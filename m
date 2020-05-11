@@ -2,109 +2,110 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3731C1CD384
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 May 2020 10:08:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 878BF1CDAE8
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 May 2020 15:14:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728260AbgEKIIH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 11 May 2020 04:08:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726082AbgEKIIH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 11 May 2020 04:08:07 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02E01C061A0C;
-        Mon, 11 May 2020 01:08:05 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id t9so7495667pjw.0;
-        Mon, 11 May 2020 01:08:05 -0700 (PDT)
+        id S1730145AbgEKNOZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 11 May 2020 09:14:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726687AbgEKNOX (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 11 May 2020 09:14:23 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AB94C061A0E
+        for <linux-ext4@vger.kernel.org>; Mon, 11 May 2020 06:14:21 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id a4so7452623lfh.12
+        for <linux-ext4@vger.kernel.org>; Mon, 11 May 2020 06:14:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=k2G71kN8Haoompxo3U0sCkik6jn//FKFL8AWmWCpJvI=;
-        b=XNbWWqVKHyKLF7jd1B3sI+3YjTL+cq3MvXdnNWXuqOmEQRFeObEcdBASNHmooe9oRb
-         biqNyWZNDEHxpVT1FGOIX+umumlhX0lGY+e4c8lCsiUtUav2Xi7KYTQossE5xNcIF6fV
-         e8WgOsr4Z+FUt184K3RDDRAPJcjI2X2kMAg0JYUkWYogOd5n2y4ntUNIt6GeSVT6KquY
-         0IsYVWHi0OOYINJ+hcHRxiutKQMCG9Kv7iwmZ95SznSYSZLP7Q9NNExGZHibbQaB/b+2
-         DaTmklNT83XQCaQaJJFsbH+mNleZLtnirI/WoDUIHIzGn01hXuqQB0M0rA+2D03+ZsY9
-         Xnfg==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=U5G2udOSHaQZv+/vRn9bY4n/DXBHSBdIm8Dj9bPbJOA=;
+        b=hIRznpXq1Mi0E8mpdkPnk3hmCkIkEdeRf6pMnebUkb/1CDDnNzap+KPo0X8tCEvAHM
+         xux9V5R+UKSG7LTlNhow80b5oSyz4xu9EjSrj8Pt40WjDISGvgcW8IJY/kKUaLIARklB
+         EbZt05Xvxf090qFRJbw+YxVv3z4tehsHGxa7zVsxhhW7/b1rCSP3K5Fg5ihZdeS3Uwns
+         dc/rCGAp97V3cXOpMFrs3ekRGUiaufkpPWfCoOFWPi0BgV3Ve2ztEHzwmtpn1PC4zUsJ
+         +32zH47SoxY/QYEMo58iwTYlsCsokYNHuIVcee4mk2XUGMQNnJfdWs6oP8a3HdQdYGEO
+         lBLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=k2G71kN8Haoompxo3U0sCkik6jn//FKFL8AWmWCpJvI=;
-        b=NXwyx9cUoBZVlgxAhaYKYtr8WHxleqnmmdxoY84uBIkjQ3Ltf1c2GMnyfqFIbnK9ue
-         jVFhBFbmyxhUCmD5oVQyIsQMC+qa256j9mPg8R03/JTyPTpKMDJb31QzKcFWUO91A9XU
-         AlR6hcW98tgHXlAz/nVLzgxi2+zliMeLANPcband88XOCww9js6pSJlBJve98zX/EA3b
-         KPCvPQ+r0f8Y6Rnh/133PhTy2mucdgS/imzMJzkDSeHDjTNV09oiqw5myR8ltNxeQm0b
-         vVX4thjWV8Lm/VXEffWbedQqqDEoov3Jx+gmGkhwd31FCmGwsgXuV9jxN4shbkW263xy
-         C17w==
-X-Gm-Message-State: AGi0PuZkGOss7a0BXfZpwnz9KqVqwVDau1tZpyOGMydfk/gUYtsIZ6Ky
-        LUBP9yT6FlW8acmzSEYwRMg=
-X-Google-Smtp-Source: APiQypIdWF58ZixPlbFx3vC8hS2e/98FkERnQkNxs7PIcrmTySLB6s3ePNW1kPAA93QLqelKNcAESw==
-X-Received: by 2002:a17:902:7c05:: with SMTP id x5mr7216740pll.278.1589184484383;
-        Mon, 11 May 2020 01:08:04 -0700 (PDT)
-Received: from localhost.localdomain ([124.123.80.46])
-        by smtp.gmail.com with ESMTPSA id 73sm4143046pge.15.2020.05.11.01.08.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 May 2020 01:08:03 -0700 (PDT)
-Subject: Re: [PATCH] ext4: Don't set dioread_nolock by default for blocksize <
- pagesize
-To:     stable@vger.kernel.org
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        Jan Kara <jack@suse.cz>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-References: <87pndagw7s.fsf@linux.ibm.com>
- <20200327200744.12473-1-riteshh@linux.ibm.com>
- <20200329021728.GI53396@mit.edu>
-From:   Ritesh Harjani <ritesh.list@gmail.com>
-Message-ID: <e61fe76d-687f-3e34-6091-c501071b8a9a@gmail.com>
-Date:   Mon, 11 May 2020 13:37:59 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        bh=U5G2udOSHaQZv+/vRn9bY4n/DXBHSBdIm8Dj9bPbJOA=;
+        b=aqTZXZhRoQthCbJFfd0OUv3JWadedsMNu96JI1DP4PryHvDy7zefEFDdNlTCtF9klJ
+         5kngmfrw4Bz/cAUHCo1ut1Eqzc6XJi6/0CmQjFd0vmyPSj023x4eB9ddKmPrAyWgDuqf
+         Vm21mKapPRz4iLx8BIINVVjrV8dnPdc9BcrMzZkDLpzDfnL4LNmlPMNlqKGAHc/WV0uW
+         vXxQbFeBWkSKF9YZoBaZTkEyuCcOOgmQkSyzPgOAsuL4KvAwA+4Aw0bYx5js4nDF4G/X
+         ATjCTHgBKvzf70iF66a2IQEBfG5ohm7XvVWV7pZ5s/vlpU3q7Agd1iq7OYnLXmpHDnDr
+         uplA==
+X-Gm-Message-State: AOAM531m3W5q+ImPk969wsluvS5AT/yDrbKy2VIvAysqD3EiJYlfjJH0
+        GHUtnmvC/e/6TmgGgFSQu83piQ==
+X-Google-Smtp-Source: ABdhPJyxP3hgaWRGIbs7CbiGxBLMK1Agzv2v0iWSsVIzG1UmL0wwG1g4ObOsnQjUF+BkJb3I4c3vbw==
+X-Received: by 2002:a19:cc92:: with SMTP id c140mr10986211lfg.34.1589202859704;
+        Mon, 11 May 2020 06:14:19 -0700 (PDT)
+Received: from localhost (c-8c28e555.07-21-73746f28.bbcust.telenor.se. [85.229.40.140])
+        by smtp.gmail.com with ESMTPSA id f24sm11918890lfk.36.2020.05.11.06.14.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 May 2020 06:14:19 -0700 (PDT)
+From:   Anders Roxell <anders.roxell@linaro.org>
+To:     brendanhiggins@google.com, akpm@linux-foundation.org,
+        gregkh@linuxfoundation.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, john.johansen@canonical.com,
+        jmorris@namei.org, serge@hallyn.com
+Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-security-module@vger.kernel.org, elver@google.com,
+        davidgow@google.com, Anders Roxell <anders.roxell@linaro.org>
+Subject: [PATCH v3 0/6] Enable as many KUnit tests as possible
+Date:   Mon, 11 May 2020 15:13:50 +0200
+Message-Id: <20200511131350.29638-1-anders.roxell@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20200329021728.GI53396@mit.edu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello stable-list,
+Hi,
 
-I think this subjected patch [1] missed the below fixes tag.
-I guess the subjected patch is only picked for 5.7. And
-AFAIU, this patch will be needed for 5.6 as well.
+This patchset will try to enable as many KUnit test fragments as
+possible for the current .config file.
+This will make it easier for both developers that tests their specific
+feature and also for test-systems that would like to get as much as
+possible for their current .config file.
 
-Could you please do the needful.
+I will send a separate KCSAN KUnit patch after this patchset since that
+isn't in mainline yet.
 
-Fixes: 244adf6426ee31a (ext4: make dioread_nolock the default)
+Since v2:
+Fixed David's comments. KUNIT_RUN_ALL -> KUNIT_ALL_TESTS, and he
+suggested a great help text.
 
-[1]: 
-https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git/commit/?h=dev&id=626b035b816b61a7a7b4d2205a6807e2f11a18c1
+Since v1:
+Marco commented to split up the patches, and change a "." to a ",".
 
 
--ritesh
+Cheers,
+Anders
 
-On 3/29/20 7:47 AM, Theodore Y. Ts'o wrote:
-> On Sat, Mar 28, 2020 at 01:37:44AM +0530, Ritesh Harjani wrote:
->> Currently on calling echo 3 > drop_caches on host machine, we see
->> FS corruption in the guest. This happens on Power machine where
->> blocksize < pagesize.
->>
->> So as a temporary workaound don't enable dioread_nolock by default
->> for blocksize < pagesize until we identify the root cause.
->>
->> Also emit a warning msg in case if this mount option is manually
->> enabled for blocksize < pagesize.
->>
->> Reported-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
->> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
-> 
-> Thanks, applied.
-> 
-> 					- Ted
-> 
+Anders Roxell (6):
+  kunit: Kconfig: enable a KUNIT_ALL_TESTS fragment
+  kunit: default KUNIT_* fragments to KUNIT_ALL_TESTS
+  lib: Kconfig.debug: default KUNIT_* fragments to KUNIT_ALL_TESTS
+  drivers: base: default KUNIT_* fragments to KUNIT_ALL_TESTS
+  fs: ext4: default KUNIT_* fragments to KUNIT_ALL_TESTS
+  security: apparmor: default KUNIT_* fragments to KUNIT_ALL_TESTS
+
+ drivers/base/Kconfig      |  3 ++-
+ drivers/base/test/Kconfig |  3 ++-
+ fs/ext4/Kconfig           |  3 ++-
+ lib/Kconfig.debug         |  6 ++++--
+ lib/kunit/Kconfig         | 23 ++++++++++++++++++++---
+ security/apparmor/Kconfig |  3 ++-
+ 6 files changed, 32 insertions(+), 9 deletions(-)
+
+-- 
+2.20.1
+
