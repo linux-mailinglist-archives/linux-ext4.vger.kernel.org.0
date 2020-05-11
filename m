@@ -2,72 +2,58 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2F091CE293
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 May 2020 20:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25FFC1CE3AD
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 May 2020 21:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729719AbgEKS0Z convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Mon, 11 May 2020 14:26:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58844 "EHLO mail.kernel.org"
+        id S1731271AbgEKTQh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 11 May 2020 15:16:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729673AbgEKS0Z (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 11 May 2020 14:26:25 -0400
-From:   bugzilla-daemon@bugzilla.kernel.org
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 207635] EXT4-fs error (device sda3): ext4_lookup:1701: inode
- #...: comm find: casefold flag without casefold feature; EXT4-fs (sda3):
- Remounting filesystem read-only
-Date:   Mon, 11 May 2020 18:26:24 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: blocking
-X-Bugzilla-Who: ebiggers3@gmail.com
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-207635-13602-NttAo3E9Wz@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-207635-13602@https.bugzilla.kernel.org/>
-References: <bug-207635-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        id S1728613AbgEKTQg (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 11 May 2020 15:16:36 -0400
+Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 50247206E6;
+        Mon, 11 May 2020 19:16:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589224596;
+        bh=tBesqsTZnw0kx/Akr2tFasAZ+I+4QbG0o21sc6BMcfI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XamP3kJWjE2sYmlIKlfYZ56Lg+nYobrBaj0d1gSAiulPa2bvLPDDqmh/sSDGbGpLU
+         vFTnSRrn/7/w8sF0ijX1uMCF4Lg6sMQ1q+TGXP+yPKXEbeNQ5n/qcqSRPBRxD+5xRi
+         VGrijh9MkSub8sMxCvRQnCXatalBjz/FQio+FoP8=
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
+Subject: [PATCH 0/3] fscrypt: misc cleanups
+Date:   Mon, 11 May 2020 12:13:55 -0700
+Message-Id: <20200511191358.53096-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=207635
+In fs/crypto/ and fscrypt.h, fix all kerneldoc warnings, and fix some
+coding style inconsistencies in function declarations.
 
---- Comment #7 from Eric Biggers (ebiggers3@gmail.com) ---
-> Someone might use a kernel with casefold or encryption support on Monday -
-> and even use these features, causing a few of these flags to be set.
->
-> The same person might run a kernel with casefold and/or encryption disabled
-> on Tuesday. So, would it really be necessary to set their filesystem to ro -
-> giving them a hard time, just because they like to use different kernels? I
-> think not.
+Eric Biggers (3):
+  fscrypt: fix all kerneldoc warnings
+  fscrypt: name all function parameters
+  fscrypt: remove unnecessary extern keywords
 
-Casefold is an 'incompat' feature, because it changes the directory format.  So
-if someone enables it (on-disk, which is different from merely using a kernel
-that supports it), then old kernels can't use the filesystem at all.  That's
-working as intended.
-
-But that's *not* actually what this issue is about.  This issue is about how
-the kernel treats inodes that got corrupted to have the casefold flag set when
-the user didn't actually enable the casefold feature.  The ext4 feature flags
-have clear behavior for how unexpected flags are handled, but the inode flags
-don't.
+ fs/crypto/crypto.c          |   9 +-
+ fs/crypto/fname.c           |  52 +++++++++---
+ fs/crypto/fscrypt_private.h |  88 +++++++++----------
+ fs/crypto/hooks.c           |   4 +-
+ fs/crypto/keysetup.c        |   9 +-
+ fs/crypto/policy.c          |  19 ++++-
+ include/linux/fscrypt.h     | 165 ++++++++++++++++++------------------
+ 7 files changed, 193 insertions(+), 153 deletions(-)
 
 -- 
-You are receiving this mail because:
-You are watching the assignee of the bug.
+2.26.2
+
