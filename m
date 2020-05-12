@@ -2,261 +2,97 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2344D1CF361
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 May 2020 13:33:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 024081CF393
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 May 2020 13:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729375AbgELLdD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 12 May 2020 07:33:03 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:16362 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726187AbgELLdD (ORCPT
+        id S1729514AbgELLph (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 12 May 2020 07:45:37 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:51275 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726187AbgELLph (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 12 May 2020 07:33:03 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04CBX0FZ114575;
-        Tue, 12 May 2020 07:33:00 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30ws2f8d2y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 May 2020 07:33:00 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 04CBOfnx062260;
-        Tue, 12 May 2020 07:32:19 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30ws2f8d21-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 May 2020 07:32:19 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 04CBPMta005751;
-        Tue, 12 May 2020 11:32:17 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03ams.nl.ibm.com with ESMTP id 30wm55pbn8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 May 2020 11:32:17 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04CBWFd856557718
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 May 2020 11:32:15 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 007954C04A;
-        Tue, 12 May 2020 11:32:15 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 309FC4C046;
-        Tue, 12 May 2020 11:32:14 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.79.181.98])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 12 May 2020 11:32:13 +0000 (GMT)
-Subject: Re: [PATCH] ext4: rework map struct instantiation in
- ext4_ext_map_blocks()
-To:     Eric Whitney <enwlinux@gmail.com>, linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu
-References: <20200510155805.18808-1-enwlinux@gmail.com>
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-Date:   Tue, 12 May 2020 17:02:13 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Tue, 12 May 2020 07:45:37 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 345BC5C00E1;
+        Tue, 12 May 2020 07:45:36 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Tue, 12 May 2020 07:45:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=CgwbE++isZyh3ATrtRIk7CV0qzN
+        Yg3YqRPlybExTQvQ=; b=ai/6IKq+PjIBYdqmB00V7zCtQ5OORYogAyFp6PG+Ww7
+        jmFOiRjsXHKsSfhcPpLB2u2w7cZIx8j6fSNe0oChaL3Wa1/f0NXq75ZxG4pSC5tb
+        D9Z7hYadD3wNShYxQvceom3G9gCkdxe2uh5ukcy/Tj+5u7WbNxr/bQH4GmWH4Whi
+        kIUcsvFM+/6B9biMt7oYdymIgDZRqZazJGCxs8dLkLA2YZZmWnBpIIfqMX7ZmU9T
+        LVoaNjbf+PZkrpieXFPXYH7c1cLuWo28/em+oP6JcwdqH7gKKPj+KNqTLWIKxGny
+        fzJWOCc+O0tgJfbGfAqppv5gptDjZMeO30HZdkqVjcw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=CgwbE+
+        +isZyh3ATrtRIk7CV0qzNYg3YqRPlybExTQvQ=; b=dfribv2oTfwMksipTTVAGH
+        ma8ibMGxYhwHJxfugABK9kUGF9TESgHtraGsW9nNdEUUBGPtSfoCmzeyFY1ebEcO
+        xEbjXL22IDyZkCbzjBSSpXRAVkO62v1oKHe/nTjZ+eynk0BjdzYGZRbTiqIQZQHv
+        3b4hNvVVkOYmYZ6hKePJBB3VCts1siK0I3v6v4WytAggS+fcbsYW43eMbW1d0vAp
+        XQsAZlVoJdypCoodF0WCA6rHi4H43U1dAYJCC9sCCe1JaLeIi7kg9FZh1mf07wB6
+        s6ev7LKNzh4iurqzmWpEDrI7T6M86iOuGHm/eB1iL6esii9VkJp3RCgiqNqTR38g
+        ==
+X-ME-Sender: <xms:X4y6Xo42oE_nwJQQxEd-SKlA7huq_hL4C-Kd-dM552lRhzVGNglwuQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrledvgdegudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
+    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepueelledthe
+    ekleethfeludduvdfhffeuvdffudevgeehkeegieffveehgeeftefgnecuffhomhgrihhn
+    pehkvghrnhgvlhdrohhrghenucfkphepkeefrdekiedrkeelrddutdejnecuvehluhhsth
+    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghh
+    rdgtohhm
+X-ME-Proxy: <xmx:X4y6Xp7qGI-_7cRIjn-BgY1gcPwRdwtRhmdhLUukidQvWCgoX08vOQ>
+    <xmx:X4y6XncxbpWFohzTEPPfEsYDbM7uZ8mCuYb_8FQKcZu38XV3aKgIkA>
+    <xmx:X4y6XtJl87C2N_r7yr967xE6lVUijCXf4Iewxxo1yEnqGLsm4Q691w>
+    <xmx:YIy6Xg3UWXtCWVw9AJ7ObGBnAaiPmY0qK7gxoJ1FB2PfQh6I2oP0MA>
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 674EF3280066;
+        Tue, 12 May 2020 07:45:35 -0400 (EDT)
+Date:   Tue, 12 May 2020 13:45:33 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Ritesh Harjani <ritesh.list@gmail.com>
+Cc:     stable@vger.kernel.org, "Theodore Y. Ts'o" <tytso@mit.edu>,
+        linux-ext4@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH] ext4: Don't set dioread_nolock by default for blocksize
+ < pagesize
+Message-ID: <20200512114533.GA54730@kroah.com>
+References: <87pndagw7s.fsf@linux.ibm.com>
+ <20200327200744.12473-1-riteshh@linux.ibm.com>
+ <20200329021728.GI53396@mit.edu>
+ <e61fe76d-687f-3e34-6091-c501071b8a9a@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200510155805.18808-1-enwlinux@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Message-Id: <20200512113214.309FC4C046@d06av22.portsmouth.uk.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-12_03:2020-05-11,2020-05-12 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- mlxlogscore=999 bulkscore=0 clxscore=1015 impostorscore=0 adultscore=0
- phishscore=0 mlxscore=0 priorityscore=1501 lowpriorityscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2005120082
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e61fe76d-687f-3e34-6091-c501071b8a9a@gmail.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-
-
-On 5/10/20 9:28 PM, Eric Whitney wrote:
-> The path performing block allocations in ext4_ext_map_blocks() contains
-> code trimming the length of a new extent that is repeated later
-> in the function.  This code is both redundant and unnecessary as the
-> exact length of the new extent has already been calculated.  Rewrite the
-> instantiation of the map struct in this case to use the available
-> values, avoiding the overhead of unnecessary conversions and improving
-> clarity.  Add another map struct instantiation tailored specifically to
-> the separate case for an existing written extent.  Remove an old comment
-> that no longer appears applicable to the current code.
+On Mon, May 11, 2020 at 01:37:59PM +0530, Ritesh Harjani wrote:
+> Hello stable-list,
 > 
-> Signed-off-by: Eric Whitney <enwlinux@gmail.com>
-
-Yes, the previous code around looks to be confusing.
-
-One thing which I also checked was that, when we insert this new
-extent into the tree (via ext4_ext_insert_extent()) and even if this
-extent could be merged with a nearby extent, the length or pblock of
-this extent is not modified for the caller.
-So again doing such below calculations (line 4250 - 4254) were redundant
-and it's better that this patch got rid of it. This patch hence looks
-logically correct to me.
-
-4250         /* previous routine could use block we allocated */ 
-
-4251         newblock = ext4_ext_pblock(&newex); 
-
-4252         allocated = ext4_ext_get_actual_len(&newex); 
- 
- 
-
-4253         if (allocated > map->m_len) 
-
-4254                 allocated = map->m_len; 
-
-
-
-Feel free to add:
-Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
-
-
-> ---
->   fs/ext4/extents.c | 50 +++++++++++++++++++++++------------------------
->   1 file changed, 25 insertions(+), 25 deletions(-)
+> I think this subjected patch [1] missed the below fixes tag.
+> I guess the subjected patch is only picked for 5.7. And
+> AFAIU, this patch will be needed for 5.6 as well.
 > 
-> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> index f2b577b315a0..c01a204ce60b 100644
-> --- a/fs/ext4/extents.c
-> +++ b/fs/ext4/extents.c
-> @@ -4024,7 +4024,7 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
->   	struct ext4_ext_path *path = NULL;
->   	struct ext4_extent newex, *ex, *ex2;
->   	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
-> -	ext4_fsblk_t newblock = 0;
-> +	ext4_fsblk_t newblock = 0, pblk;
->   	int err = 0, depth, ret;
->   	unsigned int allocated = 0, offset = 0;
->   	unsigned int allocated_clusters = 0;
-> @@ -4040,7 +4040,7 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
->   	if (IS_ERR(path)) {
->   		err = PTR_ERR(path);
->   		path = NULL;
-> -		goto out2;
-> +		goto out;
->   	}
+> Could you please do the needful.
 > 
->   	depth = ext_depth(inode);
-> @@ -4056,7 +4056,7 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
->   				 (unsigned long) map->m_lblk, depth,
->   				 path[depth].p_block);
->   		err = -EFSCORRUPTED;
-> -		goto out2;
-> +		goto out;
->   	}
+> Fixes: 244adf6426ee31a (ext4: make dioread_nolock the default)
 > 
->   	ex = path[depth].p_ext;
-> @@ -4090,8 +4090,14 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
->   			    (flags & EXT4_GET_BLOCKS_CONVERT_UNWRITTEN)) {
->   				err = convert_initialized_extent(handle,
->   					inode, map, &path, &allocated);
-> -				goto out2;
-> +				goto out;
->   			} else if (!ext4_ext_is_unwritten(ex)) {
-> +				map->m_flags |= EXT4_MAP_MAPPED;
-> +				map->m_pblk = newblock;
-> +				if (allocated > map->m_len)
-> +					allocated = map->m_len;
-> +				map->m_len = allocated;
-> +				ext4_ext_show_leaf(inode, path);
->   				goto out;
->   			}
-> 
-> @@ -4102,7 +4108,7 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
->   				err = ret;
->   			else
->   				allocated = ret;
-> -			goto out2;
-> +			goto out;
->   		}
->   	}
-> 
-> @@ -4127,7 +4133,7 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
->   		map->m_pblk = 0;
->   		map->m_len = min_t(unsigned int, map->m_len, hole_len);
-> 
-> -		goto out2;
-> +		goto out;
->   	}
-> 
->   	/*
-> @@ -4151,12 +4157,12 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
->   	ar.lleft = map->m_lblk;
->   	err = ext4_ext_search_left(inode, path, &ar.lleft, &ar.pleft);
->   	if (err)
-> -		goto out2;
-> +		goto out;
->   	ar.lright = map->m_lblk;
->   	ex2 = NULL;
->   	err = ext4_ext_search_right(inode, path, &ar.lright, &ar.pright, &ex2);
->   	if (err)
-> -		goto out2;
-> +		goto out;
-> 
->   	/* Check if the extent after searching to the right implies a
->   	 * cluster we can use. */
-> @@ -4217,7 +4223,7 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
->   		ar.flags |= EXT4_MB_USE_RESERVED;
->   	newblock = ext4_mb_new_blocks(handle, &ar, &err);
->   	if (!newblock)
-> -		goto out2;
-> +		goto out;
->   	ext_debug("allocate new block: goal %llu, found %llu/%u\n",
->   		  ar.goal, newblock, allocated);
->   	allocated_clusters = ar.len;
-> @@ -4227,7 +4233,8 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
-> 
->   got_allocated_blocks:
->   	/* try to insert new extent into found leaf and return */
-> -	ext4_ext_store_pblock(&newex, newblock + offset);
-> +	pblk = newblock + offset;
-> +	ext4_ext_store_pblock(&newex, pblk);
->   	newex.ee_len = cpu_to_le16(ar.len);
->   	/* Mark unwritten */
->   	if (flags & EXT4_GET_BLOCKS_UNWRIT_EXT) {
-> @@ -4252,16 +4259,9 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
->   					 EXT4_C2B(sbi, allocated_clusters),
->   					 fb_flags);
->   		}
-> -		goto out2;
-> +		goto out;
->   	}
-> 
-> -	/* previous routine could use block we allocated */
-> -	newblock = ext4_ext_pblock(&newex);
-> -	allocated = ext4_ext_get_actual_len(&newex);
-> -	if (allocated > map->m_len)
-> -		allocated = map->m_len;
-> -	map->m_flags |= EXT4_MAP_NEW;
-> -
->   	/*
->   	 * Reduce the reserved cluster count to reflect successful deferred
->   	 * allocation of delayed allocated clusters or direct allocation of
-> @@ -4307,14 +4307,14 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
->   		ext4_update_inode_fsync_trans(handle, inode, 1);
->   	else
->   		ext4_update_inode_fsync_trans(handle, inode, 0);
-> -out:
-> -	if (allocated > map->m_len)
-> -		allocated = map->m_len;
-> +
-> +	map->m_flags |= (EXT4_MAP_NEW | EXT4_MAP_MAPPED);
-> +	map->m_pblk = pblk;
-> +	map->m_len = ar.len;
-> +	allocated = map->m_len;
->   	ext4_ext_show_leaf(inode, path);
-> -	map->m_flags |= EXT4_MAP_MAPPED;
-> -	map->m_pblk = newblock;
-> -	map->m_len = allocated;
-> -out2:
-> +
-> +out:
->   	ext4_ext_drop_refs(path);
->   	kfree(path);
-> 
+> [1]: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git/commit/?h=dev&id=626b035b816b61a7a7b4d2205a6807e2f11a18c1
+
+This patch does not apply to the 5.6 kernel tree at all.  Please provide
+a working backport if you wish to see it present there.
+
+thanks,
+
+greg k-h
