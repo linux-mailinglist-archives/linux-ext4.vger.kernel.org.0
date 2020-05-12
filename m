@@ -2,125 +2,130 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 827981CFA36
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 May 2020 18:12:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5730F1CFC46
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 May 2020 19:34:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727943AbgELQML (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 12 May 2020 12:12:11 -0400
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:35175 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726668AbgELQMK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 12 May 2020 12:12:10 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 7E1A75C0131;
-        Tue, 12 May 2020 12:12:09 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Tue, 12 May 2020 12:12:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=WdxskVqADaciZoTeZ8HP8SyJhqq
-        P2uyamPg5faf2kCQ=; b=cfYYlMQAktFvvlPOfy7eRgmQoU4SEx4RZN1zWe8uBXj
-        MnlLOO9BdAcD7uWDU3RW4kY5yI+VOQceX3mrmCH6cTwui56IsWyf04PutZinpvj5
-        buXZV9T99dZCKbRBVfhHYNrJfacOcxST4lMNSAextgSlFLkM0RoHFed+9smgB9e7
-        Y9pm2b9otqlGyIt6xDdTQm6PAazpudWY5xvMhDQd/mZPkAdg4WvX2owTglTv0mVa
-        kmjG4aCc1mcYe6HM3a9crAc0CwvhpjfIqnX+khGR3aFHOE+v/yCzGCuYSFkLG0Sg
-        tBXUATaIOaLQWtWqfmm9cT1V0p2KwAd59WKKh2ZCX2Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=WdxskV
-        qADaciZoTeZ8HP8SyJhqqP2uyamPg5faf2kCQ=; b=NuQTbPUUGPUNupkppJeQii
-        eZ60S8wrvDopiEYMr1VRZ00x0yh4xreBJiC07GIl/y7G/JnYPDQXNrNECHea7jyT
-        hP3ESDcd2tM6RPLcmYAxg+pY5iKKOxCWiI/7Syezwx3mulHtvZ4EqlBvCCEb0pD0
-        OK3XrKoQZliQov2q+DajfKTO5TG6KbtczIYRWYd1dDJPxAliPn6ZBElltL/cf3Bu
-        uTdujob2L2xQOdWFnMYm+f4AgW2bGs5CVuo4OSSHziR3zU96EBMVl8n2qly51XZJ
-        qiFlIXLqkxQJwHawITc3KjyxYnPpYg4/AH1YHczqJ117R/0h6cjMVe162Ai4e1Zg
-        ==
-X-ME-Sender: <xms:2Mq6XvGo-l8eY975BrSbteps2SpAAISvFfb79f5KUXlq1kjIHT_Hgg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrledvgdelhecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
-    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepueelledthe
-    ekleethfeludduvdfhffeuvdffudevgeehkeegieffveehgeeftefgnecuffhomhgrihhn
-    pehkvghrnhgvlhdrohhrghenucfkphepkeefrdekiedrkeelrddutdejnecuvehluhhsth
-    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghh
-    rdgtohhm
-X-ME-Proxy: <xmx:2Mq6XsWQpBU2Bnc8mFxq8IM4-n1x_m-6WzrwUIsHqecjGfktLH6PSw>
-    <xmx:2Mq6XhL6HlQnOPyxb9P_mvQ5dKYqTULanxxODkXB9mfbJwlQQVbhXA>
-    <xmx:2Mq6XtERWA-3OOPupt0DOIRNyA-TWBDFiLVTeBd2fM_ZGMxJNZ6FeQ>
-    <xmx:2cq6XoRRnJOst4r2M6gS_igfgVrvCkht3CtOj5qf7nGe9VH9rOdudg>
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 927C730662C2;
-        Tue, 12 May 2020 12:12:08 -0400 (EDT)
-Date:   Tue, 12 May 2020 18:12:05 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     Ritesh Harjani <ritesh.list@gmail.com>, stable@vger.kernel.org,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        Jan Kara <jack@suse.cz>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
-Subject: Re: [PATCH] ext4: Don't set dioread_nolock by default for blocksize
- < pagesize
-Message-ID: <20200512161205.GA690441@kroah.com>
-References: <87pndagw7s.fsf@linux.ibm.com>
- <20200327200744.12473-1-riteshh@linux.ibm.com>
- <20200329021728.GI53396@mit.edu>
- <e61fe76d-687f-3e34-6091-c501071b8a9a@gmail.com>
- <20200512114533.GA54730@kroah.com>
- <61fb772b-75e2-f391-1a5f-044e573b38f7@gmail.com>
- <20200512125931.GA435853@kroah.com>
- <20200512141312.GP13035@sasha-vm>
+        id S1730110AbgELReq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 12 May 2020 13:34:46 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:44347 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725554AbgELReq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 12 May 2020 13:34:46 -0400
+Received: from static-50-53-45-43.bvtn.or.frontiernet.net ([50.53.45.43] helo=[192.168.192.153])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <john.johansen@canonical.com>)
+        id 1jYYnh-0003MC-7v; Tue, 12 May 2020 17:34:41 +0000
+Subject: Re: [PATCH v3 6/6] security: apparmor: default KUNIT_* fragments to
+ KUNIT_ALL_TESTS
+To:     Anders Roxell <anders.roxell@linaro.org>, jmorris@namei.org,
+        serge@hallyn.com
+Cc:     gregkh@linuxfoundation.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, akpm@linux-foundation.org,
+        brendanhiggins@google.com, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-security-module@vger.kernel.org,
+        elver@google.com, davidgow@google.com
+References: <20200511131442.30002-1-anders.roxell@linaro.org>
+From:   John Johansen <john.johansen@canonical.com>
+Autocrypt: addr=john.johansen@canonical.com; prefer-encrypt=mutual; keydata=
+ LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCgptUUlOQkU1bXJQb0JFQURB
+ azE5UHNnVmdCS2tJbW1SMmlzUFE2bzdLSmhUVEtqSmR3VmJrV1NuTm4rbzZVcDVrCm5LUDFm
+ NDlFQlFsY2VXZzF5cC9Od2JSOGFkK2VTRU8vdW1hL0srUHFXdkJwdEtDOVNXRDk3Rkc0dUI0
+ L2Nhb20KTEVVOTdzTFFNdG52R1dkeHJ4VlJHTTRhbnpXWU1neno1VFptSWlWVFo0M091NVZw
+ YVMxVnoxWlN4UDNoL3hLTgpaci9UY1c1V1FhaTh1M1BXVm5ia2poU1pQSHYxQmdoTjY5cXhF
+ UG9tckpCbTFnbXR4M1ppVm1GWGx1d1RtVGdKCk9rcEZvbDduYkowaWxuWUhyQTdTWDNDdFIx
+ dXBlVXBNYS9XSWFuVk85NldkVGpISElhNDNmYmhtUXViZTR0eFMKM0ZjUUxPSlZxUXN4NmxF
+ OUI3cUFwcG05aFExMHFQV3dkZlB5LyswVzZBV3ROdTVBU2lHVkNJbld6bDJIQnFZZAovWmxs
+ OTN6VXErTklvQ244c0RBTTlpSCt3dGFHRGNKeXdJR0luK2VkS050SzcyQU1nQ2hUZy9qMVpv
+ V0g2WmVXClBqdVVmdWJWelp0bzFGTW9HSi9TRjRNbWRRRzFpUU50ZjRzRlpiRWdYdXk5Y0dp
+ MmJvbUYwenZ5QkpTQU5weGwKS05CRFlLek42S3owOUhVQWtqbEZNTmdvbUwvY2pxZ0FCdEF4
+ NTlMK2RWSVpmYUYyODFwSWNVWnp3dmg1K0pvRwplT1c1dUJTTWJFN0wzOG5zem9veWtJSjVY
+ ckFjaGtKeE5mejdrK0ZuUWVLRWtOekVkMkxXYzNRRjRCUVpZUlQ2ClBISGdhM1JneWtXNSsx
+ d1RNcUpJTGRtdGFQYlhyRjNGdm5WMExSUGN2NHhLeDdCM2ZHbTd5Z2Rvb3dBUkFRQUIKdEIx
+ S2IyaHVJRXB2YUdGdWMyVnVJRHhxYjJodVFHcHFiWGd1Ym1WMFBva0NPZ1FUQVFvQUpBSWJB
+ d1VMQ1FnSApBd1VWQ2drSUN3VVdBZ01CQUFJZUFRSVhnQVVDVG8wWVZ3SVpBUUFLQ1JBRkx6
+ WndHTlhEMkx4SkQvOVRKWkNwCndsbmNUZ1llcmFFTWVEZmtXdjhjMUlzTTFqMEFtRTRWdEwr
+ ZkU3ODBaVlA5Z2tqZ2tkWVN4dDdlY0VUUFRLTWEKWlNpc3JsMVJ3cVUwb29nWGRYUVNweHJH
+ SDAxaWN1LzJuMGpjWVNxWUtnZ1B4eTc4QkdzMkxacTRYUGZKVFptSApaR25YR3EvZURyL21T
+ bmowYWF2QkptTVo2amJpUHo2eUh0QllQWjlmZG84YnRjendQNDFZZVdvSXUyNi84SUk2CmYw
+ WG0zVkM1b0FhOHY3UmQrUldaYThUTXdsaHpIRXh4ZWwzanRJN0l6ek9zbm1FOS84RG0wQVJE
+ NWlUTENYd1IKMWN3SS9KOUJGL1MxWHY4UE4xaHVUM0l0Q05kYXRncDh6cW9Ka2dQVmptdnlM
+ NjRRM2ZFa1liZkhPV3NhYmE5LwprQVZ0Qk56OVJURmg3SUhEZkVDVmFUb3VqQmQ3QnRQcXIr
+ cUlqV0ZhZEpEM0k1ZUxDVkp2VnJyb2xyQ0FUbEZ0Ck4zWWtRczZKbjFBaUlWSVUzYkhSOEdq
+ ZXZnejVMbDZTQ0dIZ1Jya3lScG5TWWFVL3VMZ24zN042QVl4aS9RQUwKK2J5M0N5RUZManpX
+ QUV2eVE4YnEzSXVjbjdKRWJoUy9KLy9kVXFMb2VVZjh0c0dpMDB6bXJJVFpZZUZZQVJoUQpN
+ dHNmaXpJclZEdHoxaVBmL1pNcDVnUkJuaXlqcFhuMTMxY20zTTNndjZIclFzQUdubjhBSnJ1
+ OEdEaTVYSllJCmNvLzEreC9xRWlOMm5DbGFBT3BiaHpOMmVVdlBEWTVXMHEzYkEvWnAybWZH
+ NTJ2YlJJK3RRMEJyMUhkL3ZzbnQKVUhPOTAzbU1aZXAyTnpOM0JaNXFFdlB2RzRyVzVacTJE
+ cHliV2JRclNtOW9iaUJLYjJoaGJuTmxiaUE4YW05bwpiaTVxYjJoaGJuTmxia0JqWVc1dmJt
+ bGpZV3d1WTI5dFBva0NOd1FUQVFvQUlRVUNUbzBYV2dJYkF3VUxDUWdICkF3VVZDZ2tJQ3dV
+ V0FnTUJBQUllQVFJWGdBQUtDUkFGTHpad0dOWEQySXRNRC85anliYzg3ZE00dUFIazZ5Tk0K
+ TjBZL0JGbW10VFdWc09CaHFPbm9iNGkzOEJyRE8yQzFoUUNQQ1FlNExMczEvNHB0ZW92UXQ4
+ QjJGeXJQVmp3Zwo3alpUSE5LNzRyNmxDQ1Z4eDN5dTFCN1U5UG80VlRrY3NsVmIxL3FtV3V4
+ OFhXY040eXZrVHFsTCtHeHB5Sm45CjlaWmZmWEpjNk9oNlRtT2ZiS0d2TXV1djVhclNJQTNK
+ SEZMZjlhTHZadEExaXNKVXI3cFM5YXBnOXVUVUdVcDcKd2ZWMFdUNlQzZUczbXRVVTJ1cDVK
+ VjQ4NTBMMDVqSFM2dVdpZS9ZK3lmSk9iaXlyeE4vNlpxVzVHb25oTEJxLwptc3pjVjV2QlQz
+ QkRWZTNSdkY2WGRNOU9oUG4xK1k4MXg1NCt2UTExM044aUx3RjdHR2ExNFp5SVZBTlpEMEkw
+ CkhqUnZhMmsvUnFJUlR6S3l1UEg1cGtsY0tIVlBFRk1tT3pNVCtGT294Tmp2Uys3K3dHMktN
+ RFlFbUhQcjFQSkIKWlNaZUh6SzE5dGZhbFBNcHBGeGkrc3lZTGFnTjBtQjdKSFF3WTdjclV1
+ T0RoeWNxNjBZVnoxdGFFeWd1M1l2MgoyL0kxRUNHSHZLSEc2d2M5MG80M0MvZWxIRUNYbkVo
+ N3RLcGxEY3BJQytPQ21NeEtIaFI0NitYY1p2Z3c0RGdiCjdjYTgzZVFSM0NHODlMdlFwVzJM
+ TEtFRUJEajdoWmhrTGJra1BSWm0zdzhKWTQ0YXc4VnRneFdkblNFTUNMeEwKSU9OaDZ1Wjcv
+ L0RZVnRjSWFNSllrZWJhWnRHZENwMElnVVpiMjQvVmR2WkNZYk82MkhrLzNWbzFuWHdIVUVz
+ Mwo2RC92MWJUMFJaRmk2OUxnc0NjT2N4NGdZTGtDRFFST1pxejZBUkFBb3F3NmtrQmhXeU0x
+ ZnZnYW1BVmplWjZuCktFZm5SV2JrQzk0TDFFc0pMdXAzV2IyWDBBQk5PSFNrYlNENHBBdUMy
+ dEtGL0VHQnQ1Q1A3UWRWS1JHY1F6QWQKNmIyYzFJZHk5Ukx3Nnc0Z2krbm4vZDFQbTFra1lo
+ a1NpNXpXYUlnMG01UlFVaytFbDh6a2Y1dGNFLzFOMFo1TwpLMkpoandGdTViWDBhMGw0Y0ZH
+ V1ZRRWNpVk1ES1J0eE1qRXRrM1N4RmFsbTZaZFEycHAyODIyY2xucTR6WjltCld1MWQyd2F4
+ aXorYjVJYTR3ZURZYTduNDFVUmNCRVViSkFnbmljSmtKdENUd3lJeElXMktuVnlPcmp2a1F6
+ SUIKdmFQMEZkUDJ2dlpvUE1kbENJek9sSWtQTGd4RTBJV3VlVFhlQkpoTnMwMXBiOGJMcW1U
+ SU1sdTRMdkJFTEEvdgplaWFqajVzOHk1NDJIL2FIc2ZCZjRNUVVoSHhPL0JaVjdoMDZLU1Vm
+ SWFZN09nQWdLdUdOQjNVaWFJVVM1K2E5CmduRU9RTER4S1J5L2E3UTF2OVMrTnZ4KzdqOGlI
+ M2prUUpoeFQ2WkJoWkdSeDBna0gzVCtGMG5ORG01TmFKVXMKYXN3Z0pycUZaa1VHZDJNcm0x
+ cW5Ld1hpQXQ4U0ljRU5kcTMzUjBLS0tSQzgwWGd3ajhKbjMwdlhMU0crTk8xRwpIMFVNY0F4
+ TXd5L3B2azZMVTVKR2paUjczSjVVTFZoSDRNTGJEZ2dEM21QYWlHOCtmb3RUckpVUHFxaGc5
+ aHlVCkVQcFlHN3NxdDc0WG43OStDRVpjakxIenlsNnZBRkUyVzBreGxMdFF0VVpVSE8zNmFm
+ RnY4cUdwTzNacVB2akIKVXVhdFhGNnR2VVFDd2YzSDZYTUFFUUVBQVlrQ0h3UVlBUW9BQ1FV
+ Q1RtYXMrZ0liREFBS0NSQUZMelp3R05YRAoyRC9YRC8wZGRNLzRhaTFiK1RsMWp6bkthalgz
+ a0crTWVFWWVJNGY0MHZjbzNyT0xyblJHRk9jYnl5ZlZGNjlNCktlcGllNE93b0kxamNUVTBB
+ RGVjbmJXbkROSHByMFNjenhCTXJvM2Juckxoc212anVuVFlJdnNzQlp0QjRhVkoKanVMSUxQ
+ VWxuaEZxYTdmYlZxMFpRamJpVi9ydDJqQkVOZG05cGJKWjZHam5wWUljQWJQQ0NhL2ZmTDQv
+ U1FSUwpZSFhvaEdpaVM0eTVqQlRtSzVsdGZld0xPdzAyZmtleEgrSUpGcnJHQlhEU2c2bjJT
+ Z3hubisrTkYzNGZYY205CnBpYXczbUtzSUNtKzBoZE5oNGFmR1o2SVdWOFBHMnRlb29WRHA0
+ ZFlpaCsreFgvWFM4ekJDYzFPOXc0bnpsUDIKZ0t6bHFTV2JoaVdwaWZSSkJGYTRXdEFlSlRk
+ WFlkMzdqL0JJNFJXV2hueXc3YUFQTkdqMzN5dEdITlVmNlJvMgovanRqNHRGMXkvUUZYcWpK
+ Ry93R2pwZHRSZmJ0VWpxTEhJc3ZmUE5OSnEvOTU4cDc0bmRBQ2lkbFdTSHpqK09wCjI2S3Bi
+ Rm5td05PMHBzaVVzbmh2SEZ3UE8vdkFibDNSc1I1KzBSbytodnMyY0VtUXV2OXIvYkRsQ2Zw
+ enAydDMKY0srcmh4VXFpc094OERaZnoxQm5rYW9DUkZidnZ2ays3TC9mb21QbnRHUGtxSmNp
+ WUU4VEdIa1p3MWhPa3UrNApPb00yR0I1bkVEbGorMlRGL2pMUStFaXBYOVBrUEpZdnhmUmxD
+ NmRLOFBLS2ZYOUtkZm1BSWNnSGZuVjFqU24rCjh5SDJkakJQdEtpcVcwSjY5YUlzeXg3aVYv
+ MDNwYVBDakpoN1hxOXZBenlkTjVVL1VBPT0KPTZQL2IKLS0tLS1FTkQgUEdQIFBVQkxJQyBL
+ RVkgQkxPQ0stLS0tLQo=
+Organization: Canonical
+Message-ID: <9ab1527a-b02c-4f11-ccaa-4ce8b50cceaa@canonical.com>
+Date:   Tue, 12 May 2020 10:34:37 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200512141312.GP13035@sasha-vm>
+In-Reply-To: <20200511131442.30002-1-anders.roxell@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, May 12, 2020 at 10:13:12AM -0400, Sasha Levin wrote:
-> On Tue, May 12, 2020 at 02:59:31PM +0200, Greg KH wrote:
-> > On Tue, May 12, 2020 at 06:20:05PM +0530, Ritesh Harjani wrote:
-> > > Hello Greg,
-> > > 
-> > > On 5/12/20 5:15 PM, Greg KH wrote:
-> > > > On Mon, May 11, 2020 at 01:37:59PM +0530, Ritesh Harjani wrote:
-> > > > > Hello stable-list,
-> > > > >
-> > > > > I think this subjected patch [1] missed the below fixes tag.
-> > > > > I guess the subjected patch is only picked for 5.7. And
-> > > > > AFAIU, this patch will be needed for 5.6 as well.
-> > > > >
-> > > > > Could you please do the needful.
-> > > > >
-> > > > > Fixes: 244adf6426ee31a (ext4: make dioread_nolock the default)
-> > > > >
-> > > > > [1]: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git/commit/?h=dev&id=626b035b816b61a7a7b4d2205a6807e2f11a18c1
-> > > >
-> > > > This patch does not apply to the 5.6 kernel tree at all.  Please provide
-> > > > a working backport if you wish to see it present there.
-> > > 
-> > > Sorry if that's the case.
-> > > I tried both "git cherry-pick" and "git am" with patch mentioned @ [1]
-> > > to apply on branch "remotes/linux-stable/linux-5.6.y" of tree
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
-> > > and it applied cleanly.
-> > > 
-> > > Also, just noticed this patch in the queue. Is it that maybe you are
-> > > trying to apply it twice?
-> > > 
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git/tree/queue-5.6/ext4-don-t-set-dioread_nolock-by-default-for-blocksi.patch
-> > 
-> > Odd, it didn't have the "upstream" commit id, which is why I didn't see
-> > that it was applied already.
-> > 
-> > Sasha, something went wrong with your scripts, you didn't sign-off on it
-> > either :(
+On 5/11/20 6:14 AM, Anders Roxell wrote:
+> This makes it easier to enable all KUnit fragments.
 > 
-> Crap, sorry. I'll fix it up.
+> Adding 'if !KUNIT_ALL_TESTS' so individual tests can not be turned off.
+> Therefore if KUNIT_ALL_TESTS is enabled that will hide the prompt in
+> menuconfig.
+> 
+> Reviewed-by: David Gow <davidgow@google.com>
+> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
 
-I already did :)
+Acked-by: John Johansen <john.johansen@canonical.com>
 
