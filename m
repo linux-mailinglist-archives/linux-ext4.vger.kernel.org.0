@@ -2,158 +2,261 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBE781CECFF
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 May 2020 08:27:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2344D1CF361
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 May 2020 13:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726161AbgELG1F (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 12 May 2020 02:27:05 -0400
-Received: from mga12.intel.com ([192.55.52.136]:28076 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725536AbgELG1F (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 12 May 2020 02:27:05 -0400
-IronPort-SDR: oX1VIBE3mbVkFOGBbrhD83G7zK01HRbx438GEdcQ52wgn+NIv/YaDxNwjC6mr8r0hzs0ksWCzO
- hDhqJFbD5+pg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2020 23:27:04 -0700
-IronPort-SDR: RtAoL+9yVVO2KlOk47kZQRPzQlhWG8+vgQK1l5bEjVMchEZJlFdnMJC6RFfiPvIfz8YxO2rQr3
- Yf6vRzpPHVOQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,382,1583222400"; 
-   d="scan'208";a="306392145"
-Received: from xsang-optiplex-9020.sh.intel.com (HELO xsang-OptiPlex-9020) ([10.239.159.140])
-  by FMSMGA003.fm.intel.com with ESMTP; 11 May 2020 23:27:01 -0700
-Date:   Tue, 12 May 2020 14:37:03 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     Anna Pendleton <pendleton@google.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org,
-        Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Cc:     kbuild-all@lists.01.org, linux-ext4@vger.kernel.org,
-        Anna Pendleton <pendleton@google.com>
-Subject: Re: [PATCH] ext4: avoid ext4_error()'s caused by ENOMEM in the
- truncate path
-Message-ID: <20200512063703.GA20612@xsang-OptiPlex-9020>
+        id S1729375AbgELLdD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 12 May 2020 07:33:03 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:16362 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726187AbgELLdD (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 12 May 2020 07:33:03 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04CBX0FZ114575;
+        Tue, 12 May 2020 07:33:00 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30ws2f8d2y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 May 2020 07:33:00 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 04CBOfnx062260;
+        Tue, 12 May 2020 07:32:19 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30ws2f8d21-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 May 2020 07:32:19 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 04CBPMta005751;
+        Tue, 12 May 2020 11:32:17 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03ams.nl.ibm.com with ESMTP id 30wm55pbn8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 May 2020 11:32:17 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04CBWFd856557718
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 May 2020 11:32:15 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 007954C04A;
+        Tue, 12 May 2020 11:32:15 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 309FC4C046;
+        Tue, 12 May 2020 11:32:14 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.79.181.98])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 12 May 2020 11:32:13 +0000 (GMT)
+Subject: Re: [PATCH] ext4: rework map struct instantiation in
+ ext4_ext_map_blocks()
+To:     Eric Whitney <enwlinux@gmail.com>, linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu
+References: <20200510155805.18808-1-enwlinux@gmail.com>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Date:   Tue, 12 May 2020 17:02:13 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200507175028.15061-1-pendleton@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200510155805.18808-1-enwlinux@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Message-Id: <20200512113214.309FC4C046@d06av22.portsmouth.uk.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-12_03:2020-05-11,2020-05-12 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ mlxlogscore=999 bulkscore=0 clxscore=1015 impostorscore=0 adultscore=0
+ phishscore=0 mlxscore=0 priorityscore=1501 lowpriorityscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005120082
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Anna,
-
-I love your patch! Perhaps something to improve:
-
-[auto build test WARNING on ext4/dev]
-[also build test WARNING on tytso-fscrypt/master v5.7-rc4 next-20200508]
-[if your patch is applied to the wrong git tree, please drop us a note to help
-improve the system. BTW, we also suggest to use '--base' option to specify the
-base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
-
-url:    https://github.com/0day-ci/linux/commits/Anna-Pendleton/ext4-avoid-ext4_error-s-caused-by-ENOMEM-in-the-truncate-path/20200508-062229
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
-reproduce:
-        # apt-get install sparse
-        # sparse version: 
-        make ARCH=x86_64 allmodconfig
-        make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
-:::::: branch date: 22 hours ago
-:::::: commit date: 22 hours ago
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kbuild test robot <lkp@intel.com>
 
 
-sparse warnings: (new ones prefixed by >>)
+On 5/10/20 9:28 PM, Eric Whitney wrote:
+> The path performing block allocations in ext4_ext_map_blocks() contains
+> code trimming the length of a new extent that is repeated later
+> in the function.  This code is both redundant and unnecessary as the
+> exact length of the new extent has already been calculated.  Rewrite the
+> instantiation of the map struct in this case to use the available
+> values, avoiding the overhead of unnecessary conversions and improving
+> clarity.  Add another map struct instantiation tailored specifically to
+> the separate case for an existing written extent.  Remove an old comment
+> that no longer appears applicable to the current code.
+> 
+> Signed-off-by: Eric Whitney <enwlinux@gmail.com>
 
-   fs/ext4/extents.c:493:67: sparse: warning: incorrect type in initializer (different base types)
->> fs/ext4/extents.c:493:67: sparse:    expected int gfp_flags
->> fs/ext4/extents.c:493:67: sparse:    got restricted gfp_t
-   fs/ext4/extents.c:496:27: sparse: warning: invalid assignment: |=
->> fs/ext4/extents.c:496:27: sparse:    left side has type int
->> fs/ext4/extents.c:496:27: sparse:    right side has type restricted gfp_t
-   fs/ext4/extents.c:498:47: sparse: warning: incorrect type in argument 3 (different base types)
->> fs/ext4/extents.c:498:47: sparse:    expected restricted gfp_t [usertype] gfp
->> fs/ext4/extents.c:498:47: sparse:    got int gfp_flags
-   fs/ext4/extents.c:848:25: sparse: warning: incorrect type in initializer (different base types)
-   fs/ext4/extents.c:848:25: sparse:    expected int gfp_flags
-   fs/ext4/extents.c:848:25: sparse:    got restricted gfp_t
-   fs/ext4/extents.c:851:27: sparse: warning: invalid assignment: |=
-   fs/ext4/extents.c:851:27: sparse:    left side has type int
-   fs/ext4/extents.c:851:27: sparse:    right side has type restricted gfp_t
-   fs/ext4/extents.c:872:33: sparse: warning: incorrect type in argument 3 (different base types)
->> fs/ext4/extents.c:872:33: sparse:    expected restricted gfp_t [usertype] flags
-   fs/ext4/extents.c:872:33: sparse:    got int gfp_flags
-   fs/ext4/extents.c:1022:25: sparse: warning: incorrect type in initializer (different base types)
-   fs/ext4/extents.c:1022:25: sparse:    expected int gfp_flags
-   fs/ext4/extents.c:1022:25: sparse:    got restricted gfp_t
-   fs/ext4/extents.c:1027:27: sparse: warning: invalid assignment: |=
-   fs/ext4/extents.c:1027:27: sparse:    left side has type int
-   fs/ext4/extents.c:1027:27: sparse:    right side has type restricted gfp_t
-   fs/ext4/extents.c:1062:56: sparse: warning: incorrect type in argument 3 (different base types)
-   fs/ext4/extents.c:1062:56: sparse:    expected restricted gfp_t [usertype] flags
-   fs/ext4/extents.c:1062:56: sparse:    got int gfp_flags
+Yes, the previous code around looks to be confusing.
 
-# https://github.com/0day-ci/linux/commit/7d07f7d72800b68a55822a5705514d3c3bc82b63
-git remote add linux-review https://github.com/0day-ci/linux
-git remote update linux-review
-git checkout 7d07f7d72800b68a55822a5705514d3c3bc82b63
-vim +493 fs/ext4/extents.c
+One thing which I also checked was that, when we insert this new
+extent into the tree (via ext4_ext_insert_extent()) and even if this
+extent could be merged with a nearby extent, the length or pblock of
+this extent is not modified for the caller.
+So again doing such below calculations (line 4250 - 4254) were redundant
+and it's better that this patch got rid of it. This patch hence looks
+logically correct to me.
 
-4068664e3cd231 Dmitry Monakhov 2019-11-06  485  
-7d7ea89e756ea1 Theodore Ts'o   2013-08-16  486  static struct buffer_head *
-7d7ea89e756ea1 Theodore Ts'o   2013-08-16  487  __read_extent_tree_block(const char *function, unsigned int line,
-107a7bd31ac003 Theodore Ts'o   2013-08-16  488  			 struct inode *inode, ext4_fsblk_t pblk, int depth,
-107a7bd31ac003 Theodore Ts'o   2013-08-16  489  			 int flags)
-f84891289e62a7 Darrick J. Wong 2012-04-29  490  {
-7d7ea89e756ea1 Theodore Ts'o   2013-08-16  491  	struct buffer_head		*bh;
-7d7ea89e756ea1 Theodore Ts'o   2013-08-16  492  	int				err;
-7d07f7d72800b6 Theodore Ts'o   2020-05-07 @493  	int				gfp_flags = __GFP_MOVABLE | GFP_NOFS;
-f84891289e62a7 Darrick J. Wong 2012-04-29  494  
-7d07f7d72800b6 Theodore Ts'o   2020-05-07  495  	if (flags & EXT4_EX_NOFAIL)
-7d07f7d72800b6 Theodore Ts'o   2020-05-07 @496  		gfp_flags |= __GFP_NOFAIL;
-7d07f7d72800b6 Theodore Ts'o   2020-05-07  497  
-7d07f7d72800b6 Theodore Ts'o   2020-05-07 @498  	bh = sb_getblk_gfp(inode->i_sb, pblk, gfp_flags);
-7d7ea89e756ea1 Theodore Ts'o   2013-08-16  499  	if (unlikely(!bh))
-7d7ea89e756ea1 Theodore Ts'o   2013-08-16  500  		return ERR_PTR(-ENOMEM);
-7d7ea89e756ea1 Theodore Ts'o   2013-08-16  501  
-7d7ea89e756ea1 Theodore Ts'o   2013-08-16  502  	if (!bh_uptodate_or_lock(bh)) {
-7d7ea89e756ea1 Theodore Ts'o   2013-08-16  503  		trace_ext4_ext_load_extent(inode, pblk, _RET_IP_);
-7d7ea89e756ea1 Theodore Ts'o   2013-08-16  504  		err = bh_submit_read(bh);
-7d7ea89e756ea1 Theodore Ts'o   2013-08-16  505  		if (err < 0)
-7d7ea89e756ea1 Theodore Ts'o   2013-08-16  506  			goto errout;
-7d7ea89e756ea1 Theodore Ts'o   2013-08-16  507  	}
-7869a4a6c5caa7 Theodore Ts'o   2013-08-16  508  	if (buffer_verified(bh) && !(flags & EXT4_EX_FORCE_CACHE))
-7d7ea89e756ea1 Theodore Ts'o   2013-08-16  509  		return bh;
-0a944e8a6c66ca Theodore Ts'o   2019-05-22  510  	if (!ext4_has_feature_journal(inode->i_sb) ||
-0a944e8a6c66ca Theodore Ts'o   2019-05-22  511  	    (inode->i_ino !=
-0a944e8a6c66ca Theodore Ts'o   2019-05-22  512  	     le32_to_cpu(EXT4_SB(inode->i_sb)->s_es->s_journal_inum))) {
-7d7ea89e756ea1 Theodore Ts'o   2013-08-16  513  		err = __ext4_ext_check(function, line, inode,
-c349179b4808f7 Theodore Ts'o   2013-08-16  514  				       ext_block_hdr(bh), depth, pblk);
-7d7ea89e756ea1 Theodore Ts'o   2013-08-16  515  		if (err)
-7d7ea89e756ea1 Theodore Ts'o   2013-08-16  516  			goto errout;
-0a944e8a6c66ca Theodore Ts'o   2019-05-22  517  	}
-f84891289e62a7 Darrick J. Wong 2012-04-29  518  	set_buffer_verified(bh);
-107a7bd31ac003 Theodore Ts'o   2013-08-16  519  	/*
-107a7bd31ac003 Theodore Ts'o   2013-08-16  520  	 * If this is a leaf block, cache all of its entries
-107a7bd31ac003 Theodore Ts'o   2013-08-16  521  	 */
-107a7bd31ac003 Theodore Ts'o   2013-08-16  522  	if (!(flags & EXT4_EX_NOCACHE) && depth == 0) {
-107a7bd31ac003 Theodore Ts'o   2013-08-16  523  		struct ext4_extent_header *eh = ext_block_hdr(bh);
-4068664e3cd231 Dmitry Monakhov 2019-11-06  524  		ext4_cache_extents(inode, eh);
-107a7bd31ac003 Theodore Ts'o   2013-08-16  525  	}
-7d7ea89e756ea1 Theodore Ts'o   2013-08-16  526  	return bh;
-7d7ea89e756ea1 Theodore Ts'o   2013-08-16  527  errout:
-7d7ea89e756ea1 Theodore Ts'o   2013-08-16  528  	put_bh(bh);
-7d7ea89e756ea1 Theodore Ts'o   2013-08-16  529  	return ERR_PTR(err);
-7d7ea89e756ea1 Theodore Ts'o   2013-08-16  530  
+4250         /* previous routine could use block we allocated */ 
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+4251         newblock = ext4_ext_pblock(&newex); 
 
+4252         allocated = ext4_ext_get_actual_len(&newex); 
+ 
+ 
+
+4253         if (allocated > map->m_len) 
+
+4254                 allocated = map->m_len; 
+
+
+
+Feel free to add:
+Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
+
+
+> ---
+>   fs/ext4/extents.c | 50 +++++++++++++++++++++++------------------------
+>   1 file changed, 25 insertions(+), 25 deletions(-)
+> 
+> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> index f2b577b315a0..c01a204ce60b 100644
+> --- a/fs/ext4/extents.c
+> +++ b/fs/ext4/extents.c
+> @@ -4024,7 +4024,7 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
+>   	struct ext4_ext_path *path = NULL;
+>   	struct ext4_extent newex, *ex, *ex2;
+>   	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
+> -	ext4_fsblk_t newblock = 0;
+> +	ext4_fsblk_t newblock = 0, pblk;
+>   	int err = 0, depth, ret;
+>   	unsigned int allocated = 0, offset = 0;
+>   	unsigned int allocated_clusters = 0;
+> @@ -4040,7 +4040,7 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
+>   	if (IS_ERR(path)) {
+>   		err = PTR_ERR(path);
+>   		path = NULL;
+> -		goto out2;
+> +		goto out;
+>   	}
+> 
+>   	depth = ext_depth(inode);
+> @@ -4056,7 +4056,7 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
+>   				 (unsigned long) map->m_lblk, depth,
+>   				 path[depth].p_block);
+>   		err = -EFSCORRUPTED;
+> -		goto out2;
+> +		goto out;
+>   	}
+> 
+>   	ex = path[depth].p_ext;
+> @@ -4090,8 +4090,14 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
+>   			    (flags & EXT4_GET_BLOCKS_CONVERT_UNWRITTEN)) {
+>   				err = convert_initialized_extent(handle,
+>   					inode, map, &path, &allocated);
+> -				goto out2;
+> +				goto out;
+>   			} else if (!ext4_ext_is_unwritten(ex)) {
+> +				map->m_flags |= EXT4_MAP_MAPPED;
+> +				map->m_pblk = newblock;
+> +				if (allocated > map->m_len)
+> +					allocated = map->m_len;
+> +				map->m_len = allocated;
+> +				ext4_ext_show_leaf(inode, path);
+>   				goto out;
+>   			}
+> 
+> @@ -4102,7 +4108,7 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
+>   				err = ret;
+>   			else
+>   				allocated = ret;
+> -			goto out2;
+> +			goto out;
+>   		}
+>   	}
+> 
+> @@ -4127,7 +4133,7 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
+>   		map->m_pblk = 0;
+>   		map->m_len = min_t(unsigned int, map->m_len, hole_len);
+> 
+> -		goto out2;
+> +		goto out;
+>   	}
+> 
+>   	/*
+> @@ -4151,12 +4157,12 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
+>   	ar.lleft = map->m_lblk;
+>   	err = ext4_ext_search_left(inode, path, &ar.lleft, &ar.pleft);
+>   	if (err)
+> -		goto out2;
+> +		goto out;
+>   	ar.lright = map->m_lblk;
+>   	ex2 = NULL;
+>   	err = ext4_ext_search_right(inode, path, &ar.lright, &ar.pright, &ex2);
+>   	if (err)
+> -		goto out2;
+> +		goto out;
+> 
+>   	/* Check if the extent after searching to the right implies a
+>   	 * cluster we can use. */
+> @@ -4217,7 +4223,7 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
+>   		ar.flags |= EXT4_MB_USE_RESERVED;
+>   	newblock = ext4_mb_new_blocks(handle, &ar, &err);
+>   	if (!newblock)
+> -		goto out2;
+> +		goto out;
+>   	ext_debug("allocate new block: goal %llu, found %llu/%u\n",
+>   		  ar.goal, newblock, allocated);
+>   	allocated_clusters = ar.len;
+> @@ -4227,7 +4233,8 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
+> 
+>   got_allocated_blocks:
+>   	/* try to insert new extent into found leaf and return */
+> -	ext4_ext_store_pblock(&newex, newblock + offset);
+> +	pblk = newblock + offset;
+> +	ext4_ext_store_pblock(&newex, pblk);
+>   	newex.ee_len = cpu_to_le16(ar.len);
+>   	/* Mark unwritten */
+>   	if (flags & EXT4_GET_BLOCKS_UNWRIT_EXT) {
+> @@ -4252,16 +4259,9 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
+>   					 EXT4_C2B(sbi, allocated_clusters),
+>   					 fb_flags);
+>   		}
+> -		goto out2;
+> +		goto out;
+>   	}
+> 
+> -	/* previous routine could use block we allocated */
+> -	newblock = ext4_ext_pblock(&newex);
+> -	allocated = ext4_ext_get_actual_len(&newex);
+> -	if (allocated > map->m_len)
+> -		allocated = map->m_len;
+> -	map->m_flags |= EXT4_MAP_NEW;
+> -
+>   	/*
+>   	 * Reduce the reserved cluster count to reflect successful deferred
+>   	 * allocation of delayed allocated clusters or direct allocation of
+> @@ -4307,14 +4307,14 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
+>   		ext4_update_inode_fsync_trans(handle, inode, 1);
+>   	else
+>   		ext4_update_inode_fsync_trans(handle, inode, 0);
+> -out:
+> -	if (allocated > map->m_len)
+> -		allocated = map->m_len;
+> +
+> +	map->m_flags |= (EXT4_MAP_NEW | EXT4_MAP_MAPPED);
+> +	map->m_pblk = pblk;
+> +	map->m_len = ar.len;
+> +	allocated = map->m_len;
+>   	ext4_ext_show_leaf(inode, path);
+> -	map->m_flags |= EXT4_MAP_MAPPED;
+> -	map->m_pblk = newblock;
+> -	map->m_len = allocated;
+> -out2:
+> +
+> +out:
+>   	ext4_ext_drop_refs(path);
+>   	kfree(path);
+> 
