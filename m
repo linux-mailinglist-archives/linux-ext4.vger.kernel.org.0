@@ -2,135 +2,112 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A7AE1D17DE
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 May 2020 16:47:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88B991D1A89
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 May 2020 18:04:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389026AbgEMOrK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 13 May 2020 10:47:10 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40868 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389013AbgEMOrK (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 13 May 2020 10:47:10 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 2EC9DB0BA;
-        Wed, 13 May 2020 14:47:11 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id D98B41E12AE; Wed, 13 May 2020 16:47:06 +0200 (CEST)
-Date:   Wed, 13 May 2020 16:47:06 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     ira.weiny@intel.com
-Cc:     linux-ext4@vger.kernel.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Al Viro <viro@zeniv.linux.org.uk>,
+        id S2389432AbgEMQEM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 13 May 2020 12:04:12 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:60410 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733083AbgEMQEL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 13 May 2020 12:04:11 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04DFuRXE043960;
+        Wed, 13 May 2020 16:03:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=myg+Pbi0jJplfSlrmx3sySw86RPCsqGwGq4ZrHDz5L0=;
+ b=fjVxr5HI7zXUI0LF6GL3MO8dtw0OIp8XNAfuJnSPT1e6RjSzX8OnH1TZOgVcJTQFVaXF
+ MENnYnwJ9g3IFqbh2IdRSkCMDOWJ0E5s3gsZdcsDMwEQzeZgZETPv+OzvKQF/QeVyWmc
+ CY/thpaN4Q9pDCfd1snkvUFBH7nB9oAx0dQcpYDNMS4BURCb573QC19MWFKHww7GmXeQ
+ 1+NkecJ2ul+mqzUFEPCyCpqGXXpPcRTur4dYY4pY624Ug54YcEyy0IYphNKlR8QsFoiR
+ dKuv4yIz1occf3VIe0h25a5TGOJJnycmcckouoOun+Ppg8tyICA0Wk5aR926Sxz49gLa Wg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 3100yfw4j7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 13 May 2020 16:03:59 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04DFw4EH102865;
+        Wed, 13 May 2020 16:01:58 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 3100yeubfv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 May 2020 16:01:58 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04DG1uH0002783;
+        Wed, 13 May 2020 16:01:56 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 13 May 2020 09:01:56 -0700
+Date:   Wed, 13 May 2020 09:01:53 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Cc:     ira.weiny@intel.com, Al Viro <viro@zeniv.linux.org.uk>,
         Dan Williams <dan.j.williams@intel.com>,
         Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 8/9] fs/ext4: Introduce DAX inode flag
-Message-ID: <20200513144706.GH27709@quack2.suse.cz>
-References: <20200513054324.2138483-1-ira.weiny@intel.com>
- <20200513054324.2138483-9-ira.weiny@intel.com>
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        Jeff Moyer <jmoyer@redhat.com>
+Subject: [ANNOUNCE] xfs-linux: vfs-for-next updated to 2c567af418e3
+Message-ID: <20200513160153.GA2079101@magnolia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200513054324.2138483-9-ira.weiny@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9620 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 bulkscore=0
+ phishscore=0 suspectscore=2 adultscore=0 mlxscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005130139
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9620 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 adultscore=0
+ cotscore=-2147483648 mlxscore=0 suspectscore=2 spamscore=0 impostorscore=0
+ mlxlogscore=999 malwarescore=0 clxscore=1015 phishscore=0 bulkscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2005130139
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 12-05-20 22:43:23, ira.weiny@intel.com wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
-> 
-> Add a flag to preserve FS_XFLAG_DAX in the ext4 inode.
-> 
-> Set the flag to be user visible and changeable.  Set the flag to be
-> inherited.  Allow applications to change the flag at any time.
-> 
-> Finally, on regular files, flag the inode to not be cached to facilitate
-> changing S_DAX on the next creation of the inode.
-> 
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> 
-> ---
-> Change from RFC:
-> 	use new d_mark_dontcache()
-> 	Allow caching if ALWAYS/NEVER is set
-> 	Rebased to latest Linus master
-> 	Change flag to unused 0x01000000
-> 	update ext4_should_enable_dax()
-> ---
->  fs/ext4/ext4.h  | 13 +++++++++----
->  fs/ext4/inode.c |  4 +++-
->  fs/ext4/ioctl.c | 25 ++++++++++++++++++++++++-
->  3 files changed, 36 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 01d1de838896..715f8f2029b2 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -415,13 +415,16 @@ struct flex_groups {
->  #define EXT4_VERITY_FL			0x00100000 /* Verity protected inode */
->  #define EXT4_EA_INODE_FL	        0x00200000 /* Inode used for large EA */
->  /* 0x00400000 was formerly EXT4_EOFBLOCKS_FL */
-> +
-> +#define EXT4_DAX_FL			0x01000000 /* Inode is DAX */
-> +
->  #define EXT4_INLINE_DATA_FL		0x10000000 /* Inode has inline data. */
->  #define EXT4_PROJINHERIT_FL		0x20000000 /* Create with parents projid */
->  #define EXT4_CASEFOLD_FL		0x40000000 /* Casefolded file */
->  #define EXT4_RESERVED_FL		0x80000000 /* reserved for ext4 lib */
->  
-> -#define EXT4_FL_USER_VISIBLE		0x705BDFFF /* User visible flags */
-> -#define EXT4_FL_USER_MODIFIABLE		0x604BC0FF /* User modifiable flags */
-> +#define EXT4_FL_USER_VISIBLE		0x715BDFFF /* User visible flags */
-> +#define EXT4_FL_USER_MODIFIABLE		0x614BC0FF /* User modifiable flags */
+Hi folks,
 
-Hum, I think this was already mentioned but there are also definitions in
-include/uapi/linux/fs.h which should be kept in sync... Also if DAX flag
-gets modified through FS_IOC_SETFLAGS, we should call ext4_doncache() as
-well, shouldn't we?
+The vfs-for-next branch of the xfs-linux repository at:
 
-> @@ -802,6 +807,21 @@ static int ext4_ioctl_get_es_cache(struct file *filp, unsigned long arg)
->  	return error;
->  }
->  
-> +static void ext4_dax_dontcache(struct inode *inode, unsigned int flags)
-> +{
-> +	struct ext4_inode_info *ei = EXT4_I(inode);
-> +
-> +	if (S_ISDIR(inode->i_mode))
-> +		return;
-> +
-> +	if (test_opt2(inode->i_sb, DAX_NEVER) ||
-> +	    test_opt(inode->i_sb, DAX_ALWAYS))
-> +		return;
-> +
-> +	if (((ei->i_flags ^ flags) & EXT4_DAX_FL) == EXT4_DAX_FL)
-> +		d_mark_dontcache(inode);
-> +}
-> +
->  long ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
->  {
->  	struct inode *inode = file_inode(filp);
-> @@ -1267,6 +1287,9 @@ long ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
->  			return err;
->  
->  		inode_lock(inode);
-> +
-> +		ext4_dax_dontcache(inode, flags);
-> +
+	git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git
 
-I don't think we should set dontcache flag when setting of DAX flag fails -
-it could event be a security issue). So I think you'll have to check
-whether DAX flag is being changed, call vfs_ioc_fssetxattr_check(), and
-only if it succeeded and DAX flags was changing call ext4_dax_dontcache().
+has just been updated.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Patches often get missed, so please check if your outstanding patches
+were in this update. If they have not been in this update, please
+resubmit them to linux-xfs@vger.kernel.org so they can be picked up in
+the next update.
+
+The new head of the vfs-for-next branch is commit:
+
+2c567af418e3 fs: Introduce DCACHE_DONTCACHE
+
+New Commits:
+
+Ira Weiny (5):
+      [efbe3c2493d2] fs: Remove unneeded IS_DAX() check in io_is_direct()
+      [712b2698e4c0] fs/stat: Define DAX statx attribute
+      [83d9088659e8] Documentation/dax: Update Usage section
+      [dae2f8ed7992] fs: Lift XFS_IDONTCACHE to the VFS layer
+      [2c567af418e3] fs: Introduce DCACHE_DONTCACHE
+
+
+Code Diffstat:
+
+ Documentation/filesystems/dax.txt | 142 +++++++++++++++++++++++++++++++++++++-
+ drivers/block/loop.c              |   6 +-
+ fs/dcache.c                       |  19 +++++
+ fs/stat.c                         |   3 +
+ fs/xfs/xfs_icache.c               |   4 +-
+ fs/xfs/xfs_inode.h                |   3 +-
+ fs/xfs/xfs_super.c                |   2 +-
+ include/linux/dcache.h            |   2 +
+ include/linux/fs.h                |  14 ++--
+ include/uapi/linux/stat.h         |   1 +
+ 10 files changed, 178 insertions(+), 18 deletions(-)
