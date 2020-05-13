@@ -2,112 +2,101 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B991D1A89
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 May 2020 18:04:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A98BC1D1B7E
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 May 2020 18:47:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389432AbgEMQEM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 13 May 2020 12:04:12 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:60410 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733083AbgEMQEL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 13 May 2020 12:04:11 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04DFuRXE043960;
-        Wed, 13 May 2020 16:03:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=myg+Pbi0jJplfSlrmx3sySw86RPCsqGwGq4ZrHDz5L0=;
- b=fjVxr5HI7zXUI0LF6GL3MO8dtw0OIp8XNAfuJnSPT1e6RjSzX8OnH1TZOgVcJTQFVaXF
- MENnYnwJ9g3IFqbh2IdRSkCMDOWJ0E5s3gsZdcsDMwEQzeZgZETPv+OzvKQF/QeVyWmc
- CY/thpaN4Q9pDCfd1snkvUFBH7nB9oAx0dQcpYDNMS4BURCb573QC19MWFKHww7GmXeQ
- 1+NkecJ2ul+mqzUFEPCyCpqGXXpPcRTur4dYY4pY624Ug54YcEyy0IYphNKlR8QsFoiR
- dKuv4yIz1occf3VIe0h25a5TGOJJnycmcckouoOun+Ppg8tyICA0Wk5aR926Sxz49gLa Wg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 3100yfw4j7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 13 May 2020 16:03:59 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04DFw4EH102865;
-        Wed, 13 May 2020 16:01:58 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 3100yeubfv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 May 2020 16:01:58 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04DG1uH0002783;
-        Wed, 13 May 2020 16:01:56 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 13 May 2020 09:01:56 -0700
-Date:   Wed, 13 May 2020 09:01:53 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Cc:     ira.weiny@intel.com, Al Viro <viro@zeniv.linux.org.uk>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Jeff Moyer <jmoyer@redhat.com>
-Subject: [ANNOUNCE] xfs-linux: vfs-for-next updated to 2c567af418e3
-Message-ID: <20200513160153.GA2079101@magnolia>
+        id S1732633AbgEMQrK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 13 May 2020 12:47:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52836 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729328AbgEMQrK (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 13 May 2020 12:47:10 -0400
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ACEC32054F;
+        Wed, 13 May 2020 16:47:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589388430;
+        bh=/v2IdDrymQyOQwGKwD3DYskW13FfX9JBpATBQnCGEcA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nAeGjCGQQCEXECiiVUZ7LQP3/1bJtcWmeYZLTYbvUSHQs9C+sg1PGBkyCDUte1c9B
+         UYBEHmYQLrO4Ycv+IwUgQAYx+Ig+4XaEH8IHLafNSLlVrXNOtJ6gnpBTOZ0UREEf2n
+         x/hhC5VoAEYTb5c9q+su5I0gJUEo4ndlnhA7bCQY=
+Date:   Wed, 13 May 2020 09:47:07 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Satya Tangirala <satyat@google.com>
+Cc:     linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
+        Kuohong Wang <kuohong.wang@mediatek.com>,
+        Kim Boojin <boojin.kim@samsung.com>
+Subject: Re: [PATCH v12 01/12] Documentation: Document the blk-crypto
+ framework
+Message-ID: <20200513164707.GA1243@sol.localdomain>
+References: <20200430115959.238073-1-satyat@google.com>
+ <20200430115959.238073-2-satyat@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9620 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 bulkscore=0
- phishscore=0 suspectscore=2 adultscore=0 mlxscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2005130139
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9620 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 adultscore=0
- cotscore=-2147483648 mlxscore=0 suspectscore=2 spamscore=0 impostorscore=0
- mlxlogscore=999 malwarescore=0 clxscore=1015 phishscore=0 bulkscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2005130139
+In-Reply-To: <20200430115959.238073-2-satyat@google.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi folks,
+On Thu, Apr 30, 2020 at 11:59:48AM +0000, Satya Tangirala wrote:
+> The blk-crypto framework adds support for inline encryption. There
+> are numerous changes throughout the storage stack. This patch documents
+> the main design choices in the block layer, the API presented to users
+> of the block layer (like fscrypt or layered devices) and the API presented
+> to drivers for adding support for inline encryption.
+> 
+> Signed-off-by: Satya Tangirala <satyat@google.com>
 
-The vfs-for-next branch of the xfs-linux repository at:
+Looks good, you can add:
 
-	git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git
+    Reviewed-by: Eric Biggers <ebiggers@google.com>
 
-has just been updated.
+But a few comments for when you resend:
 
-Patches often get missed, so please check if your outstanding patches
-were in this update. If they have not been in this update, please
-resubmit them to linux-xfs@vger.kernel.org so they can be picked up in
-the next update.
+> +When a bio is added to a request, the request takes over ownership of the
+> +``bi_crypt_context`` of the bio - in particular, the request keeps the
+> +``bi_crypt_context`` of the first bio in its bio-list, and frees the rest
+> +(blk-mq needs to be careful to maintain this invariant during bio and request
+> +merges).
 
-The new head of the vfs-for-next branch is commit:
+Is this part up-to-date?  There was discussion about not freeing the bios' crypt
+contexts.
 
-2c567af418e3 fs: Introduce DCACHE_DONTCACHE
+> +``blk_crypto_evict_key`` should be called by upper layers when they want
+> +to ensure that a key is removed from memory and from any keyslots in inline
+> +encryption hardware that the key might have been programmed into (or the
+> +blk-crypto-fallback).
 
-New Commits:
+This should be reworded to emphasize that blk_crypto_evict_key()
+*must* be called (as now the keyslot manager has a pointer to the key).
 
-Ira Weiny (5):
-      [efbe3c2493d2] fs: Remove unneeded IS_DAX() check in io_is_direct()
-      [712b2698e4c0] fs/stat: Define DAX statx attribute
-      [83d9088659e8] Documentation/dax: Update Usage section
-      [dae2f8ed7992] fs: Lift XFS_IDONTCACHE to the VFS layer
-      [2c567af418e3] fs: Introduce DCACHE_DONTCACHE
+> +API presented to device drivers
+> +===============================
+> +
+> +A :c:type:``struct keyslot_manager`` should be set up by device drivers in the
 
+"keyslot_manager" => "blk_keyslot_manager".  Likewise below.
 
-Code Diffstat:
+> +``request_queue`` of the device. The device driver needs to call
+> +``blk_ksm_init`` on the ``keyslot_manager``, which specfying the number of
+> +keyslots supported by the hardware.
 
- Documentation/filesystems/dax.txt | 142 +++++++++++++++++++++++++++++++++++++-
- drivers/block/loop.c              |   6 +-
- fs/dcache.c                       |  19 +++++
- fs/stat.c                         |   3 +
- fs/xfs/xfs_icache.c               |   4 +-
- fs/xfs/xfs_inode.h                |   3 +-
- fs/xfs/xfs_super.c                |   2 +-
- include/linux/dcache.h            |   2 +
- include/linux/fs.h                |  14 ++--
- include/uapi/linux/stat.h         |   1 +
- 10 files changed, 178 insertions(+), 18 deletions(-)
+"which specfying" => "while specifying"
+
+> +The device driver also needs to tell the KSM how to actually manipulate the
+> +IE hardware in the device to do things like programming the crypto key into
+> +the IE hardware into a particular keyslot. All this is achieved through the
+> +:c:type:`struct keyslot_mgmt_ll_ops` field in the KSM that the device driver
+> +must fill up after initing the ``keyslot_manager``.
+
+"keyslot_mgmt_ll_ops" => "blk_ksm_ll_ops"
+
+- Eric
