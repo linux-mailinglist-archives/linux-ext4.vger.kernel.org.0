@@ -2,115 +2,98 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06B821D054B
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 May 2020 05:16:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E062B1D0696
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 May 2020 07:45:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726011AbgEMDQC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 12 May 2020 23:16:02 -0400
-Received: from sandeen.net ([63.231.237.45]:51284 "EHLO sandeen.net"
+        id S1728991AbgEMFna (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 13 May 2020 01:43:30 -0400
+Received: from mga05.intel.com ([192.55.52.43]:40375 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725898AbgEMDQC (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 12 May 2020 23:16:02 -0400
-Received: from [10.0.0.4] (liberator [10.0.0.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by sandeen.net (Postfix) with ESMTPSA id 2E7E83248;
-        Tue, 12 May 2020 22:15:45 -0500 (CDT)
-Subject: Re: Reducing ext4 fs issues resulting from frequent hard poweroffs
-To:     julio.lajara@alum.rpi.edu, linux-ext4@vger.kernel.org
-References: <CAPA0+rx8eLJU6j1uus2bBY63SrY_WC4TU_WTy0MoXk031wNjJw@mail.gmail.com>
- <CAPA0+ryNcZM7ch_beUHkj=s1_FOo7myV=OiY=4qNwoYeAg6FDg@mail.gmail.com>
-From:   Eric Sandeen <sandeen@sandeen.net>
-Autocrypt: addr=sandeen@sandeen.net; prefer-encrypt=mutual; keydata=
- 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 pA==
-Message-ID: <d63fc6fc-f848-4d78-b9d2-b7baf9f19467@sandeen.net>
-Date:   Tue, 12 May 2020 22:16:00 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.0
+        id S1728097AbgEMFn3 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 13 May 2020 01:43:29 -0400
+IronPort-SDR: qGgY2PZKhs7nps/88OPZ8JI/v9pjVb6CYa00n/H4ZWhzaqA5OFW0eJiP1GhULS6wv4s6M43z64
+ n1uKKcuqg6WA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2020 22:43:29 -0700
+IronPort-SDR: SK59B42UbMYq2ls4ncVnwTImTJhK0cVzDiqBcnn6kBo26zDsrhp8LgIuVowGEwKjJKfpHifoyn
+ Ls586/o5KqSg==
+X-IronPort-AV: E=Sophos;i="5.73,386,1583222400"; 
+   d="scan'208";a="265754104"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2020 22:43:28 -0700
+From:   ira.weiny@intel.com
+To:     linux-ext4@vger.kernel.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>
+Cc:     Ira Weiny <ira.weiny@intel.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+        Jeff Moyer <jmoyer@redhat.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/9] Enable ext4 support for per-file/directory DAX operations
+Date:   Tue, 12 May 2020 22:43:15 -0700
+Message-Id: <20200513054324.2138483-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <CAPA0+ryNcZM7ch_beUHkj=s1_FOo7myV=OiY=4qNwoYeAg6FDg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 5/12/20 4:08 PM, Julio Lajara wrote:
-> Hi all, I currently manage an IOT fleet based on Intel NUCs running
-> Ubuntu 18.04 Server on SSDs with etx4, no swap. The device usage is
-> more CPU bound than I/O bound and we are having some issues keeping a
-> subset of devices running due to them being hard powered off in the
-> field in some regions (sometimes as frequently as every 12hrs). Due to
-> current difficulties in getting devices back from the field I'm
-> looking into tweaking them as best as possible to survive these hard
-> power off barring any physical SSD issues.
+From: Ira Weiny <ira.weiny@intel.com>
 
-I don't think you've actually said what the failure mode after power
-loss is, have you?
+Enable the same per file DAX support in ext4 as was done for xfs.  This series
+builds and depends on the V11 series for xfs.[1]
 
-> Currently I have tried tweaking some ext4 and I/O settings with the following:
-> 
-> * kernel options:
->   elevator=noop fsck.mode=force fsck.repair=yes
-> 
-> * fstab ext4 specific mount options:
->   commit=1,max_batch_time=0
-> 
-> Are there any other configuration settings or changes to the above
-> that would make sense to try here for this use case? I am hoping to at
-> least make the fsck repair the last line of defence so it doesnt get
-> stuck waiting for a prompt to repair it at boot, but want to try to
-> change the I/O / ext4 behavior if possible so its writing as
-> frequently as sanely possible to try to reduce the frequency where
-> fsck is actually needed.
+This passes the same xfstests test as XFS.
 
-I can't tell from this why fsck is needed in the first place; what
-actually goes wrong when power is lost?  Ted's right that properly
-behaving hardware should not require any special attention after
-power loss to restore filesystem consistency, but I can't tell for
-sure what your actual root cause for boot failure is from this
-email...
+The only issue is that this modifies the old mount option parsing code rather
+than waiting for the new parsing code to be finalized.
 
--Eric
+This series starts with 3 fixes which include making Verity and Encrypt truly
+mutually exclusive from DAX.  I think these first 3 patches should be picked up
+for 5.8 regardless of what is decided regarding the mount parsing.
+
+[1] https://lore.kernel.org/lkml/20200428002142.404144-1-ira.weiny@intel.com/
+
+To: linux-kernel@vger.kernel.org
+Cc: "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Dave Chinner <david@fromorbit.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc: Jan Kara <jack@suse.cz>
+Cc: linux-ext4@vger.kernel.org
+Cc: linux-xfs@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org
+
+Ira Weiny (9):
+  fs/ext4: Narrow scope of DAX check in setflags
+  fs/ext4: Disallow verity if inode is DAX
+  fs/ext4: Disallow encryption if inode is DAX
+  fs/ext4: Change EXT4_MOUNT_DAX to EXT4_MOUNT_DAX_ALWAYS
+  fs/ext4: Update ext4_should_use_dax()
+  fs/ext4: Only change S_DAX on inode load
+  fs/ext4: Make DAX mount option a tri-state
+  fs/ext4: Introduce DAX inode flag
+  Documentation/dax: Update DAX enablement for ext4
+
+ Documentation/filesystems/dax.txt         |  6 +-
+ Documentation/filesystems/ext4/verity.rst |  7 +++
+ Documentation/filesystems/fscrypt.rst     |  4 +-
+ fs/ext4/ext4.h                            | 20 ++++---
+ fs/ext4/ialloc.c                          |  2 +-
+ fs/ext4/inode.c                           | 27 +++++++--
+ fs/ext4/ioctl.c                           | 32 +++++++++--
+ fs/ext4/super.c                           | 67 +++++++++++++++--------
+ fs/ext4/verity.c                          |  5 +-
+ 9 files changed, 125 insertions(+), 45 deletions(-)
+
+-- 
+2.25.1
+
