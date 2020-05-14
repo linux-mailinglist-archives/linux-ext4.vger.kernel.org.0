@@ -2,57 +2,62 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03BC91D268B
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 May 2020 07:12:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D32B1D2816
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 May 2020 08:43:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725925AbgENFMH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 14 May 2020 01:12:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49530 "EHLO mail.kernel.org"
+        id S1725973AbgENGnj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 14 May 2020 02:43:39 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47688 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725788AbgENFMH (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 14 May 2020 01:12:07 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D5DFF206D4;
-        Thu, 14 May 2020 05:12:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589433127;
-        bh=cdFrV7nh7pJqlqa0/pkPvBaYElxzoq3V+cr3ke1Ix5g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=k2VsDoJve1gy0nqVqVKZHvP2YadsKWdsfOk2d6wWgvoInglUMeVyOX0D6k15HOULg
-         hcQOk+F1+efu8V0RnZHR/Nwlcpp1qBS8gbxG5coCW4XjhFQ315KR+Vl4v6XHWurap+
-         yjR+HEitPXERvDZN0i8LtInW04GRKwswvZBdqjes=
-Date:   Wed, 13 May 2020 22:12:05 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
-        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
-        Kuohong Wang <kuohong.wang@mediatek.com>,
-        Kim Boojin <boojin.kim@samsung.com>
-Subject: Re: [PATCH v13 08/12] scsi: ufs: Add inline encryption support to UFS
-Message-ID: <20200514051205.GB14829@sol.localdomain>
-References: <20200514003727.69001-1-satyat@google.com>
- <20200514003727.69001-9-satyat@google.com>
+        id S1725831AbgENGnj (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 14 May 2020 02:43:39 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 23C0EAE4B;
+        Thu, 14 May 2020 06:43:40 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id E48FE1E12A8; Thu, 14 May 2020 08:43:35 +0200 (CEST)
+Date:   Thu, 14 May 2020 08:43:35 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 8/9] fs/ext4: Introduce DAX inode flag
+Message-ID: <20200514064335.GB9569@quack2.suse.cz>
+References: <20200513054324.2138483-1-ira.weiny@intel.com>
+ <20200513054324.2138483-9-ira.weiny@intel.com>
+ <20200513144706.GH27709@quack2.suse.cz>
+ <20200513214154.GB2140786@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200514003727.69001-9-satyat@google.com>
+In-Reply-To: <20200513214154.GB2140786@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, May 14, 2020 at 12:37:23AM +0000, Satya Tangirala wrote:
-> Wire up ufshcd.c with the UFS Crypto API, the block layer inline
-> encryption additions and the keyslot manager.
+On Wed 13-05-20 14:41:55, Ira Weiny wrote:
+> On Wed, May 13, 2020 at 04:47:06PM +0200, Jan Kara wrote:
+> >
+> > So I think you'll have to check
+> > whether DAX flag is being changed,
 > 
-> Signed-off-by: Satya Tangirala <satyat@google.com>
+> ext4_dax_dontcache() does check if the flag is being changed.
 
-Looks good, you can add:
+Yes, but if you call it after inode flags change, you cannot determine that
+just from flags and EXT4_I(inode)->i_flags. So that logic needs to change.
 
-    Reviewed-by: Eric Biggers <ebiggers@google.com>
+								Honza
 
-- Eric
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
