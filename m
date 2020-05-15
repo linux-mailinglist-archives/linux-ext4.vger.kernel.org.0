@@ -2,135 +2,246 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D1E21D48E9
-	for <lists+linux-ext4@lfdr.de>; Fri, 15 May 2020 10:56:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 095001D49A5
+	for <lists+linux-ext4@lfdr.de>; Fri, 15 May 2020 11:32:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727772AbgEOI4p (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 15 May 2020 04:56:45 -0400
-Received: from mail-dm6nam10on2089.outbound.protection.outlook.com ([40.107.93.89]:6116
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726922AbgEOI4o (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 15 May 2020 04:56:44 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hZ9O6bJnxn2fN9tRxZUuVgsguxZb/6kTEUkyvNzBzef9EUc8faM3mZpoNPN+R8RNk2HEtR+t0pogWXG3HT3cRQFXl+CsPbfMeD/jE6/wJ5w3SG4JylCyKmQGh3DIVswZExlngHBkX+Voecu8dkkpppCiQy8ZJ78/jEkkvUR6Xu7z4bs/fd8LB/GNjjfLIG0uf/Gzs4JaUqA6mH/0nNSx34z4QCuuTZ1N8ic48SO2tMCYDSa9LUcvRKkY7Xt4ddJd5H6g553b3UDg9s77edMcn+ND58zpbxZMncGHQaIXfO1NaMtmXMrFUVDLIgztr/QQUPpTooszAUV5FNo6AiLpgg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LGhglOqnCZK/6DtzRT7RGQvfOfcrCM251qzcBRmplPE=;
- b=R/g3tGm0pYyZ/xnSQi0Gzh7q8fyyiif6VPfl50omSVskWs3OhyEFbnDS/6E2x3gKsiEXwMn93x34eVjoHIwHX14gMvT9q/JUyT6hlszSYe9ubwMylYGMZ55Ae+md8PoBBB2md5bJ/GXZUA8tgQBYSxvauFofzdLkhRW//K21KmRvemlu/o3qeSuBjO0AQbDzagBykF866TzvWVpQn7SGaoEVc69SXDsmXQXLTy6rjYVprrVlMwOX8yk6rb/JLaZ8lMHTFCGGDxKTrQVFFojHfc7RmnipRefKCjmG7ks11V8lU9nkydMeWAQ50rSO0M3qdQeylGZkO9kSSJ2PQLhzkA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=whamcloud.com; dmarc=pass action=none
- header.from=whamcloud.com; dkim=pass header.d=whamcloud.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=whamcloud.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LGhglOqnCZK/6DtzRT7RGQvfOfcrCM251qzcBRmplPE=;
- b=iaW6BQDkQ1tmxtXzWXCYf3qcm29b+iJ+RfbMB45fGToa5iTWB5SZHjv1MT+MBOexzh9ThHTFmwMfxpqhBKlTPk+jKMh8i01vDBMyjeghx2v51wPh28ziHTBRYBeWa7OXcLeEBKeeMNiDTYgN1JweQYLcMiaNORE/PP2qxXAaBQM=
-Received: from DM6PR19MB2441.namprd19.prod.outlook.com (2603:10b6:5:18d::16)
- by DM6PR19MB4344.namprd19.prod.outlook.com (2603:10b6:5:2b7::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.29; Fri, 15 May
- 2020 08:56:42 +0000
-Received: from DM6PR19MB2441.namprd19.prod.outlook.com
- ([fe80::b111:c44a:87ea:4bf4]) by DM6PR19MB2441.namprd19.prod.outlook.com
- ([fe80::b111:c44a:87ea:4bf4%7]) with mapi id 15.20.3000.022; Fri, 15 May 2020
- 08:56:42 +0000
-From:   Alex Zhuravlev <azhuravlev@whamcloud.com>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-CC:     Alex Zhuravlev <azhuravlev@whamcloud.com>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH 2/2] ext4: skip non-loaded groups at cr=0/1
-Thread-Topic: [PATCH 2/2] ext4: skip non-loaded groups at cr=0/1
-Thread-Index: AQHWHEjMGVpmuPlRl0Kqrw5gTNRAkaindXQAgAF/eoA=
-Date:   Fri, 15 May 2020 08:56:42 +0000
-Message-ID: <914597DA-395A-47A5-A8D6-DFCE2D674289@whamcloud.com>
-References: <0B6BF408-EDF7-4363-80CD-BDA0136BF62C@whamcloud.com>
- <20200514100411.D1A15A405C@b06wcsmtp001.portsmouth.uk.ibm.com>
-In-Reply-To: <20200514100411.D1A15A405C@b06wcsmtp001.portsmouth.uk.ibm.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linux.ibm.com; dkim=none (message not signed)
- header.d=none;linux.ibm.com; dmarc=none action=none
- header.from=whamcloud.com;
-x-originating-ip: [95.73.85.160]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 9500f853-b008-462a-2a7e-08d7f8ade357
-x-ms-traffictypediagnostic: DM6PR19MB4344:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR19MB43440CD254D908C355F787D7CBBD0@DM6PR19MB4344.namprd19.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-forefront-prvs: 04041A2886
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: /e6hLS+d5cqPvnsTTaDBHvqFOK2frW56K2gG9e8uvf0NY442IGpNV08nxmnbXtjJtqAGpNRU3e+/zDR4s0y/iCcnvhNSaL+QiIzPlpQMKfUj492X4jl6PuO8EYPLQXYVDvka6b80EVr+TuT1lrE2Po+++02FELWaBo/tWK+xgzbaJV8uyFFS1Agll0maZwJ4sYO9iLQTIA78o0ftTksqvlb7BD6yopZSWk8iu5Ib+2vfzfsaIDUnWmNyixgORI/wIA9WipB3RQ+iz57YmTCwAQMGQtxnDYeBhBPdJaHHr6oLbV9l+c264mlFI+29WnOCF615yP4g+ARVhHd0VMAmbdEzc/OZ7o5M7l6us9C1+Rb9tRIxvC8yISSqB3930FcgSW25b/iY5frhRdDF1kenK+s+Dzld2Jhb2NtHNn4zK1ScabKP1Kyxpd+k4ZH3BZcR
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR19MB2441.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(136003)(376002)(396003)(366004)(39850400004)(33656002)(6486002)(316002)(2616005)(186003)(6506007)(6512007)(26005)(36756003)(4326008)(2906002)(86362001)(8936002)(54906003)(91956017)(478600001)(8676002)(5660300002)(66556008)(53546011)(66946007)(66446008)(76116006)(6916009)(66476007)(64756008)(71200400001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: v3KrhHFyS5t+ptKxYg09bl2oNR9Cu3IBK40txbYzuYbhDzbOReU/FzaN5NK7+Fv+KfT+z6F5Z4pNMtS1zP4DaNtwqe48NT1+RETnBSXtFd5ulG81uckFjbTGpbko3tSv2uG+WA8/edfzhv3tLGRv5TzPInnqDrrY2qge23/bbr/BjHqAzaHxze8Bfrfavv2xx3ujiSzOQpmW8OqUc+t23tC6SYeeP9NIM654HVL6NSX3QKjRAMg7UPaad8ze1bvwC+OR5Am9jbw9PMJ/8Y7hP7LOgaC+NaRHGhz+kvoYV1txj3Xsguus4FuNIci1RcOR4Zf7OFl9StALGenot9QrGx9zhQSBOKuDIPB0bhjvizXXYDGdgDfuK9IxalekF5JuuGulIS2mBhg2eWb2cOfa/14Q/0PGvYDsdRG3LepjBBhF0YxY7a5rl6mQMoyS2v8occr9GSbpaBclXJkGvXpf/Lh9Jg2IeXMxwgGqRaICnBs=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <AB2C887153CEB0499E8B32D176325088@namprd19.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1727977AbgEOJca (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 15 May 2020 05:32:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51732 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727116AbgEOJc3 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 15 May 2020 05:32:29 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 86733B1C1;
+        Fri, 15 May 2020 09:32:28 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 6F43D1E056A; Fri, 15 May 2020 11:32:24 +0200 (CEST)
+Date:   Fri, 15 May 2020 11:32:24 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     ira.weiny@intel.com
+Cc:     linux-ext4@vger.kernel.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 7/9] fs/ext4: Make DAX mount option a tri-state
+Message-ID: <20200515093224.GI9569@quack2.suse.cz>
+References: <20200515044121.2987940-1-ira.weiny@intel.com>
+ <20200515044121.2987940-8-ira.weiny@intel.com>
 MIME-Version: 1.0
-X-OriginatorOrg: whamcloud.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9500f853-b008-462a-2a7e-08d7f8ade357
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 May 2020 08:56:42.2346
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 753b6e26-6fd3-43e6-8248-3f1735d59bb4
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: pOuTno0gQcwyiQVjzMGdvZAQj4Sgm/QZKfg3pY+9Y8osv63xG0oPJeGVCRp7zxU8sF4pRdFxXvhHCOJ+P+AATw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR19MB4344
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200515044121.2987940-8-ira.weiny@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Thanks for the review, answers inline..
+On Thu 14-05-20 21:41:19, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
+> 
+> We add 'always', 'never', and 'inode' (default).  '-o dax' continues to
+> operate the same which is equivalent to 'always'.  This new
+> functionality is limited to ext4 only.
+> 
+> Specifically we introduce a 2nd DAX mount flag EXT4_MOUNT2_DAX_NEVER and set
+> it and EXT4_MOUNT_DAX_ALWAYS appropriately for the mode.
+> 
+> We also force EXT4_MOUNT2_DAX_NEVER if !CONFIG_FS_DAX.
+> 
+> Finally, EXT4_MOUNT2_DAX_INODE is used solely to detect if the user
+> specified that option for printing.
+> 
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 
+Thanks. The patch looks good to me now. You can add:
 
-> On 14 May 2020, at 13:04, Ritesh Harjani <riteshh@linux.ibm.com> wrote:
-> Not needed in a commit msg.
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-OK
+								Honza
 
->=20
->> cr=3D0 is supposed to be an optimization to save CPU cycles, but if budd=
-y data (in memory)
->> is not initialized then all this makes no sense as we have to do sync IO=
- taking a lot of cycles.
->> also, at cr=3D0 mballoc doesn't store any avaibale chunk. cr=3D1 also sk=
-ips groups using heuristic
-> /s/avaibale/available/
-
-OK
-
->=20
->> based on avg. fragment size. it's more useful to skip such groups and sw=
-itch to cr=3D2 where
->> groups will be scanned for available chunks.
->> using sparse image and dm-slow virtual device of 120TB was simulated. th=
-en the image was
->> formatted and filled using debugfs to mark ~85% of available space as bu=
-sy. mount process w/o
->> the patch couldn't complete in half an hour (according to vmstat it woul=
-d take ~10-11 hours).
->> with the patch applied mount took ~20 seconds.
->=20
-> I guess what we should edit the commit msg to explain that it is not the
-> mount process but the very first write whose performance is improved via
-> this patch.
-
-Correct
-
->> +		/* cr=3D0/1 is a very optimistic search to find large
->> +		 * good chunks almost for free. if buddy data is
->> +		 * not ready, then this optimization makes no sense */
->=20
-> I guess it will be also helpful to mention a comment related to the
-> discussion that we had on why this should be ok to skip those groups.
-> Because this could result into we skipping the group which is closer to
-> our inode. I somehow couldn't recollect it completely.
-
-Please remind where the discussion took place? I must be missing that.
-
+> 
+> ---
+> Changes from V1:
+> 	Fix up mounting options to only show an option if specified
+> 	Fix remount to prevent dax changes
+> 	Isolate behavior to ext4 only
+> 
+> Changes from RFC:
+> 	Combine remount check for DAX_NEVER with DAX_ALWAYS
+> 	Update ext4_should_enable_dax()
+> ---
+>  fs/ext4/ext4.h  |  2 ++
+>  fs/ext4/inode.c |  2 ++
+>  fs/ext4/super.c | 67 +++++++++++++++++++++++++++++++++++++++++--------
+>  3 files changed, 61 insertions(+), 10 deletions(-)
+> 
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 86a0994332ce..6235440e4c39 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -1168,6 +1168,8 @@ struct ext4_inode_info {
+>  						      blocks */
+>  #define EXT4_MOUNT2_HURD_COMPAT		0x00000004 /* Support HURD-castrated
+>  						      file systems */
+> +#define EXT4_MOUNT2_DAX_NEVER		0x00000008 /* Do not allow Direct Access */
+> +#define EXT4_MOUNT2_DAX_INODE		0x00000010 /* For printing options only */
+>  
+>  #define EXT4_MOUNT2_EXPLICIT_JOURNAL_CHECKSUM	0x00000008 /* User explicitly
+>  						specified journal checksum */
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 23e42a223235..140b1930e2f4 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -4400,6 +4400,8 @@ int ext4_get_inode_loc(struct inode *inode, struct ext4_iloc *iloc)
+>  
+>  static bool ext4_should_enable_dax(struct inode *inode)
+>  {
+> +	if (test_opt2(inode->i_sb, DAX_NEVER))
+> +		return false;
+>  	if (!S_ISREG(inode->i_mode))
+>  		return false;
+>  	if (ext4_should_journal_data(inode))
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 5ec900fdf73c..4753de53b186 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -1504,7 +1504,8 @@ enum {
+>  	Opt_usrjquota, Opt_grpjquota, Opt_offusrjquota, Opt_offgrpjquota,
+>  	Opt_jqfmt_vfsold, Opt_jqfmt_vfsv0, Opt_jqfmt_vfsv1, Opt_quota,
+>  	Opt_noquota, Opt_barrier, Opt_nobarrier, Opt_err,
+> -	Opt_usrquota, Opt_grpquota, Opt_prjquota, Opt_i_version, Opt_dax,
+> +	Opt_usrquota, Opt_grpquota, Opt_prjquota, Opt_i_version,
+> +	Opt_dax, Opt_dax_always, Opt_dax_inode, Opt_dax_never,
+>  	Opt_stripe, Opt_delalloc, Opt_nodelalloc, Opt_warn_on_error,
+>  	Opt_nowarn_on_error, Opt_mblk_io_submit,
+>  	Opt_lazytime, Opt_nolazytime, Opt_debug_want_extra_isize,
+> @@ -1571,6 +1572,9 @@ static const match_table_t tokens = {
+>  	{Opt_nobarrier, "nobarrier"},
+>  	{Opt_i_version, "i_version"},
+>  	{Opt_dax, "dax"},
+> +	{Opt_dax_always, "dax=always"},
+> +	{Opt_dax_inode, "dax=inode"},
+> +	{Opt_dax_never, "dax=never"},
+>  	{Opt_stripe, "stripe=%u"},
+>  	{Opt_delalloc, "delalloc"},
+>  	{Opt_warn_on_error, "warn_on_error"},
+> @@ -1718,6 +1722,7 @@ static int clear_qf_name(struct super_block *sb, int qtype)
+>  #define MOPT_NO_EXT3	0x0200
+>  #define MOPT_EXT4_ONLY	(MOPT_NO_EXT2 | MOPT_NO_EXT3)
+>  #define MOPT_STRING	0x0400
+> +#define MOPT_SKIP	0x0800
+>  
+>  static const struct mount_opts {
+>  	int	token;
+> @@ -1767,7 +1772,13 @@ static const struct mount_opts {
+>  	{Opt_min_batch_time, 0, MOPT_GTE0},
+>  	{Opt_inode_readahead_blks, 0, MOPT_GTE0},
+>  	{Opt_init_itable, 0, MOPT_GTE0},
+> -	{Opt_dax, EXT4_MOUNT_DAX_ALWAYS, MOPT_SET},
+> +	{Opt_dax, EXT4_MOUNT_DAX_ALWAYS, MOPT_SET | MOPT_SKIP},
+> +	{Opt_dax_always, EXT4_MOUNT_DAX_ALWAYS,
+> +		MOPT_EXT4_ONLY | MOPT_SET | MOPT_SKIP},
+> +	{Opt_dax_inode, EXT4_MOUNT2_DAX_INODE,
+> +		MOPT_EXT4_ONLY | MOPT_SET | MOPT_SKIP},
+> +	{Opt_dax_never, EXT4_MOUNT2_DAX_NEVER,
+> +		MOPT_EXT4_ONLY | MOPT_SET | MOPT_SKIP},
+>  	{Opt_stripe, 0, MOPT_GTE0},
+>  	{Opt_resuid, 0, MOPT_GTE0},
+>  	{Opt_resgid, 0, MOPT_GTE0},
+> @@ -2076,13 +2087,32 @@ static int handle_mount_opt(struct super_block *sb, char *opt, int token,
+>  		}
+>  		sbi->s_jquota_fmt = m->mount_opt;
+>  #endif
+> -	} else if (token == Opt_dax) {
+> +	} else if (token == Opt_dax || token == Opt_dax_always ||
+> +		   token == Opt_dax_inode || token == Opt_dax_never) {
+>  #ifdef CONFIG_FS_DAX
+> -		ext4_msg(sb, KERN_WARNING,
+> -		"DAX enabled. Warning: EXPERIMENTAL, use at your own risk");
+> -		sbi->s_mount_opt |= m->mount_opt;
+> +		switch (token) {
+> +		case Opt_dax:
+> +		case Opt_dax_always:
+> +			ext4_msg(sb, KERN_WARNING,
+> +				"DAX enabled. Warning: EXPERIMENTAL, use at your own risk");
+> +			sbi->s_mount_opt |= EXT4_MOUNT_DAX_ALWAYS;
+> +			sbi->s_mount_opt2 &= ~EXT4_MOUNT2_DAX_NEVER;
+> +			break;
+> +		case Opt_dax_never:
+> +			sbi->s_mount_opt2 |= EXT4_MOUNT2_DAX_NEVER;
+> +			sbi->s_mount_opt &= ~EXT4_MOUNT_DAX_ALWAYS;
+> +			break;
+> +		case Opt_dax_inode:
+> +			sbi->s_mount_opt &= ~EXT4_MOUNT_DAX_ALWAYS;
+> +			sbi->s_mount_opt2 &= ~EXT4_MOUNT2_DAX_NEVER;
+> +			/* Strictly for printing options */
+> +			sbi->s_mount_opt2 |= EXT4_MOUNT2_DAX_INODE;
+> +			break;
+> +		}
+>  #else
+>  		ext4_msg(sb, KERN_INFO, "dax option not supported");
+> +		sbi->s_mount_opt2 |= EXT4_MOUNT2_DAX_NEVER;
+> +		sbi->s_mount_opt &= ~EXT4_MOUNT_DAX_ALWAYS;
+>  		return -1;
+>  #endif
+>  	} else if (token == Opt_data_err_abort) {
+> @@ -2246,7 +2276,7 @@ static int _ext4_show_options(struct seq_file *seq, struct super_block *sb,
+>  	for (m = ext4_mount_opts; m->token != Opt_err; m++) {
+>  		int want_set = m->flags & MOPT_SET;
+>  		if (((m->flags & (MOPT_SET|MOPT_CLEAR)) == 0) ||
+> -		    (m->flags & MOPT_CLEAR_ERR))
+> +		    (m->flags & MOPT_CLEAR_ERR) || m->flags & MOPT_SKIP)
+>  			continue;
+>  		if (!nodefs && !(m->mount_opt & (sbi->s_mount_opt ^ def_mount_opt)))
+>  			continue; /* skip if same as the default */
+> @@ -2306,6 +2336,17 @@ static int _ext4_show_options(struct seq_file *seq, struct super_block *sb,
+>  	if (DUMMY_ENCRYPTION_ENABLED(sbi))
+>  		SEQ_OPTS_PUTS("test_dummy_encryption");
+>  
+> +	if (test_opt(sb, DAX_ALWAYS)) {
+> +		if (IS_EXT2_SB(sb))
+> +			SEQ_OPTS_PUTS("dax");
+> +		else
+> +			SEQ_OPTS_PUTS("dax=always");
+> +	} else if (test_opt2(sb, DAX_NEVER)) {
+> +		SEQ_OPTS_PUTS("dax=never");
+> +	} else if (test_opt2(sb, DAX_INODE)) {
+> +		SEQ_OPTS_PUTS("dax=inode");
+> +	}
+> +
+>  	ext4_show_quota_options(seq, sb);
+>  	return 0;
+>  }
+> @@ -5425,10 +5466,16 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
+>  		goto restore_opts;
+>  	}
+>  
+> -	if ((sbi->s_mount_opt ^ old_opts.s_mount_opt) & EXT4_MOUNT_DAX_ALWAYS) {
+> +	if ((sbi->s_mount_opt ^ old_opts.s_mount_opt) & EXT4_MOUNT_DAX_ALWAYS ||
+> +	    (sbi->s_mount_opt2 ^ old_opts.s_mount_opt2) & EXT4_MOUNT2_DAX_NEVER ||
+> +	    (sbi->s_mount_opt2 ^ old_opts.s_mount_opt2) & EXT4_MOUNT2_DAX_INODE) {
+>  		ext4_msg(sb, KERN_WARNING, "warning: refusing change of "
+> -			"dax flag with busy inodes while remounting");
+> -		sbi->s_mount_opt ^= EXT4_MOUNT_DAX_ALWAYS;
+> +			"dax mount option with busy inodes while remounting");
+> +		sbi->s_mount_opt &= ~EXT4_MOUNT_DAX_ALWAYS;
+> +		sbi->s_mount_opt |= old_opts.s_mount_opt & EXT4_MOUNT_DAX_ALWAYS;
+> +		sbi->s_mount_opt2 &= ~(EXT4_MOUNT2_DAX_NEVER | EXT4_MOUNT2_DAX_INODE);
+> +		sbi->s_mount_opt2 |= old_opts.s_mount_opt2 &
+> +				     (EXT4_MOUNT2_DAX_NEVER | EXT4_MOUNT2_DAX_INODE);
+>  	}
+>  
+>  	if (sbi->s_mount_flags & EXT4_MF_FS_ABORTED)
+> -- 
+> 2.25.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
