@@ -2,134 +2,167 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 831D81D4740
-	for <lists+linux-ext4@lfdr.de>; Fri, 15 May 2020 09:41:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40DF51D47DB
+	for <lists+linux-ext4@lfdr.de>; Fri, 15 May 2020 10:13:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726980AbgEOHlh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 15 May 2020 03:41:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726624AbgEOHle (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 15 May 2020 03:41:34 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD219C061A0C;
-        Fri, 15 May 2020 00:41:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=5F5020LXe/PKeW2E7HP+KIsjpPbHby4z569GcXavvzw=; b=HbpcDNi3cjt95r1YCRFokz/Cxj
-        P+8RahgC1lAn/32KwuHkV4Lvhyhsk97XCxxP0im6h+5rMpUaSLveo3+kRZlKvMsoccaigaCPWm1cy
-        qLJ0wTKT1MLNqAGARFe/2g2elZChAcggp62D7/BfxeDnVplokiU+xeDaFSkipusQsgp50BZkC4QCs
-        1GC5JyHov7b6RP7pfumvwoG8cFIdaqTzqMYYr19s9rekZo9R5CGENqmBlqKBDBqmSGhAo6+3NJkic
-        Hk5pup2crDyCB948jsfNP0kCfoLy2tU6hHMpyfWcRcJLPEHubtPFNggqhzA2Eerfysdcuiz7ClvSL
-        fAiHMJXg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jZUyF-0005Jq-7l; Fri, 15 May 2020 07:41:27 +0000
-Date:   Fri, 15 May 2020 00:41:27 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        Satya Tangirala <satyat@google.com>,
-        linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
-        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
-        Kuohong Wang <kuohong.wang@mediatek.com>,
-        Kim Boojin <boojin.kim@samsung.com>
-Subject: Re: [PATCH v13 00/12] Inline Encryption Support
-Message-ID: <20200515074127.GA13926@infradead.org>
-References: <20200514003727.69001-1-satyat@google.com>
- <20200514051053.GA14829@sol.localdomain>
- <8fa1aafe-1725-e586-ede3-a3273e674470@kernel.dk>
+        id S1727063AbgEOINq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 15 May 2020 04:13:46 -0400
+Received: from mail-dm6nam12on2088.outbound.protection.outlook.com ([40.107.243.88]:18544
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726732AbgEOINq (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 15 May 2020 04:13:46 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WSJoYWNUoUX6qz6h8xYKl66ST18tuH12kyb0T4yxsO7Jm3NhyblPZqjxkNwqmGLjZBbjk49iT9gA1szia1H9dyngvbTvSAYUGH0b1iiwOMFErdSHDPX/x9/OiCsquZqWJSet2Lp6kJfYvlb4c4iL1/C2ciLKgD5OS0IJJQrRALBBGTCTm9rEzDvGSYwiacvW5o7d8O86qxSAUSnwpuvOwRfRRrUdPhwMYKQCbd3DIDbPGgrEZ9oCgoXYdo4vqAy9clRM5t4Pf4A5eha0Obu35xbBV+25blRds1fKUAoTwDNZ50ILNjNEm9WTVtmEbjMb68NMwpNPNJnH5BrNVZVPWw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZMxSeqSZJS5G82XUI0qf/tzeS0zvh/2ZJPBILaUvqiM=;
+ b=N4kAL+nfWTpWfEOiUm6nd5Fz+ozNruAE8U0fwdq4E9gOXjurY8OPXmWoFtfc+LvI+xF4gQJ88qSrUkX+wLATDk91YbUKAp+IfAlVAZuRjv20aT7ycQIQ0EzGDGQmTUaktA6iSwu1sw6f9UVk5jXD1Nf46Fc33kyhAHNIUgcHMIRYp3BD1BGc3FJPxVLaek0d7c5eSr0D4wsN6AEFadOnrs6DrIPzm+pj36UnkyKun4pitNURrj5ie54qMYo+N4NgxfkIKiQ8JsZpFcat9fbBICMRFdzFg4Nh4eXFkjLPoBvB7/23hsYtdzCerpoCP0h/kHsGMrghvDV6ersIBzlJfA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=whamcloud.com; dmarc=pass action=none
+ header.from=whamcloud.com; dkim=pass header.d=whamcloud.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=whamcloud.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZMxSeqSZJS5G82XUI0qf/tzeS0zvh/2ZJPBILaUvqiM=;
+ b=yBG6SUeo5iNfDZxVPpkwENl4FcEiQtvuAoGlngBcQRW+RJO6Q7x0/2rtxim1QVipLT0jMQsWx/bzzOZvwgVJmaQv1kKila6BAMIGHiQSk0vyMTFswzoUbof84IqdBY57vgLAOo2GL62kLr1F8tsl4rvcDqFK84FoQmYPcbHmEjk=
+Received: from DM6PR19MB2441.namprd19.prod.outlook.com (2603:10b6:5:18d::16)
+ by DM6PR19MB4197.namprd19.prod.outlook.com (2603:10b6:5:2b1::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.26; Fri, 15 May
+ 2020 08:13:43 +0000
+Received: from DM6PR19MB2441.namprd19.prod.outlook.com
+ ([fe80::b111:c44a:87ea:4bf4]) by DM6PR19MB2441.namprd19.prod.outlook.com
+ ([fe80::b111:c44a:87ea:4bf4%7]) with mapi id 15.20.3000.022; Fri, 15 May 2020
+ 08:13:42 +0000
+From:   Alex Zhuravlev <azhuravlev@whamcloud.com>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+CC:     Alex Zhuravlev <azhuravlev@whamcloud.com>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
+Subject: Re: [PATCH 1/2] ext4: mballoc to prefetch groups ahead of scanning 
+Thread-Topic: [PATCH 1/2] ext4: mballoc to prefetch groups ahead of scanning 
+Thread-Index: AQHWHRyy1xG1svQkZk+tmha82siiQqinbbmAgAF5iwA=
+Date:   Fri, 15 May 2020 08:13:42 +0000
+Message-ID: <C0BA654A-C359-4EFD-9C88-79A5D0562FEC@whamcloud.com>
+References: <DF4ADFBC-BC4B-4E6A-894A-5BCED5464F42@whamcloud.com>
+ <20200514094226.67D044C040@d06av22.portsmouth.uk.ibm.com>
+In-Reply-To: <20200514094226.67D044C040@d06av22.portsmouth.uk.ibm.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linux.ibm.com; dkim=none (message not signed)
+ header.d=none;linux.ibm.com; dmarc=none action=none
+ header.from=whamcloud.com;
+x-originating-ip: [95.73.85.160]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 7520b274-17c2-431b-4502-08d7f8a7e1ef
+x-ms-traffictypediagnostic: DM6PR19MB4197:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR19MB41976D360E4F577FA32733ADCBBD0@DM6PR19MB4197.namprd19.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6108;
+x-forefront-prvs: 04041A2886
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: giwrzZfTrmJANZBxrOAWlFjZqR6oFY6zpNUeqbeEnj64mDo544qmP6T1xkWitGogRdMzUQL0EjKfApXJLFUHwx8zBS4eLImIN2zi2ASDy4prYRqqurTS0ApzbL9RL3jhm5YB68l/FThlK7iHD6GY4L6Xa/IkCW1Tfwp1wfTdxF6CPB/tUFybogCEdyFVF99fP2UMckd+0kxg4XFaRUKAQl3JfrNFIBIMziiH6p2hZtJzhyhkTO2PjLWRVHL9ASZb1TOFSJ19naU3Ac2yfkFouUemePFwnaDzSa76F90qWEde68YMSC/USNAePpMzYkejqmJGaHivcNBbZvl/yHD5hwWu7NjfRO9YbI+E7+Xv57t0avJAHjzrreEt/a0UrXI4z7b23BA6jnaXwAfstogCWf658glhen5U6S2iWUARn0oyd3f2d8ds2QUa03/kLDyD
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR19MB2441.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39850400004)(396003)(136003)(376002)(346002)(366004)(2616005)(66446008)(186003)(6916009)(6486002)(36756003)(91956017)(33656002)(5660300002)(71200400001)(76116006)(64756008)(86362001)(4743002)(478600001)(2906002)(66476007)(53546011)(6512007)(66946007)(54906003)(26005)(4326008)(66556008)(8676002)(6506007)(8936002)(316002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: KLF6uK/spqkaDKUS+7yolGZS9MmdhYdEfQTRvWEWZVPAQQY8jaYblLc/8ZeEs7EFNdVV5/O7oN+NxrYEjG9LileoMfDLzW7mKSsPMl10rrZsxdY1LHXR6+dfdINneCGcHa1B4T953+hKQxQx/MtBaBIqR8PYBTGaoPoxvbE1KyCn9OqTzMMOUXcH/er6gcfMM0pM+PvEvTprsmNjzKdGTBTgz5fmA64bjanT/F9MtzDFPrv9n6JF87kUMPMqcAbocdiWi1TdVF6jpknKEqe/9sylsEbAGKctamcbER1ZJq2B3LE2p0hfv7gAkqBkA60chqTpVI40oX8vphcRUPwHRBYjD5rbJTbF40VQ4U+6NXeIUogP34BoBhbKuLAvLluT14ohqS0BcsHV7S4JfZeOovT7hn5d/Dc6pQ4f7x8Ul0yoHIz5SkOqnY3tchcoPq4+dtZnPFda6mqdHL8pvuFY2KjN6MCpKjSKfWU5yIbx4wI=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <8BC42F0DBBE6214689975136541E0FF9@namprd19.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8fa1aafe-1725-e586-ede3-a3273e674470@kernel.dk>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-OriginatorOrg: whamcloud.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7520b274-17c2-431b-4502-08d7f8a7e1ef
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 May 2020 08:13:42.8726
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 753b6e26-6fd3-43e6-8248-3f1735d59bb4
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 1FrEQpdDfC8d/RZ2ht+BoLS5uK10CrfKqz4OTxZfub4gWVrXHZiwzQZakIoRm+LfvQzIJkAHOo3dM/vM+xUD0g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR19MB4197
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, May 14, 2020 at 09:48:40AM -0600, Jens Axboe wrote:
-> I have applied 1-5 for 5.8. Small tweak needed in patch 3 due to a header
-> inclusion, but clean apart from that.
-
-I looked at this a bit more as it clashed with my outstanding
-q_usage_counter optimization, and I think we should move the
-blk_crypto_bio_prep call into blk-mq, similar to what we do about
-the integrity_prep call.  Comments?
-
----
-From b7a78be7de0f39ef972d6a2f97a3982a422bf3ab Mon Sep 17 00:00:00 2001
-From: Christoph Hellwig <hch@lst.de>
-Date: Fri, 15 May 2020 09:32:40 +0200
-Subject: block: move blk_crypto_bio_prep into blk_mq_make_request
-
-Currently blk_crypto_bio_prep is called for every block driver, including
-stacking drivers, which is probably not the right thing to do.  Instead
-move it to blk_mq_make_request, similar to how we handle integrity data.
-If we ever grow a low-level make_request based driver that wants
-encryption it will have to call blk_crypto_bio_prep manually, but I really
-hope we don't grow more non-stacking make_request drivers to start with.
-
-This also means we only need to do the crypto preparation after splitting
-and bouncing the bio, which means we don't bother allocating the fallback
-context for a bio that might only be a dummy and gets split or bounced
-later.
-
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- block/blk-core.c | 13 +++++--------
- block/blk-mq.c   |  2 ++
- 2 files changed, 7 insertions(+), 8 deletions(-)
-
-diff --git a/block/blk-core.c b/block/blk-core.c
-index 1e97f99735232..ac59afaa26960 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -1131,12 +1131,10 @@ blk_qc_t generic_make_request(struct bio *bio)
- 			/* Create a fresh bio_list for all subordinate requests */
- 			bio_list_on_stack[1] = bio_list_on_stack[0];
- 			bio_list_init(&bio_list_on_stack[0]);
--			if (blk_crypto_bio_prep(&bio)) {
--				if (q->make_request_fn)
--					ret = q->make_request_fn(q, bio);
--				else
--					ret = blk_mq_make_request(q, bio);
--			}
-+			if (q->make_request_fn)
-+				ret = q->make_request_fn(q, bio);
-+			else
-+				ret = blk_mq_make_request(q, bio);
- 
- 			blk_queue_exit(q);
- 
-@@ -1185,8 +1183,7 @@ blk_qc_t direct_make_request(struct bio *bio)
- 		return BLK_QC_T_NONE;
- 	if (unlikely(bio_queue_enter(bio)))
- 		return BLK_QC_T_NONE;
--	if (blk_crypto_bio_prep(&bio))
--		ret = blk_mq_make_request(q, bio);
-+	ret = blk_mq_make_request(q, bio);
- 	blk_queue_exit(q);
- 	return ret;
- }
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index d2962863e629f..0b5a0fa0d124b 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -2033,6 +2033,8 @@ blk_qc_t blk_mq_make_request(struct request_queue *q, struct bio *bio)
- 	blk_queue_bounce(q, &bio);
- 	__blk_queue_split(q, &bio, &nr_segs);
- 
-+	if (!blk_crypto_bio_prep(&bio))
-+		return BLK_QC_T_NONE;
- 	if (!bio_integrity_prep(bio))
- 		return BLK_QC_T_NONE;
- 
--- 
-2.26.2
-
+SGksDQoNClRoYW5rcyBmb3IgdGhlIHJldmlldy4gQW5zd2VycyBpbmxpbmUuLg0KDQoNCj4gT24g
+MTQgTWF5IDIwMjAsIGF0IDEyOjQyLCBSaXRlc2ggSGFyamFuaSA8cml0ZXNoaEBsaW51eC5pYm0u
+Y29tPiB3cm90ZToNCj4gTm90IHN1cmUgaWYgSSBjb21wbGV0ZWx5IHVuZGVyc3RhbmQgYWJvdmUu
+IENhcmUgdG8gZXhwbGFpbiBhIGJpdCBtb3JlDQo+IHBscz8NCg0KSeKAmW0gYWxsIGZvciB0aGF0
+LCBidXQgbmVlZCB0byBrbm93IHdoYXTigJlzIG1pc3NpbmcgaW4gdGhlIGRlc2NyaXB0aW9uLg0K
+DQo+PiBUb2dldGhlciB3aXRoIHRoZSBwYXRjaCAiZXh0NDogbGltaXQgc2Nhbm5pbmcgb2YgdW5p
+bml0aWFsaXplZCBncm91cHMiDQo+IFdoZXJlIGlzIHRoaXMgcGF0Y2ggd2hpY2ggc2F5cyBeXl5e
+XiA/DQoNCkhtbSwgbXkgYmFkLCB0aGF04oCZcyB0aGUgcGF0Y2ggeW91IHJldmlld2VkIHlldCAt
+IGV4dDQ6IHNraXAgbm9uLWxvYWRlZCBncm91cHMgYXQgY3I9MC8xDQoNCj4+IHRoZSBtb3VudCB0
+aW1lIG9mIGEgMVBCIGZpbGVzeXN0ZW0gaXMgcmVkdWNlZCBzaWduaWZpY2FudGx5Og0KPj4gICAg
+ICAgICAgICAgICAgMCUgZnVsbCAgICA1MCUtZnVsbCB1bnBhdGNoZWQgICAgcGF0Y2hlZA0KPj4g
+ICBtb3VudCB0aW1lICAgICAgIDMzcyAgICAgICAgICAgICAgICA5Mjc5cyAgICAgICA1NjNzDQo+
+IA0KPiBMb29rcyBnb29kLiBEbyB5b3UgaGF2ZSBwZXJmIGltcHJvdmVtZW50IG51bWJlcnMgd2l0
+aCB0aGlzIHBhdGNoIGFsb25lPw0KPiBXb25kZXIgaWYgdGhpcyBjb3VsZCBzaG93IGltcHJvdmVt
+ZW50IGlmIEkgbWFrZSBteSBGUyBpbWFnZSB1c2luZyBkbS1zcGFyc2U/DQoNCkFjdHVhbGx5IEkg
+ZGlkLCBidXQgZmV3IHBhdGNoZXMgd2VyZSBpbiB1c2UgYXQgb25jZSwgc28gdGhpcyB3b3VsZG7i
+gJl0IGJlIGNvcnJlY3QgdG8gaW5jbHVkZSBudW1iZXJzLg0KV2lsbCB0cnkgdG8gcmVwZWF0IGp1
+c3QgZm9yIHRoaXMgcGF0Y2guDQoNCj4+IC1leHQ0X3JlYWRfYmxvY2tfYml0bWFwX25vd2FpdChz
+dHJ1Y3Qgc3VwZXJfYmxvY2sgKnNiLCBleHQ0X2dyb3VwX3QgYmxvY2tfZ3JvdXApDQo+PiArZXh0
+NF9yZWFkX2Jsb2NrX2JpdG1hcF9ub3dhaXQoc3RydWN0IHN1cGVyX2Jsb2NrICpzYiwgZXh0NF9n
+cm91cF90IGJsb2NrX2dyb3VwLA0KPj4gKwkJCQkgaW50IGlnbm9yZV9sb2NrZWQpDQo+IA0KPiBT
+aG91bGQgbWFrZSBpZ25vcmVfbG9ja2VkIGFzIGJvb2xlYW4uDQoNCk9LDQoNCj4+ICsJc3RydWN0
+IGJ1ZmZlcl9oZWFkICpiaDsNCj4+ICsJaW50IG5yOw0KPiBuciBzaG91bGQgYmUgb2YgdHlwZSBl
+eHQ0X2dyb3VwX3QuDQoNCk9LDQoNCg0KPj4gKwkvKiBsaW1pdCBwcmVmZXRjaGluZyBhdCBjcj0w
+LCBvdGhlcndpc2UgbWJhbGxvYyBjYW4NCj4+ICsJICogc3BlbmQgYSBsb3Qgb2YgdGltZSBsb2Fk
+aW5nIGltcGVyZmVjdCBncm91cHMgKi8NCj4gDQo+IFNvcnJ5IG5vdCBzdXJlIGlmIEkgdW5kZXJz
+dGFuZCB0aGlzIGNvbXBsZXRlbHkuIFBsZWFzZSBleHBsYWluIHRoaXMNCj4gYSBiaXQgZnVydGhl
+ci4NCg0KTWJhbGxvYyBkb2VzIGZldyAoNCBhdCBtb3N0KSBwYXNzZXMuIEVhY2ggcGFzcyBoYXMg
+b3duIHNlbnNlIG9mIGdvb2QgZ3JvdXAgdG8gdHJ5IHRvIGFsbG9jYXRlIGluLg0KWW91IGNhbiBz
+ZWUgZXhhY3QgY3JpdGVyaWEgaW4gZXh0NF9tYl9nb29kX2dyb3VwKCkuDQpGaXJzdCB0d28gcGFz
+c2VzIGFyZSBzdXBwb3NlZCB0byBzY2FuIHRoZSBncm91cHMgYXMgZmFzdCBhcyBwb3NzaWJsZSwg
+bG9va2luZyBmb3IgdmVyeSBnb29kIGNodW5rcy4NClRoaXMgY2hlY2sgbGltaXRzIElPIGlzc3Vl
+ZCBhdCB0aGVzZSBwYXNzZXMsIG90aGVyd2lzZSBzb29uZXIgb3IgbGF0ZXIgKGRlcGVuZGluZyBv
+biBmaWxlc3lzdGVtIHNpemUsDQpmcmFnbWVudGF0aW9uLCAgSU8gdGhyb3VnaHB1dCwgZXRjKSBt
+YmFsbG9jIHdpbGwgZ2V0IHN0dWNrLg0KDQo+PiArCWlmIChhYy0+YWNfY3JpdGVyaWEgPCAyICYm
+IGFjLT5hY19wcmVmZXRjaF9pb3MgPj0gc2JpLT5zX21iX3ByZWZldGNoX2xpbWl0KQ0KPj4gKwkJ
+cmV0dXJuOw0KPiANCj4gU28sIHdoYXQgaXMgYWNfY3JpdGVyaWEgaXMgMz8gV2UgZ28gYW5kIHBy
+ZWZldGNoIGluIHRoYXQgY2FzZT8NCj4gT3IgbWF5YmUgZG8geW91IG1lYW4gdGhhdCBiZWZvcmUg
+ZXZlbiBhY19jcml0ZXJhIHJlYWNoZXMgMywgdGhlIG90aGVyDQo+IGNvbmRpdGlvbiBtYXkgYmVj
+b21lIGZhbHNlPw0KDQpTZWUgaW4gZXh0NF9tYl9nb29kX2dyb3VwKCkgLSB0aGlzIGlzIHRoZSBs
+YXN0IHBhc3MsIG1iYWxsb2MganVzdCBzY2FucyBiaXRtYXBzLCBhbGwgcHJldmlvdXMgcGFzc2Vz
+DQpmb3VuZCBubyDigJxnb29k4oCdIGdyb3VwLiBCYXNpY2FsbHkgbWJhbGxvYyBnYXZlIHVwIHdp
+dGggZmFzdCBhbGxvY2F0aW9uIGFuZCB3ZeKAmXJlIGdvaW5nIHRvIGRvIElPIGFueXdheSwNCmp1
+c3QgdG8gYmUgYWJsZSB0byBhbGxvY2F0ZS4gU28gcHJlZmV0Y2hpbmcgaXMgdW5jb25kaXRpb25h
+bCBhdCB0aGlzIHBhc3MuDQoNCj4+ICsJLyogYmF0Y2ggcHJlZmV0Y2hpbmcgdG8gZ2V0IGZldyBS
+RUFEcyBpbiBmbGlnaHQgKi8NCj4+ICsJbnIgPSBhYy0+YWNfcHJlZmV0Y2ggLSBncm91cDsNCj4+
+ICsJaWYgKGFjLT5hY19wcmVmZXRjaCA8IGdyb3VwKQ0KPj4gKwkJLyogd3JhcHBlZCB0byB0aGUg
+Zmlyc3QgZ3JvdXBzICovDQo+PiArCQluciArPSBuZ3JvdXBzOw0KPj4gKwlpZiAobnIgPiAwKQ0K
+Pj4gKwkJcmV0dXJuOw0KPj4gKwlCVUdfT04obnIgPCAwKTsNCj4gDQo+IE9rLCBzbyBJSVVDLCB3
+ZSBhcmUgZG9pbmcgdGhpcyBwcmVmZXRjaGluZyBvbmx5IG9uY2UgYXQgdGhlIHN0YXJ0IG9mDQo+
+IGVhY2ggYWxsb2NhdGlvbiBjcml0ZXJpYS4gQmVjYXVzZSBvbmx5IHRoYXQgdGltZSBuciB3aWxs
+IGJlIDAuDQo+IGkuZS4gYWMtPmFjX3ByZWZldGNoID09IGdyb3VwLg0KPiBJcyB0aGF0IHRoZSBj
+YXNlPw0KSG1tLCBzaG91bGRu4oCZdCBiZSB0aGF0IHdheS4gQXMgdGhlIGFsbG9jYXRpb24gcHJv
+Y2VzcyBnb2VzIGdyb3VwIGJ5IGdyb3VwDQpJdCB3aWxsIG1lZXQgdGhpcyDigJxhY19wcmVmZXRj
+aCA9PSBncm91cOKAnSBjb25kaXRpb24gYWdhaW4gYW5kIHRoaXMgaXMgd2hlcmUgbmV3DQpwcmVm
+ZXRjaCB3aW5kb3cgc3RhcnRzLiBleHQ0X21iX3ByZWZldGNoKCkgY2hlY2tzIGFuZCBzdWJtaXRz
+IElPLCB0aGVuDQpzZXRzIGFjX3ByZWZldGNoIHRvIHRoZSBuZXh0IHByZWZldGNoIHdpbmRvd+KA
+mXMgc3RhcnQuIA0KDQo+PiArCWlmIChleHQ0X2hhc19mZWF0dXJlX2ZsZXhfYmcoc2IpKSB7DQo+
+PiArCQkvKiBhbGlnbiB0byBmbGV4X2JnIHRvIGdldCBtb3JlIGJpdG1hcyB3aXRoIGEgc2luZ2xl
+IElPICovDQo+IA0KPiAvcy9iaXRtYXMvYml0bWFwcy8NCg0KT0sNCg0KPj4gKwkJaWYgKCsrZ3Jv
+dXAgPj0gbmdyb3VwcykNCj4+ICsJCQlncm91cCA9IDA7DQo+IA0KPiBTbyBzYXkgbnIgPSAzMi4g
+YW5kIHRoZSBncm91cCB0aGF0IHlvdSBhcmUgc3RhcnRlZCB3aXRoIGhhcw0KPiB2YWx1ZSA9IChu
+Z3JvdXBzIC0gMzIpLiBUaGVuIHdoZW4gd2UgYXJlIGxvb3BpbmcgZm9yIHRoZSBmaW5hbCB0aW1l
+LA0KPiBuciB3aWxsIGJlIDAsIGFuZCB0aGUgYWJvdmUgY2hlY2sgd2lsbCBtYWtlIGdyb3VwID0g
+MA0KDQpZZXMsIHRoaXMgaXMgZ3JvdXAgbnVtYmVyLCB3aGljaCB3cmFwcyB3aGVuIHdlIHJlYWNo
+IHRoZSBsYXN0IG9uZT8NCg0KPiBUaG91Z2ggdGhpcyBjYXNlIGNvdWxkIGJlIGEgY29ybmVyIGNh
+c2UsIGJ1dCBtYXliZSBzb21ldGhpbmcgdG8gYmUNCj4gaW1wcm92ZWQgdXBvbj8gVGhvdWdodHM/
+DQoNCk9LDQoNCj4+ICtzdGF0aWMgdm9pZA0KPj4gK2V4dDRfbWJfcHJlZmV0Y2hfZmluaShzdHJ1
+Y3QgZXh0NF9hbGxvY2F0aW9uX2NvbnRleHQgKmFjKQ0KPiANCj4gRGlkIHlvdSBtZWFuIGV4dDRf
+bWJfcHJlZmV0Y2hfZmluaXNoKCk/DQo+IE5vdCBzdXJlIGlmIEkgdW5kZXJzdGFuZCB0aGUgZnVu
+Y3Rpb24gbmFtZSBjb21wbGV0ZWx5Lg0KDQpIbW0sIHRoYXTigJlzIHdoYXQgSSB1c2VkIHRvOiBp
+bmkgLSBpbml0LCBmaW5pIC0gZmluaXNoLiBUaGlzIGlzIHByZXR0eSBjb21tb24gbmFtaW5nIHNj
+aGVtYT8NCg0KPj4gKwkJaWYgKGdyb3VwLS0gPT0gMCkNCj4+ICsJCQlncm91cCA9IGV4dDRfZ2V0
+X2dyb3Vwc19jb3VudChhYy0+YWNfc2IpIC0gMTsNCj4gDQo+IHdoeSBwbGF5IHdpdGggYW4gdW5z
+aWduZWQgaW50IGxpa2UgdGhpcyBpbiBhYm92ZS4NCj4gYmVsb3cgbG9va3MgbXVjaCBzaW1wbGVy
+IG5vPw0KPiANCj4gaWYgKGdyb3VwID09IDApDQo+IAlncm91cCA9IGV4dDRfZ2V0X2dyb3Vwc19j
+b3VudChhYy0+YWNfc2IpOw0KPiBncm91cOKAlDsNCg0KV2VsbCwgdGhpcyBpcyBleHRyYSA1IGJ5
+dGVzIHJlcGxpY2F0ZWQgYW5kIHRyYW5zZmVycmVkIHppbGxpb24gdGltZXMgb3ZlciB0aGUgZ2xv
+YmUuDQpTb3JyeSwganVzdCBraWRkaW5nLCBJ4oCZbSBmaW5lIHRvIGNoYW5nZSB0aGlzIGlmIHlv
+dSBmaW5kIGl04oCZcyBiZXR0ZXIuDQoNClRoYW5rcywgQWxleA==
