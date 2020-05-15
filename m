@@ -2,88 +2,69 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 925DE1D44C3
-	for <lists+linux-ext4@lfdr.de>; Fri, 15 May 2020 06:41:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 273781D45FA
+	for <lists+linux-ext4@lfdr.de>; Fri, 15 May 2020 08:35:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726229AbgEOEll (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 15 May 2020 00:41:41 -0400
-Received: from mga18.intel.com ([134.134.136.126]:36399 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726179AbgEOElb (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 15 May 2020 00:41:31 -0400
-IronPort-SDR: Ham0KcT7JOWHsTjsmhwegYDEb/5XZX4wxQWD2nWGN/ZIUPppI4zWfMLZeNmbTy3AvNHvkd2xoe
- UIS11He28ERA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 May 2020 21:41:30 -0700
-IronPort-SDR: SRqXEoxPgn5C3CDNI3PkD+pS6kLXYn++wMdJAL9eVZwlCArX/mr5+mbPKCTeCA77tGnKtZDNCF
- rr7GWkpfpHRA==
-X-IronPort-AV: E=Sophos;i="5.73,394,1583222400"; 
-   d="scan'208";a="464776443"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 May 2020 21:41:30 -0700
-From:   ira.weiny@intel.com
-To:     linux-ext4@vger.kernel.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>
-Cc:     Ira Weiny <ira.weiny@intel.com>, Al Viro <viro@zeniv.linux.org.uk>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 9/9] Documentation/dax: Update DAX enablement for ext4
-Date:   Thu, 14 May 2020 21:41:21 -0700
-Message-Id: <20200515044121.2987940-10-ira.weiny@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200515044121.2987940-1-ira.weiny@intel.com>
-References: <20200515044121.2987940-1-ira.weiny@intel.com>
+        id S1726385AbgEOGfa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 15 May 2020 02:35:30 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:39623 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726191AbgEOGfa (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 15 May 2020 02:35:30 -0400
+X-UUID: a627162ab9be4896a6a78854bb275d10-20200515
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=dnVzAwZEKYSKKY4z6dkr6lk8gdmk1Zn9tS3rjZChFxw=;
+        b=kwP3dkT2wnhIK6hP6had2V0Z7rwvK+3/mjplUJSj+Y2YTlsYDUe1aNcX60PT1zJsQI+DGMO5AOQuCjtilA4TxJRcvm/jQ4MZXj4SIX54zHioqFt/GT2+ucgVaVjbC/X8ONuXj0OGZArn4uLYaSbrzzSD73g88Df20DCAmLwlh5U=;
+X-UUID: a627162ab9be4896a6a78854bb275d10-20200515
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 782748912; Fri, 15 May 2020 14:35:27 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 15 May 2020 14:35:24 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 15 May 2020 14:35:24 +0800
+Message-ID: <1589524526.3197.110.camel@mtkswgap22>
+Subject: Re: [PATCH v13 07/12] scsi: ufs: UFS crypto API
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     Satya Tangirala <satyat@google.com>
+CC:     <linux-block@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+        <linux-fscrypt@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-ext4@vger.kernel.org>,
+        "Barani Muthukumaran" <bmuthuku@qti.qualcomm.com>,
+        Kuohong Wang <kuohong.wang@mediatek.com>,
+        Kim Boojin <boojin.kim@samsung.com>,
+        "Eric Biggers" <ebiggers@google.com>
+Date:   Fri, 15 May 2020 14:35:26 +0800
+In-Reply-To: <20200514003727.69001-8-satyat@google.com>
+References: <20200514003727.69001-1-satyat@google.com>
+         <20200514003727.69001-8-satyat@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Ira Weiny <ira.weiny@intel.com>
-
-Update the document to reflect ext4 and xfs now behave the same.
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-
----
-Changes from RFC:
-	Update with ext2 text...
----
- Documentation/filesystems/dax.txt | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/Documentation/filesystems/dax.txt b/Documentation/filesystems/dax.txt
-index 735fb4b54117..265c4f808dbf 100644
---- a/Documentation/filesystems/dax.txt
-+++ b/Documentation/filesystems/dax.txt
-@@ -25,7 +25,7 @@ size when creating the filesystem.
- Currently 3 filesystems support DAX: ext2, ext4 and xfs.  Enabling DAX on them
- is different.
- 
--Enabling DAX on ext4 and ext2
-+Enabling DAX on ext2
- -----------------------------
- 
- When mounting the filesystem, use the "-o dax" option on the command line or
-@@ -33,8 +33,8 @@ add 'dax' to the options in /etc/fstab.  This works to enable DAX on all files
- within the filesystem.  It is equivalent to the '-o dax=always' behavior below.
- 
- 
--Enabling DAX on xfs
---------------------
-+Enabling DAX on xfs and ext4
-+----------------------------
- 
- Summary
- -------
--- 
-2.25.1
+SGkgU2F0eWEsDQoNCk9uIFRodSwgMjAyMC0wNS0xNCBhdCAwMDozNyArMDAwMCwgU2F0eWEgVGFu
+Z2lyYWxhIHdyb3RlOg0KPiBJbnRyb2R1Y2UgZnVuY3Rpb25zIHRvIG1hbmlwdWxhdGUgVUZTIGlu
+bGluZSBlbmNyeXB0aW9uIGhhcmR3YXJlDQo+IGluIGxpbmUgd2l0aCB0aGUgSkVERUMgVUZTSENJ
+IHYyLjEgc3BlY2lmaWNhdGlvbiBhbmQgdG8gd29yayB3aXRoIHRoZQ0KPiBibG9jayBrZXlzbG90
+IG1hbmFnZXIuDQo+IA0KPiBUaGUgVUZTIGNyeXB0byBBUEkgd2lsbCBhc3N1bWUgYnkgZGVmYXVs
+dCB0aGF0IGEgdmVuZG9yIGRyaXZlciBkb2Vzbid0DQo+IHN1cHBvcnQgVUZTIGNyeXB0bywgZXZl
+biBpZiB0aGUgaGFyZHdhcmUgYWR2ZXJ0aXNlcyB0aGUgY2FwYWJpbGl0eSwgYmVjYXVzZQ0KPiBh
+IGxvdCBvZiBoYXJkd2FyZSByZXF1aXJlcyBzb21lIHNwZWNpYWwgaGFuZGxpbmcgdGhhdCdzIG5v
+dCBzcGVjaWZpZWQgaW4NCj4gdGhlIGFmb3JlbWVudGlvbmVkIEpFREVDIHNwZWMuIEVhY2ggdmVu
+ZG9yIGRyaXZlciBtdXN0IGV4cGxpY2l0eSBzZXQNCg0KZXhwbGljaXRseQ0KDQo+IGhiYS0+Y2Fw
+cyB8PSBVRlNIQ0RfQ0FQX0NSWVBUTyBiZWZvcmUgdWZzaGNkX2hiYV9pbml0X2NyeXB0byBpcyBj
+YWxsZWQgdG8NCj4gb3B0LWluIHRvIFVGUyBjcnlwdG8gc3VwcG9ydC4NCj4gDQo+IFNpZ25lZC1v
+ZmYtYnk6IFNhdHlhIFRhbmdpcmFsYSA8c2F0eWF0QGdvb2dsZS5jb20+DQo+IFJldmlld2VkLWJ5
+OiBFcmljIEJpZ2dlcnMgPGViaWdnZXJzQGdvb2dsZS5jb20+DQoNClJldmlld2VkLWJ5OiBTdGFu
+bGV5IENodSA8c3RhbmxleS5jaHVAbWVkaWF0ZWsuY29tPg0KDQo=
 
