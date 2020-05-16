@@ -2,113 +2,140 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DD8E1D5DC2
-	for <lists+linux-ext4@lfdr.de>; Sat, 16 May 2020 03:50:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B01D1D5DCD
+	for <lists+linux-ext4@lfdr.de>; Sat, 16 May 2020 04:03:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727825AbgEPBuA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 15 May 2020 21:50:00 -0400
-Received: from mga12.intel.com ([192.55.52.136]:28415 "EHLO mga12.intel.com"
+        id S1727837AbgEPCC4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 15 May 2020 22:02:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726247AbgEPBuA (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 15 May 2020 21:50:00 -0400
-IronPort-SDR: FSvUIo4HGT351WtWP8nBsbKV490bW2bD8y5ROqOft0OzWlZlOwlnSu37/u5cyB9RMOU5hOHntn
- iaVRuLh2O+tQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2020 18:49:59 -0700
-IronPort-SDR: +44OKSQD30T2ErgR+ws3Jaw+vBaqnkiU8aZPbEkNGE7l20WRYduBUf+EXxf1E4gpNYRdHxsoRa
- i7mmZiYA8n/g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,397,1583222400"; 
-   d="scan'208";a="252208031"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by orsmga007.jf.intel.com with ESMTP; 15 May 2020 18:49:59 -0700
-Date:   Fri, 15 May 2020 18:49:59 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Jan Kara <jack@suse.cz>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        syzkaller-bugs@googlegroups.com, stable@kernel.org,
-        syzbot+bca9799bf129256190da@syzkaller.appspotmail.com
-Subject: Re: [PATCH] ext4: reject mount options not supported when remounting
- in handle_mount_opt()
-Message-ID: <20200516014958.GB3018416@iweiny-DESK2.sc.intel.com>
-References: <to=00000000000098a5d505a34d1e48@google.com>
- <20200415174839.461347-1-tytso@mit.edu>
- <20200415202537.GA2309605@iweiny-DESK2.sc.intel.com>
- <20200415220752.GA5187@mit.edu>
- <20200416052352.GK2309605@iweiny-DESK2.sc.intel.com>
- <20200422161029.GD20756@quack2.suse.cz>
- <20200514143409.GP1596452@mit.edu>
+        id S1726541AbgEPCC4 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 15 May 2020 22:02:56 -0400
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 047B120671;
+        Sat, 16 May 2020 02:02:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589594575;
+        bh=udGZ/mluE2geb6BB8HoGVq2HXLCwXdDkVOVFXYUtwhw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=opoNd5ub3tJqB7aomfT3jNItncU2GVNtSneh6kO9sM8U/OsKCHyX7JqIq+jJpqax/
+         btQ+J2EQ7PGpxh1xYxSlW0mk6vCLoyVaq0JcjUGxjb5dUcLDW3n3chvxw55ZDoxAGo
+         3N4Lkt0uGqa3OgAYoiVezqJold1tfxIkFNtpOYf4=
+Date:   Fri, 15 May 2020 19:02:53 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     ira.weiny@intel.com
+Cc:     linux-ext4@vger.kernel.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/9] fs/ext4: Disallow encryption if inode is DAX
+Message-ID: <20200516020253.GG1009@sol.localdomain>
+References: <20200513054324.2138483-1-ira.weiny@intel.com>
+ <20200513054324.2138483-4-ira.weiny@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200514143409.GP1596452@mit.edu>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <20200513054324.2138483-4-ira.weiny@intel.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, May 14, 2020 at 10:34:09AM -0400, Theodore Y. Ts'o wrote:
-> On Wed, Apr 22, 2020 at 06:10:29PM +0200, Jan Kara wrote:
-> > On Wed 15-04-20 22:23:52, Ira Weiny wrote:
-> > > On Wed, Apr 15, 2020 at 06:07:52PM -0400, Theodore Y. Ts'o wrote:
-> > > > On Wed, Apr 15, 2020 at 01:25:37PM -0700, Ira Weiny wrote:
-> > > > > This fundamentally changes the behavior from forcing the dax mode to be the
-> > > > > same across the remount to only failing if we are going from non-dax to dax,
-> > > > > adding -o dax on the remount?
-> > > > > 
-> > > > > But going from -o dax to 'not -o dax' would be ok?
-> > > > > 
-> > > > > FWIW after thinking about it some I _think_ it would be ok to allow the dax
-> > > > > mode to change on a remount and let the inodes in memory stay in the mode they
-> > > > > are at.  And newly loaded inodes would get the new mode...  Unfortunately
-> > > > > without the STATX patch I have proposed the user does not have any way of
-> > > > > knowing which files are in which mode.
-> > > > 
-> > > > We don't currently support mount -o nodax.
-> > > 
-> > > But we do support not supplying the option which means 'nodax' right?
-> > 
-> > Yeah, I second what Ira wrote. The new code does not seem to properly
-> > detect a case when enabled mount option is removed for remount and thus the
-> > feature would get disabled during remount as a result...
+On Tue, May 12, 2020 at 10:43:18PM -0700, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
 > 
-> Sorry for not responding earlier.  The way ext4 remounting working is
-> not supplying an mount option which toggles a switch means that we
-> don't change its current setting.
+> Encryption and DAX are incompatible.  Changing the DAX mode due to a
+> change in Encryption mode is wrong without a corresponding
+> address_space_operations update.
 > 
-> For example, if you mount with, say dioread_nolock, if you don't
-> specify it when remounting, the current setting of dioread_nolock
-> remains the same.  If you want to change it, you need to specify the
-> mount option nodioread_nolock.  The change is true for discard vs
-> nodiscard, etc.
+> Make the 2 options mutually exclusive by returning an error if DAX was
+> set first.
 > 
-> We currently don't have nodax at all, which means that once dax is
-> set, there is no way to unset the dax mount option.  This was
-> deliberate, because I was aware that the dax->no dax transition would
-> result in badness.
+> Furthermore, clarify the documentation of the exclusivity and how that
+> will work.
+> 
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> 
+> ---
+> Changes:
+> 	remove WARN_ON_ONCE
+> 	Add documentation to the encrypt doc WRT DAX
+> ---
+>  Documentation/filesystems/fscrypt.rst |  4 +++-
+>  fs/ext4/super.c                       | 10 +---------
+>  2 files changed, 4 insertions(+), 10 deletions(-)
+> 
+> diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
+> index aa072112cfff..1475b8d52fef 100644
+> --- a/Documentation/filesystems/fscrypt.rst
+> +++ b/Documentation/filesystems/fscrypt.rst
+> @@ -1038,7 +1038,9 @@ astute users may notice some differences in behavior:
+>  - The ext4 filesystem does not support data journaling with encrypted
+>    regular files.  It will fall back to ordered data mode instead.
+>  
+> -- DAX (Direct Access) is not supported on encrypted files.
+> +- DAX (Direct Access) is not supported on encrypted files.  Attempts to enable
+> +  DAX on an encrypted file will fail.  Mount options will _not_ enable DAX on
+> +  encrypted files.
+>  
+>  - The st_size of an encrypted symlink will not necessarily give the
+>    length of the symlink target as required by POSIX.  It will actually
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index bf5fcb477f66..9873ab27e3fa 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -1320,7 +1320,7 @@ static int ext4_set_context(struct inode *inode, const void *ctx, size_t len,
+>  	if (inode->i_ino == EXT4_ROOT_INO)
+>  		return -EPERM;
+>  
+> -	if (WARN_ON_ONCE(IS_DAX(inode) && i_size_read(inode)))
+> +	if (IS_DAX(inode))
+>  		return -EINVAL;
+>  
+>  	res = ext4_convert_inline_data(inode);
+> @@ -1344,10 +1344,6 @@ static int ext4_set_context(struct inode *inode, const void *ctx, size_t len,
+>  			ext4_set_inode_flag(inode, EXT4_INODE_ENCRYPT);
+>  			ext4_clear_inode_state(inode,
+>  					EXT4_STATE_MAY_INLINE_DATA);
+> -			/*
+> -			 * Update inode->i_flags - S_ENCRYPTED will be enabled,
+> -			 * S_DAX may be disabled
+> -			 */
+>  			ext4_set_inode_flags(inode);
+>  		}
+>  		return res;
+> @@ -1371,10 +1367,6 @@ static int ext4_set_context(struct inode *inode, const void *ctx, size_t len,
+>  				    ctx, len, 0);
+>  	if (!res) {
+>  		ext4_set_inode_flag(inode, EXT4_INODE_ENCRYPT);
+> -		/*
+> -		 * Update inode->i_flags - S_ENCRYPTED will be enabled,
+> -		 * S_DAX may be disabled
+> -		 */
+>  		ext4_set_inode_flags(inode);
+>  		res = ext4_mark_inode_dirty(handle, inode);
+>  		if (res)
 
-At this point I'm not sure if it was working correctly before or not.
+I'm confused by the ext4_set_context() change.
 
-I did keep this thread in mind and did a bit more testing on the latest version
-of the new DAX mount option parsing[1].
+ext4_set_context() is only called when FS_IOC_SET_ENCRYPTION_POLICY sets an
+encryption policy on an empty directory, *or* when a new inode (regular, dir, or
+symlink) is created in an encrypted directory (thus inheriting encryption from
+its parent).
 
-I have verified that whatever state (always, never, inode) dax was in, a
-remount does not affect it and the warning is printed.
+So when is it reachable when IS_DAX()?  Is the issue that the DAX flag can now
+be set on directories?  The commit message doesn't seem to be talking about
+directories.  Is the behavior we want is that on an (empty) directory with the
+DAX flag set, FS_IOC_SET_ENCRYPTION_POLICY should fail with EINVAL?
 
-Furthermore I think the lead patches disabling verity and encryption[2] in that
-series should help, if not fix, this bug.
+I don't see why the i_size_read(inode) check is there though, so I think you're
+at least right to remove that.
 
-Ted, do you think this series can make 5.8?  The prelim patches [2] could be
-marked stable if you think they help without the rework of the mount option.
-
-Thanks,
-Ira
-
-[1] https://lore.kernel.org/lkml/20200515093224.GI9569@quack2.suse.cz/
-[2] https://lore.kernel.org/lkml/20200515044121.2987940-3-ira.weiny@intel.com/
-    https://lore.kernel.org/lkml/20200515044121.2987940-4-ira.weiny@intel.com/
-
+- Eric
