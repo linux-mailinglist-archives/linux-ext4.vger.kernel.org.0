@@ -2,44 +2,70 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D63B1D7A83
-	for <lists+linux-ext4@lfdr.de>; Mon, 18 May 2020 15:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EC381D662A
+	for <lists+linux-ext4@lfdr.de>; Sun, 17 May 2020 07:25:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726997AbgERN67 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Mon, 18 May 2020 09:58:59 -0400
-Received: from windy.om.sist.chukyo-u.ac.jp ([150.42.42.129]:36521 "EHLO
-        windy.om.sist.chukyo-u.ac.jp" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726800AbgERN67 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 18 May 2020 09:58:59 -0400
-Received: from ucbaps.ucb.edu.bh (109-161-148-108.rev.bb.zain.com [109.161.148.108])
-        by windy.om.sist.chukyo-u.ac.jp (Postfix) with ESMTP id CA8C7157900B7;
-        Sun, 17 May 2020 01:01:05 +0900 (JST)
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1726426AbgEQFZD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 17 May 2020 01:25:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725861AbgEQFZD (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 17 May 2020 01:25:03 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC6FFC061A0C
+        for <linux-ext4@vger.kernel.org>; Sat, 16 May 2020 22:25:02 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id 4so6702546ilg.1
+        for <linux-ext4@vger.kernel.org>; Sat, 16 May 2020 22:25:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=nwc0F+jsSvKGgXVj9lURprhJGivjk/wNs4uJjp+9h3E=;
+        b=FP2nq3v8Pa9/iSufoShw3/30sc99Ww/mSUHRip2FjHNL5t3Q9Ps+VPopIIOCjygGSn
+         JlKzlSlzoR3Epzsw6UM3a1JeVTXfXr64xrTBKkw+0r5ku5xO9GqsMWJYTVKlPRRG7BTd
+         W7emsf1wbqZRrn2Vem6XbmA12D0tQz48VErXJGUXozhHOuPcUVlTMYFrHMwmF+//jHTB
+         0m7GZGQU5lT5zn+BzAwD2kefr0bVsXL69Z13oEnxwxA/f4VRKGf9vedH1TNV7bBxCzz+
+         UJTa0bFtl7p8D+WGVsISqKIDjN7zRbwVmFinrnW6o3pPyipV98WrcDM5qoxaH/eOQP2B
+         hy1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=nwc0F+jsSvKGgXVj9lURprhJGivjk/wNs4uJjp+9h3E=;
+        b=sUc0dySBQxTuJ1ixPgUSMng849CN95ZsKJ3ofgTADXzXuFgK2O14BIcIeZ+vuWDBW1
+         WPjRN7YAoteatVvwno9mObjZ8WmrDI6vHCRdzGg6u+dXPP9QyFKvOq4rVaYHFDYQaUhs
+         YZWwBMVpFUeiZ7SdjByWVPO2eitTydT+83YPy665dVR+g0dY3iMvC8Y8fVDSMwrN+Vzi
+         lxif78wLq24jcrqqShUuHO3l/MPxtgp8HTY1kqM800kOzWYb0jJU7QBJBgBmjaRqKcZ7
+         d+rw80Oo/AAoFHTEILfpsxnLsC5KmwKxBq/p0o/CPLD2TCI1QhKm3ZK9npCIYcRA/kVk
+         xBvQ==
+X-Gm-Message-State: AOAM532KNWrWv5si0C3shD7bQ0mZ+HWujBUWMu05MHLx8VTPer3lS97S
+        Pc7GcIpTxdeOcS8Ii5vN1TSt16WXf3nFobjduUE=
+X-Google-Smtp-Source: ABdhPJxbn04bj/fdop+QFrsHJKxLDNk7Q8SuRGTIG7ipkWh9f2ZnlwIMBE5JllFF4uIhYEBslWrqX8tE/hF2SDj3gsA=
+X-Received: by 2002:a92:58d6:: with SMTP id z83mr10537883ilf.129.1589693101447;
+ Sat, 16 May 2020 22:25:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: URGENT ATTENTION
-To:     TO <kono@pikul.jp>
-From:   "SAMUEL AMANKWA" <kono@pikul.jp>
-Date:   Sat, 16 May 2020 19:42:01 +0300
-Reply-To: samuelaa@consultationoffice.com
-Message-Id: <20200516160106.CA8C7157900B7@windy.om.sist.chukyo-u.ac.jp>
+Received: by 2002:a02:58c3:0:0:0:0:0 with HTTP; Sat, 16 May 2020 22:25:01
+ -0700 (PDT)
+Reply-To: owusup021@gmail.com
+From:   Marcus <achiksc1@gmail.com>
+Date:   Sun, 17 May 2020 06:25:01 +0100
+Message-ID: <CA+SdDCDXqQE3DjU9jTgcb0aWWTDWrFoTP2uMbo3+rJvZL-hfpA@mail.gmail.com>
+Subject: ATTENTION PLS
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-
-ATTENTION,
-
-THEY ARE TWO GENTLEMEN WHO CAME TO OUR BANK TODAY, STATING THEY ARE YOUR REPRESENTATIVES FOR THE INTERNATIONAL MONETARY FUNDS (IMF) AND THE WORLD BANK BENEFICIARY INHERITANCE ALLOWANCE/ AMNESTY PAYMENT.
-
-THEY ALREADY SUBMITTED YOUR WELLS FARGO ACCOUNT INFORMATION WHERE THEY CONFIRMED YOU WANT YOUR ALLOWANCE PAYMENT TO BE TRANSFERRED, WE THEREFORE WISH TO SEEK YOUR APPROVAL BEFORE DISBURSEMENT, BECAUSE THIS DEPARTMENT WAS SOLELY SET-UP FOR THESE PURPOSE AND WE WILL BE CONCLUDING WITHIN 7 WORKING DAYS.
-
-KINDLY REVERT BEFORE CLOSE OF BUSINESS TODAY.
-
-YOURS FAITHFULLY,
-SAMUEL AMANKWA,
-HEAD CORPORATE AFFAIRS
-GHANA COMMERCIAL BANK.
+My Greetings,
+I am a banker, a Chief Auditor in our bank, I have the ability to
+transfer unclaimed funds that belong to one of our late customer who
+died in a car crash along with his family and no one came to put claim
+the funds, if left unclaimed the fund will be transferred to the state
+treasury in the bank so I invite you to a deal where we can facilitate
+the transfer of this fund, and I promise to share it equal with you
+when it is transferred into your account, meanwhile let me know if you
+are interested to do this business with me for more details.
+I wait to hear from you soon.
+Best Regards,
+Marcus.
