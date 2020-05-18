@@ -2,100 +2,55 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E5491D73D1
-	for <lists+linux-ext4@lfdr.de>; Mon, 18 May 2020 11:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 879241D76EC
+	for <lists+linux-ext4@lfdr.de>; Mon, 18 May 2020 13:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726545AbgERJVY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 18 May 2020 05:21:24 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36658 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726494AbgERJVY (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 18 May 2020 05:21:24 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 292CBAFFB;
-        Mon, 18 May 2020 09:21:25 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id C98FC1E126F; Mon, 18 May 2020 11:21:21 +0200 (CEST)
-From:   Jan Kara <jack@suse.cz>
-To:     Ted Tso <tytso@mit.edu>
-Cc:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>,
-        stable@vger.kernel.org
-Subject: [PATCH 2/2] jbd2: Avoid leaking transaction credits when unreserving handle
-Date:   Mon, 18 May 2020 11:21:20 +0200
-Message-Id: <20200518092120.10322-3-jack@suse.cz>
-X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20200518092120.10322-1-jack@suse.cz>
-References: <20200518092120.10322-1-jack@suse.cz>
+        id S1727976AbgERLZD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 18 May 2020 07:25:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726339AbgERLZC (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 18 May 2020 07:25:02 -0400
+X-Greylist: delayed 1254 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 18 May 2020 04:25:01 PDT
+Received: from vps.dvp24.com (unknown [IPv6:2a02:348:36:5b8c::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABBBEC061A0C;
+        Mon, 18 May 2020 04:25:01 -0700 (PDT)
+Received: from localhost ([127.0.0.1] helo=dvp24.com)
+        by vps.dvp24.com with esmtpa (Exim 4.77)
+        (envelope-from <abhay@dvp24.com>)
+        id 1jadYi-0006sv-08; Mon, 18 May 2020 13:03:48 +0200
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Mon, 18 May 2020 12:03:47 +0100
+From:   pedro hills <abhay@dvp24.com>
+To:     undisclosed-recipients:;
+Subject: (DONATION) $2 Million Has Been Donated
+Reply-To: <pedrohills@outlook.es>
+Mail-Reply-To: <pedrohills@outlook.es>
+Message-ID: <48fae56db7d72b6c8944f63bdd887348@dvp24.com>
+X-Sender: abhay@dvp24.com
+User-Agent: Roundcube Webmail/0.7.1
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-When reserved transaction handle is unused, we subtract its reserved
-credits in __jbd2_journal_unreserve_handle() called from
-jbd2_journal_stop(). However this function forgets to remove reserved
-credits from transaction->t_outstanding_credits and thus the transaction
-space that was reserved remains effectively leaked. The leaked
-transaction space can be quite significant in some cases and leads to
-unnecessarily small transactions and thus reducing throughput of the
-journalling machinery. E.g. fsmark workload creating lots of 4k files
-was observed to have about 20% lower throughput due to this when ext4 is
-mounted with dioread_nolock mount option.
 
-Subtract reserved credits from t_outstanding_credits as well.
 
-CC: stable@vger.kernel.org
-Fixes: 8f7d89f36829 ("jbd2: transaction reservation support")
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/jbd2/transaction.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
-
-diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-index 3dccc23cf010..b49a103cff1f 100644
---- a/fs/jbd2/transaction.c
-+++ b/fs/jbd2/transaction.c
-@@ -541,17 +541,24 @@ handle_t *jbd2_journal_start(journal_t *journal, int nblocks)
- }
- EXPORT_SYMBOL(jbd2_journal_start);
- 
--static void __jbd2_journal_unreserve_handle(handle_t *handle)
-+static void __jbd2_journal_unreserve_handle(handle_t *handle, transaction_t *t)
- {
- 	journal_t *journal = handle->h_journal;
- 
- 	WARN_ON(!handle->h_reserved);
- 	sub_reserved_credits(journal, handle->h_total_credits);
-+	if (t)
-+		atomic_sub(handle->h_total_credits, &t->t_outstanding_credits);
- }
- 
- void jbd2_journal_free_reserved(handle_t *handle)
- {
--	__jbd2_journal_unreserve_handle(handle);
-+	journal_t *journal = handle->h_journal;
-+
-+	/* Get j_state_lock to pin running transaction if it exists */
-+	read_lock(&journal->j_state_lock);
-+	__jbd2_journal_unreserve_handle(handle, journal->j_running_transaction);
-+	read_unlock(&journal->j_state_lock);
- 	jbd2_free_handle(handle);
- }
- EXPORT_SYMBOL(jbd2_journal_free_reserved);
-@@ -721,8 +728,10 @@ static void stop_this_handle(handle_t *handle)
- 	}
- 	atomic_sub(handle->h_total_credits,
- 		   &transaction->t_outstanding_credits);
--	if (handle->h_rsv_handle)
--		__jbd2_journal_unreserve_handle(handle->h_rsv_handle);
-+	if (handle->h_rsv_handle) {
-+		__jbd2_journal_unreserve_handle(handle->h_rsv_handle,
-+						transaction);
-+	}
- 	if (atomic_dec_and_test(&transaction->t_updates))
- 		wake_up(&journal->j_wait_updates);
- 
 -- 
-2.16.4
+$2 Million Has Been Donated To You,By PEDRO this is Real For More Info
+  Contact PEDRO immediately for your clame This Email:
+  pedrohills@outlook.es
 
+  Contact phone number +34632232897
+  Send Your Response To: pedrohills@outlook.es
+
+  2 Millionen US-Dollar wurden an Sie gespendet. Von PEDRO ist dies für
+weitere Informationen real
+  Wenden Sie sich umgehend an PEDRO. Diese E-Mail:
+  pedrohills@outlook.es
+
+  Kontakttelefonnummer +34632232897
+  Senden Sie Ihre Antwort an: pedrohills@outlook.es
