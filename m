@@ -2,74 +2,77 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A3701D8867
-	for <lists+linux-ext4@lfdr.de>; Mon, 18 May 2020 21:45:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5F4F1D8915
+	for <lists+linux-ext4@lfdr.de>; Mon, 18 May 2020 22:26:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728392AbgERTod (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 18 May 2020 15:44:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35096 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728380AbgERTod (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 18 May 2020 15:44:33 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 95188207F5;
-        Mon, 18 May 2020 19:44:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589831073;
-        bh=oy9YnKVQd9UwRnc0AtIyh15UtZegjDULjfw6/wLKXW8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SblDj+20WmoadkylWzDlhSuXFLQFYLblQPumAF+SNiOzE+jUzPscJBuBMJbnCE8mD
-         lGz3g4eitY2LWDyGlkH81wxuPMztTxhLxKfRPqPfCUT3Le8PYk0rY8UCnkpOyKDRU0
-         scWVGb1emwQ9G2B0TUrFPeoK822n+eyzHxCy3Qvg=
-Date:   Mon, 18 May 2020 12:44:31 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     linux-ext4@vger.kernel.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/9] fs/ext4: Disallow encryption if inode is DAX
-Message-ID: <20200518194431.GB121709@gmail.com>
-References: <20200513054324.2138483-1-ira.weiny@intel.com>
- <20200513054324.2138483-4-ira.weiny@intel.com>
- <20200516020253.GG1009@sol.localdomain>
- <20200518050315.GA3025231@iweiny-DESK2.sc.intel.com>
- <20200518162447.GA954@sol.localdomain>
- <20200518192357.GE3025231@iweiny-DESK2.sc.intel.com>
+        id S1726510AbgERUWa convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Mon, 18 May 2020 16:22:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726349AbgERUW3 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 18 May 2020 16:22:29 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5869C061A0C
+        for <linux-ext4@vger.kernel.org>; Mon, 18 May 2020 13:22:29 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 1F3492A02BD
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+Subject: [GIT PULL] Unicode updates for v5.8
+Date:   Mon, 18 May 2020 16:22:24 -0400
+Message-ID: <85a725f0xr.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200518192357.GE3025231@iweiny-DESK2.sc.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, May 18, 2020 at 12:23:57PM -0700, Ira Weiny wrote:
-> > 
-> > The other question is what should happen when a file is created in an encrypted
-> > directory when the filesystem is mounted with -o dax.  Actually, I think I
-> > missed something there.  Currently (based on reading the code) the DAX flag will
-> > get set first, and then ext4_set_context()
-> 
-> See this is where I am confused.  Above you said that ext4_set_context() is only
-> called on a directory.  And I agree with you now having seen the check in
-> fscrypt_ioctl_set_policy().  So what is the call path you are speaking of here?
 
-Here's what I actually said:
+The following changes since commit 9c94b39560c3a013de5886ea21ef1eaf21840cb9:
 
-	ext4_set_context() is only called when FS_IOC_SET_ENCRYPTION_POLICY sets
-	an encryption policy on an empty directory, *or* when a new inode
-	(regular, dir, or symlink) is created in an encrypted directory (thus
-	inheriting encryption from its parent).
+  Merge tag 'ext4_for_linus' of git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4 (2020-04-05 10:54:03 -0700)
 
-Just find the places where ->set_context() is called and follow them backwards.
+are available in the Git repository at:
 
-- Eric
+  git://git.kernel.org/pub/scm/linux/kernel/git/krisman/unicode.git tags/unicode-next-v5.8
+
+for you to fetch changes up to cfeb007a96b15cafe1b8cc7aa8d43da77a97b7ae:
+
+  unicode: Expose available encodings in sysfs (2020-05-18 15:07:13 -0400)
+
+----------------------------------------------------------------
+fs/unicode patches for v5.8
+
+This includes two patches for the unicode system for inclusion into
+Linux v5.8:
+
+  - A patch from Gabriel exporting in sysfs the most recent utf-8
+  version available
+
+  - A patch by Ricardo Cañuelo converting the unicode tests to kunit.
+
+----------------------------------------------------------------
+Gabriel Krisman Bertazi (1):
+      unicode: Expose available encodings in sysfs
+
+Ricardo Cañuelo (1):
+      unicode: implement utf8 unit tests as a KUnit test suite.
+
+ Documentation/ABI/testing/sysfs-fs-unicode  |   6 +
+ fs/unicode/Kconfig                          |  19 ++-
+ fs/unicode/Makefile                         |   2 +-
+ fs/unicode/utf8-core.c                      |  55 ++++++++
+ fs/unicode/{utf8-selftest.c => utf8-test.c} | 199 +++++++++++++---------------
+ fs/unicode/utf8n.h                          |   4 +
+ 6 files changed, 173 insertions(+), 112 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-fs-unicode
+ rename fs/unicode/{utf8-selftest.c => utf8-test.c} (60%)
+
+
+-- 
+Gabriel Krisman Bertazi
