@@ -2,159 +2,70 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EF161D8E35
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 May 2020 05:29:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 878A91D8EF8
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 May 2020 07:03:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726407AbgESD3U (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 18 May 2020 23:29:20 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:33578 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726293AbgESD3U (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 18 May 2020 23:29:20 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07488;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0Tz-O038_1589858957;
-Received: from admindeMacBook-Pro-2.local(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0Tz-O038_1589858957)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 19 May 2020 11:29:17 +0800
-Subject: Re: [PATCH RFC] ext4: fix partial cluster initialization when
- splitting extent
-To:     Eric Whitney <enwlinux@gmail.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
-        joseph.qi@linux.alibaba.com
-References: <1589444097-38535-1-git-send-email-jefflexu@linux.alibaba.com>
- <20200514222120.GB4710@localhost.localdomain>
- <20200518220804.GA20248@localhost.localdomain>
-From:   JeffleXu <jefflexu@linux.alibaba.com>
-Message-ID: <9b526ae9-cba6-35dd-0424-61e8fa5ab016@linux.alibaba.com>
-Date:   Tue, 19 May 2020 11:29:17 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.0
+        id S1726861AbgESFDx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 19 May 2020 01:03:53 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:47094 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726307AbgESFDx (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 May 2020 01:03:53 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id A426E2A112D
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, kernel@collabora.com,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        =?UTF-8?q?Ricardo=20Ca=C3=B1uelo?= <ricardo.canuelo@collabora.com>,
+        kbuild test robot <lkp@intel.com>
+Subject: [PATCH] unicode: Allow building kunit test suite as a module
+Date:   Tue, 19 May 2020 01:03:46 -0400
+Message-Id: <20200519050346.3983998-1-krisman@collabora.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20200518220804.GA20248@localhost.localdomain>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Starting on commit c475c77d5b56 ("kunit: allow kunit tests to be loaded
+as a module") kunit testsuites need to be buildable as modules, to
+prevent the undefined references below, in case KUNIT itself was made a
+module:
 
-On 5/19/20 6:08 AM, Eric Whitney wrote:
-> Hi, Jeffle:
->
-> What kernel were you running when you observed your failures?  Does your
-> patch resolve all observed failures, or do any remain?  Do you have a
-> simple test script that reproduces the bug?
->
-> I've made almost 1000 runs of shared/298 on various bigalloc configurations
-> using Ted's test appliance on 5.7-rc5 and have not observed a failure.
-> Several auto group runs have also passed without failures.  Ideally, I'd
-> like to be able to reproduce your failure to be sure we fully understand
-> what's going on.  It's still the case that the "2" is wrong, but I think
-> that code in rm_leaf may be involved in an unexpected way.
->
-> Thanks,
-> Eric
+utf8-test.c:(.text+0x48): undefined reference to `kunit_ptr_not_err_assert_format'
+>> sparc64-linux-ld: utf8-test.c:(.text+0x50): undefined reference to `kunit_ptr_not_err_assert_format'
+>> sparc64-linux-ld: utf8-test.c:(.text+0xb4): undefined reference to `kunit_do_assertion'
+>> sparc64-linux-ld: utf8-test.c:(.text+0xbc): undefined reference to
+`kunit_binary_assert_format'
 
-Hi Eric,
+This was found by 0-day on linux-next and fixes the allmodconfig build
 
-Following on is my test environment.
+CC: Ricardo Cañuelo <ricardo.canuelo@collabora.com>
+Fixes: d269543a1dcb ("unicode: implement utf8 unit tests as a KUnit test suite")
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+---
+ fs/unicode/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-kernel: 5.7-rc4-git-eb24fdd8e6f5c6bb95129748a1801c6476492aba
-
-e2fsprog: latest release version 1.45.6 (20-Mar-2020)
-
-xfstests: git://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git, master 
-branch, latest commit
-
-
-1. Test device
-
-I run the test in a VM and the VM is setup by qemu. The size of vdb is 1G,
-
-```
-
-#lsblk
-
-NAME   MAJ:MIN RM SIZE RO TYPE MOUNTPOINT
-vdb    254:16   0   1G  0 disk
-
-```
-
-
-and is initialized by:
-
-```
-
-qemu-img create -f qcow2 /XX/disk1.qcow2 1G
-
-qemu-kvm -drive file=/XX/disk1.qcow2,if=virtio,format=qcow2 ...
-
-```
-
-
-2. Test script
-
-
-local.config of xfstests is like:
-
-export TEST_DEV=/dev/vdb
-export TEST_DIR=/mnt/test
-export SCRATCH_DEV=/dev/vdc
-export SCRATCH_MNT=/mnt/scratch
-
-
-Following on is an example script to reproduce the failure:
-
-```sh
-
-#!/bin/bash
-
-for i in `seq 100`; do
-         echo y | mkfs.ext4 -O bigalloc -C 16K /dev/vdb
-
-         ./check shared/298
-         status=$?
-
-         if [[ $status == 1 ]]; then
-                 echo "$i exit"
-                 exit
-         fi
-done
-
-```
-
-
-Indeed the failure occurs occasionally. Sometimes the script stops at 
-iteration 4, or sometimes
-
-at iteration 2, 7, 24.
-
-
-The failure occurs with the following dmesg report:
-
-```
-
-[  387.471876] EXT4-fs error (device vdb): mb_free_blocks:1457: group 1, 
-block 158084:freeing already freed block (bit 6753); block bitmap corrupt.
-[  387.473729] EXT4-fs error (device vdb): ext4_mb_generate_buddy:747: 
-group 1, block bitmap and bg descriptor inconsistent: 19550 vs 19551 
-free clusters
-
-```
-
-
-3. About the applied patch
-
-The applied patch does fix the failure in my test environment. At least 
-the failure doesn't occur after running the full 100 iterations.
-
-
-Thanks
-
-Jeffle
-
-
+diff --git a/fs/unicode/Kconfig b/fs/unicode/Kconfig
+index a8865891c3bd..eb30ef469567 100644
+--- a/fs/unicode/Kconfig
++++ b/fs/unicode/Kconfig
+@@ -9,7 +9,7 @@ config UNICODE
+ 	  support.
+ 
+ config UNICODE_KUNIT_TESTS
+-	bool "KUnit tests for Unicode normalization and casefolding support"
++	tristate "KUnit tests for Unicode normalization and casefolding support"
+ 	depends on UNICODE && KUNIT
+ 	default n
+ 	help
+-- 
+2.26.2
 
