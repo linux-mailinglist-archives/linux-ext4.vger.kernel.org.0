@@ -2,125 +2,134 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F9A1DBF46
-	for <lists+linux-ext4@lfdr.de>; Wed, 20 May 2020 21:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B8951DBFDC
+	for <lists+linux-ext4@lfdr.de>; Wed, 20 May 2020 22:03:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728113AbgETT7N (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 20 May 2020 15:59:13 -0400
-Received: from mail-bn7nam10on2042.outbound.protection.outlook.com ([40.107.92.42]:6019
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728641AbgETT7M (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 20 May 2020 15:59:12 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DL2IKYBz+WnIJfMLVnJRbN32oX35nB5jxAnpcPPjqt7Lng/L9Uw3Ph3U6+22kaG5/UjzZr7fLIo1plCC6sFURV4hS4J4B8O/f5RqzOJTPjPSXhDfKQ/AAL5Afu/tFrYmqYn6fBoLWFH3TX1rC9/G99yv/ObWYrEv+HzdGV1baHuE7y8FStbEjvEyLOFrvdBOfiv3nlDRa/bkvq9fE4X10UruwFKB0AcfonAFr/fkSS4W6hADZf58apoau3KUW9DL0VT6EdtreXL4hzPNSrbmXSCIAn8aPAvmi8kZ+NQSanw5c6pUwdPHZcD8oB0hMAEpy0/sh8i15dtAPxW3peE6rg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wmpHXGIYQ3DhZ1CXnyDvURVQK38sJJfUA8gcNBMzytE=;
- b=W+s4Kv7qeHi1XSi7wIo7d0sV8IEDbVUIkXJOYutYvzOCsW0rRoMTnjlQ0p+O062g6iatC7kUKJdZp6ux5EFSNkAXCIBmrXE4BXNY7CWMC5ZE5k0qSf+SG8VCcSI4usrAwJttHB4ieL35FPoOXlABsFvWCS3yJFDDAIgrNnnF94xP/Ig3MKWdfd52aIJbmnfnT7tsdIhQ+bx8MVeVx9kU+zqnpT1yaaXElUqMG9A5lLPMPtDTxcDZk331WMLT/4+OEmuDXKuRSW92bO7eHA18dkEEBkwzDzjtGWnUKb8GfB+hCDdfNpDA2mww+O/F2ju7ZV/W675zuQ2gyWzm0vXvag==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=whamcloud.com; dmarc=pass action=none
- header.from=whamcloud.com; dkim=pass header.d=whamcloud.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=whamcloud.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wmpHXGIYQ3DhZ1CXnyDvURVQK38sJJfUA8gcNBMzytE=;
- b=ly4dqXLDsIyLFHw8PcXaiYFWgH4rz3gEAdksZitpncjqjywaETyDWcY9pE9BU6ec1pWS9lhUKveFNkHr8a8E/8Z/srCW1Yv+RDASqbz2RwluETrYap/gGfUr37ed8XVauk3JmERI4qWZ2ahZ3FOdmVpFSYnjhfUGOGWCpkphQSY=
-Received: from DM6PR19MB2441.namprd19.prod.outlook.com (2603:10b6:5:18d::16)
- by DM6PR19MB2426.namprd19.prod.outlook.com (2603:10b6:5:15e::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.25; Wed, 20 May
- 2020 19:59:09 +0000
-Received: from DM6PR19MB2441.namprd19.prod.outlook.com
- ([fe80::b111:c44a:87ea:4bf4]) by DM6PR19MB2441.namprd19.prod.outlook.com
- ([fe80::b111:c44a:87ea:4bf4%7]) with mapi id 15.20.3000.034; Wed, 20 May 2020
- 19:59:09 +0000
-From:   Alex Zhuravlev <azhuravlev@whamcloud.com>
+        id S1728458AbgETUCn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 20 May 2020 16:02:43 -0400
+Received: from mga06.intel.com ([134.134.136.31]:8428 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726964AbgETUCn (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 20 May 2020 16:02:43 -0400
+IronPort-SDR: En7TE4pC35+FsL0O09GAitU4+sdrIHfIoMomojKG3Eak4OdySbhQRzLJBPesusjYt+K2xDWlrI
+ Qgi90tMh9pGw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2020 13:02:42 -0700
+IronPort-SDR: WGQiCEpS+JLoSUye2jjBRzzaU2aCBC9y335dAGm4Yvf+0DsM2Hro8uzHZ9fCeX36P9ZVeV2cR3
+ LKkGrLFBJVxA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,415,1583222400"; 
+   d="scan'208";a="289471916"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
+  by fmsmga004.fm.intel.com with ESMTP; 20 May 2020 13:02:42 -0700
+Date:   Wed, 20 May 2020 13:02:42 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
 To:     Andreas Dilger <adilger@dilger.ca>
-CC:     Alex Zhuravlev <azhuravlev@whamcloud.com>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH 2/2] ext4: skip non-loaded groups at cr=0/1
-Thread-Topic: [PATCH 2/2] ext4: skip non-loaded groups at cr=0/1
-Thread-Index: AQHWHEjMGVpmuPlRl0Kqrw5gTNRAkaindXQAgAF/eoCAAxN2gIAEw7YAgAC2kICAAAcCAA==
-Date:   Wed, 20 May 2020 19:59:09 +0000
-Message-ID: <7F6AF0FC-2E52-4FC5-9663-C8874BA7B98E@whamcloud.com>
-References: <0B6BF408-EDF7-4363-80CD-BDA0136BF62C@whamcloud.com>
- <20200514100411.D1A15A405C@b06wcsmtp001.portsmouth.uk.ibm.com>
- <914597DA-395A-47A5-A8D6-DFCE2D674289@whamcloud.com>
- <3BA1CBB1-77DB-43C8-A9CD-A3B85223F86F@dilger.ca>
- <3158FFEB-D9F7-450B-85C5-38B1C218321F@whamcloud.com>
- <DDB9F79B-55A9-4667-AE03-60D575CAD77A@dilger.ca>
-In-Reply-To: <DDB9F79B-55A9-4667-AE03-60D575CAD77A@dilger.ca>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dilger.ca; dkim=none (message not signed)
- header.d=none;dilger.ca; dmarc=none action=none header.from=whamcloud.com;
-x-originating-ip: [95.73.208.89]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 941f3c98-2b9f-4e83-e500-08d7fcf842a1
-x-ms-traffictypediagnostic: DM6PR19MB2426:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR19MB242679B4F23B4C3C69193A4ACBB60@DM6PR19MB2426.namprd19.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 04097B7F7F
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 4Kux1hMACmshMhPL0rZVseZcxWJ03xd6iyCd2c77zAU7aaUgUabuBkvuMjPNqIkxFu4sW1Zfjwh4MgrsWY+rStEWcGRd9graJ7h62/n+cpRUaiogaY+KAujHiwrtqf5xMIigu7xYI0152/4+3cH5OEvUDn42FhSjmm3C42o3REulNda+X81L8xwLXVViELIfzoyr/kCDtZ5Y70HQYHiIrvaSO1AWTxGQ1FPLpQmhWdqBLN8caQU4gGogkhPO9vj7HgJno+tp9WDrQxzVy7UrZrvZaLgusqT6s++9lRVrRSb8KVpmQnq2PWeEBFuSxUBCUsBgdK/65HsRNnQwgmEIOw0DgJdcy+JLSLZtj3TdrlM1GiNAglMGHK1Wjrp/2g2U+Y2yeMR+wCW7tXoW9ZhJh2b6ZYsCgsxwlvbzTDnJSEW7zuVeVFLelUdc26T5o3hy
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR19MB2441.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(366004)(39850400004)(346002)(136003)(376002)(76116006)(36756003)(66946007)(33656002)(91956017)(66556008)(66446008)(26005)(66476007)(64756008)(8676002)(2616005)(5660300002)(8936002)(6506007)(53546011)(6512007)(54906003)(86362001)(2906002)(478600001)(6916009)(316002)(71200400001)(186003)(6486002)(4326008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: Nx/3vtSBuyQgp9Ozgaw/Am5t5fsquUeWVnxH2ioCH8HxGybiOTrWCfcq7U1kR8DpoB+EX7RFH1eTJTxrOiG8zZnQsrqcCICFqSht8AExcu5gocaE0oKriEwgSe7UE0W634p6r/jnxrOv9udC3drMx09htBEGa/Jov1d4zSDxNon2qWCIgsuKa3kqHjal9stAu7TcQivjpFXrMwsRupu/ztI9BqrpxkoB630drndpcUX9DDEzARXg1b8bmNxWiNcysgikc9+UrEiVAXUqAu50v5HuHNf3Rv+PL/3f7/UOAmx5Ktuo+sfGdqvqJLEgYvT1yXX1s27cwvY1UuVyk/GaUlSLyXTxV+D/MilodBVUj23bpqPTSnV036sH2kYYvg2PaIK4J4ysHP9v5xZS2IF8yk3cEEZv1i2ljT47aahP+oUCMWJxx5rZsaGT/27yWdV8RUwKB43MwcVV3P9WHvzuGervLhydIENop6JloPyB/T0=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <334A751B2ECB284D96C161B79FB9D3A6@namprd19.prod.outlook.com>
-Content-Transfer-Encoding: base64
+Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Li Xi <lixi@ddn.com>
+Subject: Re: [PATCH V3 7/8] fs/ext4: Introduce DAX inode flag
+Message-ID: <20200520200242.GG3660833@iweiny-DESK2.sc.intel.com>
+References: <20200520055753.3733520-1-ira.weiny@intel.com>
+ <20200520055753.3733520-8-ira.weiny@intel.com>
+ <34ECB1DE-9F2F-4365-BBBC-DFACF703E7D4@dilger.ca>
 MIME-Version: 1.0
-X-OriginatorOrg: whamcloud.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 941f3c98-2b9f-4e83-e500-08d7fcf842a1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 May 2020 19:59:09.4980
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 753b6e26-6fd3-43e6-8248-3f1735d59bb4
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Ae1yDVEwvi/Hcal9wBfyforkClBHuFHGa29Z+CB4q9Of5OyUKGf/cwkwrsVye/7R4x89veHtR6edN3Sg0psVbA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR19MB2426
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <34ECB1DE-9F2F-4365-BBBC-DFACF703E7D4@dilger.ca>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-DQoNCj4gT24gMjAgTWF5IDIwMjAsIGF0IDIyOjM0LCBBbmRyZWFzIERpbGdlciA8YWRpbGdlckBk
-aWxnZXIuY2E+IHdyb3RlOg0KPiANCj4gT24gTWF5IDIwLCAyMDIwLCBhdCAyOjQwIEFNLCBBbGV4
-IFpodXJhdmxldiA8YXpodXJhdmxldkB3aGFtY2xvdWQuY29tPiB3cm90ZToNCj4+IA0KPj4+IE9u
-IDE3IE1heSAyMDIwLCBhdCAxMDo1NSwgQW5kcmVhcyBEaWxnZXIgPGFkaWxnZXJAZGlsZ2VyLmNh
-PiB3cm90ZToNCj4+PiANCj4+PiBUaGUgcXVlc3Rpb24gaXMgd2hldGhlciB0aGlzIGlzIHNpdHVh
-dGlvbiBpcyBhZmZlY3Rpbmcgb25seSBhIGZldyBpbm9kZQ0KPj4+IGFsbG9jYXRpb25zIGZvciBh
-IHNob3J0IHRpbWUgYWZ0ZXIgbW91bnQsIG9yIGRvZXMgdGhpcyBwZXJzaXN0IGZvciBhIGxvbmcN
-Cj4+PiB0aW1lPyAgSSB0aGluayB0aGF0IGl0IF9zaG91bGRfIGJlIG9ubHkgYSBzaG9ydCB0aW1l
-LCBiZWNhdXNlIHRoZXNlIG90aGVyDQo+Pj4gdGhyZWFkcyBzaG91bGQgYWxsIHN0YXJ0IHByZWZl
-dGNoIG9uIHRoZWlyIHByZWZlcnJlZCBncm91cHMsIHNvIGV2ZW4gaWYgYQ0KPj4+IGZldyBpbm9k
-ZXMgaGF2ZSB0aGVpciBibG9ja3MgYWxsb2NhdGVkIGluIHRoZSAid3JvbmciIGdyb3VwLCBpdCBz
-aG91bGRuJ3QNCj4+PiBiZSBhIGxvbmcgdGVybSBwcm9ibGVtIHNpbmNlIHRoZSBwcmVmZXRjaGVk
-IGJpdG1hcHMgd2lsbCBmaW5pc2ggbG9hZGluZw0KPj4+IGFuZCBhbGxvdyB0aGUgYmxvY2tzIHRv
-IGJlIGFsbG9jYXRlZCwgb3Igc2tpcHBlZCBpZiBncm91cCBpcyBmcmFnbWVudGVkLg0KPj4gDQo+
-PiBZZXMsIHRoYXTigJlzIHRoZSBpZGVhIC0gdGhlcmUgaXMgYSBzaG9ydCB3aW5kb3cgd2hlbiBi
-dWRkeSBkYXRhIGlzIGJlaW5nDQo+PiBwb3B1bGF0ZWQuIEFuZCBmb3IgZWFjaCDigJxjbHVzdGVy
-4oCdIChub3QganVzdCBhIHNpbmdsZSBncm91cCkgcHJlZmV0Y2hpbmcNCj4+IHdpbGwgYmUgaW5p
-dGlhdGVkIGJ5IGFsbG9jYXRpb24uDQo+PiBJdOKAmXMgcG9zc2libGUgdGhhdCBzb21lIG51bWJl
-ciBvZiBpbm9kZXMgd2lsbCBnZXQg4oCcYmFk4oCdIGJsb2NrcyByaWdodCBhZnRlcg0KPj4gYWZ0
-ZXIgbW91bnQuDQo+PiBJZiB5b3UgdGhpbmsgdGhpcyBpcyBhIGJhZCBzY2VuYXJpbyBJIGNhbiBp
-bnRyb2R1Y2UgY291cGxlIG1vcmUgdGhpbmdzOg0KPj4gMSkgZmV3IHRpbWVzIGRpc2N1c3NlZCBw
-cmVmZXRjaGluZyB0aHJlYWQNCj4+IDIpIGxldCBtYmFsbG9jIHdhaXQgZm9yIHRoZSBnb2FsIGdy
-b3VwIHRvIGdldCByZWFkeSAtIHRoaXMgZXNzZW50aWFscyBvbmUNCj4+ICAgbW9yZSBjaGVjayBp
-biBleHQ0X21iX2dvb2RfZ3JvdXAoKQ0KPiANCj4gSU1ITywgdGhpcyBpcyBhbiBhY2NlcHRhYmxl
-ICJjYWNoZSB3YXJtdXAiIGJlaGF2aW9yLCBub3QgcmVhbGx5IGRpZmZlcmVudA0KPiB0aGFuIG1i
-YWxsb2MgZG9pbmcgbGltaXRlZCBzY2FubmluZyB3aGVuIGxvb2tpbmcgZm9yIGFueSBvdGhlciBh
-bGxvY2F0aW9uLg0KPiBTaW5jZSB3ZSBhbHJlYWR5IHNlcGFyYXRlIGlub2RlIHRhYmxlIGJsb2Nr
-cyBhbmQgZGF0YSBibG9ja3MgaW50byBzZXBhcmF0ZQ0KPiBncm91cHMgZHVlIHRvIGZsZXhfYmcs
-IEkgZG9uJ3QgdGhpbmsgYW55IGdyb3VwIGlzICJiZXR0ZXIiIHRoYW4gYW5vdGhlciwNCj4gc28g
-bG9uZyBhcyB0aGUgYWxsb2NhdGlvbnMgYXJlIGF2b2lkaW5nIHdvcnN0LWNhc2UgZnJhZ21lbnRh
-dGlvbiAoaS5lLiBhDQo+IHNlcmllcyBvZiBvbmUtYmxvY2sgYWxsb2NhdGlvbnMpLg0KDQpJIHRl
-bmQgdG8gYWdyZWUsIGJ1dCByZWZyZXNoZWQgdGhlIHBhdGNoIHRvIGVuYWJsZSB3YWl0aW5nIGZv
-ciB0aGUgZ29hbCBncm91cA0KKG9uZSBtb3JlIGNoZWNrKS4gRXh0cmEgd2FpdGluZyBmb3Igb25l
-IGdyb3VwIGR1cmluZyB3YXJtdXAgc2hvdWxkIGJlIGZpbmUsIElNTy4NCg0KVGhhbmtzLCBBbGV4
+On Wed, May 20, 2020 at 01:26:44PM -0600, Andreas Dilger wrote:
+> On May 19, 2020, at 11:57 PM, ira.weiny@intel.com wrote:
+> > 
+> > From: Ira Weiny <ira.weiny@intel.com>
+> > 
+> > Add a flag to preserve FS_XFLAG_DAX in the ext4 inode.
+> > 
+> > Set the flag to be user visible and changeable.  Set the flag to be
+> > inherited.  Allow applications to change the flag at any time with the
+> > exception of if VERITY or ENCRYPT is set.
+> > 
+> > Disallow setting VERITY or ENCRYPT if DAX is set.
+> > 
+> > Finally, on regular files, flag the inode to not be cached to facilitate
+> > changing S_DAX on the next creation of the inode.
+> > 
+> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > 
+> > ---
+> > diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> > index 6235440e4c39..467c30a789b6 100644
+> > --- a/fs/ext4/ext4.h
+> > +++ b/fs/ext4/ext4.h
+> > @@ -415,13 +415,16 @@ struct flex_groups {
+> > #define EXT4_VERITY_FL			0x00100000 /* Verity protected inode */
+> > #define EXT4_EA_INODE_FL	        0x00200000 /* Inode used for large EA */
+> > /* 0x00400000 was formerly EXT4_EOFBLOCKS_FL */
+> > +
+> > +#define EXT4_DAX_FL			0x01000000 /* Inode is DAX */
+> > +
+> > #define EXT4_INLINE_DATA_FL		0x10000000 /* Inode has inline data. */
+> > #define EXT4_PROJINHERIT_FL		0x20000000 /* Create with parents projid */
+> > #define EXT4_CASEFOLD_FL		0x40000000 /* Casefolded file */
+> > #define EXT4_RESERVED_FL		0x80000000 /* reserved for ext4 lib */
+> 
+> Hi Ira,
+> This flag value conflicts with the reserved flag in e2fsprogs for snapshots:
+> 
+> #define EXT4_SNAPFILE_FL                0x01000000  /* Inode is a snapshot */
+
+Sure NP but is that new?  I'm building off of 5.7-rc4.
+
+Just curious if I completely missed something.
+
+> 
+> Please change EXT4_DAX_FL and FS_DAX_FL to use 0x02000000, which is not used
+> for anything in either case.
+
+NP, thanks!
+Ira
+
+> 
+> Cheers, Andreas
+> 
+> 
+> > diff --git a/include/uapi/linux/fs.h b/include/uapi/linux/fs.h
+> > index 379a612f8f1d..7c5f6eb51e2d 100644
+> > --- a/include/uapi/linux/fs.h
+> > +++ b/include/uapi/linux/fs.h
+> > @@ -262,6 +262,7 @@ struct fsxattr {
+> > #define FS_EA_INODE_FL			0x00200000 /* Inode used for large EA */
+> > #define FS_EOFBLOCKS_FL			0x00400000 /* Reserved for ext4 */
+> > #define FS_NOCOW_FL			0x00800000 /* Do not cow file */
+> > +#define FS_DAX_FL			0x01000000 /* Inode is DAX */
+> > #define FS_INLINE_DATA_FL		0x10000000 /* Reserved for ext4 */
+> > #define FS_PROJINHERIT_FL		0x20000000 /* Create with parents projid */
+> > #define FS_CASEFOLD_FL			0x40000000 /* Folder is case insensitive */
+> > --
+> > 2.25.1
+> > 
+> 
+> 
+> Cheers, Andreas
+> 
+> 
+> 
+> 
+> 
+
+
