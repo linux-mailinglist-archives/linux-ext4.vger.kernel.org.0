@@ -2,159 +2,126 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2AFB1DB9D6
-	for <lists+linux-ext4@lfdr.de>; Wed, 20 May 2020 18:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10D341DBC28
+	for <lists+linux-ext4@lfdr.de>; Wed, 20 May 2020 20:00:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726819AbgETQj5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 20 May 2020 12:39:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48360 "EHLO
+        id S1726822AbgETSAH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 20 May 2020 14:00:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726545AbgETQj5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 20 May 2020 12:39:57 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34D41C061A0E;
-        Wed, 20 May 2020 09:39:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:
-        Subject:Sender:Reply-To:Cc:Content-ID:Content-Description;
-        bh=AnGXWlpEOu4iqWXGhr7iWfL5p65eGbwcAaVhmmCOm0U=; b=lS/OubPCMJGTT8oh1axlCTHnDs
-        Ihm0CtyV7yRVusP4pNf4C2LpVNTuFo5cJ7Quhr/2Dz46tiXw1xLyoqHA5NrSYYPmnLvoUAkQ09hWa
-        Jdol0k1UXDfosww1ICtI1jSi2TvkNW0v6Mg5GU+mfdOQGdvv46MsSs1BpN4OFKkxI5Z0KttgNs7fZ
-        Z864lDjMJ508imL6bRCTASR2nL8AQjmKojA178Lwi3oC5mkjgwDJtWbzfEfkn71NI9U19s3VeyTEk
-        myb2n4kG8ocUil2HSPUzVnmRoEY0VrQbj01l9rYyvRP6Si1OcIy2fVwNOBOEcNAVXWenkJ7beFwI/
-        A/fPVung==;
-Received: from c-73-157-219-8.hsd1.or.comcast.net ([73.157.219.8] helo=[10.0.0.252])
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jbRl4-0003rI-1L; Wed, 20 May 2020 16:39:54 +0000
-Subject: Re: kernel BUG at fs/inode.c:531!
-To:     nirinA raseliarison <nirina.raseliarison@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Al Viro <viro@ZenIV.linux.org.uk>,
-        Theodore Ts'o <tytso@mit.edu>
-References: <CANsGL8Mb31NWVSgj=B2fNtT3x4oYm3tDKYZxpBCKfNC9ROLcGA@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <29a960db-734a-a5bc-1f4c-1833bd9eb1d8@infradead.org>
-Date:   Wed, 20 May 2020 09:39:53 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        with ESMTP id S1726804AbgETSAD (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 20 May 2020 14:00:03 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67CD6C08C5C0
+        for <linux-ext4@vger.kernel.org>; Wed, 20 May 2020 11:00:02 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id u15so4896349ljd.3
+        for <linux-ext4@vger.kernel.org>; Wed, 20 May 2020 11:00:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mtpCTLjeaytdekB4adxVz/e/JZwQHur4soi/tkekgkg=;
+        b=RwL7kSM3fz9MR6t5Ar2hYTR0dC+a68qyUw6+z9033WeXCAUoxY8PEL7x2rcKx9bIWT
+         l6A08Wjxs5sPfZMw5X09MFSUjE1qHLWgyYHW8VFFkTznN60/pkdMAWpnger7o85A8dVP
+         qTXxWNl+c9c6DyvNDvC0ebMsh3xbuJUKuQ8Rz44tF4eOqCus/XLjH8vxAcgNxnvE6ECD
+         vDEUVjfrmmgeklu12ukdEkM3ps7/O48UUdbhbzh08v+evhakhTrUIyOdzD4cM7odKyc2
+         jWOem0ysPrATgUJg9nMtB+WUY+Ngyots1DIicBIYLP8IlhqZc/3YjYx7aeu0g0fnDMxE
+         4bOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mtpCTLjeaytdekB4adxVz/e/JZwQHur4soi/tkekgkg=;
+        b=OlM0+qlJkUmfxz+etPInf3DXwxxYry16P80+OP1s5lq/rJheGz+HNwsuOgY2JCzDEO
+         YIxE9K2vkIu66EYNryWQ5+nytupEVyR0hksHw9yBD9dRoPgWL2XWyXH7kPg30RD5JPhC
+         T/Tb4iuRfs2fusDOMEBohFYmXt3bzRM1UOo2e1t+jzFHPfQVvthwp1bnQwdsbcpKTyX/
+         2Pt41KlPSWP3A9iUJjC+Y+ivXvh0rYZ808+idjIS9hpe6lL9v+NjUSDTbqRzgGi69gku
+         2CxZLoOXm2HKkHWH5s4rmQOvsiuyAihgDxod4av3Oh+j+KOUEfvEHiSyRQ1CylGW0SwJ
+         oemQ==
+X-Gm-Message-State: AOAM533oi3AbKtuTFSUC/CUsY01udwFKJyqm5epyL4ZZxLye0fhNylDc
+        D7R15c+UBWBeGQnUt42UducptUcKMQuEoBTQ7nxxww==
+X-Google-Smtp-Source: ABdhPJxMVT2aazzajf86PZFdGt2E7whHDnP+nICKDm4NC6feIw0z4SprtT2do+git6kUcT4Xo3qaJQi4N/SBczqLtpU=
+X-Received: by 2002:a2e:3012:: with SMTP id w18mr3286415ljw.55.1589997600706;
+ Wed, 20 May 2020 11:00:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CANsGL8Mb31NWVSgj=B2fNtT3x4oYm3tDKYZxpBCKfNC9ROLcGA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CA+G9fYu2ruH-8uxBHE0pdE6RgRTSx4QuQPAN=Nv3BCdRd2ouYA@mail.gmail.com>
+ <20200501135806.4eebf0b92f84ab60bba3e1e7@linux-foundation.org>
+ <CA+G9fYsiZ81pmawUY62K30B6ue+RXYod854RS91R2+F8ZO7Xvw@mail.gmail.com>
+ <20200519075213.GF32497@dhcp22.suse.cz> <CAK8P3a2T_j-Ynvhsqe_FCqS2-ZdLbo0oMbHhHChzMbryE0izAQ@mail.gmail.com>
+ <20200519084535.GG32497@dhcp22.suse.cz> <CA+G9fYvzLm7n1BE7AJXd8_49fOgPgWWTiQ7sXkVre_zoERjQKg@mail.gmail.com>
+In-Reply-To: <CA+G9fYvzLm7n1BE7AJXd8_49fOgPgWWTiQ7sXkVre_zoERjQKg@mail.gmail.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 20 May 2020 23:29:49 +0530
+Message-ID: <CA+G9fYsXnwyGetj-vztAKPt8=jXrkY8QWe74u5EEA3XPW7aikQ@mail.gmail.com>
+Subject: Re: mm: mkfs.ext4 invoked oom-killer on i386 - pagecache_get_page
+To:     Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>
+Cc:     "Linux F2FS DEV, Mailing List" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, Arnd Bergmann <arnd@arndb.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        "Theodore Ts'o" <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Chao Yu <yuchao0@huawei.com>, lkft-triage@lists.linaro.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-[adding Cc:s]
+On Wed, 20 May 2020 at 17:26, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+>
+>
+> This issue is specific on 32-bit architectures i386 and arm on linux-next tree.
+> As per the test results history this problem started happening from
+> Bad : next-20200430
+> Good : next-20200429
+>
+> steps to reproduce:
+> dd if=/dev/disk/by-id/ata-SanDisk_SSD_PLUS_120GB_190504A00573
+> of=/dev/null bs=1M count=2048
+> or
+> mkfs -t ext4 /dev/disk/by-id/ata-SanDisk_SSD_PLUS_120GB_190804A00BE5
+>
+>
+> Problem:
+> [   38.802375] dd invoked oom-killer: gfp_mask=0x100cc0(GFP_USER),
+> order=0, oom_score_adj=0
 
-Kernel is 5.7.0-rc6.20200519.
+As a part of investigation on this issue LKFT teammate Anders Roxell
+git bisected the problem and found bad commit(s) which caused this problem.
 
+The following two patches have been reverted on next-20200519 and retested the
+reproducible steps and confirmed the test case mkfs -t ext4 got PASS.
+( invoked oom-killer is gone now)
 
-On 5/20/20 5:57 AM, nirinA raseliarison wrote:
-> hello ,
-> 
-> i repeatedly hit this bug since gcc-10.1.0:
-> 
-> May 20 05:06:25 supernova kernel: [16312.604136] ------------[ cut
-> here ]------------
-> May 20 05:06:25 supernova kernel: [16312.604139] kernel BUG at fs/inode.c:531!
-> May 20 05:06:25 supernova kernel: [16312.604145] invalid opcode: 0000
-> [#1] SMP PTI
-> May 20 05:06:25 supernova kernel: [16312.604148] CPU: 1 PID: 149 Comm:
-> kswapd0 Not tainted 5.7.0-rc6.20200519 #1
-> May 20 05:06:25 supernova kernel: [16312.604150] Hardware name: To be
-> filled by O.E.M. To be filled by O.E.M./ONDA H61V Ver:4.01, BIOS 4.6.5
-> 01/07/2013
-> May 20 05:06:25 supernova kernel: [16312.604155] RIP: 0010:clear_inode+0x75/0x80
-> May 20 05:06:25 supernova kernel: [16312.604157] Code: a8 20 74 2a a8
-> 40 75 28 48 8b 83 28 01 00 00 48 8d 93 28 01 00 00 48 39 c2 75 17 48
-> c7 83 98 00 00 00 60 00 00 00 5b c3 0f 0b <0f> 0b 0f 0b 0f 0b 0f 0b 0f
-> 0b 90 0f 1f 44 00 00 53 ba 48 02 00 00
-> May 20 05:06:25 supernova kernel: [16312.604158] RSP:
-> 0000:ffffc9000048fb50 EFLAGS: 00010006
-> May 20 05:06:25 supernova kernel: [16312.604160] RAX: 0000000000000000
-> RBX: ffff88808c5f9e38 RCX: 0000000000000000
-> May 20 05:06:25 supernova kernel: [16312.604161] RDX: 0000000000000001
-> RSI: 0000000000000000 RDI: ffff88808c5f9fb8
-> May 20 05:06:25 supernova kernel: [16312.604162] RBP: ffff88808c5f9e38
-> R08: ffffffffffffffff R09: ffffc9000048fcd8
-> May 20 05:06:25 supernova kernel: [16312.604163] R10: 0000000000000000
-> R11: 0000000000000520 R12: ffff88808c5f9fb0
-> May 20 05:06:25 supernova kernel: [16312.604164] R13: ffff88820f14d000
-> R14: ffff88820f14d070 R15: 0000000000000122
-> May 20 05:06:25 supernova kernel: [16312.604166] FS:
-> 0000000000000000(0000) GS:ffff888217700000(0000)
-> knlGS:0000000000000000
-> May 20 05:06:25 supernova kernel: [16312.604167] CS:  0010 DS: 0000
-> ES: 0000 CR0: 0000000080050033
-> May 20 05:06:25 supernova kernel: [16312.604168] CR2: 00007f7849e58000
-> CR3: 000000001e676006 CR4: 00000000001606e0
-> May 20 05:06:25 supernova kernel: [16312.604169] Call Trace:
-> May 20 05:06:25 supernova kernel: [16312.604174]  ext4_clear_inode+0x16/0x80
-> May 20 05:06:25 supernova kernel: [16312.604177]  ext4_evict_inode+0x58/0x4c0
-> May 20 05:06:25 supernova kernel: [16312.604180]  evict+0xbf/0x180
-> May 20 05:06:25 supernova kernel: [16312.604183]  prune_icache_sb+0x7e/0xb0
-> May 20 05:06:25 supernova kernel: [16312.604186]  super_cache_scan+0x161/0x1e0
-> May 20 05:06:25 supernova kernel: [16312.604189]  do_shrink_slab+0x146/0x290
-> May 20 05:06:25 supernova kernel: [16312.604191]  shrink_slab+0xac/0x2a0
-> May 20 05:06:25 supernova kernel: [16312.604194]  ? __switch_to_asm+0x40/0x70
-> May 20 05:06:25 supernova kernel: [16312.604196]  shrink_node+0x16f/0x660
-> May 20 05:06:25 supernova kernel: [16312.604199]  balance_pgdat+0x2cf/0x5b0
-> May 20 05:06:25 supernova kernel: [16312.604201]  kswapd+0x1dc/0x3a0
-> May 20 05:06:25 supernova kernel: [16312.604204]  ? __schedule+0x217/0x710
-> May 20 05:06:25 supernova kernel: [16312.604206]  ? wait_woken+0x80/0x80
-> May 20 05:06:25 supernova kernel: [16312.604208]  ? balance_pgdat+0x5b0/0x5b0
-> May 20 05:06:25 supernova kernel: [16312.604210]  kthread+0x118/0x130
-> May 20 05:06:25 supernova kernel: [16312.604212]  ?
-> kthread_create_worker_on_cpu+0x70/0x70
-> May 20 05:06:25 supernova kernel: [16312.604214]  ret_from_fork+0x35/0x40
-> May 20 05:06:25 supernova kernel: [16312.604215] Modules linked in:
-> nct6775 hwmon_vid rfkill ipv6 nf_defrag_ipv6 snd_pcm_oss snd_mixer_oss
-> fuse hid_generic usbhid hid i2c_dev snd_hda_codec_hdmi
-> snd_hda_codec_realtek snd_hda_codec_generic coretemp hwmon
-> x86_pkg_temp_thermal intel_powerclamp i915 kvm_intel kvm irqbypass
-> evdev crc32_pclmul serio_raw r8169 drm_kms_helper snd_hda_intel
-> snd_intel_dspcfg realtek snd_hda_codec libphy snd_hwdep syscopyarea
-> sysfillrect sysimgblt snd_hda_core fan fb_sys_fops thermal snd_pcm drm
-> 8250 mei_me snd_timer drm_panel_orientation_quirks 8250_base
-> serial_core intel_gtt video snd ehci_pci lpc_ich ehci_hcd mei agpgart
-> soundcore button i2c_algo_bit i2c_i801 loop
-> May 20 05:06:25 supernova kernel: [16312.604237] ---[ end trace
-> 6d45434b7eb1e097 ]---
-> May 20 05:06:25 supernova kernel: [16312.604240] RIP: 0010:clear_inode+0x75/0x80
-> May 20 05:06:25 supernova kernel: [16312.604241] Code: a8 20 74 2a a8
-> 40 75 28 48 8b 83 28 01 00 00 48 8d 93 28 01 00 00 48 39 c2 75 17 48
-> c7 83 98 00 00 00 60 00 00 00 5b c3 0f 0b <0f> 0b 0f 0b 0f 0b 0f 0b 0f
-> 0b 90 0f 1f 44 00 00 53 ba 48 02 00 00
-> May 20 05:06:25 supernova kernel: [16312.604242] RSP:
-> 0000:ffffc9000048fb50 EFLAGS: 00010006
-> May 20 05:06:25 supernova kernel: [16312.604244] RAX: 0000000000000000
-> RBX: ffff88808c5f9e38 RCX: 0000000000000000
-> May 20 05:06:25 supernova kernel: [16312.604245] RDX: 0000000000000001
-> RSI: 0000000000000000 RDI: ffff88808c5f9fb8
-> May 20 05:06:25 supernova kernel: [16312.604246] RBP: ffff88808c5f9e38
-> R08: ffffffffffffffff R09: ffffc9000048fcd8
-> May 20 05:06:25 supernova kernel: [16312.604246] R10: 0000000000000000
-> R11: 0000000000000520 R12: ffff88808c5f9fb0
-> May 20 05:06:25 supernova kernel: [16312.604247] R13: ffff88820f14d000
-> R14: ffff88820f14d070 R15: 0000000000000122
-> May 20 05:06:25 supernova kernel: [16312.604249] FS:
-> 0000000000000000(0000) GS:ffff888217700000(0000)
-> knlGS:0000000000000000
-> May 20 05:06:25 supernova kernel: [16312.604250] CS:  0010 DS: 0000
-> ES: 0000 CR0: 0000000080050033
-> May 20 05:06:25 supernova kernel: [16312.604251] CR2: 00007f7849e58000
-> CR3: 000000001e676006 CR4: 00000000001606e0
-> 
-> --
-> nirinA
-> 
+Revert "mm, memcg: avoid stale protection values when cgroup is above
+protection"
+    This reverts commit 23a53e1c02006120f89383270d46cbd040a70bc6.
 
+Revert "mm, memcg: decouple e{low,min} state mutations from protection
+checks"
+    This reverts commit 7b88906ab7399b58bb088c28befe50bcce076d82.
+
+i386 test log shows mkfs -t ext4 pass
+https://lkft.validation.linaro.org/scheduler/job/1443405#L1200
+
+ref:
+https://lore.kernel.org/linux-mm/cover.1588092152.git.chris@chrisdown.name/
+https://lore.kernel.org/linux-mm/CA+G9fYvzLm7n1BE7AJXd8_49fOgPgWWTiQ7sXkVre_zoERjQKg@mail.gmail.com/T/#t
 
 -- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Linaro LKFT
+https://lkft.linaro.org
