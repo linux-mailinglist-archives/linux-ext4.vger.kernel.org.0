@@ -2,159 +2,167 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFE581DAF21
-	for <lists+linux-ext4@lfdr.de>; Wed, 20 May 2020 11:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E8251DB269
+	for <lists+linux-ext4@lfdr.de>; Wed, 20 May 2020 13:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726486AbgETJpk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 20 May 2020 05:45:40 -0400
-Received: from mail-dm6nam11on2058.outbound.protection.outlook.com ([40.107.223.58]:19842
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726224AbgETJpk (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 20 May 2020 05:45:40 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ND3+lbRZPXvz7oDlti2GmdLxFcXSTkJQ5oAJZFEfNKD5X+ZBzNCSBUA/oj/ayCIvvCKN8xN76RImM9QTKwql2vD9mmG1TIAQVGVbqSc6b5tX25MCOiaDhAyHcLAqPE109PY0XbQECnuMMwapH2sxiDZoZQyFA1qrFqhjFqXeg53ql42mFMIWzO4WtTp5TOF0PzL2tFU7C5AePZobGxLHCOINQAQGlphm/cSX6ckVknilumrGvzhHWYCZsdXMqRbs8Ecm8ZrUwtufTe76NelgJ+qx4mXP35kwKW3ERL7A036MdkpC2NgQ9fa3gumkurn/Vryb0C74nVF3ek8uIGGx+A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eMR5bRlkfLSFVLWhLRLlPQ7n/yAvEIxsrsHdZ67ZU5k=;
- b=he0C1jSFaL6CWYO3JwJGWbqyJUvMeqhI3nX9um6rp6LXkTt5m+mIuCgDOx0rgv6XbPM72JPAMRP9NB51h+kfNiDx08tmFQu5WxLL+PSCH8OBmh/np/cCiXX5wlqxo4ObqqHlMd4AZM1zio+LgSVhkikYD1+MhZla5n5akfZtUv+EzsYrRnEl2aqWlfoOwlxijLZ1o/kjkuO77iqTZ8QDXQNCa9JD0kUni8dYrUn+ygppM3+tC2awb9kAdpguOlhSQR29lYDzmPvUHbhOaIX43MG6zAzlxBCW1slUam5yqZ9R2Y14Nv82w4vTgOHY5L/RLYeFfPqbk+SvvrLJMCqgzg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=whamcloud.com; dmarc=pass action=none
- header.from=whamcloud.com; dkim=pass header.d=whamcloud.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=whamcloud.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eMR5bRlkfLSFVLWhLRLlPQ7n/yAvEIxsrsHdZ67ZU5k=;
- b=wG3K0eti5MBsZP1ghDdCfZQc05KgFEJv4Qe1Deeihax85MgGnAX4f9AKDHDbOpgWBgR2PqaL6aBiyBYVVQ+y3X61BDk57p2QP8F1Y9nIvX40gtYb+24eZXJDlv6Ms9w8TP4j+wJ2HMPdgkjWfuEojSW4i4ZmtGV2yoZn2RTQ6UE=
-Received: from DM6PR19MB2441.namprd19.prod.outlook.com (2603:10b6:5:18d::16)
- by DM6PR19MB2378.namprd19.prod.outlook.com (2603:10b6:5:c8::33) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.24; Wed, 20 May
- 2020 09:45:37 +0000
-Received: from DM6PR19MB2441.namprd19.prod.outlook.com
- ([fe80::b111:c44a:87ea:4bf4]) by DM6PR19MB2441.namprd19.prod.outlook.com
- ([fe80::b111:c44a:87ea:4bf4%7]) with mapi id 15.20.3000.034; Wed, 20 May 2020
- 09:45:36 +0000
-From:   Alex Zhuravlev <azhuravlev@whamcloud.com>
-To:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
-Subject: [PATCH 2/2] ext4: mballoc - limit scanning of uninitialized groups
-Thread-Topic: [PATCH 2/2] ext4: mballoc - limit scanning of uninitialized
- groups
-Thread-Index: AQHWLotqWUPyoTh+2Ui1cgAgxU2TBA==
-Date:   Wed, 20 May 2020 09:45:36 +0000
-Message-ID: <48DC3E7A-AA4E-494D-A520-3D301FBC573B@whamcloud.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=whamcloud.com;
-x-originating-ip: [95.73.208.89]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7f4a8972-0b39-4fb1-ff0e-08d7fca28c92
-x-ms-traffictypediagnostic: DM6PR19MB2378:
-x-microsoft-antispam-prvs: <DM6PR19MB237826D0AE239022EE3D6528CBB60@DM6PR19MB2378.namprd19.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-forefront-prvs: 04097B7F7F
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: b8iJgu4+eJuSkZM0B/mW4JfAS7qR/8Cf8eUSohVoTkKDK6bgTe70nRuS8U6KQxrcN/gVD7yIBN+UFJj4aTEDEzopXKbJlqpd0iGwGM7wa9avdVWVVaZgD/c70/MDLypHLRZucwCeE6qJcxmeVC3WyNmZxizG27tRHltvnXHDogVxgkSV6DTvSwjTfdTGccYrh04TwkZ3H8nEhx4z35JwSYq2ksdg/DcjmYbMHkia3gxpKbN638Q35qRsm5jkiyMYoKy6rCb6Dvt4msVzMGphjXwMTuv0bZsJN9xp4EoE+tbpxvFnVsc1nsNsuiZZFhnKNi5H5AkZp0y4/hN25VwezA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR19MB2441.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(366004)(396003)(136003)(376002)(39850400004)(8676002)(6512007)(186003)(26005)(6916009)(36756003)(8936002)(6486002)(2906002)(316002)(6506007)(76116006)(66446008)(91956017)(86362001)(66946007)(64756008)(66556008)(66476007)(5660300002)(2616005)(71200400001)(478600001)(33656002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: ht1n7NoPf5R8Ow4kM6tD3Sh4mHdyE5ND2EbeT/arp6S3n4hrZmQ6kAUkAFsVVdflbpvohRNqP8gPlpTz4RBKd4XbL8I/WcJrF6pj8zugtJr14iDRrjKp3T+V0G8NnCoacfOuKW9eT2Jdel0yeh8zgRyTPKWlSDWvdW38qjnyQQA01rTrr+jbWc7sNYCxjbetCtHNZ+ljDPd/onddo1fR6+j1oYmrEJkAAusMCTWnCsgGIIwnUpl0qGYgMWns0mrhV/G2jsQPe0T21Hyd7sUNljMZJQ8+xbue2iMefaCj3fHQs6MrOF/4HIUJ2pn9H7vQnKM6Fi6/4z/u4bpDKdUMSuQNxDxelaIX5niwRC6Sdu19ubbw0Y3GpiFrRmPd1kWFnq3DddGSt6ZgpuLJEB1noKjTUwXvRlubmJGHVKTHg0eaxjkaqE3Bv4wJkKnoJKDifZkOzNg97OIxVFRXsG1k51jBOlv1LmGvs+t6YRyLZjE=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <ECE18DECD0229E4B991270C1AC1096CE@namprd19.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1726914AbgETL4c (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 20 May 2020 07:56:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726838AbgETL4b (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 20 May 2020 07:56:31 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FD08C061A0F
+        for <linux-ext4@vger.kernel.org>; Wed, 20 May 2020 04:56:31 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id h188so2124405lfd.7
+        for <linux-ext4@vger.kernel.org>; Wed, 20 May 2020 04:56:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c8qp29x57Bnw83ildG5bfYkgdHVhrczJ6/NyvfJLqdw=;
+        b=qlgXHVmEwhlw8sQKewHDsuWMSreqtLqu7J0G2FobOqDX6oBRZuV/ovWE3ANMJBrQ/R
+         VHSrnEzZvSTDxoGM3/zD4+VTvhNG0yaVzAa7lwGqABFXOzXetvh0ERA4i6G5tYAoy+YR
+         Qr6jPv+xDkynFLCazHC8VGxm8nKlCbFmrG5Kj91mWASiJARiWqfoR7ILN0Zk3nndZglm
+         xfojJ2HA3S+ljjrJhP5FQNxiCPqhXs7R18c5zKgCMh12Zewow13rinQNy8sr0PEtMvmD
+         gPqjH0dG3srB+Q4snOOPhnSigEJYiArkGSq8les+OJeIhHLgVWpVkJPP+TTaSgnYuQhJ
+         AIGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c8qp29x57Bnw83ildG5bfYkgdHVhrczJ6/NyvfJLqdw=;
+        b=JECMAiaAIKvn69NQBBhNsFmVgppSJyFq4UMw5t+3ow9SWWq+wXU4dYZU7bPqs8hRnl
+         9NuuVow6w3tRJiNUrU5PaEdrhPIrr0qWiFCiJ3GHjhp1FFxHvn1pHOIG7atOmMSIfXB8
+         qciH6RzhCXo39DAM2ZWddmpBEHtls6mnMRFBiFsHXyTP3DfdsTh2BvOJZaySBS4L5fGi
+         92330CMHxvoOkic3DG9mgin7m2bgjn2359hCbc8pkZ7/jqaWEbfvAnub7r11pTQgEVL1
+         dYcQsf2UqctbU/dEsogABPnzaYIpFU00/tzrSAP08G9RfMGiVcCfoJRyK5/mCScomjc4
+         GBbA==
+X-Gm-Message-State: AOAM530TGAsy1v6V2/4UJGgh73Kbola9+NH7A2IzPOl/Z8S3Nw2dma4Z
+        l7V4dAO/dfCkgXWO1yFz7V8Wpf+YbQVVcrbxmDoHiQ==
+X-Google-Smtp-Source: ABdhPJwm4d8MeeXVBkReCSgeKef0/TrHxDY6JMkbe05871VEuSEJIfm5/eJuCpE32/mb9LC8RnbJH+gDczs7BL2boVk=
+X-Received: by 2002:a19:8453:: with SMTP id g80mr2422388lfd.167.1589975789287;
+ Wed, 20 May 2020 04:56:29 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: whamcloud.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7f4a8972-0b39-4fb1-ff0e-08d7fca28c92
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 May 2020 09:45:36.8330
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 753b6e26-6fd3-43e6-8248-3f1735d59bb4
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: SPVZME4rvvokm99srf+6wSVYi8hrnZ+ZzW1ETJMOirWueZYijuY9it4sbV1+R+puyi0M4ZctA4uAj9baveEBHw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR19MB2378
+References: <CA+G9fYu2ruH-8uxBHE0pdE6RgRTSx4QuQPAN=Nv3BCdRd2ouYA@mail.gmail.com>
+ <20200501135806.4eebf0b92f84ab60bba3e1e7@linux-foundation.org>
+ <CA+G9fYsiZ81pmawUY62K30B6ue+RXYod854RS91R2+F8ZO7Xvw@mail.gmail.com>
+ <20200519075213.GF32497@dhcp22.suse.cz> <CAK8P3a2T_j-Ynvhsqe_FCqS2-ZdLbo0oMbHhHChzMbryE0izAQ@mail.gmail.com>
+ <20200519084535.GG32497@dhcp22.suse.cz>
+In-Reply-To: <20200519084535.GG32497@dhcp22.suse.cz>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 20 May 2020 17:26:17 +0530
+Message-ID: <CA+G9fYvzLm7n1BE7AJXd8_49fOgPgWWTiQ7sXkVre_zoERjQKg@mail.gmail.com>
+Subject: Re: mm: mkfs.ext4 invoked oom-killer on i386 - pagecache_get_page
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        "Linux F2FS DEV, Mailing List" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        "Theodore Ts'o" <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Chao Yu <yuchao0@huawei.com>, lkft-triage@lists.linaro.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-cr=3D0 is supposed to be an optimization to save CPU cycles, but if
-buddy data (in memory) is not initialized then all this makes no
-sense as we have to do sync IO taking a lot of cycles.
-also, at cr=3D0 mballoc doesn't store any available chunk. cr=3D1 also
-skips groups using heuristic based on avg. fragment size. it's more
-useful to skip such groups and switch to cr=3D2 where groups will be
-scanned for available chunks.
+FYI,
 
-The goal group is not skipped to prevent allocations in foreign groups,
-which can happen after mount while buddy data is still being populated.
+This issue is specific on 32-bit architectures i386 and arm on linux-next tree.
+As per the test results history this problem started happening from
+Bad : next-20200430
+Good : next-20200429
 
-using sparse image and dm-slow virtual device of 120TB was simulated.
-then the image was formatted and filled using debugfs to mark ~85% of
-available space as busy. the very first allocation w/o the patch could
-not complete in half an hour (according to vmstat it would take ~10-1
-hours). with the patch applied the allocation took ~20 seconds.
+steps to reproduce:
+dd if=/dev/disk/by-id/ata-SanDisk_SSD_PLUS_120GB_190504A00573
+of=/dev/null bs=1M count=2048
+or
+mkfs -t ext4 /dev/disk/by-id/ata-SanDisk_SSD_PLUS_120GB_190804A00BE5
 
-Signed-off-by: Alex Zhuravlev <bzzz@whamcloud.com>
-Reviewed-by: Andreas Dilger <adilger@whamcloud.com>
 
- fs/ext4/mballoc.c | 30 +++++++++++++++++++++++++++++-
- 1 file changed, 29 insertions(+), 1 deletion(-)
+Problem:
+[   38.802375] dd invoked oom-killer: gfp_mask=0x100cc0(GFP_USER),
+order=0, oom_score_adj=0
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 30d5d97548c4..f719714862b5 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -1877,6 +1877,21 @@ int ext4_mb_find_by_goal(struct ext4_allocation_cont=
-ext *ac,
- 	return 0;
- }
-=20
-+static inline int ext4_mb_uninit_on_disk(struct super_block *sb,
-+				    ext4_group_t group)
-+{
-+	struct ext4_group_desc *desc;
-+
-+	if (!ext4_has_group_desc_csum(sb))
-+		return 0;
-+
-+	desc =3D ext4_get_group_desc(sb, group, NULL);
-+	if (desc->bg_flags & cpu_to_le16(EXT4_BG_BLOCK_UNINIT))
-+		return 1;
-+
-+	return 0;
-+}
-+
- /*
-  * The routine scans buddy structures (not bitmap!) from given order
-  * to max order and tries to find big enough chunk to satisfy the req
-@@ -2060,7 +2075,20 @@ static int ext4_mb_good_group(struct ext4_allocation=
-_context *ac,
-=20
- 	/* We only do this if the grp has never been initialized */
- 	if (unlikely(EXT4_MB_GRP_NEED_INIT(grp))) {
--		int ret =3D ext4_mb_init_group(ac->ac_sb, group, GFP_NOFS);
-+		int ret;
-+
-+		/* cr=3D0/1 is a very optimistic search to find large
-+		 * good chunks almost for free. if buddy data is
-+		 * not ready, then this optimization makes no sense.
-+		 * instead it leads to loading (synchronously) lots
-+		 * of groups and very slow allocations.
-+		 * but don't skip the goal group to keep blocks in
-+		 * the inode's group. */
-+
-+		if (cr < 2 && !ext4_mb_uninit_on_disk(ac->ac_sb, group) &&
-+		    ac->ac_g_ex.fe_group !=3D group)
-+			return 0;
-+		ret =3D ext4_mb_init_group(ac->ac_sb, group, GFP_NOFS);
- 		if (ret)
- 			return ret;
- 	}
---=20
-2.21.3
+i386 crash log:  https://pastebin.com/Hb8U89vU
+arm crash log: https://pastebin.com/BD9t3JTm
 
+On Tue, 19 May 2020 at 14:15, Michal Hocko <mhocko@kernel.org> wrote:
+>
+> On Tue 19-05-20 10:11:25, Arnd Bergmann wrote:
+> > On Tue, May 19, 2020 at 9:52 AM Michal Hocko <mhocko@kernel.org> wrote:
+> > >
+> > > On Mon 18-05-20 19:40:55, Naresh Kamboju wrote:
+> > > > Thanks for looking into this problem.
+> > > >
+> > > > On Sat, 2 May 2020 at 02:28, Andrew Morton <akpm@linux-foundation.org> wrote:
+> > > > >
+> > > > > On Fri, 1 May 2020 18:08:28 +0530 Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+> > > > >
+> > > > > > mkfs -t ext4 invoked oom-killer on i386 kernel running on x86_64 device
+> > > > > > and started happening on linux -next master branch kernel tag next-20200430
+> > > > > > and next-20200501. We did not bisect this problem.
+> > > [...]
+> > > > Creating journal (131072 blocks): [   31.251333] mkfs.ext4 invoked
+> > > > oom-killer: gfp_mask=0x101cc0(GFP_USER|__GFP_WRITE), order=0,
+> > > > oom_score_adj=0
+> > > [...]
+> > > > [   31.500943] DMA free:187396kB min:22528kB low:28160kB high:33792kB
+> > > > reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB
+> > > > active_file:4736kB inactive_file:431688kB unevictable:0kB
+> > > > writepending:62020kB present:783360kB managed:668264kB mlocked:0kB
+> > > > kernel_stack:888kB pagetables:0kB bounce:0kB free_pcp:880kB
+> > > > local_pcp:216kB free_cma:163840kB
+> > >
+> > > This is really unexpected. You are saying this is a regular i386 and DMA
+> > > should be bottom 16MB while yours is 780MB and the rest of the low mem
+> > > is in the Normal zone which is completely missing here. How have you got
+> > > to that configuration? I have to say I haven't seen anything like that
+> > > on i386.
+> >
+> > I think that line comes from an ARM32 beaglebone-X15 machine showing
+> > the same symptom. The i386 line from the log file that Naresh linked to at
+> > https://lkft.validation.linaro.org/scheduler/job/1406110#L1223  is less
+> > unusual:
+>
+> OK, that makes more sense! At least for the memory layout.
+>
+> > [   34.931663] Node 0 active_anon:21464kB inactive_anon:8688kB
+> > active_file:16604kB inactive_file:849976kB unevictable:0kB
+> > isolated(anon):0kB isolated(file):0kB mapped:25284kB dirty:58952kB
+> > writeback:27772kB shmem:8944kB writeback_tmp:0kB unstable:0kB
+> > all_unreclaimable? yes
+> > [   34.955523] DMA free:3356kB min:68kB low:84kB high:100kB
+> > reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB
+> > active_file:0kB inactive_file:11964kB unevictable:0kB
+> > writepending:11980kB present:15964kB managed:15876kB mlocked:0kB
+> > kernel_stack:0kB pagetables:0kB bounce:0kB free_pcp:0kB local_pcp:0kB
+> > free_cma:0kB
+> > [   34.983385] lowmem_reserve[]: 0 825 1947 825
+> > [   34.987678] Normal free:3948kB min:7732kB low:8640kB high:9548kB
+> > reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB
+> > active_file:1096kB inactive_file:786400kB unevictable:0kB
+> > writepending:65432kB present:884728kB managed:845576kB mlocked:0kB
+> > kernel_stack:1112kB pagetables:0kB bounce:0kB free_pcp:2908kB
+> > local_pcp:500kB free_cma:0kB
+>
+> The lowmem is really low (way below the min watermark so even memory
+> reserves for high priority and atomic requests are depleted. There is
+> still 786MB of inactive page cache to be reclaimed. It doesn't seem to
+> be dirty or under the writeback but it still might be pinned by the
+> filesystem. I would suggest watching vmscan reclaim tracepoints and
+> check why the reclaim fails to reclaim anything.
+> --
+> Michal Hocko
+> SUSE Labs
