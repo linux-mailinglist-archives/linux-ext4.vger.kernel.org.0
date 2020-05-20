@@ -2,187 +2,141 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F29A11DA6BC
-	for <lists+linux-ext4@lfdr.de>; Wed, 20 May 2020 02:44:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C38191DA7A5
+	for <lists+linux-ext4@lfdr.de>; Wed, 20 May 2020 04:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726432AbgETAob (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 19 May 2020 20:44:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726178AbgETAob (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 May 2020 20:44:31 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8CE6C061A0F
-        for <linux-ext4@vger.kernel.org>; Tue, 19 May 2020 17:44:29 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id 145so716282pfw.13
-        for <linux-ext4@vger.kernel.org>; Tue, 19 May 2020 17:44:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=s430EJB7RmoBPjOWD4EaCDtzUs1PkOuIqbnqhKXMVW0=;
-        b=bedIwYFX9+2cHiNogs4Geq4ODkF4AmzYWVZlqlh271uYjw9lZhHMjqVXSDrzCc/6T/
-         7mWrscT1901ZkbeOAObLowazD1IJJtyIMIY1bwBM7sGu/8Kp5e742X08hOaYs86BPSmn
-         Sr5z67z6xFhx42Nag0h601jRc9Datz6gtKUuvk+TmaspRS8SPSGTojjCNGmSn4VudTlx
-         jHPk2iYOBLe9Li5Cr8dVvmTnq2pm3BBRgOvdRI2HMwB92tTzYYMI319+3GuRpboIeH5V
-         7SnJy9h5l8ie8OISM+5h6ug1GhO22gFwzZS6RYxlwC2wwWJ07yGwkSdy2+jJa49b0mYD
-         w3FA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=s430EJB7RmoBPjOWD4EaCDtzUs1PkOuIqbnqhKXMVW0=;
-        b=DHn7XDBp39PyTEBuSWzRObdfwwUe5FuDT/Dhrd/U7/0HUZWr40lL9czBg1vaNhnjdw
-         m9OI1UYVp9+3BeWVPmcnFYLrwi34+bv7jhisp49WnDnrMRrVqz3kYg/NBp8Q5Gefr2bf
-         qL0/cFdc9BqZUp3672OlsHFmZs/BEaYX4C/R/fpYjUfXuANOYVMCOrzU1wOzisQregd+
-         Ko1z1aMbveMBCrNhoLmhHcDpRgSISZAtiLyF/ALJHI8WRUT2DUVgNGxkFpaOp9m4UDHn
-         IZni5Gl41biodLrDs2sSAUpn6H8t9+GfaS1w0Xfkj5pAAG8XTqROSjK6wrPb4BiEZnkY
-         aPzg==
-X-Gm-Message-State: AOAM532+oEZGJC1ZGhAre4P7Daw76moH+t6EWGuRcWAHRc5ca6npFXRe
-        xh1ic1voe923xfjfcUiibh0SYQ==
-X-Google-Smtp-Source: ABdhPJxeximIo3SU1JWO3Fymu331fgRKoVSKm/KPjIWeblowxUhzTB7dC0flzYAjG+QLDpsx85FZlQ==
-X-Received: by 2002:a63:1e5f:: with SMTP id p31mr1596630pgm.19.1589935468995;
-        Tue, 19 May 2020 17:44:28 -0700 (PDT)
-Received: from [192.168.10.160] (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
-        by smtp.gmail.com with ESMTPSA id n205sm541869pfd.50.2020.05.19.17.44.27
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 19 May 2020 17:44:28 -0700 (PDT)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <20AA140E-877B-4240-9BEF-91D24215AF45@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_9BA1F62A-5378-475C-AF76-40175CDC3230";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH 2/2] jbd2: Avoid leaking transaction credits when
- unreserving handle
-Date:   Tue, 19 May 2020 18:44:25 -0600
-In-Reply-To: <20200518092120.10322-3-jack@suse.cz>
-Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        stable@vger.kernel.org
-To:     Jan Kara <jack@suse.cz>
-References: <20200518092120.10322-1-jack@suse.cz>
- <20200518092120.10322-3-jack@suse.cz>
-X-Mailer: Apple Mail (2.3273)
+        id S1728391AbgETCCe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 19 May 2020 22:02:34 -0400
+Received: from mga02.intel.com ([134.134.136.20]:11305 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726379AbgETCCe (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 19 May 2020 22:02:34 -0400
+IronPort-SDR: KXF6qd43oAx8/UnDSaK4asVuHJ+/bSNwS+SENonGqW++3WS/7MnzVhNci1siOL6aCqWtPKxamD
+ w17MzyKZycIQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2020 19:02:34 -0700
+IronPort-SDR: m/fhxx6jPbq7qZ0zgedcE0xpHxfN3zP7A9oZnB302QnVzCHxMgMIzOf8NbcKm47m7FnUyO55hO
+ +uQHaEVufyJw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,412,1583222400"; 
+   d="scan'208";a="282519935"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
+  by orsmga002.jf.intel.com with ESMTP; 19 May 2020 19:02:33 -0700
+Date:   Tue, 19 May 2020 19:02:33 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-ext4@vger.kernel.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/9] fs/ext4: Disallow encryption if inode is DAX
+Message-ID: <20200520020232.GA3470571@iweiny-DESK2.sc.intel.com>
+References: <20200513054324.2138483-1-ira.weiny@intel.com>
+ <20200513054324.2138483-4-ira.weiny@intel.com>
+ <20200516020253.GG1009@sol.localdomain>
+ <20200518050315.GA3025231@iweiny-DESK2.sc.intel.com>
+ <20200518162447.GA954@sol.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200518162447.GA954@sol.localdomain>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Mon, May 18, 2020 at 09:24:47AM -0700, Eric Biggers wrote:
+> On Sun, May 17, 2020 at 10:03:15PM -0700, Ira Weiny wrote:
 
---Apple-Mail=_9BA1F62A-5378-475C-AF76-40175CDC3230
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+First off...  OMG...
 
-On May 18, 2020, at 3:21 AM, Jan Kara <jack@suse.cz> wrote:
->=20
-> When reserved transaction handle is unused, we subtract its reserved
-> credits in __jbd2_journal_unreserve_handle() called from
-> jbd2_journal_stop(). However this function forgets to remove reserved
-> credits from transaction->t_outstanding_credits and thus the =
-transaction
-> space that was reserved remains effectively leaked. The leaked
-> transaction space can be quite significant in some cases and leads to
-> unnecessarily small transactions and thus reducing throughput of the
-> journalling machinery. E.g. fsmark workload creating lots of 4k files
-> was observed to have about 20% lower throughput due to this when ext4 =
-is
-> mounted with dioread_nolock mount option.
->=20
-> Subtract reserved credits from t_outstanding_credits as well.
->=20
-> CC: stable@vger.kernel.org
-> Fixes: 8f7d89f36829 ("jbd2: transaction reservation support")
-> Signed-off-by: Jan Kara <jack@suse.cz>
+I'm seeing some possible user pitfalls which are complicating things IMO.  It
+probably does not matter because most users don't care and have either enabled
+DAX on _every_ mount or _not_ enabled DAX on _every_ mount.  And have _not_
+used verity nor encryption while using DAX.
 
-Patch looks reasonable, with one minor nit below.
+Verity is a bit easier because verity is not inherited and we only need to
+protect against setting it if DAX is on.
 
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+However, it can be weird for the user thusly:
 
-> ---
-> fs/jbd2/transaction.c | 17 +++++++++++++----
-> 1 file changed, 13 insertions(+), 4 deletions(-)
->=20
-> diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-> index 3dccc23cf010..b49a103cff1f 100644
-> --- a/fs/jbd2/transaction.c
-> +++ b/fs/jbd2/transaction.c
-> @@ -541,17 +541,24 @@ handle_t *jbd2_journal_start(journal_t *journal, =
-int nblocks)
-> }
-> EXPORT_SYMBOL(jbd2_journal_start);
->=20
-> -static void __jbd2_journal_unreserve_handle(handle_t *handle)
-> +static void __jbd2_journal_unreserve_handle(handle_t *handle, =
-transaction_t *t)
-> {
-> 	journal_t *journal =3D handle->h_journal;
->=20
-> 	WARN_ON(!handle->h_reserved);
-> 	sub_reserved_credits(journal, handle->h_total_credits);
-> +	if (t)
-> +		atomic_sub(handle->h_total_credits, =
-&t->t_outstanding_credits);
-> }
->=20
-> void jbd2_journal_free_reserved(handle_t *handle)
-> {
-> -	__jbd2_journal_unreserve_handle(handle);
-> +	journal_t *journal =3D handle->h_journal;
-> +
-> +	/* Get j_state_lock to pin running transaction if it exists */
-> +	read_lock(&journal->j_state_lock);
-> +	__jbd2_journal_unreserve_handle(handle, =
-journal->j_running_transaction);
-> +	read_unlock(&journal->j_state_lock);
-> 	jbd2_free_handle(handle);
-> }
-> EXPORT_SYMBOL(jbd2_journal_free_reserved);
-> @@ -721,8 +728,10 @@ static void stop_this_handle(handle_t *handle)
-> 	}
-> 	atomic_sub(handle->h_total_credits,
-> 		   &transaction->t_outstanding_credits);
-> -	if (handle->h_rsv_handle)
-> -		__jbd2_journal_unreserve_handle(handle->h_rsv_handle);
-> +	if (handle->h_rsv_handle) {
-> +		__jbd2_journal_unreserve_handle(handle->h_rsv_handle,
-> +						transaction);
-> +	}
+1) mount _without_ DAX
+2) enable verity on individual inodes
+3) unmount/mount _with_ DAX
 
-There isn't any need for braces {} around this one-line if-block.
+Now the verity files are not enabled for DAX without any indication...  <sigh>
+This is still true with my patch.  But at least it closes the hole of trying to
+change the DAX flag after the fact (because verity was set).
 
+Also both this check and the verity need to be maintained to keep the mount
+option working as it was before...
 
-Cheers, Andreas
+For encryption it is more complicated because encryption can be set on
+directories and inherited so the IS_DAX() check does nothing while '-o dax' is
+used.  Therefore users can:
 
+1) mount _with_ DAX
+2) enable encryption on a directory
+3) files created in that directory will not have DAX set
 
+And I now understand why the WARN_ON() was there...  To tell users about this
+craziness.
 
+...
 
+> > This is, AFAICS, not going to affect correctness.  It will only be confusing
+> > because the user will be able to set both DAX and encryption on the directory
+> > but files there will only see encryption being used...  :-(
+> > 
+> > Assuming you are correct about this call path only being valid on directories.
+> > It seems this IS_DAX() needs to be changed to check for EXT4_DAX_FL in
+> > "fs/ext4: Introduce DAX inode flag"?  Then at that point we can prevent DAX and
+> > encryption on a directory.  ...  and at this point IS_DAX() could be removed at
+> > this point in the series???
+> 
+> I haven't read the whole series, but if you are indeed trying to prevent a
+> directory with EXT4_DAX_FL from being encrypted, then it does look like you'd
+> need to check EXT4_DAX_FL, not S_DAX.
+> 
+> The other question is what should happen when a file is created in an encrypted
+> directory when the filesystem is mounted with -o dax.  Actually, I think I
+> missed something there.  Currently (based on reading the code) the DAX flag will
+> get set first, and then ext4_set_context() will see IS_DAX() && i_size == 0 and
+> clear the DAX flag when setting the encrypt flag.
 
+I think you are correct.
 
---Apple-Mail=_9BA1F62A-5378-475C-AF76-40175CDC3230
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
+>
+> So, the i_size == 0 check is actually needed.
+> Your patch (AFAICS) just makes creating an encrypted file fail
+> when '-o dax'.  Is that intended?
 
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
+Yes that is what I intended but it is more complicated I see now.
 
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl7EfWkACgkQcqXauRfM
-H+CjDxAAgR72LLDqfiSa0CiTLsjpEG8ZXL+WEXseIQLOJe66IPm9f/VUmCZzncAw
-0uPAq87QXoos8rmJidrX71JWRtd3+HC+cIVcNxCADtGi3oSRu3U0G0j0+HEEhtpp
-ypGdY1LZ0SQEEa9HPcJqTq+XkybCZJ87MznMx4zacZcIzKw18pUDu+MemzK3KEw8
-rBmb4mMHW/jsib/LifaaNOA6HOrk0aYa91bK8QTMimW93nhT/SVUOXFo156rKG8o
-IC+k+VzIHtcyirI7r3OfzGTqtY3s9ymvtF1lrsY+I9JCyL9Lh8RoHkPXVuMH2oe9
-O8pqWrzctwVre6VTYgXgNglrfpqht/Fq9Q9lmOsS/nohzf0SnTRTE5ZTJJUqLGCQ
-4qQDboRWyOzRnbLawrADwWuP/FLhyPW8PAlUTY2djLX/8zPsOFKAu02AfaQJiZeu
-xginCZFetyaUj/mSKYVTzR+qenrW9Z0J0oH/WxDUyAuvA3U8w16Kxg0HV7giQ5Wo
-IiOUy/3aKvuzL9agECcrWoTWRglD6gydrcX8PEr+2HC/aAsf52S3d6PeRSv8robm
-uQ6t06GsZ4e9yfU9NovWPSB+5L648Eld60a1tzt43Nfhsf3Z/6TrBOb7lVj7+e6V
-Wz03I+AMnOBQh6y+EH93zOhBn1dwQm1wcb3asuzSvYlcZ17HXq8=
-=/5kH
------END PGP SIGNATURE-----
+The intent is that IS_DAX() should _never_ be true on an encrypted or verity
+file...  even if -o dax is specified.  Because IS_DAX() should be a result of
+the inode flags being checked.  The order of the setting of those flags is a
+bit odd for the encrypted case.  I don't really like that DAX is set then
+un-set.  It is convoluted but I'm not clear right now how to fix it.
 
---Apple-Mail=_9BA1F62A-5378-475C-AF76-40175CDC3230--
+> If not, maybe you should change it to check
+> S_NEW instead of i_size == 0 to make it clearer?
+
+The patch is completely unnecessary.
+
+It is much easier to make (EXT4_ENCRYPT_FL | EXT4_VERITY_FL) incompatible with
+EXT4_DAX_FL when it is introduced later in the series.  Furthermore this mutual
+exclusion can be done on directories in the encrypt case.  Which I think will
+be nicer for the user if they get an error when trying to set one when the other
+is set.
+
+Ira
+
