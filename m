@@ -2,92 +2,159 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B52BC1DB5FA
-	for <lists+linux-ext4@lfdr.de>; Wed, 20 May 2020 16:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2AFB1DB9D6
+	for <lists+linux-ext4@lfdr.de>; Wed, 20 May 2020 18:40:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726546AbgETOLl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 20 May 2020 10:11:41 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37452 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726436AbgETOLl (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 20 May 2020 10:11:41 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 1655AABCE;
-        Wed, 20 May 2020 14:11:42 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 719CE1E126F; Wed, 20 May 2020 16:11:38 +0200 (CEST)
-Date:   Wed, 20 May 2020 16:11:38 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     ira.weiny@intel.com
-Cc:     linux-ext4@vger.kernel.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3 7/8] fs/ext4: Introduce DAX inode flag
-Message-ID: <20200520141138.GE30597@quack2.suse.cz>
-References: <20200520055753.3733520-1-ira.weiny@intel.com>
- <20200520055753.3733520-8-ira.weiny@intel.com>
+        id S1726819AbgETQj5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 20 May 2020 12:39:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726545AbgETQj5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 20 May 2020 12:39:57 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34D41C061A0E;
+        Wed, 20 May 2020 09:39:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:
+        Subject:Sender:Reply-To:Cc:Content-ID:Content-Description;
+        bh=AnGXWlpEOu4iqWXGhr7iWfL5p65eGbwcAaVhmmCOm0U=; b=lS/OubPCMJGTT8oh1axlCTHnDs
+        Ihm0CtyV7yRVusP4pNf4C2LpVNTuFo5cJ7Quhr/2Dz46tiXw1xLyoqHA5NrSYYPmnLvoUAkQ09hWa
+        Jdol0k1UXDfosww1ICtI1jSi2TvkNW0v6Mg5GU+mfdOQGdvv46MsSs1BpN4OFKkxI5Z0KttgNs7fZ
+        Z864lDjMJ508imL6bRCTASR2nL8AQjmKojA178Lwi3oC5mkjgwDJtWbzfEfkn71NI9U19s3VeyTEk
+        myb2n4kG8ocUil2HSPUzVnmRoEY0VrQbj01l9rYyvRP6Si1OcIy2fVwNOBOEcNAVXWenkJ7beFwI/
+        A/fPVung==;
+Received: from c-73-157-219-8.hsd1.or.comcast.net ([73.157.219.8] helo=[10.0.0.252])
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jbRl4-0003rI-1L; Wed, 20 May 2020 16:39:54 +0000
+Subject: Re: kernel BUG at fs/inode.c:531!
+To:     nirinA raseliarison <nirina.raseliarison@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Al Viro <viro@ZenIV.linux.org.uk>,
+        Theodore Ts'o <tytso@mit.edu>
+References: <CANsGL8Mb31NWVSgj=B2fNtT3x4oYm3tDKYZxpBCKfNC9ROLcGA@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <29a960db-734a-a5bc-1f4c-1833bd9eb1d8@infradead.org>
+Date:   Wed, 20 May 2020 09:39:53 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200520055753.3733520-8-ira.weiny@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CANsGL8Mb31NWVSgj=B2fNtT3x4oYm3tDKYZxpBCKfNC9ROLcGA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 19-05-20 22:57:52, ira.weiny@intel.com wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
+[adding Cc:s]
+
+Kernel is 5.7.0-rc6.20200519.
+
+
+On 5/20/20 5:57 AM, nirinA raseliarison wrote:
+> hello ,
 > 
-> Add a flag to preserve FS_XFLAG_DAX in the ext4 inode.
+> i repeatedly hit this bug since gcc-10.1.0:
 > 
-> Set the flag to be user visible and changeable.  Set the flag to be
-> inherited.  Allow applications to change the flag at any time with the
-> exception of if VERITY or ENCRYPT is set.
+> May 20 05:06:25 supernova kernel: [16312.604136] ------------[ cut
+> here ]------------
+> May 20 05:06:25 supernova kernel: [16312.604139] kernel BUG at fs/inode.c:531!
+> May 20 05:06:25 supernova kernel: [16312.604145] invalid opcode: 0000
+> [#1] SMP PTI
+> May 20 05:06:25 supernova kernel: [16312.604148] CPU: 1 PID: 149 Comm:
+> kswapd0 Not tainted 5.7.0-rc6.20200519 #1
+> May 20 05:06:25 supernova kernel: [16312.604150] Hardware name: To be
+> filled by O.E.M. To be filled by O.E.M./ONDA H61V Ver:4.01, BIOS 4.6.5
+> 01/07/2013
+> May 20 05:06:25 supernova kernel: [16312.604155] RIP: 0010:clear_inode+0x75/0x80
+> May 20 05:06:25 supernova kernel: [16312.604157] Code: a8 20 74 2a a8
+> 40 75 28 48 8b 83 28 01 00 00 48 8d 93 28 01 00 00 48 39 c2 75 17 48
+> c7 83 98 00 00 00 60 00 00 00 5b c3 0f 0b <0f> 0b 0f 0b 0f 0b 0f 0b 0f
+> 0b 90 0f 1f 44 00 00 53 ba 48 02 00 00
+> May 20 05:06:25 supernova kernel: [16312.604158] RSP:
+> 0000:ffffc9000048fb50 EFLAGS: 00010006
+> May 20 05:06:25 supernova kernel: [16312.604160] RAX: 0000000000000000
+> RBX: ffff88808c5f9e38 RCX: 0000000000000000
+> May 20 05:06:25 supernova kernel: [16312.604161] RDX: 0000000000000001
+> RSI: 0000000000000000 RDI: ffff88808c5f9fb8
+> May 20 05:06:25 supernova kernel: [16312.604162] RBP: ffff88808c5f9e38
+> R08: ffffffffffffffff R09: ffffc9000048fcd8
+> May 20 05:06:25 supernova kernel: [16312.604163] R10: 0000000000000000
+> R11: 0000000000000520 R12: ffff88808c5f9fb0
+> May 20 05:06:25 supernova kernel: [16312.604164] R13: ffff88820f14d000
+> R14: ffff88820f14d070 R15: 0000000000000122
+> May 20 05:06:25 supernova kernel: [16312.604166] FS:
+> 0000000000000000(0000) GS:ffff888217700000(0000)
+> knlGS:0000000000000000
+> May 20 05:06:25 supernova kernel: [16312.604167] CS:  0010 DS: 0000
+> ES: 0000 CR0: 0000000080050033
+> May 20 05:06:25 supernova kernel: [16312.604168] CR2: 00007f7849e58000
+> CR3: 000000001e676006 CR4: 00000000001606e0
+> May 20 05:06:25 supernova kernel: [16312.604169] Call Trace:
+> May 20 05:06:25 supernova kernel: [16312.604174]  ext4_clear_inode+0x16/0x80
+> May 20 05:06:25 supernova kernel: [16312.604177]  ext4_evict_inode+0x58/0x4c0
+> May 20 05:06:25 supernova kernel: [16312.604180]  evict+0xbf/0x180
+> May 20 05:06:25 supernova kernel: [16312.604183]  prune_icache_sb+0x7e/0xb0
+> May 20 05:06:25 supernova kernel: [16312.604186]  super_cache_scan+0x161/0x1e0
+> May 20 05:06:25 supernova kernel: [16312.604189]  do_shrink_slab+0x146/0x290
+> May 20 05:06:25 supernova kernel: [16312.604191]  shrink_slab+0xac/0x2a0
+> May 20 05:06:25 supernova kernel: [16312.604194]  ? __switch_to_asm+0x40/0x70
+> May 20 05:06:25 supernova kernel: [16312.604196]  shrink_node+0x16f/0x660
+> May 20 05:06:25 supernova kernel: [16312.604199]  balance_pgdat+0x2cf/0x5b0
+> May 20 05:06:25 supernova kernel: [16312.604201]  kswapd+0x1dc/0x3a0
+> May 20 05:06:25 supernova kernel: [16312.604204]  ? __schedule+0x217/0x710
+> May 20 05:06:25 supernova kernel: [16312.604206]  ? wait_woken+0x80/0x80
+> May 20 05:06:25 supernova kernel: [16312.604208]  ? balance_pgdat+0x5b0/0x5b0
+> May 20 05:06:25 supernova kernel: [16312.604210]  kthread+0x118/0x130
+> May 20 05:06:25 supernova kernel: [16312.604212]  ?
+> kthread_create_worker_on_cpu+0x70/0x70
+> May 20 05:06:25 supernova kernel: [16312.604214]  ret_from_fork+0x35/0x40
+> May 20 05:06:25 supernova kernel: [16312.604215] Modules linked in:
+> nct6775 hwmon_vid rfkill ipv6 nf_defrag_ipv6 snd_pcm_oss snd_mixer_oss
+> fuse hid_generic usbhid hid i2c_dev snd_hda_codec_hdmi
+> snd_hda_codec_realtek snd_hda_codec_generic coretemp hwmon
+> x86_pkg_temp_thermal intel_powerclamp i915 kvm_intel kvm irqbypass
+> evdev crc32_pclmul serio_raw r8169 drm_kms_helper snd_hda_intel
+> snd_intel_dspcfg realtek snd_hda_codec libphy snd_hwdep syscopyarea
+> sysfillrect sysimgblt snd_hda_core fan fb_sys_fops thermal snd_pcm drm
+> 8250 mei_me snd_timer drm_panel_orientation_quirks 8250_base
+> serial_core intel_gtt video snd ehci_pci lpc_ich ehci_hcd mei agpgart
+> soundcore button i2c_algo_bit i2c_i801 loop
+> May 20 05:06:25 supernova kernel: [16312.604237] ---[ end trace
+> 6d45434b7eb1e097 ]---
+> May 20 05:06:25 supernova kernel: [16312.604240] RIP: 0010:clear_inode+0x75/0x80
+> May 20 05:06:25 supernova kernel: [16312.604241] Code: a8 20 74 2a a8
+> 40 75 28 48 8b 83 28 01 00 00 48 8d 93 28 01 00 00 48 39 c2 75 17 48
+> c7 83 98 00 00 00 60 00 00 00 5b c3 0f 0b <0f> 0b 0f 0b 0f 0b 0f 0b 0f
+> 0b 90 0f 1f 44 00 00 53 ba 48 02 00 00
+> May 20 05:06:25 supernova kernel: [16312.604242] RSP:
+> 0000:ffffc9000048fb50 EFLAGS: 00010006
+> May 20 05:06:25 supernova kernel: [16312.604244] RAX: 0000000000000000
+> RBX: ffff88808c5f9e38 RCX: 0000000000000000
+> May 20 05:06:25 supernova kernel: [16312.604245] RDX: 0000000000000001
+> RSI: 0000000000000000 RDI: ffff88808c5f9fb8
+> May 20 05:06:25 supernova kernel: [16312.604246] RBP: ffff88808c5f9e38
+> R08: ffffffffffffffff R09: ffffc9000048fcd8
+> May 20 05:06:25 supernova kernel: [16312.604246] R10: 0000000000000000
+> R11: 0000000000000520 R12: ffff88808c5f9fb0
+> May 20 05:06:25 supernova kernel: [16312.604247] R13: ffff88820f14d000
+> R14: ffff88820f14d070 R15: 0000000000000122
+> May 20 05:06:25 supernova kernel: [16312.604249] FS:
+> 0000000000000000(0000) GS:ffff888217700000(0000)
+> knlGS:0000000000000000
+> May 20 05:06:25 supernova kernel: [16312.604250] CS:  0010 DS: 0000
+> ES: 0000 CR0: 0000000080050033
+> May 20 05:06:25 supernova kernel: [16312.604251] CR2: 00007f7849e58000
+> CR3: 000000001e676006 CR4: 00000000001606e0
 > 
-> Disallow setting VERITY or ENCRYPT if DAX is set.
+> --
+> nirinA
 > 
-> Finally, on regular files, flag the inode to not be cached to facilitate
-> changing S_DAX on the next creation of the inode.
-> 
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 
-The patch looks good to me. You can add:
 
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-One comment below:
-
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 5ba65eb0e2ef..be9713e898eb 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -1323,6 +1323,9 @@ static int ext4_set_context(struct inode *inode, const void *ctx, size_t len,
->  	if (WARN_ON_ONCE(IS_DAX(inode) && i_size_read(inode)))
->  		return -EINVAL;
-
-AFAIU this check is here so that fscrypt_inherit_context() is able call us
-and we can clear S_DAX flag. So can't we rather move this below the
-EXT4_INODE_DAX check and change this to
-
-	IS_DAX(inode) && !(inode->i_flags & I_NEW)
-
-? Because as I'm reading the code now, this should never trigger?
-
->  
-> +	if (ext4_test_inode_flag(inode, EXT4_INODE_DAX))
-> +		return -EOPNOTSUPP;
-> +
-
-								Honza
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
