@@ -2,126 +2,182 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10D341DBC28
-	for <lists+linux-ext4@lfdr.de>; Wed, 20 May 2020 20:00:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9E921DBCF1
+	for <lists+linux-ext4@lfdr.de>; Wed, 20 May 2020 20:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726822AbgETSAH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 20 May 2020 14:00:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726804AbgETSAD (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 20 May 2020 14:00:03 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67CD6C08C5C0
-        for <linux-ext4@vger.kernel.org>; Wed, 20 May 2020 11:00:02 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id u15so4896349ljd.3
-        for <linux-ext4@vger.kernel.org>; Wed, 20 May 2020 11:00:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mtpCTLjeaytdekB4adxVz/e/JZwQHur4soi/tkekgkg=;
-        b=RwL7kSM3fz9MR6t5Ar2hYTR0dC+a68qyUw6+z9033WeXCAUoxY8PEL7x2rcKx9bIWT
-         l6A08Wjxs5sPfZMw5X09MFSUjE1qHLWgyYHW8VFFkTznN60/pkdMAWpnger7o85A8dVP
-         qTXxWNl+c9c6DyvNDvC0ebMsh3xbuJUKuQ8Rz44tF4eOqCus/XLjH8vxAcgNxnvE6ECD
-         vDEUVjfrmmgeklu12ukdEkM3ps7/O48UUdbhbzh08v+evhakhTrUIyOdzD4cM7odKyc2
-         jWOem0ysPrATgUJg9nMtB+WUY+Ngyots1DIicBIYLP8IlhqZc/3YjYx7aeu0g0fnDMxE
-         4bOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mtpCTLjeaytdekB4adxVz/e/JZwQHur4soi/tkekgkg=;
-        b=OlM0+qlJkUmfxz+etPInf3DXwxxYry16P80+OP1s5lq/rJheGz+HNwsuOgY2JCzDEO
-         YIxE9K2vkIu66EYNryWQ5+nytupEVyR0hksHw9yBD9dRoPgWL2XWyXH7kPg30RD5JPhC
-         T/Tb4iuRfs2fusDOMEBohFYmXt3bzRM1UOo2e1t+jzFHPfQVvthwp1bnQwdsbcpKTyX/
-         2Pt41KlPSWP3A9iUJjC+Y+ivXvh0rYZ808+idjIS9hpe6lL9v+NjUSDTbqRzgGi69gku
-         2CxZLoOXm2HKkHWH5s4rmQOvsiuyAihgDxod4av3Oh+j+KOUEfvEHiSyRQ1CylGW0SwJ
-         oemQ==
-X-Gm-Message-State: AOAM533oi3AbKtuTFSUC/CUsY01udwFKJyqm5epyL4ZZxLye0fhNylDc
-        D7R15c+UBWBeGQnUt42UducptUcKMQuEoBTQ7nxxww==
-X-Google-Smtp-Source: ABdhPJxMVT2aazzajf86PZFdGt2E7whHDnP+nICKDm4NC6feIw0z4SprtT2do+git6kUcT4Xo3qaJQi4N/SBczqLtpU=
-X-Received: by 2002:a2e:3012:: with SMTP id w18mr3286415ljw.55.1589997600706;
- Wed, 20 May 2020 11:00:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <CA+G9fYu2ruH-8uxBHE0pdE6RgRTSx4QuQPAN=Nv3BCdRd2ouYA@mail.gmail.com>
- <20200501135806.4eebf0b92f84ab60bba3e1e7@linux-foundation.org>
- <CA+G9fYsiZ81pmawUY62K30B6ue+RXYod854RS91R2+F8ZO7Xvw@mail.gmail.com>
- <20200519075213.GF32497@dhcp22.suse.cz> <CAK8P3a2T_j-Ynvhsqe_FCqS2-ZdLbo0oMbHhHChzMbryE0izAQ@mail.gmail.com>
- <20200519084535.GG32497@dhcp22.suse.cz> <CA+G9fYvzLm7n1BE7AJXd8_49fOgPgWWTiQ7sXkVre_zoERjQKg@mail.gmail.com>
-In-Reply-To: <CA+G9fYvzLm7n1BE7AJXd8_49fOgPgWWTiQ7sXkVre_zoERjQKg@mail.gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 20 May 2020 23:29:49 +0530
-Message-ID: <CA+G9fYsXnwyGetj-vztAKPt8=jXrkY8QWe74u5EEA3XPW7aikQ@mail.gmail.com>
-Subject: Re: mm: mkfs.ext4 invoked oom-killer on i386 - pagecache_get_page
-To:     Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>
-Cc:     "Linux F2FS DEV, Mailing List" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, Arnd Bergmann <arnd@arndb.de>,
+        id S1726871AbgETSeG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 20 May 2020 14:34:06 -0400
+Received: from mga01.intel.com ([192.55.52.88]:49544 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726510AbgETSeG (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 20 May 2020 14:34:06 -0400
+IronPort-SDR: /qoIdQ/3yGZM96X46ViR/C7Cc6fpUBgO/EA11MPzp/Gb6da8I32bmhG9TSBplu6JlgcYmN+x51
+ z24UjS4MsqGg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2020 11:34:05 -0700
+IronPort-SDR: inQU0SeZy+ZsfOc31YVmUroqAI4RRp1d+ieKKViNm60J3QwGRSI8o5y+0O9z0a8O8nijdjftaE
+ ICZ166qYICFw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,414,1583222400"; 
+   d="scan'208";a="412121303"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
+  by orsmga004.jf.intel.com with ESMTP; 20 May 2020 11:34:04 -0700
+Date:   Wed, 20 May 2020 11:34:04 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-ext4@vger.kernel.org,
         Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Chao Yu <yuchao0@huawei.com>, lkft-triage@lists.linaro.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3 7/8] fs/ext4: Introduce DAX inode flag
+Message-ID: <20200520183404.GE3660833@iweiny-DESK2.sc.intel.com>
+References: <20200520055753.3733520-1-ira.weiny@intel.com>
+ <20200520055753.3733520-8-ira.weiny@intel.com>
+ <20200520141138.GE30597@quack2.suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200520141138.GE30597@quack2.suse.cz>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, 20 May 2020 at 17:26, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->
->
-> This issue is specific on 32-bit architectures i386 and arm on linux-next tree.
-> As per the test results history this problem started happening from
-> Bad : next-20200430
-> Good : next-20200429
->
-> steps to reproduce:
-> dd if=/dev/disk/by-id/ata-SanDisk_SSD_PLUS_120GB_190504A00573
-> of=/dev/null bs=1M count=2048
-> or
-> mkfs -t ext4 /dev/disk/by-id/ata-SanDisk_SSD_PLUS_120GB_190804A00BE5
->
->
-> Problem:
-> [   38.802375] dd invoked oom-killer: gfp_mask=0x100cc0(GFP_USER),
-> order=0, oom_score_adj=0
+On Wed, May 20, 2020 at 04:11:38PM +0200, Jan Kara wrote:
+> On Tue 19-05-20 22:57:52, ira.weiny@intel.com wrote:
+> > From: Ira Weiny <ira.weiny@intel.com>
+> > 
+> > Add a flag to preserve FS_XFLAG_DAX in the ext4 inode.
+> > 
+> > Set the flag to be user visible and changeable.  Set the flag to be
+> > inherited.  Allow applications to change the flag at any time with the
+> > exception of if VERITY or ENCRYPT is set.
+> > 
+> > Disallow setting VERITY or ENCRYPT if DAX is set.
+> > 
+> > Finally, on regular files, flag the inode to not be cached to facilitate
+> > changing S_DAX on the next creation of the inode.
+> > 
+> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> 
+> The patch looks good to me. You can add:
+> 
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> 
+> One comment below:
+> 
+> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> > index 5ba65eb0e2ef..be9713e898eb 100644
+> > --- a/fs/ext4/super.c
+> > +++ b/fs/ext4/super.c
+> > @@ -1323,6 +1323,9 @@ static int ext4_set_context(struct inode *inode, const void *ctx, size_t len,
+> >  	if (WARN_ON_ONCE(IS_DAX(inode) && i_size_read(inode)))
+> >  		return -EINVAL;
+> 
+> AFAIU this check is here so that fscrypt_inherit_context() is able call us
+> and we can clear S_DAX flag.
 
-As a part of investigation on this issue LKFT teammate Anders Roxell
-git bisected the problem and found bad commit(s) which caused this problem.
+Basically yes that is true.  It is IMO somewhat convoluted because I think ext4
+probably could have prevented S_DAX from being set in __ext4_new_inode() in the
+first place.  But that is a clean up I was not prepared to make last night.
 
-The following two patches have been reverted on next-20200519 and retested the
-reproducible steps and confirmed the test case mkfs -t ext4 got PASS.
-( invoked oom-killer is gone now)
+> So can't we rather move this below the
+> EXT4_INODE_DAX check and change this to
+> 
+> 	IS_DAX(inode) && !(inode->i_flags & I_NEW)
+> 
+> ? Because as I'm reading the code now, this should never trigger?
 
-Revert "mm, memcg: avoid stale protection values when cgroup is above
-protection"
-    This reverts commit 23a53e1c02006120f89383270d46cbd040a70bc6.
+I agree this should never trigger.  But I don't see how the order of the checks
+maters much.  But changing this to !new is probably worth doing to make it
+clear what we really mean here.
 
-Revert "mm, memcg: decouple e{low,min} state mutations from protection
-checks"
-    This reverts commit 7b88906ab7399b58bb088c28befe50bcce076d82.
+I think that is a follow on patch.  In addition, if we don't set S_DAX at all
+in __ext4_new_inode() this check could then be what I had originally with the warn on.
 
-i386 test log shows mkfs -t ext4 pass
-https://lkft.validation.linaro.org/scheduler/job/1443405#L1200
+	if (WARN_ON_ONCE(IS_DAX(inode)))
+		...
 
-ref:
-https://lore.kernel.org/linux-mm/cover.1588092152.git.chris@chrisdown.name/
-https://lore.kernel.org/linux-mm/CA+G9fYvzLm7n1BE7AJXd8_49fOgPgWWTiQ7sXkVre_zoERjQKg@mail.gmail.com/T/#t
+... because it would be considered a bug to be setting DAX on inodes which are
+going to be encrypted..
 
--- 
-Linaro LKFT
-https://lkft.linaro.org
+Ira
+
+Something like this:  (compiled only)
+
+commit 6cd5aed3cd9e2c10e3fb7c6dd23918580532f256 (HEAD -> lck-4071-b13-v4)
+Author: Ira Weiny <ira.weiny@intel.com>
+Date:   Wed May 20 11:32:50 2020 -0700
+
+    RFC: do not set S_DAX on an inode which is going to be encrypted
+
+diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
+index 7941c140723f..be80cb639d74 100644
+--- a/fs/ext4/ialloc.c
++++ b/fs/ext4/ialloc.c
+@@ -844,6 +844,9 @@ struct inode *__ext4_new_inode(handle_t *handle, struct inode *dir,
+                return ERR_PTR(-ENOMEM);
+        ei = EXT4_I(inode);
+ 
++       if (encrypt)
++               ext4_set_inode_flag(inode, EXT4_INODE_ENCRYPT);
++
+        /*
+         * Initialize owners and quota early so that we don't have to account
+         * for quota initialization worst case in standard inode creating
+@@ -1165,6 +1168,7 @@ struct inode *__ext4_new_inode(handle_t *handle, struct inode *dir,
+                err = fscrypt_inherit_context(dir, inode, handle, true);
+                if (err)
+                        goto fail_free_drop;
++               ext4_clear_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
+        }
+ 
+        if (!(ei->i_flags & EXT4_EA_INODE_FL)) {
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index be9713e898eb..099b87864f55 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -1320,7 +1320,10 @@ static int ext4_set_context(struct inode *inode, const void *ctx, size_t len,
+        if (inode->i_ino == EXT4_ROOT_INO)
+                return -EPERM;
+ 
+-       if (WARN_ON_ONCE(IS_DAX(inode) && i_size_read(inode)))
++       /* S_DAX should never be set here because encryption is not compatible
++        * with DAX
++        */
++       if (WARN_ON_ONCE(IS_DAX(inode)))
+                return -EINVAL;
+ 
+        if (ext4_test_inode_flag(inode, EXT4_INODE_DAX))
+@@ -1337,22 +1340,11 @@ static int ext4_set_context(struct inode *inode, const void *ctx, size_t len,
+         * being set on an existing inode in its own transaction.  Only in the
+         * latter case should the "retry on ENOSPC" logic be used.
+         */
+-
+        if (handle) {
+                res = ext4_xattr_set_handle(handle, inode,
+                                            EXT4_XATTR_INDEX_ENCRYPTION,
+                                            EXT4_XATTR_NAME_ENCRYPTION_CONTEXT,
+                                            ctx, len, 0);
+-               if (!res) {
+-                       ext4_set_inode_flag(inode, EXT4_INODE_ENCRYPT);
+-                       ext4_clear_inode_state(inode,
+-                                       EXT4_STATE_MAY_INLINE_DATA);
+-                       /*
+-                        * Update inode->i_flags - S_ENCRYPTED will be enabled,
+-                        * S_DAX may be disabled
+-                        */
+-                       ext4_set_inode_flags(inode, false);
+-               }
+                return res;
+        }
+
