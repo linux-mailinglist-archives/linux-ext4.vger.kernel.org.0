@@ -2,167 +2,141 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E8251DB269
-	for <lists+linux-ext4@lfdr.de>; Wed, 20 May 2020 13:56:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD4CA1DB4A3
+	for <lists+linux-ext4@lfdr.de>; Wed, 20 May 2020 15:11:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726914AbgETL4c (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 20 May 2020 07:56:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726838AbgETL4b (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 20 May 2020 07:56:31 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FD08C061A0F
-        for <linux-ext4@vger.kernel.org>; Wed, 20 May 2020 04:56:31 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id h188so2124405lfd.7
-        for <linux-ext4@vger.kernel.org>; Wed, 20 May 2020 04:56:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=c8qp29x57Bnw83ildG5bfYkgdHVhrczJ6/NyvfJLqdw=;
-        b=qlgXHVmEwhlw8sQKewHDsuWMSreqtLqu7J0G2FobOqDX6oBRZuV/ovWE3ANMJBrQ/R
-         VHSrnEzZvSTDxoGM3/zD4+VTvhNG0yaVzAa7lwGqABFXOzXetvh0ERA4i6G5tYAoy+YR
-         Qr6jPv+xDkynFLCazHC8VGxm8nKlCbFmrG5Kj91mWASiJARiWqfoR7ILN0Zk3nndZglm
-         xfojJ2HA3S+ljjrJhP5FQNxiCPqhXs7R18c5zKgCMh12Zewow13rinQNy8sr0PEtMvmD
-         gPqjH0dG3srB+Q4snOOPhnSigEJYiArkGSq8les+OJeIhHLgVWpVkJPP+TTaSgnYuQhJ
-         AIGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=c8qp29x57Bnw83ildG5bfYkgdHVhrczJ6/NyvfJLqdw=;
-        b=JECMAiaAIKvn69NQBBhNsFmVgppSJyFq4UMw5t+3ow9SWWq+wXU4dYZU7bPqs8hRnl
-         9NuuVow6w3tRJiNUrU5PaEdrhPIrr0qWiFCiJ3GHjhp1FFxHvn1pHOIG7atOmMSIfXB8
-         qciH6RzhCXo39DAM2ZWddmpBEHtls6mnMRFBiFsHXyTP3DfdsTh2BvOJZaySBS4L5fGi
-         92330CMHxvoOkic3DG9mgin7m2bgjn2359hCbc8pkZ7/jqaWEbfvAnub7r11pTQgEVL1
-         dYcQsf2UqctbU/dEsogABPnzaYIpFU00/tzrSAP08G9RfMGiVcCfoJRyK5/mCScomjc4
-         GBbA==
-X-Gm-Message-State: AOAM530TGAsy1v6V2/4UJGgh73Kbola9+NH7A2IzPOl/Z8S3Nw2dma4Z
-        l7V4dAO/dfCkgXWO1yFz7V8Wpf+YbQVVcrbxmDoHiQ==
-X-Google-Smtp-Source: ABdhPJwm4d8MeeXVBkReCSgeKef0/TrHxDY6JMkbe05871VEuSEJIfm5/eJuCpE32/mb9LC8RnbJH+gDczs7BL2boVk=
-X-Received: by 2002:a19:8453:: with SMTP id g80mr2422388lfd.167.1589975789287;
- Wed, 20 May 2020 04:56:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <CA+G9fYu2ruH-8uxBHE0pdE6RgRTSx4QuQPAN=Nv3BCdRd2ouYA@mail.gmail.com>
- <20200501135806.4eebf0b92f84ab60bba3e1e7@linux-foundation.org>
- <CA+G9fYsiZ81pmawUY62K30B6ue+RXYod854RS91R2+F8ZO7Xvw@mail.gmail.com>
- <20200519075213.GF32497@dhcp22.suse.cz> <CAK8P3a2T_j-Ynvhsqe_FCqS2-ZdLbo0oMbHhHChzMbryE0izAQ@mail.gmail.com>
- <20200519084535.GG32497@dhcp22.suse.cz>
-In-Reply-To: <20200519084535.GG32497@dhcp22.suse.cz>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 20 May 2020 17:26:17 +0530
-Message-ID: <CA+G9fYvzLm7n1BE7AJXd8_49fOgPgWWTiQ7sXkVre_zoERjQKg@mail.gmail.com>
-Subject: Re: mm: mkfs.ext4 invoked oom-killer on i386 - pagecache_get_page
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        "Linux F2FS DEV, Mailing List" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
+        id S1726823AbgETNLa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 20 May 2020 09:11:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53668 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726435AbgETNLa (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 20 May 2020 09:11:30 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id C9140AF26;
+        Wed, 20 May 2020 13:11:30 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id F00F21E126B; Wed, 20 May 2020 15:11:26 +0200 (CEST)
+Date:   Wed, 20 May 2020 15:11:26 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>, linux-ext4@vger.kernel.org,
         Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Chao Yu <yuchao0@huawei.com>, lkft-triage@lists.linaro.org
-Content-Type: text/plain; charset="UTF-8"
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/9] fs/ext4: Disallow encryption if inode is DAX
+Message-ID: <20200520131126.GA30597@quack2.suse.cz>
+References: <20200513054324.2138483-1-ira.weiny@intel.com>
+ <20200513054324.2138483-4-ira.weiny@intel.com>
+ <20200516020253.GG1009@sol.localdomain>
+ <20200518050315.GA3025231@iweiny-DESK2.sc.intel.com>
+ <20200518162447.GA954@sol.localdomain>
+ <20200520020232.GA3470571@iweiny-DESK2.sc.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200520020232.GA3470571@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-FYI,
+On Tue 19-05-20 19:02:33, Ira Weiny wrote:
+> On Mon, May 18, 2020 at 09:24:47AM -0700, Eric Biggers wrote:
+> > On Sun, May 17, 2020 at 10:03:15PM -0700, Ira Weiny wrote:
+> 
+> First off...  OMG...
+> 
+> I'm seeing some possible user pitfalls which are complicating things IMO.  It
+> probably does not matter because most users don't care and have either enabled
+> DAX on _every_ mount or _not_ enabled DAX on _every_ mount.  And have _not_
+> used verity nor encryption while using DAX.
+> 
+> Verity is a bit easier because verity is not inherited and we only need to
+> protect against setting it if DAX is on.
+> 
+> However, it can be weird for the user thusly:
+> 
+> 1) mount _without_ DAX
+> 2) enable verity on individual inodes
+> 3) unmount/mount _with_ DAX
+> 
+> Now the verity files are not enabled for DAX without any indication...
+> <sigh> This is still true with my patch.  But at least it closes the hole
+> of trying to change the DAX flag after the fact (because verity was set).
+> 
+> Also both this check and the verity need to be maintained to keep the mount
+> option working as it was before...
+> 
+> For encryption it is more complicated because encryption can be set on
+> directories and inherited so the IS_DAX() check does nothing while '-o
+> dax' is used.  Therefore users can:
+> 
+> 1) mount _with_ DAX
+> 2) enable encryption on a directory
+> 3) files created in that directory will not have DAX set
+> 
+> And I now understand why the WARN_ON() was there...  To tell users about this
+> craziness.
 
-This issue is specific on 32-bit architectures i386 and arm on linux-next tree.
-As per the test results history this problem started happening from
-Bad : next-20200430
-Good : next-20200429
+Thanks for digging into this! I agree that just not setting S_DAX where
+other inode features disallow that is probably the best.
 
-steps to reproduce:
-dd if=/dev/disk/by-id/ata-SanDisk_SSD_PLUS_120GB_190504A00573
-of=/dev/null bs=1M count=2048
-or
-mkfs -t ext4 /dev/disk/by-id/ata-SanDisk_SSD_PLUS_120GB_190804A00BE5
-
-
-Problem:
-[   38.802375] dd invoked oom-killer: gfp_mask=0x100cc0(GFP_USER),
-order=0, oom_score_adj=0
-
-i386 crash log:  https://pastebin.com/Hb8U89vU
-arm crash log: https://pastebin.com/BD9t3JTm
-
-On Tue, 19 May 2020 at 14:15, Michal Hocko <mhocko@kernel.org> wrote:
->
-> On Tue 19-05-20 10:11:25, Arnd Bergmann wrote:
-> > On Tue, May 19, 2020 at 9:52 AM Michal Hocko <mhocko@kernel.org> wrote:
-> > >
-> > > On Mon 18-05-20 19:40:55, Naresh Kamboju wrote:
-> > > > Thanks for looking into this problem.
-> > > >
-> > > > On Sat, 2 May 2020 at 02:28, Andrew Morton <akpm@linux-foundation.org> wrote:
-> > > > >
-> > > > > On Fri, 1 May 2020 18:08:28 +0530 Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
-> > > > >
-> > > > > > mkfs -t ext4 invoked oom-killer on i386 kernel running on x86_64 device
-> > > > > > and started happening on linux -next master branch kernel tag next-20200430
-> > > > > > and next-20200501. We did not bisect this problem.
-> > > [...]
-> > > > Creating journal (131072 blocks): [   31.251333] mkfs.ext4 invoked
-> > > > oom-killer: gfp_mask=0x101cc0(GFP_USER|__GFP_WRITE), order=0,
-> > > > oom_score_adj=0
-> > > [...]
-> > > > [   31.500943] DMA free:187396kB min:22528kB low:28160kB high:33792kB
-> > > > reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB
-> > > > active_file:4736kB inactive_file:431688kB unevictable:0kB
-> > > > writepending:62020kB present:783360kB managed:668264kB mlocked:0kB
-> > > > kernel_stack:888kB pagetables:0kB bounce:0kB free_pcp:880kB
-> > > > local_pcp:216kB free_cma:163840kB
-> > >
-> > > This is really unexpected. You are saying this is a regular i386 and DMA
-> > > should be bottom 16MB while yours is 780MB and the rest of the low mem
-> > > is in the Normal zone which is completely missing here. How have you got
-> > > to that configuration? I have to say I haven't seen anything like that
-> > > on i386.
+> > > This is, AFAICS, not going to affect correctness.  It will only be confusing
+> > > because the user will be able to set both DAX and encryption on the directory
+> > > but files there will only see encryption being used...  :-(
+> > > 
+> > > Assuming you are correct about this call path only being valid on directories.
+> > > It seems this IS_DAX() needs to be changed to check for EXT4_DAX_FL in
+> > > "fs/ext4: Introduce DAX inode flag"?  Then at that point we can prevent DAX and
+> > > encryption on a directory.  ...  and at this point IS_DAX() could be removed at
+> > > this point in the series???
+> > 
+> > I haven't read the whole series, but if you are indeed trying to prevent a
+> > directory with EXT4_DAX_FL from being encrypted, then it does look like you'd
+> > need to check EXT4_DAX_FL, not S_DAX.
+> > 
+> > The other question is what should happen when a file is created in an encrypted
+> > directory when the filesystem is mounted with -o dax.  Actually, I think I
+> > missed something there.  Currently (based on reading the code) the DAX flag will
+> > get set first, and then ext4_set_context() will see IS_DAX() && i_size == 0 and
+> > clear the DAX flag when setting the encrypt flag.
+> 
+> I think you are correct.
+> 
 > >
-> > I think that line comes from an ARM32 beaglebone-X15 machine showing
-> > the same symptom. The i386 line from the log file that Naresh linked to at
-> > https://lkft.validation.linaro.org/scheduler/job/1406110#L1223  is less
-> > unusual:
->
-> OK, that makes more sense! At least for the memory layout.
->
-> > [   34.931663] Node 0 active_anon:21464kB inactive_anon:8688kB
-> > active_file:16604kB inactive_file:849976kB unevictable:0kB
-> > isolated(anon):0kB isolated(file):0kB mapped:25284kB dirty:58952kB
-> > writeback:27772kB shmem:8944kB writeback_tmp:0kB unstable:0kB
-> > all_unreclaimable? yes
-> > [   34.955523] DMA free:3356kB min:68kB low:84kB high:100kB
-> > reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB
-> > active_file:0kB inactive_file:11964kB unevictable:0kB
-> > writepending:11980kB present:15964kB managed:15876kB mlocked:0kB
-> > kernel_stack:0kB pagetables:0kB bounce:0kB free_pcp:0kB local_pcp:0kB
-> > free_cma:0kB
-> > [   34.983385] lowmem_reserve[]: 0 825 1947 825
-> > [   34.987678] Normal free:3948kB min:7732kB low:8640kB high:9548kB
-> > reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB
-> > active_file:1096kB inactive_file:786400kB unevictable:0kB
-> > writepending:65432kB present:884728kB managed:845576kB mlocked:0kB
-> > kernel_stack:1112kB pagetables:0kB bounce:0kB free_pcp:2908kB
-> > local_pcp:500kB free_cma:0kB
->
-> The lowmem is really low (way below the min watermark so even memory
-> reserves for high priority and atomic requests are depleted. There is
-> still 786MB of inactive page cache to be reclaimed. It doesn't seem to
-> be dirty or under the writeback but it still might be pinned by the
-> filesystem. I would suggest watching vmscan reclaim tracepoints and
-> check why the reclaim fails to reclaim anything.
-> --
-> Michal Hocko
-> SUSE Labs
+> > So, the i_size == 0 check is actually needed.
+> > Your patch (AFAICS) just makes creating an encrypted file fail
+> > when '-o dax'.  Is that intended?
+> 
+> Yes that is what I intended but it is more complicated I see now.
+> 
+> The intent is that IS_DAX() should _never_ be true on an encrypted or verity
+> file...  even if -o dax is specified.  Because IS_DAX() should be a result of
+> the inode flags being checked.  The order of the setting of those flags is a
+> bit odd for the encrypted case.  I don't really like that DAX is set then
+> un-set.  It is convoluted but I'm not clear right now how to fix it.
+> 
+> > If not, maybe you should change it to check
+> > S_NEW instead of i_size == 0 to make it clearer?
+> 
+> The patch is completely unnecessary.
+> 
+> It is much easier to make (EXT4_ENCRYPT_FL | EXT4_VERITY_FL) incompatible
+> with EXT4_DAX_FL when it is introduced later in the series.  Furthermore
+> this mutual exclusion can be done on directories in the encrypt case.
+> Which I think will be nicer for the user if they get an error when trying
+> to set one when the other is set.
+
+Agreed.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
