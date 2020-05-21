@@ -2,128 +2,110 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BCDE1DD67C
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 May 2020 21:00:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D52381DD6D8
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 May 2020 21:14:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730024AbgEUTA2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 21 May 2020 15:00:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729793AbgEUTA1 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 21 May 2020 15:00:27 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DB3DC08C5C0
-        for <linux-ext4@vger.kernel.org>; Thu, 21 May 2020 12:00:27 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id z18so9577088lji.12
-        for <linux-ext4@vger.kernel.org>; Thu, 21 May 2020 12:00:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AXqOJl5SmNS23EUn7DmXTUU6aYLgyfPvo+AUamH08Ps=;
-        b=EV5SVn70MuPiXaA+/GpI4b2qrg0jB93InY/vaKKkvXw3rt6V19F3iaEfufdWjb2vSa
-         LFgwuEMLZ0kF+u4vLem/Ho+YYOlDTSymGzxy0FWxZiHOsB3Pb3GSFPQ6THq8MehoMw81
-         61D12qPxoVMXCVN5YnrMpoSh0ZCOqjVhvK2/icCRVt/PPsd4BcWFGL0kAP/7zDq1hN3x
-         a1rzoPThWH5HcKX0GiUC4cxi3kkuCMXpV76kYKiXipe6YgwkiIKVt/YehTDSxdT8FKMQ
-         CKv5YcXmrRHEWyhnCcxlLCZV3yGZBNkQfBJxwnNbBjgGPVYWSZIk3apxM0beTrE2kQJt
-         vtEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AXqOJl5SmNS23EUn7DmXTUU6aYLgyfPvo+AUamH08Ps=;
-        b=ibXGyIsYys9Cqy2asiKX6Zw25OVCtmCmYMoc9eycgoWKdf60VEeGIpBoZKQV5HgDYf
-         xgsONRenMpS46a+VBtkBdAzsbLAbi8suoyCJfgtOVlrEb1xJHTbevpPnXFMWhYs+UNwX
-         Nupukxm3bjsDPAieVAc5oz7Suq3mwh58ulPpBhS9gJtWDJnKCAg54su2Of0UHJpmDK7e
-         r4yGV2caTc4Hik5jdwc3wvUasvpCL42KDqlcPx9Cxjdq5sfbL3ylnTt+wTjM0G1KvZ7V
-         dyKZKWhWqMcoRE3181KAxVxmrsTCe6PiJm+8LxZWAvmug5I89qNmFcajLa9okc2l70Vl
-         WePA==
-X-Gm-Message-State: AOAM5315zwpnTOkcihuOGUqp8GmPlTaxB3cDfzqxSp0/ThilgCGCBpxB
-        JVKsAE3Ezgzo6y2sXH0MS9EWuicyyDK16sCafmxsTA==
-X-Google-Smtp-Source: ABdhPJztzAYrR/hpe1uRAGQjKmg0ls00XHM6k9/5+3Vj5L9HrQE3V1E3er3ujQPjsfP8Tn3nR1o1fnGVTi8pnw7kWuo=
-X-Received: by 2002:a2e:6c0c:: with SMTP id h12mr5664520ljc.266.1590087625478;
- Thu, 21 May 2020 12:00:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <CA+G9fYu2ruH-8uxBHE0pdE6RgRTSx4QuQPAN=Nv3BCdRd2ouYA@mail.gmail.com>
- <20200501135806.4eebf0b92f84ab60bba3e1e7@linux-foundation.org>
- <CA+G9fYsiZ81pmawUY62K30B6ue+RXYod854RS91R2+F8ZO7Xvw@mail.gmail.com>
- <20200519075213.GF32497@dhcp22.suse.cz> <CAK8P3a2T_j-Ynvhsqe_FCqS2-ZdLbo0oMbHhHChzMbryE0izAQ@mail.gmail.com>
- <20200519084535.GG32497@dhcp22.suse.cz> <CA+G9fYvzLm7n1BE7AJXd8_49fOgPgWWTiQ7sXkVre_zoERjQKg@mail.gmail.com>
- <CA+G9fYsXnwyGetj-vztAKPt8=jXrkY8QWe74u5EEA3XPW7aikQ@mail.gmail.com>
- <20200520190906.GA558281@chrisdown.name> <20200521095515.GK6462@dhcp22.suse.cz>
- <20200521163450.GV6462@dhcp22.suse.cz>
-In-Reply-To: <20200521163450.GV6462@dhcp22.suse.cz>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 22 May 2020 00:30:13 +0530
-Message-ID: <CA+G9fYuDWGZx50UpD+WcsDeHX9vi3hpksvBAWbMgRZadb0Pkww@mail.gmail.com>
-Subject: Re: mm: mkfs.ext4 invoked oom-killer on i386 - pagecache_get_page
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        "Linux F2FS DEV, Mailing List" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, Arnd Bergmann <arnd@arndb.de>,
+        id S1729990AbgEUTNS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 21 May 2020 15:13:18 -0400
+Received: from mga09.intel.com ([134.134.136.24]:54416 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729593AbgEUTNS (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 21 May 2020 15:13:18 -0400
+IronPort-SDR: 7NfA+RssM2oxqP9PwDnul1nIsqrqdegNBuT8BpKAKNK6cCqSc9R5RHSp/i0U4LoGzIsJhHAJZv
+ SSI1amTkVIDg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2020 12:13:17 -0700
+IronPort-SDR: ujuwjXnfhlAS/wLHOjcQHidVe/I589qgyOG3ix97c9JZrd0rybb4Pcr85nPMOo4kFKQL5JH1Mc
+ sXqKPaz6KX0Q==
+X-IronPort-AV: E=Sophos;i="5.73,418,1583222400"; 
+   d="scan'208";a="412509503"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2020 12:13:16 -0700
+From:   ira.weiny@intel.com
+To:     linux-ext4@vger.kernel.org,
         Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Chao Yu <yuchao0@huawei.com>, lkft-triage@lists.linaro.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Cgroups <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        Eric Biggers <ebiggers@kernel.org>
+Cc:     Ira Weiny <ira.weiny@intel.com>, Al Viro <viro@zeniv.linux.org.uk>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH V4 0/8] Enable ext4 support for per-file/directory DAX operations
+Date:   Thu, 21 May 2020 12:13:05 -0700
+Message-Id: <20200521191313.261929-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, 21 May 2020 at 22:04, Michal Hocko <mhocko@kernel.org> wrote:
->
-> On Thu 21-05-20 11:55:16, Michal Hocko wrote:
-> > On Wed 20-05-20 20:09:06, Chris Down wrote:
-> > > Hi Naresh,
-> > >
-> > > Naresh Kamboju writes:
-> > > > As a part of investigation on this issue LKFT teammate Anders Roxell
-> > > > git bisected the problem and found bad commit(s) which caused this problem.
-> > > >
-> > > > The following two patches have been reverted on next-20200519 and retested the
-> > > > reproducible steps and confirmed the test case mkfs -t ext4 got PASS.
-> > > > ( invoked oom-killer is gone now)
-> > > >
-> > > > Revert "mm, memcg: avoid stale protection values when cgroup is above
-> > > > protection"
-> > > >    This reverts commit 23a53e1c02006120f89383270d46cbd040a70bc6.
-> > > >
-> > > > Revert "mm, memcg: decouple e{low,min} state mutations from protection
-> > > > checks"
-> > > >    This reverts commit 7b88906ab7399b58bb088c28befe50bcce076d82.
-> > >
-> > > Thanks Anders and Naresh for tracking this down and reverting.
-> > >
-> > > I'll take a look tomorrow. I don't see anything immediately obviously wrong
-> > > in either of those commits from a (very) cursory glance, but they should
-> > > only be taking effect if protections are set.
-> >
-> > Agreed. If memory.{low,min} is not used then the patch should be
-> > effectively a nop.
->
-> I was staring into the code and did not see anything.  Could you give the
-> following debugging patch a try and see whether it triggers?
+From: Ira Weiny <ira.weiny@intel.com>
 
-These code paths did not touch it seems. but still see the reported problem.
-Please find a detailed test log output [1]
+Changes from V3:
+	Change EXT4_DAX_FL to bit24
+	Cache device DAX support in the super block and use that is
+		ext4_should_use_dax()
 
-And
-One more test log with cgroup_disable=memory [2]
+Changes from V2:
+	Rework DAX exclusivity with verity and encryption based on feedback
+	from Eric
 
-Test log link,
-[1] https://pastebin.com/XJU7We1g
-[2] https://pastebin.com/BZ0BMUVt
+Enable the same per file DAX support in ext4 as was done for xfs.  This series
+builds and depends on the V11 series for xfs.[1]
+
+This passes the same xfstests test as XFS.
+
+The only issue is that this modifies the old mount option parsing code rather
+than waiting for the new parsing code to be finalized.
+
+This series starts with 3 fixes which include making Verity and Encrypt truly
+mutually exclusive from DAX.  I think these first 3 patches should be picked up
+for 5.8 regardless of what is decided regarding the mount parsing.
+
+[1] https://lore.kernel.org/lkml/20200428002142.404144-1-ira.weiny@intel.com/
+
+To: linux-ext4@vger.kernel.org
+To: Andreas Dilger <adilger.kernel@dilger.ca>
+To: "Theodore Y. Ts'o" <tytso@mit.edu>
+To: Jan Kara <jack@suse.cz>
+To: Eric Biggers <ebiggers@kernel.org>
+
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Dave Chinner <david@fromorbit.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Jeff Moyer <jmoyer@redhat.com>
+Cc: "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+Ira Weiny (8):
+  fs/ext4: Narrow scope of DAX check in setflags
+  fs/ext4: Disallow verity if inode is DAX
+  fs/ext4: Change EXT4_MOUNT_DAX to EXT4_MOUNT_DAX_ALWAYS
+  fs/ext4: Update ext4_should_use_dax()
+  fs/ext4: Only change S_DAX on inode load
+  fs/ext4: Make DAX mount option a tri-state
+  fs/ext4: Introduce DAX inode flag
+  Documentation/dax: Update DAX enablement for ext4
+
+ Documentation/filesystems/dax.txt         |  6 +-
+ Documentation/filesystems/ext4/verity.rst |  3 +
+ fs/ext4/ext4.h                            | 23 ++++--
+ fs/ext4/ialloc.c                          |  2 +-
+ fs/ext4/inode.c                           | 26 +++++--
+ fs/ext4/ioctl.c                           | 41 +++++++++--
+ fs/ext4/super.c                           | 85 ++++++++++++++++++-----
+ fs/ext4/verity.c                          |  5 +-
+ include/uapi/linux/fs.h                   |  1 +
+ 9 files changed, 154 insertions(+), 38 deletions(-)
+
+-- 
+2.25.1
+
