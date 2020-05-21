@@ -2,213 +2,208 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8C171DD96C
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 May 2020 23:26:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C6931DD9C3
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 May 2020 23:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730483AbgEUV00 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 21 May 2020 17:26:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35740 "EHLO
+        id S1730466AbgEUV7W (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 21 May 2020 17:59:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726814AbgEUV0Y (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 21 May 2020 17:26:24 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F41EEC061A0E
-        for <linux-ext4@vger.kernel.org>; Thu, 21 May 2020 14:26:22 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id v4so6762212qte.3
-        for <linux-ext4@vger.kernel.org>; Thu, 21 May 2020 14:26:22 -0700 (PDT)
+        with ESMTP id S1729918AbgEUV7V (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 21 May 2020 17:59:21 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B24AC08C5C2
+        for <linux-ext4@vger.kernel.org>; Thu, 21 May 2020 14:59:20 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id o19so6778003qtr.10
+        for <linux-ext4@vger.kernel.org>; Thu, 21 May 2020 14:59:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=mO0P/F4ePADvuck2PJKFh7AyzOOCb+O076IyCb7LnYM=;
-        b=dlTs/1liL4YcrYk8JtiIe6jZe97uqldxrDfzd1VMPFhTCPBqxLRgUXc0HBcqZGUVb5
-         adVcAeg2Z3iyl7Y1sxN8zx305PWE+YiL2vCddfps1r/1H9xAZH4hpeFeohQpcx9DMGb0
-         dPZk49tCToIJtoWsKQ7TqCt3DRmC/PToiyR32jH9+QZrmerj3v+KsWxt/n8V4VMjkPhA
-         kTip5P6TuSl1ZRIX6/nHPQTUXZc+sHiM1n7aHS8Arvx5cH7zXR9wPbegfiFdr8/flsxg
-         k7fY2knGCqB9Etd1eDSC2TBxN26QjRYVSLLbxDnWwRg8gu7ernr7KLfjaCCVYYuiMiH/
-         m5gQ==
+         :content-disposition:in-reply-to;
+        bh=5B1+HMIDvT7snVXiXmhhirfPbIUt2RcF6P9jK7VVgzk=;
+        b=tfzseeFRapr6mzYIpyevbB2Jr0bnMxnhrggEPvTJwKT1cNJUmOyzhNEEPC7YfmFN10
+         Leq8bJtwR9By5lcHPu1Udo3g0bnQUdDLbiLyiUxWzyBaErEnqpb7zOsiDxNzuM2DY5m3
+         9i2yn71sn05AqTGZbUV3FNlQ7ZJDjxLEs00cKA6PCnWfel6WSALIg9RBtqLJgEXELCof
+         VnDtHFb0fobUgITmj7IgRam7lmriUKw5hSI013/Y1R8qjEoh55ee/UDqIrEF3v9Q5HYU
+         QhDt6u4wHbqDq6tuAnx5yRdXaCqWqT71EZvmB6MnGSWGJ8dz1OAmtQO3ti3WC/Sg3XO+
+         PZAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=mO0P/F4ePADvuck2PJKFh7AyzOOCb+O076IyCb7LnYM=;
-        b=tfh+iZMZmSC3CLBF4lUxclJUp2gyp+SO6IqtNcDotvl/ZbWR0+1zniz6FaY1CGxCAa
-         1TyTxSwhQo7Wj9TCWrdVsraia7FPfaKd2kc8iKhyWrl8Mov1aXDEbv3oMO0wZTf3Syf3
-         aY9y60jo3QMIB8dsftR9OOw1yXJbqODgZ9D6oA1JOyhHs2zUX76Mv1jLqP7LscnwDDDn
-         G2qBeqNyI835eRN0sLYFiJ9tcrvyX+AS04iRg5rZexch1hJRCiFBgJ7GxZm7Xur1ukWb
-         l/meQ3Nt2WMszSTfv946gfWKperkxIEkNDtj3dRXNM84WhToWcEXod+TIgwjp/K7QpU/
-         o5hQ==
-X-Gm-Message-State: AOAM5313fjqpkHUvppe+OHaQYuqch23++N1Fq11BMaazRbwdsM3ycQZ9
-        tOV405zDLBTDu5NLMuMOtr8=
-X-Google-Smtp-Source: ABdhPJyp3QRLUYbZ8ikof1Gd25xRaRFXbFlozVQvC4mjsbGI+9+X0NJ0eAj86E7YDFlHihI7qPs1CA==
-X-Received: by 2002:aed:374a:: with SMTP id i68mr12618097qtb.69.1590096382202;
-        Thu, 21 May 2020 14:26:22 -0700 (PDT)
-Received: from localhost.localdomain (c-73-60-226-25.hsd1.nh.comcast.net. [73.60.226.25])
-        by smtp.gmail.com with ESMTPSA id r25sm4345968qtc.16.2020.05.21.14.26.20
+         :mime-version:content-disposition:in-reply-to;
+        bh=5B1+HMIDvT7snVXiXmhhirfPbIUt2RcF6P9jK7VVgzk=;
+        b=G8K98PTTVnx2HtKq+sVU+Ny5OnAQIxy61l3TB6R5nUMnTn2XsUK29HeycyPiPlFUVD
+         PcMREpU/ON2zMEodR7eqJmDJqn5iAuJrXTCha/fyLQxmCMhxsDFX6ImR8oGNi6ISSwWl
+         g3uL0LiWkg+49Z1jFjflEZJeelgPwZ0Y4rfPTfMyscvB5xGcZCTb4bMt2rVsAs7IIAPm
+         B8Vx7UMDUlNcKYMwY64AxRqT9wlIPM8jSsOmtrj8kdtt0EVgXV+bNmIz5jHqV9friFvQ
+         8nwgfUU+17W9c8fBk6uEbutEsPNDRtrTcuOodjs/vMHbmnWTupausaXw4CBOrJl85S8l
+         KVPg==
+X-Gm-Message-State: AOAM532/fw1fRsQf17To6o1GXPNqcitHaSbSSa/qRz1TcXr4y5KnDTS5
+        Vi7x/sE2wncRpbQYv4ZL2ILCDMJkz5w=
+X-Google-Smtp-Source: ABdhPJynOwwPxmTuGwW6Ugcajsa54FPAHyhnkQZPzhAlPWSvWI/s5UNhYFanefxUXztWg+08MxKYyg==
+X-Received: by 2002:aed:37e7:: with SMTP id j94mr12705571qtb.57.1590098359373;
+        Thu, 21 May 2020 14:59:19 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:4708])
+        by smtp.gmail.com with ESMTPSA id m13sm6939518qtm.12.2020.05.21.14.59.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 May 2020 14:26:21 -0700 (PDT)
-Date:   Thu, 21 May 2020 17:26:19 -0400
-From:   Eric Whitney <enwlinux@gmail.com>
-To:     JeffleXu <jefflexu@linux.alibaba.com>
-Cc:     Eric Whitney <enwlinux@gmail.com>, linux-ext4@vger.kernel.org,
-        tytso@mit.edu, joseph.qi@linux.alibaba.com
-Subject: Re: [PATCH RFC] ext4: fix partial cluster initialization when
- splitting extent
-Message-ID: <20200521212619.GA10473@localhost.localdomain>
-References: <1589444097-38535-1-git-send-email-jefflexu@linux.alibaba.com>
- <20200514222120.GB4710@localhost.localdomain>
- <20200518220804.GA20248@localhost.localdomain>
- <9b526ae9-cba6-35dd-0424-61e8fa5ab016@linux.alibaba.com>
+        Thu, 21 May 2020 14:59:18 -0700 (PDT)
+Date:   Thu, 21 May 2020 17:58:55 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        "Linux F2FS DEV, Mailing List" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, Arnd Bergmann <arnd@arndb.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Chao Yu <yuchao0@huawei.com>, lkft-triage@lists.linaro.org,
+        Roman Gushchin <guro@fb.com>, Cgroups <cgroups@vger.kernel.org>
+Subject: Re: mm: mkfs.ext4 invoked oom-killer on i386 - pagecache_get_page
+Message-ID: <20200521215855.GB815153@cmpxchg.org>
+References: <CA+G9fYvzLm7n1BE7AJXd8_49fOgPgWWTiQ7sXkVre_zoERjQKg@mail.gmail.com>
+ <CA+G9fYsXnwyGetj-vztAKPt8=jXrkY8QWe74u5EEA3XPW7aikQ@mail.gmail.com>
+ <20200520190906.GA558281@chrisdown.name>
+ <20200521095515.GK6462@dhcp22.suse.cz>
+ <CA+G9fYvAB9F+Xo0vUsSveKnExkv3cV9-oOG9gBqGEcXsO95m0w@mail.gmail.com>
+ <20200521105801.GL6462@dhcp22.suse.cz>
+ <alpine.LSU.2.11.2005210504110.1185@eggly.anvils>
+ <20200521124444.GP6462@dhcp22.suse.cz>
+ <20200521191746.GB815980@cmpxchg.org>
+ <alpine.LSU.2.11.2005211250130.1158@eggly.anvils>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9b526ae9-cba6-35dd-0424-61e8fa5ab016@linux.alibaba.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <alpine.LSU.2.11.2005211250130.1158@eggly.anvils>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-* JeffleXu <jefflexu@linux.alibaba.com>:
-> 
-> On 5/19/20 6:08 AM, Eric Whitney wrote:
-> > Hi, Jeffle:
+On Thu, May 21, 2020 at 01:06:28PM -0700, Hugh Dickins wrote:
+> On Thu, 21 May 2020, Johannes Weiner wrote:
+> > do_memsw_account() used to be automatically false when the cgroup
+> > controller was disabled. Now that it's replaced by
+> > cgroup_memory_noswap, for which this isn't true, make the
+> > mem_cgroup_disabled() checks explicit in the swap control API.
 > > 
-> > What kernel were you running when you observed your failures?  Does your
-> > patch resolve all observed failures, or do any remain?  Do you have a
-> > simple test script that reproduces the bug?
-> > 
-> > I've made almost 1000 runs of shared/298 on various bigalloc configurations
-> > using Ted's test appliance on 5.7-rc5 and have not observed a failure.
-> > Several auto group runs have also passed without failures.  Ideally, I'd
-> > like to be able to reproduce your failure to be sure we fully understand
-> > what's going on.  It's still the case that the "2" is wrong, but I think
-> > that code in rm_leaf may be involved in an unexpected way.
-> > 
-> > Thanks,
-> > Eric
+> > [hannes@cmpxchg.org: use mem_cgroup_disabled() in all API functions]
+> > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> > Debugged-by: Hugh Dickins <hughd@google.com>
+> > Debugged-by: Michal Hocko <mhocko@kernel.org>
+> > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> > ---
+> >  mm/memcontrol.c | 47 +++++++++++++++++++++++++++++++++++++++++------
+> >  1 file changed, 41 insertions(+), 6 deletions(-)
 > 
-> Hi Eric,
-> 
-> Following on is my test environment.
-> 
-> 
-> kernel: 5.7-rc4-git-eb24fdd8e6f5c6bb95129748a1801c6476492aba
-> 
-> e2fsprog: latest release version 1.45.6 (20-Mar-2020)
-> 
-> xfstests: git://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git, master
-> branch, latest commit
-> 
-> 
-> 1. Test device
-> 
-> I run the test in a VM and the VM is setup by qemu. The size of vdb is 1G,
-> 
-> ```
-> 
-> #lsblk
-> 
-> NAME   MAJ:MIN RM SIZE RO TYPE MOUNTPOINT
-> vdb    254:16   0   1G  0 disk
-> 
-> ```
-> 
-> 
-> and is initialized by:
-> 
-> ```
-> 
-> qemu-img create -f qcow2 /XX/disk1.qcow2 1G
-> 
-> qemu-kvm -drive file=/XX/disk1.qcow2,if=virtio,format=qcow2 ...
-> 
-> ```
-> 
-> 
-> 2. Test script
-> 
-> 
-> local.config of xfstests is like:
-> 
-> export TEST_DEV=/dev/vdb
-> export TEST_DIR=/mnt/test
-> export SCRATCH_DEV=/dev/vdc
-> export SCRATCH_MNT=/mnt/scratch
-> 
-> 
-> Following on is an example script to reproduce the failure:
-> 
-> ```sh
-> 
-> #!/bin/bash
-> 
-> for i in `seq 100`; do
->         echo y | mkfs.ext4 -O bigalloc -C 16K /dev/vdb
-> 
->         ./check shared/298
->         status=$?
-> 
->         if [[ $status == 1 ]]; then
->                 echo "$i exit"
->                 exit
->         fi
-> done
-> 
-> ```
-> 
-> 
-> Indeed the failure occurs occasionally. Sometimes the script stops at
-> iteration 4, or sometimes
-> 
-> at iteration 2, 7, 24.
-> 
-> 
-> The failure occurs with the following dmesg report:
-> 
-> ```
-> 
-> [  387.471876] EXT4-fs error (device vdb): mb_free_blocks:1457: group 1,
-> block 158084:freeing already freed block (bit 6753); block bitmap corrupt.
-> [  387.473729] EXT4-fs error (device vdb): ext4_mb_generate_buddy:747: group
-> 1, block bitmap and bg descriptor inconsistent: 19550 vs 19551 free clusters
-> 
-> ```
-> 
-> 
-> 3. About the applied patch
-> 
-> The applied patch does fix the failure in my test environment. At least the
-> failure doesn't occur after running the full 100 iterations.
-> 
-> 
-> Thanks
-> 
-> Jeffle
-> 
-> 
->
+> I'm certainly not against a mem_cgroup_disabled() check in the only
+> place that's been observed to need it, as a fixup to merge into your
+> original patch; but this seems rather an over-reaction - and I'm a
+> little surprised that setting mem_cgroup_disabled() doesn't just
+> force cgroup_memory_noswap, saving repetitious checks elsewhere
+> (perhaps there's a difficulty in that, I haven't looked).
 
-Hi, Jeffle:
+Fair enough, I changed it to set the flag at initialization time if
+mem_cgroup_disabled(). I was never a fan of the old flags, where it
+was never clear what was commandline, and what was internal runtime
+state - do_swap_account? really_do_swap_account? But I think it's
+straight-forward in this case now.
 
-Thanks for that information.  I'm still unable to reproduce your failure,
-but by inspection your patch clearly fixes a bug, and of course, you're seeing
-that.  I suspect the code in rm_leaf that also sets the partial cluster nofree
-state is masking the bug in my testing.  In your case, my best guess is that
-your testing is occasionally getting into the retry loop for EAGAIN in
-remove_space.  This would effectively expose the bug again and could lead to
-the failure you've described.
+> Historically, I think we've added mem_cgroup_disabled() checks
+> (accessing a cacheline we'd rather avoid) where they're necessary,
+> rather than at every "interface".
 
-Your patch has survived all the heavy testing I've thrown at it.  So, please
-repost your RFC patch as a fix, and feel free to add:
-Reviewed-by: Eric Whitney <enwlinux@gmail.com>
+To me that always seemed like bugs waiting to happen. Like this one!
 
-This points out that the cluster freeing code really needs to be cleaned up,
-so I'm working on a patch series that does that.
+It's a jump label nowadays, so I've been liberal with these to avoid
+subtle bugs.
 
-Thanks for your patience,
-Eric
+> And you seem to be in a very "goto out" mood today - we all have
+> our "goto out" days, alternating with our "return 0" days :)
+
+:-)
+
+But I agree, best to keep this fixup self-contained and defer anything
+else to separate cleanup patches.
+
+How about the below? It survives a swaptest with cgroup_disable=memory
+for me.
+
+Hugh, I started with your patch, which is why I kept you as the
+author, but as the patch now (and arguably the previous one) is
+sufficiently different, I dropped that now. I hope that's okay.
+
+---
+From d9e7ed15d1c9248a3fd99e35e82437549154dac7 Mon Sep 17 00:00:00 2001
+From: Johannes Weiner <hannes@cmpxchg.org>
+Date: Thu, 21 May 2020 17:44:25 -0400
+Subject: [PATCH] mm: memcontrol: prepare swap controller setup for integration
+ fix
+
+Fix crash with cgroup_disable=memory:
+
+> > > > + mkfs -t ext4 /dev/disk/by-id/ata-TOSHIBA_MG04ACA100N_Y8NRK0BPF6XF
+> > > > mke2fs 1.43.8 (1-Jan-2018)
+> > > > Creating filesystem with 244190646 4k blocks and 61054976 inodes
+> > > > Filesystem UUID: 3bb1a285-2cb4-44b4-b6e8-62548f3ac620
+> > > > Superblock backups stored on blocks:
+> > > > 32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208,
+> > > > 4096000, 7962624, 11239424, 20480000, 23887872, 71663616, 78675968,
+> > > > 102400000, 214990848
+> > > > Allocating group tables:    0/7453                           done
+> > > > Writing inode tables:    0/7453                           done
+> > > > Creating journal (262144 blocks): [   35.502102] BUG: kernel NULL
+> > > > pointer dereference, address: 000000c8
+> > > > [   35.508372] #PF: supervisor read access in kernel mode
+> > > > [   35.513506] #PF: error_code(0x0000) - not-present page
+> > > > [   35.518638] *pde = 00000000
+> > > > [   35.521514] Oops: 0000 [#1] SMP
+> > > > [   35.524652] CPU: 0 PID: 145 Comm: kswapd0 Not tainted
+> > > > 5.7.0-rc6-next-20200519+ #1
+> > > > [   35.532121] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
+> > > > 2.2 05/23/2018
+> > > > [   35.539507] EIP: mem_cgroup_get_nr_swap_pages+0x28/0x60
+
+Swap accounting used to be implied-disabled when the cgroup controller
+was disabled. Restore that for the new cgroup_memory_noswap, so that
+we bail out of this function instead of dereferencing a NULL memcg.
+
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Debugged-by: Hugh Dickins <hughd@google.com>
+Debugged-by: Michal Hocko <mhocko@kernel.org>
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+---
+ mm/memcontrol.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 3e000a316b59..e3b785d6e771 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -7075,7 +7075,11 @@ static struct cftype memsw_files[] = {
+ 
+ static int __init mem_cgroup_swap_init(void)
+ {
+-	if (mem_cgroup_disabled() || cgroup_memory_noswap)
++	/* No memory control -> no swap control */
++	if (mem_cgroup_disabled())
++		cgroup_memory_noswap = true;
++
++	if (cgroup_memory_noswap)
+ 		return 0;
+ 
+ 	WARN_ON(cgroup_add_dfl_cftypes(&memory_cgrp_subsys, swap_files));
+-- 
+2.26.2
 
