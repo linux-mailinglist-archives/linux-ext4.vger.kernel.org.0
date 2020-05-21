@@ -2,209 +2,224 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E5A1DC45F
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 May 2020 02:57:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B0191DC54E
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 May 2020 04:40:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726892AbgEUA5y (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 20 May 2020 20:57:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41772 "EHLO
+        id S1727989AbgEUCkE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 20 May 2020 22:40:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726859AbgEUA5y (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 20 May 2020 20:57:54 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65B3AC061A0E
-        for <linux-ext4@vger.kernel.org>; Wed, 20 May 2020 17:57:54 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id ci21so2146331pjb.3
-        for <linux-ext4@vger.kernel.org>; Wed, 20 May 2020 17:57:54 -0700 (PDT)
+        with ESMTP id S1727798AbgEUCkD (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 20 May 2020 22:40:03 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27CCBC061A0E;
+        Wed, 20 May 2020 19:40:02 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id y17so3336509ilg.0;
+        Wed, 20 May 2020 19:40:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=KGVkUClSLYZCYqVJ3Vb5pZma0B0CMSc9xCimjRrMQV4=;
-        b=EnQnho+durolBvxcF0rxSWNlK3Jrfd93rhtSLlUIhi9jN+cueOLJafrsVZwBtv+S4T
-         u55ccsGngVMxemnta6jzq7wQr0igjPVYLCO8xLpwPlrlYTCvOdeeqy/VJ/6Vk/h88zXl
-         l1LoAoIyNz7ljBFkIsL9VzXKO+sseDFQLBf6PzhnBvs4ofZ6JPuIrassGtHsUKVac8AN
-         smMD1oLfWN2s9P6qa6JLgmq7SC1WH1KuGsnULxIkCdiJ5QPLyM4sBHihQ+2SwcD30Nr3
-         Rm5kO+A6kY3IyayvdnN/lO9Wvs13f8pJOc0dK+agLWoF4o909nKS1b+PZsxcQgXG19Zs
-         Rzhw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/RCzazjPJQ1zcfvr5ivU8gZ2oW1vvouNHyaX2fPjs5o=;
+        b=JIZNHQnmERaJeRhfnEjjac0W+vknvOwLXY/d6ercTVMilrrz524WChiYGwFGcaHgFJ
+         K8JZk1i5INW6EyIXuYOyX2v32bfw6qRfgzQTQHHULRWMhQsYMBm89glhPbVBx2I6bwxs
+         j20/Yum6NRQKLWYNIxFRjPx0QViHZTbPlmI1fZzO6exUlTKfLwEVLiDwpVb7Qfp6TgJ/
+         snhs+KlBeHyRitCTHyRBIFjZ454fFCb9qrYuro47/SQk4QgBQgus3sRPgPYvG8W/Vui1
+         AknW2UXV00QW+opr5rDKKkCPY+BNrd0MlLO7V3cFfkCwusagGNkXGNtRMJgA5pK9QeWA
+         IAFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=KGVkUClSLYZCYqVJ3Vb5pZma0B0CMSc9xCimjRrMQV4=;
-        b=l8l+Cnpy0hKktWT1tr46M+pWF7eHxCh70bmtqEV76Mw3wtLU5Y/LJbMMlakVWidsvV
-         05qyF2WGFdkUs4cAmvB82B4RGBclJKTdxNTN0gdByx7FF+W6/6m20cb5CJrbj7dRkGNT
-         xfazYy5ScpSMBLPUKa7eCmCdFICIOv7TDCdqkfk2Au0uRhrt2GoPgpDCR14ggTU59kfW
-         cd4l1Bux+LIiN5PnqK2R0s/+ReEb+hkvbu47fGIPhqW5ardaYxumRmxnJ3mMwwEofNwG
-         IRPZ0Qs/JKTb7O9JFoG5zdl59CiNRfe/ALmTo/+bTJhI5V73GvSP/81oOkYdY38Qgw+0
-         Sgbg==
-X-Gm-Message-State: AOAM532G97za8xG6SMGbtx1tECrSynfUNyD5BYieUbbkUj09MVNdHjxr
-        /aJpuP1PbMhAWMpQRi3noOdMYQ==
-X-Google-Smtp-Source: ABdhPJwaaQYhjUcbFZBfpiHUoSoUl0ma74EGGoSXAFK2cUprsydh9kP/qRONl5U5tw78WUFI6JGn7w==
-X-Received: by 2002:a17:90a:734b:: with SMTP id j11mr8170570pjs.108.1590022673733;
-        Wed, 20 May 2020 17:57:53 -0700 (PDT)
-Received: from [192.168.10.160] (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
-        by smtp.gmail.com with ESMTPSA id e13sm2744584pfh.19.2020.05.20.17.57.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 20 May 2020 17:57:52 -0700 (PDT)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <5D85188E-34E0-49F0-8A77-0AF4CD0EC3E1@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_1495D86A-A351-44B7-922D-BABD111013ED";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH V3 7/8] fs/ext4: Introduce DAX inode flag
-Date:   Wed, 20 May 2020 18:57:49 -0600
-In-Reply-To: <20200520205509.GA17615@magnolia>
-Cc:     Ira Weiny <ira.weiny@intel.com>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Li Xi <lixi@ddn.com>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-References: <20200520055753.3733520-1-ira.weiny@intel.com>
- <20200520055753.3733520-8-ira.weiny@intel.com>
- <34ECB1DE-9F2F-4365-BBBC-DFACF703E7D4@dilger.ca>
- <20200520200242.GG3660833@iweiny-DESK2.sc.intel.com>
- <20200520205509.GA17615@magnolia>
-X-Mailer: Apple Mail (2.3273)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/RCzazjPJQ1zcfvr5ivU8gZ2oW1vvouNHyaX2fPjs5o=;
+        b=TWTHK1Mul5Ro/PhNgWzqWNYPt0nJuLsbNFOVNMtrDHKeUNy5e3Wh4KgXabrwfejQa4
+         feGQUIrWta/+x1iWMMKkF95BTmX22rdt+eaMHB2HnUkoBYGSK/Hu9KHbjv+BmPIoH6+n
+         MxAmTa8gLVNgzNGUEm32kaHaJYGHO8DYUO4jiB7cEoJwQyVAuC8rLYdbpC6arSWPo3K6
+         Bgqcm/kcW5i+XRLJd6gjF3FiPga6q49LJs2Mgj6IFDBPg7QaPPNEhs8PSWHouj3hSFKC
+         IVcPeYPuZJwkrw4dqoILxGW0DGCfBC0jvyl98CnOG3p+/AhoxnPTh8l9IaZhrNuYJihJ
+         r98g==
+X-Gm-Message-State: AOAM53084UvGaeHRrgPwSB/V1GuYkpGv69xr+89HIfFpfscv5Ue+oW+Z
+        KgqQtQd3+FqBTBWZX8nQAlxvdPiSsKFL7f9z2FM=
+X-Google-Smtp-Source: ABdhPJyv/UYZjPy/DPwJRsYbSaKbImcwHJUxF5BT675dGaD56oiGCZioxLSjEnZKhN7916a+tUgfDxQbE7d+nnFanoQ=
+X-Received: by 2002:a92:9e11:: with SMTP id q17mr6952459ili.137.1590028801270;
+ Wed, 20 May 2020 19:40:01 -0700 (PDT)
+MIME-Version: 1.0
+References: <CA+G9fYu2ruH-8uxBHE0pdE6RgRTSx4QuQPAN=Nv3BCdRd2ouYA@mail.gmail.com>
+ <20200501135806.4eebf0b92f84ab60bba3e1e7@linux-foundation.org>
+ <CA+G9fYsiZ81pmawUY62K30B6ue+RXYod854RS91R2+F8ZO7Xvw@mail.gmail.com>
+ <20200519075213.GF32497@dhcp22.suse.cz> <CAK8P3a2T_j-Ynvhsqe_FCqS2-ZdLbo0oMbHhHChzMbryE0izAQ@mail.gmail.com>
+ <20200519084535.GG32497@dhcp22.suse.cz> <CA+G9fYvzLm7n1BE7AJXd8_49fOgPgWWTiQ7sXkVre_zoERjQKg@mail.gmail.com>
+ <CA+G9fYsXnwyGetj-vztAKPt8=jXrkY8QWe74u5EEA3XPW7aikQ@mail.gmail.com>
+In-Reply-To: <CA+G9fYsXnwyGetj-vztAKPt8=jXrkY8QWe74u5EEA3XPW7aikQ@mail.gmail.com>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Thu, 21 May 2020 10:39:25 +0800
+Message-ID: <CALOAHbDMrHkNHTxeBWP22iTjJd+HfqfFhAfmC_m0jsVkhu5vEA@mail.gmail.com>
+Subject: Re: mm: mkfs.ext4 invoked oom-killer on i386 - pagecache_get_page
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Chris Down <chris@chrisdown.name>,
+        Michal Hocko <mhocko@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        "Linux F2FS DEV, Mailing List" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, Arnd Bergmann <arnd@arndb.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        "Theodore Ts'o" <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Chao Yu <yuchao0@huawei.com>, lkft-triage@lists.linaro.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Cgroups <cgroups@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Thu, May 21, 2020 at 2:00 AM Naresh Kamboju
+<naresh.kamboju@linaro.org> wrote:
+>
+> On Wed, 20 May 2020 at 17:26, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+> >
+> >
+> > This issue is specific on 32-bit architectures i386 and arm on linux-next tree.
+> > As per the test results history this problem started happening from
+> > Bad : next-20200430
+> > Good : next-20200429
+> >
+> > steps to reproduce:
+> > dd if=/dev/disk/by-id/ata-SanDisk_SSD_PLUS_120GB_190504A00573
+> > of=/dev/null bs=1M count=2048
+> > or
+> > mkfs -t ext4 /dev/disk/by-id/ata-SanDisk_SSD_PLUS_120GB_190804A00BE5
+> >
+> >
+> > Problem:
+> > [   38.802375] dd invoked oom-killer: gfp_mask=0x100cc0(GFP_USER),
+> > order=0, oom_score_adj=0
+>
+> As a part of investigation on this issue LKFT teammate Anders Roxell
+> git bisected the problem and found bad commit(s) which caused this problem.
+>
+> The following two patches have been reverted on next-20200519 and retested the
+> reproducible steps and confirmed the test case mkfs -t ext4 got PASS.
+> ( invoked oom-killer is gone now)
+>
+> Revert "mm, memcg: avoid stale protection values when cgroup is above
+> protection"
+>     This reverts commit 23a53e1c02006120f89383270d46cbd040a70bc6.
+>
+> Revert "mm, memcg: decouple e{low,min} state mutations from protection
+> checks"
+>     This reverts commit 7b88906ab7399b58bb088c28befe50bcce076d82.
+>
 
---Apple-Mail=_1495D86A-A351-44B7-922D-BABD111013ED
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+My guess is that we made the same mistake in commit "mm, memcg:
+decouple e{low,min} state mutations from protection
+checks" that it read a stale memcg protection in
+mem_cgroup_below_low() and mem_cgroup_below_min().
 
-On May 20, 2020, at 2:55 PM, Darrick J. Wong <darrick.wong@oracle.com> =
-wrote:
-> On Wed, May 20, 2020 at 01:02:42PM -0700, Ira Weiny wrote:
->> On Wed, May 20, 2020 at 01:26:44PM -0600, Andreas Dilger wrote:
->>> On May 19, 2020, at 11:57 PM, ira.weiny@intel.com wrote:
->>>>=20
->>>> From: Ira Weiny <ira.weiny@intel.com>
->>>>=20
->>>> Add a flag to preserve FS_XFLAG_DAX in the ext4 inode.
->>>>=20
->>>> Set the flag to be user visible and changeable.  Set the flag to be
->>>> inherited.  Allow applications to change the flag at any time with =
-the
->>>> exception of if VERITY or ENCRYPT is set.
->>>>=20
->>>> Disallow setting VERITY or ENCRYPT if DAX is set.
->>>>=20
->>>> Finally, on regular files, flag the inode to not be cached to =
-facilitate
->>>> changing S_DAX on the next creation of the inode.
->>>>=20
->>>> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
->>>>=20
->>>> ---
->>>> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
->>>> index 6235440e4c39..467c30a789b6 100644
->>>> --- a/fs/ext4/ext4.h
->>>> +++ b/fs/ext4/ext4.h
->>>> @@ -415,13 +415,16 @@ struct flex_groups {
->>>> #define EXT4_VERITY_FL			0x00100000 /* Verity =
-protected inode */
->>>> #define EXT4_EA_INODE_FL	        0x00200000 /* Inode used for =
-large EA */
->>>> /* 0x00400000 was formerly EXT4_EOFBLOCKS_FL */
->>>> +
->>>> +#define EXT4_DAX_FL			0x01000000 /* Inode is =
-DAX */
->>>> +
->>>> #define EXT4_INLINE_DATA_FL		0x10000000 /* Inode has =
-inline data. */
->>>> #define EXT4_PROJINHERIT_FL		0x20000000 /* Create =
-with parents projid */
->>>> #define EXT4_CASEFOLD_FL		0x40000000 /* Casefolded file */
->>>> #define EXT4_RESERVED_FL		0x80000000 /* reserved for ext4 =
-lib */
->>>=20
->>> Hi Ira,
->>> This flag value conflicts with the reserved flag in e2fsprogs for =
-snapshots:
->>>=20
->>> #define EXT4_SNAPFILE_FL                0x01000000  /* Inode is a =
-snapshot */
->>=20
->> Sure NP but is that new?  I'm building off of 5.7-rc4.
->>=20
->> Just curious if I completely missed something.
->=20
-> Yeah, you missed that ... for some reason the kernel ext4 driver is
-> missing flags that are in e2fsprogs.  (huh??)
+Bellow is a possble fix,
 
-It's no different than ext2 not having the full set of bits defined or
-in use.
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 7a2c56fc..6591b71 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -391,20 +391,28 @@ static inline unsigned long
+mem_cgroup_protection(struct mem_cgroup *root,
+ void mem_cgroup_calculate_protection(struct mem_cgroup *root,
+                                     struct mem_cgroup *memcg);
 
-> I would say you could probably just take over the flag because the =
-2010s
-> called and they don't want next3 back.  I guess that leaves 0x02000000
-> as the sole unclaimed bit, but this seriously needs some cleaning.
+-static inline bool mem_cgroup_below_low(struct mem_cgroup *memcg)
++static inline bool mem_cgroup_below_low(struct mem_cgroup *root,
++                                       struct mem_cgroup *memcg)
+ {
+        if (mem_cgroup_disabled())
+                return false;
 
-Darrick,
-we are in the process of updating the snapshot code for ext4, so need to
-keep the 0x01000000 bit for snapshots.  Since 0x02000000 has never been
-used for anything, there is no reason not to use it instead.
++       if (root == memcg)
++               return false;
++
+        return READ_ONCE(memcg->memory.elow) >=
+                page_counter_read(&memcg->memory);
+ }
 
-If we need to reclaim flags, it would be better to look at "COMPR" =
-flags:
+-static inline bool mem_cgroup_below_min(struct mem_cgroup *memcg)
++static inline bool mem_cgroup_below_min(struct mem_cgroup *root,
++                                       struct mem_cgroup *memcg)
+ {
+        if (mem_cgroup_disabled())
+                return false;
 
-/* Reserved for compression usage... */
-#define FS_COMPR_FL           0x00000004 /* Compress file */
-#define FS_DIRTY_FL           0x00000100
-#define FS_COMPRBLK_FL        0x00000200 /* One or more compressed =
-clusters */
-#define FS_NOCOMP_FL          0x00000400 /* Don't compress */
++       if (root == memcg)
++               return false;
++
+        return READ_ONCE(memcg->memory.emin) >=
+                page_counter_read(&memcg->memory);
+ }
+@@ -896,12 +904,14 @@ static inline void
+mem_cgroup_calculate_protection(struct mem_cgroup *root,
+ {
+ }
 
-since I don't think they have ever been used.  I don't think we need 4x
-on-disk state flags for that, especially not as part of the API.  It is
-enough to have FS_COMPR_FL for the API, and then handle internal state
-separately (e.g. compress into a separate on-disk extent and then swap
-extents atomically instead of storing transient state on disk).
+-static inline bool mem_cgroup_below_low(struct mem_cgroup *memcg)
++static inline bool mem_cgroup_below_low(struct mem_cgroup *root,
++                                       struct mem_cgroup *memcg)
+ {
+        return false;
+ }
 
-Cheers, Andreas
+-static inline bool mem_cgroup_below_min(struct mem_cgroup *memcg)
++static inline bool mem_cgroup_below_min(struct mem_cgroup *root,
++                                       struct mem_cgroup *memcg)
+ {
+        return false;
+ }
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index c71660e..fdcdd88 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -2637,13 +2637,13 @@ static void shrink_node_memcgs(pg_data_t
+*pgdat, struct scan_control *sc)
+
+                mem_cgroup_calculate_protection(target_memcg, memcg);
+
+-               if (mem_cgroup_below_min(memcg)) {
++               if (mem_cgroup_below_min(target_memcg, memcg)) {
+                        /*
+                         * Hard protection.
+                         * If there is no reclaimable memory, OOM.
+                         */
+                        continue;
+-               } else if (mem_cgroup_below_low(memcg)) {
++               } else if (mem_cgroup_below_low(target_memcg, memcg)) {
+                        /*
+                         * Soft protection.
+                         * Respect the protection only as long as
 
 
 
 
 
+> i386 test log shows mkfs -t ext4 pass
+> https://lkft.validation.linaro.org/scheduler/job/1443405#L1200
+>
+> ref:
+> https://lore.kernel.org/linux-mm/cover.1588092152.git.chris@chrisdown.name/
+> https://lore.kernel.org/linux-mm/CA+G9fYvzLm7n1BE7AJXd8_49fOgPgWWTiQ7sXkVre_zoERjQKg@mail.gmail.com/T/#t
+>
+> --
+> Linaro LKFT
+> https://lkft.linaro.org
 
---Apple-Mail=_1495D86A-A351-44B7-922D-BABD111013ED
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
 
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
 
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl7F0g0ACgkQcqXauRfM
-H+CWlRAAu3u2+ZaTMjCUV9frowE4dctq6hQJiA8VeuTTKBNRQIZ+kVXOtFtsbASL
-8CaEdjxXsCVyrxFVG1cjCI2GU+90Ae77P52Z5dfzIv0YEA4CC45lCQ/fSHYNfSBd
-z1efesNBiaXnShzidJKR+4J1AtAbTWMVgTIcHPq1Vyim/0ECtv8HHspTZBCHm8R8
-bY3Yjf5+0HYqAdsrqbWOC4eXOt1MchCkUokD8i1awqoNFSmupJedVI7ytZjeEUTW
-oWX+iJCTfvH9rUZd9pJvnR1O3W1awSRueVeG6YXmQmD/PRyu03n5eFEHfo3MEvWm
-XtND5oisszz8/RPI26LLmBLFXZjxziXKyvy90Z6+m9MmT0B/74CGbwYGZ4Y3/wL8
-asC14AYoB6yZhM+wdPDlvHGEVvtQJS8yk/gcFK54D4j8K2jC+loIW4rE02liEGQA
-lEFLCeKqJxS9KpnqMM+s54jjK/3dsLKnUm8i6KL1GWE/9umIURgE68Rd3HCdzb6c
-IOQPcg0/USAjYQLA3TXzlsf126wHvT5DjD+296dDFP9uE7VyKzH5FnU/+gvtYqI8
-JN1srfp7AdhsC/v0DxZn+FYFujF8gf2uCT5e/LuNajzPbUYGiOuv5+CWttMsu3mp
-a1yfBYgR6sgx8ay0+V4tljFQroujSfYNFEAQVKIVL2asV8d4LA0=
-=cMli
------END PGP SIGNATURE-----
-
---Apple-Mail=_1495D86A-A351-44B7-922D-BABD111013ED--
+--
+Thanks
+Yafang
