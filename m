@@ -2,144 +2,103 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02DE71DE517
-	for <lists+linux-ext4@lfdr.de>; Fri, 22 May 2020 13:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F12E91DE5E1
+	for <lists+linux-ext4@lfdr.de>; Fri, 22 May 2020 13:48:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729106AbgEVLIm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 22 May 2020 07:08:42 -0400
-Received: from mga17.intel.com ([192.55.52.151]:40191 "EHLO mga17.intel.com"
+        id S1728898AbgEVLsx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 22 May 2020 07:48:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35406 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728281AbgEVLIl (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 22 May 2020 07:08:41 -0400
-IronPort-SDR: 3U1mdRkdwRpCM4HFpvFFcb++VCn0QgVtXx95MYou4XBMK3winWBF1fU9a/RUmMhvC9CivG901W
- +sMWjfAFSEdQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 May 2020 04:08:41 -0700
-IronPort-SDR: qXVP9kAtGGjeCXeQ7CAZdukU5lZ4ZhyPCqG1uu2rKfqzA2AZUkuXukPxBMHOoRa0bRPvkjWIkz
- 2AVVz5gTZjXw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,421,1583222400"; 
-   d="scan'208";a="255567293"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 22 May 2020 04:08:40 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1jc5Xb-0004f0-GD; Fri, 22 May 2020 19:08:39 +0800
-Date:   Fri, 22 May 2020 19:07:53 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-Subject: [ext4:dev] BUILD SUCCESS 875145e328872198c8c3b9db376f97d40185810f
-Message-ID: <5ec7b289.5s/hEv57u+xIMOgI%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1728495AbgEVLsw (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 22 May 2020 07:48:52 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 18949AE41;
+        Fri, 22 May 2020 11:48:53 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 7834A1E126B; Fri, 22 May 2020 13:48:48 +0200 (CEST)
+Date:   Fri, 22 May 2020 13:48:48 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     ira.weiny@intel.com
+Cc:     linux-ext4@vger.kernel.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V4 7/8] fs/ext4: Introduce DAX inode flag
+Message-ID: <20200522114848.GC14199@quack2.suse.cz>
+References: <20200521191313.261929-1-ira.weiny@intel.com>
+ <20200521191313.261929-8-ira.weiny@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20200521191313.261929-8-ira.weiny@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git  dev
-branch HEAD: 875145e328872198c8c3b9db376f97d40185810f  Merge branch 'fiemap-fixes' into dev
+On Thu 21-05-20 12:13:12, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
+> 
+> Add a flag to preserve FS_XFLAG_DAX in the ext4 inode.
+> 
+> Set the flag to be user visible and changeable.  Set the flag to be
+> inherited.  Allow applications to change the flag at any time with the
+> exception of if VERITY or ENCRYPT is set.
+> 
+> Disallow setting VERITY or ENCRYPT if DAX is set.
+> 
+> Finally, on regular files, flag the inode to not be cached to facilitate
+> changing S_DAX on the next creation of the inode.
+> 
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 
-elapsed time: 1205m
+...
 
-configs tested: 86
-configs skipped: 1
+> @@ -303,6 +318,16 @@ static int ext4_ioctl_setflags(struct inode *inode,
+>  	unsigned int jflag;
+>  	struct super_block *sb = inode->i_sb;
+>  
+> +	if (ext4_test_inode_flag(inode, EXT4_INODE_DAX)) {
+> +		if (ext4_test_inode_flag(inode, EXT4_INODE_VERITY) ||
+> +		    ext4_test_inode_flag(inode, EXT4_INODE_ENCRYPT) ||
+> +		    ext4_test_inode_state(inode,
+> +					  EXT4_STATE_VERITY_IN_PROGRESS)) {
+> +			err = -EOPNOTSUPP;
+> +			goto flags_out;
+> +		}
+> +	}
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+The way this check is implemented wouldn't IMO do what we need... It
+doesn't check the flags that are being set but just the current inode
+state. I think it should rather be:
 
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-sparc                            allyesconfig
-mips                             allyesconfig
-m68k                             allyesconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                             allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                                 defconfig
-arc                              allyesconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                              defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a013-20200520
-x86_64               randconfig-a015-20200520
-x86_64               randconfig-a016-20200520
-x86_64               randconfig-a012-20200520
-x86_64               randconfig-a014-20200520
-x86_64               randconfig-a011-20200520
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                                defconfig
-x86_64                              defconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-um                               allmodconfig
-um                               allyesconfig
-um                                allnoconfig
-um                                  defconfig
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-x86_64                                  kexec
+	if ((flags ^ oldflags) & EXT4_INODE_DAX_FL) {
+		...
+	}
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+And perhaps move this to a place in ext4_ioctl_setflags() where we check
+other similar conflicts.
+
+And then we should check conflicts with the journal flag as well, as I
+mentioned in reply to the first patch. There it is more complicated by the
+fact that we should disallow setting of both EXT4_INODE_DAX_FL and
+EXT4_JOURNAL_DATA_FL at the same time so the checks will be somewhat more
+complicated.
+
+								Honza
+
+> +
+>  	/* Is it quota file? Do not allow user to mess with it */
+>  	if (ext4_is_quota_file(inode))
+>  		goto flags_out;
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
