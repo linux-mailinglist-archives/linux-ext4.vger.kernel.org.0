@@ -2,140 +2,76 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C21B91DDEAD
-	for <lists+linux-ext4@lfdr.de>; Fri, 22 May 2020 06:18:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E3CC1DDF08
+	for <lists+linux-ext4@lfdr.de>; Fri, 22 May 2020 06:56:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726453AbgEVES5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 22 May 2020 00:18:57 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:39282 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725921AbgEVES4 (ORCPT
+        id S1726910AbgEVE4C (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 22 May 2020 00:56:02 -0400
+Received: from sender2-op-o12.zoho.com.cn ([163.53.93.243]:17170 "EHLO
+        sender2-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726421AbgEVE4C (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 22 May 2020 00:18:56 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R291e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01358;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0TzFAC1R_1590121124;
-Received: from localhost(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0TzFAC1R_1590121124)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 22 May 2020 12:18:44 +0800
-From:   Jeffle Xu <jefflexu@linux.alibaba.com>
-To:     tytso@mit.edu, enwlinux@gmail.com
-Cc:     linux-ext4@vger.kernel.org, joseph.qi@linux.alibaba.com
-Subject: [PATCH] ext4: fix partial cluster initialization when splitting extent
-Date:   Fri, 22 May 2020 12:18:44 +0800
-Message-Id: <1590121124-37096-1-git-send-email-jefflexu@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Fri, 22 May 2020 00:56:02 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1590122447; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=lJcr7vXpK40LMj5JvsWjdAj6Nq4q7wa1WUgvulpKG6OrsQdKs7ZXO/i+96cyLRk4Lfv5+gzUYOTmF/OCxPA8e3/aiq4/zNAy1GYoo95KuUetd7VydcMbiE/5bnnDsSRCNG0uXroVRGu4b/g+ppmDnOsa4PAWxODJe62N+d9+pPw=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1590122447; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
+        bh=0TUX0uJD+XsSVxCFSykWLZrCh6BscwdhEbIJbkQTBuw=; 
+        b=OWwQRR391lz+uSpnNoB72OW4YB2vjPbiLKKFai3xxuKpQ93laaYaCaNpD9lHg1rltPXSg32frSm8eOjOQW+alhB0AJjxqscMPyAH5rHfFbS5LWUz7nem4ouItm01P1tTc6QPqfPd9hLSQpjzS3YTQ2poaRxd+qnH8w7YZGX/ujw=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=mykernel.net;
+        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
+        dmarc=pass header.from=<cgxu519@mykernel.net> header.from=<cgxu519@mykernel.net>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1590122447;
+        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
+        h=From:To:Cc:Message-ID:Subject:Date:MIME-Version:Content-Transfer-Encoding:Content-Type;
+        bh=0TUX0uJD+XsSVxCFSykWLZrCh6BscwdhEbIJbkQTBuw=;
+        b=LZNhGeFLHPmkJE3l9Zt8p1ndm05hH/tFjgmZuy7xAt94mGgAFmdYQS7NVXozJw+r
+        vcCOmnfkAhA/HOjqFFKbjrHy9DsHRSVvjAx6tqCf8X7ki6d/9Zx5CmlW/xY9eHezWD9
+        oQRuSAPFSunNuicu1hekDQwoPtpYMsfgt0qbZ9Ok=
+Received: from localhost.localdomain (218.18.229.179 [218.18.229.179]) by mx.zoho.com.cn
+        with SMTPS id 1590122444475531.2078805086636; Fri, 22 May 2020 12:40:44 +0800 (CST)
+From:   Chengguang Xu <cgxu519@mykernel.net>
+To:     jack@suse.com
+Cc:     linux-ext4@vger.kernel.org, Chengguang Xu <cgxu519@mykernel.net>
+Message-ID: <20200522044035.24190-1-cgxu519@mykernel.net>
+Subject: [PATCH 1/2] ext2: fix incorrect i_op for special inode
+Date:   Fri, 22 May 2020 12:40:34 +0800
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-ZohoCNMailClient: External
+Content-Type: text/plain; charset=utf8
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Fix the bug when calculating the physical block number of the first
-block in the split extent.
+We should always set &ext2_special_inode_operations to i_op
+for special inode regardless of CONFIG_EXT2_FS_XATTR setting.
 
-This bug will cause xfstests shared/298 failure on ext4 with bigalloc
-enabled occasionally. Ext4 error messages indicate that previously freed
-blocks are being freed again, and the following fsck will fail due to
-the inconsistency of block bitmap and bg descriptor.
-
-The following is an example case:
-
-1. First, Initialize a ext4 filesystem with cluster size '16K', block size
-'4K', in which case, one cluster contains four blocks.
-
-2. Create one file (e.g., xxx.img) on this ext4 filesystem. Now the extent
-tree of this file is like:
-
-...
-36864:[0]4:220160
-36868:[0]14332:145408
-51200:[0]2:231424
-...
-
-3. Then execute PUNCH_HOLE fallocate on this file. The hole range is
-like:
-
-..
-ext4_ext_remove_space: dev 254,16 ino 12 since 49506 end 49506 depth 1
-ext4_ext_remove_space: dev 254,16 ino 12 since 49544 end 49546 depth 1
-ext4_ext_remove_space: dev 254,16 ino 12 since 49605 end 49607 depth 1
-...
-
-4. Then the extent tree of this file after punching is like
-
-...
-49507:[0]37:158047
-49547:[0]58:158087
-...
-
-5. Detailed procedure of punching hole [49544, 49546]
-
-5.1. The block address space:
-```
-lblk        ~49505  49506   49507~49543     49544~49546    49547~
-	  ---------+------+-------------+----------------+--------
-	    extent | hole |   extent	|	hole	 | extent
-	  ---------+------+-------------+----------------+--------
-pblk       ~158045  158046  158047~158083  158084~158086   158087~
-```
-
-5.2. The detailed layout of cluster 39521:
-```
-		cluster 39521
-	<------------------------------->
-
-		hole		  extent
-	<----------------------><--------
-
-lblk      49544   49545   49546   49547
-	+-------+-------+-------+-------+
-	|	|	|	|	|
-	+-------+-------+-------+-------+
-pblk     158084  1580845  158086  158087
-```
-
-5.3. The ftrace output when punching hole [49544, 49546]:
-- ext4_ext_remove_space (start 49544, end 49546)
-  - ext4_ext_rm_leaf (start 49544, end 49546, last_extent [49507(158047), 40], partial [pclu 39522 lblk 0 state 2])
-    - ext4_remove_blocks (extent [49507(158047), 40], from 49544 to 49546, partial [pclu 39522 lblk 0 state 2]
-      - ext4_free_blocks: (block 158084 count 4)
-        - ext4_mballoc_free (extent 1/6753/1)
-
-5.4. Ext4 error message in dmesg:
-EXT4-fs error (device vdb): mb_free_blocks:1457: group 1, block 158084:freeing already freed block (bit 6753); block bitmap corrupt.
-EXT4-fs error (device vdb): ext4_mb_generate_buddy:747: group 1, block bitmap and bg descriptor inconsistent: 19550 vs 19551 free clusters
-
-
-In this case, the whole cluster 39521 is freed mistakenly when freeing
-pblock 158084~158086 (i.e., the first three blocks of this cluster),
-although pblock 158087 (the last remaining block of this cluster) has
-not been freed yet.
-
-The root cause of this isuue is that, the pclu of the partial cluster is
-calculated mistakenly in ext4_ext_remove_space(). The correct
-partial_cluster.pclu (i.e., the cluster number of the first block in the
-next extent, that is, lblock 49597 (pblock 158086)) should be 39521 rather
-than 39522.
-
-Fixes: f4226d9ea400 ("ext4: fix partial cluster initialization")
-Signed-off-by: Jeffle Xu <jefflexu@linux.alibaba.com>
-Reviewed-by: Eric Whitney <enwlinux@gmail.com>
-Cc: stable@kernel.org # v3.19+
+Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
 ---
- fs/ext4/extents.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/ext2/namei.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index f2b577b..cb74496 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -2828,7 +2828,7 @@ int ext4_ext_remove_space(struct inode *inode, ext4_lblk_t start,
- 			 * in use to avoid freeing it when removing blocks.
- 			 */
- 			if (sbi->s_cluster_ratio > 1) {
--				pblk = ext4_ext_pblock(ex) + end - ee_block + 2;
-+				pblk = ext4_ext_pblock(ex) + end - ee_block + 1;
- 				partial.pclu = EXT4_B2C(sbi, pblk);
- 				partial.state = nofree;
- 			}
--- 
-1.8.3.1
+diff --git a/fs/ext2/namei.c b/fs/ext2/namei.c
+index ccfbbf59e2fc..1a5421a34ef7 100644
+--- a/fs/ext2/namei.c
++++ b/fs/ext2/namei.c
+@@ -136,9 +136,7 @@ static int ext2_mknod (struct inode * dir, struct dentr=
+y *dentry, umode_t mode,
+ =09err =3D PTR_ERR(inode);
+ =09if (!IS_ERR(inode)) {
+ =09=09init_special_inode(inode, inode->i_mode, rdev);
+-#ifdef CONFIG_EXT2_FS_XATTR
+ =09=09inode->i_op =3D &ext2_special_inode_operations;
+-#endif
+ =09=09mark_inode_dirty(inode);
+ =09=09err =3D ext2_add_nondir(dentry, inode);
+ =09}
+--=20
+2.20.1
+
 
