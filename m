@@ -2,63 +2,65 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 869F61DF81B
-	for <lists+linux-ext4@lfdr.de>; Sat, 23 May 2020 17:52:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ED151DF9DD
+	for <lists+linux-ext4@lfdr.de>; Sat, 23 May 2020 20:00:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727987AbgEWPwk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 23 May 2020 11:52:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35688 "EHLO
+        id S2387868AbgEWSA3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 23 May 2020 14:00:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726861AbgEWPwj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 23 May 2020 11:52:39 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DDBDC061A0E;
-        Sat, 23 May 2020 08:52:39 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.93 #3 (Red Hat Linux))
-        id 1jcWRc-00E8oV-Lz; Sat, 23 May 2020 15:52:16 +0000
-Date:   Sat, 23 May 2020 16:52:16 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     linux-ext4@vger.kernel.org, jack@suse.cz, tytso@mit.edu,
-        adilger@dilger.ca, riteshh@linux.ibm.com, amir73il@gmail.com,
-        linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org
-Subject: Re: fiemap cleanups v4
-Message-ID: <20200523155216.GZ23230@ZenIV.linux.org.uk>
-References: <20200523073016.2944131-1-hch@lst.de>
+        with ESMTP id S2388212AbgEWSAW (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 23 May 2020 14:00:22 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA98C02A19D
+        for <linux-ext4@vger.kernel.org>; Sat, 23 May 2020 11:00:20 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id d1so6269376qvl.6
+        for <linux-ext4@vger.kernel.org>; Sat, 23 May 2020 11:00:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=F3NMDrR9dummcUXdRfruEEfbIS6yB2vx68nB8Asq/5Q=;
+        b=DLUdlLdqK1bsV3DbEuTTyBWxouo7TOwyxri4APWQD3NqiMSIjirU+KuWgkxjC+SPXd
+         U5bKcUrFxXkujPWjXtLFF/k/nfilKzP5EjBajrS/8510fneO07cpMqdcHCxwrpi40/q7
+         /O0e1HoJlTbh5NB1junI0CHT5u7OlL96wLc3EVtoU1jy6h6mu/94Ij3+HmmWjDrdLWVh
+         jTwO4Rc/jE6wel14tPJDJsn6k0/UDkI9Or/XCFS691xyvyogoxyI2h7yK06Suh6ePv/U
+         +lZz7VywgsFgSxYL/B5mLPOXcZ0fktkIkUnyPxHg9tbmvqat4Bb8GZAodniIxvBVB3XB
+         mJxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=F3NMDrR9dummcUXdRfruEEfbIS6yB2vx68nB8Asq/5Q=;
+        b=KdBDqmUYtBGyGPfhubRk8YySWGJ9MD9D/7om5kABhF5ngWn8nVBAhOKmMlpHTupiCx
+         RXykLeuUceNZGKaDR1JU/p2ACpVIsgM5U8fNAVz0WDPWogH9iBy+YHVV7gynJgNypG8C
+         3OvQYoj0ToojXjsrqVfWp/NZNULjvl58bi2jBsbPkcRr1ifRCaRgJrXwa5ieE9eD3XOK
+         /SRwBkkZ0BM/Y7G7Qsl1OrBKfybAk8Fcj2fULHFlQwPzkwodzrwrYz2SlVxaXWEgWdjW
+         +KjDJPoWeJg4VspEXv3q4j2uIgagL5UhYxJGZ56K4RU47S5+ygZle8al5pykbBofepzM
+         iyEA==
+X-Gm-Message-State: AOAM531wV6Idbv822B1mjIxnhprnaGpNAWEMAaZUCRzptZrTg4qrbv3D
+        /qE1R296YGXMNzCebJTQjChW6jGjmja5jDE7VrU=
+X-Google-Smtp-Source: ABdhPJxI0GNvtYFRzubiNKehFnBmeNa8IdxO7hQ3TxAldsg7mTxyy0v9X6v2Fayhxp/lnxt7tCbB9QFJVJ60H98MgEQ=
+X-Received: by 2002:a0c:ed4b:: with SMTP id v11mr9120627qvq.179.1590256818769;
+ Sat, 23 May 2020 11:00:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200523073016.2944131-1-hch@lst.de>
+Received: by 2002:aed:3ac5:0:0:0:0:0 with HTTP; Sat, 23 May 2020 11:00:18
+ -0700 (PDT)
+Reply-To: mrs.chantala2055@gmail.com
+From:   mrs chantal <mrs.chantaltwo@gmail.com>
+Date:   Sat, 23 May 2020 18:00:18 +0000
+Message-ID: <CAGVwK0UnqGdMqCxvjeR06i5Ca=SScOHB3E1kfQEUa4_tgZN-cQ@mail.gmail.com>
+Subject: jjCompliment
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, May 23, 2020 at 09:30:07AM +0200, Christoph Hellwig wrote:
-> Hi all,
-> 
-> This series cleans up the fiemap support in ext4 and in general.
-> 
-> Ted or Al, can one of you pick this up?  It touches both ext4 and core
-> code, so either tree could work.
-> 
-> 
-> Changes since v3:
->  - dropped the fixes that have been merged int mainline
-> 
-> Changes since v2:
->  - commit message typo
->  - doc updates
->  - use d_inode in cifs
->  - add a missing return statement in cifs
->  - remove the filemap_write_and_wait call from ext4_ioctl_get_es_cache
-> 
-> Changes since v1:
->  - rename fiemap_validate to fiemap_prep
->  - lift FIEMAP_FLAG_SYNC handling to common code
->  - add a new linux/fiemap.h header
->  - remove __generic_block_fiemap
->  - remove access_ok calls from fiemap and ext4
-
-Hmmm...  I can do an immutable shared branch, no problem.  What would
-you prefer for a branchpoint for that one?
+     Compliment of the day to you. I am Mrs.CHANTAL I am sending this brief
+    letter to solicit your partnership to transfer $13.5 Million US
+    Dollars.I shall send you more information and procedures when I receive
+    positive response From you. Please send me a message in My private
+    email address is ( mrschantal066@gmail.com  )
+    Best Regards
+    MrS.Chantal
