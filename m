@@ -2,76 +2,159 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E10F1E0802
-	for <lists+linux-ext4@lfdr.de>; Mon, 25 May 2020 09:28:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A7051E087F
+	for <lists+linux-ext4@lfdr.de>; Mon, 25 May 2020 10:12:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389107AbgEYH2r (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 25 May 2020 03:28:47 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58302 "EHLO mx2.suse.de"
+        id S2388772AbgEYIMV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 25 May 2020 04:12:21 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52800 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388948AbgEYH2r (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 25 May 2020 03:28:47 -0400
+        id S2387668AbgEYIMV (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 25 May 2020 04:12:21 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 56897B083;
-        Mon, 25 May 2020 07:28:48 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 22525AC5F;
+        Mon, 25 May 2020 08:12:22 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id EF42C1E1270; Mon, 25 May 2020 09:28:44 +0200 (CEST)
-Date:   Mon, 25 May 2020 09:28:44 +0200
+        id A5A461E127C; Mon, 25 May 2020 10:12:18 +0200 (CEST)
 From:   Jan Kara <jack@suse.cz>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V4 7/8] fs/ext4: Introduce DAX inode flag
-Message-ID: <20200525072844.GH14199@quack2.suse.cz>
-References: <20200521191313.261929-1-ira.weiny@intel.com>
- <20200521191313.261929-8-ira.weiny@intel.com>
- <20200522114848.GC14199@quack2.suse.cz>
- <20200525043910.GA319107@iweiny-DESK2.sc.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200525043910.GA319107@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+To:     Ted Tso <tytso@mit.edu>
+Cc:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>
+Subject: [PATCH] ext4: Avoid unnecessary transaction starts during writeback
+Date:   Mon, 25 May 2020 10:12:15 +0200
+Message-Id: <20200525081215.29451-1-jack@suse.cz>
+X-Mailer: git-send-email 2.16.4
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sun 24-05-20 21:39:10, Ira Weiny wrote:
-> On Fri, May 22, 2020 at 01:48:48PM +0200, Jan Kara wrote:
-> > And then we should check conflicts with the journal flag as well, as I
-> > mentioned in reply to the first patch. There it is more complicated by the
-> > fact that we should disallow setting of both EXT4_INODE_DAX_FL and
-> > EXT4_JOURNAL_DATA_FL at the same time so the checks will be somewhat more
-> > complicated.
-> 
-> I'm confused by jflag.  Why is EXT4_JOURNAL_DATA_FL stored in jflag?
+ext4_writepages() currently works in a loop like:
+  start a transaction
+  scan inode for pages to write
+  map and submit these pages
+  stop the transaction
 
-It isn't just EXT4_JOURNAL_DATA_FL. It is:
+This loop results in starting transaction once more than is needed
+because in the last iteration we start a transaction only to scan the
+inode and find there are no pages to write. This can be significant
+increase in number of transaction starts for single-extent files or
+files that have all blocks already mapped. Furthermore we already know
+from previous iteration whether there are more pages to write or not. So
+propagate the information from mpage_prepare_extent_to_map() and avoid
+unnecessary looping in case there are no more pages to write.
 
-	jflag = flags & EXT4_JOURNAL_DATA_FL;
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ fs/ext4/inode.c | 31 +++++++++++++------------------
+ 1 file changed, 13 insertions(+), 18 deletions(-)
 
-so it is EXT4_JOURNAL_DATA_FL if it should be set by the current ioctl and 0
-otherwise. But I agree that since we mostly do
-
-	(jflag ^ oldflags) & EXT4_JOURNAL_DATA_FL
-
-jflags is mostly useless as we could do just
-
-	(flags ^ oldflags) & EXT4_JOURNAL_DATA_FL
-
-I guess it's mostly a relict from the past...
-
-								Honza
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 2a4aae6acdcb..d550514ebf13 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -1526,6 +1526,7 @@ struct mpage_da_data {
+ 	struct ext4_map_blocks map;
+ 	struct ext4_io_submit io_submit;	/* IO submission data */
+ 	unsigned int do_map:1;
++	unsigned int scanned_until_end:1;
+ };
+ 
+ static void mpage_release_unused_pages(struct mpage_da_data *mpd,
+@@ -1541,6 +1542,7 @@ static void mpage_release_unused_pages(struct mpage_da_data *mpd,
+ 	if (mpd->first_page >= mpd->next_page)
+ 		return;
+ 
++	mpd->scanned_until_end = 0;
+ 	index = mpd->first_page;
+ 	end   = mpd->next_page - 1;
+ 	if (invalidate) {
+@@ -2188,7 +2190,11 @@ static int mpage_process_page_bufs(struct mpage_da_data *mpd,
+ 		if (err < 0)
+ 			return err;
+ 	}
+-	return lblk < blocks;
++	if (lblk >= blocks) {
++		mpd->scanned_until_end = 1;
++		return 0;
++	}
++	return 1;
+ }
+ 
+ /*
+@@ -2546,7 +2552,7 @@ static int mpage_prepare_extent_to_map(struct mpage_da_data *mpd)
+ 		nr_pages = pagevec_lookup_range_tag(&pvec, mapping, &index, end,
+ 				tag);
+ 		if (nr_pages == 0)
+-			goto out;
++			break;
+ 
+ 		for (i = 0; i < nr_pages; i++) {
+ 			struct page *page = pvec.pages[i];
+@@ -2601,6 +2607,7 @@ static int mpage_prepare_extent_to_map(struct mpage_da_data *mpd)
+ 		pagevec_release(&pvec);
+ 		cond_resched();
+ 	}
++	mpd->scanned_until_end = 1;
+ 	return 0;
+ out:
+ 	pagevec_release(&pvec);
+@@ -2619,7 +2626,6 @@ static int ext4_writepages(struct address_space *mapping,
+ 	struct inode *inode = mapping->host;
+ 	int needed_blocks, rsv_blocks = 0, ret = 0;
+ 	struct ext4_sb_info *sbi = EXT4_SB(mapping->host->i_sb);
+-	bool done;
+ 	struct blk_plug plug;
+ 	bool give_up_on_write = false;
+ 
+@@ -2705,7 +2711,6 @@ static int ext4_writepages(struct address_space *mapping,
+ retry:
+ 	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
+ 		tag_pages_for_writeback(mapping, mpd.first_page, mpd.last_page);
+-	done = false;
+ 	blk_start_plug(&plug);
+ 
+ 	/*
+@@ -2715,6 +2720,7 @@ static int ext4_writepages(struct address_space *mapping,
+ 	 * started.
+ 	 */
+ 	mpd.do_map = 0;
++	mpd.scanned_until_end = 0;
+ 	mpd.io_submit.io_end = ext4_init_io_end(inode, GFP_KERNEL);
+ 	if (!mpd.io_submit.io_end) {
+ 		ret = -ENOMEM;
+@@ -2730,7 +2736,7 @@ static int ext4_writepages(struct address_space *mapping,
+ 	if (ret < 0)
+ 		goto unplug;
+ 
+-	while (!done && mpd.first_page <= mpd.last_page) {
++	while (!mpd.scanned_until_end && wbc->nr_to_write > 0) {
+ 		/* For each extent of pages we use new io_end */
+ 		mpd.io_submit.io_end = ext4_init_io_end(inode, GFP_KERNEL);
+ 		if (!mpd.io_submit.io_end) {
+@@ -2765,20 +2771,9 @@ static int ext4_writepages(struct address_space *mapping,
+ 
+ 		trace_ext4_da_write_pages(inode, mpd.first_page, mpd.wbc);
+ 		ret = mpage_prepare_extent_to_map(&mpd);
+-		if (!ret) {
+-			if (mpd.map.m_len)
+-				ret = mpage_map_and_submit_extent(handle, &mpd,
++		if (!ret && mpd.map.m_len)
++			ret = mpage_map_and_submit_extent(handle, &mpd,
+ 					&give_up_on_write);
+-			else {
+-				/*
+-				 * We scanned the whole range (or exhausted
+-				 * nr_to_write), submitted what was mapped and
+-				 * didn't find anything needing mapping. We are
+-				 * done.
+-				 */
+-				done = true;
+-			}
+-		}
+ 		/*
+ 		 * Caution: If the handle is synchronous,
+ 		 * ext4_journal_stop() can wait for transaction commit
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.16.4
+
