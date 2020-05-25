@@ -2,97 +2,124 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB0E1E03CA
-	for <lists+linux-ext4@lfdr.de>; Mon, 25 May 2020 00:53:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F4FC1E062C
+	for <lists+linux-ext4@lfdr.de>; Mon, 25 May 2020 06:39:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388061AbgEXWxV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 24 May 2020 18:53:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41436 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387863AbgEXWxU (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 24 May 2020 18:53:20 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F24CC061A0E
-        for <linux-ext4@vger.kernel.org>; Sun, 24 May 2020 15:53:19 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id d10so7910648pgn.4
-        for <linux-ext4@vger.kernel.org>; Sun, 24 May 2020 15:53:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=5/CL6aE3lmoBkiGBNUyn08WPxVC9RpbRIRWnD6gEim0=;
-        b=d4I2rw7JyAW6c5tLLKj1CoCnyw7IOmQ1KKrOwsDYwRs97Mmv63Gk/06vSP6J6nYyHK
-         xCpSMKh05Caa4OKGqNQvqQ2auPfEnVWLK06yudWFzFLncqjzrd6x8lm6kSWitlY3K4UE
-         k+BZuxSCpKnqaa0DEFDTGovBPJa5ootz6bEwUqQgtDTS7tTwNcgW33fKKyNMmqMQ0Ta+
-         Uc/AhTd6oOjopjG7DsUrJX3tXVVWAtRsMrIKnzW3iAWTfQAVHg5ae0DX9n9B02hfnUmF
-         s61DsVtvjeuylg2DkMc47wGqPahEd3xedSVBUHK8K3k43Rh6IgSJCTy9wdhwXlVvI5BB
-         dnHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=5/CL6aE3lmoBkiGBNUyn08WPxVC9RpbRIRWnD6gEim0=;
-        b=k0Rh6sXn1/oiEeX8OGxS2ihrkJoYU35Qu1E3MOCo6OHIRqJ2GqhBiBdgSnbu2VV3eu
-         RQfhIMLD/qWIzZRB9VS7NgFWHKqPEhmttHUUB2L8p7pP6z9gR5+1CU8sy2zsj+phx+jp
-         uUWWcdxS0mvC4oXnXDD4neALoubUc4yZp8SxAZibDWw0XNdf/wvgFoxCP2tV11ZlxYSU
-         AcFWck5QPyVYkS3VIkw7CwlBn+94t15K5D/icIijNrxB6Up23/TN9Tn34SwmoFm4wEeH
-         Q61Hhkc3Ws/+RtN31G5fB2huu8CNMql5s2kZiWC0U2IblHNMFVQeE4HQCVT12gDBEC/w
-         iBZg==
-X-Gm-Message-State: AOAM530vjbdjPlVY0clGFqK9YL87J4Boq4UViahDKAAToMInx6q0PmM3
-        njfN3StVN8i5vxRF7wQeuMJQmHjwAArRgA==
-X-Google-Smtp-Source: ABdhPJwrw0jm5eq4OdEjBfgOQdC7cuwT1GdTriTUSRgWkXw8y5uo23p69JfqObr0AqTJHoxbHUfOIQ==
-X-Received: by 2002:a05:6a00:d2:: with SMTP id e18mr15029510pfj.252.1590360798612;
-        Sun, 24 May 2020 15:53:18 -0700 (PDT)
-Received: from ?IPv6:2605:e000:100e:8c61:343d:8ab7:4cee:d96f? ([2605:e000:100e:8c61:343d:8ab7:4cee:d96f])
-        by smtp.gmail.com with ESMTPSA id w65sm1540434pfb.160.2020.05.24.15.53.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 24 May 2020 15:53:17 -0700 (PDT)
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-From:   Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH] ext4: don't block for O_DIRECT if IOCB_NOWAIT is set
-Message-ID: <76152096-2bbb-7682-8fce-4cb498bcd909@kernel.dk>
-Date:   Sun, 24 May 2020 16:53:16 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726445AbgEYEjM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 25 May 2020 00:39:12 -0400
+Received: from mga04.intel.com ([192.55.52.120]:12919 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725949AbgEYEjL (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 25 May 2020 00:39:11 -0400
+IronPort-SDR: 02gefz82HyRqGfp/DRwWDX50sWBfFAzDWMGuXzBsU1a73YdFMPpbQM72TATUXdRw5AdQA3eSLW
+ 2+0/b/HqfNPQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2020 21:39:11 -0700
+IronPort-SDR: mkPIiir/SIIp5RsIl2SkJX+dMgspH7qHmH92MoBbroHS+PWpT9tKflWqEGsybUNTzLAYcNacxR
+ ymSYNh1hOXyA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,432,1583222400"; 
+   d="scan'208";a="269644158"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
+  by orsmga006.jf.intel.com with ESMTP; 24 May 2020 21:39:10 -0700
+Date:   Sun, 24 May 2020 21:39:10 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-ext4@vger.kernel.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V4 7/8] fs/ext4: Introduce DAX inode flag
+Message-ID: <20200525043910.GA319107@iweiny-DESK2.sc.intel.com>
+References: <20200521191313.261929-1-ira.weiny@intel.com>
+ <20200521191313.261929-8-ira.weiny@intel.com>
+ <20200522114848.GC14199@quack2.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200522114848.GC14199@quack2.suse.cz>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Running with some debug patches to detect illegal blocking triggered the
-extend/unaligned condition in ext4. If ext4 needs to extend the file (and
-hence go to buffered IO), or if the app is doing unaligned IO, then ext4
-asks the iomap code to wait for IO completion. If the caller asked for
-no-wait semantics by setting IOCB_NOWAIT, then ext4 should return -EAGAIN
-instead.
+On Fri, May 22, 2020 at 01:48:48PM +0200, Jan Kara wrote:
+> On Thu 21-05-20 12:13:12, ira.weiny@intel.com wrote:
+> > From: Ira Weiny <ira.weiny@intel.com>
+> > 
+> > Add a flag to preserve FS_XFLAG_DAX in the ext4 inode.
+> > 
+> > Set the flag to be user visible and changeable.  Set the flag to be
+> > inherited.  Allow applications to change the flag at any time with the
+> > exception of if VERITY or ENCRYPT is set.
+> > 
+> > Disallow setting VERITY or ENCRYPT if DAX is set.
+> > 
+> > Finally, on regular files, flag the inode to not be cached to facilitate
+> > changing S_DAX on the next creation of the inode.
+> > 
+> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> 
+> ...
+> 
+> > @@ -303,6 +318,16 @@ static int ext4_ioctl_setflags(struct inode *inode,
+> >  	unsigned int jflag;
+> >  	struct super_block *sb = inode->i_sb;
+> >  
+> > +	if (ext4_test_inode_flag(inode, EXT4_INODE_DAX)) {
+> > +		if (ext4_test_inode_flag(inode, EXT4_INODE_VERITY) ||
+> > +		    ext4_test_inode_flag(inode, EXT4_INODE_ENCRYPT) ||
+> > +		    ext4_test_inode_state(inode,
+> > +					  EXT4_STATE_VERITY_IN_PROGRESS)) {
+> > +			err = -EOPNOTSUPP;
+> > +			goto flags_out;
+> > +		}
+> > +	}
+> 
+> The way this check is implemented wouldn't IMO do what we need... It
+> doesn't check the flags that are being set but just the current inode
+> state. I think it should rather be:
 
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Sorry, I got confused by the flags when I wrote this.
 
----
+> 
+> 	if ((flags ^ oldflags) & EXT4_INODE_DAX_FL) {
+> 		...
+> 	}
+> 
+> And perhaps move this to a place in ext4_ioctl_setflags() where we check
+> other similar conflicts.
 
-diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-index 0d624250a62b..3ac95f4cada6 100644
---- a/fs/ext4/file.c
-+++ b/fs/ext4/file.c
-@@ -495,6 +495,12 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 	if (ret <= 0)
- 		return ret;
- 
-+	/* if we're going to block and IOCB_NOWAIT is set, return -EAGAIN */
-+	if ((iocb->ki_flags & IOCB_NOWAIT) && (unaligned_io || extend)) {
-+		ret = -EAGAIN;
-+		goto out;
-+	}
-+
- 	offset = iocb->ki_pos;
- 	count = ret;
- 
+Sure.  It seems like a ext4_setflags_prepare() helper would be in order.  I'll
+see what I can do.
 
--- 
-Jens Axboe
+> 
+> And then we should check conflicts with the journal flag as well, as I
+> mentioned in reply to the first patch. There it is more complicated by the
+> fact that we should disallow setting of both EXT4_INODE_DAX_FL and
+> EXT4_JOURNAL_DATA_FL at the same time so the checks will be somewhat more
+> complicated.
 
+I'm confused by jflag.  Why is EXT4_JOURNAL_DATA_FL stored in jflag?
+
+Ira
+
+> 
+> 								Honza
+> 
+> > +
+> >  	/* Is it quota file? Do not allow user to mess with it */
+> >  	if (ext4_is_quota_file(inode))
+> >  		goto flags_out;
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
