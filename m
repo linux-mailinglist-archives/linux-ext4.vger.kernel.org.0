@@ -2,159 +2,86 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A7051E087F
-	for <lists+linux-ext4@lfdr.de>; Mon, 25 May 2020 10:12:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05D8E1E11CF
+	for <lists+linux-ext4@lfdr.de>; Mon, 25 May 2020 17:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388772AbgEYIMV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 25 May 2020 04:12:21 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52800 "EHLO mx2.suse.de"
+        id S2404202AbgEYPdf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 25 May 2020 11:33:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52490 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387668AbgEYIMV (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 25 May 2020 04:12:21 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 22525AC5F;
-        Mon, 25 May 2020 08:12:22 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id A5A461E127C; Mon, 25 May 2020 10:12:18 +0200 (CEST)
-From:   Jan Kara <jack@suse.cz>
-To:     Ted Tso <tytso@mit.edu>
-Cc:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>
-Subject: [PATCH] ext4: Avoid unnecessary transaction starts during writeback
-Date:   Mon, 25 May 2020 10:12:15 +0200
-Message-Id: <20200525081215.29451-1-jack@suse.cz>
-X-Mailer: git-send-email 2.16.4
+        id S2404092AbgEYPdf (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 25 May 2020 11:33:35 -0400
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0D41B2071A;
+        Mon, 25 May 2020 15:33:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590420814;
+        bh=/lRcApMN9bchgxQmdRuHru0M8nV62fiOyAvgNyyKOqE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FkSvkKrkHrQNmOS5J/o9VjrQqOrK15S4n8hbD/X0fyIUhr7F42waBhGQOqj/6HAJx
+         tyzcpYbp9yyCxo7RvSbHabJpYOQEmcyfJ+E1oVol2cFd97D1c/VRNotZIGgME0uUKv
+         pVg9kv2JyeNisFfbKjtrNkuNbJM87euAu3sXNQ6I=
+Date:   Mon, 25 May 2020 08:33:20 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-mmc@vger.kernel.org, "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Satya Tangirala <satyat@google.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Paul Crowley <paulcrowley@google.com>
+Subject: Re: [PATCH] fscrypt: add support for IV_INO_LBLK_32 policies
+Message-ID: <20200525153320.GA2152@sol.localdomain>
+References: <20200515204141.251098-1-ebiggers@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200515204141.251098-1-ebiggers@kernel.org>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-ext4_writepages() currently works in a loop like:
-  start a transaction
-  scan inode for pages to write
-  map and submit these pages
-  stop the transaction
+On Fri, May 15, 2020 at 01:41:41PM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> The eMMC inline crypto standard will only specify 32 DUN bits (a.k.a. IV
+> bits), unlike UFS's 64.  IV_INO_LBLK_64 is therefore not applicable, but
+> an encryption format which uses one key per policy and permits the
+> moving of encrypted file contents (as f2fs's garbage collector requires)
+> is still desirable.
+> 
+> To support such hardware, add a new encryption format IV_INO_LBLK_32
+> that makes the best use of the 32 bits: the IV is set to
+> 'SipHash-2-4(inode_number) + file_logical_block_number mod 2^32', where
+> the SipHash key is derived from the fscrypt master key.  We hash only
+> the inode number and not also the block number, because we need to
+> maintain contiguity of DUNs to merge bios.
+> 
+> Unlike with IV_INO_LBLK_64, with this format IV reuse is possible; this
+> is unavoidable given the size of the DUN.  This means this format should
+> only be used where the requirements of the first paragraph apply.
+> However, the hash spreads out the IVs in the whole usable range, and the
+> use of a keyed hash makes it difficult for an attacker to determine
+> which files use which IVs.
+> 
+> Besides the above differences, this flag works like IV_INO_LBLK_64 in
+> that on ext4 it is only allowed if the stable_inodes feature has been
+> enabled to prevent inode numbers and the filesystem UUID from changing.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+>  Documentation/filesystems/fscrypt.rst | 33 +++++++++--
+>  fs/crypto/crypto.c                    |  6 +-
+>  fs/crypto/fscrypt_private.h           | 20 +++++--
+>  fs/crypto/keyring.c                   |  5 +-
+>  fs/crypto/keysetup.c                  | 85 +++++++++++++++++++++------
+>  fs/crypto/policy.c                    | 51 +++++++++++-----
+>  include/uapi/linux/fscrypt.h          |  3 +-
+>  7 files changed, 157 insertions(+), 46 deletions(-)
 
-This loop results in starting transaction once more than is needed
-because in the last iteration we start a transaction only to scan the
-inode and find there are no pages to write. This can be significant
-increase in number of transaction starts for single-extent files or
-files that have all blocks already mapped. Furthermore we already know
-from previous iteration whether there are more pages to write or not. So
-propagate the information from mpage_prepare_extent_to_map() and avoid
-unnecessary looping in case there are no more pages to write.
+Applied to fscrypt.git#master for 5.8.
 
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/inode.c | 31 +++++++++++++------------------
- 1 file changed, 13 insertions(+), 18 deletions(-)
-
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 2a4aae6acdcb..d550514ebf13 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -1526,6 +1526,7 @@ struct mpage_da_data {
- 	struct ext4_map_blocks map;
- 	struct ext4_io_submit io_submit;	/* IO submission data */
- 	unsigned int do_map:1;
-+	unsigned int scanned_until_end:1;
- };
- 
- static void mpage_release_unused_pages(struct mpage_da_data *mpd,
-@@ -1541,6 +1542,7 @@ static void mpage_release_unused_pages(struct mpage_da_data *mpd,
- 	if (mpd->first_page >= mpd->next_page)
- 		return;
- 
-+	mpd->scanned_until_end = 0;
- 	index = mpd->first_page;
- 	end   = mpd->next_page - 1;
- 	if (invalidate) {
-@@ -2188,7 +2190,11 @@ static int mpage_process_page_bufs(struct mpage_da_data *mpd,
- 		if (err < 0)
- 			return err;
- 	}
--	return lblk < blocks;
-+	if (lblk >= blocks) {
-+		mpd->scanned_until_end = 1;
-+		return 0;
-+	}
-+	return 1;
- }
- 
- /*
-@@ -2546,7 +2552,7 @@ static int mpage_prepare_extent_to_map(struct mpage_da_data *mpd)
- 		nr_pages = pagevec_lookup_range_tag(&pvec, mapping, &index, end,
- 				tag);
- 		if (nr_pages == 0)
--			goto out;
-+			break;
- 
- 		for (i = 0; i < nr_pages; i++) {
- 			struct page *page = pvec.pages[i];
-@@ -2601,6 +2607,7 @@ static int mpage_prepare_extent_to_map(struct mpage_da_data *mpd)
- 		pagevec_release(&pvec);
- 		cond_resched();
- 	}
-+	mpd->scanned_until_end = 1;
- 	return 0;
- out:
- 	pagevec_release(&pvec);
-@@ -2619,7 +2626,6 @@ static int ext4_writepages(struct address_space *mapping,
- 	struct inode *inode = mapping->host;
- 	int needed_blocks, rsv_blocks = 0, ret = 0;
- 	struct ext4_sb_info *sbi = EXT4_SB(mapping->host->i_sb);
--	bool done;
- 	struct blk_plug plug;
- 	bool give_up_on_write = false;
- 
-@@ -2705,7 +2711,6 @@ static int ext4_writepages(struct address_space *mapping,
- retry:
- 	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
- 		tag_pages_for_writeback(mapping, mpd.first_page, mpd.last_page);
--	done = false;
- 	blk_start_plug(&plug);
- 
- 	/*
-@@ -2715,6 +2720,7 @@ static int ext4_writepages(struct address_space *mapping,
- 	 * started.
- 	 */
- 	mpd.do_map = 0;
-+	mpd.scanned_until_end = 0;
- 	mpd.io_submit.io_end = ext4_init_io_end(inode, GFP_KERNEL);
- 	if (!mpd.io_submit.io_end) {
- 		ret = -ENOMEM;
-@@ -2730,7 +2736,7 @@ static int ext4_writepages(struct address_space *mapping,
- 	if (ret < 0)
- 		goto unplug;
- 
--	while (!done && mpd.first_page <= mpd.last_page) {
-+	while (!mpd.scanned_until_end && wbc->nr_to_write > 0) {
- 		/* For each extent of pages we use new io_end */
- 		mpd.io_submit.io_end = ext4_init_io_end(inode, GFP_KERNEL);
- 		if (!mpd.io_submit.io_end) {
-@@ -2765,20 +2771,9 @@ static int ext4_writepages(struct address_space *mapping,
- 
- 		trace_ext4_da_write_pages(inode, mpd.first_page, mpd.wbc);
- 		ret = mpage_prepare_extent_to_map(&mpd);
--		if (!ret) {
--			if (mpd.map.m_len)
--				ret = mpage_map_and_submit_extent(handle, &mpd,
-+		if (!ret && mpd.map.m_len)
-+			ret = mpage_map_and_submit_extent(handle, &mpd,
- 					&give_up_on_write);
--			else {
--				/*
--				 * We scanned the whole range (or exhausted
--				 * nr_to_write), submitted what was mapped and
--				 * didn't find anything needing mapping. We are
--				 * done.
--				 */
--				done = true;
--			}
--		}
- 		/*
- 		 * Caution: If the handle is synchronous,
- 		 * ext4_journal_stop() can wait for transaction commit
--- 
-2.16.4
-
+- Eric
