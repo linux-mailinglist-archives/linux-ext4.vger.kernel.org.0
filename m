@@ -2,28 +2,28 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DAC11E1C07
-	for <lists+linux-ext4@lfdr.de>; Tue, 26 May 2020 09:19:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 726921E1C04
+	for <lists+linux-ext4@lfdr.de>; Tue, 26 May 2020 09:19:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731394AbgEZHTY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 26 May 2020 03:19:24 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:5334 "EHLO huawei.com"
+        id S1731383AbgEZHTW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 26 May 2020 03:19:22 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:4899 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730426AbgEZHTV (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 26 May 2020 03:19:21 -0400
+        id S1731340AbgEZHTW (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 26 May 2020 03:19:22 -0400
 Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 087809FD67E4CC8E91E9;
+        by Forcepoint Email with ESMTP id 0434FCE7620702D08BEF;
         Tue, 26 May 2020 15:19:20 +0800 (CST)
 Received: from huawei.com (10.175.124.28) by DGGEMS406-HUB.china.huawei.com
  (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Tue, 26 May 2020
- 15:19:10 +0800
+ 15:19:11 +0800
 From:   "zhangyi (F)" <yi.zhang@huawei.com>
 To:     <linux-ext4@vger.kernel.org>
 CC:     <tytso@mit.edu>, <jack@suse.cz>, <adilger.kernel@dilger.ca>,
         <yi.zhang@huawei.com>, <zhangxiaoxu5@huawei.com>
-Subject: [PATCH 08/10] ext4: replace sb_breadahead() with ext4_sb_breadahead()
-Date:   Tue, 26 May 2020 15:17:52 +0800
-Message-ID: <20200526071754.33819-9-yi.zhang@huawei.com>
+Subject: [PATCH 09/10] ext4: abort the filesystem while freeing the write error io buffer
+Date:   Tue, 26 May 2020 15:17:53 +0800
+Message-ID: <20200526071754.33819-10-yi.zhang@huawei.com>
 X-Mailer: git-send-email 2.21.3
 In-Reply-To: <20200526071754.33819-1-yi.zhang@huawei.com>
 References: <20200526071754.33819-1-yi.zhang@huawei.com>
@@ -37,99 +37,107 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-For the cases of read ahead blocks, we also need to check the write io
-error flag to prevent reading block from disk if it is actually
-uptodate. Add a new wrapper ext4_sb_breadahead() to check the uptodate
-flag and prevent unnecessary read operation, and replace all
-sb_breadahead().
+Now we can prevent reading old metadata buffer from the disk which has
+been failed to write out through checking write io error when getting
+the buffer. One more thing need to do is to prevent freeing the write
+io error buffer. If the buffer was freed, we lose the latest data and
+buffer stats, finally it will also lead to inconsistency.
+
+So, this patch abort the journal in journal mode and invoke
+ext4_error_err() in nojournal mode to prevent further inconsistency.
 
 Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
 ---
- fs/ext4/ext4.h  | 11 +++++------
- fs/ext4/inode.c |  2 +-
- fs/ext4/super.c | 19 ++++++++++++++++++-
- 3 files changed, 24 insertions(+), 8 deletions(-)
+ fs/ext4/super.c       | 32 +++++++++++++++++++++++++++++++-
+ fs/jbd2/transaction.c | 13 +++++++++++++
+ 2 files changed, 44 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 81c1bdfb9397..cafa2617a093 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -2767,6 +2767,8 @@ extern struct buffer_head *__ext4_sb_getblk(struct super_block *sb,
- extern struct buffer_head *__ext4_sb_bread_gfp(struct super_block *sb,
- 					       sector_t block, int op_flags,
- 					       gfp_t gfp);
-+extern void ext4_sb_breadahead_unmovable(struct super_block *sb,
-+					 sector_t block);
- extern int ext4_seq_options_show(struct seq_file *seq, void *offset);
- extern int ext4_calculate_overhead(struct super_block *sb);
- extern void ext4_superblock_csum_set(struct super_block *sb);
-@@ -3533,13 +3535,10 @@ static inline int ext4_buffer_uptodate(struct buffer_head *bh)
- {
- 	/*
- 	 * If the buffer has the write error flag, we have failed
--	 * to write out data in the block.  In this  case, we don't
--	 * have to read the block because we may read the old data
--	 * successfully.
-+	 * to write out this metadata block. In this case, the data
-+	 * in this block is uptodate.
- 	 */
--	if (!buffer_uptodate(bh) && buffer_write_io_error(bh))
--		set_buffer_uptodate(bh);
--	return buffer_uptodate(bh);
-+	return buffer_uptodate(bh) || buffer_write_io_error(bh);
- }
- 
- #endif	/* __KERNEL__ */
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 4989a9633fc7..7354edb444c5 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -4351,7 +4351,7 @@ static int __ext4_get_inode_loc(struct inode *inode,
- 			if (end > table)
- 				end = table;
- 			while (b <= end)
--				sb_breadahead_unmovable(sb, b++);
-+				ext4_sb_breadahead_unmovable(sb, b++);
- 		}
- 
- 		/*
 diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index b9aab334a5d0..d25a0fe44bec 100644
+index d25a0fe44bec..1e15179aa1c4 100644
 --- a/fs/ext4/super.c
 +++ b/fs/ext4/super.c
-@@ -218,6 +218,23 @@ __ext4_sb_bread_gfp(struct super_block *sb, sector_t block,
- 	return ERR_PTR(-EIO);
+@@ -1349,6 +1349,36 @@ static int ext4_nfs_commit_metadata(struct inode *inode)
+ 	return ext4_write_inode(inode, &wbc);
  }
  
-+/*
-+ * This works like sb_breadahead_unmovable() except it use
-+ * ext4_buffer_uptodate() instead of buffer_uptodate() to check the
-+ * metadata buffer is actually uptodate or not. The buffer should be
-+ * considered as actually uptodate for the case of it has been
-+ * failed to write out.
-+ */
-+void ext4_sb_breadahead_unmovable(struct super_block *sb, sector_t block)
++static int bdev_try_to_free_buffer(struct super_block *sb, struct page *page)
 +{
-+	struct buffer_head *bh = ext4_sb_getblk_gfp(sb, block, 0);
++	struct buffer_head *head, *bh;
++	bool has_write_io_error = false;
 +
-+	if (likely(bh) && !ext4_buffer_uptodate(bh)) {
-+		ll_rw_block(REQ_OP_READ, REQ_META | REQ_RAHEAD, 1, &bh);
-+		brelse(bh);
-+	}
++	head = page_buffers(page);
++	bh = head;
++	do {
++		/*
++		 * If the buffer has been failed to write out, the metadata
++		 * in this buffer is uptodate but which on disk is old, may
++		 * lead to inconsistency while reading the old data
++		 * successfully.
++		 */
++		if (buffer_write_io_error(bh) && !buffer_uptodate(bh)) {
++			has_write_io_error = true;
++			break;
++		}
++	} while ((bh = bh->b_this_page) != head);
++
++	if (has_write_io_error)
++		ext4_error_err(sb, EIO, "Free metadata buffer (%llu) that has "
++			       "been failed to write out. There is a risk of "
++			       "filesystem inconsistency in case of reading "
++			       "metadata from this block subsequently.",
++			       (unsigned long long) bh->b_blocknr);
++
++	return try_to_free_buffers(page);
 +}
 +
- static int ext4_verify_csum_type(struct super_block *sb,
- 				 struct ext4_super_block *es)
- {
-@@ -4395,7 +4412,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 	/* Pre-read the descriptors into the buffer cache */
- 	for (i = 0; i < db_count; i++) {
- 		block = descriptor_loc(sb, logical_sb_block, i);
--		sb_breadahead_unmovable(sb, block);
-+		ext4_sb_breadahead_unmovable(sb, block);
- 	}
+ /*
+  * Try to release metadata pages (indirect blocks, directories) which are
+  * mapped via the block device.  Since these pages could have journal heads
+@@ -1366,7 +1396,7 @@ static int bdev_try_to_free_page(struct super_block *sb, struct page *page,
+ 	if (journal)
+ 		return jbd2_journal_try_to_free_buffers(journal, page,
+ 						wait & ~__GFP_DIRECT_RECLAIM);
+-	return try_to_free_buffers(page);
++	return bdev_try_to_free_buffer(sb, page);
+ }
  
- 	for (i = 0; i < db_count; i++) {
+ #ifdef CONFIG_FS_ENCRYPTION
+diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
+index 3dccc23cf010..ac6a077afec3 100644
+--- a/fs/jbd2/transaction.c
++++ b/fs/jbd2/transaction.c
+@@ -2109,6 +2109,7 @@ int jbd2_journal_try_to_free_buffers(journal_t *journal,
+ {
+ 	struct buffer_head *head;
+ 	struct buffer_head *bh;
++	bool has_write_io_error = false;
+ 	int ret = 0;
+ 
+ 	J_ASSERT(PageLocked(page));
+@@ -2133,11 +2134,23 @@ int jbd2_journal_try_to_free_buffers(journal_t *journal,
+ 		jbd2_journal_put_journal_head(jh);
+ 		if (buffer_jbd(bh))
+ 			goto busy;
++
++		/*
++		 * If the buffer has been failed to write out, the metadata
++		 * in this buffer is uptodate but which on disk is old,
++		 * abort journal to prevent subsequent inconsistency while
++		 * reading the old data successfully.
++		 */
++		if (buffer_write_io_error(bh) && !buffer_uptodate(bh))
++			has_write_io_error = true;
+ 	} while ((bh = bh->b_this_page) != head);
+ 
+ 	ret = try_to_free_buffers(page);
+ 
+ busy:
++	if (has_write_io_error)
++		jbd2_journal_abort(journal, -EIO);
++
+ 	return ret;
+ }
+ 
 -- 
 2.21.3
 
