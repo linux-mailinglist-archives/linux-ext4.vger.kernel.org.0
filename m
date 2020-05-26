@@ -2,28 +2,28 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5037D1E1C00
-	for <lists+linux-ext4@lfdr.de>; Tue, 26 May 2020 09:19:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D3481E1C03
+	for <lists+linux-ext4@lfdr.de>; Tue, 26 May 2020 09:19:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730341AbgEZHTT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 26 May 2020 03:19:19 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:4898 "EHLO huawei.com"
+        id S1731381AbgEZHTW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 26 May 2020 03:19:22 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:51104 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726211AbgEZHTT (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 26 May 2020 03:19:19 -0400
+        id S1726641AbgEZHTV (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 26 May 2020 03:19:21 -0400
 Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 07F43683536799CDC3DC;
-        Tue, 26 May 2020 15:19:15 +0800 (CST)
+        by Forcepoint Email with ESMTP id E4E1D8E00C4CC26B7F8E;
+        Tue, 26 May 2020 15:19:14 +0800 (CST)
 Received: from huawei.com (10.175.124.28) by DGGEMS406-HUB.china.huawei.com
  (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Tue, 26 May 2020
- 15:19:08 +0800
+ 15:19:09 +0800
 From:   "zhangyi (F)" <yi.zhang@huawei.com>
 To:     <linux-ext4@vger.kernel.org>
 CC:     <tytso@mit.edu>, <jack@suse.cz>, <adilger.kernel@dilger.ca>,
         <yi.zhang@huawei.com>, <zhangxiaoxu5@huawei.com>
-Subject: [PATCH 04/10] ext4: replace sb_getblk() with ext4_sb_getblk_locked()
-Date:   Tue, 26 May 2020 15:17:48 +0800
-Message-ID: <20200526071754.33819-5-yi.zhang@huawei.com>
+Subject: [PATCH 05/10] ext4: replace sb_bread*() with ext4_sb_bread*()
+Date:   Tue, 26 May 2020 15:17:49 +0800
+Message-ID: <20200526071754.33819-6-yi.zhang@huawei.com>
 X-Mailer: git-send-email 2.21.3
 In-Reply-To: <20200526071754.33819-1-yi.zhang@huawei.com>
 References: <20200526071754.33819-1-yi.zhang@huawei.com>
@@ -37,216 +37,181 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-For the read buffer cases, now we invoke sb_getblk() and submit read
-bio if the buffer is not uptodate, but the uptodate checking is not
-accurate which may lead to read old metadata from the disk if the
-buffer has been failed to write out.
+For the cases of sb_bread() and sb_bread_unmovable(), we also need to
+check the buffer is actually uptodate or not and fix the uptodate flag.
 
-Replace all sb_getblk() with ext4_sb_getblk_locked(), this function
-will check and fix the buffer's uptodate flag if it has write io error
-flag, and lock the buffer if it is actually not uptodate, so the caller
-don't need to lock the buffer after ext4_sb_getblk_locked() return.
+Add a wrapper function ext4_sb_bread_unmovable() and replace all
+sb_bread*() with ext4_sb_bread*().
 
 Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
 ---
- fs/ext4/balloc.c   |  6 ++++--
- fs/ext4/extents.c  |  5 +++--
- fs/ext4/ialloc.c   |  6 ++++--
- fs/ext4/indirect.c |  4 ++--
- fs/ext4/inode.c    | 23 ++++-------------------
- fs/ext4/resize.c   |  4 ++--
- fs/ext4/super.c    |  7 ++++---
- 7 files changed, 23 insertions(+), 32 deletions(-)
+ fs/ext4/ext4.h     | 17 +++++++++++++++--
+ fs/ext4/indirect.c |  6 +++---
+ fs/ext4/resize.c   | 12 ++++++------
+ fs/ext4/super.c    | 33 +++++++++++++++++++--------------
+ 4 files changed, 43 insertions(+), 25 deletions(-)
 
-diff --git a/fs/ext4/balloc.c b/fs/ext4/balloc.c
-index a32e5f7b5385..806959644247 100644
---- a/fs/ext4/balloc.c
-+++ b/fs/ext4/balloc.c
-@@ -433,14 +433,15 @@ ext4_read_block_bitmap_nowait(struct super_block *sb, ext4_group_t block_group)
- 					EXT4_GROUP_INFO_BBITMAP_CORRUPT);
- 		return ERR_PTR(-EFSCORRUPTED);
- 	}
--	bh = sb_getblk(sb, bitmap_blk);
-+	bh = ext4_sb_getblk_locked(sb, bitmap_blk);
- 	if (unlikely(!bh)) {
- 		ext4_warning(sb, "Cannot get buffer for block bitmap - "
- 			     "block_group = %u, block_bitmap = %llu",
- 			     block_group, bitmap_blk);
- 		return ERR_PTR(-ENOMEM);
- 	}
--
-+	if (!buffer_uptodate(bh))
-+		goto submit;
- 	if (bitmap_uptodate(bh))
- 		goto verify;
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 2ee76efd029b..609c2b555d29 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -2763,8 +2763,9 @@ extern struct buffer_head *__ext4_sb_getblk_gfp(struct super_block *sb,
+ 						gfp_t gfp);
+ extern struct buffer_head *__ext4_sb_getblk(struct super_block *sb,
+ 					     sector_t block, bool lock);
+-extern struct buffer_head *ext4_sb_bread(struct super_block *sb,
+-					 sector_t block, int op_flags);
++extern struct buffer_head *__ext4_sb_bread_gfp(struct super_block *sb,
++					       sector_t block, int op_flags,
++					       gfp_t gfp);
+ extern int ext4_seq_options_show(struct seq_file *seq, void *offset);
+ extern int ext4_calculate_overhead(struct super_block *sb);
+ extern void ext4_superblock_csum_set(struct super_block *sb);
+@@ -2969,6 +2970,18 @@ ext4_sb_getblk_locked(struct super_block *sb, sector_t block)
+ 	return __ext4_sb_getblk(sb, block, true);
+ }
  
-@@ -449,6 +450,7 @@ ext4_read_block_bitmap_nowait(struct super_block *sb, ext4_group_t block_group)
- 		unlock_buffer(bh);
- 		goto verify;
- 	}
-+submit:
- 	ext4_lock_group(sb, block_group);
- 	if (ext4_has_group_desc_csum(sb) &&
- 	    (desc->bg_flags & cpu_to_le16(EXT4_BG_BLOCK_UNINIT))) {
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index f2b577b315a0..5db76b46fad5 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -488,11 +488,12 @@ __read_extent_tree_block(const char *function, unsigned int line,
- 	struct buffer_head		*bh;
- 	int				err;
- 
--	bh = sb_getblk_gfp(inode->i_sb, pblk, __GFP_MOVABLE | GFP_NOFS);
-+	bh = ext4_sb_getblk_locked_gfp(inode->i_sb, pblk,
-+				       __GFP_MOVABLE | GFP_NOFS);
- 	if (unlikely(!bh))
- 		return ERR_PTR(-ENOMEM);
- 
--	if (!bh_uptodate_or_lock(bh)) {
-+	if (!buffer_uptodate(bh)) {
- 		trace_ext4_ext_load_extent(inode, pblk, _RET_IP_);
- 		err = bh_submit_read(bh);
- 		if (err < 0)
-diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
-index 4b8c9a9bdf0c..a386b9126101 100644
---- a/fs/ext4/ialloc.c
-+++ b/fs/ext4/ialloc.c
-@@ -137,13 +137,15 @@ ext4_read_inode_bitmap(struct super_block *sb, ext4_group_t block_group)
- 					EXT4_GROUP_INFO_IBITMAP_CORRUPT);
- 		return ERR_PTR(-EFSCORRUPTED);
- 	}
--	bh = sb_getblk(sb, bitmap_blk);
-+	bh = ext4_sb_getblk_locked(sb, bitmap_blk);
- 	if (unlikely(!bh)) {
- 		ext4_warning(sb, "Cannot read inode bitmap - "
- 			     "block_group = %u, inode_bitmap = %llu",
- 			     block_group, bitmap_blk);
- 		return ERR_PTR(-ENOMEM);
- 	}
-+	if (!buffer_uptodate(bh))
-+		goto submit;
- 	if (bitmap_uptodate(bh))
- 		goto verify;
- 
-@@ -152,7 +154,7 @@ ext4_read_inode_bitmap(struct super_block *sb, ext4_group_t block_group)
- 		unlock_buffer(bh);
- 		goto verify;
- 	}
--
-+submit:
- 	ext4_lock_group(sb, block_group);
- 	if (ext4_has_group_desc_csum(sb) &&
- 	    (desc->bg_flags & cpu_to_le16(EXT4_BG_INODE_UNINIT))) {
++static inline struct buffer_head *
++ext4_sb_bread(struct super_block *sb, sector_t block, int op_flags)
++{
++	return __ext4_sb_bread_gfp(sb, block, op_flags, __GFP_MOVABLE);
++}
++
++static inline struct buffer_head *
++ext4_sb_bread_unmovable(struct super_block *sb, sector_t block)
++{
++	return __ext4_sb_bread_gfp(sb, block, 0, 0);
++}
++
+ static inline int ext4_has_metadata_csum(struct super_block *sb)
+ {
+ 	WARN_ON_ONCE(ext4_has_feature_metadata_csum(sb) &&
 diff --git a/fs/ext4/indirect.c b/fs/ext4/indirect.c
-index 107f0043f67f..8dcbf21439c1 100644
+index 8dcbf21439c1..bd4d86211ab8 100644
 --- a/fs/ext4/indirect.c
 +++ b/fs/ext4/indirect.c
-@@ -156,13 +156,13 @@ static Indirect *ext4_get_branch(struct inode *inode, int depth,
- 	if (!p->key)
- 		goto no_block;
- 	while (--depth) {
--		bh = sb_getblk(sb, le32_to_cpu(p->key));
-+		bh = ext4_sb_getblk_locked(sb, le32_to_cpu(p->key));
- 		if (unlikely(!bh)) {
- 			ret = -ENOMEM;
- 			goto failure;
- 		}
+@@ -1012,14 +1012,14 @@ static void ext4_free_branches(handle_t *handle, struct inode *inode,
+ 			}
  
--		if (!bh_uptodate_or_lock(bh)) {
-+		if (!buffer_uptodate(bh)) {
- 			if (bh_submit_read(bh) < 0) {
- 				put_bh(bh);
- 				goto failure;
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index e0f7e824b3b9..c374870f6bb1 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -4276,27 +4276,10 @@ static int __ext4_get_inode_loc(struct inode *inode,
- 	block = ext4_inode_table(sb, gdp) + (inode_offset / inodes_per_block);
- 	iloc->offset = (inode_offset % inodes_per_block) * EXT4_INODE_SIZE(sb);
+ 			/* Go read the buffer for the next level down */
+-			bh = sb_bread(inode->i_sb, nr);
++			bh = ext4_sb_bread(inode->i_sb, nr, 0);
  
--	bh = sb_getblk(sb, block);
-+	bh = ext4_sb_getblk_locked(sb, block);
- 	if (unlikely(!bh))
- 		return -ENOMEM;
- 	if (!buffer_uptodate(bh)) {
--		lock_buffer(bh);
--
--		/*
--		 * If the buffer has the write error flag, we have failed
--		 * to write out another inode in the same block.  In this
--		 * case, we don't have to read the block because we may
--		 * read the old inode data successfully.
--		 */
--		if (buffer_write_io_error(bh) && !buffer_uptodate(bh))
--			set_buffer_uptodate(bh);
--
--		if (buffer_uptodate(bh)) {
--			/* someone brought it uptodate while we waited */
--			unlock_buffer(bh);
--			goto has_buffer;
--		}
--
- 		/*
- 		 * If we have all information of the inode in memory and this
- 		 * is the only valid inode in the block, we need not read the
-@@ -4309,7 +4292,8 @@ static int __ext4_get_inode_loc(struct inode *inode,
- 			start = inode_offset & ~(inodes_per_block - 1);
- 
- 			/* Is the inode bitmap in cache? */
--			bitmap_bh = sb_getblk(sb, ext4_inode_bitmap(sb, gdp));
-+			bitmap_bh = ext4_sb_getblk_locked(sb,
-+						ext4_inode_bitmap(sb, gdp));
- 			if (unlikely(!bitmap_bh))
- 				goto make_io;
- 
-@@ -4319,6 +4303,7 @@ static int __ext4_get_inode_loc(struct inode *inode,
- 			 * of one, so skip it.
+ 			/*
+ 			 * A read failure? Report error and clear slot
+ 			 * (should be rare).
  			 */
- 			if (!buffer_uptodate(bitmap_bh)) {
-+				unlock_buffer(bitmap_bh);
- 				brelse(bitmap_bh);
- 				goto make_io;
+-			if (!bh) {
+-				ext4_error_inode_block(inode, nr, EIO,
++			if (IS_ERR(bh)) {
++				ext4_error_inode_block(inode, nr, PTR_ERR(bh),
+ 						       "Read failure");
+ 				continue;
  			}
 diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
-index a50b51270ea9..414198e4d873 100644
+index 414198e4d873..ff018e63bb55 100644
 --- a/fs/ext4/resize.c
 +++ b/fs/ext4/resize.c
-@@ -1239,10 +1239,10 @@ static int ext4_add_new_descs(handle_t *handle, struct super_block *sb,
+@@ -1806,10 +1806,10 @@ int ext4_group_extend(struct super_block *sb, struct ext4_super_block *es,
+ 			     o_blocks_count + add, add);
  
- static struct buffer_head *ext4_get_bitmap(struct super_block *sb, __u64 block)
- {
--	struct buffer_head *bh = sb_getblk(sb, block);
-+	struct buffer_head *bh = ext4_sb_getblk_locked(sb, block);
- 	if (unlikely(!bh))
- 		return NULL;
--	if (!bh_uptodate_or_lock(bh)) {
-+	if (!buffer_uptodate(bh)) {
- 		if (bh_submit_read(bh) < 0) {
- 			brelse(bh);
- 			return NULL;
+ 	/* See if the device is actually as big as what was requested */
+-	bh = sb_bread(sb, o_blocks_count + add - 1);
+-	if (!bh) {
++	bh = ext4_sb_bread(sb, o_blocks_count + add - 1, 0);
++	if (IS_ERR(bh)) {
+ 		ext4_warning(sb, "can't read last block, resize aborted");
+-		return -ENOSPC;
++		return PTR_ERR(bh);
+ 	}
+ 	brelse(bh);
+ 
+@@ -1932,10 +1932,10 @@ int ext4_resize_fs(struct super_block *sb, ext4_fsblk_t n_blocks_count)
+ 	int meta_bg;
+ 
+ 	/* See if the device is actually as big as what was requested */
+-	bh = sb_bread(sb, n_blocks_count - 1);
+-	if (!bh) {
++	bh = ext4_sb_bread(sb, n_blocks_count - 1, 0);
++	if (IS_ERR(bh)) {
+ 		ext4_warning(sb, "can't read last block, resize aborted");
+-		return -ENOSPC;
++		return PTR_ERR(bh);
+ 	}
+ 	brelse(bh);
+ 
 diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index ddc46dbcd5ce..111fff55fada 100644
+index 111fff55fada..b9aab334a5d0 100644
 --- a/fs/ext4/super.c
 +++ b/fs/ext4/super.c
-@@ -202,13 +202,14 @@ __ext4_sb_getblk(struct super_block *sb, sector_t block, bool lock)
- struct buffer_head *
- ext4_sb_bread(struct super_block *sb, sector_t block, int op_flags)
- {
--	struct buffer_head *bh = sb_getblk(sb, block);
-+	struct buffer_head *bh;
+@@ -194,17 +194,18 @@ __ext4_sb_getblk(struct super_block *sb, sector_t block, bool lock)
+ }
  
-+	bh = ext4_sb_getblk_locked(sb, block);
+ /*
+- * This works like sb_bread() except it uses ERR_PTR for error
+- * returns.  Currently with sb_bread it's impossible to distinguish
+- * between ENOMEM and EIO situations (since both result in a NULL
+- * return.
++ * This works like __bread_gfp() except it allow to pass op_flags and
++ * uses ERR_PTR for error returns.  Currently with sb_bread it's
++ * impossible to distinguish between ENOMEM and EIO situations (since
++ * both result in a NULL return.
+  */
+ struct buffer_head *
+-ext4_sb_bread(struct super_block *sb, sector_t block, int op_flags)
++__ext4_sb_bread_gfp(struct super_block *sb, sector_t block,
++		    int op_flags, gfp_t gfp)
+ {
+ 	struct buffer_head *bh;
+ 
+-	bh = ext4_sb_getblk_locked(sb, block);
++	bh = ext4_sb_getblk_locked_gfp(sb, block, gfp);
  	if (bh == NULL)
  		return ERR_PTR(-ENOMEM);
--	if (ext4_buffer_uptodate(bh))
-+	if (buffer_uptodate(bh))
- 		return bh;
--	ll_rw_block(REQ_OP_READ, REQ_META | op_flags, 1, &bh);
-+	ll_rw_one_block(REQ_OP_READ, REQ_META | op_flags, bh);
- 	wait_on_buffer(bh);
  	if (buffer_uptodate(bh))
- 		return bh;
+@@ -3777,8 +3778,10 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+ 		logical_sb_block = sb_block;
+ 	}
+ 
+-	if (!(bh = sb_bread_unmovable(sb, logical_sb_block))) {
+-		ext4_msg(sb, KERN_ERR, "unable to read superblock");
++	bh = ext4_sb_bread_unmovable(sb, logical_sb_block);
++	if (IS_ERR(bh)) {
++		ext4_msg(sb, KERN_ERR,
++			 "unable to read superblock: %ld", PTR_ERR(bh));
+ 		goto out_fail;
+ 	}
+ 	/*
+@@ -4175,10 +4178,11 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+ 		brelse(bh);
+ 		logical_sb_block = sb_block * EXT4_MIN_BLOCK_SIZE;
+ 		offset = do_div(logical_sb_block, blocksize);
+-		bh = sb_bread_unmovable(sb, logical_sb_block);
+-		if (!bh) {
++		bh = ext4_sb_bread_unmovable(sb, logical_sb_block);
++		if (IS_ERR(bh)) {
+ 			ext4_msg(sb, KERN_ERR,
+-			       "Can't read superblock on 2nd try");
++				 "Can't read superblock on 2nd try: %ld",
++				 PTR_ERR(bh));
+ 			goto failed_mount;
+ 		}
+ 		es = (struct ext4_super_block *)(bh->b_data + offset);
+@@ -4398,10 +4402,11 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+ 		struct buffer_head *bh;
+ 
+ 		block = descriptor_loc(sb, logical_sb_block, i);
+-		bh = sb_bread_unmovable(sb, block);
+-		if (!bh) {
++		bh = ext4_sb_bread_unmovable(sb, block);
++		if (IS_ERR(bh)) {
+ 			ext4_msg(sb, KERN_ERR,
+-			       "can't read group descriptor %d", i);
++				 "can't read group descriptor %d: %ld",
++				 i, PTR_ERR(bh));
+ 			db_count = i;
+ 			goto failed_mount2;
+ 		}
 -- 
 2.21.3
 
