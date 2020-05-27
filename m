@@ -2,133 +2,122 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 588FC1E3F6C
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 May 2020 12:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC0C1E4068
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 May 2020 13:49:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387599AbgE0K4r (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 27 May 2020 06:56:47 -0400
-Received: from mail.thelounge.net ([91.118.73.15]:45269 "EHLO
-        mail.thelounge.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387574AbgE0K4r (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 May 2020 06:56:47 -0400
-Received: from srv-rhsoft.rhsoft.net (rh.vpn.thelounge.net [10.10.10.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256))
-        (No client certificate requested)
-        (Authenticated sender: h.reindl@thelounge.net)
-        by mail.thelounge.net (THELOUNGE MTA) with ESMTPSA id 49X77J5gnHzXSL;
-        Wed, 27 May 2020 12:56:44 +0200 (CEST)
-Subject: Re: [PATCH] ext4: introduce EXT4_BG_WAS_TRIMMED to optimize trim
-To:     Lukas Czerner <lczerner@redhat.com>
-Cc:     Wang Shilong <wangshilong1991@gmail.com>,
-        linux-ext4@vger.kernel.org, Wang Shilong <wshilong@ddn.com>,
-        Shuichi Ihara <sihara@ddn.com>,
-        Andreas Dilger <adilger@dilger.ca>
-References: <1590565130-23773-1-git-send-email-wangshilong1991@gmail.com>
- <20200527091938.647363ekmnz7av7y@work>
- <520b260b-13e9-4c62-eaeb-c44215b14089@thelounge.net>
- <20200527095751.7vt74n7grfre6wit@work>
- <59df4f2f-f168-99a1-e929-82742693f8ee@thelounge.net>
- <20200527103214.knm2vmnwjt64j55l@work>
-From:   Reindl Harald <h.reindl@thelounge.net>
-Organization: the lounge interactive design
-Message-ID: <ece9cd79-6d97-db36-66bb-f02bd6bf6573@thelounge.net>
-Date:   Wed, 27 May 2020 12:56:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1728185AbgE0Ltd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 27 May 2020 07:49:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726019AbgE0Lt3 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 May 2020 07:49:29 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0599CC061A0F
+        for <linux-ext4@vger.kernel.org>; Wed, 27 May 2020 04:49:29 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id e125so14286854lfd.1
+        for <linux-ext4@vger.kernel.org>; Wed, 27 May 2020 04:49:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1eb8hhRgWhldc6gNCY/BHu4k6Mc3ON849X4b3k08UMU=;
+        b=dZ2EO3LdRXmW0rb/PbGBy5/ATbLPpBSpne2iHWL8g4cHa5pFCH5GCbOAD7jC3Kzi3S
+         MISYPGpgS2exm9jQV0gLr3s2v7seE3tyMVMGbhwvcq5KWBC2lbp4WRogLsHJmD56dSoF
+         SaGqBkdQFcT/Q8+h09FriRhyy32nZ8Qbam2ia6qehADmirwsw9FzofuUIssUXiEf/O1M
+         PNKyMGSEEuXIahADQmZbrbIFZkk9iuRkEcQbQIaG2M4cssRD0uw+ZxOkNkqohemuxYe7
+         g5KMFqDZR/29AuHUIPPzijSDWnAEbdNVWRVRrdnecAjUZPqBYLoGLUucygRKxHZITQJs
+         lRlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1eb8hhRgWhldc6gNCY/BHu4k6Mc3ON849X4b3k08UMU=;
+        b=IJnn2DCtUTzFRjqikUga9WjpMB0lqnd/7qNIt9bYT5Qf8mC5cEDPM3IfSz2i7186cu
+         4/KgknrDty0GU7DXWTyW1q00aDd6wUIet75NZ9onAR3xXz1Y0EoNOoCYM93N0JZ1roY/
+         Co0AXdnGKyrpl1Yq3+LhXuOHEjVCI9tdY68QH2iqcnIpEqNWHsOeEDHktHZow3WEoNCS
+         z6hyXIyzFIFB24t7PWJZJKuwgQf11XC33q2BcbtPEvkRkIJcLnxdFzPnllm/OX5xKYIq
+         AroLu2r/Z1DcxPmfd7R4hzLoZyUzkmKmm8XK5z7fXrC7vd2JBFW5yBpuSnmvCcfpVOjG
+         f0YA==
+X-Gm-Message-State: AOAM533JCqnGQUUEqgS0gDYZFms2Ahd3rmnwDgbBK1g0do334RVRzchP
+        P0N5SPNbBU9TyyBPaXhdobT9cHtwpEwCFHtMKDXlTA==
+X-Google-Smtp-Source: ABdhPJxtfHGgD1x+0sGWQDtxJJeB9uCl6Feg/5utDqmnhP3TYYxI7kATndRbmt63ldid6mOZbKhfx/ZSXQlPvqovUXQ=
+X-Received: by 2002:a05:6512:1051:: with SMTP id c17mr2908078lfb.206.1590580167403;
+ Wed, 27 May 2020 04:49:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200527103214.knm2vmnwjt64j55l@work>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200511131350.29638-1-anders.roxell@linaro.org>
+In-Reply-To: <20200511131350.29638-1-anders.roxell@linaro.org>
+From:   Anders Roxell <anders.roxell@linaro.org>
+Date:   Wed, 27 May 2020 13:49:16 +0200
+Message-ID: <CADYN=9LkA2h6dANREfPQq4iDvVEJX1wAdxjv31mpVBkaM_g0ZQ@mail.gmail.com>
+Subject: Re: [PATCH v3 0/6] Enable as many KUnit tests as possible
+To:     Brendan Higgins <brendanhiggins@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        John Johansen <john.johansen@canonical.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>
+Cc:     "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ext4@vger.kernel.org,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        Marco Elver <elver@google.com>, David Gow <davidgow@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Hi all,
 
+Friendly ping: who can take this?
 
-Am 27.05.20 um 12:32 schrieb Lukas Czerner:
-> On Wed, May 27, 2020 at 12:11:52PM +0200, Reindl Harald wrote:
->>
->> Am 27.05.20 um 11:57 schrieb Lukas Czerner:
->>> On Wed, May 27, 2020 at 11:32:02AM +0200, Reindl Harald wrote:
->>>>
->>>>
->>>> Am 27.05.20 um 11:19 schrieb Lukas Czerner:
->>>>> On Wed, May 27, 2020 at 04:38:50PM +0900, Wang Shilong wrote:
->>>>>> From: Wang Shilong <wshilong@ddn.com>
->>>>>>
->>>>>> Currently WAS_TRIMMED flag is not persistent, whenever filesystem was
->>>>>> remounted, fstrim need walk all block groups again, the problem with
->>>>>> this is FSTRIM could be slow on very large LUN SSD based filesystem.
->>>>>>
->>>>>> To avoid this kind of problem, we introduce a block group flag
->>>>>> EXT4_BG_WAS_TRIMMED, the side effect of this is we need introduce
->>>>>> extra one block group dirty write after trimming block group.
->>>>
->>>> would that also fix the issue that *way too much* is trimmed all the
->>>> time, no matter if it's a thin provisioned vmware disk or a phyiscal
->>>> RAID10 with SSD
->>>
->>> no, the mechanism remains the same, but the proposal is to make it
->>> pesisten across re-mounts.
->>>
->>>>
->>>> no way of 315 MB deletes within 2 hours or so on a system with just 485M
->>>> used
->>>
->>> The reason is that we're working on block group granularity. So if you
->>> have almost free block group, and you free some blocks from it, the flag
->>> gets freed and next time you run fstrim it'll trim all the free space in
->>> the group. Then again if you free some blocks from the group, the flags
->>> gets cleared again ...
->>>
->>> But I don't think this is a problem at all. Certainly not worth tracking
->>> free/trimmed extents to solve it.
->>
->> it is a problem
->>
->> on a daily "fstrim -av" you trim gigabytes of alredy trimmed blocks
->> which for example on a vmware thin provisioned vdisk makes it down to
->> CBT (changed-block-tracking)
->>
->> so instead completly ignore that untouched space thanks to CBT it's
->> considered as changed and verified in the follow up backup run which
->> takes magnitutdes longer than needed
-> 
-> Looks like you identified the problem then ;)
+Cheers,
+Anders
 
-well, in a perfect world.....
-
-> But seriously, trim/discard was always considered advisory and the
-> storage is completely free to do whatever it wants to do with the
-> information. I might even be the case that the discard requests are
-> ignored and we might not even need optimization like this. But
-> regardless it does take time to go through the block gropus and as a
-> result this optimization is useful in the fs itself.
-
-luckily at least fstrim is non-blocking in a vmware environment, on my
-physical box it takes ages
-
-this machine *does nothing* than wait to be cloned, 235 MB pretended
-deleted data within 50 minutes is absurd on a completly idle guest
-
-so even when i am all in for optimizations thatÄs way over top
-
-[root@master:~]$ fstrim -av
-/boot: 0 B (0 bytes) trimmed on /dev/sda1
-/: 235.8 MiB (247201792 bytes) trimmed on /dev/sdb1
-
-[root@master:~]$ df
-Filesystem     Type  Size  Used Avail Use% Mounted on
-/dev/sdb1      ext4  5.8G  502M  5.3G   9% /
-/dev/sda1      ext4  485M   39M  443M   9% /boot
-
-> However it seems to me that the situation you're describing calls for
-> optimization on a storage side (TP vdisk in your case), not file system
-> side.
-> 
-> And again, for fine grained discard you can use -o discard
-
-with a terrible performance impact at runtime
+On Mon, 11 May 2020 at 15:14, Anders Roxell <anders.roxell@linaro.org> wrote:
+>
+> Hi,
+>
+> This patchset will try to enable as many KUnit test fragments as
+> possible for the current .config file.
+> This will make it easier for both developers that tests their specific
+> feature and also for test-systems that would like to get as much as
+> possible for their current .config file.
+>
+> I will send a separate KCSAN KUnit patch after this patchset since that
+> isn't in mainline yet.
+>
+> Since v2:
+> Fixed David's comments. KUNIT_RUN_ALL -> KUNIT_ALL_TESTS, and he
+> suggested a great help text.
+>
+> Since v1:
+> Marco commented to split up the patches, and change a "." to a ",".
+>
+>
+> Cheers,
+> Anders
+>
+> Anders Roxell (6):
+>   kunit: Kconfig: enable a KUNIT_ALL_TESTS fragment
+>   kunit: default KUNIT_* fragments to KUNIT_ALL_TESTS
+>   lib: Kconfig.debug: default KUNIT_* fragments to KUNIT_ALL_TESTS
+>   drivers: base: default KUNIT_* fragments to KUNIT_ALL_TESTS
+>   fs: ext4: default KUNIT_* fragments to KUNIT_ALL_TESTS
+>   security: apparmor: default KUNIT_* fragments to KUNIT_ALL_TESTS
+>
+>  drivers/base/Kconfig      |  3 ++-
+>  drivers/base/test/Kconfig |  3 ++-
+>  fs/ext4/Kconfig           |  3 ++-
+>  lib/Kconfig.debug         |  6 ++++--
+>  lib/kunit/Kconfig         | 23 ++++++++++++++++++++---
+>  security/apparmor/Kconfig |  3 ++-
+>  6 files changed, 32 insertions(+), 9 deletions(-)
+>
+> --
+> 2.20.1
+>
