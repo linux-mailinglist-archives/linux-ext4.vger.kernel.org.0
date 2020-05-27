@@ -2,94 +2,288 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB541E3EB7
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 May 2020 12:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7873A1E3EE0
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 May 2020 12:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387774AbgE0KLy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 27 May 2020 06:11:54 -0400
-Received: from mail.thelounge.net ([91.118.73.15]:15931 "EHLO
-        mail.thelounge.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387767AbgE0KLy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 May 2020 06:11:54 -0400
-Received: from srv-rhsoft.rhsoft.net (rh.vpn.thelounge.net [10.10.10.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        id S1729786AbgE0KWK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 27 May 2020 06:22:10 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:60910 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729783AbgE0KWK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 27 May 2020 06:22:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590574927;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AxgryR443q/eyG9WKki++/fM8WnoUEW2qj2DTcqDzdk=;
+        b=blIZRIwb98muNg2C+hhGT0GngbWwkHUBxVkzxJW/BFEuTYAi4kEEehE89+3XbdIVM8jcro
+        hqyh8eUD99p9LCJ8s+w2r6HBBWkU4zMSJRtj9qrMLG2XtUeVJlTTmMd5a6Rqh7fpkv9dpd
+        vNbhUjDKv0x4vUGaF65EqKQssLElB04=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-202-1IE8eDrnMbqQeYDq5CINqg-1; Wed, 27 May 2020 06:22:05 -0400
+X-MC-Unique: 1IE8eDrnMbqQeYDq5CINqg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: h.reindl@thelounge.net)
-        by mail.thelounge.net (THELOUNGE MTA) with ESMTPSA id 49X67X2KhczXSL;
-        Wed, 27 May 2020 12:11:52 +0200 (CEST)
-Subject: Re: [PATCH] ext4: introduce EXT4_BG_WAS_TRIMMED to optimize trim
-To:     Lukas Czerner <lczerner@redhat.com>
-Cc:     Wang Shilong <wangshilong1991@gmail.com>,
-        linux-ext4@vger.kernel.org, Wang Shilong <wshilong@ddn.com>,
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 96FE918FE88C;
+        Wed, 27 May 2020 10:22:04 +0000 (UTC)
+Received: from work (unknown [10.40.194.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0A99F98A5C;
+        Wed, 27 May 2020 10:22:02 +0000 (UTC)
+Date:   Wed, 27 May 2020 12:21:58 +0200
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     Wang Shilong <wangshilong1991@gmail.com>
+Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Wang Shilong <wshilong@ddn.com>,
         Shuichi Ihara <sihara@ddn.com>,
         Andreas Dilger <adilger@dilger.ca>
+Subject: Re: [PATCH] ext4: introduce EXT4_BG_WAS_TRIMMED to optimize trim
+Message-ID: <20200527102158.n2bozg5wivzjot2b@work>
 References: <1590565130-23773-1-git-send-email-wangshilong1991@gmail.com>
  <20200527091938.647363ekmnz7av7y@work>
- <520b260b-13e9-4c62-eaeb-c44215b14089@thelounge.net>
- <20200527095751.7vt74n7grfre6wit@work>
-From:   Reindl Harald <h.reindl@thelounge.net>
-Organization: the lounge interactive design
-Message-ID: <59df4f2f-f168-99a1-e929-82742693f8ee@thelounge.net>
-Date:   Wed, 27 May 2020 12:11:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ <CAP9B-QkM1m2FuHd4qoqM2iEJqbKpGS1KYUmccmOd1SS=gUn2Gw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200527095751.7vt74n7grfre6wit@work>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAP9B-QkM1m2FuHd4qoqM2iEJqbKpGS1KYUmccmOd1SS=gUn2Gw@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-
-Am 27.05.20 um 11:57 schrieb Lukas Czerner:
-> On Wed, May 27, 2020 at 11:32:02AM +0200, Reindl Harald wrote:
->>
->>
->> Am 27.05.20 um 11:19 schrieb Lukas Czerner:
->>> On Wed, May 27, 2020 at 04:38:50PM +0900, Wang Shilong wrote:
->>>> From: Wang Shilong <wshilong@ddn.com>
->>>>
->>>> Currently WAS_TRIMMED flag is not persistent, whenever filesystem was
->>>> remounted, fstrim need walk all block groups again, the problem with
->>>> this is FSTRIM could be slow on very large LUN SSD based filesystem.
->>>>
->>>> To avoid this kind of problem, we introduce a block group flag
->>>> EXT4_BG_WAS_TRIMMED, the side effect of this is we need introduce
->>>> extra one block group dirty write after trimming block group.
->>
->> would that also fix the issue that *way too much* is trimmed all the
->> time, no matter if it's a thin provisioned vmware disk or a phyiscal
->> RAID10 with SSD
+On Wed, May 27, 2020 at 06:06:09PM +0800, Wang Shilong wrote:
+> On Wed, May 27, 2020 at 5:19 PM Lukas Czerner <lczerner@redhat.com> wrote:
+> >
+> > On Wed, May 27, 2020 at 04:38:50PM +0900, Wang Shilong wrote:
+> > > From: Wang Shilong <wshilong@ddn.com>
+> > >
+> > > Currently WAS_TRIMMED flag is not persistent, whenever filesystem was
+> > > remounted, fstrim need walk all block groups again, the problem with
+> > > this is FSTRIM could be slow on very large LUN SSD based filesystem.
+> > >
+> > > To avoid this kind of problem, we introduce a block group flag
+> > > EXT4_BG_WAS_TRIMMED, the side effect of this is we need introduce
+> > > extra one block group dirty write after trimming block group.
+> >
+> > Hi
+> >
+> > that's fair enough, however once you make this persistent we also need
+> > to have a way to clear the flag, or at least bypass it. Storage can be
+> > changed and if it does we might want to re-run the fstrim.
 > 
-> no, the mechanism remains the same, but the proposal is to make it
-> pesisten across re-mounts.
+> Yup, i thought about that.
 > 
->>
->> no way of 315 MB deletes within 2 hours or so on a system with just 485M
->> used
+> 1) we might add an mount option or sys interface, something force_fstrim
+> 2) Add an option to e2fsck to force clear this block group flag.
+
+Option for tune2fs to clear the flags sounds way better than yet another
+mount option.
+
+Thanks!
+-Lukas
+
 > 
-> The reason is that we're working on block group granularity. So if you
-> have almost free block group, and you free some blocks from it, the flag
-> gets freed and next time you run fstrim it'll trim all the free space in
-> the group. Then again if you free some blocks from the group, the flags
-> gets cleared again ...
+> >
+> > We also need to set this flag in mke2fs and e2fsck if appropriate.
+> >
 > 
-> But I don't think this is a problem at all. Certainly not worth tracking
-> free/trimmed extents to solve it.
+> Good point.
+> 
+> > more below...
+> >
+> > >
+> > > And When clearing TRIMMED flag, block group will be journalled
+> > > anyway, so it won't introduce any overhead.
+> > >
+> > > Cc: Shuichi Ihara <sihara@ddn.com>
+> > > Cc: Andreas Dilger <adilger@dilger.ca>
+> > > Cc: Wang Shilong <wangshilong1991@gmail.com>
+> > > Signed-off-by: Wang Shilong <wshilong@ddn.com>
+> > > ---
+> > >  fs/ext4/ext4.h      | 18 +++++++--------
+> > >  fs/ext4/ext4_jbd2.h |  3 ++-
+> > >  fs/ext4/mballoc.c   | 54 ++++++++++++++++++++++++++++++++++-----------
+> > >  3 files changed, 52 insertions(+), 23 deletions(-)
+> > >
+> > > diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> > > index ad2dbf6e4924..23c2dc529a28 100644
+> > > --- a/fs/ext4/ext4.h
+> > > +++ b/fs/ext4/ext4.h
+> > > @@ -357,6 +357,7 @@ struct flex_groups {
+> > >  #define EXT4_BG_INODE_UNINIT 0x0001 /* Inode table/bitmap not in use */
+> > >  #define EXT4_BG_BLOCK_UNINIT 0x0002 /* Block bitmap not in use */
+> > >  #define EXT4_BG_INODE_ZEROED 0x0004 /* On-disk itable initialized to zero */
+> > > +#define EXT4_BG_WAS_TRIMMED  0x0008 /* block group was trimmed */
+> > >
+> > >  /*
+> > >   * Macro-instructions used to manage group descriptors
+> > > @@ -3112,9 +3113,8 @@ struct ext4_group_info {
+> > >  };
+> > >
+> > >  #define EXT4_GROUP_INFO_NEED_INIT_BIT                0
+> > > -#define EXT4_GROUP_INFO_WAS_TRIMMED_BIT              1
+> > > -#define EXT4_GROUP_INFO_BBITMAP_CORRUPT_BIT  2
+> > > -#define EXT4_GROUP_INFO_IBITMAP_CORRUPT_BIT  3
+> > > +#define EXT4_GROUP_INFO_BBITMAP_CORRUPT_BIT  1
+> > > +#define EXT4_GROUP_INFO_IBITMAP_CORRUPT_BIT  2
+> > >  #define EXT4_GROUP_INFO_BBITMAP_CORRUPT              \
+> > >       (1 << EXT4_GROUP_INFO_BBITMAP_CORRUPT_BIT)
+> > >  #define EXT4_GROUP_INFO_IBITMAP_CORRUPT              \
+> > > @@ -3127,12 +3127,12 @@ struct ext4_group_info {
+> > >  #define EXT4_MB_GRP_IBITMAP_CORRUPT(grp)     \
+> > >       (test_bit(EXT4_GROUP_INFO_IBITMAP_CORRUPT_BIT, &((grp)->bb_state)))
+> > >
+> > > -#define EXT4_MB_GRP_WAS_TRIMMED(grp) \
+> > > -     (test_bit(EXT4_GROUP_INFO_WAS_TRIMMED_BIT, &((grp)->bb_state)))
+> > > -#define EXT4_MB_GRP_SET_TRIMMED(grp) \
+> > > -     (set_bit(EXT4_GROUP_INFO_WAS_TRIMMED_BIT, &((grp)->bb_state)))
+> > > -#define EXT4_MB_GRP_CLEAR_TRIMMED(grp)       \
+> > > -     (clear_bit(EXT4_GROUP_INFO_WAS_TRIMMED_BIT, &((grp)->bb_state)))
+> > > +#define EXT4_MB_GDP_WAS_TRIMMED(gdp) \
+> > > +     (gdp->bg_flags & cpu_to_le16(EXT4_BG_WAS_TRIMMED))
+> > > +#define EXT4_MB_GDP_SET_TRIMMED(gdp) \
+> > > +     (gdp->bg_flags |= cpu_to_le16(EXT4_BG_WAS_TRIMMED))
+> > > +#define EXT4_MB_GDP_CLEAR_TRIMMED(gdp)       \
+> > > +     (gdp->bg_flags &= ~cpu_to_le16(EXT4_BG_WAS_TRIMMED))
+> > >
+> > >  #define EXT4_MAX_CONTENTION          8
+> > >  #define EXT4_CONTENTION_THRESHOLD    2
+> > > diff --git a/fs/ext4/ext4_jbd2.h b/fs/ext4/ext4_jbd2.h
+> > > index 4b9002f0e84c..4094a5b247f7 100644
+> > > --- a/fs/ext4/ext4_jbd2.h
+> > > +++ b/fs/ext4/ext4_jbd2.h
+> > > @@ -123,7 +123,8 @@
+> > >  #define EXT4_HT_MOVE_EXTENTS     9
+> > >  #define EXT4_HT_XATTR           10
+> > >  #define EXT4_HT_EXT_CONVERT     11
+> > > -#define EXT4_HT_MAX             12
+> > > +#define EXT4_HT_FS_TRIM              12
+> > > +#define EXT4_HT_MAX             13
+> > >
+> > >  /**
+> > >   *   struct ext4_journal_cb_entry - Base structure for callback information.
+> > > diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> > > index 30d5d97548c4..d25377948994 100644
+> > > --- a/fs/ext4/mballoc.c
+> > > +++ b/fs/ext4/mballoc.c
+> > > @@ -2829,15 +2829,6 @@ static void ext4_free_data_in_buddy(struct super_block *sb,
+> > >       rb_erase(&entry->efd_node, &(db->bb_free_root));
+> > >       mb_free_blocks(NULL, &e4b, entry->efd_start_cluster, entry->efd_count);
+> > >
+> > > -     /*
+> > > -      * Clear the trimmed flag for the group so that the next
+> > > -      * ext4_trim_fs can trim it.
+> > > -      * If the volume is mounted with -o discard, online discard
+> > > -      * is supported and the free blocks will be trimmed online.
+> > > -      */
+> > > -     if (!test_opt(sb, DISCARD))
+> > > -             EXT4_MB_GRP_CLEAR_TRIMMED(db);
+> > > -
+> > >       if (!db->bb_free_root.rb_node) {
+> > >               /* No more items in the per group rb tree
+> > >                * balance refcounts from ext4_mb_free_metadata()
+> > > @@ -4928,8 +4919,7 @@ void ext4_free_blocks(handle_t *handle, struct inode *inode,
+> > >                                        " group:%d block:%d count:%lu failed"
+> > >                                        " with %d", block_group, bit, count,
+> > >                                        err);
+> > > -             } else
+> > > -                     EXT4_MB_GRP_CLEAR_TRIMMED(e4b.bd_info);
+> > > +             }
+> > >
+> > >               ext4_lock_group(sb, block_group);
+> > >               mb_clear_bits(bitmap_bh->b_data, bit, count_clusters);
+> > > @@ -4939,6 +4929,14 @@ void ext4_free_blocks(handle_t *handle, struct inode *inode,
+> > >       ret = ext4_free_group_clusters(sb, gdp) + count_clusters;
+> > >       ext4_free_group_clusters_set(sb, gdp, ret);
+> > >       ext4_block_bitmap_csum_set(sb, block_group, gdp, bitmap_bh);
+> > > +     /*
+> > > +      * Clear the trimmed flag for the group so that the next
+> > > +      * ext4_trim_fs can trim it.
+> > > +      * If the volume is mounted with -o discard, online discard
+> > > +      * is supported and the free blocks will be trimmed online.
+> > > +      */
+> > > +     if (!test_opt(sb, DISCARD))
+> > > +             EXT4_MB_GDP_CLEAR_TRIMMED(gdp);
+> > >       ext4_group_desc_csum_set(sb, block_group, gdp);
+> > >       ext4_unlock_group(sb, block_group);
+> > >
+> > > @@ -5192,8 +5190,15 @@ ext4_trim_all_free(struct super_block *sb, ext4_group_t group,
+> > >       ext4_grpblk_t next, count = 0, free_count = 0;
+> > >       struct ext4_buddy e4b;
+> > >       int ret = 0;
+> > > +     struct ext4_group_desc *gdp;
+> > > +     struct buffer_head *gdp_bh;
+> > >
+> > >       trace_ext4_trim_all_free(sb, group, start, max);
+> > > +     gdp = ext4_get_group_desc(sb, group, &gdp_bh);
+> > > +     if (!gdp) {
+> > > +             ret = -EIO;
+> > > +             return ret;
+> > > +     }
+> > >
+> > >       ret = ext4_mb_load_buddy(sb, group, &e4b);
+> > >       if (ret) {
+> > > @@ -5204,7 +5209,7 @@ ext4_trim_all_free(struct super_block *sb, ext4_group_t group,
+> > >       bitmap = e4b.bd_bitmap;
+> > >
+> > >       ext4_lock_group(sb, group);
+> > > -     if (EXT4_MB_GRP_WAS_TRIMMED(e4b.bd_info) &&
+> > > +     if (EXT4_MB_GDP_WAS_TRIMMED(gdp) &&
+> > >           minblocks >= atomic_read(&EXT4_SB(sb)->s_last_trim_minblks))
+> > >               goto out;
+> > >
+> > > @@ -5245,12 +5250,35 @@ ext4_trim_all_free(struct super_block *sb, ext4_group_t group,
+> > >
+> > >       if (!ret) {
+> > >               ret = count;
+> > > -             EXT4_MB_GRP_SET_TRIMMED(e4b.bd_info);
+> > > +             EXT4_MB_GDP_SET_TRIMMED(gdp);
+> > > +             ext4_group_desc_csum_set(sb, group, gdp);
+> > >       }
+> > >  out:
+> > >       ext4_unlock_group(sb, group);
+> > >       ext4_mb_unload_buddy(&e4b);
+> > > +     if (ret > 0) {
+> > > +             int err;
+> > > +             handle_t *handle;
+> > >
+> > > +             handle = ext4_journal_start_sb(sb, EXT4_HT_FS_TRIM, 1);
+> > > +             if (IS_ERR(handle)) {
+> > > +                     ret = PTR_ERR(handle);
+> > > +                     goto out_return;
+> > > +             }
+> > > +             err = ext4_journal_get_write_access(handle, gdp_bh);
+> > > +             if (err) {
+> > > +                     ret = err;
+> > > +                     goto out_journal;
+> > > +             }
+> >
+> > Don't we need to do this before we set the flag in gdp?
+> >
+> 
+> Sorry about this, you are right.
+> 
+> > -Lukas
+> >
+> > > +             err = ext4_handle_dirty_metadata(handle, NULL, gdp_bh);
+> > > +             if (err)
+> > > +                     ret = err;
+> > > +out_journal:
+> > > +             err = ext4_journal_stop(handle);
+> > > +             if (err)
+> > > +                     ret = err;
+> > > +     }
+> > > +out_return:
+> > >       ext4_debug("trimmed %d blocks in the group %d\n",
+> > >               count, group);
+> > >
+> > > --
+> > > 2.25.4
+> > >
+> >
+> 
 
-it is a problem
-
-on a daily "fstrim -av" you trim gigabytes of alredy trimmed blocks
-which for example on a vmware thin provisioned vdisk makes it down to
-CBT (changed-block-tracking)
-
-so instead completly ignore that untouched space thanks to CBT it's
-considered as changed and verified in the follow up backup run which
-takes magnitutdes longer than needed
-
-without that behavior our daily backups would take 3 minutes instead 1
-hour but without fstrim the backup grows with useless temp data over time
