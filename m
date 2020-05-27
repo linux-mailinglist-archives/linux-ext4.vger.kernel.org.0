@@ -2,59 +2,59 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7869C1E4540
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 May 2020 16:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D90911E4541
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 May 2020 16:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388518AbgE0OJI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 27 May 2020 10:09:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41250 "EHLO
+        id S1726351AbgE0OJJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 27 May 2020 10:09:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387711AbgE0OJF (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 May 2020 10:09:05 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62D4DC08C5C1
-        for <linux-ext4@vger.kernel.org>; Wed, 27 May 2020 07:09:05 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id f21so8803277pgg.12
-        for <linux-ext4@vger.kernel.org>; Wed, 27 May 2020 07:09:05 -0700 (PDT)
+        with ESMTP id S2387711AbgE0OJJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 May 2020 10:09:09 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD332C08C5C2
+        for <linux-ext4@vger.kernel.org>; Wed, 27 May 2020 07:09:07 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id r10so11791998pgv.8
+        for <linux-ext4@vger.kernel.org>; Wed, 27 May 2020 07:09:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=WMnlzBIzrloadjbjQNPdZUSWLPqow8bmYOKFr77Q5Dw=;
-        b=DjpvyuU64Rum3FaEXB//a04RFK2RSBXu3I+4s8NFIYfn1669gIv/YXIpOzVZk4NA12
-         BtW0WOw/XNtfJJpT/8hMDT4hkY+btYxFwONuCwP0vlUzXYIMycp5bUgOkbXzfUgeA3o+
-         mYqKiOkHMF41GxwPeIsJ96ov0w7EEBNH8EtjHCiuDDSa5vTQ4LY72ZZ1DWOLr1yVcG0i
-         xai4ziclp9pz3Kzf7k23tNPKDvPfgcEnDLMz7b795AlxlM+kKXxqaXtZhGL6msjgD65E
-         LYVxkQ33/CYCU+vT37MSZpPDynByKsG0nf6EpC18yh0XXkj91RniOGff5cRh20lY0gvh
-         puDg==
+        bh=Ng+MxLT2HGepK3dpvNNBwXeLhxwHtNTHC/4kyr+tUic=;
+        b=ZV02WJRDKqaQzDPtIkXsnqb91hsDiJLIQWbcW0E3O5scyOIMIFlNoDw78ip5KUt143
+         By4booPxKTj8UgKf5t49CZqaieXPaZ259KadCZ2mVxuj45PCrZqhlwUemi6dUX+SZl5X
+         Xq2QNu/1cp5DlAYLC3lIcAhr2/3BrrjD5iOOuZQQBFyBxBX+6MdMwJ6tLUJqDqzRpd8W
+         mJVaQVUyk5MwhJP+KIJCAaC1qzCPDBa0clPbQEdPke3pgVv6ze9loFdcV4/FwvkOXvgd
+         YzZM6Q3MItGWXPfOXecuFmWE6/ThSh7z7aeBCLZH2sTtd5PMWL+MkRu0iEHN0YY0pXfa
+         1g1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=WMnlzBIzrloadjbjQNPdZUSWLPqow8bmYOKFr77Q5Dw=;
-        b=SFc0bq8Anun/Mmw+Me9CL8pJ9fOPmdOg//A2bCuaycaHyhCalpCFgoxPU15rtx9lAJ
-         9C/MgrxGww8yiCYQzJ/482zCLe7oKkJOrxfEc+nMq9JiclIVjh8eIZ155xySF3AS0eUR
-         PAFp4lf6AbX9xmJU3yX1cQoEyzpvG18RJ9MipuKQ5Y5rrLDUHGi3ofhv5EHhzKKQRMzO
-         Y0+5g4YDRAibqbidwiIbg5vo6M+hnQWumvGQfzgfCy1qCSc3FNb8E+Od/kWJ0hEVL5U/
-         tp3dJR8gKYFETFU6kFLK+8Y/z6lW3qdAagMxmn9VUhZzxd7VEUxKz/zt3MjhgZH5EhnV
-         0Khg==
-X-Gm-Message-State: AOAM5301kdx+cZNtVPXZq3mItoDQoAZP1VUzUVTbOsObOX9L1uuup02V
-        E0j0hUH9DVoWhrM+9aA/zrfZDAK6CzM=
-X-Google-Smtp-Source: ABdhPJwx4AwdCmwG2An9aUNMJD4AFIP5jugEmOEQ5Sin8bcXpQNt+vi8WjKoFQ+G4N/fPAB8r66Z9A==
-X-Received: by 2002:a63:3c11:: with SMTP id j17mr4300867pga.70.1590588544656;
-        Wed, 27 May 2020 07:09:04 -0700 (PDT)
+        bh=Ng+MxLT2HGepK3dpvNNBwXeLhxwHtNTHC/4kyr+tUic=;
+        b=fQ2pY+4GbeSxuZcGDTatKTVzJuqy7kbQAQIYqEWxcdiaxPdqmivogNq3EcwDisQ7qE
+         9g4ePzbT+rb2rgfofXF1GXlX94EgKeXr9CibgmUXKr2m2KAMAq6HKEyRACDe7r2e8Pxm
+         T7wz9GDHNvEKVMTHOlAk18gvxqVE1gOPYJRSRKoiDz6AUh0UqOjfdgv5IwFakhpoBuEZ
+         6Jv3KYW9IBconmISaQ+8uQxJ2YS0b22ticm5S/8+DtifsFSiaOV3/LuZHa+wM6MuWBSO
+         HxTpxntiVDSD59Hr9My6W/Cc1JqzqmalLSyAhZdtkept12aLjOJuC44TXpZjxXZhZVgo
+         0esA==
+X-Gm-Message-State: AOAM530oXqxkJtpPme9eM9kirtgJVx6TwhvuXclfjUWU4T6wGmnQa78U
+        XevPhbz3dVI0iI3aOBvKu1AjjG5a514=
+X-Google-Smtp-Source: ABdhPJw6PHZicCXr1ODFhEVa5Kvv0SwUcgS+TsXYHlQwO7Q0JQw7iCtpW/hpz4RVJuMmD6szg8e1bw==
+X-Received: by 2002:a65:6902:: with SMTP id s2mr3748620pgq.199.1590588547037;
+        Wed, 27 May 2020 07:09:07 -0700 (PDT)
 Received: from localhost.localdomain (fs276ec80e.tkyc203.ap.nuro.jp. [39.110.200.14])
-        by smtp.gmail.com with ESMTPSA id q201sm2292580pfq.40.2020.05.27.07.09.02
+        by smtp.gmail.com with ESMTPSA id q201sm2292580pfq.40.2020.05.27.07.09.04
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 27 May 2020 07:09:04 -0700 (PDT)
+        Wed, 27 May 2020 07:09:06 -0700 (PDT)
 From:   Wang Shilong <wangshilong1991@gmail.com>
 To:     linux-ext4@vger.kernel.org
 Cc:     Wang Shilong <wshilong@ddn.com>, Shuichi Ihara <sihara@ddn.com>,
         Andreas Dilger <adilger@dilger.ca>,
         Wang Shilong <wangshilong1991@gmail.com>,
         Lukas Czerner <lczerner@redhat.com>
-Subject: [PATCH 2/2] tune2fs: add clear_was_trimmed option
-Date:   Wed, 27 May 2020 23:08:44 +0900
-Message-Id: <1590588525-29669-2-git-send-email-wangshilong1991@gmail.com>
+Subject: [PATCH v2] ext4: introduce EXT4_BG_WAS_TRIMMED to optimize trim
+Date:   Wed, 27 May 2020 23:08:45 +0900
+Message-Id: <1590588525-29669-3-git-send-email-wangshilong1991@gmail.com>
 X-Mailer: git-send-email 1.9.1
 In-Reply-To: <1590588525-29669-1-git-send-email-wangshilong1991@gmail.com>
 References: <1590588525-29669-1-git-send-email-wangshilong1991@gmail.com>
@@ -65,8 +65,16 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Wang Shilong <wshilong@ddn.com>
 
-It might be possible that admin want an option for clear
-existed WAS_TRIMMED flag to force fstrim next run time.
+Currently WAS_TRIMMED flag is not persistent, whenever filesystem was
+remounted, fstrim need walk all block groups again, the problem with
+this is FSTRIM could be slow on very large LUN SSD based filesystem.
+
+To avoid this kind of problem, we introduce a block group flag
+EXT4_BG_WAS_TRIMMED, the side effect of this is we need introduce
+extra one block group dirty write after trimming block group.
+
+And When clearing TRIMMED flag, block group will be journalled
+anyway, so it won't introduce any overhead.
 
 Cc: Shuichi Ihara <sihara@ddn.com>
 Cc: Andreas Dilger <adilger@dilger.ca>
@@ -74,94 +82,182 @@ Cc: Wang Shilong <wangshilong1991@gmail.com>
 Cc: Lukas Czerner <lczerner@redhat.com>
 Signed-off-by: Wang Shilong <wshilong@ddn.com>
 ---
- misc/tune2fs.8.in |  5 +++++
- misc/tune2fs.c    | 30 +++++++++++++++++++++++++++++-
- 2 files changed, 34 insertions(+), 1 deletion(-)
+v1->v2:
+call ext4_journal_get_write_access() before modify buffer.
+---
+ fs/ext4/ext4.h      | 18 +++++++-------
+ fs/ext4/ext4_jbd2.h |  3 ++-
+ fs/ext4/mballoc.c   | 59 +++++++++++++++++++++++++++++++++------------
+ 3 files changed, 55 insertions(+), 25 deletions(-)
 
-diff --git a/misc/tune2fs.8.in b/misc/tune2fs.8.in
-index 3cf1f5ed..b8025949 100644
---- a/misc/tune2fs.8.in
-+++ b/misc/tune2fs.8.in
-@@ -249,6 +249,11 @@ mounted using experimental kernel code, such as the ext4dev filesystem.
- .B ^test_fs
- Clear the test_fs flag, indicating the filesystem should only be mounted
- using production-level filesystem code.
-+.TP
-+.B clear_was_trimmed
-+Clear block groups' WAS_TRIMMED flag, this will force fstrim to run every
-+block group next time.
-+.TP
- .RE
- .TP
- .B \-f
-diff --git a/misc/tune2fs.c b/misc/tune2fs.c
-index 314cc0d0..3e9814e3 100644
---- a/misc/tune2fs.c
-+++ b/misc/tune2fs.c
-@@ -101,6 +101,7 @@ static int rewrite_checksums;
- static int feature_64bit;
- static int fsck_requested;
- static char *undo_file;
-+static int clear_was_trimmed;
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index ad2dbf6e4924..23c2dc529a28 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -357,6 +357,7 @@ struct flex_groups {
+ #define EXT4_BG_INODE_UNINIT	0x0001 /* Inode table/bitmap not in use */
+ #define EXT4_BG_BLOCK_UNINIT	0x0002 /* Block bitmap not in use */
+ #define EXT4_BG_INODE_ZEROED	0x0004 /* On-disk itable initialized to zero */
++#define EXT4_BG_WAS_TRIMMED	0x0008 /* block group was trimmed */
  
- int journal_size, journal_flags;
- char *journal_device;
-@@ -949,6 +950,26 @@ static void rewrite_metadata_checksums(ext2_filsys fs, unsigned int flags)
- 	ext2fs_mark_super_dirty(fs);
- }
+ /*
+  * Macro-instructions used to manage group descriptors
+@@ -3112,9 +3113,8 @@ struct ext4_group_info {
+ };
  
-+static void clear_bg_was_trimmed(ext2_filsys fs)
-+{
-+	dgrp_t i;
-+	int dirty = 0;
-+
-+	for (i = 0; i < fs->group_desc_count; i++) {
-+		if (ext2fs_bg_flags_test(fs, i, EXT2_BG_WAS_TRIMMED)) {
-+			ext2fs_bg_flags_clear(fs, i, EXT2_BG_WAS_TRIMMED);
-+			ext2fs_group_desc_csum_set(fs, i);
-+			dirty = 1;
+ #define EXT4_GROUP_INFO_NEED_INIT_BIT		0
+-#define EXT4_GROUP_INFO_WAS_TRIMMED_BIT		1
+-#define EXT4_GROUP_INFO_BBITMAP_CORRUPT_BIT	2
+-#define EXT4_GROUP_INFO_IBITMAP_CORRUPT_BIT	3
++#define EXT4_GROUP_INFO_BBITMAP_CORRUPT_BIT	1
++#define EXT4_GROUP_INFO_IBITMAP_CORRUPT_BIT	2
+ #define EXT4_GROUP_INFO_BBITMAP_CORRUPT		\
+ 	(1 << EXT4_GROUP_INFO_BBITMAP_CORRUPT_BIT)
+ #define EXT4_GROUP_INFO_IBITMAP_CORRUPT		\
+@@ -3127,12 +3127,12 @@ struct ext4_group_info {
+ #define EXT4_MB_GRP_IBITMAP_CORRUPT(grp)	\
+ 	(test_bit(EXT4_GROUP_INFO_IBITMAP_CORRUPT_BIT, &((grp)->bb_state)))
+ 
+-#define EXT4_MB_GRP_WAS_TRIMMED(grp)	\
+-	(test_bit(EXT4_GROUP_INFO_WAS_TRIMMED_BIT, &((grp)->bb_state)))
+-#define EXT4_MB_GRP_SET_TRIMMED(grp)	\
+-	(set_bit(EXT4_GROUP_INFO_WAS_TRIMMED_BIT, &((grp)->bb_state)))
+-#define EXT4_MB_GRP_CLEAR_TRIMMED(grp)	\
+-	(clear_bit(EXT4_GROUP_INFO_WAS_TRIMMED_BIT, &((grp)->bb_state)))
++#define EXT4_MB_GDP_WAS_TRIMMED(gdp)	\
++	(gdp->bg_flags & cpu_to_le16(EXT4_BG_WAS_TRIMMED))
++#define EXT4_MB_GDP_SET_TRIMMED(gdp)	\
++	(gdp->bg_flags |= cpu_to_le16(EXT4_BG_WAS_TRIMMED))
++#define EXT4_MB_GDP_CLEAR_TRIMMED(gdp)	\
++	(gdp->bg_flags &= ~cpu_to_le16(EXT4_BG_WAS_TRIMMED))
+ 
+ #define EXT4_MAX_CONTENTION		8
+ #define EXT4_CONTENTION_THRESHOLD	2
+diff --git a/fs/ext4/ext4_jbd2.h b/fs/ext4/ext4_jbd2.h
+index 4b9002f0e84c..4094a5b247f7 100644
+--- a/fs/ext4/ext4_jbd2.h
++++ b/fs/ext4/ext4_jbd2.h
+@@ -123,7 +123,8 @@
+ #define EXT4_HT_MOVE_EXTENTS     9
+ #define EXT4_HT_XATTR           10
+ #define EXT4_HT_EXT_CONVERT     11
+-#define EXT4_HT_MAX             12
++#define EXT4_HT_FS_TRIM		12
++#define EXT4_HT_MAX             13
+ 
+ /**
+  *   struct ext4_journal_cb_entry - Base structure for callback information.
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 30d5d97548c4..a2b78a96da16 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -2829,15 +2829,6 @@ static void ext4_free_data_in_buddy(struct super_block *sb,
+ 	rb_erase(&entry->efd_node, &(db->bb_free_root));
+ 	mb_free_blocks(NULL, &e4b, entry->efd_start_cluster, entry->efd_count);
+ 
+-	/*
+-	 * Clear the trimmed flag for the group so that the next
+-	 * ext4_trim_fs can trim it.
+-	 * If the volume is mounted with -o discard, online discard
+-	 * is supported and the free blocks will be trimmed online.
+-	 */
+-	if (!test_opt(sb, DISCARD))
+-		EXT4_MB_GRP_CLEAR_TRIMMED(db);
+-
+ 	if (!db->bb_free_root.rb_node) {
+ 		/* No more items in the per group rb tree
+ 		 * balance refcounts from ext4_mb_free_metadata()
+@@ -4928,8 +4919,7 @@ void ext4_free_blocks(handle_t *handle, struct inode *inode,
+ 					 " group:%d block:%d count:%lu failed"
+ 					 " with %d", block_group, bit, count,
+ 					 err);
+-		} else
+-			EXT4_MB_GRP_CLEAR_TRIMMED(e4b.bd_info);
 +		}
+ 
+ 		ext4_lock_group(sb, block_group);
+ 		mb_clear_bits(bitmap_bh->b_data, bit, count_clusters);
+@@ -4939,6 +4929,14 @@ void ext4_free_blocks(handle_t *handle, struct inode *inode,
+ 	ret = ext4_free_group_clusters(sb, gdp) + count_clusters;
+ 	ext4_free_group_clusters_set(sb, gdp, ret);
+ 	ext4_block_bitmap_csum_set(sb, block_group, gdp, bitmap_bh);
++	/*
++	 * Clear the trimmed flag for the group so that the next
++	 * ext4_trim_fs can trim it.
++	 * If the volume is mounted with -o discard, online discard
++	 * is supported and the free blocks will be trimmed online.
++	 */
++	if (!test_opt(sb, DISCARD))
++		EXT4_MB_GDP_CLEAR_TRIMMED(gdp);
+ 	ext4_group_desc_csum_set(sb, block_group, gdp);
+ 	ext4_unlock_group(sb, block_group);
+ 
+@@ -5192,8 +5190,15 @@ ext4_trim_all_free(struct super_block *sb, ext4_group_t group,
+ 	ext4_grpblk_t next, count = 0, free_count = 0;
+ 	struct ext4_buddy e4b;
+ 	int ret = 0;
++	struct ext4_group_desc *gdp;
++	struct buffer_head *gdp_bh;
+ 
+ 	trace_ext4_trim_all_free(sb, group, start, max);
++	gdp = ext4_get_group_desc(sb, group, &gdp_bh);
++	if (!gdp) {
++		ret = -EIO;
++		return ret;
 +	}
-+
-+	if (dirty) {
-+		fs->flags &= ~EXT2_FLAG_SUPER_ONLY;
-+		ext2fs_mark_bb_dirty(fs);
-+		ext2fs_mark_super_dirty(fs);
-+	}
-+}
-+
- static void enable_uninit_bg(ext2_filsys fs)
- {
- 	struct ext2_group_desc *gd;
-@@ -2207,6 +2228,9 @@ static int parse_extended_opts(ext2_filsys fs, const char *opts)
- 				continue;
- 			}
- 			ext_mount_opts = strdup(arg);
-+		}  else if (!strcmp(token, "clear_was_trimmed") ||
-+			    !strcmp(token, "clear_was-trimmed")) {
-+			clear_was_trimmed = 1;
- 		} else
- 			r_usage++;
- 	}
-@@ -2224,7 +2248,8 @@ static int parse_extended_opts(ext2_filsys fs, const char *opts)
- 			"\tstripe_width=<RAID stride*data disks in blocks>\n"
- 			"\tforce_fsck\n"
- 			"\ttest_fs\n"
--			"\t^test_fs\n"));
-+			"\t^test_fs\n"
-+			"\tclear_was_trimmed\n"));
- 		free(buf);
- 		return 1;
- 	}
-@@ -3361,6 +3386,9 @@ _("Warning: The journal is dirty. You may wish to replay the journal like:\n\n"
- 		}
+ 
+ 	ret = ext4_mb_load_buddy(sb, group, &e4b);
+ 	if (ret) {
+@@ -5204,7 +5209,7 @@ ext4_trim_all_free(struct super_block *sb, ext4_group_t group,
+ 	bitmap = e4b.bd_bitmap;
+ 
+ 	ext4_lock_group(sb, group);
+-	if (EXT4_MB_GRP_WAS_TRIMMED(e4b.bd_info) &&
++	if (EXT4_MB_GDP_WAS_TRIMMED(gdp) &&
+ 	    minblocks >= atomic_read(&EXT4_SB(sb)->s_last_trim_minblks))
+ 		goto out;
+ 
+@@ -5243,14 +5248,38 @@ ext4_trim_all_free(struct super_block *sb, ext4_group_t group,
+ 			break;
  	}
  
-+	if (clear_was_trimmed)
-+		clear_bg_was_trimmed(fs);
-+
- 	if (rewrite_checksums)
- 		rewrite_metadata_checksums(fs, rewrite_checksums);
+-	if (!ret) {
++	if (!ret)
+ 		ret = count;
+-		EXT4_MB_GRP_SET_TRIMMED(e4b.bd_info);
+-	}
+ out:
+ 	ext4_unlock_group(sb, group);
+ 	ext4_mb_unload_buddy(&e4b);
++	if (ret > 0) {
++		int err;
++		handle_t *handle;
+ 
++		handle = ext4_journal_start_sb(sb, EXT4_HT_FS_TRIM, 1);
++		if (IS_ERR(handle)) {
++			ret = PTR_ERR(handle);
++			goto out_return;
++		}
++		err = ext4_journal_get_write_access(handle, gdp_bh);
++		if (err) {
++			ret = err;
++			goto out_journal;
++		}
++		ext4_lock_group(sb, group);
++		EXT4_MB_GDP_SET_TRIMMED(gdp);
++		ext4_group_desc_csum_set(sb, group, gdp);
++		ext4_unlock_group(sb, group);
++		err = ext4_handle_dirty_metadata(handle, NULL, gdp_bh);
++		if (err)
++			ret = err;
++out_journal:
++		err = ext4_journal_stop(handle);
++		if (err)
++			ret = err;
++	}
++out_return:
+ 	ext4_debug("trimmed %d blocks in the group %d\n",
+ 		count, group);
  
 -- 
 2.25.4
