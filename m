@@ -2,88 +2,224 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07A5F1E4944
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 May 2020 18:06:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC5E11E4DEB
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 May 2020 21:12:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390762AbgE0QGr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 27 May 2020 12:06:47 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:32148 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2389666AbgE0QGq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 27 May 2020 12:06:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590595605;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZkcGB2YfoFRSuQGCtsex+ihKZ7XyPFksfWsRlOfpavw=;
-        b=DpYhEYkfcGZsQ1bXfuyMFyl4xXl+2wBs5DdaBirqYzeULm1Bc7+j4+sa6LV7KfD9UNKwcR
-        P4p+MqLHJQgqeTG/gc7fdgThmTWuyBjYt/bvhl/HOMadkZPzvIUrIICNYBAOmzlgcodBHi
-        g3jsPMsR2/Z0n/721a+MnkGiq2kWOpc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-283-Fai_m2LCN5mVS7dqiSe-kQ-1; Wed, 27 May 2020 12:06:40 -0400
-X-MC-Unique: Fai_m2LCN5mVS7dqiSe-kQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5D4548005AA;
-        Wed, 27 May 2020 16:06:39 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-138.rdu2.redhat.com [10.10.112.138])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7CCBE5C1B0;
-        Wed, 27 May 2020 16:06:37 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <8c74f334-3711-ea07-9875-22f379a62bb3@yandex-team.ru>
-References: <8c74f334-3711-ea07-9875-22f379a62bb3@yandex-team.ru> <8ac18259-ad47-5617-fa01-fba88349b82d@yandex-team.ru> <195849.1590075556@warthog.procyon.org.uk> <3735168.1590592854@warthog.procyon.org.uk>
-To:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-Cc:     dhowells@redhat.com, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-afs@lists.infradead.org, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] vfs, afs, ext4: Make the inode hash table RCU searchable
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3873242.1590595596.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Wed, 27 May 2020 17:06:36 +0100
-Message-ID: <3873243.1590595596@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        id S1726770AbgE0TMH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 27 May 2020 15:12:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725795AbgE0TME (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 May 2020 15:12:04 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C20E0C08C5C1
+        for <linux-ext4@vger.kernel.org>; Wed, 27 May 2020 12:12:02 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id cx22so2043556pjb.1
+        for <linux-ext4@vger.kernel.org>; Wed, 27 May 2020 12:12:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=tbDR4Y1DFWahxOCDCekgP3BNBaPhddvRYiCol3purKY=;
+        b=fU0ULxnHQCFWr/G6SvdRct8khiqyShnSJLqHnL06z9E+/II0eZ6rseZ/mO8Agwh+3Z
+         NwMEnVct9A2SzJvJKRcHt8yhxZgVMd1yMKCK+A/40ZsTvwFPuV3zsye2Wfxji91T6PON
+         86cDwBU+Abv0k5wGwlZtdw1TJdH9Jp6hFspAMzhuapXJW7ELkE2FwPJcKh6kuIQ67/md
+         cxadpAnTq628isRDT8y7lExE6NrppLzPZEXhVBg+tvpPFEYDPmKQtYc3i6caMlCUrxXP
+         AmuOOWMovhCsse2tmI/XtpGvNcJkqPI38TtmlZiqMkHmNPEZpiaHXdLzCeVesURs2OhZ
+         p7pQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=tbDR4Y1DFWahxOCDCekgP3BNBaPhddvRYiCol3purKY=;
+        b=TtqKi07J2W7h8zwP3heYXj+D4o5O1fZ/6sfMIr91eevfMkTN1z8VCZwgSnxCEkbve3
+         6F3Jjc8XxJDszHGLukTEkA/tnZDzZxPftLqFHSWzVTn3Ajb8D8mY6TJbaF+0RYxsNqIz
+         /gzdgHdQzyM6OW66V5sUxYcbquFQRG+DwwqOllfJkXHfBLPe4mlynl9yrNhdRMSXAYH5
+         KxTvcKYQkEJa3eWcnwnhe4Nwp5Xm0xQ3yrFAbB3FpT7Wl/G2gl2PH+5hTRWUFFzJLL9O
+         fkFGu2NsjXvwO93bPNYAD/QRXNeK57VKweiCBKS1INsDczgXUdl7bkMZAnw6T3JG0SIY
+         H+ig==
+X-Gm-Message-State: AOAM5330Y775v5mIaUgN0SPh/MdJHWhMoPt1SCEyFvn31cRQReGYJk0+
+        RBEiWQ4HBrhe6Uozmt8b8/WGxg==
+X-Google-Smtp-Source: ABdhPJwItto45UcbY2GKPfAD4L/YUZQCyUHypCYWib9te2pEu54gCTPbTxPy7MyOGN65I6P8L2ef7Q==
+X-Received: by 2002:a17:902:b98c:: with SMTP id i12mr7467241pls.41.1590606722110;
+        Wed, 27 May 2020 12:12:02 -0700 (PDT)
+Received: from [192.168.10.160] (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
+        by smtp.gmail.com with ESMTPSA id 124sm2695064pfb.15.2020.05.27.12.11.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 27 May 2020 12:12:00 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <7ED9AC71-D768-44BE-A227-95F876A4C1DF@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_F72D2A94-AF2C-439C-8963-A9512254D2B7";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH] ext4: introduce EXT4_BG_WAS_TRIMMED to optimize trim
+Date:   Wed, 27 May 2020 13:11:55 -0600
+In-Reply-To: <ece9cd79-6d97-db36-66bb-f02bd6bf6573@thelounge.net>
+Cc:     Lukas Czerner <lczerner@redhat.com>,
+        Wang Shilong <wangshilong1991@gmail.com>,
+        linux-ext4@vger.kernel.org, Wang Shilong <wshilong@ddn.com>,
+        Shuichi Ihara <sihara@ddn.com>
+To:     Reindl Harald <h.reindl@thelounge.net>
+References: <1590565130-23773-1-git-send-email-wangshilong1991@gmail.com>
+ <20200527091938.647363ekmnz7av7y@work>
+ <520b260b-13e9-4c62-eaeb-c44215b14089@thelounge.net>
+ <20200527095751.7vt74n7grfre6wit@work>
+ <59df4f2f-f168-99a1-e929-82742693f8ee@thelounge.net>
+ <20200527103214.knm2vmnwjt64j55l@work>
+ <ece9cd79-6d97-db36-66bb-f02bd6bf6573@thelounge.net>
+X-Mailer: Apple Mail (2.3273)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Konstantin Khlebnikov <khlebnikov@yandex-team.ru> wrote:
 
-> > Konstantin Khlebnikov <khlebnikov@yandex-team.ru> wrote:
-> >
-> >>> Is this something that would be of interest to Ext4?
-> >>
-> >> For now, I've plugged this issue with try-lock in ext4 lazy time upda=
-te.
-> >> This solution is much better.
-> >
-> > Would I be able to turn that into some sort of review tag?
-> =
+--Apple-Mail=_F72D2A94-AF2C-439C-8963-A9512254D2B7
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=utf-8
 
-> This version looks more like RFC, so
-> =
+On May 27, 2020, at 4:56 AM, Reindl Harald <h.reindl@thelounge.net> =
+wrote:
+> Am 27.05.20 um 12:32 schrieb Lukas Czerner:
+>> On Wed, May 27, 2020 at 12:11:52PM +0200, Reindl Harald wrote:
+>>>=20
+>>> Am 27.05.20 um 11:57 schrieb Lukas Czerner:
+>>>> On Wed, May 27, 2020 at 11:32:02AM +0200, Reindl Harald wrote:
+>>>>> would that also fix the issue that *way too much* is trimmed all =
+the
+>>>>> time, no matter if it's a thin provisioned vmware disk or a =
+phyiscal
+>>>>> RAID10 with SSD
+>>>>=20
+>>>> no, the mechanism remains the same, but the proposal is to make it
+>>>> pesisten across re-mounts.
+>>>>=20
+>>>>>=20
+>>>>> no way of 315 MB deletes within 2 hours or so on a system with =
+just 485M
+>>>>> used
+>>>>=20
+>>>> The reason is that we're working on block group granularity. So if =
+you
+>>>> have almost free block group, and you free some blocks from it, the =
+flag
+>>>> gets freed and next time you run fstrim it'll trim all the free =
+space in
+>>>> the group. Then again if you free some blocks from the group, the =
+flags
+>>>> gets cleared again ...
+>>>>=20
+>>>> But I don't think this is a problem at all. Certainly not worth =
+tracking
+>>>> free/trimmed extents to solve it.
+>>>=20
+>>> it is a problem
+>>>=20
+>>> on a daily "fstrim -av" you trim gigabytes of alredy trimmed blocks
+>>> which for example on a vmware thin provisioned vdisk makes it down =
+to
+>>> CBT (changed-block-tracking)
+>>>=20
+>>> so instead completly ignore that untouched space thanks to CBT it's
+>>> considered as changed and verified in the follow up backup run which
+>>> takes magnitutdes longer than needed
+>>=20
+>> Looks like you identified the problem then ;)
+>=20
+> well, in a perfect world.....
+>=20
+>> But seriously, trim/discard was always considered advisory and the
+>> storage is completely free to do whatever it wants to do with the
+>> information. I might even be the case that the discard requests are
+>> ignored and we might not even need optimization like this. But
+>> regardless it does take time to go through the block gropus and as a
+>> result this optimization is useful in the fs itself.
+>=20
+> luckily at least fstrim is non-blocking in a vmware environment, on my
+> physical box it takes ages
+>=20
+> this machine *does nothing* than wait to be cloned, 235 MB pretended
+> deleted data within 50 minutes is absurd on a completly idle guest
+>=20
+> so even when i am all in for optimizations that=C3=84s way over top
+>=20
+> [root@master:~]$ fstrim -av
+> /boot: 0 B (0 bytes) trimmed on /dev/sda1
+> /: 235.8 MiB (247201792 bytes) trimmed on /dev/sdb1
+>=20
+> [root@master:~]$ df
+> Filesystem     Type  Size  Used Avail Use% Mounted on
+> /dev/sdb1      ext4  5.8G  502M  5.3G   9% /
+> /dev/sda1      ext4  485M   39M  443M   9% /boot
 
-> Acked-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-> =
 
-> this definitely will fix my problem with ext4 lazytime:
-> https://lore.kernel.org/lkml/158040603451.1879.7954684107752709143.stgit=
-@buzz/
+I don't think that this patch will necessarily fix the problem you
+are seeing, in the sense that WAS_TRIMMED was previously stored in
+the group descriptor in memory, so repeated fstrim runs _shouldn't_
+result in the group being trimmed unless it had some blocks freed.
+If your image has even one block freed in any group, then fstrim will
+result in all of the free blocks in that group being trimmed again.
 
-Thanks!
+That said, I think a follow-on optimization would be to limit *clearing*
+the WAS_TRIMMED flag until at least some minimum number of blocks have
+been freed (e.g. at least 1024 blocks freed, or the group is "empty", or
+similar).  That would avoid excess TRIM calls down to the storage when
+only a few blocks were freed that would be unlikely to actually result
+in an erase blocks being freed.  This size could be dynamic based on
+the minimum trim size passed by fstrim (e.g. min(1024 * minblocks, =
+16MB)).
 
-David
+That would also fit in nicely with changing "-o discard" over to using
+per-block group tracking of the trim state, and use the same mechanism
+as fstrim, rather than using the per-extent tracking that is used today
+and causes (IMHO) too many small trims to the storage to be useful.
+Not only do many small trim requests cause overhead during IO, but they
+can also miss actual trims because the individual extent are smaller
+than the discard size of the storage, and it doesn't combine the trim
+range with adjacent free blocks.
 
+Doing the block-group-based trim in the background, when a group has had
+a bunch of blocks freed, and when the filesystem is idle (maybe a percpu
+counter that is incremented whenever user read/write requests are done,
+that can be checked for idleness when there are groups to be trimmed)
+doesn't have to be perfect or totally crash proof, since it will always
+have another chance to trim the group the next time some blocks are =
+freed,
+or if manual "fstrim" is called on the group with a smaller minlen.
+
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_F72D2A94-AF2C-439C-8963-A9512254D2B7
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl7Ou3sACgkQcqXauRfM
+H+CCcQ//bYKUH+AVVY/no0yyRqZuj3nDbqgCj8XBdldqYUJiw5af1c+YzIUNiZqa
+IrwN+4Tp/1yjXsP7gQwu+Jg6G1KPnrDFndg/CR77Q2Ty6BOjprTl+lmO85yo1ThZ
+pMYHmzrmHbP+uh9+LcF//smjTg+JBnXYk+DS2QhrZNv2sM/qYQgHdzrYM4i977sq
+5p6B5dB5RjyVjEPzUqw+oOZwYxrRcTU6P+hEaAoaeO/EG2qB8jhY1TwEvc9w+qTw
+EhvY6aPK1DgeMUpPkEbqcWEik97mnId7HNVlxJz4oXxVCjMTkwh7flrEcUbp5W/2
+lvjjUh2v2vng50wl7STy3eNGsDPKDAgXu4kpwh5Z7mz/9v6fDGS5fkoiniY6UHHC
+Wz1Ip2DlOEAP7wuNQEDYQtrF7jYnskDZ8U1ssG5SvpaMiHFjWU1UtJVp5HfK1xPw
+DE8FraC0bRqM8tvp/+P6cmhpJ3nhWBPJ4GnKnETnbF7LwpF6qllC/Xrfb2FqLbCA
+0gX+y41NIllt83t3AUcA1sPozVXuScnzBHeSPttJ9fd7DzYMY+pBo6aiMZhniSjK
+NWzp3YCYCzePIJRkNfF/fd8+mrtJ3ZUmjZ1Y3hCpUpr74GqjojFVg5fD4Yd8NL9g
+bcZMTYiJQ+aJbaPTSUjJknreFx0v3KeCFFUQYWfi4glrzSSCGqc=
+=zIh5
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_F72D2A94-AF2C-439C-8963-A9512254D2B7--
