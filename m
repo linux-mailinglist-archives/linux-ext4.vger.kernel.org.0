@@ -2,89 +2,100 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13A221E652C
-	for <lists+linux-ext4@lfdr.de>; Thu, 28 May 2020 17:01:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B093F1E655A
+	for <lists+linux-ext4@lfdr.de>; Thu, 28 May 2020 17:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404046AbgE1PAX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 28 May 2020 11:00:23 -0400
-Received: from mga18.intel.com ([134.134.136.126]:59623 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403933AbgE1PAW (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 28 May 2020 11:00:22 -0400
-IronPort-SDR: 9IrUsf65/sxCy5Ek2tAmnuyh/LxlvysYoajdIoZuvU4dfGROnHmXqG7hHCm091PJQyDVyDhNVB
- ZBNtzgD0imSQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2020 08:00:12 -0700
-IronPort-SDR: IQoaQF4QNlijXhTZVhp1aYk63DUWeazbrKW1+FmpERrzKf06zIFbwvfXh4HNE9QTzKQQ2+hECt
- X+dUJ9l3ULZA==
-X-IronPort-AV: E=Sophos;i="5.73,445,1583222400"; 
-   d="scan'208";a="345927916"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2020 08:00:11 -0700
-From:   ira.weiny@intel.com
-To:     linux-ext4@vger.kernel.org,
+        id S2404159AbgE1PDT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 28 May 2020 11:03:19 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:35115 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403912AbgE1PDQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 28 May 2020 11:03:16 -0400
+Received: by mail-wm1-f66.google.com with SMTP id n5so3561883wmd.0;
+        Thu, 28 May 2020 08:03:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=evz1lutsdd2Eqt9o4+KgC57g/gR26qB8cQ2KV6NODWs=;
+        b=VJx/HwbXl5o/d18rL9jXFWIru48CRcbu6zMa/nbL8uHL5RkpLFzluxqMPSHkiUACnq
+         8fpdo/KWej952ZGVeM52GUKte5NExvG3LpYfxGglSAuy0TBPmQxlIIK82X7RgOLgJmXB
+         +pjpUIOL/bVQorU96JoWT/ysuQZBRxRchyXcPh4B01yzJEnbYuNZSzg4Di2PgdvnQw22
+         ksF9CdT4clBfpm1g7Phqf34d9bI09L/NOjel519iuryPdW9UVpqHeITg1pNWQgwAcNU0
+         V4UJuQwu9Zb4g6+2NLS3L5y+wF758rtkI/+FjSh/df4TUBaKBHx9YBdCX2ufGjpBOo78
+         eMbg==
+X-Gm-Message-State: AOAM5335KeIBGypNdrt0JATwyrPXP/uVxG66RygJwBLuKrIswRUKlp8s
+        U+85bywfUrHGjRi+1zXV9K4=
+X-Google-Smtp-Source: ABdhPJzniI6Aw1b/FqGaEPNB/a6M/vRt8hKQ5Zx5UYlLdgljMoGjhh+KSxCloB6yCJzH8NHlfHrceg==
+X-Received: by 2002:a1c:b0c8:: with SMTP id z191mr3947280wme.165.1590678193035;
+        Thu, 28 May 2020 08:03:13 -0700 (PDT)
+Received: from localhost (ip-37-188-185-40.eurotel.cz. [37.188.185.40])
+        by smtp.gmail.com with ESMTPSA id k14sm6163539wrq.97.2020.05.28.08.03.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 May 2020 08:03:11 -0700 (PDT)
+Date:   Thu, 28 May 2020 17:03:10 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Yafang Shao <laoar.shao@gmail.com>,
+        Chris Down <chris@chrisdown.name>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        "Linux F2FS DEV, Mailing List" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, Arnd Bergmann <arnd@arndb.de>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Eric Biggers <ebiggers@kernel.org>
-Cc:     Ira Weiny <ira.weiny@intel.com>, Al Viro <viro@zeniv.linux.org.uk>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V5 9/9] Documentation/dax: Update DAX enablement for ext4
-Date:   Thu, 28 May 2020 08:00:03 -0700
-Message-Id: <20200528150003.828793-10-ira.weiny@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200528150003.828793-1-ira.weiny@intel.com>
-References: <20200528150003.828793-1-ira.weiny@intel.com>
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Chao Yu <yuchao0@huawei.com>, lkft-triage@lists.linaro.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Cgroups <cgroups@vger.kernel.org>
+Subject: Re: mm: mkfs.ext4 invoked oom-killer on i386 - pagecache_get_page
+Message-ID: <20200528150310.GG27484@dhcp22.suse.cz>
+References: <20200519075213.GF32497@dhcp22.suse.cz>
+ <CAK8P3a2T_j-Ynvhsqe_FCqS2-ZdLbo0oMbHhHChzMbryE0izAQ@mail.gmail.com>
+ <20200519084535.GG32497@dhcp22.suse.cz>
+ <CA+G9fYvzLm7n1BE7AJXd8_49fOgPgWWTiQ7sXkVre_zoERjQKg@mail.gmail.com>
+ <CA+G9fYsXnwyGetj-vztAKPt8=jXrkY8QWe74u5EEA3XPW7aikQ@mail.gmail.com>
+ <20200520190906.GA558281@chrisdown.name>
+ <20200521095515.GK6462@dhcp22.suse.cz>
+ <20200521163450.GV6462@dhcp22.suse.cz>
+ <CA+G9fYuDWGZx50UpD+WcsDeHX9vi3hpksvBAWbMgRZadb0Pkww@mail.gmail.com>
+ <CA+G9fYs2jg-j_5fdb0OW0G-JzDjN7b8d9qnX7uuk9p4c7mVSig@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYs2jg-j_5fdb0OW0G-JzDjN7b8d9qnX7uuk9p4c7mVSig@mail.gmail.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Ira Weiny <ira.weiny@intel.com>
+On Fri 22-05-20 02:23:09, Naresh Kamboju wrote:
+> My apology !
+> As per the test results history this problem started happening from
+> Bad : next-20200430 (still reproducible on next-20200519)
+> Good : next-20200429
+> 
+> The git tree / tag used for testing is from linux next-20200430 tag and reverted
+> following three patches and oom-killer problem fixed.
+> 
+> Revert "mm, memcg: avoid stale protection values when cgroup is above
+> protection"
+> Revert "mm, memcg: decouple e{low,min} state mutations from protectinn checks"
+> Revert "mm-memcg-decouple-elowmin-state-mutations-from-protection-checks-fix"
 
-Update the document to reflect ext4 and xfs now behave the same.
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-
----
-Changes from RFC:
-	Update with ext2 text...
----
- Documentation/filesystems/dax.txt | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/Documentation/filesystems/dax.txt b/Documentation/filesystems/dax.txt
-index 735fb4b54117..265c4f808dbf 100644
---- a/Documentation/filesystems/dax.txt
-+++ b/Documentation/filesystems/dax.txt
-@@ -25,7 +25,7 @@ size when creating the filesystem.
- Currently 3 filesystems support DAX: ext2, ext4 and xfs.  Enabling DAX on them
- is different.
- 
--Enabling DAX on ext4 and ext2
-+Enabling DAX on ext2
- -----------------------------
- 
- When mounting the filesystem, use the "-o dax" option on the command line or
-@@ -33,8 +33,8 @@ add 'dax' to the options in /etc/fstab.  This works to enable DAX on all files
- within the filesystem.  It is equivalent to the '-o dax=always' behavior below.
- 
- 
--Enabling DAX on xfs
---------------------
-+Enabling DAX on xfs and ext4
-+----------------------------
- 
- Summary
- -------
+The discussion has fragmented and I got lost TBH.
+In http://lkml.kernel.org/r/CA+G9fYuDWGZx50UpD+WcsDeHX9vi3hpksvBAWbMgRZadb0Pkww@mail.gmail.com
+you have said that none of the added tracing output has triggered. Does
+this still hold? Because I still have a hard time to understand how
+those three patches could have the observed effects.
 -- 
-2.25.1
-
+Michal Hocko
+SUSE Labs
