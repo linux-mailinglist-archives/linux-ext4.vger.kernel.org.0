@@ -2,107 +2,98 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 552851E5C3B
-	for <lists+linux-ext4@lfdr.de>; Thu, 28 May 2020 11:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFF0C1E621D
+	for <lists+linux-ext4@lfdr.de>; Thu, 28 May 2020 15:23:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728443AbgE1Jlr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 28 May 2020 05:41:47 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53500 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728300AbgE1Jlr (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 28 May 2020 05:41:47 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 037BFAD81;
-        Thu, 28 May 2020 09:41:44 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id D71171E1283; Thu, 28 May 2020 11:41:44 +0200 (CEST)
-Date:   Thu, 28 May 2020 11:41:44 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Xiao Yang <yangx.jy@cn.fujitsu.com>
-Cc:     Ira Weiny <ira.weiny@intel.com>, linux-ext4@vger.kernel.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V4 6/8] fs/ext4: Make DAX mount option a tri-state
-Message-ID: <20200528094144.GD14550@quack2.suse.cz>
-References: <20200521191313.261929-1-ira.weiny@intel.com>
- <20200521191313.261929-7-ira.weiny@intel.com>
- <5ECE00AE.3010802@cn.fujitsu.com>
- <20200527235002.GA725853@iweiny-DESK2.sc.intel.com>
- <5ECF7CD3.20409@cn.fujitsu.com>
+        id S2390370AbgE1NXd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 28 May 2020 09:23:33 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:5303 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2390295AbgE1NXa (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 28 May 2020 09:23:30 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 8D23ECE5D4564FEC6464;
+        Thu, 28 May 2020 21:23:26 +0800 (CST)
+Received: from [127.0.0.1] (10.166.215.198) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Thu, 28 May 2020
+ 21:23:17 +0800
+Subject: Re: [PATCH 02/10] fs: pick out ll_rw_one_block() helper function
+To:     Christoph Hellwig <hch@infradead.org>
+CC:     <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <jack@suse.cz>,
+        <adilger.kernel@dilger.ca>, <zhangxiaoxu5@huawei.com>
+References: <20200526071754.33819-1-yi.zhang@huawei.com>
+ <20200526071754.33819-3-yi.zhang@huawei.com>
+ <20200528050757.GA14198@infradead.org>
+From:   "zhangyi (F)" <yi.zhang@huawei.com>
+Message-ID: <d65650b2-05b2-1fd0-54d6-76e9e1e40786@huawei.com>
+Date:   Thu, 28 May 2020 21:23:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5ECF7CD3.20409@cn.fujitsu.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200528050757.GA14198@infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.166.215.198]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 28-05-20 16:56:51, Xiao Yang wrote:
-> On 2020/5/28 7:50, Ira Weiny wrote:
-> > On Wed, May 27, 2020 at 01:54:54PM +0800, Xiao Yang wrote:
-> > > On 2020/5/22 3:13, ira.weiny@intel.com wrote:
-> > > > From: Ira Weiny<ira.weiny@intel.com>
-> > > > 
-> > > > We add 'always', 'never', and 'inode' (default).  '-o dax' continues to
-> > > > operate the same which is equivalent to 'always'.  This new
-> > > > functionality is limited to ext4 only.
-> > > > 
-> > > > Specifically we introduce a 2nd DAX mount flag EXT4_MOUNT2_DAX_NEVER and set
-> > > > it and EXT4_MOUNT_DAX_ALWAYS appropriately for the mode.
-> > > > 
-> > > > We also force EXT4_MOUNT2_DAX_NEVER if !CONFIG_FS_DAX.
-> > > > 
-> > > > Finally, EXT4_MOUNT2_DAX_INODE is used solely to detect if the user
-> > > > specified that option for printing.
-> > > Hi Ira,
-> > > 
-> > > I have two questions when reviewing this patch:
-> > > 1) After doing mount with the same dax=inode option, ext4/xfs shows
-> > > differnt output(i.e. xfs doesn't print 'dax=inode'):
-> > > ---------------------------------------------------
-> > > # mount -o dax=inode /dev/pmem0 /mnt/xfstests/test/
-> > > # mount | grep pmem0
-> > > /dev/pmem0 on /mnt/xfstests/test type ext4 (rw,relatime,seclabel,dax=inode)
-> > > 
-> > > # mount -odax=inode /dev/pmem1 /mnt/xfstests/scratch/
-> > > # mount | grep pmem1
-> > > /dev/pmem1 on /mnt/xfstests/scratch type xfs
-> > > (rw,relatime,seclabel,attr2,inode64,logbufs=8,logbsize=32k,noquota)
-> > > ----------------------------------------------------
-> > > Is this expected output? why don't unify the output?
-> > 
-> > Correct. dax=inode is the default.  xfs treats that default the same whether
-> > you specify it on the command line or not.
-> > 
-> > For ext4 Jan specifically asked that if the user specified dax=inode on the
-> > command line that it be printed on the mount options.  If you don't specify
-> > anything then dax=inode is in effect but ext4 will not print anything.
-> > 
-> > I had the behavior the same as XFS originally but Jan wanted it this way.  The
-> > XFS behavior is IMO better and is what the new mount infrastructure gives by
-> > default.
+Hi, Christoph
+
+On 2020/5/28 13:07, Christoph Hellwig wrote:
+> On Tue, May 26, 2020 at 03:17:46PM +0800, zhangyi (F) wrote:
+>> Pick out ll_rw_one_block() helper function from ll_rw_block() for
+>> submitting one locked buffer for reading/writing.
 > 
-> Could we unify the output?  It is strange for me to use differnt output on
-> ext4 and xfs.
+> That should probably read factor out instead of pick out.
+> 
+>>
+>> Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
+>> ---
+>>  fs/buffer.c                 | 41 ++++++++++++++++++++++---------------
+>>  include/linux/buffer_head.h |  1 +
+>>  2 files changed, 26 insertions(+), 16 deletions(-)
+>>
+>> diff --git a/fs/buffer.c b/fs/buffer.c
+>> index a60f60396cfa..3a2226f88b2d 100644
+>> --- a/fs/buffer.c
+>> +++ b/fs/buffer.c
+>> @@ -3081,6 +3081,29 @@ int submit_bh(int op, int op_flags, struct buffer_head *bh)
+>>  }
+>>  EXPORT_SYMBOL(submit_bh);
+>>  
+>> +void ll_rw_one_block(int op, int op_flags, struct buffer_head *bh)
+>> +{
+>> +	BUG_ON(!buffer_locked(bh));
+>> +
+>> +	if (op == WRITE) {
+>> +		if (test_clear_buffer_dirty(bh)) {
+>> +			bh->b_end_io = end_buffer_write_sync;
+>> +			get_bh(bh);
+>> +			submit_bh(op, op_flags, bh);
+>> +			return;
+>> +		}
+>> +	} else {
+>> +		if (!buffer_uptodate(bh)) {
+>> +			bh->b_end_io = end_buffer_read_sync;
+>> +			get_bh(bh);
+>> +			submit_bh(op, op_flags, bh);
+>> +			return;
+>> +		}
+>> +	}
+>> +	unlock_buffer(bh);
+>> +}
+>> +EXPORT_SYMBOL(ll_rw_one_block);
+> 
+> I don't think you want separate read and write sides.  In fact I'm not
+> sure you want the helper at all.  At this point just open coding it
+> rather than adding more overhead to core code might be a better idea.
+> 
 
-If we'd unify the output with XFS, it would be inconsistent with all the
-other ext4 mount options. So I disagree with that. I agree it is not ideal
-to have different behavior between xfs and ext4 but such is the historical
-behavior. If we want to change that, we need to change the handling for all
-the ext4 mount options. I'm open for that discussion but it is a problem
-unrelated to this patch set.
+Yeah, what I want is only the read side, it's fine by me to open coding it.
+Thanks,
+Yi.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
