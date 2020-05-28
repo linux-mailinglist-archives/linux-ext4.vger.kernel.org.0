@@ -2,64 +2,69 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 793FF1E6A00
-	for <lists+linux-ext4@lfdr.de>; Thu, 28 May 2020 21:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D514D1E6A12
+	for <lists+linux-ext4@lfdr.de>; Thu, 28 May 2020 21:08:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406049AbgE1TFO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 28 May 2020 15:05:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56816 "EHLO
+        id S2406195AbgE1TH1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 28 May 2020 15:07:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406045AbgE1TFI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 28 May 2020 15:05:08 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78298C08C5C8
-        for <linux-ext4@vger.kernel.org>; Thu, 28 May 2020 12:05:08 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id s69so755pjb.4
-        for <linux-ext4@vger.kernel.org>; Thu, 28 May 2020 12:05:08 -0700 (PDT)
+        with ESMTP id S2406108AbgE1THY (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 28 May 2020 15:07:24 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A850C08C5C6
+        for <linux-ext4@vger.kernel.org>; Thu, 28 May 2020 12:07:24 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id x10so11989048plr.4
+        for <linux-ext4@vger.kernel.org>; Thu, 28 May 2020 12:07:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=0J8Ym+kzod0znonchBb67O6GEq+arSkfzWAx+2kx7IA=;
-        b=a8nA3Uvc1XNWqllXPWq50YCm6GC9JIOys9XsXoIOt75s4dnRClATn64VHORczX9nz6
-         36TiE/XIWNy4AlmxWJnXDOjgvsdfvmvpVnaO2spx11lRLFhR2wUwUrM6twTgijFZSMqE
-         wlhBeYKIjt+aSvFkHgat+EnhmlS08Lj8cQdcmDa8DdOVCnGQfzYhxtphaTNntW39TuoY
-         NXWldrR4iHGI2FL0D3sITI0vFDewIHKpEGHL2qvhCcHfj0ZL8ZpDSHixbKyv8jWakGKz
-         hMtXp+VhiNXwFMwKe+la2CyE3Cj0X/v83o5EewZSH0f1rn80z/ge1nhoKL5BqoZMw6XH
-         lzTA==
+        bh=VwOVkU0O5MPTy6BNN6XbEIcSAUqdb5AHofI+QJezuPI=;
+        b=uDW5ODyyxREse/z9nXtUVNzYSUM3rxmiKouMrW0jQ4pjS6v1fwxsd/yw3a/ZOhLjGv
+         +jxGfyDsoKrn60aSTMmdCEZ2GchIZiuChuz/1AE6nf0dyurPkh4aVOWLNA/wdcuWoQmU
+         oOrU3dKuigLmoTXchnDB47CeNglHPROppF6lxw+UKA//5w9cqkkW8LdHMQHyPK6SUGyO
+         GCbw8fY9NUY6foqe4PtpNWnbJ82ESuHOCefXC/FkqMmVTJWfp1TBB+jyO+x91mphMZEI
+         wdves0btscFepzUrFDrHsvalWOOYRZfS5Kyq0euFgY4kpm6EmhBKzRzD4vzd8i8gIdpz
+         gLHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0J8Ym+kzod0znonchBb67O6GEq+arSkfzWAx+2kx7IA=;
-        b=hBuL2dqKJmqN+sne9bi+86FIhteqzXjap8eoVZRaOjUGDHr3YzgOdP+/h5Z+u4S67b
-         MqyoypjdCWHPYlYKv6VL2yusFW5cPMJtvCToytumaiPmkQfkiO23HufY+++tbONsUCw+
-         2SyLc4br9zOci4XVSlkO8ZsuG/xO6QVo+oiZFNo5JSRjyQr8XXXNHhCwNxZLjkbPxDCc
-         xnbuwYs//9LR8czfNhVyvcJ5uN4mFLT7yGSfcyMsIYSBOZIBwt8T/TJL8hpe/zsXNgr9
-         UEtM+2yOG0j+dHEpEhaNayhMb88Eby+v5kuJEN4trKBT3mH3U9anpveoa8waRS9IQKhp
-         Ik/Q==
-X-Gm-Message-State: AOAM533KUWnCtqJxmTAoK/EsI/vx2mRxoucLbpwfmfI9CvvaKpddal2h
-        BiAqxhSYnx0UgBe4FHgmshu2L2d5IRYmWoaSpTBZtA==
-X-Google-Smtp-Source: ABdhPJyGks+NLInlB7CGn8AvdNxpH+2UCTLT9jhDTHdhJNdwc1bWKpa0P/I3v5HG+9H3eFYcbh9Z67/5AufG661dnwA=
-X-Received: by 2002:a17:90a:17ed:: with SMTP id q100mr4941782pja.80.1590692707555;
- Thu, 28 May 2020 12:05:07 -0700 (PDT)
+        bh=VwOVkU0O5MPTy6BNN6XbEIcSAUqdb5AHofI+QJezuPI=;
+        b=r0mXdQqbcA6/szT3+kbc+GLwyvkVoN9Ocwqc8kKAQ3LFL3oTxMZzqe5xzjZIjxb1JQ
+         3hExqcJA3AIE2c5X17aXRpM7B65YYJAJoe0Np33ysjpRux2ftpyDMKrQKyUc4eH4WX3F
+         yxaI4vA/QO4d7btIeMdoTV03Jk9IhIuYmgyVaEIDOklaX5sIFw60cyXtcpneTsdC9WP7
+         TJmCTMJG80edLTW0r3ksCKNBrX8HIZFyAjwsmz7jHdYPvL5VkFDF83iJ4+CGsc9k9vCj
+         YwqpimDkuW6ATITNoThuo8Ry/zQ8b4WVGhvXrpNzxTKGAR/ce/7VYz/RWCTa3fBXNDBI
+         dqFA==
+X-Gm-Message-State: AOAM531ua8jSAroXR3UEDCwDVHaxVUkp6LFRcTEgWL2NVpR1to53KrZK
+        sd3a8HyD5ClRBt/rEn+xhzcbB3QKMZuJdhlh0DYmoQ==
+X-Google-Smtp-Source: ABdhPJyHjlcrtJrC+9HghnaFLvsYtvx90pMxGJn0t37UYFwj6H/4l9P4f/thKbVZ/294rQqkIqrgjWfA3AjwOQYQKbs=
+X-Received: by 2002:a17:90a:17ed:: with SMTP id q100mr4950842pja.80.1590692843445;
+ Thu, 28 May 2020 12:07:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200511131420.29758-1-anders.roxell@linaro.org>
-In-Reply-To: <20200511131420.29758-1-anders.roxell@linaro.org>
+References: <20200511131350.29638-1-anders.roxell@linaro.org> <CADYN=9LkA2h6dANREfPQq4iDvVEJX1wAdxjv31mpVBkaM_g0ZQ@mail.gmail.com>
+In-Reply-To: <CADYN=9LkA2h6dANREfPQq4iDvVEJX1wAdxjv31mpVBkaM_g0ZQ@mail.gmail.com>
 From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Thu, 28 May 2020 12:04:57 -0700
-Message-ID: <CAFd5g458j=VXttzbJUtD-HQR4k5T7us44oQOB6EPL09rgVr4LA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/6] kunit: Kconfig: enable a KUNIT_ALL_TESTS fragment
-To:     Anders Roxell <anders.roxell@linaro.org>
-Cc:     John Johansen <john.johansen@canonical.com>, jmorris@namei.org,
-        serge@hallyn.com, "Theodore Ts'o" <tytso@mit.edu>,
-        adilger.kernel@dilger.ca, Greg KH <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
+Date:   Thu, 28 May 2020 12:07:13 -0700
+Message-ID: <CAFd5g452oiRpMa3S=F9wFsb9SRKBYXJFuusge+6=zCEFX74kYQ@mail.gmail.com>
+Subject: Re: [PATCH v3 0/6] Enable as many KUnit tests as possible
+To:     Anders Roxell <anders.roxell@linaro.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        John Johansen <john.johansen@canonical.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
         "open list:KERNEL SELFTEST FRAMEWORK" 
         <linux-kselftest@vger.kernel.org>,
         KUnit Development <kunit-dev@googlegroups.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-ext4@vger.kernel.org,
+        linux-security-module <linux-security-module@vger.kernel.org>,
         Marco Elver <elver@google.com>, David Gow <davidgow@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
@@ -67,13 +72,61 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, May 11, 2020 at 6:14 AM Anders Roxell <anders.roxell@linaro.org> wrote:
+On Wed, May 27, 2020 at 4:49 AM Anders Roxell <anders.roxell@linaro.org> wrote:
 >
-> Make it easier to enable all KUnit fragments.  This is useful for kernel
-> devs or testers, so its easy to get all KUnit tests enabled and if new
-> gets added they will be enabled as well.  Fragments that has to be
-> builtin will be missed if CONFIG_KUNIT_ALL_TESTS is set as a module.
+> Hi all,
 >
-> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+> Friendly ping: who can take this?
 
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+Sorry, I just reviewed the last patch.
+
+Shuah, do you mind picking this up for 5.8?
+
+> Cheers,
+> Anders
+>
+> On Mon, 11 May 2020 at 15:14, Anders Roxell <anders.roxell@linaro.org> wrote:
+> >
+> > Hi,
+> >
+> > This patchset will try to enable as many KUnit test fragments as
+> > possible for the current .config file.
+> > This will make it easier for both developers that tests their specific
+> > feature and also for test-systems that would like to get as much as
+> > possible for their current .config file.
+> >
+> > I will send a separate KCSAN KUnit patch after this patchset since that
+> > isn't in mainline yet.
+> >
+> > Since v2:
+> > Fixed David's comments. KUNIT_RUN_ALL -> KUNIT_ALL_TESTS, and he
+> > suggested a great help text.
+> >
+> > Since v1:
+> > Marco commented to split up the patches, and change a "." to a ",".
+> >
+> >
+> > Cheers,
+> > Anders
+> >
+> > Anders Roxell (6):
+> >   kunit: Kconfig: enable a KUNIT_ALL_TESTS fragment
+> >   kunit: default KUNIT_* fragments to KUNIT_ALL_TESTS
+> >   lib: Kconfig.debug: default KUNIT_* fragments to KUNIT_ALL_TESTS
+> >   drivers: base: default KUNIT_* fragments to KUNIT_ALL_TESTS
+> >   fs: ext4: default KUNIT_* fragments to KUNIT_ALL_TESTS
+> >   security: apparmor: default KUNIT_* fragments to KUNIT_ALL_TESTS
+> >
+> >  drivers/base/Kconfig      |  3 ++-
+> >  drivers/base/test/Kconfig |  3 ++-
+> >  fs/ext4/Kconfig           |  3 ++-
+> >  lib/Kconfig.debug         |  6 ++++--
+> >  lib/kunit/Kconfig         | 23 ++++++++++++++++++++---
+> >  security/apparmor/Kconfig |  3 ++-
+> >  6 files changed, 32 insertions(+), 9 deletions(-)
+> >
+> > --
+> > 2.20.1
+> >
+
+Thanks!
