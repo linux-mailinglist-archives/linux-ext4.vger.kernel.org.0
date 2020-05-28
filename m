@@ -2,84 +2,62 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEC281E52B4
-	for <lists+linux-ext4@lfdr.de>; Thu, 28 May 2020 03:12:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BD7F1E5540
+	for <lists+linux-ext4@lfdr.de>; Thu, 28 May 2020 06:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725969AbgE1BM0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 27 May 2020 21:12:26 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:59460 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725294AbgE1BM0 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 May 2020 21:12:26 -0400
-Received: from callcc.thunk.org (pool-100-0-195-244.bstnma.fios.verizon.net [100.0.195.244])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 04S1CLnC022045
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 May 2020 21:12:21 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 15279420304; Wed, 27 May 2020 21:12:21 -0400 (EDT)
-Date:   Wed, 27 May 2020 21:12:21 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Jonny Grant <jg@jguk.org>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: /fs/ext4/namei.c ext4_find_dest_de()
-Message-ID: <20200528011221.GC228632@mit.edu>
-References: <2edc7d6a-289e-57ad-baf1-477dc240474d@jguk.org>
- <20200504015122.GB404484@mit.edu>
- <e6e172ae-ba19-f303-3aa9-a388adba8cb0@jguk.org>
+        id S1725779AbgE1Ezp convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Thu, 28 May 2020 00:55:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36848 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725308AbgE1Ezp (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 28 May 2020 00:55:45 -0400
+From:   bugzilla-daemon@bugzilla.kernel.org
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 109331] EXT4-fs (sda1): couldn't mount as ext3 due to feature
+ incompatibilities
+Date:   Thu, 28 May 2020 04:55:44 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: ovilewade9@gmail.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P3
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: cc
+Message-ID: <bug-109331-13602-qCczpAWeGf@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-109331-13602@https.bugzilla.kernel.org/>
+References: <bug-109331-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e6e172ae-ba19-f303-3aa9-a388adba8cb0@jguk.org>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, May 27, 2020 at 10:25:43PM +0100, Jonny Grant wrote:
-> 
-> 
-> How about adding an improved mkdir to POSIX and the Linux kernel? Let's call it mkdir2()
-> 
-> It has one more error, for EISDIR
-> 
-> [EEXIST]
-> The named file exists.
-> 
-> [EISDIR]
-> Directory with that name exists.
+https://bugzilla.kernel.org/show_bug.cgi?id=109331
 
-It's *really* not worth it.
+ovile9080 (ovilewade9@gmail.com) changed:
 
-You seem to really care about this; why don't you just keep your own
-version of shellutils which calls stat(1) if you get EEXIST and to
-distinguish between these two cases?
+           What    |Removed                     |Added
+----------------------------------------------------------------------------
+                 CC|                            |ovilewade9@gmail.com
 
-I know the shellutils maintainers has rejected this.  But that's OK,
-you can have your own copy on your systems.  You might want to reflect
-that if the shellutils maintainer refused to add the stat(1) on the
-error path, what makes you think they will accept a change to use a
-non-standard mkdir2() system call?
+--- Comment #8 from ovile9080 (ovilewade9@gmail.com) ---
+There are the very nice post here i love to read it so going the here
+https://heartsgameonline.net and looking the latest free online hearts card
+game most of the players exited for this here.
 
-If you want to try to convince Austin Common Standards Revision Group
-that it's worth it to mandate a whole new system call *just* for a new
-error code, you're welcome to try.  I suspect you will not get a good
-reception, and even if you did, Linux VFS maintainer may well very
-well deride the proposal as silly, and refuse to follow the lead of
-the Austin group.  In fact, Al Viro is very likely not to be as
-politic as I have been.  (It's likely the response would have included
-things like "idiotic idea" and "stupid".)
-
-> I'm tempted to suggest this new function mkdir2() returns 0 on success, or
-> an error number directly number. That would do away with 'errno' for this as
-> well.
-
-This is not going to get a good reception from either Al or the Austin
-Group, I predict.  If you really have strong ideas of what you think
-an OS and its interfaces should look like, perhaps you should just
-design your own OS from scratch.
-
-Best regards,
-
-						- Ted
+-- 
+You are receiving this mail because:
+You are watching the assignee of the bug.
