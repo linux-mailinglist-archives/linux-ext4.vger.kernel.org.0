@@ -2,230 +2,192 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 504611E865E
-	for <lists+linux-ext4@lfdr.de>; Fri, 29 May 2020 20:12:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28D251E8A88
+	for <lists+linux-ext4@lfdr.de>; Sat, 30 May 2020 00:00:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727039AbgE2SMn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 29 May 2020 14:12:43 -0400
-Received: from mga03.intel.com ([134.134.136.65]:29640 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725901AbgE2SMn (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 29 May 2020 14:12:43 -0400
-IronPort-SDR: Bags044BBQ3w3bCvn1yI4j6uu2LWfiHIR1aHi3CtNOTr9MZ/lZFERWKXotZcEHN7Bij48VuUl/
- jEhLjdIlx5fw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 May 2020 11:12:38 -0700
-IronPort-SDR: PnmldtMOMxWT/M+KWFtaK4CAXs29HAreOz+jvHmvwtAMAQzsBk0LbRrV6lC7KDFGciihdam1/X
- zyMhiofp/rwA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,449,1583222400"; 
-   d="scan'208";a="376777761"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by fmsmga001.fm.intel.com with ESMTP; 29 May 2020 11:12:38 -0700
-Date:   Fri, 29 May 2020 11:12:38 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+        id S1728360AbgE2WAN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 29 May 2020 18:00:13 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:36521 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726975AbgE2WAK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 29 May 2020 18:00:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590789609;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=pxbvmVbl9lsruKM4AA1eWb8CAia0DHVSFuL5O/ctfrI=;
+        b=jLjMt1LJhEx9OvLHOhXgYJjnEIpLGkdhNgi9jZz9QviJ8wYjju0huk4u9NUrLPmEJxOIyf
+        uvLbpZoIPDhqzlF7H1DAANAmeRWAzERw9I5A3zBjKR1EJG98DP8zcUKUReGYCN/e5PriBB
+        rLsPiFeAXOF4HLSiYSf4xu7yciJq3iA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-298-ufnsmF08M5m8DCBHuapQYg-1; Fri, 29 May 2020 18:00:04 -0400
+X-MC-Unique: ufnsmF08M5m8DCBHuapQYg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 806BD18A8220;
+        Fri, 29 May 2020 22:00:02 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-138.rdu2.redhat.com [10.10.112.138])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 968BB5C1B5;
+        Fri, 29 May 2020 22:00:00 +0000 (UTC)
+Subject: [PATCH 00/27] afs: Improvements
+From:   David Howells <dhowells@redhat.com>
+To:     linux-afs@lists.infradead.org
 Cc:     linux-ext4@vger.kernel.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Eric Biggers <ebiggers@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Jeffrey Altman <jaltman@auristor.com>,
+        Dave Botsch <botsch@cnf.cornell.edu>, dhowells@redhat.com,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V5 0/9] Enable ext4 support for per-file/directory DAX
- operations
-Message-ID: <20200529181237.GA829208@iweiny-DESK2.sc.intel.com>
-References: <20200528150003.828793-1-ira.weiny@intel.com>
- <20200529025441.GI228632@mit.edu>
- <20200529041717.GN228632@mit.edu>
+Date:   Fri, 29 May 2020 22:59:59 +0100
+Message-ID: <159078959973.679399.15496997680826127470.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.22
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200529041717.GN228632@mit.edu>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, May 29, 2020 at 12:17:17AM -0400, Theodore Y. Ts'o wrote:
-> On Thu, May 28, 2020 at 10:54:41PM -0400, Theodore Y. Ts'o wrote:
-> > 
-> > Thanks, applied to the ext4-dax branch.
-> > 
-> 
-> I spoke too soon.  While I tried merging with the ext4.git dev branch,
-> a merge conflict made me look closer and I realize I needed to make
-> the following changes (see diff between your patch set and what is
-> currently in ext4-dax).
-> 
-> Essentially, I needed to rework the branch to take into account commit
-> e0198aff3ae3 ("ext4: reject mount options not supported when
-> remounting in handle_mount_opt()").
-> 
-> The problem is that if you allow handle_mount_opt() to apply the
-> changes to the dax settings, and then later on, ext4_remount() realize
-> that we're remounting, and we need to reject the change, there's a
-> race if we restore the mount options to the original configuration.
-> Specifically, as Syzkaller pointed out, between when we change the dax
-> settings and then reset them, it's possible for some file to be opened
-> with "wrong" dax setting, and then when they are reset, *boom*.
-> 
-> The correct way to deal with this is to reject the mount option change
-> much earlier, in handle_mount_opt(), *before* we mess with the dax
-> settings.
-> 
-> Please take a look at the ext4-dax for the actual changes which I
-> made.
-> 
-> Cheers,
-> 
-> 					- Ted
-> 
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 3658e3016999..9a37d70394b2 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -1733,7 +1733,7 @@ static int clear_qf_name(struct super_block *sb, int qtype)
->  #define MOPT_NO_EXT3	0x0200
->  #define MOPT_EXT4_ONLY	(MOPT_NO_EXT2 | MOPT_NO_EXT3)
->  #define MOPT_STRING	0x0400
-> -#define MOPT_SKIP	0x0800
 
-I think we still need MOPT_SKIP...
+Here's a set of patches to make a number of improvements to the AFS driver:
 
-This was put in to skip these options when printing to deal with printing only
-dax=inode when it was specified by the user.
+ (1) Improve callback (ie. third party change notification) processing by:
 
-Ah but I see now.  By taking MOPT_SET away you have created the same behavior?
+     (a) Relying more on the fact we're doing this under RCU and by using
+     	 fewer locks.
 
-This is  orthogonal to the remount issue right?
+     	 This involves making the inode hash table RCU safe and providing
+     	 some RCU-safe accessor functions.  The search can then be done
+     	 without taking the inode_hash_lock.  Care must be taken because
+     	 the object may be being deleted and no wait is made.
 
-> +#define MOPT_NO_REMOUNT	0x0800
->  
->  static const struct mount_opts {
->  	int	token;
-> @@ -1783,18 +1783,15 @@ static const struct mount_opts {
->  	{Opt_min_batch_time, 0, MOPT_GTE0},
->  	{Opt_inode_readahead_blks, 0, MOPT_GTE0},
->  	{Opt_init_itable, 0, MOPT_GTE0},
-> -	{Opt_dax, EXT4_MOUNT_DAX_ALWAYS, MOPT_SET | MOPT_SKIP},
-> -	{Opt_dax_always, EXT4_MOUNT_DAX_ALWAYS,
-> -		MOPT_EXT4_ONLY | MOPT_SET | MOPT_SKIP},
-> -	{Opt_dax_inode, EXT4_MOUNT2_DAX_INODE,
-> -		MOPT_EXT4_ONLY | MOPT_SET | MOPT_SKIP},
-> -	{Opt_dax_never, EXT4_MOUNT2_DAX_NEVER,
-> -		MOPT_EXT4_ONLY | MOPT_SET | MOPT_SKIP},
-> +	{Opt_dax, 0, MOPT_NO_REMOUNT},
-> +	{Opt_dax_always, 0, MOPT_NO_REMOUNT},
-> +	{Opt_dax_inode, 0, MOPT_NO_REMOUNT},
-> +	{Opt_dax_never, 0, MOPT_NO_REMOUNT},
+ 	 This is also used to improve Ext4's time updating.  Konstantin
+     	 Khlebnikov said "For now, I've plugged this issue with try-lock in
+     	 ext4 lazy time update.  This solution is much better."
 
-Even if MOPT_SET is redundant.  Why don't we need still need MOPT_EXT4_ONLY?
+     (b) Moving to keeping volumes in a tree indexed by volume ID rather
+     	 than a flat list.
 
-And why don't we need to associate the defines; EXT4_MOUNT_DAX_ALWAYS etc?
+     (c) Making the server and volume records logically part of the cell.
+     	 This means that a server record now points directly at the cell
+     	 and the tree of volumes is there.  This removes an N:M mapping
+     	 table, simplifying things.
 
->  	{Opt_stripe, 0, MOPT_GTE0},
->  	{Opt_resuid, 0, MOPT_GTE0},
->  	{Opt_resgid, 0, MOPT_GTE0},
-> -	{Opt_journal_dev, 0, MOPT_NO_EXT2 | MOPT_GTE0},
-> -	{Opt_journal_path, 0, MOPT_NO_EXT2 | MOPT_STRING},
-> +	{Opt_journal_dev, 0, MOPT_NO_EXT2 | MOPT_GTE0 | MOPT_NO_REMOUNT},
-> +	{Opt_journal_path, 0, MOPT_NO_EXT2 | MOPT_STRING | MOPT_NO_REMOUNT},
->  	{Opt_journal_ioprio, 0, MOPT_NO_EXT2 | MOPT_GTE0},
->  	{Opt_data_journal, EXT4_MOUNT_JOURNAL_DATA, MOPT_NO_EXT2 | MOPT_DATAJ},
->  	{Opt_data_ordered, EXT4_MOUNT_ORDERED_DATA, MOPT_NO_EXT2 | MOPT_DATAJ},
-> @@ -1831,7 +1828,7 @@ static const struct mount_opts {
->  	{Opt_jqfmt_vfsv1, QFMT_VFS_V1, MOPT_QFMT},
->  	{Opt_max_dir_size_kb, 0, MOPT_GTE0},
->  	{Opt_test_dummy_encryption, 0, MOPT_GTE0},
-> -	{Opt_nombcache, EXT4_MOUNT_NO_MBCACHE, MOPT_SET},
-> +	{Opt_nombcache, EXT4_MOUNT_NO_MBCACHE, MOPT_SET | MOPT_NO_REMOUNT},
->  	{Opt_err, 0, 0}
->  };
->  
-> @@ -1929,6 +1926,12 @@ static int handle_mount_opt(struct super_block *sb, char *opt, int token,
->  			 "Mount option \"%s\" incompatible with ext3", opt);
->  		return -1;
->  	}
-> +	if ((m->flags & MOPT_NO_REMOUNT) && is_remount) {
-> +		ext4_msg(sb, KERN_ERR,
-> +			 "Mount option \"%s\" not supported when remounting",
-> +			 opt);
-> +		return -1;
-> +	}
+ (2) Improve keeping NAT or firewall channels open for the server callbacks
+     to reach the client by actively polling the fileserver on a timed
+     basis, instead of only doing it when we have an operation to process.
 
-I think this is cleaner!
+ (3) Improving detection of delayed or lost callbacks by including the
+     parent directory in the list of file IDs to be queried when doing a
+     bulk status fetch from lookup.  We can then check to see if our copy
+     of the directory has changed under us without us getting notified.
 
-Thanks, I did test this but not while trying to manipulate files as the same time
-as a remount.  So a race would not have been caught.
+ (4) Determine aliasing of cells (such as a cell that is pointed to be a
+     DNS alias).  This allows us to avoid having ambiguity due to
+     apparently different cells using the same volume and file servers.
 
-Thanks!
-Ira
+ (5) Improve the fileserver rotation to do more probing when it detects
+     that all of the addresses to a server are listed as non-responsive.
+     It's possible that an address that previously stopped responding has
+     become responsive again.
 
->  
->  	if (args->from && !(m->flags & MOPT_STRING) && match_int(args, &arg))
->  		return -1;
-> @@ -2008,11 +2011,6 @@ static int handle_mount_opt(struct super_block *sb, char *opt, int token,
->  		}
->  		sbi->s_resgid = gid;
->  	} else if (token == Opt_journal_dev) {
-> -		if (is_remount) {
-> -			ext4_msg(sb, KERN_ERR,
-> -				 "Cannot specify journal on remount");
-> -			return -1;
-> -		}
->  		*journal_devnum = arg;
->  	} else if (token == Opt_journal_path) {
->  		char *journal_path;
-> @@ -2020,11 +2018,6 @@ static int handle_mount_opt(struct super_block *sb, char *opt, int token,
->  		struct path path;
->  		int error;
->  
-> -		if (is_remount) {
-> -			ext4_msg(sb, KERN_ERR,
-> -				 "Cannot specify journal on remount");
-> -			return -1;
-> -		}
->  		journal_path = match_strdup(&args[0]);
->  		if (!journal_path) {
->  			ext4_msg(sb, KERN_ERR, "error: could not dup "
-> @@ -2287,7 +2280,7 @@ static int _ext4_show_options(struct seq_file *seq, struct super_block *sb,
->  	for (m = ext4_mount_opts; m->token != Opt_err; m++) {
->  		int want_set = m->flags & MOPT_SET;
->  		if (((m->flags & (MOPT_SET|MOPT_CLEAR)) == 0) ||
-> -		    (m->flags & MOPT_CLEAR_ERR) || m->flags & MOPT_SKIP)
-> +		    (m->flags & MOPT_CLEAR_ERR))
->  			continue;
->  		if (!nodefs && !(m->mount_opt & (sbi->s_mount_opt ^ def_mount_opt)))
->  			continue; /* skip if same as the default */
-> @@ -5474,24 +5467,6 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
->  		}
->  	}
->  
-> -	if ((sbi->s_mount_opt ^ old_opts.s_mount_opt) & EXT4_MOUNT_NO_MBCACHE) {
-> -		ext4_msg(sb, KERN_ERR, "can't enable nombcache during remount");
-> -		err = -EINVAL;
-> -		goto restore_opts;
-> -	}
-> -
-> -	if ((sbi->s_mount_opt ^ old_opts.s_mount_opt) & EXT4_MOUNT_DAX_ALWAYS ||
-> -	    (sbi->s_mount_opt2 ^ old_opts.s_mount_opt2) & EXT4_MOUNT2_DAX_NEVER ||
-> -	    (sbi->s_mount_opt2 ^ old_opts.s_mount_opt2) & EXT4_MOUNT2_DAX_INODE) {
-> -		ext4_msg(sb, KERN_WARNING, "warning: refusing change of "
-> -			"dax mount option with busy inodes while remounting");
-> -		sbi->s_mount_opt &= ~EXT4_MOUNT_DAX_ALWAYS;
-> -		sbi->s_mount_opt |= old_opts.s_mount_opt & EXT4_MOUNT_DAX_ALWAYS;
-> -		sbi->s_mount_opt2 &= ~(EXT4_MOUNT2_DAX_NEVER | EXT4_MOUNT2_DAX_INODE);
-> -		sbi->s_mount_opt2 |= old_opts.s_mount_opt2 &
-> -				     (EXT4_MOUNT2_DAX_NEVER | EXT4_MOUNT2_DAX_INODE);
-> -	}
-> -
->  	if (sbi->s_mount_flags & EXT4_MF_FS_ABORTED)
->  		ext4_abort(sb, EXT4_ERR_ESHUTDOWN, "Abort forced by user");
->  
+Beyond that, lay some foundations for making some calls asynchronous:
+
+ (1) Turn the fileserver cursor struct into a general operation struct and
+     hang the parameters off of that rather than keeping them in local
+     variables and hang results off of that rather than the call struct.
+
+ (2) Implement some general operation handling code and simplify the
+     callers of operations that affect a volume or a volume component (such
+     as a file).  Most of the operation is now done by core code.
+
+ (3) Operations are supplied with a table of operations to issue different
+     variants of RPCs and to manage the completion, where all the required
+     data is held in the operation object, thereby allowing these to be
+     called from a workqueue.
+
+ (4) Put the standard "if (begin), while(select), call op, end" sequence
+     into a canned function that just emulates the current behaviour for
+     now.
+
+There are also some fixes interspersed:
+
+ (1) Don't let the EACCES from ICMP6 mapping reach the user as such, since
+     it's confusing as to whether it's a filesystem error.  Convert it to
+     EHOSTUNREACH.
+
+ (2) Don't use the epoch value acquired through probing a server.  If we
+     have two servers with the same UUID but in different cells, it's hard
+     to draw conclusions from them having different epoch values.
+
+ (3) Don't interpret the argument to the CB.ProbeUuid RPC as a fileserver
+     UUID and look up a fileserver from it.
+
+ (4) Deal with servers in different cells having the same UUIDs.  In the
+     event that a CB.InitCallBackState3 RPC is received, we have to break
+     the callback promises for every server record matching that UUID.
+
+ (5) Don't let afs_statfs return values that go below 0.
+
+ (6) Don't use running fileserver probe state to make server selection and
+     address selection decisions on.  Only make decisions on final state as
+     the running state is cleared at the start of probing.
+
+The patches are here:
+
+	http://git.kernel.org/cgit/linux/kernel/git/dhowells/linux-fs.git/log/?h=afs-next
+
+David
+---
+David Howells (1):
+      afs: Adjust the fileserver rotation algorithm to reprobe/retry more quickly
+
+
+ fs/afs/Makefile            |    2 +
+ fs/afs/afs.h               |    3 +-
+ fs/afs/afs_vl.h            |    1 +
+ fs/afs/callback.c          |  345 ++++--------
+ fs/afs/cell.c              |   10 +-
+ fs/afs/cmservice.c         |   67 +--
+ fs/afs/dir.c               | 1253 ++++++++++++++++++++----------------------
+ fs/afs/dir_silly.c         |  190 +++----
+ fs/afs/dynroot.c           |   93 ++++
+ fs/afs/file.c              |   62 ++-
+ fs/afs/flock.c             |  114 ++--
+ fs/afs/fs_operation.c      |  239 ++++++++
+ fs/afs/fs_probe.c          |  339 +++++++++---
+ fs/afs/fsclient.c          | 1295 +++++++++++++++++---------------------------
+ fs/afs/inode.c             |  491 ++++++++---------
+ fs/afs/internal.h          |  523 ++++++++++--------
+ fs/afs/main.c              |    6 +-
+ fs/afs/proc.c              |   42 +-
+ fs/afs/protocol_yfs.h      |    2 +-
+ fs/afs/rotate.c            |  443 ++++++---------
+ fs/afs/rxrpc.c             |   45 +-
+ fs/afs/security.c          |    8 +-
+ fs/afs/server.c            |  299 ++++++----
+ fs/afs/server_list.c       |   40 +-
+ fs/afs/super.c             |  107 ++--
+ fs/afs/vl_alias.c          |  384 +++++++++++++
+ fs/afs/vl_rotate.c         |    4 +
+ fs/afs/vlclient.c          |  146 ++++-
+ fs/afs/volume.c            |  152 ++++--
+ fs/afs/write.c             |  148 +++--
+ fs/afs/xattr.c             |  300 +++++-----
+ fs/afs/yfsclient.c         |  914 +++++++++++++------------------
+ fs/ext4/inode.c            |   44 +-
+ fs/inode.c                 |  173 +++++-
+ include/linux/fs.h         |    3 +
+ include/trace/events/afs.h |  111 +++-
+ net/rxrpc/peer_event.c     |    3 +
+ net/rxrpc/proc.c           |    6 +-
+ 38 files changed, 4484 insertions(+), 3923 deletions(-)
+ create mode 100644 fs/afs/fs_operation.c
+ create mode 100644 fs/afs/vl_alias.c
+
+
