@@ -2,84 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32D7D1E72EC
-	for <lists+linux-ext4@lfdr.de>; Fri, 29 May 2020 04:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 146401E7376
+	for <lists+linux-ext4@lfdr.de>; Fri, 29 May 2020 05:26:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407215AbgE2CzK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 28 May 2020 22:55:10 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:53391 "EHLO
+        id S2391621AbgE2DKi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 28 May 2020 23:10:38 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:55051 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2406778AbgE2CzJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 28 May 2020 22:55:09 -0400
+        with ESMTP id S2389625AbgE2DKh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 28 May 2020 23:10:37 -0400
 Received: from callcc.thunk.org (pool-100-0-195-244.bstnma.fios.verizon.net [100.0.195.244])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 04T2sfhO021649
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 04T3ARkg025243
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 May 2020 22:54:42 -0400
+        Thu, 28 May 2020 23:10:28 -0400
 Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id AB339420304; Thu, 28 May 2020 22:54:41 -0400 (EDT)
-Date:   Thu, 28 May 2020 22:54:41 -0400
+        id 40186420304; Thu, 28 May 2020 23:10:27 -0400 (EDT)
+Date:   Thu, 28 May 2020 23:10:27 -0400
 From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     ira.weiny@intel.com
-Cc:     linux-ext4@vger.kernel.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Eric Biggers <ebiggers@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V5 0/9] Enable ext4 support for per-file/directory DAX
- operations
-Message-ID: <20200529025441.GI228632@mit.edu>
-References: <20200528150003.828793-1-ira.weiny@intel.com>
+To:     Andreas Dilger <adilger@dilger.ca>
+Cc:     Jonny Grant <jg@jguk.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+Subject: Re: [PATCH] ext4: add comment for ext4_dir_entry_2 file_type member
+Message-ID: <20200529031027.GJ228632@mit.edu>
+References: <ad3290d5-86af-99c1-f9d5-cd1bab710429@jguk.org>
+ <04681804-F540-48E9-BD4A-79AF89DBC6CA@dilger.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200528150003.828793-1-ira.weiny@intel.com>
+In-Reply-To: <04681804-F540-48E9-BD4A-79AF89DBC6CA@dilger.ca>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, May 28, 2020 at 07:59:54AM -0700, ira.weiny@intel.com wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
+On Fri, May 22, 2020 at 11:12:41PM -0600, Andreas Dilger wrote:
+> On May 22, 2020, at 9:09 AM, Jonny Grant <jg@jguk.org> wrote:
+> > 
+> > From 4e9d768a0adb60698ba13e7b7522c15a4548332a Mon Sep 17 00:00:00 2001
+> > From: Jonathan Grant <jg@jguk.org>
+> > Date: Fri, 22 May 2020 16:07:58 +0100
+> > Subject: [PATCH] add comment for ext4_dir_entry_2 file_type member
+> > 
+> > Signed-off-by: Jonathan Grant <jg@jguk.org>
 > 
-> Changes from V4:
-> 	Fix up DAX mutual exclusion with other flags.
-> 	Add clean up patch (remove jflags)
-> 
-> Changes from V3:
-> 	Change EXT4_DAX_FL to bit24
-> 	Cache device DAX support in the super block and use that is
-> 		ext4_should_use_dax()
-> 
-> Changes from V2:
-> 	Rework DAX exclusivity with verity and encryption based on feedback
-> 	from Eric
-> 
-> Enable the same per file DAX support in ext4 as was done for xfs.  This series
-> builds and depends on the V11 series for xfs.[1]
-> 
-> This passes the same xfstests test as XFS.
-> 
-> The only issue is that this modifies the old mount option parsing code rather
-> than waiting for the new parsing code to be finalized.
-> 
-> This series starts with 3 fixes which include making Verity and Encrypt truly
-> mutually exclusive from DAX.  I think these first 3 patches should be picked up
-> for 5.8 regardless of what is decided regarding the mount parsing.
-> 
-> [1] https://lore.kernel.org/lkml/20200428002142.404144-1-ira.weiny@intel.com/
-> 
-> To: linux-ext4@vger.kernel.org
-> To: Andreas Dilger <adilger.kernel@dilger.ca>
-> To: "Theodore Y. Ts'o" <tytso@mit.edu>
-> To: Jan Kara <jack@suse.cz>
-> To: Eric Biggers <ebiggers@kernel.org>
+> Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 
-Thanks, applied to the ext4-dax branch.
+Thanks, applied.
 
-						- Ted
+					- Ted
