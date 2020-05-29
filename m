@@ -2,166 +2,82 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36B371E7688
-	for <lists+linux-ext4@lfdr.de>; Fri, 29 May 2020 09:22:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D761E7889
+	for <lists+linux-ext4@lfdr.de>; Fri, 29 May 2020 10:39:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725790AbgE2HW0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 29 May 2020 03:22:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58738 "EHLO
+        id S1726451AbgE2Iju convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Fri, 29 May 2020 04:39:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725601AbgE2HWZ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 29 May 2020 03:22:25 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18003C08C5C6
-        for <linux-ext4@vger.kernel.org>; Fri, 29 May 2020 00:22:25 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id z18so1303161lji.12
-        for <linux-ext4@vger.kernel.org>; Fri, 29 May 2020 00:22:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dl25yjAmJuE5AxkRwc5qz4dWHRUh+gkJVzHXFvs+rfg=;
-        b=hswH03OEBTEgok3PtkSVa8NSZO20xTjVRoaF6RX18g3v51a3hFRNQq1utdUpGr9Z+q
-         X0d8OiqCQkSgY7tBpDOoibOwLHpXeCKtZIfzhxr6OXnsSFPaccLBqztx6eRQDL6nQA96
-         R7Gh7KWcHd0rcO+5eyuklKCsu2JYny3gaHcv7QnG5kdWnIe1mi12m0EC/ShEZa9D/27y
-         Wt8TPxDCkKvjnK61EJeBc1ygn05qOqGBeSquohq7VPUR0fRff9mPKPVyr5aK7UVkIGkj
-         xH5lh580rUwSSMLJCkZZM8WZLHeb5HXjjF5A/8ck/w7RyZP/fxxukcleq03s9CqprG8h
-         JUzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dl25yjAmJuE5AxkRwc5qz4dWHRUh+gkJVzHXFvs+rfg=;
-        b=MOly0ewcCZl70raElnUPS/eibvrDd7qIwJJOaWgXYaN+xxzgeEtxpBuvWIoNzfiX8L
-         bi+1YUtHZG0y9xHgc7I8VAWoQgh7vrcw3KogK2On7Pq8xuTCVmHkIURtUhdmB5dQ6AQz
-         ByqSrH6KcUZdsHrFJakT2ogpJcq6IXzdxKaRMYQRHR5oWT1ji+KLBDZdgIvzdghDulrf
-         DerciOW3vvh+7Gzjt7sDWsxczTbtN1+axRWdWtCTpkB/lk13PfOM9plaLL2h+H2MNOl/
-         p04usa3A98g1VFksRKc6Kftcx6D/yS1LhZgM9oEPnQMK8vdTffkaRxYMDPpoKmL1gTWr
-         DnWQ==
-X-Gm-Message-State: AOAM530xTYEgaXp9agHIW1gQXZ8QtO5Bjs8nP7ivVbEP+S4xYvJLr9Xl
-        mdPVBliKcB/bbDXZXgg1TL42eQ==
-X-Google-Smtp-Source: ABdhPJw41qmTFNR1CsfUZRyTyoeD0cdsQ+X861XvpuY9BXFNpuN+0C0bxdkiKXtLjIsMiCEHv54kPQ==
-X-Received: by 2002:a2e:870b:: with SMTP id m11mr3122624lji.315.1590736943242;
-        Fri, 29 May 2020 00:22:23 -0700 (PDT)
-Received: from localhost.localdomain ([92.34.219.140])
-        by smtp.gmail.com with ESMTPSA id k27sm2068399lfe.88.2020.05.29.00.22.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 May 2020 00:22:22 -0700 (PDT)
-From:   Linus Walleij <linus.walleij@linaro.org>
-To:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
-Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-api@vger.kernel.org, qemu-devel@nongnu.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Florian Weimer <fw@deneb.enyo.de>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: [PATCH v2] fcntl: Add 32bit filesystem mode
-Date:   Fri, 29 May 2020 09:20:17 +0200
-Message-Id: <20200529072017.2906-1-linus.walleij@linaro.org>
-X-Mailer: git-send-email 2.25.4
+        with ESMTP id S1725306AbgE2Ijt (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 29 May 2020 04:39:49 -0400
+Received: from eggs.gnu.org (eggs.gnu.org [IPv6:2001:470:142:3::10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA91C03E969;
+        Fri, 29 May 2020 01:39:49 -0700 (PDT)
+Received: from fencepost.gnu.org ([2001:470:142:3::e]:51136)
+        by eggs.gnu.org with esmtp (Exim 4.90_1)
+        (envelope-from <janneke@gnu.org>)
+        id 1jeaYK-000171-17; Fri, 29 May 2020 04:39:44 -0400
+Received: from [2001:980:1b4f:1:42d2:832d:bb59:862] (port=36364 helo=dundal.peder.onsbrabantnet.nl)
+        by fencepost.gnu.org with esmtpsa (TLS1.2:RSA_AES_256_CBC_SHA1:256)
+        (Exim 4.82)
+        (envelope-from <janneke@gnu.org>)
+        id 1jeaYJ-0002yQ-G1; Fri, 29 May 2020 04:39:43 -0400
+From:   Jan Nieuwenhuizen <janneke@gnu.org>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Danny Milosavljevic <dannym@scratchpost.org>,
+        Samuel Thibault <samuel.thibault@gnu.org>
+Subject: Re: [PATCH v2] ext4: support xattr gnu.* namespace for the Hurd
+Organization: AvatarAcademy.nl
+References: <20200525193940.878-1-janneke@gnu.org>
+        <20200529032505.GM228632@mit.edu>
+X-Url:  http://AvatarAcademy.nl
+Date:   Fri, 29 May 2020 10:39:39 +0200
+In-Reply-To: <20200529032505.GM228632@mit.edu> (Theodore Y. Ts'o's message of
+        "Thu, 28 May 2020 23:25:05 -0400")
+Message-ID: <87imgfuoc4.fsf@gnu.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-It was brought to my attention that this bug from 2018 was
-still unresolved: 32 bit emulators like QEMU were given
-64 bit hashes when running 32 bit emulation on 64 bit systems.
+Theodore Y. Ts'o writes:
 
-This adds a flag to the fcntl() F_GETFD and F_SETFD operations
-to set the underlying filesystem into 32bit mode even if the
-file handle was opened using 64bit mode without the compat
-syscalls.
+Hello!
 
-Programs that need the 32 bit file system behavior need to
-issue a fcntl() system call such as in this example:
+> On Mon, May 25, 2020 at 09:39:40PM +0200, Jan (janneke) Nieuwenhuizen wrote:
+>> The Hurd gained[0] support for moving the translator and author
+>> fields out of the inode and into the "gnu.*" xattr namespace.
+>> 
+>> In anticipation of that, an xattr INDEX was reserved[1].  The Hurd has
+>> now been brought into compliance[2] with that.
+>> 
+>> This patch adds support for reading and writing such attributes from
+>> Linux; you can now do something like
 
-  #define FD_32BIT_MODE 2
+[...]
+>
+> This patch is missing a Signed-off-by.  If you don't understand why
+> this is really important, please read: 
+>
+> https://www.kernel.org/doc/html/latest/process/submitting-patches.html#sign-your-work-the-developer-s-certificate-of-origin
 
-  int main(int argc, char** argv) {
-    DIR* dir;
-    int err;
-    int fd;
+Ah, that makes sense.  Sorry for omitting that/being not clear on it.
 
-    dir = opendir("/boot");
-    fd = dirfd(dir);
-    err = fcntl(fd, F_SETFD, FD_32BIT_MODE);
-    if (err) {
-      printf("fcntl() failed! err=%d\n", err);
-      return 1;
-    }
-    printf("dir=%p\n", dir);
-    printf("readdir(dir)=%p\n", readdir(dir));
-    printf("errno=%d: %s\n", errno, strerror(errno));
-    return 0;
-  }
+> Can you resubmit with the DCO or confirm that it's OK for me to add
+> your Signed-off-by?
 
-This can be pretty hard to test since C libraries and linux
-userspace security extensions aggressively filter the parameters
-that are passed down and allowed to commit into actual system
-calls.
+Yes, that's OK, please do!  I am the original author of this patch.
 
-Cc: Florian Weimer <fw@deneb.enyo.de>
-Cc: Peter Maydell <peter.maydell@linaro.org>
-Cc: Andy Lutomirski <luto@kernel.org>
-Suggested-by: Theodore Ts'o <tytso@mit.edu>
-Link: https://bugs.launchpad.net/qemu/+bug/1805913
-Link: https://lore.kernel.org/lkml/87bm56vqg4.fsf@mid.deneb.enyo.de/
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=205957
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
-ChangeLog v1->v2:
-- Use a new flag FD_32BIT_MODE to F_GETFD and F_SETFD
-  instead of a new fcntl operation, there is already a fcntl
-  operation to set random flags.
-- Sorry for taking forever to respin this patch :(
----
- fs/fcntl.c                       | 5 +++++
- include/uapi/asm-generic/fcntl.h | 8 ++++++++
- 2 files changed, 13 insertions(+)
+Greetings,
+Janneke
 
-diff --git a/fs/fcntl.c b/fs/fcntl.c
-index 2e4c0fa2074b..10a6b712d3a7 100644
---- a/fs/fcntl.c
-+++ b/fs/fcntl.c
-@@ -335,10 +335,15 @@ static long do_fcntl(int fd, unsigned int cmd, unsigned long arg,
- 		break;
- 	case F_GETFD:
- 		err = get_close_on_exec(fd) ? FD_CLOEXEC : 0;
-+		/* Report 32bit file system mode */
-+		if (filp->f_mode & FMODE_32BITHASH)
-+			err |= FD_32BIT_MODE;
- 		break;
- 	case F_SETFD:
- 		err = 0;
- 		set_close_on_exec(fd, arg & FD_CLOEXEC);
-+		if (arg & FD_32BIT_MODE)
-+			filp->f_mode |= FMODE_32BITHASH;
- 		break;
- 	case F_GETFL:
- 		err = filp->f_flags;
-diff --git a/include/uapi/asm-generic/fcntl.h b/include/uapi/asm-generic/fcntl.h
-index 9dc0bf0c5a6e..edd3573cb7ef 100644
---- a/include/uapi/asm-generic/fcntl.h
-+++ b/include/uapi/asm-generic/fcntl.h
-@@ -160,6 +160,14 @@ struct f_owner_ex {
- 
- /* for F_[GET|SET]FL */
- #define FD_CLOEXEC	1	/* actually anything with low bit set goes */
-+/*
-+ * This instructs the kernel to provide 32bit semantics (such as hashes) from
-+ * the file system layer, when running a userland that depend on 32bit
-+ * semantics on a kernel that supports 64bit userland, but does not use the
-+ * compat ioctl() for e.g. open(), so that the kernel would otherwise assume
-+ * that the userland process is capable of dealing with 64bit semantics.
-+ */
-+#define FD_32BIT_MODE	2
- 
- /* for posix fcntl() and lockf() */
- #ifndef F_RDLCK
 -- 
-2.25.4
-
+Jan Nieuwenhuizen <janneke@gnu.org> | GNU LilyPond http://lilypond.org
+Freelance IT http://JoyofSource.com | Avatar® http://AvatarAcademy.com
