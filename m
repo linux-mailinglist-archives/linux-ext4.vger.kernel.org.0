@@ -2,101 +2,189 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6821B1EAFFA
-	for <lists+linux-ext4@lfdr.de>; Mon,  1 Jun 2020 22:08:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15D9F1EB074
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Jun 2020 22:50:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728350AbgFAUIf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 1 Jun 2020 16:08:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46552 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726201AbgFAUIf (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 1 Jun 2020 16:08:35 -0400
-Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D119E20734;
-        Mon,  1 Jun 2020 20:08:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591042115;
-        bh=85zG2AyYa1iBuFIil+uEjS+WxblsLLJ2fCz4UIcuvB0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=bWKFmytTENc3vIROh8oQVWS1O0w1comVKM+t+gE9ks8imExM5DT6P5bLl2uv+8F+H
-         kmKMJK+ltnLXxYGFjA24VPmHpyD6aZeUlxiqtthaluyVGj9zT+YnYHpP8gR62W6Q4a
-         t3oNWPVc1HbbNM3uvgCrfqsnhMQ48ZHYrh1mJSXE=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-f2fs-devel@lists.sourceforge.net
+        id S1728097AbgFAUt7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 1 Jun 2020 16:49:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726124AbgFAUt7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 1 Jun 2020 16:49:59 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1132C08C5C0
+        for <linux-ext4@vger.kernel.org>; Mon,  1 Jun 2020 13:49:57 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id bg4so424069plb.3
+        for <linux-ext4@vger.kernel.org>; Mon, 01 Jun 2020 13:49:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=Zsfe/CY3WqqlXja6vLHgdVguHtH9LaqYn6H1ozFlCfw=;
+        b=xEK4RLm1kVQWM2G1DQesS0K1Jdldy89Pmf787MqRCT1k1W25neEsNIbvL+WF/9iaQK
+         6dOlZusQISFuIZIvkqY9zyUzsiJbHez0y0TlR0CIMXdEzKeNInglgBXWxwKd5GmEZrcB
+         lnRmci334m1aC5r9QXhX2isN+Yzlirk+Prf+hD82XqBZBoOV56raIbiecVKLnc1VYYFH
+         vdot39BKY7LClpwzrpMPDWN7MQWyvzz8B0gY5Sq8y6rYMa0wyly8MptrFk3xileKVnJo
+         /wmHTDXkj8Z/m6QfZnCOKqXMykpS5Q0aprSZnw4Q9t3B3lGEry1MujAwSZ3S7NHtri0o
+         1Kzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=Zsfe/CY3WqqlXja6vLHgdVguHtH9LaqYn6H1ozFlCfw=;
+        b=iWa7DPIWKDgqfnN6gZK2gO8DdU6qoUsCHIY8UoJ+tDY7cF8kKRLnWTltTzdHZ7X5y+
+         RJMYtsxIhbYl4N3QqSdB0WnO8ebsp7Ek2I+WRAZ6ZubYgBjru1AzISc9u8HsJnAzDi6H
+         oJCa6YNoerAihgTjQdJUrg4PF5kAHJLBWJlz5fj2kONMECdtI7l3DloezXrx1KZduDAY
+         R1CMl7QBAcJ1o04xB00JBMpIVGHl1cckESPNhFMvW+fXiJwthwCGfvAmlmDI5TlWKKj+
+         NtkyocchjVDgf6ewie2EGTj7tvimZBz1bglLn4kE+q2BSr9EicTEYKz2dJW/AGNKfj4u
+         SwCA==
+X-Gm-Message-State: AOAM531EqHUiyJsfXd2Uf+4xgJ03z6caFzZu4UUUWjJul+jzPFE35Mk6
+        +vHXInDYyBFzNKdX/oaDWJT9BQ==
+X-Google-Smtp-Source: ABdhPJythQhc7Usfey0VfyIV23ZnegR0Mv4dJcSKz7nL6FaA5R3MwD0eg+Cxa1MdrSNdyD/naH7Pzg==
+X-Received: by 2002:a17:902:8541:: with SMTP id d1mr792724plo.234.1591044597184;
+        Mon, 01 Jun 2020 13:49:57 -0700 (PDT)
+Received: from [192.168.10.160] (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
+        by smtp.gmail.com with ESMTPSA id u61sm402013pjb.7.2020.06.01.13.49.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 01 Jun 2020 13:49:56 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <E876FECB-300E-471B-A790-D44F2F1A3F9A@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_2CC2D8B3-5855-40C9-B329-6585736A68A7";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH v2] ext4: avoid utf8_strncasecmp() with unstable name
+Date:   Mon, 1 Jun 2020 14:49:51 -0600
+In-Reply-To: <20200601200543.59417-1-ebiggers@kernel.org>
 Cc:     linux-ext4@vger.kernel.org, Daniel Rosenberg <drosen@google.com>,
-        stable@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+        stable@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        Al Viro <viro@zeniv.linux.org.uk>,
         linux-fsdevel@vger.kernel.org,
         Gabriel Krisman Bertazi <krisman@collabora.co.uk>
-Subject: [PATCH v2] f2fs: avoid utf8_strncasecmp() with unstable name
-Date:   Mon,  1 Jun 2020 13:08:05 -0700
-Message-Id: <20200601200805.59655-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+To:     Eric Biggers <ebiggers@kernel.org>
+References: <20200601200543.59417-1-ebiggers@kernel.org>
+X-Mailer: Apple Mail (2.3273)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
 
-If the dentry name passed to ->d_compare() fits in dentry::d_iname, then
-it may be concurrently modified by a rename.  This can cause undefined
-behavior (possibly out-of-bounds memory accesses or crashes) in
-utf8_strncasecmp(), since fs/unicode/ isn't written to handle strings
-that may be concurrently modified.
+--Apple-Mail=_2CC2D8B3-5855-40C9-B329-6585736A68A7
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-Fix this by first copying the filename to a stack buffer if needed.
-This way we get a stable snapshot of the filename.
+On Jun 1, 2020, at 2:05 PM, Eric Biggers <ebiggers@kernel.org> wrote:
+>=20
+> From: Eric Biggers <ebiggers@google.com>
+>=20
+> If the dentry name passed to ->d_compare() fits in dentry::d_iname, =
+then
+> it may be concurrently modified by a rename.  This can cause undefined
+> behavior (possibly out-of-bounds memory accesses or crashes) in
+> utf8_strncasecmp(), since fs/unicode/ isn't written to handle strings
+> that may be concurrently modified.
+>=20
+> Fix this by first copying the filename to a stack buffer if needed.
+> This way we get a stable snapshot of the filename.
+>=20
+> Fixes: b886ee3e778e ("ext4: Support case-insensitive file name =
+lookups")
+> Cc: <stable@vger.kernel.org> # v5.2+
+> Cc: Al Viro <viro@zeniv.linux.org.uk>
+> Cc: Daniel Rosenberg <drosen@google.com>
+> Cc: Gabriel Krisman Bertazi <krisman@collabora.co.uk>
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-Fixes: 2c2eb7a300cd ("f2fs: Support case-insensitive file name lookups")
-Cc: <stable@vger.kernel.org> # v5.4+
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Daniel Rosenberg <drosen@google.com>
-Cc: Gabriel Krisman Bertazi <krisman@collabora.co.uk>
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
+LGTM.
 
-v2: Use memcpy() + barrier() instead of a byte-by-byte copy.
-    Also rebased onto f2fs/dev.
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 
- fs/f2fs/dir.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+> ---
+>=20
+> v2: use memcpy() + barrier() instead of a byte-by-byte copy.
+>=20
+> fs/ext4/dir.c | 16 ++++++++++++++++
+> 1 file changed, 16 insertions(+)
+>=20
+> diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
+> index c654205f648dd..1d82336b1cd45 100644
+> --- a/fs/ext4/dir.c
+> +++ b/fs/ext4/dir.c
+> @@ -675,6 +675,7 @@ static int ext4_d_compare(const struct dentry =
+*dentry, unsigned int len,
+> 	struct qstr qstr =3D {.name =3D str, .len =3D len };
+> 	const struct dentry *parent =3D READ_ONCE(dentry->d_parent);
+> 	const struct inode *inode =3D READ_ONCE(parent->d_inode);
+> +	char strbuf[DNAME_INLINE_LEN];
+>=20
+> 	if (!inode || !IS_CASEFOLDED(inode) ||
+> 	    !EXT4_SB(inode->i_sb)->s_encoding) {
+> @@ -683,6 +684,21 @@ static int ext4_d_compare(const struct dentry =
+*dentry, unsigned int len,
+> 		return memcmp(str, name->name, len);
+> 	}
+>=20
+> +	/*
+> +	 * If the dentry name is stored in-line, then it may be =
+concurrently
+> +	 * modified by a rename.  If this happens, the VFS will =
+eventually retry
+> +	 * the lookup, so it doesn't matter what ->d_compare() returns.
+> +	 * However, it's unsafe to call utf8_strncasecmp() with an =
+unstable
+> +	 * string.  Therefore, we have to copy the name into a temporary =
+buffer.
+> +	 */
+> +	if (len <=3D DNAME_INLINE_LEN - 1) {
+> +		memcpy(strbuf, str, len);
+> +		strbuf[len] =3D 0;
+> +		qstr.name =3D strbuf;
+> +		/* prevent compiler from optimizing out the temporary =
+buffer */
+> +		barrier();
+> +	}
+> +
+> 	return ext4_ci_compare(inode, name, &qstr, false);
+> }
+>=20
+> --
+> 2.26.2
+>=20
 
-diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
-index 29f70f2295cce..d35976785e8c5 100644
---- a/fs/f2fs/dir.c
-+++ b/fs/f2fs/dir.c
-@@ -1114,11 +1114,27 @@ static int f2fs_d_compare(const struct dentry *dentry, unsigned int len,
- 	const struct inode *dir = READ_ONCE(parent->d_inode);
- 	const struct f2fs_sb_info *sbi = F2FS_SB(dentry->d_sb);
- 	struct qstr entry = QSTR_INIT(str, len);
-+	char strbuf[DNAME_INLINE_LEN];
- 	int res;
- 
- 	if (!dir || !IS_CASEFOLDED(dir))
- 		goto fallback;
- 
-+	/*
-+	 * If the dentry name is stored in-line, then it may be concurrently
-+	 * modified by a rename.  If this happens, the VFS will eventually retry
-+	 * the lookup, so it doesn't matter what ->d_compare() returns.
-+	 * However, it's unsafe to call utf8_strncasecmp() with an unstable
-+	 * string.  Therefore, we have to copy the name into a temporary buffer.
-+	 */
-+	if (len <= DNAME_INLINE_LEN - 1) {
-+		memcpy(strbuf, str, len);
-+		strbuf[len] = 0;
-+		entry.name = strbuf;
-+		/* prevent compiler from optimizing out the temporary buffer */
-+		barrier();
-+	}
-+
- 	res = utf8_strncasecmp(sbi->s_encoding, name, &entry);
- 	if (res >= 0)
- 		return res;
--- 
-2.26.2
 
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_2CC2D8B3-5855-40C9-B329-6585736A68A7
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl7Vae8ACgkQcqXauRfM
+H+A0SA/+Lqr0KRKEEI89LdIVUAM1EoellMMlQ+pGubMR5C0rPx80xNgbPuivmJYz
+eKxzdkV7t+QTC56lQISbjriAsf9HxILXtWKMRrhlBSqtkFAu28s1W/5he2ooasoe
+Xw8IyMQASbKCZAiP22MZGwT8t7H9xUOS1X4IcATloFUQMZx8/39ihY+5l6j5a5QV
+N4Rv34EyIqGODvQEXz6O9hdVFRdKJrxedCRQ/yY3QcBd6e4qpQKufGYM1U77dF1H
+mUJ+bEPaD+7niHchFcw9E7qsoWjKy8nm6yMxzzHRrx6sW1XIw6tSFR4t6SGHnktp
+84dL5FLtGlQ7jvySZdp4IJXpuJOpUMMQnrcVUhnmvhYrMnfobooueg2eA+2zUBSW
+1+W3HmjMWOE1enjyLXel8HuT5YPrmuNLu8qLn5twQRlsfzauOTlmFyk5Omq7tGt4
+70DWSXUN6AjM7zBO6JP47e5EwK1US6XpFl3QSFgCA32hfoja2q457ngf+XNIAGCr
+At2e1QKuBdcm5H6MxP6ge2K2sSSjA0J9nbubRE0ddWrsVvDsgEjCqfodLPVqxt0R
+Ynq2Zp5PQNanluObBv8XrZkLl9e2zlgG+N65B7hD2HvX1yK+Ld2N0cwdGhnprTBY
+WpFVZ7XfNIGN1mpJKgBRG74vfekTDXcoG3evy4/rwkp/emcVOjM=
+=YlTr
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_2CC2D8B3-5855-40C9-B329-6585736A68A7--
