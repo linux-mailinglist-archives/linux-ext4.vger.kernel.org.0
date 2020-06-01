@@ -2,152 +2,208 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FD4F1E9BEB
-	for <lists+linux-ext4@lfdr.de>; Mon,  1 Jun 2020 05:04:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B690A1E9D23
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Jun 2020 07:19:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727942AbgFADEE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 31 May 2020 23:04:04 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:29972 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726901AbgFADEE (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Sun, 31 May 2020 23:04:04 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0U-9NYiu_1590980631;
-Received: from admindeMacBook-Pro-2.local(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0U-9NYiu_1590980631)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 01 Jun 2020 11:03:52 +0800
-Subject: Re: [PATCH] ext4: fix partial cluster initialization when splitting
- extent
-From:   JeffleXu <jefflexu@linux.alibaba.com>
-To:     tytso@mit.edu, enwlinux@gmail.com
-Cc:     linux-ext4@vger.kernel.org, joseph.qi@linux.alibaba.com
-References: <1590121124-37096-1-git-send-email-jefflexu@linux.alibaba.com>
-Message-ID: <8cafedae-5e2b-52cd-2888-f61fdbe77882@linux.alibaba.com>
-Date:   Mon, 1 Jun 2020 11:03:51 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.0
+        id S1726200AbgFAFTM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 1 Jun 2020 01:19:12 -0400
+Received: from mga07.intel.com ([134.134.136.100]:28450 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726176AbgFAFTL (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 1 Jun 2020 01:19:11 -0400
+IronPort-SDR: 48zvZ9roRNtpL4L99UfidcJwQr90BeiwKXdDL+b7nd3BP7Er/psO9ZkAD/8XzUWiM3L0tdYIZk
+ N9esRWbbZeJg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2020 22:19:11 -0700
+IronPort-SDR: ZJSgmkGnFrx8/dXZ7TDjhN7mIeynjsWm21GK5yK9uTamIeZajZVnQ3P40qkA6sTKSrjfNuBVnJ
+ +D0TPI5RkExA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,459,1583222400"; 
+   d="scan'208";a="268201975"
+Received: from lkp-server01.sh.intel.com (HELO 49d03d9b0ee7) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 31 May 2020 22:19:10 -0700
+Received: from kbuild by 49d03d9b0ee7 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1jfcqr-0000EX-ET; Mon, 01 Jun 2020 05:19:09 +0000
+Date:   Mon, 01 Jun 2020 13:18:15 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+Subject: [ext4:ext4-dax] BUILD SUCCESS
+ a436a8bc7b70363e6b7db4737e4e08f118658c29
+Message-ID: <5ed48f97.Lz+6gPEFzkvE4jof%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <1590121124-37096-1-git-send-email-jefflexu@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi @Ted, is this patch ok to be applied? It has been reviewed by Eric 
-Whitney.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git  ext4-dax
+branch HEAD: a436a8bc7b70363e6b7db4737e4e08f118658c29  Documentation/dax: Update DAX enablement for ext4
 
-Link: https://www.spinics.net/lists/linux-ext4/msg72321.html
+elapsed time: 4240m
 
+configs tested: 149
+configs skipped: 6
 
-On 5/22/20 12:18 PM, Jeffle Xu wrote:
-> Fix the bug when calculating the physical block number of the first
-> block in the split extent.
->
-> This bug will cause xfstests shared/298 failure on ext4 with bigalloc
-> enabled occasionally. Ext4 error messages indicate that previously freed
-> blocks are being freed again, and the following fsck will fail due to
-> the inconsistency of block bitmap and bg descriptor.
->
-> The following is an example case:
->
-> 1. First, Initialize a ext4 filesystem with cluster size '16K', block size
-> '4K', in which case, one cluster contains four blocks.
->
-> 2. Create one file (e.g., xxx.img) on this ext4 filesystem. Now the extent
-> tree of this file is like:
->
-> ...
-> 36864:[0]4:220160
-> 36868:[0]14332:145408
-> 51200:[0]2:231424
-> ...
->
-> 3. Then execute PUNCH_HOLE fallocate on this file. The hole range is
-> like:
->
-> ..
-> ext4_ext_remove_space: dev 254,16 ino 12 since 49506 end 49506 depth 1
-> ext4_ext_remove_space: dev 254,16 ino 12 since 49544 end 49546 depth 1
-> ext4_ext_remove_space: dev 254,16 ino 12 since 49605 end 49607 depth 1
-> ...
->
-> 4. Then the extent tree of this file after punching is like
->
-> ...
-> 49507:[0]37:158047
-> 49547:[0]58:158087
-> ...
->
-> 5. Detailed procedure of punching hole [49544, 49546]
->
-> 5.1. The block address space:
-> ```
-> lblk        ~49505  49506   49507~49543     49544~49546    49547~
-> 	  ---------+------+-------------+----------------+--------
-> 	    extent | hole |   extent	|	hole	 | extent
-> 	  ---------+------+-------------+----------------+--------
-> pblk       ~158045  158046  158047~158083  158084~158086   158087~
-> ```
->
-> 5.2. The detailed layout of cluster 39521:
-> ```
-> 		cluster 39521
-> 	<------------------------------->
->
-> 		hole		  extent
-> 	<----------------------><--------
->
-> lblk      49544   49545   49546   49547
-> 	+-------+-------+-------+-------+
-> 	|	|	|	|	|
-> 	+-------+-------+-------+-------+
-> pblk     158084  1580845  158086  158087
-> ```
->
-> 5.3. The ftrace output when punching hole [49544, 49546]:
-> - ext4_ext_remove_space (start 49544, end 49546)
->    - ext4_ext_rm_leaf (start 49544, end 49546, last_extent [49507(158047), 40], partial [pclu 39522 lblk 0 state 2])
->      - ext4_remove_blocks (extent [49507(158047), 40], from 49544 to 49546, partial [pclu 39522 lblk 0 state 2]
->        - ext4_free_blocks: (block 158084 count 4)
->          - ext4_mballoc_free (extent 1/6753/1)
->
-> 5.4. Ext4 error message in dmesg:
-> EXT4-fs error (device vdb): mb_free_blocks:1457: group 1, block 158084:freeing already freed block (bit 6753); block bitmap corrupt.
-> EXT4-fs error (device vdb): ext4_mb_generate_buddy:747: group 1, block bitmap and bg descriptor inconsistent: 19550 vs 19551 free clusters
->
->
-> In this case, the whole cluster 39521 is freed mistakenly when freeing
-> pblock 158084~158086 (i.e., the first three blocks of this cluster),
-> although pblock 158087 (the last remaining block of this cluster) has
-> not been freed yet.
->
-> The root cause of this isuue is that, the pclu of the partial cluster is
-> calculated mistakenly in ext4_ext_remove_space(). The correct
-> partial_cluster.pclu (i.e., the cluster number of the first block in the
-> next extent, that is, lblock 49597 (pblock 158086)) should be 39521 rather
-> than 39522.
->
-> Fixes: f4226d9ea400 ("ext4: fix partial cluster initialization")
-> Signed-off-by: Jeffle Xu <jefflexu@linux.alibaba.com>
-> Reviewed-by: Eric Whitney <enwlinux@gmail.com>
-> Cc: stable@kernel.org # v3.19+
-> ---
->   fs/ext4/extents.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> index f2b577b..cb74496 100644
-> --- a/fs/ext4/extents.c
-> +++ b/fs/ext4/extents.c
-> @@ -2828,7 +2828,7 @@ int ext4_ext_remove_space(struct inode *inode, ext4_lblk_t start,
->   			 * in use to avoid freeing it when removing blocks.
->   			 */
->   			if (sbi->s_cluster_ratio > 1) {
-> -				pblk = ext4_ext_pblock(ex) + end - ee_block + 2;
-> +				pblk = ext4_ext_pblock(ex) + end - ee_block + 1;
->   				partial.pclu = EXT4_B2C(sbi, pblk);
->   				partial.state = nofree;
->   			}
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+sparc                       sparc64_defconfig
+mips                  decstation_64_defconfig
+mips                          ath79_defconfig
+powerpc                      pasemi_defconfig
+h8300                            allyesconfig
+sh                             sh03_defconfig
+sh                           se7343_defconfig
+arm                          badge4_defconfig
+sh                           se7780_defconfig
+sh                          rsk7269_defconfig
+mips                             allyesconfig
+ia64                        generic_defconfig
+arm                       mainstone_defconfig
+arm                            hisi_defconfig
+powerpc                     mpc83xx_defconfig
+m68k                          multi_defconfig
+m68k                             allyesconfig
+arm                         ebsa110_defconfig
+arm                            lart_defconfig
+sh                         microdev_defconfig
+x86_64                              defconfig
+arm                        oxnas_v6_defconfig
+arm                            pleb_defconfig
+sh                             espt_defconfig
+arm                           omap1_defconfig
+arm                       spear13xx_defconfig
+sparc64                          allyesconfig
+microblaze                    nommu_defconfig
+arc                          axs101_defconfig
+powerpc                       maple_defconfig
+nds32                             allnoconfig
+sh                               allmodconfig
+c6x                         dsk6455_defconfig
+riscv                    nommu_virt_defconfig
+sh                        apsh4ad0a_defconfig
+openrisc                            defconfig
+mips                          rb532_defconfig
+arm                         assabet_defconfig
+arc                              alldefconfig
+sh                            shmin_defconfig
+xtensa                       common_defconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+nios2                               defconfig
+nios2                            allyesconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a002-20200529
+x86_64               randconfig-a006-20200529
+x86_64               randconfig-a005-20200529
+x86_64               randconfig-a001-20200529
+x86_64               randconfig-a004-20200529
+x86_64               randconfig-a003-20200529
+i386                 randconfig-a004-20200529
+i386                 randconfig-a001-20200529
+i386                 randconfig-a002-20200529
+i386                 randconfig-a006-20200529
+i386                 randconfig-a003-20200529
+i386                 randconfig-a005-20200529
+i386                 randconfig-a004-20200531
+i386                 randconfig-a003-20200531
+i386                 randconfig-a006-20200531
+i386                 randconfig-a002-20200531
+i386                 randconfig-a005-20200531
+i386                 randconfig-a001-20200531
+x86_64               randconfig-a011-20200531
+x86_64               randconfig-a016-20200531
+x86_64               randconfig-a012-20200531
+x86_64               randconfig-a014-20200531
+x86_64               randconfig-a013-20200531
+x86_64               randconfig-a015-20200531
+i386                 randconfig-a013-20200529
+i386                 randconfig-a011-20200529
+i386                 randconfig-a012-20200529
+i386                 randconfig-a015-20200529
+i386                 randconfig-a016-20200529
+i386                 randconfig-a014-20200529
+i386                 randconfig-a013-20200531
+i386                 randconfig-a012-20200531
+i386                 randconfig-a015-20200531
+i386                 randconfig-a011-20200531
+i386                 randconfig-a016-20200531
+i386                 randconfig-a014-20200531
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allmodconfig
+um                                allnoconfig
+um                                  defconfig
+um                               allmodconfig
+um                               allyesconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
