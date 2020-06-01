@@ -2,56 +2,103 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDBBE1EAFA6
-	for <lists+linux-ext4@lfdr.de>; Mon,  1 Jun 2020 21:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50D021EAFF6
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Jun 2020 22:07:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729482AbgFATfE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 1 Jun 2020 15:35:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57666 "EHLO mail.kernel.org"
+        id S1728399AbgFAUHb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 1 Jun 2020 16:07:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46082 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729308AbgFATfD (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 1 Jun 2020 15:35:03 -0400
-Subject: Re: [GIT PULL] fsverity updates for 5.8
+        id S1726201AbgFAUHb (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 1 Jun 2020 16:07:31 -0400
+Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 898D82074B;
+        Mon,  1 Jun 2020 20:07:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591040103;
-        bh=FG5YZrumuxu+SUe9tE67sVQlsmLyNC7e800RwFody5U=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=KeExiaz9m5h879IZ1BEQl3nEkk8hevGPTuX/HTBMuE2abZI2ifbmaB5R/CNVUeKdW
-         Zy0uNXJWso9ocrLXtq6DWF3YggXoBfGdMb0/UA5DY/dnhFAeX+EgV/wRrplS8o/GUO
-         WFI1fbrkwDNfuAwAhSlYazDURGbqszfUUDgf6SE0=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200601063150.GB11054@sol.localdomain>
-References: <20200601063150.GB11054@sol.localdomain>
-X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200601063150.GB11054@sol.localdomain>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git
- tags/fsverity-for-linus
-X-PR-Tracked-Commit-Id: 9cd6b593cfc9eaa476c9a3fa768b08bca73213d0
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 4d67829e11863072aec7cd1dd2939b1fd3eda17b
-Message-Id: <159104010315.18844.6258170183596402649.pr-tracker-bot@kernel.org>
-Date:   Mon, 01 Jun 2020 19:35:03 +0000
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        s=default; t=1591042050;
+        bh=WLG4kcqEt9VdTt2Je1rr3PBXsRXzaEOmL6iqofLYZlU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=U/7r1QVUCvm+wEhm5Ri1zhOAfxcLfglh4KLlLcNS7Ul+dX4GsRGMJKMuQfOpLEixR
+         gwU3C/dECGBpe0rLgADp2TyoAXRq6gM/6EYE30LI9Llwg9z18xiFP3PNvAUMGLiTYC
+         9kTnCYrYqc79N0QRx7pf5oOhOXRh/o6brZJRhtwY=
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-ext4@vger.kernel.org
+Cc:     Daniel Rosenberg <drosen@google.com>, stable@vger.kernel.org,
         linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Theodore Ts'o <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.co.uk>
+Subject: [PATCH v2] ext4: avoid utf8_strncasecmp() with unstable name
+Date:   Mon,  1 Jun 2020 13:05:43 -0700
+Message-Id: <20200601200543.59417-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The pull request you sent on Sun, 31 May 2020 23:31:50 -0700:
+From: Eric Biggers <ebiggers@google.com>
 
-> https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fsverity-for-linus
+If the dentry name passed to ->d_compare() fits in dentry::d_iname, then
+it may be concurrently modified by a rename.  This can cause undefined
+behavior (possibly out-of-bounds memory accesses or crashes) in
+utf8_strncasecmp(), since fs/unicode/ isn't written to handle strings
+that may be concurrently modified.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/4d67829e11863072aec7cd1dd2939b1fd3eda17b
+Fix this by first copying the filename to a stack buffer if needed.
+This way we get a stable snapshot of the filename.
 
-Thank you!
+Fixes: b886ee3e778e ("ext4: Support case-insensitive file name lookups")
+Cc: <stable@vger.kernel.org> # v5.2+
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Daniel Rosenberg <drosen@google.com>
+Cc: Gabriel Krisman Bertazi <krisman@collabora.co.uk>
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
 
+v2: use memcpy() + barrier() instead of a byte-by-byte copy.
+
+ fs/ext4/dir.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
+index c654205f648dd..1d82336b1cd45 100644
+--- a/fs/ext4/dir.c
++++ b/fs/ext4/dir.c
+@@ -675,6 +675,7 @@ static int ext4_d_compare(const struct dentry *dentry, unsigned int len,
+ 	struct qstr qstr = {.name = str, .len = len };
+ 	const struct dentry *parent = READ_ONCE(dentry->d_parent);
+ 	const struct inode *inode = READ_ONCE(parent->d_inode);
++	char strbuf[DNAME_INLINE_LEN];
+ 
+ 	if (!inode || !IS_CASEFOLDED(inode) ||
+ 	    !EXT4_SB(inode->i_sb)->s_encoding) {
+@@ -683,6 +684,21 @@ static int ext4_d_compare(const struct dentry *dentry, unsigned int len,
+ 		return memcmp(str, name->name, len);
+ 	}
+ 
++	/*
++	 * If the dentry name is stored in-line, then it may be concurrently
++	 * modified by a rename.  If this happens, the VFS will eventually retry
++	 * the lookup, so it doesn't matter what ->d_compare() returns.
++	 * However, it's unsafe to call utf8_strncasecmp() with an unstable
++	 * string.  Therefore, we have to copy the name into a temporary buffer.
++	 */
++	if (len <= DNAME_INLINE_LEN - 1) {
++		memcpy(strbuf, str, len);
++		strbuf[len] = 0;
++		qstr.name = strbuf;
++		/* prevent compiler from optimizing out the temporary buffer */
++		barrier();
++	}
++
+ 	return ext4_ci_compare(inode, name, &qstr, false);
+ }
+ 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+2.26.2
+
