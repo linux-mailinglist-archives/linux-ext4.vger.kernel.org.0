@@ -2,239 +2,314 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D7A41EA53C
-	for <lists+linux-ext4@lfdr.de>; Mon,  1 Jun 2020 15:44:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3BB11EA9D2
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Jun 2020 20:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726067AbgFANoH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 1 Jun 2020 09:44:07 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:38298 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725974AbgFANoG (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 1 Jun 2020 09:44:06 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 58031483D561017E314A
-        for <linux-ext4@vger.kernel.org>; Mon,  1 Jun 2020 21:43:56 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Mon, 1 Jun 2020
- 21:43:49 +0800
-From:   "zhangyi (F)" <yi.zhang@huawei.com>
-To:     <linux-ext4@vger.kernel.org>
-CC:     <jack@suse.cz>, <yi.zhang@huawei.com>
-Subject: [PATCH] ext2: propagate errors up to ext2_find_entry()'s callers
-Date:   Mon, 1 Jun 2020 21:42:22 +0800
-Message-ID: <20200601134222.37235-1-yi.zhang@huawei.com>
-X-Mailer: git-send-email 2.21.3
+        id S1729956AbgFASCh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 1 Jun 2020 14:02:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728956AbgFASCd (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 1 Jun 2020 14:02:33 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BFEEC08C5C0
+        for <linux-ext4@vger.kernel.org>; Mon,  1 Jun 2020 11:02:33 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id d6so175497pjs.3
+        for <linux-ext4@vger.kernel.org>; Mon, 01 Jun 2020 11:02:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5r2FLJZvS4apnVJUvia1LdiyjeetiucFqacIaJB0qwE=;
+        b=kByfvhbrsfoJV5dc4p5p3XJ8Nwzy6nVtd8NCzRHkCKXO86yXpCmBAa6zUR32iOZTYA
+         Lx1QBQBhqM7gzoipZTu9ewhI9K7S6i4fNvSCyv6XxthBOnY022I79JvcSSTjY6gRiWa0
+         aafmieCdblGsUi3aoOKdf5vYe3xEH6t6Iyu9FOwFb306QQTFrH01MZcfyhgC6SvVYkTt
+         0jQCLQdbUpV8MJ2VUjzgQToekZH0cN+rtsnQPknohyNZUBT2AO6jG/5+i7ByBSOEDMYX
+         p/8V5MugpKcz8d3lad0DAtwWUw5Lv1mlY3Vc+8bfTUy/ttA8hJt7Asi6g+HQ83fXDQMt
+         J3aQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5r2FLJZvS4apnVJUvia1LdiyjeetiucFqacIaJB0qwE=;
+        b=DKWsRu7oFOz61aMMLxQa82Pk9Xj2OS3scB7/qryuascsILDXPvdoBqu4MPt+vj0zhm
+         RZSjYMeh7A0lZonoZQTF3RSnQqGjKnL/1cjC5TscuHudvcPmsSMyKl64Mcl0pojUI1yw
+         nNidtYenuTkbGZPxHGXj7J9wqQ4SPStnFQPjnN6UouefzZTm9tR5bvM845LE2cWcxtPe
+         AdCG7lMMhTuCpbLq4kRRpu2Vve/gDDLYGhTX9tJJdFTncDzP9SlVjjdREboHdB7Mzawn
+         4FWiN/xJd54WDeasdhZWF4+QBZENiJynY9e0+kbZCimRTBth8b7AB3t5ncTbVNxN5qgH
+         0erA==
+X-Gm-Message-State: AOAM5307UUWdHazaBifqZXSCDJV22H8AD2feEWQlYCIJZOwgDlZZ+rJD
+        8+xmdBj9wdp9Xt+8A4oq3FVWadKcOrI41qEvwJSj3Q==
+X-Google-Smtp-Source: ABdhPJyxCUI48+3yicisvCBE1NGabupp/bBH5IdsT37UC0TS1i1eaK2L+YZogniHkGgVRJCUFHo02kEckZ9JnWKwuh0=
+X-Received: by 2002:a17:902:82c9:: with SMTP id u9mr21165072plz.179.1591034552563;
+ Mon, 01 Jun 2020 11:02:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.28]
-X-CFilter-Loop: Reflected
+References: <202006011907.ocBGNEZT%lkp@intel.com>
+In-Reply-To: <202006011907.ocBGNEZT%lkp@intel.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 1 Jun 2020 11:02:20 -0700
+Message-ID: <CAKwvOdkff8dwqHGkrnyK++e+yWTTYZwefPJ4wqqXQCQhmePE5A@mail.gmail.com>
+Subject: Re: [ext4:dev 41/50] fs/ext4/mballoc.c:1494:2: error: invalid input
+ size for constraint 'qi'
+To:     kbuild test robot <lkp@intel.com>
+Cc:     "Ritesh, Harjani," <riteshh@linux.ibm.com>,
+        kbuild-all@lists.01.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
+        Philip Li <philip.li@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The same to commit <36de928641ee4> (ext4: propagate errors up to
-ext4_find_entry()'s callers') in ext4, also return error instead of NULL
-pointer in case of some error happens in ext2_find_entry() (e.g. -ENOMEM
-or -EIO). This could avoid a negative dentry cache entry installed even
-it failed to read directory block due to IO error.
+nevermind this failure. Clang doesn't support i386 yet (WIP).
 
-Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
----
- fs/ext2/dir.c   | 62 +++++++++++++++++++++++++------------------------
- fs/ext2/ext2.h  |  3 ++-
- fs/ext2/namei.c | 28 ++++++++++++++++++----
- 3 files changed, 58 insertions(+), 35 deletions(-)
+On Mon, Jun 1, 2020 at 4:41 AM kbuild test robot <lkp@intel.com> wrote:
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+> head:   38bd76b9696c5582dcef4ab1af437e0666021f65
+> commit: 42f56b7a4a7db127a9d281da584152dc3d525d25 [41/50] ext4: mballoc: introduce pcpu seqcnt for freeing PA to improve ENOSPC handling
+> config: i386-randconfig-a014-20200601 (attached as .config)
+> compiler: clang version 11.0.0 (https://github.com/llvm/llvm-project 2388a096e7865c043e83ece4e26654bd3d1a20d5)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install i386 cross compiling tool for clang build
+>         # apt-get install binutils-i386-linux-gnu
+>         git checkout 42f56b7a4a7db127a9d281da584152dc3d525d25
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=i386
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kbuild test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>, old ones prefixed by <<):
+>
+> >> fs/ext4/mballoc.c:1494:2: error: invalid input size for constraint 'qi'
+> this_cpu_inc(discard_pa_seq);
+> ^
+> include/linux/percpu-defs.h:520:28: note: expanded from macro 'this_cpu_inc'
+> #define this_cpu_inc(pcp)               this_cpu_add(pcp, 1)
+> ^
+> include/linux/percpu-defs.h:509:33: note: expanded from macro 'this_cpu_add'
+> #define this_cpu_add(pcp, val)          __pcpu_size_call(this_cpu_add_, pcp, val)
+> ^
+> include/linux/percpu-defs.h:377:11: note: expanded from macro '__pcpu_size_call'
+> case 1: stem##1(variable, __VA_ARGS__);break;                                      ^
+> <scratch space>:160:1: note: expanded from here
+> this_cpu_add_1
+> ^
+> arch/x86/include/asm/percpu.h:432:34: note: expanded from macro 'this_cpu_add_1'
+> #define this_cpu_add_1(pcp, val)        percpu_add_op(volatile, (pcp), val)
+> ^
+> arch/x86/include/asm/percpu.h:147:16: note: expanded from macro 'percpu_add_op'
+> : "qi" ((pao_T__)(val)));                                                          ^
+> >> fs/ext4/mballoc.c:1494:2: error: invalid input size for constraint 'qi'
+> include/linux/percpu-defs.h:520:28: note: expanded from macro 'this_cpu_inc'
+> #define this_cpu_inc(pcp)               this_cpu_add(pcp, 1)
+> ^
+> include/linux/percpu-defs.h:509:33: note: expanded from macro 'this_cpu_add'
+> #define this_cpu_add(pcp, val)          __pcpu_size_call(this_cpu_add_, pcp, val)
+> ^
+> include/linux/percpu-defs.h:378:11: note: expanded from macro '__pcpu_size_call'
+> case 2: stem##2(variable, __VA_ARGS__);break;                                      ^
+> <scratch space>:185:1: note: expanded from here
+> this_cpu_add_2
+> ^
+> arch/x86/include/asm/percpu.h:433:34: note: expanded from macro 'this_cpu_add_2'
+> #define this_cpu_add_2(pcp, val)        percpu_add_op(volatile, (pcp), val)
+> ^
+> arch/x86/include/asm/percpu.h:147:16: note: expanded from macro 'percpu_add_op'
+> : "qi" ((pao_T__)(val)));                                                          ^
+> >> fs/ext4/mballoc.c:1494:2: error: invalid input size for constraint 'qi'
+> include/linux/percpu-defs.h:520:28: note: expanded from macro 'this_cpu_inc'
+> #define this_cpu_inc(pcp)               this_cpu_add(pcp, 1)
+> ^
+> include/linux/percpu-defs.h:509:33: note: expanded from macro 'this_cpu_add'
+> #define this_cpu_add(pcp, val)          __pcpu_size_call(this_cpu_add_, pcp, val)
+> ^
+> include/linux/percpu-defs.h:379:11: note: expanded from macro '__pcpu_size_call'
+> case 4: stem##4(variable, __VA_ARGS__);break;                                      ^
+> <scratch space>:210:1: note: expanded from here
+> this_cpu_add_4
+> ^
+> arch/x86/include/asm/percpu.h:434:34: note: expanded from macro 'this_cpu_add_4'
+> #define this_cpu_add_4(pcp, val)        percpu_add_op(volatile, (pcp), val)
+> ^
+> arch/x86/include/asm/percpu.h:147:16: note: expanded from macro 'percpu_add_op'
+> : "qi" ((pao_T__)(val)));                                                          ^
+> fs/ext4/mballoc.c:1636:2: error: invalid input size for constraint 'qi'
+> this_cpu_inc(discard_pa_seq);
+> ^
+> include/linux/percpu-defs.h:520:28: note: expanded from macro 'this_cpu_inc'
+> #define this_cpu_inc(pcp)               this_cpu_add(pcp, 1)
+> ^
+> include/linux/percpu-defs.h:509:33: note: expanded from macro 'this_cpu_add'
+> #define this_cpu_add(pcp, val)          __pcpu_size_call(this_cpu_add_, pcp, val)
+> ^
+> include/linux/percpu-defs.h:377:11: note: expanded from macro '__pcpu_size_call'
+> case 1: stem##1(variable, __VA_ARGS__);break;                                      ^
+> <scratch space>:12:1: note: expanded from here
+> this_cpu_add_1
+> ^
+> arch/x86/include/asm/percpu.h:432:34: note: expanded from macro 'this_cpu_add_1'
+> #define this_cpu_add_1(pcp, val)        percpu_add_op(volatile, (pcp), val)
+> ^
+> arch/x86/include/asm/percpu.h:147:16: note: expanded from macro 'percpu_add_op'
+> : "qi" ((pao_T__)(val)));                                                          ^
+> fs/ext4/mballoc.c:1636:2: error: invalid input size for constraint 'qi'
+> include/linux/percpu-defs.h:520:28: note: expanded from macro 'this_cpu_inc'
+> #define this_cpu_inc(pcp)               this_cpu_add(pcp, 1)
+> ^
+> include/linux/percpu-defs.h:509:33: note: expanded from macro 'this_cpu_add'
+> #define this_cpu_add(pcp, val)          __pcpu_size_call(this_cpu_add_, pcp, val)
+> ^
+> include/linux/percpu-defs.h:378:11: note: expanded from macro '__pcpu_size_call'
+> case 2: stem##2(variable, __VA_ARGS__);break;                                      ^
+> <scratch space>:37:1: note: expanded from here
+> this_cpu_add_2
+> ^
+> arch/x86/include/asm/percpu.h:433:34: note: expanded from macro 'this_cpu_add_2'
+> #define this_cpu_add_2(pcp, val)        percpu_add_op(volatile, (pcp), val)
+> ^
+> arch/x86/include/asm/percpu.h:147:16: note: expanded from macro 'percpu_add_op'
+> : "qi" ((pao_T__)(val)));                                                          ^
+> fs/ext4/mballoc.c:1636:2: error: invalid input size for constraint 'qi'
+> include/linux/percpu-defs.h:520:28: note: expanded from macro 'this_cpu_inc'
+> #define this_cpu_inc(pcp)               this_cpu_add(pcp, 1)
+> ^
+> include/linux/percpu-defs.h:509:33: note: expanded from macro 'this_cpu_add'
+> #define this_cpu_add(pcp, val)          __pcpu_size_call(this_cpu_add_, pcp, val)
+> ^
+> include/linux/percpu-defs.h:379:11: note: expanded from macro '__pcpu_size_call'
+> case 4: stem##4(variable, __VA_ARGS__);break;                                      ^
+> <scratch space>:62:1: note: expanded from here
+> this_cpu_add_4
+> ^
+> arch/x86/include/asm/percpu.h:434:34: note: expanded from macro 'this_cpu_add_4'
+> #define this_cpu_add_4(pcp, val)        percpu_add_op(volatile, (pcp), val)
+> ^
+> arch/x86/include/asm/percpu.h:147:16: note: expanded from macro 'percpu_add_op'
+> : "qi" ((pao_T__)(val)));                                                          ^
+> fs/ext4/mballoc.c:3996:2: error: invalid input size for constraint 'qi'
+> this_cpu_inc(discard_pa_seq);
+> ^
+> include/linux/percpu-defs.h:520:28: note: expanded from macro 'this_cpu_inc'
+> #define this_cpu_inc(pcp)               this_cpu_add(pcp, 1)
+> ^
+> include/linux/percpu-defs.h:509:33: note: expanded from macro 'this_cpu_add'
+> #define this_cpu_add(pcp, val)          __pcpu_size_call(this_cpu_add_, pcp, val)
+> ^
+> include/linux/percpu-defs.h:377:11: note: expanded from macro '__pcpu_size_call'
+> case 1: stem##1(variable, __VA_ARGS__);break;                                      ^
+> <scratch space>:150:1: note: expanded from here
+> this_cpu_add_1
+> ^
+> arch/x86/include/asm/percpu.h:432:34: note: expanded from macro 'this_cpu_add_1'
+> #define this_cpu_add_1(pcp, val)        percpu_add_op(volatile, (pcp), val)
+> ^
+> arch/x86/include/asm/percpu.h:147:16: note: expanded from macro 'percpu_add_op'
+> : "qi" ((pao_T__)(val)));                                                          ^
+> fs/ext4/mballoc.c:3996:2: error: invalid input size for constraint 'qi'
+> include/linux/percpu-defs.h:520:28: note: expanded from macro 'this_cpu_inc'
+>
+> vim +/qi +1494 fs/ext4/mballoc.c
+>
+>   1473
+>   1474  static void mb_free_blocks(struct inode *inode, struct ext4_buddy *e4b,
+>   1475                             int first, int count)
+>   1476  {
+>   1477          int left_is_free = 0;
+>   1478          int right_is_free = 0;
+>   1479          int block;
+>   1480          int last = first + count - 1;
+>   1481          struct super_block *sb = e4b->bd_sb;
+>   1482
+>   1483          if (WARN_ON(count == 0))
+>   1484                  return;
+>   1485          BUG_ON(last >= (sb->s_blocksize << 3));
+>   1486          assert_spin_locked(ext4_group_lock_ptr(sb, e4b->bd_group));
+>   1487          /* Don't bother if the block group is corrupt. */
+>   1488          if (unlikely(EXT4_MB_GRP_BBITMAP_CORRUPT(e4b->bd_info)))
+>   1489                  return;
+>   1490
+>   1491          mb_check_buddy(e4b);
+>   1492          mb_free_blocks_double(inode, e4b, first, count);
+>   1493
+> > 1494          this_cpu_inc(discard_pa_seq);
+>   1495          e4b->bd_info->bb_free += count;
+>   1496          if (first < e4b->bd_info->bb_first_free)
+>   1497                  e4b->bd_info->bb_first_free = first;
+>   1498
+>   1499          /* access memory sequentially: check left neighbour,
+>   1500           * clear range and then check right neighbour
+>   1501           */
+>   1502          if (first != 0)
+>   1503                  left_is_free = !mb_test_bit(first - 1, e4b->bd_bitmap);
+>   1504          block = mb_test_and_clear_bits(e4b->bd_bitmap, first, count);
+>   1505          if (last + 1 < EXT4_SB(sb)->s_mb_maxs[0])
+>   1506                  right_is_free = !mb_test_bit(last + 1, e4b->bd_bitmap);
+>   1507
+>   1508          if (unlikely(block != -1)) {
+>   1509                  struct ext4_sb_info *sbi = EXT4_SB(sb);
+>   1510                  ext4_fsblk_t blocknr;
+>   1511
+>   1512                  blocknr = ext4_group_first_block_no(sb, e4b->bd_group);
+>   1513                  blocknr += EXT4_C2B(sbi, block);
+>   1514                  ext4_grp_locked_error(sb, e4b->bd_group,
+>   1515                                        inode ? inode->i_ino : 0,
+>   1516                                        blocknr,
+>   1517                                        "freeing already freed block "
+>   1518                                        "(bit %u); block bitmap corrupt.",
+>   1519                                        block);
+>   1520                  ext4_mark_group_bitmap_corrupted(sb, e4b->bd_group,
+>   1521                                  EXT4_GROUP_INFO_BBITMAP_CORRUPT);
+>   1522                  mb_regenerate_buddy(e4b);
+>   1523                  goto done;
+>   1524          }
+>   1525
+>   1526          /* let's maintain fragments counter */
+>   1527          if (left_is_free && right_is_free)
+>   1528                  e4b->bd_info->bb_fragments--;
+>   1529          else if (!left_is_free && !right_is_free)
+>   1530                  e4b->bd_info->bb_fragments++;
+>   1531
+>   1532          /* buddy[0] == bd_bitmap is a special case, so handle
+>   1533           * it right away and let mb_buddy_mark_free stay free of
+>   1534           * zero order checks.
+>   1535           * Check if neighbours are to be coaleasced,
+>   1536           * adjust bitmap bb_counters and borders appropriately.
+>   1537           */
+>   1538          if (first & 1) {
+>   1539                  first += !left_is_free;
+>   1540                  e4b->bd_info->bb_counters[0] += left_is_free ? -1 : 1;
+>   1541          }
+>   1542          if (!(last & 1)) {
+>   1543                  last -= !right_is_free;
+>   1544                  e4b->bd_info->bb_counters[0] += right_is_free ? -1 : 1;
+>   1545          }
+>   1546
+>   1547          if (first <= last)
+>   1548                  mb_buddy_mark_free(e4b, first >> 1, last >> 1);
+>   1549
+>   1550  done:
+>   1551          mb_set_largest_free_order(sb, e4b->bd_info);
+>   1552          mb_check_buddy(e4b);
+>   1553  }
+>   1554
+>
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/202006011907.ocBGNEZT%25lkp%40intel.com.
 
-diff --git a/fs/ext2/dir.c b/fs/ext2/dir.c
-index 13318e255ebf..1c3ab60890b1 100644
---- a/fs/ext2/dir.c
-+++ b/fs/ext2/dir.c
-@@ -347,8 +347,7 @@ struct ext2_dir_entry_2 *ext2_find_entry (struct inode *dir,
- 	unsigned long npages = dir_pages(dir);
- 	struct page *page = NULL;
- 	struct ext2_inode_info *ei = EXT2_I(dir);
--	ext2_dirent * de;
--	int dir_has_error = 0;
-+	ext2_dirent *de, *ret = NULL;
- 
- 	if (npages == 0)
- 		goto out;
-@@ -362,25 +361,28 @@ struct ext2_dir_entry_2 *ext2_find_entry (struct inode *dir,
- 	n = start;
- 	do {
- 		char *kaddr;
--		page = ext2_get_page(dir, n, dir_has_error);
--		if (!IS_ERR(page)) {
--			kaddr = page_address(page);
--			de = (ext2_dirent *) kaddr;
--			kaddr += ext2_last_byte(dir, n) - reclen;
--			while ((char *) de <= kaddr) {
--				if (de->rec_len == 0) {
--					ext2_error(dir->i_sb, __func__,
--						"zero-length directory entry");
--					ext2_put_page(page);
--					goto out;
--				}
--				if (ext2_match (namelen, name, de))
--					goto found;
--				de = ext2_next_entry(de);
-+		page = ext2_get_page(dir, n, 0);
-+		if (IS_ERR(page)) {
-+			ret = ERR_CAST(page);
-+			goto out;
-+		}
-+		kaddr = page_address(page);
-+		de = (ext2_dirent *) kaddr;
-+		kaddr += ext2_last_byte(dir, n) - reclen;
-+		while ((char *) de <= kaddr) {
-+			if (de->rec_len == 0) {
-+				ext2_error(dir->i_sb, __func__,
-+					"zero-length directory entry");
-+				ext2_put_page(page);
-+				goto out;
- 			}
--			ext2_put_page(page);
--		} else
--			dir_has_error = 1;
-+			if (ext2_match(namelen, name, de)) {
-+				ret = de;
-+				goto found;
-+			}
-+			de = ext2_next_entry(de);
-+		}
-+		ext2_put_page(page);
- 
- 		if (++n >= npages)
- 			n = 0;
-@@ -394,12 +396,12 @@ struct ext2_dir_entry_2 *ext2_find_entry (struct inode *dir,
- 		}
- 	} while (n != start);
- out:
--	return NULL;
-+	return ret;
- 
- found:
- 	*res_page = page;
- 	ei->i_dir_start_lookup = n;
--	return de;
-+	return ret;
- }
- 
- struct ext2_dir_entry_2 * ext2_dotdot (struct inode *dir, struct page **p)
-@@ -414,18 +416,18 @@ struct ext2_dir_entry_2 * ext2_dotdot (struct inode *dir, struct page **p)
- 	return de;
- }
- 
--ino_t ext2_inode_by_name(struct inode *dir, const struct qstr *child)
-+int ext2_inode_by_name(struct inode *dir, const struct qstr *child, ino_t *ino)
- {
--	ino_t res = 0;
- 	struct ext2_dir_entry_2 *de;
- 	struct page *page;
- 	
--	de = ext2_find_entry (dir, child, &page);
--	if (de) {
--		res = le32_to_cpu(de->inode);
--		ext2_put_page(page);
--	}
--	return res;
-+	de = ext2_find_entry(dir, child, &page);
-+	if (IS_ERR_OR_NULL(de))
-+		return PTR_ERR(de);
-+
-+	*ino = le32_to_cpu(de->inode);
-+	ext2_put_page(page);
-+	return 0;
- }
- 
- static int ext2_prepare_chunk(struct page *page, loff_t pos, unsigned len)
-diff --git a/fs/ext2/ext2.h b/fs/ext2/ext2.h
-index 8178bd38a9d6..a321ff9bf1b4 100644
---- a/fs/ext2/ext2.h
-+++ b/fs/ext2/ext2.h
-@@ -738,7 +738,8 @@ extern void ext2_rsv_window_add(struct super_block *sb, struct ext2_reserve_wind
- 
- /* dir.c */
- extern int ext2_add_link (struct dentry *, struct inode *);
--extern ino_t ext2_inode_by_name(struct inode *, const struct qstr *);
-+extern int ext2_inode_by_name(struct inode *dir,
-+			      const struct qstr *child, ino_t *ino);
- extern int ext2_make_empty(struct inode *, struct inode *);
- extern struct ext2_dir_entry_2 * ext2_find_entry (struct inode *,const struct qstr *, struct page **);
- extern int ext2_delete_entry (struct ext2_dir_entry_2 *, struct page *);
-diff --git a/fs/ext2/namei.c b/fs/ext2/namei.c
-index ccfbbf59e2fc..f888e2146345 100644
---- a/fs/ext2/namei.c
-+++ b/fs/ext2/namei.c
-@@ -56,12 +56,15 @@ static inline int ext2_add_nondir(struct dentry *dentry, struct inode *inode)
- static struct dentry *ext2_lookup(struct inode * dir, struct dentry *dentry, unsigned int flags)
- {
- 	struct inode * inode;
--	ino_t ino;
-+	ino_t ino = 0;
-+	int res;
- 	
- 	if (dentry->d_name.len > EXT2_NAME_LEN)
- 		return ERR_PTR(-ENAMETOOLONG);
- 
--	ino = ext2_inode_by_name(dir, &dentry->d_name);
-+	res = ext2_inode_by_name(dir, &dentry->d_name, &ino);
-+	if (res)
-+		return ERR_PTR(res);
- 	inode = NULL;
- 	if (ino) {
- 		inode = ext2_iget(dir->i_sb, ino);
-@@ -78,7 +81,12 @@ static struct dentry *ext2_lookup(struct inode * dir, struct dentry *dentry, uns
- struct dentry *ext2_get_parent(struct dentry *child)
- {
- 	struct qstr dotdot = QSTR_INIT("..", 2);
--	unsigned long ino = ext2_inode_by_name(d_inode(child), &dotdot);
-+	ino_t ino = 0;
-+	int res;
-+
-+	res = ext2_inode_by_name(d_inode(child), &dotdot, &ino);
-+	if (res)
-+		return ERR_PTR(res);
- 	if (!ino)
- 		return ERR_PTR(-ENOENT);
- 	return d_obtain_alias(ext2_iget(child->d_sb, ino));
-@@ -277,6 +285,10 @@ static int ext2_unlink(struct inode * dir, struct dentry *dentry)
- 		goto out;
- 
- 	de = ext2_find_entry (dir, &dentry->d_name, &page);
-+	if (IS_ERR(de)) {
-+		err = PTR_ERR(de);
-+		goto out;
-+	}
- 	if (!de) {
- 		err = -ENOENT;
- 		goto out;
-@@ -332,7 +344,11 @@ static int ext2_rename (struct inode * old_dir, struct dentry * old_dentry,
- 	if (err)
- 		goto out;
- 
--	old_de = ext2_find_entry (old_dir, &old_dentry->d_name, &old_page);
-+	old_de = ext2_find_entry(old_dir, &old_dentry->d_name, &old_page);
-+	if (IS_ERR(old_de)) {
-+		err = PTR_ERR(old_de);
-+		goto out;
-+	}
- 	if (!old_de) {
- 		err = -ENOENT;
- 		goto out;
-@@ -355,6 +371,10 @@ static int ext2_rename (struct inode * old_dir, struct dentry * old_dentry,
- 
- 		err = -ENOENT;
- 		new_de = ext2_find_entry (new_dir, &new_dentry->d_name, &new_page);
-+		if (IS_ERR(new_de)) {
-+			err = PTR_ERR(new_de);
-+			goto out_dir;
-+		}
- 		if (!new_de)
- 			goto out_dir;
- 		ext2_set_link(new_dir, new_de, new_page, old_inode, 1);
+
+
 -- 
-2.21.3
-
+Thanks,
+~Nick Desaulniers
