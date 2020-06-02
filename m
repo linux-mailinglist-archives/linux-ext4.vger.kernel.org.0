@@ -2,189 +2,122 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15D9F1EB074
-	for <lists+linux-ext4@lfdr.de>; Mon,  1 Jun 2020 22:50:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F4491EB2E5
+	for <lists+linux-ext4@lfdr.de>; Tue,  2 Jun 2020 03:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728097AbgFAUt7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 1 Jun 2020 16:49:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726124AbgFAUt7 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 1 Jun 2020 16:49:59 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1132C08C5C0
-        for <linux-ext4@vger.kernel.org>; Mon,  1 Jun 2020 13:49:57 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id bg4so424069plb.3
-        for <linux-ext4@vger.kernel.org>; Mon, 01 Jun 2020 13:49:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=Zsfe/CY3WqqlXja6vLHgdVguHtH9LaqYn6H1ozFlCfw=;
-        b=xEK4RLm1kVQWM2G1DQesS0K1Jdldy89Pmf787MqRCT1k1W25neEsNIbvL+WF/9iaQK
-         6dOlZusQISFuIZIvkqY9zyUzsiJbHez0y0TlR0CIMXdEzKeNInglgBXWxwKd5GmEZrcB
-         lnRmci334m1aC5r9QXhX2isN+Yzlirk+Prf+hD82XqBZBoOV56raIbiecVKLnc1VYYFH
-         vdot39BKY7LClpwzrpMPDWN7MQWyvzz8B0gY5Sq8y6rYMa0wyly8MptrFk3xileKVnJo
-         /wmHTDXkj8Z/m6QfZnCOKqXMykpS5Q0aprSZnw4Q9t3B3lGEry1MujAwSZ3S7NHtri0o
-         1Kzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=Zsfe/CY3WqqlXja6vLHgdVguHtH9LaqYn6H1ozFlCfw=;
-        b=iWa7DPIWKDgqfnN6gZK2gO8DdU6qoUsCHIY8UoJ+tDY7cF8kKRLnWTltTzdHZ7X5y+
-         RJMYtsxIhbYl4N3QqSdB0WnO8ebsp7Ek2I+WRAZ6ZubYgBjru1AzISc9u8HsJnAzDi6H
-         oJCa6YNoerAihgTjQdJUrg4PF5kAHJLBWJlz5fj2kONMECdtI7l3DloezXrx1KZduDAY
-         R1CMl7QBAcJ1o04xB00JBMpIVGHl1cckESPNhFMvW+fXiJwthwCGfvAmlmDI5TlWKKj+
-         NtkyocchjVDgf6ewie2EGTj7tvimZBz1bglLn4kE+q2BSr9EicTEYKz2dJW/AGNKfj4u
-         SwCA==
-X-Gm-Message-State: AOAM531EqHUiyJsfXd2Uf+4xgJ03z6caFzZu4UUUWjJul+jzPFE35Mk6
-        +vHXInDYyBFzNKdX/oaDWJT9BQ==
-X-Google-Smtp-Source: ABdhPJythQhc7Usfey0VfyIV23ZnegR0Mv4dJcSKz7nL6FaA5R3MwD0eg+Cxa1MdrSNdyD/naH7Pzg==
-X-Received: by 2002:a17:902:8541:: with SMTP id d1mr792724plo.234.1591044597184;
-        Mon, 01 Jun 2020 13:49:57 -0700 (PDT)
-Received: from [192.168.10.160] (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
-        by smtp.gmail.com with ESMTPSA id u61sm402013pjb.7.2020.06.01.13.49.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 01 Jun 2020 13:49:56 -0700 (PDT)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <E876FECB-300E-471B-A790-D44F2F1A3F9A@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_2CC2D8B3-5855-40C9-B329-6585736A68A7";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH v2] ext4: avoid utf8_strncasecmp() with unstable name
-Date:   Mon, 1 Jun 2020 14:49:51 -0600
-In-Reply-To: <20200601200543.59417-1-ebiggers@kernel.org>
-Cc:     linux-ext4@vger.kernel.org, Daniel Rosenberg <drosen@google.com>,
-        stable@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        id S1725832AbgFBBQn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 1 Jun 2020 21:16:43 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:18273 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725793AbgFBBQn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 1 Jun 2020 21:16:43 -0400
+X-IronPort-AV: E=Sophos;i="5.73,462,1583164800"; 
+   d="scan'208";a="93611258"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 02 Jun 2020 09:16:38 +0800
+Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
+        by cn.fujitsu.com (Postfix) with ESMTP id 582184CE03C1;
+        Tue,  2 Jun 2020 09:16:36 +0800 (CST)
+Received: from [10.167.220.69] (10.167.220.69) by
+ G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Tue, 2 Jun 2020 09:16:36 +0800
+Message-ID: <5ED5A871.4070101@cn.fujitsu.com>
+Date:   Tue, 2 Jun 2020 09:16:33 +0800
+From:   Xiao Yang <yangx.jy@cn.fujitsu.com>
+User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.2; zh-CN; rv:1.9.2.18) Gecko/20110616 Thunderbird/3.1.11
+MIME-Version: 1.0
+To:     Jan Kara <jack@suse.cz>
+CC:     Ira Weiny <ira.weiny@intel.com>, <linux-ext4@vger.kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Eric Biggers <ebiggers@kernel.org>,
         Al Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.co.uk>
-To:     Eric Biggers <ebiggers@kernel.org>
-References: <20200601200543.59417-1-ebiggers@kernel.org>
-X-Mailer: Apple Mail (2.3273)
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V4 6/8] fs/ext4: Make DAX mount option a tri-state
+References: <20200521191313.261929-1-ira.weiny@intel.com> <20200521191313.261929-7-ira.weiny@intel.com> <5ECE00AE.3010802@cn.fujitsu.com> <20200527235002.GA725853@iweiny-DESK2.sc.intel.com> <5ECF7CD3.20409@cn.fujitsu.com> <20200528094144.GD14550@quack2.suse.cz>
+In-Reply-To: <20200528094144.GD14550@quack2.suse.cz>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.167.220.69]
+X-ClientProxiedBy: G08CNEXCHPEKD05.g08.fujitsu.local (10.167.33.203) To
+ G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206)
+X-yoursite-MailScanner-ID: 582184CE03C1.AA45D
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: yangx.jy@cn.fujitsu.com
+X-Spam-Status: No
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On 2020/5/28 17:41, Jan Kara wrote:
+> On Thu 28-05-20 16:56:51, Xiao Yang wrote:
+>> On 2020/5/28 7:50, Ira Weiny wrote:
+>>> On Wed, May 27, 2020 at 01:54:54PM +0800, Xiao Yang wrote:
+>>>> On 2020/5/22 3:13, ira.weiny@intel.com wrote:
+>>>>> From: Ira Weiny<ira.weiny@intel.com>
+>>>>>
+>>>>> We add 'always', 'never', and 'inode' (default).  '-o dax' continues to
+>>>>> operate the same which is equivalent to 'always'.  This new
+>>>>> functionality is limited to ext4 only.
+>>>>>
+>>>>> Specifically we introduce a 2nd DAX mount flag EXT4_MOUNT2_DAX_NEVER and set
+>>>>> it and EXT4_MOUNT_DAX_ALWAYS appropriately for the mode.
+>>>>>
+>>>>> We also force EXT4_MOUNT2_DAX_NEVER if !CONFIG_FS_DAX.
+>>>>>
+>>>>> Finally, EXT4_MOUNT2_DAX_INODE is used solely to detect if the user
+>>>>> specified that option for printing.
+>>>> Hi Ira,
+>>>>
+>>>> I have two questions when reviewing this patch:
+>>>> 1) After doing mount with the same dax=inode option, ext4/xfs shows
+>>>> differnt output(i.e. xfs doesn't print 'dax=inode'):
+>>>> ---------------------------------------------------
+>>>> # mount -o dax=inode /dev/pmem0 /mnt/xfstests/test/
+>>>> # mount | grep pmem0
+>>>> /dev/pmem0 on /mnt/xfstests/test type ext4 (rw,relatime,seclabel,dax=inode)
+>>>>
+>>>> # mount -odax=inode /dev/pmem1 /mnt/xfstests/scratch/
+>>>> # mount | grep pmem1
+>>>> /dev/pmem1 on /mnt/xfstests/scratch type xfs
+>>>> (rw,relatime,seclabel,attr2,inode64,logbufs=8,logbsize=32k,noquota)
+>>>> ----------------------------------------------------
+>>>> Is this expected output? why don't unify the output?
+>>>
+>>> Correct. dax=inode is the default.  xfs treats that default the same whether
+>>> you specify it on the command line or not.
+>>>
+>>> For ext4 Jan specifically asked that if the user specified dax=inode on the
+>>> command line that it be printed on the mount options.  If you don't specify
+>>> anything then dax=inode is in effect but ext4 will not print anything.
+>>>
+>>> I had the behavior the same as XFS originally but Jan wanted it this way.  The
+>>> XFS behavior is IMO better and is what the new mount infrastructure gives by
+>>> default.
+>>
+>> Could we unify the output?  It is strange for me to use differnt output on
+>> ext4 and xfs.
+>
+> If we'd unify the output with XFS, it would be inconsistent with all the
+> other ext4 mount options. So I disagree with that. I agree it is not ideal
+> to have different behavior between xfs and ext4 but such is the historical
+> behavior. If we want to change that, we need to change the handling for all
+> the ext4 mount options. I'm open for that discussion but it is a problem
+> unrelated to this patch set.
+Hi Jan,
 
---Apple-Mail=_2CC2D8B3-5855-40C9-B329-6585736A68A7
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+Thanks for your quick feedback.
+Of course, this doubt should not block the patch set.
 
-On Jun 1, 2020, at 2:05 PM, Eric Biggers <ebiggers@kernel.org> wrote:
->=20
-> From: Eric Biggers <ebiggers@google.com>
->=20
-> If the dentry name passed to ->d_compare() fits in dentry::d_iname, =
-then
-> it may be concurrently modified by a rename.  This can cause undefined
-> behavior (possibly out-of-bounds memory accesses or crashes) in
-> utf8_strncasecmp(), since fs/unicode/ isn't written to handle strings
-> that may be concurrently modified.
->=20
-> Fix this by first copying the filename to a stack buffer if needed.
-> This way we get a stable snapshot of the filename.
->=20
-> Fixes: b886ee3e778e ("ext4: Support case-insensitive file name =
-lookups")
-> Cc: <stable@vger.kernel.org> # v5.2+
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Cc: Daniel Rosenberg <drosen@google.com>
-> Cc: Gabriel Krisman Bertazi <krisman@collabora.co.uk>
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-
-LGTM.
-
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
-
-> ---
->=20
-> v2: use memcpy() + barrier() instead of a byte-by-byte copy.
->=20
-> fs/ext4/dir.c | 16 ++++++++++++++++
-> 1 file changed, 16 insertions(+)
->=20
-> diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
-> index c654205f648dd..1d82336b1cd45 100644
-> --- a/fs/ext4/dir.c
-> +++ b/fs/ext4/dir.c
-> @@ -675,6 +675,7 @@ static int ext4_d_compare(const struct dentry =
-*dentry, unsigned int len,
-> 	struct qstr qstr =3D {.name =3D str, .len =3D len };
-> 	const struct dentry *parent =3D READ_ONCE(dentry->d_parent);
-> 	const struct inode *inode =3D READ_ONCE(parent->d_inode);
-> +	char strbuf[DNAME_INLINE_LEN];
->=20
-> 	if (!inode || !IS_CASEFOLDED(inode) ||
-> 	    !EXT4_SB(inode->i_sb)->s_encoding) {
-> @@ -683,6 +684,21 @@ static int ext4_d_compare(const struct dentry =
-*dentry, unsigned int len,
-> 		return memcmp(str, name->name, len);
-> 	}
->=20
-> +	/*
-> +	 * If the dentry name is stored in-line, then it may be =
-concurrently
-> +	 * modified by a rename.  If this happens, the VFS will =
-eventually retry
-> +	 * the lookup, so it doesn't matter what ->d_compare() returns.
-> +	 * However, it's unsafe to call utf8_strncasecmp() with an =
-unstable
-> +	 * string.  Therefore, we have to copy the name into a temporary =
-buffer.
-> +	 */
-> +	if (len <=3D DNAME_INLINE_LEN - 1) {
-> +		memcpy(strbuf, str, len);
-> +		strbuf[len] =3D 0;
-> +		qstr.name =3D strbuf;
-> +		/* prevent compiler from optimizing out the temporary =
-buffer */
-> +		barrier();
-> +	}
-> +
-> 	return ext4_ci_compare(inode, name, &qstr, false);
-> }
->=20
-> --
-> 2.26.2
->=20
-
-
-Cheers, Andreas
+Best Regards,
+Xiao Yang
+>
+> 								Honza
 
 
 
-
-
-
---Apple-Mail=_2CC2D8B3-5855-40C9-B329-6585736A68A7
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl7Vae8ACgkQcqXauRfM
-H+A0SA/+Lqr0KRKEEI89LdIVUAM1EoellMMlQ+pGubMR5C0rPx80xNgbPuivmJYz
-eKxzdkV7t+QTC56lQISbjriAsf9HxILXtWKMRrhlBSqtkFAu28s1W/5he2ooasoe
-Xw8IyMQASbKCZAiP22MZGwT8t7H9xUOS1X4IcATloFUQMZx8/39ihY+5l6j5a5QV
-N4Rv34EyIqGODvQEXz6O9hdVFRdKJrxedCRQ/yY3QcBd6e4qpQKufGYM1U77dF1H
-mUJ+bEPaD+7niHchFcw9E7qsoWjKy8nm6yMxzzHRrx6sW1XIw6tSFR4t6SGHnktp
-84dL5FLtGlQ7jvySZdp4IJXpuJOpUMMQnrcVUhnmvhYrMnfobooueg2eA+2zUBSW
-1+W3HmjMWOE1enjyLXel8HuT5YPrmuNLu8qLn5twQRlsfzauOTlmFyk5Omq7tGt4
-70DWSXUN6AjM7zBO6JP47e5EwK1US6XpFl3QSFgCA32hfoja2q457ngf+XNIAGCr
-At2e1QKuBdcm5H6MxP6ge2K2sSSjA0J9nbubRE0ddWrsVvDsgEjCqfodLPVqxt0R
-Ynq2Zp5PQNanluObBv8XrZkLl9e2zlgG+N65B7hD2HvX1yK+Ld2N0cwdGhnprTBY
-WpFVZ7XfNIGN1mpJKgBRG74vfekTDXcoG3evy4/rwkp/emcVOjM=
-=YlTr
------END PGP SIGNATURE-----
-
---Apple-Mail=_2CC2D8B3-5855-40C9-B329-6585736A68A7--
