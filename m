@@ -2,78 +2,77 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAC171EB7AD
-	for <lists+linux-ext4@lfdr.de>; Tue,  2 Jun 2020 10:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E201F1EB819
+	for <lists+linux-ext4@lfdr.de>; Tue,  2 Jun 2020 11:13:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726260AbgFBIvz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 2 Jun 2020 04:51:55 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:29435 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725811AbgFBIvz (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 2 Jun 2020 04:51:55 -0400
-X-IronPort-AV: E=Sophos;i="5.73,463,1583164800"; 
-   d="scan'208";a="93649971"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 02 Jun 2020 16:51:51 +0800
-Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
-        by cn.fujitsu.com (Postfix) with ESMTP id 7007A4BCC8B1;
-        Tue,  2 Jun 2020 16:51:50 +0800 (CST)
-Received: from [10.167.220.69] (10.167.220.69) by
- G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Tue, 2 Jun 2020 16:51:50 +0800
-Message-ID: <5ED61324.6010300@cn.fujitsu.com>
-Date:   Tue, 2 Jun 2020 16:51:48 +0800
-From:   Xiao Yang <yangx.jy@cn.fujitsu.com>
-User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.2; zh-CN; rv:1.9.2.18) Gecko/20110616 Thunderbird/3.1.11
+        id S1726160AbgFBJNx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 2 Jun 2020 05:13:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45296 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725811AbgFBJNw (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 2 Jun 2020 05:13:52 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 1B677AB64;
+        Tue,  2 Jun 2020 09:13:54 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 509481E1282; Tue,  2 Jun 2020 11:13:51 +0200 (CEST)
+Date:   Tue, 2 Jun 2020 11:13:51 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     "zhangyi (F)" <yi.zhang@huawei.com>
+Cc:     linux-ext4@vger.kernel.org, jack@suse.cz
+Subject: Re: [PATCH] ext2: propagate errors up to ext2_find_entry()'s callers
+Message-ID: <20200602091351.GD19165@quack2.suse.cz>
+References: <20200601134222.37235-1-yi.zhang@huawei.com>
 MIME-Version: 1.0
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-CC:     <ira.weiny@intel.com>, <fstests@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Jeff Moyer <jmoyer@redhat.com>, <linux-ext4@vger.kernel.org>,
-        <linux-xfs@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH] xfs/XXX: Add xfs/XXX
-References: <20200413054419.1560503-1-ira.weiny@intel.com> <20200413163025.GB6742@magnolia>
-In-Reply-To: <20200413163025.GB6742@magnolia>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.167.220.69]
-X-ClientProxiedBy: G08CNEXCHPEKD05.g08.fujitsu.local (10.167.33.203) To
- G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206)
-X-yoursite-MailScanner-ID: 7007A4BCC8B1.AB2BC
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: yangx.jy@cn.fujitsu.com
-X-Spam-Status: No
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200601134222.37235-1-yi.zhang@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2020/4/14 0:30, Darrick J. Wong wrote:
-> This might be a good time to introduce a few new helpers:
->
-> _require_scratch_dax ("Does $SCRATCH_DEV support DAX?")
-> _require_scratch_dax_mountopt ("Does the fs support the DAX mount options?")
-> _require_scratch_daX_iflag ("Does the fs support FS_XFLAG_DAX?")
-Hi Darrick,
+On Mon 01-06-20 21:42:22, zhangyi (F) wrote:
+> The same to commit <36de928641ee4> (ext4: propagate errors up to
+> ext4_find_entry()'s callers') in ext4, also return error instead of NULL
+> pointer in case of some error happens in ext2_find_entry() (e.g. -ENOMEM
+> or -EIO). This could avoid a negative dentry cache entry installed even
+> it failed to read directory block due to IO error.
+> 
+> Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
+> ---
+>  fs/ext2/dir.c   | 62 +++++++++++++++++++++++++------------------------
+>  fs/ext2/ext2.h  |  3 ++-
+>  fs/ext2/namei.c | 28 ++++++++++++++++++----
+>  3 files changed, 58 insertions(+), 35 deletions(-)
+> 
+> diff --git a/fs/ext2/dir.c b/fs/ext2/dir.c
+> index 13318e255ebf..1c3ab60890b1 100644
+> --- a/fs/ext2/dir.c
+> +++ b/fs/ext2/dir.c
+> @@ -347,8 +347,7 @@ struct ext2_dir_entry_2 *ext2_find_entry (struct inode *dir,
+>  	unsigned long npages = dir_pages(dir);
+>  	struct page *page = NULL;
+>  	struct ext2_inode_info *ei = EXT2_I(dir);
+> -	ext2_dirent * de;
+> -	int dir_has_error = 0;
+> +	ext2_dirent *de, *ret = NULL;
 
-Now, I am trying to introduce these new helpers and have some questions:
-1) There are five testcases related to old dax implementation, should we 
-only convert them to new dax implementation or make them compatible with 
-old and new dax implementation?
+I don't think you need additional 'ret' variable and it does not improve
+the readability of the code either... You can just use 'de' all the time.
 
-2) I think _require_xfs_io_command "chattr" "x" is enough to check if fs 
-supports FS_XFLAG_DAX.  Is it necessary to add 
-_require_scratch_dax_iflag()? like this:
-_require_scratch_dax_iflag()
-{
-	_require_xfs_io_command "chattr" "x"
-}
+Otherwise the patch looks good. I'd also note that all callers of
+ext2_find_entry() except for ext2_inode_by_name() transform de == NULL to
+-ENOENT so it would be a good followup cleanup to return -ENOENT directly
+from ext2_find_entry(). Also ext2_inode_by_name() could just pass -ENOENT
+further since only ext2_lookup() needs to actually transform this -ENOENT
+to calling d_splice_alias() with NULL inode.
 
-Best Regards,
-Xiao Yang
+Thanks for the patch!
 
-
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
