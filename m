@@ -2,115 +2,107 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22EF21EC1B1
-	for <lists+linux-ext4@lfdr.de>; Tue,  2 Jun 2020 20:17:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFAA61EC2F3
+	for <lists+linux-ext4@lfdr.de>; Tue,  2 Jun 2020 21:40:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726223AbgFBSRS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 2 Jun 2020 14:17:18 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:59046 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726000AbgFBSRR (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 2 Jun 2020 14:17:17 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 052I7t1h177905;
-        Tue, 2 Jun 2020 18:17:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=mime-version :
- message-id : date : from : to : cc : subject : references : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=X49wKSnu9fOxTqf6/taZw+DmoyGY5qqdKkF7CwXyyhU=;
- b=Lv5g79NM3PnfnYv8QvcLbn0XfFCOXjNP4txvAUlj2UekN+oloAsfr/MoevQSCgU/YA2F
- 1L1Q6Lr1MVk2lkLoAXh0cbPvlZxcuOxAvDVmjlzK2GzST09NxCZKl5hgP2GogLZ3yN5W
- Zg0dczpNpX8oennm5UYn+xxRXbjn3OLezuCqEeihy0kzDwM0NnzihsUAWOUHARtwqg/G
- hezD+fKVptJ7hDiIXu5fopCOlicWKD+EpjVT8lx64+9b8XcDMunTNXPwjS+hKhZ68fwO
- 88N7SedbcMhA0G5XuF2VmpkhtqvfENgk09P+t6SOE/Vk/XCw14ZV1Sn3WST0MA8+39aE Rw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 31bewqwhdb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 02 Jun 2020 18:17:00 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 052I80jG005905;
-        Tue, 2 Jun 2020 18:15:00 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 31dju1wkvj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 02 Jun 2020 18:15:00 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 052IEvIo025425;
-        Tue, 2 Jun 2020 18:14:57 GMT
-Received: from localhost (/67.169.218.210) by default (Oracle Beehive Gateway
- v4.0) with ESMTP ; Tue, 02 Jun 2020 11:14:46 -0700
+        id S1726875AbgFBTkm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 2 Jun 2020 15:40:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726809AbgFBTkl (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 2 Jun 2020 15:40:41 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAA53C08C5C2
+        for <linux-ext4@vger.kernel.org>; Tue,  2 Jun 2020 12:40:40 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id v13so5065343otp.4
+        for <linux-ext4@vger.kernel.org>; Tue, 02 Jun 2020 12:40:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2I+4S8tbIx7DwMo7JNczQsK841BfxFTSjY0MHCxNYIU=;
+        b=RfILkcDdS5Dw4tjKJUDbUCzR3ll3NKNjJAcSgdGam226ZRMseGj5qe273EFQQvXA9f
+         KJi8xFz/CQ6R3Xll1dDTZpPe3A5Xl/nbUIB6FuftNNmc8eCPXJKV5AbZo1/gXBRabqu0
+         HGaaJmma/HW55BM8Cqxss1rUeAlL1vYBg2PT0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2I+4S8tbIx7DwMo7JNczQsK841BfxFTSjY0MHCxNYIU=;
+        b=QA6Ap0YK29B2M8h+TRvkLuXRVeA1uJ9uD3ywXX6Dpdmmw2ysXMPBnHgs2R7uZJdlBi
+         14A7TvXuqqiCIQr9tSdc2oiNzyZEwKQRAqYJZWu4dhME3qSJzXZTS3E2o97tAzbElPxe
+         sgVtcLWz/gaBFSKVJ49ceM/PAmCtlhXxO/IWeE8mw5MWuYPy4GlXUpazhognk9hZTA4n
+         Q+sjpvXTsdpzPyo8PYMFMM4SyT0slEJU4O38drGAG25SGN1Oa9WpfWx4pOBESHcKgpnO
+         ddh5wq04MFANo+WyYIk0CoTIMYDTadwaOHnPm/ynuINVH0uw8Tk5avpVeDi59fbQYM4M
+         2+ow==
+X-Gm-Message-State: AOAM5303JMh2mAx2Pf7W53Smx5kgeiR55s2l/4XLOqLA1pPk/RziC0Sr
+        L6itaW9Yg9lQJ9jEBSz9XzYjIQ==
+X-Google-Smtp-Source: ABdhPJyO+YiEkWCKUiWfbv50giAJAa8LV/HDs6CajK377rV7mJSLpwA75R+tRe8S/deTEbCX8vPnUA==
+X-Received: by 2002:a9d:4e5:: with SMTP id 92mr606889otm.146.1591126839965;
+        Tue, 02 Jun 2020 12:40:39 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id c1sm850342otn.81.2020.06.02.12.40.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Jun 2020 12:40:39 -0700 (PDT)
+Subject: Re: [PATCH v3 0/6] Enable as many KUnit tests as possible
+To:     Brendan Higgins <brendanhiggins@google.com>,
+        Anders Roxell <anders.roxell@linaro.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        John Johansen <john.johansen@canonical.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ext4@vger.kernel.org,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        Marco Elver <elver@google.com>,
+        David Gow <davidgow@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20200511131350.29638-1-anders.roxell@linaro.org>
+ <CADYN=9LkA2h6dANREfPQq4iDvVEJX1wAdxjv31mpVBkaM_g0ZQ@mail.gmail.com>
+ <CAFd5g452oiRpMa3S=F9wFsb9SRKBYXJFuusge+6=zCEFX74kYQ@mail.gmail.com>
+ <76811e1b-c26f-53ac-5703-104aacd06666@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <f6b5c1db-c0f6-5f8e-3afd-8a7075721ffb@linuxfoundation.org>
+Date:   Tue, 2 Jun 2020 13:40:37 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Message-ID: <20200602181444.GD8230@magnolia>
-Date:   Tue, 2 Jun 2020 11:14:44 -0700 (PDT)
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Xiao Yang <yangx.jy@cn.fujitsu.com>
-Cc:     ira.weiny@intel.com, fstests@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Jeff Moyer <jmoyer@redhat.com>, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] xfs/XXX: Add xfs/XXX
-References: <20200413054419.1560503-1-ira.weiny@intel.com>
- <20200413163025.GB6742@magnolia> <5ED61324.6010300@cn.fujitsu.com>
-In-Reply-To: <5ED61324.6010300@cn.fujitsu.com>
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <76811e1b-c26f-53ac-5703-104aacd06666@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9640 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
- phishscore=0 malwarescore=0 mlxscore=0 adultscore=0 bulkscore=0
- suspectscore=1 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006020132
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9640 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 bulkscore=0
- phishscore=0 suspectscore=1 impostorscore=0 cotscore=-2147483648
- lowpriorityscore=0 mlxscore=0 adultscore=0 spamscore=0 mlxlogscore=999
- malwarescore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006020132
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jun 02, 2020 at 04:51:48PM +0800, Xiao Yang wrote:
-> On 2020/4/14 0:30, Darrick J. Wong wrote:
-> > This might be a good time to introduce a few new helpers:
-> > 
-> > _require_scratch_dax ("Does $SCRATCH_DEV support DAX?")
-> > _require_scratch_dax_mountopt ("Does the fs support the DAX mount options?")
-> > _require_scratch_daX_iflag ("Does the fs support FS_XFLAG_DAX?")
-> Hi Darrick,
+On 5/28/20 1:13 PM, Shuah Khan wrote:
+> On 5/28/20 1:07 PM, Brendan Higgins wrote:
+>> On Wed, May 27, 2020 at 4:49 AM Anders Roxell 
+>> <anders.roxell@linaro.org> wrote:
+>>>
+>>> Hi all,
+>>>
+>>> Friendly ping: who can take this?
+>>
+>> Sorry, I just reviewed the last patch.
+>>
+>> Shuah, do you mind picking this up for 5.8?
+>>
 > 
-> Now, I am trying to introduce these new helpers and have some questions:
-> 1) There are five testcases related to old dax implementation, should we
-> only convert them to new dax implementation or make them compatible with old
-> and new dax implementation?
-
-What is the 'old' DAX implementation?  ext2 XIP?
-
-> 2) I think _require_xfs_io_command "chattr" "x" is enough to check if fs
-> supports FS_XFLAG_DAX.  Is it necessary to add _require_scratch_dax_iflag()?
-> like this:
-> _require_scratch_dax_iflag()
-> {
-> 	_require_xfs_io_command "chattr" "x"
-> }
-
-I suggested that list based on the major control knobs that will be
-visible to userspace programs.  Even if this is just a one-line helper,
-its name is useful for recognizing which of those knobs we're looking
-for.
-
-Yes, you could probably save a trivial amount of time by skipping one
-iteration of bash function calling, but now everyone has to remember
-that the xfs_io chattr "x" flag means the dax inode flag, and not
-confuse it for chmod +x or something else.
-
---D
-
-> Best Regards,
-> Xiao Yang
+> Yup. Will do. I was watching this thread waiting for your
+> Ack. I will apply it once.
 > 
-> 
+
+Applied to linux-kselftest kunit branch for Linux 5.8-rc1
+
+thanks,
+-- Shuah
+
