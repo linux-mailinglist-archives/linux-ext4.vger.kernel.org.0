@@ -2,40 +2,40 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED8041EBB7E
+	by mail.lfdr.de (Postfix) with ESMTP id 814E71EBB7D
 	for <lists+linux-ext4@lfdr.de>; Tue,  2 Jun 2020 14:20:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728103AbgFBMUT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 2 Jun 2020 08:20:19 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:52540 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727924AbgFBMUS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 2 Jun 2020 08:20:18 -0400
-Received: by mail-il1-f198.google.com with SMTP id m7so11543023ill.19
-        for <linux-ext4@vger.kernel.org>; Tue, 02 Jun 2020 05:20:16 -0700 (PDT)
+        id S1728056AbgFBMUS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 2 Jun 2020 08:20:18 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:53471 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727032AbgFBMUR (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 2 Jun 2020 08:20:17 -0400
+Received: by mail-il1-f197.google.com with SMTP id c29so11567888ilf.20
+        for <linux-ext4@vger.kernel.org>; Tue, 02 Jun 2020 05:20:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=ZnzEZCHryLV8mcyggZorI2Pw7WyGvNuTkNQjiVsjQoU=;
-        b=pccnIcMWOYb3p9tHs4oA2cfCTdszFKwyIcUOP3GNZQUWnEw4bUEnPEnMzS7d6dL8tA
-         CsqBIiJUu2AkrR60xZpXG1eWWrnYLweoGEEnKYNL8LmebmcDGQr7HMsdw0JW0nA+aiCV
-         8O+LphbXxOilNG4J0W+JxEtB89lw4cyc1VKqSyuHWEkcPctSRn3FUAnyrG79zXrg7CNm
-         iyrKglB2tJBqWT3X4+UtO8DE7Fq4cI/JGxnEQCVce7Ak28CTrSB2EFWKrzeOmwU5YCSO
-         aXK+yQxI0GLCpUICNU2bUHgNPWnuInpmJfkasC0jVKboCLx0y9oO+qmtssL4rLWAQpIX
-         +FSA==
-X-Gm-Message-State: AOAM532Cav8AzQIjz9ZoL1wn7br6NseFurdmRNjN4eQE+rlHfqfmaNtb
-        aoewIbKezcGh41JcDHuIK4OCYsfSY1BbDi99vL18ZO0sQY+z
-X-Google-Smtp-Source: ABdhPJz+A2UnGb/ByrAkBHUCSaa4hXkbpXZ72LvNlqDKR2a7Ml/YCuiqW9L4PbgcAXUjGaLM/aHRLNoVRDY5jDuWBJ8+1pTQy3Yt
+        bh=h3tn7L8YlQ4td3n8uENjqvRX7Z+upsyhDNzdhaP0eBg=;
+        b=FPEYuro2mfV75JW4gSJORhCNHu5+ZfAhl00JXFANDBGaZGSLroPz3QwlzXXpsK6b2y
+         /Vxh978zSiHJ9WzzCvxB8aX28GbyyzxjfV4IHU2tN9+bcgtTp7SPrtRLHxdz0EKS+M/1
+         LC8VKnGD7y+zE+PgPS4c8L4geBJ0WGLpPQFzL+kqHT+H/ohecOym+9mQ8NCiAik+hoXb
+         zVfqkqUwYVXnBKRm/mIkK4cE+WGggxh52IyaPJZvLgP8heiGR24nk5nrFfi9LXF1h4X4
+         813Ki74FDaRR8vXMRywRfOdMshowr4Ff7MlLwF0pe+Ixk6kgtmi11nQgrPSBSxLRNQxc
+         fZDg==
+X-Gm-Message-State: AOAM531TK7KF362RYyNf/Yl10uHBY36ugnfaXWkKR7bAXdznJE7MNzRq
+        BLKg81/AXFvmS5+MfGUSFW4t+frQ4lQphHO1yAbXhEggpXcJ
+X-Google-Smtp-Source: ABdhPJx8n2GPImG5q/AR+WM+SpJU3w/GQcDyxuepA/kjSkWcBk7A0GOZQAckLphBw7yVoXtcwNl16abR2kp+kJtFdo+eakrobM4d
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1286:: with SMTP id y6mr3284521ilq.0.1591100416502;
+X-Received: by 2002:a92:1fc7:: with SMTP id f68mr26465899ilf.133.1591100416736;
  Tue, 02 Jun 2020 05:20:16 -0700 (PDT)
 Date:   Tue, 02 Jun 2020 05:20:16 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000020b15e05a718ef22@google.com>
+Message-ID: <00000000000024436605a718ef99@google.com>
 Subject: linux-next test error: BUG: using smp_processor_id() in preemptible
- [ADDR] code: kworker/u4:LINE/6740
-From:   syzbot <syzbot+8ea916061cc749544c8f@syzkaller.appspotmail.com>
+ [ADDR] code: systemd-rfkill/6731
+From:   syzbot <syzbot+7f2b4a7d4281e8c2aad0@syzkaller.appspotmail.com>
 To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
         sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com,
@@ -52,19 +52,18 @@ syzbot found the following crash on:
 
 HEAD commit:    0e21d462 Add linux-next specific files for 20200602
 git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=13f3dcca100000
+console output: https://syzkaller.appspot.com/x/log.txt?x=102c59ce100000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=ecc1aef35f550ee3
-dashboard link: https://syzkaller.appspot.com/bug?extid=8ea916061cc749544c8f
+dashboard link: https://syzkaller.appspot.com/bug?extid=7f2b4a7d4281e8c2aad0
 compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
 
 IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+8ea916061cc749544c8f@syzkaller.appspotmail.com
+Reported-by: syzbot+7f2b4a7d4281e8c2aad0@syzkaller.appspotmail.com
 
-BUG: using smp_processor_id() in preemptible [00000000] code: kworker/u4:6/6740
+BUG: using smp_processor_id() in preemptible [00000000] code: systemd-rfkill/6731
 caller is ext4_mb_new_blocks+0xa4d/0x3b70 fs/ext4/mballoc.c:4711
-CPU: 1 PID: 6740 Comm: kworker/u4:6 Not tainted 5.7.0-next-20200602-syzkaller #0
+CPU: 0 PID: 6731 Comm: systemd-rfkill Not tainted 5.7.0-next-20200602-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: writeback wb_workfn (flush-8:0)
 Call Trace:
  __dump_stack lib/dump_stack.c:77 [inline]
  dump_stack+0x18f/0x20d lib/dump_stack.c:118
@@ -72,21 +71,23 @@ Call Trace:
  ext4_mb_new_blocks+0xa4d/0x3b70 fs/ext4/mballoc.c:4711
  ext4_ext_map_blocks+0x201b/0x33e0 fs/ext4/extents.c:4244
  ext4_map_blocks+0x4cb/0x1640 fs/ext4/inode.c:626
- mpage_map_one_extent fs/ext4/inode.c:2377 [inline]
- mpage_map_and_submit_extent fs/ext4/inode.c:2430 [inline]
- ext4_writepages+0x1ab5/0x3400 fs/ext4/inode.c:2782
- do_writepages+0xfa/0x2a0 mm/page-writeback.c:2338
- __writeback_single_inode+0x12a/0x13d0 fs/fs-writeback.c:1453
- writeback_sb_inodes+0x515/0xdc0 fs/fs-writeback.c:1717
- __writeback_inodes_wb+0xc3/0x250 fs/fs-writeback.c:1786
- wb_writeback+0x8db/0xd50 fs/fs-writeback.c:1895
- wb_check_old_data_flush fs/fs-writeback.c:1997 [inline]
- wb_do_writeback fs/fs-writeback.c:2050 [inline]
- wb_workfn+0xab3/0x1090 fs/fs-writeback.c:2079
- process_one_work+0x965/0x1690 kernel/workqueue.c:2269
- worker_thread+0x96/0xe10 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:291
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
+ ext4_getblk+0xad/0x520 fs/ext4/inode.c:833
+ ext4_bread+0x7c/0x380 fs/ext4/inode.c:883
+ ext4_append+0x153/0x360 fs/ext4/namei.c:67
+ ext4_init_new_dir fs/ext4/namei.c:2757 [inline]
+ ext4_mkdir+0x5e0/0xdf0 fs/ext4/namei.c:2802
+ vfs_mkdir+0x419/0x690 fs/namei.c:3632
+ do_mkdirat+0x21e/0x280 fs/namei.c:3655
+ do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fe0d32c9687
+Code: Bad RIP value.
+RSP: 002b:00007fffd5e80488 EFLAGS: 00000246 ORIG_RAX: 0000000000000053
+RAX: ffffffffffffffda RBX: 000055fab378a985 RCX: 00007fe0d32c9687
+RDX: 00007fffd5e80350 RSI: 00000000000001ed RDI: 000055fab378a985
+RBP: 00007fe0d32c9680 R08: 0000000000000100 R09: 0000000000000000
+R10: 000055fab378a980 R11: 0000000000000246 R12: 00000000000001ed
+R13: 00007fffd5e80610 R14: 0000000000000000 R15: 0000000000000000
 
 
 ---
