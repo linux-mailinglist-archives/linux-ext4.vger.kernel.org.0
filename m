@@ -2,89 +2,101 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D5DF1ECDA3
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jun 2020 12:35:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 302F41ED12D
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jun 2020 15:48:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725985AbgFCKfH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 3 Jun 2020 06:35:07 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:24526 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725854AbgFCKfH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 3 Jun 2020 06:35:07 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 053AYp5V075359;
-        Wed, 3 Jun 2020 06:34:53 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 31dp431mau-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 03 Jun 2020 06:34:52 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 053AUan1008800;
-        Wed, 3 Jun 2020 10:31:52 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma02fra.de.ibm.com with ESMTP id 31bf47u6x3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 03 Jun 2020 10:31:52 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 053AVnsT25165956
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 3 Jun 2020 10:31:49 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C96F852050;
-        Wed,  3 Jun 2020 10:31:49 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.199.36.151])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id C42D65204F;
-        Wed,  3 Jun 2020 10:31:46 +0000 (GMT)
-Subject: Re: [PATCHv5 1/1] ext4: mballoc: Use raw_cpu_ptr instead of
- this_cpu_ptr
-To:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-ext4@vger.kernel.org, tytso@mit.edu
-Cc:     linux-fsdevel@vger.kernel.org, Jan Kara <jack@suse.com>,
-        linux-kernel@vger.kernel.org, adilger.kernel@dilger.ca,
-        sfr@canb.auug.org.au, linux-next@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com,
-        syzbot+82f324bb69744c5f6969@syzkaller.appspotmail.com
-References: <20200602134721.18211-1-riteshh@linux.ibm.com>
- <CGME20200603102422eucas1p109e0d0140e8fc61dc3e57957f2ccf700@eucas1p1.samsung.com>
- <ca794804-7d99-9837-2490-366a2eb97a94@samsung.com>
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-Date:   Wed, 3 Jun 2020 16:01:45 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1725985AbgFCNst (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 3 Jun 2020 09:48:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725944AbgFCNst (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 3 Jun 2020 09:48:49 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD1F0C08C5C2
+        for <linux-ext4@vger.kernel.org>; Wed,  3 Jun 2020 06:48:48 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id u16so1356901lfl.8
+        for <linux-ext4@vger.kernel.org>; Wed, 03 Jun 2020 06:48:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=H8rDQEJouwBJIElP/Vpqq+PrvTZxQQy2H7A/MvyMMB0=;
+        b=LImzFWfFZ5MGhzJT1qzCsgEXVo7xW37sUIdrDLCKiXHQE0/Tq0rYX6Af/ld5dvlhmE
+         opFt8B8vUrhAfyxGIRs7eIQZmnu+cHCt7Dz4gEu/fnBWHDlMa8iVHDbM7XgqJUtNcgor
+         I4Oj1yGJ3ygOniFn6Dr+FHDS5BV48N/ldz+eBwWbR5/ADnYCL6KuztRZu9mrKJOxMODU
+         fmVICwwGmTYXXsgICTxE6unupuMdGq6+YZvkWKysZVLYK3Wwxrg7U2ecMo3WGycHWcU1
+         w35jxyjuynpm30G3kj/I18A4vO2Y2WN0kfTajUkGc1Xe9t84eQuWhnB4AGlAS8dbrawc
+         iC3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=H8rDQEJouwBJIElP/Vpqq+PrvTZxQQy2H7A/MvyMMB0=;
+        b=iF3duva0vRo+yHImKJbwwbEGj57CucbUygd9QQAu4Iu+5+esGtBmoia6wldqOd/akI
+         2oBy0yETvhP62B9dHVhY7Op3tU7gn16OrOZiuR09wBkfD+yxTi+P+6X8uw70VdRPqe5a
+         rpexyZfWv0oNu3ERlgRzxV8oZ21TVWeA0WsgSxMaZtUz9PwuFysenUNvqE296U5JRClV
+         h5wR/eqiNoPYXDMWsJsT8+R+PwogirXsR4pLVnZ/4gcnv2T6eQK3zHHtMo7O6QbddzRs
+         MCoc4w7R6KtnIkIj3uvZJ86Fc17dvgTP7OWpsRTfoU2q5BUCuDcWtflQ91n7XRBXELru
+         rcVg==
+X-Gm-Message-State: AOAM530aP35qekK38b7DJdAn5MxQpvjG4QZGC/1WPlkCUJxgscFoCrjJ
+        amuANVlOzz0+bp9Dg13ZxsJIlda8daR2xs0vowg=
+X-Google-Smtp-Source: ABdhPJzc66PsPJ7uf2JiXrqj7zfh07Ra5BpBms0TPKeexmxkWkfXYY+ch/Os+E85wJbdOE6Lm+0ANdybV/7KRG4HAcU=
+X-Received: by 2002:a05:6512:308e:: with SMTP id z14mr2566308lfd.29.1591192127287;
+ Wed, 03 Jun 2020 06:48:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <ca794804-7d99-9837-2490-366a2eb97a94@samsung.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Message-Id: <20200603103146.C42D65204F@d06av21.portsmouth.uk.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-03_11:2020-06-02,2020-06-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- lowpriorityscore=0 phishscore=0 clxscore=1011 cotscore=-2147483648
- adultscore=0 suspectscore=0 spamscore=0 bulkscore=0 impostorscore=0
- mlxscore=0 mlxlogscore=799 priorityscore=1501 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006030083
+Reply-To: susanjones.wife@gmail.com
+Received: by 2002:a19:a405:0:0:0:0:0 with HTTP; Wed, 3 Jun 2020 06:48:46 -0700 (PDT)
+From:   "Mrs.Susan Jones" <joneswife.susan@gmail.com>
+Date:   Wed, 3 Jun 2020 14:48:46 +0100
+X-Google-Sender-Auth: aH2vam-ZraP3yG1gz3ryctMgTE4
+Message-ID: <CALBhdBfusXWup1N4iFuTS3D1AZxWbZbTDS_qa-wA3FkbkE7MrQ@mail.gmail.com>
+Subject: HELLO: I AM MRS SUSAN JONES
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-> This fixes the warning observed on various Samsung Exynos SoC based
-> boards with linux-next 20200602.
-> 
-> Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> 
+-- 
+OUR GOLDEN OPPORTUNITY
 
-Thanks Marek,
+Hello Dear Friend,
 
-Hello Ted,
+Complement of the day, i hope you are doing great today. However, I am
+Mrs.Susan Jones, an auditor with one of the new generation banks here
+in Burkina Faso.
 
-Please pick up below change which I just sent with an added "Fixes" by
-tag. Changes wise it is the same which Marek tested.
+I am writing you this letter based on the latest development at my
+Department. i discovered some abandoned huge amount of money, Ten
+Million, Five hundred thousand  United States Dollars.($10.500.000).
+Now I am only contacting you as a foreigner because this money cannot
+be approved to a local bank account here, but can only be approved to
+any foreign account and foreign beneficiary because the money is in US
+dollars
 
-https://patchwork.ozlabs.org/project/linux-ext4/patch/20200603101827.2824-1-riteshh@linux.ibm.com/
+This will be  a legitimate transaction once you accept to build trust
+with me and follow simple instruction doing the transfer process,
+until the total sum transfer out of the bank here to your own bank
+account any where in the world, and I agreed to share the total money
+50/50 with you once you successful confirmed it in your bank account.
+But any expenses doing the transfer process will be deduct from the
+amount before sharing, If you are interested to work with me and
+provide a good receiving bank account, get back to me as soon as
+possible with the following details below.
 
+Your full name
+Your Profession
+Your direct mobile phone number
+Your Scanned International passport or any of your identity
 
--ritesh
+NOTE: PLEASE IT YOU ARE NOT INTERESTED DON'T BORDER TO RESPOND BACK TO
+AVOID TIME WASTED.
+
+As soon as I receive these data's, I will forward to you the
+application form which you will send to the bank for the claim and
+transfer of the fund into your bank account as the  new beneficial.
+
+I am waiting to hear from you soon
+
+Yours
+Mrs.Susan Jones
