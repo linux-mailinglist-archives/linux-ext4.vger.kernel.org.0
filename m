@@ -2,143 +2,108 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4D131ECCDA
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jun 2020 11:44:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 205A31ECD29
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jun 2020 12:07:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726584AbgFCJog (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 3 Jun 2020 05:44:36 -0400
-Received: from sender2-op-o12.zoho.com.cn ([163.53.93.243]:17157 "EHLO
-        sender2-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725854AbgFCJof (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 3 Jun 2020 05:44:35 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1591177466; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=qelmaq0pkwEIu3d+xZVz3BFzuq4wuOuUVrpuk9TMFZ73n2JMBSKsJOlRSqfbnGjHl3vEYFuPLK+eovJ9gYa0ARLynhO5ejNb0k+oSdmzM9TElKQ/p9uhXCqQY2+9gBZ+WPJHU6q3AWHtG/DmuQ9mypgbR05qu35fPngwrTmMX6k=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1591177466; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
-        bh=Fuvq/HBzV1tV1tSsQmVZUooYeDxi59K+tWOu59nNxDc=; 
-        b=gS36OKGcxXHLpc6+AbgUR2yEezQYNx2t59u1oge0C5S0tM4QB1FuyRuw4oiCMn0qBDMD9X99ET05aJARMgqQ/oMvaUb14hCjdGMiNUNhoQmvrZdUHkf5kGxCX/f9LgQnt4C0SXCrQLE2LL5kS9rXbkYJ6Kq6bI7ICT41SzJWZD4=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=mykernel.net;
-        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
-        dmarc=pass header.from=<cgxu519@mykernel.net> header.from=<cgxu519@mykernel.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1591177466;
-        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
-        h=From:To:Cc:Message-ID:Subject:Date:MIME-Version:Content-Transfer-Encoding:Content-Type;
-        bh=Fuvq/HBzV1tV1tSsQmVZUooYeDxi59K+tWOu59nNxDc=;
-        b=Eo9mMZHXmEAsRW1+PQiUEsw42vfJQzvfxh8orj76Rq89A6A+zNpRBS0wLzVB08UP
-        gA5r5y29Ut0SFNhuiCeVpqGFAwN5waTCaYL4NOqLbBAuSwc0gdVCCtlK6WZ32MUOyzC
-        /lLlBctNbvyc8mmmztlQsjUkdCsH4qiwkcb7YZPc=
-Received: from localhost.localdomain (218.18.229.179 [218.18.229.179]) by mx.zoho.com.cn
-        with SMTPS id 1591177465430772.6652610296833; Wed, 3 Jun 2020 17:44:25 +0800 (CST)
-From:   Chengguang Xu <cgxu519@mykernel.net>
-To:     jack@suse.com
-Cc:     linux-ext4@vger.kernel.org, Chengguang Xu <cgxu519@mykernel.net>
-Message-ID: <20200603094417.6143-1-cgxu519@mykernel.net>
-Subject: [RFC PATCH] ext2: drop cached block when detecting corruption
-Date:   Wed,  3 Jun 2020 17:44:17 +0800
-X-Mailer: git-send-email 2.20.1
+        id S1726235AbgFCKHI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 3 Jun 2020 06:07:08 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:46456 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725854AbgFCKHH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 3 Jun 2020 06:07:07 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 053A3CKf015509;
+        Wed, 3 Jun 2020 06:06:57 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31e3w5t93y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 03 Jun 2020 06:06:56 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 053A4WIX021346;
+        Wed, 3 Jun 2020 06:06:56 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31e3w5t93f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 03 Jun 2020 06:06:56 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 053A02EZ018295;
+        Wed, 3 Jun 2020 10:06:54 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03ams.nl.ibm.com with ESMTP id 31bf47ysjb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 03 Jun 2020 10:06:54 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 053A6qVo45350920
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 3 Jun 2020 10:06:52 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 43E3552059;
+        Wed,  3 Jun 2020 10:06:52 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.36.151])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id BE4A452054;
+        Wed,  3 Jun 2020 10:06:49 +0000 (GMT)
+Subject: Re: linux-next test error: BUG: using smp_processor_id() in
+ preemptible [ADDR] code: syz-fuzzer/6792
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     syzbot <syzbot+82f324bb69744c5f6969@syzkaller.appspotmail.com>,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
+References: <20200602145256.9236-1-hdanton@sina.com>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Date:   Wed, 3 Jun 2020 15:36:47 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-ZohoCNMailClient: External
-Content-Type: text/plain; charset=utf8
+In-Reply-To: <20200602145256.9236-1-hdanton@sina.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Message-Id: <20200603100649.BE4A452054@d06av21.portsmouth.uk.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-03_06:2020-06-02,2020-06-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ phishscore=0 clxscore=1015 adultscore=0 cotscore=-2147483648
+ suspectscore=0 bulkscore=0 impostorscore=0 mlxlogscore=999 spamscore=0
+ priorityscore=1501 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006030074
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Currently ext2 uses mdcache for deduplication of extended
-attribution blocks. However, there is lack of handling for
-corrupted blocks, so newly created EAs may still links to
-corrupted blocks. This patch tries to drop cached block
-when detecting corruption to mitigate the effect.
-
-Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
----
- fs/ext2/xattr.c | 25 ++++++++++++++++++++++---
- 1 file changed, 22 insertions(+), 3 deletions(-)
-
-diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
-index 943cc469f42f..969521e39753 100644
---- a/fs/ext2/xattr.c
-+++ b/fs/ext2/xattr.c
-@@ -93,6 +93,8 @@ static int ext2_xattr_set2(struct inode *, struct buffer_=
-head *,
- =09=09=09   struct ext2_xattr_header *);
-=20
- static int ext2_xattr_cache_insert(struct mb_cache *, struct buffer_head *=
-);
-+static void ext2_xattr_cache_remove(struct mb_cache *cache,
-+=09=09=09=09    struct buffer_head *bh);
- static struct buffer_head *ext2_xattr_cache_find(struct inode *,
- =09=09=09=09=09=09 struct ext2_xattr_header *);
- static void ext2_xattr_rehash(struct ext2_xattr_header *,
-@@ -237,8 +239,10 @@ ext2_xattr_get(struct inode *inode, int name_index, co=
-nst char *name,
- =09entry =3D FIRST_ENTRY(bh);
- =09while (!IS_LAST_ENTRY(entry)) {
- =09=09if (!ext2_xattr_entry_valid(entry, end,
--=09=09    inode->i_sb->s_blocksize))
-+=09=09    inode->i_sb->s_blocksize)) {
-+=09=09=09ext2_xattr_cache_remove(ea_block_cache, bh);
- =09=09=09goto bad_block;
-+=09=09}
-=20
- =09=09not_found =3D ext2_xattr_cmp_entry(name_index, name_len, name,
- =09=09=09=09=09=09 entry);
-@@ -323,8 +327,10 @@ ext2_xattr_list(struct dentry *dentry, char *buffer, s=
-ize_t buffer_size)
- =09entry =3D FIRST_ENTRY(bh);
- =09while (!IS_LAST_ENTRY(entry)) {
- =09=09if (!ext2_xattr_entry_valid(entry, end,
--=09=09    inode->i_sb->s_blocksize))
-+=09=09    inode->i_sb->s_blocksize)) {
-+=09=09=09ext2_xattr_cache_remove(ea_block_cache, bh);
- =09=09=09goto bad_block;
-+=09=09}
- =09=09entry =3D EXT2_XATTR_NEXT(entry);
- =09}
- =09if (ext2_xattr_cache_insert(ea_block_cache, bh))
-@@ -407,6 +413,7 @@ int
- ext2_xattr_set(struct inode *inode, int name_index, const char *name,
- =09       const void *value, size_t value_len, int flags)
- {
-+=09struct mb_cache *ea_block_cache =3D EA_BLOCK_CACHE(inode);
- =09struct super_block *sb =3D inode->i_sb;
- =09struct buffer_head *bh =3D NULL;
- =09struct ext2_xattr_header *header =3D NULL;
-@@ -464,8 +471,11 @@ ext2_xattr_set(struct inode *inode, int name_index, co=
-nst char *name,
- =09=09 */
- =09=09last =3D FIRST_ENTRY(bh);
- =09=09while (!IS_LAST_ENTRY(last)) {
--=09=09=09if (!ext2_xattr_entry_valid(last, end, sb->s_blocksize))
-+=09=09=09if (!ext2_xattr_entry_valid(last, end,
-+=09=09=09    sb->s_blocksize)) {
-+=09=09=09=09ext2_xattr_cache_remove(ea_block_cache, bh);
- =09=09=09=09goto bad_block;
-+=09=09=09}
- =09=09=09if (last->e_value_size) {
- =09=09=09=09size_t offs =3D le16_to_cpu(last->e_value_offs);
- =09=09=09=09if (offs < min_offs)
-@@ -881,6 +891,15 @@ ext2_xattr_cache_insert(struct mb_cache *cache, struct=
- buffer_head *bh)
- =09return error;
- }
-=20
-+static void
-+ext2_xattr_cache_remove(struct mb_cache *cache, struct buffer_head *bh)
-+{
-+=09lock_buffer(bh);
-+=09mb_cache_entry_delete(cache, le32_to_cpu(HDR(bh)->h_hash),
-+=09=09=09      bh->b_blocknr);
-+=09unlock_buffer(bh);
-+}
-+
- /*
-  * ext2_xattr_cmp()
-  *
---=20
-2.20.1
 
 
+On 6/2/20 8:22 PM, Hillf Danton wrote:
+> 
+> Tue, 02 Jun 2020 04:20:16 -0700
+>> syzbot found the following crash on:
+>>
+>> HEAD commit:    0e21d462 Add linux-next specific files for 20200602
+>> git tree:       linux-next
+>> console output: https://syzkaller.appspot.com/x/log.txt?x=127233ee100000
+>> kernel config:  https://syzkaller.appspot.com/x/.config?x=ecc1aef35f550ee3
+>> dashboard link: https://syzkaller.appspot.com/bug?extid=82f324bb69744c5f6969
+>> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+>>
+>> IMPORTANT: if you fix the bug, please add the following tag to the commit:
+>> Reported-by: syzbot+82f324bb69744c5f6969@syzkaller.appspotmail.com
+>>
+>> BUG: using smp_processor_id() in preemptible [00000000] code: syz-fuzzer/6792
+>> caller is ext4_mb_new_blocks+0xa4d/0x3b70 fs/ext4/mballoc.c:4711
+> 
+> Fix 42f56b7a4a7d ("ext4: mballoc: introduce pcpu seqcnt for freeing PA
+> to improve ENOSPC handling") by redefining discard_pa_seq to be a simple
+> regular sequence counter to axe the need of percpu operation.
+
+Why remove percpu seqcnt? IIUC, percpu are much better in case of a 
+multi-threaded use case which could run and allocate blocks in parallel.
+Whereas a updating a simple variable across different cpus may lead to 
+cacheline bouncing problem.
+Since in this case we can very well have a use case of multiple threads 
+trying to allocate blocks at the same time, so why change this to a 
+simple seqcnt from percpu seqcnt?
+
+-ritesh
