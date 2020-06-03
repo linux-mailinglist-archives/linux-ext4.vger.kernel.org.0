@@ -2,113 +2,101 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD4741ED4AA
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jun 2020 19:04:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6F2C1ED834
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jun 2020 23:55:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726147AbgFCREM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 3 Jun 2020 13:04:12 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:49246 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725855AbgFCREK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 3 Jun 2020 13:04:10 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 053GuURH084285;
-        Wed, 3 Jun 2020 17:03:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=JE+WMAzYhB9I63Z7mLN3ij+Wo6tJjTmohhHE6mf0Dik=;
- b=UvDUuojTTQy9ZVgoum0ooM+DA1vodbZ1rLxZ8kLb0V/FDnz9VFoopV2r+ZgrC9aArifB
- EcnzCqD/N44bU2SOUGxeSlYeBdkl9LCSlmfqyLPrsb3Cmmypn2nMZOXt4kjWEZsdiDLH
- k9XHgRSQPBjFIlqBvHP8YhaS/XTw1tdDt5iRM+AaLzk3le1uIFPOUGEKeFs09OCEaTmc
- TZNDjpfhqdAZHhoT9i1zzP+iZ78irasfD4fy2khX49ETuwfmfUjOsf9gDn6mw+6t4fSA
- j3TtQ9UIR4Fs65FzN5ddA2Y62radlWBGQ3npodurSC/8+EIKltiJOuP2B++6UhutLWVn NQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 31bfemacc6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 03 Jun 2020 17:03:49 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 053GvXW5135784;
-        Wed, 3 Jun 2020 17:03:49 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 31c12r602b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 03 Jun 2020 17:03:48 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 053H3kbd018195;
-        Wed, 3 Jun 2020 17:03:46 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 03 Jun 2020 10:03:45 -0700
-Date:   Wed, 3 Jun 2020 10:03:44 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     ira.weiny@intel.com, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-api@vger.kernel.org
-Subject: Re: [PATCH V11 11/11] fs/xfs: Update
- xfs_ioctl_setattr_dax_invalidate()
-Message-ID: <20200603170344.GO2162697@magnolia>
-References: <20200428002142.404144-1-ira.weiny@intel.com>
- <20200428002142.404144-12-ira.weiny@intel.com>
- <20200428201138.GD6742@magnolia>
- <20200602172353.GC8230@magnolia>
- <20200603101024.GG19165@quack2.suse.cz>
+        id S1726568AbgFCVzp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 3 Jun 2020 17:55:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45634 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725922AbgFCVzo (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 3 Jun 2020 17:55:44 -0400
+Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0080D204EF;
+        Wed,  3 Jun 2020 21:55:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591221344;
+        bh=R4fNoE/V83KUWOOchGYb1qdwOG+iP/zrahv26j4hVII=;
+        h=From:To:Cc:Subject:Date:From;
+        b=qanbruc0DKsoMMz1Mra0u4RAmgPgCGIDhPjze56SbL0frK/LcmNCFwON/vcvgpUvR
+         AIYS4YSOj9QwOWNpcn4V6YuFGfwPbWglOLFPouRtE//sWW/VgCbdEZPsh4Lvgnlzu5
+         uowmOUALqDbG7tk+N2eCC7ZtB6hKX15sFh3GIYNw=
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org
+Subject: [xfstests-bld PATCH] test-appliance: exclude ext4/023 and ext4/028 from encrypt config
+Date:   Wed,  3 Jun 2020 14:54:57 -0700
+Message-Id: <20200603215457.146447-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200603101024.GG19165@quack2.suse.cz>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9641 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 malwarescore=0
- adultscore=0 suspectscore=1 spamscore=0 bulkscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006030133
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9641 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=1
- mlxlogscore=999 priorityscore=1501 bulkscore=0 phishscore=0 clxscore=1015
- impostorscore=0 adultscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0
- cotscore=-2147483648 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006030133
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jun 03, 2020 at 12:10:24PM +0200, Jan Kara wrote:
-> On Tue 02-06-20 10:23:53, Darrick J. Wong wrote:
-> > On Tue, Apr 28, 2020 at 01:11:38PM -0700, Darrick J. Wong wrote:
-> > > > -out_unlock:
-> > > > -	xfs_iunlock(ip, XFS_MMAPLOCK_EXCL | XFS_IOLOCK_EXCL);
-> > > > -	return error;
-> > > > +	if ((mp->m_flags & XFS_MOUNT_DAX_ALWAYS) ||
-> > > > +	    (mp->m_flags & XFS_MOUNT_DAX_NEVER))
-> > > > +		return;
-> > > >  
-> > > > +	if (((fa->fsx_xflags & FS_XFLAG_DAX) &&
-> > > > +	    !(ip->i_d.di_flags2 & XFS_DIFLAG2_DAX)) ||
-> > > > +	    (!(fa->fsx_xflags & FS_XFLAG_DAX) &&
-> > > > +	     (ip->i_d.di_flags2 & XFS_DIFLAG2_DAX)))
-> > > > +		d_mark_dontcache(inode);
-> > 
-> > Now that I think about this further, are we /really/ sure that we want
-> > to let unprivileged userspace cause inode evictions?
-> 
-> You have to have an equivalent of write access to the file to be able to
-> trigger d_mark_dontcache(). So you can e.g. delete it.  Or you could
-> fadvise / madvise regarding its page cache. I don't see the ability to push
-> inode out of cache as stronger than the abilities you already have...
+From: Eric Biggers <ebiggers@google.com>
 
-<nod> Ok.  I just had one last bout of paranoia, but I think it'll be
-fine. :)
+In Linux 5.8, the test_dummy_encryption mount option will use v2
+encryption policies rather than v1 as it previously did.  This increases
+the size of the encryption xattr slightly, causing two ext4 tests to
+start failing due to xattr spillover.  Exclude these tests.
 
---D
+See kernel commit ed318a6cc0b6 ("fscrypt: support
+test_dummy_encryption=v2") for more details.
 
-> 								Honza
-> -- 
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ .../files/root/fs/ext4/cfg/encrypt.exclude          |  2 ++
+ .../files/root/fs/ext4/cfg/encrypt_1k.exclude       | 13 +++++++------
+ 2 files changed, 9 insertions(+), 6 deletions(-)
+
+diff --git a/kvm-xfstests/test-appliance/files/root/fs/ext4/cfg/encrypt.exclude b/kvm-xfstests/test-appliance/files/root/fs/ext4/cfg/encrypt.exclude
+index 304201e..47c26e7 100644
+--- a/kvm-xfstests/test-appliance/files/root/fs/ext4/cfg/encrypt.exclude
++++ b/kvm-xfstests/test-appliance/files/root/fs/ext4/cfg/encrypt.exclude
+@@ -5,7 +5,9 @@ ext4/004	# dump/restore doesn't handle quotas
+ # xattr size.  This causes problems with encryption
+ # which requires its own xattrs which take space.
+ ext4/022
++ext4/023
+ ext4/026
++ext4/028
+ 
+ # file systems with encryption enabled can't be mounted with ext3
+ ext4/044
+diff --git a/kvm-xfstests/test-appliance/files/root/fs/ext4/cfg/encrypt_1k.exclude b/kvm-xfstests/test-appliance/files/root/fs/ext4/cfg/encrypt_1k.exclude
+index e31c371..cd60151 100644
+--- a/kvm-xfstests/test-appliance/files/root/fs/ext4/cfg/encrypt_1k.exclude
++++ b/kvm-xfstests/test-appliance/files/root/fs/ext4/cfg/encrypt_1k.exclude
+@@ -1,8 +1,15 @@
+ # These tests are also excluded in encrypt.exclude.
+ # See there for the reasons.
++#
++# Due to the 1k block size, ext4/023 and ext4/028 also fail for a second reason:
++# they use _scratch_populate_cached() which tries to create a 1023-byte symlink,
++# which fails with encrypt_1k because encrypted symlinks are limited to
++# blocksize-3 bytes, not blocksize-1 as is the case for no encryption.
+ ext4/004
+ ext4/022
++ext4/023
+ ext4/026
++ext4/028
+ generic/082
+ generic/219
+ generic/230
+@@ -19,9 +26,3 @@ generic/204
+ ext4/034
+ generic/273
+ generic/454
+-
+-# These tests use _scratch_populate_cached() which tries to create a 1023-byte
+-# symlink, which fails with encrypt_1k because encrypted symlinks are limited to
+-# blocksize-3 bytes, not blocksize-1 as is the case for no encryption.
+-ext4/023
+-ext4/028
+-- 
+2.26.2
+
