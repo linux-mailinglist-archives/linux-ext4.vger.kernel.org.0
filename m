@@ -2,114 +2,125 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A479D1EC5F0
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jun 2020 01:53:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F28511EC6F9
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jun 2020 03:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728386AbgFBXxH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 2 Jun 2020 19:53:07 -0400
-Received: from mga06.intel.com ([134.134.136.31]:39746 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726267AbgFBXxG (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 2 Jun 2020 19:53:06 -0400
-IronPort-SDR: 7pjoj0cj35/NaofwcrKVBE2fBmelzHAFVEgDiJ8cl6I5MsEB2nyJmoukJZqm9j3kZHlA9MHEzi
- nV/4PWozqlHw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2020 16:53:05 -0700
-IronPort-SDR: Fjosrr6vpGK5zwtIgnd84lq7g7jGjKCKBVDcWW2Xd9/i/a+bCVJiomnAZSEIQRGn0f9UiyeC0t
- kX8qGrZdgA4A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,466,1583222400"; 
-   d="scan'208";a="470925223"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by fmsmga005.fm.intel.com with ESMTP; 02 Jun 2020 16:53:05 -0700
-Date:   Tue, 2 Jun 2020 16:53:05 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        david@fromorbit.com, linux-kernel@vger.kernel.org,
-        sandeen@sandeen.net, hch@lst.de,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>
-Subject: Re: [GIT PULL] vfs: improve DAX behavior for 5.8, part 1
-Message-ID: <20200602235305.GI1505637@iweiny-DESK2.sc.intel.com>
-References: <20200602165852.GB8230@magnolia>
+        id S1725834AbgFCB41 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 2 Jun 2020 21:56:27 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:65353 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725777AbgFCB41 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 2 Jun 2020 21:56:27 -0400
+X-IronPort-AV: E=Sophos;i="5.73,466,1583164800"; 
+   d="scan'208";a="93708776"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 03 Jun 2020 09:56:23 +0800
+Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
+        by cn.fujitsu.com (Postfix) with ESMTP id A46C150A996E;
+        Wed,  3 Jun 2020 09:56:18 +0800 (CST)
+Received: from [10.167.220.69] (10.167.220.69) by
+ G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Wed, 3 Jun 2020 09:56:16 +0800
+Message-ID: <5ED7033D.7020009@cn.fujitsu.com>
+Date:   Wed, 3 Jun 2020 09:56:13 +0800
+From:   Xiao Yang <yangx.jy@cn.fujitsu.com>
+User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.2; zh-CN; rv:1.9.2.18) Gecko/20110616 Thunderbird/3.1.11
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200602165852.GB8230@magnolia>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+CC:     <ira.weiny@intel.com>, <fstests@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        Jeff Moyer <jmoyer@redhat.com>, <linux-ext4@vger.kernel.org>,
+        <linux-xfs@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH] xfs/XXX: Add xfs/XXX
+References: <20200413054419.1560503-1-ira.weiny@intel.com> <20200413163025.GB6742@magnolia> <5ED61324.6010300@cn.fujitsu.com> <20200602181444.GD8230@magnolia>
+In-Reply-To: <20200602181444.GD8230@magnolia>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.167.220.69]
+X-ClientProxiedBy: G08CNEXCHPEKD05.g08.fujitsu.local (10.167.33.203) To
+ G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206)
+X-yoursite-MailScanner-ID: A46C150A996E.ACF0C
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: yangx.jy@cn.fujitsu.com
+X-Spam-Status: No
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jun 02, 2020 at 09:58:52AM -0700, Darrick J. Wong wrote:
-> Hi Linus,
-> 
-> After many years of LKML-wrangling about how to enable programs to query
-> and influence the file data access mode (DAX) when a filesystem resides
-> on storage devices such as persistent memory, Ira Weiny has emerged with
-> a proposed set of standard behaviors that has not been shot down by
-> anyone!  We're more or less standardizing on the current XFS behavior
-> and adapting ext4 to do the same.
+On 2020/6/3 2:14, Darrick J. Wong wrote:
+> On Tue, Jun 02, 2020 at 04:51:48PM +0800, Xiao Yang wrote:
+>> On 2020/4/14 0:30, Darrick J. Wong wrote:
+>>> This might be a good time to introduce a few new helpers:
+>>>
+>>> _require_scratch_dax ("Does $SCRATCH_DEV support DAX?")
+>>> _require_scratch_dax_mountopt ("Does the fs support the DAX mount options?")
+>>> _require_scratch_daX_iflag ("Does the fs support FS_XFLAG_DAX?")
+>> Hi Darrick,
+>>
+>> Now, I am trying to introduce these new helpers and have some questions:
+>> 1) There are five testcases related to old dax implementation, should we
+>> only convert them to new dax implementation or make them compatible with old
+>> and new dax implementation?
+>
+> What is the 'old' DAX implementation?  ext2 XIP?
+Hi Darrick,
 
-Also, for those interested: The corresponding man page change mentioned in the
-commit has been submitted here:
+Thanks for your quick feedback.
 
-https://lore.kernel.org/lkml/20200505002016.1085071-1-ira.weiny@intel.com/
+Right, the 'old' DAX implementation means old dax mount option(i.e. -o dax)
 
-Ira
+Compare new and old dax mount option on ext4 and xfs, is the following 
+logic right?
+-o dax=always == -o dax
+-o dax=never == without dax
+-o dax=inode == nothing
 
-> 
-> This pull request is the first of a handful that will make ext4 and XFS
-> present a consistent interface for user programs that care about DAX.
-> We add a statx attribute that programs can check to see if DAX is
-> enabled on a particular file.  Then, we update the DAX documentation to
-> spell out the user-visible behaviors that filesystems will guarantee
-> (until the next storage industry shakeup).  The on-disk inode flag has
-> been in XFS for a few years now.
-> 
-> Note that Stephen Rothwell reported a minor merge conflict[1] between
-> the first cleanup patch and a different change in the block layer.  The
-> resolution looks pretty straightforward, but let me know if you
-> encounter problems.
-> 
+Of course, we should uses new option if ext4/xfs supports new dax mount 
+option on distros.  But should we fallback to use old option if ext4/xfs 
+doesn't support new dax mount option on some old distros?
+btw:
+it seems hard for testcases to use two different sets of mount 
+options(i.e. old and new) so do you have any suggestion?
+
+>
+>> 2) I think _require_xfs_io_command "chattr" "x" is enough to check if fs
+>> supports FS_XFLAG_DAX.  Is it necessary to add _require_scratch_dax_iflag()?
+>> like this:
+>> _require_scratch_dax_iflag()
+>> {
+>> 	_require_xfs_io_command "chattr" "x"
+>> }
+>
+> I suggested that list based on the major control knobs that will be
+> visible to userspace programs.  Even if this is just a one-line helper,
+> its name is useful for recognizing which of those knobs we're looking
+> for.
+>
+> Yes, you could probably save a trivial amount of time by skipping one
+> iteration of bash function calling, but now everyone has to remember
+> that the xfs_io chattr "x" flag means the dax inode flag, and not
+> confuse it for chmod +x or something else.
+
+Got it, thanks for your detailed explanation.
+
+Best Regards,
+Xiao Yang
+>
 > --D
-> 
-> [1] https://lore.kernel.org/linux-next/20200522145848.38cdcf54@canb.auug.org.au/
-> 
-> The following changes since commit 0e698dfa282211e414076f9dc7e83c1c288314fd:
-> 
->   Linux 5.7-rc4 (2020-05-03 14:56:04 -0700)
-> 
-> are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/vfs-5.8-merge-1
-> 
-> for you to fetch changes up to 83d9088659e8f113741bb197324bd9554d159657:
-> 
->   Documentation/dax: Update Usage section (2020-05-04 08:49:39 -0700)
-> 
-> ----------------------------------------------------------------
-> New code for 5.8:
-> - Clean up io_is_direct.
-> - Add a new statx flag to indicate when file data access is being done
->   via DAX (as opposed to the page cache).
-> - Update the documentation for how system administrators and application
->   programmers can take advantage of the (still experimental DAX) feature.
-> 
-> ----------------------------------------------------------------
-> Ira Weiny (3):
->       fs: Remove unneeded IS_DAX() check in io_is_direct()
->       fs/stat: Define DAX statx attribute
->       Documentation/dax: Update Usage section
-> 
->  Documentation/filesystems/dax.txt | 142 +++++++++++++++++++++++++++++++++++++-
->  drivers/block/loop.c              |   6 +-
->  fs/stat.c                         |   3 +
->  include/linux/fs.h                |   7 +-
->  include/uapi/linux/stat.h         |   1 +
->  5 files changed, 147 insertions(+), 12 deletions(-)
+>
+>> Best Regards,
+>> Xiao Yang
+>>
+>>
+>
+>
+> .
+>
+
+
+
