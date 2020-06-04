@@ -2,268 +2,166 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FDCE1EE8FC
-	for <lists+linux-ext4@lfdr.de>; Thu,  4 Jun 2020 18:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D387A1EEB2D
+	for <lists+linux-ext4@lfdr.de>; Thu,  4 Jun 2020 21:31:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729995AbgFDQ6b (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 4 Jun 2020 12:58:31 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:60299 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729882AbgFDQ6a (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 4 Jun 2020 12:58:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591289907;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=ErqaEYtQq+8H+ACe+CCYKF90Lhb/HNJTuhEz/C6gzAU=;
-        b=O7EfOuppHUxYZrUq69UuxbCTK06iK7ZPGsGyVFebVKPnUC6unK4/uER/Du4p3qOGPZI6mv
-        vOOQLapyo0/37wMqUJla7/vWXTWOgw5p2TqnBL4gHB9Nmz1hG21reqiToR1xEfIaAeQBmN
-        8D8pDei0AUWeFWIlDG07vIw5MJQtkJk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-143-7SWia1yiMD-_yMrw-eLbKA-1; Thu, 04 Jun 2020 12:58:23 -0400
-X-MC-Unique: 7SWia1yiMD-_yMrw-eLbKA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 37CBD1005510;
-        Thu,  4 Jun 2020 16:58:22 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-138.rdu2.redhat.com [10.10.112.138])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EFCAF7CCD2;
-        Thu,  4 Jun 2020 16:58:19 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     dhowells@redhat.com, viro@zeniv.linux.org.uk,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        linux-afs@lists.infradead.org, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] afs: Improvements for v5.8
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2240659.1591289899.1@warthog.procyon.org.uk>
+        id S1728809AbgFDTbo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 4 Jun 2020 15:31:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726666AbgFDTbn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 4 Jun 2020 15:31:43 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A308EC08C5C0
+        for <linux-ext4@vger.kernel.org>; Thu,  4 Jun 2020 12:31:43 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id b5so3725389pfp.9
+        for <linux-ext4@vger.kernel.org>; Thu, 04 Jun 2020 12:31:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=kHwANpdmUkrTfxwqS86A1kJbf7bf2zHr7UBG62ZQT/w=;
+        b=XfE/71riLd3x6A1wPiokNxKOJ2OLJyePMB22AJlzHJ2lkVs5Ara0QCrx0iiBBa28nj
+         ScffRJreVbWy/f8fRXWTiWWTDe9jivl/hGeRTZOoYOFSReHaqL/GsyP30UGvRTLS4ZSO
+         YxGW7Re4DuTxWZDtpIg7P66qB0tGde/X6QL/pAAGMlUJqm/1RMxyMr8jZmEgOky+oswF
+         DuEFwC22y84wNCMEKDUtox7/hE+QDZs6sRR73RfrwlmoWbAuXpCWVNkg+r4aWQZqpbwr
+         G6hmh2ohJPpjR88BhdLfmzQvibE2+UqDCBUq5jqDCoPAi2h/kmnfmbt9kOm2k7gHXd8J
+         YAPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=kHwANpdmUkrTfxwqS86A1kJbf7bf2zHr7UBG62ZQT/w=;
+        b=jl5+61hzPnOCvSV+NKsj+paBP3KHjfZtCvAdZ3HUlb97i+YNQzeeF95GD6Lf00byOA
+         9iNl6pXU8VOMESnrj35/eF9W47GbDxcSvK3hRRSdvHdp96143N97LRIlUi6TEZ54OzGK
+         gxwww4CnjmNq9ZX01sqpEeGTaRyet8QJwG1/EVdbzJbAkiMvVg+eoe6Yev6yStU9e6Q/
+         8I0eNynDzhPjOuDtPDg0MnqF+Nj0VLigG+Fk+CsEwdT8qBlhO1dsT+9ehqlpxsgxtQz7
+         HsuLmq8IqMlGo1zdvYLMttLTzfU2ks18t8ThPpc833ePq4qLm4ljnqQPTXwsiMPKWyx9
+         8emQ==
+X-Gm-Message-State: AOAM530aVWvOPWAQu08PEFD8ESa7M1h+jDG9Z11JFl0zctx2jCwCW9XL
+        +in48d8xIZrZncRUxPOLuJPPBmOA65JUFQ==
+X-Google-Smtp-Source: ABdhPJw1Q07XlANhMJ09cmattoe+pY8WqA6DISMU6FykDFSrqYlFp4vgUcec8QOPl7G1eYyjSoHWpg==
+X-Received: by 2002:a62:6846:: with SMTP id d67mr5953861pfc.167.1591299102797;
+        Thu, 04 Jun 2020 12:31:42 -0700 (PDT)
+Received: from [192.168.10.175] (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
+        by smtp.gmail.com with ESMTPSA id y6sm5555105pfp.144.2020.06.04.12.31.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Jun 2020 12:31:41 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date:   Thu, 04 Jun 2020 17:58:19 +0100
-Message-ID: <2240660.1591289899@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+From:   Andreas Dilger <adilger@dilger.ca>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [RFC PATCH] ext2: drop cached block when detecting corruption
+Date:   Thu, 4 Jun 2020 13:31:40 -0600
+Message-Id: <B50814CC-57FB-4FDE-887B-3608C61AAF22@dilger.ca>
+References: <20200603094417.6143-1-cgxu519@mykernel.net>
+Cc:     jack@suse.com, linux-ext4@vger.kernel.org
+In-Reply-To: <20200603094417.6143-1-cgxu519@mykernel.net>
+To:     Chengguang Xu <cgxu519@mykernel.net>
+X-Mailer: iPhone Mail (17E262)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Linus,
+On Jun 3, 2020, at 03:44, Chengguang Xu <cgxu519@mykernel.net> wrote:
+>=20
+> =EF=BB=BFCurrently ext2 uses mdcache for deduplication of extended
 
-Is it too late to put in a pull request for AFS changes?  Apologies - I wa=
-s
-holding off and hoping that I could get Al to review the changes I made to
-the core VFS change commit (first in the series) in response to his earlie=
-r
-review comments.  I have an ack for the Ext4 changes made, though.  If you
-would prefer it to be held off at this point, fair enough.
+(typo) this should be "mbcache"
 
-Note that the series also got rebased to -rc7 to remove the dependency on
-fix patches that got merged through the net tree.
 
----
-
-There's one core VFS change which affects a couple of filesystems:
-
- (1) Make the inode hash table RCU safe and providing some RCU-safe
-     accessor functions.  The search can then be done without taking the
-     inode_hash_lock.  Care must be taken because the object may be being
-     deleted and no wait is made.
-
- (2) Allow iunique() to avoid taking the inode_hash_lock.
-
- (3) Allow AFS's callback processing to avoid taking the inode_hash_lock
-     when using the inode table to find an inode to notify.
-
- (4) Improve Ext4's time updating.  Konstantin Khlebnikov said "For now,
-     I've plugged this issue with try-lock in ext4 lazy time update.  This
-     solution is much better."
-
-Then there's a set of changes to make a number of improvements to the AFS
-driver:
-
- (1) Improve callback (ie. third party change notification) processing by:
-
-     (a) Relying more on the fact we're doing this under RCU and by using
-     	 fewer locks.  This makes use of the RCU-based inode searching
-     	 outlined above.
-
-     (b) Moving to keeping volumes in a tree indexed by volume ID rather
-     	 than a flat list.
-
-     (c) Making the server and volume records logically part of the cell.
-     	 This means that a server record now points directly at the cell
-     	 and the tree of volumes is there.  This removes an N:M mapping
-     	 table, simplifying things.
-
- (2) Improve keeping NAT or firewall channels open for the server callback=
-s
-     to reach the client by actively polling the fileserver on a timed
-     basis, instead of only doing it when we have an operation to process.
-
- (3) Improving detection of delayed or lost callbacks by including the
-     parent directory in the list of file IDs to be queried when doing a
-     bulk status fetch from lookup.  We can then check to see if our copy
-     of the directory has changed under us without us getting notified.
-
- (4) Determine aliasing of cells (such as a cell that is pointed to be a
-     DNS alias).  This allows us to avoid having ambiguity due to
-     apparently different cells using the same volume and file servers.
-
- (5) Improve the fileserver rotation to do more probing when it detects
-     that all of the addresses to a server are listed as non-responsive.
-     It's possible that an address that previously stopped responding has
-     become responsive again.
-
-Beyond that, lay some foundations for making some calls asynchronous:
-
- (1) Turn the fileserver cursor struct into a general operation struct and
-     hang the parameters off of that rather than keeping them in local
-     variables and hang results off of that rather than the call struct.
-
- (2) Implement some general operation handling code and simplify the
-     callers of operations that affect a volume or a volume component (suc=
-h
-     as a file).  Most of the operation is now done by core code.
-
- (3) Operations are supplied with a table of operations to issue different
-     variants of RPCs and to manage the completion, where all the required
-     data is held in the operation object, thereby allowing these to be
-     called from a workqueue.
-
- (4) Put the standard "if (begin), while(select), call op, end" sequence
-     into a canned function that just emulates the current behaviour for
-     now.
-
-There are also some fixes interspersed:
-
- (1) Don't let the EACCES from ICMP6 mapping reach the user as such, since
-     it's confusing as to whether it's a filesystem error.  Convert it to
-     EHOSTUNREACH.
-
- (2) Don't use the epoch value acquired through probing a server.  If we
-     have two servers with the same UUID but in different cells, it's hard
-     to draw conclusions from them having different epoch values.
-
- (3) Don't interpret the argument to the CB.ProbeUuid RPC as a fileserver
-     UUID and look up a fileserver from it.
-
- (4) Deal with servers in different cells having the same UUIDs.  In the
-     event that a CB.InitCallBackState3 RPC is received, we have to break
-     the callback promises for every server record matching that UUID.
-
- (5) Don't let afs_statfs return values that go below 0.
-
- (6) Don't use running fileserver probe state to make server selection and
-     address selection decisions on.  Only make decisions on final state a=
-s
-     the running state is cleared at the start of probing.
-
-Tested-by: Marc Dionne <marc.dionne@auristor.com>
-
-Thanks,
-David
----
-The following changes since commit 9cb1fd0efd195590b828b9b865421ad345a4a14=
-5:
-
-  Linux 5.7-rc7 (2020-05-24 15:32:54 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags=
-/afs-next-20200604
-
-for you to fetch changes up to 8409f67b6437c4b327ee95a71081b9c7bfee0b00:
-
-  afs: Adjust the fileserver rotation algorithm to reprobe/retry more quic=
-kly (2020-06-04 15:37:58 +0100)
-
-----------------------------------------------------------------
-AFS Changes
-
-----------------------------------------------------------------
-David Howells (27):
-      vfs, afs, ext4: Make the inode hash table RCU searchable
-      rxrpc: Map the EACCES error produced by some ICMP6 to EHOSTUNREACH
-      rxrpc: Adjust /proc/net/rxrpc/calls to display call->debug_id not us=
-er_ID
-      afs: Always include dir in bulk status fetch from afs_do_lookup()
-      afs: Use the serverUnique field in the UVLDB record to reduce rpc op=
-s
-      afs: Split the usage count on struct afs_server
-      afs: Actively poll fileservers to maintain NAT or firewall openings
-      afs: Show more information in /proc/net/afs/servers
-      afs: Make callback processing more efficient.
-      afs: Set error flag rather than return error from file status decode
-      afs: Remove the error argument from afs_protocol_error()
-      afs: Rename struct afs_fs_cursor to afs_operation
-      afs: Build an abstraction around an "operation" concept
-      afs: Don't get epoch from a server because it may be ambiguous
-      afs: Fix handling of CB.ProbeUuid cache manager op
-      afs: Retain more of the VLDB record for alias detection
-      afs: Implement client support for the YFSVL.GetCellName RPC op
-      afs: Detect cell aliases 1 - Cells with root volumes
-      afs: Detect cell aliases 2 - Cells with no root volumes
-      afs: Detect cell aliases 3 - YFS Cells with a canonical cell name op
-      afs: Add a tracepoint to track the lifetime of the afs_volume struct
-      afs: Reorganise volume and server trees to be rooted on the cell
-      afs: Fix the by-UUID server tree to allow servers with the same UUID
-      afs: Fix afs_statfs() to not let the values go below zero
-      afs: Don't use probe running state to make decisions outside probe c=
-ode
-      afs: Show more a bit more server state in /proc/net/afs/servers
-      afs: Adjust the fileserver rotation algorithm to reprobe/retry more =
-quickly
-
- fs/afs/Makefile            |    2 +
- fs/afs/afs.h               |    3 +-
- fs/afs/afs_vl.h            |    1 +
- fs/afs/callback.c          |  345 ++++--------
- fs/afs/cell.c              |   10 +-
- fs/afs/cmservice.c         |   67 +--
- fs/afs/dir.c               | 1253 ++++++++++++++++++++-------------------=
----
- fs/afs/dir_silly.c         |  190 ++++---
- fs/afs/dynroot.c           |   93 ++++
- fs/afs/file.c              |   62 ++-
- fs/afs/flock.c             |  114 ++--
- fs/afs/fs_operation.c      |  239 ++++++++
- fs/afs/fs_probe.c          |  339 +++++++++---
- fs/afs/fsclient.c          | 1305 +++++++++++++++++----------------------=
------
- fs/afs/inode.c             |  491 ++++++++---------
- fs/afs/internal.h          |  523 ++++++++++--------
- fs/afs/main.c              |    6 +-
- fs/afs/proc.c              |   42 +-
- fs/afs/protocol_yfs.h      |    2 +-
- fs/afs/rotate.c            |  447 ++++++---------
- fs/afs/rxrpc.c             |   45 +-
- fs/afs/security.c          |    8 +-
- fs/afs/server.c            |  299 ++++++----
- fs/afs/server_list.c       |   40 +-
- fs/afs/super.c             |  107 ++--
- fs/afs/vl_alias.c          |  382 +++++++++++++
- fs/afs/vl_rotate.c         |    4 +
- fs/afs/vlclient.c          |  146 ++++-
- fs/afs/volume.c            |  154 ++++--
- fs/afs/write.c             |  148 +++--
- fs/afs/xattr.c             |  300 +++++-----
- fs/afs/yfsclient.c         |  914 +++++++++++++------------------
- fs/ext4/inode.c            |   44 +-
- fs/inode.c                 |  112 +++-
- include/linux/fs.h         |    3 +
- include/trace/events/afs.h |  111 +++-
- net/rxrpc/peer_event.c     |    3 +
- net/rxrpc/proc.c           |    6 +-
- 38 files changed, 4437 insertions(+), 3923 deletions(-)
- create mode 100644 fs/afs/fs_operation.c
- create mode 100644 fs/afs/vl_alias.c
-
+> attribution blocks. However, there is lack of handling for
+> corrupted blocks, so newly created EAs may still links to
+> corrupted blocks. This patch tries to drop cached block
+> when detecting corruption to mitigate the effect.
+>=20
+> Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
+> ---
+> fs/ext2/xattr.c | 25 ++++++++++++++++++++++---
+> 1 file changed, 22 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
+> index 943cc469f42f..969521e39753 100644
+> --- a/fs/ext2/xattr.c
+> +++ b/fs/ext2/xattr.c
+> @@ -93,6 +93,8 @@ static int ext2_xattr_set2(struct inode *, struct buffer=
+_head *,
+>               struct ext2_xattr_header *);
+>=20
+> static int ext2_xattr_cache_insert(struct mb_cache *, struct buffer_head *=
+);
+> +static void ext2_xattr_cache_remove(struct mb_cache *cache,
+> +                    struct buffer_head *bh);
+> static struct buffer_head *ext2_xattr_cache_find(struct inode *,
+>                         struct ext2_xattr_header *);
+> static void ext2_xattr_rehash(struct ext2_xattr_header *,
+> @@ -237,8 +239,10 @@ ext2_xattr_get(struct inode *inode, int name_index, c=
+onst char *name,
+>    entry =3D FIRST_ENTRY(bh);
+>    while (!IS_LAST_ENTRY(entry)) {
+>        if (!ext2_xattr_entry_valid(entry, end,
+> -            inode->i_sb->s_blocksize))
+> +            inode->i_sb->s_blocksize)) {
+> +            ext2_xattr_cache_remove(ea_block_cache, bh);
+>            goto bad_block;
+> +        }
+>=20
+>        not_found =3D ext2_xattr_cmp_entry(name_index, name_len, name,
+>                         entry);
+> @@ -323,8 +327,10 @@ ext2_xattr_list(struct dentry *dentry, char *buffer, s=
+ize_t buffer_size)
+>    entry =3D FIRST_ENTRY(bh);
+>    while (!IS_LAST_ENTRY(entry)) {
+>        if (!ext2_xattr_entry_valid(entry, end,
+> -            inode->i_sb->s_blocksize))
+> +            inode->i_sb->s_blocksize)) {
+> +            ext2_xattr_cache_remove(ea_block_cache, bh);
+>            goto bad_block;
+> +        }
+>        entry =3D EXT2_XATTR_NEXT(entry);
+>    }
+>    if (ext2_xattr_cache_insert(ea_block_cache, bh))
+> @@ -407,6 +413,7 @@ int
+> ext2_xattr_set(struct inode *inode, int name_index, const char *name,
+>           const void *value, size_t value_len, int flags)
+> {
+> +    struct mb_cache *ea_block_cache =3D EA_BLOCK_CACHE(inode);
+>    struct super_block *sb =3D inode->i_sb;
+>    struct buffer_head *bh =3D NULL;
+>    struct ext2_xattr_header *header =3D NULL;
+> @@ -464,8 +471,11 @@ ext2_xattr_set(struct inode *inode, int name_index, c=
+onst char *name,
+>         */
+>        last =3D FIRST_ENTRY(bh);
+>        while (!IS_LAST_ENTRY(last)) {
+> -            if (!ext2_xattr_entry_valid(last, end, sb->s_blocksize))
+> +            if (!ext2_xattr_entry_valid(last, end,
+> +                sb->s_blocksize)) {
+> +                ext2_xattr_cache_remove(ea_block_cache, bh);
+>                goto bad_block;
+> +            }
+>            if (last->e_value_size) {
+>                size_t offs =3D le16_to_cpu(last->e_value_offs);
+>                if (offs < min_offs)
+> @@ -881,6 +891,15 @@ ext2_xattr_cache_insert(struct mb_cache *cache, struc=
+t buffer_head *bh)
+>    return error;
+> }
+>=20
+> +static void
+> +ext2_xattr_cache_remove(struct mb_cache *cache, struct buffer_head *bh)
+> +{
+> +    lock_buffer(bh);
+> +    mb_cache_entry_delete(cache, le32_to_cpu(HDR(bh)->h_hash),
+> +                  bh->b_blocknr);
+> +    unlock_buffer(bh);
+> +}
+> +
+> /*
+>  * ext2_xattr_cmp()
+>  *
+> --=20
+> 2.20.1
+>=20
+>=20
