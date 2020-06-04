@@ -2,67 +2,161 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 158711EDD2F
-	for <lists+linux-ext4@lfdr.de>; Thu,  4 Jun 2020 08:27:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 711B81EE4A4
+	for <lists+linux-ext4@lfdr.de>; Thu,  4 Jun 2020 14:41:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727043AbgFDG1D (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 4 Jun 2020 02:27:03 -0400
-Received: from sender2-op-o12.zoho.com.cn ([163.53.93.243]:17191 "EHLO
-        sender2-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725959AbgFDG1A (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 4 Jun 2020 02:27:00 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1591252014; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=axuw/og/0SBtIs7v1VxHjxDYK6qG3rBrEk4yNAM5u1i66EBwB1hYdVvt+RWQnFiRLt75ubUEF/H/XbWdp4FLIVoA2yDr5A3tfE8x1bPMNlYEdrYNWLubxvkPG4593whGzDMvm6sy6+bKF3lQqNcWiKZYSowTXpvJ9zmcx+fUT0g=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1591252014; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=hB6eEYcFUT0usHlsMngAxAuisvsix1M+/W2Cex7Lw+o=; 
-        b=nVmJrnsWgmAJen2/rCFUcMponpGRE+1lxR2+bUdgIIpo9FGWulhOvFFRycGaVmhkU0Ox69mbh5h08oVU0B4G0qES9W1sWSJrexqA7rldY2h5Qc/HcMzchyKaSKlovv9Qhwl6JifjP8alwlPkfQf2kN3f0KRkBLzVxyRjGMnkvqA=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=mykernel.net;
-        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
-        dmarc=pass header.from=<cgxu519@mykernel.net> header.from=<cgxu519@mykernel.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1591252014;
-        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding;
-        bh=hB6eEYcFUT0usHlsMngAxAuisvsix1M+/W2Cex7Lw+o=;
-        b=S9tz31UUdziMYJakb0EvlX2IQlkPSUVv169sAoH5VlpVviuqY4gUsTpgF+gEQ1Oy
-        XViIiSphSIUxiFhyrAWB1XXD+nyJT4iOjHDqyzxn8j8xpSaaf4FcOk5eKClJe1nvP+7
-        rY/3JkrGHVdKcFg9R3CcTj9ZPWtu9nrHbYt5UFAY=
-Received: from [192.168.166.138] (218.18.229.179 [218.18.229.179]) by mx.zoho.com.cn
-        with SMTPS id 1591252010129892.6626369129234; Thu, 4 Jun 2020 14:26:50 +0800 (CST)
-Subject: Re: [RFC PATCH] ext2: drop cached block when detecting corruption
-To:     jack@suse.com
+        id S1726711AbgFDMlI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 4 Jun 2020 08:41:08 -0400
+Received: from mga05.intel.com ([192.55.52.43]:59379 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726084AbgFDMlI (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 4 Jun 2020 08:41:08 -0400
+IronPort-SDR: Q/jArQWTYAiarAtfuUjsllB/84taFKATT8Cbhe+/VJDhC13cGDiPSxEUccMp+bOz8Fx8X2PCKO
+ Cp3/QLZ7Ryrg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2020 05:41:07 -0700
+IronPort-SDR: gFjYo6tafnnd29ufiJ3RAnTKQ4WE3PEJEftRNlLqXFvzRoO8OjgVyrx7rv7wO/nLqxYm1DVCVQ
+ M+P9jcsHpoFQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,472,1583222400"; 
+   d="scan'208";a="471517373"
+Received: from lkp-server01.sh.intel.com (HELO 54ff842e15fb) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 04 Jun 2020 05:41:06 -0700
+Received: from kbuild by 54ff842e15fb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1jgpBC-00003S-5J; Thu, 04 Jun 2020 12:41:06 +0000
+Date:   Thu, 04 Jun 2020 20:40:23 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
 Cc:     linux-ext4@vger.kernel.org
-References: <20200603094417.6143-1-cgxu519@mykernel.net>
-From:   cgxu <cgxu519@mykernel.net>
-Message-ID: <398a6fd8-37ee-c323-b606-c8679067e540@mykernel.net>
-Date:   Thu, 4 Jun 2020 14:26:49 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+Subject: [ext4:dev] BUILD SUCCESS 6b8ed62008a49751fc71fefd2a4f89202a7c2d4d
+Message-ID: <5ed8ebb7.+g8AvTMZFrTF24HF%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20200603094417.6143-1-cgxu519@mykernel.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-ZohoCNMailClient: External
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 6/3/20 5:44 PM, Chengguang Xu wrote:
-> Currently ext2 uses mdcache for deduplication of extended
-> attribution blocks. However, there is lack of handling for
-> corrupted blocks, so newly created EAs may still links to
-> corrupted blocks. This patch tries to drop cached block
-> when detecting corruption to mitigate the effect.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git  dev
+branch HEAD: 6b8ed62008a49751fc71fefd2a4f89202a7c2d4d  ext4: avoid unnecessary transaction starts during writeback
 
-ext2_xattr_cmp() will carefully check every entry in the block,
-so there is no chance to link to corrupted block, maybe we can
-improve the speed of cache related operations by dropping
-corrupted blocks.
+Warning in current branch:
 
+fs/ext4/mballoc.c:2209:9: sparse: sparse: context imbalance in 'ext4_mb_good_group_nolock' - different lock contexts for basic block
 
-Thanks,
-cgxu
+Warning ids grouped by kconfigs:
+
+recent_errors
+`-- x86_64-randconfig-s021-20200603
+    `-- fs-ext4-mballoc.c:sparse:sparse:context-imbalance-in-ext4_mb_good_group_nolock-different-lock-contexts-for-basic-block
+
+elapsed time: 560m
+
+configs tested: 93
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm                           h3600_defconfig
+mips                malta_qemu_32r6_defconfig
+microblaze                      mmu_defconfig
+arm                         hackkit_defconfig
+sh                         apsh4a3a_defconfig
+arm                            mmp2_defconfig
+arm                        neponset_defconfig
+arm                         orion5x_defconfig
+arm                         ebsa110_defconfig
+arm                          moxart_defconfig
+arm                     eseries_pxa_defconfig
+arm                           stm32_defconfig
+arm                     am200epdkit_defconfig
+powerpc                    gamecube_defconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+i386                              allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
