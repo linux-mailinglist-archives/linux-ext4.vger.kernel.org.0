@@ -2,419 +2,95 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83B081EDB2D
-	for <lists+linux-ext4@lfdr.de>; Thu,  4 Jun 2020 04:26:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF9FB1EDC0A
+	for <lists+linux-ext4@lfdr.de>; Thu,  4 Jun 2020 06:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726328AbgFDC0A (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 3 Jun 2020 22:26:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46604 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726047AbgFDC0A (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 3 Jun 2020 22:26:00 -0400
-Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 336C520657;
-        Thu,  4 Jun 2020 02:25:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591237559;
-        bh=mtY+0BqKAtk8g8udHtJQPPg4cNBQETb1s0kd0xnhJ6Y=;
-        h=From:To:Cc:Subject:Date:From;
-        b=MMPE1fGkaNKzaUoyt5USbSfCT5lWZ4lY5y2b4sDWyjdpPd7mfvWr92oxUgJt8TeDn
-         JNoCau/PPJCHSqTvbTGRue/QYTbuOeszvjgBu5A4B6SCYUilbZcI0f3wnPGyRiz+UJ
-         4+AYOfiwb9zOOtHU2ufYm1hZ2I/1SeJkYE57jFLA=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     fstests@vger.kernel.org
-Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: [xfstests PATCH] generic: verify ciphertext of IV_INO_LBLK_32 encryption policies
-Date:   Wed,  3 Jun 2020 19:25:01 -0700
-Message-Id: <20200604022501.425267-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S1726252AbgFDEEP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 4 Jun 2020 00:04:15 -0400
+Received: from sonic317-33.consmr.mail.ne1.yahoo.com ([66.163.184.44]:39256
+        "EHLO sonic317-33.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725861AbgFDEEO (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 4 Jun 2020 00:04:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1591243453; bh=DPYuw2gUpgtMJzJhlH/AVmRGu2wSKCY1C+f8nOCoxu0=; h=Date:From:Reply-To:Subject:References:From:Subject; b=fzrrUzM64ShhHrHGSe9IAs90d20M0XNvNH9clLSNfKAPB4OlDygAa+/OxsMY92FM7qLLErKL/UOOb9EDTdfyjv2KPQro5xDOu5N30WtjtSQAR8dWttut6fRYIBoZUAQPku9OS88CVqkoLqbt0QRnbw2Mp9MwyJueMCwwfZLR/27gmlgJ34NUuqGszqNftedpewUVhTPFOrXUgSNoZEozTfameax8ET8QssrJ2u+GxVCWRpIPuTi+0ovZPiFaCy9RWwNE82LJ3TEcngQqQyuH95ZErXx3fa/PiD6JBhJH8edZuo7KwE4L9a0BWwsvgtn9DirR1C++jESahJIYfHzObg==
+X-YMail-OSG: m95dJDQVM1nZLjgWRsi6eHGj2NfhZxiLJrqSqjCSwZCyMREWnZN2Nevn7hGECpt
+ W55lsm._G2X5quG4wcoQL8LzMws0X92HEjT1.qeP72bISxwcK4ngJEKuIlZu4f4qrK0..Bk3_XQp
+ X.skVB41zwhLZ7XXODu8JMdCXAb6L8Iq4mSZpq1wzGeEqL7TyGOrU35rI2ZRkoEowEfYq.v2GHZu
+ b2zSXXcq3JOOBAbPz6MDTvNqFTNThBLNd230VIqsJmNG0QsXuY51lmebzzcwsIh.jSa3kOmF3yEi
+ eUpe6X_yRswfHuoVLWF1bxkiyBYDze73NL94RsCfKFAVLRKvPrCD83GULAOoQM7wjYX9fh9.Rwhf
+ g.Pg_ZGR3o807xUbPnlL9TS7ZPW5dmpGq8tJQc9NiYuIGW4FdbJolWoYtfhfV7dUMbUAY1cRnaYb
+ 6_9YEshCmsNkiXCVkxIpZrg3xNSbUOv8bHnr4MWnM3TX.WJzu9l69oMur5d5d9qf6wS.r0_uO.G2
+ x3uOJyzB8sS3gKL75W9sATG6NPxF8cMzYVUZHg0Ur5jEWbgLQ2xdUzjf5uVh7cmD9aFhhJ84fBCc
+ A0wrGdKlYFA__FrBY9gKgIzdr6gmmNBsqANtg3wy1F_tWe_HJDzhlz74SlsVcjOjg2f3azyId_P9
+ xb3A2MH7Tps8Y0EjQA.4k4h8Ej5yDIAxUbhwQeDtp1lou.qk12ZRdVKTmqlo4PavrINemFqMaOvx
+ i6dyz0tSii2hv6J44CRbozXnQf7TWkLLu7hFysDvoi5LW787HU5iJE0rM3dXnM36tJBj75wofsXz
+ sCrs1bFFKxp_Xn3NFh4dO3mHHiPifwuel6qyo9CkHaDPJZY1uZZsLU2QUz3NjsDMtq5nr5bkuCfk
+ ww7r_vrgbaCpDxNI1oVdjGctulKKtZlKqXdN2u_BRfuEVJruLnxVRYznbnMHJyjERajowpJjUc5H
+ CbbzFOrmR5yypSOwwQz98s8aQLO7D0uEH_nf0djFKNA7bmeBe.Ap3NKJrX1.lzFC7v0s0f08KUCl
+ YiDiMai.Xdlw8Y3y9PVb3EMSvY6uqbK8YjWf0IrfXsVrOEcOX9XIRcdR1JNFGM88XlU0OBZg0V_9
+ bYV7M5PTepix8HgBnRiBXto_2w.MFC1Ld50KNq9U6iSMvkkApp2U60Fnd6lXeQQzXJnW4Ud2s7X7
+ EmO.SXDOJ0VuowWbvlt4Yr65v2JXO2_l_v7shQPw9hajXoLmKdC1sf1Tcls4ace5PvvM8f2IQ7v3
+ KqLnIFuAEYWLzfv3YT54c65xkrEdkCQFGmLaZEkdwJZUJ45CRawnY.lPFeET9rNWt0XjcKhgfhak
+ -
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic317.consmr.mail.ne1.yahoo.com with HTTP; Thu, 4 Jun 2020 04:04:13 +0000
+Date:   Thu, 4 Jun 2020 04:04:10 +0000 (UTC)
+From:   "Mrs. Mina A. Brunel" <mrsminaabrunel2@gmail.com>
+Reply-To: smrsminaabrunel63@gmail.com
+Message-ID: <759497937.2473485.1591243450092@mail.yahoo.com>
+Subject: My Dear in the lord
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <759497937.2473485.1591243450092.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16037 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
 
-Verify the ciphertext for v2 encryption policies that use the
-IV_INO_LBLK_32 flag and that use AES-256-XTS to encrypt file contents
-and AES-256-CTS-CBC to encrypt file names.
 
-The IV_INO_LBLK_32 encryption policy flag modifies the IV generation and
-key derivation to be optimized for use with inline encryption hardware
-that only accepts 32-bit IVs.  It is similar to IV_INO_LBLK_64 (which is
-tested by generic/592), but it uses a trick to get the IV down to 32
-bits.  For more information, see kernel commit e3b1078bedd3 ("fscrypt:
-add support for IV_INO_LBLK_32 policies").
+My Dear in the lord
 
-This test required adding SipHash support to fscrypt-crypt-util.
 
-Running this test requires a kernel containing the above commit, e.g.
-the latest mainline (which will become v5.8 and later).  For ext4, it
-also needs an e2fsprogs version that supports the stable_inodes feature,
-e.g. the latest git master branch (which will become v1.46 and later).
+My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
+na Faso, I am married to Mr. Brunel Patrice, a politicians who owns a small=
+ gold company in Burkina Faso; He died of Leprosy and Radesyge, in year Feb=
+ruary 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Milli=
+on Euro) Eight million, Five hundred thousand Euros in a bank in Ouagadougo=
+u the capital city of of Burkina in West Africa. The money was from the sal=
+e of his company and death benefits payment and entitlements of my deceased=
+ husband by his company.
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- common/encrypt           |  18 ++++--
- src/fscrypt-crypt-util.c | 121 ++++++++++++++++++++++++++++++++++-----
- tests/generic/900        |  43 ++++++++++++++
- tests/generic/900.out    |   6 ++
- tests/generic/group      |   1 +
- 5 files changed, 171 insertions(+), 18 deletions(-)
- create mode 100755 tests/generic/900
- create mode 100644 tests/generic/900.out
+I am sending you this message with heavy tears in my eyes and great sorrow =
+in my heart, and also praying that it will reach you in good health because=
+ I am not in good health, I sleep every night without knowing if I may be a=
+live to see the next day. I am suffering from long time cancer and presentl=
+y I am partially suffering from Leprosy, which has become difficult for me =
+to move around. I was married to my late husband for more than 6 years with=
+out having a child and my doctor confided that I have less chance to live, =
+having to know when the cup of death will come, I decided to contact you to=
+ claim the fund since I don't have any relation I grew up from an orphanage=
+ home.
 
-diff --git a/common/encrypt b/common/encrypt
-index 5695a123..c4cc2d83 100644
---- a/common/encrypt
-+++ b/common/encrypt
-@@ -97,7 +97,8 @@ _require_encryption_policy_support()
- 	echo "Checking whether kernel supports encryption policy: $set_encpolicy_args" \
- 		>> $seqres.full
- 
--	if (( policy_flags & FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64 )); then
-+	if (( policy_flags & (FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64 |
-+			      FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32) )); then
- 		_scratch_unmount
- 		_scratch_mkfs_stable_inodes_encrypted &>> $seqres.full
- 		_scratch_mount
-@@ -769,6 +770,7 @@ FSCRYPT_MODE_ADIANTUM=9
- 
- FSCRYPT_POLICY_FLAG_DIRECT_KEY=0x04
- FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64=0x08
-+FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32=0x10
- 
- FSCRYPT_KEY_SPEC_TYPE_DESCRIPTOR=1
- FSCRYPT_KEY_SPEC_TYPE_IDENTIFIER=2
-@@ -797,6 +799,7 @@ _fscrypt_mode_name_to_num()
- #	'v2':			test a v2 encryption policy
- #	'direct':		test the DIRECT_KEY policy flag
- #	'iv_ino_lblk_64':	test the IV_INO_LBLK_64 policy flag
-+#	'iv_ino_lblk_32':	test the IV_INO_LBLK_32 policy flag
- #
- _verify_ciphertext_for_encryption_policy()
- {
-@@ -826,6 +829,9 @@ _verify_ciphertext_for_encryption_policy()
- 		iv_ino_lblk_64)
- 			(( policy_flags |= FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64 ))
- 			;;
-+		iv_ino_lblk_32)
-+			(( policy_flags |= FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32 ))
-+			;;
- 		*)
- 			_fail "Unknown option '$opt' passed to ${FUNCNAME[0]}"
- 			;;
-@@ -841,14 +847,15 @@ _verify_ciphertext_for_encryption_policy()
- 		set_encpolicy_args+=" -v 2"
- 		crypt_util_args+=" --kdf=HKDF-SHA512"
- 		if (( policy_flags & FSCRYPT_POLICY_FLAG_DIRECT_KEY )); then
--			if (( policy_flags & FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64 )); then
--				_fail "'direct' and 'iv_ino_lblk_64' options are mutually exclusive"
--			fi
- 			crypt_util_args+=" --mode-num=$contents_mode_num"
- 		elif (( policy_flags & FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64 )); then
- 			crypt_util_args+=" --iv-ino-lblk-64"
- 			crypt_util_contents_args+=" --mode-num=$contents_mode_num"
- 			crypt_util_filename_args+=" --mode-num=$filenames_mode_num"
-+		elif (( policy_flags & FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32 )); then
-+			crypt_util_args+=" --iv-ino-lblk-32"
-+			crypt_util_contents_args+=" --mode-num=$contents_mode_num"
-+			crypt_util_filename_args+=" --mode-num=$filenames_mode_num"
- 		fi
- 	else
- 		if (( policy_flags & ~FSCRYPT_POLICY_FLAG_DIRECT_KEY )); then
-@@ -872,7 +879,8 @@ _verify_ciphertext_for_encryption_policy()
- 	fi
- 
- 	echo "Creating encryption-capable filesystem" >> $seqres.full
--	if (( policy_flags & FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64 )); then
-+	if (( policy_flags & (FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64 |
-+			      FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32) )); then
- 		_scratch_mkfs_stable_inodes_encrypted &>> $seqres.full
- 	else
- 		_scratch_mkfs_encrypted &>> $seqres.full
-diff --git a/src/fscrypt-crypt-util.c b/src/fscrypt-crypt-util.c
-index 1bf8f95c..ce9da85d 100644
---- a/src/fscrypt-crypt-util.c
-+++ b/src/fscrypt-crypt-util.c
-@@ -63,10 +63,14 @@ static void usage(FILE *fp)
- "  --decrypt                   Decrypt instead of encrypt\n"
- "  --file-nonce=NONCE          File's nonce as a 32-character hex string\n"
- "  --fs-uuid=UUID              The filesystem UUID as a 32-character hex string.\n"
--"                                Only required for --iv-ino-lblk-64.\n"
-+"                                Required for --iv-ino-lblk-32 and\n"
-+"                                --iv-ino-lblk-64; otherwise is unused.\n"
- "  --help                      Show this help\n"
--"  --inode-number=INUM         The file's inode number.  Only required for\n"
--"                                --iv-ino-lblk-64.\n"
-+"  --inode-number=INUM         The file's inode number.  Required for\n"
-+"                                --iv-ino-lblk-32 and --iv-ino-lblk-64;\n"
-+"                                otherwise is unused.\n"
-+"  --iv-ino-lblk-32            Similar to --iv-ino-lblk-64, but selects the\n"
-+"                                32-bit variant.\n"
- "  --iv-ino-lblk-64            Use the format where the IVs include the inode\n"
- "                                number and the same key is shared across files.\n"
- "                                Requires --kdf=HKDF-SHA512, --fs-uuid,\n"
-@@ -143,6 +147,11 @@ static inline u32 ror32(u32 v, int n)
- 	return (v >> n) | (v << (32 - n));
- }
- 
-+static inline u64 rol64(u64 v, int n)
-+{
-+	return (v << n) | (v >> (64 - n));
-+}
-+
- static inline u64 ror64(u64 v, int n)
- {
- 	return (v >> n) | (v << (64 - n));
-@@ -1579,6 +1588,50 @@ static void test_adiantum(void)
- }
- #endif /* ENABLE_ALG_TESTS */
- 
-+/*----------------------------------------------------------------------------*
-+ *                               SipHash-2-4                                  *
-+ *----------------------------------------------------------------------------*/
-+
-+/*
-+ * Reference: "SipHash: a fast short-input PRF"
-+ *	https://cr.yp.to/siphash/siphash-20120918.pdf
-+ */
-+
-+#define SIPROUND						\
-+	do {							\
-+		v0 += v1;	    v2 += v3;			\
-+		v1 = rol64(v1, 13); v3 = rol64(v3, 16);		\
-+		v1 ^= v0;	    v3 ^= v2;			\
-+		v0 = rol64(v0, 32);				\
-+		v2 += v1;	    v0 += v3;			\
-+		v1 = rol64(v1, 17); v3 = rol64(v3, 21);		\
-+		v1 ^= v2;	    v3 ^= v0;			\
-+		v2 = rol64(v2, 32);				\
-+	} while (0)
-+
-+/* Compute the SipHash-2-4 of a 64-bit number when formatted as little endian */
-+static u64 siphash_1u64(const u64 key[2], u64 data)
-+{
-+	u64 v0 = key[0] ^ 0x736f6d6570736575ULL;
-+	u64 v1 = key[1] ^ 0x646f72616e646f6dULL;
-+	u64 v2 = key[0] ^ 0x6c7967656e657261ULL;
-+	u64 v3 = key[1] ^ 0x7465646279746573ULL;
-+	u64 m[2] = {data, (u64)sizeof(data) << 56};
-+	size_t i;
-+
-+	for (i = 0; i < ARRAY_SIZE(m); i++) {
-+		v3 ^= m[i];
-+		SIPROUND;
-+		SIPROUND;
-+		v0 ^= m[i];
-+	}
-+
-+	v2 ^= 0xff;
-+	for (i = 0; i < 4; i++)
-+		SIPROUND;
-+	return v0 ^ v1 ^ v2 ^ v3;
-+}
-+
- /*----------------------------------------------------------------------------*
-  *                               Main program                                 *
-  *----------------------------------------------------------------------------*/
-@@ -1723,15 +1776,39 @@ struct key_and_iv_params {
- 	u8 file_nonce[FILE_NONCE_SIZE];
- 	bool file_nonce_specified;
- 	bool iv_ino_lblk_64;
-+	bool iv_ino_lblk_32;
- 	u32 inode_number;
- 	u8 fs_uuid[UUID_SIZE];
- 	bool fs_uuid_specified;
- };
- 
- #define HKDF_CONTEXT_KEY_IDENTIFIER	1
--#define HKDF_CONTEXT_PER_FILE_KEY	2
-+#define HKDF_CONTEXT_PER_FILE_ENC_KEY	2
- #define HKDF_CONTEXT_DIRECT_KEY		3
- #define HKDF_CONTEXT_IV_INO_LBLK_64_KEY	4
-+#define HKDF_CONTEXT_DIRHASH_KEY	5
-+#define HKDF_CONTEXT_IV_INO_LBLK_32_KEY	6
-+#define HKDF_CONTEXT_INODE_HASH_KEY	7
-+
-+/* Hash the file's inode number using SipHash keyed by a derived key */
-+static u32 hash_inode_number(const struct key_and_iv_params *params)
-+{
-+	u8 info[9] = "fscrypt";
-+	union {
-+		u64 words[2];
-+		u8 bytes[16];
-+	} hash_key;
-+
-+	info[8] = HKDF_CONTEXT_INODE_HASH_KEY;
-+	hkdf_sha512(params->master_key, params->master_key_size,
-+		    NULL, 0, info, sizeof(info),
-+		    hash_key.bytes, sizeof(hash_key));
-+
-+	hash_key.words[0] = get_unaligned_le64(&hash_key.bytes[0]);
-+	hash_key.words[1] = get_unaligned_le64(&hash_key.bytes[8]);
-+
-+	return (u32)siphash_1u64(hash_key.words, params->inode_number);
-+}
- 
- /*
-  * Get the key and starting IV with which the encryption will actually be done.
-@@ -1752,8 +1829,20 @@ static void get_key_and_iv(const struct key_and_iv_params *params,
- 
- 	memset(iv, 0, sizeof(*iv));
- 
--	if (params->iv_ino_lblk_64 && params->kdf != KDF_HKDF_SHA512)
--		die("--iv-ino-lblk-64 requires --kdf=HKDF-SHA512");
-+	if (params->iv_ino_lblk_64 || params->iv_ino_lblk_32) {
-+		const char *opt = params->iv_ino_lblk_64 ? "--iv-ino-lblk-64" :
-+							   "--iv-ino-lblk-32";
-+		if (params->iv_ino_lblk_64 && params->iv_ino_lblk_32)
-+			die("--iv-ino-lblk-64 and --iv-ino-lblk-32 are mutually exclusive");
-+		if (params->kdf != KDF_HKDF_SHA512)
-+			die("%s requires --kdf=HKDF-SHA512", opt);
-+		if (!params->fs_uuid_specified)
-+			die("%s requires --fs-uuid", opt);
-+		if (params->inode_number == 0)
-+			die("%s requires --inode-number", opt);
-+		if (params->mode_num == 0)
-+			die("%s requires --mode-num", opt);
-+	}
- 
- 	switch (params->kdf) {
- 	case KDF_NONE:
-@@ -1776,23 +1865,24 @@ static void get_key_and_iv(const struct key_and_iv_params *params,
- 		break;
- 	case KDF_HKDF_SHA512:
- 		if (params->iv_ino_lblk_64) {
--			if (!params->fs_uuid_specified)
--				die("--iv-ino-lblk-64 requires --fs-uuid");
--			if (params->inode_number == 0)
--				die("--iv-ino-lblk-64 requires --inode-number");
--			if (params->mode_num == 0)
--				die("--iv-ino-lblk-64 requires --mode-num");
- 			info[infolen++] = HKDF_CONTEXT_IV_INO_LBLK_64_KEY;
- 			info[infolen++] = params->mode_num;
- 			memcpy(&info[infolen], params->fs_uuid, UUID_SIZE);
- 			infolen += UUID_SIZE;
- 			put_unaligned_le32(params->inode_number, &iv->bytes[4]);
-+		} else if (params->iv_ino_lblk_32) {
-+			info[infolen++] = HKDF_CONTEXT_IV_INO_LBLK_32_KEY;
-+			info[infolen++] = params->mode_num;
-+			memcpy(&info[infolen], params->fs_uuid, UUID_SIZE);
-+			infolen += UUID_SIZE;
-+			put_unaligned_le32(hash_inode_number(params),
-+					   iv->bytes);
- 		} else if (params->mode_num != 0) {
- 			info[infolen++] = HKDF_CONTEXT_DIRECT_KEY;
- 			info[infolen++] = params->mode_num;
- 			file_nonce_in_iv = true;
- 		} else if (params->file_nonce_specified) {
--			info[infolen++] = HKDF_CONTEXT_PER_FILE_KEY;
-+			info[infolen++] = HKDF_CONTEXT_PER_FILE_ENC_KEY;
- 			memcpy(&info[infolen], params->file_nonce,
- 			       FILE_NONCE_SIZE);
- 			infolen += FILE_NONCE_SIZE;
-@@ -1817,6 +1907,7 @@ enum {
- 	OPT_FS_UUID,
- 	OPT_HELP,
- 	OPT_INODE_NUMBER,
-+	OPT_IV_INO_LBLK_32,
- 	OPT_IV_INO_LBLK_64,
- 	OPT_KDF,
- 	OPT_MODE_NUM,
-@@ -1830,6 +1921,7 @@ static const struct option longopts[] = {
- 	{ "fs-uuid",         required_argument, NULL, OPT_FS_UUID },
- 	{ "help",            no_argument,       NULL, OPT_HELP },
- 	{ "inode-number",    required_argument, NULL, OPT_INODE_NUMBER },
-+	{ "iv-ino-lblk-32",  no_argument,       NULL, OPT_IV_INO_LBLK_32 },
- 	{ "iv-ino-lblk-64",  no_argument,       NULL, OPT_IV_INO_LBLK_64 },
- 	{ "kdf",             required_argument, NULL, OPT_KDF },
- 	{ "mode-num",        required_argument, NULL, OPT_MODE_NUM },
-@@ -1890,6 +1982,9 @@ int main(int argc, char *argv[])
- 		case OPT_INODE_NUMBER:
- 			params.inode_number = parse_inode_number(optarg);
- 			break;
-+		case OPT_IV_INO_LBLK_32:
-+			params.iv_ino_lblk_32 = true;
-+			break;
- 		case OPT_IV_INO_LBLK_64:
- 			params.iv_ino_lblk_64 = true;
- 			break;
-diff --git a/tests/generic/900 b/tests/generic/900
-new file mode 100755
-index 00000000..dc2a2225
---- /dev/null
-+++ b/tests/generic/900
-@@ -0,0 +1,43 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright 2020 Google LLC
-+#
-+# FS QA Test No. 900
-+#
-+# Verify ciphertext for v2 encryption policies that use the IV_INO_LBLK_32 flag
-+# and use AES-256-XTS to encrypt file contents and AES-256-CTS-CBC to encrypt
-+# file names.
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+here=`pwd`
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+	cd /
-+	rm -f $tmp.*
-+}
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+. ./common/encrypt
-+
-+# remove previous $seqres.full before test
-+rm -f $seqres.full
-+
-+# real QA test starts here
-+_supported_fs generic
-+_supported_os Linux
-+
-+_verify_ciphertext_for_encryption_policy AES-256-XTS AES-256-CTS-CBC \
-+	v2 iv_ino_lblk_32
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/generic/900.out b/tests/generic/900.out
-new file mode 100644
-index 00000000..8fbb34cc
---- /dev/null
-+++ b/tests/generic/900.out
-@@ -0,0 +1,6 @@
-+QA output created by 900
-+
-+Verifying ciphertext with parameters:
-+	contents_encryption_mode: AES-256-XTS
-+	filenames_encryption_mode: AES-256-CTS-CBC
-+	options: v2 iv_ino_lblk_32
-diff --git a/tests/generic/group b/tests/generic/group
-index c6ce029c..d3501ccc 100644
---- a/tests/generic/group
-+++ b/tests/generic/group
-@@ -604,3 +604,4 @@
- 599 auto quick remount shutdown
- 600 auto quick quota
- 601 auto quick quota
-+900 auto quick encrypt
--- 
-2.26.2
+I have decided to donate this money for the support of helping Motherless b=
+abies/Less privileged/Widows and churches also to build the house of God be=
+cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
+cided to donate from what I have inherited from my late husband to you for =
+the good work of Almighty God; I will be going in for an operation surgery =
+soon.
 
+Now I want you to stand as my next of kin to claim the funds for charity pu=
+rposes. Because of this money remains unclaimed after my death, the bank ex=
+ecutives or the government will take the money as unclaimed fund and maybe =
+use it for selfishness and worthless ventures, I need a very honest person =
+who can claim this money and use it for Charity works, for orphanages, wido=
+ws and also build schools and churches for less privilege that will be name=
+d after my late husband and my name.
+
+I need your urgent answer to know if you will be able to execute this proje=
+ct, and I will give you more information on how the fund will be transferre=
+d to your bank account or online banking.
+
+Thanks
+Mrs. Mina A. Brunel
