@@ -2,166 +2,205 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D387A1EEB2D
-	for <lists+linux-ext4@lfdr.de>; Thu,  4 Jun 2020 21:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 470471EEE2E
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jun 2020 01:13:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728809AbgFDTbo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 4 Jun 2020 15:31:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726666AbgFDTbn (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 4 Jun 2020 15:31:43 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A308EC08C5C0
-        for <linux-ext4@vger.kernel.org>; Thu,  4 Jun 2020 12:31:43 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id b5so3725389pfp.9
-        for <linux-ext4@vger.kernel.org>; Thu, 04 Jun 2020 12:31:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=kHwANpdmUkrTfxwqS86A1kJbf7bf2zHr7UBG62ZQT/w=;
-        b=XfE/71riLd3x6A1wPiokNxKOJ2OLJyePMB22AJlzHJ2lkVs5Ara0QCrx0iiBBa28nj
-         ScffRJreVbWy/f8fRXWTiWWTDe9jivl/hGeRTZOoYOFSReHaqL/GsyP30UGvRTLS4ZSO
-         YxGW7Re4DuTxWZDtpIg7P66qB0tGde/X6QL/pAAGMlUJqm/1RMxyMr8jZmEgOky+oswF
-         DuEFwC22y84wNCMEKDUtox7/hE+QDZs6sRR73RfrwlmoWbAuXpCWVNkg+r4aWQZqpbwr
-         G6hmh2ohJPpjR88BhdLfmzQvibE2+UqDCBUq5jqDCoPAi2h/kmnfmbt9kOm2k7gHXd8J
-         YAPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=kHwANpdmUkrTfxwqS86A1kJbf7bf2zHr7UBG62ZQT/w=;
-        b=jl5+61hzPnOCvSV+NKsj+paBP3KHjfZtCvAdZ3HUlb97i+YNQzeeF95GD6Lf00byOA
-         9iNl6pXU8VOMESnrj35/eF9W47GbDxcSvK3hRRSdvHdp96143N97LRIlUi6TEZ54OzGK
-         gxwww4CnjmNq9ZX01sqpEeGTaRyet8QJwG1/EVdbzJbAkiMvVg+eoe6Yev6yStU9e6Q/
-         8I0eNynDzhPjOuDtPDg0MnqF+Nj0VLigG+Fk+CsEwdT8qBlhO1dsT+9ehqlpxsgxtQz7
-         HsuLmq8IqMlGo1zdvYLMttLTzfU2ks18t8ThPpc833ePq4qLm4ljnqQPTXwsiMPKWyx9
-         8emQ==
-X-Gm-Message-State: AOAM530aVWvOPWAQu08PEFD8ESa7M1h+jDG9Z11JFl0zctx2jCwCW9XL
-        +in48d8xIZrZncRUxPOLuJPPBmOA65JUFQ==
-X-Google-Smtp-Source: ABdhPJw1Q07XlANhMJ09cmattoe+pY8WqA6DISMU6FykDFSrqYlFp4vgUcec8QOPl7G1eYyjSoHWpg==
-X-Received: by 2002:a62:6846:: with SMTP id d67mr5953861pfc.167.1591299102797;
-        Thu, 04 Jun 2020 12:31:42 -0700 (PDT)
-Received: from [192.168.10.175] (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
-        by smtp.gmail.com with ESMTPSA id y6sm5555105pfp.144.2020.06.04.12.31.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Jun 2020 12:31:41 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andreas Dilger <adilger@dilger.ca>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [RFC PATCH] ext2: drop cached block when detecting corruption
-Date:   Thu, 4 Jun 2020 13:31:40 -0600
-Message-Id: <B50814CC-57FB-4FDE-887B-3608C61AAF22@dilger.ca>
-References: <20200603094417.6143-1-cgxu519@mykernel.net>
-Cc:     jack@suse.com, linux-ext4@vger.kernel.org
-In-Reply-To: <20200603094417.6143-1-cgxu519@mykernel.net>
-To:     Chengguang Xu <cgxu519@mykernel.net>
-X-Mailer: iPhone Mail (17E262)
+        id S1726116AbgFDXNI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 4 Jun 2020 19:13:08 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:59759 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725943AbgFDXNH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 4 Jun 2020 19:13:07 -0400
+Received: from callcc.thunk.org (pool-100-0-195-244.bstnma.fios.verizon.net [100.0.195.244])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 054NCxeT012058
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 4 Jun 2020 19:13:00 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id B8E4B4200DD; Thu,  4 Jun 2020 19:12:59 -0400 (EDT)
+Date:   Thu, 4 Jun 2020 19:12:59 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: [GIT PULL] ext4 changes for 5.8-rc1
+Message-ID: <20200604231259.GA1992367@mit.edu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Jun 3, 2020, at 03:44, Chengguang Xu <cgxu519@mykernel.net> wrote:
->=20
-> =EF=BB=BFCurrently ext2 uses mdcache for deduplication of extended
+The following changes since commit 0e698dfa282211e414076f9dc7e83c1c288314fd:
 
-(typo) this should be "mbcache"
+  Linux 5.7-rc4 (2020-05-03 14:56:04 -0700)
 
+are available in the Git repository at:
 
-> attribution blocks. However, there is lack of handling for
-> corrupted blocks, so newly created EAs may still links to
-> corrupted blocks. This patch tries to drop cached block
-> when detecting corruption to mitigate the effect.
->=20
-> Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
-> ---
-> fs/ext2/xattr.c | 25 ++++++++++++++++++++++---
-> 1 file changed, 22 insertions(+), 3 deletions(-)
->=20
-> diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
-> index 943cc469f42f..969521e39753 100644
-> --- a/fs/ext2/xattr.c
-> +++ b/fs/ext2/xattr.c
-> @@ -93,6 +93,8 @@ static int ext2_xattr_set2(struct inode *, struct buffer=
-_head *,
->               struct ext2_xattr_header *);
->=20
-> static int ext2_xattr_cache_insert(struct mb_cache *, struct buffer_head *=
-);
-> +static void ext2_xattr_cache_remove(struct mb_cache *cache,
-> +                    struct buffer_head *bh);
-> static struct buffer_head *ext2_xattr_cache_find(struct inode *,
->                         struct ext2_xattr_header *);
-> static void ext2_xattr_rehash(struct ext2_xattr_header *,
-> @@ -237,8 +239,10 @@ ext2_xattr_get(struct inode *inode, int name_index, c=
-onst char *name,
->    entry =3D FIRST_ENTRY(bh);
->    while (!IS_LAST_ENTRY(entry)) {
->        if (!ext2_xattr_entry_valid(entry, end,
-> -            inode->i_sb->s_blocksize))
-> +            inode->i_sb->s_blocksize)) {
-> +            ext2_xattr_cache_remove(ea_block_cache, bh);
->            goto bad_block;
-> +        }
->=20
->        not_found =3D ext2_xattr_cmp_entry(name_index, name_len, name,
->                         entry);
-> @@ -323,8 +327,10 @@ ext2_xattr_list(struct dentry *dentry, char *buffer, s=
-ize_t buffer_size)
->    entry =3D FIRST_ENTRY(bh);
->    while (!IS_LAST_ENTRY(entry)) {
->        if (!ext2_xattr_entry_valid(entry, end,
-> -            inode->i_sb->s_blocksize))
-> +            inode->i_sb->s_blocksize)) {
-> +            ext2_xattr_cache_remove(ea_block_cache, bh);
->            goto bad_block;
-> +        }
->        entry =3D EXT2_XATTR_NEXT(entry);
->    }
->    if (ext2_xattr_cache_insert(ea_block_cache, bh))
-> @@ -407,6 +413,7 @@ int
-> ext2_xattr_set(struct inode *inode, int name_index, const char *name,
->           const void *value, size_t value_len, int flags)
-> {
-> +    struct mb_cache *ea_block_cache =3D EA_BLOCK_CACHE(inode);
->    struct super_block *sb =3D inode->i_sb;
->    struct buffer_head *bh =3D NULL;
->    struct ext2_xattr_header *header =3D NULL;
-> @@ -464,8 +471,11 @@ ext2_xattr_set(struct inode *inode, int name_index, c=
-onst char *name,
->         */
->        last =3D FIRST_ENTRY(bh);
->        while (!IS_LAST_ENTRY(last)) {
-> -            if (!ext2_xattr_entry_valid(last, end, sb->s_blocksize))
-> +            if (!ext2_xattr_entry_valid(last, end,
-> +                sb->s_blocksize)) {
-> +                ext2_xattr_cache_remove(ea_block_cache, bh);
->                goto bad_block;
-> +            }
->            if (last->e_value_size) {
->                size_t offs =3D le16_to_cpu(last->e_value_offs);
->                if (offs < min_offs)
-> @@ -881,6 +891,15 @@ ext2_xattr_cache_insert(struct mb_cache *cache, struc=
-t buffer_head *bh)
->    return error;
-> }
->=20
-> +static void
-> +ext2_xattr_cache_remove(struct mb_cache *cache, struct buffer_head *bh)
-> +{
-> +    lock_buffer(bh);
-> +    mb_cache_entry_delete(cache, le32_to_cpu(HDR(bh)->h_hash),
-> +                  bh->b_blocknr);
-> +    unlock_buffer(bh);
-> +}
-> +
-> /*
->  * ext2_xattr_cmp()
->  *
-> --=20
-> 2.20.1
->=20
->=20
+  git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus
+
+for you to fetch changes up to 6b8ed62008a49751fc71fefd2a4f89202a7c2d4d:
+
+  ext4: avoid unnecessary transaction starts during writeback (2020-06-03 23:16:56 -0400)
+
+----------------------------------------------------------------
+A lot of bug fixes and cleanups for ext4, including:
+
+* Fix performance problems found in dioread_nolock now that it is the
+  default, caused by transaction leaks.
+* Clean up fiemap handling in ext4
+* Clean up and refactor multiple block allocator (mballoc) code
+* Fix a problem with mballoc with a smaller file systems running out
+  of blocks because they couldn't properly use blocks that had been
+  reserved by inode preallocation.
+* Fixed a race in ext4_sync_parent() versus rename()
+* Simplify the error handling in the extent manipulation code
+* Make sure all metadata I/O errors are felected to ext4_ext_dirty()'s and
+  ext4_make_inode_dirty()'s callers.
+* Avoid passing an error pointer to brelse in ext4_xattr_set()
+* Fix race which could result to freeing an inode on the dirty last
+  in data=journal mode.
+* Fix refcount handling if ext4_iget() fails
+* Fix a crash in generic/019 caused by a corrupted extent node
+
+----------------------------------------------------------------
+Carlos Guerrero Álvarez (1):
+      ext4: fix a style issue in fs/ext4/acl.c
+
+Christoph Hellwig (10):
+      ext4: fix fiemap size checks for bitmap files
+      ext4: split _ext4_fiemap
+      ext4: remove the call to fiemap_check_flags in ext4_fiemap
+      fs: mark __generic_block_fiemap static
+      fs: move the fiemap definitions out of fs.h
+      iomap: fix the iomap_fiemap prototype
+      fs: move fiemap range validation into the file systems instances
+      fs: handle FIEMAP_FLAG_SYNC in fiemap_prep
+      fs: remove the access_ok() check in ioctl_fiemap
+      ext4: remove the access_ok() check in ext4_ioctl_get_es_cache
+
+Christophe JAILLET (1):
+      ext4: fix a typo in a comment
+
+Eric Biggers (2):
+      ext4: fix race between ext4_sync_parent() and rename()
+      ext4: add casefold flag to EXT4_INODE_* flags
+
+Eric Whitney (7):
+      ext4: remove EXT4_GET_BLOCKS_KEEP_SIZE flag
+      ext4: translate a few more map flags to strings in tracepoints
+      ext4: remove dead GET_BLOCKS_ZERO code
+      ext4: remove redundant GET_BLOCKS_CONVERT code
+      ext4: clean up GET_BLOCKS_PRE_IO error handling
+      ext4: clean up ext4_ext_convert_to_initialized() error handling
+      ext4: rework map struct instantiation in ext4_ext_map_blocks()
+
+Harshad Shirwadkar (3):
+      ext4: fix EXT_MAX_EXTENT/INDEX to check for zeroed eh_max
+      ext4: handle ext4_mark_inode_dirty errors
+      ext4: don't ignore return values from ext4_ext_dirty()
+
+Jan Kara (5):
+      writeback: Export inode_io_list_del()
+      ext4: Avoid freeing inodes on dirty list
+      ext4: drop ext4_journal_free_reserved()
+      jbd2: avoid leaking transaction credits when unreserving handle
+      ext4: avoid unnecessary transaction starts during writeback
+
+Jason Yan (1):
+      ext4: remove unnecessary comparisons to bool
+
+Jeffle Xu (1):
+      ext4: fix error pointer dereference
+
+Jens Axboe (1):
+      ext4: don't block for O_DIRECT if IOCB_NOWAIT is set
+
+Jonathan Grant (1):
+      add comment for ext4_dir_entry_2 file_type member
+
+Kaixu Xia (2):
+      ext4: remove unnecessary test_opt for DIOREAD_NOLOCK
+      ext4: remove redundant variable has_bigalloc in ext4_fill_super
+
+Ritesh Harjani (21):
+      ext4: mballoc: print bb_free info even when it is 0
+      ext4: mballoc: refactor ext4_mb_show_ac()
+      ext4: mballoc: add more mb_debug() msgs
+      ext4: mballoc: correct the mb_debug() format specifier for pa_len var
+      ext4: mballoc: fix few other format specifier in mb_debug()
+      ext4: mballoc: simplify error handling in ext4_init_mballoc()
+      ext4: mballoc: make ext4_mb_use_preallocated() return type as bool
+      ext4: mballoc: refactor code inside DOUBLE_CHECK into separate function
+      ext4: mballoc: fix possible NULL ptr & remove BUG_ONs from DOUBLE_CHECK
+      ext4: balloc: use task_pid_nr() helper
+      ext4: use BIT() macro for BH_** state bits
+      ext4: improve ext_debug() msg in case of block allocation failure
+      ext4: replace EXT_DEBUG with __maybe_unused in ext4_ext_handle_unwritten_extents()
+      ext4: mballoc: make mb_debug() implementation to use pr_debug()
+      ext4: make ext_debug() implementation to use pr_debug()
+      ext4: mballoc: add blocks to PA list under same spinlock after allocating blocks
+      ext4: mballoc: refactor ext4_mb_discard_preallocations()
+      ext4: mballoc: introduce pcpu seqcnt for freeing PA to improve ENOSPC handling
+      ext4: mballoc: refactor ext4_mb_good_group()
+      ext4: mballoc: use lock for checking free blocks while retrying
+      ext4: fix EXT4_MAX_LOGICAL_BLOCK macro
+
+Theodore Ts'o (1):
+      ext4: avoid ext4_error()'s caused by ENOMEM in the truncate path
+
+Xiyu Yang (1):
+      ext4: fix buffer_head refcnt leak when ext4_iget() fails
+
+ Documentation/filesystems/fiemap.txt |  12 +-
+ fs/bad_inode.c                       |   1 +
+ fs/btrfs/extent_io.h                 |   1 +
+ fs/btrfs/inode.c                     |   4 +-
+ fs/cifs/inode.c                      |   1 +
+ fs/cifs/smb2ops.c                    |   6 +-
+ fs/ext2/inode.c                      |   1 +
+ fs/ext4/Kconfig                      |   3 +-
+ fs/ext4/acl.c                        |   5 +-
+ fs/ext4/balloc.c                     |   5 +-
+ fs/ext4/ext4.h                       |  42 +++--
+ fs/ext4/ext4_extents.h               |   9 +-
+ fs/ext4/ext4_jbd2.h                  |  11 +-
+ fs/ext4/extents.c                    | 473 ++++++++++++++++++++++++++++++------------------------
+ fs/ext4/extents_status.c             |   2 +-
+ fs/ext4/file.c                       |  17 +-
+ fs/ext4/fsync.c                      |  28 ++--
+ fs/ext4/ialloc.c                     |   1 +
+ fs/ext4/indirect.c                   |   4 +-
+ fs/ext4/inline.c                     |   6 +-
+ fs/ext4/inode.c                      | 108 +++++++------
+ fs/ext4/ioctl.c                      |  41 +----
+ fs/ext4/mballoc.c                    | 512 ++++++++++++++++++++++++++++++++++++++---------------------
+ fs/ext4/mballoc.h                    |  16 +-
+ fs/ext4/migrate.c                    |  12 +-
+ fs/ext4/namei.c                      |  76 +++++----
+ fs/ext4/super.c                      |  27 ++--
+ fs/ext4/xattr.c                      |  13 +-
+ fs/f2fs/data.c                       |   3 +-
+ fs/f2fs/inline.c                     |   1 +
+ fs/fs-writeback.c                    |   1 +
+ fs/gfs2/inode.c                      |   1 +
+ fs/hpfs/file.c                       |   1 +
+ fs/internal.h                        |   2 -
+ fs/ioctl.c                           |  82 ++++------
+ fs/iomap/fiemap.c                    |  11 +-
+ fs/jbd2/transaction.c                |  14 +-
+ fs/nilfs2/inode.c                    |   3 +-
+ fs/ocfs2/extent_map.c                |   4 +-
+ fs/overlayfs/inode.c                 |   5 +-
+ fs/xfs/xfs_iops.c                    |   1 +
+ include/linux/fiemap.h               |  25 +++
+ include/linux/fs.h                   |  23 +--
+ include/linux/iomap.h                |   2 +-
+ include/linux/writeback.h            |   1 +
+ include/trace/events/ext4.h          |   9 +-
+ include/uapi/linux/fiemap.h          |   6 +-
+ 47 files changed, 938 insertions(+), 694 deletions(-)
+ create mode 100644 include/linux/fiemap.h
