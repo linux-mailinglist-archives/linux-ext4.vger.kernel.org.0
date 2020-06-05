@@ -2,205 +2,98 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 470471EEE2E
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jun 2020 01:13:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 914851EEF49
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jun 2020 04:02:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726116AbgFDXNI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 4 Jun 2020 19:13:08 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:59759 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725943AbgFDXNH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 4 Jun 2020 19:13:07 -0400
-Received: from callcc.thunk.org (pool-100-0-195-244.bstnma.fios.verizon.net [100.0.195.244])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 054NCxeT012058
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 4 Jun 2020 19:13:00 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id B8E4B4200DD; Thu,  4 Jun 2020 19:12:59 -0400 (EDT)
-Date:   Thu, 4 Jun 2020 19:12:59 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: [GIT PULL] ext4 changes for 5.8-rc1
-Message-ID: <20200604231259.GA1992367@mit.edu>
+        id S1726084AbgFECC3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 4 Jun 2020 22:02:29 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:36974 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725883AbgFECCU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 4 Jun 2020 22:02:20 -0400
+Received: by mail-il1-f198.google.com with SMTP id n2so5338172ilq.4
+        for <linux-ext4@vger.kernel.org>; Thu, 04 Jun 2020 19:02:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=4rcueDE6zN7DRRKwO+S7Sh4oUwAm56CiDtVj9788tc0=;
+        b=uJ8gc/iZk5UhanyXYD1iDIl9qob0ANNejHstDIG8sc4U0gOsVKsh7tx4GlL9s+V3Fo
+         3L+2nwu4vcsnX5jioJtHyH+8BHogditxTN1gKjsQS/vW2PMbm17St6CXcbp5N0Rp4WUS
+         IEJmNM/r3XwerrP6ZAh8k7ucmhvF0vZFd0RyIKmt9Cpg1ZMBShQhWj4PXOFdV8RUd1QF
+         zLVk57qcq4L5eb0u8755piIFdKggLdtBwsVFiZF8dUYru9mDPsQ9wVdnaVsnFL0GC0DZ
+         rdMtcx71MT1UVENUc3HvzwNytCUy4ONw+ptb01yxhxDzlT2dYU4kL3sYZj6MZbpn57yx
+         wvuw==
+X-Gm-Message-State: AOAM530fqUSjEl3brIacEBOVdIntlQstYnSbLJU1pMolig4A+EyBf1Js
+        cMHJC/KHF/6RfPUD6IkOHZvYxAxm8uttOzoR9AmDBr/qERkj
+X-Google-Smtp-Source: ABdhPJwn6iMhHcIMJ4Cst6v/CJSQLfOI0lmzwZsatfmQ5asx8AtEQcplJ+OCDFRmExBxWwU+vH6o0TkPdU7g27IJoghKIzVu4vmb
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a02:908b:: with SMTP id x11mr6533785jaf.41.1591322538916;
+ Thu, 04 Jun 2020 19:02:18 -0700 (PDT)
+Date:   Thu, 04 Jun 2020 19:02:18 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a7be4a05a74ca69a@google.com>
+Subject: linux-next test error: BUG: using smp_processor_id() in preemptible
+ [ADDR] code: systemd-rfkill/6728
+From:   syzbot <syzbot+aed048f49c59eb997737@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The following changes since commit 0e698dfa282211e414076f9dc7e83c1c288314fd:
+Hello,
 
-  Linux 5.7-rc4 (2020-05-03 14:56:04 -0700)
+syzbot found the following crash on:
 
-are available in the Git repository at:
+HEAD commit:    0e21d462 Add linux-next specific files for 20200602
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=10461661100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ecc1aef35f550ee3
+dashboard link: https://syzkaller.appspot.com/bug?extid=aed048f49c59eb997737
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+aed048f49c59eb997737@syzkaller.appspotmail.com
 
-for you to fetch changes up to 6b8ed62008a49751fc71fefd2a4f89202a7c2d4d:
+BUG: using smp_processor_id() in preemptible [00000000] code: systemd-rfkill/6728
+caller is ext4_mb_new_blocks+0xa4d/0x3b70 fs/ext4/mballoc.c:4711
+CPU: 1 PID: 6728 Comm: systemd-rfkill Not tainted 5.7.0-next-20200602-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ check_preemption_disabled+0x20d/0x220 lib/smp_processor_id.c:48
+ ext4_mb_new_blocks+0xa4d/0x3b70 fs/ext4/mballoc.c:4711
+ ext4_ext_map_blocks+0x201b/0x33e0 fs/ext4/extents.c:4244
+ ext4_map_blocks+0x4cb/0x1640 fs/ext4/inode.c:626
+ ext4_getblk+0xad/0x520 fs/ext4/inode.c:833
+ ext4_bread+0x7c/0x380 fs/ext4/inode.c:883
+ ext4_append+0x153/0x360 fs/ext4/namei.c:67
+ ext4_init_new_dir fs/ext4/namei.c:2757 [inline]
+ ext4_mkdir+0x5e0/0xdf0 fs/ext4/namei.c:2802
+ vfs_mkdir+0x419/0x690 fs/namei.c:3632
+ do_mkdirat+0x21e/0x280 fs/namei.c:3655
+ do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f9ffaa79687
+Code: Bad RIP value.
+RSP: 002b:00007ffeb3197c38 EFLAGS: 00000246 ORIG_RAX: 0000000000000053
+RAX: ffffffffffffffda RBX: 000055c2e6155985 RCX: 00007f9ffaa79687
+RDX: 00007ffeb3197b00 RSI: 00000000000001ed RDI: 000055c2e6155985
+RBP: 00007f9ffaa79680 R08: 0000000000000100 R09: 0000000000000000
+R10: 000055c2e6155980 R11: 0000000000000246 R12: 00000000000001ed
+R13: 00007ffeb3197dc0 R14: 0000000000000000 R15: 0000000000000000
 
-  ext4: avoid unnecessary transaction starts during writeback (2020-06-03 23:16:56 -0400)
 
-----------------------------------------------------------------
-A lot of bug fixes and cleanups for ext4, including:
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-* Fix performance problems found in dioread_nolock now that it is the
-  default, caused by transaction leaks.
-* Clean up fiemap handling in ext4
-* Clean up and refactor multiple block allocator (mballoc) code
-* Fix a problem with mballoc with a smaller file systems running out
-  of blocks because they couldn't properly use blocks that had been
-  reserved by inode preallocation.
-* Fixed a race in ext4_sync_parent() versus rename()
-* Simplify the error handling in the extent manipulation code
-* Make sure all metadata I/O errors are felected to ext4_ext_dirty()'s and
-  ext4_make_inode_dirty()'s callers.
-* Avoid passing an error pointer to brelse in ext4_xattr_set()
-* Fix race which could result to freeing an inode on the dirty last
-  in data=journal mode.
-* Fix refcount handling if ext4_iget() fails
-* Fix a crash in generic/019 caused by a corrupted extent node
-
-----------------------------------------------------------------
-Carlos Guerrero Álvarez (1):
-      ext4: fix a style issue in fs/ext4/acl.c
-
-Christoph Hellwig (10):
-      ext4: fix fiemap size checks for bitmap files
-      ext4: split _ext4_fiemap
-      ext4: remove the call to fiemap_check_flags in ext4_fiemap
-      fs: mark __generic_block_fiemap static
-      fs: move the fiemap definitions out of fs.h
-      iomap: fix the iomap_fiemap prototype
-      fs: move fiemap range validation into the file systems instances
-      fs: handle FIEMAP_FLAG_SYNC in fiemap_prep
-      fs: remove the access_ok() check in ioctl_fiemap
-      ext4: remove the access_ok() check in ext4_ioctl_get_es_cache
-
-Christophe JAILLET (1):
-      ext4: fix a typo in a comment
-
-Eric Biggers (2):
-      ext4: fix race between ext4_sync_parent() and rename()
-      ext4: add casefold flag to EXT4_INODE_* flags
-
-Eric Whitney (7):
-      ext4: remove EXT4_GET_BLOCKS_KEEP_SIZE flag
-      ext4: translate a few more map flags to strings in tracepoints
-      ext4: remove dead GET_BLOCKS_ZERO code
-      ext4: remove redundant GET_BLOCKS_CONVERT code
-      ext4: clean up GET_BLOCKS_PRE_IO error handling
-      ext4: clean up ext4_ext_convert_to_initialized() error handling
-      ext4: rework map struct instantiation in ext4_ext_map_blocks()
-
-Harshad Shirwadkar (3):
-      ext4: fix EXT_MAX_EXTENT/INDEX to check for zeroed eh_max
-      ext4: handle ext4_mark_inode_dirty errors
-      ext4: don't ignore return values from ext4_ext_dirty()
-
-Jan Kara (5):
-      writeback: Export inode_io_list_del()
-      ext4: Avoid freeing inodes on dirty list
-      ext4: drop ext4_journal_free_reserved()
-      jbd2: avoid leaking transaction credits when unreserving handle
-      ext4: avoid unnecessary transaction starts during writeback
-
-Jason Yan (1):
-      ext4: remove unnecessary comparisons to bool
-
-Jeffle Xu (1):
-      ext4: fix error pointer dereference
-
-Jens Axboe (1):
-      ext4: don't block for O_DIRECT if IOCB_NOWAIT is set
-
-Jonathan Grant (1):
-      add comment for ext4_dir_entry_2 file_type member
-
-Kaixu Xia (2):
-      ext4: remove unnecessary test_opt for DIOREAD_NOLOCK
-      ext4: remove redundant variable has_bigalloc in ext4_fill_super
-
-Ritesh Harjani (21):
-      ext4: mballoc: print bb_free info even when it is 0
-      ext4: mballoc: refactor ext4_mb_show_ac()
-      ext4: mballoc: add more mb_debug() msgs
-      ext4: mballoc: correct the mb_debug() format specifier for pa_len var
-      ext4: mballoc: fix few other format specifier in mb_debug()
-      ext4: mballoc: simplify error handling in ext4_init_mballoc()
-      ext4: mballoc: make ext4_mb_use_preallocated() return type as bool
-      ext4: mballoc: refactor code inside DOUBLE_CHECK into separate function
-      ext4: mballoc: fix possible NULL ptr & remove BUG_ONs from DOUBLE_CHECK
-      ext4: balloc: use task_pid_nr() helper
-      ext4: use BIT() macro for BH_** state bits
-      ext4: improve ext_debug() msg in case of block allocation failure
-      ext4: replace EXT_DEBUG with __maybe_unused in ext4_ext_handle_unwritten_extents()
-      ext4: mballoc: make mb_debug() implementation to use pr_debug()
-      ext4: make ext_debug() implementation to use pr_debug()
-      ext4: mballoc: add blocks to PA list under same spinlock after allocating blocks
-      ext4: mballoc: refactor ext4_mb_discard_preallocations()
-      ext4: mballoc: introduce pcpu seqcnt for freeing PA to improve ENOSPC handling
-      ext4: mballoc: refactor ext4_mb_good_group()
-      ext4: mballoc: use lock for checking free blocks while retrying
-      ext4: fix EXT4_MAX_LOGICAL_BLOCK macro
-
-Theodore Ts'o (1):
-      ext4: avoid ext4_error()'s caused by ENOMEM in the truncate path
-
-Xiyu Yang (1):
-      ext4: fix buffer_head refcnt leak when ext4_iget() fails
-
- Documentation/filesystems/fiemap.txt |  12 +-
- fs/bad_inode.c                       |   1 +
- fs/btrfs/extent_io.h                 |   1 +
- fs/btrfs/inode.c                     |   4 +-
- fs/cifs/inode.c                      |   1 +
- fs/cifs/smb2ops.c                    |   6 +-
- fs/ext2/inode.c                      |   1 +
- fs/ext4/Kconfig                      |   3 +-
- fs/ext4/acl.c                        |   5 +-
- fs/ext4/balloc.c                     |   5 +-
- fs/ext4/ext4.h                       |  42 +++--
- fs/ext4/ext4_extents.h               |   9 +-
- fs/ext4/ext4_jbd2.h                  |  11 +-
- fs/ext4/extents.c                    | 473 ++++++++++++++++++++++++++++++------------------------
- fs/ext4/extents_status.c             |   2 +-
- fs/ext4/file.c                       |  17 +-
- fs/ext4/fsync.c                      |  28 ++--
- fs/ext4/ialloc.c                     |   1 +
- fs/ext4/indirect.c                   |   4 +-
- fs/ext4/inline.c                     |   6 +-
- fs/ext4/inode.c                      | 108 +++++++------
- fs/ext4/ioctl.c                      |  41 +----
- fs/ext4/mballoc.c                    | 512 ++++++++++++++++++++++++++++++++++++++---------------------
- fs/ext4/mballoc.h                    |  16 +-
- fs/ext4/migrate.c                    |  12 +-
- fs/ext4/namei.c                      |  76 +++++----
- fs/ext4/super.c                      |  27 ++--
- fs/ext4/xattr.c                      |  13 +-
- fs/f2fs/data.c                       |   3 +-
- fs/f2fs/inline.c                     |   1 +
- fs/fs-writeback.c                    |   1 +
- fs/gfs2/inode.c                      |   1 +
- fs/hpfs/file.c                       |   1 +
- fs/internal.h                        |   2 -
- fs/ioctl.c                           |  82 ++++------
- fs/iomap/fiemap.c                    |  11 +-
- fs/jbd2/transaction.c                |  14 +-
- fs/nilfs2/inode.c                    |   3 +-
- fs/ocfs2/extent_map.c                |   4 +-
- fs/overlayfs/inode.c                 |   5 +-
- fs/xfs/xfs_iops.c                    |   1 +
- include/linux/fiemap.h               |  25 +++
- include/linux/fs.h                   |  23 +--
- include/linux/iomap.h                |   2 +-
- include/linux/writeback.h            |   1 +
- include/trace/events/ext4.h          |   9 +-
- include/uapi/linux/fiemap.h          |   6 +-
- 47 files changed, 938 insertions(+), 694 deletions(-)
- create mode 100644 include/linux/fiemap.h
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
