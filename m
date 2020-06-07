@@ -2,52 +2,98 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF5DA1F07F4
-	for <lists+linux-ext4@lfdr.de>; Sat,  6 Jun 2020 18:45:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C00B11F0914
+	for <lists+linux-ext4@lfdr.de>; Sun,  7 Jun 2020 02:03:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728714AbgFFQpb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 6 Jun 2020 12:45:31 -0400
-Received: from mail.thelounge.net ([91.118.73.15]:48443 "EHLO
-        mail.thelounge.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727989AbgFFQpa (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 6 Jun 2020 12:45:30 -0400
-Received: from srv-rhsoft.rhsoft.net (rh.vpn.thelounge.net [10.10.10.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: h.reindl@thelounge.net)
-        by mail.thelounge.net (THELOUNGE MTA) with ESMTPSA id 49fQP35knczXSW
-        for <linux-ext4@vger.kernel.org>; Sat,  6 Jun 2020 18:45:22 +0200 (CEST)
-To:     linux-ext4@vger.kernel.org
-From:   Reindl Harald <h.reindl@thelounge.net>
-Subject: ext4 filesystem being mounted at /boot supports timestamps until 2038
-Organization: the lounge interactive design
-Message-ID: <b944159f-01cb-9e48-309b-fe13e25e2340@thelounge.net>
-Date:   Sat, 6 Jun 2020 18:45:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1728902AbgFGADU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 6 Jun 2020 20:03:20 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:38494 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728778AbgFGADR (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 6 Jun 2020 20:03:17 -0400
+Received: by mail-il1-f200.google.com with SMTP id c8so9270616ilm.5
+        for <linux-ext4@vger.kernel.org>; Sat, 06 Jun 2020 17:03:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=KV32Z4MgLRYgdeFgN5N39kdkpX0bptVvM8rb8zt3mRw=;
+        b=L/f0O8zTRqlAvXdPWyTF/4jg4Nrf8/esJyscObAniIInYSgXrLmgYnheegWHVLgxUB
+         DWv9A7ZQkZP3lXRAerBcBLGutE9tFfft66WinFG3i+khgzfoTKUanWawksp4EABcpsj5
+         330raD7/Osb7XjbvEqbpDSIkbvP5v9nhF7aZO6HfflkPGLw8N4vu3J6Kg3UekNjqQfMk
+         5c1smfrmsVrCeuBGcnB61PJgUR2vmVb4xwmTwbNzXXIna7VFTQqhZvpjqR4hzaCmplif
+         tpOV8ez7CHQ2fDE7lJ+V4YzQ009Nb0RLVgXcPUC2F+MQVJ3H/JgU00oX9IRizCr4D353
+         rxdw==
+X-Gm-Message-State: AOAM53112uka1KYtHYSYKuNVPZKYVo0Eoz3GNlVB8F8r9d6YwFPIDumF
+        EOVkOlxTRYm00msWHk1clyt2CpIWzCFP2OYhSFfXDRzs8QUb
+X-Google-Smtp-Source: ABdhPJytgjeZtITZ/eWeIU7BPodPkzsHXeQCUywZsA8GbUvqgmstcoKE+VDNDIKeP3RijSk7RQgKoRx092qVh8rB+yzwbAbizuRv
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a92:c103:: with SMTP id p3mr15797129ile.166.1591488195478;
+ Sat, 06 Jun 2020 17:03:15 -0700 (PDT)
+Date:   Sat, 06 Jun 2020 17:03:15 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008e483f05a773388c@google.com>
+Subject: linux-next test error: BUG: using smp_processor_id() in preemptible
+ [ADDR] code: kworker/u4:LINE/198
+From:   syzbot <syzbot+ca020d38a27ddc8e3cae@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-are you guys kidding me?
+Hello,
 
-* create a new vmware vdisk with 512 MB
-* kernel 5.7.0, e2fsprogs-1.45.5-1.fc31.x86_64
-* mount the filesystem
+syzbot found the following crash on:
 
-Jun  6 18:37:57 master kernel: ext4 filesystem being mounted at /boot
-supports timestamps until 2038 (0x7fffffff)
+HEAD commit:    0e21d462 Add linux-next specific files for 20200602
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=107072f2100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ecc1aef35f550ee3
+dashboard link: https://syzkaller.appspot.com/bug?extid=ca020d38a27ddc8e3cae
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
 
-https://lore.kernel.org/patchwork/patch/1172334/
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+ca020d38a27ddc8e3cae@syzkaller.appspotmail.com
 
------------------------------
+BUG: using smp_processor_id() in preemptible [00000000] code: kworker/u4:4/198
+caller is ext4_mb_new_blocks+0xa4d/0x3b70 fs/ext4/mballoc.c:4711
+CPU: 0 PID: 198 Comm: kworker/u4:4 Not tainted 5.7.0-next-20200602-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: writeback wb_workfn (flush-8:0)
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ check_preemption_disabled+0x20d/0x220 lib/smp_processor_id.c:48
+ ext4_mb_new_blocks+0xa4d/0x3b70 fs/ext4/mballoc.c:4711
+ ext4_ext_map_blocks+0x201b/0x33e0 fs/ext4/extents.c:4244
+ ext4_map_blocks+0x4cb/0x1640 fs/ext4/inode.c:626
+ mpage_map_one_extent fs/ext4/inode.c:2377 [inline]
+ mpage_map_and_submit_extent fs/ext4/inode.c:2430 [inline]
+ ext4_writepages+0x1ab5/0x3400 fs/ext4/inode.c:2782
+ do_writepages+0xfa/0x2a0 mm/page-writeback.c:2338
+ __writeback_single_inode+0x12a/0x13d0 fs/fs-writeback.c:1453
+ writeback_sb_inodes+0x515/0xdc0 fs/fs-writeback.c:1717
+ __writeback_inodes_wb+0xc3/0x250 fs/fs-writeback.c:1786
+ wb_writeback+0x8db/0xd50 fs/fs-writeback.c:1895
+ wb_check_old_data_flush fs/fs-writeback.c:1997 [inline]
+ wb_do_writeback fs/fs-writeback.c:2050 [inline]
+ wb_workfn+0xab3/0x1090 fs/fs-writeback.c:2079
+ process_one_work+0x965/0x1690 kernel/workqueue.c:2269
+ worker_thread+0x96/0xe10 kernel/workqueue.c:2415
+ kthread+0x3b5/0x4a0 kernel/kthread.c:291
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
+tipc: TX() has been purged, node left!
 
-this does *not* happen when the vdisk is 768 MB instead just 512 MB
-large - what's te point of defaults which lead to warnings like this in
-2020?
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
