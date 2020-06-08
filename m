@@ -2,75 +2,65 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECFAD1F10FF
-	for <lists+linux-ext4@lfdr.de>; Mon,  8 Jun 2020 03:20:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 049441F1115
+	for <lists+linux-ext4@lfdr.de>; Mon,  8 Jun 2020 03:38:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728094AbgFHBUH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 7 Jun 2020 21:20:07 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:50534 "EHLO huawei.com"
+        id S1728213AbgFHBiA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 7 Jun 2020 21:38:00 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:5793 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727972AbgFHBUH (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Sun, 7 Jun 2020 21:20:07 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id BF881C31F3ECCA726673
-        for <linux-ext4@vger.kernel.org>; Mon,  8 Jun 2020 09:20:03 +0800 (CST)
-Received: from [127.0.0.1] (10.166.215.198) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Mon, 8 Jun 2020
- 09:20:00 +0800
-Subject: Re: [PATCH v2 2/2] ext2: ext2_find_entry() return -ENOENT if no entry
- found
-To:     Jan Kara <jack@suse.cz>
-CC:     <linux-ext4@vger.kernel.org>
-References: <20200603063514.3904811-1-yi.zhang@huawei.com>
- <20200603063514.3904811-2-yi.zhang@huawei.com>
- <20200605151100.GD13248@quack2.suse.cz>
-From:   "zhangyi (F)" <yi.zhang@huawei.com>
-Message-ID: <13a18e5f-faea-f8b6-1072-8e911975ddc2@huawei.com>
-Date:   Mon, 8 Jun 2020 09:20:00 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        id S1728065AbgFHBiA (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sun, 7 Jun 2020 21:38:00 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 5776DBCF7928A71F4C0D;
+        Mon,  8 Jun 2020 09:37:58 +0800 (CST)
+Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server (TLS) id 14.3.487.0; Mon, 8 Jun 2020
+ 09:37:53 +0800
+Subject: Re: [PATCH v2] f2fs: avoid utf8_strncasecmp() with unstable name
+To:     Eric Biggers <ebiggers@kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+CC:     <linux-ext4@vger.kernel.org>, Daniel Rosenberg <drosen@google.com>,
+        <stable@vger.kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
+        <linux-fsdevel@vger.kernel.org>,
+        Gabriel Krisman Bertazi <krisman@collabora.co.uk>
+References: <20200601200805.59655-1-ebiggers@kernel.org>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <a2849e34-879d-783a-761e-5ce9a1d43311@huawei.com>
+Date:   Mon, 8 Jun 2020 09:37:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-In-Reply-To: <20200605151100.GD13248@quack2.suse.cz>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20200601200805.59655-1-ebiggers@kernel.org>
+Content-Type: text/plain; charset="windows-1252"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.166.215.198]
+X-Originating-IP: [10.134.22.195]
 X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2020/6/5 23:11, Jan Kara wrote:
-> On Wed 03-06-20 14:35:14, zhangyi (F) wrote:
->> Almost all callers of ext2_find_entry() transform NULL return value to
->> -ENOENT, so just let ext2_find_entry() retuen -ENOENT instead of NULL
->> if no valid entry found, and also switch to check the return value of
->> ext2_inode_by_name() in ext2_lookup() and ext2_get_parent().
->>
->> Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
->> Suggested-by: Jan Kara <jack@suse.cz>
+On 2020/6/2 4:08, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> Thanks for the patch. Just one small nit below.
+> If the dentry name passed to ->d_compare() fits in dentry::d_iname, then
+> it may be concurrently modified by a rename.  This can cause undefined
+> behavior (possibly out-of-bounds memory accesses or crashes) in
+> utf8_strncasecmp(), since fs/unicode/ isn't written to handle strings
+> that may be concurrently modified.
 > 
->> @@ -419,11 +419,16 @@ int ext2_inode_by_name(struct inode *dir, const struct qstr *child, ino_t *ino)
->>  	struct page *page;
->>  	
->>  	de = ext2_find_entry(dir, child, &page);
->> -	if (IS_ERR_OR_NULL(de))
->> +	if (IS_ERR(de))
->>  		return PTR_ERR(de);
->>  
->> -	*ino = le32_to_cpu(de->inode);
->>  	ext2_put_page(page);
->> +	if (!de->inode) {
+> Fix this by first copying the filename to a stack buffer if needed.
+> This way we get a stable snapshot of the filename.
 > 
-> ext2_find_entry() will not ever return de with de->inode == 0 because
-> ext2_match() never returns true for such entries. So I'd just remove this
-> condition...
-> 
-Indeed, I missed this point, will do.
+> Fixes: 2c2eb7a300cd ("f2fs: Support case-insensitive file name lookups")
+> Cc: <stable@vger.kernel.org> # v5.4+
+> Cc: Al Viro <viro@zeniv.linux.org.uk>
+> Cc: Daniel Rosenberg <drosen@google.com>
+> Cc: Gabriel Krisman Bertazi <krisman@collabora.co.uk>
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
 
 Thanks,
-Yi.
-
