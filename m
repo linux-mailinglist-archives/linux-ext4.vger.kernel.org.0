@@ -2,134 +2,200 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C08691F111B
-	for <lists+linux-ext4@lfdr.de>; Mon,  8 Jun 2020 03:39:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 844181F11AF
+	for <lists+linux-ext4@lfdr.de>; Mon,  8 Jun 2020 05:25:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728196AbgFHBj4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 7 Jun 2020 21:39:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728065AbgFHBj4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 7 Jun 2020 21:39:56 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B917BC08C5C3
-        for <linux-ext4@vger.kernel.org>; Sun,  7 Jun 2020 18:39:54 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id l17so2569976wmj.0
-        for <linux-ext4@vger.kernel.org>; Sun, 07 Jun 2020 18:39:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jguk.org; s=google;
-        h=from:subject:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hc+ccXW71+qNr4G7lwCMMXSLLdx8mR+aqwaHOWDLr14=;
-        b=Bkzyd7gM1jXtBwZ4MNFf7OxQClsi2BPivyPNGfi2yDpZOTZPs/4p6bIlJdVh7TF7WI
-         41y1luJ7ivkk9R3LWfaZk+aeT69tLtsj12NX7H45ygsqqQXtQVvcKNIz2hoEakS9gN/h
-         vP7azpsDk2E/ShpJxTcqvl7xNdvr+9wd3hbX0ljB481m9CZBycRQ8SDbNVhmu9S+tDv8
-         fg3YcpQC7/APbszCJ97wuAtOBC7vOS9fH0xyIzZnUKcw6/m0KnfMvI/worBXkQvr2CSa
-         UF2XnOjRgcsWBYjZWiC+85vwXOetI8deqnQrK/K0I/O7eAMn4fNGozzPO3jK3DfNEiLj
-         ou/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hc+ccXW71+qNr4G7lwCMMXSLLdx8mR+aqwaHOWDLr14=;
-        b=Wx77kGMyPbm5nGhhWJViORXGNvKdNYdkD/MSIdpi0i7TuE4FTtq/JSjXBCQ6W/6Fu2
-         oLyVbJz03D+6aGdTNc7sweckRqZ0lmy/LIvm/DFXfZ8HxDcqYugL4KaaQSj0bfcqkGSb
-         +lGrpQSg16qVnSQ7c18hQbVVZnEqit/IVTmbT5nxv3FZHrYgnDmf7H6C5kLhrKxAxY+8
-         5V/KIwGNXQTdrinbLBX6u6CwXbvd68BcoFzMT8hBZyzAULZ7DEvHaVRmymOXNFRP0ugP
-         sWO1ltQKdxYiAYQyD4rQJ0lPBVashcP0GuWhta6mQtjf+DOKfMoCAlVdy2N3uZFuWtw7
-         2DOQ==
-X-Gm-Message-State: AOAM532ORhk0rWeJI2rt1mGlJqqJ+sjUEMgnde/Xo7Vh+XNngKnghp0t
-        8gAfhr2spP6TUcnhspPsk8bL2+ci9cQ=
-X-Google-Smtp-Source: ABdhPJxpZnuO9M/OnjeCs8H7cLQ4TZvmo6yAimcBwOyXXeHRs5XeQhBfwzA8R369+YOYOKqUF0FwQQ==
-X-Received: by 2002:a1c:9e13:: with SMTP id h19mr14430757wme.107.1591580392955;
-        Sun, 07 Jun 2020 18:39:52 -0700 (PDT)
-Received: from [192.168.0.12] (cpc87281-slou4-2-0-cust47.17-4.cable.virginm.net. [92.236.12.48])
-        by smtp.gmail.com with ESMTPSA id h188sm21693820wmh.2.2020.06.07.18.39.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Jun 2020 18:39:51 -0700 (PDT)
-From:   Jonny Grant <jg@jguk.org>
-Subject: Re: /fs/ext4/namei.c ext4_find_dest_de()
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-References: <2edc7d6a-289e-57ad-baf1-477dc240474d@jguk.org>
- <20200504015122.GB404484@mit.edu>
- <e6e172ae-ba19-f303-3aa9-a388adba8cb0@jguk.org>
- <20200528011221.GC228632@mit.edu>
-Message-ID: <fea0b424-cdb4-b6f8-ec0a-3aae8d66233e@jguk.org>
-Date:   Mon, 8 Jun 2020 02:39:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1728691AbgFHDZf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 7 Jun 2020 23:25:35 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:5863 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728065AbgFHDZf (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sun, 7 Jun 2020 23:25:35 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 3471FD8015FC39EABC3A;
+        Mon,  8 Jun 2020 11:25:32 +0800 (CST)
+Received: from [127.0.0.1] (10.166.215.198) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Mon, 8 Jun 2020
+ 11:25:24 +0800
+Subject: Re: [PATCH] ext4, jbd2: switch to use completion variable instead of
+ JBD2_REC_ERR
+To:     <linux-ext4@vger.kernel.org>
+CC:     <tytso@mit.edu>, <jack@suse.cz>, <adilger.kernel@dilger.ca>,
+        <zhangxiaoxu5@huawei.com>
+References: <20200526142039.32643-1-yi.zhang@huawei.com>
+From:   "zhangyi (F)" <yi.zhang@huawei.com>
+Message-ID: <3539a7de-2bc5-cdeb-18a3-8fd72d1ac1ec@huawei.com>
+Date:   Mon, 8 Jun 2020 11:25:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-In-Reply-To: <20200528011221.GC228632@mit.edu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200526142039.32643-1-yi.zhang@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.166.215.198]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Hi，Ted and Jan, any suggestions of this patch?
 
+Thanks,
+Yi.
 
-On 28/05/2020 02:12, Theodore Y. Ts'o wrote:
-> On Wed, May 27, 2020 at 10:25:43PM +0100, Jonny Grant wrote:
->>
->>
->> How about adding an improved mkdir to POSIX and the Linux kernel? Let's call it mkdir2()
->>
->> It has one more error, for EISDIR
->>
->> [EEXIST]
->> The named file exists.
->>
->> [EISDIR]
->> Directory with that name exists.
+On 2020/5/26 22:20, zhangyi (F) wrote:
+> In the ext4 filesystem with errors=panic, if one process is recording
+> errno in the superblock when invoking jbd2_journal_abort() due to some
+> error cases, it could be raced by another __ext4_abort() which is
+> setting the SB_RDONLY flag but missing panic because errno has not been
+> recorded.
 > 
-> It's *really* not worth it.
-
-You're right.
-
-> You seem to really care about this; why don't you just keep your own
-> version of shellutils which calls stat(1) if you get EEXIST and to
-> distinguish between these two cases?
+> jbd2_journal_abort()
+>  journal->j_flags |= JBD2_ABORT;
+>  jbd2_journal_update_sb_errno()
+>                                    | __ext4_abort()
+>                                    |  sb->s_flags |= SB_RDONLY;
+>                                    |  if (!JBD2_REC_ERR)
+>                                    |       return;
+>  journal->j_flags |= JBD2_REC_ERR;
 > 
-> I know the shellutils maintainers has rejected this.  But that's OK,
-> you can have your own copy on your systems.  You might want to reflect
-> that if the shellutils maintainer refused to add the stat(1) on the
-> error path, what makes you think they will accept a change to use a
-> non-standard mkdir2() system call?
-
-You're right, it's unlikely.
-
-> If you want to try to convince Austin Common Standards Revision Group
-> that it's worth it to mandate a whole new system call *just* for a new
-> error code, you're welcome to try.  I suspect you will not get a good
-> reception, and even if you did, Linux VFS maintainer may well very
-> well deride the proposal as silly, and refuse to follow the lead of
-> the Austin group.  In fact, Al Viro is very likely not to be as
-> politic as I have been.  (It's likely the response would have included
-> things like "idiotic idea" and "stupid".)
+> Finally, it will no longer trigger panic because the filesystem has
+> already been set read-only. Fix this by remove JBD2_REC_ERR and switch
+> to use completion variable instead.
 > 
->> I'm tempted to suggest this new function mkdir2() returns 0 on success, or
->> an error number directly number. That would do away with 'errno' for this as
->> well.
+> Fixes: 4327ba52afd03 ("ext4, jbd2: ensure entering into panic after recording an error in superblock")
+> Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
+> ---
+>  fs/ext4/super.c      | 25 +++++++++++++------------
+>  fs/jbd2/journal.c    |  6 ++----
+>  include/linux/jbd2.h |  6 +++++-
+>  3 files changed, 20 insertions(+), 17 deletions(-)
 > 
-> This is not going to get a good reception from either Al or the Austin
-> Group, I predict.  If you really have strong ideas of what you think
-> an OS and its interfaces should look like, perhaps you should just
-> design your own OS from scratch.
-
-Yes, I agree, no one would want to change anything.
-I recall other APIs like pthread_setname_np return 0 on success, and the error code directly, so there is some trend in 
-that direction. That's part of POSIX.1
-
-
-Hmm designing an OS, could be fun as a hobby, but wouldn't be big and professional like linux is on x86 x64 these days. 
-I'd probably seek feedback on things people like/dislike in POSIX, as any OS would resemble it somewhat anyway, at least 
-due to practical reasons compiling common tools. It would end up with a POSIX wrapper, on top of any APIs I designed, 
-and then there would be no reason to use my APIs anyway. It's more fun to contribute to something with global appeal 
-than a hobby project.
-
-Regards, Jonny
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index bf5fcb477f66..987a0bd5b78a 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -495,6 +495,8 @@ static bool system_going_down(void)
+>  
+>  static void ext4_handle_error(struct super_block *sb)
+>  {
+> +	struct ext4_sb_info *sbi = EXT4_SB(sb);
+> +
+>  	if (test_opt(sb, WARN_ON_ERROR))
+>  		WARN_ON_ONCE(1);
+>  
+> @@ -502,9 +504,9 @@ static void ext4_handle_error(struct super_block *sb)
+>  		return;
+>  
+>  	if (!test_opt(sb, ERRORS_CONT)) {
+> -		journal_t *journal = EXT4_SB(sb)->s_journal;
+> +		journal_t *journal = sbi->s_journal;
+>  
+> -		EXT4_SB(sb)->s_mount_flags |= EXT4_MF_FS_ABORTED;
+> +		sbi->s_mount_flags |= EXT4_MF_FS_ABORTED;
+>  		if (journal)
+>  			jbd2_journal_abort(journal, -EIO);
+>  	}
+> @@ -522,9 +524,8 @@ static void ext4_handle_error(struct super_block *sb)
+>  		smp_wmb();
+>  		sb->s_flags |= SB_RDONLY;
+>  	} else if (test_opt(sb, ERRORS_PANIC)) {
+> -		if (EXT4_SB(sb)->s_journal &&
+> -		  !(EXT4_SB(sb)->s_journal->j_flags & JBD2_REC_ERR))
+> -			return;
+> +		if (sbi->s_journal && is_journal_aborted(sbi->s_journal))
+> +			wait_for_completion(&sbi->s_journal->j_record_errno);
+>  		panic("EXT4-fs (device %s): panic forced after error\n",
+>  			sb->s_id);
+>  	}
+> @@ -710,10 +711,11 @@ void __ext4_std_error(struct super_block *sb, const char *function,
+>  void __ext4_abort(struct super_block *sb, const char *function,
+>  		  unsigned int line, int error, const char *fmt, ...)
+>  {
+> +	struct ext4_sb_info *sbi = EXT4_SB(sb);
+>  	struct va_format vaf;
+>  	va_list args;
+>  
+> -	if (unlikely(ext4_forced_shutdown(EXT4_SB(sb))))
+> +	if (unlikely(ext4_forced_shutdown(sbi)))
+>  		return;
+>  
+>  	save_error_info(sb, error, 0, 0, function, line);
+> @@ -726,20 +728,19 @@ void __ext4_abort(struct super_block *sb, const char *function,
+>  
+>  	if (sb_rdonly(sb) == 0) {
+>  		ext4_msg(sb, KERN_CRIT, "Remounting filesystem read-only");
+> -		EXT4_SB(sb)->s_mount_flags |= EXT4_MF_FS_ABORTED;
+> +		sbi->s_mount_flags |= EXT4_MF_FS_ABORTED;
+>  		/*
+>  		 * Make sure updated value of ->s_mount_flags will be visible
+>  		 * before ->s_flags update
+>  		 */
+>  		smp_wmb();
+>  		sb->s_flags |= SB_RDONLY;
+> -		if (EXT4_SB(sb)->s_journal)
+> -			jbd2_journal_abort(EXT4_SB(sb)->s_journal, -EIO);
+> +		if (sbi->s_journal)
+> +			jbd2_journal_abort(sbi->s_journal, -EIO);
+>  	}
+>  	if (test_opt(sb, ERRORS_PANIC) && !system_going_down()) {
+> -		if (EXT4_SB(sb)->s_journal &&
+> -		  !(EXT4_SB(sb)->s_journal->j_flags & JBD2_REC_ERR))
+> -			return;
+> +		if (sbi->s_journal && is_journal_aborted(sbi->s_journal))
+> +			wait_for_completion(&sbi->s_journal->j_record_errno);
+>  		panic("EXT4-fs panic from previous error\n");
+>  	}
+>  }
+> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+> index a49d0e670ddf..b8acdb2f7ac7 100644
+> --- a/fs/jbd2/journal.c
+> +++ b/fs/jbd2/journal.c
+> @@ -1140,6 +1140,7 @@ static journal_t *journal_init_common(struct block_device *bdev,
+>  	init_waitqueue_head(&journal->j_wait_commit);
+>  	init_waitqueue_head(&journal->j_wait_updates);
+>  	init_waitqueue_head(&journal->j_wait_reserved);
+> +	init_completion(&journal->j_record_errno);
+>  	mutex_init(&journal->j_barrier);
+>  	mutex_init(&journal->j_checkpoint_mutex);
+>  	spin_lock_init(&journal->j_revoke_lock);
+> @@ -2188,10 +2189,7 @@ void jbd2_journal_abort(journal_t *journal, int errno)
+>  	 * layer could realise that a filesystem check is needed.
+>  	 */
+>  	jbd2_journal_update_sb_errno(journal);
+> -
+> -	write_lock(&journal->j_state_lock);
+> -	journal->j_flags |= JBD2_REC_ERR;
+> -	write_unlock(&journal->j_state_lock);
+> +	complete_all(&journal->j_record_errno);
+>  }
+>  
+>  /**
+> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+> index f613d8529863..0f623b0c347f 100644
+> --- a/include/linux/jbd2.h
+> +++ b/include/linux/jbd2.h
+> @@ -765,6 +765,11 @@ struct journal_s
+>  	 */
+>  	int			j_errno;
+>  
+> +	/**
+> +	 * @j_record_errno: complete to record errno in the journal superblock
+> +	 */
+> +	struct completion	j_record_errno;
+> +
+>  	/**
+>  	 * @j_sb_buffer: The first part of the superblock buffer.
+>  	 */
+> @@ -1247,7 +1252,6 @@ JBD2_FEATURE_INCOMPAT_FUNCS(csum3,		CSUM_V3)
+>  #define JBD2_ABORT_ON_SYNCDATA_ERR	0x040	/* Abort the journal on file
+>  						 * data write error in ordered
+>  						 * mode */
+> -#define JBD2_REC_ERR	0x080	/* The errno in the sb has been recorded */
+>  
+>  /*
+>   * Function declarations for the journaling transaction and buffer
+> 
 
