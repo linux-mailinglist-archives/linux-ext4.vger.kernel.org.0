@@ -2,35 +2,35 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00C171F1B28
-	for <lists+linux-ext4@lfdr.de>; Mon,  8 Jun 2020 16:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 037F81F1BB6
+	for <lists+linux-ext4@lfdr.de>; Mon,  8 Jun 2020 17:09:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730007AbgFHOju (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 8 Jun 2020 10:39:50 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:5799 "EHLO huawei.com"
+        id S1730137AbgFHPIz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 8 Jun 2020 11:08:55 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:5870 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729948AbgFHOju (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 8 Jun 2020 10:39:50 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 99ECA47E766E94979118;
-        Mon,  8 Jun 2020 22:39:41 +0800 (CST)
-Received: from [127.0.0.1] (10.166.215.198) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Mon, 8 Jun 2020
- 22:39:32 +0800
-Subject: Re: [PATCH 00/10] ext4: fix inconsistency since reading old metadata
- from disk
+        id S1730127AbgFHPIy (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 8 Jun 2020 11:08:54 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 0AC617DC019768E8E8C8;
+        Mon,  8 Jun 2020 23:08:51 +0800 (CST)
+Received: from [127.0.0.1] (10.166.215.198) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Mon, 8 Jun 2020
+ 23:08:43 +0800
+Subject: Re: [PATCH] ext4, jbd2: switch to use completion variable instead of
+ JBD2_REC_ERR
 To:     Jan Kara <jack@suse.cz>
 CC:     <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
         <adilger.kernel@dilger.ca>, <zhangxiaoxu5@huawei.com>
-References: <20200526071754.33819-1-yi.zhang@huawei.com>
- <20200608082007.GJ13248@quack2.suse.cz>
+References: <20200526142039.32643-1-yi.zhang@huawei.com>
+ <20200608075729.GI13248@quack2.suse.cz>
 From:   "zhangyi (F)" <yi.zhang@huawei.com>
-Message-ID: <cc834f50-95f0-449a-0ace-c55c41d2be1c@huawei.com>
-Date:   Mon, 8 Jun 2020 22:39:31 +0800
+Message-ID: <0adeaa3a-25e0-0f73-8fb2-1b3dcecd190b@huawei.com>
+Date:   Mon, 8 Jun 2020 23:08:42 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.3.0
 MIME-Version: 1.0
-In-Reply-To: <20200608082007.GJ13248@quack2.suse.cz>
+In-Reply-To: <20200608075729.GI13248@quack2.suse.cz>
 Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -43,161 +43,219 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 Hi, Jan.
 
-On 2020/6/8 16:20, Jan Kara wrote:
-> Hello Yi!
+On 2020/6/8 15:57, Jan Kara wrote:
+> On Tue 26-05-20 22:20:39, zhangyi (F) wrote:
+>> In the ext4 filesystem with errors=panic, if one process is recording
+>> errno in the superblock when invoking jbd2_journal_abort() due to some
+>> error cases, it could be raced by another __ext4_abort() which is
+>> setting the SB_RDONLY flag but missing panic because errno has not been
+>> recorded.
+>>
+>> jbd2_journal_abort()
+>>  journal->j_flags |= JBD2_ABORT;
+>>  jbd2_journal_update_sb_errno()
+>>                                    | __ext4_abort()
+>>                                    |  sb->s_flags |= SB_RDONLY;
+>>                                    |  if (!JBD2_REC_ERR)
+>>                                    |       return;
+>>  journal->j_flags |= JBD2_REC_ERR;
+>>
+>> Finally, it will no longer trigger panic because the filesystem has
+>> already been set read-only. Fix this by remove JBD2_REC_ERR and switch
+>> to use completion variable instead.
 > 
-> On Tue 26-05-20 15:17:44, zhangyi (F) wrote:
->> Background
->> ==========
->>
->> This patch set point to fix the inconsistency problem which has been
->> discussed and partial fixed in [1].
->>
->> Now, the problem is on the unstable storage which has a flaky transport
->> (e.g. iSCSI transport may disconnect few seconds and reconnect due to
->> the bad network environment), if we failed to async write metadata in
->> background, the end write routine in block layer will clear the buffer's
->> uptodate flag, but the data in such buffer is actually uptodate. Finally
->> we may read "old && inconsistent" metadata from the disk when we get the
->> buffer later because not only the uptodate flag was cleared but also we
->> do not check the write io error flag, or even worse the buffer has been
->> freed due to memory presure.
->>
->> Fortunately, if the jbd2 do checkpoint after async IO error happens,
->> the checkpoint routine will check the write_io_error flag and abort the
->> the journal if detect IO error. And in the journal recover case, the
->> recover code will invoke sync_blockdev() after recover complete, it will
->> also detect IO error and refuse to mount the filesystem.
->>
->> Current ext4 have already deal with this problem in __ext4_get_inode_loc()
->> and commit 7963e5ac90125 ("ext4: treat buffers with write errors as
->> containing valid data"), but it's not enough.
+> Thanks for the patch! I don't quite understand how this last part can
+> happen: "Finally, it will no longer trigger panic because the filesystem has
+> already been set read-only."
 > 
-> Before we go and complicate ext4 code like this, I'd like to understand
-> what is the desired outcome which doesn't seem to be mentioned here, in the
-> commit 7963e5ac90125, or in the discussion you reference. If you have a
-> flaky transport that gives you IO errors, IMO it is not a bussiness of the
-> filesystem to try to fix that. I just has to make sure it properly reports
-
-If we meet some IO errors due to the flaky transport, IMO the desired outcome
-is 1) report IO error; 2) ext4 filesystem act as the "errors=xxx" configuration
-specified, if we set "errors=read-only || panic", we expect ext4 could remount
-to read-only or panic immediately to avoid inconsistency. In brief, the kernel
-should try best to guarantee the filesystem on disk is consistency, this will
-reduce fsck's work (AFAIK, the fsck cannot fix those inconsistent in auto mode
-for most cases caused by the async error problem I mentioned), so we could
-recover the fs automatically in next boot.
-
-But now, in the case of metadata async writeback, (1) is done in
-end_buffer_async_write(), but (2) is not guaranteed, because ext4 cannot detect
-metadata write error, and it also cannot remount the filesystem or invoke panic
-immediately. Finally, if we read the metadata on disk and re-write again, it
-may lead to on-disk filesystem inconsistency.
-
-> errors to userspace and (depending of errors= configuration) shuts itself
-> down to limit further damage. This patch seems to try to mask those errors
-> and that's, in my opinion, rather futile (as in you can hardly ever deal
-> with all the cases). BTW are you running these systems on flaky iSCSI with
-> errors=continue so that the errors don't shut the filesystem down
-> immediately?
+> AFAIU jbd2_journal_abort() gets called somewhere from jbd2 so ext4 doesn't
+> know about it. At the same time ext4_abort() gets called somewhere from
+> ext4 and races as you describe above. OK. But then the next ext4_abort()
+> call should panic() just fine. What am I missing? I understand that we
+> might want that the first ext4_abort() already triggers the panic but I'd
+> like to understand whether that's the bug you're trying to fix or something
+> else...
 > 
-Yes, I run ext4 filesystem on a flaky iSCSI(it is stable most of the time)
-with errors=read-only, in the cases mentioned above, the fs will not be
-remount to read-only immediately or remount after it has already been
-inconsistency.
+Since the fs is marked to read-only in the first ext4_abort(), the
+ext4_journal_check_start() will return -EROFS immediately, so we
+have no chance to invoke ext4_abort() again and trigger panic.
 
-Thinking about how to fix this, one method is to invoke ext4_error() or
-jbd2_journal_abort() when we detect write error to prevent further use of
-the filesystem. But after looking at __ext4_get_inode_loc() and 7963e5ac90125,
-I think although the metadata buffer was failed to write back to the disk due
-to the occasional unstable network environment, but the data in the buffer
-is actually uptodate, the filesystem could self-healing after the network
-recovery. In the worst case, if the network is broken for a long time, the
-jbd2's checkpoint routing will detect the error, or jbd2 will failed to write
-the journal to disk, both will abort the filesystem. So I think we could
-re-set the uptodate flag when we read buffer again as 7963e5ac90125 does.
+static int ext4_journal_check_start(struct super_block *sb)
+{
+...
+	if (sb_rdonly(sb))
+		return -EROFS;
+...
+}
+
+> WRT the solution I think that the completion you add unnecessarily
+> complicates matters. I'd rather introduce j_abort_mutex to the journal and
+> all jbd2_journal_abort() calls will take it and release it once everything
+> is done. That way we can remove JBD2_REC_ERR, races are avoided, and the
+> filesystem (ext4 or ocfs2) knows that after its call to
+> jbd2_journal_abort() completes, journal abort is completed (either by us or
+> someone else) and so we are free to panic. No need for strange
+> wait_for_completion() calls in ext4_handle_error() or __ext4_abort() and
+> the error handling is again fully self-contained within the jbd2 layer.
+> 
+
+Now, the race condition is between jbd2_journal_abort() and ext4_handle_error()/__ext4_abort(),
+so if we only use j_abort_mutex, it will re-introduce the problem which 4327ba52afd03
+want to fix, think about below case:
+
+jbd2_journal_commit_transaction()   ext4_journal_check_start()   ext4_journal_check_start()
+ jbd2_journal_abort()
+   lock j_abort_mutex
+   journal->j_flags |= JBD2_ABORT;
+                                     __ext4_abort()
+                                                                   __ext4_abort()
+                                      sb->s_flags |= SB_RDONLY;
+                                                                     panic()  <-- system panic here due to "sb_rdonly()==true"
+                                      jbd2_journal_abort() <-- block
+   jbd2_journal_update_sb_errno  <-- not write to disk
+   unlock j_abort_mutex
+
+The system will panic before the error info is written to the journal's
+super block. Use j_abort_mutex to avoid the race between jbd2_journal_abort()
+and ext4_handle_error()/__ext4_abort() is depends on the both of those two
+ext4 error handlers invoke jbd2_journal_abort(), if not, the race will re-open.
 
 Thanks,
 Yi.
 
 > 
->> [1] https://lore.kernel.org/linux-ext4/20190823030207.GC8130@mit.edu/
+>> Fixes: 4327ba52afd03 ("ext4, jbd2: ensure entering into panic after recording an error in superblock")
+>> Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
+>> ---
+>>  fs/ext4/super.c      | 25 +++++++++++++------------
+>>  fs/jbd2/journal.c    |  6 ++----
+>>  include/linux/jbd2.h |  6 +++++-
+>>  3 files changed, 20 insertions(+), 17 deletions(-)
 >>
->> Description
->> ===========
->>
->> This patch set add and rework 7 wrapper functions of getting metadata
->> blocks, replace all sb_bread() / sb_getblk*() / ext4_bread() and
->> sb_breadahead*(). Add buffer_write_io_error() checking into them, if
->> the buffer isn't uptodate and write_io_error flag was set, which means
->> that the buffer has been failed to write out to disk, re-add the
->> uptodate flag to prevent subsequent read operation.
->>
->>  - ext4_sb_getblk(): works the same as sb_getblk(), use to replace all
->>    sb_getblk() used for newly allocated blocks and getting buffers.
->>  - ext4_sb_getblk_locked(): works the same as sb_getblk() except check &
->>    fix buffer uotpdate flag, use to replace all sb_getblk() used for
->>    getting buffers to read.
->>  - ext4_sb_getblk_gfp(): gfp version of ext4_sb_getblk().
->>  - ext4_sb_getblk_locked_gfp(): gfp version of ext4_sb_getblk_locked().
->>  - ext4_sb_bread(): get buffer and submit read bio if buffer is actually
->>    not uptodate.
->>  - ext4_sb_bread_unmovable(): unmovable version of ext4_sb_bread().
->>  - ext4_sb_breadahead_unmovable(): works the same to ext4_sb_bread_unmovable()
->>    except skip submit read bio if failed to lock the buffer.
->>
->> Patch 1-2: do some small change in ext4 inode eio simulation and add a
->> helper in buffer.c, just prepare for below patches.
->> Patch 3: add the ext4_sb_*() function to deal with the write_io_error
->> flag in buffer.
->> Patch 4-8: replace all sb_*() with ext4_sb_*() in ext4.
->> Patch 9: deal with the buffer shrinking case, abort jbd2/fs when
->> shrinking a buffer with write_io_error flag.
->> Patch 10: just do some cleanup.
->>
->> After this patch set, we need to use above 7 wrapper functions to
->> get/read metadata block instead of invoke sb_*() functions defined in
->> fs/buffer.h.
->>
->> Test
->> ====
->>
->> This patch set is based on linux-5.7-rc7 and has been tests by xfstests
->> in auto mode.
->>
->> Thanks,
->> Yi.
->>
->>
->> zhangyi (F) (10):
->>   ext4: move inode eio simulation behind io completeion
->>   fs: pick out ll_rw_one_block() helper function
->>   ext4: add ext4_sb_getblk*() wrapper functions
->>   ext4: replace sb_getblk() with ext4_sb_getblk_locked()
->>   ext4: replace sb_bread*() with ext4_sb_bread*()
->>   ext4: replace sb_getblk() with ext4_sb_getblk()
->>   ext4: switch to use ext4_sb_getblk_locked() in ext4_getblk()
->>   ext4: replace sb_breadahead() with ext4_sb_breadahead()
->>   ext4: abort the filesystem while freeing the write error io buffer
->>   ext4: remove unused parameter in jbd2_journal_try_to_free_buffers()
->>
->>  fs/buffer.c                 |  41 ++++++----
->>  fs/ext4/balloc.c            |   6 +-
->>  fs/ext4/ext4.h              |  60 ++++++++++++---
->>  fs/ext4/extents.c           |  13 ++--
->>  fs/ext4/ialloc.c            |   6 +-
->>  fs/ext4/indirect.c          |  13 ++--
->>  fs/ext4/inline.c            |   2 +-
->>  fs/ext4/inode.c             |  53 +++++--------
->>  fs/ext4/mmp.c               |   2 +-
->>  fs/ext4/resize.c            |  24 +++---
->>  fs/ext4/super.c             | 145 +++++++++++++++++++++++++++++++-----
->>  fs/ext4/xattr.c             |   4 +-
->>  fs/jbd2/transaction.c       |  20 +++--
->>  include/linux/buffer_head.h |   1 +
->>  include/linux/jbd2.h        |   3 +-
->>  15 files changed, 277 insertions(+), 116 deletions(-)
->>
+>> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+>> index bf5fcb477f66..987a0bd5b78a 100644
+>> --- a/fs/ext4/super.c
+>> +++ b/fs/ext4/super.c
+>> @@ -495,6 +495,8 @@ static bool system_going_down(void)
+>>  
+>>  static void ext4_handle_error(struct super_block *sb)
+>>  {
+>> +	struct ext4_sb_info *sbi = EXT4_SB(sb);
+>> +
+>>  	if (test_opt(sb, WARN_ON_ERROR))
+>>  		WARN_ON_ONCE(1);
+>>  
+>> @@ -502,9 +504,9 @@ static void ext4_handle_error(struct super_block *sb)
+>>  		return;
+>>  
+>>  	if (!test_opt(sb, ERRORS_CONT)) {
+>> -		journal_t *journal = EXT4_SB(sb)->s_journal;
+>> +		journal_t *journal = sbi->s_journal;
+>>  
+>> -		EXT4_SB(sb)->s_mount_flags |= EXT4_MF_FS_ABORTED;
+>> +		sbi->s_mount_flags |= EXT4_MF_FS_ABORTED;
+>>  		if (journal)
+>>  			jbd2_journal_abort(journal, -EIO);
+>>  	}
+>> @@ -522,9 +524,8 @@ static void ext4_handle_error(struct super_block *sb)
+>>  		smp_wmb();
+>>  		sb->s_flags |= SB_RDONLY;
+>>  	} else if (test_opt(sb, ERRORS_PANIC)) {
+>> -		if (EXT4_SB(sb)->s_journal &&
+>> -		  !(EXT4_SB(sb)->s_journal->j_flags & JBD2_REC_ERR))
+>> -			return;
+>> +		if (sbi->s_journal && is_journal_aborted(sbi->s_journal))
+>> +			wait_for_completion(&sbi->s_journal->j_record_errno);
+>>  		panic("EXT4-fs (device %s): panic forced after error\n",
+>>  			sb->s_id);
+>>  	}
+>> @@ -710,10 +711,11 @@ void __ext4_std_error(struct super_block *sb, const char *function,
+>>  void __ext4_abort(struct super_block *sb, const char *function,
+>>  		  unsigned int line, int error, const char *fmt, ...)
+>>  {
+>> +	struct ext4_sb_info *sbi = EXT4_SB(sb);
+>>  	struct va_format vaf;
+>>  	va_list args;
+>>  
+>> -	if (unlikely(ext4_forced_shutdown(EXT4_SB(sb))))
+>> +	if (unlikely(ext4_forced_shutdown(sbi)))
+>>  		return;
+>>  
+>>  	save_error_info(sb, error, 0, 0, function, line);
+>> @@ -726,20 +728,19 @@ void __ext4_abort(struct super_block *sb, const char *function,
+>>  
+>>  	if (sb_rdonly(sb) == 0) {
+>>  		ext4_msg(sb, KERN_CRIT, "Remounting filesystem read-only");
+>> -		EXT4_SB(sb)->s_mount_flags |= EXT4_MF_FS_ABORTED;
+>> +		sbi->s_mount_flags |= EXT4_MF_FS_ABORTED;
+>>  		/*
+>>  		 * Make sure updated value of ->s_mount_flags will be visible
+>>  		 * before ->s_flags update
+>>  		 */
+>>  		smp_wmb();
+>>  		sb->s_flags |= SB_RDONLY;
+>> -		if (EXT4_SB(sb)->s_journal)
+>> -			jbd2_journal_abort(EXT4_SB(sb)->s_journal, -EIO);
+>> +		if (sbi->s_journal)
+>> +			jbd2_journal_abort(sbi->s_journal, -EIO);
+>>  	}
+>>  	if (test_opt(sb, ERRORS_PANIC) && !system_going_down()) {
+>> -		if (EXT4_SB(sb)->s_journal &&
+>> -		  !(EXT4_SB(sb)->s_journal->j_flags & JBD2_REC_ERR))
+>> -			return;
+>> +		if (sbi->s_journal && is_journal_aborted(sbi->s_journal))
+>> +			wait_for_completion(&sbi->s_journal->j_record_errno);
+>>  		panic("EXT4-fs panic from previous error\n");
+>>  	}
+>>  }
+>> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+>> index a49d0e670ddf..b8acdb2f7ac7 100644
+>> --- a/fs/jbd2/journal.c
+>> +++ b/fs/jbd2/journal.c
+>> @@ -1140,6 +1140,7 @@ static journal_t *journal_init_common(struct block_device *bdev,
+>>  	init_waitqueue_head(&journal->j_wait_commit);
+>>  	init_waitqueue_head(&journal->j_wait_updates);
+>>  	init_waitqueue_head(&journal->j_wait_reserved);
+>> +	init_completion(&journal->j_record_errno);
+>>  	mutex_init(&journal->j_barrier);
+>>  	mutex_init(&journal->j_checkpoint_mutex);
+>>  	spin_lock_init(&journal->j_revoke_lock);
+>> @@ -2188,10 +2189,7 @@ void jbd2_journal_abort(journal_t *journal, int errno)
+>>  	 * layer could realise that a filesystem check is needed.
+>>  	 */
+>>  	jbd2_journal_update_sb_errno(journal);
+>> -
+>> -	write_lock(&journal->j_state_lock);
+>> -	journal->j_flags |= JBD2_REC_ERR;
+>> -	write_unlock(&journal->j_state_lock);
+>> +	complete_all(&journal->j_record_errno);
+>>  }
+>>  
+>>  /**
+>> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+>> index f613d8529863..0f623b0c347f 100644
+>> --- a/include/linux/jbd2.h
+>> +++ b/include/linux/jbd2.h
+>> @@ -765,6 +765,11 @@ struct journal_s
+>>  	 */
+>>  	int			j_errno;
+>>  
+>> +	/**
+>> +	 * @j_record_errno: complete to record errno in the journal superblock
+>> +	 */
+>> +	struct completion	j_record_errno;
+>> +
+>>  	/**
+>>  	 * @j_sb_buffer: The first part of the superblock buffer.
+>>  	 */
+>> @@ -1247,7 +1252,6 @@ JBD2_FEATURE_INCOMPAT_FUNCS(csum3,		CSUM_V3)
+>>  #define JBD2_ABORT_ON_SYNCDATA_ERR	0x040	/* Abort the journal on file
+>>  						 * data write error in ordered
+>>  						 * mode */
+>> -#define JBD2_REC_ERR	0x080	/* The errno in the sb has been recorded */
+>>  
+>>  /*
+>>   * Function declarations for the journaling transaction and buffer
 >> -- 
 >> 2.21.3
 >>
