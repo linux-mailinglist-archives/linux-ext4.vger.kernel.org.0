@@ -2,107 +2,73 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 304471F41E5
-	for <lists+linux-ext4@lfdr.de>; Tue,  9 Jun 2020 19:14:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B93FF1F480B
+	for <lists+linux-ext4@lfdr.de>; Tue,  9 Jun 2020 22:28:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728772AbgFIROY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 9 Jun 2020 13:14:24 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:49053 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727021AbgFIROX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 9 Jun 2020 13:14:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591722862;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=QMyFhku3rGzuZoalxANSGbyqeBynKYN/URvK4ZCOZOE=;
-        b=eKdC4+wRxIK4oa/uFGRl+w1GLfFaN/v44m/g3eTvO6VUzJhVZErZ/SeSUqG+PQwWocPcAX
-        twx0/dwZ5xlQHxEyH842pEvuihQHH/F5+96ywdTsINh9LqwZvDn+K0jHjf1Wvh8fD0ncSi
-        aWaOQ58Cpbw5559H5dSEfFddSW8077Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-269-dFYh4qi_O8WKGaR5QuSwlg-1; Tue, 09 Jun 2020 13:14:20 -0400
-X-MC-Unique: dFYh4qi_O8WKGaR5QuSwlg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S2387786AbgFIU20 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 9 Jun 2020 16:28:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44700 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733222AbgFIU2X (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 9 Jun 2020 16:28:23 -0400
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7476A800053;
-        Tue,  9 Jun 2020 17:14:19 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 448F01001281;
-        Tue,  9 Jun 2020 17:14:19 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 059HEIoY031800;
-        Tue, 9 Jun 2020 13:14:18 -0400
-Received: from localhost (mpatocka@localhost)
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 059HEIHm031797;
-        Tue, 9 Jun 2020 13:14:18 -0400
-X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
-Date:   Tue, 9 Jun 2020 13:14:18 -0400 (EDT)
-From:   Mikulas Patocka <mpatocka@redhat.com>
-X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
-To:     "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.com>
-cc:     linux-ext4@vger.kernel.org
-Subject: [PATCH] ext2: fix missing percpu_counter_inc (fwd)
-Message-ID: <alpine.LRH.2.02.2006091312530.31685@file01.intranet.prod.int.rdu2.redhat.com>
-User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7DB8A206C3;
+        Tue,  9 Jun 2020 20:28:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591734502;
+        bh=H/1jyA2ENEl76fko3i9AUC1qpu0Coz7F0CswtYS3WFg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=P4T3MvRrVMmtF3DbaNR6Vf9oaL5Jydxxzs2uKXV09TAGaRgb3FsE2ef7SwvZALph5
+         oLzKqq/yk82ZVm20+xmwMUS0IlcojUDB+UExygverfwT7n9SSgELPQgUAZuSMTp3+/
+         zSn333TkeHIJXbPbfcPqt0I9lUR/Dp6eiEyNsjFA=
+Date:   Tue, 9 Jun 2020 13:28:21 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Daniel Rosenberg <drosen@google.com>, stable@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.co.uk>
+Subject: Re: [PATCH v2] ext4: avoid utf8_strncasecmp() with unstable name
+Message-ID: <20200609202821.GB1105@sol.localdomain>
+References: <20200601200543.59417-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200601200543.59417-1-ebiggers@kernel.org>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-I'm resending this because I didn't get any response.
+On Mon, Jun 01, 2020 at 01:05:43PM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> If the dentry name passed to ->d_compare() fits in dentry::d_iname, then
+> it may be concurrently modified by a rename.  This can cause undefined
+> behavior (possibly out-of-bounds memory accesses or crashes) in
+> utf8_strncasecmp(), since fs/unicode/ isn't written to handle strings
+> that may be concurrently modified.
+> 
+> Fix this by first copying the filename to a stack buffer if needed.
+> This way we get a stable snapshot of the filename.
+> 
+> Fixes: b886ee3e778e ("ext4: Support case-insensitive file name lookups")
+> Cc: <stable@vger.kernel.org> # v5.2+
+> Cc: Al Viro <viro@zeniv.linux.org.uk>
+> Cc: Daniel Rosenberg <drosen@google.com>
+> Cc: Gabriel Krisman Bertazi <krisman@collabora.co.uk>
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+> 
+> v2: use memcpy() + barrier() instead of a byte-by-byte copy.
+> 
+>  fs/ext4/dir.c | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
 
-Mikulas
+Ted, could you take this through the ext4 tree as a fix for 5.8?
+The f2fs patch has been merged already.
 
-
-
----------- Forwarded message ----------
-Date: Mon, 20 Apr 2020 16:02:21 -0400 (EDT)
-From: Mikulas Patocka <mpatocka@redhat.com>
-To: Jan Kara <jack@suse.com>
-Cc: linux-ext4@vger.kernel.org
-Subject: [PATCH] ext2: fix missing percpu_counter_inc
-
-sbi->s_freeinodes_counter is only decreased by the ext2 code, it is never
-increased. This patch fixes it.
-
-Note that sbi->s_freeinodes_counter is only used in the algorithm that
-tries to find the group for new allocations, so this bug is not easily
-visible (the only visibility is that the group finding algorithm selects
-inoptinal result).
-
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-Cc: stable@vger.kernel.org
-
----
- fs/ext2/ialloc.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-Index: linux-2.6/fs/ext2/ialloc.c
-===================================================================
---- linux-2.6.orig/fs/ext2/ialloc.c	2019-09-20 14:39:07.951999000 +0200
-+++ linux-2.6/fs/ext2/ialloc.c	2020-04-20 21:33:26.389999000 +0200
-@@ -80,6 +80,7 @@ static void ext2_release_inode(struct su
- 	if (dir)
- 		le16_add_cpu(&desc->bg_used_dirs_count, -1);
- 	spin_unlock(sb_bgl_lock(EXT2_SB(sb), group));
-+	percpu_counter_inc(&EXT2_SB(sb)->s_freeinodes_counter);
- 	if (dir)
- 		percpu_counter_dec(&EXT2_SB(sb)->s_dirs_counter);
- 	mark_buffer_dirty(bh);
-@@ -528,7 +529,7 @@ got:
- 		goto fail;
- 	}
- 
--	percpu_counter_add(&sbi->s_freeinodes_counter, -1);
-+	percpu_counter_dec(&sbi->s_freeinodes_counter);
- 	if (S_ISDIR(mode))
- 		percpu_counter_inc(&sbi->s_dirs_counter);
- 
-
+- Eric
