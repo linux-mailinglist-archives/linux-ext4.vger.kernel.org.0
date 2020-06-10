@@ -2,98 +2,110 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A9D1F4B09
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 Jun 2020 03:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 073D21F4B2F
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 Jun 2020 04:06:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726090AbgFJBsR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 9 Jun 2020 21:48:17 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:35476 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725988AbgFJBsP (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 9 Jun 2020 21:48:15 -0400
-Received: by mail-io1-f70.google.com with SMTP id c5so563497ioh.2
-        for <linux-ext4@vger.kernel.org>; Tue, 09 Jun 2020 18:48:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=tCNv4MDksUTvEJtckn2siy6hhdfAtvNNzotf7ihGV9M=;
-        b=dhoCsNXDd6t7Jg78YQUXOInEUbNpNdzEryOhuihJkDXQoVIJzC8w1bjvgWngDO/mZ/
-         V/yd9tSODmGvL/HtD0pxGAuWNgGnplkvnr8u17GsO2HbKJribELVsPyon9ZU5f+uZrb5
-         P+rTjxI7EhZ+jOIv4x237SZW+vaS6SUFtiE71ybhHJ7+hdktpnqypsoYpqMP2dOczWZi
-         gRmpbhbfTQy+D0kO32uuq0gUQM8VAxTgIuECMQa+vtFhzNrvfuqtOeS0D+0A1C+7Gb6P
-         shp9PUVjRFlCz3fvXrA8DzSRio+yL2Rq3oBiIwALupdKZ2YQk9uV62vuy588g7pXEEqL
-         ITaw==
-X-Gm-Message-State: AOAM532g1iFdvFU8cPIXXJTP6Ly1R7OZ+Tdssin5JVDP8WX74vrDmX1B
-        RWkgv4ySkeVuMAVUlyBoNqg9d2tg6hSZIqA5G4Kb0BLZ7mX+
-X-Google-Smtp-Source: ABdhPJzlbbQqB+bRC/Lpi5Ncz3C53bANqqT4UivwwU48hlv7Ea2cNi/oHmCV7GKnB7uL5/fOrvLrCG+ZyxAfqp0k+QhYJ3u3uZQk
+        id S1726119AbgFJCGf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 9 Jun 2020 22:06:35 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:9788 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725798AbgFJCGf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 9 Jun 2020 22:06:35 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05A22RwB157293;
+        Tue, 9 Jun 2020 22:06:17 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31j4unst99-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Jun 2020 22:06:17 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05A22f5j158369;
+        Tue, 9 Jun 2020 22:06:16 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31j4unst8b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Jun 2020 22:06:16 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05A25MMP023550;
+        Wed, 10 Jun 2020 02:06:14 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 31g2s7xvcf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Jun 2020 02:06:14 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05A26Cq111338212
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Jun 2020 02:06:12 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8DEE611C04C;
+        Wed, 10 Jun 2020 02:06:12 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AEB3211C066;
+        Wed, 10 Jun 2020 02:06:10 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.37.89])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 10 Jun 2020 02:06:10 +0000 (GMT)
+Subject: Re: [PATCHv2 1/1] ext4: mballoc: Use this_cpu_read instead of
+ this_cpu_ptr
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     linux-ext4@vger.kernel.org, jack@suse.com, tytso@mit.edu,
+        Markus Elfring <Markus.Elfring@web.de>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Borislav Petkov <bp@alien8.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        syzbot+82f324bb69744c5f6969@syzkaller.appspotmail.com
+References: <20200609123716.16888-1-hdanton@sina.com>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Date:   Wed, 10 Jun 2020 07:36:09 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-X-Received: by 2002:a6b:7516:: with SMTP id l22mr1061993ioh.18.1591753693598;
- Tue, 09 Jun 2020 18:48:13 -0700 (PDT)
-Date:   Tue, 09 Jun 2020 18:48:13 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007a16f705a7b1096d@google.com>
-Subject: upstream test error: BUG: using smp_processor_id() in preemptible
- code in ext4_mb_new_blocks
-From:   syzbot <syzbot+0113b9be6667b5b50840@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200609123716.16888-1-hdanton@sina.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Message-Id: <20200610020610.AEB3211C066@d06av25.portsmouth.uk.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-09_14:2020-06-09,2020-06-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
+ cotscore=-2147483648 mlxlogscore=999 priorityscore=1501 bulkscore=0
+ phishscore=0 impostorscore=0 clxscore=1015 lowpriorityscore=0 mlxscore=0
+ adultscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006100010
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
-
-syzbot found the following crash on:
-
-HEAD commit:    5b14671b Merge tag 'fuse-update-5.8' of git://git.kernel.o..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12a11ec1100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d1ea633f7958e008
-dashboard link: https://syzkaller.appspot.com/bug?extid=0113b9be6667b5b50840
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+0113b9be6667b5b50840@syzkaller.appspotmail.com
-
-BUG: using smp_processor_id() in preemptible [00000000] code: systemd-rfkill/6740
-caller is ext4_mb_new_blocks+0xa77/0x3b30 fs/ext4/mballoc.c:4711
-CPU: 0 PID: 6740 Comm: systemd-rfkill Not tainted 5.7.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x18f/0x20d lib/dump_stack.c:118
- check_preemption_disabled lib/smp_processor_id.c:47 [inline]
- debug_smp_processor_id.cold+0x88/0x9b lib/smp_processor_id.c:57
- ext4_mb_new_blocks+0xa77/0x3b30 fs/ext4/mballoc.c:4711
- ext4_ext_map_blocks+0x2044/0x3410 fs/ext4/extents.c:4244
- ext4_map_blocks+0x4cb/0x1640 fs/ext4/inode.c:626
- ext4_getblk+0xad/0x520 fs/ext4/inode.c:833
- ext4_bread+0x7c/0x380 fs/ext4/inode.c:883
- ext4_append+0x153/0x360 fs/ext4/namei.c:67
- ext4_init_new_dir fs/ext4/namei.c:2757 [inline]
- ext4_mkdir+0x5e0/0xdf0 fs/ext4/namei.c:2802
- vfs_mkdir+0x419/0x690 fs/namei.c:3641
- do_mkdirat+0x21e/0x280 fs/namei.c:3664
- do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
- entry_SYSCALL_64_after_hwframe+0x49/0xb3
-RIP: 0033:0x7f449ff49687
-Code: Bad RIP value.
-RSP: 002b:00007ffdd3b9fe58 EFLAGS: 00000246 ORIG_RAX: 0000000000000053
-RAX: ffffffffffffffda RBX: 00005567752fd985 RCX: 00007f449ff49687
-RDX: 00007ffdd3b9fd20 RSI: 00000000000001ed RDI: 00005567752fd985
-RBP: 00007f449ff49680 R08: 0000000000000100 R09: 0000000000000000
-R10: 00005567752fd980 R11: 0000000000000246 R12: 00000000000001ed
-R13: 00007ffdd3b9ffe0 R14: 0000000000000000 R15: 0000000000000000
 
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+On 6/9/20 6:07 PM, Hillf Danton wrote:
+> 
+> On Tue, 9 Jun 2020 18:53:23 +0800 Ritesh Harjani wrote:
+>>
+>> Simplify reading a seq variable by directly using this_cpu_read API
+>> instead of doing this_cpu_ptr and then dereferencing it.
+> 
+> Two of the quick questions
+> 1) Why can blocks discarded in a ext4 FS help allocators in another?
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+I am not sure if I understand your Q correctly. But here is a brief 
+about the patchset. If there were PA blocks just or about to be 
+discarded by another thread, then the current thread who is doing block 
+allocation should not fail with ENOSPC error instead should be able to 
+allocate those blocks from another thread. The concept is better 
+explained in the commit msgs, if more details are required.
+Without this patchset (in some heavy multi-threaded use case) allocation 
+was failing when the overall filesystem space available was more then 50%.
+
+> 
+> 2) Why is a percpu seqcount prefered over what <linux/seqlock.h>
+> can offer?
+> 
+
+Since this could be a multi-threaded use case, per cpu variable helps in 
+avoid cache line bouncing problem, which could happen when the same 
+variable is updated by multiple threads on different cpus.
+
+-ritesh
