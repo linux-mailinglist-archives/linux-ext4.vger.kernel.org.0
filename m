@@ -2,102 +2,92 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C73951F4E46
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 Jun 2020 08:34:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB2EA1F507C
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 Jun 2020 10:45:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726098AbgFJGe6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 10 Jun 2020 02:34:58 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:40274 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726035AbgFJGe5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 10 Jun 2020 02:34:57 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05A6X4pj187195;
-        Wed, 10 Jun 2020 02:34:39 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31jaydtk5a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Jun 2020 02:34:39 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05A6YctA002469;
-        Wed, 10 Jun 2020 02:34:38 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31jaydtk4h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Jun 2020 02:34:38 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05A6MLM4012047;
-        Wed, 10 Jun 2020 06:34:36 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03fra.de.ibm.com with ESMTP id 31jf1grag8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Jun 2020 06:34:36 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05A6YYIq57540632
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 10 Jun 2020 06:34:34 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 00B7811C054;
-        Wed, 10 Jun 2020 06:34:34 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 354E411C04A;
-        Wed, 10 Jun 2020 06:34:32 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.199.37.89])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 10 Jun 2020 06:34:32 +0000 (GMT)
-Subject: Re: [PATCHv2 1/1] ext4: mballoc: Use this_cpu_read instead of
- this_cpu_ptr
-To:     Christoph Hellwig <hch@infradead.org>, tytso@mit.edu
-Cc:     linux-ext4@vger.kernel.org, jack@suse.com,
-        Hillf Danton <hdanton@sina.com>, linux-fsdevel@vger.kernel.org,
-        Borislav Petkov <bp@alien8.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        syzbot+82f324bb69744c5f6969@syzkaller.appspotmail.com
-References: <534f275016296996f54ecf65168bb3392b6f653d.1591699601.git.riteshh@linux.ibm.com>
- <20200610062538.GA24975@infradead.org>
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-Date:   Wed, 10 Jun 2020 12:04:31 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1726799AbgFJIpR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 10 Jun 2020 04:45:17 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33316 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726424AbgFJIpQ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 10 Jun 2020 04:45:16 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 035CEAC52;
+        Wed, 10 Jun 2020 08:45:18 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id A001A1E1283; Wed, 10 Jun 2020 10:45:14 +0200 (CEST)
+Date:   Wed, 10 Jun 2020 10:45:14 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Mikulas Patocka <mpatocka@redhat.com>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] ext2: fix missing percpu_counter_inc (fwd)
+Message-ID: <20200610084514.GC12551@quack2.suse.cz>
+References: <alpine.LRH.2.02.2006091312530.31685@file01.intranet.prod.int.rdu2.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200610062538.GA24975@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Message-Id: <20200610063432.354E411C04A@d06av25.portsmouth.uk.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-10_02:2020-06-10,2020-06-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=845 spamscore=0
- priorityscore=1501 lowpriorityscore=0 suspectscore=0 bulkscore=0
- impostorscore=0 mlxscore=0 phishscore=0 adultscore=0 cotscore=-2147483648
- malwarescore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006100049
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LRH.2.02.2006091312530.31685@file01.intranet.prod.int.rdu2.redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Tue 09-06-20 13:14:18, Mikulas Patocka wrote:
+> I'm resending this because I didn't get any response.
 
+I'm sorry far that. The patch got buried in my inbox... I've queued it up
+now. Thanks!
 
-On 6/10/20 11:55 AM, Christoph Hellwig wrote:
-> On Tue, Jun 09, 2020 at 04:23:10PM +0530, Ritesh Harjani wrote:
->> Simplify reading a seq variable by directly using this_cpu_read API
->> instead of doing this_cpu_ptr and then dereferencing it.
->>
->> This also avoid the below kernel BUG: which happens when
->> CONFIG_DEBUG_PREEMPT is enabled
+								Honza
+
+> ---------- Forwarded message ----------
+> Date: Mon, 20 Apr 2020 16:02:21 -0400 (EDT)
+> From: Mikulas Patocka <mpatocka@redhat.com>
+> To: Jan Kara <jack@suse.com>
+> Cc: linux-ext4@vger.kernel.org
+> Subject: [PATCH] ext2: fix missing percpu_counter_inc
 > 
-> I see this warning all the time with ext4 using tests VMs, so lets get
-> this fixed ASAP before -rc1:
-
-Couldn't agree more.
-
+> sbi->s_freeinodes_counter is only decreased by the ext2 code, it is never
+> increased. This patch fixes it.
 > 
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Note that sbi->s_freeinodes_counter is only used in the algorithm that
+> tries to find the group for new allocations, so this bug is not easily
+> visible (the only visibility is that the group finding algorithm selects
+> inoptinal result).
 > 
-
-Thanks
-
--ritesh
+> Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+> Cc: stable@vger.kernel.org
+> 
+> ---
+>  fs/ext2/ialloc.c |    3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> Index: linux-2.6/fs/ext2/ialloc.c
+> ===================================================================
+> --- linux-2.6.orig/fs/ext2/ialloc.c	2019-09-20 14:39:07.951999000 +0200
+> +++ linux-2.6/fs/ext2/ialloc.c	2020-04-20 21:33:26.389999000 +0200
+> @@ -80,6 +80,7 @@ static void ext2_release_inode(struct su
+>  	if (dir)
+>  		le16_add_cpu(&desc->bg_used_dirs_count, -1);
+>  	spin_unlock(sb_bgl_lock(EXT2_SB(sb), group));
+> +	percpu_counter_inc(&EXT2_SB(sb)->s_freeinodes_counter);
+>  	if (dir)
+>  		percpu_counter_dec(&EXT2_SB(sb)->s_dirs_counter);
+>  	mark_buffer_dirty(bh);
+> @@ -528,7 +529,7 @@ got:
+>  		goto fail;
+>  	}
+>  
+> -	percpu_counter_add(&sbi->s_freeinodes_counter, -1);
+> +	percpu_counter_dec(&sbi->s_freeinodes_counter);
+>  	if (S_ISDIR(mode))
+>  		percpu_counter_inc(&sbi->s_dirs_counter);
+>  
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
