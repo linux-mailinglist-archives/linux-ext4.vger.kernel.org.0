@@ -2,57 +2,98 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32EA71F4902
-	for <lists+linux-ext4@lfdr.de>; Tue,  9 Jun 2020 23:43:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3A9D1F4B09
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 Jun 2020 03:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728012AbgFIVnx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 9 Jun 2020 17:43:53 -0400
-Received: from rrcs-72-43-215-122.nys.biz.rr.com ([72.43.215.122]:41196 "EHLO
-        localhost.localdomain" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728153AbgFIVnv (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 9 Jun 2020 17:43:51 -0400
-Received: from 127.0.0.1 (localhost [127.0.0.1])
-        by localhost.localdomain (Postfix) with SMTP id 49821247DEB;
-        Tue,  9 Jun 2020 05:10:54 -0400 (EDT)
-Received: from [129.1.94.128] by 127.0.0.1 with SMTP; Tue, 09 Jun 2020 09:02:55 -0100
-Message-ID: <x$wu09$$uj$y@yccma.0b5>
-From:   "Mrs. Janet Olsen " <mrs.janetolse@gmail.com>
-Reply-To: "Mrs. Janet Olsen " <mrs.janetolse@gmail.com>
-To:     andros@netapp.com
-Subject: Your response 
-Date:   Tue, 09 Jun 20 09:02:55 GMT
-X-Mailer: QUALCOMM Windows Eudora Version 5.1
+        id S1726090AbgFJBsR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 9 Jun 2020 21:48:17 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:35476 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725988AbgFJBsP (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 9 Jun 2020 21:48:15 -0400
+Received: by mail-io1-f70.google.com with SMTP id c5so563497ioh.2
+        for <linux-ext4@vger.kernel.org>; Tue, 09 Jun 2020 18:48:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=tCNv4MDksUTvEJtckn2siy6hhdfAtvNNzotf7ihGV9M=;
+        b=dhoCsNXDd6t7Jg78YQUXOInEUbNpNdzEryOhuihJkDXQoVIJzC8w1bjvgWngDO/mZ/
+         V/yd9tSODmGvL/HtD0pxGAuWNgGnplkvnr8u17GsO2HbKJribELVsPyon9ZU5f+uZrb5
+         P+rTjxI7EhZ+jOIv4x237SZW+vaS6SUFtiE71ybhHJ7+hdktpnqypsoYpqMP2dOczWZi
+         gRmpbhbfTQy+D0kO32uuq0gUQM8VAxTgIuECMQa+vtFhzNrvfuqtOeS0D+0A1C+7Gb6P
+         shp9PUVjRFlCz3fvXrA8DzSRio+yL2Rq3oBiIwALupdKZ2YQk9uV62vuy588g7pXEEqL
+         ITaw==
+X-Gm-Message-State: AOAM532g1iFdvFU8cPIXXJTP6Ly1R7OZ+Tdssin5JVDP8WX74vrDmX1B
+        RWkgv4ySkeVuMAVUlyBoNqg9d2tg6hSZIqA5G4Kb0BLZ7mX+
+X-Google-Smtp-Source: ABdhPJzlbbQqB+bRC/Lpi5Ncz3C53bANqqT4UivwwU48hlv7Ea2cNi/oHmCV7GKnB7uL5/fOrvLrCG+ZyxAfqp0k+QhYJ3u3uZQk
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-        boundary="C.9.8A.110."
-X-Priority: 5
-X-MSMail-Priority: Low
+X-Received: by 2002:a6b:7516:: with SMTP id l22mr1061993ioh.18.1591753693598;
+ Tue, 09 Jun 2020 18:48:13 -0700 (PDT)
+Date:   Tue, 09 Jun 2020 18:48:13 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007a16f705a7b1096d@google.com>
+Subject: upstream test error: BUG: using smp_processor_id() in preemptible
+ code in ext4_mb_new_blocks
+From:   syzbot <syzbot+0113b9be6667b5b50840@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Hello,
 
---C.9.8A.110.
-Content-Type: text/plain;
-Content-Transfer-Encoding: quoted-printable
+syzbot found the following crash on:
 
-Hello, 
+HEAD commit:    5b14671b Merge tag 'fuse-update-5.8' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12a11ec1100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d1ea633f7958e008
+dashboard link: https://syzkaller.appspot.com/bug?extid=0113b9be6667b5b50840
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
 
-Greetings from Mrs. Janet Olsen, from Norway.
- 
-Please i will like to establish some investments over there, such as Orpha=
-nage home and Hospital for Cancer patients but i don't have anyone, Who ca=
-n handle the contracts for me over there.
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+0113b9be6667b5b50840@syzkaller.appspotmail.com
 
-So, I am contacting to ask you and to know if you will be able of handling=
- the contracts for me over there and you will be rewarded bountifully.
+BUG: using smp_processor_id() in preemptible [00000000] code: systemd-rfkill/6740
+caller is ext4_mb_new_blocks+0xa77/0x3b30 fs/ext4/mballoc.c:4711
+CPU: 0 PID: 6740 Comm: systemd-rfkill Not tainted 5.7.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ check_preemption_disabled lib/smp_processor_id.c:47 [inline]
+ debug_smp_processor_id.cold+0x88/0x9b lib/smp_processor_id.c:57
+ ext4_mb_new_blocks+0xa77/0x3b30 fs/ext4/mballoc.c:4711
+ ext4_ext_map_blocks+0x2044/0x3410 fs/ext4/extents.c:4244
+ ext4_map_blocks+0x4cb/0x1640 fs/ext4/inode.c:626
+ ext4_getblk+0xad/0x520 fs/ext4/inode.c:833
+ ext4_bread+0x7c/0x380 fs/ext4/inode.c:883
+ ext4_append+0x153/0x360 fs/ext4/namei.c:67
+ ext4_init_new_dir fs/ext4/namei.c:2757 [inline]
+ ext4_mkdir+0x5e0/0xdf0 fs/ext4/namei.c:2802
+ vfs_mkdir+0x419/0x690 fs/namei.c:3641
+ do_mkdirat+0x21e/0x280 fs/namei.c:3664
+ do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
+ entry_SYSCALL_64_after_hwframe+0x49/0xb3
+RIP: 0033:0x7f449ff49687
+Code: Bad RIP value.
+RSP: 002b:00007ffdd3b9fe58 EFLAGS: 00000246 ORIG_RAX: 0000000000000053
+RAX: ffffffffffffffda RBX: 00005567752fd985 RCX: 00007f449ff49687
+RDX: 00007ffdd3b9fd20 RSI: 00000000000001ed RDI: 00005567752fd985
+RBP: 00007f449ff49680 R08: 0000000000000100 R09: 0000000000000000
+R10: 00005567752fd980 R11: 0000000000000246 R12: 00000000000001ed
+R13: 00007ffdd3b9ffe0 R14: 0000000000000000 R15: 0000000000000000
 
-Thanks and remain good, till i hear from you soon, for the full details.
 
-Regards, 
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Mrs. Janet Olsen.=20
-
---C.9.8A.110.--
-
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
