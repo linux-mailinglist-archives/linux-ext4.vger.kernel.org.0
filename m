@@ -2,104 +2,94 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 922D81F5FDA
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jun 2020 04:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB7121F6019
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jun 2020 04:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726361AbgFKCM5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 10 Jun 2020 22:12:57 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:5876 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726163AbgFKCM5 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 10 Jun 2020 22:12:57 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id D922F61A59FADC89566F;
-        Thu, 11 Jun 2020 10:12:55 +0800 (CST)
-Received: from [127.0.0.1] (10.166.215.198) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Thu, 11 Jun 2020
- 10:12:45 +0800
-Subject: Re: [PATCH 00/10] ext4: fix inconsistency since reading old metadata
- from disk
-To:     Jan Kara <jack@suse.cz>, "Theodore Y. Ts'o" <tytso@mit.edu>
-CC:     <linux-ext4@vger.kernel.org>, <adilger.kernel@dilger.ca>,
-        <zhangxiaoxu5@huawei.com>
-References: <20200526071754.33819-1-yi.zhang@huawei.com>
- <20200608082007.GJ13248@quack2.suse.cz>
- <cc834f50-95f0-449a-0ace-c55c41d2be1c@huawei.com>
- <20200609121920.GB12551@quack2.suse.cz>
- <45796804-07f7-2f62-b8c5-db077950d882@huawei.com>
- <20200610095739.GE12551@quack2.suse.cz> <20200610154543.GI1347934@mit.edu>
- <20200610162715.GD20677@quack2.suse.cz>
-From:   "zhangyi (F)" <yi.zhang@huawei.com>
-Message-ID: <92c92066-472e-1f1a-6043-af59bceeb0d8@huawei.com>
-Date:   Thu, 11 Jun 2020 10:12:45 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        id S1726499AbgFKCnD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 10 Jun 2020 22:43:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47588 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726312AbgFKCnC (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 10 Jun 2020 22:43:02 -0400
+Received: from localhost (c-67-169-218-210.hsd1.or.comcast.net [67.169.218.210])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 798A6206FA;
+        Thu, 11 Jun 2020 02:43:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591843382;
+        bh=uM3dzCIwaaLTHi9qlTTMuvqdx9nz3dpFhWZaS11i1xA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=c9mzM4KjTrYLQdNgmyeOEQ2rmtQ6gNNP8wJVJv0rQ/lVtYlCTa+6peAb5UzKZu0XO
+         x60Sm0bKJEQZUsFlS85fmoWvvkYGukWZxEcedS7NXzl0LbRjx8Hwj9qHCArhDRIz5c
+         PMyqM+TPsnD5eG/YSnt1ZhlBYld8s8NHjKbb3238=
+Date:   Wed, 10 Jun 2020 19:42:48 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        david@fromorbit.com, linux-kernel@vger.kernel.org,
+        sandeen@sandeen.net, hch@lst.de,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>, ira.weiny@intel.com
+Subject: [GIT PULL] vfs: improve DAX behavior for 5.8, part 3
+Message-ID: <20200611024248.GG11245@magnolia>
 MIME-Version: 1.0
-In-Reply-To: <20200610162715.GD20677@quack2.suse.cz>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.166.215.198]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2020/6/11 0:27, Jan Kara wrote:
-> On Wed 10-06-20 11:45:43, Theodore Y. Ts'o wrote:
->> On Wed, Jun 10, 2020 at 11:57:39AM +0200, Jan Kara wrote:
->>>> So I guess it may still lead to inconsistency. How about add this checking
->>>> into ext4_journal_get_write_access() ?
->>>
->>> Yes, this also occured to me later. Adding the check to
->>> ext4_journal_get_write_access() should be safer.
->>
->> There's another thing which we could do.  One of the issues is that we
->> allow buffered writeback for block devices once the change to the
->> block has been committed.  What if we add a change to block device
->> writeback code and in fs/buffer.c so that optionally, the file system
->> can specify a callback function can get called when an I/O error has
->> been reflected back up from the block layer?
->>
->> It seems unfortunate that currently, we can immediately report the I/O
->> error for buffered writes to *files*, but for metadata blocks, we
->> would only be able to report the problem when we next try to modify
->> it.
->>
->> Making changes to fs/buffer.c might be controversial, but I think it
->> might be result in a better solution.
-> 
-> Yeah, what you propose certainly makes sence could be relatively easily
-> done by blkdev_writepage() using __block_write_full_page() with appropriate
-> endio handler which calls fs callback. I'm just not sure how propagate the
-> callback function from the fs to the blkdev...
->
+Hi Linus,
 
-I have thought about this solution, we could add a hook in 'struct super_operations'
-and call it in blkdev_writepage() like blkdev_releasepage() does, and pick out a
-wrapper from block_write_full_page() to pass our endio handler in, something like
-this.
+Please pull this third part of the 5.8 DAX changes.  Now that the xfs
+changes have landed, this third piece changes the FS_XFLAG_DAX ioctl
+code in xfs to request that the inode be reloaded after the last program
+closes the file, if doing so would make a S_DAX change happen.  This
+goal here is to make dax access mode switching quicker when possible.
 
-static const struct super_operations ext4_sops = {
-...
-	.bdev_write_page = ext4_bdev_write_page,
-...
-};
+I did a test merge of this branch against upstream this evening and
+there weren't any conflicts.  The first five patches in the series were
+already in the xfs merge, so it's only the last one that should change
+anything.  Please let us know if you have any complaints about pulling
+this, since I can rework the branch.
 
-static int blkdev_writepage(struct page *page, struct writeback_control *wbc)
-{
-	struct super_block *super = BDEV_I(page->mapping->host)->bdev.bd_super;
+--D
 
-	if (super && super->s_op->bdev_write_page)
-		return super->s_op->bdev_write_page(page, blkdev_get_block, wbc);
+The following changes since commit 2c567af418e3f9380c2051aada58b4e5a4b5c2ad:
 
-	return block_write_full_page(page, blkdev_get_block, wbc);
-}
+  fs: Introduce DCACHE_DONTCACHE (2020-05-13 08:44:35 -0700)
 
-But I'm not sure it's a optimal ieda. So I continue to realize the "wb_err"
-solution now ?
+are available in the Git repository at:
 
-Thanks,
-Yi.
+  git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/vfs-5.8-merge-3
 
+for you to fetch changes up to e4f9ba20d3b8c2b86ec71f326882e1a3c4e47953:
+
+  fs/xfs: Update xfs_ioctl_setattr_dax_invalidate() (2020-05-29 20:13:20 -0700)
+
+----------------------------------------------------------------
+Third part of new DAX code for 5.8:
+- Teach XFS to ask the VFS to drop an inode if the administrator changes
+  the FS_XFLAG_DAX inode flag such that the S_DAX state would change.
+  This can result in files changing access modes without requiring an
+  unmount cycle.
+
+----------------------------------------------------------------
+Ira Weiny (6):
+      fs/xfs: Remove unnecessary initialization of i_rwsem
+      fs/xfs: Change XFS_MOUNT_DAX to XFS_MOUNT_DAX_ALWAYS
+      fs/xfs: Make DAX mount option a tri-state
+      fs/xfs: Create function xfs_inode_should_enable_dax()
+      fs/xfs: Combine xfs_diflags_to_linux() and xfs_diflags_to_iflags()
+      fs/xfs: Update xfs_ioctl_setattr_dax_invalidate()
+
+ fs/xfs/xfs_icache.c |   4 +-
+ fs/xfs/xfs_inode.h  |   1 +
+ fs/xfs/xfs_ioctl.c  | 141 ++++++++--------------------------------------------
+ fs/xfs/xfs_iops.c   |  70 +++++++++++++++++---------
+ fs/xfs/xfs_mount.h  |   4 +-
+ fs/xfs/xfs_super.c  |  48 ++++++++++++++++--
+ 6 files changed, 115 insertions(+), 153 deletions(-)
