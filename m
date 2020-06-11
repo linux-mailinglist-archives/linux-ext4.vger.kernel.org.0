@@ -2,50 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E18A1F6A77
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jun 2020 17:00:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A20271F6A79
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jun 2020 17:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728380AbgFKPAK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 11 Jun 2020 11:00:10 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:47186 "EHLO
+        id S1728405AbgFKPA5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 11 Jun 2020 11:00:57 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:47353 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728059AbgFKPAK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 11 Jun 2020 11:00:10 -0400
+        with ESMTP id S1728059AbgFKPA4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 11 Jun 2020 11:00:56 -0400
 Received: from callcc.thunk.org (pool-100-0-195-244.bstnma.fios.verizon.net [100.0.195.244])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 05BEw2xl023972
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 05BExr8q024568
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Jun 2020 10:58:02 -0400
+        Thu, 11 Jun 2020 10:59:53 -0400
 Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 2ED884200DD; Thu, 11 Jun 2020 10:58:02 -0400 (EDT)
-Date:   Thu, 11 Jun 2020 10:58:02 -0400
+        id 112B14200DD; Thu, 11 Jun 2020 10:59:53 -0400 (EDT)
+Date:   Thu, 11 Jun 2020 10:59:53 -0400
 From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Jeffle Xu <jefflexu@linux.alibaba.com>
-Cc:     enwlinux@gmail.com, linux-ext4@vger.kernel.org,
-        joseph.qi@linux.alibaba.com
-Subject: Re: [PATCH] ext4: fix partial cluster initialization when splitting
- extent
-Message-ID: <20200611145802.GM1347934@mit.edu>
-References: <1590121124-37096-1-git-send-email-jefflexu@linux.alibaba.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     yangerkun <yangerkun@huawei.com>, jaegeuk@kernel.org,
+        linux-ext4@vger.kernel.org, yi.zhang@huawei.com
+Subject: Re: [PATCH] ext4: stop overwrite the errcode in ext4_setup_super
+Message-ID: <20200611145953.GN1347934@mit.edu>
+References: <20200601073404.3712492-1-yangerkun@huawei.com>
+ <20200601114708.GG3960@quack2.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1590121124-37096-1-git-send-email-jefflexu@linux.alibaba.com>
+In-Reply-To: <20200601114708.GG3960@quack2.suse.cz>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, May 22, 2020 at 12:18:44PM +0800, Jeffle Xu wrote:
-> Fix the bug when calculating the physical block number of the first
-> block in the split extent.
+On Mon, Jun 01, 2020 at 01:47:08PM +0200, Jan Kara wrote:
+> On Mon 01-06-20 15:34:04, yangerkun wrote:
+> > Now the errcode from ext4_commit_super will overwrite EROFS exists in
+> > ext4_setup_super. Actually, no need to call ext4_commit_super since we
+> > will return EROFS. Fix it by goto done directly.
+> > 
+> > Fixes: c89128a00838 ("ext4: handle errors on ext4_commit_super")
+> > Signed-off-by: yangerkun <yangerkun@huawei.com>
 > 
-> This bug will cause xfstests shared/298 failure on ext4 with bigalloc
-> enabled occasionally. Ext4 error messages indicate that previously freed
-> blocks are being freed again, and the following fsck will fail due to
-> the inconsistency of block bitmap and bg descriptor.
+> Yeah, makes sense. You can add:
+> 
+> Reviewed-by: Jan Kara <jack@suse.cz>
 
-Applied, thanks.
+Thanks, applied.
 
-	 					- Ted
+					- Ted
