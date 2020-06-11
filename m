@@ -2,124 +2,104 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC6711F5F76
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jun 2020 03:21:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 922D81F5FDA
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jun 2020 04:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726312AbgFKBV2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 10 Jun 2020 21:21:28 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:43162 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726265AbgFKBV1 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 10 Jun 2020 21:21:27 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05B17CjE093234;
-        Wed, 10 Jun 2020 21:21:20 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31k5hxqv59-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Jun 2020 21:21:20 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05B1L7Tt030186;
-        Thu, 11 Jun 2020 01:21:18 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 31g2s80s47-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Jun 2020 01:21:18 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05B1LF9a64029050
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 11 Jun 2020 01:21:15 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D4C31A4051;
-        Thu, 11 Jun 2020 01:21:15 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CE7ECA4040;
-        Thu, 11 Jun 2020 01:21:14 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.85.93.125])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 11 Jun 2020 01:21:14 +0000 (GMT)
-Subject: Re: [PATCH] ext4: mballoc: Disable preemption before getting per-CPU
- pointer
-To:     YueHaibing <yuehaibing@huawei.com>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca
-References: <20200610134919.73688-1-yuehaibing@huawei.com>
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-Date:   Thu, 11 Jun 2020 06:51:14 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1726361AbgFKCM5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 10 Jun 2020 22:12:57 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:5876 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726163AbgFKCM5 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 10 Jun 2020 22:12:57 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id D922F61A59FADC89566F;
+        Thu, 11 Jun 2020 10:12:55 +0800 (CST)
+Received: from [127.0.0.1] (10.166.215.198) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Thu, 11 Jun 2020
+ 10:12:45 +0800
+Subject: Re: [PATCH 00/10] ext4: fix inconsistency since reading old metadata
+ from disk
+To:     Jan Kara <jack@suse.cz>, "Theodore Y. Ts'o" <tytso@mit.edu>
+CC:     <linux-ext4@vger.kernel.org>, <adilger.kernel@dilger.ca>,
+        <zhangxiaoxu5@huawei.com>
+References: <20200526071754.33819-1-yi.zhang@huawei.com>
+ <20200608082007.GJ13248@quack2.suse.cz>
+ <cc834f50-95f0-449a-0ace-c55c41d2be1c@huawei.com>
+ <20200609121920.GB12551@quack2.suse.cz>
+ <45796804-07f7-2f62-b8c5-db077950d882@huawei.com>
+ <20200610095739.GE12551@quack2.suse.cz> <20200610154543.GI1347934@mit.edu>
+ <20200610162715.GD20677@quack2.suse.cz>
+From:   "zhangyi (F)" <yi.zhang@huawei.com>
+Message-ID: <92c92066-472e-1f1a-6043-af59bceeb0d8@huawei.com>
+Date:   Thu, 11 Jun 2020 10:12:45 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-In-Reply-To: <20200610134919.73688-1-yuehaibing@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20200610162715.GD20677@quack2.suse.cz>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Message-Id: <20200611012114.CE7ECA4040@d06av23.portsmouth.uk.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-10_13:2020-06-10,2020-06-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 spamscore=0
- mlxscore=0 mlxlogscore=944 suspectscore=0 bulkscore=0 impostorscore=0
- cotscore=-2147483648 phishscore=0 malwarescore=0 lowpriorityscore=0
- adultscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006110005
+X-Originating-IP: [10.166.215.198]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
-
-Fix for this is already submitted @
-
-https://patchwork.ozlabs.org/project/linux-ext4/patch/534f275016296996f54ecf65168bb3392b6f653d.1591699601.git.riteshh@linux.ibm.com/
-
--ritesh
-
-On 6/10/20 7:19 PM, YueHaibing wrote:
-> BUG: using smp_processor_id() in preemptible [00000000] code: kworker/u16:3/2181
-> caller is ext4_mb_new_blocks+0x388/0xed0
-> CPU: 2 PID: 2181 Comm: kworker/u16:3 Not tainted 5.7.0+ #182
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-> Workqueue: writeback wb_workfn (flush-8:0)
-> Call Trace:
->   dump_stack+0xb9/0xfc
->   debug_smp_processor_id+0xc8/0xd0
->   ext4_mb_new_blocks+0x388/0xed0
->   ext4_ext_map_blocks+0xa92/0xff0
->   ext4_map_blocks+0x34e/0x580
->   ext4_writepages+0xa28/0x11b0
->   do_writepages+0x46/0xe0
->   __writeback_single_inode+0x5f/0x6b0
->   writeback_sb_inodes+0x290/0x620
->   __writeback_inodes_wb+0x62/0xb0
->   wb_writeback+0x36c/0x520
->   wb_workfn+0x319/0x680
->   process_one_work+0x271/0x640
->   worker_thread+0x3a/0x3a0
->   kthread+0x14e/0x170
->   ret_from_fork+0x27/0x40
+On 2020/6/11 0:27, Jan Kara wrote:
+> On Wed 10-06-20 11:45:43, Theodore Y. Ts'o wrote:
+>> On Wed, Jun 10, 2020 at 11:57:39AM +0200, Jan Kara wrote:
+>>>> So I guess it may still lead to inconsistency. How about add this checking
+>>>> into ext4_journal_get_write_access() ?
+>>>
+>>> Yes, this also occured to me later. Adding the check to
+>>> ext4_journal_get_write_access() should be safer.
+>>
+>> There's another thing which we could do.  One of the issues is that we
+>> allow buffered writeback for block devices once the change to the
+>> block has been committed.  What if we add a change to block device
+>> writeback code and in fs/buffer.c so that optionally, the file system
+>> can specify a callback function can get called when an I/O error has
+>> been reflected back up from the block layer?
+>>
+>> It seems unfortunate that currently, we can immediately report the I/O
+>> error for buffered writes to *files*, but for metadata blocks, we
+>> would only be able to report the problem when we next try to modify
+>> it.
+>>
+>> Making changes to fs/buffer.c might be controversial, but I think it
+>> might be result in a better solution.
 > 
-> Disable preemption before accessing discard_pa_seq.
-> 
-> Fixes: 07b5b8e1ac40 ("ext4: mballoc: introduce pcpu seqcnt for freeing PA to improve ENOSPC handling")
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> ---
->   fs/ext4/mballoc.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index a9083113a8c0..30b3bfb1e06a 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -4708,7 +4708,8 @@ ext4_fsblk_t ext4_mb_new_blocks(handle_t *handle,
->   	}
->   
->   	ac->ac_op = EXT4_MB_HISTORY_PREALLOC;
-> -	seq = *this_cpu_ptr(&discard_pa_seq);
-> +	seq = *get_cpu_ptr(&discard_pa_seq);
-> +	put_cpu_ptr(&discard_pa_seq);
->   	if (!ext4_mb_use_preallocated(ac)) {
->   		ac->ac_op = EXT4_MB_HISTORY_ALLOC;
->   		ext4_mb_normalize_request(ac, ar);
-> 
+> Yeah, what you propose certainly makes sence could be relatively easily
+> done by blkdev_writepage() using __block_write_full_page() with appropriate
+> endio handler which calls fs callback. I'm just not sure how propagate the
+> callback function from the fs to the blkdev...
+>
+
+I have thought about this solution, we could add a hook in 'struct super_operations'
+and call it in blkdev_writepage() like blkdev_releasepage() does, and pick out a
+wrapper from block_write_full_page() to pass our endio handler in, something like
+this.
+
+static const struct super_operations ext4_sops = {
+...
+	.bdev_write_page = ext4_bdev_write_page,
+...
+};
+
+static int blkdev_writepage(struct page *page, struct writeback_control *wbc)
+{
+	struct super_block *super = BDEV_I(page->mapping->host)->bdev.bd_super;
+
+	if (super && super->s_op->bdev_write_page)
+		return super->s_op->bdev_write_page(page, blkdev_get_block, wbc);
+
+	return block_write_full_page(page, blkdev_get_block, wbc);
+}
+
+But I'm not sure it's a optimal ieda. So I continue to realize the "wb_err"
+solution now ?
+
+Thanks,
+Yi.
+
