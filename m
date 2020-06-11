@@ -2,99 +2,102 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19BE61F6C78
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jun 2020 18:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD8221F6D15
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jun 2020 20:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726637AbgFKQzj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 11 Jun 2020 12:55:39 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:45069 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725782AbgFKQzj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 11 Jun 2020 12:55:39 -0400
-Received: from callcc.thunk.org (pool-100-0-195-244.bstnma.fios.verizon.net [100.0.195.244])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 05BGtNsG013702
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Jun 2020 12:55:24 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 834404200DD; Thu, 11 Jun 2020 12:55:23 -0400 (EDT)
-Date:   Thu, 11 Jun 2020 12:55:23 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Jan Kara <jack@suse.cz>
-Cc:     "zhangyi (F)" <yi.zhang@huawei.com>, linux-ext4@vger.kernel.org,
-        adilger.kernel@dilger.ca, zhangxiaoxu5@huawei.com
-Subject: Re: [PATCH 00/10] ext4: fix inconsistency since reading old metadata
- from disk
-Message-ID: <20200611165523.GQ1347934@mit.edu>
-References: <20200526071754.33819-1-yi.zhang@huawei.com>
- <20200608082007.GJ13248@quack2.suse.cz>
- <cc834f50-95f0-449a-0ace-c55c41d2be1c@huawei.com>
- <20200609121920.GB12551@quack2.suse.cz>
- <45796804-07f7-2f62-b8c5-db077950d882@huawei.com>
- <20200610095739.GE12551@quack2.suse.cz>
- <20200610154543.GI1347934@mit.edu>
- <20200610162715.GD20677@quack2.suse.cz>
- <92c92066-472e-1f1a-6043-af59bceeb0d8@huawei.com>
- <20200611082103.GA18088@quack2.suse.cz>
+        id S1726841AbgFKSBJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 11 Jun 2020 14:01:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726814AbgFKSBG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 11 Jun 2020 14:01:06 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D749C08C5C1
+        for <linux-ext4@vger.kernel.org>; Thu, 11 Jun 2020 11:01:06 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id e4so8028325ljn.4
+        for <linux-ext4@vger.kernel.org>; Thu, 11 Jun 2020 11:01:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BulRtyYimxYCM3JqpK8tF3IaJrXUR0A9VD3QaE4GUiU=;
+        b=F+EXHlVbvkMTRVWWzv8ZcPEHGpfAID2Da8N5jJ9jwq/Sk5UFdV4BndnY890mbolBO3
+         xJbuERV3mR0f+F5yKntH8xwiKR2kUGoUueLXNO5RnIgcO1PBh7DEHUydmD5yKAclq+vQ
+         balMdqIjrUuK2NFsEurmgSTtX0E/N5pRMm69I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BulRtyYimxYCM3JqpK8tF3IaJrXUR0A9VD3QaE4GUiU=;
+        b=FPpvmSWDRBa8b0AmBeJrBPw7xi4tYQzyyRtCdZSTJRkbOyjsXI3/mHZe7VoI9iSnBk
+         uzAn9ymxwQ+jAgbaREKrLnYttJBw1s0/6E0eZgrAKprBoHF8Gd/5PyemsQ5cMFyJCBD4
+         TUX600VfL365xehe6OlQiPFbgWncZcMWTr+nnUDz1mnMmjTjaQIoIUZHvaDisYCA0lct
+         qnXnI89T0aJA93vnpzKca+vu2bloXZunRJI/xsGmbuI9l7MlS6OpGXOsptHhDZaOa+cl
+         s3RUXx8Iz8TNnK5dKQEC0Liw8vk/K1M9sCogZ6O095LQyTc9fluvCAGStLenFeUCeBWb
+         o6Vw==
+X-Gm-Message-State: AOAM532RzQsydWV36yAJMAxAeJ2ya555EnD3Lk7uEZuz1TIBhRrqJz1o
+        bZjpcbIacvZONr+ziBgKIjPFc/POPtY=
+X-Google-Smtp-Source: ABdhPJxxB1bYxzl6ezZr+y/7dtd3K0BjAWVUCCrGc+GBzDIWsdFWp8RaEBJ77zfwYrs64TDz/BCVXw==
+X-Received: by 2002:a05:651c:484:: with SMTP id s4mr4552411ljc.381.1591898462198;
+        Thu, 11 Jun 2020 11:01:02 -0700 (PDT)
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
+        by smtp.gmail.com with ESMTPSA id z2sm1287459lfg.45.2020.06.11.11.01.00
+        for <linux-ext4@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Jun 2020 11:01:00 -0700 (PDT)
+Received: by mail-lj1-f175.google.com with SMTP id x18so8004086lji.1
+        for <linux-ext4@vger.kernel.org>; Thu, 11 Jun 2020 11:01:00 -0700 (PDT)
+X-Received: by 2002:a2e:8e78:: with SMTP id t24mr4854187ljk.314.1591898459839;
+ Thu, 11 Jun 2020 11:00:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200611082103.GA18088@quack2.suse.cz>
+References: <20200611024248.GG11245@magnolia>
+In-Reply-To: <20200611024248.GG11245@magnolia>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 11 Jun 2020 11:00:43 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgTMxCAHVgtKkbSJt=1pBm+86bz=RbZiZE-2sszwmcKvQ@mail.gmail.com>
+Message-ID: <CAHk-=wgTMxCAHVgtKkbSJt=1pBm+86bz=RbZiZE-2sszwmcKvQ@mail.gmail.com>
+Subject: Re: [GIT PULL] vfs: improve DAX behavior for 5.8, part 3
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Eric Sandeen <sandeen@sandeen.net>,
+        Christoph Hellwig <hch@lst.de>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        "Theodore Ts'o" <tytso@mit.edu>, ira.weiny@intel.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jun 11, 2020 at 10:21:03AM +0200, Jan Kara wrote:
-> > I have thought about this solution, we could add a hook in 'struct super_operations'
-> > and call it in blkdev_writepage() like blkdev_releasepage() does, and pick out a
-> > wrapper from block_write_full_page() to pass our endio handler in, something like
-> > this.
-> > 
-> > static const struct super_operations ext4_sops = {
-> > ...
-> > 	.bdev_write_page = ext4_bdev_write_page,
-> > ...
-> > };
-> > 
-> > static int blkdev_writepage(struct page *page, struct writeback_control *wbc)
-> > {
-> > 	struct super_block *super = BDEV_I(page->mapping->host)->bdev.bd_super;
-> > 
-> > 	if (super && super->s_op->bdev_write_page)
-> > 		return super->s_op->bdev_write_page(page, blkdev_get_block, wbc);
-> > 
-> > 	return block_write_full_page(page, blkdev_get_block, wbc);
-> > }
-> > 
-> > But I'm not sure it's a optimal ieda. So I continue to realize the "wb_err"
-> > solution now ?
-> 
-> The above idea looks good to me. I'm fine with either that solution or
-> "wb_err" idea so maybe let's leave it for Ted to decide...
+On Wed, Jun 10, 2020 at 7:43 PM Darrick J. Wong <djwong@kernel.org> wrote:
+>
+> I did a test merge of this branch against upstream this evening and
+> there weren't any conflicts.  The first five patches in the series were
+> already in the xfs merge, so it's only the last one that should change
+> anything.  Please let us know if you have any complaints about pulling
+> this, since I can rework the branch.
 
-My preference would be to be able to get the (error from the callback
-right away.  My reasoning behind that is (a) it allows the file system
-to be notified about the problem right away, (b) in the case of a file
-system resize, we _really_ want to know about the failure ASAP, so we
-can fail the resize before we start allocating inodes and blocks to
-use the new space, and (c) over time, we might be able to add some
-more intelligence handling of some write errors.
+I've taken this, but I hate how the patches apparently got duplicated.
+It feels like they should have been a cleanly separated branch that
+was just pulled into whoever needed them when they were ready, rather
+than applied in two different places.
 
-For example, we already have a way of handling CRC errors when we are
-reading an allocation bitmap; we simply avoid allocating blocks and
-inodes from that blockgroup.  Over time, we could theoretically do
-other things to try to recover from some write errors --- for example,
-we could try allocating a new block for an extent tree block, and try
-writing it, and if that succeeds, updating its parent node to point at
-the new location.  Is it worth it to try to add that kind of
-complexity?  I'm really not sure; at the end of the day, it might be
-simpler to just call ext4_error() and abort using the entire file
-system until a system administrator can sort out the mess.  But I
-think (a) and (b) are still reasons for doing this by intercepting the
-writeback error from the buffer head.
+So this is just a note for future work - duplicating the patches like
+this can cause annoyances down the line. No merge issues this time
+(they often happen when duplicate patches then have other work done on
+top of them), but things like "git bisect" now don't have quite as
+black-and-white a situation etc etc.,
 
-Cheers,
+("git bisect" will still find _one_ of the duplicate commits if it
+introduced a problem, so it's usually not a huge deal, but it can
+cause the bug to be then repeated if people revert that one, but
+nobody ever notices that the other commit that did the same thing is
+still around and it gets back-ported to stable or whatever..)
 
-						- Ted
+So part of this is just in general about confusing duplicate history,
+and part of it is that the duplication can then cause later confusion.
+
+                Linus
