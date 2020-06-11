@@ -2,70 +2,58 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3017E1F6A80
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jun 2020 17:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FF661F6A8F
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jun 2020 17:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728408AbgFKPCK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 11 Jun 2020 11:02:10 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:47766 "EHLO
+        id S1728471AbgFKPEQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 11 Jun 2020 11:04:16 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:48131 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728059AbgFKPCK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 11 Jun 2020 11:02:10 -0400
+        with ESMTP id S1728419AbgFKPEP (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 11 Jun 2020 11:04:15 -0400
 Received: from callcc.thunk.org (pool-100-0-195-244.bstnma.fios.verizon.net [100.0.195.244])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 05BF1oeZ025687
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 05BF3eIm026407
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Jun 2020 11:01:51 -0400
+        Thu, 11 Jun 2020 11:03:40 -0400
 Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 8C5C84200DD; Thu, 11 Jun 2020 11:01:50 -0400 (EDT)
-Date:   Thu, 11 Jun 2020 11:01:50 -0400
+        id 0903E4200DD; Thu, 11 Jun 2020 11:03:40 -0400 (EDT)
+Date:   Thu, 11 Jun 2020 11:03:40 -0400
 From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Andreas Dilger <adilger@dilger.ca>
-Cc:     Eric Biggers <ebiggers@kernel.org>, linux-ext4@vger.kernel.org,
-        Daniel Rosenberg <drosen@google.com>, stable@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.co.uk>
-Subject: Re: [PATCH v2] ext4: avoid utf8_strncasecmp() with unstable name
-Message-ID: <20200611150150.GO1347934@mit.edu>
-References: <20200601200543.59417-1-ebiggers@kernel.org>
- <E876FECB-300E-471B-A790-D44F2F1A3F9A@dilger.ca>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Ritesh Harjani <riteshh@linux.ibm.com>, linux-ext4@vger.kernel.org,
+        jack@suse.com, Hillf Danton <hdanton@sina.com>,
+        linux-fsdevel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        syzbot+82f324bb69744c5f6969@syzkaller.appspotmail.com
+Subject: Re: [PATCHv2 1/1] ext4: mballoc: Use this_cpu_read instead of
+ this_cpu_ptr
+Message-ID: <20200611150340.GP1347934@mit.edu>
+References: <534f275016296996f54ecf65168bb3392b6f653d.1591699601.git.riteshh@linux.ibm.com>
+ <20200610062538.GA24975@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <E876FECB-300E-471B-A790-D44F2F1A3F9A@dilger.ca>
+In-Reply-To: <20200610062538.GA24975@infradead.org>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jun 01, 2020 at 02:49:51PM -0600, Andreas Dilger wrote:
-> On Jun 1, 2020, at 2:05 PM, Eric Biggers <ebiggers@kernel.org> wrote:
+On Tue, Jun 09, 2020 at 11:25:38PM -0700, Christoph Hellwig wrote:
+> On Tue, Jun 09, 2020 at 04:23:10PM +0530, Ritesh Harjani wrote:
+> > Simplify reading a seq variable by directly using this_cpu_read API
+> > instead of doing this_cpu_ptr and then dereferencing it.
 > > 
-> > From: Eric Biggers <ebiggers@google.com>
-> > 
-> > If the dentry name passed to ->d_compare() fits in dentry::d_iname, then
-> > it may be concurrently modified by a rename.  This can cause undefined
-> > behavior (possibly out-of-bounds memory accesses or crashes) in
-> > utf8_strncasecmp(), since fs/unicode/ isn't written to handle strings
-> > that may be concurrently modified.
-> > 
-> > Fix this by first copying the filename to a stack buffer if needed.
-> > This way we get a stable snapshot of the filename.
-> > 
-> > Fixes: b886ee3e778e ("ext4: Support case-insensitive file name lookups")
-> > Cc: <stable@vger.kernel.org> # v5.2+
-> > Cc: Al Viro <viro@zeniv.linux.org.uk>
-> > Cc: Daniel Rosenberg <drosen@google.com>
-> > Cc: Gabriel Krisman Bertazi <krisman@collabora.co.uk>
-> > Signed-off-by: Eric Biggers <ebiggers@google.com>
+> > This also avoid the below kernel BUG: which happens when
+> > CONFIG_DEBUG_PREEMPT is enabled
 > 
-> LGTM.
+> I see this warning all the time with ext4 using tests VMs, so lets get
+> this fixed ASAP before -rc1:
 > 
-> Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
 Thanks, applied.
 
-					- Ted
+						- Ted
