@@ -2,128 +2,117 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 449501F63A8
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jun 2020 10:34:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A8C91F6508
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jun 2020 11:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726756AbgFKIe2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 11 Jun 2020 04:34:28 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:59044 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726651AbgFKIe2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 11 Jun 2020 04:34:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591864467;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=tYt8wIp47TLS9JNkJcULGEMZvCJIk4AdRW5F88VoPg8=;
-        b=SUsGHA5Vs0jHz86MROjdIqR6x0Y3xRz7xv54UFUR4YuAYkA0CMOK8B8vWeTwMzwutZKT8V
-        wD7/JDcjaVywXmsqRJfC3PRrET5C0uIO1h8ItDceKSTKx7dhvLzJieLozDYbuZIRSVFPgj
-        8l3LA2kJNOr7jfwA/PsaCld3ZUTwTNA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-179-RGKLhJ9MMtyUmtS-rWhnmA-1; Thu, 11 Jun 2020 04:34:25 -0400
-X-MC-Unique: RGKLhJ9MMtyUmtS-rWhnmA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 27D2F464;
-        Thu, 11 Jun 2020 08:34:23 +0000 (UTC)
-Received: from work (unknown [10.40.192.76])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4E25819D61;
-        Thu, 11 Jun 2020 08:34:22 +0000 (UTC)
-Date:   Thu, 11 Jun 2020 10:34:17 +0200
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     Jan Kara <jack@suse.cz>
-Subject: jbd2: can b_transaction be NULL in refile_buffer ?
-Message-ID: <20200611083417.4akdykeubd7kfuuh@work>
+        id S1727006AbgFKJzp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 11 Jun 2020 05:55:45 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:33737 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726783AbgFKJzT (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 11 Jun 2020 05:55:19 -0400
+Received: by mail-wm1-f67.google.com with SMTP id j198so6574348wmj.0;
+        Thu, 11 Jun 2020 02:55:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OGc4Jynhv8J9+LXwEVD2pmhTRYA7A0SBRA8Y9bWfwBM=;
+        b=ZP3WT+PqgLjTcOB43l6GxF4o9GVmkvGG8l8sH87x0bHL7XqW1KaHyZDmXKTjJKOzkt
+         RMgvMWpExF98C4c5Y8zco5vLKDG7hWRa43rDJfaSezsHoqaU+WlrqodiEafdyOR6DLBQ
+         sVAhvx5jJLoHj705kpT+10r+i2FjIpJr8PQg+MUeEUNoTiXzrXv0eurO1JGi1H1SIPOZ
+         S/KzhrJBCblA+SH0Gx9hzDttKjs8TI+oOrIpJt1f1hPWRjpYSRFdWMjxC2GYJ1vt1jOJ
+         t2JOGG6A6SmkoGwePy6IL/YHQJu+TjWJQs041ML6lujAcOHokviij9GvmZXEDyLTidDh
+         gLrA==
+X-Gm-Message-State: AOAM530ngMhb6vfGTQmJl/t9EPNN5CQTYVgAf7hkzc9JAKRH3GtCAfhI
+        VHBihFejIgcUSJAK6Xm9qRg=
+X-Google-Smtp-Source: ABdhPJxdFlFuIOqczVMYLEkBB/5DcRTZD3uW4Gi3wzWe6yykRWLuYTOprRKGwBQhCme4nouL4V90Cw==
+X-Received: by 2002:a7b:c18a:: with SMTP id y10mr7719246wmi.73.1591869316876;
+        Thu, 11 Jun 2020 02:55:16 -0700 (PDT)
+Received: from localhost (ip-37-188-174-201.eurotel.cz. [37.188.174.201])
+        by smtp.gmail.com with ESMTPSA id 67sm4301281wrk.49.2020.06.11.02.55.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Jun 2020 02:55:15 -0700 (PDT)
+Date:   Thu, 11 Jun 2020 11:55:14 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Chris Down <chris@chrisdown.name>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Yafang Shao <laoar.shao@gmail.com>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        "Linux F2FS DEV, Mailing List" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, Arnd Bergmann <arnd@arndb.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Chao Yu <yuchao0@huawei.com>, lkft-triage@lists.linaro.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Cgroups <cgroups@vger.kernel.org>
+Subject: Re: mm: mkfs.ext4 invoked oom-killer on i386 - pagecache_get_page
+Message-ID: <20200611095514.GD20450@dhcp22.suse.cz>
+References: <20200521095515.GK6462@dhcp22.suse.cz>
+ <20200521163450.GV6462@dhcp22.suse.cz>
+ <CA+G9fYuDWGZx50UpD+WcsDeHX9vi3hpksvBAWbMgRZadb0Pkww@mail.gmail.com>
+ <CA+G9fYs2jg-j_5fdb0OW0G-JzDjN7b8d9qnX7uuk9p4c7mVSig@mail.gmail.com>
+ <20200528150310.GG27484@dhcp22.suse.cz>
+ <CA+G9fYvDXiZ9E9EfU6h0gsJ+xaXY77mRu9Jg+J7C=X4gJ3qvLg@mail.gmail.com>
+ <20200528164121.GA839178@chrisdown.name>
+ <CALOAHbAHGOsAUUM7qn=9L1u8kAf6Gztqt=SyHSmZ9XuYZWcKmg@mail.gmail.com>
+ <20200529015644.GA84588@chrisdown.name>
+ <20200529094910.GH4406@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <20200529094910.GH4406@dhcp22.suse.cz>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi,
+On Fri 29-05-20 11:49:20, Michal Hocko wrote:
+> On Fri 29-05-20 02:56:44, Chris Down wrote:
+> > Yafang Shao writes:
+> > > Look at this patch[1] carefully you will find that it introduces the
+> > > same issue that I tried to fix in another patch [2]. Even more sad is
+> > > these two patches are in the same patchset. Although this issue isn't
+> > > related with the issue found by Naresh, we have to ask ourselves why
+> > > we always make the same mistake ?
+> > > One possible answer is that we always forget the lifecyle of
+> > > memory.emin before we read it. memory.emin doesn't have the same
+> > > lifecycle with the memcg, while it really has the same lifecyle with
+> > > the reclaimer. IOW, once a reclaimer begins the protetion value should
+> > > be set to 0, and after we traversal the memcg tree we calculate a
+> > > protection value for this reclaimer, finnaly it disapears after the
+> > > reclaimer stops. That is why I highly suggest to add an new protection
+> > > member in scan_control before.
+> > 
+> > I agree with you that the e{min,low} lifecycle is confusing for everyone --
+> > the only thing I've not seen confirmation of is any confirmed correlation
+> > with the i386 oom killer issue. If you've validated that, I'd like to see
+> > the data :-)
+> 
+> Agreed. Even if e{low,min} might still have some rough edges I am
+> completely puzzled how we could end up oom if none of the protection
+> path triggers which the additional debugging should confirm. Maybe my
+> debugging patch is incomplete or used incorrectly (maybe it would be
+> esier to use printk rather than trace_printk?).
 
-I am tracking a rare and very hard to reproduce bug that ends up hittng
-
-J_ASSERT_JH(jh, jh->b_transaction == NULL)
-
-in __journal_remove_journal_head(). In fact we can get there with
-b_next_transaction set and b_jlist == BJ_Forget so it's clear that we
-should not have dropped the last JH reference at that point.
-
-Most of the time that I've seen we get there from
-__jbd2_journal_remove_checkpoint() called from
-jbd2_journal_commit_transaction().
-
-The locking in and around grabbing and putting the journal head
-reference (b_jcount) looks solid as well as the use of j_list_lock. But
-I have noticed a problem in logic of __jbd2_journal_refile_buffer().
-
-The idea is that b_next_transaction will inherit the reference from
-b_transaction so that we do not need to grab a new reference of
-journal_head. However this will only be true if b_transaction is set.
-But if it is indeed NULL, then we will do
-
-WRITE_ONCE(jh->b_transaction, jh->b_next_transaction);
-
-and __jbd2_journal_file_buffer() will not grab the jh reference. AFAICT
-the b_next_transaction is not holding it's own jh reference. This will
-result in b_transaction _not_ holding it's own jh reference and we will
-be able to drop the last jh reference at unexpected places - hence we can
-hit the asserts in __journal_remove_journal_head().
-
-However I am not really sure if it is indeed possible to get into
-__jbd2_journal_refile_buffer() with b_transaction == NULL and
-b_next_transaction set. Jan do you have any idea if that's possible and
-what would be the circumstances to lead us there ?
-
-
-Regardless I still think this is a bug in the logic and we should either
-make sure that b_transaction is _not_ NULL in
-__jbd2_journal_refile_buffer(), or let __jbd2_journal_file_buffer() grab
-the jh reference if b_transaction was indeen NULL. How about something
-like the following untested patch ?
-
-Thanks!
--Lukas
-
+It would be really great if we could move forward. While the fix (which
+has been dropped from mmotm) is not super urgent I would really like to
+understand how it could hit the observed behavior. Can we double check
+that the debugging patch really doesn't trigger (e.g.
+s@trace_printk@printk in the first step)? I have checked it again but
+do not see any potential code path which would be affected by the patch
+yet not trigger any output. But another pair of eyes would be really
+great.
 -- 
-
-diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-index e91aad3637a2..55e5cb6b4bb5 100644
---- a/fs/jbd2/transaction.c
-+++ b/fs/jbd2/transaction.c
-@@ -2498,7 +2498,7 @@ void __jbd2_journal_file_buffer(struct journal_head *jh,
-                __jbd2_journal_temp_unlink_buffer(jh);
-        else
-                jbd2_journal_grab_journal_head(bh);
--       jh->b_transaction = transaction;
-+       WRITE_ONCE(jh->b_transaction, transaction);
-
-        switch (jlist) {
-        case BJ_None:
-@@ -2577,15 +2577,14 @@ bool __jbd2_journal_refile_buffer(struct journal_head *jh)
-         * our jh reference and thus __jbd2_journal_file_buffer() must not
-         * take a new one.
-         */
--       WRITE_ONCE(jh->b_transaction, jh->b_next_transaction);
--       WRITE_ONCE(jh->b_next_transaction, NULL);
-        if (buffer_freed(bh))
-                jlist = BJ_Forget;
-        else if (jh->b_modified)
-                jlist = BJ_Metadata;
-        else
-                jlist = BJ_Reserved;
--       __jbd2_journal_file_buffer(jh, jh->b_transaction, jlist);
-+       __jbd2_journal_file_buffer(jh, jh->b_next_transaction, jlist);
-+       WRITE_ONCE(jh->b_next_transaction, NULL);
-        J_ASSERT_JH(jh, jh->b_transaction->t_state == T_RUNNING);
-
-        if (was_dirty)
-(END)
-
+Michal Hocko
+SUSE Labs
