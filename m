@@ -2,108 +2,136 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 602D91F77B3
-	for <lists+linux-ext4@lfdr.de>; Fri, 12 Jun 2020 14:09:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7988A1F77C3
+	for <lists+linux-ext4@lfdr.de>; Fri, 12 Jun 2020 14:15:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726268AbgFLMJM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 12 Jun 2020 08:09:12 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:36922 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725791AbgFLMJM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 12 Jun 2020 08:09:12 -0400
-Received: by mail-wr1-f65.google.com with SMTP id x13so9494574wrv.4;
-        Fri, 12 Jun 2020 05:09:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0z8NpPBTC8fx2bnuG8Z/NmM1px6+WjPFa2BhCesn7bM=;
-        b=dwnmoXthax/50cYKAd2YDKOcoUZGZ40vfZxg8MCacIHv1HWxewXKYMVXB6iepuaAD1
-         DUoRH8fH6vP6uZePzk2ZbBA35FsWL9StD0xCH3yuU5Kfylnp1F2OQY/YOxznxRN0ta53
-         5NNXNtWr3a9ZFnER1wWXh12ZTJx2mKUa/ax28gJnxUDfTaDY0VVsBS9U6vkkVJOkfYy3
-         WrLnQLQx3PinJv9PsOWt5O6SvJGoQGRmbV8KYKKCMqtTu+FrLMzn2MV3JdA1rYv6imWK
-         P5OnZpf0A/Tq/XDBVA2LF3wKX3f5ZNqPlRplNEhPpkmDEQ+yyQYC5rQkFjj+gNCHEF5w
-         rhuA==
-X-Gm-Message-State: AOAM531xfznxpy8lXvdt7BeWSnJgiUnkLe5E3nbDJryK8/aP8D/Ze7lg
-        gCAVB9vF2Fkict2wXAM65rM=
-X-Google-Smtp-Source: ABdhPJz1sL62XzpDAGQuQcumUUzvpkSfg7su7rAnvTQ7e/vCPEMTYoz1QoY8w+Uh8QVrBnRvZKmM4A==
-X-Received: by 2002:a05:6000:1104:: with SMTP id z4mr14545075wrw.272.1591963748046;
-        Fri, 12 Jun 2020 05:09:08 -0700 (PDT)
-Received: from localhost (ip-37-188-174-201.eurotel.cz. [37.188.174.201])
-        by smtp.gmail.com with ESMTPSA id a3sm9652169wrp.91.2020.06.12.05.09.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jun 2020 05:09:06 -0700 (PDT)
-Date:   Fri, 12 Jun 2020 14:09:04 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        "Linux F2FS DEV, Mailing List" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, Arnd Bergmann <arnd@arndb.de>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Chao Yu <yuchao0@huawei.com>, lkft-triage@lists.linaro.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Cgroups <cgroups@vger.kernel.org>
-Subject: Re: mm: mkfs.ext4 invoked oom-killer on i386 - pagecache_get_page
-Message-ID: <20200612120904.GA8641@dhcp22.suse.cz>
-References: <CA+G9fYuDWGZx50UpD+WcsDeHX9vi3hpksvBAWbMgRZadb0Pkww@mail.gmail.com>
- <CA+G9fYs2jg-j_5fdb0OW0G-JzDjN7b8d9qnX7uuk9p4c7mVSig@mail.gmail.com>
- <20200528150310.GG27484@dhcp22.suse.cz>
- <CA+G9fYvDXiZ9E9EfU6h0gsJ+xaXY77mRu9Jg+J7C=X4gJ3qvLg@mail.gmail.com>
- <20200528164121.GA839178@chrisdown.name>
- <CALOAHbAHGOsAUUM7qn=9L1u8kAf6Gztqt=SyHSmZ9XuYZWcKmg@mail.gmail.com>
- <20200529015644.GA84588@chrisdown.name>
- <20200529094910.GH4406@dhcp22.suse.cz>
- <20200611095514.GD20450@dhcp22.suse.cz>
- <CA+G9fYsjH8vOTkSKGa5vgC=0fEXuC5UnGsZOirHxH9nOJSHPdA@mail.gmail.com>
+        id S1726255AbgFLMP4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 12 Jun 2020 08:15:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58188 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726085AbgFLMP4 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 12 Jun 2020 08:15:56 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D3A5F20792;
+        Fri, 12 Jun 2020 12:15:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591964155;
+        bh=ZPk3RP/f0vKFwVoKwXnjqpyMNkSKgrEOjYa45LKg+rQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mYukDCqvVukI/cgKxL76dOAdzJ8ilgzVdwGLOAbWjq2kaml+oL68YHhQsMI75wf8U
+         wniLfUuujTb0AAsPLlWrfPdwepSMGEvlPRPc6BKBFEcxxOG0cVMl71asG7PlskTvvt
+         A4Z00Fr8TCqm0kXjnQtLkp3A2guSt4kEspl+V0fo=
+Date:   Fri, 12 Jun 2020 14:15:49 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
+Cc:     syzbot <syzbot+0113b9be6667b5b50840@syzkaller.appspotmail.com>
+Subject: Re: upstream test error: BUG: using smp_processor_id() in
+ preemptible code in ext4_mb_new_blocks
+Message-ID: <20200612121549.GA2603@kroah.com>
+References: <0000000000007a16f705a7b1096d@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+G9fYsjH8vOTkSKGa5vgC=0fEXuC5UnGsZOirHxH9nOJSHPdA@mail.gmail.com>
+In-Reply-To: <0000000000007a16f705a7b1096d@google.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri 12-06-20 15:13:22, Naresh Kamboju wrote:
-> On Thu, 11 Jun 2020 at 15:25, Michal Hocko <mhocko@kernel.org> wrote:
-> >
-> > On Fri 29-05-20 11:49:20, Michal Hocko wrote:
-> > > On Fri 29-05-20 02:56:44, Chris Down wrote:
-> > > > Yafang Shao writes:
-> > > Agreed. Even if e{low,min} might still have some rough edges I am
-> > > completely puzzled how we could end up oom if none of the protection
-> > > path triggers which the additional debugging should confirm. Maybe my
-> > > debugging patch is incomplete or used incorrectly (maybe it would be
-> > > esier to use printk rather than trace_printk?).
-> >
-> > It would be really great if we could move forward. While the fix (which
-> > has been dropped from mmotm) is not super urgent I would really like to
-> > understand how it could hit the observed behavior. Can we double check
-> > that the debugging patch really doesn't trigger (e.g.
-> > s@trace_printk@printk in the first step)?
+On Tue, Jun 09, 2020 at 06:48:13PM -0700, syzbot wrote:
+> Hello,
 > 
-> Please suggest to me the way to get more debug information
-> by providing kernel debug patches and extra kernel configs.
+> syzbot found the following crash on:
 > 
-> I have applied your debug patch and tested on top on linux next 20200612
-> but did not find any printk output while running mkfs -t ext4 /drive test case.
+> HEAD commit:    5b14671b Merge tag 'fuse-update-5.8' of git://git.kernel.o..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=12a11ec1100000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=d1ea633f7958e008
+> dashboard link: https://syzkaller.appspot.com/bug?extid=0113b9be6667b5b50840
+> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> 
+> IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> Reported-by: syzbot+0113b9be6667b5b50840@syzkaller.appspotmail.com
+> 
+> BUG: using smp_processor_id() in preemptible [00000000] code: systemd-rfkill/6740
+> caller is ext4_mb_new_blocks+0xa77/0x3b30 fs/ext4/mballoc.c:4711
+> CPU: 0 PID: 6740 Comm: systemd-rfkill Not tainted 5.7.0-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x18f/0x20d lib/dump_stack.c:118
+>  check_preemption_disabled lib/smp_processor_id.c:47 [inline]
+>  debug_smp_processor_id.cold+0x88/0x9b lib/smp_processor_id.c:57
+>  ext4_mb_new_blocks+0xa77/0x3b30 fs/ext4/mballoc.c:4711
+>  ext4_ext_map_blocks+0x2044/0x3410 fs/ext4/extents.c:4244
+>  ext4_map_blocks+0x4cb/0x1640 fs/ext4/inode.c:626
+>  ext4_getblk+0xad/0x520 fs/ext4/inode.c:833
+>  ext4_bread+0x7c/0x380 fs/ext4/inode.c:883
+>  ext4_append+0x153/0x360 fs/ext4/namei.c:67
+>  ext4_init_new_dir fs/ext4/namei.c:2757 [inline]
+>  ext4_mkdir+0x5e0/0xdf0 fs/ext4/namei.c:2802
+>  vfs_mkdir+0x419/0x690 fs/namei.c:3641
+>  do_mkdirat+0x21e/0x280 fs/namei.c:3664
+>  do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
+>  entry_SYSCALL_64_after_hwframe+0x49/0xb3
+> RIP: 0033:0x7f449ff49687
+> Code: Bad RIP value.
+> RSP: 002b:00007ffdd3b9fe58 EFLAGS: 00000246 ORIG_RAX: 0000000000000053
+> RAX: ffffffffffffffda RBX: 00005567752fd985 RCX: 00007f449ff49687
+> RDX: 00007ffdd3b9fd20 RSI: 00000000000001ed RDI: 00005567752fd985
+> RBP: 00007f449ff49680 R08: 0000000000000100 R09: 0000000000000000
+> R10: 00005567752fd980 R11: 0000000000000246 R12: 00000000000001ed
+> R13: 00007ffdd3b9ffe0 R14: 0000000000000000 R15: 0000000000000000
 
-Have you tried s@trace_printk@printk@ in the patch? AFAIK trace_printk
-doesn't dump anything into the printk ring buffer. You would have to
-look into trace ring buffer.
--- 
-Michal Hocko
-SUSE Labs
+I am seeing this all over the place on Linus's tree right now:
+
+[  +0.008563] BUG: using smp_processor_id() in preemptible [00000000] code: systemd/1
+[  +0.000011] caller is ext4_mb_new_blocks+0x2ac/0xc10
+[  +0.000002] CPU: 31 PID: 1 Comm: systemd Not tainted 5.7.0-14371-g25ae6195a4c7 #66
+[  +0.000002] Hardware name: Micro-Star International Co., Ltd. MS-7C59/Creator TRX40 (MS-7C59), BIOS 1.50 05/13/2020
+[  +0.000001] Call Trace:
+[  +0.000008]  dump_stack+0x57/0x70
+[  +0.000004]  debug_smp_processor_id.cold+0x4e/0x53
+[  +0.000001]  ext4_mb_new_blocks+0x2ac/0xc10
+[  +0.000004]  ? ext4_find_extent+0x3e8/0x450
+[  +0.000002]  ext4_ext_map_blocks+0x9f6/0x1b10
+[  +0.000003]  ? ext4_mark_iloc_dirty+0x60f/0xa50
+[  +0.000003]  ? __ext4_journal_get_write_access+0x2d/0x70
+[  +0.000004]  ext4_map_blocks+0x119/0x5a0
+[  +0.000004]  ext4_getblk+0x66/0x1c0
+[  +0.000003]  ext4_bread+0x26/0xc0
+[  +0.000002]  ext4_append+0x49/0xe0
+[  +0.000002]  ext4_mkdir+0x233/0x450
+[  +0.000005]  vfs_mkdir+0x11d/0x1b0
+[  +0.000003]  do_mkdirat+0x92/0x130
+[  +0.000004]  do_syscall_64+0x43/0x80
+[  +0.000004]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[  +0.000003] RIP: 0033:0x7fef3df7a72b
+[  +0.000001] Code: Bad RIP value.
+[  +0.000001] RSP: 002b:00007ffdb4eba0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000053
+[  +0.000003] RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007fef3df7a72b
+[  +0.000001] RDX: 0000000000000000 RSI: 00000000000001c0 RDI: 0000563b11cf26e0
+[  +0.000001] RBP: 0000563b11cf2731 R08: 000000000000000d R09: 0000000000000002
+[  +0.000000] R10: 11175e4331068ed5 R11: 0000000000000246 R12: 0000563b11cf26e0
+[  +0.000002] R13: 00007fef3e019c20 R14: 00007ffdb4eba0f0 R15: 8421084210842109
+
+Just a constant stream of them.
+
+There's a few other fun:
+
+[  +0.453222] BUG: unable to handle page fault for address: ffffb59cc2719000
+[  +0.000004] #PF: supervisor write access in kernel mode
+[  +0.000001] #PF: error_code(0x000b) - reserved bit violation
+
+messages at times, but I don't think that's an ext4 issue, but rather
+something in the sound stack...
+
+EXT4 developers, any hints/patches to try?
+
+thanks,
+
+greg k-h
