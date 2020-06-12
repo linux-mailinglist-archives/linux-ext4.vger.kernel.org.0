@@ -2,159 +2,105 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 082841F7628
-	for <lists+linux-ext4@lfdr.de>; Fri, 12 Jun 2020 11:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57EFD1F7716
+	for <lists+linux-ext4@lfdr.de>; Fri, 12 Jun 2020 13:13:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726271AbgFLJni (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 12 Jun 2020 05:43:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725886AbgFLJnh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 12 Jun 2020 05:43:37 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0EF4C08C5C2
-        for <linux-ext4@vger.kernel.org>; Fri, 12 Jun 2020 02:43:35 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id e4so10368336ljn.4
-        for <linux-ext4@vger.kernel.org>; Fri, 12 Jun 2020 02:43:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aIjum0OdXj+v8gBuVrC8N67GclMwnVqsebwDSnxt9vM=;
-        b=B5zzUnrxMZIR1cvpNNJdn3LFoosy6pPU4isLVSWgJ9nP8PUuaqb/X7mACFUtN4Zz0e
-         je1pJ6/7L30IUd9miR1oO0pReCGX2bidQmzsxFyBH7tKSWWLqW6VQz10wJTlfMKj9rrB
-         WBE/JK4Uw5jGqY0GBMDdgRP4v094YfQNIFITKncq2chQL2ULqFL5HZsbtycVUANMKQ4q
-         Ff22Q8bj6f9otWxYKNEcAsUS4YOjCGydg0FG7aELVJHksT7x7qdY2jHFHD/khmaddwqh
-         5gNJVS3WCEasOzyYFedHV6DyZL/RyohzMUHwWpOSbVYfzQc6KihVidQjyi/EVoZE4LYe
-         XpFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aIjum0OdXj+v8gBuVrC8N67GclMwnVqsebwDSnxt9vM=;
-        b=Zn7YI1um0vjuAoTQh6rFYZ+krQz0/RSCtS4SWYegSiLxi5zaA5p32iMbf3KHq3aHmc
-         QZLELyk5mV1w6pQ7r9jPWVSee3bvayavc3rIT8mVab5ZEEwKM7SnhVcLXDH0QQ+uVzR5
-         yB5K90yomdVFVFxffDYEwEQJ3aK68GRtWYNqUn9dRZXOssU1JCqZ9q5HUZl65nCjjTOh
-         qlzW1kPH5+i09AKVPMX+OIuvGj4jY7xQMeUnjIq33GNq9GcIBYrbka9Qn2mVe9I6BRQL
-         gWI/v7EgNmhKYGoh4Y5z089cI6gMCGPQyg/BBLRHM/8UYGsRzpt42flJJcqKVLzG/b2R
-         K2ew==
-X-Gm-Message-State: AOAM531NMwCWOpekAlXOM6hETJcNHOWuDb8vul18pFvyKP3+leYomBcJ
-        idewe+W0hsBFSzMtjyV4YRTVnNyTRUzl+WLpzKPbZg==
-X-Google-Smtp-Source: ABdhPJw5tmdt3Qb2oH83ueGFSlyEX7PXjd2r9+J99+ZU7hJQo8IwOlnJ7848er/3tfXq8Sq1AS7XMX8/8Aq5t7u2d+4=
-X-Received: by 2002:a2e:984b:: with SMTP id e11mr6079071ljj.358.1591955014129;
- Fri, 12 Jun 2020 02:43:34 -0700 (PDT)
+        id S1726255AbgFLLNw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 12 Jun 2020 07:13:52 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:5821 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726039AbgFLLNv (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 12 Jun 2020 07:13:51 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 230D9A581DC6AF975B99;
+        Fri, 12 Jun 2020 19:13:48 +0800 (CST)
+Received: from [127.0.0.1] (10.166.215.198) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Fri, 12 Jun 2020
+ 19:13:42 +0800
+Subject: Re: [PATCH 00/10] ext4: fix inconsistency since reading old metadata
+ from disk
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>
+CC:     <linux-ext4@vger.kernel.org>, <adilger.kernel@dilger.ca>,
+        <zhangxiaoxu5@huawei.com>
+References: <20200526071754.33819-1-yi.zhang@huawei.com>
+ <20200608082007.GJ13248@quack2.suse.cz>
+ <cc834f50-95f0-449a-0ace-c55c41d2be1c@huawei.com>
+ <20200609121920.GB12551@quack2.suse.cz>
+ <45796804-07f7-2f62-b8c5-db077950d882@huawei.com>
+ <20200610095739.GE12551@quack2.suse.cz> <20200610154543.GI1347934@mit.edu>
+ <20200610162715.GD20677@quack2.suse.cz>
+ <92c92066-472e-1f1a-6043-af59bceeb0d8@huawei.com>
+ <20200611082103.GA18088@quack2.suse.cz> <20200611165523.GQ1347934@mit.edu>
+From:   "zhangyi (F)" <yi.zhang@huawei.com>
+Message-ID: <9db65a37-84e7-68c0-c6b5-418d55166a49@huawei.com>
+Date:   Fri, 12 Jun 2020 19:13:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-References: <20200521095515.GK6462@dhcp22.suse.cz> <20200521163450.GV6462@dhcp22.suse.cz>
- <CA+G9fYuDWGZx50UpD+WcsDeHX9vi3hpksvBAWbMgRZadb0Pkww@mail.gmail.com>
- <CA+G9fYs2jg-j_5fdb0OW0G-JzDjN7b8d9qnX7uuk9p4c7mVSig@mail.gmail.com>
- <20200528150310.GG27484@dhcp22.suse.cz> <CA+G9fYvDXiZ9E9EfU6h0gsJ+xaXY77mRu9Jg+J7C=X4gJ3qvLg@mail.gmail.com>
- <20200528164121.GA839178@chrisdown.name> <CALOAHbAHGOsAUUM7qn=9L1u8kAf6Gztqt=SyHSmZ9XuYZWcKmg@mail.gmail.com>
- <20200529015644.GA84588@chrisdown.name> <20200529094910.GH4406@dhcp22.suse.cz>
- <20200611095514.GD20450@dhcp22.suse.cz>
-In-Reply-To: <20200611095514.GD20450@dhcp22.suse.cz>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 12 Jun 2020 15:13:22 +0530
-Message-ID: <CA+G9fYsjH8vOTkSKGa5vgC=0fEXuC5UnGsZOirHxH9nOJSHPdA@mail.gmail.com>
-Subject: Re: mm: mkfs.ext4 invoked oom-killer on i386 - pagecache_get_page
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        "Linux F2FS DEV, Mailing List" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, Arnd Bergmann <arnd@arndb.de>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Chao Yu <yuchao0@huawei.com>, lkft-triage@lists.linaro.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Cgroups <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200611165523.GQ1347934@mit.edu>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.166.215.198]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, 11 Jun 2020 at 15:25, Michal Hocko <mhocko@kernel.org> wrote:
->
-> On Fri 29-05-20 11:49:20, Michal Hocko wrote:
-> > On Fri 29-05-20 02:56:44, Chris Down wrote:
-> > > Yafang Shao writes:
-> > Agreed. Even if e{low,min} might still have some rough edges I am
-> > completely puzzled how we could end up oom if none of the protection
-> > path triggers which the additional debugging should confirm. Maybe my
-> > debugging patch is incomplete or used incorrectly (maybe it would be
-> > esier to use printk rather than trace_printk?).
->
-> It would be really great if we could move forward. While the fix (which
-> has been dropped from mmotm) is not super urgent I would really like to
-> understand how it could hit the observed behavior. Can we double check
-> that the debugging patch really doesn't trigger (e.g.
-> s@trace_printk@printk in the first step)?
+On 2020/6/12 0:55, Theodore Y. Ts'o wrote:
+> On Thu, Jun 11, 2020 at 10:21:03AM +0200, Jan Kara wrote:
+>>> I have thought about this solution, we could add a hook in 'struct super_operations'
+>>> and call it in blkdev_writepage() like blkdev_releasepage() does, and pick out a
+>>> wrapper from block_write_full_page() to pass our endio handler in, something like
+>>> this.
+>>>
+>>> static const struct super_operations ext4_sops = {
+>>> ...
+>>> 	.bdev_write_page = ext4_bdev_write_page,
+>>> ...
+>>> };
+>>>
+>>> static int blkdev_writepage(struct page *page, struct writeback_control *wbc)
+>>> {
+>>> 	struct super_block *super = BDEV_I(page->mapping->host)->bdev.bd_super;
+>>>
+>>> 	if (super && super->s_op->bdev_write_page)
+>>> 		return super->s_op->bdev_write_page(page, blkdev_get_block, wbc);
+>>>
+>>> 	return block_write_full_page(page, blkdev_get_block, wbc);
+>>> }
+>>>
+>>> But I'm not sure it's a optimal ieda. So I continue to realize the "wb_err"
+>>> solution now ?
+>>
+>> The above idea looks good to me. I'm fine with either that solution or
+>> "wb_err" idea so maybe let's leave it for Ted to decide...
+> 
+> My preference would be to be able to get the (error from the callback
+> right away.  My reasoning behind that is (a) it allows the file system
+> to be notified about the problem right away, (b) in the case of a file
+> system resize, we _really_ want to know about the failure ASAP, so we
+> can fail the resize before we start allocating inodes and blocks to
+> use the new space, and (c) over time, we might be able to add some
+> more intelligence handling of some write errors.
+> 
+> For example, we already have a way of handling CRC errors when we are
+> reading an allocation bitmap; we simply avoid allocating blocks and
+> inodes from that blockgroup.  Over time, we could theoretically do
+> other things to try to recover from some write errors --- for example,
+> we could try allocating a new block for an extent tree block, and try
+> writing it, and if that succeeds, updating its parent node to point at
+> the new location.  Is it worth it to try to add that kind of
+> complexity?  I'm really not sure; at the end of the day, it might be
+> simpler to just call ext4_error() and abort using the entire file
+> system until a system administrator can sort out the mess.  But I
+> think (a) and (b) are still reasons for doing this by intercepting the
+> writeback error from the buffer head.
+> 
 
-Please suggest to me the way to get more debug information
-by providing kernel debug patches and extra kernel configs.
+Yeah, it make sense to me, I will realize this callback solution.
 
-I have applied your debug patch and tested on top on linux next 20200612
-but did not find any printk output while running mkfs -t ext4 /drive test case.
+Thanks,
+Yi.
 
-
-> I have checked it again but
-> do not see any potential code path which would be affected by the patch
-> yet not trigger any output. But another pair of eyes would be really
-> great.
-
-
----
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index b6d84326bdf2..d13ce7b02de4 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -2375,6 +2375,8 @@ static void get_scan_count(struct lruvec
-*lruvec, struct scan_control *sc,
-  * sc->priority further than desirable.
-  */
-  scan = max(scan, SWAP_CLUSTER_MAX);
-+
-+ trace_printk("scan:%lu protection:%lu\n", scan, protection);
-  } else {
-  scan = lruvec_size;
-  }
-@@ -2618,6 +2620,7 @@ static void shrink_node_memcgs(pg_data_t *pgdat,
-struct scan_control *sc)
-
-  switch (mem_cgroup_protected(target_memcg, memcg)) {
-  case MEMCG_PROT_MIN:
-+ trace_printk("under min:%lu emin:%lu\n", memcg->memory.min,
-memcg->memory.emin);
-  /*
-  * Hard protection.
-  * If there is no reclaimable memory, OOM.
-@@ -2630,6 +2633,7 @@ static void shrink_node_memcgs(pg_data_t *pgdat,
-struct scan_control *sc)
-  * there is an unprotected supply
-  * of reclaimable memory from other cgroups.
-  */
-+ trace_printk("under low:%lu elow:%lu\n", memcg->memory.low,
-memcg->memory.elow);
-  if (!sc->memcg_low_reclaim) {
-  sc->memcg_low_skipped = 1;
-  continue;
--- 
-2.23.0
-
-ref:
-test output:
-https://lkft.validation.linaro.org/scheduler/job/1489767#L1388
-
-Test artifacts link (kernel / modules):
-https://builds.tuxbuild.com/5rRNgQqF_wHsSRptdj4A1A/
-- Naresh
