@@ -2,100 +2,217 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEBF41F8237
-	for <lists+linux-ext4@lfdr.de>; Sat, 13 Jun 2020 11:16:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 485AC1F839D
+	for <lists+linux-ext4@lfdr.de>; Sat, 13 Jun 2020 16:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726442AbgFMJQZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 13 Jun 2020 05:16:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57526 "EHLO mail.kernel.org"
+        id S1726441AbgFMOHI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 13 Jun 2020 10:07:08 -0400
+Received: from mga17.intel.com ([192.55.52.151]:49346 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726424AbgFMJQX (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Sat, 13 Jun 2020 05:16:23 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 28131206D7;
-        Sat, 13 Jun 2020 09:16:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592039782;
-        bh=Ls5GKOCBUIeEFZSrLiEOowJ2rHuV6lGNQpo7uIq9sjk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oEeYW4tv293H4PQ3DcuB9/XfL4Mwrd9uc/gGs14RBARXcIcsVfMD9AhDbNRfLd5O3
-         w6FBRoVpKH9tvH7PpHaFTJhqSrJm/FFo2/CQQdR62T2eg0r3H01A/YbRU2hfV4RTSs
-         I1e+NSozpJdorD4bqtWQ31sGb8+Ps7o2NMu+cl1s=
-Date:   Sat, 13 Jun 2020 11:16:20 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu,
-        syzbot <syzbot+0113b9be6667b5b50840@syzkaller.appspotmail.com>
-Subject: Re: upstream test error: BUG: using smp_processor_id() in
- preemptible code in ext4_mb_new_blocks
-Message-ID: <20200613091620.GC2606625@kroah.com>
-References: <0000000000007a16f705a7b1096d@google.com>
- <20200612121549.GA2603@kroah.com>
- <20200612165036.415A752052@d06av21.portsmouth.uk.ibm.com>
+        id S1726132AbgFMOHH (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sat, 13 Jun 2020 10:07:07 -0400
+IronPort-SDR: A31ChBUxgN4jFuQToBtbODBcarc2c+5r7K1icWKgvWcvJ5qX4WQQpjddKJpOn7HM5U3XQzBGGn
+ 8pKRo0gIyjaQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jun 2020 07:07:07 -0700
+IronPort-SDR: 2zlfKujPrHNCT2Qv+d4hvr9aaPEaw38N4A9pw0jkjIVyP0AQItkcrJ86JIMu77TAPX8vxhJLvo
+ YpMri7hrWXyA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,507,1583222400"; 
+   d="scan'208";a="307874644"
+Received: from lkp-server02.sh.intel.com (HELO de5642daf266) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 13 Jun 2020 07:07:06 -0700
+Received: from kbuild by de5642daf266 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1jk6oL-0000LD-DZ; Sat, 13 Jun 2020 14:07:05 +0000
+Date:   Sat, 13 Jun 2020 22:06:45 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+Subject: [ext4:dev] BUILD SUCCESS 7b97d868b7ab2448859668de9222b8af43f76e78
+Message-ID: <5ee4dd75.2YWn6EmB0AH0iEjn%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200612165036.415A752052@d06av21.portsmouth.uk.ibm.com>
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Jun 12, 2020 at 10:20:35PM +0530, Ritesh Harjani wrote:
-> > I am seeing this all over the place on Linus's tree right now:
-> > 
-> > [  +0.008563] BUG: using smp_processor_id() in preemptible [00000000] code: systemd/1
-> > [  +0.000011] caller is ext4_mb_new_blocks+0x2ac/0xc10
-> > [  +0.000002] CPU: 31 PID: 1 Comm: systemd Not tainted 5.7.0-14371-g25ae6195a4c7 #66
-> > [  +0.000002] Hardware name: Micro-Star International Co., Ltd. MS-7C59/Creator TRX40 (MS-7C59), BIOS 1.50 05/13/2020
-> > [  +0.000001] Call Trace:
-> > [  +0.000008]  dump_stack+0x57/0x70
-> > [  +0.000004]  debug_smp_processor_id.cold+0x4e/0x53
-> > [  +0.000001]  ext4_mb_new_blocks+0x2ac/0xc10
-> > [  +0.000004]  ? ext4_find_extent+0x3e8/0x450
-> > [  +0.000002]  ext4_ext_map_blocks+0x9f6/0x1b10
-> > [  +0.000003]  ? ext4_mark_iloc_dirty+0x60f/0xa50
-> > [  +0.000003]  ? __ext4_journal_get_write_access+0x2d/0x70
-> > [  +0.000004]  ext4_map_blocks+0x119/0x5a0
-> > [  +0.000004]  ext4_getblk+0x66/0x1c0
-> > [  +0.000003]  ext4_bread+0x26/0xc0
-> > [  +0.000002]  ext4_append+0x49/0xe0
-> > [  +0.000002]  ext4_mkdir+0x233/0x450
-> > [  +0.000005]  vfs_mkdir+0x11d/0x1b0
-> > [  +0.000003]  do_mkdirat+0x92/0x130
-> > [  +0.000004]  do_syscall_64+0x43/0x80
-> > [  +0.000004]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > [  +0.000003] RIP: 0033:0x7fef3df7a72b
-> > [  +0.000001] Code: Bad RIP value.
-> > [  +0.000001] RSP: 002b:00007ffdb4eba0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000053
-> > [  +0.000003] RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007fef3df7a72b
-> > [  +0.000001] RDX: 0000000000000000 RSI: 00000000000001c0 RDI: 0000563b11cf26e0
-> > [  +0.000001] RBP: 0000563b11cf2731 R08: 000000000000000d R09: 0000000000000002
-> > [  +0.000000] R10: 11175e4331068ed5 R11: 0000000000000246 R12: 0000563b11cf26e0
-> > [  +0.000002] R13: 00007fef3e019c20 R14: 00007ffdb4eba0f0 R15: 8421084210842109
-> > 
-> > Just a constant stream of them.
-> > 
-> > There's a few other fun:
-> > 
-> > [  +0.453222] BUG: unable to handle page fault for address: ffffb59cc2719000
-> > [  +0.000004] #PF: supervisor write access in kernel mode
-> > [  +0.000001] #PF: error_code(0x000b) - reserved bit violation
-> > 
-> > messages at times, but I don't think that's an ext4 issue, but rather
-> > something in the sound stack...
-> > 
-> > EXT4 developers, any hints/patches to try?
-> > 
-> 
-> Below patch should fix the ext4 issue coming from ext4_mb_new_blocks().
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git/commit/?h=dev&id=811985365378df01386c3cfb7ff716e74ca376d5
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git  dev
+branch HEAD: 7b97d868b7ab2448859668de9222b8af43f76e78  ext4, jbd2: ensure panic by fix a race between jbd2 abort and ext4 error handlers
 
-Thanks, that should work, I'll try it out on Monday.
+Warning in current branch:
 
-greg k-h
+fs/ext4/mballoc.c:2209:9: sparse: sparse: context imbalance in 'ext4_mb_good_group_nolock' - different lock contexts for basic block
+
+Warning ids grouped by kconfigs:
+
+recent_errors
+`-- i386-randconfig-s001-20200612
+    `-- fs-ext4-mballoc.c:sparse:sparse:context-imbalance-in-ext4_mb_good_group_nolock-different-lock-contexts-for-basic-block
+
+elapsed time: 629m
+
+configs tested: 149
+configs skipped: 9
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm                            zeus_defconfig
+arm                         socfpga_defconfig
+parisc                generic-64bit_defconfig
+mips                        qi_lb60_defconfig
+arm                             ezx_defconfig
+arm                          pxa168_defconfig
+arc                      axs103_smp_defconfig
+arm                            pleb_defconfig
+arm                        mini2440_defconfig
+arm                          ep93xx_defconfig
+arc                     nsimosci_hs_defconfig
+xtensa                         virt_defconfig
+arm                          moxart_defconfig
+arm                              zx_defconfig
+sh                   sh7770_generic_defconfig
+arm                          imote2_defconfig
+powerpc                     mpc512x_defconfig
+ia64                             allyesconfig
+arm                        clps711x_defconfig
+sh                 kfr2r09-romimage_defconfig
+arc                 nsimosci_hs_smp_defconfig
+xtensa                          iss_defconfig
+riscv                          rv32_defconfig
+c6x                        evmc6474_defconfig
+arc                        vdk_hs38_defconfig
+arm                  colibri_pxa270_defconfig
+arm                          collie_defconfig
+sh                          lboxre2_defconfig
+csky                             allyesconfig
+arc                         haps_hs_defconfig
+mips                     loongson1c_defconfig
+arm                         vf610m4_defconfig
+arm                          tango4_defconfig
+m68k                           sun3_defconfig
+arc                        nsim_700_defconfig
+sh                        dreamcast_defconfig
+h8300                            alldefconfig
+mips                          ath79_defconfig
+arc                          axs103_defconfig
+um                           x86_64_defconfig
+arm                         s3c6400_defconfig
+sh                ecovec24-romimage_defconfig
+c6x                         dsk6455_defconfig
+mips                         rt305x_defconfig
+sh                          rsk7269_defconfig
+arm                           sama5_defconfig
+arm                         s5pv210_defconfig
+xtensa                    xip_kc705_defconfig
+x86_64                              defconfig
+arm                      jornada720_defconfig
+arm                              alldefconfig
+sparc                            allyesconfig
+mips                      bmips_stb_defconfig
+arm                          pxa910_defconfig
+mips                         cobalt_defconfig
+microblaze                    nommu_defconfig
+sh                          urquell_defconfig
+m68k                          amiga_defconfig
+ia64                      gensparse_defconfig
+sh                  sh7785lcr_32bit_defconfig
+arm                        shmobile_defconfig
+ia64                              allnoconfig
+sh                         ecovec24_defconfig
+arm                          pcm027_defconfig
+mips                          ath25_defconfig
+sh                        sh7785lcr_defconfig
+nds32                             allnoconfig
+arm                         palmz72_defconfig
+um                            kunit_defconfig
+powerpc                           allnoconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                             defconfig
+i386                 randconfig-a015-20200612
+i386                 randconfig-a011-20200612
+i386                 randconfig-a014-20200612
+i386                 randconfig-a016-20200612
+i386                 randconfig-a013-20200612
+i386                 randconfig-a012-20200612
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                                allnoconfig
+um                                  defconfig
+um                               allmodconfig
+um                               allyesconfig
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
