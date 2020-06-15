@@ -2,123 +2,120 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC7C71F8A72
-	for <lists+linux-ext4@lfdr.de>; Sun, 14 Jun 2020 22:00:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F31A71F8BD7
+	for <lists+linux-ext4@lfdr.de>; Mon, 15 Jun 2020 02:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726938AbgFNUAk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 14 Jun 2020 16:00:40 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:34687 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726648AbgFNUAk (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 14 Jun 2020 16:00:40 -0400
-Received: from callcc.thunk.org (pool-100-0-195-244.bstnma.fios.verizon.net [100.0.195.244])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 05EK0Y1h027920
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 14 Jun 2020 16:00:35 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 2C2F342026D; Sun, 14 Jun 2020 16:00:34 -0400 (EDT)
-Date:   Sun, 14 Jun 2020 16:00:34 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     torvalds@linux-foundation.org
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] ext4 changes part 2 for 5.8
-Message-ID: <20200614200034.GA3294624@mit.edu>
+        id S1728014AbgFOAKz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Sun, 14 Jun 2020 20:10:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49802 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727954AbgFOAKy (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sun, 14 Jun 2020 20:10:54 -0400
+From:   bugzilla-daemon@bugzilla.kernel.org
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 208173] New: BUG: using smp_processor_id() in preemptible,
+ caller is ext4_mb_new_blocks
+Date:   Mon, 15 Jun 2020 00:10:53 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: new
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: tseewald@gmail.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: bug_id short_desc product version
+ cf_kernel_version rep_platform op_sys cf_tree bug_status bug_severity
+ priority component assigned_to reporter cf_regression attachments.created
+Message-ID: <bug-208173-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The following changes since commit 6b8ed62008a49751fc71fefd2a4f89202a7c2d4d:
+https://bugzilla.kernel.org/show_bug.cgi?id=208173
 
-  ext4: avoid unnecessary transaction starts during writeback (2020-06-03 23:16:56 -0400)
+            Bug ID: 208173
+           Summary: BUG: using smp_processor_id() in preemptible, caller
+                    is ext4_mb_new_blocks
+           Product: File System
+           Version: 2.5
+    Kernel Version: 5.8.0-rc1
+          Hardware: x86-64
+                OS: Linux
+              Tree: Mainline
+            Status: NEW
+          Severity: normal
+          Priority: P1
+         Component: ext4
+          Assignee: fs_ext4@kernel-bugs.osdl.org
+          Reporter: tseewald@gmail.com
+        Regression: No
 
-are available in the Git repository at:
+Created attachment 289655
+  --> https://bugzilla.kernel.org/attachment.cgi?id=289655&action=edit
+dmesg
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4-for-linus-5.8-rc1-2
+Immediately after booting 5.8.0-rc1 and logging in, dmesg is filled with BUG
+backtraces like:
 
-for you to fetch changes up to 7b97d868b7ab2448859668de9222b8af43f76e78:
+[   10.823091] BUG: using smp_processor_id() in preemptible [00000000] code:
+auditd/788
+[   10.823095] caller is ext4_mb_new_blocks+0x285/0xd50
+[   10.823096] CPU: 2 PID: 788 Comm: auditd Not tainted 5.8.0-rc1 #15
+[   10.823097] Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M./Z77
+Extreme4, BIOS P2.90 07/11/2013
+[   10.823097] Call Trace:
+[   10.823104]  dump_stack+0x57/0x70
+[   10.823107]  check_preemption_disabled+0xab/0xc0
+[   10.823109]  ext4_mb_new_blocks+0x285/0xd50
+[   10.823112]  ? __kmalloc+0x1ac/0x280
+[   10.823114]  ? ext4_find_extent+0x2a1/0x370
+[   10.823116]  ? ext4_find_extent+0x163/0x370
+[   10.823118]  ? release_pages+0x3b1/0x470
+[   10.823120]  ext4_ext_map_blocks+0x84d/0xcc0
+[   10.823122]  ext4_map_blocks+0xef/0x560
+[   10.823124]  ? kmem_cache_alloc+0x181/0x220
+[   10.823126]  ext4_writepages+0x856/0xe00
+[   10.823130]  ? futex_wait+0x11d/0x210
+[   10.823132]  ? do_writepages+0x41/0xd0
+[   10.823134]  ? __ext4_mark_inode_dirty+0x250/0x250
+[   10.823134]  do_writepages+0x41/0xd0
+[   10.823137]  ? wbc_attach_and_unlock_inode+0xd6/0x140
+[   10.823139]  __filemap_fdatawrite_range+0xcb/0x100
+[   10.823141]  file_write_and_wait_range+0x5e/0xb0
+[   10.823143]  ext4_sync_file+0x10c/0x3a0
+[   10.823144]  do_fsync+0x38/0x70
+[   10.823146]  __x64_sys_fsync+0x10/0x20
+[   10.823147]  do_syscall_64+0x47/0x80
+[   10.823150]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   10.823152] RIP: 0033:0x7fb904384f1b
+[   10.823152] Code: Bad RIP value.
+[   10.823153] RSP: 002b:00007fb903d4cd00 EFLAGS: 00000293 ORIG_RAX:
+000000000000004a
+[   10.823154] RAX: ffffffffffffffda RBX: 0000000000000000 RCX:
+00007fb904384f1b
+[   10.823155] RDX: 0000000000000001 RSI: 0000000000000081 RDI:
+0000000000000005
+[   10.823155] RBP: 000055c4f63e82c0 R08: 0000000000000000 R09:
+00007fb903d4d700
+[   10.823156] R10: 0000000000000000 R11: 0000000000000293 R12:
+00007ffd56550cce
+[   10.823156] R13: 00007ffd56550ccf R14: 00007ffd56550cd0 R15:
+00007fb903d4d700
 
-  ext4, jbd2: ensure panic by fix a race between jbd2 abort and ext4 error handlers (2020-06-12 14:51:41 -0400)
-
-----------------------------------------------------------------
-This is the second round of ext4 commits for 5.8 merge window.  It
-includes the per-inode DAX support, which was dependant on the DAX
-infrastructure which came in via the XFS tree, and a number of
-regression and bug fixes; most notably the "BUG: using
-smp_processor_id() in preemptible code in ext4_mb_new_blocks" reported
-by syzkaller.
-
-----------------------------------------------------------------
-Eric Biggers (1):
-      ext4: avoid utf8_strncasecmp() with unstable name
-
-Ira Weiny (14):
-      fs: Remove unneeded IS_DAX() check in io_is_direct()
-      fs/stat: Define DAX statx attribute
-      Documentation/dax: Update Usage section
-      fs: Lift XFS_IDONTCACHE to the VFS layer
-      fs: Introduce DCACHE_DONTCACHE
-      fs/ext4: Narrow scope of DAX check in setflags
-      fs/ext4: Disallow verity if inode is DAX
-      fs/ext4: Change EXT4_MOUNT_DAX to EXT4_MOUNT_DAX_ALWAYS
-      fs/ext4: Update ext4_should_use_dax()
-      fs/ext4: Only change S_DAX on inode load
-      fs/ext4: Make DAX mount option a tri-state
-      fs/ext4: Remove jflag variable
-      fs/ext4: Introduce DAX inode flag
-      Documentation/dax: Update DAX enablement for ext4
-
-Jan (janneke) Nieuwenhuizen (1):
-      ext4: support xattr gnu.* namespace for the Hurd
-
-Jeffle Xu (1):
-      ext4: fix partial cluster initialization when splitting extent
-
-Ritesh Harjani (1):
-      ext4: mballoc: Use this_cpu_read instead of this_cpu_ptr
-
-Theodore Ts'o (2):
-      Enable ext4 support for per-file/directory dax operations
-      ext4: avoid race conditions when remounting with options that change dax
-
-yangerkun (1):
-      ext4: stop overwrite the errcode in ext4_setup_super
-
-zhangyi (F) (1):
-      ext4, jbd2: ensure panic by fix a race between jbd2 abort and ext4 error handlers
-
- Documentation/filesystems/dax.txt         | 142 ++++++++++++++++++++++++++++++++++++++++++++++++++++--
- Documentation/filesystems/ext4/verity.rst |   3 ++
- drivers/block/loop.c                      |   6 +--
- fs/dcache.c                               |  19 ++++++++
- fs/ext4/Makefile                          |   3 +-
- fs/ext4/dir.c                             |  16 ++++++
- fs/ext4/ext4.h                            |  27 ++++++++---
- fs/ext4/extents.c                         |   2 +-
- fs/ext4/ialloc.c                          |   2 +-
- fs/ext4/inode.c                           |  26 +++++++---
- fs/ext4/ioctl.c                           |  65 ++++++++++++++++++++-----
- fs/ext4/mballoc.c                         |   2 +-
- fs/ext4/super.c                           | 124 +++++++++++++++++++++++++++++++++--------------
- fs/ext4/verity.c                          |   5 +-
- fs/ext4/xattr.c                           |   2 +
- fs/ext4/xattr.h                           |   1 +
- fs/ext4/xattr_hurd.c                      |  51 ++++++++++++++++++++
- fs/jbd2/journal.c                         |  17 +++++--
- fs/stat.c                                 |   3 ++
- fs/xfs/xfs_icache.c                       |   4 +-
- fs/xfs/xfs_inode.h                        |   3 +-
- fs/xfs/xfs_super.c                        |   2 +-
- include/linux/dcache.h                    |   2 +
- include/linux/fs.h                        |  14 +++---
- include/linux/jbd2.h                      |   6 ++-
- include/uapi/linux/fs.h                   |   1 +
- include/uapi/linux/stat.h                 |   1 +
- include/uapi/linux/xattr.h                |   4 ++
- 28 files changed, 465 insertions(+), 88 deletions(-)
- create mode 100644 fs/ext4/xattr_hurd.c
+-- 
+You are receiving this mail because:
+You are watching the assignee of the bug.
