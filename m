@@ -2,66 +2,58 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 952051F8BF2
-	for <lists+linux-ext4@lfdr.de>; Mon, 15 Jun 2020 02:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8698E1F8EAA
+	for <lists+linux-ext4@lfdr.de>; Mon, 15 Jun 2020 08:52:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728035AbgFOAki convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Sun, 14 Jun 2020 20:40:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50594 "EHLO mail.kernel.org"
+        id S1728950AbgFOGvb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 15 Jun 2020 02:51:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727951AbgFOAki (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Sun, 14 Jun 2020 20:40:38 -0400
-From:   bugzilla-daemon@bugzilla.kernel.org
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 208173] BUG: using smp_processor_id() in preemptible, caller is
- ext4_mb_new_blocks
-Date:   Mon, 15 Jun 2020 00:40:38 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: tseewald@gmail.com
-X-Bugzilla-Status: RESOLVED
-X-Bugzilla-Resolution: CODE_FIX
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-208173-13602-y0eoQep2Ar@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-208173-13602@https.bugzilla.kernel.org/>
-References: <bug-208173-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        id S1728699AbgFOGv1 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 15 Jun 2020 02:51:27 -0400
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 297942067B;
+        Mon, 15 Jun 2020 06:51:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592203887;
+        bh=w7KcDakz00qrDKT+3PtQZ1TMTfHGZvcgWnYT3lZBW60=;
+        h=Date:From:To:Cc:Subject:From;
+        b=zS/qdo8jfgzfP64P5IT1agUm247hUGFAeKjtri9UwCyUnMmJwBj705ZN1niz3r+JJ
+         NquKJ4EoAeXnQtTilv1CZkjH6egDROoXwaHm3LHy/LnJaEHliBRDRPw+ok8pLV9CT9
+         oZ64APSoq9K3WwTLp5F19CmKLkPDpXBDW/yoNNw0=
+Date:   Sun, 14 Jun 2020 23:51:25 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     Jes Sorensen <jsorensen@fb.com>, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: [ANNOUNCE] fsverity-utils v1.1
+Message-ID: <20200615065125.GB3100@sol.localdomain>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=208173
+I've released fsverity-utils v1.1:
 
---- Comment #3 from Tom Seewald (tseewald@gmail.com) ---
-After looking around, syzkaller already found this bug [1], and a fix was
-already posted [2] but Linus didn't pull it before tagging the rc1 release.
+Git: https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/fsverity-utils.git/tag/?h=v1.1
+Tarball: https://kernel.org/pub/linux/kernel/people/ebiggers/fsverity-utils/v1.1/
 
-I manually applied commit 811985365378df01386c3cfb7ff716e74ca376d5 ("ext4:
-mballoc: Use this_cpu_read instead of this_cpu_ptr") from
-https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git, and I can
-confirm that this fixes the problem. Hopefully this makes it in by rc2.
+Release notes:
 
-I'll close this report once Linus pulls the fix.
+  * Split the file measurement computation and signing functionality
+    of the `fsverity` program into a library `libfsverity`.  See
+    `README.md` and `Makefile` for more details.
 
-[1]
-https://syzkaller.appspot.com/bug?id=b7f459091a40a67a13f27d2281281ffd0ed8e5e1
-[2] https://lore.kernel.org/lkml/20200614200034.GA3294624@mit.edu/T/
+  * Improved the Makefile.
 
--- 
-You are receiving this mail because:
-You are watching the assignee of the bug.
+  * Added some tests.  They can be run using `make check`.  Also added
+    `scripts/run-tests.sh` which does more extensive prerelease tests.
+
+  * Lots of cleanups and other small improvements.
+
+- Eric
