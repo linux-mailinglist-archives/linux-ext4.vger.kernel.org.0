@@ -2,105 +2,101 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C35671FBFEF
-	for <lists+linux-ext4@lfdr.de>; Tue, 16 Jun 2020 22:22:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 256381FC1BA
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Jun 2020 00:36:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731742AbgFPUVl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 16 Jun 2020 16:21:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726856AbgFPUVl (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 16 Jun 2020 16:21:41 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC92C061573;
-        Tue, 16 Jun 2020 13:21:41 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id c12so16579788qtq.11;
-        Tue, 16 Jun 2020 13:21:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=fn4EkDtyCwWOYjkj5abb0ivOrfVPzRJ74WkGvYptq6M=;
-        b=dg/HgUWfWS+M4LYIXTdMrGl3x3ZRCXBAitiRGyBsR/f//oA0ExU5pFXfOj5RutZfPo
-         eKtzh4Lj8nDNTmhzIPK+EevDMuqxYgCckV1AIRXbnODOOOvMqrMAUo7VceZ86IDGmZGF
-         bOip7xlLpxKsZSanlH9iesa0jpyFMaeM94CRD+F8E7K/7VXU4GOIFgQmL6Uyxys2aSVm
-         wwAQxoXNACyomKG9viuY/h2q0DEdPoe0wrHR4OebvwXqgg+CkCBAoaY8BKqhAXsFFN4B
-         hIzjT0oO2mjsaGEucqtfy7vOx7/itxVxyQYfYa6GDlbpawx55bbdKjSiLMypeKtMoixV
-         KI7g==
+        id S1726480AbgFPWge (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 16 Jun 2020 18:36:34 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:20248 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726401AbgFPWga (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 16 Jun 2020 18:36:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592346989;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pjA7zgwqv80y4xmAR3IWOMUOAyE53XKax4l1DtqqEck=;
+        b=F+ZCKP/pO88AJj755FSRxWuieNVWxHCCsztlYyIB2knySypa6BSFBNzg6YoBhvzR4nkjs6
+        898OCMNDJ+BwO50vK+6MIsFzwdTJCxMRXXaSLWeSDZtvAdBBxPmOpJEp9Qo2TIAPAZQFK+
+        Qia28yr+FTWe5+zvGSdQJ4GcLRHPkpM=
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
+ [209.85.210.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-262-BDSGzoz6PI6Ne_Rt4OSzJg-1; Tue, 16 Jun 2020 18:36:25 -0400
+X-MC-Unique: BDSGzoz6PI6Ne_Rt4OSzJg-1
+Received: by mail-ot1-f72.google.com with SMTP id f21so167586otq.6
+        for <linux-ext4@vger.kernel.org>; Tue, 16 Jun 2020 15:36:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=fn4EkDtyCwWOYjkj5abb0ivOrfVPzRJ74WkGvYptq6M=;
-        b=VyDhH8OVwfSizaQ2SGlj1w3qHowfPjvuiAPAk/W5SBRuxjQ9xM1bpXseANfg7EamBA
-         7V0MFYujQ/zlzSjo9uERX1hdg6jFtA4Jyq6v9+rfbYK2Wm3vYY37WVrfWp7HXBw6cUI0
-         AJJijN+duWHQGQRr7XBR/IMEleFqC/7nhdf8ONIRQnlpbBElhKnJvIAOeleph2oUsW8U
-         eaIZRFkUNR8WHVM9GeAqo6eKk8CvVn8yGyyO2rDAVZlNJPOUxws3SDVTwOTKx7469Lw/
-         ew3lZWNHYMJW8v2DCpoo5tIdTOQi6Be4GugVyk86Ld8IswrV+m6TDLnotY59HrQciiP1
-         E7mg==
-X-Gm-Message-State: AOAM530J4mHY0k7NdRfSbQHaGdd90eu+Q+hzQ79IEDDe2DBAgGjxvHhL
-        vxj8TW8w/7YYUpsd1HLJfQ==
-X-Google-Smtp-Source: ABdhPJwVNG6Y075bcXUmYimMU9ZVj2934sQIGstMjpXrJVeRJ0GvNAgeGtyjpRV91E8NQqr2ZXc6OA==
-X-Received: by 2002:aed:21d7:: with SMTP id m23mr22545244qtc.342.1592338900651;
-        Tue, 16 Jun 2020 13:21:40 -0700 (PDT)
-Received: from localhost (209-6-122-159.s2973.c3-0.arl-cbr1.sbo-arl.ma.cable.rcncustomer.com. [209.6.122.159])
-        by smtp.gmail.com with ESMTPSA id k20sm16401468qtu.16.2020.06.16.13.21.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 16 Jun 2020 13:21:40 -0700 (PDT)
-From:   Masayoshi Mizuma <msys.mizuma@gmail.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH] fs: i_version mntopt gets visible through /proc/mounts
-Date:   Tue, 16 Jun 2020 16:21:23 -0400
-Message-Id: <20200616202123.12656-1-msys.mizuma@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pjA7zgwqv80y4xmAR3IWOMUOAyE53XKax4l1DtqqEck=;
+        b=qSz9EggHCW321WnrK05sf24gVpW5QMbYim7negJFdBc0Mz/n8HUjmkj1/vA+cb0rpP
+         CwQeyf73NeD1QOGdfmcLDox5HEG/J91tTufY+FHW3mWt2hwL2OjdaYTNkdZ4w+6LM14t
+         IwCojfmxMM0vJ1CWloeFhHhlivBtrfdkUwW6n8Kcdee1FjJqWHL9DOTkurHHCXPSI5Rq
+         m04jbN9faYXlAf+Avcr02ZGDO/xxZPbrJzDhDh+r29qE+xBVRK+AQus4DtF/mn2t6DQC
+         l4oomFUBuK4spWYR8uVuXDJ+XJPOc75EuvKReZiK+wWcae9rraOdxMpK1snUeI02SuvX
+         Xmhw==
+X-Gm-Message-State: AOAM53027+nu5J88nHSy2KlqcezJ9qOKSTYwSPi6Bpp0w276ZJKuRh4l
+        x5otTWunGEVUz1ljgADZ//vzKsSruvJBhIkvOL1h+YboH3J+gO5gpUGsb+WhW7p//trCVAEXv63
+        faO4895nB/w4BWPRazb7O6tosS4gUJleeHsvvxQ==
+X-Received: by 2002:a9d:6e96:: with SMTP id a22mr4427239otr.58.1592346984854;
+        Tue, 16 Jun 2020 15:36:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyoYNEk859HKJnIJ4XSJZ0fYGYB8IyuHx9XmftKrB9TO1HP0sg3cpUFv1zd47ilgV+zJ3II6JUZaM7vtE9AC3A=
+X-Received: by 2002:a9d:6e96:: with SMTP id a22mr4427227otr.58.1592346984642;
+ Tue, 16 Jun 2020 15:36:24 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200414150233.24495-1-willy@infradead.org> <20200414150233.24495-17-willy@infradead.org>
+In-Reply-To: <20200414150233.24495-17-willy@infradead.org>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Wed, 17 Jun 2020 00:36:13 +0200
+Message-ID: <CAHc6FU4m1M7Tv4scX0UxSiVBqkL=Vcw_z-R7SufL8k7Bw=qPOw@mail.gmail.com>
+Subject: Re: [Cluster-devel] [PATCH v11 16/25] fs: Convert mpage_readpages to mpage_readahead
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-xfs@vger.kernel.org, Junxiao Bi <junxiao.bi@oracle.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel <cluster-devel@redhat.com>,
+        Linux-MM <linux-mm@kvack.org>, ocfs2-devel@oss.oracle.com,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-erofs@lists.ozlabs.org, Christoph Hellwig <hch@lst.de>,
+        linux-btrfs@vger.kernel.org,
+        Steven Whitehouse <swhiteho@redhat.com>,
+        Bob Peterson <rpeterso@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>
+Am Mi., 15. Apr. 2020 um 23:39 Uhr schrieb Matthew Wilcox <willy@infradead.org>:
+> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+>
+> Implement the new readahead aop and convert all callers (block_dev,
+> exfat, ext2, fat, gfs2, hpfs, isofs, jfs, nilfs2, ocfs2, omfs, qnx6,
+> reiserfs & udf).  The callers are all trivial except for GFS2 & OCFS2.
 
-/proc/mounts doesn't show 'i_version' even if iversion
-mount option is set to XFS.
+This patch leads to an ABBA deadlock in xfstest generic/095 on gfs2.
 
-iversion mount option is a VFS option, not ext4 specific option.
-Move the handler to show_sb_opts() so that /proc/mounts can show
-'i_version' on not only ext4 but also the other filesystem.
+Our lock hierarchy is such that the inode cluster lock ("inode glock")
+for an inode needs to be taken before any page locks in that inode's
+address space. However, the readahead address space operation is
+called with the pages already locked. When we try to grab the inode
+glock inside gfs2_readahead, we'll deadlock with processes that are
+holding that inode glock and trying to lock one of those same pages.
 
-Signed-off-by: Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>
----
- fs/ext4/super.c     | 2 --
- fs/proc_namespace.c | 1 +
- 2 files changed, 1 insertion(+), 2 deletions(-)
+One possible solution is to use a trylock on the glock in
+gfs2_readahead, and to give up the readahead in case of a locking
+conflict. I have no idea how this is going to affect performance.
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index a29e8ea1a7ab..879289de1818 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -2325,8 +2325,6 @@ static int _ext4_show_options(struct seq_file *seq, struct super_block *sb,
- 		SEQ_OPTS_PRINT("min_batch_time=%u", sbi->s_min_batch_time);
- 	if (nodefs || sbi->s_max_batch_time != EXT4_DEF_MAX_BATCH_TIME)
- 		SEQ_OPTS_PRINT("max_batch_time=%u", sbi->s_max_batch_time);
--	if (sb->s_flags & SB_I_VERSION)
--		SEQ_OPTS_PUTS("i_version");
- 	if (nodefs || sbi->s_stripe)
- 		SEQ_OPTS_PRINT("stripe=%lu", sbi->s_stripe);
- 	if (nodefs || EXT4_MOUNT_DATA_FLAGS &
-diff --git a/fs/proc_namespace.c b/fs/proc_namespace.c
-index 3059a9394c2d..848c4afaef05 100644
---- a/fs/proc_namespace.c
-+++ b/fs/proc_namespace.c
-@@ -49,6 +49,7 @@ static int show_sb_opts(struct seq_file *m, struct super_block *sb)
- 		{ SB_DIRSYNC, ",dirsync" },
- 		{ SB_MANDLOCK, ",mand" },
- 		{ SB_LAZYTIME, ",lazytime" },
-+		{ SB_I_VERSION, ",i_version" },
- 		{ 0, NULL }
- 	};
- 	const struct proc_fs_opts *fs_infop;
--- 
-2.18.4
+Any other ideas?
+
+Thanks,
+Andreas
 
