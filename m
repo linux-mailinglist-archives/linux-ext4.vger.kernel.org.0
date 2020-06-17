@@ -2,176 +2,73 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50D201FCEAD
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Jun 2020 15:38:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F9EF1FCEBD
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Jun 2020 15:44:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727814AbgFQNhg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 17 Jun 2020 09:37:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727802AbgFQNhf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 17 Jun 2020 09:37:35 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0838C0613ED
-        for <linux-ext4@vger.kernel.org>; Wed, 17 Jun 2020 06:37:34 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id y11so2878296ljm.9
-        for <linux-ext4@vger.kernel.org>; Wed, 17 Jun 2020 06:37:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fqR44w8izx/KE5EkQ1Ws5ETNchnRTHELluIzCKgLjZQ=;
-        b=AQDHF9j1wumEdOF8jW/1ZD+wMd/8SpKXUSrLOHAhi0A44X1JaVVNvxPIvK23AWFQl1
-         lcfd2qLeHyI1mOR56hQwvpPqFkxdvrqlLEDd85my4N1iUDfAlgcF8AzsgKWBK3zrgNCe
-         FfcZd/NGkaf2Mw5/0Wi7/NN8GlYj/dE1H3Y2K/UdByyIhfAVRQSJIdp1UXJN3EirQcCx
-         gGhwwgc+eOdRDRZohnKU4obNcVnQwSt7TB0Y31V6blCHXIgexA++Mbo6gO8D5gHDGqpn
-         e08UA7hYCS3YGjFr+hICEEExE+bXh2EV+2ZuVFnYmW334FTROJKMWUws6mNfrG1VlVfC
-         NXPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fqR44w8izx/KE5EkQ1Ws5ETNchnRTHELluIzCKgLjZQ=;
-        b=qOqzS3mOdcGcxfXJR+ZxDK7rnw44OMtAKFtSYXJ2mshRpnfyKfejXlV/CJNxMTPEWn
-         k9cPwARFfoh4XVG/Z4Ti8cf80ulVT4M5xKp1MaAt9R09PnRfILMuaPaQFQttnH1tSQZF
-         Dyn+bDz8Ak9vxE8RAgtx6qlAa9D7RbdE6hJFQj9KuMs4zBuqNtzKDlmrAllC96lv082C
-         9D/JKFIn1qbMeSN5swyJdHf6YaQJF2hH2QqKkJlqkp8X3gHxRwBrVbc+bayEoUsHOXFU
-         Ex5yPe6XEnJOUT7qJe0v6onC81fhfY4lsboMY3FdO/4uIv76lXOWXBbb1ccbZyEAwKLG
-         kFQw==
-X-Gm-Message-State: AOAM530Xl0yihbLaxZVPT+TFm9dmG5x2x5WE+pUviLGbBZaKlTme7QcM
-        UZQmLjceA9P5jNRJ2OtNdj1Qkc8aR6y+T8FzMH7MSw==
-X-Google-Smtp-Source: ABdhPJwA6fF2gcH8wQw09CP/KfWtNPcawF+FUlNNP2wgH6FMgwt35Wa0rYTio1e8v/dCRtNDcHsmii7KXDmm4uILcaA=
-X-Received: by 2002:a2e:911:: with SMTP id 17mr4347007ljj.411.1592401052747;
- Wed, 17 Jun 2020 06:37:32 -0700 (PDT)
+        id S1726853AbgFQNor (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 17 Jun 2020 09:44:47 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:35046 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726331AbgFQNor (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 17 Jun 2020 09:44:47 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id A893EA6112A76EA029FA;
+        Wed, 17 Jun 2020 21:44:45 +0800 (CST)
+Received: from [127.0.0.1] (10.166.215.198) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Wed, 17 Jun 2020
+ 21:44:36 +0800
+Subject: Re: [PATCH v2 3/5] ext4: detect metadata async write error when
+ getting journal's write access
+To:     Jan Kara <jack@suse.cz>
+CC:     <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
+        <adilger.kernel@dilger.ca>, <zhangxiaoxu5@huawei.com>,
+        <linux-fsdevel@vger.kernel.org>
+References: <20200617115947.836221-1-yi.zhang@huawei.com>
+ <20200617115947.836221-4-yi.zhang@huawei.com>
+ <20200617124157.GB29763@quack2.suse.cz>
+From:   "zhangyi (F)" <yi.zhang@huawei.com>
+Message-ID: <8caf9fe1-b7ce-655f-1f4d-3e0e90e211dc@huawei.com>
+Date:   Wed, 17 Jun 2020 21:44:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-References: <CA+G9fYu2ruH-8uxBHE0pdE6RgRTSx4QuQPAN=Nv3BCdRd2ouYA@mail.gmail.com>
- <20200501135806.4eebf0b92f84ab60bba3e1e7@linux-foundation.org>
- <CA+G9fYsiZ81pmawUY62K30B6ue+RXYod854RS91R2+F8ZO7Xvw@mail.gmail.com>
- <20200519075213.GF32497@dhcp22.suse.cz> <CAK8P3a2T_j-Ynvhsqe_FCqS2-ZdLbo0oMbHhHChzMbryE0izAQ@mail.gmail.com>
- <20200519084535.GG32497@dhcp22.suse.cz> <CA+G9fYvzLm7n1BE7AJXd8_49fOgPgWWTiQ7sXkVre_zoERjQKg@mail.gmail.com>
- <CA+G9fYsXnwyGetj-vztAKPt8=jXrkY8QWe74u5EEA3XPW7aikQ@mail.gmail.com>
- <20200520190906.GA558281@chrisdown.name> <20200521095515.GK6462@dhcp22.suse.cz>
- <20200521163450.GV6462@dhcp22.suse.cz>
-In-Reply-To: <20200521163450.GV6462@dhcp22.suse.cz>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 17 Jun 2020 19:07:20 +0530
-Message-ID: <CA+G9fYsdsgRmwLtSKJSzB1eWcUQ1z-_aaU+BNcQpker34XT6_w@mail.gmail.com>
-Subject: Re: mm: mkfs.ext4 invoked oom-killer on i386 - pagecache_get_page
-To:     Michal Hocko <mhocko@kernel.org>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>
-Cc:     Anders Roxell <anders.roxell@linaro.org>,
-        "Linux F2FS DEV, Mailing List" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, Arnd Bergmann <arnd@arndb.de>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Chao Yu <yuchao0@huawei.com>, lkft-triage@lists.linaro.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Cgroups <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200617124157.GB29763@quack2.suse.cz>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.166.215.198]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, 21 May 2020 at 22:04, Michal Hocko <mhocko@kernel.org> wrote:
->
-> On Thu 21-05-20 11:55:16, Michal Hocko wrote:
-> > On Wed 20-05-20 20:09:06, Chris Down wrote:
-> > > Hi Naresh,
-> > >
-> > > Naresh Kamboju writes:
-> > > > As a part of investigation on this issue LKFT teammate Anders Roxell
-> > > > git bisected the problem and found bad commit(s) which caused this problem.
-> > > >
-> > > > The following two patches have been reverted on next-20200519 and retested the
-> > > > reproducible steps and confirmed the test case mkfs -t ext4 got PASS.
-> > > > ( invoked oom-killer is gone now)
-> > > >
-> > > > Revert "mm, memcg: avoid stale protection values when cgroup is above
-> > > > protection"
-> > > >    This reverts commit 23a53e1c02006120f89383270d46cbd040a70bc6.
-> > > >
-> > > > Revert "mm, memcg: decouple e{low,min} state mutations from protection
-> > > > checks"
-> > > >    This reverts commit 7b88906ab7399b58bb088c28befe50bcce076d82.
-> > >
-> > > Thanks Anders and Naresh for tracking this down and reverting.
-> > >
-> > > I'll take a look tomorrow. I don't see anything immediately obviously wrong
-> > > in either of those commits from a (very) cursory glance, but they should
-> > > only be taking effect if protections are set.
-> >
-> > Agreed. If memory.{low,min} is not used then the patch should be
-> > effectively a nop.
->
-> I was staring into the code and do not see anything.  Could you give the
-> following debugging patch a try and see whether it triggers?
->
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index cc555903a332..df2e8df0eb71 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -2404,6 +2404,8 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
->                          * sc->priority further than desirable.
->                          */
->                         scan = max(scan, SWAP_CLUSTER_MAX);
-> +
-> +                       trace_printk("scan:%lu protection:%lu\n", scan, protection);
->                 } else {
->                         scan = lruvec_size;
->                 }
-> @@ -2648,6 +2650,7 @@ static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
->                 mem_cgroup_calculate_protection(target_memcg, memcg);
->
->                 if (mem_cgroup_below_min(memcg)) {
-> +                       trace_printk("under min:%lu emin:%lu\n", memcg->memory.min, memcg->memory.emin);
->                         /*
->                          * Hard protection.
->                          * If there is no reclaimable memory, OOM.
-> @@ -2660,6 +2663,7 @@ static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
->                          * there is an unprotected supply
->                          * of reclaimable memory from other cgroups.
->                          */
-> +                       trace_printk("under low:%lu elow:%lu\n", memcg->memory.low, memcg->memory.elow);
->                         if (!sc->memcg_low_reclaim) {
->                                 sc->memcg_low_skipped = 1;
->                                 continue;
+On 2020/6/17 20:41, Jan Kara wrote:
+> On Wed 17-06-20 19:59:45, zhangyi (F) wrote:
+>> Although we have already introduce s_bdev_wb_err_work to detect and
+>> handle async write metadata buffer error as soon as possible, there is
+>> still a potential race that could lead to filesystem inconsistency,
+>> which is the buffer may reading and re-writing out to journal before
+>> s_bdev_wb_err_work run. So this patch detect bdev mapping->wb_err when
+>> getting journal's write access and also mark the filesystem error if
+>> something bad happened.
+>>
+>> Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
+> 
+> So instead of all this, cannot we just do:
+> 
+> 	if (work_pending(sbi->s_bdev_wb_err_work))
+> 		flush_work(sbi->s_bdev_wb_err_work);
+> 
+> ? And so we are sure the filesystem is aborted if the abort was pending?
+> 
 
-As per your suggestions on debugging this problem,
-trace_printk is replaced with printk and applied to your patch on top of the
-problematic kernel and here is the test output and link.
+Thanks for this suggestion. Yeah, we could do this, it depends on the second
+patch, if we check and flush the pending work here, we could not use the
+end_buffer_async_write() in ext4_end_buffer_async_write(), we need to open
+coding ext4_end_buffer_async_write() and queue the error work before the
+buffer is unlocked, or else the race is still there. Do you agree ?
 
-mkfs -t ext4 /dev/disk/by-id/ata-TOSHIBA_MG04ACA100N_Y8RQK14KF6XF
-mke2fs 1.43.8 (1-Jan-2018)
-Creating filesystem with 244190646 4k blocks and 61054976 inodes
-Filesystem UUID: 7c380766-0ed8-41ba-a0de-3c08e78f1891
-Superblock backups stored on blocks:
-32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208,
-4096000, 7962624, 11239424, 20480000, 23887872, 71663616, 78675968,
-102400000, 214990848
-Allocating group tables:    0/7453 done
-Writing inode tables:    0/7453 done
-Creating journal (262144 blocks): [   51.544525] under min:0 emin:0
-[   51.845304] under min:0 emin:0
-[   51.848738] under min:0 emin:0
-[   51.858147] under min:0 emin:0
-[   51.861333] under min:0 emin:0
-[   51.862034] under min:0 emin:0
-[   51.862442] under min:0 emin:0
-[   51.862763] under min:0 emin:0
+Thanks,
+Yi.
 
-Full test log link,
-https://lkft.validation.linaro.org/scheduler/job/1497412#L1451
-
-- Naresh
