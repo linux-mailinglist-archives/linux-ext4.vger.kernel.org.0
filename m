@@ -2,147 +2,182 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A841FD545
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Jun 2020 21:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62DBC1FD5CF
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Jun 2020 22:14:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726848AbgFQTTN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 17 Jun 2020 15:19:13 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:28430 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726496AbgFQTTM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 17 Jun 2020 15:19:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592421549;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=wp8i2r6ysle42W+yOihADUcGa3SU5tRZWKYa9BbxV4g=;
-        b=id/luy4tpGfKW+szyqt5rbPp+Hfd6QlJLrDlagb3pGfCE8epO7NdmdsRb3FXqdakEYE84Z
-        eSn62HluuAZheDaOdkG2W1FJwjj0t7ER9QFpSMNo4QaLVITJDl2iP7Yu+Rt+Bt6DwConi1
-        RPFAx//uBN7YSPozBFIdXxKq+zcC71o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-191--V3RvAxNNbi78VzE1VyaWA-1; Wed, 17 Jun 2020 15:19:07 -0400
-X-MC-Unique: -V3RvAxNNbi78VzE1VyaWA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1C3C08015CB
-        for <linux-ext4@vger.kernel.org>; Wed, 17 Jun 2020 19:19:06 +0000 (UTC)
-Received: from [IPv6:::1] (ovpn04.gateway.prod.ext.phx2.redhat.com [10.5.9.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C9DF2707C6
-        for <linux-ext4@vger.kernel.org>; Wed, 17 Jun 2020 19:19:05 +0000 (UTC)
-Subject: [PATCH 1/1] ext4: fix potential negative array index in do_split()
-From:   Eric Sandeen <sandeen@redhat.com>
-To:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
-References: <d08d63e9-8f74-b571-07c7-828b9629ce6a@redhat.com>
-Autocrypt: addr=sandeen@redhat.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <f53e246b-647c-64bb-16ec-135383c70ad7@redhat.com>
-Date:   Wed, 17 Jun 2020 14:19:04 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.9.0
+        id S1726952AbgFQUOL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 17 Jun 2020 16:14:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726890AbgFQUOI (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 17 Jun 2020 16:14:08 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0835C0613EF
+        for <linux-ext4@vger.kernel.org>; Wed, 17 Jun 2020 13:14:07 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id a9so4478314ljn.6
+        for <linux-ext4@vger.kernel.org>; Wed, 17 Jun 2020 13:14:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=K/gPu7TMycBU2OMmKICnzUSp+xjDAAHE5ZCXBHSedrA=;
+        b=Hgg/nMoOfC6xMGf+J0M+j/XoZSAzvWUNAJO5oRrnxxQZz6Jmm0bdH9VjaHmTQ4XPAi
+         n/s9J0wSZAWbIYX//BzBFy8dbEnTocLEWX0efF+Wc/Hi97+M0oDVNjosY09MY8AutLO8
+         qpGLDMUievYu4q8rJPW79V9RO2lnQiRDoKZYOwvNwTOtAoz3Y1Yf4CYHpoxy71/O111x
+         XyKu9yBw7Y6GEAQ6DbuX1G6elk8UAN33ZXvp/hMJY42Wbp16m3kGTmL6w9UxFO2mTphj
+         NMM0Gh4+agGODtkiA7pegz8sjaNYzBN5MFM1gmXwuuNuXozNRhBVA/6Ak0mguCvAdC5y
+         uIiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=K/gPu7TMycBU2OMmKICnzUSp+xjDAAHE5ZCXBHSedrA=;
+        b=beaQshq0ldhXyUwYkn59oKRoWLaA38kjLM7lnXF5fRaghCUvMyT1qDpeqRxHK5fpas
+         ztbU6jUS1SIvusGeuqXn1me1BtIqCUEnV057BUrJvc6EpVFzh/JlrGBjlM990SjrBvM7
+         8Uht4NFVFfV5aC6hQrugigchtb57BesL/vLbvPIR1+3MeH/N0+qLex5KhzoDvt6uPP5U
+         eo+T1si8K1j8vOCyM3OvU44oSJ69A4t5Az6xrngD/5PZz18OEsrSgotfxOVQ8q/wh2ev
+         Xg8r52IXubCfduqfD/ZOfxoJGM/VWCmE69o2CUpU0RLkLv2rGznpPLd0GkNpG2LEe3WQ
+         zwyg==
+X-Gm-Message-State: AOAM530PpSo71kabNOCUEM9deMBA2nmTl7UEFWufRm7uZNI1UqrCzZSM
+        uo1cIrrobIMbe1IGA+yetprhTFPsdn/JRxlYLyA/gA==
+X-Google-Smtp-Source: ABdhPJxu/rE2rptP5d+WfyaHgfX2ttcXAh33IxS8fL6XLG7WEVYacg0tdg5G22BFQHF/I4DoFwlWnsCjNWKyglTnJas=
+X-Received: by 2002:a2e:974e:: with SMTP id f14mr480197ljj.102.1592424845650;
+ Wed, 17 Jun 2020 13:14:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <d08d63e9-8f74-b571-07c7-828b9629ce6a@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20200519084535.GG32497@dhcp22.suse.cz> <CA+G9fYvzLm7n1BE7AJXd8_49fOgPgWWTiQ7sXkVre_zoERjQKg@mail.gmail.com>
+ <CA+G9fYsXnwyGetj-vztAKPt8=jXrkY8QWe74u5EEA3XPW7aikQ@mail.gmail.com>
+ <20200520190906.GA558281@chrisdown.name> <20200521095515.GK6462@dhcp22.suse.cz>
+ <20200521163450.GV6462@dhcp22.suse.cz> <CA+G9fYsdsgRmwLtSKJSzB1eWcUQ1z-_aaU+BNcQpker34XT6_w@mail.gmail.com>
+ <20200617135758.GA548179@chrisdown.name> <20200617141155.GQ9499@dhcp22.suse.cz>
+ <CA+G9fYu+FB1PE0AMmE-9MrHpayE9kChwTyc3zfM6V83uQ0zcQA@mail.gmail.com> <20200617160624.GS9499@dhcp22.suse.cz>
+In-Reply-To: <20200617160624.GS9499@dhcp22.suse.cz>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 18 Jun 2020 01:43:53 +0530
+Message-ID: <CA+G9fYtCXrVGVtRTwxiqgfFNDDf_H4aNH=VpWLhsV4n_mCTLGg@mail.gmail.com>
+Subject: Re: mm: mkfs.ext4 invoked oom-killer on i386 - pagecache_get_page
+To:     Michal Hocko <mhocko@kernel.org>, Chris Down <chris@chrisdown.name>
+Cc:     Yafang Shao <laoar.shao@gmail.com>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        "Linux F2FS DEV, Mailing List" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, Arnd Bergmann <arnd@arndb.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        "Theodore Ts'o" <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Chao Yu <yuchao0@huawei.com>, lkft-triage@lists.linaro.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Cgroups <cgroups@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-If for any reason a directory passed to do_split() does not have enough
-active entries to exceed half the size of the block, we can end up
-iterating over all "count" entries without finding a split point.
+On Wed, 17 Jun 2020 at 21:36, Michal Hocko <mhocko@kernel.org> wrote:
+>
+> On Wed 17-06-20 21:23:05, Naresh Kamboju wrote:
+> > On Wed, 17 Jun 2020 at 19:41, Michal Hocko <mhocko@kernel.org> wrote:
+> > >
+> > > [Our emails have crossed]
+> > >
+> > > On Wed 17-06-20 14:57:58, Chris Down wrote:
+> > > > Naresh Kamboju writes:
+> > > > > mkfs -t ext4 /dev/disk/by-id/ata-TOSHIBA_MG04ACA100N_Y8RQK14KF6XF
+> > > > > mke2fs 1.43.8 (1-Jan-2018)
+> > > > > Creating filesystem with 244190646 4k blocks and 61054976 inodes
+> > > > > Filesystem UUID: 7c380766-0ed8-41ba-a0de-3c08e78f1891
+> > > > > Superblock backups stored on blocks:
+> > > > > 32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208,
+> > > > > 4096000, 7962624, 11239424, 20480000, 23887872, 71663616, 78675968,
+> > > > > 102400000, 214990848
+> > > > > Allocating group tables:    0/7453 done
+> > > > > Writing inode tables:    0/7453 done
+> > > > > Creating journal (262144 blocks): [   51.544525] under min:0 emin:0
+> > > > > [   51.845304] under min:0 emin:0
+> > > > > [   51.848738] under min:0 emin:0
+> > > > > [   51.858147] under min:0 emin:0
+> > > > > [   51.861333] under min:0 emin:0
+> > > > > [   51.862034] under min:0 emin:0
+> > > > > [   51.862442] under min:0 emin:0
+> > > > > [   51.862763] under min:0 emin:0
+> > > >
+> > > > Thanks, this helps a lot. Somehow we're entering mem_cgroup_below_min even
+> > > > when min/emin is 0 (which should indeed be the case if you haven't set them
+> > > > in the hierarchy).
+> > > >
+> > > > My guess is that page_counter_read(&memcg->memory) is 0, which means
+> > > > mem_cgroup_below_min will return 1.
+> > >
+> > > Yes this is the case because this is likely the root memcg which skips
+> > > all charges.
+> > >
+> > > > However, I don't know for sure why that should then result in the OOM killer
+> > > > coming along. My guess is that since this memcg has 0 pages to scan anyway,
+> > > > we enter premature OOM under some conditions. I don't know why we wouldn't
+> > > > have hit that with the old version of mem_cgroup_protected that returned
+> > > > MEMCG_PROT_* members, though.
+> > >
+> > > Not really. There is likely no other memcg to reclaim from and assuming
+> > > min limit protection will result in no reclaimable memory and thus the
+> > > OOM killer.
+> > >
+> > > > Can you please try the patch with the `>=` checks in mem_cgroup_below_min
+> > > > and mem_cgroup_below_low changed to `>`? If that fixes it, then that gives a
+> > > > strong hint about what's going on here.
+> > >
+> > > This would work but I believe an explicit check for the root memcg would
+> > > be easier to spot the reasoning.
+> >
+> > May I request you to send debugging or proposed fix patches here.
+> > I am happy to do more testing.
+>
+> Sure, here is the diff to test.
+>
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index c74a8f2323f1..6b5a31672fbe 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -392,6 +392,13 @@ static inline bool mem_cgroup_below_low(struct mem_cgroup *memcg)
+>         if (mem_cgroup_disabled())
+>                 return false;
+>
+> +       /*
+> +        * Root memcg doesn't account charges and doesn't support
+> +        * protection
+> +        */
+> +       if (mem_cgroup_is_root(memcg))
+> +               return false;
+> +
+>         return READ_ONCE(memcg->memory.elow) >=
+>                 page_counter_read(&memcg->memory);
+>  }
+> @@ -401,6 +408,13 @@ static inline bool mem_cgroup_below_min(struct mem_cgroup *memcg)
+>         if (mem_cgroup_disabled())
+>                 return false;
+>
+> +       /*
+> +        * Root memcg doesn't account charges and doesn't support
+> +        * protection
+> +        */
+> +       if (mem_cgroup_is_root(memcg))
+> +               return false;
+> +
+>         return READ_ONCE(memcg->memory.emin) >=
+>                 page_counter_read(&memcg->memory);
+>  }
 
-In this case, count == move, and split will be zero, and we will
-attempt a negative index into map[].
 
-Guard against this by detecting this case, and falling back to
-split-to-half-of-count instead; in this case we will still have
-plenty of space (> half blocksize) in each split block.
+After this patch applied the reported issue got fixed.
 
-Fixes: ef2b02d3e617 ("ext34: ensure do_split leaves enough free space in both blocks")
-Signed-off-by: Eric Sandeen <sandeen@redhat.com>
----
+test log link,
+https://lkft.validation.linaro.org/scheduler/job/1505417#L1429
 
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index a8aca4772aaa..8b60881f07ee 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -1858,7 +1858,7 @@ static struct ext4_dir_entry_2 *do_split(handle_t *handle, struct inode *dir,
- 			     blocksize, hinfo, map);
- 	map -= count;
- 	dx_sort_map(map, count);
--	/* Split the existing block in the middle, size-wise */
-+	/* Ensure that neither split block is over half full */
- 	size = 0;
- 	move = 0;
- 	for (i = count-1; i >= 0; i--) {
-@@ -1868,8 +1868,18 @@ static struct ext4_dir_entry_2 *do_split(handle_t *handle, struct inode *dir,
- 		size += map[i].size;
- 		move++;
- 	}
--	/* map index at which we will split */
--	split = count - move;
-+	/*
-+	 * map index at which we will split
-+	 *
-+	 * If the sum of active entries didn't exceed half the block size, just
-+	 * split it in half by count; each resulting block will have at least
-+	 * half the space free.
-+	 */
-+	if (i > 0)
-+		split = count - move;
-+	else
-+		split = count/2;
-+
- 	hash2 = map[split].hash;
- 	continued = hash2 == map[split - 1].hash;
- 	dxtrace(printk(KERN_INFO "Split block %lu at %x, %i/%i\n",
-
-
+- Naresh
