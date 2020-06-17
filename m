@@ -2,95 +2,176 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DEBF1FCE81
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Jun 2020 15:34:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50D201FCEAD
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Jun 2020 15:38:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726708AbgFQNeC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 17 Jun 2020 09:34:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50458 "EHLO
+        id S1727814AbgFQNhg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 17 Jun 2020 09:37:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726355AbgFQNeB (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 17 Jun 2020 09:34:01 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CD59C06174E;
-        Wed, 17 Jun 2020 06:34:00 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id cv17so969690qvb.13;
-        Wed, 17 Jun 2020 06:34:00 -0700 (PDT)
+        with ESMTP id S1727802AbgFQNhf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 17 Jun 2020 09:37:35 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0838C0613ED
+        for <linux-ext4@vger.kernel.org>; Wed, 17 Jun 2020 06:37:34 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id y11so2878296ljm.9
+        for <linux-ext4@vger.kernel.org>; Wed, 17 Jun 2020 06:37:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sE2GtgzFyH/Me0L3Rwy/BvM2kkw0y53nU1L0Sm+C+QY=;
-        b=X9z/7dAR1UUuoM3Fa0+xlrzXxqlhqj/kNY0I9nb0IlEzBVmxHESkw/47G32LB9ktQt
-         ec7kXVQNN32dPbx0EzmpbyYlfoDXj+AQ+PcNTD3r27dyNpHLUXZUCjPXd5XRMA2H5nbB
-         24r+FbrsY9IcygOqqDNuHCgZ3zYFtqMmzjORtMtGUEy7KdxJ35KbJrL9tL0eWuJrrfb/
-         mzzNXb8kGlYOegf338ezMQQEB6OW8E1hrlAWw3aIBmIyX0WJd0XKipfJcimG0I9bx4id
-         MStVnZDnyeLuhVVsPNj6DcUUFPQAoZ85e6Xl9qYQ4YXmM1hU13cxTS7ryf+16y2VlD6G
-         UPqg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fqR44w8izx/KE5EkQ1Ws5ETNchnRTHELluIzCKgLjZQ=;
+        b=AQDHF9j1wumEdOF8jW/1ZD+wMd/8SpKXUSrLOHAhi0A44X1JaVVNvxPIvK23AWFQl1
+         lcfd2qLeHyI1mOR56hQwvpPqFkxdvrqlLEDd85my4N1iUDfAlgcF8AzsgKWBK3zrgNCe
+         FfcZd/NGkaf2Mw5/0Wi7/NN8GlYj/dE1H3Y2K/UdByyIhfAVRQSJIdp1UXJN3EirQcCx
+         gGhwwgc+eOdRDRZohnKU4obNcVnQwSt7TB0Y31V6blCHXIgexA++Mbo6gO8D5gHDGqpn
+         e08UA7hYCS3YGjFr+hICEEExE+bXh2EV+2ZuVFnYmW334FTROJKMWUws6mNfrG1VlVfC
+         NXPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sE2GtgzFyH/Me0L3Rwy/BvM2kkw0y53nU1L0Sm+C+QY=;
-        b=luT3Ynp5Qe8qi9GzySrtB7sBdFAQMO3VPS2I5Gg4+/FhQYpMosBktIY/EKwANx8nBu
-         faQuIBf9k6v4w9eXhe0ZfoHkM7ZF5y4ss+y839CkAqAaqnlELqT/ayjzsPidC4+GavSg
-         +E/SsaPT3v9sejx+DM3PE126o46xygC33k/AXVvUyYM6pOTUAEAPq/nJAlyAhbz80aoT
-         SbP1YwLXVGyqRWW0RoTHYZjuphU9NYtgZAF58reXdsADcUZkRjjUKf1XPtWC1oUkI5dn
-         1itcFdfkCqA0YsXa9Q9OWTrfGQrwLTw1JSNV5fqibNlwYnzV6l0fS5COo/+JL+GFbnN1
-         AoMg==
-X-Gm-Message-State: AOAM531pH/P6vvqkDb4I2qgq6FUIkxEDBhRKMZqgMfQ+auWVr8XEs+0G
-        IOX4mxWtly+lVd0ZOSKQqA==
-X-Google-Smtp-Source: ABdhPJxysRZkZWDT1x8SCJdemmbfkIJWwqEC58Nn2mufQhTE76A3V/vJPE1KxEQ4DYcjj0emEklIvQ==
-X-Received: by 2002:a0c:b256:: with SMTP id k22mr7352996qve.115.1592400839886;
-        Wed, 17 Jun 2020 06:33:59 -0700 (PDT)
-Received: from gabell (209-6-122-159.s2973.c3-0.arl-cbr1.sbo-arl.ma.cable.rcncustomer.com. [209.6.122.159])
-        by smtp.gmail.com with ESMTPSA id a82sm17947212qkb.29.2020.06.17.06.33.58
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 17 Jun 2020 06:33:59 -0700 (PDT)
-Date:   Wed, 17 Jun 2020 09:33:57 -0400
-From:   Masayoshi Mizuma <msys.mizuma@gmail.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] fs: i_version mntopt gets visible through /proc/mounts
-Message-ID: <20200617133357.e56dnjeapatck25w@gabell>
-References: <20200616202123.12656-1-msys.mizuma@gmail.com>
- <20200617080314.GA7147@infradead.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fqR44w8izx/KE5EkQ1Ws5ETNchnRTHELluIzCKgLjZQ=;
+        b=qOqzS3mOdcGcxfXJR+ZxDK7rnw44OMtAKFtSYXJ2mshRpnfyKfejXlV/CJNxMTPEWn
+         k9cPwARFfoh4XVG/Z4Ti8cf80ulVT4M5xKp1MaAt9R09PnRfILMuaPaQFQttnH1tSQZF
+         Dyn+bDz8Ak9vxE8RAgtx6qlAa9D7RbdE6hJFQj9KuMs4zBuqNtzKDlmrAllC96lv082C
+         9D/JKFIn1qbMeSN5swyJdHf6YaQJF2hH2QqKkJlqkp8X3gHxRwBrVbc+bayEoUsHOXFU
+         Ex5yPe6XEnJOUT7qJe0v6onC81fhfY4lsboMY3FdO/4uIv76lXOWXBbb1ccbZyEAwKLG
+         kFQw==
+X-Gm-Message-State: AOAM530Xl0yihbLaxZVPT+TFm9dmG5x2x5WE+pUviLGbBZaKlTme7QcM
+        UZQmLjceA9P5jNRJ2OtNdj1Qkc8aR6y+T8FzMH7MSw==
+X-Google-Smtp-Source: ABdhPJwA6fF2gcH8wQw09CP/KfWtNPcawF+FUlNNP2wgH6FMgwt35Wa0rYTio1e8v/dCRtNDcHsmii7KXDmm4uILcaA=
+X-Received: by 2002:a2e:911:: with SMTP id 17mr4347007ljj.411.1592401052747;
+ Wed, 17 Jun 2020 06:37:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200617080314.GA7147@infradead.org>
+References: <CA+G9fYu2ruH-8uxBHE0pdE6RgRTSx4QuQPAN=Nv3BCdRd2ouYA@mail.gmail.com>
+ <20200501135806.4eebf0b92f84ab60bba3e1e7@linux-foundation.org>
+ <CA+G9fYsiZ81pmawUY62K30B6ue+RXYod854RS91R2+F8ZO7Xvw@mail.gmail.com>
+ <20200519075213.GF32497@dhcp22.suse.cz> <CAK8P3a2T_j-Ynvhsqe_FCqS2-ZdLbo0oMbHhHChzMbryE0izAQ@mail.gmail.com>
+ <20200519084535.GG32497@dhcp22.suse.cz> <CA+G9fYvzLm7n1BE7AJXd8_49fOgPgWWTiQ7sXkVre_zoERjQKg@mail.gmail.com>
+ <CA+G9fYsXnwyGetj-vztAKPt8=jXrkY8QWe74u5EEA3XPW7aikQ@mail.gmail.com>
+ <20200520190906.GA558281@chrisdown.name> <20200521095515.GK6462@dhcp22.suse.cz>
+ <20200521163450.GV6462@dhcp22.suse.cz>
+In-Reply-To: <20200521163450.GV6462@dhcp22.suse.cz>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 17 Jun 2020 19:07:20 +0530
+Message-ID: <CA+G9fYsdsgRmwLtSKJSzB1eWcUQ1z-_aaU+BNcQpker34XT6_w@mail.gmail.com>
+Subject: Re: mm: mkfs.ext4 invoked oom-killer on i386 - pagecache_get_page
+To:     Michal Hocko <mhocko@kernel.org>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>
+Cc:     Anders Roxell <anders.roxell@linaro.org>,
+        "Linux F2FS DEV, Mailing List" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, Arnd Bergmann <arnd@arndb.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        "Theodore Ts'o" <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Chao Yu <yuchao0@huawei.com>, lkft-triage@lists.linaro.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Cgroups <cgroups@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 01:03:14AM -0700, Christoph Hellwig wrote:
-> On Tue, Jun 16, 2020 at 04:21:23PM -0400, Masayoshi Mizuma wrote:
-> > From: Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>
-> > 
-> > /proc/mounts doesn't show 'i_version' even if iversion
-> > mount option is set to XFS.
-> > 
-> > iversion mount option is a VFS option, not ext4 specific option.
-> > Move the handler to show_sb_opts() so that /proc/mounts can show
-> > 'i_version' on not only ext4 but also the other filesystem.
-> 
-> SB_I_VERSION is a kernel internal flag.  XFS doesn't have an i_version
-> mount option.
+On Thu, 21 May 2020 at 22:04, Michal Hocko <mhocko@kernel.org> wrote:
+>
+> On Thu 21-05-20 11:55:16, Michal Hocko wrote:
+> > On Wed 20-05-20 20:09:06, Chris Down wrote:
+> > > Hi Naresh,
+> > >
+> > > Naresh Kamboju writes:
+> > > > As a part of investigation on this issue LKFT teammate Anders Roxell
+> > > > git bisected the problem and found bad commit(s) which caused this problem.
+> > > >
+> > > > The following two patches have been reverted on next-20200519 and retested the
+> > > > reproducible steps and confirmed the test case mkfs -t ext4 got PASS.
+> > > > ( invoked oom-killer is gone now)
+> > > >
+> > > > Revert "mm, memcg: avoid stale protection values when cgroup is above
+> > > > protection"
+> > > >    This reverts commit 23a53e1c02006120f89383270d46cbd040a70bc6.
+> > > >
+> > > > Revert "mm, memcg: decouple e{low,min} state mutations from protection
+> > > > checks"
+> > > >    This reverts commit 7b88906ab7399b58bb088c28befe50bcce076d82.
+> > >
+> > > Thanks Anders and Naresh for tracking this down and reverting.
+> > >
+> > > I'll take a look tomorrow. I don't see anything immediately obviously wrong
+> > > in either of those commits from a (very) cursory glance, but they should
+> > > only be taking effect if protections are set.
+> >
+> > Agreed. If memory.{low,min} is not used then the patch should be
+> > effectively a nop.
+>
+> I was staring into the code and do not see anything.  Could you give the
+> following debugging patch a try and see whether it triggers?
+>
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index cc555903a332..df2e8df0eb71 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -2404,6 +2404,8 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
+>                          * sc->priority further than desirable.
+>                          */
+>                         scan = max(scan, SWAP_CLUSTER_MAX);
+> +
+> +                       trace_printk("scan:%lu protection:%lu\n", scan, protection);
+>                 } else {
+>                         scan = lruvec_size;
+>                 }
+> @@ -2648,6 +2650,7 @@ static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
+>                 mem_cgroup_calculate_protection(target_memcg, memcg);
+>
+>                 if (mem_cgroup_below_min(memcg)) {
+> +                       trace_printk("under min:%lu emin:%lu\n", memcg->memory.min, memcg->memory.emin);
+>                         /*
+>                          * Hard protection.
+>                          * If there is no reclaimable memory, OOM.
+> @@ -2660,6 +2663,7 @@ static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
+>                          * there is an unprotected supply
+>                          * of reclaimable memory from other cgroups.
+>                          */
+> +                       trace_printk("under low:%lu elow:%lu\n", memcg->memory.low, memcg->memory.elow);
+>                         if (!sc->memcg_low_reclaim) {
+>                                 sc->memcg_low_skipped = 1;
+>                                 continue;
 
-Thank you for pointing it out, I misunderstood that for XFS.
+As per your suggestions on debugging this problem,
+trace_printk is replaced with printk and applied to your patch on top of the
+problematic kernel and here is the test output and link.
 
-iversion mount option is a VFS option, so I think it's good to
-show 'i_version' on /proc/mounts if the filesystem has i_version feature,
-like as:
+mkfs -t ext4 /dev/disk/by-id/ata-TOSHIBA_MG04ACA100N_Y8RQK14KF6XF
+mke2fs 1.43.8 (1-Jan-2018)
+Creating filesystem with 244190646 4k blocks and 61054976 inodes
+Filesystem UUID: 7c380766-0ed8-41ba-a0de-3c08e78f1891
+Superblock backups stored on blocks:
+32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208,
+4096000, 7962624, 11239424, 20480000, 23887872, 71663616, 78675968,
+102400000, 214990848
+Allocating group tables:    0/7453 done
+Writing inode tables:    0/7453 done
+Creating journal (262144 blocks): [   51.544525] under min:0 emin:0
+[   51.845304] under min:0 emin:0
+[   51.848738] under min:0 emin:0
+[   51.858147] under min:0 emin:0
+[   51.861333] under min:0 emin:0
+[   51.862034] under min:0 emin:0
+[   51.862442] under min:0 emin:0
+[   51.862763] under min:0 emin:0
 
-$ cat /proc/mounts
-...
-/dev/vdb1 /mnt xfs rw,i_version,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota 0 0
-...
+Full test log link,
+https://lkft.validation.linaro.org/scheduler/job/1497412#L1451
 
-- Masa
+- Naresh
