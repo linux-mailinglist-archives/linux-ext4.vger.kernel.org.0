@@ -2,50 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 586F91FC7F6
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Jun 2020 09:57:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 415E91FC7FB
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Jun 2020 09:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725773AbgFQH5i (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 17 Jun 2020 03:57:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54820 "EHLO
+        id S1726565AbgFQH5l (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 17 Jun 2020 03:57:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725964AbgFQH5i (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 17 Jun 2020 03:57:38 -0400
+        with ESMTP id S1726519AbgFQH5k (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 17 Jun 2020 03:57:40 -0400
 Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB052C061573
-        for <linux-ext4@vger.kernel.org>; Wed, 17 Jun 2020 00:57:37 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id y3so1680861ybf.4
-        for <linux-ext4@vger.kernel.org>; Wed, 17 Jun 2020 00:57:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42862C06174E
+        for <linux-ext4@vger.kernel.org>; Wed, 17 Jun 2020 00:57:39 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id r17so1579779ybj.22
+        for <linux-ext4@vger.kernel.org>; Wed, 17 Jun 2020 00:57:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=YrGLoue5k9cA5koD7/PO4iQoD6IjWXOUupBIS3VbDWk=;
-        b=iFNqldV2E0w+7bBQ385IjyHcqfjU9mHdgYgoOylqrDwynqv0FkaVUtzHYnx9jORWBx
-         nqLhO71PXhAxR/dettLy3H8elFoRNQ1xrwhbvwSjSMpTnH6Z3jQ1IJTsOZv7+sTTeATu
-         ewCeVTcWVzetIlVH5/jaGuMBKUpHxMpGioqjOhAzRFBPHmVm36fnLoOaHDgjrTe4Vq5W
-         WkrYAx7DiBNschMNjM2VxKdeL1pAKB/MwZJao3YSAovK798PHpRlhrY11GWKavUHDcr7
-         aypJl1ncfu6qAqOj9ec3P89dwmhW89iV6fJz4PAYy3IWXtr9brGu8umUFOvmmF5C0398
-         MWGA==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=G/fPjNKj6PNXBhhglcGDXFh+C2RJTmo0o/rYX7Lpb+0=;
+        b=TluV8U8p4btHvRnG6E6rAe71kNH+BvrrGlEUayjO0HSPyFC+sXTxG1hYdqjhQRPKUY
+         YDfNaP8YEbdwvHiu0XmRd3SNZSVbMyEDvebwv262dL8uHXfSd2dHrP2ZMHzf8smMGyf8
+         aZSebf2M/SqHt4cF4SJ2tKEQvOlqkH606abeCiH0hh2KPEqZG0VysoQXAisisVGnR9hy
+         CcDI6rzrx6tGcujgcyBKLSyDzqFCaSEA7l41SnukYRgykKsAYwIMcZDIQe5M8U1Mej2F
+         vIl2mlIUiX9vxJe0t0YzmIQiOqjs+8O58+gZVqrIu/vEFjVjpOI9UWCeLB1Jn4CMO8zf
+         luQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=YrGLoue5k9cA5koD7/PO4iQoD6IjWXOUupBIS3VbDWk=;
-        b=JYk1IhuQk/wN9Ue14jk969YmMHhZDtqEfH6eaOCH9wAAF4fZpPNtIOsWeEByz+ygsL
-         axFHKZee3nM/N5w+CaB5mKENofqydpA8RfhgFDA6VOJ2THDQl1pK9HAfqJRZPFOIK+Bj
-         cCp4NRHs+HGHU+jMtpzyGh+uNhQxTVGSeYz/AQpyP5Xx0sX4urVb8u46C1e2TxGo8Yu3
-         p79cDQVcXU3g5vdp2kQT3BCIH9KAO+Hnc+KmjgqeoQj9Gh4UhkTPOYSTAI4IgMdOETSK
-         XStqcK2hHM84ygZ/WVn0C9uwMG1/OgkEgWJSq0lda5uNiHSMapiX9+Wr817IslKrbtLF
-         Bogg==
-X-Gm-Message-State: AOAM532WbMAUq1cBGkiWTh/Ns2pCCyLrCJxWOsbaezGETDIkaue12OfU
-        0mxCkpVAumlRMJYgw0CTldk0Ie1Y334=
-X-Google-Smtp-Source: ABdhPJyi+r7Mo3g9hSD3snev85cZk7qSVEtvV2RBZ+GdzakmAaT064tsDCrF7yalJdTdipPDsMh0KpvnBYc=
-X-Received: by 2002:a25:cbcc:: with SMTP id b195mr10932034ybg.91.1592380656942;
- Wed, 17 Jun 2020 00:57:36 -0700 (PDT)
-Date:   Wed, 17 Jun 2020 07:57:28 +0000
-Message-Id: <20200617075732.213198-1-satyat@google.com>
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=G/fPjNKj6PNXBhhglcGDXFh+C2RJTmo0o/rYX7Lpb+0=;
+        b=NnhQlbkGohlzzZLqfYm/JjoR3uTV+T6+ABFGfOuwJ+qaS/xMqBzAVi3KDNMXb99VLg
+         Z0JO73kd2F/Kb7iYE4FP5cO/jw8Xp259/SDNqBJAjnz+9rjDWPN8h6PVQMYYcN1MA12Z
+         /9tQlXTO+6U0txXfOFRWzP4rtB7oZe2wjW0GFghcqho9NmkdX53MRygob9DzJRLYgvaA
+         0C4bmBM4dgdod7LSlZAr7u/qrD/yFUqAF5FNgPZuuMOGvAhPPaMKiqOrLwpwwfMMA/XE
+         QFNSN1LQeYg/81F0AenVd8rcArhvVrJAyJVW596oeGtvJryFNvqX6azCTJXs7yCClc3S
+         XaTg==
+X-Gm-Message-State: AOAM533/gb3W8nMCanP7jIs6Ta6bR9w11Pft2gqppX+pTULbeeVJgcj5
+        B2RxdVgMdQAWut0bA+WmDLdc7WBVSL8=
+X-Google-Smtp-Source: ABdhPJywj8c0Uv6bj9+yC8+EAxU6RuQUxCW39QAO7pvXRpbIsrAXbcARnKWZPdo9CiZyYjT2VpEZFOaFlOA=
+X-Received: by 2002:a25:2f4b:: with SMTP id v72mr10935088ybv.232.1592380658499;
+ Wed, 17 Jun 2020 00:57:38 -0700 (PDT)
+Date:   Wed, 17 Jun 2020 07:57:29 +0000
+In-Reply-To: <20200617075732.213198-1-satyat@google.com>
+Message-Id: <20200617075732.213198-2-satyat@google.com>
 Mime-Version: 1.0
+References: <20200617075732.213198-1-satyat@google.com>
 X-Mailer: git-send-email 2.27.0.290.gba653c62da-goog
-Subject: [PATCH 0/4] Inline Encryption Support for fscrypt
+Subject: [PATCH 1/4] fs: introduce SB_INLINECRYPT
 From:   Satya Tangirala <satyat@google.com>
 To:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org
@@ -56,56 +60,42 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This patch series adds support for Inline Encryption to fscrypt, f2fs
-and ext4. It builds on the inline encryption support now present in
-the block layer, and has been rebased on v5.8-rc1.
+Introduce SB_INLINECRYPT, which is set by filesystems that wish to use
+blk-crypto for file content en/decryption. This flag maps to the
+'-o inlinecrypt' mount option which multiple filesystems will implement,
+and code in fs/crypto/ needs to be able to check for this mount option
+in a filesystem-independent way.
 
-Patch 1 introduces the SB_INLINECRYPT sb options, which filesystems
-should set if they want to use blk-crypto for file content en/decryption.
+Signed-off-by: Satya Tangirala <satyat@google.com>
+---
+ fs/proc_namespace.c | 1 +
+ include/linux/fs.h  | 1 +
+ 2 files changed, 2 insertions(+)
 
-Patch 2 adds inline encryption support to fscrypt. To use inline
-encryption with fscrypt, the filesystem must set the above mentioned
-SB_INLINECRYPT sb option. When this option is set, the contents of
-encrypted files will be en/decrypted using blk-crypto.
-
-Patches 3 and 4 wire up f2fs and ext4 respectively to fscrypt support for
-inline encryption, and e.g ensure that bios are submitted with blocks
-that not only are contiguous, but also have contiguous DUNs.
-
-Eric Biggers (1):
-  ext4: add inline encryption support
-
-Satya Tangirala (3):
-  fs: introduce SB_INLINECRYPT
-  fscrypt: add inline encryption support
-  f2fs: add inline encryption support
-
- Documentation/admin-guide/ext4.rst |   6 +
- Documentation/filesystems/f2fs.rst |   7 +-
- fs/buffer.c                        |   7 +-
- fs/crypto/Kconfig                  |   6 +
- fs/crypto/Makefile                 |   1 +
- fs/crypto/bio.c                    |  50 +++++
- fs/crypto/crypto.c                 |   2 +-
- fs/crypto/fname.c                  |   4 +-
- fs/crypto/fscrypt_private.h        | 118 +++++++++-
- fs/crypto/inline_crypt.c           | 349 +++++++++++++++++++++++++++++
- fs/crypto/keyring.c                |   6 +-
- fs/crypto/keysetup.c               |  68 ++++--
- fs/crypto/keysetup_v1.c            |  16 +-
- fs/ext4/inode.c                    |   4 +-
- fs/ext4/page-io.c                  |   6 +-
- fs/ext4/readpage.c                 |  11 +-
- fs/ext4/super.c                    |   9 +
- fs/f2fs/compress.c                 |   2 +-
- fs/f2fs/data.c                     |  81 +++++--
- fs/f2fs/super.c                    |  32 +++
- fs/proc_namespace.c                |   1 +
- include/linux/fs.h                 |   1 +
- include/linux/fscrypt.h            |  82 +++++++
- 23 files changed, 794 insertions(+), 75 deletions(-)
- create mode 100644 fs/crypto/inline_crypt.c
-
+diff --git a/fs/proc_namespace.c b/fs/proc_namespace.c
+index 3059a9394c2d..e0ff1f6ac8f1 100644
+--- a/fs/proc_namespace.c
++++ b/fs/proc_namespace.c
+@@ -49,6 +49,7 @@ static int show_sb_opts(struct seq_file *m, struct super_block *sb)
+ 		{ SB_DIRSYNC, ",dirsync" },
+ 		{ SB_MANDLOCK, ",mand" },
+ 		{ SB_LAZYTIME, ",lazytime" },
++		{ SB_INLINECRYPT, ",inlinecrypt" },
+ 		{ 0, NULL }
+ 	};
+ 	const struct proc_fs_opts *fs_infop;
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 6c4ab4dc1cd7..abef6aa95524 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -1380,6 +1380,7 @@ extern int send_sigurg(struct fown_struct *fown);
+ #define SB_NODIRATIME	2048	/* Do not update directory access times */
+ #define SB_SILENT	32768
+ #define SB_POSIXACL	(1<<16)	/* VFS does not apply the umask */
++#define SB_INLINECRYPT	(1<<17)	/* Use blk-crypto for encrypted files */
+ #define SB_KERNMOUNT	(1<<22) /* this is a kern_mount call */
+ #define SB_I_VERSION	(1<<23) /* Update inode I_version field */
+ #define SB_LAZYTIME	(1<<25) /* Update the on-disk [acm]times lazily */
 -- 
 2.27.0.290.gba653c62da-goog
 
