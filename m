@@ -2,60 +2,97 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84E7A1FC81F
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Jun 2020 10:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AE9A1FC98F
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Jun 2020 11:10:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726355AbgFQIDX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 17 Jun 2020 04:03:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725773AbgFQIDW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 17 Jun 2020 04:03:22 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05402C061573;
-        Wed, 17 Jun 2020 01:03:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=NMpqp1Po11wPc+OD0tz0uL8QRWn/5SXktIpHxMSID1Q=; b=PiQQyFj3/Lid+T0g4v7zSlPeeG
-        BiAy34rtFGnQNTqvQKyD+Lwnd7ZZJqzKMizujBEmc75hqT6AYHc0KIyoNmEVuSboIXk7d6RG1Vvrn
-        5JWnElGaUxkljCpb9fri77myQ4TknPnTwWDi5ucSm7wYBQBHJl27K+6+fH1vkPNLT39APX465hWcQ
-        U2/C72zjJB1yHdumJhntT+6Q9ByxRwdfqFPluwwt//ICEENj5GW+yeRrLS/KoHUPNHEy8Gy59RiK9
-        2yHnYKI+tW7N2tC0bwEcx/EKBwiZn9i5g9jCIWxTnp9ec1z6My25Yyl+BSv+J2O7D14YzFULPuHkS
-        4YfEuhHg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jlT2Q-00022O-E7; Wed, 17 Jun 2020 08:03:14 +0000
-Date:   Wed, 17 Jun 2020 01:03:14 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Masayoshi Mizuma <msys.mizuma@gmail.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] fs: i_version mntopt gets visible through /proc/mounts
-Message-ID: <20200617080314.GA7147@infradead.org>
-References: <20200616202123.12656-1-msys.mizuma@gmail.com>
+        id S1726454AbgFQJKi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 17 Jun 2020 05:10:38 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:41145 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725554AbgFQJKi (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 17 Jun 2020 05:10:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592385037;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=j/3l3TD0GFWgZsLzJhbuPbo0MzigVGqI3vp1NM+IpDo=;
+        b=ekcBqo6KJURs4S3OigeCMlyFz/R0E+2LZl416eDM1NGAMGD0udiUhBSidK00A1W5tfmArR
+        7KgoSg2ZO12QVJmY3beJitb7s3ztFmgVdu6mibaOpBuLOrvFTnapeXR6kM0BRj5hjFa2xf
+        MbKTj2sT1Y3IsjCK9KxrUWoTnk3eN+I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-436-rWfETuJuPkO_9cWa7kvKag-1; Wed, 17 Jun 2020 05:10:35 -0400
+X-MC-Unique: rWfETuJuPkO_9cWa7kvKag-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4451E1009618;
+        Wed, 17 Jun 2020 09:10:34 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.40.195.22])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7FA315C1C3;
+        Wed, 17 Jun 2020 09:10:33 +0000 (UTC)
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     Jan Kara <jack@suse.com>
+Subject: [PATCH] jbd2: make sure jh have b_transaction set in refile/unlink_buffer
+Date:   Wed, 17 Jun 2020 11:10:31 +0200
+Message-Id: <20200617091031.6558-1-lczerner@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200616202123.12656-1-msys.mizuma@gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 04:21:23PM -0400, Masayoshi Mizuma wrote:
-> From: Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>
-> 
-> /proc/mounts doesn't show 'i_version' even if iversion
-> mount option is set to XFS.
-> 
-> iversion mount option is a VFS option, not ext4 specific option.
-> Move the handler to show_sb_opts() so that /proc/mounts can show
-> 'i_version' on not only ext4 but also the other filesystem.
+Callers of __jbd2_journal_unfile_buffer() and
+__jbd2_journal_refile_buffer() assume that the b_transaction is set. In
+fact if it's not, we can end up with journal_head refcounting errors
+leading to crash much later that might be very hard to track down. Add
+asserts to make sure that is the case.
 
-SB_I_VERSION is a kernel internal flag.  XFS doesn't have an i_version
-mount option.
+We also make sure that b_next_transaction is NULL in
+__jbd2_journal_unfile_buffer() since the callers expect that as well and
+we should not get into that stage in this state anyway, leading to
+problems later on if we do.
+
+Tested with fstests.
+
+Signed-off-by: Lukas Czerner <lczerner@redhat.com>
+---
+ fs/jbd2/transaction.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
+index e91aad3637a2..e65e0aca2826 100644
+--- a/fs/jbd2/transaction.c
++++ b/fs/jbd2/transaction.c
+@@ -2026,6 +2026,9 @@ static void __jbd2_journal_temp_unlink_buffer(struct journal_head *jh)
+  */
+ static void __jbd2_journal_unfile_buffer(struct journal_head *jh)
+ {
++	J_ASSERT_JH(jh, jh->b_transaction != NULL);
++	J_ASSERT_JH(jh, jh->b_next_transaction == NULL);
++
+ 	__jbd2_journal_temp_unlink_buffer(jh);
+ 	jh->b_transaction = NULL;
+ }
+@@ -2572,6 +2575,13 @@ bool __jbd2_journal_refile_buffer(struct journal_head *jh)
+ 
+ 	was_dirty = test_clear_buffer_jbddirty(bh);
+ 	__jbd2_journal_temp_unlink_buffer(jh);
++
++	/*
++	 * b_transaction must be set, otherwise the new b_transaction won't
++	 * be holding jh reference
++	 */
++	J_ASSERT_JH(jh, jh->b_transaction != NULL);
++
+ 	/*
+ 	 * We set b_transaction here because b_next_transaction will inherit
+ 	 * our jh reference and thus __jbd2_journal_file_buffer() must not
+-- 
+2.21.3
+
