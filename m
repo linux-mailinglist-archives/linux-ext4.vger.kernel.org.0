@@ -2,73 +2,128 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F9EF1FCEBD
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Jun 2020 15:44:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7478A1FCEEB
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Jun 2020 15:58:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726853AbgFQNor (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 17 Jun 2020 09:44:47 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:35046 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726331AbgFQNor (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 17 Jun 2020 09:44:47 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id A893EA6112A76EA029FA;
-        Wed, 17 Jun 2020 21:44:45 +0800 (CST)
-Received: from [127.0.0.1] (10.166.215.198) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Wed, 17 Jun 2020
- 21:44:36 +0800
-Subject: Re: [PATCH v2 3/5] ext4: detect metadata async write error when
- getting journal's write access
-To:     Jan Kara <jack@suse.cz>
-CC:     <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
-        <adilger.kernel@dilger.ca>, <zhangxiaoxu5@huawei.com>,
-        <linux-fsdevel@vger.kernel.org>
-References: <20200617115947.836221-1-yi.zhang@huawei.com>
- <20200617115947.836221-4-yi.zhang@huawei.com>
- <20200617124157.GB29763@quack2.suse.cz>
-From:   "zhangyi (F)" <yi.zhang@huawei.com>
-Message-ID: <8caf9fe1-b7ce-655f-1f4d-3e0e90e211dc@huawei.com>
-Date:   Wed, 17 Jun 2020 21:44:35 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        id S1726594AbgFQN6E (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 17 Jun 2020 09:58:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726341AbgFQN6D (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 17 Jun 2020 09:58:03 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98208C0613EE
+        for <linux-ext4@vger.kernel.org>; Wed, 17 Jun 2020 06:58:01 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id h5so2456339wrc.7
+        for <linux-ext4@vger.kernel.org>; Wed, 17 Jun 2020 06:58:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=czz/LMTUSEyCUOCBc2bpVTh7IggBB8ARvYVKv0fzm0w=;
+        b=oHJZsmwDgazVpFYFy9f1b0DXnvsC0m5vxNXELt2qWUG2KfVfS0Fn9Az8Mm4tsT5Yun
+         T0BN8K2g46PCiRW5Vtd3CYq9U6e5qZuldGsqUGrQVKibeXmeDBk6U6AB2EVkl4AOMQoQ
+         bb1tNkHgfcvlaxd0Rj1tDcDG32lDe0/EQGnL4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=czz/LMTUSEyCUOCBc2bpVTh7IggBB8ARvYVKv0fzm0w=;
+        b=bJGj5/x4CNj9oLAHbMzphji0E7h1a4/ABpA+e835T7SQRy7TyQaWppllNoDFpIku4n
+         nDY2gnBAVRE26V3f/pKiKkKCaz1HsAa+KwYTVwDbXs/1b/O8LaJlPCQZq4dMyVvFDzjQ
+         lkW3pPtIxxR+7oSFaAbQX5s1Ux70nBkezJUOcw/NeAlTOgFXERfqcthPI3bXH1zIDgHr
+         G5A4CEYwLYXnE658pEoGPPTrVypeq+5ngb/uTzC5YJMW6MN/IBiWcCF3pC1DrFgqvswB
+         k2rXay0uA2BmKgbdW8lDMHqI9tSgIp9aF8Ie1lseOLg+yAdLskBvxWU1rFLAtV5OXlv9
+         Zr3A==
+X-Gm-Message-State: AOAM531WbeNZuvvVZQABUJPZ9no6OY+OlymF/yKy2qiWaQe8q2A79cV7
+        3XcZdB8MZIOZ2+wimQ0FH4v2/w==
+X-Google-Smtp-Source: ABdhPJxEWNxFxNxnJ3uLML+OdoNnGyXOqpBVbo7UMqTkjK8aBRi7UkKmaFuOunrzbNW+H9nqkV6M+Q==
+X-Received: by 2002:a5d:4286:: with SMTP id k6mr8336535wrq.140.1592402279710;
+        Wed, 17 Jun 2020 06:57:59 -0700 (PDT)
+Received: from localhost ([2a01:4b00:8432:8a00:63de:dd93:20be:f460])
+        by smtp.gmail.com with ESMTPSA id 67sm35206526wrk.49.2020.06.17.06.57.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jun 2020 06:57:58 -0700 (PDT)
+Date:   Wed, 17 Jun 2020 14:57:58 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        "Linux F2FS DEV, Mailing List" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, Arnd Bergmann <arnd@arndb.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Chao Yu <yuchao0@huawei.com>, lkft-triage@lists.linaro.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Cgroups <cgroups@vger.kernel.org>
+Subject: Re: mm: mkfs.ext4 invoked oom-killer on i386 - pagecache_get_page
+Message-ID: <20200617135758.GA548179@chrisdown.name>
+References: <CA+G9fYsiZ81pmawUY62K30B6ue+RXYod854RS91R2+F8ZO7Xvw@mail.gmail.com>
+ <20200519075213.GF32497@dhcp22.suse.cz>
+ <CAK8P3a2T_j-Ynvhsqe_FCqS2-ZdLbo0oMbHhHChzMbryE0izAQ@mail.gmail.com>
+ <20200519084535.GG32497@dhcp22.suse.cz>
+ <CA+G9fYvzLm7n1BE7AJXd8_49fOgPgWWTiQ7sXkVre_zoERjQKg@mail.gmail.com>
+ <CA+G9fYsXnwyGetj-vztAKPt8=jXrkY8QWe74u5EEA3XPW7aikQ@mail.gmail.com>
+ <20200520190906.GA558281@chrisdown.name>
+ <20200521095515.GK6462@dhcp22.suse.cz>
+ <20200521163450.GV6462@dhcp22.suse.cz>
+ <CA+G9fYsdsgRmwLtSKJSzB1eWcUQ1z-_aaU+BNcQpker34XT6_w@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200617124157.GB29763@quack2.suse.cz>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.166.215.198]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYsdsgRmwLtSKJSzB1eWcUQ1z-_aaU+BNcQpker34XT6_w@mail.gmail.com>
+User-Agent: Mutt/1.14.3 (2020-06-14)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2020/6/17 20:41, Jan Kara wrote:
-> On Wed 17-06-20 19:59:45, zhangyi (F) wrote:
->> Although we have already introduce s_bdev_wb_err_work to detect and
->> handle async write metadata buffer error as soon as possible, there is
->> still a potential race that could lead to filesystem inconsistency,
->> which is the buffer may reading and re-writing out to journal before
->> s_bdev_wb_err_work run. So this patch detect bdev mapping->wb_err when
->> getting journal's write access and also mark the filesystem error if
->> something bad happened.
->>
->> Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
-> 
-> So instead of all this, cannot we just do:
-> 
-> 	if (work_pending(sbi->s_bdev_wb_err_work))
-> 		flush_work(sbi->s_bdev_wb_err_work);
-> 
-> ? And so we are sure the filesystem is aborted if the abort was pending?
-> 
+Naresh Kamboju writes:
+>mkfs -t ext4 /dev/disk/by-id/ata-TOSHIBA_MG04ACA100N_Y8RQK14KF6XF
+>mke2fs 1.43.8 (1-Jan-2018)
+>Creating filesystem with 244190646 4k blocks and 61054976 inodes
+>Filesystem UUID: 7c380766-0ed8-41ba-a0de-3c08e78f1891
+>Superblock backups stored on blocks:
+>32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208,
+>4096000, 7962624, 11239424, 20480000, 23887872, 71663616, 78675968,
+>102400000, 214990848
+>Allocating group tables:    0/7453 done
+>Writing inode tables:    0/7453 done
+>Creating journal (262144 blocks): [   51.544525] under min:0 emin:0
+>[   51.845304] under min:0 emin:0
+>[   51.848738] under min:0 emin:0
+>[   51.858147] under min:0 emin:0
+>[   51.861333] under min:0 emin:0
+>[   51.862034] under min:0 emin:0
+>[   51.862442] under min:0 emin:0
+>[   51.862763] under min:0 emin:0
 
-Thanks for this suggestion. Yeah, we could do this, it depends on the second
-patch, if we check and flush the pending work here, we could not use the
-end_buffer_async_write() in ext4_end_buffer_async_write(), we need to open
-coding ext4_end_buffer_async_write() and queue the error work before the
-buffer is unlocked, or else the race is still there. Do you agree ?
+Thanks, this helps a lot. Somehow we're entering mem_cgroup_below_min even when 
+min/emin is 0 (which should indeed be the case if you haven't set them in the 
+hierarchy).
 
-Thanks,
-Yi.
+My guess is that page_counter_read(&memcg->memory) is 0, which means 
+mem_cgroup_below_min will return 1.
 
+However, I don't know for sure why that should then result in the OOM killer 
+coming along. My guess is that since this memcg has 0 pages to scan anyway, we 
+enter premature OOM under some conditions. I don't know why we wouldn't have 
+hit that with the old version of mem_cgroup_protected that returned 
+MEMCG_PROT_* members, though.
+
+Can you please try the patch with the `>=` checks in mem_cgroup_below_min and 
+mem_cgroup_below_low changed to `>`? If that fixes it, then that gives a strong 
+hint about what's going on here.
+
+Thanks for your help!
