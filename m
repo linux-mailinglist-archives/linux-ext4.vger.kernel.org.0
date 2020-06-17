@@ -2,46 +2,49 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AE9A1FC98F
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Jun 2020 11:10:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C017E1FC9CA
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Jun 2020 11:25:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726454AbgFQJKi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 17 Jun 2020 05:10:38 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:41145 "EHLO
+        id S1725967AbgFQJZ5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 17 Jun 2020 05:25:57 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:41117 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725554AbgFQJKi (ORCPT
+        by vger.kernel.org with ESMTP id S1725536AbgFQJZ5 (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 17 Jun 2020 05:10:38 -0400
+        Wed, 17 Jun 2020 05:25:57 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592385037;
+        s=mimecast20190719; t=1592385956;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=j/3l3TD0GFWgZsLzJhbuPbo0MzigVGqI3vp1NM+IpDo=;
-        b=ekcBqo6KJURs4S3OigeCMlyFz/R0E+2LZl416eDM1NGAMGD0udiUhBSidK00A1W5tfmArR
-        7KgoSg2ZO12QVJmY3beJitb7s3ztFmgVdu6mibaOpBuLOrvFTnapeXR6kM0BRj5hjFa2xf
-        MbKTj2sT1Y3IsjCK9KxrUWoTnk3eN+I=
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5hWn7MRCR6o1uAcvBFYKXKNlYUtbdpN0vJxOt1YsMyM=;
+        b=d2FVYQJG3t6JXxAagyWU9dmyqr7PHr7UJqJiZrcSvt7IM6l4Vpfm2OwrGn23aUF5S2Z1Jh
+        og0aJyy6mRNY3ub46tIq4j1zZ6bKIHqn6LnNt31ZfAXflOOsfBSzjfUo/DvC4bSmGVW7jL
+        A83uCQ6WvheqCpDBmt0gKkI8VAZ+Mds=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-436-rWfETuJuPkO_9cWa7kvKag-1; Wed, 17 Jun 2020 05:10:35 -0400
-X-MC-Unique: rWfETuJuPkO_9cWa7kvKag-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+ us-mta-281-tZry2wIvPHCDP5Xg9En84Q-1; Wed, 17 Jun 2020 05:25:52 -0400
+X-MC-Unique: tZry2wIvPHCDP5Xg9En84Q-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4451E1009618;
-        Wed, 17 Jun 2020 09:10:34 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B666A2210A1;
+        Wed, 17 Jun 2020 09:25:51 +0000 (UTC)
 Received: from localhost.localdomain (unknown [10.40.195.22])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7FA315C1C3;
-        Wed, 17 Jun 2020 09:10:33 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 011DE7CABA;
+        Wed, 17 Jun 2020 09:25:50 +0000 (UTC)
 From:   Lukas Czerner <lczerner@redhat.com>
 To:     linux-ext4@vger.kernel.org
 Cc:     Jan Kara <jack@suse.com>
-Subject: [PATCH] jbd2: make sure jh have b_transaction set in refile/unlink_buffer
-Date:   Wed, 17 Jun 2020 11:10:31 +0200
-Message-Id: <20200617091031.6558-1-lczerner@redhat.com>
+Subject: [PATCH v2] jbd2: make sure jh have b_transaction set in refile/unfile_buffer
+Date:   Wed, 17 Jun 2020 11:25:49 +0200
+Message-Id: <20200617092549.6712-1-lczerner@redhat.com>
+In-Reply-To: <20200617091031.6558-1-lczerner@redhat.com>
+References: <20200617091031.6558-1-lczerner@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
@@ -62,6 +65,8 @@ Tested with fstests.
 
 Signed-off-by: Lukas Czerner <lczerner@redhat.com>
 ---
+v2: Fix subject line s/unlink/unfile/
+
  fs/jbd2/transaction.c | 10 ++++++++++
  1 file changed, 10 insertions(+)
 
