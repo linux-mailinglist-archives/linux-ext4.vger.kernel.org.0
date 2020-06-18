@@ -2,125 +2,103 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CD571FDF0B
-	for <lists+linux-ext4@lfdr.de>; Thu, 18 Jun 2020 03:39:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61AE31FDFD5
+	for <lists+linux-ext4@lfdr.de>; Thu, 18 Jun 2020 03:44:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729932AbgFRBi0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 17 Jun 2020 21:38:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48428 "EHLO
+        id S1732790AbgFRBno (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 17 Jun 2020 21:43:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732547AbgFRBab (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 17 Jun 2020 21:30:31 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 056DAC061755;
-        Wed, 17 Jun 2020 18:30:30 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id b27so4094827qka.4;
-        Wed, 17 Jun 2020 18:30:29 -0700 (PDT)
+        with ESMTP id S1729997AbgFRBnm (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 17 Jun 2020 21:43:42 -0400
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E92D2C06174E;
+        Wed, 17 Jun 2020 18:43:41 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id j19so4243037ilk.9;
+        Wed, 17 Jun 2020 18:43:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BgQL6jr7f4Pok+oRfrdP837PZf1178oPJYqZuFJeOOM=;
-        b=PsoyNROs97j1k2IGHTBbgdA1UmsBzqoIU4M9fAiqotRAMt2bltVbCKEquho2syZZ8a
-         hBoONSygFB18Ey8vU3Y3DQic30cQ34dLKddxAqW74b0hN7xln8EFfDmJL+yPMf/RCQNH
-         +8UC8geUs0OFu6oPvSUOl+BjoSKT73x8hLu8Si+8xsOkIMmw8utndSm2YFEl1d+2y3Vy
-         SIETCtxkGsv/mNz/kre1pCMonY3xKajSxgHkH/I7UvrRTq7w9Pzn1JyiTVainKp1tjST
-         nk6zyaFXLinCbFwP//4BjNJKz5i+UuVUcENob2yJ9qKKHk2e/d5ZQGjn3BcUUjMDc3I8
-         A+HQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/NV0zNhM4fAGBEvR6pS4jubz62WIXqxLs8Qbcn4M8G8=;
+        b=dDcozoF3gjERlnIYD/aopfiDz8+Xk7wB85tQ+JG+fS/wcxWZRWOO9ndR3j6DlLjase
+         pakWhsVPQ1s1RE4tdxVgckkmbgQQmy7KzyUVIgo8XiewLQf5iDAQQHzmV55SqyA3ni0l
+         UhO1lJ4tnxN9yr+l1R5SlEBFs6N7bGO1IezGVFxCOKnzKhYGlAd0C60gF1lzq5zPgtZ5
+         9JgAPTH5CwMDcYYdYBRFRY59OOo2Ufb2xXI6CZ33SNJk34h80UPpZg/jdNoIWaOmSADF
+         HprtPmsk/lgc7E5A+WM5WfU02YavO+ic/3qkx+0n65e7+GL5yWyxbhFZWUcj97Z490uK
+         AJxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BgQL6jr7f4Pok+oRfrdP837PZf1178oPJYqZuFJeOOM=;
-        b=r8T9rzT07whmPCoah12mDClWmTH/na8nIVIvMrjfUYkn0O+MKzWTepn6IS8xL3s3up
-         aFONMUT4MysG2B/u5/smkzvgSAP4F1X9gfALpfSHxQlW8XAxaHYOTDZ55gS6PVe6FuS6
-         NWUESj7yFFXCjc8M3lC2n1iaByG+Dm9ZfHCGWPITxdxYMOxAGr20rnRJPC6Q7hSBvrsK
-         cDfDNIW3cRE4i16a0eBc+cRM79m6PnbXHgjZOwJZ6chWN9ym1Z8OfHSrWZZQP6DD1bRW
-         E0/qCHrpCK39MVTtMAKrbY0bwE+8BtRqxK4qgjfA6R9sAkEY9gr4tmqlfoCn7sSE7DKf
-         s/Zw==
-X-Gm-Message-State: AOAM530qwgOtAZjmUwycuYwlCiXs8mciam2q7i4TEstW7jSAnNbfHQQB
-        mxrhFM5Fj7npDyvxFigNTg==
-X-Google-Smtp-Source: ABdhPJwmfKV/RiX9rrG5aWDGqFvBQuR28QYYzJpTADtHrTUuB7rzV/CkW5/nnvBH2d+2wQJphU09nA==
-X-Received: by 2002:a37:63c2:: with SMTP id x185mr1621171qkb.82.1592443829168;
-        Wed, 17 Jun 2020 18:30:29 -0700 (PDT)
-Received: from gabell (209-6-122-159.s2973.c3-0.arl-cbr1.sbo-arl.ma.cable.rcncustomer.com. [209.6.122.159])
-        by smtp.gmail.com with ESMTPSA id d78sm1642255qkg.106.2020.06.17.18.30.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 17 Jun 2020 18:30:28 -0700 (PDT)
-Date:   Wed, 17 Jun 2020 21:30:26 -0400
-From:   Masayoshi Mizuma <msys.mizuma@gmail.com>
-To:     "J. Bruce Fields" <bfields@fieldses.org>
-Cc:     Eric Sandeen <sandeen@sandeen.net>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-xfs <linux-xfs@vger.kernel.org>
-Subject: Re: [PATCH] fs: i_version mntopt gets visible through /proc/mounts
-Message-ID: <20200618013026.ewnhvf64nb62k2yx@gabell>
-References: <20200616202123.12656-1-msys.mizuma@gmail.com>
- <20200617080314.GA7147@infradead.org>
- <20200617155836.GD13815@fieldses.org>
- <24692989-2ee0-3dcc-16d8-aa436114f5fb@sandeen.net>
- <20200617172456.GP11245@magnolia>
- <8f0df756-4f71-9d96-7a52-45bf51482556@sandeen.net>
- <20200617181816.GA18315@fieldses.org>
- <4cbb5cbe-feb4-2166-0634-29041a41a8dc@sandeen.net>
- <20200617184507.GB18315@fieldses.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/NV0zNhM4fAGBEvR6pS4jubz62WIXqxLs8Qbcn4M8G8=;
+        b=rIZaeZTMyB+E9IELLbPTjBPoCCaBgD3xQt1ws8BU4h9XstxN3oZN8RRILpTQ4uXQmv
+         cXVnyuNmNjOsK9YJzEz/33jmCbeqZXOHypH4Zqr6izzZXuj0AtnuKmdNXfuxHbYRF2H6
+         j3eoZTp+6Rsa/iTM6VuJPmhM7cbez1oFBZ4FsG0xI2WpGUSKFKpMt26GsmJ8YRhiRgd1
+         JF7A9z+tUxOQaJ3YJusjuZmowsqkbr8kNn6dsC8UdxUiCTTeFRnXDw3bL3VRTJNzZAJz
+         Qd2ngfmMwYX6ZcerUAuNG5bGYZn83XSt4PEPFvemdEu48FNflsj37H2WGLfe+nnZT5Mk
+         QtOg==
+X-Gm-Message-State: AOAM532Bac1QzSwCth3YFWtbUrdp2SmwUmrp6GQ3dBHgcArhsOSGaf50
+        lIOM/P6Ix+OA6HFX3w6m06pzkFXlG1Jfpy7sikM=
+X-Google-Smtp-Source: ABdhPJy/FeQxzQszfiH33uOWaccj4JEo3pvq0ekiMOC1+TiGVdTADnFmscwMk0igU9qcjJHn9X3GpIIhMlgC28sEOaI=
+X-Received: by 2002:a05:6e02:542:: with SMTP id i2mr1867971ils.203.1592444621188;
+ Wed, 17 Jun 2020 18:43:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200617184507.GB18315@fieldses.org>
+References: <CA+G9fYsXnwyGetj-vztAKPt8=jXrkY8QWe74u5EEA3XPW7aikQ@mail.gmail.com>
+ <20200520190906.GA558281@chrisdown.name> <20200521095515.GK6462@dhcp22.suse.cz>
+ <20200521163450.GV6462@dhcp22.suse.cz> <CA+G9fYsdsgRmwLtSKJSzB1eWcUQ1z-_aaU+BNcQpker34XT6_w@mail.gmail.com>
+ <20200617135758.GA548179@chrisdown.name> <20200617141155.GQ9499@dhcp22.suse.cz>
+ <CA+G9fYu+FB1PE0AMmE-9MrHpayE9kChwTyc3zfM6V83uQ0zcQA@mail.gmail.com>
+ <20200617160624.GS9499@dhcp22.suse.cz> <CA+G9fYtCXrVGVtRTwxiqgfFNDDf_H4aNH=VpWLhsV4n_mCTLGg@mail.gmail.com>
+ <20200617210935.GA578452@chrisdown.name>
+In-Reply-To: <20200617210935.GA578452@chrisdown.name>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Thu, 18 Jun 2020 09:43:05 +0800
+Message-ID: <CALOAHbBp7Ytd-Hta9NH-_HJtVTAsR5Pw2RYrVScp7PPezCEv2w@mail.gmail.com>
+Subject: Re: mm: mkfs.ext4 invoked oom-killer on i386 - pagecache_get_page
+To:     Chris Down <chris@chrisdown.name>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        "Linux F2FS DEV, Mailing List" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, Arnd Bergmann <arnd@arndb.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        "Theodore Ts'o" <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Chao Yu <yuchao0@huawei.com>, lkft-triage@lists.linaro.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Cgroups <cgroups@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 02:45:07PM -0400, J. Bruce Fields wrote:
-> On Wed, Jun 17, 2020 at 01:28:11PM -0500, Eric Sandeen wrote:
-> > but mount(8) has already exposed this interface:
-> > 
-> >        iversion
-> >               Every time the inode is modified, the i_version field will be incremented.
-> > 
-> >        noiversion
-> >               Do not increment the i_version inode field.
-> > 
-> > so now what?
-> 
-> It's not like anyone's actually depending on i_version *not* being
-> incremented.  (Can you even observe it from userspace other than over
-> NFS?)
-> 
-> So, just silently turn on the "iversion" behavior and ignore noiversion,
-> and I doubt you're going to break any real application.
+On Thu, Jun 18, 2020 at 5:09 AM Chris Down <chris@chrisdown.name> wrote:
+>
+> Naresh Kamboju writes:
+> >After this patch applied the reported issue got fixed.
+>
+> Great! Thank you Naresh and Michal for helping to get to the bottom of this :-)
+>
+> I'll send out a new version tomorrow with the fixes applied and both of you
+> credited in the changelog for the detection and fix.
 
-I suppose it's probably good to remain the options for user compatibility,
-however, it seems that iversion and noiversiont are useful for
-only ext4.
-How about moving iversion and noiversion description on mount(8)
-to ext4 specific option?
+As we have already found that the usage around memory.{emin, elow} has
+many limitations, I think memory.{emin, elow} should be used for
+memcg-tree internally only, that means they can only be used to
+calculate the protection of a memcg in a specified memcg-tree but
+should not be exposed to other MM parts.
 
-And fixing the remount issue for XFS (maybe btrfs has the same
-issue as well)?
-For XFS like as:
-
-diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
-index 379cbff438bc..2ddd634cfb0b 100644
---- a/fs/xfs/xfs_super.c
-+++ b/fs/xfs/xfs_super.c
-@@ -1748,6 +1748,9 @@ xfs_fc_reconfigure(
-                        return error;
-        }
-
-+       if (XFS_SB_VERSION_NUM(&mp->m_sb) == XFS_SB_VERSION_5)
-+               mp->m_super->s_flags |= SB_I_VERSION;
-+
-        return 0;
- }
-
-Thanks,
-Masa
+-- 
+Thanks
+Yafang
