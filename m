@@ -2,116 +2,113 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BD7B1FF5FB
-	for <lists+linux-ext4@lfdr.de>; Thu, 18 Jun 2020 17:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFB661FF614
+	for <lists+linux-ext4@lfdr.de>; Thu, 18 Jun 2020 17:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730787AbgFRPAJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 18 Jun 2020 11:00:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59912 "EHLO
+        id S1731180AbgFRPDN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 18 Jun 2020 11:03:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726193AbgFRPAI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 18 Jun 2020 11:00:08 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC3CFC06174E;
-        Thu, 18 Jun 2020 08:00:07 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id m81so7406487ioa.1;
-        Thu, 18 Jun 2020 08:00:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NtwtfirPIaj3hQKqt5NnTqLzfoXadlYH6xaXhH3mB+s=;
-        b=kYwPKZdp0pHLg9nzSkXLUjXIWhhGSDK+lUsX3kvZKhpx/abFTtNYjkojW4sVVt7bHm
-         qZGTxARuFd3WI6EfU1eBN6+4gj/yCc7G3VU2n21gea6aS3fkUz/uMmbZ6zjhs6dF/ctG
-         mtQLDzrh6EKtHb9OSOEmMjo3N7fWi8hwmYyXXXcwlEWheXzJEY46FsRDyYJ/YXapbZEL
-         GAjWeoKd6sh4vm2KkDp99cfVll6l6Xz1jcMVSif5RsT91SxuUdRKKCZShkXiMxJfDPO2
-         mEQ03gbiIGbBmN1vxaEfCsHPJle351uahP3BtuY+Amj/uplhgSOrlPpU1WHGNLMkS4iC
-         lVIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NtwtfirPIaj3hQKqt5NnTqLzfoXadlYH6xaXhH3mB+s=;
-        b=E9oYBpHSZYmC7FLuwZtM18HBTCZPtsRMxCzP0mIHBegoGebObr7eH9A7y4vuzcy66h
-         Kd3F62IdMGfD/Q8vLsxuqYRk5AhEPIBg55HPyVBb0PGzoXl0igvA0SIPhQLYundiIMx+
-         tcgJqFJOaqh9yEL5uSqY55GT+USlIRYZVF/VfS9kNr13eJ53fAIBYIBO47RDw9NCtDJx
-         yhJfYZTsJH7BAFHsYN1ySSDYNAWrsh5qRnguXjI7Nx5PypdyoEyfXovnVqwprgoFdeZx
-         0vHgfWRD82wxHZsrQ8boAvZ7JBHCLsK2Y/qXb1qZH4ZkXPcZs3sXiK4s9cDt8Jl3NJdC
-         Apdw==
-X-Gm-Message-State: AOAM531PZUpGh13VrmFL1AJBCGva+2B1zX1VYE6NkKS9TH70KddBrTFW
-        sDtIVOtYHe2ZjdVKqjAWQ1PnUYsWmMEG/bDDECQ=
-X-Google-Smtp-Source: ABdhPJyxduBF4FPnbsePTb+IJMrnaO574t87lgH7MXGDrxKnm7Fm0uPL20a9JpNnhO5AEW9mefqTwucGCC8avIECgKo=
-X-Received: by 2002:a05:6602:2dd4:: with SMTP id l20mr5412675iow.13.1592492407237;
- Thu, 18 Jun 2020 08:00:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200521095515.GK6462@dhcp22.suse.cz> <20200521163450.GV6462@dhcp22.suse.cz>
- <CA+G9fYsdsgRmwLtSKJSzB1eWcUQ1z-_aaU+BNcQpker34XT6_w@mail.gmail.com>
- <20200617135758.GA548179@chrisdown.name> <20200617141155.GQ9499@dhcp22.suse.cz>
- <CA+G9fYu+FB1PE0AMmE-9MrHpayE9kChwTyc3zfM6V83uQ0zcQA@mail.gmail.com>
- <20200617160624.GS9499@dhcp22.suse.cz> <CA+G9fYtCXrVGVtRTwxiqgfFNDDf_H4aNH=VpWLhsV4n_mCTLGg@mail.gmail.com>
- <20200617210935.GA578452@chrisdown.name> <CALOAHbBp7Ytd-Hta9NH-_HJtVTAsR5Pw2RYrVScp7PPezCEv2w@mail.gmail.com>
- <20200618123743.GA694719@chrisdown.name>
-In-Reply-To: <20200618123743.GA694719@chrisdown.name>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Thu, 18 Jun 2020 22:59:28 +0800
-Message-ID: <CALOAHbCPd407z45e809VE5c8vP6ewqwkDkY9nrMP5TyP5cjG+A@mail.gmail.com>
-Subject: Re: mm: mkfs.ext4 invoked oom-killer on i386 - pagecache_get_page
-To:     Chris Down <chris@chrisdown.name>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        "Linux F2FS DEV, Mailing List" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
+        with ESMTP id S1726853AbgFRPDM (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 18 Jun 2020 11:03:12 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E26C06174E;
+        Thu, 18 Jun 2020 08:03:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Transfer-Encoding
+        :Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=UL+8ApV4cJJsaL9i1XR4k0qibz3XspT8vONGVk524kc=; b=EuLHMlaVNrGT+gpgg4ZOy214Lf
+        /NetdKt4msEGn/SdU6wS7Vb3Nicec9n/1E16Pv5CLgJpT25JAXyLZqTClcv5dthiCzHK32BiNFyNn
+        2Vtkj1cmYSbWiXKfh18xDTiF4w22UEYWsdQ5WG/abzsVteDtOAX8vWZ3bKmb0ydVHdoW/dmfLoAdv
+        rcWXcFdBrgdT+0Rnct9YP5xWZ5E6pNPsBKwkf9wU8u6uAxjlRbX/tFeF4hooENdTFNAX/QSEm8LMc
+        hZs29nl0IRtyQgR2KBWEayJ7IYD2dzdJAKDyw0r1yoEP6TVl666nT/5G8UpJw9LpuF0WelqGPXar4
+        ortJ5rhQ==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jlw4L-0003On-LK; Thu, 18 Jun 2020 15:03:09 +0000
+Date:   Thu, 18 Jun 2020 08:03:09 -0700
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Andreas =?iso-8859-1?Q?Gr=FCnbacher?= 
+        <andreas.gruenbacher@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, Arnd Bergmann <arnd@arndb.de>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Chao Yu <yuchao0@huawei.com>, lkft-triage@lists.linaro.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Cgroups <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        Junxiao Bi <junxiao.bi@oracle.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel <cluster-devel@redhat.com>,
+        Linux-MM <linux-mm@kvack.org>, ocfs2-devel@oss.oracle.com,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-erofs@lists.ozlabs.org, Christoph Hellwig <hch@lst.de>,
+        linux-btrfs@vger.kernel.org,
+        Steven Whitehouse <swhiteho@redhat.com>,
+        Bob Peterson <rpeterso@redhat.com>
+Subject: Re: [Cluster-devel] [PATCH v11 16/25] fs: Convert mpage_readpages to
+ mpage_readahead
+Message-ID: <20200618150309.GP8681@bombadil.infradead.org>
+References: <20200414150233.24495-1-willy@infradead.org>
+ <20200414150233.24495-17-willy@infradead.org>
+ <CAHc6FU4m1M7Tv4scX0UxSiVBqkL=Vcw_z-R7SufL8k7Bw=qPOw@mail.gmail.com>
+ <20200617003216.GC8681@bombadil.infradead.org>
+ <CAHpGcMK6Yu0p-FO8CciiySqh+qcWLG-t3hEaUg-rqJnS=2uhqg@mail.gmail.com>
+ <20200617022157.GF8681@bombadil.infradead.org>
+ <CAHc6FU7NLRHKRJJ6c2kQT0ig8ed1n+3qR-YcSCWzXOeJCUsLbA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHc6FU7NLRHKRJJ6c2kQT0ig8ed1n+3qR-YcSCWzXOeJCUsLbA@mail.gmail.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 8:37 PM Chris Down <chris@chrisdown.name> wrote:
->
-> Yafang Shao writes:
-> >On Thu, Jun 18, 2020 at 5:09 AM Chris Down <chris@chrisdown.name> wrote:
-> >>
-> >> Naresh Kamboju writes:
-> >> >After this patch applied the reported issue got fixed.
-> >>
-> >> Great! Thank you Naresh and Michal for helping to get to the bottom of this :-)
-> >>
-> >> I'll send out a new version tomorrow with the fixes applied and both of you
-> >> credited in the changelog for the detection and fix.
+On Thu, Jun 18, 2020 at 02:46:03PM +0200, Andreas Gruenbacher wrote:
+> On Wed, Jun 17, 2020 at 4:22 AM Matthew Wilcox <willy@infradead.org> wrote:
+> > On Wed, Jun 17, 2020 at 02:57:14AM +0200, Andreas Grünbacher wrote:
+> > > Right, the approach from the following thread might fix this:
+> > >
+> > > https://lore.kernel.org/linux-fsdevel/20191122235324.17245-1-agruenba@redhat.com/T/#t
 > >
-> >As we have already found that the usage around memory.{emin, elow} has
-> >many limitations, I think memory.{emin, elow} should be used for
-> >memcg-tree internally only, that means they can only be used to
-> >calculate the protection of a memcg in a specified memcg-tree but
-> >should not be exposed to other MM parts.
->
-> I agree that the current semantics are mentally taxing and we should generally
-> avoid exposing the implementation details outside of memcg where possible. Do
-> you have a suggested rework? :-)
+> > In general, I think this is a sound approach.
+> >
+> > Specifically, I think FAULT_FLAG_CACHED can go away.  map_pages()
+> > will bring in the pages which are in the page cache, so when we get to
+> > gfs2_fault(), we know there's a reason to acquire the glock.
+> 
+> We'd still be grabbing a glock while holding a dependent page lock.
+> Another process could be holding the glock and could try to grab the
+> same page lock (i.e., a concurrent writer), leading to the same kind
+> of deadlock.
 
-Keeping the mem_cgroup_protected() as-is is my suggestion. Anyway I
-think it is bad to put memory.{emin, elow} here and there.
-If we don't have any better idea by now, just putting all the
-references of memory.{emin, elow}  into one
-wrapper(mem_cgroup_protected()) is the reasonable solution.
+What I'm saying is that gfs2_fault should just be:
 
--- 
-Thanks
-Yafang
++static vm_fault_t gfs2_fault(struct vm_fault *vmf)
++{
++	struct inode *inode = file_inode(vmf->vma->vm_file);
++	struct gfs2_inode *ip = GFS2_I(inode);
++	struct gfs2_holder gh;
++	vm_fault_t ret;
++	int err;
++
++	gfs2_holder_init(ip->i_gl, LM_ST_SHARED, 0, &gh);
++	err = gfs2_glock_nq(&gh);
++	if (err) {
++		ret = block_page_mkwrite_return(err);
++		goto out_uninit;
++	}
++	ret = filemap_fault(vmf);
++	gfs2_glock_dq(&gh);
++out_uninit:
++	gfs2_holder_uninit(&gh);
++	return ret;
++}
+
+because by the time gfs2_fault() is called, map_pages() has already been
+called and has failed to insert the necessary page, so we should just
+acquire the glock now instead of trying again to look for the page in
+the page cache.
