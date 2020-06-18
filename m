@@ -2,91 +2,125 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 230F71FDF1F
-	for <lists+linux-ext4@lfdr.de>; Thu, 18 Jun 2020 03:39:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CD571FDF0B
+	for <lists+linux-ext4@lfdr.de>; Thu, 18 Jun 2020 03:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730507AbgFRBjF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 17 Jun 2020 21:39:05 -0400
-Received: from [211.29.132.59] ([211.29.132.59]:40327 "EHLO
-        mail108.syd.optusnet.com.au" rhost-flags-FAIL-FAIL-OK-OK)
-        by vger.kernel.org with ESMTP id S1726920AbgFRBjD (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:39:03 -0400
-X-Greylist: delayed 1156 seconds by postgrey-1.27 at vger.kernel.org; Wed, 17 Jun 2020 21:39:02 EDT
-Received: from dread.disaster.area (unknown [49.180.124.177])
-        by mail108.syd.optusnet.com.au (Postfix) with ESMTPS id BB9BD1AEAF2;
-        Thu, 18 Jun 2020 11:19:20 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1jljCy-0001gV-Fl; Thu, 18 Jun 2020 11:19:12 +1000
-Date:   Thu, 18 Jun 2020 11:19:12 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 1/4] fs: introduce SB_INLINECRYPT
-Message-ID: <20200618011912.GA2040@dread.disaster.area>
-References: <20200617075732.213198-1-satyat@google.com>
- <20200617075732.213198-2-satyat@google.com>
+        id S1729932AbgFRBi0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 17 Jun 2020 21:38:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732547AbgFRBab (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 17 Jun 2020 21:30:31 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 056DAC061755;
+        Wed, 17 Jun 2020 18:30:30 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id b27so4094827qka.4;
+        Wed, 17 Jun 2020 18:30:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BgQL6jr7f4Pok+oRfrdP837PZf1178oPJYqZuFJeOOM=;
+        b=PsoyNROs97j1k2IGHTBbgdA1UmsBzqoIU4M9fAiqotRAMt2bltVbCKEquho2syZZ8a
+         hBoONSygFB18Ey8vU3Y3DQic30cQ34dLKddxAqW74b0hN7xln8EFfDmJL+yPMf/RCQNH
+         +8UC8geUs0OFu6oPvSUOl+BjoSKT73x8hLu8Si+8xsOkIMmw8utndSm2YFEl1d+2y3Vy
+         SIETCtxkGsv/mNz/kre1pCMonY3xKajSxgHkH/I7UvrRTq7w9Pzn1JyiTVainKp1tjST
+         nk6zyaFXLinCbFwP//4BjNJKz5i+UuVUcENob2yJ9qKKHk2e/d5ZQGjn3BcUUjMDc3I8
+         A+HQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BgQL6jr7f4Pok+oRfrdP837PZf1178oPJYqZuFJeOOM=;
+        b=r8T9rzT07whmPCoah12mDClWmTH/na8nIVIvMrjfUYkn0O+MKzWTepn6IS8xL3s3up
+         aFONMUT4MysG2B/u5/smkzvgSAP4F1X9gfALpfSHxQlW8XAxaHYOTDZ55gS6PVe6FuS6
+         NWUESj7yFFXCjc8M3lC2n1iaByG+Dm9ZfHCGWPITxdxYMOxAGr20rnRJPC6Q7hSBvrsK
+         cDfDNIW3cRE4i16a0eBc+cRM79m6PnbXHgjZOwJZ6chWN9ym1Z8OfHSrWZZQP6DD1bRW
+         E0/qCHrpCK39MVTtMAKrbY0bwE+8BtRqxK4qgjfA6R9sAkEY9gr4tmqlfoCn7sSE7DKf
+         s/Zw==
+X-Gm-Message-State: AOAM530qwgOtAZjmUwycuYwlCiXs8mciam2q7i4TEstW7jSAnNbfHQQB
+        mxrhFM5Fj7npDyvxFigNTg==
+X-Google-Smtp-Source: ABdhPJwmfKV/RiX9rrG5aWDGqFvBQuR28QYYzJpTADtHrTUuB7rzV/CkW5/nnvBH2d+2wQJphU09nA==
+X-Received: by 2002:a37:63c2:: with SMTP id x185mr1621171qkb.82.1592443829168;
+        Wed, 17 Jun 2020 18:30:29 -0700 (PDT)
+Received: from gabell (209-6-122-159.s2973.c3-0.arl-cbr1.sbo-arl.ma.cable.rcncustomer.com. [209.6.122.159])
+        by smtp.gmail.com with ESMTPSA id d78sm1642255qkg.106.2020.06.17.18.30.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 17 Jun 2020 18:30:28 -0700 (PDT)
+Date:   Wed, 17 Jun 2020 21:30:26 -0400
+From:   Masayoshi Mizuma <msys.mizuma@gmail.com>
+To:     "J. Bruce Fields" <bfields@fieldses.org>
+Cc:     Eric Sandeen <sandeen@sandeen.net>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-xfs <linux-xfs@vger.kernel.org>
+Subject: Re: [PATCH] fs: i_version mntopt gets visible through /proc/mounts
+Message-ID: <20200618013026.ewnhvf64nb62k2yx@gabell>
+References: <20200616202123.12656-1-msys.mizuma@gmail.com>
+ <20200617080314.GA7147@infradead.org>
+ <20200617155836.GD13815@fieldses.org>
+ <24692989-2ee0-3dcc-16d8-aa436114f5fb@sandeen.net>
+ <20200617172456.GP11245@magnolia>
+ <8f0df756-4f71-9d96-7a52-45bf51482556@sandeen.net>
+ <20200617181816.GA18315@fieldses.org>
+ <4cbb5cbe-feb4-2166-0634-29041a41a8dc@sandeen.net>
+ <20200617184507.GB18315@fieldses.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200617075732.213198-2-satyat@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=W5xGqiek c=1 sm=1 tr=0
-        a=k3aV/LVJup6ZGWgigO6cSA==:117 a=k3aV/LVJup6ZGWgigO6cSA==:17
-        a=kj9zAlcOel0A:10 a=nTHF0DUjJn0A:10 a=1XWaLZrsAAAA:8 a=7-415B0cAAAA:8
-        a=Yn2aIsqHhkDqJBDDX5kA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <20200617184507.GB18315@fieldses.org>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 07:57:29AM +0000, Satya Tangirala wrote:
-> Introduce SB_INLINECRYPT, which is set by filesystems that wish to use
-> blk-crypto for file content en/decryption. This flag maps to the
-> '-o inlinecrypt' mount option which multiple filesystems will implement,
-> and code in fs/crypto/ needs to be able to check for this mount option
-> in a filesystem-independent way.
+On Wed, Jun 17, 2020 at 02:45:07PM -0400, J. Bruce Fields wrote:
+> On Wed, Jun 17, 2020 at 01:28:11PM -0500, Eric Sandeen wrote:
+> > but mount(8) has already exposed this interface:
+> > 
+> >        iversion
+> >               Every time the inode is modified, the i_version field will be incremented.
+> > 
+> >        noiversion
+> >               Do not increment the i_version inode field.
+> > 
+> > so now what?
 > 
-> Signed-off-by: Satya Tangirala <satyat@google.com>
-> ---
->  fs/proc_namespace.c | 1 +
->  include/linux/fs.h  | 1 +
->  2 files changed, 2 insertions(+)
+> It's not like anyone's actually depending on i_version *not* being
+> incremented.  (Can you even observe it from userspace other than over
+> NFS?)
 > 
-> diff --git a/fs/proc_namespace.c b/fs/proc_namespace.c
-> index 3059a9394c2d..e0ff1f6ac8f1 100644
-> --- a/fs/proc_namespace.c
-> +++ b/fs/proc_namespace.c
-> @@ -49,6 +49,7 @@ static int show_sb_opts(struct seq_file *m, struct super_block *sb)
->  		{ SB_DIRSYNC, ",dirsync" },
->  		{ SB_MANDLOCK, ",mand" },
->  		{ SB_LAZYTIME, ",lazytime" },
-> +		{ SB_INLINECRYPT, ",inlinecrypt" },
->  		{ 0, NULL }
->  	};
->  	const struct proc_fs_opts *fs_infop;
+> So, just silently turn on the "iversion" behavior and ignore noiversion,
+> and I doubt you're going to break any real application.
 
-NACK.
+I suppose it's probably good to remain the options for user compatibility,
+however, it seems that iversion and noiversiont are useful for
+only ext4.
+How about moving iversion and noiversion description on mount(8)
+to ext4 specific option?
 
-SB_* flgs are for functionality enabled on the superblock, not for
-indicating mount options that have been set by the user.
+And fixing the remount issue for XFS (maybe btrfs has the same
+issue as well)?
+For XFS like as:
 
-If the mount options are directly parsed by the filesystem option
-parser (as is done later in this patchset), then the mount option
-setting should be emitted by the filesystem's ->show_options
-function, not a generic function.
+diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
+index 379cbff438bc..2ddd634cfb0b 100644
+--- a/fs/xfs/xfs_super.c
++++ b/fs/xfs/xfs_super.c
+@@ -1748,6 +1748,9 @@ xfs_fc_reconfigure(
+                        return error;
+        }
 
-The option string must match what the filesystem defines, not
-require separate per-filesystem and VFS definitions of the same
-option that people could potentially get wrong (*cough* i_version vs
-iversion *cough*)....
++       if (XFS_SB_VERSION_NUM(&mp->m_sb) == XFS_SB_VERSION_5)
++               mp->m_super->s_flags |= SB_I_VERSION;
++
+        return 0;
+ }
 
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Thanks,
+Masa
