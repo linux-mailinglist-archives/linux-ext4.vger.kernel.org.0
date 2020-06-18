@@ -2,136 +2,171 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 624771FFC1A
-	for <lists+linux-ext4@lfdr.de>; Thu, 18 Jun 2020 21:58:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CE791FFE3E
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 Jun 2020 00:40:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730000AbgFRT6v (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 18 Jun 2020 15:58:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49664 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728960AbgFRT6v (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 18 Jun 2020 15:58:51 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 63A2D20890;
-        Thu, 18 Jun 2020 19:58:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592510330;
-        bh=dSy3+3MsJtnQCrUsIwwOwY3jSdccZWKXyDHHQVRMuh0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Z1u4g0KEqnRmBd+xd6z5SjF2uSDu/BS0hojj4vVYYigVXXpj6HE5C4HSWl0f/+fjM
-         YZog0PcY8XNGQHvuwODS93zDUkVET1AMaMtJ1PjpD4sALqCpl71vhTBXDYNWDAQCoc
-         EAtJhG+IcZ+pnw+OQuW8/oqitjWl1eZ6Mt6jC5bg=
-Date:   Thu, 18 Jun 2020 12:58:49 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Wang Shilong <wangshilong1991@gmail.com>
-Cc:     linux-ext4@vger.kernel.org, Wang Shilong <wshilong@ddn.com>
-Subject: Re: [PATCH] ext2fs: fix to avoid invalid memory access
-Message-ID: <20200618195849.GE2957@sol.localdomain>
-References: <1592493363-24778-1-git-send-email-wangshilong1991@gmail.com>
+        id S1728244AbgFRWkP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 18 Jun 2020 18:40:15 -0400
+Received: from [211.29.132.53] ([211.29.132.53]:55738 "EHLO
+        mail107.syd.optusnet.com.au" rhost-flags-FAIL-FAIL-OK-OK)
+        by vger.kernel.org with ESMTP id S1726835AbgFRWkO (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 18 Jun 2020 18:40:14 -0400
+Received: from dread.disaster.area (unknown [49.180.124.177])
+        by mail107.syd.optusnet.com.au (Postfix) with ESMTPS id 2169CD5B28E;
+        Fri, 19 Jun 2020 08:39:51 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1jm3CG-0000vL-Qx; Fri, 19 Jun 2020 08:39:48 +1000
+Date:   Fri, 19 Jun 2020 08:39:48 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Masayoshi Mizuma <msys.mizuma@gmail.com>
+Cc:     "J. Bruce Fields" <bfields@fieldses.org>,
+        Eric Sandeen <sandeen@sandeen.net>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-xfs <linux-xfs@vger.kernel.org>
+Subject: Re: [PATCH] fs: i_version mntopt gets visible through /proc/mounts
+Message-ID: <20200618223948.GI2005@dread.disaster.area>
+References: <20200617155836.GD13815@fieldses.org>
+ <24692989-2ee0-3dcc-16d8-aa436114f5fb@sandeen.net>
+ <20200617172456.GP11245@magnolia>
+ <8f0df756-4f71-9d96-7a52-45bf51482556@sandeen.net>
+ <20200617181816.GA18315@fieldses.org>
+ <4cbb5cbe-feb4-2166-0634-29041a41a8dc@sandeen.net>
+ <20200617184507.GB18315@fieldses.org>
+ <20200618013026.ewnhvf64nb62k2yx@gabell>
+ <20200618030539.GH2005@dread.disaster.area>
+ <20200618034535.h5ho7pd4eilpbj3f@gabell>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1592493363-24778-1-git-send-email-wangshilong1991@gmail.com>
+In-Reply-To: <20200618034535.h5ho7pd4eilpbj3f@gabell>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=W5xGqiek c=1 sm=1 tr=0
+        a=k3aV/LVJup6ZGWgigO6cSA==:117 a=k3aV/LVJup6ZGWgigO6cSA==:17
+        a=kj9zAlcOel0A:10 a=nTHF0DUjJn0A:10 a=7-415B0cAAAA:8
+        a=T-c9y1LhZP_wMowfrC8A:9 a=M9xdgUNOmOWECtrQ:21 a=SC1P7o9sxr00x_CH:21
+        a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 12:16:03AM +0900, Wang Shilong wrote:
-> From: Wang Shilong <wshilong@ddn.com>
+On Wed, Jun 17, 2020 at 11:45:35PM -0400, Masayoshi Mizuma wrote:
+> On Thu, Jun 18, 2020 at 01:05:39PM +1000, Dave Chinner wrote:
+> > On Wed, Jun 17, 2020 at 09:30:26PM -0400, Masayoshi Mizuma wrote:
+> > > On Wed, Jun 17, 2020 at 02:45:07PM -0400, J. Bruce Fields wrote:
+> > > > On Wed, Jun 17, 2020 at 01:28:11PM -0500, Eric Sandeen wrote:
+> > > > > but mount(8) has already exposed this interface:
+> > > > > 
+> > > > >        iversion
+> > > > >               Every time the inode is modified, the i_version field will be incremented.
+> > > > > 
+> > > > >        noiversion
+> > > > >               Do not increment the i_version inode field.
+> > > > > 
+> > > > > so now what?
+> > > > 
+> > > > It's not like anyone's actually depending on i_version *not* being
+> > > > incremented.  (Can you even observe it from userspace other than over
+> > > > NFS?)
+> > > > 
+> > > > So, just silently turn on the "iversion" behavior and ignore noiversion,
+> > > > and I doubt you're going to break any real application.
+> > > 
+> > > I suppose it's probably good to remain the options for user compatibility,
+> > > however, it seems that iversion and noiversiont are useful for
+> > > only ext4.
+> > > How about moving iversion and noiversion description on mount(8)
+> > > to ext4 specific option?
+> > > 
+> > > And fixing the remount issue for XFS (maybe btrfs has the same
+> > > issue as well)?
+> > > For XFS like as:
+> > > 
+> > > diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
+> > > index 379cbff438bc..2ddd634cfb0b 100644
+> > > --- a/fs/xfs/xfs_super.c
+> > > +++ b/fs/xfs/xfs_super.c
+> > > @@ -1748,6 +1748,9 @@ xfs_fc_reconfigure(
+> > >                         return error;
+> > >         }
+> > > 
+> > > +       if (XFS_SB_VERSION_NUM(&mp->m_sb) == XFS_SB_VERSION_5)
+> > > +               mp->m_super->s_flags |= SB_I_VERSION;
+> > > +
+> > >         return 0;
+> > >  }
+> > 
+> > no this doesn't work, because the sueprblock flags are modified
+> > after ->reconfigure is called.
+> > 
+> > i.e. reconfigure_super() does this:
+> > 
+> > 	if (fc->ops->reconfigure) {
+> > 		retval = fc->ops->reconfigure(fc);
+> > 		if (retval) {
+> > 			if (!force)
+> > 				goto cancel_readonly;
+> > 			/* If forced remount, go ahead despite any errors */
+> > 			WARN(1, "forced remount of a %s fs returned %i\n",
+> > 			     sb->s_type->name, retval);
+> > 		}
+> > 	}
+> > 
+> > 	WRITE_ONCE(sb->s_flags, ((sb->s_flags & ~fc->sb_flags_mask) |
+> > 				 (fc->sb_flags & fc->sb_flags_mask)));
+> > 
+> > And it's the WRITE_ONCE() line that clears SB_I_VERSION out of
+> > sb->s_flags. Hence adding it in ->reconfigure doesn't help.
+> > 
+> > What we actually want to do here in xfs_fc_reconfigure() is this:
+> > 
+> > 	if (XFS_SB_VERSION_NUM(&mp->m_sb) == XFS_SB_VERSION_5)
+> > 		fc->sb_flags_mask |= SB_I_VERSION;
+> > 
+> > So that the SB_I_VERSION is not cleared from sb->s_flags.
+> > 
+> > I'll also note that btrfs will need the same fix, because it also
+> > sets SB_I_VERSION unconditionally, as will any other filesystem that
+> > does this, too.
 > 
-> Valgrind reported error messages like following:
+> Thank you for pointed it out.
+> How about following change? I believe it works both xfs and btrfs...
 > 
-> ==129205==  Address 0x1b804b04 is 4 bytes after a block of size 4,096 alloc'd
-> ==129205==    at 0x483980B: malloc (vg_replace_malloc.c:307)
-> ==129205==    by 0x44F973: ext2fs_get_mem (ext2fs.h:1846)
-> ==129205==    by 0x44F973: ext2fs_get_pathname (get_pathname.c:162)
-> ==129205==    by 0x430917: print_pathname (message.c:212)
-> ==129205==    by 0x430FB1: expand_percent_expression (message.c:462)
-> ==129205==    by 0x430FB1: print_e2fsck_message (message.c:544)
-> ==129205==    by 0x430BED: expand_at_expression (message.c:262)
-> ==129205==    by 0x430BED: print_e2fsck_message (message.c:528)
-> ==129205==    by 0x430450: fix_problem (problem.c:2494)
-> ==129205==    by 0x423F8B: e2fsck_process_bad_inode (pass2.c:1929)
-> ==129205==    by 0x425AE8: check_dir_block (pass2.c:1407)
-> ==129205==    by 0x426942: check_dir_block2 (pass2.c:961)
-> ==129205==    by 0x445736: ext2fs_dblist_iterate3.part.0 (dblist.c:254)
-> ==129205==    by 0x423835: e2fsck_pass2 (pass2.c:187)
-> ==129205==    by 0x414B19: e2fsck_run (e2fsck.c:257)
+> diff --git a/fs/super.c b/fs/super.c
+> index b0a511bef4a0..42fc6334d384 100644
+> --- a/fs/super.c
+> +++ b/fs/super.c
+> @@ -973,6 +973,9 @@ int reconfigure_super(struct fs_context *fc)
+>                 }
+>         }
 > 
-> Dir block might be corrupted and cause the next dirent is out
-> of block size boundary, even though we have the check to avoid
-> problem, memory check tools like valgrind still complains it.
-> 
-> Patch try to fix the problem by checking if offset exceed max
-> offset firstly before getting the pointer.
-> 
-> Signed-off-by: Wang Shilong <wshilong@ddn.com>
-> ---
->  lib/ext2fs/csum.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/lib/ext2fs/csum.c b/lib/ext2fs/csum.c
-> index c2550365..643777fd 100644
-> --- a/lib/ext2fs/csum.c
-> +++ b/lib/ext2fs/csum.c
-> @@ -260,22 +260,24 @@ static errcode_t __get_dirent_tail(ext2_filsys fs,
->  	void *top;
->  	struct ext2_dir_entry_tail *t;
->  	unsigned int rec_len;
-> +	unsigned int max_len;
->  	errcode_t retval = 0;
->  	__u16 (*translate)(__u16) = (need_swab ? disk_to_host16 : do_nothing16);
->  
->  	d = dirent;
->  	top = EXT2_DIRENT_TAIL(dirent, fs->blocksize);
->  
-> +	max_len = (char *)top - (char *)dirent;
->  	rec_len = translate(d->rec_len);
->  	while ((void *) d < top) {
->  		if ((rec_len < 8) || (rec_len & 0x03))
->  			return EXT2_ET_DIR_CORRUPTED;
-> +		if ((char *)d - (char *)dirent + rec_len > max_len)
-> +			return EXT2_ET_DIR_CORRUPTED;
->  		d = (struct ext2_dir_entry *)(((char *)d) + rec_len);
->  		rec_len = translate(d->rec_len);
->  	}
->  
-> -	if ((char *)d > ((char *)dirent + fs->blocksize))
-> -			return EXT2_ET_DIR_CORRUPTED;
->  	if (d != top)
->  		return EXT2_ET_DIR_NO_SPACE_FOR_CSUM;
+> +       if (sb->s_flags & SB_I_VERSION)
+> +               fc->sb_flags |= MS_I_VERSION;
+> +
+>         WRITE_ONCE(sb->s_flags, ((sb->s_flags & ~fc->sb_flags_mask) |
+>                                  (fc->sb_flags & fc->sb_flags_mask)));
+>         /* Needs to be ordered wrt mnt_is_readonly() */
 
-This looks buggy.  Previously this returned EXT2_ET_DIR_NO_SPACE_FOR_CSUM if the
-last dirent extends beyond where the metadata checksum entry is supposed to
-begin, but doesn't exceed fs->blocksize.  But your change makes it return
-EXT2_ET_DIR_CORRUPTED in that case, which is potentially a regression.
+This will prevent SB_I_VERSION from being turned off at all. That
+will break existing filesystems that allow SB_I_VERSION to be turned
+off on remount, such as ext4.
 
-How about:
+The manipulations here need to be in the filesystem specific code;
+we screwed this one up so badly there is no "one size fits all"
+behaviour that we can implement in the generic code...
 
-diff --git a/lib/ext2fs/csum.c b/lib/ext2fs/csum.c
-index 54b53a3c..0dbb4963 100644
---- a/lib/ext2fs/csum.c
-+++ b/lib/ext2fs/csum.c
-@@ -266,16 +266,14 @@ static errcode_t __get_dirent_tail(ext2_filsys fs,
- 	d = dirent;
- 	top = EXT2_DIRENT_TAIL(dirent, fs->blocksize);
- 
--	rec_len = translate(d->rec_len);
- 	while ((void *) d < top) {
--		if ((rec_len < 8) || (rec_len & 0x03))
-+		rec_len = translate(d->rec_len);
-+		if ((rec_len < 8) || (rec_len & 0x03) ||
-+		    (rec_len > (char *)dirent + fs->blocksize - (char *)d))
- 			return EXT2_ET_DIR_CORRUPTED;
- 		d = (struct ext2_dir_entry *)(((char *)d) + rec_len);
--		rec_len = translate(d->rec_len);
- 	}
- 
--	if ((char *)d > ((char *)dirent + fs->blocksize))
--			return EXT2_ET_DIR_CORRUPTED;
- 	if (d != top)
- 		return EXT2_ET_DIR_NO_SPACE_FOR_CSUM;
- 
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
