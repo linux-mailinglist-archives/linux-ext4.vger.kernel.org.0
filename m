@@ -2,83 +2,151 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 872D21FE643
-	for <lists+linux-ext4@lfdr.de>; Thu, 18 Jun 2020 04:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D420E1FE939
+	for <lists+linux-ext4@lfdr.de>; Thu, 18 Jun 2020 05:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733253AbgFRCcU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 17 Jun 2020 22:32:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45246 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729445AbgFRBPN (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:15:13 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E101C221EB;
-        Thu, 18 Jun 2020 01:15:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442913;
-        bh=xbcdMyZ/zU7XdYMLaTEcniBciHD6hTU30WYvpM9EXOc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FUasuUFcD3ZJB5r0rJL5sumgGxjBjfF51E/VhLCQWmlooTNbubu6VDkr3ZehHXr+G
-         onhoOct+OkdGSwJ3j4UkSwym1s70E6B84resIjSSVj/1MQaujfpt/yiDcULXv9SnPT
-         kQ4UPvc+rLBkwB+8MIlBBMBvgojOwgwyeGOzKrfA=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jens Axboe <axboe@kernel.dk>, Theodore Ts'o <tytso@mit.edu>,
-        Sasha Levin <sashal@kernel.org>, linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 331/388] ext4: don't block for O_DIRECT if IOCB_NOWAIT is set
-Date:   Wed, 17 Jun 2020 21:07:08 -0400
-Message-Id: <20200618010805.600873-331-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
-References: <20200618010805.600873-1-sashal@kernel.org>
+        id S1727804AbgFRDGO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 17 Jun 2020 23:06:14 -0400
+Received: from [211.29.132.246] ([211.29.132.246]:57138 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-FAIL-FAIL-OK-OK)
+        by vger.kernel.org with ESMTP id S1726952AbgFRDGN (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 17 Jun 2020 23:06:13 -0400
+Received: from dread.disaster.area (unknown [49.180.124.177])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id B8369821885;
+        Thu, 18 Jun 2020 13:05:47 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1jlkrz-0002Nn-SF; Thu, 18 Jun 2020 13:05:39 +1000
+Date:   Thu, 18 Jun 2020 13:05:39 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Masayoshi Mizuma <msys.mizuma@gmail.com>
+Cc:     "J. Bruce Fields" <bfields@fieldses.org>,
+        Eric Sandeen <sandeen@sandeen.net>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-xfs <linux-xfs@vger.kernel.org>
+Subject: Re: [PATCH] fs: i_version mntopt gets visible through /proc/mounts
+Message-ID: <20200618030539.GH2005@dread.disaster.area>
+References: <20200616202123.12656-1-msys.mizuma@gmail.com>
+ <20200617080314.GA7147@infradead.org>
+ <20200617155836.GD13815@fieldses.org>
+ <24692989-2ee0-3dcc-16d8-aa436114f5fb@sandeen.net>
+ <20200617172456.GP11245@magnolia>
+ <8f0df756-4f71-9d96-7a52-45bf51482556@sandeen.net>
+ <20200617181816.GA18315@fieldses.org>
+ <4cbb5cbe-feb4-2166-0634-29041a41a8dc@sandeen.net>
+ <20200617184507.GB18315@fieldses.org>
+ <20200618013026.ewnhvf64nb62k2yx@gabell>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200618013026.ewnhvf64nb62k2yx@gabell>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=QIgWuTDL c=1 sm=1 tr=0
+        a=k3aV/LVJup6ZGWgigO6cSA==:117 a=k3aV/LVJup6ZGWgigO6cSA==:17
+        a=kj9zAlcOel0A:10 a=nTHF0DUjJn0A:10 a=7-415B0cAAAA:8
+        a=yHdZGDY2jtx0MHS2ggIA:9 a=aBMfwiDfj0bUOVTI:21 a=1xHCqXNt3GIuuEAb:21
+        a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+On Wed, Jun 17, 2020 at 09:30:26PM -0400, Masayoshi Mizuma wrote:
+> On Wed, Jun 17, 2020 at 02:45:07PM -0400, J. Bruce Fields wrote:
+> > On Wed, Jun 17, 2020 at 01:28:11PM -0500, Eric Sandeen wrote:
+> > > but mount(8) has already exposed this interface:
+> > > 
+> > >        iversion
+> > >               Every time the inode is modified, the i_version field will be incremented.
+> > > 
+> > >        noiversion
+> > >               Do not increment the i_version inode field.
+> > > 
+> > > so now what?
+> > 
+> > It's not like anyone's actually depending on i_version *not* being
+> > incremented.  (Can you even observe it from userspace other than over
+> > NFS?)
+> > 
+> > So, just silently turn on the "iversion" behavior and ignore noiversion,
+> > and I doubt you're going to break any real application.
+> 
+> I suppose it's probably good to remain the options for user compatibility,
+> however, it seems that iversion and noiversiont are useful for
+> only ext4.
+> How about moving iversion and noiversion description on mount(8)
+> to ext4 specific option?
+> 
+> And fixing the remount issue for XFS (maybe btrfs has the same
+> issue as well)?
+> For XFS like as:
+> 
+> diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
+> index 379cbff438bc..2ddd634cfb0b 100644
+> --- a/fs/xfs/xfs_super.c
+> +++ b/fs/xfs/xfs_super.c
+> @@ -1748,6 +1748,9 @@ xfs_fc_reconfigure(
+>                         return error;
+>         }
+> 
+> +       if (XFS_SB_VERSION_NUM(&mp->m_sb) == XFS_SB_VERSION_5)
+> +               mp->m_super->s_flags |= SB_I_VERSION;
+> +
+>         return 0;
+>  }
 
-[ Upstream commit 6e014c621e7271649f0d51e54dbe1db4c10486c8 ]
+no this doesn't work, because the sueprblock flags are modified
+after ->reconfigure is called.
 
-Running with some debug patches to detect illegal blocking triggered the
-extend/unaligned condition in ext4. If ext4 needs to extend the file (and
-hence go to buffered IO), or if the app is doing unaligned IO, then ext4
-asks the iomap code to wait for IO completion. If the caller asked for
-no-wait semantics by setting IOCB_NOWAIT, then ext4 should return -EAGAIN
-instead.
+i.e. reconfigure_super() does this:
 
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+	if (fc->ops->reconfigure) {
+		retval = fc->ops->reconfigure(fc);
+		if (retval) {
+			if (!force)
+				goto cancel_readonly;
+			/* If forced remount, go ahead despite any errors */
+			WARN(1, "forced remount of a %s fs returned %i\n",
+			     sb->s_type->name, retval);
+		}
+	}
 
-Link: https://lore.kernel.org/r/76152096-2bbb-7682-8fce-4cb498bcd909@kernel.dk
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/ext4/file.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+	WRITE_ONCE(sb->s_flags, ((sb->s_flags & ~fc->sb_flags_mask) |
+				 (fc->sb_flags & fc->sb_flags_mask)));
 
-diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-index b8e69f9e3858..2a01e31a032c 100644
---- a/fs/ext4/file.c
-+++ b/fs/ext4/file.c
-@@ -502,6 +502,12 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 	if (ret <= 0)
- 		return ret;
- 
-+	/* if we're going to block and IOCB_NOWAIT is set, return -EAGAIN */
-+	if ((iocb->ki_flags & IOCB_NOWAIT) && (unaligned_io || extend)) {
-+		ret = -EAGAIN;
-+		goto out;
-+	}
-+
- 	offset = iocb->ki_pos;
- 	count = ret;
- 
+And it's the WRITE_ONCE() line that clears SB_I_VERSION out of
+sb->s_flags. Hence adding it in ->reconfigure doesn't help.
+
+What we actually want to do here in xfs_fc_reconfigure() is this:
+
+	if (XFS_SB_VERSION_NUM(&mp->m_sb) == XFS_SB_VERSION_5)
+		fc->sb_flags_mask |= SB_I_VERSION;
+
+So that the SB_I_VERSION is not cleared from sb->s_flags.
+
+I'll also note that btrfs will need the same fix, because it also
+sets SB_I_VERSION unconditionally, as will any other filesystem that
+does this, too.
+
+Really, this is just indicative of the mess that the mount
+flags vs superblock feature flags are. Filesystems can choose to
+unconditionally support various superblock features, and no mount
+option futzing from userspace should -ever- be able to change that
+feature. Filesystems really do need to be able to override mount
+options that were parsed in userspace and turned into a binary
+flag...
+
+Cheers,
+
+Dave.
 -- 
-2.25.1
-
+Dave Chinner
+david@fromorbit.com
