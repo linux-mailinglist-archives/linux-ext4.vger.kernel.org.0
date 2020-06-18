@@ -2,196 +2,89 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC3BA1FE998
-	for <lists+linux-ext4@lfdr.de>; Thu, 18 Jun 2020 05:45:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D4111FE9A8
+	for <lists+linux-ext4@lfdr.de>; Thu, 18 Jun 2020 05:53:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727023AbgFRDpj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 17 Jun 2020 23:45:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726853AbgFRDpi (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 17 Jun 2020 23:45:38 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 717B2C06174E;
-        Wed, 17 Jun 2020 20:45:38 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id b4so4277217qkn.11;
-        Wed, 17 Jun 2020 20:45:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=E4WVx3mfVHTIynvqaASmx3kJDP8cMZcWWMKXBtc+T4g=;
-        b=iXr3J1+CE8J2EENEerAJeaGxzwxK53TqDIe0XrX+GpdlGkNUiQEjTO+tR2qF8N4r9Z
-         ESm8iPliifxmoAGXNYkb7s0Y1ib4VGmLy1dLODbx8/4KWRVuEaqy1aTZtEywf84cwFYo
-         ZO07YENnRduzyec5XGCL8FJ5yUI+Kfjp+fP2T5aBHBO1LAVn3dfdYj2iQ8p299xIaRnQ
-         fW7vW53qGzecwsmdruAGIDBK/QR0odkL8riCV78Z/6jacBIBLezg+M58dsm31CtcVSZT
-         BKjXBx9hG1PKRPlppPEBwVqyxkhIO0tv+NJwq0K2E2Mda3H/hnqKLWe1Ijvk355dsIQV
-         HLCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=E4WVx3mfVHTIynvqaASmx3kJDP8cMZcWWMKXBtc+T4g=;
-        b=N5Hzvxo/HrIAzfAmnMlnDsMOiXDjiqTsqrjFP9MwuzYc+K+JsHpUUH/uYJ085B2aMo
-         PsebWzcWotv9lHZfYSI/oLvr1zseuqOfrrKYyDPU/HP+AwImawnLW1qsKCdToAm2KrJU
-         Aixx5fU4fBfQES9/M/gT5MgWGdtZYPQ6HLD1+auSyy1o6VfTd71MHxNoQDOnEKHE1dav
-         ZpPCS6HTbIp1vUJP2SB9u5o/Kn91bcaTsEVfOhByn8BCC/WCVgrBSLOB5+IBYW5254YK
-         p2APpkrZZLzylUSKcao/BMPMrUF/Mr0Rnm7XgO1YBFYlpbMJmAwt5GpePhpfnavzyzdl
-         z3yg==
-X-Gm-Message-State: AOAM532BlsO6DJ3k29LIoq8PHpwJIuvq/WAaqiIhVwXmV7TPepyzOMnc
-        SsAIgXK+MRNVObpV+jxZOg==
-X-Google-Smtp-Source: ABdhPJzmzJcLMNdXiXwFVwuG7zJYOdkJoVtqYvTWSC+lNuvpUirXNk8inAz4bramoCVCKWmaUEjXNA==
-X-Received: by 2002:a37:7645:: with SMTP id r66mr1836780qkc.397.1592451937715;
-        Wed, 17 Jun 2020 20:45:37 -0700 (PDT)
-Received: from gabell (209-6-122-159.s2973.c3-0.arl-cbr1.sbo-arl.ma.cable.rcncustomer.com. [209.6.122.159])
-        by smtp.gmail.com with ESMTPSA id v14sm2012859qtj.31.2020.06.17.20.45.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 17 Jun 2020 20:45:37 -0700 (PDT)
-Date:   Wed, 17 Jun 2020 23:45:35 -0400
-From:   Masayoshi Mizuma <msys.mizuma@gmail.com>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     "J. Bruce Fields" <bfields@fieldses.org>,
-        Eric Sandeen <sandeen@sandeen.net>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-xfs <linux-xfs@vger.kernel.org>
-Subject: Re: [PATCH] fs: i_version mntopt gets visible through /proc/mounts
-Message-ID: <20200618034535.h5ho7pd4eilpbj3f@gabell>
-References: <20200617080314.GA7147@infradead.org>
- <20200617155836.GD13815@fieldses.org>
- <24692989-2ee0-3dcc-16d8-aa436114f5fb@sandeen.net>
- <20200617172456.GP11245@magnolia>
- <8f0df756-4f71-9d96-7a52-45bf51482556@sandeen.net>
- <20200617181816.GA18315@fieldses.org>
- <4cbb5cbe-feb4-2166-0634-29041a41a8dc@sandeen.net>
- <20200617184507.GB18315@fieldses.org>
- <20200618013026.ewnhvf64nb62k2yx@gabell>
- <20200618030539.GH2005@dread.disaster.area>
+        id S1727903AbgFRDxk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 17 Jun 2020 23:53:40 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:36226 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727839AbgFRDxk (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 17 Jun 2020 23:53:40 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 1BD8C27422F0F153F043;
+        Thu, 18 Jun 2020 11:53:38 +0800 (CST)
+Received: from [127.0.0.1] (10.166.215.198) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Thu, 18 Jun 2020
+ 11:53:31 +0800
+Subject: Re: [PATCH v2 3/5] ext4: detect metadata async write error when
+ getting journal's write access
+From:   "zhangyi (F)" <yi.zhang@huawei.com>
+To:     Jan Kara <jack@suse.cz>
+CC:     <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
+        <adilger.kernel@dilger.ca>, <zhangxiaoxu5@huawei.com>,
+        <linux-fsdevel@vger.kernel.org>, <yi.zhang@huawei.com>
+References: <20200617115947.836221-1-yi.zhang@huawei.com>
+ <20200617115947.836221-4-yi.zhang@huawei.com>
+ <20200617124157.GB29763@quack2.suse.cz>
+ <8caf9fe1-b7ce-655f-1f4d-3e0e90e211dc@huawei.com>
+Message-ID: <9efa3fdb-e0d0-ef90-94ba-1e9124722df0@huawei.com>
+Date:   Thu, 18 Jun 2020 11:53:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200618030539.GH2005@dread.disaster.area>
+In-Reply-To: <8caf9fe1-b7ce-655f-1f4d-3e0e90e211dc@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.166.215.198]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 01:05:39PM +1000, Dave Chinner wrote:
-> On Wed, Jun 17, 2020 at 09:30:26PM -0400, Masayoshi Mizuma wrote:
-> > On Wed, Jun 17, 2020 at 02:45:07PM -0400, J. Bruce Fields wrote:
-> > > On Wed, Jun 17, 2020 at 01:28:11PM -0500, Eric Sandeen wrote:
-> > > > but mount(8) has already exposed this interface:
-> > > > 
-> > > >        iversion
-> > > >               Every time the inode is modified, the i_version field will be incremented.
-> > > > 
-> > > >        noiversion
-> > > >               Do not increment the i_version inode field.
-> > > > 
-> > > > so now what?
-> > > 
-> > > It's not like anyone's actually depending on i_version *not* being
-> > > incremented.  (Can you even observe it from userspace other than over
-> > > NFS?)
-> > > 
-> > > So, just silently turn on the "iversion" behavior and ignore noiversion,
-> > > and I doubt you're going to break any real application.
-> > 
-> > I suppose it's probably good to remain the options for user compatibility,
-> > however, it seems that iversion and noiversiont are useful for
-> > only ext4.
-> > How about moving iversion and noiversion description on mount(8)
-> > to ext4 specific option?
-> > 
-> > And fixing the remount issue for XFS (maybe btrfs has the same
-> > issue as well)?
-> > For XFS like as:
-> > 
-> > diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
-> > index 379cbff438bc..2ddd634cfb0b 100644
-> > --- a/fs/xfs/xfs_super.c
-> > +++ b/fs/xfs/xfs_super.c
-> > @@ -1748,6 +1748,9 @@ xfs_fc_reconfigure(
-> >                         return error;
-> >         }
-> > 
-> > +       if (XFS_SB_VERSION_NUM(&mp->m_sb) == XFS_SB_VERSION_5)
-> > +               mp->m_super->s_flags |= SB_I_VERSION;
-> > +
-> >         return 0;
-> >  }
+On 2020/6/17 21:44, zhangyi (F) wrote:
+> On 2020/6/17 20:41, Jan Kara wrote:
+>> On Wed 17-06-20 19:59:45, zhangyi (F) wrote:
+>>> Although we have already introduce s_bdev_wb_err_work to detect and
+>>> handle async write metadata buffer error as soon as possible, there is
+>>> still a potential race that could lead to filesystem inconsistency,
+>>> which is the buffer may reading and re-writing out to journal before
+>>> s_bdev_wb_err_work run. So this patch detect bdev mapping->wb_err when
+>>> getting journal's write access and also mark the filesystem error if
+>>> something bad happened.
+>>>
+>>> Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
+>>
+>> So instead of all this, cannot we just do:
+>>
+>> 	if (work_pending(sbi->s_bdev_wb_err_work))
+>> 		flush_work(sbi->s_bdev_wb_err_work);
+>>
+>> ? And so we are sure the filesystem is aborted if the abort was pending?
+>>
 > 
-> no this doesn't work, because the sueprblock flags are modified
-> after ->reconfigure is called.
+> Thanks for this suggestion. Yeah, we could do this, it depends on the second
+> patch, if we check and flush the pending work here, we could not use the
+> end_buffer_async_write() in ext4_end_buffer_async_write(), we need to open
+> coding ext4_end_buffer_async_write() and queue the error work before the
+> buffer is unlocked, or else the race is still there. Do you agree ?
 > 
-> i.e. reconfigure_super() does this:
-> 
-> 	if (fc->ops->reconfigure) {
-> 		retval = fc->ops->reconfigure(fc);
-> 		if (retval) {
-> 			if (!force)
-> 				goto cancel_readonly;
-> 			/* If forced remount, go ahead despite any errors */
-> 			WARN(1, "forced remount of a %s fs returned %i\n",
-> 			     sb->s_type->name, retval);
-> 		}
-> 	}
-> 
-> 	WRITE_ONCE(sb->s_flags, ((sb->s_flags & ~fc->sb_flags_mask) |
-> 				 (fc->sb_flags & fc->sb_flags_mask)));
-> 
-> And it's the WRITE_ONCE() line that clears SB_I_VERSION out of
-> sb->s_flags. Hence adding it in ->reconfigure doesn't help.
-> 
-> What we actually want to do here in xfs_fc_reconfigure() is this:
-> 
-> 	if (XFS_SB_VERSION_NUM(&mp->m_sb) == XFS_SB_VERSION_5)
-> 		fc->sb_flags_mask |= SB_I_VERSION;
-> 
-> So that the SB_I_VERSION is not cleared from sb->s_flags.
-> 
-> I'll also note that btrfs will need the same fix, because it also
-> sets SB_I_VERSION unconditionally, as will any other filesystem that
-> does this, too.
 
-Thank you for pointed it out.
-How about following change? I believe it works both xfs and btrfs...
+Add one point, add work_pending check here may not safe. We need to make sure
+the filesystem is aborted, so we need to wait the error handle work is finished,
+but the work's pending bit is cleared before it start running. I think may
+better to just invoke flush_work() here.
 
-diff --git a/fs/super.c b/fs/super.c
-index b0a511bef4a0..42fc6334d384 100644
---- a/fs/super.c
-+++ b/fs/super.c
-@@ -973,6 +973,9 @@ int reconfigure_super(struct fs_context *fc)
-                }
-        }
+BTW, I also notice another race condition that may lead to inconsistency. In
+bdev_try_to_free_page(), if we free a write error buffer before the worker
+is finished, the jbd2 checkpoint procedure will miss this error and wrongly
+think it has already been written to disk successfully, and finally it will
+destroy the log and lead to inconsistency (the same to no-journal mode).
+So I think the ninth patch in my v1 patch set is still needed. What do you
+think?
 
-+       if (sb->s_flags & SB_I_VERSION)
-+               fc->sb_flags |= MS_I_VERSION;
-+
-        WRITE_ONCE(sb->s_flags, ((sb->s_flags & ~fc->sb_flags_mask) |
-                                 (fc->sb_flags & fc->sb_flags_mask)));
-        /* Needs to be ordered wrt mnt_is_readonly() */
+Thanks,
+Yi.
 
-
-- Masa
-
-> 
-> Really, this is just indicative of the mess that the mount
-> flags vs superblock feature flags are. Filesystems can choose to
-> unconditionally support various superblock features, and no mount
-> option futzing from userspace should -ever- be able to change that
-> feature. Filesystems really do need to be able to override mount
-> options that were parsed in userspace and turned into a binary
-> flag...
-> 
-> Cheers,
-> 
-> Dave.
-> -- 
-> Dave Chinner
-> david@fromorbit.com
