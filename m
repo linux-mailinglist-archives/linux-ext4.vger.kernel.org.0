@@ -2,57 +2,57 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0240B1FF6CC
-	for <lists+linux-ext4@lfdr.de>; Thu, 18 Jun 2020 17:30:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A1AC1FF6D1
+	for <lists+linux-ext4@lfdr.de>; Thu, 18 Jun 2020 17:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731547AbgFRP3L (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 18 Jun 2020 11:29:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36214 "EHLO
+        id S1731624AbgFRP3i (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 18 Jun 2020 11:29:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731531AbgFRP3J (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 18 Jun 2020 11:29:09 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2A32C06174E
-        for <linux-ext4@vger.kernel.org>; Thu, 18 Jun 2020 08:29:08 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id bh7so2561716plb.11
-        for <linux-ext4@vger.kernel.org>; Thu, 18 Jun 2020 08:29:08 -0700 (PDT)
+        with ESMTP id S1731554AbgFRP3M (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 18 Jun 2020 11:29:12 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00351C06174E
+        for <linux-ext4@vger.kernel.org>; Thu, 18 Jun 2020 08:29:10 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id ne5so2686568pjb.5
+        for <linux-ext4@vger.kernel.org>; Thu, 18 Jun 2020 08:29:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=G5ozTBAl0Nc2Seqb+1Z0zSPmpgJ1KFPacFYxKJ0OJFw=;
-        b=vDev6Xci4wuCFpc5kJDBGBgJK30ysnuX8lu247wQzuh7Du7WMI2GAOg3rBCzJIv0cQ
-         AM9PGJD3ZevkHHTlBzd3nYMX2yjvqKXE4a58STCTWhkD9VtVoNzvmQEqz+sgeWEgdbah
-         cQTFBfSzkQeQik9+EkOInzyS3ego2JAU2E0OZUtSZjmrzEaf+GsiGBlnrMuwkc+yl/W5
-         D0kLPoJu67NCM5/Q+F2RPSuqAvCNsT+1JD5pD+Z8ILAdbDk3FObBRp9obGRLnUjDAlZM
-         BnKMGV5xNwn5alYnb83vf0M2G5lKa9zeZ+v3E/cYJB6xsG61I2DmbYXavAB+TcWEYeV7
-         4EEA==
+        bh=yCvNQG2eDte7phry8MD3FQlz8aCNKOB0pw/UKfg9jfU=;
+        b=nNhgMchn1FjvB2ddMfTDeN7bCyUjzKjNPtJc8j6tztEfpWk1n2NGXbQmCtPk+tOywu
+         QMs5kTcrZA+5Lw+9tlwiJcMKoouGzyZT8u2W6KxBgkgJkM5kDxQYb9apdis2lPC4Sh2I
+         i/woDJc7wXPrZNJzxGmKqW6Qw4E10Gp7KmkC7yEQqgtAquyFTk2KlXCG/9Iy1Sqmk14n
+         uFyBiCEgSqMgbqdNEwMdEEf9RunVwVJiaoizy2WyncBleN8j/2+dTBQru2NLZwKLQFuC
+         lSJQKmmoIYO4KSMo5paF0GCvxcGoWwBEc3zzeorGp3FZgBrRpg+UYFkkDEvRPk/1+ekK
+         oo1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=G5ozTBAl0Nc2Seqb+1Z0zSPmpgJ1KFPacFYxKJ0OJFw=;
-        b=Y6OI0tGQAc0Md2I2Cj3/hRA5I4Oqyu2mRGU9HJ6oSGi9YxsQ9G6C4q/CxJba4cbUNx
-         Q18xlJzYrlDYnLCpK9897tRFv8duItEGunMxEd6YJsJuvobewSV8a6UhYtMrPzlqdp0+
-         F4kC9/4jcRJ3A2FGy18yeP9nbjDSrHzh1GggPG2a9q/W5DCMTR8HM9GH1NrKE4wXLdVE
-         xwsjI/2S2A+NNP111YIgMgFQBp3Bd1lcvV2SVbIEzpYuYrixsKMduZYHYAm5s92z5M/n
-         Ad8UjkElOeXgO9XgpX4HosCFuZuBt28psdmv4xzEL4XvYD9A96S3U9mnuTMpqPTAm5P5
-         TZ3g==
-X-Gm-Message-State: AOAM530uSQSja1ZDMGbtQydOuqalc5ehCiU8HiCbhR4yIbKpA7qdA3GC
-        6jV3ubwjoEaX/XDEdCWmIm/6JASU9WM=
-X-Google-Smtp-Source: ABdhPJyOSRTwvy7VI2mJwFBJQdkqLsodC4zKXLZKid47Bg5v8yCqFyftYdc4thntfG7JktuFDMJx7w==
-X-Received: by 2002:a17:90a:1781:: with SMTP id q1mr4594248pja.24.1592494147798;
-        Thu, 18 Jun 2020 08:29:07 -0700 (PDT)
+        bh=yCvNQG2eDte7phry8MD3FQlz8aCNKOB0pw/UKfg9jfU=;
+        b=EfTB2JbkGAXeBz6vMkDI3/fl9KuQgFGAXtG7BCeM4TDH0N2oMxT9Ph9JpYy98+X8PP
+         BXmN7bWt1FoPZxTB/dzGidGj+zMcUeVQAd17dp+UA81mzNwoa2hg59Wg965uVs00wakQ
+         NZlpP1YdAiCUnwvz66iNVBSdwmJS14JiftwZ//DFLJO8daj85IInasveLE7NjcMI9O8l
+         CnX5Exe2Zl+z3cf5hcmEUHcIYwcWVtoc3e48I58ltERPWu/Nd0IzSEvVOgF2p6iAty7B
+         7kSXmN912I/o0jcpTAwJGz9lOwD3aLykiGYi/5edxcas/sma0gwziAOEgpiGeSG3tokW
+         bc9Q==
+X-Gm-Message-State: AOAM53170pzBXblPq79l2IzU3e7/rLzQJq/SsuEP2uGfVDMUa7d/sCLM
+        rSFQA1lTt388+5GbnXTmp7PTp+sbNac=
+X-Google-Smtp-Source: ABdhPJzJbJxYF/s1Waq3ivTl+7sZag/LNea00QBco7L8/FHrnO7npXvOInaeuksiO9jN8b12b+vuCQ==
+X-Received: by 2002:a17:902:8e82:: with SMTP id bg2mr4289752plb.198.1592494150200;
+        Thu, 18 Jun 2020 08:29:10 -0700 (PDT)
 Received: from localhost.localdomain (ftp.datadirectnet.jp. [182.171.80.51])
-        by smtp.gmail.com with ESMTPSA id y81sm3306650pfb.33.2020.06.18.08.29.05
+        by smtp.gmail.com with ESMTPSA id y81sm3306650pfb.33.2020.06.18.08.29.08
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 18 Jun 2020 08:29:07 -0700 (PDT)
+        Thu, 18 Jun 2020 08:29:09 -0700 (PDT)
 From:   Wang Shilong <wangshilong1991@gmail.com>
 To:     linux-ext4@vger.kernel.org
 Cc:     lixi@ddn.com, adilger@dilger.ca, wangshilong1991@gmail.com,
         sihara@ddn.com, Wang Shilong <wshilong@ddn.com>
-Subject: [RFC PATCH v2 23/51] e2fsck: merge icounts after thread finishes
-Date:   Fri, 19 Jun 2020 00:27:26 +0900
-Message-Id: <1592494074-28991-24-git-send-email-wangshilong1991@gmail.com>
+Subject: [RFC PATCH v2 24/51] e2fsck: merge dblist after thread finishes
+Date:   Fri, 19 Jun 2020 00:27:27 +0900
+Message-Id: <1592494074-28991-25-git-send-email-wangshilong1991@gmail.com>
 X-Mailer: git-send-email 1.7.1
 In-Reply-To: <1592494074-28991-1-git-send-email-wangshilong1991@gmail.com>
 References: <1592494074-28991-1-git-send-email-wangshilong1991@gmail.com>
@@ -66,217 +66,118 @@ From: Li Xi <lixi@ddn.com>
 Signed-off-by: Li Xi <lixi@ddn.com>
 Signed-off-by: Wang Shilong <wshilong@ddn.com>
 ---
- e2fsck/pass1.c      |  36 +++++++++++++++-
- lib/ext2fs/ext2fs.h |   1 +
- lib/ext2fs/icount.c | 101 ++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 137 insertions(+), 1 deletion(-)
+ e2fsck/pass1.c      | 18 +++++++++++++-----
+ lib/ext2fs/dblist.c | 36 ++++++++++++++++++++++++++++++++++++
+ lib/ext2fs/ext2fs.h |  1 +
+ 3 files changed, 50 insertions(+), 5 deletions(-)
 
 diff --git a/e2fsck/pass1.c b/e2fsck/pass1.c
-index e343ec00..3c04edfd 100644
+index 3c04edfd..7accc76c 100644
 --- a/e2fsck/pass1.c
 +++ b/e2fsck/pass1.c
-@@ -2435,6 +2435,28 @@ static void e2fsck_pass1_merge_dir_info(e2fsck_t global_ctx, e2fsck_t thread_ctx
- 			      global_ctx->dir_info);
- }
+@@ -2266,18 +2266,21 @@ static int _e2fsck_pass1_merge_fs(ext2_filsys dest, ext2_filsys src)
+ 	ext2fs_inode_bitmap inode_map;
+ 	ext2fs_block_bitmap block_map;
+ 	ext2_badblocks_list badblocks;
++	ext2_dblist dblist;
  
-+#define PASS1_MERGE_CTX_ICOUNT(_dest, _src, _field)			\
-+do {									\
-+    if (_src->_field) {							\
-+        if (_dest->_field == NULL) {					\
-+            _dest->_field = _src->_field;				\
-+            _src->_field = NULL;					\
-+        } else {							\
-+            errcode_t _ret;						\
-+            _ret = ext2fs_icount_merge(_src->_field, _dest->_field);	\
-+            if (_ret)							\
-+                return _ret;						\
-+        }								\
-+    }									\
-+} while (0)
-+
-+static errcode_t e2fsck_pass1_merge_icounts(e2fsck_t global_ctx, e2fsck_t thread_ctx)
-+{
-+	PASS1_MERGE_CTX_ICOUNT(global_ctx, thread_ctx, inode_count);
-+	PASS1_MERGE_CTX_ICOUNT(global_ctx, thread_ctx, inode_link_info);
-+	return 0;
-+}
-+
- static int e2fsck_pass1_thread_join_one(e2fsck_t global_ctx, e2fsck_t thread_ctx)
- {
- 	errcode_t	 retval;
-@@ -2454,7 +2476,9 @@ static int e2fsck_pass1_thread_join_one(e2fsck_t global_ctx, e2fsck_t thread_ctx
- 	ext2fs_block_bitmap block_ea_map = global_ctx->block_ea_map;
- 	ext2fs_block_bitmap block_metadata_map = global_ctx->block_metadata_map;
- 	ext2fs_block_bitmap inodes_to_rebuild = global_ctx->inodes_to_rebuild;
--	
-+	ext2_icount_t inode_count = global_ctx->inode_count;
-+	ext2_icount_t inode_link_info = global_ctx->inode_link_info;
-+
- #ifdef HAVE_SETJMP_H
- 	jmp_buf		 old_jmp;
- 
-@@ -2477,6 +2501,8 @@ static int e2fsck_pass1_thread_join_one(e2fsck_t global_ctx, e2fsck_t thread_ctx
- 	global_ctx->block_metadata_map = block_metadata_map;
- 	global_ctx->dir_info = dir_info;
- 	e2fsck_pass1_merge_dir_info(global_ctx, thread_ctx);
-+	global_ctx->inode_count = inode_count;
-+	global_ctx->inode_link_info = inode_link_info;
- 
- 	/* Keep the global singal flags*/
- 	global_ctx->flags |= (flags & E2F_FLAG_SIGNAL_MASK) |
-@@ -2492,6 +2518,12 @@ static int e2fsck_pass1_thread_join_one(e2fsck_t global_ctx, e2fsck_t thread_ctx
- 	global_ctx->logf = global_logf;
- 	global_ctx->problem_logf = global_problem_logf;
- 	global_ctx->global_ctx = NULL;
-+	retval = e2fsck_pass1_merge_icounts(global_ctx, thread_ctx);
-+	if (retval) {
-+		com_err(global_ctx->program_name, 0,
-+			_("while merging icounts\n"));
-+		return retval;
-+	}
- 
+ 	dest_io = dest->io;
+ 	dest_image_io = dest->image_io;
+ 	inode_map = dest->inode_map;
+ 	block_map = dest->block_map;
+ 	badblocks = dest->badblocks;
++	dblist = dest->dblist;
+ 	memcpy(dest, src, sizeof(struct struct_ext2_filsys));
+ 	dest->io = dest_io;
+ 	dest->image_io = dest_image_io;
+ 	dest->inode_map = inode_map;
+ 	dest->block_map = block_map;
+ 	dest->badblocks = badblocks;
++	dest->dblist = dblist;
  	/*
- 	 * PASS1_COPY_CTX_BITMAP might return directly from this function,
-@@ -2533,6 +2565,8 @@ static int e2fsck_pass1_thread_join(e2fsck_t global_ctx, e2fsck_t thread_ctx)
- 	PASS1_FREE_CTX_BITMAP(thread_ctx, block_dup_map);
- 	PASS1_FREE_CTX_BITMAP(thread_ctx, block_ea_map);
- 	PASS1_FREE_CTX_BITMAP(thread_ctx, block_metadata_map);
-+	ext2fs_free_icount(thread_ctx->inode_count);
-+	ext2fs_free_icount(thread_ctx->inode_link_info);
- 	e2fsck_free_dir_info(thread_ctx);
- 	ext2fs_free_mem(&thread_ctx);
+ 	 * PASS1_MERGE_FS_BITMAP might return directly from this function,
+ 	 * so please do NOT leave any garbage behind after returning.
+@@ -2286,11 +2289,16 @@ static int _e2fsck_pass1_merge_fs(ext2_filsys dest, ext2_filsys src)
+ 	PASS1_MERGE_FS_BITMAP(dest, src, block_map);
  
-diff --git a/lib/ext2fs/ext2fs.h b/lib/ext2fs/ext2fs.h
-index bdb72251..5a094da3 100644
---- a/lib/ext2fs/ext2fs.h
-+++ b/lib/ext2fs/ext2fs.h
-@@ -1509,6 +1509,7 @@ extern errcode_t ext2fs_icount_decrement(ext2_icount_t icount, ext2_ino_t ino,
- 					 __u16 *ret);
- extern errcode_t ext2fs_icount_store(ext2_icount_t icount, ext2_ino_t ino,
- 				     __u16 count);
-+extern errcode_t ext2fs_icount_merge(ext2_icount_t src, ext2_icount_t dest);
- extern ext2_ino_t ext2fs_get_icount_size(ext2_icount_t icount);
- errcode_t ext2fs_icount_validate(ext2_icount_t icount, FILE *);
+ 	if (src->dblist) {
+-		retval = ext2fs_copy_dblist(src->dblist, &dest->dblist);
+-		if (retval)
+-			return retval;
+-		/* The ext2fs_copy_dblist() uses the src->fs as the fs */
+-		dest->dblist->fs = dest;
++		if (dest->dblist) {
++			retval = ext2fs_merge_dblist(src->dblist, dest->dblist);
++			if (retval)
++				return retval;
++		} else {
++			/* The ext2fs_copy_dblist() uses the src->fs as the fs */
++			dest->dblist = src->dblist;
++			dest->dblist->fs = dest;
++			src->dblist = NULL;
++		}
+ 	}
  
-diff --git a/lib/ext2fs/icount.c b/lib/ext2fs/icount.c
-index 888a90b2..729f993f 100644
---- a/lib/ext2fs/icount.c
-+++ b/lib/ext2fs/icount.c
-@@ -13,6 +13,7 @@
- #if HAVE_UNISTD_H
- #include <unistd.h>
- #endif
-+#include <assert.h>
- #include <string.h>
- #include <stdio.h>
- #include <sys/stat.h>
-@@ -701,6 +702,106 @@ errcode_t ext2fs_icount_store(ext2_icount_t icount, ext2_ino_t ino,
+ 	if (src->badblocks) {
+diff --git a/lib/ext2fs/dblist.c b/lib/ext2fs/dblist.c
+index bbdb221d..046b1e68 100644
+--- a/lib/ext2fs/dblist.c
++++ b/lib/ext2fs/dblist.c
+@@ -119,6 +119,42 @@ errcode_t ext2fs_copy_dblist(ext2_dblist src, ext2_dblist *dest)
  	return 0;
  }
  
-+errcode_t ext2fs_icount_merge_full_map(ext2_icount_t src, ext2_icount_t dest)
-+{
-+	/* TODO: add the support for full map */
-+	return EOPNOTSUPP;
-+}
-+
-+errcode_t ext2fs_icount_merge_el(ext2_icount_t src, ext2_icount_t dest)
++/*
++ * Merge a directory block list @src to @dest
++ */
++errcode_t ext2fs_merge_dblist(ext2_dblist src, ext2_dblist dest)
 +{
 +	int			 src_count = src->count;
 +	int			 dest_count = dest->count;
 +	int			 size = src_count + dest_count;
-+	int			 size_entry = sizeof(struct ext2_icount_el);
-+	struct ext2_icount_el	*array;
-+	struct ext2_icount_el	*array_ptr;
-+	struct ext2_icount_el	*src_array = src->list;
-+	struct ext2_icount_el	*dest_array = dest->list;
-+	int			 src_index = 0;
-+	int			 dest_index = 0;
++	int			 size_entry = sizeof(struct ext2_db_entry2);
++	struct ext2_db_entry2	*array, *array2;
 +	errcode_t		 retval;
 +
 +	if (src_count == 0)
 +		return 0;
 +
++	if (src->sorted || dest->sorted)
++		return EINVAL;
++
 +	retval = ext2fs_get_array(size, size_entry, &array);
 +	if (retval)
 +		return retval;
 +
-+	array_ptr = array;
-+	/*
-+	 * This can be improved by binary search and memcpy, but codes would
-+	 * be complexer. And if number of bad blocks is small, the optimization
-+	 * won't improve performance a lot.
-+	 */
-+	while (src_index < src_count || dest_index < dest_count) {
-+		if (src_index >= src_count) {
-+			memcpy(array_ptr, &dest_array[dest_index],
-+			       (dest_count - dest_index) * size_entry);
-+			break;
-+		}
-+		if (dest_index >= dest_count) {
-+			memcpy(array_ptr, &src_array[src_index],
-+			       (src_count - src_index) * size_entry);
-+			break;
-+		}
-+		if (src_array[src_index].ino < dest_array[dest_index].ino) {
-+			*array_ptr = src_array[src_index];
-+			src_index++;
-+		} else {
-+			assert(src_array[src_index].ino >
-+			       dest_array[dest_index].ino);
-+			*array_ptr = dest_array[dest_index];
-+			dest_index++;
-+		}
-+		array_ptr++;
-+	}
++	array2 = array;
 +
++	memcpy(array, src->list, src_count * size_entry);
++	array += src_count;
++	memcpy(array, dest->list, dest_count * size_entry);
 +	ext2fs_free_mem(&dest->list);
-+	dest->list = array;
++
++	dest->list = array2;
 +	dest->count = src_count + dest_count;
 +	dest->size = size;
-+	dest->last_lookup = NULL;
-+	return 0;
-+}
-+
-+errcode_t ext2fs_icount_merge(ext2_icount_t src, ext2_icount_t dest)
-+{
-+	errcode_t	retval;
-+
-+	if (src->fullmap && !dest->fullmap)
-+		return EINVAL;
-+
-+	if (!src->fullmap && dest->fullmap)
-+		return EINVAL;
-+
-+	if (src->multiple && !dest->multiple)
-+		return EINVAL;
-+
-+	if (!src->multiple && dest->multiple)
-+		return EINVAL;
-+
-+	if (src->fullmap)
-+		return ext2fs_icount_merge_full_map(src, dest);
-+
-+	retval = ext2fs_merge_bitmap(src->single, dest->single);
-+	if (retval)
-+		return retval;
-+
-+	if (src->multiple) {
-+		retval = ext2fs_merge_bitmap(src->multiple, dest->multiple);
-+		if (retval)
-+			return retval;
-+	}
-+
-+	retval = ext2fs_icount_merge_el(src, dest);
-+	if (retval)
-+		return retval;
 +
 +	return 0;
 +}
 +
- ext2_ino_t ext2fs_get_icount_size(ext2_icount_t icount)
- {
- 	if (!icount || icount->magic != EXT2_ET_MAGIC_ICOUNT)
+ /*
+  * Close a directory block list
+  *
+diff --git a/lib/ext2fs/ext2fs.h b/lib/ext2fs/ext2fs.h
+index 5a094da3..37460a31 100644
+--- a/lib/ext2fs/ext2fs.h
++++ b/lib/ext2fs/ext2fs.h
+@@ -1120,6 +1120,7 @@ extern errcode_t ext2fs_add_dir_block(ext2_dblist dblist, ext2_ino_t ino,
+ 				      blk_t blk, int blockcnt);
+ extern errcode_t ext2fs_add_dir_block2(ext2_dblist dblist, ext2_ino_t ino,
+ 				       blk64_t blk, e2_blkcnt_t blockcnt);
++extern errcode_t ext2fs_merge_dblist(ext2_dblist src, ext2_dblist dest);
+ extern void ext2fs_dblist_sort(ext2_dblist dblist,
+ 			       EXT2_QSORT_TYPE (*sortfunc)(const void *,
+ 							   const void *));
 -- 
 2.25.4
 
