@@ -2,390 +2,110 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCA881FEF46
-	for <lists+linux-ext4@lfdr.de>; Thu, 18 Jun 2020 12:06:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBFD41FF202
+	for <lists+linux-ext4@lfdr.de>; Thu, 18 Jun 2020 14:37:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728585AbgFRKGV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 18 Jun 2020 06:06:21 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:6363 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728416AbgFRKGM (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 18 Jun 2020 06:06:12 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id C94E18C9742A71BE527C;
-        Thu, 18 Jun 2020 18:06:08 +0800 (CST)
-Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
- (10.3.19.207) with Microsoft SMTP Server (TLS) id 14.3.487.0; Thu, 18 Jun
- 2020 18:06:03 +0800
-Subject: Re: [PATCH 3/4] f2fs: add inline encryption support
-To:     Satya Tangirala <satyat@google.com>,
-        <linux-fscrypt@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        id S1729780AbgFRMhr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 18 Jun 2020 08:37:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727022AbgFRMhq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 18 Jun 2020 08:37:46 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1466EC0613ED
+        for <linux-ext4@vger.kernel.org>; Thu, 18 Jun 2020 05:37:46 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id d128so5485405wmc.1
+        for <linux-ext4@vger.kernel.org>; Thu, 18 Jun 2020 05:37:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=OgZomFoj/7toYCBCKWRo7nq/kYdKAWeXt05LtEajY3k=;
+        b=Vba3/YBp135F4zjZnb2RedWXF2lwu1lFFL34CLaNpxPjPTPlt0UR472eYi5S4YZ1Wx
+         Z0rDK+6Hs9d3o0cUOdxwi2SS36Jq5bWlnav7DNmZNgJpcMQ+D8caGFIGg/ORh0SmmPxl
+         k69/g/gWD8TgMCYkGiY2Wz/GRty0LMQ/SrbXk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=OgZomFoj/7toYCBCKWRo7nq/kYdKAWeXt05LtEajY3k=;
+        b=iI3Qx9k1WUV4n6tftLQjE1VwPvvWNVqexyi6txK6RG5RfRuQP55JASBkkpksV/25ZV
+         qaTLHYx53KckuU5pcLP1U9dx8pzBSVF7nw9waQod/aS5vmWw1t0zmQa4m/h05Mw1sWKI
+         GFsyFQvIUnH6EZKau1poI1sYvajVsgIY2HW1nu5VOYD7JQhpCMFOu08snsK+/judn3CO
+         KWwbre3puz9Gy1wFZLRwlH0aDWwD2mGygZVOcaApu3aqM1sV7lVXJ3XCQhWuVFkrN7p+
+         B0jgsc/0gZQphAkatn4nO/AepcEcAleZsXz9AthOc1Q+2DdweEgp7WdY8msSMmYEde69
+         clAQ==
+X-Gm-Message-State: AOAM531WxL66XGeia+RXpcrluhPm1Wn0zbkyTjdMHBoINWQTd3Ivs5NY
+        8qLuSehY/6Gq8ScT0sm2FpSSiA==
+X-Google-Smtp-Source: ABdhPJzFoWSkp2MqAS0xx92RSUWbWQ0U7Z92SQ/MTtOdoN5z3gnxoKRC/r81z8qHIYMjhulYtZARyw==
+X-Received: by 2002:a1c:4143:: with SMTP id o64mr3734793wma.157.1592483864725;
+        Thu, 18 Jun 2020 05:37:44 -0700 (PDT)
+Received: from localhost ([2a01:4b00:8432:8a00:63de:dd93:20be:f460])
+        by smtp.gmail.com with ESMTPSA id t82sm2586962wmg.10.2020.06.18.05.37.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jun 2020 05:37:43 -0700 (PDT)
+Date:   Thu, 18 Jun 2020 13:37:43 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        "Linux F2FS DEV, Mailing List" 
         <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-ext4@vger.kernel.org>
-CC:     Eric Biggers <ebiggers@google.com>
-References: <20200617075732.213198-1-satyat@google.com>
- <20200617075732.213198-4-satyat@google.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <5e78e1be-f948-d54c-d28e-50f1f0a92ab3@huawei.com>
-Date:   Thu, 18 Jun 2020 18:06:02 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, Arnd Bergmann <arnd@arndb.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Chao Yu <yuchao0@huawei.com>, lkft-triage@lists.linaro.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Cgroups <cgroups@vger.kernel.org>
+Subject: Re: mm: mkfs.ext4 invoked oom-killer on i386 - pagecache_get_page
+Message-ID: <20200618123743.GA694719@chrisdown.name>
+References: <20200521095515.GK6462@dhcp22.suse.cz>
+ <20200521163450.GV6462@dhcp22.suse.cz>
+ <CA+G9fYsdsgRmwLtSKJSzB1eWcUQ1z-_aaU+BNcQpker34XT6_w@mail.gmail.com>
+ <20200617135758.GA548179@chrisdown.name>
+ <20200617141155.GQ9499@dhcp22.suse.cz>
+ <CA+G9fYu+FB1PE0AMmE-9MrHpayE9kChwTyc3zfM6V83uQ0zcQA@mail.gmail.com>
+ <20200617160624.GS9499@dhcp22.suse.cz>
+ <CA+G9fYtCXrVGVtRTwxiqgfFNDDf_H4aNH=VpWLhsV4n_mCTLGg@mail.gmail.com>
+ <20200617210935.GA578452@chrisdown.name>
+ <CALOAHbBp7Ytd-Hta9NH-_HJtVTAsR5Pw2RYrVScp7PPezCEv2w@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200617075732.213198-4-satyat@google.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.134.22.195]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CALOAHbBp7Ytd-Hta9NH-_HJtVTAsR5Pw2RYrVScp7PPezCEv2w@mail.gmail.com>
+User-Agent: Mutt/1.14.3 (2020-06-14)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2020/6/17 15:57, Satya Tangirala wrote:
-> Wire up f2fs to support inline encryption via the helper functions which
-> fs/crypto/ now provides.  This includes:
-> 
-> - Adding a mount option 'inlinecrypt' which enables inline encryption
->   on encrypted files where it can be used.
-> 
-> - Setting the bio_crypt_ctx on bios that will be submitted to an
->   inline-encrypted file.
-> 
-> - Not adding logically discontiguous data to bios that will be submitted
->   to an inline-encrypted file.
-> 
-> - Not doing filesystem-layer crypto on inline-encrypted files.
-> 
-> This patch includes a fix for a race during IPU by
-> Sahitya Tummala <stummala@codeaurora.org>
-> 
-> Co-developed-by: Eric Biggers <ebiggers@google.com>
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> Signed-off-by: Satya Tangirala <satyat@google.com>
-> ---
->  Documentation/filesystems/f2fs.rst |  7 ++-
->  fs/f2fs/compress.c                 |  2 +-
->  fs/f2fs/data.c                     | 81 ++++++++++++++++++++++++------
->  fs/f2fs/super.c                    | 32 ++++++++++++
->  4 files changed, 104 insertions(+), 18 deletions(-)
-> 
-> diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
-> index 099d45ac8d8f..4dc36143ff82 100644
-> --- a/Documentation/filesystems/f2fs.rst
-> +++ b/Documentation/filesystems/f2fs.rst
-> @@ -258,7 +258,12 @@ compress_extension=%s  Support adding specified extension, so that f2fs can enab
->                         on compression extension list and enable compression on
->                         these file by default rather than to enable it via ioctl.
->                         For other files, we can still enable compression via ioctl.
-> -====================== ============================================================
-> +inlinecrypt
-> +                       Encrypt/decrypt the contents of encrypted files using the
-> +                       blk-crypto framework rather than filesystem-layer encryption.
-> +                       This allows the use of inline encryption hardware. The on-disk
-> +                       format is unaffected. For more details, see
-> +                       Documentation/block/inline-encryption.rst.
->  
->  Debugfs Entries
->  ===============
-> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-> index 1e02a8c106b0..29e50fbe7eca 100644
-> --- a/fs/f2fs/compress.c
-> +++ b/fs/f2fs/compress.c
-> @@ -1086,7 +1086,7 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
->  		.submitted = false,
->  		.io_type = io_type,
->  		.io_wbc = wbc,
-> -		.encrypted = f2fs_encrypted_file(cc->inode),
-> +		.encrypted = fscrypt_inode_uses_fs_layer_crypto(cc->inode),
->  	};
->  	struct dnode_of_data dn;
->  	struct node_info ni;
-> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> index 326c63879ddc..6955ea6fa1b6 100644
-> --- a/fs/f2fs/data.c
-> +++ b/fs/f2fs/data.c
-> @@ -14,6 +14,7 @@
->  #include <linux/pagevec.h>
->  #include <linux/blkdev.h>
->  #include <linux/bio.h>
-> +#include <linux/blk-crypto.h>
->  #include <linux/swap.h>
->  #include <linux/prefetch.h>
->  #include <linux/uio.h>
-> @@ -459,6 +460,33 @@ static struct bio *__bio_alloc(struct f2fs_io_info *fio, int npages)
->  	return bio;
->  }
->  
-> +static void f2fs_set_bio_crypt_ctx(struct bio *bio, const struct inode *inode,
-> +				  pgoff_t first_idx,
-> +				  const struct f2fs_io_info *fio,
-> +				  gfp_t gfp_mask)
-> +{
-> +	/*
-> +	 * The f2fs garbage collector sets ->encrypted_page when it wants to
-> +	 * read/write raw data without encryption.
-> +	 */
-> +	if (!fio || !fio->encrypted_page)
-> +		fscrypt_set_bio_crypt_ctx(bio, inode, first_idx, gfp_mask);
-> +}
-> +
-> +static bool f2fs_crypt_mergeable_bio(struct bio *bio, const struct inode *inode,
-> +				     pgoff_t next_idx,
-> +				     const struct f2fs_io_info *fio)
-> +{
-> +	/*
-> +	 * The f2fs garbage collector sets ->encrypted_page when it wants to
-> +	 * read/write raw data without encryption.
-> +	 */
-> +	if (fio && fio->encrypted_page)
-> +		return !bio_has_crypt_ctx(bio);
-> +
-> +	return fscrypt_mergeable_bio(bio, inode, next_idx);
-> +}
-> +
->  static inline void __submit_bio(struct f2fs_sb_info *sbi,
->  				struct bio *bio, enum page_type type)
->  {
-> @@ -684,6 +712,9 @@ int f2fs_submit_page_bio(struct f2fs_io_info *fio)
->  	/* Allocate a new bio */
->  	bio = __bio_alloc(fio, 1);
->  
-> +	f2fs_set_bio_crypt_ctx(bio, fio->page->mapping->host,
-> +			       fio->page->index, fio, GFP_NOIO);
-> +
->  	if (bio_add_page(bio, page, PAGE_SIZE, 0) < PAGE_SIZE) {
->  		bio_put(bio);
->  		return -EFAULT;
-> @@ -763,9 +794,10 @@ static void del_bio_entry(struct bio_entry *be)
->  	kmem_cache_free(bio_entry_slab, be);
->  }
->  
-> -static int add_ipu_page(struct f2fs_sb_info *sbi, struct bio **bio,
-> +static int add_ipu_page(struct f2fs_io_info *fio, struct bio **bio,
->  							struct page *page)
->  {
-> +	struct f2fs_sb_info *sbi = fio->sbi;
->  	enum temp_type temp;
->  	bool found = false;
->  	int ret = -EAGAIN;
-> @@ -782,13 +814,18 @@ static int add_ipu_page(struct f2fs_sb_info *sbi, struct bio **bio,
->  
->  			found = true;
->  
-> -			if (bio_add_page(*bio, page, PAGE_SIZE, 0) ==
-> -							PAGE_SIZE) {
-> +			if (page_is_mergeable(sbi, *bio, *fio->last_block,
-> +					fio->new_blkaddr) &&
-> +			    f2fs_crypt_mergeable_bio(*bio,
-> +					fio->page->mapping->host,
-> +					fio->page->index, fio) &&
-> +			    bio_add_page(*bio, page, PAGE_SIZE, 0) ==
-> +					PAGE_SIZE) {
->  				ret = 0;
->  				break;
->  			}
->  
-> -			/* bio is full */
-> +			 /* page can't be merged into bio; submit the bio */
+Yafang Shao writes:
+>On Thu, Jun 18, 2020 at 5:09 AM Chris Down <chris@chrisdown.name> wrote:
+>>
+>> Naresh Kamboju writes:
+>> >After this patch applied the reported issue got fixed.
+>>
+>> Great! Thank you Naresh and Michal for helping to get to the bottom of this :-)
+>>
+>> I'll send out a new version tomorrow with the fixes applied and both of you
+>> credited in the changelog for the detection and fix.
+>
+>As we have already found that the usage around memory.{emin, elow} has
+>many limitations, I think memory.{emin, elow} should be used for
+>memcg-tree internally only, that means they can only be used to
+>calculate the protection of a memcg in a specified memcg-tree but
+>should not be exposed to other MM parts.
 
-One more unneeded space before '/'.
-
->  			del_bio_entry(be);
->  			__submit_bio(sbi, *bio, DATA);
->  			break;
-> @@ -873,18 +910,17 @@ int f2fs_merge_page_bio(struct f2fs_io_info *fio)
->  	trace_f2fs_submit_page_bio(page, fio);
->  	f2fs_trace_ios(fio, 0);
->  
-> -	if (bio && !page_is_mergeable(fio->sbi, bio, *fio->last_block,
-> -						fio->new_blkaddr))
-> -		f2fs_submit_merged_ipu_write(fio->sbi, &bio, NULL);
-
-I prefer to keep this condition for non-inlinecrypt case to avoid unneeded lock
-contention in add_ipu_page().
-
->  alloc_new:
->  	if (!bio) {
->  		bio = __bio_alloc(fio, BIO_MAX_PAGES);
->  		__attach_io_flag(fio);
-> +		f2fs_set_bio_crypt_ctx(bio, fio->page->mapping->host,
-> +				       fio->page->index, fio, GFP_NOIO);
->  		bio_set_op_attrs(bio, fio->op, fio->op_flags);
->  
->  		add_bio_entry(fio->sbi, bio, page, fio->temp);
->  	} else {
-> -		if (add_ipu_page(fio->sbi, &bio, page))
-> +		if (add_ipu_page(fio, &bio, page))
->  			goto alloc_new;
->  	}
->  
-> @@ -936,8 +972,11 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
->  
->  	inc_page_count(sbi, WB_DATA_TYPE(bio_page));
->  
-> -	if (io->bio && !io_is_mergeable(sbi, io->bio, io, fio,
-> -			io->last_block_in_bio, fio->new_blkaddr))
-> +	if (io->bio &&
-> +	    (!io_is_mergeable(sbi, io->bio, io, fio, io->last_block_in_bio,
-> +			      fio->new_blkaddr) ||
-> +	     !f2fs_crypt_mergeable_bio(io->bio, fio->page->mapping->host,
-> +				       fio->page->index, fio)))
-
-bio_page->index, fio)))
-
->  		__submit_merged_bio(io);
->  alloc_new:
->  	if (io->bio == NULL) {
-> @@ -949,6 +988,8 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
->  			goto skip;
->  		}
->  		io->bio = __bio_alloc(fio, BIO_MAX_PAGES);
-> +		f2fs_set_bio_crypt_ctx(io->bio, fio->page->mapping->host,
-> +				       fio->page->index, fio, GFP_NOIO);
-
-bio_page->index, fio, GFP_NOIO);
-
-Thanks,
-
->  		io->fio = *fio;
->  	}
->  
-> @@ -993,11 +1034,14 @@ static struct bio *f2fs_grab_read_bio(struct inode *inode, block_t blkaddr,
->  								for_write);
->  	if (!bio)
->  		return ERR_PTR(-ENOMEM);
-> +
-> +	f2fs_set_bio_crypt_ctx(bio, inode, first_idx, NULL, GFP_NOFS);
-> +
->  	f2fs_target_device(sbi, blkaddr, bio);
->  	bio->bi_end_io = f2fs_read_end_io;
->  	bio_set_op_attrs(bio, REQ_OP_READ, op_flag);
->  
-> -	if (f2fs_encrypted_file(inode))
-> +	if (fscrypt_inode_uses_fs_layer_crypto(inode))
->  		post_read_steps |= 1 << STEP_DECRYPT;
->  	if (f2fs_compressed_file(inode))
->  		post_read_steps |= 1 << STEP_DECOMPRESS_NOWQ;
-> @@ -2073,8 +2117,9 @@ static int f2fs_read_single_page(struct inode *inode, struct page *page,
->  	 * This page will go to BIO.  Do we need to send this
->  	 * BIO off first?
->  	 */
-> -	if (bio && !page_is_mergeable(F2FS_I_SB(inode), bio,
-> -				*last_block_in_bio, block_nr)) {
-> +	if (bio && (!page_is_mergeable(F2FS_I_SB(inode), bio,
-> +				       *last_block_in_bio, block_nr) ||
-> +		    !f2fs_crypt_mergeable_bio(bio, inode, page->index, NULL))) {
->  submit_and_realloc:
->  		__submit_bio(F2FS_I_SB(inode), bio, DATA);
->  		bio = NULL;
-> @@ -2204,8 +2249,9 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
->  		blkaddr = data_blkaddr(dn.inode, dn.node_page,
->  						dn.ofs_in_node + i + 1);
->  
-> -		if (bio && !page_is_mergeable(sbi, bio,
-> -					*last_block_in_bio, blkaddr)) {
-> +		if (bio && (!page_is_mergeable(sbi, bio,
-> +					*last_block_in_bio, blkaddr) ||
-> +		    !f2fs_crypt_mergeable_bio(bio, inode, page->index, NULL))) {
->  submit_and_realloc:
->  			__submit_bio(sbi, bio, DATA);
->  			bio = NULL;
-> @@ -2421,6 +2467,9 @@ int f2fs_encrypt_one_page(struct f2fs_io_info *fio)
->  	/* wait for GCed page writeback via META_MAPPING */
->  	f2fs_wait_on_block_writeback(inode, fio->old_blkaddr);
->  
-> +	if (fscrypt_inode_uses_inline_crypto(inode))
-> +		return 0;
-> +
->  retry_encrypt:
->  	fio->encrypted_page = fscrypt_encrypt_pagecache_blocks(page,
->  					PAGE_SIZE, 0, gfp_flags);
-> @@ -2594,7 +2643,7 @@ int f2fs_do_write_data_page(struct f2fs_io_info *fio)
->  			f2fs_unlock_op(fio->sbi);
->  		err = f2fs_inplace_write_data(fio);
->  		if (err) {
-> -			if (f2fs_encrypted_file(inode))
-> +			if (fscrypt_inode_uses_fs_layer_crypto(inode))
->  				fscrypt_finalize_bounce_page(&fio->encrypted_page);
->  			if (PageWriteback(page))
->  				end_page_writeback(page);
-> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-> index 20e56b0fa46a..3621969b2665 100644
-> --- a/fs/f2fs/super.c
-> +++ b/fs/f2fs/super.c
-> @@ -138,6 +138,7 @@ enum {
->  	Opt_alloc,
->  	Opt_fsync,
->  	Opt_test_dummy_encryption,
-> +	Opt_inlinecrypt,
->  	Opt_checkpoint_disable,
->  	Opt_checkpoint_disable_cap,
->  	Opt_checkpoint_disable_cap_perc,
-> @@ -204,6 +205,7 @@ static match_table_t f2fs_tokens = {
->  	{Opt_fsync, "fsync_mode=%s"},
->  	{Opt_test_dummy_encryption, "test_dummy_encryption=%s"},
->  	{Opt_test_dummy_encryption, "test_dummy_encryption"},
-> +	{Opt_inlinecrypt, "inlinecrypt"},
->  	{Opt_checkpoint_disable, "checkpoint=disable"},
->  	{Opt_checkpoint_disable_cap, "checkpoint=disable:%u"},
->  	{Opt_checkpoint_disable_cap_perc, "checkpoint=disable:%u%%"},
-> @@ -833,6 +835,13 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
->  			if (ret)
->  				return ret;
->  			break;
-> +		case Opt_inlinecrypt:
-> +#ifdef CONFIG_FS_ENCRYPTION_INLINE_CRYPT
-> +			sb->s_flags |= SB_INLINECRYPT;
-> +#else
-> +			f2fs_info(sbi, "inline encryption not supported");
-> +#endif
-> +			break;
->  		case Opt_checkpoint_disable_cap_perc:
->  			if (args->from && match_int(args, &arg))
->  				return -EINVAL;
-> @@ -1624,6 +1633,8 @@ static void default_options(struct f2fs_sb_info *sbi)
->  	F2FS_OPTION(sbi).compress_ext_cnt = 0;
->  	F2FS_OPTION(sbi).bggc_mode = BGGC_MODE_ON;
->  
-> +	sbi->sb->s_flags &= ~SB_INLINECRYPT;
-> +
->  	set_opt(sbi, INLINE_XATTR);
->  	set_opt(sbi, INLINE_DATA);
->  	set_opt(sbi, INLINE_DENTRY);
-> @@ -2470,6 +2481,25 @@ static void f2fs_get_ino_and_lblk_bits(struct super_block *sb,
->  	*lblk_bits_ret = 8 * sizeof(block_t);
->  }
->  
-> +static int f2fs_get_num_devices(struct super_block *sb)
-> +{
-> +	struct f2fs_sb_info *sbi = F2FS_SB(sb);
-> +
-> +	if (f2fs_is_multi_device(sbi))
-> +		return sbi->s_ndevs;
-> +	return 1;
-> +}
-> +
-> +static void f2fs_get_devices(struct super_block *sb,
-> +			     struct request_queue **devs)
-> +{
-> +	struct f2fs_sb_info *sbi = F2FS_SB(sb);
-> +	int i;
-> +
-> +	for (i = 0; i < sbi->s_ndevs; i++)
-> +		devs[i] = bdev_get_queue(FDEV(i).bdev);
-> +}
-> +
->  static const struct fscrypt_operations f2fs_cryptops = {
->  	.key_prefix		= "f2fs:",
->  	.get_context		= f2fs_get_context,
-> @@ -2479,6 +2509,8 @@ static const struct fscrypt_operations f2fs_cryptops = {
->  	.max_namelen		= F2FS_NAME_LEN,
->  	.has_stable_inodes	= f2fs_has_stable_inodes,
->  	.get_ino_and_lblk_bits	= f2fs_get_ino_and_lblk_bits,
-> +	.get_num_devices	= f2fs_get_num_devices,
-> +	.get_devices		= f2fs_get_devices,
->  };
->  #endif
->  
-> 
+I agree that the current semantics are mentally taxing and we should generally 
+avoid exposing the implementation details outside of memcg where possible. Do 
+you have a suggested rework? :-)
