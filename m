@@ -2,124 +2,223 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A13A5200037
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 Jun 2020 04:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B6AB200038
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 Jun 2020 04:31:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726278AbgFSCbK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 18 Jun 2020 22:31:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53424 "EHLO
+        id S1727047AbgFSCbN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 18 Jun 2020 22:31:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726196AbgFSCbJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 18 Jun 2020 22:31:09 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DB8CC06174E
-        for <linux-ext4@vger.kernel.org>; Thu, 18 Jun 2020 19:31:08 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id l11so8166102wru.0
-        for <linux-ext4@vger.kernel.org>; Thu, 18 Jun 2020 19:31:08 -0700 (PDT)
+        with ESMTP id S1726196AbgFSCbL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 18 Jun 2020 22:31:11 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FBB4C0613EE
+        for <linux-ext4@vger.kernel.org>; Thu, 18 Jun 2020 19:31:09 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id d66so3741137pfd.6
+        for <linux-ext4@vger.kernel.org>; Thu, 18 Jun 2020 19:31:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yiWrnPLf7Tt3qVA6DFfe/vRtls4UslWtfUz1t40GdvQ=;
-        b=LSvyYBzIvXbbLR8pHyx5MUXAXmQBOAI31NNiEZOfSJrVCnll1k6EaLaA4D2wXH7Zv2
-         J5YTEEBYQta1rEv426pDQvrSVsm+ZXiprW/kKI1npk3OI/o1kb5K/y3Jtv6srHtCpX6O
-         OBQWRI0sdPsJPYjzqUFBP7cCqsEF4ju8GKQlZt6t7ISjpTYCZZnUt5vBzX8q3bmHa1dP
-         JxiAQ6denVlxVNdMU7OkaxRZ30400YiBXr2cn4To6wjcErE+GoBp66ML6N+Zlw2XGj9I
-         e2+vraFJyGEd8TdSM3Yh5hZQ53xHQDQe4LUf2wAXeeYCz34+fz2C2efAMO3/1XU1zMTQ
-         u+AQ==
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=pP39j/TyQZt962BeO/zkB9ZVC5jdvpfb8Y+HnDseHwA=;
+        b=IpRp2PW5ozHb1S7GL/K/Srk0JZ1G7zyF08llr/X3MrlwDYeXYZ6vWbgiBI/vM5eunj
+         U4qZVjiKrwBzhH8FHt118RN7Dc1PXdIgwnXlMoqvL5FsvmpAjoXiuxP1eteQQEFRx7cO
+         1egJ8HlmnefYpqJ6o6DWqtGuqRbqKcQxWRuB7XopBD+1XtsowQL6eZvKpYjT6l71UlNS
+         cfp3I3mraMGN5KJlYG4XPC/ytDXatQT0O6Da61d3ab8+FkoyJzk0/IfTFujCfWAgs3v3
+         Xaz6qXRTIYAu7cQ1E61OOifB8HSSsYhmIlRwDypJbOoJGV3K7pq4A1XeFB7tHinHlZat
+         EDXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yiWrnPLf7Tt3qVA6DFfe/vRtls4UslWtfUz1t40GdvQ=;
-        b=c27pFMgZeiyni6CUP91RL0GvpH5f/NsRtzLmTb4XPOPRYl5c9FnmRAL9we5qANdPta
-         QapgIgjFbZs/ZyXkBul1EnXHJvkpGVlxJCK7getSfUdk4mc6mp3/SBJggzKWRzG8CYb7
-         QtqjhB0FY6DmUdztGpxR5JXBtj6L87tXMjg9xxTt5s0amw01fPhc4eUPgfpRlWSzcIs9
-         4XD8jfjt6nonXu/JP7M5uew/qgo4WLLNB6VRCls+JRzMQrWi7UlCgAwctdyJ4BiSdnVF
-         HbJq0KYirZVPkN0YCLW48Exnun6zmrZQFr2t7o59FsXIh93bnRIDcDx0/gLmaFp4vX1f
-         sOBw==
-X-Gm-Message-State: AOAM530dXcx/Ibj/1SbHoKRwNqGYpEWuRl3QJDI+iazxXUmif3yPb6zX
-        RLCJhhVb7qDmtXAjDbUu8my28XawmF0LJCkAqt0zJ1iP
-X-Google-Smtp-Source: ABdhPJxDxj66RIp9WEBj8P8l78/C+B6Y3eIO/kuGCTqi4kHWsUKls4jhw4JqhG59qzZ1sBTiYbIjOZF7ffCUFoWJEFE=
-X-Received: by 2002:adf:8521:: with SMTP id 30mr1392726wrh.238.1592533866579;
- Thu, 18 Jun 2020 19:31:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <1592533574-24249-1-git-send-email-wangshilong1991@gmail.com>
-In-Reply-To: <1592533574-24249-1-git-send-email-wangshilong1991@gmail.com>
-From:   Wang Shilong <wangshilong1991@gmail.com>
-Date:   Fri, 19 Jun 2020 10:30:49 +0800
-Message-ID: <CAP9B-QnauzeJtbTYvUAHoXbJqKeu-UBGTSjVg2R=DESWqg5dDA@mail.gmail.com>
-Subject: Re: [PATCH v2] Valgrind reported error messages like following:
-To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-Cc:     ebiggers@kernel.org, Wang Shilong <wshilong@ddn.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=pP39j/TyQZt962BeO/zkB9ZVC5jdvpfb8Y+HnDseHwA=;
+        b=FTEUO1gPHcxRLMMdjXqBV3mFjsn/DjaH8Knj+WHEKCiGOYFiF8hbFG3vtmsncxziJt
+         1er+YNBVdZlxZqqsNxgrafz3j5xKdLAWGe8tY0+sVkKE9bY7Ro3zzxsuuHBRxFCaDjbn
+         XIRRo1BzZP/GHawQUOLEuFuxxYytLFgvV6jv6PRVaJIZyNlOlDBt7INVgux6xQK1jBIj
+         Hl1u0DMaMEp4/lEfMZounv4k/Q6p4bNxBjTLQrapjTSQIP2x9eipToVkkNRp6TuxnjNZ
+         3RK5AE+Mk4bwLAOig7VuThUSIvJ/gubtttIF0hI5v+6B0xQMDXuOpdKCOIKT0p8pBvEp
+         sZcA==
+X-Gm-Message-State: AOAM532JBFdXM2IEH97bwbrabGfrfa4PGciTMPxSJ/9fwx55eGE0N9O7
+        J+70sp+gt0HE/MQal85xs+261Q==
+X-Google-Smtp-Source: ABdhPJzUG3m8+PRl8Nfte5L+vPNKXBA8oPCqD+EgMHIhPjszxHw+WgXbMJ0FNAg5WOePFWybAcsRzA==
+X-Received: by 2002:a05:6a00:1592:: with SMTP id u18mr6119395pfk.26.1592533868886;
+        Thu, 18 Jun 2020 19:31:08 -0700 (PDT)
+Received: from [192.168.10.160] (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id y7sm3714565pjm.54.2020.06.18.19.31.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 18 Jun 2020 19:31:08 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <B9A0A2A9-25B3-4238-A24D-4F77DD1FEABC@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_0E26836E-A3D2-4541-A52E-4DA3E4BD0F4B";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH 0/1] ext4: fix potential negative array index in do_split
+Date:   Thu, 18 Jun 2020 20:31:05 -0600
+In-Reply-To: <d08d63e9-8f74-b571-07c7-828b9629ce6a@redhat.com>
+Cc:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
+To:     Eric Sandeen <sandeen@redhat.com>
+References: <d08d63e9-8f74-b571-07c7-828b9629ce6a@redhat.com>
+X-Mailer: Apple Mail (2.3273)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Sorry, please ignore this version, patch title is wrong...
 
-On Fri, Jun 19, 2020 at 10:26 AM Wang Shilong <wangshilong1991@gmail.com> wrote:
->
-> From: Wang Shilong <wshilong@ddn.com>
->
-> ==129205==  Address 0x1b804b04 is 4 bytes after a block of size 4,096 alloc'd
-> ==129205==    at 0x483980B: malloc (vg_replace_malloc.c:307)
-> ==129205==    by 0x44F973: ext2fs_get_mem (ext2fs.h:1846)
-> ==129205==    by 0x44F973: ext2fs_get_pathname (get_pathname.c:162)
-> ==129205==    by 0x430917: print_pathname (message.c:212)
-> ==129205==    by 0x430FB1: expand_percent_expression (message.c:462)
-> ==129205==    by 0x430FB1: print_e2fsck_message (message.c:544)
-> ==129205==    by 0x430BED: expand_at_expression (message.c:262)
-> ==129205==    by 0x430BED: print_e2fsck_message (message.c:528)
-> ==129205==    by 0x430450: fix_problem (problem.c:2494)
-> ==129205==    by 0x423F8B: e2fsck_process_bad_inode (pass2.c:1929)
-> ==129205==    by 0x425AE8: check_dir_block (pass2.c:1407)
-> ==129205==    by 0x426942: check_dir_block2 (pass2.c:961)
-> ==129205==    by 0x445736: ext2fs_dblist_iterate3.part.0 (dblist.c:254)
-> ==129205==    by 0x423835: e2fsck_pass2 (pass2.c:187)
-> ==129205==    by 0x414B19: e2fsck_run (e2fsck.c:257)
->
-> Dir block might be corrupted and cause the next dirent is out
-> of block size boundary, even though we have the check to avoid
-> problem, memory check tools like valgrind still complains it.
->
-> Patch try to fix the problem by checking if offset exceed max
-> offset firstly before getting the pointer.
->
-> Signed-off-by: Wang Shilong <wshilong@ddn.com>
-> ---
-> v1->v2:
-> kept same return value for corruption case as before.
-> ---
->  lib/ext2fs/csum.c | 8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
->
-> diff --git a/lib/ext2fs/csum.c b/lib/ext2fs/csum.c
-> index c2550365..417a1fba 100644
-> --- a/lib/ext2fs/csum.c
-> +++ b/lib/ext2fs/csum.c
-> @@ -266,16 +266,14 @@ static errcode_t __get_dirent_tail(ext2_filsys fs,
->         d = dirent;
->         top = EXT2_DIRENT_TAIL(dirent, fs->blocksize);
->
-> -       rec_len = translate(d->rec_len);
->         while ((void *) d < top) {
-> -               if ((rec_len < 8) || (rec_len & 0x03))
-> +               rec_len = translate(d->rec_len);
-> +               if ((rec_len < 8) || (rec_len & 0x03) ||
-> +                   (rec_len > (char *)dirent + fs->blocksize - (char *)d))
->                         return EXT2_ET_DIR_CORRUPTED;
->                 d = (struct ext2_dir_entry *)(((char *)d) + rec_len);
-> -               rec_len = translate(d->rec_len);
->         }
->
-> -       if ((char *)d > ((char *)dirent + fs->blocksize))
-> -                       return EXT2_ET_DIR_CORRUPTED;
->         if (d != top)
->                 return EXT2_ET_DIR_NO_SPACE_FOR_CSUM;
->
-> --
-> 2.25.4
->
+--Apple-Mail=_0E26836E-A3D2-4541-A52E-4DA3E4BD0F4B
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
+
+On Jun 17, 2020, at 1:01 PM, Eric Sandeen <sandeen@redhat.com> wrote:
+>=20
+> We recently had a report of a panic in do_split; the filesystem in =
+question
+> panicked a distribution kernel when trying to add a new directory =
+entry;
+> the behavior/bug persists upstream.
+>=20
+> The directory block in question had lots of unused and un-coalesced
+> entries, like this, printed from the loop in ext4_insert_dentry():
+>=20
+> [32778.024654] reclen 44 for name len 36
+> [32778.028745] start: de ffff9f4cb5309800 top ffff9f4cb5309bd4
+> [32778.034971]  offset 0 nlen 28 rlen 40, rlen-nlen 12, reclen 44 name =
+<empty>
+> [32778.042744]  offset 40 nlen 28 rlen 28, rlen-nlen 0, reclen 44 name =
+<empty>
+> [32778.050521]  offset 68 nlen 32 rlen 32, rlen-nlen 0, reclen 44 name =
+<empty>
+> [32778.058294]  offset 100 nlen 28 rlen 28, rlen-nlen 0, reclen 44 =
+name <empty>
+> [32778.066166]  offset 128 nlen 28 rlen 28, rlen-nlen 0, reclen 44 =
+name <empty>
+> [32778.074035]  offset 156 nlen 28 rlen 28, rlen-nlen 0, reclen 44 =
+name <empty>
+> [32778.081907]  offset 184 nlen 24 rlen 24, rlen-nlen 0, reclen 44 =
+name <empty>
+> [32778.089779]  offset 208 nlen 36 rlen 36, rlen-nlen 0, reclen 44 =
+name <empty>
+> [32778.097648]  offset 244 nlen 12 rlen 12, rlen-nlen 0, reclen 44 =
+name REDACTED
+> [32778.105227]  offset 256 nlen 24 rlen 24, rlen-nlen 0, reclen 44 =
+name <empty>
+> [32778.113099]  offset 280 nlen 24 rlen 24, rlen-nlen 0, reclen 44 =
+name REDACTED
+> [32778.122134]  offset 304 nlen 20 rlen 20, rlen-nlen 0, reclen 44 =
+name REDACTED
+> [32778.130780]  offset 324 nlen 16 rlen 16, rlen-nlen 0, reclen 44 =
+name REDACTED
+> [32778.138746]  offset 340 nlen 24 rlen 24, rlen-nlen 0, reclen 44 =
+name <empty>
+> [32778.146616]  offset 364 nlen 28 rlen 28, rlen-nlen 0, reclen 44 =
+name <empty>
+> [32778.154487]  offset 392 nlen 24 rlen 24, rlen-nlen 0, reclen 44 =
+name <empty>
+> [32778.162362]  offset 416 nlen 16 rlen 16, rlen-nlen 0, reclen 44 =
+name <empty>
+> ...
+>=20
+> the file we were trying to insert needed a record length of 44, and =
+none of the
+> non-coalesced <empty> slots were big enough, so we failed and told =
+do_split
+> to get to work.
+>=20
+> However, the sum of the non-empty entries didn't exceed half the block =
+size, so
+> the loop in do_split() iterated over all of the entries, ended at =
+"count," and
+> told us to split at (count - move) which is zero, and eventually:
+>=20
+>        continued =3D hash2 =3D=3D map[split - 1].hash;
+>=20
+> exploded on the negative index.
+>=20
+> It's an open question as to how this directory got into this format; =
+I'm not
+> sure if this should ever happen or not.  But at a minimum, I think we =
+should
+> be defensive here, hence [PATCH 1/1] will do that as an expedient fix =
+and
+> backportable patch for this situation.  There may be some other =
+underlying
+> probem which led to this directory structure if it's unexpected, and =
+maybe that
+> can come as another patch if anyone can investigate.
+
+I thought this might be a bit of a conundrum.  There is *supposed* to be
+merging of adjacent entries, but in some quick testing on RHEL7 (kernel
+3.10.0-957.12.1.el7, same with Debian 4.14.79) shows this to be broken
+if the files are deleted in dirent order (which would seem to be the =
+most
+common order):
+
+# mkdir tmp; cd tmp
+# touch file{1..100}
+# rm file{33,36,37,39,41,42,43,46,47}
+# debugfs -c -R "ls -ld tmp" /dev/sda1
+   366  100644 (1)      0      0       0 18-Jun-2020 18:43 file30
+<   369>      0 (1)      0      0   <reclen=3D  16> <deleted> file33
+<   372>      0 (1)      0      0   <reclen=3D  16> <deleted> file36
+<   373>      0 (1)      0      0   <reclen=3D  16> <deleted> file37
+<   375>      0 (1)      0      0   <reclen=3D  16> <deleted> file39
+<   377>      0 (1)      0      0   <reclen=3D  16> <deleted> file41
+<   378>      0 (1)      0      0   <reclen=3D  16> <deleted> file42
+<   379>      0 (1)      0      0   <reclen=3D  16> <deleted> file43
+<   382>      0 (1)      0      0   <reclen=3D  16> <deleted> file46
+<   383>      0 (1)      0      0   <reclen=3D  16> <deleted> file47
+    386  100644 (1)      0      0       0 18-Jun-2020 18:43 file50
+
+Above shows (with modified debugfs to show reclen for deleted files)
+that the dirents are *not* combined.  If the dirent *before* the
+other entries is deleted, then they are merged:
+
+# rm file30
+<   366>      0 (1)      0      0   <reclen=3D 160> <deleted> file30
+<   369>      0 (1)      0      0   <reclen=3D  16> <deleted> file33
+<   372>      0 (1)      0      0   <reclen=3D  16> <deleted> file36
+<   373>      0 (1)      0      0   <reclen=3D  16> <deleted> file37
+<   375>      0 (1)      0      0   <reclen=3D  16> <deleted> file39
+<   377>      0 (1)      0      0   <reclen=3D  16> <deleted> file41
+<   378>      0 (1)      0      0   <reclen=3D  16> <deleted> file42
+<   379>      0 (1)      0      0   <reclen=3D  16> <deleted> file43
+<   382>      0 (1)      0      0   <reclen=3D  16> <deleted> file46
+<   383>      0 (1)      0      0   <reclen=3D  16> <deleted> file47
+    386  100644 (1)      0      0       0 18-Jun-2020 18:43 file50
+
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_0E26836E-A3D2-4541-A52E-4DA3E4BD0F4B
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl7sI2kACgkQcqXauRfM
+H+BeRw//Vn8s8SPHaEuIrx1fN6UwJBCKeB5D893Yt6DHGaGULEd7Se7Irn0gi4NE
+C6z+R5+Gkyg1i40Ov6iAzzR2twKLHJGZ2WkgqsN31uQ3H6BhEoCjQ/CtYcGXMXmX
+RKl6IgspVM1AXueVbdi0o0OSNRHGLUfWKUIV0CE9qFhCXKrWlYOR9nFfhXd08UcG
+8DsvWY2NDAKkBQBbd702JmIdJlumGysSqxVkg3oq7xl1NicEcOpdxsiwyyfxLSGV
+GAHldFPFtft0F0IObC/g6jgrwO+MHnX1SwUjVWO+psy+92Q0N8Fb0HRIRsh/H9yZ
+zo7qFUV4fxfkto6c4ojlkPJSolg/fEW5L+HX/CTUpbG7cSdrBsS7Mie7Q00n0Bfd
+fjbps6NSTwTqEzdSnOGA5W0ZSfmR0GAvoVNicTOX+nWAEdgj5LOyl8uOH/gvIcWq
+YGJiwxZ0tRm8RddDUtLp4RGtmNbkwWH0298/p0EBaLDQ5Q5SPqepxzsCgDSjPsMC
+r2aMxNCPak7jw+xIzvoffwzagSkk9U31UpINIdHQgNtiJBZiYTe1JItNnNzb+GL5
+9xtvWh2OZZbEO2dF8CdiO/N2v12mQ2BQliCo8tt7itQFY4ZZO/K2A+w5iANaFn6G
+VyjGTjwz80vzzVvIYj0pLxob247zwER64JGw8vY6DIBep+kAK9o=
+=5OrI
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_0E26836E-A3D2-4541-A52E-4DA3E4BD0F4B--
