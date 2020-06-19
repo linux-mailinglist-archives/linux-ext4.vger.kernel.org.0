@@ -2,55 +2,55 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFE17200029
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 Jun 2020 04:26:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52921200034
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 Jun 2020 04:29:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729474AbgFSC00 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 18 Jun 2020 22:26:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52686 "EHLO
+        id S1728443AbgFSC36 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 18 Jun 2020 22:29:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726517AbgFSC0Z (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 18 Jun 2020 22:26:25 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C24EC06174E
-        for <linux-ext4@vger.kernel.org>; Thu, 18 Jun 2020 19:26:24 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id ne5so3434695pjb.5
-        for <linux-ext4@vger.kernel.org>; Thu, 18 Jun 2020 19:26:24 -0700 (PDT)
+        with ESMTP id S1726277AbgFSC36 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 18 Jun 2020 22:29:58 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1419BC06174E
+        for <linux-ext4@vger.kernel.org>; Thu, 18 Jun 2020 19:29:58 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id a45so3969671pje.1
+        for <linux-ext4@vger.kernel.org>; Thu, 18 Jun 2020 19:29:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id;
-        bh=UqVaagynY59uZFcArkL4jE3eXVudc6htekLGUw1E/tk=;
-        b=lgCQHYKPcB8+ix398h9MKCoh6iazDibzEVTqIyWSW3kgR0wM4Udd01ZJgc7zwzWtkH
-         mQwVklY6lZluPXWopvxd6sTj6VdunYNKlgnopj/3rdYyAJhr2B9mwdqGBwk16GbVPBoy
-         IR/7kcH+mLE4NfJHJ2tZsi45pD9D9wMveu6hO1PQoML28aZReGZg7Unzkmore5Q6Zvuq
-         CHEA4GgwKwRsZlONKGA6e7P87bfhLL5W01COHm6imq5lbBQkpVSpo2ko/c0BhJ1wBYoo
-         TzqcdxZpu6QHtRyj5XLNdrZTICWxzeLZbO3Cw5XK6PiNPT9BUQuNx/gfWDyTE8lvFySF
-         uRXg==
+        bh=1vNYzU723rnH34dc3A/qQf7lbzeNCyVcvQcdqpZQ58s=;
+        b=Illj7ntHhrwPos4H8sFiENT+JcsW9S2bzdA0TSlCuRPbNcd/nViiiskZK1eZpNfUzy
+         M0DK/K1jzglx9c2jaoRAb3+M+aCy4CqAorvTij7wQE9WejyODisIV3XOHApEQuxKIVzJ
+         wX/5EKtAsfNJIKj7mL6TyjZ3zGWGxcmshifMkjLEKwfWymMELx8/WGF2y32+mz50F/Wf
+         Fb1rwUEx8SrhitIOX10OdLqQeEvoIQDU0zw2o7ezRmD8OStQat8WYZVPi7f3ehw7bewK
+         38QXFLrKcl0K2HD3Vv5MmFEj0ayxU2XCPPjIFrmcyswcRlv1FCdd+/090lpmZx+zqt/N
+         aJhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=UqVaagynY59uZFcArkL4jE3eXVudc6htekLGUw1E/tk=;
-        b=WMCs1QP0ESXHJ9D0/wfNsuUJq4IU8qeh8dKCLaQqc+TobEl4f/X7i8iWuaiVj/fyxC
-         kcnOOfgwjaSHHpiY1rFtcj6mGa9vCAPSjUhZc9XdOxbee8Req7gb6AA7s6UCHJg/Lb+K
-         sCQr80PLMnyJMzctF3YxKBMz2l3RtLcvoUQh/oaSE4EhWsc2Ecg6yns691F3D3o77dne
-         UbIgEFamX5Jcw6JRPAeW4G9c0LWeCV6kVDlnzlmzFUi+OvANpUE4NnC83O+gJ7A86ndW
-         xSOJexxFDIkFlvyiptfQ07fiFRv3iOcXaTVjNf9lrR2/4ggqiu3idGikqEyLnvinvfvd
-         J1DA==
-X-Gm-Message-State: AOAM533wWaT93HoGdr1t7Y7glHUYlN+ksoUk6cVc8LGTfQAtbF9/4XFr
-        aLG/xEL464ebkixiU/odNLwDUwpwtcU=
-X-Google-Smtp-Source: ABdhPJz+Y2O1R5dqi7Wai8ZTkdeDxPt8UVRb+PEgeGE1BvDi6O9DIMgRlUMjJqyI1Uza2/O/rAv/CQ==
-X-Received: by 2002:a17:902:b40e:: with SMTP id x14mr6295248plr.285.1592533583348;
-        Thu, 18 Jun 2020 19:26:23 -0700 (PDT)
+        bh=1vNYzU723rnH34dc3A/qQf7lbzeNCyVcvQcdqpZQ58s=;
+        b=s9pKmTis6W2iFEWOoaz9xlt6seE0kx8HDIKb2j5LutgOmXKTgs0cUeH1327IeuQG7N
+         j6/MXGtRc0p7ZFroeSWbuZilyUuZG70usbj+KGfuZBgs1/Lgfdp5dZKTl4xjpJZ6ZOgK
+         mSCDfar8zIYBkPDq1/bgo6sPdyCtSOr3DSSEAmHPQ+Kksf7tTb6OR8LH56tM9pwCk4GS
+         sH85omFyrjx4syFLfsYQnLs8JqVoxclrAz0l3n+0cOlYBe9BagErkJ6Li/721mYv89dQ
+         mt6irstEtCC/HHMm8jxnbKlv4In1rPprfASy3rJXCKEYOf6o8DH0nSZoi47QYqfuYUe9
+         cAjw==
+X-Gm-Message-State: AOAM533p5hEt/nbIxpa31ZOfxCAcrwLQuOFXp04kdzHb+LZxJ+W1nz81
+        a10yNnuLmENaJRiI1JSvVVkIErzn+qM=
+X-Google-Smtp-Source: ABdhPJx6z+qCzvGtLZ0R2L2ylv9f5EKB+hyg54YI2AM/mkkzQSUIYlHyElXZmf7X3x36yQpWjk71ww==
+X-Received: by 2002:a17:902:bd05:: with SMTP id p5mr5941834pls.187.1592533797235;
+        Thu, 18 Jun 2020 19:29:57 -0700 (PDT)
 Received: from localhost.localdomain (ftp.datadirectnet.jp. [182.171.80.51])
-        by smtp.gmail.com with ESMTPSA id j123sm4118305pfd.160.2020.06.18.19.26.21
+        by smtp.gmail.com with ESMTPSA id y5sm3557158pgl.85.2020.06.18.19.29.55
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 18 Jun 2020 19:26:22 -0700 (PDT)
+        Thu, 18 Jun 2020 19:29:56 -0700 (PDT)
 From:   Wang Shilong <wangshilong1991@gmail.com>
 To:     linux-ext4@vger.kernel.org
 Cc:     ebiggers@kernel.org, Wang Shilong <wshilong@ddn.com>
-Subject: [PATCH v2] Valgrind reported error messages like following:
-Date:   Fri, 19 Jun 2020 11:26:14 +0900
-Message-Id: <1592533574-24249-1-git-send-email-wangshilong1991@gmail.com>
+Subject: [PATCH v3] ext2fs: fix to avoid invalid memory access
+Date:   Fri, 19 Jun 2020 11:29:48 +0900
+Message-Id: <1592533788-24392-1-git-send-email-wangshilong1991@gmail.com>
 X-Mailer: git-send-email 1.7.1
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
@@ -58,6 +58,8 @@ List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Wang Shilong <wshilong@ddn.com>
+
+Valgrind reported error messages like following:
 
 ==129205==  Address 0x1b804b04 is 4 bytes after a block of size 4,096 alloc'd
 ==129205==    at 0x483980B: malloc (vg_replace_malloc.c:307)
@@ -85,6 +87,8 @@ offset firstly before getting the pointer.
 
 Signed-off-by: Wang Shilong <wshilong@ddn.com>
 ---
+v2->v3:
+fixed patch title
 v1->v2:
 kept same return value for corruption case as before.
 ---
