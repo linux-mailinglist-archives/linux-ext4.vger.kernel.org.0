@@ -2,200 +2,133 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB6912001FC
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 Jun 2020 08:38:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2E3200207
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 Jun 2020 08:41:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727926AbgFSGh7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 19 Jun 2020 02:37:59 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:6287 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727808AbgFSGh6 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 19 Jun 2020 02:37:58 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id DBE6EBE6350EF092C04C;
-        Fri, 19 Jun 2020 14:37:54 +0800 (CST)
-Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
- (10.3.19.212) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 19 Jun
- 2020 14:37:52 +0800
-Subject: Re: [PATCH 3/4] f2fs: add inline encryption support
-To:     Eric Biggers <ebiggers@kernel.org>
-CC:     Satya Tangirala <satyat@google.com>,
-        <linux-fscrypt@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-ext4@vger.kernel.org>
-References: <20200617075732.213198-1-satyat@google.com>
- <20200617075732.213198-4-satyat@google.com>
- <5e78e1be-f948-d54c-d28e-50f1f0a92ab3@huawei.com>
- <20200618181357.GC2957@sol.localdomain>
- <c6f9d02d-623f-8b36-1f18-91c69bdd17c8@huawei.com>
- <20200619042048.GF2957@sol.localdomain>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <f1013767-9099-5b38-e3cd-b8caa639f66c@huawei.com>
-Date:   Fri, 19 Jun 2020 14:37:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1727799AbgFSGld (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 19 Jun 2020 02:41:33 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:22172 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725290AbgFSGld (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 19 Jun 2020 02:41:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592548891;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HHo0v39omm+I5Al+J8jMDPRd9NyZ03Vu0S8PHLO7kc8=;
+        b=b/yuxQj8wSeiZi3eCp6acNPRM8FyNRqXZe+yLFZm/n1lvy8ZVUNKmXcKNfrxxrHFOvJVvD
+        T3dxrSblxqCNDH2EHzY29cSMwYpaXjlA7UEzt7GqQtDpUXkSzswswK0I9YxxXiFti4kMGL
+        NsMY+Zp6drrgE0XOz+A9Ls23K2RdpgU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-389-XGVHbCYbPtWOXMIiitcW0A-1; Fri, 19 Jun 2020 02:41:29 -0400
+X-MC-Unique: XGVHbCYbPtWOXMIiitcW0A-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 122C7107ACCA
+        for <linux-ext4@vger.kernel.org>; Fri, 19 Jun 2020 06:41:29 +0000 (UTC)
+Received: from work (unknown [10.40.192.238])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 54A6E60CCC;
+        Fri, 19 Jun 2020 06:41:25 +0000 (UTC)
+Date:   Fri, 19 Jun 2020 08:41:22 +0200
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     Eric Sandeen <sandeen@redhat.com>
+Cc:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
+Subject: Re: [PATCH 1/1] ext4: fix potential negative array index in
+ do_split()
+Message-ID: <20200619064122.vj346xptid5viogv@work>
+References: <d08d63e9-8f74-b571-07c7-828b9629ce6a@redhat.com>
+ <f53e246b-647c-64bb-16ec-135383c70ad7@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200619042048.GF2957@sol.localdomain>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.134.22.195]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f53e246b-647c-64bb-16ec-135383c70ad7@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2020/6/19 12:20, Eric Biggers wrote:
-> On Fri, Jun 19, 2020 at 10:39:34AM +0800, Chao Yu wrote:
->> Hi Eric,
->>
->> On 2020/6/19 2:13, Eric Biggers wrote:
->>> Hi Chao,
->>>
->>> On Thu, Jun 18, 2020 at 06:06:02PM +0800, Chao Yu wrote:
->>>>> @@ -936,8 +972,11 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
->>>>>  
->>>>>  	inc_page_count(sbi, WB_DATA_TYPE(bio_page));
->>>>>  
->>>>> -	if (io->bio && !io_is_mergeable(sbi, io->bio, io, fio,
->>>>> -			io->last_block_in_bio, fio->new_blkaddr))
->>>>> +	if (io->bio &&
->>>>> +	    (!io_is_mergeable(sbi, io->bio, io, fio, io->last_block_in_bio,
->>>>> +			      fio->new_blkaddr) ||
->>>>> +	     !f2fs_crypt_mergeable_bio(io->bio, fio->page->mapping->host,
->>>>> +				       fio->page->index, fio)))
->>>>
->>>> bio_page->index, fio)))
->>>>
->>>>>  		__submit_merged_bio(io);
->>>>>  alloc_new:
->>>>>  	if (io->bio == NULL) {
->>>>> @@ -949,6 +988,8 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
->>>>>  			goto skip;
->>>>>  		}
->>>>>  		io->bio = __bio_alloc(fio, BIO_MAX_PAGES);
->>>>> +		f2fs_set_bio_crypt_ctx(io->bio, fio->page->mapping->host,
->>>>> +				       fio->page->index, fio, GFP_NOIO);
->>>>
->>>> bio_page->index, fio, GFP_NOIO);
->>>>
->>>
->>> We're using ->mapping->host and ->index.  Ordinarily that would mean the page
->>> needs to be a pagecache page.  But bio_page can also be a compressed page or a
->>> bounce page containing fs-layer encrypted contents.
->>
->> I'm concerning about compression + inlinecrypt case.
->>
->>>
->>> Is your suggestion to keep using fio->page->mapping->host (since encrypted pages
->>
->> Yup,
->>
->>> don't have a mapping), but start using bio_page->index (since f2fs apparently
->>
->> I meant that we need to use bio_page->index as tweak value in write path to
->> keep consistent as we did in read path, otherwise we may read the wrong
->> decrypted data later to incorrect tweak value.
->>
->> - f2fs_read_multi_pages (only comes from compression inode)
->>  - f2fs_alloc_dic
->>   - f2fs_set_compressed_page(page, cc->inode,
->> 					start_idx + i + 1, dic);
->>                                         ^^^^^^^^^^^^^^^^^
->>   - dic->cpages[i] = page;
->>  - for ()
->>      struct page *page = dic->cpages[i];
->>      if (!bio)
->>        - f2fs_grab_read_bio(..., page->index,..)
->>         - f2fs_set_bio_crypt_ctx(..., first_idx, ..)   /* first_idx == cpage->index */
->>
->> You can see that cpage->index was set to page->index + 1, that's why we need
->> to use one of cpage->index/page->index as tweak value all the time rather than
->> using both index mixed in read/write path.
->>
->> But note that for fs-layer encryption, we have used cpage->index as tweak value,
->> so here I suggest we can keep consistent to use cpage->index in inlinecrypt case.
+On Wed, Jun 17, 2020 at 02:19:04PM -0500, Eric Sandeen wrote:
+> If for any reason a directory passed to do_split() does not have enough
+> active entries to exceed half the size of the block, we can end up
+> iterating over all "count" entries without finding a split point.
 > 
-> Yes, inlinecrypt mustn't change the ciphertext that gets written to disk.
+> In this case, count == move, and split will be zero, and we will
+> attempt a negative index into map[].
 > 
->>
->>> *does* set ->index for compressed pages, and if the file uses fs-layer
->>> encryption then f2fs_set_bio_crypt_ctx() won't use the index anyway)?
->>>
->>> Does this mean the code is currently broken for compression + inline encryption
->>> because it's using the wrong ->index?  I think the answer is no, since
->>
->> I guess it's broken now for compression + inlinecrypt case.
->>
->>> f2fs_write_compressed_pages() will still pass the first 'nr_cpages' pagecache
->>> pages along with the compressed pages.  In that case, your suggestion would be a
->>> cleanup rather than a fix?
->>
->> That's a fix.
->>
+> Guard against this by detecting this case, and falling back to
+> split-to-half-of-count instead; in this case we will still have
+> plenty of space (> half blocksize) in each split block.
 > 
-> FWIW, I tested this, and it actually works both before and after your suggested
-> change.  The reason is that f2fs_write_compressed_pages() actually passes the
-> pagecache pages sequentially starting at 'start_idx_of_cluster(cc) + 1' for the
-> length of the compressed cluster.  That matches the '+ 1' adjustment elsewhere,
-> so we have fio->page->index == bio_page->index.
+> Fixes: ef2b02d3e617 ("ext34: ensure do_split leaves enough free space in both blocks")
+> Signed-off-by: Eric Sandeen <sandeen@redhat.com>
+> ---
+> 
+> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+> index a8aca4772aaa..8b60881f07ee 100644
+> --- a/fs/ext4/namei.c
+> +++ b/fs/ext4/namei.c
+> @@ -1858,7 +1858,7 @@ static struct ext4_dir_entry_2 *do_split(handle_t *handle, struct inode *dir,
+>  			     blocksize, hinfo, map);
+>  	map -= count;
+>  	dx_sort_map(map, count);
+> -	/* Split the existing block in the middle, size-wise */
+> +	/* Ensure that neither split block is over half full */
+>  	size = 0;
+>  	move = 0;
+>  	for (i = count-1; i >= 0; i--) {
+> @@ -1868,8 +1868,18 @@ static struct ext4_dir_entry_2 *do_split(handle_t *handle, struct inode *dir,
+>  		size += map[i].size;
+>  		move++;
+>  	}
+> -	/* map index at which we will split */
+> -	split = count - move;
+> +	/*
+> +	 * map index at which we will split
+> +	 *
+> +	 * If the sum of active entries didn't exceed half the block size, just
+> +	 * split it in half by count; each resulting block will have at least
+> +	 * half the space free.
+> +	 */
+> +	if (i > 0)
+> +		split = count - move;
+> +	else
+> +		split = count/2;
 
-I've checked the code, yes, that's correct.
+Won't we have exactly the same problem as we did before your commit
+ef2b02d3e617cb0400eedf2668f86215e1b0e6af ? Since we do not know how much
+space we actually moved we might have not made enough space for the new
+entry ?
 
-> 
-> I personally think the way the f2fs compression code works is really confusing.
-> Compressed pages don't have a 1:1 correspondence to pagecache pages, so there
-> should *not* be a pagecache page passed around when writing a compressed page.
+Also since we have the move == count when the problem appears then it's
+clear that we never hit the condition
 
-The only place we always use fio->page is:
-- f2fs_submit_page_write
- - trace_f2fs_submit_page_write(fio->page,..)
-  - f2fs__submit_page_bio
-   __entry->dev		= page_file_mapping(page)->host->i_sb->s_dev;
-   __entry->ino		= page_file_mapping(page)->host->i_ino;
+1865 →       →       /* is more than half of this entry in 2nd half of the block? */
+1866 →       →       if (size + map[i].size/2 > blocksize/2)
+1867 →       →       →       break;
 
-For compression case, we can get rid of using this parameter because bio_page
-(fio->compressed_page) has correct mapping info, however for fs-layer encryption
-case, bio_page (fio->encrypted_page, allocated by fscrypt_alloc_bounce_page())
-has not correct mapping info.
+in the loop. This is surprising but it means the the entries must have
+gaps between them that are small enough that we can't fit the entry
+right in ? Should not we try to compact it before splitting, or is it
+the case that this should have been done somewhere else ?
 
-> 
-> Anyway, here's the test script I used in case anyone else wants to use it.  But
-> we really need to write a proper f2fs compression + encryption test for xfstests
-> which decrypts and decompresses a file in userspace and verifies we get back the
-> original data.  (There are already ciphertext verification tests, but they don't
-> cover compression.)  Note that this test is needed even for the filesystem-layer
-> encryption which is currently supported.
+If we really want ot be fair and we want to split it right in the middle
+of the entries size-wise then we need to keep track of of sum of the
+entries and decide based on that, not blocksize/2. But maybe the problem
+could be solved by compacting the entries together because the condition
+seems to rely on that.
 
-Yes, let me check how to make this testcase a bit later.
+-Lukas
 
+> +
+>  	hash2 = map[split].hash;
+>  	continued = hash2 == map[split - 1].hash;
+>  	dxtrace(printk(KERN_INFO "Split block %lu at %x, %i/%i\n",
 > 
-> #!/bin/bash
 > 
-> set -e
-> 
-> DEV=/dev/vdb
-> 
-> umount /mnt &> /dev/null || true
-> mkfs.f2fs -f -O encrypt,compression,extra_attr $DEV
-> head -c 1000000 /dev/zero > /tmp/testdata
-> 
-> for opt1 in '-o inlinecrypt' ''; do
->         mount $DEV /mnt $opt1
->         rm -rf /mnt/.fscrypt /mnt/dir
->         fscrypt setup /mnt
->         mkdir /mnt/dir
->         chattr +c /mnt/dir
->         echo hunter2 | fscrypt encrypt /mnt/dir --quiet --source=custom_passphrase --name=secret
->         cp /tmp/testdata /mnt/dir/file
->         umount /mnt
->         for opt2 in '-o inlinecrypt' ''; do
->                 mount $DEV /mnt $opt2
->                 echo hunter2 | fscrypt unlock /mnt/dir --quiet
->                 cmp /mnt/dir/file /tmp/testdata
->                 umount /mnt
->         done
-> done
-> .
-> 
+
