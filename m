@@ -2,96 +2,106 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E964C201F95
-	for <lists+linux-ext4@lfdr.de>; Sat, 20 Jun 2020 03:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3279201FE5
+	for <lists+linux-ext4@lfdr.de>; Sat, 20 Jun 2020 04:53:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731598AbgFTB4e (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 19 Jun 2020 21:56:34 -0400
-Received: from fieldses.org ([173.255.197.46]:41234 "EHLO fieldses.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731589AbgFTB4e (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 19 Jun 2020 21:56:34 -0400
-Received: by fieldses.org (Postfix, from userid 2815)
-        id C14F191D8; Fri, 19 Jun 2020 21:56:33 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org C14F191D8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
-        s=default; t=1592618193;
-        bh=px2fxrVRGaefarQd+BFyouZ0r8UsW3DJrqCLsAmy3qs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=T9/sZJMpMOgd+/TkpaAoBFfhJJXx0Rt3kQv+PaHGiCUpVIwWIfRwp6CtiEPMpERoB
-         apwrhYqnopPoBS5TNsHZUdB6O6Kj4KWRBuE43RfpCw5geLcE6VwwarEHXeY4pRTXrx
-         3AErIh9dL/mYCpaZppI/hiDk67oG4cNXJLjt+f2E=
-Date:   Fri, 19 Jun 2020 21:56:33 -0400
-From:   "J. Bruce Fields" <bfields@fieldses.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        Eric Sandeen <sandeen@sandeen.net>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-xfs <linux-xfs@vger.kernel.org>, jlayton@redhat.com
-Subject: Re: [PATCH] fs: i_version mntopt gets visible through /proc/mounts
-Message-ID: <20200620015633.GA1516@fieldses.org>
-References: <20200618013026.ewnhvf64nb62k2yx@gabell>
- <20200618030539.GH2005@dread.disaster.area>
- <20200618034535.h5ho7pd4eilpbj3f@gabell>
- <20200618223948.GI2005@dread.disaster.area>
- <20200619022005.GA25414@fieldses.org>
- <20200619024455.GN2005@dread.disaster.area>
- <20200619204033.GB1564@fieldses.org>
- <20200619221044.GO2005@dread.disaster.area>
- <20200619222843.GB2650@fieldses.org>
- <20200620014957.GQ2005@dread.disaster.area>
+        id S1732107AbgFTCxa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 19 Jun 2020 22:53:30 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:6294 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1732006AbgFTCx3 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 19 Jun 2020 22:53:29 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 5016D6C9B5FF326A0C16;
+        Sat, 20 Jun 2020 10:53:26 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Sat, 20 Jun 2020
+ 10:53:20 +0800
+From:   "zhangyi (F)" <yi.zhang@huawei.com>
+To:     <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <jack@suse.cz>
+CC:     <adilger.kernel@dilger.ca>, <zhangxiaoxu5@huawei.com>,
+        <yi.zhang@huawei.com>, <linux-fsdevel@vger.kernel.org>
+Subject: [PATCH v3 0/5] ext4: fix inconsistency since async write metadata buffer error
+Date:   Sat, 20 Jun 2020 10:54:22 +0800
+Message-ID: <20200620025427.1756360-1-yi.zhang@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200620014957.GQ2005@dread.disaster.area>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Jun 20, 2020 at 11:49:57AM +1000, Dave Chinner wrote:
-> On Fri, Jun 19, 2020 at 06:28:43PM -0400, J. Bruce Fields wrote:
-> > On Sat, Jun 20, 2020 at 08:10:44AM +1000, Dave Chinner wrote:
-> > > On Fri, Jun 19, 2020 at 04:40:33PM -0400, J. Bruce Fields wrote:
-> > > > On Fri, Jun 19, 2020 at 12:44:55PM +1000, Dave Chinner wrote:
-> > > > > On Thu, Jun 18, 2020 at 10:20:05PM -0400, J. Bruce Fields wrote:
-> > > > > > My memory was that after Jeff Layton's i_version patches, there wasn't
-> > > > > > really a significant performance hit any more, so the ability to turn it
-> > > > > > off is no longer useful.
-> > > > > 
-> > > > > Yes, I completely agree with you here. However, with some
-> > > > > filesystems allowing it to be turned off, we can't just wave our
-> > > > > hands and force enable the option. Those filesystems - if the
-> > > > > maintainers chose to always enable iversion - will have to go
-> > > > > through a mount option deprecation period before permanently
-> > > > > enabling it.
-> > > > 
-> > > > I don't understand why.
-> > > > 
-> > > > The filesystem can continue to let people set iversion or noiversion as
-> > > > they like, while under the covers behaving as if iversion is always set.
-> > > > I can't see how that would break any application.  (Or even how an
-> > > > application would be able to detect that the filesystem was doing this.)
-> > > 
-> > > It doesn't break functionality, but it affects performance.
-> > 
-> > I thought you just agreed above that any performance hit was not
-> > "significant".
-> 
-> Yes, but that's just /my opinion/.
-> 
-> However, other people have different opinions on this matter (and we
-> know that from the people who considered XFS v4 -> v5 going slower
-> because iversion a major regression), and so we must acknowledge
-> those opinions even if we don't agree with them.
+Changes since v2:
+ - Christoph against the solution of adding callback in the block layer
+   that could let ext4 handle write error. So for simplicity, switch to
+   check the bdev mapping->wb_err when ext4 getting journal write access
+   as Jan suggested now. Maybe we could implement the callback through
+   introduce a special inode (e.g. a meta inode) for ext4 in the future.
+ - Patch 1: Add mapping->wb_err check and invoke ext4_error_err() in
+   ext4_journal_get_write_access() if wb_err is different from the
+   original one saved at mount time.
+ - Patch 2-3: Remove partial fix <7963e5ac90125> and <9c83a923c67d>.
+ - Patch 4: Fix another inconsistency problem since we may bypass the
+   journal's checkpoint procedure if we free metadata buffers which
+   were failed to async write out.
+ - Patch 5: Just a cleanup patch.
+   
+The above 5 patches are based on linux-5.8-rc1 and have been tested by
+xfstests, no newly increased failures.
 
-Do you have any of those reports handy?  Were there numbers?
+Thanks,
+Yi.
 
---b.
+-----------------------
+
+Original background
+===================
+
+This patch set point to fix the inconsistency problem which has been
+discussed and partial fixed in [1].
+
+Now, the problem is on the unstable storage which has a flaky transport
+(e.g. iSCSI transport may disconnect few seconds and reconnect due to
+the bad network environment), if we failed to async write metadata in
+background, the end write routine in block layer will clear the buffer's
+uptodate flag, but the data in such buffer is actually uptodate. Finally
+we may read "old && inconsistent" metadata from the disk when we get the
+buffer later because not only the uptodate flag was cleared but also we
+do not check the write io error flag, or even worse the buffer has been
+freed due to memory presure.
+
+Fortunately, if the jbd2 do checkpoint after async IO error happens,
+the checkpoint routine will check the write_io_error flag and abort the
+the journal if detect IO error. And in the journal recover case, the
+recover code will invoke sync_blockdev() after recover complete, it will
+also detect IO error and refuse to mount the filesystem.
+
+Current ext4 have already deal with this problem in __ext4_get_inode_loc()
+and commit 7963e5ac90125 ("ext4: treat buffers with write errors as
+containing valid data"), but it's not enough.
+
+[1] https://lore.kernel.org/linux-ext4/20190823030207.GC8130@mit.edu/
+
+
+zhangyi (F) (5):
+  ext4: abort the filesystem if failed to async write metadata buffer
+  ext4: remove ext4_buffer_uptodate()
+  ext4: remove write io error check before read inode block
+  jbd2: abort journal if free a async write error metadata buffer
+  jbd2: remove unused parameter in jbd2_journal_try_to_free_buffers()
+
+ fs/ext4/ext4.h        | 16 +++-------------
+ fs/ext4/ext4_jbd2.c   | 25 +++++++++++++++++++++++++
+ fs/ext4/inode.c       | 15 +++------------
+ fs/ext4/super.c       | 23 ++++++++++++++++++++---
+ fs/jbd2/transaction.c | 20 ++++++++++++++------
+ include/linux/jbd2.h  |  2 +-
+ 6 files changed, 66 insertions(+), 35 deletions(-)
+
+-- 
+2.25.4
+
