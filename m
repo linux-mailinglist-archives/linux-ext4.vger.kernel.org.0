@@ -2,195 +2,59 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D1672038E8
-	for <lists+linux-ext4@lfdr.de>; Mon, 22 Jun 2020 16:17:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9176203BF1
+	for <lists+linux-ext4@lfdr.de>; Mon, 22 Jun 2020 18:02:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728937AbgFVORM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 22 Jun 2020 10:17:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728328AbgFVORL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 22 Jun 2020 10:17:11 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C78E9C061573
-        for <linux-ext4@vger.kernel.org>; Mon, 22 Jun 2020 07:17:11 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id b5so8200496pgm.8
-        for <linux-ext4@vger.kernel.org>; Mon, 22 Jun 2020 07:17:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=S5nvfnVVW3icFlX7ze3NlAy4/LTMUqs0sSK3iwANFEw=;
-        b=CzirAu6QnnOd88c/cZrQ5xYmxM1chEavirRDGcBkPmqgyT8od/lrKrGO4aKVGh3hax
-         yycsquRECDR5xGPScYiIbT/ejnmSAblkU6CFVjHvJNin5yAJZ66KOgWN5m8IxgIXejwn
-         Iy5ejANxZM7LlUdO7H88LfqChXEtVeli6oKVtNc9UYBnAJ6BPz6lYiofuzEuoLVhPvFU
-         8HPkbyWv1bn7PLVJIs2UnFvn1NMCjB3qWjoaIejDSlBDQyLG5U6z3K56AP2DS9I+dNrK
-         377RsrtVQbW4NWtF8E9vtLNG8Ff7d8eyWjilLMBIU6Z54DDI8R/X8Ux66wxiOClXf5Tl
-         u4mA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=S5nvfnVVW3icFlX7ze3NlAy4/LTMUqs0sSK3iwANFEw=;
-        b=GpCQg3vWntf14VDO/cVAw1dRB3GjaRn7Is10A5obncfojPiy3ybIAl+zLqLDH3E5SY
-         BVX6/VuIEjyv+T/+SxlufQHhQMBpbgi8U0SysbgBxpMT6aOFkBnWovmxwgVR/pclfnVs
-         fNwEbkzqYCK45y7kUoA8mjcfYvF8DiCQu9ERrdcDynThgV40AF5J/r1yswgqB0IZAasE
-         tIOhH5sTfHz5HCKHiudkNVUQKgAu55MmRKftqA/ALiS+472JjcFobVKfaxVK3m2+FhEc
-         QYJGRrvRNWKMzyEV1U444AE1FCriD6MWE9PCfqSdR9mGvQfPu/SBQVofYC1ssEYDfsGo
-         3wXg==
-X-Gm-Message-State: AOAM531PCxu4PPBDKQAl/shw7CCxXmXWH2vxm9QQp/0GlLwuLJ9mQmmh
-        TmR9PymAlSEoE4hXmkqahg95ia4XFLk=
-X-Google-Smtp-Source: ABdhPJwk4K2lrIz6ofuDjcKKsKc7lZblmO8sfekCU3mlvmMLzZcvQKiAZV/nlgnQSBUGwwiHV1qvsw==
-X-Received: by 2002:aa7:9acc:: with SMTP id x12mr20505176pfp.24.1592835430759;
-        Mon, 22 Jun 2020 07:17:10 -0700 (PDT)
-Received: from localhost.localdomain (ftp.datadirectnet.jp. [182.171.80.51])
-        by smtp.gmail.com with ESMTPSA id v8sm13778933pfn.217.2020.06.22.07.17.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 22 Jun 2020 07:17:09 -0700 (PDT)
-From:   Wang Shilong <wangshilong1991@gmail.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     Wang Shilong <wshilong@ddn.com>, Shuichi Ihara <sihara@ddn.com>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Wang Shilong <wangshilong1991@gmail.com>
-Subject: [PATCH v2 2/2] ext4: avoid trimming block group if only few blocks freed
-Date:   Mon, 22 Jun 2020 23:16:59 +0900
-Message-Id: <1592835419-7841-1-git-send-email-wangshilong1991@gmail.com>
-X-Mailer: git-send-email 1.7.1
-In-Reply-To: <1592831677-13945-2-git-send-email-wangshilong1991@gmail.com>
-References: <1592831677-13945-2-git-send-email-wangshilong1991@gmail.com>
+        id S1729852AbgFVQCw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 22 Jun 2020 12:02:52 -0400
+Received: from sonic302-21.consmr.mail.ne1.yahoo.com ([66.163.186.147]:34946
+        "EHLO sonic302-21.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729585AbgFVQCW (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 22 Jun 2020 12:02:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1592841741; bh=cK2qy9Lv5SAgMg9nAvfVmkJPj46H3ss3vOVyjpHm6Nk=; h=Date:From:Reply-To:Subject:References:From:Subject; b=imnMzKvnrwdEkzevY9v55JCHWrS7mFcRp2xLflBpdsWBX5v32iTt1Jwj292Sqyxc6zTWfVf6UW3RltjDxv8H8ZAxxFg96tpPBoXA2f/GRkfTuiNcUr3yDzOGiHeT9IqR//B+9C8c9YoGDJPnAeuuKcQvLl1HS8J+STK4/r0WZ3jbtWFF0MKDjydg+AbeXShoRDHqwsqAaAi7D9jDq8wNDWBIR81puaAh7APGDPK32RqjpFS85hxXrbmotW59Gm/gC9SoLB52q4udtwMI++FS4HYmIHt+kUh9tNcMAsNUvFYo0HWMN59EiLf7lYGm/4AR40adfmghUfkmt4dYpTZmZQ==
+X-YMail-OSG: AhKkJLAVM1lDQ3XPPTTJWpEw.A_YPk4v7tBrtMEv9XTYrBN0vKxPyUyPokZyCLH
+ 0NPJEnbM.Ixt5u0eXkMwZesEBqS.rCtCLJgnod2Yg.I9TXOm0suNzcmJ92mBaA3mHgRFUusjI.6E
+ 3Gu4LEq019.le8uhDgpgUZ.YgtmiKAQJK6Bd4WPLqozbdEc8urSPipLpvwJTvKec65xmptWyRiVv
+ 5wejfhjut7ltVV2EWvbGnxpPsKrHXW63gZY0z7W.qC8yTTTM6xXIAPM6OYdYDYNn.6t5yJFWlC1P
+ OIdbZEYbWLsjaYGAZ3nhw68imywZs7JgVqTzxfR4ZQQxpuo3K8t9CM9O0hpOCt10FP__XXwyrmrD
+ TCoCE7B_Edu3G.zjOUn_rksR4jYB.m1Rp.1vZ_bLxnQwCiAul5Wqfj8PNdUGzT.zvxnBCUVqWq9J
+ 8hXM6oMyn8gklCF.R8KCTVo6NRJRq4thjGWIexrpJEGu0QolvkJTIALFEd6_slAReLmAOEup3xKy
+ .77XY9y0L2WZlQcf1QY4ryEv90HkLK9R59Zd1MxuC8qefRgY6y6xUFmVBWO8SDJCCjnQpB48PRDP
+ pRTSfD8hEjxrcMoyLQRR8ik6SRBEuL1N.zoJ2juJT7TtdJItukcqyaFlw7VOC6cm49vWb13NtnZ0
+ gQ2bWEWTG5v0uAlc54_ulltpKs.Fgm6hkagBtyzunEJ52PGAuturV.LPWyLoBYPiB1KC1HlV8gI8
+ yJqtTplsyPL2eALndgi_xv5WXRslUdVun50zfx9iDK5v_kT1lyZrnl7BpPa5N7roHYs5FCR3fGlt
+ 00HJ7sf.lnan3Im8PEbT96k38NwI6o6wqQk3XTx1x0TOib38VwKLgaWNY916uiRI1upzFCMVqmW6
+ hKW.i_z2qDWeeQaZVyBhDmfLTpSCKpEZXqJt.HWEa0uB7F6lyRoT1rQEzhMY_zbISz6YbRmtNDlq
+ VLlEzjYA6uILpMVD7EkmwXGP0XOJgDIix93HShigByDXDbmOlbnVPelpKvxPRFg3gnhpf.0Rc47i
+ 08Ic.liUMCD9zHGFCga9cXgoGaM8kFbRyDB3CB8uLHuuV8rIwOstkm24RLt0t3H1wtfuP85AC7r8
+ v042NbRsPX1Mj80LTxFt.KStV8ND4Dc1.IiPBslhVUpEA9f2YrGnkjCHG4.U4j0M0U489djAouYX
+ y9F8lECiGIH30pwUi5p9NUzViYBtaTM7ID67rbGjIKdkEdFs14rCm3KSzct0U2izLUB1NerwsRiF
+ IQWasnNhp61WOxqpf4zyo6bEJMCV1B8QkTG.8HvHCcJtAwYQhWHkE5SwAzxSGopkwGBC4.Xf9
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic302.consmr.mail.ne1.yahoo.com with HTTP; Mon, 22 Jun 2020 16:02:21 +0000
+Date:   Mon, 22 Jun 2020 16:02:19 +0000 (UTC)
+From:   Karim Zakari <kariim1960z@gmail.com>
+Reply-To: kzakari04@gmail.com
+Message-ID: <1507214802.1850985.1592841739314@mail.yahoo.com>
+Subject: URGENT REPLY.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <1507214802.1850985.1592841739314.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16138 YMailNodin Mozilla/5.0 (Windows NT 6.1; ) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Wang Shilong <wshilong@ddn.com>
 
-Now WAS_TRIMMED flag will be cleared if there are any blocks
-freed in this block group, this might be not good idea if there
-are only few blocks freed, since most of freed blocks have been
-issued discard before.
 
-So this patch tries to introduce another counter which record
-how many blocks freed since last time trimmed, WAS_TRIMMED flag
-will be only cleared if there are enough free blocks(default 128).
+Good-Day Friend,
 
-Also expose a new sys interface min_freed_blocks_to_trim to tune
-default behavior.
+ Hope you are doing great Today. I have a proposed business deal worthy (US$16.5 Million Dollars) that will benefit both parties. This is legitimate' legal and your personality will not be compromised.
 
-Cc: Shuichi Ihara <sihara@ddn.com>
-Cc: Andreas Dilger <adilger@dilger.ca>
-Cc: Wang Shilong <wangshilong1991@gmail.com>
-Signed-off-by: Wang Shilong <wshilong@ddn.com>
----
-changelog v1->v2:
-init bb_freed_last_trimmed to be zero during setup
----
- fs/ext4/ext4.h    |  7 +++++++
- fs/ext4/mballoc.c | 18 ++++++++++++++++--
- fs/ext4/sysfs.c   |  2 ++
- 3 files changed, 25 insertions(+), 2 deletions(-)
+Waiting for your response for more details, As you are willing to execute this business opportunity with me.
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 252754da2f1b..2da86d1ebe3f 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -1240,6 +1240,9 @@ extern void ext4_set_bits(void *bm, int cur, int len);
- /* Metadata checksum algorithm codes */
- #define EXT4_CRC32C_CHKSUM		1
- 
-+/* Default min freed blocks which we could clear TRIMMED flags */
-+#define DEFAULT_MIN_FREED_BLOCKS_TO_TRIM	128
-+
- /*
-  * Structure of the super block
-  */
-@@ -1533,6 +1536,9 @@ struct ext4_sb_info {
- 	/* the size of zero-out chunk */
- 	unsigned int s_extent_max_zeroout_kb;
- 
-+	/* Min freed blocks per group that we could run trim on it*/
-+	unsigned long s_min_freed_blocks_to_trim;
-+
- 	unsigned int s_log_groups_per_flex;
- 	struct flex_groups * __rcu *s_flex_groups;
- 	ext4_group_t s_flex_groups_allocated;
-@@ -3125,6 +3131,7 @@ struct ext4_group_info {
- 	struct rb_root  bb_free_root;
- 	ext4_grpblk_t	bb_first_free;	/* first free block */
- 	ext4_grpblk_t	bb_free;	/* total free blocks */
-+	ext4_grpblk_t	bb_freed_last_trimmed; /* total free blocks since last trimmed*/
- 	ext4_grpblk_t	bb_fragments;	/* nr of freespace fragments */
- 	ext4_grpblk_t	bb_largest_free_order;/* order of largest frag in BG */
- 	struct          list_head bb_prealloc_list;
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 235a316584d0..52ab9ac5be86 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -2558,6 +2558,7 @@ int ext4_mb_add_groupinfo(struct super_block *sb, ext4_group_t group,
- 	init_rwsem(&meta_group_info[i]->alloc_sem);
- 	meta_group_info[i]->bb_free_root = RB_ROOT;
- 	meta_group_info[i]->bb_largest_free_order = -1;  /* uninit */
-+	meta_group_info[i]->bb_freed_last_trimmed = 0;
- 
- 	mb_group_bb_bitmap_alloc(sb, meta_group_info[i], group);
- 	return 0;
-@@ -2763,6 +2764,8 @@ int ext4_mb_init(struct super_block *sb)
- 			sbi->s_mb_group_prealloc, sbi->s_stripe);
- 	}
- 
-+	sbi->s_min_freed_blocks_to_trim = DEFAULT_MIN_FREED_BLOCKS_TO_TRIM;
-+
- 	sbi->s_locality_groups = alloc_percpu(struct ext4_locality_group);
- 	if (sbi->s_locality_groups == NULL) {
- 		ret = -ENOMEM;
-@@ -5091,8 +5094,18 @@ void ext4_free_blocks(handle_t *handle, struct inode *inode,
- 	 * If the volume is mounted with -o discard, online discard
- 	 * is supported and the free blocks will be trimmed online.
- 	 */
--	if (!test_opt(sb, DISCARD))
--		EXT4_MB_GDP_CLEAR_TRIMMED(gdp);
-+	if (!test_opt(sb, DISCARD)) {
-+		e4b.bd_info->bb_freed_last_trimmed += count;
-+		/*
-+		 * Only clear the WAS_TRIMMED flag if there are
-+		 * several blocks freed, or if the group becomes
-+		 * totally 'empty'(free < num_itable_blocks + 2).
-+		 */
-+		if (e4b.bd_info->bb_freed_last_trimmed >=
-+		    sbi->s_min_freed_blocks_to_trim ||
-+		    e4b.bd_info->bb_free < (sbi->s_itb_per_group + 2))
-+			EXT4_MB_GDP_CLEAR_TRIMMED(gdp);
-+	}
- 	ext4_group_desc_csum_set(sb, block_group, gdp);
- 	ext4_unlock_group(sb, block_group);
- 
-@@ -5425,6 +5438,7 @@ ext4_trim_all_free(struct super_block *sb, ext4_group_t group,
- 		}
- 		ext4_lock_group(sb, group);
- 		EXT4_MB_GDP_SET_TRIMMED(gdp);
-+		e4b.bd_info->bb_freed_last_trimmed = 0;
- 		ext4_group_desc_csum_set(sb, group, gdp);
- 		ext4_unlock_group(sb, group);
- 		err = ext4_handle_dirty_metadata(handle, NULL, gdp_bh);
-diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
-index 6c9fc9e21c13..8ee4e7e3f125 100644
---- a/fs/ext4/sysfs.c
-+++ b/fs/ext4/sysfs.c
-@@ -216,6 +216,7 @@ EXT4_RW_ATTR_SBI_UI(mb_order2_req, s_mb_order2_reqs);
- EXT4_RW_ATTR_SBI_UI(mb_stream_req, s_mb_stream_request);
- EXT4_RW_ATTR_SBI_UI(mb_group_prealloc, s_mb_group_prealloc);
- EXT4_RW_ATTR_SBI_UI(extent_max_zeroout_kb, s_extent_max_zeroout_kb);
-+EXT4_RW_ATTR_SBI_UI(min_freed_blocks_to_trim, s_min_freed_blocks_to_trim);
- EXT4_ATTR(trigger_fs_error, 0200, trigger_test_error);
- EXT4_RW_ATTR_SBI_UI(err_ratelimit_interval_ms, s_err_ratelimit_state.interval);
- EXT4_RW_ATTR_SBI_UI(err_ratelimit_burst, s_err_ratelimit_state.burst);
-@@ -259,6 +260,7 @@ static struct attribute *ext4_attrs[] = {
- 	ATTR_LIST(mb_group_prealloc),
- 	ATTR_LIST(max_writeback_mb_bump),
- 	ATTR_LIST(extent_max_zeroout_kb),
-+	ATTR_LIST(min_freed_blocks_to_trim),
- 	ATTR_LIST(trigger_fs_error),
- 	ATTR_LIST(err_ratelimit_interval_ms),
- 	ATTR_LIST(err_ratelimit_burst),
--- 
-2.25.4
-
+Sincerely Yours,
+Mr. Karim Zakari.
