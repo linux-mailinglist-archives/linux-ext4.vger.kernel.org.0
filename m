@@ -2,61 +2,61 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 522642037A4
-	for <lists+linux-ext4@lfdr.de>; Mon, 22 Jun 2020 15:14:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D1672038E8
+	for <lists+linux-ext4@lfdr.de>; Mon, 22 Jun 2020 16:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728626AbgFVNOz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 22 Jun 2020 09:14:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45546 "EHLO
+        id S1728937AbgFVORM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 22 Jun 2020 10:17:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727851AbgFVNOy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 22 Jun 2020 09:14:54 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93287C061573
-        for <linux-ext4@vger.kernel.org>; Mon, 22 Jun 2020 06:14:54 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id x207so8400914pfc.5
-        for <linux-ext4@vger.kernel.org>; Mon, 22 Jun 2020 06:14:54 -0700 (PDT)
+        with ESMTP id S1728328AbgFVORL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 22 Jun 2020 10:17:11 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C78E9C061573
+        for <linux-ext4@vger.kernel.org>; Mon, 22 Jun 2020 07:17:11 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id b5so8200496pgm.8
+        for <linux-ext4@vger.kernel.org>; Mon, 22 Jun 2020 07:17:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=A8MjK80hHPbdpWiCN4eDD1WmKAq1ju8wZ3baFdZW/kw=;
-        b=uMCCCktMPDM+N1tOLRfAif9fHH/4RwksZEsY+/2K2QoGvhRNoirVUkS3LTydcnMf1b
-         mAnxeYYmhnI0ItZ071KTSPcXmXaEYt5ACnWlv+seYDqDpRRrvfk0kmJeDELzulFURlvs
-         NiAa5faC75uiM54tjQWfp18INx2fVTkBAhM5cLs/79rmq9BTptgMuHsaFmhks2yMFLmQ
-         9UfGvuG5+VLAFIwcuGwQllq+xcPq3dc1BJfy9E5TVkbWwhvTy0rSGBOLz0wNow2O6N73
-         lqqPxY/+TrwHlR4x6vH0YMZ0kH5tvO3VVdjrKX0ZFd41uQbR4ehbk1m43MC/xYdHR3MW
-         0X0Q==
+        bh=S5nvfnVVW3icFlX7ze3NlAy4/LTMUqs0sSK3iwANFEw=;
+        b=CzirAu6QnnOd88c/cZrQ5xYmxM1chEavirRDGcBkPmqgyT8od/lrKrGO4aKVGh3hax
+         yycsquRECDR5xGPScYiIbT/ejnmSAblkU6CFVjHvJNin5yAJZ66KOgWN5m8IxgIXejwn
+         Iy5ejANxZM7LlUdO7H88LfqChXEtVeli6oKVtNc9UYBnAJ6BPz6lYiofuzEuoLVhPvFU
+         8HPkbyWv1bn7PLVJIs2UnFvn1NMCjB3qWjoaIejDSlBDQyLG5U6z3K56AP2DS9I+dNrK
+         377RsrtVQbW4NWtF8E9vtLNG8Ff7d8eyWjilLMBIU6Z54DDI8R/X8Ux66wxiOClXf5Tl
+         u4mA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=A8MjK80hHPbdpWiCN4eDD1WmKAq1ju8wZ3baFdZW/kw=;
-        b=bay6MrjGC7rwaZax+9W9gdb0+pqwbazhZzJawpBbX/+vqKhINFDOyqR5VHcORe2xYU
-         Zc0x7XIpcmsEQSjOmmC1HuRmcc48RXkmDLkRB1dYL1hIMOksQAuRbhPzYrPPyA+PFcX/
-         VbUT3fh1Nf8BGiyjYUEP/SCkOEDKRigTugfv26NrrEWEeKgX19CXT1e5ur9BPkJLbEja
-         T8JL/TpYOTMUqQzZKdoHpPGxoGlxpJJkbm1Bxg5KDGjBTmdZnSEe7XzAy8nHOFaKXlpa
-         5x/TzrBUb3loBtw9gInym+vfY2nM24E1iuVIJOulgwuDfOa5kWGy2VXnyTfI1WYbbfx6
-         M2UA==
-X-Gm-Message-State: AOAM533AJzlNjD8joMVpmhZGHV1PV+KU97spmKrWv/ZdSBXSKi/amxPJ
-        9UK69fBFwPKcn6ejiNBPAT29UnrNF+Q=
-X-Google-Smtp-Source: ABdhPJzN+n0ypps39wwD4wrRNEQbIUeqRentLddm3MB3lZHelQH0sE+9JLGvFNTw9mwmI3oY4UtPMA==
-X-Received: by 2002:a62:1ac7:: with SMTP id a190mr19925991pfa.194.1592831693800;
-        Mon, 22 Jun 2020 06:14:53 -0700 (PDT)
+        bh=S5nvfnVVW3icFlX7ze3NlAy4/LTMUqs0sSK3iwANFEw=;
+        b=GpCQg3vWntf14VDO/cVAw1dRB3GjaRn7Is10A5obncfojPiy3ybIAl+zLqLDH3E5SY
+         BVX6/VuIEjyv+T/+SxlufQHhQMBpbgi8U0SysbgBxpMT6aOFkBnWovmxwgVR/pclfnVs
+         fNwEbkzqYCK45y7kUoA8mjcfYvF8DiCQu9ERrdcDynThgV40AF5J/r1yswgqB0IZAasE
+         tIOhH5sTfHz5HCKHiudkNVUQKgAu55MmRKftqA/ALiS+472JjcFobVKfaxVK3m2+FhEc
+         QYJGRrvRNWKMzyEV1U444AE1FCriD6MWE9PCfqSdR9mGvQfPu/SBQVofYC1ssEYDfsGo
+         3wXg==
+X-Gm-Message-State: AOAM531PCxu4PPBDKQAl/shw7CCxXmXWH2vxm9QQp/0GlLwuLJ9mQmmh
+        TmR9PymAlSEoE4hXmkqahg95ia4XFLk=
+X-Google-Smtp-Source: ABdhPJwk4K2lrIz6ofuDjcKKsKc7lZblmO8sfekCU3mlvmMLzZcvQKiAZV/nlgnQSBUGwwiHV1qvsw==
+X-Received: by 2002:aa7:9acc:: with SMTP id x12mr20505176pfp.24.1592835430759;
+        Mon, 22 Jun 2020 07:17:10 -0700 (PDT)
 Received: from localhost.localdomain (ftp.datadirectnet.jp. [182.171.80.51])
-        by smtp.gmail.com with ESMTPSA id v62sm2652291pfb.119.2020.06.22.06.14.51
+        by smtp.gmail.com with ESMTPSA id v8sm13778933pfn.217.2020.06.22.07.17.08
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 22 Jun 2020 06:14:53 -0700 (PDT)
+        Mon, 22 Jun 2020 07:17:09 -0700 (PDT)
 From:   Wang Shilong <wangshilong1991@gmail.com>
 To:     linux-ext4@vger.kernel.org
 Cc:     Wang Shilong <wshilong@ddn.com>, Shuichi Ihara <sihara@ddn.com>,
         Andreas Dilger <adilger@dilger.ca>,
         Wang Shilong <wangshilong1991@gmail.com>
-Subject: [PATCH 2/2] ext4: avoid trimming block group if only few blocks freed
-Date:   Mon, 22 Jun 2020 22:14:37 +0900
-Message-Id: <1592831677-13945-2-git-send-email-wangshilong1991@gmail.com>
+Subject: [PATCH v2 2/2] ext4: avoid trimming block group if only few blocks freed
+Date:   Mon, 22 Jun 2020 23:16:59 +0900
+Message-Id: <1592835419-7841-1-git-send-email-wangshilong1991@gmail.com>
 X-Mailer: git-send-email 1.7.1
-In-Reply-To: <1592831677-13945-1-git-send-email-wangshilong1991@gmail.com>
-References: <1592831677-13945-1-git-send-email-wangshilong1991@gmail.com>
+In-Reply-To: <1592831677-13945-2-git-send-email-wangshilong1991@gmail.com>
+References: <1592831677-13945-2-git-send-email-wangshilong1991@gmail.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
@@ -81,10 +81,13 @@ Cc: Andreas Dilger <adilger@dilger.ca>
 Cc: Wang Shilong <wangshilong1991@gmail.com>
 Signed-off-by: Wang Shilong <wshilong@ddn.com>
 ---
+changelog v1->v2:
+init bb_freed_last_trimmed to be zero during setup
+---
  fs/ext4/ext4.h    |  7 +++++++
- fs/ext4/mballoc.c | 17 +++++++++++++++--
+ fs/ext4/mballoc.c | 18 ++++++++++++++++--
  fs/ext4/sysfs.c   |  2 ++
- 3 files changed, 24 insertions(+), 2 deletions(-)
+ 3 files changed, 25 insertions(+), 2 deletions(-)
 
 diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
 index 252754da2f1b..2da86d1ebe3f 100644
@@ -119,10 +122,18 @@ index 252754da2f1b..2da86d1ebe3f 100644
  	ext4_grpblk_t	bb_largest_free_order;/* order of largest frag in BG */
  	struct          list_head bb_prealloc_list;
 diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 235a316584d0..d33ee1781b2c 100644
+index 235a316584d0..52ab9ac5be86 100644
 --- a/fs/ext4/mballoc.c
 +++ b/fs/ext4/mballoc.c
-@@ -2763,6 +2763,8 @@ int ext4_mb_init(struct super_block *sb)
+@@ -2558,6 +2558,7 @@ int ext4_mb_add_groupinfo(struct super_block *sb, ext4_group_t group,
+ 	init_rwsem(&meta_group_info[i]->alloc_sem);
+ 	meta_group_info[i]->bb_free_root = RB_ROOT;
+ 	meta_group_info[i]->bb_largest_free_order = -1;  /* uninit */
++	meta_group_info[i]->bb_freed_last_trimmed = 0;
+ 
+ 	mb_group_bb_bitmap_alloc(sb, meta_group_info[i], group);
+ 	return 0;
+@@ -2763,6 +2764,8 @@ int ext4_mb_init(struct super_block *sb)
  			sbi->s_mb_group_prealloc, sbi->s_stripe);
  	}
  
@@ -131,7 +142,7 @@ index 235a316584d0..d33ee1781b2c 100644
  	sbi->s_locality_groups = alloc_percpu(struct ext4_locality_group);
  	if (sbi->s_locality_groups == NULL) {
  		ret = -ENOMEM;
-@@ -5091,8 +5093,18 @@ void ext4_free_blocks(handle_t *handle, struct inode *inode,
+@@ -5091,8 +5094,18 @@ void ext4_free_blocks(handle_t *handle, struct inode *inode,
  	 * If the volume is mounted with -o discard, online discard
  	 * is supported and the free blocks will be trimmed online.
  	 */
@@ -152,7 +163,7 @@ index 235a316584d0..d33ee1781b2c 100644
  	ext4_group_desc_csum_set(sb, block_group, gdp);
  	ext4_unlock_group(sb, block_group);
  
-@@ -5425,6 +5437,7 @@ ext4_trim_all_free(struct super_block *sb, ext4_group_t group,
+@@ -5425,6 +5438,7 @@ ext4_trim_all_free(struct super_block *sb, ext4_group_t group,
  		}
  		ext4_lock_group(sb, group);
  		EXT4_MB_GDP_SET_TRIMMED(gdp);
