@@ -2,126 +2,89 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 829B8206933
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 Jun 2020 02:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B367206A3A
+	for <lists+linux-ext4@lfdr.de>; Wed, 24 Jun 2020 04:31:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388284AbgFXAzP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 23 Jun 2020 20:55:15 -0400
-Received: from mail109.syd.optusnet.com.au ([211.29.132.80]:43045 "EHLO
-        mail109.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387764AbgFXAzO (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 23 Jun 2020 20:55:14 -0400
-Received: from dread.disaster.area (pa49-180-124-177.pa.nsw.optusnet.com.au [49.180.124.177])
-        by mail109.syd.optusnet.com.au (Postfix) with ESMTPS id 3A00CD7B989;
-        Wed, 24 Jun 2020 10:55:10 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1jntgz-0001dO-9M; Wed, 24 Jun 2020 10:55:09 +1000
-Date:   Wed, 24 Jun 2020 10:55:09 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        Satya Tangirala <satyat@google.com>
-Subject: Re: [f2fs-dev] [PATCH 1/4] fs: introduce SB_INLINECRYPT
-Message-ID: <20200624005509.GA5369@dread.disaster.area>
-References: <20200617075732.213198-1-satyat@google.com>
- <20200617075732.213198-2-satyat@google.com>
- <20200618011912.GA2040@dread.disaster.area>
- <20200618031935.GE1138@sol.localdomain>
- <20200623004636.GE2040@dread.disaster.area>
- <20200623015017.GA844@sol.localdomain>
+        id S2388230AbgFXCbQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 23 Jun 2020 22:31:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387835AbgFXCbQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 23 Jun 2020 22:31:16 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD1CC061573
+        for <linux-ext4@vger.kernel.org>; Tue, 23 Jun 2020 19:31:16 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id l63so603654pge.12
+        for <linux-ext4@vger.kernel.org>; Tue, 23 Jun 2020 19:31:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7c4eGKW81B+OemcrKm4MQgz/3RkopxB8Ue6/O/Q2hkY=;
+        b=WRi6cON9DHNltT5oUfen6qCSLSIJTxtehftDAupFOLv5lH4kwPzBkqVd93ncge3wT7
+         smjELGR5bbeSLwfXHvOryXZZuk/tmzFHxw2ZR7jxe8/H++HCqXsvy63qSwVa9ODvTjdM
+         ZWE9r6+gepbIcJQ5UmiAi4EksJT/7AmtO9h1s=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7c4eGKW81B+OemcrKm4MQgz/3RkopxB8Ue6/O/Q2hkY=;
+        b=R4elUuZEPbM387ZoGZzsO47AZHaTcdcOTkZYbQWepQm+PuPx5URc9xNSK4APtYPT6y
+         uGnLtjc8GBqE1ti7eapt91W7Nthn5Lk9s9hBABprjja2cr4E/HAUelEvPS1OKKjyTRay
+         AVOIOvTdeIFkm4dTzi0ZxRUEaiKAnIHZj8Mduz9Zy0VUeXBMWqaQazCoypjvww2L2aoi
+         OMElN+ntPup+ZhbqQGh29jYS+n3rKFxEu8N2nQAdygoULAfPzi1KDVl+l4N9W8rV04bS
+         U9wEe5uZZHkAfe3xhrsx9dpvGpmkZBbVYqYE3DJFxlk/fegMGdpqXSeeKR2hR2tY3+7x
+         swAg==
+X-Gm-Message-State: AOAM533Jbk+8sc2VCYGIgFU57HgRhflemXLF3QKw+DEf3Eu1vIT2XQfK
+        IKDFYZOhf5+dI2GLhORlkzzUMw==
+X-Google-Smtp-Source: ABdhPJxxF+UKYEZSANjk+sh7xprPcF8VVIc5qFQtXIMQTDSq/BpkySP4V8qoYHH6sDJP0neTT63TJw==
+X-Received: by 2002:a63:ab02:: with SMTP id p2mr20296844pgf.416.1592965875545;
+        Tue, 23 Jun 2020 19:31:15 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:4cc0:7eee:97c9:3c1a])
+        by smtp.gmail.com with ESMTPSA id w10sm15338963pgm.70.2020.06.23.19.31.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Jun 2020 19:31:14 -0700 (PDT)
+From:   Gwendal Grignou <gwendal@chromium.org>
+To:     sarthakkukreti@chromium.org, tytso@mit.edu, ebiggers@google.com
+Cc:     linux-ext4@vger.kernel.org, Gwendal Grignou <gwendal@chromium.org>
+Subject: [PATCH] tune2fs: allow remove VERITY
+Date:   Tue, 23 Jun 2020 19:31:07 -0700
+Message-Id: <20200624023107.182118-1-gwendal@chromium.org>
+X-Mailer: git-send-email 2.27.0.111.gc72c7da667-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200623015017.GA844@sol.localdomain>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=QIgWuTDL c=1 sm=1 tr=0
-        a=k3aV/LVJup6ZGWgigO6cSA==:117 a=k3aV/LVJup6ZGWgigO6cSA==:17
-        a=kj9zAlcOel0A:10 a=nTHF0DUjJn0A:10 a=VwQbUJbxAAAA:8 a=JfrnYn6hAAAA:8
-        a=7-415B0cAAAA:8 a=_JHsV_7MbDpF1hl6ON4A:9 a=CjuIK1q_8ugA:10
-        a=AjGcO6oz07-iQ99wixmX:22 a=1CNFftbPRP8L7MoqJWF3:22
-        a=biEYGPWJfzWAr4FL6Ov7:22
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 06:50:17PM -0700, Eric Biggers wrote:
-> On Tue, Jun 23, 2020 at 10:46:36AM +1000, Dave Chinner wrote:
-> > On Wed, Jun 17, 2020 at 08:19:35PM -0700, Eric Biggers wrote:
-> > > Are you objecting to the use of a SB_* flag, or just to showing the flag in
-> > > show_sb_opts() instead of in the individual filesystems?  Note that the SB_*
-> > > flag was requested by Christoph
-> > > (https://lkml.kernel.org/r/20191031183217.GF23601@infradead.org/,
-> > > https://lkml.kernel.org/r/20191031212103.GA6244@infradead.org/).  We originally
-> > > used a function fscrypt_operations::inline_crypt_enabled() instead.
-> > 
-> > I'm objecting to the layering violations of having the filesystem
-> > control the mount option parsing and superblock feature flags, but
-> > then having no control over whether features that the filesystem has
-> > indicated to the VFS it is using get emitted as a mount option or
-> > not, and then having the VFS code unconditionally override the
-> > functionality that the filesystem uses because it thinks it's a
-> > mount option the filesystem supports....
-> > 
-> > For example, the current mess that has just come to light:
-> > filesystems like btrfs and XFS v5 which set SB_IVERSION
-> > unconditionally (i.e. it's not a mount option!) end up having that
-> > functionality turned off on remount because the VFS conflates
-> > MS_IVERSION with SB_IVERSION and so unconditionally clears
-> > SB_IVERSION because MS_IVERSION is not set on remount by userspace.
-> > Which userspace will never set be because the filesystems don't put
-> > "iversion" in their mount option strings because -its not a mount
-> > option- for those filesystems.
-> > 
-> > See the problem?  MS_IVERSION should be passed to the filesystem to
-> > deal with as a mount option, not treated as a flag to directly
-> > change SB_IVERSION in the superblock.
-> > 
-> > We really need to stop with the "global mount options for everyone
-> > at the VFS" and instead pass everything down to the filesystems to
-> > parse appropriately. Yes, provide generic helper functions to deal
-> > with the common flags that everything supports, but the filesystems
-> > should be masking off mount options they doesn't support changing
-> > before changing their superblock feature support mask....
-> 
-> I think the MS_* flags are best saved for mount options that are applicable to
-> many/most filesystems and are mostly/entirely implementable at the VFS level.
+Allow verity flag to be removed from the susperblock:
+Tests:
+- check the signed file is readable by older kernel after flag
+is removed. EXT4_VERITY_FL replaces EXT4_EXT_MIGRATE that has been
+removed in 2009.
+- when a new kernel is reinstalled, check reenabling verity flag
+allow signature to be verified (fsverity measure ...).
 
-That's the theory, but so far it's caused nothing but pain.
+Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
+---
+ misc/tune2fs.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-In reality, I think ithe only sane way forward if to stop mount
-option parsing in userspace (i.e. no new MS_* flags) for any new
-functionality as it only leads to future pain. i.e. all new mount
-options should be parsed entirely in the kernel by the filesystem
-parsing code....
-
-> I don't think "inlinecrypt" qualifies, since while it will be shared by the
-> block device-based filesystems that support fscrypt, that is only 2 filesystems
-> currently; and while some of the code needed to implement it is shared in
-> fs/crypto/, there are still substantial filesystem-specific hooks needed.
-
-Right. I wasn't suggesting this patchset should use an MS_ flag -
-it was pointing out the problem with the VFS code using SB_ flags to
-indicate enabled filesystem functionality unconditionally as a mount
-option that can be changed by userspace.
-
-> Hence this patchset intentionally does *not* allocate an MS_INLINECRYPT flag.
-> 
-> I believe that already addresses half of your concern, as it means
-> SB_INLINECRYPT can only be set/cleared by the filesystem itself, not by the VFS.
-> (But the commit message could use an explanation of this.)
-> 
-> The other half would be addressed by the following change, right?
-
-Yes, it does. Thanks, Eric!
-
-Cheers,
-
-Dave.
+diff --git a/misc/tune2fs.c b/misc/tune2fs.c
+index 314cc0d0..724b8014 100644
+--- a/misc/tune2fs.c
++++ b/misc/tune2fs.c
+@@ -198,7 +198,8 @@ static __u32 clear_ok_features[3] = {
+ 		EXT4_FEATURE_RO_COMPAT_QUOTA |
+ 		EXT4_FEATURE_RO_COMPAT_PROJECT |
+ 		EXT4_FEATURE_RO_COMPAT_METADATA_CSUM |
+-		EXT4_FEATURE_RO_COMPAT_READONLY
++		EXT4_FEATURE_RO_COMPAT_READONLY |
++		EXT4_FEATURE_RO_COMPAT_VERITY
+ };
+ 
+ /**
 -- 
-Dave Chinner
-david@fromorbit.com
+2.27.0.111.gc72c7da667-goog
+
