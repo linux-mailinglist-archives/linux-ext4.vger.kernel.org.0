@@ -2,104 +2,82 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 318C220786A
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 Jun 2020 18:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 738C0209749
+	for <lists+linux-ext4@lfdr.de>; Thu, 25 Jun 2020 01:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404601AbgFXQJa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 24 Jun 2020 12:09:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36520 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404531AbgFXQJ2 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 24 Jun 2020 12:09:28 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DCA2A206F7;
-        Wed, 24 Jun 2020 16:09:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593014968;
-        bh=1HN+aFFydwUDkXhTMITgOH48yWkTMel06ctBR26YTGo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Pm03Hm63aOgOvN1SpJ0Apo4gkR95HgkLJr2gv/rspIFOaxEoVyQw3sGRuhoVkuPIc
-         ZFdKIOXOzXLHwM1ok8kkPzynkHR56TsU99jdpPQEw0d+OLh8+LEwmHU5cu0+A3eC8u
-         cgbJcYT3NkYoPfUMhaLXXaf+rDnPyGYwWyoXo3rE=
-Date:   Wed, 24 Jun 2020 09:09:26 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Gwendal Grignou <gwendal@chromium.org>
-Cc:     Sarthak Kukreti <sarthakkukreti@chromium.org>, tytso@mit.edu,
-        linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] tune2fs: allow remove VERITY
-Message-ID: <20200624160926.GA200774@gmail.com>
-References: <20200624023107.182118-1-gwendal@chromium.org>
- <20200624024043.GA844@sol.localdomain>
- <CAPUE2uv0XXv40quqbKmdktgCD18DnSWh=Ekeiq2tAZOfmGmjGw@mail.gmail.com>
+        id S2387828AbgFXX4c (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 24 Jun 2020 19:56:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728035AbgFXX4b (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 24 Jun 2020 19:56:31 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F95CC061573
+        for <linux-ext4@vger.kernel.org>; Wed, 24 Jun 2020 16:56:31 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id p20so4125825ejd.13
+        for <linux-ext4@vger.kernel.org>; Wed, 24 Jun 2020 16:56:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=purestorage.com; s=google;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=hzYmUdowX/9ohN1yOJtSuqA6+VsT6eBxnBFftF12pAk=;
+        b=QzQI+lkIPD7JbBGXuSwo9Exikbf0Pfw4AVh6Ai43iW1mtILH1CZBCBj8gaGPAMRE2z
+         Tjqko8599YnQKyoH/KZJcoN9RkWp5vYur65uUi+hF9Q2AXO2Kx3t7AprQ/biaCRPqPUy
+         ls22VVFiGwUircLi3Oal4iynAPmd+7bPKVl94=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=hzYmUdowX/9ohN1yOJtSuqA6+VsT6eBxnBFftF12pAk=;
+        b=UPoPUkyM3NbGnxLMbixcIhKzlVAPO0JQqiYtBc254SC96Czauwgt8dYhCL8ikvob7q
+         tPepdOqCNQD7sCAsCAK4Kk08dEM+daEeic2K61NeF1+m8YC5KruMrbvNHklOp6vVJW1D
+         b/XHZgd6h3YLg85UFFKBXqhTufJ3ytJintM1dbOb/PFEVT1BzZhhNkgbJ0Y3qN6vpLn/
+         mIYW1SmyQY5ggETB6b5yvpfmCjVLFzFSqGtK8ENjuMMM8P3pRXaftmKrNGPvw3lBR+Cw
+         sTlSjV9P1hxWgLnLJV2zQbupskMOFuoeuEQJk8rS8RXVGajMXVFMpWajIlXqoUN6smlP
+         Eq0A==
+X-Gm-Message-State: AOAM530HsahtqbE4WSj5q+9rz4DBoH9/jgv11+keXiXNsTwtpOzjNWas
+        uXsLQyR8zdZpT4hma3yp8Ofvqwf1bllqS3R1E6OQ/ljOQ28=
+X-Google-Smtp-Source: ABdhPJwlK40lb+XSj0kn80FqYC/Cks6MC2mQBbI4KR9SwLmQoRE3tpOofePYqDiH5lf5GOXJVI+q5u4Uw7gNl9aqpMc=
+X-Received: by 2002:a17:906:4d13:: with SMTP id r19mr26871308eju.45.1593042989478;
+ Wed, 24 Jun 2020 16:56:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPUE2uv0XXv40quqbKmdktgCD18DnSWh=Ekeiq2tAZOfmGmjGw@mail.gmail.com>
+From:   Costa Sapuntzakis <costa@purestorage.com>
+Date:   Wed, 24 Jun 2020 16:56:18 -0700
+Message-ID: <CAABuPhaMHu+mmHbVKGt2L0tcE2-EMyd5VWcok7kAfJY3DQ=-vw@mail.gmail.com>
+Subject: [BUG] invalid superblock checksum possibly due to race
+To:     linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jun 24, 2020 at 12:06:22AM -0700, Gwendal Grignou wrote:
-> On Tue, Jun 23, 2020 at 7:40 PM Eric Biggers <ebiggers@kernel.org> wrote:
-> >
-> > On Tue, Jun 23, 2020 at 07:31:07PM -0700, Gwendal Grignou wrote:
-> > > Allow verity flag to be removed from the susperblock:
-> > > Tests:
-> > > - check the signed file is readable by older kernel after flag
-> > > is removed. EXT4_VERITY_FL replaces EXT4_EXT_MIGRATE that has been
-> > > removed in 2009.
-> > > - when a new kernel is reinstalled, check reenabling verity flag
-> > > allow signature to be verified (fsverity measure ...).
-> > >
-> > > Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
-> > > ---
-> > >  misc/tune2fs.c | 3 ++-
-> > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/misc/tune2fs.c b/misc/tune2fs.c
-> > > index 314cc0d0..724b8014 100644
-> > > --- a/misc/tune2fs.c
-> > > +++ b/misc/tune2fs.c
-> > > @@ -198,7 +198,8 @@ static __u32 clear_ok_features[3] = {
-> > >               EXT4_FEATURE_RO_COMPAT_QUOTA |
-> > >               EXT4_FEATURE_RO_COMPAT_PROJECT |
-> > >               EXT4_FEATURE_RO_COMPAT_METADATA_CSUM |
-> > > -             EXT4_FEATURE_RO_COMPAT_READONLY
-> > > +             EXT4_FEATURE_RO_COMPAT_READONLY |
-> > > +             EXT4_FEATURE_RO_COMPAT_VERITY
-> > >  };
-> > >
-> >
-> > tune2fs doesn't allow removing features like encrypt, casefold, verity, extents,
-> > and ea_inode because it doesn't know whether there are any inodes on the
-> > filesystem that are using these features.  These features can't be removed if
-> > there are any inodes using them.
->
-> The verity case is slightly different though: beside metadata,
-> encrypted files are useless.
-> In the case of fs-verity, the file is still readable, its size is
-> correct. Using debugfs, I checked the merkel tree blocks appended at
-> the end of the file are still mapped to the file inode, they are
-> marked as free when the file is removed.
-> Are you concerned about filesystem corruption? When I re-enable the
-> features and load a kernel that supports fs-verity, the protected
-> files are signed and read-only as expected.
+Our workload: taking snapshots repeatedly of an active ext4 filesystem
+(vdbench fwiw). e2fsck discovered a snapshot that had a corrupted
+superblock after journal replay. Diffing the corrupted superblock to
+the superblock before journal replay revealed that only s_last_orphan
+and the checksum had changed.
 
-The problem is that the old, non-verity-aware kernel will allow writing to
-verity files, because it ignores the verity inode flag.  That will get files'
-data out of sync with their Merkle trees, and possibly corrupt their Merkle
-trees.
+The following race could explain it:
 
-This is why verity is a RO_COMPAT feature rather than a COMPAT one.  This
-ensures that if the kernel isn't aware of verity, then the filesystem can only
-be mounted read-only.
+Thread 1 (T1): ext4_orphan_del -> update s_last_orphan to value A ->
+ext4_handle_dirty_super -> ext4_superblock_csum_set -- PAUSE right
+before setting es->s_checksum
 
-How about making 'tune2fs -O ^verity' remove the verity flag from all files
-that have it and remove their Merkle trees by truncating blocks past i_size?
-Would that work for you, or do you really need the verity-ness of files to be
-preserved over 'tune2fs -O ^verity; tune2fs -O verity'?
+T2: ext4_orphan_del -> update s_last_orphan to value B ->
+ext4_handle_dirty_super -> ext4_superblock_csum_set runs to completion
 
-- Eric
+T1: Resume and assign es->s_checksum
+
+Is there higher level synchronization going on that makes this race benign?
+
+If not, a spinlock around the calculation and assignment should fix it.
+
+The spinlock still has the race where s_last_orphan is being updated
+while the checksum is calculated. But the last thread to set
+s_last_orphan will also eventually try to recalculate the checksum and
+set it right (though it's possible some other thread will do it for
+it). And I'm guessing/hoping jbd2 won't flush the superblock to the
+journal and close a transaction until the references from
+journal_get_write_access drain. The checksum is recalculated before
+the get_write_access reference is dropped.
+
+-Costa
