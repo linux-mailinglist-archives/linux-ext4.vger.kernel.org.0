@@ -2,89 +2,86 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B367206A3A
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 Jun 2020 04:31:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 135BD206A42
+	for <lists+linux-ext4@lfdr.de>; Wed, 24 Jun 2020 04:40:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388230AbgFXCbQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 23 Jun 2020 22:31:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387835AbgFXCbQ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 23 Jun 2020 22:31:16 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD1CC061573
-        for <linux-ext4@vger.kernel.org>; Tue, 23 Jun 2020 19:31:16 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id l63so603654pge.12
-        for <linux-ext4@vger.kernel.org>; Tue, 23 Jun 2020 19:31:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7c4eGKW81B+OemcrKm4MQgz/3RkopxB8Ue6/O/Q2hkY=;
-        b=WRi6cON9DHNltT5oUfen6qCSLSIJTxtehftDAupFOLv5lH4kwPzBkqVd93ncge3wT7
-         smjELGR5bbeSLwfXHvOryXZZuk/tmzFHxw2ZR7jxe8/H++HCqXsvy63qSwVa9ODvTjdM
-         ZWE9r6+gepbIcJQ5UmiAi4EksJT/7AmtO9h1s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7c4eGKW81B+OemcrKm4MQgz/3RkopxB8Ue6/O/Q2hkY=;
-        b=R4elUuZEPbM387ZoGZzsO47AZHaTcdcOTkZYbQWepQm+PuPx5URc9xNSK4APtYPT6y
-         uGnLtjc8GBqE1ti7eapt91W7Nthn5Lk9s9hBABprjja2cr4E/HAUelEvPS1OKKjyTRay
-         AVOIOvTdeIFkm4dTzi0ZxRUEaiKAnIHZj8Mduz9Zy0VUeXBMWqaQazCoypjvww2L2aoi
-         OMElN+ntPup+ZhbqQGh29jYS+n3rKFxEu8N2nQAdygoULAfPzi1KDVl+l4N9W8rV04bS
-         U9wEe5uZZHkAfe3xhrsx9dpvGpmkZBbVYqYE3DJFxlk/fegMGdpqXSeeKR2hR2tY3+7x
-         swAg==
-X-Gm-Message-State: AOAM533Jbk+8sc2VCYGIgFU57HgRhflemXLF3QKw+DEf3Eu1vIT2XQfK
-        IKDFYZOhf5+dI2GLhORlkzzUMw==
-X-Google-Smtp-Source: ABdhPJxxF+UKYEZSANjk+sh7xprPcF8VVIc5qFQtXIMQTDSq/BpkySP4V8qoYHH6sDJP0neTT63TJw==
-X-Received: by 2002:a63:ab02:: with SMTP id p2mr20296844pgf.416.1592965875545;
-        Tue, 23 Jun 2020 19:31:15 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:4cc0:7eee:97c9:3c1a])
-        by smtp.gmail.com with ESMTPSA id w10sm15338963pgm.70.2020.06.23.19.31.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Jun 2020 19:31:14 -0700 (PDT)
-From:   Gwendal Grignou <gwendal@chromium.org>
-To:     sarthakkukreti@chromium.org, tytso@mit.edu, ebiggers@google.com
-Cc:     linux-ext4@vger.kernel.org, Gwendal Grignou <gwendal@chromium.org>
-Subject: [PATCH] tune2fs: allow remove VERITY
-Date:   Tue, 23 Jun 2020 19:31:07 -0700
-Message-Id: <20200624023107.182118-1-gwendal@chromium.org>
-X-Mailer: git-send-email 2.27.0.111.gc72c7da667-goog
+        id S2388278AbgFXCkq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 23 Jun 2020 22:40:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56506 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387985AbgFXCkq (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 23 Jun 2020 22:40:46 -0400
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 67858206E2;
+        Wed, 24 Jun 2020 02:40:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592966445;
+        bh=7RLWhFRPme88LM6U8zPTM0WpfAuSprjdk4k8kRDwiyQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LOt6a5fcr168MVqefLRaN+osouDQI5N/pBjEZNlBiSUC9m3rrXu2hRgp0ajnpmrzt
+         t1dTlFyMmPruQrAn0NgR/3pVU2GXNW3lIXS26flLIzQZ/YcGoPyyzt9ETAGbS0aSJy
+         fHszpe8VibDIM64aIX9/hEntTscMeFezDzDcu0yA=
+Date:   Tue, 23 Jun 2020 19:40:43 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Gwendal Grignou <gwendal@chromium.org>
+Cc:     sarthakkukreti@chromium.org, tytso@mit.edu,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] tune2fs: allow remove VERITY
+Message-ID: <20200624024043.GA844@sol.localdomain>
+References: <20200624023107.182118-1-gwendal@chromium.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200624023107.182118-1-gwendal@chromium.org>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Allow verity flag to be removed from the susperblock:
-Tests:
-- check the signed file is readable by older kernel after flag
-is removed. EXT4_VERITY_FL replaces EXT4_EXT_MIGRATE that has been
-removed in 2009.
-- when a new kernel is reinstalled, check reenabling verity flag
-allow signature to be verified (fsverity measure ...).
+On Tue, Jun 23, 2020 at 07:31:07PM -0700, Gwendal Grignou wrote:
+> Allow verity flag to be removed from the susperblock:
+> Tests:
+> - check the signed file is readable by older kernel after flag
+> is removed. EXT4_VERITY_FL replaces EXT4_EXT_MIGRATE that has been
+> removed in 2009.
+> - when a new kernel is reinstalled, check reenabling verity flag
+> allow signature to be verified (fsverity measure ...).
+> 
+> Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
+> ---
+>  misc/tune2fs.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/misc/tune2fs.c b/misc/tune2fs.c
+> index 314cc0d0..724b8014 100644
+> --- a/misc/tune2fs.c
+> +++ b/misc/tune2fs.c
+> @@ -198,7 +198,8 @@ static __u32 clear_ok_features[3] = {
+>  		EXT4_FEATURE_RO_COMPAT_QUOTA |
+>  		EXT4_FEATURE_RO_COMPAT_PROJECT |
+>  		EXT4_FEATURE_RO_COMPAT_METADATA_CSUM |
+> -		EXT4_FEATURE_RO_COMPAT_READONLY
+> +		EXT4_FEATURE_RO_COMPAT_READONLY |
+> +		EXT4_FEATURE_RO_COMPAT_VERITY
+>  };
+>  
 
-Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
----
- misc/tune2fs.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+tune2fs doesn't allow removing features like encrypt, casefold, verity, extents,
+and ea_inode because it doesn't know whether there are any inodes on the
+filesystem that are using these features.  These features can't be removed if
+there are any inodes using them.
 
-diff --git a/misc/tune2fs.c b/misc/tune2fs.c
-index 314cc0d0..724b8014 100644
---- a/misc/tune2fs.c
-+++ b/misc/tune2fs.c
-@@ -198,7 +198,8 @@ static __u32 clear_ok_features[3] = {
- 		EXT4_FEATURE_RO_COMPAT_QUOTA |
- 		EXT4_FEATURE_RO_COMPAT_PROJECT |
- 		EXT4_FEATURE_RO_COMPAT_METADATA_CSUM |
--		EXT4_FEATURE_RO_COMPAT_READONLY
-+		EXT4_FEATURE_RO_COMPAT_READONLY |
-+		EXT4_FEATURE_RO_COMPAT_VERITY
- };
- 
- /**
--- 
-2.27.0.111.gc72c7da667-goog
+There was recently a suggestion to make tune2fs scan the inode table to
+determine whether it is safe to remove these flags; see
+https://lkml.kernel.org/linux-ext4/C0761869-5FCD-4CC7-9635-96C18744A0F8@dilger.ca
+and
+https://lkml.kernel.org/linux-ext4/20200407053213.GC102437@sol.localdomain
 
+I think you'd need to implement that in order for clearing verity to be safe.
+
+Note that misc/tune2fs.8.in would also need to be updated to remove the sentence
+that says that clearing the verity feature is unsuppported.
+
+- Eric
