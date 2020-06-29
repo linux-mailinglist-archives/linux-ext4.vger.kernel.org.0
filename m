@@ -2,186 +2,139 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E04E620E0C8
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jun 2020 23:57:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84BFA20E179
+	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jun 2020 23:58:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731545AbgF2Utm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 29 Jun 2020 16:49:42 -0400
-Received: from mail-m964.mail.126.com ([123.126.96.4]:54182 "EHLO
-        mail-m964.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731557AbgF2Utk (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 29 Jun 2020 16:49:40 -0400
-X-Greylist: delayed 5420 seconds by postgrey-1.27 at vger.kernel.org; Mon, 29 Jun 2020 16:49:39 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=dZFXghp2i9BkRXeQIr
-        QISjtevrHQgS0lHVzMWGLDDZI=; b=lj9PiDYYMZOxqGFVGXaCBp+s71xwrYi66o
-        tNIizvnECV5i9rd0sDxGOaFrjeO8jd5GfhEa374YfNLPRbxAhd5Fl9FS59zPG8tO
-        DDPUNDhRhzg8wyXCQeQf7diukTLsSS6TQFGa7dEI7h2WOEjDW6BrsvyGm2SsyKME
-        Lp/tyPGbA=
-Received: from xr-hulk-k8s-node1933.gh.sankuai.com (unknown [101.236.11.2])
-        by smtp9 (Coremail) with SMTP id NeRpCgCHnS07uPlezqHWAg--.1769S2;
-        Mon, 29 Jun 2020 17:45:36 +0800 (CST)
-From:   Jiang Ying <jiangying8582@126.com>
-To:     Markus.Elfring@web.de, tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wanglong19@meituan.com, heguanjun@meituan.com
-Subject: [PATCH v3] ext4: fix direct I/O read error
-Date:   Mon, 29 Jun 2020 17:45:30 +0800
-Message-Id: <1593423930-5576-1-git-send-email-jiangying8582@126.com>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: NeRpCgCHnS07uPlezqHWAg--.1769S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxAw47WFW8tw4rCr1UZr4xZwb_yoWrGry5pr
-        nxCa15WrZ5Zr4xCanrK3ZrZFyFy3yDGFWUXry5u34UZr4Yg3s5KFWxKF17C3yUGrWF9w4F
-        qFZ8tryfAw1UAFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07U_cTdUUUUU=
-X-Originating-IP: [101.236.11.2]
-X-CM-SenderInfo: xmld0wp1lqwmqvysqiyswou0bp/1tbiXABSAFpEA7E69AAAss
+        id S2388322AbgF2U4L (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 29 Jun 2020 16:56:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731282AbgF2TNJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 29 Jun 2020 15:13:09 -0400
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FC25C0F26C6
+        for <linux-ext4@vger.kernel.org>; Mon, 29 Jun 2020 05:04:13 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id jx16so5087196pjb.6
+        for <linux-ext4@vger.kernel.org>; Mon, 29 Jun 2020 05:04:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=OgrownsdciRkQfHLu2Mfy3btRxxtBKOX+y4E3Oqteos=;
+        b=gBiZCVlEO4XDHJNS23BhAsQTP1jO1/1YSpaH/WgvMSS3FuMlqd+4vKZrSzJYaWnl/Y
+         1n1gSdCt3z+pNV3CigPeOXG4eWXKbpivWBuPyrfPGp1RIgFeEDVv/cPemO6wV3JCho0e
+         jtOIYCZIL5m5allS+ROBU+GL06J1VYIuxb9Z5y9RT3Zi8IiwzIYN+bmBk1wt2JfYac8c
+         Ye2I8lshSh/FtnYECOI3yuRPOKNSi/QlD9zFMx5r0MsMNroQ3ZPLZjUGeLkHYYQ4sm3/
+         3luLSZG+zTmBtBG1Ed7XTgsbFfmZSkITPVvXtYQ1D95XhQY/gcG72x8y0aBQeNDpQhaa
+         CvEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=OgrownsdciRkQfHLu2Mfy3btRxxtBKOX+y4E3Oqteos=;
+        b=ED2VK8H7YGsweZJrGjuJz6FAczBN8P5DP++H7SfeBK+dRAkFXZdMaPvGoL9WyJTjsD
+         8lygyILLHlzOTEtkIvqR9LNSWcl+IuKUQdehP/9T6BFB/58+VBmvzP+VM4aUmt+oEp1t
+         jDY3gEbAT32oJR3NOzRnat+MHWvzxt62PyjIAZW057lkf6CWv7IRN+wqIpkKBvNM/Pmu
+         url6dsSIVedXJR7VKPK0YocJ6fvMC86afbrF63MDlQL/tGl1NUb3J6B0H8PMgTzHplxl
+         UAXttYFyiVxe5MDzoKibThggKEiIqk8yXyjt53LuTqN/32HSmhFn2EcZNAGmMVWopbop
+         WkMg==
+X-Gm-Message-State: AOAM533j5s2XwmXMr6Si+nspdkuGHvoxDEJebyojFNGEbp4iWPO+XJfn
+        kgBwSM8QzDygs8DqSTpzE1OGDbk4YAk=
+X-Google-Smtp-Source: ABdhPJwYLTVSt9n1XjUVygrqIZ2mKYtW5G+8LSUlIBRmnIEmdQxeGLDbPT+he1blzav1wz1DLUaRqIPqKYM=
+X-Received: by 2002:a17:902:c408:: with SMTP id k8mr13536731plk.279.1593432252439;
+ Mon, 29 Jun 2020 05:04:12 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 12:04:01 +0000
+Message-Id: <20200629120405.701023-1-satyat@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.27.0.212.ge8ba1cc988-goog
+Subject: [PATCH v2 0/4] Inline Encryption Support for fscrypt
+From:   Satya Tangirala <satyat@google.com>
+To:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org
+Cc:     Satya Tangirala <satyat@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This patch is used to fix ext4 direct I/O read error when
-the read size is not aligned with block size.
+This patch series adds support for Inline Encryption to fscrypt, f2fs
+and ext4. It builds on the inline encryption support now present in
+the block layer, and has been rebased on v5.8-rc3.
 
-Then, I will use a test to explain the error.
+This patch series previously went though a number of iterations as part
+of the "Inline Encryption Support" patchset (last version was v13:
+https://lkml.kernel.org/r/20200514003727.69001-1-satyat@google.com).
 
-(1) Make a file that is not aligned with block size:
-	$dd if=/dev/zero of=./test.jar bs=1000 count=3
+Patch 1 introduces the SB_INLINECRYPT sb options, which filesystems
+should set if they want to use blk-crypto for file content en/decryption.
 
-(2) I wrote a source file named "direct_io_read_file.c" as following:
+Patch 2 adds inline encryption support to fscrypt. To use inline
+encryption with fscrypt, the filesystem must set the above mentioned
+SB_INLINECRYPT sb option. When this option is set, the contents of
+encrypted files will be en/decrypted using blk-crypto.
 
-	#include <stdio.h>
-	#include <stdlib.h>
-	#include <unistd.h>
-	#include <sys/file.h>
-	#include <sys/types.h>
-	#include <sys/stat.h>
-	#include <string.h>
-	#define BUF_SIZE 1024
+Patches 3 and 4 wire up f2fs and ext4 respectively to fscrypt support for
+inline encryption, and e.g ensure that bios are submitted with blocks
+that not only are contiguous, but also have continuous DUNs.
 
-	int main()
-	{
-		int fd;
-		int ret;
+This patchset was tested by running xfstests with the "inlinecrypt" mount
+option on ext4 and f2fs with test dummy encryption (the actual
+en/decryption of file contents was handled by the blk-crypto-fallback). It
+was also tested along with the UFS patches from the original series on some
+Qualcomm and Mediatek chipsets with hardware inline encryption support
+(refer to
+https://lkml.kernel.org/linux-scsi/20200501045111.665881-1-ebiggers@kernel.org/
+and
+https://lkml.kernel.org/linux-scsi/20200304022101.14165-1-stanley.chu@mediatek.com/
+for more details on those tests).
 
-		unsigned char *buf;
-		ret = posix_memalign((void **)&buf, 512, BUF_SIZE);
-		if (ret) {
-			perror("posix_memalign failed");
-			exit(1);
-		}
-		fd = open("./test.jar", O_RDONLY | O_DIRECT, 0755);
-		if (fd < 0){
-			perror("open ./test.jar failed");
-			exit(1);
-		}
-
-		do {
-			ret = read(fd, buf, BUF_SIZE);
-			printf("ret=%d\n",ret);
-			if (ret < 0) {
-				perror("write test.jar failed");
-			}
-		} while (ret > 0);
-
-		free(buf);
-		close(fd);
-	}
-
-(3) Compile the source file:
-	$gcc direct_io_read_file.c -D_GNU_SOURCE
-
-(4) Run the test program:
-	$./a.out
-
-	The result is as following:
-	ret=1024
-	ret=1024
-	ret=952
-	ret=-1
-	write test.jar failed: Invalid argument.
-
-I have tested this program on XFS filesystem, XFS does not have
-this problem, because XFS use iomap_dio_rw() to do direct I/O
-read. And the comparing between read offset and file size is done
-in iomap_dio_rw(), the code is as following:
-
-	if (pos < size) {
-		retval = filemap_write_and_wait_range(mapping, pos,
-				pos + iov_length(iov, nr_segs) - 1);
-
-		if (!retval) {
-			retval = mapping->a_ops->direct_IO(READ, iocb,
-						iov, pos, nr_segs);
-		}
-		...
-	}
-
-...only when "pos < size", direct I/O can be done, or 0 will be return.
-
-I have tested the fix patch on Ext4, it is up to the mustard of
-EINVAL in man2(read) as following:
-	#include <unistd.h>
-	ssize_t read(int fd, void *buf, size_t count);
-
-	EINVAL
-		fd is attached to an object which is unsuitable for reading;
-		or the file was opened with the O_DIRECT flag, and either the
-		address specified in buf, the value specified in count, or the
-		current file offset is not suitably aligned.
-
-So I think this patch can be applied to fix ext4 direct I/O error.
-
-However Ext4 introduces direct I/O read using iomap infrastructure
-on kernel 5.5, the patch is commit <b1b4705d54ab>
-("ext4: introduce direct I/O read using iomap infrastructure"),
-then Ext4 will be the same as XFS, they all use iomap_dio_rw() to do direct
-I/O read. So this problem does not exist on kernel 5.5 for Ext4.
-
-From above description, we can see this problem exists on all the kernel
-versions between kernel 3.14 and kernel 5.4. Please apply this patch
-on these kernel versions, or please use the method on kernel 5.5 to fix
-this problem.
-
-Fixes: 9fe55eea7e4b ("Fix race when checking i_size on direct i/o read")
-Co-developed-by: Wang Long <wanglong19@meituan.com>
-Signed-off-by: Wang Long <wanglong19@meituan.com>
-Signed-off-by: Jiang Ying <jiangying8582@126.com>
-
-Changes since V2:
-	Optimize the description of the commit message and make a variation for
-	the patch, e.g. with:
-
-		Before:
-			loff_t size;
-			size = i_size_read(inode);
-		After:
-			loff_t size = i_size_read(inode);
-
-Changes since V1:
-	Signed-off use real name and add "Fixes:" flag
-
----
- fs/ext4/inode.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 516faa2..a66b0ac 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -3821,6 +3821,11 @@ static ssize_t ext4_direct_IO_read(struct kiocb *iocb, struct iov_iter *iter)
- 	struct inode *inode = mapping->host;
- 	size_t count = iov_iter_count(iter);
- 	ssize_t ret;
-+	loff_t offset = iocb->ki_pos;
-+	loff_t size = i_size_read(inode);
-+
-+	if (offset >= size)
-+		return 0;
+Changes v1 => v2
+ - SB_INLINECRYPT mount option is shown by individual filesystems instead
+   of by the common VFS code since the option is parsed by filesystem
+   specific code, and is not a mount option applicable generically to
+   all filesystems.
+ - Make fscrypt_select_encryption_impl() return error code when it fails
+   to allocate memory.
+ - cleanups
  
- 	/*
- 	 * Shared inode_lock is enough for us - it protects against concurrent
+Changes v13 in original patchset => v1
+ - rename struct fscrypt_info::ci_key to ci_enc_key
+ - set dun bytes more precisely in fscrypt
+ - cleanups
+
+Eric Biggers (1):
+  ext4: add inline encryption support
+
+Satya Tangirala (3):
+  fs: introduce SB_INLINECRYPT
+  fscrypt: add inline encryption support
+  f2fs: add inline encryption support
+
+ Documentation/admin-guide/ext4.rst    |   6 +
+ Documentation/filesystems/f2fs.rst    |   7 +
+ Documentation/filesystems/fscrypt.rst |   3 +
+ fs/buffer.c                           |   7 +-
+ fs/crypto/Kconfig                     |   6 +
+ fs/crypto/Makefile                    |   1 +
+ fs/crypto/bio.c                       |  50 ++++
+ fs/crypto/crypto.c                    |   2 +-
+ fs/crypto/fname.c                     |   4 +-
+ fs/crypto/fscrypt_private.h           | 115 ++++++++-
+ fs/crypto/inline_crypt.c              | 351 ++++++++++++++++++++++++++
+ fs/crypto/keyring.c                   |   6 +-
+ fs/crypto/keysetup.c                  |  70 +++--
+ fs/crypto/keysetup_v1.c               |  16 +-
+ fs/ext4/inode.c                       |   4 +-
+ fs/ext4/page-io.c                     |   6 +-
+ fs/ext4/readpage.c                    |  11 +-
+ fs/ext4/super.c                       |  12 +
+ fs/f2fs/compress.c                    |   2 +-
+ fs/f2fs/data.c                        |  78 +++++-
+ fs/f2fs/super.c                       |  35 +++
+ include/linux/fs.h                    |   1 +
+ include/linux/fscrypt.h               |  82 ++++++
+ 23 files changed, 804 insertions(+), 71 deletions(-)
+ create mode 100644 fs/crypto/inline_crypt.c
+
 -- 
-1.8.3.1
+2.27.0.212.ge8ba1cc988-goog
 
