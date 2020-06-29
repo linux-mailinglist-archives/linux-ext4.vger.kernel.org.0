@@ -2,96 +2,49 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7426120DD70
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jun 2020 23:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C832220E274
+	for <lists+linux-ext4@lfdr.de>; Tue, 30 Jun 2020 00:00:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725300AbgF2Syh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 29 Jun 2020 14:54:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41116 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728084AbgF2SxW (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:53:22 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D1E37204EC;
-        Mon, 29 Jun 2020 18:53:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593456802;
-        bh=W1gAL231GdpfTzeSawMbnT+/vhlibbLVm5O4BlAr+To=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gKjmzYSiQ96d+bPzFXbNs1Z1D7M6nBioD7k2Kk8wAD8D1sdT0KwrP+7dRymuowCMk
-         W1GS85/L4li6HodUiqTV1+eyHgI6f+hLnjoWdVc8se4XffmDaW3gEVcjeX4I5DiRhT
-         ryu6Fs1b9zJdpFPcejncKZrU0eIuvxpXWkQEFnC8=
-Date:   Mon, 29 Jun 2020 11:53:20 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: Re: [PATCH v2 3/4] f2fs: add inline encryption support
-Message-ID: <20200629185320.GH20492@sol.localdomain>
-References: <20200629120405.701023-1-satyat@google.com>
- <20200629120405.701023-4-satyat@google.com>
+        id S2390154AbgF2VFh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 29 Jun 2020 17:05:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731095AbgF2TMn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 29 Jun 2020 15:12:43 -0400
+Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE1A5C08EB17;
+        Sun, 28 Jun 2020 23:22:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Yvlilp1llFdU9iiu1LHhrhDDb73hODP2epRWqobx+Y4=; b=wECgs7mPEMM1puAOoGYHZMcv/6
+        q/0yIsE6zm4ShN1TEwOCZUBtvAAaASgy5BH1adghPpwbFiLG78OjV1w129/fsykKJutsK3vMzsjAt
+        cBEUmvQRdE0UP86U0TU/qrpJ3LTtlECtpFHoQ9kf3y4fgLwHf4M7XvyETn46Ltaz+2+tdtzB9Pn2G
+        0tyMFwRxtjQj3SmwoXwQqm/N0Xl9X/mF+y3MzIqxaH9GmmksFexTgbpl8UJIXxpPLQ3vQAL/sA34J
+        SrDwBZK0kblyw3XHycL9ey+QTClsLX1x00M+mK7uPISadpR2yNh8zpiyTF6OtxH+QMD91S0cGrlgN
+        JGl9pYyQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jpnBQ-0002t3-W6; Mon, 29 Jun 2020 06:22:25 +0000
+Date:   Mon, 29 Jun 2020 07:22:24 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jiang Ying <jiangying8582@126.com>
+Cc:     Markus.Elfring@web.de, tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wanglong19@meituan.com
+Subject: Re: [PATCH v2] ext4: fix direct I/O read error
+Message-ID: <20200629062224.GA10550@infradead.org>
+References: <1593400165-114818-1-git-send-email-jiangying8582@126.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200629120405.701023-4-satyat@google.com>
+In-Reply-To: <1593400165-114818-1-git-send-email-jiangying8582@126.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 12:04:04PM +0000, Satya Tangirala via Linux-f2fs-devel wrote:
-> Wire up f2fs to support inline encryption via the helper functions which
-> fs/crypto/ now provides.  This includes:
-> 
-> - Adding a mount option 'inlinecrypt' which enables inline encryption
->   on encrypted files where it can be used.
-> 
-> - Setting the bio_crypt_ctx on bios that will be submitted to an
->   inline-encrypted file.
-> 
-> - Not adding logically discontiguous data to bios that will be submitted
->   to an inline-encrypted file.
-> 
-> - Not doing filesystem-layer crypto on inline-encrypted files.
-> 
-> This patch includes a fix for a race during IPU by
-> Sahitya Tummala <stummala@codeaurora.org>
-> 
-> Co-developed-by: Eric Biggers <ebiggers@google.com>
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> Signed-off-by: Satya Tangirala <satyat@google.com>
-> Acked-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Any chance you could add your reproducer to xfstests?
 
-Reviewed-by: Eric Biggers <ebiggers@google.com>
-
-> ---
->  Documentation/filesystems/f2fs.rst |  7 +++
->  fs/f2fs/compress.c                 |  2 +-
->  fs/f2fs/data.c                     | 78 +++++++++++++++++++++++++-----
->  fs/f2fs/super.c                    | 35 ++++++++++++++
->  4 files changed, 108 insertions(+), 14 deletions(-)
-> 
-> diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
-> index 099d45ac8d8f..8b4fac44f4e1 100644
-> --- a/Documentation/filesystems/f2fs.rst
-> +++ b/Documentation/filesystems/f2fs.rst
-> @@ -258,6 +258,13 @@ compress_extension=%s  Support adding specified extension, so that f2fs can enab
->                         on compression extension list and enable compression on
->                         these file by default rather than to enable it via ioctl.
->                         For other files, we can still enable compression via ioctl.
-> +inlinecrypt
-> +                       When possible, encrypt/decrypt the contents of encrypted
-> +                       files using the blk-crypto framework rather than
-> +                       filesystem-layer encryption. This allows the use of
-> +                       inline encryption hardware. The on-disk format is
-> +                       unaffected. For more details, see
-> +                       Documentation/block/inline-encryption.rst.
->  ====================== ============================================================
-
-Last time I suggested adding "When possible, ", and it got added here but not in
-the ext4 patch.  It should go in both.
-
-- Eric
+Thanks!
