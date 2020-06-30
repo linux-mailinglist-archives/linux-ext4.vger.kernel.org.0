@@ -2,152 +2,85 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C184E20E5AE
-	for <lists+linux-ext4@lfdr.de>; Tue, 30 Jun 2020 00:07:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14DEB20F3C8
+	for <lists+linux-ext4@lfdr.de>; Tue, 30 Jun 2020 13:48:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390080AbgF2Vkg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 29 Jun 2020 17:40:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60642 "EHLO mail.kernel.org"
+        id S1731845AbgF3Lse (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 30 Jun 2020 07:48:34 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42512 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728225AbgF2SkW (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:40:22 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 16B2A255BA;
-        Mon, 29 Jun 2020 18:22:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593454972;
-        bh=Y7LpjQLfAxhqBzjm0yYAEkclb4h+QWTLcv+9I/39AOQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=f2WxZRsr3ztXYnZzBr4mn4P+cVb5g5ZFjuVs6Q7CP9OHMSAstoPLftkfQGr7XYarS
-         gRb9BsrxNCmYy773wNWZK69W9ONwYM5OkVOGzd56ZWIrqYKwAflXXkTPrzKgK3PTCd
-         Z5aGgScPalZ5l1nSTCvh0rTphGGTlBxpvGf0MhSc=
-Date:   Mon, 29 Jun 2020 11:22:50 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: Re: [PATCH v2 2/4] fscrypt: add inline encryption support
-Message-ID: <20200629182250.GD20492@sol.localdomain>
-References: <20200629120405.701023-1-satyat@google.com>
- <20200629120405.701023-3-satyat@google.com>
+        id S1731412AbgF3Lse (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 30 Jun 2020 07:48:34 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id ECEA7B5A9;
+        Tue, 30 Jun 2020 11:48:32 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id BF4591E12ED; Tue, 30 Jun 2020 13:48:32 +0200 (CEST)
+Date:   Tue, 30 Jun 2020 13:48:32 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Costa Sapuntzakis <costa@purestorage.com>
+Cc:     linux-ext4@vger.kernel.org
+Subject: Re: [BUG] invalid superblock checksum possibly due to race
+Message-ID: <20200630114832.GA16372@quack2.suse.cz>
+References: <CAABuPhaMHu+mmHbVKGt2L0tcE2-EMyd5VWcok7kAfJY3DQ=-vw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200629120405.701023-3-satyat@google.com>
+In-Reply-To: <CAABuPhaMHu+mmHbVKGt2L0tcE2-EMyd5VWcok7kAfJY3DQ=-vw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 12:04:03PM +0000, Satya Tangirala via Linux-f2fs-devel wrote:
-> diff --git a/fs/crypto/bio.c b/fs/crypto/bio.c
-> index 4fa18fff9c4e..1ea9369a7688 100644
-> --- a/fs/crypto/bio.c
-> +++ b/fs/crypto/bio.c
-> @@ -41,6 +41,52 @@ void fscrypt_decrypt_bio(struct bio *bio)
->  }
->  EXPORT_SYMBOL(fscrypt_decrypt_bio);
->  
-> +static int fscrypt_zeroout_range_inline_crypt(const struct inode *inode,
-> +					      pgoff_t lblk, sector_t pblk,
-> +					      unsigned int len)
-> +{
-> +	const unsigned int blockbits = inode->i_blkbits;
-> +	const unsigned int blocks_per_page = 1 << (PAGE_SHIFT - blockbits);
-> +	struct bio *bio;
-> +	int ret, err = 0;
-> +	int num_pages = 0;
-> +
-> +	/* This always succeeds since __GFP_DIRECT_RECLAIM is set. */
-> +	bio = bio_alloc(GFP_NOFS, BIO_MAX_PAGES);
-> +
-> +	while (len) {
-> +		unsigned int blocks_this_page = min(len, blocks_per_page);
-> +		unsigned int bytes_this_page = blocks_this_page << blockbits;
-> +
-> +		if (num_pages == 0) {
-> +			fscrypt_set_bio_crypt_ctx(bio, inode, lblk, GFP_NOFS);
-> +			bio_set_dev(bio, inode->i_sb->s_bdev);
-> +			bio->bi_iter.bi_sector =
-> +					pblk << (blockbits - SECTOR_SHIFT);
-> +			bio_set_op_attrs(bio, REQ_OP_WRITE, 0);
-> +		}
-> +		ret = bio_add_page(bio, ZERO_PAGE(0), bytes_this_page, 0);
-> +		if (WARN_ON(ret != bytes_this_page)) {
-> +			err = -EIO;
-> +			goto out;
-> +		}
-> +		num_pages++;
-> +		len -= blocks_this_page;
-> +		lblk += blocks_this_page;
-> +		pblk += blocks_this_page;
-> +		if (num_pages == BIO_MAX_PAGES || !len) {
-> +			err = submit_bio_wait(bio);
-> +			if (err)
-> +				goto out;
-> +			bio_reset(bio);
-> +			num_pages = 0;
-> +		}
-> +	}
-> +out:
-> +	bio_put(bio);
-> +	return err;
-> +}
+Hello!
 
-I just realized we missed something.
+On Wed 24-06-20 16:56:18, Costa Sapuntzakis wrote:
+> Our workload: taking snapshots repeatedly of an active ext4 filesystem
+> (vdbench fwiw). e2fsck discovered a snapshot that had a corrupted
+> superblock after journal replay. Diffing the corrupted superblock to
+> the superblock before journal replay revealed that only s_last_orphan
+> and the checksum had changed.
+> 
+> The following race could explain it:
+> 
+> Thread 1 (T1): ext4_orphan_del -> update s_last_orphan to value A ->
+> ext4_handle_dirty_super -> ext4_superblock_csum_set -- PAUSE right
+> before setting es->s_checksum
+> 
+> T2: ext4_orphan_del -> update s_last_orphan to value B ->
+> ext4_handle_dirty_super -> ext4_superblock_csum_set runs to completion
+> 
+> T1: Resume and assign es->s_checksum
+> 
+> Is there higher level synchronization going on that makes this race benign?
 
-With the new IV_INO_LBLK_32 IV generation strategy, logically contiguous blocks
-don't necessarily have contiguous IVs.
+Thanks for report and the analysis. What you describe indeed seems
+possible.
 
-So we need to check fscrypt_mergeable_bio() here.
+> If not, a spinlock around the calculation and assignment should fix it.
 
-Also it *should* be checked once per block, not once per page.  However, that
-means that ext4_mpage_readpages() and f2fs_mpage_readpages() are wrong too,
-since they only check fscrypt_mergeable_bio() once per page.
+Yes, probably ext4_superblock_csum_set() should use
 
-Given that difficulty, and the fact that IV_INO_LBLK_32 only has limited use
-cases on specific hardware, I suggest that for now we simply restrict inline
-encryption with IV_INO_LBLK_32 to the blocksize == PAGE_SIZE case.
+lock_buffer(EXT4_SB(sb)->s_sbh)
 
-(Checking fscrypt_mergeable_bio() once per page is still needed.)
+to synchronize updating of superblock checksum. Will you send a patch?
 
-I.e., on top of this patch:
+> The spinlock still has the race where s_last_orphan is being updated
+> while the checksum is calculated. But the last thread to set
+> s_last_orphan will also eventually try to recalculate the checksum and
+> set it right (though it's possible some other thread will do it for
+> it). And I'm guessing/hoping jbd2 won't flush the superblock to the
+> journal and close a transaction until the references from
+> journal_get_write_access drain. The checksum is recalculated before
+> the get_write_access reference is dropped.
 
-diff --git a/fs/crypto/bio.c b/fs/crypto/bio.c
-index 1ea9369a7688..b048a0e38516 100644
---- a/fs/crypto/bio.c
-+++ b/fs/crypto/bio.c
-@@ -74,7 +74,8 @@ static int fscrypt_zeroout_range_inline_crypt(const struct inode *inode,
- 		len -= blocks_this_page;
- 		lblk += blocks_this_page;
- 		pblk += blocks_this_page;
--		if (num_pages == BIO_MAX_PAGES || !len) {
-+		if (num_pages == BIO_MAX_PAGES || !len ||
-+		    !fscrypt_mergeable_bio(bio, inode, lblk)) {
- 			err = submit_bio_wait(bio);
- 			if (err)
- 				goto out;
-diff --git a/fs/crypto/inline_crypt.c b/fs/crypto/inline_crypt.c
-index ec514bc8ee86..097c5a565a21 100644
---- a/fs/crypto/inline_crypt.c
-+++ b/fs/crypto/inline_crypt.c
-@@ -84,6 +84,19 @@ int fscrypt_select_encryption_impl(struct fscrypt_info *ci)
- 	if (!(sb->s_flags & SB_INLINECRYPT))
- 		return 0;
- 
-+	/*
-+	 * When a page contains multiple logically contiguous filesystem blocks,
-+	 * some filesystem code only calls fscrypt_mergeable_bio() for the first
-+	 * block in the page.  This is fine for most of fscrypt's IV generation
-+	 * strategies, where contiguous blocks imply contiguous IVs.  But it
-+	 * doesn't work with IV_INO_LBLK_32.  For now, simply exclude
-+	 * IV_INO_LBLK_32 with blocksize != PAGE_SIZE from inline encryption.
-+	 */
-+	if ((fscrypt_policy_flags(&ci->ci_policy) &
-+	     FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32) &&
-+	    sb->s_blocksize != PAGE_SIZE)
-+		return 0;
-+
+Yes, jbd2 layer will make sure that inconsistent block contents will not
+make it to disk in this case.
+
+								Honza
+
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
