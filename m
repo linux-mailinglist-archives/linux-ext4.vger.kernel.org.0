@@ -2,109 +2,102 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A85CE21057C
-	for <lists+linux-ext4@lfdr.de>; Wed,  1 Jul 2020 09:53:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A7BB21052C
+	for <lists+linux-ext4@lfdr.de>; Wed,  1 Jul 2020 09:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728502AbgGAHxO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 1 Jul 2020 03:53:14 -0400
-Received: from verein.lst.de ([213.95.11.211]:39050 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728485AbgGAHxN (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 1 Jul 2020 03:53:13 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 755A968B02; Wed,  1 Jul 2020 09:53:10 +0200 (CEST)
-Date:   Wed, 1 Jul 2020 09:53:10 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
-Cc:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        fdmanana@gmail.com, dsterba@suse.cz, david@fromorbit.com,
-        darrick.wong@oracle.com, hch@lst.de,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>,
-        cluster-devel@redhat.com, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Subject: always fall back to buffered I/O after invalidation failures, was:
- Re: [PATCH 2/6] iomap: IOMAP_DIO_RWF_NO_STALE_PAGECACHE return if
- page invalidation fails
-Message-ID: <20200701075310.GB29884@lst.de>
-References: <20200629192353.20841-1-rgoldwyn@suse.de> <20200629192353.20841-3-rgoldwyn@suse.de>
+        id S1728243AbgGAHjo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 1 Jul 2020 03:39:44 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:37776 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727836AbgGAHjn (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 1 Jul 2020 03:39:43 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 80B8BD0D26A46366D379;
+        Wed,  1 Jul 2020 15:39:41 +0800 (CST)
+Received: from huawei.com (10.175.101.6) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Wed, 1 Jul 2020
+ 15:39:36 +0800
+From:   zhengliang <zhengliang6@huawei.com>
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>
+CC:     <linux-ext4@vger.kernel.org>
+Subject: [PATCH v2] ext4: lost matching-pair of trace in ext4_truncate
+Date:   Wed, 1 Jul 2020 16:30:27 +0800
+Message-ID: <20200701083027.45996-1-zhengliang6@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200629192353.20841-3-rgoldwyn@suse.de>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain
+X-Originating-IP: [10.175.101.6]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 02:23:49PM -0500, Goldwyn Rodrigues wrote:
-> From: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> 
-> For direct I/O, add the flag IOMAP_DIO_RWF_NO_STALE_PAGECACHE to indicate
-> that if the page invalidation fails, return back control to the
-> filesystem so it may fallback to buffered mode.
-> 
-> Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+It should call trace exit in all return path for ext4_truncate.
 
-I'd like to start a discussion of this shouldn't really be the
-default behavior.  If we have page cache that can't be invalidated it
-actually makes a whole lot of sense to not do direct I/O, avoid the
-warnings, etc.
+v2:
+It shoule call trace exit in all return path, and add "out_trace" label to avoid the
+multiple copies of the cleanup code in each error case.
+ 
+Signed-off-by: zhengliang <zhengliang6@huawei.com>
+---
+ fs/ext4/inode.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-Adding all the relevant lists.
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 10dd470876b3..6187c8880c02 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -4163,7 +4163,7 @@ int ext4_truncate(struct inode *inode)
+ 	trace_ext4_truncate_enter(inode);
+ 
+ 	if (!ext4_can_truncate(inode))
+-		return 0;
++		goto out_trace;
+ 
+ 	if (inode->i_size == 0 && !test_opt(inode->i_sb, NO_AUTO_DA_ALLOC))
+ 		ext4_set_inode_state(inode, EXT4_STATE_DA_ALLOC_CLOSE);
+@@ -4172,16 +4172,14 @@ int ext4_truncate(struct inode *inode)
+ 		int has_inline = 1;
+ 
+ 		err = ext4_inline_data_truncate(inode, &has_inline);
+-		if (err)
+-			return err;
+-		if (has_inline)
+-			return 0;
++		if (err || has_inline)
++			goto out_trace;
+ 	}
+ 
+ 	/* If we zero-out tail of the page, we have to create jinode for jbd2 */
+ 	if (inode->i_size & (inode->i_sb->s_blocksize - 1)) {
+ 		if (ext4_inode_attach_jinode(inode) < 0)
+-			return 0;
++			goto out_trace;
+ 	}
+ 
+ 	if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
+@@ -4190,8 +4188,10 @@ int ext4_truncate(struct inode *inode)
+ 		credits = ext4_blocks_for_truncate(inode);
+ 
+ 	handle = ext4_journal_start(inode, EXT4_HT_TRUNCATE, credits);
+-	if (IS_ERR(handle))
+-		return PTR_ERR(handle);
++	if (IS_ERR(handle)) {
++		err = PTR_ERR(handle);
++		goto out_trace;
++	}
+ 
+ 	if (inode->i_size & (inode->i_sb->s_blocksize - 1))
+ 		ext4_block_truncate_page(handle, mapping, inode->i_size);
+@@ -4242,6 +4242,7 @@ int ext4_truncate(struct inode *inode)
+ 		err = err2;
+ 	ext4_journal_stop(handle);
+ 
++out_trace:
+ 	trace_ext4_truncate_exit(inode);
+ 	return err;
+ }
+-- 
+2.17.1
 
-> ---
->  fs/iomap/direct-io.c  |  8 +++++++-
->  include/linux/iomap.h | 14 ++++++++++++++
->  2 files changed, 21 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> index fd22bff61569..2459c76e41ab 100644
-> --- a/fs/iomap/direct-io.c
-> +++ b/fs/iomap/direct-io.c
-> @@ -484,8 +484,14 @@ iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
->  	 */
->  	ret = invalidate_inode_pages2_range(mapping,
->  			pos >> PAGE_SHIFT, end >> PAGE_SHIFT);
-> -	if (ret)
-> +	if (ret) {
-> +		if (dio_flags & IOMAP_DIO_RWF_NO_STALE_PAGECACHE) {
-> +			if (ret == -EBUSY)
-> +				ret = 0;
-> +			goto out_free_dio;
-> +		}
->  		dio_warn_stale_pagecache(iocb->ki_filp);
-> +	}
->  	ret = 0;
->  
->  	if (iov_iter_rw(iter) == WRITE && !wait_for_completion &&
-> diff --git a/include/linux/iomap.h b/include/linux/iomap.h
-> index 8a4ba1635202..2ebb8a298cd8 100644
-> --- a/include/linux/iomap.h
-> +++ b/include/linux/iomap.h
-> @@ -262,7 +262,21 @@ struct iomap_dio_ops {
->  /*
->   * Wait for completion of DIO
->   */
-> +
->  #define IOMAP_DIO_RWF_SYNCIO			(1 << 0)
-> +/*
-> + * Direct IO will attempt to keep the page cache coherent by
-> + * invalidating the inode's page cache over the range of the DIO.
-> + * That can fail if something else is actively using the page cache.
-> + * If this happens and the DIO continues, the data in the page
-> + * cache will become stale.
-> + *
-> + * Set this flag if you want the DIO to abort without issuing any IO
-> + * or error if it fails to invalidate the page cache successfully.
-> + * This allows the IO submitter to fallback to buffered IO to resubmit
-> + * IO
-> + */
-> +#define IOMAP_DIO_RWF_NO_STALE_PAGECACHE	(1 << 1)
->  
->  ssize_t iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
->  		const struct iomap_ops *ops, const struct iomap_dio_ops *dops,
-> -- 
-> 2.26.2
----end quoted text---
