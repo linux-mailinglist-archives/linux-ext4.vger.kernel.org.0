@@ -2,100 +2,109 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C31212D20
-	for <lists+linux-ext4@lfdr.de>; Thu,  2 Jul 2020 21:29:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5639B212D29
+	for <lists+linux-ext4@lfdr.de>; Thu,  2 Jul 2020 21:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725937AbgGBT3d (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 2 Jul 2020 15:29:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37428 "EHLO
+        id S1726030AbgGBTeq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 2 Jul 2020 15:34:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725847AbgGBT3c (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 2 Jul 2020 15:29:32 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7590EC08C5C1
-        for <linux-ext4@vger.kernel.org>; Thu,  2 Jul 2020 12:29:32 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id f16so2549680pjt.0
-        for <linux-ext4@vger.kernel.org>; Thu, 02 Jul 2020 12:29:32 -0700 (PDT)
+        with ESMTP id S1725862AbgGBTeq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 2 Jul 2020 15:34:46 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B739C08C5C1
+        for <linux-ext4@vger.kernel.org>; Thu,  2 Jul 2020 12:34:46 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id o4so14347181ybp.0
+        for <linux-ext4@vger.kernel.org>; Thu, 02 Jul 2020 12:34:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=8aWCEvr+Js0tYOnq/XOnbh/Rps1YbsOGWhRz+Wh6Sjc=;
-        b=HRwbUgyVgzWTQjbg4NaukeYXEg3xv5j4WTbTS4VpIkQLF7Lg1IfWo9h8UL+3cPB0WU
-         MG1ApqpGv/PAX8SdZ255cs6Fj9aldvVZyxIrBi/MG7JfVTKY5PxiDb02iJ74l6LQVH1d
-         +aeiMTJvU4q9d0q20ogvwlxcROKTX0Z9gO2Tt0xvYi3sUspk1bNrIn6hh2IfrZYtx7yR
-         qdWQ2zkwZ6vPbHTGByo+01Mq+xyN4jJjxAk+WdO/6UbK2PP6deklb4+czYe6H2c9mKPR
-         noX92BalNvd6CmNerY7TrVYYJ3B3vxqNB8syra2X4W2SnmzyExZ36RI2RUREwN8PHhPi
-         h4Tw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=qcodwUmetLzrGa/Qokfc7C4E4hosRqvK9nYWUWNhvh0=;
+        b=VukUiJhK9+c0+vbGQH33dQzABVBCBs+I5oI72Jo+8tZ935e2KNb0U7KPvBYIBjsw1x
+         qxC4bKAH0p7T6EV2I+2frL4gvq+w64saWzfz29h4nckyKPCtblosUu+9aF/0t1znVnxM
+         qk9aPh32JVdSS7Yid/gBYvYKySSuNdemxADwZY4cMaUcQwyoyxEKnQJ1Yh1jbikI7SPB
+         LIrz6nFClyBqIfMMViI6W6+Ir3eG87P6h9EPnGGCsneYRf+mCTV7/F1HUkXC0CFX12WX
+         PpOJLF5h2+qwVUVc5NYQqoTDPieKkCkNle4Wt8Vj41ErP/rHaXZ0/q1LhYLwoKhiNTqV
+         wrkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=8aWCEvr+Js0tYOnq/XOnbh/Rps1YbsOGWhRz+Wh6Sjc=;
-        b=nIROLwRhyOiICTs6Y0p4C1BiMkpBIglVjsqMde6ZZL6XSPSGVLwaJjYpjK3SejpndW
-         VsByYsALYzbCl84wJXwEXCHSnstOkBbqvC9UrWpFn1xEGYRqp9clN+A+qnzKfWNNhIc6
-         /5B6GpYO76XpGyA7eay0GCTct/hZkpLWtP0sAxqVXSvDPUFp6ofRVDmqWpgBdVc+QKtw
-         aG3MrENFcQaFjwfcqLuqOZRleslC39BKY3rLwNAjez2yU7RqsWUB7P+Z/314Rzbsz0aV
-         QNeOtQvgKd4XnFJGs1/JOX+LyYp9KTozA4g5UIJP29lNJOzbR/sCJT1PKVvgxPqTc0Ba
-         yIqg==
-X-Gm-Message-State: AOAM531Jqo+VuE/TogNrB2fdr5DpQysJFmQ0/cgg4Dx3y1vQJGFXD8oz
-        Tl++Fw0F8ELXVHJUVUBUHRF6fQ==
-X-Google-Smtp-Source: ABdhPJyqfLVqYs7UCvaxgSmuvnfCzNyXEvBOIymNavXDdeJuAZo8WahLr29KtirNhaFOJiqGt10Hfw==
-X-Received: by 2002:a17:902:b48a:: with SMTP id y10mr26538392plr.97.1593718171846;
-        Thu, 02 Jul 2020 12:29:31 -0700 (PDT)
-Received: from [192.168.0.149] (S0106bc4dfb596de3.ek.shawcable.net. [174.0.67.248])
-        by smtp.gmail.com with ESMTPSA id o42sm8967031pje.10.2020.07.02.12.29.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Jul 2020 12:29:31 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andreas Dilger <adilger@dilger.ca>
-Mime-Version: 1.0 (1.0)
-Subject: Re: Grow ext4 filesystem on mounted device
-Date:   Thu, 2 Jul 2020 13:29:28 -0600
-Message-Id: <A735B112-0384-43F8-8F0F-CACFD34CEA67@dilger.ca>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=qcodwUmetLzrGa/Qokfc7C4E4hosRqvK9nYWUWNhvh0=;
+        b=BjQ55aZDKR7XerYKuRY6OrLvMtpxWWYFQ3BY6pF0gaS9Mi0BBhH+Nf3JBKLWPaF7Lx
+         yu1ll1FgSy8CWHnt67KehWVMImZhdlYgWVYsGyePu4tHECHzaQvVP7FCmp9Ev6OrciLc
+         GZDUlsZa4bLKq4aT98K4BshHXz3X1xGJi+2gxTKYer7pSoyxCAr4u2d6J9YmGROojJCs
+         sIP1456nkNEyeYIYj+G/hY/o7x1ut58Jqev10YsvlYoGs/fua4cpg4Ix/aiPB5Ap0JP9
+         ct5sE1e6PogPH1mbdC8APAadAtp7kDWWn6fheWDNC+tvrOvMcq4/QP8aG6hSYsUFHshZ
+         n7Vw==
+X-Gm-Message-State: AOAM532uqXFmgTUK2+FAn+NQhjt4ogCrLuwAofenjNelGZtOrYkO+cIY
+        yVRLrmHf0yvPzlLBCkk1UJltLioys7aFMwnH/cY6eqhMmzhfbw==
+X-Google-Smtp-Source: ABdhPJx98/FhDBFbC7Pr3FOG/cmuAP7SYjWs0Uczqzmde+SIjrBC6fcin7ZO1RDdOZ4zHwXaDaELXgHI95iBSDvdM+k=
+X-Received: by 2002:a25:7542:: with SMTP id q63mr31109850ybc.19.1593718485156;
+ Thu, 02 Jul 2020 12:34:45 -0700 (PDT)
+MIME-Version: 1.0
 References: <CAG-6nk9Cy6itStS917HxL7dvcy5=J+CCpSAqRoC9Um8P9LJ=kw@mail.gmail.com>
+ <A735B112-0384-43F8-8F0F-CACFD34CEA67@dilger.ca>
+In-Reply-To: <A735B112-0384-43F8-8F0F-CACFD34CEA67@dilger.ca>
+From:   Alok Jain <jain.alok103@gmail.com>
+Date:   Fri, 3 Jul 2020 01:04:33 +0530
+Message-ID: <CAG-6nk8vnj_tJzhjqLYRexrbJoGiVzP_wjam8ucm=_DB_Yx75w@mail.gmail.com>
+Subject: Re: Grow ext4 filesystem on mounted device
+To:     Andreas Dilger <adilger@dilger.ca>
 Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu
-In-Reply-To: <CAG-6nk9Cy6itStS917HxL7dvcy5=J+CCpSAqRoC9Um8P9LJ=kw@mail.gmail.com>
-To:     Alok Jain <jain.alok103@gmail.com>
-X-Mailer: iPhone Mail (17F80)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Jul 2, 2020, at 13:18, Alok Jain <jain.alok103@gmail.com> wrote:
->=20
-> =EF=BB=BFHi Experts,
->=20
-> I want to grow the ext4 file system on mounted device by running
-> resize2fs utility but it fails, same works in case of unmounted FS
-> with additional invocation of e2fsck utility.
->=20
-> This is what i am doing
->=20
-> 1)Rescanning the device
-> echo "1" | sudo tee /sys/block/sdd/device/rescan
-> 2) Extending the partition
-> growpart /dev/sdd 1
-> 3) resizing the file system
-> resize2fs /dev/sdd1
-> resize2fs 1.43-WIP (20-Jun-2013)
-> The filesystem is already 43253499 blocks long.  Nothing to do!
+Thanks Andreas,
 
-What does "grep sdd1 /proc/partitions" show?  Is the kernel
-aware of the larger partition size?
+Device has only one partition, I also ran partprobe post growpart but
+still no luck :(
 
-> parted -s /dev/sdd1 print free
-> Model: Unknown (unknown)
-> Disk /dev/sdd1: 177GB
-> Sector size (logical/physical): 512B/4096B
-> Partition Table: loop
->=20
-> Number  Start  End    Size   File system  Flags
-> 1      0.00B  177GB  177GB  ext4
->=20
-> Any help?
->=20
-> Thanks,
-> Alok
+# grep sdd1 /proc/partitions
+   8       49  173013999 sdd1
+
+Thanks,
+Alok
+
+On Fri, Jul 3, 2020 at 12:59 AM Andreas Dilger <adilger@dilger.ca> wrote:
+>
+> On Jul 2, 2020, at 13:18, Alok Jain <jain.alok103@gmail.com> wrote:
+> >
+> > =EF=BB=BFHi Experts,
+> >
+> > I want to grow the ext4 file system on mounted device by running
+> > resize2fs utility but it fails, same works in case of unmounted FS
+> > with additional invocation of e2fsck utility.
+> >
+> > This is what i am doing
+> >
+> > 1)Rescanning the device
+> > echo "1" | sudo tee /sys/block/sdd/device/rescan
+> > 2) Extending the partition
+> > growpart /dev/sdd 1
+> > 3) resizing the file system
+> > resize2fs /dev/sdd1
+> > resize2fs 1.43-WIP (20-Jun-2013)
+> > The filesystem is already 43253499 blocks long.  Nothing to do!
+>
+> What does "grep sdd1 /proc/partitions" show?  Is the kernel
+> aware of the larger partition size?
+>
+> > parted -s /dev/sdd1 print free
+> > Model: Unknown (unknown)
+> > Disk /dev/sdd1: 177GB
+> > Sector size (logical/physical): 512B/4096B
+> > Partition Table: loop
+> >
+> > Number  Start  End    Size   File system  Flags
+> > 1      0.00B  177GB  177GB  ext4
+> >
+> > Any help?
+> >
+> > Thanks,
+> > Alok
