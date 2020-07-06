@@ -2,94 +2,104 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3704B215F2B
-	for <lists+linux-ext4@lfdr.de>; Mon,  6 Jul 2020 21:04:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 484B6215FAD
+	for <lists+linux-ext4@lfdr.de>; Mon,  6 Jul 2020 21:53:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729816AbgGFTDs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 6 Jul 2020 15:03:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729762AbgGFTDs (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 6 Jul 2020 15:03:48 -0400
-Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B3BBC061755;
-        Mon,  6 Jul 2020 12:03:48 -0700 (PDT)
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 7EFABBC07E;
-        Mon,  6 Jul 2020 19:03:45 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca, corbet@lwn.net,
-        linux-ext4@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] Replace HTTP links with HTTPS ones: Ext4
-Date:   Mon,  6 Jul 2020 21:03:39 +0200
-Message-Id: <20200706190339.20709-1-grandmaster@al2klimov.de>
+        id S1725941AbgGFTxy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 6 Jul 2020 15:53:54 -0400
+Received: from zulu.geekplace.eu ([5.45.100.158]:35010 "EHLO zulu.geekplace.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725895AbgGFTxy (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 6 Jul 2020 15:53:54 -0400
+Received: from neo-pc.sch (55d4bc09.access.ecotel.net [85.212.188.9])
+        by zulu.geekplace.eu (Postfix) with ESMTPA id 6924C4A0928;
+        Mon,  6 Jul 2020 21:48:05 +0200 (CEST)
+From:   Florian Schmaus <flo@geekplace.eu>
+To:     linux-ext4@vger.kernel.org
+Cc:     Florian Schmaus <flo@geekplace.eu>
+Subject: [PATCH 1/3] e4crypt: if salt is explicitly provided to add_key, then use it
+Date:   Mon,  6 Jul 2020 21:47:25 +0200
+Message-Id: <20200706194727.12979-1-flo@geekplace.eu>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+Providing -S and a path to 'add_key' previously exhibit an unintuitive
+behavior: instead of using the salt explicitly provided by the user,
+e4crypt would use the salt obtained via EXT4_IOC_GET_ENCRYPTION_PWSALT
+on the path. This was because set_policy() was still called with NULL
+as salt.
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-          If both the HTTP and HTTPS versions
-          return 200 OK and serve the same content:
-            Replace HTTP with HTTPS.
+With this change we now remember the explicitly provided salt (if any)
+and use it as argument for set_policy().
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+Eventually
+
+e4crypt add_key -S s:my-spicy-salt /foo
+
+will now actually use 'my-spicy-salt' and not something else as salt
+for the policy set on /foo.
+
+Signed-off-by: Florian Schmaus <flo@geekplace.eu>
 ---
- Continuing my work started at 93431e0607e5.
+ misc/e4crypt.8.in | 4 +++-
+ misc/e4crypt.c    | 8 +++++++-
+ 2 files changed, 10 insertions(+), 2 deletions(-)
 
- If there are any URLs to be removed completely or at least not HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also https://lkml.org/lkml/2020/6/27/64
-
- If there are any valid, but yet not changed URLs:
- See https://lkml.org/lkml/2020/6/26/837
-
- Documentation/filesystems/ext4/about.rst | 2 +-
- fs/ext4/Kconfig                          | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/filesystems/ext4/about.rst b/Documentation/filesystems/ext4/about.rst
-index 0aadba052264..cc76b577d2f4 100644
---- a/Documentation/filesystems/ext4/about.rst
-+++ b/Documentation/filesystems/ext4/about.rst
-@@ -39,6 +39,6 @@ entry.
- Other References
- ----------------
- 
--Also see http://www.nongnu.org/ext2-doc/ for quite a collection of
-+Also see https://www.nongnu.org/ext2-doc/ for quite a collection of
- information about ext2/3. Here's another old reference:
- http://wiki.osdev.org/Ext2
-diff --git a/fs/ext4/Kconfig b/fs/ext4/Kconfig
-index 1afa5a4bcb5f..619dd35ddd48 100644
---- a/fs/ext4/Kconfig
-+++ b/fs/ext4/Kconfig
-@@ -110,7 +110,7 @@ config EXT4_KUNIT_TESTS
- 	  This builds the ext4 KUnit tests.
- 
- 	  KUnit tests run during boot and output the results to the debug log
--	  in TAP format (http://testanything.org/). Only useful for kernel devs
-+	  in TAP format (https://testanything.org/). Only useful for kernel devs
- 	  running KUnit test harness and are not for inclusion into a production
- 	  build.
- 
+diff --git a/misc/e4crypt.8.in b/misc/e4crypt.8.in
+index 75b968a0..32fbd444 100644
+--- a/misc/e4crypt.8.in
++++ b/misc/e4crypt.8.in
+@@ -48,7 +48,9 @@ values are 4, 8, 16, and 32.
+ If one or more directory paths are specified, e4crypt will try to
+ set the policy of those directories to use the key just added by the
+ .B add_key
+-command.
++command.  If a salt was explicitly specified, then it will be used
++by the policy of those directories.  Otherwise a directory-specific
++default salt will be used.
+ .TP
+ .B e4crypt get_policy \fIpath\fR ...
+ Print the policy for the directories specified on the command line.
+diff --git a/misc/e4crypt.c b/misc/e4crypt.c
+index 2ae6254a..c82c6f8f 100644
+--- a/misc/e4crypt.c
++++ b/misc/e4crypt.c
+@@ -652,6 +652,7 @@ static void do_help(int argc, char **argv, const struct cmd_desc *cmd);
+ static void do_add_key(int argc, char **argv, const struct cmd_desc *cmd)
+ {
+ 	struct salt *salt;
++	struct salt *explicit_salt = NULL;
+ 	char *keyring = NULL;
+ 	int i, opt, pad = 4;
+ 	unsigned j;
+@@ -666,8 +667,13 @@ static void do_add_key(int argc, char **argv, const struct cmd_desc *cmd)
+ 			pad = atoi(optarg);
+ 			break;
+ 		case 'S':
++			if (explicit_salt) {
++				fputs("May only provide -S once\n", stderr);
++				exit(1);
++			}
+ 			/* Salt value for passphrase. */
+ 			parse_salt(optarg, 0);
++			explicit_salt = salt_list;
+ 			break;
+ 		case 'v':
+ 			options |= OPT_VERBOSE;
+@@ -703,7 +709,7 @@ static void do_add_key(int argc, char **argv, const struct cmd_desc *cmd)
+ 		insert_key_into_keyring(keyring, salt);
+ 	}
+ 	if (optind != argc)
+-		set_policy(NULL, pad, argc, argv, optind);
++		set_policy(explicit_salt, pad, argc, argv, optind);
+ 	clear_secrets();
+ 	exit(0);
+ }
 -- 
-2.27.0
+2.26.2
 
