@@ -2,132 +2,122 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72BCB217A98
-	for <lists+linux-ext4@lfdr.de>; Tue,  7 Jul 2020 23:40:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B1DB217AA7
+	for <lists+linux-ext4@lfdr.de>; Tue,  7 Jul 2020 23:47:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728299AbgGGVkv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 7 Jul 2020 17:40:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37984 "EHLO mail.kernel.org"
+        id S1729113AbgGGVrG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 7 Jul 2020 17:47:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726273AbgGGVkv (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 7 Jul 2020 17:40:51 -0400
+        id S1728802AbgGGVrG (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 7 Jul 2020 17:47:06 -0400
 Received: from gmail.com (unknown [104.132.1.76])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E8A8E206C3;
-        Tue,  7 Jul 2020 21:40:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9D630206C3;
+        Tue,  7 Jul 2020 21:47:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594158051;
-        bh=vxv5qBPVuy9ahyBiVFV0ubwCh9vE0K1so/fgKi2bNpY=;
+        s=default; t=1594158425;
+        bh=ts+rvuN68LcgbRXW9Yw4SR73tT3Wbcg4lH9/td/6Y48=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iOXPHanlrH3Mpti8/g1vHm1fc5rBxiE3bhsAHMgkplD0NDku6SVe4y08hWX4IQhN0
-         XIKwTsna5dsR4tJwDU4+qiXJxvE7pOAITHxqxDZpkqX7/qNkoxjM3yHfqx0iy8vJBh
-         KLUNovlLwY+ynjUMlih1jX8JIUEv414C9e6Hiqc4=
-Date:   Tue, 7 Jul 2020 14:40:49 -0700
+        b=Dn/ov9H+jKWfQSHO9PKQyMghLVZpP06uh60KGNIw05F4fBAtK6OVlg2BHA2kOJgC8
+         cwruCwGabBvlPqfXEOd6evZcfwZ18oo24jz2veoy6Vsan3QcNBqPkz/rpFJt5O1ZwV
+         c5MZ4GoTQRmqe8s5X1SIFAGKGshPRXHi6mjvwfzA=
+Date:   Tue, 7 Jul 2020 14:47:04 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Florian Schmaus <flo@geekplace.eu>
+To:     Florian Schmaus <flo@geekplace.eu>, Theodore Ts'o <tytso@mit.edu>
 Cc:     linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 1/3] e4crypt: if salt is explicitly provided to add_key,
+Subject: Re: [PATCH v2] e4crypt: if salt is explicitly provided to add_key,
  then use it
-Message-ID: <20200707214049.GC3426938@gmail.com>
+Message-ID: <20200707214704.GD3426938@gmail.com>
 References: <20200706194727.12979-1-flo@geekplace.eu>
- <20200706215719.GA827691@gmail.com>
- <16765dd5-3686-6083-7f9b-261b51953d32@geekplace.eu>
+ <20200707082729.85058-1-flo@geekplace.eu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <16765dd5-3686-6083-7f9b-261b51953d32@geekplace.eu>
+In-Reply-To: <20200707082729.85058-1-flo@geekplace.eu>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jul 07, 2020 at 10:36:12AM +0200, Florian Schmaus wrote:
-> On 7/6/20 11:57 PM, Eric Biggers wrote:
-> > On Mon, Jul 06, 2020 at 09:47:25PM +0200, Florian Schmaus wrote:
-> >> Providing -S and a path to 'add_key' previously exhibit an unintuitive
-> >> behavior: instead of using the salt explicitly provided by the user,
-> >> e4crypt would use the salt obtained via EXT4_IOC_GET_ENCRYPTION_PWSALT
-> >> on the path. This was because set_policy() was still called with NULL
-> >> as salt.
-> >>
-> >> With this change we now remember the explicitly provided salt (if any)
-> >> and use it as argument for set_policy().
-> >>
-> >> Eventually
-> >>
-> >> e4crypt add_key -S s:my-spicy-salt /foo
-> >>
-> >> will now actually use 'my-spicy-salt' and not something else as salt
-> >> for the policy set on /foo.
-> >>
-> >> Signed-off-by: Florian Schmaus <flo@geekplace.eu>
-> > 
-> > Thanks for these patches for e4crypt.
-> 
-> Thanks for your feedback.
-> 
-> 
-> > Note that e4crypt is in maintenance mode, and it hasn't been updated to follow
-> > recommended security practices (e.g. using Argon2), to support the new
-> > encryption API which fixes a lot of problems with the original one, or to
-> > support the other filesystems that share the same encryption API.
-> > 
-> > Instead you should use the 'fscrypt' tool: https://github.com/google/fscrypt
-> > 
-> > What is your use case for still using e4crypt?
-> 
-> This sounds like 'fsscrypt' is an alternative to e4crypt. If so, then I
-> guess I have no use case for e4crypt, but simply use it because it is
-> available. Sadly there is no fscrypt package for my distribution
-> (Gentoo) available. Guess I have to look into that. :)
-> 
-> Besides that, my use case is to have a e4crytped directory accessible
-> after PAM authentication. For that I recently looked into pam_e4crypt
-> [1]. In fact, pam_e4crypt's README mentions fscrypt. But the small size
-> of pam_e4crypt made it look more appealing to me than fscrypt.
-> 
+On Tue, Jul 07, 2020 at 10:27:30AM +0200, Florian Schmaus wrote:
+> Providing -S and a path to 'add_key' previously exhibit an unintuitive
 
-'fscrypt' comes with a PAM module pam_fscrypt which auto-unlocks directories at
-login as well.
+exhibit => exhibited
 
-See the README (https://github.com/google/fscrypt/blob/master/README.md) and
-also the Arch Linux Wiki article (https://wiki.archlinux.org/index.php/Fscrypt).
-
-Can you get it packaged for Gentoo?
-
-I don't have time to work on multiple redundant tools, so I've been focusing on
-improving 'fscrypt'.
-
-> > And why do you want to explicitly specify a salt?
+> behavior: instead of using the salt explicitly provided by the user,
+> e4crypt would use the salt obtained via EXT4_IOC_GET_ENCRYPTION_PWSALT
+> on the path. This was because set_policy() was still called with NULL
+> as salt.
 > 
-> For some reason pam_e4crypt removed support for the
-> EXT4_IOC_GET_ENCRYPTION_PWSALT ioctl and only supports a file as source
-> for the salt. It took me a while to figure out that
+> With this change we now remember the explicitly provided salt (if any)
+> and use it as argument for set_policy().
+> 
+> Eventually
 > 
 > e4crypt add_key -S s:my-spicy-salt /foo
 > 
-> would not use 'my-spicy-salt' for /foo. This is an attempt to fix that.
+> will now actually use 'my-spicy-salt' and not something else as salt
+> for the policy set on /foo.
 > 
-
-I'm guessing the developer of pam_e4crypt did that because pam_e4crypt doesn't
-know on what filesystem(s) the encrypted directories are located when it unlocks
-them.  Note that that design only works with the deprecated encryption API, not
-the new one in Linux v5.4+ that's recommended and 'fscrypt' uses by default.
-
-'fscrypt' works a bit differently; it stores metadata files (policies and
-protectors) in the ".fscrypt" directory at the root of each filesystem.
-Passphrase protectors have a random salt generated and stored along with them.
-So there's no need for users to explicitly specify a salt.
-
-> > Moreover it appears the above code should just be removed, since
-> > get_default_salts() already handles adding salts for all ext4 filesystems.
+> Signed-off-by: Florian Schmaus <flo@geekplace.eu>
+> ---
 > 
-> I think only for the ones declared in /etc/mtab? Hence for filesystems
-> that are not in mtab it appears sensible to keep the code.
+> Notes:
+>     - Clarify -S description in man page.
+>     - Do not store a reference to salt_list entry, as it
+>       could be reallocated causing a use-after-free.
+>     - Only parse the salts of the path arguments if no
+>       salt was explicitly specified.
+> 
+>  misc/e4crypt.8.in |  4 +++-
+>  misc/e4crypt.c    | 18 ++++++++++++++----
+>  2 files changed, 17 insertions(+), 5 deletions(-)
+> 
+> diff --git a/misc/e4crypt.8.in b/misc/e4crypt.8.in
+> index 75b968a0..fe9372cf 100644
+> --- a/misc/e4crypt.8.in
+> +++ b/misc/e4crypt.8.in
+> @@ -48,7 +48,9 @@ values are 4, 8, 16, and 32.
+>  If one or more directory paths are specified, e4crypt will try to
+>  set the policy of those directories to use the key just added by the
+>  .B add_key
+> -command.
+> +command.  If a salt was explicitly specified, then it will be used
+> +to derive the encryption key of those directories.  Otherwise a
+> +directory-specific default salt will be used.
+>  .TP
+>  .B e4crypt get_policy \fIpath\fR ...
+>  Print the policy for the directories specified on the command line.
+> diff --git a/misc/e4crypt.c b/misc/e4crypt.c
+> index 2ae6254a..67d25d88 100644
+> --- a/misc/e4crypt.c
+> +++ b/misc/e4crypt.c
+> @@ -26,6 +26,7 @@
+>  #include <getopt.h>
+>  #include <dirent.h>
+>  #include <errno.h>
+> +#include <stdbool.h>
 
-/etc/mtab is supposed to list all mounted filesystems.  Traditionally it could
-become outdated, but now it's usually linked to /proc/mounts which is populated
-by the kernel and thus is never outdated.
+I'd like to use <stdbool.h> too, but I'm not sure if it's allowed in e2fsprogs;
+this would be the first use.  Everywhere else seems to just use int, 0, and 1.
+Ted, is stdbool.h allowed in e2fsprogs?
+
+> +	if (!explicit_salt)
+> +		for (i = optind; i < argc; i++)
+> +			parse_salt(argv[i], PARSE_FLAGS_FORCE_FN);
+
+There should be braces at the outer level (following Linux kernel coding style):
+
+	if (!explicit_salt) {
+		for (i = optind; i < argc; i++)
+			parse_salt(argv[i], PARSE_FLAGS_FORCE_FN);
+	}
+
+
+Otherwise this patch looks fine.
+
+Hopefully people aren't depending on this bug being present.
 
 - Eric
