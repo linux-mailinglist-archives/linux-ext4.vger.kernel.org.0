@@ -2,64 +2,124 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFE13218C3D
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 Jul 2020 17:49:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7D6C218C8E
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 Jul 2020 18:09:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730387AbgGHPtf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 8 Jul 2020 11:49:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55770 "EHLO mail.kernel.org"
+        id S1730141AbgGHQJU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 8 Jul 2020 12:09:20 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40340 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730114AbgGHPtf (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 8 Jul 2020 11:49:35 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A8132206DF;
-        Wed,  8 Jul 2020 15:49:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594223375;
-        bh=bqLj7/olahh4JFtc4EpL9q3D/iTuGstNCn11lxS2sf4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=z8Azl4TKT9W4MeG9hf8xbb9+IT4Vkm5fDqyl/WJgXll0rwBoEZZB1dPFFsJgHRItn
-         xsngg1q+ZlC83YZZmLNlAPECU791bJi6VwWHLb8P6Hma4P91aEvw3Q9UZSycYmYVLW
-         G94SP2CKSCoNSdtCH+2ch4YdjpCLigRyNTWJ0A8g=
-Date:   Wed, 8 Jul 2020 08:49:33 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Daniel Rosenberg <drosen@google.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fscrypt@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v12 2/4] fs: Add standard casefolding support
-Message-ID: <20200708154933.GA915@sol.localdomain>
-References: <20200708091237.3922153-1-drosen@google.com>
- <20200708091237.3922153-3-drosen@google.com>
+        id S1730075AbgGHQJU (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 8 Jul 2020 12:09:20 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9BAA9ACC6;
+        Wed,  8 Jul 2020 16:09:18 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id ED86D1E12BF; Wed,  8 Jul 2020 18:09:17 +0200 (CEST)
+Date:   Wed, 8 Jul 2020 18:09:17 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Eric Sandeen <sandeen@sandeen.net>
+Cc:     Lukas Czerner <lczerner@redhat.com>,
+        Eric Sandeen <sandeen@redhat.com>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
+Subject: Re: [PATCH 1/1] ext4: fix potential negative array index in
+ do_split()
+Message-ID: <20200708160917.GC5288@quack2.suse.cz>
+References: <d08d63e9-8f74-b571-07c7-828b9629ce6a@redhat.com>
+ <f53e246b-647c-64bb-16ec-135383c70ad7@redhat.com>
+ <20200619064122.vj346xptid5viogv@work>
+ <04a5b98c-4bb7-4861-76c3-dd0b0c6a6610@sandeen.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200708091237.3922153-3-drosen@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <04a5b98c-4bb7-4861-76c3-dd0b0c6a6610@sandeen.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jul 08, 2020 at 02:12:35AM -0700, Daniel Rosenberg wrote:
-> This adds general supporting functions for filesystems that use
-> utf8 casefolding. It provides standard dentry_operations and adds the
-> necessary structures in struct super_block to allow this standardization.
+On Fri 19-06-20 08:39:53, Eric Sandeen wrote:
+> On 6/19/20 1:41 AM, Lukas Czerner wrote:
+> > On Wed, Jun 17, 2020 at 02:19:04PM -0500, Eric Sandeen wrote:
+> >> If for any reason a directory passed to do_split() does not have enough
+> >> active entries to exceed half the size of the block, we can end up
+> >> iterating over all "count" entries without finding a split point.
+> >>
+> >> In this case, count == move, and split will be zero, and we will
+> >> attempt a negative index into map[].
+> >>
+> >> Guard against this by detecting this case, and falling back to
+> >> split-to-half-of-count instead; in this case we will still have
+> >> plenty of space (> half blocksize) in each split block.
 > 
-> The new dentry operations are functionally equivalent to the existing
-> operations in ext4 and f2fs, apart from the use of utf8_casefold_hash to
-> avoid an allocation.
+> ...
 > 
-> By providing a common implementation, all users can benefit from any
-> optimizations without needing to port over improvements.
+> >> +	/*
+> >> +	 * map index at which we will split
+> >> +	 *
+> >> +	 * If the sum of active entries didn't exceed half the block size, just
+> >> +	 * split it in half by count; each resulting block will have at least
+> >> +	 * half the space free.
+> >> +	 */
+> >> +	if (i > 0)
+> >> +		split = count - move;
+> >> +	else
+> >> +		split = count/2;
+> > 
+> > Won't we have exactly the same problem as we did before your commit
+> > ef2b02d3e617cb0400eedf2668f86215e1b0e6af ? Since we do not know how much
+> > space we actually moved we might have not made enough space for the new
+> > entry ?
 > 
-> Signed-off-by: Daniel Rosenberg <drosen@google.com>
+> I don't think so - while we don't have the original reproducer, I assume that
+> it was the case where the block was very full, and splitting by count left us
+> with one of the split blocks still over half full (because ensuring that we
+> split in half by size seemed to fix it)
+> 
+> In this case, the sum of the active entries was <= half the block size.
+> So if we split by count, we're guaranteed to have >= half the block size free
+> in each side of the split.
+>  
+> > Also since we have the move == count when the problem appears then it's
+> > clear that we never hit the condition
+> > 
+> > 1865 →       →       /* is more than half of this entry in 2nd half of the block? */
+> > 1866 →       →       if (size + map[i].size/2 > blocksize/2)
+> > 1867 →       →       →       break;
+> > 
+> > in the loop. This is surprising but it means the the entries must have
+> > gaps between them that are small enough that we can't fit the entry
+> > right in ? Should not we try to compact it before splitting, or is it
+> > the case that this should have been done somewhere else ?
+> 
+> Yes, that's exactly what happened - see my 0/1 cover letter.  Maybe that should
+> be in the patch description itself.  ALso, yes compaction would help but I was
+> unclear as to whether that should be done here, is the side effect of some other
+> bug, etc.  In general, we do seem to do compaction elsewhere and I don't know
+> how we got to this point.
+> 
+> > If we really want ot be fair and we want to split it right in the middle
+> > of the entries size-wise then we need to keep track of of sum of the
+> > entries and decide based on that, not blocksize/2. But maybe the problem
+> > could be solved by compacting the entries together because the condition
+> > seems to rely on that.
+> 
+> I thought about that as well, but it took a bit more code to do; we could make
+> make_map() return both count and total size, for example.  But based on my
+> theory above that both sides of the split will have >= half block free, it
+> didn't seem necessary, particularly since this seems like an edge case?
 
-Reviewed-by: Eric Biggers <ebiggers@google.com>
+This didn't seem to conclude in any way? The patch looks good to me FWIW so
+feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+Ted, can you please pick this patch up? Thanks!
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
