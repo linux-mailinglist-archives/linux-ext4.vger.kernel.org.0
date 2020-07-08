@@ -2,122 +2,110 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B1DB217AA7
-	for <lists+linux-ext4@lfdr.de>; Tue,  7 Jul 2020 23:47:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9D56217C92
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 Jul 2020 03:27:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729113AbgGGVrG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 7 Jul 2020 17:47:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40162 "EHLO mail.kernel.org"
+        id S1728683AbgGHB12 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 7 Jul 2020 21:27:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47828 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728802AbgGGVrG (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 7 Jul 2020 17:47:06 -0400
-Received: from gmail.com (unknown [104.132.1.76])
+        id S1727945AbgGHB11 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 7 Jul 2020 21:27:27 -0400
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9D630206C3;
-        Tue,  7 Jul 2020 21:47:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1B77020708;
+        Wed,  8 Jul 2020 01:27:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594158425;
-        bh=ts+rvuN68LcgbRXW9Yw4SR73tT3Wbcg4lH9/td/6Y48=;
+        s=default; t=1594171647;
+        bh=/7pCaqefr9jo0aoJVKw/0wOb++ZXKm19cVeKnE9mCvo=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Dn/ov9H+jKWfQSHO9PKQyMghLVZpP06uh60KGNIw05F4fBAtK6OVlg2BHA2kOJgC8
-         cwruCwGabBvlPqfXEOd6evZcfwZ18oo24jz2veoy6Vsan3QcNBqPkz/rpFJt5O1ZwV
-         c5MZ4GoTQRmqe8s5X1SIFAGKGshPRXHi6mjvwfzA=
-Date:   Tue, 7 Jul 2020 14:47:04 -0700
+        b=qHRW7YN0Nlb2+aagrXIdgt1BRs2O/ElEgTA8SeDY58ttcpFjV2WMguBka5e0D14/6
+         eII1Utr6Zyf7C+j8nqJKF6oIyPa7Lvr7IX+95hdHWJfLY6SYii6lxG8/9KTCfZj1j0
+         lMNMPiLdrNgHwelooIlKFukdniOyCGAXm4jCeDcE=
+Date:   Tue, 7 Jul 2020 18:27:25 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Florian Schmaus <flo@geekplace.eu>, Theodore Ts'o <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v2] e4crypt: if salt is explicitly provided to add_key,
- then use it
-Message-ID: <20200707214704.GD3426938@gmail.com>
-References: <20200706194727.12979-1-flo@geekplace.eu>
- <20200707082729.85058-1-flo@geekplace.eu>
+To:     Daniel Rosenberg <drosen@google.com>
+Cc:     Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fscrypt@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH v10 2/4] fs: Add standard casefolding support
+Message-ID: <20200708012725.GE839@sol.localdomain>
+References: <20200707113123.3429337-1-drosen@google.com>
+ <20200707113123.3429337-3-drosen@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200707082729.85058-1-flo@geekplace.eu>
+In-Reply-To: <20200707113123.3429337-3-drosen@google.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jul 07, 2020 at 10:27:30AM +0200, Florian Schmaus wrote:
-> Providing -S and a path to 'add_key' previously exhibit an unintuitive
+On Tue, Jul 07, 2020 at 04:31:21AM -0700, Daniel Rosenberg wrote:
+> +/*
+> + * Determine if the name of a dentry should be casefolded. It does not make
+> + * sense to casefold the no-key token of an encrypted filename.
+> + *
+> + * Return: if names will need casefolding
+> + */
+> +static bool needs_casefold(const struct inode *dir, const struct dentry *dentry)
+> +{
+> +	return IS_CASEFOLDED(dir) && dir->i_sb->s_encoding &&
+> +			!(dentry->d_flags & DCACHE_ENCRYPTED_NAME);
+> +}
+> +
+[...]
+> +/**
+> + * generic_ci_d_hash - generic d_hash implementation for casefolding filesystems
+> + * @dentry:	dentry whose name we are hashing
+> + * @str:	qstr of name whose hash we should fill in
+> + *
+> + * Return: 0 if hash was successful, or -ERRNO
+> + */
+> +int generic_ci_d_hash(const struct dentry *dentry, struct qstr *str)
+> +{
+> +	const struct inode *inode = READ_ONCE(dentry->d_inode);
+> +	struct super_block *sb = dentry->d_sb;
+> +	const struct unicode_map *um = sb->s_encoding;
+> +	int ret = 0;
+> +
+> +	if (!inode || !needs_casefold(inode, dentry))
+> +		return 0;
+> +
+> +	ret = utf8_casefold_hash(um, dentry, str);
+> +	if (ret < 0)
+> +		goto err;
+> +
+> +	return 0;
+> +err:
+> +	if (sb_has_strict_encoding(sb))
+> +		ret = -EINVAL;
+> +	else
+> +		ret = 0;
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL(generic_ci_d_hash);
 
-exhibit => exhibited
+I thought this was discussed before, but the 'dentry' passed to ->d_hash() is
+the parent dentry, not the one being hashed.
 
-> behavior: instead of using the salt explicitly provided by the user,
-> e4crypt would use the salt obtained via EXT4_IOC_GET_ENCRYPTION_PWSALT
-> on the path. This was because set_policy() was still called with NULL
-> as salt.
-> 
-> With this change we now remember the explicitly provided salt (if any)
-> and use it as argument for set_policy().
-> 
-> Eventually
-> 
-> e4crypt add_key -S s:my-spicy-salt /foo
-> 
-> will now actually use 'my-spicy-salt' and not something else as salt
-> for the policy set on /foo.
-> 
-> Signed-off-by: Florian Schmaus <flo@geekplace.eu>
-> ---
-> 
-> Notes:
->     - Clarify -S description in man page.
->     - Do not store a reference to salt_list entry, as it
->       could be reallocated causing a use-after-free.
->     - Only parse the salts of the path arguments if no
->       salt was explicitly specified.
-> 
->  misc/e4crypt.8.in |  4 +++-
->  misc/e4crypt.c    | 18 ++++++++++++++----
->  2 files changed, 17 insertions(+), 5 deletions(-)
-> 
-> diff --git a/misc/e4crypt.8.in b/misc/e4crypt.8.in
-> index 75b968a0..fe9372cf 100644
-> --- a/misc/e4crypt.8.in
-> +++ b/misc/e4crypt.8.in
-> @@ -48,7 +48,9 @@ values are 4, 8, 16, and 32.
->  If one or more directory paths are specified, e4crypt will try to
->  set the policy of those directories to use the key just added by the
->  .B add_key
-> -command.
-> +command.  If a salt was explicitly specified, then it will be used
-> +to derive the encryption key of those directories.  Otherwise a
-> +directory-specific default salt will be used.
->  .TP
->  .B e4crypt get_policy \fIpath\fR ...
->  Print the policy for the directories specified on the command line.
-> diff --git a/misc/e4crypt.c b/misc/e4crypt.c
-> index 2ae6254a..67d25d88 100644
-> --- a/misc/e4crypt.c
-> +++ b/misc/e4crypt.c
-> @@ -26,6 +26,7 @@
->  #include <getopt.h>
->  #include <dirent.h>
->  #include <errno.h>
-> +#include <stdbool.h>
+Therefore checking DCACHE_ENCRYPTED_NAME on 'dentry' is wrong here.  Instead we
+need to use !fscrypt_has_encryption_key() here.  (IOW, while checking
+DCACHE_ENCRYPTED_NAME is better *when possible*, it's not possible here.)
 
-I'd like to use <stdbool.h> too, but I'm not sure if it's allowed in e2fsprogs;
-this would be the first use.  Everywhere else seems to just use int, 0, and 1.
-Ted, is stdbool.h allowed in e2fsprogs?
+Note that the whole point of ->d_hash() is to hash the filename so that the VFS
+can find the dentry.  If the VFS already had the dentry, there would be no need
+for ->d_hash().
 
-> +	if (!explicit_salt)
-> +		for (i = optind; i < argc; i++)
-> +			parse_salt(argv[i], PARSE_FLAGS_FORCE_FN);
-
-There should be braces at the outer level (following Linux kernel coding style):
-
-	if (!explicit_salt) {
-		for (i = optind; i < argc; i++)
-			parse_salt(argv[i], PARSE_FLAGS_FORCE_FN);
-	}
-
-
-Otherwise this patch looks fine.
-
-Hopefully people aren't depending on this bug being present.
+Also, did you consider my suggestion to not handle encrypt+casefold in this
+patch?  I'd like to get this series in as a refactoring for 5.9.  The encryption
+handling (which is new) might better belong in a later patch series.
 
 - Eric
