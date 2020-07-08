@@ -2,124 +2,145 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB7CF217FEA
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 Jul 2020 08:51:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C87221829A
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 Jul 2020 10:37:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729990AbgGHGvg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 8 Jul 2020 02:51:36 -0400
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:55758 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729971AbgGHGvf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Jul 2020 02:51:35 -0400
-Received: from dread.disaster.area (pa49-180-53-24.pa.nsw.optusnet.com.au [49.180.53.24])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 408423A4417;
-        Wed,  8 Jul 2020 16:51:29 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1jt3vT-0003aV-Rn; Wed, 08 Jul 2020 16:51:27 +1000
-Date:   Wed, 8 Jul 2020 16:51:27 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        fdmanana@gmail.com, dsterba@suse.cz, darrick.wong@oracle.com,
-        cluster-devel@redhat.com, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Subject: Re: always fall back to buffered I/O after invalidation failures,
- was: Re: [PATCH 2/6] iomap: IOMAP_DIO_RWF_NO_STALE_PAGECACHE return if page
- invalidation fails
-Message-ID: <20200708065127.GM2005@dread.disaster.area>
-References: <20200629192353.20841-1-rgoldwyn@suse.de>
- <20200629192353.20841-3-rgoldwyn@suse.de>
- <20200701075310.GB29884@lst.de>
- <20200707124346.xnr5gtcysuzehejq@fiona>
- <20200707125705.GK25523@casper.infradead.org>
- <20200707130030.GA13870@lst.de>
+        id S1728114AbgGHIgq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 8 Jul 2020 04:36:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725789AbgGHIgp (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Jul 2020 04:36:45 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A608AC08E6DC
+        for <linux-ext4@vger.kernel.org>; Wed,  8 Jul 2020 01:36:45 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id t18so23547142otq.5
+        for <linux-ext4@vger.kernel.org>; Wed, 08 Jul 2020 01:36:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=E9OfFYHbH3ZToik4MArfMg4xPvvnpVtVORAGHHfFrzw=;
+        b=a7N5EXkH5q7VpSLTWAozI5gExPwpPLyEBtcnr+2Joyigm0wqh9O962IoDSEkQkNe24
+         G0b7x3cdw0AGEOwCagxOmuU2zD2rueVP3jFwJ1lbf3nWWdqZWtyp4KjV6oVZfok6JToX
+         b5iZD6fEW2fOrcX3fUDiv4C44gQbHmEgFQDXN+gKgfNQoiyXhwA+X+OmAU2s1fIInzLD
+         8Fc1+guNZyjLcgN0szNlMFiaHA+C8wUa8soG5hVGc84IlOyq2splKLjARL+IhmghncC1
+         Bv3M94PQA+S5+1aPAntPl45rQ9Ut5fxU8s3HhGRLBtk06ZEBoz9M7eo06qvjRzHsHzTl
+         8GNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=E9OfFYHbH3ZToik4MArfMg4xPvvnpVtVORAGHHfFrzw=;
+        b=OYgWriQ40KlhuT+l78hJcmSUCQF7yDftGwClhYoTLQ52SCHyzLt70jQsoHcqoRDMUa
+         xzfpA3O5RibPyOs1RfKc/YduMp75YF179V1543a8WuJtkmROY4C+XSCyP2YslaFv2l3s
+         IwP59v1wnIrB/riZEBfvWbQe1NpZXUuZgPPBMCr+jMFDnHPPVGRYIWridW8ah1Rx+MFz
+         TQIDLOJqxJvrcOKZAMShaWr0eh185ElihRq+VR6bzIgnFx3YJnBMxXR81W5KBeQLJYz/
+         qrhB0VH6mdNwd0LQAQ6Z+e1f1K9SjKczwomYHH+8MN7WNTvnReEs/mpBQg7jRb/+jYrI
+         ahoQ==
+X-Gm-Message-State: AOAM531Iz/pmfD/cxXdS2QtI0AiA4filVy0OekskZGs9rpBwk1PLvvmc
+        sh6+eMMSJfvbB2kjw2eCvpDVku3IESufVajVFAbF0Q==
+X-Google-Smtp-Source: ABdhPJwKsuIiJfQBK+Z2FyMDKuMkojZ6lgZ1RE3obfX6zdiVrn4CkzrMBfnMstVN4ibNoDkOfiQQ4zMF5Hlxev2KtTc=
+X-Received: by 2002:a9d:6d98:: with SMTP id x24mr38406495otp.93.1594197404821;
+ Wed, 08 Jul 2020 01:36:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200707130030.GA13870@lst.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=QIgWuTDL c=1 sm=1 tr=0
-        a=moVtWZxmCkf3aAMJKIb/8g==:117 a=moVtWZxmCkf3aAMJKIb/8g==:17
-        a=kj9zAlcOel0A:10 a=_RQrkK6FrEwA:10 a=iox4zFpeAAAA:8 a=yPCof4ZbAAAA:8
-        a=7-415B0cAAAA:8 a=3vpnGOzTaiQfhgfqfmAA:9 a=CjuIK1q_8ugA:10
-        a=WzC6qhA0u3u7Ye7llzcV:22 a=biEYGPWJfzWAr4FL6Ov7:22
+References: <20200708030552.3829094-1-drosen@google.com> <20200708030552.3829094-3-drosen@google.com>
+ <20200708041230.GL839@sol.localdomain>
+In-Reply-To: <20200708041230.GL839@sol.localdomain>
+From:   Daniel Rosenberg <drosen@google.com>
+Date:   Wed, 8 Jul 2020 01:36:33 -0700
+Message-ID: <CA+PiJmQP+kJQeCZ0LFqRcN6JYWF6pAUHaTnFOThmDLtLTveOXg@mail.gmail.com>
+Subject: Re: [PATCH v11 2/4] fs: Add standard casefolding support
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fscrypt@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jul 07, 2020 at 03:00:30PM +0200, Christoph Hellwig wrote:
-> On Tue, Jul 07, 2020 at 01:57:05PM +0100, Matthew Wilcox wrote:
-> > On Tue, Jul 07, 2020 at 07:43:46AM -0500, Goldwyn Rodrigues wrote:
-> > > On  9:53 01/07, Christoph Hellwig wrote:
-> > > > On Mon, Jun 29, 2020 at 02:23:49PM -0500, Goldwyn Rodrigues wrote:
-> > > > > From: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> > > > > 
-> > > > > For direct I/O, add the flag IOMAP_DIO_RWF_NO_STALE_PAGECACHE to indicate
-> > > > > that if the page invalidation fails, return back control to the
-> > > > > filesystem so it may fallback to buffered mode.
-> > > > > 
-> > > > > Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-> > > > > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> > > > 
-> > > > I'd like to start a discussion of this shouldn't really be the
-> > > > default behavior.  If we have page cache that can't be invalidated it
-> > > > actually makes a whole lot of sense to not do direct I/O, avoid the
-> > > > warnings, etc.
-> > > > 
-> > > > Adding all the relevant lists.
-> > > 
-> > > Since no one responded so far, let me see if I can stir the cauldron :)
-> > > 
-> > > What error should be returned in case of such an error? I think the
-> > 
-> > Christoph's message is ambiguous.  I don't know if he means "fail the
-> > I/O with an error" or "satisfy the I/O through the page cache".  I'm
-> > strongly in favour of the latter.
-> 
-> Same here.  Sorry if my previous mail was unclear.
-> 
-> > Indeed, I'm in favour of not invalidating
-> > the page cache at all for direct I/O.  For reads, I think the page cache
-> > should be used to satisfy any portion of the read which is currently
-> > cached.  For writes, I think we should write into the page cache pages
-> > which currently exist, and then force those pages to be written back,
-> > but left in cache.
-> 
-> Something like that, yes.
+On Tue, Jul 7, 2020 at 9:12 PM Eric Biggers <ebiggers@kernel.org> wrote:
+>
+> On Tue, Jul 07, 2020 at 08:05:50PM -0700, Daniel Rosenberg wrote:
+> > +/**
+> > + * generic_ci_d_compare - generic d_compare implementation for casefolding filesystems
+> > + * @dentry:  dentry whose name we are checking against
+> > + * @len:     len of name of dentry
+> > + * @str:     str pointer to name of dentry
+> > + * @name:    Name to compare against
+> > + *
+> > + * Return: 0 if names match, 1 if mismatch, or -ERRNO
+> > + */
+> > +int generic_ci_d_compare(const struct dentry *dentry, unsigned int len,
+> > +                       const char *str, const struct qstr *name)
+> > +{
+> > +     const struct dentry *parent = READ_ONCE(dentry->d_parent);
+> > +     const struct inode *inode = READ_ONCE(parent->d_inode);
+>
+> How about calling the 'inode' variable 'dir' instead?
+>
+> That would help avoid confusion about what is the directory and what is a file
+> in the directory.
+>
+> Likewise in generic_ci_d_hash().
+>
+> > +/**
+> > + * generic_ci_d_hash - generic d_hash implementation for casefolding filesystems
+> > + * @dentry:  dentry whose name we are hashing
+>
+> This comment for @dentry needs to be updated.
+>
+> It's the parent dentry, not the dentry whose name we are hashing.
+>
+> > + * @str:     qstr of name whose hash we should fill in
+> > + *
+> > + * Return: 0 if hash was successful, or -ERRNO
+>
+> As I mentioned on v9, this can also return 0 if the hashing was not done because
+> it wants to fallback to the standard hashing.  Can you please fix the comment?
+>
+> > +int generic_ci_d_hash(const struct dentry *dentry, struct qstr *str)
+> > +{
+> > +     const struct inode *inode = READ_ONCE(dentry->d_inode);
+> > +     struct super_block *sb = dentry->d_sb;
+> > +     const struct unicode_map *um = sb->s_encoding;
+> > +     int ret = 0;
+> > +
+> > +     if (!inode || !needs_casefold(inode))
+> > +             return 0;
+> > +
+> > +     ret = utf8_casefold_hash(um, dentry, str);
+> > +     if (ret < 0)
+> > +             goto err;
+> > +
+> > +     return 0;
+> > +err:
+> > +     if (sb_has_strict_encoding(sb))
+> > +             ret = -EINVAL;
+> > +     else
+> > +             ret = 0;
+> > +     return ret;
+> > +}
+>
+> On v9, Gabriel suggested simplifying this to:
+>
+>         ret = utf8_casefold_hash(um, dentry, str);
+>         if (ret < 0 && sb_has_enc_strict_mode(sb))
+>                 return -EINVAL;
+>         return 0;
+>
+> Any reason not to do that?
+>
+> - Eric
 
-So are we really willing to take the performance regression that
-occurs from copying out of the page cache consuming lots more CPU
-than an actual direct IO read? Or that direct IO writes suddenly
-serialise because there are page cache pages and now we have to do
-buffered IO?
-
-Direct IO should be a deterministic, zero-copy IO path to/from
-storage. Using the CPU to copy data during direct IO is the complete
-opposite of the intended functionality, not to mention the behaviour
-that many applications have been careful designed and tuned for.
-
-Hence I think that forcing iomap to use cached pages for DIO is a
-non-starter. I have no problems with providing infrastructure that
-allows filesystems to -opt in- to using buffered IO for the direct
-IO path. However, the change in IO behaviour caused by unpredicably
-switching between direct IO and buffered IO (e.g. suddening DIO
-writes serialise -all IO-) will cause unacceptible performance
-regressions for many applications and be -very difficult to
-diagnose- in production systems.
-
-IOWs, we need to let the individual filesystems decide how they want
-to use the page cache for direct IO. Just because we have new direct
-IO infrastructure (i.e. iomap) it does not mean we can just make
-wholesale changes to the direct IO path behaviour...
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Guh, I remember making those changes, must've lost them in a rebase :(
+I'll resend shortly.
+-Daniel
