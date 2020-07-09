@@ -2,103 +2,98 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1C6221A79D
-	for <lists+linux-ext4@lfdr.de>; Thu,  9 Jul 2020 21:15:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0548C21A812
+	for <lists+linux-ext4@lfdr.de>; Thu,  9 Jul 2020 21:48:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726193AbgGITPo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 9 Jul 2020 15:15:44 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:57996 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726116AbgGITPo (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 9 Jul 2020 15:15:44 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 069J6c88049825;
-        Thu, 9 Jul 2020 19:15:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=scD0dRNk66GYxAvzVfjhVk7XV0N9HiU1EB24wa/KmfU=;
- b=lYpySmdDlEakTQsJASSHisCQtuHxzB57Cj3PEUjiuRNEZJaiJPe9V8E+5QnLl+m5bnAo
- WL4I5DZc8Dj6dxixgbIMZ0TUKN/qJaP9TzRqAzUBEAKCllSywJHpaeHFdQwxN5f38cil
- 1JNcN2SI+uGTo4haUdngzrasOZOH7WC5BDYbvQfiI1Skm9A+vEA/rXVo+U70ZmmfxzfY
- aGLg5/7J0AmAZk2CZ82qWakesyg+SyzsNVocST7eDJounuBI1ih5rkcC8+9Urk4KA0HR
- 5RnVMY0RBFGVqmVM3/LkO25SwccwfK0cHeI/ad/Elrkt6Z9LAfeg7etD6KKV35vRSxN3 lQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 325y0akpqw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 09 Jul 2020 19:15:40 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 069J9HEW169804;
-        Thu, 9 Jul 2020 19:13:40 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 325k3hrfb4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 09 Jul 2020 19:13:40 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 069JDd9A030528;
-        Thu, 9 Jul 2020 19:13:39 GMT
-Received: from localhost (/10.159.229.94)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 09 Jul 2020 12:13:39 -0700
-Date:   Thu, 9 Jul 2020 12:13:38 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] generic/530: Require metadata journaling
-Message-ID: <20200709191338.GA848607@magnolia>
-References: <20200709095753.3514-1-jack@suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200709095753.3514-1-jack@suse.cz>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9677 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 mlxlogscore=999
- phishscore=0 adultscore=0 suspectscore=1 malwarescore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007090131
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9677 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 adultscore=0 malwarescore=0
- clxscore=1015 impostorscore=0 phishscore=0 suspectscore=1
- priorityscore=1501 bulkscore=0 lowpriorityscore=0 mlxlogscore=999
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007090131
+        id S1726546AbgGITsD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 9 Jul 2020 15:48:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726220AbgGITr5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 9 Jul 2020 15:47:57 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2A02C08C5CE
+        for <linux-ext4@vger.kernel.org>; Thu,  9 Jul 2020 12:47:56 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id s1so2472019pge.16
+        for <linux-ext4@vger.kernel.org>; Thu, 09 Jul 2020 12:47:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=OQlFlzqp7cgxbEDAcFcy1Mp/9MDoNdc1mBQkMnvEjS8=;
+        b=pBZbi74/hZ9MKsVQolBdjXjTOO8KKn/3Z56LfSGw1BYIJbckz8I6p+Grrnj++3VaqI
+         Wfd7CJ40NdzKxB9/ChwQTaq+jFFu84vkcBwJdZ3qR5ZYg9tvRya9kcEriBdzZmqHUquz
+         ra78LhjLSBN0thXrH9MXImFbLdmrxwobSlfEXgCfjXHziseJKpNM7ZmDmUliCJd07P1g
+         NiwyQ1h6y3r/5FidO0wXZagVk1tnMpEVSZz+DzHUTgViL04XFNPAvmlS6EvBM2XHRtvw
+         9R+IzEJYFfk/49VWx3x2fGfrhavRhEiQHpOYtFKVBFBysKZcVFW90TqQJa2sJwWmA261
+         0ovg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=OQlFlzqp7cgxbEDAcFcy1Mp/9MDoNdc1mBQkMnvEjS8=;
+        b=S8mlpkrau5m7sXJhs/BK8havOScr6cwdl+dCrW1NGuPfV1tqccRBcu76mQ6BKoONbz
+         L6uyqm38lLr25RzRwmMCHcbo3bcbKYEZL9ao9AJzpxsd94Eo+MW4qqLOcL+3oqomqKAg
+         xs2UIR5ejcPRXYSO8I9BVEJvqDzy4NKOMw5xll09S85ghuhTmL8Av/mwaYiiPjMgHL6V
+         kJFAKFQ4N99e1B8AzlODPiIGmUJCZCgrmS6Y+yVWxEVCvpk+WQuiNYRG6mJwLHfG9dK5
+         pGR/SATWXV9Jzo5pBUHwPZXa5Wh+m7S6VyLx3s1yHGwyTHvQy6FrrCx+BPkOFixZ2PYU
+         r2KA==
+X-Gm-Message-State: AOAM532ANwo4NTpayNxxF0vqwhSdrc5oUTuiGLgzpyFaDlRn/QrpoxU6
+        zGWOEwrCDtd0wVX75Q8niwRNc80n+YU=
+X-Google-Smtp-Source: ABdhPJyPuBGtLJ2QIfaP80rWb4N1NQC5Ht7OHXhJqVfgNx6APnNpuuj6IT4dY+awLOKpAY/PJNhCp6wKhKM=
+X-Received: by 2002:a17:90a:1fcb:: with SMTP id z11mr770921pjz.1.1594324075443;
+ Thu, 09 Jul 2020 12:47:55 -0700 (PDT)
+Date:   Thu,  9 Jul 2020 19:47:46 +0000
+Message-Id: <20200709194751.2579207-1-satyat@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.27.0.383.g050319c2ae-goog
+Subject: [PATCH 0/5] add support for direct I/O with fscrypt using blk-crypto
+From:   Satya Tangirala <satyat@google.com>
+To:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org
+Cc:     Satya Tangirala <satyat@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jul 09, 2020 at 11:57:53AM +0200, Jan Kara wrote:
-> Test generic/530 doesn't make sence without metadata journalling as in
-> that case, there's no way to recover shutdown fs besides fsck. ext4
-> can be configured without a journal and it supports shutdown ioctl even
-> in that mode which makes this test fail for that configuration. Add
-> requirement for metadata journalling to this test so that it's properly
-> skipped.
-> 
-> Signed-off-by: Jan Kara <jack@suse.cz>
+This patch series adds support for direct I/O with fscrypt using
+blk-crypto. It has been rebased on fscrypt/inline-encryption.
 
-<shudder> Right, I forgot about that...
+Patch 1 adds two functions to fscrypt that need to be called to determine
+if direct I/O is supported for a request.
 
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+Patches 2 and 3 wire up direct-io and iomap respectively with the functions
+introduced in Patch 1 and set bio crypt contexts on bios when appropriate
+by calling into fscrypt.
 
---D
+Patches 4 and 5 allow ext4 and f2fs direct I/O to support fscrypt without
+falling back to buffered I/O.
 
-> ---
->  tests/generic/530 | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/tests/generic/530 b/tests/generic/530
-> index cb874ace902b..153a045dca87 100755
-> --- a/tests/generic/530
-> +++ b/tests/generic/530
-> @@ -33,6 +33,7 @@ _supported_fs generic
->  _supported_os Linux
->  _require_scratch
->  _require_scratch_shutdown
-> +_require_metadata_journaling
->  _require_test_program "t_open_tmpfiles"
->  
->  rm -f $seqres.full
-> -- 
-> 2.16.4
-> 
+This patch series was tested by running xfstests with test_dummy_encryption
+with and without the 'inlinecrypt' mount option, and there were no
+meaningful regressions. The only regression was for generic/587 on ext4,
+but that test isn't compatible with test_dummy_encryption in the first
+place, and the test "incorrectly" passes without the 'inlinecrypt' mount
+option - a patch will be sent out to exclude that test when
+test_dummy_encryption is turned on with ext4 (like the other quota related
+tests that use user visible quota files).
+
+Eric Biggers (5):
+  fscrypt: Add functions for direct I/O support
+  direct-io: add support for fscrypt using blk-crypto
+  iomap: support direct I/O with fscrypt using blk-crypto
+  ext4: support direct I/O with fscrypt using blk-crypto
+  f2fs: support direct I/O with fscrypt using blk-crypto
+
+ fs/crypto/crypto.c       |  8 +++++
+ fs/crypto/inline_crypt.c | 72 ++++++++++++++++++++++++++++++++++++++++
+ fs/direct-io.c           | 15 ++++++++-
+ fs/ext4/file.c           | 10 +++---
+ fs/f2fs/f2fs.h           |  4 ++-
+ fs/iomap/direct-io.c     |  8 +++++
+ include/linux/fscrypt.h  | 19 +++++++++++
+ 7 files changed, 130 insertions(+), 6 deletions(-)
+
+-- 
+2.27.0.383.g050319c2ae-goog
+
