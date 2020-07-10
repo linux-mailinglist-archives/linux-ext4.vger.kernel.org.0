@@ -2,102 +2,80 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88DFC21AB14
-	for <lists+linux-ext4@lfdr.de>; Fri, 10 Jul 2020 00:59:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64FAF21AC5B
+	for <lists+linux-ext4@lfdr.de>; Fri, 10 Jul 2020 03:05:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727065AbgGIW7p (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 9 Jul 2020 18:59:45 -0400
-Received: from mail109.syd.optusnet.com.au ([211.29.132.80]:34184 "EHLO
-        mail109.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726228AbgGIW7o (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 9 Jul 2020 18:59:44 -0400
-Received: from dread.disaster.area (pa49-180-53-24.pa.nsw.optusnet.com.au [49.180.53.24])
-        by mail109.syd.optusnet.com.au (Postfix) with ESMTPS id 484E0D7A54F;
-        Fri, 10 Jul 2020 08:59:37 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1jtfVw-00018A-GA; Fri, 10 Jul 2020 08:59:36 +1000
-Date:   Fri, 10 Jul 2020 08:59:36 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        fdmanana@gmail.com, dsterba@suse.cz, cluster-devel@redhat.com,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: always fall back to buffered I/O after invalidation failures,
- was: Re: [PATCH 2/6] iomap: IOMAP_DIO_RWF_NO_STALE_PAGECACHE return if page
- invalidation fails
-Message-ID: <20200709225936.GZ2005@dread.disaster.area>
-References: <20200701075310.GB29884@lst.de>
- <20200707124346.xnr5gtcysuzehejq@fiona>
- <20200707125705.GK25523@casper.infradead.org>
- <20200707130030.GA13870@lst.de>
- <20200708065127.GM2005@dread.disaster.area>
- <20200708135437.GP25523@casper.infradead.org>
- <20200709022527.GQ2005@dread.disaster.area>
- <20200709160926.GO7606@magnolia>
- <20200709170519.GH12769@casper.infradead.org>
- <20200709171038.GE7625@magnolia>
+        id S1726433AbgGJBFb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 9 Jul 2020 21:05:31 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7284 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726265AbgGJBFb (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 9 Jul 2020 21:05:31 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id CEECEF12BB245A9D0CA7;
+        Fri, 10 Jul 2020 09:05:28 +0800 (CST)
+Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 10 Jul
+ 2020 09:05:24 +0800
+Subject: Re: [PATCH 5/5] f2fs: support direct I/O with fscrypt using
+ blk-crypto
+To:     Satya Tangirala <satyat@google.com>,
+        <linux-fscrypt@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-ext4@vger.kernel.org>
+CC:     Eric Biggers <ebiggers@google.com>
+References: <20200709194751.2579207-1-satyat@google.com>
+ <20200709194751.2579207-6-satyat@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <560266ca-0164-c02e-18ea-55564683d13e@huawei.com>
+Date:   Fri, 10 Jul 2020 09:05:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200709171038.GE7625@magnolia>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=X6os11be c=1 sm=1 tr=0
-        a=moVtWZxmCkf3aAMJKIb/8g==:117 a=moVtWZxmCkf3aAMJKIb/8g==:17
-        a=kj9zAlcOel0A:10 a=_RQrkK6FrEwA:10 a=7-415B0cAAAA:8
-        a=CAmLY35Qp_Y7Zt_JOjoA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <20200709194751.2579207-6-satyat@google.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.134.22.195]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jul 09, 2020 at 10:10:38AM -0700, Darrick J. Wong wrote:
-> On Thu, Jul 09, 2020 at 06:05:19PM +0100, Matthew Wilcox wrote:
-> > On Thu, Jul 09, 2020 at 09:09:26AM -0700, Darrick J. Wong wrote:
-> > > On Thu, Jul 09, 2020 at 12:25:27PM +1000, Dave Chinner wrote:
-> > > > -	 */
-> > > > -	ret = invalidate_inode_pages2_range(mapping,
-> > > > -			pos >> PAGE_SHIFT, end >> PAGE_SHIFT);
-> > > > -	if (ret)
-> > > > -		dio_warn_stale_pagecache(iocb->ki_filp);
-> > > > -	ret = 0;
-> > > > +	if (iov_iter_rw(iter) == WRITE) {
-> > > > +		/*
-> > > > +		 * Try to invalidate cache pages for the range we're direct
-> > > > +		 * writing.  If this invalidation fails, tough, the write will
-> > > > +		 * still work, but racing two incompatible write paths is a
-> > > > +		 * pretty crazy thing to do, so we don't support it 100%.
-> > > > +		 */
-> > > > +		ret = invalidate_inode_pages2_range(mapping,
-> > > > +				pos >> PAGE_SHIFT, end >> PAGE_SHIFT);
-> > > > +		if (ret)
-> > > > +			dio_warn_stale_pagecache(iocb->ki_filp);
-> > > > +		ret = 0;
-> > > >  
-> > > > -	if (iov_iter_rw(iter) == WRITE && !wait_for_completion &&
-> > > > -	    !inode->i_sb->s_dio_done_wq) {
-> > > > -		ret = sb_init_dio_done_wq(inode->i_sb);
-> > > > -		if (ret < 0)
-> > > > -			goto out_free_dio;
-> > > > +		if (!wait_for_completion &&
-> > > > +		    !inode->i_sb->s_dio_done_wq) {
-> > > > +			ret = sb_init_dio_done_wq(inode->i_sb);
-> > > > +			if (ret < 0)
-> > > > +				goto out_free_dio;
+On 2020/7/10 3:47, Satya Tangirala wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> ...and yes I did add in the closing brace here. :P
+> Wire up f2fs with fscrypt direct I/O support.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> Signed-off-by: Satya Tangirala <satyat@google.com>
+> ---
+>  fs/f2fs/f2fs.h | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index b35a50f4953c..6d662a37b445 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -4082,7 +4082,9 @@ static inline bool f2fs_force_buffered_io(struct inode *inode,
+>  	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+>  	int rw = iov_iter_rw(iter);
+>  
+> -	if (f2fs_post_read_required(inode))
+> +	if (!fscrypt_dio_supported(iocb, iter))
+> +		return true;
+> +	if (fsverity_active(inode))
 
-Doh! I forgot to refresh the patch after fixing that. :/
+static inline bool f2fs_post_read_required(struct inode *inode)
+{
+	return f2fs_encrypted_file(inode) || fsverity_active(inode) ||
+		f2fs_compressed_file(inode);
+}
 
-Thanks!
+That's not correct, missed to check compression condition.
 
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+>  		return true;
+>  	if (f2fs_is_multi_device(sbi))
+>  		return true;
+> 
