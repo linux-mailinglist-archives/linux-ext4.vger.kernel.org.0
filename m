@@ -2,100 +2,140 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84B9F21C309
-	for <lists+linux-ext4@lfdr.de>; Sat, 11 Jul 2020 09:28:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0D7221C92A
+	for <lists+linux-ext4@lfdr.de>; Sun, 12 Jul 2020 13:36:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728133AbgGKH2Z (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 11 Jul 2020 03:28:25 -0400
-Received: from sender2-op-o12.zoho.com.cn ([163.53.93.243]:17107 "EHLO
-        sender2-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726958AbgGKH2Y (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Sat, 11 Jul 2020 03:28:24 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1594452487; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=WKWE3bVeXz5BUZpTqZpuy0JcdOxKuW14NTl/NoW7Ec9sZYAihZmwAoTE/PIEFexsXNwe8KAATX/3JcILqi9rxQ1ZnV7eC4+HxhVauYugd+HmBDDLT0SSYdoHVhCKVi34yugL5xJo2g2d9/Zi+dt54b6ujCYZZld+oXg8rd0yPSw=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1594452487; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=LlxI+xhhbaNqR3A672B1fiq0MKfW9jkWMb2zP3rGVK0=; 
-        b=K94aft54caCskHniBSpp6phkuWnxrdpCisy9iJkxgalqlcl9PEiJDPIeToDEvpNX6AigyLcgb3R6qHtw3yIZAFVZNyh9X1jq+GI0zFdzYAZo3UumndAqoYSQZV2jG35Th9jCMW/ZINyEPyfRRtGLT9mnEuMjf8C2UePrZ/wtXO8=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=mykernel.net;
-        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
-        dmarc=pass header.from=<cgxu519@mykernel.net> header.from=<cgxu519@mykernel.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1594452487;
-        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding;
-        bh=LlxI+xhhbaNqR3A672B1fiq0MKfW9jkWMb2zP3rGVK0=;
-        b=UKm5W7Vrv/gwXyVd6LkGxQOQHfg8LK0yo7rGQ1vWAoVbVPiNo0bugqjktaihjnu3
-        m3Jfo247fd1z4pWoNsIIX9zQKUKFeP0pAofLDjSrMVqKeorU544p10KGBOUGjPaY5ed
-        JXJFxbUr1hNTZ98bt7GZIpsZtrhVxlO1Zw6E83hs=
-Received: from [10.0.0.5] (113.87.90.223 [113.87.90.223]) by mx.zoho.com.cn
-        with SMTPS id 1594452485309823.4562675062915; Sat, 11 Jul 2020 15:28:05 +0800 (CST)
-Subject: Re: [PATCH] ext2: initialize quota info in ext2_xattr_set()
-To:     Ritesh Harjani <riteshh@linux.ibm.com>, jack@suse.com
-Cc:     linux-ext4@vger.kernel.org
-References: <20200626054959.114177-1-cgxu519@mykernel.net>
- <20200708105202.7AE73A405F@b06wcsmtp001.portsmouth.uk.ibm.com>
-From:   Chengguang Xu <cgxu519@mykernel.net>
-Message-ID: <38909abd-c180-8e04-216c-24755d1ca582@mykernel.net>
-Date:   Sat, 11 Jul 2020 15:27:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728797AbgGLLgg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 12 Jul 2020 07:36:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728799AbgGLLgf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 12 Jul 2020 07:36:35 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E127BC08C5DD
+        for <linux-ext4@vger.kernel.org>; Sun, 12 Jul 2020 04:36:34 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id r12so10063025wrj.13
+        for <linux-ext4@vger.kernel.org>; Sun, 12 Jul 2020 04:36:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=scylladb-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=5A9cDnFjTG3NBzPmqHsPL3YmbPK4apFGGEKOIxq7+1E=;
+        b=ZiuD87Dsu+6b7jF8K06Oi76ztxdd7tcCfM24FD0meQMd0en5C46y3i/vjGou1ps+mp
+         IINa+5udjSzWkifAEdUzA21DvZcisQqApTQfvyUaleXNt2uCllIdltFhYN4TsL5IU3Wz
+         f+67WzizA9s7b3wjdRsNSf6wAguRT8/W0xLrxIM+zD0y19fcSXwwmG//8Ba/KKYoH/ck
+         XZSqpzoX6xVbBJ0gnk3TJFGiHv4bUtwLjQfHq1aCeVkUR8byjONl687PUWDkIYlUScSe
+         ptjblxeDeZ6iP9JetGcVIDSG8L9WbbwkPQFwcQ+DIzroN6zwuC1FzvfZxRMeeZ9Ml1LC
+         0N1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-transfer-encoding:content-language;
+        bh=5A9cDnFjTG3NBzPmqHsPL3YmbPK4apFGGEKOIxq7+1E=;
+        b=I1QFIdbmNLK10DUhGWC7TSO1vtsyIxOBQl7jlgufGIlnFtxaC+qiuFpmAywy1AKo/n
+         bKoEAkskkkHtpe5kuEJ0enpocUaUCodhNpoVf/8RNe9NR/TryqaLCri7MzY8cBisQIgt
+         E5Z89/K+dVJ1SYt4y6+pt2lkw1XWa2Gq8gb0ogLAwe1oNf14e+C6XnxDb0jh+XTDNSlf
+         ZrOBhi1Wg5iPD45SucsaDgaF1IlS/U1lQvI2LTsIG51WnQkjbxoq7oLBBGm4qio87dN9
+         5cpd0bhosfuJGSblin3Ht0WRY5gxcnaU/mQmac7NwascDG7NWtdzxfw+adxdenWjkkKJ
+         QMIQ==
+X-Gm-Message-State: AOAM532gvSJ1RRxjK4JGlt55K3EifewWPbSlH3xQXmMBaFWEMCJ2rZ7+
+        vfBoFlUMOtTKmke1EwR4LmxDNQ==
+X-Google-Smtp-Source: ABdhPJz33AclGjgkKPm9J3Ofni7d342G+PScmj88XhlgW6hBgx7woi/nEA1w/wuw9KvF7wt1x0wiRg==
+X-Received: by 2002:adf:f889:: with SMTP id u9mr82733150wrp.149.1594553793471;
+        Sun, 12 Jul 2020 04:36:33 -0700 (PDT)
+Received: from [10.0.0.1] (system.cloudius-systems.com. [199.203.229.89])
+        by smtp.gmail.com with ESMTPSA id m2sm7020970wmg.0.2020.07.12.04.36.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 12 Jul 2020 04:36:32 -0700 (PDT)
+Subject: Re: always fall back to buffered I/O after invalidation failures,
+ was: Re: [PATCH 2/6] iomap: IOMAP_DIO_RWF_NO_STALE_PAGECACHE return if page
+ invalidation fails
+To:     Dave Chinner <david@fromorbit.com>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        fdmanana@gmail.com, dsterba@suse.cz, darrick.wong@oracle.com,
+        cluster-devel@redhat.com, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org
+References: <20200629192353.20841-1-rgoldwyn@suse.de>
+ <20200629192353.20841-3-rgoldwyn@suse.de> <20200701075310.GB29884@lst.de>
+ <20200707124346.xnr5gtcysuzehejq@fiona>
+ <20200707125705.GK25523@casper.infradead.org> <20200707130030.GA13870@lst.de>
+ <20200708065127.GM2005@dread.disaster.area>
+ <20200708135437.GP25523@casper.infradead.org>
+ <20200709022527.GQ2005@dread.disaster.area>
+From:   Avi Kivity <avi@scylladb.com>
+Organization: ScyllaDB
+Message-ID: <f86a687a-29bf-ef9c-844c-4354de9a65bb@scylladb.com>
+Date:   Sun, 12 Jul 2020 14:36:28 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200708105202.7AE73A405F@b06wcsmtp001.portsmouth.uk.ibm.com>
+In-Reply-To: <20200709022527.GQ2005@dread.disaster.area>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-ZohoCNMailClient: External
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-=E5=9C=A8 7/8/2020 6:52 PM, Ritesh Harjani =E5=86=99=E9=81=93:
->
->
-> On 6/26/20 11:19 AM, Chengguang Xu wrote:
->> In order to correctly account/limit space usage, should initialize
->> quota info before calling quota related functions.
->
-> How did you encounter the problem?
-> Any test case got hit?
 
-I found the issue by code inspecting when I was learning mbcache logic.
+On 09/07/2020 05.25, Dave Chinner wrote:
+>
+>> Nobody's proposing changing Direct I/O to exclusively work through the
+>> pagecache.  The proposal is to behave less weirdly when there's already
+>> data in the pagecache.
+> No, the proposal it to make direct IO behave *less
+> deterministically* if there is data in the page cache.
+>
+> e.g. Instead of having a predicatable submission CPU overhead and
+> read latency of 100us for your data, this proposal makes the claim
+> that it is always better to burn 10x the IO submission CPU for a
+> single IO to copy the data and give that specific IO 10x lower
+> latency than it is to submit 10 async IOs to keep the IO pipeline
+> full.
+>
+> What it fails to take into account is that in spending that CPU time
+> to copy the data, we haven't submitted 10 other IOs and so the
+> actual in-flight IO for the application has decreased. If
+> performance comes from keeping the IO pipeline as close to 100% full
+> as possible, then copying the data out of the page cache will cause
+> performance regressions.
+>
+> i.e. Hit 5 page cache pages in 5 IOs in a row, and the IO queue
+> depth craters because we've only fulfilled 5 complete IOs instead of
+> submitting 50 entire IOs. This is the hidden cost of synchronous IO
+> via CPU data copying vs async IO via hardware offload, and if we
+> take that into account we must look at future hardware performance
+> trends to determine if this cost is going to increase or decrease in
+> future.
+>
+> That is: CPUs are not getting faster anytime soon. IO subsystems are
+> still deep in the "performance doubles every 2 years" part of the
+> technology curve (pcie 3.0->4.0 just happened, 4->5 is a year away,
+> 5->6 is 3-4 years away, etc). Hence our reality is that we are deep
+> within a performance trend curve that tells us synchronous CPU
+> operations are not getting faster, but IO bandwidth and IOPS are
+> going to increase massively over the next 5-10 years. Hence putting
+> (already expensive) synchronous CPU operations in the asynchronous
+> zero-data-touch IO fast path is -exactly the wrong direction to be
+> moving-.
+>
+> This is simple math. The gap between IO latency and bandwidth and
+> CPU addressable memory latency and bandwidth is closing all the
+> time, and the closer that gap gets the less sense it makes to use
+> CPU addressable memory for buffering syscall based read and write
+> IO. We are not quite yet at the cross-over point, but we really
+> aren't that far from it.
+>
+>
 
-Thanks,
-cgxu
-
->
->>
->> Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
->
-> LGTM, feel free to add
-> Reviewed-by: Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
->
->
->> ---
->> =C2=A0 fs/ext2/xattr.c | 3 +++
->> =C2=A0 1 file changed, 3 insertions(+)
->>
->> diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
->> index 943cc469f42f..913e5c4921ec 100644
->> --- a/fs/ext2/xattr.c
->> +++ b/fs/ext2/xattr.c
->> @@ -437,6 +437,9 @@ ext2_xattr_set(struct inode *inode, int=20
->> name_index, const char *name,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 name_len =3D strlen(name);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (name_len > 255 || value_len > sb->s_b=
-locksize)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -ERANGE;
->> +=C2=A0=C2=A0=C2=A0 error =3D dquot_initialize(inode);
->> +=C2=A0=C2=A0=C2=A0 if (error)
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return error;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 down_write(&EXT2_I(inode)->xattr_sem);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (EXT2_I(inode)->i_file_acl) {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* The inode alre=
-ady has an extended attribute block. */
->>
+My use-case supports this. The application uses AIO+DIO, but backup may 
+bring pages into page cache. For me, it is best to ignore page cache (as 
+long as it's clean, which it is for backup) and serve from disk as usual.
 
 
