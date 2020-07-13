@@ -2,123 +2,57 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E59E021CDCB
-	for <lists+linux-ext4@lfdr.de>; Mon, 13 Jul 2020 05:35:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1535E21D0D7
+	for <lists+linux-ext4@lfdr.de>; Mon, 13 Jul 2020 09:48:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728614AbgGMDfE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 12 Jul 2020 23:35:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47574 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726491AbgGMDfE (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Sun, 12 Jul 2020 23:35:04 -0400
-Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7D2E320722;
-        Mon, 13 Jul 2020 03:35:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594611303;
-        bh=41IYY+/hX2sb2b1GBvHrVsrCwrGfmHuoNNwcohgG4Us=;
-        h=From:To:Cc:Subject:Date:From;
-        b=zKLykD+ebs0yY0QSgcLifTmGtf0olv8jsDAubALRq2trmmLiErvOdj5Lt9Q5pktgz
-         UerZhze4E3Z8Vnq8R++twoa81O8L6/XVIA6/7fKEO0o0KQBh9sBm7yvNt/Xd4/ZOtB
-         J3u9YYUlHTWNLZLawnI+60HlK4L2C0qCxnhIAL2w=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: [PATCH] fs/direct-io: avoid data race on ->s_dio_done_wq
-Date:   Sun, 12 Jul 2020 20:33:30 -0700
-Message-Id: <20200713033330.205104-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S1729626AbgGMHsx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 13 Jul 2020 03:48:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729621AbgGMHsv (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 13 Jul 2020 03:48:51 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91F78C061755;
+        Mon, 13 Jul 2020 00:48:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=O4RkM4L4v1uhacdo+mwWkqTommwnEKP8IOylxP5CiHY=; b=dqXtaVODQtunzwGbeWrghLtHSf
+        fs+Sfkplja9BdIX4aw+kn4Z0IVAD0+pDfQjQol+4hhlN8ZVGgRBQ6SfNxIYAjsimdaIfxSsmA484v
+        syal7xxqYgpTBMBTtXAPvqiUt8A1BR9FZ6TgNnlqwzqiybvHB5/heOaLeoqFAHenD4DwUe3Bv+Ar8
+        q5d3TydO+ejePk96Y+yq0zmaorz9Z1Jlq4rlFZICXWbj3tYVAnDEe1BFIWqyEqayQsLokJlmp6HVz
+        5g/+jnwo3aquic/b0fhXipa1LhbIK5rWa5I9fuHwUkySqkYMLygyHKUZxrBcrAr0ePGVOugC6WTWh
+        lcrul8ZA==;
+Received: from 089144201169.atnat0010.highway.a1.net ([89.144.201.169] helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jutCf-00018J-0F; Mon, 13 Jul 2020 07:48:45 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Dave Chinner <david@fromorbit.com>,
+        Goldwyn Rodrigues <rgoldwyn@suse.de>
+Cc:     Damien Le Moal <damien.lemoal@wdc.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Johannes Thumshirn <jth@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        cluster-devel@redhat.com, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org
+Subject: RFC: iomap write invalidation
+Date:   Mon, 13 Jul 2020 09:46:31 +0200
+Message-Id: <20200713074633.875946-1-hch@lst.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+Hi all,
 
-Fix the preliminary checks for ->s_dio_done_wq to use READ_ONCE(), since
-it's a data race, and technically the behavior is undefined without
-READ_ONCE().  Also, on one CPU architecture (Alpha), the data read
-dependency barrier included in READ_ONCE() is needed to guarantee that
-the pointed-to struct is seen as fully initialized.
-
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/direct-io.c       | 8 +++-----
- fs/internal.h        | 9 ++++++++-
- fs/iomap/direct-io.c | 3 +--
- 3 files changed, 12 insertions(+), 8 deletions(-)
-
-diff --git a/fs/direct-io.c b/fs/direct-io.c
-index 6d5370eac2a8..26221ae24156 100644
---- a/fs/direct-io.c
-+++ b/fs/direct-io.c
-@@ -590,7 +590,7 @@ static inline int dio_bio_reap(struct dio *dio, struct dio_submit *sdio)
-  * filesystems that don't need it and also allows us to create the workqueue
-  * late enough so the we can include s_id in the name of the workqueue.
-  */
--int sb_init_dio_done_wq(struct super_block *sb)
-+int __sb_init_dio_done_wq(struct super_block *sb)
- {
- 	struct workqueue_struct *old;
- 	struct workqueue_struct *wq = alloc_workqueue("dio/%s",
-@@ -615,9 +615,7 @@ static int dio_set_defer_completion(struct dio *dio)
- 	if (dio->defer_completion)
- 		return 0;
- 	dio->defer_completion = true;
--	if (!sb->s_dio_done_wq)
--		return sb_init_dio_done_wq(sb);
--	return 0;
-+	return sb_init_dio_done_wq(sb);
- }
- 
- /*
-@@ -1250,7 +1248,7 @@ do_blockdev_direct_IO(struct kiocb *iocb, struct inode *inode,
- 		retval = 0;
- 		if (iocb->ki_flags & IOCB_DSYNC)
- 			retval = dio_set_defer_completion(dio);
--		else if (!dio->inode->i_sb->s_dio_done_wq) {
-+		else {
- 			/*
- 			 * In case of AIO write racing with buffered read we
- 			 * need to defer completion. We can't decide this now,
-diff --git a/fs/internal.h b/fs/internal.h
-index 9b863a7bd708..6736c9eee978 100644
---- a/fs/internal.h
-+++ b/fs/internal.h
-@@ -178,7 +178,14 @@ extern void mnt_pin_kill(struct mount *m);
- extern const struct dentry_operations ns_dentry_operations;
- 
- /* direct-io.c: */
--int sb_init_dio_done_wq(struct super_block *sb);
-+int __sb_init_dio_done_wq(struct super_block *sb);
-+static inline int sb_init_dio_done_wq(struct super_block *sb)
-+{
-+	/* pairs with cmpxchg() in __sb_init_dio_done_wq() */
-+	if (likely(READ_ONCE(sb->s_dio_done_wq)))
-+		return 0;
-+	return __sb_init_dio_done_wq(sb);
-+}
- 
- /*
-  * fs/stat.c:
-diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-index ec7b78e6feca..dc7fe898dab8 100644
---- a/fs/iomap/direct-io.c
-+++ b/fs/iomap/direct-io.c
-@@ -487,8 +487,7 @@ iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
- 		dio_warn_stale_pagecache(iocb->ki_filp);
- 	ret = 0;
- 
--	if (iov_iter_rw(iter) == WRITE && !wait_for_completion &&
--	    !inode->i_sb->s_dio_done_wq) {
-+	if (iov_iter_rw(iter) == WRITE && !wait_for_completion) {
- 		ret = sb_init_dio_done_wq(inode->i_sb);
- 		if (ret < 0)
- 			goto out_free_dio;
--- 
-2.27.0
-
+this series has two parts:  the first one picks up Dave's patch to avoid
+invalidation entierly for reads, picked up deep down from the btrfs iomap
+thread.  The second one falls back to buffered writes if invalidation fails
+instead of leaving a stale cache around.  Let me know what you think about
+this approch.
