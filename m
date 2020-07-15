@@ -2,142 +2,147 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81A1D220DE4
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jul 2020 15:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEF3A22120F
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jul 2020 18:13:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731684AbgGONSa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 15 Jul 2020 09:18:30 -0400
-Received: from [195.135.220.15] ([195.135.220.15]:45978 "EHLO mx2.suse.de"
-        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
-        id S1731673AbgGONS3 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 15 Jul 2020 09:18:29 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 81BD3B70B;
-        Wed, 15 Jul 2020 13:18:30 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id F08871E12D1; Wed, 15 Jul 2020 15:18:26 +0200 (CEST)
-From:   Jan Kara <jack@suse.cz>
-To:     Ted Tso <tytso@mit.edu>
-Cc:     <linux-ext4@vger.kernel.org>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        Wolfgang Frisch <wolfgang.frisch@suse.com>,
-        Jan Kara <jack@suse.cz>
-Subject: [PATCH 4/4] ext4: Fold ext4_data_block_valid_rcu() into the caller
-Date:   Wed, 15 Jul 2020 15:18:12 +0200
-Message-Id: <20200715131812.7243-5-jack@suse.cz>
-X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20200715131812.7243-1-jack@suse.cz>
-References: <20200715131812.7243-1-jack@suse.cz>
+        id S1725912AbgGOQNp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 15 Jul 2020 12:13:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32850 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725831AbgGOQNp (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 15 Jul 2020 12:13:45 -0400
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5F93120663;
+        Wed, 15 Jul 2020 16:13:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594829624;
+        bh=IJsMkoevTsx6L9HNxlWZDWP3nwinEoBjxQZqDR3QAYM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=N0z0tBQotG8LArmmiAePX5kmgXENP4UAKHIg9UhO1qGZPrV8Ilw+LOIpBvIm+VROW
+         AoElmez3OskjYxnq2+b63SuxSI83F+O+C3V4lqsRfNbW0Dqvog97lsMD/99y4sRwB+
+         FhOZI9bPxybyBjGn3THjrB6bMu7VYjNnUaTHySQw=
+Date:   Wed, 15 Jul 2020 09:13:42 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] fs/direct-io: avoid data race on ->s_dio_done_wq
+Message-ID: <20200715161342.GA1167@sol.localdomain>
+References: <20200713033330.205104-1-ebiggers@kernel.org>
+ <20200715013008.GD2005@dread.disaster.area>
+ <20200715023714.GA38091@sol.localdomain>
+ <20200715080144.GF2005@dread.disaster.area>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200715080144.GF2005@dread.disaster.area>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-After the previous patch, ext4_data_block_valid_rcu() has a single
-caller. Fold it into it.
+On Wed, Jul 15, 2020 at 06:01:44PM +1000, Dave Chinner wrote:
+> > > >  /* direct-io.c: */
+> > > > -int sb_init_dio_done_wq(struct super_block *sb);
+> > > > +int __sb_init_dio_done_wq(struct super_block *sb);
+> > > > +static inline int sb_init_dio_done_wq(struct super_block *sb)
+> > > > +{
+> > > > +	/* pairs with cmpxchg() in __sb_init_dio_done_wq() */
+> > > > +	if (likely(READ_ONCE(sb->s_dio_done_wq)))
+> > > > +		return 0;
+> > > > +	return __sb_init_dio_done_wq(sb);
+> > > > +}
+> > > 
+> > > Ummm, why don't you just add this check in sb_init_dio_done_wq(). I
+> > > don't see any need for adding another level of function call
+> > > abstraction in the source code?
+> > 
+> > This keeps the fast path doing no function calls and one fewer branch, as it was
+> > before.  People care a lot about minimizing direct I/O overhead, so it seems
+> > desirable to keep this simple optimization.  Would you rather it be removed?
+> 
+> No.
+> 
+> What I'm trying to say is that I'd prefer fast path checks don't get
+> hidden away in a static inline function wrappers that require the
+> reader to go look up code in a different file to understand that
+> code in yet another different file is conditionally executed.
+> 
+> Going from obvious, easy to read fast path code to spreading the
+> fast path logic over functions in 3 different files is not an
+> improvement in the code - it is how we turn good code into an
+> unmaintainable mess...
 
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/block_validity.c | 67 ++++++++++++++++++++++--------------------------
- 1 file changed, 30 insertions(+), 37 deletions(-)
+The alternative would be to duplicate the READ_ONCE() at all 3 call sites --
+including the explanatory comment.  That seems strictly worse.
 
-diff --git a/fs/ext4/block_validity.c b/fs/ext4/block_validity.c
-index 3602356cbf09..9c40214f31f9 100644
---- a/fs/ext4/block_validity.c
-+++ b/fs/ext4/block_validity.c
-@@ -144,40 +144,6 @@ static void debug_print_tree(struct ext4_sb_info *sbi)
- 	printk(KERN_CONT "\n");
- }
- 
--/*
-- * Returns 1 if the passed-in block region (start_blk,
-- * start_blk+count) is valid; 0 if some part of the block region
-- * overlaps with filesystem metadata blocks.
-- */
--static int ext4_data_block_valid_rcu(struct ext4_sb_info *sbi,
--				     struct ext4_system_blocks *system_blks,
--				     ext4_fsblk_t start_blk,
--				     unsigned int count, ino_t ino)
--{
--	struct ext4_system_zone *entry;
--	struct rb_node *n;
--
--	if ((start_blk <= le32_to_cpu(sbi->s_es->s_first_data_block)) ||
--	    (start_blk + count < start_blk) ||
--	    (start_blk + count > ext4_blocks_count(sbi->s_es)))
--		return 0;
--
--	if (system_blks == NULL)
--		return 1;
--
--	n = system_blks->root.rb_node;
--	while (n) {
--		entry = rb_entry(n, struct ext4_system_zone, node);
--		if (start_blk + count - 1 < entry->start_blk)
--			n = n->rb_left;
--		else if (start_blk >= (entry->start_blk + entry->count))
--			n = n->rb_right;
--		else
--			return entry->ino == ino;
--	}
--	return 1;
--}
--
- static int ext4_protect_reserved_inode(struct super_block *sb,
- 				       struct ext4_system_blocks *system_blks,
- 				       u32 ino)
-@@ -333,11 +299,24 @@ void ext4_release_system_zone(struct super_block *sb)
- 		call_rcu(&system_blks->rcu, ext4_destroy_system_zone);
- }
- 
-+/*
-+ * Returns 1 if the passed-in block region (start_blk,
-+ * start_blk+count) is valid; 0 if some part of the block region
-+ * overlaps with some other filesystem metadata blocks.
-+ */
- int ext4_inode_block_valid(struct inode *inode, ext4_fsblk_t start_blk,
- 			  unsigned int count)
- {
-+	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
- 	struct ext4_system_blocks *system_blks;
--	int ret;
-+	struct ext4_system_zone *entry;
-+	struct rb_node *n;
-+	int ret = 1;
-+
-+	if ((start_blk <= le32_to_cpu(sbi->s_es->s_first_data_block)) ||
-+	    (start_blk + count < start_blk) ||
-+	    (start_blk + count > ext4_blocks_count(sbi->s_es)))
-+		return 0;
- 
- 	/*
- 	 * Lock the system zone to prevent it being released concurrently
-@@ -346,8 +325,22 @@ int ext4_inode_block_valid(struct inode *inode, ext4_fsblk_t start_blk,
- 	 */
- 	rcu_read_lock();
- 	system_blks = rcu_dereference(sbi->system_blks);
--	ret = ext4_data_block_valid_rcu(EXT4_SB(inode->i_sb), system_blks,
--					start_blk, count, inode->i_ino);
-+	if (system_blks == NULL)
-+		goto out_rcu;
-+
-+	n = system_blks->root.rb_node;
-+	while (n) {
-+		entry = rb_entry(n, struct ext4_system_zone, node);
-+		if (start_blk + count - 1 < entry->start_blk)
-+			n = n->rb_left;
-+		else if (start_blk >= (entry->start_blk + entry->count))
-+			n = n->rb_right;
-+		else {
-+			ret = (entry->ino == inode->i_ino);
-+			break;
-+		}
-+	}
-+out_rcu:
- 	rcu_read_unlock();
- 	return ret;
- }
--- 
-2.16.4
+And the code before was broken, so I disagree it was "obvious" or "good".
 
+> 
+> > > Also, you need to explain the reason for the READ_ONCE() existing
+> > > rather than just saying "it pairs with <some other operation>".
+> > > Knowing what operation it pairs with doesn't explain why the pairing
+> > > is necessary in the first place, and that leads to nobody reading
+> > > the code being able to understand what this is protecting against.
+> > > 
+> > 
+> > How about this?
+> > 
+> > 	/*
+> > 	 * Nothing to do if ->s_dio_done_wq is already set.  But since another
+> > 	 * process may set it concurrently, we need to use READ_ONCE() rather
+> > 	 * than a plain read to avoid a data race (undefined behavior) and to
+> > 	 * ensure we observe the pointed-to struct to be fully initialized.
+> > 	 */
+> > 	if (likely(READ_ONCE(sb->s_dio_done_wq)))
+> > 		return 0;
+> 
+> You still need to document what it pairs with, as "data race" doesn't
+> describe the actual dependency we are synchronising against is.
+> 
+> AFAICT from your description, the data race is not on
+> sb->s_dio_done_wq itself, but on seeing the contents of the
+> structure being pointed to incorrectly. i.e. we need to ensure that
+> writes done before the cmpxchg are ordered correctly against
+> reads done after the pointer can be seen here.
+> 
+
+No, the data race is on ->s_dio_done_wq itself.  How about this:
+
+        /*
+         * Nothing to do if ->s_dio_done_wq is already set.  The READ_ONCE()
+         * here pairs with the cmpxchg() in __sb_init_dio_done_wq().  Since the
+         * cmpxchg() may set ->s_dio_done_wq concurrently, a plain load would be
+         * a data race (undefined behavior), so READ_ONCE() is needed.
+         * READ_ONCE() also includes any needed read data dependency barrier to
+         * ensure that the pointed-to struct is seen to be fully initialized.
+         */
+
+FWIW, long-term we really need to get developers to understand these sorts of
+issues, so that the code is written correctly in the first place and we don't
+need to annotate common patterns like one-time-init with a long essay and have a
+long discussion.  Recently KCSAN was merged upstream
+(https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/dev-tools/kcsan.rst)
+and the memory model documentation was improved
+(https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/memory-model/Documentation/explanation.txt?h=v5.8-rc5#n1922),
+so hopefully that will raise awareness...
+
+> If so, can't we just treat this as a normal
+> store-release/load-acquire ordering pattern and hence use more
+> relaxed memory barriers instead of have to patch up what we have now
+> to specifically make ancient platforms that nobody actually uses
+> with weird and unusual memory models work correctly?
+
+READ_ONCE() is already as relaxed as it can get, as it includes a read data
+dependency barrier only (which is no-op on everything other than Alpha).
+
+If anything it should be upgraded to smp_load_acquire(), which handles control
+dependencies too.  I didn't see anything obvious in the workqueue code that
+would need that (i.e. accesses to some global structure that isn't transitively
+reachable via the workqueue_struct itself).  But we could use it to be safe if
+we're okay with any performance implications of the additional memory barrier it
+would add.
+
+- Eric
