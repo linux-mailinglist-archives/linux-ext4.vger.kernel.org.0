@@ -2,136 +2,88 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5445F22026F
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jul 2020 04:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C4C32202B1
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jul 2020 05:01:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728321AbgGOChR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 14 Jul 2020 22:37:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35544 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726609AbgGOChR (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 14 Jul 2020 22:37:17 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3DA7720663;
-        Wed, 15 Jul 2020 02:37:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594780636;
-        bh=gNCU6NtVT1fH7sZMvndJL+pfZVolBkI/L9zrcc75WLM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZW7bvzZismjfYNcynEiJI4uFYpzcES7AiqZrIEknc1E5AE5GIGxUqEpg5yb+eb60K
-         4z6ODym+QN9zL9m2e9h+i2hXxFIpKSNtzshWLEr+yJV5/dbQxq4mi/t1s+48jbgTwE
-         QkLMnFZNQrNY9V2HZEKQ6QO1YqGQAplVdI+EF7Pw=
-Date:   Tue, 14 Jul 2020 19:37:14 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] fs/direct-io: avoid data race on ->s_dio_done_wq
-Message-ID: <20200715023714.GA38091@sol.localdomain>
-References: <20200713033330.205104-1-ebiggers@kernel.org>
- <20200715013008.GD2005@dread.disaster.area>
+        id S1728437AbgGODAs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 14 Jul 2020 23:00:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727772AbgGODAs (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 14 Jul 2020 23:00:48 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D6E1C061755;
+        Tue, 14 Jul 2020 20:00:48 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id a24so1140438pfc.10;
+        Tue, 14 Jul 2020 20:00:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=1Lox4NjQutxxCAyIeog/I4IOb78DAZQiAZT6VbqqOWw=;
+        b=rhsc93T5Y9kvp5CauuOOjj3+KAzVWQFlqvr+llfbQjpyywTVWKnHGGCx8XP0QSgaX3
+         GjWr/gtMOkWa2LBLTO83uCM+uOse0ZGxwkXU1Ouipm0dUkHDarbIPjO2aajDMwmBdHuF
+         w/sCjTZ9J0dDHAH0FyP1PTU8HC3MFKRrR6NuLeKp+GRvGNN6CRQyuzekGk1/3vLfDs1S
+         NcAKgEjanRymaibf76sbJFUZRChbVkbOAtkf39W7a0U1Xv2+fLSOfI1e67KKy5blUhFh
+         xYLHhRP0Xk31taV838lQ/WOkl/Ud+pBDr9cT4pceUjFnoPf5tq6UH9biOYiu+OyGl7Zy
+         gEDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-transfer-encoding:content-language;
+        bh=1Lox4NjQutxxCAyIeog/I4IOb78DAZQiAZT6VbqqOWw=;
+        b=PHwo7la0oYIXZOCFfyD4GtYPtNw3q0SYQWiOY0W77KoAyGNr+O2yBGRjhvy6H6era9
+         7MRIQfqu5lCXfEPNTTxkx7ZcsrZ++tY5s+ya4lnGE6rKMMX5GZj39vQ1TynSmNXlbKdu
+         OCp0/SF8iXFGSSEPENbAqXdSmNw/ke3WmXvYhwqDfXZPbVCi7kC+b7NlA2RaNQ1rusjO
+         FoaTBn5YIwB9XMJDnxFLBiApanQok84UTdEovnB3unaaU4QiRx4cp6Q4UG0j2yUgk//T
+         Z6tCBGEwFA96CKYWOo2F+vVE/iF2CKLN4OZfxwM1Sml6w+ReEjE+EAols+J7v1GLxMKT
+         CH2g==
+X-Gm-Message-State: AOAM531yMxV5McUeYGc3ehAMSflb/kt+9b3UO86oAS1zePrCg/F2U2eS
+        1lTPcdSv2afBg62eGt3sBMuEk72m8uo=
+X-Google-Smtp-Source: ABdhPJwkHJJjR0MotnebLX23BOguIhErOSFz9vxM99gk7lnMHqOVbCr/6+AAWbG7UM8NHUizuOcK9g==
+X-Received: by 2002:a63:4e51:: with SMTP id o17mr6299774pgl.315.1594782046935;
+        Tue, 14 Jul 2020 20:00:46 -0700 (PDT)
+Received: from [127.0.0.1] ([203.205.141.43])
+        by smtp.gmail.com with ESMTPSA id g6sm445356pfr.129.2020.07.14.20.00.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Jul 2020 20:00:46 -0700 (PDT)
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
+From:   brookxu <brookxu.cn@gmail.com>
+Subject: ext4: fix spelling typos in ext4_mb_initialize_context
+Message-ID: <883b523c-58ec-7f38-0bb8-cd2ea4393684@gmail.com>
+Date:   Wed, 15 Jul 2020 11:00:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200715013008.GD2005@dread.disaster.area>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jul 15, 2020 at 11:30:08AM +1000, Dave Chinner wrote:
-> On Sun, Jul 12, 2020 at 08:33:30PM -0700, Eric Biggers wrote:
-> > From: Eric Biggers <ebiggers@google.com>
-> > 
-> > Fix the preliminary checks for ->s_dio_done_wq to use READ_ONCE(), since
-> > it's a data race, and technically the behavior is undefined without
-> > READ_ONCE().  Also, on one CPU architecture (Alpha), the data read
-> > dependency barrier included in READ_ONCE() is needed to guarantee that
-> > the pointed-to struct is seen as fully initialized.
-> > 
-> > Signed-off-by: Eric Biggers <ebiggers@google.com>
-> > ---
-> >  fs/direct-io.c       | 8 +++-----
-> >  fs/internal.h        | 9 ++++++++-
-> >  fs/iomap/direct-io.c | 3 +--
-> >  3 files changed, 12 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/fs/direct-io.c b/fs/direct-io.c
-> > index 6d5370eac2a8..26221ae24156 100644
-> > --- a/fs/direct-io.c
-> > +++ b/fs/direct-io.c
-> > @@ -590,7 +590,7 @@ static inline int dio_bio_reap(struct dio *dio, struct dio_submit *sdio)
-> >   * filesystems that don't need it and also allows us to create the workqueue
-> >   * late enough so the we can include s_id in the name of the workqueue.
-> >   */
-> > -int sb_init_dio_done_wq(struct super_block *sb)
-> > +int __sb_init_dio_done_wq(struct super_block *sb)
-> >  {
-> >  	struct workqueue_struct *old;
-> >  	struct workqueue_struct *wq = alloc_workqueue("dio/%s",
-> > @@ -615,9 +615,7 @@ static int dio_set_defer_completion(struct dio *dio)
-> >  	if (dio->defer_completion)
-> >  		return 0;
-> >  	dio->defer_completion = true;
-> > -	if (!sb->s_dio_done_wq)
-> > -		return sb_init_dio_done_wq(sb);
-> > -	return 0;
-> > +	return sb_init_dio_done_wq(sb);
-> >  }
-> >  
-> >  /*
-> > @@ -1250,7 +1248,7 @@ do_blockdev_direct_IO(struct kiocb *iocb, struct inode *inode,
-> >  		retval = 0;
-> >  		if (iocb->ki_flags & IOCB_DSYNC)
-> >  			retval = dio_set_defer_completion(dio);
-> > -		else if (!dio->inode->i_sb->s_dio_done_wq) {
-> > +		else {
-> >  			/*
-> >  			 * In case of AIO write racing with buffered read we
-> >  			 * need to defer completion. We can't decide this now,
-> > diff --git a/fs/internal.h b/fs/internal.h
-> > index 9b863a7bd708..6736c9eee978 100644
-> > --- a/fs/internal.h
-> > +++ b/fs/internal.h
-> > @@ -178,7 +178,14 @@ extern void mnt_pin_kill(struct mount *m);
-> >  extern const struct dentry_operations ns_dentry_operations;
-> >  
-> >  /* direct-io.c: */
-> > -int sb_init_dio_done_wq(struct super_block *sb);
-> > +int __sb_init_dio_done_wq(struct super_block *sb);
-> > +static inline int sb_init_dio_done_wq(struct super_block *sb)
-> > +{
-> > +	/* pairs with cmpxchg() in __sb_init_dio_done_wq() */
-> > +	if (likely(READ_ONCE(sb->s_dio_done_wq)))
-> > +		return 0;
-> > +	return __sb_init_dio_done_wq(sb);
-> > +}
-> 
-> Ummm, why don't you just add this check in sb_init_dio_done_wq(). I
-> don't see any need for adding another level of function call
-> abstraction in the source code?
+Fix spelling typos in ext4_mb_initialize_context.
 
-This keeps the fast path doing no function calls and one fewer branch, as it was
-before.  People care a lot about minimizing direct I/O overhead, so it seems
-desirable to keep this simple optimization.  Would you rather it be removed?
+Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+---
+ fs/ext4/mballoc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> 
-> Also, you need to explain the reason for the READ_ONCE() existing
-> rather than just saying "it pairs with <some other operation>".
-> Knowing what operation it pairs with doesn't explain why the pairing
-> is necessary in the first place, and that leads to nobody reading
-> the code being able to understand what this is protecting against.
-> 
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index c0a331e..6dc2c6c 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -4399,7 +4399,7 @@ static void ext4_mb_group_or_file(struct ext4_allocation_context *ac)
+     ac->ac_g_ex = ac->ac_o_ex;
+     ac->ac_flags = ar->flags;
+ 
+-    /* we have to define context: we'll we work with a file or
++    /* we have to define context: we'll work with a file or
+      * locality group. this is a policy, actually */
+     ext4_mb_group_or_file(ac);
+ 
+-- 
+1.8.3.1
 
-How about this?
-
-	/*
-	 * Nothing to do if ->s_dio_done_wq is already set.  But since another
-	 * process may set it concurrently, we need to use READ_ONCE() rather
-	 * than a plain read to avoid a data race (undefined behavior) and to
-	 * ensure we observe the pointed-to struct to be fully initialized.
-	 */
-	if (likely(READ_ONCE(sb->s_dio_done_wq)))
-		return 0;
