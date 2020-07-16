@@ -2,34 +2,34 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F44C221AC6
-	for <lists+linux-ext4@lfdr.de>; Thu, 16 Jul 2020 05:21:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A2C5221BF9
+	for <lists+linux-ext4@lfdr.de>; Thu, 16 Jul 2020 07:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728157AbgGPDTl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 15 Jul 2020 23:19:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45684 "EHLO mail.kernel.org"
+        id S1726656AbgGPFde (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 16 Jul 2020 01:33:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726905AbgGPDTl (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 15 Jul 2020 23:19:41 -0400
+        id S1726069AbgGPFde (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 16 Jul 2020 01:33:34 -0400
 Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7BE5B2076C;
-        Thu, 16 Jul 2020 03:19:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DB2782070E;
+        Thu, 16 Jul 2020 05:33:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594869580;
-        bh=vgPMdz/7sCKkyj9OaQrErsOsGTtsVIrq+sr8sn87GuU=;
+        s=default; t=1594877614;
+        bh=ZeNoICWseJGDNKyU51SpHxs0uU+R8HjTKFVU8U55P8w=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EtE9oJJqUTVTtM4nTcziXAOegeBwz5zdOszxhZLgXYpmLgOq2RPCOIbDz2/1B0yJ3
-         rQguRgZjmQmCGqFgM6CNv9bqyDe4SnhFo/PSqFv3bOc0lqMPWvrV/GCp1Yk8me8Lk4
-         yHnooUxaiKYqSapJvsfpqkwplyY2oPQ6f8LV2bHc=
-Date:   Wed, 15 Jul 2020 20:19:39 -0700
+        b=Hu2QE465llvTGLhEunjPpv09FrW/igxrnztl8vTySqUKpe+mCP1iiFHK4VC33Kl4f
+         XRgK6Th83Ov21MSjfjwDyb7OfghTu/xoYuGI6m4k7Ml7Zt6jl/QzKnhMFbIDjV6N4B
+         R5ZLfF7OBCVDDkBK+gKyq+B2Lq8a4ohsMydly+q0=
+Date:   Wed, 15 Jul 2020 22:33:32 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     Matthew Wilcox <willy@infradead.org>
 Cc:     Dave Chinner <david@fromorbit.com>, linux-fsdevel@vger.kernel.org,
         linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org
 Subject: Re: [PATCH] fs/direct-io: avoid data race on ->s_dio_done_wq
-Message-ID: <20200716031939.GF1167@sol.localdomain>
+Message-ID: <20200716053332.GH1167@sol.localdomain>
 References: <20200713033330.205104-1-ebiggers@kernel.org>
  <20200715013008.GD2005@dread.disaster.area>
  <20200715023714.GA38091@sol.localdomain>
@@ -58,10 +58,6 @@ On Thu, Jul 16, 2020 at 03:47:17AM +0100, Matthew Wilcox wrote:
 > compiler does, and that rather than disable the stupid "optimisation",
 > we'd be glad that we'd already stuffed the source code up so that it
 > lay within some tortuous reading of the C spec.
-
-There are actually many reasons to avoid data races; see
-https://github.com/google/ktsan/wiki/READ_ONCE-and-WRITE_ONCE
-
 > 
 > The memory model is just too complicated.  Look at the recent exchange
 > between myself & Dan Williams.  I spent literally _hours_ trying to
@@ -78,11 +74,32 @@ https://github.com/google/ktsan/wiki/READ_ONCE-and-WRITE_ONCE
 > 
 > https://lore.kernel.org/linux-mm/159009507306.847224.8502634072429766747.stgit@dwillia2-desk3.amr.corp.intel.com/
 
-Yes, it's too complicated.  I'm not sure there's much of a solution, though.
+Looks like you still got it wrong :-(  It needs:
 
-Of course, we also have easy-to-use synchronization primitives like mutex,
-spinlock, rw_semaphore, etc.  The problems arise when people think they know
-better and try to write something more "optimized".  We need to have a higher
-bar for accepting changes where the memory model is a concern at all.
+diff --git a/drivers/char/mem.c b/drivers/char/mem.c
+index 934c92dcb9ab..9a95fbe86e15 100644
+--- a/drivers/char/mem.c
++++ b/drivers/char/mem.c
+@@ -1029,7 +1029,7 @@ static int devmem_init_inode(void)
+        }
+
+        /* publish /dev/mem initialized */
+-       WRITE_ONCE(devmem_inode, inode);
++       smp_store_release(&devmem_inode, inode);
+
+        return 0;
+ }
+
+It seems one source of confusion is that READ_ONCE() and WRITE_ONCE() don't
+actually pair with each other, unless no memory barriers are needed at all.
+
+Instead, READ_ONCE() pairs with a primitive that has "release" semantics, e.g.
+smp_store_release() or cmpxchg_release().  But READ_ONCE() is only correct if
+there's no control flow dependency; if there is, it needs to be upgraded to a
+primitive with "acquire" semantics, e.g. smp_load_acquire().
+
+The best approach might be to just say that the READ_ONCE() + "release" pairing
+should be avoided, and we should stick to "acquire" + "release".  (And I think
+Dave may be saying he'd prefer that for ->s_dio_done_wq?)
 
 - Eric
