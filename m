@@ -2,72 +2,96 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C0C722333D
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Jul 2020 08:02:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D6E72235E6
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Jul 2020 09:29:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726234AbgGQGCs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 17 Jul 2020 02:02:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726083AbgGQGCs (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Jul 2020 02:02:48 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAC71C061755;
-        Thu, 16 Jul 2020 23:02:47 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id k6so6404625ili.6;
-        Thu, 16 Jul 2020 23:02:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=ve/cmXtNUOqHiayEYTadiiBcyTXVbObeiw7WV4ExN98=;
-        b=VbOvQYl/a15OZU3ZulHv64cd9EjeIZTIQ/l9Ih0MNzUws8Gr+INBxuM3rcBDbbG5fU
-         kOCg2WnqrEiOr6T5HWD6fAOmYMd/uciZ+ubDNcXEAdl5h3u8y7T96tvNoduqGPicJIEV
-         /T0JCyOpGz6pUVf+/7BdV4eovntNshzSNJAvE6LFZcFnqjF6n7P9uey7KPe5TVPHDMpa
-         dq9CegXIHYLPQqdHr7U1o99vB6Iz50iajX1UC/lFemk/k0hMbGSm6FBFTbqUMwDZaqhf
-         gM1vjMH6OPNg0olrZ4tL9Y1Ob5V6+WAPZOSGryvEuQTG9XNZtb28RxolBMgKwj1wN0EA
-         aVMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=ve/cmXtNUOqHiayEYTadiiBcyTXVbObeiw7WV4ExN98=;
-        b=Rpiz9ZGhsWeyLCpy9gYYNAGEEs0wAR53mDJ4AvFXQihNvddyYkOuk83yFpXhyQ0EvI
-         SxtYDC8gcFn+ThgFwl7JVmdMtBSu5OLZ7C2b3Z8TZU0qmxZ356ddHyUgOGsoBOvOVikW
-         RrSegGGCQTkpPOH9f7ve5pSJnkribnlmlWWyOquxpVjuzIuYgVUh0XCdgu9DePPGX8t/
-         /Q+AK3a9oWjt0lYRGzvAwEcAx69qjV1XyEvW+o4SugmSkdI5fCK1tCT3FpqDx1VbZR4Z
-         fWeMu2BABJjXGMVQRKlx1KCD5I62F96NA1UyDvmmlZYPSrYW8HtMykO/Df3ttcKTKivT
-         cTUA==
-X-Gm-Message-State: AOAM533LGvVXEWcQG47b1EWtV0wWdEQtjvPj/LsEoNryxR1cXyTD8pGq
-        VfTekvZf+kUcMoqFdq9qeoWlFOtuKaoqVdu57Mk=
-X-Google-Smtp-Source: ABdhPJxw89TDMcyDoUVy003U8UgoW1M2CjP36Z5/idIUBu7FhV64fYfsvsAeNagcVB2rNTRHLStu90ucqP2U2eQU/54=
-X-Received: by 2002:a92:5fc9:: with SMTP id i70mr8774183ill.176.1594965767253;
- Thu, 16 Jul 2020 23:02:47 -0700 (PDT)
+        id S1726234AbgGQH3F convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Fri, 17 Jul 2020 03:29:05 -0400
+Received: from relay10.mail.gandi.net ([217.70.178.230]:47131 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726105AbgGQH3F (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Jul 2020 03:29:05 -0400
+Received: from localhost (lfbn-tou-1-1075-236.w90-76.abo.wanadoo.fr [90.76.143.236])
+        (Authenticated sender: antoine.tenart@bootlin.com)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id D776024000F;
+        Fri, 17 Jul 2020 07:29:02 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20200717050510.95832-1-ebiggers@kernel.org>
-In-Reply-To: <20200717050510.95832-1-ebiggers@kernel.org>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Fri, 17 Jul 2020 08:02:36 +0200
-Message-ID: <CA+icZUXyz8Oy6YBwiX5qgzY_zy3qGeFyEroNBxc+E6_NY-TxUw@mail.gmail.com>
-Subject: Re: [PATCH v2] fs/direct-io: fix one-time init of ->s_dio_done_wq
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20200701153404.1647002-1-antoine.tenart@bootlin.com>
+References: <20200701153404.1647002-1-antoine.tenart@bootlin.com>
+To:     linux-ext4@vger.kernel.org, tytso@mit.edu
+Cc:     matthew.weber@rockwellcollins.com, thomas.petazzoni@bootlin.com
+Subject: Re: [PATCH] create_inode: set xattrs to the root directory as well
+From:   Antoine Tenart <antoine.tenart@bootlin.com>
+Message-ID: <159497094193.3166.11625094942627698345@kwain>
+Date:   Fri, 17 Jul 2020 09:29:02 +0200
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 7:08 AM Eric Biggers <ebiggers@kernel.org> wrote:
-> - The preliminary checks for sb->s_dio_done_wq are a data race, since
->   they do a plain load of a concurrently modified variable.  According
->   to the C standard, this undefined behavior.  In practice, the kernel
->   does sometimes makes assumptions about data races might be okay in
+Hello,
 
-Some small typos:
-...this *is* undefined behavior...
-...does sometimes make* assumptions about...
+Gentle ping. Does anyone have a comment on this patch?
 
-- Sedat -
+Thanks!
+Antoine
+
+Quoting Antoine Tenart (2020-07-01 17:34:04)
+> __populate_fs do copy the xattrs for all files and directories, but the
+> root directory is skipped and as a result its extended attributes aren't
+> set. This is an issue when using mkfs to build a full system image that
+> can be used with SElinux in enforcing mode without making any runtime
+> fix at first boot.
+> 
+> This patch adds logic to set the root directory's extended attributes.
+> 
+> Signed-off-by: Antoine Tenart <antoine.tenart@bootlin.com>
+> ---
+>  misc/create_inode.c | 24 +++++++++++++++++++++++-
+>  1 file changed, 23 insertions(+), 1 deletion(-)
+> 
+> diff --git a/misc/create_inode.c b/misc/create_inode.c
+> index e8d1df6b55a5..0a6e4dc23d16 100644
+> --- a/misc/create_inode.c
+> +++ b/misc/create_inode.c
+> @@ -820,7 +820,29 @@ static errcode_t __populate_fs(ext2_filsys fs, ext2_ino_t parent_ino,
+>  
+>         for (i = 0; i < num_dents; free(dent[i]), i++) {
+>                 name = dent[i]->d_name;
+> -               if ((!strcmp(name, ".")) || (!strcmp(name, "..")))
+> +               if (!strcmp(name, ".")) {
+> +                       retval = ext2fs_namei(fs, root, parent_ino, ".", &ino);
+> +                       if (retval) {
+> +                               com_err(name, retval, 0);
+> +                                       goto out;
+> +                       }
+> +
+> +                       /*
+> +                        * Take special care for the root directory, to copy its
+> +                        * extended attributes.
+> +                        */
+> +                       if (ino == root) {
+> +                               retval = set_inode_xattr(fs, ino, ".");
+> +                               if (retval) {
+> +                                       com_err(__func__, retval,
+> +                                               _("while setting xattrs for ."));
+> +                                       goto out;
+> +                               }
+> +                       }
+> +
+> +                       continue;
+> +               }
+> +               if (!strcmp(name, ".."))
+>                         continue;
+>                 if (lstat(name, &st)) {
+>                         retval = errno;
+> -- 
+> 2.26.2
+> 
+
+-- 
+Antoine Ténart, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
