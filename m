@@ -2,54 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DA05223070
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Jul 2020 03:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8125C22306B
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Jul 2020 03:35:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726984AbgGQBfh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 16 Jul 2020 21:35:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37776 "EHLO
+        id S1726936AbgGQBfe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 16 Jul 2020 21:35:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726512AbgGQBfb (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Jul 2020 21:35:31 -0400
+        with ESMTP id S1726858AbgGQBfd (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Jul 2020 21:35:33 -0400
 Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D585C08C5DB
-        for <linux-ext4@vger.kernel.org>; Thu, 16 Jul 2020 18:35:31 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id p4so5574817pls.16
-        for <linux-ext4@vger.kernel.org>; Thu, 16 Jul 2020 18:35:31 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DF50C08C5DB
+        for <linux-ext4@vger.kernel.org>; Thu, 16 Jul 2020 18:35:33 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id 65so5613300plf.1
+        for <linux-ext4@vger.kernel.org>; Thu, 16 Jul 2020 18:35:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=+UBFxrt4pNJbQqfKhET/4plBmEv6gpLPjB+6J7RRg5k=;
-        b=S9hUMdztXXvOY4ssFaJ9x50x8aFoXJPR1Ord6CgvNBpR6vnJ1HcxEp+eSdaGY2wu49
-         f3fn0Te4kWifwbc6OZ2yWU1j5vyM+/dIh9NQBMQelj7AihRRtRxZWdcI+Qm/qQb+JSZ1
-         4vatdj6y/6H9IPDw31RFvJBnXZAEWZbrTIeQ4n+CYYf5Ls9iTkaDeHulKw5UxKN3y0t7
-         zfn3cXRsUyUuNwYuMX4HUH1SILLzTcAjK5hnXBz6/fju1dXdZTfC0wUHMfBLejmNNWiV
-         2zSjQ0QinEPAhWayJplF9JFzkA1NeMZT/PHLH5AVbbg/wAeJA+k9Fp7jqWMsVvb0ahs1
-         nmew==
+        bh=E/vVSGidxRNqfgFvT7W0V9puYBqKI9SZ+5JR8j0m+58=;
+        b=ZcYDTvcfLLpu/jhtpmOZTX1yip7PM/LKW+mqaazTmFRD19tgdynOHn3dvFmYrGW/EU
+         3OGE6491fFJOHWChT38oVFGgJgqcZ1z9qC05QU8JraayXUwgfZmczmipgbR37elMel8Z
+         zNb7TYC+lWvWJJ6SnDNsPiAtosseBQpBY7N1qfVzLHJNWx+JNLHhks/B90rtrKlzTw2Q
+         QdJ4Rgwpk7ZYwleZwGq00b+zq66rjpmtFE10TZhsYG25d9JTk8G6JQVQC1rLY+/3pY2o
+         8blcSeqgKqhLSzrKduWn3JF/DTEgh0C9d7W/d32ySDrix8TvV4yJXo/ftZgek76k0P/c
+         Y1Lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=+UBFxrt4pNJbQqfKhET/4plBmEv6gpLPjB+6J7RRg5k=;
-        b=Y5Tr/ayyQmPFlgle5c8T/+XNS/LJqv0t9qAjBLtbRMQHNWIH2xd3AUdHAaqv8u4Zwc
-         yu56yIhEWHOF8vhWXC7yx21cwM3KDWd7c18mSjgn+e7rRnF4Di8gg9S8u3/ZlgESKR77
-         9EYxopcizZq4kOHlOctEC7rjtNpmzIrDeVYCR1Fd5Xh0ieuyIjnR5v7RuSnBn2MbntUM
-         bSIEuOXXRE57lsuHa1cpElIMtElE4tjCNYSJn9fNNp2DwoLcYetvyuyXXA/yXC1vYxCU
-         dEhHYvlwAVoxo9dWPwJcovvA8OZJrw1OFW31RexKv0FgCBVkBBfz8+gwVitlnO0zjiG6
-         H1QA==
-X-Gm-Message-State: AOAM532jNwO2f0d1cjp9L1Si7okugpB8dIJU6l48yjtjUbaHzyUZIwZf
-        WAPTYENn6QESn8Q5X6yiXZhQKG/Wkbg=
-X-Google-Smtp-Source: ABdhPJyUKbNKbPD52mHlMT2ZSrU8LempwbQ8BXLBZXihRGAVepOXrVcw0EfQ5Li0VQYXBx83T3iUPhq+8QI=
-X-Received: by 2002:a17:90a:1fcb:: with SMTP id z11mr2171526pjz.1.1594949730708;
- Thu, 16 Jul 2020 18:35:30 -0700 (PDT)
-Date:   Fri, 17 Jul 2020 01:35:14 +0000
+        bh=E/vVSGidxRNqfgFvT7W0V9puYBqKI9SZ+5JR8j0m+58=;
+        b=FIsVZFzYthWIZyDSSZs21eDjOpgv1gdi5B4NIWMpXab87OjQP1A4jXDQhMirKihclg
+         SPkUEbmFqQufGS8TdFtfT+N0aXDv/yzmPtob64T57OZaKMWOSOZ3Z/hgN+5GHIIMCpvi
+         EM+4BD8rGOKyV30O0PI2MxryktHJajmgLMSIfYfjXR+dmiLpI7qYxcMte/lrkg0iDWyn
+         Q47cm8c3mCbL33hTmj39lfmLQjuUtvYcggCmvP51xEp4BXjSFIRuO3g8oRHY6qcnv+o0
+         yMC2RXck41dq3i0TNkvww3BJ+9HFWnTKBNuFc+lOny92CfFQvi1EIORqGmkLaNtwyReQ
+         y4kQ==
+X-Gm-Message-State: AOAM531WUR5d9FHZf9uj4g0+ydkbNHmFleCllYKpvXwBVnc2ii1CIrLL
+        xqD+evug5cInORiB/a857pMPYeay6/M=
+X-Google-Smtp-Source: ABdhPJxblkVinfK9/GjEu/MeJLy/xcw1zo2TEXIQwGlWkq0fWav4MrbEVMKPE2WnLaQ1sWXSffDb1SKbb/Q=
+X-Received: by 2002:a63:225d:: with SMTP id t29mr6933840pgm.374.1594949732647;
+ Thu, 16 Jul 2020 18:35:32 -0700 (PDT)
+Date:   Fri, 17 Jul 2020 01:35:15 +0000
 In-Reply-To: <20200717013518.59219-1-satyat@google.com>
-Message-Id: <20200717013518.59219-4-satyat@google.com>
+Message-Id: <20200717013518.59219-5-satyat@google.com>
 Mime-Version: 1.0
 References: <20200717013518.59219-1-satyat@google.com>
 X-Mailer: git-send-email 2.28.0.rc0.105.gf9edc3c819-goog
-Subject: [PATCH v2 3/7] iomap: support direct I/O with fscrypt using blk-crypto
+Subject: [PATCH v2 4/7] ext4: support direct I/O with fscrypt using blk-crypto
 From:   Satya Tangirala <satyat@google.com>
 To:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org
@@ -63,72 +63,58 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Wire up iomap direct I/O with the fscrypt additions for direct I/O,
-and set bio crypt contexts on bios when appropriate.
-
-Make iomap_dio_bio_actor() call fscrypt_limit_io_pages() to ensure that
-DUNs remain contiguous within a bio, since it works directly with logical
-ranges and can't call fscrypt_mergeable_bio() on each page.
+Wire up ext4 with fscrypt direct I/O support. direct I/O with fscrypt is
+only supported through blk-crypto (i.e. CONFIG_BLK_INLINE_ENCRYPTION must
+have been enabled, the 'inlinecrypt' mount option must have been specified,
+and either hardware inline encryption support must be present or
+CONFIG_BLK_INLINE_ENCYRPTION_FALLBACK must have been enabled). Further,
+direct I/O on encrypted files is only supported when I/O is aligned
+to the filesystem block size (which is *not* necessarily the same as the
+block device's block size).
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 Co-developed-by: Satya Tangirala <satyat@google.com>
 Signed-off-by: Satya Tangirala <satyat@google.com>
 ---
- fs/iomap/direct-io.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ fs/ext4/file.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-index ec7b78e6feca..4507dc16dbe5 100644
---- a/fs/iomap/direct-io.c
-+++ b/fs/iomap/direct-io.c
-@@ -6,6 +6,7 @@
- #include <linux/module.h>
- #include <linux/compiler.h>
- #include <linux/fs.h>
-+#include <linux/fscrypt.h>
- #include <linux/iomap.h>
- #include <linux/backing-dev.h>
- #include <linux/uio.h>
-@@ -183,11 +184,14 @@ static void
- iomap_dio_zero(struct iomap_dio *dio, struct iomap *iomap, loff_t pos,
- 		unsigned len)
+diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+index 2a01e31a032c..d534f72675d9 100644
+--- a/fs/ext4/file.c
++++ b/fs/ext4/file.c
+@@ -36,9 +36,11 @@
+ #include "acl.h"
+ #include "truncate.h"
+ 
+-static bool ext4_dio_supported(struct inode *inode)
++static bool ext4_dio_supported(struct kiocb *iocb, struct iov_iter *iter)
  {
-+	struct inode *inode = file_inode(dio->iocb->ki_filp);
- 	struct page *page = ZERO_PAGE(0);
- 	int flags = REQ_SYNC | REQ_IDLE;
- 	struct bio *bio;
- 
- 	bio = bio_alloc(GFP_KERNEL, 1);
-+	fscrypt_set_bio_crypt_ctx(bio, inode, pos >> inode->i_blkbits,
-+				  GFP_KERNEL);
- 	bio_set_dev(bio, iomap->bdev);
- 	bio->bi_iter.bi_sector = iomap_sector(iomap, pos);
- 	bio->bi_private = dio;
-@@ -253,6 +257,7 @@ iomap_dio_bio_actor(struct inode *inode, loff_t pos, loff_t length,
- 		ret = nr_pages;
- 		goto out;
+-	if (IS_ENABLED(CONFIG_FS_ENCRYPTION) && IS_ENCRYPTED(inode))
++	struct inode *inode = file_inode(iocb->ki_filp);
++
++	if (!fscrypt_dio_supported(iocb, iter))
+ 		return false;
+ 	if (fsverity_active(inode))
+ 		return false;
+@@ -61,7 +63,7 @@ static ssize_t ext4_dio_read_iter(struct kiocb *iocb, struct iov_iter *to)
+ 		inode_lock_shared(inode);
  	}
-+	nr_pages = fscrypt_limit_io_pages(inode, pos, nr_pages);
  
- 	if (need_zeroout) {
- 		/* zero out from the start of the block to the write offset */
-@@ -270,6 +275,8 @@ iomap_dio_bio_actor(struct inode *inode, loff_t pos, loff_t length,
- 		}
+-	if (!ext4_dio_supported(inode)) {
++	if (!ext4_dio_supported(iocb, to)) {
+ 		inode_unlock_shared(inode);
+ 		/*
+ 		 * Fallback to buffered I/O if the operation being performed on
+@@ -490,7 +492,7 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ 	}
  
- 		bio = bio_alloc(GFP_KERNEL, nr_pages);
-+		fscrypt_set_bio_crypt_ctx(bio, inode, pos >> inode->i_blkbits,
-+					  GFP_KERNEL);
- 		bio_set_dev(bio, iomap->bdev);
- 		bio->bi_iter.bi_sector = iomap_sector(iomap, pos);
- 		bio->bi_write_hint = dio->iocb->ki_hint;
-@@ -307,6 +314,7 @@ iomap_dio_bio_actor(struct inode *inode, loff_t pos, loff_t length,
- 		copied += n;
- 
- 		nr_pages = iov_iter_npages(dio->submit.iter, BIO_MAX_PAGES);
-+		nr_pages = fscrypt_limit_io_pages(inode, pos, nr_pages);
- 		iomap_dio_submit_bio(dio, iomap, bio, pos);
- 		pos += n;
- 	} while (nr_pages);
+ 	/* Fallback to buffered I/O if the inode does not support direct I/O. */
+-	if (!ext4_dio_supported(inode)) {
++	if (!ext4_dio_supported(iocb, from)) {
+ 		if (ilock_shared)
+ 			inode_unlock_shared(inode);
+ 		else
 -- 
 2.28.0.rc0.105.gf9edc3c819-goog
 
