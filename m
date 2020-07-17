@@ -2,262 +2,209 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C737B223FF8
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Jul 2020 17:54:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2E8224596
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Jul 2020 23:04:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726742AbgGQPyF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 17 Jul 2020 11:54:05 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:54475 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726344AbgGQPyE (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Jul 2020 11:54:04 -0400
-Received: from callcc.thunk.org (pool-96-230-252-158.bstnma.fios.verizon.net [96.230.252.158])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 06HFrx1s029544
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Jul 2020 11:53:59 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id D4E46420C56; Fri, 17 Jul 2020 11:53:58 -0400 (EDT)
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-Cc:     Alex Zhuravlev <bzzz@whamcloud.com>,
-        "Theodore Ts'o" <tytso@mit.edu>
-Subject: [PATCH 4/4] ext4: add prefetch_block_bitmaps mount options
-Date:   Fri, 17 Jul 2020 11:53:52 -0400
-Message-Id: <20200717155352.1053040-5-tytso@mit.edu>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200717155352.1053040-1-tytso@mit.edu>
-References: <20200717155352.1053040-1-tytso@mit.edu>
+        id S1726759AbgGQVE3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 17 Jul 2020 17:04:29 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:47424 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726393AbgGQVE2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Jul 2020 17:04:28 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06HL3IG2013698;
+        Fri, 17 Jul 2020 21:04:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=MM7mdGykqks3yBttHdwzGPDw1wP4s4tokF4UONjrXBE=;
+ b=n4fd1huMLf1/ZFaqGiKLnSpsN1AKpxfbcOPLORjsQ1jTnuax6a8kAhM0qenRPHn184XB
+ DUGASgisVnyApaMTNVrY6i1tsnocOzuLC1Uj8xQQrbFr0Az+pV2nEmcRWqkmtrb/CRvS
+ mRRvIRbh4bz/ovWi/V+tnw4DVS6ZFCXmG/NkASGMKDYwMdweDADF+mD1FgoKqP0lYJfV
+ yHA9/jlnBelOUJlMRFAZXd1lVZTPG+BspfOlD55wmJ9zbJr3snWSjX2UvqxUPiUou/D8
+ pr8LNIEaSiTEHwrBB7/oivGhiVg1RZvLXlz+4L83e2dR66fLraWOI1QHhUn/3VL7RiqI uw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 3275cmsfnc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 17 Jul 2020 21:04:26 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06HL3tqK025230;
+        Fri, 17 Jul 2020 21:04:25 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 32bj2d3hdx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 17 Jul 2020 21:04:25 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06HL4O0N002782;
+        Fri, 17 Jul 2020 21:04:24 GMT
+Received: from localhost (/10.159.159.76)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 17 Jul 2020 14:04:24 -0700
+Date:   Fri, 17 Jul 2020 14:04:23 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v2] fs/direct-io: fix one-time init of ->s_dio_done_wq
+Message-ID: <20200717210423.GP3151642@magnolia>
+References: <20200717050510.95832-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200717050510.95832-1-ebiggers@kernel.org>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9685 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
+ adultscore=0 spamscore=0 bulkscore=0 malwarescore=0 mlxscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007170142
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9685 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 priorityscore=1501
+ bulkscore=0 adultscore=0 lowpriorityscore=0 phishscore=0 spamscore=0
+ impostorscore=0 malwarescore=0 mlxlogscore=999 clxscore=1015 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007170142
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-For file systems where we can afford to keep the buddy bitmaps cached,
-we can speed up initial writes to large file systems by starting to
-load the block allocation bitmaps as soon as the file system is
-mounted.  This won't work well for _super_ large file systems, or
-memory constrained systems, so we only enable this when it is
-requested via a mount option.
+On Thu, Jul 16, 2020 at 10:05:10PM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> Correctly implement the "one-time" init pattern for ->s_dio_done_wq.
+> This fixes the following issues:
+> 
+> - The LKMM doesn't guarantee that the workqueue will be seen initialized
+>   before being used, if another CPU allocated it.  With regards to
+>   specific CPU architectures, this is true on at least Alpha, but it may
+>   be true on other architectures too if the internal implementation of
+>   workqueues causes use of the workqueue to involve a control
+>   dependency.  (There doesn't appear to be a control dependency
+>   currently, but it's hard to tell and it could change in the future.)
+> 
+> - The preliminary checks for sb->s_dio_done_wq are a data race, since
+>   they do a plain load of a concurrently modified variable.  According
+>   to the C standard, this undefined behavior.  In practice, the kernel
+>   does sometimes makes assumptions about data races might be okay in
+>   practice, but these rules are undocumented and not uniformly agreed
+>   upon, so it's best to avoid cases where they might come into play.
+> 
+> Following the guidance for one-time init I've proposed at
+> https://lkml.kernel.org/r/20200717044427.68747-1-ebiggers@kernel.org,
 
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
----
- fs/ext4/ext4.h    | 13 ++++++++++++
- fs/ext4/mballoc.c | 10 ++++------
- fs/ext4/super.c   | 51 +++++++++++++++++++++++++++++++++++++----------
- 3 files changed, 57 insertions(+), 17 deletions(-)
+It might be a good idea to combine these two patches into a series so
+that we can leave a breadcrumb in sb_init_dio_done_wq explaining why it
+does what it does.
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 7451662e092a..c04d4ef0b77a 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -1172,6 +1172,7 @@ struct ext4_inode_info {
- #define EXT4_MOUNT_JOURNAL_CHECKSUM	0x800000 /* Journal checksums */
- #define EXT4_MOUNT_JOURNAL_ASYNC_COMMIT	0x1000000 /* Journal Async Commit */
- #define EXT4_MOUNT_WARN_ON_ERROR	0x2000000 /* Trigger WARN_ON on error */
-+#define EXT4_MOUNT_PREFETCH_BLOCK_BITMAPS 0x4000000
- #define EXT4_MOUNT_DELALLOC		0x8000000 /* Delalloc support */
- #define EXT4_MOUNT_DATA_ERR_ABORT	0x10000000 /* Abort on file data write */
- #define EXT4_MOUNT_BLOCK_VALIDITY	0x20000000 /* Block validity checking */
-@@ -2315,9 +2316,15 @@ struct ext4_lazy_init {
- 	struct mutex		li_list_mtx;
- };
- 
-+typedef enum {
-+	EXT4_LI_MODE_ITABLE,
-+	EXT4_LI_MODE_PREFETCH_BBITMAP
-+} ext4_li_mode;
-+
- struct ext4_li_request {
- 	struct super_block	*lr_super;
- 	struct ext4_sb_info	*lr_sbi;
-+	ext4_li_mode		lr_mode;
- 	ext4_group_t		lr_next_group;
- 	struct list_head	lr_request;
- 	unsigned long		lr_next_sched;
-@@ -2657,6 +2664,12 @@ extern int ext4_mb_reserve_blocks(struct super_block *, int);
- extern void ext4_discard_preallocations(struct inode *);
- extern int __init ext4_init_mballoc(void);
- extern void ext4_exit_mballoc(void);
-+extern ext4_group_t ext4_mb_prefetch(struct super_block *sb,
-+				     ext4_group_t group,
-+				     unsigned int nr, int *cnt);
-+extern void ext4_mb_prefetch_fini(struct super_block *sb, ext4_group_t group,
-+				  unsigned int nr);
-+
- extern void ext4_free_blocks(handle_t *handle, struct inode *inode,
- 			     struct buffer_head *bh, ext4_fsblk_t block,
- 			     unsigned long count, int flags);
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 172994349bf6..c072d06d678d 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -2224,9 +2224,8 @@ static int ext4_mb_good_group_nolock(struct ext4_allocation_context *ac,
-  * Start prefetching @nr block bitmaps starting at @group.
-  * Return the next group which needs to be prefetched.
-  */
--static ext4_group_t
--ext4_mb_prefetch(struct super_block *sb, ext4_group_t group,
--		 unsigned int nr, int *cnt)
-+ext4_group_t ext4_mb_prefetch(struct super_block *sb, ext4_group_t group,
-+			      unsigned int nr, int *cnt)
- {
- 	ext4_group_t ngroups = ext4_get_groups_count(sb);
- 	struct buffer_head *bh;
-@@ -2276,9 +2275,8 @@ ext4_mb_prefetch(struct super_block *sb, ext4_group_t group,
-  * waiting for the block allocation bitmap read to finish when
-  * ext4_mb_prefetch_fini is called from ext4_mb_regular_allocator().
-  */
--static void
--ext4_mb_prefetch_fini(struct super_block *sb, ext4_group_t group,
--		      unsigned int nr)
-+void ext4_mb_prefetch_fini(struct super_block *sb, ext4_group_t group,
-+			   unsigned int nr)
- {
- 	while (nr-- > 0) {
- 		struct ext4_group_desc *gdp = ext4_get_group_desc(sb, group,
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 330957ed1f05..9e19d5830745 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1521,6 +1521,7 @@ enum {
- 	Opt_dioread_nolock, Opt_dioread_lock,
- 	Opt_discard, Opt_nodiscard, Opt_init_itable, Opt_noinit_itable,
- 	Opt_max_dir_size_kb, Opt_nojournal_checksum, Opt_nombcache,
-+	Opt_prefetch_block_bitmaps,
- };
- 
- static const match_table_t tokens = {
-@@ -1612,6 +1613,7 @@ static const match_table_t tokens = {
- 	{Opt_test_dummy_encryption, "test_dummy_encryption"},
- 	{Opt_nombcache, "nombcache"},
- 	{Opt_nombcache, "no_mbcache"},	/* for backward compatibility */
-+	{Opt_prefetch_block_bitmaps, "prefetch_block_bitmaps"},
- 	{Opt_removed, "check=none"},	/* mount option from ext2/3 */
- 	{Opt_removed, "nocheck"},	/* mount option from ext2/3 */
- 	{Opt_removed, "reservation"},	/* mount option from ext2/3 */
-@@ -1829,6 +1831,8 @@ static const struct mount_opts {
- 	{Opt_max_dir_size_kb, 0, MOPT_GTE0},
- 	{Opt_test_dummy_encryption, 0, MOPT_STRING},
- 	{Opt_nombcache, EXT4_MOUNT_NO_MBCACHE, MOPT_SET},
-+	{Opt_prefetch_block_bitmaps, EXT4_MOUNT_PREFETCH_BLOCK_BITMAPS,
-+	 MOPT_SET},
- 	{Opt_err, 0, 0}
- };
- 
-@@ -3197,19 +3201,33 @@ static void print_daily_error_info(struct timer_list *t)
- 	mod_timer(&sbi->s_err_report, jiffies + 24*60*60*HZ);  /* Once a day */
- }
- 
-+static int ext4_run_li_prefetch(struct ext4_li_request *elr,
-+				struct super_block *sb, ext4_group_t group)
-+{
-+	unsigned int prefetch_ios = 0;
-+
-+	elr->lr_next_group = ext4_mb_prefetch(sb, group,
-+					      EXT4_SB(sb)->s_mb_prefetch,
-+					      &prefetch_ios);
-+	if (prefetch_ios)
-+		ext4_mb_prefetch_fini(sb, elr->lr_next_group, prefetch_ios);
-+	return (group >= elr->lr_next_group);
-+}
-+
- /* Find next suitable group and run ext4_init_inode_table */
- static int ext4_run_li_request(struct ext4_li_request *elr)
- {
- 	struct ext4_group_desc *gdp = NULL;
--	ext4_group_t group, ngroups;
--	struct super_block *sb;
-+	ext4_group_t group = elr->lr_next_group;
-+	struct super_block *sb = elr->lr_super;
-+	ext4_group_t ngroups = EXT4_SB(sb)->s_groups_count;
- 	unsigned long timeout = 0;
- 	int ret = 0;
- 
--	sb = elr->lr_super;
--	ngroups = EXT4_SB(sb)->s_groups_count;
-+	if (elr->lr_mode == EXT4_LI_MODE_PREFETCH_BBITMAP)
-+		return ext4_run_li_prefetch(elr, sb, group);
- 
--	for (group = elr->lr_next_group; group < ngroups; group++) {
-+	for (; group < ngroups; group++) {
- 		gdp = ext4_get_group_desc(sb, group, NULL);
- 		if (!gdp) {
- 			ret = 1;
-@@ -3219,13 +3237,12 @@ static int ext4_run_li_request(struct ext4_li_request *elr)
- 		if (!(gdp->bg_flags & cpu_to_le16(EXT4_BG_INODE_ZEROED)))
- 			break;
- 	}
--
- 	if (group >= ngroups)
- 		ret = 1;
- 
- 	if (!ret) {
- 		timeout = jiffies;
--		ret = ext4_init_inode_table(sb, group,
-+		ret = ext4_init_inode_table(elr->lr_super, group,
- 					    elr->lr_timeout ? 0 : 1);
- 		if (elr->lr_timeout == 0) {
- 			timeout = (jiffies - timeout) *
-@@ -3234,6 +3251,10 @@ static int ext4_run_li_request(struct ext4_li_request *elr)
- 		}
- 		elr->lr_next_sched = jiffies + elr->lr_timeout;
- 		elr->lr_next_group = group + 1;
-+	} else if (test_opt(sb, PREFETCH_BLOCK_BITMAPS)) {
-+		elr->lr_mode = EXT4_LI_MODE_PREFETCH_BBITMAP;
-+		elr->lr_next_group = 0;
-+		ret = 0;
- 	}
- 	return ret;
- }
-@@ -3459,7 +3480,8 @@ static int ext4_li_info_new(void)
- }
- 
- static struct ext4_li_request *ext4_li_request_new(struct super_block *sb,
--					    ext4_group_t start)
-+						   ext4_group_t start,
-+						   ext4_li_mode mode)
- {
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 	struct ext4_li_request *elr;
-@@ -3468,6 +3490,7 @@ static struct ext4_li_request *ext4_li_request_new(struct super_block *sb,
- 	if (!elr)
- 		return NULL;
- 
-+	elr->lr_mode = mode;
- 	elr->lr_super = sb;
- 	elr->lr_sbi = sbi;
- 	elr->lr_next_group = start;
-@@ -3488,6 +3511,7 @@ int ext4_register_li_request(struct super_block *sb,
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 	struct ext4_li_request *elr = NULL;
- 	ext4_group_t ngroups = sbi->s_groups_count;
-+	ext4_li_mode lr_mode = EXT4_LI_MODE_ITABLE;
- 	int ret = 0;
- 
- 	mutex_lock(&ext4_li_mtx);
-@@ -3501,10 +3525,15 @@ int ext4_register_li_request(struct super_block *sb,
- 	}
- 
- 	if (first_not_zeroed == ngroups || sb_rdonly(sb) ||
--	    !test_opt(sb, INIT_INODE_TABLE))
--		goto out;
-+	    !test_opt(sb, INIT_INODE_TABLE)) {
-+		if (test_opt(sb, PREFETCH_BLOCK_BITMAPS)) {
-+			first_not_zeroed = 0;
-+			lr_mode = EXT4_LI_MODE_PREFETCH_BBITMAP;
-+		} else
-+			goto out;
-+	}
- 
--	elr = ext4_li_request_new(sb, first_not_zeroed);
-+	elr = ext4_li_request_new(sb, first_not_zeroed, lr_mode);
- 	if (!elr) {
- 		ret = -ENOMEM;
- 		goto out;
--- 
-2.24.1
+> replace it with the simplest implementation that is guaranteed to be
+> correct while still achieving the following properties:
+> 
+>     - Doesn't make direct I/O users contend on a mutex in the fast path.
+> 
+>     - Doesn't allocate the workqueue when it will never be used.
+> 
+> Fixes: 7b7a8665edd8 ("direct-io: Implement generic deferred AIO completions")
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+> 
+> v2: new implementation using smp_load_acquire() + smp_store_release()
+>     and a mutex.
+> 
+>  fs/direct-io.c       | 42 ++++++++++++++++++++++++------------------
+>  fs/iomap/direct-io.c |  3 +--
+>  2 files changed, 25 insertions(+), 20 deletions(-)
+> 
+> diff --git a/fs/direct-io.c b/fs/direct-io.c
+> index 6d5370eac2a8..c03c2204aadf 100644
+> --- a/fs/direct-io.c
+> +++ b/fs/direct-io.c
+> @@ -592,20 +592,28 @@ static inline int dio_bio_reap(struct dio *dio, struct dio_submit *sdio)
+>   */
+>  int sb_init_dio_done_wq(struct super_block *sb)
+>  {
+> -	struct workqueue_struct *old;
+> -	struct workqueue_struct *wq = alloc_workqueue("dio/%s",
+> -						      WQ_MEM_RECLAIM, 0,
+> -						      sb->s_id);
+> -	if (!wq)
+> -		return -ENOMEM;
+> -	/*
+> -	 * This has to be atomic as more DIOs can race to create the workqueue
+> -	 */
+> -	old = cmpxchg(&sb->s_dio_done_wq, NULL, wq);
+> -	/* Someone created workqueue before us? Free ours... */
+> -	if (old)
+> -		destroy_workqueue(wq);
+> -	return 0;
+> +	static DEFINE_MUTEX(sb_init_dio_done_mutex);
+> +	struct workqueue_struct *wq;
+> +	int err = 0;
+> +
+> +	/* Pairs with the smp_store_release() below */
+> +	if (smp_load_acquire(&sb->s_dio_done_wq))
+> +		return 0;
+> +
+> +	mutex_lock(&sb_init_dio_done_mutex);
+> +	if (sb->s_dio_done_wq)
+> +		goto out;
+> +
+> +	wq = alloc_workqueue("dio/%s", WQ_MEM_RECLAIM, 0, sb->s_id);
+> +	if (!wq) {
+> +		err = -ENOMEM;
+> +		goto out;
+> +	}
+> +	/* Pairs with the smp_load_acquire() above */
+> +	smp_store_release(&sb->s_dio_done_wq, wq);
 
+Why not use cmpxchg_release here?  Is the mutex actually required here,
+or is this merely following the "don't complicate it up" guidelines in
+the "One-Time Init" recipe that say not to use cmpxchg_release unless
+you have a strong justification for it?
+
+The code changes look ok to me, fwiw.
+
+--D
+
+> +out:
+> +	mutex_unlock(&sb_init_dio_done_mutex);
+> +	return err;
+>  }
+>  
+>  static int dio_set_defer_completion(struct dio *dio)
+> @@ -615,9 +623,7 @@ static int dio_set_defer_completion(struct dio *dio)
+>  	if (dio->defer_completion)
+>  		return 0;
+>  	dio->defer_completion = true;
+> -	if (!sb->s_dio_done_wq)
+> -		return sb_init_dio_done_wq(sb);
+> -	return 0;
+> +	return sb_init_dio_done_wq(sb);
+>  }
+>  
+>  /*
+> @@ -1250,7 +1256,7 @@ do_blockdev_direct_IO(struct kiocb *iocb, struct inode *inode,
+>  		retval = 0;
+>  		if (iocb->ki_flags & IOCB_DSYNC)
+>  			retval = dio_set_defer_completion(dio);
+> -		else if (!dio->inode->i_sb->s_dio_done_wq) {
+> +		else {
+>  			/*
+>  			 * In case of AIO write racing with buffered read we
+>  			 * need to defer completion. We can't decide this now,
+> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+> index ec7b78e6feca..dc7fe898dab8 100644
+> --- a/fs/iomap/direct-io.c
+> +++ b/fs/iomap/direct-io.c
+> @@ -487,8 +487,7 @@ iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
+>  		dio_warn_stale_pagecache(iocb->ki_filp);
+>  	ret = 0;
+>  
+> -	if (iov_iter_rw(iter) == WRITE && !wait_for_completion &&
+> -	    !inode->i_sb->s_dio_done_wq) {
+> +	if (iov_iter_rw(iter) == WRITE && !wait_for_completion) {
+>  		ret = sb_init_dio_done_wq(inode->i_sb);
+>  		if (ret < 0)
+>  			goto out_free_dio;
+> -- 
+> 2.27.0
+> 
