@@ -2,54 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8125C22306B
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Jul 2020 03:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56100223072
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Jul 2020 03:35:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726936AbgGQBfe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 16 Jul 2020 21:35:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37778 "EHLO
+        id S1726892AbgGQBfh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 16 Jul 2020 21:35:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726858AbgGQBfd (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Jul 2020 21:35:33 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DF50C08C5DB
-        for <linux-ext4@vger.kernel.org>; Thu, 16 Jul 2020 18:35:33 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id 65so5613300plf.1
-        for <linux-ext4@vger.kernel.org>; Thu, 16 Jul 2020 18:35:33 -0700 (PDT)
+        with ESMTP id S1726858AbgGQBff (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Jul 2020 21:35:35 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30A74C061755
+        for <linux-ext4@vger.kernel.org>; Thu, 16 Jul 2020 18:35:35 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id i203so9510236yba.9
+        for <linux-ext4@vger.kernel.org>; Thu, 16 Jul 2020 18:35:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=E/vVSGidxRNqfgFvT7W0V9puYBqKI9SZ+5JR8j0m+58=;
-        b=ZcYDTvcfLLpu/jhtpmOZTX1yip7PM/LKW+mqaazTmFRD19tgdynOHn3dvFmYrGW/EU
-         3OGE6491fFJOHWChT38oVFGgJgqcZ1z9qC05QU8JraayXUwgfZmczmipgbR37elMel8Z
-         zNb7TYC+lWvWJJ6SnDNsPiAtosseBQpBY7N1qfVzLHJNWx+JNLHhks/B90rtrKlzTw2Q
-         QdJ4Rgwpk7ZYwleZwGq00b+zq66rjpmtFE10TZhsYG25d9JTk8G6JQVQC1rLY+/3pY2o
-         8blcSeqgKqhLSzrKduWn3JF/DTEgh0C9d7W/d32ySDrix8TvV4yJXo/ftZgek76k0P/c
-         Y1Lw==
+        bh=ORAQciKgJGVxLPMl88O8FRaS7Y2vfgBBYDIN8L834Cw=;
+        b=oxCwlxw8hiOmpc9dDE5VHP0nyw8uhX2w43IaKudLEwrXxdgnP120llEreKyOOyh1yb
+         1WL8Dz+vf62oDSYhDCJMemrgkfz8WYWqfwvE/k3RuBACwKsg9UN/b/70jtV8Bh5s5ZUl
+         WrqxtcHQKHwvgHTdS5R/09Di9WRfeq7aFwIAp6PB4QWEH0TDZQQYq6ccRf0UpNNMbFFl
+         k4ZGdek4wV3r5+sTAIYfuP/jWrOw9Pbl+P1VkdzDRNqXM7DL0BJSJwO91JPyC0vA5ApC
+         ngAIgB1BKgaFCSFN5dAUqxUK11W1Cw9dSBzo0il3J6r3PmLNgtmOY/hVfrka9zORhpXj
+         ZLCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=E/vVSGidxRNqfgFvT7W0V9puYBqKI9SZ+5JR8j0m+58=;
-        b=FIsVZFzYthWIZyDSSZs21eDjOpgv1gdi5B4NIWMpXab87OjQP1A4jXDQhMirKihclg
-         SPkUEbmFqQufGS8TdFtfT+N0aXDv/yzmPtob64T57OZaKMWOSOZ3Z/hgN+5GHIIMCpvi
-         EM+4BD8rGOKyV30O0PI2MxryktHJajmgLMSIfYfjXR+dmiLpI7qYxcMte/lrkg0iDWyn
-         Q47cm8c3mCbL33hTmj39lfmLQjuUtvYcggCmvP51xEp4BXjSFIRuO3g8oRHY6qcnv+o0
-         yMC2RXck41dq3i0TNkvww3BJ+9HFWnTKBNuFc+lOny92CfFQvi1EIORqGmkLaNtwyReQ
-         y4kQ==
-X-Gm-Message-State: AOAM531WUR5d9FHZf9uj4g0+ydkbNHmFleCllYKpvXwBVnc2ii1CIrLL
-        xqD+evug5cInORiB/a857pMPYeay6/M=
-X-Google-Smtp-Source: ABdhPJxblkVinfK9/GjEu/MeJLy/xcw1zo2TEXIQwGlWkq0fWav4MrbEVMKPE2WnLaQ1sWXSffDb1SKbb/Q=
-X-Received: by 2002:a63:225d:: with SMTP id t29mr6933840pgm.374.1594949732647;
- Thu, 16 Jul 2020 18:35:32 -0700 (PDT)
-Date:   Fri, 17 Jul 2020 01:35:15 +0000
+        bh=ORAQciKgJGVxLPMl88O8FRaS7Y2vfgBBYDIN8L834Cw=;
+        b=mLUd5fjj103gLox+h33g6auHhKe0E8cBEIDC/GBbbPXbu6ORH9whK4Ip1Zuhr0/JZI
+         QmkZ6dxW4n8sx9bVrHclS7hsHYHGVPq59VyFi+GaYLQWa/JJ76yRG9YfV0RmheJzOdq2
+         bC4xL+h3E01xdN/UorS4BK4RarYkJmhIH6iudOokZ9PZkolkh1er8/0V9I28p+EVBHMI
+         oFHmwFgrrz0wtrZArE5Y3/3H2yy99GtGCa7rr9vYkhdZYEz5QQz40L2prWTCY9YpG4eV
+         MWp9a9lYkC4/fmDfGhhsBHlLPGEupoaKiu3Nmi26in/agJvogt+2KXxFdbUUY0vRZr+o
+         DCnw==
+X-Gm-Message-State: AOAM53237WR97s5wX0cgiJef3eZFI1BfQNQQKkhVZHKF7jaL8jWNp4Or
+        Iq/jSCD8wTusMnCF3Kj2Asxtf5KbJjQ=
+X-Google-Smtp-Source: ABdhPJwyL6R46WRxWnDIfZEHMgiK0bcZUjuux5QdiBW2epiAYbnHUX5h5wXX6tXlXwwrx+N2jIvS0DNsy54=
+X-Received: by 2002:a25:e790:: with SMTP id e138mr11127098ybh.114.1594949734407;
+ Thu, 16 Jul 2020 18:35:34 -0700 (PDT)
+Date:   Fri, 17 Jul 2020 01:35:16 +0000
 In-Reply-To: <20200717013518.59219-1-satyat@google.com>
-Message-Id: <20200717013518.59219-5-satyat@google.com>
+Message-Id: <20200717013518.59219-6-satyat@google.com>
 Mime-Version: 1.0
 References: <20200717013518.59219-1-satyat@google.com>
 X-Mailer: git-send-email 2.28.0.rc0.105.gf9edc3c819-goog
-Subject: [PATCH v2 4/7] ext4: support direct I/O with fscrypt using blk-crypto
+Subject: [PATCH v2 5/7] f2fs: support direct I/O with fscrypt using blk-crypto
 From:   Satya Tangirala <satyat@google.com>
 To:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org
@@ -63,7 +63,7 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Wire up ext4 with fscrypt direct I/O support. direct I/O with fscrypt is
+Wire up f2fs with fscrypt direct I/O support. direct I/O with fscrypt is
 only supported through blk-crypto (i.e. CONFIG_BLK_INLINE_ENCRYPTION must
 have been enabled, the 'inlinecrypt' mount option must have been specified,
 and either hardware inline encryption support must be present or
@@ -76,45 +76,26 @@ Signed-off-by: Eric Biggers <ebiggers@google.com>
 Co-developed-by: Satya Tangirala <satyat@google.com>
 Signed-off-by: Satya Tangirala <satyat@google.com>
 ---
- fs/ext4/file.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ fs/f2fs/f2fs.h | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-index 2a01e31a032c..d534f72675d9 100644
---- a/fs/ext4/file.c
-+++ b/fs/ext4/file.c
-@@ -36,9 +36,11 @@
- #include "acl.h"
- #include "truncate.h"
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index b35a50f4953c..978130b5a195 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -4082,7 +4082,11 @@ static inline bool f2fs_force_buffered_io(struct inode *inode,
+ 	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+ 	int rw = iov_iter_rw(iter);
  
--static bool ext4_dio_supported(struct inode *inode)
-+static bool ext4_dio_supported(struct kiocb *iocb, struct iov_iter *iter)
- {
--	if (IS_ENABLED(CONFIG_FS_ENCRYPTION) && IS_ENCRYPTED(inode))
-+	struct inode *inode = file_inode(iocb->ki_filp);
-+
+-	if (f2fs_post_read_required(inode))
 +	if (!fscrypt_dio_supported(iocb, iter))
- 		return false;
- 	if (fsverity_active(inode))
- 		return false;
-@@ -61,7 +63,7 @@ static ssize_t ext4_dio_read_iter(struct kiocb *iocb, struct iov_iter *to)
- 		inode_lock_shared(inode);
- 	}
- 
--	if (!ext4_dio_supported(inode)) {
-+	if (!ext4_dio_supported(iocb, to)) {
- 		inode_unlock_shared(inode);
- 		/*
- 		 * Fallback to buffered I/O if the operation being performed on
-@@ -490,7 +492,7 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 	}
- 
- 	/* Fallback to buffered I/O if the inode does not support direct I/O. */
--	if (!ext4_dio_supported(inode)) {
-+	if (!ext4_dio_supported(iocb, from)) {
- 		if (ilock_shared)
- 			inode_unlock_shared(inode);
- 		else
++		return true;
++	if (fsverity_active(inode))
++		return true;
++	if (f2fs_compressed_file(inode))
+ 		return true;
+ 	if (f2fs_is_multi_device(sbi))
+ 		return true;
 -- 
 2.28.0.rc0.105.gf9edc3c819-goog
 
