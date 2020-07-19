@@ -2,78 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A11422742E
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jul 2020 02:56:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1387E22752B
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jul 2020 04:00:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728061AbgGUA4E (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 20 Jul 2020 20:56:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52954 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726390AbgGUA4E (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 20 Jul 2020 20:56:04 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BCA0C2080D;
-        Tue, 21 Jul 2020 00:56:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595292963;
-        bh=dljJpfGPFFNj0wv4WYv/v3SWoi1fAf+MTy7pRYnyY7Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ejU8ZkFJrLiVoGTmDI5vINlnpExbViy7d42Uic8QH7oIDcehBxc7Xjc7fPHoEdxnp
-         zFQ8luDXtsqZ6dhgmGuNI1zE295r46BjEni3RQj/MX42KOpQE0ENNWACO4S8D3mPN8
-         N093bypT+wf9P/NEFxk1k2jmPoWzo0dvJXrS3+7c=
-Date:   Mon, 20 Jul 2020 17:56:02 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v4 0/7] add support for direct I/O with fscrypt using
- blk-crypto
-Message-ID: <20200721005602.GE7464@sol.localdomain>
-References: <20200720233739.824943-1-satyat@google.com>
+        id S1728346AbgGUCA3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 20 Jul 2020 22:00:29 -0400
+Received: from [211.196.21.11] ([211.196.21.11]:53116 "EHLO
+        iscure03.localdomain" rhost-flags-FAIL-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728153AbgGUCA0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 20 Jul 2020 22:00:26 -0400
+Received: from Shop01 (unknown [127.0.0.1])
+        by iscure03.localdomain (Postfix) with SMTP id 061772AE13B;
+        Mon, 20 Jul 2020 12:16:00 +0900 (KST)
+Received: from [229.141.241.102] by Shop01 id ud7dU1XDA1r0; Sun, 19 Jul 2020 12:13:41 -0400
+Message-ID: <p$j$$juj73lb2-kt@3ud.erf.a.16r>
+From:   "MOORE GATES LTD" <TEXT@TEXT.COM>
+Reply-To: "MOORE GATES LTD" <TEXT@TEXT.COM>
+To:     ling_1111@hotmail.com
+Subject: FROM MR. MOORE
+Date:   Sun, 19 Jul 20 12:13:41 GMT
+X-Mailer: eGroups Message Poster
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200720233739.824943-1-satyat@google.com>
+Content-Type: multipart/alternative;
+        boundary="D9F2D5A2__"
+X-Priority: 1
+X-MSMail-Priority: High
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 11:37:32PM +0000, Satya Tangirala wrote:
-> This patch series adds support for direct I/O with fscrypt using
-> blk-crypto. It has been rebased on fscrypt/master.
-> 
-> Patch 1 adds two functions to fscrypt that need to be called to determine
-> if direct I/O is supported for a request.
-> 
-> Patches 2 and 3 wire up direct-io and iomap respectively with the functions
-> introduced in Patch 1 and set bio crypt contexts on bios when appropriate
-> by calling into fscrypt.
-> 
-> Patches 4 and 5 allow ext4 and f2fs direct I/O to support fscrypt without
-> falling back to buffered I/O.
-> 
-> Patches 6 and 7 update the fscrypt documentation for inline encryption
-> support and direct I/O. The documentation now notes the required conditions
-> for inline encryption and direct I/O on encrypted files.
-> 
-> This patch series was tested by running xfstests with test_dummy_encryption
-> with and without the 'inlinecrypt' mount option, and there were no
-> meaningful regressions. One regression was for generic/587 on ext4,
-> but that test isn't compatible with test_dummy_encryption in the first
-> place, and the test "incorrectly" passes without the 'inlinecrypt' mount
-> option - a patch will be sent out to exclude that test when
-> test_dummy_encryption is turned on with ext4 (like the other quota related
-> tests that use user visible quota files). The other regression was for
-> generic/252 on ext4, which does direct I/O with a buffer aligned to the
-> block device's blocksize, but not necessarily aligned to the filesystem's
-> block size, which direct I/O with fscrypt requires.
-> 
 
-This patch series looks good to me now.  Can the ext4, f2fs, and iomap
-maintainers take a look?
+--D9F2D5A2__
+Content-Type: text/plain;
+Content-Transfer-Encoding: quoted-printable
 
-- Eric
+Dear Beloved,
+Peace of the Lord be with you and family, I am Fitzpatrick Moore a
+United Kingdom Citizen, I have ($ 25M) Twenty five Million united
+states dollars with a finance House in United State. I will want you
+to help me collect this deposit and dispatch it to charity
+organizations. You will take out 30% of these funds for your
+assistance to help ME disburse this fund to charities. I will like you
+to acknowledge the receipt of this e-mail as soon as possible and
+treats with absolute confidentiality and sincerity. Please reply to my
+Email: (moorefitzpatrick@gmail.com)
+Yours Sincerely,
+Fitzpatrick Moore
+
+--D9F2D5A2__--
+
