@@ -2,66 +2,91 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B722E227B98
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jul 2020 11:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCD47227D28
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jul 2020 12:36:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727073AbgGUJUl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 21 Jul 2020 05:20:41 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:54199 "EHLO
+        id S1726657AbgGUKgj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 21 Jul 2020 06:36:39 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:51088 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726928AbgGUJUl (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 21 Jul 2020 05:20:41 -0400
+        with ESMTP id S1726127AbgGUKgj (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 21 Jul 2020 06:36:39 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595323240;
+        s=mimecast20190719; t=1595327798;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=sv/ghfSihcC/k9xUblGJxCJ7j0PN54embSTEUAu3/S0=;
-        b=HqAN4IVTxZt9P2v9MVAuwM3pxy4WYOseuTo1iWnVhNiQdQKakwZeqEzdzcqIzFb2Ge2PBT
-        hxxvDjMTJrO3uXEAQFsP77E6YjI2JVzOG+az/V15rTiJnq1gxTQmhWaxgTS8yN/oKVGC6D
-        t7tC5dD6Eb5xaIuqVa2CpcHeCIN9aIA=
+        bh=8wNLTyq4CpvRxfwpZ7DWeVCxVXN2jeU61gKBPmKrIpo=;
+        b=CSxTGIBDV+PVIBS6G/KzA1rH4FmYzpV22ub5VdZmZdzfDB5VSmPxAMZPNhWdb+qbZ0Hkn6
+        udPACqQpviYaloOD+Kyzw/v1CqjjqJbGgkt96Q+ZWwyFRPn7c8dnqBAfd+YSwQwE/4XPay
+        +3bFWV9i6NJGte1766zp2acOUNhAIvs=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-127-4NRH_XbaNTiDiAr1ERaFwg-1; Tue, 21 Jul 2020 05:20:38 -0400
-X-MC-Unique: 4NRH_XbaNTiDiAr1ERaFwg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+ us-mta-361-sXosijhgPfCD6Z-EO_SBTA-1; Tue, 21 Jul 2020 06:36:35 -0400
+X-MC-Unique: sXosijhgPfCD6Z-EO_SBTA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 061C619067E0;
-        Tue, 21 Jul 2020 09:20:37 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-32.rdu2.redhat.com [10.10.112.32])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D6A555D9CA;
-        Tue, 21 Jul 2020 09:20:35 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20200422161242.GD6733@magnolia>
-References: <20200422161242.GD6733@magnolia> <20200401151837.GB56931@magnolia> <2461554.1585726747@warthog.procyon.org.uk> <2504712.1587485842@warthog.procyon.org.uk> <BFC9114B-7D3D-4B8F-A8BB-75C2770EE36D@dilger.ca>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     dhowells@redhat.com, Andreas Dilger <adilger@dilger.ca>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>
-Subject: Re: Exporting ext4-specific information through fsinfo attributes
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 40376100AA23;
+        Tue, 21 Jul 2020 10:36:34 +0000 (UTC)
+Received: from work (unknown [10.40.193.213])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4A97B6FECD;
+        Tue, 21 Jul 2020 10:36:31 +0000 (UTC)
+Date:   Tue, 21 Jul 2020 12:36:28 +0200
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        Wolfgang Frisch <wolfgang.frisch@suse.com>
+Subject: Re: [PATCH 1/4] ext4: Handle error of ext4_setup_system_zone() on
+ remount
+Message-ID: <20200721101802.e6xl2oewirqmxcjr@work>
+References: <20200715131812.7243-1-jack@suse.cz>
+ <20200715131812.7243-2-jack@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <533171.1595323235.1@warthog.procyon.org.uk>
-Date:   Tue, 21 Jul 2020 10:20:35 +0100
-Message-ID: <533172.1595323235@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200715131812.7243-2-jack@suse.cz>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Darrick J. Wong <darrick.wong@oracle.com> wrote:
+On Wed, Jul 15, 2020 at 03:18:09PM +0200, Jan Kara wrote:
+> ext4_setup_system_zone() can fail. Handle the failure in ext4_remount().
+> 
+> Signed-off-by: Jan Kara <jack@suse.cz>
+> ---
+>  fs/ext4/super.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 330957ed1f05..8e055ec57a2c 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -5653,7 +5653,10 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
+>  		ext4_register_li_request(sb, first_not_zeroed);
+>  	}
+>  
+> -	ext4_setup_system_zone(sb);
+> +	err = ext4_setup_system_zone(sb);
+> +	if (err)
+> +		goto restore_opts;
+> +
 
-> The other properties look fine (in principle) to me though. :)
+Thanks Jan, this looks good. But while you're at it, ext4_remount is
+missing ext4_release_system_zone() and so it we want to enable block_validity
+on remount and it fails after ext4_setup_system_zone() we wont release
+it. This *I think* means that we would end up with block_validity
+enabled without user knowing about it ?
 
-Can I put that down as a reviewed-by?
+-Lukas
 
-Thanks,
-David
+>  	if (sbi->s_journal == NULL && !(old_sb_flags & SB_RDONLY)) {
+>  		err = ext4_commit_super(sb, 1);
+>  		if (err)
+> -- 
+> 2.16.4
+> 
 
