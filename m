@@ -2,90 +2,133 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD47227D28
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jul 2020 12:36:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A9EF227D2A
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jul 2020 12:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726657AbgGUKgj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 21 Jul 2020 06:36:39 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:51088 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726127AbgGUKgj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 21 Jul 2020 06:36:39 -0400
+        id S1727043AbgGUKhM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 21 Jul 2020 06:37:12 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:37535 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726084AbgGUKhM (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 21 Jul 2020 06:37:12 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595327798;
+        s=mimecast20190719; t=1595327830;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=8wNLTyq4CpvRxfwpZ7DWeVCxVXN2jeU61gKBPmKrIpo=;
-        b=CSxTGIBDV+PVIBS6G/KzA1rH4FmYzpV22ub5VdZmZdzfDB5VSmPxAMZPNhWdb+qbZ0Hkn6
-        udPACqQpviYaloOD+Kyzw/v1CqjjqJbGgkt96Q+ZWwyFRPn7c8dnqBAfd+YSwQwE/4XPay
-        +3bFWV9i6NJGte1766zp2acOUNhAIvs=
+        bh=QR2hCphuvwAGaWepx5vffd7yvUYpdlXoSQP8Q2CvwL8=;
+        b=S9vDU+Kcl7Um/bBZoM1nf6OMYn/alIeZ8hoWdpeq6GC2AbiRmceD0Egxq2MXzBskdJONxQ
+        Foi0RbNcz4S0Rgw6T1zMrnoDt40cc+TUxAIoIJ+LNT9L+G/b4Sxz3KM/UtzA9nz2fQYG2H
+        Onhzn+DjT29e8LR4hkcbzS6Zmm71UT0=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-361-sXosijhgPfCD6Z-EO_SBTA-1; Tue, 21 Jul 2020 06:36:35 -0400
-X-MC-Unique: sXosijhgPfCD6Z-EO_SBTA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+ us-mta-480-evUVTeHxMCC0uE5MUqcORg-1; Tue, 21 Jul 2020 06:37:06 -0400
+X-MC-Unique: evUVTeHxMCC0uE5MUqcORg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 40376100AA23;
-        Tue, 21 Jul 2020 10:36:34 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 48F0E100AA25;
+        Tue, 21 Jul 2020 10:37:05 +0000 (UTC)
 Received: from work (unknown [10.40.193.213])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4A97B6FECD;
-        Tue, 21 Jul 2020 10:36:31 +0000 (UTC)
-Date:   Tue, 21 Jul 2020 12:36:28 +0200
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id DE5D67303C;
+        Tue, 21 Jul 2020 10:37:02 +0000 (UTC)
+Date:   Tue, 21 Jul 2020 12:36:59 +0200
 From:   Lukas Czerner <lczerner@redhat.com>
 To:     Jan Kara <jack@suse.cz>
 Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
         Ritesh Harjani <riteshh@linux.ibm.com>,
         Wolfgang Frisch <wolfgang.frisch@suse.com>
-Subject: Re: [PATCH 1/4] ext4: Handle error of ext4_setup_system_zone() on
- remount
-Message-ID: <20200721101802.e6xl2oewirqmxcjr@work>
+Subject: Re: [PATCH 2/4] ext4: Don't allow overlapping system zones
+Message-ID: <20200721103659.je33lyuqubuhkizg@work>
 References: <20200715131812.7243-1-jack@suse.cz>
- <20200715131812.7243-2-jack@suse.cz>
+ <20200715131812.7243-3-jack@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200715131812.7243-2-jack@suse.cz>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20200715131812.7243-3-jack@suse.cz>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jul 15, 2020 at 03:18:09PM +0200, Jan Kara wrote:
-> ext4_setup_system_zone() can fail. Handle the failure in ext4_remount().
+On Wed, Jul 15, 2020 at 03:18:10PM +0200, Jan Kara wrote:
+> Currently, add_system_zone() just silently merges two added system zones
+> that overlap. However the overlap should not happen and it generally
+> suggests that some unrelated metadata overlap which indicates the fs is
+> corrupted. We should have caught such problems earlier (e.g. in
+> ext4_check_descriptors()) but add this check as another line of defense.
+> In later patch we also use this for stricter checking of journal inode
+> extent tree.
+
+Looks good, thanks!
+
+Reviewed-by: Lukas Czerner <lczerner@redhat.com>
+
+
 > 
 > Signed-off-by: Jan Kara <jack@suse.cz>
 > ---
->  fs/ext4/super.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+>  fs/ext4/block_validity.c | 36 +++++++++++++-----------------------
+>  1 file changed, 13 insertions(+), 23 deletions(-)
 > 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 330957ed1f05..8e055ec57a2c 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -5653,7 +5653,10 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
->  		ext4_register_li_request(sb, first_not_zeroed);
+> diff --git a/fs/ext4/block_validity.c b/fs/ext4/block_validity.c
+> index 16e9b2fda03a..b394a50ebbe3 100644
+> --- a/fs/ext4/block_validity.c
+> +++ b/fs/ext4/block_validity.c
+> @@ -68,7 +68,7 @@ static int add_system_zone(struct ext4_system_blocks *system_blks,
+>  			   ext4_fsblk_t start_blk,
+>  			   unsigned int count)
+>  {
+> -	struct ext4_system_zone *new_entry = NULL, *entry;
+> +	struct ext4_system_zone *new_entry, *entry;
+>  	struct rb_node **n = &system_blks->root.rb_node, *node;
+>  	struct rb_node *parent = NULL, *new_node = NULL;
+>  
+> @@ -79,30 +79,20 @@ static int add_system_zone(struct ext4_system_blocks *system_blks,
+>  			n = &(*n)->rb_left;
+>  		else if (start_blk >= (entry->start_blk + entry->count))
+>  			n = &(*n)->rb_right;
+> -		else {
+> -			if (start_blk + count > (entry->start_blk +
+> -						 entry->count))
+> -				entry->count = (start_blk + count -
+> -						entry->start_blk);
+> -			new_node = *n;
+> -			new_entry = rb_entry(new_node, struct ext4_system_zone,
+> -					     node);
+> -			break;
+> -		}
+> +		else	/* Unexpected overlap of system zones. */
+> +			return -EFSCORRUPTED;
 >  	}
 >  
-> -	ext4_setup_system_zone(sb);
-> +	err = ext4_setup_system_zone(sb);
-> +	if (err)
-> +		goto restore_opts;
+> -	if (!new_entry) {
+> -		new_entry = kmem_cache_alloc(ext4_system_zone_cachep,
+> -					     GFP_KERNEL);
+> -		if (!new_entry)
+> -			return -ENOMEM;
+> -		new_entry->start_blk = start_blk;
+> -		new_entry->count = count;
+> -		new_node = &new_entry->node;
+> -
+> -		rb_link_node(new_node, parent, n);
+> -		rb_insert_color(new_node, &system_blks->root);
+> -	}
+> +	new_entry = kmem_cache_alloc(ext4_system_zone_cachep,
+> +				     GFP_KERNEL);
+> +	if (!new_entry)
+> +		return -ENOMEM;
+> +	new_entry->start_blk = start_blk;
+> +	new_entry->count = count;
+> +	new_node = &new_entry->node;
 > +
-
-Thanks Jan, this looks good. But while you're at it, ext4_remount is
-missing ext4_release_system_zone() and so it we want to enable block_validity
-on remount and it fails after ext4_setup_system_zone() we wont release
-it. This *I think* means that we would end up with block_validity
-enabled without user knowing about it ?
-
--Lukas
-
->  	if (sbi->s_journal == NULL && !(old_sb_flags & SB_RDONLY)) {
->  		err = ext4_commit_super(sb, 1);
->  		if (err)
+> +	rb_link_node(new_node, parent, n);
+> +	rb_insert_color(new_node, &system_blks->root);
+>  
+>  	/* Can we merge to the left? */
+>  	node = rb_prev(new_node);
 > -- 
 > 2.16.4
 > 
