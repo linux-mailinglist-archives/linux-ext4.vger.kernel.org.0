@@ -2,92 +2,90 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4E082283D7
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jul 2020 17:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 698C62283F6
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jul 2020 17:38:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728623AbgGUPbl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 21 Jul 2020 11:31:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726654AbgGUPbl (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 21 Jul 2020 11:31:41 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23BD5C061794;
-        Tue, 21 Jul 2020 08:31:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=3+Pp/3FagpQxAvNMEgqYtXBdoVkPujJ1lGmtP9vdIiU=; b=BFZGeujwgBNxHNSd3GsPXLbs2u
-        0whuAeYJh8B7UmJm1CKmOH/uPtfZwcSCjo0xFvKy+Qe0rZXWVTAHVicNwUY6cVJKCd43ia3UsYiQB
-        44rFLiF2gMMCJ/B8w84DXAY4I46N0iYAP4RZ59K0gMxkgINTjQ4K3pRNrGaisthtTKi8t5g8RM3iJ
-        U+YnZbfG7dpY+6j12QMS5pOXVPf3b2+WY+4YAOu6cm/OSO+l31X3wTDzq+rsqa5PRWnfdHE1u3I9+
-        fBK7wZqM2yjOcKdDLDA19hq1B4esBkxg0oUs/1nHdBCKcosscvXRRq/Ib/2CJNa+urQHz5GK9kXhR
-        bHeRqntQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jxuEy-0003u2-6C; Tue, 21 Jul 2020 15:31:36 +0000
-Date:   Tue, 21 Jul 2020 16:31:36 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        Dave Chinner <david@fromorbit.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Johannes Thumshirn <jth@kernel.org>,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        cluster-devel@redhat.com, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        linux-man@vger.kernel.org
-Subject: Re: RFC: iomap write invalidation
-Message-ID: <20200721153136.GJ15516@casper.infradead.org>
-References: <20200713074633.875946-1-hch@lst.de>
- <20200720215125.bfz7geaftocy4r5l@fiona>
- <20200721145313.GA9217@lst.de>
- <20200721150432.GH15516@casper.infradead.org>
- <20200721150615.GA10330@lst.de>
- <20200721151437.GI15516@casper.infradead.org>
- <20200721151616.GA11074@lst.de>
+        id S1728180AbgGUPiL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 21 Jul 2020 11:38:11 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:37408 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726654AbgGUPiL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 21 Jul 2020 11:38:11 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06LFHT9X026895;
+        Tue, 21 Jul 2020 15:38:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=7v7sM4o9BcwAeO/G1v01JNEWMbOxJCGDgnJlpAGJe0E=;
+ b=RasBQHSduKrBzItygh9yavlIQkiGqohuFYkxumA0z887ZPRe1ZiBIExUPb8geQdaLYHE
+ 9l7xmDAMbi7hjabkZgZb2nmjogSYm6TS6fgY+C0nynW3NGEHd70Ws8Tii1+iMhtOp3oa
+ px/fwdmNtDllYZ1LhiW4oIUFB3QOpgAzOM2IReDAOk5F/KpsovYtOdixZxu1KnNxdOzc
+ uZtki3VDpX2/xWB2aJKq5u8nZGkw7u48cgg/Pd4/bs7vLQHkOZjzPV4DcrV/i4i7K+yQ
+ KUQ0RP+aQERDtr8CEvdfnYZS677piKzVAYh+0qPzY52jzbtskJo1nYGFAMrG9x6UFZux 6g== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 32d6ksj846-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 21 Jul 2020 15:38:04 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06LFMwiE043957;
+        Tue, 21 Jul 2020 15:38:03 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 32dyj64q62-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 21 Jul 2020 15:38:03 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06LFc0Gm032687;
+        Tue, 21 Jul 2020 15:38:00 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 21 Jul 2020 08:38:00 -0700
+Date:   Tue, 21 Jul 2020 08:37:59 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Andreas Dilger <adilger@dilger.ca>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+Subject: Re: Exporting ext4-specific information through fsinfo attributes
+Message-ID: <20200721153759.GC848607@magnolia>
+References: <20200422161242.GD6733@magnolia>
+ <20200401151837.GB56931@magnolia>
+ <2461554.1585726747@warthog.procyon.org.uk>
+ <2504712.1587485842@warthog.procyon.org.uk>
+ <BFC9114B-7D3D-4B8F-A8BB-75C2770EE36D@dilger.ca>
+ <533172.1595323235@warthog.procyon.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200721151616.GA11074@lst.de>
+In-Reply-To: <533172.1595323235@warthog.procyon.org.uk>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9689 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 suspectscore=1
+ mlxscore=0 mlxlogscore=999 phishscore=0 bulkscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007210111
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9689 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=1
+ bulkscore=0 mlxscore=0 mlxlogscore=999 impostorscore=0 priorityscore=1501
+ lowpriorityscore=0 phishscore=0 spamscore=0 adultscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007210111
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 05:16:16PM +0200, Christoph Hellwig wrote:
-> On Tue, Jul 21, 2020 at 04:14:37PM +0100, Matthew Wilcox wrote:
-> > On Tue, Jul 21, 2020 at 05:06:15PM +0200, Christoph Hellwig wrote:
-> > > On Tue, Jul 21, 2020 at 04:04:32PM +0100, Matthew Wilcox wrote:
-> > > > I thought you were going to respin this with EREMCHG changed to ENOTBLK?
-> > > 
-> > > Oh, true.  I'll do that ASAP.
-> > 
-> > Michael, could we add this to manpages?
+On Tue, Jul 21, 2020 at 10:20:35AM +0100, David Howells wrote:
+> Darrick J. Wong <darrick.wong@oracle.com> wrote:
 > 
-> Umm, no.  -ENOTBLK is internal - the file systems will retry using
-> buffered I/O and the error shall never escape to userspace (or even the
-> VFS for that matter).
+> > The other properties look fine (in principle) to me though. :)
+> 
+> Can I put that down as a reviewed-by?
 
-Ah, I made the mistake of believing the comments that I could see in
-your patch instead of reading the code.
+Hang on, let me take a second look and do a real review. :)
 
-Can I suggest deleting this comment:
+--D
 
-        /*
-         * No fallback to buffered IO on errors for XFS, direct IO will either
-         * complete fully or fail.
-         */
-
-and rewording this one:
-
-                /*
-                 * Allow a directio write to fall back to a buffered
-                 * write *only* in the case that we're doing a reflink
-                 * CoW.  In all other directio scenarios we do not
-                 * allow an operation to fall back to buffered mode.
-                 */
-
-as part of your revised patchset?
+> Thanks,
+> David
+> 
