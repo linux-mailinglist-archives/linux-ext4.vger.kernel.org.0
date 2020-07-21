@@ -2,110 +2,90 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25C9F2284D3
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jul 2020 18:06:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EDBA228803
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jul 2020 20:11:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730190AbgGUQGJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 21 Jul 2020 12:06:09 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:52130 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729094AbgGUQGJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 21 Jul 2020 12:06:09 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06LG3SUe077647;
-        Tue, 21 Jul 2020 16:05:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=a7wjNPBX2VLwbGesoL6VTOkK6uEZ/3z/Ep3iy3hAJVE=;
- b=VUBjEX1Cb89azRfaE3KbHUUU97n75z1WMfoYZp/DbnK3PV+9qzitcv8lHl2/G6fqBI7s
- IxU1tTnUGxLuJN7Omi1t6JLOk9fbOEekBiO6fKxlWB7ZRo6TUSqHD7ZPHLVpiQfLdT72
- F4/NHGZuypLDlTw6FFjrkkx6WY7tqxQNKoQWuZKl6fENTktbPLoMfZXNXS1dgiMhKWqh
- tqdiwcTiumSNDuHSzA6kEF8t/h8HA4tzB5g0pvJQdpUhz9UEcMsXCQvj/2rrsBWTNDqH
- uUOt+4BlArHi5n+pmYQn3Aez/GHwOtSw+k/fPcffQLpBR8B1VxOcelHC0Hska7zYtgdz DA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 32d6ksjdcu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 21 Jul 2020 16:05:46 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06LG4A4i054834;
-        Tue, 21 Jul 2020 16:05:46 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 32e3j403mk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 21 Jul 2020 16:05:46 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06LG5iAF015966;
-        Tue, 21 Jul 2020 16:05:44 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 21 Jul 2020 16:05:44 +0000
-Date:   Tue, 21 Jul 2020 09:05:42 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        Dave Chinner <david@fromorbit.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Johannes Thumshirn <jth@kernel.org>,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        cluster-devel@redhat.com, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        linux-man@vger.kernel.org
-Subject: Re: RFC: iomap write invalidation
-Message-ID: <20200721160542.GD3151642@magnolia>
-References: <20200720215125.bfz7geaftocy4r5l@fiona>
- <20200721145313.GA9217@lst.de>
- <20200721150432.GH15516@casper.infradead.org>
- <20200721150615.GA10330@lst.de>
- <20200721151437.GI15516@casper.infradead.org>
- <20200721151616.GA11074@lst.de>
- <20200721152754.GD7597@magnolia>
- <20200721154132.GA11652@lst.de>
- <20200721155925.GB3151642@magnolia>
- <20200721160143.GA12046@lst.de>
+        id S1726943AbgGUSLh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 21 Jul 2020 14:11:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46760 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726029AbgGUSLg (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 21 Jul 2020 14:11:36 -0400
+Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 91CAF20720;
+        Tue, 21 Jul 2020 18:11:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595355095;
+        bh=8PmokV2OOLmhOJcGzxltydoC6SNc4ybchJ4kJJykcWM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=kO4W9ZhKEjO67C15PxdhGd0mkQ4ex6CD4DjfWXWPsgSgIbHe4fJG7yGUMOTdvC5lF
+         XsRirzo70YHXKkubXVARHQf+brNyq9xgFikJwXiEGCVZ4/C0mB1EIZl9kk4HqOYB9/
+         3SVtABIpfYg/BronmpYSvNUciJR0vU/pTxWHv9eM=
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        Paul Crowley <paulcrowley@google.com>,
+        Satya Tangirala <satyat@google.com>
+Subject: [PATCH] fscrypt: restrict IV_INO_LBLK_* to AES-256-XTS
+Date:   Tue, 21 Jul 2020 11:10:12 -0700
+Message-Id: <20200721181012.39308-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200721160143.GA12046@lst.de>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9689 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=1
- mlxlogscore=999 phishscore=0 mlxscore=0 adultscore=0 bulkscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007210113
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9689 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=1
- bulkscore=0 mlxscore=0 mlxlogscore=999 impostorscore=0 priorityscore=1501
- lowpriorityscore=0 phishscore=0 spamscore=0 adultscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007210113
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 06:01:43PM +0200, Christoph Hellwig wrote:
-> On Tue, Jul 21, 2020 at 08:59:25AM -0700, Darrick J. Wong wrote:
-> > In the comment that precedes iomap_dio_rw() for the iomap version,
-> 
-> maybe let's just do that..
-> 
-> > ``direct_IO``
-> > 	called by the generic read/write routines to perform direct_IO -
-> > 	that is IO requests which bypass the page cache and transfer
-> > 	data directly between the storage and the application's address
-> > 	space.  This function can return -ENOTBLK to signal that it is
-> > 	necessary to fallback to buffered IO.  Note that
-> > 	blockdev_direct_IO and variants can also return -ENOTBLK.
-> 
-> ->direct_IO is not used for iomap and various other implementations.
-> In fact it is a horrible hack that I've been trying to get rid of
-> for a while.
+From: Eric Biggers <ebiggers@google.com>
 
-Agreed, but for now there are still a number of fses who are still on
-the old directio code; let's try to keep the drainbamage/confusion
-potential to a minimum so it doesn't spread to our iomap shinyness. :)
+IV_INO_LBLK_* exist only because of hardware limitations, and currently
+the only known use case for them involves AES-256-XTS.  Therefore, for
+now only allow them in combination with AES-256-XTS.  This way we don't
+have to worry about them being combined with other encryption modes.
 
---D
+(To be clear, combining IV_INO_LBLK_* with other encryption modes
+*should* work just fine.  It's just not being tested, so we can't be
+100% sure it works.  So with no known use case, it's best to disallow it
+for now, just like we don't allow other weird combinations like
+AES-256-XTS contents encryption with Adiantum filenames encryption.)
+
+This can be relaxed later if a use case for other combinations arises.
+
+Fixes: b103fb7653ff ("fscrypt: add support for IV_INO_LBLK_64 policies")
+Fixes: e3b1078bedd3 ("fscrypt: add support for IV_INO_LBLK_32 policies")
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ fs/crypto/policy.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
+index 8a8ad0e44bb8..8e667aadf271 100644
+--- a/fs/crypto/policy.c
++++ b/fs/crypto/policy.c
+@@ -77,6 +77,20 @@ static bool supported_iv_ino_lblk_policy(const struct fscrypt_policy_v2 *policy,
+ 	struct super_block *sb = inode->i_sb;
+ 	int ino_bits = 64, lblk_bits = 64;
+ 
++	/*
++	 * IV_INO_LBLK_* exist only because of hardware limitations, and
++	 * currently the only known use case for them involves AES-256-XTS.
++	 * That's also all we test currently.  For these reasons, for now only
++	 * allow AES-256-XTS here.  This can be relaxed later if a use case for
++	 * IV_INO_LBLK_* with other encryption modes arises.
++	 */
++	if (policy->contents_encryption_mode != FSCRYPT_MODE_AES_256_XTS) {
++		fscrypt_warn(inode,
++			     "Can't use %s policy with contents mode other than AES-256-XTS",
++			     type);
++		return false;
++	}
++
+ 	/*
+ 	 * It's unsafe to include inode numbers in the IVs if the filesystem can
+ 	 * potentially renumber inodes, e.g. via filesystem shrinking.
+-- 
+2.27.0
+
