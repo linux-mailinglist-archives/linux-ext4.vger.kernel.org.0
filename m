@@ -2,187 +2,206 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 832F222884A
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jul 2020 20:32:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2751322887B
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jul 2020 20:45:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730229AbgGUScP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 21 Jul 2020 14:32:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35784 "EHLO
+        id S1730128AbgGUSpT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 21 Jul 2020 14:45:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728577AbgGUScJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 21 Jul 2020 14:32:09 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D6E2C0619DC;
-        Tue, 21 Jul 2020 11:32:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=g1iU+g80X5NheLUj70Usw4wskv5FEEX9gbzjsPxiIG4=; b=YCrFq48BOZ+ZpLcUDlo3t/YS22
-        VhEtv/+6o60MkrpDfnDvCDmuIgcTTmA3psW4K9+lrJx8V7zgFmwewa5YW7a5s5uHA1ClLqUQiAi7D
-        4de1hqXxmVp6bDFwPv41ymH535PNS/2X7qMjalJyNwk8tZsHgdRY/btyGm/82XKa/7fj73Rr/SKwd
-        4mdb7PBCiAPtzyLbtQiwXwcHixdWI+/XaWgshBP/Yw3OaNe/3W6dx2etX7gQWy9OABLtTvqnwpOx9
-        fyjZUFBtLmEx6f9NNMRipziu+ngzNFBtpeAY+ULvC1stSgszyjhvqo+jsP9jCkktH04Wordcp6JvY
-        E3hctjfw==;
-Received: from [2001:4bb8:18c:2acc:5b1c:6483:bd6d:e406] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jxx3c-00062e-DZ; Tue, 21 Jul 2020 18:32:05 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Dave Chinner <david@fromorbit.com>,
-        Goldwyn Rodrigues <rgoldwyn@suse.de>
-Cc:     Damien Le Moal <damien.lemoal@wdc.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Johannes Thumshirn <jth@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        cluster-devel@redhat.com, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, Dave Chinner <dchinner@redhat.com>,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: [PATCH 3/3] iomap: fall back to buffered writes for invalidation failures
-Date:   Tue, 21 Jul 2020 20:31:57 +0200
-Message-Id: <20200721183157.202276-4-hch@lst.de>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200721183157.202276-1-hch@lst.de>
-References: <20200721183157.202276-1-hch@lst.de>
+        with ESMTP id S1726602AbgGUSpS (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 21 Jul 2020 14:45:18 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 075F3C061794
+        for <linux-ext4@vger.kernel.org>; Tue, 21 Jul 2020 11:45:18 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id s189so12333539pgc.13
+        for <linux-ext4@vger.kernel.org>; Tue, 21 Jul 2020 11:45:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8F0I47SalSu7tWceHPLl8k2zKpbw4YBTOmjye/4dLdU=;
+        b=tDnGbeQOxePZ7EmwjkJUHNCZ9bMZ5z+QOYyOOwzPEtIqqV39mTYCFAL7F7clljnATJ
+         FyZ4VvLCsqf2RHKSiOncCYXkHxPuVEfCfXB+hrXw9lJIadh9jCZ4goMslmgfR/LFOTc3
+         eyZsYR+tTT1cTEKiZg4GkUnkuWp75pn7U6r+NJBnGVhlIm12/0YADf1pSXldRlnB4ebN
+         /YRCMcMGFLgoAXowBYDI2tf42iFGJHaN8sDP0uaUM9AW8iyRjfFSyWX7ichc2IpEwqtX
+         YKBWpypny1zFMV/J4ix5T89Pz1U76keuPvlvH/yfrXmXaHd9Jm5cCNsYhrAgicsEKtVW
+         +j7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8F0I47SalSu7tWceHPLl8k2zKpbw4YBTOmjye/4dLdU=;
+        b=c7G3mMdP1d401ANjYtfLR9BTkfBL5r/nhb2uqDCou0SIuBivMLPJERVFhb6Z8MjLFE
+         n8x2W7AkJS3TGp2VfA+xCfmoqzVKMqRL0wJGId9qApHYilNMiulxAF3jQJRhjCJEltiM
+         vAU1j+YVKR44B5l0N1mL7d5QD5wmVVoZHESVG+RxMpdYs9sC26fkTwDhWBD35BVOiz6a
+         kvEaiNWzi9SKlg1WWbD0MRrujd99222mglW2AHwu0TDYyCevaeE05Sgn8k5jBHXZGPNz
+         FzcQHs/eO1PTS1V40ADv0LgDj6kBr0Zv93ANVh0gw3hajpdslO5ebmN3XXjf5a65/pHl
+         EoZA==
+X-Gm-Message-State: AOAM532RtUjessF1OslplD7lS6NxcDkVFDmAiaNWSplZQBYGj4AKWdTU
+        zdkhH5fS5sE+Yc48UbPm5Dcx2GxB
+X-Google-Smtp-Source: ABdhPJwXqjbRfybV4P1W/pAHK3vB5WTgWVykyMU5uij53PPFvaKjJ3ar3tgq0dCz3XQZNRYogepfYA==
+X-Received: by 2002:a63:338c:: with SMTP id z134mr23163147pgz.245.1595357116787;
+        Tue, 21 Jul 2020 11:45:16 -0700 (PDT)
+Received: from harshads-520.kir.corp.google.com ([2620:15c:17:10:a6ae:11ff:fe11:86a2])
+        by smtp.googlemail.com with ESMTPSA id b13sm4179890pjl.7.2020.07.21.11.45.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Jul 2020 11:45:15 -0700 (PDT)
+From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Subject: [PATCH v8 0/7] ext4: add fast commits feature
+Date:   Tue, 21 Jul 2020 11:43:48 -0700
+Message-Id: <20200721184355.1616986-1-harshadshirwadkar@gmail.com>
+X-Mailer: git-send-email 2.28.0.rc0.105.gf9edc3c819-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Failing to invalid the page cache means data in incoherent, which is
-a very bad state for the system.  Always fall back to buffered I/O
-through the page cache if we can't invalidate mappings.
+This patch series adds support for fast commits which is a simplified
+version of the scheme proposed by Park and Shin, in their paper,
+"iJournaling: Fine-Grained Journaling for Improving the Latency of
+Fsync System Call"[1]. The basic idea of fast commits is to make JBD2
+give the client file system an opportunity to perform a faster
+commit. Only if the file system cannot perform such a commit
+operation, then JBD2 should fall back to traditional commits.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Acked-by: Dave Chinner <dchinner@redhat.com>
-Reviewed-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+Because JBD2 operates at block granularity, for every file system
+metadata update it commits all the changed blocks are written to the
+journal at commit time. This is inefficient because updates to some
+blocks that JBD2 commits are derivable from some other blocks. For
+example, if a new extent is added to an inode, then corresponding
+updates to the inode table, the block bitmap, the group descriptor and
+the superblock can be derived based on just the extent information and
+the corresponding inode information. So, if we take this relationship
+between blocks into account and replay the journalled blocks smartly,
+we could increase performance of file system commits significantly.
+
+Fast commits introduced in this patch have two main contributions:
+
+(1) Making JBD2 fast commit aware, so that clients of JBD2 can
+    implement fast commits
+
+(2) Add support in ext4 to use JBD2's new interfaces and implement
+    fast commits
+
+Fast commit operation
+---------------------
+
+The new fast commit operation works by tracking file system deltas
+since last commit in memory and committing these deltas to disk during
+fsync(). Ext4 maintains directory entry updates in an in-memory
+queue. Also, the inodes that have changed since last commit are
+maintained in an in-memory queue. These queues are flushed to disk
+during the commit time in a log-structured way. Fast commit area is
+organized as a log of TAG-LENGTH-VALUE tuples with a special "tail"
+tag marking the end of a commit. If certain operation prevents fast
+commit from happening, the commit code falls back to JBD2 full commit
+operation and thus invalidating all the fast commits since last full
+commit. JBD2 provides new jbd2_fc_start() and jbd2_fc_stop() functions
+to co-ordinate between JBD2's full commits and client file system's
+fast commits.
+
+Recovery operation
+------------------
+
+During recovery, JBD2 lets the client file system handle fast commit
+blocks as it wants. After performing transaction replay, JBD2 invokes
+client file system's recovery path handler. During the scan phase,
+Ext4's recovery path handler determines the validity of fast commit
+log by making sure CRC and TID of fast commits are valid. During the
+replay phase, the recovery handler replays tags one by one. These
+replay handlers are idempotent. Thus, if we crash in the middle of
+recovery, Ext4 can restart the log replay and reach the identical
+final state.
+
+Testing
+-------
+
+e2fsprogs was updated to set fast commit feature flag and to ignore
+fast commit blocks during e2fsck.
+
+https://github.com/harshadjs/e2fsprogs.git
+
+No regressions were introduced in smoke tests.
+
+Performance Evaluation
+----------------------
+
+Ext4 performance was compared with and without fast commits using
+fsmark, dbench and filebench benchmarks with local file system and
+over NFS. This is the summary of results:
+
+|-----------+-------------------+----------------+----------------+------------|
+| Benchmark | Config            | No FC          | FC             | % increase |
+|-----------+-------------------+----------------+----------------+------------|
+| Fsmark    | Local, 8 threads  | 1475.1 files/s | 4309.8 files/s |      192.2 |
+| Fsmark    | NFS, 4 threads    | 299.4 files/s  | 409.45 files/s |       36.8 |
+|-----------+-------------------+----------------+----------------+------------|
+| Dbench    | Local, 2 procs    | 33.32 MB/s     | 70.87 MB/s     |      112.7 |
+| Dbench    | NFS, 2 procs      | 8.84 MB/s      | 11.88 MB/s     |       34.4 |
+|-----------+-------------------+----------------+----------------+------------|
+| Dbench    | Local, 10 procs   | 90.48 MB/s     | 110.12 MB/s    |       21.7 |
+| Dbench    | NFS, 10 procs     | 34.62 MB/s     | 52.83 MB/s     |       52.6 |
+|-----------+-------------------+----------------+----------------+------------|
+| FileBench | Local, 16 threads | 10442.3 ops/s  | 18617.8 ops/s  |       78.3 |
+|           | (Varmail)         |                |                |            |
+| FileBench | NFS, 16 threads   | 1531.3 ops/s   | 2681.5 ops/s   |       75.1 |
+|           | (Varmail)         |                |                |            |
+|-----------+-------------------+----------------+----------------+------------|
+
+Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 ---
- fs/ext4/file.c       |  2 ++
- fs/gfs2/file.c       |  3 ++-
- fs/iomap/direct-io.c | 16 +++++++++++-----
- fs/iomap/trace.h     |  1 +
- fs/xfs/xfs_file.c    |  4 ++--
- fs/zonefs/super.c    |  7 +++++--
- 6 files changed, 23 insertions(+), 10 deletions(-)
 
-diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-index 2a01e31a032c4c..129cc1dd6b7952 100644
---- a/fs/ext4/file.c
-+++ b/fs/ext4/file.c
-@@ -544,6 +544,8 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 		iomap_ops = &ext4_iomap_overwrite_ops;
- 	ret = iomap_dio_rw(iocb, from, iomap_ops, &ext4_dio_write_ops,
- 			   is_sync_kiocb(iocb) || unaligned_io || extend);
-+	if (ret == -ENOTBLK)
-+		ret = 0;
- 
- 	if (extend)
- 		ret = ext4_handle_inode_extension(inode, offset, ret, count);
-diff --git a/fs/gfs2/file.c b/fs/gfs2/file.c
-index bebde537ac8cf2..b085a3bea4f0fd 100644
---- a/fs/gfs2/file.c
-+++ b/fs/gfs2/file.c
-@@ -835,7 +835,8 @@ static ssize_t gfs2_file_direct_write(struct kiocb *iocb, struct iov_iter *from)
- 
- 	ret = iomap_dio_rw(iocb, from, &gfs2_iomap_ops, NULL,
- 			   is_sync_kiocb(iocb));
--
-+	if (ret == -ENOTBLK)
-+		ret = 0;
- out:
- 	gfs2_glock_dq(&gh);
- out_uninit:
-diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-index 190967e87b69e4..c1aafb2ab99072 100644
---- a/fs/iomap/direct-io.c
-+++ b/fs/iomap/direct-io.c
-@@ -10,6 +10,7 @@
- #include <linux/backing-dev.h>
- #include <linux/uio.h>
- #include <linux/task_io_accounting_ops.h>
-+#include "trace.h"
- 
- #include "../internal.h"
- 
-@@ -401,6 +402,9 @@ iomap_dio_actor(struct inode *inode, loff_t pos, loff_t length,
-  * can be mapped into multiple disjoint IOs and only a subset of the IOs issued
-  * may be pure data writes. In that case, we still need to do a full data sync
-  * completion.
-+ *
-+ * Returns -ENOTBLK In case of a page invalidation invalidation failure for
-+ * writes.  The callers needs to fall back to buffered I/O in this case.
-  */
- ssize_t
- iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
-@@ -478,13 +482,15 @@ iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
- 	if (iov_iter_rw(iter) == WRITE) {
- 		/*
- 		 * Try to invalidate cache pages for the range we are writing.
--		 * If this invalidation fails, tough, the write will still work,
--		 * but racing two incompatible write paths is a pretty crazy
--		 * thing to do, so we don't support it 100%.
-+		 * If this invalidation fails, let the caller fall back to
-+		 * buffered I/O.
- 		 */
- 		if (invalidate_inode_pages2_range(mapping, pos >> PAGE_SHIFT,
--				end >> PAGE_SHIFT))
--			dio_warn_stale_pagecache(iocb->ki_filp);
-+				end >> PAGE_SHIFT)) {
-+			trace_iomap_dio_invalidate_fail(inode, pos, count);
-+			ret = -ENOTBLK;
-+			goto out_free_dio;
-+		}
- 
- 		if (!wait_for_completion && !inode->i_sb->s_dio_done_wq) {
- 			ret = sb_init_dio_done_wq(inode->i_sb);
-diff --git a/fs/iomap/trace.h b/fs/iomap/trace.h
-index 5693a39d52fb63..fdc7ae388476f5 100644
---- a/fs/iomap/trace.h
-+++ b/fs/iomap/trace.h
-@@ -74,6 +74,7 @@ DEFINE_EVENT(iomap_range_class, name,	\
- DEFINE_RANGE_EVENT(iomap_writepage);
- DEFINE_RANGE_EVENT(iomap_releasepage);
- DEFINE_RANGE_EVENT(iomap_invalidatepage);
-+DEFINE_RANGE_EVENT(iomap_dio_invalidate_fail);
- 
- #define IOMAP_TYPE_STRINGS \
- 	{ IOMAP_HOLE,		"HOLE" }, \
-diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-index a6ef90457abf97..1b4517fc55f1b9 100644
---- a/fs/xfs/xfs_file.c
-+++ b/fs/xfs/xfs_file.c
-@@ -553,8 +553,8 @@ xfs_file_dio_aio_write(
- 	xfs_iunlock(ip, iolock);
- 
- 	/*
--	 * No fallback to buffered IO on errors for XFS, direct IO will either
--	 * complete fully or fail.
-+	 * No fallback to buffered IO after short writes for XFS, direct I/O
-+	 * will either complete fully or return an error.
- 	 */
- 	ASSERT(ret < 0 || ret == count);
- 	return ret;
-diff --git a/fs/zonefs/super.c b/fs/zonefs/super.c
-index 07bc42d62673ce..d0a04528a7e18e 100644
---- a/fs/zonefs/super.c
-+++ b/fs/zonefs/super.c
-@@ -786,8 +786,11 @@ static ssize_t zonefs_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 	if (iocb->ki_pos >= ZONEFS_I(inode)->i_max_size)
- 		return -EFBIG;
- 
--	if (iocb->ki_flags & IOCB_DIRECT)
--		return zonefs_file_dio_write(iocb, from);
-+	if (iocb->ki_flags & IOCB_DIRECT) {
-+		ssize_t ret = zonefs_file_dio_write(iocb, from);
-+		if (ret != -ENOTBLK)
-+			return ret;
-+	}
- 
- 	return zonefs_file_buffered_write(iocb, from);
- }
+Changes since V7:
+ - Fixed compilation errors for (patch 5/7) "ext4: main fast-commit
+   commit path"
+
+Changes since V6:
+ - Rebased on top of v5.7
+ - Re-designed the on-disk format
+ - Handled extent tree splitting during recovery (by adding a simple allocator)
+ - Handled inode deletion case in fast commits
+ - Added more documentation in the code
+
+Harshad Shirwadkar (7):
+ doc: update ext4 and journalling docs to include fast commit feature
+ ext4: add fast_commit feature and handling for extended mount options
+ ext4 / jbd2: add fast commit initialization
+ jbd2: add fast commit machinery
+ ext4: main fast-commit commit path
+ jbd2: fast commit recovery path
+ ext4: fast commit recovery path
+
+ Documentation/filesystems/ext4/journal.rst |   66 +
+ Documentation/filesystems/journalling.rst  |   28 +
+ fs/ext4/Makefile                           |    3 +-
+ fs/ext4/acl.c                              |    2 +
+ fs/ext4/balloc.c                           |    7 +-
+ fs/ext4/ext4.h                             |   88 ++
+ fs/ext4/ext4_jbd2.c                        |    2 +-
+ fs/ext4/extents.c                          |  258 +++-
+ fs/ext4/extents_status.c                   |   24 +
+ fs/ext4/fast_commit.c                      | 2064 ++++++++++++++++++++++++++++
+ fs/ext4/fast_commit.h                      |  159 +++
+ fs/ext4/file.c                             |   10 +-
+ fs/ext4/fsync.c                            |    2 +-
+ fs/ext4/ialloc.c                           |  165 ++-
+ fs/ext4/inode.c                            |  130 +-
+ fs/ext4/ioctl.c                            |   22 +-
+ fs/ext4/mballoc.c                          |  225 ++-
+ fs/ext4/mballoc.h                          |    2 +
+ fs/ext4/namei.c                            |  179 ++-
+ fs/ext4/super.c                            |   73 +-
+ fs/ext4/xattr.c                            |    3 +
+ fs/jbd2/commit.c                           |   60 +
+ fs/jbd2/journal.c                          |  238 +++-
+ fs/jbd2/recovery.c                         |   56 +-
+ include/linux/jbd2.h                       |   91 +-
+ include/trace/events/ext4.h                |  228 ++-
 -- 
-2.27.0
+2.28.0.rc0.105.gf9edc3c819-goog
 
