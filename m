@@ -2,109 +2,56 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFA66229CDE
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Jul 2020 18:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53409229D97
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 Jul 2020 18:57:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728229AbgGVQPv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 22 Jul 2020 12:15:51 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:34916 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726784AbgGVQPu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 22 Jul 2020 12:15:50 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06MFuUmc190158;
-        Wed, 22 Jul 2020 16:15:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=wngYaeffss/ZqmZUl6rKo1fTpBJT6kVj81mnBoaEJkk=;
- b=tNfNeGvz1SSwZxRu9fuL4U85ibGGMw0IqTN16mViR+zPmIZ3snSn0UNYIExeUSQz7sWN
- c+Qw0iNhG1sFwBRadVu4Q1KZ1CRgsm/v7GoBgaWc0wwKzzlqbWYsFSFz0NLRYLkTHiKb
- DD9khdBj83kLpNL0l6UEqVxRBUhaGRRUWkk24RDeyDs58cIrEXrvLwO5yIvrXaE1ZZHU
- oOP5F/gDbOj7hlL0sCaUr5KbZqj3ve/JUgyRFFjFRVcC+4yzNMl0lgMA0cp9oQYZho/w
- wLIz8sBM0T9apd4/7RFzs+cnR/YJpWFYXzWVnn1kckJ+VgB3Rtdf5rMmJIe1ebDCDPJQ CA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 32brgrmaqr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 22 Jul 2020 16:15:31 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06MFwB5L096647;
-        Wed, 22 Jul 2020 16:15:30 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 32erheh0mf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 22 Jul 2020 16:15:30 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 06MGFQFN011293;
-        Wed, 22 Jul 2020 16:15:26 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 22 Jul 2020 09:15:25 -0700
-Date:   Wed, 22 Jul 2020 09:15:23 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Johannes Thumshirn <jth@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        cluster-devel@redhat.com, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, Dave Chinner <dchinner@redhat.com>,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: Re: [PATCH 3/3] iomap: fall back to buffered writes for invalidation
- failures
-Message-ID: <20200722153744.GN3151642@magnolia>
-References: <20200721183157.202276-1-hch@lst.de>
- <20200721183157.202276-4-hch@lst.de>
- <20200721203749.GF3151642@magnolia>
- <20200722061850.GA24799@lst.de>
+        id S1729733AbgGVQ5f (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 22 Jul 2020 12:57:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56990 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726736AbgGVQ5e (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 22 Jul 2020 12:57:34 -0400
+Received: from localhost (unknown [104.132.1.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B5C0207CD;
+        Wed, 22 Jul 2020 16:57:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595437054;
+        bh=foafLTKTSs4eRv6H8DFW8ktlWYvdIzYz280w9TzcoZQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XAQyYh1QpMNzwzJvzhVIQQzkEjb96TUxGGx+IOEEUuuul6uaTDQ6wBXoBfdlrenHv
+         M3vDPkxQ0CSYm7iQ9K8pcC4z2TTyTV/awLhUxetG6+hNGTSDBoJ9DsvCCFFvifzfdJ
+         /c3bcsGQXknw8yBFX32wBWp5ul8DeISsD/1Z8yug=
+Date:   Wed, 22 Jul 2020 09:57:33 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Satya Tangirala <satyat@google.com>, linux-fscrypt@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v4 7/7] fscrypt: update documentation for direct I/O
+ support
+Message-ID: <20200722165733.GB3912099@google.com>
+References: <20200720233739.824943-1-satyat@google.com>
+ <20200720233739.824943-8-satyat@google.com>
+ <20200721004701.GD7464@sol.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200722061850.GA24799@lst.de>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9690 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 suspectscore=1
- mlxlogscore=999 adultscore=0 mlxscore=0 bulkscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007220108
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9690 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 spamscore=0
- impostorscore=0 suspectscore=1 adultscore=0 clxscore=1015 mlxlogscore=999
- priorityscore=1501 phishscore=0 lowpriorityscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007220108
+In-Reply-To: <20200721004701.GD7464@sol.localdomain>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jul 22, 2020 at 08:18:50AM +0200, Christoph Hellwig wrote:
-> On Tue, Jul 21, 2020 at 01:37:49PM -0700, Darrick J. Wong wrote:
-> > On Tue, Jul 21, 2020 at 08:31:57PM +0200, Christoph Hellwig wrote:
-> > > Failing to invalid the page cache means data in incoherent, which is
-> > > a very bad state for the system.  Always fall back to buffered I/O
-> > > through the page cache if we can't invalidate mappings.
-> > > 
-> > > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > > Acked-by: Dave Chinner <dchinner@redhat.com>
-> > > Reviewed-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+On 07/20, Eric Biggers wrote:
+> On Mon, Jul 20, 2020 at 11:37:39PM +0000, Satya Tangirala wrote:
+> > Update fscrypt documentation to reflect the addition of direct I/O support
+> > and document the necessary conditions for direct I/O on encrypted files.
 > > 
-> > For the iomap and xfs parts,
-> > Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-> > 
-> > But I'd still like acks from Ted, Andreas, and Damien for ext4, gfs2,
-> > and zonefs, respectively.
-> > 
-> > (Particularly if anyone was harboring ideas about trying to get this in
-> > before 5.10, though I've not yet heard anyone say that explicitly...)
+> > Signed-off-by: Satya Tangirala <satyat@google.com>
 > 
-> Why would we want to wait another whole merge window?
+> Reviewed-by: Eric Biggers <ebiggers@google.com>
 
-Well it /is/ past -rc6, which is a tad late...
-
-OTOH we've been talking about this for 2 months now and most of the
-actual behavior change is in xfs land so maybe it's fine. :)
-
---D
+Reviewed-by: Jaegeuk Kim <jaegeuk@kernel.org>
