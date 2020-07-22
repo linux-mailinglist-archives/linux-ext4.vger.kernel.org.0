@@ -2,51 +2,61 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 964DE228FF0
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Jul 2020 07:42:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7778D22906A
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 Jul 2020 08:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728008AbgGVFmD convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Wed, 22 Jul 2020 01:42:03 -0400
-Received: from smtp.utu.edu.uy ([190.0.150.6]:49256 "EHLO delta45.utu.edu.uy"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726696AbgGVFmD (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 22 Jul 2020 01:42:03 -0400
-X-Greylist: delayed 481 seconds by postgrey-1.27 at vger.kernel.org; Wed, 22 Jul 2020 01:41:53 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by delta45.utu.edu.uy (Postfix) with ESMTP id A0FDF1D0EF10;
-        Wed, 22 Jul 2020 02:32:12 -0300 (GMT+3)
-Received: from delta45.utu.edu.uy ([127.0.0.1])
-        by localhost (delta45.utu.edu.uy [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id j-d5-xIHkuKF; Wed, 22 Jul 2020 02:32:12 -0300 (GMT+3)
-Received: from localhost (localhost [127.0.0.1])
-        by delta45.utu.edu.uy (Postfix) with ESMTP id DC7E81D0EF09;
-        Wed, 22 Jul 2020 02:32:11 -0300 (GMT+3)
-X-Virus-Scanned: amavisd-new at delta45.utu.edu.uy
-Received: from delta45.utu.edu.uy ([127.0.0.1])
-        by localhost (delta45.utu.edu.uy [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id z5KYbxFuF39p; Wed, 22 Jul 2020 02:32:11 -0300 (GMT+3)
-Received: from delta45.utu.edu.uy (delta45 [172.17.1.45])
-        by delta45.utu.edu.uy (Postfix) with ESMTP id 7FB051D0EEFB;
-        Wed, 22 Jul 2020 02:32:10 -0300 (GMT+3)
-Date:   Wed, 22 Jul 2020 02:32:10 -0300 (GMT-03:00)
-From:   Darlehen Bedienung <aemartinez@utu.edu.uy>
-Reply-To: info_innoxcapitalservicesolution@aol.com
-Message-ID: <754360867.138094.1595395930510.JavaMail.zimbra@utu.edu.uy>
-Subject: 
+        id S1728697AbgGVGSz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 22 Jul 2020 02:18:55 -0400
+Received: from verein.lst.de ([213.95.11.211]:54935 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727867AbgGVGSz (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 22 Jul 2020 02:18:55 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id E8C1068AFE; Wed, 22 Jul 2020 08:18:50 +0200 (CEST)
+Date:   Wed, 22 Jul 2020 08:18:50 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Dave Chinner <david@fromorbit.com>,
+        Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Johannes Thumshirn <jth@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        cluster-devel@redhat.com, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, Dave Chinner <dchinner@redhat.com>,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>
+Subject: Re: [PATCH 3/3] iomap: fall back to buffered writes for
+ invalidation failures
+Message-ID: <20200722061850.GA24799@lst.de>
+References: <20200721183157.202276-1-hch@lst.de> <20200721183157.202276-4-hch@lst.de> <20200721203749.GF3151642@magnolia>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [172.17.1.45]
-X-Mailer: Zimbra 8.8.12_GA_3866 (zclient/8.8.12_GA_3866)
-X-Authenticated-User: aemartinez@utu.edu.uy
-Thread-Index: sHxyVNlBzwToKpIuoIGp0++CnI1oLA==
-Thread-Topic: 
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200721203749.GF3151642@magnolia>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Tue, Jul 21, 2020 at 01:37:49PM -0700, Darrick J. Wong wrote:
+> On Tue, Jul 21, 2020 at 08:31:57PM +0200, Christoph Hellwig wrote:
+> > Failing to invalid the page cache means data in incoherent, which is
+> > a very bad state for the system.  Always fall back to buffered I/O
+> > through the page cache if we can't invalidate mappings.
+> > 
+> > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> > Acked-by: Dave Chinner <dchinner@redhat.com>
+> > Reviewed-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> 
+> For the iomap and xfs parts,
+> Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+> 
+> But I'd still like acks from Ted, Andreas, and Damien for ext4, gfs2,
+> and zonefs, respectively.
+> 
+> (Particularly if anyone was harboring ideas about trying to get this in
+> before 5.10, though I've not yet heard anyone say that explicitly...)
 
-
-Schönen Tag,Wir sind zuverlässige, vertrauenswürdige Kreditgeber, Wir bieten Darlehen an Unternehmen und Privatpersonen zu niedrigen und günstigen Zinssatz von 2%. Sind Sie auf der Suche nach einem Business-Darlehen, persönliche Darlehen, Schuldenkonsolidierung, unbesicherte Darlehen, Venture Capital. Kontaktieren Sie uns mit Name, Land, Darlehensbetrag, Dauer und Telefonnummer.GrüßeHerr DA COSTA DARREN FAY
+Why would we want to wait another whole merge window?
