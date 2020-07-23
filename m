@@ -2,132 +2,182 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D129F22B21A
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 Jul 2020 17:05:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAB0A22B927
+	for <lists+linux-ext4@lfdr.de>; Fri, 24 Jul 2020 00:08:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728282AbgGWPFj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 23 Jul 2020 11:05:39 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:37394 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727885AbgGWPFi (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 23 Jul 2020 11:05:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595516735;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=UHeCrznzqXoe2/XAP4BQ2MEUqBxwRsB0ZsZP/VO7+nE=;
-        b=AJeHkytnK6N5PQM0GwfROCoN7YYnVKWT+xs14PUs1GdjnhyeujdXjjcULVF6EapoCXcEeh
-        Hoxp80or1RMBSQiRxnkruwG/Qwe1P39epaWwbLdSyCJTMbQA2TWdUxxnaXaAz5F8UXU2Lm
-        +KklUMQoGtQ2T/4F/EsF/PjWvp7g6/M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-11-tnW97FTbOM2hCrxp3OQlaw-1; Thu, 23 Jul 2020 11:05:31 -0400
-X-MC-Unique: tnW97FTbOM2hCrxp3OQlaw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D62F68AF85E;
-        Thu, 23 Jul 2020 15:05:30 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.40.194.0])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0DBA6101E59C;
-        Thu, 23 Jul 2020 15:05:29 +0000 (UTC)
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu
-Subject: [PATCH] ext4: handle option set by mount flags correctly
-Date:   Thu, 23 Jul 2020 17:05:26 +0200
-Message-Id: <20200723150526.19931-1-lczerner@redhat.com>
+        id S1726608AbgGWWIF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 23 Jul 2020 18:08:05 -0400
+Received: from mail110.syd.optusnet.com.au ([211.29.132.97]:54888 "EHLO
+        mail110.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726173AbgGWWIF (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 23 Jul 2020 18:08:05 -0400
+Received: from dread.disaster.area (pa49-180-53-24.pa.nsw.optusnet.com.au [49.180.53.24])
+        by mail110.syd.optusnet.com.au (Postfix) with ESMTPS id 84C79108342;
+        Fri, 24 Jul 2020 08:07:58 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1jyjNY-0000u9-BP; Fri, 24 Jul 2020 08:07:52 +1000
+Date:   Fri, 24 Jul 2020 08:07:52 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Satya Tangirala <satyat@google.com>, linux-fscrypt@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v4 3/7] iomap: support direct I/O with fscrypt using
+ blk-crypto
+Message-ID: <20200723220752.GF2005@dread.disaster.area>
+References: <20200720233739.824943-1-satyat@google.com>
+ <20200720233739.824943-4-satyat@google.com>
+ <20200722211629.GE2005@dread.disaster.area>
+ <20200722223404.GA76479@sol.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200722223404.GA76479@sol.localdomain>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=LPwYv6e9 c=1 sm=1 tr=0
+        a=moVtWZxmCkf3aAMJKIb/8g==:117 a=moVtWZxmCkf3aAMJKIb/8g==:17
+        a=kj9zAlcOel0A:10 a=_RQrkK6FrEwA:10 a=1XWaLZrsAAAA:8 a=VwQbUJbxAAAA:8
+        a=7-415B0cAAAA:8 a=o-5nuXC40d1hAW-zK1QA:9 a=lV8-eMjJ7w0CS7Ub:21
+        a=2U3LBo-zXchMHvL1:21 a=CjuIK1q_8ugA:10 a=AjGcO6oz07-iQ99wixmX:22
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Currently there is a problem with mount options that can be both set by
-vfs using mount flags or by a string parsing in ext4.
+On Wed, Jul 22, 2020 at 03:34:04PM -0700, Eric Biggers wrote:
+> On Thu, Jul 23, 2020 at 07:16:29AM +1000, Dave Chinner wrote:
+> > On Mon, Jul 20, 2020 at 11:37:35PM +0000, Satya Tangirala wrote:
+> > > From: Eric Biggers <ebiggers@google.com>
+> > > 
+> > > Wire up iomap direct I/O with the fscrypt additions for direct I/O.
+> > > This allows ext4 to support direct I/O on encrypted files when inline
+> > > encryption is enabled.
+> > > 
+> > > This change consists of two parts:
+> > > 
+> > > - Set a bio_crypt_ctx on bios for encrypted files, so that the file
+> > >   contents get encrypted (or decrypted).
+> > > 
+> > > - Ensure that encryption data unit numbers (DUNs) are contiguous within
+> > >   each bio.  Use the new function fscrypt_limit_io_pages() for this,
+> > >   since the iomap code works directly with logical ranges and thus
+> > >   doesn't have a chance to call fscrypt_mergeable_bio() on each page.
+> > > 
+> > > Note that fscrypt_limit_io_pages() is normally a no-op, as normally the
+> > > DUNs simply increment along with the logical blocks.  But it's needed to
+> > > handle an edge case in one of the fscrypt IV generation methods.
+> > > 
+> > > Signed-off-by: Eric Biggers <ebiggers@google.com>
+> > > Co-developed-by: Satya Tangirala <satyat@google.com>
+> > > Signed-off-by: Satya Tangirala <satyat@google.com>
+> > > ---
+> > >  fs/iomap/direct-io.c | 12 +++++++++++-
+> > >  1 file changed, 11 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+> > > index ec7b78e6feca..12064daa3e3d 100644
+> > > --- a/fs/iomap/direct-io.c
+> > > +++ b/fs/iomap/direct-io.c
+> > > @@ -6,6 +6,7 @@
+> > >  #include <linux/module.h>
+> > >  #include <linux/compiler.h>
+> > >  #include <linux/fs.h>
+> > > +#include <linux/fscrypt.h>
+> > >  #include <linux/iomap.h>
+> > >  #include <linux/backing-dev.h>
+> > >  #include <linux/uio.h>
+> > > @@ -183,11 +184,16 @@ static void
+> > >  iomap_dio_zero(struct iomap_dio *dio, struct iomap *iomap, loff_t pos,
+> > >  		unsigned len)
+> > >  {
+> > > +	struct inode *inode = file_inode(dio->iocb->ki_filp);
+> > >  	struct page *page = ZERO_PAGE(0);
+> > >  	int flags = REQ_SYNC | REQ_IDLE;
+> > >  	struct bio *bio;
+> > >  
+> > >  	bio = bio_alloc(GFP_KERNEL, 1);
+> > > +
+> > > +	/* encrypted direct I/O is guaranteed to be fs-block aligned */
+> > > +	WARN_ON_ONCE(fscrypt_needs_contents_encryption(inode));
+> > 
+> > Which means you are now placing a new constraint on this code in
+> > that we cannot ever, in future, zero entire blocks here.
+> > 
+> > This code can issue arbitrary sized zeroing bios - multiple entire fs blocks
+> > blocks if necessary - so I think constraining it to only support
+> > partial block zeroing by adding a warning like this is no correct.
+> 
+> In v3 and earlier this instead had the code to set an encryption context:
+> 
+> 	fscrypt_set_bio_crypt_ctx(bio, inode, pos >> inode->i_blkbits,
+> 				  GFP_KERNEL);
+> 
+> Would you prefer that, even though the call to fscrypt_set_bio_crypt_ctx() would
 
-i_version/iversion options gets lost after remount, for example
+Actually, I have no idea what that function does. It's not in a
+5.8-rc6 kernel, and it's not in this patchset....
 
-$ mount -o i_version /dev/pmem0 /mnt
-$ grep pmem0 /proc/self/mountinfo | grep i_version
-310 95 259:0 / /mnt rw,relatime shared:163 - ext4 /dev/pmem0 rw,seclabel,i_version
-$ mount -o remount,ro /mnt
-$ grep pmem0 /proc/self/mountinfo | grep i_version
+> always be a no-op currently (since for now, iomap_dio_zero() will never be
+> called with an encrypted file) and thus wouldn't be properly tested?
 
-nolazytime gets ignored by ext4 on remount, for example
+Same can be said for this WARN_ON_ONCE() code :)
 
-$ mount -o lazytime /dev/pmem0 /mnt
-$ grep pmem0 /proc/self/mountinfo | grep lazytime
-310 95 259:0 / /mnt rw,relatime shared:163 - ext4 /dev/pmem0 rw,lazytime,seclabel
-$ mount -o remount,nolazytime /mnt
-$ grep pmem0 /proc/self/mountinfo | grep lazytime
-310 95 259:0 / /mnt rw,relatime shared:163 - ext4 /dev/pmem0 rw,lazytime,seclabel
+But, in the interests of not leaving landmines, if a fscrypt context
+is needed to be attached to the bio for data IO in direct IO, it
+should be attached to all bios that are allocated in the dio path
+rather than leave a landmine for people in future to trip over.
 
-Fix it by applying the SB_LAZYTIME and SB_I_VERSION flags from *flags to
-s_flags before we parse the option and use the resulting state of the
-same flags in *flags at the end of successful remount.
+> BTW, iomap_dio_zero() is actually limited to one page, so it's not quite
+> "arbitrary sizes".
 
-Signed-off-by: Lukas Czerner <lczerner@redhat.com>
----
- fs/ext4/super.c | 21 ++++++++++++++++-----
- 1 file changed, 16 insertions(+), 5 deletions(-)
+Yup, but that's an implentation detail, not a design constraint.
+i.e. I typically review/talk about how stuff functions at a
+design/architecture level, not how it's been implemented in the
+code.
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 330957ed1f05..caab4c57f909 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -5445,7 +5445,7 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
- {
- 	struct ext4_super_block *es;
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
--	unsigned long old_sb_flags;
-+	unsigned long old_sb_flags, vfs_flags;
- 	struct ext4_mount_options old_opts;
- 	int enable_quota = 0;
- 	ext4_group_t g;
-@@ -5488,6 +5488,14 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
- 	if (sbi->s_journal && sbi->s_journal->j_task->io_context)
- 		journal_ioprio = sbi->s_journal->j_task->io_context->ioprio;
- 
-+	/*
-+	 * Some options can be enabled by ext4 and/or by VFS mount flag
-+	 * either way we need to make sure it matches in both *flags and
-+	 * s_flags. Copy those selected flags from *flags to s_flags
-+	 */
-+	vfs_flags = SB_LAZYTIME | SB_I_VERSION;
-+	sb->s_flags = (sb->s_flags & ~vfs_flags) | (*flags & vfs_flags);
-+
- 	if (!parse_options(data, sb, NULL, &journal_ioprio, 1)) {
- 		err = -EINVAL;
- 		goto restore_opts;
-@@ -5541,9 +5549,6 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
- 		set_task_ioprio(sbi->s_journal->j_task, journal_ioprio);
- 	}
- 
--	if (*flags & SB_LAZYTIME)
--		sb->s_flags |= SB_LAZYTIME;
--
- 	if ((bool)(*flags & SB_RDONLY) != sb_rdonly(sb)) {
- 		if (sbi->s_mount_flags & EXT4_MF_FS_ABORTED) {
- 			err = -EROFS;
-@@ -5675,7 +5680,13 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
- 	}
- #endif
- 
--	*flags = (*flags & ~SB_LAZYTIME) | (sb->s_flags & SB_LAZYTIME);
-+	/*
-+	 * Some options can be enabled by ext4 and/or by VFS mount flag
-+	 * either way we need to make sure it matches in both *flags and
-+	 * s_flags. Copy those selected flags from s_flags to *flags
-+	 */
-+	*flags = (*flags & ~vfs_flags) | (sb->s_flags & vfs_flags);
-+
- 	ext4_msg(sb, KERN_INFO, "re-mounted. Opts: %s", orig_data);
- 	kfree(orig_data);
- 	return 0;
+e.g. block size > page size patches in progress make use of the
+"arbitrary length" capability of the design:
+
+https://lore.kernel.org/linux-xfs/20181107063127.3902-7-david@fromorbit.com/
+
+> iomap is used for other filesystem operations too, so we need to consider when
+> to actually do the limiting.  I don't think we should break up the extents
+> returned FS_IOC_FIEMAP, for example.  FIEMAP already has a defined behavior.
+> Also, it would be weird for the list of extents that FIEMAP returns to change
+> depending on whether the filesystem is mounted with '-o inlinecrypt' or not.
+
+We don't need to care about that in the iomap code. The caller
+controls the behaviour of the mapping callbacks themselves via
+the iomap_ops structure they pass into high level iomap functions.
+
+> That also avoids any confusion between pages and blocks, which is nice.
+
+FWIW, the latest version of the above patchset (which,
+co-incidentally, I was bring up to date yesterday) abstracts away
+page and block sizes. It introduces the concept of "chunk size"
+which is calculated from the combination of the current page's size
+and the current inode's block size.
+
+i.e. in the near future we are going to have both variable page
+sizes (on a per-page basis via Willy's current work) and per-inode
+blocks sizes smaller, the same and larger than the size of the
+current pager. Hence we need to get rid of any assumptions about
+page sizes and block sizes in the iomap code, not introduce new
+ones.
+
+Hence if there is any limitation of filesystem functionality based
+on block size vs page size, it is going to be up to the filesystem
+to detect and enforce those restrictions, not the iomap
+infrastructure.
+
+Cheers,
+
+Dave.
 -- 
-2.21.3
-
+Dave Chinner
+david@fromorbit.com
