@@ -2,151 +2,133 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBACD22BD7C
-	for <lists+linux-ext4@lfdr.de>; Fri, 24 Jul 2020 07:31:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13D1522C45E
+	for <lists+linux-ext4@lfdr.de>; Fri, 24 Jul 2020 13:27:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726317AbgGXFbh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 24 Jul 2020 01:31:37 -0400
-Received: from mail109.syd.optusnet.com.au ([211.29.132.80]:46979 "EHLO
-        mail109.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725860AbgGXFbh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 24 Jul 2020 01:31:37 -0400
-Received: from dread.disaster.area (pa49-180-53-24.pa.nsw.optusnet.com.au [49.180.53.24])
-        by mail109.syd.optusnet.com.au (Postfix) with ESMTPS id 3E0F1D7ADE7;
-        Fri, 24 Jul 2020 15:31:32 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1jyqIs-0003Xl-Rk; Fri, 24 Jul 2020 15:31:30 +1000
-Date:   Fri, 24 Jul 2020 15:31:30 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Satya Tangirala <satyat@google.com>, linux-fscrypt@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v4 3/7] iomap: support direct I/O with fscrypt using
- blk-crypto
-Message-ID: <20200724053130.GO2005@dread.disaster.area>
-References: <20200720233739.824943-1-satyat@google.com>
- <20200720233739.824943-4-satyat@google.com>
- <20200722211629.GE2005@dread.disaster.area>
- <20200722223404.GA76479@sol.localdomain>
- <20200723220752.GF2005@dread.disaster.area>
- <20200723230345.GB870@sol.localdomain>
- <20200724013910.GH2005@dread.disaster.area>
- <20200724034628.GC870@sol.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200724034628.GC870@sol.localdomain>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=QKgWuTDL c=1 sm=1 tr=0
-        a=moVtWZxmCkf3aAMJKIb/8g==:117 a=moVtWZxmCkf3aAMJKIb/8g==:17
-        a=kj9zAlcOel0A:10 a=_RQrkK6FrEwA:10 a=7-415B0cAAAA:8
-        a=qgdjzU_bvmtCALAiQDgA:9 a=abFM6lBaT0MdK4Jk:21 a=bpKwr00CVUWniEzF:21
-        a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+        id S1726317AbgGXL14 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 24 Jul 2020 07:27:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726182AbgGXL1z (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 24 Jul 2020 07:27:55 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB117C0619D3
+        for <linux-ext4@vger.kernel.org>; Fri, 24 Jul 2020 04:27:53 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id q6so9605312ljp.4
+        for <linux-ext4@vger.kernel.org>; Fri, 24 Jul 2020 04:27:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=8HeVgGPueNBRRDpahYDN/80YdB4Ni14xuwuUIzLd78g=;
+        b=jEfmKM4pU3jtbTxZGT+c8ZMmxrH3aso/dXfPd/YFYjxL6ebVYWfowrb8P0+/YYDDcz
+         rOMyTxIurh1mXNV7lsgIodbw/Akn+Fk5FaTHne2CydV0lXAmuH71zCJOk2AGqt89R4oP
+         bdlCibOEiYOJctRI2R0avb0c3C5iDoZiem9QRBXeV7+VcV70QTW+OIIwv3GgoutDPDI7
+         3nQ245PRQ5AaYUpfTbFeMk0j9sz0DHZyHOiStA7q23H3hZHRJ5mliwCpqvQhfA71Kb/L
+         CnsHRhtnEUtljks8AUayflMRr6g6K4Ri0UnQ4s+VamrKlahvmZRxafOustYx54wGMa+T
+         lnbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=8HeVgGPueNBRRDpahYDN/80YdB4Ni14xuwuUIzLd78g=;
+        b=sdeUVQfzmmb0dRQry0jGcd2pTIB6AO32Yo4VOTnESaPNP+pXc6j9+mXjb4hTY/WDb7
+         ER57ERqL5u7AxMtu61Jw6scNTVSJM7ORrAhmh1EXYBzjaAILodFQXTuQmAJH7JLaHB8j
+         /WMPNiehxTfoux8ik7gPvKs8gAXUqgiOGnR0a4dJJV37dpYkcYG+25OTrjygxiHJo4rk
+         wdrCzxm/EFDy8ECZrRYxXAwp48oKCfjsNWu4xDsLfYdfosaIc6jUXU8DL2ZFax43FtwI
+         U2zwpcmEEb34MvJLmC9J6qEopqs+89hpo6QHwBkCAmOYCaeB4DMVobQGOXVhFi+ooC9w
+         x83g==
+X-Gm-Message-State: AOAM530r1KOT5u8oTZ8lbIn0fzXqQ3RwiYoMyy8Gb2xVyyoVez7unAWi
+        SWogDozpTxgvoZQT214mlSU=
+X-Google-Smtp-Source: ABdhPJwGP8pxXXMm7lxWvfp40/2A8mokNaqLikCTwxcJFEn2i3ECq8OIPf9X3Fcfe0IBgSbkClfc4Q==
+X-Received: by 2002:a05:651c:1291:: with SMTP id 17mr4471491ljc.286.1595590072273;
+        Fri, 24 Jul 2020 04:27:52 -0700 (PDT)
+Received: from [192.168.1.192] ([195.245.244.36])
+        by smtp.gmail.com with ESMTPSA id b16sm178890ljp.124.2020.07.24.04.27.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 24 Jul 2020 04:27:51 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.15\))
+Subject: Re: [PATCH 2/4] ext4: skip non-loaded groups at cr=0/1 when scanning
+ for good groups
+From:   =?utf-8?B?0JHQu9Cw0LPQvtC00LDRgNC10L3QutC+INCQ0YDRgtGR0Lw=?= 
+        <artem.blagodarenko@gmail.com>
+In-Reply-To: <20200717155352.1053040-3-tytso@mit.edu>
+Date:   Fri, 24 Jul 2020 14:27:48 +0300
+Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Alex Zhuravlev <bzzz@whamcloud.com>,
+        Alex Zhuravlev <azhuravlev@whamcloud.com>,
+        Andreas Dilger <adilger@whamcloud.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <81448013-525F-4C51-A9F3-88969CB49B70@gmail.com>
+References: <20200717155352.1053040-1-tytso@mit.edu>
+ <20200717155352.1053040-3-tytso@mit.edu>
+To:     Theodore Ts'o <tytso@mit.edu>
+X-Mailer: Apple Mail (2.3445.104.15)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 08:46:28PM -0700, Eric Biggers wrote:
-> On Fri, Jul 24, 2020 at 11:39:10AM +1000, Dave Chinner wrote:
-> > fscrypt_inode_uses_inline_crypto() ends up being:
-> > 
-> > 	if (IS_ENCRYPTED(inode) && S_ISREG(inode->i_mode) &&
-> > 	    inode->i_crypt_info->ci_inlinecrypt)
-> > 
-> > I note there are no checks for inode->i_crypt_info being non-null,
-> > and I note that S_ENCRYPTED is set on the inode when the on-disk
-> > encrypted flag is encountered, not when inode->i_crypt_info is set.
-> > 
-> 
-> ->i_crypt_info is set when the file is opened, so it's guaranteed to be set for
-> any I/O.  So the case you're concerned about just doesn't happen.
+Looks good.
 
-Ok. The connection is not obvious to someone who doesn't know the
-fscrypt code inside out.
+Reviewed-by: Artem Blagodarenko <artem.blagodarenko@gmail.com>
 
-> > > Note that currently, I don't think iomap_dio_bio_actor() would handle an
-> > > encrypted file with blocksize > PAGE_SIZE correctly, as the I/O could be split
-> > > in the middle of a filesystem block (even after the filesystem ensures that
-> > > direct I/O on encrypted files is fully filesystem-block-aligned, which we do ---
-> > > see the rest of this patchset), which isn't allowed on encrypted files.
-> > 
-> > That can already happen unless you've specifically restricted DIO
-> > alignments in the filesystem code. i.e. Direct IO already supports
-> > sub-block ranges and alignment, and we can already do user DIO on
-> > sub-block, sector aligned ranges just fine. And the filesystem can
-> > already split the iomap on sub-block alignments and ranges if it
-> > needs to because the iomap uses byte range addressing, not sector or
-> > block based addressing.
-> > 
-> > So either you already have a situation where the 2^32 offset can
-> > land *inside* a filesystem block, or the offset is guaranteed to be
-> > filesystem block aligned and so you'll never get this "break an IO
-> > on sub-block alignment" problem regardless of the filesystem block
-> > size...
-> > 
-> > Either way, it's not an iomap problem - it's a filesystem mapping
-> > problem...
-> > 
-> 
-> I think you're missing the point here.  Currently, the granularity of encryption
-> (a.k.a. "data unit size") is always filesystem blocks, so that's the minimum we
-> can directly read or write to an encrypted file.  This has nothing to do with
-> the IV wraparound case also being discussed.
+> On 17 Jul 2020, at 18:53, Theodore Ts'o <tytso@mit.edu> wrote:
+>=20
+> From: Alex Zhuravlev <azhuravlev@whamcloud.com>
+>=20
+> cr=3D0 is supposed to be an optimization to save CPU cycles, but if
+> buddy data (in memory) is not initialized then all this makes no sense
+> as we have to do sync IO taking a lot of cycles.  also, at cr=3D0
+> mballoc doesn't store any avaibale chunk. cr=3D1 also skips groups =
+using
+> heuristic based on avg. fragment size. it's more useful to skip such
+> groups and switch to cr=3D2 where groups will be scanned for available
+> chunks.
+>=20
+> using sparse image and dm-slow virtual device of 120TB was
+> simulated. then the image was formatted and filled using debugfs to
+> mark ~85% of available space as busy.  mount process w/o the patch
+> couldn't complete in half an hour (according to vmstat it would take
+> ~10-11 hours).  With the patch applied mount took ~20 seconds.
+>=20
+> Lustre-bug-id: https://jira.whamcloud.com/browse/LU-12988
+> Signed-off-by: Alex Zhuravlev <bzzz@whamcloud.com>
+> Reviewed-by: Andreas Dilger <adilger@whamcloud.com>
+> ---
+> fs/ext4/mballoc.c | 13 ++++++++++++-
+> 1 file changed, 12 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 8a1e6e03c088..172994349bf6 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -2195,7 +2195,18 @@ static int ext4_mb_good_group_nolock(struct =
+ext4_allocation_context *ac,
+>=20
+> 	/* We only do this if the grp has never been initialized */
+> 	if (unlikely(EXT4_MB_GRP_NEED_INIT(grp))) {
+> -		ret =3D ext4_mb_init_group(ac->ac_sb, group, GFP_NOFS);
+> +		struct ext4_group_desc *gdp =3D ext4_get_group_desc(sb, =
+group,
+> +								  NULL);
+> +		int ret;
+> +
+> +		/* cr=3D0/1 is a very optimistic search to find large
+> +		 * good chunks almost for free. if buddy data is
+> +		 * not ready, then this optimization makes no sense */
+> +		if (cr < 2 &&
+> +		    !(ext4_has_group_desc_csum(sb) &&
+> +		      (gdp->bg_flags & =
+cpu_to_le16(EXT4_BG_BLOCK_UNINIT))))
+> +			return 0;
+> +		ret =3D ext4_mb_init_group(sb, group, GFP_NOFS);
+> 		if (ret)
+> 			return ret;
+> 	}
+> --=20
+> 2.24.1
+>=20
 
-So when you change the subject, please make it *really obvious* so
-that people don't think you are still talking about the same issue.
-
-> For example, changing a single bit in the plaintext of a filesystem block may
-> result in the entire block's ciphertext changing.  (The exact behavior depends
-> on the cryptographic algorithm that is used.)
-> 
-> That's why this patchset makes ext4 only allow direct I/O on encrypted files if
-> the I/O is fully filesystem-block-aligned.  Note that this might be a more
-> strict alignment requirement than the bdev_logical_block_size().
-> 
-> As long as the iomap code only issues filesystem-block-aligned bios, *given
-> fully filesystem-block-aligned inputs*, we're fine.  That appears to be the case
-> currently.
-
-The actual size and shape of the bios issued by direct IO (both old
-code and newer iomap code) is determined by the user supplied iov,
-the size of the biovec array allocated in the bio, and the IO
-constraints of the underlying hardware.  Hence direct IO does not
-guarantee alignment to anything larger than the underlying block
-device logical sector size because there's no guarantee when or
-where a bio will fill up.
-
-To guarantee alignment of what ends up at the hardware, you have to
-set the block device parameters (e.g. logical sector size)
-appropriately all the way down the stack. You also need to ensure
-that the filesystem is correctly aligned on the block device so that
-filesystem blocks don't overlap things like RAID stripe boundaires,
-linear concat boundaries, etc.
-
-IOWs, to constrain alignment in the IO path, you need to configure
-you system correct so that the information provided to iomap for IO
-alignment matches your requirements. This is not somethign iomap can
-do itself; everything from above needs to be constrained by the
-filesystem using iomap, everything sent below by iomap is
-constrained by the block device config.
-
-> (It's possible that in the future we'll support other encryption data unit
-> sizes, perhaps powers of 2 from 512 to filesystem block size.  But for now the
-> filesystem block size has been good enough for everyone,
-
-Not the case. fscrypt use in enterprise environments needs support
-for block size < page size so that it can be deployed on 64kB page
-size machines without requiring 64kB filesystem block sizes.
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
