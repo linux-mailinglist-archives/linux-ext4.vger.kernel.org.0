@@ -2,150 +2,141 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5175622C4B6
-	for <lists+linux-ext4@lfdr.de>; Fri, 24 Jul 2020 14:04:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC4CD22C4E2
+	for <lists+linux-ext4@lfdr.de>; Fri, 24 Jul 2020 14:12:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726411AbgGXMEz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 24 Jul 2020 08:04:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52592 "EHLO
+        id S1726835AbgGXMMn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 24 Jul 2020 08:12:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726258AbgGXMEy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 24 Jul 2020 08:04:54 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC992C0619D3
-        for <linux-ext4@vger.kernel.org>; Fri, 24 Jul 2020 05:04:53 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id d17so9718804ljl.3
-        for <linux-ext4@vger.kernel.org>; Fri, 24 Jul 2020 05:04:53 -0700 (PDT)
+        with ESMTP id S1726329AbgGXMLu (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 24 Jul 2020 08:11:50 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2177C0619E6
+        for <linux-ext4@vger.kernel.org>; Fri, 24 Jul 2020 05:11:50 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id u16so6169268pgj.17
+        for <linux-ext4@vger.kernel.org>; Fri, 24 Jul 2020 05:11:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=hTnq/pehl+LkT0RLtMU8McDacOcZL7DUguXoxJ6L88s=;
-        b=d7vhTluvMPzOftKE6UHZrM+snWdYn3hJ69x+m0L5wkfLqo4MTIbMaWBOkrT3jy/cAC
-         Px4Tqds2tydELZf+25zZmMnyYnaKDR5ztP70q71K//DHynuJmqzpNMFwQmI1N4ICA7WH
-         eqyUrzzKWe1pKakmJDXPeEYy4SVlkDuw4RAwkeQnMsWe0ZYm0pxj0RzpSlCzdV+wpnxj
-         WsUDqTvLuaxa34grvshgJojgOs57Z+bmDdxVAvnwBhNHDTUCm9Z7RJ6ingZcg/4X9f24
-         qKbFs4xEM24piJmijepHRUVTjdplM5KzWGLDfbfFy7R2+vL4SDfc4fDNojeG9oiF1bvv
-         AppQ==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=iD4FUEMenVr5lbrZY3MfjlLwUfP0+0if0gfZ+EqYyLI=;
+        b=LU3Hl6Xb+kMb570dums3X91bS1lNWjAd6VAivVVwirnidnc44D39+JcML+BJHAGiYb
+         /hLd0zQi1FE3LxsnU7ZCOiHAwNYFdEQm0Bw4lVG08rIUvLsp792e/7XMSZZKpfCuj9Wi
+         Mc8RxN2om8nGrDd3CaWoXZVr6lkr8/IILg3NAUhby99DW4FbyIdip+AGS2zLfcAtbz/F
+         O9L2jZzffcKwr1Nl0ZHrIcY6HnWsZBa3k0OuPKOQb9xFpTMvj12C/tW6+hn7DR9DEsn4
+         VKLlFLHhKUhRXgHCiOcqBzkEP20Hlp9PqlgiscGHlUoNdDb1QOOHybUTJiChgSWV7ZW+
+         1eeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=hTnq/pehl+LkT0RLtMU8McDacOcZL7DUguXoxJ6L88s=;
-        b=pOdLvqd3lIX+Lo7GcBoeBrwNEF0fgtvVcyjy6v3Cdn6BBxtOVM6HjHA2nC2y546WJu
-         GtHK8JFPbxAWWf/MHkMc5a0DHVLuT2fC0lduo1TF6MV9hWVbdEvS3mam/LgUCtiBFXyd
-         Lxe7Syv71ZNBbmynsEtqWN0/JYl3FMiDw4DJ5g5X8WwbfRnFKAtqdVbLE49hNbnFsP64
-         PIymb4Kx0CuKJyt/gihpQovrK61EigZKcRGLVZjGn3XfvWQ0/H56bWkysCm2x76k67XC
-         9YTeQHEALA9zAFb8PNSWqW98bNMCcQgb+jaEMB8KgF8WYeAzyOCH3uxxN1oOmHLj3xpD
-         D4qA==
-X-Gm-Message-State: AOAM530scG/frD9FSbmnzMzdjNYvpNb4fI/9J0d6F0qboPVRRb/cxxeu
-        Z5TkUkWjOV26KXDrjpnYnik=
-X-Google-Smtp-Source: ABdhPJy/jNQSfLAlcdTojn3K5Z9F0UTi1WgCD2nzeCiNZwh9PP5hR2hBC+FfgIi6ftv0ZoeA/WiSvw==
-X-Received: by 2002:a2e:8542:: with SMTP id u2mr4088842ljj.154.1595592292356;
-        Fri, 24 Jul 2020 05:04:52 -0700 (PDT)
-Received: from [192.168.1.192] ([195.245.244.36])
-        by smtp.gmail.com with ESMTPSA id x24sm204780ljh.21.2020.07.24.05.04.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 24 Jul 2020 05:04:51 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.15\))
-Subject: Re: [PATCH 3/4] ext4: indicate via a block bitmap read is prefetched
- via a tracepoint
-From:   =?utf-8?B?0JHQu9Cw0LPQvtC00LDRgNC10L3QutC+INCQ0YDRgtGR0Lw=?= 
-        <artem.blagodarenko@gmail.com>
-In-Reply-To: <20200717155352.1053040-4-tytso@mit.edu>
-Date:   Fri, 24 Jul 2020 15:04:49 +0300
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Alex Zhuravlev <bzzz@whamcloud.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <749F3FF2-1DC8-408C-8B7E-7CD3110919CC@gmail.com>
-References: <20200717155352.1053040-1-tytso@mit.edu>
- <20200717155352.1053040-4-tytso@mit.edu>
-To:     Theodore Ts'o <tytso@mit.edu>
-X-Mailer: Apple Mail (2.3445.104.15)
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=iD4FUEMenVr5lbrZY3MfjlLwUfP0+0if0gfZ+EqYyLI=;
+        b=gGr19hu0UIyCfnFME0zWaPcOSBx/p9FJeZIgjeX7oZzTMnnQJm8lMhagHJL11S0Oxs
+         0XJazIRlBQocZdUCBhqQUbVvVkIY+VdMnfcP8Wl65KSvswXXh0t6n8O3ouTQKeWnbIh1
+         W2RAJsTapdj+56EDjjYHP+Iw6WNl1RSy7m6ai1LpuCNriGQUHjsOgGQMLsWVg7MK01Qh
+         oz6qyJ4zsSqOLQnFrkO3FJZEScNM21rgHwLtUfsY5VlZINrFayA9cL7pTAWHIMsF+MS/
+         f/lT52sly4ctqz5ODWqZUIvE8PWjDYIgggweFvEiI5/ZpedlWsjzKOk6Le+KQT31IaJc
+         LEmQ==
+X-Gm-Message-State: AOAM531LggHfHkQIu1vMUOwgN9fsZ5a2TcQd8oXrDiNzVXtph75riQra
+        lIQD7ab6BbTR8vPSgKt1k0/QsqI98/0=
+X-Google-Smtp-Source: ABdhPJyWpT2NfcWEy4aLcDx08oXPKDl45eq2YPnQvm8sfH2moUaX/HTt1lJWyIEHpqxaEqJ3QKBmMRx778Y=
+X-Received: by 2002:a63:4b44:: with SMTP id k4mr2076411pgl.305.1595592709047;
+ Fri, 24 Jul 2020 05:11:49 -0700 (PDT)
+Date:   Fri, 24 Jul 2020 12:11:36 +0000
+Message-Id: <20200724121143.1589121-1-satyat@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.rc0.142.g3c755180ce-goog
+Subject: [PATCH v5 0/7] add support for direct I/O with fscrypt using blk-crypto
+From:   Satya Tangirala <satyat@google.com>
+To:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org
+Cc:     linux-xfs@vger.kernel.org, Satya Tangirala <satyat@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-I have used this tracepoint for verifying other patches in the series. =
-Useful. The patch looks good.
+This patch series adds support for direct I/O with fscrypt using
+blk-crypto. It has been rebased on fscrypt/master (i.e. the "master"
+branch of the fscrypt tree at
+https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git)
 
-Reviewed-by: Artem Blagodarenko <artem.blagodarenko@gmail.com>
+Patch 1 adds two functions to fscrypt that need to be called to determine
+if direct I/O is supported for a request.
 
-> On 17 Jul 2020, at 18:53, Theodore Ts'o <tytso@mit.edu> wrote:
->=20
-> Modify the ext4_read_block_bitmap_load tracepoint so that it tells us
-> whether a block bitmap is being prefetched.
->=20
-> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-> ---
-> fs/ext4/balloc.c            |  2 +-
-> include/trace/events/ext4.h | 24 ++++++++++++++++++++----
-> 2 files changed, 21 insertions(+), 5 deletions(-)
->=20
-> diff --git a/fs/ext4/balloc.c b/fs/ext4/balloc.c
-> index aaa9ec5212c8..5a2f8837200c 100644
-> --- a/fs/ext4/balloc.c
-> +++ b/fs/ext4/balloc.c
-> @@ -494,7 +494,7 @@ ext4_read_block_bitmap_nowait(struct super_block =
-*sb, ext4_group_t block_group,
-> 	 * submit the buffer_head for reading
-> 	 */
-> 	set_buffer_new(bh);
-> -	trace_ext4_read_block_bitmap_load(sb, block_group);
-> +	trace_ext4_read_block_bitmap_load(sb, block_group, =
-ignore_locked);
-> 	bh->b_end_io =3D ext4_end_bitmap_read;
-> 	get_bh(bh);
-> 	submit_bh(REQ_OP_READ, REQ_META | REQ_PRIO |
-> diff --git a/include/trace/events/ext4.h b/include/trace/events/ext4.h
-> index cc41d692ae8e..cbcd2e1a608d 100644
-> --- a/include/trace/events/ext4.h
-> +++ b/include/trace/events/ext4.h
-> @@ -1312,18 +1312,34 @@ DEFINE_EVENT(ext4__bitmap_load, =
-ext4_mb_buddy_bitmap_load,
-> 	TP_ARGS(sb, group)
-> );
->=20
-> -DEFINE_EVENT(ext4__bitmap_load, ext4_read_block_bitmap_load,
-> +DEFINE_EVENT(ext4__bitmap_load, ext4_load_inode_bitmap,
->=20
-> 	TP_PROTO(struct super_block *sb, unsigned long group),
->=20
-> 	TP_ARGS(sb, group)
-> );
->=20
-> -DEFINE_EVENT(ext4__bitmap_load, ext4_load_inode_bitmap,
-> +TRACE_EVENT(ext4_read_block_bitmap_load,
-> +	TP_PROTO(struct super_block *sb, unsigned long group, bool =
-prefetch),
->=20
-> -	TP_PROTO(struct super_block *sb, unsigned long group),
-> +	TP_ARGS(sb, group, prefetch),
->=20
-> -	TP_ARGS(sb, group)
-> +	TP_STRUCT__entry(
-> +		__field(	dev_t,	dev			)
-> +		__field(	__u32,	group			)
-> +		__field(	bool,	prefetch		)
-> +
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__entry->dev	=3D sb->s_dev;
-> +		__entry->group	=3D group;
-> +		__entry->prefetch =3D prefetch;
-> +	),
-> +
-> +	TP_printk("dev %d,%d group %u prefetch %d",
-> +		  MAJOR(__entry->dev), MINOR(__entry->dev),
-> +		  __entry->group, __entry->prefetch)
-> );
->=20
-> TRACE_EVENT(ext4_direct_IO_enter,
-> --=20
-> 2.24.1
->=20
+Patches 2 and 3 modify direct-io and iomap respectively to set bio crypt
+contexts on bios when appropriate by calling into fscrypt.
+
+Patches 4 and 5 allow ext4 and f2fs direct I/O to support fscrypt without
+falling back to buffered I/O.
+
+Patches 6 and 7 update the fscrypt documentation for inline encryption
+support and direct I/O. The documentation now notes the required conditions
+for inline encryption and direct I/O on encrypted files.
+
+This patch series was tested by running xfstests with test_dummy_encryption
+with and without the 'inlinecrypt' mount option, and there were no
+meaningful regressions. One regression was for generic/587 on ext4,
+but that test isn't compatible with test_dummy_encryption in the first
+place, and the test "incorrectly" passes without the 'inlinecrypt' mount
+option - a patch will be sent out to exclude that test when
+test_dummy_encryption is turned on with ext4 (like the other quota related
+tests that use user visible quota files). The other regression was for
+generic/252 on ext4, which does direct I/O with a buffer aligned to the
+block device's blocksize, but not necessarily aligned to the filesystem's
+block size, which direct I/O with fscrypt requires.
+
+Changes v4 => v5:
+ - replace fscrypt_limit_io_pages() with fscrypt_limit_io_block(), which
+   is now called by individual filesystems (currently only ext4) instead
+   of the iomap code. This new function serves the same end purpose as
+   the one it replaces (ensuring that DUNs within a bio are contiguous)
+   but operates purely with blocks instead of with pages.
+ - make iomap_dio_zero() set bio_crypt_ctx's again, instead of just a
+   WARN_ON() since some folks prefer that instead.
+ - add Reviewed-by's
+
+Changes v3 => v4:
+ - Fix bug in iomap_dio_bio_actor() where fscrypt_limit_io_pages() was
+   being called too early (thanks Eric!)
+ - Improve comments and fix formatting in documentation
+ - iomap_dio_zero() is only called to zero out partial blocks, but
+   direct I/O is only supported on encrypted files when I/O is
+   blocksize aligned, so it doesn't need to set encryption contexts on
+   bios. Replace setting the encryption context with a WARN_ON(). (Eric)
+
+Changes v2 => v3:
+ - add changelog to coverletter
+
+Changes v1 => v2:
+ - Fix bug in f2fs caused by replacing f2fs_post_read_required() with
+   !fscrypt_dio_supported() since the latter doesn't check for
+   compressed inodes unlike the former.
+ - Add patches 6 and 7 for fscrypt documentation
+ - cleanups and comments
+
+Eric Biggers (5):
+  fscrypt: Add functions for direct I/O support
+  direct-io: add support for fscrypt using blk-crypto
+  iomap: support direct I/O with fscrypt using blk-crypto
+  ext4: support direct I/O with fscrypt using blk-crypto
+  f2fs: support direct I/O with fscrypt using blk-crypto
+
+Satya Tangirala (2):
+  fscrypt: document inline encryption support
+  fscrypt: update documentation for direct I/O support
+
+ Documentation/filesystems/fscrypt.rst | 36 +++++++++++--
+ fs/crypto/crypto.c                    |  8 +++
+ fs/crypto/inline_crypt.c              | 75 +++++++++++++++++++++++++++
+ fs/direct-io.c                        | 15 +++++-
+ fs/ext4/file.c                        | 10 ++--
+ fs/ext4/inode.c                       |  7 +++
+ fs/f2fs/f2fs.h                        |  6 ++-
+ fs/iomap/direct-io.c                  |  6 +++
+ include/linux/fscrypt.h               | 19 +++++++
+ 9 files changed, 173 insertions(+), 9 deletions(-)
+
+-- 
+2.28.0.rc0.142.g3c755180ce-goog
 
