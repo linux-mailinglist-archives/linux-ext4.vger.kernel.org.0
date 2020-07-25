@@ -2,139 +2,255 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D92922D787
-	for <lists+linux-ext4@lfdr.de>; Sat, 25 Jul 2020 14:33:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 561D822DAA5
+	for <lists+linux-ext4@lfdr.de>; Sun, 26 Jul 2020 01:48:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726777AbgGYMda (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 25 Jul 2020 08:33:30 -0400
-Received: from forwardcorp1p.mail.yandex.net ([77.88.29.217]:37044 "EHLO
-        forwardcorp1p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726583AbgGYMda (ORCPT
+        id S1727912AbgGYXsB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 25 Jul 2020 19:48:01 -0400
+Received: from mail107.syd.optusnet.com.au ([211.29.132.53]:49494 "EHLO
+        mail107.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727086AbgGYXsA (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Sat, 25 Jul 2020 08:33:30 -0400
-Received: from myt5-23f0be3aa648.qloud-c.yandex.net (myt5-23f0be3aa648.qloud-c.yandex.net [IPv6:2a02:6b8:c12:3e29:0:640:23f0:be3a])
-        by forwardcorp1p.mail.yandex.net (Yandex) with ESMTP id 738F12E150C;
-        Sat, 25 Jul 2020 15:33:23 +0300 (MSK)
-Received: from myt5-70c90f7d6d7d.qloud-c.yandex.net (myt5-70c90f7d6d7d.qloud-c.yandex.net [2a02:6b8:c12:3e2c:0:640:70c9:f7d])
-        by myt5-23f0be3aa648.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id tkF5ew7AMV-XMu8o3O4;
-        Sat, 25 Jul 2020 15:33:23 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
-        t=1595680403; bh=TfCL0CFkdZVUnLf18W8f9TTEIMStg9w7tIP6qnVDzJQ=;
-        h=Message-Id:Date:Subject:To:From:Cc;
-        b=yTpIdvheW/mQKsauTTW/uuLbW4P+QzWYUXRJliWdMdlEhd++bxEFXizONox23cmLI
-         bfrzJawcB8tHqxXVoPT6zETWOnPLEffwP1M/My5cjlePyvAxdjrJ2gIAz4gT4bvLo9
-         LtGW2dVwGGw2D2FscfcWCvXlJ88vmjbzwhbsvIvE=
-Authentication-Results: myt5-23f0be3aa648.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.ru
-Received: from 95.108.174.193-red.dhcp.yndx.net (95.108.174.193-red.dhcp.yndx.net [95.108.174.193])
-        by myt5-70c90f7d6d7d.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id MtNvF1pJiO-XMj8gjtg;
-        Sat, 25 Jul 2020 15:33:22 +0300
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client certificate not present)
-From:   Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
-To:     linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu, Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
-Subject: [PATCH] ext4: export msg_count and warning_count via sysfs
-Date:   Sat, 25 Jul 2020 12:33:13 +0000
-Message-Id: <20200725123313.4467-1-dmtrmonakhov@yandex-team.ru>
-X-Mailer: git-send-email 2.18.0
+        Sat, 25 Jul 2020 19:48:00 -0400
+Received: from dread.disaster.area (pa49-180-53-24.pa.nsw.optusnet.com.au [49.180.53.24])
+        by mail107.syd.optusnet.com.au (Postfix) with ESMTPS id E7D84D5AF5D;
+        Sun, 26 Jul 2020 09:47:53 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1jzTtP-0001MM-R6; Sun, 26 Jul 2020 09:47:51 +1000
+Date:   Sun, 26 Jul 2020 09:47:51 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Satya Tangirala <satyat@google.com>, linux-fscrypt@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v4 3/7] iomap: support direct I/O with fscrypt using
+ blk-crypto
+Message-ID: <20200725234751.GR2005@dread.disaster.area>
+References: <20200720233739.824943-1-satyat@google.com>
+ <20200720233739.824943-4-satyat@google.com>
+ <20200722211629.GE2005@dread.disaster.area>
+ <20200722223404.GA76479@sol.localdomain>
+ <20200723220752.GF2005@dread.disaster.area>
+ <20200723230345.GB870@sol.localdomain>
+ <20200724013910.GH2005@dread.disaster.area>
+ <20200724034628.GC870@sol.localdomain>
+ <20200724053130.GO2005@dread.disaster.area>
+ <20200724174132.GB819@sol.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200724174132.GB819@sol.localdomain>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=QIgWuTDL c=1 sm=1 tr=0
+        a=moVtWZxmCkf3aAMJKIb/8g==:117 a=moVtWZxmCkf3aAMJKIb/8g==:17
+        a=kj9zAlcOel0A:10 a=_RQrkK6FrEwA:10 a=7-415B0cAAAA:8
+        a=kCWghvGevV_Be34-x9kA:9 a=0nE9jjMUsWplL590:21 a=Ro6-E-bpJJKdh-rk:21
+        a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This numbers can be analized by system automation similar to errors_count.
-In ideal world it would be nice to have separate counters for different
-log-levels, but this makes this patch too intrusive.
+On Fri, Jul 24, 2020 at 10:41:32AM -0700, Eric Biggers wrote:
+> On Fri, Jul 24, 2020 at 03:31:30PM +1000, Dave Chinner wrote:
+> > On Thu, Jul 23, 2020 at 08:46:28PM -0700, Eric Biggers wrote:
+> > > On Fri, Jul 24, 2020 at 11:39:10AM +1000, Dave Chinner wrote:
+> > > > fscrypt_inode_uses_inline_crypto() ends up being:
+> > > > 
+> > > > 	if (IS_ENCRYPTED(inode) && S_ISREG(inode->i_mode) &&
+> > > > 	    inode->i_crypt_info->ci_inlinecrypt)
+> > > > 
+> > > > I note there are no checks for inode->i_crypt_info being non-null,
+> > > > and I note that S_ENCRYPTED is set on the inode when the on-disk
+> > > > encrypted flag is encountered, not when inode->i_crypt_info is set.
+> > > > 
+> > > 
+> > > ->i_crypt_info is set when the file is opened, so it's guaranteed to be set for
+> > > any I/O.  So the case you're concerned about just doesn't happen.
+> > 
+> > Ok. The connection is not obvious to someone who doesn't know the
+> > fscrypt code inside out.
+> > 
+> > > > > Note that currently, I don't think iomap_dio_bio_actor() would handle an
+> > > > > encrypted file with blocksize > PAGE_SIZE correctly, as the I/O could be split
+> > > > > in the middle of a filesystem block (even after the filesystem ensures that
+> > > > > direct I/O on encrypted files is fully filesystem-block-aligned, which we do ---
+> > > > > see the rest of this patchset), which isn't allowed on encrypted files.
+> > > > 
+> > > > That can already happen unless you've specifically restricted DIO
+> > > > alignments in the filesystem code. i.e. Direct IO already supports
+> > > > sub-block ranges and alignment, and we can already do user DIO on
+> > > > sub-block, sector aligned ranges just fine. And the filesystem can
+> > > > already split the iomap on sub-block alignments and ranges if it
+> > > > needs to because the iomap uses byte range addressing, not sector or
+> > > > block based addressing.
+> > > > 
+> > > > So either you already have a situation where the 2^32 offset can
+> > > > land *inside* a filesystem block, or the offset is guaranteed to be
+> > > > filesystem block aligned and so you'll never get this "break an IO
+> > > > on sub-block alignment" problem regardless of the filesystem block
+> > > > size...
+> > > > 
+> > > > Either way, it's not an iomap problem - it's a filesystem mapping
+> > > > problem...
+> > > > 
+> > > 
+> > > I think you're missing the point here.  Currently, the granularity of encryption
+> > > (a.k.a. "data unit size") is always filesystem blocks, so that's the minimum we
+> > > can directly read or write to an encrypted file.  This has nothing to do with
+> > > the IV wraparound case also being discussed.
+> > 
+> > So when you change the subject, please make it *really obvious* so
+> > that people don't think you are still talking about the same issue.
+> > 
+> > > For example, changing a single bit in the plaintext of a filesystem block may
+> > > result in the entire block's ciphertext changing.  (The exact behavior depends
+> > > on the cryptographic algorithm that is used.)
+> > > 
+> > > That's why this patchset makes ext4 only allow direct I/O on encrypted files if
+> > > the I/O is fully filesystem-block-aligned.  Note that this might be a more
+> > > strict alignment requirement than the bdev_logical_block_size().
+> > > 
+> > > As long as the iomap code only issues filesystem-block-aligned bios, *given
+> > > fully filesystem-block-aligned inputs*, we're fine.  That appears to be the case
+> > > currently.
+> > 
+> > The actual size and shape of the bios issued by direct IO (both old
+> > code and newer iomap code) is determined by the user supplied iov,
+> > the size of the biovec array allocated in the bio, and the IO
+> > constraints of the underlying hardware.  Hence direct IO does not
+> > guarantee alignment to anything larger than the underlying block
+> > device logical sector size because there's no guarantee when or
+> > where a bio will fill up.
+> > 
+> > To guarantee alignment of what ends up at the hardware, you have to
+> > set the block device parameters (e.g. logical sector size)
+> > appropriately all the way down the stack. You also need to ensure
+> > that the filesystem is correctly aligned on the block device so that
+> > filesystem blocks don't overlap things like RAID stripe boundaires,
+> > linear concat boundaries, etc.
+> > 
+> > IOWs, to constrain alignment in the IO path, you need to configure
+> > you system correct so that the information provided to iomap for IO
+> > alignment matches your requirements. This is not somethign iomap can
+> > do itself; everything from above needs to be constrained by the
+> > filesystem using iomap, everything sent below by iomap is
+> > constrained by the block device config.
+> 
+> That way of thinking about things doesn't entirely work for inline encryption.
 
-Signed-off-by: Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
----
- fs/ext4/ext4.h  |  2 ++
- fs/ext4/super.c | 12 +++++++++---
- fs/ext4/sysfs.c |  7 +++++++
- 3 files changed, 18 insertions(+), 3 deletions(-)
+Then the inline encryption design is flawed. Block devices tell the
+layers above what the minimum unit of atomic IO is via the logical
+block size of the device is. Everything above the block device
+assumes that it can align and size IO to this size, and the IO will
+succeed.
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 99a737c..e7bef27 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -1573,6 +1573,8 @@ struct ext4_sb_info {
- 	struct ratelimit_state s_err_ratelimit_state;
- 	struct ratelimit_state s_warning_ratelimit_state;
- 	struct ratelimit_state s_msg_ratelimit_state;
-+	atomic_t s_warning_count;
-+	atomic_t s_msg_count;
- 
- 	/* Encryption context for '-o test_dummy_encryption' */
- 	struct fscrypt_dummy_context s_dummy_enc_ctx;
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 7a5a8a5..4c408d3 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -744,6 +744,7 @@ void __ext4_msg(struct super_block *sb,
- 	struct va_format vaf;
- 	va_list args;
- 
-+	atomic_inc(&EXT4_SB(sb)->s_msg_count);
- 	if (!___ratelimit(&(EXT4_SB(sb)->s_msg_ratelimit_state), "EXT4-fs"))
- 		return;
- 
-@@ -754,9 +755,12 @@ void __ext4_msg(struct super_block *sb,
- 	va_end(args);
- }
- 
--#define ext4_warning_ratelimit(sb)					\
--		___ratelimit(&(EXT4_SB(sb)->s_warning_ratelimit_state),	\
--			     "EXT4-fs warning")
-+static int ext4_warning_ratelimit(struct super_block *sb)
-+{
-+	atomic_inc(&EXT4_SB(sb)->s_warning_count);
-+	return ___ratelimit(&(EXT4_SB(sb)->s_warning_ratelimit_state),
-+			    "EXT4-fs warning");
-+}
- 
- void __ext4_warning(struct super_block *sb, const char *function,
- 		    unsigned int line, const char *fmt, ...)
-@@ -4819,6 +4823,8 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 	ratelimit_state_init(&sbi->s_err_ratelimit_state, 5 * HZ, 10);
- 	ratelimit_state_init(&sbi->s_warning_ratelimit_state, 5 * HZ, 10);
- 	ratelimit_state_init(&sbi->s_msg_ratelimit_state, 5 * HZ, 10);
-+	atomic_set(&sbi->s_warning_count, 0);
-+	atomic_set(&sbi->s_msg_count, 0);
- 
- 	kfree(orig_data);
- 	return 0;
-diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
-index 6c9fc9e..4f15992 100644
---- a/fs/ext4/sysfs.c
-+++ b/fs/ext4/sysfs.c
-@@ -189,6 +189,9 @@ static struct ext4_attr ext4_attr_##_name = {			\
- #define EXT4_RW_ATTR_SBI_UL(_name,_elname)	\
- 	EXT4_ATTR_OFFSET(_name, 0644, pointer_ul, ext4_sb_info, _elname)
- 
-+#define EXT4_RO_ATTR_SBI_ATOMIC(_name,_elname)	\
-+	EXT4_ATTR_OFFSET(_name, 0444, pointer_atomic, ext4_sb_info, _elname)
-+
- #define EXT4_ATTR_PTR(_name,_mode,_id,_ptr) \
- static struct ext4_attr ext4_attr_##_name = {			\
- 	.attr = {.name = __stringify(_name), .mode = _mode },	\
-@@ -226,6 +229,8 @@ EXT4_RW_ATTR_SBI_UI(msg_ratelimit_burst, s_msg_ratelimit_state.burst);
- #ifdef CONFIG_EXT4_DEBUG
- EXT4_RW_ATTR_SBI_UL(simulate_fail, s_simulate_fail);
- #endif
-+EXT4_RO_ATTR_SBI_ATOMIC(warning_count, s_warning_count);
-+EXT4_RO_ATTR_SBI_ATOMIC(msg_count, s_msg_count);
- EXT4_RO_ATTR_ES_UI(errors_count, s_error_count);
- EXT4_RO_ATTR_ES_U8(first_error_errcode, s_first_error_errcode);
- EXT4_RO_ATTR_ES_U8(last_error_errcode, s_last_error_errcode);
-@@ -267,6 +272,8 @@ static struct attribute *ext4_attrs[] = {
- 	ATTR_LIST(msg_ratelimit_interval_ms),
- 	ATTR_LIST(msg_ratelimit_burst),
- 	ATTR_LIST(errors_count),
-+	ATTR_LIST(warning_count),
-+	ATTR_LIST(msg_count),
- 	ATTR_LIST(first_error_ino),
- 	ATTR_LIST(last_error_ino),
- 	ATTR_LIST(first_error_block),
+> Hardware can support multiple encryption "data unit sizes", some of which may be
+> larger than the logical block size.  (The data unit size is the granularity of
+> encryption.  E.g. if software selects data_unit_size=4096, then each invocation
+> of the encryption/decryption algorithm is passed 4096 bytes.  You can't then
+> later encrypt/decrypt just part of that; that's not how the algorithms work.)
+
+I know what a DUN is. The problem here is that it's the unit of
+atomic IO the hardware supports when encryption is enabled....
+
+> For example hardware might *in general* support addressing 512-byte sectors and
+> thus have logical_block_size=512.  But it could also support encryption data
+> unit sizes [512, 1024, 2048, 4096].  Encrypted I/O has to be aligned to the data
+> unit size, not just to the logical block size.  The data unit size to use, and
+> whether to use encryption or not, is decided on a per-I/O basis.
+
+And that is the fundamental problem here: DUN > logical block size
+of the underlying device. i.e. The storage stack does not guarantee
+atomicity of such IOs.
+
+If inline encryption increases the size of the atomic unit of IO,
+then the logical block size of the device must increase to match it.
+If you do that, then the iomap and storage layers will guarantee
+that IOs are *always* aligned to DUN boundaries.
+
+> So in this case technically it's the filesystem (and later the
+> bio::bi_crypt_context which the filesystem sets) that knows about the alignment
+> needed -- *not* the request_queue.
+
+Exactly my point. Requiring infrastructure and storage layers to
+obey completely new, undefined, undiscoverable, opaque and variable
+definition of the block devices' "atomic unit of IO", then that's
+simply a non-starter. That requires a complete re-architecture of
+the block layers and how things interface and transmit information
+through them. At minimum, high level IO alignment constraints must
+be generic and not be hidden in context specific crypto structures.
+
+> Is it your opinion that inline encryption should only be supported when
+> data_unit_size <= logical_block_size?  The problems with that are
+
+Pretty much.
+
+>     (a) Using an unnecessarily small data_unit_size degrades performance a
+> 	lot -- for *all* I/O, not just direct I/O.  This is because there are a
+> 	lot more separate encryptions/decryptions to do, and there's a fixed
+> 	overhead to each one (much of which is intrinsic in the crypto
+> 	algorithms themselves, i.e. this isn't simply an implementation quirk).
+
+Performance is irrelevant if correctness is not possible.
+
+>     (b) fscrypt currently only supports data_unit_size == filesystem_block_size.
+> 	(OFC, filesystem_block_size may be greater than logical_block_size.)
+
+Which is just fine if FSB == logical block size.
+
+The existing constraint on filesystems is that FSB >= block device
+logical sector size as the filesystem has to be able to do single
+block IOs.  For inline encryption, this turns into a constraint on
+fscrypt that DUN <= logical block size because it requires IOs to be
+aligned to DUNs, not filesystem blocks..
+
+And because of the -implementation limitation- of fscrypt that DUN
+== FSB, that means the only valid configuration right now is DUN =
+FSB = logical sector size.
+
+>     (c) Filesystem images would be less portable, unless the minimum
+> 	data_unit_size were used everywhere which would degrade performance.
+
+Not my problem. If the hardware and/or kernel cannot support the
+requirements of the encryption used within the filesystem image,
+then it -should error out-.
+
+> (We could address (b) by allowing users to specify data_unit_size when
+> encrypting a directory.  That would add complexity, but it's possible.)
+> 
+> But again, as far as I can tell, fs/iomap/direct-io.c currently *does* guarantee
+> that *if* the input is fully filesystem-block-aligned and if blocksize <=
+> PAGE_SIZE, then the issued I/O is also filesystem-block-aligned.
+
+Please listen to what I'm saying, Eric.
+
+The -current iomap implementation- may provide that behaviour. That
+doesn't mean we guarantee that behaviour. i.e. the iomap -design-
+does not guaranteee that behaviour, and we don't guarantee such
+behaviour into the future. And we won't guarantee this behaviour -
+even though the current implementation may provide it - because the
+rest of the IO stack below iomap does not provide iomap with that
+guarantee.
+
+Hence if iomap cannot get a guarantee that IO it issues won't get
+split at some arbitrary boundary, it cannot provide filesystems with
+that guarantee.
+
+> So as far as I can tell, there isn't really any problem there, at least not now.
+> I just want to make sure we're on the same page...
+
+If that page is "fscrypt+inline encryption is making fundamentally
+flawed assumptions about IO stack behaviour" then, yes, we're on the
+same page.
+
+And that code that has fundamentally flawed assumptions is grounds
+for a NACK, yes?
+
+-Dave.
 -- 
-2.7.4
-
+Dave Chinner
+david@fromorbit.com
