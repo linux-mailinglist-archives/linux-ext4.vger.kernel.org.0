@@ -2,158 +2,139 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1102422D329
-	for <lists+linux-ext4@lfdr.de>; Sat, 25 Jul 2020 02:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D92922D787
+	for <lists+linux-ext4@lfdr.de>; Sat, 25 Jul 2020 14:33:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726997AbgGYAOv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 24 Jul 2020 20:14:51 -0400
-Received: from mail108.syd.optusnet.com.au ([211.29.132.59]:41879 "EHLO
-        mail108.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726704AbgGYAOv (ORCPT
+        id S1726777AbgGYMda (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 25 Jul 2020 08:33:30 -0400
+Received: from forwardcorp1p.mail.yandex.net ([77.88.29.217]:37044 "EHLO
+        forwardcorp1p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726583AbgGYMda (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 24 Jul 2020 20:14:51 -0400
-Received: from dread.disaster.area (pa49-180-53-24.pa.nsw.optusnet.com.au [49.180.53.24])
-        by mail108.syd.optusnet.com.au (Postfix) with ESMTPS id B54F51AA49D;
-        Sat, 25 Jul 2020 10:14:44 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1jz7pp-0001fR-24; Sat, 25 Jul 2020 10:14:41 +1000
-Date:   Sat, 25 Jul 2020 10:14:41 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, Eric Biggers <ebiggers@google.com>
-Subject: Re: [PATCH v6 1/7] fscrypt: Add functions for direct I/O support
-Message-ID: <20200725001441.GQ2005@dread.disaster.area>
-References: <20200724184501.1651378-1-satyat@google.com>
- <20200724184501.1651378-2-satyat@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200724184501.1651378-2-satyat@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=LPwYv6e9 c=1 sm=1 tr=0
-        a=moVtWZxmCkf3aAMJKIb/8g==:117 a=moVtWZxmCkf3aAMJKIb/8g==:17
-        a=kj9zAlcOel0A:10 a=_RQrkK6FrEwA:10 a=1XWaLZrsAAAA:8 a=7-415B0cAAAA:8
-        a=Rqi5QEisB4je2o-fgwEA:9 a=938-DbcbG5wzybhJ:21 a=PkVgxCpPGaEuij1c:21
-        a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+        Sat, 25 Jul 2020 08:33:30 -0400
+Received: from myt5-23f0be3aa648.qloud-c.yandex.net (myt5-23f0be3aa648.qloud-c.yandex.net [IPv6:2a02:6b8:c12:3e29:0:640:23f0:be3a])
+        by forwardcorp1p.mail.yandex.net (Yandex) with ESMTP id 738F12E150C;
+        Sat, 25 Jul 2020 15:33:23 +0300 (MSK)
+Received: from myt5-70c90f7d6d7d.qloud-c.yandex.net (myt5-70c90f7d6d7d.qloud-c.yandex.net [2a02:6b8:c12:3e2c:0:640:70c9:f7d])
+        by myt5-23f0be3aa648.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id tkF5ew7AMV-XMu8o3O4;
+        Sat, 25 Jul 2020 15:33:23 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1595680403; bh=TfCL0CFkdZVUnLf18W8f9TTEIMStg9w7tIP6qnVDzJQ=;
+        h=Message-Id:Date:Subject:To:From:Cc;
+        b=yTpIdvheW/mQKsauTTW/uuLbW4P+QzWYUXRJliWdMdlEhd++bxEFXizONox23cmLI
+         bfrzJawcB8tHqxXVoPT6zETWOnPLEffwP1M/My5cjlePyvAxdjrJ2gIAz4gT4bvLo9
+         LtGW2dVwGGw2D2FscfcWCvXlJ88vmjbzwhbsvIvE=
+Authentication-Results: myt5-23f0be3aa648.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from 95.108.174.193-red.dhcp.yndx.net (95.108.174.193-red.dhcp.yndx.net [95.108.174.193])
+        by myt5-70c90f7d6d7d.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id MtNvF1pJiO-XMj8gjtg;
+        Sat, 25 Jul 2020 15:33:22 +0300
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client certificate not present)
+From:   Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
+To:     linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
+Subject: [PATCH] ext4: export msg_count and warning_count via sysfs
+Date:   Sat, 25 Jul 2020 12:33:13 +0000
+Message-Id: <20200725123313.4467-1-dmtrmonakhov@yandex-team.ru>
+X-Mailer: git-send-email 2.18.0
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Jul 24, 2020 at 06:44:55PM +0000, Satya Tangirala wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> Introduce fscrypt_dio_supported() to check whether a direct I/O request
-> is unsupported due to encryption constraints.
-> 
-> Also introduce fscrypt_limit_io_blocks() to limit how many blocks can be
-> added to a bio being prepared for direct I/O. This is needed for
-> filesystems that use the iomap direct I/O implementation to avoid DUN
-> wraparound in the middle of a bio (which is possible with the
-> IV_INO_LBLK_32 IV generation method). Elsewhere fscrypt_mergeable_bio()
-> is used for this, but iomap operates on logical ranges directly, so
-> filesystems using iomap won't have a chance to call fscrypt_mergeable_bio()
-> on every block added to a bio. So we need this function which limits a
-> logical range in one go.
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> Co-developed-by: Satya Tangirala <satyat@google.com>
-> Signed-off-by: Satya Tangirala <satyat@google.com>
-> ---
->  fs/crypto/crypto.c       |  8 +++++
->  fs/crypto/inline_crypt.c | 74 ++++++++++++++++++++++++++++++++++++++++
->  include/linux/fscrypt.h  | 18 ++++++++++
->  3 files changed, 100 insertions(+)
-> 
-> diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
-> index 9212325763b0..f72f22a718b2 100644
-> --- a/fs/crypto/crypto.c
-> +++ b/fs/crypto/crypto.c
-> @@ -69,6 +69,14 @@ void fscrypt_free_bounce_page(struct page *bounce_page)
->  }
->  EXPORT_SYMBOL(fscrypt_free_bounce_page);
->  
-> +/*
-> + * Generate the IV for the given logical block number within the given file.
-> + * For filenames encryption, lblk_num == 0.
-> + *
-> + * Keep this in sync with fscrypt_limit_io_blocks().  fscrypt_limit_io_blocks()
-> + * needs to know about any IV generation methods where the low bits of IV don't
-> + * simply contain the lblk_num (e.g., IV_INO_LBLK_32).
-> + */
->  void fscrypt_generate_iv(union fscrypt_iv *iv, u64 lblk_num,
->  			 const struct fscrypt_info *ci)
->  {
-> diff --git a/fs/crypto/inline_crypt.c b/fs/crypto/inline_crypt.c
-> index d7aecadf33c1..4cdf807b89b9 100644
-> --- a/fs/crypto/inline_crypt.c
-> +++ b/fs/crypto/inline_crypt.c
-> @@ -16,6 +16,7 @@
->  #include <linux/blkdev.h>
->  #include <linux/buffer_head.h>
->  #include <linux/sched/mm.h>
-> +#include <linux/uio.h>
->  
->  #include "fscrypt_private.h"
->  
-> @@ -362,3 +363,76 @@ bool fscrypt_mergeable_bio_bh(struct bio *bio,
->  	return fscrypt_mergeable_bio(bio, inode, next_lblk);
->  }
->  EXPORT_SYMBOL_GPL(fscrypt_mergeable_bio_bh);
-> +
-> +/**
-> + * fscrypt_dio_supported() - check whether a direct I/O request is unsupported
-> + *			     due to encryption constraints
-> + * @iocb: the file and position the I/O is targeting
-> + * @iter: the I/O data segment(s)
-> + *
-> + * Return: true if direct I/O is supported
-> + */
-> +bool fscrypt_dio_supported(struct kiocb *iocb, struct iov_iter *iter)
-> +{
-> +	const struct inode *inode = file_inode(iocb->ki_filp);
-> +	const unsigned int blocksize = i_blocksize(inode);
-> +
-> +	/* If the file is unencrypted, no veto from us. */
-> +	if (!fscrypt_needs_contents_encryption(inode))
-> +		return true;
-> +
-> +	/* We only support direct I/O with inline crypto, not fs-layer crypto */
-> +	if (!fscrypt_inode_uses_inline_crypto(inode))
-> +		return false;
-> +
-> +	/*
-> +	 * Since the granularity of encryption is filesystem blocks, the I/O
-> +	 * must be block aligned -- not just disk sector aligned.
-> +	 */
-> +	if (!IS_ALIGNED(iocb->ki_pos | iov_iter_alignment(iter), blocksize))
-> +		return false;
+This numbers can be analized by system automation similar to errors_count.
+In ideal world it would be nice to have separate counters for different
+log-levels, but this makes this patch too intrusive.
 
-Doesn't this force user buffers to be filesystem block size aligned,
-instead of 512 byte aligned as is typical for direct IO?
+Signed-off-by: Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
+---
+ fs/ext4/ext4.h  |  2 ++
+ fs/ext4/super.c | 12 +++++++++---
+ fs/ext4/sysfs.c |  7 +++++++
+ 3 files changed, 18 insertions(+), 3 deletions(-)
 
-That's going to cause applications that work fine on normal
-filesystems becaues the memalign() buffers to 512 bytes or logical
-block device sector sizes (as per the open(2) man page) to fail on
-encrypted volumes, and it's not going to be obvious to users as to
-why this happens.
-
-XFS has XFS_IOC_DIOINFO to expose exactly this information to
-userspace on a per-file basis. Other filesystem and VFS developers
-have said for the past 15 years "we don't need no stinking DIOINFO".
-The same people shot down adding optional IO alignment
-constraint fields to statx() a few years ago, too.
-
-Yet here were are again, with alignment of DIO buffers being an
-issue that userspace needs to know about....
-
-Cheers,
-
-Dave.
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 99a737c..e7bef27 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -1573,6 +1573,8 @@ struct ext4_sb_info {
+ 	struct ratelimit_state s_err_ratelimit_state;
+ 	struct ratelimit_state s_warning_ratelimit_state;
+ 	struct ratelimit_state s_msg_ratelimit_state;
++	atomic_t s_warning_count;
++	atomic_t s_msg_count;
+ 
+ 	/* Encryption context for '-o test_dummy_encryption' */
+ 	struct fscrypt_dummy_context s_dummy_enc_ctx;
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 7a5a8a5..4c408d3 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -744,6 +744,7 @@ void __ext4_msg(struct super_block *sb,
+ 	struct va_format vaf;
+ 	va_list args;
+ 
++	atomic_inc(&EXT4_SB(sb)->s_msg_count);
+ 	if (!___ratelimit(&(EXT4_SB(sb)->s_msg_ratelimit_state), "EXT4-fs"))
+ 		return;
+ 
+@@ -754,9 +755,12 @@ void __ext4_msg(struct super_block *sb,
+ 	va_end(args);
+ }
+ 
+-#define ext4_warning_ratelimit(sb)					\
+-		___ratelimit(&(EXT4_SB(sb)->s_warning_ratelimit_state),	\
+-			     "EXT4-fs warning")
++static int ext4_warning_ratelimit(struct super_block *sb)
++{
++	atomic_inc(&EXT4_SB(sb)->s_warning_count);
++	return ___ratelimit(&(EXT4_SB(sb)->s_warning_ratelimit_state),
++			    "EXT4-fs warning");
++}
+ 
+ void __ext4_warning(struct super_block *sb, const char *function,
+ 		    unsigned int line, const char *fmt, ...)
+@@ -4819,6 +4823,8 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+ 	ratelimit_state_init(&sbi->s_err_ratelimit_state, 5 * HZ, 10);
+ 	ratelimit_state_init(&sbi->s_warning_ratelimit_state, 5 * HZ, 10);
+ 	ratelimit_state_init(&sbi->s_msg_ratelimit_state, 5 * HZ, 10);
++	atomic_set(&sbi->s_warning_count, 0);
++	atomic_set(&sbi->s_msg_count, 0);
+ 
+ 	kfree(orig_data);
+ 	return 0;
+diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
+index 6c9fc9e..4f15992 100644
+--- a/fs/ext4/sysfs.c
++++ b/fs/ext4/sysfs.c
+@@ -189,6 +189,9 @@ static struct ext4_attr ext4_attr_##_name = {			\
+ #define EXT4_RW_ATTR_SBI_UL(_name,_elname)	\
+ 	EXT4_ATTR_OFFSET(_name, 0644, pointer_ul, ext4_sb_info, _elname)
+ 
++#define EXT4_RO_ATTR_SBI_ATOMIC(_name,_elname)	\
++	EXT4_ATTR_OFFSET(_name, 0444, pointer_atomic, ext4_sb_info, _elname)
++
+ #define EXT4_ATTR_PTR(_name,_mode,_id,_ptr) \
+ static struct ext4_attr ext4_attr_##_name = {			\
+ 	.attr = {.name = __stringify(_name), .mode = _mode },	\
+@@ -226,6 +229,8 @@ EXT4_RW_ATTR_SBI_UI(msg_ratelimit_burst, s_msg_ratelimit_state.burst);
+ #ifdef CONFIG_EXT4_DEBUG
+ EXT4_RW_ATTR_SBI_UL(simulate_fail, s_simulate_fail);
+ #endif
++EXT4_RO_ATTR_SBI_ATOMIC(warning_count, s_warning_count);
++EXT4_RO_ATTR_SBI_ATOMIC(msg_count, s_msg_count);
+ EXT4_RO_ATTR_ES_UI(errors_count, s_error_count);
+ EXT4_RO_ATTR_ES_U8(first_error_errcode, s_first_error_errcode);
+ EXT4_RO_ATTR_ES_U8(last_error_errcode, s_last_error_errcode);
+@@ -267,6 +272,8 @@ static struct attribute *ext4_attrs[] = {
+ 	ATTR_LIST(msg_ratelimit_interval_ms),
+ 	ATTR_LIST(msg_ratelimit_burst),
+ 	ATTR_LIST(errors_count),
++	ATTR_LIST(warning_count),
++	ATTR_LIST(msg_count),
+ 	ATTR_LIST(first_error_ino),
+ 	ATTR_LIST(last_error_ino),
+ 	ATTR_LIST(first_error_block),
 -- 
-Dave Chinner
-david@fromorbit.com
+2.7.4
+
