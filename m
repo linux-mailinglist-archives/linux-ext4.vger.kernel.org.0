@@ -2,181 +2,148 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8DD622F5A8
-	for <lists+linux-ext4@lfdr.de>; Mon, 27 Jul 2020 18:46:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BF4B22F664
+	for <lists+linux-ext4@lfdr.de>; Mon, 27 Jul 2020 19:16:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727780AbgG0Qqa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 27 Jul 2020 12:46:30 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:8100 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726139AbgG0Qqa (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 27 Jul 2020 12:46:30 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06RGVRQR160869;
-        Mon, 27 Jul 2020 12:46:27 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 32j0a4w9p5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Jul 2020 12:46:27 -0400
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06RGVbjw162055;
-        Mon, 27 Jul 2020 12:46:27 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 32j0a4w9n9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Jul 2020 12:46:27 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06RGjBtu026077;
-        Mon, 27 Jul 2020 16:46:25 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04ams.nl.ibm.com with ESMTP id 32gcy4jf4e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Jul 2020 16:46:25 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06RGkNVV31457606
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 27 Jul 2020 16:46:23 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5B0624C058;
-        Mon, 27 Jul 2020 16:46:23 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B88874C044;
-        Mon, 27 Jul 2020 16:46:22 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.199.33.112])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 27 Jul 2020 16:46:22 +0000 (GMT)
-Subject: Re: [PATCH] ext4: handle option set by mount flags correctly
-To:     Lukas Czerner <lczerner@redhat.com>, linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu
-References: <20200723150526.19931-1-lczerner@redhat.com>
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-Date:   Mon, 27 Jul 2020 22:16:21 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1730655AbgG0RQS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 27 Jul 2020 13:16:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47900 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728021AbgG0RQR (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 27 Jul 2020 13:16:17 -0400
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A9042206E7;
+        Mon, 27 Jul 2020 17:16:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595870176;
+        bh=7UCQgSoiooCyBil8fOSJp8RobRWZr1sCpOea8qGPx3c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xLeAxijvamdVYBWP2+Xvnj2jRciZbuOyQV+Kr2OvyHP74SUbz5bInn0yjxVioK8iA
+         8RWxuGNDB39zHQEMFVvnNN+Y241XtQ8jBcC1cBB46iXnudHmAJqjUxgGzvnF30XsHK
+         t5+RylcDIYaB/36yRNq39qkw5MkMKxUWNmCGlon4=
+Date:   Mon, 27 Jul 2020 10:16:15 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Satya Tangirala <satyat@google.com>, linux-fscrypt@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v4 3/7] iomap: support direct I/O with fscrypt using
+ blk-crypto
+Message-ID: <20200727171615.GJ1138@sol.localdomain>
+References: <20200722211629.GE2005@dread.disaster.area>
+ <20200722223404.GA76479@sol.localdomain>
+ <20200723220752.GF2005@dread.disaster.area>
+ <20200723230345.GB870@sol.localdomain>
+ <20200724013910.GH2005@dread.disaster.area>
+ <20200724034628.GC870@sol.localdomain>
+ <20200724053130.GO2005@dread.disaster.area>
+ <20200724174132.GB819@sol.localdomain>
+ <20200725234751.GR2005@dread.disaster.area>
+ <20200726024211.GA14321@sol.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <20200723150526.19931-1-lczerner@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Message-Id: <20200727164622.B88874C044@d06av22.portsmouth.uk.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-27_11:2020-07-27,2020-07-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
- phishscore=0 lowpriorityscore=0 impostorscore=0 spamscore=0 adultscore=0
- mlxscore=0 mlxlogscore=999 malwarescore=0 clxscore=1015 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007270111
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200726024211.GA14321@sol.localdomain>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Sat, Jul 25, 2020 at 07:42:11PM -0700, Eric Biggers wrote:
+> > Exactly my point. Requiring infrastructure and storage layers to
+> > obey completely new, undefined, undiscoverable, opaque and variable
+> > definition of the block devices' "atomic unit of IO", then that's
+> > simply a non-starter. That requires a complete re-architecture of
+> > the block layers and how things interface and transmit information
+> > through them. At minimum, high level IO alignment constraints must
+> > be generic and not be hidden in context specific crypto structures.
+> 
+> Do you have any specific examples in mind of where *encrypted* I/O may broken at
+> only a logical_block_size boundary?  Remember that encrypted I/O with a
+> particular data_unit_size is only issued if the request_queue has declared that
+> it supports encryption with that data_unit_size.  In the case of a layered
+> device, that means that every layer would have to opt-into supporting encryption
+> as well as the specific data_unit_size.
+> 
+> Also, the alignment requirement is already passed down the stack as part of the
+> bio_crypt_ctx.  If there do turn out to be places that need to use it, we could
+> easily define generic helper functions:
+> 
+> unsigned int bio_required_alignment(struct bio *bio)
+> {
+>         unsigned int alignmask = queue_logical_block_size(bio->bi_disk->queue) - 1;
+> 
+> #ifdef CONFIG_BLK_INLINE_ENCRYPTION
+>         if (bio->bi_crypt_context)
+>                 alignmask |= bio->bi_crypt_context->bc_key->crypto_cfg.data_unit_size - 1;
+> #endif
+> 
+>         return alignmask + 1;
+> }
+> 
+> unsigned int rq_required_alignment(struct request *rq)
+> {
+>         unsigned int alignmask = queue_logical_block_size(rq->q) - 1;
+> 
+> #ifdef CONFIG_BLK_INLINE_ENCRYPTION
+>         if (rq->crypt_ctx)
+>                 alignmask |= rq->crypt_ctx->bc_key->crypto_cfg.data_unit_size - 1;
+> #endif
+> 
+>         return alignmask + 1;
+> }
+> 
+> Sure, we could also add a new alignment_required field to struct bio and struct
+> request, but it would be unnecessary since all the information is already there.
+> 
+> > > Is it your opinion that inline encryption should only be supported when
+> > > data_unit_size <= logical_block_size?  The problems with that are
+> > 
+> > Pretty much.
+> > 
+> > >     (a) Using an unnecessarily small data_unit_size degrades performance a
+> > > 	lot -- for *all* I/O, not just direct I/O.  This is because there are a
+> > > 	lot more separate encryptions/decryptions to do, and there's a fixed
+> > > 	overhead to each one (much of which is intrinsic in the crypto
+> > > 	algorithms themselves, i.e. this isn't simply an implementation quirk).
+> > 
+> > Performance is irrelevant if correctness is not possible.
+> > 
+> 
+> As far as I know, data_unit_size > logical_block_size is working for everyone
+> who has used it so far.
+> 
+> So again, I'm curious if you have any specific examples in mind.  Is this a
+> real-world problem, or just a theoretical case where (in the future) someone
+> could declare support for some data_unit_size in their 'struct request_queue'
+> (possibly for a layered device) without correctly handling alignment in all
+> cases?
+> 
+> I do see that logical_block_size is used for discard, write_same, and zeroout.
+> But that isn't encrypted I/O.
+> 
+> BTW, there might very well be hardware that *only* supports
+> data_unit_size > logical_block_size.
 
+I found get_max_io_size() in block/blk-merge.c.  I'll check if that needs to be
+updated.
 
-On 7/23/20 8:35 PM, Lukas Czerner wrote:
-> Currently there is a problem with mount options that can be both set by
-> vfs using mount flags or by a string parsing in ext4.
-> 
-> i_version/iversion options gets lost after remount, for example
-> 
-> $ mount -o i_version /dev/pmem0 /mnt
-> $ grep pmem0 /proc/self/mountinfo | grep i_version
-> 310 95 259:0 / /mnt rw,relatime shared:163 - ext4 /dev/pmem0 rw,seclabel,i_version
-> $ mount -o remount,ro /mnt
-> $ grep pmem0 /proc/self/mountinfo | grep i_version
-> 
-> nolazytime gets ignored by ext4 on remount, for example
-> 
-> $ mount -o lazytime /dev/pmem0 /mnt
-> $ grep pmem0 /proc/self/mountinfo | grep lazytime
-> 310 95 259:0 / /mnt rw,relatime shared:163 - ext4 /dev/pmem0 rw,lazytime,seclabel
-> $ mount -o remount,nolazytime /mnt
-> $ grep pmem0 /proc/self/mountinfo | grep lazytime
-> 310 95 259:0 / /mnt rw,relatime shared:163 - ext4 /dev/pmem0 rw,lazytime,seclabel
-> 
-> Fix it by applying the SB_LAZYTIME and SB_I_VERSION flags from *flags to
-> s_flags before we parse the option and use the resulting state of the
-> same flags in *flags at the end of successful remount.
-> 
-> Signed-off-by: Lukas Czerner <lczerner@redhat.com>
+Let me know if you have any objection to the fscrypt inline encryption patches
+*without direct I/O support* going into 5.9.  Note that fscrypt doesn't directly
+care about this block layer stuff at all; instead it uses
+blk_crypto_config_supported() to check whether inline encryption with the
+specified (crypto_mode, data_unit_size, dun_bytes) combination is supported on
+the filesystem's device(s).  Only then will fscrypt use inline encryption
+instead of the traditional filesystem-layer encryption.
 
-Looks good to me. I did some small unit testing to observe the
-behavior. Below logs are *with your patch applied* for nolazytime e.g.
-which you referred above. But without your patch, as you mentioned
-nolazytime was not taking into effect.
+So if blk_crypto_config_supported() is saying that some crypto configuration is
+supported when it isn't, then that's a bug in the blk-crypto patches that went
+into the block layer in 5.8, which we need to fix there.  (Ideally by fixing any
+cases where encrypted I/O may be split in the middle of a data unit.  But in the
+worst case, we could easily make blk_crypto_config_supported() return false when
+'data_unit_size > logical_block_size' for now.)
 
-           mount  8635 [007]  5477.595642:      probe:ext4_remount: 
-(ffffffff813bd270) s_flags=0x72810000 flags=0x0 data_string="i_version"
-            mount  8635 [007]  5477.595672:  probe:ext4_remount_L55: 
-(ffffffff813bd3d1) s_flags=0x70010000 flags=0x0 data_string="i_version"
-            mount  8635 [007]  5477.595758: probe:ext4_remount_L217: 
-(ffffffff813bd787) s_flags=0x70810000 flags=0x0
-            mount  8635 [007]  5477.595772: probe:ext4_remount_L246: 
-(ffffffff813bd820) s_flags=0x70810000 flags=0x800000
-
-
-
-Please feel free to add.
-Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
-
-
-> ---
->   fs/ext4/super.c | 21 ++++++++++++++++-----
->   1 file changed, 16 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 330957ed1f05..caab4c57f909 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -5445,7 +5445,7 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
->   {
->   	struct ext4_super_block *es;
->   	struct ext4_sb_info *sbi = EXT4_SB(sb);
-> -	unsigned long old_sb_flags;
-> +	unsigned long old_sb_flags, vfs_flags;
->   	struct ext4_mount_options old_opts;
->   	int enable_quota = 0;
->   	ext4_group_t g;
-> @@ -5488,6 +5488,14 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
->   	if (sbi->s_journal && sbi->s_journal->j_task->io_context)
->   		journal_ioprio = sbi->s_journal->j_task->io_context->ioprio;
-> 
-> +	/*
-> +	 * Some options can be enabled by ext4 and/or by VFS mount flag
-> +	 * either way we need to make sure it matches in both *flags and
-> +	 * s_flags. Copy those selected flags from *flags to s_flags
-> +	 */
-> +	vfs_flags = SB_LAZYTIME | SB_I_VERSION;
-> +	sb->s_flags = (sb->s_flags & ~vfs_flags) | (*flags & vfs_flags);
-> +
->   	if (!parse_options(data, sb, NULL, &journal_ioprio, 1)) {
->   		err = -EINVAL;
->   		goto restore_opts;
-> @@ -5541,9 +5549,6 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
->   		set_task_ioprio(sbi->s_journal->j_task, journal_ioprio);
->   	}
-> 
-> -	if (*flags & SB_LAZYTIME)
-> -		sb->s_flags |= SB_LAZYTIME;
-> -
->   	if ((bool)(*flags & SB_RDONLY) != sb_rdonly(sb)) {
->   		if (sbi->s_mount_flags & EXT4_MF_FS_ABORTED) {
->   			err = -EROFS;
-> @@ -5675,7 +5680,13 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
->   	}
->   #endif
-> 
-> -	*flags = (*flags & ~SB_LAZYTIME) | (sb->s_flags & SB_LAZYTIME);
-> +	/*
-> +	 * Some options can be enabled by ext4 and/or by VFS mount flag
-> +	 * either way we need to make sure it matches in both *flags and
-> +	 * s_flags. Copy those selected flags from s_flags to *flags
-> +	 */
-> +	*flags = (*flags & ~vfs_flags) | (sb->s_flags & vfs_flags);
-> +
->   	ext4_msg(sb, KERN_INFO, "re-mounted. Opts: %s", orig_data);
->   	kfree(orig_data);
->   	return 0;
-> 
+- Eric
