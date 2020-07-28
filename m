@@ -2,65 +2,66 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E03D230574
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Jul 2020 10:32:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA7E823062C
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 Jul 2020 11:10:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728160AbgG1Ice convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Tue, 28 Jul 2020 04:32:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54590 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727808AbgG1Icd (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 28 Jul 2020 04:32:33 -0400
-From:   bugzilla-daemon@bugzilla.kernel.org
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 207729] Mounting EXT4 with data_err=abort does not abort
- journal on data block write failure
-Date:   Tue, 28 Jul 2020 08:32:32 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: jack@suse.cz
-X-Bugzilla-Status: ASSIGNED
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-207729-13602-9qz1oojuSh@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-207729-13602@https.bugzilla.kernel.org/>
-References: <bug-207729-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        id S1728306AbgG1JKg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 28 Jul 2020 05:10:36 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8837 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727970AbgG1JKf (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 28 Jul 2020 05:10:35 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 22F452697912E371BFAF;
+        Tue, 28 Jul 2020 17:10:33 +0800 (CST)
+Received: from [127.0.0.1] (10.174.178.38) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Tue, 28 Jul 2020
+ 17:10:28 +0800
+Subject: Re: [PATCH 3/6] ext4: Check journal inode extents more carefully
+To:     Jan Kara <jack@suse.cz>, Ted Tso <tytso@mit.edu>
+CC:     <linux-ext4@vger.kernel.org>, Lukas Czerner <lczerner@redhat.com>
+References: <20200727114429.1478-1-jack@suse.cz>
+ <20200727114429.1478-4-jack@suse.cz>
+From:   luomeng <luomeng12@huawei.com>
+Message-ID: <ec26732c-d219-8219-e7d6-63dab7aee03d@huawei.com>
+Date:   Tue, 28 Jul 2020 17:10:28 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
+In-Reply-To: <20200727114429.1478-4-jack@suse.cz>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.38]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=207729
 
---- Comment #4 from Jan Kara (jack@suse.cz) ---
-Thanks for the reproducer! Good spotting! This is indeed broken. The problem is
-that the write to the second file block happens, data is written to page cache.
-Then fsync(2) happens. It starts writeback of the second file block - allocates
-block, extends file size, submits write of the second file block, and waits for
-this write to complete. Because the write fails with EIO, waiting for the write
-to complete returns EIO which then bubbles up to userspace. But this also
-"consumes" the IO error and so the journalling layer which commits transaction
-later does not know there was IO error before and so it happily commits the
-transaction. As I've verified, this scenario indeed leads to stale data
-exposure that data_err=abort mount option is meant to prevent.
 
-I have to think how to fix this properly...
+ÔÚ 2020/7/27 19:44, Jan Kara Ð´µÀ:
+> -int ext4_data_block_valid(struct ext4_sb_info *sbi, ext4_fsblk_t start_blk,
+> +int ext4_inode_block_valid(struct inode *inode, ext4_fsblk_t start_blk,
+>   			  unsigned int count)
+>   {
+>   	struct ext4_system_blocks *system_blks;
+> @@ -344,8 +346,8 @@ int ext4_data_block_valid(struct ext4_sb_info *sbi, ext4_fsblk_t start_blk,
+>   	 */
+>   	rcu_read_lock();
+>   	system_blks = rcu_dereference(sbi->system_blks);
+Because of a change in the function parameters£¬there is no 'sbi' 
+declared. So there will be a compile error:
 
--- 
-You are receiving this mail because:
-You are watching the assignee of the bug.
+   fs/ext4/block_validity.c: In function ¡®ext4_inode_block_valid¡¯:
+   fs/ext4/block_validity.c:345:32: error: ¡®sbi¡¯ undeclared (first use 
+        in this function)
+   system_blks = rcu_dereference(sbi->system_blks);
+> -	ret = ext4_data_block_valid_rcu(sbi, system_blks, start_blk,
+> -					count);
+> +	ret = ext4_data_block_valid_rcu(EXT4_SB(inode->i_sb), system_blks,
+> +					start_blk, count, inode->i_ino);
+>   	rcu_read_unlock();
+>   	return ret;
+>   }
+
