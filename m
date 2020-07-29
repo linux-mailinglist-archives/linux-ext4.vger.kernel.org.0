@@ -2,124 +2,115 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECCC6231B88
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 Jul 2020 10:45:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C92231CCD
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 Jul 2020 12:38:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728124AbgG2Ipd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 29 Jul 2020 04:45:33 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:19810 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727054AbgG2Ipc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 29 Jul 2020 04:45:32 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06T8WR1Q053522;
-        Wed, 29 Jul 2020 04:45:30 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 32jpw40reg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Jul 2020 04:45:29 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06T8TnkI026980;
-        Wed, 29 Jul 2020 08:45:28 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma03ams.nl.ibm.com with ESMTP id 32gcpx4u4c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Jul 2020 08:45:27 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06T8i0xC55640444
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 29 Jul 2020 08:44:00 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 36A6A11C05C;
-        Wed, 29 Jul 2020 08:45:25 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E610911C050;
-        Wed, 29 Jul 2020 08:45:23 +0000 (GMT)
-Received: from localhost.localdomain.com (unknown [9.199.33.112])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 29 Jul 2020 08:45:23 +0000 (GMT)
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-To:     linux-nvdimm@lists.01.org
-Cc:     linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
-Subject: [RFC 1/1] pmem: Add cond_resched() in bio_for_each_segment loop in pmem_make_request
-Date:   Wed, 29 Jul 2020 14:15:18 +0530
-Message-Id: <0d96e2481f292de2cda8828b03d5121004308759.1596011292.git.riteshh@linux.ibm.com>
-X-Mailer: git-send-email 2.25.4
+        id S1726449AbgG2Kil (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 29 Jul 2020 06:38:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726336AbgG2Kil (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 29 Jul 2020 06:38:41 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 544AFC061794;
+        Wed, 29 Jul 2020 03:38:41 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id l26so591449otj.4;
+        Wed, 29 Jul 2020 03:38:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=IFF1irOJqdUETJCHFaBsg6OmWBfYFCwyibD9/Op1rYM=;
+        b=NiajiFeXapFSLkg9Fcia++H17b4TapQkKaBWfWcoZqgcQvIOYHMNBPmw9Z37rdrfWS
+         4c3SkUG7pXNrxgS4l3EErffvKWY0JivYsN4NSeORL/KG+aRbyDKpEuPTdOjSVC8jxY4k
+         y04BHIzSyppanI7tEIbvycB+X0SKBDz9ofWkoKjqGyfZiYMO1sdKT1SzSIsjEgJOOWux
+         RXt/PFZvfbzcxlMYNt4YHv4NC9j+vXFl+ehuaIeK66HVHBRi0eS5gQzoYmlD5WKsRmQN
+         C8ejvMzQxWn0j7AIiv2+lWV752s0ZH6ZB86u+t3HFiNsd9pqay1YFa2jKavpSQ46u2Ij
+         YUxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=IFF1irOJqdUETJCHFaBsg6OmWBfYFCwyibD9/Op1rYM=;
+        b=ExD3CceF82XK5XGkddvL+lerT/9bGONqjJrwuneBTfAP9Mriq9c+gG6Ujl6H87H8za
+         g+Xw4y5BuIof9AC1jrv0rQa0TjDSP4XJxSlNgqJrJ8360Wy8/JOSAC+r6z+nP7P01RG+
+         IOO3KVLkbA2l0yQguPiodiZarh4cQiBzoapeHdTF1S2q21UP/SfSsr3RSLS/WrM21lfh
+         q7yKmYG9kxcUf0/hmOi6HFeK6pX1RK/XwLq68q7C2czxa6cCNft+a0TCbxDoFeA5jZ8K
+         X+2wKWh48ilBuAEd63WxaWqxbeoxtGnn2wcSL7gz410e76fVFdDQP0k+SO2NWkeLgHu0
+         nj9g==
+X-Gm-Message-State: AOAM530/huLinMfA8lP2jAEaJoRDYiLj03msASjtSCd07HXK32qCYiPV
+        FurR2OAiS6oBOeWVJlwvDblbRNno+Unc2E7J5jcEed4FVIA=
+X-Google-Smtp-Source: ABdhPJy848HJf2FYyv6C06g0pRiXGI8p0iDziqZgEZInSOsIlilb36b3qI5wirQMia3EfHaXcg5LW6I+FsrXtAlypFg=
+X-Received: by 2002:a9d:7057:: with SMTP id x23mr602045otj.95.1596019120257;
+ Wed, 29 Jul 2020 03:38:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-29_03:2020-07-28,2020-07-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- adultscore=0 lowpriorityscore=0 priorityscore=1501 mlxlogscore=842
- malwarescore=0 spamscore=0 impostorscore=0 suspectscore=1 clxscore=1011
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007290055
+From:   Takuya Yoshikawa <takuya.yoshikawa@gmail.com>
+Date:   Wed, 29 Jul 2020 19:38:33 +0900
+Message-ID: <CANR1yOpz9o9VcAiqo18aVO5ssmuSy18RxnMKR=Dz884Rj8_trg@mail.gmail.com>
+Subject: ext4/xfs: about switching underlying 512B sector devices to 4K ones
+To:     linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-For systems which do not have CONFIG_PREEMPT set and
-if there is a heavy multi-threaded load/store operation happening
-on pmem + sometimes along with device latencies, softlockup warnings like
-this could trigger. This was seen on Power where pagesize is 64K.
+I have a question: is it possible to make existing ext4/xfs filesystems
+formatted on 512B sector devices run as is on 4k sector devices?
 
-To avoid softlockup, this patch adds a cond_resched() in this path.
 
-<...>
-watchdog: BUG: soft lockup - CPU#31 stuck for 22s!
-<...>
-CPU: 31 PID: 15627 <..> 5.3.18-20
-<...>
-NIP memcpy_power7+0x43c/0x7e0
-LR memcpy_flushcache+0x28/0xa0
+Problem:
 
-Call Trace:
-memcpy_power7+0x274/0x7e0 (unreliable)
-memcpy_flushcache+0x28/0xa0
-write_pmem+0xa0/0x100 [nd_pmem]
-pmem_do_bvec+0x1f0/0x420 [nd_pmem]
-pmem_make_request+0x14c/0x370 [nd_pmem]
-generic_make_request+0x164/0x400
-submit_bio+0x134/0x2e0
-submit_bio_wait+0x70/0xc0
-blkdev_issue_zeroout+0xf4/0x2a0
-xfs_zero_extent+0x90/0xc0 [xfs]
-xfs_bmapi_convert_unwritten+0x198/0x230 [xfs]
-xfs_bmapi_write+0x284/0x630 [xfs]
-xfs_iomap_write_direct+0x1f0/0x3e0 [xfs]
-xfs_file_iomap_begin+0x344/0x690 [xfs]
-dax_iomap_pmd_fault+0x488/0xc10
-__xfs_filemap_fault+0x26c/0x2b0 [xfs]
-__handle_mm_fault+0x794/0x1af0
-handle_mm_fault+0x12c/0x220
-__do_page_fault+0x290/0xe40
-do_page_fault+0x38/0xc0
-handle_page_fault+0x10/0x30
+We are maintaining some legacy servers whose data is stored on
+ext4/xfs filesystems formatted on lvm2 raid1 devices.
 
-Reviewed-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
----
- drivers/nvdimm/pmem.c | 1 +
- 1 file changed, 1 insertion(+)
+These raid1 devices consist of a few iSCSI devices, so the
+remote storage servers running as iSCSI targets are the actual
+data storage.
 
-diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
-index 2df6994acf83..fcf7af13897e 100644
---- a/drivers/nvdimm/pmem.c
-+++ b/drivers/nvdimm/pmem.c
-@@ -214,6 +214,7 @@ static blk_qc_t pmem_make_request(struct request_queue *q, struct bio *bio)
- 			bio->bi_status = rc;
- 			break;
- 		}
-+		cond_resched();
- 	}
- 	if (do_acct)
- 		nd_iostat_end(bio, start);
--- 
-2.25.4
+  /dev/md127 --  /dev/sda  --(iSCSI)-- remote storage server
+                 /dev/sdb  --(iSCSI)-- remote storage server
 
+A problem happened when we tried to add a new storage server with
+4k sector disks as an iSCSI target. After lvm2 added that iSCSI
+device and started syncing the blocks from existing 512B sector
+storage servers to the new 4k sector ones, we got
+"Bad block number requested" messages, and soon after that,
+the new device was removed from the lvm2 raid1 device.
+
+  /dev/md127 --  /dev/sda  --(iSCSI)-- remote storage server(512)
+                 /dev/sdb  --(iSCSI)-- remote storage server(512)
+              *  /dev/sdc  --(iSCSI)-- remote storage server(4k)
+
+  The combined raid1 device had been recognized as a 4k device
+  as described in this article:
+    https://access.redhat.com/articles/3911611
+
+It seemed like 512B unaligned requests from the xfs filesystem
+were sent to the raid1 device, and mirrored requests caused
+the problem on the newly added 4k sector storage.
+
+The xfs was formatted with its sector_size_options set to the
+default (512).
+See https://www.man7.org/linux/man-pages/man8/mkfs.xfs.8.html
+
+In the case of ext4, the device continued to run, but I was not
+sure if there could be any problems.
+
+
+Question:
+
+Is it possible to change the underlying storage to 4k sector ones
+as written above without copying the data on the ext4/xfs
+filesystems to outside of the raid1 device?
+
+ext4: I am not seeing any apparent errors after adding the 4k
+  device. Is this an expected behavior?
+
+xfs: is it possible to change the filesystem sector size?
+
+  I read this explanation and thought if I could change the
+  journal related metadata, it might be possible.
+  https://www.spinics.net/lists/linux-xfs/msg14495.html
+
+
+Thanks,
+  Takuya
