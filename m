@@ -2,58 +2,58 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D72C7231969
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 Jul 2020 08:19:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9000E23196A
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 Jul 2020 08:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726314AbgG2GTZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 29 Jul 2020 02:19:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40842 "EHLO
+        id S1726445AbgG2GT1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 29 Jul 2020 02:19:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726286AbgG2GTY (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 29 Jul 2020 02:19:24 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E47DC061794
-        for <linux-ext4@vger.kernel.org>; Tue, 28 Jul 2020 23:19:23 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id i92so1093457pje.0
-        for <linux-ext4@vger.kernel.org>; Tue, 28 Jul 2020 23:19:23 -0700 (PDT)
+        with ESMTP id S1726286AbgG2GT0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 29 Jul 2020 02:19:26 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBC6DC061794
+        for <linux-ext4@vger.kernel.org>; Tue, 28 Jul 2020 23:19:26 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id t6so13720278pgq.1
+        for <linux-ext4@vger.kernel.org>; Tue, 28 Jul 2020 23:19:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=to:cc:from:subject:message-id:date:user-agent:mime-version
          :content-transfer-encoding:content-language;
-        bh=wtuxLP0ca/1lLLWZrG8eU9P0LZtnmzzX2jMre0ZG8VM=;
-        b=dRLqwPgId8IZo8/ccRXzF3ObkrXodoTy5jMzxNkUy5RbHut4EIUuk1O2jmnXEsrR+l
-         x9bG70WzOhTWOtV9ein3nXRQyJdDk5NLweSkcnbxEBXzCkuVHKvwKSMZZi9vx/Tj4Fxp
-         +h7jmCh4qoMZ0GjZ/SkpY/dhAFvqjeKogjFWNzbUpJcMLkK4GzYF9EwzFTXbXKfkmvph
-         rORmFKAfkrU9vvPSP561Ltk2V+VlL1CCc7tRrkEj1XKXeAs4832+7P70MVJofDu9vFLr
-         WldmkZz59XNhjl7V6jNQZyKb/c0Z2iYsTDMgS/joZ4KRoa/Jw0mBknUOe7aUZVjSZtct
-         CtdQ==
+        bh=rIOXkzd3UM4u7MLNWHv7VAb8VIykq9AFMuxB5NPzRRI=;
+        b=kzwGHsTXXF4bp7wUDmtsY1TzWSe+iao1y0T0/A8W3abnehscEZPFGb2kisC4YHHTyq
+         OaUg7R1aNrVmo5DG7Qj5dB2mvUb91gOVKUrR+mQsc7YO9d9jo8NE7eY8jL5cecf3cs4M
+         S0IbQrnFyCWPE5yzpSXwV5jX1wv8+uFJcvtEwuBI9i1KrR9NHnpBPoOQgA2HV5JaI3Qv
+         fsY4bwBZeCOV4bRO79F8ZxiFm5feCZGg/pWAjof+/+9AuCIEknsyEAYmnQ6zRxAwdNR6
+         VSTvszFFFBbVMtdeF6k4+ws5bl6Ipv0iTyiLFGySvKqYIOVSTVpLI/HZfVUg1WcGNfQd
+         8Zpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
          :mime-version:content-transfer-encoding:content-language;
-        bh=wtuxLP0ca/1lLLWZrG8eU9P0LZtnmzzX2jMre0ZG8VM=;
-        b=ukMGzfkm5NX1BRiMDkJg7KyMOev7jf/uITIcSZ9sT3qxCFJxAnNJiHNemRUIsbihvI
-         o7njmuZly6ZeQVJ4NO03A4Ghrg2RebMplIvji29IqKX0XALYqjZ3jQ60c+W5BCtqqQWf
-         6NFJiV1Cvw2gXr/OWxUne0liNmNSqhyUUiBwWlTiL6yyEo31h4fmyz8Ci9NBvpPwwmHl
-         ioi0iiTWiw+KvNnu48lWRWQWj1+0eMVGu5v/6DDfsVy2aY9Tn9p3jFJg52DsSZN5P7hw
-         I7UAuyGjM9cjQDn2UuVkFgWYu6/+ypNWO42P1H4B2xEHyL8rLoLHscNHFpofUN6lfusL
-         eJsw==
-X-Gm-Message-State: AOAM533IFdcJv6Fh6BNv/Fq5+QSqqHoOvFLj1lc1Xl3RRcyrRKDun+Lh
-        XOybAOmpOeUMYNhgd45y8iGnqgdoMdk=
-X-Google-Smtp-Source: ABdhPJyIjGhzuzuO2ArOBpU0Npgzfezv2LM0ans6jSti+91guPrfBIvgBg401K34mTp/+qRBE1Faag==
-X-Received: by 2002:a17:90a:9b88:: with SMTP id g8mr8158020pjp.143.1596003562284;
-        Tue, 28 Jul 2020 23:19:22 -0700 (PDT)
+        bh=rIOXkzd3UM4u7MLNWHv7VAb8VIykq9AFMuxB5NPzRRI=;
+        b=I3/DnQf1LTYXXgu1JBwhBhDJUGZ9GlggY4UMWUa22I6IBNvDdVN66nKg+qmL72W70a
+         05J+tBvOlZihCiq7FqDSNNnReud7Gcd4bfPGsYvDl/XQAzwSxdP4Wh/Ay9rigRqh1Wce
+         CK6BV2tIXfnuVJxwslSHvKLCimGjgm/zlySagDL75wwGq8ASOHndZeWhFxbtr5wIcGQW
+         pnUeqnJu7HKvpURVMs2IPdi0q3YEQ+u8FIepGLJDdJ8QNhWontg7MxDmBR+DbwX7X9Gd
+         DDgACmUpeIy00oiOt1akAiwCFiDqOCwNwUpEcQdwySWX8e7ngUmZXivJ+5u/VPCn7Hgm
+         GHww==
+X-Gm-Message-State: AOAM531zsNE+aYglDJNSAi6553GX8w+CyyaDuZW1WKlaZzAXD/9065OF
+        AEE8/8y7SU0vJ/Hx+rvRRXO2wyoiLz4=
+X-Google-Smtp-Source: ABdhPJxSIKyYp8spToCuwkRtjpo5Hj84RFWdkhxSpxM14lr8fK63LPtGwCoR39NhdwX6Ctd4FzyoPA==
+X-Received: by 2002:a63:ec05:: with SMTP id j5mr28459617pgh.109.1596003566217;
+        Tue, 28 Jul 2020 23:19:26 -0700 (PDT)
 Received: from [10.8.0.10] ([203.205.141.60])
-        by smtp.gmail.com with ESMTPSA id io3sm964170pjb.22.2020.07.28.23.19.21
+        by smtp.gmail.com with ESMTPSA id z77sm998085pfc.199.2020.07.28.23.19.24
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Jul 2020 23:19:21 -0700 (PDT)
+        Tue, 28 Jul 2020 23:19:25 -0700 (PDT)
 To:     tytso@mit.edu, adilger.kernel@dilger.ca
 Cc:     linux-ext4@vger.kernel.org
 From:   brookxu <brookxu.cn@gmail.com>
-Subject: [PATCH 1/2] ext4: rename journal_dev to s_journal_dev inside
+Subject: [PATCH 2/2] ext4: rename system_blks to s_system_blks inside
  ext4_sb_info
-Message-ID: <74c2a122-5a6c-ac97-614a-043038d61623@gmail.com>
-Date:   Wed, 29 Jul 2020 14:19:20 +0800
+Message-ID: <6af737ee-e16f-9d2b-5045-fb5b8995a6d6@gmail.com>
+Date:   Wed, 29 Jul 2020 14:19:23 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
@@ -65,110 +65,86 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Rename journal_dev to s_journal_dev inside ext4_sb_info, keep
+Rename system_blks to s_system_blks inside ext4_sb_info, keep
 the naming rules consistent with other variables, which is
 convenient for code reading and writing.
 
 Signed-off-by: Chunguang Xu <brookxu@tencent.com>
 ---
- fs/ext4/ext4.h  |  2 +-
- fs/ext4/fsmap.c |  8 ++++----
- fs/ext4/super.c | 14 +++++++-------
- 3 files changed, 12 insertions(+), 12 deletions(-)
+ fs/ext4/block_validity.c | 14 +++++++-------
+ fs/ext4/ext4.h           |  2 +-
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
+diff --git a/fs/ext4/block_validity.c b/fs/ext4/block_validity.c
+index 16e9b2f..69240b4 100644
+--- a/fs/ext4/block_validity.c
++++ b/fs/ext4/block_validity.c
+@@ -138,7 +138,7 @@ static void debug_print_tree(struct ext4_sb_info *sbi)
+ 
+     printk(KERN_INFO "System zones: ");
+     rcu_read_lock();
+-    system_blks = rcu_dereference(sbi->system_blks);
++    system_blks = rcu_dereference(sbi->s_system_blks);
+     node = rb_first(&system_blks->root);
+     while (node) {
+         entry = rb_entry(node, struct ext4_system_zone, node);
+@@ -263,11 +263,11 @@ int ext4_setup_system_zone(struct super_block *sb)
+     int ret;
+ 
+     if (!test_opt(sb, BLOCK_VALIDITY)) {
+-        if (sbi->system_blks)
++        if (sbi->s_system_blks)
+             ext4_release_system_zone(sb);
+         return 0;
+     }
+-    if (sbi->system_blks)
++    if (sbi->s_system_blks)
+         return 0;
+ 
+     system_blks = kzalloc(sizeof(*system_blks), GFP_KERNEL);
+@@ -308,7 +308,7 @@ int ext4_setup_system_zone(struct super_block *sb)
+      * with ext4_data_block_valid() accessing the rbtree at the same
+      * time.
+      */
+-    rcu_assign_pointer(sbi->system_blks, system_blks);
++    rcu_assign_pointer(sbi->s_system_blks, system_blks);
+ 
+     if (test_opt(sb, DEBUG))
+         debug_print_tree(sbi);
+@@ -333,9 +333,9 @@ void ext4_release_system_zone(struct super_block *sb)
+ {
+     struct ext4_system_blocks *system_blks;
+ 
+-    system_blks = rcu_dereference_protected(EXT4_SB(sb)->system_blks,
++    system_blks = rcu_dereference_protected(EXT4_SB(sb)->s_system_blks,
+                     lockdep_is_held(&sb->s_umount));
+-    rcu_assign_pointer(EXT4_SB(sb)->system_blks, NULL);
++    rcu_assign_pointer(EXT4_SB(sb)->s_system_blks, NULL);
+ 
+     if (system_blks)
+         call_rcu(&system_blks->rcu, ext4_destroy_system_zone);
+@@ -353,7 +353,7 @@ int ext4_data_block_valid(struct ext4_sb_info *sbi, ext4_fsblk_t start_blk,
+      * mount option.
+      */
+     rcu_read_lock();
+-    system_blks = rcu_dereference(sbi->system_blks);
++    system_blks = rcu_dereference(sbi->s_system_blks);
+     ret = ext4_data_block_valid_rcu(sbi, system_blks, start_blk,
+                     count);
+     rcu_read_unlock();
 diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 68e0ebe..8ca9adf 100644
+index 8ca9adf..d60a462 100644
 --- a/fs/ext4/ext4.h
 +++ b/fs/ext4/ext4.h
-@@ -1463,7 +1463,7 @@ struct ext4_sb_info {
-     unsigned long s_commit_interval;
-     u32 s_max_batch_time;
-     u32 s_min_batch_time;
--    struct block_device *journal_bdev;
-+    struct block_device *s_journal_bdev;
- #ifdef CONFIG_QUOTA
-     /* Names of quota files with journalled quota */
-     char __rcu *s_qf_names[EXT4_MAXQUOTAS];
-diff --git a/fs/ext4/fsmap.c b/fs/ext4/fsmap.c
-index dbccf46..005c0ae 100644
---- a/fs/ext4/fsmap.c
-+++ b/fs/ext4/fsmap.c
-@@ -571,8 +571,8 @@ static bool ext4_getfsmap_is_valid_device(struct super_block *sb,
-     if (fm->fmr_device == 0 || fm->fmr_device == UINT_MAX ||
-         fm->fmr_device == new_encode_dev(sb->s_bdev->bd_dev))
-         return true;
--    if (EXT4_SB(sb)->journal_bdev &&
--        fm->fmr_device == new_encode_dev(EXT4_SB(sb)->journal_bdev->bd_dev))
-+    if (EXT4_SB(sb)->s_journal_bdev &&
-+        fm->fmr_device == new_encode_dev(EXT4_SB(sb)->s_journal_bdev->bd_dev))
-         return true;
-     return false;
- }
-@@ -642,9 +642,9 @@ int ext4_getfsmap(struct super_block *sb, struct ext4_fsmap_head *head,
-     memset(handlers, 0, sizeof(handlers));
-     handlers[0].gfd_dev = new_encode_dev(sb->s_bdev->bd_dev);
-     handlers[0].gfd_fn = ext4_getfsmap_datadev;
--    if (EXT4_SB(sb)->journal_bdev) {
-+    if (EXT4_SB(sb)->s_journal_bdev) {
-         handlers[1].gfd_dev = new_encode_dev(
--                EXT4_SB(sb)->journal_bdev->bd_dev);
-+                EXT4_SB(sb)->s_journal_bdev->bd_dev);
-         handlers[1].gfd_fn = ext4_getfsmap_logdev;
-     }
+@@ -1470,7 +1470,7 @@ struct ext4_sb_info {
+     int s_jquota_fmt;            /* Format of quota to use */
+ #endif
+     unsigned int s_want_extra_isize; /* New inodes should reserve # bytes */
+-    struct ext4_system_blocks __rcu *system_blks;
++    struct ext4_system_blocks __rcu *s_system_blks;
  
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 8ce61f3..f785aee7 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -935,10 +935,10 @@ static void ext4_blkdev_put(struct block_device *bdev)
- static void ext4_blkdev_remove(struct ext4_sb_info *sbi)
- {
-     struct block_device *bdev;
--    bdev = sbi->journal_bdev;
-+    bdev = sbi->s_journal_bdev;
-     if (bdev) {
-         ext4_blkdev_put(bdev);
--        sbi->journal_bdev = NULL;
-+        sbi->s_journal_bdev = NULL;
-     }
- }
- 
-@@ -1069,14 +1069,14 @@ static void ext4_put_super(struct super_block *sb)
- 
-     sync_blockdev(sb->s_bdev);
-     invalidate_bdev(sb->s_bdev);
--    if (sbi->journal_bdev && sbi->journal_bdev != sb->s_bdev) {
-+    if (sbi->s_journal_bdev && sbi->s_journal_bdev != sb->s_bdev) {
-         /*
-          * Invalidate the journal device's buffers.  We don't want them
-          * floating about in memory - the physical journal device may
-          * hotswapped, and it breaks the `ro-after' testing code.
-          */
--        sync_blockdev(sbi->journal_bdev);
--        invalidate_bdev(sbi->journal_bdev);
-+        sync_blockdev(sbi->s_journal_bdev);
-+        invalidate_bdev(sbi->s_journal_bdev);
-         ext4_blkdev_remove(sbi);
-     }
- 
-@@ -3712,7 +3712,7 @@ int ext4_calculate_overhead(struct super_block *sb)
-      * Add the internal journal blocks whether the journal has been
-      * loaded or not
-      */
--    if (sbi->s_journal && !sbi->journal_bdev)
-+    if (sbi->s_journal && !sbi->s_journal_bdev)
-         overhead += EXT4_NUM_B2C(sbi, sbi->s_journal->j_maxlen);
-     else if (ext4_has_feature_journal(sb) && !sbi->s_journal && j_inum) {
-         /* j_inum for internal journal is non-zero */
-@@ -5057,7 +5057,7 @@ static journal_t *ext4_get_dev_journal(struct super_block *sb,
-             be32_to_cpu(journal->j_superblock->s_nr_users));
-         goto out_journal;
-     }
--    EXT4_SB(sb)->journal_bdev = bdev;
-+    EXT4_SB(sb)->s_journal_bdev = bdev;
-     ext4_init_journal_params(sb, journal);
-     return journal;
- 
+ #ifdef EXTENTS_STATS
+     /* ext4 extents stats */
 -- 
 1.8.3.1
 
