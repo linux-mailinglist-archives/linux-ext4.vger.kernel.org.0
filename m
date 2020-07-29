@@ -2,149 +2,124 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9000E23196A
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 Jul 2020 08:19:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECCC6231B88
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 Jul 2020 10:45:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726445AbgG2GT1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 29 Jul 2020 02:19:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726286AbgG2GT0 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 29 Jul 2020 02:19:26 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBC6DC061794
-        for <linux-ext4@vger.kernel.org>; Tue, 28 Jul 2020 23:19:26 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id t6so13720278pgq.1
-        for <linux-ext4@vger.kernel.org>; Tue, 28 Jul 2020 23:19:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=rIOXkzd3UM4u7MLNWHv7VAb8VIykq9AFMuxB5NPzRRI=;
-        b=kzwGHsTXXF4bp7wUDmtsY1TzWSe+iao1y0T0/A8W3abnehscEZPFGb2kisC4YHHTyq
-         OaUg7R1aNrVmo5DG7Qj5dB2mvUb91gOVKUrR+mQsc7YO9d9jo8NE7eY8jL5cecf3cs4M
-         S0IbQrnFyCWPE5yzpSXwV5jX1wv8+uFJcvtEwuBI9i1KrR9NHnpBPoOQgA2HV5JaI3Qv
-         fsY4bwBZeCOV4bRO79F8ZxiFm5feCZGg/pWAjof+/+9AuCIEknsyEAYmnQ6zRxAwdNR6
-         VSTvszFFFBbVMtdeF6k4+ws5bl6Ipv0iTyiLFGySvKqYIOVSTVpLI/HZfVUg1WcGNfQd
-         8Zpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-transfer-encoding:content-language;
-        bh=rIOXkzd3UM4u7MLNWHv7VAb8VIykq9AFMuxB5NPzRRI=;
-        b=I3/DnQf1LTYXXgu1JBwhBhDJUGZ9GlggY4UMWUa22I6IBNvDdVN66nKg+qmL72W70a
-         05J+tBvOlZihCiq7FqDSNNnReud7Gcd4bfPGsYvDl/XQAzwSxdP4Wh/Ay9rigRqh1Wce
-         CK6BV2tIXfnuVJxwslSHvKLCimGjgm/zlySagDL75wwGq8ASOHndZeWhFxbtr5wIcGQW
-         pnUeqnJu7HKvpURVMs2IPdi0q3YEQ+u8FIepGLJDdJ8QNhWontg7MxDmBR+DbwX7X9Gd
-         DDgACmUpeIy00oiOt1akAiwCFiDqOCwNwUpEcQdwySWX8e7ngUmZXivJ+5u/VPCn7Hgm
-         GHww==
-X-Gm-Message-State: AOAM531zsNE+aYglDJNSAi6553GX8w+CyyaDuZW1WKlaZzAXD/9065OF
-        AEE8/8y7SU0vJ/Hx+rvRRXO2wyoiLz4=
-X-Google-Smtp-Source: ABdhPJxSIKyYp8spToCuwkRtjpo5Hj84RFWdkhxSpxM14lr8fK63LPtGwCoR39NhdwX6Ctd4FzyoPA==
-X-Received: by 2002:a63:ec05:: with SMTP id j5mr28459617pgh.109.1596003566217;
-        Tue, 28 Jul 2020 23:19:26 -0700 (PDT)
-Received: from [10.8.0.10] ([203.205.141.60])
-        by smtp.gmail.com with ESMTPSA id z77sm998085pfc.199.2020.07.28.23.19.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Jul 2020 23:19:25 -0700 (PDT)
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     linux-ext4@vger.kernel.org
-From:   brookxu <brookxu.cn@gmail.com>
-Subject: [PATCH 2/2] ext4: rename system_blks to s_system_blks inside
- ext4_sb_info
-Message-ID: <6af737ee-e16f-9d2b-5045-fb5b8995a6d6@gmail.com>
-Date:   Wed, 29 Jul 2020 14:19:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728124AbgG2Ipd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 29 Jul 2020 04:45:33 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:19810 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727054AbgG2Ipc (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 29 Jul 2020 04:45:32 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06T8WR1Q053522;
+        Wed, 29 Jul 2020 04:45:30 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32jpw40reg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Jul 2020 04:45:29 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06T8TnkI026980;
+        Wed, 29 Jul 2020 08:45:28 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma03ams.nl.ibm.com with ESMTP id 32gcpx4u4c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Jul 2020 08:45:27 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06T8i0xC55640444
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 29 Jul 2020 08:44:00 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 36A6A11C05C;
+        Wed, 29 Jul 2020 08:45:25 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E610911C050;
+        Wed, 29 Jul 2020 08:45:23 +0000 (GMT)
+Received: from localhost.localdomain.com (unknown [9.199.33.112])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 29 Jul 2020 08:45:23 +0000 (GMT)
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+To:     linux-nvdimm@lists.01.org
+Cc:     linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
+Subject: [RFC 1/1] pmem: Add cond_resched() in bio_for_each_segment loop in pmem_make_request
+Date:   Wed, 29 Jul 2020 14:15:18 +0530
+Message-Id: <0d96e2481f292de2cda8828b03d5121004308759.1596011292.git.riteshh@linux.ibm.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-29_03:2020-07-28,2020-07-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
+ adultscore=0 lowpriorityscore=0 priorityscore=1501 mlxlogscore=842
+ malwarescore=0 spamscore=0 impostorscore=0 suspectscore=1 clxscore=1011
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007290055
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Rename system_blks to s_system_blks inside ext4_sb_info, keep
-the naming rules consistent with other variables, which is
-convenient for code reading and writing.
+For systems which do not have CONFIG_PREEMPT set and
+if there is a heavy multi-threaded load/store operation happening
+on pmem + sometimes along with device latencies, softlockup warnings like
+this could trigger. This was seen on Power where pagesize is 64K.
 
-Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+To avoid softlockup, this patch adds a cond_resched() in this path.
+
+<...>
+watchdog: BUG: soft lockup - CPU#31 stuck for 22s!
+<...>
+CPU: 31 PID: 15627 <..> 5.3.18-20
+<...>
+NIP memcpy_power7+0x43c/0x7e0
+LR memcpy_flushcache+0x28/0xa0
+
+Call Trace:
+memcpy_power7+0x274/0x7e0 (unreliable)
+memcpy_flushcache+0x28/0xa0
+write_pmem+0xa0/0x100 [nd_pmem]
+pmem_do_bvec+0x1f0/0x420 [nd_pmem]
+pmem_make_request+0x14c/0x370 [nd_pmem]
+generic_make_request+0x164/0x400
+submit_bio+0x134/0x2e0
+submit_bio_wait+0x70/0xc0
+blkdev_issue_zeroout+0xf4/0x2a0
+xfs_zero_extent+0x90/0xc0 [xfs]
+xfs_bmapi_convert_unwritten+0x198/0x230 [xfs]
+xfs_bmapi_write+0x284/0x630 [xfs]
+xfs_iomap_write_direct+0x1f0/0x3e0 [xfs]
+xfs_file_iomap_begin+0x344/0x690 [xfs]
+dax_iomap_pmd_fault+0x488/0xc10
+__xfs_filemap_fault+0x26c/0x2b0 [xfs]
+__handle_mm_fault+0x794/0x1af0
+handle_mm_fault+0x12c/0x220
+__do_page_fault+0x290/0xe40
+do_page_fault+0x38/0xc0
+handle_page_fault+0x10/0x30
+
+Reviewed-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
 ---
- fs/ext4/block_validity.c | 14 +++++++-------
- fs/ext4/ext4.h           |  2 +-
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ drivers/nvdimm/pmem.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/ext4/block_validity.c b/fs/ext4/block_validity.c
-index 16e9b2f..69240b4 100644
---- a/fs/ext4/block_validity.c
-+++ b/fs/ext4/block_validity.c
-@@ -138,7 +138,7 @@ static void debug_print_tree(struct ext4_sb_info *sbi)
- 
-     printk(KERN_INFO "System zones: ");
-     rcu_read_lock();
--    system_blks = rcu_dereference(sbi->system_blks);
-+    system_blks = rcu_dereference(sbi->s_system_blks);
-     node = rb_first(&system_blks->root);
-     while (node) {
-         entry = rb_entry(node, struct ext4_system_zone, node);
-@@ -263,11 +263,11 @@ int ext4_setup_system_zone(struct super_block *sb)
-     int ret;
- 
-     if (!test_opt(sb, BLOCK_VALIDITY)) {
--        if (sbi->system_blks)
-+        if (sbi->s_system_blks)
-             ext4_release_system_zone(sb);
-         return 0;
-     }
--    if (sbi->system_blks)
-+    if (sbi->s_system_blks)
-         return 0;
- 
-     system_blks = kzalloc(sizeof(*system_blks), GFP_KERNEL);
-@@ -308,7 +308,7 @@ int ext4_setup_system_zone(struct super_block *sb)
-      * with ext4_data_block_valid() accessing the rbtree at the same
-      * time.
-      */
--    rcu_assign_pointer(sbi->system_blks, system_blks);
-+    rcu_assign_pointer(sbi->s_system_blks, system_blks);
- 
-     if (test_opt(sb, DEBUG))
-         debug_print_tree(sbi);
-@@ -333,9 +333,9 @@ void ext4_release_system_zone(struct super_block *sb)
- {
-     struct ext4_system_blocks *system_blks;
- 
--    system_blks = rcu_dereference_protected(EXT4_SB(sb)->system_blks,
-+    system_blks = rcu_dereference_protected(EXT4_SB(sb)->s_system_blks,
-                     lockdep_is_held(&sb->s_umount));
--    rcu_assign_pointer(EXT4_SB(sb)->system_blks, NULL);
-+    rcu_assign_pointer(EXT4_SB(sb)->s_system_blks, NULL);
- 
-     if (system_blks)
-         call_rcu(&system_blks->rcu, ext4_destroy_system_zone);
-@@ -353,7 +353,7 @@ int ext4_data_block_valid(struct ext4_sb_info *sbi, ext4_fsblk_t start_blk,
-      * mount option.
-      */
-     rcu_read_lock();
--    system_blks = rcu_dereference(sbi->system_blks);
-+    system_blks = rcu_dereference(sbi->s_system_blks);
-     ret = ext4_data_block_valid_rcu(sbi, system_blks, start_blk,
-                     count);
-     rcu_read_unlock();
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 8ca9adf..d60a462 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -1470,7 +1470,7 @@ struct ext4_sb_info {
-     int s_jquota_fmt;            /* Format of quota to use */
- #endif
-     unsigned int s_want_extra_isize; /* New inodes should reserve # bytes */
--    struct ext4_system_blocks __rcu *system_blks;
-+    struct ext4_system_blocks __rcu *s_system_blks;
- 
- #ifdef EXTENTS_STATS
-     /* ext4 extents stats */
+diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
+index 2df6994acf83..fcf7af13897e 100644
+--- a/drivers/nvdimm/pmem.c
++++ b/drivers/nvdimm/pmem.c
+@@ -214,6 +214,7 @@ static blk_qc_t pmem_make_request(struct request_queue *q, struct bio *bio)
+ 			bio->bi_status = rc;
+ 			break;
+ 		}
++		cond_resched();
+ 	}
+ 	if (do_acct)
+ 		nd_iostat_end(bio, start);
 -- 
-1.8.3.1
+2.25.4
 
