@@ -2,56 +2,59 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4E032329A9
-	for <lists+linux-ext4@lfdr.de>; Thu, 30 Jul 2020 03:48:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80DD7232AA5
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 Jul 2020 06:01:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726806AbgG3Bsl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 29 Jul 2020 21:48:41 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:35990 "EHLO
+        id S1726275AbgG3EBI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 30 Jul 2020 00:01:08 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:49647 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726287AbgG3Bsl (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 29 Jul 2020 21:48:41 -0400
+        with ESMTP id S1725765AbgG3EBI (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 30 Jul 2020 00:01:08 -0400
 Received: from callcc.thunk.org (pool-96-230-252-158.bstnma.fios.verizon.net [96.230.252.158])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 06U1matc026303
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 06U40hmE028092
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Jul 2020 21:48:36 -0400
+        Thu, 30 Jul 2020 00:00:44 -0400
 Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 07683420304; Wed, 29 Jul 2020 21:48:36 -0400 (EDT)
-Date:   Wed, 29 Jul 2020 21:48:35 -0400
+        id B1260420304; Thu, 30 Jul 2020 00:00:43 -0400 (EDT)
+Date:   Thu, 30 Jul 2020 00:00:43 -0400
 From:   tytso@mit.edu
-To:     Eric Sandeen <sandeen@redhat.com>
-Cc:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH 1/1] ext4: fix potential negative array index in
- do_split()
-Message-ID: <20200730014835.GC44720@mit.edu>
-References: <d08d63e9-8f74-b571-07c7-828b9629ce6a@redhat.com>
- <f53e246b-647c-64bb-16ec-135383c70ad7@redhat.com>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Johannes Thumshirn <jth@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        cluster-devel@redhat.com, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, Dave Chinner <dchinner@redhat.com>,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH 3/3] iomap: fall back to buffered writes for invalidation
+ failures
+Message-ID: <20200730040043.GA202592@mit.edu>
+References: <20200721183157.202276-1-hch@lst.de>
+ <20200721183157.202276-4-hch@lst.de>
+ <20200722231352.GE848607@magnolia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f53e246b-647c-64bb-16ec-135383c70ad7@redhat.com>
+In-Reply-To: <20200722231352.GE848607@magnolia>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 02:19:04PM -0500, Eric Sandeen wrote:
-> If for any reason a directory passed to do_split() does not have enough
-> active entries to exceed half the size of the block, we can end up
-> iterating over all "count" entries without finding a split point.
+On Wed, Jul 22, 2020 at 04:13:52PM -0700, Darrick J. Wong wrote:
+> Hey Ted,
 > 
-> In this case, count == move, and split will be zero, and we will
-> attempt a negative index into map[].
-> 
-> Guard against this by detecting this case, and falling back to
-> split-to-half-of-count instead; in this case we will still have
-> plenty of space (> half blocksize) in each split block.
-> 
-> Fixes: ef2b02d3e617 ("ext34: ensure do_split leaves enough free space in both blocks")
-> Signed-off-by: Eric Sandeen <sandeen@redhat.com>
+> Could you please review the fs/ext4/ part of this patch (it's the
+> follow-on to the directio discussion I had with you last week) so that I
+> can get this moving for 5.9? Thx,
 
-Thanks, applied.
+Reviewed-by: Theodore Ts'o <tytso@mit.edu> # for ext4
 
-						- Ted
+	     	      	   		     - Ted
