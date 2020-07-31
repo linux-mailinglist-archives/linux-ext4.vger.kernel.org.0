@@ -2,214 +2,182 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7515F234749
-	for <lists+linux-ext4@lfdr.de>; Fri, 31 Jul 2020 16:03:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8803A2348EF
+	for <lists+linux-ext4@lfdr.de>; Fri, 31 Jul 2020 18:12:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730170AbgGaODb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 31 Jul 2020 10:03:31 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:25810 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731597AbgGaODb (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 31 Jul 2020 10:03:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596204209;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cps8/F9QZ13raGQ0LNt7ieXiXD83betUld/eJQwHa/g=;
-        b=MuGyMDnrHVr7ccFELYgbJfhTsgoAu+nJCcJJYmqMrGqiI81D1DhahczFmFCUlcbUpssWLr
-        RiDJ3YDrMq0J5yb0040aFtxQ8rDeGgCsy8G+OHwFZr87NImnYapycVEJT4kPxQyMbIknHB
-        V0cVgiwm+/sFOriKJLOox8BXpUmHSMc=
-Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com
- [209.85.161.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-145-1cIZ4dShMq-Roo14q3ueDQ-1; Fri, 31 Jul 2020 10:03:27 -0400
-X-MC-Unique: 1cIZ4dShMq-Roo14q3ueDQ-1
-Received: by mail-oo1-f69.google.com with SMTP id a5so885458ooj.6
-        for <linux-ext4@vger.kernel.org>; Fri, 31 Jul 2020 07:03:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cps8/F9QZ13raGQ0LNt7ieXiXD83betUld/eJQwHa/g=;
-        b=HzpnkLCuBssJ80CaRMpwkUfJKyLnMp3Ac/iEC6hMWdV6SBABliAsVOLmRSE9c37d4y
-         fE9G45oSfHYHFFvlB67aurFVupcqqrq8v68lwO5dCQB7M1+Tav0cXAKzedbDpP4NpJ2F
-         paWONXbeiv6J67/JoeL1upFuxpAc29LCrxMsoJirJUUEJ76cHqSkDFevvqZy0pEWurU6
-         cUJsqYuJJA4abRVgPOczVmomWP2lEoprlR3VdFXrhqoc0PpqbqHNaFICyj6l2JaKmm7q
-         x8Tjbfgq/GLwNF0oLonS0XTsRocuWVije03qlMYDlhbETr337Dresvez7Ww4D7rvOqlh
-         9RiA==
-X-Gm-Message-State: AOAM532JA09aYSpncG6y15gSzWAUU4Boa65uWP/gtzgcuzXdYlLrB66f
-        Lh1x77vRaW1/7s02PW3VZRPrAuIOwJH9RS8jDI13+phAHnELaComLJpoDck55kJTeyCIZVqYdu6
-        vy3WAElIt4UnIpN7GlYtmqivUaJKf2GX6vZ+PvA==
-X-Received: by 2002:aca:5cc5:: with SMTP id q188mr2875438oib.10.1596204205912;
-        Fri, 31 Jul 2020 07:03:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz2o1MCathljqcbxdIfvbrQ4AoMpjkC6t7vNA2UlmPa6Y8MaoCbcKN4WLZ9gni27APqI9VwD7WX0IkKlBrdOtU=
-X-Received: by 2002:aca:5cc5:: with SMTP id q188mr2875387oib.10.1596204205391;
- Fri, 31 Jul 2020 07:03:25 -0700 (PDT)
+        id S1729375AbgGaQMD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 31 Jul 2020 12:12:03 -0400
+Received: from m15111.mail.126.com ([220.181.15.111]:39310 "EHLO
+        m15111.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727819AbgGaQMD (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 31 Jul 2020 12:12:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=eWSI7
+        L8NGq/27v/T6lDLZQTISBFxShctwfHHbupILPw=; b=qTCDi5DHFwHcZrKqLpf2a
+        j7v+1QUAZke/Rm8d+7cQnzgAKFyvy2IYZ6oGugY4xEHzruyTdE6voPY3ZJL9z15C
+        dmn9JeDjPKT78uudy9Ye6733lPZzZFG4maT+VPX/Vf2CRngnviFZ1I3ymqKduAMF
+        ajBpExJvLuZ5XYSqNdvP6w=
+Received: from 192.168.137.249 (unknown [112.10.84.202])
+        by smtp1 (Coremail) with SMTP id C8mowACHv0dxQiRfuzR5IA--.15697S3;
+        Sat, 01 Aug 2020 00:10:28 +0800 (CST)
+From:   Xianting Tian <xianting_tian@126.com>
+To:     viro@zeniv.linux.org.uk, tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ext4@vger.kernel.org
+Subject: [PATCH] ext4: move buffer_mapped() to proper position
+Date:   Fri, 31 Jul 2020 12:10:25 -0400
+Message-Id: <1596211825-8750-1-git-send-email-xianting_tian@126.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-References: <20200721183157.202276-1-hch@lst.de> <20200721183157.202276-4-hch@lst.de>
-In-Reply-To: <20200721183157.202276-4-hch@lst.de>
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Fri, 31 Jul 2020 16:03:13 +0200
-Message-ID: <CAHc6FU4KpmW71xA1iX3rPp0evEPoYN3gjcSHt4de+K3R1ZKgEQ@mail.gmail.com>
-Subject: Re: [Cluster-devel] [PATCH 3/3] iomap: fall back to buffered writes
- for invalidation failures
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        Naohiro Aota <naohiro.aota@wdc.com>, linux-xfs@vger.kernel.org,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Johannes Thumshirn <jth@kernel.org>,
-        linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: C8mowACHv0dxQiRfuzR5IA--.15697S3
+X-Coremail-Antispam: 1Uf129KBjvJXoWxtw17Aw1furW7CF1fCryxGrg_yoW7tF47pr
+        nIkFWjgF4kJ3W29rsFvF4Yq3WrX3ZxZFyxWrnagr47ZFnrGF1aqryUtF48GFW5Xws7X342
+        qr15Gw18Kw1rJaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jw-B_UUUUU=
+X-Originating-IP: [112.10.84.202]
+X-CM-SenderInfo: h0ld03plqjs3xldqqiyswou0bp/1tbiwRRypFpD+6DxHgAAsu
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 8:55 PM Christoph Hellwig <hch@lst.de> wrote:
-> Failing to invalid the page cache means data in incoherent, which is
-> a very bad state for the system.  Always fall back to buffered I/O
-> through the page cache if we can't invalidate mappings.
->
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Acked-by: Dave Chinner <dchinner@redhat.com>
-> Reviewed-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> ---
->  fs/ext4/file.c       |  2 ++
->  fs/gfs2/file.c       |  3 ++-
->  fs/iomap/direct-io.c | 16 +++++++++++-----
->  fs/iomap/trace.h     |  1 +
->  fs/xfs/xfs_file.c    |  4 ++--
->  fs/zonefs/super.c    |  7 +++++--
->  6 files changed, 23 insertions(+), 10 deletions(-)
->
-> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-> index 2a01e31a032c4c..129cc1dd6b7952 100644
-> --- a/fs/ext4/file.c
-> +++ b/fs/ext4/file.c
-> @@ -544,6 +544,8 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
->                 iomap_ops = &ext4_iomap_overwrite_ops;
->         ret = iomap_dio_rw(iocb, from, iomap_ops, &ext4_dio_write_ops,
->                            is_sync_kiocb(iocb) || unaligned_io || extend);
-> +       if (ret == -ENOTBLK)
-> +               ret = 0;
->
->         if (extend)
->                 ret = ext4_handle_inode_extension(inode, offset, ret, count);
-> diff --git a/fs/gfs2/file.c b/fs/gfs2/file.c
-> index bebde537ac8cf2..b085a3bea4f0fd 100644
-> --- a/fs/gfs2/file.c
-> +++ b/fs/gfs2/file.c
-> @@ -835,7 +835,8 @@ static ssize_t gfs2_file_direct_write(struct kiocb *iocb, struct iov_iter *from)
->
->         ret = iomap_dio_rw(iocb, from, &gfs2_iomap_ops, NULL,
->                            is_sync_kiocb(iocb));
-> -
-> +       if (ret == -ENOTBLK)
-> +               ret = 0;
->  out:
->         gfs2_glock_dq(&gh);
->  out_uninit:
-> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> index 190967e87b69e4..c1aafb2ab99072 100644
-> --- a/fs/iomap/direct-io.c
-> +++ b/fs/iomap/direct-io.c
-> @@ -10,6 +10,7 @@
->  #include <linux/backing-dev.h>
->  #include <linux/uio.h>
->  #include <linux/task_io_accounting_ops.h>
-> +#include "trace.h"
->
->  #include "../internal.h"
->
-> @@ -401,6 +402,9 @@ iomap_dio_actor(struct inode *inode, loff_t pos, loff_t length,
->   * can be mapped into multiple disjoint IOs and only a subset of the IOs issued
->   * may be pure data writes. In that case, we still need to do a full data sync
->   * completion.
-> + *
-> + * Returns -ENOTBLK In case of a page invalidation invalidation failure for
-> + * writes.  The callers needs to fall back to buffered I/O in this case.
->   */
->  ssize_t
->  iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
-> @@ -478,13 +482,15 @@ iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
->         if (iov_iter_rw(iter) == WRITE) {
->                 /*
->                  * Try to invalidate cache pages for the range we are writing.
-> -                * If this invalidation fails, tough, the write will still work,
-> -                * but racing two incompatible write paths is a pretty crazy
-> -                * thing to do, so we don't support it 100%.
-> +                * If this invalidation fails, let the caller fall back to
-> +                * buffered I/O.
->                  */
->                 if (invalidate_inode_pages2_range(mapping, pos >> PAGE_SHIFT,
-> -                               end >> PAGE_SHIFT))
-> -                       dio_warn_stale_pagecache(iocb->ki_filp);
-> +                               end >> PAGE_SHIFT)) {
-> +                       trace_iomap_dio_invalidate_fail(inode, pos, count);
-> +                       ret = -ENOTBLK;
-> +                       goto out_free_dio;
-> +               }
->
->                 if (!wait_for_completion && !inode->i_sb->s_dio_done_wq) {
->                         ret = sb_init_dio_done_wq(inode->i_sb);
-> diff --git a/fs/iomap/trace.h b/fs/iomap/trace.h
-> index 5693a39d52fb63..fdc7ae388476f5 100644
-> --- a/fs/iomap/trace.h
-> +++ b/fs/iomap/trace.h
-> @@ -74,6 +74,7 @@ DEFINE_EVENT(iomap_range_class, name, \
->  DEFINE_RANGE_EVENT(iomap_writepage);
->  DEFINE_RANGE_EVENT(iomap_releasepage);
->  DEFINE_RANGE_EVENT(iomap_invalidatepage);
-> +DEFINE_RANGE_EVENT(iomap_dio_invalidate_fail);
->
->  #define IOMAP_TYPE_STRINGS \
->         { IOMAP_HOLE,           "HOLE" }, \
-> diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-> index a6ef90457abf97..1b4517fc55f1b9 100644
-> --- a/fs/xfs/xfs_file.c
-> +++ b/fs/xfs/xfs_file.c
-> @@ -553,8 +553,8 @@ xfs_file_dio_aio_write(
->         xfs_iunlock(ip, iolock);
->
->         /*
-> -        * No fallback to buffered IO on errors for XFS, direct IO will either
-> -        * complete fully or fail.
-> +        * No fallback to buffered IO after short writes for XFS, direct I/O
-> +        * will either complete fully or return an error.
->          */
->         ASSERT(ret < 0 || ret == count);
->         return ret;
-> diff --git a/fs/zonefs/super.c b/fs/zonefs/super.c
-> index 07bc42d62673ce..d0a04528a7e18e 100644
-> --- a/fs/zonefs/super.c
-> +++ b/fs/zonefs/super.c
-> @@ -786,8 +786,11 @@ static ssize_t zonefs_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
->         if (iocb->ki_pos >= ZONEFS_I(inode)->i_max_size)
->                 return -EFBIG;
->
-> -       if (iocb->ki_flags & IOCB_DIRECT)
-> -               return zonefs_file_dio_write(iocb, from);
-> +       if (iocb->ki_flags & IOCB_DIRECT) {
-> +               ssize_t ret = zonefs_file_dio_write(iocb, from);
-> +               if (ret != -ENOTBLK)
-> +                       return ret;
-> +       }
->
->         return zonefs_file_buffered_write(iocb, from);
->  }
-> --
-> 2.27.0
->
+As you know, commit a17712c8 has added below code to aviod a
+crash( 'BUG_ON(!buffer_mapped(bh))' in submit_bh_wbc) when
+device hot-removed(a physical device is unpluged from pcie slot
+or a nbd device's network is shutdown).
+static int ext4_commit_super():
+ 	if (!sbh || block_device_ejected(sb))
+ 		return error;
++
++	/*
++	 * The superblock bh should be mapped, but it might not be if the
++	 * device was hot-removed. Not much we can do but fail the I/O.
++	 */
++	if (!buffer_mapped(sbh))
++		return error;
 
-Reviewed-by: Andreas Gruenbacher <agruenba@redhat.com> # for gfs2
+And the call trace, which leads to the crash, as below:
+ext4_commit_super()
+  __sync_dirty_buffer()
+    submit_bh()
+      submit_bh_wbc()
+        BUG_ON(!buffer_mapped(bh));
 
-Thanks,
-Andreas
+But recently we met the same crash(with very low probability) when
+device hot-removed even though the kernel already contained
+above exception protection code. Still, the crash is caused by
+'BUG_ON(!buffer_mapped(bh))' in submit_bh_wbc(), and the same
+call trace as below.
+
+As my understanding and below code，there are still some more
+codes needs to run between 'buffer_mapped(sbh)'(which is added
+by commit a17712c8) and 'BUG_ON(!buffer_mapped(bh))' in
+submit_bh_wbc(), especially lock_buffer is called two times(sometimes,
+it may take more times to get the lock). So when do the test of
+device hot-remove, there is low probability that the sbh is mapped
+when executing 'buffer_mapped(sbh)'(which is added by commit a17712c8)
+but sbh is not mapped when executing 'BUG_ON(!buffer_mapped(bh))'
+in submit_bh_wbc().
+Code path:
+ext4_commit_super
+    judge if 'buffer_mapped(sbh)' is false, return <== commit a17712c8
+          lock_buffer(sbh)
+          ...
+          unlock_buffer(sbh)
+               __sync_dirty_buffer(sbh,...
+                    lock_buffer(sbh)
+                        judge if 'buffer_mapped(sbh))' is false, return <== added by this patch
+                            submit_bh(...,sbh)
+                                submit_bh_wbc(...,sbh,...)
+
+This patch is to move the check of 'buffer_mapped(sbh)' to the place just
+before calling 'BUG_ON(!buffer_mapped(bh))' in submit_bh_wbc().
+
+[100722.966497] kernel BUG at fs/buffer.c:3095! <== BUG_ON(!buffer_mapped(bh))' in submit_bh_wbc()
+[100722.966503] invalid opcode: 0000 [#1] SMP
+[100722.966566] task: ffff8817e15a9e40 task.stack: ffffc90024744000
+[100722.966574] RIP: 0010:submit_bh_wbc+0x180/0x190
+[100722.966575] RSP: 0018:ffffc90024747a90 EFLAGS: 00010246
+[100722.966576] RAX: 0000000000620005 RBX: ffff8818a80603a8 RCX: 0000000000000000
+[100722.966576] RDX: ffff8818a80603a8 RSI: 0000000000020800 RDI: 0000000000000001
+[100722.966577] RBP: ffffc90024747ac0 R08: 0000000000000000 R09: ffff88207f94170d
+[100722.966578] R10: 00000000000437c8 R11: 0000000000000001 R12: 0000000000020800
+[100722.966578] R13: 0000000000000001 R14: 000000000bf9a438 R15: ffff88195f333000
+[100722.966580] FS:  00007fa2eee27700(0000) GS:ffff88203d840000(0000) knlGS:0000000000000000
+[100722.966580] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[100722.966581] CR2: 0000000000f0b008 CR3: 000000201a622003 CR4: 00000000007606e0
+[100722.966582] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[100722.966583] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[100722.966583] PKRU: 55555554
+[100722.966583] Call Trace:
+[100722.966588]  __sync_dirty_buffer+0x6e/0xd0
+[100722.966614]  ext4_commit_super+0x1d8/0x290 [ext4]
+[100722.966626]  __ext4_std_error+0x78/0x100 [ext4]
+[100722.966635]  ? __ext4_journal_get_write_access+0xca/0x120 [ext4]
+[100722.966646]  ext4_reserve_inode_write+0x58/0xb0 [ext4]
+[100722.966655]  ? ext4_dirty_inode+0x48/0x70 [ext4]
+[100722.966663]  ext4_mark_inode_dirty+0x53/0x1e0 [ext4]
+[100722.966671]  ? __ext4_journal_start_sb+0x6d/0xf0 [ext4]
+[100722.966679]  ext4_dirty_inode+0x48/0x70 [ext4]
+[100722.966682]  __mark_inode_dirty+0x17f/0x350
+[100722.966686]  generic_update_time+0x87/0xd0
+[100722.966687]  touch_atime+0xa9/0xd0
+[100722.966690]  generic_file_read_iter+0xa09/0xcd0
+[100722.966694]  ? page_cache_tree_insert+0xb0/0xb0
+[100722.966704]  ext4_file_read_iter+0x4a/0x100 [ext4]
+[100722.966707]  ? __inode_security_revalidate+0x4f/0x60
+[100722.966709]  __vfs_read+0xec/0x160
+[100722.966711]  vfs_read+0x8c/0x130
+[100722.966712]  SyS_pread64+0x87/0xb0
+[100722.966716]  do_syscall_64+0x67/0x1b0
+[100722.966719]  entry_SYSCALL64_slow_path+0x25/0x25
+
+Signed-off-by: Xianting Tian <xianting_tian@126.com>
+---
+ fs/buffer.c     | 9 +++++++++
+ fs/ext4/super.c | 7 -------
+ 2 files changed, 9 insertions(+), 7 deletions(-)
+
+diff --git a/fs/buffer.c b/fs/buffer.c
+index 64fe82e..75a8849 100644
+--- a/fs/buffer.c
++++ b/fs/buffer.c
+@@ -3160,6 +3160,15 @@ int __sync_dirty_buffer(struct buffer_head *bh, int op_flags)
+ 	WARN_ON(atomic_read(&bh->b_count) < 1);
+ 	lock_buffer(bh);
+ 	if (test_clear_buffer_dirty(bh)) {
++		/*
++		 * The bh should be mapped, but it might not be if the
++		 * device was hot-removed. Not much we can do but fail the I/O.
++		 */
++		if (!buffer_mapped(bh)) {
++			unlock_buffer(bh);
++			return -EIO;
++		}
++
+ 		get_bh(bh);
+ 		bh->b_end_io = end_buffer_write_sync;
+ 		ret = submit_bh(REQ_OP_WRITE, op_flags, bh);
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 330957e..1c22044 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -5171,13 +5171,6 @@ static int ext4_commit_super(struct super_block *sb, int sync)
+ 		return error;
+ 
+ 	/*
+-	 * The superblock bh should be mapped, but it might not be if the
+-	 * device was hot-removed. Not much we can do but fail the I/O.
+-	 */
+-	if (!buffer_mapped(sbh))
+-		return error;
+-
+-	/*
+ 	 * If the file system is mounted read-only, don't update the
+ 	 * superblock write time.  This avoids updating the superblock
+ 	 * write time when we are mounting the root file system
+-- 
+1.8.3.1
 
