@@ -2,84 +2,116 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0D8523549A
-	for <lists+linux-ext4@lfdr.de>; Sun,  2 Aug 2020 01:18:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88BB4239CF4
+	for <lists+linux-ext4@lfdr.de>; Mon,  3 Aug 2020 01:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726999AbgHAXSR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 1 Aug 2020 19:18:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50384 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726807AbgHAXSP (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Sat, 1 Aug 2020 19:18:15 -0400
-Received: from localhost (unknown [70.37.104.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8F1A4207FB;
-        Sat,  1 Aug 2020 23:18:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596323894;
-        bh=XNByyhL9Y2whfuo7uld8tDXRV7zi64mizD0FKxzuXz4=;
-        h=Date:From:To:To:To:Cc:CC:Cc:Subject:In-Reply-To:References:From;
-        b=PYg0QgUSrIrX/kcYu4GpXsAWmFquKJIzLuzz7ko6OZYxhR/wiUowCs25og8zXZ224
-         itfZ0nezwnsuZj0yPNpXuCqUB9hU8QVbZz+Oi6ebd4AE+u9tn1l8+uW6LcC50jQc+s
-         xOH4wmumLxW4+3FcdZN6cBf5zzcTbdar6VhVi9ho=
-Date:   Sat, 01 Aug 2020 23:18:14 +0000
-From:   Sasha Levin <sashal@kernel.org>
-To:     Sasha Levin <sashal@kernel.org>
-To:     Jan Kara <jack@suse.cz>
-To:     Ted Tso <tytso@mit.edu>
-Cc:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>
-CC:     stable@vger.kernel.org
-Cc:     stable@vger.kernel.org
-Subject: Re: [PATCH] ext4: Fix checking of entry validity
-In-Reply-To: <20200731162135.8080-1-jack@suse.cz>
-References: <20200731162135.8080-1-jack@suse.cz>
-Message-Id: <20200801231814.8F1A4207FB@mail.kernel.org>
+        id S1727006AbgHBXBz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 2 Aug 2020 19:01:55 -0400
+Received: from mail110.syd.optusnet.com.au ([211.29.132.97]:57774 "EHLO
+        mail110.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726257AbgHBXBz (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 2 Aug 2020 19:01:55 -0400
+Received: from dread.disaster.area (pa49-180-53-24.pa.nsw.optusnet.com.au [49.180.53.24])
+        by mail110.syd.optusnet.com.au (Postfix) with ESMTPS id 9F77B109820;
+        Mon,  3 Aug 2020 09:01:50 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1k2MzE-0000Mk-Pv; Mon, 03 Aug 2020 09:01:48 +1000
+Date:   Mon, 3 Aug 2020 09:01:48 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
+Subject: Re: [RFC 1/1] pmem: Add cond_resched() in bio_for_each_segment loop
+ in pmem_make_request
+Message-ID: <20200802230148.GA2114@dread.disaster.area>
+References: <0d96e2481f292de2cda8828b03d5121004308759.1596011292.git.riteshh@linux.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0d96e2481f292de2cda8828b03d5121004308759.1596011292.git.riteshh@linux.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=QIgWuTDL c=1 sm=1 tr=0
+        a=moVtWZxmCkf3aAMJKIb/8g==:117 a=moVtWZxmCkf3aAMJKIb/8g==:17
+        a=kj9zAlcOel0A:10 a=y4yBn9ojGxQA:10 a=VnNF1IyMAAAA:8 a=7-415B0cAAAA:8
+        a=qczKg5P-FDsFxSpMrEAA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi
+On Wed, Jul 29, 2020 at 02:15:18PM +0530, Ritesh Harjani wrote:
+> For systems which do not have CONFIG_PREEMPT set and
+> if there is a heavy multi-threaded load/store operation happening
+> on pmem + sometimes along with device latencies, softlockup warnings like
+> this could trigger. This was seen on Power where pagesize is 64K.
+> 
+> To avoid softlockup, this patch adds a cond_resched() in this path.
+> 
+> <...>
+> watchdog: BUG: soft lockup - CPU#31 stuck for 22s!
+> <...>
+> CPU: 31 PID: 15627 <..> 5.3.18-20
+> <...>
+> NIP memcpy_power7+0x43c/0x7e0
+> LR memcpy_flushcache+0x28/0xa0
+> 
+> Call Trace:
+> memcpy_power7+0x274/0x7e0 (unreliable)
+> memcpy_flushcache+0x28/0xa0
+> write_pmem+0xa0/0x100 [nd_pmem]
+> pmem_do_bvec+0x1f0/0x420 [nd_pmem]
+> pmem_make_request+0x14c/0x370 [nd_pmem]
+> generic_make_request+0x164/0x400
+> submit_bio+0x134/0x2e0
+> submit_bio_wait+0x70/0xc0
+> blkdev_issue_zeroout+0xf4/0x2a0
+> xfs_zero_extent+0x90/0xc0 [xfs]
+> xfs_bmapi_convert_unwritten+0x198/0x230 [xfs]
+> xfs_bmapi_write+0x284/0x630 [xfs]
+> xfs_iomap_write_direct+0x1f0/0x3e0 [xfs]
+> xfs_file_iomap_begin+0x344/0x690 [xfs]
+> dax_iomap_pmd_fault+0x488/0xc10
+> __xfs_filemap_fault+0x26c/0x2b0 [xfs]
+> __handle_mm_fault+0x794/0x1af0
+> handle_mm_fault+0x12c/0x220
+> __do_page_fault+0x290/0xe40
+> do_page_fault+0x38/0xc0
+> handle_page_fault+0x10/0x30
+> 
+> Reviewed-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> ---
+>  drivers/nvdimm/pmem.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
+> index 2df6994acf83..fcf7af13897e 100644
+> --- a/drivers/nvdimm/pmem.c
+> +++ b/drivers/nvdimm/pmem.c
+> @@ -214,6 +214,7 @@ static blk_qc_t pmem_make_request(struct request_queue *q, struct bio *bio)
+>  			bio->bi_status = rc;
+>  			break;
+>  		}
+> +		cond_resched();
 
-[This is an automated email]
+There are already cond_resched() calls between submitted bios in
+blkdev_issue_zeroout() via both __blkdev_issue_zero_pages() and
+__blkdev_issue_write_zeroes(), so I'm kinda wondering where the
+problem is coming from here.
 
-This commit has been processed because it contains a "Fixes:" tag
-fixing commit: 109ba779d6cc ("ext4: check for directory entries too close to block end").
+Just how big is the bio being issued here that it spins for 22s
+trying to copy it?
 
-The bot has tested the following trees: v5.7.11, v5.4.54, v4.19.135, v4.14.190, v4.9.231, v4.4.231.
+And, really, if the system is that bound on cacheline bouncing that
+it prevents memcpy() from making progress, I think we probably
+should be issuing a soft lockup warning like this...
 
-v5.7.11: Build OK!
-v5.4.54: Build OK!
-v4.19.135: Build OK!
-v4.14.190: Build OK!
-v4.9.231: Failed to apply! Possible dependencies:
-    364443cbcfe7 ("ext4: convert DAX reads to iomap infrastructure")
-    39bc88e5e38e ("arm64: Disable TTBR0_EL1 during normal kernel execution")
-    7046ae35329f ("ext4: Add iomap support for inline data")
-    7c0f6ba682b9 ("Replace <asm/uaccess.h> with <linux/uaccess.h> globally")
-    9cf09d68b89a ("arm64: xen: Enable user access before a privcmd hvc call")
-    b886ee3e778e ("ext4: Support case-insensitive file name lookups")
-    bd38967d406f ("arm64: Factor out PAN enabling/disabling into separate uaccess_* macros")
-    ee73f9a52a34 ("ext4: convert to new i_version API")
-    eeca7ea1baa9 ("ext4: use current_time() for inode timestamps")
+Cheers,
 
-v4.4.231: Failed to apply! Possible dependencies:
-    12735f881952 ("ext4: pre-zero allocated blocks for DAX IO")
-    2dcba4781fa3 ("ext4: get rid of EXT4_GET_BLOCKS_NO_LOCK flag")
-    364443cbcfe7 ("ext4: convert DAX reads to iomap infrastructure")
-    7046ae35329f ("ext4: Add iomap support for inline data")
-    705965bd6dfa ("ext4: rename and split get blocks functions")
-    b886ee3e778e ("ext4: Support case-insensitive file name lookups")
-    ba5843f51d46 ("ext4: use pre-zeroed blocks for DAX page faults")
-    c86d8db33a92 ("ext4: implement allocation of pre-zeroed blocks")
-    ee73f9a52a34 ("ext4: convert to new i_version API")
-
-
-NOTE: The patch will not be queued to stable trees until it is upstream.
-
-How should we proceed with this patch?
-
+Dave.
 -- 
-Thanks
-Sasha
+Dave Chinner
+david@fromorbit.com
