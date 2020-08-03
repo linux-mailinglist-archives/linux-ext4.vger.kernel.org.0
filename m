@@ -2,102 +2,58 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E3FD23AA5A
-	for <lists+linux-ext4@lfdr.de>; Mon,  3 Aug 2020 18:17:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E4AA23ABEC
+	for <lists+linux-ext4@lfdr.de>; Mon,  3 Aug 2020 19:55:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727807AbgHCQRs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 3 Aug 2020 12:17:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726802AbgHCQRr (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 3 Aug 2020 12:17:47 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1CD6C06174A;
-        Mon,  3 Aug 2020 09:17:47 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id 2so98662pjx.5;
-        Mon, 03 Aug 2020 09:17:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=GPsrQW4vpQ6dRXyrzWsHOIAruTyA0LII1zG3YHLs52M=;
-        b=fMlUIz0rLEz3np/lgOR1J/xdo3PvyCdrkMOYNmTrImerYZd+Z0ERvgCmlU2O7XaXiN
-         /rPjHx8143fNjlGV2LmOwBz6+b4AMyK3K2t+G/vrlqRbWt/s8ECFfIYlmrYWMQtw0raE
-         S1DzcRzxmD4IHLSkpGCXUHciCUU31SBZsiZWitkeHTVLkjXV78v5JzNat5JLyDYj10eD
-         QShTyvnNM7yjM7k6zlXp4lTkX1CBtYRuEGSHwNXjeY6OTPjNDYBqQtVXc0Rb/YIjwVrI
-         uLs7ivpbkukdz6x3NNl8bVqqlMCGKzIDxU3L//Qp3uEpwMzkgJcm7wvwcT5PjHfn4vYa
-         dOhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=GPsrQW4vpQ6dRXyrzWsHOIAruTyA0LII1zG3YHLs52M=;
-        b=Uzek/6Yacyy7zrdp+wlhntVybN2k0hYeCkBffYoMiAXG0QymmTP2DIf8hS6xMUpVBM
-         WUoJLcBXyQQeE98UqJgVTcBG+dAKrEJU3qqz5PaEF6j1/j7nLcjsPMQCTKv1W/1ruu9n
-         fTyym5IFCwEYbX0P+X5kwoR8imeyqC1h39P908QMXED+zwNc3215s+OxC3i3huOEngOX
-         FRs3uESIIULfIMEzNC/8JC7yHsyagLnalrD5Qz0H542DpbobeJ+lEWJkSwbqEToFSbGS
-         jQsiyNzu/MP50NbQNGBFqrbGV0sQSs+Po3ar2+VF7U5RpboukPKpmjEDw4lbC9BpqHLw
-         WWLg==
-X-Gm-Message-State: AOAM5337r45QwI02anObOZg0WHmeyz3w6jRRF5G3hIZX1RsPYqG/3Y8i
-        vSuh191Ux1rniYcp9hxereGzYLETiwvg3Q==
-X-Google-Smtp-Source: ABdhPJw7avMZq/kZ3NOZty8xBaeBN9sb48D/0vRuTEUPmcWVWsBvmPfrnSh14aB4vO5FXDt8YNYHFw==
-X-Received: by 2002:a17:902:eb14:: with SMTP id l20mr9684125plb.104.1596471466713;
-        Mon, 03 Aug 2020 09:17:46 -0700 (PDT)
-Received: from lazar-beloica-cent7-umvm1.dev.nutanix.com ([192.146.154.242])
-        by smtp.gmail.com with ESMTPSA id d65sm19316102pfc.97.2020.08.03.09.17.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 03 Aug 2020 09:17:45 -0700 (PDT)
-From:   Lazar Beloica <lazarbeloica@gmail.com>
-X-Google-Original-From: Lazar Beloica <lazar.beloica@nutanix.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     stable@vger.kernel.org, lazarbeloica@gmail.com,
-        lazar.beloica@nutanix.com, boyu.mt@taobao.com,
-        adilger.kernel@dilger.ca, linux-kernel@vger.kernel.org
-Subject: [PATCH] ext4: fix marking group trimmed if all blocks not trimmed
-Date:   Mon,  3 Aug 2020 16:17:44 +0000
-Message-Id: <1596471464-198715-1-git-send-email-lazar.beloica@nutanix.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1728561AbgHCRzD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 3 Aug 2020 13:55:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51990 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728551AbgHCRzC (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 3 Aug 2020 13:55:02 -0400
+Subject: Re: [GIT PULL] fscrypt updates for 5.9
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596477301;
+        bh=zoMh0nl23+pSyDpQtAkLlOsvsO3R3HRl5QxOs9dNUU4=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=TLwaIfx0FGEcrWa8IyQvq9a7sCFcL5Hs9++NjdORSBd7cBQh+tigrF0hl0ngo8WQv
+         vViE81VquM5FAC4FsrHj6uUDYR347M8nqGW1qLlkaix7hcIlIieNBfM4t7Ert75B2h
+         X9nZpi7wEgte2Q41n4BAtsH35GnoWdJy86VK6eFI=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20200803070547.GA24480@sol.localdomain>
+References: <20200803070547.GA24480@sol.localdomain>
+X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200803070547.GA24480@sol.localdomain>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git
+ tags/fscrypt-for-linus
+X-PR-Tracked-Commit-Id: 55e32c54bbd5741cad462c9ee00c453c72fa74b9
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 690b25675f5c9c082cb1b902e6d21dd956754e7e
+Message-Id: <159647730140.19506.4501237993165044273.pr-tracker-bot@kernel.org>
+Date:   Mon, 03 Aug 2020 17:55:01 +0000
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Satya Tangirala <satyat@google.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-When FTRIM is issued on a group, ext4 marks it as trimmed so another FTRIM
-on the same group has no effect. Ext4 marks group as trimmed if at least
-one block is trimmed, therefore it is possible that a group is marked as
-trimmed even if there are blocks in that group left untrimmed.
+The pull request you sent on Mon, 3 Aug 2020 00:05:47 -0700:
 
-This patch marks group as trimmed only if there are no more blocks
-in that group to be trimmed.
+> https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
 
-Fixes: 3d56b8d2c74cc3f375ce332b3ac3519e009d79ee
-Tested-by: Lazar Beloica <lazar.beloica@nutanix.com>
-Signed-off-by: Lazar Beloica <lazar.beloica@nutanix.com>
----
- fs/ext4/mballoc.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/690b25675f5c9c082cb1b902e6d21dd956754e7e
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index c0a331e..130936b 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -5346,6 +5346,7 @@ static int ext4_trim_extent(struct super_block *sb, int start, int count,
- {
- 	void *bitmap;
- 	ext4_grpblk_t next, count = 0, free_count = 0;
-+	ext4_fsblk_t max_blks = ext4_blocks_count(EXT4_SB(sb)->s_es);
- 	struct ext4_buddy e4b;
- 	int ret = 0;
- 
-@@ -5401,7 +5402,9 @@ static int ext4_trim_extent(struct super_block *sb, int start, int count,
- 
- 	if (!ret) {
- 		ret = count;
--		EXT4_MB_GRP_SET_TRIMMED(e4b.bd_info);
-+		next = mb_find_next_bit(bitmap, max_blks, max + 1);
-+		if (next == max_blks)
-+			EXT4_MB_GRP_SET_TRIMMED(e4b.bd_info);
- 	}
- out:
- 	ext4_unlock_group(sb, group);
+Thank you!
+
 -- 
-1.8.3.1
-
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
