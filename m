@@ -2,243 +2,102 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B70AC23A7C4
-	for <lists+linux-ext4@lfdr.de>; Mon,  3 Aug 2020 15:38:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E3FD23AA5A
+	for <lists+linux-ext4@lfdr.de>; Mon,  3 Aug 2020 18:17:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728132AbgHCNig (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 3 Aug 2020 09:38:36 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:24769 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728328AbgHCNif (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 3 Aug 2020 09:38:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596461912;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/AwV8WBhuqPeelgBaxBkgLyMvJZx/53MPZJnj+q0yps=;
-        b=XMAqP/unaHdbLQmqkFIzCkHyMjEQZBiWlsS1Pe8IwROYli1iqtXgWdgw86psDrWmXr0XNY
-        jo586mSsfPK9pt0tMbtgrCt4y8kcFRTEdEuZRWhn+6gRyIS4ne+lgDt6v0kSb3RxGjHQvZ
-        JntGN3gUSzJCWAlns9DUu33TrzOBUlM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-8-vMeBDm6kPvyfAUd1PnObMQ-1; Mon, 03 Aug 2020 09:38:31 -0400
-X-MC-Unique: vMeBDm6kPvyfAUd1PnObMQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3EB8357;
-        Mon,  3 Aug 2020 13:38:29 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-32.rdu2.redhat.com [10.10.112.32])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2BEFE87E2C;
-        Mon,  3 Aug 2020 13:38:25 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH 14/18] fsinfo: Add support to ext4 [ver #21]
-From:   David Howells <dhowells@redhat.com>
-To:     viro@zeniv.linux.org.uk
-Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Eric Biggers <ebiggers@kernel.org>, linux-ext4@vger.kernel.org,
-        dhowells@redhat.com, torvalds@linux-foundation.org,
-        raven@themaw.net, mszeredi@redhat.com, christian@brauner.io,
-        jannh@google.com, darrick.wong@oracle.com, kzak@redhat.com,
-        jlayton@redhat.com, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 03 Aug 2020 14:38:25 +0100
-Message-ID: <159646190516.1784947.7453810619136216278.stgit@warthog.procyon.org.uk>
-In-Reply-To: <159646178122.1784947.11705396571718464082.stgit@warthog.procyon.org.uk>
-References: <159646178122.1784947.11705396571718464082.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        id S1727807AbgHCQRs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 3 Aug 2020 12:17:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726802AbgHCQRr (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 3 Aug 2020 12:17:47 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1CD6C06174A;
+        Mon,  3 Aug 2020 09:17:47 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id 2so98662pjx.5;
+        Mon, 03 Aug 2020 09:17:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=GPsrQW4vpQ6dRXyrzWsHOIAruTyA0LII1zG3YHLs52M=;
+        b=fMlUIz0rLEz3np/lgOR1J/xdo3PvyCdrkMOYNmTrImerYZd+Z0ERvgCmlU2O7XaXiN
+         /rPjHx8143fNjlGV2LmOwBz6+b4AMyK3K2t+G/vrlqRbWt/s8ECFfIYlmrYWMQtw0raE
+         S1DzcRzxmD4IHLSkpGCXUHciCUU31SBZsiZWitkeHTVLkjXV78v5JzNat5JLyDYj10eD
+         QShTyvnNM7yjM7k6zlXp4lTkX1CBtYRuEGSHwNXjeY6OTPjNDYBqQtVXc0Rb/YIjwVrI
+         uLs7ivpbkukdz6x3NNl8bVqqlMCGKzIDxU3L//Qp3uEpwMzkgJcm7wvwcT5PjHfn4vYa
+         dOhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=GPsrQW4vpQ6dRXyrzWsHOIAruTyA0LII1zG3YHLs52M=;
+        b=Uzek/6Yacyy7zrdp+wlhntVybN2k0hYeCkBffYoMiAXG0QymmTP2DIf8hS6xMUpVBM
+         WUoJLcBXyQQeE98UqJgVTcBG+dAKrEJU3qqz5PaEF6j1/j7nLcjsPMQCTKv1W/1ruu9n
+         fTyym5IFCwEYbX0P+X5kwoR8imeyqC1h39P908QMXED+zwNc3215s+OxC3i3huOEngOX
+         FRs3uESIIULfIMEzNC/8JC7yHsyagLnalrD5Qz0H542DpbobeJ+lEWJkSwbqEToFSbGS
+         jQsiyNzu/MP50NbQNGBFqrbGV0sQSs+Po3ar2+VF7U5RpboukPKpmjEDw4lbC9BpqHLw
+         WWLg==
+X-Gm-Message-State: AOAM5337r45QwI02anObOZg0WHmeyz3w6jRRF5G3hIZX1RsPYqG/3Y8i
+        vSuh191Ux1rniYcp9hxereGzYLETiwvg3Q==
+X-Google-Smtp-Source: ABdhPJw7avMZq/kZ3NOZty8xBaeBN9sb48D/0vRuTEUPmcWVWsBvmPfrnSh14aB4vO5FXDt8YNYHFw==
+X-Received: by 2002:a17:902:eb14:: with SMTP id l20mr9684125plb.104.1596471466713;
+        Mon, 03 Aug 2020 09:17:46 -0700 (PDT)
+Received: from lazar-beloica-cent7-umvm1.dev.nutanix.com ([192.146.154.242])
+        by smtp.gmail.com with ESMTPSA id d65sm19316102pfc.97.2020.08.03.09.17.45
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 03 Aug 2020 09:17:45 -0700 (PDT)
+From:   Lazar Beloica <lazarbeloica@gmail.com>
+X-Google-Original-From: Lazar Beloica <lazar.beloica@nutanix.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     stable@vger.kernel.org, lazarbeloica@gmail.com,
+        lazar.beloica@nutanix.com, boyu.mt@taobao.com,
+        adilger.kernel@dilger.ca, linux-kernel@vger.kernel.org
+Subject: [PATCH] ext4: fix marking group trimmed if all blocks not trimmed
+Date:   Mon,  3 Aug 2020 16:17:44 +0000
+Message-Id: <1596471464-198715-1-git-send-email-lazar.beloica@nutanix.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Add support to ext4, including the following:
+When FTRIM is issued on a group, ext4 marks it as trimmed so another FTRIM
+on the same group has no effect. Ext4 marks group as trimmed if at least
+one block is trimmed, therefore it is possible that a group is marked as
+trimmed even if there are blocks in that group left untrimmed.
 
- (1) FSINFO_ATTR_SUPPORTS: Information about supported STATX attributes and
-     support for ioctls like FS_IOC_[GS]ETFLAGS and FS_IOC_FS[GS]ETXATTR.
+This patch marks group as trimmed only if there are no more blocks
+in that group to be trimmed.
 
- (2) FSINFO_ATTR_FEATURES: Information about features supported by an ext4
-     filesystem, such as whether version counting, birth time and name case
-     folding are in operation.
-
- (3) FSINFO_ATTR_VOLUME_NAME: The volume name from the superblock.
-
-Signed-off-by: David Howells <dhowells@redhat.com>
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-cc: "Theodore Ts'o" <tytso@mit.edu>
-cc: Andreas Dilger <adilger.kernel@dilger.ca>
-cc: Eric Biggers <ebiggers@kernel.org>
-cc: linux-ext4@vger.kernel.org
+Fixes: 3d56b8d2c74cc3f375ce332b3ac3519e009d79ee
+Tested-by: Lazar Beloica <lazar.beloica@nutanix.com>
+Signed-off-by: Lazar Beloica <lazar.beloica@nutanix.com>
 ---
+ fs/ext4/mballoc.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
- fs/ext4/Makefile |    1 +
- fs/ext4/ext4.h   |    6 +++
- fs/ext4/fsinfo.c |   97 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
- fs/ext4/super.c  |    3 ++
- 4 files changed, 107 insertions(+)
- create mode 100644 fs/ext4/fsinfo.c
-
-diff --git a/fs/ext4/Makefile b/fs/ext4/Makefile
-index 2e42f47a7f98..ad67812bf7d0 100644
---- a/fs/ext4/Makefile
-+++ b/fs/ext4/Makefile
-@@ -17,3 +17,4 @@ ext4-$(CONFIG_EXT4_FS_SECURITY)		+= xattr_security.o
- ext4-inode-test-objs			+= inode-test.o
- obj-$(CONFIG_EXT4_KUNIT_TESTS)		+= ext4-inode-test.o
- ext4-$(CONFIG_FS_VERITY)		+= verity.o
-+ext4-$(CONFIG_FSINFO)			+= fsinfo.o
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 42f5060f3cdf..99a737cf6308 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -43,6 +43,7 @@
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index c0a331e..130936b 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -5346,6 +5346,7 @@ static int ext4_trim_extent(struct super_block *sb, int start, int count,
+ {
+ 	void *bitmap;
+ 	ext4_grpblk_t next, count = 0, free_count = 0;
++	ext4_fsblk_t max_blks = ext4_blocks_count(EXT4_SB(sb)->s_es);
+ 	struct ext4_buddy e4b;
+ 	int ret = 0;
  
- #include <linux/fscrypt.h>
- #include <linux/fsverity.h>
-+#include <linux/fsinfo.h>
+@@ -5401,7 +5402,9 @@ static int ext4_trim_extent(struct super_block *sb, int start, int count,
  
- #include <linux/compiler.h>
- 
-@@ -3233,6 +3234,11 @@ extern const struct inode_operations ext4_file_inode_operations;
- extern const struct file_operations ext4_file_operations;
- extern loff_t ext4_llseek(struct file *file, loff_t offset, int origin);
- 
-+/* fsinfo.c */
-+#ifdef CONFIG_FSINFO
-+extern int ext4_fsinfo(struct path *path, struct fsinfo_context *ctx);
-+#endif
-+
- /* inline.c */
- extern int ext4_get_max_inline_size(struct inode *inode);
- extern int ext4_find_inline_data_nolock(struct inode *inode);
-diff --git a/fs/ext4/fsinfo.c b/fs/ext4/fsinfo.c
-new file mode 100644
-index 000000000000..1d4093ef32e7
---- /dev/null
-+++ b/fs/ext4/fsinfo.c
-@@ -0,0 +1,97 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Filesystem information for ext4
-+ *
-+ * Copyright (C) 2020 Red Hat, Inc. All Rights Reserved.
-+ * Written by David Howells (dhowells@redhat.com)
-+ */
-+
-+#include <linux/mount.h>
-+#include "ext4.h"
-+
-+static int ext4_fsinfo_supports(struct path *path, struct fsinfo_context *ctx)
-+{
-+	struct fsinfo_supports *p = ctx->buffer;
-+	struct inode *inode = d_inode(path->dentry);
-+	struct ext4_inode_info *ei = EXT4_I(inode);
-+	struct ext4_inode *raw_inode;
-+	u32 flags;
-+
-+	fsinfo_generic_supports(path, ctx);
-+	p->stx_attributes |= (STATX_ATTR_APPEND |
-+			      STATX_ATTR_COMPRESSED |
-+			      STATX_ATTR_ENCRYPTED |
-+			      STATX_ATTR_IMMUTABLE |
-+			      STATX_ATTR_NODUMP |
-+			      STATX_ATTR_VERITY);
-+	if (EXT4_FITS_IN_INODE(raw_inode, ei, i_crtime))
-+		p->stx_mask |= STATX_BTIME;
-+
-+	flags = EXT4_FL_USER_VISIBLE;
-+	if (S_ISREG(inode->i_mode))
-+		flags &= ~EXT4_PROJINHERIT_FL;
-+	p->fs_ioc_getflags = flags;
-+	flags &= EXT4_FL_USER_MODIFIABLE;
-+	p->fs_ioc_setflags_set = flags;
-+	p->fs_ioc_setflags_clear = flags;
-+
-+	p->fs_ioc_fsgetxattr_xflags = EXT4_FL_XFLAG_VISIBLE;
-+	p->fs_ioc_fssetxattr_xflags_set = EXT4_FL_XFLAG_VISIBLE;
-+	p->fs_ioc_fssetxattr_xflags_clear = EXT4_FL_XFLAG_VISIBLE;
-+	return sizeof(*p);
-+}
-+
-+static int ext4_fsinfo_features(struct path *path, struct fsinfo_context *ctx)
-+{
-+	struct fsinfo_features *p = ctx->buffer;
-+	struct super_block *sb = path->dentry->d_sb;
-+	struct inode *inode = d_inode(path->dentry);
-+	struct ext4_inode_info *ei = EXT4_I(inode);
-+	struct ext4_inode *raw_inode;
-+
-+	fsinfo_generic_features(path, ctx);
-+	fsinfo_set_unix_features(p);
-+	fsinfo_set_feature(p, FSINFO_FEAT_VOLUME_UUID);
-+	fsinfo_set_feature(p, FSINFO_FEAT_VOLUME_NAME);
-+	fsinfo_set_feature(p, FSINFO_FEAT_O_SYNC);
-+	fsinfo_set_feature(p, FSINFO_FEAT_O_DIRECT);
-+	fsinfo_set_feature(p, FSINFO_FEAT_ADV_LOCKS);
-+
-+	if (test_opt(sb, XATTR_USER))
-+		fsinfo_set_feature(p, FSINFO_FEAT_XATTRS);
-+	if (ext4_has_feature_journal(sb))
-+		fsinfo_set_feature(p, FSINFO_FEAT_JOURNAL);
-+	if (ext4_has_feature_casefold(sb))
-+		fsinfo_set_feature(p, FSINFO_FEAT_NAME_CASE_INDEP);
-+
-+	if (sb->s_flags & SB_I_VERSION &&
-+	    !test_opt2(sb, HURD_COMPAT) &&
-+	    EXT4_INODE_SIZE(sb) > EXT4_GOOD_OLD_INODE_SIZE) {
-+		fsinfo_set_feature(p, FSINFO_FEAT_IVER_DATA_CHANGE);
-+		fsinfo_set_feature(p, FSINFO_FEAT_IVER_MONO_INCR);
-+	}
-+
-+	if (EXT4_FITS_IN_INODE(raw_inode, ei, i_crtime))
-+		fsinfo_set_feature(p, FSINFO_FEAT_HAS_BTIME);
-+	return sizeof(*p);
-+}
-+
-+static int ext4_fsinfo_get_volume_name(struct path *path, struct fsinfo_context *ctx)
-+{
-+	const struct ext4_sb_info *sbi = EXT4_SB(path->mnt->mnt_sb);
-+	const struct ext4_super_block *es = sbi->s_es;
-+
-+	memcpy(ctx->buffer, es->s_volume_name, sizeof(es->s_volume_name));
-+	return strlen(ctx->buffer) + 1;
-+}
-+
-+static const struct fsinfo_attribute ext4_fsinfo_attributes[] = {
-+	FSINFO_VSTRUCT	(FSINFO_ATTR_SUPPORTS,		ext4_fsinfo_supports),
-+	FSINFO_VSTRUCT	(FSINFO_ATTR_FEATURES,		ext4_fsinfo_features),
-+	FSINFO_STRING	(FSINFO_ATTR_VOLUME_NAME,	ext4_fsinfo_get_volume_name),
-+	{}
-+};
-+
-+int ext4_fsinfo(struct path *path, struct fsinfo_context *ctx)
-+{
-+	return fsinfo_get_attribute(path, ctx, ext4_fsinfo_attributes);
-+}
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 330957ed1f05..47f349620176 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1481,6 +1481,9 @@ static const struct super_operations ext4_sops = {
- 	.freeze_fs	= ext4_freeze,
- 	.unfreeze_fs	= ext4_unfreeze,
- 	.statfs		= ext4_statfs,
-+#ifdef CONFIG_FSINFO
-+	.fsinfo		= ext4_fsinfo,
-+#endif
- 	.remount_fs	= ext4_remount,
- 	.show_options	= ext4_show_options,
- #ifdef CONFIG_QUOTA
-
+ 	if (!ret) {
+ 		ret = count;
+-		EXT4_MB_GRP_SET_TRIMMED(e4b.bd_info);
++		next = mb_find_next_bit(bitmap, max_blks, max + 1);
++		if (next == max_blks)
++			EXT4_MB_GRP_SET_TRIMMED(e4b.bd_info);
+ 	}
+ out:
+ 	ext4_unlock_group(sb, group);
+-- 
+1.8.3.1
 
