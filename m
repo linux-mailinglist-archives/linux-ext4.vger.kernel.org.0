@@ -2,207 +2,122 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C088623BAB7
-	for <lists+linux-ext4@lfdr.de>; Tue,  4 Aug 2020 14:50:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17AEA23BD51
+	for <lists+linux-ext4@lfdr.de>; Tue,  4 Aug 2020 17:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726090AbgHDMuo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 4 Aug 2020 08:50:44 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58210 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725830AbgHDMuj (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 4 Aug 2020 08:50:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 485F9ACC5;
-        Tue,  4 Aug 2020 12:50:53 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 047361E12CB; Tue,  4 Aug 2020 14:50:36 +0200 (CEST)
-Date:   Tue, 4 Aug 2020 14:50:35 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     =?utf-8?B?5aec6L+O?= <jiangying8582@126.com>
-Cc:     Markus.Elfring@web.de, tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wanglong19@meituan.com, heguanjun@meituan.com
-Subject: Re: [PATCH v3] ext4: fix direct I/O read error
-Message-ID: <20200804125035.GA21667@quack2.suse.cz>
-References: <1593423930-5576-1-git-send-email-jiangying8582@126.com>
- <13A548B3-C71D-4637-B194-CC405991AFC4@126.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <13A548B3-C71D-4637-B194-CC405991AFC4@126.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1728157AbgHDPjw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 4 Aug 2020 11:39:52 -0400
+Received: from bedivere.hansenpartnership.com ([66.63.167.143]:51856 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727038AbgHDPjt (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Aug 2020 11:39:49 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 9ACC18EE19F;
+        Tue,  4 Aug 2020 08:39:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1596555587;
+        bh=ubA7UgAjztHk4GVyHjlFRj5OwpgCUgVMlAu9TLOG2Po=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=mCiJhDrQYtjSKfKCoc+zcXJw20GOjtM2YdZhPriO5Hpid2hhKtxkt8+OGJwn2AR3k
+         /FzvI51x/wnSixkOpn44wsemSD62wUTee772UZzM6yfGamb8lw4JDlhYCqImJp8k0g
+         hmxDKw2bpbC2GIaRZMiNMW3KnidEG+hyy2eB6oS4=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Bg9YfVLl3_vu; Tue,  4 Aug 2020 08:39:47 -0700 (PDT)
+Received: from [153.66.254.194] (unknown [50.35.76.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 939768EE0E4;
+        Tue,  4 Aug 2020 08:39:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1596555586;
+        bh=ubA7UgAjztHk4GVyHjlFRj5OwpgCUgVMlAu9TLOG2Po=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=bmKnsvG0vWB3ZUCvyzNR7rWc4eZ9+ZsNbdyYPV9VoolPcD7XlGUzdRm1c07fHjqT1
+         qmu1PsFAW7gpFD+aA+3WSAkibprMkfYJ8qYBN+PYTXiY0qbHHzX8qwXsshnmHzmyD6
+         Q9O+aU2LAAvWaja75qo/xTXfUs/5DETrYxxrcOpI=
+Message-ID: <1596555579.10158.23.camel@HansenPartnership.com>
+Subject: Re: [PATCH 00/18] VFS: Filesystem information [ver #21]
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     David Howells <dhowells@redhat.com>, viro@zeniv.linux.org.uk
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Jeff Layton <jlayton@kernel.org>, linux-ext4@vger.kernel.org,
+        Carlos Maiolino <cmaiolino@redhat.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-api@vger.kernel.org, torvalds@linux-foundation.org,
+        raven@themaw.net, mszeredi@redhat.com, christian@brauner.io,
+        jannh@google.com, kzak@redhat.com, jlayton@redhat.com,
+        linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 04 Aug 2020 08:39:39 -0700
+In-Reply-To: <159646178122.1784947.11705396571718464082.stgit@warthog.procyon.org.uk>
+References: <159646178122.1784947.11705396571718464082.stgit@warthog.procyon.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 01-07-20 23:25:26, 姜迎 wrote:
-> Does anyone else have any comments on the PATCH v3？Suggestions are welcome.
+On Mon, 2020-08-03 at 14:36 +0100, David Howells wrote:
+> Here's a set of patches that adds a system call, fsinfo(), that
+> allows information about the VFS, mount topology, superblock and
+> files to be retrieved.
 > 
-> Thanks！
+> The patchset is based on top of the notifications patchset and allows
+> event counters implemented in the latter to be retrieved to allow
+> overruns to be efficiently managed.
 
-The patch looks good to me FWIW. But as Jiang properly notes current
-upstream doesn't need this at all so it's only for -stable kernel releases.
-Since there was no report of this problem so far I'm not convinced this is
-serious enough to warrant non-upstream patch in -stable but if this bug
-indeed breaks some application, please add that info to the changelog and
-send the patch to stable@vger.kernel.org for inclusion. In that case also
-feel free to add:
+Could I repeat the question I asked about six months back that never
+got answered:
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+https://lore.kernel.org/linux-api/1582316494.3376.45.camel@HansenPartnership.com/
 
-								Honza
-> 
-> 发自我的iPhone
-> 
-> > 在 2020年6月29日，下午5:45，Jiang Ying <jiangying8582@126.com> 写道：
-> > 
-> > ﻿This patch is used to fix ext4 direct I/O read error when
-> > the read size is not aligned with block size.
-> > 
-> > Then, I will use a test to explain the error.
-> > 
-> > (1) Make a file that is not aligned with block size:
-> >    $dd if=/dev/zero of=./test.jar bs=1000 count=3
-> > 
-> > (2) I wrote a source file named "direct_io_read_file.c" as following:
-> > 
-> >    #include <stdio.h>
-> >    #include <stdlib.h>
-> >    #include <unistd.h>
-> >    #include <sys/file.h>
-> >    #include <sys/types.h>
-> >    #include <sys/stat.h>
-> >    #include <string.h>
-> >    #define BUF_SIZE 1024
-> > 
-> >    int main()
-> >    {
-> >        int fd;
-> >        int ret;
-> > 
-> >        unsigned char *buf;
-> >        ret = posix_memalign((void **)&buf, 512, BUF_SIZE);
-> >        if (ret) {
-> >            perror("posix_memalign failed");
-> >            exit(1);
-> >        }
-> >        fd = open("./test.jar", O_RDONLY | O_DIRECT, 0755);
-> >        if (fd < 0){
-> >            perror("open ./test.jar failed");
-> >            exit(1);
-> >        }
-> > 
-> >        do {
-> >            ret = read(fd, buf, BUF_SIZE);
-> >            printf("ret=%d\n",ret);
-> >            if (ret < 0) {
-> >                perror("write test.jar failed");
-> >            }
-> >        } while (ret > 0);
-> > 
-> >        free(buf);
-> >        close(fd);
-> >    }
-> > 
-> > (3) Compile the source file:
-> >    $gcc direct_io_read_file.c -D_GNU_SOURCE
-> > 
-> > (4) Run the test program:
-> >    $./a.out
-> > 
-> >    The result is as following:
-> >    ret=1024
-> >    ret=1024
-> >    ret=952
-> >    ret=-1
-> >    write test.jar failed: Invalid argument.
-> > 
-> > I have tested this program on XFS filesystem, XFS does not have
-> > this problem, because XFS use iomap_dio_rw() to do direct I/O
-> > read. And the comparing between read offset and file size is done
-> > in iomap_dio_rw(), the code is as following:
-> > 
-> >    if (pos < size) {
-> >        retval = filemap_write_and_wait_range(mapping, pos,
-> >                pos + iov_length(iov, nr_segs) - 1);
-> > 
-> >        if (!retval) {
-> >            retval = mapping->a_ops->direct_IO(READ, iocb,
-> >                        iov, pos, nr_segs);
-> >        }
-> >        ...
-> >    }
-> > 
-> > ...only when "pos < size", direct I/O can be done, or 0 will be return.
-> > 
-> > I have tested the fix patch on Ext4, it is up to the mustard of
-> > EINVAL in man2(read) as following:
-> >    #include <unistd.h>
-> >    ssize_t read(int fd, void *buf, size_t count);
-> > 
-> >    EINVAL
-> >        fd is attached to an object which is unsuitable for reading;
-> >        or the file was opened with the O_DIRECT flag, and either the
-> >        address specified in buf, the value specified in count, or the
-> >        current file offset is not suitably aligned.
-> > 
-> > So I think this patch can be applied to fix ext4 direct I/O error.
-> > 
-> > However Ext4 introduces direct I/O read using iomap infrastructure
-> > on kernel 5.5, the patch is commit <b1b4705d54ab>
-> > ("ext4: introduce direct I/O read using iomap infrastructure"),
-> > then Ext4 will be the same as XFS, they all use iomap_dio_rw() to do direct
-> > I/O read. So this problem does not exist on kernel 5.5 for Ext4.
-> > 
-> > From above description, we can see this problem exists on all the kernel
-> > versions between kernel 3.14 and kernel 5.4. Please apply this patch
-> > on these kernel versions, or please use the method on kernel 5.5 to fix
-> > this problem.
-> > 
-> > Fixes: 9fe55eea7e4b ("Fix race when checking i_size on direct i/o read")
-> > Co-developed-by: Wang Long <wanglong19@meituan.com>
-> > Signed-off-by: Wang Long <wanglong19@meituan.com>
-> > Signed-off-by: Jiang Ying <jiangying8582@126.com>
-> > 
-> > Changes since V2:
-> >    Optimize the description of the commit message and make a variation for
-> >    the patch, e.g. with:
-> > 
-> >        Before:
-> >            loff_t size;
-> >            size = i_size_read(inode);
-> >        After:
-> >            loff_t size = i_size_read(inode);
-> > 
-> > Changes since V1:
-> >    Signed-off use real name and add "Fixes:" flag
-> > 
-> > ---
-> > fs/ext4/inode.c | 5 +++++
-> > 1 file changed, 5 insertions(+)
-> > 
-> > diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> > index 516faa2..a66b0ac 100644
-> > --- a/fs/ext4/inode.c
-> > +++ b/fs/ext4/inode.c
-> > @@ -3821,6 +3821,11 @@ static ssize_t ext4_direct_IO_read(struct kiocb *iocb, struct iov_iter *iter)
-> >    struct inode *inode = mapping->host;
-> >    size_t count = iov_iter_count(iter);
-> >    ssize_t ret;
-> > +    loff_t offset = iocb->ki_pos;
-> > +    loff_t size = i_size_read(inode);
-> > +
-> > +    if (offset >= size)
-> > +        return 0;
-> > 
-> >    /*
-> >     * Shared inode_lock is enough for us - it protects against concurrent
-> > -- 
-> > 1.8.3.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+It sort of petered out into a long winding thread about why not use
+sysfs instead, which really doesn't look like a good idea to me.
+
+I'll repeat the information for those who want to quote it easily on
+reply without having to use a web interface:
+
+---
+Could I make a suggestion about how this should be done in a way that
+doesn't actually require the fsinfo syscall at all: it could just be
+done with fsconfig.  The idea is based on something I've wanted to do
+for configfd but couldn't because otherwise it wouldn't substitute for
+fsconfig, but Christian made me think it was actually essential to the
+ability of the seccomp and other verifier tools in the critique of
+configfd and I belive the same critique applies here.
+
+Instead of making fsconfig functionally configure ... as in you pass
+the attribute name, type and parameters down into the fs specific
+handler and the handler does a string match and then verifies the
+parameters and then acts on them, make it table configured, so what
+each fstype does is register a table of attributes which can be got and
+optionally set (with each attribute having a get and optional set
+function).  We'd have multiple tables per fstype, so the generic VFS
+can register a table of attributes it understands for every fstype
+(things like name, uuid and the like) and then each fs type would
+register a table of fs specific attributes following the same pattern. 
+The system would examine the fs specific table before the generic one,
+allowing overrides.  fsconfig would have the ability to both get and
+set attributes, permitting retrieval as well as setting (which is how I
+get rid of the fsinfo syscall), we'd have a global parameter, which
+would retrieve the entire table by name and type so the whole thing is
+introspectable because the upper layer knows a-priori all the
+attributes which can be set for a given fs type and what type they are
+(so we can make more of the parsing generic).  Any attribute which
+doesn't have a set routine would be read only and all attributes would
+have to have a get routine meaning everything is queryable.
+
+I think I know how to code this up in a way that would be fully
+transparent to the existing syscalls.
+---
+
+James
+
+
+
