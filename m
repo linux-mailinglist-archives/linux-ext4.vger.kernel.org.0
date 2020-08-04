@@ -2,93 +2,164 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3590C23B0A3
-	for <lists+linux-ext4@lfdr.de>; Tue,  4 Aug 2020 01:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF9CD23B28A
+	for <lists+linux-ext4@lfdr.de>; Tue,  4 Aug 2020 04:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728984AbgHCXCO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 3 Aug 2020 19:02:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727991AbgHCXCN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 3 Aug 2020 19:02:13 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D829DC06174A
-        for <linux-ext4@vger.kernel.org>; Mon,  3 Aug 2020 16:02:13 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id u185so19138561pfu.1
-        for <linux-ext4@vger.kernel.org>; Mon, 03 Aug 2020 16:02:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=V/+z/hxKFgTteJODvKkcx/ojBZuakxz0j5YHjVIKU/I=;
-        b=WvzRhMuo+Bhq3EFBZdXi/SgHsTe8rpKDUkQkc9iu++WXSNIDqmVy3dDn8sRLN7T/eO
-         I5z/tJlNF/CoQPYbXeY4zyQgcBzx/NK7gKR3VSmsCWbt4a63wjrorNpU5oK7/o9EZOb7
-         GbPlkTi5doGkvngQDeNHiK7aW320dZCIeL6HC7a4lnD8VLxmcvn2u4EPPsXE6V8IUM3m
-         rPVkbrqrwSUqWpNEvZvM+Kf+klqLwtyeqrppMj6Cn+IIGyxakTB42svkyBYmfeLCtMtf
-         tqEgDHKaHqyaEZ2+YlffH0DefvxZ20+vvWxiUoEvuAKYotl5pPF6eEfaTbizpQyCOlUy
-         97SQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=V/+z/hxKFgTteJODvKkcx/ojBZuakxz0j5YHjVIKU/I=;
-        b=gPVGE3P3k7peTALQE1XSIwlLjCky7JZHAp9qhVmcKIBeBP+JqnOU1BfQWL6621XM7i
-         RpWCkxuCofXQzOJCJK0AonV7zymQeH+qKdtgpSmFEO5a0Pi/jZvoPE/ENEizw2PqBOxl
-         2+oMlJqAP5RBvBEysj3mVG+zzBlEIh/i2ut2C3zdfdgNE7+vp1Mv8Z1TXL993JeLqFD3
-         cC+IUFmi8qJcqd5B40eJwdjZVP9yZJBxwrEwo84UFrS9ViJWOxGqw/gYaRx6xlm2fssk
-         xtAAaoCw+Oiqh2hwRf5OJ2jVm00R4ODpLDyVVu0R/LpvCVUxPGDb5f1TRrI/JjMdDXpY
-         IDlA==
-X-Gm-Message-State: AOAM531Ks3QaAJbiznUIk5ql2K4/dS1rRTjfKxKAPSwsH28Z/zO2wMKL
-        MXDR7WJ8k1MSM3X8s5ZwD9E4nQ==
-X-Google-Smtp-Source: ABdhPJxYaNOzfp7Coaq7/S3GFzQRaWKpMjthMCF1MVEAbgu6MXquqj4sTaj7nUYP30nuW+UakDmt1Q==
-X-Received: by 2002:a65:438c:: with SMTP id m12mr16411217pgp.373.1596495733364;
-        Mon, 03 Aug 2020 16:02:13 -0700 (PDT)
-Received: from [192.168.1.182] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id r185sm21403864pfr.8.2020.08.03.16.02.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 Aug 2020 16:02:12 -0700 (PDT)
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH] ext4: flag as supporting buffered async reads
-Message-ID: <fb90cc2d-b12c-738f-21a4-dd7a8ae0556a@kernel.dk>
-Date:   Mon, 3 Aug 2020 17:02:11 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726766AbgHDCBF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 3 Aug 2020 22:01:05 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:47262 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725840AbgHDCBE (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 3 Aug 2020 22:01:04 -0400
+X-IronPort-AV: E=Sophos;i="5.75,432,1589212800"; 
+   d="scan'208";a="97566951"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 04 Aug 2020 10:00:36 +0800
+Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
+        by cn.fujitsu.com (Postfix) with ESMTP id 486994CE5CD8;
+        Tue,  4 Aug 2020 10:00:36 +0800 (CST)
+Received: from [10.167.220.69] (10.167.220.69) by
+ G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Tue, 4 Aug 2020 10:00:35 +0800
+Message-ID: <5F28C141.6020609@cn.fujitsu.com>
+Date:   Tue, 4 Aug 2020 10:00:33 +0800
+From:   Xiao Yang <yangx.jy@cn.fujitsu.com>
+User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.2; zh-CN; rv:1.9.2.18) Gecko/20110616 Thunderbird/3.1.11
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+To:     Xiao Yang <yangx.jy@cn.fujitsu.com>
+CC:     <darrick.wong@oracle.com>, <ira.weiny@intel.com>, <tytso@mit.edu>,
+        <ebiggers@kernel.org>, <linux-ext4@vger.kernel.org>
+Subject: Re: [PATCH v2] chattr/lsattr: Support dax attribute
+References: <20200728053321.12892-1-yangx.jy@cn.fujitsu.com>
+In-Reply-To: <20200728053321.12892-1-yangx.jy@cn.fujitsu.com>
+Content-Type: text/plain; charset="GB2312"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.167.220.69]
+X-ClientProxiedBy: G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.205) To
+ G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206)
+X-yoursite-MailScanner-ID: 486994CE5CD8.AC361
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: yangx.jy@cn.fujitsu.com
+X-Spam-Status: No
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-ext4 uses generic_file_read_iter(), which already supports this.
+Hi£¬
 
-Cc: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Is there any comment on the v2 patch?
 
----
+Thanks,
+Xiao Yang
+On 2020/7/28 13:33, Xiao Yang wrote:
+> Use the letter 'x' to set/get dax attribute on a directory/file.
+>
+> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> ---
+>
+> V1->V2:
+> 1) Define FS_DAX_FL in order and add missing 'x' letter in manpage.
+> 2) Add more detailed description about 'x' attribute.
+> 3) 'x' is a separate attribute and doesn't always affect S_DAX(i.e.
+>    pagecache bypass) so remove the related info.
+>
+>  lib/e2p/pf.c         |  1 +
+>  lib/ext2fs/ext2_fs.h |  1 +
+>  misc/chattr.1.in     | 15 ++++++++++++---
+>  misc/chattr.c        |  3 ++-
+>  4 files changed, 16 insertions(+), 4 deletions(-)
+>
+> diff --git a/lib/e2p/pf.c b/lib/e2p/pf.c
+> index 0c6998c4..e59cccff 100644
+> --- a/lib/e2p/pf.c
+> +++ b/lib/e2p/pf.c
+> @@ -44,6 +44,7 @@ static struct flags_name flags_array[] = {
+>  	{ EXT2_TOPDIR_FL, "T", "Top_of_Directory_Hierarchies" },
+>  	{ EXT4_EXTENTS_FL, "e", "Extents" },
+>  	{ FS_NOCOW_FL, "C", "No_COW" },
+> +	{ FS_DAX_FL, "x", "Dax" },
+>  	{ EXT4_CASEFOLD_FL, "F", "Casefold" },
+>  	{ EXT4_INLINE_DATA_FL, "N", "Inline_Data" },
+>  	{ EXT4_PROJINHERIT_FL, "P", "Project_Hierarchy" },
+> diff --git a/lib/ext2fs/ext2_fs.h b/lib/ext2fs/ext2_fs.h
+> index 6c20ea77..88f510a3 100644
+> --- a/lib/ext2fs/ext2_fs.h
+> +++ b/lib/ext2fs/ext2_fs.h
+> @@ -335,6 +335,7 @@ struct ext2_dx_tail {
+>  /* EXT4_EOFBLOCKS_FL 0x00400000 was here */
+>  #define FS_NOCOW_FL			0x00800000 /* Do not cow file */
+>  #define EXT4_SNAPFILE_FL		0x01000000  /* Inode is a snapshot */
+> +#define FS_DAX_FL			0x02000000 /* Inode is DAX */
+>  #define EXT4_SNAPFILE_DELETED_FL	0x04000000  /* Snapshot is being deleted */
+>  #define EXT4_SNAPFILE_SHRUNK_FL		0x08000000  /* Snapshot shrink has completed */
+>  #define EXT4_INLINE_DATA_FL		0x10000000 /* Inode has inline data */
+> diff --git a/misc/chattr.1.in b/misc/chattr.1.in
+> index ff2fcf00..5a4928a5 100644
+> --- a/misc/chattr.1.in
+> +++ b/misc/chattr.1.in
+> @@ -23,13 +23,13 @@ chattr \- change file attributes on a Linux file system
+>  .B chattr
+>  changes the file attributes on a Linux file system.
+>  .PP
+> -The format of a symbolic mode is +-=[aAcCdDeFijPsStTu].
+> +The format of a symbolic mode is +-=[aAcCdDeFijPsStTux].
+>  .PP
+>  The operator '+' causes the selected attributes to be added to the
+>  existing attributes of the files; '-' causes them to be removed; and '='
+>  causes them to be the only attributes that the files have.
+>  .PP
+> -The letters 'aAcCdDeFijPsStTu' select the new attributes for the files:
+> +The letters 'aAcCdDeFijPsStTux' select the new attributes for the files:
+>  append only (a),
+>  no atime updates (A),
+>  compressed (c),
+> @@ -45,7 +45,8 @@ secure deletion (s),
+>  synchronous updates (S),
+>  no tail-merging (t),
+>  top of directory hierarchy (T),
+> -and undeletable (u).
+> +undeletable (u),
+> +and direct access for files (x).
+>  .PP
+>  The following attributes are read-only, and may be listed by
+>  .BR lsattr (1)
+> @@ -210,6 +211,14 @@ saved.  This allows the user to ask for its undeletion.  Note: please
+>  make sure to read the bugs and limitations section at the end of this
+>  document.
+>  .TP
+> +.B x
+> +The 'x' attribute can be set on a directory or file.  If the attribute
+> +is set on an existing directory, it will be inherited by all files and
+> +subdirectories that are subsequently created in the directory.  If an
+> +existing directory has contained some files and subdirectories, modifying
+> +the attribute on the parent directory doesn't change the attributes on
+> +these files and subdirectories.
+> +.TP
+>  .B V
+>  A file with the 'V' attribute set has fs-verity enabled.  It cannot be
+>  written to, and the filesystem will automatically verify all data read
+> diff --git a/misc/chattr.c b/misc/chattr.c
+> index a5d60170..c0337f86 100644
+> --- a/misc/chattr.c
+> +++ b/misc/chattr.c
+> @@ -86,7 +86,7 @@ static unsigned long sf;
+>  static void usage(void)
+>  {
+>  	fprintf(stderr,
+> -		_("Usage: %s [-pRVf] [-+=aAcCdDeijPsStTuF] [-v version] files...\n"),
+> +		_("Usage: %s [-pRVf] [-+=aAcCdDeijPsStTuFx] [-v version] files...\n"),
+>  		program_name);
+>  	exit(1);
+>  }
+> @@ -112,6 +112,7 @@ static const struct flags_char flags_array[] = {
+>  	{ EXT2_NOTAIL_FL, 't' },
+>  	{ EXT2_TOPDIR_FL, 'T' },
+>  	{ FS_NOCOW_FL, 'C' },
+> +	{ FS_DAX_FL, 'x' },
+>  	{ EXT4_CASEFOLD_FL, 'F' },
+>  	{ 0, 0 }
+>  };
 
-Resending this one, as I've been carrying it privately since May. The
-necessary bits are now upstream (and XFS/btrfs equiv changes as well),
-please consider this one for 5.9. Thanks!
 
-diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-index 2a01e31a032c..1e827410e9e1 100644
---- a/fs/ext4/file.c
-+++ b/fs/ext4/file.c
-@@ -839,7 +839,7 @@ static int ext4_file_open(struct inode * inode, struct file * filp)
- 			return ret;
- 	}
- 
--	filp->f_mode |= FMODE_NOWAIT;
-+	filp->f_mode |= FMODE_NOWAIT | FMODE_BUF_RASYNC;
- 	return dquot_file_open(inode, filp);
- }
- 
--- 
-Jens Axboe
 
