@@ -2,116 +2,136 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1268123C2D8
-	for <lists+linux-ext4@lfdr.de>; Wed,  5 Aug 2020 03:05:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 111E423C3A8
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Aug 2020 04:49:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726981AbgHEBCX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 4 Aug 2020 21:02:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41680 "EHLO
+        id S1727055AbgHECs5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 4 Aug 2020 22:48:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726865AbgHEBCW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Aug 2020 21:02:22 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6963AC06174A;
-        Tue,  4 Aug 2020 18:02:21 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id 17so1354037pfw.9;
-        Tue, 04 Aug 2020 18:02:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:subject:to:cc:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=v+E7HQYcKD4Tu8V8lX10hoR/DUAtzqd7abuNaI0iTM4=;
-        b=l64pSHHOe4/wFDDoijdiAxBHBnGmUyhsXlXiVfhFaXTwu6Sq6fW8lDbnPczAeV1/aa
-         Jr+oT2ZFAvWz0ZS8Z4JB1hTLfSrOqi5qoYLEAB+T3bXR4dlliGY8HrqTik3qC9QN0rzZ
-         XFRsCGKac6ZFwCYv/d6+/Nie2nEgkqIN7VETg94COkDQ7ApCO4kXVMqSxXyj7gV0PJd4
-         X8uWx0fKh/3ql7HKgdOJ4Ql963yMFkLSzJ0C5ax286SyP7NdubaJXqtZQMeDrUbAVeJb
-         sISSGT7IeAOC4eu3esmb4TnIvZRYywoUIUAwZQ540mc9vwtOCRBi333PGWwtunkieeoy
-         ZqfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:message-id:date:user-agent
-         :mime-version:content-transfer-encoding:content-language;
-        bh=v+E7HQYcKD4Tu8V8lX10hoR/DUAtzqd7abuNaI0iTM4=;
-        b=nRK0HVXwoOoHagWI9z/r4O3cCrJwMvgn8xFBjGkkw4LGhrlYZjH2KYwnlQqAj51CBd
-         kITD0sWXzxQx1FValHYvjBiirfwtXT/alEVLZb8KIsj4cyLda9Q40SrokxZFuZEmbLvq
-         VXKWXQNxzB6EkZJ6bAoLbvFQzpF79HFFO/Ultjsr1gzLn+/7Z2V5jPJnRSAk1RDfQcgu
-         mNjAuUzre/u8pUK8Tp9XG653OHmn86IO24Bc8k8J3eOCMo9bBoNKfA5W/ClBfGiVc40W
-         xDjZvDZCXLxhbhMssmfobGOnQ+VhFFkFcI/HmSuvQssZGcyVEFCCGjcEYa+we8r+kHGp
-         QH2Q==
-X-Gm-Message-State: AOAM533dtQVww3qldX7DAaczJsvneA1dVUWiYopCfkrqzGEVeaDUb9dy
-        N503kRMTBba8dLr1J0BeOlhjbHZ5yB4=
-X-Google-Smtp-Source: ABdhPJzhIp0kcMzAJ8ORkwlLD08pIUsbegJlfQWIrF8l603GbyTVkpteW1lpRWkVX7nuHcTFtvpHIQ==
-X-Received: by 2002:aa7:92d7:: with SMTP id k23mr873629pfa.295.1596589340431;
-        Tue, 04 Aug 2020 18:02:20 -0700 (PDT)
-Received: from [127.0.0.1] ([203.205.141.45])
-        by smtp.gmail.com with ESMTPSA id a13sm470792pfo.49.2020.08.04.18.02.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 04 Aug 2020 18:02:20 -0700 (PDT)
-From:   brookxu <brookxu.cn@gmail.com>
-Subject: [PATCH v2 3/3] ext4: add needed paramter to
- ext4_mb_discard_preallocations trace
-To:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-kernel@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org
-Message-ID: <34718b7d-9e0c-e8a9-cdef-9150fc5edab8@gmail.com>
-Date:   Wed, 5 Aug 2020 09:02:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        with ESMTP id S1725950AbgHECs5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Aug 2020 22:48:57 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6C78C06174A;
+        Tue,  4 Aug 2020 19:48:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=45+4tsZh43voqjT3pyHG/7x1QXao2XdBpQJpfMWnUws=; b=gtSqY2NBABTLkNBfCxPB95KMUT
+        sQe54gmhDEkq26K3Nai9vrsCgXEpFzZODeQdJoTX2n7kLGibiYhLrulxCDIdidU1yAD0o+5R8Lp8f
+        DR3l/ktJdpMJ+aJEG/awzgolaYr+v4bO5CJdNaueEVKXm6l8G16/HtdzGxsZQuTKqhfi+4zSLD6lM
+        f6XP+ISw3Hgj3nq1vxIRDQbinYvEQIg/x108fyHihZX9HhhW7GByCZW9g19GgcA6h8YIPnnFlFrwg
+        UTtotBA4bAkeo3q68UZYuLxGCXSJ+V/WkPriHtr0ouf//PBb4RVCbMpF5cs+8nfe7RxEUNnD1wF6+
+        NS6RHTcA==;
+Received: from [2601:1c0:6280:3f0::19c2] (helo=smtpauth.infradead.org)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k39U5-0007TM-W2; Wed, 05 Aug 2020 02:48:54 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org
+Subject: [PATCH] ext4: delete duplicated words + other fixes
+Date:   Tue,  4 Aug 2020 19:48:50 -0700
+Message-Id: <20200805024850.12129-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Add the needed value to ext4_mb_discard_preallocations trace, so
-we can more easily observe the requested number of trim.
+Delete repeated words in fs/ext4/.
+{the, this, of, we, after}
 
-Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+Also change spelling of "xttr" in inline.c to "xattr" in 2 places.
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+To: linux-fsdevel@vger.kernel.org
+Cc: "Theodore Ts'o" <tytso@mit.edu>
+Cc: Andreas Dilger <adilger.kernel@dilger.ca>
+Cc: linux-ext4@vger.kernel.org
 ---
- include/trace/events/ext4.h | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ fs/ext4/extents.c  |    2 +-
+ fs/ext4/indirect.c |    2 +-
+ fs/ext4/inline.c   |    4 ++--
+ fs/ext4/inode.c    |    2 +-
+ fs/ext4/mballoc.c  |    4 ++--
+ 5 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/include/trace/events/ext4.h b/include/trace/events/ext4.h
-index cc41d69..61736d8 100644
---- a/include/trace/events/ext4.h
-+++ b/include/trace/events/ext4.h
-@@ -746,24 +746,26 @@
- );
- 
- TRACE_EVENT(ext4_discard_preallocations,
--    TP_PROTO(struct inode *inode),
-+    TP_PROTO(struct inode *inode, unsigned int needed),
- 
--    TP_ARGS(inode),
-+    TP_ARGS(inode, needed),
- 
-     TP_STRUCT__entry(
--        __field(    dev_t,    dev            )
--        __field(    ino_t,    ino            )
-+        __field(    dev_t,        dev        )
-+        __field(    ino_t,        ino        )
-+        __field(    unsigned int,    needed        )
- 
-     ),
- 
-     TP_fast_assign(
-         __entry->dev    = inode->i_sb->s_dev;
-         __entry->ino    = inode->i_ino;
-+        __entry->needed    = needed;
-     ),
- 
--    TP_printk("dev %d,%d ino %lu",
-+    TP_printk("dev %d,%d ino %lu needed %u",
-           MAJOR(__entry->dev), MINOR(__entry->dev),
--          (unsigned long) __entry->ino)
-+          (unsigned long) __entry->ino, __entry->needed)
- );
- 
- TRACE_EVENT(ext4_mb_discard_preallocations,
-
--- 
-1.8.3.1
-
+--- linux-next-20200804.orig/fs/ext4/extents.c
++++ linux-next-20200804/fs/ext4/extents.c
+@@ -4029,7 +4029,7 @@ static int get_implied_cluster_alloc(str
+  * down_read(&EXT4_I(inode)->i_data_sem) if not allocating file system block
+  * (ie, create is zero). Otherwise down_write(&EXT4_I(inode)->i_data_sem)
+  *
+- * return > 0, number of of blocks already mapped/allocated
++ * return > 0, number of blocks already mapped/allocated
+  *          if create == 0 and these are pre-allocated blocks
+  *          	buffer head is unmapped
+  *          otherwise blocks are mapped
+--- linux-next-20200804.orig/fs/ext4/indirect.c
++++ linux-next-20200804/fs/ext4/indirect.c
+@@ -1035,7 +1035,7 @@ static void ext4_free_branches(handle_t
+ 			brelse(bh);
+ 
+ 			/*
+-			 * Everything below this this pointer has been
++			 * Everything below this pointer has been
+ 			 * released.  Now let this top-of-subtree go.
+ 			 *
+ 			 * We want the freeing of this indirect block to be
+--- linux-next-20200804.orig/fs/ext4/inline.c
++++ linux-next-20200804/fs/ext4/inline.c
+@@ -276,7 +276,7 @@ static int ext4_create_inline_data(handl
+ 		len = 0;
+ 	}
+ 
+-	/* Insert the the xttr entry. */
++	/* Insert the xattr entry. */
+ 	i.value = value;
+ 	i.value_len = len;
+ 
+@@ -354,7 +354,7 @@ static int ext4_update_inline_data(handl
+ 	if (error)
+ 		goto out;
+ 
+-	/* Update the xttr entry. */
++	/* Update the xattr entry. */
+ 	i.value = value;
+ 	i.value_len = len;
+ 
+--- linux-next-20200804.orig/fs/ext4/inode.c
++++ linux-next-20200804/fs/ext4/inode.c
+@@ -2786,7 +2786,7 @@ retry:
+ 		 * ext4_journal_stop() can wait for transaction commit
+ 		 * to finish which may depend on writeback of pages to
+ 		 * complete or on page lock to be released.  In that
+-		 * case, we have to wait until after after we have
++		 * case, we have to wait until after we have
+ 		 * submitted all the IO, released page locks we hold,
+ 		 * and dropped io_end reference (for extent conversion
+ 		 * to be able to complete) before stopping the handle.
+--- linux-next-20200804.orig/fs/ext4/mballoc.c
++++ linux-next-20200804/fs/ext4/mballoc.c
+@@ -124,7 +124,7 @@
+  * /sys/fs/ext4/<partition>/mb_group_prealloc. The value is represented in
+  * terms of number of blocks. If we have mounted the file system with -O
+  * stripe=<value> option the group prealloc request is normalized to the
+- * the smallest multiple of the stripe value (sbi->s_stripe) which is
++ * smallest multiple of the stripe value (sbi->s_stripe) which is
+  * greater than the default mb_group_prealloc.
+  *
+  * The regular allocator (using the buddy cache) supports a few tunables.
+@@ -2026,7 +2026,7 @@ void ext4_mb_complex_scan_group(struct e
+ 			/*
+ 			 * IF we have corrupt bitmap, we won't find any
+ 			 * free blocks even though group info says we
+-			 * we have free blocks
++			 * have free blocks
+ 			 */
+ 			ext4_grp_locked_error(sb, e4b->bd_group, 0, 0,
+ 					"%d free clusters as per "
