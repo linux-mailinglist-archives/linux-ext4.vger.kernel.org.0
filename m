@@ -2,94 +2,200 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA90723CFE3
-	for <lists+linux-ext4@lfdr.de>; Wed,  5 Aug 2020 21:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E88723D1DF
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Aug 2020 22:07:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728869AbgHET0K (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 5 Aug 2020 15:26:10 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:30110 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728681AbgHEROA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 5 Aug 2020 13:14:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596647638;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yTnFp3FGNnUMIV+drG+EiP28NPY1kzNtc5gU15VKTgg=;
-        b=EPFQ+szwIY5F62w8zr2I2fjpdpckbH7cE/mKO500e5Z2FY5u5l5us7dqhV/PNScv64ZY6+
-        ryH4fDs8xkJtta7Mc3G0sHwUiK85UkV78lhlGTuOH/bcpT7ceLV5jMIUag0rRkkD0ihpXO
-        vqY9RXcf5GpJyr7QAFBrplc0ttcqEHE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-404-CVKT19CpOAaHFqv9tWctXA-1; Wed, 05 Aug 2020 13:13:57 -0400
-X-MC-Unique: CVKT19CpOAaHFqv9tWctXA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3CC2D80183C;
-        Wed,  5 Aug 2020 17:13:55 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-32.rdu2.redhat.com [10.10.112.32])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 089C25D9DC;
-        Wed,  5 Aug 2020 17:13:48 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <1596555579.10158.23.camel@HansenPartnership.com>
-References: <1596555579.10158.23.camel@HansenPartnership.com> <159646178122.1784947.11705396571718464082.stgit@warthog.procyon.org.uk>
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     dhowells@redhat.com, viro@zeniv.linux.org.uk,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Jeff Layton <jlayton@kernel.org>, linux-ext4@vger.kernel.org,
-        Carlos Maiolino <cmaiolino@redhat.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-api@vger.kernel.org, torvalds@linux-foundation.org,
-        raven@themaw.net, mszeredi@redhat.com, christian@brauner.io,
-        jannh@google.com, kzak@redhat.com, jlayton@redhat.com,
-        linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/18] VFS: Filesystem information [ver #21]
+        id S1727893AbgHEUHF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 5 Aug 2020 16:07:05 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57638 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726918AbgHEQeG (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 5 Aug 2020 12:34:06 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id F1E01AC6E;
+        Wed,  5 Aug 2020 14:15:32 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 011301E12CB; Wed,  5 Aug 2020 16:15:15 +0200 (CEST)
+Date:   Wed, 5 Aug 2020 16:15:15 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ted Tso <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org, Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH] mke2fs: Warn if fs block size is incompatible with DAX
+Message-ID: <20200805141515.GB16475@quack2.suse.cz>
+References: <20200709144057.21333-1-jack@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2329128.1596647628.1@warthog.procyon.org.uk>
-Date:   Wed, 05 Aug 2020 18:13:48 +0100
-Message-ID: <2329129.1596647628@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200709144057.21333-1-jack@suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-James Bottomley <James.Bottomley@HansenPartnership.com> wrote:
+On Thu 09-07-20 16:40:57, Jan Kara wrote:
+> If we are creating filesystem on DAX capable device, warn if set block
+> size is incompatible with DAX to give admin some hint why DAX might not
+> be available.
+> 
+> Signed-off-by: Jan Kara <jack@suse.cz>
 
-> It sort of petered out into a long winding thread about why not use
-> sysfs instead, which really doesn't look like a good idea to me.
+Ping?
 
-It seemed to turn into a set of procfs symlinks that pointed at a bunch of
-sysfs stuff - or possibly some special filesystem.
+								Honza
 
-> Could I make a suggestion about how this should be done in a way that
-> doesn't actually require the fsinfo syscall at all: it could just be
-> done with fsconfig.
-
-I'd prefer to keep it separate.  The interface for fsconfig() is intended to
-move stuff into the kernel, not out of it.  Better to add a parallel syscall
-to go the other way (kind of like we have setxattr/getxattr, sendmsg/recvmsg).
-
-Further, fsinfo() can refer directly to a file/fd/mount/whatever, but
-fsconfig() doesn't do that.  You have to use fspick() to get a context before
-you can use fsconfig().  Now, that's fine if you want to gather several pieces
-of information from a particular object, but it's not so good if you want to
-get one piece of information from each of several objects.
-
-> ... make it table configured...
-
-I did, kind of (though I didn't call it that).  Al rewrote the code to get rid
-of it.
-
-David
-
+> ---
+>  configure.ac  |  3 +++
+>  misc/mke2fs.c | 81 ++++++++++++++++++++++++++++++++++++++---------------------
+>  2 files changed, 55 insertions(+), 29 deletions(-)
+> 
+> diff --git a/configure.ac b/configure.ac
+> index 18e434bc6ebc..7d9210740387 100644
+> --- a/configure.ac
+> +++ b/configure.ac
+> @@ -1142,6 +1142,9 @@ if test -n "$BLKID_CMT"; then
+>    AC_CHECK_LIB(blkid, blkid_probe_get_topology,
+>  		      AC_DEFINE(HAVE_BLKID_PROBE_GET_TOPOLOGY, 1,
+>  				[Define to 1 if blkid has blkid_probe_get_topology]))
+> +  AC_CHECK_LIB(blkid, blkid_topology_get_dax,
+> +		      AC_DEFINE(HAVE_BLKID_TOPOLOGY_GET_DAX, 1,
+> +				[Define to 1 if blkid has blkid_topology_get_dax]))
+>    AC_CHECK_LIB(blkid, blkid_probe_enable_partitions,
+>  		      AC_DEFINE(HAVE_BLKID_PROBE_ENABLE_PARTITIONS, 1,
+>  				[Define to 1 if blkid has blkid_probe_enable_partitions]))
+> diff --git a/misc/mke2fs.c b/misc/mke2fs.c
+> index c90dcf0e87c1..8c8f5ea467d3 100644
+> --- a/misc/mke2fs.c
+> +++ b/misc/mke2fs.c
+> @@ -1468,23 +1468,30 @@ int get_bool_from_profile(char **types, const char *opt, int def_val)
+>  extern const char *mke2fs_default_profile;
+>  static const char *default_files[] = { "<default>", 0 };
+>  
+> +struct device_param {
+> +	unsigned long min_io;		/* prefered minimum IO size */
+> +	unsigned long opt_io;		/* optimal IO size */
+> +	unsigned long alignment_offset;	/* alignment offset wrt physical block size */
+> +	unsigned int dax:1;		/* supports dax? */
+> +};
+> +
+>  #ifdef HAVE_BLKID_PROBE_GET_TOPOLOGY
+>  /*
+>   * Sets the geometry of a device (stripe/stride), and returns the
+>   * device's alignment offset, if any, or a negative error.
+>   */
+>  static int get_device_geometry(const char *file,
+> -			       struct ext2_super_block *param,
+> -			       unsigned int psector_size)
+> +			       unsigned int blocksize,
+> +			       unsigned int psector_size,
+> +			       struct device_param *dev_param)
+>  {
+>  	int rc = -1;
+> -	unsigned int blocksize;
+>  	blkid_probe pr;
+>  	blkid_topology tp;
+> -	unsigned long min_io;
+> -	unsigned long opt_io;
+>  	struct stat statbuf;
+>  
+> +	memset(dev_param, 0, sizeof(*dev_param));
+> +
+>  	/* Nothing to do for a regular file */
+>  	if (!stat(file, &statbuf) && S_ISREG(statbuf.st_mode))
+>  		return 0;
+> @@ -1497,23 +1504,20 @@ static int get_device_geometry(const char *file,
+>  	if (!tp)
+>  		goto out;
+>  
+> -	min_io = blkid_topology_get_minimum_io_size(tp);
+> -	opt_io = blkid_topology_get_optimal_io_size(tp);
+> -	blocksize = EXT2_BLOCK_SIZE(param);
+> -	if ((min_io == 0) && (psector_size > blocksize))
+> -		min_io = psector_size;
+> -	if ((opt_io == 0) && min_io)
+> -		opt_io = min_io;
+> -	if ((opt_io == 0) && (psector_size > blocksize))
+> -		opt_io = psector_size;
+> -
+> -	/* setting stripe/stride to blocksize is pointless */
+> -	if (min_io > blocksize)
+> -		param->s_raid_stride = min_io / blocksize;
+> -	if (opt_io > blocksize)
+> -		param->s_raid_stripe_width = opt_io / blocksize;
+> -
+> -	rc = blkid_topology_get_alignment_offset(tp);
+> +	dev_param->min_io = blkid_topology_get_minimum_io_size(tp);
+> +	dev_param->opt_io = blkid_topology_get_optimal_io_size(tp);
+> +	if ((dev_param->min_io == 0) && (psector_size > blocksize))
+> +		dev_param->min_io = psector_size;
+> +	if ((dev_param->opt_io == 0) && dev_param->min_io > 0)
+> +		dev_param->opt_io = dev_param->min_io;
+> +	if ((dev_param->opt_io == 0) && (psector_size > blocksize))
+> +		dev_param->opt_io = psector_size;
+> +
+> +	dev_param->alignment_offset = blkid_topology_get_alignment_offset(tp);
+> +#ifdef HAVE_BLKID_TOPOLOGY_GET_DAX
+> +	dev_param->dax = blkid_topology_get_dax(tp);
+> +#endif
+> +	rc = 0;
+>  out:
+>  	blkid_free_probe(pr);
+>  	return rc;
+> @@ -1562,6 +1566,7 @@ static void PRS(int argc, char *argv[])
+>  	int		use_bsize;
+>  	char		*newpath;
+>  	int		pathlen = sizeof(PATH_SET) + 1;
+> +	struct device_param dev_param;
+>  
+>  	if (oldpath)
+>  		pathlen += strlen(oldpath);
+> @@ -2307,17 +2312,35 @@ profile_error:
+>  	}
+>  
+>  #ifdef HAVE_BLKID_PROBE_GET_TOPOLOGY
+> -	retval = get_device_geometry(device_name, &fs_param,
+> -				     (unsigned int) psector_size);
+> +	retval = get_device_geometry(device_name, blocksize,
+> +				     psector_size, &dev_param);
+>  	if (retval < 0) {
+>  		fprintf(stderr,
+>  			_("warning: Unable to get device geometry for %s\n"),
+>  			device_name);
+> -	} else if (retval) {
+> -		printf(_("%s alignment is offset by %lu bytes.\n"),
+> -		       device_name, retval);
+> -		printf(_("This may result in very poor performance, "
+> -			  "(re)-partitioning suggested.\n"));
+> +	} else {
+> +		/* setting stripe/stride to blocksize is pointless */
+> +		if (dev_param.min_io > blocksize)
+> +			fs_param.s_raid_stride = dev_param.min_io / blocksize;
+> +		if (dev_param.opt_io > blocksize) {
+> +			fs_param.s_raid_stripe_width =
+> +						dev_param.opt_io / blocksize;
+> +		}
+> +
+> +		if (dev_param.alignment_offset) {
+> +			printf(_("%s alignment is offset by %lu bytes.\n"),
+> +			       device_name, dev_param.alignment_offset);
+> +			printf(_("This may result in very poor performance, "
+> +				  "(re)-partitioning suggested.\n"));
+> +		}
+> +
+> +		if (dev_param.dax && blocksize != sys_page_size) {
+> +			fprintf(stderr,
+> +				_("%s is capable of DAX but current block size "
+> +				  "%u is different from system page size %u so "
+> +				  "filesystem will not support DAX.\n"),
+> +				device_name, blocksize, sys_page_size);
+> +		}
+>  	}
+>  #endif
+>  
+> -- 
+> 2.16.4
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
