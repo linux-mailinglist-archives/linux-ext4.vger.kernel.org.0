@@ -2,40 +2,41 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 031A323C717
-	for <lists+linux-ext4@lfdr.de>; Wed,  5 Aug 2020 09:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA4E23C7C3
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Aug 2020 10:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726175AbgHEHlH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 5 Aug 2020 03:41:07 -0400
-Received: from mail-m963.mail.126.com ([123.126.96.3]:53114 "EHLO
-        mail-m963.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726066AbgHEHlH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 5 Aug 2020 03:41:07 -0400
+        id S1726604AbgHEI3L (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 5 Aug 2020 04:29:11 -0400
+Received: from mail-m965.mail.126.com ([123.126.96.5]:60616 "EHLO
+        mail-m965.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726563AbgHEI3I (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 5 Aug 2020 04:29:08 -0400
+X-Greylist: delayed 1833 seconds by postgrey-1.27 at vger.kernel.org; Wed, 05 Aug 2020 04:29:07 EDT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=DOCU5HntHDoMHJxp9H
-        qyRoF18SUiP/lo+VubNRBp8Xc=; b=elrI9UxbmjQNB0rK6F6YWTE2lDa8tE8zbR
-        sqWJYIS/zvwuPzHfShuAD2FQA4nDraE31PXz17ER2dAE0PU7hUwxxOxqilroJczV
-        ZtkloXhThdUE0BKDmC3kl7x99Ztd5nMyANryddNpyJVNF0lzKN1+WMDpx2j10Rq1
-        8up9jsWhw=
+        s=s110527; h=From:Subject:Date:Message-Id; bh=FVXiprMeiPkEoGT4A5
+        sLzrvwYbzv4vr3XgsT3WHV+Uk=; b=LFbEoL6sRPWPKgmbpFaFdhoRKtp2AH8c5a
+        v4dsbOKxZDsaPhpPr8finOuCarGWNoW+SJj3lt02HIgHgXiWxqvj/ox0rASuuHhd
+        mG95Ch56MA/VtcKwH8sJQ7zHJ1NFxwaN0kheiDM7tJMRumPgoEjm/li2C2rV6cj2
+        psY5+n21U=
 Received: from xr-hulk-k8s-node1933.gh.sankuai.com (unknown [101.236.11.3])
-        by smtp8 (Coremail) with SMTP id NORpCgAXPFdyYipfzVkEBw--.113S2;
-        Wed, 05 Aug 2020 15:40:40 +0800 (CST)
+        by smtp10 (Coremail) with SMTP id NuRpCgD3yrZhZipfGNE9Xg--.1772S2;
+        Wed, 05 Aug 2020 15:57:26 +0800 (CST)
 From:   Jiang Ying <jiangying8582@126.com>
 To:     tytso@mit.edu, adilger.kernel@dilger.ca,
         linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
         stable@vger.kernel.org
 Cc:     wanglong19@meituan.com, heguanjun@meituan.com, jack@suse.cz
 Subject: [PATCH v4] ext4: fix direct I/O read error
-Date:   Wed,  5 Aug 2020 15:40:34 +0800
-Message-Id: <1596613234-174664-1-git-send-email-jiangying8582@126.com>
+Date:   Wed,  5 Aug 2020 15:57:21 +0800
+Message-Id: <1596614241-178185-1-git-send-email-jiangying8582@126.com>
 X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: NORpCgAXPFdyYipfzVkEBw--.113S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxAw47WFW8tw4rCr1UZr4xZwb_yoWrXr4rpF
-        sxCa15WrWkZr4rCanFk3W7Za4Fy3yDGFWUXF98uw1UZr43Kr9YyrW8KF1UGayUGrWF9w4F
-        qFZ8tryfXw1UZFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jOTmhUUUUU=
+X-CM-TRANSID: NuRpCgD3yrZhZipfGNE9Xg--.1772S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxAw47WFW8tw4rCr1UZr4xZwb_yoWrCryfpr
+        sxCa15WrZ5Xr4xCanrK3W7uFyFy3yDGFWUXr98u345Zr15Kr9YkrWIkF1UGayUJrWv9w4Y
+        qFZ8tryfXw1UZFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jcMa8UUUUU=
 X-Originating-IP: [101.236.11.3]
-X-CM-SenderInfo: xmld0wp1lqwmqvysqiyswou0bp/1tbimhh3AFpEAtE9tQAAsw
+X-CM-SenderInfo: xmld0wp1lqwmqvysqiyswou0bp/1tbiXAZ3AFpEBLWCIgAAsi
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
@@ -155,6 +156,24 @@ Reviewed-by: Jan Kara <jack@suse.cz>
 Co-developed-by: Wang Long <wanglong19@meituan.com>
 Signed-off-by: Wang Long <wanglong19@meituan.com>
 Signed-off-by: Jiang Ying <jiangying8582@126.com>
+
+Changes since V3:
+	Add the info: this bug could break some application that use the
+	stable kernel releases.
+
+Changes since V2:
+	Optimize the description of the commit message and make a variation for
+	the patch, e.g. with:
+
+		Before:
+			loff_t size;
+			size = i_size_read(inode);
+		After:
+			loff_t size = i_size_read(inode);
+
+Changes since V1:
+	Signed-off use real name and add "Fixes:" flag
+
 ---
  fs/ext4/inode.c | 5 +++++
  1 file changed, 5 insertions(+)
