@@ -2,197 +2,249 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E88723D1DF
-	for <lists+linux-ext4@lfdr.de>; Wed,  5 Aug 2020 22:07:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5661F23D1B6
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Aug 2020 22:05:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727893AbgHEUHF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 5 Aug 2020 16:07:05 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57638 "EHLO mx2.suse.de"
+        id S1727884AbgHEUFl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 5 Aug 2020 16:05:41 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58434 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726918AbgHEQeG (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:34:06 -0400
+        id S1727793AbgHEQf6 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 5 Aug 2020 12:35:58 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id F1E01AC6E;
-        Wed,  5 Aug 2020 14:15:32 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 3617EB5FD;
+        Wed,  5 Aug 2020 14:16:40 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 011301E12CB; Wed,  5 Aug 2020 16:15:15 +0200 (CEST)
-Date:   Wed, 5 Aug 2020 16:15:15 +0200
+        id 54C291E12CB; Wed,  5 Aug 2020 16:16:23 +0200 (CEST)
+Date:   Wed, 5 Aug 2020 16:16:23 +0200
 From:   Jan Kara <jack@suse.cz>
 To:     Ted Tso <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org, Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH] mke2fs: Warn if fs block size is incompatible with DAX
-Message-ID: <20200805141515.GB16475@quack2.suse.cz>
-References: <20200709144057.21333-1-jack@suse.cz>
+Cc:     linux-ext4@vger.kernel.org, Lukas Czerner <lczerner@redhat.com>,
+        Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH v3] ext4: don't BUG on inconsistent journal feature
+Message-ID: <20200805141623.GC16475@quack2.suse.cz>
+References: <20200710140759.18031-1-jack@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200709144057.21333-1-jack@suse.cz>
+In-Reply-To: <20200710140759.18031-1-jack@suse.cz>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 09-07-20 16:40:57, Jan Kara wrote:
-> If we are creating filesystem on DAX capable device, warn if set block
-> size is incompatible with DAX to give admin some hint why DAX might not
-> be available.
+On Fri 10-07-20 16:07:59, Jan Kara wrote:
+> A customer has reported a BUG_ON in ext4_clear_journal_err() hitting
+> during an LTP testing. Either this has been caused by a test setup
+> issue where the filesystem was being overwritten while LTP was mounting
+> it or the journal replay has overwritten the superblock with invalid
+> data. In either case it is preferable we don't take the machine down
+> with a BUG_ON. So handle the situation of unexpectedly missing
+> has_journal feature more gracefully. We issue warning and fail the mount
+> in the cases where the race window is narrow and the failed check is
+> most likely a programming error. In cases where fs corruption is more
+> likely, we do full ext4_error() handling before failing mount / remount.
 > 
+> Reviewed-by: Lukas Czerner <lczerner@redhat.com>
 > Signed-off-by: Jan Kara <jack@suse.cz>
 
-Ping?
+Ted, can you please pick up this patch? Thanks!
 
 								Honza
 
 > ---
->  configure.ac  |  3 +++
->  misc/mke2fs.c | 81 ++++++++++++++++++++++++++++++++++++++---------------------
->  2 files changed, 55 insertions(+), 29 deletions(-)
+>  fs/ext4/super.c | 68 +++++++++++++++++++++++++++++++++++++++------------------
+>  1 file changed, 47 insertions(+), 21 deletions(-)
 > 
-> diff --git a/configure.ac b/configure.ac
-> index 18e434bc6ebc..7d9210740387 100644
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -1142,6 +1142,9 @@ if test -n "$BLKID_CMT"; then
->    AC_CHECK_LIB(blkid, blkid_probe_get_topology,
->  		      AC_DEFINE(HAVE_BLKID_PROBE_GET_TOPOLOGY, 1,
->  				[Define to 1 if blkid has blkid_probe_get_topology]))
-> +  AC_CHECK_LIB(blkid, blkid_topology_get_dax,
-> +		      AC_DEFINE(HAVE_BLKID_TOPOLOGY_GET_DAX, 1,
-> +				[Define to 1 if blkid has blkid_topology_get_dax]))
->    AC_CHECK_LIB(blkid, blkid_probe_enable_partitions,
->  		      AC_DEFINE(HAVE_BLKID_PROBE_ENABLE_PARTITIONS, 1,
->  				[Define to 1 if blkid has blkid_probe_enable_partitions]))
-> diff --git a/misc/mke2fs.c b/misc/mke2fs.c
-> index c90dcf0e87c1..8c8f5ea467d3 100644
-> --- a/misc/mke2fs.c
-> +++ b/misc/mke2fs.c
-> @@ -1468,23 +1468,30 @@ int get_bool_from_profile(char **types, const char *opt, int def_val)
->  extern const char *mke2fs_default_profile;
->  static const char *default_files[] = { "<default>", 0 };
+> Changes since v2:
+> - added Reviewed-by tag
+> - fixup compilation failure without CONFIG_QUOTA
+> 
+> Changes since v1:
+> - handle failures more likely coming from fs corruption as with ext4_error
+> 
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 330957ed1f05..9fdad843b30e 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -66,10 +66,10 @@ static int ext4_load_journal(struct super_block *, struct ext4_super_block *,
+>  			     unsigned long journal_devnum);
+>  static int ext4_show_options(struct seq_file *seq, struct dentry *root);
+>  static int ext4_commit_super(struct super_block *sb, int sync);
+> -static void ext4_mark_recovery_complete(struct super_block *sb,
+> +static int ext4_mark_recovery_complete(struct super_block *sb,
+>  					struct ext4_super_block *es);
+> -static void ext4_clear_journal_err(struct super_block *sb,
+> -				   struct ext4_super_block *es);
+> +static int ext4_clear_journal_err(struct super_block *sb,
+> +				  struct ext4_super_block *es);
+>  static int ext4_sync_fs(struct super_block *sb, int wait);
+>  static int ext4_remount(struct super_block *sb, int *flags, char *data);
+>  static int ext4_statfs(struct dentry *dentry, struct kstatfs *buf);
+> @@ -4770,7 +4770,9 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+>  	EXT4_SB(sb)->s_mount_state &= ~EXT4_ORPHAN_FS;
+>  	if (needs_recovery) {
+>  		ext4_msg(sb, KERN_INFO, "recovery complete");
+> -		ext4_mark_recovery_complete(sb, es);
+> +		err = ext4_mark_recovery_complete(sb, es);
+> +		if (err)
+> +			goto failed_mount8;
+>  	}
+>  	if (EXT4_SB(sb)->s_journal) {
+>  		if (test_opt(sb, DATA_FLAGS) == EXT4_MOUNT_JOURNAL_DATA)
+> @@ -4813,10 +4815,8 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+>  		ext4_msg(sb, KERN_ERR, "VFS: Can't find ext4 filesystem");
+>  	goto failed_mount;
 >  
-> +struct device_param {
-> +	unsigned long min_io;		/* prefered minimum IO size */
-> +	unsigned long opt_io;		/* optimal IO size */
-> +	unsigned long alignment_offset;	/* alignment offset wrt physical block size */
-> +	unsigned int dax:1;		/* supports dax? */
-> +};
-> +
->  #ifdef HAVE_BLKID_PROBE_GET_TOPOLOGY
->  /*
->   * Sets the geometry of a device (stripe/stride), and returns the
->   * device's alignment offset, if any, or a negative error.
+> -#ifdef CONFIG_QUOTA
+>  failed_mount8:
+>  	ext4_unregister_sysfs(sb);
+> -#endif
+>  failed_mount7:
+>  	ext4_unregister_li_request(sb);
+>  failed_mount6:
+> @@ -4956,7 +4956,8 @@ static journal_t *ext4_get_journal(struct super_block *sb,
+>  	struct inode *journal_inode;
+>  	journal_t *journal;
+>  
+> -	BUG_ON(!ext4_has_feature_journal(sb));
+> +	if (WARN_ON_ONCE(!ext4_has_feature_journal(sb)))
+> +		return NULL;
+>  
+>  	journal_inode = ext4_get_journal_inode(sb, journal_inum);
+>  	if (!journal_inode)
+> @@ -4986,7 +4987,8 @@ static journal_t *ext4_get_dev_journal(struct super_block *sb,
+>  	struct ext4_super_block *es;
+>  	struct block_device *bdev;
+>  
+> -	BUG_ON(!ext4_has_feature_journal(sb));
+> +	if (WARN_ON_ONCE(!ext4_has_feature_journal(sb)))
+> +		return NULL;
+>  
+>  	bdev = ext4_blkdev_get(j_dev, sb);
+>  	if (bdev == NULL)
+> @@ -5078,7 +5080,8 @@ static int ext4_load_journal(struct super_block *sb,
+>  	int err = 0;
+>  	int really_read_only;
+>  
+> -	BUG_ON(!ext4_has_feature_journal(sb));
+> +	if (WARN_ON_ONCE(!ext4_has_feature_journal(sb)))
+> +		return -EFSCORRUPTED;
+>  
+>  	if (journal_devnum &&
+>  	    journal_devnum != le32_to_cpu(es->s_journal_dev)) {
+> @@ -5148,7 +5151,12 @@ static int ext4_load_journal(struct super_block *sb,
+>  	}
+>  
+>  	EXT4_SB(sb)->s_journal = journal;
+> -	ext4_clear_journal_err(sb, es);
+> +	err = ext4_clear_journal_err(sb, es);
+> +	if (err) {
+> +		EXT4_SB(sb)->s_journal = NULL;
+> +		jbd2_journal_destroy(journal);
+> +		return err;
+> +	}
+>  
+>  	if (!really_read_only && journal_devnum &&
+>  	    journal_devnum != le32_to_cpu(es->s_journal_dev)) {
+> @@ -5244,26 +5252,32 @@ static int ext4_commit_super(struct super_block *sb, int sync)
+>   * remounting) the filesystem readonly, then we will end up with a
+>   * consistent fs on disk.  Record that fact.
 >   */
->  static int get_device_geometry(const char *file,
-> -			       struct ext2_super_block *param,
-> -			       unsigned int psector_size)
-> +			       unsigned int blocksize,
-> +			       unsigned int psector_size,
-> +			       struct device_param *dev_param)
+> -static void ext4_mark_recovery_complete(struct super_block *sb,
+> -					struct ext4_super_block *es)
+> +static int ext4_mark_recovery_complete(struct super_block *sb,
+> +				       struct ext4_super_block *es)
 >  {
->  	int rc = -1;
-> -	unsigned int blocksize;
->  	blkid_probe pr;
->  	blkid_topology tp;
-> -	unsigned long min_io;
-> -	unsigned long opt_io;
->  	struct stat statbuf;
+> +	int err;
+>  	journal_t *journal = EXT4_SB(sb)->s_journal;
 >  
-> +	memset(dev_param, 0, sizeof(*dev_param));
-> +
->  	/* Nothing to do for a regular file */
->  	if (!stat(file, &statbuf) && S_ISREG(statbuf.st_mode))
->  		return 0;
-> @@ -1497,23 +1504,20 @@ static int get_device_geometry(const char *file,
->  	if (!tp)
+>  	if (!ext4_has_feature_journal(sb)) {
+> -		BUG_ON(journal != NULL);
+> -		return;
+> +		if (journal != NULL) {
+> +			ext4_error(sb, "Journal got removed while the fs was "
+> +				   "mounted!");
+> +			return -EFSCORRUPTED;
+> +		}
+> +		return 0;
+>  	}
+>  	jbd2_journal_lock_updates(journal);
+> -	if (jbd2_journal_flush(journal) < 0)
+> +	err = jbd2_journal_flush(journal);
+> +	if (err < 0)
 >  		goto out;
 >  
-> -	min_io = blkid_topology_get_minimum_io_size(tp);
-> -	opt_io = blkid_topology_get_optimal_io_size(tp);
-> -	blocksize = EXT2_BLOCK_SIZE(param);
-> -	if ((min_io == 0) && (psector_size > blocksize))
-> -		min_io = psector_size;
-> -	if ((opt_io == 0) && min_io)
-> -		opt_io = min_io;
-> -	if ((opt_io == 0) && (psector_size > blocksize))
-> -		opt_io = psector_size;
+>  	if (ext4_has_feature_journal_needs_recovery(sb) && sb_rdonly(sb)) {
+>  		ext4_clear_feature_journal_needs_recovery(sb);
+>  		ext4_commit_super(sb, 1);
+>  	}
 > -
-> -	/* setting stripe/stride to blocksize is pointless */
-> -	if (min_io > blocksize)
-> -		param->s_raid_stride = min_io / blocksize;
-> -	if (opt_io > blocksize)
-> -		param->s_raid_stripe_width = opt_io / blocksize;
-> -
-> -	rc = blkid_topology_get_alignment_offset(tp);
-> +	dev_param->min_io = blkid_topology_get_minimum_io_size(tp);
-> +	dev_param->opt_io = blkid_topology_get_optimal_io_size(tp);
-> +	if ((dev_param->min_io == 0) && (psector_size > blocksize))
-> +		dev_param->min_io = psector_size;
-> +	if ((dev_param->opt_io == 0) && dev_param->min_io > 0)
-> +		dev_param->opt_io = dev_param->min_io;
-> +	if ((dev_param->opt_io == 0) && (psector_size > blocksize))
-> +		dev_param->opt_io = psector_size;
-> +
-> +	dev_param->alignment_offset = blkid_topology_get_alignment_offset(tp);
-> +#ifdef HAVE_BLKID_TOPOLOGY_GET_DAX
-> +	dev_param->dax = blkid_topology_get_dax(tp);
-> +#endif
-> +	rc = 0;
 >  out:
->  	blkid_free_probe(pr);
->  	return rc;
-> @@ -1562,6 +1566,7 @@ static void PRS(int argc, char *argv[])
->  	int		use_bsize;
->  	char		*newpath;
->  	int		pathlen = sizeof(PATH_SET) + 1;
-> +	struct device_param dev_param;
+>  	jbd2_journal_unlock_updates(journal);
+> +	return err;
+>  }
 >  
->  	if (oldpath)
->  		pathlen += strlen(oldpath);
-> @@ -2307,17 +2312,35 @@ profile_error:
+>  /*
+> @@ -5271,14 +5285,17 @@ static void ext4_mark_recovery_complete(struct super_block *sb,
+>   * has recorded an error from a previous lifetime, move that error to the
+>   * main filesystem now.
+>   */
+> -static void ext4_clear_journal_err(struct super_block *sb,
+> +static int ext4_clear_journal_err(struct super_block *sb,
+>  				   struct ext4_super_block *es)
+>  {
+>  	journal_t *journal;
+>  	int j_errno;
+>  	const char *errstr;
+>  
+> -	BUG_ON(!ext4_has_feature_journal(sb));
+> +	if (!ext4_has_feature_journal(sb)) {
+> +		ext4_error(sb, "Journal got removed while the fs was mounted!");
+> +		return -EFSCORRUPTED;
+> +	}
+>  
+>  	journal = EXT4_SB(sb)->s_journal;
+>  
+> @@ -5303,6 +5320,7 @@ static void ext4_clear_journal_err(struct super_block *sb,
+>  		jbd2_journal_clear_err(journal);
+>  		jbd2_journal_update_sb_errno(journal);
 >  	}
+> +	return 0;
+>  }
 >  
->  #ifdef HAVE_BLKID_PROBE_GET_TOPOLOGY
-> -	retval = get_device_geometry(device_name, &fs_param,
-> -				     (unsigned int) psector_size);
-> +	retval = get_device_geometry(device_name, blocksize,
-> +				     psector_size, &dev_param);
->  	if (retval < 0) {
->  		fprintf(stderr,
->  			_("warning: Unable to get device geometry for %s\n"),
->  			device_name);
-> -	} else if (retval) {
-> -		printf(_("%s alignment is offset by %lu bytes.\n"),
-> -		       device_name, retval);
-> -		printf(_("This may result in very poor performance, "
-> -			  "(re)-partitioning suggested.\n"));
-> +	} else {
-> +		/* setting stripe/stride to blocksize is pointless */
-> +		if (dev_param.min_io > blocksize)
-> +			fs_param.s_raid_stride = dev_param.min_io / blocksize;
-> +		if (dev_param.opt_io > blocksize) {
-> +			fs_param.s_raid_stripe_width =
-> +						dev_param.opt_io / blocksize;
-> +		}
-> +
-> +		if (dev_param.alignment_offset) {
-> +			printf(_("%s alignment is offset by %lu bytes.\n"),
-> +			       device_name, dev_param.alignment_offset);
-> +			printf(_("This may result in very poor performance, "
-> +				  "(re)-partitioning suggested.\n"));
-> +		}
-> +
-> +		if (dev_param.dax && blocksize != sys_page_size) {
-> +			fprintf(stderr,
-> +				_("%s is capable of DAX but current block size "
-> +				  "%u is different from system page size %u so "
-> +				  "filesystem will not support DAX.\n"),
-> +				device_name, blocksize, sys_page_size);
-> +		}
->  	}
->  #endif
+>  /*
+> @@ -5573,8 +5591,13 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
+>  			    (sbi->s_mount_state & EXT4_VALID_FS))
+>  				es->s_state = cpu_to_le16(sbi->s_mount_state);
 >  
+> -			if (sbi->s_journal)
+> +			if (sbi->s_journal) {
+> +				/*
+> +				 * We let remount-ro finish even if marking fs
+> +				 * as clean failed...
+> +				 */
+>  				ext4_mark_recovery_complete(sb, es);
+> +			}
+>  			if (sbi->s_mmp_tsk)
+>  				kthread_stop(sbi->s_mmp_tsk);
+>  		} else {
+> @@ -5622,8 +5645,11 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
+>  			 * been changed by e2fsck since we originally mounted
+>  			 * the partition.)
+>  			 */
+> -			if (sbi->s_journal)
+> -				ext4_clear_journal_err(sb, es);
+> +			if (sbi->s_journal) {
+> +				err = ext4_clear_journal_err(sb, es);
+> +				if (err)
+> +					goto restore_opts;
+> +			}
+>  			sbi->s_mount_state = le16_to_cpu(es->s_state);
+>  
+>  			err = ext4_setup_super(sb, es, 0);
 > -- 
 > 2.16.4
 > 
