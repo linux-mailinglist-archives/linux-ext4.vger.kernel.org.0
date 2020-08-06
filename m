@@ -2,61 +2,84 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACDB323D501
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Aug 2020 03:19:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58FE923D50B
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Aug 2020 03:24:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726005AbgHFBTM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 5 Aug 2020 21:19:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40224 "EHLO mail.kernel.org"
+        id S1726824AbgHFBYJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 5 Aug 2020 21:24:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41202 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725920AbgHFBTL (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 5 Aug 2020 21:19:11 -0400
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        id S1726150AbgHFBYG (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 5 Aug 2020 21:24:06 -0400
+Received: from localhost (unknown [70.37.104.77])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8DD122245C;
-        Thu,  6 Aug 2020 01:19:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E3B2122B40;
+        Thu,  6 Aug 2020 01:24:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596676750;
-        bh=Q/nPyKFSTqrQ9nnopbWeCBGkmI0RyCRsimXLL0tW1mc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=flZLcQ99Aj0xc2tl730AsZpuY1WF9t17S0WzyagItJtUU84hOLJCMBchIAdyVc2DD
-         njfdx7bD4WYGC3CluvgMO1qkoAzYoQ/ngT3qmq+bC8doBFeKRuAbBqJG5K1oQYCunW
-         iBnpbpOKAt7IzU5GIeCAbd6UA8xahL0n2dSWKrA8=
-Date:   Wed, 5 Aug 2020 21:19:09 -0400
+        s=default; t=1596677046;
+        bh=XNByyhL9Y2whfuo7uld8tDXRV7zi64mizD0FKxzuXz4=;
+        h=Date:From:To:To:To:Cc:CC:Cc:Subject:In-Reply-To:References:From;
+        b=VDJIboO0JjgLTrerPPFVXtVvJM7f2Tc70CIBir4TkP2+5t5dEDHKN53JuSspENC+b
+         NwFq25Qs/aPGQh787I1U/bL0+QzsxD/oajq+//wiA3P4blJQjS9MzzPxUGPWm94lMX
+         LKjATQBSeXjIn8U62IreLnln3Aij6y6iDmbQ7ugk=
+Date:   Thu, 06 Aug 2020 01:24:05 +0000
 From:   Sasha Levin <sashal@kernel.org>
+To:     Sasha Levin <sashal@kernel.org>
 To:     Jan Kara <jack@suse.cz>
-Cc:     stable@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wanglong19@meituan.com, heguanjun@meituan.com,
-        Jiang Ying <jiangying8582@126.com>
-Subject: Re: [PATCH v4] ext4: fix direct I/O read error
-Message-ID: <20200806011909.GD2975990@sasha-vm>
-References: <1596614241-178185-1-git-send-email-jiangying8582@126.com>
- <20200805085107.GC4117@quack2.suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20200805085107.GC4117@quack2.suse.cz>
+To:     Ted Tso <tytso@mit.edu>
+Cc:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>
+CC:     stable@vger.kernel.org
+Cc:     stable@vger.kernel.org
+Subject: Re: [PATCH] ext4: Fix checking of entry validity
+In-Reply-To: <20200731162135.8080-1-jack@suse.cz>
+References: <20200731162135.8080-1-jack@suse.cz>
+Message-Id: <20200806012405.E3B2122B40@mail.kernel.org>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Aug 05, 2020 at 10:51:07AM +0200, Jan Kara wrote:
->Note to stable tree maintainers (summary from the rather long changelog):
->This is a non-upstream patch. It will not go upstream because the problem
->there has been fixed by converting ext4 to use iomap infrastructure.
->However that change is out of scope for stable kernels and this is a
->minimal fix for the problem that has hit real-world applications so I think
->it would be worth it to include the fix in stable trees. Thanks.
+Hi
 
-How far back should it go? It breaks the build on 4.9 and 4.4 but the
-fix for the breakage is trivial.
+[This is an automated email]
 
-It does however suggest that this fix wasn't tested on 4.9 or 4.4, so
-I'd like to clarify it here before fixing it up (or dropping it).
+This commit has been processed because it contains a "Fixes:" tag
+fixing commit: 109ba779d6cc ("ext4: check for directory entries too close to block end").
+
+The bot has tested the following trees: v5.7.11, v5.4.54, v4.19.135, v4.14.190, v4.9.231, v4.4.231.
+
+v5.7.11: Build OK!
+v5.4.54: Build OK!
+v4.19.135: Build OK!
+v4.14.190: Build OK!
+v4.9.231: Failed to apply! Possible dependencies:
+    364443cbcfe7 ("ext4: convert DAX reads to iomap infrastructure")
+    39bc88e5e38e ("arm64: Disable TTBR0_EL1 during normal kernel execution")
+    7046ae35329f ("ext4: Add iomap support for inline data")
+    7c0f6ba682b9 ("Replace <asm/uaccess.h> with <linux/uaccess.h> globally")
+    9cf09d68b89a ("arm64: xen: Enable user access before a privcmd hvc call")
+    b886ee3e778e ("ext4: Support case-insensitive file name lookups")
+    bd38967d406f ("arm64: Factor out PAN enabling/disabling into separate uaccess_* macros")
+    ee73f9a52a34 ("ext4: convert to new i_version API")
+    eeca7ea1baa9 ("ext4: use current_time() for inode timestamps")
+
+v4.4.231: Failed to apply! Possible dependencies:
+    12735f881952 ("ext4: pre-zero allocated blocks for DAX IO")
+    2dcba4781fa3 ("ext4: get rid of EXT4_GET_BLOCKS_NO_LOCK flag")
+    364443cbcfe7 ("ext4: convert DAX reads to iomap infrastructure")
+    7046ae35329f ("ext4: Add iomap support for inline data")
+    705965bd6dfa ("ext4: rename and split get blocks functions")
+    b886ee3e778e ("ext4: Support case-insensitive file name lookups")
+    ba5843f51d46 ("ext4: use pre-zeroed blocks for DAX page faults")
+    c86d8db33a92 ("ext4: implement allocation of pre-zeroed blocks")
+    ee73f9a52a34 ("ext4: convert to new i_version API")
+
+
+NOTE: The patch will not be queued to stable trees until it is upstream.
+
+How should we proceed with this patch?
 
 -- 
-Thanks,
+Thanks
 Sasha
