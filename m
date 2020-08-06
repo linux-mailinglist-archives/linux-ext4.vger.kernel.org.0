@@ -2,197 +2,206 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40A5E23DDBB
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Aug 2020 19:14:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01C1C23DF45
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Aug 2020 19:44:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730196AbgHFROE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 6 Aug 2020 13:14:04 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41138 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730415AbgHFRNq (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:13:46 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E0C25B596;
-        Thu,  6 Aug 2020 14:20:47 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id BFD0F1E12C9; Thu,  6 Aug 2020 16:20:29 +0200 (CEST)
-Date:   Thu, 6 Aug 2020 16:20:29 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     =?utf-8?B?5bi45Yek5qWg?= <changfengnan@hikvision.com>
-Cc:     "tytso@mit.edu" <tytso@mit.edu>, "jack@suse.com" <jack@suse.com>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH] jbd2: fix descriptor block checksum failed after format
- with lazy_journal_init=1
-Message-ID: <20200806142029.GC1313@quack2.suse.cz>
-References: <1a15c069e2a54d6caeceb6fb2ea6eafc@hikvision.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1a15c069e2a54d6caeceb6fb2ea6eafc@hikvision.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1729744AbgHFRoX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 6 Aug 2020 13:44:23 -0400
+Received: from mail-m964.mail.126.com ([123.126.96.4]:48352 "EHLO
+        mail-m964.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729380AbgHFRkr (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Aug 2020 13:40:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=c8/GilhZXt+xp0aXyD
+        ZunhXIbWSuuGS2PG6f78YxS7U=; b=l5MPtJNMxpVuwfALg36IFTAxU5cXkbeCLc
+        8YmK/JtkIk3iEREkt8J4+m+Ck8jKYwAFbD2zKsub6xCiKJAONZ1ySupzjdJp1ZKh
+        OjlKIa3mwmM2Nmuz0M92+eZUr3coDrjjKvpXIMzk1F2pF16O3oGraHUD7Qpnh1LG
+        87hOtxZxQ=
+Received: from xr-hulk-k8s-node1933.gh.sankuai.com (unknown [101.236.11.3])
+        by smtp9 (Coremail) with SMTP id NeRpCgAXH4sA8StfcaW3FA--.0S2;
+        Thu, 06 Aug 2020 20:01:15 +0800 (CST)
+From:   Jiang Ying <jiangying8582@126.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jack@suse.cz, stable@vger.kernel.org, greg@kroah.com,
+        sashal@kernel.org
+Cc:     wanglong19@meituan.com, heguanjun@meituan.com
+Subject: [PATCH v6] ext4: fix direct I/O read error for kernel stable rc 4.9
+Date:   Thu,  6 Aug 2020 20:01:04 +0800
+Message-Id: <1596715264-3645-1-git-send-email-jiangying8582@126.com>
+X-Mailer: git-send-email 1.8.3.1
+X-CM-TRANSID: NeRpCgAXH4sA8StfcaW3FA--.0S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxAw47WFW8tw4rCr1UZr4xZwb_yoWrur18pF
+        sxCa15WrZ5Xr1xC3ZF93WUua4rAayDGFWUXr98u345Zw4agr9YkFWIkF1UGayUJrZY9w4Y
+        qFWUtryfJw1UZFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jYwZcUUUUU=
+X-Originating-IP: [101.236.11.3]
+X-CM-SenderInfo: xmld0wp1lqwmqvysqiyswou0bp/1tbi7wt4AFpD+ovNaAAAsR
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 03-08-20 02:25:45, 常凤楠 wrote:
-> We encountered a file system crash, it's quite easy to reproduces when format with lazy_journal_init=1, the dmesg follwed:
-> [    2.366962] JBD2: Invalid checksum recovering block 5 in log
-> [    2.372680] JBD2: recovery failed
-> [    2.376015] EXT4-fs (mmcblk2p1): error loading journal
-> 
-> It's because of descriptor block checksum failed, We tested on linux-4.19.200 and linux-5.7.9 with e2fsprogs-1.45.6, and both failed.
-> We found it only happened in format with lazy_journal_init=1, and the first mount time is a short time.
-> After the analysis of jbd2, We think it's due to jbd2's super block just show first transaction id, but didn't show the nums of transaction.
-> 
-> if you format with lazy_journal_init=1 first time, after mount a short time, you reboot machine, the layout of jbd2 may be like this:
-> 
-> journal Superblock |descriptor_block | data_blocks | commmit_block | descriptor_block | data_blocks | commmit_block |  [more transactions...
-> ---------------------|--------------------- transaction 1   --------------|---------------   transaction 2   -----------------|
-> 
-> and after reboot, you format with lazy_journal_init=1 second time, after mount a short time, you reboot machine again, the layout of jbd2 may be like this:
-> 
-> journal Superblock |descriptor_block | data_blocks|  commmit_block | descriptor_block |  data_blocks| commmit_block| [more transactions...
-> ---------------------|----------------   transaction 1   -----------------|
-> 
-> and then you mount filesystem again, when jbd2 start recovery, it will think there is more transactions after transaction 1, and when check transaction 2, since the journal csum
-> seed has changed, it will definitely fail.
+This patch is used to fix ext4 direct I/O read error when
+the read size is not aligned with block size.
 
-Thanks for the report and the detailed analysis of the problem! I was
-thinking how we could cleanly fix this since I don't quite like your
-solution of comparing commit times - that seems rather fragile. In the end
-I'd probably fix the problem in e2fsprogs:
+Then, I will use a test to explain the error.
 
-Change mke2fs so that even with lazy_journal_init=1, it would zero-out
-the first journal block after the superblock. That will be enough to stop
-confusing journal recovery code with stale journal data but it will keep
-reporting errors if the journal checksum mismatches.
+(1) Make a file that is not aligned with block size:
+	$dd if=/dev/zero of=./test.jar bs=1000 count=3
 
-What do people think?
+(2) I wrote a source file named "direct_io_read_file.c" as following:
 
-								Honza
+	#include <stdio.h>
+	#include <stdlib.h>
+	#include <unistd.h>
+	#include <sys/file.h>
+	#include <sys/types.h>
+	#include <sys/stat.h>
+	#include <string.h>
+	#define BUF_SIZE 1024
 
-> You can reproduce with this simple script:
-> 
->     #!/bin/sh
->     mount /dev/nvme0n1 /tmp
->     if [ "$?" != "0" ] ; then
->        echo "mount model failed"
->         exit 1
->     fi
->     file=/tmp/flag_file
->     if [ ! -f $file ]; then
->         echo "do not format............."
->         echo $file
->         #you may need to modify this time range, must be less than the time used by the ext4lazyinit thread
->         t=$((( RANDOM % 8 ) + 5 ))
->         echo $t
->         touch $file
->         dd if=/dev/zero of=/tmp/test bs=1M count=$t
->         sleep $t
->         reboot -n -f
->         exit 0
->     else
->         echo "do format............."
->         umount /tmp
->         mkfs.ext4 -F /dev/nvme0n1 -E lazy_journal_init=1
->         sync
->         reboot -n -f
->         exit 0
->     fi
-> 
-> We have an idea,  When jbd2 encountered a descriptor block checksum error during recovery, We check the commit time and compare it with the commit time of the previous transaction,
-> if it's smaller than previous, We think it's not belong to same journal, then end this recovery, and return with success, otherwise return with failed just like before.
-> 
-> This is the patch, diff from linux-5.7.9:
-> 
-> 
-> --- fs/jbd2/recovery.c.orig      2020-07-16 14:13:36.000000000 +0800
-> +++ fs/jbd2/recovery.c   2020-07-21 10:00:46.828449500 +0800
-> @@ -412,7 +412,27 @@ static int jbd2_block_tag_csum_verify(jo
->      else
->             return tag->t_checksum == cpu_to_be16(csum32);
-> }
-> +/*
-> + * We check the commit time and compare it with the commit time of the previous transaction,
-> + * if it's smaller than previous, We think it's not belong to same journal.
-> + */
-> +static int is_same_journal(journal_t *journal,struct buffer_head *bh, unsigned long blocknr, __u64 last_commit_sec)
-> +{
-> +     int commit_block_nr = blocknr + count_tags(journal, bh) + 1;
-> +     struct buffer_head *  nbh;
-> +
-> +     int err = jread(&nbh, journal, commit_block_nr);
-> +     if (err)
-> +            return 1;
-> +     struct commit_header *cbh = (struct commit_header *)nbh->b_data;
-> +     __u64 commit_sec = be64_to_cpu(cbh->h_commit_sec);
-> +
-> +     if(commit_sec < last_commit_sec)
-> +            return 0;
-> +     else
-> +            return 1;
-> +}
-> static int do_one_pass(journal_t *journal,
->                    struct recovery_info *info, enum passtype pass)
-> {
-> @@ -426,6 +446,7 @@ static int do_one_pass(journal_t *journa
->      int                 blocktype;
->      int                 tag_bytes = journal_tag_bytes(journal);
->      __u32                   crc32_sum = ~0; /* Transactional Checksums */
-> +     __u64            last_commit_sec = 0;
->      int                 descr_csum_size = 0;
->      int                 block_error = 0;
-> @@ -520,12 +541,22 @@ static int do_one_pass(journal_t *journa
->                    if (descr_csum_size > 0 &&
->                        !jbd2_descriptor_block_csum_verify(journal,
->                                                       bh->b_data)) {
-> -                           printk(KERN_ERR "JBD2: Invalid checksum "
-> +                          if(is_same_journal(journal,bh,next_log_block-1,last_commit_sec)) {
-> +                                 printk(KERN_ERR "JBD2: Invalid checksum "
->                                  "recovering block %lu in log\n",
->                                  next_log_block);
-> -                           err = -EFSBADCRC;
-> -                           brelse(bh);
-> -                           goto failed;
-> +                                 err = -EFSBADCRC;
-> +                                 brelse(bh);
-> +                                 goto failed;
-> +                          } else {
-> +                                 /*if it's not belong to same journal, just end this recovery, return with success*/
-> +                                 printk(KERN_ERR "JBD2: Invalid checksum "
-> +                                 "found in block %lu in log, but not same journal %d\n",
-> +                                 next_log_block,next_commit_ID);
-> +                                 err = 0;
-> +                                 brelse(bh);
-> +                                 goto done;
-> +                          }
->                    }
->                     /* If it is a valid descriptor block, replay it
-> @@ -688,11 +719,15 @@ static int do_one_pass(journal_t *journa
->                     * are present verify them in PASS_SCAN; else not
->                     * much to do other than move on to the next sequence
->                     * number. */
-> +                   if(pass == PASS_SCAN) {
-> +                          struct commit_header *cbh =
-> +                                 (struct commit_header *)bh->b_data;
-> +                          last_commit_sec = be64_to_cpu(cbh->h_commit_sec);
-> +                   }
->                    if (pass == PASS_SCAN &&
->                        jbd2_has_feature_checksum(journal)) {
->                           int chksum_err, chksum_seen;
-> -                           struct commit_header *cbh =
-> -                                  (struct commit_header *)bh->b_data;
-> +
->                           unsigned found_chksum =
->                                  be32_to_cpu(cbh->h_chksum[0]);
-> 
-> 
-> ________________________________
-> 
-> CONFIDENTIALITY NOTICE: This electronic message is intended to be viewed only by the individual or entity to whom it is addressed. It may contain information that is privileged, confidential and exempt from disclosure under applicable law. Any dissemination, distribution or copying of this communication is strictly prohibited without our prior permission. If the reader of this message is not the intended recipient, or the employee or agent responsible for delivering the message to the intended recipient, or if you have received this communication in error, please notify us immediately by return e-mail and delete the original message and any copies of it from your computer system. For further information about Hikvision company. please see our website at www.hikvision.com<http://www.hikvision.com>
+	int main()
+	{
+		int fd;
+		int ret;
+
+		unsigned char *buf;
+		ret = posix_memalign((void **)&buf, 512, BUF_SIZE);
+		if (ret) {
+			perror("posix_memalign failed");
+			exit(1);
+		}
+		fd = open("./test.jar", O_RDONLY | O_DIRECT, 0755);
+		if (fd < 0){
+			perror("open ./test.jar failed");
+			exit(1);
+		}
+
+		do {
+			ret = read(fd, buf, BUF_SIZE);
+			printf("ret=%d\n",ret);
+			if (ret < 0) {
+				perror("write test.jar failed");
+			}
+		} while (ret > 0);
+
+		free(buf);
+		close(fd);
+	}
+
+(3) Compile the source file:
+	$gcc direct_io_read_file.c -D_GNU_SOURCE
+
+(4) Run the test program:
+	$./a.out
+
+	The result is as following:
+	ret=1024
+	ret=1024
+	ret=952
+	ret=-1
+	write test.jar failed: Invalid argument.
+
+I have tested this program on XFS filesystem, XFS does not have
+this problem, because XFS use iomap_dio_rw() to do direct I/O
+read. And the comparing between read offset and file size is done
+in iomap_dio_rw(), the code is as following:
+
+	if (pos < size) {
+		retval = filemap_write_and_wait_range(mapping, pos,
+				pos + iov_length(iov, nr_segs) - 1);
+
+		if (!retval) {
+			retval = mapping->a_ops->direct_IO(READ, iocb,
+						iov, pos, nr_segs);
+		}
+		...
+	}
+
+...only when "pos < size", direct I/O can be done, or 0 will be return.
+
+I have tested the fix patch on Ext4, it is up to the mustard of
+EINVAL in man2(read) as following:
+	#include <unistd.h>
+	ssize_t read(int fd, void *buf, size_t count);
+
+	EINVAL
+		fd is attached to an object which is unsuitable for reading;
+		or the file was opened with the O_DIRECT flag, and either the
+		address specified in buf, the value specified in count, or the
+		current file offset is not suitably aligned.
+
+So I think this patch can be applied to fix ext4 direct I/O error.
+
+However Ext4 introduces direct I/O read using iomap infrastructure
+on kernel 5.5, the patch is commit <b1b4705d54ab>
+("ext4: introduce direct I/O read using iomap infrastructure"),
+then Ext4 will be the same as XFS, they all use iomap_dio_rw() to do direct
+I/O read. So this problem does not exist on kernel 5.5 for Ext4.
+
+From above description, we can see this problem exists on all the kernel
+versions between kernel 3.14 and kernel 5.4. It will cause the Applications
+to fail to read. For example, when the search service downloads a new full
+index file, the search engine is loading the previous index file and is
+processing the search request, it can not use buffer io that may squeeze
+the previous index file in use from pagecache, so the serch service must
+use direct I/O read.
+
+Please apply this patch on these kernel versions, or please use the method
+on kernel 5.5 to fix this problem.
+
+Fixes: 9fe55eea7e4b ("Fix race when checking i_size on direct i/o read")
+Reviewed-by: Jan Kara <jack@suse.cz>
+Reviewed-by: Wang Long <wanglong19@meituan.com>
+Signed-off-by: Jiang Ying <jiangying8582@126.com>
+
+Changes since V5:
+	Fix checkpatch error on kernel stable rc 4.9 based V3.
+	Use "reviewed-by" instead of "Co-developed-by" to fix
+	checkpatch error.
+
+Changes since V4:
+	Fix build error on kernel stable rc 4.4 based V3.
+	This patch only for kernel 4.4.
+
+Changes since V3:
+	Add the info: this bug could break some application that use the
+	stable kernel releases.
+
+Changes since V2:
+	Optimize the description of the commit message and make a variation for
+	the patch, e.g. with:
+
+		Before:
+			loff_t size;
+			size = i_size_read(inode);
+		After:
+			loff_t size = i_size_read(inode);
+
+Changes since V1:
+	Signed-off use real name and add "Fixes:" flag
+
+---
+ fs/ext4/inode.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index d8780e0..ccce89d 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -3575,6 +3575,11 @@ static ssize_t ext4_direct_IO_read(struct kiocb *iocb, struct iov_iter *iter)
+ 	struct address_space *mapping = iocb->ki_filp->f_mapping;
+ 	struct inode *inode = mapping->host;
+ 	ssize_t ret;
++	loff_t offset = iocb->ki_pos;
++	loff_t size = i_size_read(inode);
++
++	if (offset >= size)
++		return 0;
+ 
+ 	/*
+ 	 * Shared inode_lock is enough for us - it protects against concurrent
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+1.8.3.1
+
