@@ -2,44 +2,65 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A295623D68E
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Aug 2020 07:49:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8FD623D692
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Aug 2020 07:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726388AbgHFFtO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 6 Aug 2020 01:49:14 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:49213 "EHLO
+        id S1726490AbgHFFwh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 6 Aug 2020 01:52:37 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:49484 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726051AbgHFFtN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Aug 2020 01:49:13 -0400
+        with ESMTP id S1726051AbgHFFwh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Aug 2020 01:52:37 -0400
 Received: from callcc.thunk.org (pool-96-230-252-158.bstnma.fios.verizon.net [96.230.252.158])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0765mt6s032275
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0765qX2u000522
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 6 Aug 2020 01:48:56 -0400
+        Thu, 6 Aug 2020 01:52:33 -0400
 Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id BCF11420263; Thu,  6 Aug 2020 01:48:55 -0400 (EDT)
-Date:   Thu, 6 Aug 2020 01:48:55 -0400
+        id 0CDA0420263; Thu,  6 Aug 2020 01:52:33 -0400 (EDT)
+Date:   Thu, 6 Aug 2020 01:52:32 -0400
 From:   tytso@mit.edu
-To:     Xianting Tian <xianting_tian@126.com>
-Cc:     jack@suse.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] jbd2: fix incorrect code style
-Message-ID: <20200806054855.GM7657@mit.edu>
-References: <1595077057-8048-1-git-send-email-xianting_tian@126.com>
+To:     Lukas Czerner <lczerner@redhat.com>
+Cc:     linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] ext4: handle option set by mount flags correctly
+Message-ID: <20200806055232.GN7657@mit.edu>
+References: <20200723150526.19931-1-lczerner@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1595077057-8048-1-git-send-email-xianting_tian@126.com>
+In-Reply-To: <20200723150526.19931-1-lczerner@redhat.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Jul 18, 2020 at 08:57:37AM -0400, Xianting Tian wrote:
-> Remove unnecessary blank.
+On Thu, Jul 23, 2020 at 05:05:26PM +0200, Lukas Czerner wrote:
+> Currently there is a problem with mount options that can be both set by
+> vfs using mount flags or by a string parsing in ext4.
 > 
-> Signed-off-by: Xianting Tian <xianting_tian@126.com>
+> i_version/iversion options gets lost after remount, for example
+> 
+> $ mount -o i_version /dev/pmem0 /mnt
+> $ grep pmem0 /proc/self/mountinfo | grep i_version
+> 310 95 259:0 / /mnt rw,relatime shared:163 - ext4 /dev/pmem0 rw,seclabel,i_version
+> $ mount -o remount,ro /mnt
+> $ grep pmem0 /proc/self/mountinfo | grep i_version
+> 
+> nolazytime gets ignored by ext4 on remount, for example
+> 
+> $ mount -o lazytime /dev/pmem0 /mnt
+> $ grep pmem0 /proc/self/mountinfo | grep lazytime
+> 310 95 259:0 / /mnt rw,relatime shared:163 - ext4 /dev/pmem0 rw,lazytime,seclabel
+> $ mount -o remount,nolazytime /mnt
+> $ grep pmem0 /proc/self/mountinfo | grep lazytime
+> 310 95 259:0 / /mnt rw,relatime shared:163 - ext4 /dev/pmem0 rw,lazytime,seclabel
+> 
+> Fix it by applying the SB_LAZYTIME and SB_I_VERSION flags from *flags to
+> s_flags before we parse the option and use the resulting state of the
+> same flags in *flags at the end of successful remount.
+> 
+> Signed-off-by: Lukas Czerner <lczerner@redhat.com>
 
 Thanks, applied.
 
