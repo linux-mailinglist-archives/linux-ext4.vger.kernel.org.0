@@ -2,64 +2,57 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26EA323F389
-	for <lists+linux-ext4@lfdr.de>; Fri,  7 Aug 2020 22:07:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAEFF23F40C
+	for <lists+linux-ext4@lfdr.de>; Fri,  7 Aug 2020 22:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726067AbgHGUHb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 7 Aug 2020 16:07:31 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:59258 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725893AbgHGUHa (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 7 Aug 2020 16:07:30 -0400
-Received: from callcc.thunk.org (pool-96-230-252-158.bstnma.fios.verizon.net [96.230.252.158])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 077K7OUf018999
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 7 Aug 2020 16:07:24 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 14F28420263; Fri,  7 Aug 2020 16:07:24 -0400 (EDT)
-Date:   Fri, 7 Aug 2020 16:07:24 -0400
-From:   tytso@mit.edu
-To:     Jan Kara <jack@suse.cz>
-Cc:     <linux-ext4@vger.kernel.org>, stable@vger.kernel.org
-Subject: Re: [PATCH] ext4: Fix checking of entry validity
-Message-ID: <20200807200724.GZ7657@mit.edu>
-References: <20200731162135.8080-1-jack@suse.cz>
+        id S1726582AbgHGU6z (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 7 Aug 2020 16:58:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726536AbgHGU6y (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 7 Aug 2020 16:58:54 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 962E4C061756;
+        Fri,  7 Aug 2020 13:58:54 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id EBC47299758
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     tytso@mit.edu
+Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] Unicode patches for v5.9
+Organization: Collabora
+References: <87blkap6az.fsf@collabora.com>
+Date:   Fri, 07 Aug 2020 16:58:48 -0400
+In-Reply-To: <87blkap6az.fsf@collabora.com> (Gabriel Krisman Bertazi's message
+        of "Mon, 20 Jul 2020 11:14:28 -0400")
+Message-ID: <87tuxe5g1j.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200731162135.8080-1-jack@suse.cz>
+Content-Type: text/plain
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Thanks, applied, although I changed the commit summary to be:
+Gabriel Krisman Bertazi <krisman@collabora.com> writes:
 
-    ext4: fix checking of directory entry validity for inline directories
+> The following changes since commit 9c94b39560c3a013de5886ea21ef1eaf21840cb9:
+>
+>   Merge tag 'ext4_for_linus' of git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4 (2020-04-05 10:54:03 -0700)
+>
 
-    	      	       	  	    	  	   - Ted
+Hi Ted,
+
+Sorry for the ping, I understand you are extra busy :)
+
+Do you have any concerns about this PR for 5.9?  I believe it wasn't
+pulled into your tree for the 5.9 ext4 PR.  Anything I can do here to
+improve my process?
+
+Thanks,
 
 
-On Fri, Jul 31, 2020 at 06:21:35PM +0200, Jan Kara wrote:
-> ext4_search_dir() and ext4_generic_delete_entry() can be called both for
-> standard director blocks and for inline directories stored inside inode
-> or inline xattr space. For the second case we didn't call
-> ext4_check_dir_entry() with proper constraints that could result in
-> accepting corrupted directory entry as well as false positive filesystem
-> errors like:
-> 
-> EXT4-fs error (device dm-0): ext4_search_dir:1395: inode #28320400:
-> block 113246792: comm dockerd: bad entry in directory: directory entry too
-> close to block end - offset=0, inode=28320403, rec_len=32, name_len=8,
-> size=4096
-> 
-> Fix the arguments passed to ext4_check_dir_entry().
-> 
-> Fixes: 109ba779d6cc ("ext4: check for directory entries too close to block end")
-> CC: stable@vger.kernel.org
-> Signed-off-by: Jan Kara <jack@suse.cz>
-> ---
->  fs/ext4/namei.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+-- 
+Gabriel Krisman Bertazi
