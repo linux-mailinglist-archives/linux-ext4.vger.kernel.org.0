@@ -2,50 +2,55 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1458723E5E1
-	for <lists+linux-ext4@lfdr.de>; Fri,  7 Aug 2020 04:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29B5023E5E3
+	for <lists+linux-ext4@lfdr.de>; Fri,  7 Aug 2020 04:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726078AbgHGCjO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 6 Aug 2020 22:39:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38512 "EHLO mail.kernel.org"
+        id S1726205AbgHGCjP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 6 Aug 2020 22:39:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38550 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726027AbgHGCjJ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 6 Aug 2020 22:39:09 -0400
-Subject: Re: [GIT PULL] ext2, udf, reiserfs, quota cleanups and minor fixes for
- 5.9-rc1
+        id S1726049AbgHGCjK (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 6 Aug 2020 22:39:10 -0400
+Subject: Re: [GIT PULL v2] iomap: new code for 5.9-rc1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596767948;
-        bh=bvjeBD1saQji7LMSZpFdeOzskozO9njyGtkfYo31rxE=;
+        s=default; t=1596767950;
+        bh=zFOyHZS18PBPXv24TPjZot4Y7THCDOAZOYL0pNQ8Wi0=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=ZLWS3BwUwE0mk1N7heCmzyJ9pql54IecDciUJjesi/fPJ78IIjT9y4sNEnaXzC0pT
-         j9/iIzv+Q+foK5uN3OvvZCuPr+EsGpAj7ej8FibQWkZKQoQ32Ndt3qa51vkzQrH0jM
-         RYEM0T9T9fgtFluJGJKSywzSW02NrGbUMde96bKg=
+        b=gaj/Ebh7DmnIZITl9QB+5jrj3tGA1PNpahqKbcxD95KflA3ENJUBuviCfoacXzvSb
+         bApi4u9QzNK3DOdLmKbmtGrj3fACpx0yGvUc4b9r3iG+zL/O8SnylpubrChW55m07m
+         oi1hoZQL06Hyz1+fAVPFbxMjxdTgyPuwF5+KUE8U=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200805091205.GD4117@quack2.suse.cz>
-References: <20200805091205.GD4117@quack2.suse.cz>
+In-Reply-To: <20200806150743.GC6090@magnolia>
+References: <20200806150743.GC6090@magnolia>
 X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200805091205.GD4117@quack2.suse.cz>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git for_v5.9-rc1
-X-PR-Tracked-Commit-Id: 9436fb4d899333f612e051a6940af52028f7168b
+X-PR-Tracked-Message-Id: <20200806150743.GC6090@magnolia>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/iomap-5.9-merge-5
+X-PR-Tracked-Commit-Id: 60263d5889e6dc5987dc51b801be4955ff2e4aa7
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 09e70bb4d89f727bafa6349155e08ce6ac0d8d9f
-Message-Id: <159676794814.23087.2830802387498915624.pr-tracker-bot@kernel.org>
-Date:   Fri, 07 Aug 2020 02:39:08 +0000
-To:     Jan Kara <jack@suse.cz>
+X-PR-Merge-Commit-Id: 0e4656a299db8484933a143259e7e5ebae2e3a01
+Message-Id: <159676795001.23087.7465580263799667328.pr-tracker-bot@kernel.org>
+Date:   Fri, 07 Aug 2020 02:39:10 +0000
+To:     "Darrick J. Wong" <djwong@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
+        "Darrick J. Wong" <djwong@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        david@fromorbit.com, linux-kernel@vger.kernel.org,
+        sandeen@sandeen.net, hch@lst.de,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>, riteshh@linux.ibm.com,
+        rgoldwyn@suse.de, agruenba@redhat.com, linux-btrfs@vger.kernel.org
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The pull request you sent on Wed, 5 Aug 2020 11:12:05 +0200:
+The pull request you sent on Thu, 6 Aug 2020 08:07:43 -0700:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git for_v5.9-rc1
+> git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/iomap-5.9-merge-5
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/09e70bb4d89f727bafa6349155e08ce6ac0d8d9f
+https://git.kernel.org/torvalds/c/0e4656a299db8484933a143259e7e5ebae2e3a01
 
 Thank you!
 
