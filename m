@@ -2,94 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28CB123F4B8
-	for <lists+linux-ext4@lfdr.de>; Sat,  8 Aug 2020 00:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EE5C23F559
+	for <lists+linux-ext4@lfdr.de>; Sat,  8 Aug 2020 01:50:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726155AbgHGWCC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 7 Aug 2020 18:02:02 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:47482 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726038AbgHGWCC (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 7 Aug 2020 18:02:02 -0400
-Received: from callcc.thunk.org (pool-96-230-252-158.bstnma.fios.verizon.net [96.230.252.158])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 077M1l0R024214
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 7 Aug 2020 18:01:48 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 7AE6B420263; Fri,  7 Aug 2020 18:01:47 -0400 (EDT)
-Date:   Fri, 7 Aug 2020 18:01:47 -0400
-From:   tytso@mit.edu
-To:     Lazar Beloica <lazarbeloica@gmail.com>
-Cc:     linux-ext4@vger.kernel.org, stable@vger.kernel.org,
-        lazar.beloica@nutanix.com, boyu.mt@taobao.com,
-        adilger.kernel@dilger.ca, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4: fix marking group trimmed if all blocks not trimmed
-Message-ID: <20200807220147.GA7657@mit.edu>
-References: <1596471464-198715-1-git-send-email-lazar.beloica@nutanix.com>
+        id S1726307AbgHGXuu convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Fri, 7 Aug 2020 19:50:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42222 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726066AbgHGXuu (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 7 Aug 2020 19:50:50 -0400
+From:   bugzilla-daemon@bugzilla.kernel.org
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 207165] Persistent ext4_search_dir: bad entry in directory:
+ directory entry too close to block end
+Date:   Fri, 07 Aug 2020 23:50:49 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: el@prans.net
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-207165-13602-BFJ3gVZ502@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-207165-13602@https.bugzilla.kernel.org/>
+References: <bug-207165-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1596471464-198715-1-git-send-email-lazar.beloica@nutanix.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Aug 03, 2020 at 04:17:44PM +0000, Lazar Beloica wrote:
-> When FTRIM is issued on a group, ext4 marks it as trimmed so another FTRIM
-> on the same group has no effect. Ext4 marks group as trimmed if at least
-> one block is trimmed, therefore it is possible that a group is marked as
-> trimmed even if there are blocks in that group left untrimmed.
-> 
-> This patch marks group as trimmed only if there are no more blocks
-> in that group to be trimmed.
+https://bugzilla.kernel.org/show_bug.cgi?id=207165
 
-This patch makes no sense; first of all, the changes below are *not*
-in the function ext4_trim_extent(), but rather ext4_trim_all_free().
-It appears that the diff is based off of v5.8-rc2, based on the index
-c0a331e, but then I'm not sure how you generated the diff?
+--- Comment #7 from Elvis Pranskevichus (el@prans.net) ---
+The patch fixes the bug for me as well. Thanks Jan!
 
-Secondly, ext4_trim_all_free(), which is where these two patch hunks
-appear:
-
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index c0a331e..130936b 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -5346,6 +5346,7 @@ static int ext4_trim_extent(struct super_block *sb, int start, int count,
->  {
->  	void *bitmap;
->  	ext4_grpblk_t next, count = 0, free_count = 0;
-> +	ext4_fsblk_t max_blks = ext4_blocks_count(EXT4_SB(sb)->s_es);
->  	struct ext4_buddy e4b;
->  	int ret = 0;
->  
-> @@ -5401,7 +5402,9 @@ static int ext4_trim_extent(struct super_block *sb, int start, int count,
->  
->  	if (!ret) {
->  		ret = count;
-> -		EXT4_MB_GRP_SET_TRIMMED(e4b.bd_info);
-> +		next = mb_find_next_bit(bitmap, max_blks, max + 1);
-> +		if (next == max_blks)
-> +			EXT4_MB_GRP_SET_TRIMMED(e4b.bd_info);
->  	}
->  out:
->  	ext4_unlock_group(sb, group);
-
-The function send discards for blocks in a block group which are
-freed.  So setting max_blks to be ext4_blocks_count() and then using
-it as the limit to mb_find_next_bit() makes no sense.  First of all
-next will never be equal to max_blks, since next is an offset relative
-to the beginning of the block group, and max_blks is set number of
-blocks in the entire file system.
-
-Secondly, mb_find_next_bit is searching a bitmap, which is a single
-file system block (e.g., 4k in a 4k block file system).  So if
-max_blks is the the number of blocks in (for example) a 10TB file
-system, this is going to potentially cause a kernel oops.
-
-How, exactly did you test this patch?
-
-	     	      	 	     	   - Ted
+-- 
+You are receiving this mail because:
+You are watching the assignee of the bug.
