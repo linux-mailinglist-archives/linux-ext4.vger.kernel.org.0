@@ -2,57 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8A8523EF52
-	for <lists+linux-ext4@lfdr.de>; Fri,  7 Aug 2020 16:50:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB71223EF27
+	for <lists+linux-ext4@lfdr.de>; Fri,  7 Aug 2020 16:42:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726729AbgHGOuS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Fri, 7 Aug 2020 10:50:18 -0400
-Received: from mail.furshetcrimea.ru ([193.27.243.220]:51882 "EHLO
-        furshetcrimea.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726683AbgHGOuQ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 7 Aug 2020 10:50:16 -0400
-X-Greylist: delayed 4990 seconds by postgrey-1.27 at vger.kernel.org; Fri, 07 Aug 2020 10:50:14 EDT
-Received: from [154.118.61.214] (account info@furshetcrimea.ru HELO [192.168.8.100])
-  by furshetcrimea.ru (CommuniGate Pro SMTP 6.1.10)
-  with ESMTPA id 11097427; Fri, 07 Aug 2020 16:34:39 +0300
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1726233AbgHGOmH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 7 Aug 2020 10:42:07 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:33043 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725955AbgHGOmH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 7 Aug 2020 10:42:07 -0400
+Received: from callcc.thunk.org (pool-96-230-252-158.bstnma.fios.verizon.net [96.230.252.158])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 077EfsH8026551
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 7 Aug 2020 10:41:55 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id A7E0A420263; Fri,  7 Aug 2020 10:41:54 -0400 (EDT)
+Date:   Fri, 7 Aug 2020 10:41:54 -0400
+From:   tytso@mit.edu
+To:     Lukas Czerner <lczerner@redhat.com>
+Cc:     fstests@vger.kernel.org, guan@eryu.me, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v2] ext4/002: Test read-only external journal device
+Message-ID: <20200807144154.GU7657@mit.edu>
+References: <20200717105544.3201-1-lczerner@redhat.com>
+ <20200727102618.11695-1-lczerner@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Bei Interesse antworten.
-To:     Recipients <info@furshetcrimea.ru>
-From:   info@furshetcrimea.ru
-Date:   Fri, 07 Aug 2020 14:22:01 +0100
-Reply-To: mattiassjoborg751@gmail.com
-X-Antivirus: Avast (VPS 200807-0, 08/07/2020), Outbound message
-X-Antivirus-Status: Clean
-Message-ID: <auto-000011097427@furshetcrimea.ru>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200727102618.11695-1-lczerner@redhat.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Schöne Grüße,
+On Mon, Jul 27, 2020 at 12:26:18PM +0200, Lukas Czerner wrote:
+> We should never be able to mount ext4 file system read-write with
+> read-only external journal device. Test it.
+> 
+> This problem has been addressed with proposed kernel patch
+> https://lore.kernel.org/linux-ext4/20200717090605.2612-1-lczerner@redhat.com/
+> 
+> The test was based on generic/050.
+> 
+> Signed-off-by: Lukas Czerner <lczerner@redhat.com>
 
-Mein Name ist MATTIAS SJOBORG, ich bin Schweizer Staatsbürger und (Vorsitzender des Vergütungs- und Nominierungsausschusses) von Tethys Petroleum, einem multinationalen Ölkonzern mit Sitz in London-England, Großbritannien. Ich bitte Sie um Ihre Hilfe, um die Summe von vierzig Millionen Dollar abzurufen, die aus zwei Sendungsboxen besteht.
+Looks good, tested with and without the fix.
 
-Dieses Geld wurde von der Firma erworben und von einem Diplomaten begleitet und korrekt in einer Sicherheitsfirma in Amerika hinterlegt. Mein Grund dafür ist, dass ich von der Firma zu lange um meine Ansprüche betrogen wurde, nur weil ich kein bin Britisch. Die Kontaktdaten des Diplomaten erhalten Sie, wenn Sie Ihr Interesse bekunden, mir zu helfen.
+Reviewed-by: Theodore Ts'o <tytso@mit.edu>
 
-Jede der Schachteln enthält 20 Mio. USD. Für Ihre Hilfe bin ich bereit, 40% an Sie freizugeben. Aus Sicherheitsgründen wurde die Sendung als VERTRAULICHE DIPLOMATISCHE DOKUMENTE registriert, und ich kann erklären, warum dies so erklärt wurde. Denken Sie daran, dass der Diplomat den Inhalt der Sendung nicht kennt. Er ist seit einem Monat dort, während ich nach einem zuverlässigen Partner suchen möchte. Ich werde das Land verlassen, sobald die Sendung für Sie an Sie geliefert wird Private Investitionen und ich haben geschworen, niemals nach London zurückzukehren. Bitte, ich brauche Ihre dringende Antwort, bevor meine Pläne, das Unternehmen zu verlassen, entdeckt werden.
-
-www.tethyspetroleum.com/tethys/static/EN_US/au_seniormanagement.html
-
-Im Moment ist die sicherste Form der Korrespondenz meine eigene E-Mail-Adresse. Bitte antworten Sie im Interesse der Vertraulichkeit nur über meine direkte E-Mail-Adresse. Antworten Sie zusammen mit Ihrer direkten Telefon- und Faxnummer, unter der ich Sie alternativ erreichen kann.
-
-Bitte, wenn Sie nicht bereit und interessiert sind, mir zu helfen, löschen Sie bitte diese E-Mail aus Ihrer E-Mail und tun Sie so, als hätten Sie sie nie erhalten.
-
-Freundliche Grüße,
-Mr.Mattias Sjoborg
-(Vorsitzender des Vergütungs- und Nominierungsausschusses)
-Tethys Petroleum.
-London, England
-
--- 
-This email has been checked for viruses by Avast antivirus software.
-https://www.avast.com/antivirus
-
+						- Ted
