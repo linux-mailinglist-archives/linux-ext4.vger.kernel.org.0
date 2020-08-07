@@ -2,58 +2,47 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29B5023E5E3
-	for <lists+linux-ext4@lfdr.de>; Fri,  7 Aug 2020 04:39:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03D3523E6F2
+	for <lists+linux-ext4@lfdr.de>; Fri,  7 Aug 2020 07:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726205AbgHGCjP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 6 Aug 2020 22:39:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38550 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726049AbgHGCjK (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 6 Aug 2020 22:39:10 -0400
-Subject: Re: [GIT PULL v2] iomap: new code for 5.9-rc1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596767950;
-        bh=zFOyHZS18PBPXv24TPjZot4Y7THCDOAZOYL0pNQ8Wi0=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=gaj/Ebh7DmnIZITl9QB+5jrj3tGA1PNpahqKbcxD95KflA3ENJUBuviCfoacXzvSb
-         bApi4u9QzNK3DOdLmKbmtGrj3fACpx0yGvUc4b9r3iG+zL/O8SnylpubrChW55m07m
-         oi1hoZQL06Hyz1+fAVPFbxMjxdTgyPuwF5+KUE8U=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200806150743.GC6090@magnolia>
-References: <20200806150743.GC6090@magnolia>
-X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200806150743.GC6090@magnolia>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/iomap-5.9-merge-5
-X-PR-Tracked-Commit-Id: 60263d5889e6dc5987dc51b801be4955ff2e4aa7
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 0e4656a299db8484933a143259e7e5ebae2e3a01
-Message-Id: <159676795001.23087.7465580263799667328.pr-tracker-bot@kernel.org>
-Date:   Fri, 07 Aug 2020 02:39:10 +0000
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        david@fromorbit.com, linux-kernel@vger.kernel.org,
-        sandeen@sandeen.net, hch@lst.de,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>, riteshh@linux.ibm.com,
-        rgoldwyn@suse.de, agruenba@redhat.com, linux-btrfs@vger.kernel.org
+        id S1726123AbgHGFBT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 7 Aug 2020 01:01:19 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:57611 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725263AbgHGFBT (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 7 Aug 2020 01:01:19 -0400
+Received: from callcc.thunk.org (pool-96-230-252-158.bstnma.fios.verizon.net [96.230.252.158])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 07751B7H015516
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 7 Aug 2020 01:01:11 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id E2A11420263; Fri,  7 Aug 2020 01:01:10 -0400 (EDT)
+Date:   Fri, 7 Aug 2020 01:01:10 -0400
+From:   tytso@mit.edu
+To:     Jan Kara <jack@suse.cz>
+Cc:     <linux-ext4@vger.kernel.org>
+Subject: Re: [PATCH 0/6 v3] ext4: Check journal inode extents more carefully
+Message-ID: <20200807050110.GS7657@mit.edu>
+References: <20200728130437.7804-1-jack@suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200728130437.7804-1-jack@suse.cz>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The pull request you sent on Thu, 6 Aug 2020 08:07:43 -0700:
+On Tue, Jul 28, 2020 at 03:04:31PM +0200, Jan Kara wrote:
+> Hello!
+> 
+> This series changes ext4 to properly check extent tree blocks of journal inode.
+> Omitting these (which is a limitation of block validity checks) leads to crash
+> in ext4_cache_extents() in case the extent tree of the journal inode is
+> suitably corrupted.
 
-> git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/iomap-5.9-merge-5
+Thanks, I've applied this series.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/0e4656a299db8484933a143259e7e5ebae2e3a01
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+					- Ted
