@@ -2,55 +2,55 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D4402400A0
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 Aug 2020 03:02:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBAE72400A1
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 Aug 2020 03:02:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726398AbgHJBCZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 9 Aug 2020 21:02:25 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:36773 "EHLO
+        id S1726401AbgHJBC1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 9 Aug 2020 21:02:27 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:36776 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726335AbgHJBCY (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 9 Aug 2020 21:02:24 -0400
-Received: from mail-qt1-f200.google.com ([209.85.160.200])
+        with ESMTP id S1726350AbgHJBC0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 9 Aug 2020 21:02:26 -0400
+Received: from mail-qk1-f198.google.com ([209.85.222.198])
         by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <mfo@canonical.com>)
-        id 1k4wCj-00070X-L0
-        for linux-ext4@vger.kernel.org; Mon, 10 Aug 2020 01:02:21 +0000
-Received: by mail-qt1-f200.google.com with SMTP id b18so6472292qte.18
-        for <linux-ext4@vger.kernel.org>; Sun, 09 Aug 2020 18:02:21 -0700 (PDT)
+        id 1k4wCl-00070s-Tw
+        for linux-ext4@vger.kernel.org; Mon, 10 Aug 2020 01:02:24 +0000
+Received: by mail-qk1-f198.google.com with SMTP id a130so6092500qkg.9
+        for <linux-ext4@vger.kernel.org>; Sun, 09 Aug 2020 18:02:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=JEfAzSWNZQaASNwjhatmjvzHZB2T4xTmTgYYKkfWqIQ=;
-        b=mwzDvLiq/rKYZMvAf18fh6Impj1wkeY+tfOthnsr2c8qOMUT4o9toFg3HpxIWrOBxh
-         9S6so/sEpYS63wEtg5pmUv8Qa3oXakvtqjFPKaa1M0NCtYoDgdseqpIdKazqVxATiPEp
-         vvy+4RB79GlZwPl4ssis1aW9P6+1+dMH1PU8/Z2uyEpXXkhq5I+05xpSkTXr2FgKBIb8
-         I4UcUEELmtc3U3+InH4M71Red7N2N/hbNupIVjA1v3MYxh3Ir2aVN2PfozNDytb7Nxlv
-         0BsN5jRZ481r/BqAko9juba07GjC7zlhpSsnzlwk4IQKhTDZK88DCly+p2Zd0reewY79
-         v6sw==
-X-Gm-Message-State: AOAM53046Go/JrcTGBrAw6c1vT07vaSiupH/V5wKhRm81WuNch7hnS0V
-        WGkn9Xmd4bDPJC015bZ0nYSkkpdKQ/g3uwVegacHsyUEHZav0boUrAYwQzRO0c64wlMQXKKxC8f
-        eKxZGZdGh7qyWmSNgPAMx1twJYInvz9WDxyOt9Ng=
-X-Received: by 2002:a05:620a:21c1:: with SMTP id h1mr23384890qka.178.1597021340620;
-        Sun, 09 Aug 2020 18:02:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw/gNL1NLIKY9GhTzgTs03cLkaKtYowVsvbffBNA7OF+unNlfZkYequJe4anyU7u2lg8rTxkQ==
-X-Received: by 2002:a05:620a:21c1:: with SMTP id h1mr23384864qka.178.1597021340263;
-        Sun, 09 Aug 2020 18:02:20 -0700 (PDT)
+        bh=OTgRyPr4ATTOsKSC00sYGFwp4YxQtlbP2Mw6EU51Lz4=;
+        b=qxt6M4wURNJPQt7XcA6RZWz3zgAe6Z9khINE4eKIzEuBjuRPKaW6SZQZwUBUBCO7qh
+         IuVzhA6gUtENVAuQDyvAwYfUiHNUfJ1kaXKJK6qxrU6A19H7sA0KLDr7fpWRer+PtLVG
+         /fhbBR4AQ8I1fg9pGrYV1ulxYO5D2Y+dmk7V2/Ib8snKLnIEjCi7TcQPPw+wfbG7DeEI
+         HkmBpZtc8uLTcH7cFzywJHXVSp52BUPLE5QceS11bznYisTd5Y3/xDgKiujMKwjnKkRp
+         MP+iSdjRD0ZyPuU768RizlP48ZU9eZW7dIgLFPHpT0eG8XM+xere0Z3vzVLQ+UwsJ3Re
+         ZKFQ==
+X-Gm-Message-State: AOAM531JvpdDosWeft0TWyjktv1tl5iEj1kbqAoFUnR07uhvsY6Jq+gG
+        WCRJIjNooQ2xB1yPMpDvKZlKMugT1CtQy0xapKiORn1NJQ/LT6mS2WckQLAjJmDwTy+JgnXnZYP
+        ubbiWwyIP4bJ2Hx+rqBCEUpVe+PQpnpPrhqR4Tlk=
+X-Received: by 2002:ae9:ebd0:: with SMTP id b199mr22706347qkg.294.1597021342975;
+        Sun, 09 Aug 2020 18:02:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwJAmBaN3Mtp9AQd1vCl1OREa6PJqmBWU7zPcC8hLAKNd8L+F8/MqiMR7XTbNaGGtq5cijPBg==
+X-Received: by 2002:ae9:ebd0:: with SMTP id b199mr22706331qkg.294.1597021342641;
+        Sun, 09 Aug 2020 18:02:22 -0700 (PDT)
 Received: from localhost.localdomain ([201.82.49.101])
-        by smtp.gmail.com with ESMTPSA id 95sm44815qtc.29.2020.08.09.18.02.18
+        by smtp.gmail.com with ESMTPSA id 95sm44815qtc.29.2020.08.09.18.02.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 09 Aug 2020 18:02:19 -0700 (PDT)
+        Sun, 09 Aug 2020 18:02:22 -0700 (PDT)
 From:   Mauricio Faria de Oliveira <mfo@canonical.com>
 To:     Jan Kara <jack@suse.cz>
 Cc:     linux-ext4@vger.kernel.org,
         dann frazier <dann.frazier@canonical.com>,
         Mauricio Faria de Oliveira <mauricio.foliveira@gmail.com>,
         Jan Kara <jack@suse.com>
-Subject: [RFC PATCH v2 2/5] jbd2: introduce journal callbacks j_submit|finish_inode_data_buffers
-Date:   Sun,  9 Aug 2020 22:02:05 -0300
-Message-Id: <20200810010210.3305322-3-mfo@canonical.com>
+Subject: [RFC PATCH v2 3/5] ext4: data=journal: write-protect pages on submit inode data buffers callback
+Date:   Sun,  9 Aug 2020 22:02:06 -0300
+Message-Id: <20200810010210.3305322-4-mfo@canonical.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200810010210.3305322-1-mfo@canonical.com>
 References: <20200810010210.3305322-1-mfo@canonical.com>
@@ -61,99 +61,119 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Add the callbacks as opt-in to override the default behavior for
-the transaction's inode list, instead of moving that code around.
+This implements the journal's j_submit_inode_data_buffers() callback
+to write-protect the inode's pages with write_cache_pages(), and use
+a writepage callback to redirty pages with buffers that are not part
+of the committing transaction or the next transaction.
 
-This is important as not only ext4 uses the inode list: ocfs2 too,
-via jbd2_journal_inode_ranged_write(), and maybe out-of-tree code.
+And set a no-op function as j_finish_inode_data_buffers() callback
+(nothing needed other than the write-protect above.)
 
-To opt-out of the default behavior (i.e., to do nothing), one has
-to opt-in with a no-op function.
+Currently, the inode is added to the transaction's inode list in the
+__ext4_journalled_writepage() function.
 ---
- fs/jbd2/commit.c     | 21 ++++++++++++++++-----
- include/linux/jbd2.h | 21 ++++++++++++++++++++-
- 2 files changed, 36 insertions(+), 6 deletions(-)
+ fs/ext4/inode.c |  4 +++
+ fs/ext4/super.c | 65 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 69 insertions(+)
 
-diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
-index 51f713089e35..b98d227b50d8 100644
---- a/fs/jbd2/commit.c
-+++ b/fs/jbd2/commit.c
-@@ -237,10 +237,14 @@ static int journal_submit_data_buffers(journal_t *journal,
- 		 * instead of writepages. Because writepages can do
- 		 * block allocation  with delalloc. We need to write
- 		 * only allocated blocks here.
-+		 * This can be overriden with a custom callback.
- 		 */
- 		trace_jbd2_submit_inode_data(jinode->i_vfs_inode);
--		err = journal_submit_inode_data_buffers(mapping, dirty_start,
--				dirty_end);
-+		if (journal->j_submit_inode_data_buffers)
-+			err = journal->j_submit_inode_data_buffers(jinode);
-+		else
-+			err = journal_submit_inode_data_buffers(mapping,
-+					dirty_start, dirty_end);
- 		if (!ret)
- 			ret = err;
- 		spin_lock(&journal->j_list_lock);
-@@ -274,9 +278,16 @@ static int journal_finish_inode_data_buffers(journal_t *journal,
- 			continue;
- 		jinode->i_flags |= JI_COMMIT_RUNNING;
- 		spin_unlock(&journal->j_list_lock);
--		err = filemap_fdatawait_range_keep_errors(
--				jinode->i_vfs_inode->i_mapping, dirty_start,
--				dirty_end);
-+		/*
-+		 * Wait for the inode data buffers writeout.
-+		 * This can be overriden with a custom callback.
-+		 */
-+		if (journal->j_finish_inode_data_buffers)
-+			err = journal->j_finish_inode_data_buffers(jinode);
-+		else
-+			err = filemap_fdatawait_range_keep_errors(
-+					jinode->i_vfs_inode->i_mapping,
-+					dirty_start, dirty_end);
- 		if (!ret)
- 			ret = err;
- 		spin_lock(&journal->j_list_lock);
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index d56128df2aff..24efe88eda1b 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -628,7 +628,8 @@ struct transaction_s
- 	struct journal_head	*t_shadow_list;
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 10dd470876b3..978ccde8454f 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -1911,6 +1911,10 @@ static int __ext4_journalled_writepage(struct page *page,
+ 		err = ext4_walk_page_buffers(handle, page_bufs, 0, len, NULL,
+ 					     write_end_fn);
+ 	}
++	if (ret == 0)
++		ret = err;
++	// XXX: is this correct for inline data inodes?
++	err = ext4_jbd2_inode_add_write(handle, inode, 0, len);
+ 	if (ret == 0)
+ 		ret = err;
+ 	EXT4_I(inode)->i_datasync_tid = handle->h_transaction->t_tid;
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 330957ed1f05..38aaac6572ea 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -472,6 +472,66 @@ static void ext4_journal_commit_callback(journal_t *journal, transaction_t *txn)
+ 	spin_unlock(&sbi->s_md_lock);
+ }
  
- 	/*
--	 * List of inodes whose data we've modified in data=ordered mode.
-+	 * List of inodes whose data we've modified in data=ordered mode
-+	 * or whose pages we should write-protect in data=journaled mode.
- 	 * [j_list_lock]
- 	 */
- 	struct list_head	t_inode_list;
-@@ -1110,6 +1111,24 @@ struct journal_s
- 	void			(*j_commit_callback)(journal_t *,
- 						     transaction_t *);
++/*
++ * This writepage callback for write_cache_pages()
++ * takes care of a few cases after page cleaning.
++ *
++ * write_cache_pages() already checks for dirty pages
++ * and calls clear_page_dirty_for_io(), which we want,
++ * to write protect the pages.
++ *
++ * However, we have to redirty a page in two cases:
++ * 1) some buffer is not part of the committing transaction
++ * 2) some buffer already has b_next_transaction set
++ */
++
++static int ext4_journalled_writepage_callback(struct page *page,
++					      struct writeback_control *wbc,
++					      void *data)
++{
++	transaction_t *transaction = (transaction_t *) data;
++	struct buffer_head *bh, *head;
++	struct journal_head *jh;
++
++	// XXX: any chance of !bh here?
++	bh = head = page_buffers(page);
++	do {
++		jh = bh2jh(bh);
++		if (!jh || jh->b_transaction != transaction ||
++		    jh->b_next_transaction) {
++			redirty_page_for_writepage(wbc, page);
++			goto out;
++		}
++	} while ((bh = bh->b_this_page) != head);
++
++out:
++	return AOP_WRITEPAGE_ACTIVATE;
++}
++
++static int ext4_journalled_submit_inode_data_buffers(struct jbd2_inode *jinode)
++{
++	struct address_space *mapping = jinode->i_vfs_inode->i_mapping;
++	transaction_t *transaction = jinode->i_transaction;
++	loff_t dirty_start = jinode->i_dirty_start;
++	loff_t dirty_end = jinode->i_dirty_end;
++
++	struct writeback_control wbc = {
++		.sync_mode =  WB_SYNC_ALL,
++		.nr_to_write = mapping->nrpages * 2,
++		.range_start = dirty_start,
++		.range_end = dirty_end,
++        };
++
++	return write_cache_pages(mapping, &wbc,
++				 ext4_journalled_writepage_callback,
++				 transaction);
++}
++
++static int ext4_journalled_finish_inode_data_buffers(struct jbd2_inode *jinode)
++{
++	return 0;
++}
++
+ static bool system_going_down(void)
+ {
+ 	return system_state == SYSTEM_HALT || system_state == SYSTEM_POWER_OFF
+@@ -4599,6 +4659,11 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+ 		ext4_msg(sb, KERN_ERR, "can't mount with "
+ 			"journal_async_commit in data=ordered mode");
+ 		goto failed_mount_wq;
++	} else if (test_opt(sb, DATA_FLAGS) == EXT4_MOUNT_JOURNAL_DATA) {
++		sbi->s_journal->j_submit_inode_data_buffers =
++			ext4_journalled_submit_inode_data_buffers;
++		sbi->s_journal->j_finish_inode_data_buffers =
++			ext4_journalled_finish_inode_data_buffers;
+ 	}
  
-+	/**
-+	 * @j_submit_inode_data_buffers:
-+	 *
-+	 * This function is called before flushing metadata buffers.
-+	 * This overrides the default behavior (writeout data buffers.)
-+	 */
-+	int			(*j_submit_inode_data_buffers)
-+					(struct jbd2_inode *);
-+
-+	/**
-+	 * @j_finish_inode_data_buffers:
-+	 *
-+	 * This function is called after flushing metadata buffers.
-+	 * This overrides the default behavior (wait writeout.)
-+	 */
-+	int			(*j_finish_inode_data_buffers)
-+					(struct jbd2_inode *);
-+
- 	/*
- 	 * Journal statistics
- 	 */
+ 	set_task_ioprio(sbi->s_journal->j_task, journal_ioprio);
 -- 
 2.17.1
 
