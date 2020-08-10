@@ -2,95 +2,172 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9838824037F
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 Aug 2020 10:39:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4446F2404FC
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 Aug 2020 13:02:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726089AbgHJIjH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 10 Aug 2020 04:39:07 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:15802 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725857AbgHJIjH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 10 Aug 2020 04:39:07 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07A8W8o3080791;
-        Mon, 10 Aug 2020 04:39:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : date : mime-version : in-reply-to : content-type :
- content-transfer-encoding : message-id; s=pp1;
- bh=VvaSZcZ55zcKkEkGlqKbwmfJv9CMAQpb13cLvAi69Is=;
- b=kKjjBCUW/VrpGdNb/CiTBTSItJvNLm0drnmysemJmA7FhZtAoVeo+sGvwD3INFtMw9tS
- c7VbnDsezbNVZ2d2oDPExX/iGoCPelW0iplf3QvkJ627rWMGNce4YFFnGyoa+gCLLfgk
- MpQeJ6AxbZK9+SUDBj2Px/usywNs9NJv9Eq+ogVgliomeiCAXND4D8JzMyF0xy2kI6lq
- RhCdK9UYGjB8WorAzi9cDpok0xmtkTCf2A8u1XIm0p4clt1eouxOx7a4FCxh83+M2Gqu
- QKHxtsGX2/05/naEqZMZcAQ8MfZSvv2wt6vSVoBbjsr9KfadYxVtPGzEZlMbVMyIzueI lQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 32sr7udj3t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 10 Aug 2020 04:39:03 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07A8WUZm081648;
-        Mon, 10 Aug 2020 04:39:02 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 32sr7udj35-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 10 Aug 2020 04:39:02 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07A8Wijf027472;
-        Mon, 10 Aug 2020 08:39:00 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06ams.nl.ibm.com with ESMTP id 32skaha24h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 10 Aug 2020 08:39:00 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07A8cwSi27984270
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 10 Aug 2020 08:38:58 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5967BAE057;
-        Mon, 10 Aug 2020 08:38:58 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 90732AE045;
-        Mon, 10 Aug 2020 08:38:57 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.199.33.217])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 10 Aug 2020 08:38:57 +0000 (GMT)
-Subject: Re: [PATCH] ext4: remove unused parameter of
- ext4_generic_delete_entry function
-To:     Kyoungho Koo <rnrudgh@gmail.com>, "Theodore Ts'o" <tytso@mit.edu>,
+        id S1726466AbgHJLCp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 10 Aug 2020 07:02:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726033AbgHJLCl (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 10 Aug 2020 07:02:41 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADC3EC061756
+        for <linux-ext4@vger.kernel.org>; Mon, 10 Aug 2020 04:02:40 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id h19so9027107ljg.13
+        for <linux-ext4@vger.kernel.org>; Mon, 10 Aug 2020 04:02:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=U2JMQwQuDgHlcfFwPb65GGl9226SqxYKSo8gW1+qV4A=;
+        b=ycd09Q6Ye7sc8xqUC49v6AA4FxlLR1Hhhh1W8l247b5DxMeoGrHGyCyBbcY+ZiSH90
+         GeV1Cf91H5eFnM79C4JBDeH9AXTAfcF7ZDnLEOm5K2bMnAM4iFLTNk+ZxhgM0X9fCmmD
+         ZTurMhH/RXWXDFaHBRgqIxCSL+pjcAemO3QhifUTqZlHj2WS1S6BNKnBgDBRLmszQ3V9
+         Ps1F8x7lzay/fBYHEHQ45zhw8pAG4B+koE1WUB9pF9+RVvc3+qiJ738gc55yoaogOoOE
+         ImEfQsr/iFcxtv087s9yBFxnrKp3K/GIPtIvcZcMneoY3EMVmvCGymFyzAAwYhiONzBa
+         3oEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=U2JMQwQuDgHlcfFwPb65GGl9226SqxYKSo8gW1+qV4A=;
+        b=cv6sjBVYja+W/zhDkYiLL6XxauyWR/A6t1k44dbUQrQgGrmq3tmlH1DwIDBsm6QyU2
+         2NfnAUTU+fV21Y/fQTIaGCB/is1/LkQrPJS79UN+N0En7WXZekD+11pJj0zbmfRRf4nZ
+         ppKtMH99+O1Q61bUFNBW5QiNk+KJdjokE1lcozSW+1kbrUjllWyOXUaJU5kLON7AGSpY
+         5a5QztHxVbKKmfPdrtGgyV+dpbvZEQ/eRMwwuripIRDxXqeQU2Iwfe9TzVmE8aXDdVuE
+         z2kNmtE9O1LmGAr+tyClIe9om4GkkeCf+Ga4g7cUu6LSF1LaF26UwX+3RKwuyXHW0hlG
+         fLfA==
+X-Gm-Message-State: AOAM533ZoXFCeOyQ0CL2lgZrbc5kOeLS5d5k4g12sPbjBsHViEPu/hOH
+        lf+TQmvSkeIBoIjrthH90LRX+GM9JHo=
+X-Google-Smtp-Source: ABdhPJw3yxD6ZDS/L2suPjxFjHfDzdlOqM5qnYl24R3NyHXPuk0N9Bpai2F2cl0Q/XqafWDMauOqGA==
+X-Received: by 2002:a2e:9e8a:: with SMTP id f10mr262329ljk.330.1597057357892;
+        Mon, 10 Aug 2020 04:02:37 -0700 (PDT)
+Received: from genomnajs.ideon.se ([85.235.10.227])
+        by smtp.gmail.com with ESMTPSA id k12sm10551672lfe.68.2020.08.10.04.02.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Aug 2020 04:02:37 -0700 (PDT)
+From:   Linus Walleij <linus.walleij@linaro.org>
+To:     Theodore Ts'o <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>
-Cc:     linux-ext4@vger.kernel.org
-References: <20200810080701.GA14160@koo-Z370-HD3>
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-Date:   Mon, 10 Aug 2020 14:08:56 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-api@vger.kernel.org, qemu-devel@nongnu.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Florian Weimer <fw@deneb.enyo.de>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: [PATCH v3] fcntl: Add 32bit filesystem mode
+Date:   Mon, 10 Aug 2020 13:02:33 +0200
+Message-Id: <20200810110233.4374-1-linus.walleij@linaro.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20200810080701.GA14160@koo-Z370-HD3>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Message-Id: <20200810083857.90732AE045@d06av26.portsmouth.uk.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-10_03:2020-08-06,2020-08-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- mlxlogscore=999 impostorscore=0 malwarescore=0 bulkscore=0 mlxscore=0
- adultscore=0 phishscore=0 priorityscore=1501 lowpriorityscore=0
- clxscore=1015 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008100057
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+It was brought to my attention that this bug from 2018 was
+still unresolved: 32 bit emulators like QEMU were given
+64 bit hashes when running 32 bit emulation on 64 bit systems.
 
+This adds a flag to the fcntl() F_GETFD and F_SETFD operations
+to set the underlying filesystem into 32bit mode even if the
+file handle was opened using 64bit mode without the compat
+syscalls.
 
-On 8/10/20 1:37 PM, Kyoungho Koo wrote:
-> The ext4_generic_delete_entry function defines the handle_t type
-> variable, handle, as a parameter, but it is not used.
-> 
-> Signed-off-by: Kyoungho Koo <rnrudgh@gmail.com>
+Programs that need the 32 bit file system behavior need to
+issue a fcntl() system call such as in this example:
 
-LGTM, feel free to add:
-Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
+  #define FD_32BIT_MODE 2
+
+  int main(int argc, char** argv) {
+    DIR* dir;
+    int err;
+    int fd;
+
+    dir = opendir("/boot");
+    fd = dirfd(dir);
+    err = fcntl(fd, F_SETFD, FD_32BIT_MODE);
+    if (err) {
+      printf("fcntl() failed! err=%d\n", err);
+      return 1;
+    }
+    printf("dir=%p\n", dir);
+    printf("readdir(dir)=%p\n", readdir(dir));
+    printf("errno=%d: %s\n", errno, strerror(errno));
+    return 0;
+  }
+
+This can be pretty hard to test since C libraries and linux
+userspace security extensions aggressively filter the parameters
+that are passed down and allowed to commit into actual system
+calls.
+
+Cc: Florian Weimer <fw@deneb.enyo.de>
+Cc: Peter Maydell <peter.maydell@linaro.org>
+Cc: Andy Lutomirski <luto@kernel.org>
+Suggested-by: Theodore Ts'o <tytso@mit.edu>
+Link: https://bugs.launchpad.net/qemu/+bug/1805913
+Link: https://lore.kernel.org/lkml/87bm56vqg4.fsf@mid.deneb.enyo.de/
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=205957
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ChangeLog v2->v3:
+- Realized that I also have to clear the flag correspondingly
+  if someone ask for !FD_32BIT_MODE after setting it the
+  first time.
+ChangeLog v1->v2:
+- Use a new flag FD_32BIT_MODE to F_GETFD and F_SETFD
+  instead of a new fcntl operation, there is already a fcntl
+  operation to set random flags.
+- Sorry for taking forever to respin this patch :(
+---
+ fs/fcntl.c                       | 7 +++++++
+ include/uapi/asm-generic/fcntl.h | 8 ++++++++
+ 2 files changed, 15 insertions(+)
+
+diff --git a/fs/fcntl.c b/fs/fcntl.c
+index 2e4c0fa2074b..a937be835924 100644
+--- a/fs/fcntl.c
++++ b/fs/fcntl.c
+@@ -335,10 +335,17 @@ static long do_fcntl(int fd, unsigned int cmd, unsigned long arg,
+ 		break;
+ 	case F_GETFD:
+ 		err = get_close_on_exec(fd) ? FD_CLOEXEC : 0;
++		/* Report 32bit file system mode */
++		if (filp->f_mode & FMODE_32BITHASH)
++			err |= FD_32BIT_MODE;
+ 		break;
+ 	case F_SETFD:
+ 		err = 0;
+ 		set_close_on_exec(fd, arg & FD_CLOEXEC);
++		if (arg & FD_32BIT_MODE)
++			filp->f_mode |= FMODE_32BITHASH;
++		else
++			filp->f_mode &= ~FMODE_32BITHASH;
+ 		break;
+ 	case F_GETFL:
+ 		err = filp->f_flags;
+diff --git a/include/uapi/asm-generic/fcntl.h b/include/uapi/asm-generic/fcntl.h
+index 9dc0bf0c5a6e..edd3573cb7ef 100644
+--- a/include/uapi/asm-generic/fcntl.h
++++ b/include/uapi/asm-generic/fcntl.h
+@@ -160,6 +160,14 @@ struct f_owner_ex {
+ 
+ /* for F_[GET|SET]FL */
+ #define FD_CLOEXEC	1	/* actually anything with low bit set goes */
++/*
++ * This instructs the kernel to provide 32bit semantics (such as hashes) from
++ * the file system layer, when running a userland that depend on 32bit
++ * semantics on a kernel that supports 64bit userland, but does not use the
++ * compat ioctl() for e.g. open(), so that the kernel would otherwise assume
++ * that the userland process is capable of dealing with 64bit semantics.
++ */
++#define FD_32BIT_MODE	2
+ 
+ /* for posix fcntl() and lockf() */
+ #ifndef F_RDLCK
+-- 
+2.26.2
+
