@@ -2,172 +2,147 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4446F2404FC
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 Aug 2020 13:02:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F3A424056F
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 Aug 2020 13:45:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726466AbgHJLCp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 10 Aug 2020 07:02:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726033AbgHJLCl (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 10 Aug 2020 07:02:41 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADC3EC061756
-        for <linux-ext4@vger.kernel.org>; Mon, 10 Aug 2020 04:02:40 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id h19so9027107ljg.13
-        for <linux-ext4@vger.kernel.org>; Mon, 10 Aug 2020 04:02:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=U2JMQwQuDgHlcfFwPb65GGl9226SqxYKSo8gW1+qV4A=;
-        b=ycd09Q6Ye7sc8xqUC49v6AA4FxlLR1Hhhh1W8l247b5DxMeoGrHGyCyBbcY+ZiSH90
-         GeV1Cf91H5eFnM79C4JBDeH9AXTAfcF7ZDnLEOm5K2bMnAM4iFLTNk+ZxhgM0X9fCmmD
-         ZTurMhH/RXWXDFaHBRgqIxCSL+pjcAemO3QhifUTqZlHj2WS1S6BNKnBgDBRLmszQ3V9
-         Ps1F8x7lzay/fBYHEHQ45zhw8pAG4B+koE1WUB9pF9+RVvc3+qiJ738gc55yoaogOoOE
-         ImEfQsr/iFcxtv087s9yBFxnrKp3K/GIPtIvcZcMneoY3EMVmvCGymFyzAAwYhiONzBa
-         3oEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=U2JMQwQuDgHlcfFwPb65GGl9226SqxYKSo8gW1+qV4A=;
-        b=cv6sjBVYja+W/zhDkYiLL6XxauyWR/A6t1k44dbUQrQgGrmq3tmlH1DwIDBsm6QyU2
-         2NfnAUTU+fV21Y/fQTIaGCB/is1/LkQrPJS79UN+N0En7WXZekD+11pJj0zbmfRRf4nZ
-         ppKtMH99+O1Q61bUFNBW5QiNk+KJdjokE1lcozSW+1kbrUjllWyOXUaJU5kLON7AGSpY
-         5a5QztHxVbKKmfPdrtGgyV+dpbvZEQ/eRMwwuripIRDxXqeQU2Iwfe9TzVmE8aXDdVuE
-         z2kNmtE9O1LmGAr+tyClIe9om4GkkeCf+Ga4g7cUu6LSF1LaF26UwX+3RKwuyXHW0hlG
-         fLfA==
-X-Gm-Message-State: AOAM533ZoXFCeOyQ0CL2lgZrbc5kOeLS5d5k4g12sPbjBsHViEPu/hOH
-        lf+TQmvSkeIBoIjrthH90LRX+GM9JHo=
-X-Google-Smtp-Source: ABdhPJw3yxD6ZDS/L2suPjxFjHfDzdlOqM5qnYl24R3NyHXPuk0N9Bpai2F2cl0Q/XqafWDMauOqGA==
-X-Received: by 2002:a2e:9e8a:: with SMTP id f10mr262329ljk.330.1597057357892;
-        Mon, 10 Aug 2020 04:02:37 -0700 (PDT)
-Received: from genomnajs.ideon.se ([85.235.10.227])
-        by smtp.gmail.com with ESMTPSA id k12sm10551672lfe.68.2020.08.10.04.02.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Aug 2020 04:02:37 -0700 (PDT)
-From:   Linus Walleij <linus.walleij@linaro.org>
-To:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
-Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-api@vger.kernel.org, qemu-devel@nongnu.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Florian Weimer <fw@deneb.enyo.de>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: [PATCH v3] fcntl: Add 32bit filesystem mode
-Date:   Mon, 10 Aug 2020 13:02:33 +0200
-Message-Id: <20200810110233.4374-1-linus.walleij@linaro.org>
-X-Mailer: git-send-email 2.26.2
+        id S1726486AbgHJLpv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 10 Aug 2020 07:45:51 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:47276 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726141AbgHJLpu (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 10 Aug 2020 07:45:50 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 23E60CAF2948679A61FF;
+        Mon, 10 Aug 2020 19:45:49 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Mon, 10 Aug 2020
+ 19:45:44 +0800
+From:   Shijie Luo <luoshijie1@huawei.com>
+To:     <linux-ext4@vger.kernel.org>
+CC:     <tytso@mit.edu>, <jack@suse.cz>, <riteshh@linux.ibm.com>
+Subject: [PATCH] ext4: change to use fallthrough macro instead of fallthrough comments
+Date:   Mon, 10 Aug 2020 07:44:35 -0400
+Message-ID: <20200810114435.24182-1-luoshijie1@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-It was brought to my attention that this bug from 2018 was
-still unresolved: 32 bit emulators like QEMU were given
-64 bit hashes when running 32 bit emulation on 64 bit systems.
+Change to use fallthrough macro in switch case.
 
-This adds a flag to the fcntl() F_GETFD and F_SETFD operations
-to set the underlying filesystem into 32bit mode even if the
-file handle was opened using 64bit mode without the compat
-syscalls.
-
-Programs that need the 32 bit file system behavior need to
-issue a fcntl() system call such as in this example:
-
-  #define FD_32BIT_MODE 2
-
-  int main(int argc, char** argv) {
-    DIR* dir;
-    int err;
-    int fd;
-
-    dir = opendir("/boot");
-    fd = dirfd(dir);
-    err = fcntl(fd, F_SETFD, FD_32BIT_MODE);
-    if (err) {
-      printf("fcntl() failed! err=%d\n", err);
-      return 1;
-    }
-    printf("dir=%p\n", dir);
-    printf("readdir(dir)=%p\n", readdir(dir));
-    printf("errno=%d: %s\n", errno, strerror(errno));
-    return 0;
-  }
-
-This can be pretty hard to test since C libraries and linux
-userspace security extensions aggressively filter the parameters
-that are passed down and allowed to commit into actual system
-calls.
-
-Cc: Florian Weimer <fw@deneb.enyo.de>
-Cc: Peter Maydell <peter.maydell@linaro.org>
-Cc: Andy Lutomirski <luto@kernel.org>
-Suggested-by: Theodore Ts'o <tytso@mit.edu>
-Link: https://bugs.launchpad.net/qemu/+bug/1805913
-Link: https://lore.kernel.org/lkml/87bm56vqg4.fsf@mid.deneb.enyo.de/
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=205957
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Shijie Luo <luoshijie1@huawei.com>
 ---
-ChangeLog v2->v3:
-- Realized that I also have to clear the flag correspondingly
-  if someone ask for !FD_32BIT_MODE after setting it the
-  first time.
-ChangeLog v1->v2:
-- Use a new flag FD_32BIT_MODE to F_GETFD and F_SETFD
-  instead of a new fcntl operation, there is already a fcntl
-  operation to set random flags.
-- Sorry for taking forever to respin this patch :(
----
- fs/fcntl.c                       | 7 +++++++
- include/uapi/asm-generic/fcntl.h | 8 ++++++++
- 2 files changed, 15 insertions(+)
+ fs/ext4/hash.c     |  4 ++--
+ fs/ext4/indirect.c | 12 ++++++------
+ fs/ext4/readpage.c |  4 ++--
+ 3 files changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/fs/fcntl.c b/fs/fcntl.c
-index 2e4c0fa2074b..a937be835924 100644
---- a/fs/fcntl.c
-+++ b/fs/fcntl.c
-@@ -335,10 +335,17 @@ static long do_fcntl(int fd, unsigned int cmd, unsigned long arg,
+diff --git a/fs/ext4/hash.c b/fs/ext4/hash.c
+index 3e133793a5a3..2924261226e0 100644
+--- a/fs/ext4/hash.c
++++ b/fs/ext4/hash.c
+@@ -233,7 +233,7 @@ static int __ext4fs_dirhash(const char *name, int len,
  		break;
- 	case F_GETFD:
- 		err = get_close_on_exec(fd) ? FD_CLOEXEC : 0;
-+		/* Report 32bit file system mode */
-+		if (filp->f_mode & FMODE_32BITHASH)
-+			err |= FD_32BIT_MODE;
+ 	case DX_HASH_HALF_MD4_UNSIGNED:
+ 		str2hashbuf = str2hashbuf_unsigned;
+-		/* fall through */
++		fallthrough;
+ 	case DX_HASH_HALF_MD4:
+ 		p = name;
+ 		while (len > 0) {
+@@ -247,7 +247,7 @@ static int __ext4fs_dirhash(const char *name, int len,
  		break;
- 	case F_SETFD:
- 		err = 0;
- 		set_close_on_exec(fd, arg & FD_CLOEXEC);
-+		if (arg & FD_32BIT_MODE)
-+			filp->f_mode |= FMODE_32BITHASH;
-+		else
-+			filp->f_mode &= ~FMODE_32BITHASH;
- 		break;
- 	case F_GETFL:
- 		err = filp->f_flags;
-diff --git a/include/uapi/asm-generic/fcntl.h b/include/uapi/asm-generic/fcntl.h
-index 9dc0bf0c5a6e..edd3573cb7ef 100644
---- a/include/uapi/asm-generic/fcntl.h
-+++ b/include/uapi/asm-generic/fcntl.h
-@@ -160,6 +160,14 @@ struct f_owner_ex {
- 
- /* for F_[GET|SET]FL */
- #define FD_CLOEXEC	1	/* actually anything with low bit set goes */
-+/*
-+ * This instructs the kernel to provide 32bit semantics (such as hashes) from
-+ * the file system layer, when running a userland that depend on 32bit
-+ * semantics on a kernel that supports 64bit userland, but does not use the
-+ * compat ioctl() for e.g. open(), so that the kernel would otherwise assume
-+ * that the userland process is capable of dealing with 64bit semantics.
-+ */
-+#define FD_32BIT_MODE	2
- 
- /* for posix fcntl() and lockf() */
- #ifndef F_RDLCK
+ 	case DX_HASH_TEA_UNSIGNED:
+ 		str2hashbuf = str2hashbuf_unsigned;
+-		/* fall through */
++		fallthrough;
+ 	case DX_HASH_TEA:
+ 		p = name;
+ 		while (len > 0) {
+diff --git a/fs/ext4/indirect.c b/fs/ext4/indirect.c
+index be2b66eb65f7..1217f0fdcb33 100644
+--- a/fs/ext4/indirect.c
++++ b/fs/ext4/indirect.c
+@@ -1182,21 +1182,21 @@ void ext4_ind_truncate(handle_t *handle, struct inode *inode)
+ 			ext4_free_branches(handle, inode, NULL, &nr, &nr+1, 1);
+ 			i_data[EXT4_IND_BLOCK] = 0;
+ 		}
+-		/* fall through */
++		fallthrough;
+ 	case EXT4_IND_BLOCK:
+ 		nr = i_data[EXT4_DIND_BLOCK];
+ 		if (nr) {
+ 			ext4_free_branches(handle, inode, NULL, &nr, &nr+1, 2);
+ 			i_data[EXT4_DIND_BLOCK] = 0;
+ 		}
+-		/* fall through */
++		fallthrough;
+ 	case EXT4_DIND_BLOCK:
+ 		nr = i_data[EXT4_TIND_BLOCK];
+ 		if (nr) {
+ 			ext4_free_branches(handle, inode, NULL, &nr, &nr+1, 3);
+ 			i_data[EXT4_TIND_BLOCK] = 0;
+ 		}
+-		/* fall through */
++		fallthrough;
+ 	case EXT4_TIND_BLOCK:
+ 		;
+ 	}
+@@ -1436,7 +1436,7 @@ int ext4_ind_remove_space(handle_t *handle, struct inode *inode,
+ 			ext4_free_branches(handle, inode, NULL, &nr, &nr+1, 1);
+ 			i_data[EXT4_IND_BLOCK] = 0;
+ 		}
+-		/* fall through */
++		fallthrough;
+ 	case EXT4_IND_BLOCK:
+ 		if (++n >= n2)
+ 			break;
+@@ -1445,7 +1445,7 @@ int ext4_ind_remove_space(handle_t *handle, struct inode *inode,
+ 			ext4_free_branches(handle, inode, NULL, &nr, &nr+1, 2);
+ 			i_data[EXT4_DIND_BLOCK] = 0;
+ 		}
+-		/* fall through */
++		fallthrough;
+ 	case EXT4_DIND_BLOCK:
+ 		if (++n >= n2)
+ 			break;
+@@ -1454,7 +1454,7 @@ int ext4_ind_remove_space(handle_t *handle, struct inode *inode,
+ 			ext4_free_branches(handle, inode, NULL, &nr, &nr+1, 3);
+ 			i_data[EXT4_TIND_BLOCK] = 0;
+ 		}
+-		/* fall through */
++		fallthrough;
+ 	case EXT4_TIND_BLOCK:
+ 		;
+ 	}
+diff --git a/fs/ext4/readpage.c b/fs/ext4/readpage.c
+index f2df2db0786c..f014c5e473a9 100644
+--- a/fs/ext4/readpage.c
++++ b/fs/ext4/readpage.c
+@@ -140,7 +140,7 @@ static void bio_post_read_processing(struct bio_post_read_ctx *ctx)
+ 			return;
+ 		}
+ 		ctx->cur_step++;
+-		/* fall-through */
++		fallthrough;
+ 	case STEP_VERITY:
+ 		if (ctx->enabled_steps & (1 << STEP_VERITY)) {
+ 			INIT_WORK(&ctx->work, verity_work);
+@@ -148,7 +148,7 @@ static void bio_post_read_processing(struct bio_post_read_ctx *ctx)
+ 			return;
+ 		}
+ 		ctx->cur_step++;
+-		/* fall-through */
++		fallthrough;
+ 	default:
+ 		__read_end_io(ctx->bio);
+ 	}
 -- 
-2.26.2
+2.19.1
 
