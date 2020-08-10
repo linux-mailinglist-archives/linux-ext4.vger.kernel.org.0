@@ -2,108 +2,91 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28BFA240689
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 Aug 2020 15:25:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC5412406E7
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 Aug 2020 15:44:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726769AbgHJNZF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 10 Aug 2020 09:25:05 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:43396 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726330AbgHJNZE (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 10 Aug 2020 09:25:04 -0400
-Received: from callcc.thunk.org (pool-96-230-252-158.bstnma.fios.verizon.net [96.230.252.158])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 07ADOvSF028256
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 10 Aug 2020 09:24:58 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 696E1420263; Mon, 10 Aug 2020 09:24:57 -0400 (EDT)
-Date:   Mon, 10 Aug 2020 09:24:57 -0400
-From:   tytso@mit.edu
-To:     Andreas Dilger <adilger@dilger.ca>
-Cc:     Wang Shilong <wangshilong1991@gmail.com>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Wang Shilong <wshilong@ddn.com>, Shuichi Ihara <sihara@ddn.com>
-Subject: Re: [PATCH v3 1/2] ext4: introduce EXT4_BG_WAS_TRIMMED to optimize
- trim
-Message-ID: <20200810132457.GA14208@mit.edu>
-References: <1592831677-13945-1-git-send-email-wangshilong1991@gmail.com>
- <20200806044703.GC7657@mit.edu>
- <CAP9B-Qnv2LXva_szv+sDOiawQ6zRb9a8u-UAsbXqSqWiK+emiQ@mail.gmail.com>
- <20200808151801.GA284779@mit.edu>
- <9789BE11-11FB-42B2-A5BE-D4887838ED10@dilger.ca>
+        id S1726653AbgHJNoY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 10 Aug 2020 09:44:24 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:42478 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726569AbgHJNoX (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 10 Aug 2020 09:44:23 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07ADXXZj028960;
+        Mon, 10 Aug 2020 09:44:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : date : mime-version : in-reply-to : content-type :
+ content-transfer-encoding : message-id; s=pp1;
+ bh=XXXqoePBOa4qDr3rIBArYqgR5RCbpncK4XHJVflsofk=;
+ b=ik2Y2ILYxYkZ2+P9ojK6tL/ZE2QR5Xy+hvTltnSB7TI1GF1rxzyXP42v9NjoijNdc3ZJ
+ QUeP+5wal9dc6eldObVeq+97UoWm+Sts0AiVnTqgGkMWqhNuvcpSoGVM+DgFRJpOwdzi
+ kVOE23yDLhUBlfJNhSD7YKMFJyqhUDhypkSohItvig6aitTjJiRVb1rz4ybHq5nou3P9
+ 1GV3VxzJrW891Am62fphFA3/uY27ZG+Bj+PFEkLRWh4uK2m0nqa3Dfm3zAnrA6Cysf1C
+ K0cHdhBBZFjkde1Ju9lUSPO9O/1BKgV7O7vMcM92ZIMWY7KsxLpXeM3Zf8I8KjIANPb+ vw== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32u4g1n5uy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 10 Aug 2020 09:44:13 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07ADa4va010168;
+        Mon, 10 Aug 2020 13:44:11 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 32skp82a6x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 10 Aug 2020 13:44:11 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07ADi8EY13959538
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 10 Aug 2020 13:44:09 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CD120AE058;
+        Mon, 10 Aug 2020 13:44:08 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0B7E2AE04D;
+        Mon, 10 Aug 2020 13:44:08 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.33.217])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 10 Aug 2020 13:44:07 +0000 (GMT)
+Subject: Re: [PATCH] ext4: change to use fallthrough macro instead of
+ fallthrough comments
+To:     Shijie Luo <luoshijie1@huawei.com>, linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, jack@suse.cz
+References: <20200810114435.24182-1-luoshijie1@huawei.com>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Date:   Mon, 10 Aug 2020 19:14:07 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <20200810114435.24182-1-luoshijie1@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <9789BE11-11FB-42B2-A5BE-D4887838ED10@dilger.ca>
+Message-Id: <20200810134408.0B7E2AE04D@d06av26.portsmouth.uk.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-10_09:2020-08-06,2020-08-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 phishscore=0 mlxlogscore=552 impostorscore=0 clxscore=1015
+ priorityscore=1501 mlxscore=0 suspectscore=0 bulkscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008100101
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Aug 08, 2020 at 10:33:08PM -0600, Andreas Dilger wrote:
-> What about storing "s_min_freed_blocks_to_trim" persistently in the
-> superblock, and then the admin can adjust this as desired?  If it is
-> set =1, then the "lazy trim" optimization would be disabled (every
-> FITRIM request would honor the trim requests whenever there is a
-> freed block in a group).  I suppose we could allow =0 to mean "do not
-> store the WAS_TRIMMED flag persistently", so there would be no change
-> for current behavior, and it would require a tune2fs option to set the
-> new value into the superblock (though we might consider setting this
-> to a non-zero value in mke2fs by default).
 
-Currently the the minimum blocks to trim is passed in to FITRIM from
-userspace; so we would need to define how the passed-in value from the
-fstrim program interacts with the value stored in the sueprblock.
-Would we always ignore the value passed-in from userspace?  That
-doesn't seem right...
 
-> The other thing we were thinkgin about was changing the "-o discard" code
-> to leverage the WAS_TRIMMED flag, and just do bulk trim periodically
-> in the filesystem as blocks are freed from groups, rather than tracking
-> freed extents in memory and submitting trims actively during IO.  Instead,
-> it would track groups that exceed "s_min_freed_blocks_to_trim", and trim
-> the whole group in the background when the filesystem is not active.
+On 8/10/20 5:14 PM, Shijie Luo wrote:
+> Change to use fallthrough macro in switch case.
+> 
+> Signed-off-by: Shijie Luo <luoshijie1@huawei.com>
 
-Hmm, maybe.  That's an awful lot of complexity, which is my concern
-with that approach.
+pseudo-keyword macro “fallthrough” should be used as per latest
+documentation.
+https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
 
-Part of the problem here is that discard is being used for different
-things for different use cases and devices with different discard
-speeds.  Right now, one of the primary uses of -o discard is for
-people who have fast discard implementation(s and/or people who really
-want to make sure every freed block is immediately discard --- perhaps
-to meet security / privacy requirements (such as HIPPA compliance,
-etc.).   I don't want to break that.
 
-We now have a requirement of people who have very slow discards --- I
-think at one point people mentioned something about for devices using
-HDD, probably in some kind of dm-thin use case?  One solution that we
-can use for those is simply use fstrim -m 8M or some such.  But it
-appears that part of the problem is people do want more precision than
-that?
-
-Another solution might be to skip trimming block groups if there have
-been blocks that have been freshly freed that are pending a commit,
-and skip that block group until the commit has completed.  That might
-also help reduce contention on a busy file system.
-
-Yet another solution might be bias block allocations towards LBA
-Uranges that have been deleted recently --- since another way to avoid
-trims is to simply overwrite those LBA's.  But then the question is
-how much memory are we willing to dedicate towards tracking recently
-released LBA's, and to what level of granularity?  Perhaps we just
-track the freed extents, and if they don't get used within a certain
-period, or if we start getting put under memory pressure, we then send
-the discards at that point.
-
-Ultimately, though, this is a space full of trade offs, and I'm
-reminded of one of my father's favorite Chinese sayings: "You're
-demanding a horse which can run fast, but which doesn't eat much
-grass." (又要马儿跑，又要马儿不吃草).  Or translated more
-idiomatically, you can't have your cake and eat it too.  It seems this
-desire transcends all cultures.  :-)
-
-	       	   	      	   	- Ted
+LGTM, feel free to add:
+Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
