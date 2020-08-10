@@ -2,122 +2,71 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4887D2400A5
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 Aug 2020 03:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A60172400DE
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 Aug 2020 04:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726429AbgHJBCf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 9 Aug 2020 21:02:35 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:36803 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726403AbgHJBCf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 9 Aug 2020 21:02:35 -0400
-Received: from mail-qv1-f69.google.com ([209.85.219.69])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <mfo@canonical.com>)
-        id 1k4wCv-00072Y-5c
-        for linux-ext4@vger.kernel.org; Mon, 10 Aug 2020 01:02:33 +0000
-Received: by mail-qv1-f69.google.com with SMTP id v18so6290726qvi.8
-        for <linux-ext4@vger.kernel.org>; Sun, 09 Aug 2020 18:02:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=79jNt9AWXrhAF9xU8libSw5IoEPCQwOhdmwvJTGQsB8=;
-        b=gdVZF55IToU7DCLdGIJbkW/O92IDw4UPq/8MMyB7OPbFaFwIoEex8gSjMxqde0MGUi
-         E74Zl8fIk0Im9JBHLRd35KCy3gqoMpvf+yhjqCY0USWmeXzAlPlIVoNTVMwMvHW1wDLn
-         qOMjmBVPYkqsx357bkZ+m0QS1NGHIrdsLbvauO4ZZw6CEKWVjpll38A6EFUtYEKH1dRL
-         7MD3AqRmQsD5Ige1RJ84GMCQFKMk9m0Eh42Jo3YykIkDqZYg7+jJLbHdHhsZs+o6RA1e
-         3y1CvCjjuviux/o9t8C4bIsidMmcLDcfEFlfYm32CtkaemyqbuAUjTlb4AnmfwjXbOU4
-         5PRg==
-X-Gm-Message-State: AOAM5318hYSkHBGlCuvX7vxbeZduMF2acyWcYUZMDGIa1rsABTV9hhLJ
-        xySKhImU6QWBnbhmHD+T178BqcPBO5HqNXAie+rI211tF/TJqTreOqG6TPn85esR7IicMUnFF6P
-        aNmlO00LWk8wwEuZ17SAsrZTX5jIUDk87T7Uc1KU=
-X-Received: by 2002:a37:e92:: with SMTP id 140mr23492776qko.121.1597021352244;
-        Sun, 09 Aug 2020 18:02:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzZhI8NlYPXWFB5XZFvN63vqFkJWIVQ1rZoVKHssk3beaqJdaKJhEgFIbbjaiK6g64Dyjh+0Q==
-X-Received: by 2002:a37:e92:: with SMTP id 140mr23492757qko.121.1597021352012;
-        Sun, 09 Aug 2020 18:02:32 -0700 (PDT)
-Received: from localhost.localdomain ([201.82.49.101])
-        by smtp.gmail.com with ESMTPSA id 95sm44815qtc.29.2020.08.09.18.02.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 09 Aug 2020 18:02:31 -0700 (PDT)
-From:   Mauricio Faria de Oliveira <mfo@canonical.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-ext4@vger.kernel.org,
-        dann frazier <dann.frazier@canonical.com>,
-        Mauricio Faria de Oliveira <mauricio.foliveira@gmail.com>,
-        Jan Kara <jack@suse.com>
-Subject: [RFC PATCH v2/TEST CASE]
-Date:   Sun,  9 Aug 2020 22:02:10 -0300
-Message-Id: <20200810010210.3305322-8-mfo@canonical.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200810010210.3305322-1-mfo@canonical.com>
-References: <20200810010210.3305322-1-mfo@canonical.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726584AbgHJC2U (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 9 Aug 2020 22:28:20 -0400
+Received: from smtp23.cstnet.cn ([159.226.251.23]:57142 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726344AbgHJC2U (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sun, 9 Aug 2020 22:28:20 -0400
+X-Greylist: delayed 368 seconds by postgrey-1.27 at vger.kernel.org; Sun, 09 Aug 2020 22:28:19 EDT
+Received: from localhost (unknown [159.226.5.99])
+        by APP-03 (Coremail) with SMTP id rQCowADX3xtHrzBfDXBoAQ--.23141S2;
+        Mon, 10 Aug 2020 10:21:59 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Xu Wang <vulab@iscas.ac.cn>
+Subject: [PATCH] mballoc: Replace seq_printf with seq_puts
+Date:   Mon, 10 Aug 2020 02:21:58 +0000
+Message-Id: <20200810022158.9167-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: rQCowADX3xtHrzBfDXBoAQ--.23141S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrWry7KFy5Kw4fGr48GFyUWrg_yoWxXrcEka
+        47CF4kuryfJrn2kF1kJrs0yry0v3Z2yF4rJa9rJr43ZF1jga1rZ3s8JFs3Aw4xGr4jkr9r
+        Cw1rWFy8WFWS9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb4AFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+        Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr
+        1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r1q6rW5McIj6I8E87Iv67AKxVW8Jr0_Cr1UMcvjeVCFs4IE7xkEbV
+        WUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK
+        6r4UMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
+        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y
+        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+        W8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_
+        Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUb7DG5
+        UUUUU==
+X-Originating-IP: [159.226.5.99]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiAwgEA13qZSbaIgABsB
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-#include <errno.h>
-#include <fcntl.h>
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
+seq_puts is a lot cheaper than seq_printf, so use that to print
+literal strings.
 
-#include <sys/mman.h>
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ fs/ext4/mballoc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-int main() {
-	int fd, rc;
-	char *addr;
-	const int PAGE_SIZE = sysconf(_SC_PAGESIZE);
-
-	rc = unlink("file");
-	if (rc < 0 && errno != ENOENT ) {
-		perror("unlink");
-		return 1;
-	}
-
-	fd = open("file", O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
-	if (fd < 0) {
-		perror("open");
-		return 1;
-	}
-
-	addr = mmap(NULL, PAGE_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-	if (addr < 0) {
-		perror("mmap");
-		return 1;
-	}
-
-	rc = pwrite(fd, "a", 1, 0);
-	if (rc < 0) {
-		perror("pwrite");
-		close(fd);
-		return 1;
-	}
-
-	addr[0] = 'B';
-	addr[1] = 'U';
-	addr[2] = 'G';
-
-	while (1) {
-		printf("Press enter to change buffer contents\n");
-		getchar();
-		addr[3]++;
-		printf("Buffer contents changed\n");
-	}
-
-	// This is not reached.
-	rc = munmap(addr, PAGE_SIZE);
-	if (rc < 0) {
-		perror("munmap");
-		return 1;
-	}
-
-	close(fd);
-	return 0;
-}
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index c0a331e2feb0..77288e549a95 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -2439,7 +2439,7 @@ static int ext4_mb_seq_groups_show(struct seq_file *seq, void *v)
+ 	for (i = 0; i <= 13; i++)
+ 		seq_printf(seq, " %-5u", i <= blocksize_bits + 1 ?
+ 				sg.info.bb_counters[i] : 0);
+-	seq_printf(seq, " ]\n");
++	seq_puts(seq, " ]\n");
+ 
+ 	return 0;
+ }
+-- 
+2.17.1
 
