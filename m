@@ -2,147 +2,136 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F3A424056F
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 Aug 2020 13:45:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24699240600
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 Aug 2020 14:38:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726486AbgHJLpv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 10 Aug 2020 07:45:51 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:47276 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726141AbgHJLpu (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 10 Aug 2020 07:45:50 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 23E60CAF2948679A61FF;
-        Mon, 10 Aug 2020 19:45:49 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Mon, 10 Aug 2020
- 19:45:44 +0800
-From:   Shijie Luo <luoshijie1@huawei.com>
-To:     <linux-ext4@vger.kernel.org>
-CC:     <tytso@mit.edu>, <jack@suse.cz>, <riteshh@linux.ibm.com>
-Subject: [PATCH] ext4: change to use fallthrough macro instead of fallthrough comments
-Date:   Mon, 10 Aug 2020 07:44:35 -0400
-Message-ID: <20200810114435.24182-1-luoshijie1@huawei.com>
-X-Mailer: git-send-email 2.19.1
+        id S1726595AbgHJMiB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 10 Aug 2020 08:38:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726536AbgHJMiA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 10 Aug 2020 08:38:00 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58B00C061756
+        for <linux-ext4@vger.kernel.org>; Mon, 10 Aug 2020 05:38:00 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id bo3so9164120ejb.11
+        for <linux-ext4@vger.kernel.org>; Mon, 10 Aug 2020 05:38:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=AYMYv/RtmqZzu//iHYyi5t/eBtvTabtXaLeRqTpyxJw=;
+        b=JJMCV+DzFbd7m+rqi0hGo1wViav7rFNqQyNAWi1C4d87QC2liAYcTUyLaYlrUfum3p
+         wQAPcnA2eyd38p8MrgDnpWQDuhVa3aoz6z+//fVSzw6fPZwJN8wUGzDPhDzQjPyYbXHa
+         nENKiKCFnJB4/Tx8AvmQz1c3agwSy0oHEr55iKj0E5S0ZgbVCeO2XdbBd4o0sj/wCYuJ
+         GCO0KVnKkUxswwxeK223R1fuiPCVl0CVi77njS10PGI3zxRez/PH9tYo+OmQnEJcnRGn
+         VLNg1xDsrUUjAC73Z0vn3UGr3GbD5rAS7UJszzQ4PA5TtC61lBTeoIR4O0GeSnbDL9ai
+         b+7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=AYMYv/RtmqZzu//iHYyi5t/eBtvTabtXaLeRqTpyxJw=;
+        b=WIi7h4SqKIuTVmcSfqWuuZKB/TOfrh7iC4EnK/n4af0uqchxfdPMeHfrCJqlFtyGhN
+         kXQanhzHb21LmWRb3DtUuoeNTRFv7NScD4Ock/d0JsCkH4V2KGyckcEXTLdvlmRDBznn
+         JKCDB+8eyhLYX8IlLbZAuCi5OTDo+At8gh/ZusYTpv9yzihlUl8FlDLTNGjKJiuWpZ+C
+         Fdl6V+5BByDdI4tY3zTDXMh/TfAMTASnWdL22l1VY3FsJfCApa+sEGKExyFov3uAS9Wz
+         TQcYNQ+iwyJVn64o685Sdtgbz1Hj/0YDPkwqwZbcDDyNSqBAvaGZMjHh6+HuiXAkXW9K
+         cCYA==
+X-Gm-Message-State: AOAM5301lMyuxgqQeGVIdSNTuyFuPEZYl4VhZjnyHE83XcKmNTRZt+f0
+        7gRrhSslqCtRLB9KU7T80nWr+wakIwORfrsGjQ7D1Gi+2JU=
+X-Google-Smtp-Source: ABdhPJxJIzZSQJAByqP1kjs9qTwPpQ5NWzl43fKccMLZ2hPqOm3giOVR0fksFKBMrD41e6fn8qt1ORokNBjNx1Gxigk=
+X-Received: by 2002:a17:906:7155:: with SMTP id z21mr22758726ejj.282.1597063077958;
+ Mon, 10 Aug 2020 05:37:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+References: <CAPQccj4_Tz-11AfXaSiPj4aRWYU2mX9eJuJyGNR68Mini0PZjw@mail.gmail.com>
+In-Reply-To: <CAPQccj4_Tz-11AfXaSiPj4aRWYU2mX9eJuJyGNR68Mini0PZjw@mail.gmail.com>
+From:   Maciej Jablonski <mafjmafj@gmail.com>
+Date:   Mon, 10 Aug 2020 13:37:45 +0100
+Message-ID: <CAPQccj7XwunXerNYxPBTpBa0JVX7vzC=7aBoE8m35ttFHYNOPg@mail.gmail.com>
+Subject: Re: libext2fs: mkfs.ext3 really slow on centos 8.2
+To:     linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Change to use fallthrough macro in switch case.
+Hi,
 
-Signed-off-by: Shijie Luo <luoshijie1@huawei.com>
----
- fs/ext4/hash.c     |  4 ++--
- fs/ext4/indirect.c | 12 ++++++------
- fs/ext4/readpage.c |  4 ++--
- 3 files changed, 10 insertions(+), 10 deletions(-)
+On upgrading from centos 7.6 to centos 8.2 mkfs slowed down by orders
+of magnitude.
 
-diff --git a/fs/ext4/hash.c b/fs/ext4/hash.c
-index 3e133793a5a3..2924261226e0 100644
---- a/fs/ext4/hash.c
-+++ b/fs/ext4/hash.c
-@@ -233,7 +233,7 @@ static int __ext4fs_dirhash(const char *name, int len,
- 		break;
- 	case DX_HASH_HALF_MD4_UNSIGNED:
- 		str2hashbuf = str2hashbuf_unsigned;
--		/* fall through */
-+		fallthrough;
- 	case DX_HASH_HALF_MD4:
- 		p = name;
- 		while (len > 0) {
-@@ -247,7 +247,7 @@ static int __ext4fs_dirhash(const char *name, int len,
- 		break;
- 	case DX_HASH_TEA_UNSIGNED:
- 		str2hashbuf = str2hashbuf_unsigned;
--		/* fall through */
-+		fallthrough;
- 	case DX_HASH_TEA:
- 		p = name;
- 		while (len > 0) {
-diff --git a/fs/ext4/indirect.c b/fs/ext4/indirect.c
-index be2b66eb65f7..1217f0fdcb33 100644
---- a/fs/ext4/indirect.c
-+++ b/fs/ext4/indirect.c
-@@ -1182,21 +1182,21 @@ void ext4_ind_truncate(handle_t *handle, struct inode *inode)
- 			ext4_free_branches(handle, inode, NULL, &nr, &nr+1, 1);
- 			i_data[EXT4_IND_BLOCK] = 0;
- 		}
--		/* fall through */
-+		fallthrough;
- 	case EXT4_IND_BLOCK:
- 		nr = i_data[EXT4_DIND_BLOCK];
- 		if (nr) {
- 			ext4_free_branches(handle, inode, NULL, &nr, &nr+1, 2);
- 			i_data[EXT4_DIND_BLOCK] = 0;
- 		}
--		/* fall through */
-+		fallthrough;
- 	case EXT4_DIND_BLOCK:
- 		nr = i_data[EXT4_TIND_BLOCK];
- 		if (nr) {
- 			ext4_free_branches(handle, inode, NULL, &nr, &nr+1, 3);
- 			i_data[EXT4_TIND_BLOCK] = 0;
- 		}
--		/* fall through */
-+		fallthrough;
- 	case EXT4_TIND_BLOCK:
- 		;
- 	}
-@@ -1436,7 +1436,7 @@ int ext4_ind_remove_space(handle_t *handle, struct inode *inode,
- 			ext4_free_branches(handle, inode, NULL, &nr, &nr+1, 1);
- 			i_data[EXT4_IND_BLOCK] = 0;
- 		}
--		/* fall through */
-+		fallthrough;
- 	case EXT4_IND_BLOCK:
- 		if (++n >= n2)
- 			break;
-@@ -1445,7 +1445,7 @@ int ext4_ind_remove_space(handle_t *handle, struct inode *inode,
- 			ext4_free_branches(handle, inode, NULL, &nr, &nr+1, 2);
- 			i_data[EXT4_DIND_BLOCK] = 0;
- 		}
--		/* fall through */
-+		fallthrough;
- 	case EXT4_DIND_BLOCK:
- 		if (++n >= n2)
- 			break;
-@@ -1454,7 +1454,7 @@ int ext4_ind_remove_space(handle_t *handle, struct inode *inode,
- 			ext4_free_branches(handle, inode, NULL, &nr, &nr+1, 3);
- 			i_data[EXT4_TIND_BLOCK] = 0;
- 		}
--		/* fall through */
-+		fallthrough;
- 	case EXT4_TIND_BLOCK:
- 		;
- 	}
-diff --git a/fs/ext4/readpage.c b/fs/ext4/readpage.c
-index f2df2db0786c..f014c5e473a9 100644
---- a/fs/ext4/readpage.c
-+++ b/fs/ext4/readpage.c
-@@ -140,7 +140,7 @@ static void bio_post_read_processing(struct bio_post_read_ctx *ctx)
- 			return;
- 		}
- 		ctx->cur_step++;
--		/* fall-through */
-+		fallthrough;
- 	case STEP_VERITY:
- 		if (ctx->enabled_steps & (1 << STEP_VERITY)) {
- 			INIT_WORK(&ctx->work, verity_work);
-@@ -148,7 +148,7 @@ static void bio_post_read_processing(struct bio_post_read_ctx *ctx)
- 			return;
- 		}
- 		ctx->cur_step++;
--		/* fall-through */
-+		fallthrough;
- 	default:
- 		__read_end_io(ctx->bio);
- 	}
--- 
-2.19.1
+e.g. 35GB partition from under 8s to 4m+ on the same host.
 
+Most time is spent on writing the journal to the disk.
+
+strace shows the following:
+
+We have got strace which shows that each each block is zeroed with
+fallocate and each
+ invocation of fallocate takes 10ms, this accumulates of course.
+
+We have found that using
+
+UNIX_IO_NOZEROOUT=1 to affect libext2fs
+
+Brings the timings back in line down to seconds.
+
+If this is not a known bug I can send more details,
+
+Looks that calling fallocate for each block is very inefficient on some system.
+In our case this is dellr640 (skylake) with a mechanical disk.
+
+Kind Regards,
+
+Maciej
+
+
+On Mon, 10 Aug 2020 at 13:35, Maciej Jablonski <mafjmafj@gmail.com> wrote:
+>
+> Hi,
+>
+> On upgrading from centos 7.6 to centos 8.2 mkfs slowed down by orders of magnitude.
+>
+> e.g. 35GB partition from under 8s to 4m+ on the same host.
+>
+> Most time is spent on writing the journal to the disk.
+>
+> strace shows the following:
+>
+> 16:19:49.827056 prctl(PR_GET_DUMPABLE)  = 1 (SUID_DUMP_USER)
+> 16:19:49.827112 fallocate(3, FALLOC_FL_ZERO_RANGE, 3383296, 4096) = 0
+> 16:19:49.835203 pwrite64(3, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 4096, 3362816) = 4096
+> 16:19:49.835321 getuid()                = 0
+> 16:19:49.835403 geteuid()               = 0
+> 16:19:49.835463 getgid()                = 0
+> 16:19:49.835513 getegid()               = 0
+> 16:19:49.835582 prctl(PR_GET_DUMPABLE)  = 1 (SUID_DUMP_USER)
+> 16:19:49.835657 fallocate(3, FALLOC_FL_ZERO_RANGE, 3387392, 4096) = 0
+> 16:19:49.843471 pwrite64(3, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 4096, 3366912) = 4096
+> 16:19:49.843562 getuid()                = 0
+> 16:19:49.843619 geteuid()               = 0
+> 16:19:49.843669 getgid()                = 0
+> 16:19:49.843715 getegid()               = 0
+> 16:19:49.843785 prctl(PR_GET_DUMPABLE)  = 1 (SUID_DUMP_USER)
+> 16:19:49.843836 fallocate(3, FALLOC_FL_ZERO_RANGE, 3391488, 4096) = 0
+> 16:19:49.851885 pwrite64(3, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 4096, 3371008) = 4096
+>
+>
+> Each invocation of fallocate takes 10ms, this accumulates of course.
+> We have found that using
+>
+> UNIX_IO_NOZEROOUT=1 to affect libext2fs
+>
+> Brings the timings back in line down to seconds.
+>
+> If this is not a known bug I can send more details,
+>
+> Looks that calling fallocate for each block is very inefficient on some system.
+> In our case this is dellr640 (skylake) with a mechanical disk.
+>
+> Kind Regards,
+>
+> Maciej
+>
+>
