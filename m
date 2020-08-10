@@ -2,136 +2,108 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24699240600
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 Aug 2020 14:38:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28BFA240689
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 Aug 2020 15:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726595AbgHJMiB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 10 Aug 2020 08:38:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726536AbgHJMiA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 10 Aug 2020 08:38:00 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58B00C061756
-        for <linux-ext4@vger.kernel.org>; Mon, 10 Aug 2020 05:38:00 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id bo3so9164120ejb.11
-        for <linux-ext4@vger.kernel.org>; Mon, 10 Aug 2020 05:38:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=AYMYv/RtmqZzu//iHYyi5t/eBtvTabtXaLeRqTpyxJw=;
-        b=JJMCV+DzFbd7m+rqi0hGo1wViav7rFNqQyNAWi1C4d87QC2liAYcTUyLaYlrUfum3p
-         wQAPcnA2eyd38p8MrgDnpWQDuhVa3aoz6z+//fVSzw6fPZwJN8wUGzDPhDzQjPyYbXHa
-         nENKiKCFnJB4/Tx8AvmQz1c3agwSy0oHEr55iKj0E5S0ZgbVCeO2XdbBd4o0sj/wCYuJ
-         GCO0KVnKkUxswwxeK223R1fuiPCVl0CVi77njS10PGI3zxRez/PH9tYo+OmQnEJcnRGn
-         VLNg1xDsrUUjAC73Z0vn3UGr3GbD5rAS7UJszzQ4PA5TtC61lBTeoIR4O0GeSnbDL9ai
-         b+7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=AYMYv/RtmqZzu//iHYyi5t/eBtvTabtXaLeRqTpyxJw=;
-        b=WIi7h4SqKIuTVmcSfqWuuZKB/TOfrh7iC4EnK/n4af0uqchxfdPMeHfrCJqlFtyGhN
-         kXQanhzHb21LmWRb3DtUuoeNTRFv7NScD4Ock/d0JsCkH4V2KGyckcEXTLdvlmRDBznn
-         JKCDB+8eyhLYX8IlLbZAuCi5OTDo+At8gh/ZusYTpv9yzihlUl8FlDLTNGjKJiuWpZ+C
-         Fdl6V+5BByDdI4tY3zTDXMh/TfAMTASnWdL22l1VY3FsJfCApa+sEGKExyFov3uAS9Wz
-         TQcYNQ+iwyJVn64o685Sdtgbz1Hj/0YDPkwqwZbcDDyNSqBAvaGZMjHh6+HuiXAkXW9K
-         cCYA==
-X-Gm-Message-State: AOAM5301lMyuxgqQeGVIdSNTuyFuPEZYl4VhZjnyHE83XcKmNTRZt+f0
-        7gRrhSslqCtRLB9KU7T80nWr+wakIwORfrsGjQ7D1Gi+2JU=
-X-Google-Smtp-Source: ABdhPJxJIzZSQJAByqP1kjs9qTwPpQ5NWzl43fKccMLZ2hPqOm3giOVR0fksFKBMrD41e6fn8qt1ORokNBjNx1Gxigk=
-X-Received: by 2002:a17:906:7155:: with SMTP id z21mr22758726ejj.282.1597063077958;
- Mon, 10 Aug 2020 05:37:57 -0700 (PDT)
+        id S1726769AbgHJNZF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 10 Aug 2020 09:25:05 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:43396 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726330AbgHJNZE (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 10 Aug 2020 09:25:04 -0400
+Received: from callcc.thunk.org (pool-96-230-252-158.bstnma.fios.verizon.net [96.230.252.158])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 07ADOvSF028256
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 10 Aug 2020 09:24:58 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 696E1420263; Mon, 10 Aug 2020 09:24:57 -0400 (EDT)
+Date:   Mon, 10 Aug 2020 09:24:57 -0400
+From:   tytso@mit.edu
+To:     Andreas Dilger <adilger@dilger.ca>
+Cc:     Wang Shilong <wangshilong1991@gmail.com>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Wang Shilong <wshilong@ddn.com>, Shuichi Ihara <sihara@ddn.com>
+Subject: Re: [PATCH v3 1/2] ext4: introduce EXT4_BG_WAS_TRIMMED to optimize
+ trim
+Message-ID: <20200810132457.GA14208@mit.edu>
+References: <1592831677-13945-1-git-send-email-wangshilong1991@gmail.com>
+ <20200806044703.GC7657@mit.edu>
+ <CAP9B-Qnv2LXva_szv+sDOiawQ6zRb9a8u-UAsbXqSqWiK+emiQ@mail.gmail.com>
+ <20200808151801.GA284779@mit.edu>
+ <9789BE11-11FB-42B2-A5BE-D4887838ED10@dilger.ca>
 MIME-Version: 1.0
-References: <CAPQccj4_Tz-11AfXaSiPj4aRWYU2mX9eJuJyGNR68Mini0PZjw@mail.gmail.com>
-In-Reply-To: <CAPQccj4_Tz-11AfXaSiPj4aRWYU2mX9eJuJyGNR68Mini0PZjw@mail.gmail.com>
-From:   Maciej Jablonski <mafjmafj@gmail.com>
-Date:   Mon, 10 Aug 2020 13:37:45 +0100
-Message-ID: <CAPQccj7XwunXerNYxPBTpBa0JVX7vzC=7aBoE8m35ttFHYNOPg@mail.gmail.com>
-Subject: Re: libext2fs: mkfs.ext3 really slow on centos 8.2
-To:     linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9789BE11-11FB-42B2-A5BE-D4887838ED10@dilger.ca>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi,
+On Sat, Aug 08, 2020 at 10:33:08PM -0600, Andreas Dilger wrote:
+> What about storing "s_min_freed_blocks_to_trim" persistently in the
+> superblock, and then the admin can adjust this as desired?  If it is
+> set =1, then the "lazy trim" optimization would be disabled (every
+> FITRIM request would honor the trim requests whenever there is a
+> freed block in a group).  I suppose we could allow =0 to mean "do not
+> store the WAS_TRIMMED flag persistently", so there would be no change
+> for current behavior, and it would require a tune2fs option to set the
+> new value into the superblock (though we might consider setting this
+> to a non-zero value in mke2fs by default).
 
-On upgrading from centos 7.6 to centos 8.2 mkfs slowed down by orders
-of magnitude.
+Currently the the minimum blocks to trim is passed in to FITRIM from
+userspace; so we would need to define how the passed-in value from the
+fstrim program interacts with the value stored in the sueprblock.
+Would we always ignore the value passed-in from userspace?  That
+doesn't seem right...
 
-e.g. 35GB partition from under 8s to 4m+ on the same host.
+> The other thing we were thinkgin about was changing the "-o discard" code
+> to leverage the WAS_TRIMMED flag, and just do bulk trim periodically
+> in the filesystem as blocks are freed from groups, rather than tracking
+> freed extents in memory and submitting trims actively during IO.  Instead,
+> it would track groups that exceed "s_min_freed_blocks_to_trim", and trim
+> the whole group in the background when the filesystem is not active.
 
-Most time is spent on writing the journal to the disk.
+Hmm, maybe.  That's an awful lot of complexity, which is my concern
+with that approach.
 
-strace shows the following:
+Part of the problem here is that discard is being used for different
+things for different use cases and devices with different discard
+speeds.  Right now, one of the primary uses of -o discard is for
+people who have fast discard implementation(s and/or people who really
+want to make sure every freed block is immediately discard --- perhaps
+to meet security / privacy requirements (such as HIPPA compliance,
+etc.).   I don't want to break that.
 
-We have got strace which shows that each each block is zeroed with
-fallocate and each
- invocation of fallocate takes 10ms, this accumulates of course.
+We now have a requirement of people who have very slow discards --- I
+think at one point people mentioned something about for devices using
+HDD, probably in some kind of dm-thin use case?  One solution that we
+can use for those is simply use fstrim -m 8M or some such.  But it
+appears that part of the problem is people do want more precision than
+that?
 
-We have found that using
+Another solution might be to skip trimming block groups if there have
+been blocks that have been freshly freed that are pending a commit,
+and skip that block group until the commit has completed.  That might
+also help reduce contention on a busy file system.
 
-UNIX_IO_NOZEROOUT=1 to affect libext2fs
+Yet another solution might be bias block allocations towards LBA
+Uranges that have been deleted recently --- since another way to avoid
+trims is to simply overwrite those LBA's.  But then the question is
+how much memory are we willing to dedicate towards tracking recently
+released LBA's, and to what level of granularity?  Perhaps we just
+track the freed extents, and if they don't get used within a certain
+period, or if we start getting put under memory pressure, we then send
+the discards at that point.
 
-Brings the timings back in line down to seconds.
+Ultimately, though, this is a space full of trade offs, and I'm
+reminded of one of my father's favorite Chinese sayings: "You're
+demanding a horse which can run fast, but which doesn't eat much
+grass." (又要马儿跑，又要马儿不吃草).  Or translated more
+idiomatically, you can't have your cake and eat it too.  It seems this
+desire transcends all cultures.  :-)
 
-If this is not a known bug I can send more details,
-
-Looks that calling fallocate for each block is very inefficient on some system.
-In our case this is dellr640 (skylake) with a mechanical disk.
-
-Kind Regards,
-
-Maciej
-
-
-On Mon, 10 Aug 2020 at 13:35, Maciej Jablonski <mafjmafj@gmail.com> wrote:
->
-> Hi,
->
-> On upgrading from centos 7.6 to centos 8.2 mkfs slowed down by orders of magnitude.
->
-> e.g. 35GB partition from under 8s to 4m+ on the same host.
->
-> Most time is spent on writing the journal to the disk.
->
-> strace shows the following:
->
-> 16:19:49.827056 prctl(PR_GET_DUMPABLE)  = 1 (SUID_DUMP_USER)
-> 16:19:49.827112 fallocate(3, FALLOC_FL_ZERO_RANGE, 3383296, 4096) = 0
-> 16:19:49.835203 pwrite64(3, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 4096, 3362816) = 4096
-> 16:19:49.835321 getuid()                = 0
-> 16:19:49.835403 geteuid()               = 0
-> 16:19:49.835463 getgid()                = 0
-> 16:19:49.835513 getegid()               = 0
-> 16:19:49.835582 prctl(PR_GET_DUMPABLE)  = 1 (SUID_DUMP_USER)
-> 16:19:49.835657 fallocate(3, FALLOC_FL_ZERO_RANGE, 3387392, 4096) = 0
-> 16:19:49.843471 pwrite64(3, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 4096, 3366912) = 4096
-> 16:19:49.843562 getuid()                = 0
-> 16:19:49.843619 geteuid()               = 0
-> 16:19:49.843669 getgid()                = 0
-> 16:19:49.843715 getegid()               = 0
-> 16:19:49.843785 prctl(PR_GET_DUMPABLE)  = 1 (SUID_DUMP_USER)
-> 16:19:49.843836 fallocate(3, FALLOC_FL_ZERO_RANGE, 3391488, 4096) = 0
-> 16:19:49.851885 pwrite64(3, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 4096, 3371008) = 4096
->
->
-> Each invocation of fallocate takes 10ms, this accumulates of course.
-> We have found that using
->
-> UNIX_IO_NOZEROOUT=1 to affect libext2fs
->
-> Brings the timings back in line down to seconds.
->
-> If this is not a known bug I can send more details,
->
-> Looks that calling fallocate for each block is very inefficient on some system.
-> In our case this is dellr640 (skylake) with a mechanical disk.
->
-> Kind Regards,
->
-> Maciej
->
->
+	       	   	      	   	- Ted
