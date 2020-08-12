@@ -2,205 +2,153 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9844B241D3F
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Aug 2020 17:33:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A952A242F6B
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Aug 2020 21:36:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729036AbgHKPdj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 11 Aug 2020 11:33:39 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:38365 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728859AbgHKPdj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 Aug 2020 11:33:39 -0400
-X-IronPort-AV: E=Sophos;i="5.75,461,1589212800"; 
-   d="scan'208";a="97995540"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 11 Aug 2020 23:33:24 +0800
-Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
-        by cn.fujitsu.com (Postfix) with ESMTP id CC48C4CE34E6;
-        Tue, 11 Aug 2020 23:33:19 +0800 (CST)
-Received: from [10.167.220.69] (10.167.220.69) by
- G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Tue, 11 Aug 2020 23:33:21 +0800
-Message-ID: <5F32BA3E.90801@cn.fujitsu.com>
-Date:   Tue, 11 Aug 2020 23:33:18 +0800
-From:   Xiao Yang <yangx.jy@cn.fujitsu.com>
-User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.2; zh-CN; rv:1.9.2.18) Gecko/20110616 Thunderbird/3.1.11
-MIME-Version: 1.0
-To:     Ira Weiny <ira.weiny@intel.com>
-CC:     <darrick.wong@oracle.com>, <tytso@mit.edu>, <ebiggers@kernel.org>,
-        <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH v2] chattr/lsattr: Support dax attribute
-References: <20200728053321.12892-1-yangx.jy@cn.fujitsu.com> <20200807160305.GQ1573827@iweiny-DESK2.sc.intel.com>
-In-Reply-To: <20200807160305.GQ1573827@iweiny-DESK2.sc.intel.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.167.220.69]
-X-ClientProxiedBy: G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.205) To
- G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206)
-X-yoursite-MailScanner-ID: CC48C4CE34E6.AE4B1
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: yangx.jy@cn.fujitsu.com
-X-Spam-Status: No
+        id S1726546AbgHLTgP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 12 Aug 2020 15:36:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726528AbgHLTgP (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 12 Aug 2020 15:36:15 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5167AC061383
+        for <linux-ext4@vger.kernel.org>; Wed, 12 Aug 2020 12:36:15 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id l60so1633366pjb.3
+        for <linux-ext4@vger.kernel.org>; Wed, 12 Aug 2020 12:36:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=qF083KBLV8usb2cBgAHxfO4POcfb7xqP3KHR5T5OhZg=;
+        b=wwtXCf/fxsux83EVdcsLvJ73jD+FsHpotkfNXY0VeB3iFIg0JQ756/fWUMSmPNRfgK
+         Gq2sWFkly8/n4VKicy3rwmUWgwt9GOlSUpZdyuonKlCowAy8GmEY+D9cxsQndhUo13wV
+         G8HZ7TXCSAEpp5i4q/P+a31dqHV5LlMIyI6WvWGgcxSFwaUdY88wMjLbAONh5+DbxK0k
+         ufCkyQZ4WMSpXHQ8IW37oTGvTb3HFf3gRUl1TaBHJwfeqa0whQb/tAeBpwP0qLBku80F
+         ULpzdKLveXveJAAEzrbVx+i/zQCUj3Ip2LdHIbCDMC8pwd0xndDBQ7EsM1fY1dxI4Ae7
+         CPMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=qF083KBLV8usb2cBgAHxfO4POcfb7xqP3KHR5T5OhZg=;
+        b=pyDrNteZZAYZvTmDY2sJQ/4OVPBezJ6j8/aePz/m6J/nxP/KLXr/tjWewAGeWColr4
+         Tq4kxXhwMRPTKgTCnrpxrcE/0l+fRGMm3nQaQOxzk76hf4nsbU7M7Klh0sygHELYpJuh
+         DNOADgcQ88hLBm/qjHYYdGpTfdIg2h/atcX0QYWI8dC0HSo8tdBAnAh7lG88ER/2mjjz
+         TtpBtfLMBQ6NtKkwbVvt5KzwLiGp7FGvibEM+BPlSPFyq4yilop5dqTcG8y8HvRdOXFP
+         w6Cf0z9uqPlPIVU4Z3QC55Tm5+BoywIYggsIx6DdbZHuqEYc5/DxOe3bJE8D43l8l7id
+         yZCA==
+X-Gm-Message-State: AOAM532TB0dcfvZW7q7ktqAf4zVso0xXwKWWNo8bH9Hktuaqk3NLCIK1
+        Nedtg0DhTj0tjJvzUVsavj1aBA==
+X-Google-Smtp-Source: ABdhPJzOHYqNdCJ44HkgOQIPOViViCQnoCam2XbQXVWkeW1I/fdUzogakf+bDgUyGl4i2tY6Hae0Tw==
+X-Received: by 2002:a17:902:7205:: with SMTP id ba5mr813971plb.230.1597260974774;
+        Wed, 12 Aug 2020 12:36:14 -0700 (PDT)
+Received: from [192.168.10.160] (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id a6sm3025660pje.8.2020.08.12.12.36.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 12 Aug 2020 12:36:13 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <8A79C6DA-5C0F-4B4F-9EEE-E272993AD0FC@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_8ECA6D81-89C8-4F81-8EA4-7D1B55830A09";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH] ext4: fix log printing of ext4_mb_regular_allocator()
+Date:   Wed, 12 Aug 2020 13:36:08 -0600
+In-Reply-To: <131a608b-0c8a-1a2d-57ee-4263cfcdd5a2@gmail.com>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+To:     brookxu <brookxu.cn@gmail.com>
+References: <131a608b-0c8a-1a2d-57ee-4263cfcdd5a2@gmail.com>
+X-Mailer: Apple Mail (2.3273)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2020/8/8 0:03, Ira Weiny wrote:
-> On Tue, Jul 28, 2020 at 01:33:21PM +0800, Xiao Yang wrote:
->> Use the letter 'x' to set/get dax attribute on a directory/file.
->>
->> Signed-off-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
->> ---
->>
->> V1->V2:
->> 1) Define FS_DAX_FL in order and add missing 'x' letter in manpage.
->> 2) Add more detailed description about 'x' attribute.
->> 3) 'x' is a separate attribute and doesn't always affect S_DAX(i.e.
->>     pagecache bypass) so remove the related info.
->>
->>   lib/e2p/pf.c         |  1 +
->>   lib/ext2fs/ext2_fs.h |  1 +
->>   misc/chattr.1.in     | 15 ++++++++++++---
->>   misc/chattr.c        |  3 ++-
->>   4 files changed, 16 insertions(+), 4 deletions(-)
->>
->> diff --git a/lib/e2p/pf.c b/lib/e2p/pf.c
->> index 0c6998c4..e59cccff 100644
->> --- a/lib/e2p/pf.c
->> +++ b/lib/e2p/pf.c
->> @@ -44,6 +44,7 @@ static struct flags_name flags_array[] = {
->>   	{ EXT2_TOPDIR_FL, "T", "Top_of_Directory_Hierarchies" },
->>   	{ EXT4_EXTENTS_FL, "e", "Extents" },
->>   	{ FS_NOCOW_FL, "C", "No_COW" },
->> +	{ FS_DAX_FL, "x", "Dax" },
->>   	{ EXT4_CASEFOLD_FL, "F", "Casefold" },
->>   	{ EXT4_INLINE_DATA_FL, "N", "Inline_Data" },
->>   	{ EXT4_PROJINHERIT_FL, "P", "Project_Hierarchy" },
->> diff --git a/lib/ext2fs/ext2_fs.h b/lib/ext2fs/ext2_fs.h
->> index 6c20ea77..88f510a3 100644
->> --- a/lib/ext2fs/ext2_fs.h
->> +++ b/lib/ext2fs/ext2_fs.h
->> @@ -335,6 +335,7 @@ struct ext2_dx_tail {
->>   /* EXT4_EOFBLOCKS_FL 0x00400000 was here */
->>   #define FS_NOCOW_FL			0x00800000 /* Do not cow file */
->>   #define EXT4_SNAPFILE_FL		0x01000000  /* Inode is a snapshot */
->> +#define FS_DAX_FL			0x02000000 /* Inode is DAX */
-> Per-file support is not supported on ext2...
->
-> So I'm suspicious of this change.  It is probably not an issue but I just
-> wanted to check if you are trying to test on ext2?
-Hi Ira,
 
-Thanks for your reply. :-)
-chattr failed to set the 'x' flag on ext2 sliently because ext2_ioctl() 
-in kernel drops
-unsupported 'FS_DAX_FL' sliently:
-----------------------------------------------
-# touch file
-# chattr +x file;echo $?
-0
-# lsattr file
---------------------- file
-----------------------------------------------
+--Apple-Mail=_8ECA6D81-89C8-4F81-8EA4-7D1B55830A09
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=utf-8
 
-ext2_ioctl() drops all unsupported flags sliently(see the following 
-code) so I am
-not sure if we should return -EOPNOTSUPP for the unsupported  FS_DAX_FL:
-----------------------------------------------
-long ext2_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
-...
-         case EXT2_IOC_SETFLAGS: {
-...
-                 flags = flags & EXT2_FL_USER_MODIFIABLE;
-                 flags |= oldflags & ~EXT2_FL_USER_MODIFIABLE;
-                 ei->i_flags = flags;
+On Aug 7, 2020, at 8:01 AM, brookxu <brookxu.cn@gmail.com> wrote:
+>=20
+> Fix log printing of ext4_mb_regular_allocator()=EF=BC=8Cit may be an
+> unintentional behavior.
+>=20
+> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
 
-                 ext2_set_inode_flags(inode);
-...
-----------------------------------------------
+The debug message would probably be more useful if it included some
+actual information (PID, status, fe_group, fe_start, fe_len), but
+that isn't necessarily a problem with this patch itself.
 
-Best Regards,
-Xiao Yang
-> Ira
->
->>   #define EXT4_SNAPFILE_DELETED_FL	0x04000000  /* Snapshot is being deleted */
->>   #define EXT4_SNAPFILE_SHRUNK_FL		0x08000000  /* Snapshot shrink has completed */
->>   #define EXT4_INLINE_DATA_FL		0x10000000 /* Inode has inline data */
->> diff --git a/misc/chattr.1.in b/misc/chattr.1.in
->> index ff2fcf00..5a4928a5 100644
->> --- a/misc/chattr.1.in
->> +++ b/misc/chattr.1.in
->> @@ -23,13 +23,13 @@ chattr \- change file attributes on a Linux file system
->>   .B chattr
->>   changes the file attributes on a Linux file system.
->>   .PP
->> -The format of a symbolic mode is +-=[aAcCdDeFijPsStTu].
->> +The format of a symbolic mode is +-=[aAcCdDeFijPsStTux].
->>   .PP
->>   The operator '+' causes the selected attributes to be added to the
->>   existing attributes of the files; '-' causes them to be removed; and '='
->>   causes them to be the only attributes that the files have.
->>   .PP
->> -The letters 'aAcCdDeFijPsStTu' select the new attributes for the files:
->> +The letters 'aAcCdDeFijPsStTux' select the new attributes for the files:
->>   append only (a),
->>   no atime updates (A),
->>   compressed (c),
->> @@ -45,7 +45,8 @@ secure deletion (s),
->>   synchronous updates (S),
->>   no tail-merging (t),
->>   top of directory hierarchy (T),
->> -and undeletable (u).
->> +undeletable (u),
->> +and direct access for files (x).
->>   .PP
->>   The following attributes are read-only, and may be listed by
->>   .BR lsattr (1)
->> @@ -210,6 +211,14 @@ saved.  This allows the user to ask for its undeletion.  Note: please
->>   make sure to read the bugs and limitations section at the end of this
->>   document.
->>   .TP
->> +.B x
->> +The 'x' attribute can be set on a directory or file.  If the attribute
->> +is set on an existing directory, it will be inherited by all files and
->> +subdirectories that are subsequently created in the directory.  If an
->> +existing directory has contained some files and subdirectories, modifying
->> +the attribute on the parent directory doesn't change the attributes on
->> +these files and subdirectories.
->> +.TP
->>   .B V
->>   A file with the 'V' attribute set has fs-verity enabled.  It cannot be
->>   written to, and the filesystem will automatically verify all data read
->> diff --git a/misc/chattr.c b/misc/chattr.c
->> index a5d60170..c0337f86 100644
->> --- a/misc/chattr.c
->> +++ b/misc/chattr.c
->> @@ -86,7 +86,7 @@ static unsigned long sf;
->>   static void usage(void)
->>   {
->>   	fprintf(stderr,
->> -		_("Usage: %s [-pRVf] [-+=aAcCdDeijPsStTuF] [-v version] files...\n"),
->> +		_("Usage: %s [-pRVf] [-+=aAcCdDeijPsStTuFx] [-v version] files...\n"),
->>   		program_name);
->>   	exit(1);
->>   }
->> @@ -112,6 +112,7 @@ static const struct flags_char flags_array[] = {
->>   	{ EXT2_NOTAIL_FL, 't' },
->>   	{ EXT2_TOPDIR_FL, 'T' },
->>   	{ FS_NOCOW_FL, 'C' },
->> +	{ FS_DAX_FL, 'x' },
->>   	{ EXT4_CASEFOLD_FL, 'F' },
->>   	{ 0, 0 }
->>   };
->> -- 
->> 2.21.0
->>
->>
->>
->
-> .
->
+Reviewed-by: Andreas Dilger <adilger@diger.ca>
+
+
+> ---
+> fs/ext4/mballoc.c | 3 +--
+> 1 file changed, 1 insertion(+), 2 deletions(-)
+>=20
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 5d4a1be..b0da525 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -2324,15 +2324,14 @@ static int ext4_mb_good_group_nolock(struct =
+ext4_allocation_context *ac,
+> 		 * We've been searching too long. Let's try to allocate
+> 		 * the best chunk we've found so far
+> 		 */
+> -
+> 		ext4_mb_try_best_found(ac, &e4b);
+> 		if (ac->ac_status !=3D AC_STATUS_FOUND) {
+> 			/*
+> 			 * Someone more lucky has already allocated it.
+> 			 * The only thing we can do is just take first
+> 			 * found block(s)
+> -			printk(KERN_DEBUG "EXT4-fs: someone won our =
+chunk\n");
+> 			 */
+> +			mb_debug(sb, "EXT4-fs: someone won our =
+chunk\n");
+> 			ac->ac_b_ex.fe_group =3D 0;
+> 			ac->ac_b_ex.fe_start =3D 0;
+> 			ac->ac_b_ex.fe_len =3D 0;
+> --
+> 1.8.3.1
+
+
+Cheers, Andreas
 
 
 
+
+
+
+--Apple-Mail=_8ECA6D81-89C8-4F81-8EA4-7D1B55830A09
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl80RKgACgkQcqXauRfM
+H+CCPhAAlCchW92sNG3fhRqE5jqNi2Wl7sUe1mfZzMHj9xdpTTDhFtF9acusQYi0
+CkVQovCazH+z2vWOM+2Vp3IrLaVk0QD4+4fd72zS5MamsSv7mnNe+Ku/a8LdUBcl
+hkpRPdZiL5XxJ5FetkhgFABoX9Ab8b1zpbxUsmskX3nl4WkrE9POrcX/5o1YvDNE
+U4+N6oDnhDWOG9WR/VZRIw+RQjjyPUKSKeeZWE0F7Cfdzmaja9zF7ca8svVy5xQI
+ozytCbFFsqbaw9uyRHEZDEqEaC8ePE2HNX2zgWf6XyyGLZutnIYmySIVX6BF9pbH
++PbuzPin2PSEc419oiqxbAvx9uomGT56I3DyD0vmfsZ24+Z9V/jdhILtm1RFa2LG
+E30s3bmu4hzpgGYmKOFlEsZjYTPWafP9y5UK2hykpsH/79zVJEhwqvmhBg2P9Zdd
+0DrRwjWZ515dZgieOdLoa56c3X+R0OQig1ESIh1zpEN/SY1J0C/vVeDGZLL5/T39
+MlPpzLZVwzOlFq6VMXV5SXlYCGhxucKjnZG1Ou8DQolDF2SEC9y3PizAA3mW5QTM
+41fF/De9d52asdWtcCWwomeNxxUEQPjO/CZzRzRqMYICSCjhLS+7ceVq4XeQA0zY
+P07Oo/Pa+TY5JKMbNxlfB+JvGqUDzJjslEO0oAMNDJRFibuEYFo=
+=br5h
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_8ECA6D81-89C8-4F81-8EA4-7D1B55830A09--
