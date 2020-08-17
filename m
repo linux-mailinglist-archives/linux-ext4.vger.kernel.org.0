@@ -2,56 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80532245821
-	for <lists+linux-ext4@lfdr.de>; Sun, 16 Aug 2020 16:32:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2A15245B41
+	for <lists+linux-ext4@lfdr.de>; Mon, 17 Aug 2020 05:54:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729680AbgHPOb6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 16 Aug 2020 10:31:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57144 "EHLO
+        id S1726667AbgHQDyo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 16 Aug 2020 23:54:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729487AbgHPO2y (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 16 Aug 2020 10:28:54 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 345F8C06134E
-        for <linux-ext4@vger.kernel.org>; Sun, 16 Aug 2020 07:28:35 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 184so11882378wmb.0
-        for <linux-ext4@vger.kernel.org>; Sun, 16 Aug 2020 07:28:34 -0700 (PDT)
+        with ESMTP id S1726315AbgHQDyn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 16 Aug 2020 23:54:43 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 141F9C061388
+        for <linux-ext4@vger.kernel.org>; Sun, 16 Aug 2020 20:54:42 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id k8so12740869wma.2
+        for <linux-ext4@vger.kernel.org>; Sun, 16 Aug 2020 20:54:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
+        d=ime-usp-br.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to
          :content-transfer-encoding;
-        bh=Duxa+mmNF3T3C2WDKsmzowR2OzvdY892XFjTPp0RWRI=;
-        b=NAKDDu3zYGlp6/1rTFA3zLXzfLNUWElMFpld1DGXTqZ3f2C1G5vMMGgQBtzYdv61gR
-         j0gW2VjYzcAEQEK9JcrA+yGSHFEXNhE9RNkaz3uxkanP37gacJrIVytgT7/c7zGkA2Dy
-         XJB3L8ToVDoWAD9Rvm7U849RIrxncLk9xI9S/Uu5ZGT/cXsim2IUQmYeZsKFSBsv6kJT
-         3kDR9KLYjND6JPpx0YTAndrQaTelzP3558OkivI4ykhj79/nak1F6z80uX1/EQIXmTKV
-         I+kUa6Zt2XAbNuMItIuLndMdaWWyo32PYvWKoOywYCMLUV2UDlYdbpJ66arhF+MiPCa0
-         yMKA==
+        bh=WzEP0AhyZ6x1IlLUJetI5h1m46d2gV3P5oj8NnH+hhQ=;
+        b=Gzs1CnMF43zJWDBCVRXsRqqM0ch3khcL+UDiPrhlQVB/xPirQ7Pmy01PGJUr/25fLx
+         OBawAeOQc19V6/WSJqL+JW0Doz9iNhtRiCs62i0Ni0Cjobc7PX9s15w5uBzaipp0nUfJ
+         QY4PzXT1KB1FszPDIt74QpYT0VEs+Hkn58zfBn0ayh6gzMz36cKn5B3qAU/mXcpmcSML
+         cl7BlhRLBfWsLvYuNaK1g1Lg0I4hipcm6ayzw7LO8+mfi5gVaFVgD9Dn3eGfFbQ8JYT5
+         1uCmnPHqsLs/tgosMz7mqnaXW1cFfe00DVYncnFDzxpFzcrFuhmCuqH3UE9XjL7s+mzw
+         IoRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=Duxa+mmNF3T3C2WDKsmzowR2OzvdY892XFjTPp0RWRI=;
-        b=OdEZ8nxavImnW+BrPqGCa1g/VJQq3vEekZY0hp+fj60RD7XmabDc8WAo42Wn2+t8eU
-         5+9lJcmDLDf9I4aHmM3msY9VfqVHMeeoR4wBBQwTXLrpuR3WWi9RgNRkny9xeFHsbR/O
-         /DfYWrm2Dc0W3dMTNffbJam1H8D+AmQmnjCUJmU94uSKLUsD/sfXnVR8YmKP2T6zaj33
-         Sg1Szn4DRR6OBjSM9jy3NOupIyhpM992n622HGVKq5v1XuGe2+Clgk24Fo9OvKov/YJL
-         bAZN0SuPXwaq+RBKS1vVgb1floEobYSBdnbbJL256A7OMDPOyZyyrNg95vJzY+dQW52b
-         mmVw==
-X-Gm-Message-State: AOAM533h2zzDK2jlIF7ReMyqztKNo90rs/3LLdVgDAt1U6LLk10wnTSX
-        uFaGXdLRBMboPUQMomJA4QuNUJR7l+5aSn+wzwE=
-X-Google-Smtp-Source: ABdhPJydZZ8FQlFGmrB/EDLy0Z8gH5X03F6EFXypW4K1vf8iv94WhLhI3iwPKgeJEaRZZocHWED4lUmYPOBkTFPeX+4=
-X-Received: by 2002:a1c:a1c7:: with SMTP id k190mr10461870wme.1.1597588111746;
- Sun, 16 Aug 2020 07:28:31 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=WzEP0AhyZ6x1IlLUJetI5h1m46d2gV3P5oj8NnH+hhQ=;
+        b=AmvzvnB8KX6VpF1Ad5KEqI53Pq+YMxsL7nxCSxCq/pSkzKZFDpesMGrEMbhbv1KUHZ
+         fezBqis4Eokq/qDfHLILAx5/QmWkP89i5vwiZ/S3D4d9lhfL+8oBWmwK/AenLkXMHn7v
+         R4f9PJ0IKGY8Iq/odztvaOOtlcpdRvDp/RqmqG4alPUqZVbv0LWTMMdj60NChutkVT07
+         6Ycap7lCVyLN/9nZr27NbNRL4slfnwvKualYD5UjEk8XgnMI66MDCiK9vmKRiKI5JrZN
+         6XtYXytlqOmJHpKIlvLWaFhGxBc15IlXZKHWaxD6l1S6mX80535UhM9CjMGzbAWYcUz3
+         vkPg==
+X-Gm-Message-State: AOAM532cpN9WChBQr6rkGnBsEbxKMFvDsgQXhxiZisoFnsfg3Q59ioY6
+        Qvte33oKoC4CHlYiIbjtUhMcrrkVlv/rlZKFQtbAWhH5a+g=
+X-Google-Smtp-Source: ABdhPJzp/f/JOtWx9ncbjJnSb0bxPgeEmrff2FLbH0++nEuuON+mMZC1UTXndu44mafRhL3owKW+8o6mh28jUvevoQQ=
+X-Received: by 2002:a7b:c74b:: with SMTP id w11mr12268375wmk.81.1597636481014;
+ Sun, 16 Aug 2020 20:54:41 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a5d:6cd3:0:0:0:0:0 with HTTP; Sun, 16 Aug 2020 07:28:30
- -0700 (PDT)
-Reply-To: sctnld11170@tlen.pl
-From:   "Mr. Scott Donald" <confianzayrentabilidad@gmail.com>
-Date:   Sun, 16 Aug 2020 07:28:30 -0700
-Message-ID: <CANrrfX7wwL97G=jb--8nb9jH8oRO8T90L6NGSfg1HfnzMyyHcw@mail.gmail.com>
-Subject: Hello, Please
-To:     undisclosed-recipients:;
+From:   =?UTF-8?Q?Rog=C3=A9rio_Brito?= <rbrito@ime.usp.br>
+Date:   Mon, 17 Aug 2020 03:54:29 +0000
+Message-ID: <CAOtrxKPMpNh7MZ2wX2wxju15rrY9rzrjNAwFneyAwCy2Z7DVMQ@mail.gmail.com>
+Subject: Generic questions about ext4
+To:     linux-ext4@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: linux-ext4-owner@vger.kernel.org
@@ -59,39 +56,37 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Dear developers,
+
+I have been using ext4 for quite some time and I have some ext4
+filesystems that led me to some questions.
+
+I have at least 2 "large" filesystems (with 2TB each, both almost
+full) dating back from 2011 and 2010. I believe that I even converted
+one of them from ext3 to ext4, but my memory is not that clear after
+almost a decade. As such, they were created without some useful
+features that are useful nowadays, like inline files. With that in
+mind, here are some questions:
+
+1 - I know that some features can be enabled with tune2fs, but, in
+particular, inline files don't seem to be. I've seen some people
+indicate that using debugfs, I can mark the superblock as having
+support for it. Would that really work? I don't plan on booting old
+kernels. One of those filesystems is running on an armel device that
+is quite slow and I would really like to avoid copying all the files
+to an external HD, recreating the filesystem and, then, copying back
+the files to the system.
+
+2 - Is there any way to get transparent compression with ext4? That
+would really, really rock and is, perhaps, one of the features that
+some users like me would greatly benefit from.
+
+
+Thanks for any pointers,
+
+Rog=C3=A9rio Brito.
+
 --=20
-Dear Friend,
-
-I'm Mr. Scott Donald a Successful businessMan dealing with
-Exportation, I got your mail contact through search to let you know my
-intension and my Ugly Situation Am a dying Man here in Los Angeles
-California Hospital Bed in (USA), I Lost my Wife and my only Daughter
-for Covid-19 and I also have a problem in my Health and I can die
-anytime I Know,
-
-I have a project that I am about to hand over to you. and I already
-instructed the Bankia S.A. Madrid, Spain(BSA) to transfer my fund sum
-of =C2=A33,7M GBP. Equivalent to =E2=82=AC4,077,033.91 EUR, to you as to en=
-able you
-to give 50% of this fund to Charitable Home in your State and take 50%
-don't think otherwise and why would anybody send someone you barely
-know to help you deliver a message, help me do this for the happiness
-of my soul and for God to mercy me and my Family and give Us a good
-place.
-
-please, do as I said there was someone from your State that I deeply
-love so very very much and I miss her so badly I have no means to
-reach any Charitable Home there. that is why I go for a personal
-search of the Country and State and I got your mail contact through
-search to let you know my Bitterness and please, help me is getting
-Dark I ask my Doctor to help me keep you notice failure for me to
-reach you in person Your urgent Response, here is my Doctor Whats-app
-Number for urgent notice +13019692737
-
-Hope To Hear From You. I'm sending this email to you for the second
-time yet no response from you.
-
-My Regards.
-
-Mr. Scott Donald
-CEO
+Rog=C3=A9rio Brito : rbrito@{ime.usp.br,gmail.com} : GPG key 4096R/BCFCAAAA
+http://cynic.cc/blog/ : github.com/rbrito : profiles.google.com/rbrito
+DebianQA: http://qa.debian.org/developer.php?login=3Drbrito%40ime.usp.br
