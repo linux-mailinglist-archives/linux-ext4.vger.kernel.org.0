@@ -2,432 +2,543 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD76E247F40
-	for <lists+linux-ext4@lfdr.de>; Tue, 18 Aug 2020 09:17:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EC9824825F
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 Aug 2020 11:58:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726421AbgHRHRg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 18 Aug 2020 03:17:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39550 "EHLO
+        id S1726624AbgHRJ6Q (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 18 Aug 2020 05:58:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726203AbgHRHRf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Aug 2020 03:17:35 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAAE5C061389
-        for <linux-ext4@vger.kernel.org>; Tue, 18 Aug 2020 00:17:34 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id t15so20274528iob.3
-        for <linux-ext4@vger.kernel.org>; Tue, 18 Aug 2020 00:17:34 -0700 (PDT)
+        with ESMTP id S1726145AbgHRJ6H (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Aug 2020 05:58:07 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D84DC061389
+        for <linux-ext4@vger.kernel.org>; Tue, 18 Aug 2020 02:58:07 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id mt12so9188683pjb.4
+        for <linux-ext4@vger.kernel.org>; Tue, 18 Aug 2020 02:58:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=CoAc7uWU1xQGwqUf/bOC53h+joksTQpV+CxGOIPj8Zg=;
-        b=aP4k9S94OVz03Ul/Fpqe8KZEOA6RsI9BXdqQVc4K0IrRccEv5f58JTEfVkitMzxvwN
-         DR59Lcj4VcsMthR8ZgWXMYZ5zN6FfgLjMbEeNgqfxoNfBMN+U6ANTXW6WUXcyKs3Vmvg
-         abe2RYhmnn4Hl5/NmSlUbcJpAdl1H2nkyGEgEVZhrzsuAGAAPWsEdU1OXs3mCtRc/5eT
-         uV6Fr00LLteF75cAGvf5L0m+c3RDLaQ3EFB6EYkGrNgLZcjK87eMH+TsMH9E/X2E2u6q
-         4F7LM1qh6itqopORg8wgnJ+ci03mTkjjlZDhv98QROMuS7UIrPbmvZBz+JXnw6VkpwXo
-         9tsw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=93UNLZUlp0tT6XSqtdpy0m71QVHNpuLCffovbvsyBvA=;
+        b=WK2LniSfNKGkOdt7g25tGus5lJp6nsTh2fvHNeDk/Sj0MDtBHGpsOZTl6DrEkZNL3i
+         4UzZT/HRYLgJtnxPbruK+ElN/d+tlDlSht/mZ7hZeZriOsEplF/97wU615gLil3WeH9k
+         hWgLzx9ZG/Ha+AOU6avkeH0eZobIdfZ5+Xxz/lJpVlj19fxoVeY7a3UeKZ+GmrmFpJiX
+         CtQaCN7k3qBQiHes0vn5POu49Qgx3BcIEUSRQ9t/t7YKlUeVKq1jgwKZOKnMaVFDGM5Q
+         L/dhbEf/0ycUllzekOxSzMX5HRF9UH7d7Wcat5epCjkCD2Ov9YbHkmx9iSWzmpdE8ioq
+         siew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=CoAc7uWU1xQGwqUf/bOC53h+joksTQpV+CxGOIPj8Zg=;
-        b=ciwk+AUWdXRhHmpLToFlQgoH7/roPpP1jpMaUKCTTBivg9Cd4rQKxitjlxjI4oZ1vK
-         jZOBl+0ClSgorxYBGcAn+A2ezxzc/wcabVVC/JOpdE7dtenpYB+X5DoGO5psZ9Ock2Gm
-         fLpeCsQwArnOo1/KRHsyYH9kHyWhQatRKjd+ZCSAJGbIsPwTGBn36psGxhtgOku8TUMP
-         AsDbX2mlYa8DMHynKRInEy8GU2k1gHNYZ66WY+wMn8toPaUzLwsQPazHKQ2hadeaQInu
-         7YxnkEz7hSlc+tZBI7IVGR4T3aagjnhPTnY8IU13LUvgKmc5dUsrb8BVl6klEwOdpsep
-         iTBA==
-X-Gm-Message-State: AOAM531NRzvBYvXdrtla+NMjBaMIvyK+cql3glNFeUPN8DW5U2czeXGo
-        kNhWNBFY49sNYFwfkFc20bArr8U+zaB8lxgX
-X-Google-Smtp-Source: ABdhPJymzjUol3wOziQjESF/tQZn1NUuPiqJA5EozDy66DqYCXPlenlJvxu1fClLLywiHwBqYSpwMQ==
-X-Received: by 2002:a6b:8d03:: with SMTP id p3mr15009145iod.114.1597735053154;
-        Tue, 18 Aug 2020 00:17:33 -0700 (PDT)
-Received: from CO82.us.cray.com (chippewa-nat.cray.com. [136.162.34.1])
-        by smtp.gmail.com with ESMTPSA id y2sm10642791iow.30.2020.08.18.00.17.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Aug 2020 00:17:32 -0700 (PDT)
-From:   Artem Blagodarenko <artem.blagodarenko@gmail.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     adilger.kernel@dilger.ca, alexey.lyashkov@gmail.com,
-        Alexey Lyashkov <alexey.lyashkov@hpe.com>,
-        Artem Blagodarenko <artem.blagodarenko@hpe.com>
-Subject: [PATCH v3] e2image: add option to ignore fs errors
-Date:   Tue, 18 Aug 2020 03:17:03 -0400
-Message-Id: <20200818071703.33484-1-artem.blagodarenko@gmail.com>
-X-Mailer: git-send-email 2.18.4
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=93UNLZUlp0tT6XSqtdpy0m71QVHNpuLCffovbvsyBvA=;
+        b=ZEONTSXgKJG7e8CU10sHBITM/m8AWyzR7yJRWIIDjkFnCuuYgJ7Mi2AoFug3RswEAA
+         XW1cryr91CZyy8meS6gaxofRGkU61IhmP31OYtEdNpcgtJ5+RT/IuCHZtODo0xdVsSTq
+         4NpNtzlWvSh6qJEftu96ce5TgJKh73AjGLFzqhMI88w03/+0mUNajDk+ni77UxqFQBdi
+         +8vlHbAL2AgaiO58YrbPUrnCsuOf3uCTzNkoUHJPsl7nz+JZxUc7rsHM1XiUVukhOt1j
+         aZwLwnggNu8TDUELaZTdAOZwfrS4egGKTZbvGfmXe/id4P3TTdM+2dEH2A9Ao/gDIujP
+         BVUg==
+X-Gm-Message-State: AOAM5325Jvic5CIeqFdZKorztEKiqskmuzHmxWXHaDZRJJhoqnlx4AiS
+        HXRQ2ueDW8offJ0c7o7aZwlIg99ftGQ=
+X-Google-Smtp-Source: ABdhPJyb1TqgmiVdSLwzNDWfnSwl1/CqlGPGO25fDnklhWqRqc65cjKP6Tgo3/TvJewAlpYcje6WPg==
+X-Received: by 2002:a17:902:9309:: with SMTP id bc9mr14270252plb.51.1597744686527;
+        Tue, 18 Aug 2020 02:58:06 -0700 (PDT)
+Received: from [127.0.0.1] ([203.205.141.50])
+        by smtp.gmail.com with ESMTPSA id w23sm21129695pgj.5.2020.08.18.02.58.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Aug 2020 02:58:05 -0700 (PDT)
+Subject: Re: [PATCH v5 2/2] ext4: limit the length of per-inode prealloc list
+To:     Ritesh Harjani <riteshh@linux.ibm.com>, adilger.kernel@dilger.ca,
+        tytso@mit.edu
+Cc:     jack@suse.cz, linux-ext4@vger.kernel.org
+References: <d7a98178-056b-6db5-6bce-4ead23f4a257@gmail.com>
+ <20200818030958.A7924AE051@d06av26.portsmouth.uk.ibm.com>
+From:   brookxu <brookxu.cn@gmail.com>
+Message-ID: <2f8aa94b-11c8-3273-f760-349d21125684@gmail.com>
+Date:   Tue, 18 Aug 2020 17:58:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+MIME-Version: 1.0
+In-Reply-To: <20200818030958.A7924AE051@d06av26.portsmouth.uk.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Alexey Lyashkov <alexey.lyashkov@hpe.com>
 
-Add extended "-E ignore_error" option to be more tolerant
-to fs errors while scanning inode extents.
 
-This is 6th version of the patch set. Changes:
+Ritesh Harjani wrote on 2020/8/18 11:09:
+> 
+> 
+> On 8/17/20 1:06 PM, brookxu wrote:
+>> In the scenario of writing sparse files, the per-inode prealloc list may
+>> be very long, resulting in high overhead for ext4_mb_use_preallocated().
+>> To circumvent this problem, we limit the maximum length of per-inode
+>> prealloc list to 512 and allow users to modify it.
+>>
+>> After patching, we observed that the sys ratio of cpu has dropped, and
+>> the system throughput has increased significantly. We created a process
+>> to write the sparse file, and the running time of the process on the
+>> fixed kernel was significantly reduced, as follows:
+>>
+>> Running time on unfixed kernel：
+>> [root@TENCENT64 ~]# time taskset 0x01 ./sparse /data1/sparce.dat
+>> real    0m2.051s
+>> user    0m0.008s
+>> sys     0m2.026s
+>>
+>> Running time on fixed kernel：
+>> [root@TENCENT64 ~]# time taskset 0x01 ./sparse /data1/sparce.dat
+>> real    0m0.471s
+>> user    0m0.004s
+>> sys     0m0.395s
+>>
+>> V5:
+>> 1. Fix the wrong parameter of list_move().
+>> 2. Use an atomic variable to count the length of the prealloc list.
+>>
+>> V4:
+>> 1. Add performance data to the commit log.
+>>
+>> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+>> ---
+>>   Documentation/admin-guide/ext4.rst |  3 ++
+>>   fs/ext4/ext4.h                     |  4 ++-
+>>   fs/ext4/extents.c                  | 10 +++---
+>>   fs/ext4/file.c                     |  2 +-
+>>   fs/ext4/indirect.c                 |  2 +-
+>>   fs/ext4/inode.c                    |  6 ++--
+>>   fs/ext4/ioctl.c                    |  2 +-
+>>   fs/ext4/mballoc.c                  | 74 +++++++++++++++++++++++++++++++++-----
+>>   fs/ext4/mballoc.h                  |  4 +++
+>>   fs/ext4/move_extent.c              |  4 +--
+>>   fs/ext4/super.c                    |  3 +-
+>>   fs/ext4/sysfs.c                    |  2 ++
+>>   include/trace/events/ext4.h        | 17 +++++----
+>>   13 files changed, 104 insertions(+), 29 deletions(-)
+>>
+>> diff --git a/Documentation/admin-guide/ext4.rst b/Documentation/admin-guide/ext4.rst
+>> index 9443fce..f37d074 100644
+>> --- a/Documentation/admin-guide/ext4.rst
+>> +++ b/Documentation/admin-guide/ext4.rst
+>> @@ -482,6 +482,9 @@ Files in /sys/fs/ext4/<devname>:
+>>           multiple of this tuning parameter if the stripe size is not set in the
+>>           ext4 superblock
+>>   +  mb_max_inode_prealloc
+>> +        The maximum length of per-inode ext4_prealloc_space list.
+>> +
+>>     mb_max_to_scan
+>>           The maximum number of extents the multiblock allocator will search to
+>>           find the best extent.
+>> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+>> index 42f5060..c4b465c 100644
+>> --- a/fs/ext4/ext4.h
+>> +++ b/fs/ext4/ext4.h
+>> @@ -1054,6 +1054,7 @@ struct ext4_inode_info {
+>>       struct timespec64 i_crtime;
+>>         /* mballoc */
+>> +    atomic_t i_prealloc_active;
+>>       struct list_head i_prealloc_list;
+>>       spinlock_t i_prealloc_lock;
+>>   @@ -1501,6 +1502,7 @@ struct ext4_sb_info {
+>>       unsigned int s_mb_stats;
+>>       unsigned int s_mb_order2_reqs;
+>>       unsigned int s_mb_group_prealloc;
+>> +    unsigned int s_mb_max_inode_prealloc;
+>>       unsigned int s_max_dir_size_kb;
+>>       /* where last allocation was done - for stream allocation */
+>>       unsigned long s_mb_last_group;
+>> @@ -2651,7 +2653,7 @@ extern int ext4_init_inode_table(struct super_block *sb,
+>>   extern ext4_fsblk_t ext4_mb_new_blocks(handle_t *,
+>>                   struct ext4_allocation_request *, int *);
+>>   extern int ext4_mb_reserve_blocks(struct super_block *, int);
+>> -extern void ext4_discard_preallocations(struct inode *);
+>> +extern void ext4_discard_preallocations(struct inode *, unsigned int);
+>>   extern int __init ext4_init_mballoc(void);
+>>   extern void ext4_exit_mballoc(void);
+>>   extern void ext4_free_blocks(handle_t *handle, struct inode *inode,
+>> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+>> index 221f240..a40f928 100644
+>> --- a/fs/ext4/extents.c
+>> +++ b/fs/ext4/extents.c
+>> @@ -100,7 +100,7 @@ static int ext4_ext_trunc_restart_fn(struct inode *inode, int *dropped)
+>>        * i_mutex. So we can safely drop the i_data_sem here.
+>>        */
+>>       BUG_ON(EXT4_JOURNAL(inode) == NULL);
+>> -    ext4_discard_preallocations(inode);
+>> +    ext4_discard_preallocations(inode, 0);
+>>       up_write(&EXT4_I(inode)->i_data_sem);
+>>       *dropped = 1;
+>>       return 0;
+>> @@ -4272,7 +4272,7 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
+>>                * not a good idea to call discard here directly,
+>>                * but otherwise we'd need to call it every free().
+>>                */
+>> -            ext4_discard_preallocations(inode);
+>> +            ext4_discard_preallocations(inode, 0);
+>>               if (flags & EXT4_GET_BLOCKS_DELALLOC_RESERVE)
+>>                   fb_flags = EXT4_FREE_BLOCKS_NO_QUOT_UPDATE;
+>>               ext4_free_blocks(handle, inode, NULL, newblock,
+>> @@ -5299,7 +5299,7 @@ static int ext4_collapse_range(struct inode *inode, loff_t offset, loff_t len)
+>>       }
+>>         down_write(&EXT4_I(inode)->i_data_sem);
+>> -    ext4_discard_preallocations(inode);
+>> +    ext4_discard_preallocations(inode, 0);
+>>         ret = ext4_es_remove_extent(inode, punch_start,
+>>                       EXT_MAX_BLOCKS - punch_start);
+>> @@ -5313,7 +5313,7 @@ static int ext4_collapse_range(struct inode *inode, loff_t offset, loff_t len)
+>>           up_write(&EXT4_I(inode)->i_data_sem);
+>>           goto out_stop;
+>>       }
+>> -    ext4_discard_preallocations(inode);
+>> +    ext4_discard_preallocations(inode, 0);
+>>         ret = ext4_ext_shift_extents(inode, handle, punch_stop,
+>>                        punch_stop - punch_start, SHIFT_LEFT);
+>> @@ -5445,7 +5445,7 @@ static int ext4_insert_range(struct inode *inode, loff_t offset, loff_t len)
+>>           goto out_stop;
+>>         down_write(&EXT4_I(inode)->i_data_sem);
+>> -    ext4_discard_preallocations(inode);
+>> +    ext4_discard_preallocations(inode, 0);
+>>         path = ext4_find_extent(inode, offset_lblk, NULL, 0);
+>>       if (IS_ERR(path)) {
+>> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+>> index 2a01e31..e3ab8ea 100644
+>> --- a/fs/ext4/file.c
+>> +++ b/fs/ext4/file.c
+>> @@ -148,7 +148,7 @@ static int ext4_release_file(struct inode *inode, struct file *filp)
+>>                   !EXT4_I(inode)->i_reserved_data_blocks)
+>>       {
+>>           down_write(&EXT4_I(inode)->i_data_sem);
+>> -        ext4_discard_preallocations(inode);
+>> +        ext4_discard_preallocations(inode, 0);
+>>           up_write(&EXT4_I(inode)->i_data_sem);
+>>       }
+>>       if (is_dx(inode) && filp->private_data)
+>> diff --git a/fs/ext4/indirect.c b/fs/ext4/indirect.c
+>> index be2b66e..ec6b930 100644
+>> --- a/fs/ext4/indirect.c
+>> +++ b/fs/ext4/indirect.c
+>> @@ -696,7 +696,7 @@ static int ext4_ind_trunc_restart_fn(handle_t *handle, struct inode *inode,
+>>        * i_mutex. So we can safely drop the i_data_sem here.
+>>        */
+>>       BUG_ON(EXT4_JOURNAL(inode) == NULL);
+>> -    ext4_discard_preallocations(inode);
+>> +    ext4_discard_preallocations(inode, 0);
+>>       up_write(&EXT4_I(inode)->i_data_sem);
+>>       *dropped = 1;
+>>       return 0;
+>> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+>> index 10dd470..bb9e1cd 100644
+>> --- a/fs/ext4/inode.c
+>> +++ b/fs/ext4/inode.c
+>> @@ -383,7 +383,7 @@ void ext4_da_update_reserve_space(struct inode *inode,
+>>        */
+>>       if ((ei->i_reserved_data_blocks == 0) &&
+>>           !inode_is_open_for_write(inode))
+>> -        ext4_discard_preallocations(inode);
+>> +        ext4_discard_preallocations(inode, 0);
+>>   }
+>>     static int __check_block_validity(struct inode *inode, const char *func,
+>> @@ -4056,7 +4056,7 @@ int ext4_punch_hole(struct inode *inode, loff_t offset, loff_t length)
+>>       if (stop_block > first_block) {
+>>             down_write(&EXT4_I(inode)->i_data_sem);
+>> -        ext4_discard_preallocations(inode);
+>> +        ext4_discard_preallocations(inode, 0);
+>>             ret = ext4_es_remove_extent(inode, first_block,
+>>                           stop_block - first_block);
+>> @@ -4211,7 +4211,7 @@ int ext4_truncate(struct inode *inode)
+>>         down_write(&EXT4_I(inode)->i_data_sem);
+>>   -    ext4_discard_preallocations(inode);
+>> +    ext4_discard_preallocations(inode, 0);
+>>         if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
+>>           err = ext4_ext_truncate(handle, inode);
+>> diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
+>> index 999cf6a..a5fcc23 100644
+>> --- a/fs/ext4/ioctl.c
+>> +++ b/fs/ext4/ioctl.c
+>> @@ -202,7 +202,7 @@ static long swap_inode_boot_loader(struct super_block *sb,
+>>       reset_inode_seed(inode);
+>>       reset_inode_seed(inode_bl);
+>>   -    ext4_discard_preallocations(inode);
+>> +    ext4_discard_preallocations(inode, 0);
+>>         err = ext4_mark_inode_dirty(handle, inode);
+>>       if (err < 0) {
+>> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+>> index 51f37f1..58426c6 100644
+>> --- a/fs/ext4/mballoc.c
+>> +++ b/fs/ext4/mballoc.c
+>> @@ -2739,6 +2739,7 @@ int ext4_mb_init(struct super_block *sb)
+>>       sbi->s_mb_stats = MB_DEFAULT_STATS;
+>>       sbi->s_mb_stream_request = MB_DEFAULT_STREAM_THRESHOLD;
+>>       sbi->s_mb_order2_reqs = MB_DEFAULT_ORDER2_REQS;
+>> +    sbi->s_mb_max_inode_prealloc = MB_DEFAULT_MAX_INODE_PREALLOC;
+>>       /*
+>>        * The default group preallocation is 512, which for 4k block
+>>        * sizes translates to 2 megabytes.  However for bigalloc file
+>> @@ -3677,6 +3678,26 @@ void ext4_mb_generate_from_pa(struct super_block *sb, void *bitmap,
+>>       mb_debug(sb, "preallocated %d for group %u\n", preallocated, group);
+>>   }
+>>   +static void ext4_mb_mark_pa_deleted(struct super_block *sb,
+>> +                    struct ext4_prealloc_space *pa)
+>> +{
+>> +    struct ext4_inode_info *ei;
+>> +
+>> +    if (pa->pa_deleted) {
+>> +        ext4_warning(sb, "deaded pa, type:%d, pblk:%llu, lblk:%u, len:%d\n",
+> 
+> s/deaded/deleted ?
 
-*more obvious binaries existence check in test
-*finish test if e2image can't capture an image
+Ritesh, thanks for taking time to review these patches. En, deleted should be better, 
+I will fix it in the next version. Thanks again.
 
-Signed-off-by: Alexey Lyashkov <alexey.lyashkov@hpe.com>
-Signed-off-by: Artem Blagodarenko <artem.blagodarenko@hpe.com>
-Cray-bug-id: LUS-1922
-Change-Id: Ib79300656726839b1d3b7ee1dd0793c60679d296
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
----
- lib/support/Makefile.in          |  4 +++
- lib/support/mvstring.c           | 25 +++++++++++++++
- lib/support/mvstring.h           |  1 +
- misc/e2image.8.in                |  3 ++
- misc/e2image.c                   | 53 +++++++++++++++++++++++++++++---
- misc/e2initrd_helper.c           | 16 +---------
- tests/i_error_tolerance/expect.1 | 23 ++++++++++++++
- tests/i_error_tolerance/expect.2 |  7 +++++
- tests/i_error_tolerance/script   | 47 ++++++++++++++++++++++++++++
- 9 files changed, 160 insertions(+), 19 deletions(-)
- create mode 100644 lib/support/mvstring.c
- create mode 100644 lib/support/mvstring.h
- create mode 100644 tests/i_error_tolerance/expect.1
- create mode 100644 tests/i_error_tolerance/expect.2
- create mode 100644 tests/i_error_tolerance/script
-
-diff --git a/lib/support/Makefile.in b/lib/support/Makefile.in
-index 1d278642..4d04eef0 100644
---- a/lib/support/Makefile.in
-+++ b/lib/support/Makefile.in
-@@ -13,6 +13,7 @@ INSTALL = @INSTALL@
- all::
- 
- OBJS=		cstring.o \
-+		mvstring.o \
- 		mkquota.o \
- 		plausible.o \
- 		profile.o \
-@@ -26,6 +27,7 @@ OBJS=		cstring.o \
- 
- SRCS=		$(srcdir)/argv_parse.c \
- 		$(srcdir)/cstring.c \
-+		$(srcdir)/mvstring.c \
- 		$(srcdir)/mkquota.c \
- 		$(srcdir)/parse_qtype.c \
- 		$(srcdir)/plausible.c \
-@@ -105,6 +107,8 @@ argv_parse.o: $(srcdir)/argv_parse.c $(top_builddir)/lib/config.h \
-  $(top_builddir)/lib/dirpaths.h $(srcdir)/argv_parse.h
- cstring.o: $(srcdir)/cstring.c $(top_builddir)/lib/config.h \
-  $(top_builddir)/lib/dirpaths.h $(srcdir)/cstring.h
-+mvstring.o: $(srcdir)/mvstring.c $(top_builddir)/lib/config.h \
-+ $(srcdir)/mvstring.h
- mkquota.o: $(srcdir)/mkquota.c $(top_builddir)/lib/config.h \
-  $(top_builddir)/lib/dirpaths.h $(top_srcdir)/lib/ext2fs/ext2_fs.h \
-  $(top_builddir)/lib/ext2fs/ext2_types.h $(top_srcdir)/lib/ext2fs/ext2fs.h \
-diff --git a/lib/support/mvstring.c b/lib/support/mvstring.c
-new file mode 100644
-index 00000000..1ed2fd67
---- /dev/null
-+++ b/lib/support/mvstring.c
-@@ -0,0 +1,25 @@
-+#include "config.h"
-+#ifdef HAVE_STDLIB_H
-+#include <stdlib.h>
-+#endif
-+#include <ctype.h>
-+#include <string.h>
-+#include "mvstring.h"
-+
-+
-+/*
-+ * fstab parsing code
-+ */
-+char *string_copy(const char *s)
-+{
-+	char	*ret;
-+
-+	if (!s)
-+		return 0;
-+	ret = malloc(strlen(s)+1);
-+	if (ret)
-+		strcpy(ret, s);
-+	return ret;
-+}
-+
-+
-diff --git a/lib/support/mvstring.h b/lib/support/mvstring.h
-new file mode 100644
-index 00000000..94590d56
---- /dev/null
-+++ b/lib/support/mvstring.h
-@@ -0,0 +1 @@
-+extern char *string_copy(const char *s);
-diff --git a/misc/e2image.8.in b/misc/e2image.8.in
-index ef124867..3816b682 100644
---- a/misc/e2image.8.in
-+++ b/misc/e2image.8.in
-@@ -73,6 +73,9 @@ for the image file to be in a consistent state.  This requirement can be
- overridden using the
- .B \-f
- option, but the resulting image file is very likely not going to be useful.
-+If you going to grab an image from a corrupted FS
-+.B \-E ignore_error
-+option to ignore fs errors, allows to grab fs image from a corrupted fs.
- .PP
- If
- .I image-file
-diff --git a/misc/e2image.c b/misc/e2image.c
-index 892c5371..887c38f2 100644
---- a/misc/e2image.c
-+++ b/misc/e2image.c
-@@ -52,6 +52,7 @@ extern int optind;
- 
- #include "support/nls-enable.h"
- #include "support/plausible.h"
-+#include "support/mvstring.h"
- #include "../version.h"
- 
- #define QCOW_OFLAG_COPIED     (1ULL << 63)
-@@ -78,6 +79,7 @@ static char move_mode;
- static char show_progress;
- static char *check_buf;
- static int skipped_blocks;
-+static int ignore_error = 0;
- 
- static blk64_t align_offset(blk64_t offset, unsigned int n)
- {
-@@ -105,7 +107,7 @@ static int get_bits_from_size(size_t size)
- static void usage(void)
- {
- 	fprintf(stderr, _("Usage: %s [ -r|-Q ] [ -f ] [ -b superblock ] [ -B blocksize ] "
--			  "device image-file\n"),
-+			  "[-E extended-options] device image-file\n"),
- 		program_name);
- 	fprintf(stderr, _("       %s -I device image-file\n"), program_name);
- 	fprintf(stderr, _("       %s -ra [ -cfnp ] [ -o src_offset ] "
-@@ -1368,7 +1370,8 @@ static void write_raw_image_file(ext2_filsys fs, int fd, int type, int flags,
- 				com_err(program_name, retval,
- 					_("while iterating over inode %u"),
- 					ino);
--				exit(1);
-+				if (ignore_error == 0)
-+					exit(1);
- 			}
- 		} else {
- 			if ((inode.i_flags & EXT4_EXTENTS_FL) ||
-@@ -1381,7 +1384,8 @@ static void write_raw_image_file(ext2_filsys fs, int fd, int type, int flags,
- 				if (retval) {
- 					com_err(program_name, retval,
- 					_("while iterating over inode %u"), ino);
--					exit(1);
-+					if (ignore_error == 0)
-+						exit(1);
- 				}
- 			}
- 		}
-@@ -1475,6 +1479,40 @@ static struct ext2_qcow2_hdr *check_qcow2_image(int *fd, char *name)
- 	return qcow2_read_header(*fd);
- }
- 
-+static void parse_extended_opts(const char *opts)
-+{
-+	char	*buf, *token, *next, *p;
-+	int	ea_ver;
-+	int	extended_usage = 0;
-+	unsigned long long reada_kb;
-+
-+	buf = string_copy(opts);
-+	for (token = buf; token && *token; token = next) {
-+		p = strchr(token, ',');
-+		next = 0;
-+		if (p) {
-+			*p = 0;
-+			next = p+1;
-+		}
-+		if (strcmp(token, "ignore_error") == 0) {
-+			ignore_error = 1;
-+			continue;
-+		} else {
-+			fprintf(stderr, _("Unknown extended option: %s\n"),
-+				token);
-+			extended_usage++;
-+		}
-+	}
-+	free(buf);
-+
-+	if (extended_usage) {
-+		fputs(_("\nExtended options are separated by commas. "
-+		       "Valid extended options are:\n\n"), stderr);
-+		fputs("\tignore_error\n", stderr);
-+		exit(1);
-+	}
-+}
-+
- int main (int argc, char ** argv)
- {
- 	int c;
-@@ -1494,6 +1532,7 @@ int main (int argc, char ** argv)
- 	struct stat st;
- 	blk64_t superblock = 0;
- 	int blocksize = 0;
-+	char	*extended_opts = 0;
- 
- #ifdef ENABLE_NLS
- 	setlocale(LC_MESSAGES, "");
-@@ -1507,7 +1546,7 @@ int main (int argc, char ** argv)
- 	if (argc && *argv)
- 		program_name = *argv;
- 	add_error_table(&et_ext2_error_table);
--	while ((c = getopt(argc, argv, "b:B:nrsIQafo:O:pc")) != EOF)
-+	while ((c = getopt(argc, argv, "b:B:E:nrsIQafo:O:pc")) != EOF)
- 		switch (c) {
- 		case 'b':
- 			superblock = strtoull(optarg, NULL, 0);
-@@ -1515,6 +1554,9 @@ int main (int argc, char ** argv)
- 		case 'B':
- 			blocksize = strtoul(optarg, NULL, 0);
- 			break;
-+		case 'E':
-+			extended_opts = optarg;
-+			break;
- 		case 'I':
- 			flags |= E2IMAGE_INSTALL_FLAG;
- 			break;
-@@ -1597,6 +1639,9 @@ int main (int argc, char ** argv)
- 		exit(1);
- 	}
- 
-+	if (extended_opts)
-+		parse_extended_opts(extended_opts);
-+
- 	if (img_type && !ignore_rw_mount &&
- 	    (mount_flags & EXT2_MF_MOUNTED) &&
- 	   !(mount_flags & EXT2_MF_READONLY)) {
-diff --git a/misc/e2initrd_helper.c b/misc/e2initrd_helper.c
-index 436aab8c..ab5991a4 100644
---- a/misc/e2initrd_helper.c
-+++ b/misc/e2initrd_helper.c
-@@ -36,6 +36,7 @@ extern char *optarg;
- #include "ext2fs/ext2fs.h"
- #include "blkid/blkid.h"
- #include "support/nls-enable.h"
-+#include "support/mvstring.h"
- 
- #include "../version.h"
- 
-@@ -151,21 +152,6 @@ static int mem_file_eof(struct mem_file *file)
- 	return (file->ptr >= file->size);
- }
- 
--/*
-- * fstab parsing code
-- */
--static char *string_copy(const char *s)
--{
--	char	*ret;
--
--	if (!s)
--		return 0;
--	ret = malloc(strlen(s)+1);
--	if (ret)
--		strcpy(ret, s);
--	return ret;
--}
--
- static char *skip_over_blank(char *cp)
- {
- 	while (*cp && isspace(*cp))
-diff --git a/tests/i_error_tolerance/expect.1 b/tests/i_error_tolerance/expect.1
-new file mode 100644
-index 00000000..8d5ffa2c
---- /dev/null
-+++ b/tests/i_error_tolerance/expect.1
-@@ -0,0 +1,23 @@
-+Pass 1: Checking inodes, blocks, and sizes
-+Inode 12 has illegal block(s).  Clear? yes
-+
-+Illegal indirect block (1000000) in inode 12.  CLEARED.
-+Inode 12, i_blocks is 34, should be 24.  Fix? yes
-+
-+Pass 2: Checking directory structure
-+Pass 3: Checking directory connectivity
-+Pass 4: Checking reference counts
-+Pass 5: Checking group summary information
-+Block bitmap differences:  -(31--34) -37
-+Fix? yes
-+
-+Free blocks count wrong for group #0 (62, counted=67).
-+Fix? yes
-+
-+Free blocks count wrong (62, counted=67).
-+Fix? yes
-+
-+
-+test_filesys: ***** FILE SYSTEM WAS MODIFIED *****
-+test_filesys: 12/16 files (8.3% non-contiguous), 33/100 blocks
-+Exit status is 1
-diff --git a/tests/i_error_tolerance/expect.2 b/tests/i_error_tolerance/expect.2
-new file mode 100644
-index 00000000..7fd42318
---- /dev/null
-+++ b/tests/i_error_tolerance/expect.2
-@@ -0,0 +1,7 @@
-+Pass 1: Checking inodes, blocks, and sizes
-+Pass 2: Checking directory structure
-+Pass 3: Checking directory connectivity
-+Pass 4: Checking reference counts
-+Pass 5: Checking group summary information
-+test_filesys: 12/16 files (8.3% non-contiguous), 33/100 blocks
-+Exit status is 0
-diff --git a/tests/i_error_tolerance/script b/tests/i_error_tolerance/script
-new file mode 100644
-index 00000000..6503de97
---- /dev/null
-+++ b/tests/i_error_tolerance/script
-@@ -0,0 +1,47 @@
-+if ! test -x $E2IMAGE_EXE; then
-+	echo "$test_name: $test_description: skipped (no e2image)"
-+	return 0
-+fi
-+if ! test -x $DEBUGFS_EXE; then
-+	echo "$test_name: $test_description: skipped (no debugfs)"
-+	return 0
-+fi
-+
-+SKIP_GUNZIP="true"
-+
-+TEST_DATA="$test_name.tmp"
-+dd if=/dev/urandom of=$TEST_DATA bs=1k count=16 > /dev/null 2>&1 
-+
-+dd if=/dev/zero of=$TMPFILE bs=1k count=100 > /dev/null 2>&1
-+$MKE2FS -Ft ext4 -O ^extents $TMPFILE > /dev/null 2>&1
-+$DEBUGFS -w $TMPFILE << EOF  > /dev/null 2>&1
-+write $TEST_DATA testfile
-+set_inode_field testfile block[IND] 1000000
-+q
-+EOF
-+
-+$E2IMAGE -r $TMPFILE $TMPFILE.back
-+
-+if [ $? = 0 ] ; then
-+	echo "Image expected to be broken"
-+	echo "$test_name: $test_description: fail"
-+	touch $test_name.failed
-+	return 0
-+fi
-+
-+$E2IMAGE -r -E ignore_error $TMPFILE $TMPFILE.back
-+
-+if [ $? = 1 ] ; then
-+	echo "Can not get image even with ignore_error"
-+	echo "$test_name: $test_description: fail"
-+	touch $test_name.failed
-+	return 0
-+fi
-+
-+mv $TMPFILE.back $TMPFILE
-+
-+. $cmd_dir/run_e2fsck
-+
-+rm -f $TEST_DATA
-+
-+unset E2FSCK_TIME TEST_DATA
--- 
-2.18.4
-
+>> +                 pa->pa_type, pa->pa_pstart, pa->pa_lstart,
+>> +                 pa->pa_len);
+>> +        return;
+>> +    }
+>> +
+>> +    pa->pa_deleted = 1;
+>> +
+>> +    if (pa->pa_type == MB_INODE_PA) {
+>> +        ei = EXT4_I(pa->pa_inode);
+>> +        atomic_dec(&ei->i_prealloc_active);
+>> +    }
+>> +}
+>> +
+>>   static void ext4_mb_pa_callback(struct rcu_head *head)
+>>   {
+>>       struct ext4_prealloc_space *pa;
+>> @@ -3709,7 +3730,7 @@ static void ext4_mb_put_pa(struct ext4_allocation_context *ac,
+>>           return;
+>>       }
+>>   -    pa->pa_deleted = 1;
+>> +    ext4_mb_mark_pa_deleted(sb, pa);
+>>       spin_unlock(&pa->pa_lock);
+>>         grp_blk = pa->pa_pstart;
+>> @@ -3833,6 +3854,7 @@ static void ext4_mb_put_pa(struct ext4_allocation_context *ac,
+>>       spin_lock(pa->pa_obj_lock);
+>>       list_add_rcu(&pa->pa_inode_list, &ei->i_prealloc_list);
+>>       spin_unlock(pa->pa_obj_lock);
+>> +    atomic_inc(&ei->i_prealloc_active);
+>>   }
+>>     /*
+>> @@ -4043,7 +4065,7 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
+>>           }
+>>             /* seems this one can be freed ... */
+>> -        pa->pa_deleted = 1;
+>> +        ext4_mb_mark_pa_deleted(sb, pa);
+>>             /* we can trust pa_free ... */
+>>           free += pa->pa_free;
+>> @@ -4106,7 +4128,7 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
+>>    *
+>>    * FIXME!! Make sure it is valid at all the call sites
+>>    */
+>> -void ext4_discard_preallocations(struct inode *inode)
+>> +void ext4_discard_preallocations(struct inode *inode, unsigned int needed)
+>>   {
+>>       struct ext4_inode_info *ei = EXT4_I(inode);
+>>       struct super_block *sb = inode->i_sb;
+>> @@ -4124,15 +4146,19 @@ void ext4_discard_preallocations(struct inode *inode)
+>>         mb_debug(sb, "discard preallocation for inode %lu\n",
+>>            inode->i_ino);
+>> -    trace_ext4_discard_preallocations(inode);
+>> +    trace_ext4_discard_preallocations(inode,
+>> +            atomic_read(&ei->i_prealloc_active), needed);
+>>         INIT_LIST_HEAD(&list);
+>>   +    if (needed == 0)
+>> +        needed = UINT_MAX;
+>> +
+>>   repeat:
+>>       /* first, collect all pa's in the inode */
+>>       spin_lock(&ei->i_prealloc_lock);
+>> -    while (!list_empty(&ei->i_prealloc_list)) {
+>> -        pa = list_entry(ei->i_prealloc_list.next,
+>> +    while (!list_empty(&ei->i_prealloc_list) && needed) {
+>> +        pa = list_entry(ei->i_prealloc_list.prev,
+>>                   struct ext4_prealloc_space, pa_inode_list);
+>>           BUG_ON(pa->pa_obj_lock != &ei->i_prealloc_lock);
+>>           spin_lock(&pa->pa_lock);
+>> @@ -4149,10 +4175,11 @@ void ext4_discard_preallocations(struct inode *inode)
+>>             }
+>>           if (pa->pa_deleted == 0) {
+>> -            pa->pa_deleted = 1;
+>> +            ext4_mb_mark_pa_deleted(sb, pa);
+>>               spin_unlock(&pa->pa_lock);
+>>               list_del_rcu(&pa->pa_inode_list);
+>>               list_add(&pa->u.pa_tmp_list, &list);
+>> +            needed--;
+>>               continue;
+>>           }
+>>   @@ -4453,7 +4480,7 @@ static void ext4_mb_group_or_file(struct ext4_allocation_context *ac)
+>>           BUG_ON(pa->pa_type != MB_GROUP_PA);
+>>             /* seems this one can be freed ... */
+>> -        pa->pa_deleted = 1;
+>> +        ext4_mb_mark_pa_deleted(sb, pa);
+> 
+> Isn't this inside ext4_mb_discard_lg_preallocations()?
+> ext4_mb_mark_pa_deleted() is not required here. Since there is anyway a
+> BUG_ON() at top which ensures that this is MB_GROUP_PA type only.
+> 
+> -ritesh
+> 
+> 
+>>           spin_unlock(&pa->pa_lock);
+>>             list_del_rcu(&pa->pa_inode_list);
+>> @@ -4552,10 +4579,29 @@ static void ext4_mb_add_n_trim(struct ext4_allocation_context *ac)
+>>   }
+>>     /*
+>> + * if per-inode prealloc list is too long, trim some PA
+>> + */
+>> +static void ext4_mb_trim_inode_pa(struct inode *inode)
+>> +{
+>> +    struct ext4_inode_info *ei = EXT4_I(inode);
+>> +    struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
+>> +    int count, delta;
+>> +
+>> +    count = atomic_read(&ei->i_prealloc_active);
+>> +    delta = (sbi->s_mb_max_inode_prealloc >> 2) + 1;
+>> +    if (count > sbi->s_mb_max_inode_prealloc + delta) {
+>> +        count -= sbi->s_mb_max_inode_prealloc;
+>> +        ext4_discard_preallocations(inode, count);
+>> +    }
+>> +}
+>> +
+>> +/*
+>>    * release all resource we used in allocation
+>>    */
+>>   static int ext4_mb_release_context(struct ext4_allocation_context *ac)
+>>   {
+>> +    struct inode *inode = ac->ac_inode;
+>> +    struct ext4_inode_info *ei = EXT4_I(inode);
+>>       struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
+>>       struct ext4_prealloc_space *pa = ac->ac_pa;
+>>       if (pa) {
+>> @@ -4581,6 +4627,17 @@ static int ext4_mb_release_context(struct ext4_allocation_context *ac)
+>>                   ext4_mb_add_n_trim(ac);
+>>               }
+>>           }
+>> +
+>> +        if (pa->pa_type == MB_INODE_PA) {
+>> +            /*
+>> +             * treat per-inode prealloc list as a lru list, then try
+>> +             * to trim the least recently used PA.
+>> +             */
+>> +            spin_lock(pa->pa_obj_lock);
+>> +            list_move(&pa->pa_inode_list, &ei->i_prealloc_list);
+>> +            spin_unlock(pa->pa_obj_lock);
+>> +        }
+>> +
+>>           ext4_mb_put_pa(ac, ac->ac_sb, pa);
+>>       }
+>>       if (ac->ac_bitmap_page)
+>> @@ -4590,6 +4647,7 @@ static int ext4_mb_release_context(struct ext4_allocation_context *ac)
+>>       if (ac->ac_flags & EXT4_MB_HINT_GROUP_ALLOC)
+>>           mutex_unlock(&ac->ac_lg->lg_mutex);
+>>       ext4_mb_collect_stats(ac);
+>> +    ext4_mb_trim_inode_pa(inode);
+>>       return 0;
+>>   }
+>>   diff --git a/fs/ext4/mballoc.h b/fs/ext4/mballoc.h
+>> index 6b4d17c..e75b474 100644
+>> --- a/fs/ext4/mballoc.h
+>> +++ b/fs/ext4/mballoc.h
+>> @@ -73,6 +73,10 @@
+>>    */
+>>   #define MB_DEFAULT_GROUP_PREALLOC    512
+>>   +/*
+>> + * maximum length of inode prealloc list
+>> + */
+>> +#define MB_DEFAULT_MAX_INODE_PREALLOC    512
+>>     struct ext4_free_data {
+>>       /* this links the free block information from sb_info */
+>> diff --git a/fs/ext4/move_extent.c b/fs/ext4/move_extent.c
+>> index 1ed86fb..0d601b8 100644
+>> --- a/fs/ext4/move_extent.c
+>> +++ b/fs/ext4/move_extent.c
+>> @@ -686,8 +686,8 @@
+>>     out:
+>>       if (*moved_len) {
+>> -        ext4_discard_preallocations(orig_inode);
+>> -        ext4_discard_preallocations(donor_inode);
+>> +        ext4_discard_preallocations(orig_inode, 0);
+>> +        ext4_discard_preallocations(donor_inode, 0);
+>>       }
+>>         ext4_ext_drop_refs(path);
+>> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+>> index 330957e..4df5dde 100644
+>> --- a/fs/ext4/super.c
+>> +++ b/fs/ext4/super.c
+>> @@ -1123,6 +1123,7 @@ static struct inode *ext4_alloc_inode(struct super_block *sb)
+>>       inode_set_iversion(&ei->vfs_inode, 1);
+>>       spin_lock_init(&ei->i_raw_lock);
+>>       INIT_LIST_HEAD(&ei->i_prealloc_list);
+>> +    atomic_set(&ei->i_prealloc_active, 0);
+>>       spin_lock_init(&ei->i_prealloc_lock);
+>>       ext4_es_init_tree(&ei->i_es_tree);
+>>       rwlock_init(&ei->i_es_lock);
+>> @@ -1216,7 +1217,7 @@ void ext4_clear_inode(struct inode *inode)
+>>   {
+>>       invalidate_inode_buffers(inode);
+>>       clear_inode(inode);
+>> -    ext4_discard_preallocations(inode);
+>> +    ext4_discard_preallocations(inode, 0);
+>>       ext4_es_remove_extent(inode, 0, EXT_MAX_BLOCKS);
+>>       dquot_drop(inode);
+>>       if (EXT4_I(inode)->jinode) {
+>> diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
+>> index 6c9fc9e..92f04e9 100644
+>> --- a/fs/ext4/sysfs.c
+>> +++ b/fs/ext4/sysfs.c
+>> @@ -215,6 +215,7 @@ static ssize_t journal_task_show(struct ext4_sb_info *sbi, char *buf)
+>>   EXT4_RW_ATTR_SBI_UI(mb_order2_req, s_mb_order2_reqs);
+>>   EXT4_RW_ATTR_SBI_UI(mb_stream_req, s_mb_stream_request);
+>>   EXT4_RW_ATTR_SBI_UI(mb_group_prealloc, s_mb_group_prealloc);
+>> +EXT4_RW_ATTR_SBI_UI(mb_max_inode_prealloc, s_mb_max_inode_prealloc);
+>>   EXT4_RW_ATTR_SBI_UI(extent_max_zeroout_kb, s_extent_max_zeroout_kb);
+>>   EXT4_ATTR(trigger_fs_error, 0200, trigger_test_error);
+>>   EXT4_RW_ATTR_SBI_UI(err_ratelimit_interval_ms, s_err_ratelimit_state.interval);
+>> @@ -257,6 +258,7 @@ static ssize_t journal_task_show(struct ext4_sb_info *sbi, char *buf)
+>>       ATTR_LIST(mb_order2_req),
+>>       ATTR_LIST(mb_stream_req),
+>>       ATTR_LIST(mb_group_prealloc),
+>> +    ATTR_LIST(mb_max_inode_prealloc),
+>>       ATTR_LIST(max_writeback_mb_bump),
+>>       ATTR_LIST(extent_max_zeroout_kb),
+>>       ATTR_LIST(trigger_fs_error),
+>> diff --git a/include/trace/events/ext4.h b/include/trace/events/ext4.h
+>> index cc41d69..628db6a 100644
+>> --- a/include/trace/events/ext4.h
+>> +++ b/include/trace/events/ext4.h
+>> @@ -746,24 +746,29 @@
+>>   );
+>>     TRACE_EVENT(ext4_discard_preallocations,
+>> -    TP_PROTO(struct inode *inode),
+>> +    TP_PROTO(struct inode *inode, unsigned int len, unsigned int needed),
+>>   -    TP_ARGS(inode),
+>> +    TP_ARGS(inode, len, needed),
+>>         TP_STRUCT__entry(
+>> -        __field(    dev_t,    dev            )
+>> -        __field(    ino_t,    ino            )
+>> +        __field(    dev_t,        dev        )
+>> +        __field(    ino_t,        ino        )
+>> +        __field(    unsigned int,    len        )
+>> +        __field(    unsigned int,    needed        )
+>>         ),
+>>         TP_fast_assign(
+>>           __entry->dev    = inode->i_sb->s_dev;
+>>           __entry->ino    = inode->i_ino;
+>> +        __entry->len    = len;
+>> +        __entry->needed    = needed;
+>>       ),
+>>   -    TP_printk("dev %d,%d ino %lu",
+>> +    TP_printk("dev %d,%d ino %lu len: %u needed %u",
+>>             MAJOR(__entry->dev), MINOR(__entry->dev),
+>> -          (unsigned long) __entry->ino)
+>> +          (unsigned long) __entry->ino, __entry->len,
+>> +          __entry->needed)
+>>   );
+>>     TRACE_EVENT(ext4_mb_discard_preallocations,
+>>
