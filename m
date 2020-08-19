@@ -2,122 +2,130 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D26249DDE
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Aug 2020 14:31:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB43624A69B
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 Aug 2020 21:13:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727019AbgHSMbm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 19 Aug 2020 08:31:42 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:45536 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726952AbgHSMbk (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 19 Aug 2020 08:31:40 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id AB49E2E7917A994B3512;
-        Wed, 19 Aug 2020 20:31:36 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Wed, 19 Aug 2020
- 20:31:26 +0800
-From:   Shijie Luo <luoshijie1@huawei.com>
-To:     <linux-ext4@vger.kernel.org>
-CC:     <tytso@mit.edu>, <jack@suse.cz>, <linfeilong@huawei.com>
-Subject: [PATCH] jbd2: remove unnecessary chksum variables in do_one_pass
-Date:   Wed, 19 Aug 2020 08:29:55 -0400
-Message-ID: <20200819122955.33526-1-luoshijie1@huawei.com>
-X-Mailer: git-send-email 2.19.1
+        id S1726867AbgHSTNS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 19 Aug 2020 15:13:18 -0400
+Received: from mga09.intel.com ([134.134.136.24]:63949 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726861AbgHSTNS (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 19 Aug 2020 15:13:18 -0400
+IronPort-SDR: LjemV0CD9+ZrW6fa/9f07q/f4gJvh7fGzdvgxOAYmQ97qKKC4yNaEL0xJlegsv1vG1tIfsmZ7m
+ 3WcYIlWUVDBA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9718"; a="156256607"
+X-IronPort-AV: E=Sophos;i="5.76,332,1592895600"; 
+   d="scan'208";a="156256607"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2020 12:13:17 -0700
+IronPort-SDR: Kq8IaNYX4VGeNhyo5DbDVq132Jd/WQ0eRKpRUTr0fq1TyNp4WV9Vs/G5BFvY8rysiVsrLWPu2R
+ RDcCZ5Nn5i/g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,332,1592895600"; 
+   d="scan'208";a="472347720"
+Received: from lkp-server01.sh.intel.com (HELO 4cedd236b688) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 19 Aug 2020 12:13:15 -0700
+Received: from kbuild by 4cedd236b688 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1k8TWN-0000Ua-9T; Wed, 19 Aug 2020 19:13:15 +0000
+Date:   Thu, 20 Aug 2020 03:12:38 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+Subject: [ext4:dev] BUILD SUCCESS 12ada33d7ac4bfcb769cb85da8a01bee096af97d
+Message-ID: <5f3d79a6.7EFyHReQkxwJpthX%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Remove unnecessary chksum variables, and add a chksum_err
- branch to make it cleaner.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git  dev
+branch HEAD: 12ada33d7ac4bfcb769cb85da8a01bee096af97d  ext4: limit the length of per-inode prealloc list
 
-Signed-off-by: Shijie Luo <luoshijie1@huawei.com>
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Reviewed-by: Jan Kara <jack@suse.cz>
+elapsed time: 725m
+
+configs tested: 69
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                         ap325rxa_defconfig
+arc                 nsimosci_hs_smp_defconfig
+microblaze                      mmu_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20200818
+i386                 randconfig-a002-20200818
+i386                 randconfig-a001-20200818
+i386                 randconfig-a006-20200818
+i386                 randconfig-a003-20200818
+i386                 randconfig-a004-20200818
+x86_64               randconfig-a013-20200818
+x86_64               randconfig-a016-20200818
+x86_64               randconfig-a012-20200818
+x86_64               randconfig-a011-20200818
+x86_64               randconfig-a014-20200818
+x86_64               randconfig-a015-20200818
+i386                 randconfig-a016-20200818
+i386                 randconfig-a011-20200818
+i386                 randconfig-a015-20200818
+i386                 randconfig-a013-20200818
+i386                 randconfig-a012-20200818
+i386                 randconfig-a014-20200818
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
 ---
- fs/jbd2/recovery.c | 46 ++++++++++++----------------------------------
- 1 file changed, 12 insertions(+), 34 deletions(-)
-
-diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
-index 2ed278f0dced..faa97d748474 100644
---- a/fs/jbd2/recovery.c
-+++ b/fs/jbd2/recovery.c
-@@ -690,14 +690,11 @@ static int do_one_pass(journal_t *journal,
- 			 * number. */
- 			if (pass == PASS_SCAN &&
- 			    jbd2_has_feature_checksum(journal)) {
--				int chksum_err, chksum_seen;
- 				struct commit_header *cbh =
- 					(struct commit_header *)bh->b_data;
- 				unsigned found_chksum =
- 					be32_to_cpu(cbh->h_chksum[0]);
- 
--				chksum_err = chksum_seen = 0;
--
- 				if (info->end_transaction) {
- 					journal->j_failed_commit =
- 						info->end_transaction;
-@@ -705,42 +702,23 @@ static int do_one_pass(journal_t *journal,
- 					break;
- 				}
- 
--				if (crc32_sum == found_chksum &&
--				    cbh->h_chksum_type == JBD2_CRC32_CHKSUM &&
--				    cbh->h_chksum_size ==
--						JBD2_CRC32_CHKSUM_SIZE)
--				       chksum_seen = 1;
--				else if (!(cbh->h_chksum_type == 0 &&
--					     cbh->h_chksum_size == 0 &&
--					     found_chksum == 0 &&
--					     !chksum_seen))
--				/*
--				 * If fs is mounted using an old kernel and then
--				 * kernel with journal_chksum is used then we
--				 * get a situation where the journal flag has
--				 * checksum flag set but checksums are not
--				 * present i.e chksum = 0, in the individual
--				 * commit blocks.
--				 * Hence to avoid checksum failures, in this
--				 * situation, this extra check is added.
--				 */
--						chksum_err = 1;
--
--				if (chksum_err) {
--					info->end_transaction = next_commit_ID;
--
--					if (!jbd2_has_feature_async_commit(journal)) {
--						journal->j_failed_commit =
--							next_commit_ID;
--						brelse(bh);
--						break;
--					}
--				}
-+				/* Neither checksum match nor unused? */
-+				if (!((crc32_sum == found_chksum &&
-+				       cbh->h_chksum_type ==
-+						JBD2_CRC32_CHKSUM &&
-+				       cbh->h_chksum_size ==
-+						JBD2_CRC32_CHKSUM_SIZE) ||
-+				      (cbh->h_chksum_type == 0 &&
-+				       cbh->h_chksum_size == 0 &&
-+				       found_chksum == 0)))
-+					goto chksum_error;
-+
- 				crc32_sum = ~0;
- 			}
- 			if (pass == PASS_SCAN &&
- 			    !jbd2_commit_block_csum_verify(journal,
- 							   bh->b_data)) {
-+			chksum_error:
- 				info->end_transaction = next_commit_ID;
- 
- 				if (!jbd2_has_feature_async_commit(journal)) {
--- 
-2.19.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
