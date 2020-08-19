@@ -2,130 +2,86 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB43624A69B
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Aug 2020 21:13:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 780A324AA59
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Aug 2020 01:59:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726867AbgHSTNS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 19 Aug 2020 15:13:18 -0400
-Received: from mga09.intel.com ([134.134.136.24]:63949 "EHLO mga09.intel.com"
+        id S1726870AbgHSX54 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 19 Aug 2020 19:57:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726861AbgHSTNS (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 19 Aug 2020 15:13:18 -0400
-IronPort-SDR: LjemV0CD9+ZrW6fa/9f07q/f4gJvh7fGzdvgxOAYmQ97qKKC4yNaEL0xJlegsv1vG1tIfsmZ7m
- 3WcYIlWUVDBA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9718"; a="156256607"
-X-IronPort-AV: E=Sophos;i="5.76,332,1592895600"; 
-   d="scan'208";a="156256607"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2020 12:13:17 -0700
-IronPort-SDR: Kq8IaNYX4VGeNhyo5DbDVq132Jd/WQ0eRKpRUTr0fq1TyNp4WV9Vs/G5BFvY8rysiVsrLWPu2R
- RDcCZ5Nn5i/g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,332,1592895600"; 
-   d="scan'208";a="472347720"
-Received: from lkp-server01.sh.intel.com (HELO 4cedd236b688) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 19 Aug 2020 12:13:15 -0700
-Received: from kbuild by 4cedd236b688 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1k8TWN-0000Ua-9T; Wed, 19 Aug 2020 19:13:15 +0000
-Date:   Thu, 20 Aug 2020 03:12:38 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-Subject: [ext4:dev] BUILD SUCCESS 12ada33d7ac4bfcb769cb85da8a01bee096af97d
-Message-ID: <5f3d79a6.7EFyHReQkxwJpthX%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+        id S1726435AbgHSX4l (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 19 Aug 2020 19:56:41 -0400
+Received: from localhost (unknown [70.37.104.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1FF42214F1;
+        Wed, 19 Aug 2020 23:56:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597881401;
+        bh=y0Y9dUpsINNbfudEKK3GZSt+xmoBFwG9iWNUT2rZKK8=;
+        h=Date:From:To:To:To:Cc:CC:Cc:Subject:In-Reply-To:References:From;
+        b=K7aM1lxnSI+WTErVVg4GHLU2rjZj9JiE5ZSh4GF8/zlOX5P0MNgjcOv0UKI272jGZ
+         NmiADQUa3vXMUg+nsYBej/BK+OFvI3VNMallG/nKoBkINCPNTv4qQhWghmmWiwZ69f
+         D2+ytAXZarvOAoHsMtA3SZyWqmZjNIxya8D7ok8c=
+Date:   Wed, 19 Aug 2020 23:56:40 +0000
+From:   Sasha Levin <sashal@kernel.org>
+To:     Sasha Levin <sashal@kernel.org>
+To:     Jan Kara <jack@suse.cz>
+To:     Ted Tso <tytso@mit.edu>
+Cc:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>
+CC:     stable@vger.kernel.org
+Cc:     stable@vger.kernel.org
+Subject: Re: [PATCH] ext4: Fix checking of entry validity
+In-Reply-To: <20200731162135.8080-1-jack@suse.cz>
+References: <20200731162135.8080-1-jack@suse.cz>
+Message-Id: <20200819235641.1FF42214F1@mail.kernel.org>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git  dev
-branch HEAD: 12ada33d7ac4bfcb769cb85da8a01bee096af97d  ext4: limit the length of per-inode prealloc list
+Hi
 
-elapsed time: 725m
+[This is an automated email]
 
-configs tested: 69
-configs skipped: 3
+This commit has been processed because it contains a "Fixes:" tag
+fixing commit: 109ba779d6cc ("ext4: check for directory entries too close to block end").
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+The bot has tested the following trees: v5.8.1, v5.7.15, v5.4.58, v4.19.139, v4.14.193, v4.9.232, v4.4.232.
 
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sh                         ap325rxa_defconfig
-arc                 nsimosci_hs_smp_defconfig
-microblaze                      mmu_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20200818
-i386                 randconfig-a002-20200818
-i386                 randconfig-a001-20200818
-i386                 randconfig-a006-20200818
-i386                 randconfig-a003-20200818
-i386                 randconfig-a004-20200818
-x86_64               randconfig-a013-20200818
-x86_64               randconfig-a016-20200818
-x86_64               randconfig-a012-20200818
-x86_64               randconfig-a011-20200818
-x86_64               randconfig-a014-20200818
-x86_64               randconfig-a015-20200818
-i386                 randconfig-a016-20200818
-i386                 randconfig-a011-20200818
-i386                 randconfig-a015-20200818
-i386                 randconfig-a013-20200818
-i386                 randconfig-a012-20200818
-i386                 randconfig-a014-20200818
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+v5.8.1: Build OK!
+v5.7.15: Build OK!
+v5.4.58: Build OK!
+v4.19.139: Build OK!
+v4.14.193: Build failed! Errors:
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+v4.9.232: Failed to apply! Possible dependencies:
+    364443cbcfe7 ("ext4: convert DAX reads to iomap infrastructure")
+    39bc88e5e38e ("arm64: Disable TTBR0_EL1 during normal kernel execution")
+    7046ae35329f ("ext4: Add iomap support for inline data")
+    7c0f6ba682b9 ("Replace <asm/uaccess.h> with <linux/uaccess.h> globally")
+    9cf09d68b89a ("arm64: xen: Enable user access before a privcmd hvc call")
+    b886ee3e778e ("ext4: Support case-insensitive file name lookups")
+    bd38967d406f ("arm64: Factor out PAN enabling/disabling into separate uaccess_* macros")
+    ee73f9a52a34 ("ext4: convert to new i_version API")
+    eeca7ea1baa9 ("ext4: use current_time() for inode timestamps")
+
+v4.4.232: Failed to apply! Possible dependencies:
+    12735f881952 ("ext4: pre-zero allocated blocks for DAX IO")
+    2dcba4781fa3 ("ext4: get rid of EXT4_GET_BLOCKS_NO_LOCK flag")
+    364443cbcfe7 ("ext4: convert DAX reads to iomap infrastructure")
+    7046ae35329f ("ext4: Add iomap support for inline data")
+    705965bd6dfa ("ext4: rename and split get blocks functions")
+    b886ee3e778e ("ext4: Support case-insensitive file name lookups")
+    ba5843f51d46 ("ext4: use pre-zeroed blocks for DAX page faults")
+    c86d8db33a92 ("ext4: implement allocation of pre-zeroed blocks")
+    ee73f9a52a34 ("ext4: convert to new i_version API")
+
+
+NOTE: The patch will not be queued to stable trees until it is upstream.
+
+How should we proceed with this patch?
+
+-- 
+Thanks
+Sasha
