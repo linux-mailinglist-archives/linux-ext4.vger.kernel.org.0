@@ -2,105 +2,247 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61C36249448
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Aug 2020 07:01:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74075249775
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 Aug 2020 09:31:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725903AbgHSFBG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 19 Aug 2020 01:01:06 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:63842 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725275AbgHSFBG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 19 Aug 2020 01:01:06 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07J4XJua185997;
-        Wed, 19 Aug 2020 01:00:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : date : mime-version : in-reply-to : content-type :
- content-transfer-encoding : message-id; s=pp1;
- bh=3yCVTE2ZD0j285tr5W+PRQSHrD9xufwjMmZcd4j65H8=;
- b=Op9aaVBsLSHA/vIJ5U2+cRJr821ywvlCTrxpYtmezO7BoRA9Z6CS2B3Ady6hGBik60QQ
- 9zFrT0fwcdwUFxmUEQj0n8ZMOKyL4R+eO9crXL82dF3zlBUbSjI3ioayiPM2LmOZM1vW
- 2JqMhFi5RJ6kb4rF3O0+vIqWlD0oJGQUlDhyucP9e4bW1tizLYN2+eqsC2k9wuGoIkVX
- 6Ctr5Z6zwZugxUbnTD2HUJI5hAf7Y8vLvL+gTJz1viENAKrIyTmaY2x7YrJ3agp22WHu
- 85EVl/76M052QRZq0UsSNKWeEvYs2COhuGFeHSVwh1c2/XLySR2pnQOACBSTqOmC+oJz 0Q== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3304r456gs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 Aug 2020 01:00:56 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07J4tCtx020120;
-        Wed, 19 Aug 2020 05:00:54 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03ams.nl.ibm.com with ESMTP id 3304um1e2r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 Aug 2020 05:00:54 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07J50qHB25821540
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 19 Aug 2020 05:00:52 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BADA711C050;
-        Wed, 19 Aug 2020 05:00:50 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F103511C073;
-        Wed, 19 Aug 2020 05:00:49 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.199.33.217])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 19 Aug 2020 05:00:49 +0000 (GMT)
-Subject: Re: [PATCH -next] ext2: remove duplicate include
-To:     Wang Hai <wanghai38@huawei.com>, jack@suse.com
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200819025434.65763-1-wanghai38@huawei.com>
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-Date:   Wed, 19 Aug 2020 10:30:49 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1726951AbgHSHbS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 19 Aug 2020 03:31:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726685AbgHSHbR (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 19 Aug 2020 03:31:17 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41383C061389
+        for <linux-ext4@vger.kernel.org>; Wed, 19 Aug 2020 00:31:17 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id p37so10975500pgl.3
+        for <linux-ext4@vger.kernel.org>; Wed, 19 Aug 2020 00:31:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qBo3U360TLPTAUNBEb/4tvBZAkyZukE+xHKktR7W77U=;
+        b=YeCTC3hvMiONyl8UoTHqATUrhKSV8Ou23xruBO8P7u03sVFPvm4q/JxW2h6uiBltOR
+         k0bYaUowSVMeVjH6oX+UP3Fj8BESK6gn0MkBc+ZOToyDof5IblJguyVaFGaIdhePZZiZ
+         8OuWjjhk5K099MowYGRSw+YuYj6kUletblQ46uoFS+Iks4J7VTMbn5RmJzsdnDJZe5hh
+         3QtVFtV7DEcT+LGda70LP5SVfJDCXDo3KDwVJOop1OKM4n2qIy1PnNuYUQmdbGjh8E6b
+         XPyFHyPbq/Xwxn0Hu+mbGw2hBABrsqeGhL+54MQyQF5aJ/gMUjsET4mmGgi1Gliyk5bK
+         cPNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qBo3U360TLPTAUNBEb/4tvBZAkyZukE+xHKktR7W77U=;
+        b=pTdSt0OO/HRDkZ3xtRHq4THufWH3u/4bihPb9gDaJY7wGCs4lfBICjswmqAhhijOSB
+         M4TWE/i7fuVF5pK2ygOaZDDdS127VgO+w4aYJ8ZdK8QgJBjbEPL9uoboZrZl2WzZ3tWt
+         DAu2S2qnwDFgEXz7hH106RqcZh1HlYNEq+Lw6AQh9xM42505XrVROPFZmJwC6jkUM0Vd
+         t46P7dGujJ7X49/fhz1finqNKRDMJVbYhycmXWACd+9pto6WcxxXUZ8OaL2bQdPzM1Ue
+         HKFtgRuQBxB1qZhpc6r12p9MkF3L129GIFdbAYYUqvYE2J5BBvZar1qMp+l+SwnU8/jw
+         6NtQ==
+X-Gm-Message-State: AOAM5305Cx/7ZuDJeiWleUflKsmD2JR1EFWjxBk/9emco7Ryo3J3Ylc9
+        7RXW4jwofj1o4GdEYImTRpoQEYQZQ1c=
+X-Google-Smtp-Source: ABdhPJz9USgGHoqyWZaFTS1/ARJlgzr+LKQn6RSdN7HbuEzguhAMNTdm7oGFsl3MqGy5VhLDiKTt+A==
+X-Received: by 2002:a62:8815:: with SMTP id l21mr18093837pfd.309.1597822275740;
+        Wed, 19 Aug 2020 00:31:15 -0700 (PDT)
+Received: from harshads-520.kir.corp.google.com ([2620:15c:17:10:a6ae:11ff:fe11:86a2])
+        by smtp.googlemail.com with ESMTPSA id q6sm2040019pjr.20.2020.08.19.00.31.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Aug 2020 00:31:14 -0700 (PDT)
+From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, lyx1209@gmail.com,
+        Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Subject: [PATCH 0/9] ext4: add free-space extent based allocator
+Date:   Wed, 19 Aug 2020 00:30:55 -0700
+Message-Id: <20200819073104.1141705-1-harshadshirwadkar@gmail.com>
+X-Mailer: git-send-email 2.28.0.220.ged08abb693-goog
 MIME-Version: 1.0
-In-Reply-To: <20200819025434.65763-1-wanghai38@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Message-Id: <20200819050049.F103511C073@d06av25.portsmouth.uk.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-19_02:2020-08-18,2020-08-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
- lowpriorityscore=0 clxscore=1011 impostorscore=0 bulkscore=0
- priorityscore=1501 suspectscore=0 mlxlogscore=999 mlxscore=0 adultscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008190039
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+ext4: add free-space extent based allocator
 
+This patchset introduces a new multiblock allocator for the Ext4 file
+system based on an enhanced version of the free space management
+mechanism originally proposed by Kadekodi S. and Jain S., in their
+paper, "Taking Linux Filesystems to the Space Age: Space Maps in Ext4"
+[1].
 
-On 8/19/20 8:24 AM, Wang Hai wrote:
-> Remove linux/fiemap.h which is included more than once
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wang Hai <wanghai38@huawei.com>
+High Level Design
+=================
 
+This allocator maintains the free space information about the file
+system in per-flexible block group level trees. These trees are
+constructed from block bitmaps stored on disk. Therefore, this feature
+does not require any on-disk format change. For every flexible block
+group, we maintain individual freespace nodes in two trees, one sorted
+by flex-bg offset and other sorted by length. This gives us two
+benefits: i) In the allocation path, our search time complexity is
+O(Log(Number of freespace regions in the flex-bg)). ii) In free path,
+in the same time complexity we can merge the adjacent nodes thereby
+reducing the size of the tree efficiently.
 
-LGTM, please feel free to add,
-Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
+Along with flexible block group level trees, we also introduce a top
+level meta-tree which consists of individual flex-bg trees. This tree
+is sorted by length of largest extents found in flex-bgs. The key
+advantage that this tree gives us is this: During an allocation
+request, the allocator is now able to consult this tree and directly
+(in O(Log(Number of Flex BGs)) jump to a flexible block group which
+_definitely_ has at least one (the largest) extent that can satisfy
+this request. If no flexible block group exists which can satisfy this
+request, the allocator can now immediately drop the CR level.
 
-> ---
->   fs/ext2/inode.c | 1 -
->   1 file changed, 1 deletion(-)
-> 
-> diff --git a/fs/ext2/inode.c b/fs/ext2/inode.c
-> index 80662e1f7889..de6b97612410 100644
-> --- a/fs/ext2/inode.c
-> +++ b/fs/ext2/inode.c
-> @@ -36,7 +36,6 @@
->   #include <linux/iomap.h>
->   #include <linux/namei.h>
->   #include <linux/uio.h>
-> -#include <linux/fiemap.h>
->   #include "ext2.h"
->   #include "acl.h"
->   #include "xattr.h"
-> 
+In order to preseve the parallel allocation / free performance, the
+allocator only *tries* to consult this tree. It does so by calling
+read_trylock() function and if the meta-tree is busy, the allocator
+continues its linear search until it is able to grab a read-lock on
+this tree.
+
+Memory Footprint
+================
+
+In a less fragmented file system, the memory footprint of the new
+allocator is significantly lower than buddy bitmaps. Memory footprint
+of the freespace tree allocator can be checked by running "cat
+/sys/fs/ext4/<dev>/frsp_tree_usage". For an almost newly created 100G
+disk, the total usage is only ~10 KB. However, as the fragmentation
+level increases, the memory footprint of this allocator may
+increase. The memory usage of the freespace tree allocator can be
+controlled using sysfs tunable "mb_frsp_max_mem". Once the memory
+threshold is reached, the allocator starts evicting the freespace
+trees in the LRU fashion from memory. However, we don't remove tree's
+entry from the meta-tree. This allows the allocator to efficiently
+reconstruct only relevant trees from on-disk bitmaps under high memory
+pressure. As we show in the evaluation section, freespace tree
+allocator still manages to outperform buddy allocator in memory crunch
+situation. The default value of mb_frsp_max_mem is max(memory needed
+for buddy, maximum memory needed for one tree in the worst
+case). Accounting for max memory needed for one tree allows us to keep
+at least one tree in memory even in the worst case. This avoids
+thrashing.
+
+Caching Tree Metadata
+=====================
+
+As noted in our experiments, we find caching tree metadata (the
+largest available extent in a tree) in the meta-tree significantly
+boosts allocation performance. However, if the allocator waits for the
+cache to fill up before starting to serve allocation requests, that
+may severely degrade allocation performance on large disks. Thus, it
+is important to tune the tree caching behavior according to the
+underlying block device. This patchset provides four cache aggression
+levels. Cache aggression level can be specified as a mount time
+parameter "frsp_cache_aggression". Here is the meaning of these
+different levels:
+
+|-------+------------------------------------------------------------------|
+| Level | Meaning                                                          |
+|-------+------------------------------------------------------------------|
+|     0 | Try to avoid caching as much as possible. In this mode           |
+|       | the allocator tries hard to serve the request from the already   |
+|       | cached trees.                                                    |
+|-------+------------------------------------------------------------------|
+|     1 | Avoid caching at CR=0. Otherwise, cache trees on every other     |
+|       | allocation request. (default)                                    |
+|-------+------------------------------------------------------------------|
+|     2 | Cache trees on every other allocation request.                   |
+|-------+------------------------------------------------------------------|
+|     3 | Aggressive caching. In this mode the allocator aggressively      |
+|       | caches uncached trees, even if the request can be fulfilled      |
+|       | by one of the available trees. Using this mode, the allocator    |
+|       | ends up caching trees quickly and thereby is able to make better |
+|       | allocation decisions sooner.                                     |
+|-------+------------------------------------------------------------------|
+
+Evaluation
+==========
+
+This feature did not introduce any regressions in Ext4 XFStests in
+quick group. We created a _highly_ 60T fragmented disk with over 490K
+block groups and over 30K flexible block groups. We tested the write
+performance of the first small write (10MB) and a larger second write
+(100MB) using both the buddy allocator and freespace tree
+allocator. We turned memory limit off for the first four free space
+tree configurations.
+
+First Write Performance
+-----------------------
+|--------------------------------------+---------+---------+-----------+--------|
+| Allocator                            | RAM     | # trees | Perf      | Time   |
+|                                      | usage   |  cached |           |        |
+|--------------------------------------+---------+---------+-----------+--------|
+| Buddy Allocator (v5.7)               | -       |       - | 6.8 KB/s  | 25m51s |
+|--------------------------------------+---------+---------+-----------+--------|
+| With --prefetch_block_bitmap         | -       |       - | 28.1 KB/s | 6m14s  |
+|--------------------------------------+---------+---------+-----------+--------|
+| Free space tree allocator at level 0 | 43.5 MB |     201 | 2.6 MB/s  | 0m8s   |
+|--------------------------------------+---------+---------+-----------+--------|
+| Free space tree allocator at level 1 | 193 MB  |     874 | 1.5 MB/s  | 0m47s  |
+|--------------------------------------+---------+---------+-----------+--------|
+| Free space tree allocator at level 2 | 3.6 GB  |   16476 | 21.4 KB/s | 8m14s  |
+|--------------------------------------+---------+---------+-----------+--------|
+| Free space tree allocator at level 3 | 6.8 GB  |   30720 | 9.1 KB/s  | 19m22s |
+|--------------------------------------+---------+---------+-----------+--------|
+| Free space tree allocator at level 3 | 1023 MB |   30720 | 9.3 KB/s  | 18m53s |
+| ( With 1G Limit)                     |         |         |           |        |
+|--------------------------------------+---------+---------+-----------+--------|
+
+Second Write Performance
+------------------------
+|--------------------------------------+---------+---------+-----------+-------|
+| Allocator                            | RAM     | # trees | Perf      | Time  |
+|                                      | usage   |  cached |           |       |
+|--------------------------------------+---------+---------+-----------+-------|
+| Buddy Allocator (v5.7)               | -       |       - | 499 KB/s  | 3m30s |
+|--------------------------------------+---------+---------+-----------+-------|
+| With --prefetch_block_bitmap         | -       |       - | 185 KB/s  | 9m26s |
+|--------------------------------------+---------+---------+-----------+-------|
+| Free space tree allocator at level 0 | 48.7 MB |     226 | 48.2 MB/s | 6s    |
+|--------------------------------------+---------+---------+-----------+-------|
+| Free space tree allocator at level 1 | 221 MB  |    1007 | 26.8 MB/s | 8s    |
+|--------------------------------------+---------+---------+-----------+-------|
+| Free space tree allocator at level 2 | 6.8 GB  |   30720 | 178 KB/s  | 9m54s |
+|--------------------------------------+---------+---------+-----------+-------|
+| Free space tree allocator at level 3 | 6.8 GB  |   30720 | 79 MB/s   | 5s    |
+|--------------------------------------+---------+---------+-----------+-------|
+| Free space tree allocator at level 3 | 1023 MB |   30720 | 77.1 MB/s | 7s    |
+| ( With 1G Limit)                     |         |         |           |       |
+|--------------------------------------+---------+---------+-----------+-------|
+
+Verified that parallel write performance on a newly created disk is
+not very different for buddy allocator and freespace tree
+allocator. This patchset is applied on top of block bitmap prefetch
+patches.
+
+Signed-off-by: Yuexin Li <lyx1209@gmail.com>
+Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+
+[1] https://www.kernel.org/doc/ols/2010/ols2010-pages-121-132.pdf
+
+Harshad Shirwadkar (8):
+  ext4: add handling for extended mount options
+  ext4: rename ext4_mb_load_buddy to ext4_mb_load_allocator
+  ext4: add prefetching support for freespace trees
+  ext4: add freespace tree optimizations
+  ext4: add memory usage tracker for freespace trees
+  ext4: add LRU eviction for free space trees
+  ext4: add tracepoints for free space trees
+  ext4: add freespace trees documentation in code
+
+Yuexin Li (1):
+  ext4: add freespace tree allocator
+
+ fs/ext4/ext4.h              |  117 +++
+ fs/ext4/mballoc.c           | 1541 +++++++++++++++++++++++++++++++++--
+ fs/ext4/mballoc.h           |   67 +-
+ fs/ext4/resize.c            |    8 +
+ fs/ext4/super.c             |   60 +-
+ fs/ext4/sysfs.c             |   11 +
+ include/trace/events/ext4.h |  112 +++
+ 7 files changed, 1821 insertions(+), 95 deletions(-)
+
+-- 
+2.28.0.220.ged08abb693-goog
+
