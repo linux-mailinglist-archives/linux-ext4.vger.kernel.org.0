@@ -2,58 +2,58 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4605924977A
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Aug 2020 09:31:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BF9824977F
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 Aug 2020 09:32:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727072AbgHSHbl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 19 Aug 2020 03:31:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42068 "EHLO
+        id S1727835AbgHSHbm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 19 Aug 2020 03:31:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727081AbgHSHbZ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 19 Aug 2020 03:31:25 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11087C061344
-        for <linux-ext4@vger.kernel.org>; Wed, 19 Aug 2020 00:31:25 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id m34so10962318pgl.11
-        for <linux-ext4@vger.kernel.org>; Wed, 19 Aug 2020 00:31:25 -0700 (PDT)
+        with ESMTP id S1727120AbgHSHba (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 19 Aug 2020 03:31:30 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B89C9C061345
+        for <linux-ext4@vger.kernel.org>; Wed, 19 Aug 2020 00:31:26 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id mt12so709434pjb.4
+        for <linux-ext4@vger.kernel.org>; Wed, 19 Aug 2020 00:31:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=jsAzrDLh2Ch9lvlJy7pjfEH46kqJ70uMVgvqmgAKAas=;
-        b=MeGH8Q/G+OPhlhr3ZsVLeRhKFQBN3tdV9FASIz5YlhaLeVF6SZoxWBLRqkR8Y8k7aB
-         EP5o1nVp5x82krcl9DAJF8rUJxJXYhFWjqtdTe/tSUs7n3GEZrTnng//AuoY9e84icJt
-         0JDH77wGdCDBXEShKPoUpOI3lOLfy3TLaUgPXyzoFLltpjyreJhPG1D3Dh3gCRdKg7WC
-         wR1RaBahQUZ6gITvDbd40yd1KbcM7JO/OgqQknFUIGJEb8c1G+KZW3kb/Y+tyOWAOdyy
-         sJ1XkkbRAt6OQmzW/nQXawzCCymeow1jBCXDioz2wQCo7DH0CibXidduBwnVbvug5fS0
-         4y9w==
+        bh=zIlwfdMXV5+1V7UxkE4rRg1pqWvw2i7VYTsadIQGe9w=;
+        b=L7uJ98GBo8uJBz8/h1SHiu5CVgmdYUDQ5I/3I9wSbTrntUnYhLc3HOcaGi3yBGVIND
+         ZOCa4njFm3lkdB729RVBDGDuZs4FzjMImkyOxSojZYOuQtB1u+jZMj+aerDv3MYptoir
+         /V1E8+bmz2sQCSUPq+Ef/hkdw779SQNJVeBDhfHJ1pQG8TUyyiw9cVKvoKRdX7MzwLMs
+         zAgguDp/9h4WjX2f4yqDjC/eWlNwwdSnfOzJl0nsWhtyio0vOOyZhEVzURdZAYtTlRyh
+         JozHZ6YyHFbeCeN2qKkpjgAEvM3PP+4Zc8IuxYGYU0TB+UulCrtkiESi0qxExHNrVj4y
+         HQpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=jsAzrDLh2Ch9lvlJy7pjfEH46kqJ70uMVgvqmgAKAas=;
-        b=JD5uJb52r5fHrsi+xSnBjhhX5AevAsOw8ZG7277g+Ym/EHPPM1qokQyQnaRCPszOcT
-         mbL1MJ2EGzQAlhMeVCUIl0HuFqB6t2eGYyz0hN3vyydPGSy88sisVk24RAlf6OY2+Sk0
-         gcKCYXc7vB0zxeRp3HXyJQs9kIz1zSl1lUAaqU0SfFvBGy8cHSrpaiKkFXVGedopscBj
-         /wFQXO6xI/qo4swOWEVAZHpvg6jH5+KyeLPfsjLUAQwKeB6S8VItCdIaAtQxqZqdyTTE
-         ViNOasAtw+D5g5yJyjiQ8/DbhekiOC2VxvMkaF0kswc9SojBckLkRTWeT6IE7TnLJizn
-         WxoA==
-X-Gm-Message-State: AOAM531VGbe2qiYFkWF/9vh/pcKnp37G+ixpUrsAcGlsCWUO5VYMhcLg
-        S+Z/J4RSs/yAwETkBYSkDWhseSc5CHI=
-X-Google-Smtp-Source: ABdhPJxc7obmz4VcT3ylCxntjp6x+AeD1+JpKhil+DmilP8iQXyCfe3M0uxno0nOZd0FSlWHPSRRBQ==
-X-Received: by 2002:a65:52c2:: with SMTP id z2mr3666805pgp.402.1597822284135;
-        Wed, 19 Aug 2020 00:31:24 -0700 (PDT)
+        bh=zIlwfdMXV5+1V7UxkE4rRg1pqWvw2i7VYTsadIQGe9w=;
+        b=qEM6lZwjYWywOJBTKuXfZG1RdMgzxmkO9Q1CLvgn5k0E6AL5IWZwwrWrxFTqJYcjPb
+         q1mts/l3oX41+sC8Rybla15xpFYt8+EUe1SA+mVDd8J3TwwuVZPiBasgQ0KcWZpvpCfh
+         SWF+I/m6+1j0tdgPtIb7KFpgfasWBDnUnCUSADxWYMsJkrnthHpEZbI2To6Xg+sMbbwT
+         3pBkbSysUUgingWOX6htjWkgWmYuiQ6A7dSO/LPFMBIZOeiANbq+0RMSslXep6v/OWWg
+         E7zMcj+KcciPoTtz+yZqsk/pKvCR+hMl/4AHfO+KtyeapxmEE/gNju6tYFwqo4oy+fX8
+         Q1aw==
+X-Gm-Message-State: AOAM532kvO6M3I5z2zRCHYO9Pk8P2qnLHvIDn0dhw13VY824cSOEXLLN
+        clWjbhabkMIg8QwLltZKwX6JnMP/PBQ=
+X-Google-Smtp-Source: ABdhPJwj8ROv8uKKswUZXw0tiRSrndNoP9NxYUbq936dVTYIImTmsAeJ7DOQXfmB+IfoDtFNxPy/hQ==
+X-Received: by 2002:a17:90a:8c8f:: with SMTP id b15mr3109384pjo.84.1597822285488;
+        Wed, 19 Aug 2020 00:31:25 -0700 (PDT)
 Received: from harshads-520.kir.corp.google.com ([2620:15c:17:10:a6ae:11ff:fe11:86a2])
-        by smtp.googlemail.com with ESMTPSA id q6sm2040019pjr.20.2020.08.19.00.31.22
+        by smtp.googlemail.com with ESMTPSA id q6sm2040019pjr.20.2020.08.19.00.31.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Aug 2020 00:31:22 -0700 (PDT)
+        Wed, 19 Aug 2020 00:31:24 -0700 (PDT)
 From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 To:     linux-ext4@vger.kernel.org
 Cc:     tytso@mit.edu, lyx1209@gmail.com,
         Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Subject: [PATCH 6/9] ext4: add memory usage tracker for freespace trees
-Date:   Wed, 19 Aug 2020 00:31:01 -0700
-Message-Id: <20200819073104.1141705-7-harshadshirwadkar@gmail.com>
+Subject: [PATCH 7/9] ext4: add LRU eviction for free space trees
+Date:   Wed, 19 Aug 2020 00:31:02 -0700
+Message-Id: <20200819073104.1141705-8-harshadshirwadkar@gmail.com>
 X-Mailer: git-send-email 2.28.0.220.ged08abb693-goog
 In-Reply-To: <20200819073104.1141705-1-harshadshirwadkar@gmail.com>
 References: <20200819073104.1141705-1-harshadshirwadkar@gmail.com>
@@ -64,178 +64,396 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Freespace trees can occupy a lot of memory with as the fragmentation
-increases. This patch adds a sysfs file to monitor the memory usage of
-the freespace tree allocator. Also, added a sysfs config to control
-maximum memory that the allocator can use. If the allocator exceeds
-this threshold, file system enters "FRSP_MEM_CRUNCH" state. The next
-patch in the series performs LRU eviction when this state is reached.
+This patch adds LRU eviction policy for freespace trees. In order to
+avoid contention on one LRU lock, the LRU scheme is implemented as two
+lists - an active list and an inactive list. Trees in active list
+aren't moved inside the list thereby avoiding the need of a
+lock. Trees in inactive list become active only if they are accessed
+twice in a short interval thereby avoiding outliers to enter the
+active list.
 
 Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 ---
- fs/ext4/ext4.h    |  8 ++++++++
- fs/ext4/mballoc.c | 20 ++++++++++++++++++++
- fs/ext4/mballoc.h |  4 ++++
- fs/ext4/sysfs.c   | 11 +++++++++++
- 4 files changed, 43 insertions(+)
+ fs/ext4/ext4.h    |  46 +++++++++++++
+ fs/ext4/mballoc.c | 164 ++++++++++++++++++++++++++++++++++++++++++----
+ 2 files changed, 197 insertions(+), 13 deletions(-)
 
 diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 8cfe089ebea6..45fc3b230357 100644
+index 45fc3b230357..8f015f90a537 100644
 --- a/fs/ext4/ext4.h
 +++ b/fs/ext4/ext4.h
-@@ -1206,6 +1206,12 @@ struct ext4_inode_info {
- 						    * allocator off)
- 						    */
+@@ -1437,6 +1437,10 @@ struct ext4_frsp_tree {
+ 							 */
+ 	struct list_head frsp_list_node;
+ 	struct rb_node frsp_len_node;
++	atomic_t frsp_fragments;
++	struct list_head frsp_lru_active_node;
++	unsigned long frsp_last_access;
++	atomic_t frsp_ref;
+ };
  
-+#define EXT4_MOUNT2_FRSP_MEM_CRUNCH	0x00000040 /*
-+						    * Freespace tree allocator
-+						    * is in a tight memory
-+						    * situation.
-+						    */
+ /* Freespace tree flags */
+@@ -1451,6 +1455,47 @@ struct ext4_frsp_tree {
+ #define EXT4_MB_FRSP_DEFAULT_CACHE_AGGRESSION		0x1
+ #define EXT4_MB_FRSP_MAX_CACHE_AGGRESSION		0x3
+ 
++/* LRU management for free space trees */
++struct ext4_mb_frsp_lru {
++	rwlock_t frsp_lru_lock;
++	atomic_t frsp_active_fragments;		/* Current #of fragments in
++						 * the active queue
++						 */
++	u32 frsp_max_active_fragments;
++	/*
++	 * List of active trees. Trees at tail are oldest trees in active set.
++	 */
++	struct list_head frsp_lru_active;
++	/*
++	 * List of inactive trees but loaded trees.
++	 */
++	struct list_head frsp_lru_inactive;
++	struct super_block *frsp_lru_sb;
++};
 +
- #define clear_opt(sb, opt)		EXT4_SB(sb)->s_mount_opt &= \
- 						~EXT4_MOUNT_##opt
- #define set_opt(sb, opt)		EXT4_SB(sb)->s_mount_opt |= \
-@@ -1589,6 +1595,8 @@ struct ext4_sb_info {
- 	atomic_t s_mb_num_frsp_trees_cached;
- 	struct list_head s_mb_uncached_trees;
++/*
++ * Minimum memory needed for our allocator. The pathological worst case for
++ * freespace trees is when every other block is allocated. In this case,
++ * the allocator will end up storing an extent node of length 1 for each free
++ * block. We need to make sure that the minimum memory available for the
++ * allocator is as much memory needed for 1 worst-case tree. This ensures that
++ * we can at-least keep 1 tree in memory. This way we avoid thrashing.
++ */
++#define EXT4_MB_FRSP_MEM_MIN(sb)					\
++	((sizeof(struct ext4_frsp_node) * ext4_flex_bg_size(EXT4_SB(sb))) \
++		* (EXT4_BLOCKS_PER_GROUP(sb) / 2))
++
++/* Half of the total memory available is allowed for active list */
++#define EXT4_MB_FRSP_MAX_ACTIVE_FRAGMENTS(sb)				\
++	((EXT4_SB(sb)->s_mb_frsp_mem_limit /				\
++		(2 * sizeof(struct ext4_frsp_node))))
++
++/*
++ * Maximum number of jiffies allowed between two successive hits on a freespace
++ * tree before we move it to the "active" queue.
++ */
++#define EXT4_MB_FRSP_ACTIVE_THRESHOLD_JIFFIES		100
++
+ /*
+  * fourth extended-fs super-block data in memory
+  */
+@@ -1597,6 +1642,7 @@ struct ext4_sb_info {
  	u32 s_mb_frsp_cache_aggression;
-+	atomic_t s_mb_num_fragments;
-+	u32 s_mb_frsp_mem_limit;
+ 	atomic_t s_mb_num_fragments;
+ 	u32 s_mb_frsp_mem_limit;
++	struct ext4_mb_frsp_lru s_mb_frsp_lru;
  
  	/* workqueue for reserved extent conversions (buffered io) */
  	struct workqueue_struct *rsv_conversion_wq;
 diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index fa027b626abe..aada6838cafd 100644
+index aada6838cafd..98591d44e3cd 100644
 --- a/fs/ext4/mballoc.c
 +++ b/fs/ext4/mballoc.c
-@@ -869,6 +869,7 @@ void ext4_mb_frsp_print_tree_len(struct super_block *sb,
- static struct ext4_frsp_node *ext4_mb_frsp_alloc_node(struct super_block *sb)
+@@ -866,10 +866,12 @@ void ext4_mb_frsp_print_tree_len(struct super_block *sb,
+ }
+ #endif
+ 
+-static struct ext4_frsp_node *ext4_mb_frsp_alloc_node(struct super_block *sb)
++static struct ext4_frsp_node *ext4_mb_frsp_alloc_node(struct super_block *sb,
++			struct ext4_frsp_tree *tree)
  {
  	struct ext4_frsp_node *node;
-+	struct ext4_sb_info *sbi = EXT4_SB(sb);
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
++	struct ext4_mb_frsp_lru *lru = &EXT4_SB(sb)->s_mb_frsp_lru;
  
  	node = kmem_cache_alloc(ext4_freespace_node_cachep, GFP_NOFS);
  	if (!node)
-@@ -877,13 +878,31 @@ static struct ext4_frsp_node *ext4_mb_frsp_alloc_node(struct super_block *sb)
- 	RB_CLEAR_NODE(&node->frsp_node);
+@@ -879,6 +881,11 @@ static struct ext4_frsp_node *ext4_mb_frsp_alloc_node(struct super_block *sb)
  	RB_CLEAR_NODE(&node->frsp_len_node);
  
-+	atomic_inc(&sbi->s_mb_num_fragments);
-+
-+	if (sbi->s_mb_frsp_mem_limit &&
-+		atomic_read(&sbi->s_mb_num_fragments) >
-+		EXT4_FRSP_MEM_LIMIT_TO_NUM_NODES(sb))
-+		set_opt2(sb, FRSP_MEM_CRUNCH);
-+	else
-+		clear_opt2(sb, FRSP_MEM_CRUNCH);
-+
-+
- 	return node;
+ 	atomic_inc(&sbi->s_mb_num_fragments);
++	atomic_inc(&tree->frsp_fragments);
++	read_lock(&lru->frsp_lru_lock);
++	if (!list_empty(&tree->frsp_lru_active_node))
++		atomic_inc(&lru->frsp_active_fragments);
++	read_unlock(&lru->frsp_lru_lock);
+ 
+ 	if (sbi->s_mb_frsp_mem_limit &&
+ 		atomic_read(&sbi->s_mb_num_fragments) >
+@@ -892,12 +899,18 @@ static struct ext4_frsp_node *ext4_mb_frsp_alloc_node(struct super_block *sb)
  }
  
  static void ext4_mb_frsp_free_node(struct super_block *sb,
- 		struct ext4_frsp_node *node)
+-		struct ext4_frsp_node *node)
++		struct ext4_frsp_tree *tree, struct ext4_frsp_node *node)
  {
-+	struct ext4_sb_info *sbi = EXT4_SB(sb);
-+
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
++	struct ext4_mb_frsp_lru *lru = &EXT4_SB(sb)->s_mb_frsp_lru;
+ 
  	kmem_cache_free(ext4_freespace_node_cachep, node);
-+	atomic_dec(&sbi->s_mb_num_fragments);
-+
-+	if (!sbi->s_mb_frsp_mem_limit ||
-+		atomic_read(&sbi->s_mb_num_fragments) <
-+		EXT4_FRSP_MEM_LIMIT_TO_NUM_NODES(sb))
-+		clear_opt2(sb, FRSP_MEM_CRUNCH);
+ 	atomic_dec(&sbi->s_mb_num_fragments);
++	atomic_dec(&tree->frsp_fragments);
++	read_lock(&lru->frsp_lru_lock);
++	if (!list_empty(&tree->frsp_lru_active_node))
++		atomic_dec(&lru->frsp_active_fragments);
++	read_unlock(&lru->frsp_lru_lock);
+ 
+ 	if (!sbi->s_mb_frsp_mem_limit ||
+ 		atomic_read(&sbi->s_mb_num_fragments) <
+@@ -915,6 +928,8 @@ void ext4_mb_frsp_free_tree(struct super_block *sb, struct ext4_frsp_tree *tree)
+ 	mutex_lock(&tree->frsp_lock);
+ 	if (!(tree->frsp_flags & EXT4_MB_FRSP_FLAG_LOADED))
+ 		goto out;
++	if (atomic_read(&tree->frsp_ref))
++		goto out;
+ 
+ 	node = rb_first_cached(&tree->frsp_offset_root);
+ 	while (node) {
+@@ -922,7 +937,7 @@ void ext4_mb_frsp_free_tree(struct super_block *sb, struct ext4_frsp_tree *tree)
+ 		rb_erase_cached(node, &tree->frsp_offset_root);
+ 		rb_erase_cached(&frsp_node->frsp_len_node,
+ 				&tree->frsp_len_root);
+-		ext4_mb_frsp_free_node(sb, frsp_node);
++		ext4_mb_frsp_free_node(sb, tree, frsp_node);
+ 		node = rb_first_cached(&tree->frsp_offset_root);
+ 	}
+ 	tree->frsp_flags &= ~EXT4_MB_FRSP_FLAG_LOADED;
+@@ -985,7 +1000,7 @@ int ext4_mb_frsp_add_region(struct super_block *sb, struct ext4_frsp_tree *tree,
+ 				*prev_entry = NULL;
+ 	struct rb_node *left = NULL, *right = NULL;
+ 
+-	new_entry = ext4_mb_frsp_alloc_node(sb);
++	new_entry = ext4_mb_frsp_alloc_node(sb, tree);
+ 	if (!new_entry)
+ 		return -ENOMEM;
+ 
+@@ -1004,7 +1019,7 @@ int ext4_mb_frsp_add_region(struct super_block *sb, struct ext4_frsp_tree *tree,
+ 			rb_erase_cached(left, &tree->frsp_offset_root);
+ 			rb_erase_cached(&prev_entry->frsp_len_node,
+ 						&tree->frsp_len_root);
+-			ext4_mb_frsp_free_node(sb, prev_entry);
++			ext4_mb_frsp_free_node(sb, tree, prev_entry);
+ 		}
+ 	}
+ 
+@@ -1017,7 +1032,7 @@ int ext4_mb_frsp_add_region(struct super_block *sb, struct ext4_frsp_tree *tree,
+ 			rb_erase_cached(right, &tree->frsp_offset_root);
+ 			rb_erase_cached(&next_entry->frsp_len_node,
+ 						&tree->frsp_len_root);
+-			ext4_mb_frsp_free_node(sb, next_entry);
++			ext4_mb_frsp_free_node(sb, tree, next_entry);
+ 		}
+ 	}
+ 	ext4_mb_frsp_insert_len(tree, new_entry);
+@@ -1601,6 +1616,10 @@ static void ext4_mb_frsp_init_tree(struct ext4_frsp_tree *tree, int index)
+ 	tree->frsp_flags = 0;
+ 	tree->frsp_index = index;
+ 	INIT_LIST_HEAD(&tree->frsp_list_node);
++	atomic_set(&tree->frsp_fragments, 0);
++	tree->frsp_last_access = 0;
++	INIT_LIST_HEAD(&tree->frsp_lru_active_node);
++	atomic_set(&tree->frsp_ref, 0);
  }
  
- /* Evict a tree from memory */
-@@ -1607,6 +1626,7 @@ int ext4_mb_init_freespace_trees(struct super_block *sb)
- 	}
+ int ext4_mb_init_freespace_trees(struct super_block *sb)
+@@ -1627,6 +1646,15 @@ int ext4_mb_init_freespace_trees(struct super_block *sb)
  	rwlock_init(&sbi->s_mb_frsp_lock);
  	atomic_set(&sbi->s_mb_num_frsp_trees_cached, 0);
-+	atomic_set(&sbi->s_mb_num_fragments, 0);
+ 	atomic_set(&sbi->s_mb_num_fragments, 0);
++	INIT_LIST_HEAD(&sbi->s_mb_frsp_lru.frsp_lru_active);
++	INIT_LIST_HEAD(&sbi->s_mb_frsp_lru.frsp_lru_inactive);
++	rwlock_init(&sbi->s_mb_frsp_lru.frsp_lru_lock);
++	/* Set the default hard-limit to be as much as buddy bitmaps */
++	sbi->s_mb_frsp_mem_limit = ext4_get_groups_count(sb) <<
++				(sb->s_blocksize_bits + 1);
++	if (sbi->s_mb_frsp_mem_limit < EXT4_MB_FRSP_MEM_MIN(sb))
++		sbi->s_mb_frsp_mem_limit = EXT4_MB_FRSP_MEM_MIN(sb);
++	atomic_set(&sbi->s_mb_frsp_lru.frsp_active_fragments, 0);
  
  	return 0;
  }
-diff --git a/fs/ext4/mballoc.h b/fs/ext4/mballoc.h
-index ac65f7eac611..08cac358324d 100644
---- a/fs/ext4/mballoc.h
-+++ b/fs/ext4/mballoc.h
-@@ -88,6 +88,10 @@ struct ext4_frsp_node {
- 	struct rb_node frsp_node;
- 	struct rb_node frsp_len_node;
- };
+@@ -1664,6 +1692,99 @@ int ext4_mb_add_frsp_trees(struct super_block *sb, int ngroups)
+ 	return 0;
+ }
+ 
++/*
++ * Evict one tree from inactive list.
++ */
++static void ext4_frsp_evict(struct super_block *sb)
++{
++	struct ext4_mb_frsp_lru *lru = &EXT4_SB(sb)->s_mb_frsp_lru;
++	struct ext4_frsp_tree *tree = NULL;
++	bool found = false;
 +
-+#define EXT4_FRSP_MEM_LIMIT_TO_NUM_NODES(__sb)				\
-+	((sbi->s_mb_frsp_mem_limit / sizeof(struct ext4_frsp_node)))
++	write_lock(&lru->frsp_lru_lock);
++	if (!list_empty(&lru->frsp_lru_inactive)) {
++		/* Evict from front, insert at tail */
++		found = 0;
++		list_for_each_entry(tree, &lru->frsp_lru_inactive,
++			frsp_list_node) {
++			if (!atomic_read(&tree->frsp_ref)) {
++				found = true;
++				break;
++			}
++		}
++		if (found)
++			list_del_init(&tree->frsp_list_node);
++	}
++	write_unlock(&lru->frsp_lru_lock);
++	if (found)
++		ext4_mb_frsp_free_tree(sb, tree);
++}
 +
- struct ext4_free_data {
- 	/* this links the free block information from sb_info */
- 	struct list_head		efd_list;
-diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
-index 31e0db726d21..d23cb51635c3 100644
---- a/fs/ext4/sysfs.c
-+++ b/fs/ext4/sysfs.c
-@@ -8,6 +8,7 @@
-  *
-  */
++/*
++ * This function maintains LRU lists. "tree" has just been accessed.
++ */
++static void ext4_mb_frsp_maintain_lru(struct super_block *sb,
++					struct ext4_frsp_tree *tree)
++{
++	struct ext4_mb_frsp_lru *lru = &EXT4_SB(sb)->s_mb_frsp_lru;
++	struct ext4_frsp_tree *last;
++	unsigned long current_jiffies = jiffies;
++
++	read_lock(&lru->frsp_lru_lock);
++	if (!list_empty(&tree->frsp_lru_active_node)) {
++		/* Already active, nothing to do */
++		read_unlock(&lru->frsp_lru_lock);
++		goto out;
++	}
++
++	/*
++	 * Check if this tree needs to be moved to active list. We move it to
++	 * active list if one of the following three conditions is true:
++	 * - This is the first access to this tree
++	 * - We haven't yet reached the max active fragments threshold, so there
++	 *   is space in active list.
++	 * - This tree was accessed twice in
++	 *   EXT4_MB_FRSP_ACTIVE_THRESHOLD_JIFFIES interval.
++	 */
++	if (tree->frsp_last_access &&
++		EXT4_MB_FRSP_MAX_ACTIVE_FRAGMENTS(sb) &&
++		atomic_read(&lru->frsp_active_fragments) >
++			EXT4_MB_FRSP_MAX_ACTIVE_FRAGMENTS(sb) &&
++		current_jiffies - tree->frsp_last_access >
++		EXT4_MB_FRSP_ACTIVE_THRESHOLD_JIFFIES) {
++		read_unlock(&lru->frsp_lru_lock);
++		goto out;
++	}
++	read_unlock(&lru->frsp_lru_lock);
++
++	write_lock(&lru->frsp_lru_lock);
++	/* Check again just in case */
++	if (!list_empty(&tree->frsp_lru_active_node)) {
++		write_unlock(&lru->frsp_lru_lock);
++		goto out;
++	}
++	list_add(&tree->frsp_lru_active_node, &lru->frsp_lru_active);
++	list_del_init(&tree->frsp_list_node);
++	atomic_add(atomic_read(&tree->frsp_fragments),
++			&lru->frsp_active_fragments);
++	/* Remove trees from active queue until we are below the limit */
++	while (EXT4_MB_FRSP_MAX_ACTIVE_FRAGMENTS(sb) &&
++		atomic_read(&lru->frsp_active_fragments) >
++			EXT4_MB_FRSP_MAX_ACTIVE_FRAGMENTS(sb)) {
++		last = list_last_entry(&lru->frsp_lru_active,
++				struct ext4_frsp_tree, frsp_lru_active_node);
++		list_del_init(&last->frsp_lru_active_node);
++		/* Evict from front, insert at tail */
++		list_add_tail(&last->frsp_list_node, &lru->frsp_lru_inactive);
++		atomic_sub(atomic_read(&last->frsp_fragments),
++			&lru->frsp_active_fragments);
++	}
++	write_unlock(&lru->frsp_lru_lock);
++
++out:
++	tree->frsp_last_access = current_jiffies;
++}
++
+ /*
+  * Divide blocks started from @first with length @len into
+  * smaller chunks with power of 2 blocks.
+@@ -2154,10 +2275,12 @@ ext4_mb_load_allocator_gfp(struct super_block *sb, ext4_group_t group,
+ 		e4b->frsp_tree = ext4_get_frsp_tree(sb,
+ 					ext4_flex_group(sbi, group));
+ 		e4b->frsp_flags = flags;
++		ext4_mb_frsp_maintain_lru(sb, e4b->frsp_tree);
+ 		if (flags & EXT4_ALLOCATOR_FRSP_NOLOAD)
+ 			return 0;
  
-+#include "mballoc.h"
- #include <linux/time.h>
- #include <linux/fs.h>
- #include <linux/seq_file.h>
-@@ -24,6 +25,7 @@ typedef enum {
- 	attr_session_write_kbytes,
- 	attr_lifetime_write_kbytes,
- 	attr_reserved_clusters,
-+	attr_frsp_tree_usage,
- 	attr_inode_readahead,
- 	attr_trigger_test_error,
- 	attr_first_error_time,
-@@ -205,6 +207,7 @@ EXT4_ATTR_FUNC(delayed_allocation_blocks, 0444);
- EXT4_ATTR_FUNC(session_write_kbytes, 0444);
- EXT4_ATTR_FUNC(lifetime_write_kbytes, 0444);
- EXT4_ATTR_FUNC(reserved_clusters, 0644);
-+EXT4_ATTR_FUNC(frsp_tree_usage, 0444);
+ 		mutex_lock(&e4b->frsp_tree->frsp_lock);
++		atomic_inc(&e4b->frsp_tree->frsp_ref);
+ 		if (e4b->frsp_tree->frsp_flags & EXT4_MB_FRSP_FLAG_LOADED) {
+ 			mutex_unlock(&e4b->frsp_tree->frsp_lock);
+ 			return 0;
+@@ -2288,8 +2411,15 @@ static int ext4_mb_load_allocator(struct super_block *sb, ext4_group_t group,
  
- EXT4_ATTR_OFFSET(inode_readahead_blks, 0644, inode_readahead,
- 		 ext4_sb_info, s_inode_readahead_blks);
-@@ -242,6 +245,7 @@ EXT4_ATTR(last_error_time, 0444, last_error_time);
- EXT4_ATTR(journal_task, 0444, journal_task);
- EXT4_RW_ATTR_SBI_UI(mb_prefetch, s_mb_prefetch);
- EXT4_RW_ATTR_SBI_UI(mb_prefetch_limit, s_mb_prefetch_limit);
-+EXT4_RW_ATTR_SBI_UI(mb_frsp_max_mem, s_mb_frsp_mem_limit);
+ static void ext4_mb_unload_allocator(struct ext4_buddy *e4b)
+ {
+-	if (ext4_mb_frsp_on(e4b->bd_sb))
++	if (ext4_mb_frsp_on(e4b->bd_sb)) {
++		if (!e4b->frsp_tree ||
++			e4b->frsp_flags & EXT4_ALLOCATOR_FRSP_NOLOAD)
++			return;
++		atomic_dec(&e4b->frsp_tree->frsp_ref);
++		if (test_opt2(e4b->bd_sb, FRSP_MEM_CRUNCH))
++			ext4_frsp_evict(e4b->bd_sb);
+ 		return;
++	}
+ 	if (e4b->bd_bitmap_page)
+ 		put_page(e4b->bd_bitmap_page);
+ 	if (e4b->bd_buddy_page)
+@@ -2661,7 +2791,8 @@ static int mb_mark_used(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
+ 				ex->fe_node->frsp_offset +
+ 				ex->fe_node->frsp_len) {
+ 				/* Need to split the node */
+-				new = ext4_mb_frsp_alloc_node(e4b->bd_sb);
++				new = ext4_mb_frsp_alloc_node(e4b->bd_sb,
++								e4b->frsp_tree);
+ 				if (!new)
+ 					return -ENOMEM;
+ 				new->frsp_offset = flex_offset + ex->fe_len;
+@@ -2678,7 +2809,8 @@ static int mb_mark_used(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
+ 			ex->fe_node->frsp_offset += ex->fe_len;
+ 			ex->fe_node->frsp_len -= ex->fe_len;
+ 		} else {
+-			ext4_mb_frsp_free_node(e4b->bd_sb, ex->fe_node);
++			ext4_mb_frsp_free_node(e4b->bd_sb, e4b->frsp_tree,
++							ex->fe_node);
+ 			return 0;
+ 		}
  
- static unsigned int old_bump_val = 128;
- EXT4_ATTR_PTR(max_writeback_mb_bump, 0444, pointer_ui, &old_bump_val);
-@@ -251,6 +255,7 @@ static struct attribute *ext4_attrs[] = {
- 	ATTR_LIST(session_write_kbytes),
- 	ATTR_LIST(lifetime_write_kbytes),
- 	ATTR_LIST(reserved_clusters),
-+	ATTR_LIST(frsp_tree_usage),
- 	ATTR_LIST(inode_readahead_blks),
- 	ATTR_LIST(inode_goal),
- 	ATTR_LIST(mb_stats),
-@@ -287,6 +292,7 @@ static struct attribute *ext4_attrs[] = {
- #endif
- 	ATTR_LIST(mb_prefetch),
- 	ATTR_LIST(mb_prefetch_limit),
-+	ATTR_LIST(mb_frsp_max_mem),
- 	NULL,
- };
- ATTRIBUTE_GROUPS(ext4);
-@@ -369,6 +375,11 @@ static ssize_t ext4_attr_show(struct kobject *kobj,
- 		return snprintf(buf, PAGE_SIZE, "%llu\n",
- 				(unsigned long long)
- 				atomic64_read(&sbi->s_resv_clusters));
-+	case attr_frsp_tree_usage:
-+		return snprintf(buf, PAGE_SIZE, "%llu\n",
-+				(unsigned long long)
-+				atomic_read(&sbi->s_mb_num_fragments) *
-+				sizeof(struct ext4_frsp_node));
- 	case attr_inode_readahead:
- 	case attr_pointer_ui:
- 		if (!ptr)
+@@ -4170,7 +4302,9 @@ static void ext4_free_data_in_buddy(struct super_block *sb,
+ 		/* No more items in the per group rb tree
+ 		 * balance refcounts from ext4_mb_free_metadata()
+ 		 */
+-		if (!ext4_mb_frsp_on(sb)) {
++		if (ext4_mb_frsp_on(sb)) {
++			atomic_dec(&e4b.frsp_tree->frsp_ref);
++		} else {
+ 			put_page(e4b.bd_buddy_page);
+ 			put_page(e4b.bd_bitmap_page);
+ 		}
+@@ -6094,14 +6228,18 @@ ext4_mb_free_metadata(handle_t *handle, struct ext4_buddy *e4b,
+ 	new_node = &new_entry->efd_node;
+ 	cluster = new_entry->efd_start_cluster;
+ 
+-	if (!*n && !ext4_mb_frsp_on(sb)) {
++	if (!*n) {
+ 		/* first free block exent. We need to
+ 		   protect buddy cache from being freed,
+ 		 * otherwise we'll refresh it from
+ 		 * on-disk bitmap and lose not-yet-available
+ 		 * blocks */
+-		get_page(e4b->bd_buddy_page);
+-		get_page(e4b->bd_bitmap_page);
++		if (ext4_mb_frsp_on(sb)) {
++			atomic_inc(&e4b->frsp_tree->frsp_ref);
++		} else {
++			get_page(e4b->bd_buddy_page);
++			get_page(e4b->bd_bitmap_page);
++		}
+ 	}
+ 	while (*n) {
+ 		parent = *n;
 -- 
 2.28.0.220.ged08abb693-goog
 
