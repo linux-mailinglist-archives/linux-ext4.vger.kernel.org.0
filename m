@@ -2,203 +2,198 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D424249780
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Aug 2020 09:32:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F25D249863
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 Aug 2020 10:44:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727889AbgHSHbw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 19 Aug 2020 03:31:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727783AbgHSHba (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 19 Aug 2020 03:31:30 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AC65C061347
-        for <linux-ext4@vger.kernel.org>; Wed, 19 Aug 2020 00:31:29 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id c10so792215pjn.1
-        for <linux-ext4@vger.kernel.org>; Wed, 19 Aug 2020 00:31:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=73oeTFMOiyS//4pFDHN5uXIQNvxmtlBh7uXWl0z1oKU=;
-        b=O5LbfLtviKsdyMGGQuD6Uot3f6exAlYyo2kSrKg4RJmQGMzV4zfil2bcAVxp1HLEeA
-         PtAs2ssL+G5SRRp5BZCvKj4zLc2Iwakhu5Z0VjkPxljrTktqPVaJwlUTx+DvfpcEBWjr
-         R9OMXW0E/jgT22PtLKw4IGwj//kHIQ3O32LQKmFKtVLoxh2/DS0CnbBzcuHO2piJgACw
-         /NfuO5g+Q9C8PczATrVXzZy2PC7xwB6QSLtMHOCcHrD97ov/hAbsZpniEwz6G9RSG7/c
-         x9HXX7tXfRMK7Qn75BfYh4XGZtlDU2cRcvuMrSBuWoPZmPU9rhRKoCsBAl2Hu1lr3jq+
-         i15w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=73oeTFMOiyS//4pFDHN5uXIQNvxmtlBh7uXWl0z1oKU=;
-        b=sZaLG1AM02M/A20Up9WemRjmVa7PmxIA+E/4SRpLKYY+qjjsLj7YDs7mGBFjvEl1Ki
-         cNsZQY1KiiCaUuwV1sKJz+qvDsznpgzo/N/cop2fcWhf8beU0jzlGbzs/U/vnKlcN/B+
-         NTg1KJEESTcHx8fLmBAuIxE5yIhAz9yBzP3yaVfvFTKeJRgIrWDPhoK7cKZqOjUDXA2l
-         wWA9tjHnWRAfcPIdIMOQPwFSCtYdEq/tLtxnUcWHr2zugio74YUFeAUQmmGguVGE1J2P
-         ytJYL21FIkZCq7tx8Wa6oIRfZvNYrZBMeu4WC3sv1P359jFCqOdYGV2Y//dN/2denozV
-         V7fg==
-X-Gm-Message-State: AOAM532IDh5vttf06uCtT+Tp1n54pzj9MqdjFkkSZnvFYC/aul4BclhW
-        /xy9jpDeZjvVM5OK9hNBV7pDbljuXVE=
-X-Google-Smtp-Source: ABdhPJxtIaZOsRH4CvDq9rhrYJXdp3HDI2pcfzW5JBj77zqZIDRqBln0dmLyWbykXI/P7oZJgpZ43w==
-X-Received: by 2002:a17:902:8d8d:: with SMTP id v13mr3827859plo.110.1597822288173;
-        Wed, 19 Aug 2020 00:31:28 -0700 (PDT)
-Received: from harshads-520.kir.corp.google.com ([2620:15c:17:10:a6ae:11ff:fe11:86a2])
-        by smtp.googlemail.com with ESMTPSA id q6sm2040019pjr.20.2020.08.19.00.31.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Aug 2020 00:31:26 -0700 (PDT)
-From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu, lyx1209@gmail.com,
-        Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Subject: [PATCH 9/9] ext4: add freespace trees documentation in code
-Date:   Wed, 19 Aug 2020 00:31:04 -0700
-Message-Id: <20200819073104.1141705-10-harshadshirwadkar@gmail.com>
-X-Mailer: git-send-email 2.28.0.220.ged08abb693-goog
-In-Reply-To: <20200819073104.1141705-1-harshadshirwadkar@gmail.com>
-References: <20200819073104.1141705-1-harshadshirwadkar@gmail.com>
+        id S1726494AbgHSIoY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 19 Aug 2020 04:44:24 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47280 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725903AbgHSIoX (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 19 Aug 2020 04:44:23 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E5781B669;
+        Wed, 19 Aug 2020 08:44:47 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 59D421E1312; Wed, 19 Aug 2020 10:44:21 +0200 (CEST)
+Date:   Wed, 19 Aug 2020 10:44:21 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Mauricio Faria de Oliveira <mfo@canonical.com>
+Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
+        dann frazier <dann.frazier@canonical.com>,
+        Mauricio Faria de Oliveira <mauricio.foliveira@gmail.com>,
+        Jan Kara <jack@suse.com>
+Subject: Re: [RFC PATCH v2 3/5] ext4: data=journal: write-protect pages on
+ submit inode data buffers callback
+Message-ID: <20200819084421.GD1902@quack2.suse.cz>
+References: <20200810010210.3305322-1-mfo@canonical.com>
+ <20200810010210.3305322-4-mfo@canonical.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200810010210.3305322-4-mfo@canonical.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This patch adds a comment in mballoc.c describing the design and flow
-of free-space trees.
+On Sun 09-08-20 22:02:06, Mauricio Faria de Oliveira wrote:
+> This implements the journal's j_submit_inode_data_buffers() callback
+> to write-protect the inode's pages with write_cache_pages(), and use
+> a writepage callback to redirty pages with buffers that are not part
+> of the committing transaction or the next transaction.
+> 
+> And set a no-op function as j_finish_inode_data_buffers() callback
+> (nothing needed other than the write-protect above.)
+> 
+> Currently, the inode is added to the transaction's inode list in the
+> __ext4_journalled_writepage() function.
+> ---
+>  fs/ext4/inode.c |  4 +++
+>  fs/ext4/super.c | 65 +++++++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 69 insertions(+)
+> 
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 10dd470876b3..978ccde8454f 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -1911,6 +1911,10 @@ static int __ext4_journalled_writepage(struct page *page,
+>  		err = ext4_walk_page_buffers(handle, page_bufs, 0, len, NULL,
+>  					     write_end_fn);
+>  	}
+> +	if (ret == 0)
+> +		ret = err;
+> +	// XXX: is this correct for inline data inodes?
 
-Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
----
- fs/ext4/mballoc.c | 116 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 116 insertions(+)
+Inodes with inline data should never get here. The thing is that when a
+file with inline data is faulted for writing, ext4_page_mkwrite() converts
+the file to normal data format. And ordinary write(2) will directly update
+the inline data and clear the page dirty bit so writepage isn't called for
+it.
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index b9a833341b98..644df0bf61ee 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -330,6 +330,122 @@
-  *        object
-  *
-  */
-+
-+/*
-+ * The freespace tree allocator
-+ * -----------------------------
-+ *
-+ * High Level Design
-+ * =================
-+ * This allocator maintains the free space information about the file system in
-+ * per-flexible block group level trees. For every flexible block group, we
-+ * maintain individual freespace nodes in two trees, one sorted by flex-bg
-+ * offset and other sorted by length. This gives us two benefits: i) In
-+ * allocation path, our search time complexity is O(Log(Number of freespace
-+ * regions in the flex-bg)). ii) In free path, in the same time complexity we
-+ * can merge the adjacent nodes thereby reducing the size of the tree
-+ * efficiently.
-+ *
-+ * Along with flexible block group level trees, we also introduce a top level
-+ * meta-tree which consists of individual trees. This tree is sorted by length
-+ * of largest extents found in flex-bgs. The key advantage that this tree gives
-+ * us is this: During an allocation request, the allocator is now able to
-+ * consult this tree and directly (in O(Log(Number of Flex BGs)) jump to a
-+ * flexible block group which definitely has at least one (the largest) extent
-+ * that can satisfy this request. If no flexible block group exists which can
-+ * satisfy this request, the allocator can now immediately drop the CR level.
-+ *
-+ * In order to preseve the parallel allocation / free performance, the allocator
-+ * only *tries* to consult this tree. It does so by calling read_trylock()
-+ * function and if the meta-tree is busy, the allocator continues its linear
-+ * search until it is able to grab a read-lock on this tree.
-+ *
-+ * Memory Footprint
-+ * ================
-+ *
-+ * In a less fragmented file system, the memory footprint of the new allocator
-+ * is significantly lower than buddy bitmaps. However, as the fragmentation
-+ * level increases, the memory footprint of this allocator increases
-+ * significantly. The memory usage of the freespace tree allocator can be
-+ * controlled using sysfs tunable /sys/fs/ext4/<dev>/mb_frsp_max_mem. The
-+ * default value of this is max(memory needed for buddy, maximum memory needed
-+ * for one tree in the worst case). Accounting for max memory needed for one
-+ * tree allows us to keep at least one tree in memory even in the worst
-+ * case. This avoids thrashing. Once the memory threshold is reached, the
-+ * allocator starts evicting trees from memory in LRU fashion. However, we don't
-+ * remove tree's entry from the meta-tree. This allows the allocator to
-+ * efficiently reconstruct only relevant trees from on-disk bitmaps. In our
-+ * evaluations, we found that freespace tree allocator still manages to
-+ * outperform buddy allocator in memory crunch situation.
-+ *
-+ * LRU
-+ * ===
-+ *
-+ * We maintain two lists - an active list and an inactive list of trees. Trees
-+ * in active list stay in it until evicted. In order to reduce contention on the
-+ * active list lock, once a tree is in active list it is not moved inside the
-+ * list. Also, a tree moves from inactive list to active list only if it is
-+ * accessed twice in a EXT4_MB_FRSP_ACTIVE_THRESHOLD_JIFFIES window.
-+ *
-+ *
-+ * Caching Tree Metadata
-+ * =====================
-+ * As noted in our experiments, we find caching tree metadata (the largest
-+ * available extent in a tree) in the meta-tree significantly boosts allocation
-+ * performance. However, if the allocator waits for the cache to fill up before
-+ * starting to serve allocation requests, that may severely degrade allocation
-+ * performance on large disks. Thus, it is important to tune the tree caching
-+ * behavior according to the underlying block device. This patchset provides
-+ * four cache aggression levels. Cache aggression level can be specified as a
-+ * mount time parametere "frsp_cache_aggression". Here is the meaning of these
-+ * different levels:
-+ *
-+ * Cache Aggression 0: Try to serve request only cached trees
-+ * Cache Aggression 1 (Default): Try to serve request from only cached trees
-+ *	at CR 0. At all other CRs, try to use an uncached tree for every
-+ *	alternate request.
-+ * Cache Aggression 2: Try to use an uncached tree for every alternate request
-+ *	at all CR levels.
-+ * Cache Aggression 3: Try to use uncached trees for every request.
-+ *
-+ * Moreover, if file system is mounted with "prefetch_block_bitmaps", tree
-+ * caching starts at mount time.
-+ *
-+ * Locking Order
-+ * =============
-+ *
-+ * - Tree lock
-+ * - Meta tree lock (sbi->s_mb_frsp_lock)
-+ * - LRU lock
-+ *
-+ * Critical sections of meta-tree lock and LRU locks are kept as small as
-+ * possible and you shouldn't need to take meta-tree lock and lru-lock
-+ * simultaneously.
-+ *
-+ * High Level Algorithm
-+ * ====================
-+ * - Consult meta-tree asking which flex-bg should the allocator look at
-+ *   - One of the following things can happen
-+ *     - Meta tree may find a suitable flex-bg for the request
-+ *        - In this case we start searching in that tree
-+ *     - Meta tree may realize that there's no suitable flex-bg
-+ *        - In this case we increase CR and restart
-+ *     - Based on the caching mode, meta tree may redirect us to an
-+ *       uncached tree
-+ *     - Meta tree is busy
-+ *       - In this case, we dont wait for meta-tree to become available,
-+ *         instead, we continue our search linearly.
-+ * - Pick a tree (either based on what meta-tree told us or linearly from the
-+ *   last one)
-+ * - Manage LRU structure (ext4_mb_frsp_maintain_lru())
-+ *   - Move tree to active list if needed
-+ *   - Move trees from active list to inactive lists if needed
-+ * - Perform search by length and pick matching extents.
-+ * - Repeat until best found
-+ * - Perform memory-crunch check and evict trees in LRU fashion if needed
-+ *   (ext4_mb_unload_allocator()))
-+ */
-+
- static struct kmem_cache *ext4_pspace_cachep;
- static struct kmem_cache *ext4_ac_cachep;
- static struct kmem_cache *ext4_free_data_cachep;
+> +	err = ext4_jbd2_inode_add_write(handle, inode, 0, len);
+>  	if (ret == 0)
+>  		ret = err;
+>  	EXT4_I(inode)->i_datasync_tid = handle->h_transaction->t_tid;
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 330957ed1f05..38aaac6572ea 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -472,6 +472,66 @@ static void ext4_journal_commit_callback(journal_t *journal, transaction_t *txn)
+>  	spin_unlock(&sbi->s_md_lock);
+>  }
+>  
+> +/*
+> + * This writepage callback for write_cache_pages()
+> + * takes care of a few cases after page cleaning.
+> + *
+> + * write_cache_pages() already checks for dirty pages
+> + * and calls clear_page_dirty_for_io(), which we want,
+> + * to write protect the pages.
+> + *
+> + * However, we have to redirty a page in two cases:
+> + * 1) some buffer is not part of the committing transaction
+> + * 2) some buffer already has b_next_transaction set
+> + */
+> +
+> +static int ext4_journalled_writepage_callback(struct page *page,
+> +					      struct writeback_control *wbc,
+> +					      void *data)
+> +{
+> +	transaction_t *transaction = (transaction_t *) data;
+> +	struct buffer_head *bh, *head;
+> +	struct journal_head *jh;
+> +
+> +	// XXX: any chance of !bh here?
+
+No. In ext4, whenever a page is dirty, it should have buffers attached.
+
+> +	bh = head = page_buffers(page);
+> +	do {
+> +		jh = bh2jh(bh);
+> +		if (!jh || jh->b_transaction != transaction ||
+> +		    jh->b_next_transaction) {
+> +			redirty_page_for_writepage(wbc, page);
+> +			goto out;
+> +		}
+> +	} while ((bh = bh->b_this_page) != head);
+> +
+> +out:
+> +	return AOP_WRITEPAGE_ACTIVATE;
+> +}
+> +
+> +static int ext4_journalled_submit_inode_data_buffers(struct jbd2_inode *jinode)
+> +{
+> +	struct address_space *mapping = jinode->i_vfs_inode->i_mapping;
+> +	transaction_t *transaction = jinode->i_transaction;
+> +	loff_t dirty_start = jinode->i_dirty_start;
+> +	loff_t dirty_end = jinode->i_dirty_end;
+> +
+> +	struct writeback_control wbc = {
+> +		.sync_mode =  WB_SYNC_ALL,
+> +		.nr_to_write = mapping->nrpages * 2,
+
+For WB_SYNC_ALL writeback, .nr_to_write is mostly ignored so just set it to
+~0ULL.
+
+> +		.range_start = dirty_start,
+> +		.range_end = dirty_end,
+> +        };
+> +
+> +	return write_cache_pages(mapping, &wbc,
+> +				 ext4_journalled_writepage_callback,
+> +				 transaction);
+
+I was thinking about this and we may need to do this somewhat differently.
+I've realized that there's the slight trouble that we now use page dirty
+bit for two purposes in data=journal mode - to track pages that need write
+protection during commit and also to track pages which have buffers that
+need checkpointing. And this mixing is making things complex. So I was
+thinking that we could simply leave PageDirty bit for checkpointing
+purposes and always make sure buffers are appropriately attached to a
+transaction as dirty in ext4_page_mkwrite(). This will make mmap writes in
+data=journal mode somewhat less efficient (all the pages written through
+mmap while transaction T was running will be written to the journal during
+transaction T commit while currently, we write only pages that also went
+through __ext4_journalled_writepage() while T was running which usually
+happens less frequently). But the code should be simpler and we don't care
+about mmap write performance for data=journal mode much. Furthermore I
+don't think that the tricks with PageChecked logic we play in data=journal
+mode are really needed as well which should bring further simplifications.
+I'll try to code this cleanup.
+
+Then in ext4_journalled_submit_inode_data_buffers() we would need to walk
+all the pages in the range describe by jinode and call page_mkclean() for
+each page which has buffer attached to the committing transaction.
+
+> +}
+> +
+> +static int ext4_journalled_finish_inode_data_buffers(struct jbd2_inode *jinode)
+> +{
+> +	return 0;
+> +}
+> +
+>  static bool system_going_down(void)
+>  {
+>  	return system_state == SYSTEM_HALT || system_state == SYSTEM_POWER_OFF
+> @@ -4599,6 +4659,11 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+>  		ext4_msg(sb, KERN_ERR, "can't mount with "
+>  			"journal_async_commit in data=ordered mode");
+>  		goto failed_mount_wq;
+> +	} else if (test_opt(sb, DATA_FLAGS) == EXT4_MOUNT_JOURNAL_DATA) {
+> +		sbi->s_journal->j_submit_inode_data_buffers =
+> +			ext4_journalled_submit_inode_data_buffers;
+> +		sbi->s_journal->j_finish_inode_data_buffers =
+> +			ext4_journalled_finish_inode_data_buffers;
+
+We can journal data only for individual inodes (when inode has journal_data
+flag set). So you have to set the callback unconditionally here and only in
+the callback decide what to do with the particular inode based on what
+ext4_should_journal_data() tells about the inode.
+
+								Honza
 -- 
-2.28.0.220.ged08abb693-goog
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
