@@ -2,165 +2,254 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37FDB24C80C
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 Aug 2020 00:55:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67F8B24C9B0
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 Aug 2020 03:55:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728571AbgHTWzX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 20 Aug 2020 18:55:23 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:34903 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728368AbgHTWzU (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 Aug 2020 18:55:20 -0400
-Received: from mail-vk1-f198.google.com ([209.85.221.198])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <mauricio.oliveira@canonical.com>)
-        id 1k8tSn-0002cX-RP
-        for linux-ext4@vger.kernel.org; Thu, 20 Aug 2020 22:55:17 +0000
-Received: by mail-vk1-f198.google.com with SMTP id o26so954110vkn.21
-        for <linux-ext4@vger.kernel.org>; Thu, 20 Aug 2020 15:55:17 -0700 (PDT)
+        id S1726969AbgHUBzd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 20 Aug 2020 21:55:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725859AbgHUBza (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 Aug 2020 21:55:30 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AF61C061385
+        for <linux-ext4@vger.kernel.org>; Thu, 20 Aug 2020 18:55:30 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id a79so286858pfa.8
+        for <linux-ext4@vger.kernel.org>; Thu, 20 Aug 2020 18:55:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ox1M4H9yXLK0NZmqy1bfDVrKeJ5PP7vOvP4fO3yewSU=;
+        b=K2E6LeDDWf3R9D+P+rJW/xZOJc0peVtf2tEXr2d4ECX01728ENehioWCFeWDlu+pIY
+         vTuqAfRN/nR3HPnrA8ETdhoQFSDWwpgemT23rA82h2BkaugKwchH07ki0YDh7+EzGLqx
+         QoD1knj/PxPezmUuDcqe1JArZV0SMi+kDcni45G7HxAjbBio4nVbDGp2TKISsN1bY0Ml
+         6LS2e/UBd5NnxD4HBb7d3nb1ldy0d42K7btQdX10grzVcsdj6wO3XQ2SEhs3GMQioV3G
+         FG63BV37FvoDBZM+KVOoMZnjcJdmanVBH+9OhJk+CvfPmwKmantPlwf+hwk4nlUAAklE
+         qvPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zI/K6WF/hyi29f3bR/5neadnZsBA08HlwY9LFG1FwfM=;
-        b=Y8MFPaLxRDtP58wTsqy1VFFBDXpGooOWPZX1NrOCYsNIpeOOybEVbm8Iz8L3FsVdt7
-         HaiWzK+06BDOedwe/SD4+RJ8WIOO9Du/ZhnwWWHIJkVHGSqXAwTK2hIuRNQhDGwh99ui
-         jVlfKmi7jwGS2oZkPHKMi107VrpMgxHFrvRP2fhkdbzk997R5x6HfK6MTFnkGfSMmjgU
-         +/IWeRMhXDoT3dxl8AhKsZ3A3Q34xuX1GRuNdhFfhRLPtHRe8Mwt/ow9lUlnMLnDJI1l
-         7WBVNQLq3m5MpGUn+S3maDY0q1Qi83QA2oRTbHRnD43ry+RUHTlK1hWqzFOxWfrmZs7v
-         2rPg==
-X-Gm-Message-State: AOAM531UTIKciKbsbjbN8xDrfQu2v6g7oKyTPYWygqY678XCT46Db1bA
-        9WwrIBDeDs8E6usTwBhB1FwxD4LT37Wq3ukXfcZmr7ukmEDEQY+ezafYvlkIwHhzQ8usiUw5RCA
-        h+GfCKn2CBgq2ffeY39nZksV1SCuAdUjEGLxFV+ZXV1f1h+T0eK9c1bw=
-X-Received: by 2002:ab0:41:: with SMTP id 59mr58270uai.40.1597964116887;
-        Thu, 20 Aug 2020 15:55:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzyP/e1xJO/bLOjh8vTN4QRwGIyT4il7uwVMusdRvfv9H+CY1l//tYVKKLep0O4i876S91R2M7mdr9joGzQX9s=
-X-Received: by 2002:ab0:41:: with SMTP id 59mr58256uai.40.1597964116535; Thu,
- 20 Aug 2020 15:55:16 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ox1M4H9yXLK0NZmqy1bfDVrKeJ5PP7vOvP4fO3yewSU=;
+        b=ZViFK0DuPguktlt5Kl66d93eB3dvZr79RzAfjHtFQQ9qNHpl2MNDlu0Qs4sFWEruNs
+         PQdI6PK3zE3ZleK7Gue/lnpOBJZMIaV3zNdKMBwcV4FWyarHCRKfz2cCQPBc4iK2DO1F
+         FckF5GvLyh7XKdK/AD92kWZFXB3y1utfXDkpqU5iMiHMnNqoknjAHkgZwqFbpJXDuDl9
+         dwoOZT8um61utMzAEM9yhzgSIxyo4o59N3g8n29CpOIIy2MEcjML9HIdSP/y5Bv342+f
+         2s+vZGwqlP9QN03Qm5/XDhLbxjP/4Pj4raqvIm/RgHLkY74NdGZOrKqXM6hAZHLzRtVP
+         3C5A==
+X-Gm-Message-State: AOAM5302S3im8Bn+tJZFZZOcu0Lq8bsuJMTA1VooBxjpRrWylDArZmb0
+        Dl7DxKfiN0kUJzCocB207z9jx1qGhzk=
+X-Google-Smtp-Source: ABdhPJzjui3q/kP4/TkNLusrkheXFmi/aVf1vzb7B8aw21Vqyzx75D15qfdV446CZBLEzPjprbD+sg==
+X-Received: by 2002:a63:5f04:: with SMTP id t4mr713010pgb.308.1597974928503;
+        Thu, 20 Aug 2020 18:55:28 -0700 (PDT)
+Received: from harshads-520.kir.corp.google.com ([2620:15c:17:10:a6ae:11ff:fe11:86a2])
+        by smtp.googlemail.com with ESMTPSA id o15sm370191pfu.167.2020.08.20.18.55.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Aug 2020 18:55:27 -0700 (PDT)
+From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+X-Google-Original-From: Harshad Shirwadkar <harshads@google.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, lyx1209@gmail.com,
+        Harshad Shirwadkar <harshads@google.com>,
+        Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Subject: [RFC PATCH v2 0/9] ext4: add free-space extent based allocator
+Date:   Thu, 20 Aug 2020 18:55:14 -0700
+Message-Id: <20200821015523.1698374-1-harshads@google.com>
+X-Mailer: git-send-email 2.28.0.297.g1956fa8f8d-goog
 MIME-Version: 1.0
-References: <20200810010210.3305322-1-mfo@canonical.com> <20200810010210.3305322-4-mfo@canonical.com>
- <20200819084421.GD1902@quack2.suse.cz> <20200819104139.GJ1902@quack2.suse.cz>
-In-Reply-To: <20200819104139.GJ1902@quack2.suse.cz>
-From:   Mauricio Faria de Oliveira <mfo@canonical.com>
-Date:   Thu, 20 Aug 2020 19:55:05 -0300
-Message-ID: <CAO9xwp2UBLyD5f3wzwBHQHA9NvxuasR3c+KCBsFLWR_NitLOxA@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 3/5] ext4: data=journal: write-protect pages on
- submit inode data buffers callback
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-ext4@vger.kernel.org,
-        dann frazier <dann.frazier@canonical.com>,
-        Jan Kara <jack@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Jan,
+ext4: add free-space extent based allocator
 
-Thanks a bunch for the detailed comments, including in the cover letter.
-Your attention and patience for explanations are really appreciated.
+This patchset introduces a new multiblock allocator for the Ext4 file
+system based on an enhanced version of the free space management
+mechanism originally proposed by Kadekodi S. and Jain S., in their
+paper, "Taking Linux Filesystems to the Space Age: Space Maps in Ext4"
+[1].
 
-I _think_ I got most of it for the next iteration -- a few follow up questions:
+High Level Design
+=================
 
-On Wed, Aug 19, 2020 at 7:41 AM Jan Kara <jack@suse.cz> wrote:
->
-> On Wed 19-08-20 10:44:21, Jan Kara wrote:
-> > I was thinking about this and we may need to do this somewhat differently.
-> > I've realized that there's the slight trouble that we now use page dirty
-> > bit for two purposes in data=journal mode - to track pages that need write
-> > protection during commit and also to track pages which have buffers that
-> > need checkpointing. And this mixing is making things complex. So I was
-> > thinking that we could simply leave PageDirty bit for checkpointing
-> > purposes and always make sure buffers are appropriately attached to a
-> > transaction as dirty in ext4_page_mkwrite(). [snip]
-> > [snip] Furthermore I
-> > don't think that the tricks with PageChecked logic we play in data=journal
-> > mode are really needed as well which should bring further simplifications.
-> > I'll try to code this cleanup.
->
-> I was looking more into this but it isn't as simple as I thought because
-> get_user_pages() users can still modify data and call set_page_dirty() when
-> the page is no longer writeably mapped. And by the time set_page_dirty() is
-> called page buffers are not necessarily part of any transaction so we need
-> to do effectively what's in ext4_journalled_writepage(). To handle this
-> corner case I didn't find anything considerably simpler than the current
-> code.
->
-> So let's stay with what we have in
-> ext4_journalled_submit_inode_data_buffers(), we just have to also redirty
-> the page if we find any dirty buffers.
->
+This allocator maintains the free space information about the file
+system in per-flexible block group level trees. These trees are
+constructed from block bitmaps stored on disk. Therefore, this feature
+does not require any on-disk format change. For every flexible block
+group, we maintain individual freespace nodes in two trees, one sorted
+by flex-bg offset and other sorted by length. This gives us two
+benefits: i) In the allocation path, our search time complexity is
+O(Log(Number of freespace regions in the flex-bg)). ii) In free path,
+in the same time complexity we can merge the adjacent nodes thereby
+reducing the size of the tree efficiently.
 
-Could you please clarify/comment whether the dirty buffers "flags" are
-different between
-the suggestions for ext4_page_mkwrite() and
-ext4_journalled_submit_inode_data_buffers() ?
+Along with flexible block group level trees, we also introduce a top
+level meta-tree which consists of individual flex-bg trees. This tree
+is sorted by length of largest extents found in flex-bgs. The key
+advantage that this tree gives us is this: During an allocation
+request, the allocator is now able to consult this tree and directly
+(in O(Log(Number of Flex BGs)) jump to a flexible block group which
+_definitely_ has at least one (the largest) extent that can satisfy
+this request. If no flexible block group exists which can satisfy this
+request, the allocator can now immediately drop the CR level.
 
-I'm asking because..
+In order to preseve the parallel allocation / free performance, the
+allocator only *tries* to consult this tree. It does so by calling
+read_trylock() function and if the meta-tree is busy, the allocator
+continues its linear search until it is able to grab a read-lock on
+this tree.
 
-In ext4_page_mkwrite() the suggestion is to attach buffers as dirty to
-a transaction, which I guess can be done with
-ext4_walk_page_buffers(..., write_end_fn) after
-ext4_walk_page_buffers(..., do_journal_get_write_access) -- just as
-done in ext4_journalled_writepage() -- and that sets the buffer as
-*jbd* dirty (BH_JBDDirty.)
+Memory Footprint
+================
 
-In ext4_journalled_submit_inode_data_buffers() the suggestion is to
-check for dirty buffers to redirty the page
-(for the case of buffers that need checkpointing) and I think this is
-the non-jbd/just dirty (BH_Dirty.)
+In a less fragmented file system, the memory footprint of the new
+allocator is significantly lower than buddy bitmaps. Memory footprint
+of the freespace tree allocator can be checked by running "cat
+/sys/fs/ext4/<dev>/frsp_tree_usage". For an almost newly created 100G
+disk, the total usage is only ~10 KB. However, as the fragmentation
+level increases, the memory footprint of this allocator may
+increase. The memory usage of the freespace tree allocator can be
+controlled using sysfs tunable "mb_frsp_max_mem". Once the memory
+threshold is reached, the allocator starts evicting the freespace
+trees in the LRU fashion from memory. However, we don't remove tree's
+entry from the meta-tree. This allows the allocator to efficiently
+reconstruct only relevant trees from on-disk bitmaps under high memory
+pressure. As we show in the evaluation section, freespace tree
+allocator still manages to outperform buddy allocator in memory crunch
+situation. The default value of mb_frsp_max_mem is max(memory needed
+for buddy, maximum memory needed for one tree in the worst
+case). Accounting for max memory needed for one tree allows us to keep
+at least one tree in memory even in the worst case. This avoids
+thrashing.
 
-If I actually understood your explanation/suggest, the dirty buffer
-flags should be different,
-as otherwise we'd be unconditionally setting buffers dirty on
-ext4_page_mkwrite() to later
-check for (known to be) dirty buffers in
-ext4_journalled_submit_inode_data_buffers().
+Caching Tree Metadata
+=====================
 
-...
+As noted in our experiments, we find caching tree metadata (the
+largest available extent in a tree) in the meta-tree significantly
+boosts allocation performance. However, if the allocator waits for the
+cache to fill up before starting to serve allocation requests, that
+may severely degrade allocation performance on large disks. Thus, it
+is important to tune the tree caching behavior according to the
+underlying block device. This patchset provides four cache aggression
+levels. Cache aggression level can be specified as a mount time
+parameter "frsp_cache_aggression". Here is the meaning of these
+different levels:
 
-And as you mentioned no cleanup / keeping ext4_journalled_writepage()
-and the PageChecked bit,
-I would like to revisit two questions from the cover letter that would
-have no impact with the cleanup,
-so to confirm my understanding for the next steps.
+|-------+------------------------------------------------------------------|
+| Level | Meaning                                                          |
+|-------+------------------------------------------------------------------|
+|     0 | Try to avoid caching as much as possible. In this mode           |
+|       | the allocator tries hard to serve the request from the already   |
+|       | cached trees.                                                    |
+|-------+------------------------------------------------------------------|
+|     1 | Avoid caching at CR=0. Otherwise, cache trees on every other     |
+|       | allocation request. (default)                                    |
+|-------+------------------------------------------------------------------|
+|     2 | Cache trees on every other allocation request.                   |
+|-------+------------------------------------------------------------------|
+|     3 | Aggressive caching. In this mode the allocator aggressively      |
+|       | caches uncached trees, even if the request can be fulfilled      |
+|       | by one of the available trees. Using this mode, the allocator    |
+|       | ends up caching trees quickly and thereby is able to make better |
+|       | allocation decisions sooner.                                     |
+|-------+------------------------------------------------------------------|
 
-    > 3) When checking to redirty the page in the writepage callback,
-    >    does a buffer without a journal head means we should redirty
-    >    the page? (for the reason it's not part of the committing txn)
+Evaluation
+==========
 
-Per your explanation about the page dirty bit for buffers that need
-checkpointing, I see we cannot redirty
-the page just because a buffer isn't part of the transaction -- the
-buffer has to be dirty -- so I think it falls
-down to your suggestion of 'also redirty if we find any dirty buffers'
-(regardless of a buffer w/out txns.) right?
+This feature did not introduce any regressions in Ext4 XFStests in
+quick group. We created a _highly_ fragmented 60T disk with over 490K
+block groups and over 30K flexible block groups. We tested the write
+performance of the first small write (10MB) and a larger second write
+(100MB) using both the buddy allocator and freespace tree
+allocator. We turned memory limit off for the first four free space
+tree configurations.
 
-    > 4) Should we clear the PageChecked bit?
-    ...
-    > Should we try to prevent that [ext4_journalled_writepage()
-running later] by, say, clearing the pagechecked bit
-    > in case we don't have to redirty the page (in the writepage callback) ?
+First Write Performance
+-----------------------
+|--------------------------------------+---------+---------+-----------+--------|
+| Allocator                            | RAM     | # trees | Perf      | Time   |
+|                                      | usage   |  cached |           |        |
+|--------------------------------------+---------+---------+-----------+--------|
+| Buddy Allocator (v5.7)               | -       |       - | 6.8 KB/s  | 25m51s |
+|--------------------------------------+---------+---------+-----------+--------|
+| With --prefetch_block_bitmap         | -       |       - | 28.1 KB/s | 6m14s  |
+|--------------------------------------+---------+---------+-----------+--------|
+| Free space tree allocator at level 0 | 43.5 MB |     201 | 2.6 MB/s  | 0m8s   |
+|--------------------------------------+---------+---------+-----------+--------|
+| Free space tree allocator at level 1 | 193 MB  |     874 | 1.5 MB/s  | 0m47s  |
+|--------------------------------------+---------+---------+-----------+--------|
+| Free space tree allocator at level 2 | 3.6 GB  |   16476 | 21.4 KB/s | 8m14s  |
+|--------------------------------------+---------+---------+-----------+--------|
+| Free space tree allocator at level 3 | 6.8 GB  |   30720 | 9.1 KB/s  | 19m22s |
+|--------------------------------------+---------+---------+-----------+--------|
+| Free space tree allocator at level 3 | 1023 MB |   30720 | 9.3 KB/s  | 18m53s |
+| ( With 1G Limit)                     |         |         |           |        |
+|--------------------------------------+---------+---------+-----------+--------|
 
-And I think the answer is no, per your explanation about page dirty
-being set elsewhere outside of our control,
-and thus ext4_journalled_page() still needs to run, and thus the  page
-checked bit still needs to remain set; correct?
+Second Write Performance
+------------------------
+|--------------------------------------+---------+---------+-----------+-------|
+| Allocator                            | RAM     | # trees | Perf      | Time  |
+|                                      | usage   |  cached |           |       |
+|--------------------------------------+---------+---------+-----------+-------|
+| Buddy Allocator (v5.7)               | -       |       - | 499 KB/s  | 3m30s |
+|--------------------------------------+---------+---------+-----------+-------|
+| With --prefetch_block_bitmap         | -       |       - | 185 KB/s  | 9m26s |
+|--------------------------------------+---------+---------+-----------+-------|
+| Free space tree allocator at level 0 | 48.7 MB |     226 | 48.2 MB/s | 6s    |
+|--------------------------------------+---------+---------+-----------+-------|
+| Free space tree allocator at level 1 | 221 MB  |    1007 | 26.8 MB/s | 8s    |
+|--------------------------------------+---------+---------+-----------+-------|
+| Free space tree allocator at level 2 | 6.8 GB  |   30720 | 178 KB/s  | 9m54s |
+|--------------------------------------+---------+---------+-----------+-------|
+| Free space tree allocator at level 3 | 6.8 GB  |   30720 | 79 MB/s   | 5s    |
+|--------------------------------------+---------+---------+-----------+-------|
+| Free space tree allocator at level 3 | 1023 MB |   30720 | 77.1 MB/s | 7s    |
+| ( With 1G Limit)                     |         |         |           |       |
+|--------------------------------------+---------+---------+-----------+-------|
 
-Thanks again,
+Verified that parallel write performance on a newly created disk is
+not very different for buddy allocator and freespace tree
+allocator. This patchset is applied on top of block bitmap prefetch
+patches.
 
+Signed-off-by: Yuexin Li <lyx1209@gmail.com>
+Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 
+[1] https://www.kernel.org/doc/ols/2010/ols2010-pages-121-132.pdf
 
+Changes Since V1:
 
->                                                                 Honza
->
-> --
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+- Rebased the patchset on top of ext4 dev branch
+- Converted the patches to RFC
 
+Harshad Shirwadkar (8):
+  ext4: add handling for extended mount options
+  ext4: rename ext4_mb_load_buddy to ext4_mb_load_allocator
+  ext4: add prefetching support for freespace trees
+  ext4: add freespace tree optimizations
+  ext4: add memory usage tracker for freespace trees
+  ext4: add LRU eviction for free space trees
+  ext4: add tracepoints for free space trees
+  ext4: add freespace trees documentation in code
 
+Yuexin Li (1):
+  ext4: add freespace tree allocator
 
---
-Mauricio Faria de Oliveira
+ fs/ext4/ext4.h              |  117 +++
+ fs/ext4/mballoc.c           | 1541 +++++++++++++++++++++++++++++++++--
+ fs/ext4/mballoc.h           |   67 +-
+ fs/ext4/resize.c            |    8 +
+ fs/ext4/super.c             |   60 +-
+ fs/ext4/sysfs.c             |   11 +
+ include/trace/events/ext4.h |  112 +++
+ 7 files changed, 1821 insertions(+), 95 deletions(-)
+
+-- 
+2.28.0.297.g1956fa8f8d-goog
+
