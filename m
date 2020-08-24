@@ -2,38 +2,36 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8A93250389
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Aug 2020 18:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A511250376
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Aug 2020 18:45:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728577AbgHXQpx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 24 Aug 2020 12:45:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47078 "EHLO mail.kernel.org"
+        id S1728676AbgHXQou (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 24 Aug 2020 12:44:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728581AbgHXQjV (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 24 Aug 2020 12:39:21 -0400
+        id S1728598AbgHXQjh (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 24 Aug 2020 12:39:37 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D8E0822C9F;
-        Mon, 24 Aug 2020 16:39:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 65DEB22D0B;
+        Mon, 24 Aug 2020 16:39:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598287160;
-        bh=kln/52Ec7fs2A7jHa5N0CHcMCW4dKWnZEG/iLv3hCmU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zgLYDsvjgwe3Jnw3zIkUlaYnkFdQacjdc4m/EPAxK9yqA1aDBR06gJlhnTEuw374H
-         A/5txNJrYL/LAG9vae78xV5O0jSUXsxw2kfqr6SvxdZycd7s/ULvC2qZZkH1jQv6Br
-         BkKnMC32t76/ZYpuG+4hc00/9wZQO1SqHc+kVzf8=
+        s=default; t=1598287173;
+        bh=I5sszpnEsWLW9bceSHEeRvrJ/DB70tDxtWUEm34wodg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Nlm2sMBw37V5t1Sw2QmSN5DXZOQ5t/1ENEcNi9tmOqxV9xN6Eo+urX0QrWWdnjcC/
+         KqeTG03OoARXnObDYwOOxLj2jEKMaYw+OapqzOWE7EzgSEHb4AbinHfimnc0RfP2VI
+         e6MAGBlNqOyF9/nam3O5hpbydVhMNhgC6hFUDF5g=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Xianting Tian <xianting_tian@126.com>,
+Cc:     Lukas Czerner <lczerner@redhat.com>, Jan Kara <jack@suse.cz>,
         Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 04/11] fs: prevent BUG_ON in submit_bh_wbc()
-Date:   Mon, 24 Aug 2020 12:39:07 -0400
-Message-Id: <20200824163914.607152-4-sashal@kernel.org>
+        linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.9 1/8] jbd2: make sure jh have b_transaction set in refile/unfile_buffer
+Date:   Mon, 24 Aug 2020 12:39:24 -0400
+Message-Id: <20200824163931.607291-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200824163914.607152-1-sashal@kernel.org>
-References: <20200824163914.607152-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -43,129 +41,60 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Xianting Tian <xianting_tian@126.com>
+From: Lukas Czerner <lczerner@redhat.com>
 
-[ Upstream commit 377254b2cd2252c7c3151b113cbdf93a7736c2e9 ]
+[ Upstream commit 24dc9864914eb5813173cfa53313fcd02e4aea7d ]
 
-If a device is hot-removed --- for example, when a physical device is
-unplugged from pcie slot or a nbd device's network is shutdown ---
-this can result in a BUG_ON() crash in submit_bh_wbc().  This is
-because the when the block device dies, the buffer heads will have
-their Buffer_Mapped flag get cleared, leading to the crash in
-submit_bh_wbc.
+Callers of __jbd2_journal_unfile_buffer() and
+__jbd2_journal_refile_buffer() assume that the b_transaction is set. In
+fact if it's not, we can end up with journal_head refcounting errors
+leading to crash much later that might be very hard to track down. Add
+asserts to make sure that is the case.
 
-We had attempted to work around this problem in commit a17712c8
-("ext4: check superblock mapped prior to committing").  Unfortunately,
-it's still possible to hit the BUG_ON(!buffer_mapped(bh)) if the
-device dies between when the work-around check in ext4_commit_super()
-and when submit_bh_wbh() is finally called:
+We also make sure that b_next_transaction is NULL in
+__jbd2_journal_unfile_buffer() since the callers expect that as well and
+we should not get into that stage in this state anyway, leading to
+problems later on if we do.
 
-Code path:
-ext4_commit_super
-    judge if 'buffer_mapped(sbh)' is false, return <== commit a17712c8
-          lock_buffer(sbh)
-          ...
-          unlock_buffer(sbh)
-               __sync_dirty_buffer(sbh,...
-                    lock_buffer(sbh)
-                        judge if 'buffer_mapped(sbh))' is false, return <== added by this patch
-                            submit_bh(...,sbh)
-                                submit_bh_wbc(...,sbh,...)
+Tested with fstests.
 
-[100722.966497] kernel BUG at fs/buffer.c:3095! <== BUG_ON(!buffer_mapped(bh))' in submit_bh_wbc()
-[100722.966503] invalid opcode: 0000 [#1] SMP
-[100722.966566] task: ffff8817e15a9e40 task.stack: ffffc90024744000
-[100722.966574] RIP: 0010:submit_bh_wbc+0x180/0x190
-[100722.966575] RSP: 0018:ffffc90024747a90 EFLAGS: 00010246
-[100722.966576] RAX: 0000000000620005 RBX: ffff8818a80603a8 RCX: 0000000000000000
-[100722.966576] RDX: ffff8818a80603a8 RSI: 0000000000020800 RDI: 0000000000000001
-[100722.966577] RBP: ffffc90024747ac0 R08: 0000000000000000 R09: ffff88207f94170d
-[100722.966578] R10: 00000000000437c8 R11: 0000000000000001 R12: 0000000000020800
-[100722.966578] R13: 0000000000000001 R14: 000000000bf9a438 R15: ffff88195f333000
-[100722.966580] FS:  00007fa2eee27700(0000) GS:ffff88203d840000(0000) knlGS:0000000000000000
-[100722.966580] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[100722.966581] CR2: 0000000000f0b008 CR3: 000000201a622003 CR4: 00000000007606e0
-[100722.966582] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[100722.966583] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[100722.966583] PKRU: 55555554
-[100722.966583] Call Trace:
-[100722.966588]  __sync_dirty_buffer+0x6e/0xd0
-[100722.966614]  ext4_commit_super+0x1d8/0x290 [ext4]
-[100722.966626]  __ext4_std_error+0x78/0x100 [ext4]
-[100722.966635]  ? __ext4_journal_get_write_access+0xca/0x120 [ext4]
-[100722.966646]  ext4_reserve_inode_write+0x58/0xb0 [ext4]
-[100722.966655]  ? ext4_dirty_inode+0x48/0x70 [ext4]
-[100722.966663]  ext4_mark_inode_dirty+0x53/0x1e0 [ext4]
-[100722.966671]  ? __ext4_journal_start_sb+0x6d/0xf0 [ext4]
-[100722.966679]  ext4_dirty_inode+0x48/0x70 [ext4]
-[100722.966682]  __mark_inode_dirty+0x17f/0x350
-[100722.966686]  generic_update_time+0x87/0xd0
-[100722.966687]  touch_atime+0xa9/0xd0
-[100722.966690]  generic_file_read_iter+0xa09/0xcd0
-[100722.966694]  ? page_cache_tree_insert+0xb0/0xb0
-[100722.966704]  ext4_file_read_iter+0x4a/0x100 [ext4]
-[100722.966707]  ? __inode_security_revalidate+0x4f/0x60
-[100722.966709]  __vfs_read+0xec/0x160
-[100722.966711]  vfs_read+0x8c/0x130
-[100722.966712]  SyS_pread64+0x87/0xb0
-[100722.966716]  do_syscall_64+0x67/0x1b0
-[100722.966719]  entry_SYSCALL64_slow_path+0x25/0x25
-
-To address this, add the check of 'buffer_mapped(bh)' to
-__sync_dirty_buffer().  This also has the benefit of fixing this for
-other file systems.
-
-With this addition, we can drop the workaround in ext4_commit_supper().
-
-[ Commit description rewritten by tytso. ]
-
-Signed-off-by: Xianting Tian <xianting_tian@126.com>
-Link: https://lore.kernel.org/r/1596211825-8750-1-git-send-email-xianting_tian@126.com
+Signed-off-by: Lukas Czerner <lczerner@redhat.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20200617092549.6712-1-lczerner@redhat.com
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/buffer.c     | 9 +++++++++
- fs/ext4/super.c | 7 -------
- 2 files changed, 9 insertions(+), 7 deletions(-)
+ fs/jbd2/transaction.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/fs/buffer.c b/fs/buffer.c
-index cae7f24a0410e..9fbeddb6834a4 100644
---- a/fs/buffer.c
-+++ b/fs/buffer.c
-@@ -3250,6 +3250,15 @@ int __sync_dirty_buffer(struct buffer_head *bh, int op_flags)
- 	WARN_ON(atomic_read(&bh->b_count) < 1);
- 	lock_buffer(bh);
- 	if (test_clear_buffer_dirty(bh)) {
-+		/*
-+		 * The bh should be mapped, but it might not be if the
-+		 * device was hot-removed. Not much we can do but fail the I/O.
-+		 */
-+		if (!buffer_mapped(bh)) {
-+			unlock_buffer(bh);
-+			return -EIO;
-+		}
+diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
+index 8de458d64134a..1478512ecab3e 100644
+--- a/fs/jbd2/transaction.c
++++ b/fs/jbd2/transaction.c
+@@ -1896,6 +1896,9 @@ static void __jbd2_journal_temp_unlink_buffer(struct journal_head *jh)
+  */
+ static void __jbd2_journal_unfile_buffer(struct journal_head *jh)
+ {
++	J_ASSERT_JH(jh, jh->b_transaction != NULL);
++	J_ASSERT_JH(jh, jh->b_next_transaction == NULL);
 +
- 		get_bh(bh);
- 		bh->b_end_io = end_buffer_write_sync;
- 		ret = submit_bh(REQ_OP_WRITE, op_flags, bh);
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index da0cb9a7d6fdc..634c822d1dc98 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -4861,13 +4861,6 @@ static int ext4_commit_super(struct super_block *sb, int sync)
- 	if (!sbh || block_device_ejected(sb))
- 		return error;
+ 	__jbd2_journal_temp_unlink_buffer(jh);
+ 	jh->b_transaction = NULL;
+ 	jbd2_journal_put_journal_head(jh);
+@@ -2443,6 +2446,13 @@ void __jbd2_journal_refile_buffer(struct journal_head *jh)
  
--	/*
--	 * The superblock bh should be mapped, but it might not be if the
--	 * device was hot-removed. Not much we can do but fail the I/O.
--	 */
--	if (!buffer_mapped(sbh))
--		return error;
--
+ 	was_dirty = test_clear_buffer_jbddirty(bh);
+ 	__jbd2_journal_temp_unlink_buffer(jh);
++
++	/*
++	 * b_transaction must be set, otherwise the new b_transaction won't
++	 * be holding jh reference
++	 */
++	J_ASSERT_JH(jh, jh->b_transaction != NULL);
++
  	/*
- 	 * If the file system is mounted read-only, don't update the
- 	 * superblock write time.  This avoids updating the superblock
+ 	 * We set b_transaction here because b_next_transaction will inherit
+ 	 * our jh reference and thus __jbd2_journal_file_buffer() must not
 -- 
 2.25.1
 
