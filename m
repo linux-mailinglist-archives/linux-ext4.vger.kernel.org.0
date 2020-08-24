@@ -2,36 +2,34 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9203C25063E
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Aug 2020 19:30:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FA6225063B
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Aug 2020 19:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728211AbgHXQfX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 24 Aug 2020 12:35:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39210 "EHLO mail.kernel.org"
+        id S1728230AbgHXQfY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 24 Aug 2020 12:35:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39216 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728114AbgHXQfR (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        id S1728139AbgHXQfR (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
         Mon, 24 Aug 2020 12:35:17 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 70D08207CD;
-        Mon, 24 Aug 2020 16:35:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 63B1322C9E;
+        Mon, 24 Aug 2020 16:35:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598286911;
-        bh=dzdvycN+vMiUHofR3jvJMXhONIaGcrfVUdqphJBV+ck=;
+        s=default; t=1598286915;
+        bh=m6gVk/EC6o00WgijoMdmia05PkUmTo2EqoFZ42ly1nQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SdkG+sUDQCwz9jH9NB45+btThmJHi+0ec+QixnGB9HtQQsAB7winb8X0iShy62z/j
-         qqeHzqgv2CdaeVURzOG3m1idjLkpIVB2OtB7wyP5qau81qw5gXbSIXvTWKMscGVvX3
-         s7XwgKf/c4qyR+BtLdGp5cNaJ5bCO9pfqGxv2b00=
+        b=DuT+mLNDLAFppYWxGQIrU0hew0mBWs+YiRt3LUC2MDP0touF2wC3M7DMU8RXWHxku
+         oVOTq3qStuxgQluoZEQpiXQ+sTWtMqVpdbFZU3xfFwqY3b7blxD39e3NMrTHQeR4hY
+         rZa/KyE7cHycM16/WjHqdJh0WRhXORPN2dAMxoP4=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Alex Zhuravlev <azhuravlev@whamcloud.com>,
-        Andreas Dilger <adilger@whamcloud.com>,
-        Artem Blagodarenko <artem.blagodarenko@gmail.com>,
+Cc:     "zhangyi (F)" <yi.zhang@huawei.com>, Theodore Ts'o <tytso@mit.edu>,
         Sasha Levin <sashal@kernel.org>, linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 05/63] ext4: skip non-loaded groups at cr=0/1 when scanning for good groups
-Date:   Mon, 24 Aug 2020 12:34:05 -0400
-Message-Id: <20200824163504.605538-5-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.8 08/63] jbd2: abort journal if free a async write error metadata buffer
+Date:   Mon, 24 Aug 2020 12:34:08 -0400
+Message-Id: <20200824163504.605538-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200824163504.605538-1-sashal@kernel.org>
 References: <20200824163504.605538-1-sashal@kernel.org>
@@ -44,74 +42,64 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Alex Zhuravlev <azhuravlev@whamcloud.com>
+From: "zhangyi (F)" <yi.zhang@huawei.com>
 
-[ Upstream commit c1d2c7d47e15482bb23cda83a5021e60f624a09c ]
+[ Upstream commit c044f3d8360d2ecf831ba2cc9f08cf9fb2c699fb ]
 
-cr=0 is supposed to be an optimization to save CPU cycles, but if
-buddy data (in memory) is not initialized then all this makes no sense
-as we have to do sync IO taking a lot of cycles.  Also, at cr=0
-mballoc doesn't choose any available chunk.  cr=1 also skips groups
-using heuristic based on avg. fragment size.  It's more useful to skip
-such groups and switch to cr=2 where groups will be scanned for
-available chunks.  However, we always read the first block group in a
-flex_bg so metadata blocks will get read into the first flex_bg if
-possible.
+If we free a metadata buffer which has been failed to async write out
+in the background, the jbd2 checkpoint procedure will not detect this
+failure in jbd2_log_do_checkpoint(), so it may lead to filesystem
+inconsistency after cleanup journal tail. This patch abort the journal
+if free a buffer has write_io_error flag to prevent potential further
+inconsistency.
 
-Using sparse image and dm-slow virtual device of 120TB was
-simulated, then the image was formatted and filled using debugfs to
-mark ~85% of available space as busy.  mount process w/o the patch
-couldn't complete in half an hour (according to vmstat it would take
-~10-11 hours).  With the patch applied mount took ~20 seconds.
-
-Lustre-bug-id: https://jira.whamcloud.com/browse/LU-12988
-Signed-off-by: Alex Zhuravlev <azhuravlev@whamcloud.com>
-Reviewed-by: Andreas Dilger <adilger@whamcloud.com>
-Reviewed-by: Artem Blagodarenko <artem.blagodarenko@gmail.com>
+Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
+Link: https://lore.kernel.org/r/20200620025427.1756360-5-yi.zhang@huawei.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/mballoc.c | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
+ fs/jbd2/transaction.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index c0a331e2feb02..9ed108b5bd7fd 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -2177,6 +2177,7 @@ static int ext4_mb_good_group_nolock(struct ext4_allocation_context *ac,
+diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
+index e65e0aca28261..6250c9faa4cbe 100644
+--- a/fs/jbd2/transaction.c
++++ b/fs/jbd2/transaction.c
+@@ -2120,6 +2120,7 @@ int jbd2_journal_try_to_free_buffers(journal_t *journal,
  {
- 	struct ext4_group_info *grp = ext4_get_group_info(ac->ac_sb, group);
- 	struct super_block *sb = ac->ac_sb;
-+	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 	bool should_lock = ac->ac_flags & EXT4_MB_STRICT_CHECK;
- 	ext4_grpblk_t free;
+ 	struct buffer_head *head;
+ 	struct buffer_head *bh;
++	bool has_write_io_error = false;
  	int ret = 0;
-@@ -2195,7 +2196,25 @@ static int ext4_mb_good_group_nolock(struct ext4_allocation_context *ac,
  
- 	/* We only do this if the grp has never been initialized */
- 	if (unlikely(EXT4_MB_GRP_NEED_INIT(grp))) {
--		ret = ext4_mb_init_group(ac->ac_sb, group, GFP_NOFS);
-+		struct ext4_group_desc *gdp =
-+			ext4_get_group_desc(sb, group, NULL);
-+		int ret;
+ 	J_ASSERT(PageLocked(page));
+@@ -2144,11 +2145,26 @@ int jbd2_journal_try_to_free_buffers(journal_t *journal,
+ 		jbd2_journal_put_journal_head(jh);
+ 		if (buffer_jbd(bh))
+ 			goto busy;
 +
-+		/* cr=0/1 is a very optimistic search to find large
-+		 * good chunks almost for free.  If buddy data is not
-+		 * ready, then this optimization makes no sense.  But
-+		 * we never skip the first block group in a flex_bg,
-+		 * since this gets used for metadata block allocation,
-+		 * and we want to make sure we locate metadata blocks
-+		 * in the first block group in the flex_bg if possible.
++		/*
++		 * If we free a metadata buffer which has been failed to
++		 * write out, the jbd2 checkpoint procedure will not detect
++		 * this failure and may lead to filesystem inconsistency
++		 * after cleanup journal tail.
 +		 */
-+		if (cr < 2 &&
-+		    (!sbi->s_log_groups_per_flex ||
-+		     ((group & ((1 << sbi->s_log_groups_per_flex) - 1)) != 0)) &&
-+		    !(ext4_has_group_desc_csum(sb) &&
-+		      (gdp->bg_flags & cpu_to_le16(EXT4_BG_BLOCK_UNINIT))))
-+			return 0;
-+		ret = ext4_mb_init_group(sb, group, GFP_NOFS);
- 		if (ret)
- 			return ret;
- 	}
++		if (buffer_write_io_error(bh)) {
++			pr_err("JBD2: Error while async write back metadata bh %llu.",
++			       (unsigned long long)bh->b_blocknr);
++			has_write_io_error = true;
++		}
+ 	} while ((bh = bh->b_this_page) != head);
+ 
+ 	ret = try_to_free_buffers(page);
+ 
+ busy:
++	if (has_write_io_error)
++		jbd2_journal_abort(journal, -EIO);
++
+ 	return ret;
+ }
+ 
 -- 
 2.25.1
 
