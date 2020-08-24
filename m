@@ -2,114 +2,171 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A7BF250A48
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Aug 2020 22:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75D51250AF1
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Aug 2020 23:34:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727794AbgHXUtP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 24 Aug 2020 16:49:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38656 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726090AbgHXUtP (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 24 Aug 2020 16:49:15 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 195B02067C;
-        Mon, 24 Aug 2020 20:49:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598302154;
-        bh=PDF5FB3f/iX6KmB9XrlWFrnk42OQsjSRBtJ1FLkbKmk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jUh/EXYBZSsJDdmVjLNI9Ide1YTidVvRvP57Wf4SyWXTEaa/Oq3Sun1fEYKw2zPbo
-         aKCpyYiHp520+hjmEuKybQsRGqMfFfEWdJnjuX5r1U5Kobvoccm1Wqv2sA2JRBKfsY
-         /d8CDZHgd3G1/Lq1Dw0aWx5EI4uNe9CYC6tcvDpQ=
-Date:   Mon, 24 Aug 2020 13:49:12 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, ceph-devel@vger.kernel.org
-Subject: Re: [RFC PATCH 1/8] fscrypt: add fscrypt_prepare_new_inode() and
- fscrypt_set_context()
-Message-ID: <20200824204912.GD1650861@gmail.com>
-References: <20200824061712.195654-1-ebiggers@kernel.org>
- <20200824061712.195654-2-ebiggers@kernel.org>
- <0cf5638796e7cddacc38dcd1e967368b99f0069a.camel@kernel.org>
- <20200824182114.GB1650861@gmail.com>
- <06a7d9562b84354eb72bd67c9d4b7262dac53457.camel@kernel.org>
- <20200824190221.GC1650861@gmail.com>
- <fe81c713ed827b91004b0e2838800684da33e60c.camel@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fe81c713ed827b91004b0e2838800684da33e60c.camel@kernel.org>
+        id S1726532AbgHXVez (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 24 Aug 2020 17:34:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726090AbgHXVey (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 24 Aug 2020 17:34:54 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC816C061574
+        for <linux-ext4@vger.kernel.org>; Mon, 24 Aug 2020 14:34:53 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id g6so122054pjl.0
+        for <linux-ext4@vger.kernel.org>; Mon, 24 Aug 2020 14:34:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=ovAyn4Poe4VsI6v8u6x7bM5uzaIaijG/macBqt+tzP8=;
+        b=CYndytIs1bzqd+BqGkVWuiC7KVK29GFSZT9yB1e6uumqNWxvtsZuqBPD4jNseVFR96
+         ucrL5v5wJ2TzqwJYVhWDZcOC+RR3zqhwRiG76LMu/fPbiT6j83cr8J81nfnzwjuRLpGq
+         FyAMYGSaH3vP5dxlN3p2Jl9BaZ4Jrm7hv0yKqYjzksAdQaPOG4idohrU3298gUuE/JN9
+         5cSxKFCVdS0BQtbyf0kaJz66h5kZjMct8rVvWk6dpeJvHG+NRTM4ZdUtVvTbicw6uOc1
+         vEEKsds+oBDNRRM3R52JB20EAIL2fz21VeuU6EvIpy5kOzClHC91vCT3zSdkbbVFAq93
+         dVZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=ovAyn4Poe4VsI6v8u6x7bM5uzaIaijG/macBqt+tzP8=;
+        b=mrZEH6cvoKKocCNmYG9FjrzsND+XBit528FbfGM26uxfM2FE4FG/8wq7HFnvBtiYXc
+         7CO2q3oWKhXwL61MPukUNy++bnhvZGUU/hw/ysjpyxxhJ3iSwmowxEUT/yJx+LUAHvC3
+         +Oa401a+A2SxEuYwToNSIpJawBE3mxCMxKPXQIIB9zB5kRY21403Bx80oJUhGotAGfSi
+         0qhsgGF3Oi+Hm0CC4iLu3F3e2bV2Ww9bIdRzYEEzgzhddiZP3qzqTUs3p5zytsIe5515
+         9m1SLJZOj+fcMGa+SSuQDz2oyH9FM4Ehdng8kZx59wd917vVVJ1kEJHgSCo/hRzGqvkJ
+         YERw==
+X-Gm-Message-State: AOAM5323hjKfBCW4nRmojIaEMGvHxtlQ/qar8uRgcXPpeQzVoAYIaZu/
+        KDoyNx1Q0uzh5XZUcug8EadcDQSE0TYjBWZN
+X-Google-Smtp-Source: ABdhPJxJbuXETIeK15L72ChVd3noeyc9Ysebs0NtNGGcvUJGMt4X6nMK3cNdFs9IlfAsPF6M6efLVQ==
+X-Received: by 2002:a17:90a:9503:: with SMTP id t3mr971422pjo.171.1598304893436;
+        Mon, 24 Aug 2020 14:34:53 -0700 (PDT)
+Received: from [192.168.10.160] (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id na14sm417354pjb.6.2020.08.24.14.34.52
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 24 Aug 2020 14:34:52 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <C0C75F3E-F34B-4DB9-B139-C93694EF693D@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_B4C19C5C-A0E1-4B4F-A1FC-6EB055F4EF04";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH v5 1/2] ext4: reorganize if statement of
+ ext4_mb_release_context()
+Date:   Mon, 24 Aug 2020 15:34:49 -0600
+In-Reply-To: <5439ac6f-db79-ad68-76c1-a4dda9aa0cc3@gmail.com>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        Jan Kara <jack@suse.cz>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+To:     brookxu <brookxu.cn@gmail.com>
+References: <530dadc7-7bee-6d90-38b8-3af56c428297@gmail.com>
+ <20200815133212.8D164A4057@d06av23.portsmouth.uk.ibm.com>
+ <5439ac6f-db79-ad68-76c1-a4dda9aa0cc3@gmail.com>
+X-Mailer: Apple Mail (2.3273)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 03:42:59PM -0400, Jeff Layton wrote:
-> On Mon, 2020-08-24 at 12:02 -0700, Eric Biggers wrote:
-> > On Mon, Aug 24, 2020 at 02:47:07PM -0400, Jeff Layton wrote:
-> > > On Mon, 2020-08-24 at 11:21 -0700, Eric Biggers wrote:
-> > > > On Mon, Aug 24, 2020 at 12:48:48PM -0400, Jeff Layton wrote:
-> > > > > > +void fscrypt_hash_inode_number(struct fscrypt_info *ci,
-> > > > > > +			       const struct fscrypt_master_key *mk)
-> > > > > > +{
-> > > > > > +	WARN_ON(ci->ci_inode->i_ino == 0);
-> > > > > > +	WARN_ON(!mk->mk_ino_hash_key_initialized);
-> > > > > > +
-> > > > > > +	ci->ci_hashed_ino = (u32)siphash_1u64(ci->ci_inode->i_ino,
-> > > > > > +					      &mk->mk_ino_hash_key);
-> > > > > 
-> > > > > i_ino is an unsigned long. Will this produce a consistent results on
-> > > > > arches with 32 and 64 bit long values? I think it'd be nice to ensure
-> > > > > that we can access an encrypted directory created on a 32-bit host from
-> > > > > (e.g.) a 64-bit host.
-> > > > 
-> > > > The result is the same regardless of word size and endianness.
-> > > > siphash_1u64(v, k) is equivalent to:
-> > > > 
-> > > > 	__le64 x = cpu_to_le64(v);
-> > > > 	siphash(&x, 8, k);
-> > > > 
-> > > 
-> > > In the case where you have an (on-storage) inode number that is larger
-> > > than 2^32, x will almost certainly be different on a 32 vs. 64-bit
-> > > wordsize.
-> > > 
-> > > On the box with the 32-bit wordsize, you'll end up promoting i_ino to a
-> > > 64-bit word and the upper 32 bits will be zeroed out. So it seems like
-> > > this means that if you're using inline hardware you're going to end up
-> > > with a result that won't work correctly across different wordsizes.
-> > 
-> > That's only possible if the VFS is truncating the inode number, which would also
-> > break userspace in lots of ways like making applications think that files are
-> > hard-linked together when they aren't.  Also, IV_INO_LBLK_64 would break.
-> > 
-> > The correct fix for that would be to make inode::i_ino 64-bit.
-> > 
-> 
-> ...or just ask the filesystem for the 64-bit inode number via ->getattr
-> or a new op. You could also just truncate it down to 32 bits or xor the
-> top and bottom bits together first, etc...
-> 
-> > Note that ext4 and f2fs (currently the only filesystems that support the
-> > IV_INO_LBLK_* flags) only support 32-bit inode numbers.
-> > 
-> 
-> Ahh, ok. That explains why it's not been an issue so far. Still, if
-> you're reworking this code anyway, you might want to consider avoiding
-> i_ino here.
 
-Let's just enforce ino_bits <= 32 for IV_INO_LBLK_32 for now,
-like is done for IV_INO_LBLK_64:
-https://lkml.kernel.org/r/20200824203841.1707847-1-ebiggers@kernel.org
+--Apple-Mail=_B4C19C5C-A0E1-4B4F-A1FC-6EB055F4EF04
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-There's no need to add extra complexity for something that no one wants yet.
+On Aug 17, 2020, at 1:36 AM, brookxu <brookxu.cn@gmail.com> wrote:
+>=20
+> Reorganize the if statement of ext4_mb_release_context(), make it
+> easier to read.
+>=20
+> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
 
-(And as mentioned, this won't prevent ceph or other filesystems with 64-bit
-inode numbers from adding support for fscrypt, as IV_INO_LBLK_32 support is
-optional and has a pretty specific use case.)
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 
-- Eric
+> ---
+> fs/ext4/mballoc.c | 27 +++++++++++++--------------
+> 1 file changed, 13 insertions(+), 14 deletions(-)
+>=20
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 70b110f..51f37f1 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -4567,20 +4567,19 @@ static int ext4_mb_release_context(struct =
+ext4_allocation_context *ac)
+> 			pa->pa_free -=3D ac->ac_b_ex.fe_len;
+> 			pa->pa_len -=3D ac->ac_b_ex.fe_len;
+> 			spin_unlock(&pa->pa_lock);
+> -		}
+> -	}
+> -	if (pa) {
+> -		/*
+> -		 * We want to add the pa to the right bucket.
+> -		 * Remove it from the list and while adding
+> -		 * make sure the list to which we are adding
+> -		 * doesn't grow big.
+> -		 */
+> -		if ((pa->pa_type =3D=3D MB_GROUP_PA) && =
+likely(pa->pa_free)) {
+> -			spin_lock(pa->pa_obj_lock);
+> -			list_del_rcu(&pa->pa_inode_list);
+> -			spin_unlock(pa->pa_obj_lock);
+> -			ext4_mb_add_n_trim(ac);
+> +
+> +			/*
+> +			 * We want to add the pa to the right bucket.
+> +			 * Remove it from the list and while adding
+> +			 * make sure the list to which we are adding
+> +			 * doesn't grow big.
+> +			 */
+> +			if (likely(pa->pa_free)) {
+> +				spin_lock(pa->pa_obj_lock);
+> +				list_del_rcu(&pa->pa_inode_list);
+> +				spin_unlock(pa->pa_obj_lock);
+> +				ext4_mb_add_n_trim(ac);
+> +			}
+> 		}
+> 		ext4_mb_put_pa(ac, ac->ac_sb, pa);
+> 	}
+> --
+> 1.8.3.1
+>=20
+>=20
+
+
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_B4C19C5C-A0E1-4B4F-A1FC-6EB055F4EF04
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl9EMnkACgkQcqXauRfM
+H+DINhAApbmuErKVkyGroY7x2EZI5rxfhDQWmJv+2wZ36zz7zNJDzmRdn4sCdgX0
+piDJGS2K57tk7rjT0LReiNpe/dMjfF0LOgm7lgj1Qr20HDXVoo6C/D0qUW6AAKTD
+NqiFNEAQxOeVEpw1+KjA2KNqpvQdeyF6cAAwxAZGqIqYF55LqnWhkRuTzLE86jKK
+Xal+KHd4VoflZP6J7L1m5k9QIUXJqSWb//OxdPsPTP5cWKoW7BCv+4AGbXWvfcBb
+KgFvTCLKgZGleo8qWW4mxzG1bduIQCT8yVEKaJx2RZgYZc1cGtRMTmyJH8J66ibY
+4NMW83o5KPjhsOxB+mzujZb1sSrkLpgEtfH9MyzF0+81C5YdyBBJCEXrFoIjOQmn
+dNNJzKmswURVpHTeeZ44sSRAxq5PpuKpcHJb1msRLo8/tyTH2qJKKW2jPXf0eNli
+4LBL1NLSq84bCR2YTgBWrXa6CUeQxLvwRcfZzOreeA0G6Jwvr6lZwTOXLXXDko6b
+0fIG/y5BpU62+rHd51AHG0GzbesN2hSwf5sxJKon5p02E+JlkFadww4NBfK1dUe7
+Dt3WBHl9w3FFF4iubQaySy94KEweoWIGJhboCdTa9LH1yXNlkeOz5dzp7JHchk+F
+xRVZbj/HpdI1txjxMfK5BzjkBzl1wB43cSoLzKeZhYkZ8Aa0aso=
+=o8kZ
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_B4C19C5C-A0E1-4B4F-A1FC-6EB055F4EF04--
