@@ -2,39 +2,40 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1311E250641
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Aug 2020 19:30:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AD47250586
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Aug 2020 19:17:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728219AbgHXRaf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 24 Aug 2020 13:30:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39362 "EHLO mail.kernel.org"
+        id S1727961AbgHXRQu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 24 Aug 2020 13:16:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728152AbgHXQfV (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 24 Aug 2020 12:35:21 -0400
+        id S1728338AbgHXQgk (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 24 Aug 2020 12:36:40 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5D9E922B49;
-        Mon, 24 Aug 2020 16:35:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0454020838;
+        Mon, 24 Aug 2020 16:36:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598286920;
-        bh=k9EA6Yz5BlgytRW2iMDZ8yHVhMkyTP3Gu35nJjpBIVE=;
+        s=default; t=1598286982;
+        bh=yGP6sqnsWOqieh9v9O19m0/UWH3+9FDdeVId7bWLZQk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qcAbktjSglz3BueAt3UEOLno8+6B2bP3jNG+75S0NVdqEFfXm96DVwJXTwEQpWNSI
-         bGL83legWAc7lSUDAYrTMccTnFXXH2he8dvEK8+iEUisMUS5/jErto6vmEwCeZk8XQ
-         iNsRM9b2e9BwC3I7xabD5GiWntFw8lSBDPVjiYGw=
+        b=wIITNpIftwLvKVSg2X6qu7UAi2cDi4hg9tWI/X5qcMWa+0Mi64hxG50Ls5EhTGFz+
+         uK5C0tC+qYOJ7eyexjbLu7v65ab6IQDN48bsIq4uKOdgY8hbFDt3+A3jP5HtUf9ecY
+         B5FgKOwYIxTgvkPIAfC/MXbAhUTj/JORu6ha5+vA=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Xianting Tian <xianting_tian@126.com>,
+Cc:     brookxu <brookxu.cn@gmail.com>, Chunguang Xu <brookxu@tencent.com>,
         Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 12/63] fs: prevent BUG_ON in submit_bh_wbc()
-Date:   Mon, 24 Aug 2020 12:34:12 -0400
-Message-Id: <20200824163504.605538-12-sashal@kernel.org>
+        linux-doc@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.8 57/63] ext4: limit the length of per-inode prealloc list
+Date:   Mon, 24 Aug 2020 12:34:57 -0400
+Message-Id: <20200824163504.605538-57-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200824163504.605538-1-sashal@kernel.org>
 References: <20200824163504.605538-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -43,129 +44,501 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Xianting Tian <xianting_tian@126.com>
+From: brookxu <brookxu.cn@gmail.com>
 
-[ Upstream commit 377254b2cd2252c7c3151b113cbdf93a7736c2e9 ]
+[ Upstream commit 27bc446e2def38db3244a6eb4bb1d6312936610a ]
 
-If a device is hot-removed --- for example, when a physical device is
-unplugged from pcie slot or a nbd device's network is shutdown ---
-this can result in a BUG_ON() crash in submit_bh_wbc().  This is
-because the when the block device dies, the buffer heads will have
-their Buffer_Mapped flag get cleared, leading to the crash in
-submit_bh_wbc.
+In the scenario of writing sparse files, the per-inode prealloc list may
+be very long, resulting in high overhead for ext4_mb_use_preallocated().
+To circumvent this problem, we limit the maximum length of per-inode
+prealloc list to 512 and allow users to modify it.
 
-We had attempted to work around this problem in commit a17712c8
-("ext4: check superblock mapped prior to committing").  Unfortunately,
-it's still possible to hit the BUG_ON(!buffer_mapped(bh)) if the
-device dies between when the work-around check in ext4_commit_super()
-and when submit_bh_wbh() is finally called:
+After patching, we observed that the sys ratio of cpu has dropped, and
+the system throughput has increased significantly. We created a process
+to write the sparse file, and the running time of the process on the
+fixed kernel was significantly reduced, as follows:
 
-Code path:
-ext4_commit_super
-    judge if 'buffer_mapped(sbh)' is false, return <== commit a17712c8
-          lock_buffer(sbh)
-          ...
-          unlock_buffer(sbh)
-               __sync_dirty_buffer(sbh,...
-                    lock_buffer(sbh)
-                        judge if 'buffer_mapped(sbh))' is false, return <== added by this patch
-                            submit_bh(...,sbh)
-                                submit_bh_wbc(...,sbh,...)
+Running time on unfixed kernel：
+[root@TENCENT64 ~]# time taskset 0x01 ./sparse /data1/sparce.dat
+real    0m2.051s
+user    0m0.008s
+sys     0m2.026s
 
-[100722.966497] kernel BUG at fs/buffer.c:3095! <== BUG_ON(!buffer_mapped(bh))' in submit_bh_wbc()
-[100722.966503] invalid opcode: 0000 [#1] SMP
-[100722.966566] task: ffff8817e15a9e40 task.stack: ffffc90024744000
-[100722.966574] RIP: 0010:submit_bh_wbc+0x180/0x190
-[100722.966575] RSP: 0018:ffffc90024747a90 EFLAGS: 00010246
-[100722.966576] RAX: 0000000000620005 RBX: ffff8818a80603a8 RCX: 0000000000000000
-[100722.966576] RDX: ffff8818a80603a8 RSI: 0000000000020800 RDI: 0000000000000001
-[100722.966577] RBP: ffffc90024747ac0 R08: 0000000000000000 R09: ffff88207f94170d
-[100722.966578] R10: 00000000000437c8 R11: 0000000000000001 R12: 0000000000020800
-[100722.966578] R13: 0000000000000001 R14: 000000000bf9a438 R15: ffff88195f333000
-[100722.966580] FS:  00007fa2eee27700(0000) GS:ffff88203d840000(0000) knlGS:0000000000000000
-[100722.966580] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[100722.966581] CR2: 0000000000f0b008 CR3: 000000201a622003 CR4: 00000000007606e0
-[100722.966582] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[100722.966583] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[100722.966583] PKRU: 55555554
-[100722.966583] Call Trace:
-[100722.966588]  __sync_dirty_buffer+0x6e/0xd0
-[100722.966614]  ext4_commit_super+0x1d8/0x290 [ext4]
-[100722.966626]  __ext4_std_error+0x78/0x100 [ext4]
-[100722.966635]  ? __ext4_journal_get_write_access+0xca/0x120 [ext4]
-[100722.966646]  ext4_reserve_inode_write+0x58/0xb0 [ext4]
-[100722.966655]  ? ext4_dirty_inode+0x48/0x70 [ext4]
-[100722.966663]  ext4_mark_inode_dirty+0x53/0x1e0 [ext4]
-[100722.966671]  ? __ext4_journal_start_sb+0x6d/0xf0 [ext4]
-[100722.966679]  ext4_dirty_inode+0x48/0x70 [ext4]
-[100722.966682]  __mark_inode_dirty+0x17f/0x350
-[100722.966686]  generic_update_time+0x87/0xd0
-[100722.966687]  touch_atime+0xa9/0xd0
-[100722.966690]  generic_file_read_iter+0xa09/0xcd0
-[100722.966694]  ? page_cache_tree_insert+0xb0/0xb0
-[100722.966704]  ext4_file_read_iter+0x4a/0x100 [ext4]
-[100722.966707]  ? __inode_security_revalidate+0x4f/0x60
-[100722.966709]  __vfs_read+0xec/0x160
-[100722.966711]  vfs_read+0x8c/0x130
-[100722.966712]  SyS_pread64+0x87/0xb0
-[100722.966716]  do_syscall_64+0x67/0x1b0
-[100722.966719]  entry_SYSCALL64_slow_path+0x25/0x25
+Running time on fixed kernel：
+[root@TENCENT64 ~]# time taskset 0x01 ./sparse /data1/sparce.dat
+real    0m0.471s
+user    0m0.004s
+sys     0m0.395s
 
-To address this, add the check of 'buffer_mapped(bh)' to
-__sync_dirty_buffer().  This also has the benefit of fixing this for
-other file systems.
-
-With this addition, we can drop the workaround in ext4_commit_supper().
-
-[ Commit description rewritten by tytso. ]
-
-Signed-off-by: Xianting Tian <xianting_tian@126.com>
-Link: https://lore.kernel.org/r/1596211825-8750-1-git-send-email-xianting_tian@126.com
+Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+Link: https://lore.kernel.org/r/d7a98178-056b-6db5-6bce-4ead23f4a257@gmail.com
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/buffer.c     | 9 +++++++++
- fs/ext4/super.c | 7 -------
- 2 files changed, 9 insertions(+), 7 deletions(-)
+ Documentation/admin-guide/ext4.rst |  3 ++
+ fs/ext4/ext4.h                     |  4 +-
+ fs/ext4/extents.c                  | 10 ++--
+ fs/ext4/file.c                     |  2 +-
+ fs/ext4/indirect.c                 |  2 +-
+ fs/ext4/inode.c                    |  6 +--
+ fs/ext4/ioctl.c                    |  2 +-
+ fs/ext4/mballoc.c                  | 74 ++++++++++++++++++++++++++----
+ fs/ext4/mballoc.h                  |  4 ++
+ fs/ext4/move_extent.c              |  4 +-
+ fs/ext4/super.c                    |  3 +-
+ fs/ext4/sysfs.c                    |  2 +
+ include/trace/events/ext4.h        | 17 ++++---
+ 13 files changed, 104 insertions(+), 29 deletions(-)
 
-diff --git a/fs/buffer.c b/fs/buffer.c
-index 64fe82ec65ff1..75a8849abb5d2 100644
---- a/fs/buffer.c
-+++ b/fs/buffer.c
-@@ -3160,6 +3160,15 @@ int __sync_dirty_buffer(struct buffer_head *bh, int op_flags)
- 	WARN_ON(atomic_read(&bh->b_count) < 1);
- 	lock_buffer(bh);
- 	if (test_clear_buffer_dirty(bh)) {
-+		/*
-+		 * The bh should be mapped, but it might not be if the
-+		 * device was hot-removed. Not much we can do but fail the I/O.
-+		 */
-+		if (!buffer_mapped(bh)) {
-+			unlock_buffer(bh);
-+			return -EIO;
+diff --git a/Documentation/admin-guide/ext4.rst b/Documentation/admin-guide/ext4.rst
+index 9443fcef18760..f37d0743fd668 100644
+--- a/Documentation/admin-guide/ext4.rst
++++ b/Documentation/admin-guide/ext4.rst
+@@ -482,6 +482,9 @@ Files in /sys/fs/ext4/<devname>:
+         multiple of this tuning parameter if the stripe size is not set in the
+         ext4 superblock
+ 
++  mb_max_inode_prealloc
++        The maximum length of per-inode ext4_prealloc_space list.
++
+   mb_max_to_scan
+         The maximum number of extents the multiblock allocator will search to
+         find the best extent.
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 6a76bd94277f0..b90d06334410c 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -1054,6 +1054,7 @@ struct ext4_inode_info {
+ 	struct timespec64 i_crtime;
+ 
+ 	/* mballoc */
++	atomic_t i_prealloc_active;
+ 	struct list_head i_prealloc_list;
+ 	spinlock_t i_prealloc_lock;
+ 
+@@ -1501,6 +1502,7 @@ struct ext4_sb_info {
+ 	unsigned int s_mb_stats;
+ 	unsigned int s_mb_order2_reqs;
+ 	unsigned int s_mb_group_prealloc;
++	unsigned int s_mb_max_inode_prealloc;
+ 	unsigned int s_max_dir_size_kb;
+ 	/* where last allocation was done - for stream allocation */
+ 	unsigned long s_mb_last_group;
+@@ -2654,7 +2656,7 @@ extern int ext4_mb_release(struct super_block *);
+ extern ext4_fsblk_t ext4_mb_new_blocks(handle_t *,
+ 				struct ext4_allocation_request *, int *);
+ extern int ext4_mb_reserve_blocks(struct super_block *, int);
+-extern void ext4_discard_preallocations(struct inode *);
++extern void ext4_discard_preallocations(struct inode *, unsigned int);
+ extern int __init ext4_init_mballoc(void);
+ extern void ext4_exit_mballoc(void);
+ extern void ext4_free_blocks(handle_t *handle, struct inode *inode,
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index 221f240eae604..a40f928dcb1f1 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -100,7 +100,7 @@ static int ext4_ext_trunc_restart_fn(struct inode *inode, int *dropped)
+ 	 * i_mutex. So we can safely drop the i_data_sem here.
+ 	 */
+ 	BUG_ON(EXT4_JOURNAL(inode) == NULL);
+-	ext4_discard_preallocations(inode);
++	ext4_discard_preallocations(inode, 0);
+ 	up_write(&EXT4_I(inode)->i_data_sem);
+ 	*dropped = 1;
+ 	return 0;
+@@ -4272,7 +4272,7 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
+ 			 * not a good idea to call discard here directly,
+ 			 * but otherwise we'd need to call it every free().
+ 			 */
+-			ext4_discard_preallocations(inode);
++			ext4_discard_preallocations(inode, 0);
+ 			if (flags & EXT4_GET_BLOCKS_DELALLOC_RESERVE)
+ 				fb_flags = EXT4_FREE_BLOCKS_NO_QUOT_UPDATE;
+ 			ext4_free_blocks(handle, inode, NULL, newblock,
+@@ -5299,7 +5299,7 @@ static int ext4_collapse_range(struct inode *inode, loff_t offset, loff_t len)
+ 	}
+ 
+ 	down_write(&EXT4_I(inode)->i_data_sem);
+-	ext4_discard_preallocations(inode);
++	ext4_discard_preallocations(inode, 0);
+ 
+ 	ret = ext4_es_remove_extent(inode, punch_start,
+ 				    EXT_MAX_BLOCKS - punch_start);
+@@ -5313,7 +5313,7 @@ static int ext4_collapse_range(struct inode *inode, loff_t offset, loff_t len)
+ 		up_write(&EXT4_I(inode)->i_data_sem);
+ 		goto out_stop;
+ 	}
+-	ext4_discard_preallocations(inode);
++	ext4_discard_preallocations(inode, 0);
+ 
+ 	ret = ext4_ext_shift_extents(inode, handle, punch_stop,
+ 				     punch_stop - punch_start, SHIFT_LEFT);
+@@ -5445,7 +5445,7 @@ static int ext4_insert_range(struct inode *inode, loff_t offset, loff_t len)
+ 		goto out_stop;
+ 
+ 	down_write(&EXT4_I(inode)->i_data_sem);
+-	ext4_discard_preallocations(inode);
++	ext4_discard_preallocations(inode, 0);
+ 
+ 	path = ext4_find_extent(inode, offset_lblk, NULL, 0);
+ 	if (IS_ERR(path)) {
+diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+index 2a01e31a032c4..e3ab8ea1edf42 100644
+--- a/fs/ext4/file.c
++++ b/fs/ext4/file.c
+@@ -148,7 +148,7 @@ static int ext4_release_file(struct inode *inode, struct file *filp)
+ 		        !EXT4_I(inode)->i_reserved_data_blocks)
+ 	{
+ 		down_write(&EXT4_I(inode)->i_data_sem);
+-		ext4_discard_preallocations(inode);
++		ext4_discard_preallocations(inode, 0);
+ 		up_write(&EXT4_I(inode)->i_data_sem);
+ 	}
+ 	if (is_dx(inode) && filp->private_data)
+diff --git a/fs/ext4/indirect.c b/fs/ext4/indirect.c
+index be2b66eb65f7a..ec6b930928cf6 100644
+--- a/fs/ext4/indirect.c
++++ b/fs/ext4/indirect.c
+@@ -696,7 +696,7 @@ static int ext4_ind_trunc_restart_fn(handle_t *handle, struct inode *inode,
+ 	 * i_mutex. So we can safely drop the i_data_sem here.
+ 	 */
+ 	BUG_ON(EXT4_JOURNAL(inode) == NULL);
+-	ext4_discard_preallocations(inode);
++	ext4_discard_preallocations(inode, 0);
+ 	up_write(&EXT4_I(inode)->i_data_sem);
+ 	*dropped = 1;
+ 	return 0;
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 10dd470876b30..bb9e1cde29464 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -383,7 +383,7 @@ void ext4_da_update_reserve_space(struct inode *inode,
+ 	 */
+ 	if ((ei->i_reserved_data_blocks == 0) &&
+ 	    !inode_is_open_for_write(inode))
+-		ext4_discard_preallocations(inode);
++		ext4_discard_preallocations(inode, 0);
+ }
+ 
+ static int __check_block_validity(struct inode *inode, const char *func,
+@@ -4056,7 +4056,7 @@ int ext4_punch_hole(struct inode *inode, loff_t offset, loff_t length)
+ 	if (stop_block > first_block) {
+ 
+ 		down_write(&EXT4_I(inode)->i_data_sem);
+-		ext4_discard_preallocations(inode);
++		ext4_discard_preallocations(inode, 0);
+ 
+ 		ret = ext4_es_remove_extent(inode, first_block,
+ 					    stop_block - first_block);
+@@ -4211,7 +4211,7 @@ int ext4_truncate(struct inode *inode)
+ 
+ 	down_write(&EXT4_I(inode)->i_data_sem);
+ 
+-	ext4_discard_preallocations(inode);
++	ext4_discard_preallocations(inode, 0);
+ 
+ 	if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
+ 		err = ext4_ext_truncate(handle, inode);
+diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
+index 999cf6add39c6..a5fcc238c6693 100644
+--- a/fs/ext4/ioctl.c
++++ b/fs/ext4/ioctl.c
+@@ -202,7 +202,7 @@ static long swap_inode_boot_loader(struct super_block *sb,
+ 	reset_inode_seed(inode);
+ 	reset_inode_seed(inode_bl);
+ 
+-	ext4_discard_preallocations(inode);
++	ext4_discard_preallocations(inode, 0);
+ 
+ 	err = ext4_mark_inode_dirty(handle, inode);
+ 	if (err < 0) {
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 9ed108b5bd7fd..b5fe1466cea85 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -2755,6 +2755,7 @@ int ext4_mb_init(struct super_block *sb)
+ 	sbi->s_mb_stats = MB_DEFAULT_STATS;
+ 	sbi->s_mb_stream_request = MB_DEFAULT_STREAM_THRESHOLD;
+ 	sbi->s_mb_order2_reqs = MB_DEFAULT_ORDER2_REQS;
++	sbi->s_mb_max_inode_prealloc = MB_DEFAULT_MAX_INODE_PREALLOC;
+ 	/*
+ 	 * The default group preallocation is 512, which for 4k block
+ 	 * sizes translates to 2 megabytes.  However for bigalloc file
+@@ -3693,6 +3694,26 @@ void ext4_mb_generate_from_pa(struct super_block *sb, void *bitmap,
+ 	mb_debug(sb, "preallocated %d for group %u\n", preallocated, group);
+ }
+ 
++static void ext4_mb_mark_pa_deleted(struct super_block *sb,
++				    struct ext4_prealloc_space *pa)
++{
++	struct ext4_inode_info *ei;
++
++	if (pa->pa_deleted) {
++		ext4_warning(sb, "deleted pa, type:%d, pblk:%llu, lblk:%u, len:%d\n",
++			     pa->pa_type, pa->pa_pstart, pa->pa_lstart,
++			     pa->pa_len);
++		return;
++	}
++
++	pa->pa_deleted = 1;
++
++	if (pa->pa_type == MB_INODE_PA) {
++		ei = EXT4_I(pa->pa_inode);
++		atomic_dec(&ei->i_prealloc_active);
++	}
++}
++
+ static void ext4_mb_pa_callback(struct rcu_head *head)
+ {
+ 	struct ext4_prealloc_space *pa;
+@@ -3725,7 +3746,7 @@ static void ext4_mb_put_pa(struct ext4_allocation_context *ac,
+ 		return;
+ 	}
+ 
+-	pa->pa_deleted = 1;
++	ext4_mb_mark_pa_deleted(sb, pa);
+ 	spin_unlock(&pa->pa_lock);
+ 
+ 	grp_blk = pa->pa_pstart;
+@@ -3849,6 +3870,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
+ 	spin_lock(pa->pa_obj_lock);
+ 	list_add_rcu(&pa->pa_inode_list, &ei->i_prealloc_list);
+ 	spin_unlock(pa->pa_obj_lock);
++	atomic_inc(&ei->i_prealloc_active);
+ }
+ 
+ /*
+@@ -4059,7 +4081,7 @@ ext4_mb_discard_group_preallocations(struct super_block *sb,
+ 		}
+ 
+ 		/* seems this one can be freed ... */
+-		pa->pa_deleted = 1;
++		ext4_mb_mark_pa_deleted(sb, pa);
+ 
+ 		/* we can trust pa_free ... */
+ 		free += pa->pa_free;
+@@ -4122,7 +4144,7 @@ ext4_mb_discard_group_preallocations(struct super_block *sb,
+  *
+  * FIXME!! Make sure it is valid at all the call sites
+  */
+-void ext4_discard_preallocations(struct inode *inode)
++void ext4_discard_preallocations(struct inode *inode, unsigned int needed)
+ {
+ 	struct ext4_inode_info *ei = EXT4_I(inode);
+ 	struct super_block *sb = inode->i_sb;
+@@ -4140,15 +4162,19 @@ void ext4_discard_preallocations(struct inode *inode)
+ 
+ 	mb_debug(sb, "discard preallocation for inode %lu\n",
+ 		 inode->i_ino);
+-	trace_ext4_discard_preallocations(inode);
++	trace_ext4_discard_preallocations(inode,
++			atomic_read(&ei->i_prealloc_active), needed);
+ 
+ 	INIT_LIST_HEAD(&list);
+ 
++	if (needed == 0)
++		needed = UINT_MAX;
++
+ repeat:
+ 	/* first, collect all pa's in the inode */
+ 	spin_lock(&ei->i_prealloc_lock);
+-	while (!list_empty(&ei->i_prealloc_list)) {
+-		pa = list_entry(ei->i_prealloc_list.next,
++	while (!list_empty(&ei->i_prealloc_list) && needed) {
++		pa = list_entry(ei->i_prealloc_list.prev,
+ 				struct ext4_prealloc_space, pa_inode_list);
+ 		BUG_ON(pa->pa_obj_lock != &ei->i_prealloc_lock);
+ 		spin_lock(&pa->pa_lock);
+@@ -4165,10 +4191,11 @@ void ext4_discard_preallocations(struct inode *inode)
+ 
+ 		}
+ 		if (pa->pa_deleted == 0) {
+-			pa->pa_deleted = 1;
++			ext4_mb_mark_pa_deleted(sb, pa);
+ 			spin_unlock(&pa->pa_lock);
+ 			list_del_rcu(&pa->pa_inode_list);
+ 			list_add(&pa->u.pa_tmp_list, &list);
++			needed--;
+ 			continue;
+ 		}
+ 
+@@ -4469,7 +4496,7 @@ ext4_mb_discard_lg_preallocations(struct super_block *sb,
+ 		BUG_ON(pa->pa_type != MB_GROUP_PA);
+ 
+ 		/* seems this one can be freed ... */
+-		pa->pa_deleted = 1;
++		ext4_mb_mark_pa_deleted(sb, pa);
+ 		spin_unlock(&pa->pa_lock);
+ 
+ 		list_del_rcu(&pa->pa_inode_list);
+@@ -4567,11 +4594,30 @@ static void ext4_mb_add_n_trim(struct ext4_allocation_context *ac)
+ 	return ;
+ }
+ 
++/*
++ * if per-inode prealloc list is too long, trim some PA
++ */
++static void ext4_mb_trim_inode_pa(struct inode *inode)
++{
++	struct ext4_inode_info *ei = EXT4_I(inode);
++	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
++	int count, delta;
++
++	count = atomic_read(&ei->i_prealloc_active);
++	delta = (sbi->s_mb_max_inode_prealloc >> 2) + 1;
++	if (count > sbi->s_mb_max_inode_prealloc + delta) {
++		count -= sbi->s_mb_max_inode_prealloc;
++		ext4_discard_preallocations(inode, count);
++	}
++}
++
+ /*
+  * release all resource we used in allocation
+  */
+ static int ext4_mb_release_context(struct ext4_allocation_context *ac)
+ {
++	struct inode *inode = ac->ac_inode;
++	struct ext4_inode_info *ei = EXT4_I(inode);
+ 	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
+ 	struct ext4_prealloc_space *pa = ac->ac_pa;
+ 	if (pa) {
+@@ -4598,6 +4644,17 @@ static int ext4_mb_release_context(struct ext4_allocation_context *ac)
+ 			spin_unlock(pa->pa_obj_lock);
+ 			ext4_mb_add_n_trim(ac);
+ 		}
++
++		if (pa->pa_type == MB_INODE_PA) {
++			/*
++			 * treat per-inode prealloc list as a lru list, then try
++			 * to trim the least recently used PA.
++			 */
++			spin_lock(pa->pa_obj_lock);
++			list_move(&pa->pa_inode_list, &ei->i_prealloc_list);
++			spin_unlock(pa->pa_obj_lock);
 +		}
 +
- 		get_bh(bh);
- 		bh->b_end_io = end_buffer_write_sync;
- 		ret = submit_bh(REQ_OP_WRITE, op_flags, bh);
+ 		ext4_mb_put_pa(ac, ac->ac_sb, pa);
+ 	}
+ 	if (ac->ac_bitmap_page)
+@@ -4607,6 +4664,7 @@ static int ext4_mb_release_context(struct ext4_allocation_context *ac)
+ 	if (ac->ac_flags & EXT4_MB_HINT_GROUP_ALLOC)
+ 		mutex_unlock(&ac->ac_lg->lg_mutex);
+ 	ext4_mb_collect_stats(ac);
++	ext4_mb_trim_inode_pa(inode);
+ 	return 0;
+ }
+ 
+diff --git a/fs/ext4/mballoc.h b/fs/ext4/mballoc.h
+index 6b4d17c2935d6..e75b4749aa1c2 100644
+--- a/fs/ext4/mballoc.h
++++ b/fs/ext4/mballoc.h
+@@ -73,6 +73,10 @@
+  */
+ #define MB_DEFAULT_GROUP_PREALLOC	512
+ 
++/*
++ * maximum length of inode prealloc list
++ */
++#define MB_DEFAULT_MAX_INODE_PREALLOC	512
+ 
+ struct ext4_free_data {
+ 	/* this links the free block information from sb_info */
+diff --git a/fs/ext4/move_extent.c b/fs/ext4/move_extent.c
+index 1ed86fb6c3026..0d601b8228753 100644
+--- a/fs/ext4/move_extent.c
++++ b/fs/ext4/move_extent.c
+@@ -686,8 +686,8 @@ ext4_move_extents(struct file *o_filp, struct file *d_filp, __u64 orig_blk,
+ 
+ out:
+ 	if (*moved_len) {
+-		ext4_discard_preallocations(orig_inode);
+-		ext4_discard_preallocations(donor_inode);
++		ext4_discard_preallocations(orig_inode, 0);
++		ext4_discard_preallocations(donor_inode, 0);
+ 	}
+ 
+ 	ext4_ext_drop_refs(path);
 diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 4c8253188d8df..f3614299ffd09 100644
+index f3614299ffd09..0b38bf29c07e0 100644
 --- a/fs/ext4/super.c
 +++ b/fs/ext4/super.c
-@@ -5204,13 +5204,6 @@ static int ext4_commit_super(struct super_block *sb, int sync)
- 	if (!sbh || block_device_ejected(sb))
- 		return error;
+@@ -1123,6 +1123,7 @@ static struct inode *ext4_alloc_inode(struct super_block *sb)
+ 	inode_set_iversion(&ei->vfs_inode, 1);
+ 	spin_lock_init(&ei->i_raw_lock);
+ 	INIT_LIST_HEAD(&ei->i_prealloc_list);
++	atomic_set(&ei->i_prealloc_active, 0);
+ 	spin_lock_init(&ei->i_prealloc_lock);
+ 	ext4_es_init_tree(&ei->i_es_tree);
+ 	rwlock_init(&ei->i_es_lock);
+@@ -1216,7 +1217,7 @@ void ext4_clear_inode(struct inode *inode)
+ {
+ 	invalidate_inode_buffers(inode);
+ 	clear_inode(inode);
+-	ext4_discard_preallocations(inode);
++	ext4_discard_preallocations(inode, 0);
+ 	ext4_es_remove_extent(inode, 0, EXT_MAX_BLOCKS);
+ 	dquot_drop(inode);
+ 	if (EXT4_I(inode)->jinode) {
+diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
+index 6c9fc9e21c138..92f04e9e94413 100644
+--- a/fs/ext4/sysfs.c
++++ b/fs/ext4/sysfs.c
+@@ -215,6 +215,7 @@ EXT4_RW_ATTR_SBI_UI(mb_min_to_scan, s_mb_min_to_scan);
+ EXT4_RW_ATTR_SBI_UI(mb_order2_req, s_mb_order2_reqs);
+ EXT4_RW_ATTR_SBI_UI(mb_stream_req, s_mb_stream_request);
+ EXT4_RW_ATTR_SBI_UI(mb_group_prealloc, s_mb_group_prealloc);
++EXT4_RW_ATTR_SBI_UI(mb_max_inode_prealloc, s_mb_max_inode_prealloc);
+ EXT4_RW_ATTR_SBI_UI(extent_max_zeroout_kb, s_extent_max_zeroout_kb);
+ EXT4_ATTR(trigger_fs_error, 0200, trigger_test_error);
+ EXT4_RW_ATTR_SBI_UI(err_ratelimit_interval_ms, s_err_ratelimit_state.interval);
+@@ -257,6 +258,7 @@ static struct attribute *ext4_attrs[] = {
+ 	ATTR_LIST(mb_order2_req),
+ 	ATTR_LIST(mb_stream_req),
+ 	ATTR_LIST(mb_group_prealloc),
++	ATTR_LIST(mb_max_inode_prealloc),
+ 	ATTR_LIST(max_writeback_mb_bump),
+ 	ATTR_LIST(extent_max_zeroout_kb),
+ 	ATTR_LIST(trigger_fs_error),
+diff --git a/include/trace/events/ext4.h b/include/trace/events/ext4.h
+index cc41d692ae8ed..628db6a07fda0 100644
+--- a/include/trace/events/ext4.h
++++ b/include/trace/events/ext4.h
+@@ -746,24 +746,29 @@ TRACE_EVENT(ext4_mb_release_group_pa,
+ );
  
--	/*
--	 * The superblock bh should be mapped, but it might not be if the
--	 * device was hot-removed. Not much we can do but fail the I/O.
--	 */
--	if (!buffer_mapped(sbh))
--		return error;
--
- 	/*
- 	 * If the file system is mounted read-only, don't update the
- 	 * superblock write time.  This avoids updating the superblock
+ TRACE_EVENT(ext4_discard_preallocations,
+-	TP_PROTO(struct inode *inode),
++	TP_PROTO(struct inode *inode, unsigned int len, unsigned int needed),
+ 
+-	TP_ARGS(inode),
++	TP_ARGS(inode, len, needed),
+ 
+ 	TP_STRUCT__entry(
+-		__field(	dev_t,	dev			)
+-		__field(	ino_t,	ino			)
++		__field(	dev_t,		dev		)
++		__field(	ino_t,		ino		)
++		__field(	unsigned int,	len		)
++		__field(	unsigned int,	needed		)
+ 
+ 	),
+ 
+ 	TP_fast_assign(
+ 		__entry->dev	= inode->i_sb->s_dev;
+ 		__entry->ino	= inode->i_ino;
++		__entry->len	= len;
++		__entry->needed	= needed;
+ 	),
+ 
+-	TP_printk("dev %d,%d ino %lu",
++	TP_printk("dev %d,%d ino %lu len: %u needed %u",
+ 		  MAJOR(__entry->dev), MINOR(__entry->dev),
+-		  (unsigned long) __entry->ino)
++		  (unsigned long) __entry->ino, __entry->len,
++		  __entry->needed)
+ );
+ 
+ TRACE_EVENT(ext4_mb_discard_preallocations,
 -- 
 2.25.1
 
