@@ -2,125 +2,88 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 509F124E86B
-	for <lists+linux-ext4@lfdr.de>; Sat, 22 Aug 2020 17:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F32BA24F254
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Aug 2020 08:18:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728256AbgHVPso (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 22 Aug 2020 11:48:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727807AbgHVPsm (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 22 Aug 2020 11:48:42 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39DEAC061574
-        for <linux-ext4@vger.kernel.org>; Sat, 22 Aug 2020 08:48:42 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id f193so2573774pfa.12
-        for <linux-ext4@vger.kernel.org>; Sat, 22 Aug 2020 08:48:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WbL90IDwtnRtnzlD0xDGTdZ6FaQmNJQAGy53EB9XAHk=;
-        b=0KZ+dqt5XN5ztFcChm8+ZeUl+GW8fXsEiliNI5SKcfdWype1tzUD3q0c4KCTXtTOWU
-         jPdbj4EvlAV56xq5aGtoLWg72Lzki+lOYu5f2Dm2iO7hp2ipTTvWMfQ2DzwmGhOVTZmk
-         tCnjKLnK3sU8J0nFYAJFV8EJrXyQuNj8nh9PwJ/h2SZBxKRJOcNaoKmSKlabujAeVLFy
-         R1y+0QXCzY/yaBUIsAqVctnVCzCJ9d1s0ruzhX9nsDJwUd1to8WQXxgHh4AZrIPcR7lB
-         GMY8IIx3nkVE0iyeqWc3ko//t77f0KAmDvW+XD37zLzd7hDX1clRQgikLtsDjrsHFNmP
-         ZCLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WbL90IDwtnRtnzlD0xDGTdZ6FaQmNJQAGy53EB9XAHk=;
-        b=MgWqae+Sb1llHB/fqmwh9MctbG4H21s02E60Z9K72u7F1/p5wAahwCbVAFfRUaePNP
-         nuxWRYiHzG/QSiScqUVDN1YbZUBiuVRhmUF5DNTUOFcQIXT6EyblG6oDFtecBzjk8Ru+
-         +NXYEH8VWWWH8EP7DD7LFaeudPsuxCYU0FXg98jLGcj/kgU4S6/b1EfxQbwUF5CRcFMU
-         AEl2fhSe0tFxt1uc3jPBKlV+T1ZpkRgp/B87ZfLFNYaEctM+xeatY4OCRERizl8Afbht
-         05qWpQNETl9DRB0au9Y5tFhBtjq1BSnyP0qu2YsVhxIP6iVqWQ3XMPtQyoymJg01khVq
-         2Jrw==
-X-Gm-Message-State: AOAM530bksJ4AMTuopHc+yKugxL7Bu/hjLQtfO562f1S1uccJLFwnACb
-        9lo3LQYWs08jG13AIg4Dhuk7ggqKR7Cjr+/x
-X-Google-Smtp-Source: ABdhPJzHdhcG1OaTI4+z9SJEQ0YHL8LOWl5oPUh0GXHf9JvYJ0cQemZTDm7DiSpV3t68o+75tLmz2A==
-X-Received: by 2002:aa7:9468:: with SMTP id t8mr6380356pfq.182.1598111320508;
-        Sat, 22 Aug 2020 08:48:40 -0700 (PDT)
-Received: from [192.168.1.182] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id b10sm721269pjd.51.2020.08.22.08.48.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 22 Aug 2020 08:48:39 -0700 (PDT)
-Subject: Re: [PATCH] ext4: flag as supporting buffered async reads
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <fb90cc2d-b12c-738f-21a4-dd7a8ae0556a@kernel.dk>
- <20200818181117.GA34125@mit.edu>
- <990cc101-d4a1-f346-fe78-0fb5b963b406@kernel.dk>
- <20c844c8-b649-3250-ff5b-b7420f72ff38@kernel.dk>
- <20200822143326.GC199705@mit.edu>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <aff250ad-4c31-15c2-fa1d-3f3945cb7aa5@kernel.dk>
-Date:   Sat, 22 Aug 2020 09:48:37 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726026AbgHXGSS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 24 Aug 2020 02:18:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49688 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725770AbgHXGSS (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 24 Aug 2020 02:18:18 -0400
+Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CD6CF206B5;
+        Mon, 24 Aug 2020 06:18:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598249898;
+        bh=5Cg/F/P1MsSIqNAEKm5EcA85tMzmQDFgxtq+BwsOiXY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=f893nZOHOk74YywNd+s2c7KM7U+ApkFK+G5wAxPqs247sQ2FcptH0qP9EtwzvEYBf
+         LROjPrF6b7H17wnj5KGsZaPkgvTF6yctFlLpC0zde7Uvt1Qfhq8ilvE8jBprCzObNr
+         jbaGalIhOAIFifcUwA2qyoWoyI0iCcGdq4CofU6w=
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, ceph-devel@vger.kernel.org,
+        Jeff Layton <jlayton@kernel.org>
+Subject: [RFC PATCH 0/8] fscrypt: avoid GFP_NOFS-unsafe key setup during transaction
+Date:   Sun, 23 Aug 2020 23:17:04 -0700
+Message-Id: <20200824061712.195654-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20200822143326.GC199705@mit.edu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 8/22/20 8:33 AM, Theodore Y. Ts'o wrote:
-> On Fri, Aug 21, 2020 at 03:26:35PM -0600, Jens Axboe wrote:
->>>>> Resending this one, as I've been carrying it privately since May. The
->>>>> necessary bits are now upstream (and XFS/btrfs equiv changes as well),
->>>>> please consider this one for 5.9. Thanks!
->>>>
->>>> The necessary commit only hit upstream as of 5.9-rc1, unless I'm
->>>> missing something?  It's on my queue to send to Linus once I get my
->>>> (late) ext4 primary pull request for 5.9.
->>>
->>> Right, it went in at the start of the merge window for 5.9. Thanks Ted!
->>
->> Didn't see it in the queue that just sent in, is it still queued up?
-> 
-> It wasn't in the queue which I queued up because that was based on
-> 5.8-rc4.  Linus was a bit grumpy (fairly so) because it was late, and
-> that's totally on me.
-> 
-> He has said that he's going to start ignoring pull requests that
-> aren't fixes only if this becomes a pattern, so while I can send him
-> another pull request which will just have that one change, there are
-> no guarantees he's going to take it at this late date.
-> 
-> Sorry, when you sent me the commit saying that the changes that were
-> needed were already upstream on August 3rd, I thought that meant that
-> they were aready in Linus's tree.  I should have checked and noticed
-> that that in fact "ext4: flag as supporting buffered async reads"
-> wasn't compiling against Linus's upstream tree, so I didn't realize
-> this needed to be handled as a special case during the merge window.
+This series fixes some deadlocks which are theoretically possible due to
+fscrypt_get_encryption_info() being GFP_NOFS-unsafe, and thus not safe
+to be called from within an ext4 transaction or under f2fs_lock_op().
 
-Well to be honest, this kind of sucks. I've been posting it since May,
-and the ideal approach would have been to just ack it and I could have
-carried it in my tree. That's what we did for btrfs and XFS, both of
-which have it.
+The problem is solved by new helper functions which allow setting up the
+key for new inodes earlier.  Patch 1 adds these helper functions.  Also
+see that patch for a more detailed description of this problem.
 
-The required patches *were* upstreamed on August 3rd, which is why I
-mentioned that. But yes, not in 5.8 or earlier, of course.
+Patches 2-6 then convert ext4, f2fs, and ubifs to use these new helpers.
 
-So I suggest that you either include it for the next pull request for
-Linus, or that I put it in with your ack. Either is fine with me. I'd
-consider this a "dropping the ball" kind of thing, it's not like the
-patch hasn't been in linux-next or hasn't been ready for months. This
-isn't some "oh I wrote this feature after the merge window" event. It'd
-be a real shame to ship 5.9 and ext4 not have support for the more
-efficient async buffered reads, imho, especially since the two other
-major local file systems already have it.
+Patch 7-8 then clean up a few things afterwards.
 
-Let me know what you think.
+Coincidentally, this also solves some of the ordering problems that
+ceph fscrypt support will have.  For more details about this, see the
+discussion on Jeff Layton's RFC patchset for ceph fscrypt support
+(https://lkml.kernel.org/linux-fscrypt/20200821182813.52570-1-jlayton@kernel.org/T/#u)
+However, fscrypt_prepare_new_inode() still requires that the new
+'struct inode' exist already, so it might not be enough for ceph yet.
+
+This patchset applies to v5.9-rc2.
+
+Eric Biggers (8):
+  fscrypt: add fscrypt_prepare_new_inode() and fscrypt_set_context()
+  ext4: factor out ext4_xattr_credits_for_new_inode()
+  ext4: remove some #ifdefs in ext4_xattr_credits_for_new_inode()
+  ext4: use fscrypt_prepare_new_inode() and fscrypt_set_context()
+  f2fs: use fscrypt_prepare_new_inode() and fscrypt_set_context()
+  ubifs: use fscrypt_prepare_new_inode() and fscrypt_set_context()
+  fscrypt: remove fscrypt_inherit_context()
+  fscrypt: stop pretending that key setup is nofs-safe
+
+ fs/crypto/fscrypt_private.h |   3 +
+ fs/crypto/hooks.c           |  10 +-
+ fs/crypto/inline_crypt.c    |   7 +-
+ fs/crypto/keysetup.c        | 190 ++++++++++++++++++++++++++++--------
+ fs/crypto/keysetup_v1.c     |   8 +-
+ fs/crypto/policy.c          |  64 +++++++-----
+ fs/ext4/ialloc.c            | 118 +++++++++++-----------
+ fs/f2fs/dir.c               |   2 +-
+ fs/f2fs/f2fs.h              |  16 ---
+ fs/f2fs/namei.c             |   7 +-
+ fs/ubifs/dir.c              |  26 ++---
+ include/linux/fscrypt.h     |  18 +++-
+ 12 files changed, 293 insertions(+), 176 deletions(-)
 
 -- 
-Jens Axboe
+2.28.0
 
