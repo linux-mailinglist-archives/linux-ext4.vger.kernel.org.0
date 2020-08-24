@@ -2,34 +2,35 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FA6225063B
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Aug 2020 19:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A7F250635
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Aug 2020 19:29:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728230AbgHXQfY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 24 Aug 2020 12:35:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39216 "EHLO mail.kernel.org"
+        id S1728240AbgHXQfZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 24 Aug 2020 12:35:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728139AbgHXQfR (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 24 Aug 2020 12:35:17 -0400
+        id S1728145AbgHXQfU (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 24 Aug 2020 12:35:20 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 63B1322C9E;
-        Mon, 24 Aug 2020 16:35:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 003BA22BF5;
+        Mon, 24 Aug 2020 16:35:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598286915;
-        bh=m6gVk/EC6o00WgijoMdmia05PkUmTo2EqoFZ42ly1nQ=;
+        s=default; t=1598286918;
+        bh=YXFQNHr9lZq6hjs8+szpgPfzsKLLsPavwLXSALMFg+8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DuT+mLNDLAFppYWxGQIrU0hew0mBWs+YiRt3LUC2MDP0touF2wC3M7DMU8RXWHxku
-         oVOTq3qStuxgQluoZEQpiXQ+sTWtMqVpdbFZU3xfFwqY3b7blxD39e3NMrTHQeR4hY
-         rZa/KyE7cHycM16/WjHqdJh0WRhXORPN2dAMxoP4=
+        b=LBLrpjxeqXlMyhC1soMYXMJlKm+WjsSByzIEC5dbIH+6G9Ep9ycCM9DMu7/2AdP4Q
+         rfF6/UlyNLPnb9LE/7crFwulJ77YhRTnAcL+KdutygpLjeMwX6WojwMeWNVMCULF5G
+         j9bvBm62A/3jEPJ3xgZnBplzxWJHm6SaRbi+E9B8=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "zhangyi (F)" <yi.zhang@huawei.com>, Theodore Ts'o <tytso@mit.edu>,
-        Sasha Levin <sashal@kernel.org>, linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 08/63] jbd2: abort journal if free a async write error metadata buffer
-Date:   Mon, 24 Aug 2020 12:34:08 -0400
-Message-Id: <20200824163504.605538-8-sashal@kernel.org>
+Cc:     Jan Kara <jack@suse.cz>, Lukas Czerner <lczerner@redhat.com>,
+        Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
+        linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.8 11/63] ext4: correctly restore system zone info when remount fails
+Date:   Mon, 24 Aug 2020 12:34:11 -0400
+Message-Id: <20200824163504.605538-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200824163504.605538-1-sashal@kernel.org>
 References: <20200824163504.605538-1-sashal@kernel.org>
@@ -42,64 +43,108 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: "zhangyi (F)" <yi.zhang@huawei.com>
+From: Jan Kara <jack@suse.cz>
 
-[ Upstream commit c044f3d8360d2ecf831ba2cc9f08cf9fb2c699fb ]
+[ Upstream commit 0f5bde1db174f6c471f0bd27198575719dabe3e5 ]
 
-If we free a metadata buffer which has been failed to async write out
-in the background, the jbd2 checkpoint procedure will not detect this
-failure in jbd2_log_do_checkpoint(), so it may lead to filesystem
-inconsistency after cleanup journal tail. This patch abort the journal
-if free a buffer has write_io_error flag to prevent potential further
-inconsistency.
+When remounting filesystem fails late during remount handling and
+block_validity mount option is also changed during the remount, we fail
+to restore system zone information to a state matching the mount option.
+This is mostly harmless, just the block validity checking will not match
+the situation described by the mount option. Make sure these two are always
+consistent.
 
-Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
-Link: https://lore.kernel.org/r/20200620025427.1756360-5-yi.zhang@huawei.com
+Reported-by: Lukas Czerner <lczerner@redhat.com>
+Reviewed-by: Lukas Czerner <lczerner@redhat.com>
+Signed-off-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20200728130437.7804-7-jack@suse.cz
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/jbd2/transaction.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ fs/ext4/block_validity.c |  8 --------
+ fs/ext4/super.c          | 29 +++++++++++++++++++++--------
+ 2 files changed, 21 insertions(+), 16 deletions(-)
 
-diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-index e65e0aca28261..6250c9faa4cbe 100644
---- a/fs/jbd2/transaction.c
-+++ b/fs/jbd2/transaction.c
-@@ -2120,6 +2120,7 @@ int jbd2_journal_try_to_free_buffers(journal_t *journal,
- {
- 	struct buffer_head *head;
- 	struct buffer_head *bh;
-+	bool has_write_io_error = false;
- 	int ret = 0;
+diff --git a/fs/ext4/block_validity.c b/fs/ext4/block_validity.c
+index 16e9b2fda03ae..30ff442453ff0 100644
+--- a/fs/ext4/block_validity.c
++++ b/fs/ext4/block_validity.c
+@@ -262,14 +262,6 @@ int ext4_setup_system_zone(struct super_block *sb)
+ 	int flex_size = ext4_flex_bg_size(sbi);
+ 	int ret;
  
- 	J_ASSERT(PageLocked(page));
-@@ -2144,11 +2145,26 @@ int jbd2_journal_try_to_free_buffers(journal_t *journal,
- 		jbd2_journal_put_journal_head(jh);
- 		if (buffer_jbd(bh))
- 			goto busy;
-+
-+		/*
-+		 * If we free a metadata buffer which has been failed to
-+		 * write out, the jbd2 checkpoint procedure will not detect
-+		 * this failure and may lead to filesystem inconsistency
-+		 * after cleanup journal tail.
-+		 */
-+		if (buffer_write_io_error(bh)) {
-+			pr_err("JBD2: Error while async write back metadata bh %llu.",
-+			       (unsigned long long)bh->b_blocknr);
-+			has_write_io_error = true;
+-	if (!test_opt(sb, BLOCK_VALIDITY)) {
+-		if (sbi->system_blks)
+-			ext4_release_system_zone(sb);
+-		return 0;
+-	}
+-	if (sbi->system_blks)
+-		return 0;
+-
+ 	system_blks = kzalloc(sizeof(*system_blks), GFP_KERNEL);
+ 	if (!system_blks)
+ 		return -ENOMEM;
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 54d1c09329e55..4c8253188d8df 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -4698,11 +4698,13 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+ 
+ 	ext4_set_resv_clusters(sb);
+ 
+-	err = ext4_setup_system_zone(sb);
+-	if (err) {
+-		ext4_msg(sb, KERN_ERR, "failed to initialize system "
+-			 "zone (%d)", err);
+-		goto failed_mount4a;
++	if (test_opt(sb, BLOCK_VALIDITY)) {
++		err = ext4_setup_system_zone(sb);
++		if (err) {
++			ext4_msg(sb, KERN_ERR, "failed to initialize system "
++				 "zone (%d)", err);
++			goto failed_mount4a;
 +		}
- 	} while ((bh = bh->b_this_page) != head);
+ 	}
  
- 	ret = try_to_free_buffers(page);
+ 	ext4_ext_init(sb);
+@@ -5716,9 +5718,16 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
+ 		ext4_register_li_request(sb, first_not_zeroed);
+ 	}
  
- busy:
-+	if (has_write_io_error)
-+		jbd2_journal_abort(journal, -EIO);
-+
- 	return ret;
- }
+-	err = ext4_setup_system_zone(sb);
+-	if (err)
+-		goto restore_opts;
++	/*
++	 * Handle creation of system zone data early because it can fail.
++	 * Releasing of existing data is done when we are sure remount will
++	 * succeed.
++	 */
++	if (test_opt(sb, BLOCK_VALIDITY) && !sbi->system_blks) {
++		err = ext4_setup_system_zone(sb);
++		if (err)
++			goto restore_opts;
++	}
  
+ 	if (sbi->s_journal == NULL && !(old_sb_flags & SB_RDONLY)) {
+ 		err = ext4_commit_super(sb, 1);
+@@ -5740,6 +5749,8 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
+ 		}
+ 	}
+ #endif
++	if (!test_opt(sb, BLOCK_VALIDITY) && sbi->system_blks)
++		ext4_release_system_zone(sb);
+ 
+ 	/*
+ 	 * Some options can be enabled by ext4 and/or by VFS mount flag
+@@ -5761,6 +5772,8 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
+ 	sbi->s_commit_interval = old_opts.s_commit_interval;
+ 	sbi->s_min_batch_time = old_opts.s_min_batch_time;
+ 	sbi->s_max_batch_time = old_opts.s_max_batch_time;
++	if (!test_opt(sb, BLOCK_VALIDITY) && sbi->system_blks)
++		ext4_release_system_zone(sb);
+ #ifdef CONFIG_QUOTA
+ 	sbi->s_jquota_fmt = old_opts.s_jquota_fmt;
+ 	for (i = 0; i < EXT4_MAXQUOTAS; i++) {
 -- 
 2.25.1
 
