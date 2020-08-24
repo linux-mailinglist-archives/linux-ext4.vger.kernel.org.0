@@ -2,68 +2,116 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E598A25062A
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Aug 2020 19:28:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9203C25063E
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Aug 2020 19:30:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728385AbgHXR2l convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Mon, 24 Aug 2020 13:28:41 -0400
-Received: from ns2.chapar.net ([81.31.224.5]:4781 "EHLO mail.chapar.net"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728382AbgHXR2e (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 24 Aug 2020 13:28:34 -0400
-X-Greylist: delayed 20125 seconds by postgrey-1.27 at vger.kernel.org; Mon, 24 Aug 2020 13:28:31 EDT
-Received: from chapar.net by mail.chapar.net (MDaemon PRO v12.5.6)
-        with ESMTP id md50001230178.msg
-        for <linux-ext4@vger.kernel.org>; Tue, 23 Jun 2020 12:27:26 +0430
-X-Spam-Processed: mail.chapar.net, Tue, 23 Jun 2020 12:27:26 +0430
-        (not processed: message from trusted or authenticated source)
-X-Authenticated-Sender: iphone@chapar.net
-X-MDRemoteIP: 197.234.219.46
-X-Return-Path: iphone@chapar.net
-X-Envelope-From: iphone@chapar.net
-X-MDaemon-Deliver-To: linux-ext4@vger.kernel.org
-Reply-To: conseiljuriquemealabijoel1@gmail.com
-From:   Mr JOEL ALABI <iphone@chapar.net>
-To:     linux-ext4@vger.kernel.org
-Subject: Mes Salutations
-Date:   23 Jun 2020 03:25:26 +0200
-Message-ID: <20200623032525.4F6EA25555D763F6@chapar.net>
+        id S1728211AbgHXQfX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 24 Aug 2020 12:35:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39210 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728114AbgHXQfR (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 24 Aug 2020 12:35:17 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 70D08207CD;
+        Mon, 24 Aug 2020 16:35:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598286911;
+        bh=dzdvycN+vMiUHofR3jvJMXhONIaGcrfVUdqphJBV+ck=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=SdkG+sUDQCwz9jH9NB45+btThmJHi+0ec+QixnGB9HtQQsAB7winb8X0iShy62z/j
+         qqeHzqgv2CdaeVURzOG3m1idjLkpIVB2OtB7wyP5qau81qw5gXbSIXvTWKMscGVvX3
+         s7XwgKf/c4qyR+BtLdGp5cNaJ5bCO9pfqGxv2b00=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Alex Zhuravlev <azhuravlev@whamcloud.com>,
+        Andreas Dilger <adilger@whamcloud.com>,
+        Artem Blagodarenko <artem.blagodarenko@gmail.com>,
+        Sasha Levin <sashal@kernel.org>, linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.8 05/63] ext4: skip non-loaded groups at cr=0/1 when scanning for good groups
+Date:   Mon, 24 Aug 2020 12:34:05 -0400
+Message-Id: <20200824163504.605538-5-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200824163504.605538-1-sashal@kernel.org>
+References: <20200824163504.605538-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: 8BIT
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-A votre attention 
+From: Alex Zhuravlev <azhuravlev@whamcloud.com>
 
-OFFRE
-Je vous prie de m'excuser si vous êtes surpris de mon message. Je 
-me
-présente donc, je suis Mr Malik  AL- KHABIR ancien ingénieur 
-pétrolier
-sous le régime de l’ex et défunt président Mouammar KADHAFI.
-En effet, dans le cadre de mon soutien humanitaire individuel en 
-ces
-temps difficiles de lutte contre la maladie du virus Corona
-(COVID-19), au vu de la crise économique mondiale, votre adresse
-e-mail a été sélectionnée pour un don de 500 000 € pour une œuvre
-caritative et soutien médical communautaire dans votre  région. 
-En
-acceptant notre donation nous aidons ainsi toute une communauté à
-travers vous.
-Alors si vous acceptez cette donation je vous prie de prendre 
-contact
-avec mon avocat à son adresse personnelle  afin de rentrer en
-possession de ces fonds qui sont domiciliés dans une banque 
-située en
-Afrique ceci en toute légalité selon les lois en vigueur.
-Contact de l’avocat :
-NOM : Me JOEL ALABI
-E-mail : conseiljuriquemealabijoel1@gmail.com
-Cordialement…
-Mr Malik  AL- KHABIR
+[ Upstream commit c1d2c7d47e15482bb23cda83a5021e60f624a09c ]
 
+cr=0 is supposed to be an optimization to save CPU cycles, but if
+buddy data (in memory) is not initialized then all this makes no sense
+as we have to do sync IO taking a lot of cycles.  Also, at cr=0
+mballoc doesn't choose any available chunk.  cr=1 also skips groups
+using heuristic based on avg. fragment size.  It's more useful to skip
+such groups and switch to cr=2 where groups will be scanned for
+available chunks.  However, we always read the first block group in a
+flex_bg so metadata blocks will get read into the first flex_bg if
+possible.
+
+Using sparse image and dm-slow virtual device of 120TB was
+simulated, then the image was formatted and filled using debugfs to
+mark ~85% of available space as busy.  mount process w/o the patch
+couldn't complete in half an hour (according to vmstat it would take
+~10-11 hours).  With the patch applied mount took ~20 seconds.
+
+Lustre-bug-id: https://jira.whamcloud.com/browse/LU-12988
+Signed-off-by: Alex Zhuravlev <azhuravlev@whamcloud.com>
+Reviewed-by: Andreas Dilger <adilger@whamcloud.com>
+Reviewed-by: Artem Blagodarenko <artem.blagodarenko@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/ext4/mballoc.c | 21 ++++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
+
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index c0a331e2feb02..9ed108b5bd7fd 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -2177,6 +2177,7 @@ static int ext4_mb_good_group_nolock(struct ext4_allocation_context *ac,
+ {
+ 	struct ext4_group_info *grp = ext4_get_group_info(ac->ac_sb, group);
+ 	struct super_block *sb = ac->ac_sb;
++	struct ext4_sb_info *sbi = EXT4_SB(sb);
+ 	bool should_lock = ac->ac_flags & EXT4_MB_STRICT_CHECK;
+ 	ext4_grpblk_t free;
+ 	int ret = 0;
+@@ -2195,7 +2196,25 @@ static int ext4_mb_good_group_nolock(struct ext4_allocation_context *ac,
+ 
+ 	/* We only do this if the grp has never been initialized */
+ 	if (unlikely(EXT4_MB_GRP_NEED_INIT(grp))) {
+-		ret = ext4_mb_init_group(ac->ac_sb, group, GFP_NOFS);
++		struct ext4_group_desc *gdp =
++			ext4_get_group_desc(sb, group, NULL);
++		int ret;
++
++		/* cr=0/1 is a very optimistic search to find large
++		 * good chunks almost for free.  If buddy data is not
++		 * ready, then this optimization makes no sense.  But
++		 * we never skip the first block group in a flex_bg,
++		 * since this gets used for metadata block allocation,
++		 * and we want to make sure we locate metadata blocks
++		 * in the first block group in the flex_bg if possible.
++		 */
++		if (cr < 2 &&
++		    (!sbi->s_log_groups_per_flex ||
++		     ((group & ((1 << sbi->s_log_groups_per_flex) - 1)) != 0)) &&
++		    !(ext4_has_group_desc_csum(sb) &&
++		      (gdp->bg_flags & cpu_to_le16(EXT4_BG_BLOCK_UNINIT))))
++			return 0;
++		ret = ext4_mb_init_group(sb, group, GFP_NOFS);
+ 		if (ret)
+ 			return ret;
+ 	}
+-- 
+2.25.1
 
