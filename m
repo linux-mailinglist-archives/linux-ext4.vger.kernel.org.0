@@ -2,93 +2,68 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88090250C64
-	for <lists+linux-ext4@lfdr.de>; Tue, 25 Aug 2020 01:32:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BE84250EBE
+	for <lists+linux-ext4@lfdr.de>; Tue, 25 Aug 2020 04:11:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727078AbgHXXcM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 24 Aug 2020 19:32:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38984 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725968AbgHXXcL (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 24 Aug 2020 19:32:11 -0400
-Received: from localhost (unknown [104.132.1.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1090C2074D;
-        Mon, 24 Aug 2020 23:32:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598311931;
-        bh=MHWFxrSNWgUFbkwhstp/6s6DxFuZbPykagmrmfORDj0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IsooUHbL1hbNjt/UxArRuXQ4gDx5qqLpZrSaveZCC0UMlS1Ca4PHW8BaGvurwQ/PM
-         0aFlZxQiWzqU2b6+2MLc9JWtCT2OCvP4nSwiSvkH8QOgdW7lsTBnv+LTZoxH5Ucz5x
-         sabwm2+ayVwUI+Ntm4IX2sz/ljDaix2w++h75wVY=
-Date:   Mon, 24 Aug 2020 16:32:10 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Daniel Rosenberg <drosen@google.com>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fscrypt@vger.kernel.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>
-Subject: Re: [PATCH v12 0/4] Prepare for upcoming Casefolding/Encryption
- patches
-Message-ID: <20200824233210.GA122905@google.com>
-References: <20200708091237.3922153-1-drosen@google.com>
- <20200720170951.GE1292162@gmail.com>
- <20200727164508.GE1138@sol.localdomain>
- <20200824230015.GA810@sol.localdomain>
+        id S1726697AbgHYCLj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 24 Aug 2020 22:11:39 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:10317 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726882AbgHYCLf (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 24 Aug 2020 22:11:35 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 0FE8D6DC1D0E38E8D415;
+        Tue, 25 Aug 2020 10:11:33 +0800 (CST)
+Received: from [127.0.0.1] (10.174.179.86) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Tue, 25 Aug 2020
+ 10:11:30 +0800
+Subject: Re: [PATCH 0/2] Fix race between do_invalidatepage and
+ init_page_buffers
+To:     Jan Kara <jack@suse.cz>
+References: <20200822082218.2228697-1-yebin10@huawei.com>
+ <20200824155143.GH24877@quack2.suse.cz>
+CC:     <jack@suse.com>, <tytso@mit.edu>, <linux-ext4@vger.kernel.org>
+From:   yebin <yebin10@huawei.com>
+Message-ID: <5F447351.6060207@huawei.com>
+Date:   Tue, 25 Aug 2020 10:11:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200824230015.GA810@sol.localdomain>
+In-Reply-To: <20200824155143.GH24877@quack2.suse.cz>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.86]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 08/24, Eric Biggers wrote:
-> On Mon, Jul 27, 2020 at 09:45:08AM -0700, Eric Biggers wrote:
-> > On Mon, Jul 20, 2020 at 10:09:51AM -0700, Eric Biggers wrote:
-> > > On Wed, Jul 08, 2020 at 02:12:33AM -0700, Daniel Rosenberg wrote:
-> > > > This lays the ground work for enabling casefolding and encryption at the
-> > > > same time for ext4 and f2fs. A future set of patches will enable that
-> > > > functionality.
-> > > > 
-> > > > These unify the highly similar dentry_operations that ext4 and f2fs both
-> > > > use for casefolding. In addition, they improve d_hash by not requiring a
-> > > > new string allocation.
-> > > > 
-> > > > Daniel Rosenberg (4):
-> > > >   unicode: Add utf8_casefold_hash
-> > > >   fs: Add standard casefolding support
-> > > >   f2fs: Use generic casefolding support
-> > > >   ext4: Use generic casefolding support
-> > > > 
-> > > 
-> > > Ted, are you interested in taking this through the ext4 tree for 5.9?
-> > > 
-> > > - Eric
-> > 
-> > Ping?
-> > 
-> 
-> Unfortunately this patchset got ignored for 5.9.
-> 
-> Ted, will you have any interest in taking this patchset for 5.10?  Or should
-> Jaegeuk just take patches 1-3 via the f2fs tree?
+Your patch certainly can fix the problem with my testcases, but I don't 
+think it's
+a good way. There are other paths that can call do_invalidatepage , for 
+instance
+block ioctl to discard and zero_range.
 
-fyi; I think I can merge 1-3, if Al has no concern on 1 & 2. 
+On 2020/8/24 23:51, Jan Kara wrote:
+> Hello,
+>
+> On Sat 22-08-20 16:22:16, Ye Bin wrote:
+>> Ye Bin (2):
+>>    ext4: Add comment to BUFFER_FLAGS_DISCARD for search code
+>>    jbd2: Fix race between do_invalidatepage and init_page_buffers
+>>
+>>   fs/buffer.c                 | 12 +++++++++++-
+>>   fs/jbd2/journal.c           |  7 +++++++
+>>   include/linux/buffer_head.h |  2 ++
+>>   3 files changed, 20 insertions(+), 1 deletion(-)
+> Thanks for the good description of the problem and the analysis. I could
+> now easily understand what was really happening on your system. I think the
+> problem should be fixed differently through - it is a problem of
+> block_write_full_page() that it invalidates buffers while JBD2 is working
+> with them. Attached patch should also fix the problem. Can you please test
+> whether it fixes your testcase as well? Thanks!
+>
+> 								Honza
 
-> 
-> The fscrypt tree is also an option, but I feel it's not really appropriate since
-> this patchset is just a refactoring of the existing casefolding support.
-> 
-> More reviews on patches 1-2 would be appreciated too.  So far just Gabriel and I
-> have reviewed them.  I was hoping that other people would review them too.
-> 
-> - Eric
+
