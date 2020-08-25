@@ -2,196 +2,134 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C2142518A9
-	for <lists+linux-ext4@lfdr.de>; Tue, 25 Aug 2020 14:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16E80251AAA
+	for <lists+linux-ext4@lfdr.de>; Tue, 25 Aug 2020 16:18:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726611AbgHYMhT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 25 Aug 2020 08:37:19 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:60682 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726374AbgHYMhQ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 25 Aug 2020 08:37:16 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07PCXm25037207;
-        Tue, 25 Aug 2020 08:37:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : date : mime-version : in-reply-to : content-type :
- content-transfer-encoding : message-id; s=pp1;
- bh=wVyG37sejAuGZH8iqPCXOVAlO+CpTvU/uUL/nBXgU8M=;
- b=q+7d0oKeKn6NPfHpT/vbefOl8r6RERE9un9wZxOgxm8J7A8Z8xpuLJhMRAoXSUOBd6BB
- TI6eM2pSBqZ87BJPLz9IcNAHePQOY98v6wGzoQGFUMTfEcy96E4QKk39zZepnTXnLSPh
- lzAxVTyM3bNsEMidKNhVwIbe1ZyqXe0NEd1xqR7YbGAtMo863i0XRvrfAk1GIbj1Aybh
- tBk1s8Ed2Y5sqzF49/KaIuLZsNJDmQ5UEv9NqPhGxmZsScxRWSO+o1KjQvQQeTa0WHv3
- LrOS0b+imEpLYYRobAyMa5kv2nVrHYo0K9q3i2I8Gqxklf3bRycs76piZ8M/ivPvZ/Of GA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 334yt64t59-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Aug 2020 08:37:09 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07PCZwv8043492;
-        Tue, 25 Aug 2020 08:37:08 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 334yt64syr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Aug 2020 08:37:08 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07PCRlqU018400;
-        Tue, 25 Aug 2020 12:36:53 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma03ams.nl.ibm.com with ESMTP id 332ujkue5v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Aug 2020 12:36:53 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07PCZL2466519352
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 25 Aug 2020 12:35:21 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 70DF2AE056;
-        Tue, 25 Aug 2020 12:36:51 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3AA34AE045;
-        Tue, 25 Aug 2020 12:36:50 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.199.43.157])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 25 Aug 2020 12:36:50 +0000 (GMT)
-Subject: Re: [PATCH] iomap: iomap_bmap should accept unwritten maps
-To:     Yuxuan Shui <yshuiv7@gmail.com>
-Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
-        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        Jan Kara <jack@suse.cz>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>
-References: <20200505183608.10280-1-yshuiv7@gmail.com>
- <20200505193049.GC5694@magnolia>
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-Date:   Tue, 25 Aug 2020 18:06:49 +0530
+        id S1726610AbgHYOSf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 25 Aug 2020 10:18:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726187AbgHYOSa (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 25 Aug 2020 10:18:30 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5640AC061574
+        for <linux-ext4@vger.kernel.org>; Tue, 25 Aug 2020 07:18:30 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id v2so10536689ilq.4
+        for <linux-ext4@vger.kernel.org>; Tue, 25 Aug 2020 07:18:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=4fa6CWJEUOwheO2MzeVtgbtKAJxehJpCdEllFRnoowQ=;
+        b=aw1QWNf3nx90XJSzXYAZQe7F04hGPY8+Gb+qR8Ze+dP2vRW0I4JdU4Kyne2+ye13UW
+         Zad39+dVzCW5d6cTcfiDt5+u3pyK0Gm1JhPyRny4A5LDMsB3f/zhEDDVTZndtWUW3Hfc
+         njciB/DQ4eevRhkLmSrwx7364rKibGzFp/FtwIz693ca3qROabwT5HSB7/gHuD9AiwDg
+         7SA0mVFQ44RaNI7rNK4T+AbFcWaIGoobuRvhnB7TvIkMgL/RaLdwUA9adq5hQ4ef+56i
+         g8z5WEYqyxhctyOIRZpS1zKfyTKAsW0SdFeLOwmSEmjdsfBO0lVHaMeFCut9nTP+ABoL
+         4+RQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4fa6CWJEUOwheO2MzeVtgbtKAJxehJpCdEllFRnoowQ=;
+        b=tEFA6k3oQtG+AqyESQ4vQpvBISypohdg+0Sv0Y0R71AA/q8KWacyxso/BMsqIyLtg/
+         8RezqkDTFowNMWp/mgOathx7SwBAkWd0UbipBgaV5WmPJGO9C6kOS8doPvg8aJc+tb4+
+         7hDoFtdCpCyNrPp8yW5ExJBCl3/LDgH20t5SAlg4sXPqoaNtnZm5XZRR2dY+QFu2NB9Z
+         S4tNcKvlaBNsYRUjSgS09D8EslPfX3iExmUS8xmA66ppPKkxwEvJ3xmlEzOrc7gRrJra
+         GmN+36YiqqDfKqLrNx4FefAn9FxXkUFrCLxcnmwLMfRS26F1BJB+wec+Jsai9HN2wh2T
+         lFkg==
+X-Gm-Message-State: AOAM530W0mSuz0z4U/Wb3IUcUKmcoE/hWX3CpwJbTGY4zDFbEbnZTLTa
+        OMJOaTVjHfuRqxu9/YnxN7srS8bVfTadYo+4
+X-Google-Smtp-Source: ABdhPJyY1OaQ+Umotok2j2XLRxsZuzwhZJCnmSI1jN+NLrCYnTMyRkEaZpokELcBWo2CHRg0pa9f7w==
+X-Received: by 2002:a92:6c09:: with SMTP id h9mr9815270ilc.46.1598365109513;
+        Tue, 25 Aug 2020 07:18:29 -0700 (PDT)
+Received: from [192.168.1.58] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id f18sm9350485ilj.24.2020.08.25.07.18.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Aug 2020 07:18:28 -0700 (PDT)
+Subject: Re: [PATCH] ext4: flag as supporting buffered async reads
+From:   Jens Axboe <axboe@kernel.dk>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <fb90cc2d-b12c-738f-21a4-dd7a8ae0556a@kernel.dk>
+ <20200818181117.GA34125@mit.edu>
+ <990cc101-d4a1-f346-fe78-0fb5b963b406@kernel.dk>
+ <20c844c8-b649-3250-ff5b-b7420f72ff38@kernel.dk>
+ <20200822143326.GC199705@mit.edu>
+ <aff250ad-4c31-15c2-fa1d-3f3945cb7aa5@kernel.dk>
+ <7f0e2d99-5da2-237e-a894-0afddc0ace1e@kernel.dk>
+Message-ID: <049a97db-c362-bcfb-59e5-4b1d2df59383@kernel.dk>
+Date:   Tue, 25 Aug 2020 08:18:27 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200505193049.GC5694@magnolia>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <7f0e2d99-5da2-237e-a894-0afddc0ace1e@kernel.dk>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Message-Id: <20200825123650.3AA34AE045@d06av26.portsmouth.uk.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-25_03:2020-08-25,2020-08-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 mlxlogscore=999 mlxscore=0 bulkscore=0 clxscore=1015
- priorityscore=1501 impostorscore=0 suspectscore=0 malwarescore=0
- adultscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008250092
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-
-
-On 5/6/20 1:00 AM, Darrick J. Wong wrote:
-> On Tue, May 05, 2020 at 07:36:08PM +0100, Yuxuan Shui wrote:
->> commit ac58e4fb03f9d111d733a4ad379d06eef3a24705 moved ext4_bmap from
->> generic_block_bmap to iomap_bmap, this introduced a regression which
->> prevents some user from using previously working swapfiles. The kernel
->> will complain about holes while there is none.
+On 8/24/20 4:56 AM, Jens Axboe wrote:
+> On 8/22/20 9:48 AM, Jens Axboe wrote:
+>> On 8/22/20 8:33 AM, Theodore Y. Ts'o wrote:
+>>> On Fri, Aug 21, 2020 at 03:26:35PM -0600, Jens Axboe wrote:
+>>>>>>> Resending this one, as I've been carrying it privately since May. The
+>>>>>>> necessary bits are now upstream (and XFS/btrfs equiv changes as well),
+>>>>>>> please consider this one for 5.9. Thanks!
+>>>>>>
+>>>>>> The necessary commit only hit upstream as of 5.9-rc1, unless I'm
+>>>>>> missing something?  It's on my queue to send to Linus once I get my
+>>>>>> (late) ext4 primary pull request for 5.9.
+>>>>>
+>>>>> Right, it went in at the start of the merge window for 5.9. Thanks Ted!
+>>>>
+>>>> Didn't see it in the queue that just sent in, is it still queued up?
+>>>
+>>> It wasn't in the queue which I queued up because that was based on
+>>> 5.8-rc4.  Linus was a bit grumpy (fairly so) because it was late, and
+>>> that's totally on me.
+>>>
+>>> He has said that he's going to start ignoring pull requests that
+>>> aren't fixes only if this becomes a pattern, so while I can send him
+>>> another pull request which will just have that one change, there are
+>>> no guarantees he's going to take it at this late date.
+>>>
+>>> Sorry, when you sent me the commit saying that the changes that were
+>>> needed were already upstream on August 3rd, I thought that meant that
+>>> they were aready in Linus's tree.  I should have checked and noticed
+>>> that that in fact "ext4: flag as supporting buffered async reads"
+>>> wasn't compiling against Linus's upstream tree, so I didn't realize
+>>> this needed to be handled as a special case during the merge window.
 >>
->> What is happening here is that the swapfile has unwritten mappings,
->> which is rejected by iomap_bmap, but was accepted by ext4_get_block.
+>> Well to be honest, this kind of sucks. I've been posting it since May,
+>> and the ideal approach would have been to just ack it and I could have
+>> carried it in my tree. That's what we did for btrfs and XFS, both of
+>> which have it.
+>>
+>> The required patches *were* upstreamed on August 3rd, which is why I
+>> mentioned that. But yes, not in 5.8 or earlier, of course.
+>>
+>> So I suggest that you either include it for the next pull request for
+>> Linus, or that I put it in with your ack. Either is fine with me. I'd
+>> consider this a "dropping the ball" kind of thing, it's not like the
+>> patch hasn't been in linux-next or hasn't been ready for months. This
+>> isn't some "oh I wrote this feature after the merge window" event. It'd
+>> be a real shame to ship 5.9 and ext4 not have support for the more
+>> efficient async buffered reads, imho, especially since the two other
+>> major local file systems already have it.
+>>
+>> Let me know what you think.
 > 
-> ...which is why ext4 ought to use iomap_swapfile_activate.
+> Ted, can you make a call on this, please? It's now post -rc2. Let's
+> get this settled and included, one way or another.
 
-I tested this patch (diff below), which seems to be working fine for me
-for straight forward use case of swapon/swapoff on ext4.
-Could you give it a try?
+Daily ping on this one...
 
-<log showing ext4_iomap_swap_activate path kicking in>
-swapon  1283 [000]   438.651028:     250000 cpu-clock:pppH:
-	ffffffff817f7f56 percpu_counter_add_batch+0x26 (/boot/vmlinux)
-	ffffffff813a61d0 ext4_es_lookup_extent+0x1d0 (/boot/vmlinux)
-	ffffffff813b8095 ext4_map_blocks+0x65 (/boot/vmlinux)
-	ffffffff813b8d4b ext4_iomap_begin_report+0x10b (/boot/vmlinux)
-	ffffffff81367f58 iomap_apply+0xa8 (/boot/vmlinux)
-	ffffffff8136d1c3 iomap_swapfile_activate+0xb3 (/boot/vmlinux)
-	ffffffff813b51a5 ext4_iomap_swap_activate+0x15 (/boot/vmlinux)
-	ffffffff812a3a27 __do_sys_swapon+0xb37 (/boot/vmlinux)
-	ffffffff812a40f6 __x64_sys_swapon+0x16 (/boot/vmlinux)
-	ffffffff820b760a do_syscall_64+0x5a (/boot/vmlinux)
-	ffffffff8220007c entry_SYSCALL_64+0x7c (/boot/vmlinux)
-	    7ffff7de68bb swapon+0xb (/usr/lib/x86_64-linux-gnu/libc-2.30.so)
-	66706177732f756d [unknown] ([unknown])
+-- 
+Jens Axboe
 
-<shows that swapfile(which I setup using fallocate) has some used bytes>
-$ swapon -s
-Filename                                Type            Size    Used 
-Priority
-/home/qemu/swapfile-test                file            2097148 42312   -2
-
-
-@Jan/Ted/Darrick,
-
-I am not that familiar with how swap subsystem works.
-So, is there anything else you feel is required apart from below changes
-for supporting swap_activate via iomap? I did test both swapon/swapoff
-and see that swap is getting used up on ext4 with delalloc mount opt.
-
-As I see from code, iomap_swapfile_activate is mainly looking for
-extent mapping information of that file to pass to swap subsystem.
-And IIUC, "ext4_iomap_report_ops" is meant exactly for that.
-Same as how we use it in ext4_fiemap().
-
-
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 6eae17758ece..1e390157541d 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -3614,6 +3614,13 @@ static int ext4_set_page_dirty(struct page *page)
-  	return __set_page_dirty_buffers(page);
-  }
-
-+static int ext4_iomap_swap_activate(struct swap_info_struct *sis,
-+				    struct file *file, sector_t *span)
-+{
-+	return iomap_swapfile_activate(sis, file, span,
-+				       &ext4_iomap_report_ops);
-+}
-+
-  static const struct address_space_operations ext4_aops = {
-  	.readpage		= ext4_readpage,
-  	.readahead		= ext4_readahead,
-@@ -3629,6 +3636,7 @@ static const struct address_space_operations 
-ext4_aops = {
-  	.migratepage		= buffer_migrate_page,
-  	.is_partially_uptodate  = block_is_partially_uptodate,
-  	.error_remove_page	= generic_error_remove_page,
-+	.swap_activate 		= ext4_iomap_swap_activate,
-  };
-
-  static const struct address_space_operations ext4_journalled_aops = {
-@@ -3645,6 +3653,7 @@ static const struct address_space_operations 
-ext4_journalled_aops = {
-  	.direct_IO		= noop_direct_IO,
-  	.is_partially_uptodate  = block_is_partially_uptodate,
-  	.error_remove_page	= generic_error_remove_page,
-+	.swap_activate 		= ext4_iomap_swap_activate,
-  };
-
-  static const struct address_space_operations ext4_da_aops = {
-@@ -3662,6 +3671,7 @@ static const struct address_space_operations 
-ext4_da_aops = {
-  	.migratepage		= buffer_migrate_page,
-  	.is_partially_uptodate  = block_is_partially_uptodate,
-  	.error_remove_page	= generic_error_remove_page,
-+	.swap_activate 		= ext4_iomap_swap_activate,
-  };
-
-  static const struct address_space_operations ext4_dax_aops = {
-@@ -3670,6 +3680,7 @@ static const struct address_space_operations 
-ext4_dax_aops = {
-  	.set_page_dirty		= noop_set_page_dirty,
-  	.bmap			= ext4_bmap,
-  	.invalidatepage		= noop_invalidatepage,
-+	.swap_activate 		= ext4_iomap_swap_activate,
-  };
-
-  void ext4_set_aops(struct inode *inode)
