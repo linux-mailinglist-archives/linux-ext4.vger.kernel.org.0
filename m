@@ -2,134 +2,109 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E80251AAA
-	for <lists+linux-ext4@lfdr.de>; Tue, 25 Aug 2020 16:18:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BBB5251BB9
+	for <lists+linux-ext4@lfdr.de>; Tue, 25 Aug 2020 17:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726610AbgHYOSf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 25 Aug 2020 10:18:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60086 "EHLO
+        id S1726351AbgHYPAh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 25 Aug 2020 11:00:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726187AbgHYOSa (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 25 Aug 2020 10:18:30 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5640AC061574
-        for <linux-ext4@vger.kernel.org>; Tue, 25 Aug 2020 07:18:30 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id v2so10536689ilq.4
-        for <linux-ext4@vger.kernel.org>; Tue, 25 Aug 2020 07:18:30 -0700 (PDT)
+        with ESMTP id S1726645AbgHYPA2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 25 Aug 2020 11:00:28 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 703B6C061574
+        for <linux-ext4@vger.kernel.org>; Tue, 25 Aug 2020 08:00:27 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id q4so1706849eds.3
+        for <linux-ext4@vger.kernel.org>; Tue, 25 Aug 2020 08:00:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4fa6CWJEUOwheO2MzeVtgbtKAJxehJpCdEllFRnoowQ=;
-        b=aw1QWNf3nx90XJSzXYAZQe7F04hGPY8+Gb+qR8Ze+dP2vRW0I4JdU4Kyne2+ye13UW
-         Zad39+dVzCW5d6cTcfiDt5+u3pyK0Gm1JhPyRny4A5LDMsB3f/zhEDDVTZndtWUW3Hfc
-         njciB/DQ4eevRhkLmSrwx7364rKibGzFp/FtwIz693ca3qROabwT5HSB7/gHuD9AiwDg
-         7SA0mVFQ44RaNI7rNK4T+AbFcWaIGoobuRvhnB7TvIkMgL/RaLdwUA9adq5hQ4ef+56i
-         g8z5WEYqyxhctyOIRZpS1zKfyTKAsW0SdFeLOwmSEmjdsfBO0lVHaMeFCut9nTP+ABoL
-         4+RQ==
+        d=malat-biz.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EBvMikOTlgp4iHmq2ikAXfpylQFNImhiHDDTAi/6CgA=;
+        b=r6U4Absd22DuKSqY5QKdrJsNL0Cqobha1iosRwta2QU51jGwuyHKrZMfZ4GB8VkCQK
+         DRSE7UbkuV7Pw9R9Icv+wCMBIDGxfvlIq5o/7u3xzm5hWS2JS/RBtt6nNabf1r4TnBKe
+         MNcV2pr7XvVreTNTLqxfHcr8OMBZxKw90yjxnquwyC+8mWR8yyW9tKauHi3UZOqoS3kY
+         5F2CcreGSyJMjGND4lST42BnMVXmJUWwKLlKWmdFVXkcrI5CM8XCL7QdGB7Hc6wUh7Oz
+         PS1LGkUVCruweYBurHOUXPVRsY2WikyRLXYiiiQAMd8A3FwUK2eZlujfs56vpi9cqrjt
+         ZaRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=4fa6CWJEUOwheO2MzeVtgbtKAJxehJpCdEllFRnoowQ=;
-        b=tEFA6k3oQtG+AqyESQ4vQpvBISypohdg+0Sv0Y0R71AA/q8KWacyxso/BMsqIyLtg/
-         8RezqkDTFowNMWp/mgOathx7SwBAkWd0UbipBgaV5WmPJGO9C6kOS8doPvg8aJc+tb4+
-         7hDoFtdCpCyNrPp8yW5ExJBCl3/LDgH20t5SAlg4sXPqoaNtnZm5XZRR2dY+QFu2NB9Z
-         S4tNcKvlaBNsYRUjSgS09D8EslPfX3iExmUS8xmA66ppPKkxwEvJ3xmlEzOrc7gRrJra
-         GmN+36YiqqDfKqLrNx4FefAn9FxXkUFrCLxcnmwLMfRS26F1BJB+wec+Jsai9HN2wh2T
-         lFkg==
-X-Gm-Message-State: AOAM530W0mSuz0z4U/Wb3IUcUKmcoE/hWX3CpwJbTGY4zDFbEbnZTLTa
-        OMJOaTVjHfuRqxu9/YnxN7srS8bVfTadYo+4
-X-Google-Smtp-Source: ABdhPJyY1OaQ+Umotok2j2XLRxsZuzwhZJCnmSI1jN+NLrCYnTMyRkEaZpokELcBWo2CHRg0pa9f7w==
-X-Received: by 2002:a92:6c09:: with SMTP id h9mr9815270ilc.46.1598365109513;
-        Tue, 25 Aug 2020 07:18:29 -0700 (PDT)
-Received: from [192.168.1.58] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id f18sm9350485ilj.24.2020.08.25.07.18.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Aug 2020 07:18:28 -0700 (PDT)
-Subject: Re: [PATCH] ext4: flag as supporting buffered async reads
-From:   Jens Axboe <axboe@kernel.dk>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <fb90cc2d-b12c-738f-21a4-dd7a8ae0556a@kernel.dk>
- <20200818181117.GA34125@mit.edu>
- <990cc101-d4a1-f346-fe78-0fb5b963b406@kernel.dk>
- <20c844c8-b649-3250-ff5b-b7420f72ff38@kernel.dk>
- <20200822143326.GC199705@mit.edu>
- <aff250ad-4c31-15c2-fa1d-3f3945cb7aa5@kernel.dk>
- <7f0e2d99-5da2-237e-a894-0afddc0ace1e@kernel.dk>
-Message-ID: <049a97db-c362-bcfb-59e5-4b1d2df59383@kernel.dk>
-Date:   Tue, 25 Aug 2020 08:18:27 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=EBvMikOTlgp4iHmq2ikAXfpylQFNImhiHDDTAi/6CgA=;
+        b=Cgs6kbGSEsk1+yPSpBUl2GsLRaMp+U0Ln7544puNJhx/7hRDLmb6fryAG9S6S0sdUN
+         s4BZz8p0pnHJKp2FELYDk3HPsG27ufvnEQWQLUIsGglGgpPkU7GDx4Sapa7otA5ykRwE
+         9A5fgRElRaE8hTjvWDAoeiSHI1ZMG5ZLlzdiTncxFQNhhxU5GGT+3oVXRDacgtm5kC8w
+         3tZd2hPQvupGhMepQrDr5uDp44CHhR5cYHCgRE5xv6Ef/fBUBoyHTpCjki9DFHTnZ3Wx
+         ISahbGkxw+ANf8CF/qkPhXpvl+4mbH8bP4O1ncLIhWw39DHCjnjcE4ybIsee8fghu6S1
+         PJ/g==
+X-Gm-Message-State: AOAM533Q6ocs8McDCUYbvbBYkYAG+TDDwpcY3ytKz259HdzikhzTSDhZ
+        gzes8894TCkAXWIEWdepD8dLjA9tBBdunw==
+X-Google-Smtp-Source: ABdhPJx/Tp3UIUwcuBtUTtpok9g/CZUHcORxTwbZGSrHElm1rkcxc6N6Xc6Smlf2GPOPFMHJ+0Apcw==
+X-Received: by 2002:a50:ba8c:: with SMTP id x12mr10959282ede.319.1598367625754;
+        Tue, 25 Aug 2020 08:00:25 -0700 (PDT)
+Received: from ntb.petris.klfree.cz (snat2.klfree.cz. [81.201.48.25])
+        by smtp.googlemail.com with ESMTPSA id ci27sm14454886ejc.23.2020.08.25.08.00.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Aug 2020 08:00:25 -0700 (PDT)
+From:   Petr Malat <oss@malat.biz>
+To:     linux-ext4@vger.kernel.org
+Cc:     adilger.kernel@dilger.ca, tytso@mit.edu, Petr Malat <oss@malat.biz>
+Subject: [PATCH] ext4: Do not interpret high bytes if 64bit feature is disabled
+Date:   Tue, 25 Aug 2020 17:00:16 +0200
+Message-Id: <20200825150016.3363-1-oss@malat.biz>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <7f0e2d99-5da2-237e-a894-0afddc0ace1e@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 8/24/20 4:56 AM, Jens Axboe wrote:
-> On 8/22/20 9:48 AM, Jens Axboe wrote:
->> On 8/22/20 8:33 AM, Theodore Y. Ts'o wrote:
->>> On Fri, Aug 21, 2020 at 03:26:35PM -0600, Jens Axboe wrote:
->>>>>>> Resending this one, as I've been carrying it privately since May. The
->>>>>>> necessary bits are now upstream (and XFS/btrfs equiv changes as well),
->>>>>>> please consider this one for 5.9. Thanks!
->>>>>>
->>>>>> The necessary commit only hit upstream as of 5.9-rc1, unless I'm
->>>>>> missing something?  It's on my queue to send to Linus once I get my
->>>>>> (late) ext4 primary pull request for 5.9.
->>>>>
->>>>> Right, it went in at the start of the merge window for 5.9. Thanks Ted!
->>>>
->>>> Didn't see it in the queue that just sent in, is it still queued up?
->>>
->>> It wasn't in the queue which I queued up because that was based on
->>> 5.8-rc4.  Linus was a bit grumpy (fairly so) because it was late, and
->>> that's totally on me.
->>>
->>> He has said that he's going to start ignoring pull requests that
->>> aren't fixes only if this becomes a pattern, so while I can send him
->>> another pull request which will just have that one change, there are
->>> no guarantees he's going to take it at this late date.
->>>
->>> Sorry, when you sent me the commit saying that the changes that were
->>> needed were already upstream on August 3rd, I thought that meant that
->>> they were aready in Linus's tree.  I should have checked and noticed
->>> that that in fact "ext4: flag as supporting buffered async reads"
->>> wasn't compiling against Linus's upstream tree, so I didn't realize
->>> this needed to be handled as a special case during the merge window.
->>
->> Well to be honest, this kind of sucks. I've been posting it since May,
->> and the ideal approach would have been to just ack it and I could have
->> carried it in my tree. That's what we did for btrfs and XFS, both of
->> which have it.
->>
->> The required patches *were* upstreamed on August 3rd, which is why I
->> mentioned that. But yes, not in 5.8 or earlier, of course.
->>
->> So I suggest that you either include it for the next pull request for
->> Linus, or that I put it in with your ack. Either is fine with me. I'd
->> consider this a "dropping the ball" kind of thing, it's not like the
->> patch hasn't been in linux-next or hasn't been ready for months. This
->> isn't some "oh I wrote this feature after the merge window" event. It'd
->> be a real shame to ship 5.9 and ext4 not have support for the more
->> efficient async buffered reads, imho, especially since the two other
->> major local file systems already have it.
->>
->> Let me know what you think.
-> 
-> Ted, can you make a call on this, please? It's now post -rc2. Let's
-> get this settled and included, one way or another.
+Fields s_free_blocks_count_hi, s_r_blocks_count_hi and s_blocks_count_hi
+are not valid if EXT4_FEATURE_INCOMPAT_64BIT is not enabled and should be
+treated as zeroes.
 
-Daily ping on this one...
+Signed-off-by: Petr Malat <oss@malat.biz>
+---
+ fs/ext4/ext4.h | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 523e00d7b392..eafb92fe7735 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -3012,22 +3012,24 @@ static inline int ext4_has_group_desc_csum(struct super_block *sb)
+ 	return ext4_has_feature_gdt_csum(sb) || ext4_has_metadata_csum(sb);
+ }
+ 
++#define ext4_read_incompat_64bit_val(es, name) \
++	(((es)->s_feature_incompat & cpu_to_le32(EXT4_FEATURE_INCOMPAT_64BIT) \
++		? (ext4_fsblk_t)le32_to_cpu(es->name##_hi) << 32 : 0) | \
++		le32_to_cpu(es->name##_lo))
++
+ static inline ext4_fsblk_t ext4_blocks_count(struct ext4_super_block *es)
+ {
+-	return ((ext4_fsblk_t)le32_to_cpu(es->s_blocks_count_hi) << 32) |
+-		le32_to_cpu(es->s_blocks_count_lo);
++	return ext4_read_incompat_64bit_val(es, s_blocks_count);
+ }
+ 
+ static inline ext4_fsblk_t ext4_r_blocks_count(struct ext4_super_block *es)
+ {
+-	return ((ext4_fsblk_t)le32_to_cpu(es->s_r_blocks_count_hi) << 32) |
+-		le32_to_cpu(es->s_r_blocks_count_lo);
++	return ext4_read_incompat_64bit_val(es, s_r_blocks_count);
+ }
+ 
+ static inline ext4_fsblk_t ext4_free_blocks_count(struct ext4_super_block *es)
+ {
+-	return ((ext4_fsblk_t)le32_to_cpu(es->s_free_blocks_count_hi) << 32) |
+-		le32_to_cpu(es->s_free_blocks_count_lo);
++	return ext4_read_incompat_64bit_val(es, s_free_blocks_count);
+ }
+ 
+ static inline void ext4_blocks_count_set(struct ext4_super_block *es,
 -- 
-Jens Axboe
+2.20.1
 
