@@ -2,87 +2,141 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06FE0251F58
-	for <lists+linux-ext4@lfdr.de>; Tue, 25 Aug 2020 20:52:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99307252F56
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 Aug 2020 15:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726556AbgHYSw1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Tue, 25 Aug 2020 14:52:27 -0400
-Received: from ns2.chapar.net ([81.31.224.5]:4763 "EHLO mail.chapar.net"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726838AbgHYSwU (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 25 Aug 2020 14:52:20 -0400
-Received: from chapar.net by mail.chapar.net (MDaemon PRO v12.5.6)
-        with ESMTP id md50001200350.msg
-        for <linux-ext4@vger.kernel.org>; Sat, 20 Jun 2020 10:47:47 +0430
-X-Spam-Processed: mail.chapar.net, Sat, 20 Jun 2020 10:47:47 +0430
-        (not processed: message from trusted or authenticated source)
-X-Authenticated-Sender: iphone@chapar.net
-X-MDRemoteIP: 197.234.219.55
-X-Return-Path: iphone@chapar.net
-X-Envelope-From: iphone@chapar.net
-X-MDaemon-Deliver-To: linux-ext4@vger.kernel.org
-Reply-To: agboarmand276@gmail.com
-From:   Mr ARMAND AGBO <iphone@chapar.net>
-To:     linux-ext4@vger.kernel.org
-Subject: Mes Salutations
-Date:   19 Jun 2020 23:19:44 +0800
-Message-ID: <20200619231943.17A66970FC5AF84F@chapar.net>
+        id S1730173AbgHZNH4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 26 Aug 2020 09:07:56 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59220 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729334AbgHZNH4 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 26 Aug 2020 09:07:56 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 265FDAF22;
+        Wed, 26 Aug 2020 13:08:25 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 68C5A1E12AF; Wed, 26 Aug 2020 15:07:53 +0200 (CEST)
+Date:   Wed, 26 Aug 2020 15:07:53 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] ext4: delete duplicated words + other fixes
+Message-ID: <20200826130753.GC15126@quack2.suse.cz>
+References: <20200805024850.12129-1-rdunlap@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200805024850.12129-1-rdunlap@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-A votre Attention
+On Tue 04-08-20 19:48:50, Randy Dunlap wrote:
+> Delete repeated words in fs/ext4/.
+> {the, this, of, we, after}
+> 
+> Also change spelling of "xttr" in inline.c to "xattr" in 2 places.
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> To: linux-fsdevel@vger.kernel.org
+> Cc: "Theodore Ts'o" <tytso@mit.edu>
+> Cc: Andreas Dilger <adilger.kernel@dilger.ca>
+> Cc: linux-ext4@vger.kernel.org
 
-Veuillez m'excuser pour ce dérangement très surprenant car c'est 
-suite
-à une recherche  de partenariat que je suis tombé suis votre 
-adresse.
-Je suis Mr Armand AGBO gestionnaire de compte auprès d’une 
-institution
-bancaire en Afrique de l'ouest. Je prends contact avec vous afin 
-de
-lier une relation de partenariat entre vous et moi.
+The patch looks good to me. You can add:
 
-En effet, il s'agit d’un compte dont je suis le gestionnaire et 
-le
-compte appartenait à un investisseur libyen EL HADJ MALIK IDRISS
-malheureusement décédé suite à une courte maladie. Comme ce 
-dernier
-n'a personne ici et pour que la Banque ne bénéficie pas de ses 
-fonds,
-alors étant le gestionnaire de ce compte, je cherche une personne 
-de
-confiance que je ferais passer pour le mandataire de ce compte 
-afin
-que la  Banque lui verse cet argent.  En retour  nous allons le
-partager à part égale.
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-Sachez que cette transaction ne représente aucun risque seulement 
-une
-confiance mutuelle et la discrétion. Alors si vous êtes d'accord  
-pour
- une sérieuse collaboration, veuillez me fournir les informations
-suivantes par e-mail agboarmand276@gmail.com :
-NOM :
-PRENOM :
-AGE : 
-PROFESSION :
-PAYS :
-ADRESSE COMPLETES:
-NUMERO DE TELEPHONE MOBILE :
+Ted, I think this patch fell through the cracks while you were busy...
 
-Suite à cela je vous enverrai les détails et la procédure à 
-suivre.
-Dans l'attente de vos nouvelles, recevez  mes sincères et 
-profondes
-salutations.
+								Honza
 
-Cordialement…
-Mr Armand AGBO
-
-
+> ---
+>  fs/ext4/extents.c  |    2 +-
+>  fs/ext4/indirect.c |    2 +-
+>  fs/ext4/inline.c   |    4 ++--
+>  fs/ext4/inode.c    |    2 +-
+>  fs/ext4/mballoc.c  |    4 ++--
+>  5 files changed, 7 insertions(+), 7 deletions(-)
+> 
+> --- linux-next-20200804.orig/fs/ext4/extents.c
+> +++ linux-next-20200804/fs/ext4/extents.c
+> @@ -4029,7 +4029,7 @@ static int get_implied_cluster_alloc(str
+>   * down_read(&EXT4_I(inode)->i_data_sem) if not allocating file system block
+>   * (ie, create is zero). Otherwise down_write(&EXT4_I(inode)->i_data_sem)
+>   *
+> - * return > 0, number of of blocks already mapped/allocated
+> + * return > 0, number of blocks already mapped/allocated
+>   *          if create == 0 and these are pre-allocated blocks
+>   *          	buffer head is unmapped
+>   *          otherwise blocks are mapped
+> --- linux-next-20200804.orig/fs/ext4/indirect.c
+> +++ linux-next-20200804/fs/ext4/indirect.c
+> @@ -1035,7 +1035,7 @@ static void ext4_free_branches(handle_t
+>  			brelse(bh);
+>  
+>  			/*
+> -			 * Everything below this this pointer has been
+> +			 * Everything below this pointer has been
+>  			 * released.  Now let this top-of-subtree go.
+>  			 *
+>  			 * We want the freeing of this indirect block to be
+> --- linux-next-20200804.orig/fs/ext4/inline.c
+> +++ linux-next-20200804/fs/ext4/inline.c
+> @@ -276,7 +276,7 @@ static int ext4_create_inline_data(handl
+>  		len = 0;
+>  	}
+>  
+> -	/* Insert the the xttr entry. */
+> +	/* Insert the xattr entry. */
+>  	i.value = value;
+>  	i.value_len = len;
+>  
+> @@ -354,7 +354,7 @@ static int ext4_update_inline_data(handl
+>  	if (error)
+>  		goto out;
+>  
+> -	/* Update the xttr entry. */
+> +	/* Update the xattr entry. */
+>  	i.value = value;
+>  	i.value_len = len;
+>  
+> --- linux-next-20200804.orig/fs/ext4/inode.c
+> +++ linux-next-20200804/fs/ext4/inode.c
+> @@ -2786,7 +2786,7 @@ retry:
+>  		 * ext4_journal_stop() can wait for transaction commit
+>  		 * to finish which may depend on writeback of pages to
+>  		 * complete or on page lock to be released.  In that
+> -		 * case, we have to wait until after after we have
+> +		 * case, we have to wait until after we have
+>  		 * submitted all the IO, released page locks we hold,
+>  		 * and dropped io_end reference (for extent conversion
+>  		 * to be able to complete) before stopping the handle.
+> --- linux-next-20200804.orig/fs/ext4/mballoc.c
+> +++ linux-next-20200804/fs/ext4/mballoc.c
+> @@ -124,7 +124,7 @@
+>   * /sys/fs/ext4/<partition>/mb_group_prealloc. The value is represented in
+>   * terms of number of blocks. If we have mounted the file system with -O
+>   * stripe=<value> option the group prealloc request is normalized to the
+> - * the smallest multiple of the stripe value (sbi->s_stripe) which is
+> + * smallest multiple of the stripe value (sbi->s_stripe) which is
+>   * greater than the default mb_group_prealloc.
+>   *
+>   * The regular allocator (using the buddy cache) supports a few tunables.
+> @@ -2026,7 +2026,7 @@ void ext4_mb_complex_scan_group(struct e
+>  			/*
+>  			 * IF we have corrupt bitmap, we won't find any
+>  			 * free blocks even though group info says we
+> -			 * we have free blocks
+> +			 * have free blocks
+>  			 */
+>  			ext4_grp_locked_error(sb, e4b->bd_group, 0, 0,
+>  					"%d free clusters as per "
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
