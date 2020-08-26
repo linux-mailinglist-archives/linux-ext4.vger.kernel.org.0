@@ -2,141 +2,126 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99307252F56
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 Aug 2020 15:07:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F094252FF1
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 Aug 2020 15:32:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730173AbgHZNH4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 26 Aug 2020 09:07:56 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59220 "EHLO mx2.suse.de"
+        id S1730286AbgHZNbk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 26 Aug 2020 09:31:40 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53080 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729334AbgHZNH4 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 26 Aug 2020 09:07:56 -0400
+        id S1730293AbgHZNbi (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 26 Aug 2020 09:31:38 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 265FDAF22;
-        Wed, 26 Aug 2020 13:08:25 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 68C5A1E12AF; Wed, 26 Aug 2020 15:07:53 +0200 (CEST)
-Date:   Wed, 26 Aug 2020 15:07:53 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] ext4: delete duplicated words + other fixes
-Message-ID: <20200826130753.GC15126@quack2.suse.cz>
-References: <20200805024850.12129-1-rdunlap@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200805024850.12129-1-rdunlap@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        by mx2.suse.de (Postfix) with ESMTP id 86907B64A;
+        Wed, 26 Aug 2020 13:31:49 +0000 (UTC)
+From:   Nikolay Borisov <nborisov@suse.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        Nikolay Borisov <nborisov@suse.com>
+Subject: [PATCH] ext4: Remove unused argument from ext4_(inc|dec)_count
+Date:   Wed, 26 Aug 2020 16:31:16 +0300
+Message-Id: <20200826133116.11592-1-nborisov@suse.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 04-08-20 19:48:50, Randy Dunlap wrote:
-> Delete repeated words in fs/ext4/.
-> {the, this, of, we, after}
-> 
-> Also change spelling of "xttr" in inline.c to "xattr" in 2 places.
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> To: linux-fsdevel@vger.kernel.org
-> Cc: "Theodore Ts'o" <tytso@mit.edu>
-> Cc: Andreas Dilger <adilger.kernel@dilger.ca>
-> Cc: linux-ext4@vger.kernel.org
+The 'handle' argument is not used for anything so simply remove it.
 
-The patch looks good to me. You can add:
+Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+---
+ fs/ext4/namei.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index 56738b538ddf..b411f843e469 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -2546,7 +2546,7 @@ static int ext4_delete_entry(handle_t *handle,
+  * for checking S_ISDIR(inode) (since the INODE_INDEX feature will not be set
+  * on regular files) and to avoid creating huge/slow non-HTREE directories.
+  */
+-static void ext4_inc_count(handle_t *handle, struct inode *inode)
++static void ext4_inc_count(struct inode *inode)
+ {
+ 	inc_nlink(inode);
+ 	if (is_dx(inode) &&
+@@ -2558,7 +2558,7 @@ static void ext4_inc_count(handle_t *handle, struct inode *inode)
+  * If a directory had nlink == 1, then we should let it be 1. This indicates
+  * directory has >EXT4_LINK_MAX subdirs.
+  */
+-static void ext4_dec_count(handle_t *handle, struct inode *inode)
++static void ext4_dec_count(struct inode *inode)
+ {
+ 	if (!S_ISDIR(inode->i_mode) || inode->i_nlink > 2)
+ 		drop_nlink(inode);
+@@ -2817,7 +2817,7 @@ static int ext4_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
+ 		iput(inode);
+ 		goto out_retry;
+ 	}
+-	ext4_inc_count(handle, dir);
++	ext4_inc_count(dir);
+ 	ext4_update_dx_flag(dir);
+ 	err = ext4_mark_inode_dirty(handle, dir);
+ 	if (err)
+@@ -3155,7 +3155,7 @@ static int ext4_rmdir(struct inode *dir, struct dentry *dentry)
+ 	retval = ext4_mark_inode_dirty(handle, inode);
+ 	if (retval)
+ 		goto end_rmdir;
+-	ext4_dec_count(handle, dir);
++	ext4_dec_count(dir);
+ 	ext4_update_dx_flag(dir);
+ 	retval = ext4_mark_inode_dirty(handle, dir);
 
-Ted, I think this patch fell through the cracks while you were busy...
+@@ -3422,7 +3422,7 @@ static int ext4_link(struct dentry *old_dentry,
+ 		ext4_handle_sync(handle);
 
-								Honza
+ 	inode->i_ctime = current_time(inode);
+-	ext4_inc_count(handle, inode);
++	ext4_inc_count(inode);
+ 	ihold(inode);
 
-> ---
->  fs/ext4/extents.c  |    2 +-
->  fs/ext4/indirect.c |    2 +-
->  fs/ext4/inline.c   |    4 ++--
->  fs/ext4/inode.c    |    2 +-
->  fs/ext4/mballoc.c  |    4 ++--
->  5 files changed, 7 insertions(+), 7 deletions(-)
-> 
-> --- linux-next-20200804.orig/fs/ext4/extents.c
-> +++ linux-next-20200804/fs/ext4/extents.c
-> @@ -4029,7 +4029,7 @@ static int get_implied_cluster_alloc(str
->   * down_read(&EXT4_I(inode)->i_data_sem) if not allocating file system block
->   * (ie, create is zero). Otherwise down_write(&EXT4_I(inode)->i_data_sem)
->   *
-> - * return > 0, number of of blocks already mapped/allocated
-> + * return > 0, number of blocks already mapped/allocated
->   *          if create == 0 and these are pre-allocated blocks
->   *          	buffer head is unmapped
->   *          otherwise blocks are mapped
-> --- linux-next-20200804.orig/fs/ext4/indirect.c
-> +++ linux-next-20200804/fs/ext4/indirect.c
-> @@ -1035,7 +1035,7 @@ static void ext4_free_branches(handle_t
->  			brelse(bh);
->  
->  			/*
-> -			 * Everything below this this pointer has been
-> +			 * Everything below this pointer has been
->  			 * released.  Now let this top-of-subtree go.
->  			 *
->  			 * We want the freeing of this indirect block to be
-> --- linux-next-20200804.orig/fs/ext4/inline.c
-> +++ linux-next-20200804/fs/ext4/inline.c
-> @@ -276,7 +276,7 @@ static int ext4_create_inline_data(handl
->  		len = 0;
->  	}
->  
-> -	/* Insert the the xttr entry. */
-> +	/* Insert the xattr entry. */
->  	i.value = value;
->  	i.value_len = len;
->  
-> @@ -354,7 +354,7 @@ static int ext4_update_inline_data(handl
->  	if (error)
->  		goto out;
->  
-> -	/* Update the xttr entry. */
-> +	/* Update the xattr entry. */
->  	i.value = value;
->  	i.value_len = len;
->  
-> --- linux-next-20200804.orig/fs/ext4/inode.c
-> +++ linux-next-20200804/fs/ext4/inode.c
-> @@ -2786,7 +2786,7 @@ retry:
->  		 * ext4_journal_stop() can wait for transaction commit
->  		 * to finish which may depend on writeback of pages to
->  		 * complete or on page lock to be released.  In that
-> -		 * case, we have to wait until after after we have
-> +		 * case, we have to wait until after we have
->  		 * submitted all the IO, released page locks we hold,
->  		 * and dropped io_end reference (for extent conversion
->  		 * to be able to complete) before stopping the handle.
-> --- linux-next-20200804.orig/fs/ext4/mballoc.c
-> +++ linux-next-20200804/fs/ext4/mballoc.c
-> @@ -124,7 +124,7 @@
->   * /sys/fs/ext4/<partition>/mb_group_prealloc. The value is represented in
->   * terms of number of blocks. If we have mounted the file system with -O
->   * stripe=<value> option the group prealloc request is normalized to the
-> - * the smallest multiple of the stripe value (sbi->s_stripe) which is
-> + * smallest multiple of the stripe value (sbi->s_stripe) which is
->   * greater than the default mb_group_prealloc.
->   *
->   * The regular allocator (using the buddy cache) supports a few tunables.
-> @@ -2026,7 +2026,7 @@ void ext4_mb_complex_scan_group(struct e
->  			/*
->  			 * IF we have corrupt bitmap, we won't find any
->  			 * free blocks even though group info says we
-> -			 * we have free blocks
-> +			 * have free blocks
->  			 */
->  			ext4_grp_locked_error(sb, e4b->bd_group, 0, 0,
->  					"%d free clusters as per "
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+ 	err = ext4_add_entry(handle, dentry, inode);
+@@ -3619,9 +3619,9 @@ static void ext4_update_dir_count(handle_t *handle, struct ext4_renament *ent)
+ {
+ 	if (ent->dir_nlink_delta) {
+ 		if (ent->dir_nlink_delta == -1)
+-			ext4_dec_count(handle, ent->dir);
++			ext4_dec_count(ent->dir);
+ 		else
+-			ext4_inc_count(handle, ent->dir);
++			ext4_inc_count(ent->dir);
+ 		ext4_mark_inode_dirty(handle, ent->dir);
+ 	}
+ }
+@@ -3833,7 +3833,7 @@ static int ext4_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 	}
+
+ 	if (new.inode) {
+-		ext4_dec_count(handle, new.inode);
++		ext4_dec_count(new.inode);
+ 		new.inode->i_ctime = current_time(new.inode);
+ 	}
+ 	old.dir->i_ctime = old.dir->i_mtime = current_time(old.dir);
+@@ -3843,14 +3843,14 @@ static int ext4_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 		if (retval)
+ 			goto end_rename;
+
+-		ext4_dec_count(handle, old.dir);
++		ext4_dec_count(old.dir);
+ 		if (new.inode) {
+ 			/* checked ext4_empty_dir above, can't have another
+ 			 * parent, ext4_dec_count() won't work for many-linked
+ 			 * dirs */
+ 			clear_nlink(new.inode);
+ 		} else {
+-			ext4_inc_count(handle, new.dir);
++			ext4_inc_count(new.dir);
+ 			ext4_update_dx_flag(new.dir);
+ 			retval = ext4_mark_inode_dirty(handle, new.dir);
+ 			if (unlikely(retval))
+--
+2.17.1
+
