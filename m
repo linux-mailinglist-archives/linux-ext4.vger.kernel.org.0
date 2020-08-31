@@ -2,81 +2,94 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65051257718
-	for <lists+linux-ext4@lfdr.de>; Mon, 31 Aug 2020 12:03:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3E7D257A6C
+	for <lists+linux-ext4@lfdr.de>; Mon, 31 Aug 2020 15:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726312AbgHaKDn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 31 Aug 2020 06:03:43 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39574 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725964AbgHaKDm (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 31 Aug 2020 06:03:42 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CA31EB702;
-        Mon, 31 Aug 2020 10:04:15 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 7CA711E12CF; Mon, 31 Aug 2020 12:03:40 +0200 (CEST)
-Date:   Mon, 31 Aug 2020 12:03:40 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     syzbot <syzbot+3622cea378100f45d59f@syzkaller.appspotmail.com>
-Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu, linux-mm@kvack.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>
-Subject: Re: kernel BUG at fs/ext4/inode.c:LINE!
-Message-ID: <20200831100340.GA26519@quack2.suse.cz>
-References: <000000000000d3a33205add2f7b2@google.com>
- <20200828100755.GG7072@quack2.suse.cz>
+        id S1727820AbgHaN3b (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 31 Aug 2020 09:29:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727859AbgHaN1J (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 31 Aug 2020 09:27:09 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11982C0619E6
+        for <linux-ext4@vger.kernel.org>; Mon, 31 Aug 2020 06:26:29 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id r13so6716366ljm.0
+        for <linux-ext4@vger.kernel.org>; Mon, 31 Aug 2020 06:26:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=o69Nac3LLMj5CDhyPqLcnP7WGq46U4gQb9HzFdG/MvE=;
+        b=GvS5ONqONS+SkRITeLOYK+nEKqeftr2e4zlw8iOljUdVaT4ei8mXK/eMe5gdebbxul
+         qejaiESAwrQo/TwRSbsV2RgWo1cR2hwlUx3zHZP6xDZHfKXln6WrMjydy1j5UDKStApO
+         83k6OMYB/O4HA/D4ksOUSzU9ZpUpEqmaButNQtqR6C29H3+mAHSKCbPlI067sUdB20EE
+         ixBTW9S1A2kyuIbzfdQN/JSL5cc/RZ+/MNHv7Yis6pX8HuuJNUwic97zwHx5MU4x4PUn
+         9VwFvJUStfi4hRDyGGDy0ijlpU3bNrs4tLAIT0WFfsT49jK8zJO72eI6R18XAB60K+Uk
+         aflg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=o69Nac3LLMj5CDhyPqLcnP7WGq46U4gQb9HzFdG/MvE=;
+        b=AAgtle7CAYiPTbmTFNaDUa9YdnncqK67eQzu8WUMIfbZombJPj4fdtrmZRXSDuNFZ1
+         3KwXCvPyrd9TnNEXRf+SKwuxdZiqNM0XypV9hqHR++rdj9Lwy5x0TRn6YOgOlsCjyHM9
+         upsBAqM3tubQR8i/BAPMq4OYr7eD1KLoqXGdbK2pZ78Pf6xnDturMwZ5Z/vgO3SqfPre
+         UTQ904PHDM9EpSwDlaDcsLbIRqhrpPyHg77WeF5pfQnh9FNvz7MLVSh1oCJwAbyM8s6u
+         5OXYwwupqxNLNbYbhTfejkOpYL9Oxqr25b7UngApiuSR3jhiSlAvWvUI0Nw8OxBbOh8Y
+         WPzw==
+X-Gm-Message-State: AOAM532VKu7tFsWiazTHpzGJ/EP0v/vZNoI0x9/N956L1cNxn/7paBwH
+        nj0PIsZkrt5thSNNyraZLg19FyTfK/U0aWIVNxQ=
+X-Google-Smtp-Source: ABdhPJx5h73UdWdmqN0ZXklbmHxhGiANR3jS4fz3EetfufGWkyufJh3oSK0WTBZL+72KPBBqNF1EE+YcTj5isQyt2i4=
+X-Received: by 2002:a2e:5316:: with SMTP id h22mr714236ljb.167.1598880387154;
+ Mon, 31 Aug 2020 06:26:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200828100755.GG7072@quack2.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Reply-To: marie_avis12@yahoo.com
+Received: by 2002:a2e:9817:0:0:0:0:0 with HTTP; Mon, 31 Aug 2020 06:26:26
+ -0700 (PDT)
+From:   Miss Maris Avis <marie.avis11@gmail.com>
+Date:   Mon, 31 Aug 2020 13:26:26 +0000
+X-Google-Sender-Auth: aulnVZG-1gSOcZsrnz7-vOB6QCo
+Message-ID: <CADTVshPC=1cJsw0xvUiUZDDBg3VVdBcHJ+pk-zuvR4tycntngg@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri 28-08-20 12:07:55, Jan Kara wrote:
-> On Wed 26-08-20 19:48:16, syzbot wrote:
-> > Hello,
-> > 
-> > syzbot found the following issue on:
-> > 
-> > HEAD commit:    c3d8f220 Merge tag 'kbuild-fixes-v5.9' of git://git.kernel..
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=15f83cb6900000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=bb68b9e8a8cc842f
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=3622cea378100f45d59f
-> > compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1287ac96900000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11c7ac46900000
-> > 
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+3622cea378100f45d59f@syzkaller.appspotmail.com
-> > 
-> > ------------[ cut here ]------------
-> > kernel BUG at fs/ext4/inode.c:2598!
-> > invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-> > CPU: 1 PID: 27612 Comm: syz-executor879 Not tainted 5.9.0-rc1-syzkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > RIP: 0010:mpage_prepare_extent_to_map+0xd34/0xd40 fs/ext4/inode.c:2598
-> 
-> Doh, so this is:
-> 
->                         wait_on_page_writeback(page);
-> >>>                     BUG_ON(PageWriteback(page));
-> 
-> in mpage_prepare_extent_to_map(). So we have PageWriteback() page after we
-> have called wait_on_page_writeback() on a locked page. Not sure how this
-> could ever happen even less how ext4 could cause this...
+My Dear,
 
-I was poking a bit into this and there were actually recent changes into
-page bit waiting logic by Linus. Linus, any idea?
+My name is Miss Marie Avis the only daughter of Mr. Gabriel Avis, my
+Father was dealing in Cocoa and Timber in this country before his
+death,  It is my pleasure to contact you for a business venture which
+I intend to establish in your country. Though I have not met with you
+before but I believe one has to risk confiding before you can succeed
+sometimes in life.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+I can confide in you for my brighter future since you are a human
+being like me. There is this huge amount of Ten Million five hundred
+thousand United States dollars. ($10.500.000.00) which my late Father
+kept for me in a suspense account with one of the bank here in Abidjan
+Cote d'Ivoire before he was assassinated by unknown persons, Now I
+have decided to invest these money in your country or anywhere safe
+enough for me.
+
+I want you to help me claim this fund from the bank and have it
+transfer into your personal account in your country for investment
+purposes in your country in these areas:
+
+1). Telecommunication
+2). The transport Industry
+3). Five Star Hotel
+4). Tourism
+5). Real Estate
+
+If you can be of assistance to me I will be pleased to offer you 20%
+of the total fund.
+
+I await your soonest response.
+
+Respectfully yours,
+Miss Marie Evis
+Tel: +225597438528
