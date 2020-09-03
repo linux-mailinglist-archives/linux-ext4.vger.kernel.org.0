@@ -2,71 +2,112 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE0D02597D6
-	for <lists+linux-ext4@lfdr.de>; Tue,  1 Sep 2020 18:20:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC2B025B96D
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Sep 2020 05:52:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729618AbgIAQT7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 1 Sep 2020 12:19:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39810 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726933AbgIAQTp (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 1 Sep 2020 12:19:45 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 720D32065F;
-        Tue,  1 Sep 2020 16:19:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598977185;
-        bh=5fmv3liAy2AA2zgQtwuQUk/DiRgWN0KqifzEK4zr+cY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kK8k1jG55cZ/1Vf0304O9BkuyvSq/ZrmpTTlJvvpNap7P0ezzzfKPJTEemKuoWOmm
-         BlqkokSMnN7bTbceqls+ugRY73EeInvcZE0cW6A54DKnFufrVSDatA2T2a5rjkPjLw
-         go2Rg5c2t5EMIBrvfrXuYY6YA8n64tUNgugXtQtA=
-Date:   Tue, 1 Sep 2020 09:19:44 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH 0/4] e2fsprogs: fix and document the stable_inodes feature
-Message-ID: <20200901161944.GC669796@gmail.com>
-References: <20200401203239.163679-1-ebiggers@kernel.org>
- <20200410152406.GO45598@mit.edu>
- <20200507181847.GD236103@gmail.com>
- <20200615222240.GD85413@gmail.com>
- <20200727164555.GF1138@sol.localdomain>
+        id S1728266AbgICDwp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 2 Sep 2020 23:52:45 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:47026 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726654AbgICDwn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 2 Sep 2020 23:52:43 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0833obwd191914;
+        Thu, 3 Sep 2020 03:52:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=plrQbRO5We9myfM1D8OZxb2JZVOMVYHNu9vACenTQ7o=;
+ b=umACb64vTspKV52Xcc2OvTOzfLlTJiWJuHOTs9jzlD6zO3V9a3Xcr/kMBdzVreM+DChF
+ 9BKCQK5bYPHT6YHyz/U9aeuNLi4YES3Dq3NuGX/yHXn3+fq96EYCkjeN5JvHkmYjiqtc
+ /x8QihfAhutP8U3M7Yki2WOt2sYSelCosgzJtVhoe41p47nEgTb5BB5tOuNCoaR9o5gd
+ WSPsXdUbv154rNs8yrdoYmmELgCi50Pl/Z7/cOLWSd/QC4GOBJV4GH1ZzCEeGxgndvfJ
+ KudpvhKniH9/J+3E+VWUdcKfafv74WBM/DGcJtFHcY/wTd5FXRUs8/NUpLDNWbbqFW3o Gg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 337eyme83a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 03 Sep 2020 03:52:35 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0833nlUh078075;
+        Thu, 3 Sep 2020 03:52:35 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3030.oracle.com with ESMTP id 3380y12x5u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 03 Sep 2020 03:52:35 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0833qYAW084111;
+        Thu, 3 Sep 2020 03:52:34 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 3380y12x5j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 03 Sep 2020 03:52:34 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0833qQ8V030386;
+        Thu, 3 Sep 2020 03:52:26 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 02 Sep 2020 20:52:26 -0700
+Date:   Wed, 2 Sep 2020 20:52:25 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        xfs <linux-xfs@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        ocfs2 list <ocfs2-devel@oss.oracle.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Eric Sandeen <sandeen@redhat.com>,
+        "Theodore Ts'o" <tytso@mit.edu>
+Subject: Broken O_{D,}SYNC behavior with FICLONE*?
+Message-ID: <20200903035225.GJ6090@magnolia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200727164555.GF1138@sol.localdomain>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9732 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 adultscore=0
+ priorityscore=1501 phishscore=0 mlxlogscore=999 mlxscore=0
+ lowpriorityscore=0 clxscore=1015 spamscore=0 bulkscore=0 impostorscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009030035
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 09:45:55AM -0700, Eric Biggers wrote:
-> On Mon, Jun 15, 2020 at 03:22:40PM -0700, Eric Biggers wrote:
-> > On Thu, May 07, 2020 at 11:18:47AM -0700, Eric Biggers wrote:
-> > > On Fri, Apr 10, 2020 at 11:24:06AM -0400, Theodore Y. Ts'o wrote:
-> > > > On Wed, Apr 01, 2020 at 01:32:35PM -0700, Eric Biggers wrote:
-> > > > > Fix tune2fs to not allow cases where IV_INO_LBLK_64-encrypted files
-> > > > > (which can exist if the stable_inodes feature is set) could be broken:
-> > > > > 
-> > > > > - Changing the filesystem's UUID
-> > > > > - Clearing the stable_inodes feature
-> > > > > 
-> > > > > Also document the stable_inodes feature in the appropriate places.
-> > > > > 
-> > > > > Eric Biggers (4):
-> > > > >   tune2fs: prevent changing UUID of fs with stable_inodes feature
-> > > > >   tune2fs: prevent stable_inodes feature from being cleared
-> > > > >   ext4.5: document the stable_inodes feature
-> > > > >   tune2fs.8: document the stable_inodes feature
-> > > > 
-> > > > Thanks, I've applied this patch series.
-> > > > 
-> > > 
-> > > Ted, I still don't see this in git.  Are you planning to push it out?
-> 
-> Ping?
+Hi,
 
-Ping.
+I have a question for everyone-- do FICLONE and FICLONERANGE count as a
+"write operation" for the purposes of reasoning about O_SYNC and
+O_DSYNC?  In other words, is it supposed to be the case that
+(paraphrasing the open(2) manpage) "By the time ioctl(FICLONE) returns,
+the output data and associated file metadata have been transferred to
+the underlying hardware (i.e., as though each ioctl(FICLONE) was
+followed by a call to fsync(2))."?
+
+If I open a file with O_SYNC, call FICLONE to reflink some data blocks
+into that file, and hit the reset button as soon as the ioctl call
+returns, should I expect that I will always see the new file contents in
+that file after the system comes back up?  Or am I required to fsync()
+the file despite O_SYNC being set?
+
+The reason I ask is that (a) reflinking can definitely change the file
+contents which seems like a write operation; and (b) we wrote a test to
+examine the copy_file_range() semantics wrt O_SYNC and discovered that
+an unaligned c_f_r through the splice code does indeed honor the
+documented O_SYNC semantics, but a block-aligned c_f_r that uses reflink
+does *not* honor this.
+
+So, that's inconsistent behavior and I want to know if remap_file_range
+is broken or if we all just don't care about O_SYNC for these fancy
+IO accelerators?
+
+I tend to think reflink is broken on XFS, but I converted that O_SYNC
+test into a fstest and discovered that none of XFS, btrfs, or ocfs2
+actually force the fs to persist metadata changes after reflinking into
+an O_SYNC file.  The manpages for the clone ioctls and copy_file_range
+don't explicitly declare those calls to be "write operations".
+
+FWIW I repeated the analysis with a file that had FS_XFLAG_SYNC or
+FS_SYNC_FL set on the inode but O_SYNC was not set on the fd, and
+observed the same results.
+
+--D
