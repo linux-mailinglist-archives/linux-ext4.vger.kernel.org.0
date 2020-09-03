@@ -2,63 +2,91 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E0725C2A4
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Sep 2020 16:31:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7A9325CBE5
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Sep 2020 23:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729333AbgICOan (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 3 Sep 2020 10:30:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729348AbgICO1t (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Sep 2020 10:27:49 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70147C061245;
-        Thu,  3 Sep 2020 07:27:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=mNFw25jVlcdo2HOeyRWdNvqHRP3XxNhZ9gh8UR9BP6c=; b=V3e5uAFr2pYrWuAxT18Z6Ya4Mt
-        AbeWXjbfVj6/jUD82K1+56y+g7jOzYnahDWdf04czK+ngUIoEf1Dwymk6RuN634VptJHYaKxPbimj
-        Zc8rwOLhZD01rAPBVOcpOgr5+zad9skPXEfa3fpHiyyF/199sF0MxE+Q5RPs7BbEeDQChAH+elQV6
-        w51gPFqkVNEGqsGO/xrQ2Ywe7Qw+mzCvgnovuF3NrdkDsyDtxJye4oulORgfusPZw1FxQZ4Twubo5
-        Khxy6HJUi5Rkh6fGV3Hw3j/y9v7Z0N2EA/4SyaxDXS9vSXPOcY+hqIOkUk/cAcQ3oLwTEy5mqBrX9
-        lzNEc6Ww==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kDqCz-0004uM-1q; Thu, 03 Sep 2020 14:27:25 +0000
-Date:   Thu, 3 Sep 2020 15:27:24 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        xfs <linux-xfs@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        ocfs2 list <ocfs2-devel@oss.oracle.com>,
+        id S1728309AbgICVMf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 3 Sep 2020 17:12:35 -0400
+Received: from sandeen.net ([63.231.237.45]:41628 "EHLO sandeen.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726323AbgICVMf (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 3 Sep 2020 17:12:35 -0400
+Received: from liberator.sandeen.net (liberator.sandeen.net [10.0.0.146])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by sandeen.net (Postfix) with ESMTPSA id D94902ACC;
+        Thu,  3 Sep 2020 16:12:09 -0500 (CDT)
+To:     Andreas Gruenbacher <agruenba@redhat.com>,
         Christoph Hellwig <hch@infradead.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Eric Sandeen <sandeen@redhat.com>,
-        Theodore Ts'o <tytso@mit.edu>
-Subject: Re: Broken O_{D,}SYNC behavior with FICLONE*?
-Message-ID: <20200903142724.GA18478@infradead.org>
-References: <20200903035225.GJ6090@magnolia>
+        "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, cluster-devel@redhat.com,
+        linux-ext4@vger.kernel.org
+References: <20200903165632.1338996-1-agruenba@redhat.com>
+From:   Eric Sandeen <sandeen@sandeen.net>
+Subject: Re: [PATCH] iomap: Fix direct I/O write consistency check
+Message-ID: <695a418c-ba6d-d3e9-f521-7dfa059764db@sandeen.net>
+Date:   Thu, 3 Sep 2020 16:12:33 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.2.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200903035225.GJ6090@magnolia>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20200903165632.1338996-1-agruenba@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 08:52:25PM -0700, Darrick J. Wong wrote:
-> Hi,
-> 
-> I have a question for everyone-- do FICLONE and FICLONERANGE count as a
-> "write operation" for the purposes of reasoning about O_SYNC and
-> O_DSYNC?
+On 9/3/20 11:56 AM, Andreas Gruenbacher wrote:
+> When a direct I/O write falls back to buffered I/O entirely, dio->size
+> will be 0 in iomap_dio_complete.  Function invalidate_inode_pages2_range
+> will try to invalidate the rest of the address space.
 
-They aren't really write operations in the traditional sense as they
-only change metadata.  Then again the metadata is all about the file
-content, so we'd probaby err on the safe side by including them in the
-write operations umbrella term.
+(Because if ->size == 0 and offset == 0, then invalidating up to (0+0-1) will
+invalidate the entire range.)
+
+
+                err = invalidate_inode_pages2_range(inode->i_mapping,
+                                offset >> PAGE_SHIFT,
+                                (offset + dio->size - 1) >> PAGE_SHIFT);
+
+so I guess this behavior is unique to writing to a hole at offset 0?
+
+FWIW, this same test yields the same results on ext3 when it falls back to
+buffered.
+
+-Eric
+
+> If there are any
+> dirty pages in that range, the write will fail and a "Page cache
+> invalidation failure on direct I/O" error will be logged.
+> 
+> On gfs2, this can be reproduced as follows:
+> 
+>   xfs_io \
+>     -c "open -ft foo" -c "pwrite 4k 4k" -c "close" \
+>     -c "open -d foo" -c "pwrite 0 4k"
+> 
+> Fix this by recognizing 0-length writes.
+> 
+> Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+> ---
+>  fs/iomap/direct-io.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+> index c1aafb2ab990..c9d6b4eecdb7 100644
+> --- a/fs/iomap/direct-io.c
+> +++ b/fs/iomap/direct-io.c
+> @@ -108,7 +108,7 @@ static ssize_t iomap_dio_complete(struct iomap_dio *dio)
+>  	 * ->end_io() when necessary, otherwise a racing buffer read would cache
+>  	 * zeros from unwritten extents.
+>  	 */
+> -	if (!dio->error &&
+> +	if (!dio->error && dio->size &&
+>  	    (dio->flags & IOMAP_DIO_WRITE) && inode->i_mapping->nrpages) {
+>  		int err;
+>  		err = invalidate_inode_pages2_range(inode->i_mapping,
+> 
