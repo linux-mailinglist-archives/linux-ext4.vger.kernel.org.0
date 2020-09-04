@@ -2,131 +2,143 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CBB225CCA3
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Sep 2020 23:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96D3825CEB3
+	for <lists+linux-ext4@lfdr.de>; Fri,  4 Sep 2020 02:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729401AbgICVsF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 3 Sep 2020 17:48:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53995 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726891AbgICVsB (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Sep 2020 17:48:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599169678;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oBrynNccaVwKMAHtYaWvrpJ0iV4f205Vo+3SkjyLb1M=;
-        b=F7wIbma2FRq6t6wqeI1ji/maXQaDBPUn46nBs9buesEq8kWzo8kYeeaqXE1bUBIH/lEYuQ
-        oG+Cz30kcirEFTw7yb3TPth5zjrJvrcJymi2aBjGJ0nO9fL3fEpKz68p/dkE6vpfnFWlly
-        2NAOl+j6gnF/pEXngDif3xWaJ/5dRJQ=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-43-t_RkFw2PNoq0jHN7E8Hs8Q-1; Thu, 03 Sep 2020 17:47:57 -0400
-X-MC-Unique: t_RkFw2PNoq0jHN7E8Hs8Q-1
-Received: by mail-wr1-f71.google.com with SMTP id r16so1536115wrm.18
-        for <linux-ext4@vger.kernel.org>; Thu, 03 Sep 2020 14:47:57 -0700 (PDT)
+        id S1728271AbgIDAKX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 3 Sep 2020 20:10:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725787AbgIDAKW (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Sep 2020 20:10:22 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D18BEC061244
+        for <linux-ext4@vger.kernel.org>; Thu,  3 Sep 2020 17:10:21 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id 2so2334349pjx.5
+        for <linux-ext4@vger.kernel.org>; Thu, 03 Sep 2020 17:10:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Rw9pmQTQu6dvaQDKT0uSQScovZ5fpYHem+SmnvyvPmU=;
+        b=FU9Grb4nh8gFbwKt44VFMMllrBQOnPfGq3/5Owyng816a3rX2+dwGqU1YD3ieFoz31
+         0CDFOUZj+0ovoCpya3T5u3zUmfWm6E/Euca4qKBCRsrlX6mMCRtaWXNMYUFBpw2ArKDV
+         HRRN9q4OY+n1Cpvfd2Xz53G+0NOzMjH1Nv4VhTcvDerEdjIfEZ9IdOSEVRxwj9akRH7r
+         Q+2flUPhU1aF4u2JPPMXbWlMDOwKGyz2Yy4UjTkfnmtYSdgLgRL04QdOwEZyYVkTQvLt
+         BbFqXVndcNMpqwoGBsqNNi5fvCD7lXVwswPotSlxMfKTpajohEBifM+TyceWF1YdxWf9
+         BGSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oBrynNccaVwKMAHtYaWvrpJ0iV4f205Vo+3SkjyLb1M=;
-        b=XGpELr94rjpXQpk2t08OKdJGa85Un1R2kyCndnCmT7eiUNc85NGmpZYYTzZLEZ5ACm
-         tXIkxG/s0QiV4KZTc3gHZ5Nq13sfFs96J8ccesmYYJIaAw7BExEW1d7/6toa+wSgAmRo
-         GdzKMtJCB/dzQUjrO5iwnReBdfDH2n5e3cUoEg8/88ZYYHmwRq3UXFUzjncQKEDC/DxQ
-         VGBGlEecVtqBjLKpOfUNC4x5nGFZX5WNSi3x4QJ5iZixL89wfohaQBLW+25df8wU9xD9
-         81HFWtkJwpnOj0A+Kfujf9mkMxc92Gs9zX0yxxZXRF2nBvr1CgLOMlNysX55B6q1JMSq
-         m3HA==
-X-Gm-Message-State: AOAM531FptRvfHh9hsSL3xhMuSToMnPyeTQTgCw6c3G6kLx7zabOTFnw
-        Io4N4ymsXJo9xhYxpqMHeYSATtC7cnIFveFyrH8OtmIE3dvMU5SCNmArwROiYHw00Mj55IPY+iH
-        KEWR+zyL3vNlqf6UI0WbvCk516fcTwRUJr3sw7Q==
-X-Received: by 2002:a7b:c0c5:: with SMTP id s5mr4395617wmh.152.1599169676210;
-        Thu, 03 Sep 2020 14:47:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzfurQNCgokDtRoLPRuHgAybZLnKZ8B+2PgntmWzIP1k1DncX3kyUDbDZW6vrGvGz+eL5DynJVwhOUzgUE9+X8=
-X-Received: by 2002:a7b:c0c5:: with SMTP id s5mr4395604wmh.152.1599169676019;
- Thu, 03 Sep 2020 14:47:56 -0700 (PDT)
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Rw9pmQTQu6dvaQDKT0uSQScovZ5fpYHem+SmnvyvPmU=;
+        b=q3y5l5pts9EGd/zHSo23R0jGZ5SfMpvOvGzKYDQA8LYThrU3X5Sgxf8UjPW9SJ4aBV
+         7iQgHD67NS8qOsEKB244qzlEQff+9za32JehZXykRHAbdX+r9GN7usQ2H6FeXUI0WL1Y
+         LnsNQt0FBcb4KIeT0K3VfktMOL8JJs5cS9DgN5A7trC4n4dV1yQBJELp9PKkXbCrA+Xp
+         BdRov3+/olT8FjKS86xbaSqGBNXLiTl2Lmx5ZfJpQou0wcJzmbidwa1SBO1d0KNNxvVG
+         JoWfXCi0ABBVg62ai+LiwZwWHabHEYz60bx0Fjry30guEO1ygt8UTqGzhDvJOrzFynpl
+         pqCg==
+X-Gm-Message-State: AOAM531BUrocN3D4xXQ8OJqYQ0KyquoqACOGcj44tVq276phoE0KvreH
+        pkBCJdpVDohZ3xVpLcdQeElNqw==
+X-Google-Smtp-Source: ABdhPJwYzWDKB3jLO3lPgnu1+einL1KUEDjZkKuhU01AKBm1PSHOGYqgt4sJF5+tp9mK0KQLrEEOUg==
+X-Received: by 2002:a17:90a:ee16:: with SMTP id e22mr5084461pjy.81.1599178220874;
+        Thu, 03 Sep 2020 17:10:20 -0700 (PDT)
+Received: from [192.168.1.182] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id e19sm4626659pfl.135.2020.09.03.17.10.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Sep 2020 17:10:20 -0700 (PDT)
+Subject: Re: [PATCH] ext4: flag as supporting buffered async reads
+From:   Jens Axboe <axboe@kernel.dk>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <fb90cc2d-b12c-738f-21a4-dd7a8ae0556a@kernel.dk>
+ <20200818181117.GA34125@mit.edu>
+ <990cc101-d4a1-f346-fe78-0fb5b963b406@kernel.dk>
+ <20c844c8-b649-3250-ff5b-b7420f72ff38@kernel.dk>
+ <20200822143326.GC199705@mit.edu>
+ <aff250ad-4c31-15c2-fa1d-3f3945cb7aa5@kernel.dk>
+ <7f0e2d99-5da2-237e-a894-0afddc0ace1e@kernel.dk>
+ <049a97db-c362-bcfb-59e5-4b1d2df59383@kernel.dk>
+ <5140ba6c-779c-2a71-b7f2-3c3220cdf19c@kernel.dk>
+Message-ID: <68510957-c887-8e26-4a1a-a7a93488586a@kernel.dk>
+Date:   Thu, 3 Sep 2020 18:10:19 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200903165632.1338996-1-agruenba@redhat.com> <695a418c-ba6d-d3e9-f521-7dfa059764db@sandeen.net>
-In-Reply-To: <695a418c-ba6d-d3e9-f521-7dfa059764db@sandeen.net>
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Thu, 3 Sep 2020 23:47:44 +0200
-Message-ID: <CAHc6FU5zwQTBaGVban6tCH7kNwr+NiW-_oKC1j0vmqbWAWx50g@mail.gmail.com>
-Subject: Re: [PATCH] iomap: Fix direct I/O write consistency check
-To:     Eric Sandeen <sandeen@sandeen.net>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-xfs@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-ext4 <linux-ext4@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <5140ba6c-779c-2a71-b7f2-3c3220cdf19c@kernel.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Sep 3, 2020 at 11:12 PM Eric Sandeen <sandeen@sandeen.net> wrote:
-> On 9/3/20 11:56 AM, Andreas Gruenbacher wrote:
-> > When a direct I/O write falls back to buffered I/O entirely, dio->size
-> > will be 0 in iomap_dio_complete.  Function invalidate_inode_pages2_range
-> > will try to invalidate the rest of the address space.
->
-> (Because if ->size == 0 and offset == 0, then invalidating up to (0+0-1) will
-> invalidate the entire range.)
->
->
->                 err = invalidate_inode_pages2_range(inode->i_mapping,
->                                 offset >> PAGE_SHIFT,
->                                 (offset + dio->size - 1) >> PAGE_SHIFT);
->
-> so I guess this behavior is unique to writing to a hole at offset 0?
->
-> FWIW, this same test yields the same results on ext3 when it falls back to
-> buffered.
+On 8/26/20 7:54 PM, Jens Axboe wrote:
+> On 8/25/20 8:18 AM, Jens Axboe wrote:
+>> On 8/24/20 4:56 AM, Jens Axboe wrote:
+>>> On 8/22/20 9:48 AM, Jens Axboe wrote:
+>>>> On 8/22/20 8:33 AM, Theodore Y. Ts'o wrote:
+>>>>> On Fri, Aug 21, 2020 at 03:26:35PM -0600, Jens Axboe wrote:
+>>>>>>>>> Resending this one, as I've been carrying it privately since May. The
+>>>>>>>>> necessary bits are now upstream (and XFS/btrfs equiv changes as well),
+>>>>>>>>> please consider this one for 5.9. Thanks!
+>>>>>>>>
+>>>>>>>> The necessary commit only hit upstream as of 5.9-rc1, unless I'm
+>>>>>>>> missing something?  It's on my queue to send to Linus once I get my
+>>>>>>>> (late) ext4 primary pull request for 5.9.
+>>>>>>>
+>>>>>>> Right, it went in at the start of the merge window for 5.9. Thanks Ted!
+>>>>>>
+>>>>>> Didn't see it in the queue that just sent in, is it still queued up?
+>>>>>
+>>>>> It wasn't in the queue which I queued up because that was based on
+>>>>> 5.8-rc4.  Linus was a bit grumpy (fairly so) because it was late, and
+>>>>> that's totally on me.
+>>>>>
+>>>>> He has said that he's going to start ignoring pull requests that
+>>>>> aren't fixes only if this becomes a pattern, so while I can send him
+>>>>> another pull request which will just have that one change, there are
+>>>>> no guarantees he's going to take it at this late date.
+>>>>>
+>>>>> Sorry, when you sent me the commit saying that the changes that were
+>>>>> needed were already upstream on August 3rd, I thought that meant that
+>>>>> they were aready in Linus's tree.  I should have checked and noticed
+>>>>> that that in fact "ext4: flag as supporting buffered async reads"
+>>>>> wasn't compiling against Linus's upstream tree, so I didn't realize
+>>>>> this needed to be handled as a special case during the merge window.
+>>>>
+>>>> Well to be honest, this kind of sucks. I've been posting it since May,
+>>>> and the ideal approach would have been to just ack it and I could have
+>>>> carried it in my tree. That's what we did for btrfs and XFS, both of
+>>>> which have it.
+>>>>
+>>>> The required patches *were* upstreamed on August 3rd, which is why I
+>>>> mentioned that. But yes, not in 5.8 or earlier, of course.
+>>>>
+>>>> So I suggest that you either include it for the next pull request for
+>>>> Linus, or that I put it in with your ack. Either is fine with me. I'd
+>>>> consider this a "dropping the ball" kind of thing, it's not like the
+>>>> patch hasn't been in linux-next or hasn't been ready for months. This
+>>>> isn't some "oh I wrote this feature after the merge window" event. It'd
+>>>> be a real shame to ship 5.9 and ext4 not have support for the more
+>>>> efficient async buffered reads, imho, especially since the two other
+>>>> major local file systems already have it.
+>>>>
+>>>> Let me know what you think.
+>>>
+>>> Ted, can you make a call on this, please? It's now post -rc2. Let's
+>>> get this settled and included, one way or another.
+>>
+>> Daily ping on this one...
+> 
+> And again. Ted, not sure how to make any progress with this, to be
+> honest, it's like pounding sand.
 
-That's interesting. An ext3 formatted filesystem will invoke
-dio_warn_stale_pagecache and thus log the error message, but the error
-isn't immediately reported by the "pwrite 0 4k". It takes adding '-c
-"fsync"' to the xfs_io command or similar to make it fail.
+And 8 days later...
 
-An ext4 formatted filesystem doesn't show any of these problems.
-
-Thanks,
-Andreas
-
-> -Eric
->
-> > If there are any
-> > dirty pages in that range, the write will fail and a "Page cache
-> > invalidation failure on direct I/O" error will be logged.
-> >
-> > On gfs2, this can be reproduced as follows:
-> >
-> >   xfs_io \
-> >     -c "open -ft foo" -c "pwrite 4k 4k" -c "close" \
-> >     -c "open -d foo" -c "pwrite 0 4k"
-> >
-> > Fix this by recognizing 0-length writes.
-> >
-> > Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-> > ---
-> >  fs/iomap/direct-io.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> > index c1aafb2ab990..c9d6b4eecdb7 100644
-> > --- a/fs/iomap/direct-io.c
-> > +++ b/fs/iomap/direct-io.c
-> > @@ -108,7 +108,7 @@ static ssize_t iomap_dio_complete(struct iomap_dio *dio)
-> >        * ->end_io() when necessary, otherwise a racing buffer read would cache
-> >        * zeros from unwritten extents.
-> >        */
-> > -     if (!dio->error &&
-> > +     if (!dio->error && dio->size &&
-> >           (dio->flags & IOMAP_DIO_WRITE) && inode->i_mapping->nrpages) {
-> >               int err;
-> >               err = invalidate_inode_pages2_range(inode->i_mapping,
-> >
->
+-- 
+Jens Axboe
 
