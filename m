@@ -2,44 +2,44 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4643B25E769
-	for <lists+linux-ext4@lfdr.de>; Sat,  5 Sep 2020 14:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B5FF25E76C
+	for <lists+linux-ext4@lfdr.de>; Sat,  5 Sep 2020 14:12:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728486AbgIEML2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 5 Sep 2020 08:11:28 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:52627 "EHLO
+        id S1728536AbgIEMMP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 5 Sep 2020 08:12:15 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:31527 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726597AbgIEML1 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 5 Sep 2020 08:11:27 -0400
+        with ESMTP id S1728468AbgIEMML (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 5 Sep 2020 08:12:11 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599307885;
+        s=mimecast20190719; t=1599307930;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=0HJzFO7pAp71wK9aXPM9q5yt4bMuyYKdTaYajwPv7ro=;
-        b=USetTins5hZ9/jwekFv3Sf43shqw3jqIYOaieFj3O01aWOl8CA3DNDtX5/iFcRXaG+Eeba
-        zCXvi38etgQlp+82mUpvedCw7Rk6mN+jnOfeCdIeEVGn2UR0nV5Hdw/+9MnQlJju0Y5EXO
-        qw8/Q8QNri40q5mdPj6EXqne0OVfeGk=
+        bh=qJZq+Utr2MNF3iSeTd5whZpczkdnhNmjJK+ZipavdxI=;
+        b=WBb3bQ/8Bo2MjMCOdrQXL1wsylmD+8nacR4dCR13zZw8ohhiiZHPcXxAnAbmX19h4J4XDQ
+        VrrZu0UfXp5FFOyy5VtT+xujmqC2fFi1zapxWCOPHjPC1uR1SR6x5essRlyUBu7bSQhh1a
+        XNYSrzyZ+mBoBh+G7/6pyQmiJ+JvEeI=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-339-zs11oeW0P32FFs86Hfex0w-1; Sat, 05 Sep 2020 08:11:21 -0400
-X-MC-Unique: zs11oeW0P32FFs86Hfex0w-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+ us-mta-496-wmpBuOf2PGeDWX7-G1ZQ0g-1; Sat, 05 Sep 2020 08:12:07 -0400
+X-MC-Unique: wmpBuOf2PGeDWX7-G1ZQ0g-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 106EB10054B0;
-        Sat,  5 Sep 2020 12:11:18 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6BE0B1074643;
+        Sat,  5 Sep 2020 12:12:05 +0000 (UTC)
 Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 60FAC7FB92;
-        Sat,  5 Sep 2020 12:11:14 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4CF9F7ED86;
+        Sat,  5 Sep 2020 12:12:02 +0000 (UTC)
 Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 085CBDc6012762;
-        Sat, 5 Sep 2020 08:11:13 -0400
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 085CC1XE012789;
+        Sat, 5 Sep 2020 08:12:01 -0400
 Received: from localhost (mpatocka@localhost)
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 085CBBbB012758;
-        Sat, 5 Sep 2020 08:11:11 -0400
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 085CC19D012786;
+        Sat, 5 Sep 2020 08:12:01 -0400
 X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
-Date:   Sat, 5 Sep 2020 08:11:11 -0400 (EDT)
+Date:   Sat, 5 Sep 2020 08:12:01 -0400 (EDT)
 From:   Mikulas Patocka <mpatocka@redhat.com>
 X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
 To:     Linus Torvalds <torvalds@linux-foundation.org>,
@@ -56,44 +56,68 @@ cc:     Jann Horn <jannh@google.com>, Christoph Hellwig <hch@lst.de>,
         Dan Williams <dan.j.williams@intel.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
         linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: make misbehavior on ext2 in dax mode (was: a crash when running
- strace from persistent memory)
-In-Reply-To: <alpine.LRH.2.02.2009041200570.27312@file01.intranet.prod.int.rdu2.redhat.com>
-Message-ID: <alpine.LRH.2.02.2009050805250.12419@file01.intranet.prod.int.rdu2.redhat.com>
-References: <alpine.LRH.2.02.2009031328040.6929@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.2009041200570.27312@file01.intranet.prod.int.rdu2.redhat.com>
+Subject: [PATCH 1/2] ext2: don't update mtime on COW faults
+In-Reply-To: <alpine.LRH.2.02.2009050805250.12419@file01.intranet.prod.int.rdu2.redhat.com>
+Message-ID: <alpine.LRH.2.02.2009050811200.12419@file01.intranet.prod.int.rdu2.redhat.com>
+References: <alpine.LRH.2.02.2009031328040.6929@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.2009041200570.27312@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.2009050805250.12419@file01.intranet.prod.int.rdu2.redhat.com>
 User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+When running in a dax mode, if the user maps a page with MAP_PRIVATE and
+PROT_WRITE, the ext2 filesystem would incorrectly update ctime and mtime
+when the user hits a COW fault.
 
+This breaks building of the Linux kernel.
+How to reproduce:
+1. extract the Linux kernel tree on dax-mounted ext2 filesystem
+2. run make clean
+3. run make -j12
+4. run make -j12
+- at step 4, make would incorrectly rebuild the whole kernel (although it
+  was already built in step 3).
 
-On Fri, 4 Sep 2020, Mikulas Patocka wrote:
+The reason for the breakage is that almost all object files depend on
+objtool. When we run objtool, it takes COW page fault on its .data
+section, and these faults will incorrectly update the timestamp of the
+objtool binary. The updated timestamp causes make to rebuild the whole
+tree.
 
-> Hmm, so I've found another bug in dax mode.
-> 
-> If you extract the Linux kernel tree on dax-based ext2 filesystem (use the 
-> real ext2 driver, not ext4), and then you run make twice, the second 
-> invocation will rebuild everything. It seems like a problem with 
-> timestamps.
-> 
-> mount -t ext2 -o dax /dev/pmem0 /mnt/ext2/
-> cd /mnt/ext2/usr/src/git/linux-2.6
-> make clean
-> make -j12
-> make -j12	<--- this rebuilds the whole tree, althought it shouldn't
-> 
-> I wasn't able to bisect it because this bug seems to be present in every 
-> kernel I tried (back to 4.16.0). Ext4 doesn't seem to have this bug.
-> 
-> Mikulas
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Cc: stable@vger.kernel.org
 
-I've found out the root cause for this bug (XFS has it too) and I'm 
-sending patches.
+---
+ fs/ext2/file.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Mikulas
+Index: linux-2.6/fs/ext2/file.c
+===================================================================
+--- linux-2.6.orig/fs/ext2/file.c	2020-09-05 10:01:41.000000000 +0200
++++ linux-2.6/fs/ext2/file.c	2020-09-05 13:09:50.000000000 +0200
+@@ -93,8 +93,10 @@ static vm_fault_t ext2_dax_fault(struct
+ 	struct inode *inode = file_inode(vmf->vma->vm_file);
+ 	struct ext2_inode_info *ei = EXT2_I(inode);
+ 	vm_fault_t ret;
++	bool write = (vmf->flags & FAULT_FLAG_WRITE) &&
++		(vmf->vma->vm_flags & VM_SHARED);
+ 
+-	if (vmf->flags & FAULT_FLAG_WRITE) {
++	if (write) {
+ 		sb_start_pagefault(inode->i_sb);
+ 		file_update_time(vmf->vma->vm_file);
+ 	}
+@@ -103,7 +105,7 @@ static vm_fault_t ext2_dax_fault(struct
+ 	ret = dax_iomap_fault(vmf, PE_SIZE_PTE, NULL, NULL, &ext2_iomap_ops);
+ 
+ 	up_read(&ei->dax_sem);
+-	if (vmf->flags & FAULT_FLAG_WRITE)
++	if (write)
+ 		sb_end_pagefault(inode->i_sb);
+ 	return ret;
+ }
 
