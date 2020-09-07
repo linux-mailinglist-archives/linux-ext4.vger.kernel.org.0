@@ -2,56 +2,71 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A65C525F3EE
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Sep 2020 09:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E40925F5DA
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Sep 2020 11:00:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727035AbgIGH1Q convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Mon, 7 Sep 2020 03:27:16 -0400
-Received: from relay12.mail.gandi.net ([217.70.178.232]:55333 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726443AbgIGH1P (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Sep 2020 03:27:15 -0400
-Received: from localhost (lfbn-tou-1-1075-236.w90-76.abo.wanadoo.fr [90.76.143.236])
-        (Authenticated sender: antoine.tenart@bootlin.com)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 30AE920000D;
-        Mon,  7 Sep 2020 07:27:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <E65D3B4E-A8C4-4BC8-9A6C-07E900F90D9A@dilger.ca>
-References: <20200717100846.497546-1-antoine.tenart@bootlin.com> <B2EE7AC5-BEC0-46A8-8C37-D3085645F94C@dilger.ca> <159609406998.3391.5621985067917886015@kwain> <159920782384.787733.9857416604675445355@kwain> <E65D3B4E-A8C4-4BC8-9A6C-07E900F90D9A@dilger.ca>
-Subject: Re: [PATCH v2] create_inode: set xattrs to the root directory as well
-To:     Andreas Dilger <adilger@dilger.ca>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
+        id S1728203AbgIGJAA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 7 Sep 2020 05:00:00 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40594 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727989AbgIGI76 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 7 Sep 2020 04:59:58 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A15FAABD2;
+        Mon,  7 Sep 2020 08:59:57 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 742E41E12D1; Mon,  7 Sep 2020 10:59:56 +0200 (CEST)
+Date:   Mon, 7 Sep 2020 10:59:56 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Mikulas Patocka <mpatocka@redhat.com>, Jan Kara <jack@suse.cz>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        Jann Horn <jannh@google.com>, Christoph Hellwig <hch@lst.de>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
         Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        matthew.weber@rockwellcollins.com, thomas.petazzoni@bootlin.com
-From:   Antoine Tenart <antoine.tenart@bootlin.com>
-Message-ID: <159946362909.787733.4975683171769234991@kwain>
-Date:   Mon, 07 Sep 2020 09:27:09 +0200
+        linux-xfs <linux-xfs@vger.kernel.org>
+Subject: Re: [PATCH 2/2] xfs: don't update mtime on COW faults
+Message-ID: <20200907085956.GA16559@quack2.suse.cz>
+References: <alpine.LRH.2.02.2009031328040.6929@file01.intranet.prod.int.rdu2.redhat.com>
+ <alpine.LRH.2.02.2009041200570.27312@file01.intranet.prod.int.rdu2.redhat.com>
+ <alpine.LRH.2.02.2009050805250.12419@file01.intranet.prod.int.rdu2.redhat.com>
+ <alpine.LRH.2.02.2009050812060.12419@file01.intranet.prod.int.rdu2.redhat.com>
+ <CAHk-=wh=0V27kdRkBAOkCDXSeFYmB=VzC0hMQVbmaiFV_1ZaCA@mail.gmail.com>
+ <CAHk-=wgNoq2kh_xYKtTX38GJdEC_iAvoeFU9gpj6kFVaiA0o=A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgNoq2kh_xYKtTX38GJdEC_iAvoeFU9gpj6kFVaiA0o=A@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello Andreas,
-
-Quoting Andreas Dilger (2020-09-04 21:43:18)
-> On Sep 4, 2020, at 2:23 AM, Antoine Tenart <antoine.tenart@bootlin.com> wrote:
-> > Quoting Antoine Tenart (2020-07-30 09:27:50)
-> >> 
-> >> Gentle ping. What's the status of this patch?
-> > 
-> > Do anyone know if anything else is required to get this merged?
+On Sat 05-09-20 10:03:20, Linus Torvalds wrote:
+> On Sat, Sep 5, 2020 at 9:47 AM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > So your patch is obviously correct, [..]
 > 
-> Based on other emails to the list, Ted has a backlog of patches to be
-> merged for ext4 and e2fsprogs, so it isn't that your patch was missed.
-> He will hopefully be able to start landing patches again soon.
+> Oh, and I had a xfs pull request in my inbox already, so rather than
+> expect Darrick to do another one just for this and have Jan do one for
+> ext2, I just applied these two directly as "ObviouslyCorrect(tm)".
 
-Thanks for the explanation!
+OK, thanks!
 
-Antoine
-
+								Honza
 -- 
-Antoine Ténart, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
