@@ -2,57 +2,75 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D6D625F362
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Sep 2020 08:48:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EBD225F3A1
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Sep 2020 09:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726770AbgIGGsC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 7 Sep 2020 02:48:02 -0400
-Received: from verein.lst.de ([213.95.11.211]:47846 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726278AbgIGGsC (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 7 Sep 2020 02:48:02 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 5A1BB6736F; Mon,  7 Sep 2020 08:47:58 +0200 (CEST)
-Date:   Mon, 7 Sep 2020 08:47:58 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Mikulas Patocka <mpatocka@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Jann Horn <jannh@google.com>, Christoph Hellwig <hch@lst.de>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH 2/2] xfs: don't update mtime on COW faults
-Message-ID: <20200907064758.GA19384@lst.de>
-References: <alpine.LRH.2.02.2009031328040.6929@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.2009041200570.27312@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.2009050805250.12419@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.2009050812060.12419@file01.intranet.prod.int.rdu2.redhat.com>
+        id S1726733AbgIGHMh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 7 Sep 2020 03:12:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726770AbgIGHMf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Sep 2020 03:12:35 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D99BC061573;
+        Mon,  7 Sep 2020 00:12:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=sRwaojnvVzc22iW0i8NlJG/12Ib/PukN7Tq7eXaU5vo=; b=XFaXrqq1Gxwveqc+eBXdlLhbhW
+        JwP8LEDWN0RWlaXurzSXMt4aIRtPuBzZeWJK/Ufw6fv2Nq3AVFeoWC/PpBbjMZv+zKf9eZPbvya+P
+        AcLA5+uNbOi2Gm+qoBSpfD9PoGZfQoLBw+4bh0lSa/EBKVg3pJmH4PVLxfa5F2/sGcm/vQWz0L39D
+        FsM5piAQDKg5f8VXYLmu1RbKdcgl39w2BjHXh6hexptdR4Xj50gJghDc5/7E/ndn/aEkZZq4yLYQU
+        gc/BolXai1zy4pocXfj5i7Y9BLvRSuqTBMp2CAR1opFdWEmxtVEkDMGTD9cp4lpVvU7i1ww3AQDfV
+        dRJezAfA==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kFBKG-0007KA-Ku; Mon, 07 Sep 2020 07:12:28 +0000
+Date:   Mon, 7 Sep 2020 08:12:28 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-block@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
+        yebin <yebin10@huawei.com>, Andreas Dilger <adilger@dilger.ca>,
+        Jens Axboe <axboe@kernel.dk>, stable@vger.kernel.org
+Subject: Re: [PATCH 1/2] fs: Don't invalidate page buffers in
+ block_write_full_page()
+Message-ID: <20200907071228.GA27898@infradead.org>
+References: <20200904085852.5639-1-jack@suse.cz>
+ <20200904085852.5639-2-jack@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.LRH.2.02.2009050812060.12419@file01.intranet.prod.int.rdu2.redhat.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20200904085852.5639-2-jack@suse.cz>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-> +static bool
-> +xfs_is_write_fault(
-> +	struct vm_fault		*vmf)
-> +{
-> +	return vmf->flags & FAULT_FLAG_WRITE && vmf->vma->vm_flags & VM_SHARED;
-> +}
+On Fri, Sep 04, 2020 at 10:58:51AM +0200, Jan Kara wrote:
+> If block_write_full_page() is called for a page that is beyond current
+> inode size, it will truncate page buffers for the page and return 0.
+> This logic has been added in 2.5.62 in commit 81eb69062588 ("fix ext3
+> BUG due to race with truncate") in history.git tree to fix a problem
+> with ext3 in data=ordered mode. This particular problem doesn't exist
+> anymore because ext3 is long gone and ext4 handles ordered data
+> differently. Also normally buffers are invalidated by truncate code and
+> there's no need to specially handle this in ->writepage() code.
+> 
+> This invalidation of page buffers in block_write_full_page() is causing
+> issues to filesystems (e.g. ext4 or ocfs2) when block device is shrunk
+> under filesystem's hands and metadata buffers get discarded while being
+> tracked by the journalling layer. Although it is obviously "not
+> supported" it can cause kernel crashes like:
 
-This function does not look xfs specific at all.  Why isn't it it in
-fs.h?  While we're at it the name sounds rather generic, and there are
-no good comments.
+Btw, while looking over the block device revalidation code I think
+all the magic we do on shrinking block devices actually is a bad
+idea - potentially very harmful, but without much real benefit.
+And it only is run on file systems directly created on the whole device,
+meaning it isn't even used at all with the typical setups that use
+partitions.
 
-Maybe we just need to split FAULT_FLAG_WRITE into two and check those
-instead of such crazy workarounds?
+Anyway, this patch looks good:
+
+Reviewed-by: Christoph Hellwig <hch@lst.de>
