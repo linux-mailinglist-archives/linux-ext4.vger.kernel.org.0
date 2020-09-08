@@ -2,158 +2,412 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 337BC260E12
-	for <lists+linux-ext4@lfdr.de>; Tue,  8 Sep 2020 10:52:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E94E262338
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Sep 2020 00:48:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730232AbgIHIv7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 8 Sep 2020 04:51:59 -0400
-Received: from mail.hikvision.com ([123.157.208.19]:34484 "EHLO
-        mail.hikvision.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729831AbgIHIv5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 8 Sep 2020 04:51:57 -0400
-Received: from HIK-MBX-CN-06.hikvision.com (unknown [10.1.7.21])
-        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by Forcepoint Email with ESMTPS id 61CD0156C5670B2B7869;
-        Tue,  8 Sep 2020 16:51:53 +0800 (CST)
-Received: from HIK-MBX-CN-00.hikvision.com (10.1.7.113) by
- HIK-MBX-CN-06.hikvision.com (10.1.7.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1466.3; Tue, 8 Sep 2020 16:51:52 +0800
-Received: from HIK-MBX-CN-00.hikvision.com ([fe80::4cd8:233f:871e:fd8c]) by
- HIK-MBX-CN-00.hikvision.com ([fe80::4cd8:233f:871e:fd8c%14]) with mapi id
- 15.01.1415.007; Tue, 8 Sep 2020 16:51:50 +0800
-From:   =?gb2312?B?s6O37+mq?= <changfengnan@hikvision.com>
-To:     "tytso@mit.edu" <tytso@mit.edu>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "jack@suse.com" <jack@suse.com>
-Subject: [PATCH v2] jbd2: fix descriptor block checksum failed after format
- with lazy_journal_init=1
-Thread-Topic: [PATCH v2] jbd2: fix descriptor block checksum failed after
+        id S1730079AbgIHWsh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 8 Sep 2020 18:48:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729990AbgIHWsd (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 8 Sep 2020 18:48:33 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90090C061573
+        for <linux-ext4@vger.kernel.org>; Tue,  8 Sep 2020 15:48:33 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d9so414040pfd.3
+        for <linux-ext4@vger.kernel.org>; Tue, 08 Sep 2020 15:48:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=JJBC+dRsWx19fxnTrxyYD1s4Dh/9MfBc48gk9kmR18w=;
+        b=HDgI0QqEdRhiQ/DNiVepuZWax/p0swNpVcDQPiEjYU6pptrJQUdva4blsdA+QK8SBE
+         q18PAyIdT+BIC3VaxZCxmiaHxO3+9ctCjG9axVrtZIKlnHZwRW39mJ3kUwHQsoO2Aghy
+         jfXuIM06pnhURHwkLb/j4lIW1C/yYDJ3OoQ2tJY7b4CQvX5eUXMhMns1BYpz74xT0Yvj
+         5Jve7d9sdlDV3MCEOpQJWyQsuxik69z75avtNTCmN5o5Hj6Ha/66SvSxvbn76n3YrY+R
+         bLOPvoclZwkBxoKHG4lQdpXmAcAj6tGVIwcZUtndffka5wlFiSzm0W4+J8adp1QJUTaE
+         eKlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=JJBC+dRsWx19fxnTrxyYD1s4Dh/9MfBc48gk9kmR18w=;
+        b=MKBxUF0cO/+fpWZzdAdiqbuyr/2GGTHy8fUsS01MzvmmoTFmtM9CTOzRk8+otyr+KY
+         TLfiokw4O6nfOumfT7woLI5Qa6Af/Zcr08cDSvqGXUu0fexGP5O1zb5pmaDCWEt458p9
+         zBS7vczSsBMbHXFnNZed4Ba+ntZIfyFL0P0fgbVgETS5QvDUBmTmrr65vBcASX3us5vS
+         fwvXzGmiWmJEHQjgzI/gToJJNLEzq+ZF9Zt8jcpWTaOcd63J2Xcx3P2FLbbBlr2SqhFJ
+         q/Ul9z1F2qbSFOzCJ85u236k3c3Kw1wO9HtPNzUQ6pRdxz7EzxGJNw065NtfB1pGjX7/
+         6DTA==
+X-Gm-Message-State: AOAM5334bJ9C50TgY7lBldWHAFgD8J7wRxW6KfNRyP8awoCe7S8v2PA7
+        oQK95nW4YWPVmBMxZVeqQNYIFQ==
+X-Google-Smtp-Source: ABdhPJyIxNjNoj3zNv04AtjNHwzx2PAMmqjrX4JFccJ29pdLx75uWPoleJp9fQdjOLOhJBYFUhjpVg==
+X-Received: by 2002:aa7:99c7:0:b029:13e:d13d:a056 with SMTP id v7-20020aa799c70000b029013ed13da056mr1158896pfi.28.1599605311306;
+        Tue, 08 Sep 2020 15:48:31 -0700 (PDT)
+Received: from [192.168.10.160] (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id j14sm275737pgf.76.2020.09.08.15.48.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 08 Sep 2020 15:48:30 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <62F2BFF6-6FF4-4283-95E0-F79A48AD7A2E@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_8B141A62-05B2-4AC8-A386-2DA372BF6213";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH v2] jbd2: fix descriptor block checksum failed after
  format with lazy_journal_init=1
-Thread-Index: AdaFuRLNVxlBV2GwSW+Kk1rUddDWSgAA0spw
-Date:   Tue, 8 Sep 2020 08:51:50 +0000
-Message-ID: <02cc0284c5cb4c4f9cb5282302807bc2@hikvision.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.1.7.137]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+Date:   Tue, 8 Sep 2020 16:48:26 -0600
+In-Reply-To: <02cc0284c5cb4c4f9cb5282302807bc2@hikvision.com>
+Cc:     "tytso@mit.edu" <tytso@mit.edu>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "jack@suse.com" <jack@suse.com>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>
+To:     =?utf-8?B?5bi45Yek5qWg?= <changfengnan@hikvision.com>
+References: <02cc0284c5cb4c4f9cb5282302807bc2@hikvision.com>
+X-Mailer: Apple Mail (2.3273)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-QWZ0ZXIgdGhlIGxhc3QgY29tbWl0LCBJIGZvdW5kIHRoYXQgc29tZSBzaXR1YXRpb25zIHdlcmUg
-bm90IGNvbnNpZGVyZWQuDQpJbiBsYXN0IHBvc3QsIEkgb25seSBjb25zaWRlcmVkIHRoZSBjYXNl
-IG9mIGRlc2NyaXB0b3IgYmxvY2sgY2hlY2tzdW0gZmFpbGVkLGJ1dCB0aGVyZSBpcyBvdGhlcnMg
-c2l0dWF0aW9ucy4NCmZvciBleGFtcGxlOg0KDQppZiB5b3UgZm9ybWF0IHdpdGggbGF6eV9qb3Vy
-bmFsX2luaXQ9MSBmaXJzdCB0aW1lLCBhZnRlciBtb3VudCBhIHNob3J0IHRpbWUsIHlvdSByZWJv
-b3QgbWFjaGluZSwgdGhlIGxheW91dCBvZiBqYmQyIG1heSBiZSBsaWtlIHRoaXM6DQoNCmpvdXJu
-YWwgU3VwZXJibG9ja3wgICAgIFsgdHJhbnNhY3Rpb25zLi4uLi4gXSAgICAgIHxkZXNjcmlwdG9y
-X2Jsb2NrIHwgZGF0YV9ibG9ja3N8ICBjb21tbWl0X2Jsb2NrIHwgZGVzY3JpcHRvcl9ibG9jayB8
-ICBkYXRhX2Jsb2Nrc3wgY29tbW1pdF9ibG9ja3xbbW9yZSB0cmFuc2FjdGlvbnMuLi4NCi0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS18ICAgICBbc29tZSB0cmFuc2FjdGlvbnNdICAgfC0tLS0tLS0t
-LS0tLS0tLS0tLS0gICAgICAgdHJhbnNhY3Rpb24geCAgICAgICAgICAtLS0tLS0tLS0tLS0tLS0t
-LXwtLS0tLS0tLS0tLS0tLS0tLSAgICAgICAgICB0cmFuc2FjdGlvbiB4KzEgICAgICAgICAtLS0t
-LS0tLS0tLS0tLS18DQoNCmFuZCBhZnRlciByZWJvb3QsIHlvdSBmb3JtYXQgd2l0aCBsYXp5X2pv
-dXJuYWxfaW5pdD0xIHNlY29uZCB0aW1lLCBhZnRlciBtb3VudCBhIHNob3J0IHRpbWUsIHlvdSBy
-ZWJvb3QgbWFjaGluZSBhZ2FpbiwgdGhlIGxheW91dCBvZiBqYmQyIG1heSBiZSBsaWtlIHRoaXM6
-DQoNCjEuDQpqb3VybmFsIFN1cGVyYmxvY2t8ICAgICBbIHRyYW5zYWN0aW9ucy4uLi4uIF0gICAg
-ICAgfGRlc2NyaXB0b3JfYmxvY2sgfCBkYXRhX2Jsb2Nrc3wgIGNvbW1taXRfYmxvY2sgfCBkZXNj
-cmlwdG9yX2Jsb2NrIHwgIGRhdGFfYmxvY2tzfCBjb21tbWl0X2Jsb2NrfFttb3JlIHRyYW5zYWN0
-aW9ucy4uLg0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLXwgICAgIFtzb21lIHRyYW5zYWN0aW9u
-c10gICB8LS0tLS0tLS0tLS0tLS0tICAgICAgICAgIHRyYW5zYWN0aW9uIHggICAgICAgLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tfA0KMi4NCmpvdXJuYWwgU3VwZXJibG9ja3wgICAgIFsgdHJhbnNhY3Rp
-b25zLi4uLi4gXSAgICAgICB8ZGVzY3JpcHRvcl9ibG9jayB8ICBkYXRhX2Jsb2NrcyB8IGRhdGFf
-YmxvY2tzICB8ICAgIGRhdGFfYmxvY2tzICAgfCBjb21tbWl0X2Jsb2NrfCBjb21tbWl0X2Jsb2Nr
-fFttb3JlIHRyYW5zYWN0aW9ucy4uLg0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLXwgICAgIFtz
-b21lIHRyYW5zYWN0aW9uc10gICB8LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0g
-ICAgICAgICAgICAgICB0cmFuc2FjdGlvbiB4ICAgICAgICAgICAgICAgICAgLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS18DQozLg0Kam91cm5hbCBTdXBlcmJsb2NrfCAgICAgWyB0cmFu
-c2FjdGlvbnMuLi4uLiBdICAgICAgfGRlc2NyaXB0b3JfYmxvY2sgfCAgZGF0YV9ibG9ja3MgfCBk
-YXRhX2Jsb2NrcyAgfCAgICBjb21tbWl0X2Jsb2NrIHwgZGF0YV9ibG9ja3MgfCBjb21tbWl0X2Js
-b2NrfFttb3JlIHRyYW5zYWN0aW9ucy4uLg0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLXwgICAg
-W3NvbWUgdHJhbnNhY3Rpb25zXSAgIHwtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSAg
-ICAgdHJhbnNhY3Rpb24geCAgICAgICAgICAgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLXwN
-Cg0KSW4gY2FzZSBvbmUgYW5kIHR3byx3aWxsIGJlIHJlY292ZXJ5IGZhaWxlZC4gU28gdGhlcmUg
-aXMgYW5vdGhlciBwYXRjaDoNCg0KIGZzL2piZDIvcmVjb3ZlcnkuYyB8IDYwICsrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKystLS0tLQ0KIDEgZmlsZSBjaGFu
-Z2VkLCA1NSBpbnNlcnRpb25zKCspLCA1IGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0IGEvZnMv
-amJkMi9yZWNvdmVyeS5jIGIvZnMvamJkMi9yZWNvdmVyeS5jDQppbmRleCBhNDk2N2IyN2ZmYjYu
-LjU2MTk4YzJjMWEwNCAxMDA2NDQNCi0tLSBhL2ZzL2piZDIvcmVjb3ZlcnkuYw0KKysrIGIvZnMv
-amJkMi9yZWNvdmVyeS5jDQpAQCAtMzMsNiArMzMsOCBAQCBzdHJ1Y3QgcmVjb3ZlcnlfaW5mbw0K
-IGludG5yX3JlcGxheXM7DQogaW50bnJfcmV2b2tlczsNCiBpbnRucl9yZXZva2VfaGl0czsNCitp
-bnQgdHJhbnNhY3Rpb25fZmxhZzsNCitfX2JlNjQgIGxhc3RfdHJhbnNfY29tbWl0X3RpbWU7DQog
-fTsNCg0KIGVudW0gcGFzc3R5cGUge1BBU1NfU0NBTiwgUEFTU19SRVZPS0UsIFBBU1NfUkVQTEFZ
-fTsNCkBAIC00MTIsNyArNDE0LDI3IEBAIHN0YXRpYyBpbnQgamJkMl9ibG9ja190YWdfY3N1bV92
-ZXJpZnkoam91cm5hbF90ICpqLCBqb3VybmFsX2Jsb2NrX3RhZ190ICp0YWcsDQogZWxzZQ0KIHJl
-dHVybiB0YWctPnRfY2hlY2tzdW0gPT0gY3B1X3RvX2JlMTYoY3N1bTMyKTsNCiB9DQorLyoNCisg
-KiBXZSBjaGVjayB0aGUgY29tbWl0IHRpbWUgYW5kIGNvbXBhcmUgaXQgd2l0aCB0aGUgY29tbWl0
-IHRpbWUgb2YgdGhlIHByZXZpb3VzIHRyYW5zYWN0aW9uLA0KKyAqIGlmIGl0J3Mgc21hbGxlciB0
-aGFuIHByZXZpb3VzLCBXZSB0aGluayBpdCdzIG5vdCBiZWxvbmcgdG8gc2FtZSBqb3VybmFsLg0K
-KyAqLw0KK3N0YXRpYyBpbnQgaXNfc2FtZV9qb3VybmFsKGpvdXJuYWxfdCAqam91cm5hbCxzdHJ1
-Y3QgYnVmZmVyX2hlYWQgKmJoLCB1bnNpZ25lZCBsb25nIGJsb2NrbnIsIF9fdTY0IGxhc3RfY29t
-bWl0X3NlYykNCit7DQoraW50IGNvbW1pdF9ibG9ja19uciA9IGJsb2NrbnIgKyBjb3VudF90YWdz
-KGpvdXJuYWwsIGJoKSArIDE7DQorc3RydWN0IGJ1ZmZlcl9oZWFkICpuYmg7DQoNCitpbnQgZXJy
-ID0ganJlYWQoJm5iaCwgam91cm5hbCwgY29tbWl0X2Jsb2NrX25yKTsNCitpZiAoZXJyKQ0KK3Jl
-dHVybiAxOw0KKw0KK3N0cnVjdCBjb21taXRfaGVhZGVyICpjYmggPSAoc3RydWN0IGNvbW1pdF9o
-ZWFkZXIgKiluYmgtPmJfZGF0YTsNCitfX3U2NGNvbW1pdF9zZWMgPSBiZTY0X3RvX2NwdShjYmgt
-PmhfY29tbWl0X3NlYyk7DQorDQoraWYoY29tbWl0X3NlYyA8IGxhc3RfY29tbWl0X3NlYykNCity
-ZXR1cm4gMDsNCitlbHNlDQorcmV0dXJuIDE7DQorfQ0KIHN0YXRpYyBpbnQgZG9fb25lX3Bhc3Mo
-am91cm5hbF90ICpqb3VybmFsLA0KIHN0cnVjdCByZWNvdmVyeV9pbmZvICppbmZvLCBlbnVtIHBh
-c3N0eXBlIHBhc3MpDQogew0KQEAgLTUxNCwxOCArNTM2LDMxIEBAIHN0YXRpYyBpbnQgZG9fb25l
-X3Bhc3Moam91cm5hbF90ICpqb3VybmFsLA0KIHN3aXRjaChibG9ja3R5cGUpIHsNCiBjYXNlIEpC
-RDJfREVTQ1JJUFRPUl9CTE9DSzoNCiAvKiBWZXJpZnkgY2hlY2tzdW0gZmlyc3QgKi8NCitpZihw
-YXNzID09IFBBU1NfU0NBTikgew0KK2luZm8tPnRyYW5zYWN0aW9uX2ZsYWcgPSAweDE7DQorfQ0K
-IGlmIChqYmQyX2pvdXJuYWxfaGFzX2NzdW1fdjJvcjMoam91cm5hbCkpDQogZGVzY3JfY3N1bV9z
-aXplID0NCiBzaXplb2Yoc3RydWN0IGpiZDJfam91cm5hbF9ibG9ja190YWlsKTsNCiBpZiAoZGVz
-Y3JfY3N1bV9zaXplID4gMCAmJg0KICAgICAhamJkMl9kZXNjcmlwdG9yX2Jsb2NrX2NzdW1fdmVy
-aWZ5KGpvdXJuYWwsDQogICAgICAgIGJoLT5iX2RhdGEpKSB7DQotcHJpbnRrKEtFUk5fRVJSICJK
-QkQyOiBJbnZhbGlkIGNoZWNrc3VtICINCitpZihpc19zYW1lX2pvdXJuYWwoam91cm5hbCxiaCxu
-ZXh0X2xvZ19ibG9jay0xLGluZm8tPmxhc3RfdHJhbnNfY29tbWl0X3RpbWUpKSB7DQorcHJpbnRr
-KEtFUk5fRVJSICJKQkQyOiBJbnZhbGlkIGNoZWNrc3VtICINCiAgICAgICAgInJlY292ZXJpbmcg
-YmxvY2sgJWx1IGluIGxvZ1xuIiwNCiAgICAgICAgbmV4dF9sb2dfYmxvY2spOw0KLWVyciA9IC1F
-RlNCQURDUkM7DQotYnJlbHNlKGJoKTsNCi1nb3RvIGZhaWxlZDsNCitlcnIgPSAtRUZTQkFEQ1JD
-Ow0KK2JyZWxzZShiaCk7DQorZ290byBmYWlsZWQ7DQorfSBlbHNlIHsNCisvKmlmIGl0J3Mgbm90
-IGJlbG9uZyB0byBzYW1lIGpvdXJuYWwsIGp1c3QgZW5kIHRoaXMgcmVjb3ZlcnksIHJldHVybiB3
-aXRoIHN1Y2Nlc3MqLw0KK3ByaW50ayhLRVJOX0VSUiAiSkJEMjogSW52YWxpZCBjaGVja3N1bSAi
-DQorICAgICAgICJmb3VuZCBpbiBibG9jayAlbHUgaW4gbG9nLCBidXQgbm90IHNhbWUgam91cm5h
-bCAlZFxuIiwNCisgICAgICAgbmV4dF9sb2dfYmxvY2ssbmV4dF9jb21taXRfSUQpOw0KK2VyciA9
-IDA7DQorYnJlbHNlKGJoKTsNCitnb3RvIGRvbmU7DQorfQ0KIH0NCg0KIC8qIElmIGl0IGlzIGEg
-dmFsaWQgZGVzY3JpcHRvciBibG9jaywgcmVwbGF5IGl0DQpAQCAtNjg4LDYgKzcyMywxNyBAQCBz
-dGF0aWMgaW50IGRvX29uZV9wYXNzKGpvdXJuYWxfdCAqam91cm5hbCwNCiAgKiBhcmUgcHJlc2Vu
-dCB2ZXJpZnkgdGhlbSBpbiBQQVNTX1NDQU47IGVsc2Ugbm90DQogICogbXVjaCB0byBkbyBvdGhl
-ciB0aGFuIG1vdmUgb24gdG8gdGhlIG5leHQgc2VxdWVuY2UNCiAgKiBudW1iZXIuICovDQoraWYo
-cGFzcyA9PSBQQVNTX1NDQU4pIHsNCitzdHJ1Y3QgY29tbWl0X2hlYWRlciAqY2JoID0NCisoc3Ry
-dWN0IGNvbW1pdF9oZWFkZXIgKiliaC0+Yl9kYXRhOw0KK2lmKGluZm8tPnRyYW5zYWN0aW9uX2Zs
-YWcgIT0gMHgxKSB7DQoramJkX2RlYnVnKDEsICJpbnZhbGlkIGNvbW1pdCBibG9jayBmb3VuZCBp
-biAlbHUsIHN0b3AgaGVyZS5cbiIsbmV4dF9sb2dfYmxvY2spOw0KK2JyZWxzZShiaCk7DQorZ290
-byBkb25lOw0KK30NCitpbmZvLT50cmFuc2FjdGlvbl9mbGFnID0gMHgwOw0KK2luZm8tPmxhc3Rf
-dHJhbnNfY29tbWl0X3RpbWUgPSBiZTY0X3RvX2NwdShjYmgtPmhfY29tbWl0X3NlYyk7DQorfQ0K
-IGlmIChwYXNzID09IFBBU1NfU0NBTiAmJg0KICAgICBqYmQyX2hhc19mZWF0dXJlX2NoZWNrc3Vt
-KGpvdXJuYWwpKSB7DQogaW50IGNoa3N1bV9lcnIsIGNoa3N1bV9zZWVuOw0KQEAgLTc2MSw3ICs4
-MDcsMTEgQEAgc3RhdGljIGludCBkb19vbmVfcGFzcyhqb3VybmFsX3QgKmpvdXJuYWwsDQogYnJl
-bHNlKGJoKTsNCiBjb250aW51ZTsNCiB9DQotDQoraWYgKHBhc3MgIT0gUEFTU19TQ0FOICYmIGlu
-Zm8tPnRyYW5zYWN0aW9uX2ZsYWcgIT0gMHgxKSB7DQoramJkX2RlYnVnKDEsICJpbnZhbGlkIHJl
-dm9rZSBibG9jayBmb3VuZCBpbiAlbHUsIHN0b3AgaGVyZS5cbiIsbmV4dF9sb2dfYmxvY2spOw0K
-K2JyZWxzZShiaCk7DQorZ290byBkb25lOw0KK30NCiBlcnIgPSBzY2FuX3Jldm9rZV9yZWNvcmRz
-KGpvdXJuYWwsIGJoLA0KICAgbmV4dF9jb21taXRfSUQsIGluZm8pOw0KIGJyZWxzZShiaCk7DQoN
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQoNCkNPTkZJREVOVElBTElUWSBOT1RJ
-Q0U6IFRoaXMgZWxlY3Ryb25pYyBtZXNzYWdlIGlzIGludGVuZGVkIHRvIGJlIHZpZXdlZCBvbmx5
-IGJ5IHRoZSBpbmRpdmlkdWFsIG9yIGVudGl0eSB0byB3aG9tIGl0IGlzIGFkZHJlc3NlZC4gSXQg
-bWF5IGNvbnRhaW4gaW5mb3JtYXRpb24gdGhhdCBpcyBwcml2aWxlZ2VkLCBjb25maWRlbnRpYWwg
-YW5kIGV4ZW1wdCBmcm9tIGRpc2Nsb3N1cmUgdW5kZXIgYXBwbGljYWJsZSBsYXcuIEFueSBkaXNz
-ZW1pbmF0aW9uLCBkaXN0cmlidXRpb24gb3IgY29weWluZyBvZiB0aGlzIGNvbW11bmljYXRpb24g
-aXMgc3RyaWN0bHkgcHJvaGliaXRlZCB3aXRob3V0IG91ciBwcmlvciBwZXJtaXNzaW9uLiBJZiB0
-aGUgcmVhZGVyIG9mIHRoaXMgbWVzc2FnZSBpcyBub3QgdGhlIGludGVuZGVkIHJlY2lwaWVudCwg
-b3IgdGhlIGVtcGxveWVlIG9yIGFnZW50IHJlc3BvbnNpYmxlIGZvciBkZWxpdmVyaW5nIHRoZSBt
-ZXNzYWdlIHRvIHRoZSBpbnRlbmRlZCByZWNpcGllbnQsIG9yIGlmIHlvdSBoYXZlIHJlY2VpdmVk
-IHRoaXMgY29tbXVuaWNhdGlvbiBpbiBlcnJvciwgcGxlYXNlIG5vdGlmeSB1cyBpbW1lZGlhdGVs
-eSBieSByZXR1cm4gZS1tYWlsIGFuZCBkZWxldGUgdGhlIG9yaWdpbmFsIG1lc3NhZ2UgYW5kIGFu
-eSBjb3BpZXMgb2YgaXQgZnJvbSB5b3VyIGNvbXB1dGVyIHN5c3RlbS4gRm9yIGZ1cnRoZXIgaW5m
-b3JtYXRpb24gYWJvdXQgSGlrdmlzaW9uIGNvbXBhbnkuIHBsZWFzZSBzZWUgb3VyIHdlYnNpdGUg
-YXQgd3d3Lmhpa3Zpc2lvbi5jb208aHR0cDovL3d3dy5oaWt2aXNpb24uY29tPg0K
+
+--Apple-Mail=_8B141A62-05B2-4AC8-A386-2DA372BF6213
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=utf-8
+
+On Sep 8, 2020, at 2:51 AM, =E5=B8=B8=E5=87=A4=E6=A5=A0 =
+<changfengnan@hikvision.com> wrote:
+>=20
+> After the last commit, I found that some situations were not =
+considered.
+> In last post, I only considered the case of descriptor block checksum =
+failed,but there is others situations.
+
+Thank you for the updated patch.  There are several things that need to =
+be
+fixed before the patch can be accepted:
+- the whitespace of the patch is broken, since it looks like all tabs =
+are lost
+- the patch summary should be shorter than 64 characters, maybe like:
+  "jbd2: avoid transaction reuse after reformatting" or similar, and =
+then
+  put a more complete description in the commit message
+- the patch commit message should be shorter than 70 characters.  It =
+would be
+  much easier to read if you aligned the transaction blocks vertically, =
+down
+  the page, instead having such very long lines, like:
+
+     case 1 journal        case 2 journal        case 3 journal
+  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D  =
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D  =
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+  [journal superblock]  [journal superblock]
+  [ transactions
+      ....
+        ....         ]
+  [ descriptor block |
+  |   data blocks
+      ....
+        ....         |
+  |   commit block   ]
+  [ more transactions
+       ....
+         ....        ]
+
+- the commit message should describe only the patch itself, not the =
+previous
+  version of the patch or general comments.  Other comments can be =
+written
+  in a separate email that is a reply to the patch itself.
+- please run your patch through "checkpatch.pl" to find any style issues
+- you need to add a "Signed-off-by: =E5=B8=B8=E5=87=A4=E6=A5=A0 =
+<changfengnan@hikvision.com>" line
+  or maybe "Signed-off-by: =E5=B8=B8=E5=87=A4=E6=A5=A0 (Chang Fengnan) =
+<changfengnan@hikvision.com>"
+
+Some general comments on the patch inline.
+
+> for example:
+>=20
+> if you format with lazy_journal_init=3D1 first time, after mount a =
+short time, you reboot machine, the layout of jbd2 may be like this:
+>=20
+> journal Superblock|     [ transactions..... ]      |descriptor_block | =
+data_blocks|  commmit_block | descriptor_block |  data_blocks| =
+commmit_block|[more transactions...
+> -------------------------|     [some transactions]   =
+|-------------------       transaction x          =
+-----------------|-----------------          transaction x+1         =
+---------------|
+>=20
+> and after reboot, you format with lazy_journal_init=3D1 second time, =
+after mount a short time, you reboot machine again, the layout of jbd2 =
+may be like this:
+>=20
+> 1.
+> journal Superblock|     [ transactions..... ]       |descriptor_block =
+| data_blocks|  commmit_block | descriptor_block |  data_blocks| =
+commmit_block|[more transactions...
+> -------------------------|     [some transactions]   |---------------  =
+        transaction x       ---------------------|
+> 2.
+> journal Superblock|     [ transactions..... ]       |descriptor_block =
+|  data_blocks | data_blocks  |    data_blocks   | commmit_block| =
+commmit_block|[more transactions...
+> -------------------------|     [some transactions]   =
+|-----------------------------------               transaction x         =
+         --------------------------------|
+> 3.
+> journal Superblock|     [ transactions..... ]      |descriptor_block | =
+ data_blocks | data_blocks  |    commmit_block | data_blocks | =
+commmit_block|[more transactions...
+> -------------------------|    [some transactions]   =
+|--------------------------------     transaction x           =
+----------------------------|
+>=20
+> In case one and two,will be recovery failed. So there is another =
+patch:
+>=20
+> fs/jbd2/recovery.c | 60 =
++++++++++++++++++++++++++++++++++++++++++++++++++-----
+> 1 file changed, 55 insertions(+), 5 deletions(-)
+>=20
+> diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
+> index a4967b27ffb6..56198c2c1a04 100644
+> --- a/fs/jbd2/recovery.c
+> +++ b/fs/jbd2/recovery.c
+> @@ -33,6 +33,8 @@ struct recovery_info
+> intnr_replays;
+> intnr_revokes;
+> intnr_revoke_hits;
+> +int transaction_flag;
+
+(minor) This should be an unsigned int, and there should be a #define'd
+constant to describe what "0x1" means instead of using "0x1" in the =
+code.
+However, it may be better to make this "ri_commit_block", see below.
+
+> +__be64  last_trans_commit_time;
+> };
+>=20
+> enum passtype {PASS_SCAN, PASS_REVOKE, PASS_REPLAY};
+> @@ -412,7 +414,27 @@ static int jbd2_block_tag_csum_verify(journal_t =
+*j, journal_block_tag_t *tag,
+> else
+> return tag->t_checksum =3D=3D cpu_to_be16(csum32);
+> }
+> +/*
+> + * We check the commit time and compare it with the commit time of =
+the previous transaction,
+
+Please wrap lines at 80 columns.
+
+> + * if it's smaller than previous, We think it's not belong to same =
+journal.
+> + */
+> +static int is_same_journal(journal_t *journal,struct buffer_head *bh, =
+unsigned long blocknr, __u64 last_commit_sec)
+
+(minor) return type should be "bool"
+(style) Wrap at 80 columns.
+
+> +{
+> +int commit_block_nr =3D blocknr + count_tags(journal, bh) + 1;
+
+(defect) "commit_block_nr" should not be a signed int, or it may =
+overflow
+(style) it would be good to use a consistent naming for the block
+number and the buffer head, like:
+
+	unsigned long commit_block;
+	struct buffer_head *commit_bh;
+
+> +struct buffer_head *nbh;
+>=20
+> +int err =3D jread(&nbh, journal, commit_block_nr);
+
+(style) blank line after variable declarations
+
+> +if (err)
+> +return 1;
+
+(defect?) Should the checksum of commit_bh be verified before use?
+Otherwise, this may be a random block in the journal that has some
+value > last_commit_sec, and not a commit block at all.  However,
+it may be enough to avoid this extra commit block checksum by storing
+the commit block number as ri_commit_block, and then checking it
+is correct when the commit block is later processed.
+
+> +
+> +struct commit_header *cbh =3D (struct commit_header *)nbh->b_data;
+> +__u64commit_sec =3D be64_to_cpu(cbh->h_commit_sec);
+
+(style) no variable declarations in the middle of functions
+
+> +
+> +if(commit_sec < last_commit_sec)
+> +return 0;
+> +else
+> +return 1;
+
+(style) no need for "else" after "return".  That said, this function
+could just return the boolean comparison value directly:
+
+	return commit_sec >=3D last_commit_sec;
+
+> +}
+> static int do_one_pass(journal_t *journal,
+> struct recovery_info *info, enum passtype pass)
+> {
+> @@ -514,18 +536,31 @@ static int do_one_pass(journal_t *journal,
+> switch(blocktype) {
+> case JBD2_DESCRIPTOR_BLOCK:
+> /* Verify checksum first */
+> +if(pass =3D=3D PASS_SCAN) {
+> +info->transaction_flag =3D 0x1;
+> +}
+
+(style) no need for {} around single-line block
+(style) could this instead store the block number of the logical commit
+block number that is referenced and verified by this descriptor block?
+That would be better than just storing the "0x1" flag, to verify that
+the proper checksum/timestamp was used by the descriptor block?
+
+I had to re-indent the below code to understand the logic, but I think
+I did it correctly.
+
+> 		if (jbd2_journal_has_csum_v2or3(journal))
+> 			descr_csum_size =3D
+> 				sizeof(struct jbd2_journal_block_tail);
+> 		if (descr_csum_size > 0 &&
+> 		    !jbd2_descriptor_block_csum_verify(journal,
+> 						       bh->b_data)) {
+> -			printk(KERN_ERR "JBD2: Invalid checksum "
+> +			=
+if(is_same_journal(journal,bh,next_log_block-1,info->last_trans_commit_tim=
+e)) {
+
+(style) wrap lines at 80 columns.
+
+> +				printk(KERN_ERR "JBD2: Invalid checksum =
+"
+>  				       "recovering block %lu in log\n",
+>  				       next_log_block);
+
+(style) console error strings should *not* be wrapped at 80 columns, so =
+it
+can be found more easily in the code (e.g. grep for "checksum =
+recovering"
+should be able to find this line of code).  This code was written before
+the "do not wrap error strings" rule was added, but should be updated to
+follow the new code style if modified.
+
+> -			err =3D -EFSBADCRC;
+> -			brelse(bh);
+> -			goto failed;
+> +				err =3D -EFSBADCRC;
+> +				brelse(bh);
+> +				goto failed;
+
+> +			} else {
+> +				/*if it's not belong to same journal, =
+just end this recovery, return with success*/
+
+(style) wrap at 80 columns
+
+> +				printk(KERN_ERR "JBD2: Invalid checksum =
+"
+> +				       "found in block %lu in log, but =
+not same journal %d\n",
+> +				       next_log_block,next_commit_ID);
+
+(style) do not wrap error strings
+(minor) this shouldn't really be printed as an "error" to the user, =
+since
+it isn't an "error" at all, only a bad coincidence or a short =
+transaction?
+This should probably only be a jbd_debug() message or similar?
+
+> +err =3D 0;
+> +brelse(bh);
+> +goto done;
+> +}
+> }
+>=20
+> /* If it is a valid descriptor block, replay it
+> @@ -688,6 +723,17 @@ static int do_one_pass(journal_t *journal,
+>  * are present verify them in PASS_SCAN; else not
+>  * much to do other than move on to the next sequence
+>  * number. */
+> +if(pass =3D=3D PASS_SCAN) {
+> +struct commit_header *cbh =3D
+> +(struct commit_header *)bh->b_data;
+> +if(info->transaction_flag !=3D 0x1) {
+
+(style) This should check "info->ri_commit_block" to verify that this =
+block
+is the correct commit block, which is safer than just checking "flag !=3D =
+0x1".
+
+> +jbd_debug(1, "invalid commit block found in %lu, stop =
+here.\n",next_log_block);
+> +brelse(bh);
+> +goto done;
+> +}
+> +info->transaction_flag =3D 0x0;
+> +info->last_trans_commit_time =3D be64_to_cpu(cbh->h_commit_sec);
+> +}
+> if (pass =3D=3D PASS_SCAN &&
+>     jbd2_has_feature_checksum(journal)) {
+> int chksum_err, chksum_seen;
+> @@ -761,7 +807,11 @@ static int do_one_pass(journal_t *journal,
+> brelse(bh);
+> continue;
+> }
+> -
+> +if (pass !=3D PASS_SCAN && info->transaction_flag !=3D 0x1) {
+> +jbd_debug(1, "invalid revoke block found in %lu, stop =
+here.\n",next_log_block);
+> +brelse(bh);
+> +goto done;
+> +}
+> err =3D scan_revoke_records(journal, bh,
+>   next_commit_ID, info);
+> brelse(bh);
+
+
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_8B141A62-05B2-4AC8-A386-2DA372BF6213
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl9YCjoACgkQcqXauRfM
+H+BYeBAApoxOc1v1+ZD30kgSWuNhIIR1+OmTaXY+mHTLSbUExhkZD5XslJOhpVVn
+w/XoGKQyrti6O20klIp5WYXBZUtSVqjihKghKGTTxUhGez5BNf44GdZg7LGV58FD
+0GpGKElRDXu7HwKjPbbdzhhTexw4g90uG6/8WfHpg2PQcauwlVCWX4522MabiCC3
+KYKdcEqxxcTpH2oe4nwv+kbG7/sr2FqIRuZo/IxF8Wmh0V2vMpscwTzLWd4HcOBo
+g9VfQwivyJ6ESJhzTUtmzGZtA2Sa8O7ykTRKnbZyEq76Gk5MbDkm0+tj27gcKM/y
+wRwpAjhta2358DexZ3ugbsjEZqdAyDhh+pT9JjE5uU6ooPOBtG7z0B5U799ShnWU
+d1C0Iz/gz+O50jgetbGmMfTdc7UULnOHqENS17E+VLsorWYonYVLsZPCXb2yFDzy
+2Mjlhos3cdWftA8Z6Ax/f4yKCev5pFuBQ9IjWqj/DAd0TuHkUdzoJEc6PU7ejl6C
+a2oSysxjUtOI3Edv+TJoeqOV1kcimnsF8g0XM9amTMZ3KeOwhb9++dz/mt8rFSBE
+Pa7hDZkwmLsv/ikPIUCHDGpZrD02snURcN+3Zk4BWxOlW0vOSveNQMk78deZGTh4
+y1//b8owXxdkxYfgA2SuVDRt81ZZX87s5ytjMMJycD1T3YK3/+U=
+=77Jo
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_8B141A62-05B2-4AC8-A386-2DA372BF6213--
