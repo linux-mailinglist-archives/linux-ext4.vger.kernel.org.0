@@ -2,95 +2,134 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E5AD26411C
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Sep 2020 11:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32F012645E0
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Sep 2020 14:21:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730140AbgIJJOh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 10 Sep 2020 05:14:37 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11764 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729779AbgIJJNy (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 10 Sep 2020 05:13:54 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id BB4A31DF5A7A92365727;
-        Thu, 10 Sep 2020 17:13:40 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Thu, 10 Sep 2020
- 17:13:31 +0800
-From:   Ye Bin <yebin10@huawei.com>
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.com>,
-        <linux-ext4@vger.kernel.org>
-CC:     Ye Bin <yebin10@huawei.com>
-Subject: [PATCH v3] ext4: Fix dead loop in ext4_mb_new_blocks
-Date:   Thu, 10 Sep 2020 17:12:52 +0800
-Message-ID: <20200910091252.525346-1-yebin10@huawei.com>
-X-Mailer: git-send-email 2.25.4
+        id S1730450AbgIJMUm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 10 Sep 2020 08:20:42 -0400
+Received: from mail.hikvision.com ([123.157.208.19]:59498 "EHLO
+        mail.hikvision.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729455AbgIJMRx (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Sep 2020 08:17:53 -0400
+X-Greylist: delayed 685 seconds by postgrey-1.27 at vger.kernel.org; Thu, 10 Sep 2020 08:17:52 EDT
+Received: from HIK-MBX-CN-05.hikvision.com (unknown [10.1.7.127])
+        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by Forcepoint Email with ESMTPS id BA4A8437AC17BD54FC10;
+        Thu, 10 Sep 2020 20:06:04 +0800 (CST)
+Received: from HIK-MBX-CN-00.hikvision.com (10.1.7.113) by
+ HIK-MBX-CN-05.hikvision.com (10.1.7.127) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1415.2; Thu, 10 Sep 2020 20:06:04 +0800
+Received: from HIK-MBX-CN-00.hikvision.com ([fe80::4cd8:233f:871e:fd8c]) by
+ HIK-MBX-CN-00.hikvision.com ([fe80::4cd8:233f:871e:fd8c%14]) with mapi id
+ 15.01.1415.007; Thu, 10 Sep 2020 20:06:04 +0800
+From:   =?gb2312?B?s6O37+mq?= <changfengnan@hikvision.com>
+To:     "adilger@dilger.ca" <adilger@dilger.ca>
+CC:     "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
+        "jack@suse.com" <jack@suse.com>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "tytso@mit.edu" <tytso@mit.edu>
+Subject: [PATCH] jbd2: avoid transaction reuse after reformatting
+Thread-Topic: [PATCH] jbd2: avoid transaction reuse after reformatting
+Thread-Index: AQHWh2lh9meS1wshdki76zJvq/o+G6lhxS6Q
+Date:   Thu, 10 Sep 2020 12:06:04 +0000
+Message-ID: <150263f045344bcfa906867fa84b23d1@hikvision.com>
+References: <tencent_2341B065211F204FA07C3ADDA1AE07706405@qq.com>
+In-Reply-To: <tencent_2341B065211F204FA07C3ADDA1AE07706405@qq.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.1.7.137]
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-As we test disk offline/online with running fsstress, we find fsstress
-process is keeping running state.
-kworker/u32:3-262   [004] ...1   140.787471: ext4_mb_discard_preallocations: dev 8,32 needed 114
-....
-kworker/u32:3-262   [004] ...1   140.787471: ext4_mb_discard_preallocations: dev 8,32 needed 114
-
-ext4_mb_new_blocks
-repeat:
-	ext4_mb_discard_preallocations_should_retry(sb, ac, &seq)
-		freed = ext4_mb_discard_preallocations
-			ext4_mb_discard_group_preallocations
-				this_cpu_inc(discard_pa_seq);
-		---> freed == 0
-		seq_retry = ext4_get_discard_pa_seq_sum
-			for_each_possible_cpu(__cpu)
-				__seq += per_cpu(discard_pa_seq, __cpu);
-		if (seq_retry != *seq) {
-			*seq = seq_retry;
-			ret = true;
-		}
-
-As we see seq_retry is sum of discard_pa_seq every cpu, if
-ext4_mb_discard_group_preallocations return zero discard_pa_seq in this
-cpu maybe increase one, so condition "seq_retry != *seq" have always
-been met.
-To Fix this problem, in ext4_mb_discard_group_preallocations function increase
-discard_pa_seq only when it found preallocation to discard.
-
-Fixes: 07b5b8e1ac40 ("ext4: mballoc: introduce pcpu seqcnt for freeing PA to improve ENOSPC handling")
-Signed-off-by: Ye Bin <yebin10@huawei.com>
----
- fs/ext4/mballoc.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index f386fe62727d..fd55264dc3fe 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -4191,7 +4191,6 @@ ext4_mb_discard_group_preallocations(struct super_block *sb,
- 	INIT_LIST_HEAD(&list);
- repeat:
- 	ext4_lock_group(sb, group);
--	this_cpu_inc(discard_pa_seq);
- 	list_for_each_entry_safe(pa, tmp,
- 				&grp->bb_prealloc_list, pa_group_list) {
- 		spin_lock(&pa->pa_lock);
-@@ -4233,6 +4232,9 @@ ext4_mb_discard_group_preallocations(struct super_block *sb,
- 		goto out;
- 	}
- 
-+	/* only increase when find reallocation to discard */
-+	this_cpu_inc(discard_pa_seq);
-+
- 	/* now free all selected PAs */
- 	list_for_each_entry_safe(pa, tmp, &list, u.pa_tmp_list) {
- 
--- 
-2.25.4
-
+V2hlbiBmb3JtYXQgZXh0NCB3aXRoIGxhenlfam91cm5hbF9pbml0PTEsIHRoZSBwcmV2aW91cyB0
+cmFuc2FjdGlvbiBpcyBzdGlsbCBvbiBkaXNrLA0KaXQgaXMgcG9zc2libGUgdGhhdCB0aGUgcHJl
+dmlvdXMgdHJhbnNhY3Rpb24gd2lsbCBiZSB1c2VkIGFnYWluIGR1cmluZyBqYmQyIHJlY292ZXJ5
+Lg0KQmVjYXVzZSB0aGUgc2VlZCBpcyBjaGFuZ2VkLCB0aGUgQ1JDIGNoZWNrIHdpbGwgZmFpbC4N
+Cg0KU2lnbmVkLW9mZi1ieTogRmVuZ25hbiBDaGFuZyA8Y2hhbmdmZW5nbmFuQGhpa3Zpc2lvbi5j
+b20+DQotLS0NCiBmcy9qYmQyL3JlY292ZXJ5LmMgfCA2MCArKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKy0tLS0tDQogMSBmaWxlIGNoYW5nZWQsIDU0IGluc2VydGlvbnMo
+KyksIDYgZGVsZXRpb25zKC0pDQoNCmRpZmYgLS1naXQgYS9mcy9qYmQyL3JlY292ZXJ5LmMgYi9m
+cy9qYmQyL3JlY292ZXJ5LmMgaW5kZXggYTQ5NjdiMjdmZmI2Li44YTZiYzMyMmEwNmQgMTAwNjQ0
+DQotLS0gYS9mcy9qYmQyL3JlY292ZXJ5LmMNCisrKyBiL2ZzL2piZDIvcmVjb3ZlcnkuYw0KQEAg
+LTMzLDYgKzMzLDggQEAgc3RydWN0IHJlY292ZXJ5X2luZm8NCiBpbnRucl9yZXBsYXlzOw0KIGlu
+dG5yX3Jldm9rZXM7DQogaW50bnJfcmV2b2tlX2hpdHM7DQordW5zaWduZWQgbG9uZyAgcmlfY29t
+bWl0X2Jsb2NrOw0KK19fYmU2NCAgbGFzdF90cmFuc19jb21taXRfdGltZTsNCiB9Ow0KDQogZW51
+bSBwYXNzdHlwZSB7UEFTU19TQ0FOLCBQQVNTX1JFVk9LRSwgUEFTU19SRVBMQVl9OyBAQCAtNDEy
+LDcgKzQxNCwyNyBAQCBzdGF0aWMgaW50IGpiZDJfYmxvY2tfdGFnX2NzdW1fdmVyaWZ5KGpvdXJu
+YWxfdCAqaiwgam91cm5hbF9ibG9ja190YWdfdCAqdGFnLA0KIGVsc2UNCiByZXR1cm4gdGFnLT50
+X2NoZWNrc3VtID09IGNwdV90b19iZTE2KGNzdW0zMik7ICB9DQorLyoNCisgKiBXZSBjaGVjayB0
+aGUgY29tbWl0IHRpbWUgYW5kIGNvbXBhcmUgaXQgd2l0aCB0aGUgY29tbWl0IHRpbWUgb2YNCisg
+KiB0aGUgcHJldmlvdXMgdHJhbnNhY3Rpb24sIGlmIGl0J3Mgc21hbGxlciB0aGFuIHByZXZpb3Vz
+LA0KKyAqIFdlIHRoaW5rIGl0J3Mgbm90IGJlbG9uZyB0byBzYW1lIGpvdXJuYWwuDQorICovDQor
+c3RhdGljIGJvb2wgaXNfc2FtZV9qb3VybmFsKGpvdXJuYWxfdCAqam91cm5hbCwgc3RydWN0IGJ1
+ZmZlcl9oZWFkICpiaCwNCit1bnNpZ25lZCBsb25nIGJsb2NrbnIsIF9fdTY0IGxhc3RfY29tbWl0
+X3NlYykgew0KK3Vuc2lnbmVkIGxvbmcgY29tbWl0X2Jsb2NrID0gYmxvY2tuciArIGNvdW50X3Rh
+Z3Moam91cm5hbCwgYmgpICsgMTsNCitzdHJ1Y3QgYnVmZmVyX2hlYWQgKm5iaDsNCitzdHJ1Y3Qg
+Y29tbWl0X2hlYWRlciAqY2JoOw0KK19fdTY0Y29tbWl0X3NlYzsNCitpbnQgZXJyID0ganJlYWQo
+Jm5iaCwgam91cm5hbCwgY29tbWl0X2Jsb2NrKTsNCg0KK2lmIChlcnIpDQorcmV0dXJuIHRydWU7
+DQorDQorY2JoID0gKHN0cnVjdCBjb21taXRfaGVhZGVyICopbmJoLT5iX2RhdGE7DQorY29tbWl0
+X3NlYyA9IGJlNjRfdG9fY3B1KGNiaC0+aF9jb21taXRfc2VjKTsNCisNCityZXR1cm4gY29tbWl0
+X3NlYyA+PSBsYXN0X2NvbW1pdF9zZWM7DQorfQ0KIHN0YXRpYyBpbnQgZG9fb25lX3Bhc3Moam91
+cm5hbF90ICpqb3VybmFsLA0KIHN0cnVjdCByZWNvdmVyeV9pbmZvICppbmZvLCBlbnVtIHBhc3N0
+eXBlIHBhc3MpICB7IEBAIC01MTQsMTggKzUzNiwyOSBAQCBzdGF0aWMgaW50IGRvX29uZV9wYXNz
+KGpvdXJuYWxfdCAqam91cm5hbCwNCiBzd2l0Y2goYmxvY2t0eXBlKSB7DQogY2FzZSBKQkQyX0RF
+U0NSSVBUT1JfQkxPQ0s6DQogLyogVmVyaWZ5IGNoZWNrc3VtIGZpcnN0ICovDQoraWYgKHBhc3Mg
+PT0gUEFTU19TQ0FOKQ0KK2luZm8tPnJpX2NvbW1pdF9ibG9jayA9IDA7DQorDQogaWYgKGpiZDJf
+am91cm5hbF9oYXNfY3N1bV92Mm9yMyhqb3VybmFsKSkNCiBkZXNjcl9jc3VtX3NpemUgPQ0KIHNp
+emVvZihzdHJ1Y3QgamJkMl9qb3VybmFsX2Jsb2NrX3RhaWwpOw0KIGlmIChkZXNjcl9jc3VtX3Np
+emUgPiAwICYmDQogICAgICFqYmQyX2Rlc2NyaXB0b3JfYmxvY2tfY3N1bV92ZXJpZnkoam91cm5h
+bCwNCiAgICAgICAgYmgtPmJfZGF0YSkpIHsNCi1wcmludGsoS0VSTl9FUlIgIkpCRDI6IEludmFs
+aWQgY2hlY2tzdW0gIg0KLSAgICAgICAicmVjb3ZlcmluZyBibG9jayAlbHUgaW4gbG9nXG4iLA0K
+K2lmIChpc19zYW1lX2pvdXJuYWwoam91cm5hbCwgYmgsIG5leHRfbG9nX2Jsb2NrLTEsIGluZm8t
+Pmxhc3RfdHJhbnNfY29tbWl0X3RpbWUpKSB7DQorcHJpbnRrKEtFUk5fRVJSICJKQkQyOiBJbnZh
+bGlkIGNoZWNrc3VtIHJlY292ZXJpbmcgYmxvY2sgJWx1IGluDQorbG9nXG4iLA0KICAgICAgICBu
+ZXh0X2xvZ19ibG9jayk7DQotZXJyID0gLUVGU0JBRENSQzsNCi1icmVsc2UoYmgpOw0KLWdvdG8g
+ZmFpbGVkOw0KK2VyciA9IC1FRlNCQURDUkM7DQorYnJlbHNlKGJoKTsNCitnb3RvIGZhaWxlZDsN
+Cit9IGVsc2Ugew0KKy8qaXQncyBub3QgYmVsb25nIHRvIHNhbWUgam91cm5hbCwganVzdCBlbmQg
+dGhpcyByZWNvdmVyeSB3aXRoIHN1Y2Nlc3MqLw0KK2piZF9kZWJ1ZygxLCAiSkJEMjogSW52YWxp
+ZCBjaGVja3N1bSBmb3VuZCBpbiBibG9jayAlbHUgaW4gbG9nLCBidXQgbm90IHNhbWUgam91cm5h
+bCAlZFxuIiwNCisgICAgICAgbmV4dF9sb2dfYmxvY2ssIG5leHRfY29tbWl0X0lEKTsNCitlcnIg
+PSAwOw0KK2JyZWxzZShiaCk7DQorZ290byBkb25lOw0KK30NCiB9DQoNCiAvKiBJZiBpdCBpcyBh
+IHZhbGlkIGRlc2NyaXB0b3IgYmxvY2ssIHJlcGxheSBpdCBAQCAtNjg4LDYgKzcyMSwxNyBAQCBz
+dGF0aWMgaW50IGRvX29uZV9wYXNzKGpvdXJuYWxfdCAqam91cm5hbCwNCiAgKiBhcmUgcHJlc2Vu
+dCB2ZXJpZnkgdGhlbSBpbiBQQVNTX1NDQU47IGVsc2Ugbm90DQogICogbXVjaCB0byBkbyBvdGhl
+ciB0aGFuIG1vdmUgb24gdG8gdGhlIG5leHQgc2VxdWVuY2UNCiAgKiBudW1iZXIuICovDQoraWYg
+KHBhc3MgPT0gUEFTU19TQ0FOKSB7DQorc3RydWN0IGNvbW1pdF9oZWFkZXIgKmNiaCA9DQorKHN0
+cnVjdCBjb21taXRfaGVhZGVyICopYmgtPmJfZGF0YTsNCitpZiAoaW5mby0+cmlfY29tbWl0X2Js
+b2NrKSB7DQoramJkX2RlYnVnKDEsICJpbnZhbGlkIGNvbW1pdCBibG9jayBmb3VuZCBpbiAlbHUs
+IHN0b3AgaGVyZS5cbiIsIG5leHRfbG9nX2Jsb2NrKTsNCiticmVsc2UoYmgpOw0KK2dvdG8gZG9u
+ZTsNCit9DQoraW5mby0+cmlfY29tbWl0X2Jsb2NrID0gbmV4dF9sb2dfYmxvY2s7DQoraW5mby0+
+bGFzdF90cmFuc19jb21taXRfdGltZSA9IGJlNjRfdG9fY3B1KGNiaC0+aF9jb21taXRfc2VjKTsN
+Cit9DQogaWYgKHBhc3MgPT0gUEFTU19TQ0FOICYmDQogICAgIGpiZDJfaGFzX2ZlYXR1cmVfY2hl
+Y2tzdW0oam91cm5hbCkpIHsNCiBpbnQgY2hrc3VtX2VyciwgY2hrc3VtX3NlZW47DQpAQCAtNzYx
+LDcgKzgwNSwxMSBAQCBzdGF0aWMgaW50IGRvX29uZV9wYXNzKGpvdXJuYWxfdCAqam91cm5hbCwN
+CiBicmVsc2UoYmgpOw0KIGNvbnRpbnVlOw0KIH0NCi0NCitpZiAocGFzcyAhPSBQQVNTX1NDQU4g
+JiYgaW5mby0+cmlfY29tbWl0X2Jsb2NrKSB7DQoramJkX2RlYnVnKDEsICJpbnZhbGlkIHJldm9r
+ZSBibG9jayBmb3VuZCBpbiAlbHUsIHN0b3AgaGVyZS5cbiIsIG5leHRfbG9nX2Jsb2NrKTsNCiti
+cmVsc2UoYmgpOw0KK2dvdG8gZG9uZTsNCit9DQogZXJyID0gc2Nhbl9yZXZva2VfcmVjb3Jkcyhq
+b3VybmFsLCBiaCwNCiAgIG5leHRfY29tbWl0X0lELCBpbmZvKTsNCiBicmVsc2UoYmgpOw0KLS0N
+CjIuMjcuMC53aW5kb3dzLjENCg0KDQoNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+DQoNCkNPTkZJREVOVElBTElUWSBOT1RJQ0U6IFRoaXMgZWxlY3Ryb25pYyBtZXNzYWdlIGlzIGlu
+dGVuZGVkIHRvIGJlIHZpZXdlZCBvbmx5IGJ5IHRoZSBpbmRpdmlkdWFsIG9yIGVudGl0eSB0byB3
+aG9tIGl0IGlzIGFkZHJlc3NlZC4gSXQgbWF5IGNvbnRhaW4gaW5mb3JtYXRpb24gdGhhdCBpcyBw
+cml2aWxlZ2VkLCBjb25maWRlbnRpYWwgYW5kIGV4ZW1wdCBmcm9tIGRpc2Nsb3N1cmUgdW5kZXIg
+YXBwbGljYWJsZSBsYXcuIEFueSBkaXNzZW1pbmF0aW9uLCBkaXN0cmlidXRpb24gb3IgY29weWlu
+ZyBvZiB0aGlzIGNvbW11bmljYXRpb24gaXMgc3RyaWN0bHkgcHJvaGliaXRlZCB3aXRob3V0IG91
+ciBwcmlvciBwZXJtaXNzaW9uLiBJZiB0aGUgcmVhZGVyIG9mIHRoaXMgbWVzc2FnZSBpcyBub3Qg
+dGhlIGludGVuZGVkIHJlY2lwaWVudCwgb3IgdGhlIGVtcGxveWVlIG9yIGFnZW50IHJlc3BvbnNp
+YmxlIGZvciBkZWxpdmVyaW5nIHRoZSBtZXNzYWdlIHRvIHRoZSBpbnRlbmRlZCByZWNpcGllbnQs
+IG9yIGlmIHlvdSBoYXZlIHJlY2VpdmVkIHRoaXMgY29tbXVuaWNhdGlvbiBpbiBlcnJvciwgcGxl
+YXNlIG5vdGlmeSB1cyBpbW1lZGlhdGVseSBieSByZXR1cm4gZS1tYWlsIGFuZCBkZWxldGUgdGhl
+IG9yaWdpbmFsIG1lc3NhZ2UgYW5kIGFueSBjb3BpZXMgb2YgaXQgZnJvbSB5b3VyIGNvbXB1dGVy
+IHN5c3RlbS4gRm9yIGZ1cnRoZXIgaW5mb3JtYXRpb24gYWJvdXQgSGlrdmlzaW9uIGNvbXBhbnku
+IHBsZWFzZSBzZWUgb3VyIHdlYnNpdGUgYXQgd3d3Lmhpa3Zpc2lvbi5jb208aHR0cDovL3d3dy5o
+aWt2aXNpb24uY29tPg0K
