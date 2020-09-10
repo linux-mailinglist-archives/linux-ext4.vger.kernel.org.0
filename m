@@ -2,55 +2,57 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B021E264F12
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Sep 2020 21:34:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8C22264F10
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Sep 2020 21:33:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728023AbgIJTd6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 10 Sep 2020 15:33:58 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:43001 "EHLO
+        id S1728014AbgIJTdy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 10 Sep 2020 15:33:54 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:43006 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727938AbgIJTbf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Sep 2020 15:31:35 -0400
-Received: from mail-qt1-f197.google.com ([209.85.160.197])
+        with ESMTP id S1727945AbgIJTbh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Sep 2020 15:31:37 -0400
+Received: from mail-qk1-f200.google.com ([209.85.222.200])
         by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <mfo@canonical.com>)
-        id 1kGSI8-0000i6-RI
-        for linux-ext4@vger.kernel.org; Thu, 10 Sep 2020 19:31:33 +0000
-Received: by mail-qt1-f197.google.com with SMTP id m13so4896432qtu.10
-        for <linux-ext4@vger.kernel.org>; Thu, 10 Sep 2020 12:31:32 -0700 (PDT)
+        id 1kGSIB-0000ib-37
+        for linux-ext4@vger.kernel.org; Thu, 10 Sep 2020 19:31:35 +0000
+Received: by mail-qk1-f200.google.com with SMTP id s141so4321837qka.13
+        for <linux-ext4@vger.kernel.org>; Thu, 10 Sep 2020 12:31:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LuSXWTsin8cF8bzKkoixqrxuBXCzvzGP6uXIxX5Rv+w=;
-        b=n6PLbvTVkl2R3MJiykeo6J7FUX4zDZFFb0EN8MDQ6/moxSZ8T4NO9ZIQ3+47MxtbFb
-         x9/rA6cB03ZLtagoHDryFrEdTvOvG0Etv4fgz64Di18Rlc/djbwszqOoJvmlPtARHlcf
-         HT6z60zKCOul4sYRvUCyIy6c0GTxmFBSR0Iy99ayJko+ZVeat4juCGe2z8Lm3/ZJMzzL
-         4j1OK0z6cc1fOM2uUmmf6PPgNnw8SKs5lOvjjn/dck0lh2qxF0BnCQVRaAedlqV6G4C/
-         KK6yZTNvbXPLSydALJb+ozRv5KGmx9VBsBXpirOympebOmNlUJEPxq/JpFTDeBSwZvWa
-         Pufw==
-X-Gm-Message-State: AOAM530S6k/VMJ1Y6Hqn5Sj4/QhKCDU/OPEHcTBWNtY8V1A9kBvvftuK
-        5BZPSP6I1v7PyZlVrE+3Z023OXV7hzIjRNsas1afb2wO2YxT9pdALLV+cycxxh7DW+j7Tau48fK
-        qVRxzTC0D4zl9BatHhInDY3kGED+yIa8fQwUvrUM=
-X-Received: by 2002:ae9:ef92:: with SMTP id d140mr9232941qkg.73.1599766291852;
-        Thu, 10 Sep 2020 12:31:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwyZhJeuJAS61vLtuS9a5AHy70InG5CeeZxiVfSoD8pHjtHSd6j77SH54gT/SYXL8Lw4At6bQ==
-X-Received: by 2002:ae9:ef92:: with SMTP id d140mr9232918qkg.73.1599766291557;
-        Thu, 10 Sep 2020 12:31:31 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=3SZen2y6K+eX+Acff0PC37lH0dwsf+MyxigV9F/BcKg=;
+        b=eh7iZNizR3qu8eqoU96Vbp96ZCY9kWRKrPvtUTyl6hmb2+P2WkWmpWEDX3zcjXEgQ+
+         1wMb6DAWF0E5wcV2OqxCqcclCvw3dK43WSzsqLQt+NGxBKg7JOM/TCTeyV4378NbDvdh
+         hg7JD31zq8XIPZDbxnPBEu/HvNuMACZxD1JMNcic7O7rQDb2+olfMstiU31t6IzEFHhY
+         EY3U7EUNkVxUmhmwT5lIhRiWICc8jHUkkDAZp4479Gl78uyzey0OpXuWirZvP4zbn5X0
+         lpHeG9vTltjeLQ/trYLFoMu30cL+VwQBN3tEkH1dW4NPyL79GJFqxGEjLRCiO+JGgihG
+         ZGIw==
+X-Gm-Message-State: AOAM533oW2YPmhLZp6d7cWYlMZ53EmVObD5GJqOYTcj/+fNKg2COjF8V
+        4KIqbHGl9f2DSYdITqQQLXJpN/9e3yeH/tlvK1S+Lj7ETMp6AXzYzIWh2cq+FW1NOc0jfgUxbd2
+        FOh6dUYXto8mZF3XkmDj0tdG/IKWjTRFqbTylm6Y=
+X-Received: by 2002:ac8:743:: with SMTP id k3mr9878649qth.182.1599766294104;
+        Thu, 10 Sep 2020 12:31:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy/VErnBmL5lJo1R9q0rx7mfoORd6dxd7jVrDbB6VHvn5oCmJXu4teKr8Zo77K/YeDe+/3Saw==
+X-Received: by 2002:ac8:743:: with SMTP id k3mr9878630qth.182.1599766293837;
+        Thu, 10 Sep 2020 12:31:33 -0700 (PDT)
 Received: from localhost.localdomain ([201.82.49.101])
-        by smtp.gmail.com with ESMTPSA id u4sm6410391qkk.68.2020.09.10.12.31.29
+        by smtp.gmail.com with ESMTPSA id u4sm6410391qkk.68.2020.09.10.12.31.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2020 12:31:30 -0700 (PDT)
+        Thu, 10 Sep 2020 12:31:33 -0700 (PDT)
 From:   Mauricio Faria de Oliveira <mfo@canonical.com>
 To:     Jan Kara <jack@suse.cz>
 Cc:     linux-ext4@vger.kernel.org,
         dann frazier <dann.frazier@canonical.com>,
         Mauricio Faria de Oliveira <mauricio.foliveira@gmail.com>
-Subject: [RFC PATCH v3 0/3] ext4/jbd2: data=journal: write-protect pages on transaction commit
-Date:   Thu, 10 Sep 2020 16:31:24 -0300
-Message-Id: <20200910193127.276214-1-mfo@canonical.com>
+Subject: [RFC PATCH v3 1/3] jbd2: introduce/export functions jbd2_journal_submit|finish_inode_data_buffers()
+Date:   Thu, 10 Sep 2020 16:31:25 -0300
+Message-Id: <20200910193127.276214-2-mfo@canonical.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200910193127.276214-1-mfo@canonical.com>
+References: <20200910193127.276214-1-mfo@canonical.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
@@ -58,97 +60,128 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hey Jan,
+Export functions that implement the current behavior done
+for an inode in journal_submit|finish_inode_data_buffers().
 
-This series implements your suggestions for the RFC PATCH v2 set,
-which we mostly talked about in cover letter [1] and PATCH 3 [2].
-(I added Suggested-by: tags, by the way, for due credit.)
+No functional change.
 
-It looks almost good on fstests: zero regressions on data=ordered,
-and only one regression in data=journal (generic/347); I'll check.
-(That's with ext4; I'll check ocfs2, but it's only a minor change.)
-
-However, there's an issue I have to check with you about, that we
-exposed from the original kernel. It's described below, but other
-than this I _guess_ this should be close if you don't spot errors.
-
-Thanks!
-Mauricio
-
-...
-
-Testing with 'stress-ng --mmap <N> --mmap-file' runs well for days,
-but it occasionally hits:
-
-  JBD2: Spotted dirty metadata buffer (dev = vdc, blocknr = 74775).
-  There's a risk of filesystem corruption in case of system crash.
-
-I added dump_stack() in warn_dirty_buffer(), and it usually comes
-from jbd2_journal_file_buffer(, BJ_Forget) in the commit function.
-When filing from BJ_Shadow to BJ_Forget.. so it possibly happened
-while BH_Shadow was still set!
-
-So I instrumented [test_]set_buffer_dirty() macros to dump_stack()
-if BH_Shadow is set (i.e. buffer being set dirty during write-out.)
-
-This showed that the occasional BH_Dirty setter with BH_Shadow set
-is block_page_mkwrite() in ext4_page_mkwrite(). And it seems right,
-because it's called before do_journal_get_write_access() (where we
-check for/wait on BH_Shadow.)
-
-ext4_page_mkwrite():
-
-        err = block_page_mkwrite(vma, vmf, get_block);
-        if (!err && ext4_should_journal_data(inode)) {
-                if (ext4_walk_page_buffers(handle, page_buffers(page), 0,
-                          PAGE_SIZE, NULL, do_journal_get_write_access)) {
-
-The patches didn't directly break this, they only allow this code
-to run more often as we disabled an early-return optimization for
-the case 'all buffers mapped' in data=journal (question 2 in [1]):
-
-ext4_page_mkwrite():
-
-         * Return if we have all the buffers mapped.
-	...
--       if (page_has_buffers(page)) {
-+       if (page_has_buffers(page) && !ext4_should_journal_data(inode)) {
-
-
-In order to confirm it, I built the unpatched v5.9-rc4 kernel, with
-just the change to disable that optimization in data=journal -- and
-it hit that occasionally too ("JBD2: Spotted dirty metadata buffer".)
-
-I was naive enough to mindlessly try to swap the order of those two
-statements, in hopes that do_journal_get_write_access() should wait
-for BH_Shadow to clear, and then we just call block_page_mkwrite().
-BUT it trips into the BUG() check in page_buffers() in the former.
-
-I still have to dig more about it, but if you have something quick
-in mind, I'd appreciate any comments/feedback about it, if it gets
-more complex than I can see.
-
-Thanks again!
-
-[1] https://lore.kernel.org/linux-ext4/20200819092735.GI1902@quack2.suse.cz/
-[2] https://lore.kernel.org/linux-ext4/20200821102625.GB3432@quack2.suse.cz/
-
-Mauricio Faria de Oliveira (3):
-  jbd2: introduce/export functions
-    jbd2_journal_submit|finish_inode_data_buffers()
-  jbd2, ext4, ocfs2: introduce/use journal callbacks
-    j_submit|finish_inode_data_buffers()
-  ext4: data=journal: write-protect pages on
-    j_submit_inode_data_buffers()
-
- fs/ext4/inode.c      | 29 +++++++++++-----
- fs/ext4/super.c      | 82 ++++++++++++++++++++++++++++++++++++++++++++
- fs/jbd2/commit.c     | 58 +++++++++++++++++--------------
+Signed-off-by: Mauricio Faria de Oliveira <mfo@canonical.com>
+Suggested-by: Jan Kara <jack@suse.cz>
+---
+ fs/jbd2/commit.c     | 32 +++++++++++++++++---------------
  fs/jbd2/journal.c    |  2 ++
- fs/ocfs2/super.c     | 15 ++++++++
- include/linux/jbd2.h | 29 +++++++++++++++-
- 6 files changed, 181 insertions(+), 34 deletions(-)
+ include/linux/jbd2.h |  4 ++++
+ 3 files changed, 23 insertions(+), 15 deletions(-)
 
+diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
+index 6d2da8ad0e6f..c17cda96926e 100644
+--- a/fs/jbd2/commit.c
++++ b/fs/jbd2/commit.c
+@@ -187,9 +187,11 @@ static int journal_wait_on_commit_record(journal_t *journal,
+  * use writepages() because with delayed allocation we may be doing
+  * block allocation in writepages().
+  */
+-static int journal_submit_inode_data_buffers(struct address_space *mapping,
+-		loff_t dirty_start, loff_t dirty_end)
++int jbd2_journal_submit_inode_data_buffers(struct jbd2_inode *jinode)
+ {
++	struct address_space *mapping = jinode->i_vfs_inode->i_mapping;
++	loff_t dirty_start = jinode->i_dirty_start;
++	loff_t dirty_end = jinode->i_dirty_end;
+ 	int ret;
+ 	struct writeback_control wbc = {
+ 		.sync_mode =  WB_SYNC_ALL,
+@@ -215,16 +217,11 @@ static int journal_submit_data_buffers(journal_t *journal,
+ {
+ 	struct jbd2_inode *jinode;
+ 	int err, ret = 0;
+-	struct address_space *mapping;
+ 
+ 	spin_lock(&journal->j_list_lock);
+ 	list_for_each_entry(jinode, &commit_transaction->t_inode_list, i_list) {
+-		loff_t dirty_start = jinode->i_dirty_start;
+-		loff_t dirty_end = jinode->i_dirty_end;
+-
+ 		if (!(jinode->i_flags & JI_WRITE_DATA))
+ 			continue;
+-		mapping = jinode->i_vfs_inode->i_mapping;
+ 		jinode->i_flags |= JI_COMMIT_RUNNING;
+ 		spin_unlock(&journal->j_list_lock);
+ 		/*
+@@ -234,8 +231,7 @@ static int journal_submit_data_buffers(journal_t *journal,
+ 		 * only allocated blocks here.
+ 		 */
+ 		trace_jbd2_submit_inode_data(jinode->i_vfs_inode);
+-		err = journal_submit_inode_data_buffers(mapping, dirty_start,
+-				dirty_end);
++		err = jbd2_journal_submit_inode_data_buffers(jinode);
+ 		if (!ret)
+ 			ret = err;
+ 		spin_lock(&journal->j_list_lock);
+@@ -248,6 +244,17 @@ static int journal_submit_data_buffers(journal_t *journal,
+ 	return ret;
+ }
+ 
++int jbd2_journal_finish_inode_data_buffers(struct jbd2_inode *jinode)
++{
++	struct address_space *mapping = jinode->i_vfs_inode->i_mapping;
++	loff_t dirty_start = jinode->i_dirty_start;
++	loff_t dirty_end = jinode->i_dirty_end;
++	int ret;
++
++	ret = filemap_fdatawait_range_keep_errors(mapping, dirty_start, dirty_end);
++	return ret;
++}
++
+ /*
+  * Wait for data submitted for writeout, refile inodes to proper
+  * transaction if needed.
+@@ -262,16 +269,11 @@ static int journal_finish_inode_data_buffers(journal_t *journal,
+ 	/* For locking, see the comment in journal_submit_data_buffers() */
+ 	spin_lock(&journal->j_list_lock);
+ 	list_for_each_entry(jinode, &commit_transaction->t_inode_list, i_list) {
+-		loff_t dirty_start = jinode->i_dirty_start;
+-		loff_t dirty_end = jinode->i_dirty_end;
+-
+ 		if (!(jinode->i_flags & JI_WAIT_DATA))
+ 			continue;
+ 		jinode->i_flags |= JI_COMMIT_RUNNING;
+ 		spin_unlock(&journal->j_list_lock);
+-		err = filemap_fdatawait_range_keep_errors(
+-				jinode->i_vfs_inode->i_mapping, dirty_start,
+-				dirty_end);
++		err = jbd2_journal_finish_inode_data_buffers(jinode);
+ 		if (!ret)
+ 			ret = err;
+ 		spin_lock(&journal->j_list_lock);
+diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+index 17fdc482f554..c0600405e7a2 100644
+--- a/fs/jbd2/journal.c
++++ b/fs/jbd2/journal.c
+@@ -91,6 +91,8 @@ EXPORT_SYMBOL(jbd2_journal_try_to_free_buffers);
+ EXPORT_SYMBOL(jbd2_journal_force_commit);
+ EXPORT_SYMBOL(jbd2_journal_inode_ranged_write);
+ EXPORT_SYMBOL(jbd2_journal_inode_ranged_wait);
++EXPORT_SYMBOL(jbd2_journal_submit_inode_data_buffers);
++EXPORT_SYMBOL(jbd2_journal_finish_inode_data_buffers);
+ EXPORT_SYMBOL(jbd2_journal_init_jbd_inode);
+ EXPORT_SYMBOL(jbd2_journal_release_jbd_inode);
+ EXPORT_SYMBOL(jbd2_journal_begin_ordered_truncate);
+diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+index 08f904943ab2..2865a5475888 100644
+--- a/include/linux/jbd2.h
++++ b/include/linux/jbd2.h
+@@ -1421,6 +1421,10 @@ extern int	   jbd2_journal_inode_ranged_write(handle_t *handle,
+ extern int	   jbd2_journal_inode_ranged_wait(handle_t *handle,
+ 			struct jbd2_inode *inode, loff_t start_byte,
+ 			loff_t length);
++extern int	   jbd2_journal_submit_inode_data_buffers(
++			struct jbd2_inode *jinode);
++extern int	   jbd2_journal_finish_inode_data_buffers(
++			struct jbd2_inode *jinode);
+ extern int	   jbd2_journal_begin_ordered_truncate(journal_t *journal,
+ 				struct jbd2_inode *inode, loff_t new_size);
+ extern void	   jbd2_journal_init_jbd_inode(struct jbd2_inode *jinode, struct inode *inode);
 -- 
 2.17.1
 
