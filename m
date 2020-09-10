@@ -2,224 +2,111 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F7F0263CFB
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Sep 2020 08:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B760263EF5
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Sep 2020 09:49:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726080AbgIJGJK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 10 Sep 2020 02:09:10 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:54292 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbgIJGJB (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Sep 2020 02:09:01 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08A65LZx078701;
-        Thu, 10 Sep 2020 06:08:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=BZKbxxW9fRj1O1NrXCl2qK3IkQQc10VGvhE4jGAfas0=;
- b=SQXd37fk/BtuTbYp748oOSVO53w3aOoQNP/3F8naKXGJyn/Emxpln0uo/FP1QQV+SwMa
- RBhwXY0N1ICtDL0IyNhtKdYr/x1cuW3XL2cBm+0sWFG56khgarmwH2MCGdaN4EccRrPE
- MUQt2bNNa1U79RvqRBkOb7IBAzP/e2K57RAWoWPvO1kLLlv1H1ezz2s3vRIai/o0y3Tq
- NTjth5D+U0sr3oEGQ75nz9VilMpJtKHxtUzNuXqujU6uXz7W1agd0/zYZ8BzSWeLM9VD
- um2WB6SFr+wXVxYgW/iOatGGl2OXv3/a97+AzwUvQesXQ8j7totADeGAJNYINuUP9SpS kg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 33c23r5yje-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 10 Sep 2020 06:08:36 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08A66Pc7133170;
-        Thu, 10 Sep 2020 06:06:36 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 33cmm0c2ea-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 10 Sep 2020 06:06:36 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08A66TSK001564;
-        Thu, 10 Sep 2020 06:06:29 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 09 Sep 2020 23:06:28 -0700
-Date:   Wed, 9 Sep 2020 23:06:26 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Mikulas Patocka <mpatocka@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>, Dave Chinner <dchinner@redhat.com>,
-        Jann Horn <jannh@google.com>, Christoph Hellwig <hch@lst.de>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        Eric Sandeen <sandeen@redhat.com>
-Subject: Re: [PATCH 2/2] xfs: don't update mtime on COW faults
-Message-ID: <20200910060626.GA7964@magnolia>
-References: <alpine.LRH.2.02.2009031328040.6929@file01.intranet.prod.int.rdu2.redhat.com>
- <alpine.LRH.2.02.2009041200570.27312@file01.intranet.prod.int.rdu2.redhat.com>
- <alpine.LRH.2.02.2009050805250.12419@file01.intranet.prod.int.rdu2.redhat.com>
- <alpine.LRH.2.02.2009050812060.12419@file01.intranet.prod.int.rdu2.redhat.com>
- <20200905153652.GA7955@magnolia>
- <alpine.LRH.2.02.2009051229180.542@file01.intranet.prod.int.rdu2.redhat.com>
+        id S1728709AbgIJHtG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 10 Sep 2020 03:49:06 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38818 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728297AbgIJHtD (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 10 Sep 2020 03:49:03 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 90FD8AC83;
+        Thu, 10 Sep 2020 07:49:17 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 8AA771E12EB; Thu, 10 Sep 2020 09:49:01 +0200 (CEST)
+Date:   Thu, 10 Sep 2020 09:49:01 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ye Bin <yebin10@huawei.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.com,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v2] ext4: Fix dead loop in ext4_mb_new_blocks
+Message-ID: <20200910074901.GD17540@quack2.suse.cz>
+References: <20200910030806.223411-1-yebin10@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.LRH.2.02.2009051229180.542@file01.intranet.prod.int.rdu2.redhat.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9739 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 suspectscore=1
- spamscore=0 mlxlogscore=999 adultscore=0 malwarescore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009100056
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9739 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 priorityscore=1501
- mlxlogscore=999 mlxscore=0 bulkscore=0 suspectscore=1 spamscore=0
- malwarescore=0 phishscore=0 lowpriorityscore=0 clxscore=1015
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009100056
+In-Reply-To: <20200910030806.223411-1-yebin10@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Sep 05, 2020 at 01:02:33PM -0400, Mikulas Patocka wrote:
-> 
-> 
-> On Sat, 5 Sep 2020, Darrick J. Wong wrote:
-> 
-> > On Sat, Sep 05, 2020 at 08:13:02AM -0400, Mikulas Patocka wrote:
-> > > When running in a dax mode, if the user maps a page with MAP_PRIVATE and
-> > > PROT_WRITE, the xfs filesystem would incorrectly update ctime and mtime
-> > > when the user hits a COW fault.
-> > > 
-> > > This breaks building of the Linux kernel.
-> > > How to reproduce:
-> > > 1. extract the Linux kernel tree on dax-mounted xfs filesystem
-> > > 2. run make clean
-> > > 3. run make -j12
-> > > 4. run make -j12
-> > > - at step 4, make would incorrectly rebuild the whole kernel (although it
-> > >   was already built in step 3).
-> > > 
-> > > The reason for the breakage is that almost all object files depend on
-> > > objtool. When we run objtool, it takes COW page fault on its .data
-> > > section, and these faults will incorrectly update the timestamp of the
-> > > objtool binary. The updated timestamp causes make to rebuild the whole
-> > > tree.
-> > > 
-> > > Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-> > > Cc: stable@vger.kernel.org
-> > > 
-> > > ---
-> > >  fs/xfs/xfs_file.c |   11 +++++++++--
-> > >  1 file changed, 9 insertions(+), 2 deletions(-)
-> > > 
-> > > Index: linux-2.6/fs/xfs/xfs_file.c
-> > > ===================================================================
-> > > --- linux-2.6.orig/fs/xfs/xfs_file.c	2020-09-05 10:01:42.000000000 +0200
-> > > +++ linux-2.6/fs/xfs/xfs_file.c	2020-09-05 13:59:12.000000000 +0200
-> > > @@ -1223,6 +1223,13 @@ __xfs_filemap_fault(
-> > >  	return ret;
-> > >  }
-> > >  
-> > > +static bool
-> > > +xfs_is_write_fault(
-> > 
-> > Call this xfs_is_shared_dax_write_fault, and throw in the IS_DAX() test?
-> > 
-> > You might as well make it a static inline.
-> 
-> Yes, it is possible. I'll send a second version.
-> 
-> > > +	struct vm_fault		*vmf)
-> > > +{
-> > > +	return vmf->flags & FAULT_FLAG_WRITE && vmf->vma->vm_flags & VM_SHARED;
-> > 
-> > Also, is "shortcutting the normal fault path" the reason for ext2 and
-> > xfs both being broken?
-> > 
-> > /me puzzles over why write_fault is always true for page_mkwrite and
-> > pfn_mkwrite, but not for fault and huge_fault...
-> > 
-> > Also: Can you please turn this (checking for timestamp update behavior
-> > wrt shared and private mapping write faults) into an fstest so we don't
-> > mess this up again?
-> 
-> I've written this program that tests it - you can integrate it into your 
-> testsuite.
 
-I don't get it.  You're a filesystem maintainer too, which means you're
-a regular contributor.  Do you:
+Hello!
 
-(a) not use fstests?  If you don't, I really hope you use something else
-to QA hpfs.
+On Thu 10-09-20 11:08:06, Ye Bin wrote:
+> As we test disk offline/online with running fsstress, we find fsstress
+> process is keeping running state.
+> kworker/u32:3-262   [004] ...1   140.787471: ext4_mb_discard_preallocations: dev 8,32 needed 114
+> ....
+> kworker/u32:3-262   [004] ...1   140.787471: ext4_mb_discard_preallocations: dev 8,32 needed 114
+> 
+> ext4_mb_new_blocks
+> repeat:
+> 	ext4_mb_discard_preallocations_should_retry(sb, ac, &seq)
+> 		freed = ext4_mb_discard_preallocations
+> 			ext4_mb_discard_group_preallocations
+> 				this_cpu_inc(discard_pa_seq);
+> 		---> freed == 0
+> 		seq_retry = ext4_get_discard_pa_seq_sum
+> 			for_each_possible_cpu(__cpu)
+> 				__seq += per_cpu(discard_pa_seq, __cpu);
+> 		if (seq_retry != *seq) {
+> 			*seq = seq_retry;
+> 			ret = true;
+> 		}
+> 
+> As we see seq_retry is sum of discard_pa_seq every cpu, if
+> ext4_mb_discard_group_preallocations return zero discard_pa_seq in this
+> cpu maybe increase one, so condition "seq_retry != *seq" have always
+> been met.
+> To Fix this problem, ext4_get_discard_pa_seq_sum function couldn't add
+> own's cpu "discard_pa_seq" value.
+> 
+> Fixes: 07b5b8e1ac40 ("ext4: mballoc: introduce pcpu seqcnt for freeing PA to improve ENOSPC handling")
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
 
-(b) really think that it's my problem to integrate and submit your
-regression tests for you?
+Thanks for the patch! I agree with your analysis but avoiding current CPU
+in the sum is wrong. After all there's nothing which prevents the scheduler
+from rescheduling your task among different CPUs while it is searching for
+preallocations to discard. The correct fix is IMO to change
+ext4_mb_discard_group_preallocations() so that it increments discard_pa_seq
+only when it found preallocation to discard (and is thus guaranteed to
+return value > 0).
 
-> Mikulas
-> 
-> 
-> #include <stdio.h>
+								Honza
 
-and (c) what do you want me to do with a piece of code that has no
-signoff tag, no copyright, and no license?  This is your patch, and
-therefore your responsibility to develop enough of an appropriate
-regression test in a proper form that the rest of us can easily
-determine we have the rights to contribute to it.
-
-I don't have a problem with helping to tweak a properly licensed and
-tagged test program into fstests, but this is a non-starter.
-
---D
-
-> #include <stdlib.h>
-> #include <unistd.h>
-> #include <fcntl.h>
-> #include <string.h>
-> #include <sys/mman.h>
-> #include <sys/stat.h>
+> ---
+>  fs/ext4/mballoc.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 > 
-> #define FILE_NAME	"test.txt"
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 132c118d12e1..f386fe62727d 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -372,11 +372,13 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac);
+>  static DEFINE_PER_CPU(u64, discard_pa_seq);
+>  static inline u64 ext4_get_discard_pa_seq_sum(void)
+>  {
+> -	int __cpu;
+> +	int __cpu, this_cpu;
+>  	u64 __seq = 0;
+>  
+> +	this_cpu = smp_processor_id();
+>  	for_each_possible_cpu(__cpu)
+> -		__seq += per_cpu(discard_pa_seq, __cpu);
+> +		if (this_cpu != __cpu)
+> +			__seq += per_cpu(discard_pa_seq, __cpu);
+>  	return __seq;
+>  }
+>  
+> -- 
+> 2.25.4
 > 
-> static struct stat st1, st2;
-> 
-> int main(void)
-> {
-> 	int h, r;
-> 	char *map;
-> 	unlink(FILE_NAME);
-> 	h = creat(FILE_NAME, 0600);
-> 	if (h == -1) perror("creat"), exit(1);
-> 	r = write(h, "x", 1);
-> 	if (r != 1) perror("write"), exit(1);
-> 	if (close(h)) perror("close"), exit(1);
-> 	h = open(FILE_NAME, O_RDWR);
-> 	if (h == -1) perror("open"), exit(1);
-> 
-> 	map = mmap(NULL, 4096, PROT_READ | PROT_WRITE, MAP_PRIVATE, h, 0);
-> 	if (map == MAP_FAILED) perror("mmap"), exit(1);
-> 	if (fstat(h, &st1)) perror("fstat"), exit(1);
-> 	sleep(2);
-> 	*map = 'y';
-> 	if (fstat(h, &st2)) perror("fstat"), exit(1);
-> 	if (memcmp(&st1, &st2, sizeof(struct stat))) fprintf(stderr, "BUG: COW fault changed time!\n"), exit(1);
-> 	if (munmap(map, 4096)) perror("munmap"), exit(1);
-> 
-> 	map = mmap(NULL, 4096, PROT_READ | PROT_WRITE, MAP_SHARED, h, 0);
-> 	if (map == MAP_FAILED) perror("mmap"), exit(1);
-> 	if (fstat(h, &st1)) perror("fstat"), exit(1);
-> 	sleep(2);
-> 	*map = 'z';
-> 	if (fstat(h, &st2)) perror("fstat"), exit(1);
-> 	if (st1.st_mtime == st2.st_mtime) fprintf(stderr, "BUG: Shared fault did not change mtime!\n"), exit(1);
-> 	if (st1.st_ctime == st2.st_ctime) fprintf(stderr, "BUG: Shared fault did not change ctime!\n"), exit(1);
-> 	if (munmap(map, 4096)) perror("munmap"), exit(1);
-> 
-> 	if (close(h)) perror("close"), exit(1);
-> 	if (unlink(FILE_NAME)) perror("unlink"), exit(1);
-> 	return 0;
-> }
-> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
