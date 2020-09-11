@@ -2,101 +2,257 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93800266392
-	for <lists+linux-ext4@lfdr.de>; Fri, 11 Sep 2020 18:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC06C26649B
+	for <lists+linux-ext4@lfdr.de>; Fri, 11 Sep 2020 18:42:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726555AbgIKQU1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 11 Sep 2020 12:20:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726302AbgIKQUS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 11 Sep 2020 12:20:18 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E1EC061573
-        for <linux-ext4@vger.kernel.org>; Fri, 11 Sep 2020 09:20:17 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id n25so12924292ljj.4
-        for <linux-ext4@vger.kernel.org>; Fri, 11 Sep 2020 09:20:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wS+2D5dfLN9QgihIWAla+nKxV9MYjTp5BLkNM4khVjE=;
-        b=XbPCLeeMd7dUEDmR8HalrH43Wz+fnWFeYhs/rlnvLr5vCYsgvWReALY9m08mRxarHs
-         fstWw9ej/4DgNV+wO7ddIZssg2Kl+GzST6IOWjuodymr5DqtuuVs6l+11effO3QKToXx
-         7BWoJU9LkLd7qam10Ppdv/SSsdF+Cs1O6RkK8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wS+2D5dfLN9QgihIWAla+nKxV9MYjTp5BLkNM4khVjE=;
-        b=BOl8WZ+f3q/WhylAjyJoss1zIpyylOKQRuMKUO+Zrg853ghpFmdf4MSzJnVYwS5bDS
-         Xtqy9dcSwBwZ2/Mkrb3HqUpCDNV2Yzy7vK6AocUqE5EV5eixuUb0oLQo16Wre36zGAl+
-         Yrud9/7eaJ/NIxv30qRm5emjWY2cEg+SHVvZ/tRBrGLTQqTLZ8b+aY78SN+2RfqTml9u
-         zIR04Rzij+b+JAKgBXkeQcLMubp6dBM+kkpCUf6VSuu+ueY7fD84rvm0bCNdpAczKsU1
-         7XHqUOUOLMYXt0ct3lCghX3NVYaQVxmx9TbfN18wh7MUEyxoMb3XgHUOPf372jahJfbx
-         zTTA==
-X-Gm-Message-State: AOAM532AOA3Kv2r3eGQOa0fc8R9f70Q96j6yrJMFx/HaYm/4EN5wnG8O
-        r9As40Kz/F2edA3gj7BH8wZr6X/IACVZwQ==
-X-Google-Smtp-Source: ABdhPJzeVrHEFxR15VVNG+76r99hCyKvzlBsHMBum6YYdY3PxvAVZ9mgS09X9teOEDGYoKe47BC8kg==
-X-Received: by 2002:a2e:89ca:: with SMTP id c10mr1133219ljk.223.1599841215960;
-        Fri, 11 Sep 2020 09:20:15 -0700 (PDT)
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
-        by smtp.gmail.com with ESMTPSA id 82sm136964lfo.173.2020.09.11.09.20.14
-        for <linux-ext4@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Sep 2020 09:20:14 -0700 (PDT)
-Received: by mail-lj1-f172.google.com with SMTP id s205so12916372lja.7
-        for <linux-ext4@vger.kernel.org>; Fri, 11 Sep 2020 09:20:14 -0700 (PDT)
-X-Received: by 2002:a2e:84d6:: with SMTP id q22mr1020283ljh.70.1599841213913;
- Fri, 11 Sep 2020 09:20:13 -0700 (PDT)
+        id S1726144AbgIKQmu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 11 Sep 2020 12:42:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31348 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726316AbgIKQl5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 11 Sep 2020 12:41:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599842516;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dCCYRHJfCs9q7+pn8+1DMUQvWPREwMeHDgZW4MhyNFI=;
+        b=B8PKEE/1gWxSFtGvpiobBIBjz4SOX/hs4EDvbr8KCcclvtf4meexZr3BPKSD6ax2mMOpMv
+        BktVdQhESKtoMs+bPTxko0RaAX2DKqxpkZjAfTBKXoMRmKY8HGCZFhnru581Ty6bbdi1Hx
+        pB6tKVnt3FW32iLHH8H9iQtc1Zcx5Zk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-202-ioDUguKaNDO_8rEqEDUcWA-1; Fri, 11 Sep 2020 12:41:51 -0400
+X-MC-Unique: ioDUguKaNDO_8rEqEDUcWA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0AB601084CA4;
+        Fri, 11 Sep 2020 16:41:48 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 68F247B7D2;
+        Fri, 11 Sep 2020 16:41:28 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 08BGfRwA030406;
+        Fri, 11 Sep 2020 12:41:27 -0400
+Received: from localhost (mpatocka@localhost)
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 08BGfQ8M030402;
+        Fri, 11 Sep 2020 12:41:26 -0400
+X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
+Date:   Fri, 11 Sep 2020 12:41:26 -0400 (EDT)
+From:   Mikulas Patocka <mpatocka@redhat.com>
+X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>, Dave Chinner <dchinner@redhat.com>,
+        Jann Horn <jannh@google.com>, Christoph Hellwig <hch@lst.de>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Williams <dan.j.williams@intel.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        Eric Sandeen <sandeen@redhat.com>
+Subject: Re: [PATCH 2/2] xfs: don't update mtime on COW faults
+In-Reply-To: <20200910060626.GA7964@magnolia>
+Message-ID: <alpine.LRH.2.02.2009111232210.29958@file01.intranet.prod.int.rdu2.redhat.com>
+References: <alpine.LRH.2.02.2009031328040.6929@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.2009041200570.27312@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.2009050805250.12419@file01.intranet.prod.int.rdu2.redhat.com>
+ <alpine.LRH.2.02.2009050812060.12419@file01.intranet.prod.int.rdu2.redhat.com> <20200905153652.GA7955@magnolia> <alpine.LRH.2.02.2009051229180.542@file01.intranet.prod.int.rdu2.redhat.com> <20200910060626.GA7964@magnolia>
+User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
 MIME-Version: 1.0
-References: <CAHk-=wiZnE409WkTOG6fbF_eV1LgrHBvMtyKkpTqM9zT5hpf9A@mail.gmail.com>
- <CAHk-=wj+Qj=wXByMrAx3T8jmw=soUetioRrbz6dQaECx+zjMtg@mail.gmail.com>
- <CAHk-=wgOPjbJsj-LeLc-JMx9Sz9DjGF66Q+jQFJROt9X9utdBg@mail.gmail.com>
- <CAHk-=wjjK7PTnDZNi039yBxSHtAqusFoRrZzgMNTiYkJYdNopw@mail.gmail.com>
- <aa90f272-1186-f9e1-8fdb-eefd332fdae8@MichaelLarabel.com> <CAHk-=wh_31_XBNHbdF7EUJceLpEpwRxVF+_1TONzyBUym6Pw4w@mail.gmail.com>
- <e24ef34d-7b1d-dd99-082d-28ca285a79ff@MichaelLarabel.com> <CAHk-=wgEE4GuNjcRaaAvaS97tW+239-+tjcPjTq2FGhEuM8HYg@mail.gmail.com>
- <6e1d8740-2594-c58b-ff02-a04df453d53c@MichaelLarabel.com> <CAHk-=wgJ3-cEkU-5zXFPvRCHKkCCuKxVauYWGphjePEhJJgtgQ@mail.gmail.com>
- <d2023f4c-ef14-b877-b5bb-e4f8af332abc@MichaelLarabel.com> <CAHk-=wiz=J=8mJ=zRG93nuJ9GtQAm5bSRAbWJbWZuN4Br38+EQ@mail.gmail.com>
- <CAHk-=wimM2kckaYj7spUJwehZkSYxK9RQqu3G392BE=73dyKtg@mail.gmail.com>
- <8bb582d2-2841-94eb-8862-91d1225d5ebc@MichaelLarabel.com> <CAHk-=wjqE_a6bpZyDQ4DCrvj_Dv2RwQoY7wN91kj8y-tZFRvEA@mail.gmail.com>
- <0cbc959e-1b8d-8d7e-1dc6-672cf5b3899a@MichaelLarabel.com>
-In-Reply-To: <0cbc959e-1b8d-8d7e-1dc6-672cf5b3899a@MichaelLarabel.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 11 Sep 2020 09:19:57 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whP-7Uw9WgWgjRgF1mCg+NnkOPpWjVw+a9M3F9C52DrVg@mail.gmail.com>
-Message-ID: <CAHk-=whP-7Uw9WgWgjRgF1mCg+NnkOPpWjVw+a9M3F9C52DrVg@mail.gmail.com>
-Subject: Re: Kernel Benchmarking
-To:     Michael Larabel <Michael@michaellarabel.com>
-Cc:     "Ted Ts'o" <tytso@google.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 6:42 AM Michael Larabel
-<Michael@michaellarabel.com> wrote:
->
-> From preliminary testing of the patch on a Threadripper box, the EXT4 locking patch did help with a small improvement at 10 concurrent users for Apache but all the higher counts didn't end up showing any real change with the patch.
 
-Ok, it's probably simply that fairness is really bad for performance
-here in general, and that special case is just that - a special case,
-not the main issue.
 
-I'll have to think about it. We've certainly seen this before (the
-queued spinlocks brought the same fairness issues), but this is much
-worse because of how it affects scheduling on a big level.
+On Wed, 9 Sep 2020, Darrick J. Wong wrote:
 
-Some middle ground hybrid model (unfair in the common case, but with
-at least _some_ measure of fairness for the worst-case situation to
-avoid the worst-case latency spikes) would be best, but I don't see
-how to do it.
+> On Sat, Sep 05, 2020 at 01:02:33PM -0400, Mikulas Patocka wrote:
+> > > > 
+> > 
+> > I've written this program that tests it - you can integrate it into your 
+> > testsuite.
+> 
+> I don't get it.  You're a filesystem maintainer too, which means you're
+> a regular contributor.  Do you:
+> 
+> (a) not use fstests?  If you don't, I really hope you use something else
+> to QA hpfs.
 
-              Linus
+I don't use xfstests on HPFS. I was testing it just by using it. Now I use 
+it just a little, but I don't modify it much.
 
-                 Linus
+> (b) really think that it's my problem to integrate and submit your
+> regression tests for you?
+> 
+> and (c) what do you want me to do with a piece of code that has no 
+> signoff tag, no copyright, and no license?  This is your patch, and 
+> therefore your responsibility to develop enough of an appropriate 
+> regression test in a proper form that the rest of us can easily 
+> determine we have the rights to contribute to it.
 
-                  Linus
+
+If you want a full patch (I copied the script from test 313), I send it 
+here.
+
+Mikulas
+
+
+From: Mikulas Patocka <mpatocka@redhat.com>
+Subject: [PATCH] check ctime and mtime vs mmap
+
+Check ctime and mtime are not updated on COW faults
+and that they are updated on shared faults
+
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+
+---
+ src/Makefile          |    3 +-
+ src/mmap-timestamp.c  |   53 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ tests/generic/609     |   40 +++++++++++++++++++++++++++++++++++++
+ tests/generic/609.out |    2 +
+ tests/generic/group   |    1 
+ 5 files changed, 98 insertions(+), 1 deletion(-)
+
+Index: xfstests-dev/src/Makefile
+===================================================================
+--- xfstests-dev.orig/src/Makefile	2020-09-06 12:38:40.000000000 +0200
++++ xfstests-dev/src/Makefile	2020-09-11 17:39:04.000000000 +0200
+@@ -17,7 +17,8 @@ TARGETS = dirstress fill fill2 getpagesi
+ 	t_mmap_cow_race t_mmap_fallocate fsync-err t_mmap_write_ro \
+ 	t_ext4_dax_journal_corruption t_ext4_dax_inline_corruption \
+ 	t_ofd_locks t_mmap_collision mmap-write-concurrent \
+-	t_get_file_time t_create_short_dirs t_create_long_dirs
++	t_get_file_time t_create_short_dirs t_create_long_dirs \
++	mmap-timestamp
+ 
+ LINUX_TARGETS = xfsctl bstat t_mtab getdevicesize preallo_rw_pattern_reader \
+ 	preallo_rw_pattern_writer ftrunc trunc fs_perms testx looptest \
+Index: xfstests-dev/src/mmap-timestamp.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ xfstests-dev/src/mmap-timestamp.c	2020-09-11 18:21:40.000000000 +0200
+@@ -0,0 +1,53 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright (C) 2020 Red Hat, Inc. All Rights reserved.
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <fcntl.h>
++#include <string.h>
++#include <sys/mman.h>
++#include <sys/stat.h>
++
++#define FILE_NAME	argv[1]
++
++static struct stat st1, st2;
++
++int main(int argc, char *argv[])
++{
++	int h, r;
++	char *map;
++	unlink(FILE_NAME);
++	h = creat(FILE_NAME, 0600);
++	if (h == -1) perror("creat"), exit(1);
++	r = write(h, "x", 1);
++	if (r != 1) perror("write"), exit(1);
++	if (close(h)) perror("close"), exit(1);
++	h = open(FILE_NAME, O_RDWR);
++	if (h == -1) perror("open"), exit(1);
++
++	map = mmap(NULL, 4096, PROT_READ | PROT_WRITE, MAP_PRIVATE, h, 0);
++	if (map == MAP_FAILED) perror("mmap"), exit(1);
++	if (fstat(h, &st1)) perror("fstat"), exit(1);
++	sleep(2);
++	*map = 'y';
++	if (fstat(h, &st2)) perror("fstat"), exit(1);
++	if (st1.st_mtime != st2.st_mtime) fprintf(stderr, "BUG: COW fault changed mtime!\n"), exit(1);
++	if (st1.st_ctime != st2.st_ctime) fprintf(stderr, "BUG: COW fault changed ctime!\n"), exit(1);
++	if (munmap(map, 4096)) perror("munmap"), exit(1);
++
++	map = mmap(NULL, 4096, PROT_READ | PROT_WRITE, MAP_SHARED, h, 0);
++	if (map == MAP_FAILED) perror("mmap"), exit(1);
++	if (fstat(h, &st1)) perror("fstat"), exit(1);
++	sleep(2);
++	*map = 'z';
++	if (msync(map, 4096, MS_SYNC)) perror("msync"), exit(1);
++	if (fstat(h, &st2)) perror("fstat"), exit(1);
++	if (st1.st_mtime == st2.st_mtime) fprintf(stderr, "BUG: Shared fault did not change mtime!\n"), exit(1);
++	if (st1.st_ctime == st2.st_ctime) fprintf(stderr, "BUG: Shared fault did not change ctime!\n"), exit(1);
++	if (munmap(map, 4096)) perror("munmap"), exit(1);
++
++	if (close(h)) perror("close"), exit(1);
++	if (unlink(FILE_NAME)) perror("unlink"), exit(1);
++	return 0;
++}
+Index: xfstests-dev/tests/generic/609
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ xfstests-dev/tests/generic/609	2020-09-11 18:30:30.000000000 +0200
+@@ -0,0 +1,40 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2020 Red Hat, Inc. All Rights Reserved.
++#
++# FS QA Test No. 609
++#
++# Check ctime and mtime are not updated on COW faults
++# and that they are updated on shared faults
++#
++seq=`basename $0`
++seqres=$RESULT_DIR/$seq
++echo "QA output created by $seq"
++
++here=`pwd`
++status=1	# failure is the default!
++trap "_cleanup; exit \$status" 0 1 2 3 15
++
++_cleanup()
++{
++    cd /
++    rm -f $testfile
++}
++
++# get standard environment, filters and checks
++. ./common/rc
++. ./common/filter
++
++# real QA test starts here
++_supported_fs generic
++_supported_os Linux
++_require_test
++
++testfile=$TEST_DIR/testfile.$seq
++
++echo "Silence is golden"
++
++$here/src/mmap-timestamp $testfile 2>&1
++
++status=0
++exit
+Index: xfstests-dev/tests/generic/609.out
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ xfstests-dev/tests/generic/609.out	2020-09-11 18:24:24.000000000 +0200
+@@ -0,0 +1,2 @@
++QA output created by 609
++Silence is golden
+Index: xfstests-dev/tests/generic/group
+===================================================================
+--- xfstests-dev.orig/tests/generic/group	2020-09-06 12:38:40.000000000 +0200
++++ xfstests-dev/tests/generic/group	2020-09-11 18:25:09.000000000 +0200
+@@ -611,3 +611,4 @@
+ 606 auto attr quick dax
+ 607 auto attr quick dax
+ 608 auto attr quick dax
++609 auto quick
+
