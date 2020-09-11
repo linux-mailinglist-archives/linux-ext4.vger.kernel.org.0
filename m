@@ -2,222 +2,101 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E7C52660CD
-	for <lists+linux-ext4@lfdr.de>; Fri, 11 Sep 2020 15:58:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93800266392
+	for <lists+linux-ext4@lfdr.de>; Fri, 11 Sep 2020 18:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726249AbgIKNxV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 11 Sep 2020 09:53:21 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:41432 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726264AbgIKNVb (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 11 Sep 2020 09:21:31 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08BDDsLB057570;
-        Fri, 11 Sep 2020 09:20:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=7OGlk+3ozQ/F2RrURZxi1DsjzY/cMXGxo1nr6EuBBw4=;
- b=OTp6hEDTR5EbxW8PKFE5cd1+pU5wpTmscSJMqJqCn0hdmRa0PzsPcrees9anTqLzGq+s
- y2mlxRB9xFIqp3AOSX+5t2Xiv+RLDEJKq/OHI/S6s5+i/jkla22yPKvZZIPGHBKQ9xcJ
- oM4MsjZBBbtKpqo+2wQge3dy+4Hb0T/cVk+4RAVuF8fii4E9doYYYMGUnSAr1BUnj41z
- KhRWylnQOrsgQ1Oalg73kW3WkjBg5/fkuW23cT8nqrM65hV6qNjDtydG+5PGzR0PWIDh
- Quxz69dcmZFJHZO9xbMCmVBVPPiEE1MchMw7uR2hD7y6tFRNs/ZoHKkfAE8fSdjeEPpG QA== 
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 33g9ntrwwr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Sep 2020 09:20:29 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08BDCVke007887;
-        Fri, 11 Sep 2020 13:20:27 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma01fra.de.ibm.com with ESMTP id 33c2a821vy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Sep 2020 13:20:27 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08BDKOKd29884712
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 11 Sep 2020 13:20:25 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DA01652052;
-        Fri, 11 Sep 2020 13:20:23 +0000 (GMT)
-Received: from [9.199.34.21] (unknown [9.199.34.21])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id C0F6A52075;
-        Fri, 11 Sep 2020 13:20:22 +0000 (GMT)
-Subject: Re: [PATCH v3] ext4: Fix dead loop in ext4_mb_new_blocks
-To:     Ye Bin <yebin10@huawei.com>
-Cc:     Jan Kara <jack@suse.cz>, tytso@mit.edu, adilger.kernel@dilger.ca,
-        jack@suse.com, linux-ext4@vger.kernel.org
-References: <20200910091252.525346-1-yebin10@huawei.com>
- <20200910161753.GB17362@quack2.suse.cz>
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-Message-ID: <0e48b9bb-f839-4b3b-dbce-45755618df97@linux.ibm.com>
-Date:   Fri, 11 Sep 2020 18:50:22 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726555AbgIKQU1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 11 Sep 2020 12:20:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726302AbgIKQUS (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 11 Sep 2020 12:20:18 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E1EC061573
+        for <linux-ext4@vger.kernel.org>; Fri, 11 Sep 2020 09:20:17 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id n25so12924292ljj.4
+        for <linux-ext4@vger.kernel.org>; Fri, 11 Sep 2020 09:20:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wS+2D5dfLN9QgihIWAla+nKxV9MYjTp5BLkNM4khVjE=;
+        b=XbPCLeeMd7dUEDmR8HalrH43Wz+fnWFeYhs/rlnvLr5vCYsgvWReALY9m08mRxarHs
+         fstWw9ej/4DgNV+wO7ddIZssg2Kl+GzST6IOWjuodymr5DqtuuVs6l+11effO3QKToXx
+         7BWoJU9LkLd7qam10Ppdv/SSsdF+Cs1O6RkK8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wS+2D5dfLN9QgihIWAla+nKxV9MYjTp5BLkNM4khVjE=;
+        b=BOl8WZ+f3q/WhylAjyJoss1zIpyylOKQRuMKUO+Zrg853ghpFmdf4MSzJnVYwS5bDS
+         Xtqy9dcSwBwZ2/Mkrb3HqUpCDNV2Yzy7vK6AocUqE5EV5eixuUb0oLQo16Wre36zGAl+
+         Yrud9/7eaJ/NIxv30qRm5emjWY2cEg+SHVvZ/tRBrGLTQqTLZ8b+aY78SN+2RfqTml9u
+         zIR04Rzij+b+JAKgBXkeQcLMubp6dBM+kkpCUf6VSuu+ueY7fD84rvm0bCNdpAczKsU1
+         7XHqUOUOLMYXt0ct3lCghX3NVYaQVxmx9TbfN18wh7MUEyxoMb3XgHUOPf372jahJfbx
+         zTTA==
+X-Gm-Message-State: AOAM532AOA3Kv2r3eGQOa0fc8R9f70Q96j6yrJMFx/HaYm/4EN5wnG8O
+        r9As40Kz/F2edA3gj7BH8wZr6X/IACVZwQ==
+X-Google-Smtp-Source: ABdhPJzeVrHEFxR15VVNG+76r99hCyKvzlBsHMBum6YYdY3PxvAVZ9mgS09X9teOEDGYoKe47BC8kg==
+X-Received: by 2002:a2e:89ca:: with SMTP id c10mr1133219ljk.223.1599841215960;
+        Fri, 11 Sep 2020 09:20:15 -0700 (PDT)
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
+        by smtp.gmail.com with ESMTPSA id 82sm136964lfo.173.2020.09.11.09.20.14
+        for <linux-ext4@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Sep 2020 09:20:14 -0700 (PDT)
+Received: by mail-lj1-f172.google.com with SMTP id s205so12916372lja.7
+        for <linux-ext4@vger.kernel.org>; Fri, 11 Sep 2020 09:20:14 -0700 (PDT)
+X-Received: by 2002:a2e:84d6:: with SMTP id q22mr1020283ljh.70.1599841213913;
+ Fri, 11 Sep 2020 09:20:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200910161753.GB17362@quack2.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-11_04:2020-09-10,2020-09-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxlogscore=999
- suspectscore=2 phishscore=0 bulkscore=0 priorityscore=1501 malwarescore=0
- mlxscore=0 adultscore=0 lowpriorityscore=0 impostorscore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009110102
+References: <CAHk-=wiZnE409WkTOG6fbF_eV1LgrHBvMtyKkpTqM9zT5hpf9A@mail.gmail.com>
+ <CAHk-=wj+Qj=wXByMrAx3T8jmw=soUetioRrbz6dQaECx+zjMtg@mail.gmail.com>
+ <CAHk-=wgOPjbJsj-LeLc-JMx9Sz9DjGF66Q+jQFJROt9X9utdBg@mail.gmail.com>
+ <CAHk-=wjjK7PTnDZNi039yBxSHtAqusFoRrZzgMNTiYkJYdNopw@mail.gmail.com>
+ <aa90f272-1186-f9e1-8fdb-eefd332fdae8@MichaelLarabel.com> <CAHk-=wh_31_XBNHbdF7EUJceLpEpwRxVF+_1TONzyBUym6Pw4w@mail.gmail.com>
+ <e24ef34d-7b1d-dd99-082d-28ca285a79ff@MichaelLarabel.com> <CAHk-=wgEE4GuNjcRaaAvaS97tW+239-+tjcPjTq2FGhEuM8HYg@mail.gmail.com>
+ <6e1d8740-2594-c58b-ff02-a04df453d53c@MichaelLarabel.com> <CAHk-=wgJ3-cEkU-5zXFPvRCHKkCCuKxVauYWGphjePEhJJgtgQ@mail.gmail.com>
+ <d2023f4c-ef14-b877-b5bb-e4f8af332abc@MichaelLarabel.com> <CAHk-=wiz=J=8mJ=zRG93nuJ9GtQAm5bSRAbWJbWZuN4Br38+EQ@mail.gmail.com>
+ <CAHk-=wimM2kckaYj7spUJwehZkSYxK9RQqu3G392BE=73dyKtg@mail.gmail.com>
+ <8bb582d2-2841-94eb-8862-91d1225d5ebc@MichaelLarabel.com> <CAHk-=wjqE_a6bpZyDQ4DCrvj_Dv2RwQoY7wN91kj8y-tZFRvEA@mail.gmail.com>
+ <0cbc959e-1b8d-8d7e-1dc6-672cf5b3899a@MichaelLarabel.com>
+In-Reply-To: <0cbc959e-1b8d-8d7e-1dc6-672cf5b3899a@MichaelLarabel.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 11 Sep 2020 09:19:57 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whP-7Uw9WgWgjRgF1mCg+NnkOPpWjVw+a9M3F9C52DrVg@mail.gmail.com>
+Message-ID: <CAHk-=whP-7Uw9WgWgjRgF1mCg+NnkOPpWjVw+a9M3F9C52DrVg@mail.gmail.com>
+Subject: Re: Kernel Benchmarking
+To:     Michael Larabel <Michael@michaellarabel.com>
+Cc:     "Ted Ts'o" <tytso@google.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello Ye,
+On Fri, Sep 11, 2020 at 6:42 AM Michael Larabel
+<Michael@michaellarabel.com> wrote:
+>
+> From preliminary testing of the patch on a Threadripper box, the EXT4 locking patch did help with a small improvement at 10 concurrent users for Apache but all the higher counts didn't end up showing any real change with the patch.
 
-Please excuse if there is something horribly wrong with my email
-formatting. Have yesterday received this laptop and still setting up
-few things.
+Ok, it's probably simply that fairness is really bad for performance
+here in general, and that special case is just that - a special case,
+not the main issue.
 
-On 9/10/20 9:47 PM, Jan Kara wrote:
-> On Thu 10-09-20 17:12:52, Ye Bin wrote:
->> As we test disk offline/online with running fsstress, we find fsstress
->> process is keeping running state.
->> kworker/u32:3-262   [004] ...1   140.787471: ext4_mb_discard_preallocations: dev 8,32 needed 114
->> ....
->> kworker/u32:3-262   [004] ...1   140.787471: ext4_mb_discard_preallocations: dev 8,32 needed 114
->>
->> ext4_mb_new_blocks
->> repeat:
->> 	ext4_mb_discard_preallocations_should_retry(sb, ac, &seq)
->> 		freed = ext4_mb_discard_preallocations
->> 			ext4_mb_discard_group_preallocations
->> 				this_cpu_inc(discard_pa_seq);
->> 		---> freed == 0
->> 		seq_retry = ext4_get_discard_pa_seq_sum
->> 			for_each_possible_cpu(__cpu)
->> 				__seq += per_cpu(discard_pa_seq, __cpu);
->> 		if (seq_retry != *seq) {
->> 			*seq = seq_retry;
->> 			ret = true;
->> 		}
->>
->> As we see seq_retry is sum of discard_pa_seq every cpu, if
->> ext4_mb_discard_group_preallocations return zero discard_pa_seq in this
->> cpu maybe increase one, so condition "seq_retry != *seq" have always
->> been met.
->> To Fix this problem, in ext4_mb_discard_group_preallocations function increase
->> discard_pa_seq only when it found preallocation to discard.
->>
->> Fixes: 07b5b8e1ac40 ("ext4: mballoc: introduce pcpu seqcnt for freeing PA to improve ENOSPC handling")
->> Signed-off-by: Ye Bin <yebin10@huawei.com>
-> 
-> Thanks for the patch. One comment below.
-> 
->> ---
->>   fs/ext4/mballoc.c | 4 +++-
->>   1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
->> index f386fe62727d..fd55264dc3fe 100644
->> --- a/fs/ext4/mballoc.c
->> +++ b/fs/ext4/mballoc.c
->> @@ -4191,7 +4191,6 @@ ext4_mb_discard_group_preallocations(struct super_block *sb,
->>   	INIT_LIST_HEAD(&list);
->>   repeat:
->>   	ext4_lock_group(sb, group);
->> -	this_cpu_inc(discard_pa_seq);
->>   	list_for_each_entry_safe(pa, tmp,
->>   				&grp->bb_prealloc_list, pa_group_list) {
->>   		spin_lock(&pa->pa_lock);
->> @@ -4233,6 +4232,9 @@ ext4_mb_discard_group_preallocations(struct super_block *sb,
->>   		goto out;
->>   	}
->>   
->> +	/* only increase when find reallocation to discard */
->> +	this_cpu_inc(discard_pa_seq);
->> +
-> 
-> This is a good place to increment the counter but I think you also need to
-> handle the case:
-> 
->          if (free < needed && busy) {
->                  busy = 0;
->                  ext4_unlock_group(sb, group);
->                  cond_resched();
->                  goto repeat;
->          }
-> 
-> We can unlock the group here after removing some preallocations and thus
-> other processes checking discard_pa_seq could miss we did this. In fact I
-> think the code is somewhat buggy here and we should also discard extents
-> accumulated on "list" so far before unlocking the group. Ritesh?
-> 
+I'll have to think about it. We've certainly seen this before (the
+queued spinlocks brought the same fairness issues), but this is much
+worse because of how it affects scheduling on a big level.
 
-mmm, so even though this code is not discarding those buffers b4
-unlocking, but it has still removed those from the grp->bb_prealloc_list
-and added it to the local list. And since it will at some point get
-scheduled and start operating from repeat: label so functionally wise
-this should be ok. Am I missing anything?
+Some middle ground hybrid model (unfair in the common case, but with
+at least _some_ measure of fairness for the worst-case situation to
+avoid the worst-case latency spikes) would be best, but I don't see
+how to do it.
 
-Although I agree, that if we remove at least the current pa's before
-unlocking the group may be a good idea, but we should also check
-why was this done like this at the first place.
+              Linus
 
+                 Linus
 
-I agree with Jan, that we should increment discard_pa_seq once we 
-actually have something
-to discard. I should have written a comment here to explain why we did 
-this here.
-But I think commit msg should have all the history (since I have a habit 
-of writing long commit msgs ;)
-
-But IIRC, it was done since in case if there is a parallel thread which 
-is discarding
-all the preallocations so the current thread may return 0 since it 
-checks the
-list_empty(&grp->bb_prealloc_list) check in 
-ext4_mb_discard_group_preallocations() and returns 0 directly.
-
-And why the discard_pa_seq counter at other places may not help since we 
-remove the pa nodes from
-grp->bb_prealloc_list into a local list and then start operating on
-that. So meanwhile some thread may comes and just checks that the list
-is empty and return 0 while some other thread may start discarding from
-it's local list.
-So I guess the main problem was that in the current code we remove
-the pa from grp->bb_prealloc_list and add it to local list. So if 
-someone else comes
-and checks that grp->bb_prealloc_list is empty then it will directly 
-return 0.
-
-So, maybe we could do something like this then?
-
-repeat:
-	ext4_lock_group(sb, group);
--	this_cpu_inc(discard_pa_seq);
-list_for_each_entry_safe(pa, tmp,
-				&grp->bb_prealloc_list, pa_group_list) {<...>
-
-+		if (!free)
-+			this_cpu_inc(discard_pa_seq);   // we should do this here before 
-calling list_del(&pa->pa_group_list);
-
-		/* we can trust pa_free ... */
-		free += pa->pa_free;
-		spin_unlock(&pa->pa_lock);
-
-		list_del(&pa->pa_group_list);
-		list_add(&pa->u.pa_tmp_list, &list);
-	}
-
-I have some test cases around this to test for cases which were
-failing. Since in world of parallelism you can't be 100% certain of some
-corner case (like this one you just reported).
-But, I don't have my other box rite now where I kept all of those -
-due to some technical issues. I think I should be able to get those by
-next week, if not, I anyways will setup my current machine for testing
-this.
-
--ritesh
+                  Linus
