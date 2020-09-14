@@ -2,48 +2,91 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EE7D268761
-	for <lists+linux-ext4@lfdr.de>; Mon, 14 Sep 2020 10:40:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7A36268745
+	for <lists+linux-ext4@lfdr.de>; Mon, 14 Sep 2020 10:35:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726258AbgINIkj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Mon, 14 Sep 2020 04:40:39 -0400
-Received: from mail.bnv.gob.ve ([201.249.200.115]:34618 "EHLO
-        correo.bnv.gob.ve" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726248AbgINIki (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 14 Sep 2020 04:40:38 -0400
-X-Greylist: delayed 11773 seconds by postgrey-1.27 at vger.kernel.org; Mon, 14 Sep 2020 04:40:34 EDT
-Received: from localhost (localhost.bnv.gob.ve [127.0.0.1])
-        by correo.bnv.gob.ve (Postfix) with ESMTP id D065D34C6705;
-        Sun, 13 Sep 2020 21:14:20 -0400 (-04)
-Received: from correo.bnv.gob.ve ([127.0.0.1])
-        by localhost (correo.bnv.gob.ve [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id GKiIN-1rUqcn; Sun, 13 Sep 2020 21:14:20 -0400 (-04)
-Received: from localhost (localhost.bnv.gob.ve [127.0.0.1])
-        by correo.bnv.gob.ve (Postfix) with ESMTP id B747C34C043C;
-        Sun, 13 Sep 2020 20:26:26 -0400 (-04)
-X-Virus-Scanned: amavisd-new at bnv.gob.ve
-Received: from correo.bnv.gob.ve ([127.0.0.1])
-        by localhost (correo.bnv.gob.ve [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id WvOl2jpaIylh; Sun, 13 Sep 2020 20:26:26 -0400 (-04)
-Received: from [192.168.8.101] (8ta-229-1-199.telkomadsl.co.za [197.229.1.199])
-        by correo.bnv.gob.ve (Postfix) with ESMTPSA id 7C15434A4217;
-        Sun, 13 Sep 2020 19:14:29 -0400 (-04)
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1726195AbgINIfP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 14 Sep 2020 04:35:15 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40540 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726139AbgINIfO (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 14 Sep 2020 04:35:14 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 01E62AD60;
+        Mon, 14 Sep 2020 08:35:27 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 47D141E12ED; Mon, 14 Sep 2020 10:35:12 +0200 (CEST)
+Date:   Mon, 14 Sep 2020 10:35:12 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Wang Hai <wanghai38@huawei.com>
+Cc:     jack@suse.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] ext2: Fix some kernel-doc warnings in balloc.c
+Message-ID: <20200914083512.GB4863@quack2.suse.cz>
+References: <20200911114036.60616-1-wanghai38@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Spende von 2.000.000,00 Euro.
-To:     Recipients <manuelfranco@info.com>
-From:   "manuel franco" <manuelfranco@info.com>
-Date:   Mon, 14 Sep 2020 01:14:20 +0200
-Reply-To: manuelfrancospende11@gmail.com
-Message-Id: <20200913231429.7C15434A4217@correo.bnv.gob.ve>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200911114036.60616-1-wanghai38@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
- Sie haben eine Spende von 2.000.000,00 Euro.
+On Fri 11-09-20 19:40:36, Wang Hai wrote:
+> Fixes the following W=1 kernel build warning(s):
+> 
+> fs/ext2/balloc.c:203: warning: Excess function parameter 'rb_root' description in '__rsv_window_dump'
+> fs/ext2/balloc.c:294: warning: Excess function parameter 'rb_root' description in 'search_reserve_window'
+> fs/ext2/balloc.c:878: warning: Excess function parameter 'rsv' description in 'alloc_new_reservation'
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wang Hai <wanghai38@huawei.com>
 
-Mein Name ist Manuel Franco aus den USA.
-Ich habe die America-Lotterie im Wert von 768 Millionen US-Dollar gewonnen und spende einen Teil davon an nur 5 glückliche Menschen und einige Waisenhäuser als Wohlwollen für die Menschheit.
+Thanks. I've added the patch to my tree.
+
+								Honza
+
+> ---
+>  fs/ext2/balloc.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/ext2/balloc.c b/fs/ext2/balloc.c
+> index fa9c951d3471..1f3f4326bf3c 100644
+> --- a/fs/ext2/balloc.c
+> +++ b/fs/ext2/balloc.c
+> @@ -189,7 +189,7 @@ static void group_adjust_blocks(struct super_block *sb, int group_no,
+>  
+>  /**
+>   * __rsv_window_dump() -- Dump the filesystem block allocation reservation map
+> - * @rb_root:		root of per-filesystem reservation rb tree
+> + * @root:		root of per-filesystem reservation rb tree
+>   * @verbose:		verbose mode
+>   * @fn:			function which wishes to dump the reservation map
+>   *
+> @@ -282,7 +282,7 @@ goal_in_my_reservation(struct ext2_reserve_window *rsv, ext2_grpblk_t grp_goal,
+>  
+>  /**
+>   * search_reserve_window()
+> - * @rb_root:		root of reservation tree
+> + * @root:		root of reservation tree
+>   * @goal:		target allocation block
+>   *
+>   * Find the reserved window which includes the goal, or the previous one
+> @@ -859,7 +859,7 @@ static int find_next_reservable_window(
+>   *
+>   *	failed: we failed to find a reservation window in this group
+>   *
+> - *	@rsv: the reservation
+> + *	@my_rsv: the reservation
+>   *
+>   *	@grp_goal: The goal (group-relative).  It is where the search for a
+>   *		free reservable space should start from.
+> -- 
+> 2.17.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
