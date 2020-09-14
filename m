@@ -2,471 +2,216 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5CB02691C7
-	for <lists+linux-ext4@lfdr.de>; Mon, 14 Sep 2020 18:39:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2992226933B
+	for <lists+linux-ext4@lfdr.de>; Mon, 14 Sep 2020 19:28:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726291AbgINPbt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 14 Sep 2020 11:31:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726192AbgINPbI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 14 Sep 2020 11:31:08 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EDA1C06174A
-        for <linux-ext4@vger.kernel.org>; Mon, 14 Sep 2020 08:31:08 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id y2so17166486ilp.7
-        for <linux-ext4@vger.kernel.org>; Mon, 14 Sep 2020 08:31:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=TCpeLdw8ZoWFDQ66h8Wa6XXcpn4IgrFVfAHg7dhW8jc=;
-        b=HoUOedtf3q/HE16JohlDREQn60qmnhB1O+s+Dg42XeRFQughuydsWBru7NqnUI5v1q
-         3VB1//scqkb6fPhjT00zTf4TUEUQczYE0n/ziJXiWMVTojk0SicwqFzEmxQT9gfzfBGm
-         W0n4ZKDVugfnjdBmHoMB8Y4dXZ0IDKsceuDCPBgTigSnbJhFHPJHDevSDTUJ132IFV9V
-         euPlOQdN3TugpCm64l1t3rjaf0iSieJ3FvZKQDqZo3f3MVuN4yIylxjVbvBZMQHVfMAP
-         DZ9C8ne2Z9JFlyhEV1dR7VbPz3cNSS5QfGAWsK2DLNCqOJ9bpmOwW6ClmJcbgS7hzyqj
-         fnZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=TCpeLdw8ZoWFDQ66h8Wa6XXcpn4IgrFVfAHg7dhW8jc=;
-        b=fKF6ZijL91W4pPGXd9MQsVfk67P71Xme2VL/E8s2R2ihviQlZfQ1bNkdne473vQxW0
-         x2+QzFvb7LIytwUBqTug3dVcyY4R8htw+pWlFZFISjR2AB9d95FEZEWtAW2MCwAC7kUa
-         4egQlPfVlyJW6DjlcvslbY8aBk5eg/EOcwMOaH52hcgtIaosTZRr4Oc0LqazSX18NvCm
-         nOk4GqWYE3IYItoUnbZHY+byB0xq9lSxwA5YUyg5Rg24aHCzBPqgQnO9B1hhPq4iJ3ON
-         ifz039W/XkrC5Xf6iRxr/9oGDzXew66oIwu8TN5U9rI2S3tanAtaaCd+mde8aWL292t3
-         AqYg==
-X-Gm-Message-State: AOAM532c7rynTkiIz+NGBfx8WJBchDzhuEjubj0MKCD5KVYq2+cbrdcL
-        I62zOl27mGwWeb46iTTsKPIcM0OkN0rYorQ3
-X-Google-Smtp-Source: ABdhPJzly5cBjF8Y6SPd6r03seE0WVzmSnVt2uJ7uXZ5V0D4Bb7pMked5uJ3bWzPkNT+t8Mbq8lDkQ==
-X-Received: by 2002:a05:6e02:d93:: with SMTP id i19mr7058979ilj.21.1600097467110;
-        Mon, 14 Sep 2020 08:31:07 -0700 (PDT)
-Received: from [172.25.17.149] ([136.162.66.1])
-        by smtp.gmail.com with ESMTPSA id s17sm7253926ilb.24.2020.09.14.08.31.02
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 14 Sep 2020 08:31:06 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.15\))
-Subject: Re: [PATCH v3] e2image: add option to ignore fs errors
-From:   =?utf-8?B?0JHQu9Cw0LPQvtC00LDRgNC10L3QutC+INCQ0YDRgtGR0Lw=?= 
-        <artem.blagodarenko@gmail.com>
-In-Reply-To: <20200818071703.33484-1-artem.blagodarenko@gmail.com>
-Date:   Mon, 14 Sep 2020 18:30:58 +0300
-Cc:     adilger.kernel@dilger.ca, alexey.lyashkov@gmail.com,
-        Alexey Lyashkov <alexey.lyashkov@hpe.com>,
-        Artem Blagodarenko <artem.blagodarenko@hpe.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <7804F015-CF5B-4AAE-86FD-82331C558DA5@gmail.com>
-References: <20200818071703.33484-1-artem.blagodarenko@gmail.com>
-To:     linux-ext4@vger.kernel.org
-X-Mailer: Apple Mail (2.3445.104.15)
+        id S1726189AbgINR1R (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 14 Sep 2020 13:27:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44326 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726349AbgINR0f (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 14 Sep 2020 13:26:35 -0400
+Received: from localhost (unknown [104.132.1.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5A76720771;
+        Mon, 14 Sep 2020 17:26:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600104392;
+        bh=YUeqH1XV4uJ6fcDfV4Ef0fs7JAcffDRAHHBbtRYjkUo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zWEX0pMpAA8elGd0n7N77i+c2xaSJEQf610j8WGNnOUtqCU83gjZvcmIbJQ4Pu0q6
+         ZOgBKc1nLgQT2h5G/a81dG6ajjukvp6peLcfOQHdlHlFQ+CSBfNAZ338ontu5yt0lu
+         XxF9EcorDt9Yjg4DyeGUumDrixK1yZQlIhTAGiWs=
+Date:   Mon, 14 Sep 2020 10:26:31 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-fscrypt@vger.kernel.org,
+        Daniel Rosenberg <drosen@google.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, ceph-devel@vger.kernel.org,
+        linux-ext4@vger.kernel.org
+Subject: Re: [f2fs-dev] [PATCH v2 04/11] f2fs: use
+ fscrypt_prepare_new_inode() and fscrypt_set_context()
+Message-ID: <20200914172631.GA2580525@google.com>
+References: <20200913083620.170627-1-ebiggers@kernel.org>
+ <20200913083620.170627-5-ebiggers@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200913083620.170627-5-ebiggers@kernel.org>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+On 09/13, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> Convert f2fs to use the new functions fscrypt_prepare_new_inode() and
+> fscrypt_set_context().  This avoids calling
+> fscrypt_get_encryption_info() from under f2fs_lock_op(), which can
+> deadlock because fscrypt_get_encryption_info() isn't GFP_NOFS-safe.
+> 
+> For more details about this problem, see the earlier patch
+> "fscrypt: add fscrypt_prepare_new_inode() and fscrypt_set_context()".
+> 
+> This also fixes a f2fs-specific deadlock when the filesystem is mounted
+> with '-o test_dummy_encryption' and a file is created in an unencrypted
+> directory other than the root directory:
+> 
+>     INFO: task touch:207 blocked for more than 30 seconds.
+>           Not tainted 5.9.0-rc4-00099-g729e3d0919844 #2
+>     "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+>     task:touch           state:D stack:    0 pid:  207 ppid:   167 flags:0x00000000
+>     Call Trace:
+>      [...]
+>      lock_page include/linux/pagemap.h:548 [inline]
+>      pagecache_get_page+0x25e/0x310 mm/filemap.c:1682
+>      find_or_create_page include/linux/pagemap.h:348 [inline]
+>      grab_cache_page include/linux/pagemap.h:424 [inline]
+>      f2fs_grab_cache_page fs/f2fs/f2fs.h:2395 [inline]
+>      f2fs_grab_cache_page fs/f2fs/f2fs.h:2373 [inline]
+>      __get_node_page.part.0+0x39/0x2d0 fs/f2fs/node.c:1350
+>      __get_node_page fs/f2fs/node.c:35 [inline]
+>      f2fs_get_node_page+0x2e/0x60 fs/f2fs/node.c:1399
+>      read_inline_xattr+0x88/0x140 fs/f2fs/xattr.c:288
+>      lookup_all_xattrs+0x1f9/0x2c0 fs/f2fs/xattr.c:344
+>      f2fs_getxattr+0x9b/0x160 fs/f2fs/xattr.c:532
+>      f2fs_get_context+0x1e/0x20 fs/f2fs/super.c:2460
+>      fscrypt_get_encryption_info+0x9b/0x450 fs/crypto/keysetup.c:472
+>      fscrypt_inherit_context+0x2f/0xb0 fs/crypto/policy.c:640
+>      f2fs_init_inode_metadata+0xab/0x340 fs/f2fs/dir.c:540
+>      f2fs_add_inline_entry+0x145/0x390 fs/f2fs/inline.c:621
+>      f2fs_add_dentry+0x31/0x80 fs/f2fs/dir.c:757
+>      f2fs_do_add_link+0xcd/0x130 fs/f2fs/dir.c:798
+>      f2fs_add_link fs/f2fs/f2fs.h:3234 [inline]
+>      f2fs_create+0x104/0x290 fs/f2fs/namei.c:344
+>      lookup_open.isra.0+0x2de/0x500 fs/namei.c:3103
+>      open_last_lookups+0xa9/0x340 fs/namei.c:3177
+>      path_openat+0x8f/0x1b0 fs/namei.c:3365
+>      do_filp_open+0x87/0x130 fs/namei.c:3395
+>      do_sys_openat2+0x96/0x150 fs/open.c:1168
+>      [...]
+> 
+> That happened because f2fs_add_inline_entry() locks the directory
+> inode's page in order to add the dentry, then f2fs_get_context() tries
+> to lock it recursively in order to read the encryption xattr.  This
+> problem is specific to "test_dummy_encryption" because normally the
+> directory's fscrypt_info would be set up prior to
+> f2fs_add_inline_entry() in order to encrypt the new filename.
+> 
+> Regardless, the new design fixes this test_dummy_encryption deadlock as
+> well as potential deadlocks with fs reclaim, by setting up any needed
+> fscrypt_info structs prior to taking so many locks.
+> 
+> The test_dummy_encryption deadlock was reported by Daniel Rosenberg.
+> 
+> Reported-by: Daniel Rosenberg <drosen@google.com>
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-Should I fix something in this patch?
+Thanks.
 
-Thanks,
+Acked-by: Jaegeuk Kim <jaegeuk@kernel.org>
 
-Artem Blagodarenko.
-
-> On 18 Aug 2020, at 10:17, Artem Blagodarenko =
-<artem.blagodarenko@gmail.com> wrote:
->=20
-> From: Alexey Lyashkov <alexey.lyashkov@hpe.com>
->=20
-> Add extended "-E ignore_error" option to be more tolerant
-> to fs errors while scanning inode extents.
->=20
-> This is 6th version of the patch set. Changes:
->=20
-> *more obvious binaries existence check in test
-> *finish test if e2image can't capture an image
->=20
-> Signed-off-by: Alexey Lyashkov <alexey.lyashkov@hpe.com>
-> Signed-off-by: Artem Blagodarenko <artem.blagodarenko@hpe.com>
-> Cray-bug-id: LUS-1922
-> Change-Id: Ib79300656726839b1d3b7ee1dd0793c60679d296
-> Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 > ---
-> lib/support/Makefile.in          |  4 +++
-> lib/support/mvstring.c           | 25 +++++++++++++++
-> lib/support/mvstring.h           |  1 +
-> misc/e2image.8.in                |  3 ++
-> misc/e2image.c                   | 53 +++++++++++++++++++++++++++++---
-> misc/e2initrd_helper.c           | 16 +---------
-> tests/i_error_tolerance/expect.1 | 23 ++++++++++++++
-> tests/i_error_tolerance/expect.2 |  7 +++++
-> tests/i_error_tolerance/script   | 47 ++++++++++++++++++++++++++++
-> 9 files changed, 160 insertions(+), 19 deletions(-)
-> create mode 100644 lib/support/mvstring.c
-> create mode 100644 lib/support/mvstring.h
-> create mode 100644 tests/i_error_tolerance/expect.1
-> create mode 100644 tests/i_error_tolerance/expect.2
-> create mode 100644 tests/i_error_tolerance/script
->=20
-> diff --git a/lib/support/Makefile.in b/lib/support/Makefile.in
-> index 1d278642..4d04eef0 100644
-> --- a/lib/support/Makefile.in
-> +++ b/lib/support/Makefile.in
-> @@ -13,6 +13,7 @@ INSTALL =3D @INSTALL@
-> all::
->=20
-> OBJS=3D		cstring.o \
-> +		mvstring.o \
-> 		mkquota.o \
-> 		plausible.o \
-> 		profile.o \
-> @@ -26,6 +27,7 @@ OBJS=3D		cstring.o \
->=20
-> SRCS=3D		$(srcdir)/argv_parse.c \
-> 		$(srcdir)/cstring.c \
-> +		$(srcdir)/mvstring.c \
-> 		$(srcdir)/mkquota.c \
-> 		$(srcdir)/parse_qtype.c \
-> 		$(srcdir)/plausible.c \
-> @@ -105,6 +107,8 @@ argv_parse.o: $(srcdir)/argv_parse.c =
-$(top_builddir)/lib/config.h \
->  $(top_builddir)/lib/dirpaths.h $(srcdir)/argv_parse.h
-> cstring.o: $(srcdir)/cstring.c $(top_builddir)/lib/config.h \
->  $(top_builddir)/lib/dirpaths.h $(srcdir)/cstring.h
-> +mvstring.o: $(srcdir)/mvstring.c $(top_builddir)/lib/config.h \
-> + $(srcdir)/mvstring.h
-> mkquota.o: $(srcdir)/mkquota.c $(top_builddir)/lib/config.h \
->  $(top_builddir)/lib/dirpaths.h $(top_srcdir)/lib/ext2fs/ext2_fs.h \
->  $(top_builddir)/lib/ext2fs/ext2_types.h =
-$(top_srcdir)/lib/ext2fs/ext2fs.h \
-> diff --git a/lib/support/mvstring.c b/lib/support/mvstring.c
-> new file mode 100644
-> index 00000000..1ed2fd67
-> --- /dev/null
-> +++ b/lib/support/mvstring.c
-> @@ -0,0 +1,25 @@
-> +#include "config.h"
-> +#ifdef HAVE_STDLIB_H
-> +#include <stdlib.h>
-> +#endif
-> +#include <ctype.h>
-> +#include <string.h>
-> +#include "mvstring.h"
-> +
-> +
-> +/*
-> + * fstab parsing code
-> + */
-> +char *string_copy(const char *s)
-> +{
-> +	char	*ret;
-> +
-> +	if (!s)
-> +		return 0;
-> +	ret =3D malloc(strlen(s)+1);
-> +	if (ret)
-> +		strcpy(ret, s);
-> +	return ret;
-> +}
-> +
-> +
-> diff --git a/lib/support/mvstring.h b/lib/support/mvstring.h
-> new file mode 100644
-> index 00000000..94590d56
-> --- /dev/null
-> +++ b/lib/support/mvstring.h
-> @@ -0,0 +1 @@
-> +extern char *string_copy(const char *s);
-> diff --git a/misc/e2image.8.in b/misc/e2image.8.in
-> index ef124867..3816b682 100644
-> --- a/misc/e2image.8.in
-> +++ b/misc/e2image.8.in
-> @@ -73,6 +73,9 @@ for the image file to be in a consistent state.  =
-This requirement can be
-> overridden using the
-> .B \-f
-> option, but the resulting image file is very likely not going to be =
-useful.
-> +If you going to grab an image from a corrupted FS
-> +.B \-E ignore_error
-> +option to ignore fs errors, allows to grab fs image from a corrupted =
-fs.
-> .PP
-> If
-> .I image-file
-> diff --git a/misc/e2image.c b/misc/e2image.c
-> index 892c5371..887c38f2 100644
-> --- a/misc/e2image.c
-> +++ b/misc/e2image.c
-> @@ -52,6 +52,7 @@ extern int optind;
->=20
-> #include "support/nls-enable.h"
-> #include "support/plausible.h"
-> +#include "support/mvstring.h"
-> #include "../version.h"
->=20
-> #define QCOW_OFLAG_COPIED     (1ULL << 63)
-> @@ -78,6 +79,7 @@ static char move_mode;
-> static char show_progress;
-> static char *check_buf;
-> static int skipped_blocks;
-> +static int ignore_error =3D 0;
->=20
-> static blk64_t align_offset(blk64_t offset, unsigned int n)
-> {
-> @@ -105,7 +107,7 @@ static int get_bits_from_size(size_t size)
-> static void usage(void)
-> {
-> 	fprintf(stderr, _("Usage: %s [ -r|-Q ] [ -f ] [ -b superblock ] =
-[ -B blocksize ] "
-> -			  "device image-file\n"),
-> +			  "[-E extended-options] device image-file\n"),
-> 		program_name);
-> 	fprintf(stderr, _("       %s -I device image-file\n"), =
-program_name);
-> 	fprintf(stderr, _("       %s -ra [ -cfnp ] [ -o src_offset ] "
-> @@ -1368,7 +1370,8 @@ static void write_raw_image_file(ext2_filsys fs, =
-int fd, int type, int flags,
-> 				com_err(program_name, retval,
-> 					_("while iterating over inode =
-%u"),
-> 					ino);
-> -				exit(1);
-> +				if (ignore_error =3D=3D 0)
-> +					exit(1);
-> 			}
-> 		} else {
-> 			if ((inode.i_flags & EXT4_EXTENTS_FL) ||
-> @@ -1381,7 +1384,8 @@ static void write_raw_image_file(ext2_filsys fs, =
-int fd, int type, int flags,
-> 				if (retval) {
-> 					com_err(program_name, retval,
-> 					_("while iterating over inode =
-%u"), ino);
-> -					exit(1);
-> +					if (ignore_error =3D=3D 0)
-> +						exit(1);
-> 				}
-> 			}
-> 		}
-> @@ -1475,6 +1479,40 @@ static struct ext2_qcow2_hdr =
-*check_qcow2_image(int *fd, char *name)
-> 	return qcow2_read_header(*fd);
-> }
->=20
-> +static void parse_extended_opts(const char *opts)
-> +{
-> +	char	*buf, *token, *next, *p;
-> +	int	ea_ver;
-> +	int	extended_usage =3D 0;
-> +	unsigned long long reada_kb;
-> +
-> +	buf =3D string_copy(opts);
-> +	for (token =3D buf; token && *token; token =3D next) {
-> +		p =3D strchr(token, ',');
-> +		next =3D 0;
-> +		if (p) {
-> +			*p =3D 0;
-> +			next =3D p+1;
-> +		}
-> +		if (strcmp(token, "ignore_error") =3D=3D 0) {
-> +			ignore_error =3D 1;
-> +			continue;
-> +		} else {
-> +			fprintf(stderr, _("Unknown extended option: =
-%s\n"),
-> +				token);
-> +			extended_usage++;
-> +		}
-> +	}
-> +	free(buf);
-> +
-> +	if (extended_usage) {
-> +		fputs(_("\nExtended options are separated by commas. "
-> +		       "Valid extended options are:\n\n"), stderr);
-> +		fputs("\tignore_error\n", stderr);
-> +		exit(1);
-> +	}
-> +}
-> +
-> int main (int argc, char ** argv)
-> {
-> 	int c;
-> @@ -1494,6 +1532,7 @@ int main (int argc, char ** argv)
-> 	struct stat st;
-> 	blk64_t superblock =3D 0;
-> 	int blocksize =3D 0;
-> +	char	*extended_opts =3D 0;
->=20
-> #ifdef ENABLE_NLS
-> 	setlocale(LC_MESSAGES, "");
-> @@ -1507,7 +1546,7 @@ int main (int argc, char ** argv)
-> 	if (argc && *argv)
-> 		program_name =3D *argv;
-> 	add_error_table(&et_ext2_error_table);
-> -	while ((c =3D getopt(argc, argv, "b:B:nrsIQafo:O:pc")) !=3D EOF)
-> +	while ((c =3D getopt(argc, argv, "b:B:E:nrsIQafo:O:pc")) !=3D =
-EOF)
-> 		switch (c) {
-> 		case 'b':
-> 			superblock =3D strtoull(optarg, NULL, 0);
-> @@ -1515,6 +1554,9 @@ int main (int argc, char ** argv)
-> 		case 'B':
-> 			blocksize =3D strtoul(optarg, NULL, 0);
-> 			break;
-> +		case 'E':
-> +			extended_opts =3D optarg;
-> +			break;
-> 		case 'I':
-> 			flags |=3D E2IMAGE_INSTALL_FLAG;
-> 			break;
-> @@ -1597,6 +1639,9 @@ int main (int argc, char ** argv)
-> 		exit(1);
-> 	}
->=20
-> +	if (extended_opts)
-> +		parse_extended_opts(extended_opts);
-> +
-> 	if (img_type && !ignore_rw_mount &&
-> 	    (mount_flags & EXT2_MF_MOUNTED) &&
-> 	   !(mount_flags & EXT2_MF_READONLY)) {
-> diff --git a/misc/e2initrd_helper.c b/misc/e2initrd_helper.c
-> index 436aab8c..ab5991a4 100644
-> --- a/misc/e2initrd_helper.c
-> +++ b/misc/e2initrd_helper.c
-> @@ -36,6 +36,7 @@ extern char *optarg;
-> #include "ext2fs/ext2fs.h"
-> #include "blkid/blkid.h"
-> #include "support/nls-enable.h"
-> +#include "support/mvstring.h"
->=20
-> #include "../version.h"
->=20
-> @@ -151,21 +152,6 @@ static int mem_file_eof(struct mem_file *file)
-> 	return (file->ptr >=3D file->size);
-> }
->=20
-> -/*
-> - * fstab parsing code
-> - */
-> -static char *string_copy(const char *s)
-> -{
-> -	char	*ret;
+>  fs/f2fs/dir.c   |  2 +-
+>  fs/f2fs/f2fs.h  | 23 -----------------------
+>  fs/f2fs/namei.c |  7 ++++++-
+>  3 files changed, 7 insertions(+), 25 deletions(-)
+> 
+> diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
+> index b2530b9507bd9..414bc94fbd546 100644
+> --- a/fs/f2fs/dir.c
+> +++ b/fs/f2fs/dir.c
+> @@ -537,7 +537,7 @@ struct page *f2fs_init_inode_metadata(struct inode *inode, struct inode *dir,
+>  			goto put_error;
+>  
+>  		if (IS_ENCRYPTED(inode)) {
+> -			err = fscrypt_inherit_context(dir, inode, page, false);
+> +			err = fscrypt_set_context(inode, page);
+>  			if (err)
+>  				goto put_error;
+>  		}
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index d9e52a7f3702f..0503371f88ed4 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -1315,13 +1315,6 @@ enum fsync_mode {
+>  #define IS_IO_TRACED_PAGE(page) (0)
+>  #endif
+>  
+> -#ifdef CONFIG_FS_ENCRYPTION
+> -#define DUMMY_ENCRYPTION_ENABLED(sbi) \
+> -	(unlikely(F2FS_OPTION(sbi).dummy_enc_ctx.ctx != NULL))
+> -#else
+> -#define DUMMY_ENCRYPTION_ENABLED(sbi) (0)
+> -#endif
 > -
-> -	if (!s)
-> -		return 0;
-> -	ret =3D malloc(strlen(s)+1);
-> -	if (ret)
-> -		strcpy(ret, s);
-> -	return ret;
+>  /* For compression */
+>  enum compress_algorithm_type {
+>  	COMPRESS_LZO,
+> @@ -4022,22 +4015,6 @@ static inline bool f2fs_lfs_mode(struct f2fs_sb_info *sbi)
+>  	return F2FS_OPTION(sbi).fs_mode == FS_MODE_LFS;
+>  }
+>  
+> -static inline bool f2fs_may_encrypt(struct inode *dir, struct inode *inode)
+> -{
+> -#ifdef CONFIG_FS_ENCRYPTION
+> -	struct f2fs_sb_info *sbi = F2FS_I_SB(dir);
+> -	umode_t mode = inode->i_mode;
+> -
+> -	/*
+> -	 * If the directory encrypted or dummy encryption enabled,
+> -	 * then we should encrypt the inode.
+> -	 */
+> -	if (IS_ENCRYPTED(dir) || DUMMY_ENCRYPTION_ENABLED(sbi))
+> -		return (S_ISREG(mode) || S_ISDIR(mode) || S_ISLNK(mode));
+> -#endif
+> -	return false;
 > -}
 > -
-> static char *skip_over_blank(char *cp)
-> {
-> 	while (*cp && isspace(*cp))
-> diff --git a/tests/i_error_tolerance/expect.1 =
-b/tests/i_error_tolerance/expect.1
-> new file mode 100644
-> index 00000000..8d5ffa2c
-> --- /dev/null
-> +++ b/tests/i_error_tolerance/expect.1
-> @@ -0,0 +1,23 @@
-> +Pass 1: Checking inodes, blocks, and sizes
-> +Inode 12 has illegal block(s).  Clear? yes
+>  static inline bool f2fs_may_compress(struct inode *inode)
+>  {
+>  	if (IS_SWAPFILE(inode) || f2fs_is_pinned_file(inode) ||
+> diff --git a/fs/f2fs/namei.c b/fs/f2fs/namei.c
+> index 84e4bbc1a64de..45f324511a19e 100644
+> --- a/fs/f2fs/namei.c
+> +++ b/fs/f2fs/namei.c
+> @@ -28,6 +28,7 @@ static struct inode *f2fs_new_inode(struct inode *dir, umode_t mode)
+>  	nid_t ino;
+>  	struct inode *inode;
+>  	bool nid_free = false;
+> +	bool encrypt = false;
+>  	int xattr_size = 0;
+>  	int err;
+>  
+> @@ -69,13 +70,17 @@ static struct inode *f2fs_new_inode(struct inode *dir, umode_t mode)
+>  		F2FS_I(inode)->i_projid = make_kprojid(&init_user_ns,
+>  							F2FS_DEF_PROJID);
+>  
+> +	err = fscrypt_prepare_new_inode(dir, inode, &encrypt);
+> +	if (err)
+> +		goto fail_drop;
 > +
-> +Illegal indirect block (1000000) in inode 12.  CLEARED.
-> +Inode 12, i_blocks is 34, should be 24.  Fix? yes
-> +
-> +Pass 2: Checking directory structure
-> +Pass 3: Checking directory connectivity
-> +Pass 4: Checking reference counts
-> +Pass 5: Checking group summary information
-> +Block bitmap differences:  -(31--34) -37
-> +Fix? yes
-> +
-> +Free blocks count wrong for group #0 (62, counted=3D67).
-> +Fix? yes
-> +
-> +Free blocks count wrong (62, counted=3D67).
-> +Fix? yes
-> +
-> +
-> +test_filesys: ***** FILE SYSTEM WAS MODIFIED *****
-> +test_filesys: 12/16 files (8.3% non-contiguous), 33/100 blocks
-> +Exit status is 1
-> diff --git a/tests/i_error_tolerance/expect.2 =
-b/tests/i_error_tolerance/expect.2
-> new file mode 100644
-> index 00000000..7fd42318
-> --- /dev/null
-> +++ b/tests/i_error_tolerance/expect.2
-> @@ -0,0 +1,7 @@
-> +Pass 1: Checking inodes, blocks, and sizes
-> +Pass 2: Checking directory structure
-> +Pass 3: Checking directory connectivity
-> +Pass 4: Checking reference counts
-> +Pass 5: Checking group summary information
-> +test_filesys: 12/16 files (8.3% non-contiguous), 33/100 blocks
-> +Exit status is 0
-> diff --git a/tests/i_error_tolerance/script =
-b/tests/i_error_tolerance/script
-> new file mode 100644
-> index 00000000..6503de97
-> --- /dev/null
-> +++ b/tests/i_error_tolerance/script
-> @@ -0,0 +1,47 @@
-> +if ! test -x $E2IMAGE_EXE; then
-> +	echo "$test_name: $test_description: skipped (no e2image)"
-> +	return 0
-> +fi
-> +if ! test -x $DEBUGFS_EXE; then
-> +	echo "$test_name: $test_description: skipped (no debugfs)"
-> +	return 0
-> +fi
-> +
-> +SKIP_GUNZIP=3D"true"
-> +
-> +TEST_DATA=3D"$test_name.tmp"
-> +dd if=3D/dev/urandom of=3D$TEST_DATA bs=3D1k count=3D16 > /dev/null =
-2>&1=20
-> +
-> +dd if=3D/dev/zero of=3D$TMPFILE bs=3D1k count=3D100 > /dev/null 2>&1
-> +$MKE2FS -Ft ext4 -O ^extents $TMPFILE > /dev/null 2>&1
-> +$DEBUGFS -w $TMPFILE << EOF  > /dev/null 2>&1
-> +write $TEST_DATA testfile
-> +set_inode_field testfile block[IND] 1000000
-> +q
-> +EOF
-> +
-> +$E2IMAGE -r $TMPFILE $TMPFILE.back
-> +
-> +if [ $? =3D 0 ] ; then
-> +	echo "Image expected to be broken"
-> +	echo "$test_name: $test_description: fail"
-> +	touch $test_name.failed
-> +	return 0
-> +fi
-> +
-> +$E2IMAGE -r -E ignore_error $TMPFILE $TMPFILE.back
-> +
-> +if [ $? =3D 1 ] ; then
-> +	echo "Can not get image even with ignore_error"
-> +	echo "$test_name: $test_description: fail"
-> +	touch $test_name.failed
-> +	return 0
-> +fi
-> +
-> +mv $TMPFILE.back $TMPFILE
-> +
-> +. $cmd_dir/run_e2fsck
-> +
-> +rm -f $TEST_DATA
-> +
-> +unset E2FSCK_TIME TEST_DATA
-> --=20
-> 2.18.4
->=20
-
+>  	err = dquot_initialize(inode);
+>  	if (err)
+>  		goto fail_drop;
+>  
+>  	set_inode_flag(inode, FI_NEW_INODE);
+>  
+> -	if (f2fs_may_encrypt(dir, inode))
+> +	if (encrypt)
+>  		f2fs_set_encrypted_inode(inode);
+>  
+>  	if (f2fs_sb_has_extra_attr(sbi)) {
+> -- 
+> 2.28.0
+> 
+> 
+> 
+> _______________________________________________
+> Linux-f2fs-devel mailing list
+> Linux-f2fs-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
