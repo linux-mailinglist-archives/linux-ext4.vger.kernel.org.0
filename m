@@ -2,101 +2,76 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 014CD2687A4
-	for <lists+linux-ext4@lfdr.de>; Mon, 14 Sep 2020 10:54:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD173268875
+	for <lists+linux-ext4@lfdr.de>; Mon, 14 Sep 2020 11:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726141AbgINIya (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 14 Sep 2020 04:54:30 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57386 "EHLO mx2.suse.de"
+        id S1726384AbgINJdg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 14 Sep 2020 05:33:36 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38474 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726128AbgINIy3 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 14 Sep 2020 04:54:29 -0400
+        id S1726351AbgINJdJ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 14 Sep 2020 05:33:09 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AE7AEAC46;
-        Mon, 14 Sep 2020 08:54:43 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id AC4B1AE85;
+        Mon, 14 Sep 2020 09:33:19 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id F0BDF1E12ED; Mon, 14 Sep 2020 10:54:27 +0200 (CEST)
-Date:   Mon, 14 Sep 2020 10:54:27 +0200
+        id BC1581E12EF; Mon, 14 Sep 2020 11:33:03 +0200 (CEST)
+Date:   Mon, 14 Sep 2020 11:33:03 +0200
 From:   Jan Kara <jack@suse.cz>
-To:     Constantine Sapuntzakis <costa@purestorage.com>
-Cc:     linux-ext4@vger.kernel.org, jack@suse.cz, tytso@mit.edu,
-        adilger.kernel@dilger.ca
-Subject: Re: [PATCH] ext4: Fix superblock checksum calculation race
-Message-ID: <20200914085427.GC4863@quack2.suse.cz>
-References: <20200911211603.5653-1-costa@purestorage.com>
+To:     =?iso-8859-1?Q?Rog=E9rio?= Brito <rbrito@ime.usp.br>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Hugh Dickins <hughd@google.com>,
+        Michael Larabel <Michael@michaellarabel.com>,
+        Ted Ts'o <tytso@google.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: Kernel Benchmarking
+Message-ID: <20200914093303.GA7347@quack2.suse.cz>
+References: <CAHk-=wimM2kckaYj7spUJwehZkSYxK9RQqu3G392BE=73dyKtg@mail.gmail.com>
+ <8bb582d2-2841-94eb-8862-91d1225d5ebc@MichaelLarabel.com>
+ <CAHk-=wjqE_a6bpZyDQ4DCrvj_Dv2RwQoY7wN91kj8y-tZFRvEA@mail.gmail.com>
+ <0cbc959e-1b8d-8d7e-1dc6-672cf5b3899a@MichaelLarabel.com>
+ <CAHk-=whP-7Uw9WgWgjRgF1mCg+NnkOPpWjVw+a9M3F9C52DrVg@mail.gmail.com>
+ <CAHk-=wjfw3U5eTGWLaisPHg1+jXsCX=xLZgqPx4KJeHhEqRnEQ@mail.gmail.com>
+ <a2369108-7103-278c-9f10-6309a0a9dc3b@MichaelLarabel.com>
+ <CAOQ4uxhz8prfD5K7dU68yHdz=iBndCXTg5w4BrF-35B+4ziOwA@mail.gmail.com>
+ <CAHk-=whjhYa3ig0U_mtpoU5Zok_2Y5zTCw8f-THkf1vHRBDNuA@mail.gmail.com>
+ <c1970d94-52c7-5b8b-bf35-42f285ae6a3d@ime.usp.br>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200911211603.5653-1-costa@purestorage.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c1970d94-52c7-5b8b-bf35-42f285ae6a3d@ime.usp.br>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri 11-09-20 15:16:03, Constantine Sapuntzakis wrote:
-> The race condition could cause the persisted superblock checksum
-> to not match the contents of the superblock, causing the
-> superblock to be considered corrupt.
+On Sat 12-09-20 17:32:41, Rogério Brito wrote:
+> Now, to the subject: is this that you describe (RCU or VFS), in some sense,
+> related to, say, copying a "big" file (e.g., a movie) to a "slow" media (in
+> my case, a USB thumb drive, so that I can watch said movie on my TV)?
 > 
-> An example of the race follows.  A first thread is interrupted in the
-> middle of a checksum calculation. Then, another thread changes the
-> superblock, calculates a new checksum, and sets it. Then, the first
-> thread resumes and sets the checksum based on the older superblock.
-> 
-> To fix, serialize the superblock checksum calculation using the buffer
-> header lock. While a spinlock is sufficient, the buffer header is
-> already there and there is precedent for locking it (e.g. in
-> ext4_commit_super).
-> 
-> Tested the patch by booting up a kernel with the patch, creating
-> a filesystem and some files (including some orphans), and then
-> unmounting and remounting the file system.
-> 
-> Suggested-by: Jan Kara <jack@suse.cz>
+> I've seen backtraces mentioning "task xxx hung for yyy seconds" and a
+> non-reponsive cp process at that... I say RCU or VFS because I see this
+> with the thumb drives with vfat filesystems (so, it wouldn't be quite
+> related to ext4, apart from the fact that all my Linux-specific
+> filesystems are ext4).
 
-Thanks for the patch!  Please add your Signed-off-by line to the patch to
-certify that you've written the patch and agree with it being included in
-the kernel (see "Developer's Certificate of Origin 1.1" in
-Documentation/process/submitting-patches.rst for more details). Without it
-the patch cannot be included. Otherwise it looks good so feel free to add:
+This is very likely completely different problem. I'd need to see exact
+messages and kernel traces but usually errors like these happen when the IO
+is very slow and other things (such as grabbing some locks or doing memory
+allocation) get blocked waiting for that IO.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+In the case Linus speaks about this is really more about CPU bound tasks
+that heavily hammer the same cached contents.
 
-								Thanks
-									Honza
-
-> ---
->  fs/ext4/super.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index ea425b49b345..3f7fdce5ab05 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -201,7 +201,18 @@ void ext4_superblock_csum_set(struct super_block *sb)
->  	if (!ext4_has_metadata_csum(sb))
->  		return;
->  
-> +	/*
-> +	 * Locking the superblock prevents the scenario
-> +	 * where:
-> +	 *  1) a first thread pauses during checksum calculation.
-> +	 *  2) a second thread updates the superblock, recalculates
-> +	 *     the checksum, and updates s_checksum
-> +	 *  3) the first thread resumes and finishes its checksum calculation
-> +	 *     and updates s_checksum with a potentially stale or torn value.
-> +	 */
-> +	lock_buffer(EXT4_SB(sb)->s_sbh);
->  	es->s_checksum = ext4_superblock_csum(sb, es);
-> +	unlock_buffer(EXT4_SB(sb)->s_sbh);
->  }
->  
->  ext4_fsblk_t ext4_block_bitmap(struct super_block *sb,
-> -- 
-> 2.17.1
-> 
+								Honza
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
