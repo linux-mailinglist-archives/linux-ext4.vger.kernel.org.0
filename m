@@ -2,114 +2,110 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3A41268B3A
-	for <lists+linux-ext4@lfdr.de>; Mon, 14 Sep 2020 14:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F22C269126
+	for <lists+linux-ext4@lfdr.de>; Mon, 14 Sep 2020 18:11:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726179AbgINMkw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 14 Sep 2020 08:40:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49008 "EHLO
+        id S1726420AbgINQLi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 14 Sep 2020 12:11:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726527AbgINMjJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 14 Sep 2020 08:39:09 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 400A4C061A10
-        for <linux-ext4@vger.kernel.org>; Mon, 14 Sep 2020 05:11:50 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id e22so6797595edq.6
-        for <linux-ext4@vger.kernel.org>; Mon, 14 Sep 2020 05:11:50 -0700 (PDT)
+        with ESMTP id S1726370AbgINQKt (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 14 Sep 2020 12:10:49 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EFD4C06174A
+        for <linux-ext4@vger.kernel.org>; Mon, 14 Sep 2020 09:10:49 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id s65so184510pgb.0
+        for <linux-ext4@vger.kernel.org>; Mon, 14 Sep 2020 09:10:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=gxYQz48aGorfvze6exW0FuIKKJvVhs5z+cRnEenJUaY=;
-        b=CJjh07xIDkVwVr5IThKGuQVr0hblaCsgDabxLm1I4Z1TpzY3qB0jIxOsEDGf0m6vXo
-         wep/5WJwnO74sjuUhOdVdvY3fZ1BWCYFAro4jzs6XtN7eJqvYedfFczvY5Boer0RIbjw
-         gJucGbgkCJ3+hSQ+sBmXnq0UqctdFF8aHtQTvsIgUKZ30HuPArcsj/n6WhgZNGwC99tw
-         YtmfnTHov/uRZXDhPXO7fC6y039cIwCPIR4GuttjH94rP6WYUXkNZ6b7abvF7xd78JHx
-         8m+JWTEOoKnr6CeQ6j1ioid0KYvwrwzXiITVI99NjmxmsTWqvcSa2B1U6x5MRXZl7mh3
-         EHww==
+        d=purestorage.com; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=IRsgGa1G98lqotgMC8zH12tt2GmtFhgxtnSUD+dw6j8=;
+        b=Nnuip7KwhUJExh+T9RfI0G1OuU0eeP2U+tX6faI9gnHdTta6iuRwqwbS2u9NfyLvQb
+         6PL9vA2Gn67Q7YV4ylRjegZQrm1TzGGXh+3LD3eM6pc2woGteNHJY87r3RfuMwKYykKl
+         HJkLzjdKXAmfstnWdvSSbcPwkOBPHiR5C96Xk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=gxYQz48aGorfvze6exW0FuIKKJvVhs5z+cRnEenJUaY=;
-        b=dw+0NRQ0cbraLwrj9ukMpz3hFiht+t7XE090qsGjudjDuyZKMlRFU8IhzozKLd7aMk
-         sRZG/7kumNrL689zhsRW/GD8TbwN9Ee1lNwcxwgJm8nZ8ykjjbPIOWszfJ5w/WX9Z3J6
-         HuTeXwfxj/DGyQalR++Cw8tcWPDEofoPKnRzhdnpoSTJYiH3xg8sFi4fMde/JTM/X7CZ
-         pQFJPLXcweOB2wLaIUAZOGzNKxFtoJeDwlc4swM6BoZW+sLI7RcdpyxZAVeot9vWk4T7
-         TxQ7/N/v6mGkwgnQq3dZEgQ1DZ5yjLC9Iwz5ctNl7xRSGbw/UfWvt/9Q/Uw/I8wKZ1m8
-         f1+g==
-X-Gm-Message-State: AOAM5322m/gWm5NVw9RLZDqS9URMdQ+DSXiqnCCAoZyNZN5ZUU8w0Yaj
-        rE/JCMxIp6dnZLCHWhOofw0+efnjtRK7KzNo6fI=
-X-Google-Smtp-Source: ABdhPJwHlTpo44V7hpalfpH5qi8HReYrn1OIyty9zqQzW+QG1hW0/IFDAOy8XAO8lGTEsww1hWAfk/afNOWhp/P7kKY=
-X-Received: by 2002:a50:cc9a:: with SMTP id q26mr17550708edi.64.1600085508835;
- Mon, 14 Sep 2020 05:11:48 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:a17:906:6945:0:0:0:0 with HTTP; Mon, 14 Sep 2020 05:11:48
- -0700 (PDT)
-Reply-To: mrsmegwilliam6@gmail.com
-From:   Ms Mary Mcniff <dhlcouriercompanymiami@gmail.com>
-Date:   Mon, 14 Sep 2020 05:11:48 -0700
-Message-ID: <CAG_Oktqa56Bp7PLufmpy8BRuakuVfeDqG3cGaWACLE6sUUX7kg@mail.gmail.com>
-Subject: Your Respond ASAP
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=IRsgGa1G98lqotgMC8zH12tt2GmtFhgxtnSUD+dw6j8=;
+        b=ORGrub6VyaN4CMcpTAqB7iSJ/lhRdHQPUzVIfe9G4gvXM+PeD2yeg5AHW6d7ZoiT9t
+         HNLSO2ZPN99uQe5lRjrJcj+wOPca0bBk5n4S0yr9lWBwEX8wbMy0OPL+nGZM98KX4TAY
+         D6il4tiYX9gLsFT+ymN5+ghe5VaZOkIYcFzKz94Y2G9zO0IKijVhBFv0tF3A+mQvlGMc
+         P/4cYLAFZT+eYyS0jNb3Re0ACVzmOXfynnqIQzFlFa0HtiQ5K2yKfHUQ4k6I+4oc3n18
+         VdGVNzEXlqFCnJJngzveffdgHf8H+4cjGHi0UoDz/Qm/jJs995IOiSj/YeGon6dsa7uw
+         0Avg==
+X-Gm-Message-State: AOAM531OnAPq14RF2X3RFrb3LYm0KrtYfGR6/t/Gikj49xzPBOztZrql
+        k5CB5+YJEa3IZdIeYqxmEUWQ/w==
+X-Google-Smtp-Source: ABdhPJxa3vSmp27KG9oCF2+jY9yrElTsLgCHZulslxN5vFuafmn948FOW9Z9PxCo2NjV3NpbMxJLmg==
+X-Received: by 2002:a63:5fc3:: with SMTP id t186mr11214909pgb.100.1600099848545;
+        Mon, 14 Sep 2020 09:10:48 -0700 (PDT)
+Received: from dev-costa.dev.purestorage.com ([192.30.188.252])
+        by smtp.gmail.com with ESMTPSA id cf7sm9909834pjb.52.2020.09.14.09.10.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 09:10:47 -0700 (PDT)
+From:   Constantine Sapuntzakis <costa@purestorage.com>
+To:     jack@suse.com, adilger.kernel@dilger.ca, tytso@mit.edu,
+        linux-ext4@vger.kernel.org
+Cc:     Constantine Sapuntzakis <costa@purestorage.com>
+Subject: [PATCH] ext4: Fix superblock checksum calculation race
+Date:   Mon, 14 Sep 2020 10:10:14 -0600
+Message-Id: <20200914161014.22275-1-costa@purestorage.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200914085427.GC4863@quack2.suse.cz>
+References: <20200914085427.GC4863@quack2.suse.cz>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+The race condition could cause the persisted superblock checksum
+to not match the contents of the superblock, causing the
+superblock to be considered corrupt.
+
+An example of the race follows.  A first thread is interrupted in the
+middle of a checksum calculation. Then, another thread changes the
+superblock, calculates a new checksum, and sets it. Then, the first
+thread resumes and sets the checksum based on the older superblock.
+
+To fix, serialize the superblock checksum calculation using the buffer
+header lock. While a spinlock is sufficient, the buffer header is
+already there and there is precedent for locking it (e.g. in
+ext4_commit_super).
+
+Tested the patch by booting up a kernel with the patch, creating
+a filesystem and some files (including some orphans), and then
+unmounting and remounting the file system.
+
+Signed-off-by: Constantine Sapuntzakis <costa@purestorage.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Suggested-by: Jan Kara <jack@suse.cz>
+---
+ fs/ext4/super.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index ea425b49b345..3f7fdce5ab05 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -201,7 +201,18 @@ void ext4_superblock_csum_set(struct super_block *sb)
+ 	if (!ext4_has_metadata_csum(sb))
+ 		return;
+ 
++	/*
++	 * Locking the superblock prevents the scenario
++	 * where:
++	 *  1) a first thread pauses during checksum calculation.
++	 *  2) a second thread updates the superblock, recalculates
++	 *     the checksum, and updates s_checksum
++	 *  3) the first thread resumes and finishes its checksum calculation
++	 *     and updates s_checksum with a potentially stale or torn value.
++	 */
++	lock_buffer(EXT4_SB(sb)->s_sbh);
+ 	es->s_checksum = ext4_superblock_csum(sb, es);
++	unlock_buffer(EXT4_SB(sb)->s_sbh);
+ }
+ 
+ ext4_fsblk_t ext4_block_bitmap(struct super_block *sb,
 -- 
-From Chief Compliance Officer, Citigroup Inc CITIBANK
-388 Greenwich St, New York, 10013, United States United.
-PAYMENT CODE: FRB010
-Swift: PTBLBXXX
-==============================================
+2.17.1
 
-Attention: Beneficiary,
-
-We write to inform you that Series of meetings have been held over the
-past 2 weeks with the Secretary General of United Nations,U.S
-Department of State and Dubai Union Organization this ended last
-week.And parcel is under our custody right now, It will deliver to you
-within 24 hours once you clear the charges which will cost you
-according to the BANKERS COURIER SERVICES that wish to deliver your
-ATM CARD card to
-you immediately.
-
-However, it is the pleasure of this office to inform you that your ATM
-CARD number; is 29741733 and it has been approved and upgraded in your
-favor .you call me for the pin code numbers. The ATM CARD value is us
-$10.5 Million only.
-
-Kindly contact the paying bank for the claim of your ATM visa card
-payment fund $10,500,000.00 through the below contact information;
-
-Contact Person:Mr Williams S Young
-Director of Financial Controller
-Bank Name: CITIBANK
-Bank address; 388 Greenwich St,
-New York City,10013, United States
-Email:mrsmegwilliam6@gmail.com
-
-Reconfirm the following information?
-
-(1)Your Full Name=============
-(2)Mobile Phone Number======
-(3)Current Home Address==== ====
-(4)Fax Number================
-(5)Passport/Drivers license ======
-
-Endeavor to keep me posted once you contacted the officer in charge
-through the above mentioned information.
-
-Your timely response is highly appreciated.To this end, you are
-required to forward your payment information as follows to enable us
-load your fund into the card with your information and deliver it to
-your door step. as the BANKERS COURIER SERVICES are in charge of the
-delivery services to your destination.
-
-Yours truly;
-
-Ms Mary Mcniff.
-Chief Compliance Officer, Citigroup Inc
-FEDERAL RESERVE SYSTEM.
-Email: marymcniff7@gmail.com.
