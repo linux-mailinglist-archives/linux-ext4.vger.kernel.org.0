@@ -2,52 +2,52 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0217926ADC0
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Sep 2020 21:39:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F004E26AE3F
+	for <lists+linux-ext4@lfdr.de>; Tue, 15 Sep 2020 21:57:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727851AbgIOTjU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 15 Sep 2020 15:39:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54426 "EHLO
+        id S1727842AbgIOT5T (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 15 Sep 2020 15:57:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728018AbgIOTin (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Sep 2020 15:38:43 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0568C061351
-        for <linux-ext4@vger.kernel.org>; Tue, 15 Sep 2020 12:38:41 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id p9so6726469ejf.6
-        for <linux-ext4@vger.kernel.org>; Tue, 15 Sep 2020 12:38:41 -0700 (PDT)
+        with ESMTP id S1727825AbgIOT4q (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Sep 2020 15:56:46 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16C79C061788
+        for <linux-ext4@vger.kernel.org>; Tue, 15 Sep 2020 12:56:46 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id e23so6822802eja.3
+        for <linux-ext4@vger.kernel.org>; Tue, 15 Sep 2020 12:56:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=tessares-net.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=s8T/xfdPgHNj8zUD8Dev4ytzaOaIL61Me0jC59/f6ng=;
-        b=egkRtBub72A0udarXLyx7kPiMFbZwxsdamaVoFNk6fnra45xH6+b1qu08DA4H5P14q
-         xetyyxN5sf5gqn/2H/HatglN6yEKyZ42U6+lhqC/pnGz5T70MrjHENkX2vz7X41W3+JW
-         alpjHNCximjdVxjju4pceLFUdI5o+mVhSE8ZH78vFtpdOQH4MPkuH6h1xDLvqb4zKOrv
-         bXDk2fgNXtneCIfn7EbycNR+/brHucmInUL/jFy/EpsPw6Q/niRK2ggnlDZZiT84cgrt
-         Oyg38QnQ7HMZ1Klg3HsGoWjySJ0wjMjVd7+Su+bnbpgFbS85diBrzIWBW3LcqMeyUDsb
-         aceA==
+        bh=GpAjogX5KHpPYudErdDqBFNqQR1HiYdRO79ByOxK/1M=;
+        b=YZ1qJeWD42At/4TPPtDp1NiAXhBuWITqr/9SfJi5gJ/aGGCrzamXIsOlxmqXCL7m5+
+         IMDBGZeXSOP3Zr+fc0Eqa5VYV460KI/Lrt5BcRkCtkLLY1iugXf/E4yk85Gr649FVuyW
+         BHSQ8ENiyk9US/p7BCZTf27LmX9B7Ed4hbnoZVBrWCfYVNbvF7nDO9Xx3cK5Eg2zuffg
+         p7IHCOzxxGtocsXOX84JU7k5w1p9UrqH9F/1FjbHuYaTlLqW8HJ94zrw6FL9FIhTE6u7
+         jZ22SQZpEPLKVHx8ZHwryuZxQB1NTc4s5+2Q0ZT7W/4bsGFDUJmNaIMaqcKHwXm3WaKU
+         k0ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=s8T/xfdPgHNj8zUD8Dev4ytzaOaIL61Me0jC59/f6ng=;
-        b=UiliPvaEjAKvI50dq9Cjm1arhVePZKz0ENVoEZUB12tvNFE0/5XTmIKb2v31tamJCg
-         ja+FLKNxnPoBtxzeHRJHejAOMuvXeop05120OyVUN2ZabvvtXA9OJQi+lDuyuZsQ0V8k
-         ADflZwgwmW1QTVIo4Q5i7npvyxm4a/HvUsAhINaeanRCMJFW/vF5csHFFBEVrokiEwDc
-         xUM1I3LNUlekJ3fQeXsf6k7osY0uhH5o2W35c0dyr18+VdqHvao88j7Q1DsFzSoDxp3K
-         7klB6xk32VmZfvI17kDWAifLlW/Y8y9Ue9E4LaJXju4AoFDNySGvl4uUH9KJ2cU4iKRG
-         u91g==
-X-Gm-Message-State: AOAM531lvlmhN0CVIA+iGO6vn4Fif9itgICqMzxWGq8U0smkVdcaA8aR
-        09Wu9zFhvFwsW2w+JO9bldVX1w==
-X-Google-Smtp-Source: ABdhPJwf98cQYg59nWOxTJOT2LYyBb716h5ZTzsJtSJJboypj0hXqlJsypquvfCfPTpmlCY7mUhmDQ==
-X-Received: by 2002:a17:906:2752:: with SMTP id a18mr8819405ejd.350.1600198720550;
-        Tue, 15 Sep 2020 12:38:40 -0700 (PDT)
+        bh=GpAjogX5KHpPYudErdDqBFNqQR1HiYdRO79ByOxK/1M=;
+        b=oaBnWptgXOmleXFP/xY2ep1fQeMyw2zfeIE1PUwVYmRij4wUHKW6iK6pdqZFDwuVHP
+         7ImCPouBcqczcHIn8aH0+CPX+VUdPzsSvqnKTsmHfYUFHPOBuzLCCczXbLRvHALhc/Xs
+         QuZU6T57i3LIInrQ7X29oyGF+eQz+kGAgrFYcBC/4/wQpBNAnPuyfmvRcpPXmVqLDVWx
+         FVZJe52ShhpKBLZZscE5mU79KCcjue/u+5JVBHK0PFXQHVZiS2u7Cx3eias0uDSFsX0A
+         7EawuOZzGyQpr4BEPDHKcX092z6FfY9b3cf0u5X2/i1QGGBHLnWSWIZ8JR8kYEbQ3Uza
+         TEPQ==
+X-Gm-Message-State: AOAM533ZDqPO0zS/QWtl5awm7+67Y45tG0JlH5iQq3ys/EvyOmZVXynQ
+        tydpAcO86l6T/grK0JfA49FdTA==
+X-Google-Smtp-Source: ABdhPJyryQLLphSyB8qnI1GpJF4j42P2if4BPsLIss/EPwd2ejE5TgpyVTFXUuEyqwfC76ZKJF0D3A==
+X-Received: by 2002:a17:907:2115:: with SMTP id qn21mr21463544ejb.278.1600199803404;
+        Tue, 15 Sep 2020 12:56:43 -0700 (PDT)
 Received: from tsr-lap-08.nix.tessares.net ([2a02:578:85b0:e00:ec32:668e:7a20:c1cd])
-        by smtp.gmail.com with ESMTPSA id z18sm11038113ejw.94.2020.09.15.12.38.39
+        by smtp.gmail.com with ESMTPSA id by24sm11059782ejc.100.2020.09.15.12.56.42
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Sep 2020 12:38:39 -0700 (PDT)
+        Tue, 15 Sep 2020 12:56:42 -0700 (PDT)
 Subject: Re: Kernel Benchmarking
 To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     Michael Larabel <Michael@michaellarabel.com>,
@@ -59,8 +59,6 @@ Cc:     Michael Larabel <Michael@michaellarabel.com>,
         Jan Kara <jack@suse.cz>,
         linux-fsdevel <linux-fsdevel@vger.kernel.org>
 References: <CAHk-=wiz=J=8mJ=zRG93nuJ9GtQAm5bSRAbWJbWZuN4Br38+EQ@mail.gmail.com>
- <0cbc959e-1b8d-8d7e-1dc6-672cf5b3899a@MichaelLarabel.com>
- <CAHk-=whP-7Uw9WgWgjRgF1mCg+NnkOPpWjVw+a9M3F9C52DrVg@mail.gmail.com>
  <CAHk-=wjfw3U5eTGWLaisPHg1+jXsCX=xLZgqPx4KJeHhEqRnEQ@mail.gmail.com>
  <a2369108-7103-278c-9f10-6309a0a9dc3b@MichaelLarabel.com>
  <CAOQ4uxhz8prfD5K7dU68yHdz=iBndCXTg5w4BrF-35B+4ziOwA@mail.gmail.com>
@@ -72,15 +70,16 @@ References: <CAHk-=wiz=J=8mJ=zRG93nuJ9GtQAm5bSRAbWJbWZuN4Br38+EQ@mail.gmail.com>
  <CAHk-=wgZEUoiGoKh92stUh3sBA-7D24i6XqQN2UMm3u4=XkQkg@mail.gmail.com>
  <9550725a-2d3f-fa35-1410-cae912e128b9@tessares.net>
  <CAHk-=wimdSWe+GVBKwB0_=ZKX2ZN5JEqK5yA99toab4MAoYAsg@mail.gmail.com>
- <9a92bf16-02c5-ba38-33c7-f350588ac874@tessares.net>
- <CAHk-=wihcYiKwZQjwGd8eHLqMm=sL23a=fyzJ_u1YiFNsKN2AQ@mail.gmail.com>
+ <CAHk-=wimjnAsoDUjkanC2BQTntwK4qtzmPdBbtmgM=MMhR6B2w@mail.gmail.com>
+ <a9faedf1-c528-38e9-2ac4-e8847ecda0f2@tessares.net>
+ <CAHk-=wiHPE3Q-qARO+vqbN0FSHwQXCYSmKcrjgxqVLJun5DjhA@mail.gmail.com>
 From:   Matthieu Baerts <matthieu.baerts@tessares.net>
-Message-ID: <b6f8df30-4fbe-a440-b205-dc90583097a7@tessares.net>
-Date:   Tue, 15 Sep 2020 21:38:38 +0200
+Message-ID: <37989469-f88c-199b-d779-ed41bc65fe56@tessares.net>
+Date:   Tue, 15 Sep 2020 21:56:41 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.2.1
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wihcYiKwZQjwGd8eHLqMm=sL23a=fyzJ_u1YiFNsKN2AQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wiHPE3Q-qARO+vqbN0FSHwQXCYSmKcrjgxqVLJun5DjhA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
@@ -89,26 +88,97 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 15/09/2020 21:24, Linus Torvalds wrote:
-> On Tue, Sep 15, 2020 at 12:01 PM Matthieu Baerts
-> <matthieu.baerts@tessares.net> wrote:
- >
->> I forgot one important thing, I was on top of David Miller's net-next
->> branch by reflex. I can redo the traces on top of linux-next if needed.
-> 
-> Not likely an issue.
-> 
-> I'll go stare at the page lock code again to see if I've missed
-> anything. I still suspect it's a latent ABBA deadlock that is just
-> much *much* easier to trigger with the synchronous lock handoff, but I
-> don't see where it is.
-> 
-> I guess this is all fairly theoretical since we apparently need to do
-> that hybrid "limited fairness" patch anyway, and it fixes your issue,
-> but I hate not understanding the problem.
+On 15/09/2020 21:32, Linus Torvalds wrote:>
+> Was that an actual UP kernel? It might be good to try that too, just
+> to see if it could be an SMP race in the page locking code.
 
-I understand :)
-Thank you again for looking at this issue!
+I am sorry, I am not sure how to verify this. I guess it was one 
+processor because I removed "-smp 2" option from qemu. So I guess it 
+switched to a uniprocessor mode.
+
+Also, when I did the test and to make sure I was using only one CPU, I 
+also printed the output of /proc/cpuinfo:
+
+
++ cat /proc/cpuinfo 
+
+processor       : 0 
+
+vendor_id       : AuthenticAMD 
+
+cpu family      : 23 
+
+model           : 1 
+
+model name      : AMD EPYC 7401P 24-Core Processor 
+
+stepping        : 2 
+
+microcode       : 0x1000065 
+
+cpu MHz         : 2000.000
+cache size      : 512 KB 
+
+physical id     : 0 
+ 
+ 
+
+siblings        : 1 
+ 
+ 
+
+core id         : 0 
+
+cpu cores       : 1 
+
+apicid          : 0 
+
+initial apicid  : 0 
+
+fpu             : yes 
+ 
+ 
+
+fpu_exception   : yes 
+
+cpuid level     : 13 
+
+wp              : yes 
+ 
+ 
+
+flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge 
+mca cmov pat pse36 clflush mmx fxsr sse sse2 syscall nx mmxext fxsr_opt 
+pdpe1gb rdtscp lm rep_good nopl cpuid extd_apicid tsc_known_freq pni 
+pclmulqdq ssse3 fma cx16 sse4_1 sse4_2 x2apic movbe
+popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm 
+cmp_legacy svm cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ssbd 
+ibpb vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 rdseed adx smap 
+clflushopt sha_ni xsaveopt xsavec xgetbv1 virt_ssbd
+arat npt nrip_save arch_capabilities
+bugs            : fxsave_leak sysret_ss_attrs null_seg spectre_v1 
+spectre_v2 spec_store_bypass 
+ 
+
+bogomips        : 4000.00
+TLB size        : 1024 4K pages
+clflush size    : 64
+cache_alignment : 64 
+
+address sizes   : 40 bits physical, 48 bits virtual 
+
+power management:
+
+
+Do you want me to try another qemu config?
+
+Sorry, it is getting late for me but I also forgot to mention earlier 
+that with 1 CPU and your new sysctl set to 1, it didn't reproduce my 
+issue for 6 executions.
+
+> After all, one such theoretical race was one reason I started the rewrite.
+
+And that's a good thing, thank you! :)
 
 Cheers,
 Matt
