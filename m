@@ -2,205 +2,124 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2418126A887
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Sep 2020 17:14:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7309126AB2E
+	for <lists+linux-ext4@lfdr.de>; Tue, 15 Sep 2020 19:54:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727312AbgIOPOv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 15 Sep 2020 11:14:51 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:45148 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727047AbgIOPN4 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 15 Sep 2020 11:13:56 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id D88DD58F7AB3808AD984;
-        Tue, 15 Sep 2020 22:57:39 +0800 (CST)
-Received: from [10.174.179.187] (10.174.179.187) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 15 Sep 2020 22:57:35 +0800
-Subject: Re: [PATCH] ext4: clear buffer verified flag if read meta block from
- disk
-To:     Jan Kara <jack@suse.cz>
-CC:     <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
-        <adilger.kernel@dilger.ca>, <jack@suse.com>
-References: <20200914112420.1906407-1-yi.zhang@huawei.com>
- <20200915130711.GP4863@quack2.suse.cz>
-From:   "zhangyi (F)" <yi.zhang@huawei.com>
-Message-ID: <2b43d24e-f220-a9f8-d1a6-e85363020a3b@huawei.com>
-Date:   Tue, 15 Sep 2020 22:57:35 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        id S1727973AbgIORyB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 15 Sep 2020 13:54:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727729AbgIORxF (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Sep 2020 13:53:05 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1125AC06174A
+        for <linux-ext4@vger.kernel.org>; Tue, 15 Sep 2020 10:53:05 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id w11so4081623lfn.2
+        for <linux-ext4@vger.kernel.org>; Tue, 15 Sep 2020 10:53:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=O5EdDP5TwLdVY+wZC2Mc3xNI5SqRb91I6yJNFAUYDPA=;
+        b=SF6ZGFUAklQG7wFEMMK7S8YbMY6pG0AwQL8q0xidLzQvFAafGZhYPU7XRuqfSClCLm
+         XCeDRH62u3B/2ufMPQWjq3JySnOhdMP1u8SxO/aKybwicZpKMtUR3ToTvG/VSYoRcn52
+         z6zQr8NVsuG5WXwCh4d14g31PkQgn9QF5mNE8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O5EdDP5TwLdVY+wZC2Mc3xNI5SqRb91I6yJNFAUYDPA=;
+        b=nIwLfufDlQfuWxOREzebjkAf0m0c80j79PxkaKIa89QCx9QlPaTDNpa5FZnh49nAd6
+         CasaI0xa9IbZXCU7e4KpyH058BbpToWuseaWJA2vH7Bf8HnbT23ZIZ3MTKMA7cL6Pdpq
+         GAL1uvf+CEJDibxlQMVN7U2p/8yAn5tCfth7JnTAh8/EfCTSB05cDkv6IXiSuHD18v3W
+         gUZF3r1v22+P0ef/2+JWuSHdIIsJugNFuIwvo+J9wUEFXPCbSGzIisCXqMgN9cnC+vto
+         DF5rDDxe7OqH642oYz88YveZlRvbI1vxmNzn+uboPfvyM1VCmjPZ9OyNFoX0E7jsBkpw
+         VUAA==
+X-Gm-Message-State: AOAM530XOjWNT+5R6QX4eF6A+jPgJlmyGgDt3fP03Kcd1+Stt6ENymgx
+        Dx1F2YVE2NyJ5VKmdXyUdzEddiHcYTVVDw==
+X-Google-Smtp-Source: ABdhPJx6mp7dL99vKNg+lxaQz+F1CrOtSPt8oM+t+Dohvqhqm7Me7BpxqFuMiij2euoA4N+/ePBf+Q==
+X-Received: by 2002:a19:8007:: with SMTP id b7mr6324380lfd.84.1600192383156;
+        Tue, 15 Sep 2020 10:53:03 -0700 (PDT)
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
+        by smtp.gmail.com with ESMTPSA id y11sm4877296ljc.27.2020.09.15.10.53.01
+        for <linux-ext4@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Sep 2020 10:53:01 -0700 (PDT)
+Received: by mail-lj1-f170.google.com with SMTP id a15so3635251ljk.2
+        for <linux-ext4@vger.kernel.org>; Tue, 15 Sep 2020 10:53:01 -0700 (PDT)
+X-Received: by 2002:a05:651c:514:: with SMTP id o20mr7743769ljp.312.1600192381258;
+ Tue, 15 Sep 2020 10:53:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200915130711.GP4863@quack2.suse.cz>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.187]
-X-CFilter-Loop: Reflected
+References: <CAHk-=wiz=J=8mJ=zRG93nuJ9GtQAm5bSRAbWJbWZuN4Br38+EQ@mail.gmail.com>
+ <CAHk-=wimM2kckaYj7spUJwehZkSYxK9RQqu3G392BE=73dyKtg@mail.gmail.com>
+ <8bb582d2-2841-94eb-8862-91d1225d5ebc@MichaelLarabel.com> <CAHk-=wjqE_a6bpZyDQ4DCrvj_Dv2RwQoY7wN91kj8y-tZFRvEA@mail.gmail.com>
+ <0cbc959e-1b8d-8d7e-1dc6-672cf5b3899a@MichaelLarabel.com> <CAHk-=whP-7Uw9WgWgjRgF1mCg+NnkOPpWjVw+a9M3F9C52DrVg@mail.gmail.com>
+ <CAHk-=wjfw3U5eTGWLaisPHg1+jXsCX=xLZgqPx4KJeHhEqRnEQ@mail.gmail.com>
+ <a2369108-7103-278c-9f10-6309a0a9dc3b@MichaelLarabel.com> <CAOQ4uxhz8prfD5K7dU68yHdz=iBndCXTg5w4BrF-35B+4ziOwA@mail.gmail.com>
+ <0daf6ae6-422c-dd46-f85a-e83f6e1d1113@MichaelLarabel.com> <20200912143704.GB6583@casper.infradead.org>
+ <658ae026-32d9-0a25-5a59-9c510d6898d5@MichaelLarabel.com> <CAHk-=wip0bCNnFK2Sxdn-YCTdKBF2JjF0kcM5mXbRuKKp3zojw@mail.gmail.com>
+ <ed8442fd-6f54-dd84-cd4a-941e8b7ee603@MichaelLarabel.com>
+In-Reply-To: <ed8442fd-6f54-dd84-cd4a-941e8b7ee603@MichaelLarabel.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 15 Sep 2020 10:52:44 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjfUakuFJko5cC_gHFyCngZ9vx-NFXv=OCmAD2p4XhRig@mail.gmail.com>
+Message-ID: <CAHk-=wjfUakuFJko5cC_gHFyCngZ9vx-NFXv=OCmAD2p4XhRig@mail.gmail.com>
+Subject: Re: Kernel Benchmarking
+To:     Michael Larabel <Michael@michaellarabel.com>
+Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi, Jan
+On Tue, Sep 15, 2020 at 7:22 AM Michael Larabel
+<Michael@michaellarabel.com> wrote:
+>
+> Still running more benchmarks and on more systems, but so far at least
+> as the Apache test is concerned this patch does seem to largely address
+> the issue. The performance with the default 1000 page_lock_unfairness
+> was yielding results more similar to 5.8 and in some cases tweaking the
+> value did help improve the performance. A PLU value of 4~5 seems to
+> yield the best performance.
 
-On 2020/9/15 21:07, Jan Kara wrote:
-> On Mon 14-09-20 19:24:20, zhangyi (F) wrote:
->> The metadata buffer is no longer trusted after we read it from disk
->> again because it is not uptodate for some reasons (e.g. failed to write
->> back). Otherwise we may get below memory corruption problem in
->> ext4_ext_split()->memset() if we read stale data from the newly
->> allocated extent block on disk which has been failed to async write
->> out but miss verify again since the verified bit has already been set
->> on the buffer.
->>
->> [   29.774674] BUG: unable to handle kernel paging request at ffff88841949d000
->> ...
->> [   29.783317] Oops: 0002 [#2] SMP
->> [   29.784219] R10: 00000000000f4240 R11: 0000000000002e28 R12: ffff88842fa1c800
->> [   29.784627] CPU: 1 PID: 126 Comm: kworker/u4:3 Tainted: G      D W
->> [   29.785546] R13: ffffffff9cddcc20 R14: ffffffff9cddd420 R15: ffff88842fa1c2f8
->> [   29.786679] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),BIOS ?-20190727_0738364
->> [   29.787588] FS:  0000000000000000(0000) GS:ffff88842fa00000(0000) knlGS:0000000000000000
->> [   29.789288] Workqueue: writeback wb_workfn
->> [   29.790319] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> [   29.790321]  (flush-8:0)
->> [   29.790844] CR2: 0000000000000008 CR3: 00000004234f2000 CR4: 00000000000006f0
->> [   29.791924] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->> [   29.792839] RIP: 0010:__memset+0x24/0x30
->> [   29.793739] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->> [   29.794256] Code: 90 90 90 90 90 90 0f 1f 44 00 00 49 89 f9 48 89 d1 83 e2 07 48 c1 e9 033
->> [   29.795161] Kernel panic - not syncing: Fatal exception in interrupt
->> ...
->> [   29.808149] Call Trace:
->> [   29.808475]  ext4_ext_insert_extent+0x102e/0x1be0
->> [   29.809085]  ext4_ext_map_blocks+0xa89/0x1bb0
->> [   29.809652]  ext4_map_blocks+0x290/0x8a0
->> [   29.809085]  ext4_ext_map_blocks+0xa89/0x1bb0
->> [   29.809652]  ext4_map_blocks+0x290/0x8a0
->> [   29.810161]  ext4_writepages+0xc85/0x17c0
->> ...
->>
->> Fix this by clear buffer's verified bit if we read it from disk again.
->>
->> Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
-> 
-> Good spotting! When looking at the patch I was just wondering that it's
-> rather easy to miss clearing of buffer_verified() bit in some place where
-> we read metadata block from disk. So I was wondering that maybe it would be
+Yeah. Although looking at those results, they are somewhat mixed - I
+think the benchmark is just not very stable performance-wise.
 
-Indeed, I clear the buffer_verified() bit in some common helpers of ext4, such as
-ext4_bread() and ext4_sb_bread(), so we may not miss clear it where we invoke these
-helpers, but it is rather easy to miss in the others places where submit read bio
-directly. How about add some common helpers for them too ?
+Looking at your 250 concurrent users numbers, it's strange how that
+unfairness=5 value gets performance _so_ much better than anything
+else (including 5.8), so I do think that this benchmark is just very
+borderline sensitive to this all, and some of the variation may just
+be almost random.
 
-> less error prone to have:
-> 
-> ext4_buffer_verified() -> buffer_verified() && !buffer_write_io_error()
-> ext4_set_buffer_verified() -> clear_buffer_write_io_error(); set_buffer_verified();
-> 
-> And this should make sure we recheck the buffer contents as needed. What do
-> people think?
-> 
+We've often seen how cache placement etc can cause big differences on
+benchmarks that just do one thing over and over.
 
-Thanks for your suggestion, but I think it makes the buffer verify bit a little more
-confused. Now the BH_Verified bit is used by ext4 only. We should check the meta data
-after we read buffer from the disk and set BH_Verified bit if the data is fine, so I
-think the semantic of the buffer is actually verified or not is the bh is "newly read
-from disk and need check" or not, not the write_io_error bit (although it seems that
-the write out failure is the only reason of re-read metadata from disk but keep the
-verified bit now).
+But the big picture is fairly clear: apache siege absolutely hates the
+complete fairness, and clearly the hybrid thing works fine.
 
-And let us think about the ext4_buffer_uptodate(), we invoke this helper in some
-places before read metadata from disk, it will re-set the uptodate bit to void read
-from disk again, so recheck the buffer is not required for these cases. If we use
-ext4_buffer_verified(), it will force to recheck the buffer again. So I think clear
-the buffer_verified() properly may be more clear to me. What do you think ?
+The fact that a "unfairness count" of 4-5 seems to be consistently
+fairly good (and sometimes seems clearly better than the "completely
+unfair" behavior) makes me feel better about things, though. I was
+suspecting that would be a somewhat reasonable value, and I _hope_
+that it's small enough that it still gets rid of the watchdog issues
+that the original fairness patch was aiming to fix.
 
-Thanks,
-Yi.
+> The results though with Hackbench and Redis that exhibited similar drops
+> from the commit in question remained mixed.
 
-> 
->> ---
->>  fs/ext4/balloc.c  | 1 +
->>  fs/ext4/extents.c | 1 +
->>  fs/ext4/ialloc.c  | 1 +
->>  fs/ext4/inode.c   | 5 ++++-
->>  fs/ext4/super.c   | 1 +
->>  5 files changed, 8 insertions(+), 1 deletion(-)
->>
->> diff --git a/fs/ext4/balloc.c b/fs/ext4/balloc.c
->> index 48c3df47748d..8e7e9715cde9 100644
->> --- a/fs/ext4/balloc.c
->> +++ b/fs/ext4/balloc.c
->> @@ -494,6 +494,7 @@ ext4_read_block_bitmap_nowait(struct super_block *sb, ext4_group_t block_group,
->>  	 * submit the buffer_head for reading
->>  	 */
->>  	set_buffer_new(bh);
->> +	clear_buffer_verified(bh);
->>  	trace_ext4_read_block_bitmap_load(sb, block_group, ignore_locked);
->>  	bh->b_end_io = ext4_end_bitmap_read;
->>  	get_bh(bh);
->> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
->> index a0481582187a..0a5205edc00a 100644
->> --- a/fs/ext4/extents.c
->> +++ b/fs/ext4/extents.c
->> @@ -501,6 +501,7 @@ __read_extent_tree_block(const char *function, unsigned int line,
->>  
->>  	if (!bh_uptodate_or_lock(bh)) {
->>  		trace_ext4_ext_load_extent(inode, pblk, _RET_IP_);
->> +		clear_buffer_verified(bh);
->>  		err = bh_submit_read(bh);
->>  		if (err < 0)
->>  			goto errout;
->> diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
->> index df25d38d6539..20cda952c621 100644
->> --- a/fs/ext4/ialloc.c
->> +++ b/fs/ext4/ialloc.c
->> @@ -188,6 +188,7 @@ ext4_read_inode_bitmap(struct super_block *sb, ext4_group_t block_group)
->>  	/*
->>  	 * submit the buffer_head for reading
->>  	 */
->> +	clear_buffer_verified(bh);
->>  	trace_ext4_load_inode_bitmap(sb, block_group);
->>  	bh->b_end_io = ext4_end_bitmap_read;
->>  	get_bh(bh);
->> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
->> index bf596467c234..7eaa55651d29 100644
->> --- a/fs/ext4/inode.c
->> +++ b/fs/ext4/inode.c
->> @@ -884,6 +884,7 @@ struct buffer_head *ext4_bread(handle_t *handle, struct inode *inode,
->>  		return bh;
->>  	if (!bh || ext4_buffer_uptodate(bh))
->>  		return bh;
->> +	clear_buffer_verified(bh);
->>  	ll_rw_block(REQ_OP_READ, REQ_META | REQ_PRIO, 1, &bh);
->>  	wait_on_buffer(bh);
->>  	if (buffer_uptodate(bh))
->> @@ -909,9 +910,11 @@ int ext4_bread_batch(struct inode *inode, ext4_lblk_t block, int bh_count,
->>  
->>  	for (i = 0; i < bh_count; i++)
->>  		/* Note that NULL bhs[i] is valid because of holes. */
->> -		if (bhs[i] && !ext4_buffer_uptodate(bhs[i]))
->> +		if (bhs[i] && !ext4_buffer_uptodate(bhs[i])) {
->> +			clear_buffer_verified(bhs[i]);
->>  			ll_rw_block(REQ_OP_READ, REQ_META | REQ_PRIO, 1,
->>  				    &bhs[i]);
->> +		}
->>  
->>  	if (!wait)
->>  		return 0;
->> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
->> index ea425b49b345..9e760bf9e8b1 100644
->> --- a/fs/ext4/super.c
->> +++ b/fs/ext4/super.c
->> @@ -156,6 +156,7 @@ ext4_sb_bread(struct super_block *sb, sector_t block, int op_flags)
->>  		return ERR_PTR(-ENOMEM);
->>  	if (ext4_buffer_uptodate(bh))
->>  		return bh;
->> +	clear_buffer_verified(bh);
->>  	ll_rw_block(REQ_OP_READ, REQ_META | op_flags, 1, &bh);
->>  	wait_on_buffer(bh);
->>  	if (buffer_uptodate(bh))
->> -- 
->> 2.25.4
->>
+The hackbench numbers seemed fairly randomly sensitive before too.
+
+I wouldn't worry about it as long as there's no clear regression on a
+load that seems realistic. We know the page lock is important, and we
+do know that the _real_ fix in many ways is to try to not get
+contention in the first place. Either by trying to avoid the page lock
+entirely (ie the approach that Willy is pursuing), or by maybe trying
+to have a reader-writer mode or something.
+
+So in a very real sense, all this page lock fairness stuff is still
+just a symptom of a more fundamental problem, even though I think that
+the fairness itself is also a fairly fundamental thing.
+
+                  Linus
