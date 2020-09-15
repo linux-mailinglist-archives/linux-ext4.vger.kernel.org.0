@@ -2,53 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 195E026ABD4
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Sep 2020 20:28:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F54026ABFC
+	for <lists+linux-ext4@lfdr.de>; Tue, 15 Sep 2020 20:32:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728050AbgIOS2U (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 15 Sep 2020 14:28:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43246 "EHLO
+        id S1727936AbgIOSb7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 15 Sep 2020 14:31:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728011AbgIOS1k (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Sep 2020 14:27:40 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59ECFC061788
-        for <linux-ext4@vger.kernel.org>; Tue, 15 Sep 2020 11:27:40 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id y4so3686297ljk.8
-        for <linux-ext4@vger.kernel.org>; Tue, 15 Sep 2020 11:27:40 -0700 (PDT)
+        with ESMTP id S1727846AbgIOSbm (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Sep 2020 14:31:42 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 476D7C06174A
+        for <linux-ext4@vger.kernel.org>; Tue, 15 Sep 2020 11:31:41 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id x69so4188820lff.3
+        for <linux-ext4@vger.kernel.org>; Tue, 15 Sep 2020 11:31:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Qd9UQxfut0hXXZzFJT2meuy74mIWL2uFMX8QA4+AqJg=;
-        b=YZCLf5KwWovlmSfLKqpmzcDEAyF10UYUc9DhZZy90MM3OUQp+Ev1oCFxtSUDRKXzd+
-         LlCn0zf4uazyNTtCJH26wj7kEXvoCzPV6Qb7BXxj/r9ifUPX3DcozQleedXwAZN9ZGEo
-         zmKHlYAru5kQsLQh0RPI5YC1rKJiqPlN+n6D8=
+        bh=Dfn+wAryn8C6DCMRnpMqu5m74tYawQDjyF9URZVbit4=;
+        b=KytikPFX2ltfGBuVNpKqIMWZkBuq7chmhFwJK4wg3F9rWrqDBv7uB9WDavsBoHoyUE
+         wj2KWBLT+0RefUd1HoTSg6Ue4AUM1cNQKEd6Nhs7R6AeUsgwnk/hSGaz84Tr764/Q66H
+         b+egq4Eo3V9tr9aRJcHnwjPJozP0YCOTZxh3k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Qd9UQxfut0hXXZzFJT2meuy74mIWL2uFMX8QA4+AqJg=;
-        b=UKS1E2e5Ct0nXCROXUnRp0uAOUfQjTz+0OBK1sS1vfs14ALvvs8ErMKsWL4CroUEy1
-         uQB6eM48X5W5XYP6ptw1SxRNA3iI75jI0+Zv+oStq+kJYH3pj8Usgc8Ev0iOxZ2/el8s
-         4roe4igdnVii8e5zsQ2JE5DDeUJCfjWV5V5zEUZ30N6j1aVPs5LlxxTn4eVIFlIPIS9E
-         o4ks4UEARcGVWOOZVA9X0Tkv0SErPUa+QBONFC4d+s+ZenKqkC5NyQM+f8Tzgb6sSHVO
-         +MdOASVcVWO8Qi6PXH0+JCuGeCvcnzgJ7ztG3o8XvFKh/5AVueRoQWlYznRuSskHWmmg
-         aDdw==
-X-Gm-Message-State: AOAM532OVw2S89W3YvdfUSc3ZqQiMYbyX/+b/VgYLk9EPyC7xnuWka58
-        vaci4h1+ph4qq4GJoMVT9AdgnV8B6Blarw==
-X-Google-Smtp-Source: ABdhPJxrmrPVeSvKdS70RKn2MqWyR+3D+vi04zLa+hyr1M82Idcat/zNgl/8ir4vUZj8fAxR70H4wg==
-X-Received: by 2002:a05:651c:1056:: with SMTP id x22mr8024555ljm.81.1600194458326;
-        Tue, 15 Sep 2020 11:27:38 -0700 (PDT)
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
-        by smtp.gmail.com with ESMTPSA id n3sm4805062ljj.59.2020.09.15.11.27.36
+        bh=Dfn+wAryn8C6DCMRnpMqu5m74tYawQDjyF9URZVbit4=;
+        b=tGOKHUMUupl/UifETBVsUWRdhxbN7Wqet+ooHfo8+xD2S/XvtoIUGM0bRhZkH3kTii
+         qlr39JLdSQNULxaZLuOHPtpyb2MZxLQak23MEcOWNRVgFMIDe86Hfgaa4X5eyTRgf19O
+         MX/+oKsHF0WLPAw8fA0Kuw91EOJopylI9A6Ghj0F9tyYqyTzC8eiAOI7OH+lGMyT9cVS
+         RuDiVouB6gljenhq/I08RQVgca5UPPbFDRSywULm6IpVFJD2e3rl5R/PmEIrZOwKXmJA
+         +mBniSKhZ85+PDhTgjBzMighEWgnTU4nIbpvfsGfFJ9AZ2Y4fFpxLy6UAf2vhUDGg1wu
+         amnw==
+X-Gm-Message-State: AOAM532LWRQvjARwAB6+m+g+y4gafNd5ZEaNTOcGEtMWVbVgccPHDf61
+        pcOq46hKFiUJDAPyzebtRDPARxUPcAi2Vw==
+X-Google-Smtp-Source: ABdhPJy1hHKqVncJOTf/crRmtEKePtKMhVoG8cX+PmsK1N7vtJmWB+tE1SQx5wmn6iVU8P/6XiFliw==
+X-Received: by 2002:a19:c6c8:: with SMTP id w191mr6009815lff.348.1600194699329;
+        Tue, 15 Sep 2020 11:31:39 -0700 (PDT)
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
+        by smtp.gmail.com with ESMTPSA id w9sm4092009lfn.224.2020.09.15.11.31.38
         for <linux-ext4@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Sep 2020 11:27:36 -0700 (PDT)
-Received: by mail-lj1-f172.google.com with SMTP id s205so3692384lja.7
-        for <linux-ext4@vger.kernel.org>; Tue, 15 Sep 2020 11:27:36 -0700 (PDT)
-X-Received: by 2002:a2e:84d6:: with SMTP id q22mr6691288ljh.70.1600194456034;
- Tue, 15 Sep 2020 11:27:36 -0700 (PDT)
+        Tue, 15 Sep 2020 11:31:38 -0700 (PDT)
+Received: by mail-lj1-f169.google.com with SMTP id n25so3718859ljj.4
+        for <linux-ext4@vger.kernel.org>; Tue, 15 Sep 2020 11:31:38 -0700 (PDT)
+X-Received: by 2002:a05:651c:104c:: with SMTP id x12mr7823371ljm.285.1600194698099;
+ Tue, 15 Sep 2020 11:31:38 -0700 (PDT)
 MIME-Version: 1.0
 References: <CAHk-=wiz=J=8mJ=zRG93nuJ9GtQAm5bSRAbWJbWZuN4Br38+EQ@mail.gmail.com>
  <CAHk-=wimM2kckaYj7spUJwehZkSYxK9RQqu3G392BE=73dyKtg@mail.gmail.com>
@@ -62,9 +62,9 @@ References: <CAHk-=wiz=J=8mJ=zRG93nuJ9GtQAm5bSRAbWJbWZuN4Br38+EQ@mail.gmail.com>
  <9550725a-2d3f-fa35-1410-cae912e128b9@tessares.net>
 In-Reply-To: <9550725a-2d3f-fa35-1410-cae912e128b9@tessares.net>
 From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 15 Sep 2020 11:27:19 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wimdSWe+GVBKwB0_=ZKX2ZN5JEqK5yA99toab4MAoYAsg@mail.gmail.com>
-Message-ID: <CAHk-=wimdSWe+GVBKwB0_=ZKX2ZN5JEqK5yA99toab4MAoYAsg@mail.gmail.com>
+Date:   Tue, 15 Sep 2020 11:31:21 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiH37sXgMC+0UtLceOUJry2FBa_G3j726TP4n69jeB80w@mail.gmail.com>
+Message-ID: <CAHk-=wiH37sXgMC+0UtLceOUJry2FBa_G3j726TP4n69jeB80w@mail.gmail.com>
 Subject: Re: Kernel Benchmarking
 To:     Matthieu Baerts <matthieu.baerts@tessares.net>
 Cc:     Michael Larabel <Michael@michaellarabel.com>,
@@ -84,49 +84,13 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 On Tue, Sep 15, 2020 at 8:34 AM Matthieu Baerts
 <matthieu.baerts@tessares.net> wrote:
 >
-> > But it sounds like it's 100% repeatable with the fair page lock, which
-> > is actually a good thing. It means that if you do a "sysrq-w" while
-> > it's blocking, you should see exactly what is waiting for what.
-> >
-> > (Except since it times out nicely eventually, probably at least part
-> > of the waiting is interruptible, and then you need to do "sysrq-t"
-> > instead and it's going to be _very_ verbose and much harder to
-> > pinpoint things, and you'll probably need to have a very big printk
-> > buffer).
+> One more thing, only when I have the issue, I can also see this kernel
+> message that seems clearly linked:
 >
-> Thank you for this idea! I was focused on using lockdep and I forgot
-> about this simple method. It is not (yet) a reflex for me to use it!
->
-> I think I got an interesting trace I took 20 seconds after having
-> started packetdrill:
+>    [    7.198259] sched: RT throttling activated
 
-Ok, so everybody there is basically in the same identical situation,
-they all seem to be doing mlockall(), which does __mm_populate() ->
-populate_vma_page_range() -> __get_user_pages() -> handle_mm_fault()
-and then actually tries to fault in the missing pages.
+Hmm. It does seem like this might be related and a clue, but you'd
+have to ask the RT folks what the likely cause is and how to debug
+things.. Not my area.
 
-And that does do a lot of "lock_page()" (and, of course, as a result,
-a lot of "unlock_page()" too).
-
-Every one of them is in the "io_schedule()" in the filemap_fault()
-path, although two of them seem to be in file_fdatawait_range() rather
-than in the lock_page() code itself (so they are also waiting on a
-page bit, but they are waiting for the writeback bit to clear).
-
-And all of them do it under the mmap_read_lock().
-
-I'm not seeing what else they'd be blocking on, though.
-
-As mentioned, the thing they are blocking on might be something
-interruptible that holds the lock, and might not be in 'D' state. Then
-it wouldn't show up in sysrq-W, you'd have to do 'sysrq-T' to see
-those..
-
-From past experience, that tends to be a _lot_ of data, though, and it
-easily overflows the printk buffers etc.
-
-lockdep has made these kinds of sysrq hacks mostly a thing of the
-past, and the few non-lockdep locks (and the page lock is definitely
-the biggest of them) are an annoying blast to the past..
-
-                    Linus
+                 Linus
