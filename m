@@ -2,189 +2,177 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63BE526A4C4
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Sep 2020 14:13:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B093226A5E7
+	for <lists+linux-ext4@lfdr.de>; Tue, 15 Sep 2020 15:07:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726524AbgIOMMw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 15 Sep 2020 08:12:52 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53378 "EHLO mx2.suse.de"
+        id S1726566AbgIONHg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 15 Sep 2020 09:07:36 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35540 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726526AbgIOMLw (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 15 Sep 2020 08:11:52 -0400
+        id S1726552AbgIONHN (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 15 Sep 2020 09:07:13 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 533ECB5A4;
-        Tue, 15 Sep 2020 12:11:38 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id EFBD2AC19;
+        Tue, 15 Sep 2020 13:07:26 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 9F78D1E12EF; Tue, 15 Sep 2020 14:11:22 +0200 (CEST)
-Date:   Tue, 15 Sep 2020 14:11:22 +0200
+        id 412451E12EF; Tue, 15 Sep 2020 15:07:11 +0200 (CEST)
+Date:   Tue, 15 Sep 2020 15:07:11 +0200
 From:   Jan Kara <jack@suse.cz>
-To:     Ye Bin <yebin10@huawei.com>
-Cc:     riteshh@linux.ibm.com, jack@suse.cz, tytso@mit.edu,
-        adilger.kernel@dilger.ca, jack@suse.com, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v4]  ext4: Fix dead loop in ext4_mb_new_blocks
-Message-ID: <20200915121122.GN4863@quack2.suse.cz>
-References: <20200914104742.1745082-1-yebin10@huawei.com>
+To:     "zhangyi (F)" <yi.zhang@huawei.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jack@suse.com
+Subject: Re: [PATCH] ext4: clear buffer verified flag if read meta block from
+ disk
+Message-ID: <20200915130711.GP4863@quack2.suse.cz>
+References: <20200914112420.1906407-1-yi.zhang@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="GZVR6ND4mMseVXL/"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200914104742.1745082-1-yebin10@huawei.com>
+In-Reply-To: <20200914112420.1906407-1-yi.zhang@huawei.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-
---GZVR6ND4mMseVXL/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon 14-09-20 18:47:42, Ye Bin wrote:
-> As we test disk offline/online with running fsstress, we find fsstress
-> process is keeping running state.
-> kworker/u32:3-262   [004] ...1   140.787471: ext4_mb_discard_preallocations: dev 8,32 needed 114
-> ....
-> kworker/u32:3-262   [004] ...1   140.787471: ext4_mb_discard_preallocations: dev 8,32 needed 114
+On Mon 14-09-20 19:24:20, zhangyi (F) wrote:
+> The metadata buffer is no longer trusted after we read it from disk
+> again because it is not uptodate for some reasons (e.g. failed to write
+> back). Otherwise we may get below memory corruption problem in
+> ext4_ext_split()->memset() if we read stale data from the newly
+> allocated extent block on disk which has been failed to async write
+> out but miss verify again since the verified bit has already been set
+> on the buffer.
 > 
-> ext4_mb_new_blocks
-> repeat:
->         ext4_mb_discard_preallocations_should_retry(sb, ac, &seq)
->                 freed = ext4_mb_discard_preallocations
->                         ext4_mb_discard_group_preallocations
->                                 this_cpu_inc(discard_pa_seq);
->                 ---> freed == 0
->                 seq_retry = ext4_get_discard_pa_seq_sum
->                         for_each_possible_cpu(__cpu)
->                                 __seq += per_cpu(discard_pa_seq, __cpu);
->                 if (seq_retry != *seq) {
->                         *seq = seq_retry;
->                         ret = true;
->                 }
+> [   29.774674] BUG: unable to handle kernel paging request at ffff88841949d000
+> ...
+> [   29.783317] Oops: 0002 [#2] SMP
+> [   29.784219] R10: 00000000000f4240 R11: 0000000000002e28 R12: ffff88842fa1c800
+> [   29.784627] CPU: 1 PID: 126 Comm: kworker/u4:3 Tainted: G      D W
+> [   29.785546] R13: ffffffff9cddcc20 R14: ffffffff9cddd420 R15: ffff88842fa1c2f8
+> [   29.786679] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),BIOS ?-20190727_0738364
+> [   29.787588] FS:  0000000000000000(0000) GS:ffff88842fa00000(0000) knlGS:0000000000000000
+> [   29.789288] Workqueue: writeback wb_workfn
+> [   29.790319] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   29.790321]  (flush-8:0)
+> [   29.790844] CR2: 0000000000000008 CR3: 00000004234f2000 CR4: 00000000000006f0
+> [   29.791924] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [   29.792839] RIP: 0010:__memset+0x24/0x30
+> [   29.793739] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [   29.794256] Code: 90 90 90 90 90 90 0f 1f 44 00 00 49 89 f9 48 89 d1 83 e2 07 48 c1 e9 033
+> [   29.795161] Kernel panic - not syncing: Fatal exception in interrupt
+> ...
+> [   29.808149] Call Trace:
+> [   29.808475]  ext4_ext_insert_extent+0x102e/0x1be0
+> [   29.809085]  ext4_ext_map_blocks+0xa89/0x1bb0
+> [   29.809652]  ext4_map_blocks+0x290/0x8a0
+> [   29.809085]  ext4_ext_map_blocks+0xa89/0x1bb0
+> [   29.809652]  ext4_map_blocks+0x290/0x8a0
+> [   29.810161]  ext4_writepages+0xc85/0x17c0
+> ...
 > 
-> As we see seq_retry is sum of discard_pa_seq every cpu, if
-> ext4_mb_discard_group_preallocations return zero discard_pa_seq in this
-> cpu maybe increase one, so condition "seq_retry != *seq" have always
-> been met.
-> Ritesh Harjani suggest to in ext4_mb_discard_group_preallocations function we
-> only increase discard_pa_seq when there is some PA to free.
+> Fix this by clear buffer's verified bit if we read it from disk again.
 > 
-> Fixes: 07b5b8e1ac40 ("ext4: mballoc: introduce pcpu seqcnt for freeing PA to improve ENOSPC handling")
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
+> Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
 
-The patch looks good to me. You can add:
+Good spotting! When looking at the patch I was just wondering that it's
+rather easy to miss clearing of buffer_verified() bit in some place where
+we read metadata block from disk. So I was wondering that maybe it would be
+less error prone to have:
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+ext4_buffer_verified() -> buffer_verified() && !buffer_write_io_error()
+ext4_set_buffer_verified() -> clear_buffer_write_io_error(); set_buffer_verified();
 
-But as I mentioned in my previous reply I also think the attached patch
-also needs to be merged to avoid premature ENOSPC errors (which your change
-makes somewhat more likely). Ritesh do you agree?
+And this should make sure we recheck the buffer contents as needed. What do
+people think?
 
 								Honza
 
-
 > ---
->  fs/ext4/mballoc.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+>  fs/ext4/balloc.c  | 1 +
+>  fs/ext4/extents.c | 1 +
+>  fs/ext4/ialloc.c  | 1 +
+>  fs/ext4/inode.c   | 5 ++++-
+>  fs/ext4/super.c   | 1 +
+>  5 files changed, 8 insertions(+), 1 deletion(-)
 > 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 132c118d12e1..ff47347012f4 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -4189,7 +4189,6 @@ ext4_mb_discard_group_preallocations(struct super_block *sb,
->  	INIT_LIST_HEAD(&list);
->  repeat:
->  	ext4_lock_group(sb, group);
-> -	this_cpu_inc(discard_pa_seq);
->  	list_for_each_entry_safe(pa, tmp,
->  				&grp->bb_prealloc_list, pa_group_list) {
->  		spin_lock(&pa->pa_lock);
-> @@ -4206,6 +4205,9 @@ ext4_mb_discard_group_preallocations(struct super_block *sb,
->  		/* seems this one can be freed ... */
->  		ext4_mb_mark_pa_deleted(sb, pa);
+> diff --git a/fs/ext4/balloc.c b/fs/ext4/balloc.c
+> index 48c3df47748d..8e7e9715cde9 100644
+> --- a/fs/ext4/balloc.c
+> +++ b/fs/ext4/balloc.c
+> @@ -494,6 +494,7 @@ ext4_read_block_bitmap_nowait(struct super_block *sb, ext4_group_t block_group,
+>  	 * submit the buffer_head for reading
+>  	 */
+>  	set_buffer_new(bh);
+> +	clear_buffer_verified(bh);
+>  	trace_ext4_read_block_bitmap_load(sb, block_group, ignore_locked);
+>  	bh->b_end_io = ext4_end_bitmap_read;
+>  	get_bh(bh);
+> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> index a0481582187a..0a5205edc00a 100644
+> --- a/fs/ext4/extents.c
+> +++ b/fs/ext4/extents.c
+> @@ -501,6 +501,7 @@ __read_extent_tree_block(const char *function, unsigned int line,
 >  
-> +		if (!free)
-> +			this_cpu_inc(discard_pa_seq);
-> +
->  		/* we can trust pa_free ... */
->  		free += pa->pa_free;
+>  	if (!bh_uptodate_or_lock(bh)) {
+>  		trace_ext4_ext_load_extent(inode, pblk, _RET_IP_);
+> +		clear_buffer_verified(bh);
+>  		err = bh_submit_read(bh);
+>  		if (err < 0)
+>  			goto errout;
+> diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
+> index df25d38d6539..20cda952c621 100644
+> --- a/fs/ext4/ialloc.c
+> +++ b/fs/ext4/ialloc.c
+> @@ -188,6 +188,7 @@ ext4_read_inode_bitmap(struct super_block *sb, ext4_group_t block_group)
+>  	/*
+>  	 * submit the buffer_head for reading
+>  	 */
+> +	clear_buffer_verified(bh);
+>  	trace_ext4_load_inode_bitmap(sb, block_group);
+>  	bh->b_end_io = ext4_end_bitmap_read;
+>  	get_bh(bh);
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index bf596467c234..7eaa55651d29 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -884,6 +884,7 @@ struct buffer_head *ext4_bread(handle_t *handle, struct inode *inode,
+>  		return bh;
+>  	if (!bh || ext4_buffer_uptodate(bh))
+>  		return bh;
+> +	clear_buffer_verified(bh);
+>  	ll_rw_block(REQ_OP_READ, REQ_META | REQ_PRIO, 1, &bh);
+>  	wait_on_buffer(bh);
+>  	if (buffer_uptodate(bh))
+> @@ -909,9 +910,11 @@ int ext4_bread_batch(struct inode *inode, ext4_lblk_t block, int bh_count,
 >  
+>  	for (i = 0; i < bh_count; i++)
+>  		/* Note that NULL bhs[i] is valid because of holes. */
+> -		if (bhs[i] && !ext4_buffer_uptodate(bhs[i]))
+> +		if (bhs[i] && !ext4_buffer_uptodate(bhs[i])) {
+> +			clear_buffer_verified(bhs[i]);
+>  			ll_rw_block(REQ_OP_READ, REQ_META | REQ_PRIO, 1,
+>  				    &bhs[i]);
+> +		}
+>  
+>  	if (!wait)
+>  		return 0;
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index ea425b49b345..9e760bf9e8b1 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -156,6 +156,7 @@ ext4_sb_bread(struct super_block *sb, sector_t block, int op_flags)
+>  		return ERR_PTR(-ENOMEM);
+>  	if (ext4_buffer_uptodate(bh))
+>  		return bh;
+> +	clear_buffer_verified(bh);
+>  	ll_rw_block(REQ_OP_READ, REQ_META | op_flags, 1, &bh);
+>  	wait_on_buffer(bh);
+>  	if (buffer_uptodate(bh))
 > -- 
 > 2.25.4
 > 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
-
---GZVR6ND4mMseVXL/
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment; filename="0001-ext4-Discard-preallocations-before-releasing-group-l.patch"
-
-From ce4bb26350da47a6c07be378bf478e5a81bc96d4 Mon Sep 17 00:00:00 2001
-From: Jan Kara <jack@suse.cz>
-Date: Tue, 15 Sep 2020 13:54:20 +0200
-Subject: [PATCH] ext4: Discard preallocations before releasing group lock
-
-ext4_mb_discard_group_preallocations() can be releasing group lock with
-preallocations accumulated on its local list. Thus although
-discard_pa_seq was incremented and concurrent allocating processes will
-be retrying allocations, it can happen that premature ENOSPC error is
-returned because blocks used for preallocations are not available for
-reuse yet. Make sure we always free locally accumulated preallocations
-before releasing group lock.
-
-Fixes: 07b5b8e1ac40 ("ext4: mballoc: introduce pcpu seqcnt for freeing PA to improve ENOSPC handling")
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/mballoc.c | 26 ++++++++++----------------
- 1 file changed, 10 insertions(+), 16 deletions(-)
-
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 132c118d12e1..0ded25d55d9b 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -4215,22 +4215,6 @@ ext4_mb_discard_group_preallocations(struct super_block *sb,
- 		list_add(&pa->u.pa_tmp_list, &list);
- 	}
- 
--	/* if we still need more blocks and some PAs were used, try again */
--	if (free < needed && busy) {
--		busy = 0;
--		ext4_unlock_group(sb, group);
--		cond_resched();
--		goto repeat;
--	}
--
--	/* found anything to free? */
--	if (list_empty(&list)) {
--		BUG_ON(free != 0);
--		mb_debug(sb, "Someone else may have freed PA for this group %u\n",
--			 group);
--		goto out;
--	}
--
- 	/* now free all selected PAs */
- 	list_for_each_entry_safe(pa, tmp, &list, u.pa_tmp_list) {
- 
-@@ -4248,6 +4232,16 @@ ext4_mb_discard_group_preallocations(struct super_block *sb,
- 		call_rcu(&(pa)->u.pa_rcu, ext4_mb_pa_callback);
- 	}
- 
-+	/* if we still need more blocks and some PAs were used, try again */
-+	if (free < needed && busy) {
-+		ext4_unlock_group(sb, group);
-+		cond_resched();
-+		busy = 0;
-+		/* Make sure we increment discard_pa_seq again */
-+		needed -= free;
-+		free = 0;
-+		goto repeat;
-+	}
- out:
- 	ext4_unlock_group(sb, group);
- 	ext4_mb_unload_buddy(&e4b);
--- 
-2.16.4
-
-
---GZVR6ND4mMseVXL/--
