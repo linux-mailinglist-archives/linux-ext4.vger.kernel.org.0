@@ -2,291 +2,189 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7FB726A349
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Sep 2020 12:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63BE526A4C4
+	for <lists+linux-ext4@lfdr.de>; Tue, 15 Sep 2020 14:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726241AbgIOKjs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 15 Sep 2020 06:39:48 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37594 "EHLO mx2.suse.de"
+        id S1726524AbgIOMMw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 15 Sep 2020 08:12:52 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53378 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726119AbgIOKjl (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 15 Sep 2020 06:39:41 -0400
+        id S1726526AbgIOMLw (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 15 Sep 2020 08:11:52 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 570CEADCD;
-        Tue, 15 Sep 2020 10:39:54 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 533ECB5A4;
+        Tue, 15 Sep 2020 12:11:38 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 766FE1E12EF; Tue, 15 Sep 2020 12:39:38 +0200 (CEST)
-Date:   Tue, 15 Sep 2020 12:39:38 +0200
+        id 9F78D1E12EF; Tue, 15 Sep 2020 14:11:22 +0200 (CEST)
+Date:   Tue, 15 Sep 2020 14:11:22 +0200
 From:   Jan Kara <jack@suse.cz>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Michael Larabel <Michael@michaellarabel.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Ted Ts'o <tytso@google.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>, linux-mm@kvack.org
-Subject: Re: Kernel Benchmarking
-Message-ID: <20200915103938.GL4863@quack2.suse.cz>
-References: <CAHk-=wjqE_a6bpZyDQ4DCrvj_Dv2RwQoY7wN91kj8y-tZFRvEA@mail.gmail.com>
- <0cbc959e-1b8d-8d7e-1dc6-672cf5b3899a@MichaelLarabel.com>
- <CAHk-=whP-7Uw9WgWgjRgF1mCg+NnkOPpWjVw+a9M3F9C52DrVg@mail.gmail.com>
- <CAHk-=wjfw3U5eTGWLaisPHg1+jXsCX=xLZgqPx4KJeHhEqRnEQ@mail.gmail.com>
- <a2369108-7103-278c-9f10-6309a0a9dc3b@MichaelLarabel.com>
- <CAOQ4uxhz8prfD5K7dU68yHdz=iBndCXTg5w4BrF-35B+4ziOwA@mail.gmail.com>
- <0daf6ae6-422c-dd46-f85a-e83f6e1d1113@MichaelLarabel.com>
- <20200912143704.GB6583@casper.infradead.org>
- <803672c0-7c57-9d25-ffb4-cde891eac4d3@MichaelLarabel.com>
- <20200915033210.GA5449@casper.infradead.org>
+To:     Ye Bin <yebin10@huawei.com>
+Cc:     riteshh@linux.ibm.com, jack@suse.cz, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jack@suse.com, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v4]  ext4: Fix dead loop in ext4_mb_new_blocks
+Message-ID: <20200915121122.GN4863@quack2.suse.cz>
+References: <20200914104742.1745082-1-yebin10@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/mixed; boundary="GZVR6ND4mMseVXL/"
 Content-Disposition: inline
-In-Reply-To: <20200915033210.GA5449@casper.infradead.org>
+In-Reply-To: <20200914104742.1745082-1-yebin10@huawei.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Matthew!
 
-On Tue 15-09-20 04:32:10, Matthew Wilcox wrote:
-> On Sat, Sep 12, 2020 at 09:44:15AM -0500, Michael Larabel wrote:
-> > Interesting, I'll fire up some cross-filesystem benchmarks with those tests
-> > today and report back shortly with the difference.
+--GZVR6ND4mMseVXL/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon 14-09-20 18:47:42, Ye Bin wrote:
+> As we test disk offline/online with running fsstress, we find fsstress
+> process is keeping running state.
+> kworker/u32:3-262   [004] ...1   140.787471: ext4_mb_discard_preallocations: dev 8,32 needed 114
+> ....
+> kworker/u32:3-262   [004] ...1   140.787471: ext4_mb_discard_preallocations: dev 8,32 needed 114
 > 
-> If you have time, perhaps you'd like to try this patch.  It tries to
-> handle page faults locklessly when possible, which should be the case
-> where you're seeing page lock contention.  I've tried to be fairly
-> conservative in this patch; reducing page lock acquisition should be
-> possible in more cases.
+> ext4_mb_new_blocks
+> repeat:
+>         ext4_mb_discard_preallocations_should_retry(sb, ac, &seq)
+>                 freed = ext4_mb_discard_preallocations
+>                         ext4_mb_discard_group_preallocations
+>                                 this_cpu_inc(discard_pa_seq);
+>                 ---> freed == 0
+>                 seq_retry = ext4_get_discard_pa_seq_sum
+>                         for_each_possible_cpu(__cpu)
+>                                 __seq += per_cpu(discard_pa_seq, __cpu);
+>                 if (seq_retry != *seq) {
+>                         *seq = seq_retry;
+>                         ret = true;
+>                 }
+> 
+> As we see seq_retry is sum of discard_pa_seq every cpu, if
+> ext4_mb_discard_group_preallocations return zero discard_pa_seq in this
+> cpu maybe increase one, so condition "seq_retry != *seq" have always
+> been met.
+> Ritesh Harjani suggest to in ext4_mb_discard_group_preallocations function we
+> only increase discard_pa_seq when there is some PA to free.
+> 
+> Fixes: 07b5b8e1ac40 ("ext4: mballoc: introduce pcpu seqcnt for freeing PA to improve ENOSPC handling")
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
 
-So I'd be somewhat uneasy with this optimization. The thing is that e.g.
-page migration relies on page lock protecting page from being mapped? How
-does your patch handle that? I'm also not sure if the rmap code is really
-ready for new page reverse mapping being added without holding page lock...
+The patch looks good to me. You can add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+But as I mentioned in my previous reply I also think the attached patch
+also needs to be merged to avoid premature ENOSPC errors (which your change
+makes somewhat more likely). Ritesh do you agree?
 
 								Honza
+
+
+> ---
+>  fs/ext4/mballoc.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index ca6e6a81576b..a14785b7fca7 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -416,6 +416,7 @@ extern pgprot_t protection_map[16];
->   * @FAULT_FLAG_REMOTE: The fault is not for current task/mm.
->   * @FAULT_FLAG_INSTRUCTION: The fault was during an instruction fetch.
->   * @FAULT_FLAG_INTERRUPTIBLE: The fault can be interrupted by non-fatal signals.
-> + * @FAULT_FLAG_UPTODATE_ONLY: The fault handler returned @VM_FAULT_UPTODATE.
->   *
->   * About @FAULT_FLAG_ALLOW_RETRY and @FAULT_FLAG_TRIED: we can specify
->   * whether we would allow page faults to retry by specifying these two
-> @@ -446,6 +447,7 @@ extern pgprot_t protection_map[16];
->  #define FAULT_FLAG_REMOTE			0x80
->  #define FAULT_FLAG_INSTRUCTION  		0x100
->  #define FAULT_FLAG_INTERRUPTIBLE		0x200
-> +#define FAULT_FLAG_UPTODATE_ONLY		0x400
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 132c118d12e1..ff47347012f4 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -4189,7 +4189,6 @@ ext4_mb_discard_group_preallocations(struct super_block *sb,
+>  	INIT_LIST_HEAD(&list);
+>  repeat:
+>  	ext4_lock_group(sb, group);
+> -	this_cpu_inc(discard_pa_seq);
+>  	list_for_each_entry_safe(pa, tmp,
+>  				&grp->bb_prealloc_list, pa_group_list) {
+>  		spin_lock(&pa->pa_lock);
+> @@ -4206,6 +4205,9 @@ ext4_mb_discard_group_preallocations(struct super_block *sb,
+>  		/* seems this one can be freed ... */
+>  		ext4_mb_mark_pa_deleted(sb, pa);
 >  
->  /*
->   * The default fault flags that should be used by most of the
-> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> index 496c3ff97cce..632eabcad2f7 100644
-> --- a/include/linux/mm_types.h
-> +++ b/include/linux/mm_types.h
-> @@ -689,6 +689,8 @@ typedef __bitwise unsigned int vm_fault_t;
->   * @VM_FAULT_NEEDDSYNC:		->fault did not modify page tables and needs
->   *				fsync() to complete (for synchronous page faults
->   *				in DAX)
-> + * @VM_FAULT_UPTODATE:		Page is not locked; must check it is still
-> + *				uptodate under the page table lock
->   * @VM_FAULT_HINDEX_MASK:	mask HINDEX value
->   *
->   */
-> @@ -706,6 +708,7 @@ enum vm_fault_reason {
->  	VM_FAULT_FALLBACK       = (__force vm_fault_t)0x000800,
->  	VM_FAULT_DONE_COW       = (__force vm_fault_t)0x001000,
->  	VM_FAULT_NEEDDSYNC      = (__force vm_fault_t)0x002000,
-> +	VM_FAULT_UPTODATE       = (__force vm_fault_t)0x004000,
->  	VM_FAULT_HINDEX_MASK    = (__force vm_fault_t)0x0f0000,
->  };
->  
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index 1aaea26556cc..38f87dd86312 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -2602,6 +2602,13 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
->  		}
->  	}
->  
-> +	if (fpin)
-> +		goto out_retry;
-> +	if (likely(PageUptodate(page))) {
-> +		ret |= VM_FAULT_UPTODATE;
-> +		goto uptodate;
-> +	}
+> +		if (!free)
+> +			this_cpu_inc(discard_pa_seq);
 > +
->  	if (!lock_page_maybe_drop_mmap(vmf, page, &fpin))
->  		goto out_retry;
+>  		/* we can trust pa_free ... */
+>  		free += pa->pa_free;
 >  
-> @@ -2630,19 +2637,19 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
->  		goto out_retry;
->  	}
->  
-> -	/*
-> -	 * Found the page and have a reference on it.
-> -	 * We must recheck i_size under page lock.
-> -	 */
-> +	ret |= VM_FAULT_LOCKED;
-> +	/* Must recheck i_size after getting a stable reference to the page */
-> +uptodate:
->  	max_off = DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE);
->  	if (unlikely(offset >= max_off)) {
-> -		unlock_page(page);
-> +		if (ret & VM_FAULT_LOCKED)
-> +			unlock_page(page);
->  		put_page(page);
->  		return VM_FAULT_SIGBUS;
->  	}
->  
->  	vmf->page = page;
-> -	return ret | VM_FAULT_LOCKED;
-> +	return ret;
->  
->  page_not_uptodate:
->  	/*
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 469af373ae76..53c8ef2bb38b 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -3460,11 +3460,6 @@ static vm_fault_t __do_fault(struct vm_fault *vmf)
->  		return VM_FAULT_HWPOISON;
->  	}
->  
-> -	if (unlikely(!(ret & VM_FAULT_LOCKED)))
-> -		lock_page(vmf->page);
-> -	else
-> -		VM_BUG_ON_PAGE(!PageLocked(vmf->page), vmf->page);
-> -
->  	return ret;
->  }
->  
-> @@ -3646,12 +3641,13 @@ vm_fault_t alloc_set_pte(struct vm_fault *vmf, struct page *page)
->  		return VM_FAULT_NOPAGE;
->  	}
->  
-> -	flush_icache_page(vma, page);
-> -	entry = mk_pte(page, vma->vm_page_prot);
-> -	entry = pte_sw_mkyoung(entry);
-> -	if (write)
-> -		entry = maybe_mkwrite(pte_mkdirty(entry), vma);
-> -	/* copy-on-write page */
-> +	/*
-> +	 * If the page isn't locked, truncate or invalidate2 may be
-> +	 * trying to remove it at the same time.  Both paths will check
-> +	 * the page's mapcount after clearing the PageUptodate bit,
-> +	 * so if we increment the mapcount here before checking the
-> +	 * Uptodate bit, the page will be unmapped by the other thread.
-> +	 */
->  	if (write && !(vma->vm_flags & VM_SHARED)) {
->  		inc_mm_counter_fast(vma->vm_mm, MM_ANONPAGES);
->  		page_add_new_anon_rmap(page, vma, vmf->address, false);
-> @@ -3660,6 +3656,25 @@ vm_fault_t alloc_set_pte(struct vm_fault *vmf, struct page *page)
->  		inc_mm_counter_fast(vma->vm_mm, mm_counter_file(page));
->  		page_add_file_rmap(page, false);
->  	}
-> +	smp_mb__after_atomic();
-> +
-> +	if ((vmf->flags & FAULT_FLAG_UPTODATE_ONLY) && !PageUptodate(page)) {
-> +		page_remove_rmap(page, false);
-> +		if (write && !(vma->vm_flags & VM_SHARED)) {
-> +			dec_mm_counter_fast(vma->vm_mm, MM_ANONPAGES);
-> +			/* lru_cache_remove_inactive_or_unevictable? */
-> +		} else {
-> +			dec_mm_counter_fast(vma->vm_mm, mm_counter_file(page));
-> +		}
-> +		return VM_FAULT_NOPAGE;
-> +	}
-> +
-> +	flush_icache_page(vma, page);
-> +	entry = mk_pte(page, vma->vm_page_prot);
-> +	entry = pte_sw_mkyoung(entry);
-> +	if (write)
-> +		entry = maybe_mkwrite(pte_mkdirty(entry), vma);
-> +	/* copy-on-write page */
->  	set_pte_at(vma->vm_mm, vmf->address, vmf->pte, entry);
->  
->  	/* no need to invalidate: a not-present page won't be cached */
-> @@ -3844,8 +3859,18 @@ static vm_fault_t do_read_fault(struct vm_fault *vmf)
->  	if (unlikely(ret & (VM_FAULT_ERROR | VM_FAULT_NOPAGE | VM_FAULT_RETRY)))
->  		return ret;
->  
-> +	if (ret & VM_FAULT_UPTODATE)
-> +		vmf->flags |= FAULT_FLAG_UPTODATE_ONLY;
-> +	else if (unlikely(!(ret & VM_FAULT_LOCKED)))
-> +		lock_page(vmf->page);
-> +	else
-> +		VM_BUG_ON_PAGE(!PageLocked(vmf->page), vmf->page);
-> +
->  	ret |= finish_fault(vmf);
-> -	unlock_page(vmf->page);
-> +	if (ret & VM_FAULT_UPTODATE)
-> +		vmf->flags &= ~FAULT_FLAG_UPTODATE_ONLY;
-> +	else
-> +		unlock_page(vmf->page);
->  	if (unlikely(ret & (VM_FAULT_ERROR | VM_FAULT_NOPAGE | VM_FAULT_RETRY)))
->  		put_page(vmf->page);
->  	return ret;
-> @@ -3875,6 +3900,11 @@ static vm_fault_t do_cow_fault(struct vm_fault *vmf)
->  	if (ret & VM_FAULT_DONE_COW)
->  		return ret;
->  
-> +	if (!(ret & VM_FAULT_LOCKED))
-> +		lock_page(vmf->page);
-> +	else
-> +		VM_BUG_ON_PAGE(!PageLocked(vmf->page), vmf->page);
-> +
->  	copy_user_highpage(vmf->cow_page, vmf->page, vmf->address, vma);
->  	__SetPageUptodate(vmf->cow_page);
->  
-> @@ -3898,6 +3928,11 @@ static vm_fault_t do_shared_fault(struct vm_fault *vmf)
->  	if (unlikely(ret & (VM_FAULT_ERROR | VM_FAULT_NOPAGE | VM_FAULT_RETRY)))
->  		return ret;
->  
-> +	if (!(ret & VM_FAULT_LOCKED))
-> +		lock_page(vmf->page);
-> +	else
-> +		VM_BUG_ON_PAGE(!PageLocked(vmf->page), vmf->page);
-> +
->  	/*
->  	 * Check if the backing address space wants to know that the page is
->  	 * about to become writable
-> diff --git a/mm/truncate.c b/mm/truncate.c
-> index dd9ebc1da356..96a0408804a7 100644
-> --- a/mm/truncate.c
-> +++ b/mm/truncate.c
-> @@ -176,6 +176,8 @@ void do_invalidatepage(struct page *page, unsigned int offset,
->  static void
->  truncate_cleanup_page(struct address_space *mapping, struct page *page)
->  {
-> +	ClearPageUptodate(page);
-> +	smp_mb__before_atomic();
->  	if (page_mapped(page)) {
->  		pgoff_t nr = PageTransHuge(page) ? HPAGE_PMD_NR : 1;
->  		unmap_mapping_pages(mapping, page->index, nr, false);
-> @@ -655,6 +657,12 @@ invalidate_complete_page2(struct address_space *mapping, struct page *page)
->  		mapping->a_ops->freepage(page);
->  
->  	put_page(page);	/* pagecache ref */
-> +
-> +	/* An unlocked page fault may have inserted an entry */
-> +	ClearPageUptodate(page);
-> +	smp_mb__before_atomic();
-> +	if (page_mapped(page))
-> +		unmap_mapping_pages(mapping, page->index, 1, false);
->  	return 1;
->  failed:
->  	xa_unlock_irqrestore(&mapping->i_pages, flags);
+> -- 
+> 2.25.4
+> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
+
+--GZVR6ND4mMseVXL/
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment; filename="0001-ext4-Discard-preallocations-before-releasing-group-l.patch"
+
+From ce4bb26350da47a6c07be378bf478e5a81bc96d4 Mon Sep 17 00:00:00 2001
+From: Jan Kara <jack@suse.cz>
+Date: Tue, 15 Sep 2020 13:54:20 +0200
+Subject: [PATCH] ext4: Discard preallocations before releasing group lock
+
+ext4_mb_discard_group_preallocations() can be releasing group lock with
+preallocations accumulated on its local list. Thus although
+discard_pa_seq was incremented and concurrent allocating processes will
+be retrying allocations, it can happen that premature ENOSPC error is
+returned because blocks used for preallocations are not available for
+reuse yet. Make sure we always free locally accumulated preallocations
+before releasing group lock.
+
+Fixes: 07b5b8e1ac40 ("ext4: mballoc: introduce pcpu seqcnt for freeing PA to improve ENOSPC handling")
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ fs/ext4/mballoc.c | 26 ++++++++++----------------
+ 1 file changed, 10 insertions(+), 16 deletions(-)
+
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 132c118d12e1..0ded25d55d9b 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -4215,22 +4215,6 @@ ext4_mb_discard_group_preallocations(struct super_block *sb,
+ 		list_add(&pa->u.pa_tmp_list, &list);
+ 	}
+ 
+-	/* if we still need more blocks and some PAs were used, try again */
+-	if (free < needed && busy) {
+-		busy = 0;
+-		ext4_unlock_group(sb, group);
+-		cond_resched();
+-		goto repeat;
+-	}
+-
+-	/* found anything to free? */
+-	if (list_empty(&list)) {
+-		BUG_ON(free != 0);
+-		mb_debug(sb, "Someone else may have freed PA for this group %u\n",
+-			 group);
+-		goto out;
+-	}
+-
+ 	/* now free all selected PAs */
+ 	list_for_each_entry_safe(pa, tmp, &list, u.pa_tmp_list) {
+ 
+@@ -4248,6 +4232,16 @@ ext4_mb_discard_group_preallocations(struct super_block *sb,
+ 		call_rcu(&(pa)->u.pa_rcu, ext4_mb_pa_callback);
+ 	}
+ 
++	/* if we still need more blocks and some PAs were used, try again */
++	if (free < needed && busy) {
++		ext4_unlock_group(sb, group);
++		cond_resched();
++		busy = 0;
++		/* Make sure we increment discard_pa_seq again */
++		needed -= free;
++		free = 0;
++		goto repeat;
++	}
+ out:
+ 	ext4_unlock_group(sb, group);
+ 	ext4_mb_unload_buddy(&e4b);
+-- 
+2.16.4
+
+
+--GZVR6ND4mMseVXL/--
