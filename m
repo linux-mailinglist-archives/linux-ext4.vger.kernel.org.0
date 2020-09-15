@@ -2,97 +2,117 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FE5526B512
-	for <lists+linux-ext4@lfdr.de>; Wed, 16 Sep 2020 01:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45DCE26B7AD
+	for <lists+linux-ext4@lfdr.de>; Wed, 16 Sep 2020 02:27:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727293AbgIOXgf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 15 Sep 2020 19:36:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35100 "EHLO
+        id S1726805AbgIPA1N (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 15 Sep 2020 20:27:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726383AbgIOXgG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Sep 2020 19:36:06 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 837B3C06174A
-        for <linux-ext4@vger.kernel.org>; Tue, 15 Sep 2020 16:36:04 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id q8so4937107lfb.6
-        for <linux-ext4@vger.kernel.org>; Tue, 15 Sep 2020 16:36:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VY3FI+8ua5GfWFJfcYL9CJDi5GxfS9ipQFMk0egquPM=;
-        b=Ejf+nB2H8r1U6BUXghESSW2la6WPBsGO2KQMBfcOZ04frdMfiw6sT10vXttnHODQ6i
-         rvToxlK44vQDz8BHh8az9FEP/q3ZzjKoTGWJmy+a9q8ESyZu13UWfzvASKK25VnT1DDc
-         EgHYogXAOZ3tXTdP4JYasoGmltggzQdxf32e4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VY3FI+8ua5GfWFJfcYL9CJDi5GxfS9ipQFMk0egquPM=;
-        b=sR8q11QpBJlXBnjBbt0chFfC81B+dBBJzRM/lBOC1OIKk98Gi0LBhS3mV538HvwXK6
-         vP/Cb26KbUr/PjmbhrD/WX6FVT8ZODTBQSMBP8kNdyhBluVb0wBwdD/LUggSPA06svZB
-         dLTW01lzFHK3lrutTzK1am102vQb/yVRCs532WKAVOIe20z5e6ur5QO1X6YNpnoUIIMT
-         o+GJsd9HftsUb5ndvWfWOeqMffeEMyahbFOdLPVCRBB8Fp9GR9Whm/b1n3dar6FK4PDK
-         DPOcsHcfldtzw5Bq5Bzy9nHGw1COuf7UAjine23sgX2SY1qGfLkJUnfmKWHI9OC+7wBD
-         wRUQ==
-X-Gm-Message-State: AOAM533NgWzQ52XhTEzb/mIcjQ9Hiq/B4gjbLgonr4qrOBpLJ/7El0i0
-        INLWCI19u+YkopYLrjmjZMKhs0fEGXvgEA==
-X-Google-Smtp-Source: ABdhPJwCudmewVOWiPwDNNNq79XTytLW6GTkaJB+Eerf+nKwqzvZ2lHhwTMeIVL9fwmIVixktnbO0A==
-X-Received: by 2002:a19:4a8a:: with SMTP id x132mr6360458lfa.423.1600212962811;
-        Tue, 15 Sep 2020 16:36:02 -0700 (PDT)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
-        by smtp.gmail.com with ESMTPSA id c28sm4247811lfh.98.2020.09.15.16.36.01
-        for <linux-ext4@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Sep 2020 16:36:01 -0700 (PDT)
-Received: by mail-lf1-f44.google.com with SMTP id y11so4943064lfl.5
-        for <linux-ext4@vger.kernel.org>; Tue, 15 Sep 2020 16:36:01 -0700 (PDT)
-X-Received: by 2002:a19:4186:: with SMTP id o128mr6576901lfa.148.1600212961230;
- Tue, 15 Sep 2020 16:36:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAHk-=wiz=J=8mJ=zRG93nuJ9GtQAm5bSRAbWJbWZuN4Br38+EQ@mail.gmail.com>
- <CAHk-=wjfw3U5eTGWLaisPHg1+jXsCX=xLZgqPx4KJeHhEqRnEQ@mail.gmail.com>
- <a2369108-7103-278c-9f10-6309a0a9dc3b@MichaelLarabel.com> <CAOQ4uxhz8prfD5K7dU68yHdz=iBndCXTg5w4BrF-35B+4ziOwA@mail.gmail.com>
- <0daf6ae6-422c-dd46-f85a-e83f6e1d1113@MichaelLarabel.com> <20200912143704.GB6583@casper.infradead.org>
- <658ae026-32d9-0a25-5a59-9c510d6898d5@MichaelLarabel.com> <CAHk-=wip0bCNnFK2Sxdn-YCTdKBF2JjF0kcM5mXbRuKKp3zojw@mail.gmail.com>
- <c560a38d-8313-51fb-b1ec-e904bd8836bc@tessares.net> <CAHk-=wgZEUoiGoKh92stUh3sBA-7D24i6XqQN2UMm3u4=XkQkg@mail.gmail.com>
- <9550725a-2d3f-fa35-1410-cae912e128b9@tessares.net> <CAHk-=wimdSWe+GVBKwB0_=ZKX2ZN5JEqK5yA99toab4MAoYAsg@mail.gmail.com>
- <CAHk-=wimjnAsoDUjkanC2BQTntwK4qtzmPdBbtmgM=MMhR6B2w@mail.gmail.com>
- <a9faedf1-c528-38e9-2ac4-e8847ecda0f2@tessares.net> <CAHk-=wiHPE3Q-qARO+vqbN0FSHwQXCYSmKcrjgxqVLJun5DjhA@mail.gmail.com>
- <37989469-f88c-199b-d779-ed41bc65fe56@tessares.net>
-In-Reply-To: <37989469-f88c-199b-d779-ed41bc65fe56@tessares.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 15 Sep 2020 16:35:45 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj8Bi5Kiufw8_1SEMmxc0GCO5Nh7TxEt+c1HdKaya=LaA@mail.gmail.com>
-Message-ID: <CAHk-=wj8Bi5Kiufw8_1SEMmxc0GCO5Nh7TxEt+c1HdKaya=LaA@mail.gmail.com>
-Subject: Re: Kernel Benchmarking
-To:     Matthieu Baerts <matthieu.baerts@tessares.net>
+        with ESMTP id S1726800AbgIOOH6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Sep 2020 10:07:58 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6835C061353;
+        Tue, 15 Sep 2020 06:52:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=QQCg8wThFn26iWjkLyQ1p1ZuQ6QQ5ZhJ4G2t+9AEEWg=; b=EAJrOVAfkyS7EnI/93mYMhdXbq
+        930pI+nqX3TusVRoKiooSZ5E1XWHK/5GNadBq6AAOiiFcItkNRP54OVJiIurFd89UC2V8hGAlT5qs
+        tmBO3/28DHpk/P/csSJy96/NJ6eRLqoUrUZpLQJmVWWOQ5nmIm0A4uMvXolRCZPYAa+Q2IYG/zsmn
+        jFe79PEkiZdCGSkpsTMq0V7DsLvaPFWFtrYdRMNuFJsDYtaQKPiVU4O/MqVbl89/0bML50U/QIVAZ
+        azXhK0gbTm0/pFqDSLZU67Rj1XzfUfEououZlect8GfHSU5Oypj5IUqwF6diyGZkWO5wLBg6LAanA
+        Jcos6MiQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kIBO2-0003js-2e; Tue, 15 Sep 2020 13:52:46 +0000
+Date:   Tue, 15 Sep 2020 14:52:46 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jan Kara <jack@suse.cz>
 Cc:     Michael Larabel <Michael@michaellarabel.com>,
-        Matthew Wilcox <willy@infradead.org>,
         Amir Goldstein <amir73il@gmail.com>,
-        "Ted Ts'o" <tytso@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Ted Ts'o <tytso@google.com>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>, linux-mm@kvack.org
+Subject: Re: Kernel Benchmarking
+Message-ID: <20200915135246.GG5449@casper.infradead.org>
+References: <0cbc959e-1b8d-8d7e-1dc6-672cf5b3899a@MichaelLarabel.com>
+ <CAHk-=whP-7Uw9WgWgjRgF1mCg+NnkOPpWjVw+a9M3F9C52DrVg@mail.gmail.com>
+ <CAHk-=wjfw3U5eTGWLaisPHg1+jXsCX=xLZgqPx4KJeHhEqRnEQ@mail.gmail.com>
+ <a2369108-7103-278c-9f10-6309a0a9dc3b@MichaelLarabel.com>
+ <CAOQ4uxhz8prfD5K7dU68yHdz=iBndCXTg5w4BrF-35B+4ziOwA@mail.gmail.com>
+ <0daf6ae6-422c-dd46-f85a-e83f6e1d1113@MichaelLarabel.com>
+ <20200912143704.GB6583@casper.infradead.org>
+ <803672c0-7c57-9d25-ffb4-cde891eac4d3@MichaelLarabel.com>
+ <20200915033210.GA5449@casper.infradead.org>
+ <20200915103938.GL4863@quack2.suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915103938.GL4863@quack2.suse.cz>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 12:56 PM Matthieu Baerts
-<matthieu.baerts@tessares.net> wrote:
->
-> I am sorry, I am not sure how to verify this. I guess it was one
-> processor because I removed "-smp 2" option from qemu. So I guess it
-> switched to a uniprocessor mode.
+On Tue, Sep 15, 2020 at 12:39:38PM +0200, Jan Kara wrote:
+> Hi Matthew!
+> 
+> On Tue 15-09-20 04:32:10, Matthew Wilcox wrote:
+> > On Sat, Sep 12, 2020 at 09:44:15AM -0500, Michael Larabel wrote:
+> > > Interesting, I'll fire up some cross-filesystem benchmarks with those tests
+> > > today and report back shortly with the difference.
+> > 
+> > If you have time, perhaps you'd like to try this patch.  It tries to
+> > handle page faults locklessly when possible, which should be the case
+> > where you're seeing page lock contention.  I've tried to be fairly
+> > conservative in this patch; reducing page lock acquisition should be
+> > possible in more cases.
+> 
+> So I'd be somewhat uneasy with this optimization. The thing is that e.g.
+> page migration relies on page lock protecting page from being mapped? How
+> does your patch handle that? I'm also not sure if the rmap code is really
+> ready for new page reverse mapping being added without holding page lock...
 
-Ok, that all sounds fine. So yes, your problem happens even with just
-one CPU, and it's not any subtle SMP race.
+I admit to not even having looked at the page migration code.  This
+patch was really to demonstrate that it's _possible_ to do page faults
+without taking the page lock.
 
-Which is all good - apart from the bug existing in the first place, of
-course. It just reinforces the "it's probably a latent deadlock"
-thing.
+It's possible to expand the ClearPageUptodate page validity protocol
+beyond mm/truncate.c, of course.  We can find all necessary places to
+change by grepping for 'page_mapped'.  Some places (eg the invalidate2
+path) can't safely ClearPageUptodate before their existing call to
+unmap_mapping_pages(), and those places will have to add a second
+test-and-call.
 
-              Linus
+It seems to me the page_add_file_rmap() is fine with being called
+without the page lock, unless the page is compound.  So we could
+make sure not to use this new protocol for THPs ...
+
++++ b/mm/filemap.c
+@@ -2604,7 +2604,7 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
+ 
+        if (fpin)
+                goto out_retry;
+-       if (likely(PageUptodate(page))) {
++       if (likely(PageUptodate(page) && !PageTransHuge(page))) {
+                ret |= VM_FAULT_UPTODATE;
+                goto uptodate;
+        }
+diff --git a/mm/memory.c b/mm/memory.c
+index 53c8ef2bb38b..6981e8738df4 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -3460,6 +3460,9 @@ static vm_fault_t __do_fault(struct vm_fault *vmf)
+                return VM_FAULT_HWPOISON;
+        }
+ 
++       /* rmap needs THP pages to be locked in case it's mlocked */
++       VM_BUG_ON((ret & VM_FAULT_UPTODATE) && PageTransHuge(page));
++
+        return ret;
+ }
+
+
