@@ -2,111 +2,117 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E02FA26C1D2
-	for <lists+linux-ext4@lfdr.de>; Wed, 16 Sep 2020 12:41:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E221826C501
+	for <lists+linux-ext4@lfdr.de>; Wed, 16 Sep 2020 18:19:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726736AbgIPKiy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 16 Sep 2020 06:38:54 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50878 "EHLO mx2.suse.de"
+        id S1726265AbgIPQTC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 16 Sep 2020 12:19:02 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34194 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726888AbgIPKfI (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 16 Sep 2020 06:35:08 -0400
+        id S1726501AbgIPQQZ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 16 Sep 2020 12:16:25 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E2CF4ACE3;
-        Wed, 16 Sep 2020 10:35:01 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 604CCB2A1;
+        Wed, 16 Sep 2020 16:15:54 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 119301E12E1; Wed, 16 Sep 2020 12:34:46 +0200 (CEST)
-Date:   Wed, 16 Sep 2020 12:34:46 +0200
+        id A4E951E12E1; Wed, 16 Sep 2020 18:15:38 +0200 (CEST)
+Date:   Wed, 16 Sep 2020 18:15:38 +0200
 From:   Jan Kara <jack@suse.cz>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Michael Larabel <Michael@michaellarabel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Ted Ts'o <tytso@google.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: Kernel Benchmarking
-Message-ID: <20200916103446.GB3607@quack2.suse.cz>
-References: <CAHk-=wip0bCNnFK2Sxdn-YCTdKBF2JjF0kcM5mXbRuKKp3zojw@mail.gmail.com>
- <c560a38d-8313-51fb-b1ec-e904bd8836bc@tessares.net>
- <CAHk-=wgZEUoiGoKh92stUh3sBA-7D24i6XqQN2UMm3u4=XkQkg@mail.gmail.com>
- <9550725a-2d3f-fa35-1410-cae912e128b9@tessares.net>
- <CAHk-=wimdSWe+GVBKwB0_=ZKX2ZN5JEqK5yA99toab4MAoYAsg@mail.gmail.com>
- <CAHk-=wimjnAsoDUjkanC2BQTntwK4qtzmPdBbtmgM=MMhR6B2w@mail.gmail.com>
- <a9faedf1-c528-38e9-2ac4-e8847ecda0f2@tessares.net>
- <CAHk-=wiHPE3Q-qARO+vqbN0FSHwQXCYSmKcrjgxqVLJun5DjhA@mail.gmail.com>
- <37989469-f88c-199b-d779-ed41bc65fe56@tessares.net>
- <CAHk-=wj8Bi5Kiufw8_1SEMmxc0GCO5Nh7TxEt+c1HdKaya=LaA@mail.gmail.com>
+To:     Mauricio Faria de Oliveira <mfo@canonical.com>
+Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
+        dann frazier <dann.frazier@canonical.com>,
+        Mauricio Faria de Oliveira <mauricio.foliveira@gmail.com>
+Subject: Re: [RFC PATCH v3 0/3] ext4/jbd2: data=journal: write-protect pages
+ on transaction commit
+Message-ID: <20200916161538.GK3607@quack2.suse.cz>
+References: <20200910193127.276214-1-mfo@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wj8Bi5Kiufw8_1SEMmxc0GCO5Nh7TxEt+c1HdKaya=LaA@mail.gmail.com>
+In-Reply-To: <20200910193127.276214-1-mfo@canonical.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 15-09-20 16:35:45, Linus Torvalds wrote:
-> On Tue, Sep 15, 2020 at 12:56 PM Matthieu Baerts
-> <matthieu.baerts@tessares.net> wrote:
-> >
-> > I am sorry, I am not sure how to verify this. I guess it was one
-> > processor because I removed "-smp 2" option from qemu. So I guess it
-> > switched to a uniprocessor mode.
+Hi Mauricio!
+
+On Thu 10-09-20 16:31:24, Mauricio Faria de Oliveira wrote:
+> This series implements your suggestions for the RFC PATCH v2 set,
+> which we mostly talked about in cover letter [1] and PATCH 3 [2].
+> (I added Suggested-by: tags, by the way, for due credit.)
 > 
-> Ok, that all sounds fine. So yes, your problem happens even with just
-> one CPU, and it's not any subtle SMP race.
+> It looks almost good on fstests: zero regressions on data=ordered,
+> and only one regression in data=journal (generic/347); I'll check.
+> (That's with ext4; I'll check ocfs2, but it's only a minor change.)
+
+Glad to hear that!
+
+> Testing with 'stress-ng --mmap <N> --mmap-file' runs well for days,
+> but it occasionally hits:
 > 
-> Which is all good - apart from the bug existing in the first place, of
-> course. It just reinforces the "it's probably a latent deadlock"
-> thing.
+>   JBD2: Spotted dirty metadata buffer (dev = vdc, blocknr = 74775).
+>   There's a risk of filesystem corruption in case of system crash.
+> 
+> I added dump_stack() in warn_dirty_buffer(), and it usually comes
+> from jbd2_journal_file_buffer(, BJ_Forget) in the commit function.
+> When filing from BJ_Shadow to BJ_Forget.. so it possibly happened
+> while BH_Shadow was still set!
+> 
+> So I instrumented [test_]set_buffer_dirty() macros to dump_stack()
+> if BH_Shadow is set (i.e. buffer being set dirty during write-out.)
+> 
+> This showed that the occasional BH_Dirty setter with BH_Shadow set
+> is block_page_mkwrite() in ext4_page_mkwrite(). And it seems right,
+> because it's called before do_journal_get_write_access() (where we
+> check for/wait on BH_Shadow.)
+> 
+> ext4_page_mkwrite():
+> 
+>         err = block_page_mkwrite(vma, vmf, get_block);
+>         if (!err && ext4_should_journal_data(inode)) {
+>                 if (ext4_walk_page_buffers(handle, page_buffers(page), 0,
+>                           PAGE_SIZE, NULL, do_journal_get_write_access)) {
+> 
+> The patches didn't directly break this, they only allow this code
+> to run more often as we disabled an early-return optimization for
+> the case 'all buffers mapped' in data=journal (question 2 in [1]):
+> 
+> ext4_page_mkwrite():
+> 
+>          * Return if we have all the buffers mapped.
+> 	...
+> -       if (page_has_buffers(page)) {
+> +       if (page_has_buffers(page) && !ext4_should_journal_data(inode)) {
+> 
+> 
+> In order to confirm it, I built the unpatched v5.9-rc4 kernel, with
+> just the change to disable that optimization in data=journal -- and
+> it hit that occasionally too ("JBD2: Spotted dirty metadata buffer".)
+> 
+> I was naive enough to mindlessly try to swap the order of those two
+> statements, in hopes that do_journal_get_write_access() should wait
+> for BH_Shadow to clear, and then we just call block_page_mkwrite().
+> BUT it trips into the BUG() check in page_buffers() in the former.
 
-So from the traces another theory that appeared to me is that it could be a
-"missed wakeup" problem. Looking at the code in wait_on_page_bit_common() I
-found one suspicious thing (which isn't a great match because the problem
-seems to happen on UP as well and I think it's mostly a theoretical issue but
-still I'll write it here):
+Yeah, you're right that code is wrong for data=journal case. We cannot
+really use block_page_mkwrite() for it - we rather need to use there
+something like:
 
-wait_on_page_bit_common() has:
+	__block_write_begin(page, pos, len, ext4_get_block);
+	ext4_walk_page_buffers(handle, page_buffers(page),
+                                             from, to, NULL,
+                                             do_journal_get_write_access);
+	ext4_walk_page_buffers(handle, page_buffers(page), from, to, NULL,
+				write_end_fn);
 
-        spin_lock_irq(&q->lock);
-        SetPageWaiters(page);
-        if (!trylock_page_bit_common(page, bit_nr, wait))
-	  - which expands to:
-	  (
-	        if (wait->flags & WQ_FLAG_EXCLUSIVE) {
-        	        if (test_and_set_bit(bit_nr, &page->flags))
-                	        return false;
-	        } else if (test_bit(bit_nr, &page->flags))
-        	        return false;
-	  )
+or something like that, I guess you get the idea...
 
-                __add_wait_queue_entry_tail(q, wait);
-        spin_unlock_irq(&q->lock);
-
-Now the suspicious thing is the ordering here. What prevents the compiler
-(or the CPU for that matter) from reordering SetPageWaiters() call behind
-the __add_wait_queue_entry_tail() call? I know SetPageWaiters() and
-test_and_set_bit() operate on the same long but is it really guaranteed
-something doesn't reorder these?
-
-In unlock_page() we have:
-
-        if (clear_bit_unlock_is_negative_byte(PG_locked, &page->flags))
-                wake_up_page_bit(page, PG_locked);
-
-So if the reordering happens, clear_bit_unlock_is_negative_byte() could
-return false even though we have a waiter queued.
-
-And this seems to be a thing commit 2a9127fcf22 ("mm: rewrite
-wait_on_page_bit_common() logic") introduced because before we had
-set_current_state() between SetPageWaiters() and test_bit() which implies a
-memory barrier.
+Actually, I think data=journal mode should get it's own .page_mkwrite
+handler because the sharing between data=journal handling and the other
+cases is pretty minimal.
 
 								Honza
 -- 
