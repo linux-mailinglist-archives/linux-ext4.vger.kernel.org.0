@@ -2,153 +2,116 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 406A626CCC6
-	for <lists+linux-ext4@lfdr.de>; Wed, 16 Sep 2020 22:49:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4688F26CDB4
+	for <lists+linux-ext4@lfdr.de>; Wed, 16 Sep 2020 23:04:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728377AbgIPUs7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 16 Sep 2020 16:48:59 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47386 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726343AbgIPRAV (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:00:21 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 924EEAC1D;
-        Wed, 16 Sep 2020 17:00:01 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id F0F7B1E12E1; Wed, 16 Sep 2020 18:59:45 +0200 (CEST)
-Date:   Wed, 16 Sep 2020 18:59:45 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Mauricio Faria de Oliveira <mfo@canonical.com>
-Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
-        dann frazier <dann.frazier@canonical.com>,
-        Mauricio Faria de Oliveira <mauricio.foliveira@gmail.com>
-Subject: Re: [RFC PATCH v3 3/3] ext4: data=journal: write-protect pages on
- j_submit_inode_data_buffers()
-Message-ID: <20200916165945.GO3607@quack2.suse.cz>
-References: <20200910193127.276214-1-mfo@canonical.com>
- <20200910193127.276214-4-mfo@canonical.com>
+        id S1726217AbgIPVEJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 16 Sep 2020 17:04:09 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:55796 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728494AbgIPVD7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Sep 2020 17:03:59 -0400
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 08GL3rRr021813
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Sep 2020 17:03:53 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id D6E7242004D; Wed, 16 Sep 2020 17:03:52 -0400 (EDT)
+Date:   Wed, 16 Sep 2020 17:03:52 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Andreas Dilger <adilger@dilger.ca>
+Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Wang Shilong <wangshilong1991@gmail.com>,
+        saranyamohan@google.com, harshads@google.com
+Subject: Re: Fwd: [PATCH] [RFC] ext2fs: parallel bitmap loading
+Message-ID: <20200916210352.GD38283@mit.edu>
+References: <CA+OwuSj-WjaPbfOSDpg5Mz2tm_W0p40N-L=meiWEDZ6j1ccq=Q@mail.gmail.com>
+ <132401FE-6D25-41B3-99D1-50E7BC746237@dilger.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200910193127.276214-4-mfo@canonical.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <132401FE-6D25-41B3-99D1-50E7BC746237@dilger.ca>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 10-09-20 16:31:27, Mauricio Faria de Oliveira wrote:
-> This implements journal callbacks j_submit|finish_inode_data_buffers()
-> with different behavior for data=journal: to write-protect pages under
-> commit, preventing changes to buffers writeably mapped to userspace.
-> 
-> If a buffer's content changes between commit's checksum calculation
-> and write-out to disk, it can cause journal recovery/mount failures
-> upon a kernel crash or power loss.
-> 
->     [   27.334874] EXT4-fs: Warning: mounting with data=journal disables delayed allocation, dioread_nolock, and O_DIRECT support!
->     [   27.339492] JBD2: Invalid checksum recovering data block 8705 in log
->     [   27.342716] JBD2: recovery failed
->     [   27.343316] EXT4-fs (loop0): error loading journal
->     mount: /ext4: can't read superblock on /dev/loop0.
-> 
-> In j_submit_inode_data_buffers() we write-protect the inode's pages
-> with write_cache_pages() and redirty w/ writepage callback if needed.
-> 
-> In j_finish_inode_data_buffers() there is nothing do to.
-> 
-> And in order to use the callbacks, inodes are added to the inode list
-> in transaction in __ext4_journalled_writepage() and ext4_page_mkwrite().
-> 
-> In ext4_page_mkwrite() we must make sure that:
-> 
-> 1) the inode is always added to the list;
->    thus we skip the 'all buffers mapped' optimization on data=journal;
-> 
-> 2) the buffers are attached to transaction as dirty;
->    as already done in __ext4_journalled_writepage().
-> 
-> Signed-off-by: Mauricio Faria de Oliveira <mfo@canonical.com>
-> Suggested-by: Jan Kara <jack@suse.cz>
-> Reported-by: Dann Frazier <dann.frazier@canonical.com>
-> ---
->  fs/ext4/inode.c | 29 ++++++++++++++------
->  fs/ext4/super.c | 72 +++++++++++++++++++++++++++++++++++++++++++++++--
->  2 files changed, 91 insertions(+), 10 deletions(-)
-> 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index bf596467c234..fa4109da056c 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -1910,6 +1910,9 @@ static int __ext4_journalled_writepage(struct page *page,
->  		err = ext4_walk_page_buffers(handle, page_bufs, 0, len, NULL,
->  					     write_end_fn);
->  	}
-> +	if (ret == 0)
-> +		ret = err;
-> +	err = ext4_jbd2_inode_add_write(handle, inode, 0, len);
->  	if (ret == 0)
->  		ret = err;
->  	EXT4_I(inode)->i_datasync_tid = handle->h_transaction->t_tid;
-> @@ -6004,9 +6007,12 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
->  		len = PAGE_SIZE;
->  	/*
->  	 * Return if we have all the buffers mapped. This avoids the need to do
-> -	 * journal_start/journal_stop which can block and take a long time
-> +	 * journal_start/journal_stop which can block and take a long time.
-> +	 *
-> +	 * This cannot be done for data journalling, as we have to add the
-> +	 * inode to the transaction's list to writeprotect pages on commit.
->  	 */
-> -	if (page_has_buffers(page)) {
-> +	if (page_has_buffers(page) && !ext4_should_journal_data(inode)) {
->  		if (!ext4_walk_page_buffers(NULL, page_buffers(page),
->  					    0, len, NULL,
->  					    ext4_bh_unmapped)) {
-> @@ -6032,12 +6038,14 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
->  	err = block_page_mkwrite(vma, vmf, get_block);
->  	if (!err && ext4_should_journal_data(inode)) {
->  		if (ext4_walk_page_buffers(handle, page_buffers(page), 0,
-> -			  PAGE_SIZE, NULL, do_journal_get_write_access)) {
-> -			unlock_page(page);
-> -			ret = VM_FAULT_SIGBUS;
-> -			ext4_journal_stop(handle);
-> -			goto out;
-> -		}
-> +			PAGE_SIZE, NULL, do_journal_get_write_access))
-> +			goto out_err;
-> +		/* Make sure buffers are attached to the transaction as dirty */
-> +		if (ext4_walk_page_buffers(handle, page_buffers(page), 0,
-> +			PAGE_SIZE, NULL, write_end_fn))
-> +			goto out_err;
+On Fri, Sep 04, 2020 at 03:34:26PM -0600, Andreas Dilger wrote:
+> This is a patch that is part of the parallel e2fsck series that Shilong is working on,
+> and does not work by itself, but was requested during discussion on the ext4
+> concall today.
 
-I think here we need to be a bit more careful. As I wrote in my answer to
-cover letter we cannot call block_page_mkwrite(). Instead we need to lock
-the page, compute 'len' again from i_size, then call __block_write_begin()
-to map (or allocate) and read blocks, and then ext4_walk_page_buffers()
-which needs to walk from 0 to len. And then unlock the page.
+Andreas, thanks for sending this patch.  (Also available at[1].)
 
-> +		if (ext4_jbd2_inode_add_write(handle, inode, 0, PAGE_SIZE))
-> +			goto out_err;
->  		ext4_set_inode_state(inode, EXT4_STATE_JDATA);
->  	}
->  	ext4_journal_stop(handle);
-> @@ -6049,6 +6057,11 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
->  	up_read(&EXT4_I(inode)->i_mmap_sem);
->  	sb_end_pagefault(inode->i_sb);
->  	return ret;
-> +out_err:
-> +	unlock_page(page);
-> +	ret = VM_FAULT_SIGBUS;
-> +	ext4_journal_stop(handle);
-> +	goto out;
->  }
+[1] https://lore.kernel.org/linux-ext4/132401FE-6D25-41B3-99D1-50E7BC746237@dilger.ca/
 
-Otherwise the patch looks good to me!
+I took look at it, and there are a number of issues with it.  First of
+all, there seems to be an assumption that (a) the number of threads is
+less than the number of block groups, and (b) the number of threads
+can evenly divide the number of block groups.  So for example, if the
+number of block groups is prime, or if you are trying to use say, 8 or
+16 threads, and the number of block groups is odd, the code in
+question will not do the right thing.
 
-								Honza
+(a) meant that attempting to run the e2fsprogs regression test suite
+caused most of the test cases to fail with e2fsck crashing due to
+buffer overruns.  I fixed this by changing the number of threads to be
+16, or if 16 was greater than the number of block groups, to be the
+number of block groups, just for debugging purposes.  However, there
+were still a few regression test failures.
 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+I also then tried to use a file system that we had been using for
+testing fragmentation issues.  The file system was creating a 10GB
+virtual disk, and then running these commands:
+
+   DEV=/dev/sdc
+   mke2fs -t ext4 $DEV 10G
+   mount $DEV /mnt
+   pushd /mnt
+   for t in $(seq 1 6144) ; do
+       for i in $(seq 1 25) ; do
+           fallocate tb$t-8mb-$i -l 8M
+       done
+       for i in $(seq 1 2) ; do
+           fallocate tb$t-400mb-$i -l 400M
+       done
+   done
+   popd
+   umount /mnt
+
+With the patch applied, all of the threads failed with error code 22
+(EINVAL), except for one which failed with a bad block group checksum
+error.  I haven't had a chance to dig into further; but I was hoping
+that Shilong and/or Saranya might be able to take closer look at that.
+
+But the other thing that we might want to consider is to add
+demand-loading of the block (or inode) bitmap.  We got a complaint
+that "e2fsck -E journal_only" was super-slow whereas running the
+journal by mounting and unmounting the file system was much faster.
+The reason, of course, was because the kernel was only reading those
+bitmap blocks that are needed to be modified by the orphaned inode
+processing, whereas with e2fsprogs, we have to read in all of the
+bitmap blocks whether this is necessary or not.
+
+So another idea that we've talked about is teaching libext2fs to be
+able to demand load the bitmap, and then when we write out the block
+bitmap, we only need to write out those blocks that were loaded.  This
+would also speed up running debugfs to examine the file system, as
+well as running fuse2fs.  Fortunately, we have abstractions in front
+of all of the bitmap accessor functions, and the code paths that would
+need to be changed to add demand-loading of bitmaps should be mostly
+exclusive of the changes needed for parallel bitmap loading.  So if
+Shilong has time to look at making the parallel bitmap loader more
+robust, perhaps Saranya could work on the demand-loading idea.
+
+Or if Shilong doesn't have time to try to polish this parallel bitmap
+loading changes, we could have Saranya look at clean it up --- since
+regardless of whether we implement demand-loading or not, parallel
+bitmap reading is going to be useful for some use cases (e.g., a full
+fsck, dumpe2fs, or e2image).
+
+What do folks think?
+
+						- Ted
