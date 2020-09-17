@@ -2,108 +2,188 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D0A226DAC0
-	for <lists+linux-ext4@lfdr.de>; Thu, 17 Sep 2020 13:51:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32A2D26DC73
+	for <lists+linux-ext4@lfdr.de>; Thu, 17 Sep 2020 15:07:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726869AbgIQLvV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 17 Sep 2020 07:51:21 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59946 "EHLO mx2.suse.de"
+        id S1727062AbgIQNHa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 17 Sep 2020 09:07:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726677AbgIQLvK (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 17 Sep 2020 07:51:10 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 95DA1ADBD;
-        Thu, 17 Sep 2020 11:51:37 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 680351E12E1; Thu, 17 Sep 2020 13:51:03 +0200 (CEST)
-Date:   Thu, 17 Sep 2020 13:51:03 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     "zhangyi (F)" <yi.zhang@huawei.com>
-Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, jack@suse.com
-Subject: Re: [PATCH] ext4: clear buffer verified flag if read meta block from
- disk
-Message-ID: <20200917115103.GD16097@quack2.suse.cz>
-References: <20200914112420.1906407-1-yi.zhang@huawei.com>
- <20200915130711.GP4863@quack2.suse.cz>
- <2b43d24e-f220-a9f8-d1a6-e85363020a3b@huawei.com>
+        id S1726765AbgIQMc5 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 17 Sep 2020 08:32:57 -0400
+Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E03D02087D;
+        Thu, 17 Sep 2020 12:32:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600345961;
+        bh=olPA59AHeALmdazeYKWfpYsBo4J0J6ZWIIQE72g2Yac=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=QBsfQLFvyNNo7AazxeBdsvgrBNu/5E0ANikO/MgA+2DaZ8Hy+kVN+DnzTkA331w9R
+         F99L+XLGUhz5QfB0i3mLuEVhal68EbIHv3IyFk1bRT/k04PDMksWsrW9xN8pUPc555
+         8JmVCKQIahp87c2ulFoeqvulKpTDYSeXTHOvjuQc=
+Message-ID: <41ad3cd50f4d213455bef4e7c42143c289690222.camel@kernel.org>
+Subject: Re: [PATCH v3 13/13] fscrypt: make
+ fscrypt_set_test_dummy_encryption() take a 'const char *'
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>, linux-fscrypt@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, ceph-devel@vger.kernel.org,
+        Daniel Rosenberg <drosen@google.com>
+Date:   Thu, 17 Sep 2020 08:32:39 -0400
+In-Reply-To: <20200917041136.178600-14-ebiggers@kernel.org>
+References: <20200917041136.178600-1-ebiggers@kernel.org>
+         <20200917041136.178600-14-ebiggers@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2b43d24e-f220-a9f8-d1a6-e85363020a3b@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 15-09-20 22:57:35, zhangyi (F) wrote:
-> Hi, Jan
+On Wed, 2020-09-16 at 21:11 -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> On 2020/9/15 21:07, Jan Kara wrote:
-> > On Mon 14-09-20 19:24:20, zhangyi (F) wrote:
-> >> The metadata buffer is no longer trusted after we read it from disk
-> >> again because it is not uptodate for some reasons (e.g. failed to write
-> >> back). Otherwise we may get below memory corruption problem in
-> >> ext4_ext_split()->memset() if we read stale data from the newly
-> >> allocated extent block on disk which has been failed to async write
-> >> out but miss verify again since the verified bit has already been set
-> >> on the buffer.
-> >>
-> >> [   29.774674] BUG: unable to handle kernel paging request at ffff88841949d000
-> >> ...
-> >> [   29.783317] Oops: 0002 [#2] SMP
-> >> [   29.784219] R10: 00000000000f4240 R11: 0000000000002e28 R12: ffff88842fa1c800
-> >> [   29.784627] CPU: 1 PID: 126 Comm: kworker/u4:3 Tainted: G      D W
-> >> [   29.785546] R13: ffffffff9cddcc20 R14: ffffffff9cddd420 R15: ffff88842fa1c2f8
-> >> [   29.786679] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),BIOS ?-20190727_0738364
-> >> [   29.787588] FS:  0000000000000000(0000) GS:ffff88842fa00000(0000) knlGS:0000000000000000
-> >> [   29.789288] Workqueue: writeback wb_workfn
-> >> [   29.790319] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> >> [   29.790321]  (flush-8:0)
-> >> [   29.790844] CR2: 0000000000000008 CR3: 00000004234f2000 CR4: 00000000000006f0
-> >> [   29.791924] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> >> [   29.792839] RIP: 0010:__memset+0x24/0x30
-> >> [   29.793739] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> >> [   29.794256] Code: 90 90 90 90 90 90 0f 1f 44 00 00 49 89 f9 48 89 d1 83 e2 07 48 c1 e9 033
-> >> [   29.795161] Kernel panic - not syncing: Fatal exception in interrupt
-> >> ...
-> >> [   29.808149] Call Trace:
-> >> [   29.808475]  ext4_ext_insert_extent+0x102e/0x1be0
-> >> [   29.809085]  ext4_ext_map_blocks+0xa89/0x1bb0
-> >> [   29.809652]  ext4_map_blocks+0x290/0x8a0
-> >> [   29.809085]  ext4_ext_map_blocks+0xa89/0x1bb0
-> >> [   29.809652]  ext4_map_blocks+0x290/0x8a0
-> >> [   29.810161]  ext4_writepages+0xc85/0x17c0
-> >> ...
-> >>
-> >> Fix this by clear buffer's verified bit if we read it from disk again.
-> >>
-> >> Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
-> > 
-> > Good spotting! When looking at the patch I was just wondering that it's
-> > rather easy to miss clearing of buffer_verified() bit in some place where
-> > we read metadata block from disk. So I was wondering that maybe it would be
+> fscrypt_set_test_dummy_encryption() requires that the optional argument
+> to the test_dummy_encryption mount option be specified as a substring_t.
+> That doesn't work well with filesystems that use the new mount API,
+> since the new way of parsing mount options doesn't use substring_t.
 > 
-> Indeed, I clear the buffer_verified() bit in some common helpers of ext4,
-> such as ext4_bread() and ext4_sb_bread(), so we may not miss clear it
-> where we invoke these helpers, but it is rather easy to miss in the
-> others places where submit read bio directly. How about add some common
-> helpers for them too ?
+> Make it take the argument as a 'const char *' instead.
+> 
+> Instead of moving the match_strdup() into the callers in ext4 and f2fs,
+> make them just use arg->from directly.  Since the pattern is
+> "test_dummy_encryption=%s", the argument will be null-terminated.
+> 
 
-I was thinking about this for some time and yes, I agree this is probably
-the best way forward. I've looked at places where we submit reads and
-probably some helper like below should work:
+Are you sure about that? I thought the point of substring_t was to give
+you a token from the string without null terminating it.
 
-void ext4_read_bh(struct buffer_head *bh, int op_flags,
-		  void (*end_io)(struct buffer_head *bh, int uptodate))
+ISTM that when you just pass in ->from, you might end up with trailing
+arguments in your string like this. e.g.:
 
-which would do the final ext4_buffer_uptodate() check, set end_io (fill in
-end_buffer_read_sync if NULL), clear verified bit, get bh ref, and do
-submit_bh(). And use this in all the places reading metadata buffers
-instead of various different helpers.
+    "v2,foo,bar,baz"
 
-								Honza
+...and then that might fail to match properly
+in fscrypt_set_test_dummy_encryption.
+
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+>  fs/crypto/policy.c      | 20 ++++++--------------
+>  fs/ext4/super.c         |  2 +-
+>  fs/f2fs/super.c         |  2 +-
+>  include/linux/fscrypt.h |  5 +----
+>  4 files changed, 9 insertions(+), 20 deletions(-)
+> 
+> diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
+> index 97cf07543651f..4441d9944b9ef 100644
+> --- a/fs/crypto/policy.c
+> +++ b/fs/crypto/policy.c
+> @@ -697,8 +697,7 @@ EXPORT_SYMBOL_GPL(fscrypt_set_context);
+>  /**
+>   * fscrypt_set_test_dummy_encryption() - handle '-o test_dummy_encryption'
+>   * @sb: the filesystem on which test_dummy_encryption is being specified
+> - * @arg: the argument to the test_dummy_encryption option.
+> - *	 If no argument was specified, then @arg->from == NULL.
+> + * @arg: the argument to the test_dummy_encryption option.  May be NULL.
+>   * @dummy_policy: the filesystem's current dummy policy (input/output, see
+>   *		  below)
+>   *
+> @@ -712,29 +711,23 @@ EXPORT_SYMBOL_GPL(fscrypt_set_context);
+>   *         -EEXIST if a different dummy policy is already set;
+>   *         or another -errno value.
+>   */
+> -int fscrypt_set_test_dummy_encryption(struct super_block *sb,
+> -				      const substring_t *arg,
+> +int fscrypt_set_test_dummy_encryption(struct super_block *sb, const char *arg,
+>  				      struct fscrypt_dummy_policy *dummy_policy)
+>  {
+> -	const char *argstr = "v2";
+> -	const char *argstr_to_free = NULL;
+>  	struct fscrypt_key_specifier key_spec = { 0 };
+>  	int version;
+>  	union fscrypt_policy *policy = NULL;
+>  	int err;
+>  
+> -	if (arg->from) {
+> -		argstr = argstr_to_free = match_strdup(arg);
+> -		if (!argstr)
+> -			return -ENOMEM;
+> -	}
+> +	if (!arg)
+> +		arg = "v2";
+>  
+> -	if (!strcmp(argstr, "v1")) {
+> +	if (!strcmp(arg, "v1")) {
+>  		version = FSCRYPT_POLICY_V1;
+>  		key_spec.type = FSCRYPT_KEY_SPEC_TYPE_DESCRIPTOR;
+>  		memset(key_spec.u.descriptor, 0x42,
+>  		       FSCRYPT_KEY_DESCRIPTOR_SIZE);
+> -	} else if (!strcmp(argstr, "v2")) {
+> +	} else if (!strcmp(arg, "v2")) {
+>  		version = FSCRYPT_POLICY_V2;
+>  		key_spec.type = FSCRYPT_KEY_SPEC_TYPE_IDENTIFIER;
+>  		/* key_spec.u.identifier gets filled in when adding the key */
+> @@ -785,7 +778,6 @@ int fscrypt_set_test_dummy_encryption(struct super_block *sb,
+>  	err = 0;
+>  out:
+>  	kfree(policy);
+> -	kfree(argstr_to_free);
+>  	return err;
+>  }
+>  EXPORT_SYMBOL_GPL(fscrypt_set_test_dummy_encryption);
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 7e77722406e2f..ed5624285a475 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -1893,7 +1893,7 @@ static int ext4_set_test_dummy_encryption(struct super_block *sb,
+>  			 "Can't set test_dummy_encryption on remount");
+>  		return -1;
+>  	}
+> -	err = fscrypt_set_test_dummy_encryption(sb, arg,
+> +	err = fscrypt_set_test_dummy_encryption(sb, arg->from,
+>  						&sbi->s_dummy_enc_policy);
+>  	if (err) {
+>  		if (err == -EEXIST)
+> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+> index f2b3d1a279fb7..c72d22c0c52e7 100644
+> --- a/fs/f2fs/super.c
+> +++ b/fs/f2fs/super.c
+> @@ -438,7 +438,7 @@ static int f2fs_set_test_dummy_encryption(struct super_block *sb,
+>  		return -EINVAL;
+>  	}
+>  	err = fscrypt_set_test_dummy_encryption(
+> -		sb, arg, &F2FS_OPTION(sbi).dummy_enc_policy);
+> +		sb, arg->from, &F2FS_OPTION(sbi).dummy_enc_policy);
+>  	if (err) {
+>  		if (err == -EEXIST)
+>  			f2fs_warn(sbi,
+> diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
+> index b3b0c5675c6b1..fc67c4cbaa968 100644
+> --- a/include/linux/fscrypt.h
+> +++ b/include/linux/fscrypt.h
+> @@ -15,7 +15,6 @@
+>  
+>  #include <linux/fs.h>
+>  #include <linux/mm.h>
+> -#include <linux/parser.h>
+>  #include <linux/slab.h>
+>  #include <uapi/linux/fscrypt.h>
+>  
+> @@ -153,9 +152,7 @@ struct fscrypt_dummy_policy {
+>  	const union fscrypt_policy *policy;
+>  };
+>  
+> -int fscrypt_set_test_dummy_encryption(
+> -				struct super_block *sb,
+> -				const substring_t *arg,
+> +int fscrypt_set_test_dummy_encryption(struct super_block *sb, const char *arg,
+>  				struct fscrypt_dummy_policy *dummy_policy);
+>  void fscrypt_show_test_dummy_encryption(struct seq_file *seq, char sep,
+>  					struct super_block *sb);
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Jeff Layton <jlayton@kernel.org>
+
