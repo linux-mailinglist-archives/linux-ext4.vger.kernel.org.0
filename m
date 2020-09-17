@@ -2,231 +2,177 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8F3426D0C0
-	for <lists+linux-ext4@lfdr.de>; Thu, 17 Sep 2020 03:43:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CED9126D11B
+	for <lists+linux-ext4@lfdr.de>; Thu, 17 Sep 2020 04:28:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726112AbgIQBnB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 16 Sep 2020 21:43:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726009AbgIQBnA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Sep 2020 21:43:00 -0400
-X-Greylist: delayed 508 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 21:43:00 EDT
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7A90C06174A
-        for <linux-ext4@vger.kernel.org>; Wed, 16 Sep 2020 18:34:31 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id l126so186667pfd.5
-        for <linux-ext4@vger.kernel.org>; Wed, 16 Sep 2020 18:34:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=0B03o0UCC9duSUvGYbtzLtk6nUcgwUNG2VAvbPi76/c=;
-        b=HgEQiw+0Bgm7MOqrDOuj687T7srSTq401nypCrRn1EudwqYbNX8e3QIQ+dQcpQnczl
-         yDmOSTEq9j1M76LBordD0tkoQzB1khfaQlVVDJ/67q2cNingCXtZqI7TmhBSey+XRWSz
-         ajpmblJIbJ7ChgwkWWqlo4APvux7MVOupTWwiZ+H+v/FUFcsGEp5cun0+8K9lkhFURju
-         nCWEdeAoBMKxonSI2VfoFcgv65MomjDMyL1AxfgJJy2fFYL5mTSCgskFc0dDqKMGSWu9
-         0aBRVDuh1G3WzewawIqH0qzpIn3tjfayFzA7yyHUthtKvDLYZS97OovFPZsdlWNgf1d2
-         vJWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=0B03o0UCC9duSUvGYbtzLtk6nUcgwUNG2VAvbPi76/c=;
-        b=qfpmrhWTwqYyolZaA+dxotyImug5ChHQDy6LTnkrQ/ITfs04LkXgwjw1ipzJvPuKP/
-         p+6DkMNUSQDw/LWBEhN53ALOiSxn/1rpEFtMShQnfN3tK3QB6qdg0SxIpi8/0HoF0AKt
-         OUG8tdsyOVNe421uOOXuS5NQkwMw7ZRNIr4dm/vHn7TKEBwFMSHLxeFgFE7xk5VYf7n/
-         o9ecVuWq8OlreEawxHGgXM53lbo2tM+xzQaBEJ7xepSCY8pZTrArRWfaZnINayeYyooc
-         6sOAT0z7VM45FQb637lQVftUPbzOBfQTAXsimz3Sx1g1fCF+Koa7QO2XKKTesvcyrJCv
-         yP+A==
-X-Gm-Message-State: AOAM532iZINA10S0WGValW91Ln8aKPQYEMuJBbh2sG93R/pv5+2cdBrb
-        +rfK2FOOpCfwrIrqpkW0UM3p4XQgbw741Q==
-X-Google-Smtp-Source: ABdhPJwDq+lnecnCwLntTDpqUAEeviYH+UUwoBwIz756JgRAlYqcJq3MF3lec6Hr5KpvZAoGQFJkiw==
-X-Received: by 2002:a63:5d08:: with SMTP id r8mr20047622pgb.174.1600306470972;
-        Wed, 16 Sep 2020 18:34:30 -0700 (PDT)
-Received: from [192.168.10.160] (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id a27sm18255180pfk.52.2020.09.16.18.34.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 16 Sep 2020 18:34:29 -0700 (PDT)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <D9D82475-7B39-4D79-84CA-C246130AD3B1@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_4DE3DE0D-DAF6-496F-98BC-71E630523FBA";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH] [RFC] ext2fs: parallel bitmap loading
-Date:   Wed, 16 Sep 2020 19:34:22 -0600
-In-Reply-To: <20200916210352.GD38283@mit.edu>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Wang Shilong <wangshilong1991@gmail.com>,
-        saranyamohan@google.com, harshads@google.com
+        id S1726102AbgIQC2P (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 16 Sep 2020 22:28:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49260 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726044AbgIQC2L (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 16 Sep 2020 22:28:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600309687;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=589jv5dcEXFCuXf0aJXsqiIdxN7TBSpdb/yY5Un5eFk=;
+        b=BLuP5TDTBiQ1arEPQQnY+HBIwfI3xlLVLcAsmmGPH844wwek4vJkIv6gaIe2GfWm4WfFPI
+        Y0YgApLVXQ/LuZ09whBVbhYHQEPNa9T/E+eQU1HNeHlV4OuGpryiG0sAubOAmfYUTAGteO
+        tGScJ86lLq9hFZi+FZV4+itQLbv4ohM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-265-CXovhrWkPt2pdtFB99xyIg-1; Wed, 16 Sep 2020 22:21:03 -0400
+X-MC-Unique: CXovhrWkPt2pdtFB99xyIg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6588D807355;
+        Thu, 17 Sep 2020 02:21:02 +0000 (UTC)
+Received: from T590 (ovpn-12-180.pek2.redhat.com [10.72.12.180])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1E0CB1992F;
+        Thu, 17 Sep 2020 02:20:55 +0000 (UTC)
+Date:   Thu, 17 Sep 2020 10:20:51 +0800
+From:   Ming Lei <ming.lei@redhat.com>
 To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-References: <CA+OwuSj-WjaPbfOSDpg5Mz2tm_W0p40N-L=meiWEDZ6j1ccq=Q@mail.gmail.com>
- <132401FE-6D25-41B3-99D1-50E7BC746237@dilger.ca>
- <20200916210352.GD38283@mit.edu>
-X-Mailer: Apple Mail (2.3273)
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-ext4@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-block@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: REGRESSION: 37f4a24c2469: blk-mq: centralise related handling
+ into blk_mq_get_driver_tag
+Message-ID: <20200917022051.GA1004828@T590>
+References: <7f0e2d99-5da2-237e-a894-0afddc0ace1e@kernel.dk>
+ <049a97db-c362-bcfb-59e5-4b1d2df59383@kernel.dk>
+ <5140ba6c-779c-2a71-b7f2-3c3220cdf19c@kernel.dk>
+ <68510957-c887-8e26-4a1a-a7a93488586a@kernel.dk>
+ <20200904035528.GE558530@mit.edu>
+ <20200915044519.GA38283@mit.edu>
+ <20200915073303.GA754106@T590>
+ <20200915224541.GB38283@mit.edu>
+ <20200915230941.GA791425@T590>
+ <20200916202026.GC38283@mit.edu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916202026.GC38283@mit.edu>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Wed, Sep 16, 2020 at 04:20:26PM -0400, Theodore Y. Ts'o wrote:
+> On Wed, Sep 16, 2020 at 07:09:41AM +0800, Ming Lei wrote:
+> > > The problem is it's a bit tricky to revert 568f27006577, since there
+> > > is a merge conflict in blk_kick_flush().  I attempted to do the bisect
+> > > manually here, but it's clearly not right since the kernel is not
+> > > booting after the revert:
+> > > 
+> > > https://github.com/tytso/ext4/commit/1e67516382a33da2c9d483b860ac4ec2ad390870
+> > > 
+> > > branch:
+> > > 
+> > > https://github.com/tytso/ext4/tree/manual-revert-of-568f27006577
+> > > 
+> > > Can you send me a patch which correctly reverts 568f27006577?  I can
+> > > try it against -rc1 .. -rc4, whichever is most convenient.
+> > 
+> > Please test the following revert patch against -rc4.
+> 
+> Unfortunately the results of the revert is... wierd.
+> 
+> With -rc4, *all* of the VM's are failing --- reliably.  With rc4 with
+> the revert, *some* of the VM's are able to complete the tests, but
+> over half are still locking up or failing with some kind of oops.  So
+> that seems to imply that there is some kind of timing issue going on,
+> or maybe there are multiple bugs in play?
 
---Apple-Mail=_4DE3DE0D-DAF6-496F-98BC-71E630523FBA
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+Obviously there is other more serious issue, since 568f27006577 is
+completely reverted in your test, and you still see list corruption
+issue.
 
-On Sep 16, 2020, at 3:03 PM, Theodore Y. Ts'o <tytso@mit.edu> wrote:
->=20
-> On Fri, Sep 04, 2020 at 03:34:26PM -0600, Andreas Dilger wrote:
->> This is a patch that is part of the parallel e2fsck series that =
-Shilong
->> is working on, and does not work by itself, but was requested during
->> discussion on the ext4 concall today.
->=20
-> Andreas, thanks for sending this patch.  (Also available at[1].)
->=20
-> [1] =
-https://lore.kernel.org/linux-ext4/132401FE-6D25-41B3-99D1-50E7BC746237@di=
-lger.ca/
->=20
-> I took look at it, and there are a number of issues with it.  First of
-> all, there seems to be an assumption that (a) the number of threads is
-> less than the number of block groups, and (b) the number of threads
-> can evenly divide the number of block groups.  So for example, if the
-> number of block groups is prime, or if you are trying to use say, 8 or
-> 16 threads, and the number of block groups is odd, the code in
-> question will not do the right thing.
+So I'd suggest to find the big issue first. Once it is fixed, maybe
+everything becomes fine.
 
-Yes, the thread count is checked earlier in the parallel e2fsck patch
-series to be <=3D number of block groups.  However, I wasn't aware of =
-any
-requirement for groups =3D N * threads.  It may be coincidental that we
-have never tested that case.
+......
 
-In any case, the patch was never really intended to be used by itself,
-only for review and discussion of the general approach.
+> 
+> v5.9-rc4 with the revert of 568f27006577: we're seeing a similar
+> 	number of VM failures, but the failure signature is different.
+> 	The most common failure is:
+> 
+> 	[  390.023691] ------------[ cut here ]------------
+> 	[  390.028614] list_del corruption, ffffe1c241b00408->next is LIST_POISON1 (dead000000000100)
+> 	[  390.037040] WARNING: CPU: 1 PID: 5948 at lib/list_debug.c:47 __list_del_entry_valid+0x4e/0x90
+> 	[  390.045684] CPU: 1 PID: 5948 Comm: umount Not tainted 5.9.0-rc4-xfstests-00001-g6fdef015feba #11
+> 	[  390.054581] Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> 	[  390.063943] RIP: 0010:__list_del_entry_valid+0x4e/0x90
+> 	[  390.069731] Code: 2e 48 8b 32 48 39 fe 75 3a 48 8b 50 08 48 39 f2 75 48 b8 01 00 00 00 c3 48 89 fe 48 89 c2 48 c7 c7 10 13 12 9b e8 30 2f 8c ff <0f> 0b 31 c0 c3 48 89 fe 48 c7 c7 48 13 12 9b e8 1c 2f 8c ff 0f 0b
+> 	[  390.088615] RSP: 0018:ffffae95c6ddba28 EFLAGS: 00010082
+> 	[  390.094079] RAX: 0000000000000000 RBX: ffffce95bfc007d0 RCX: 0000000000000027
+> 	[  390.101338] RDX: 0000000000000027 RSI: ffffa0c9d93d7dc0 RDI: ffffa0c9d93d7dc8
+> 	[  390.108659] RBP: ffffe1c241b00408 R08: 0000006ba6bff7dc R09: 0000000000000000
+> 	[  390.115925] R10: ffffa0c9d3f444c0 R11: 0000000000000046 R12: ffffa0c9d8041180
+> 	[  390.123186] R13: ffffa0c86c010e00 R14: ffffe1c241b00400 R15: ffffa0c9d8042240
+> 	[  390.130637] FS:  00007fb227580080(0000) GS:ffffa0c9d9200000(0000) knlGS:0000000000000000
+> 	[  390.138860] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> 	[  390.144721] CR2: 00007ff72d2dfe74 CR3: 00000001cdbb8002 CR4: 00000000003706e0
+> 	[  390.152022] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> 	[  390.159314] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> 	[  390.166569] Call Trace:
+> 	[  390.169148]  free_block+0xec/0x270
+> 	[  390.173100]  ___cache_free+0x488/0x6b0
+> 	[  390.177062]  kfree+0xc9/0x1d0
+> 	[  390.181202]  kmem_freepages+0xa0/0xf0
+> 	[  390.185009]  slab_destroy+0x19/0x50
+> 	[  390.188653]  slabs_destroy+0x6d/0x90
+> 	[  390.192339]  ___cache_free+0x4a3/0x6b0
+> 	[  390.196477]  kfree+0xc9/0x1d0
+> 	[  390.199651]  kmem_freepages+0xa0/0xf0
+> 	[  390.203459]  slab_destroy+0x19/0x50
+> 	[  390.207060]  slabs_destroy+0x6d/0x90
+> 	[  390.210784]  ___cache_free+0x4a3/0x6b0
+> 	[  390.214672]  ? lockdep_hardirqs_on_prepare+0xe7/0x180
+> 	[  390.219845]  kfree+0xc9/0x1d0
+> 	[  390.222928]  put_crypt_info+0xe3/0x100
+> 	[  390.226801]  fscrypt_put_encryption_info+0x15/0x30
+> 	[  390.231721]  ext4_clear_inode+0x80/0x90
+> 	[  390.235774]  ext4_evict_inode+0x6d/0x630
+> 	[  390.239960]  evict+0xd0/0x1a0
+> 	[  390.243049]  dispose_list+0x51/0x80
+> 	[  390.246659]  evict_inodes+0x15b/0x1b0
+> 	[  390.250526]  generic_shutdown_super+0x37/0x100
+> 	[  390.255094]  kill_block_super+0x21/0x50
+> 	[  390.259066]  deactivate_locked_super+0x2f/0x70
+> 	[  390.263638]  cleanup_mnt+0xb8/0x140
+> 	[  390.267248]  task_work_run+0x73/0xc0
+> 	[  390.270953]  exit_to_user_mode_prepare+0x197/0x1a0
+> 	[  390.277333]  syscall_exit_to_user_mode+0x3c/0x210
+> 	[  390.282171]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 	[  390.287348] RIP: 0033:0x7fb2279a6507
+> 	[  390.291128] Code: 19 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 59 19 0c 00 f7 d8 64 89 01 48
+> 	[  390.310018] RSP: 002b:00007ffd41391c08 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+> 	[  390.317711] RAX: 0000000000000000 RBX: 000055b889e1f970 RCX: 00007fb2279a6507
+> 	[  390.324969] RDX: 0000000000000001 RSI: 0000000000000000 RDI: 000055b889e24f00
+> 	[  390.332300] RBP: 0000000000000000 R08: 000055b889e24f20 R09: 00007fb227a27e80
+> 	[  390.339543] R10: 0000000000000000 R11: 0000000000000246 R12: 000055b889e24f00
+> 	[  390.346818] R13: 00007fb227acc1c4 R14: 000055b889e1fa68 R15: 000055b889e1fb80
+> 	[  390.354075] irq event stamp: 3176310
+> 	[  390.357762] hardirqs last  enabled at (3176309): [<ffffffff9a090df2>] kfree+0x132/0x1d0
+> 	[  390.365891] hardirqs last disabled at (3176310): [<ffffffff9a090df9>] kfree+0x139/0x1d0
+> 	[  390.374021] softirqs last  enabled at (3174992): [<ffffffff9ac00347>] __do_softirq+0x347/0x45f
+> 	[  390.382762] softirqs last disabled at (3174535): [<ffffffff9aa00f72>] asm_call_on_stack+0x12/0x20
+> 	[  390.391742] ---[ end trace 8fb872d4de3e00ed ]---
 
-> (a) meant that attempting to run the e2fsprogs regression test suite
-> caused most of the test cases to fail with e2fsck crashing due to
-> buffer overruns.  I fixed this by changing the number of threads to be
-> 16, or if 16 was greater than the number of block groups, to be the
-> number of block groups, just for debugging purposes.  However, there
-> were still a few regression test failures.
->=20
-> I also then tried to use a file system that we had been using for
-> testing fragmentation issues.  The file system was creating a 10GB
-> virtual disk, and then running these commands:
->=20
->   DEV=3D/dev/sdc
->   mke2fs -t ext4 $DEV 10G
->   mount $DEV /mnt
->   pushd /mnt
->   for t in $(seq 1 6144) ; do
->       for i in $(seq 1 25) ; do
->           fallocate tb$t-8mb-$i -l 8M
->       done
->       for i in $(seq 1 2) ; do
->           fallocate tb$t-400mb-$i -l 400M
->       done
->   done
->   popd
->   umount /mnt
->=20
-> With the patch applied, all of the threads failed with error code 22
-> (EINVAL), except for one which failed with a bad block group checksum
-> error.  I haven't had a chance to dig into further; but I was hoping
-> that Shilong and/or Saranya might be able to take closer look at that.
+Looks it is more like a memory corruption issue, is there any helpful log
+dumped when running kernel with kasan?
 
-There may very well be other issues with the patch that make it not
-useful as-is in isolation.  I'd have to let Shilong comment on that.
-
-> But the other thing that we might want to consider is to add
-> demand-loading of the block (or inode) bitmap.  We got a complaint
-> that "e2fsck -E journal_only" was super-slow whereas running the
-> journal by mounting and unmounting the file system was much faster.
-> The reason, of course, was because the kernel was only reading those
-> bitmap blocks that are needed to be modified by the orphaned inode
-> processing, whereas with e2fsprogs, we have to read in all of the
-> bitmap blocks whether this is necessary or not.
-
-Forking threads to do on-demand loading may have a high overhead, so
-it would be interesting to investigate a libext2fs IO engine that is
-using libaio.  That would allow O_DIRECT reading of filesystem metadata
-without double caching, as well as avoid blocking threads.  Alternately,
-there is already a "readahead" method exported that could be used to
-avoid changing the code too much, using posix_fadvise(WILLNEED), but I
-have no idea on how that would perform.
-
-> So another idea that we've talked about is teaching libext2fs to be
-> able to demand load the bitmap, and then when we write out the block
-> bitmap, we only need to write out those blocks that were loaded.  This
-> would also speed up running debugfs to examine the file system, as
-> well as running fuse2fs.  Fortunately, we have abstractions in front
-> of all of the bitmap accessor functions, and the code paths that would
-> need to be changed to add demand-loading of bitmaps should be mostly
-> exclusive of the changes needed for parallel bitmap loading.  So if
-> Shilong has time to look at making the parallel bitmap loader more
-> robust, perhaps Saranya could work on the demand-loading idea.
->=20
-> Or if Shilong doesn't have time to try to polish this parallel bitmap
-> loading changes, we could have Saranya look at clean it up --- since
-> regardless of whether we implement demand-loading or not, parallel
-> bitmap reading is going to be useful for some use cases (e.g., a full
-> fsck, dumpe2fs, or e2image).
-
-I don't think Shilong will have time to work on major code changes for
-the next few weeks at least, due to internal deadlines, after which we
-can finish cleaning up and submitting the pfsck patch series upstream.
-If you are interested in the whole 59-patch series, it is available via:
-
-git pull https://review.whamcloud.com/tools/e2fsprogs =
-refs/changes/14/39914/1
-
-or viewable online via Gerrit at:
-
-https://review.whamcloud.com/39914
-
-Getting some high-level review/feedback of that patch series would avoid
-spending time to rework/rebase it and finding it isn't in the form that
-you would prefer, or if it needs major architectural changes.
-
-Note that this is currently based on top of the Lustre e2fsprogs branch.
-While these shouldn't cause any problems with non-Lustre filesystems,
-there are other patches in the series that are not necessarily ready
-for submission (e.g. dirdata, Lustre xattr decoding, inode badness, =
-etc).
-
-Cheers, Andreas
+BTW, I have kvm/qumu auto test which runs blktest/xfstest over virtio-blk/virito-scsi/loop/nvme
+with xfs/ext4 every two days, and not see such failure recently, but the kernel config is based
+rhel8's config.
 
 
+thanks,
+Ming
 
-
-
-
---Apple-Mail=_4DE3DE0D-DAF6-496F-98BC-71E630523FBA
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl9ivR4ACgkQcqXauRfM
-H+BMGw//fbzXtt3NwiZsjyxeuosxBGWgQJXQdxzH+MgV4WTvbERXJuoGD+oI4fGi
-ux/d1e/P7SE3dVZVlNEpGsqs4Sia9MWDR5b+JqxYnx/322VowiEajpoVq6uVTxa5
-y5r3sr0hriP2wfA7CRnjyoGdHWvrQp59Ul3SZPV51BHNztebuJu74Hpd6lXvekvB
-j01tHdStrakdQZSpOGKvdU83yn7MLO+LWPyHiBSzQbk8TI4A49mz5DAeFRdB6wpZ
-Cdr76TSdaQjyRbS4G/7pdBuxw0UCdZnEwsAerUxnQNIwD2UId4YxQUwMaYsYsqDv
-5TxzoILZHogoPjC2U/RTa172uRH9tR63E+Zq2XNJC+xL3lMTx6MaOL5c3haQRbhI
-pVKSGa0ay1ugQPVvJ58Xd7z032JdmfpONtINYrsqLpTSDFbmDXieIhiSXnu6Ax9C
-pEGgiqWA6txxuKg+b9RchJbxiqcoewUS+k1N1dup54RtbAZGTq6+VZ57c9NhTX0T
-CHSXFIDsqpjtkG7n5W9NU0lfjxYzL9Ay+Bve34d2uGM/Ik1V0RKHgZ0ylQ5vpdE1
-kZOHHNcpVe4Bf1SqW05E+p2J/Bo8hiJZn/VyZntXDfzRXElmC3RcIwOJ8OgpteV3
-th+fm3KqCp2ZgCz+JNOGxLJ6VmAq0Pzv81k3rkhnzABiPf5804g=
-=r3pU
------END PGP SIGNATURE-----
-
---Apple-Mail=_4DE3DE0D-DAF6-496F-98BC-71E630523FBA--
