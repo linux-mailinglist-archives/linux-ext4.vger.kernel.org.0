@@ -2,201 +2,132 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5FED26D1CE
-	for <lists+linux-ext4@lfdr.de>; Thu, 17 Sep 2020 05:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B05C726D236
+	for <lists+linux-ext4@lfdr.de>; Thu, 17 Sep 2020 06:20:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725987AbgIQDfT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 16 Sep 2020 23:35:19 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:26720 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725858AbgIQDfS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Sep 2020 23:35:18 -0400
-X-Greylist: delayed 322 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 23:35:14 EDT
-X-IronPort-AV: E=Sophos;i="5.76,434,1592841600"; 
-   d="scan'208";a="99336486"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 17 Sep 2020 11:31:59 +0800
-Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
-        by cn.fujitsu.com (Postfix) with ESMTP id ACAFA48990CB;
-        Thu, 17 Sep 2020 11:31:55 +0800 (CST)
-Received: from [10.167.220.69] (10.167.220.69) by
- G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Thu, 17 Sep 2020 11:31:53 +0800
-Message-ID: <5F62D8A9.7060903@cn.fujitsu.com>
-Date:   Thu, 17 Sep 2020 11:31:53 +0800
-From:   Xiao Yang <yangx.jy@cn.fujitsu.com>
-User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.2; zh-CN; rv:1.9.2.18) Gecko/20110616 Thunderbird/3.1.11
+        id S1726219AbgIQEUk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 17 Sep 2020 00:20:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33826 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726112AbgIQEUd (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 17 Sep 2020 00:20:33 -0400
+Received: from sol.attlocal.net (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D2A412074B;
+        Thu, 17 Sep 2020 04:13:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600315988;
+        bh=tM/vVKpgIq/1E/c7scgrL37P+3enf/GVwfCXmp+Qo8Q=;
+        h=From:To:Cc:Subject:Date:From;
+        b=aOK1PhygiTi9wUZF8AW5bf7XQaiWHY70xLWcdjs/iUgFVpU9gqRwuzZbiVuk7AtBi
+         B2NqUu4X6lglthhCtvW3oOX7A0+0La/otShJwsVcyQZEDOZPwfQ1DaevY6r+cGNDNn
+         hNDwgQ+tusdACi9w+UAOmem3muqIGfgD5mdFkFnE=
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, ceph-devel@vger.kernel.org,
+        Jeff Layton <jlayton@kernel.org>,
+        Daniel Rosenberg <drosen@google.com>
+Subject: [PATCH v3 00/13] fscrypt: improve file creation flow
+Date:   Wed, 16 Sep 2020 21:11:23 -0700
+Message-Id: <20200917041136.178600-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-To:     Theodore Ts'o <tytso@mit.edu>
-CC:     Andreas Dilger <adilger@dilger.ca>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH v2] chattr/lsattr: Support dax attribute
-References: <20200728053321.12892-1-yangx.jy@cn.fujitsu.com> <9FB1F4E5-7B7C-4E09-A415-3C5C888B321F@dilger.ca> <5F349A82.5080007@cn.fujitsu.com> <5F485ED8.70402@cn.fujitsu.com> <305B253D-9A17-4E42-A0BF-016E278FD3B6@dilger.ca>
-In-Reply-To: <305B253D-9A17-4E42-A0BF-016E278FD3B6@dilger.ca>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.167.220.69]
-X-ClientProxiedBy: G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.205) To
- G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206)
-X-yoursite-MailScanner-ID: ACAFA48990CB.AADA7
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: yangx.jy@cn.fujitsu.com
-X-Spam-Status: No
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi,
+Hello,
 
-Ping :-)
+This series reworks the implementation of creating new encrypted files
+by introducing new helper functions that allow filesystems to set up the
+inodes' keys earlier, prior to taking too many filesystem locks.
 
-Best Regards,
-Xiao Yang
-On 2020/8/28 16:22, Andreas Dilger wrote:
-> On Aug 27, 2020, at 7:33 PM, Xiao Yang<yangx.jy@cn.fujitsu.com>  wrote:
->> Hi,
->>
->> Is there any comment on the patch? :-)
-> I don't need a v3 for the Dax vs. DAX case, though I think DAX would be
-> better.  The decision is up to Ted.
->
-> Cheers, Andreas
->
->> Thanks,
->> Xiao Yang
->> On 2020/8/13 9:42, Xiao Yang wrote:
->>> On 2020/8/13 7:29, Andreas Dilger wrote:
->>>> On Jul 27, 2020, at 11:33 PM, Xiao Yang<yangx.jy@cn.fujitsu.com>   wrote:
->>>>> Use the letter 'x' to set/get dax attribute on a directory/file.
->>>>>
->>>>> Signed-off-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
->>>> One minor nit below, but otherwise looks OK.
->>>>
->>>> Reviewed-by: Andreas Dilger<adilger@dilger.ca>
->>>>
->>>>> diff --git a/lib/e2p/pf.c b/lib/e2p/pf.c
->>>>> index 0c6998c4..e59cccff 100644
->>>>> --- a/lib/e2p/pf.c
->>>>> +++ b/lib/e2p/pf.c
->>>>> @@ -44,6 +44,7 @@ static struct flags_name flags_array[] = {
->>>>>     { EXT2_TOPDIR_FL, "T", "Top_of_Directory_Hierarchies" },
->>>>>     { EXT4_EXTENTS_FL, "e", "Extents" },
->>>>>     { FS_NOCOW_FL, "C", "No_COW" },
->>>>> +    { FS_DAX_FL, "x", "Dax" },
->>>> Should this be "DAX" ?  That is how it is commonly used in the kernel.
->>> Hi Andreas,
->>>
->>> Thanks a lot for your review.
->>>
->>> Either 'Dax' or 'DAX' is fine to me because it is just the output of lsattr -v.
->>> For example, xfs_io shows 'dax' instead of 'DAX':
->>> # xfs_io -c "lsattr -v" file
->>> [dax] file
->>>
->>> BTW:
->>> I just used 'Dax' to follow the current format of output(i.e. capitalize the first letter).
->>>
->>> Do you want me to send v3 patch with the 'DAX'? :-)
->>>
->>> Best Regards,
->>> Xiao Yang
->>>>>     { EXT4_CASEFOLD_FL, "F", "Casefold" },
->>>>>     { EXT4_INLINE_DATA_FL, "N", "Inline_Data" },
->>>>>     { EXT4_PROJINHERIT_FL, "P", "Project_Hierarchy" },
->>>>> diff --git a/lib/ext2fs/ext2_fs.h b/lib/ext2fs/ext2_fs.h
->>>>> index 6c20ea77..88f510a3 100644
->>>>> --- a/lib/ext2fs/ext2_fs.h
->>>>> +++ b/lib/ext2fs/ext2_fs.h
->>>>> @@ -335,6 +335,7 @@ struct ext2_dx_tail {
->>>>> /* EXT4_EOFBLOCKS_FL 0x00400000 was here */
->>>>> #define FS_NOCOW_FL            0x00800000 /* Do not cow file */
->>>>> #define EXT4_SNAPFILE_FL        0x01000000  /* Inode is a snapshot */
->>>>> +#define FS_DAX_FL            0x02000000 /* Inode is DAX */
->>>>> #define EXT4_SNAPFILE_DELETED_FL    0x04000000  /* Snapshot is being deleted */
->>>>> #define EXT4_SNAPFILE_SHRUNK_FL        0x08000000  /* Snapshot shrink has completed */
->>>>> #define EXT4_INLINE_DATA_FL        0x10000000 /* Inode has inline data */
->>>>> diff --git a/misc/chattr.1.in b/misc/chattr.1.in
->>>>> index ff2fcf00..5a4928a5 100644
->>>>> --- a/misc/chattr.1.in
->>>>> +++ b/misc/chattr.1.in
->>>>> @@ -23,13 +23,13 @@ chattr \- change file attributes on a Linux file system
->>>>> .B chattr
->>>>> changes the file attributes on a Linux file system.
->>>>> .PP
->>>>> -The format of a symbolic mode is +-=[aAcCdDeFijPsStTu].
->>>>> +The format of a symbolic mode is +-=[aAcCdDeFijPsStTux].
->>>>> .PP
->>>>> The operator '+' causes the selected attributes to be added to the
->>>>> existing attributes of the files; '-' causes them to be removed; and '='
->>>>> causes them to be the only attributes that the files have.
->>>>> .PP
->>>>> -The letters 'aAcCdDeFijPsStTu' select the new attributes for the files:
->>>>> +The letters 'aAcCdDeFijPsStTux' select the new attributes for the files:
->>>>> append only (a),
->>>>> no atime updates (A),
->>>>> compressed (c),
->>>>> @@ -45,7 +45,8 @@ secure deletion (s),
->>>>> synchronous updates (S),
->>>>> no tail-merging (t),
->>>>> top of directory hierarchy (T),
->>>>> -and undeletable (u).
->>>>> +undeletable (u),
->>>>> +and direct access for files (x).
->>>>> .PP
->>>>> The following attributes are read-only, and may be listed by
->>>>> .BR lsattr (1)
->>>>> @@ -210,6 +211,14 @@ saved.  This allows the user to ask for its undeletion.  Note: please
->>>>> make sure to read the bugs and limitations section at the end of this
->>>>> document.
->>>>> .TP
->>>>> +.B x
->>>>> +The 'x' attribute can be set on a directory or file.  If the attribute
->>>>> +is set on an existing directory, it will be inherited by all files and
->>>>> +subdirectories that are subsequently created in the directory.  If an
->>>>> +existing directory has contained some files and subdirectories, modifying
->>>>> +the attribute on the parent directory doesn't change the attributes on
->>>>> +these files and subdirectories.
->>>>> +.TP
->>>>> .B V
->>>>> A file with the 'V' attribute set has fs-verity enabled.  It cannot be
->>>>> written to, and the filesystem will automatically verify all data read
->>>>> diff --git a/misc/chattr.c b/misc/chattr.c
->>>>> index a5d60170..c0337f86 100644
->>>>> --- a/misc/chattr.c
->>>>> +++ b/misc/chattr.c
->>>>> @@ -86,7 +86,7 @@ static unsigned long sf;
->>>>> static void usage(void)
->>>>> {
->>>>>     fprintf(stderr,
->>>>> -        _("Usage: %s [-pRVf] [-+=aAcCdDeijPsStTuF] [-v version] files...\n"),
->>>>> +        _("Usage: %s [-pRVf] [-+=aAcCdDeijPsStTuFx] [-v version] files...\n"),
->>>>>         program_name);
->>>>>     exit(1);
->>>>> }
->>>>> @@ -112,6 +112,7 @@ static const struct flags_char flags_array[] = {
->>>>>     { EXT2_NOTAIL_FL, 't' },
->>>>>     { EXT2_TOPDIR_FL, 'T' },
->>>>>     { FS_NOCOW_FL, 'C' },
->>>>> +    { FS_DAX_FL, 'x' },
->>>>>     { EXT4_CASEFOLD_FL, 'F' },
->>>>>     { 0, 0 }
->>>>> };
->>>>> --
->>>>> 2.21.0
->>>>>
->>>>>
->>>>>
->>>> Cheers, Andreas
->
-> Cheers, Andreas
->
->
->
->
->
+This fixes deadlocks that are possible during memory reclaim because
+fscrypt_get_encryption_info() isn't GFP_NOFS-safe, yet it's called
+during an ext4 transaction or under f2fs_lock_op().  It also fixes a
+similar deadlock where f2fs can try to recursively lock a page when the
+test_dummy_encryption mount option is in use.
+
+It also solves an ordering problem that the ceph support for fscrypt
+will have.  For more details about this ordering problem, see the
+discussion on Jeff Layton's RFC patchsets for ceph fscrypt support
+(v1: https://lkml.kernel.org/linux-fscrypt/20200821182813.52570-1-jlayton@kernel.org/T/#u
+ v2: https://lkml.kernel.org/linux-fscrypt/20200904160537.76663-1-jlayton@kernel.org/T/#u
+ v3: https://lkml.kernel.org/linux-fscrypt/20200914191707.380444-1-jlayton@kernel.org/T/#u)
+Note that v3 of the ceph patchset is based on v2 of this patchset.
+
+Patch 1 adds the above-mentioned new helper functions.  Patches 2-5
+convert ext4, f2fs, and ubifs to use them, and patches 6-9 clean up a
+few things afterwards.
+
+Finally, patches 10-13 change the implementation of
+test_dummy_encryption to no longer set up an encryption key for
+unencrypted directories, which was confusing and was causing problems.
+
+This patchset applies to the master branch of
+https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git.
+It can also be retrieved from tag "fscrypt-file-creation-v3" of
+https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git.
+
+I'm looking to apply this for 5.10; reviews are greatly appreciated!
+
+Changed v2 => v3:
+  - Added patch that changes fscrypt_set_test_dummy_encryption() to take
+    a 'const char *'.  (Needed by ceph.)
+  - Fixed bug where fscrypt_prepare_new_inode() succeeded even if the
+    new inode's key couldn't be set up.
+  - Fixed bug where fscrypt_prepare_new_inode() wouldn't derive the
+    dirhash key for new casefolded directories.
+  - Made warning messages account for i_ino possibly being 0 now.
+
+Changed v1 => v2:
+  - Added mention of another deadlock this fixes.
+  - Added patches to improve the test_dummy_encryption implementation.
+  - Dropped an ext4 cleanup patch that can be done separately later.
+  - Lots of small cleanups, and a couple small fixes.
+
+Eric Biggers (13):
+  fscrypt: add fscrypt_prepare_new_inode() and fscrypt_set_context()
+  ext4: factor out ext4_xattr_credits_for_new_inode()
+  ext4: use fscrypt_prepare_new_inode() and fscrypt_set_context()
+  f2fs: use fscrypt_prepare_new_inode() and fscrypt_set_context()
+  ubifs: use fscrypt_prepare_new_inode() and fscrypt_set_context()
+  fscrypt: adjust logging for in-creation inodes
+  fscrypt: remove fscrypt_inherit_context()
+  fscrypt: require that fscrypt_encrypt_symlink() already has key
+  fscrypt: stop pretending that key setup is nofs-safe
+  fscrypt: make "#define fscrypt_policy" user-only
+  fscrypt: move fscrypt_prepare_symlink() out-of-line
+  fscrypt: handle test_dummy_encryption in more logical way
+  fscrypt: make fscrypt_set_test_dummy_encryption() take a 'const char
+    *'
+
+ fs/crypto/crypto.c           |   4 +-
+ fs/crypto/fname.c            |  11 +-
+ fs/crypto/fscrypt_private.h  |  10 +-
+ fs/crypto/hooks.c            |  65 ++++++++----
+ fs/crypto/inline_crypt.c     |   7 +-
+ fs/crypto/keyring.c          |   9 +-
+ fs/crypto/keysetup.c         | 182 +++++++++++++++++++++++--------
+ fs/crypto/keysetup_v1.c      |   8 +-
+ fs/crypto/policy.c           | 200 ++++++++++++++++++++---------------
+ fs/ext4/ext4.h               |   6 +-
+ fs/ext4/ialloc.c             | 119 +++++++++++----------
+ fs/ext4/super.c              |  17 +--
+ fs/f2fs/dir.c                |   2 +-
+ fs/f2fs/f2fs.h               |  25 +----
+ fs/f2fs/namei.c              |   7 +-
+ fs/f2fs/super.c              |  16 +--
+ fs/ubifs/dir.c               |  38 +++----
+ include/linux/fscrypt.h      | 120 +++++++--------------
+ include/uapi/linux/fscrypt.h |   6 +-
+ 19 files changed, 474 insertions(+), 378 deletions(-)
 
 
+base-commit: 5e895bd4d5233cb054447d0491d4e63c8496d419
+-- 
+2.28.0
 
