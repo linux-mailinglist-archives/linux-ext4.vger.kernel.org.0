@@ -2,88 +2,129 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89E5B26E100
-	for <lists+linux-ext4@lfdr.de>; Thu, 17 Sep 2020 18:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0305526E2EE
+	for <lists+linux-ext4@lfdr.de>; Thu, 17 Sep 2020 19:52:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728572AbgIQQdq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 17 Sep 2020 12:33:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43992 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728369AbgIQQdd (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 17 Sep 2020 12:33:33 -0400
-Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C27D2214D8;
-        Thu, 17 Sep 2020 16:33:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600360408;
-        bh=64guTUZ7EKPT2qpTc7D0yaFTflRcH4pcyFWo+xuAOGU=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=eU1pP6hgmXz25xyBg9bazb9fKAso0aXmNP2dVveMx2ztmBwOjVdBVik39B9/dsfyi
-         l7B1BELQj4b0ud+U4UFntHF3lCMR/Rq5xrFwpLL3OBQuZckdLAshp7dwLe0wC59tkq
-         GBid0tzn4y03cySN4r38Z/i9cVEe43zaJsX5UFUA=
-Message-ID: <197468586b4a9b933755d2f9a462a234d654e280.camel@kernel.org>
-Subject: Re: [PATCH v3 13/13] fscrypt: make
- fscrypt_set_test_dummy_encryption() take a 'const char *'
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, ceph-devel@vger.kernel.org,
-        Daniel Rosenberg <drosen@google.com>
-Date:   Thu, 17 Sep 2020 12:33:26 -0400
-In-Reply-To: <20200917152907.GB855@sol.localdomain>
-References: <20200917041136.178600-1-ebiggers@kernel.org>
-         <20200917041136.178600-14-ebiggers@kernel.org>
-         <41ad3cd50f4d213455bef4e7c42143c289690222.camel@kernel.org>
-         <20200917152907.GB855@sol.localdomain>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        id S1726607AbgIQRwb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 17 Sep 2020 13:52:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726471AbgIQRwC (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Sep 2020 13:52:02 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DE86C061788
+        for <linux-ext4@vger.kernel.org>; Thu, 17 Sep 2020 10:52:02 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id k25so2825134ljk.0
+        for <linux-ext4@vger.kernel.org>; Thu, 17 Sep 2020 10:52:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6bZmvn6AnFCToftcYmbjrMBsBaTLLKSGSnwvFmZF6n0=;
+        b=KiLftkuCxl6NE0Z5GnOQXhoKfwhjNUBSCQAWnYyfLQ+LiSz8M2D9BnQlavUlJcqpj5
+         r2WBVfPMgec7ErXB7d/k7N1dWn9frQt9YfcR85U4NaYZ6A7c+n0cdKT+RFL174Krzqk2
+         lmXuheqYv1PgK+D/UjzvSTurKgMQjEi4xIS48=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6bZmvn6AnFCToftcYmbjrMBsBaTLLKSGSnwvFmZF6n0=;
+        b=n1iSo8ifb5aXdtfvwAgOnWXfX1A2hMkBDN9NFil44j45jnEvaTsI0Y2VTCJONPEEsF
+         xn4DMeQY1W+zVSUQd8Uqn74JvJ29rEsgnshKzIAR/WaUS9z9FQ10yiZxnUuCV7ntnBpg
+         2Lz0z4Bie43mw/BeDnEjRpTCzAlCLwXqwuJBGZhqVbfWTiuUrmPNrquDnumcJRQfZPnS
+         /R2tQ99CSjGn8ngBMipU3Pr1caXM0SDHpZbVjh7C38gbjPa6a3kFoduBj0jyR5mLt1wh
+         diNL0u1RWLno3XWcEgYcu6cgfJR1Dups6I5MR2rlboYynkHtckGd0Oz6gkYqPbgjRrak
+         fcfw==
+X-Gm-Message-State: AOAM530Qdp6gQibMEsl89bK41Xvgi/99TD0VJ5Ra7JFaGdw5Bb1q4rSG
+        TJ1ty0Ur29Kd7MwgCUetinhPaK3lEtjYqw==
+X-Google-Smtp-Source: ABdhPJy0rWZtbTOjf/j0Cj7NOPGH1oQDmA/ld8TnXS6GypoU381toTQlqzq/dVIMqEGVuRJUrKfUGg==
+X-Received: by 2002:a2e:9784:: with SMTP id y4mr9939003lji.247.1600365120259;
+        Thu, 17 Sep 2020 10:52:00 -0700 (PDT)
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
+        by smtp.gmail.com with ESMTPSA id f6sm53457ljj.28.2020.09.17.10.51.58
+        for <linux-ext4@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Sep 2020 10:51:58 -0700 (PDT)
+Received: by mail-lf1-f54.google.com with SMTP id x69so3153021lff.3
+        for <linux-ext4@vger.kernel.org>; Thu, 17 Sep 2020 10:51:58 -0700 (PDT)
+X-Received: by 2002:a19:8907:: with SMTP id l7mr9413968lfd.105.1600365117964;
+ Thu, 17 Sep 2020 10:51:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <CAHk-=wiz=J=8mJ=zRG93nuJ9GtQAm5bSRAbWJbWZuN4Br38+EQ@mail.gmail.com>
+ <CAHk-=wimM2kckaYj7spUJwehZkSYxK9RQqu3G392BE=73dyKtg@mail.gmail.com>
+ <8bb582d2-2841-94eb-8862-91d1225d5ebc@MichaelLarabel.com> <CAHk-=wjqE_a6bpZyDQ4DCrvj_Dv2RwQoY7wN91kj8y-tZFRvEA@mail.gmail.com>
+ <0cbc959e-1b8d-8d7e-1dc6-672cf5b3899a@MichaelLarabel.com> <CAHk-=whP-7Uw9WgWgjRgF1mCg+NnkOPpWjVw+a9M3F9C52DrVg@mail.gmail.com>
+ <CAHk-=wjfw3U5eTGWLaisPHg1+jXsCX=xLZgqPx4KJeHhEqRnEQ@mail.gmail.com>
+ <a2369108-7103-278c-9f10-6309a0a9dc3b@MichaelLarabel.com> <CAOQ4uxhz8prfD5K7dU68yHdz=iBndCXTg5w4BrF-35B+4ziOwA@mail.gmail.com>
+ <0daf6ae6-422c-dd46-f85a-e83f6e1d1113@MichaelLarabel.com> <20200912143704.GB6583@casper.infradead.org>
+ <658ae026-32d9-0a25-5a59-9c510d6898d5@MichaelLarabel.com> <CAHk-=wip0bCNnFK2Sxdn-YCTdKBF2JjF0kcM5mXbRuKKp3zojw@mail.gmail.com>
+In-Reply-To: <CAHk-=wip0bCNnFK2Sxdn-YCTdKBF2JjF0kcM5mXbRuKKp3zojw@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 17 Sep 2020 10:51:41 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whc5CnTUWoeeCDj640Rng4nH8HdLsHgEdnz3NtPSRqqhQ@mail.gmail.com>
+Message-ID: <CAHk-=whc5CnTUWoeeCDj640Rng4nH8HdLsHgEdnz3NtPSRqqhQ@mail.gmail.com>
+Subject: Re: Kernel Benchmarking
+To:     Michael Larabel <Michael@michaellarabel.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        "Ted Ts'o" <tytso@google.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, 2020-09-17 at 08:29 -0700, Eric Biggers wrote:
-> On Thu, Sep 17, 2020 at 08:32:39AM -0400, Jeff Layton wrote:
-> > On Wed, 2020-09-16 at 21:11 -0700, Eric Biggers wrote:
-> > > From: Eric Biggers <ebiggers@google.com>
-> > > 
-> > > fscrypt_set_test_dummy_encryption() requires that the optional argument
-> > > to the test_dummy_encryption mount option be specified as a substring_t.
-> > > That doesn't work well with filesystems that use the new mount API,
-> > > since the new way of parsing mount options doesn't use substring_t.
-> > > 
-> > > Make it take the argument as a 'const char *' instead.
-> > > 
-> > > Instead of moving the match_strdup() into the callers in ext4 and f2fs,
-> > > make them just use arg->from directly.  Since the pattern is
-> > > "test_dummy_encryption=%s", the argument will be null-terminated.
-> > > 
-> > 
-> > Are you sure about that? I thought the point of substring_t was to give
-> > you a token from the string without null terminating it.
-> > 
-> > ISTM that when you just pass in ->from, you might end up with trailing
-> > arguments in your string like this. e.g.:
-> > 
-> >     "v2,foo,bar,baz"
-> > 
-> > ...and then that might fail to match properly
-> > in fscrypt_set_test_dummy_encryption.
-> > 
-> 
-> Yes I'm sure, and I had also tested it.  The use of match_token() here is to
-> parse one null-terminated mount option at a time.
-> 
-> The reason that match_token() can return multiple substrings is that the pattern
-> might be something like "foo=%d:%d".
-> 
-> But here it's just "test_dummy_encryption=%s". "%s" matches until end-of-string.
+On Mon, Sep 14, 2020 at 10:47 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> (Note that it's a commit and has a SHA1, but it's from my "throw-away
+> tree for testing", so it doesn't have my sign-off or any real commit
+> message yet: I'll do that once it gets actual testing and comments).
 
-Got it. Thanks for explaining!
--- 
-Jeff Layton <jlayton@kernel.org>
+Just to keep the list and people who were on this thread informed:
+Michal ended up doing more benchmarking, and everything seems to line
+up and yes, that patch continues to work fine with a 'unfairness'
+value of 5.
 
+So I've committed it to my git tree (not pushed out yet, I have other
+pull requests etc I'm handling too), and we'll see if anybody can come
+up with a better model for how to avoid the page locking being such a
+pain. Or if somebody can figure out why fair locking causes problems
+for that packetdrill load that Matthieu reported.
+
+It does strike me that if the main source of contention comes from
+that "we need to check that the mapping is still valid as we insert
+the page into the page tables", then the page lock really isn't the
+obvious lock to use.
+
+It would be much more natural to use the mapping->i_mmap_rwsem, I feel.
+
+Willy? Your "just check for uptodate without any lock" patch itself
+feels wrong. That's what we do for plain reads, but the difference is
+that a read is a one-time event and a race is fine: we get valid data,
+it's just that it's only valid *concurrently* with the truncate or
+hole-punching event (ie either all zeroes or old data is fine).
+
+The reason faulting a page in is different from a read is that if you
+then map in a stale page, it might have had the correct contents at
+the time of the fault, but it will not have the correct contents going
+forward.
+
+So a page-in requires fundamentally stronger locking than a read()
+does, because of how the page-in causes that "future lifetime" of the
+page, in ways a read() event does not.
+
+But truncation that does page cache removal already requires that
+i_mmap_rwsem, and in fact the VM already very much uses that (ie when
+walking the page mapping).
+
+The other alternative might be just the mapping->private_lock. It's
+not a reader-writer lock, but if we don't need to sleep (and I don't
+think the final "check ->mapping" can sleep anyway since it has to be
+done together with the page table lock), a spinlock would be fine.
+
+                   Linus
