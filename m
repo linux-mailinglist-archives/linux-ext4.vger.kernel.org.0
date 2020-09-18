@@ -2,39 +2,37 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7136826F0B1
-	for <lists+linux-ext4@lfdr.de>; Fri, 18 Sep 2020 04:45:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9FBB26EF88
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Sep 2020 04:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729199AbgIRCp1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 17 Sep 2020 22:45:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34760 "EHLO mail.kernel.org"
+        id S1729974AbgIRCgW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 17 Sep 2020 22:36:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727840AbgIRCKS (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:10:18 -0400
+        id S1728857AbgIRCM5 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:12:57 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9938D23A04;
-        Fri, 18 Sep 2020 02:10:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D93822376E;
+        Fri, 18 Sep 2020 02:12:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600395013;
-        bh=QJg12Q1/sQjz9SybGbCpVHykRlDULubY5Ryc9tLIlb8=;
+        s=default; t=1600395177;
+        bh=bfQLjtX0VTcjsk8579wkG6Q6EvF2coDfWVk/9ijALns=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=psm9Om7mn5GSA395SzzlTG3G/7i+NJYlAO7LAOhwFI5nLZe02ka90M5GwCWg7Ampq
-         4wudrRfhs7UpzqQrQAaoSmsvLVIyaIGhQJcJhoje1/i/dlGaE0o8IuhGRmlMJJwjia
-         gGHCvVxRHU+BkiMwKFrv/dCa8nyB+tXxyIjIZBag=
+        b=0FxISzLRSYfbvE5TOIRWeKJX9pG47tWF8liJjNRDbDyjlL+LSkSqG2HqXwRcRODTW
+         EzCCN4CO9YMnSMUYZ5xapPb/VhYO6gNyoG+kyJ6XIyqloT6sFdTDVWRZZ6Y117RK7P
+         CQTTkkiuJewk2Tl0ueyq2l0etx5Ik0eNhQ2MRDRU=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dmitry Monakhov <dmonakhov@gmail.com>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
+Cc:     Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
         linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 108/206] ext4: mark block bitmap corrupted when found instead of BUGON
-Date:   Thu, 17 Sep 2020 22:06:24 -0400
-Message-Id: <20200918020802.2065198-108-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 033/127] ext4: make dioread_nolock the default
+Date:   Thu, 17 Sep 2020 22:10:46 -0400
+Message-Id: <20200918021220.2066485-33-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200918020802.2065198-1-sashal@kernel.org>
-References: <20200918020802.2065198-1-sashal@kernel.org>
+In-Reply-To: <20200918021220.2066485-1-sashal@kernel.org>
+References: <20200918021220.2066485-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -43,46 +41,52 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Dmitry Monakhov <dmonakhov@gmail.com>
+From: Theodore Ts'o <tytso@mit.edu>
 
-[ Upstream commit eb5760863fc28feab28b567ddcda7e667e638da0 ]
+[ Upstream commit 244adf6426ee31a83f397b700d964cff12a247d3 ]
 
-We already has similar code in ext4_mb_complex_scan_group(), but
-ext4_mb_simple_scan_group() still affected.
+This fixes the direct I/O versus writeback race which can reveal stale
+data, and it improves the tail latency of commits on slow devices.
 
-Other reports: https://www.spinics.net/lists/linux-ext4/msg60231.html
-
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
-Signed-off-by: Dmitry Monakhov <dmonakhov@gmail.com>
-Link: https://lore.kernel.org/r/20200310150156.641-1-dmonakhov@gmail.com
+Link: https://lore.kernel.org/r/20200125022254.1101588-1-tytso@mit.edu
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/mballoc.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ fs/ext4/super.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 8dd54a8a03610..054cfdd007d69 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -1901,8 +1901,15 @@ void ext4_mb_simple_scan_group(struct ext4_allocation_context *ac,
- 		BUG_ON(buddy == NULL);
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 634c822d1dc98..74516e7fa80f1 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -1471,6 +1471,7 @@ static const match_table_t tokens = {
+ 	{Opt_auto_da_alloc, "auto_da_alloc"},
+ 	{Opt_noauto_da_alloc, "noauto_da_alloc"},
+ 	{Opt_dioread_nolock, "dioread_nolock"},
++	{Opt_dioread_lock, "nodioread_nolock"},
+ 	{Opt_dioread_lock, "dioread_lock"},
+ 	{Opt_discard, "discard"},
+ 	{Opt_nodiscard, "nodiscard"},
+@@ -3633,6 +3634,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+ 		set_opt(sb, NO_UID32);
+ 	/* xattr user namespace & acls are now defaulted on */
+ 	set_opt(sb, XATTR_USER);
++	set_opt(sb, DIOREAD_NOLOCK);
+ #ifdef CONFIG_EXT4_FS_POSIX_ACL
+ 	set_opt(sb, POSIX_ACL);
+ #endif
+@@ -3770,9 +3772,8 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+ 		goto failed_mount;
  
- 		k = mb_find_next_zero_bit(buddy, max, 0);
--		BUG_ON(k >= max);
--
-+		if (k >= max) {
-+			ext4_grp_locked_error(ac->ac_sb, e4b->bd_group, 0, 0,
-+				"%d free clusters of order %d. But found 0",
-+				grp->bb_counters[i], i);
-+			ext4_mark_group_bitmap_corrupted(ac->ac_sb,
-+					 e4b->bd_group,
-+					EXT4_GROUP_INFO_BBITMAP_CORRUPT);
-+			break;
-+		}
- 		ac->ac_found++;
- 
- 		ac->ac_b_ex.fe_len = 1 << i;
+ 	if (test_opt(sb, DATA_FLAGS) == EXT4_MOUNT_JOURNAL_DATA) {
+-		printk_once(KERN_WARNING "EXT4-fs: Warning: mounting "
+-			    "with data=journal disables delayed "
+-			    "allocation and O_DIRECT support!\n");
++		printk_once(KERN_WARNING "EXT4-fs: Warning: mounting with data=journal disables delayed allocation, dioread_nolock, and O_DIRECT support!\n");
++		clear_opt(sb, DIOREAD_NOLOCK);
+ 		if (test_opt2(sb, EXPLICIT_DELALLOC)) {
+ 			ext4_msg(sb, KERN_ERR, "can't mount with "
+ 				 "both data=journal and delalloc");
 -- 
 2.25.1
 
