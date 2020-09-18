@@ -2,55 +2,59 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BE5526F11B
-	for <lists+linux-ext4@lfdr.de>; Fri, 18 Sep 2020 04:48:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E79E726F289
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Sep 2020 05:01:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730115AbgIRCst (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 17 Sep 2020 22:48:49 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13285 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728254AbgIRCse (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:48:34 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 2378F5ABF8437A190EE7;
-        Fri, 18 Sep 2020 10:48:33 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 18 Sep 2020 10:48:30 +0800
-From:   Tian Tao <tiantao6@hisilicon.com>
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>
-Subject: [PATCH] ext4: Remove unused including <linux/version.h>
-Date:   Fri, 18 Sep 2020 10:46:05 +0800
-Message-ID: <1600397165-42873-1-git-send-email-tiantao6@hisilicon.com>
-X-Mailer: git-send-email 2.7.4
+        id S1728588AbgIRC7O (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 17 Sep 2020 22:59:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57978 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726156AbgIRC7B (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:59:01 -0400
+Received: from gmail.com (unknown [104.132.1.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E4DAB2083B;
+        Fri, 18 Sep 2020 02:59:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600397941;
+        bh=UxyESt/K75+rUqzJRmabdg0mnMv1VHXCfyIK+f5CqpE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uO19MVTx3NWJ9usXy2oKKEIPkmosZEXtgFGOe6IEnE3qkk4VXDca0g/Z9bOhX3W/9
+         2VfiWBgEYVCbm9UsWLG0XDoHFFvdK4qPQtPCzp3/bbSfQHYaNmfbliTMlnA7lLUN07
+         /P37UsqT9PPJF9YTBQT4K/8fX84LKNaKv2DigGmk=
+Date:   Thu, 17 Sep 2020 19:58:59 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 4.19 059/206] ext4: make dioread_nolock the
+ default
+Message-ID: <20200918025859.GB3518637@gmail.com>
+References: <20200918020802.2065198-1-sashal@kernel.org>
+ <20200918020802.2065198-59-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200918020802.2065198-59-sashal@kernel.org>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Remove including <linux/version.h> that don't need it.
+On Thu, Sep 17, 2020 at 10:05:35PM -0400, Sasha Levin wrote:
+> From: Theodore Ts'o <tytso@mit.edu>
+> 
+> [ Upstream commit 244adf6426ee31a83f397b700d964cff12a247d3 ]
+> 
+> This fixes the direct I/O versus writeback race which can reveal stale
+> data, and it improves the tail latency of commits on slow devices.
+> 
+> Link: https://lore.kernel.org/r/20200125022254.1101588-1-tytso@mit.edu
+> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 
-Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
----
- fs/ext4/ext4.h | 1 -
- 1 file changed, 1 deletion(-)
+Any particular reason to be backporting this?  I thought I saw some fixes for
+dioread_nolock go by, after it was made the default.  Are you getting all of
+those fixes too?
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 523e00d..ac63456 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -27,7 +27,6 @@
- #include <linux/seqlock.h>
- #include <linux/mutex.h>
- #include <linux/timer.h>
--#include <linux/version.h>
- #include <linux/wait.h>
- #include <linux/sched/signal.h>
- #include <linux/blockgroup_lock.h>
--- 
-2.7.4
-
+- Eric
