@@ -2,106 +2,97 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20E7F27189D
-	for <lists+linux-ext4@lfdr.de>; Mon, 21 Sep 2020 01:40:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C69052718F1
+	for <lists+linux-ext4@lfdr.de>; Mon, 21 Sep 2020 03:11:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726236AbgITXkm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 20 Sep 2020 19:40:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45702 "EHLO
+        id S1726461AbgIUBLF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 20 Sep 2020 21:11:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726126AbgITXkl (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 20 Sep 2020 19:40:41 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77C8FC061755
-        for <linux-ext4@vger.kernel.org>; Sun, 20 Sep 2020 16:40:41 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id d15so12007471lfq.11
-        for <linux-ext4@vger.kernel.org>; Sun, 20 Sep 2020 16:40:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bDYTO6ZHAocBqDq8dENc7+9/1NYi0FO0+BjnujPaGI8=;
-        b=JhDrBz4VpfnwLwexhSfCra/1ljR+0DDuhhSmlK485+9M4Na6YRzV375YZRt8ot7FoR
-         txVEzV4FjQhUG1H2jkoLuvnO/1KJqe+mlHoMYZtxOQIBTrhesN0I421m31sdB07MvhLV
-         GRmW/3mZz0d3TLrvySNRdpKtqcWatAyZd4SpA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bDYTO6ZHAocBqDq8dENc7+9/1NYi0FO0+BjnujPaGI8=;
-        b=ctQmQ2jd1PD3RbvfqR38XtcUq61IMNxCISVb5fhywvayidUE/IRbSd/K4Qqsrw2SKK
-         IejX5jSz2p1SdQ2mIUsB+wlzM8GBRCUnR1fL/pkFV9v9OZcDpzKq9OC54Bc5IVy+2qcc
-         FNI1YOsMwb9dOPmJh82muCtcZhAgQ/fOCvfCAachFesrSdIwxPLDxIPOETvK0jfgn78B
-         s9AFvr/MP89G7tkkAUn0ObZFk2OqIGkjXx+k7VrKh0gnWqZgNmAozFGzSyCP+rFlm4XV
-         Ax/IEoQWIYQ4ECU7kC/YPHUusjrCantIXQgKyF+GiIlB5b6CUk0HwCZ5vCt4Io79GiBE
-         uPxA==
-X-Gm-Message-State: AOAM531fWyXOCv98q0rQDgR8UbsXBmokyLOUBkJZ5BMhjN1Q8D18E+ed
-        puVW64k2PXZ3LSF8I1ze/ZVZGpKyCD/bPA==
-X-Google-Smtp-Source: ABdhPJzpr0LDRmucFrf+r2v9Gkei5GwHyDdLxTyLXmI/jI3U5sTfHhH91lRDBHe95i2jgLgKL9T+Tw==
-X-Received: by 2002:a19:8a55:: with SMTP id m82mr2888215lfd.393.1600645239485;
-        Sun, 20 Sep 2020 16:40:39 -0700 (PDT)
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
-        by smtp.gmail.com with ESMTPSA id c198sm2062234lfd.228.2020.09.20.16.40.37
-        for <linux-ext4@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 20 Sep 2020 16:40:38 -0700 (PDT)
-Received: by mail-lf1-f45.google.com with SMTP id w11so12053017lfn.2
-        for <linux-ext4@vger.kernel.org>; Sun, 20 Sep 2020 16:40:37 -0700 (PDT)
-X-Received: by 2002:ac2:4ec7:: with SMTP id p7mr12864272lfr.352.1600645237669;
- Sun, 20 Sep 2020 16:40:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200912143704.GB6583@casper.infradead.org> <658ae026-32d9-0a25-5a59-9c510d6898d5@MichaelLarabel.com>
- <CAHk-=wip0bCNnFK2Sxdn-YCTdKBF2JjF0kcM5mXbRuKKp3zojw@mail.gmail.com>
- <CAHk-=whc5CnTUWoeeCDj640Rng4nH8HdLsHgEdnz3NtPSRqqhQ@mail.gmail.com>
- <20200917182314.GU5449@casper.infradead.org> <CAHk-=wj6g2y2Z3cGzHBMoeLx-mfG0Md_2wMVwx=+g_e-xDNTbw@mail.gmail.com>
- <20200917185049.GV5449@casper.infradead.org> <CAHk-=wj6Ha=cNU4kL3z661CV+c2x2=DKzPrfH=XujMa378NhWQ@mail.gmail.com>
- <20200917192707.GW5449@casper.infradead.org> <CAHk-=wjp+KiZE2EM=f8Z1J_wmZSoq0MVZTJi=bMSXmfZ7Gx76w@mail.gmail.com>
- <20200920232303.GW12096@dread.disaster.area> <CAHk-=wgufDZzm7U38eG4EPvr7ctSFJBhKZpu51wYbgUbmBeECg@mail.gmail.com>
-In-Reply-To: <CAHk-=wgufDZzm7U38eG4EPvr7ctSFJBhKZpu51wYbgUbmBeECg@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 20 Sep 2020 16:40:21 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whKR51JXc3LQoZ2qpJSJ9qKx7jDes9yRQgxWbddG0hPLw@mail.gmail.com>
-Message-ID: <CAHk-=whKR51JXc3LQoZ2qpJSJ9qKx7jDes9yRQgxWbddG0hPLw@mail.gmail.com>
-Subject: Re: Kernel Benchmarking
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Michael Larabel <Michael@michaellarabel.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Amir Goldstein <amir73il@gmail.com>,
-        "Ted Ts'o" <tytso@google.com>,
+        with ESMTP id S1726253AbgIUBLE (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 20 Sep 2020 21:11:04 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98606C061755;
+        Sun, 20 Sep 2020 18:11:04 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id CA5D628BA5A
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     Daniel Rosenberg <drosen@google.com>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Eric Biggers <ebiggers@kernel.org>,
+        linux-fscrypt@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        kernel-team@android.com, Eric Biggers <ebiggers@google.com>
+Subject: Re: [PATCH v12 4/4] ext4: Use generic casefolding support
+Organization: Collabora
+References: <20200708091237.3922153-1-drosen@google.com>
+        <20200708091237.3922153-5-drosen@google.com>
+Date:   Sun, 20 Sep 2020 21:10:57 -0400
+In-Reply-To: <20200708091237.3922153-5-drosen@google.com> (Daniel Rosenberg's
+        message of "Wed, 8 Jul 2020 02:12:37 -0700")
+Message-ID: <87lfh4djdq.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sun, Sep 20, 2020 at 4:31 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+Daniel Rosenberg <drosen@google.com> writes:
+
+> This switches ext4 over to the generic support provided in
+> the previous patch.
 >
-> And if we do end up doing it at both levels, and end up having some of
-> the locking duplicated, that's still better than "sometimes we don't
-> do it at all", and have odd problems on the less usual (and often less
-> well maintained) filesystems..
+> Since casefolded dentries behave the same in ext4 and f2fs, we decrease
+> the maintenance burden by unifying them, and any optimizations will
+> immediately apply to both.
+>
+> Signed-off-by: Daniel Rosenberg <drosen@google.com>
+> Reviewed-by: Eric Biggers <ebiggers@google.com>
+>  
+>  #ifdef CONFIG_UNICODE
+> -	if (EXT4_SB(parent->i_sb)->s_encoding && IS_CASEFOLDED(parent)) {
+> +	if (parent->i_sb->s_encoding && IS_CASEFOLDED(parent)) {
+>  		if (fname->cf_name.name) {
+>  			struct qstr cf = {.name = fname->cf_name.name,
+>  					  .len = fname->cf_name.len};
+> @@ -2171,9 +2171,6 @@ static int ext4_add_entry(handle_t *handle, struct dentry *dentry,
+>  	struct buffer_head *bh = NULL;
+>  	struct ext4_dir_entry_2 *de;
+>  	struct super_block *sb;
+> -#ifdef CONFIG_UNICODE
+> -	struct ext4_sb_info *sbi;
+> -#endif
+>  	struct ext4_filename fname;
+>  	int	retval;
+>  	int	dx_fallback=0;
+> @@ -2190,9 +2187,8 @@ static int ext4_add_entry(handle_t *handle, struct dentry *dentry,
+>  		return -EINVAL;
+>  
+>  #ifdef CONFIG_UNICODE
+> -	sbi = EXT4_SB(sb);
+> -	if (ext4_has_strict_mode(sbi) && IS_CASEFOLDED(dir) &&
+> -	    sbi->s_encoding && utf8_validate(sbi->s_encoding, &dentry->d_name))
+> +	if (sb_has_strict_encoding(sb) && IS_CASEFOLDED(dir) &&
+> +	    sb->s_encoding && utf8_validate(sb->s_encoding, &dentry->d_name))
+>  		return -EINVAL;
 
-Doing locking at a higher level also often allows for much more easily
-changing and improving semantics.
+hm, just noticed the sb->s_encoding check here is superfluous, since the
+has_strict_mode() cannot be true if !s_encoding.  Not related to this
+patch though.
 
-For example, the only reason we have absolutely the best pathname
-lookup in the industry (by a couple of orders of magnitude) is that
-it's done by the VFS layer and the dentry caching has been worked on
-for decades to tune it and do all the lockless lookups.
+Daniel, are you still working on getting this upstream?  The fscrypt
+support would be very useful for us. :)
 
-That would simply not have been possible to do at a filesystem level.
-A filesystem might have some complex and cumbersom code to do multiple
-sequential lookups as long as they stay inside that filesystem, but it
-would be ugly and it would be strictly worse than what the VFS layer
-can and does do.
+In the hope this will get upstream, as its been flying for a while and
+looks correct.
 
-That is a fairly extreme example of course - and pathname resolution
-really is somewhat odd - but I do think there are advantages to having
-locking and access rules that are centralized across filesystems.
+Reviewed-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 
-               Linus
+-- 
+Gabriel Krisman Bertazi
