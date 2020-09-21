@@ -2,75 +2,108 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94721272405
-	for <lists+linux-ext4@lfdr.de>; Mon, 21 Sep 2020 14:40:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08BAE2731F2
+	for <lists+linux-ext4@lfdr.de>; Mon, 21 Sep 2020 20:29:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726456AbgIUMkt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 21 Sep 2020 08:40:49 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:36454 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726341AbgIUMkt (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 21 Sep 2020 08:40:49 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id BF6FD5432D9278035887;
-        Mon, 21 Sep 2020 20:40:47 +0800 (CST)
-Received: from huawei.com (10.90.53.225) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Mon, 21 Sep 2020
- 20:40:45 +0800
-From:   Qilong Zhang <zhangqilong3@huawei.com>
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>
-CC:     <linux-ext4@vger.kernel.org>
-Subject: [PATCH -next] ext4: add trace exit in exception path.
-Date:   Mon, 21 Sep 2020 20:47:38 +0800
-Message-ID: <20200921124738.23352-1-zhangqilong3@huawei.com>
-X-Mailer: git-send-email 2.26.0.106.g9fadedd
+        id S1727393AbgIUS3u (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 21 Sep 2020 14:29:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35026 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726950AbgIUS3u (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 21 Sep 2020 14:29:50 -0400
+Received: from gmail.com (unknown [104.132.1.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DC2A220758;
+        Mon, 21 Sep 2020 18:29:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600712990;
+        bh=xfKd1sWDGNhVdepPEKC1RdDT0tu6IQ/iGDe1bIAhKWE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eeL3T5WAha4l7IADwnyUubjJZSCetFw5JMJ+kxtH/TvUthibhmb+DvBnGmWcChcbt
+         iE30z75SNSivfly/Ae3pYKjc5xglPEaExNgz/vjPN/BEKGQ2BYDU8wDgNsNkKBn1Cm
+         QSWUJ0N/kinYBsYwIrCEsanyApVuhkGpI+Dtzz9Y=
+Date:   Mon, 21 Sep 2020 11:29:48 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     Daniel Rosenberg <drosen@google.com>,
+        Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fscrypt@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        kernel-team@android.com
+Subject: Re: [PATCH v12 4/4] ext4: Use generic casefolding support
+Message-ID: <20200921182948.GA885472@gmail.com>
+References: <20200708091237.3922153-1-drosen@google.com>
+ <20200708091237.3922153-5-drosen@google.com>
+ <87lfh4djdq.fsf@collabora.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.90.53.225]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87lfh4djdq.fsf@collabora.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+On Sun, Sep 20, 2020 at 09:10:57PM -0400, Gabriel Krisman Bertazi wrote:
+> Daniel Rosenberg <drosen@google.com> writes:
+> 
+> > This switches ext4 over to the generic support provided in
+> > the previous patch.
+> >
+> > Since casefolded dentries behave the same in ext4 and f2fs, we decrease
+> > the maintenance burden by unifying them, and any optimizations will
+> > immediately apply to both.
+> >
+> > Signed-off-by: Daniel Rosenberg <drosen@google.com>
+> > Reviewed-by: Eric Biggers <ebiggers@google.com>
+> >  
+> >  #ifdef CONFIG_UNICODE
+> > -	if (EXT4_SB(parent->i_sb)->s_encoding && IS_CASEFOLDED(parent)) {
+> > +	if (parent->i_sb->s_encoding && IS_CASEFOLDED(parent)) {
+> >  		if (fname->cf_name.name) {
+> >  			struct qstr cf = {.name = fname->cf_name.name,
+> >  					  .len = fname->cf_name.len};
+> > @@ -2171,9 +2171,6 @@ static int ext4_add_entry(handle_t *handle, struct dentry *dentry,
+> >  	struct buffer_head *bh = NULL;
+> >  	struct ext4_dir_entry_2 *de;
+> >  	struct super_block *sb;
+> > -#ifdef CONFIG_UNICODE
+> > -	struct ext4_sb_info *sbi;
+> > -#endif
+> >  	struct ext4_filename fname;
+> >  	int	retval;
+> >  	int	dx_fallback=0;
+> > @@ -2190,9 +2187,8 @@ static int ext4_add_entry(handle_t *handle, struct dentry *dentry,
+> >  		return -EINVAL;
+> >  
+> >  #ifdef CONFIG_UNICODE
+> > -	sbi = EXT4_SB(sb);
+> > -	if (ext4_has_strict_mode(sbi) && IS_CASEFOLDED(dir) &&
+> > -	    sbi->s_encoding && utf8_validate(sbi->s_encoding, &dentry->d_name))
+> > +	if (sb_has_strict_encoding(sb) && IS_CASEFOLDED(dir) &&
+> > +	    sb->s_encoding && utf8_validate(sb->s_encoding, &dentry->d_name))
+> >  		return -EINVAL;
+> 
+> hm, just noticed the sb->s_encoding check here is superfluous, since the
+> has_strict_mode() cannot be true if !s_encoding.  Not related to this
+> patch though.
+> 
+> Daniel, are you still working on getting this upstream?  The fscrypt
+> support would be very useful for us. :)
+> 
+> In the hope this will get upstream, as its been flying for a while and
+> looks correct.
+> 
+> Reviewed-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 
-Missing trace exit in exception path of ext4_sync_file and
-ext4_ind_map_blocks.
+We couldn't get a response from Ted, so instead Jaegeuk has applied patches 1-3
+to f2fs/dev for 5.10.  Hopefully Ted will take the ext4 patch for 5.11.
 
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
----
- fs/ext4/fsync.c    | 2 +-
- fs/ext4/indirect.c | 3 ++-
- 2 files changed, 3 insertions(+), 2 deletions(-)
+I believe that Daniel is planning to resend the actual encryption+casefolding
+support soon, but initially only for f2fs since that will be ready first.
 
-diff --git a/fs/ext4/fsync.c b/fs/ext4/fsync.c
-index 1d668c8f131f..6476994d9861 100644
---- a/fs/ext4/fsync.c
-+++ b/fs/ext4/fsync.c
-@@ -150,7 +150,7 @@ int ext4_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
- 
- 	ret = file_write_and_wait_range(file, start, end);
- 	if (ret)
--		return ret;
-+		goto out;
- 
- 	/*
- 	 * data=writeback,ordered:
-diff --git a/fs/ext4/indirect.c b/fs/ext4/indirect.c
-index 80c9f33800be..1da12c44d6fe 100644
---- a/fs/ext4/indirect.c
-+++ b/fs/ext4/indirect.c
-@@ -593,7 +593,8 @@ int ext4_ind_map_blocks(handle_t *handle, struct inode *inode,
- 	if (ext4_has_feature_bigalloc(inode->i_sb)) {
- 		EXT4_ERROR_INODE(inode, "Can't allocate blocks for "
- 				 "non-extent mapped inodes with bigalloc");
--		return -EFSCORRUPTED;
-+		err = -EFSCORRUPTED;
-+		goto out;
- 	}
- 
- 	/* Set up for the direct block allocation */
--- 
-2.17.1
-
+- Eric
