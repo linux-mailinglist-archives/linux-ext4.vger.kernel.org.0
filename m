@@ -2,142 +2,119 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B4C7273F93
-	for <lists+linux-ext4@lfdr.de>; Tue, 22 Sep 2020 12:26:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4229273FE0
+	for <lists+linux-ext4@lfdr.de>; Tue, 22 Sep 2020 12:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726454AbgIVK0Q (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 22 Sep 2020 06:26:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57167 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726522AbgIVK0M (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 22 Sep 2020 06:26:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600770371;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NP/X/94HMNHmoH8pDhuasSnOzlYoWVoVVECd1n6tkiA=;
-        b=Ra//y8OLuH1mu3T8+6Cu+crkL+xMpRmHSDiim0aAHTwQytURFFonPNJR56Kz1Yfbp8wSQ7
-        dEIRV+tlPdKVlcUOmoeVSwOkjGzBTWFD31Xl1pldgIYvHrm+3IYH60qaoLFUk2hgixusQD
-        T+oCgmhhKlcSpvx3aHZ/2SrP5lY0klg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-165-MM77Emd4ORiMngXLNOc_hA-1; Tue, 22 Sep 2020 06:26:07 -0400
-X-MC-Unique: MM77Emd4ORiMngXLNOc_hA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1EE7E807333;
-        Tue, 22 Sep 2020 10:26:06 +0000 (UTC)
-Received: from work (unknown [10.40.195.105])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 89DB07366B;
-        Tue, 22 Sep 2020 10:26:04 +0000 (UTC)
-Date:   Tue, 22 Sep 2020 12:26:00 +0200
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     adilger@whamcloud.com
-Cc:     tytso@mit.edu, linux-ext4@vger.kernel.org,
-        Andreas Dilger <adilger@dilger.ca>
-Subject: Re: [PATCH] e2fsck: skip extent optimization by default
-Message-ID: <20200922102600.5asdjvarnh5znhf2@work>
-References: <1600726562-9567-1-git-send-email-adilger@whamcloud.com>
+        id S1726543AbgIVKsW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 22 Sep 2020 06:48:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726419AbgIVKsV (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 22 Sep 2020 06:48:21 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EECDC061755
+        for <linux-ext4@vger.kernel.org>; Tue, 22 Sep 2020 03:48:20 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id kk9so1256381pjb.2
+        for <linux-ext4@vger.kernel.org>; Tue, 22 Sep 2020 03:48:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=android.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gd9BXK6Qogm8GWzcEx/RRuoN03o4stNhU2BMPs3db+g=;
+        b=cjBL0njHm+8zUypttYPB1lyQmH9E2S3jK9rf/cmZXEh6EGhIdRL9gIUk/vQojZYKYn
+         IihVstLnA999VhtdeYb2+OGsEINb8d80uZmj0iYuYKmjzqdzEUI76X8MpUdm0QgCwDJk
+         oPFPSJ3Z+Ng/XKbFdKJfbc2uQyDB1AM3XB46PycPUVTODJj7MfvUhH1c9SOBH6hy3fN7
+         +MmI5yEbIvmoO31Bcs6jUoukXNaA5DDoZecxGw2h+gJmXdQsHQE99QS9XqsD892baliJ
+         wjhdtIqH6uXDr1VRf4Cpg35fClhascX89HcZ86PTKJaI3hQP1+2H5OmowlFkWHmQUA8X
+         0uXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gd9BXK6Qogm8GWzcEx/RRuoN03o4stNhU2BMPs3db+g=;
+        b=k6AlXDfwX5fMKXtzLKhXLkC6zGa92aP7CjRw0oLpD5Aoj3mygmJJ5g/Ieb05ukTRoC
+         Z7Ph/rrUsB5UA3wdYzHhwFT4Dpc5M2ixC3pzQGgbGTln4hwu1txgXYvOlOqVceJvNbh+
+         NsbmTVRlrIkhm9yLOKs4gzT436g9LUPgX3Tw5W31Buw0rLm6JOuPE6rRiK04JVHZ3Kox
+         eNdQuj2kS+sV61XMo0F4DNL+JdS9amvmHrk/VNtpTFUPUT2ff4rA5u1J+9c1vWT+DjZt
+         HlbftlvWpqtMqv6ACDsx6veSI6kJFPG9TMYLxUsAswn7Ad8XXrX3SDJtzAhcTi85I6W5
+         tF6A==
+X-Gm-Message-State: AOAM5317QcgDcfPsxlnAAhwFc03pvlm6yw+gv3RJ0vQ5+pc/o0q2qRDa
+        WxPzywYYO+7+w4bj/lq+wxuNuA==
+X-Google-Smtp-Source: ABdhPJxmaXOIQxSeBKkx6n6E73BxPgRUl72SH7IqG1Psmqep24Gl/+025pnEfhuIqXdYNK3DnALwOg==
+X-Received: by 2002:a17:90a:e10:: with SMTP id v16mr3235865pje.84.1600771699965;
+        Tue, 22 Sep 2020 03:48:19 -0700 (PDT)
+Received: from localhost.localdomain (c-73-231-5-90.hsd1.ca.comcast.net. [73.231.5.90])
+        by smtp.gmail.com with ESMTPSA id kk17sm1958427pjb.31.2020.09.22.03.48.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Sep 2020 03:48:19 -0700 (PDT)
+From:   Daniel Rosenberg <drosen@android.com>
+To:     "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chao Yu <chao@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Richard Weinberger <richard@nod.at>,
+        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mtd@lists.infradead.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com, Daniel Rosenberg <drosen@android.com>
+Subject: [PATCH 0/5] Add support for Encryption and Casefolding in F2FS
+Date:   Tue, 22 Sep 2020 03:48:02 -0700
+Message-Id: <20200922104807.912914-1-drosen@android.com>
+X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1600726562-9567-1-git-send-email-adilger@whamcloud.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 04:16:02PM -0600, adilger@whamcloud.com wrote:
-> From: Andreas Dilger <adilger@whamcloud.com>
-> 
-> The e2fsck error message:
-> 
->     inode nnn extent tree (at level 1) could be narrower. Optimize<y>?
-> 
-> can be fairly verbose at times, and leads users to think that there
-> may be something wrong with the filesystem.  Basically, almost any
-> message printed by e2fsck makes users nervous when they are facing
-> other corruption, and a few thousand of these printed may hide other
-> errors.  It also isn't clear that saving a few blocks optimizing the
-> extent tree noticeably improves performance.
-> 
-> This message has previously been annoying enough for Ted to add the
-> "-E no_optimize_extents" option to disable it.  Just enable this
-> option by default, similar to the "-D" directory optimization option.
+These patches are on top of the f2fs dev branch
 
-Hi Andreas,
+F2FS currently supports casefolding and encryption, but not at
+the same time. These patches aim to rectify that. In a later follow up,
+this will be added for Ext4 as well. I've included one ext4 patch from
+the previous set since it isn't in the f2fs branch, but is needed for the
+fscrypt changes.
 
-it seem counterproductive to me that we would disable usefull (even if
-just a little) optimization just because the way it is presented to the
-user is inconvenient. I agree that messages during e2fsck often raise
-alarms, as they should, but perfeps instead of disabling the feature we
-can figure out a way to make the messaging better ?
+The f2fs-tools changes have already been applied.
 
-Can we just not print the every message if the answer is going to be yes
-anyway, either because of -y, -p, <a> or whatever when the user is not
-involved in the decision anymore ? Maybe a log file can be created
-for the purpose of storing the full log of changes. Or perhaps we can
-print out a summary for each type of the problem and how many of the
-instaces of a particular problem have been optimized/fixed after the
-e2fsck is done pointing to that full log for details ?
+Since both fscrypt and casefolding require their own dentry operations,
+I've moved the responsibility of setting the dentry operations from fscrypt
+to the filesystems and provided helper functions that should work for most
+cases.
 
--Lukas
+These are a follow-up to the previously sent patch set
+"[PATCH v12 0/4] Prepare for upcoming Casefolding/Encryption patches"
 
-> 
-> Signed-off-by: Andreas Dilger <adilger@dilger.ca>
-> ---
->  e2fsck/e2fsck.8.in | 4 ++--
->  e2fsck/unix.c      | 7 +++++++
->  2 files changed, 9 insertions(+), 2 deletions(-)
-> 
-> diff --git a/e2fsck/e2fsck.8.in b/e2fsck/e2fsck.8.in
-> index 4e3890b..4f5086a 100644
-> --- a/e2fsck/e2fsck.8.in
-> +++ b/e2fsck/e2fsck.8.in
-> @@ -228,12 +228,12 @@ exactly the opposite of discard option. This is set as default.
->  .TP
->  .BI no_optimize_extents
->  Do not offer to optimize the extent tree by eliminating unnecessary
-> -width or depth.  This can also be enabled in the options section of
-> +width or depth.  This is the default unless otherwise specified in
->  .BR /etc/e2fsck.conf .
->  .TP
->  .BI optimize_extents
->  Offer to optimize the extent tree by eliminating unnecessary
-> -width or depth.  This is the default unless otherwise specified in
-> +width or depth.  This can also be enabled in the options section of
->  .BR /etc/e2fsck.conf .
->  .TP
->  .BI inode_count_fullmap
-> diff --git a/e2fsck/unix.c b/e2fsck/unix.c
-> index 1b7ccea..445f806 100644
-> --- a/e2fsck/unix.c
-> +++ b/e2fsck/unix.c
-> @@ -840,6 +840,8 @@ static errcode_t PRS(int argc, char *argv[], e2fsck_t *ret_ctx)
->  	else
->  		ctx->program_name = "e2fsck";
->  
-> +	ctx->options |= E2F_OPT_NOOPT_EXTENTS;
-> +
->  	phys_mem_kb = get_memory_size() / 1024;
->  	ctx->readahead_kb = ~0ULL;
->  	while ((c = getopt(argc, argv, "panyrcC:B:dE:fvtFVM:b:I:j:P:l:L:N:SsDkz:")) != EOF)
-> @@ -1051,6 +1053,11 @@ static errcode_t PRS(int argc, char *argv[], e2fsck_t *ret_ctx)
->  	if (c)
->  		ctx->options |= E2F_OPT_NOOPT_EXTENTS;
->  
-> +	profile_get_boolean(ctx->profile, "options", "optimize_extents",
-> +			    0, 0, &c);
-> +	if (c)
-> +		ctx->options &= ~E2F_OPT_NOOPT_EXTENTS;
-> +
->  	profile_get_boolean(ctx->profile, "options", "inode_count_fullmap",
->  			    0, 0, &c);
->  	if (c)
-> -- 
-> 1.7.12.4
-> 
+Daniel Rosenberg (5):
+  ext4: Use generic casefolding support
+  fscrypt: Export fscrypt_d_revalidate
+  libfs: Add generic function for setting dentry_ops
+  fscrypt: Have filesystems handle their d_ops
+  f2fs: Handle casefolding with Encryption
+
+ fs/crypto/fname.c       |  7 ++---
+ fs/crypto/hooks.c       |  1 -
+ fs/ext4/dir.c           | 67 -----------------------------------------
+ fs/ext4/ext4.h          | 16 ----------
+ fs/ext4/hash.c          |  2 +-
+ fs/ext4/namei.c         | 21 ++++++-------
+ fs/ext4/super.c         | 15 +++------
+ fs/f2fs/dir.c           | 64 ++++++++++++++++++++++++++++++---------
+ fs/f2fs/f2fs.h          | 11 +++----
+ fs/f2fs/hash.c          | 11 ++++++-
+ fs/f2fs/namei.c         |  1 +
+ fs/f2fs/recovery.c      | 12 +++++++-
+ fs/f2fs/super.c         |  7 -----
+ fs/libfs.c              | 49 ++++++++++++++++++++++++++++++
+ fs/ubifs/dir.c          |  1 +
+ include/linux/fs.h      |  1 +
+ include/linux/fscrypt.h |  6 ++--
+ 17 files changed, 148 insertions(+), 144 deletions(-)
+
+-- 
+2.28.0.681.g6f77f65b4e-goog
 
