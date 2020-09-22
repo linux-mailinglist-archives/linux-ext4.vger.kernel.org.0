@@ -2,136 +2,142 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8514273A9E
-	for <lists+linux-ext4@lfdr.de>; Tue, 22 Sep 2020 08:18:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B4C7273F93
+	for <lists+linux-ext4@lfdr.de>; Tue, 22 Sep 2020 12:26:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729237AbgIVGS3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 22 Sep 2020 02:18:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729220AbgIVGS3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 22 Sep 2020 02:18:29 -0400
-Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9EBAC0613D0
-        for <linux-ext4@vger.kernel.org>; Mon, 21 Sep 2020 23:18:28 -0700 (PDT)
-Received: by mail-oo1-xc41.google.com with SMTP id h8so3865683ooc.12
-        for <linux-ext4@vger.kernel.org>; Mon, 21 Sep 2020 23:18:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=THG6vXPDgMK2k7M4yyjWTbzR9oGicsRPw9gT2Zgg6Sk=;
-        b=Qd4Tdn1whmgSMaYeHJVAjI8lu/OUqAsaY6nMEildJ5Wcz+HOxT7jXMUD03tm9yR8G/
-         vDzyb+d1lGxQNLYIXQnFVhKqaG73yC0TaoNUjzC++ozwpShucs6pqMzhnsZxjr1Nzb4h
-         K1wCeilU3Fa+351ZL8SHv8tnUER/5ayy20tGJ+Jy3mcBP4iSlxPb6pgoN1jPd4Q3Eeam
-         ayKBIA93D2dJaa8PMAJ4fCf08YI7Tow7I09AS1hKl6PGi/YEqKRGKJf0D0x+YgzKHRdo
-         /qbO9M29ylVanv5qWiyLs/g4pHmvhvUZPxJXOAOkBlwa6w0235QHuMaIfR4oJF8EDJME
-         vaJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=THG6vXPDgMK2k7M4yyjWTbzR9oGicsRPw9gT2Zgg6Sk=;
-        b=FVpBxBzSZ4L37Ko9di2yc/3GI3/DuQ2RQ0OsrjcXw2VP5yg/edhaLs2v5ErYvvbDKP
-         KY4b80Q6cADifqc6XyqpFN24lzrjxB8ukpFEXXpPc9p0pFJ7LLCODOvbHHt08q0ywdSA
-         Y7Q5+edVj5hpixwKJ74DHdtvMQinB2ZR1h0Em4qjz4QnSuvOPEjtu7US+FwDe6f0FGzH
-         t1nK/clmSjNtlALQNaMeE4YqxQHf2fhpM/VhWt7/swm5ps+Vfs3mEDAtOPDO7EwXyweM
-         nVRAdTnQggPicy1nbOnABTBj5n+M53Bg2ubkxIlM9s3Z+yRV3AYbU/c+afLdEpjubaqc
-         jHaw==
-X-Gm-Message-State: AOAM5300UIfaHF5xfSF6DUKZiR9ZgU3XjdYBfcNBH+Bz9hoNrmtZJvmm
-        uz/iP28/5Pyr+Zr82+GEJhe9RCsuWDHPS21WTz7VQw==
-X-Google-Smtp-Source: ABdhPJwiYGOeLvLhGoogpy5gPNwnvC+JJiMwI4f1hoq32kpb9NOx05Ev2dELtbD9Mb/3dVl5K4CX6bx+/hBa8I6MKSY=
-X-Received: by 2002:a4a:5258:: with SMTP id d85mr1950472oob.72.1600755507994;
- Mon, 21 Sep 2020 23:18:27 -0700 (PDT)
+        id S1726454AbgIVK0Q (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 22 Sep 2020 06:26:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57167 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726522AbgIVK0M (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 22 Sep 2020 06:26:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600770371;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NP/X/94HMNHmoH8pDhuasSnOzlYoWVoVVECd1n6tkiA=;
+        b=Ra//y8OLuH1mu3T8+6Cu+crkL+xMpRmHSDiim0aAHTwQytURFFonPNJR56Kz1Yfbp8wSQ7
+        dEIRV+tlPdKVlcUOmoeVSwOkjGzBTWFD31Xl1pldgIYvHrm+3IYH60qaoLFUk2hgixusQD
+        T+oCgmhhKlcSpvx3aHZ/2SrP5lY0klg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-165-MM77Emd4ORiMngXLNOc_hA-1; Tue, 22 Sep 2020 06:26:07 -0400
+X-MC-Unique: MM77Emd4ORiMngXLNOc_hA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1EE7E807333;
+        Tue, 22 Sep 2020 10:26:06 +0000 (UTC)
+Received: from work (unknown [10.40.195.105])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 89DB07366B;
+        Tue, 22 Sep 2020 10:26:04 +0000 (UTC)
+Date:   Tue, 22 Sep 2020 12:26:00 +0200
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     adilger@whamcloud.com
+Cc:     tytso@mit.edu, linux-ext4@vger.kernel.org,
+        Andreas Dilger <adilger@dilger.ca>
+Subject: Re: [PATCH] e2fsck: skip extent optimization by default
+Message-ID: <20200922102600.5asdjvarnh5znhf2@work>
+References: <1600726562-9567-1-git-send-email-adilger@whamcloud.com>
 MIME-Version: 1.0
-References: <20200708091237.3922153-1-drosen@google.com> <20200708091237.3922153-5-drosen@google.com>
- <87lfh4djdq.fsf@collabora.com> <20200921182948.GA885472@gmail.com>
-In-Reply-To: <20200921182948.GA885472@gmail.com>
-From:   Daniel Rosenberg <drosen@google.com>
-Date:   Mon, 21 Sep 2020 23:18:17 -0700
-Message-ID: <CA+PiJmQU-bupmSTHbW2MPzDxfO+3f2bu+7aKzBL1VF2D8mvqZQ@mail.gmail.com>
-Subject: Re: [PATCH v12 4/4] ext4: Use generic casefolding support
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
-        "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fscrypt@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1600726562-9567-1-git-send-email-adilger@whamcloud.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 11:29 AM Eric Biggers <ebiggers@kernel.org> wrote:
->
-> On Sun, Sep 20, 2020 at 09:10:57PM -0400, Gabriel Krisman Bertazi wrote:
-> > Daniel Rosenberg <drosen@google.com> writes:
-> >
-> > > This switches ext4 over to the generic support provided in
-> > > the previous patch.
-> > >
-> > > Since casefolded dentries behave the same in ext4 and f2fs, we decrease
-> > > the maintenance burden by unifying them, and any optimizations will
-> > > immediately apply to both.
-> > >
-> > > Signed-off-by: Daniel Rosenberg <drosen@google.com>
-> > > Reviewed-by: Eric Biggers <ebiggers@google.com>
-> > >
-> > >  #ifdef CONFIG_UNICODE
-> > > -   if (EXT4_SB(parent->i_sb)->s_encoding && IS_CASEFOLDED(parent)) {
-> > > +   if (parent->i_sb->s_encoding && IS_CASEFOLDED(parent)) {
-> > >             if (fname->cf_name.name) {
-> > >                     struct qstr cf = {.name = fname->cf_name.name,
-> > >                                       .len = fname->cf_name.len};
-> > > @@ -2171,9 +2171,6 @@ static int ext4_add_entry(handle_t *handle, struct dentry *dentry,
-> > >     struct buffer_head *bh = NULL;
-> > >     struct ext4_dir_entry_2 *de;
-> > >     struct super_block *sb;
-> > > -#ifdef CONFIG_UNICODE
-> > > -   struct ext4_sb_info *sbi;
-> > > -#endif
-> > >     struct ext4_filename fname;
-> > >     int     retval;
-> > >     int     dx_fallback=0;
-> > > @@ -2190,9 +2187,8 @@ static int ext4_add_entry(handle_t *handle, struct dentry *dentry,
-> > >             return -EINVAL;
-> > >
-> > >  #ifdef CONFIG_UNICODE
-> > > -   sbi = EXT4_SB(sb);
-> > > -   if (ext4_has_strict_mode(sbi) && IS_CASEFOLDED(dir) &&
-> > > -       sbi->s_encoding && utf8_validate(sbi->s_encoding, &dentry->d_name))
-> > > +   if (sb_has_strict_encoding(sb) && IS_CASEFOLDED(dir) &&
-> > > +       sb->s_encoding && utf8_validate(sb->s_encoding, &dentry->d_name))
-> > >             return -EINVAL;
-> >
-> > hm, just noticed the sb->s_encoding check here is superfluous, since the
-> > has_strict_mode() cannot be true if !s_encoding.  Not related to this
-> > patch though.
-> >
-> > Daniel, are you still working on getting this upstream?  The fscrypt
-> > support would be very useful for us. :)
-> >
-> > In the hope this will get upstream, as its been flying for a while and
-> > looks correct.
-> >
-> > Reviewed-by: Gabriel Krisman Bertazi <krisman@collabora.com>
->
-> We couldn't get a response from Ted, so instead Jaegeuk has applied patches 1-3
-> to f2fs/dev for 5.10.  Hopefully Ted will take the ext4 patch for 5.11.
->
-> I believe that Daniel is planning to resend the actual encryption+casefolding
-> support soon, but initially only for f2fs since that will be ready first.
->
-> - Eric
+On Mon, Sep 21, 2020 at 04:16:02PM -0600, adilger@whamcloud.com wrote:
+> From: Andreas Dilger <adilger@whamcloud.com>
+> 
+> The e2fsck error message:
+> 
+>     inode nnn extent tree (at level 1) could be narrower. Optimize<y>?
+> 
+> can be fairly verbose at times, and leads users to think that there
+> may be something wrong with the filesystem.  Basically, almost any
+> message printed by e2fsck makes users nervous when they are facing
+> other corruption, and a few thousand of these printed may hide other
+> errors.  It also isn't clear that saving a few blocks optimizing the
+> extent tree noticeably improves performance.
+> 
+> This message has previously been annoying enough for Ted to add the
+> "-E no_optimize_extents" option to disable it.  Just enable this
+> option by default, similar to the "-D" directory optimization option.
 
-Yes, planning to send them shortly. Just checking that I've not missed
-anything. For the sb_has_strict_encoding, I don't think that's
-actually checking s_encoding, though it does check s_encoding_flags.
-I'm planning to resend this one with that set, since it's not queued
-in the f2fs tree.
+Hi Andreas,
 
--Daniel
+it seem counterproductive to me that we would disable usefull (even if
+just a little) optimization just because the way it is presented to the
+user is inconvenient. I agree that messages during e2fsck often raise
+alarms, as they should, but perfeps instead of disabling the feature we
+can figure out a way to make the messaging better ?
+
+Can we just not print the every message if the answer is going to be yes
+anyway, either because of -y, -p, <a> or whatever when the user is not
+involved in the decision anymore ? Maybe a log file can be created
+for the purpose of storing the full log of changes. Or perhaps we can
+print out a summary for each type of the problem and how many of the
+instaces of a particular problem have been optimized/fixed after the
+e2fsck is done pointing to that full log for details ?
+
+-Lukas
+
+> 
+> Signed-off-by: Andreas Dilger <adilger@dilger.ca>
+> ---
+>  e2fsck/e2fsck.8.in | 4 ++--
+>  e2fsck/unix.c      | 7 +++++++
+>  2 files changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/e2fsck/e2fsck.8.in b/e2fsck/e2fsck.8.in
+> index 4e3890b..4f5086a 100644
+> --- a/e2fsck/e2fsck.8.in
+> +++ b/e2fsck/e2fsck.8.in
+> @@ -228,12 +228,12 @@ exactly the opposite of discard option. This is set as default.
+>  .TP
+>  .BI no_optimize_extents
+>  Do not offer to optimize the extent tree by eliminating unnecessary
+> -width or depth.  This can also be enabled in the options section of
+> +width or depth.  This is the default unless otherwise specified in
+>  .BR /etc/e2fsck.conf .
+>  .TP
+>  .BI optimize_extents
+>  Offer to optimize the extent tree by eliminating unnecessary
+> -width or depth.  This is the default unless otherwise specified in
+> +width or depth.  This can also be enabled in the options section of
+>  .BR /etc/e2fsck.conf .
+>  .TP
+>  .BI inode_count_fullmap
+> diff --git a/e2fsck/unix.c b/e2fsck/unix.c
+> index 1b7ccea..445f806 100644
+> --- a/e2fsck/unix.c
+> +++ b/e2fsck/unix.c
+> @@ -840,6 +840,8 @@ static errcode_t PRS(int argc, char *argv[], e2fsck_t *ret_ctx)
+>  	else
+>  		ctx->program_name = "e2fsck";
+>  
+> +	ctx->options |= E2F_OPT_NOOPT_EXTENTS;
+> +
+>  	phys_mem_kb = get_memory_size() / 1024;
+>  	ctx->readahead_kb = ~0ULL;
+>  	while ((c = getopt(argc, argv, "panyrcC:B:dE:fvtFVM:b:I:j:P:l:L:N:SsDkz:")) != EOF)
+> @@ -1051,6 +1053,11 @@ static errcode_t PRS(int argc, char *argv[], e2fsck_t *ret_ctx)
+>  	if (c)
+>  		ctx->options |= E2F_OPT_NOOPT_EXTENTS;
+>  
+> +	profile_get_boolean(ctx->profile, "options", "optimize_extents",
+> +			    0, 0, &c);
+> +	if (c)
+> +		ctx->options &= ~E2F_OPT_NOOPT_EXTENTS;
+> +
+>  	profile_get_boolean(ctx->profile, "options", "inode_count_fullmap",
+>  			    0, 0, &c);
+>  	if (c)
+> -- 
+> 1.7.12.4
+> 
+
