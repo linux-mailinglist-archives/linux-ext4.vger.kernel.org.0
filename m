@@ -2,222 +2,222 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F25892747A6
-	for <lists+linux-ext4@lfdr.de>; Tue, 22 Sep 2020 19:42:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20E022747C2
+	for <lists+linux-ext4@lfdr.de>; Tue, 22 Sep 2020 19:52:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726607AbgIVRmp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 22 Sep 2020 13:42:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726566AbgIVRmp (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 22 Sep 2020 13:42:45 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32D1AC061755
-        for <linux-ext4@vger.kernel.org>; Tue, 22 Sep 2020 10:42:45 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id bw23so1840965pjb.2
-        for <linux-ext4@vger.kernel.org>; Tue, 22 Sep 2020 10:42:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=a0Nqv9WUdZu/JHXlQPhOLlwRMwlvLZkLZtv9leHItsw=;
-        b=OiRYoXk1OfDHvOI4KO9uCU9NMzHeEycWCzgnaQ2sRSQv8lDvGh1l/ng2cEILUFRTcR
-         Rq+IlD+tq62WHqJE1OrVmVkhMl6ln8svfdTh6LtyJyvNepDLO911FgIpj5GURpDPkzwd
-         ouzf7Hsct6QWK2Re9Wp3UzH6TzXRYRU1maZOIK1IeW4YjmJ/+52qejRyjMiQWT/uWnzy
-         TYJl0v+uy9lVTV/FPrVUYEf+hqo5FE5rr2mE8Kwo1Bf3BduynI3TZF3pbVVBY60PYzSv
-         rhxk3e50EX5HGyUQ+vDJhu4+ZvgSKgJt7meSlPWrVLcn2gUI0Bxkh6PWxBfU+vyXqC2W
-         ErDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=a0Nqv9WUdZu/JHXlQPhOLlwRMwlvLZkLZtv9leHItsw=;
-        b=KizswfVLfbaRJsELxAfbdzTvzFLysFsn1ttp7LV9QgPjw0mIWveZLkhcqbDYL78YS1
-         vgnO21MvtzThjja5NYAOE+5Zgh1zS9ezyXfg7xaIpUFar7xhps69df/Ewp1vlaALWBBr
-         SWT7242/a3APnxXdaFtMRoYkol97lgHmDOG3S8SdK86P0rTKeoDQ2ghmQNMajR0ABrQw
-         0YNFIRRuFX1jI9jFZVVS3Bsf/EXv+yr/5k3ZANctgJj4Vnv8bj85WDSx53P9cbb20TBb
-         W4/T/+MfM6r/aI6T+ubLb89k1wDG4+9vPlK+FVI7QuO7vXD7++tzDn+mFnkqX1BnjlDB
-         Hs4w==
-X-Gm-Message-State: AOAM532u9vdPAW+pV9fmvkkNSTCUK2P2SJmMIJeTMm2bZuYT3kOhhnDx
-        asX82xgXpCTINbTVwwjAecRBhQ==
-X-Google-Smtp-Source: ABdhPJygw3DQzGzUjT2aosmQkN4f6H8FMrISsI0pl0RXMULF2pCF79hVZIBFoShmjwWJl1MfAwmcHg==
-X-Received: by 2002:a17:90b:3cb:: with SMTP id go11mr4318083pjb.152.1600796564467;
-        Tue, 22 Sep 2020 10:42:44 -0700 (PDT)
-Received: from [192.168.10.160] (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id s66sm15716394pfc.159.2020.09.22.10.42.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 22 Sep 2020 10:42:43 -0700 (PDT)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <7CFD0AAF-CE38-4DFC-AF1C-3B3BA671C3BE@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_DFFF35F3-FCC3-440A-ABB7-6A5CB3F99471";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH] e2fsck: skip extent optimization by default
-Date:   Tue, 22 Sep 2020 11:42:40 -0600
-In-Reply-To: <20200922102600.5asdjvarnh5znhf2@work>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>
-To:     Lukas Czerner <lczerner@redhat.com>
-References: <1600726562-9567-1-git-send-email-adilger@whamcloud.com>
- <20200922102600.5asdjvarnh5znhf2@work>
-X-Mailer: Apple Mail (2.3273)
+        id S1726614AbgIVRwJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 22 Sep 2020 13:52:09 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:35796 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726573AbgIVRwJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 22 Sep 2020 13:52:09 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08MHnTpf016003;
+        Tue, 22 Sep 2020 17:52:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=tKp0gjTuUl5FS6UF4LTzDWbYYwdBgqWzuDjG9FaDYQI=;
+ b=pKpfT5O9e43T1CDG4mvDweS2YfhawYTRLxnjSBadj1ppjY0ofTnY0b3lIhzsF0mjoNwC
+ EFLXmWHxw7Ugph6MWn7HUpev/KsKPKoi+jzXq6NyQ350+BdPwxEtgP77EffylpwwiYSu
+ Zel87ftaRQjFZjynqmPJpvFrJuIEcOf/9uaR8zqK+yDPOqYOBtsTP+qh+I/h6Xbcrm/I
+ aPQD9DSmHbfB2pliuf1UdfeaGeQDLRPevsV8fiIQOO87gbcvHhV/niltOnPdqxsTpRRo
+ DqDQAp8TCDDA2GqyIB1IceORjpfAvghcP3xrgGzCBWJY9dcK6ujeEA8bLTGIXskjGI3d 7Q== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 33qcptu6ds-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 22 Sep 2020 17:52:06 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08MHjMVd144198;
+        Tue, 22 Sep 2020 17:50:05 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 33nuwyrq05-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 22 Sep 2020 17:50:04 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08MHo3WV022388;
+        Tue, 22 Sep 2020 17:50:03 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 22 Sep 2020 10:50:02 -0700
+Date:   Tue, 22 Sep 2020 10:50:01 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu
+Subject: Re: [PATCH v9 1/9] doc: update ext4 and journalling docs to include
+ fast commit feature
+Message-ID: <20200922175001.GB7948@magnolia>
+References: <20200919005451.3899779-1-harshadshirwadkar@gmail.com>
+ <20200919005451.3899779-2-harshadshirwadkar@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200919005451.3899779-2-harshadshirwadkar@gmail.com>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9752 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 adultscore=0
+ bulkscore=0 mlxlogscore=999 phishscore=0 suspectscore=1 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009220139
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9752 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 mlxlogscore=999
+ adultscore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0 priorityscore=1501
+ phishscore=0 spamscore=0 malwarescore=0 clxscore=1011 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009220139
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Fri, Sep 18, 2020 at 05:54:43PM -0700, Harshad Shirwadkar wrote:
+> This patch adds necessary documentation for fast commits.
+> 
+> Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+> ---
+>  Documentation/filesystems/ext4/journal.rst | 66 ++++++++++++++++++++++
+>  Documentation/filesystems/journalling.rst  | 28 +++++++++
+>  2 files changed, 94 insertions(+)
+> 
+> diff --git a/Documentation/filesystems/ext4/journal.rst b/Documentation/filesystems/ext4/journal.rst
+> index ea613ee701f5..c2e4d010a201 100644
+> --- a/Documentation/filesystems/ext4/journal.rst
+> +++ b/Documentation/filesystems/ext4/journal.rst
+> @@ -28,6 +28,17 @@ metadata are written to disk through the journal. This is slower but
+>  safest. If ``data=writeback``, dirty data blocks are not flushed to the
+>  disk before the metadata are written to disk through the journal.
+>  
+> +In case of ``data=ordered`` mode, Ext4 also supports fast commits which
+> +help reduce commit latency significantly. The default ``data=ordered``
+> +mode works by logging metadata blocks tothe journal. In fast commit
 
---Apple-Mail=_DFFF35F3-FCC3-440A-ABB7-6A5CB3F99471
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+"to the journal"
 
-On Sep 22, 2020, at 4:26 AM, Lukas Czerner <lczerner@redhat.com> wrote:
->=20
-> On Mon, Sep 21, 2020 at 04:16:02PM -0600, adilger@whamcloud.com wrote:
->> From: Andreas Dilger <adilger@whamcloud.com>
->>=20
->> The e2fsck error message:
->>=20
->>    inode nnn extent tree (at level 1) could be narrower. Optimize<y>?
->>=20
->> can be fairly verbose at times, and leads users to think that there
->> may be something wrong with the filesystem.  Basically, almost any
->> message printed by e2fsck makes users nervous when they are facing
->> other corruption, and a few thousand of these printed may hide other
->> errors.  It also isn't clear that saving a few blocks optimizing the
->> extent tree noticeably improves performance.
->>=20
->> This message has previously been annoying enough for Ted to add the
->> "-E no_optimize_extents" option to disable it.  Just enable this
->> option by default, similar to the "-D" directory optimization option.
->=20
-> it seem counterproductive to me that we would disable usefull (even if
-> just a little) optimization just because the way it is presented to =
-the
-> user is inconvenient. I agree that messages during e2fsck often raise
-> alarms, as they should, but perfeps instead of disabling the feature =
-we
-> can figure out a way to make the messaging better ?
->=20
-> Can we just not print the every message if the answer is going to be =
-yes
-> anyway, either because of -y, -p, <a> or whatever when the user is not
-> involved in the decision anymore ? Maybe a log file can be created
-> for the purpose of storing the full log of changes. Or perhaps we can
-> print out a summary for each type of the problem and how many of the
-> instaces of a particular problem have been optimized/fixed after the
-> e2fsck is done pointing to that full log for details ?
+> +mode, Ext4 only stores the minimal delta needed to recreate the
+> +affected metadata in fast commit space that is shared with JBD2.
+> +Once the fast commit area fills in or if fast commit is not possible
+> +or if JBD2 commit timer goes off, Ext4 performs a traditional full commit.
+> +A full commit invalidates all the fast commits that happened before
+> +it and thus it makes the fast commit area empty for further fast
+> +commits. This feature needs to be enabled at compile time.
 
-I think the standard way to handle this in e2fsck is with a "latch =
-question",
-so that after the first or second 'y' with "answer 'y' to all =
-questions".
-This will quiet most of the messages without disabling the optimization.
+And mkfs time too, I would hope?
 
-The other question is whether the "optimization" is worthwhile or not?
-Since e2fsck is rarely run, a number of unoptimized files will exist in
-the filesystem all the time.  In our case at least, files have a =
-turnover
-rate, so optimizing the current set of inodes doesn't help much, since
-they would likely be deleted in a few weeks and new files will replace =
-them.
+> +
+>  The journal inode is typically inode 8. The first 68 bytes of the
+>  journal inode are replicated in the ext4 superblock. The journal itself
+>  is normal (but hidden) file within the filesystem. The file usually
+> @@ -609,3 +620,58 @@ bytes long (but uses a full block):
+>       - h\_commit\_nsec
+>       - Nanoseconds component of the above timestamp.
+>  
+> +Fast commits
+> +~~~~~~~~~~~~
+> +
+> +Fast commit area is organized as a log of tag tag length values. Each TLV has
+> +a ``struct ext4_fc_tl`` in the beginning which stores the tag and the length
+> +of the entire field. It is followed by variable length tag specific value.
 
-Cheers, Andreas
+"The fast commit area is organized as a log of tagged variable-length
+values.  Each value begins with a ``struct ext4_fc_tl`` tag that
+identifies the type of the value and its length, and is followed by the
+value itself." ?
 
->>=20
->> Signed-off-by: Andreas Dilger <adilger@dilger.ca>
->> ---
->> e2fsck/e2fsck.8.in | 4 ++--
->> e2fsck/unix.c      | 7 +++++++
->> 2 files changed, 9 insertions(+), 2 deletions(-)
->>=20
->> diff --git a/e2fsck/e2fsck.8.in b/e2fsck/e2fsck.8.in
->> index 4e3890b..4f5086a 100644
->> --- a/e2fsck/e2fsck.8.in
->> +++ b/e2fsck/e2fsck.8.in
->> @@ -228,12 +228,12 @@ exactly the opposite of discard option. This is =
-set as default.
->> .TP
->> .BI no_optimize_extents
->> Do not offer to optimize the extent tree by eliminating unnecessary
->> -width or depth.  This can also be enabled in the options section of
->> +width or depth.  This is the default unless otherwise specified in
->> .BR /etc/e2fsck.conf .
->> .TP
->> .BI optimize_extents
->> Offer to optimize the extent tree by eliminating unnecessary
->> -width or depth.  This is the default unless otherwise specified in
->> +width or depth.  This can also be enabled in the options section of
->> .BR /etc/e2fsck.conf .
->> .TP
->> .BI inode_count_fullmap
->> diff --git a/e2fsck/unix.c b/e2fsck/unix.c
->> index 1b7ccea..445f806 100644
->> --- a/e2fsck/unix.c
->> +++ b/e2fsck/unix.c
->> @@ -840,6 +840,8 @@ static errcode_t PRS(int argc, char *argv[], =
-e2fsck_t *ret_ctx)
->> 	else
->> 		ctx->program_name =3D "e2fsck";
->>=20
->> +	ctx->options |=3D E2F_OPT_NOOPT_EXTENTS;
->> +
->> 	phys_mem_kb =3D get_memory_size() / 1024;
->> 	ctx->readahead_kb =3D ~0ULL;
->> 	while ((c =3D getopt(argc, argv, =
-"panyrcC:B:dE:fvtFVM:b:I:j:P:l:L:N:SsDkz:")) !=3D EOF)
->> @@ -1051,6 +1053,11 @@ static errcode_t PRS(int argc, char *argv[], =
-e2fsck_t *ret_ctx)
->> 	if (c)
->> 		ctx->options |=3D E2F_OPT_NOOPT_EXTENTS;
->>=20
->> +	profile_get_boolean(ctx->profile, "options", "optimize_extents",
->> +			    0, 0, &c);
->> +	if (c)
->> +		ctx->options &=3D ~E2F_OPT_NOOPT_EXTENTS;
->> +
->> 	profile_get_boolean(ctx->profile, "options", =
-"inode_count_fullmap",
->> 			    0, 0, &c);
->> 	if (c)
->> --
->> 1.7.12.4
->>=20
->=20
+I would've called that struct "ext4_fc_tag" or something, since "tl"
+isn't really a word... ah well.
 
+> +Here is the list of supported tags and their meanings:
+> +
+> +.. list-table::
+> +   :widths: 8 20 20 32
+> +   :header-rows: 1
+> +
+> +   * - Tag
+> +     - Meaning
+> +     - Value struct
+> +     - Description
+> +   * - EXT4_FC_TAG_HEAD
+> +     - Fast commit area header
+> +     - ``struct ext4_fc_head``
+> +     - Stores the TID of the transaction after which these fast commits should
+> +       be applied.
 
-Cheers, Andreas
+So I guess log recovery is supposed to apply the transaction TID, then
+apply these fast commits, and then move on to the next transaction?
 
+--D
 
-
-
-
-
---Apple-Mail=_DFFF35F3-FCC3-440A-ABB7-6A5CB3F99471
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl9qN5AACgkQcqXauRfM
-H+CaFBAAvL3X3hNBLTLq0M9HA4u/nKgBGqoN7ZpJ76tP+jvvLFSy0/FuNgJmY3Pn
-5rynH/tyoKi2oyjukFffyEcbYCW9EvOwexHoYa2RB4cjEvuW4D4H2HK+7xcW8ZSf
-wc1RRDKHom+rclZd5OZSzI859cWFemvYQFk99MwOeaShpF7XQ5gAaSB4O7SJabyC
-WM+y2A0zDbYEYDF7WwiJkzDbDN0yLn8ZxSw/w2rt78te/FzEm1yIftmIC1KVNANN
-RPtY3zIZGrMcVGOxiiREt5ChxxGrPJipuPiNLXe7lFfLiEU+ZD+IGpztRLwmyFRC
-58hFzDmkoUQnMa9nrftEqgdX5vxujcIwkHZJ9ENk/pCWCSafZAP6B/9VWb04lgtS
-+lVWhgOhFLqCI99SD9ZdCKSCiJZbrgc//SQRYCuC76ZvnfvZPXRA3PnXKqJd0UIC
-MGdyAyAgXDHSY4LTykrqb8ao7XXvRNr2Fkn7qyWGhmJorxhzf8sQk9IT+efSyf0n
-ULWUWVdH79MDlgExJPtYcZAVjovPsNtwJtsnhCyHXOLG9HbGg/KHfSBRDVtpmcjB
-iXj22A2bnX/Zc4FsxkyNBnUw1AjK71MTM/Aj4FcfsTrks6sOajE1BKteRO6tDLVx
-jN7D2J5+MgbCRt99Pevk0oztxBMIDDAffS30zKylJHq9mYwsWMw=
-=HLk3
------END PGP SIGNATURE-----
-
---Apple-Mail=_DFFF35F3-FCC3-440A-ABB7-6A5CB3F99471--
+> +   * - EXT4_FC_TAG_ADD_RANGE
+> +     - Add extent to inode
+> +     - ``struct ext4_fc_add_range``
+> +     - Stores the inode number and extent to be added in this inode
+> +   * - EXT4_FC_TAG_DEL_RANGE
+> +     - Remove logical offsets to inode
+> +     - ``struct ext4_fc_del_range``
+> +     - Stores the inode number and the logical offset range that needs to be
+> +       removed
+> +   * - EXT4_FC_TAG_CREAT
+> +     - Create directory entry for a newly created file
+> +     - ``struct ext4_fc_dentry_info``
+> +     - Stores the parent inode numer, inode number and directory entry of the
+> +       newly created file
+> +   * - EXT4_FC_TAG_LINK
+> +     - Link a directory entry to an inode
+> +     - ``struct ext4_fc_dentry_info``
+> +     - Stores the parent inode numer, inode number and directory entry
+> +   * - EXT4_FC_TAG_UNLINK
+> +     - Unink a directory entry of an inode
+> +     - ``struct ext4_fc_dentry_info``
+> +     - Stores the parent inode numer, inode number and directory entry
+> +
+> +   * - EXT4_FC_TAG_PAD
+> +     - Padding (unused area)
+> +     - None
+> +     - Unused bytes in the fast commit area.
+> +
+> +   * - EXT4_FC_TAG_TAIL
+> +     - Mark the end of a fast commit
+> +     - ``struct ext4_fc_tail``
+> +     - Stores the TID of the commit, CRC of the fast commit of which this tag
+> +       represents the end of
+> +
+> diff --git a/Documentation/filesystems/journalling.rst b/Documentation/filesystems/journalling.rst
+> index 58ce6b395206..a9817220dc9b 100644
+> --- a/Documentation/filesystems/journalling.rst
+> +++ b/Documentation/filesystems/journalling.rst
+> @@ -132,6 +132,34 @@ The opportunities for abuse and DOS attacks with this should be obvious,
+>  if you allow unprivileged userspace to trigger codepaths containing
+>  these calls.
+>  
+> +Fast commits
+> +~~~~~~~~~~~~
+> +
+> +JBD2 to also allows you to perform file-system specific delta commits known as
+> +fast commits. In order to use fast commits, you first need to call
+> +:c:func:`jbd2_fc_init` and tell how many blocks at the end of journal
+> +area should be reserved for fast commits. Along with that, you will also need
+> +to set following callbacks that perform correspodning work:
+> +
+> +`journal->j_fc_cleanup_cb`: Cleanup function called after every full commit and
+> +fast commit.
+> +
+> +`journal->j_fc_replay_cb`: Replay function called for replay of fast commit
+> +blocks.
+> +
+> +File system is free to perform fast commits as and when it wants as long as it
+> +gets permission from JBD2 to do so by calling the function
+> +:c:func:`jbd2_fc_start()`. Once a fast commit is done, the client
+> +file  system should tell JBD2 about it by calling :c:func:`jbd2_fc_stop()`.
+> +If file system wants JBD2 to perform a full commit immediately after stopping
+> +the fast commit it can do so by calling :c:func:`jbd2_fc_stop_do_commit()`.
+> +This is useful if fast commit operation fails for some reason and the only way
+> +to guarantee consistency is for JBD2 to perform the full traditional commit.
+> +
+> +JBD2 helper functions to manage fast commit buffers. File system can use
+> +:c:func:`jbd2_fc_get_buf()` and :c:func:`jbd2_fc_wait_bufs()` to allocate
+> +and wait on IO completion of fast commit buffers.
+> +
+>  Summary
+>  ~~~~~~~
+>  
+> -- 
+> 2.28.0.681.g6f77f65b4e-goog
+> 
