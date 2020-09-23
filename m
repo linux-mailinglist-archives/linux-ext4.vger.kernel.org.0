@@ -2,224 +2,115 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B0FC2757D2
-	for <lists+linux-ext4@lfdr.de>; Wed, 23 Sep 2020 14:24:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B30BD27582A
+	for <lists+linux-ext4@lfdr.de>; Wed, 23 Sep 2020 14:47:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726504AbgIWMYi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 23 Sep 2020 08:24:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45106 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726130AbgIWMYh (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 23 Sep 2020 08:24:37 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D9E1FAFF4;
-        Wed, 23 Sep 2020 12:25:12 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 2C8E51E12E3; Wed, 23 Sep 2020 14:24:35 +0200 (CEST)
-Date:   Wed, 23 Sep 2020 14:24:35 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     =?utf-8?B?5bi45Yek5qWg?= <changfengnan@hikvision.com>
-Cc:     Jan Kara <jack@suse.cz>, changfengnan <changfengnan@qq.com>,
-        "adilger@dilger.ca" <adilger@dilger.ca>,
-        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
-        "jack@suse.com" <jack@suse.com>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "tytso@mit.edu" <tytso@mit.edu>
-Subject: Re: =?utf-8?B?562U5aSNOiDnrZTlpI06IOetlA==?= =?utf-8?B?5aSN?=
- =?utf-8?Q?=3A?= [PATCH] jbd2: avoid transaction reuse after reformatting
-Message-ID: <20200923122435.GG6719@quack2.suse.cz>
-References: <tencent_2341B065211F204FA07C3ADDA1AE07706405@qq.com>
- <20200911100603.GA26589@quack2.suse.cz>
- <2fa90e4995e0403f91f3290207618f35@hikvision.com>
- <20200917104440.GC16097@quack2.suse.cz>
- <6a08086d98c64f97bcaed1edd38861f6@hikvision.com>
- <20200918130252.GG18920@quack2.suse.cz>
- <708254ddee9b49d18ced1885dc7c29fa@hikvision.com>
+        id S1726620AbgIWMrI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 23 Sep 2020 08:47:08 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:51543 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726558AbgIWMrI (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 23 Sep 2020 08:47:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600865226;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eTJH5fsunyc+8vtxo0cxTOWltBYbQ+uQLkgwLM6exPI=;
+        b=UlnV1UsWDIPgDgPFqxX0G6a3IPA+csLnesS5W9TUaMUsXciAGJWF+VE+6ALwbhB10caIhb
+        2jlzObq/vO990z0h2KkxqDUVmDL9MesNlilCVPov6QOcqKRABI2t2hpkPAMED/HCXkFt5H
+        qo0K4H6R+BStbdBiNj5rVSzy/7FQ1kc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-434-RTPIZN_4P6qOg6GgeD4nRQ-1; Wed, 23 Sep 2020 08:47:02 -0400
+X-MC-Unique: RTPIZN_4P6qOg6GgeD4nRQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 055D9107464E;
+        Wed, 23 Sep 2020 12:47:00 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8B9B05D98D;
+        Wed, 23 Sep 2020 12:46:59 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 08NCkwt8020916;
+        Wed, 23 Sep 2020 08:46:58 -0400
+Received: from localhost (mpatocka@localhost)
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 08NCkvuo020912;
+        Wed, 23 Sep 2020 08:46:57 -0400
+X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
+Date:   Wed, 23 Sep 2020 08:46:57 -0400 (EDT)
+From:   Mikulas Patocka <mpatocka@redhat.com>
+X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
+To:     Jan Kara <jack@suse.cz>
+cc:     "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Eric Sandeen <esandeen@redhat.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: A bug in ext4 with big directories (was: NVFS XFS metadata)
+In-Reply-To: <20200923094457.GB6719@quack2.suse.cz>
+Message-ID: <alpine.LRH.2.02.2009230846210.1800@file01.intranet.prod.int.rdu2.redhat.com>
+References: <alpine.LRH.2.02.2009160649560.20720@file01.intranet.prod.int.rdu2.redhat.com> <CAPcyv4gW6AvR+RaShHdQzOaEPv9nrq5myXDmywuoCTYDZxk-hw@mail.gmail.com> <alpine.LRH.2.02.2009161254400.745@file01.intranet.prod.int.rdu2.redhat.com>
+ <CAPcyv4gD0ZFkfajKTDnJhEEjf+5Av-GH+cHRFoyhzGe8bNEgAA@mail.gmail.com> <alpine.LRH.2.02.2009161359540.20710@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.2009191336380.3478@file01.intranet.prod.int.rdu2.redhat.com> <20200922050314.GB12096@dread.disaster.area>
+ <alpine.LRH.2.02.2009220815420.16480@file01.intranet.prod.int.rdu2.redhat.com> <20200923024528.GD12096@dread.disaster.area> <alpine.LRH.2.02.2009230459450.1800@file01.intranet.prod.int.rdu2.redhat.com> <20200923094457.GB6719@quack2.suse.cz>
+User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <708254ddee9b49d18ced1885dc7c29fa@hikvision.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 23-09-20 06:29:12, 常凤楠 wrote:
-> The attachment is new patch.
 
-Thanks!
 
-> I have fix the logic in JBD2_REVOKE_BLOCK and JBD2_COMMIT_BLOCK case.
-> If the revoke block is the first block after valid transaction, I set the
-> flag like descriptor block ,and check it in commit block.  If the commit
-> block is the first block after valid transaction, I use ri_commit_block
-> to judge whether this commit block is next to another commit block, if so
-> it is illegal. I did't use time to judge commit block, because of the
-> possibility of time calibration, I think use ri_commit_block is more
-> reliable.
+On Wed, 23 Sep 2020, Jan Kara wrote:
 
-If the time is unreliable, your logic with ri_commit_block will detect only
-a small minority of the cases. The majority of cases will fail with
-checksum error. So I still don't think the ri_commit_block logic is really
-worth the additional code. Other than that the current version looks OK to
-me. So please do next submission with full changelog, Signed-off-by line,
-and the coding style issues fixed (you can use scripts/checkpatch.pl for
-patch verification). Thanks!
+> Hi!
+> 
+> On Wed 23-09-20 05:20:55, Mikulas Patocka wrote:
+> > There seems to be a bug in ext4 - when I create very large directory, ext4 
+> > fails with -ENOSPC despite the fact that there is plenty of free space and 
+> > free inodes on the filesystem.
+> > 
+> > How to reproduce:
+> > download the program dir-test: 
+> > http://people.redhat.com/~mpatocka/benchmarks/dir-test.c
+> > 
+> > # modprobe brd rd_size=67108864
+> > # mkfs.ext4 /dev/ram0
+> > # mount -t ext4 /dev/ram0 /mnt/test
+> > # dir-test /mnt/test/ 8000000 8000000
+> > deleting: 7999000
+> > 2540000
+> > file 2515327 can't be created: No space left on device
+> > # df /mnt/test
+> > /dev/ram0        65531436 633752 61525860   2% /mnt/test
+> > # df -i /mnt/test
+> > /dev/ram0        4194304 1881547 2312757   45% /mnt/test
+> 
+> Yeah, you likely run out of space in ext4 directory h-tree. You can enable
+> higher depth h-trees with large_dir feature (mkfs.ext4 -O large_dir). Does
+> that help?
 
-								Honza
+Yes, this helps.
+
+Mikulas
 
 > 
-> -----邮件原件-----
-> 发件人: Jan Kara <jack@suse.cz>
-> 发送时间: 2020年9月18日 21:03
-> 收件人: 常凤楠 <changfengnan@hikvision.com>
-> 抄送: Jan Kara <jack@suse.cz>; changfengnan <changfengnan@qq.com>; adilger@dilger.ca; darrick.wong@oracle.com; jack@suse.com; linux-ext4@vger.kernel.org; tytso@mit.edu
-> 主题: Re: 答复: 答复: [PATCH] jbd2: avoid transaction reuse after reformatting
+> 								Honza
 > 
-> Hello,
-> 
-> On Fri 18-09-20 01:49:09, 常凤楠 wrote:
-> > Sorry about my mailer, the patch is in the attachment.
-> 
-> Thanks for the patch. Functionally the patch looks mostly OK now. The only concern I have is that it handles checksum failures only in JBD2_DESCRIPTOR_BLOCK. This is the most likely case but it could also happen that JBD2_REVOKE_BLOCK or JBD2_COMMIT_BLOCK is the first one you see with mismatching checksum. So I think you need to handle these cases as well. I think your ri_commit_block logic below is an attempt to deal with these cases (but it's difficult to be sure because of complete lack of
-> comments) but it is not reliable. A valid transaction can begin both with a descriptor or with a revoke block.
-> 
-> A few other comments mostly about coding style below:
-> 
-> diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c index a4967b27ffb6..f7702e14077f 100644
-> --- a/fs/jbd2/recovery.c
-> +++ b/fs/jbd2/recovery.c
-> @@ -417,7 +417,7 @@ static int do_one_pass(journal_t *journal,
->  struct recovery_info *info, enum passtype pass)  {
->  unsigned intfirst_commit_ID, next_commit_ID;
-> -unsigned longnext_log_block;
-> +unsigned longnext_log_block, ri_commit_block = 0;
->  interr, success = 0;
->  journal_superblock_t *sb;
->  journal_header_t *tmp;
-> @@ -428,7 +428,9 @@ static int do_one_pass(journal_t *journal,
->  __u32crc32_sum = ~0; /* Transactional Checksums */
->  intdescr_csum_size = 0;
->  intblock_error = 0;
-> -
-> +boolneed_check_commit_time = false;
-> +__be64last_trans_commit_time;
-> 
-> All variable names in this function seem to be indented by one more column. Please keep the indentation.
-> 
-> +
-> 
-> This empty line has whitespace on it. Please delete.
-> 
->  /*
->   * First thing is to establish what we expect to find in the log
->   * (in terms of transaction IDs), and where (in terms of log @@ -514,18 +516,18 @@ static int do_one_pass(journal_t *journal,
->  switch(blocktype) {
->  case JBD2_DESCRIPTOR_BLOCK:
->  /* Verify checksum first */
-> +if(pass == PASS_SCAN)
->   ^ Coding style requires space before opening (.
-> You have this problem at multiple places.
-> 
-> +ri_commit_block = 0;
-> +
->  if (jbd2_journal_has_csum_v2or3(journal))
->  descr_csum_size =
->  sizeof(struct jbd2_journal_block_tail);
->  if (descr_csum_size > 0 &&
->      !jbd2_descriptor_block_csum_verify(journal,
->         bh->b_data)) {
-> -printk(KERN_ERR "JBD2: Invalid checksum "
-> -       "recovering block %lu in log\n",
-> -       next_log_block);
-> -err = -EFSBADCRC;
-> -brelse(bh);
-> -goto failed;
-> +need_check_commit_time = true;
-> +jbd_debug(1, "invalid descriptor block found in %lu, continue
-> +recovery first.\n",next_log_block);
-> +
->  }
-> 
->  /* If it is a valid descriptor block, replay it @@ -535,6 +537,7 @@ static int do_one_pass(journal_t *journal,
->  if (pass != PASS_REPLAY) {
->  if (pass == PASS_SCAN &&
->      jbd2_has_feature_checksum(journal) &&
-> +    !need_check_commit_time &&
->      !info->end_transaction) {
->  if (calc_chksums(journal, bh,
->  &next_log_block,
-> @@ -688,6 +691,36 @@ static int do_one_pass(journal_t *journal,
->   * are present verify them in PASS_SCAN; else not
->   * much to do other than move on to the next sequence
->   * number. */
-> +if(pass == PASS_SCAN) {
-> +struct commit_header *cbh =
-> +(struct commit_header *)bh->b_data;
-> +if(need_check_commit_time) {
-> +__be64 commit_time = be64_to_cpu(cbh->h_commit_sec);
-> +if(commit_time >= last_trans_commit_time) {
-> +printk(KERN_ERR "JBD2: Invalid checksum found in log, %d\n",
-> +next_commit_ID);
-> +err = -EFSBADCRC;
-> +brelse(bh);
-> +goto failed;
-> +}
-> +else
-> +{
->   Coding style requires to put opening { on the same line as 'else'. Like:
-> else {
-> +/*it's not belong to same journal, just end this recovery with success*/
-> +jbd_debug(1, "JBD2: Invalid checksum found in block in log, but not same journal %d\n",
-> +next_commit_ID);
-> +err = 0;
-> +brelse(bh);
-> +goto done;
-> +}
-> +}
-> +if(ri_commit_block) {
-> +jbd_debug(1, "invalid commit block found in %lu, stop here.\n",next_log_block);
-> +brelse(bh);
-> +goto done;
-> +}
-> +ri_commit_block = next_log_block;
-> 
-> Why does the ri_commit_block logic exist? I don't see it bringing any benefit...
-> 
-> +last_trans_commit_time = be64_to_cpu(cbh->h_commit_sec);
-> +}
->  if (pass == PASS_SCAN &&
->      jbd2_has_feature_checksum(journal)) {
->  int chksum_err, chksum_seen;
-> @@ -755,6 +788,12 @@ static int do_one_pass(journal_t *journal,
->  continue;
-> 
->  case JBD2_REVOKE_BLOCK:
-> +if (pass == PASS_SCAN &&
-> +ri_commit_block) {
-> +jbd_debug(1, "invalid revoke block found in %lu, stop here.\n",next_log_block);
-> +brelse(bh);
-> +goto done;
-> +}
-> 
-> This is wrong. A valid transaction can start with a revoke block...
-> 
->  /* If we aren't in the REVOKE pass, then we can
->   * just skip over this block. */
->  if (pass != PASS_REVOKE) {
-> 
-> Honza
-> --
+> -- 
 > Jan Kara <jack@suse.com>
 > SUSE Labs, CR
-> 
-> ________________________________
-> 
-> CONFIDENTIALITY NOTICE: This electronic message is intended to be viewed only by the individual or entity to whom it is addressed. It may contain information that is privileged, confidential and exempt from disclosure under applicable law. Any dissemination, distribution or copying of this communication is strictly prohibited without our prior permission. If the reader of this message is not the intended recipient, or the employee or agent responsible for delivering the message to the intended recipient, or if you have received this communication in error, please notify us immediately by return e-mail and delete the original message and any copies of it from your computer system. For further information about Hikvision company. please see our website at www.hikvision.com<http://www.hikvision.com>
 
-
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
