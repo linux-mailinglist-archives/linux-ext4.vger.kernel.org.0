@@ -2,89 +2,73 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AC252754B1
-	for <lists+linux-ext4@lfdr.de>; Wed, 23 Sep 2020 11:45:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3883E275676
+	for <lists+linux-ext4@lfdr.de>; Wed, 23 Sep 2020 12:35:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726420AbgIWJpA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 23 Sep 2020 05:45:00 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42618 "EHLO mx2.suse.de"
+        id S1726617AbgIWKfd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 23 Sep 2020 06:35:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46414 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726102AbgIWJpA (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 23 Sep 2020 05:45:00 -0400
+        id S1726130AbgIWKfc (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 23 Sep 2020 06:35:32 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EFD8BACB8;
-        Wed, 23 Sep 2020 09:45:34 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id DE028AC79;
+        Wed, 23 Sep 2020 10:36:08 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 5A3561E12E3; Wed, 23 Sep 2020 11:44:57 +0200 (CEST)
-Date:   Wed, 23 Sep 2020 11:44:57 +0200
+        id 578261E12E3; Wed, 23 Sep 2020 12:35:31 +0200 (CEST)
+Date:   Wed, 23 Sep 2020 12:35:31 +0200
 From:   Jan Kara <jack@suse.cz>
-To:     Mikulas Patocka <mpatocka@redhat.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Eric Sandeen <esandeen@redhat.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: A bug in ext4 with big directories (was: NVFS XFS metadata)
-Message-ID: <20200923094457.GB6719@quack2.suse.cz>
-References: <alpine.LRH.2.02.2009160649560.20720@file01.intranet.prod.int.rdu2.redhat.com>
- <CAPcyv4gW6AvR+RaShHdQzOaEPv9nrq5myXDmywuoCTYDZxk-hw@mail.gmail.com>
- <alpine.LRH.2.02.2009161254400.745@file01.intranet.prod.int.rdu2.redhat.com>
- <CAPcyv4gD0ZFkfajKTDnJhEEjf+5Av-GH+cHRFoyhzGe8bNEgAA@mail.gmail.com>
- <alpine.LRH.2.02.2009161359540.20710@file01.intranet.prod.int.rdu2.redhat.com>
- <alpine.LRH.2.02.2009191336380.3478@file01.intranet.prod.int.rdu2.redhat.com>
- <20200922050314.GB12096@dread.disaster.area>
- <alpine.LRH.2.02.2009220815420.16480@file01.intranet.prod.int.rdu2.redhat.com>
- <20200923024528.GD12096@dread.disaster.area>
- <alpine.LRH.2.02.2009230459450.1800@file01.intranet.prod.int.rdu2.redhat.com>
+To:     Hui Su <sh_def@163.com>
+Cc:     tytso@mit.edu, jack@suse.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] FIX the comment of struct jbd2_journal_handle
+Message-ID: <20200923103531.GE6719@quack2.suse.cz>
+References: <20200922171231.GA53120@rlk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.LRH.2.02.2009230459450.1800@file01.intranet.prod.int.rdu2.redhat.com>
+In-Reply-To: <20200922171231.GA53120@rlk>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi!
-
-On Wed 23-09-20 05:20:55, Mikulas Patocka wrote:
-> There seems to be a bug in ext4 - when I create very large directory, ext4 
-> fails with -ENOSPC despite the fact that there is plenty of free space and 
-> free inodes on the filesystem.
+On Wed 23-09-20 01:12:31, Hui Su wrote:
+> the struct name was modified long ago, but the comment still
+> use struct handle_s.
 > 
-> How to reproduce:
-> download the program dir-test: 
-> http://people.redhat.com/~mpatocka/benchmarks/dir-test.c
-> 
-> # modprobe brd rd_size=67108864
-> # mkfs.ext4 /dev/ram0
-> # mount -t ext4 /dev/ram0 /mnt/test
-> # dir-test /mnt/test/ 8000000 8000000
-> deleting: 7999000
-> 2540000
-> file 2515327 can't be created: No space left on device
-> # df /mnt/test
-> /dev/ram0        65531436 633752 61525860   2% /mnt/test
-> # df -i /mnt/test
-> /dev/ram0        4194304 1881547 2312757   45% /mnt/test
+> Signed-off-by: Hui Su <sh_def@163.com>
 
-Yeah, you likely run out of space in ext4 directory h-tree. You can enable
-higher depth h-trees with large_dir feature (mkfs.ext4 -O large_dir). Does
-that help?
+Thanks for the patch. It looks good to me. You can add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
 
 								Honza
 
+> ---
+>  include/linux/jbd2.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+> index 08f904943ab2..a1ef05412acf 100644
+> --- a/include/linux/jbd2.h
+> +++ b/include/linux/jbd2.h
+> @@ -452,8 +452,8 @@ struct jbd2_inode {
+>  struct jbd2_revoke_table_s;
+>  
+>  /**
+> - * struct handle_s - The handle_s type is the concrete type associated with
+> - *     handle_t.
+> + * struct jbd2_journal_handle - The jbd2_journal_handle type is the concrete
+> + *     type associated with handle_t.
+>   * @h_transaction: Which compound transaction is this update a part of?
+>   * @h_journal: Which journal handle belongs to - used iff h_reserved set.
+>   * @h_rsv_handle: Handle reserved for finishing the logical operation.
+> -- 
+> 2.25.1
+> 
+> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
