@@ -2,112 +2,270 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41C1427516B
-	for <lists+linux-ext4@lfdr.de>; Wed, 23 Sep 2020 08:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A78F2751B4
+	for <lists+linux-ext4@lfdr.de>; Wed, 23 Sep 2020 08:39:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726880AbgIWGZF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 23 Sep 2020 02:25:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38192 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726853AbgIWGY7 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 23 Sep 2020 02:24:59 -0400
-Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726629AbgIWGjf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 23 Sep 2020 02:39:35 -0400
+Received: from mail.hikvision.com ([115.236.50.29]:43244 "EHLO
+        mail.hikvision.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726608AbgIWGjf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 23 Sep 2020 02:39:35 -0400
+X-Greylist: delayed 615 seconds by postgrey-1.27 at vger.kernel.org; Wed, 23 Sep 2020 02:39:33 EDT
+Received: from HIK-MBX-CN-05.hikvision.com (unknown [10.1.7.127])
+        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 425FC21D43;
-        Wed, 23 Sep 2020 06:24:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600842298;
-        bh=EH8hBpeiETHC+h9j5rcOQFLvuMpOSGcVeSqcrnJIr+M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=o9hZFORZJfS43AD9qs/eouYS9H2lmfwPF3ydoBftcuORWrWFA+Oosf8DKY1mk3Zm3
-         cIZCITTnRgEk6JhC/F6wZsXxGJPNPdgYJYJhHDaphw687jIKp1UHYaNhlwigfbmU7Y
-         swkdL+l/hvzPy8OCNZxj+GedL3eT8qcF1ZOoGSNU=
-Date:   Tue, 22 Sep 2020 23:24:56 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Daniel Rosenberg <drosen@google.com>
-Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chao Yu <chao@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Richard Weinberger <richard@nod.at>,
-        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mtd@lists.infradead.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH 5/5] f2fs: Handle casefolding with Encryption
-Message-ID: <20200923062456.GF9538@sol.localdomain>
-References: <20200923010151.69506-1-drosen@google.com>
- <20200923010151.69506-6-drosen@google.com>
+        by Forcepoint Email with ESMTPS id E27A1FE8E92B22D4ECC6;
+        Wed, 23 Sep 2020 14:29:13 +0800 (CST)
+Received: from HIK-MBX-CN-00.hikvision.com (10.1.7.113) by
+ HIK-MBX-CN-05.hikvision.com (10.1.7.127) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1415.2; Wed, 23 Sep 2020 14:29:12 +0800
+Received: from HIK-MBX-CN-00.hikvision.com ([fe80::4cd8:233f:871e:fd8c]) by
+ HIK-MBX-CN-00.hikvision.com ([fe80::4cd8:233f:871e:fd8c%14]) with mapi id
+ 15.01.1415.007; Wed, 23 Sep 2020 14:29:12 +0800
+From:   =?utf-8?B?5bi45Yek5qWg?= <changfengnan@hikvision.com>
+To:     Jan Kara <jack@suse.cz>
+CC:     changfengnan <changfengnan@qq.com>,
+        "adilger@dilger.ca" <adilger@dilger.ca>,
+        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
+        "jack@suse.com" <jack@suse.com>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "tytso@mit.edu" <tytso@mit.edu>
+Subject: =?utf-8?B?562U5aSNOiDnrZTlpI06IOetlOWkjTogW1BBVENIXSBqYmQyOiBhdm9pZCB0?=
+ =?utf-8?Q?ransaction_reuse_after_reformatting?=
+Thread-Topic: =?utf-8?B?562U5aSNOiDnrZTlpI06IFtQQVRDSF0gamJkMjogYXZvaWQgdHJhbnNhY3Rp?=
+ =?utf-8?Q?on_reuse_after_reformatting?=
+Thread-Index: AQHWh2lh9meS1wshdki76zJvq/o+G6lisWCAgAVXi/CABCE8AIABgTmggAA3uQCAB/BIgA==
+Date:   Wed, 23 Sep 2020 06:29:12 +0000
+Message-ID: <708254ddee9b49d18ced1885dc7c29fa@hikvision.com>
+References: <tencent_2341B065211F204FA07C3ADDA1AE07706405@qq.com>
+ <20200911100603.GA26589@quack2.suse.cz>
+ <2fa90e4995e0403f91f3290207618f35@hikvision.com>
+ <20200917104440.GC16097@quack2.suse.cz>
+ <6a08086d98c64f97bcaed1edd38861f6@hikvision.com>
+ <20200918130252.GG18920@quack2.suse.cz>
+In-Reply-To: <20200918130252.GG18920@quack2.suse.cz>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: yes
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.1.7.137]
+Content-Type: multipart/mixed;
+        boundary="_002_708254ddee9b49d18ced1885dc7c29fahikvisioncom_"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200923010151.69506-6-drosen@google.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 01:01:51AM +0000, Daniel Rosenberg wrote:
-> Expand f2fs's casefolding support to include encrypted directories.  To
-> index casefolded+encrypted directories, we use the SipHash of the
-> casefolded name, keyed by a key derived from the directory's fscrypt
-> master key.  This ensures that the dirhash doesn't leak information
-> about the plaintext filenames.
-> 
-> Encryption keys are unavailable during roll-forward recovery, so we
-> can't compute the dirhash when recovering a new dentry in an encrypted +
-> casefolded directory.  To avoid having to force a checkpoint when a new
-> file is fsync'ed, store the dirhash on-disk appended to i_name.
-> 
-> This patch incorporates work by Eric Biggers <ebiggers@google.com>
-> and Jaegeuk Kim <jaegeuk@kernel.org>.
-> 
-> Co-developed-by: Eric Biggers <ebiggers@google.com>
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> Signed-off-by: Daniel Rosenberg <drosen@google.com>
-> ---
+--_002_708254ddee9b49d18ced1885dc7c29fahikvisioncom_
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 
-Generally looks good.  If it's needed, you can add:
+VGhlIGF0dGFjaG1lbnQgaXMgbmV3IHBhdGNoLg0KSSBoYXZlIGZpeCB0aGUgbG9naWMgaW4gSkJE
+Ml9SRVZPS0VfQkxPQ0sgYW5kIEpCRDJfQ09NTUlUX0JMT0NLIGNhc2UuDQpJZiB0aGUgcmV2b2tl
+IGJsb2NrIGlzIHRoZSBmaXJzdCBibG9jayBhZnRlciB2YWxpZCB0cmFuc2FjdGlvbiwgSSBzZXQg
+dGhlIGZsYWcgbGlrZSBkZXNjcmlwdG9yIGJsb2NrICxhbmQgY2hlY2sgaXQgaW4gY29tbWl0IGJs
+b2NrLg0KSWYgdGhlIGNvbW1pdCBibG9jayBpcyB0aGUgZmlyc3QgYmxvY2sgYWZ0ZXIgdmFsaWQg
+dHJhbnNhY3Rpb24sIEkgdXNlIHJpX2NvbW1pdF9ibG9jayB0byBqdWRnZSB3aGV0aGVyIHRoaXMg
+Y29tbWl0IGJsb2NrIGlzIG5leHQgdG8gYW5vdGhlcg0KY29tbWl0IGJsb2NrLCBpZiBzbyBpdCBp
+cyBpbGxlZ2FsLiBJIGRpZCd0IHVzZSB0aW1lIHRvIGp1ZGdlIGNvbW1pdCBibG9jaywgYmVjYXVz
+ZSBvZiB0aGUgcG9zc2liaWxpdHkgb2YgdGltZSBjYWxpYnJhdGlvbiwgSSB0aGluayB1c2UNCnJp
+X2NvbW1pdF9ibG9jayBpcyBtb3JlIHJlbGlhYmxlLg0KDQotLS0tLemCruS7tuWOn+S7ti0tLS0t
+DQrlj5Hku7bkuro6IEphbiBLYXJhIDxqYWNrQHN1c2UuY3o+DQrlj5HpgIHml7bpl7Q6IDIwMjDl
+ubQ55pyIMTjml6UgMjE6MDMNCuaUtuS7tuS6ujog5bi45Yek5qWgIDxjaGFuZ2ZlbmduYW5AaGlr
+dmlzaW9uLmNvbT4NCuaKhOmAgTogSmFuIEthcmEgPGphY2tAc3VzZS5jej47IGNoYW5nZmVuZ25h
+biA8Y2hhbmdmZW5nbmFuQHFxLmNvbT47IGFkaWxnZXJAZGlsZ2VyLmNhOyBkYXJyaWNrLndvbmdA
+b3JhY2xlLmNvbTsgamFja0BzdXNlLmNvbTsgbGludXgtZXh0NEB2Z2VyLmtlcm5lbC5vcmc7IHR5
+dHNvQG1pdC5lZHUNCuS4u+mimDogUmU6IOetlOWkjTog562U5aSNOiBbUEFUQ0hdIGpiZDI6IGF2
+b2lkIHRyYW5zYWN0aW9uIHJldXNlIGFmdGVyIHJlZm9ybWF0dGluZw0KDQpIZWxsbywNCg0KT24g
+RnJpIDE4LTA5LTIwIDAxOjQ5OjA5LCDluLjlh6TmpaAgd3JvdGU6DQo+IFNvcnJ5IGFib3V0IG15
+IG1haWxlciwgdGhlIHBhdGNoIGlzIGluIHRoZSBhdHRhY2htZW50Lg0KDQpUaGFua3MgZm9yIHRo
+ZSBwYXRjaC4gRnVuY3Rpb25hbGx5IHRoZSBwYXRjaCBsb29rcyBtb3N0bHkgT0sgbm93LiBUaGUg
+b25seSBjb25jZXJuIEkgaGF2ZSBpcyB0aGF0IGl0IGhhbmRsZXMgY2hlY2tzdW0gZmFpbHVyZXMg
+b25seSBpbiBKQkQyX0RFU0NSSVBUT1JfQkxPQ0suIFRoaXMgaXMgdGhlIG1vc3QgbGlrZWx5IGNh
+c2UgYnV0IGl0IGNvdWxkIGFsc28gaGFwcGVuIHRoYXQgSkJEMl9SRVZPS0VfQkxPQ0sgb3IgSkJE
+Ml9DT01NSVRfQkxPQ0sgaXMgdGhlIGZpcnN0IG9uZSB5b3Ugc2VlIHdpdGggbWlzbWF0Y2hpbmcg
+Y2hlY2tzdW0uIFNvIEkgdGhpbmsgeW91IG5lZWQgdG8gaGFuZGxlIHRoZXNlIGNhc2VzIGFzIHdl
+bGwuIEkgdGhpbmsgeW91ciByaV9jb21taXRfYmxvY2sgbG9naWMgYmVsb3cgaXMgYW4gYXR0ZW1w
+dCB0byBkZWFsIHdpdGggdGhlc2UgY2FzZXMgKGJ1dCBpdCdzIGRpZmZpY3VsdCB0byBiZSBzdXJl
+IGJlY2F1c2Ugb2YgY29tcGxldGUgbGFjayBvZg0KY29tbWVudHMpIGJ1dCBpdCBpcyBub3QgcmVs
+aWFibGUuIEEgdmFsaWQgdHJhbnNhY3Rpb24gY2FuIGJlZ2luIGJvdGggd2l0aCBhIGRlc2NyaXB0
+b3Igb3Igd2l0aCBhIHJldm9rZSBibG9jay4NCg0KQSBmZXcgb3RoZXIgY29tbWVudHMgbW9zdGx5
+IGFib3V0IGNvZGluZyBzdHlsZSBiZWxvdzoNCg0KZGlmZiAtLWdpdCBhL2ZzL2piZDIvcmVjb3Zl
+cnkuYyBiL2ZzL2piZDIvcmVjb3ZlcnkuYyBpbmRleCBhNDk2N2IyN2ZmYjYuLmY3NzAyZTE0MDc3
+ZiAxMDA2NDQNCi0tLSBhL2ZzL2piZDIvcmVjb3ZlcnkuYw0KKysrIGIvZnMvamJkMi9yZWNvdmVy
+eS5jDQpAQCAtNDE3LDcgKzQxNyw3IEBAIHN0YXRpYyBpbnQgZG9fb25lX3Bhc3Moam91cm5hbF90
+ICpqb3VybmFsLA0KIHN0cnVjdCByZWNvdmVyeV9pbmZvICppbmZvLCBlbnVtIHBhc3N0eXBlIHBh
+c3MpICB7DQogdW5zaWduZWQgaW50Zmlyc3RfY29tbWl0X0lELCBuZXh0X2NvbW1pdF9JRDsNCi11
+bnNpZ25lZCBsb25nbmV4dF9sb2dfYmxvY2s7DQordW5zaWduZWQgbG9uZ25leHRfbG9nX2Jsb2Nr
+LCByaV9jb21taXRfYmxvY2sgPSAwOw0KIGludGVyciwgc3VjY2VzcyA9IDA7DQogam91cm5hbF9z
+dXBlcmJsb2NrX3QgKnNiOw0KIGpvdXJuYWxfaGVhZGVyX3QgKnRtcDsNCkBAIC00MjgsNyArNDI4
+LDkgQEAgc3RhdGljIGludCBkb19vbmVfcGFzcyhqb3VybmFsX3QgKmpvdXJuYWwsDQogX191MzJj
+cmMzMl9zdW0gPSB+MDsgLyogVHJhbnNhY3Rpb25hbCBDaGVja3N1bXMgKi8NCiBpbnRkZXNjcl9j
+c3VtX3NpemUgPSAwOw0KIGludGJsb2NrX2Vycm9yID0gMDsNCi0NCitib29sbmVlZF9jaGVja19j
+b21taXRfdGltZSA9IGZhbHNlOw0KK19fYmU2NGxhc3RfdHJhbnNfY29tbWl0X3RpbWU7DQoNCkFs
+bCB2YXJpYWJsZSBuYW1lcyBpbiB0aGlzIGZ1bmN0aW9uIHNlZW0gdG8gYmUgaW5kZW50ZWQgYnkg
+b25lIG1vcmUgY29sdW1uLiBQbGVhc2Uga2VlcCB0aGUgaW5kZW50YXRpb24uDQoNCisNCg0KVGhp
+cyBlbXB0eSBsaW5lIGhhcyB3aGl0ZXNwYWNlIG9uIGl0LiBQbGVhc2UgZGVsZXRlLg0KDQogLyoN
+CiAgKiBGaXJzdCB0aGluZyBpcyB0byBlc3RhYmxpc2ggd2hhdCB3ZSBleHBlY3QgdG8gZmluZCBp
+biB0aGUgbG9nDQogICogKGluIHRlcm1zIG9mIHRyYW5zYWN0aW9uIElEcyksIGFuZCB3aGVyZSAo
+aW4gdGVybXMgb2YgbG9nIEBAIC01MTQsMTggKzUxNiwxOCBAQCBzdGF0aWMgaW50IGRvX29uZV9w
+YXNzKGpvdXJuYWxfdCAqam91cm5hbCwNCiBzd2l0Y2goYmxvY2t0eXBlKSB7DQogY2FzZSBKQkQy
+X0RFU0NSSVBUT1JfQkxPQ0s6DQogLyogVmVyaWZ5IGNoZWNrc3VtIGZpcnN0ICovDQoraWYocGFz
+cyA9PSBQQVNTX1NDQU4pDQogIF4gQ29kaW5nIHN0eWxlIHJlcXVpcmVzIHNwYWNlIGJlZm9yZSBv
+cGVuaW5nICguDQpZb3UgaGF2ZSB0aGlzIHByb2JsZW0gYXQgbXVsdGlwbGUgcGxhY2VzLg0KDQor
+cmlfY29tbWl0X2Jsb2NrID0gMDsNCisNCiBpZiAoamJkMl9qb3VybmFsX2hhc19jc3VtX3Yyb3Iz
+KGpvdXJuYWwpKQ0KIGRlc2NyX2NzdW1fc2l6ZSA9DQogc2l6ZW9mKHN0cnVjdCBqYmQyX2pvdXJu
+YWxfYmxvY2tfdGFpbCk7DQogaWYgKGRlc2NyX2NzdW1fc2l6ZSA+IDAgJiYNCiAgICAgIWpiZDJf
+ZGVzY3JpcHRvcl9ibG9ja19jc3VtX3ZlcmlmeShqb3VybmFsLA0KICAgICAgICBiaC0+Yl9kYXRh
+KSkgew0KLXByaW50ayhLRVJOX0VSUiAiSkJEMjogSW52YWxpZCBjaGVja3N1bSAiDQotICAgICAg
+ICJyZWNvdmVyaW5nIGJsb2NrICVsdSBpbiBsb2dcbiIsDQotICAgICAgIG5leHRfbG9nX2Jsb2Nr
+KTsNCi1lcnIgPSAtRUZTQkFEQ1JDOw0KLWJyZWxzZShiaCk7DQotZ290byBmYWlsZWQ7DQorbmVl
+ZF9jaGVja19jb21taXRfdGltZSA9IHRydWU7DQoramJkX2RlYnVnKDEsICJpbnZhbGlkIGRlc2Ny
+aXB0b3IgYmxvY2sgZm91bmQgaW4gJWx1LCBjb250aW51ZQ0KK3JlY292ZXJ5IGZpcnN0LlxuIixu
+ZXh0X2xvZ19ibG9jayk7DQorDQogfQ0KDQogLyogSWYgaXQgaXMgYSB2YWxpZCBkZXNjcmlwdG9y
+IGJsb2NrLCByZXBsYXkgaXQgQEAgLTUzNSw2ICs1MzcsNyBAQCBzdGF0aWMgaW50IGRvX29uZV9w
+YXNzKGpvdXJuYWxfdCAqam91cm5hbCwNCiBpZiAocGFzcyAhPSBQQVNTX1JFUExBWSkgew0KIGlm
+IChwYXNzID09IFBBU1NfU0NBTiAmJg0KICAgICBqYmQyX2hhc19mZWF0dXJlX2NoZWNrc3VtKGpv
+dXJuYWwpICYmDQorICAgICFuZWVkX2NoZWNrX2NvbW1pdF90aW1lICYmDQogICAgICFpbmZvLT5l
+bmRfdHJhbnNhY3Rpb24pIHsNCiBpZiAoY2FsY19jaGtzdW1zKGpvdXJuYWwsIGJoLA0KICZuZXh0
+X2xvZ19ibG9jaywNCkBAIC02ODgsNiArNjkxLDM2IEBAIHN0YXRpYyBpbnQgZG9fb25lX3Bhc3Mo
+am91cm5hbF90ICpqb3VybmFsLA0KICAqIGFyZSBwcmVzZW50IHZlcmlmeSB0aGVtIGluIFBBU1Nf
+U0NBTjsgZWxzZSBub3QNCiAgKiBtdWNoIHRvIGRvIG90aGVyIHRoYW4gbW92ZSBvbiB0byB0aGUg
+bmV4dCBzZXF1ZW5jZQ0KICAqIG51bWJlci4gKi8NCitpZihwYXNzID09IFBBU1NfU0NBTikgew0K
+K3N0cnVjdCBjb21taXRfaGVhZGVyICpjYmggPQ0KKyhzdHJ1Y3QgY29tbWl0X2hlYWRlciAqKWJo
+LT5iX2RhdGE7DQoraWYobmVlZF9jaGVja19jb21taXRfdGltZSkgew0KK19fYmU2NCBjb21taXRf
+dGltZSA9IGJlNjRfdG9fY3B1KGNiaC0+aF9jb21taXRfc2VjKTsNCitpZihjb21taXRfdGltZSA+
+PSBsYXN0X3RyYW5zX2NvbW1pdF90aW1lKSB7DQorcHJpbnRrKEtFUk5fRVJSICJKQkQyOiBJbnZh
+bGlkIGNoZWNrc3VtIGZvdW5kIGluIGxvZywgJWRcbiIsDQorbmV4dF9jb21taXRfSUQpOw0KK2Vy
+ciA9IC1FRlNCQURDUkM7DQorYnJlbHNlKGJoKTsNCitnb3RvIGZhaWxlZDsNCit9DQorZWxzZQ0K
+K3sNCiAgQ29kaW5nIHN0eWxlIHJlcXVpcmVzIHRvIHB1dCBvcGVuaW5nIHsgb24gdGhlIHNhbWUg
+bGluZSBhcyAnZWxzZScuIExpa2U6DQplbHNlIHsNCisvKml0J3Mgbm90IGJlbG9uZyB0byBzYW1l
+IGpvdXJuYWwsIGp1c3QgZW5kIHRoaXMgcmVjb3Zlcnkgd2l0aCBzdWNjZXNzKi8NCitqYmRfZGVi
+dWcoMSwgIkpCRDI6IEludmFsaWQgY2hlY2tzdW0gZm91bmQgaW4gYmxvY2sgaW4gbG9nLCBidXQg
+bm90IHNhbWUgam91cm5hbCAlZFxuIiwNCituZXh0X2NvbW1pdF9JRCk7DQorZXJyID0gMDsNCiti
+cmVsc2UoYmgpOw0KK2dvdG8gZG9uZTsNCit9DQorfQ0KK2lmKHJpX2NvbW1pdF9ibG9jaykgew0K
+K2piZF9kZWJ1ZygxLCAiaW52YWxpZCBjb21taXQgYmxvY2sgZm91bmQgaW4gJWx1LCBzdG9wIGhl
+cmUuXG4iLG5leHRfbG9nX2Jsb2NrKTsNCiticmVsc2UoYmgpOw0KK2dvdG8gZG9uZTsNCit9DQor
+cmlfY29tbWl0X2Jsb2NrID0gbmV4dF9sb2dfYmxvY2s7DQoNCldoeSBkb2VzIHRoZSByaV9jb21t
+aXRfYmxvY2sgbG9naWMgZXhpc3Q/IEkgZG9uJ3Qgc2VlIGl0IGJyaW5naW5nIGFueSBiZW5lZml0
+Li4uDQoNCitsYXN0X3RyYW5zX2NvbW1pdF90aW1lID0gYmU2NF90b19jcHUoY2JoLT5oX2NvbW1p
+dF9zZWMpOw0KK30NCiBpZiAocGFzcyA9PSBQQVNTX1NDQU4gJiYNCiAgICAgamJkMl9oYXNfZmVh
+dHVyZV9jaGVja3N1bShqb3VybmFsKSkgew0KIGludCBjaGtzdW1fZXJyLCBjaGtzdW1fc2VlbjsN
+CkBAIC03NTUsNiArNzg4LDEyIEBAIHN0YXRpYyBpbnQgZG9fb25lX3Bhc3Moam91cm5hbF90ICpq
+b3VybmFsLA0KIGNvbnRpbnVlOw0KDQogY2FzZSBKQkQyX1JFVk9LRV9CTE9DSzoNCitpZiAocGFz
+cyA9PSBQQVNTX1NDQU4gJiYNCityaV9jb21taXRfYmxvY2spIHsNCitqYmRfZGVidWcoMSwgImlu
+dmFsaWQgcmV2b2tlIGJsb2NrIGZvdW5kIGluICVsdSwgc3RvcCBoZXJlLlxuIixuZXh0X2xvZ19i
+bG9jayk7DQorYnJlbHNlKGJoKTsNCitnb3RvIGRvbmU7DQorfQ0KDQpUaGlzIGlzIHdyb25nLiBB
+IHZhbGlkIHRyYW5zYWN0aW9uIGNhbiBzdGFydCB3aXRoIGEgcmV2b2tlIGJsb2NrLi4uDQoNCiAv
+KiBJZiB3ZSBhcmVuJ3QgaW4gdGhlIFJFVk9LRSBwYXNzLCB0aGVuIHdlIGNhbg0KICAqIGp1c3Qg
+c2tpcCBvdmVyIHRoaXMgYmxvY2suICovDQogaWYgKHBhc3MgIT0gUEFTU19SRVZPS0UpIHsNCg0K
+SG9uemENCi0tDQpKYW4gS2FyYSA8amFja0BzdXNlLmNvbT4NClNVU0UgTGFicywgQ1INCg0KX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCg0KQ09ORklERU5USUFMSVRZIE5PVElDRTog
+VGhpcyBlbGVjdHJvbmljIG1lc3NhZ2UgaXMgaW50ZW5kZWQgdG8gYmUgdmlld2VkIG9ubHkgYnkg
+dGhlIGluZGl2aWR1YWwgb3IgZW50aXR5IHRvIHdob20gaXQgaXMgYWRkcmVzc2VkLiBJdCBtYXkg
+Y29udGFpbiBpbmZvcm1hdGlvbiB0aGF0IGlzIHByaXZpbGVnZWQsIGNvbmZpZGVudGlhbCBhbmQg
+ZXhlbXB0IGZyb20gZGlzY2xvc3VyZSB1bmRlciBhcHBsaWNhYmxlIGxhdy4gQW55IGRpc3NlbWlu
+YXRpb24sIGRpc3RyaWJ1dGlvbiBvciBjb3B5aW5nIG9mIHRoaXMgY29tbXVuaWNhdGlvbiBpcyBz
+dHJpY3RseSBwcm9oaWJpdGVkIHdpdGhvdXQgb3VyIHByaW9yIHBlcm1pc3Npb24uIElmIHRoZSBy
+ZWFkZXIgb2YgdGhpcyBtZXNzYWdlIGlzIG5vdCB0aGUgaW50ZW5kZWQgcmVjaXBpZW50LCBvciB0
+aGUgZW1wbG95ZWUgb3IgYWdlbnQgcmVzcG9uc2libGUgZm9yIGRlbGl2ZXJpbmcgdGhlIG1lc3Nh
+Z2UgdG8gdGhlIGludGVuZGVkIHJlY2lwaWVudCwgb3IgaWYgeW91IGhhdmUgcmVjZWl2ZWQgdGhp
+cyBjb21tdW5pY2F0aW9uIGluIGVycm9yLCBwbGVhc2Ugbm90aWZ5IHVzIGltbWVkaWF0ZWx5IGJ5
+IHJldHVybiBlLW1haWwgYW5kIGRlbGV0ZSB0aGUgb3JpZ2luYWwgbWVzc2FnZSBhbmQgYW55IGNv
+cGllcyBvZiBpdCBmcm9tIHlvdXIgY29tcHV0ZXIgc3lzdGVtLiBGb3IgZnVydGhlciBpbmZvcm1h
+dGlvbiBhYm91dCBIaWt2aXNpb24gY29tcGFueS4gcGxlYXNlIHNlZSBvdXIgd2Vic2l0ZSBhdCB3
+d3cuaGlrdmlzaW9uLmNvbTxodHRwOi8vd3d3Lmhpa3Zpc2lvbi5jb20+DQo=
 
-Reviewed-by: Eric Biggers <ebiggers@google.com>
+--_002_708254ddee9b49d18ced1885dc7c29fahikvisioncom_
+Content-Type: application/octet-stream; name="jbd2.patch"
+Content-Description: jbd2.patch
+Content-Disposition: attachment; filename="jbd2.patch"; size=4579;
+	creation-date="Wed, 23 Sep 2020 06:17:51 GMT";
+	modification-date="Wed, 23 Sep 2020 06:13:26 GMT"
+Content-Transfer-Encoding: base64
 
-(Though, some may claim I can't give Reviewed-by since this patch already has my
-Co-developed-by.)
+ZGlmZiAtLWdpdCBhL2ZzL2piZDIvcmVjb3ZlcnkuYyBiL2ZzL2piZDIvcmVjb3ZlcnkuYwppbmRl
+eCBhNDk2N2IyN2ZmYjYuLjYzMWE0MmI1MDUxNiAxMDA2NDQKLS0tIGEvZnMvamJkMi9yZWNvdmVy
+eS5jCisrKyBiL2ZzL2piZDIvcmVjb3ZlcnkuYwpAQCAtNDE3LDcgKzQxNyw3IEBAIHN0YXRpYyBp
+bnQgZG9fb25lX3Bhc3Moam91cm5hbF90ICpqb3VybmFsLAogCQkJc3RydWN0IHJlY292ZXJ5X2lu
+Zm8gKmluZm8sIGVudW0gcGFzc3R5cGUgcGFzcykKIHsKIAl1bnNpZ25lZCBpbnQJCWZpcnN0X2Nv
+bW1pdF9JRCwgbmV4dF9jb21taXRfSUQ7Ci0JdW5zaWduZWQgbG9uZwkJbmV4dF9sb2dfYmxvY2s7
+CisJdW5zaWduZWQgbG9uZwkJbmV4dF9sb2dfYmxvY2ssIHJpX2NvbW1pdF9ibG9jayA9IDA7CiAJ
+aW50CQkJZXJyLCBzdWNjZXNzID0gMDsKIAlqb3VybmFsX3N1cGVyYmxvY2tfdCAqCXNiOwogCWpv
+dXJuYWxfaGVhZGVyX3QgKgl0bXA7CkBAIC00MjgsNiArNDI4LDggQEAgc3RhdGljIGludCBkb19v
+bmVfcGFzcyhqb3VybmFsX3QgKmpvdXJuYWwsCiAJX191MzIJCQljcmMzMl9zdW0gPSB+MDsgLyog
+VHJhbnNhY3Rpb25hbCBDaGVja3N1bXMgKi8KIAlpbnQJCQlkZXNjcl9jc3VtX3NpemUgPSAwOwog
+CWludAkJCWJsb2NrX2Vycm9yID0gMDsKKwlib29sCQluZWVkX2NoZWNrX2NvbW1pdF90aW1lID0g
+ZmFsc2U7CisJX19iZTY0CQlsYXN0X3RyYW5zX2NvbW1pdF90aW1lID0gMDsKIAogCS8qCiAJICog
+Rmlyc3QgdGhpbmcgaXMgdG8gZXN0YWJsaXNoIHdoYXQgd2UgZXhwZWN0IHRvIGZpbmQgaW4gdGhl
+IGxvZwpAQCAtNTE0LDE4ICs1MTYsMTcgQEAgc3RhdGljIGludCBkb19vbmVfcGFzcyhqb3VybmFs
+X3QgKmpvdXJuYWwsCiAJCXN3aXRjaChibG9ja3R5cGUpIHsKIAkJY2FzZSBKQkQyX0RFU0NSSVBU
+T1JfQkxPQ0s6CiAJCQkvKiBWZXJpZnkgY2hlY2tzdW0gZmlyc3QgKi8KKwkJCWlmIChwYXNzID09
+IFBBU1NfU0NBTikKKwkJCQlyaV9jb21taXRfYmxvY2sgPSAwOwogCQkJaWYgKGpiZDJfam91cm5h
+bF9oYXNfY3N1bV92Mm9yMyhqb3VybmFsKSkKIAkJCQlkZXNjcl9jc3VtX3NpemUgPQogCQkJCQlz
+aXplb2Yoc3RydWN0IGpiZDJfam91cm5hbF9ibG9ja190YWlsKTsKIAkJCWlmIChkZXNjcl9jc3Vt
+X3NpemUgPiAwICYmCiAJCQkgICAgIWpiZDJfZGVzY3JpcHRvcl9ibG9ja19jc3VtX3ZlcmlmeShq
+b3VybmFsLAogCQkJCQkJCSAgICAgICBiaC0+Yl9kYXRhKSkgewotCQkJCXByaW50ayhLRVJOX0VS
+UiAiSkJEMjogSW52YWxpZCBjaGVja3N1bSAiCi0JCQkJICAgICAgICJyZWNvdmVyaW5nIGJsb2Nr
+ICVsdSBpbiBsb2dcbiIsCi0JCQkJICAgICAgIG5leHRfbG9nX2Jsb2NrKTsKLQkJCQllcnIgPSAt
+RUZTQkFEQ1JDOwotCQkJCWJyZWxzZShiaCk7Ci0JCQkJZ290byBmYWlsZWQ7CisJCQkJbmVlZF9j
+aGVja19jb21taXRfdGltZSA9IHRydWU7CisJCQkJamJkX2RlYnVnKDEsICJpbnZhbGlkIGRlc2Ny
+aXB0b3IgYmxvY2sgZm91bmQgaW4gJWx1LCBjb250aW51ZSByZWNvdmVyeSBmaXJzdC5cbiIsCisJ
+CQkJCQluZXh0X2xvZ19ibG9jayk7CiAJCQl9CiAKIAkJCS8qIElmIGl0IGlzIGEgdmFsaWQgZGVz
+Y3JpcHRvciBibG9jaywgcmVwbGF5IGl0CkBAIC01MzUsNiArNTM2LDcgQEAgc3RhdGljIGludCBk
+b19vbmVfcGFzcyhqb3VybmFsX3QgKmpvdXJuYWwsCiAJCQlpZiAocGFzcyAhPSBQQVNTX1JFUExB
+WSkgewogCQkJCWlmIChwYXNzID09IFBBU1NfU0NBTiAmJgogCQkJCSAgICBqYmQyX2hhc19mZWF0
+dXJlX2NoZWNrc3VtKGpvdXJuYWwpICYmCisJCQkJICAgICFuZWVkX2NoZWNrX2NvbW1pdF90aW1l
+ICYmCiAJCQkJICAgICFpbmZvLT5lbmRfdHJhbnNhY3Rpb24pIHsKIAkJCQkJaWYgKGNhbGNfY2hr
+c3Vtcyhqb3VybmFsLCBiaCwKIAkJCQkJCQkmbmV4dF9sb2dfYmxvY2ssCkBAIC02ODgsNiArNjkw
+LDQ3IEBAIHN0YXRpYyBpbnQgZG9fb25lX3Bhc3Moam91cm5hbF90ICpqb3VybmFsLAogCQkJICog
+YXJlIHByZXNlbnQgdmVyaWZ5IHRoZW0gaW4gUEFTU19TQ0FOOyBlbHNlIG5vdAogCQkJICogbXVj
+aCB0byBkbyBvdGhlciB0aGFuIG1vdmUgb24gdG8gdGhlIG5leHQgc2VxdWVuY2UKIAkJCSAqIG51
+bWJlci4gKi8KKwkJCWlmIChwYXNzID09IFBBU1NfU0NBTikgeworCQkJCXN0cnVjdCBjb21taXRf
+aGVhZGVyICpjYmggPQorCQkJCQkoc3RydWN0IGNvbW1pdF9oZWFkZXIgKiliaC0+Yl9kYXRhOwor
+CQkJCS8qCisJCQkJICogV2hlbiBuZWVkIGNoZWNrIGNvbW1pdCB0aW1lLCBpdCBtZWFucyBjc3Vt
+CisJCQkJICogdmVyaWZ5IGZhaWxlZCBiZWZvcmUsIGlmIGNvbW1pdCB0aW1lIGlzCisJCQkJICog
+aW5jcmVhc2luZywgaXQncyBzYW1lIGpvdXJuYWwsIG90aGVyd2lzZQorCQkJCSAqIG5vdCBzYW1l
+IGpvdXJuYWwsIGp1c3QgZW5kIHRoaXMgcmVjb3ZlcnkuCisJCQkJICovCisJCQkJaWYgKG5lZWRf
+Y2hlY2tfY29tbWl0X3RpbWUpIHsKKwkJCQkJX19iZTY0IGNvbW1pdF90aW1lID0KKwkJCQkJCWJl
+NjRfdG9fY3B1KGNiaC0+aF9jb21taXRfc2VjKTsKKworCQkJCQlpZiAoY29tbWl0X3RpbWUgPj0g
+bGFzdF90cmFuc19jb21taXRfdGltZSkgeworCQkJCQkJcHJfZXJyKCJKQkQyOiBJbnZhbGlkIGNo
+ZWNrc3VtIGZvdW5kIGluIGxvZywgJWRcbiIsCisJCQkJCQluZXh0X2NvbW1pdF9JRCk7CisJCQkJ
+CQllcnIgPSAtRUZTQkFEQ1JDOworCQkJCQkJYnJlbHNlKGJoKTsKKwkJCQkJCWdvdG8gZmFpbGVk
+OworCQkJCQl9IGVsc2UgeworCQkJCQkJLyoKKwkJCQkJCSAqIGl0J3Mgbm90IGJlbG9uZyB0byBz
+YW1lIGpvdXJuYWwsIGp1c3QKKwkJCQkJCSAqIGVuZCB0aGlzIHJlY292ZXJ5IHdpdGggc3VjY2Vz
+cy4KKwkJCQkJCSAqLworCQkJCQkJamJkX2RlYnVnKDEsICJKQkQyOiBJbnZhbGlkIGNoZWNrc3Vt
+IGZvdW5kIGluIGJsb2NrIGluIGxvZywgYnV0IG5vdCBzYW1lIGpvdXJuYWwgJWRcbiIsCisJCQkJ
+CQluZXh0X2NvbW1pdF9JRCk7CisJCQkJCQllcnIgPSAwOworCQkJCQkJYnJlbHNlKGJoKTsKKwkJ
+CQkJCWdvdG8gZG9uZTsKKwkJCQkJfQorCQkJCX0KKwkJCQlpZiAocmlfY29tbWl0X2Jsb2NrKSB7
+CisJCQkJCWpiZF9kZWJ1ZygxLCAiaW52YWxpZCBjb21taXQgYmxvY2sgZm91bmQgaW4gJWx1LCBz
+dG9wIGhlcmUuXG4iLAorCQkJCQkJbmV4dF9sb2dfYmxvY2spOworCQkJCQlicmVsc2UoYmgpOwor
+CQkJCQlnb3RvIGRvbmU7CisJCQkJfQorCQkJCXJpX2NvbW1pdF9ibG9jayA9IG5leHRfbG9nX2Js
+b2NrOworCQkJCWxhc3RfdHJhbnNfY29tbWl0X3RpbWUgPQorCQkJCQliZTY0X3RvX2NwdShjYmgt
+PmhfY29tbWl0X3NlYyk7CisJCQl9CiAJCQlpZiAocGFzcyA9PSBQQVNTX1NDQU4gJiYKIAkJCSAg
+ICBqYmQyX2hhc19mZWF0dXJlX2NoZWNrc3VtKGpvdXJuYWwpKSB7CiAJCQkJaW50IGNoa3N1bV9l
+cnIsIGNoa3N1bV9zZWVuOwpAQCAtNzU1LDYgKzc5OCwyMSBAQCBzdGF0aWMgaW50IGRvX29uZV9w
+YXNzKGpvdXJuYWxfdCAqam91cm5hbCwKIAkJCWNvbnRpbnVlOwogCiAJCWNhc2UgSkJEMl9SRVZP
+S0VfQkxPQ0s6CisJCQkvKgorCQkJICogQ2hlY2sgcmV2b2tlIGJsb2NrIGNyYyBpbiBwYXNzX3Nj
+YW4sIGlmIGNzdW0gdmVyaWZ5CisJCQkgKiBmYWlsZWQsIGNoZWNrIGNvbW1pdCBibG9jayB0aW1l
+IGxhdGVyLgorCQkJICovCisJCQlpZiAocGFzcyA9PSBQQVNTX1NDQU4pIHsKKwkJCQlqYmQyX2pv
+dXJuYWxfcmV2b2tlX2hlYWRlcl90ICpoZWFkZXIgPQorCQkJCShqYmQyX2pvdXJuYWxfcmV2b2tl
+X2hlYWRlcl90ICopYmgtPmJfZGF0YTsKKwkJCQlyaV9jb21taXRfYmxvY2sgPSAwOworCQkJCWlm
+ICghamJkMl9kZXNjcmlwdG9yX2Jsb2NrX2NzdW1fdmVyaWZ5KGpvdXJuYWwsCisJCQkJCQloZWFk
+ZXIpKSB7CisJCQkJCWpiZF9kZWJ1ZygxLCAiaW52YWxpZCByZXZva2UgYmxvY2sgZm91bmQgaW4g
+JWx1LCBjb250aW51ZSByZWNvdmVyeSBmaXJzdC5cbiIsCisJCQkJCQluZXh0X2xvZ19ibG9jayk7
+CisJCQkJCW5lZWRfY2hlY2tfY29tbWl0X3RpbWUgPSB0cnVlOworCQkJCX0KKwkJCX0KIAkJCS8q
+IElmIHdlIGFyZW4ndCBpbiB0aGUgUkVWT0tFIHBhc3MsIHRoZW4gd2UgY2FuCiAJCQkgKiBqdXN0
+IHNraXAgb3ZlciB0aGlzIGJsb2NrLiAqLwogCQkJaWYgKHBhc3MgIT0gUEFTU19SRVZPS0UpIHsK
+QEAgLTgyMiw5ICs4ODAsNiBAQCBzdGF0aWMgaW50IHNjYW5fcmV2b2tlX3JlY29yZHMoam91cm5h
+bF90ICpqb3VybmFsLCBzdHJ1Y3QgYnVmZmVyX2hlYWQgKmJoLAogCW9mZnNldCA9IHNpemVvZihq
+YmQyX2pvdXJuYWxfcmV2b2tlX2hlYWRlcl90KTsKIAlyY291bnQgPSBiZTMyX3RvX2NwdShoZWFk
+ZXItPnJfY291bnQpOwogCi0JaWYgKCFqYmQyX2Rlc2NyaXB0b3JfYmxvY2tfY3N1bV92ZXJpZnko
+am91cm5hbCwgaGVhZGVyKSkKLQkJcmV0dXJuIC1FRlNCQURDUkM7Ci0KIAlpZiAoamJkMl9qb3Vy
+bmFsX2hhc19jc3VtX3Yyb3IzKGpvdXJuYWwpKQogCQljc3VtX3NpemUgPSBzaXplb2Yoc3RydWN0
+IGpiZDJfam91cm5hbF9ibG9ja190YWlsKTsKIAlpZiAocmNvdW50ID4gam91cm5hbC0+al9ibG9j
+a3NpemUgLSBjc3VtX3NpemUpCg==
 
-One comment below, though:
-
-> @@ -218,9 +219,28 @@ static bool f2fs_match_ci_name(const struct inode *dir, const struct qstr *name,
->  {
->  	const struct super_block *sb = dir->i_sb;
->  	const struct unicode_map *um = sb->s_encoding;
-> +	struct fscrypt_str decrypted_name = FSTR_INIT(NULL, de_name_len);
->  	struct qstr entry = QSTR_INIT(de_name, de_name_len);
->  	int res;
->  
-> +	if (IS_ENCRYPTED(dir)) {
-> +		const struct fscrypt_str encrypted_name =
-> +			FSTR_INIT((u8 *)de_name, de_name_len);
-> +
-> +		if (WARN_ON_ONCE(!fscrypt_has_encryption_key(dir)))
-> +			return false;
-> +
-> +		decrypted_name.name = kmalloc(de_name_len, GFP_KERNEL);
-> +		if (!decrypted_name.name)
-> +			return false;
-> +		res = fscrypt_fname_disk_to_usr(dir, 0, 0, &encrypted_name,
-> +						&decrypted_name);
-> +		if (res < 0)
-> +			goto out;
-
-We probably should be passing up errors from here to f2fs_match_name(), then to
-f2fs_find_target_dentry(), then to f2fs_find_in_inline_dir() or find_in_block().
-
-Ignoring the filename may be okay if fscrypt_fname_disk_to_usr() returns
--EUCLEAN, indicating that it's invalid.  However, if the error is -ENOMEM,
-either from the kmalloc() or from fscrypt_fname_disk_to_usr(), then the caller
-should receive an error rather than the filename being ignored.
-
-- Eric
+--_002_708254ddee9b49d18ced1885dc7c29fahikvisioncom_--
