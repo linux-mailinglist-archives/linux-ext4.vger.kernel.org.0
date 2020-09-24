@@ -2,124 +2,55 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCA5427688D
-	for <lists+linux-ext4@lfdr.de>; Thu, 24 Sep 2020 07:48:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 626752768B8
+	for <lists+linux-ext4@lfdr.de>; Thu, 24 Sep 2020 08:14:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726832AbgIXFss (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 24 Sep 2020 01:48:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34612 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726683AbgIXFss (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 24 Sep 2020 01:48:48 -0400
-Received: from sol.attlocal.net (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5527A235FD;
-        Thu, 24 Sep 2020 05:48:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600926527;
-        bh=ZBd12iiaWrJLLa5wlKz4XAdvI+v27GCLwdJDLWNHLIY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=yxcfpsFWdaISRwAI+JVWSVcxnMGJEi4ShtKIgyoJgyvWOVArjZfAHg8LIHipiUC6V
-         QMGF7qU5twNettIbNqxJCnUBLmarGE/ysxglhg3oHN61q/vyHwjZyzoCBNs0tdGBKd
-         hdHf1ETiZYCxPPjHI7/27bpsdedx2WvOrXU8y9L0=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        ceph-devel@vger.kernel.org, Daniel Rosenberg <drosen@google.com>,
-        Jeff Layton <jlayton@kernel.org>
-Subject: [PATCH] fscrypt: export fscrypt_d_revalidate()
-Date:   Wed, 23 Sep 2020 22:47:21 -0700
-Message-Id: <20200924054721.187797-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.28.0
+        id S1726850AbgIXGOc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 24 Sep 2020 02:14:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726806AbgIXGOc (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 24 Sep 2020 02:14:32 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 561ABC0613CE
+        for <linux-ext4@vger.kernel.org>; Wed, 23 Sep 2020 23:14:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=D+TOu2srt5VOVE0VxWi+f0Vl3mBQx4wUeJiEQxkwvxw=; b=HufeTw01uTMt//ilJGlEvZDYPz
+        +0jUm+R0fsPKg6k7emokrrm15FYZPWnQlxAygahjGQXRjlqPgOw+0+pAnMjPYkL+tfzHhIYFy6jdA
+        X+8hSCF+u/C1FgnbaE9h0QZV+YiAz+2L1odokpm2hM51UnsBc54JkD7tcdPbEmDmMxEq9bQrCyTIc
+        0T/CwroD45kEoPTRJar72uxw5AYieIY2dJko3tKLKIP7NMTbcpTLRRdAi9zhzpE5JPTMb2zWnBpZ7
+        1V8r9Cz+QbQDueoF6W+YXA+fdc5wCKyW+FhjtQVju23nNKadvygeVbKi8BiQNZ93XLAcNcF6JjmPc
+        wznD87bg==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kLKWS-00077q-Oj; Thu, 24 Sep 2020 06:14:28 +0000
+Date:   Thu, 24 Sep 2020 07:14:28 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Meng Wang <meng@hcdatainc.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Keith Busch <kbusch@kernel.org>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>
+Subject: Re: kernel panics when hot removing U.2 nvme disk
+Message-ID: <20200924061428.GA27289@infradead.org>
+References: <BYAPR10MB24561C62C45813B7092E346BCB3F0@BYAPR10MB2456.namprd10.prod.outlook.com>
+ <20200919014401.GE4030837@dhcp-10-100-145-180.wdl.wdc.com>
+ <20200924051230.GA16433@infradead.org>
+ <BYAPR10MB245671198E40D4F44B2365C1CB390@BYAPR10MB2456.namprd10.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BYAPR10MB245671198E40D4F44B2365C1CB390@BYAPR10MB2456.namprd10.prod.outlook.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On Thu, Sep 24, 2020 at 05:47:12AM +0000, Meng Wang wrote:
+> Thanks for the info. Is it a problem solely for ext4 + nvme combination? If we change file system or use SATA drive, will the problem get workaround?
 
-Dentries that represent no-key names must have a dentry_operations that
-includes fscrypt_d_revalidate().  Currently, this is handled by
-fscrypt_prepare_lookup() installing fscrypt_d_ops.
-
-However, ceph support for encryption
-(https://lore.kernel.org/r/20200914191707.380444-1-jlayton@kernel.org)
-can't use fscrypt_d_ops, since ceph already has its own
-dentry_operations.
-
-Similarly, ext4 and f2fs support for directories that are both encrypted
-and casefolded
-(https://lore.kernel.org/r/20200923010151.69506-1-drosen@google.com)
-can't use fscrypt_d_ops either, since casefolding requires some dentry
-operations too.
-
-To satisfy both users, we need to move the responsibility of installing
-the dentry_operations to filesystems.
-
-In preparation for this, export fscrypt_d_revalidate() and give it a
-!CONFIG_FS_ENCRYPTION stub.
-
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
-
-Compared to the versions of this patch from Jeff and Daniel, I've
-improved the commit message and added a !CONFIG_FS_ENCRYPTION stub,
-which was missing.  I'm planning to apply this for 5.10 in preparation
-for both the ceph patchset and the encrypt+casefold patchset.
-
-
- fs/crypto/fname.c       | 3 ++-
- include/linux/fscrypt.h | 7 +++++++
- 2 files changed, 9 insertions(+), 1 deletion(-)
-
-diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
-index c65979452844..1fbe6c24d705 100644
---- a/fs/crypto/fname.c
-+++ b/fs/crypto/fname.c
-@@ -530,7 +530,7 @@ EXPORT_SYMBOL_GPL(fscrypt_fname_siphash);
-  * Validate dentries in encrypted directories to make sure we aren't potentially
-  * caching stale dentries after a key has been added.
-  */
--static int fscrypt_d_revalidate(struct dentry *dentry, unsigned int flags)
-+int fscrypt_d_revalidate(struct dentry *dentry, unsigned int flags)
- {
- 	struct dentry *dir;
- 	int err;
-@@ -569,6 +569,7 @@ static int fscrypt_d_revalidate(struct dentry *dentry, unsigned int flags)
- 
- 	return valid;
- }
-+EXPORT_SYMBOL_GPL(fscrypt_d_revalidate);
- 
- const struct dentry_operations fscrypt_d_ops = {
- 	.d_revalidate = fscrypt_d_revalidate,
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index f1757e73162d..a8f7a43f031b 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -197,6 +197,7 @@ int fscrypt_fname_disk_to_usr(const struct inode *inode,
- bool fscrypt_match_name(const struct fscrypt_name *fname,
- 			const u8 *de_name, u32 de_name_len);
- u64 fscrypt_fname_siphash(const struct inode *dir, const struct qstr *name);
-+int fscrypt_d_revalidate(struct dentry *dentry, unsigned int flags);
- 
- /* bio.c */
- void fscrypt_decrypt_bio(struct bio *bio);
-@@ -454,6 +455,12 @@ static inline u64 fscrypt_fname_siphash(const struct inode *dir,
- 	return 0;
- }
- 
-+static inline int fscrypt_d_revalidate(struct dentry *dentry,
-+				       unsigned int flags)
-+{
-+	return 1;
-+}
-+
- /* bio.c */
- static inline void fscrypt_decrypt_bio(struct bio *bio)
- {
--- 
-2.28.0
-
+This will be called for all removals.  I think the root cause probably
+is in ext4 where the evict_inode method doesn't properly deal with
+non available storage.
