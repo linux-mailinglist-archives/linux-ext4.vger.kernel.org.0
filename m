@@ -2,56 +2,56 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EF9027744D
-	for <lists+linux-ext4@lfdr.de>; Thu, 24 Sep 2020 16:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABDBA2774A6
+	for <lists+linux-ext4@lfdr.de>; Thu, 24 Sep 2020 16:59:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728147AbgIXOuL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 24 Sep 2020 10:50:11 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:48184 "EHLO
+        id S1728240AbgIXO7e (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 24 Sep 2020 10:59:34 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:49948 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727859AbgIXOuL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 24 Sep 2020 10:50:11 -0400
+        with ESMTP id S1728403AbgIXO7Y (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 24 Sep 2020 10:59:24 -0400
 Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 08OEnxrL014845
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 08OEwOWK018474
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 24 Sep 2020 10:49:59 -0400
+        Thu, 24 Sep 2020 10:58:24 -0400
 Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 41AF642003C; Thu, 24 Sep 2020 10:49:59 -0400 (EDT)
-Date:   Thu, 24 Sep 2020 10:49:59 -0400
+        id EB65442003C; Thu, 24 Sep 2020 10:58:23 -0400 (EDT)
+Date:   Thu, 24 Sep 2020 10:58:23 -0400
 From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     linux-ext4@vger.kernel.org, jack@suse.cz,
-        linux-fsdevel@vger.kernel.org, darrick.wong@oracle.com,
-        linux-kernel@vger.kernel.org, Yuxuan Shui <yshuiv7@gmail.com>
-Subject: Re: [PATCH] ext4: Implement swap_activate aops using iomap
-Message-ID: <20200924144959.GE482521@mit.edu>
-References: <20200904091653.1014334-1-riteshh@linux.ibm.com>
+To:     Ye Bin <yebin10@huawei.com>
+Cc:     riteshh@linux.ibm.com, jack@suse.cz, adilger.kernel@dilger.ca,
+        jack@suse.com, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v5 1/2] ext4: Discard preallocations before releasing
+ group lock
+Message-ID: <20200924145823.GF482521@mit.edu>
+References: <20200916113859.1556397-1-yebin10@huawei.com>
+ <20200916113859.1556397-2-yebin10@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200904091653.1014334-1-riteshh@linux.ibm.com>
+In-Reply-To: <20200916113859.1556397-2-yebin10@huawei.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Sep 04, 2020 at 02:46:53PM +0530, Ritesh Harjani wrote:
-> After moving ext4's bmap to iomap interface, swapon functionality
-> on files created using fallocate (which creates unwritten extents) are
-> failing. This is since iomap_bmap interface returns 0 for unwritten
-> extents and thus generic_swapfile_activate considers this as holes
-> and hence bail out with below kernel msg :-
+On Wed, Sep 16, 2020 at 07:38:58PM +0800, Ye Bin wrote:
+> From: Jan Kara <jack@suse.cz>
 > 
-> [340.915835] swapon: swapfile has holes
+> ext4_mb_discard_group_preallocations() can be releasing group lock with
+> preallocations accumulated on its local list. Thus although
+> discard_pa_seq was incremented and concurrent allocating processes will
+> be retrying allocations, it can happen that premature ENOSPC error is
+> returned because blocks used for preallocations are not available for
+> reuse yet. Make sure we always free locally accumulated preallocations
+> before releasing group lock.
 > 
-> To fix this we need to implement ->swap_activate aops in ext4
-> which will use ext4_iomap_report_ops. Since we only need to return
-> the list of extents so ext4_iomap_report_ops should be enough.
-> 
-> Reported-by: Yuxuan Shui <yshuiv7@gmail.com>
-> Fixes: ac58e4fb03f ("ext4: move ext4 bmap to use iomap infrastructure")
-> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> Fixes: 07b5b8e1ac40 ("ext4: mballoc: introduce pcpu seqcnt for freeing PA to improve ENOSPC handling")
+> Signed-off-by: Jan Kara <jack@suse.cz>
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
+> Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
 
 Thanks, applied.
 
