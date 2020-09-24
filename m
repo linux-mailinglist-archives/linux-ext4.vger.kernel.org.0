@@ -2,168 +2,150 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EE5927739D
-	for <lists+linux-ext4@lfdr.de>; Thu, 24 Sep 2020 16:09:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB502277415
+	for <lists+linux-ext4@lfdr.de>; Thu, 24 Sep 2020 16:34:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728217AbgIXOJN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 24 Sep 2020 10:09:13 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53628 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728064AbgIXOJN (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 24 Sep 2020 10:09:13 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 05F96AD03;
-        Thu, 24 Sep 2020 14:09:12 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id A8FA41E1318; Thu, 24 Sep 2020 11:44:47 +0200 (CEST)
-Date:   Thu, 24 Sep 2020 11:44:47 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Haotian Li <lihaotian9@huawei.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, linfeilong@huawei.com,
-        liuzhiqiang26@huawei.com, linux-ext4@vger.kernel.org,
-        hqjagain@gmail.com
-Subject: Re: [PATCH] ext4: fix data-races problem at inode->i_disksize
-Message-ID: <20200924094447.GG27019@quack2.suse.cz>
-References: <b5032209-a132-fed4-e26e-1e02bc54c640@huawei.com>
+        id S1728323AbgIXOeC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 24 Sep 2020 10:34:02 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:45115 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728088AbgIXOeC (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 24 Sep 2020 10:34:02 -0400
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 08OEXjYB007803
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Sep 2020 10:33:45 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 1FBFD42003C; Thu, 24 Sep 2020 10:33:45 -0400 (EDT)
+Date:   Thu, 24 Sep 2020 10:33:45 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-ext4@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-block@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: REGRESSION: 37f4a24c2469: blk-mq: centralise related handling
+ into blk_mq_get_driver_tag
+Message-ID: <20200924143345.GD482521@mit.edu>
+References: <68510957-c887-8e26-4a1a-a7a93488586a@kernel.dk>
+ <20200904035528.GE558530@mit.edu>
+ <20200915044519.GA38283@mit.edu>
+ <20200915073303.GA754106@T590>
+ <20200915224541.GB38283@mit.edu>
+ <20200915230941.GA791425@T590>
+ <20200916202026.GC38283@mit.edu>
+ <20200917022051.GA1004828@T590>
+ <20200917143012.GF38283@mit.edu>
+ <20200924005901.GB1806978@T590>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b5032209-a132-fed4-e26e-1e02bc54c640@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200924005901.GB1806978@T590>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat 19-09-20 20:39:52, Haotian Li wrote:
+On Thu, Sep 24, 2020 at 08:59:01AM +0800, Ming Lei wrote:
 > 
-> We find some data-race problems at inode->i_disksize by
-> using KSCAN in kernel 4.18. The same problem can also be
-> found at commit dce8e237100f ("ext4: fix a data race at
-> inode->i_disksize").
+> The list corruption issue can be reproduced on kvm/qumu guest too when
+> running xfstests(ext4) generic/038.
 > 
-> BUG: KCSAN: data-race in ext4_da_write_end / ext4_writepages
-> write to 0xffff8ee8ed62cea8 of 8 bytes by task 3908 on cpu 0:
-> mpage_map_and_submit_extent  [inline]
-> ext4_writepages+0x170c/0x1b90
-> do_writepages+0x70/0x170
-> __filemap_fdatawrite_range+0x199/0x1f0
-> file_write_and_wait_range+0x80/0xc0
-> ext4_sync_file+0x26f/0x860
-> vfs_fsync_range+0x7a/0x130
-> vfs_fsync  [inline]
-> do_fsync+0x4c/0x80
-> __do_sys_fsync  [inline]
-> __se_sys_fsync  [inline]
-> __x64_sys_fsync+0x2c/0x40
-> do_syscall_64+0xb5/0x340
-> entry_SYSCALL_64_after_hwframe+0x65/0xca
-> 0xffffffffffffffff
-> 
-> read to 0xffff8ee8ed62cea8 of 8 bytes by task 3907 on cpu 3:
-> ext4_da_write_end+0xd3/0x7d0
-> generic_perform_write+0x1c6/0x2c0
-> __generic_file_write_iter+0x2aa/0x2f0
-> ext4_file_write_iter+0x197/0x820
-> call_write_iter   [inline]
-> new_sync_write+0x2ae/0x350
-> __vfs_write+0xa5/0xc0
-> vfs_write+0x119/0x2e0
-> ksys_write+0x83/0x120
-> __do_sys_write  [inline]
-> __se_sys_write  [inline]
-> __x64_sys_write+0x4d/0x60
-> do_syscall_64+0xb5/0x340
-> entry_SYSCALL_64_after_hwframe+0x65/0xca
-> 0xffffffffffffffff
-> 
-> We find two solutions to solve this problem.
-> 1) Just the same as commit dce8e237100f ("ext4: fix a data
-> race at inode->i_disksize"), Add READ_ONCE or WRITE_ONCE
-> on inode->i_disksize directly.
-> 
-> It is helpful to avoid current KCSAN problem. However,
-> some other code using inode->i_disksize without READ_ONCE
-> or WRITE_ONCE may also have KCSAN problem. So, we try to
-> use the second solution.
-> 
-> 2) Add 'volatile' keyword at inode->i_disksize.
-> 
-> We think this solution may be helpful to deal with the
-> date-race problem on inode->i_disksize.
-> 
-> Reported-by: Wenhao Zhang <zhangwenhao8@huawei.com>
-> Signed-off-by: Haotian Li <lihaotian9@huawei.com>
+> However, the issue may become not reproduced when adding or removing memory
+> debug options, such as adding KASAN.
 
-So I don't think using volatile is really good here because if does a poor
-job documenting what's going on. Also it makes compiler optimizations
-impossible for i_disksize (not that it would matter that much in this
-particular case). In the kernel we prefer to use explicit calls (such as
-READ_ONCE) to mark something special is going on in that place.
+Can you reliably reprodue this crash?  And if so, with what config and
+what kernel version.
 
-But looking at i_disksize in particular, even using READ_ONCE / WRITE_ONCE
-is problematic for it because i_disksize is loff_t which is long long. So
-on 32-bit architectures storing value to i_disksize is not actually atomic
-and using WRITE_ONCE / READ_ONCE does not fix that and we can still see
-invalid values. So we might need similar trick as is used in i_size_read()
-/ i_size_write() to make unlocked reads of i_disksize work... Not sure if
-such a big hammer solution is really worth it for those few unlocked
-i_disksize readers we have.
+One of the reasons why I had gone silent on this bug is that I've been
+trying many, many configurations and configurations which reliably
+reproduced on say, -rc4 would not reproduce on -rc5, and then I would
+get a completely different set of results on -rc6.  So I've been
+trying to run a lot of different experiments to try to understand what
+might be going on, since it seems pretty clear this must be a very
+timing-sensitive failure.
 
-								Honza
+I also found that the re-occrance went down significantly if I enabled
+KASAN, and while it didn't go away, I wasn't able to get a KASAN
+failure to trigger, either.  Turning off CONFIG_PROVE_LOCKING and a
+*lot* of other debugging configs made the problem vanish in -rc4, but
+that trick didn't work with -rc5 or -rc6.
 
-> ---
->  fs/ext4/ext4.h  | 4 ++--
->  fs/ext4/inode.c | 4 ++--
->  2 files changed, 4 insertions(+), 4 deletions(-)
+Each time I discovered one of these things, I was about to post to the
+e-mail thread, only to have a confirmation test run on a different
+kernel version make the problem go away.  In particular, your revert
+helped with -rc4 and -rc6 IIRC, but it didn't help in -rc5.....
+
+HOWEVER, thanks to a hint from a colleague at $WORK, and realizing
+that one of the stack traces had virtio balloon in the trace, I
+realized that when I switched the GCE VM type from e1-standard-2 to
+n1-standard-2 (where e1 VM's are cheaper because they use
+virtio-balloon to better manage host OS memory utilization), problem
+has become, much, *much* rarer (and possibly has gone away, although
+I'm going to want to run a lot more tests before I say that
+conclusively) on my test setup.  At the very least, using an n1 VM
+(which doesn't have virtio-balloon enabled in the hypervisor) is
+enough to unblock ext4 development.
+
+Any chance your kvm/qemu configuration might have been using
+virtio-ballon?  Because other ext4 developers who have been using
+kvm-xftests have not had any problems....
+
+> When I enable PAGE_POISONING, double free on kmalloc(192) is captured:
 > 
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 523e00d7b392..354a9d1371af 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -1036,7 +1036,7 @@ struct ext4_inode_info {
->  	 * a truncate is in progress.  The only things which change i_disksize
->  	 * are ext4_get_block (growth) and ext4_truncate (shrinkth).
->  	 */
-> -	loff_t	i_disksize;
-> +	volatile loff_t	i_disksize;
-> 
->  	/*
->  	 * i_data_sem is for serialising ext4_truncate() against
-> @@ -3128,7 +3128,7 @@ static inline void ext4_update_i_disksize(struct inode *inode, loff_t newsize)
->  		     !inode_is_locked(inode));
->  	down_write(&EXT4_I(inode)->i_data_sem);
->  	if (newsize > EXT4_I(inode)->i_disksize)
-> -		WRITE_ONCE(EXT4_I(inode)->i_disksize, newsize);
-> +		EXT4_I(inode)->i_disksize = newsize;
->  	up_write(&EXT4_I(inode)->i_data_sem);
->  }
-> 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index bf596467c234..7c89d07dead3 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -2476,7 +2476,7 @@ static int mpage_map_and_submit_extent(handle_t *handle,
->  	 * truncate are avoided by checking i_size under i_data_sem.
->  	 */
->  	disksize = ((loff_t)mpd->first_page) << PAGE_SHIFT;
-> -	if (disksize > READ_ONCE(EXT4_I(inode)->i_disksize)) {
-> +	if (disksize > EXT4_I(inode)->i_disksize) {
->  		int err2;
->  		loff_t i_size;
-> 
-> @@ -5015,7 +5015,7 @@ static int ext4_do_update_inode(handle_t *handle,
->  		raw_inode->i_file_acl_high =
->  			cpu_to_le16(ei->i_file_acl >> 32);
->  	raw_inode->i_file_acl_lo = cpu_to_le32(ei->i_file_acl);
-> -	if (READ_ONCE(ei->i_disksize) != ext4_isize(inode->i_sb, raw_inode)) {
-> +	if (ei->i_disksize != ext4_isize(inode->i_sb, raw_inode)) {
->  		ext4_isize_set(raw_inode, ei->i_disksize);
->  		need_datasync = 1;
->  	}
-> -- 
-> 2.19.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> [ 1198.317139] slab: double free detected in cache 'kmalloc-192', objp ffff89ada7584300^M
+> [ 1198.326651] ------------[ cut here ]------------^M
+> [ 1198.327969] kernel BUG at mm/slab.c:2535!^M
+> [ 1198.329129] invalid opcode: 0000 [#1] SMP PTI^M
+> [ 1198.333776] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.9.0-rc4_quiesce_srcu-xfstests #102^M
+> [ 1198.336085] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-48-gd9c812dda519-prebuilt.qemu.org 04/01/2014^M
+> [ 1198.339826] RIP: 0010:free_block.cold.92+0x13/0x15^M
+> [ 1198.341472] Code: 8d 44 05 f0 eb d0 48 63 83 e0 00 00 00 48 8d 54 05 f8 e9 4b 81 ff ff 48 8b 73 58 48 89 ea 48 c7 c7 98 e7 4a 9c e8 20 c3 eb ff <0f> 0b 48 8b 73 58 48 c7 c2 20 e8 4a 9c 48 c7 c7 70 32 22 9c e8 19^M
+> [ 1198.347331] RSP: 0018:ffff982e40710be8 EFLAGS: 00010046^M
+> [ 1198.349091] RAX: 0000000000000048 RBX: ffff89adb6441400 RCX: 0000000000000000^M
+> [ 1198.351839] RDX: 0000000000000000 RSI: ffff89adbaa97800 RDI: ffff89adbaa97800^M
+> [ 1198.354572] RBP: ffff89ada7584300 R08: 0000000000000417 R09: 0000000000000057^M
+> [ 1198.357150] R10: 0000000000000001 R11: ffff982e40710aa5 R12: ffff89adbaaae598^M
+> [ 1198.359067] R13: ffffe7bc819d6108 R14: ffffe7bc819d6100 R15: ffff89adb6442280^M
+> [ 1198.360975] FS:  0000000000000000(0000) GS:ffff89adbaa80000(0000) knlGS:0000000000000000^M
+> [ 1198.363202] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033^M
+> [ 1198.365986] CR2: 000055f6a3811318 CR3: 000000017adca005 CR4: 0000000000770ee0^M
+> [ 1198.368679] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000^M
+> [ 1198.371386] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400^M
+> [ 1198.374203] PKRU: 55555554^M
+> [ 1198.375174] Call Trace:^M
+> [ 1198.376165]  <IRQ>^M
+> [ 1198.376908]  ___cache_free+0x56d/0x770^M
+> [ 1198.378355]  ? kmem_freepages+0xa0/0xf0^M
+> [ 1198.379814]  kfree+0x91/0x120^M
+> [ 1198.382121]  kmem_freepages+0xa0/0xf0^M
+> [ 1198.383474]  slab_destroy+0x9f/0x120^M
+> [ 1198.384779]  slabs_destroy+0x6d/0x90^M
+> [ 1198.386110]  ___cache_free+0x632/0x770^M
+> [ 1198.387547]  ? kmem_freepages+0xa0/0xf0^M
+> [ 1198.389016]  kfree+0x91/0x120^M
+> [ 1198.390160]  kmem_freepages+0xa0/0xf0^M
+> [ 1198.391551]  slab_destroy+0x9f/0x120^M
+> [ 1198.392964]  slabs_destroy+0x6d/0x90^M
+> [ 1198.394439]  ___cache_free+0x632/0x770^M
+> [ 1198.395896]  kmem_cache_free.part.75+0x19/0x70^M
+> [ 1198.397791]  rcu_core+0x1eb/0x6b0^M
+> [ 1198.399829]  ? ktime_get+0x37/0xa0^M
+> [ 1198.401343]  __do_softirq+0xdf/0x2c5^M
+> [ 1198.403010]  asm_call_on_stack+0x12/0x20^M
+> [ 1198.404847]  </IRQ>^M
+> [ 1198.405799]  do_softirq_own_stack+0x39/0x50^M
+> [ 1198.407621]  irq_exit_rcu+0x97/0xa0^M
+> [ 1198.409127]  sysvec_apic_timer_interrupt+0x2c/0x80^M
+> [ 1198.410608]  asm_sysvec_apic_timer_interrupt+0x12/0x20^M
+> [ 1198.411883] RIP: 0010:default_idle+0x13/0x20^M
+> [ 1198.412994] Code: 89 44 24 20 48 83 c0 22 48 89 44 24 28 eb c7 e8 03 93 ff ff cc cc cc 0f 1f 44 00 00 e9 07 00 00 00 0f 00 2d 11 ec 55 00 fb f4 <c3> 66 66 2e 0f 1f 84 00 00 00 00 00 90 0f 1f 44 00 00 65 48 8b 04^M
+
+Hmm, so that this looks like some kind of RCU involvement?  Some kind
+of object that had been scheduled to be freed via RCU, but then got
+freed before RCU cleanup happened?
+
+The question then is what subsystem the object involved came from.
+
+    	     	     	  	    	       - Ted
