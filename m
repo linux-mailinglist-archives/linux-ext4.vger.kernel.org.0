@@ -2,157 +2,127 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE6F7276AD0
-	for <lists+linux-ext4@lfdr.de>; Thu, 24 Sep 2020 09:32:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63B23276F22
+	for <lists+linux-ext4@lfdr.de>; Thu, 24 Sep 2020 12:57:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727151AbgIXHcu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 24 Sep 2020 03:32:50 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14222 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727125AbgIXHct (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 24 Sep 2020 03:32:49 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 5E64DF2D350F5F98635B;
-        Thu, 24 Sep 2020 15:32:47 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Thu, 24 Sep 2020
- 15:32:40 +0800
-From:   "zhangyi (F)" <yi.zhang@huawei.com>
-To:     <linux-ext4@vger.kernel.org>
-CC:     <jack@suse.com>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <yi.zhang@huawei.com>
-Subject: [PATCH v2 7/7] ext4: introduce ext4_sb_bread_unmovable() to replace sb_bread_unmovable()
-Date:   Thu, 24 Sep 2020 15:33:37 +0800
-Message-ID: <20200924073337.861472-8-yi.zhang@huawei.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200924073337.861472-1-yi.zhang@huawei.com>
-References: <20200924073337.861472-1-yi.zhang@huawei.com>
+        id S1726606AbgIXK5a (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 24 Sep 2020 06:57:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36262 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726483AbgIXK53 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 24 Sep 2020 06:57:29 -0400
+Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D2A732395B;
+        Thu, 24 Sep 2020 10:57:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600945048;
+        bh=ReNUjh2+4CXtsorEynITi+cDn6rHbuOX6gukuZuCGXI=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=a6rOZfN2v4qDIA7c079QPI66GmKpOEsCWxnxKgw2RbhqSDA1HsVDqgYgAm0I+C+t4
+         QNnLU9xw1Pv7zs5P67nh9IA66wgWrf1jFeumaRWvMFjUhs1FoXqRyIJGQlEtvvI++4
+         iL1I7aGO4aWakAy/iDW73AvJWyQbHpKWwTAjGvF8=
+Message-ID: <ca5f64b6fdfd8ff2dde489d7cc8590e63da7c306.camel@kernel.org>
+Subject: Re: [PATCH] fscrypt: export fscrypt_d_revalidate()
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>, linux-fscrypt@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        ceph-devel@vger.kernel.org, Daniel Rosenberg <drosen@google.com>
+Date:   Thu, 24 Sep 2020 06:57:26 -0400
+In-Reply-To: <20200924054721.187797-1-ebiggers@kernel.org>
+References: <20200924054721.187797-1-ebiggers@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Now we only use sb_bread_unmovable() to read superblock and descriptor
-block at mount time, so there is no opportunity that we need to clear
-buffer verified bit and also handle buffer write_io error bit. But for
-the sake of unification, let's introduce ext4_sb_bread_unmovable() to
-replace all sb_bread_unmovable(). After this patch, we stop using read
-helpers in fs/buffer.c.
+On Wed, 2020-09-23 at 22:47 -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> Dentries that represent no-key names must have a dentry_operations that
+> includes fscrypt_d_revalidate().  Currently, this is handled by
+> fscrypt_prepare_lookup() installing fscrypt_d_ops.
+> 
+> However, ceph support for encryption
+> (https://lore.kernel.org/r/20200914191707.380444-1-jlayton@kernel.org)
+> can't use fscrypt_d_ops, since ceph already has its own
+> dentry_operations.
+> 
+> Similarly, ext4 and f2fs support for directories that are both encrypted
+> and casefolded
+> (https://lore.kernel.org/r/20200923010151.69506-1-drosen@google.com)
+> can't use fscrypt_d_ops either, since casefolding requires some dentry
+> operations too.
+> 
+> To satisfy both users, we need to move the responsibility of installing
+> the dentry_operations to filesystems.
+> 
+> In preparation for this, export fscrypt_d_revalidate() and give it a
+> !CONFIG_FS_ENCRYPTION stub.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+> 
+> Compared to the versions of this patch from Jeff and Daniel, I've
+> improved the commit message and added a !CONFIG_FS_ENCRYPTION stub,
+> which was missing.  I'm planning to apply this for 5.10 in preparation
+> for both the ceph patchset and the encrypt+casefold patchset.
+> 
+> 
+>  fs/crypto/fname.c       | 3 ++-
+>  include/linux/fscrypt.h | 7 +++++++
+>  2 files changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
+> index c65979452844..1fbe6c24d705 100644
+> --- a/fs/crypto/fname.c
+> +++ b/fs/crypto/fname.c
+> @@ -530,7 +530,7 @@ EXPORT_SYMBOL_GPL(fscrypt_fname_siphash);
+>   * Validate dentries in encrypted directories to make sure we aren't potentially
+>   * caching stale dentries after a key has been added.
+>   */
+> -static int fscrypt_d_revalidate(struct dentry *dentry, unsigned int flags)
+> +int fscrypt_d_revalidate(struct dentry *dentry, unsigned int flags)
+>  {
+>  	struct dentry *dir;
+>  	int err;
+> @@ -569,6 +569,7 @@ static int fscrypt_d_revalidate(struct dentry *dentry, unsigned int flags)
+>  
+>  	return valid;
+>  }
+> +EXPORT_SYMBOL_GPL(fscrypt_d_revalidate);
+>  
+>  const struct dentry_operations fscrypt_d_ops = {
+>  	.d_revalidate = fscrypt_d_revalidate,
+> diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
+> index f1757e73162d..a8f7a43f031b 100644
+> --- a/include/linux/fscrypt.h
+> +++ b/include/linux/fscrypt.h
+> @@ -197,6 +197,7 @@ int fscrypt_fname_disk_to_usr(const struct inode *inode,
+>  bool fscrypt_match_name(const struct fscrypt_name *fname,
+>  			const u8 *de_name, u32 de_name_len);
+>  u64 fscrypt_fname_siphash(const struct inode *dir, const struct qstr *name);
+> +int fscrypt_d_revalidate(struct dentry *dentry, unsigned int flags);
+>  
+>  /* bio.c */
+>  void fscrypt_decrypt_bio(struct bio *bio);
+> @@ -454,6 +455,12 @@ static inline u64 fscrypt_fname_siphash(const struct inode *dir,
+>  	return 0;
+>  }
+>  
+> +static inline int fscrypt_d_revalidate(struct dentry *dentry,
+> +				       unsigned int flags)
+> +{
+> +	return 1;
+> +}
+> +
+>  /* bio.c */
+>  static inline void fscrypt_decrypt_bio(struct bio *bio)
+>  {
 
-Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
----
- fs/ext4/ext4.h  |  2 ++
- fs/ext4/super.c | 38 +++++++++++++++++++++++++++++---------
- 2 files changed, 31 insertions(+), 9 deletions(-)
-
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 6da1419f6ee7..28b135a536b5 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -2824,6 +2824,8 @@ extern int ext4_resize_fs(struct super_block *sb, ext4_fsblk_t n_blocks_count);
- /* super.c */
- extern struct buffer_head *ext4_sb_bread(struct super_block *sb,
- 					 sector_t block, int op_flags);
-+extern struct buffer_head *ext4_sb_bread_unmovable(struct super_block *sb,
-+						   sector_t block);
- extern void ext4_read_bh_nowait(struct buffer_head *bh, int op_flags,
- 				bh_end_io_t *end_io);
- extern int ext4_read_bh(struct buffer_head *bh, int op_flags,
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index b24e68eff48d..2b5b6033b8e6 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -204,18 +204,19 @@ int ext4_read_bh_lock(struct buffer_head *bh, int op_flags, bool wait)
- }
- 
- /*
-- * This works like sb_bread() except it uses ERR_PTR for error
-+ * This works like __bread_gfp() except it uses ERR_PTR for error
-  * returns.  Currently with sb_bread it's impossible to distinguish
-  * between ENOMEM and EIO situations (since both result in a NULL
-  * return.
-  */
--struct buffer_head *
--ext4_sb_bread(struct super_block *sb, sector_t block, int op_flags)
-+static struct buffer_head *__ext4_sb_bread_gfp(struct super_block *sb,
-+					       sector_t block, int op_flags,
-+					       gfp_t gfp)
- {
- 	struct buffer_head *bh;
- 	int ret;
- 
--	bh = sb_getblk(sb, block);
-+	bh = sb_getblk_gfp(sb, block, gfp);
- 	if (bh == NULL)
- 		return ERR_PTR(-ENOMEM);
- 	if (ext4_buffer_uptodate(bh))
-@@ -229,6 +230,18 @@ ext4_sb_bread(struct super_block *sb, sector_t block, int op_flags)
- 	return bh;
- }
- 
-+struct buffer_head *ext4_sb_bread(struct super_block *sb, sector_t block,
-+				   int op_flags)
-+{
-+	return __ext4_sb_bread_gfp(sb, block, op_flags, __GFP_MOVABLE);
-+}
-+
-+struct buffer_head *ext4_sb_bread_unmovable(struct super_block *sb,
-+					    sector_t block)
-+{
-+	return __ext4_sb_bread_gfp(sb, block, 0, 0);
-+}
-+
- void ext4_sb_breadahead_unmovable(struct super_block *sb, sector_t block)
- {
- 	struct buffer_head *bh = sb_getblk_gfp(sb, block, 0);
-@@ -3943,8 +3956,11 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 		logical_sb_block = sb_block;
- 	}
- 
--	if (!(bh = sb_bread_unmovable(sb, logical_sb_block))) {
-+	bh = ext4_sb_bread_unmovable(sb, logical_sb_block);
-+	if (IS_ERR(bh)) {
- 		ext4_msg(sb, KERN_ERR, "unable to read superblock");
-+		ret = PTR_ERR(bh);
-+		bh = NULL;
- 		goto out_fail;
- 	}
- 	/*
-@@ -4340,10 +4356,12 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 		brelse(bh);
- 		logical_sb_block = sb_block * EXT4_MIN_BLOCK_SIZE;
- 		offset = do_div(logical_sb_block, blocksize);
--		bh = sb_bread_unmovable(sb, logical_sb_block);
--		if (!bh) {
-+		bh = ext4_sb_bread_unmovable(sb, logical_sb_block);
-+		if (IS_ERR(bh)) {
- 			ext4_msg(sb, KERN_ERR,
- 			       "Can't read superblock on 2nd try");
-+			ret = PTR_ERR(bh);
-+			bh = NULL;
- 			goto failed_mount;
- 		}
- 		es = (struct ext4_super_block *)(bh->b_data + offset);
-@@ -4562,11 +4580,13 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 		struct buffer_head *bh;
- 
- 		block = descriptor_loc(sb, logical_sb_block, i);
--		bh = sb_bread_unmovable(sb, block);
--		if (!bh) {
-+		bh = ext4_sb_bread_unmovable(sb, block);
-+		if (IS_ERR(bh)) {
- 			ext4_msg(sb, KERN_ERR,
- 			       "can't read group descriptor %d", i);
- 			db_count = i;
-+			ret = PTR_ERR(bh);
-+			bh = NULL;
- 			goto failed_mount2;
- 		}
- 		rcu_read_lock();
--- 
-2.25.4
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
 
