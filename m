@@ -2,87 +2,57 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7394A277434
-	for <lists+linux-ext4@lfdr.de>; Thu, 24 Sep 2020 16:42:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EF9027744D
+	for <lists+linux-ext4@lfdr.de>; Thu, 24 Sep 2020 16:50:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728195AbgIXOmk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 24 Sep 2020 10:42:40 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:46646 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727889AbgIXOmk (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 24 Sep 2020 10:42:40 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 8F4506427D0E2EF3E382;
-        Thu, 24 Sep 2020 22:42:37 +0800 (CST)
-Received: from [10.174.179.224] (10.174.179.224) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 24 Sep 2020 22:42:30 +0800
-Subject: Re: [PATCH] ext4: Fix bdev write error check failed when mount fs
- with ro
-To:     Jan Kara <jack@suse.cz>
-CC:     <yi.zhang@huawei.com>, <tytso@mit.edu>,
-        <linux-ext4@vger.kernel.org>, <adilger.kernel@dilger.ca>
-References: <20200924011149.1624846-1-zhangxiaoxu5@huawei.com>
- <20200924080613.GC27019@quack2.suse.cz>
-From:   "zhangxiaoxu (A)" <zhangxiaoxu5@huawei.com>
-Message-ID: <e4d35bb9-e83f-343f-10ff-7b19be6cb86b@huawei.com>
-Date:   Thu, 24 Sep 2020 22:42:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.1
+        id S1728147AbgIXOuL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 24 Sep 2020 10:50:11 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:48184 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727859AbgIXOuL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 24 Sep 2020 10:50:11 -0400
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 08OEnxrL014845
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Sep 2020 10:49:59 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 41AF642003C; Thu, 24 Sep 2020 10:49:59 -0400 (EDT)
+Date:   Thu, 24 Sep 2020 10:49:59 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     linux-ext4@vger.kernel.org, jack@suse.cz,
+        linux-fsdevel@vger.kernel.org, darrick.wong@oracle.com,
+        linux-kernel@vger.kernel.org, Yuxuan Shui <yshuiv7@gmail.com>
+Subject: Re: [PATCH] ext4: Implement swap_activate aops using iomap
+Message-ID: <20200924144959.GE482521@mit.edu>
+References: <20200904091653.1014334-1-riteshh@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <20200924080613.GC27019@quack2.suse.cz>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.224]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200904091653.1014334-1-riteshh@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-
-
-ÔÚ 2020/9/24 16:06, Jan Kara Ð´µÀ:
-> On Wed 23-09-20 21:11:49, Zhang Xiaoxu wrote:
->> If some errors has occurred on the device, and the orphan list not empty,
->> then mount the device with 'ro', the bdev write error check will failed:
->>    ext4_check_bdev_write_error:193: comm mount: Error while async write back metadata
->>
->> Since the sbi->s_bdev_wb_err wouldn't be initialized when mount file system
->> with 'ro', when clean up the orphan list and access the iloc buffer, bdev
->> write error check will failed.
->>
->> So we should always initialize the sbi->s_bdev_wb_err even if mount the
->> file system with 'ro'.
->>
->> Fixes: bc71726c7257 ("ext4: abort the filesystem if failed to async write metadata buffer")
->> Signed-off-by: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+On Fri, Sep 04, 2020 at 02:46:53PM +0530, Ritesh Harjani wrote:
+> After moving ext4's bmap to iomap interface, swapon functionality
+> on files created using fallocate (which creates unwritten extents) are
+> failing. This is since iomap_bmap interface returns 0 for unwritten
+> extents and thus generic_swapfile_activate considers this as holes
+> and hence bail out with below kernel msg :-
 > 
-> Thanks for the patch! Good catch! I just think you should now remove the
-> errseq_check_and_advance() call in ext4_remount() because it isn't needed
-> anymore.
-
-Thanks for your suggesstion.
-I will send the v2 to remove the errseq_check_and_advance in ext4_remount.
-
-Xiaoxu.
+> [340.915835] swapon: swapfile has holes
 > 
+> To fix this we need to implement ->swap_activate aops in ext4
+> which will use ext4_iomap_report_ops. Since we only need to return
+> the list of extents so ext4_iomap_report_ops should be enough.
 > 
->> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
->> index ea425b49b345..086439889869 100644
->> --- a/fs/ext4/super.c
->> +++ b/fs/ext4/super.c
->> @@ -4814,9 +4814,8 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
->>   	 * used to detect the metadata async write error.
->>   	 */
->>   	spin_lock_init(&sbi->s_bdev_wb_lock);
->> -	if (!sb_rdonly(sb))
->> -		errseq_check_and_advance(&sb->s_bdev->bd_inode->i_mapping->wb_err,
->> -					 &sbi->s_bdev_wb_err);
->> +	errseq_check_and_advance(&sb->s_bdev->bd_inode->i_mapping->wb_err,
->> +				 &sbi->s_bdev_wb_err);
->>   	sb->s_bdev->bd_super = sb;
->>   	EXT4_SB(sb)->s_mount_state |= EXT4_ORPHAN_FS;
->>   	ext4_orphan_cleanup(sb, es);
->> -- 
->> 2.25.4
->>
+> Reported-by: Yuxuan Shui <yshuiv7@gmail.com>
+> Fixes: ac58e4fb03f ("ext4: move ext4 bmap to use iomap infrastructure")
+> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+
+Thanks, applied.
+
+					- Ted
