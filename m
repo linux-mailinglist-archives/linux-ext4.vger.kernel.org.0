@@ -2,67 +2,88 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCAB3277842
-	for <lists+linux-ext4@lfdr.de>; Thu, 24 Sep 2020 20:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13FE0277A46
+	for <lists+linux-ext4@lfdr.de>; Thu, 24 Sep 2020 22:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728577AbgIXSH7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 24 Sep 2020 14:07:59 -0400
-Received: from [104.211.154.226] ([104.211.154.226]:50661 "EHLO
-        mail.shirgaon.club" rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org
-        with ESMTP id S1727753AbgIXSH5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 24 Sep 2020 14:07:57 -0400
-X-Greylist: delayed 1400 seconds by postgrey-1.27 at vger.kernel.org; Thu, 24 Sep 2020 14:07:51 EDT
-Received: from User (172.96.15.83) by mail.shirgaon.club (172.17.1.7) with
- Microsoft SMTP Server id 14.3.487.0; Thu, 24 Sep 2020 17:12:26 +0000
-Reply-To: <r.hawk56@yahoo.com>
-From:   UN Foundation Grant <robert.hh90@gmail.com>
-Subject: <UN Foundation Grant>
-Date:   Thu, 24 Sep 2020 10:12:25 -0700
+        id S1726631AbgIXU35 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 24 Sep 2020 16:29:57 -0400
+Received: from [125.140.134.231] ([125.140.134.231]:59260 "EHLO
+        WIN-DAONO245HJF" rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726281AbgIXU34 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 24 Sep 2020 16:29:56 -0400
+Received: from User ([185.191.231.247]) by WIN-DAONO245HJF with Microsoft SMTPSVC(8.5.9600.16384);
+         Fri, 25 Sep 2020 05:26:34 +0900
+Reply-To: <samthong5555@yahoo.com>
+From:   "SAM THONG" <samthong5555@gmail.com>
+Subject: Business Acquisition 1
+Date:   Thu, 24 Sep 2020 13:26:34 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset="Windows-1251"
+Content-Type: text/plain;
+        charset="Windows-1251"
 Content-Transfer-Encoding: 7bit
 X-Priority: 3
 X-MSMail-Priority: Normal
 X-Mailer: Microsoft Outlook Express 6.00.2600.0000
 X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-ID: <50aaa422-ce5c-47fc-999c-ae44e2e9bfe5@ASIAEXCH.asia.com>
-To:     Undisclosed recipients:;
+Message-ID: <WIN-DAONO245HJFc4tf00e70a05@WIN-DAONO245HJF>
+X-OriginalArrivalTime: 24 Sep 2020 20:26:34.0476 (UTC) FILETIME=[FF0A1AC0:01D692B0]
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-<United Nations /World Bank Organization>
-1. 1818 H Street NW .
-1211 Geneva 20, Switzerland
 
-Dear Sir/Madam,
 
-<UN Foundation Grant>.
+Dear sir
 
-This is to notify you that you have been chosen by the UN and <World
-bank Organization> as Quarantine funds to help and fight against the
-Coronavirus Disease 2019 (COVID-19 ) The United Nations /<World Bank
-Organization> released a total of $800 Billion dollars to spread
-around the world. You have been given the sum of $500,000.00 USD (
-Five Hundred Thousand United States Dollars). Kindly send the below
-information for your claims.
+Our underwriter company is seeking the attention of genuine and reliable persons, companies
 
---   Full Name:
---  Residential address:
---  Mobile No:
---  Age:
---  Sex:
---  Occupation:
+who are indeed in need of funds as investment capital or business expansion in form of a
 
-As soon as we have your details, we shall forward to one of the paying
-banks because this is not a good time to mail cheque for security
-reasons, wire transfer will serve better. We have appointed several
-banks around the world for this purpose and time.
+direct loan to partner with us and benefit in our new Loan and Project funding programs.
 
-Thank you for your understanding.
 
-Best Regards,
 
-Mr. Robert Hawks
-Executive Director
-<World Bank Organization>
+We offer flexible loans and funding for various projects at very affordable low interest
+
+rate of 3% annually for a period of 1-15 years on Non collateral loan/funding . We offer
+
+loan/funding from a minimum of Euro ? / USD$ 1 Million to Euro ? / USD$ 1 Billion. Max,
+
+depending on the nature of business/project.
+
+We are currently funding for:-
+
+
+
+* Starting up a Franchise
+
+* Business Acquisition
+
+* Business Expansion
+
+* Commercial Real Estate purchase
+
+* Consultancy and Contract Execution, Marine , ETC.
+
+
+
+Kindly get in touch for further details and procedure. samthong5555@yahoo.com 
+
+
+
+Respectfully,
+
+
+SAM THONG
+
+
+
+
+
+
+
+	
+
+
+
