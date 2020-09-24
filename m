@@ -2,82 +2,79 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 876E5277332
-	for <lists+linux-ext4@lfdr.de>; Thu, 24 Sep 2020 15:55:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21F4627737B
+	for <lists+linux-ext4@lfdr.de>; Thu, 24 Sep 2020 16:00:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728098AbgIXNzk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 24 Sep 2020 09:55:40 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39424 "EHLO mx2.suse.de"
+        id S1728302AbgIXOAk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 24 Sep 2020 10:00:40 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45888 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727749AbgIXNzk (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 24 Sep 2020 09:55:40 -0400
+        id S1728104AbgIXOAk (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 24 Sep 2020 10:00:40 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 31965ABAD;
-        Thu, 24 Sep 2020 13:55:39 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 77003B12A;
+        Thu, 24 Sep 2020 14:00:38 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id EB4561E1303; Thu, 24 Sep 2020 11:08:59 +0200 (CEST)
-Date:   Thu, 24 Sep 2020 11:08:59 +0200
+        id 32A6A1E12ED; Thu, 24 Sep 2020 10:06:13 +0200 (CEST)
+Date:   Thu, 24 Sep 2020 10:06:13 +0200
 From:   Jan Kara <jack@suse.cz>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org,
-        syzbot+9f864abad79fae7c17e1@syzkaller.appspotmail.com
-Subject: Re: [PATCH] ext4: fix leaking sysfs kobject after failed mount
-Message-ID: <20200924090859.GF27019@quack2.suse.cz>
-References: <000000000000443d8a05afcff2b5@google.com>
- <20200922162456.93657-1-ebiggers@kernel.org>
+To:     Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+Cc:     yi.zhang@huawei.com, tytso@mit.edu, jack@suse.cz,
+        linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca
+Subject: Re: [PATCH] ext4: Fix bdev write error check failed when mount fs
+ with ro
+Message-ID: <20200924080613.GC27019@quack2.suse.cz>
+References: <20200924011149.1624846-1-zhangxiaoxu5@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200922162456.93657-1-ebiggers@kernel.org>
+In-Reply-To: <20200924011149.1624846-1-zhangxiaoxu5@huawei.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 22-09-20 09:24:56, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
+On Wed 23-09-20 21:11:49, Zhang Xiaoxu wrote:
+> If some errors has occurred on the device, and the orphan list not empty,
+> then mount the device with 'ro', the bdev write error check will failed:
+>   ext4_check_bdev_write_error:193: comm mount: Error while async write back metadata
 > 
-> ext4_unregister_sysfs() only deletes the kobject.  The reference to it
-> needs to be put separately, like ext4_put_super() does.
+> Since the sbi->s_bdev_wb_err wouldn't be initialized when mount file system
+> with 'ro', when clean up the orphan list and access the iloc buffer, bdev
+> write error check will failed.
 > 
-> This addresses the syzbot report
-> "memory leak in kobject_set_name_vargs (3)"
-> (https://syzkaller.appspot.com/bug?extid=9f864abad79fae7c17e1).
+> So we should always initialize the sbi->s_bdev_wb_err even if mount the
+> file system with 'ro'.
 > 
-> Reported-by: syzbot+9f864abad79fae7c17e1@syzkaller.appspotmail.com
-> Fixes: 72ba74508b28 ("ext4: release sysfs kobject when failing to enable quotas on mount")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> Fixes: bc71726c7257 ("ext4: abort the filesystem if failed to async write metadata buffer")
+> Signed-off-by: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
 
-Looks good. You can add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
+Thanks for the patch! Good catch! I just think you should now remove the
+errseq_check_and_advance() call in ext4_remount() because it isn't needed
+anymore.
 
 								Honza
 
-> ---
->  fs/ext4/super.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
+
 > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index ea425b49b345..41953b86ffe3 100644
+> index ea425b49b345..086439889869 100644
 > --- a/fs/ext4/super.c
 > +++ b/fs/ext4/super.c
-> @@ -4872,6 +4872,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
->  
->  failed_mount8:
->  	ext4_unregister_sysfs(sb);
-> +	kobject_put(&sbi->s_kobj);
->  failed_mount7:
->  	ext4_unregister_li_request(sb);
->  failed_mount6:
-> 
-> base-commit: ba4f184e126b751d1bffad5897f263108befc780
+> @@ -4814,9 +4814,8 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+>  	 * used to detect the metadata async write error.
+>  	 */
+>  	spin_lock_init(&sbi->s_bdev_wb_lock);
+> -	if (!sb_rdonly(sb))
+> -		errseq_check_and_advance(&sb->s_bdev->bd_inode->i_mapping->wb_err,
+> -					 &sbi->s_bdev_wb_err);
+> +	errseq_check_and_advance(&sb->s_bdev->bd_inode->i_mapping->wb_err,
+> +				 &sbi->s_bdev_wb_err);
+>  	sb->s_bdev->bd_super = sb;
+>  	EXT4_SB(sb)->s_mount_state |= EXT4_ORPHAN_FS;
+>  	ext4_orphan_cleanup(sb, es);
 > -- 
-> 2.28.0
+> 2.25.4
 > 
 -- 
 Jan Kara <jack@suse.com>
