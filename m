@@ -2,83 +2,138 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDD5327954F
-	for <lists+linux-ext4@lfdr.de>; Sat, 26 Sep 2020 01:59:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FC15279603
+	for <lists+linux-ext4@lfdr.de>; Sat, 26 Sep 2020 03:43:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729478AbgIYX7m (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 25 Sep 2020 19:59:42 -0400
-Received: from [46.166.185.98] ([46.166.185.98]:43248 "EHLO
-        host.imperialcapgroup.com" rhost-flags-FAIL-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729186AbgIYX7m (ORCPT
+        id S1729424AbgIZBno (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 25 Sep 2020 21:43:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60300 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728967AbgIZBno (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 25 Sep 2020 19:59:42 -0400
-Received: from imperialcapgroup.com (unknown [185.236.203.204])
-        by host.imperialcapgroup.com (Postfix) with ESMTPA id 9B3BB94831
-        for <linux-ext4@vger.kernel.org>; Fri, 25 Sep 2020 05:13:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 host.imperialcapgroup.com 9B3BB94831
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=imperialcapgroup.com; s=default; t=1601003612;
-        bh=6CXuz3tZVwV0sLbV3HksYvK1Xzbh6nLYCrrWqAmLkHM=;
-        h=Reply-To:From:To:Subject:Date:From;
-        b=U9ohnWTv3Kkkr20pTEJzWaGaWzxDD3wSRBRgfqPuH789qtZLur1JtWXZ41KLB0yof
-         vX3QJXmi+ju7nF3WDK8GNlOgg7SqnPdtrtqkHqPsAxs2sEXVOnJaHMzkfPYNkK6d6C
-         rlRW5We6K2sPLmTLuZqKmjIPgXYbdG8TDRXlDFbo=
-DKIM-Filter: OpenDKIM Filter v2.11.0 host.imperialcapgroup.com 9B3BB94831
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=imperialcapgroup.com; s=default; t=1601003612;
-        bh=6CXuz3tZVwV0sLbV3HksYvK1Xzbh6nLYCrrWqAmLkHM=;
-        h=Reply-To:From:To:Subject:Date:From;
-        b=U9ohnWTv3Kkkr20pTEJzWaGaWzxDD3wSRBRgfqPuH789qtZLur1JtWXZ41KLB0yof
-         vX3QJXmi+ju7nF3WDK8GNlOgg7SqnPdtrtqkHqPsAxs2sEXVOnJaHMzkfPYNkK6d6C
-         rlRW5We6K2sPLmTLuZqKmjIPgXYbdG8TDRXlDFbo=
-Reply-To: laghoulli22@secsuremail.com
-From:   L A <laghoulli299@imperialcapgroup.com>
-To:     linux-ext4@vger.kernel.org
-Subject: Co-Operation Required
-Date:   24 Sep 2020 20:13:33 -0700
-Message-ID: <20200924201333.FCD38A658BD9D50F@imperialcapgroup.com>
-Mime-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 25 Sep 2020 21:43:44 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601084623;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=anuXvW7DT2NGfM0wi3fUi3pbzDhxv6S3wuJYHpV9+T8=;
+        b=EU0gZ+3ei23xvRE7eIJx8jJLkutPGQzDWfKK8ztmlTz/BzdzHeeEC9IEkKos0yu83pzWuH
+        tJ+sPTC9aU8EuPzj1ASm+6/JlARwwntNZUWNRavavyz/Bv/Us20Q6ZxhHSx5ubVHGHGDHb
+        2eqgGgrIlsIsa6hwz7SoGFZijsvnjPg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-53-3ub8DGkqMci6FOxNU-m3_g-1; Fri, 25 Sep 2020 21:43:41 -0400
+X-MC-Unique: 3ub8DGkqMci6FOxNU-m3_g-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CFBE910066FC;
+        Sat, 26 Sep 2020 01:43:38 +0000 (UTC)
+Received: from T590 (ovpn-12-20.pek2.redhat.com [10.72.12.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E771373662;
+        Sat, 26 Sep 2020 01:43:29 +0000 (UTC)
+Date:   Sat, 26 Sep 2020 09:43:25 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>, Jens Axboe <axboe@kernel.dk>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: REGRESSION: 37f4a24c2469: blk-mq: centralise related handling
+ into blk_mq_get_driver_tag
+Message-ID: <20200926014325.GA2516054@T590>
+References: <CALvZod5pERERkxWAJcBrZHpcWQH75kXkys2gUg__qM9OL+MmtQ@mail.gmail.com>
+ <20200925191902.543953-1-shakeelb@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200925191902.543953-1-shakeelb@google.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello there,
+On Fri, Sep 25, 2020 at 12:19:02PM -0700, Shakeel Butt wrote:
+> On Fri, Sep 25, 2020 at 10:58 AM Shakeel Butt <shakeelb@google.com>
+> wrote:
+> >
+> [snip]
+> >
+> > I don't think you can ignore the flushing. The __free_once() in
+> > ___cache_free() assumes there is a space available.
+> >
+> > BTW do_drain() also have the same issue.
+> >
+> > Why not move slabs_destroy() after we update ac->avail and memmove()?
+> 
+> Ming, can you please try the following patch?
+> 
+> 
+> From: Shakeel Butt <shakeelb@google.com>
+> 
+> [PATCH] mm: slab: fix potential infinite recursion in ___cache_free
+> 
+> With the commit 10befea91b61 ("mm: memcg/slab: use a single set of
+> kmem_caches for all allocations"), it becomes possible to call kfree()
+> from the slabs_destroy(). However if slabs_destroy() is being called for
+> the array_cache of the local CPU then this opens the potential scenario
+> of infinite recursion because kfree() called from slabs_destroy() can
+> call slabs_destroy() with the same array_cache of the local CPU. Since
+> the array_cache of the local CPU is not updated before calling
+> slabs_destroy(), it will try to free the same pages.
+> 
+> To fix the issue, simply update the cache before calling
+> slabs_destroy().
+> 
+> Signed-off-by: Shakeel Butt <shakeelb@google.com>
+> ---
+>  mm/slab.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/slab.c b/mm/slab.c
+> index 3160dff6fd76..f658e86ec8ce 100644
+> --- a/mm/slab.c
+> +++ b/mm/slab.c
+> @@ -1632,6 +1632,10 @@ static void slab_destroy(struct kmem_cache *cachep, struct page *page)
+>  		kmem_cache_free(cachep->freelist_cache, freelist);
+>  }
+>  
+> +/*
+> + * Update the size of the caches before calling slabs_destroy as it may
+> + * recursively call kfree.
+> + */
+>  static void slabs_destroy(struct kmem_cache *cachep, struct list_head *list)
+>  {
+>  	struct page *page, *n;
+> @@ -2153,8 +2157,8 @@ static void do_drain(void *arg)
+>  	spin_lock(&n->list_lock);
+>  	free_block(cachep, ac->entry, ac->avail, node, &list);
+>  	spin_unlock(&n->list_lock);
+> -	slabs_destroy(cachep, &list);
+>  	ac->avail = 0;
+> +	slabs_destroy(cachep, &list);
+>  }
+>  
+>  static void drain_cpu_caches(struct kmem_cache *cachep)
+> @@ -3402,9 +3406,9 @@ static void cache_flusharray(struct kmem_cache *cachep, struct array_cache *ac)
+>  	}
+>  #endif
+>  	spin_unlock(&n->list_lock);
+> -	slabs_destroy(cachep, &list);
+>  	ac->avail -= batchcount;
+>  	memmove(ac->entry, &(ac->entry[batchcount]), sizeof(void *)*ac->avail);
+> +	slabs_destroy(cachep, &list);
+>  }
 
-I am Laghouili Abdellatif. I am contacting you because I have a=20
-proposal that I think may be interested in. I represent the=20
-interest of my brother in-law who was a minister in the Syrian=20
-Government. As you probably know, there is a lot of crisis going=20
-on currently in Syria and my brother in-law has fallen out with=20
-the ruling Junta and the president because of his foreign=20
-policies and the senseless war and killings that has been going=20
-on for a while. Everybody in Syria is fed up and want a change=20
-but the president is too powerfull and he simply kills anyone=20
-that tries to oppose him. My brother in-law belives that he is at=20
-risk and he is now very scared for the safety of his family=20
-especially his kids. In order to ensure that his family is taken=20
-care of and protected incase anything happens to him, he has=20
-asked me to help him find a foreign investor who can help him=20
-accommodate and invest 100 MUSD privately that he has secured in=20
-Europe. He wants these funds safely invested so that the future=20
-and safety of his family can be secured.
+The issue can't be reproduced after applying this patch:
 
-I am contacting you with the hope that you will be interested in=20
-helping us. We need your help to accommodate the funds in the=20
-banking system in your country and also invest it in lucrative=20
-projects that will yeild good profits. We will handle all the=20
-logistics involved in the movement of the funds to you. The funds=20
-is already in Europe so you have nothing to worry about because=20
-this transaction will be executed in a legal way. My brother in-=20
-law has also promised to compensate you for your help. He wants=20
-this to be done discretely so I will be acting as his eyes and=20
-ears during the course of this transaction.
+Tested-by: Ming Lei <ming.lei@redhat.com>
 
-If this proposal interests you, please kindly respond so that I=20
-can give you more details.
+Thanks,
+Ming
 
-Regards,
-
-Laghouili.
