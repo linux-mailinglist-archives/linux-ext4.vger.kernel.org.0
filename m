@@ -2,109 +2,87 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F2BF27B273
-	for <lists+linux-ext4@lfdr.de>; Mon, 28 Sep 2020 18:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2490A27B398
+	for <lists+linux-ext4@lfdr.de>; Mon, 28 Sep 2020 19:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727028AbgI1QsM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 28 Sep 2020 12:48:12 -0400
-Received: from mga12.intel.com ([192.55.52.136]:53199 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727005AbgI1QsD (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 28 Sep 2020 12:48:03 -0400
-IronPort-SDR: 03sIbRzvAm2pqeY8sOkmI2e9IVDqsmIOIN9U2VbSQutL4WCKaBjMRKzi8mbJN86RA37zyaprXW
- YVPztBF27k6g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="141432582"
-X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
-   d="scan'208";a="141432582"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 09:42:00 -0700
-IronPort-SDR: XQbWhO6KAZk/NW7/DnVHmkDsi3NHvQJUZzp4VEntXkFgINs7ch4KuI5QCRR6CzELcCW1goYtZE
- QtmsawxwcH1A==
-X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
-   d="scan'208";a="488651317"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 09:42:00 -0700
-Date:   Mon, 28 Sep 2020 09:42:00 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     mtk.manpages@gmail.com
-Cc:     linux-man@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] man/statx: Add STATX_ATTR_DAX
-Message-ID: <20200928164200.GA459459@iweiny-DESK2.sc.intel.com>
-References: <20200505002016.1085071-1-ira.weiny@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200505002016.1085071-1-ira.weiny@intel.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+        id S1726506AbgI1Rtp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 28 Sep 2020 13:49:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726310AbgI1Rtp (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Sep 2020 13:49:45 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05640C061755
+        for <linux-ext4@vger.kernel.org>; Mon, 28 Sep 2020 10:49:44 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id q13so9811055ejo.9
+        for <linux-ext4@vger.kernel.org>; Mon, 28 Sep 2020 10:49:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:date:mime-version
+         :content-transfer-encoding;
+        bh=XFXCLiyHOGeoT2sI1Fi/a/qpwZnL844AFb1GsQGB3NE=;
+        b=DwaoI+cD1bkuBLOQswML0c3JR0JkrDh6ZEQQ05rHFd8DS0Vpk0TH0NUgazrB1vAA6g
+         KiDqdOkjd6CuqHrmMygJmlLxks9BSGVPXOJZFq9j81mLvYFEaGYWHZ/0dEg45g4upqt1
+         HX5EuJRTj/T8eIM6Z8JdXyOZMXa35ZmGGx2FT5733xKFWANGEILd60V1dXTa7w8fsFgR
+         LzJlDk9IFoim5u2Vsk/3veqOzHichqYq4XhTnLllh+44DQR6iM7rquOQuxzN1j0+HrYN
+         O5okAnkOhXBUQRgnBkSz5nmt7YVxVekcVbdetqm0N/ppC1LIkUI8OD8Wgm9klvI0TLCl
+         1I1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:date:mime-version
+         :content-transfer-encoding;
+        bh=XFXCLiyHOGeoT2sI1Fi/a/qpwZnL844AFb1GsQGB3NE=;
+        b=WwhOSE2p6w2c2JURueRQmFKWhCA4iVhfMtMICNLTpxlPYDhGQ5Rij5vJEfdKWTa8EV
+         5i0qpkCBnT4JxZiEJx5ygfbrOv5cmRGv7nWhIc4eHlqyS7f/C24EYwgTH+PHVk82yUtX
+         EKKND7qfFbFyrJNknF8Or4lQTk4c51MCFXsGbTZfOLRN8TyPs81DN91tBVMeFWH3PBIn
+         ylzHHkFpN8OXDi2BJNQAL3Lwy76otCOpKcGGaApLdlZ7huuwr7rqlrgWu4UhCnL2Pate
+         z9ZL1qiudWOSKtn7uBAcKk1S4UpQ+RoYxVS6CzscgY400Am2h28niOM7NYFycyQe1SJ5
+         /WRQ==
+X-Gm-Message-State: AOAM530E8n1siQUJ+kAMCB/GDIb58nMqYF1quiJ+ZO9Fabaq9lfgLoWZ
+        IsLV+aS965qXzo4oRmkjuqcTORQCFqMJb/e5
+X-Google-Smtp-Source: ABdhPJySd/I+79HzSvX6dOe/L0DLl0PxpUX3N4Y57+TSrLmIb00lIav2Q6YMStzrkgRkaDRMIIe76A==
+X-Received: by 2002:a17:907:72c5:: with SMTP id du5mr2878852ejc.469.1601315383312;
+        Mon, 28 Sep 2020 10:49:43 -0700 (PDT)
+Received: from ubuntu-laptop (ip5f5bfcfd.dynamic.kabel-deutschland.de. [95.91.252.253])
+        by smtp.googlemail.com with ESMTPSA id lc25sm2040216ejb.35.2020.09.28.10.49.42
+        for <linux-ext4@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 28 Sep 2020 10:49:42 -0700 (PDT)
+Message-ID: <0e5ffd9bb29b018b2ed574381d194c4e7506f91b.camel@gmail.com>
+Subject: ext4: how to make sure the LBA contiguous  allocation across a set
+ of  files
+From:   christopher lee <christopher.lee.eu@gmail.com>
+To:     linux-ext4@vger.kernel.org
+Date:   Mon, 28 Sep 2020 19:49:41 +0200
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, May 04, 2020 at 05:20:16PM -0700, 'Ira Weiny' wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
-> 
-> Linux 5.8 is slated to have STATX_ATTR_DAX support.
-> 
-> https://lore.kernel.org/lkml/20200428002142.404144-4-ira.weiny@intel.com/
-> https://lore.kernel.org/lkml/20200504161352.GA13783@magnolia/
-> 
-> Add the text to the statx man page.
-> 
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+Hallo
+I am recently encountering an issue with the ext4 usage case. I want
+not only sequentially LBA allocation in a single file, but also expect
+that the LBA sequential allocation between the two files, which means
+that the last LBA of the previous file should be adjacent to the first
+LAB of the block of the next file.
 
-Have I sent this to the wrong list?  Or perhaps I have missed a reply.
+But from my testing, the sequential LBA of block allocation is easily
+met, but the LBA sequential allocation between files is not to ext4.
+The gab in LBA between two seq write (two files) is very huge,
+sometimes the gap is over 2GB space. I notice ext4 never allocates the
+LBA of the block between two files sequentially on my usage case.
 
-I don't see this applied to the man-pages project.[1]  But perhaps I am looking
-at the wrong place?
+who knows the reason of this? and if there is a configuration of ext4
+related to this scenario? 
+or please tell me which ext4 function I should study, and see if I can
+find the reason.
 
-Thank you,
-Ira
+thanks in advance for any suggestions.
 
-[1] git://git.kernel.org/pub/scm/docs/man-pages/man-pages.git
+Thanks,
+Lee
+ 
 
-> ---
->  man2/statx.2 | 24 ++++++++++++++++++++++++
->  1 file changed, 24 insertions(+)
-> 
-> diff --git a/man2/statx.2 b/man2/statx.2
-> index 2e90f07dbdbc..14c4ab78e7bd 100644
-> --- a/man2/statx.2
-> +++ b/man2/statx.2
-> @@ -468,6 +468,30 @@ The file has fs-verity enabled.
->  It cannot be written to, and all reads from it will be verified
->  against a cryptographic hash that covers the
->  entire file (e.g., via a Merkle tree).
-> +.TP
-> +.BR STATX_ATTR_DAX (since Linux 5.8)
-> +The file is in the DAX (cpu direct access) state.  DAX state attempts to
-> +minimize software cache effects for both I/O and memory mappings of this file.
-> +It requires a file system which has been configured to support DAX.
-> +.PP
-> +DAX generally assumes all accesses are via cpu load / store instructions which
-> +can minimize overhead for small accesses, but may adversely affect cpu
-> +utilization for large transfers.
-> +.PP
-> +File I/O is done directly to/from user-space buffers and memory mapped I/O may
-> +be performed with direct memory mappings that bypass kernel page cache.
-> +.PP
-> +While the DAX property tends to result in data being transferred synchronously,
-> +it does not give the same guarantees of O_SYNC where data and the necessary
-> +metadata are transferred together.
-> +.PP
-> +A DAX file may support being mapped with the MAP_SYNC flag, which enables a
-> +program to use CPU cache flush instructions to persist CPU store operations
-> +without an explicit
-> +.BR fsync(2).
-> +See
-> +.BR mmap(2)
-> +for more information.
->  .SH RETURN VALUE
->  On success, zero is returned.
->  On error, \-1 is returned, and
-> -- 
-> 2.25.1
-> 
