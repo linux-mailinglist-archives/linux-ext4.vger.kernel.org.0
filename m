@@ -2,53 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6D9B27B585
-	for <lists+linux-ext4@lfdr.de>; Mon, 28 Sep 2020 21:41:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1BD227B586
+	for <lists+linux-ext4@lfdr.de>; Mon, 28 Sep 2020 21:41:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726607AbgI1TlR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 28 Sep 2020 15:41:17 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:38911 "EHLO
+        id S1726656AbgI1TlT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 28 Sep 2020 15:41:19 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:38913 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726328AbgI1TlQ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Sep 2020 15:41:16 -0400
-Received: from mail-qk1-f197.google.com ([209.85.222.197])
+        with ESMTP id S1726465AbgI1TlT (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Sep 2020 15:41:19 -0400
+Received: from mail-qt1-f198.google.com ([209.85.160.198])
         by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <mfo@canonical.com>)
-        id 1kMz1N-00029r-JS
-        for linux-ext4@vger.kernel.org; Mon, 28 Sep 2020 19:41:13 +0000
-Received: by mail-qk1-f197.google.com with SMTP id 125so1291222qkh.4
-        for <linux-ext4@vger.kernel.org>; Mon, 28 Sep 2020 12:41:13 -0700 (PDT)
+        id 1kMz1Q-0002AS-2i
+        for linux-ext4@vger.kernel.org; Mon, 28 Sep 2020 19:41:16 +0000
+Received: by mail-qt1-f198.google.com with SMTP id h31so1406675qtd.14
+        for <linux-ext4@vger.kernel.org>; Mon, 28 Sep 2020 12:41:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=dsydCJbpZJgqvBtcGppNpwTpopS5m5EZ8lb0YworUAo=;
-        b=ktUFQPKK4IYzKMXbzH8JyM+p6nwE+EV6H0wVINzoRaiEepyzWdh2NFmeNnB7t3r8V7
-         t2zNaFnDfcAAlWlK9bTl/rVxMmG2Xb9XI9xh3NFxpBqwQ4yzqs4i5G7vcNYjMnXuPGex
-         tQRjK6qtzr87SEe6Ew7RfRJQSmSwtF+IpZ4KRcfR0cVTkKKHMtjDawRwhqV0n7mkAvCa
-         K7zQVoaAhlbwYkQpZUnAce0H0R8GDzIj+m/8zvLBWO26QaQnQoR6Dvhx5vvLeR9AFEYu
-         1d2q1wkypZgAgNzfZdS3S7KR3BL/Ot+gGXrxP9hGaEfz9vDuv78TeCQtKsZCdqsk6yv9
-         ybcQ==
-X-Gm-Message-State: AOAM530cFrGfo1h0okLrj5+8BNFHDdT8wF8HXBeWz4GVmQ7YDSaqYUFN
-        eOPRnIPEgps9mmIm730TcNjnAA+p2lTWROj1fDfK8Gk0GTIYslBHtZ+bixwdwKIzDhPHCziA1lI
-        NFa9aW2SWsCxgUFXxmR1jo/Pl06381b1EgFgEC2Q=
-X-Received: by 2002:ae9:ed91:: with SMTP id c139mr1081006qkg.7.1601322072484;
-        Mon, 28 Sep 2020 12:41:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxcfLi6jhUPURp8r0Tp4lb41+Zeuc3kAsh73J///xcd1sHBns132iNahHxfkZr+jgR1XQGumw==
-X-Received: by 2002:ae9:ed91:: with SMTP id c139mr1080980qkg.7.1601322072140;
-        Mon, 28 Sep 2020 12:41:12 -0700 (PDT)
+        bh=WCau5di699grODyFgnJe+SR4ba0hdB+A8OoiSVqP36Y=;
+        b=bPU863MScTZzL7bF+ZkZbAB6wyYY8zdfKZwKs+58EiNREVBPPSbuL0nOe+9CGgmFae
+         ZR/A/X6XwyRugZuDRoppJ15PZeFgNgEv8Ivxou5+lcrpQkxy9mm+FVZr2/Wm+c6eZQf3
+         kvo0EDw8/KFKBbRpj3WaXc17eagMS2iCtFWpFiyFGSwGa/YItDXXcCuIFgqAV9kYxqJ3
+         41NFMfGr6DrxlOuBiyZMx6MjbKArepsgBHuhkw/zOvHjMmUiu+PPE6hR/+zAPKFcWEMB
+         krsH+9N+yaoIYOThPzEIKFfUGu6fX6no4v3pABcdv/queyFU396V30jc5G+C50HyfNuQ
+         O1uA==
+X-Gm-Message-State: AOAM5313sDe4M5J+eW7WcelySKMjhebh+fX73z64lRldBcoecSaeVvIU
+        Te7mewH5N5Jztyk2HsTAA/v9MCVuak2OC6I7U4X0JJAVonmTpHWg7F3ZiuPBfEnNNpuQ/vHdDW8
+        NXDqUy2nLzBDUhzdcdMJngq+OcA5C6sJMSDZtYvc=
+X-Received: by 2002:ac8:4e49:: with SMTP id e9mr3318991qtw.167.1601322075052;
+        Mon, 28 Sep 2020 12:41:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzjm1+NxWMR7TE19FtY2Iwy5UDlIFICf81ckydbVpoTs03//KHJ9ugCmfSS5MThiLIC37UCbg==
+X-Received: by 2002:ac8:4e49:: with SMTP id e9mr3318973qtw.167.1601322074779;
+        Mon, 28 Sep 2020 12:41:14 -0700 (PDT)
 Received: from localhost.localdomain ([201.82.49.101])
-        by smtp.gmail.com with ESMTPSA id u15sm2360222qtj.3.2020.09.28.12.41.10
+        by smtp.gmail.com with ESMTPSA id u15sm2360222qtj.3.2020.09.28.12.41.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 12:41:11 -0700 (PDT)
+        Mon, 28 Sep 2020 12:41:13 -0700 (PDT)
 From:   Mauricio Faria de Oliveira <mfo@canonical.com>
 To:     Jan Kara <jack@suse.cz>
 Cc:     linux-ext4@vger.kernel.org,
         dann frazier <dann.frazier@canonical.com>
-Subject: [RFC PATCH v4 2/4] jbd2, ext4, ocfs2: introduce/use journal callbacks j_submit|finish_inode_data_buffers()
-Date:   Mon, 28 Sep 2020 16:41:01 -0300
-Message-Id: <20200928194103.244692-3-mfo@canonical.com>
+Subject: [RFC PATCH v4 3/4] ext4: data=journal: fixes for ext4_page_mkwrite()
+Date:   Mon, 28 Sep 2020 16:41:02 -0300
+Message-Id: <20200928194103.244692-4-mfo@canonical.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200928194103.244692-1-mfo@canonical.com>
 References: <20200928194103.244692-1-mfo@canonical.com>
@@ -58,161 +58,135 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Introduce journal callbacks to allow different behaviors
-for an inode in journal_submit|finish_inode_data_buffers().
+These are two fixes for data journalling required by
+the next patch, discovered while testing it.
 
-The existing users of the current behavior (ext4, ocfs2)
-are adapted to use the previously exported functions
-that implement the current behavior.
+First, the optimization to return early if all buffers
+are mapped is not appropriate for the next patch:
 
-Users are callers of jbd2_journal_inode_ranged_write|wait(),
-which adds the inode to the transaction's inode list with
-the JI_WRITE|WAIT_DATA flags. Only ext4 and ocfs2 in-tree.
+The inode _must_ be added to the transaction's list in
+data=journal mode (so to write-protect pages on commit)
+thus we cannot return early there.
 
-Both CONFIG_EXT4_FS and CONFIG_OCSFS2_FS select CONFIG_JBD2,
-which builds fs/jbd2/commit.c and journal.c that define and
-export the functions, so we can call directly in ext4/ocfs2.
+Second, once that optimization to reduce transactions
+was disabled for data=journal mode, more transactions
+happened, and occasionally hit this warning message:
+'JBD2: Spotted dirty metadata buffer'.
+
+Reason is, block_page_mkwrite() will set_buffer_dirty()
+before do_journal_get_write_access() that is there to
+prevent it. This issue was masked by the optimization.
+
+So, on data=journal use __block_write_begin() instead.
+This also requires page locking and len recalculation.
+(see block_page_mkwrite() for implementation details.)
+
+Finally, as Jan noted there is little sharing between
+data=journal and other modes in ext4_page_mkwrite().
+
+However, a prototype of ext4_journalled_page_mkwrite()
+showed there still would be lots of duplicated lines
+(tens of) that didn't seem worth it.
+
+Thus this patch ends up with an ugly goto to skip all
+non-data journalling code (to avoid long indentations,
+but that can be changed..) in the beginning, and just
+a conditional in the transaction section.
+
+Well, we skip a common part to data journalling which
+is the page truncated check, but we do it again after
+ext4_journal_start() when we re-acquire the page lock
+(so not to acquire the page lock twice needlessly for
+data journalling.)
 
 Signed-off-by: Mauricio Faria de Oliveira <mfo@canonical.com>
 Suggested-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Jan Kara <jack@suse.cz>
 ---
- fs/ext4/super.c      |  4 ++++
- fs/jbd2/commit.c     | 30 ++++++++++++++++++------------
- fs/ocfs2/super.c     |  5 +++++
- include/linux/jbd2.h | 25 ++++++++++++++++++++++++-
- 4 files changed, 51 insertions(+), 13 deletions(-)
+ fs/ext4/inode.c | 51 ++++++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 44 insertions(+), 7 deletions(-)
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index ea425b49b345..a14c1ed39aa3 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -4646,6 +4646,10 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 	set_task_ioprio(sbi->s_journal->j_task, journal_ioprio);
- 
- 	sbi->s_journal->j_commit_callback = ext4_journal_commit_callback;
-+	sbi->s_journal->j_submit_inode_data_buffers =
-+		jbd2_journal_submit_inode_data_buffers;
-+	sbi->s_journal->j_finish_inode_data_buffers =
-+		jbd2_journal_finish_inode_data_buffers;
- 
- no_journal:
- 	if (!test_opt(sb, NO_MBCACHE)) {
-diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
-index c17cda96926e..23d3fcc11b97 100644
---- a/fs/jbd2/commit.c
-+++ b/fs/jbd2/commit.c
-@@ -200,6 +200,12 @@ int jbd2_journal_submit_inode_data_buffers(struct jbd2_inode *jinode)
- 		.range_end = dirty_end,
- 	};
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index bf596467c234..ac153e340a6f 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -5977,9 +5977,17 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
+ 	if (err)
+ 		goto out_ret;
  
 +	/*
-+	 * submit the inode data buffers. We use writepage
-+	 * instead of writepages. Because writepages can do
-+	 * block allocation with delalloc. We need to write
-+	 * only allocated blocks here.
++	 * On data journalling we skip straight to the transaction handle:
++	 * there's no delalloc; page truncated will be checked later; the
++	 * early return w/ all buffers mapped (calculates size/len) can't
++	 * be used; and there's no dioread_nolock, so only ext4_get_block.
 +	 */
- 	ret = generic_writepages(mapping, &wbc);
- 	return ret;
- }
-@@ -224,16 +230,13 @@ static int journal_submit_data_buffers(journal_t *journal,
- 			continue;
- 		jinode->i_flags |= JI_COMMIT_RUNNING;
- 		spin_unlock(&journal->j_list_lock);
--		/*
--		 * submit the inode data buffers. We use writepage
--		 * instead of writepages. Because writepages can do
--		 * block allocation  with delalloc. We need to write
--		 * only allocated blocks here.
--		 */
-+		/* submit the inode data buffers. */
- 		trace_jbd2_submit_inode_data(jinode->i_vfs_inode);
--		err = jbd2_journal_submit_inode_data_buffers(jinode);
--		if (!ret)
--			ret = err;
-+		if (journal->j_submit_inode_data_buffers) {
-+			err = journal->j_submit_inode_data_buffers(jinode);
-+			if (!ret)
-+				ret = err;
-+		}
- 		spin_lock(&journal->j_list_lock);
- 		J_ASSERT(jinode->i_transaction == commit_transaction);
- 		jinode->i_flags &= ~JI_COMMIT_RUNNING;
-@@ -273,9 +276,12 @@ static int journal_finish_inode_data_buffers(journal_t *journal,
- 			continue;
- 		jinode->i_flags |= JI_COMMIT_RUNNING;
- 		spin_unlock(&journal->j_list_lock);
--		err = jbd2_journal_finish_inode_data_buffers(jinode);
--		if (!ret)
--			ret = err;
-+		/* wait for the inode data buffers writeout. */
-+		if (journal->j_finish_inode_data_buffers) {
-+			err = journal->j_finish_inode_data_buffers(jinode);
-+			if (!ret)
-+				ret = err;
-+		}
- 		spin_lock(&journal->j_list_lock);
- 		jinode->i_flags &= ~JI_COMMIT_RUNNING;
- 		smp_mb();
-diff --git a/fs/ocfs2/super.c b/fs/ocfs2/super.c
-index 1d91dd1e8711..560f13d4e2aa 100644
---- a/fs/ocfs2/super.c
-+++ b/fs/ocfs2/super.c
-@@ -2211,6 +2211,11 @@ static int ocfs2_initialize_super(struct super_block *sb,
++	if (ext4_should_journal_data(inode))
++		goto retry_alloc;
++
+ 	/* Delalloc case is easy... */
+ 	if (test_opt(inode->i_sb, DELALLOC) &&
+-	    !ext4_should_journal_data(inode) &&
+ 	    !ext4_nonda_switch(inode->i_sb)) {
+ 		do {
+ 			err = block_page_mkwrite(vma, vmf,
+@@ -6005,6 +6013,9 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
+ 	/*
+ 	 * Return if we have all the buffers mapped. This avoids the need to do
+ 	 * journal_start/journal_stop which can block and take a long time
++	 *
++	 * This cannot be done for data journalling, as we have to add the
++	 * inode to the transaction's list to writeprotect pages on commit.
+ 	 */
+ 	if (page_has_buffers(page)) {
+ 		if (!ext4_walk_page_buffers(NULL, page_buffers(page),
+@@ -6029,16 +6040,42 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
+ 		ret = VM_FAULT_SIGBUS;
+ 		goto out;
  	}
- 	osb->journal = journal;
- 	journal->j_osb = osb;
-+	journal->j_journal->j_submit_inode_data_buffers =
-+		jbd2_journal_submit_inode_data_buffers;
-+	journal->j_journal->j_finish_inode_data_buffers =
-+		jbd2_journal_finish_inode_data_buffers;
-+
- 
- 	atomic_set(&journal->j_num_trans, 0);
- 	init_rwsem(&journal->j_trans_barrier);
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index 2865a5475888..4aaa408c0ca7 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -629,7 +629,9 @@ struct transaction_s
- 	struct journal_head	*t_shadow_list;
- 
- 	/*
--	 * List of inodes whose data we've modified in data=ordered mode.
-+	 * List of inodes associated with the transaction; e.g., ext4 uses
-+	 * this to track inodes in data=ordered and data=journal mode that
-+	 * need special handling on transaction commit; also used by ocfs2.
- 	 * [j_list_lock]
- 	 */
- 	struct list_head	t_inode_list;
-@@ -1111,6 +1113,27 @@ struct journal_s
- 	void			(*j_commit_callback)(journal_t *,
- 						     transaction_t *);
- 
-+	/**
-+	 * @j_submit_inode_data_buffers:
-+	 *
-+	 * This function is called for all inodes associated with the
-+	 * committing transaction marked with JI_WRITE_DATA flag
-+	 * before we start to write out the transaction to the journal.
+-	err = block_page_mkwrite(vma, vmf, get_block);
+-	if (!err && ext4_should_journal_data(inode)) {
+-		if (ext4_walk_page_buffers(handle, page_buffers(page), 0,
+-			  PAGE_SIZE, NULL, do_journal_get_write_access)) {
++	/*
++	 * Data journalling can't use block_page_mkwrite() because it
++	 * will set_buffer_dirty() before do_journal_get_write_access()
++	 * thus might hit warning messages for dirty metadata buffers.
 +	 */
-+	int			(*j_submit_inode_data_buffers)
-+					(struct jbd2_inode *);
++	if (!ext4_should_journal_data(inode)) {
++		err = block_page_mkwrite(vma, vmf, get_block);
++	} else {
++		lock_page(page);
++		size = i_size_read(inode);
++		/* Page got truncated from under us? */
++		if (page->mapping != mapping || page_offset(page) > size) {
+ 			unlock_page(page);
+-			ret = VM_FAULT_SIGBUS;
++			ret = VM_FAULT_NOPAGE;
+ 			ext4_journal_stop(handle);
+ 			goto out;
+ 		}
+-		ext4_set_inode_state(inode, EXT4_STATE_JDATA);
 +
-+	/**
-+	 * @j_finish_inode_data_buffers:
-+	 *
-+	 * This function is called for all inodes associated with the
-+	 * committing transaction marked with JI_WAIT_DATA flag
-+	 * after we have written the transaction to the journal
-+	 * but before we write out the commit block.
-+	 */
-+	int			(*j_finish_inode_data_buffers)
-+					(struct jbd2_inode *);
++		if (page->index == size >> PAGE_SHIFT)
++			len = size & ~PAGE_MASK;
++		else
++			len = PAGE_SIZE;
 +
- 	/*
- 	 * Journal statistics
- 	 */
++		err = __block_write_begin(page, 0, len, ext4_get_block);
++		if (!err) {
++			if (ext4_walk_page_buffers(handle, page_buffers(page),
++					0, len, NULL, do_journal_get_write_access)) {
++				unlock_page(page);
++				ret = VM_FAULT_SIGBUS;
++				ext4_journal_stop(handle);
++				goto out;
++			}
++			ext4_set_inode_state(inode, EXT4_STATE_JDATA);
++		} else {
++			unlock_page(page);
++		}
+ 	}
+ 	ext4_journal_stop(handle);
+ 	if (err == -ENOSPC && ext4_should_retry_alloc(inode->i_sb, &retries))
 -- 
 2.17.1
 
