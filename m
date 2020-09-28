@@ -2,87 +2,105 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2490A27B398
-	for <lists+linux-ext4@lfdr.de>; Mon, 28 Sep 2020 19:49:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2220E27B583
+	for <lists+linux-ext4@lfdr.de>; Mon, 28 Sep 2020 21:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726506AbgI1Rtp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 28 Sep 2020 13:49:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726310AbgI1Rtp (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Sep 2020 13:49:45 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05640C061755
-        for <linux-ext4@vger.kernel.org>; Mon, 28 Sep 2020 10:49:44 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id q13so9811055ejo.9
-        for <linux-ext4@vger.kernel.org>; Mon, 28 Sep 2020 10:49:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:date:mime-version
-         :content-transfer-encoding;
-        bh=XFXCLiyHOGeoT2sI1Fi/a/qpwZnL844AFb1GsQGB3NE=;
-        b=DwaoI+cD1bkuBLOQswML0c3JR0JkrDh6ZEQQ05rHFd8DS0Vpk0TH0NUgazrB1vAA6g
-         KiDqdOkjd6CuqHrmMygJmlLxks9BSGVPXOJZFq9j81mLvYFEaGYWHZ/0dEg45g4upqt1
-         HX5EuJRTj/T8eIM6Z8JdXyOZMXa35ZmGGx2FT5733xKFWANGEILd60V1dXTa7w8fsFgR
-         LzJlDk9IFoim5u2Vsk/3veqOzHichqYq4XhTnLllh+44DQR6iM7rquOQuxzN1j0+HrYN
-         O5okAnkOhXBUQRgnBkSz5nmt7YVxVekcVbdetqm0N/ppC1LIkUI8OD8Wgm9klvI0TLCl
-         1I1w==
+        id S1726559AbgI1TlM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 28 Sep 2020 15:41:12 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:38902 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726328AbgI1TlM (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Sep 2020 15:41:12 -0400
+Received: from mail-qk1-f198.google.com ([209.85.222.198])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <mfo@canonical.com>)
+        id 1kMz1J-00028z-6X
+        for linux-ext4@vger.kernel.org; Mon, 28 Sep 2020 19:41:09 +0000
+Received: by mail-qk1-f198.google.com with SMTP id j5so1284408qka.7
+        for <linux-ext4@vger.kernel.org>; Mon, 28 Sep 2020 12:41:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:date:mime-version
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=XFXCLiyHOGeoT2sI1Fi/a/qpwZnL844AFb1GsQGB3NE=;
-        b=WwhOSE2p6w2c2JURueRQmFKWhCA4iVhfMtMICNLTpxlPYDhGQ5Rij5vJEfdKWTa8EV
-         5i0qpkCBnT4JxZiEJx5ygfbrOv5cmRGv7nWhIc4eHlqyS7f/C24EYwgTH+PHVk82yUtX
-         EKKND7qfFbFyrJNknF8Or4lQTk4c51MCFXsGbTZfOLRN8TyPs81DN91tBVMeFWH3PBIn
-         ylzHHkFpN8OXDi2BJNQAL3Lwy76otCOpKcGGaApLdlZ7huuwr7rqlrgWu4UhCnL2Pate
-         z9ZL1qiudWOSKtn7uBAcKk1S4UpQ+RoYxVS6CzscgY400Am2h28niOM7NYFycyQe1SJ5
-         /WRQ==
-X-Gm-Message-State: AOAM530E8n1siQUJ+kAMCB/GDIb58nMqYF1quiJ+ZO9Fabaq9lfgLoWZ
-        IsLV+aS965qXzo4oRmkjuqcTORQCFqMJb/e5
-X-Google-Smtp-Source: ABdhPJySd/I+79HzSvX6dOe/L0DLl0PxpUX3N4Y57+TSrLmIb00lIav2Q6YMStzrkgRkaDRMIIe76A==
-X-Received: by 2002:a17:907:72c5:: with SMTP id du5mr2878852ejc.469.1601315383312;
-        Mon, 28 Sep 2020 10:49:43 -0700 (PDT)
-Received: from ubuntu-laptop (ip5f5bfcfd.dynamic.kabel-deutschland.de. [95.91.252.253])
-        by smtp.googlemail.com with ESMTPSA id lc25sm2040216ejb.35.2020.09.28.10.49.42
-        for <linux-ext4@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 28 Sep 2020 10:49:42 -0700 (PDT)
-Message-ID: <0e5ffd9bb29b018b2ed574381d194c4e7506f91b.camel@gmail.com>
-Subject: ext4: how to make sure the LBA contiguous  allocation across a set
- of  files
-From:   christopher lee <christopher.lee.eu@gmail.com>
-To:     linux-ext4@vger.kernel.org
-Date:   Mon, 28 Sep 2020 19:49:41 +0200
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        bh=yLqTieO3hDkbI4EnX1s+4DSqiVKXjYq4JM3v8YoHHoo=;
+        b=nvcefkYOW1WEK9t7lrFZ5F1GjiFRnIsM6ghwaHyHlJdV1znTprXNp3YYw/07BTGron
+         JlkOI2ozv7xOOGBVNbHCZ3L2dp3zSbEx4V+oQr+rwMZYBfXQGRNMA2C91ACgHEws9vWs
+         koU86aXiJCM7PD78bt+KWMPO0peiroO1VOn+99guh+64bb6ttnJM0zZN6MDoUrOqIVyp
+         bktyJBvYkWj0QKaGRQdaJilNsx3sp6UNASRn5sC2kRcfkRFm1RazCAgGC0BbPJTh1ziT
+         0UEq3e3UPouig1DYvUySbdzhcylnDek9olZJdvFDiszHZVGP7V6UmjPsF5ryiTrnIvMK
+         fiQg==
+X-Gm-Message-State: AOAM53143Uhq5zxfCpWzMI5k0TJCUgxgHdyfesfor0ib5dE2DWV4h3eY
+        mSUylFTrJsDkLBcQ0o7ALXN3HhICJH7uTsDJBLb7XEt+zKPeH5rKZ0ZkiJeRjAuBbWMwIH2Ks2w
+        kwhviEpavzkZv3rR7efh9kGZtP/eMEvz9l6/7TZo=
+X-Received: by 2002:ae9:e814:: with SMTP id a20mr1055523qkg.429.1601322068309;
+        Mon, 28 Sep 2020 12:41:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzBA6WBZckJy7kZjWRAWb689M8EKQjEoeknhtRETX1nEtcnJayXhB4xg6s28/SAKnluKw4ySA==
+X-Received: by 2002:ae9:e814:: with SMTP id a20mr1055502qkg.429.1601322067986;
+        Mon, 28 Sep 2020 12:41:07 -0700 (PDT)
+Received: from localhost.localdomain ([201.82.49.101])
+        by smtp.gmail.com with ESMTPSA id u15sm2360222qtj.3.2020.09.28.12.41.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 12:41:07 -0700 (PDT)
+From:   Mauricio Faria de Oliveira <mfo@canonical.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-ext4@vger.kernel.org,
+        dann frazier <dann.frazier@canonical.com>
+Subject: [RFC PATCH v4 0/4] ext4/jbd2: data=journal: write-protect pages on transaction commit
+Date:   Mon, 28 Sep 2020 16:40:59 -0300
+Message-Id: <20200928194103.244692-1-mfo@canonical.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hallo
-I am recently encountering an issue with the ext4 usage case. I want
-not only sequentially LBA allocation in a single file, but also expect
-that the LBA sequential allocation between the two files, which means
-that the last LBA of the previous file should be adjacent to the first
-LAB of the block of the next file.
+Hey Jan,
 
-But from my testing, the sequential LBA of block allocation is easily
-met, but the LBA sequential allocation between files is not to ext4.
-The gab in LBA between two seq write (two files) is very huge,
-sometimes the gap is over 2GB space. I notice ext4 never allocates the
-LBA of the block between two files sequentially on my usage case.
+This series implements your suggestions for the RFC PATCH v3 set [1].
 
-who knows the reason of this? and if there is a configuration of ext4
-related to this scenario? 
-or please tell me which ext4 function I should study, and see if I can
-find the reason.
+That addressed the issue you confirmed with block_page_mkwrite() [2].
+There's no "JBD2: Spotted dirty metadata buffer" message in over 72h
+runs across 3 VMs (it used to happen within a few hours.) *Thanks!*
 
-thanks in advance for any suggestions.
+I added Reviewed-by: tags for the patches/changes you mentioned.
+The only changes from v3 are patch 3 which is new, and contains
+the 2 fixes to ext4_page_mkwrite(); and patch 4 changed 'struct
+writeback_control.nr_to_write' from ~0ULL to LONG_MAX, since it
+is signed long (~0ULL overflows to -1; kudos, kernel test robot!)
 
-Thanks,
-Lee
- 
+It looks almost good on fstests: zero regressions on data=ordered,
+and two apparently flaky tests data=journal (generic/347 _passed_
+1/6 times with the patch, and generic/547 failed 1/6 times.)
+
+I'll have more fstests runs on original/patched kernel to confirm
+if they are flaky on both, or hit corner cases with patches only,
+and will follow up with results. (and basic testing w/ ocfs2 too.)
+
+Thanks again!
+Mauricio
+
+[1] https://lore.kernel.org/linux-ext4/20200910193127.276214-1-mfo@canonical.com/
+[2] https://lore.kernel.org/linux-ext4/20200916161538.GK3607@quack2.suse.cz/
+
+Mauricio Faria de Oliveira (4):
+  jbd2: introduce/export functions
+    jbd2_journal_submit|finish_inode_data_buffers()
+  jbd2, ext4, ocfs2: introduce/use journal callbacks
+    j_submit|finish_inode_data_buffers()
+  ext4: data=journal: fixes for ext4_page_mkwrite()
+  ext4: data=journal: write-protect pages on
+    j_submit_inode_data_buffers()
+
+ fs/ext4/inode.c      | 62 ++++++++++++++++++++++++++++-----
+ fs/ext4/super.c      | 82 ++++++++++++++++++++++++++++++++++++++++++++
+ fs/jbd2/commit.c     | 58 +++++++++++++++++--------------
+ fs/jbd2/journal.c    |  2 ++
+ fs/ocfs2/super.c     |  5 +++
+ include/linux/jbd2.h | 29 +++++++++++++++-
+ 6 files changed, 203 insertions(+), 35 deletions(-)
+
+-- 
+2.17.1
 
