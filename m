@@ -2,149 +2,180 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 883C727BFB6
-	for <lists+linux-ext4@lfdr.de>; Tue, 29 Sep 2020 10:38:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8291227C6C9
+	for <lists+linux-ext4@lfdr.de>; Tue, 29 Sep 2020 13:48:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727753AbgI2Iiu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 29 Sep 2020 04:38:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727634AbgI2Iiu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 29 Sep 2020 04:38:50 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15B1EC061755;
-        Tue, 29 Sep 2020 01:38:50 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id e11so6102014wme.0;
-        Tue, 29 Sep 2020 01:38:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=cc:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=dmGf1FRJlXDhCUgK6fiA66lZin9rP4W1yXe+rkN5lfo=;
-        b=pRjMRO5D33ilsDuphOJlgFYEuejymTllYwEQ9NL8+sx9tiphg8R8mfSxOqQuMbbaEi
-         jCe/ztdfDU4IiL+/ZaTo890rYlE2ON37+Vzui24nT+qJsfycmWRAwBwShTIoVNt7ha6t
-         f+rzbyUumVTWZsOzspEIxB/8YpDP/uWJiUpR9QpEtpxYQgQ9AksWRYsX2CmYk/1gMBlG
-         2d4d8C35oP6HK5OsCrwueA2GYqlVLnywW3Ua/zd6j+h97yzVSL8tQi3mZgFCSXxzrIbO
-         hmXhw2Nh4DBKvH5g2uoieE6S5/YTTTd3KVQFt47CelNpQ8JbJ+ASD1CD3DT3c/xWFJBC
-         8iCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dmGf1FRJlXDhCUgK6fiA66lZin9rP4W1yXe+rkN5lfo=;
-        b=iQI4oSJ47ZBwPGr8WJ1UcaI1hstlEP1byQeUI9yjQmDf4n4jx7l9HKkTh2j0EzRXWe
-         9TkH6mJI9s2VPrWDd7WIptc63znuiioVttsuozC/TL/Qs5AP0iZyaQxmiRBfEO1oZgmD
-         6KJbwTSn3QPOo/yi6XT5cQ1BTDvqA4nPLJJM243tn6jBGYEZV4W072bN6Y31w8/vaIkH
-         7GzKGGE3QbYaDawTnr0LUAyhjMpzrIdWdGAxGWYGWO4k02bqcvs9d6UO+UMRZN1tP86d
-         nZ6ldOaDQwhlPf6kY6QaIGWC4S6rTuQS00AbzLstIaH8qho/aAOKN5BtDYiz7sHVHRlb
-         +n2Q==
-X-Gm-Message-State: AOAM532smaB4hG9Kq+6Zm8Q5BhxH6/rpF47Rkl4rT7Sr3loV+fx/0D+V
-        NGW6gTx4lm2QDEV4XNuwARRzfORo01U=
-X-Google-Smtp-Source: ABdhPJyBHXd39b1Y0Nd8HyE5S8phPtTwTGwEELYDj45/RQlofUJDP7uVEvOWdHxonXnH9wFc7n5rdA==
-X-Received: by 2002:a05:600c:2189:: with SMTP id e9mr3304284wme.8.1601368728464;
-        Tue, 29 Sep 2020 01:38:48 -0700 (PDT)
-Received: from ?IPv6:2001:a61:2479:6801:d8fe:4132:9f23:7e8f? ([2001:a61:2479:6801:d8fe:4132:9f23:7e8f])
-        by smtp.gmail.com with ESMTPSA id z191sm1470344wme.40.2020.09.29.01.38.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Sep 2020 01:38:47 -0700 (PDT)
-Cc:     mtk.manpages@gmail.com, linux-man@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] man/statx: Add STATX_ATTR_DAX
-To:     Ira Weiny <ira.weiny@intel.com>
-References: <20200505002016.1085071-1-ira.weiny@intel.com>
- <20200928164200.GA459459@iweiny-DESK2.sc.intel.com>
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Message-ID: <ddf4dd69-6bf8-8ca7-cdd7-a949884d997f@gmail.com>
-Date:   Tue, 29 Sep 2020 10:38:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730477AbgI2Ls3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 29 Sep 2020 07:48:29 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35716 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730782AbgI2Ls0 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:48:26 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5B5EAACB8;
+        Tue, 29 Sep 2020 11:48:25 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 20E691E12E9; Tue, 29 Sep 2020 13:48:25 +0200 (CEST)
+Date:   Tue, 29 Sep 2020 13:48:25 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Mauricio Faria de Oliveira <mfo@canonical.com>
+Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
+        dann frazier <dann.frazier@canonical.com>
+Subject: Re: [RFC PATCH v4 3/4] ext4: data=journal: fixes for
+ ext4_page_mkwrite()
+Message-ID: <20200929114825.GL10896@quack2.suse.cz>
+References: <20200928194103.244692-1-mfo@canonical.com>
+ <20200928194103.244692-4-mfo@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <20200928164200.GA459459@iweiny-DESK2.sc.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200928194103.244692-4-mfo@canonical.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello Ira,
-
-On 9/28/20 6:42 PM, Ira Weiny wrote:
-> On Mon, May 04, 2020 at 05:20:16PM -0700, 'Ira Weiny' wrote:
->> From: Ira Weiny <ira.weiny@intel.com>
->>
->> Linux 5.8 is slated to have STATX_ATTR_DAX support.
->>
->> https://lore.kernel.org/lkml/20200428002142.404144-4-ira.weiny@intel.com/
->> https://lore.kernel.org/lkml/20200504161352.GA13783@magnolia/
->>
->> Add the text to the statx man page.
->>
->> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+On Mon 28-09-20 16:41:02, Mauricio Faria de Oliveira wrote:
+> These are two fixes for data journalling required by
+> the next patch, discovered while testing it.
 > 
-> Have I sent this to the wrong list?  Or perhaps I have missed a reply.
-
-No, it's just me being a bit slow, I'm sorry. Thank you for pining.
-
-> I don't see this applied to the man-pages project.[1]  But perhaps I am looking
-> at the wrong place?
-
-Your patch is applied now, and pushed to kernel .org. Thanks!
-
-Cheers,
-
-Michael
-
-> [1] git://git.kernel.org/pub/scm/docs/man-pages/man-pages.git
+> First, the optimization to return early if all buffers
+> are mapped is not appropriate for the next patch:
 > 
->> ---
->>  man2/statx.2 | 24 ++++++++++++++++++++++++
->>  1 file changed, 24 insertions(+)
->>
->> diff --git a/man2/statx.2 b/man2/statx.2
->> index 2e90f07dbdbc..14c4ab78e7bd 100644
->> --- a/man2/statx.2
->> +++ b/man2/statx.2
->> @@ -468,6 +468,30 @@ The file has fs-verity enabled.
->>  It cannot be written to, and all reads from it will be verified
->>  against a cryptographic hash that covers the
->>  entire file (e.g., via a Merkle tree).
->> +.TP
->> +.BR STATX_ATTR_DAX (since Linux 5.8)
->> +The file is in the DAX (cpu direct access) state.  DAX state attempts to
->> +minimize software cache effects for both I/O and memory mappings of this file.
->> +It requires a file system which has been configured to support DAX.
->> +.PP
->> +DAX generally assumes all accesses are via cpu load / store instructions which
->> +can minimize overhead for small accesses, but may adversely affect cpu
->> +utilization for large transfers.
->> +.PP
->> +File I/O is done directly to/from user-space buffers and memory mapped I/O may
->> +be performed with direct memory mappings that bypass kernel page cache.
->> +.PP
->> +While the DAX property tends to result in data being transferred synchronously,
->> +it does not give the same guarantees of O_SYNC where data and the necessary
->> +metadata are transferred together.
->> +.PP
->> +A DAX file may support being mapped with the MAP_SYNC flag, which enables a
->> +program to use CPU cache flush instructions to persist CPU store operations
->> +without an explicit
->> +.BR fsync(2).
->> +See
->> +.BR mmap(2)
->> +for more information.
->>  .SH RETURN VALUE
->>  On success, zero is returned.
->>  On error, \-1 is returned, and
->> -- 
->> 2.25.1
->>
+> The inode _must_ be added to the transaction's list in
+> data=journal mode (so to write-protect pages on commit)
+> thus we cannot return early there.
+> 
+> Second, once that optimization to reduce transactions
+> was disabled for data=journal mode, more transactions
+> happened, and occasionally hit this warning message:
+> 'JBD2: Spotted dirty metadata buffer'.
+> 
+> Reason is, block_page_mkwrite() will set_buffer_dirty()
+> before do_journal_get_write_access() that is there to
+> prevent it. This issue was masked by the optimization.
+> 
+> So, on data=journal use __block_write_begin() instead.
+> This also requires page locking and len recalculation.
+> (see block_page_mkwrite() for implementation details.)
+> 
+> Finally, as Jan noted there is little sharing between
+> data=journal and other modes in ext4_page_mkwrite().
+> 
+> However, a prototype of ext4_journalled_page_mkwrite()
+> showed there still would be lots of duplicated lines
+> (tens of) that didn't seem worth it.
+> 
+> Thus this patch ends up with an ugly goto to skip all
+> non-data journalling code (to avoid long indentations,
+> but that can be changed..) in the beginning, and just
+> a conditional in the transaction section.
+> 
+> Well, we skip a common part to data journalling which
+> is the page truncated check, but we do it again after
+> ext4_journal_start() when we re-acquire the page lock
+> (so not to acquire the page lock twice needlessly for
+> data journalling.)
+> 
+> Signed-off-by: Mauricio Faria de Oliveira <mfo@canonical.com>
+> Suggested-by: Jan Kara <jack@suse.cz>
 
+The patch looks good to me. You can add:
 
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+							Honza
+
+> ---
+>  fs/ext4/inode.c | 51 ++++++++++++++++++++++++++++++++++++++++++-------
+>  1 file changed, 44 insertions(+), 7 deletions(-)
+> 
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index bf596467c234..ac153e340a6f 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -5977,9 +5977,17 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
+>  	if (err)
+>  		goto out_ret;
+>  
+> +	/*
+> +	 * On data journalling we skip straight to the transaction handle:
+> +	 * there's no delalloc; page truncated will be checked later; the
+> +	 * early return w/ all buffers mapped (calculates size/len) can't
+> +	 * be used; and there's no dioread_nolock, so only ext4_get_block.
+> +	 */
+> +	if (ext4_should_journal_data(inode))
+> +		goto retry_alloc;
+> +
+>  	/* Delalloc case is easy... */
+>  	if (test_opt(inode->i_sb, DELALLOC) &&
+> -	    !ext4_should_journal_data(inode) &&
+>  	    !ext4_nonda_switch(inode->i_sb)) {
+>  		do {
+>  			err = block_page_mkwrite(vma, vmf,
+> @@ -6005,6 +6013,9 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
+>  	/*
+>  	 * Return if we have all the buffers mapped. This avoids the need to do
+>  	 * journal_start/journal_stop which can block and take a long time
+> +	 *
+> +	 * This cannot be done for data journalling, as we have to add the
+> +	 * inode to the transaction's list to writeprotect pages on commit.
+>  	 */
+>  	if (page_has_buffers(page)) {
+>  		if (!ext4_walk_page_buffers(NULL, page_buffers(page),
+> @@ -6029,16 +6040,42 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
+>  		ret = VM_FAULT_SIGBUS;
+>  		goto out;
+>  	}
+> -	err = block_page_mkwrite(vma, vmf, get_block);
+> -	if (!err && ext4_should_journal_data(inode)) {
+> -		if (ext4_walk_page_buffers(handle, page_buffers(page), 0,
+> -			  PAGE_SIZE, NULL, do_journal_get_write_access)) {
+> +	/*
+> +	 * Data journalling can't use block_page_mkwrite() because it
+> +	 * will set_buffer_dirty() before do_journal_get_write_access()
+> +	 * thus might hit warning messages for dirty metadata buffers.
+> +	 */
+> +	if (!ext4_should_journal_data(inode)) {
+> +		err = block_page_mkwrite(vma, vmf, get_block);
+> +	} else {
+> +		lock_page(page);
+> +		size = i_size_read(inode);
+> +		/* Page got truncated from under us? */
+> +		if (page->mapping != mapping || page_offset(page) > size) {
+>  			unlock_page(page);
+> -			ret = VM_FAULT_SIGBUS;
+> +			ret = VM_FAULT_NOPAGE;
+>  			ext4_journal_stop(handle);
+>  			goto out;
+>  		}
+> -		ext4_set_inode_state(inode, EXT4_STATE_JDATA);
+> +
+> +		if (page->index == size >> PAGE_SHIFT)
+> +			len = size & ~PAGE_MASK;
+> +		else
+> +			len = PAGE_SIZE;
+> +
+> +		err = __block_write_begin(page, 0, len, ext4_get_block);
+> +		if (!err) {
+> +			if (ext4_walk_page_buffers(handle, page_buffers(page),
+> +					0, len, NULL, do_journal_get_write_access)) {
+> +				unlock_page(page);
+> +				ret = VM_FAULT_SIGBUS;
+> +				ext4_journal_stop(handle);
+> +				goto out;
+> +			}
+> +			ext4_set_inode_state(inode, EXT4_STATE_JDATA);
+> +		} else {
+> +			unlock_page(page);
+> +		}
+>  	}
+>  	ext4_journal_stop(handle);
+>  	if (err == -ENOSPC && ext4_should_retry_alloc(inode->i_sb, &retries))
+> -- 
+> 2.17.1
+> 
 -- 
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
