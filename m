@@ -2,91 +2,127 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D5D42809F3
-	for <lists+linux-ext4@lfdr.de>; Fri,  2 Oct 2020 00:21:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38785280C36
+	for <lists+linux-ext4@lfdr.de>; Fri,  2 Oct 2020 04:05:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726855AbgJAWV4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 1 Oct 2020 18:21:56 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:45146 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725924AbgJAWVz (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 1 Oct 2020 18:21:55 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 091MJBan041222;
-        Thu, 1 Oct 2020 22:21:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to :
- subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=dfCTaCO4TrPwxugpG8F1lbVYngmLQpQdeoMPR/WGz5s=;
- b=w/T955uy5f6Gf1qS9GpTnjye+4RVaVEIUMMkGId8/ddGnyKReJ5gISTgNI6ya7slFVTD
- XZ+scnFJB6yvLwL7tLgRl9XG/RGYTq9SGBthpoTdGQMl44Q980EsbkF2gFRbIQayVnYa
- F1lRLJmZI/hIXhkwt8M7w52tUcH9fpVvEgOKsvTyLD7cu/Y452jFmBtLNnyEz2uZ7EHu
- kwQPjlMooCfvuygAjhpCPDW0KfPyPVlhwevUiq0Qh2w5TOrlRDDnifLyHohgC+rcuXwN
- FF2z7rxYxt93l7oPKGoQfO1n55Bdl36SP2t40ehExIA99BM9nR1rNkil64S/qnrIDxKx vg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 33sx9ngkvy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 01 Oct 2020 22:21:51 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 091MKYtf149846;
-        Thu, 1 Oct 2020 22:21:50 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 33tfj2805b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 01 Oct 2020 22:21:50 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 091MLnHZ010500;
-        Thu, 1 Oct 2020 22:21:49 GMT
-Received: from localhost (/10.159.236.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 01 Oct 2020 15:21:49 -0700
-Date:   Thu, 1 Oct 2020 15:21:48 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>,
-        linux-ext4 <linux-ext4@vger.kernel.org>
-Subject: [PATCH] ext4: limit entries returned when counting fsmap records
-Message-ID: <20201001222148.GA49520@magnolia>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9761 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999 bulkscore=0
- phishscore=0 malwarescore=0 adultscore=0 suspectscore=1 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010010178
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9761 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=1
- phishscore=0 mlxscore=0 lowpriorityscore=0 adultscore=0 clxscore=1015
- spamscore=0 impostorscore=0 malwarescore=0 bulkscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010010178
+        id S2387559AbgJBCFx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 1 Oct 2020 22:05:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733275AbgJBCFx (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 1 Oct 2020 22:05:53 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B0E0C0613D0
+        for <linux-ext4@vger.kernel.org>; Thu,  1 Oct 2020 19:05:51 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id 197so443728pge.8
+        for <linux-ext4@vger.kernel.org>; Thu, 01 Oct 2020 19:05:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=WpAzpuEp/47QgIN5wpAExgluzWsxoLRfNzmwSIdbEL4=;
+        b=gqGSyrVZ6PmxQPjWeyOfw1/51tZQueqL49ae0WjYw2PTqh8ZZw/TZO5aQwp+BavW6+
+         7+Hk7O1fEvMcGOA4Nr9paSZZ7NILvChTEKPOVKl8nRqoEuC/QqwEOmurNB8oI23Cvi7y
+         H/N59hfAZPXHz7kjPSt8zPHLZNN/lSK18MlbxLZv+oJTT2mBV1Kwc+7wv43wQhKVrQ90
+         ATxVSxnqpwsWZ4K+ewlKhmflTc33Z1ycM+7hhBQ9D9r4UKlCW370+evlQTmj0e/IA4iV
+         XdwShL5ta5P/xj9c4msoziy9d95hOhEBG3YxbjBvgTqKAMFQjGPQmqrnNDL4WtqCEJvo
+         SnRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=WpAzpuEp/47QgIN5wpAExgluzWsxoLRfNzmwSIdbEL4=;
+        b=bPUVOfc161hEUWkY4ktBz/o3Hg4foIjoC7CFuVeViIM/IALLgcfMp04z1dDX7uFF1e
+         ASoXAJOJq2oaM2kbQmdGhdp/lYzFvUuoSsMpAMfcla29UFOR0HiUrxz8+7r6NQubr9iK
+         zdaXEGmswZ+w0b5fMZGy2SJVF2qJMoG/5yfvNtY1fKbFrDOWaOxljPKS+QZif3rRRaK9
+         0gJO2ByAZwAd5XdTR93NRdDD4iJS5JnbDCnSHBmxC0qkCW8EU8wgWu51arHGmyhfHxVK
+         eexsHcJcydZ96lTIopkLiRJlx477JbM60bIgLkscXBQ1NbnS/0IVra2WX3cMXT0xfEhq
+         TJmQ==
+X-Gm-Message-State: AOAM5307T9gHB7+4f/3TsNOKKyGpElCfj8wGHTrFK2oc8EpQN4yAeprB
+        yEVbztDOf0qyIPY8Om0A7W4f+1gB64EVkLbi
+X-Google-Smtp-Source: ABdhPJzsVxDCjUCmb+0AMsn95Dc1G+mUK19j695E51gUSasKjvjaCwX7UK1nEKykAogO0HrtHm3k1w==
+X-Received: by 2002:aa7:8e43:0:b029:151:3e50:afa6 with SMTP id d3-20020aa78e430000b02901513e50afa6mr5657134pfr.59.1601604351070;
+        Thu, 01 Oct 2020 19:05:51 -0700 (PDT)
+Received: from [192.168.10.160] (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id a71sm7767537pfa.26.2020.10.01.19.05.49
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 01 Oct 2020 19:05:50 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <7C748802-8CC0-4881-90B3-DF362CACD902@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_D7AA63F2-4001-454A-B1C4-535974D3B6FD";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH] tests: replace perl usage with shell built-in
+Date:   Thu, 1 Oct 2020 20:05:45 -0600
+In-Reply-To: <20201001170817.GL23474@mit.edu>
+Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>
+To:     "Theodore Y. Ts'o" <tytso@MIT.EDU>
+References: <20200719110033.78844-1-adilger@dilger.ca>
+ <20201001145809.GA584291@mit.edu> <20201001170817.GL23474@mit.edu>
+X-Mailer: Apple Mail (2.3273)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Darrick J. Wong <darrick.wong@oracle.com>
 
-If userspace asked fsmap to try to count the number of entries, we cannot
-return more than UINT_MAX entries because fmh_entries is u32.
-Therefore, stop counting if we hit this limit or else we will waste time
-to return truncated results.
+--Apple-Mail=_D7AA63F2-4001-454A-B1C4-535974D3B6FD
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset=us-ascii
 
-Fixes: 0c9ec4beecac ("ext4: support GETFSMAP ioctls")
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
----
- fs/ext4/fsmap.c |    3 +++
- 1 file changed, 3 insertions(+)
+On Oct 1, 2020, at 11:08 AM, Theodore Y. Ts'o <tytso@MIT.EDU> wrote:
+> 
+> On Thu, Oct 01, 2020 at 10:58:09AM -0400, Theodore Y. Ts'o wrote:
+>> On Sun, Jul 19, 2020 at 05:00:33AM -0600, Andreas Dilger wrote:
+>>> A couple of tests use perl only for generating a string of
+>>> N characters long.  Instead of requiring perl to run a few
+>>> tests, use shell built-in commands and don't repeatedly run
+>>> a separate subshell just to get a string of characters.
+>>> h
+>>> Signed-off-by: Andreas Dilger <adilger@dilger.ca>
+>> 
+>> Thanks, applied.
+> 
+> .... and I have to revert the patch.  It's using a non-standard shell
+> construction which fails on strict POSIX compliant shells, such as
+> dash.
 
-diff --git a/fs/ext4/fsmap.c b/fs/ext4/fsmap.c
-index dbccf46f1770..37347ba868b7 100644
---- a/fs/ext4/fsmap.c
-+++ b/fs/ext4/fsmap.c
-@@ -108,6 +108,9 @@ static int ext4_getfsmap_helper(struct super_block *sb,
- 
- 	/* Are we just counting mappings? */
- 	if (info->gfi_head->fmh_count == 0) {
-+		if (info->gfi_head->fmh_entries == UINT_MAX)
-+			return EXT4_QUERY_RANGE_ABORT;
-+
- 		if (rec_fsblk > info->gfi_next_fsblk)
- 			info->gfi_head->fmh_entries++;
- 
+Could you please point out which constructs it is unhappy with?  I had
+an earlier version of the patch using a different mechanism, but then
+updated it after feedback from Lukas.
+
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_D7AA63F2-4001-454A-B1C4-535974D3B6FD
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl92ivoACgkQcqXauRfM
+H+D0BA/9GuxjFvp6n3ctt2VnhTV0+UwHhPDFbj7qmaZDjWaBWbddPvwUulHt3rnJ
+x3DsxUrLrR5SfRGjnHPBMe+4JIOz4Z5Ok86daEVuR1WPQI+6eupMc1XdbW3QaV0I
+ZOOAzYg8kW1TmazzI2y6kXwo+oFFC13eqoUBMnjlUpwVLLQnRsnaTaSD6Vw4V9Fp
+XA/SAg323pgDQ147/j+InTl7WkcDULExt/abMjnW1RpOIq2qXKTxEP+dwdpU7a9Y
+T+WbMDexuQOF52na8vx9e8yPKnPVci2mOCR4983pnQdVnJ5tQyUWtIMQS0lte0wP
+a1YyrS7kE/Bj5vhcbAe8Xx1jYFMNXN5++oPrJTfn5EcBpJAkmBdOPk9WdTfLtdVQ
+gFil/raCx+85sS4vRXfLeBWWDYMyWl106QAFLbuUcTCefoXPpI0R71OUrXb5nDjj
+fQ6P1gOBCiavYvX9NVI64R56uzJ+4AvNUyPdjGvRg9EJXFy3zExjnfXbC90+xyMm
+pZjJ46FRGH84Nkl+geI+k+SiB/EFaWnmigpDkrW/s66Q7bCLRgd/zsZLrI/iH8GJ
+U3QwCCWKMAXntPxL79mI43Hp67QOHxpK05kdjs9RcsLQYDhcQBXPLc8yVKpAUW3u
+f5WchrT9nBuMUrDQO6CZoMpzD/Q6hp2CrXkQe+DCJw3So0wNwug=
+=xMK2
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_D7AA63F2-4001-454A-B1C4-535974D3B6FD--
