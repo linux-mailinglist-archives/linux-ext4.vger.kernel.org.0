@@ -2,70 +2,90 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BCAD28202D
-	for <lists+linux-ext4@lfdr.de>; Sat,  3 Oct 2020 03:38:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DF4C2820DC
+	for <lists+linux-ext4@lfdr.de>; Sat,  3 Oct 2020 05:59:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725601AbgJCBip (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 2 Oct 2020 21:38:45 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:51287 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725550AbgJCBip (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 2 Oct 2020 21:38:45 -0400
-X-IronPort-AV: E=Sophos;i="5.77,329,1596470400"; 
-   d="scan'208";a="99854525"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 03 Oct 2020 09:38:42 +0800
-Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
-        by cn.fujitsu.com (Postfix) with ESMTP id 36EC848990DF;
-        Sat,  3 Oct 2020 09:38:40 +0800 (CST)
-Received: from [10.167.220.69] (10.167.220.69) by
- G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Sat, 3 Oct 2020 09:38:37 +0800
-Message-ID: <5F77D61D.7030701@cn.fujitsu.com>
-Date:   Sat, 3 Oct 2020 09:38:37 +0800
-From:   Xiao Yang <yangx.jy@cn.fujitsu.com>
-User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.2; zh-CN; rv:1.9.2.18) Gecko/20110616 Thunderbird/3.1.11
+        id S1725794AbgJCD7i (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 2 Oct 2020 23:59:38 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:38273 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725648AbgJCD7i (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 2 Oct 2020 23:59:38 -0400
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0933xT2L010362
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 2 Oct 2020 23:59:29 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id E9A6542003C; Fri,  2 Oct 2020 23:59:28 -0400 (EDT)
+Date:   Fri, 2 Oct 2020 23:59:28 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     linux-ext4@vger.kernel.org, jack@suse.cz,
+        Dan Williams <dan.j.williams@intel.com>,
+        Anju T Sudhakar <anju@linux.vnet.ibm.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv2 1/3] ext4: Refactor ext4_overwrite_io() to take
+ ext4_map_blocks as argument
+Message-ID: <20201003035928.GY23474@mit.edu>
+References: <cover.1598094830.git.riteshh@linux.ibm.com>
+ <057a08972f818c035621a9fd3ff870bedcdf5e83.1598094830.git.riteshh@linux.ibm.com>
 MIME-Version: 1.0
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-CC:     <darrick.wong@oracle.com>, <ira.weiny@intel.com>,
-        <ebiggers@kernel.org>, <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH v2] chattr/lsattr: Support dax attribute
-References: <20200728053321.12892-1-yangx.jy@cn.fujitsu.com> <20201001205643.GA656789@mit.edu>
-In-Reply-To: <20201001205643.GA656789@mit.edu>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.167.220.69]
-X-ClientProxiedBy: G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.205) To
- G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206)
-X-yoursite-MailScanner-ID: 36EC848990DF.AA801
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: yangx.jy@cn.fujitsu.com
-X-Spam-Status: No
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <057a08972f818c035621a9fd3ff870bedcdf5e83.1598094830.git.riteshh@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2020/10/2 4:56, Theodore Y. Ts'o wrote:
-> On Tue, Jul 28, 2020 at 01:33:21PM +0800, Xiao Yang wrote:
->> Use the letter 'x' to set/get dax attribute on a directory/file.
->>
->> Signed-off-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
->> Reviewed-by: Andreas Dilger<adilger@dilger.ca>
-> Thanks, applied.  Apologies for the delay.
-Hi Ted,
+On Sat, Aug 22, 2020 at 05:04:35PM +0530, Ritesh Harjani wrote:
+> Refactor ext4_overwrite_io() to take struct ext4_map_blocks
+> as it's function argument with m_lblk and m_len filled
+> from caller
+> 
+> There should be no functionality change in this patch.
+> 
+> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> ---
+>  fs/ext4/file.c | 22 +++++++++++-----------
+>  1 file changed, 11 insertions(+), 11 deletions(-)
+> 
+> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+> index 2a01e31a032c..84f73ed91af2 100644
+> --- a/fs/ext4/file.c
+> +++ b/fs/ext4/file.c
+> @@ -188,26 +188,22 @@ ext4_extending_io(struct inode *inode, loff_t offset, size_t len)
+>  }
+>  
+>  /* Is IO overwriting allocated and initialized blocks? */
+> -static bool ext4_overwrite_io(struct inode *inode, loff_t pos, loff_t len)
+> +static bool ext4_overwrite_io(struct inode *inode, struct ext4_map_blocks *map)
+>  {
+> -	struct ext4_map_blocks map;
+>  	unsigned int blkbits = inode->i_blkbits;
+> -	int err, blklen;ts
+> +	loff_t end = (map->m_lblk + map->m_len) << blkbits;
 
-Thank you for applying this patch. :-)
+As Dan Carpenter has pointed out, we need to cast map->m_lblk to
+loff_t, since m_lblk is 32 bits, and when this get shifted left by
+blkbits, we could end up losing bits.
 
-Could you apply another fix for fsdax on ext4?
-https://www.spinics.net/lists/linux-ext4/msg73863.html
+> -	if (pos + len > i_size_read(inode))
+> +	if (end > i_size_read(inode))
+>  		return false;
 
-Best Regards,
-Xiao Yang
-> 		  	    	- Ted
->
->
-> .
->
+This transformation is not functionally identical.
 
+The problem is that pos is not necessarily a multiple of the file
+system blocksize.    From below, 
 
+> +	map.m_lblk = offset >> inode->i_blkbits;
+> +	map.m_len = EXT4_MAX_BLOCKS(count, offset, inode->i_blkbits);
 
+So what previously was the starting offset of the overwrite, is now
+offset shifted right by blkbits, and then shifted left back by blkbits.
+
+So unless I'm missing something, this looks not quite right?
+
+   	      	      		      	    - Ted
