@@ -2,90 +2,46 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF4C2820DC
-	for <lists+linux-ext4@lfdr.de>; Sat,  3 Oct 2020 05:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 829A1282101
+	for <lists+linux-ext4@lfdr.de>; Sat,  3 Oct 2020 06:06:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725794AbgJCD7i (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 2 Oct 2020 23:59:38 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:38273 "EHLO
+        id S1725794AbgJCEF6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 3 Oct 2020 00:05:58 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:39516 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725648AbgJCD7i (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 2 Oct 2020 23:59:38 -0400
+        with ESMTP id S1725747AbgJCEF5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 3 Oct 2020 00:05:57 -0400
 Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0933xT2L010362
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 09345d54013563
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 2 Oct 2020 23:59:29 -0400
+        Sat, 3 Oct 2020 00:05:40 -0400
 Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id E9A6542003C; Fri,  2 Oct 2020 23:59:28 -0400 (EDT)
-Date:   Fri, 2 Oct 2020 23:59:28 -0400
+        id BD93F42003C; Sat,  3 Oct 2020 00:05:39 -0400 (EDT)
+Date:   Sat, 3 Oct 2020 00:05:39 -0400
 From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     linux-ext4@vger.kernel.org, jack@suse.cz,
-        Dan Williams <dan.j.williams@intel.com>,
-        Anju T Sudhakar <anju@linux.vnet.ibm.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv2 1/3] ext4: Refactor ext4_overwrite_io() to take
- ext4_map_blocks as argument
-Message-ID: <20201003035928.GY23474@mit.edu>
-References: <cover.1598094830.git.riteshh@linux.ibm.com>
- <057a08972f818c035621a9fd3ff870bedcdf5e83.1598094830.git.riteshh@linux.ibm.com>
+To:     Petr Malat <oss@malat.biz>
+Cc:     linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca
+Subject: Re: [PATCH] ext4: Do not interpret high bytes if 64bit feature is
+ disabled
+Message-ID: <20201003040539.GZ23474@mit.edu>
+References: <20200825150016.3363-1-oss@malat.biz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <057a08972f818c035621a9fd3ff870bedcdf5e83.1598094830.git.riteshh@linux.ibm.com>
+In-Reply-To: <20200825150016.3363-1-oss@malat.biz>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Aug 22, 2020 at 05:04:35PM +0530, Ritesh Harjani wrote:
-> Refactor ext4_overwrite_io() to take struct ext4_map_blocks
-> as it's function argument with m_lblk and m_len filled
-> from caller
+On Tue, Aug 25, 2020 at 05:00:16PM +0200, Petr Malat wrote:
+> Fields s_free_blocks_count_hi, s_r_blocks_count_hi and s_blocks_count_hi
+> are not valid if EXT4_FEATURE_INCOMPAT_64BIT is not enabled and should be
+> treated as zeroes.
 > 
-> There should be no functionality change in this patch.
-> 
-> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
-> ---
->  fs/ext4/file.c | 22 +++++++++++-----------
->  1 file changed, 11 insertions(+), 11 deletions(-)
-> 
-> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-> index 2a01e31a032c..84f73ed91af2 100644
-> --- a/fs/ext4/file.c
-> +++ b/fs/ext4/file.c
-> @@ -188,26 +188,22 @@ ext4_extending_io(struct inode *inode, loff_t offset, size_t len)
->  }
->  
->  /* Is IO overwriting allocated and initialized blocks? */
-> -static bool ext4_overwrite_io(struct inode *inode, loff_t pos, loff_t len)
-> +static bool ext4_overwrite_io(struct inode *inode, struct ext4_map_blocks *map)
->  {
-> -	struct ext4_map_blocks map;
->  	unsigned int blkbits = inode->i_blkbits;
-> -	int err, blklen;ts
-> +	loff_t end = (map->m_lblk + map->m_len) << blkbits;
+> Signed-off-by: Petr Malat <oss@malat.biz>
 
-As Dan Carpenter has pointed out, we need to cast map->m_lblk to
-loff_t, since m_lblk is 32 bits, and when this get shifted left by
-blkbits, we could end up losing bits.
+Thanks, applied.
 
-> -	if (pos + len > i_size_read(inode))
-> +	if (end > i_size_read(inode))
->  		return false;
-
-This transformation is not functionally identical.
-
-The problem is that pos is not necessarily a multiple of the file
-system blocksize.    From below, 
-
-> +	map.m_lblk = offset >> inode->i_blkbits;
-> +	map.m_len = EXT4_MAX_BLOCKS(count, offset, inode->i_blkbits);
-
-So what previously was the starting offset of the overwrite, is now
-offset shifted right by blkbits, and then shifted left back by blkbits.
-
-So unless I'm missing something, this looks not quite right?
-
-   	      	      		      	    - Ted
+					- Ted
