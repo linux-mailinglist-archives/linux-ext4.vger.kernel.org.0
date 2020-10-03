@@ -2,57 +2,46 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CA76282181
-	for <lists+linux-ext4@lfdr.de>; Sat,  3 Oct 2020 07:09:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83188282183
+	for <lists+linux-ext4@lfdr.de>; Sat,  3 Oct 2020 07:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725765AbgJCFJq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 3 Oct 2020 01:09:46 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:56264 "EHLO
+        id S1725681AbgJCFLj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 3 Oct 2020 01:11:39 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:56763 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725446AbgJCFJq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 3 Oct 2020 01:09:46 -0400
+        with ESMTP id S1725446AbgJCFLi (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 3 Oct 2020 01:11:38 -0400
 Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 09359UHk024769
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0935BZPn026211
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 3 Oct 2020 01:09:30 -0400
+        Sat, 3 Oct 2020 01:11:35 -0400
 Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id D68E542003C; Sat,  3 Oct 2020 01:09:29 -0400 (EDT)
-Date:   Sat, 3 Oct 2020 01:09:29 -0400
+        id CFE1842003C; Sat,  3 Oct 2020 01:11:34 -0400 (EDT)
+Date:   Sat, 3 Oct 2020 01:11:34 -0400
 From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
-Cc:     yi.zhang@huawei.com, jack@suse.cz, linux-ext4@vger.kernel.org,
-        adilger.kernel@dilger.ca
-Subject: Re: [PATCH v3] ext4: Fix bdev write error check failed when mount fs
- with ro
-Message-ID: <20201003050929.GL23474@mit.edu>
-References: <20200928020556.710971-1-zhangxiaoxu5@huawei.com>
+To:     Chunguang Xu <brookxu.cn@gmail.com>
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] ext4: delete invalid comments near mb_buddy_adjust_border
+Message-ID: <20201003051134.GM23474@mit.edu>
+References: <1601292995-32205-1-git-send-email-brookxu@tencent.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200928020556.710971-1-zhangxiaoxu5@huawei.com>
+In-Reply-To: <1601292995-32205-1-git-send-email-brookxu@tencent.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sun, Sep 27, 2020 at 10:05:56PM -0400, Zhang Xiaoxu wrote:
-> Consider a situation when a filesystem was uncleanly shutdown and the
-> orphan list is not empty and a read-only mount is attempted. The orphan
-> list cleanup during mount will fail with:
+On Mon, Sep 28, 2020 at 07:36:34PM +0800, Chunguang Xu wrote:
+> From: Chunguang Xu <brookxu@tencent.com>
 > 
-> ext4_check_bdev_write_error:193: comm mount: Error while async write back metadata
+> The comment near mb_buddy_adjust_border seems meaningless, just
+> clear it.
 > 
-> This happens because sbi->s_bdev_wb_err is not initialized when mounting
-> the filesystem in read only mode and so ext4_check_bdev_write_error()
-> falsely triggers.
-> 
-> Initialize sbi->s_bdev_wb_err unconditionally to avoid this problem.
-> 
-> Fixes: bc71726c7257 ("ext4: abort the filesystem if failed to async write metadata buffer")
-> Signed-off-by: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
-> Reviewed-by: Jan Kara <jack@suse.cz>
+> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
 
 Applied, thanks.
 
-				- Ted
+					- Ted
