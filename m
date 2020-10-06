@@ -2,264 +2,165 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68081284381
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 Oct 2020 02:49:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26B09284422
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 Oct 2020 04:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726636AbgJFAtG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 5 Oct 2020 20:49:06 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:56657 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725865AbgJFAtG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 5 Oct 2020 20:49:06 -0400
-Received: from mail-qk1-f197.google.com ([209.85.222.197])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <mfo@canonical.com>)
-        id 1kPbA7-0004XQ-8q
-        for linux-ext4@vger.kernel.org; Tue, 06 Oct 2020 00:49:03 +0000
-Received: by mail-qk1-f197.google.com with SMTP id m23so8069990qkh.10
-        for <linux-ext4@vger.kernel.org>; Mon, 05 Oct 2020 17:49:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=UC5Ocn3Tw5Ct8smHnaeE3PO2yoiTUfAo3AuOvhlc9Ng=;
-        b=EiCntVP4+ejMYjnz1njUmwyxWl94b7EQ4i40/5zuHi1GHH14knyYjJoC2hjuex+7lH
-         im0VXoajD7mv3r99mDWGOlAgWKo49YjNVZFaF9TeqXK2vZUwvgciIpRlABR38p7dnH5Y
-         a4TVpZiwgxaBibzpSfXvUpnvWN5/nhiBU379z+8aTFK/KYBeklXXxQ61J6N5I+fd9Qmd
-         9x2xj0a3IfF3cAocyLW+xAcvYljEQLB+SPKEFwLyLprFJMYFGkdnmQT3m5Rib+QLHrue
-         n6bckvlIFUBmZRL3cPuWwTrtnCPnM/b0rLPf1M10Q/I75XVF2LWbe43n4HdsfOia5D8P
-         QEIQ==
-X-Gm-Message-State: AOAM533cw0uLFPG8yNhWm/x3S3F9n3e5Yq2bhNAhZGjE2MagZneZ5SYJ
-        aAh+l7lFFM7Le498p8ZGg41x1/Y8jn61y/4cmLvYeMmIpqLeeW85spSxWsXjl6m0DbtvksoGCOW
-        2NhqobhnsyiFs5DNOQOKuoWM8tLrVdVetmK2/CDw=
-X-Received: by 2002:a05:620a:2e7:: with SMTP id a7mr2772976qko.48.1601945341836;
-        Mon, 05 Oct 2020 17:49:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJytiNpfCNTo4NWRlfBdxl012ldpFf+gxvi/Vf25rkVA+kZFpWUShcB2cCZyOmiIutEdc4YJug==
-X-Received: by 2002:a05:620a:2e7:: with SMTP id a7mr2772961qko.48.1601945341552;
-        Mon, 05 Oct 2020 17:49:01 -0700 (PDT)
-Received: from localhost.localdomain ([201.82.49.101])
-        by smtp.gmail.com with ESMTPSA id l125sm1355322qke.23.2020.10.05.17.48.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 17:49:00 -0700 (PDT)
-From:   Mauricio Faria de Oliveira <mfo@canonical.com>
-To:     linux-ext4@vger.kernel.org, ocfs2-devel@oss.oracle.com
-Cc:     Jan Kara <jack@suse.cz>, Andreas Dilger <adilger@dilger.ca>,
-        dann frazier <dann.frazier@canonical.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>
-Subject: [PATCH v5 4/4] ext4: data=journal: write-protect pages on j_submit_inode_data_buffers()
-Date:   Mon,  5 Oct 2020 21:48:41 -0300
-Message-Id: <20201006004841.600488-5-mfo@canonical.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201006004841.600488-1-mfo@canonical.com>
-References: <20201006004841.600488-1-mfo@canonical.com>
+        id S1726567AbgJFCva (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 5 Oct 2020 22:51:30 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:52858 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725909AbgJFCva (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 5 Oct 2020 22:51:30 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0962nwax106626;
+        Tue, 6 Oct 2020 02:51:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=YosbUU7kIPdnSwmp8WXDorI0qaN8IkFGsOrxOmisByQ=;
+ b=o/d8baE3rfitjkiEc+2W8xFn1pTeh35tEcBNdJsaGAm65xK2fy/zRSFUdjG8XQG3VWyh
+ ETj1XOSUFr638HpqF6JG77zeXqNhXYoTMMwnOXVEIdoevGL5abYpkm83Hudr8vV2UOYH
+ VZ1TEKEIaLx7ocsoXX4ZCCbeV/Bet7EN3MNZqIQi8zh65wbRpa+wX1TF3yUxhZaOleCJ
+ 4UkotrK1jzRqizjEJN+yprguqLZihtiWH1JMJnoNt+P+EMBp1SNgwW5wkyDaKbLvnR7+
+ XXjkkve8Vs1La5Q3ZjU3Zp4j/gdhStg7anLGszJD2bCG7aXtbz7B/kJ3mUpX8th0cj/O 2w== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 33xhxmshps-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 06 Oct 2020 02:51:15 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0962omMm058934;
+        Tue, 6 Oct 2020 02:51:14 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 33y36xc7s8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 06 Oct 2020 02:51:14 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0962pBIn029775;
+        Tue, 6 Oct 2020 02:51:11 GMT
+Received: from localhost (/10.159.149.142)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 05 Oct 2020 19:51:11 -0700
+Date:   Mon, 5 Oct 2020 19:51:10 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Josh Triplett <josh@joshtriplett.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ext4@vger.kernel.org
+Subject: Re: ext4 regression in v5.9-rc2 from e7bfb5c9bb3d on ro fs with
+ overlapped bitmaps
+Message-ID: <20201006025110.GJ49559@magnolia>
+References: <CAHk-=wj-H5BYCU_kKiOK=B9sN3BtRzL4pnne2AJPyf54nQ+d=w@mail.gmail.com>
+ <20201005081454.GA493107@localhost>
+ <20201005173639.GA2311765@magnolia>
+ <20201006003216.GB6553@localhost>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201006003216.GB6553@localhost>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9765 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ bulkscore=0 spamscore=0 malwarescore=0 suspectscore=0 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2010060016
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9765 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 bulkscore=0
+ impostorscore=0 lowpriorityscore=0 suspectscore=0 phishscore=0
+ mlxlogscore=999 adultscore=0 clxscore=1015 spamscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010060016
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This implements journal callbacks j_submit|finish_inode_data_buffers()
-with different behavior for data=journal: to write-protect pages under
-commit, preventing changes to buffers writeably mapped to userspace.
+On Mon, Oct 05, 2020 at 05:32:16PM -0700, Josh Triplett wrote:
+> On Mon, Oct 05, 2020 at 10:36:39AM -0700, Darrick J. Wong wrote:
+> > On Mon, Oct 05, 2020 at 01:14:54AM -0700, Josh Triplett wrote:
+> > > Ran into an ext4 regression when testing upgrades to 5.9-rc kernels:
+> > > 
+> > > Commit e7bfb5c9bb3d ("ext4: handle add_system_zone() failure in
+> > > ext4_setup_system_zone()") breaks mounting of read-only ext4 filesystems
+> > > with intentionally overlapping bitmap blocks.
+> > > 
+> > > On an always-read-only filesystem explicitly marked with
+> > > EXT4_FEATURE_RO_COMPAT_SHARED_BLOCKS, prior to that commit, it's safe to
+> > > point all the block and inode bitmaps to a single block
+> > 
+> > LOL, WHAT?
+> > 
+> > I didn't know shared blocks applied to fs metadata.  I thought that
+> > "shared" only applied to file extent maps being able to share physical
+> > blocks.
+> 
+> The flag isn't documented very well yet, but since it specifically
+> forces the filesystem to always be mounted read-only, the bitmaps really
+> shouldn't matter at all. (In an ideal world, a permanently read-only
+> filesystem should be able to omit all the bitmaps entirely. Pointing
+> them all to a single disk block is the next best thing.)
 
-If a buffer's content changes between commit's checksum calculation
-and write-out to disk, it can cause journal recovery/mount failures
-upon a kernel crash or power loss.
+I disagree; creating undocumented forks of an existing ondisk format
+(especially one that presents as inconsistent metadata to regular tools)
+is creating a ton of pain for future users and maintainers when the
+incompat forks collide with the canonical implementation(s).
 
-    [   27.334874] EXT4-fs: Warning: mounting with data=journal disables delayed allocation, dioread_nolock, and O_DIRECT support!
-    [   27.339492] JBD2: Invalid checksum recovering data block 8705 in log
-    [   27.342716] JBD2: recovery failed
-    [   27.343316] EXT4-fs (loop0): error loading journal
-    mount: /ext4: can't read superblock on /dev/loop0.
+(Granted, I don't know if you /created/ this new interpretation of the
+feature flag or if you've merely been stuck with it...)
 
-In j_submit_inode_data_buffers() we write-protect the inode's pages
-with write_cache_pages() and redirty w/ writepage callback if needed.
+I don't say that as a theoretical argument -- you've just crashed right
+into this, because nobody knew that the in-kernel block validity doesn't
+know how to deal with this other than to error out.
 
-In j_finish_inode_data_buffers() there is nothing do to.
+> > Could /somebody/ please document the ondisk format changes that are
+> > associated with this feature?
+> 
+> I pretty much had to sort it out by looking at a combination of
+> e2fsprogs and the kernel, and a lot of experimentation, until I ended up
+> with something that the kernel was completely happy with without a
+> single complaint.
+> 
+> I'd be happy to write up a summary of the format.
 
-And in order to use the callbacks, inodes are added to the inode list
-in transaction in __ext4_journalled_writepage() and ext4_page_mkwrite().
+Seems like a good idea, particularly since you're asking for a format
+change that requires kernel support and the ondisk format documentation
+lives under Documentation/.  That said...
 
-In ext4_page_mkwrite() we must make sure that the buffers are attached
-to the transaction as jbddirty with write_end_fn(), as already done in
-__ext4_journalled_writepage().
+> I'd still really like to see this patch applied for 5.9, to avoid having
+> filesystems that an old kernel can mount but a new one can't. This still
+> seems like a regression to me.
+> 
+> > > of all 1s,
+> > > because a read-only filesystem will never allocate or free any blocks or
+> > > inodes.
+> > 
+> > All 1s?  So the inode bitmap says that every inode table slot is in use,
+> > even if the inode record itself says it isn't?
+> 
+> Yes.
+> 
+> > What does e2fsck -n
+> > think about that kind of metadata inconsistency?
+> 
+> If you set up the rest of the metadata consistently with it (for
+> instance, 0 free blocks and 0 free inodes), you'll only get a single
+> complaint, from the e2fsck equivalent of block_validity. See
+> https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=956509 for details on
+> that;
 
-Signed-off-by: Mauricio Faria de Oliveira <mfo@canonical.com>
-Reported-by: Dann Frazier <dann.frazier@canonical.com>
-Reported-by: kernel test robot <lkp@intel.com> # wbc.nr_to_write
-Suggested-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/inode.c | 25 +++++++++-----
- fs/ext4/super.c | 87 +++++++++++++++++++++++++++++++++++++++++++++++--
- 2 files changed, 101 insertions(+), 11 deletions(-)
+...Ted shot down this whole thing six months ago.
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index ac153e340a6f..af5de62c1214 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -1910,6 +1910,9 @@ static int __ext4_journalled_writepage(struct page *page,
- 		err = ext4_walk_page_buffers(handle, page_bufs, 0, len, NULL,
- 					     write_end_fn);
- 	}
-+	if (ret == 0)
-+		ret = err;
-+	err = ext4_jbd2_inode_add_write(handle, inode, 0, len);
- 	if (ret == 0)
- 		ret = err;
- 	EXT4_I(inode)->i_datasync_tid = handle->h_transaction->t_tid;
-@@ -6052,10 +6055,8 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
- 		size = i_size_read(inode);
- 		/* Page got truncated from under us? */
- 		if (page->mapping != mapping || page_offset(page) > size) {
--			unlock_page(page);
- 			ret = VM_FAULT_NOPAGE;
--			ext4_journal_stop(handle);
--			goto out;
-+			goto out_error;
- 		}
- 
- 		if (page->index == size >> PAGE_SHIFT)
-@@ -6065,13 +6066,15 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
- 
- 		err = __block_write_begin(page, 0, len, ext4_get_block);
- 		if (!err) {
-+			ret = VM_FAULT_SIGBUS;
- 			if (ext4_walk_page_buffers(handle, page_buffers(page),
--					0, len, NULL, do_journal_get_write_access)) {
--				unlock_page(page);
--				ret = VM_FAULT_SIGBUS;
--				ext4_journal_stop(handle);
--				goto out;
--			}
-+					0, len, NULL, do_journal_get_write_access))
-+				goto out_error;
-+			if (ext4_walk_page_buffers(handle, page_buffers(page),
-+					0, len, NULL, write_end_fn))
-+				goto out_error;
-+			if (ext4_jbd2_inode_add_write(handle, inode, 0, len))
-+				goto out_error;
- 			ext4_set_inode_state(inode, EXT4_STATE_JDATA);
- 		} else {
- 			unlock_page(page);
-@@ -6086,6 +6089,10 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
- 	up_read(&EXT4_I(inode)->i_mmap_sem);
- 	sb_end_pagefault(inode->i_sb);
- 	return ret;
-+out_error:
-+	unlock_page(page);
-+	ext4_journal_stop(handle);
-+	goto out;
- }
- 
- vm_fault_t ext4_filemap_fault(struct vm_fault *vmf)
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index a14c1ed39aa3..a2fc62a6d3b7 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -472,6 +472,89 @@ static void ext4_journal_commit_callback(journal_t *journal, transaction_t *txn)
- 	spin_unlock(&sbi->s_md_lock);
- }
- 
-+/*
-+ * This writepage callback for write_cache_pages()
-+ * takes care of a few cases after page cleaning.
-+ *
-+ * write_cache_pages() already checks for dirty pages
-+ * and calls clear_page_dirty_for_io(), which we want,
-+ * to write protect the pages.
-+ *
-+ * However, we may have to redirty a page (see below.)
-+ */
-+static int ext4_journalled_writepage_callback(struct page *page,
-+					      struct writeback_control *wbc,
-+					      void *data)
-+{
-+	transaction_t *transaction = (transaction_t *) data;
-+	struct buffer_head *bh, *head;
-+	struct journal_head *jh;
-+
-+	bh = head = page_buffers(page);
-+	do {
-+		/*
-+		 * We have to redirty a page in these cases:
-+		 * 1) If buffer is dirty, it means the page was dirty because it
-+		 * contains a buffer that needs checkpointing. So the dirty bit
-+		 * needs to be preserved so that checkpointing writes the buffer
-+		 * properly.
-+		 * 2) If buffer is not part of the committing transaction
-+		 * (we may have just accidentally come across this buffer because
-+		 * inode range tracking is not exact) or if the currently running
-+		 * transaction already contains this buffer as well, dirty bit
-+		 * needs to be preserved so that the buffer gets writeprotected
-+		 * properly on running transaction's commit.
-+		 */
-+		jh = bh2jh(bh);
-+		if (buffer_dirty(bh) ||
-+		    (jh && (jh->b_transaction != transaction ||
-+			    jh->b_next_transaction))) {
-+			redirty_page_for_writepage(wbc, page);
-+			goto out;
-+		}
-+	} while ((bh = bh->b_this_page) != head);
-+
-+out:
-+	return AOP_WRITEPAGE_ACTIVATE;
-+}
-+
-+static int ext4_journalled_submit_inode_data_buffers(struct jbd2_inode *jinode)
-+{
-+	struct address_space *mapping = jinode->i_vfs_inode->i_mapping;
-+	struct writeback_control wbc = {
-+		.sync_mode =  WB_SYNC_ALL,
-+		.nr_to_write = LONG_MAX,
-+		.range_start = jinode->i_dirty_start,
-+		.range_end = jinode->i_dirty_end,
-+        };
-+
-+	return write_cache_pages(mapping, &wbc,
-+				 ext4_journalled_writepage_callback,
-+				 jinode->i_transaction);
-+}
-+
-+static int ext4_journal_submit_inode_data_buffers(struct jbd2_inode *jinode)
-+{
-+	int ret;
-+
-+	if (ext4_should_journal_data(jinode->i_vfs_inode))
-+		ret = ext4_journalled_submit_inode_data_buffers(jinode);
-+	else
-+		ret = jbd2_journal_submit_inode_data_buffers(jinode);
-+
-+	return ret;
-+}
-+
-+static int ext4_journal_finish_inode_data_buffers(struct jbd2_inode *jinode)
-+{
-+	int ret = 0;
-+
-+	if (!ext4_should_journal_data(jinode->i_vfs_inode))
-+		ret = jbd2_journal_finish_inode_data_buffers(jinode);
-+
-+	return ret;
-+}
-+
- static bool system_going_down(void)
- {
- 	return system_state == SYSTEM_HALT || system_state == SYSTEM_POWER_OFF
-@@ -4647,9 +4730,9 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 
- 	sbi->s_journal->j_commit_callback = ext4_journal_commit_callback;
- 	sbi->s_journal->j_submit_inode_data_buffers =
--		jbd2_journal_submit_inode_data_buffers;
-+		ext4_journal_submit_inode_data_buffers;
- 	sbi->s_journal->j_finish_inode_data_buffers =
--		jbd2_journal_finish_inode_data_buffers;
-+		ext4_journal_finish_inode_data_buffers;
- 
- no_journal:
- 	if (!test_opt(sb, NO_MBCACHE)) {
--- 
-2.17.1
+The Debian bug database is /not/ the designated forum to discuss changes
+to the ondisk format; linux-ext4 is.
 
+--D
+
+> with that fixed, e2fsck wouldn't complain at all. The kernel,
+> prior to 5.9-rc2, doesn't have a single complaint, whether at mount,
+> unmount, or read of every file and directory on the filesystem.
+> 
+> The errors you got in your e2fsck run came because you just overrode the
+> bitmaps, but didn't make the rest of the metadata consistent with that.
+> I can provide a sample filesystem if that would help.
+> 
+> - Josh
