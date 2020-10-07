@@ -2,70 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C34285BF4
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Oct 2020 11:38:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E10B285D66
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 Oct 2020 12:52:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727111AbgJGJiw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 7 Oct 2020 05:38:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726218AbgJGJiw (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Oct 2020 05:38:52 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0DC4C061755
-        for <linux-ext4@vger.kernel.org>; Wed,  7 Oct 2020 02:38:51 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id d24so1510398lfa.8
-        for <linux-ext4@vger.kernel.org>; Wed, 07 Oct 2020 02:38:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=iastate.edu; s=google20150603;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=vUOkbXK7Vzgcm7KtrOCLHPK8GVHRzrzqej168SESYLU=;
-        b=RqdzF0ku2Mad6hdpHC5Njnaqv2J826nWtEEIONvcQvu4iV5kkPNsB8bcgCwiXsBYBQ
-         a+SSqSuayEH8c/yegOmfQ4M+QWqDqaCsccl9fOo/znkmXxdtMyv+HHLW5yj4DtV8uZ44
-         OV7r6yhOkgWze3dgaOJW61/8bqUC/mc8Swn58=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=vUOkbXK7Vzgcm7KtrOCLHPK8GVHRzrzqej168SESYLU=;
-        b=jy4bPSVKsqzOtUiDWBBKLC27Q0kByqWrpLDRwh0iQc2fceZfgg+BmP7KUGffrrzftX
-         Z8dLL2EMK4IhuovPm+JM33wXgK6kQLdycmGeEEyxGgdwVwedVDVIhR8vNKHvUDNClyaH
-         UvpfcxcTtMgDL3hD8+FCOotWZx1/U8D+217RLuQAUdI+HKRbM19MhjVxLnZsX7zcMWIZ
-         cusdOBv3h9VZDjXkn0lt+L8dWjUCG0nOH1z4e2ZtwYApFIGj9wQzQbLeQGOd7pnbVs0p
-         QvDWTmHqfJY7Po5RMgcj1k2daoUQbHRFMHxVrwPJM/DwE4b3oPnq7zOEZMRREaOMjhW5
-         XrQg==
-X-Gm-Message-State: AOAM531Dh7BWHWjJKa9Tp9FdTm/FCZgYnS9KIgL/RsM1QvkNdPTBVXyF
-        1iff1BSXLNrIBHUwaHUdjggGO+YorqlA1s+xX2zerNJS+Q1/WQ==
-X-Google-Smtp-Source: ABdhPJyAGo8PWzGtoZkrqzAFbWId1LHAV8AGeUYCJl/QEyf0t3oCnQq2ePBa6Oc3LAGPz5EA0ZA6jzQ9x8MdU04QVNs=
-X-Received: by 2002:a19:e45:: with SMTP id 66mr767062lfo.376.1602063529434;
- Wed, 07 Oct 2020 02:38:49 -0700 (PDT)
+        id S1728132AbgJGKwB convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Wed, 7 Oct 2020 06:52:01 -0400
+Received: from mx.metalurgs.lv ([81.198.125.103]:61424 "EHLO mx.metalurgs.lv"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727028AbgJGKwA (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 7 Oct 2020 06:52:00 -0400
+Received: from mx.metalurgs.lv (localhost [127.0.0.1])
+        by mx.metalurgs.lv (Postfix) with ESMTP id EB9BB5F348
+        for <linux-ext4@vger.kernel.org>; Wed,  7 Oct 2020 13:50:36 +0300 (EEST)
+Received: from kas30pipe.localhost (localhost [127.0.0.1])
+        by mx.metalurgs.lv (Postfix) with ESMTP id 5C2775EB2F
+        for <linux-ext4@vger.kernel.org>; Wed,  7 Oct 2020 13:50:36 +0300 (EEST)
+Received: by mx.metalurgs.lv (Postfix, from userid 1005)
+        id 3601B5E5EC; Wed,  7 Oct 2020 13:50:35 +0300 (EEST)
+Received: from [100.64.1.74] (unknown [190.15.125.55])
+        (Authenticated sender: admin)
+        by mx.metalurgs.lv (Postfix) with ESMTPA id 24CCC62C49;
+        Wed,  7 Oct 2020 13:50:28 +0300 (EEST)
 MIME-Version: 1.0
-From:   Om Gatla <ogatla@iastate.edu>
-Date:   Wed, 7 Oct 2020 04:38:38 -0500
-Message-ID: <CAE0mYSWO0gEUebYXWs2M_4ZnWh6-Pm1U5F21iZCsAiqFjMq1Jg@mail.gmail.com>
-Subject: Redo log for file system checkers
-To:     linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Description: Mail message body
+To:     Recipients <financialcapability6@gmail.com>
+From:   "Mr. Hashim Bin" <financialcapability6@gmail.com>
+Date:   Wed, 07 Oct 2020 07:50:21 -0300
+Reply-To: hmurrah39@gmail.com
+X-SpamTest-Envelope-From: financialcapability6@gmail.com
+X-SpamTest-Group-ID: 00000000
+X-SpamTest-Info: Profiles 71303 [Jan 01 2015]
+X-SpamTest-Info: {TO: forged address, i.e. recipient, investors, public, etc.}
+X-SpamTest-Info: {DATE: unreal year}
+X-SpamTest-Method: none
+X-SpamTest-Rate: 55
+X-SpamTest-Status: Not detected
+X-SpamTest-Status-Extended: not_detected
+X-SpamTest-Version: SMTP-Filter Version 3.0.0 [0284], KAS30/Release
+Message-ID: <20201007105035.3601B5E5EC@mx.metalurgs.lv>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+Subject: Low Rate Loan./mmm,
+X-Anti-Virus: Kaspersky Anti-Virus for Linux Mail Server 5.6.39/RELEASE,
+         bases: 20140401 #7726142, check: 20201007 notchecked
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello all,
+Hello Dear,
 
-Our research group at Iowa State University and Western Digital have
-designed and developed a generic redo log interface for file system
-checkers (fsck). The source code is available at:
-https://git.ece.iastate.edu/data-storage-lab/prototypes/rfsck
 
-The design of our redo log is based on the undo log feature available
-in e2fsck and provides a transaction interface. We identified that the
-existing undo log in e2fsck is not properly implemented and that there
-are issues concerning synchronizing updates across the undo log file
-and the device.
+We are Base Investment Company offering Corporate and Personal Loan at 3% Interest Rate for a duration of 10Years.
 
-For further details please refer to our paper:
-https://www.usenix.org/system/files/conference/fast18/fast18-gatla.pdf
 
-I request the community to kindly review our work and provide us some feedback.
+We also pay 1% commission to brokers, who introduce project owners for finance or other opportunities.
 
-Regards
-Om Rameshwar Gatla
+
+Please get back to me if you are interested for more
+
+details.
+
+
+Yours faithfully,
+
+Hashim Murrah
