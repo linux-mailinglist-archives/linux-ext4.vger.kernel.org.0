@@ -2,67 +2,65 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E10B285D66
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Oct 2020 12:52:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D80F28614D
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 Oct 2020 16:32:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728132AbgJGKwB convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Wed, 7 Oct 2020 06:52:01 -0400
-Received: from mx.metalurgs.lv ([81.198.125.103]:61424 "EHLO mx.metalurgs.lv"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727028AbgJGKwA (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 7 Oct 2020 06:52:00 -0400
-Received: from mx.metalurgs.lv (localhost [127.0.0.1])
-        by mx.metalurgs.lv (Postfix) with ESMTP id EB9BB5F348
-        for <linux-ext4@vger.kernel.org>; Wed,  7 Oct 2020 13:50:36 +0300 (EEST)
-Received: from kas30pipe.localhost (localhost [127.0.0.1])
-        by mx.metalurgs.lv (Postfix) with ESMTP id 5C2775EB2F
-        for <linux-ext4@vger.kernel.org>; Wed,  7 Oct 2020 13:50:36 +0300 (EEST)
-Received: by mx.metalurgs.lv (Postfix, from userid 1005)
-        id 3601B5E5EC; Wed,  7 Oct 2020 13:50:35 +0300 (EEST)
-Received: from [100.64.1.74] (unknown [190.15.125.55])
-        (Authenticated sender: admin)
-        by mx.metalurgs.lv (Postfix) with ESMTPA id 24CCC62C49;
-        Wed,  7 Oct 2020 13:50:28 +0300 (EEST)
+        id S1728629AbgJGOcY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 7 Oct 2020 10:32:24 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:36758 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728562AbgJGOcY (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Oct 2020 10:32:24 -0400
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 097EWBGI001492
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 7 Oct 2020 10:32:11 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 1DE34420107; Wed,  7 Oct 2020 10:32:11 -0400 (EDT)
+Date:   Wed, 7 Oct 2020 10:32:11 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Josh Triplett <josh@joshtriplett.org>
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ext4@vger.kernel.org
+Subject: Re: ext4 regression in v5.9-rc2 from e7bfb5c9bb3d on ro fs with
+ overlapped bitmaps
+Message-ID: <20201007143211.GA235506@mit.edu>
+References: <CAHk-=wj-H5BYCU_kKiOK=B9sN3BtRzL4pnne2AJPyf54nQ+d=w@mail.gmail.com>
+ <20201005081454.GA493107@localhost>
+ <20201005173639.GA2311765@magnolia>
+ <20201006003216.GB6553@localhost>
+ <20201006025110.GJ49559@magnolia>
+ <20201006031834.GA5797@mit.edu>
+ <20201006050306.GA8098@localhost>
+ <20201006133533.GC5797@mit.edu>
+ <20201007080304.GB1112@localhost>
 MIME-Version: 1.0
-Content-Description: Mail message body
-To:     Recipients <financialcapability6@gmail.com>
-From:   "Mr. Hashim Bin" <financialcapability6@gmail.com>
-Date:   Wed, 07 Oct 2020 07:50:21 -0300
-Reply-To: hmurrah39@gmail.com
-X-SpamTest-Envelope-From: financialcapability6@gmail.com
-X-SpamTest-Group-ID: 00000000
-X-SpamTest-Info: Profiles 71303 [Jan 01 2015]
-X-SpamTest-Info: {TO: forged address, i.e. recipient, investors, public, etc.}
-X-SpamTest-Info: {DATE: unreal year}
-X-SpamTest-Method: none
-X-SpamTest-Rate: 55
-X-SpamTest-Status: Not detected
-X-SpamTest-Status-Extended: not_detected
-X-SpamTest-Version: SMTP-Filter Version 3.0.0 [0284], KAS30/Release
-Message-ID: <20201007105035.3601B5E5EC@mx.metalurgs.lv>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
-Subject: Low Rate Loan./mmm,
-X-Anti-Virus: Kaspersky Anti-Virus for Linux Mail Server 5.6.39/RELEASE,
-         bases: 20140401 #7726142, check: 20201007 notchecked
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201007080304.GB1112@localhost>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello Dear,
+On Wed, Oct 07, 2020 at 01:03:04AM -0700, Josh Triplett wrote:
+> > But can we *please* take your custom tool out back and shoot it in the
+> > head?
+> 
+> Nope. As mentioned, this isn't about creating ext4 filesystem images,
+> and it isn't even remotely similar to mke2fs.
 
+Can you please tell us what your tool is for, then?  Why are you doing
+this?  Why are you inflicting this on us?
 
-We are Base Investment Company offering Corporate and Personal Loan at 3% Interest Rate for a duration of 10Years.
+And if the answer is nope, I can't, it's propietary, sorry....  then I
+think we should treat this the same way we treat proprietary kernel
+modules.
 
-
-We also pay 1% commission to brokers, who introduce project owners for finance or other opportunities.
-
-
-Please get back to me if you are interested for more
-
-details.
-
-
-Yours faithfully,
-
-Hashim Murrah
+       	     	      	        - Ted
+				
