@@ -2,186 +2,78 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7087E286242
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Oct 2020 17:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C77328641D
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 Oct 2020 18:30:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727593AbgJGPg7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 7 Oct 2020 11:36:59 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:53772 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726504AbgJGPg6 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Oct 2020 11:36:58 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 097FXS7M021665;
-        Wed, 7 Oct 2020 15:36:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=5f69miCPt+NV0LANFf/qO1h0nLQY1MwO9sbrOzCAKXg=;
- b=A3gBZ56H1novabUez4R1w5Sej3V87adyElfnlhPv4YAW+IMki1gknRxoArFhu/hvDAJ2
- n1iqburVQ+/f8wX66ajrL4xQ+XBLT2th0ZLHzcMkyNkctAiQYjLhg6NR+JtetIa4wi8y
- DG7mbgV27hqknqaHdLnJhXgbgHW2RFG7Rr+nNTHF+qyKSqrBifdQG93TtWcDWvmLwItt
- ZbkcHPG/TSkVlxOLuSP6QiKqBXKJ7Up45WwlayF9lRAhMconbPSSumdcdHLcelw/HHLM
- wMQIUfDyJRB0zB+In2+AQKQ0jx8FIwGI1oC9V8IFwuQV3M8t7EIYBExw42D2Ro6uECeP JQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 33xhxn2f9h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 07 Oct 2020 15:36:33 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 097FZIEx008693;
-        Wed, 7 Oct 2020 15:36:32 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 33yyjhc1at-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 07 Oct 2020 15:36:32 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 097FaKhX018653;
-        Wed, 7 Oct 2020 15:36:20 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 07 Oct 2020 08:36:20 -0700
-Date:   Wed, 7 Oct 2020 08:36:19 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Ralph Campbell <rcampbell@nvidia.com>
-Cc:     linux-mm@kvack.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Theodore Ts'o" <tytso@mit.edu>, Christoph Hellwig <hch@lst.de>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] ext4/xfs: add page refcount helper
-Message-ID: <20201007153619.GD49547@magnolia>
-References: <20201006230930.3908-1-rcampbell@nvidia.com>
+        id S1727993AbgJGQaj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 7 Oct 2020 12:30:39 -0400
+Received: from sonic309-14.consmr.mail.bf2.yahoo.com ([74.6.129.124]:37829
+        "EHLO sonic309-14.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727969AbgJGQai (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Oct 2020 12:30:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1602088237; bh=PxMwWzXvs+dqOoH0/FHvFmQpYH2JguaCUHYAVLLmaiw=; h=Date:From:Reply-To:Subject:References:From:Subject; b=bSXRsQDLv/trIglwvR6ekx+5n0zoRDOnRIXoYId4rspfmVyDQ+HO6eYmXiLiOQIPWR6dJBYdY4M1q979OOQ1TKjDFtnwKquq1Ob3JMOTaIsyTSjilWMzNgLVTY4ji2kQ/JaQ6QKxdqIdzoPFh/74Q1bet+/el2lUyJID3dNnojhKSE1oFBWBY/mTdrUi0P73iHEcbJI+Iq/hvn5QsLxuwV7VGZBIMwvdvP/iGc6pjOdpcpQ1qEtBs932WktMM+3FPKW+TcmFBAduZNiV9+axEah3eYjSRSd2ZoMwal6qX4Ti6Uclw1xfmwyFcHhMWElQyc00lSMLda0YLqtvuqhdcw==
+X-YMail-OSG: dnUtNsIVM1ksuZcOc23XYRVNRi2KvP98NXGHdsAi28G.4.j3LzR3teOzcMgJdV6
+ I9RFmM0M3xx0XbrxH8auo_1akYgWVB.dRSVHIzgRK0z5hKx5VFXU4dJtCGAc22MGL5lLZwLuriqx
+ spHXYJhLgjdOnN7IWn6k8UVsktxReUTOZSvffpMNjGN6HQM2GZkYT4zJYWbavaVbDj4squR6VDsG
+ FUPdmjFf_TeRoNar3kYz09J7F737j0hKxKrB5C1UoqySZ4CrJkeCYcCqo6qjLzguiHgWollDFs9G
+ wfUhfC__40GHcoR5U.tnb5qO9NkrcEsDCxVN0Yl3TF9R7SuF9eZUUNRi6p1q1qFpmebYHOu0LYlg
+ XDWhmcA8Gwj76jCE8zPtY.ndhdUj32w1_jwb8T.5ImGSXELCGBTytNYFshPcp8Ua2JkFFvF7AEdq
+ iHZ5_uGt.SmED8hs8oTSH81SBw.PrKO2a867uLjDMYkzg3YMMlzoagsbI._.zcvxQLQF3Z4wI7go
+ HVgXyVOK3cgsxDNN9uLZ0PBzPZupw7knpfbTrMUHtBZ0zq90ClywEq7ct3yk4MBS9Sr1iFfm4ZNu
+ oWrDUHzm_I8nKttgpWvu4sc9nJFuwsr9mOBdy8h726BxmI.VKfukWu91TYmzhiuAm6.MkLwTx5s7
+ aUsvcBlxc0MxNly27ydL4MsSXXLkzfERFT6x9xuzEIoAD8yMO2jUSh5l6KqoNH9z2EVoW5YZOhrr
+ OEsIeDnDNTRHYneliFW4sDaexyko3TwKr2Pp7JlEigfgiCb4iF6gqxgc4mr2thIYq4bkT4Ls_81K
+ X4aQbMndFHLEAO_QuNMA54Rb3AqGudPYJJ7V8CoZFGKKmyEOz_ThVLuAueq.wZI53AczG8jVl7se
+ pLPk5ZMEidaXsZIHJSu7XTUaZj4YR.y0fxjcsA9LW5OHxpz2ZH6AJq36gQAFb8Sd1DQ9OVPJZ0G1
+ LWM3bpXug5ZtmnJBAVWOTCE2scF5vKdFgupYZWPle66bt9DbMw9OQwMUvOZEvxs7moY0PLV5aiA6
+ d5ekeyaKjOhGBmVwJg2SYofzVimr63heoPJpFi8u902gixnanCPdsaH7mvQ7PGE3BRBl2yMRiQr7
+ EH6veU.EzJ1aDRCvkc7RuOoHy6vFYKXRaJCGllfAgmslsFZCzucfimYVY8Q9sPv_QmZQkiy_r_KR
+ IofCL2oGnGutvGQued8CdlpR1KyU2Q22Q.Rmrk9sIRuQg4gq9UwmZgqkKL7l2Ezb8LJzN4CtP4Vy
+ 9oiQiOtjhDsbbwwEZqzPwNLMX.k2hDjTEKqth9LNJb3MGugX0Usz4sIS3uH974jxBeXagmm3eoh8
+ aHcJXeRD2GmKa6Rws6fMUn_xzhK0JeENSAISfAuT4nF6t03_3FQfzo47ObE0mORHnDgvPwAH9BR8
+ B9pNTnrTSHLzrBEGuV7FORtCOmb27cguo1_W8_ZbjsY_Dog--
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic309.consmr.mail.bf2.yahoo.com with HTTP; Wed, 7 Oct 2020 16:30:37 +0000
+Date:   Wed, 7 Oct 2020 16:30:36 +0000 (UTC)
+From:   Marilyn Robert <fredodinga22@gmail.com>
+Reply-To: marilyobert@gmail.com
+Message-ID: <1859654730.147012.1602088236348@mail.yahoo.com>
+Subject: =?UTF-8?B?0J3QsNGY0LzQuNC70LAg0LrQsNGYINCz0L7RgdC/0L7QtNCw0YDQvtGC?=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201006230930.3908-1-rcampbell@nvidia.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 bulkscore=0
- phishscore=0 mlxlogscore=999 mlxscore=0 spamscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010070099
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 bulkscore=0
- impostorscore=0 lowpriorityscore=0 suspectscore=0 phishscore=0
- mlxlogscore=999 adultscore=0 clxscore=1011 spamscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010070099
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+References: <1859654730.147012.1602088236348.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16795 YMailNodin Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 04:09:30PM -0700, Ralph Campbell wrote:
-> There are several places where ZONE_DEVICE struct pages assume a reference
-> count == 1 means the page is idle and free. Instead of open coding this,
-> add a helper function to hide this detail.
-> 
-> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> ---
-> 
-> I'm resending this as a separate patch since I think it is ready to
-> merge. Originally, this was part of an RFC and is unchanged from v3:
-> https://lore.kernel.org/linux-mm/20201001181715.17416-1-rcampbell@nvidia.com
-> 
-> It applies cleanly to linux-5.9.0-rc7-mm1 but doesn't really
-> depend on anything, just simple merge conflicts when applied to
-> other trees.
-> I'll let the various maintainers decide which tree and when to merge.
-> It isn't urgent since it is a clean up patch.
-> 
->  fs/dax.c            |  4 ++--
->  fs/ext4/inode.c     |  5 +----
->  fs/xfs/xfs_file.c   |  4 +---
->  include/linux/dax.h | 10 ++++++++++
->  4 files changed, 14 insertions(+), 9 deletions(-)
-> 
-> diff --git a/fs/dax.c b/fs/dax.c
-> index 5b47834f2e1b..85c63f735909 100644
-> --- a/fs/dax.c
-> +++ b/fs/dax.c
-> @@ -358,7 +358,7 @@ static void dax_disassociate_entry(void *entry, struct address_space *mapping,
->  	for_each_mapped_pfn(entry, pfn) {
->  		struct page *page = pfn_to_page(pfn);
->  
-> -		WARN_ON_ONCE(trunc && page_ref_count(page) > 1);
-> +		WARN_ON_ONCE(trunc && !dax_layout_is_idle_page(page));
->  		WARN_ON_ONCE(page->mapping && page->mapping != mapping);
->  		page->mapping = NULL;
->  		page->index = 0;
-> @@ -372,7 +372,7 @@ static struct page *dax_busy_page(void *entry)
->  	for_each_mapped_pfn(entry, pfn) {
->  		struct page *page = pfn_to_page(pfn);
->  
-> -		if (page_ref_count(page) > 1)
-> +		if (!dax_layout_is_idle_page(page))
->  			return page;
->  	}
->  	return NULL;
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 771ed8b1fadb..132620cbfa13 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -3937,10 +3937,7 @@ int ext4_break_layouts(struct inode *inode)
->  		if (!page)
->  			return 0;
->  
-> -		error = ___wait_var_event(&page->_refcount,
-> -				atomic_read(&page->_refcount) == 1,
-> -				TASK_INTERRUPTIBLE, 0, 0,
-> -				ext4_wait_dax_page(ei));
-> +		error = dax_wait_page(ei, page, ext4_wait_dax_page);
->  	} while (error == 0);
->  
->  	return error;
-> diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-> index 3d1b95124744..a5304aaeaa3a 100644
-> --- a/fs/xfs/xfs_file.c
-> +++ b/fs/xfs/xfs_file.c
-> @@ -749,9 +749,7 @@ xfs_break_dax_layouts(
->  		return 0;
->  
->  	*retry = true;
-> -	return ___wait_var_event(&page->_refcount,
-> -			atomic_read(&page->_refcount) == 1, TASK_INTERRUPTIBLE,
-> -			0, 0, xfs_wait_dax_page(inode));
-> +	return dax_wait_page(inode, page, xfs_wait_dax_page);
-
-I don't mind this open-coded soup getting cleaned up into a macro,
-though my general opinion is that if the mm/dax developers are ok with
-this then:
-
-Acked-by: Darrick J. Wong <darrick.wong@oracle.com>
-
---D
-
->  }
->  
->  int
-> diff --git a/include/linux/dax.h b/include/linux/dax.h
-> index b52f084aa643..8909a91cd381 100644
-> --- a/include/linux/dax.h
-> +++ b/include/linux/dax.h
-> @@ -243,6 +243,16 @@ static inline bool dax_mapping(struct address_space *mapping)
->  	return mapping->host && IS_DAX(mapping->host);
->  }
->  
-> +static inline bool dax_layout_is_idle_page(struct page *page)
-> +{
-> +	return page_ref_count(page) == 1;
-> +}
-> +
-> +#define dax_wait_page(_inode, _page, _wait_cb)				\
-> +	___wait_var_event(&(_page)->_refcount,				\
-> +		dax_layout_is_idle_page(_page),				\
-> +		TASK_INTERRUPTIBLE, 0, 0, _wait_cb(_inode))
-> +
->  #ifdef CONFIG_DEV_DAX_HMEM_DEVICES
->  void hmem_register_device(int target_nid, struct resource *r);
->  #else
-> -- 
-> 2.20.1
-> 
+DQoNCtCd0LDRmNC80LjQu9CwINC60LDRmCDQs9C+0YHQv9C+0LTQsNGA0L7Rgg0KDQrQiNCw0YEg
+0YHRg9C8IDY4LdCz0L7QtNC40YjQvdCwINC20LXQvdCwLCDQutC+0ZjQsCDRgdGC0YDQsNC00LAg
+0L7QtCDQv9GA0L7QtNC+0LvQttC10L0g0LrQsNGA0YbQuNC90L7QvCDQvdCwINC00L7RmNC60LAs
+INC+0LQg0YHQuNGC0LUg0LzQtdC00LjRhtC40L3RgdC60Lgg0LjQvdC00LjQutCw0YbQuNC4LCDQ
+vNC+0ZjQsNGC0LAg0YHQvtGB0YLQvtGY0LHQsCDQvdCw0LLQuNGB0YLQuNC90LAg0YHQtSDQstC7
+0L7RiNC4INC4INC+0YfQuNCz0LvQtdC00L3QviDQtSDQtNC10LrQsCDQvNC+0LbQtdCx0Lgg0L3Q
+tdC80LAg0LTQsCDQttC40LLQtdCw0Lwg0L/QvtCy0LXRnNC1INC+0LQg0YjQtdGB0YIg0LzQtdGB
+0LXRhtC4INC60LDQutC+INGA0LXQt9GD0LvRgtCw0YIg0L3QsCDQsdGA0LfQuNC+0YIg0YDQsNGB
+0YIg0Lgg0LHQvtC70LrQsNGC0LAg0YjRgtC+INGB0LUg0ZjQsNCy0YPQstCwINC60LDRmCDQvdC1
+0LAuINCc0L7RmNC+0YIg0YHQvtC/0YDRg9CzINC/0L7Rh9C40L3QsCDQvdC10LrQvtC70LrRgyDQ
+s9C+0LTQuNC90Lgg0L3QsNC90LDQt9Cw0LQg0Lgg0L3QsNGI0LjRgtC1INC00L7Qu9Cz0Lgg0LPQ
+vtC00LjQvdC4INCx0YDQsNC6INC90LUg0LHQtdCwINCx0LvQsNCz0L7RgdC70L7QstC10L3QuCDR
+gdC+INC90LjRgtGDINC10LTQvdC+INC00LXRgtC1LCDQv9C+INC90LXQs9C+0LLQsNGC0LAg0YHQ
+vNGA0YIg0LPQviDQvdCw0YHQu9C10LTQuNCyINGG0LXQu9C+0YLQviDQvdC10LPQvtCy0L4g0LHQ
+vtCz0LDRgtGB0YLQstC+Lg0KDQrQlNC+0LDRk9Cw0Lwg0LrQsNGYINCy0LDRgSDQvtGC0LrQsNC6
+0L4g0YHQtSDQv9C+0LzQvtC70LjQsiDQt9CwINGC0L7QsCwg0L/QvtC00LPQvtGC0LLQtdC9INGB
+0YPQvCDQtNCwINC00L7QvdC40YDQsNC8INGB0YPQvNCwINC+0LQgMiwgMzAwLCAwMDAg0LXQstGA
+0LAg0LfQsCDQv9C+0LzQvtGIINC90LAg0YHQuNGA0L7QvNCw0YjQvdC40YLQtSwg0YHQuNGA0L7Q
+vNCw0YjQvdC40YLQtSDQuCDQv9C+0LzQsNC70LrRgyDQv9GA0LjQstC40LvQtdCz0LjRgNCw0L3Q
+uNGC0LUg0LzQtdGT0YMg0LLQsNGI0LjRgtC1INGB0L7QsdGA0LDQvdC40ZjQsCAvINC+0L/RiNGC
+0LXRgdGC0LLQvi4g0JfQsNCx0LXQu9C10LbQtdGC0LUg0LTQtdC60LAg0L7QstC+0Zgg0YTQvtC9
+0LQg0LUg0LTQtdC/0L7QvdC40YDQsNC9INCy0L4g0LHQsNC90LrQsCDQutCw0LTQtSDRiNGC0L4g
+0YDQsNCx0L7RgtC10YjQtSDQvNC+0ZjQvtGCINGB0L7Qv9GA0YPQsy4gQXBwcmVjaWF0ZdC1INGG
+0LXQvdCw0Lwg0LDQutC+INC+0LHRgNC90LXRgtC1INCy0L3QuNC80LDQvdC40LUg0L3QsCDQvNC+
+0LXRgtC+INCx0LDRgNCw0ZrQtSDQt9CwINC/0YDQvtC/0LDQs9C40YDQsNGa0LUg0L3QsCDQvNCw
+0YHQsNC20LDRgtCwINC90LAg0LrRgNCw0LvRgdGC0LLQvtGC0L4sINGc0LUg0LLQuCDQtNCw0LTQ
+sNC8INC/0L7QstC10ZzQtSDQtNC10YLQsNC70Lgg0LfQsCDRgtC+0LAg0LrQsNC60L4g0LTQsCDQ
+v9C+0YHRgtCw0L/QuNGC0LUuDQoNCtCR0LvQsNCz0L7QtNCw0YDQsNC8DQrQky3Rk9CwINCc0LXR
+gNC40LvQuNC9INCg0L7QsdC10YDRgg==
