@@ -2,92 +2,217 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01D9F286A9D
-	for <lists+linux-ext4@lfdr.de>; Thu,  8 Oct 2020 00:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D118286C97
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 Oct 2020 04:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728833AbgJGWAQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 7 Oct 2020 18:00:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728806AbgJGWAM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Oct 2020 18:00:12 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33B6EC0613D4
-        for <linux-ext4@vger.kernel.org>; Wed,  7 Oct 2020 15:00:12 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id md26so5101995ejb.10
-        for <linux-ext4@vger.kernel.org>; Wed, 07 Oct 2020 15:00:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lT3B2ypuGco/P409+8M6gpuF12PaIQWc3S2n+DY8zro=;
-        b=Ncyj5HRyOHiv/PCCXeiIOREYqhKi9W7Kz+qYVEQlXmRkJQFhr4mPMx/M7DMnm6YtOW
-         DUL/0irEJWJ1u3Tn9PvlSn9dTNsY5IVKDzbC9mmRlGyJusWXyE84FSrRMHnC7+4R/s2K
-         JlmM8UKi1+egfyf0npBB325upNgCiCd5lLpYz+Qt+xyrV5CQrPP3johyniRb8z+kgaE1
-         GT+P5nqT7wPGuzMyK7J2sXKrVtMSHN7U9uJt8nssAD4vXadYIDhLD2lwmqXOOlH+//Pq
-         Hz5f0mZ598OqpvKpcokOiVFhrrXoK3FDSB6Diw9PKUvJFn/Wdx3dxk6fca3QGoU6OwHC
-         HCLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lT3B2ypuGco/P409+8M6gpuF12PaIQWc3S2n+DY8zro=;
-        b=XKGZImWSHsQX62lOUy/wBKfPELnpDpYJ6aiOsYefj65VKKELYrh2KHcedfddW68NPr
-         +lgIZdJ84yaSofClig4rNZl0s6HF/Ue6sHy/V0Da6q6lp5cWLt2fKNxP/auAZ1QQHorV
-         t9eAgBNijuWgu3y03py56e7e9k77TcCE84IgHfWq9h0wI8E1uGw5MVyLZiBG4yrkExuJ
-         xcXSmAF3fGbuxXs2PEpz9y1cvHF6NrRcA+MyjDPideLf4JSXxmd/X19JGrvMgRCjCXYj
-         hBBsHEqSnb9v5949I/h/ADtrfZrO3DBv+Fh+1cM857C9UIRWZYlPtM2bvt/SHU8AfZwQ
-         r0wg==
-X-Gm-Message-State: AOAM533A3E45kkDIrQyGkngisknEPgrdpC6LYg8HKUpy9iZSgNjqDi9n
-        kIkusCxm3idrYSctQH3VbnNB1j75X42EQ3LiLyptPQ==
-X-Google-Smtp-Source: ABdhPJwku5mxYKwAyqqbDYZNawCeRw0Upn7X7sfFjzI/V4bf8n3ZT6QOAaXMTZWtxx4JzYTkY6EwLAJYedQOql+eTOc=
-X-Received: by 2002:a17:906:4701:: with SMTP id y1mr5413376ejq.341.1602108010723;
- Wed, 07 Oct 2020 15:00:10 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201006230930.3908-1-rcampbell@nvidia.com> <20201007082517.GC6984@quack2.suse.cz>
-In-Reply-To: <20201007082517.GC6984@quack2.suse.cz>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 7 Oct 2020 14:59:59 -0700
-Message-ID: <CAPcyv4j=q4n1PDW5vwOFpkeDEoDv2_xXBL+xoGsRwPn_ej=hnA@mail.gmail.com>
-Subject: Re: [PATCH] ext4/xfs: add page refcount helper
-To:     Jan Kara <jack@suse.cz>
-Cc:     Ralph Campbell <rcampbell@nvidia.com>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Theodore Ts'o" <tytso@mit.edu>, Christoph Hellwig <hch@lst.de>,
+        id S1727801AbgJHCKe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 7 Oct 2020 22:10:34 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:60792 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726520AbgJHCKd (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Oct 2020 22:10:33 -0400
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0982AIXE014585
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 7 Oct 2020 22:10:20 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id D3D1B420107; Wed,  7 Oct 2020 22:10:17 -0400 (EDT)
+Date:   Wed, 7 Oct 2020 22:10:17 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Josh Triplett <josh@joshtriplett.org>
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+        Jan Kara <jack@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ext4@vger.kernel.org
+Subject: Re: ext4 regression in v5.9-rc2 from e7bfb5c9bb3d on ro fs with
+ overlapped bitmaps
+Message-ID: <20201008021017.GD235506@mit.edu>
+References: <20201005081454.GA493107@localhost>
+ <20201005173639.GA2311765@magnolia>
+ <20201006003216.GB6553@localhost>
+ <20201006025110.GJ49559@magnolia>
+ <20201006031834.GA5797@mit.edu>
+ <20201006050306.GA8098@localhost>
+ <20201006133533.GC5797@mit.edu>
+ <20201007080304.GB1112@localhost>
+ <20201007143211.GA235506@mit.edu>
+ <20201007201424.GB15049@localhost>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201007201424.GB15049@localhost>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Oct 7, 2020 at 1:25 AM Jan Kara <jack@suse.cz> wrote:
->
-> On Tue 06-10-20 16:09:30, Ralph Campbell wrote:
-> > There are several places where ZONE_DEVICE struct pages assume a reference
-> > count == 1 means the page is idle and free. Instead of open coding this,
-> > add a helper function to hide this detail.
-> >
-> > Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
-> > Reviewed-by: Christoph Hellwig <hch@lst.de>
->
-> Looks as sane direction but if we are going to abstract checks when
-> ZONE_DEVICE page is idle, we should also update e.g.
-> mm/swap.c:put_devmap_managed_page() or
-> mm/gup.c:__unpin_devmap_managed_user_page() (there may be more places like
-> this but I found at least these two...). Maybe Dan has more thoughts about
-> this.
+On Wed, Oct 07, 2020 at 01:14:24PM -0700, Josh Triplett wrote:
+> 
+> That sounds like a conversation that would have been a lot more
+> interesting and enjoyable if it hadn't started with "can we shoot it in
+> the head", and continued with the notion that anything other than
+> e2fsprogs making something to be mounted by mount(2) and handled by
+> fs/ext4 is being "inflicted", and if the goal didn't still seem to be
+> "how do we make it go away so that only e2fsprogs and the kernel ever
+> touch ext4". I started this thread because I'd written some userspace
+> code, a new version of the kernel made that userspace code stop working,
+> so I wanted to report that the moment I'd discovered that, along with a
+> potential way to address it with as little disrupton to ext4 as
+> possible.
 
-Yes, but I think that cleanup comes once the idle page count is
-unified to be 0 across typical and ZONE_DEVICE pages. Then
-free_devmap_managed_page() can be moved internal to __put_page(). For
-this patch it's just hiding the "idle == 1" assumption from
-dax-filesystems.
+What is really getting my dander up is your attempt to claim that the
+on-disk file system format is like the userspace/kernel interface,
+where if we break any file system that file system that was
+"previously accepted by an older kernel", this is a bug that must be
+reverted or otherwise fixed to allow file systems that had previously
+worked, to continue to work.  And this is true even if the file system
+is ***invalid***.
+
+And the problem with this is that there have been any number of
+commits where file systems which were previously invalid, but which
+could be caused to trigger a syzbot whine, which was fixed by
+tightening up the validity tests in the kernel.  In some cases, I had
+to also had to fix up e2fsck to detect the invalid file system which
+was generated by the file system fuzzer.  Yes, it's unfortunate that
+we didn't have these checks earlier, but a file system has a huge
+amount of state.
+
+The principle you've articulated would make it impossible for me to
+fix these bugs, unless I can prove that the failure to check a
+particular invalid file system corruption could lead to a security
+vulnerability.  (Would it be OK for me to make the kernel more strict
+and reject an invalid file system if it triggers a WARN_ON, so I get
+the syzbot complaint, but it doesn't actually cause a security issue?)
+
+So this conversation would have been a lot more pleasant for *me* if
+you hadn't tried to elevate your request to a general principle, where
+if someone is deliberately generating an invalid file system, I'm not
+allowed to make the kernel more strict to detect said invalidity and
+to reject the invalid / corrupted / fuzzed file system.
+
+And note that sometimes the security problem happens when there are
+multiple file system corruptions that are chained together.  So
+enabling block validity *can* sometimes prevent the fuzzed file system
+from proceeding further.  Granted, this is less likely in the case of
+a read-only file system, but it really worries me when there are
+proprietary programs (maybe your library isn't proprietary, but I note
+you haven't send me a link to your git repo, but instead have offered
+sending sample file systems) which insist on generating their own file
+systems, which might or might not be valid, and then expecting them to
+receive first class support as part of an iron-bound contract where
+I'm not even allowed to add stronger sanity checks which might reject
+said invalid file system in the future.
+
+> The short version is that I needed a library to rapidly turn
+> dynamically-obtained data into a set of disk blocks to be served
+> on-the-fly as a software-defined disk, and then mounted on the other
+> side of that interface by the Linux kernel. Turns out that's *many
+> orders of magnitude* faster than any kind of network filesystem like
+> NFS. It's slightly similar to a vvfat for ext4. The less blocks it can
+> generate and account for and cache, the faster it can run, and
+> microseconds matter.
+
+So are you actually trying to dedup data blocks, or are you just
+trying to avoid needing to track the block allocation bitmaps?  And
+are you just writing a single file, or multiple files?  Do you know
+what the maximum size of the file or files will be?  Do you need a
+complex directory structure, or just a single root directory?  Can the
+file system be sparse?
+
+So for example, you can do something like this, which puts all of the
+metadata at beginning of the file system, and then you could write to
+contiguous data blocks.  Add the following in mke2fs.conf:
+
+[fs_types]
+    hugefile = {
+        features = extent,huge_file,bigalloc,flex_bg,uninit_bg,dir_nlink,extra_isize,^resize_inode,sparse_super2
+        cluster_size = 32768
+        hash_alg = half_md4
+        reserved_ratio = 0.0
+        num_backup_sb = 0
+        packed_meta_blocks = 1
+        make_hugefiles = 1
+        inode_ratio = 4194304
+        hugefiles_dir = /storage
+        hugefiles_name = huge-file
+        hugefiles_digits = 0
+        hugefiles_size = 0
+        hugefiles_align = 256M
+        hugefiles_align_disk = true
+        num_hugefiles = 1
+        zero_hugefiles = false
+	inode_size = 128
+    }
+
+   hugefiles = {
+        features = extent,huge_file,flex_bg,uninit_bg,dir_nlink,extra_isize,^resize_inode,sparse_super2
+        hash_alg = half_md4
+        reserved_ratio = 0.0
+        num_backup_sb = 0
+        packed_meta_blocks = 1
+        make_hugefiles = 1
+        inode_ratio = 4194304
+        hugefiles_dir = /storage
+        hugefiles_name = chunk-
+        hugefiles_digits = 5
+        hugefiles_size = 4G
+        hugefiles_align = 256M
+        hugefiles_align_disk = true
+        zero_hugefiles = false
+        flex_bg_size = 262144
+	inode_size = 128
+    }
+
+... and then run "mke2fs -T hugefile /tmp/image 1T" or "mke2fs -T
+hugefiles /tmp/image 1T", and see what you get.  In the case of
+hugefile, you'll see a single file which covers the entire storage
+device.  Because we are using bigalloc with a large cluster size, this
+minimizes the number of bitmap blocks.
+
+With hugefiles, it will create a set of 4G files to fill the size of
+the disk, again, aligned to 256 MiB zones at the beginning of the
+disk.  In both cases, the file or files are aligned to 256 MiB
+relative to beginning of the disk, which can be handy if you are
+creating the file system, on, say, a 14T SMR disk.  And this is a
+niche use case if there ever was one!  :-)
+
+So if you had come to the ext4 list with a set of requirements, it
+could have been that we could have come up with something which uses
+the existing file system features, or come up with something which
+would have been more specific --- and more importantly, we'd know what
+the semantics were of various on-disk file system formats that people
+are depending upon.
+
+> If at some point I'm looking to make ext4 support more than it already
+> does (e.g. a way to omit bitmaps entirely, or a way to express
+> contiguous files with smaller extent maps, or other enhancements for
+> read-only filesystems),
+
+See above for a way to significantly reduce the number of bitmaps.
+Adding a way to omit bitmaps entirely would require an INCOMPAT flag,
+so it might not be worth it.
+
+The way to express contiguous files with smaller extent files would be
+to extend the kernel to allow file systems with block_size > page_size
+read-only.  This would allow you to create a file system with a block
+size of 64k, which will reduce the size of the extent maps by a factor
+of 16, and it wouldn't be all that hard to teach ext4 to support these
+file systems.  (The reason why it would be hard for us to support file
+systems with block sizes > page size is dealing with page cache when
+writing files while allocating blocks, especially when doing random
+writes into a sparse file.  Read-only would be much easier to
+support.)
+
+So please, talk to us, and *tell* us what it is you're trying to do
+before you try to do it.  Don't rely on some implementation detail
+where we're not being sufficiently strict in checking for an invalid
+file system, especially without telling us in advance and then trying
+to hold us to the lack of checking forever because it's "breaking
+things that used to work".
+
+Cheers,
+
+					- Ted
