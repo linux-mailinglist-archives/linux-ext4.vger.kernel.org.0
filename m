@@ -2,163 +2,138 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBE69288B23
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 Oct 2020 16:32:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BFCC288B79
+	for <lists+linux-ext4@lfdr.de>; Fri,  9 Oct 2020 16:37:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389006AbgJIOcH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 9 Oct 2020 10:32:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388974AbgJIOcF (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 9 Oct 2020 10:32:05 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D4A5C0613D2;
-        Fri,  9 Oct 2020 07:32:05 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id r4so2628947ioh.0;
-        Fri, 09 Oct 2020 07:32:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=yjfO8S7B64loScyytPKcgPu2g7gJPYx9uhdcodm9LjI=;
-        b=aCLVJuNL4MjVBM0l8LllSfj8gDREo92fbX/U2m4VzlyeBWW0U9vvBv+S3EaITWOT+7
-         zTA8drWbzHHemrCof92NV8NM5fjR6qJKxKWC5+wBPownkRhds4foTVGx8x7EccVwWiuq
-         plRN98RqHjmoMVdal/SEx0l1DtmvdW2BVcE2rJADce5q/otFHOWKEn9cW/Rrxe7Cagys
-         joSBhJkPzCgQ75vUZCcCbGAQqHFtb1a2HHmnfWeozC6QUyyS2SshWnKjn+HSDP08yG9H
-         gVJe0g3pI6We5ij5kGqORbou8wIurnIVoLlY5+B7QEZLpfaj1vLSBaK+CvqL6smsKGst
-         TRJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=yjfO8S7B64loScyytPKcgPu2g7gJPYx9uhdcodm9LjI=;
-        b=FMRUOzw2VY3fnYYAIhVyLjHIQq1eaeXAgg/HhsOIrwBrsOpihnh4D6S98guA0kZvL+
-         4SSykrowWCcei6ODibJd3sPdvpuhE4K+DypnPVNgfoSbo07UvyJS3wYEKoZ7jqYQJKvT
-         HRHuxZKR3Um5bAxpLoWXYe4z4aht2k96WSyKueGcLWs1pGG6Wma4uasjceHTnHB7RG4q
-         P/oWjRVdA7ucAc9QioKc9HZG7DaGnI/3z7m24aSlHZn3JGDJhSgkwHqo2yRKUJ8TRQ2g
-         Drs9EZc1xpths2m8As+KkvDP7Qv3q1LyRLUeoG1IospcrBowg5qjOKjtBLY+bDeGWRFb
-         n86A==
-X-Gm-Message-State: AOAM5327dvEicX0yq1XEA107JKuPNIJjlJNNEHsi+2w8/57cdD+cCtmu
-        Rrt2pkeDGrCOkbG1waa0mlPf3jZfY15yF//9cqI=
-X-Google-Smtp-Source: ABdhPJxO128SkgXvqwjCnu0yIALTpGyDfWaYuo9sk5kmRa3Nb1uLZ2zcfyW0/51mwatoHZBsKFvJ3e4gvvVY7LA4gFM=
-X-Received: by 2002:a5e:dc0a:: with SMTP id b10mr9828942iok.156.1602253924816;
- Fri, 09 Oct 2020 07:32:04 -0700 (PDT)
+        id S2387978AbgJIOhq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 9 Oct 2020 10:37:46 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:40611 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1733112AbgJIOhq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 9 Oct 2020 10:37:46 -0400
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 099EbWwa005346
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 9 Oct 2020 10:37:32 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 1D13C420107; Fri,  9 Oct 2020 10:37:32 -0400 (EDT)
+Date:   Fri, 9 Oct 2020 10:37:32 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Josh Triplett <josh@joshtriplett.org>
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ext4@vger.kernel.org
+Subject: Re: ext4 regression in v5.9-rc2 from e7bfb5c9bb3d on ro fs with
+ overlapped bitmaps
+Message-ID: <20201009143732.GJ235506@mit.edu>
+References: <20201006003216.GB6553@localhost>
+ <20201006025110.GJ49559@magnolia>
+ <20201006031834.GA5797@mit.edu>
+ <20201006050306.GA8098@localhost>
+ <20201006133533.GC5797@mit.edu>
+ <20201007080304.GB1112@localhost>
+ <20201007143211.GA235506@mit.edu>
+ <20201007201424.GB15049@localhost>
+ <20201008021017.GD235506@mit.edu>
+ <20201008222259.GA45658@localhost>
 MIME-Version: 1.0
-References: <CA+icZUWkE5CVtGGo88zo9b28JB1rN7=Gpc4hXywUaqjdCcSyOw@mail.gmail.com>
- <CA+icZUVd6nf-LmoHB18vsZZjprDGW6nVFNKW3b9_cwxWvbTejw@mail.gmail.com>
-In-Reply-To: <CA+icZUVd6nf-LmoHB18vsZZjprDGW6nVFNKW3b9_cwxWvbTejw@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Fri, 9 Oct 2020 16:31:51 +0200
-Message-ID: <CA+icZUU+UwKY8jQg9MfbojimepWahFSRU6DUt=468AfAf7uCSA@mail.gmail.com>
-Subject: Re: ext4: dev: Broken with CONFIG_JBD2=and CONFIG_EXT4_FS=m
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201008222259.GA45658@localhost>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Oct 9, 2020 at 4:10 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> On Fri, Oct 9, 2020 at 3:49 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> >
-> > Hi Ted,
-> >
-> > with <ext4.git#dev> up to commit
-> > ab7b179af3f98772f2433ddc4ace6b7924a4e862 ("Merge branch
-> > 'hs/fast-commit-v9' into dev") I see some warnings (were reported via
-> > kernel-test-bot)...
-> >
-> > fs/jbd2/recovery.c:241:15: warning: unused variable 'seq' [-Wunused-variable]
-> > fs/ext4/fast_commit.c:1091:6: warning: variable 'start_time' is used
-> > uninitialized whenever 'if' condition is true
-> > [-Wsometimes-uninitialized]
-> > fs/ext4/fast_commit.c:1091:6: warning: variable 'start_time' is used
-> > uninitialized whenever '||' condition is true
-> > [-Wsometimes-uninitialized]
-> >
-> > ...and more severe a build breakage with CONFIG_JBD2=and CONFIG_EXT4_FS=m
-> >
-> > ERROR: modpost: "jbd2_fc_release_bufs" [fs/ext4/ext4.ko] undefined!
-> > ERROR: modpost: "jbd2_fc_init" [fs/ext4/ext4.ko] undefined!
-> > ERROR: modpost: "jbd2_fc_stop_do_commit" [fs/ext4/ext4.ko] undefined!
-> > ERROR: modpost: "jbd2_fc_stop" [fs/ext4/ext4.ko] undefined!
-> > ERROR: modpost: "jbd2_fc_start" [fs/ext4/ext4.ko] undefined!
-> >
-> > Looks like missing exports.
-> >
->
-> This fixes it...
->
-> $ git diff
-> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-> index 8a51c1ad7088..e50aeefaa217 100644
-> --- a/fs/jbd2/journal.c
-> +++ b/fs/jbd2/journal.c
-> @@ -754,6 +754,7 @@ int jbd2_fc_start(journal_t *journal, tid_t tid)
->
->        return 0;
-> }
-> +EXPORT_SYMBOL(jbd2_fc_start);
->
-> /*
->  * Stop a fast commit. If fallback is set, this function starts commit of
-> @@ -778,11 +779,13 @@ int jbd2_fc_stop(journal_t *journal)
-> {
->        return __jbd2_fc_stop(journal, 0, 0);
-> }
-> +EXPORT_SYMBOL(jbd2_fc_stop);
->
-> int jbd2_fc_stop_do_commit(journal_t *journal, tid_t tid)
-> {
->        return __jbd2_fc_stop(journal, tid, 1);
-> }
-> +EXPORT_SYMBOL(jbd2_fc_stop_do_commit);
->
-> /* Return 1 when transaction with given tid has already committed. */
-> int jbd2_transaction_committed(journal_t *journal, tid_t tid)
-> @@ -954,6 +957,7 @@ int jbd2_fc_release_bufs(journal_t *journal)
->
->        return 0;
-> }
-> +EXPORT_SYMBOL(jbd2_fc_release_bufs);
->
-> /*
->  * Conversion of logical to physical block numbers for the journal
-> @@ -1389,6 +1393,7 @@ int jbd2_fc_init(journal_t *journal, int num_fc_blks)
->                return -ENOMEM;
->        return 0;
-> }
-> +EXPORT_SYMBOL(jbd2_fc_init);
->
-> /* jbd2_journal_init_dev and jbd2_journal_init_inode:
->  *
->
+On Thu, Oct 08, 2020 at 03:22:59PM -0700, Josh Triplett wrote:
+> 
+> I wasn't trying to make a *new* general principle or policy. I was under
+> the impression that this *was* the policy, because it never occurred to
+> me that it could be otherwise. It seemed like a natural aspect of the
+> kernel/userspace boundary, to the point that the idea of it *not* being
+> part of the kernel's stability guarantees didn't cross my mind. 
 
-[ CC: Harshad Shirwadkar <harshadshirwadkar@gmail.com> ]
+From our perspective (and Darrick and I discussed this on this week's
+ext4 video conference, so it represents the ext4 and xfs maintainer's
+position) is that the file system format is different.  First, the
+on-disk format is not an ABI, and it is several orders more complex
+than a system call interface.  Second, we make no guarantees about
+what the file system created by malicious tools will do.  For example,
+XFS developers reject bug reports from file system fuzzers, because
+the v5 format has CRC checks, so randomly corrupted file systems won't
+crash the kernel.  Yes, this doesn't protect against maliciously
+created file systems where the attacker makes sure the checksums are
+valid, but only crazy people who think containers are just as secure
+as VM's and that unprivileged users should be allowed to make the
+kernel mount potentially maliciously created file systems would be
+exposing the kernel to such maliciously created images.
 
-Hi Harschad,
+> Finally, I think there's also some clarification needed in the role of
+> what some of the incompat and ro_compat flags mean. For instance,
+> "RO_COMPAT_READONLY" is documented as:
+> >     - Read-only filesystem image; the kernel will not mount this image
+> >       read-write and most tools will refuse to write to the image.
+> Is it reasonable to interpret this as "this can never, ever become
+> writable", such that no kernel should ever "understand" that flag in
+> ro_compat?
 
-Can you look at this?
+Yes.  However...
 
-git blame shows these commits are involved:
+> I'd assumed so, but this discussion is definitely leading me
+> to want to confirm any such assumptions. Is this a flag that e2fsck
+> could potentially use to determine that it shouldn't check
+> read-write-specific data structures, or should that be a different flag?
 
-11a6ce6a4efc2 (Harshad Shirwadkar         2020-09-18 17:54:46 -0700
-728) int jbd2_fc_start(journal_t *journal, tid_t tid)
-11a6ce6a4efc2 (Harshad Shirwadkar         2020-09-18 17:54:46 -0700
-777) int jbd2_fc_stop(journal_t *journal)
-11a6ce6a4efc2 (Harshad Shirwadkar         2020-09-18 17:54:46 -0700
-782) int jbd2_fc_stop_do_commit(journal_t *journal, tid_t tid)
-96df8fb629b26 (Harshad Shirwadkar         2020-09-18 17:54:47 -0700
-934) int jbd2_fc_release_bufs(journal_t *journal)
-d37f2bf4185b5 (Harshad Shirwadkar         2020-09-18 17:54:45 -0700
-1383) int jbd2_fc_init(journal_t *journal, int num_fc_blks)
+Just because it won't be modifiable, shouldn't mean that e2fsck won't
+check to make sure that such structures are valid.  "Won't be changed"
+and "valid" are two different concepts.  And certainly, today we *do*
+check to make sure the bitmaps are valid and don't overlap, and we
+can't go back in time to change that.
 
-11a6ce6a4efc jbd2: add fast commit machinery
-96df8fb629b2 ext4: main fast-commit commit path
-d37f2bf4185b ext4 / jbd2: add fast commit initialization
+That being said, on the ext4 weekly video chat, we did discuss other
+uses of an incompat feature flag that would allow the allocation
+bitmap blocks and inode table block fields in the superblock to be
+zero, which would mean that they are unallocated.  This would allow us
+to dynamically grow the inode table by adding an extra block group
+descriptor.  In fact, I'd probably use this as an opportunity to make
+some other changes, such using inodes to store locations of the block
+group descriptors, inode tables, and allocation bitmaps at the same
+time.  Those details can be discussed later, but the point is that
+this is why it's good to discuss format changes from a requirements
+perspective, so that if we do need to make an incompat change, we can
+kill multiple birds with a single stone.
 
-Regards,
-- Sedat -
+> It's an arbitrary filesystem hierarchy, including directories, files of
+> various sizes (hence using inline_data), and permissions. The problem
+> isn't to get data from point A to point B; the problem is (in part) to
+> turn a representation of a filesystem into an actual mounted filesystem
+> as efficiently as possible, live-serving individual blocks on demand
+> rather than generating the whole image in advance.
+
+Ah, so you want to be able to let the other side "look at" the file
+system in parallel with it being generated on demand?  The cache
+coherency problems would seem to be... huge.  For example, how can you
+add a file to directory after the reader has looked at the directory
+inode and directory blocks?  Or for that matter, looked at a portion
+of the inode table block?  Or are you using 4k inodes so there is only
+one inode per block?  What about the fact that we sometimes do
+readahead of inode table blocks?
+
+I can think of all sorts of implementation level changes in terms of
+caching, readahead behavior, etc., that we might make in the future
+that might break you if you are doing some quite as outré are that.
+Again, the fact that you're being cagey about what you are doing, and
+potentially complaining about changes we might make that would break
+you, is ***really*** scaring me now.
+
+Can you go into more details here?  I'm sorry if you're working for
+some startup who might want to patent these ideas, but if you want to
+guarantee future compatibility, I'm really going to have to insist.
+
+	  	 		    	   - Ted
+					 
