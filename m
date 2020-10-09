@@ -2,55 +2,56 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3AFB2886B8
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 Oct 2020 12:18:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95F832886E5
+	for <lists+linux-ext4@lfdr.de>; Fri,  9 Oct 2020 12:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387572AbgJIKSi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 9 Oct 2020 06:18:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42706 "EHLO
+        id S1731914AbgJIK2x (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 9 Oct 2020 06:28:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726357AbgJIKSi (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 9 Oct 2020 06:18:38 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63E80C0613D2;
-        Fri,  9 Oct 2020 03:18:36 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id u19so9565191ion.3;
-        Fri, 09 Oct 2020 03:18:36 -0700 (PDT)
+        with ESMTP id S1725979AbgJIK2w (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 9 Oct 2020 06:28:52 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 967F1C0613D2;
+        Fri,  9 Oct 2020 03:28:52 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id q7so8697920ile.8;
+        Fri, 09 Oct 2020 03:28:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:reply-to:from:date:message-id
          :subject:to:cc;
-        bh=Y4lptqLbscY9tMeYKpziy+lZfi07IAnN2JlQGiAiY2Y=;
-        b=YbZrcyp8iB4BWyJcfn64Dumb50RbytQy9JYECrmb77dbmoAdWIBJOIcg54WR50izmi
-         55F0PriXbq/cdZVk+69gqbpHGTQIvpAtu+rvqdTIzWEbOv/BwHafx8wRsqlc4Wt9GlqC
-         ShAW4jv71J2cGfTG/K0dRKBo3t1/J/fmdJCY9aL5SyJbkFSViKLdZ5e+LbqFLSHA2NQK
-         fQmprcHgV7ZOWSlqb3u+uqjgWU/8RAc1UFt4ORjkrYfSghhpRsDrj/EgkxyxPlAY3dyO
-         VlVkjyeLPzQvYTp0gkApXz1lzbGmwfvrC0F11pjgRjhBxmOWF/S5L2xYtLp44f43EdPT
-         kJiw==
+        bh=vl6FnDcmMHotO+NlsI4jNXl/ZZeiSghv4APFCf9brEc=;
+        b=GzpK03fGAvht97i6dy2iGnaeighAj9C5abdcyRyPgOGoeYaZLedkRSfW9g0ipF9LKX
+         Mh9WXoOruyqKeexTE3A9Y5TtpdxMQIQDbiq8GvFPncEf2y+uh5HrHoespBBeYPHJS+et
+         pXyMR58UsdV2/dyEFNf/gSI6ABSgizREbS00/uwosl/uU7DxnVHGsrJzKTxn2W1OczSY
+         9rCOWWrd5xaCTr0qjnZTvgkzCRbYhX76Faiq88mgMz4REzA5iP8GAjQ0KUXS3j5DL+Do
+         Ic9zwGgaNI/m6V0cHnUxhmb9ynlAbYq4x3AF4O5g+HlqYdhIq6rFo/Q5X5+Qv8SdkMD/
+         7U/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
          :from:date:message-id:subject:to:cc;
-        bh=Y4lptqLbscY9tMeYKpziy+lZfi07IAnN2JlQGiAiY2Y=;
-        b=JHyZtJSqST/ed8EHax+V6JQYvCqsYqoCmBo5b+4nyBKLgqnaCgkebxfjMXvayaOxaA
-         5HekWPHn8Hdd1Oggb2HOr4yRIwY9Y3gDjmFwmNGVAVF6vBWsDhLhELa23FHkiuJJm06k
-         vkf1eBfI7j/Wo9YiagoHZaEROpyX9DKH6KM5MtPa2ueHMHBIJ58yrJDX1/x7R2tLPbQ8
-         DIQrtDEig6hJWFzNFMTBUjgJmzJBzQCAOkvPzUb0B8+Eu7XvPT4lZtX/T0psZrtKJh/M
-         38+fMdqqWeh8LucEewFEsXK32PWuI7ste17EQS8RZti5ObIkj8G6gdCOFEFF8VLFCPRR
-         Q/SA==
-X-Gm-Message-State: AOAM532vF+5wnpl+RpCtN2ISes+/DrnW1GF2NglOjsNs8qIy4O+xjau3
-        28zwumF64Zf+ROimyvKOIcmsJfE6azm0jD+2wUYt5G1NnHiCEQ==
-X-Google-Smtp-Source: ABdhPJyn1jxZ2DRcKx96ZWhTYK2Ft3WJX50NELibl8KfUB9/8XIwa2Fze6N+3AWegm4Uwv+BJqSRtNvAF5gp1b23QJ8=
-X-Received: by 2002:a02:7717:: with SMTP id g23mr10123023jac.97.1602238715692;
- Fri, 09 Oct 2020 03:18:35 -0700 (PDT)
+        bh=vl6FnDcmMHotO+NlsI4jNXl/ZZeiSghv4APFCf9brEc=;
+        b=HbQv2L+i7nTW0CvwfcR/YoiZCPrf+RTzAQbva9yceeBR6gqZUgNan6v3CMhrrJfgCT
+         b39GNR0Jl3ysiz/TS3Ke3nP0so7W9uUY6nOzUVP+wFF0klCn7wOwUPfI9kqTxfxZbP5G
+         3DVn+357Pfrvy3cY75/pMefmVQRahwicHiNeomFi/xgkJYcPouF0vodfBKrIpd4j5GeR
+         MQG2OMKoIKCx2kedTop910BwmPX1iQsxygt/pNmcDPJ68DHNrAaWmBkjTiwIepkkUxRO
+         /pP/yAOJNntK3OXAdu8ZXC7SwzxfEWvvU2qWoBF2Z45W9L85em6+xlCC28vQz9++738F
+         ruRg==
+X-Gm-Message-State: AOAM532GInX6PTqxHh5cgbzHI2jqBsDwZmoQ6TZTQ+I+G1yEDWT978pV
+        UsZlLWAsOk0vAL0q8UibvtkDbi9uM+4BF5an6jD8Y21q08+Mug==
+X-Google-Smtp-Source: ABdhPJy7eg1DPaXz/9mI1i+aZOhwm8pf/MccLsSeFKJ9jM61qfo8Vv86Aa6Rekv36JHJ2AZALBz8kdCUNp0Adp1Aeww=
+X-Received: by 2002:a92:3543:: with SMTP id c64mr169470ila.209.1602239331831;
+ Fri, 09 Oct 2020 03:28:51 -0700 (PDT)
 MIME-Version: 1.0
 References: <af902b5db99e8b73980c795d84ad7bb417487e76.1602168865.git.riteshh@linux.ibm.com>
- <CA+icZUVPXFkc7ow5-vF4bxggE63LqQkmaXA6m9cAZVCOnbS1fQ@mail.gmail.com> <22e5c5f9-c06b-5c49-d165-8f194aad107b@linux.ibm.com>
-In-Reply-To: <22e5c5f9-c06b-5c49-d165-8f194aad107b@linux.ibm.com>
+ <CA+icZUVPXFkc7ow5-vF4bxggE63LqQkmaXA6m9cAZVCOnbS1fQ@mail.gmail.com>
+ <22e5c5f9-c06b-5c49-d165-8f194aad107b@linux.ibm.com> <CA+icZUXLDGfHVGJXp2dA2JAxP8LUV4EVDNJmz20YjHa5A9oTtQ@mail.gmail.com>
+In-Reply-To: <CA+icZUXLDGfHVGJXp2dA2JAxP8LUV4EVDNJmz20YjHa5A9oTtQ@mail.gmail.com>
 Reply-To: sedat.dilek@gmail.com
 From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Fri, 9 Oct 2020 12:18:23 +0200
-Message-ID: <CA+icZUXLDGfHVGJXp2dA2JAxP8LUV4EVDNJmz20YjHa5A9oTtQ@mail.gmail.com>
+Date:   Fri, 9 Oct 2020 12:28:40 +0200
+Message-ID: <CA+icZUW4-NA6vNg4KsGWyUNSEswR39Q4WKsJW-Hg+Vo6jopiEw@mail.gmail.com>
 Subject: Re: [PATCH 1/1] ext4: Fix bs < ps issue reported with dioread_nolock
  mount opt
 To:     Ritesh Harjani <riteshh@linux.ibm.com>
@@ -62,48 +63,55 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Oct 9, 2020 at 9:19 AM Ritesh Harjani <riteshh@linux.ibm.com> wrote:
+On Fri, Oct 9, 2020 at 12:18 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
 >
->
->
-> On 10/9/20 12:16 PM, Sedat Dilek wrote:
-> > On Thu, Oct 8, 2020 at 5:56 PM Ritesh Harjani <riteshh@linux.ibm.com> wrote:
-> >>
-> >> left shifting m_lblk by blkbits was causing value overflow and hence
-> >> it was not able to convert unwritten to written extent.
-> >> So, make sure we typecast it to loff_t before do left shift operation.
-> >> Also in func ext4_convert_unwritten_io_end_vec(), make sure to initialize
-> >> ret variable to avoid accidentally returning an uninitialized ret.
-> >>
-> >> This patch fixes the issue reported in ext4 for bs < ps with
-> >> dioread_nolock mount option.
-> >>
-> >> Fixes: c8cc88163f40df39e50c ("ext4: Add support for blocksize < pagesize in dioread_nolock")
+> On Fri, Oct 9, 2020 at 9:19 AM Ritesh Harjani <riteshh@linux.ibm.com> wrote:
 > >
-> > Fixes: tag should be 12 digits (see [1]).
-> > ( Seen while walking through ext-dev Git commits. )
+> >
+> >
+> > On 10/9/20 12:16 PM, Sedat Dilek wrote:
+> > > On Thu, Oct 8, 2020 at 5:56 PM Ritesh Harjani <riteshh@linux.ibm.com> wrote:
+> > >>
+> > >> left shifting m_lblk by blkbits was causing value overflow and hence
+> > >> it was not able to convert unwritten to written extent.
+> > >> So, make sure we typecast it to loff_t before do left shift operation.
+> > >> Also in func ext4_convert_unwritten_io_end_vec(), make sure to initialize
+> > >> ret variable to avoid accidentally returning an uninitialized ret.
+> > >>
+> > >> This patch fixes the issue reported in ext4 for bs < ps with
+> > >> dioread_nolock mount option.
+> > >>
+> > >> Fixes: c8cc88163f40df39e50c ("ext4: Add support for blocksize < pagesize in dioread_nolock")
+> > >
+> > > Fixes: tag should be 12 digits (see [1]).
+> > > ( Seen while walking through ext-dev Git commits. )
+> >
+> >
+> > Thanks Sedat, I guess it should be minimum 12 chars [1]
+> >
+> > [1]:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst#n177
+> >
 >
+> OK.
 >
-> Thanks Sedat, I guess it should be minimum 12 chars [1]
+> In my ~/.gitconfig:
 >
-> [1]:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst#n177
+> [core]
+>        abbrev = 12
+>
+> # Check for 'Fixes:' tag used in the Linux-kernel development process
+> (Thanks Kalle Valo).
+> # Link: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst
+> # Usage: $ git log --format=fixes | head -5
+> [pretty]
+>    fixes = Fixes: %h (\"%s\")
+>
+> Hope this is useful for others.
 >
 
-OK.
+Changed to...
 
-In my ~/.gitconfig:
-
-[core]
-       abbrev = 12
-
-# Check for 'Fixes:' tag used in the Linux-kernel development process
-(Thanks Kalle Valo).
-# Link: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst
-# Usage: $ git log --format=fixes | head -5
-[pretty]
-   fixes = Fixes: %h (\"%s\")
-
-Hope this is useful for others.
+Link: https://www.kernel.org/doc/html/latest/process/submitting-patches.html
 
 - Sedat -
