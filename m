@@ -2,155 +2,82 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED75F287EBD
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 Oct 2020 00:39:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5554328800F
+	for <lists+linux-ext4@lfdr.de>; Fri,  9 Oct 2020 03:42:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729574AbgJHWjI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 8 Oct 2020 18:39:08 -0400
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:34035 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728348AbgJHWjI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Oct 2020 18:39:08 -0400
-X-Originating-IP: 67.5.25.97
-Received: from localhost (unknown [67.5.25.97])
-        (Authenticated sender: josh@joshtriplett.org)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 83D1CC0007;
-        Thu,  8 Oct 2020 22:39:01 +0000 (UTC)
-Date:   Thu, 8 Oct 2020 15:38:58 -0700
-From:   Josh Triplett <josh@joshtriplett.org>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ext4@vger.kernel.org
-Subject: Re: ext4 regression in v5.9-rc2 from e7bfb5c9bb3d on ro fs with
- overlapped bitmaps
-Message-ID: <20201008223858.GC45658@localhost>
-References: <20201006003216.GB6553@localhost>
- <20201006025110.GJ49559@magnolia>
- <20201006031834.GA5797@mit.edu>
- <20201006050306.GA8098@localhost>
- <20201006133533.GC5797@mit.edu>
- <20201007080304.GB1112@localhost>
- <20201007143211.GA235506@mit.edu>
- <20201007201424.GB15049@localhost>
- <20201008021017.GD235506@mit.edu>
- <20201008175448.GA6532@magnolia>
+        id S1730499AbgJIBmA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 8 Oct 2020 21:42:00 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:38896 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727313AbgJIBmA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Oct 2020 21:42:00 -0400
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0991ffma023866
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 8 Oct 2020 21:41:42 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id D432B420107; Thu,  8 Oct 2020 21:41:40 -0400 (EDT)
+Date:   Thu, 8 Oct 2020 21:41:40 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     "zhangyi (F)" <yi.zhang@huawei.com>
+Cc:     linux-ext4@vger.kernel.org, jack@suse.com, adilger.kernel@dilger.ca
+Subject: Re: [PATCH v2 1/7] ext4: clear buffer verified flag if read meta
+ block from disk
+Message-ID: <20201009014140.GA816148@mit.edu>
+References: <20200924073337.861472-1-yi.zhang@huawei.com>
+ <20200924073337.861472-2-yi.zhang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201008175448.GA6532@magnolia>
+In-Reply-To: <20200924073337.861472-2-yi.zhang@huawei.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 10:54:48AM -0700, Darrick J. Wong wrote:
-> IMO, the prominent free software filesystem projects offer (at least)
-> four layers of social structures to keep everyone on the same page,
-> including people writing competing implementations.
-
-(I certainly hope that this isn't a *competing* implementation. It's
-more that it serves a different purpose than the existing tools.)
-
-> The first is "Does
-> everything we write still work with the kernel", which I guess you
-> clearly did since you're complaining about this change in 5.9-rc2.
-
-Right.
-
-> The second layer is "Does it pass fsck?" which, given that you're asking
-> for changes to e2fsck elsewhere in this thread and I couldn't figure out
-> how to generate a shared-bitmaps ext4 fs that didn't also cause e2fsck
-> to complain about the overlap doesn't make me confident that you went
-> beyond the first step before shipping something.
-
-I did ensure that, other than the one top-level complaint that the
-bitmaps overlapped, I got no complaints from e2fsck. I also confirmed
-that with a patch to that one item, e2fsck passed with no issues.
-
-> The third layer is consulting the ondisk format documentation to see if
-> it points out anything that the kernel or fsck didn't notice.  That
-> one's kind of on Ted for not updating Documentation/ to spell out what
-> SHARED_BLOCKS actually means, but that just leads me to the fourth thing.
-
-I've been making *extensive* use of Documentation/filesystems/ext4 by
-the way, and I greatly appreciate it. I know you've done a ton of work
-in that area.
-
-> The fourth layer is emailing the list to ask "Hey, I was thinking of
-> ___, does anyone see a problem with my interpretation?".  That clearly
-> hasn't been done for shared bitmaps until now, which is all the more
-> strange since you /did/ ask linux-ext4 about the inline data topic
-> months ago.
-
-That one was on me, you're right. Because Ted is the maintainer of
-e2fsprogs in Debian, and conversations about ext4 often happen in the
-Debian BTS, reporting a bug on e2fsprogs there felt like starting an
-upstream conversation. That was my mistake; in the future, I'll make
-sure that things make it to linux-ext4. I already did so for
-https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=971014 , and I
-*should* have gone back and done so for the shared bitmap blocks issue.
-
-> ext* and XFS have been around for 25 years.  The software validation of
-> both is imperfect and incomplete because the complexity of the ondisk
-> formats is vast and we haven't caught up with the technical debt that
-> resulted from not writing rigorous checks that would have been very
-> difficult with mid-90s hardware.  I know, because I've been writing
-> online checking for XFS and have seen the wide the gap between what the
-> existing software looks for and what the ondisk format documentation
-> allows.
+On Thu, Sep 24, 2020 at 03:33:31PM +0800, zhangyi (F) wrote:
+> The metadata buffer is no longer trusted after we read it from disk
+> again because it is not uptodate for some reasons (e.g. failed to write
+> back). Otherwise we may get below memory corruption problem in
+> ext4_ext_split()->memset() if we read stale data from the newly
+> allocated extent block on disk which has been failed to async write
+> out but miss verify again since the verified bit has already been set
+> on the buffer.
 > 
-> The only chance that we as a community have at managing the complexity
-> of a filesystem is to use those four tools I outlined above to try to
-> keep the mental models of everyone who participates in close enough
-> alignment.  That's how we usually avoid discussions that end in rancor
-> and confusion.
+> [   29.774674] BUG: unable to handle kernel paging request at ffff88841949d000
+> ...
+> [   29.783317] Oops: 0002 [#2] SMP
+> [   29.784219] R10: 00000000000f4240 R11: 0000000000002e28 R12: ffff88842fa1c800
+> [   29.784627] CPU: 1 PID: 126 Comm: kworker/u4:3 Tainted: G      D W
+> [   29.785546] R13: ffffffff9cddcc20 R14: ffffffff9cddd420 R15: ffff88842fa1c2f8
+> [   29.786679] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),BIOS ?-20190727_0738364
+> [   29.787588] FS:  0000000000000000(0000) GS:ffff88842fa00000(0000) knlGS:0000000000000000
+> [   29.789288] Workqueue: writeback wb_workfn
+> [   29.790319] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   29.790321]  (flush-8:0)
+> [   29.790844] CR2: 0000000000000008 CR3: 00000004234f2000 CR4: 00000000000006f0
+> [   29.791924] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [   29.792839] RIP: 0010:__memset+0x24/0x30
+> [   29.793739] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [   29.794256] Code: 90 90 90 90 90 90 0f 1f 44 00 00 49 89 f9 48 89 d1 83 e2 07 48 c1 e9 033
+> [   29.795161] Kernel panic - not syncing: Fatal exception in interrupt
+> ...
+> [   29.808149] Call Trace:
+> [   29.808475]  ext4_ext_insert_extent+0x102e/0x1be0
+> [   29.809085]  ext4_ext_map_blocks+0xa89/0x1bb0
+> [   29.809652]  ext4_map_blocks+0x290/0x8a0
+> [   29.809085]  ext4_ext_map_blocks+0xa89/0x1bb0
+> [   29.809652]  ext4_map_blocks+0x290/0x8a0
+> [   29.810161]  ext4_writepages+0xc85/0x17c0
+> ...
 > 
-> That was a very long way of reiterating "If you're going to interpret
-> aspects of the software, please come talk to us before you start writing
-> code".  That is key to ext4's long history of compatibility, because a
-> project cannot maintain continuity when actors develop conflicting code
-> in the shadows.  Look at all the mutations FAT and UFS that have
-> appeared over the years-- the codebases became a mess as a result.
-
-Understood, agreed, and acknowledged. I'll make sure that any future
-potentially "adventurous" filesystem experiments get discussed on
-linux-ext4 first, not just in a distro bugtracker with a limited
-audience.
-
-> > > the head", and continued with the notion that anything other than
-> > > e2fsprogs making something to be mounted by mount(2) and handled by
-> > > fs/ext4 is being "inflicted", and if the goal didn't still seem to be
-> > > "how do we make it go away so that only e2fsprogs and the kernel ever
-> > > touch ext4". I started this thread because I'd written some userspace
-> > > code, a new version of the kernel made that userspace code stop working,
-> > > so I wanted to report that the moment I'd discovered that, along with a
-> > > potential way to address it with as little disrupton to ext4 as
-> > > possible.
+> Fix this by clearing buffer's verified bit if we read meta block from
+> disk again.
 > 
-> Ted: I don't think it's a good idea to make SHARED_BLOCKS disable block
-> validity checking by default.  You could someday enable users to write
-> to block-sharing files by teaching ext4 how to COW, at which point you'd
-> need correct bitmaps and block validity to prevent accidental overwrite
-> of critical metadata.  At that point you'd either be stuck with the
-> precedent that SHARED_BLOCKS implies noblock_validity, or you'd end up
-> breaking Josh's images again.
+> Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
+> Cc: stable@vger.kernel.org
 
-That's a fair point (though I think a writable COW version of
-SHARED_BLOCKS would need a different flag). It'd make more sense to key
-this logic off of RO_COMPAT_READONLY or similar. But even better:
+Thanks, applied.
 
-> "noblock_validity" in the superblock mount options field of the images
-> you create.
-
-Yeah, I can do that. That's a much better solution, thank you. It would
-have been problematic to have to change the userspace that mounts the
-filesystem to pass new mount options ("noblock_validity") for the new
-kernel. But if I can embed it in the filesystem, that'll work.
-
-I'll do that, and please feel free to drop the original proposed patch
-as it's no longer needed. Thanks, Darrick.
-
-- Josh Triplett
+						- Ted
