@@ -2,121 +2,107 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C89032899C7
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 Oct 2020 22:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB4AB289AC2
+	for <lists+linux-ext4@lfdr.de>; Fri,  9 Oct 2020 23:36:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387723AbgJIUac (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 9 Oct 2020 16:30:32 -0400
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:57835 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732521AbgJIUac (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 9 Oct 2020 16:30:32 -0400
-X-Originating-IP: 67.5.25.97
-Received: from localhost (unknown [67.5.25.97])
-        (Authenticated sender: josh@joshtriplett.org)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id A49D0E0002;
-        Fri,  9 Oct 2020 20:30:25 +0000 (UTC)
-Date:   Fri, 9 Oct 2020 13:30:22 -0700
-From:   Josh Triplett <josh@joshtriplett.org>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ext4@vger.kernel.org
-Subject: Re: ext4 regression in v5.9-rc2 from e7bfb5c9bb3d on ro fs with
- overlapped bitmaps
-Message-ID: <20201009203022.GD4649@localhost>
-References: <20201006025110.GJ49559@magnolia>
- <20201006031834.GA5797@mit.edu>
- <20201006050306.GA8098@localhost>
- <20201006133533.GC5797@mit.edu>
- <20201007080304.GB1112@localhost>
- <20201007143211.GA235506@mit.edu>
- <20201007201424.GB15049@localhost>
- <20201008021017.GD235506@mit.edu>
- <20201008222259.GA45658@localhost>
- <20201009143732.GJ235506@mit.edu>
+        id S2391668AbgJIVfR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 9 Oct 2020 17:35:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42006 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388587AbgJIVei (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 9 Oct 2020 17:34:38 -0400
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 44F7C21D6C;
+        Fri,  9 Oct 2020 21:34:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602279277;
+        bh=af4HYKUXjfzQEnpRkoqrLOtb/VuZgD2GaaA85DESAB8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mAKgXcy5CifgRYN2i2C2c94+Jg5oLVaoZk49jTIFxseeqdMtEOOqP5cL66hXhKNTI
+         eNSQDBkgqgAc1Wd7XIXje+joGiBVI4yatMIDb1+kpBlSLeGvwRiFFGcw+A+0IeryZM
+         wi38bfOOqpr1rBlahq6SJoGGKG4xvvKCLXOhXA9s=
+Date:   Fri, 9 Oct 2020 14:34:34 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     ira.weiny@intel.com
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, linux-aio@kvack.org,
+        linux-efi@vger.kernel.org, kvm@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mmc@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
+        target-devel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-kselftest@vger.kernel.org, samba-technical@lists.samba.org,
+        ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com,
+        devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-rdma@vger.kernel.org,
+        x86@kernel.org, amd-gfx@lists.freedesktop.org,
+        linux-afs@lists.infradead.org, cluster-devel@redhat.com,
+        linux-cachefs@redhat.com, intel-wired-lan@lists.osuosl.org,
+        xen-devel@lists.xenproject.org, linux-ext4@vger.kernel.org,
+        Fenghua Yu <fenghua.yu@intel.com>, ecryptfs@vger.kernel.org,
+        linux-um@lists.infradead.org, intel-gfx@lists.freedesktop.org,
+        linux-erofs@lists.ozlabs.org, reiserfs-devel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        io-uring@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-ntfs-dev@lists.sourceforge.net, netdev@vger.kernel.org,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH RFC PKS/PMEM 22/58] fs/f2fs: Utilize new kmap_thread()
+Message-ID: <20201009213434.GA839@sol.localdomain>
+References: <20201009195033.3208459-1-ira.weiny@intel.com>
+ <20201009195033.3208459-23-ira.weiny@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201009143732.GJ235506@mit.edu>
+In-Reply-To: <20201009195033.3208459-23-ira.weiny@intel.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 10:37:32AM -0400, Theodore Y. Ts'o wrote:
-> That being said, on the ext4 weekly video chat, we did discuss other
-> uses of an incompat feature flag that would allow the allocation
-> bitmap blocks and inode table block fields in the superblock to be
-> zero, which would mean that they are unallocated.
-
-What do you mean by "allocation bitmap blocks and inode table block
-fields in the superblock"? Those are in the group descriptor, not the
-superblock. Or am I missing something there?
-
-> This would allow us
-> to dynamically grow the inode table by adding an extra block group
-> descriptor.  In fact, I'd probably use this as an opportunity to make
-> some other changes, such using inodes to store locations of the block
-> group descriptors, inode tables, and allocation bitmaps at the same
-> time.  Those details can be discussed later, but the point is that
-> this is why it's good to discuss format changes from a requirements
-> perspective, so that if we do need to make an incompat change, we can
-> kill multiple birds with a single stone.
-
-I would be quite interested in that.
-
-> On Thu, Oct 08, 2020 at 03:22:59PM -0700, Josh Triplett wrote:
-> > It's an arbitrary filesystem hierarchy, including directories, files of
-> > various sizes (hence using inline_data), and permissions. The problem
-> > isn't to get data from point A to point B; the problem is (in part) to
-> > turn a representation of a filesystem into an actual mounted filesystem
-> > as efficiently as possible, live-serving individual blocks on demand
-> > rather than generating the whole image in advance.
+On Fri, Oct 09, 2020 at 12:49:57PM -0700, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
 > 
-> Ah, so you want to be able to let the other side "look at" the file
-> system in parallel with it being generated on demand?  The cache
-> coherency problems would seem to be... huge.  For example, how can you
-> add a file to directory after the reader has looked at the directory
-> inode and directory blocks?
+> The kmap() calls in this FS are localized to a single thread.  To avoid
+> the over head of global PKRS updates use the new kmap_thread() call.
+> 
+> Cc: Jaegeuk Kim <jaegeuk@kernel.org>
+> Cc: Chao Yu <chao@kernel.org>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> ---
+>  fs/f2fs/f2fs.h | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index d9e52a7f3702..ff72a45a577e 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -2410,12 +2410,12 @@ static inline struct page *f2fs_pagecache_get_page(
+>  
+>  static inline void f2fs_copy_page(struct page *src, struct page *dst)
+>  {
+> -	char *src_kaddr = kmap(src);
+> -	char *dst_kaddr = kmap(dst);
+> +	char *src_kaddr = kmap_thread(src);
+> +	char *dst_kaddr = kmap_thread(dst);
+>  
+>  	memcpy(dst_kaddr, src_kaddr, PAGE_SIZE);
+> -	kunmap(dst);
+> -	kunmap(src);
+> +	kunmap_thread(dst);
+> +	kunmap_thread(src);
+>  }
 
-I don't. While the data is computed on demand for performance reasons,
-the nature and size of all the data is fully known in advance. I never
-add data to a filesystem, only create new filesystem images. The kernel
-*is* looking at the filesystem in parallel with it being generated,
-insofar as blocks aren't constructed until the kernel asks for them
-(which is a massive performance win, especially since the kernel may
-only want a small subset of the filesystem). But the block contents are
-fixed in advance, even if they haven't been generated yet. So the kernel
-can read ahead and cache any blocks it wants to, and they'll be valid.
-(Excessive readahead might be a performance problem, but not a
-correctness one.)
+Wouldn't it make more sense to switch cases like this to kmap_atomic()?
+The pages are only mapped to do a memcpy(), then they're immediately unmapped.
 
-I briefly considered ideas around adding new data after the filesystem
-was mounted, and dismissed those ideas just as quickly, for exactly
-these reasons (disk caching, filesystem caching, readahead). That would
-require a filesystem with at least some subset of cluster features. I
-don't plan to go there if I don't have to.
-
-If I do end up needing that, I'd consider proposing an ext4 change along
-the lines of making the root directory into a "super-root" directory
-under which multiple filesystem roots could live, and supporting a way
-to re-read that root to discover new filesystem roots and new block
-groups; then, it'd be possible to add a new root whose contents are
-*mostly* references to existing inodes (that the kernel would already
-have cached), and any modified directories or new/modified files would
-have new inodes added. That would isolate the "don't read ahead and
-cache" problem to the new inodes, which could potentially be isolated to
-new block groups for simplicity, and the "discover new roots" mechanism
-could also discover the newly added block groups and inode tables.
-
-But again, I'm not curently looking to do that, and *if* I were, I'd
-bring it up for architectural discussion and design on linux-ext4 first.
-There's also a balance there between a simple version that'd work for an
-append-only read-only filesystem, and a complex version that'd work for
-a writable filesystem, and I'd hope more for the former than the latter,
-but that'd be a topic for discussion.
-
-- Josh Triplett
+- Eric
