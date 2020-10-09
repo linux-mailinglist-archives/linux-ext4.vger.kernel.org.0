@@ -2,138 +2,195 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BFCC288B79
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 Oct 2020 16:37:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1AE8288BC0
+	for <lists+linux-ext4@lfdr.de>; Fri,  9 Oct 2020 16:44:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387978AbgJIOhq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 9 Oct 2020 10:37:46 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:40611 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1733112AbgJIOhq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 9 Oct 2020 10:37:46 -0400
-Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 099EbWwa005346
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 9 Oct 2020 10:37:32 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 1D13C420107; Fri,  9 Oct 2020 10:37:32 -0400 (EDT)
-Date:   Fri, 9 Oct 2020 10:37:32 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Josh Triplett <josh@joshtriplett.org>
-Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ext4@vger.kernel.org
-Subject: Re: ext4 regression in v5.9-rc2 from e7bfb5c9bb3d on ro fs with
- overlapped bitmaps
-Message-ID: <20201009143732.GJ235506@mit.edu>
-References: <20201006003216.GB6553@localhost>
- <20201006025110.GJ49559@magnolia>
- <20201006031834.GA5797@mit.edu>
- <20201006050306.GA8098@localhost>
- <20201006133533.GC5797@mit.edu>
- <20201007080304.GB1112@localhost>
- <20201007143211.GA235506@mit.edu>
- <20201007201424.GB15049@localhost>
- <20201008021017.GD235506@mit.edu>
- <20201008222259.GA45658@localhost>
+        id S2388727AbgJIOoR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 9 Oct 2020 10:44:17 -0400
+Received: from mga18.intel.com ([134.134.136.126]:15637 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387662AbgJIOoQ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 9 Oct 2020 10:44:16 -0400
+IronPort-SDR: SurwuXIIoL3BWJe4mOcpAYaUsRKGO+7YcqrOniFTulicWsWxlgW0Sd4PMVAOix2TQjEa5lGPSq
+ Nsg/ssnX897w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="153325952"
+X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; 
+   d="scan'208";a="153325952"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 07:44:15 -0700
+IronPort-SDR: fHPYqDqoxI0JI/NDd1jywllvxYX30JXdJ00BQXkFNe5NgUXYTGNPoYflktpfLeOoJBEWPBYEym
+ qgYKo8GxGKXg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; 
+   d="scan'208";a="354872912"
+Received: from lkp-server02.sh.intel.com (HELO 80eb06af76cf) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 09 Oct 2020 07:44:14 -0700
+Received: from kbuild by 80eb06af76cf with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kQtcz-0000ZR-AC; Fri, 09 Oct 2020 14:44:13 +0000
+Date:   Fri, 09 Oct 2020 22:44:02 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+Subject: [ext4:dev] BUILD SUCCESS WITH WARNING
+ ab7b179af3f98772f2433ddc4ace6b7924a4e862
+Message-ID: <5f807732.4D2JzwOY6J4y1O8f%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201008222259.GA45658@localhost>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 03:22:59PM -0700, Josh Triplett wrote:
-> 
-> I wasn't trying to make a *new* general principle or policy. I was under
-> the impression that this *was* the policy, because it never occurred to
-> me that it could be otherwise. It seemed like a natural aspect of the
-> kernel/userspace boundary, to the point that the idea of it *not* being
-> part of the kernel's stability guarantees didn't cross my mind. 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git  dev
+branch HEAD: ab7b179af3f98772f2433ddc4ace6b7924a4e862  Merge branch 'hs/fast-commit-v9' into dev
 
-From our perspective (and Darrick and I discussed this on this week's
-ext4 video conference, so it represents the ext4 and xfs maintainer's
-position) is that the file system format is different.  First, the
-on-disk format is not an ABI, and it is several orders more complex
-than a system call interface.  Second, we make no guarantees about
-what the file system created by malicious tools will do.  For example,
-XFS developers reject bug reports from file system fuzzers, because
-the v5 format has CRC checks, so randomly corrupted file systems won't
-crash the kernel.  Yes, this doesn't protect against maliciously
-created file systems where the attacker makes sure the checksums are
-valid, but only crazy people who think containers are just as secure
-as VM's and that unprivileged users should be allowed to make the
-kernel mount potentially maliciously created file systems would be
-exposing the kernel to such maliciously created images.
+Warning in current branch:
 
-> Finally, I think there's also some clarification needed in the role of
-> what some of the incompat and ro_compat flags mean. For instance,
-> "RO_COMPAT_READONLY" is documented as:
-> >     - Read-only filesystem image; the kernel will not mount this image
-> >       read-write and most tools will refuse to write to the image.
-> Is it reasonable to interpret this as "this can never, ever become
-> writable", such that no kernel should ever "understand" that flag in
-> ro_compat?
+fs/ext4/fast_commit.c:1079:6: warning: variable 'start_time' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
+fs/ext4/fast_commit.c:1079:6: warning: variable 'start_time' is used uninitialized whenever '||' condition is true [-Wsometimes-uninitialized]
+fs/ext4/fast_commit.c:1135 ext4_fc_commit() error: uninitialized symbol 'start_time'.
+fs/ext4/fast_commit.c:1787:6: warning: no previous prototype for function 'ext4_fc_set_bitmaps_and_counters' [-Wmissing-prototypes]
+fs/ext4/mballoc.c:5221:6: warning: no previous prototype for function 'ext4_free_blocks_simple' [-Wmissing-prototypes]
+fs/jbd2/recovery.c:258:6: warning: variable 'seq' is uninitialized when used here [-Wuninitialized]
 
-Yes.  However...
+Warning ids grouped by kconfigs:
 
-> I'd assumed so, but this discussion is definitely leading me
-> to want to confirm any such assumptions. Is this a flag that e2fsck
-> could potentially use to determine that it shouldn't check
-> read-write-specific data structures, or should that be a different flag?
+gcc_recent_errors
+`-- i386-randconfig-m021-20201009
+    `-- fs-ext4-fast_commit.c-ext4_fc_commit()-error:uninitialized-symbol-start_time-.
 
-Just because it won't be modifiable, shouldn't mean that e2fsck won't
-check to make sure that such structures are valid.  "Won't be changed"
-and "valid" are two different concepts.  And certainly, today we *do*
-check to make sure the bitmaps are valid and don't overlap, and we
-can't go back in time to change that.
+clang_recent_errors
+|-- s390-randconfig-r004-20201009
+|   |-- fs-ext4-fast_commit.c:warning:variable-start_time-is-used-uninitialized-whenever-condition-is-true
+|   `-- fs-jbd2-recovery.c:warning:variable-seq-is-uninitialized-when-used-here
+`-- x86_64-randconfig-a004-20201009
+    |-- fs-ext4-fast_commit.c:warning:no-previous-prototype-for-function-ext4_fc_set_bitmaps_and_counters
+    |-- fs-ext4-fast_commit.c:warning:variable-start_time-is-used-uninitialized-whenever-condition-is-true
+    |-- fs-ext4-fast_commit.c:warning:variable-start_time-is-used-uninitialized-whenever-if-condition-is-true
+    |-- fs-ext4-mballoc.c:warning:no-previous-prototype-for-function-ext4_free_blocks_simple
+    `-- fs-jbd2-recovery.c:warning:variable-seq-is-uninitialized-when-used-here
 
-That being said, on the ext4 weekly video chat, we did discuss other
-uses of an incompat feature flag that would allow the allocation
-bitmap blocks and inode table block fields in the superblock to be
-zero, which would mean that they are unallocated.  This would allow us
-to dynamically grow the inode table by adding an extra block group
-descriptor.  In fact, I'd probably use this as an opportunity to make
-some other changes, such using inodes to store locations of the block
-group descriptors, inode tables, and allocation bitmaps at the same
-time.  Those details can be discussed later, but the point is that
-this is why it's good to discuss format changes from a requirements
-perspective, so that if we do need to make an incompat change, we can
-kill multiple birds with a single stone.
+elapsed time: 720m
 
-> It's an arbitrary filesystem hierarchy, including directories, files of
-> various sizes (hence using inline_data), and permissions. The problem
-> isn't to get data from point A to point B; the problem is (in part) to
-> turn a representation of a filesystem into an actual mounted filesystem
-> as efficiently as possible, live-serving individual blocks on demand
-> rather than generating the whole image in advance.
+configs tested: 108
+configs skipped: 2
 
-Ah, so you want to be able to let the other side "look at" the file
-system in parallel with it being generated on demand?  The cache
-coherency problems would seem to be... huge.  For example, how can you
-add a file to directory after the reader has looked at the directory
-inode and directory blocks?  Or for that matter, looked at a portion
-of the inode table block?  Or are you using 4k inodes so there is only
-one inode per block?  What about the fact that we sometimes do
-readahead of inode table blocks?
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                 mpc832x_mds_defconfig
+arm                        mvebu_v5_defconfig
+arm                           omap1_defconfig
+mips                   sb1250_swarm_defconfig
+s390                                defconfig
+arm                  colibri_pxa300_defconfig
+arm                          moxart_defconfig
+arm                            u300_defconfig
+mips                      maltasmvp_defconfig
+arm                          simpad_defconfig
+arm                         ebsa110_defconfig
+ia64                        generic_defconfig
+x86_64                           alldefconfig
+arm                      pxa255-idp_defconfig
+mips                            e55_defconfig
+powerpc                   currituck_defconfig
+arm                           tegra_defconfig
+mips                            gpr_defconfig
+mips                      loongson3_defconfig
+arm                          collie_defconfig
+arm                         nhk8815_defconfig
+arm                         lpc18xx_defconfig
+openrisc                         alldefconfig
+mips                      pic32mzda_defconfig
+arm                          pxa168_defconfig
+arm                         cm_x300_defconfig
+powerpc                      pcm030_defconfig
+arm                       cns3420vb_defconfig
+powerpc                      bamboo_defconfig
+powerpc                      katmai_defconfig
+powerpc                     ksi8560_defconfig
+sh                 kfr2r09-romimage_defconfig
+ia64                             alldefconfig
+arm                        oxnas_v6_defconfig
+arm                        trizeps4_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a006-20201009
+i386                 randconfig-a005-20201009
+i386                 randconfig-a001-20201009
+i386                 randconfig-a004-20201009
+i386                 randconfig-a002-20201009
+i386                 randconfig-a003-20201009
+x86_64               randconfig-a012-20201009
+x86_64               randconfig-a015-20201009
+x86_64               randconfig-a013-20201009
+x86_64               randconfig-a014-20201009
+x86_64               randconfig-a011-20201009
+x86_64               randconfig-a016-20201009
+i386                 randconfig-a015-20201009
+i386                 randconfig-a013-20201009
+i386                 randconfig-a014-20201009
+i386                 randconfig-a016-20201009
+i386                 randconfig-a011-20201009
+i386                 randconfig-a012-20201009
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-I can think of all sorts of implementation level changes in terms of
-caching, readahead behavior, etc., that we might make in the future
-that might break you if you are doing some quite as outré are that.
-Again, the fact that you're being cagey about what you are doing, and
-potentially complaining about changes we might make that would break
-you, is ***really*** scaring me now.
+clang tested configs:
+x86_64               randconfig-a004-20201009
+x86_64               randconfig-a003-20201009
+x86_64               randconfig-a005-20201009
+x86_64               randconfig-a001-20201009
+x86_64               randconfig-a002-20201009
+x86_64               randconfig-a006-20201009
 
-Can you go into more details here?  I'm sorry if you're working for
-some startup who might want to patent these ideas, but if you want to
-guarantee future compatibility, I'm really going to have to insist.
-
-	  	 		    	   - Ted
-					 
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
