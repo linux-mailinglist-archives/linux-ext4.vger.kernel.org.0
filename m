@@ -2,173 +2,148 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1869A28C487
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Oct 2020 00:08:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FAA228C52E
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Oct 2020 01:31:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387726AbgJLWIi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 12 Oct 2020 18:08:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732231AbgJLWIh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 12 Oct 2020 18:08:37 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42851C0613D1
-        for <linux-ext4@vger.kernel.org>; Mon, 12 Oct 2020 15:08:37 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id l2so19917879lfk.0
-        for <linux-ext4@vger.kernel.org>; Mon, 12 Oct 2020 15:08:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Er9outiRWHyk/leMtSr3CNlG0IeLWwXg/xMOKQHeA64=;
-        b=TJLs0p8ef4M8/2cD6lB9hj/ouQXXIQ/K0meIiWe4zNhqW2s0ngXyIXQSYlacBFeFlj
-         kAIAmHPxQb1/ujaGBZFb+dfwSePuqxvopJiXkpGgjipwT732nRx+BxQq5xTHYgdGIOAs
-         isyVPJDcayUq1+Kq2+ze6a/bcqxsM1zaKE47QWncvbSgkZIu/P+xBkVlu92rPPdxxhCJ
-         uf6IILkn1+fZNd5nT3ek4QfnUSzfvR1vnFUHYKQRBnDdsyUfUshec2t1/Eul5nz6vq2e
-         iiMoUngpjYSAUATlZWlh89jleNr2DKD+euTyWeVfSZAdLsydM7LuN5j4+86z26nK9/j5
-         rqWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Er9outiRWHyk/leMtSr3CNlG0IeLWwXg/xMOKQHeA64=;
-        b=mdxLs5TnCL4XwucrLwy5PLVQAmMDfIYKPF0+HDpO8+GwQX7i4v/EzcFppiNKVDxlsH
-         e7pZBmeQF1aal7r1QZQ3hR+kp1i1Ki2rrI/EK6amZP7W6eYj/OsPp3Bug/803wQ1yLN8
-         gxFF01zK7GpeNtyR8tAknIwykL9y5r9WMskq+b91c/Hy3DSrm7YrTLXNtmXRCHRbhzhN
-         WQnUimY9sIvtWOBH56gEqd1uMP83vbxCsmTEsoLx0zWSo3FpVPO8sAaXsQLQiAkJx6gS
-         tekISVqfdUwvF7UsmmPg3nXuJ0k+yJYCsV+pAqjgUTJoZq44b0/seWd6HTPu1mn3T9mq
-         ihWw==
-X-Gm-Message-State: AOAM5318DR51uMCgB7tnKWetNb0TV94nongTnVZL1IrBpv3w5efCsNXc
-        IFsJmVEa8jDx0+K6uhEJChCSGA==
-X-Google-Smtp-Source: ABdhPJxmiM6IlJtuyaoQ8VZOOBemBYKqhzqgDG6ZrEeg+bRyV1gNNd+WNqR3yadfn3+/FcWbnCxyLA==
-X-Received: by 2002:a19:824f:: with SMTP id e76mr6874758lfd.572.1602540515605;
-        Mon, 12 Oct 2020 15:08:35 -0700 (PDT)
-Received: from localhost.localdomain (c-92d7225c.014-348-6c756e10.bbcust.telenor.se. [92.34.215.146])
-        by smtp.gmail.com with ESMTPSA id a201sm3039261lfd.213.2020.10.12.15.08.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2020 15:08:34 -0700 (PDT)
-From:   Linus Walleij <linus.walleij@linaro.org>
-To:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
-Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-api@vger.kernel.org, qemu-devel@nongnu.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Florian Weimer <fw@deneb.enyo.de>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: [PATCH v3 RESEND] fcntl: Add 32bit filesystem mode
-Date:   Tue, 13 Oct 2020 00:06:20 +0200
-Message-Id: <20201012220620.124408-1-linus.walleij@linaro.org>
-X-Mailer: git-send-email 2.26.2
+        id S2388653AbgJLXbb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 12 Oct 2020 19:31:31 -0400
+Received: from mga11.intel.com ([192.55.52.93]:32822 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726780AbgJLXb3 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 12 Oct 2020 19:31:29 -0400
+IronPort-SDR: v8kc3Fio+LjPoyvQb3mY8ylUGqFR6CzeawpaCTXAqt1VAiQ6XIXdXgWe/N/tGX+W/WtGkwX1MB
+ Yyz30aCCeR2g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="162351722"
+X-IronPort-AV: E=Sophos;i="5.77,368,1596524400"; 
+   d="scan'208";a="162351722"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 16:31:28 -0700
+IronPort-SDR: tYujEEKuwB7pwkDEJNgfSBtOh7hwJ+YZEVhRvoIibttlBusG3o0pRElwiIGjx+C70rOitVdHyl
+ N8yvUi3stUVQ==
+X-IronPort-AV: E=Sophos;i="5.77,368,1596524400"; 
+   d="scan'208";a="313606559"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 16:31:27 -0700
+Date:   Mon, 12 Oct 2020 16:31:26 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, linux-aio@kvack.org,
+        linux-efi@vger.kernel.org, kvm@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mmc@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
+        target-devel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-kselftest@vger.kernel.org, samba-technical@lists.samba.org,
+        ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com,
+        devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-rdma@vger.kernel.org,
+        x86@kernel.org, amd-gfx@lists.freedesktop.org,
+        linux-afs@lists.infradead.org, cluster-devel@redhat.com,
+        linux-cachefs@redhat.com, intel-wired-lan@lists.osuosl.org,
+        xen-devel@lists.xenproject.org, linux-ext4@vger.kernel.org,
+        Fenghua Yu <fenghua.yu@intel.com>, ecryptfs@vger.kernel.org,
+        linux-um@lists.infradead.org, intel-gfx@lists.freedesktop.org,
+        linux-erofs@lists.ozlabs.org, reiserfs-devel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        io-uring@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-ntfs-dev@lists.sourceforge.net, netdev@vger.kernel.org,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH RFC PKS/PMEM 22/58] fs/f2fs: Utilize new kmap_thread()
+Message-ID: <20201012233126.GD2046448@iweiny-DESK2.sc.intel.com>
+References: <20201009195033.3208459-23-ira.weiny@intel.com>
+ <20201009213434.GA839@sol.localdomain>
+ <20201010003954.GW20115@casper.infradead.org>
+ <20201010013036.GD1122@sol.localdomain>
+ <20201012065635.GB2046448@iweiny-DESK2.sc.intel.com>
+ <20201012161946.GA858@sol.localdomain>
+ <5d621db9-23d4-e140-45eb-d7fca2093d2b@intel.com>
+ <20201012164438.GA20115@casper.infradead.org>
+ <20201012195354.GC2046448@iweiny-DESK2.sc.intel.com>
+ <20201012200254.GB20115@casper.infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201012200254.GB20115@casper.infradead.org>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-It was brought to my attention that this bug from 2018 was
-still unresolved: 32 bit emulators like QEMU were given
-64 bit hashes when running 32 bit emulation on 64 bit systems.
+On Mon, Oct 12, 2020 at 09:02:54PM +0100, Matthew Wilcox wrote:
+> On Mon, Oct 12, 2020 at 12:53:54PM -0700, Ira Weiny wrote:
+> > On Mon, Oct 12, 2020 at 05:44:38PM +0100, Matthew Wilcox wrote:
+> > > On Mon, Oct 12, 2020 at 09:28:29AM -0700, Dave Hansen wrote:
+> > > > kmap_atomic() is always preferred over kmap()/kmap_thread().
+> > > > kmap_atomic() is _much_ more lightweight since its TLB invalidation is
+> > > > always CPU-local and never broadcast.
+> > > > 
+> > > > So, basically, unless you *must* sleep while the mapping is in place,
+> > > > kmap_atomic() is preferred.
+> > > 
+> > > But kmap_atomic() disables preemption, so the _ideal_ interface would map
+> > > it only locally, then on preemption make it global.  I don't even know
+> > > if that _can_ be done.  But this email makes it seem like kmap_atomic()
+> > > has no downsides.
+> > 
+> > And that is IIUC what Thomas was trying to solve.
+> > 
+> > Also, Linus brought up that kmap_atomic() has quirks in nesting.[1]
+> > 
+> > >From what I can see all of these discussions support the need to have something
+> > between kmap() and kmap_atomic().
+> > 
+> > However, the reason behind converting call sites to kmap_thread() are different
+> > between Thomas' patch set and mine.  Both require more kmap granularity.
+> > However, they do so with different reasons and underlying implementations but
+> > with the _same_ resulting semantics; a thread local mapping which is
+> > preemptable.[2]  Therefore they each focus on changing different call sites.
+> > 
+> > While this patch set is huge I think it serves a valuable purpose to identify a
+> > large number of call sites which are candidates for this new semantic.
+> 
+> Yes, I agree.  My problem with this patch-set is that it ties it to
+> some Intel feature that almost nobody cares about.
 
-This adds a flag to the fcntl() F_GETFD and F_SETFD operations
-to set the underlying filesystem into 32bit mode even if the
-file handle was opened using 64bit mode without the compat
-syscalls.
+I humbly disagree.  At this level the only thing this is tied to is the idea
+that there are additional memory protections available which can be enabled
+quickly on a per-thread basis.  PKS on Intel is but 1 implementation of that.
 
-Programs that need the 32 bit file system behavior need to
-issue a fcntl() system call such as in this example:
+Even the kmap code only has knowledge that there is something which needs to be
+done special on a devm page.
 
-  #define FD_32BIT_MODE 2
+>
+> Maybe we should
+> care about it, but you didn't try very hard to make anyone care about
+> it in the cover letter.
 
-  int main(int argc, char** argv) {
-    DIR* dir;
-    int err;
-    int fd;
+Ok my bad.  We have customers who care very much about restricting access to
+the PMEM pages to prevent bugs in the kernel from causing permanent damage to
+their data/file systems.  I'll reword the cover letter better.
 
-    dir = opendir("/boot");
-    fd = dirfd(dir);
-    err = fcntl(fd, F_SETFD, FD_32BIT_MODE);
-    if (err) {
-      printf("fcntl() failed! err=%d\n", err);
-      return 1;
-    }
-    printf("dir=%p\n", dir);
-    printf("readdir(dir)=%p\n", readdir(dir));
-    printf("errno=%d: %s\n", errno, strerror(errno));
-    return 0;
-  }
+> 
+> For a future patch-set, I'd like to see you just introduce the new
+> API.  Then you can optimise the Intel implementation of it afterwards.
+> Those patch-sets have entirely different reviewers.
 
-This can be pretty hard to test since C libraries and linux
-userspace security extensions aggressively filter the parameters
-that are passed down and allowed to commit into actual system
-calls.
+I considered doing this.  But this seemed more logical because the feature is
+being driven by PMEM which is behind the kmap interface not by the users of the
+API.
 
-Cc: Florian Weimer <fw@deneb.enyo.de>
-Cc: Peter Maydell <peter.maydell@linaro.org>
-Cc: Andy Lutomirski <luto@kernel.org>
-Suggested-by: Theodore Ts'o <tytso@mit.edu>
-Link: https://bugs.launchpad.net/qemu/+bug/1805913
-Link: https://lore.kernel.org/lkml/87bm56vqg4.fsf@mid.deneb.enyo.de/
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=205957
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
-ChangeLog v3->v3 RESEND 1:
-- Resending during the v5.10 merge window to get attention.
-ChangeLog v2->v3:
-- Realized that I also have to clear the flag correspondingly
-  if someone ask for !FD_32BIT_MODE after setting it the
-  first time.
-ChangeLog v1->v2:
-- Use a new flag FD_32BIT_MODE to F_GETFD and F_SETFD
-  instead of a new fcntl operation, there is already a fcntl
-  operation to set random flags.
-- Sorry for taking forever to respin this patch :(
----
- fs/fcntl.c                       | 7 +++++++
- include/uapi/asm-generic/fcntl.h | 8 ++++++++
- 2 files changed, 15 insertions(+)
+I can introduce a patch set with a kmap_thread() call which does nothing if
+that is more palatable but it seems wrong to me to do so.
 
-diff --git a/fs/fcntl.c b/fs/fcntl.c
-index 19ac5baad50f..6c32edc4099a 100644
---- a/fs/fcntl.c
-+++ b/fs/fcntl.c
-@@ -335,10 +335,17 @@ static long do_fcntl(int fd, unsigned int cmd, unsigned long arg,
- 		break;
- 	case F_GETFD:
- 		err = get_close_on_exec(fd) ? FD_CLOEXEC : 0;
-+		/* Report 32bit file system mode */
-+		if (filp->f_mode & FMODE_32BITHASH)
-+			err |= FD_32BIT_MODE;
- 		break;
- 	case F_SETFD:
- 		err = 0;
- 		set_close_on_exec(fd, arg & FD_CLOEXEC);
-+		if (arg & FD_32BIT_MODE)
-+			filp->f_mode |= FMODE_32BITHASH;
-+		else
-+			filp->f_mode &= ~FMODE_32BITHASH;
- 		break;
- 	case F_GETFL:
- 		err = filp->f_flags;
-diff --git a/include/uapi/asm-generic/fcntl.h b/include/uapi/asm-generic/fcntl.h
-index 9dc0bf0c5a6e..edd3573cb7ef 100644
---- a/include/uapi/asm-generic/fcntl.h
-+++ b/include/uapi/asm-generic/fcntl.h
-@@ -160,6 +160,14 @@ struct f_owner_ex {
- 
- /* for F_[GET|SET]FL */
- #define FD_CLOEXEC	1	/* actually anything with low bit set goes */
-+/*
-+ * This instructs the kernel to provide 32bit semantics (such as hashes) from
-+ * the file system layer, when running a userland that depend on 32bit
-+ * semantics on a kernel that supports 64bit userland, but does not use the
-+ * compat ioctl() for e.g. open(), so that the kernel would otherwise assume
-+ * that the userland process is capable of dealing with 64bit semantics.
-+ */
-+#define FD_32BIT_MODE	2
- 
- /* for posix fcntl() and lockf() */
- #ifndef F_RDLCK
--- 
-2.26.2
-
+Ira
