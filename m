@@ -2,292 +2,250 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1254228B352
-	for <lists+linux-ext4@lfdr.de>; Mon, 12 Oct 2020 13:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56AE028B359
+	for <lists+linux-ext4@lfdr.de>; Mon, 12 Oct 2020 13:03:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387985AbgJLLBJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 12 Oct 2020 07:01:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387992AbgJLLBI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 12 Oct 2020 07:01:08 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CC1BC0613D1
-        for <linux-ext4@vger.kernel.org>; Mon, 12 Oct 2020 04:01:07 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id q21so15441443ota.8
-        for <linux-ext4@vger.kernel.org>; Mon, 12 Oct 2020 04:01:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=K2YFWJ4pOihJHXPodcnaJ3e2LKbXyuwWQOZ0b/XSrV8=;
-        b=tIb4U4SQcIv4Nhyx/JYzQed9+OXaMfwLCji838eUt700PeULZsa+2OTq+TpRk0yKyY
-         RjcKqMI9CKAfUKSKrlJl0YyjZJvRZLww1+rOM+s+F0rgJoUNLswuUBz/Iz8jpJH1NE4q
-         Rm+gypk/4N8QlZfSHHy/ifmzL/QT9rcB4K6/78l5JpvLUf2C6Fz0rae3W6hpr7YrwJJW
-         uz0fC9woH5/3GthhMgNgFv47m2o7YsrwJt87Zc1dogDBtSReB8fYIamXdiWeLn6bMB1y
-         NOPe+WvoxD0DZT4vKKedDKk+zHxlBaAX6JjwFNbmuwomwwS3rsoTl7xij5IkQsbnrfFJ
-         Nung==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=K2YFWJ4pOihJHXPodcnaJ3e2LKbXyuwWQOZ0b/XSrV8=;
-        b=eS7HJL5nvOZosPv1BZWKMMgXtoxj3mBbLLoLlq836M84IJ6ev+LAP1JNBh8oPvge5L
-         UACM4Z8gZrMvjiQ26GlzShFBU0tBPj58PLbg3pCuuh6n9aHmRBwG6kgmVnFBp2tCc0jK
-         99wfK3sy1lKpGINiv2aL2k8oYrNwnO91U5ILfDk4GJepZroW86pC0bxUtMYorsD1iTs9
-         Vq6TK/8kNsV+pE+AwlV/gtS0BrYjage4YaavSYnps7/v1lz97omVh7UKNkp2WE85A3pT
-         foPGsZr2qs4s9LE5kM1/ncI083QbhJ8W89lcoy/nsDz6wi66mNB3lYu2aRyqJoh5gtA6
-         zR1g==
-X-Gm-Message-State: AOAM530Bk9SLY5iVKfgZYyydxdM0K3zDiqAaYMtDtH9k0B2sOOkMQb/6
-        nh/3x/m3U05fXJZZJ/s1f7Drp+tWE3r3Qt8oPAX1+Q==
-X-Google-Smtp-Source: ABdhPJw+swSWmxv1x2aPtX24h3ONkzSGRkKogbhvAzbeYS+3/LewQEMZnQ2O5aCjFapU1Zgd/wDJAOaL5I/bk+ksh9g=
-X-Received: by 2002:a9d:66a:: with SMTP id 97mr18798931otn.233.1602500466129;
- Mon, 12 Oct 2020 04:01:06 -0700 (PDT)
+        id S2387760AbgJLLDt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 12 Oct 2020 07:03:49 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37618 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387693AbgJLLDt (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 12 Oct 2020 07:03:49 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id AAD4FAC24;
+        Mon, 12 Oct 2020 11:03:47 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 1A4C51E12F5; Mon, 12 Oct 2020 13:03:47 +0200 (CEST)
+Date:   Mon, 12 Oct 2020 13:03:47 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     linux-ext4@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Eric Whitney <enwlinux@gmail.com>,
+        Theodore Ts'o <tytso@mit.edu>
+Subject: Re: xfstests global-ext4/1k generic/219 failure due to dmesg warning
+ of "circular locking dependency detected"
+Message-ID: <20201012110347.GB23665@quack2.suse.cz>
+References: <2eb09d70-b56e-2c0b-8ef4-0479d7be2bb3@linux.ibm.com>
 MIME-Version: 1.0
-References: <20201010145357.60886-1-98.arpi@gmail.com>
-In-Reply-To: <20201010145357.60886-1-98.arpi@gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 12 Oct 2020 13:00:54 +0200
-Message-ID: <CANpmjNOmbPsx-eEQ+TfC0X5CM-Jgy2NBqpYo=h2L9e33rnajSw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] kunit: Support for Parameterized Testing
-To:     Arpitha Raghunandan <98.arpi@gmail.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        skhan@linuxfoundation.org, yzaikin@google.com,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-ext4@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2eb09d70-b56e-2c0b-8ef4-0479d7be2bb3@linux.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, 10 Oct 2020 at 16:54, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
-> Implementation of support for parameterized testing in KUnit.
->
-> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
-> ---
->  include/kunit/test.h | 29 +++++++++++++++++++++++++++++
->  lib/kunit/test.c     | 44 +++++++++++++++++++++++++++++++++++++++++++-
->  2 files changed, 72 insertions(+), 1 deletion(-)
->
-> diff --git a/include/kunit/test.h b/include/kunit/test.h
-> index 59f3144f009a..4740d66269b4 100644
-> --- a/include/kunit/test.h
-> +++ b/include/kunit/test.h
-> @@ -140,10 +140,14 @@ struct kunit;
->  struct kunit_case {
->         void (*run_case)(struct kunit *test);
->         const char *name;
-> +       void* (*get_params)(void);
-> +       int max_parameters_count;
-> +       int parameter_size;
->
->         /* private: internal use only. */
->         bool success;
->         char *log;
-> +       bool parameterized;
+Hi!
 
-Why do you need this bool? Doesn't get_params being non-NULL tell you
-if the test case is parameterized?
+On Fri 09-10-20 22:59:13, Ritesh Harjani wrote:
+> While running generic/219 fstests on a 1k blocksize on x86 box, I see
+> below dmesg warning msg and generic/219 fails. I haven't yet analyzed
+> it, but I remember I have seen such warnings before as well in my testing.
+> I was wondering if others have also seen it in their testing or not and
+> if this is any known issue?
 
->  };
->
->  static inline char *kunit_status_to_string(bool status)
-> @@ -162,6 +166,11 @@ static inline char *kunit_status_to_string(bool status)
->   */
->  #define KUNIT_CASE(test_name) { .run_case = test_name, .name = #test_name }
->
-> +#define KUNIT_CASE_PARAM(test_name, getparams, count, size)                            \
-> +               { .run_case = test_name, .name = #test_name,                            \
-> +                 .parameterized = true, .get_params = (void* (*)(void))getparams,      \
-> +                 .max_parameters_count = count, .parameter_size = size }
-> +
+I don't remember seeing this lately. What mkfs options do you use for your
+test? I can see below that mount options are apparently:
 
-I think this interface is overly complex. For one, if the only purpose
-of the getparams function is to return a pointer to some array, then
-there are only few cases where I see getparams being a function could
-be useful.
+acl,user_xattr,block_validity,usrquota,grpquota
 
-Instead, could we make the getparams function behave like a generator?
-Because then you do not need count, nor size. Its function signature
-would be:
+> Here it goes, 219.dmesg file.
+> 
+> [14459.933253] run fstests generic/219 at 2020-10-08 20:03:27
+> [14462.947295] EXT4-fs (vdc): mounted filesystem with ordered data mode.
+> Opts: acl,user_xattr,block_validity,usrquota,grpquota
+> [14462.992869] EXT4-fs (vdc): re-mounted. Opts: (null)
+> [14463.017058] EXT4-fs (vdc): re-mounted. Opts: (null)
+> [14463.727095] EXT4-fs (vdc): mounted filesystem with ordered data mode.
+> Opts: usrquota
+> [14463.837130] EXT4-fs (vdc): re-mounted. Opts: (null)
+> [14463.874293] EXT4-fs (vdc): re-mounted. Opts: (null)
+> 
+> [14464.149407] ======================================================
+> [14464.149407] WARNING: possible circular locking dependency detected
+> [14464.149407] 5.9.0-rc8-next-20201008 #16 Not tainted
+> [14464.149407] ------------------------------------------------------
+> [14464.149407] chown/23358 is trying to acquire lock:
+> [14464.149407] ffff8b9b8ff60be0 (&ei->i_data_sem){++++}-{3:3}, at:
+> ext4_map_blocks+0xd1/0x640
+> [14464.149407]
+>                but task is already holding lock:
+> [14464.149407] ffff8b9b8963c208 (&s->s_dquot.dqio_sem){++++}-{3:3}, at:
+> v2_write_dquot+0x2d/0xb0
+> [14464.149407]
+>                which lock already depends on the new lock.
 
-void* (*generate_params)(void* prev_param);
+Umm, this seems to show that somehow the lockdep annotation for the
+i_data_sem on the quota file didn't get set properly. i_data_sem on the
+quota file should have I_DATA_SEM_QUOTA (2) subclass but in this report we
+can see that there's no subclass set on ei->i_data_sem. We do set the
+subclass in ext4_quota_on() or ext4_enable_quota(). Strange...
 
-The protocol would be:
+								Honza
 
-- The first call to generate_params is passed prev_param of NULL, and
-returns a pointer to the first parameter P[0].
-
-- Every nth successive call to generate_params is passed the previous
-parameter P[n-1].
-
-- When no more parameters are available, generate_params returns NULL.
-
-- (generate_params should otherwise be stateless, but this is only
-relevant if concurrent calls are expected.)
-
-
->  /**
->   * struct kunit_suite - describes a related collection of &struct kunit_case
->   *
-> @@ -206,6 +215,23 @@ struct kunit {
->         /* private: internal use only. */
->         const char *name; /* Read only after initialization! */
->         char *log; /* Points at case log after initialization */
-> +       bool parameterized; /* True for parameterized tests */
-> +       /* param_values stores the test parameters
-> +        * for parameterized tests.
-> +        */
-> +       void *param_values;
-> +       /* max_parameters_count indicates maximum number of
-> +        * parameters for parameterized tests.
-> +        */
-> +       int max_parameters_count;
-> +       /* iterator_count is used by the iterator method
-> +        * for parameterized tests.
-> +        */
-> +       int iterator_count;
-> +       /* parameter_size indicates size of a single test case
-> +        * for parameterized tests.
-> +        */
-> +       int parameter_size;
-
-All of this would become much simpler if you used the generator
-approach. Likely only 1 field would be required, which is the current
-param.
-
->         struct kunit_try_catch try_catch;
->         /*
->          * success starts as true, and may only be set to false during a
-> @@ -225,6 +251,7 @@ struct kunit {
->  };
->
->  void kunit_init_test(struct kunit *test, const char *name, char *log);
-> +void kunit_init_param_test(struct kunit *test, struct kunit_case *test_case);
->
->  int kunit_run_tests(struct kunit_suite *suite);
->
-> @@ -237,6 +264,8 @@ int __kunit_test_suites_init(struct kunit_suite **suites);
->
->  void __kunit_test_suites_exit(struct kunit_suite **suites);
->
-> +void *get_test_case_parameters(struct kunit *test);
-> +
->  /**
->   * kunit_test_suites() - used to register one or more &struct kunit_suite
->   *                      with KUnit.
-> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-> index c36037200310..ab9e13c81d4a 100644
-> --- a/lib/kunit/test.c
-> +++ b/lib/kunit/test.c
-> @@ -142,6 +142,11 @@ unsigned int kunit_test_case_num(struct kunit_suite *suite,
->  }
->  EXPORT_SYMBOL_GPL(kunit_test_case_num);
->
-> +static void kunit_print_failed_param(struct kunit *test)
-> +{
-> +       kunit_err(test, "\n\tTest failed at parameter: %d\n", test->iterator_count);
-> +}
-> +
->  static void kunit_print_string_stream(struct kunit *test,
->                                       struct string_stream *stream)
->  {
-> @@ -182,6 +187,9 @@ static void kunit_fail(struct kunit *test, struct kunit_assert *assert)
->
->         assert->format(assert, stream);
->
-> +       if (test->parameterized)
-> +               kunit_print_failed_param(test);
-> +
->         kunit_print_string_stream(test, stream);
->
->         WARN_ON(string_stream_destroy(stream));
-> @@ -236,6 +244,18 @@ void kunit_init_test(struct kunit *test, const char *name, char *log)
->  }
->  EXPORT_SYMBOL_GPL(kunit_init_test);
->
-> +void kunit_init_param_test(struct kunit *test, struct kunit_case *test_case)
-> +{
-> +       spin_lock_init(&test->lock);
-> +       INIT_LIST_HEAD(&test->resources);
-> +       test->parameterized = true;
-> +       test->param_values = (void *)(test_case->get_params());
-> +       test->max_parameters_count = test_case->max_parameters_count;
-> +       test->parameter_size = test_case->parameter_size;
-> +       test->iterator_count = 0;
-> +}
-> +EXPORT_SYMBOL_GPL(kunit_init_param_test);
-> +
->  /*
->   * Initializes and runs test case. Does not clean up or do post validations.
->   */
-> @@ -254,7 +274,14 @@ static void kunit_run_case_internal(struct kunit *test,
->                 }
->         }
->
-> -       test_case->run_case(test);
-> +       if (!test->parameterized) {
-> +               test_case->run_case(test);
-> +       } else {
-> +               int i;
-> +
-> +               for (i = 0; i < test->max_parameters_count; i++)
-> +                       test_case->run_case(test);
-
-With a generator approach, here you'd call generate_params. Most
-likely, you'll need to stash its result somewhere, e.g. test->param,
-so it can be retrieved by the test case.
-
-> +       }
->  }
->
->  static void kunit_case_internal_cleanup(struct kunit *test)
-> @@ -343,6 +370,8 @@ static void kunit_run_case_catch_errors(struct kunit_suite *suite,
->         struct kunit test;
->
->         kunit_init_test(&test, test_case->name, test_case->log);
-> +       if (test_case->parameterized)
-> +               kunit_init_param_test(&test, test_case);
->         try_catch = &test.try_catch;
->
->         kunit_try_catch_init(try_catch,
-> @@ -407,6 +436,19 @@ void __kunit_test_suites_exit(struct kunit_suite **suites)
->  }
->  EXPORT_SYMBOL_GPL(__kunit_test_suites_exit);
->
-> +/*
-> + * Iterator method for the parameterized test cases
-> + */
-> +void *get_test_case_parameters(struct kunit *test)
-> +{
-> +       int index = test->iterator_count * test->parameter_size;
-> +
-> +       if (test->iterator_count != test->max_parameters_count)
-> +               test->iterator_count++;
-
-This is quite confusing, because if get_test_case_parameters is called
-multiple times within the same test case, we'll iterate through all
-the test case params in the same test case? I think this function
-should not have side-effects (like normal getters).
-
-But if you use the generator approach, you'll likely not need this
-function anyway.
-
-> +       return (test->param_values + index);
-
-Braces not needed.
-
-> +}
-> +EXPORT_SYMBOL_GPL(get_test_case_parameters);
-> +
->  /*
->   * Used for static resources and when a kunit_resource * has been created by
->   * kunit_alloc_resource().  When an init function is supplied, @data is passed
-> --
-> 2.25.1
->
+> [14464.149407]
+>                the existing dependency chain (in reverse order) is:
+> [14464.149407]
+>                -> #2 (&s->s_dquot.dqio_sem){++++}-{3:3}:
+> [14464.149407]        down_read+0x41/0x200
+> [14464.149407]        v2_read_dquot+0x23/0x60
+> [14464.149407]        dquot_acquire+0x4c/0x100
+> [14464.149407]        ext4_acquire_dquot+0x72/0xc0
+> [14464.149407]        dqget+0x24a/0x4a0
+> [14464.149407]        __dquot_initialize+0x1f0/0x330
+> [14464.149407]        ext4_create+0x38/0x190
+> [14464.149407]        lookup_open+0x4cd/0x630
+> [14464.149407]        path_openat+0x2c4/0xa10
+> [14464.149407]        do_filp_open+0x91/0x100
+> [14464.149407]        do_sys_openat2+0x20d/0x2d0
+> [14464.149407]        do_sys_open+0x44/0x80
+> [14464.149407]        do_syscall_64+0x33/0x40
+> [14464.149407]        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [14464.149407]
+>                -> #1 (&dquot->dq_lock){+.+.}-{3:3}:
+> [14464.149407]        __mutex_lock+0xaa/0x9c0
+> [14464.149407]        dquot_commit+0x23/0xf0
+> [14464.149407]        ext4_write_dquot+0x78/0xb0
+> [14464.149407]        __dquot_alloc_space+0x151/0x310
+> [14464.149407]        ext4_mb_new_blocks+0x1f6/0x12e0
+> [14464.149407]        ext4_ext_map_blocks+0x9c3/0x1470
+> [14464.149407]        ext4_map_blocks+0xf4/0x640
+> [14464.149407]        _ext4_get_block+0x90/0x110
+> [14464.149407]        ext4_block_write_begin+0x15f/0x5a0
+> [14464.149407]        ext4_write_begin+0x267/0x5b0
+> [14464.149407]        generic_perform_write+0xc2/0x1e0
+> [14464.149407]        ext4_buffered_write_iter+0x8b/0x130
+> [14464.149407]        ext4_file_write_iter+0x6c/0x6d0
+> [14464.149407]        new_sync_write+0x122/0x1b0
+> [14464.149407]        vfs_write+0x1ca/0x230
+> [14464.149407]        ksys_pwrite64+0x68/0xa0
+> [14464.149407]        do_syscall_64+0x33/0x40
+> [14464.149407]        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [14464.149407]
+>                -> #0 (&ei->i_data_sem){++++}-{3:3}:
+> [14464.149407]        __lock_acquire+0x147b/0x2830
+> [14464.149407]        lock_acquire+0xc6/0x3a0
+> [14464.149407]        down_write+0x40/0x110
+> [14464.149407]        ext4_map_blocks+0xd1/0x640
+> [14464.149407]        ext4_getblk+0x54/0x1c0
+> [14464.149407]        ext4_bread+0x1f/0xd0
+> [14464.149407]        ext4_quota_write+0xbf/0x280
+> [14464.149407]        write_blk+0x35/0x70
+> [14464.149407]        get_free_dqblk+0x42/0xa0
+> [14464.149407]        do_insert_tree+0x1d6/0x480
+> [14464.149407]        do_insert_tree+0x464/0x480
+> [14464.149407]        do_insert_tree+0x218/0x480
+> [14464.149407]        do_insert_tree+0x218/0x480
+> [14464.149407]        qtree_write_dquot+0x79/0x1b0
+> [14464.149407]        v2_write_dquot+0x52/0xb0
+> [14464.149407]        dquot_acquire+0x8e/0x100
+> [14464.149407]        ext4_acquire_dquot+0x72/0xc0
+> [14464.149407]        dqget+0x24a/0x4a0
+> [14464.149407]        dquot_transfer+0xfe/0x140
+> [14464.149407]        ext4_setattr+0x134/0x9c0
+> [14464.149407]        notify_change+0x34b/0x490
+> [14464.149407]        chown_common+0x96/0x150
+> [14464.149407]        do_fchownat+0x8d/0xe0
+> [14464.149407]        __x64_sys_fchownat+0x21/0x30
+> [14464.149407]        do_syscall_64+0x33/0x40
+> [14464.149407]        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [14464.149407]
+>                other info that might help us debug this:
+> 
+> [14464.149407] Chain exists of:
+>                  &ei->i_data_sem --> &dquot->dq_lock -->
+> &s->s_dquot.dqio_sem
+> 
+> [14464.149407]  Possible unsafe locking scenario:
+> 
+> [14464.149407]        CPU0                    CPU1
+> [14464.149407]        ----                    ----
+> [14464.149407]   lock(&s->s_dquot.dqio_sem);
+> [14464.149407]                                lock(&dquot->dq_lock);
+> [14464.149407]                                lock(&s->s_dquot.dqio_sem);
+> [14464.149407]   lock(&ei->i_data_sem);
+> [14464.149407]
+>                 *** DEADLOCK ***
+> 
+> [14464.149407] 6 locks held by chown/23358:
+> [14464.149407]  #0: ffff8b9b8963c480 (sb_writers#3){++++}-{0:0}, at:
+> mnt_want_write+0x20/0x50
+> [14464.149407]  #1: ffff8b9b8ff64bc8
+> (&sb->s_type->i_mutex_key#9){++++}-{3:3}, at: chown_common+0x85/0x150
+> [14464.149407]  #2: ffff8b9b670c48d8 (jbd2_handle){++++}-{0:0}, at:
+> start_this_handle+0x1ad/0x690
+> [14464.149407]  #3: ffff8b9b8ff648d0 (&ei->xattr_sem){++++}-{3:3}, at:
+> ext4_setattr+0x129/0x9c0
+> [14464.149407]  #4: ffff8b9b1313f5f0 (&dquot->dq_lock){+.+.}-{3:3}, at:
+> dquot_acquire+0x23/0x100
+> [14464.149407]  #5: ffff8b9b8963c208 (&s->s_dquot.dqio_sem){++++}-{3:3}, at:
+> v2_write_dquot+0x2d/0xb0
+> [14464.149407]
+>                stack backtrace:
+> [14464.149407] CPU: 5 PID: 23358 Comm: chown Not tainted
+> 5.9.0-rc8-next-20201008 #16
+> [14464.149407] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+> 1.13.0-1ubuntu1 04/01/2014
+> [14464.149407] Call Trace:
+> [14464.149407]  dump_stack+0x77/0x97
+> [14464.149407]  check_noncircular+0x132/0x150
+> [14464.149407]  ? sched_clock_local+0x12/0x80
+> [14464.149407]  __lock_acquire+0x147b/0x2830
+> [14464.149407]  lock_acquire+0xc6/0x3a0
+> [14464.149407]  ? ext4_map_blocks+0xd1/0x640
+> [14464.149407]  down_write+0x40/0x110
+> [14464.149407]  ? ext4_map_blocks+0xd1/0x640
+> [14464.149407]  ext4_map_blocks+0xd1/0x640
+> [14464.149407]  ? sched_clock_local+0x12/0x80
+> [14464.149407]  ext4_getblk+0x54/0x1c0
+> [14464.149407]  ext4_bread+0x1f/0xd0
+> [14464.149407]  ext4_quota_write+0xbf/0x280
+> [14464.149407]  write_blk+0x35/0x70
+> [14464.149407]  get_free_dqblk+0x42/0xa0
+> [14464.149407]  do_insert_tree+0x1d6/0x480
+> [14464.149407]  ? ext4_quota_read+0x9d/0x110
+> [14464.149407]  do_insert_tree+0x464/0x480
+> [14464.149407]  ? ext4_quota_read+0x9d/0x110
+> [14464.149407]  do_insert_tree+0x218/0x480
+> [14464.149407]  ? ext4_quota_read+0x9d/0x110
+> [14464.149407]  do_insert_tree+0x218/0x480
+> [14464.149407]  ? __kmalloc+0x319/0x350
+> [14464.149407]  qtree_write_dquot+0x79/0x1b0
+> [14464.149407]  v2_write_dquot+0x52/0xb0
+> [14464.149407]  dquot_acquire+0x8e/0x100
+> [14464.149407]  ext4_acquire_dquot+0x72/0xc0
+> [14464.149407]  dqget+0x24a/0x4a0
+> [14464.149407]  dquot_transfer+0xfe/0x140
+> [14464.149407]  ext4_setattr+0x134/0x9c0
+> [14464.149407]  notify_change+0x34b/0x490
+> [14464.149407]  ? chown_common+0x96/0x150
+> [14464.149407]  chown_common+0x96/0x150
+> [14464.149407]  ? preempt_count_add+0x49/0xa0
+> [14464.149407]  do_fchownat+0x8d/0xe0
+> [14464.149407]  __x64_sys_fchownat+0x21/0x30
+> [14464.149407]  do_syscall_64+0x33/0x40
+> [14464.149407]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [14464.149407] RIP: 0033:0x7efd3d2666ca
+> [14464.149407] Code: 48 8b 0d c9 f7 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66
+> 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 49 89 ca b8 04 01 00 00 0f 05 <48>
+> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 96 f7 0c 00 f7 d8 64 89 01 48
+> [14464.149407] RSP: 002b:00007ffdbe6ae418 EFLAGS: 00000206 ORIG_RAX:
+> 0000000000000104
+> [14464.149407] RAX: ffffffffffffffda RBX: 00007ffdbe6ae650 RCX:
+> 00007efd3d2666ca
+> [14464.149407] RDX: 0000000000007ab7 RSI: 00005598d654ef60 RDI:
+> 00000000ffffff9c
+> [14464.149407] RBP: 00000000ffffff9c R08: 0000000000000000 R09:
+> 00000000ffffffff
+> [14464.149407] R10: 00000000ffffffff R11: 0000000000000206 R12:
+> 00005598d654e1f0
+> [14464.149407] R13: 00005598d654e268 R14: 0000000000007ab7 R15:
+> 00000000ffffffff
+> [14465.070206] EXT4-fs (vdc): mounted filesystem with ordered data mode.
+> Opts: grpquota
+> [14465.165678] EXT4-fs (vdc): re-mounted. Opts: (null)
+> [14465.201132] EXT4-fs (vdc): re-mounted. Opts: (null)
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
