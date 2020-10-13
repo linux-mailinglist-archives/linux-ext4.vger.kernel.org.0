@@ -2,171 +2,62 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42BBC28C85F
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Oct 2020 07:52:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2032128C9F4
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Oct 2020 10:15:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732372AbgJMFwr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 13 Oct 2020 01:52:47 -0400
-Received: from mail.hikvision.com ([115.236.50.29]:47170 "EHLO
-        mail.hikvision.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732329AbgJMFwr (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 13 Oct 2020 01:52:47 -0400
-X-Greylist: delayed 628 seconds by postgrey-1.27 at vger.kernel.org; Tue, 13 Oct 2020 01:52:45 EDT
-Received: from hik-cirblue-mta01.localdomain (unknown [10.1.154.164])
-        by Forcepoint Email with ESMTP id A61734B27F974DD49CFA;
-        Tue, 13 Oct 2020 13:42:11 +0800 (CST)
-Received: by hik-cirblue-mta01.localdomain (Postfix, from userid 89)
-        id 9E7D11480042; Tue, 13 Oct 2020 13:41:30 +0800 (CST)
-Received: from HIK-MBX-CN-02.hikvision.com (HIK-MBX-CN-02.hikvision.com [10.1.7.117])
-        by hik-cirblue-mta01.localdomain (Postfix) with ESMTP id 9052A1480044;
-        Tue, 13 Oct 2020 13:41:29 +0800 (CST)
-Received: from HIK-MBX-CN-00.hikvision.com (10.1.7.113) by
- HIK-MBX-CN-02.hikvision.com (10.1.7.117) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1415.2; Tue, 13 Oct 2020 13:42:07 +0800
-Received: from HIK-MBX-CN-00.hikvision.com ([fe80::4cd8:233f:871e:fd8c]) by
- HIK-MBX-CN-00.hikvision.com ([fe80::4cd8:233f:871e:fd8c%14]) with mapi id
- 15.01.1415.007; Tue, 13 Oct 2020 13:42:08 +0800
-From:   =?gb2312?B?s6O37+mq?= <changfengnan@hikvision.com>
-To:     Jan Kara <jack@suse.cz>, Ted Tso <tytso@mit.edu>
-CC:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "adilger@dilger.ca" <adilger@dilger.ca>,
-        changfengnan <fengnanchang@foxmail.com>
-Subject: =?gb2312?B?tPC4tDogW1BBVENIIHY2XSBqYmQyOiBhdm9pZCB0cmFuc2FjdGlvbiByZXVz?=
- =?gb2312?Q?e_after_reformatting?=
-Thread-Topic: [PATCH v6] jbd2: avoid transaction reuse after reformatting
-Thread-Index: AQHWoLeYOJO/9VO2o0Ky2ICarpDLjqmVBKBw
-Date:   Tue, 13 Oct 2020 05:42:07 +0000
-Message-ID: <a64190e85372479d9e6195e5922a5082@hikvision.com>
-References: <20201012164900.20197-1-jack@suse.cz>
-In-Reply-To: <20201012164900.20197-1-jack@suse.cz>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.1.7.137]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        id S2390190AbgJMIPB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 13 Oct 2020 04:15:01 -0400
+Received: from mail.fastestway24.com ([5.249.159.217]:55382 "EHLO
+        mail.fastestway24.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727744AbgJMIPA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 13 Oct 2020 04:15:00 -0400
+X-Greylist: delayed 473 seconds by postgrey-1.27 at vger.kernel.org; Tue, 13 Oct 2020 04:14:59 EDT
+Received: by mail.fastestway24.com (Postfix, from userid 1001)
+        id 8AC85A2E16; Tue, 13 Oct 2020 09:06:30 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fastestway24.com;
+        s=mail; t=1602576425;
+        bh=YGOlxoddnI3PXnh41XMWUfU0z9xsorZLZcAPNbcZr/c=;
+        h=Date:From:To:Subject:From;
+        b=bveKCFGrsqhtO+oFHBmVL7r4G2VEgFn24cna4ER9eVwMoU8pHBB0krKhYkPyedaDo
+         fBybiw2LK4GkXSVFllHqEf4EEDcsbii0J3eGRljvfrx4FvQ4LrOPatOGdzIWjsKwii
+         jVVBnfNS8m4EWBIkwTsBJUDWlUrG2Uiy9oKBsHIo1sNFVwm1OejUa+GcER98H3rbzu
+         OWu74HasFduhZVNCCmlecjWH6EVDsVuuDkXSV7SSMSlE656Wa9vvPzxvQjqiLUPUp5
+         OyLA0eThGLuCrKR95SptKc2dWwvmH+51szuh/ECWww9r/sK8LuSpSOUYxDl2d7XzOk
+         Oxlgo0mgDHxZg==
+Received: by mail.fastestway24.com for <linux-ext4@vger.kernel.org>; Tue, 13 Oct 2020 08:06:17 GMT
+Message-ID: <20201013074502-0.1.4d.9k68.0.1abkrqphvb@fastestway24.com>
+Date:   Tue, 13 Oct 2020 08:06:17 GMT
+From:   "William Jones" <william.jones@fastestway24.com>
+To:     <linux-ext4@vger.kernel.org>
+Subject: Disinfectant
+X-Mailer: mail.fastestway24.com
 MIME-Version: 1.0
-X-CG-TRANSID: FBF602DE7EEC403F88CCE315FDA4AE36
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-VGhpcyB2ZXJzaW9uIGlzIGdvb2QgZm9yIG15IHRlc3QgY2FzZXMuDQoNCg0KLS0tLS3Tyrz+1K28
-/i0tLS0tDQq3orz+yMs6IEphbiBLYXJhIDxqYWNrQHN1c2UuY3o+DQq3osvNyrG85DogMjAyMMTq
-MTDUwjEzyNUgMDo0OQ0KytW8/sjLOiBUZWQgVHNvIDx0eXRzb0BtaXQuZWR1Pg0Ks63LzTogbGlu
-dXgtZXh0NEB2Z2VyLmtlcm5lbC5vcmc7ILOjt+/pqiA8Y2hhbmdmZW5nbmFuQGhpa3Zpc2lvbi5j
-b20+OyBhZGlsZ2VyQGRpbGdlci5jYTsgY2hhbmdmZW5nbmFuIDxmZW5nbmFuY2hhbmdAZm94bWFp
-bC5jb20+OyBKYW4gS2FyYSA8amFja0BzdXNlLmN6Pg0K1vfM4jogW1BBVENIIHY2XSBqYmQyOiBh
-dm9pZCB0cmFuc2FjdGlvbiByZXVzZSBhZnRlciByZWZvcm1hdHRpbmcNCg0KRnJvbTogY2hhbmdm
-ZW5nbmFuIDxmZW5nbmFuY2hhbmdAZm94bWFpbC5jb20+DQoNCldoZW4gZXh0NCBpcyBmb3JtYXR0
-ZWQgd2l0aCBsYXp5X2pvdXJuYWxfaW5pdD0xIGFuZCB0cmFuc2FjdGlvbnMgZnJvbSB0aGUgcHJl
-dmlvdXMgZmlsZXN5c3RlbSBhcmUgc3RpbGwgb24gZGlzaywgaXQgaXMgcG9zc2libGUgdGhhdCB0
-aGV5IGFyZSBjb25zaWRlcmVkIGR1cmluZyBhIHJlY292ZXJ5IGFmdGVyIGEgY3Jhc2guIEJlY2F1
-c2UgdGhlIGNoZWNrc3VtIHNlZWQgaGFzIGNoYW5nZWQsIHRoZSBDUkMgY2hlY2sgd2lsbCBmYWls
-LCBhbmQgdGhlIGpvdXJuYWwgcmVjb3ZlcnkgZmFpbHMgd2l0aCBjaGVja3N1bSBlcnJvciBhbHRo
-b3VnaCB0aGUgam91cm5hbCBpcyBvdGhlcndpc2UgcGVyZmVjdGx5IHZhbGlkLg0KRml4IHRoZSBw
-cm9ibGVtIGJ5IGNoZWNraW5nIGNvbW1pdCBibG9jayB0aW1lIHN0YW1wcyB0byBkZXRlcm1pbmUg
-d2hldGhlciB0aGUgZGF0YSBpbiB0aGUgam91cm5hbCBibG9jayBpcyBqdXN0IHN0YWxlIG9yIHdo
-ZXRoZXIgaXQgaXMgaW5kZWVkIGNvcnJ1cHQuDQoNClJlcG9ydGVkLWJ5OiBrZXJuZWwgdGVzdCBy
-b2JvdCA8bGtwQGludGVsLmNvbT4NClJldmlld2VkLWJ5OiBBbmRyZWFzIERpbGdlciA8YWRpbGdl
-ckBkaWxnZXIuY2E+DQpTaWduZWQtb2ZmLWJ5OiBGZW5nbmFuIENoYW5nIDxjaGFuZ2ZlbmduYW5A
-aGlrdmlzaW9uLmNvbT4NClNpZ25lZC1vZmYtYnk6IEphbiBLYXJhIDxqYWNrQHN1c2UuY3o+DQot
-LS0NCiBmcy9qYmQyL3JlY292ZXJ5LmMgfCA3OCArKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKystLS0tLS0tLS0NCiAxIGZpbGUgY2hhbmdlZCwgNjYgaW5zZXJ0aW9u
-cygrKSwgMTIgZGVsZXRpb25zKC0pDQoNCkNoYW5nZXMgc2luY2UgdjU6DQotIHJlYmFzZSBvbiBj
-dXJyZW50IHVwc3RyZWFtIGtlcm5lbA0KLSByZWR1Y2VkIHNvbWUgY29kZSBkdXBsaWNhdGlvbiBh
-bmQgaW5kZW50YXRpb24gbGV2ZWwNCg0KQ2hhbmdlcyBzaW5jZSB2NDoNCi0gZml4IGxvZ2ljIHRv
-IGhhbmRsZSBhbHNvIHYyL3YzIGpvdXJuYWwgY2hlY2tzdW0gbWlzbWF0Y2ggaW4gdGhlIGNvbW1p
-dCBibG9jaw0KDQpkaWZmIC0tZ2l0IGEvZnMvamJkMi9yZWNvdmVyeS5jIGIvZnMvamJkMi9yZWNv
-dmVyeS5jIGluZGV4IGZhYTk3ZDc0ODQ3NC4uZmIxMzRjN2ExMmM4IDEwMDY0NA0KLS0tIGEvZnMv
-amJkMi9yZWNvdmVyeS5jDQorKysgYi9mcy9qYmQyL3JlY292ZXJ5LmMNCkBAIC00MjgsNiArNDI4
-LDggQEAgc3RhdGljIGludCBkb19vbmVfcGFzcyhqb3VybmFsX3QgKmpvdXJuYWwsDQogX191MzJj
-cmMzMl9zdW0gPSB+MDsgLyogVHJhbnNhY3Rpb25hbCBDaGVja3N1bXMgKi8NCiBpbnRkZXNjcl9j
-c3VtX3NpemUgPSAwOw0KIGludGJsb2NrX2Vycm9yID0gMDsNCitib29sbmVlZF9jaGVja19jb21t
-aXRfdGltZSA9IGZhbHNlOw0KK19fdTY0bGFzdF90cmFuc19jb21taXRfdGltZSA9IDAsIGNvbW1p
-dF90aW1lOw0KDQogLyoNCiAgKiBGaXJzdCB0aGluZyBpcyB0byBlc3RhYmxpc2ggd2hhdCB3ZSBl
-eHBlY3QgdG8gZmluZCBpbiB0aGUgbG9nIEBAIC01MjAsMTIgKzUyMiwyMSBAQCBzdGF0aWMgaW50
-IGRvX29uZV9wYXNzKGpvdXJuYWxfdCAqam91cm5hbCwNCiBpZiAoZGVzY3JfY3N1bV9zaXplID4g
-MCAmJg0KICAgICAhamJkMl9kZXNjcmlwdG9yX2Jsb2NrX2NzdW1fdmVyaWZ5KGpvdXJuYWwsDQog
-ICAgICAgIGJoLT5iX2RhdGEpKSB7DQotcHJpbnRrKEtFUk5fRVJSICJKQkQyOiBJbnZhbGlkIGNo
-ZWNrc3VtICINCi0gICAgICAgInJlY292ZXJpbmcgYmxvY2sgJWx1IGluIGxvZ1xuIiwNCi0gICAg
-ICAgbmV4dF9sb2dfYmxvY2spOw0KLWVyciA9IC1FRlNCQURDUkM7DQotYnJlbHNlKGJoKTsNCi1n
-b3RvIGZhaWxlZDsNCisvKg0KKyAqIFBBU1NfU0NBTiBjYW4gc2VlIHN0YWxlIGJsb2NrcyBkdWUg
-dG8gbGF6eQ0KKyAqIGpvdXJuYWwgaW5pdC4gRG9uJ3QgZXJyb3Igb3V0IG9uIHRob3NlIHlldC4N
-CisgKi8NCitpZiAocGFzcyAhPSBQQVNTX1NDQU4pIHsNCitwcl9lcnIoIkpCRDI6IEludmFsaWQg
-Y2hlY2tzdW0gcmVjb3ZlcmluZyBibG9jayAlbHUgaW4gbG9nXG4iLA0KKyAgICAgICBuZXh0X2xv
-Z19ibG9jayk7DQorZXJyID0gLUVGU0JBRENSQzsNCiticmVsc2UoYmgpOw0KK2dvdG8gZmFpbGVk
-Ow0KK30NCituZWVkX2NoZWNrX2NvbW1pdF90aW1lID0gdHJ1ZTsNCitqYmRfZGVidWcoMSwNCisi
-aW52YWxpZCBkZXNjcmlwdG9yIGJsb2NrIGZvdW5kIGluICVsdVxuIiwNCituZXh0X2xvZ19ibG9j
-ayk7DQogfQ0KDQogLyogSWYgaXQgaXMgYSB2YWxpZCBkZXNjcmlwdG9yIGJsb2NrLCByZXBsYXkg
-aXQgQEAgLTUzNSw2ICs1NDYsNyBAQCBzdGF0aWMgaW50IGRvX29uZV9wYXNzKGpvdXJuYWxfdCAq
-am91cm5hbCwNCiBpZiAocGFzcyAhPSBQQVNTX1JFUExBWSkgew0KIGlmIChwYXNzID09IFBBU1Nf
-U0NBTiAmJg0KICAgICBqYmQyX2hhc19mZWF0dXJlX2NoZWNrc3VtKGpvdXJuYWwpICYmDQorICAg
-ICFuZWVkX2NoZWNrX2NvbW1pdF90aW1lICYmDQogICAgICFpbmZvLT5lbmRfdHJhbnNhY3Rpb24p
-IHsNCiBpZiAoY2FsY19jaGtzdW1zKGpvdXJuYWwsIGJoLA0KICZuZXh0X2xvZ19ibG9jaywNCkBA
-IC02ODMsMTEgKzY5NSw0MSBAQCBzdGF0aWMgaW50IGRvX29uZV9wYXNzKGpvdXJuYWxfdCAqam91
-cm5hbCwNCiAgKiBtZW50aW9uZWQgY29uZGl0aW9ucy4gSGVuY2UgYXNzdW1lDQogICogIkludGVy
-cnVwdGVkIENvbW1pdCIuKQ0KICAqLw0KK2NvbW1pdF90aW1lID0gYmU2NF90b19jcHUoDQorKChz
-dHJ1Y3QgY29tbWl0X2hlYWRlciAqKWJoLT5iX2RhdGEpLT5oX2NvbW1pdF9zZWMpOw0KKy8qDQor
-ICogSWYgbmVlZF9jaGVja19jb21taXRfdGltZSBpcyBzZXQsIGl0IG1lYW5zIHdlIGFyZSBpbg0K
-KyAqIFBBU1NfU0NBTiBhbmQgY3N1bSB2ZXJpZnkgZmFpbGVkIGJlZm9yZS4gSWYNCisgKiBjb21t
-aXRfdGltZSBpcyBpbmNyZWFzaW5nLCBpdCdzIHRoZSBzYW1lIGpvdXJuYWwsDQorICogb3RoZXJ3
-aXNlIGl0IGlzIHN0YWxlIGpvdXJuYWwgYmxvY2ssIGp1c3QgZW5kIHRoaXMNCisgKiByZWNvdmVy
-eS4NCisgKi8NCitpZiAobmVlZF9jaGVja19jb21taXRfdGltZSkgew0KK2lmIChjb21taXRfdGlt
-ZSA+PSBsYXN0X3RyYW5zX2NvbW1pdF90aW1lKSB7DQorcHJfZXJyKCJKQkQyOiBJbnZhbGlkIGNo
-ZWNrc3VtIGZvdW5kIGluIHRyYW5zYWN0aW9uICV1XG4iLA0KKyAgICAgICBuZXh0X2NvbW1pdF9J
-RCk7DQorZXJyID0gLUVGU0JBRENSQzsNCiticmVsc2UoYmgpOw0KK2dvdG8gZmFpbGVkOw0KK30N
-CitpZ25vcmVfY3JjX21pc21hdGNoOg0KKy8qDQorICogSXQgbGlrZWx5IGRvZXMgbm90IGJlbG9u
-ZyB0byBzYW1lIGpvdXJuYWwsDQorICoganVzdCBlbmQgdGhpcyByZWNvdmVyeSB3aXRoIHN1Y2Nl
-c3MuDQorICovDQoramJkX2RlYnVnKDEsICJKQkQyOiBJbnZhbGlkIGNoZWNrc3VtIGlnbm9yZWQg
-aW4gdHJhbnNhY3Rpb24gJXUsIGxpa2VseSBzdGFsZSBkYXRhXG4iLA0KKyAgbmV4dF9jb21taXRf
-SUQpOw0KK2VyciA9IDA7DQorYnJlbHNlKGJoKTsNCitnb3RvIGRvbmU7DQorfQ0KDQotLyogRm91
-bmQgYW4gZXhwZWN0ZWQgY29tbWl0IGJsb2NrOiBpZiBjaGVja3N1bXMNCi0gKiBhcmUgcHJlc2Vu
-dCB2ZXJpZnkgdGhlbSBpbiBQQVNTX1NDQU47IGVsc2Ugbm90DQorLyoNCisgKiBGb3VuZCBhbiBl
-eHBlY3RlZCBjb21taXQgYmxvY2s6IGlmIGNoZWNrc3Vtcw0KKyAqIGFyZSBwcmVzZW50LCB2ZXJp
-ZnkgdGhlbSBpbiBQQVNTX1NDQU47IGVsc2Ugbm90DQogICogbXVjaCB0byBkbyBvdGhlciB0aGFu
-IG1vdmUgb24gdG8gdGhlIG5leHQgc2VxdWVuY2UNCi0gKiBudW1iZXIuICovDQorICogbnVtYmVy
-Lg0KKyAqLw0KIGlmIChwYXNzID09IFBBU1NfU0NBTiAmJg0KICAgICBqYmQyX2hhc19mZWF0dXJl
-X2NoZWNrc3VtKGpvdXJuYWwpKSB7DQogc3RydWN0IGNvbW1pdF9oZWFkZXIgKmNiaCA9DQpAQCAt
-NzE5LDYgKzc2MSw4IEBAIHN0YXRpYyBpbnQgZG9fb25lX3Bhc3Moam91cm5hbF90ICpqb3VybmFs
-LA0KICAgICAhamJkMl9jb21taXRfYmxvY2tfY3N1bV92ZXJpZnkoam91cm5hbCwNCiAgICBiaC0+
-Yl9kYXRhKSkgew0KIGNoa3N1bV9lcnJvcjoNCitpZiAoY29tbWl0X3RpbWUgPCBsYXN0X3RyYW5z
-X2NvbW1pdF90aW1lKQ0KK2dvdG8gaWdub3JlX2NyY19taXNtYXRjaDsNCiBpbmZvLT5lbmRfdHJh
-bnNhY3Rpb24gPSBuZXh0X2NvbW1pdF9JRDsNCg0KIGlmICghamJkMl9oYXNfZmVhdHVyZV9hc3lu
-Y19jb21taXQoam91cm5hbCkpIHsgQEAgLTcyOCwxMSArNzcyLDI0IEBAIHN0YXRpYyBpbnQgZG9f
-b25lX3Bhc3Moam91cm5hbF90ICpqb3VybmFsLA0KIGJyZWFrOw0KIH0NCiB9DQoraWYgKHBhc3Mg
-PT0gUEFTU19TQ0FOKQ0KK2xhc3RfdHJhbnNfY29tbWl0X3RpbWUgPSBjb21taXRfdGltZTsNCiBi
-cmVsc2UoYmgpOw0KIG5leHRfY29tbWl0X0lEKys7DQogY29udGludWU7DQoNCiBjYXNlIEpCRDJf
-UkVWT0tFX0JMT0NLOg0KKy8qDQorICogQ2hlY2sgcmV2b2tlIGJsb2NrIGNyYyBpbiBwYXNzX3Nj
-YW4sIGlmIGNzdW0gdmVyaWZ5DQorICogZmFpbGVkLCBjaGVjayBjb21taXQgYmxvY2sgdGltZSBs
-YXRlci4NCisgKi8NCitpZiAocGFzcyA9PSBQQVNTX1NDQU4gJiYNCisgICAgIWpiZDJfZGVzY3Jp
-cHRvcl9ibG9ja19jc3VtX3ZlcmlmeShqb3VybmFsLA0KKyAgICAgICBiaC0+Yl9kYXRhKSkgew0K
-K2piZF9kZWJ1ZygxLCAiSkJEMjogaW52YWxpZCByZXZva2UgYmxvY2sgZm91bmQgaW4gJWx1XG4i
-LA0KKyAgbmV4dF9sb2dfYmxvY2spOw0KK25lZWRfY2hlY2tfY29tbWl0X3RpbWUgPSB0cnVlOw0K
-K30NCiAvKiBJZiB3ZSBhcmVuJ3QgaW4gdGhlIFJFVk9LRSBwYXNzLCB0aGVuIHdlIGNhbg0KICAq
-IGp1c3Qgc2tpcCBvdmVyIHRoaXMgYmxvY2suICovDQogaWYgKHBhc3MgIT0gUEFTU19SRVZPS0Up
-IHsNCkBAIC04MDAsOSArODU3LDYgQEAgc3RhdGljIGludCBzY2FuX3Jldm9rZV9yZWNvcmRzKGpv
-dXJuYWxfdCAqam91cm5hbCwgc3RydWN0IGJ1ZmZlcl9oZWFkICpiaCwNCiBvZmZzZXQgPSBzaXpl
-b2YoamJkMl9qb3VybmFsX3Jldm9rZV9oZWFkZXJfdCk7DQogcmNvdW50ID0gYmUzMl90b19jcHUo
-aGVhZGVyLT5yX2NvdW50KTsNCg0KLWlmICghamJkMl9kZXNjcmlwdG9yX2Jsb2NrX2NzdW1fdmVy
-aWZ5KGpvdXJuYWwsIGhlYWRlcikpDQotcmV0dXJuIC1FRlNCQURDUkM7DQotDQogaWYgKGpiZDJf
-am91cm5hbF9oYXNfY3N1bV92Mm9yMyhqb3VybmFsKSkNCiBjc3VtX3NpemUgPSBzaXplb2Yoc3Ry
-dWN0IGpiZDJfam91cm5hbF9ibG9ja190YWlsKTsNCiBpZiAocmNvdW50ID4gam91cm5hbC0+al9i
-bG9ja3NpemUgLSBjc3VtX3NpemUpDQotLQ0KMi4xNi40DQoNCg0KX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18NCg0KQ09ORklERU5USUFMSVRZIE5PVElDRTogVGhpcyBlbGVjdHJvbmlj
-IG1lc3NhZ2UgaXMgaW50ZW5kZWQgdG8gYmUgdmlld2VkIG9ubHkgYnkgdGhlIGluZGl2aWR1YWwg
-b3IgZW50aXR5IHRvIHdob20gaXQgaXMgYWRkcmVzc2VkLiBJdCBtYXkgY29udGFpbiBpbmZvcm1h
-dGlvbiB0aGF0IGlzIHByaXZpbGVnZWQsIGNvbmZpZGVudGlhbCBhbmQgZXhlbXB0IGZyb20gZGlz
-Y2xvc3VyZSB1bmRlciBhcHBsaWNhYmxlIGxhdy4gQW55IGRpc3NlbWluYXRpb24sIGRpc3RyaWJ1
-dGlvbiBvciBjb3B5aW5nIG9mIHRoaXMgY29tbXVuaWNhdGlvbiBpcyBzdHJpY3RseSBwcm9oaWJp
-dGVkIHdpdGhvdXQgb3VyIHByaW9yIHBlcm1pc3Npb24uIElmIHRoZSByZWFkZXIgb2YgdGhpcyBt
-ZXNzYWdlIGlzIG5vdCB0aGUgaW50ZW5kZWQgcmVjaXBpZW50LCBvciB0aGUgZW1wbG95ZWUgb3Ig
-YWdlbnQgcmVzcG9uc2libGUgZm9yIGRlbGl2ZXJpbmcgdGhlIG1lc3NhZ2UgdG8gdGhlIGludGVu
-ZGVkIHJlY2lwaWVudCwgb3IgaWYgeW91IGhhdmUgcmVjZWl2ZWQgdGhpcyBjb21tdW5pY2F0aW9u
-IGluIGVycm9yLCBwbGVhc2Ugbm90aWZ5IHVzIGltbWVkaWF0ZWx5IGJ5IHJldHVybiBlLW1haWwg
-YW5kIGRlbGV0ZSB0aGUgb3JpZ2luYWwgbWVzc2FnZSBhbmQgYW55IGNvcGllcyBvZiBpdCBmcm9t
-IHlvdXIgY29tcHV0ZXIgc3lzdGVtLiBGb3IgZnVydGhlciBpbmZvcm1hdGlvbiBhYm91dCBIaWt2
-aXNpb24gY29tcGFueS4gcGxlYXNlIHNlZSBvdXIgd2Vic2l0ZSBhdCB3d3cuaGlrdmlzaW9uLmNv
-bTxodHRwOi8vd3d3Lmhpa3Zpc2lvbi5jb20+DQo=
+Good morning,
+
+looking for companies interested in raising additional capital by diversi=
+fying their offer in soaps, liquids and gels for hand disinfection and co=
+smetics for body and hair care.
+
+The distribution of innovative products corresponding to the current pref=
+erences of customers in the field of hygiene and preventive healthcare al=
+lows our partners to gain new markets and achieve better economic results=
+=2E
+
+In addition to products with bactericidal action, our range includes show=
+er gels, shampoos and hair conditioners, as well as efficient, concentrat=
+ed detergents.
+
+The versatility (suitable for all skin types) combined with an affordable=
+ price means that customers make an informed choice of a product among ot=
+hers available on the market.
+
+Are you interested in cooperation?
+
+
+William Jones
