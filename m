@@ -2,62 +2,69 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2032128C9F4
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Oct 2020 10:15:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 406D628CA4B
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Oct 2020 10:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390190AbgJMIPB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 13 Oct 2020 04:15:01 -0400
-Received: from mail.fastestway24.com ([5.249.159.217]:55382 "EHLO
-        mail.fastestway24.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727744AbgJMIPA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 13 Oct 2020 04:15:00 -0400
-X-Greylist: delayed 473 seconds by postgrey-1.27 at vger.kernel.org; Tue, 13 Oct 2020 04:14:59 EDT
-Received: by mail.fastestway24.com (Postfix, from userid 1001)
-        id 8AC85A2E16; Tue, 13 Oct 2020 09:06:30 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fastestway24.com;
-        s=mail; t=1602576425;
-        bh=YGOlxoddnI3PXnh41XMWUfU0z9xsorZLZcAPNbcZr/c=;
-        h=Date:From:To:Subject:From;
-        b=bveKCFGrsqhtO+oFHBmVL7r4G2VEgFn24cna4ER9eVwMoU8pHBB0krKhYkPyedaDo
-         fBybiw2LK4GkXSVFllHqEf4EEDcsbii0J3eGRljvfrx4FvQ4LrOPatOGdzIWjsKwii
-         jVVBnfNS8m4EWBIkwTsBJUDWlUrG2Uiy9oKBsHIo1sNFVwm1OejUa+GcER98H3rbzu
-         OWu74HasFduhZVNCCmlecjWH6EVDsVuuDkXSV7SSMSlE656Wa9vvPzxvQjqiLUPUp5
-         OyLA0eThGLuCrKR95SptKc2dWwvmH+51szuh/ECWww9r/sK8LuSpSOUYxDl2d7XzOk
-         Oxlgo0mgDHxZg==
-Received: by mail.fastestway24.com for <linux-ext4@vger.kernel.org>; Tue, 13 Oct 2020 08:06:17 GMT
-Message-ID: <20201013074502-0.1.4d.9k68.0.1abkrqphvb@fastestway24.com>
-Date:   Tue, 13 Oct 2020 08:06:17 GMT
-From:   "William Jones" <william.jones@fastestway24.com>
+        id S2390866AbgJMIcD convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Tue, 13 Oct 2020 04:32:03 -0400
+Received: from [178.252.167.140] ([178.252.167.140]:53253 "EHLO EXG16.DOE.ir"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2390846AbgJMIcD (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 13 Oct 2020 04:32:03 -0400
+X-Greylist: delayed 902 seconds by postgrey-1.27 at vger.kernel.org; Tue, 13 Oct 2020 04:32:03 EDT
+Received: from doe.ir (217.218.14.250) by EXG16.DOE.ir (172.20.1.44) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1261.35; Tue, 13 Oct
+ 2020 11:46:56 +0330
+Reply-To: <imfc@mail2washington.com>
+From:   "Mrs. Roonie Holbrook" <n.saffar@doe.ir>
 To:     <linux-ext4@vger.kernel.org>
-Subject: Disinfectant
-X-Mailer: mail.fastestway24.com
+Subject: From Mrs. Roonie Holbrook !!
+Date:   Tue, 13 Oct 2020 01:16:34 -0700
+Message-ID: <20201013011632.DB5BADED216EA79C@doe.ir>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [217.218.14.250]
+X-ClientProxiedBy: EXG16.DOE.ir (172.20.1.44) To EXG16.DOE.ir (172.20.1.44)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Good morning,
+Attention,
 
-looking for companies interested in raising additional capital by diversi=
-fying their offer in soaps, liquids and gels for hand disinfection and co=
-smetics for body and hair care.
+Nice day and Congratulations !!!.
 
-The distribution of innovative products corresponding to the current pref=
-erences of customers in the field of hygiene and preventive healthcare al=
-lows our partners to gain new markets and achieve better economic results=
-=2E
+You are qualified for the IMFC Covid 19 grant of $750,000.00 
+dollars to support the people in your community. Now respond to 
+details to claim your money.
 
-In addition to products with bactericidal action, our range includes show=
-er gels, shampoos and hair conditioners, as well as efficient, concentrat=
-ed detergents.
+You are directed to contact the below Office of Paymaster General 
+immediately through his contact details below:
 
-The versatility (suitable for all skin types) combined with an affordable=
- price means that customers make an informed choice of a product among ot=
-hers available on the market.
+Mr. Williams Fox
+Email: claim.dept@mail2finance.com 
 
-Are you interested in cooperation?
+This is to avoid mistake while transferring your overdue payment 
+to you, You have to forward to him below details of yours to 
+start processing your payment file and this ref: 
+UN/FM14/WB/Covid-19:
+ 
+Your Full Name:
+Your Contact Address:
+State:
+Country:
+Telephone and Fax Number:
+Occupation:
+Age:
+ 
+Kindly get back to Mr. Williams Fox  as soon as possible so that 
+he will direct you on what to do for the claims through our 
+Affiliated Bank.
+ 
 
+Best regards
 
-William Jones
+Mrs. Roonie Holbrook
+IMFC Grant Claim Department
+Email: imfc@mail2washington.com
