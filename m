@@ -2,135 +2,88 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA1D28CAEB
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Oct 2020 11:22:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D60028CC81
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Oct 2020 13:26:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403870AbgJMJWt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 13 Oct 2020 05:22:49 -0400
-Received: from foss.arm.com ([217.140.110.172]:50208 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390781AbgJMJWs (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 13 Oct 2020 05:22:48 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 97EF431B;
-        Tue, 13 Oct 2020 02:22:47 -0700 (PDT)
-Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 486B93F66B;
-        Tue, 13 Oct 2020 02:22:46 -0700 (PDT)
-Date:   Tue, 13 Oct 2020 10:22:43 +0100
-From:   Dave Martin <Dave.Martin@arm.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-api@vger.kernel.org, qemu-devel@nongnu.org,
-        Florian Weimer <fw@deneb.enyo.de>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: Re: [PATCH v3 RESEND] fcntl: Add 32bit filesystem mode
-Message-ID: <20201013092240.GI32292@arm.com>
-References: <20201012220620.124408-1-linus.walleij@linaro.org>
+        id S1726919AbgJML0H (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 13 Oct 2020 07:26:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726575AbgJML0F (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 13 Oct 2020 07:26:05 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BDA2C0613D0;
+        Tue, 13 Oct 2020 04:26:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ap+vugPRXoOSJhloW5EJc9FGxy9ZwiLwbnG+7+pEMhA=; b=a/Sp1GZZiVtkIrsbDZFKKgQTkQ
+        FS+JHTt9pp+5vCrBdk0ac5b7U8ZgZGFScrKiULCJv4PZD4wWqOSzzq06ZoGh/8vFLI33VuvYYBdii
+        wZ4VlXJvl5fnmlD+q4pIJJmvrTs/0jX/FIDmEAYUX2+Mt6vIwB3sAbRYRgWIA8hB4i4EWyZuWPFOQ
+        rIaV+GwSaVBgBLKvO/SsFSj7I46VHFxg38PLmJQ+Oh1DkRIQcIx5NIWLGcWnDXshQ14JMdlpURiF2
+        LxyBxRGv+1Wkfh31jf6dzRr+U4xHgvz3PsshAxeZoaF0OQPY6Fl5VA2XZOxLonra6CTBCfgsfUBp/
+        6eTYHzgA==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kSIR6-0001VK-7P; Tue, 13 Oct 2020 11:25:44 +0000
+Date:   Tue, 13 Oct 2020 12:25:44 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     ira.weiny@intel.com
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kexec@lists.infradead.org, linux-bcache@vger.kernel.org,
+        linux-mtd@lists.infradead.org, devel@driverdev.osuosl.org,
+        linux-efi@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-aio@kvack.org,
+        io-uring@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-um@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net,
+        reiserfs-devel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-nilfs@vger.kernel.org, cluster-devel@redhat.com,
+        ecryptfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-rdma@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-cachefs@redhat.com,
+        samba-technical@lists.samba.org, intel-wired-lan@lists.osuosl.org
+Subject: Re: [PATCH RFC PKS/PMEM 24/58] fs/freevxfs: Utilize new kmap_thread()
+Message-ID: <20201013112544.GA5249@infradead.org>
+References: <20201009195033.3208459-1-ira.weiny@intel.com>
+ <20201009195033.3208459-25-ira.weiny@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201012220620.124408-1-linus.walleij@linaro.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20201009195033.3208459-25-ira.weiny@intel.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 12:06:20AM +0200, Linus Walleij wrote:
-> It was brought to my attention that this bug from 2018 was
-> still unresolved: 32 bit emulators like QEMU were given
-> 64 bit hashes when running 32 bit emulation on 64 bit systems.
-> 
-> This adds a flag to the fcntl() F_GETFD and F_SETFD operations
-> to set the underlying filesystem into 32bit mode even if the
-> file handle was opened using 64bit mode without the compat
-> syscalls.
-> 
-> Programs that need the 32 bit file system behavior need to
-> issue a fcntl() system call such as in this example:
-> 
->   #define FD_32BIT_MODE 2
-> 
->   int main(int argc, char** argv) {
->     DIR* dir;
->     int err;
->     int fd;
-> 
->     dir = opendir("/boot");
->     fd = dirfd(dir);
->     err = fcntl(fd, F_SETFD, FD_32BIT_MODE);
->     if (err) {
->       printf("fcntl() failed! err=%d\n", err);
->       return 1;
->     }
->     printf("dir=%p\n", dir);
->     printf("readdir(dir)=%p\n", readdir(dir));
->     printf("errno=%d: %s\n", errno, strerror(errno));
->     return 0;
->   }
-> 
-> This can be pretty hard to test since C libraries and linux
-> userspace security extensions aggressively filter the parameters
-> that are passed down and allowed to commit into actual system
-> calls.
-> 
-> Cc: Florian Weimer <fw@deneb.enyo.de>
-> Cc: Peter Maydell <peter.maydell@linaro.org>
-> Cc: Andy Lutomirski <luto@kernel.org>
-> Suggested-by: Theodore Ts'o <tytso@mit.edu>
-> Link: https://bugs.launchpad.net/qemu/+bug/1805913
-> Link: https://lore.kernel.org/lkml/87bm56vqg4.fsf@mid.deneb.enyo.de/
-> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=205957
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
-> ChangeLog v3->v3 RESEND 1:
-> - Resending during the v5.10 merge window to get attention.
-> ChangeLog v2->v3:
-> - Realized that I also have to clear the flag correspondingly
->   if someone ask for !FD_32BIT_MODE after setting it the
->   first time.
-> ChangeLog v1->v2:
-> - Use a new flag FD_32BIT_MODE to F_GETFD and F_SETFD
->   instead of a new fcntl operation, there is already a fcntl
->   operation to set random flags.
-> - Sorry for taking forever to respin this patch :(
-> ---
->  fs/fcntl.c                       | 7 +++++++
->  include/uapi/asm-generic/fcntl.h | 8 ++++++++
->  2 files changed, 15 insertions(+)
-> 
-> diff --git a/fs/fcntl.c b/fs/fcntl.c
-> index 19ac5baad50f..6c32edc4099a 100644
-> --- a/fs/fcntl.c
-> +++ b/fs/fcntl.c
-> @@ -335,10 +335,17 @@ static long do_fcntl(int fd, unsigned int cmd, unsigned long arg,
->  		break;
->  	case F_GETFD:
->  		err = get_close_on_exec(fd) ? FD_CLOEXEC : 0;
-> +		/* Report 32bit file system mode */
-> +		if (filp->f_mode & FMODE_32BITHASH)
-> +			err |= FD_32BIT_MODE;
->  		break;
->  	case F_SETFD:
->  		err = 0;
->  		set_close_on_exec(fd, arg & FD_CLOEXEC);
-> +		if (arg & FD_32BIT_MODE)
-> +			filp->f_mode |= FMODE_32BITHASH;
-> +		else
-> +			filp->f_mode &= ~FMODE_32BITHASH;
+> -	kaddr = kmap(pp);
+> +	kaddr = kmap_thread(pp);
+>  	memcpy(kaddr, vip->vii_immed.vi_immed + offset, PAGE_SIZE);
+> -	kunmap(pp);
+> +	kunmap_thread(pp);
 
-This seems inconsistent?  F_SETFD is for setting flags on a file
-descriptor.  Won't setting a flag on filp here instead cause the
-behaviour to change for all file descriptors across the system that are
-open on this struct file?  Compare set_close_on_exec().
+You only Cced me on this particular patch, which means I have absolutely
+no idea what kmap_thread and kunmap_thread actually do, and thus can't
+provide an informed review.
 
-I don't see any discussion on whether this should be an F_SETFL or an
-F_SETFD, though I see F_SETFD was Ted's suggestion originally.
-
-[...]
-
-Cheers
----Dave
+That being said I think your life would be a lot easier if you add
+helpers for the above code sequence and its counterpart that copies
+to a potential hughmem page first, as that hides the implementation
+details from most users.
