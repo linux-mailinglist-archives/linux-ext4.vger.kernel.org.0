@@ -2,105 +2,142 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BA4928D33E
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Oct 2020 19:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A904E28D3D7
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Oct 2020 20:43:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726139AbgJMRnh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 13 Oct 2020 13:43:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725899AbgJMRnh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 13 Oct 2020 13:43:37 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55DC0C0613D0;
-        Tue, 13 Oct 2020 10:43:37 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id ce10so988401ejc.5;
-        Tue, 13 Oct 2020 10:43:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=riyjHiSVJ5SsRLINQZKfDFHKzd3ulLsf2FB6PKmdJEE=;
-        b=cgi6feJEh2fLmCFE1xGTPmL/jy7F7eSPJDcSk0SnoTj1njReE2kjErOLbO5XjBFRB5
-         IcU2j00xoEiAim5aw75yyfPrmoA+k3t74ZWlE+rTz8pWmlsVTP5ZyN8fhyAefTqH4rdA
-         ErXbre0KgubkZZj7kwTDUl3hVqlVn9YspxdTjqfrRxc/X0+u1uqMx7n//TV4DcwsfRBe
-         NgpewxPhmXZOBvgZX1AXdHCIQB8A/EanTtjTii3bYqt759goRCXV2eBdpFmVYqW/mudF
-         Mx3Ve3FyZFJWYGMgtpE3XZu1rywu/qtZ3ETwG7BqwnnyA8Jj+Snmv1nzihftcWzn3Y+P
-         Q3zQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=riyjHiSVJ5SsRLINQZKfDFHKzd3ulLsf2FB6PKmdJEE=;
-        b=gNBs9DlKh0pFDjzUz25tF3VzJTxhX/90f8P1/pQ5U08+53EM8Bt0PpwkwziG0yKHhh
-         u5Wda9wG1Bpj+P+HD3qvPgRF7ZAdm97W9xUo7f8ep6P7gdq04YnslAVyYmqjsXGgQt8W
-         pM5VPEZUtn6RA+lXHSlwZaxH5Vzm/tRqb9hywK6hWRKrWl9cjzIs9GvHCapZ5VO6xAA9
-         Vj0WFWuZOr4PjhBknuxdJJG+v8vMZMv7D6H+WBMNpE31RvyMSI4W2ZGheUIYk3+DqjD1
-         kX3WK/xa/96T/e1e/bt1L1WmSvXf76RLJuQYxqVRcZzXakq3Dy+JEMp5fv+R9sjybSEL
-         TraQ==
-X-Gm-Message-State: AOAM530MkE+HrKU+VscYlwTwXV2fie5NhGFyWzsc1Roh7lW+EP8yKea/
-        nx29aWpmJDWANt8vPghg82l9E25+lvZxGU8o8Dbq2+RhREw=
-X-Google-Smtp-Source: ABdhPJxTKlNpPOHx+6AEVrAQauN/4vqgvk1XNCJ6wQ0aZIXLvOcrvzzzC94ENcljKFTJV38SSWEUqAy37gg0Rs9kVWQ=
-X-Received: by 2002:a17:906:2e0e:: with SMTP id n14mr909012eji.120.1602611015789;
- Tue, 13 Oct 2020 10:43:35 -0700 (PDT)
+        id S2388753AbgJMSmu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 13 Oct 2020 14:42:50 -0400
+Received: from pb-sasl-trial2.pobox.com ([64.147.108.86]:53763 "EHLO
+        pb-sasl-trial2.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388132AbgJMSms (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 13 Oct 2020 14:42:48 -0400
+X-Greylist: delayed 346 seconds by postgrey-1.27 at vger.kernel.org; Tue, 13 Oct 2020 14:42:45 EDT
+Received: from pb-sasl-trial2.pobox.com (localhost.local [127.0.0.1])
+        by pb-sasl-trial2.pobox.com (Postfix) with ESMTP id B35092F08C;
+        Tue, 13 Oct 2020 14:36:58 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=date:from:to
+        :cc:subject:in-reply-to:message-id:references:mime-version
+        :content-type; s=sasl; bh=1qdRcPgrMg9PaaTRWeHMHkWBgn4=; b=Epy+q5
+        ans9ahJwXxlQvxdjICPrBYTo3ECIn9AzWxzmuo835zX7Go5RA+la+QVdJswbYHqY
+        OA9uOWP+RHqwo1f/1Hjwskkbh9itwsmr5IKrZUme2Q4YRp5bQABuumhmd/Yh0NKM
+        sMhZUgbkZQs79wJJn2wtIPZ7EN0v5uRSG8bTQ=
+Received: from pb-smtp1.nyi.icgroup.com (pb-smtp1.pobox.com [10.90.30.53])
+        by pb-sasl-trial2.pobox.com (Postfix) with ESMTP id 7910C2F08B;
+        Tue, 13 Oct 2020 14:36:58 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
+ h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=/xoWviDLFg5PKRQ9rObRWDXVC++pmZtYhfbDb0DFq7E=; b=v5OoWtflZD131TYsBl2A9g0L/PCRe2nu6sy2IJY2ys8stI3sGPGydjk9hbVpZeTUKIjemrnRhLwKFlAM+dXEIGXz5t0LfwSiRA8m7hrB4WLH79+9F2ww8ICEhYu0fLjFgoDc1lKWqG4ZKNRDYjtbn/p6CJBipu1Te7ZvLuk/HMw=
+Received: from yoda.home (unknown [24.203.50.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by pb-smtp1.pobox.com (Postfix) with ESMTPSA id CD98F955F4;
+        Tue, 13 Oct 2020 14:36:57 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+Received: from xanadu.home (xanadu.home [192.168.2.2])
+        by yoda.home (Postfix) with ESMTPSA id CF7492DA0BC7;
+        Tue, 13 Oct 2020 14:36:56 -0400 (EDT)
+Date:   Tue, 13 Oct 2020 14:36:56 -0400 (EDT)
+From:   Nicolas Pitre <nico@fluxnic.net>
+To:     Ira Weiny <ira.weiny@intel.com>
+cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kexec@lists.infradead.org, linux-bcache@vger.kernel.org,
+        linux-mtd@lists.infradead.org, devel@driverdev.osuosl.org,
+        linux-efi@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-aio@kvack.org,
+        io-uring@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-um@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net,
+        reiserfs-devel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-nilfs@vger.kernel.org, cluster-devel@redhat.com,
+        ecryptfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-rdma@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-cachefs@redhat.com,
+        samba-technical@lists.samba.org, intel-wired-lan@lists.osuosl.org
+Subject: Re: [PATCH RFC PKS/PMEM 33/58] fs/cramfs: Utilize new
+ kmap_thread()
+In-Reply-To: <20201009195033.3208459-34-ira.weiny@intel.com>
+Message-ID: <nycvar.YSQ.7.78.906.2010131436200.2184@knanqh.ubzr>
+References: <20201009195033.3208459-1-ira.weiny@intel.com> <20201009195033.3208459-34-ira.weiny@intel.com>
 MIME-Version: 1.0
-References: <CA+icZUWkE5CVtGGo88zo9b28JB1rN7=Gpc4hXywUaqjdCcSyOw@mail.gmail.com>
- <CA+icZUVd6nf-LmoHB18vsZZjprDGW6nVFNKW3b9_cwxWvbTejw@mail.gmail.com>
- <CA+icZUU+UwKY8jQg9MfbojimepWahFSRU6DUt=468AfAf7uCSA@mail.gmail.com>
- <20201009154509.GK235506@mit.edu> <CAD+ocbxpop9fFdgqzyObuT5oA=2OpmPj7SeS+ioH6QBvN_Ao6g@mail.gmail.com>
- <CA+icZUUp9gXGcDrX1rD2PNJfTTOe6JjfMTYiunjT9WTqCRVKRg@mail.gmail.com>
-In-Reply-To: <CA+icZUUp9gXGcDrX1rD2PNJfTTOe6JjfMTYiunjT9WTqCRVKRg@mail.gmail.com>
-From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
-Date:   Tue, 13 Oct 2020 10:43:24 -0700
-Message-ID: <CAD+ocbzz_7KwzMo6UpSLef6i7aFWg9O+25DqtOGj=nvRNqbcsQ@mail.gmail.com>
-Subject: Re: ext4: dev: Broken with CONFIG_JBD2=and CONFIG_EXT4_FS=m
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+X-Pobox-Relay-ID: 13301A02-0D83-11EB-84D0-D152C8D8090B-78420484!pb-smtp1.pobox.com
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Thanks Sedat, I'll take care of this in V10.
+On Fri, 9 Oct 2020, ira.weiny@intel.com wrote:
 
-On Fri, Oct 9, 2020 at 8:14 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> On Fri, Oct 9, 2020 at 6:04 PM harshad shirwadkar
-> <harshadshirwadkar@gmail.com> wrote:
-> >
-> > Thanks Sedat for pointing that out and also sending out the fixes.
-> > Ted, should I send out another version of fast commits out with
-> > Sedat's fixes?
-> >
->
-> Hi Harshad,
->
-> when you work on v10, can you look at these warnings, please?
->
-> fs/jbd2/recovery.c:241:15: warning: unused variable 'seq' [-Wunused-variable]
-> fs/ext4/fast_commit.c:1091:6: warning: variable 'start_time' is used
-> uninitialized whenever 'if' condition is true
-> [-Wsometimes-uninitialized]
-> fs/ext4/fast_commit.c:1091:6: warning: variable 'start_time' is used
-> uninitialized whenever '||' condition is true
-> [-Wsometimes-uninitialized]
->
-> Thanks,
-> - Sedat -
->
-> P.S.: Now, I see that ext4.git#dev has dropped the hs/fast-commit v9 merge.
->
-> >
-> >
-> > On Fri, Oct 9, 2020 at 8:45 AM Theodore Y. Ts'o <tytso@mit.edu> wrote:
-> > >
-> > > On Fri, Oct 09, 2020 at 04:31:51PM +0200, Sedat Dilek wrote:
-> > > > > This fixes it...
-> > >
-> > > Sedat,
-> > >
-> > > Thanks for the report and the proposed fixes!
-> > >
-> > >                                         - Ted
+> From: Ira Weiny <ira.weiny@intel.com>
+> 
+> The kmap() calls in this FS are localized to a single thread.  To avoid
+> the over head of global PKRS updates use the new kmap_thread() call.
+> 
+> Cc: Nicolas Pitre <nico@fluxnic.net>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+
+Acked-by: Nicolas Pitre <nico@fluxnic.net>
+
+>  fs/cramfs/inode.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/cramfs/inode.c b/fs/cramfs/inode.c
+> index 912308600d39..003c014a42ed 100644
+> --- a/fs/cramfs/inode.c
+> +++ b/fs/cramfs/inode.c
+> @@ -247,8 +247,8 @@ static void *cramfs_blkdev_read(struct super_block *sb, unsigned int offset,
+>  		struct page *page = pages[i];
+>  
+>  		if (page) {
+> -			memcpy(data, kmap(page), PAGE_SIZE);
+> -			kunmap(page);
+> +			memcpy(data, kmap_thread(page), PAGE_SIZE);
+> +			kunmap_thread(page);
+>  			put_page(page);
+>  		} else
+>  			memset(data, 0, PAGE_SIZE);
+> @@ -826,7 +826,7 @@ static int cramfs_readpage(struct file *file, struct page *page)
+>  
+>  	maxblock = (inode->i_size + PAGE_SIZE - 1) >> PAGE_SHIFT;
+>  	bytes_filled = 0;
+> -	pgdata = kmap(page);
+> +	pgdata = kmap_thread(page);
+>  
+>  	if (page->index < maxblock) {
+>  		struct super_block *sb = inode->i_sb;
+> @@ -914,13 +914,13 @@ static int cramfs_readpage(struct file *file, struct page *page)
+>  
+>  	memset(pgdata + bytes_filled, 0, PAGE_SIZE - bytes_filled);
+>  	flush_dcache_page(page);
+> -	kunmap(page);
+> +	kunmap_thread(page);
+>  	SetPageUptodate(page);
+>  	unlock_page(page);
+>  	return 0;
+>  
+>  err:
+> -	kunmap(page);
+> +	kunmap_thread(page);
+>  	ClearPageUptodate(page);
+>  	SetPageError(page);
+>  	unlock_page(page);
+> -- 
+> 2.28.0.rc0.12.gb6a658bd00c9
+> 
+> 
