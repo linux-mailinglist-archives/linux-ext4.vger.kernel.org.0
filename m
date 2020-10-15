@@ -2,33 +2,32 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9195028F4E0
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 Oct 2020 16:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3514B28F404
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 Oct 2020 15:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730934AbgJOOhy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 15 Oct 2020 10:37:54 -0400
-Received: from mx1.hrz.uni-dortmund.de ([129.217.128.51]:54123 "EHLO
+        id S1729948AbgJON4m (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 15 Oct 2020 09:56:42 -0400
+Received: from mx1.hrz.uni-dortmund.de ([129.217.128.51]:40845 "EHLO
         unimail.uni-dortmund.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726925AbgJOOhy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Oct 2020 10:37:54 -0400
-X-Greylist: delayed 4272 seconds by postgrey-1.27 at vger.kernel.org; Thu, 15 Oct 2020 10:37:48 EDT
+        with ESMTP id S1729498AbgJON4m (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Oct 2020 09:56:42 -0400
+X-Greylist: delayed 1801 seconds by postgrey-1.27 at vger.kernel.org; Thu, 15 Oct 2020 09:56:37 EDT
 Received: from [129.217.43.37] (kalamos.cs.uni-dortmund.de [129.217.43.37])
         (authenticated bits=0)
-        by unimail.uni-dortmund.de (8.16.1/8.16.1) with ESMTPSA id 09FDQTdr004128
+        by unimail.uni-dortmund.de (8.16.1/8.16.1) with ESMTPSA id 09FDuSAK004364
         (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT);
-        Thu, 15 Oct 2020 15:26:29 +0200 (CEST)
+        Thu, 15 Oct 2020 15:56:28 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tu-dortmund.de;
-        s=unimail; t=1602768389;
-        bh=b9VPPwnOzce61iVQ6VPKecnM/BuvQ8ThJ6ilSnKcqXE=;
+        s=unimail; t=1602770188;
+        bh=lYyynSAve4cbZZYNd/ZFmP1/MBwQVccJHoLZwJdRReA=;
         h=Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=soM5D3Glgh4SA00g4ic0YVrJ6iame3i6rnYN3mJD+V5dwO5PlBlfDqHJfNcMgdmMh
-         xZf0TLVQri2D0a9hpiuudJh3GWhv85pKnY1TPuA4r8ox4mOcLZrl5SnNmgvtTJWu2G
-         oCJX2o97gYyAGHpfROstkZeXcV/mOdoCevURcx84=
-Subject: [PATCH v3] Updated locking documentation for transaction_t
-To:     tytso@mit.edu
+        b=VWIT+Te8qI3g9B0IVQwLzR5iePi4GJajSiTfRbrbzBneOrEoiOA+5hZ+ecfm+rh2L
+         KTGT5tRKYb+4bdfXBPR4/wjmFhyx46ZfwXMy7F+8GF8Ff72wsoYUEjLDoPtYDbwJ9i
+         sm1fiSnVl8x/Moq6SHyXR40Zj9NYS4DWdiV2gnbU=
+Subject: [RFC] Fine-grained locking documentation for jbd2 data structures
+To:     tytso@mit.edu, Jan Kara <jack@suse.com>
 Cc:     Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
-        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        linux-ext4@vger.kernel.org
 References: <20190408083500.66759-1-alexander.lochmann@tu-dortmund.de>
 From:   Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
 Autocrypt: addr=alexander.lochmann@tu-dortmund.de; prefer-encrypt=mutual;
@@ -76,127 +75,113 @@ Autocrypt: addr=alexander.lochmann@tu-dortmund.de; prefer-encrypt=mutual;
  V/vsST+RgaHpcIpFoPZrzAwFgIohO+2k7Obj0sWka5J+tY2x80TuqB34Eeiz2L9QmUlgrjKp
  +80J1WwiXjwJ6S1S72QZkZSkDdoYJrjyHC1hdO9aBflS1CsptcY0EFDVn3Wkjf+bfXs4x+Tn
  VhopshUAQ+v/CLESeUrxbP19Qw==
-Message-ID: <10cfbef1-994c-c604-f8a6-b1042fcc622f@tu-dortmund.de>
-Date:   Thu, 15 Oct 2020 15:26:28 +0200
+Message-ID: <7827d153-f75c-89a2-1890-86e85f86c704@tu-dortmund.de>
+Date:   Thu, 15 Oct 2020 15:56:27 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
 In-Reply-To: <20190408083500.66759-1-alexander.lochmann@tu-dortmund.de>
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="LxPsIJ9o9eUkfLw4inCsMxbkSWuQLqcmz"
+ boundary="5aaLMZEaWne1lsSTRaeyvSGwijYHiZN5w"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---LxPsIJ9o9eUkfLw4inCsMxbkSWuQLqcmz
-Content-Type: multipart/mixed; boundary="CFOzXPkzcSisgELVMl6z5MUZyWbLUyaM5";
+--5aaLMZEaWne1lsSTRaeyvSGwijYHiZN5w
+Content-Type: multipart/mixed; boundary="ZIpBuFy3Xfl5278FczjeC7eVYnAWSmQfg";
  protected-headers="v1"
 From: Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
-To: tytso@mit.edu
+To: tytso@mit.edu, Jan Kara <jack@suse.com>
 Cc: Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
- Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Message-ID: <10cfbef1-994c-c604-f8a6-b1042fcc622f@tu-dortmund.de>
-Subject: [PATCH v3] Updated locking documentation for transaction_t
+ linux-ext4@vger.kernel.org
+Message-ID: <7827d153-f75c-89a2-1890-86e85f86c704@tu-dortmund.de>
+Subject: [RFC] Fine-grained locking documentation for jbd2 data structures
 References: <20190408083500.66759-1-alexander.lochmann@tu-dortmund.de>
 In-Reply-To: <20190408083500.66759-1-alexander.lochmann@tu-dortmund.de>
 
---CFOzXPkzcSisgELVMl6z5MUZyWbLUyaM5
-Content-Type: multipart/mixed;
- boundary="------------F506B68D0B4F75469A7E83DF"
-Content-Language: de-DE
-
-This is a multi-part message in MIME format.
---------------F506B68D0B4F75469A7E83DF
+--ZIpBuFy3Xfl5278FczjeC7eVYnAWSmQfg
 Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 Hi folks,
 
-I've updated the lock documentation according to our finding for
-transaction_t.
-Does this patch look good to you?
+when comparing our generated locking documentation with the current
+documentation
+located in include/linux/jbd2.h, I found some inconsistencies. (Our
+approach: https://dl.acm.org/doi/10.1145/3302424.3303948)
+According to the official documentation, the following members should be
+read using a lock:
+journal_t
+- j_flags: j_state_lock
+- j_barrier_count: j_state_lock
+- j_running_transaction: j_state_lock
+- j_commit_sequence: j_state_lock
+- j_commit_request: j_state_lock
+transactiont_t
+- t_nr_buffers: j_list_lock
+- t_buffers: j_list_lock
+- t_reserved_list: j_list_lock
+- t_shadow_list: j_list_lock
+jbd2_inode
+- i_transaction: j_list_lock
+- i_next_transaction: j_list_lock
+- i_flags: j_list_lock
+- i_dirty_start: j_list_lock
+- i_dirty_start: j_list_lock
+
+However, our results say that no locks are needed at all for *reading*
+those members.
+=46rom what I know, it is common wisdom that word-sized data types can be=
+
+read without any lock in the Linux kernel.
+All of the above members have word size, i.e., int, long, or ptr.
+Is it therefore safe to split the locking documentation as follows?
+@j_flags: General journaling state flags [r:nolocks, w:j_state_lock]
+
+The following members are not word-sizes. Our results also suggest that
+no locks are needed.
+Can the proposed change be applied to them as well?
+transaction_t
+- t_chp_stats: j_checkpoint_sem
+jbd2_inode:
+- i_list: j_list_lock
 
 Cheers,
 Alex
 
---------------F506B68D0B4F75469A7E83DF
-Content-Type: text/x-patch; charset=UTF-8;
- name="transaction_t-doc.patch"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="transaction_t-doc.patch"
+--=20
+Technische Universit=C3=A4t Dortmund
+Alexander Lochmann                PGP key: 0xBC3EF6FD
+Otto-Hahn-Str. 16                 phone:  +49.231.7556141
+D-44227 Dortmund                  fax:    +49.231.7556116
+http://ess.cs.tu-dortmund.de/Staff/al
 
-commit 13ac907c45c5da7d691f6e10972de5e56e0072c6
-Author: Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
-Date:   Thu Oct 15 15:24:52 2020 +0200
 
-    Updated locking documentation for transaction_t
-   =20
-    We used LockDoc to derive locking rules for each member
-    of struct transaction_t.
-    Based on those results, we extended the existing documentation
-    by more members of struct transaction_t, and updated the existing
-    documentation.
-   =20
-    Signed-off-by: Alexander Lochmann <alexander.lochmann@tu-dortmund.de>=
+--ZIpBuFy3Xfl5278FczjeC7eVYnAWSmQfg--
 
-    Signed-off-by: Horst Schirmeier <horst.schirmeier@tu-dortmund.de>
-
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index 08f904943ab2..a11c78e4af4e 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -532,6 +532,7 @@ struct transaction_chp_stats_s {
-  * The transaction keeps track of all of the buffers modified by a
-  * running transaction, and all of the buffers committed but not yet
-  * flushed to home for finished transactions.
-+ * (Locking Documentation improved by LockDoc)
-  */
-=20
- /*
-@@ -650,12 +651,12 @@ struct transaction_s
- 	unsigned long		t_start;
-=20
- 	/*
--	 * When commit was requested
-+	 * When commit was requested [journal_t.j_state_lock]
- 	 */
- 	unsigned long		t_requested;
-=20
- 	/*
--	 * Checkpointing stats [j_checkpoint_sem]
-+	 * Checkpointing stats [journal_t.j_list_lock]
- 	 */
- 	struct transaction_chp_stats_s t_chp_stats;
-=20
-
---------------F506B68D0B4F75469A7E83DF--
-
---CFOzXPkzcSisgELVMl6z5MUZyWbLUyaM5--
-
---LxPsIJ9o9eUkfLw4inCsMxbkSWuQLqcmz
+--5aaLMZEaWne1lsSTRaeyvSGwijYHiZN5w
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCgAdFiEElhZsUHzVP0dbkjCRWT7tBbw+9v0FAl+ITgQACgkQWT7tBbw+
-9v00ChAAw51cEOobFSjWDUcqR59tRutBsupJ0p6FOlHAFKje23H6P19afdIWW6dr
-mih+7RmcO81jQPC51o5yW12Q3E9ZUg8Ibqg2c9AeIurpotmlZBHCWx8aG9baU5Ha
-WmbveGpA9OB1XQzLgYf2pKOCSBnbVGnqO8y7Svt+1xeRTo6AZZFazaVlW8UWeJCc
-L6BoptPnvEGa+3+jrXTDy+ND6r44Ev7wM71BcBHIBJdpIgjSDFr4K2CkDWMeWmWt
-W6wFBr9lTOqWlyKvMxcoJSfHLY3y1zZj9Ufzs8mJmW0yuTNCjZne5lrgNgO0z5rA
-DeAkYuLyhSGpnGBKt2vX++AtrUVVKExvBvRACQWU5qoAVvuAPPjAU7ybfsOySrpN
-a/d/gBb7Duyh56j9MmF655aHuHgnsJJyMjPr9nh5LNSlbzwekjHv+SuUAIE92fDs
-W8ZCDwi8eL84xHR2pQWUkz1Hmv6hvAioj+w0BNohO9AOAPhHRwc1d/FPmO9hnrZl
-QOm2COVoCgmpYmk2cwrShw8ddQiRloJaHo5n/ZRAJ2hokbu1uB2Fb+2RRvVwHWIt
-8eZraefQ911jVYgvzctG5HgfEz33BXb7hmSO7nzP548qtV7cpUGY6GaO6KeRsvPL
-x0YJmiBfKNoB87b43fXVXlLm7fpQ7BoWLEePtcbSJdRT2Yem9/c=
-=Q3ZT
+iQIzBAEBCgAdFiEElhZsUHzVP0dbkjCRWT7tBbw+9v0FAl+IVQsACgkQWT7tBbw+
+9v2inxAA2QNkV3eBMGJT3bHys98HhaADAaDl450WYfPIzdP8MSsTM+n2ALhH6Kr6
+nPOwMF6C9jbWYEkUtHtJvqfzGdoNrDFQ8c2OEOQl95V291NUh4Iu1Ri2TQLJlVhG
+D9mHcFCDGgUm8r/Rjl7rHo6NnBlhQ1c1kUt/fV1HkvrMrfAxHdhtnZwGYePcrVgX
+whhivOE1MH0hUq5QK/w4rVjAxG0KBUETcU5pklFFjwS3SWoghUYmzMzNA1mhO5Ue
+A+wl1oRVbcoGp50Kag1iUU4RXPpuIK2oFtFG/FqxT/3p+wCNZV3Qwi9GYExeQ2tH
+8d2jTqej+efeaytDXPU8tJiJ1DVR/agG6M0Ngsy+2WQco39pczhtmN9E54rlwqkg
+Ndo667LBpmamKl6ZVTDh7lA2o92v2g/HB46X+WEe5GCbv/yRHAxjGlbCN+ptZn3b
+Vgr7WtsRreo3HDAn3FCNGKaeOCI0CggXZS3SIO/DuZUh01UZTN5cJf0I51fNcPZP
+eHtnvRSmwL1x2t3in68N416Y6kaqGuyTT6Y2CyPq9Kkmu3mQ1YEjm0Zvvb3puRnU
+ogrbbtF2HfXYJbwDIy34EdXWiQtYHttJaCynITc685Vg56KRuhw+JIsES6hWcDQP
+NmaHzZ5ppP/u7lS2ytQv81PLomfwPqi3DpI/36OCxVTnJM7MefE=
+=DdFt
 -----END PGP SIGNATURE-----
 
---LxPsIJ9o9eUkfLw4inCsMxbkSWuQLqcmz--
+--5aaLMZEaWne1lsSTRaeyvSGwijYHiZN5w--
