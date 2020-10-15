@@ -2,57 +2,57 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D19A528FA2F
+	by mail.lfdr.de (Postfix) with ESMTP id 249AF28FA2E
 	for <lists+linux-ext4@lfdr.de>; Thu, 15 Oct 2020 22:38:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730870AbgJOUiP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 15 Oct 2020 16:38:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58014 "EHLO
+        id S2387948AbgJOUiO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 15 Oct 2020 16:38:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730825AbgJOUiN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Oct 2020 16:38:13 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 183E3C0613D2
+        with ESMTP id S1729735AbgJOUiM (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Oct 2020 16:38:12 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1BD7C061755
         for <linux-ext4@vger.kernel.org>; Thu, 15 Oct 2020 13:38:12 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id f19so113076pfj.11
+Received: by mail-pl1-x643.google.com with SMTP id y1so8696plp.6
         for <linux-ext4@vger.kernel.org>; Thu, 15 Oct 2020 13:38:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=XCy4vP8UA+pfczkhHL/oVySRNrGMn2s4GxOpMv0W6ss=;
-        b=m+K9RvU60YqeAoQHpaZ3D5HtMm5p1LOFjNaINRcKj77IeD4gczPOQBmNGtxPVIciA/
-         /DDQrWtxdwoTbNhMLxNvuty1ls7ZGPfBLoMS9pThyaUAg0F96uvX8pDJ+oZu2X8VQGMc
-         f88lm+Gku5b8mfveRQ7ohYrzpALA71xZV+mlppAzQLVXxDq1zIT+kkN7BzatiI35hTEt
-         ruxXcIfthb8roLm6fo5utZPvK0HpnCNl31EKLHJ3cB6i3gKhTzME50TZmI6bPNpU3MND
-         fNsFg0kRv8kEtnoIWGJMRWhGpP6VRZ6dJ5fV41uvG/eMME3l52tNjVSvNye87yiVKx5l
-         gfFw==
+        bh=YZxciC56O0h0poh3C/gwiir1XMwrML4XJ6gRuhDOcbY=;
+        b=tcVnz3WtvGaCMv4ymLwKoMPi47TiDPSihlFnecfUxYJyymtCPd7hek8GQEYvJpyXg3
+         zoz5byCsrDuGuquZrUM0HGc1JqKoxRf4IeWQNyVnQcCk3FORXIHcDwU3IjuN9wPiBXfk
+         l2TfqTAGZDI58OWrbvfP4FNh68gv24AF4faDrap6CCdLRHQp+VV7Cum2d5EA0FkTWN2W
+         qr1zDtsOYexdAihBVLq2RX5OvGqDURM6OFr3PnrUX9DKoMrXA/8dlPaqsSFVTr8rs5X8
+         HuxQDDs8ouczxPAQB0ZI9VuwPw6Q+kw+0czcH5GOIsr2G6mBDciU6Dciqyb7i1pjkO9l
+         BQRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=XCy4vP8UA+pfczkhHL/oVySRNrGMn2s4GxOpMv0W6ss=;
-        b=CZzqScSIsw9r9TlrN3NjnjB/2705PKMz59nFr1XVsehTOG+ZDKOsmIDtX7aa2iDH1i
-         fn0E1R27o3NzzG2iYIVaiCboE2ePb436hCSM89mfDRzaO1pzX44Q9gf3PanJUmwQ19bH
-         vyZ45a8vTuvDUDk7Pn6sYYUWWc8oieDQQt9gaKc8ULtvhufZ9KiT2/IdTVguDnoEssbn
-         qRSsej0UTrRoCphvxkcD3CuODSgHQPvW5TKHAsANhqfka0lMjziejtTw5AEDyouKW9MZ
-         hWrYbntG88ut4Ipbl80vczJUaUVmWeoONbEUixajNzbs5pqkD2OztHnYoZ24cDA83qW5
-         DL5g==
-X-Gm-Message-State: AOAM532rNisGMaNyMGC+dQ3+b7LT5kjYyI36rSZovaZQq4xl83Z6YHsP
-        KT6llKo0ekIw2pC2xYBDOrTWvTJ1ZJA=
-X-Google-Smtp-Source: ABdhPJwkEw5/pe3rQMLkdFhgI7Rv8619zQ4epqFnLmmMwUij4HgzllanWDhSEUXtvwHQfzuz2U1CgA==
-X-Received: by 2002:a63:f015:: with SMTP id k21mr287741pgh.422.1602794290936;
-        Thu, 15 Oct 2020 13:38:10 -0700 (PDT)
+        bh=YZxciC56O0h0poh3C/gwiir1XMwrML4XJ6gRuhDOcbY=;
+        b=MyEGfml6N+eicEQ0QeE3tWQ+glWcZJjcVb2kl4kToa98celr6lo/KCzlPHqxYBMtYV
+         ++hDtKiHROK2Af+HRw58GfZQnVq6qQDgtn3tk3uNdhRkjaURR/jhaZmz4zgxOhhLFC/E
+         yP2+i7GpY3+Gij/yzvN/gqWej460Ww9A/SaBrtSiRXfH9TpwpBk58xUALP0F2NPaDTH3
+         CthAUmjGtjHeAiUbQzWfW8C9f9QXEynTZdsyq3Vcv7on9aE5kgLQzURZNTAN4lm9B6jA
+         Ex6uUykQBN+bJFg7QPJYWtGkst1nohG1JRHijCL2i274jmcvxIzehcjYwVY4yRRluC0V
+         yDLw==
+X-Gm-Message-State: AOAM533A6+s91tWmjyEnvjZruZUlr1vmv9dnHqcM41BMTVmX50pxpbpe
+        X47jTLcDILrTsC0cYWAxXU8bjO0WQMk=
+X-Google-Smtp-Source: ABdhPJyFUhzkGk4BQjVCuevqxijUg7gVmSidjHp0kA8UWLTkijWXBZ89Ongl27Pi51IsxsYA7xfXyA==
+X-Received: by 2002:a17:90a:65cc:: with SMTP id i12mr454437pjs.193.1602794291909;
+        Thu, 15 Oct 2020 13:38:11 -0700 (PDT)
 Received: from harshads-520.kir.corp.google.com ([2620:15c:17:10:a6ae:11ff:fe11:86a2])
-        by smtp.googlemail.com with ESMTPSA id j8sm136860pfr.121.2020.10.15.13.38.10
+        by smtp.googlemail.com with ESMTPSA id j8sm136860pfr.121.2020.10.15.13.38.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2020 13:38:10 -0700 (PDT)
+        Thu, 15 Oct 2020 13:38:11 -0700 (PDT)
 From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 To:     linux-ext4@vger.kernel.org
 Cc:     tytso@mit.edu, Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Subject: [PATCH v10 1/9] doc: update ext4 and journalling docs to include fast commit feature
-Date:   Thu, 15 Oct 2020 13:37:53 -0700
-Message-Id: <20201015203802.3597742-2-harshadshirwadkar@gmail.com>
+Subject: [PATCH v10 2/9] ext4: add fast_commit feature and handling for extended mount options
+Date:   Thu, 15 Oct 2020 13:37:54 -0700
+Message-Id: <20201015203802.3597742-3-harshadshirwadkar@gmail.com>
 X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
 In-Reply-To: <20201015203802.3597742-1-harshadshirwadkar@gmail.com>
 References: <20201015203802.3597742-1-harshadshirwadkar@gmail.com>
@@ -62,139 +62,163 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This patch adds necessary documentation for fast commits.
+We are running out of mount option bits. Add handling for using
+s_mount_opt2. Add ext4 and jbd2 fast commit feature flag and also add
+ability to turn off the fast commit feature in Ext4.
 
 Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 ---
- Documentation/filesystems/ext4/journal.rst | 66 ++++++++++++++++++++++
- Documentation/filesystems/journalling.rst  | 33 +++++++++++
- 2 files changed, 99 insertions(+)
+ fs/ext4/ext4.h       |  4 ++++
+ fs/ext4/super.c      | 27 ++++++++++++++++++++++-----
+ include/linux/jbd2.h |  5 ++++-
+ 3 files changed, 30 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/filesystems/ext4/journal.rst b/Documentation/filesystems/ext4/journal.rst
-index ea613ee701f5..a522037a28cf 100644
---- a/Documentation/filesystems/ext4/journal.rst
-+++ b/Documentation/filesystems/ext4/journal.rst
-@@ -28,6 +28,17 @@ metadata are written to disk through the journal. This is slower but
- safest. If ``data=writeback``, dirty data blocks are not flushed to the
- disk before the metadata are written to disk through the journal.
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 1879531a119f..02d7dc378505 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -1213,6 +1213,8 @@ struct ext4_inode_info {
+ #define EXT4_MOUNT2_EXPLICIT_JOURNAL_CHECKSUM	0x00000008 /* User explicitly
+ 						specified journal checksum */
  
-+In case of ``data=ordered`` mode, Ext4 also supports fast commits which
-+help reduce commit latency significantly. The default ``data=ordered``
-+mode works by logging metadata blocks to the journal. In fast commit
-+mode, Ext4 only stores the minimal delta needed to recreate the
-+affected metadata in fast commit space that is shared with JBD2.
-+Once the fast commit area fills in or if fast commit is not possible
-+or if JBD2 commit timer goes off, Ext4 performs a traditional full commit.
-+A full commit invalidates all the fast commits that happened before
-+it and thus it makes the fast commit area empty for further fast
-+commits. This feature needs to be enabled at mkfs time.
++#define EXT4_MOUNT2_JOURNAL_FAST_COMMIT	0x00000010 /* Journal fast commit */
 +
- The journal inode is typically inode 8. The first 68 bytes of the
- journal inode are replicated in the ext4 superblock. The journal itself
- is normal (but hidden) file within the filesystem. The file usually
-@@ -609,3 +620,58 @@ bytes long (but uses a full block):
-      - h\_commit\_nsec
-      - Nanoseconds component of the above timestamp.
+ #define clear_opt(sb, opt)		EXT4_SB(sb)->s_mount_opt &= \
+ 						~EXT4_MOUNT_##opt
+ #define set_opt(sb, opt)		EXT4_SB(sb)->s_mount_opt |= \
+@@ -1813,6 +1815,7 @@ static inline bool ext4_verity_in_progress(struct inode *inode)
+ #define EXT4_FEATURE_COMPAT_RESIZE_INODE	0x0010
+ #define EXT4_FEATURE_COMPAT_DIR_INDEX		0x0020
+ #define EXT4_FEATURE_COMPAT_SPARSE_SUPER2	0x0200
++#define EXT4_FEATURE_COMPAT_FAST_COMMIT		0x0400
+ #define EXT4_FEATURE_COMPAT_STABLE_INODES	0x0800
  
-+Fast commits
-+~~~~~~~~~~~~
-+
-+Fast commit area is organized as a log of tag length values. Each TLV has
-+a ``struct ext4_fc_tl`` in the beginning which stores the tag and the length
-+of the entire field. It is followed by variable length tag specific value.
-+Here is the list of supported tags and their meanings:
-+
-+.. list-table::
-+   :widths: 8 20 20 32
-+   :header-rows: 1
-+
-+   * - Tag
-+     - Meaning
-+     - Value struct
-+     - Description
-+   * - EXT4_FC_TAG_HEAD
-+     - Fast commit area header
-+     - ``struct ext4_fc_head``
-+     - Stores the TID of the transaction after which these fast commits should
-+       be applied.
-+   * - EXT4_FC_TAG_ADD_RANGE
-+     - Add extent to inode
-+     - ``struct ext4_fc_add_range``
-+     - Stores the inode number and extent to be added in this inode
-+   * - EXT4_FC_TAG_DEL_RANGE
-+     - Remove logical offsets to inode
-+     - ``struct ext4_fc_del_range``
-+     - Stores the inode number and the logical offset range that needs to be
-+       removed
-+   * - EXT4_FC_TAG_CREAT
-+     - Create directory entry for a newly created file
-+     - ``struct ext4_fc_dentry_info``
-+     - Stores the parent inode numer, inode number and directory entry of the
-+       newly created file
-+   * - EXT4_FC_TAG_LINK
-+     - Link a directory entry to an inode
-+     - ``struct ext4_fc_dentry_info``
-+     - Stores the parent inode numer, inode number and directory entry
-+   * - EXT4_FC_TAG_UNLINK
-+     - Unink a directory entry of an inode
-+     - ``struct ext4_fc_dentry_info``
-+     - Stores the parent inode numer, inode number and directory entry
-+
-+   * - EXT4_FC_TAG_PAD
-+     - Padding (unused area)
-+     - None
-+     - Unused bytes in the fast commit area.
-+
-+   * - EXT4_FC_TAG_TAIL
-+     - Mark the end of a fast commit
-+     - ``struct ext4_fc_tail``
-+     - Stores the TID of the commit, CRC of the fast commit of which this tag
-+       represents the end of
-+
-diff --git a/Documentation/filesystems/journalling.rst b/Documentation/filesystems/journalling.rst
-index 7e2be2faf653..5a5f70b4063e 100644
---- a/Documentation/filesystems/journalling.rst
-+++ b/Documentation/filesystems/journalling.rst
-@@ -132,6 +132,39 @@ The opportunities for abuse and DOS attacks with this should be obvious,
- if you allow unprivileged userspace to trigger codepaths containing
- these calls.
+ #define EXT4_FEATURE_RO_COMPAT_SPARSE_SUPER	0x0001
+@@ -1915,6 +1918,7 @@ EXT4_FEATURE_COMPAT_FUNCS(xattr,		EXT_ATTR)
+ EXT4_FEATURE_COMPAT_FUNCS(resize_inode,		RESIZE_INODE)
+ EXT4_FEATURE_COMPAT_FUNCS(dir_index,		DIR_INDEX)
+ EXT4_FEATURE_COMPAT_FUNCS(sparse_super2,	SPARSE_SUPER2)
++EXT4_FEATURE_COMPAT_FUNCS(fast_commit,		FAST_COMMIT)
+ EXT4_FEATURE_COMPAT_FUNCS(stable_inodes,	STABLE_INODES)
  
-+Fast commits
-+~~~~~~~~~~~~
-+
-+JBD2 to also allows you to perform file-system specific delta commits known as
-+fast commits. In order to use fast commits, you first need to call
-+:c:func:`jbd2_fc_init` and tell how many blocks at the end of journal
-+area should be reserved for fast commits. Along with that, you will also need
-+to set following callbacks that perform correspodning work:
-+
-+`journal->j_fc_cleanup_cb`: Cleanup function called after every full commit and
-+fast commit.
-+
-+`journal->j_fc_replay_cb`: Replay function called for replay of fast commit
-+blocks.
-+
-+File system is free to perform fast commits as and when it wants as long as it
-+gets permission from JBD2 to do so by calling the function
-+:c:func:`jbd2_fc_begin_commit()`. Once a fast commit is done, the client
-+file  system should tell JBD2 about it by calling
-+:c:func:`jbd2_fc_end_commit()`. If file system wants JBD2 to perform a full
-+commit immediately after stopping the fast commit it can do so by calling
-+:c:func:`jbd2_fc_end_commit_fallback()`. This is useful if fast commit operation
-+fails for some reason and the only way to guarantee consistency is for JBD2 to
-+perform the full traditional commit.
-+
-+JBD2 helper functions to manage fast commit buffers. File system can use
-+:c:func:`jbd2_fc_get_buf()` and :c:func:`jbd2_fc_wait_bufs()` to allocate
-+and wait on IO completion of fast commit buffers.
-+
-+Currently, only Ext4 implements fast commits. For details of its implementation
-+of fast commits, please refer to the top level comments in
-+fs/ext4/fast_commit.c.
-+
- Summary
- ~~~~~~~
+ EXT4_FEATURE_RO_COMPAT_FUNCS(sparse_super,	SPARSE_SUPER)
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 901c1c938276..70256a240442 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -1709,7 +1709,7 @@ enum {
+ 	Opt_dioread_nolock, Opt_dioread_lock,
+ 	Opt_discard, Opt_nodiscard, Opt_init_itable, Opt_noinit_itable,
+ 	Opt_max_dir_size_kb, Opt_nojournal_checksum, Opt_nombcache,
+-	Opt_prefetch_block_bitmaps,
++	Opt_prefetch_block_bitmaps, Opt_no_fc,
+ };
  
+ static const match_table_t tokens = {
+@@ -1796,6 +1796,7 @@ static const match_table_t tokens = {
+ 	{Opt_init_itable, "init_itable=%u"},
+ 	{Opt_init_itable, "init_itable"},
+ 	{Opt_noinit_itable, "noinit_itable"},
++	{Opt_no_fc, "no_fc"},
+ 	{Opt_max_dir_size_kb, "max_dir_size_kb=%u"},
+ 	{Opt_test_dummy_encryption, "test_dummy_encryption=%s"},
+ 	{Opt_test_dummy_encryption, "test_dummy_encryption"},
+@@ -1922,6 +1923,7 @@ static int clear_qf_name(struct super_block *sb, int qtype)
+ #define MOPT_EXT4_ONLY	(MOPT_NO_EXT2 | MOPT_NO_EXT3)
+ #define MOPT_STRING	0x0400
+ #define MOPT_SKIP	0x0800
++#define	MOPT_2		0x1000
+ 
+ static const struct mount_opts {
+ 	int	token;
+@@ -2022,6 +2024,8 @@ static const struct mount_opts {
+ 	{Opt_nombcache, EXT4_MOUNT_NO_MBCACHE, MOPT_SET},
+ 	{Opt_prefetch_block_bitmaps, EXT4_MOUNT_PREFETCH_BLOCK_BITMAPS,
+ 	 MOPT_SET},
++	{Opt_no_fc, EXT4_MOUNT2_JOURNAL_FAST_COMMIT,
++	 MOPT_CLEAR | MOPT_2 | MOPT_EXT4_ONLY},
+ 	{Opt_err, 0, 0}
+ };
+ 
+@@ -2398,10 +2402,17 @@ static int handle_mount_opt(struct super_block *sb, char *opt, int token,
+ 			WARN_ON(1);
+ 			return -1;
+ 		}
+-		if (arg != 0)
+-			sbi->s_mount_opt |= m->mount_opt;
+-		else
+-			sbi->s_mount_opt &= ~m->mount_opt;
++		if (m->flags & MOPT_2) {
++			if (arg != 0)
++				sbi->s_mount_opt2 |= m->mount_opt;
++			else
++				sbi->s_mount_opt2 &= ~m->mount_opt;
++		} else {
++			if (arg != 0)
++				sbi->s_mount_opt |= m->mount_opt;
++			else
++				sbi->s_mount_opt &= ~m->mount_opt;
++		}
+ 	}
+ 	return 1;
+ }
+@@ -2618,6 +2629,9 @@ static int _ext4_show_options(struct seq_file *seq, struct super_block *sb,
+ 		SEQ_OPTS_PUTS("dax=inode");
+ 	}
+ 
++	if (test_opt2(sb, JOURNAL_FAST_COMMIT))
++		SEQ_OPTS_PUTS("fast_commit");
++
+ 	ext4_show_quota_options(seq, sb);
+ 	return 0;
+ }
+@@ -4121,6 +4135,8 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+ #ifdef CONFIG_EXT4_FS_POSIX_ACL
+ 	set_opt(sb, POSIX_ACL);
+ #endif
++	if (ext4_has_feature_fast_commit(sb))
++		set_opt2(sb, JOURNAL_FAST_COMMIT);
+ 	/* don't forget to enable journal_csum when metadata_csum is enabled. */
+ 	if (ext4_has_metadata_csum(sb))
+ 		set_opt(sb, JOURNAL_CHECKSUM);
+@@ -4777,6 +4793,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+ 		sbi->s_def_mount_opt &= ~EXT4_MOUNT_JOURNAL_CHECKSUM;
+ 		clear_opt(sb, JOURNAL_CHECKSUM);
+ 		clear_opt(sb, DATA_FLAGS);
++		clear_opt2(sb, JOURNAL_FAST_COMMIT);
+ 		sbi->s_journal = NULL;
+ 		needs_recovery = 0;
+ 		goto no_journal;
+diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+index 04afa6dcd60d..0685cc95e501 100644
+--- a/include/linux/jbd2.h
++++ b/include/linux/jbd2.h
+@@ -289,6 +289,7 @@ typedef struct journal_superblock_s
+ #define JBD2_FEATURE_INCOMPAT_ASYNC_COMMIT	0x00000004
+ #define JBD2_FEATURE_INCOMPAT_CSUM_V2		0x00000008
+ #define JBD2_FEATURE_INCOMPAT_CSUM_V3		0x00000010
++#define JBD2_FEATURE_INCOMPAT_FAST_COMMIT	0x00000020
+ 
+ /* See "journal feature predicate functions" below */
+ 
+@@ -299,7 +300,8 @@ typedef struct journal_superblock_s
+ 					JBD2_FEATURE_INCOMPAT_64BIT | \
+ 					JBD2_FEATURE_INCOMPAT_ASYNC_COMMIT | \
+ 					JBD2_FEATURE_INCOMPAT_CSUM_V2 | \
+-					JBD2_FEATURE_INCOMPAT_CSUM_V3)
++					JBD2_FEATURE_INCOMPAT_CSUM_V3 | \
++					JBD2_FEATURE_INCOMPAT_FAST_COMMIT)
+ 
+ #ifdef __KERNEL__
+ 
+@@ -1263,6 +1265,7 @@ JBD2_FEATURE_INCOMPAT_FUNCS(64bit,		64BIT)
+ JBD2_FEATURE_INCOMPAT_FUNCS(async_commit,	ASYNC_COMMIT)
+ JBD2_FEATURE_INCOMPAT_FUNCS(csum2,		CSUM_V2)
+ JBD2_FEATURE_INCOMPAT_FUNCS(csum3,		CSUM_V3)
++JBD2_FEATURE_INCOMPAT_FUNCS(fast_commit,	FAST_COMMIT)
+ 
+ /*
+  * Journal flag definitions
 -- 
 2.29.0.rc1.297.gfa9743e501-goog
 
