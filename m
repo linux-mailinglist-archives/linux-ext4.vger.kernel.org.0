@@ -2,57 +2,57 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59A3128FD02
-	for <lists+linux-ext4@lfdr.de>; Fri, 16 Oct 2020 05:56:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F97E28FD03
+	for <lists+linux-ext4@lfdr.de>; Fri, 16 Oct 2020 05:56:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394319AbgJPD4F (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        id S2394320AbgJPD4F (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
         Thu, 15 Oct 2020 23:56:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40944 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394314AbgJPD4C (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Oct 2020 23:56:02 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA7E4C061755
-        for <linux-ext4@vger.kernel.org>; Thu, 15 Oct 2020 20:56:02 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id 10so700000pfp.5
-        for <linux-ext4@vger.kernel.org>; Thu, 15 Oct 2020 20:56:02 -0700 (PDT)
+        with ESMTP id S2394317AbgJPD4E (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Oct 2020 23:56:04 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04289C0613CF
+        for <linux-ext4@vger.kernel.org>; Thu, 15 Oct 2020 20:56:04 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id j8so676845pjy.5
+        for <linux-ext4@vger.kernel.org>; Thu, 15 Oct 2020 20:56:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=GiP73MTtg21BoAyrRFFkrPiIIvRdM2PWisOE0GLu5/w=;
-        b=Ikk4Ohitg8bs1SIF8eh0Jp1sXl5++MXWZhOW3ylZ0Fe16Pxq+5zaqrEF0NJoSou9Wz
-         xV6cqtPz6GhnORwVbBvcKaShdN2N/b8Zv1qG1hnNqvDA/s6dqDN5WwFbe5GRK9UAHwis
-         GWDIG1ZvVUcDvP4tbKGI8FPkGcWTOyrI+TcAaDJXWDVxxUxQrd41YblRPyhUegb1ZKYK
-         D7xdCVq6rH/j8fyg3e3zaKhbjQ8t8DLePmYAR36MwXRiPAE4K0+AoXxgxFvTL3dUjAxG
-         Vq/1hFTUNd2Y/uFcvGwS27nJGW2FdNpD4aO4I1pV53Gc4ZyQnD6UcQHHyHRUzzlOsisb
-         UJMg==
+        bh=acRwBv3y2+bW/N3+ev7tL2j1uYBkUN9rml//C4A4mhQ=;
+        b=Unqo6Ht80vp0KBzkdXy80vjV17n/uSJ9ZJDGqzzHvHHDDRXwC5lEA1HTI9vvFwpjxP
+         NhV2CdGxV0QA5un27PLhetbOijfAoGWos3BGTXyDVMHSoERkcha2dVP2cLpOriFGfO1l
+         2jUZutQI84oHXVQWoLF5hv3Zr2GiB85oTs3l9nBO9vVHrGAN/eLAcFn7u0k4W2hZhNZq
+         cZwe7sye9Ou6ln9XmNR3DsQwDZw3dKchBrJZ/9RqtnUpBW/uxXRJRelOB25v212ltxJS
+         7boHhat59uipqPmV74qoHOzPNkf54zmSHWPDMEJhaOPQjxl6ftpoXIqw21Mks4Npf8A4
+         1x+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=GiP73MTtg21BoAyrRFFkrPiIIvRdM2PWisOE0GLu5/w=;
-        b=AXGH4O5/11hhIme7zSuiA7m2kiFvgOzScBKYViMH6IuHfhvw5G2heNIHwW/bgOkBLH
-         K+QKhXiTs2GtXuUzsWnTvU5Cj8lwzZ7pJQd7Qm8jSeUeKxACV5kW/Izw8ru5nxlOCEk3
-         Ir2VVwoqXUIM5Fei9L5RBQK9PUiZLOc5TtEKbd9hD5PmWYFu1d6dBgjpmpOSoCD1QQqX
-         GD8GUS0V2A0kXcA0EBPkLeDQvzkLgxSE91r9VjqoVOB+xLaFK71byx87keXadyJpgpli
-         zdqArn36ffMJToxAOkDxzfeA8z0uNiDdlcE4mAnOZdp/EeVbC2gAXzTmMmwUUDWNEs2p
-         fZEw==
-X-Gm-Message-State: AOAM5332oeOIiztRao281M1ooQ37OkJ1MaooplK470gUTWKa1R7ELsI8
-        HheGA//vvZlVWfTfh+TYNzBdaT6Go7A=
-X-Google-Smtp-Source: ABdhPJyr6npZ5hRKu/K1XpyS+BZ7W3IFlNTyNiw9LSP5hVT0wKX1dVekUq71eF8uABm7utkUAEE27Q==
-X-Received: by 2002:a62:6241:0:b029:158:caac:f877 with SMTP id w62-20020a6262410000b0290158caacf877mr1710327pfb.71.1602820562155;
-        Thu, 15 Oct 2020 20:56:02 -0700 (PDT)
+        bh=acRwBv3y2+bW/N3+ev7tL2j1uYBkUN9rml//C4A4mhQ=;
+        b=eFndKp/b0u07xlWymzv4R61Ob9s2iNgI1XTmRGK7OsYfUWUTgPJgIZxOhELXdAJl1L
+         JvhtUwNZrkAW5cOUjMK3oVHrzfw19uco5jTMiCBbPClF7zn+gIWP2mEfORgurL+SxIRu
+         b0UU/7FXAwukfbOZ2GvilmMBtZjlrZsZHTU7MJbBz8T+D1ntIc+GFpaoh3wTW7dOUJT/
+         9tcUpFXXhrBl96qE6t7cwpx3HZt18OtDaxvHL7eJKF8H01s+8SgCH1nSwwLb2OtLbA2S
+         87S2ys+JJ/hu15br9oisDOH/6IRFjPhanG87dexNfl5zZYFuzwcoVpwUEUuQXQOupPwf
+         dKFg==
+X-Gm-Message-State: AOAM530/s0S3fLNInjz4SwEECwh0CEpVHw5S6BJMCxLdFmuVRRq0RZqM
+        rotHKS8BdO/hFE+9Mx51o4w=
+X-Google-Smtp-Source: ABdhPJyC9Z5ERMJwJbtxgs7VsUauVrW7N/Mg55IolNgvpTLkQQxEK8kkGEQOxSjfYZTqNgVfpA7y8w==
+X-Received: by 2002:a17:90a:450d:: with SMTP id u13mr2005372pjg.148.1602820563605;
+        Thu, 15 Oct 2020 20:56:03 -0700 (PDT)
 Received: from VM-0-6-centos.localdomain ([119.28.90.140])
-        by smtp.gmail.com with ESMTPSA id v12sm861555pgr.4.2020.10.15.20.56.01
+        by smtp.gmail.com with ESMTPSA id v12sm861555pgr.4.2020.10.15.20.56.02
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 15 Oct 2020 20:56:01 -0700 (PDT)
+        Thu, 15 Oct 2020 20:56:03 -0700 (PDT)
 From:   Chunguang Xu <brookxu.cn@gmail.com>
 X-Google-Original-From: Chunguang Xu <brookxu@tencent.com>
 To:     tytso@mit.edu, adilger.kernel@dilger.ca
 Cc:     linux-ext4@vger.kernel.org
-Subject: [PATCH 2/8] ext4: remove redundant mb_regenerate_buddy()
-Date:   Fri, 16 Oct 2020 11:55:46 +0800
-Message-Id: <1602820552-4082-2-git-send-email-brookxu@tencent.com>
+Subject: [PATCH 3/8] ext4: use do_div() to calculate block offset
+Date:   Fri, 16 Oct 2020 11:55:47 +0800
+Message-Id: <1602820552-4082-3-git-send-email-brookxu@tencent.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1602820552-4082-1-git-send-email-brookxu@tencent.com>
 References: <1602820552-4082-1-git-send-email-brookxu@tencent.com>
@@ -62,53 +62,37 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Chunguang Xu <brookxu@tencent.com>
 
-After this patch (163a203), if an abnormal bitmap is detected, we
-will mark the group as corrupt, and we will not use this group in
-the future. Therefore, it should be meaningless to regenerate the
-buddy bitmap of this group, It might be better to delete it.
+Use do_div() to calculate the block offset and the offset
+within the block, make the code more concise.
 
 Signed-off-by: Chunguang Xu <brookxu@tencent.com>
 ---
- fs/ext4/mballoc.c | 19 -------------------
- 1 file changed, 19 deletions(-)
+ fs/ext4/balloc.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 2705a4c..5b8ce76 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -822,24 +822,6 @@ void ext4_mb_generate_buddy(struct super_block *sb,
- 	spin_unlock(&sbi->s_bal_lock);
- }
- 
--static void mb_regenerate_buddy(struct ext4_buddy *e4b)
--{
--	int count;
--	int order = 1;
--	void *buddy;
--
--	while ((buddy = mb_find_buddy(e4b, order++, &count))) {
--		ext4_set_bits(buddy, 0, count);
--	}
--	e4b->bd_info->bb_fragments = 0;
--	memset(e4b->bd_info->bb_counters, 0,
--		sizeof(*e4b->bd_info->bb_counters) *
--		(e4b->bd_sb->s_blocksize_bits + 2));
--
--	ext4_mb_generate_buddy(e4b->bd_sb, e4b->bd_buddy,
--		e4b->bd_bitmap, e4b->bd_group);
--}
--
- /* The buddy information is attached the buddy cache inode
-  * for convenience. The information regarding each group
-  * is loaded via ext4_mb_load_buddy. The information involve
-@@ -1510,7 +1492,6 @@ static void mb_free_blocks(struct inode *inode, struct ext4_buddy *e4b,
- 				      block);
- 		ext4_mark_group_bitmap_corrupted(sb, e4b->bd_group,
- 				EXT4_GROUP_INFO_BBITMAP_CORRUPT);
--		mb_regenerate_buddy(e4b);
- 		goto done;
+diff --git a/fs/ext4/balloc.c b/fs/ext4/balloc.c
+index db7fa3e..4013676 100644
+--- a/fs/ext4/balloc.c
++++ b/fs/ext4/balloc.c
+@@ -265,7 +265,7 @@ struct ext4_group_desc * ext4_get_group_desc(struct super_block *sb,
+ 					     ext4_group_t block_group,
+ 					     struct buffer_head **bh)
+ {
+-	unsigned int group_desc;
++	unsigned int group_desc = block_group;
+ 	unsigned int offset;
+ 	ext4_group_t ngroups = ext4_get_groups_count(sb);
+ 	struct ext4_group_desc *desc;
+@@ -279,8 +279,7 @@ struct ext4_group_desc * ext4_get_group_desc(struct super_block *sb,
+ 		return NULL;
  	}
  
+-	group_desc = block_group >> EXT4_DESC_PER_BLOCK_BITS(sb);
+-	offset = block_group & (EXT4_DESC_PER_BLOCK(sb) - 1);
++	offset = do_div(group_desc, EXT4_DESC_PER_BLOCK(sb));
+ 	bh_p = sbi_array_rcu_deref(sbi, s_group_desc, group_desc);
+ 	/*
+ 	 * sbi_array_rcu_deref returns with rcu unlocked, this is ok since
 -- 
 1.8.3.1
 
