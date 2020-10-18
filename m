@@ -2,59 +2,133 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96E21291428
-	for <lists+linux-ext4@lfdr.de>; Sat, 17 Oct 2020 21:44:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02726291543
+	for <lists+linux-ext4@lfdr.de>; Sun, 18 Oct 2020 04:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439568AbgJQToi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 17 Oct 2020 15:44:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42050 "EHLO
+        id S2439914AbgJRCCn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 17 Oct 2020 22:02:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439565AbgJQToi (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 17 Oct 2020 15:44:38 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B36CC061755
-        for <linux-ext4@vger.kernel.org>; Sat, 17 Oct 2020 12:44:37 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id t20so6140920edr.11
-        for <linux-ext4@vger.kernel.org>; Sat, 17 Oct 2020 12:44:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=Yxgk40/OGkDVgnG0SZiTFNjv2vF2jSUYGNfu5ZZ+zCg=;
-        b=Xn/gC90WW5Ag3KJqlouhjL+EGCbzPRbb94/+NNXp/mPlHrev+fd/NFTDTw2yb8Yy27
-         Lr+Izh95IkP/eYQo58qMP+lXQDCjTdHFn/gSwxEAZyt1GnGAXJwX0i+PBO04NCBp6JfQ
-         QdvcslkwtlK6AyfDY91UptXHF1V8+satk9GQ1Rvm5QY9zoP5K7tNNP+HKHo0ObZy3GsE
-         VUId0IjZOqXyjZSmYZIw7DNS0KV8fSMeSo/sYgsiJ8ZRCadcFqIm/s+vcRwx4/MbvVMq
-         miD5eDDos5VlAUjeudvgFe0jOyns+yVwQ3xaJw+GjcGn5mIGdkfWwhCfC9QagG5p48jI
-         YCAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=Yxgk40/OGkDVgnG0SZiTFNjv2vF2jSUYGNfu5ZZ+zCg=;
-        b=Tc8PXo4CbeG50l3A3YgqeRpIu5iASBEQPjZ8fH2vaDaIlVvd/lDzkfO7cv0gGKa9U7
-         W6IGmfuhZJdIyc2MYSc88gcTc8S3dwrPgcbsRY2r9qQbI2O/1qtYnuBx2iNa8iSN9qsr
-         lvnyalK4lf1jNNuND0M5oB2312EZ5YjiHqsVfNHCsdx0n3b2KvDZ699sS2okp48pwAIG
-         wwWWaHfdrm3eW2FJzi8gfxP3xqQG/u2OrSwzABZb48loZhfSFhnjggSE0KwvYhF/gPjF
-         DnSwJccT1CYtMHHRX8L6LfFj/jDwITUvFpHkfI2OE+zjdlCTJw1gHHP5oU6VvZOowCUR
-         0YwQ==
-X-Gm-Message-State: AOAM530xB5L2trtlm0mIqscC2acoEv8+Ac5Uaoez12MwPLcRJEuDguHb
-        MrN0nSFwVxmisWYXEY5MR/JZscnbLdDSJIv3U8Q=
-X-Google-Smtp-Source: ABdhPJz8XZaALzuMOMPJSESx0NiH91d9Yk0zeNpeJ94IIX8hA4+IQcE6oTf5STFzbxXXOb3IJTCzmxAfJxDaHepG9ZU=
-X-Received: by 2002:a50:cf8a:: with SMTP id h10mr10747921edk.43.1602963871398;
- Sat, 17 Oct 2020 12:44:31 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:a17:907:216e:0:0:0:0 with HTTP; Sat, 17 Oct 2020 12:44:30
- -0700 (PDT)
-Reply-To: ritagrahamsprivate@outlook.com
-From:   Rita Graham <awong7523@gmail.com>
-Date:   Sat, 17 Oct 2020 20:44:30 +0100
-Message-ID: <CAPqjWP+WQvZauA09mbcHPPd26mMzqtbq+5k4ayipd5s3Z=-aHg@mail.gmail.com>
-Subject: Hello
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+        with ESMTP id S2439906AbgJRCCn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 17 Oct 2020 22:02:43 -0400
+Received: from forwardcorp1o.mail.yandex.net (forwardcorp1o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::193])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02B96C0613CE
+        for <linux-ext4@vger.kernel.org>; Sat, 17 Oct 2020 19:02:42 -0700 (PDT)
+Received: from sas1-5717c3cea310.qloud-c.yandex.net (sas1-5717c3cea310.qloud-c.yandex.net [IPv6:2a02:6b8:c14:3616:0:640:5717:c3ce])
+        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id CCBA72E156C;
+        Sun, 18 Oct 2020 05:02:37 +0300 (MSK)
+Received: from sas1-58a37b48fb94.qloud-c.yandex.net (sas1-58a37b48fb94.qloud-c.yandex.net [2a02:6b8:c08:1d1b:0:640:58a3:7b48])
+        by sas1-5717c3cea310.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id BWTjuw46qN-2bwqLFfv;
+        Sun, 18 Oct 2020 05:02:37 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1602986557; bh=YmygUld5Ig7axCaZcTX+o1aYUY3/4H51Sac6Eu4BW00=;
+        h=Message-Id:Date:Subject:To:From:Cc;
+        b=emJMJrMvOnWe+iBRMYNKEVyvWYSJSLk897QcQUSmUwCp4EhhhPTMERhfNdvkP49UH
+         tIJQr4B6DznLDc3Hfjl5DhmTNksm2nq2PGO1pNRTNQigUeHWLQYwwa9g/2VA6unIpB
+         caanfKkMX1C1QquO9HQ4ZkPP0br9OHdb3E3RziHk=
+Authentication-Results: sas1-5717c3cea310.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from kernel1.search.yandex.net (kernel1.search.yandex.net [2a02:6b8:c02:550:0:604:9094:6282])
+        by sas1-58a37b48fb94.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id y7TVDq6VSC-2bm4clTI;
+        Sun, 18 Oct 2020 05:02:37 +0300
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client certificate not present)
+From:   Roman Anufriev <dotdot@yandex-team.ru>
+To:     linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, jack@suse.cz, dmtrmonakhov@yandex-team.ru,
+        dotdot@yandex-team.ru
+Subject: [PATCH v2 1/2] ext4: add helpers for checking whether quota can be enabled/is journalled
+Date:   Sun, 18 Oct 2020 05:02:26 +0300
+Message-Id: <1602986547-15886-1-git-send-email-dotdot@yandex-team.ru>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-My names are Rita Graham, an account officer. I want to have a deal
-with you. Reply if interested. Thanks.
+Right now, there are several places, where we check whether fs is
+capable of enabling quota or if quota is journalled with quite long
+and non-self-descriptive condition statements.
+
+This patch wraps these statements into helpers for better readability
+and easier usage.
+
+Signed-off-by: Roman Anufriev <dotdot@yandex-team.ru>
+---
+Changes in v2:
+  - Fix misleading helper name 'ext4_any_quota_enabled()' ->
+    'ext4_quota_capable()'.
+
+ fs/ext4/ext4.h      | 15 +++++++++++++++
+ fs/ext4/ext4_jbd2.h |  9 +++------
+ fs/ext4/super.c     |  5 +----
+ 3 files changed, 19 insertions(+), 10 deletions(-)
+
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 250e905..897df24 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -3251,6 +3251,21 @@ static inline void ext4_unlock_group(struct super_block *sb,
+ 	spin_unlock(ext4_group_lock_ptr(sb, group));
+ }
+ 
++#ifdef CONFIG_QUOTA
++static inline bool ext4_quota_capable(struct super_block *sb)
++{
++	return (test_opt(sb, QUOTA) || ext4_has_feature_quota(sb));
++}
++
++static inline bool ext4_is_quota_journalled(struct super_block *sb)
++{
++	struct ext4_sb_info *sbi = EXT4_SB(sb);
++
++	return (ext4_has_feature_quota(sb) ||
++		sbi->s_qf_names[USRQUOTA] || sbi->s_qf_names[GRPQUOTA]);
++}
++#endif
++
+ /*
+  * Block validity checking
+  */
+diff --git a/fs/ext4/ext4_jbd2.h b/fs/ext4/ext4_jbd2.h
+index 00dc668..a124c68 100644
+--- a/fs/ext4/ext4_jbd2.h
++++ b/fs/ext4/ext4_jbd2.h
+@@ -86,17 +86,14 @@
+ #ifdef CONFIG_QUOTA
+ /* Amount of blocks needed for quota update - we know that the structure was
+  * allocated so we need to update only data block */
+-#define EXT4_QUOTA_TRANS_BLOCKS(sb) ((test_opt(sb, QUOTA) ||\
+-		ext4_has_feature_quota(sb)) ? 1 : 0)
++#define EXT4_QUOTA_TRANS_BLOCKS(sb) ((ext4_quota_capable(sb)) ? 1 : 0)
+ /* Amount of blocks needed for quota insert/delete - we do some block writes
+  * but inode, sb and group updates are done only once */
+-#define EXT4_QUOTA_INIT_BLOCKS(sb) ((test_opt(sb, QUOTA) ||\
+-		ext4_has_feature_quota(sb)) ?\
++#define EXT4_QUOTA_INIT_BLOCKS(sb) ((ext4_quota_capable(sb)) ?\
+ 		(DQUOT_INIT_ALLOC*(EXT4_SINGLEDATA_TRANS_BLOCKS(sb)-3)\
+ 		 +3+DQUOT_INIT_REWRITE) : 0)
+ 
+-#define EXT4_QUOTA_DEL_BLOCKS(sb) ((test_opt(sb, QUOTA) ||\
+-		ext4_has_feature_quota(sb)) ?\
++#define EXT4_QUOTA_DEL_BLOCKS(sb) ((ext4_quota_capable(sb)) ?\
+ 		(DQUOT_DEL_ALLOC*(EXT4_SINGLEDATA_TRANS_BLOCKS(sb)-3)\
+ 		 +3+DQUOT_DEL_REWRITE) : 0)
+ #else
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 9d01318..a988cf3 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -6158,11 +6158,8 @@ static int ext4_release_dquot(struct dquot *dquot)
+ static int ext4_mark_dquot_dirty(struct dquot *dquot)
+ {
+ 	struct super_block *sb = dquot->dq_sb;
+-	struct ext4_sb_info *sbi = EXT4_SB(sb);
+ 
+-	/* Are we journaling quotas? */
+-	if (ext4_has_feature_quota(sb) ||
+-	    sbi->s_qf_names[USRQUOTA] || sbi->s_qf_names[GRPQUOTA]) {
++	if (ext4_is_quota_journalled(sb)) {
+ 		dquot_mark_dquot_dirty(dquot);
+ 		return ext4_write_dquot(dquot);
+ 	} else {
+-- 
+2.7.4
+
