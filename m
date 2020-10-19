@@ -2,130 +2,146 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88E3D292501
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 Oct 2020 11:53:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDB78292502
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 Oct 2020 11:53:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727173AbgJSJxB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 19 Oct 2020 05:53:01 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35046 "EHLO mx2.suse.de"
+        id S1727496AbgJSJxa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 19 Oct 2020 05:53:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35470 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727088AbgJSJxB (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 19 Oct 2020 05:53:01 -0400
+        id S1727088AbgJSJxa (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 19 Oct 2020 05:53:30 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BBDDCB29D;
-        Mon, 19 Oct 2020 09:52:59 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id BAD3EB23C;
+        Mon, 19 Oct 2020 09:53:28 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 5B5461E1340; Mon, 19 Oct 2020 11:52:59 +0200 (CEST)
-Date:   Mon, 19 Oct 2020 11:52:59 +0200
+        id 88D871E1340; Mon, 19 Oct 2020 11:53:28 +0200 (CEST)
+Date:   Mon, 19 Oct 2020 11:53:28 +0200
 From:   Jan Kara <jack@suse.cz>
 To:     Roman Anufriev <dotdot@yandex-team.ru>
 Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu, jack@suse.cz,
         dmtrmonakhov@yandex-team.ru
-Subject: Re: [PATCH v2 2/2] ext4: print quota journalling mode on (re-)mount
-Message-ID: <20201019095259.GD30825@quack2.suse.cz>
+Subject: Re: [PATCH v2 1/2] ext4: add helpers for checking whether quota can
+ be enabled/is journalled
+Message-ID: <20201019095328.GE30825@quack2.suse.cz>
 References: <1602986547-15886-1-git-send-email-dotdot@yandex-team.ru>
- <1602986547-15886-2-git-send-email-dotdot@yandex-team.ru>
+ <20201019093706.GC30825@quack2.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1602986547-15886-2-git-send-email-dotdot@yandex-team.ru>
+In-Reply-To: <20201019093706.GC30825@quack2.suse.cz>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sun 18-10-20 05:02:27, Roman Anufriev wrote:
-> Right now, it is hard to understand what quota journalling type is enabled:
-> you need to be quite familiar with kernel code and trace it or really
-> understand what different combinations of fs flags/mount options lead to.
+On Mon 19-10-20 11:37:06, Jan Kara wrote:
+> On Sun 18-10-20 05:02:26, Roman Anufriev wrote:
+> > Right now, there are several places, where we check whether fs is
+> > capable of enabling quota or if quota is journalled with quite long
+> > and non-self-descriptive condition statements.
+> > 
+> > This patch wraps these statements into helpers for better readability
+> > and easier usage.
+> > 
+> > Signed-off-by: Roman Anufriev <dotdot@yandex-team.ru>
 > 
-> This patch adds printing of current quota jounalling mode on each
-> mount/remount, thus making it easier to check it at a glance/in autotests.
-> The semantics is similar to ext4 data journalling modes:
+> Looks good to me. You can add:
 > 
-> * journalled - quota accounting and journaling are enabled
-> * writeback  - quota accounting is enabled, but journalling is disabled
+> Reviewe-by: Jan Kara <jack@suse.cz>
 
-The above two descriptions are still somewhat misleading - in fact we don't
-know whether accounting is enabled or not. Just *if* it is enabled, quota
-will be journalled / non-journalled. So I'd probably describe it like:
- * journalled - quota configured, journalling will be enabled
- * writeback - quota configured, journalling will be disabled
+Now I've realized that if we run in nojournal mode, quota won't be
+journalled in any case. Probably not a configuration you run in but still
+we should get that right.
 
-We've talked with Ted on last ext4 conf call and we agreed that it's
-probably time to deprecate old style quotas in external quota files and
-transition everybody to using quotas with quota feature. That way things
-will get simpler again. But before we can disable that functionality, it
-will take a few years of deprecation warnings etc. so that's not directly
-related to your patch here. JFYI.
 
-								Honza
+ 								Honza
 
-> * none       - quota accounting is disabled
-> * disabled   - kernel compiled without CONFIG_QUOTA feature
-> 
-> Signed-off-by: Roman Anufriev <dotdot@yandex-team.ru>
-> ---
-> Changes in v2:
->   - Print quota journalling mode instead of exporting it via sysfs.
-> 
->  fs/ext4/super.c | 23 ++++++++++++++++++++---
->  1 file changed, 20 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index a988cf3..09b5645 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -3985,6 +3985,21 @@ static void ext4_set_resv_clusters(struct super_block *sb)
->  	atomic64_set(&sbi->s_resv_clusters, resv_clusters);
->  }
->  
-> +static const char *ext4_quota_mode(struct super_block *sb)
-> +{
-> +#ifdef CONFIG_QUOTA
-> +	if (!ext4_quota_capable(sb))
-> +		return "none";
-> +
-> +	if (ext4_is_quota_journalled(sb))
-> +		return "journalled";
-> +	else
-> +		return "writeback";
-> +#else
-> +	return "disabled"
-> +#endif
-> +}
-> +
->  static int ext4_fill_super(struct super_block *sb, void *data, int silent)
->  {
->  	struct dax_device *dax_dev = fs_dax_get_by_bdev(sb->s_bdev);
-> @@ -5039,10 +5054,11 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
->  
->  	if (___ratelimit(&ext4_mount_msg_ratelimit, "EXT4-fs mount"))
->  		ext4_msg(sb, KERN_INFO, "mounted filesystem with%s. "
-> -			 "Opts: %.*s%s%s", descr,
-> +			 "Opts: %.*s%s%s. Quota mode: %s.", descr,
->  			 (int) sizeof(sbi->s_es->s_mount_opts),
->  			 sbi->s_es->s_mount_opts,
-> -			 *sbi->s_es->s_mount_opts ? "; " : "", orig_data);
-> +			 *sbi->s_es->s_mount_opts ? "; " : "", orig_data,
-> +			 ext4_quota_mode(sb));
->  
->  	if (es->s_error_count)
->  		mod_timer(&sbi->s_err_report, jiffies + 300*HZ); /* 5 minutes */
-> @@ -5979,7 +5995,8 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
->  	 */
->  	*flags = (*flags & ~vfs_flags) | (sb->s_flags & vfs_flags);
->  
-> -	ext4_msg(sb, KERN_INFO, "re-mounted. Opts: %s", orig_data);
-> +	ext4_msg(sb, KERN_INFO, "re-mounted. Opts: %s. Quota mode: %s.",
-> +		 orig_data, ext4_quota_mode(sb));
->  	kfree(orig_data);
->  	return 0;
->  
+> > ---
+> > Changes in v2:
+> >   - Fix misleading helper name 'ext4_any_quota_enabled()' ->
+> >     'ext4_quota_capable()'.
+> > 
+> >  fs/ext4/ext4.h      | 15 +++++++++++++++
+> >  fs/ext4/ext4_jbd2.h |  9 +++------
+> >  fs/ext4/super.c     |  5 +----
+> >  3 files changed, 19 insertions(+), 10 deletions(-)
+> > 
+> > diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> > index 250e905..897df24 100644
+> > --- a/fs/ext4/ext4.h
+> > +++ b/fs/ext4/ext4.h
+> > @@ -3251,6 +3251,21 @@ static inline void ext4_unlock_group(struct super_block *sb,
+> >  	spin_unlock(ext4_group_lock_ptr(sb, group));
+> >  }
+> >  
+> > +#ifdef CONFIG_QUOTA
+> > +static inline bool ext4_quota_capable(struct super_block *sb)
+> > +{
+> > +	return (test_opt(sb, QUOTA) || ext4_has_feature_quota(sb));
+> > +}
+> > +
+> > +static inline bool ext4_is_quota_journalled(struct super_block *sb)
+> > +{
+> > +	struct ext4_sb_info *sbi = EXT4_SB(sb);
+> > +
+> > +	return (ext4_has_feature_quota(sb) ||
+> > +		sbi->s_qf_names[USRQUOTA] || sbi->s_qf_names[GRPQUOTA]);
+> > +}
+> > +#endif
+> > +
+> >  /*
+> >   * Block validity checking
+> >   */
+> > diff --git a/fs/ext4/ext4_jbd2.h b/fs/ext4/ext4_jbd2.h
+> > index 00dc668..a124c68 100644
+> > --- a/fs/ext4/ext4_jbd2.h
+> > +++ b/fs/ext4/ext4_jbd2.h
+> > @@ -86,17 +86,14 @@
+> >  #ifdef CONFIG_QUOTA
+> >  /* Amount of blocks needed for quota update - we know that the structure was
+> >   * allocated so we need to update only data block */
+> > -#define EXT4_QUOTA_TRANS_BLOCKS(sb) ((test_opt(sb, QUOTA) ||\
+> > -		ext4_has_feature_quota(sb)) ? 1 : 0)
+> > +#define EXT4_QUOTA_TRANS_BLOCKS(sb) ((ext4_quota_capable(sb)) ? 1 : 0)
+> >  /* Amount of blocks needed for quota insert/delete - we do some block writes
+> >   * but inode, sb and group updates are done only once */
+> > -#define EXT4_QUOTA_INIT_BLOCKS(sb) ((test_opt(sb, QUOTA) ||\
+> > -		ext4_has_feature_quota(sb)) ?\
+> > +#define EXT4_QUOTA_INIT_BLOCKS(sb) ((ext4_quota_capable(sb)) ?\
+> >  		(DQUOT_INIT_ALLOC*(EXT4_SINGLEDATA_TRANS_BLOCKS(sb)-3)\
+> >  		 +3+DQUOT_INIT_REWRITE) : 0)
+> >  
+> > -#define EXT4_QUOTA_DEL_BLOCKS(sb) ((test_opt(sb, QUOTA) ||\
+> > -		ext4_has_feature_quota(sb)) ?\
+> > +#define EXT4_QUOTA_DEL_BLOCKS(sb) ((ext4_quota_capable(sb)) ?\
+> >  		(DQUOT_DEL_ALLOC*(EXT4_SINGLEDATA_TRANS_BLOCKS(sb)-3)\
+> >  		 +3+DQUOT_DEL_REWRITE) : 0)
+> >  #else
+> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> > index 9d01318..a988cf3 100644
+> > --- a/fs/ext4/super.c
+> > +++ b/fs/ext4/super.c
+> > @@ -6158,11 +6158,8 @@ static int ext4_release_dquot(struct dquot *dquot)
+> >  static int ext4_mark_dquot_dirty(struct dquot *dquot)
+> >  {
+> >  	struct super_block *sb = dquot->dq_sb;
+> > -	struct ext4_sb_info *sbi = EXT4_SB(sb);
+> >  
+> > -	/* Are we journaling quotas? */
+> > -	if (ext4_has_feature_quota(sb) ||
+> > -	    sbi->s_qf_names[USRQUOTA] || sbi->s_qf_names[GRPQUOTA]) {
+> > +	if (ext4_is_quota_journalled(sb)) {
+> >  		dquot_mark_dquot_dirty(dquot);
+> >  		return ext4_write_dquot(dquot);
+> >  	} else {
+> > -- 
+> > 2.7.4
+> > 
 > -- 
-> 2.7.4
-> 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
