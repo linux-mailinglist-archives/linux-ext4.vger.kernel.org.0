@@ -2,122 +2,125 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B9CE2933BE
-	for <lists+linux-ext4@lfdr.de>; Tue, 20 Oct 2020 05:59:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93A9229342D
+	for <lists+linux-ext4@lfdr.de>; Tue, 20 Oct 2020 07:03:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391345AbgJTD7w (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 19 Oct 2020 23:59:52 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:45954 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391343AbgJTD7w (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 19 Oct 2020 23:59:52 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09K3jXkI166799;
-        Tue, 20 Oct 2020 03:59:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=HX4zBsYuHO4KBRPsyGJISysUZcA7hdqN6lO81DrU1Jw=;
- b=A+/fHc4N6j1ZiHYf4qSLSHzBC40HfLyi8GekhM2OWcsdIQ5n73Ziu/tAhgAPPQMrLPVM
- fuaWGyvjLIpYt94ujwkJltUTxIby7Glg+wwzoly5orhQZskF2fKRNAlXX6sqZ+AW9sIk
- OiHXa9KlHorKz1aha/kA10BGd/Pf5n4aupnLG++tMAibQCIhxGosVglAy/QsQmwweuko
- WHZUm+ChksYsin7nn0kCw+I4KwrtXx5ENB+hmKxn3lyN5Q9+WLw9mBY89KiKJtHQFqOb
- xO/CjZnEfdYsKhoLiX+1tEsIiQSDKEl2QZ1CfA1fCRNuSKPYZeCi34w/ukc7lYm2ZqDx PQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 347p4artpp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 20 Oct 2020 03:59:36 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09K3jrST130870;
-        Tue, 20 Oct 2020 03:59:36 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 348acq8p43-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 20 Oct 2020 03:59:36 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09K3xVEC011293;
-        Tue, 20 Oct 2020 03:59:31 GMT
-Received: from localhost (/10.159.227.214)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 19 Oct 2020 20:59:31 -0700
-Date:   Mon, 19 Oct 2020 20:59:30 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Luo Meng <luomeng12@huawei.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, jack@suse.cz
-Subject: Re: [PATCH] ext4: fix invalid inode checksum
-Message-ID: <20201020035930.GA489993@magnolia>
-References: <20201020013631.3796673-1-luomeng12@huawei.com>
+        id S2391579AbgJTFDr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 20 Oct 2020 01:03:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391577AbgJTFDr (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 20 Oct 2020 01:03:47 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9A06C0613CE
+        for <linux-ext4@vger.kernel.org>; Mon, 19 Oct 2020 22:03:45 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id w21so481874pfc.7
+        for <linux-ext4@vger.kernel.org>; Mon, 19 Oct 2020 22:03:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=vo7+pXqb39FGRcWB0FSvO6F1GW876k2QxHPATN5jvSM=;
+        b=JHhlJZxX7feFSN/ougwkdDFOmklZzTY8PnTqx/uFrfMCF4x2bV+n7EjOq+DPFfhvwm
+         NPxMDkCTTtYrTd182GhnTYiN5+vRWED461jGDo14WKbl3qirApKo3C4UAl4eSxeB6WF+
+         992IlMJZUoJj+wzjQxR2dxfe4Ytj57cdYBN4g7PUIUWrfHNRiJbJrfHg8AhG2YywKwI7
+         CDu5GFrTAr3tazkALkZloFmODyZu3vT3W3J2s9sYJ+lHwgG8lRcycJQ2AloSnwTCsy6M
+         HnbM4W2LlG0CY5par7dPRXR+8JTU8jmvRBrHsdb2J1N/fr5r77DBnys+f4YZp0brt0C5
+         GVig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vo7+pXqb39FGRcWB0FSvO6F1GW876k2QxHPATN5jvSM=;
+        b=nSmD1AcmxAyHpurzyzHwA/RKMb9t1zqZvdB4Dk953GZP/oZhfgX+2tEP8k2PmViGvD
+         E/Cf5xN4imXg2sQeAMNzBeLP+uWnLQM4BU17Cd1dqkkNPK0YKalYtCYqUFbxndlS8j8k
+         P5zntaTK0H5/tMkJYeRLQfW3nQlUp+ER/ixULGKAvqFQ7QDyps9OA6XAUy+h13/MEXZD
+         cWfQwMozmOH9fes+o+MUW4GCd2X4ByDp8mGOrXg3hKnDnLM3CevGWtfgJo1r5PNdnomu
+         zNImZDA0thwlp5zEmThYHUSuPM8f0lIv9ROCFOh1z9wk3dHuLM9iMD8mF4qZFPDxz7q2
+         VyHA==
+X-Gm-Message-State: AOAM532fp8Oxm71U1mRpgQYH8GCwbHvMBU95XtYgyfX2A+UXtz1B/jGf
+        Ra0g+HOq/JVDS0S3u8Wyo9V948z2fcs=
+X-Google-Smtp-Source: ABdhPJzA22vjffrLL23r+JddFp9G7NybOnKfEjPXat0C1SdhRtKvHjL5xX8F/Vbp+eHkzSNGnc/rcw==
+X-Received: by 2002:a65:4bcb:: with SMTP id p11mr1184976pgr.253.1603170224976;
+        Mon, 19 Oct 2020 22:03:44 -0700 (PDT)
+Received: from [192.168.255.10] ([203.205.141.65])
+        by smtp.gmail.com with ESMTPSA id m9sm520812pgr.23.2020.10.19.22.03.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Oct 2020 22:03:44 -0700 (PDT)
+Subject: Re: [PATCH v2 1/8] ext4: use ASSERT() to replace J_ASSERT()
+To:     Andreas Dilger <adilger@dilger.ca>
+Cc:     Ted Tso <tytso@mit.edu>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+References: <1603098158-30406-1-git-send-email-brookxu@tencent.com>
+ <849873AE-1880-45D6-B987-C5DD42967D4D@dilger.ca>
+From:   brookxu <brookxu.cn@gmail.com>
+Message-ID: <b9c6851c-7b0f-6b22-fa4c-5e620df55a41@gmail.com>
+Date:   Tue, 20 Oct 2020 13:03:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201020013631.3796673-1-luomeng12@huawei.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9779 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 adultscore=0
- mlxscore=0 malwarescore=0 suspectscore=1 spamscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010200025
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9779 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 priorityscore=1501
- clxscore=1011 malwarescore=0 mlxscore=0 bulkscore=0 lowpriorityscore=0
- phishscore=0 adultscore=0 mlxlogscore=999 impostorscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010200025
+In-Reply-To: <849873AE-1880-45D6-B987-C5DD42967D4D@dilger.ca>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 09:36:31AM +0800, Luo Meng wrote:
-> During the stability test, there are some errors:
->   ext4_lookup:1590: inode #6967: comm fsstress: iget: checksum invalid.
-> 
-> If the inode->i_iblocks too big and doesn't set huge file flag, checksum
-> will not be recalculated when update the inode information to it's buffer.
-> If other inode marks the buffer dirty, then the inconsistent inode will
-> be flushed to disk.
-> 
-> Fix this problem by checking i_blocks in advance.
-> 
-> Signed-off-by: Luo Meng <luomeng12@huawei.com>
+Thanks for your reply.
 
-Fun!  Yikes!
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-
---D
-
-> ---
->  fs/ext4/inode.c | 11 ++++++-----
->  1 file changed, 6 insertions(+), 5 deletions(-)
+Andreas Dilger wrote on 2020/10/20 11:37:
+> On Oct 19, 2020, at 3:02 AM, Chunguang Xu <brookxu.cn@gmail.com> wrote:
+>>
+>> There are currently multiple forms of assertion, such as J_ASSERT().
+>> J_ASEERT is provided for the jbd module, which is a public module.
 > 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index bf596467c234..fe53774b8b6c 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -4971,6 +4971,12 @@ static int ext4_do_update_inode(handle_t *handle,
->  	if (ext4_test_inode_state(inode, EXT4_STATE_NEW))
->  		memset(raw_inode, 0, EXT4_SB(inode->i_sb)->s_inode_size);
->  
-> +	err = ext4_inode_blocks_set(handle, raw_inode, ei);
-> +	if (err) {
-> +		spin_unlock(&ei->i_raw_lock);
-> +		goto out_brelse;
-> +	}
-> +
->  	raw_inode->i_mode = cpu_to_le16(inode->i_mode);
->  	i_uid = i_uid_read(inode);
->  	i_gid = i_gid_read(inode);
-> @@ -5004,11 +5010,6 @@ static int ext4_do_update_inode(handle_t *handle,
->  	EXT4_INODE_SET_XTIME(i_atime, inode, raw_inode);
->  	EXT4_EINODE_SET_XTIME(i_crtime, ei, raw_inode);
->  
-> -	err = ext4_inode_blocks_set(handle, raw_inode, ei);
-> -	if (err) {
-> -		spin_unlock(&ei->i_raw_lock);
-> -		goto out_brelse;
-> -	}
->  	raw_inode->i_dtime = cpu_to_le32(ei->i_dtime);
->  	raw_inode->i_flags = cpu_to_le32(ei->i_flags & 0xFFFFFFFF);
->  	if (likely(!test_opt2(inode->i_sb, HURD_COMPAT)))
-> -- 
-> 2.25.4
+> (typo) "J_ASSERT()"
+Thanks, I  will Fixed that.
+
+>> Maybe we should use custom ASSERT() like other file systems, such as
+>> xfs, which would be better.
+> 
+> My one minor complaint is that "ASSERT()" is a very generic name and is
+> likely to cause conflicts with ASSERT in other headers.  That said, I
+> also see many other filesystems using their own ASSERT() macro, so I
+> guess they are all in private headers only?
+I also thought about this before, but even if we define it in a private
+header file, because we still include several header files in a certain
+file, it seems that the conflict cannot be resolved. However, maybe it
+is safest to use a name with ext4 prefix. I will try to fix it in next
+version. Thanks.
+
+> Some minor comments/questions below, but not worth changing the patch
+> unless you think they are important...
+> 
+> You can add:
+> 
+> Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+> 
+>> @@ -185,7 +185,7 @@ static int ext4_init_block_bitmap(struct super_block *sb,
+>> 	struct ext4_sb_info *sbi = EXT4_SB(sb);
+>> 	ext4_fsblk_t start, tmp;
+>>
+>> -	J_ASSERT_BH(bh, buffer_locked(bh));
+>> +	ASSERT(buffer_locked(bh));
+> 
+> I thought J_ASSERT_BH() did something useful, but J_ASSERT_BH() just maps
+> to J_ASSERT() internally anyway.
+> 
+>> +#define ASSERT(assert)							\
+>> +do {									\
+>> +	if (unlikely(!(assert))) {					\
+>> +		printk(KERN_EMERG					\
+>> +		       "Assertion failure in %s() at %s:%d: \"%s\"\n",	\
+> 
+> (style) better to use single quotes '%s' to avoid the need to escape \".
+Thanks, this is a good suggestion, I will fix it next version.
+
+> Cheers, Andreas
+> 
+> 
+> 
+> 
 > 
