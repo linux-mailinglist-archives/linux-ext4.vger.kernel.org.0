@@ -2,406 +2,361 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5726B2938B9
-	for <lists+linux-ext4@lfdr.de>; Tue, 20 Oct 2020 12:01:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 009DB2938BB
+	for <lists+linux-ext4@lfdr.de>; Tue, 20 Oct 2020 12:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729132AbgJTKBy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 20 Oct 2020 06:01:54 -0400
-Received: from cpsmtpb-ews08.kpnxchange.com ([213.75.39.13]:62258 "EHLO
-        cpsmtpb-ews08.kpnxchange.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731571AbgJTKBy (ORCPT
+        id S2405317AbgJTKCF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 20 Oct 2020 06:02:05 -0400
+Received: from cpsmtpb-ews01.kpnxchange.com ([213.75.39.4]:59573 "EHLO
+        cpsmtpb-ews01.kpnxchange.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731571AbgJTKCF (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 20 Oct 2020 06:01:54 -0400
-Received: from cpsps-ews18.kpnxchange.com ([10.94.84.184]) by cpsmtpb-ews08.kpnxchange.com with Microsoft SMTPSVC(8.5.9600.16384);
-         Tue, 20 Oct 2020 11:48:42 +0200
+        Tue, 20 Oct 2020 06:02:05 -0400
+Received: from cpsps-ews09.kpnxchange.com ([10.94.84.176]) by cpsmtpb-ews01.kpnxchange.com with Microsoft SMTPSVC(8.5.9600.16384);
+         Tue, 20 Oct 2020 11:48:58 +0200
 X-Brand: /q/rzKX13g==
 X-KPN-SpamVerdict: e1=0;e2=0;e3=0;e4=(e1=10;e3=10;e2=11;e4=10);EVW:Whi
         te;BM:NotScanned;FinalVerdict:Clean
-X-CMAE-Analysis: v=2.4 cv=S61nfKgP c=1 sm=1 tr=0 ts=5f8eb27a
-         cx=a_idp_e a=/dHbpd/3q0lrH6oA/zwSgQ==:117
-         a=/dHbpd/3q0lrH6oA/zwSgQ==:17 a=UhJ12kwm0HYA:10 a=afefHYAZSVUA:10
-         a=aCX8Z3ww337eUAp6eBoA:9 a=Bvh1cMyPIlFTqqrt:21 a=lXBf7U04JynxQd-z:21
+X-CMAE-Analysis: v=2.4 cv=Fu67Q0nq c=1 sm=1 tr=0 ts=5f8eb28a
+         cx=a_idp_e a=YnLMpE5S06+Zisl5ga1zfg==:117
+         a=X0PnwcQ2/mKcBfosUKIoXQ==:17 a=UhJ12kwm0HYA:10 a=afefHYAZSVUA:10
+         a=TLLqb6gPi_POIADbNFkA:9 a=I-LW6ZRQ73-UjOXr:21 a=GdOTXSjQ4IiPnEbJ:21
 X-CM-AcctID: kpn@feedback.cloudmark.com
-Received: from smtp.kpnmail.nl ([195.121.84.45]) by cpsps-ews18.kpnxchange.com over TLS secured channel with Microsoft SMTPSVC(8.5.9600.16384);
-         Tue, 20 Oct 2020 11:48:42 +0200
+Received: from smtp.kpnmail.nl ([195.121.84.46]) by cpsps-ews09.kpnxchange.com over TLS secured channel with Microsoft SMTPSVC(8.5.9600.16384);
+         Tue, 20 Oct 2020 11:48:58 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=telfort.nl; s=telfort01;
         h=mime-version:message-id:date:subject:to:from;
-        bh=u9gRRwP5+kn5QnSa+2YoJigLUsRlY/8xuF80YUj7NZ8=;
-        b=HSQn3zKOmrH5w5H7YKqEsCIiMu6Dsvlff/SvVWYNIOaOnE6f3tN0CsqXtT6qdaKNExR71or1KSOId
-         ZqsYrMkKkjUnMf81GtLBfznj7TtpEzaGVpWucax5lROa2iPGkfXBrPHQcCSXf81qlfs82g/W8WQQgA
-         J6yKBpeARADHTDvo=
+        bh=UjhjgQ5KASkfVsl2JOReHa8EzVR+MqcgYGfa8vgX3hg=;
+        b=Qkj/6bFbDH2brmLqTv2Qp+/rnPM5PqMcdEn5xG2UTzo4P/nnVUJVnboUBMxkUKVImljYZM46g21oe
+         A7owpYwhjByaAweTzIMVvgw4Ove0cDZbyd4ta/fraPYfq71qgTNgHzZK1qedFblUkvXY3Jia5tILAf
+         maPW8Z9RAYZfFgFA=
 X-KPN-VerifiedSender: Yes
-X-CMASSUN: 33|UHLNwJn2UPtbPzAmwIRbcY+NiGsaPuTwa1vSTRGDciF9V77MAS5U6P0K6ktnQqj
- qxMUAo/Z/Kk5VXdgOCiFPOQ==
+X-CMASSUN: 33|Ijg6TUVcF7W54Lr5oxsxTSZMP2OV6z7awdTJeMrg5i5rruvLw9PVsBVrNQ/KpJF
+ XQ6mBmuhLpAKRtibsX6pu+Q==
 X-Originating-IP: 77.173.60.12
 Received: from localhost (77-173-60-12.fixed.kpn.net [77.173.60.12])
         by smtp.kpnmail.nl (Halon) with ESMTPSA
-        id 6fd3230e-12b9-11eb-9953-005056ab7447;
-        Tue, 20 Oct 2020 11:48:42 +0200 (CEST)
+        id 797a5a3b-12b9-11eb-9654-005056ab7584;
+        Tue, 20 Oct 2020 11:48:58 +0200 (CEST)
 From:   Benno Schulenberg <bensberg@telfort.nl>
 To:     linux-ext4@vger.kernel.org
-Subject: [PATCH 1/2] tune2fs.8: fix various wording and formatting issues
-Date:   Tue, 20 Oct 2020 11:48:28 +0200
-Message-Id: <20201020094829.3234-1-bensberg@telfort.nl>
+Subject: [PATCH 2/2] mke2fs.8: fix various formatting issues, and sort the synopsis
+Date:   Tue, 20 Oct 2020 11:48:29 +0200
+Message-Id: <20201020094829.3234-2-bensberg@telfort.nl>
 X-Mailer: git-send-email 2.25.4
+In-Reply-To: <20201020094829.3234-1-bensberg@telfort.nl>
+References: <20201020094829.3234-1-bensberg@telfort.nl>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-OriginalArrivalTime: 20 Oct 2020 09:48:42.0400 (UTC) FILETIME=[31D84200:01D6A6C6]
+X-OriginalArrivalTime: 20 Oct 2020 09:48:58.0477 (UTC) FILETIME=[3B6D69D0:01D6A6C6]
 X-RcptDomain: vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-For example: the argument of -c had a mistaken plural "s", the argument
-of -o was misformatted, the main description spoke of "options" instead
-of "parameters" and used a mistaken "i.e." instead of "e.g.", and so on.
-
-Also, sort the options in the synopsis alphabetically, to make it easier
-to find a specific one and to match the order in which they are listed
-further down.  Also, remove some excess spaces, harmonize the style of
-some decriptions, sort d, w, m in the order of ascending duration, and
-for consistency use hyphens instead of underscores in option arguments.
+Also, delete the sentence that says that the inode size cannot
+be changed after creating the file system, as tune2fs acquired
+the -I option.
 
 Signed-off-by: Benno Schulenberg <bensberg@telfort.nl>
 ---
- misc/tune2fs.8.in | 173 +++++++++++++++++++++++-----------------------
- 1 file changed, 88 insertions(+), 85 deletions(-)
+ misc/mke2fs.8.in | 144 +++++++++++++++++++++++------------------------
+ 1 file changed, 71 insertions(+), 73 deletions(-)
 
-diff --git a/misc/tune2fs.8.in b/misc/tune2fs.8.in
-index 582d1da5..b2fb58e8 100644
---- a/misc/tune2fs.8.in
-+++ b/misc/tune2fs.8.in
-@@ -8,26 +8,35 @@ tune2fs \- adjust tunable filesystem parameters on ext2/ext3/ext4 filesystems
+diff --git a/misc/mke2fs.8.in b/misc/mke2fs.8.in
+index e6bfc6d6..b2e8d89b 100644
+--- a/misc/mke2fs.8.in
++++ b/misc/mke2fs.8.in
+@@ -8,16 +8,16 @@ mke2fs \- create an ext2/ext3/ext4 filesystem
  .SH SYNOPSIS
- .B tune2fs
+ .B mke2fs
  [
--.B \-l
-+.B \-c
-+.I max-mount-count
++.B \-b
++.I block-size
++]
++[
+ .B \-c
+ |
+ .B \-l
+ .I filename
  ]
  [
--.B \-c
--.I max-mount-counts
-+.B \-C
-+.I mount-count
+-.B \-b
+-.I block-size
+-]
+-[
+ .B \-C
+ .I cluster-size
+ ]
+@@ -29,6 +29,17 @@ mke2fs \- create an ext2/ext3/ext4 filesystem
+ .B \-D
  ]
  [
- .B \-e
- .I errors-behavior
- ]
- [
++.B \-e
++.I errors-behavior
++]
++[
 +.B \-E
 +.I extended-options
 +]
 +[
- .B \-f
- ]
- [
-+.B \-g
-+.I group
++.B \-F
 +]
 +[
- .B \-i
- .I interval-between-checks
+ .B \-g
+ .I blocks-per-group
  ]
- [
- .B \-I
--.I new_inode_size
-+.I new-inode-size
- ]
- [
- .B \-j
-@@ -37,93 +46,84 @@ tune2fs \- adjust tunable filesystem parameters on ext2/ext3/ext4 filesystems
+@@ -52,15 +63,23 @@ mke2fs \- create an ext2/ext3/ext4 filesystem
  .I journal-options
  ]
  [
--.B \-m
--.I reserved-blocks-percentage
--]
--[
--.B \-o
--.RI [^]mount-options [,...]
--]
--[
--.B \-r
--.I reserved-blocks-count
--]
--[
--.B \-u
--.I user
--]
--[
--.B \-g
--.I group
--]
--[
--.B \-C
--.I mount-count
--]
--[
--.B \-E
--.I extended-options
-+.B \-l
- ]
- [
- .B \-L
- .I volume-label
- ]
- [
+-.B \-N
+-.I number-of-inodes
++.B \-L
++.I volume-label
++]
++[
 +.B \-m
 +.I reserved-blocks-percentage
 +]
 +[
- .B \-M
- .I last-mounted-directory
++.B \-M
++.I last-mounted-directory
  ]
  [
-+.B \-o
-+.RI [\fB^\fR] mount-option [\fB,\fR...]
-+]
-+[
+ .B \-n
+ ]
+ [
+-.B \-m
+-.I reserved-blocks-percentage
++.B \-N
++.I number-of-inodes
+ ]
+ [
+ .B \-o
+@@ -68,7 +87,7 @@ mke2fs \- create an ext2/ext3/ext4 filesystem
+ ]
+ [
  .B \-O
--.RI [^] feature [,...]
+-[^]\fIfeature\fR[,...]
 +.RI [\fB^\fR] feature [\fB,\fR...]
  ]
  [
- .B \-Q
- .I quota-options
+ .B \-q
+@@ -78,24 +97,6 @@ mke2fs \- create an ext2/ext3/ext4 filesystem
+ .I fs-revision-level
  ]
  [
-+.B \-r
-+.I reserved-blocks-count
-+]
-+[
- .B \-T
- .I time-last-checked
+-.B \-E
+-.I extended-options
+-]
+-[
+-.B \-v
+-]
+-[
+-.B \-F
+-]
+-[
+-.B \-L
+-.I volume-label
+-]
+-[
+-.B \-M
+-.I last-mounted-directory
+-]
+-[
+ .B \-S
  ]
  [
-+.B \-u
-+.I user
-+]
-+[
- .B \-U
+@@ -111,15 +112,14 @@ mke2fs \- create an ext2/ext3/ext4 filesystem
  .I UUID
+ ]
+ [
+-.B \-V
++.B \-v
+ ]
+ [
+-.B \-e
+-.I errors-behavior
++.B \-V
  ]
  [
  .B \-z
 -.I undo_file
 +.I undo-file
  ]
--device
-+.I device
- .SH DESCRIPTION
- .B tune2fs
- allows the system administrator to adjust various tunable filesystem
- parameters on Linux ext2, ext3, or ext4 filesystems.  The current values
--of these options can be displayed by using the
-+of these parameters can be displayed by using the
- .B -l
--option to
--.BR tune2fs (8)
--program, or by using the
-+option with
-+.BR tune2fs ,
-+or by using the
- .BR dumpe2fs (8)
- program.
- .PP
- The
  .I device
--specifier can either be a filename (i.e., /dev/sda1), or a LABEL or UUID
--specifier: "\fBLABEL=\fIvolume-label\fR" or "\fBUUID=\fIuuid\fR".  (i.e.,
-+specifier can either be a filename (for example, /dev/sda1), or a LABEL or UUID
-+specifier: "\fBLABEL=\fIvolume-label\fR" or "\fBUUID=\fIuuid\fR" (for example,
- LABEL=home or UUID=e40486c6-84d5-4f2f-b99c-032281799c9d).
- .SH OPTIONS
- .TP
--.BI \-c " max-mount-counts"
-+.BI \-c " max-mount-count"
- Adjust the number of mounts after which the filesystem will be checked by
- .BR e2fsck (8).
+ [
+@@ -171,7 +171,7 @@ option is specified, in which case
+ .I fs-size
+ is interpreted as the number of
+ .I blocksize
+-blocks.   If the fs-size is suffixed by 'k', 'm', 'g', 't'
++blocks.  If \fIfs-size\fR is suffixed by 'k', 'm', 'g', 't'
+ (either upper-case or lower-case), then it is interpreted in
+ power-of-two kilobytes, megabytes, gigabytes, terabytes, etc.
  If
--.I max-mount-counts
-+.I max-mount-count
- is 0 or \-1, the number of times the filesystem is mounted will be disregarded
- by
- .BR e2fsck (8)
- and the kernel.
- .sp
--Staggering the mount-counts at which filesystems are forcibly
--checked will avoid all filesystems being checked at one time
-+Staggering the mount counts at which filesystems are forcibly
-+checked will avoid all filesystems being checked at the same time
- when using journaled filesystems.
- .sp
- Mount-count-dependent checking is disabled by default to avoid
-@@ -145,8 +145,9 @@ option for time-dependent checking.
+@@ -228,13 +228,13 @@ Check the device for bad blocks before creating the file system.  If
+ this option is specified twice, then a slower read-write
+ test is used instead of a fast read-only test.
  .TP
- .BI \-C " mount-count"
- Set the number of times the filesystem has been mounted.
--If set to a greater value than the max-mount-counts parameter
--set by the
-+If set to a greater value than the
-+.I max-mount-count
-+parameter set by the
- .B \-c
- option,
- .BR e2fsck (8)
-@@ -258,7 +259,7 @@ option is useful when removing the
- filesystem feature from a filesystem which has
- an external journal (or is corrupted
- such that it appears to have an external journal), but that
--external journal is not available.   If the filesystem appears to require
-+external journal is not available.  If the filesystem appears to require
- journal replay, the
- .B \-f
- flag must be specified twice to proceed.
-@@ -275,31 +276,31 @@ The
- parameter can be a numerical gid or a group name.  If a group name is given,
- it is converted to a numerical gid before it is stored in the superblock.
+-.B \-C " cluster-size"
+-Specify the size of cluster in bytes for filesystems using the bigalloc
++.BI \-C " cluster-size"
++Specify the size of a cluster in bytes for filesystems using the bigalloc
+ feature.  Valid cluster-size values are from 2048 to 256M bytes per
+ cluster.  This can only be specified if the bigalloc feature is
+ enabled.  (See the
+-.B ext4 (5)
+-man page for more details about bigalloc.)   The default cluster size if
++.BR ext4 (5)
++man page for more details about bigalloc.)  The default cluster size if
+ bigalloc is enabled is 16 times the block size.
  .TP
--.B \-i " \fIinterval-between-checks\fR[\fBd\fR|\fBm\fR|\fBw\fR]"
-+.B \-i " \fIinterval-between-checks\fR[\fBd\fR|\fBw\fR|\fBm\fR]"
- Adjust the maximal time between two filesystem checks.
- No suffix or
- .B d
--will interpret the number
-+will interpret the
- .I interval-between-checks
--as days,
--.B m
--as months, and
-+number as days,
- .B w
--as weeks.  A value of zero will disable the time-dependent checking.
-+as weeks, and
-+.B m
-+as months.  A value of zero will disable the time-dependent checking.
- .sp
- There are pros and cons to disabling these periodic checks; see the
- discussion under the
- .B \-c
- (mount-count-dependent check) option for details.
+ .BI \-d " root-directory"
+@@ -242,9 +242,9 @@ Copy the contents of the given directory into the root directory of the
+ filesystem.
  .TP
--.B \-I
--Change the inode size used by the file system.   This requires rewriting
--the inode table, so it requires that the file system is checked for
-+.BI \-I " new-inode-size"
-+Change the inode size used by the filesystem.  This requires rewriting
-+the inode table, so it requires that the filesystem is checked for
- consistency first using
- .BR e2fsck (8).
--This operation can also take a while and the file system can be
--corrupted and data lost if it is interrupted while in the middle of
--converting the file system.  Backing up the file system before changing
-+The conversion can take a while, and the filesystem can be
-+corrupted and data can be lost if it is interrupted.
-+Backing up the filesystem before changing the
- inode size is recommended.
+ .B \-D
+-Use direct I/O when writing to the disk.  This avoids mke2fs dirtying a
++Use direct I/O when writing to the disk.  This avoids \fBmke2fs\fR dirtying a
+ lot of buffer cache memory, which may impact other applications running
+-on a busy server.  This option will cause mke2fs to run much more
++on a busy server.  This option will cause \fBmke2fs\fR to run much more
+ slowly, however, so there is a tradeoff to using direct I/O.
+ .TP
+ .BI \-e " error-behavior"
+@@ -392,7 +392,7 @@ Shingled Drives.
+ Specify the numeric user and group ID of the root directory.  If no UID:GID
+ is specified, use the user and group ID of the user running \fBmke2fs\fR.
+ In \fBmke2fs\fR 1.42 and earlier the UID and GID of the root directory were
+-set by default to the UID and GID of the user running the mke2fs command.
++set by default to the UID and GID of the user running the \fBmke2fs\fR command.
+ The \fBroot_owner=\fR option allows explicitly specifying these values,
+ and avoid side-effects for users that do not expect the contents of the
+ filesystem to change based on the user running \fBmke2fs\fR.
+@@ -413,14 +413,14 @@ as default.
+ Do not attempt to discard blocks at mkfs time.
+ .TP
+ .B quotatype
+-Specify the which  quota types (usrquota, grpquota, prjquota) which
++Specify which quota types (usrquota, grpquota, prjquota)
+ should be enabled in the created file system.  The argument of this
+-extended option should be a colon separated list.  This option has
++extended option should be a colon-separated list.  This option has
+ effect only if the
+ .B quota
+-feature is set.   The default quota types to be initialized if this
+-option is not specified is both user and group quotas.  If the project
+-feature is enabled that project quotas will be initialized as well.
++feature is set.  The default quota types to be initialized if this
++option is not specified are both user and group quotas.  If the project
++feature is enabled, then project quotas will be initialized as well.
+ .RE
+ .TP
+ .B \-F
+@@ -481,8 +481,6 @@ value must be a power of 2 larger or equal to 128.  The larger the
+ .I inode-size
+ the more space the inode table will consume, and this reduces the usable
+ space in the filesystem and can also negatively impact performance.
+-It is not
+-possible to change this value after the filesystem is created.
  .IP
  File systems with an inode size of 128 bytes do not support timestamps
-@@ -328,7 +329,7 @@ While checking unmounted filesystems,
- will automatically move
- .B .journal
- files to the invisible, reserved journal inode.  For all filesystems
--except for the root filesystem,  this should happen automatically and
-+except for the root filesystem, this should happen automatically and
- naturally during the next reboot cycle.  Since the root filesystem is
- mounted read-only,
- .BR e2fsck (8)
-@@ -342,16 +343,16 @@ file specifies the ext3 filesystem for the root filesystem in order to
- avoid requiring the use of a rescue floppy to add an ext3 journal to
- the root filesystem.
- .TP
--.BR \-J " journal-options"
-+.BI \-J " journal-options"
- Override the default ext3 journal parameters. Journal options are comma
+ beyond January 19, 2038.  Inodes which are 256 bytes or larger will
+@@ -508,7 +506,7 @@ which has ext3 support in order to actually make use of the journal.
+ .BI \-J " journal-options"
+ Create the ext3 journal using options specified on the command-line.
+ Journal options are comma
 -separated, and may take an argument using the equals ('=')  sign.
 +separated, and may take an argument using the equals ('=') sign.
  The following journal options are supported:
  .RS 1.2i
  .TP
- .BI size= journal-size
- Create a journal stored in the filesystem of size
- .I journal-size
--megabytes.   The size of the journal must be at least 1024 filesystem blocks
-+megabytes.  The size of the journal must be at least 1024 filesystem blocks
- (i.e., 1MB if using 1k blocks, 4MB if using 4k blocks, etc.)
- and may be no more than 10,240,000 filesystem blocks.
- There must be enough free space in the filesystem to create a journal of
-@@ -425,7 +426,7 @@ instead of a block special device name like
+@@ -630,7 +628,7 @@ filesystem.  The creator field is set by default to the name of the OS the
+ .B mke2fs
+ executable was compiled for.
  .TP
- .BI \-m " reserved-blocks-percentage"
- Set the percentage of the filesystem which may only be allocated
--by privileged processes.   Reserving some number of filesystem blocks
-+by privileged processes.  Reserving some number of filesystem blocks
- for use by privileged processes is done
- to avoid filesystem fragmentation, and to allow system
- daemons, such as
-@@ -437,7 +438,7 @@ of reserved blocks is 5%.
- .BI \-M " last-mounted-directory"
- Set the last-mounted directory for the filesystem.
- .TP
--.BR \-o " [^]\fImount-option\fR[,...]"
-+.BR \-o " [\fB^\fR]\fImount-option\fR[\fB,\fR...]"
- Set or clear the indicated default mount options in the filesystem.
- Default mount options can be overridden by mount options specified
- either in
-@@ -525,7 +526,7 @@ will disable the delayed allocation feature.  (This option is currently
- only supported by the ext4 file system driver in 2.6.35+ kernels.)
- .RE
- .TP
--.BR \-O " [^]\fIfeature\fR[,...]"
+-.B "\-O \fR[^]\fIfeature\fR[,...]"
 +.BR \-O " [\fB^\fR]\fIfeature\fR[\fB,\fR...]"
- Set or clear the indicated filesystem features (options) in the filesystem.
- More than one filesystem feature can be cleared or set by separating
- features with commas.  Filesystem features prefixed with a
-@@ -680,23 +681,25 @@ features are only supported by the ext4 filesystem.
- Set the number of reserved filesystem blocks.
+ Create a filesystem with the given features (filesystem options),
+ overriding the default filesystem options.  The features that are
+ enabled by default are specified by the
+@@ -669,8 +667,8 @@ by commas, that are to be enabled.  To disable a feature, simply
+ prefix the feature name with a caret ('^') character.
+ Features with dependencies will not be removed successfully.
+ The pseudo-filesystem feature "none" will clear all filesystem features.
+-.TP
+-For more information about the features which can be set, please see
++.sp
++For more information about the features that can be set, see
+ the manual page
+ .BR ext4 (5).
  .TP
- .BI \-Q " quota-options"
--Sets 'quota' feature on the superblock and works on the quota files for the
--given quota type. Quota options could be one or more of the following:
-+Set the 'quota' feature on the superblock and work on the quota files
-+for the given quota type.
-+.I quota-options
-+can be one or more of the following (colon-separated):
- .RS 1.2i
+@@ -719,7 +717,7 @@ will pick a default either via how
+ the command was run (for example, using a name of the form mkfs.ext2,
+ mkfs.ext3, etc.) or via a default as defined by the
+ .B /etc/mke2fs.conf
+-file.   This option controls which filesystem options are used by
++file.  This option controls which filesystem options are used by
+ default, based on the
+ .B fstypes
+ configuration stanza in
+@@ -737,14 +735,14 @@ the Linux kernel; and "\fBmke2fs \-t ext3 \-O ^has_journal /dev/hdXX\fR"
+ will create a filesystem that does not have a journal and hence will not
+ be supported by the ext3 filesystem code in the Linux kernel.)
  .TP
--.B [^]usrquota
--Sets/clears user quota inode in the superblock.
-+.RB [ ^ ] usrquota
-+Set/clear the user quota inode in the superblock.
+-.BI \-T " usage-type[,...]"
++.BI \-T " usage-type\fR[\fB,\fR...]"
+ Specify how the filesystem is going to be used, so that
+ .B mke2fs
+ can choose optimal filesystem parameters for that use.  The usage
+ types that are supported are defined in the configuration file
+ .BR /etc/mke2fs.conf .
+ The user may specify one or more usage types
+-using a comma separated list.
++using a comma-separated list.
+ .sp
+ If this option is is not specified,
+ .B mke2fs
+@@ -752,25 +750,25 @@ will pick a single default usage type based on the size of the filesystem to
+ be created.  If the filesystem size is less than 3 megabytes,
+ .B mke2fs
+ will use the filesystem type
+-.IR floppy .
++.BR floppy .
+ If the filesystem size is greater than or equal to 3 but less than
+ 512 megabytes,
+-.BR mke2fs (8)
++.B mke2fs
+ will use the filesystem type
+-.IR small .
++.BR small .
+ If the filesystem size is greater than or equal to 4 terabytes but less than
+ 16 terabytes,
+-.BR mke2fs (8)
++.B mke2fs
+ will use the filesystem type
+-.IR big .
++.BR big .
+ If the filesystem size is greater than or equal to 16 terabytes,
+-.BR mke2fs (8)
++.B mke2fs
+ will use the filesystem type
+-.IR huge .
++.BR huge .
+ Otherwise,
+-.BR mke2fs (8)
+-will use the default filesystem type
+-.IR default .
++.B mke2fs
++will use the filesystem type
++.BR default .
  .TP
--.B [^]grpquota
--Sets/clears group quota inode in the superblock.
-+.RB [ ^ ] grpquota
-+Set/clear the group quota inode in the superblock.
- .TP
--.B [^]prjquota
--Sets/clears project quota inode in the superblock.
-+.RB [ ^ ] prjquota
-+Set/clear the project quota inode in the superblock.
- .RE
- .TP
- .BI \-T " time-last-checked"
- Set the time the filesystem was last checked using
--.BR  e2fsck .
-+.BR e2fsck .
- The time is interpreted using the current (local) timezone.
- This can be useful in scripts which use a Logical Volume Manager to make
- a consistent snapshot of a filesystem, and then check the filesystem
-@@ -706,7 +709,7 @@ be used to set the last checked time on the original filesystem.  The format
- of
- .I time-last-checked
- is the international date format, with an optional time specifier, i.e.
--YYYYMMDD[HH[MM[SS]]].   The keyword
-+YYYYMMDD[HH[MM[SS]]].  The keyword
- .B now
- is also accepted, in which case the last checked time will be set to the
- current time.
-@@ -728,14 +731,14 @@ The
+ .BI \-U " UUID"
+ Set the universally unique identifier (UUID) of the filesystem to
+@@ -783,14 +781,14 @@ The
  parameter may also be one of the following:
  .RS 1.2i
  .TP
@@ -420,11 +375,11 @@ index 582d1da5..b2fb58e8 100644
 +.B time
 +Generate a new time-based UUID.
  .RE
- .IP
- The UUID may be used by
-@@ -758,12 +761,12 @@ or
- .B tune2fs
- will automatically use a time-based UUID instead of a randomly-generated UUID.
+ .TP
+ .B \-v
+@@ -801,12 +799,12 @@ Print the version number of
+ .B mke2fs
+ and exit.
  .TP
 -.BI \-z " undo_file"
 +.BI \-z " undo-file"
@@ -433,12 +388,12 @@ index 582d1da5..b2fb58e8 100644
 +an undo file.  This undo file can be used with \fBe2undo\fR(8) to restore the old
  contents of the file system should something go wrong.  If the empty string is
 -passed as the undo_file argument, the undo file will be written to a file named
--tune2fs-\fIdevice\fR.e2undo in the directory specified via the
+-mke2fs-\fIdevice\fR.e2undo in the directory specified via the
 +passed as the \fIundo-file\fR argument, the undo file will be written to a file
-+named \fBtune2fs-\fIdevice\fB.e2undo\fR in the directory specified via the
- \fIE2FSPROGS_UNDO_DIR\fR environment variable.
++named \fBmke2fs-\fIdevice\fB.e2undo\fR in the directory specified via the
+ \fIE2FSPROGS_UNDO_DIR\fR environment variable or the \fIundo_dir\fR directive
+ in the configuration file.
  
- WARNING: The undo file cannot be used to recover from a power or system crash.
 -- 
 2.25.4
 
