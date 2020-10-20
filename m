@@ -2,74 +2,66 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 035AA2935E3
-	for <lists+linux-ext4@lfdr.de>; Tue, 20 Oct 2020 09:37:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F8B62936D9
+	for <lists+linux-ext4@lfdr.de>; Tue, 20 Oct 2020 10:32:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729020AbgJTHhp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 20 Oct 2020 03:37:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726765AbgJTHhp (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 20 Oct 2020 03:37:45 -0400
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE2D9C061755
-        for <linux-ext4@vger.kernel.org>; Tue, 20 Oct 2020 00:37:44 -0700 (PDT)
-Received: from ramsan ([84.195.186.194])
-        by andre.telenet-ops.be with bizsmtp
-        id i7di230024C55Sk017died; Tue, 20 Oct 2020 09:37:42 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan with esmtp (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kUmDF-0004Tm-U5; Tue, 20 Oct 2020 09:37:41 +0200
-Received: from geert by rox.of.borg with local (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kUmDF-0007aB-Rh; Tue, 20 Oct 2020 09:37:41 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Brendan Higgins <brendanhiggins@google.com>
-Cc:     Paolo Abeni <pabeni@redhat.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] ext: EXT4_KUNIT_TESTS should depend on EXT4_FS instead of selecting it
-Date:   Tue, 20 Oct 2020 09:37:40 +0200
-Message-Id: <20201020073740.29081-1-geert@linux-m68k.org>
+        id S2388914AbgJTIcw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 20 Oct 2020 04:32:52 -0400
+Received: from smtp.h3c.com ([60.191.123.56]:23469 "EHLO h3cspam01-ex.h3c.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388905AbgJTIcw (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 20 Oct 2020 04:32:52 -0400
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
+        by h3cspam01-ex.h3c.com with ESMTPS id 09K8WBTY041663
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 20 Oct 2020 16:32:11 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from localhost.localdomain (10.99.212.201) by
+ DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 20 Oct 2020 16:32:14 +0800
+From:   Xianting Tian <tian.xianting@h3c.com>
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>
+CC:     <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Xianting Tian <tian.xianting@h3c.com>
+Subject: [PATCH] ext4: remove the null check of bio_vec page
+Date:   Tue, 20 Oct 2020 16:22:01 +0800
+Message-ID: <20201020082201.34257-1-tian.xianting@h3c.com>
 X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.99.212.201]
+X-ClientProxiedBy: BJSMTP01-EX.srv.huawei-3com.com (10.63.20.132) To
+ DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66)
+X-DNSRBL: 
+X-MAIL: h3cspam01-ex.h3c.com 09K8WBTY041663
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-EXT4_KUNIT_TESTS selects EXT4_FS, thus enabling an optional feature the
-user may not want to enable.  Fix this by making the test depend on
-EXT4_FS instead.
+bv_page can't be NULL in a valid bio_vec, so we can remove the NULL check,
+as we did in other places when calling bio_for_each_segment_all() to go
+through all bio_vec of a bio.
 
-Fixes: 1cbeab1b242d16fd ("ext4: add kunit test for decoding extended timestamps")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
 ---
-See also "[PATCH] mptcp: MPTCP_KUNIT_TESTS should depend on MPTCP
-instead of selecting it".
-https://lore.kernel.org/lkml/20201019113240.11516-1-geert@linux-m68k.org/
----
- fs/ext4/Kconfig | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ fs/ext4/page-io.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/fs/ext4/Kconfig b/fs/ext4/Kconfig
-index 619dd35ddd48a973..86699c8cab281cbc 100644
---- a/fs/ext4/Kconfig
-+++ b/fs/ext4/Kconfig
-@@ -103,8 +103,7 @@ config EXT4_DEBUG
+diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c
+index defd2e10d..cb135a944 100644
+--- a/fs/ext4/page-io.c
++++ b/fs/ext4/page-io.c
+@@ -111,9 +111,6 @@ static void ext4_finish_bio(struct bio *bio)
+ 		unsigned under_io = 0;
+ 		unsigned long flags;
  
- config EXT4_KUNIT_TESTS
- 	tristate "KUnit tests for ext4" if !KUNIT_ALL_TESTS
--	select EXT4_FS
--	depends on KUNIT
-+	depends on EXT4_FS && KUNIT
- 	default KUNIT_ALL_TESTS
- 	help
- 	  This builds the ext4 KUnit tests.
+-		if (!page)
+-			continue;
+-
+ 		if (fscrypt_is_bounce_page(page)) {
+ 			bounce_page = page;
+ 			page = fscrypt_pagecache_page(bounce_page);
 -- 
 2.17.1
 
