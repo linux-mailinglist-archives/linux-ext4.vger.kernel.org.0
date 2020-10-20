@@ -2,67 +2,82 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 265C9292B93
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 Oct 2020 18:34:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 372B22932AF
+	for <lists+linux-ext4@lfdr.de>; Tue, 20 Oct 2020 03:32:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730404AbgJSQeY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 19 Oct 2020 12:34:24 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42986 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729879AbgJSQeY (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 19 Oct 2020 12:34:24 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 20022ADF5;
-        Mon, 19 Oct 2020 16:34:22 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 5A35D1E1342; Mon, 19 Oct 2020 18:34:20 +0200 (CEST)
-Date:   Mon, 19 Oct 2020 18:34:20 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Xianting Tian <tian.xianting@h3c.com>
-Cc:     jack@suse.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext2: Remove unnecessary blank
-Message-ID: <20201019163420.GI30825@quack2.suse.cz>
-References: <20201010094335.39797-1-tian.xianting@h3c.com>
+        id S1728720AbgJTBcb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 19 Oct 2020 21:32:31 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:15235 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728702AbgJTBcb (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 19 Oct 2020 21:32:31 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id C39A9DA67446B305636C;
+        Tue, 20 Oct 2020 09:32:28 +0800 (CST)
+Received: from code-website.localdomain (10.175.127.227) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 20 Oct 2020 09:32:20 +0800
+From:   Luo Meng <luomeng12@huawei.com>
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>, <jack@suse.cz>,
+        <luomeng12@huawei.com>
+Subject: [PATCH] ext4: fix invalid inode checksum
+Date:   Tue, 20 Oct 2020 09:36:31 +0800
+Message-ID: <20201020013631.3796673-1-luomeng12@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201010094335.39797-1-tian.xianting@h3c.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat 10-10-20 17:43:35, Xianting Tian wrote:
-> Remove unnecessary blank when calling kmalloc_array().
-> 
-> Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+During the stability test, there are some errors:
+  ext4_lookup:1590: inode #6967: comm fsstress: iget: checksum invalid.
 
-Thanks. I've added the patch to my tree.
+If the inode->i_iblocks too big and doesn't set huge file flag, checksum
+will not be recalculated when update the inode information to it's buffer.
+If other inode marks the buffer dirty, then the inconsistent inode will
+be flushed to disk.
 
-								Honza
+Fix this problem by checking i_blocks in advance.
 
-> ---
->  fs/ext2/super.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext2/super.c b/fs/ext2/super.c
-> index 7fab2b3b5..551e69755 100644
-> --- a/fs/ext2/super.c
-> +++ b/fs/ext2/super.c
-> @@ -1070,7 +1070,7 @@ static int ext2_fill_super(struct super_block *sb, void *data, int silent)
->  					/ EXT2_BLOCKS_PER_GROUP(sb)) + 1;
->  	db_count = (sbi->s_groups_count + EXT2_DESC_PER_BLOCK(sb) - 1) /
->  		   EXT2_DESC_PER_BLOCK(sb);
-> -	sbi->s_group_desc = kmalloc_array (db_count,
-> +	sbi->s_group_desc = kmalloc_array(db_count,
->  					   sizeof(struct buffer_head *),
->  					   GFP_KERNEL);
->  	if (sbi->s_group_desc == NULL) {
-> -- 
-> 2.17.1
-> 
+Signed-off-by: Luo Meng <luomeng12@huawei.com>
+---
+ fs/ext4/inode.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index bf596467c234..fe53774b8b6c 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -4971,6 +4971,12 @@ static int ext4_do_update_inode(handle_t *handle,
+ 	if (ext4_test_inode_state(inode, EXT4_STATE_NEW))
+ 		memset(raw_inode, 0, EXT4_SB(inode->i_sb)->s_inode_size);
+ 
++	err = ext4_inode_blocks_set(handle, raw_inode, ei);
++	if (err) {
++		spin_unlock(&ei->i_raw_lock);
++		goto out_brelse;
++	}
++
+ 	raw_inode->i_mode = cpu_to_le16(inode->i_mode);
+ 	i_uid = i_uid_read(inode);
+ 	i_gid = i_gid_read(inode);
+@@ -5004,11 +5010,6 @@ static int ext4_do_update_inode(handle_t *handle,
+ 	EXT4_INODE_SET_XTIME(i_atime, inode, raw_inode);
+ 	EXT4_EINODE_SET_XTIME(i_crtime, ei, raw_inode);
+ 
+-	err = ext4_inode_blocks_set(handle, raw_inode, ei);
+-	if (err) {
+-		spin_unlock(&ei->i_raw_lock);
+-		goto out_brelse;
+-	}
+ 	raw_inode->i_dtime = cpu_to_le32(ei->i_dtime);
+ 	raw_inode->i_flags = cpu_to_le32(ei->i_flags & 0xFFFFFFFF);
+ 	if (likely(!test_opt2(inode->i_sb, HURD_COMPAT)))
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.25.4
+
