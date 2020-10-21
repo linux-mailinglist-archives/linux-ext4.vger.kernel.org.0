@@ -2,57 +2,57 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBA86294A4E
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 Oct 2020 11:16:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4CAC294A4F
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 Oct 2020 11:16:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437557AbgJUJQP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 21 Oct 2020 05:16:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44936 "EHLO
+        id S2437562AbgJUJQQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 21 Oct 2020 05:16:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437538AbgJUJQO (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 21 Oct 2020 05:16:14 -0400
+        with ESMTP id S2437538AbgJUJQQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 21 Oct 2020 05:16:16 -0400
 Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC956C0613CE
-        for <linux-ext4@vger.kernel.org>; Wed, 21 Oct 2020 02:16:14 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id f19so1103236pfj.11
-        for <linux-ext4@vger.kernel.org>; Wed, 21 Oct 2020 02:16:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 230C5C0613CE
+        for <linux-ext4@vger.kernel.org>; Wed, 21 Oct 2020 02:16:16 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id x13so1111565pfa.9
+        for <linux-ext4@vger.kernel.org>; Wed, 21 Oct 2020 02:16:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=A9db66j5jgBwQHfPYVkQHfIXD2LLsb4yznWteentD3Y=;
-        b=YNFFfBwjI90ifdG/sAEfyOZ1tUaGOOYvf4nr80E3oNMJj1+gCbOKv8/KglcfasyTOG
-         S6oP2iy5mUI23N9tZ+9L4tDQy2WnGlesXt9O7LXA6uSuewXXl6KWGhbwY4ZBR0s0wC5N
-         6TQ9DWHi4fe9G+fnqQA3sV8grrXGDd8+5xl5Kcka+JIecXHQJdQ8BW/YWdCx7bxSSXuw
-         vCYG8aT/2qvqyfbJj+oe0vrCVjfKVbWJOJf7goV7UtsXhm9qnKXLlUXYkCy9BJrle20E
-         QFSrYUpJwES2pmqLvkQYu0/b+HHSt4SG5sjOit+UA07Fo8Z4t2Az7/wjUyA0ZHAgF0Tq
-         6sBQ==
+        bh=AF8FR3F/ClJ6EJNVBH1gLQ9CWvyd1d97y/TI4TUHyk4=;
+        b=tXTPTzPSjFRrnGyT2VMA17ffTLhqXUFAxCJXH5vwnklf3kpeVW9o5FkyYBKLqEwM2E
+         2JhBw/MPD1X7lB62wFEkR3S/zyCXGEQPEp+65Uv8PtRPWRLpU0ecP/tWd+fLGjJ0psOa
+         NG+Ucx7cRX6CnqyVOv8fQBR5xxvvIGLFrhPg2mT3BcYSz3jjnTyE2Ytelw9yEFXWcHCa
+         ikd5gq4acaxPd7OaA8DfQGh0ySpWr+dgtbf/jFZT2XvwPA1ZCl/6AY/LteZ1Doa3C7pW
+         RhvP+AmH66wf8tr0ZOOW8I6YMWRBDkIbQd2Y03bD8Y3r17tIyIBV+jktHz5qeriEEXF0
+         HBvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=A9db66j5jgBwQHfPYVkQHfIXD2LLsb4yznWteentD3Y=;
-        b=fJmLhPGpU3KnDXhkUl+xme7O2inwYZQ9cOUavtDazgJE6woEhNEiBEGvFA7bIQKzB9
-         CUJY8ieedXaPrRfQQcvpUECTc6R+f0fxfKQbCOqeT61MUGrj3rMA/T5NJAeDqrpOXUWJ
-         ywpRQ1sAe1LSYNay6YrT1oHV7bqWkon8MMvNeFgf2nsMqdPzUNmkNfkX/Io0O2NnU0mA
-         RhXZHz5SKFxiwJn0/yzAQNTk2WY9c9MXuKR/vMeMEVlImbbnO8QaZw2JSAiPnEVwbnb7
-         2sf0xnqstXFAm1WTeRvs0FpevOS2V/OpqUzbX0PPLsjVDvQmi+P/qKuMpKt5bjPw6t7T
-         Rmfg==
-X-Gm-Message-State: AOAM531wTbpj//hhd/zmHSE0AKts5tqKwHGKaBuOgO2z6/L1dNOheERi
-        M4Y+6DIxlvmroTHPid8Wl2I=
-X-Google-Smtp-Source: ABdhPJwDUuGnIwIwClcyeH47ggGrqEBlLaCSAVS0nhhBdYJcxMb7TSNk5lmsKk5wPUo2x7+ZLev20Q==
-X-Received: by 2002:aa7:8b0b:0:b029:152:900d:2288 with SMTP id f11-20020aa78b0b0000b0290152900d2288mr2430480pfd.53.1603271774437;
-        Wed, 21 Oct 2020 02:16:14 -0700 (PDT)
+        bh=AF8FR3F/ClJ6EJNVBH1gLQ9CWvyd1d97y/TI4TUHyk4=;
+        b=lMLWs98hteCYG1l6HFF0B/OoDxO01XDdz7qAe5DhiLPAVlY1IGMKWYbc78HwZbnBfC
+         VwYWCeQnXfvZdby9Sjsh7ZOcKafn2S1FMbq0gFRlw/ccf6kmjIyvJkINzbqkHTd3aW92
+         /v1iE0fAix5aEoqV50gn86KfWU0q1dl/fUAoBKL2GMf4S2RE6jWcNUfW123tqTPNLX7u
+         jETVPMgRVDJ1N2ppiTyFSnmmPm86qdKmuWCafxYPxctwY+KwN5RueiRqNEFl6LiVCysM
+         Z0jr91KQxv6Y7+GJZC3irUNqu3HCwEdtQq/xrM+x7HK3xE3BVb1TsHjbSuGL8Szi9wKM
+         axDw==
+X-Gm-Message-State: AOAM532x+wS/J+CLb7+8jHkn0+pZOQLbnjWu44R7SWsilDf6+pJE+UAL
+        4WjYuYHwGLWrg6lrT1tO7gE=
+X-Google-Smtp-Source: ABdhPJyYNyMqriLnrM5UcIuArx/ish+yeU1UknUsN5C6NNt/xouZ/XHdqUazTBQDMLZoZ2JUHgrrLQ==
+X-Received: by 2002:aa7:96fb:0:b029:152:879f:4782 with SMTP id i27-20020aa796fb0000b0290152879f4782mr2505207pfq.45.1603271775751;
+        Wed, 21 Oct 2020 02:16:15 -0700 (PDT)
 Received: from VM-0-6-centos.localdomain ([119.28.90.140])
-        by smtp.gmail.com with ESMTPSA id x16sm1573002pff.14.2020.10.21.02.16.13
+        by smtp.gmail.com with ESMTPSA id x16sm1573002pff.14.2020.10.21.02.16.14
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 21 Oct 2020 02:16:13 -0700 (PDT)
+        Wed, 21 Oct 2020 02:16:15 -0700 (PDT)
 From:   Chunguang Xu <brookxu.cn@gmail.com>
 X-Google-Original-From: Chunguang Xu <brookxu@tencent.com>
 To:     tytso@mit.edu, adilger.kernel@dilger.ca
 Cc:     linux-ext4@vger.kernel.org
-Subject: [PATCH 3/8] ext4: simplify the code of mb_find_order_for_block
-Date:   Wed, 21 Oct 2020 17:15:23 +0800
-Message-Id: <1603271728-7198-3-git-send-email-brookxu@tencent.com>
+Subject: [PATCH 4/8] ext4: add the gdt block of meta_bg to system_zone
+Date:   Wed, 21 Oct 2020 17:15:24 +0800
+Message-Id: <1603271728-7198-4-git-send-email-brookxu@tencent.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1603271728-7198-1-git-send-email-brookxu@tencent.com>
 References: <1603271728-7198-1-git-send-email-brookxu@tencent.com>
@@ -62,44 +62,54 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Chunguang Xu <brookxu@tencent.com>
 
-The code of mb_find_order_for_block is a bit obscure, but we can
-simplify it with mb_find_buddy(), make the code more concise.
+In order to avoid poor search efficiency of system_zone, the
+system only adds metadata of some sparse group to system_zone.
+In the meta_bg scenario, the non-sparse group may contain gdt
+blocks. Perhaps we should add these blocks to system_zone to
+improve fault tolerance without significantly reducing system
+performance.
 
 Signed-off-by: Chunguang Xu <brookxu@tencent.com>
 ---
- fs/ext4/mballoc.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ fs/ext4/block_validity.c | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 22301f3..2efb489 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -1289,22 +1289,18 @@ static void ext4_mb_unload_buddy(struct ext4_buddy *e4b)
+diff --git a/fs/ext4/block_validity.c b/fs/ext4/block_validity.c
+index 8e6ca23..37025e3 100644
+--- a/fs/ext4/block_validity.c
++++ b/fs/ext4/block_validity.c
+@@ -218,6 +218,7 @@ int ext4_setup_system_zone(struct super_block *sb)
+ 	struct ext4_group_desc *gdp;
+ 	ext4_group_t i;
+ 	int flex_size = ext4_flex_bg_size(sbi);
++	int gd_blks;
+ 	int ret;
  
- static int mb_find_order_for_block(struct ext4_buddy *e4b, int block)
- {
--	int order = 1;
--	int bb_incr = 1 << (e4b->bd_blkbits - 1);
-+	int order = 1, max;
- 	void *bb;
+ 	system_blks = kzalloc(sizeof(*system_blks), GFP_KERNEL);
+@@ -226,13 +227,16 @@ int ext4_setup_system_zone(struct super_block *sb)
  
- 	BUG_ON(e4b->bd_bitmap == e4b->bd_buddy);
- 	BUG_ON(block >= (1 << (e4b->bd_blkbits + 3)));
- 
--	bb = e4b->bd_buddy;
- 	while (order <= e4b->bd_blkbits + 1) {
--		block = block >> 1;
--		if (!mb_test_bit(block, bb)) {
-+		bb = mb_find_buddy(e4b, order, &max);
-+		if (!mb_test_bit(block >> order, bb)) {
- 			/* this block is part of buddy of order 'order' */
- 			return order;
+ 	for (i=0; i < ngroups; i++) {
+ 		cond_resched();
+-		if (ext4_bg_has_super(sb, i) &&
+-		    ((i < 5) || ((i % flex_size) == 0))) {
+-			ret = add_system_zone(system_blks,
+-					ext4_group_first_block_no(sb, i),
+-					ext4_bg_num_gdb(sb, i) + 1, 0);
+-			if (ret)
+-				goto err;
++		if ((i < 5) || ((i % flex_size) == 0)) {
++			gd_blks = ext4_bg_has_super(sb, i) +
++				ext4_bg_num_gdb(sb, i);
++			if (gd_blks) {
++				ret = add_system_zone(system_blks,
++						ext4_group_first_block_no(sb, i),
++						gd_blks, 0);
++				if (ret)
++					goto err;
++			}
  		}
--		bb += bb_incr;
--		bb_incr >>= 1;
- 		order++;
- 	}
- 	return 0;
+ 		gdp = ext4_get_group_desc(sb, i, NULL);
+ 		ret = add_system_zone(system_blks,
 -- 
 1.8.3.1
 
