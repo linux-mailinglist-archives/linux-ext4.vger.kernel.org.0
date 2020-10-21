@@ -2,90 +2,102 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4901295438
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 Oct 2020 23:31:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E11162954DD
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 Oct 2020 00:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506189AbgJUVbC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 21 Oct 2020 17:31:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2440458AbgJUVbC (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 21 Oct 2020 17:31:02 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF32C0613CE;
-        Wed, 21 Oct 2020 14:31:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=rSq4aHLNIa3WJW9fS/4WwXYWjAQEL9bnpVvNu4R47Rw=; b=GpBm2aovtENMe0nHFyxYegrjwO
-        JmDG+z8mdJaGMIIQDShectofao4q1QWwGAQZrgzA6Ew8xd3UJfdQtpXPc2r28ODIFBzT5emrYNso5
-        YMdmV8SeVfYM3vs0wowAtzx0IwPdmYUMTKoh4UqFSQVrPHUcjkLmGJY42qqcF+2SIEQVJgxVHxPY9
-        qdzpPyoFYMGzIzGZTWeY82isrVgxQN7fAqZxh1iBDk4FXrOY7/S658i8VBSbHMgyNSRMQBQrcIg+0
-        7qLj5LjCTtKt4u32ZDrjmjNfSn4hGD0njUpc8LIOigaZOnnB2QbSVIxKPT3uYO3ILqxbJNf/DUb4y
-        ItiWMYog==;
-Received: from [2601:1c0:6280:3f0::507c]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kVLhC-0000sP-5o; Wed, 21 Oct 2020 21:30:58 +0000
-Subject: Re: [PATCH] ext: EXT4_KUNIT_TESTS should depend on EXT4_FS instead of
- selecting it
-To:     David Gow <davidgow@google.com>,
-        Brendan Higgins <brendanhiggins@google.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Theodore Ts'o <tytso@mit.edu>,
+        id S2506826AbgJUWhL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 21 Oct 2020 18:37:11 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:33909 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2387512AbgJUWhL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 21 Oct 2020 18:37:11 -0400
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 09LManT3021470
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Oct 2020 18:36:50 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 46CA5420107; Wed, 21 Oct 2020 18:36:49 -0400 (EDT)
+Date:   Wed, 21 Oct 2020 18:36:49 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Shuah Khan <skhan@linuxfoundation.org>,
         Iurii Zaikin <yzaikin@google.com>,
         Paolo Abeni <pabeni@redhat.com>,
         Matthieu Baerts <matthieu.baerts@tessares.net>,
         linux-ext4@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Gow <davidgow@google.com>
+Subject: Re: [PATCH] ext: EXT4_KUNIT_TESTS should depend on EXT4_FS instead
+ of selecting it
+Message-ID: <20201021223649.GP181507@mit.edu>
 References: <20201020073740.29081-1-geert@linux-m68k.org>
  <CAFd5g44dGaKyDQGPeanE1G8MPzVdVkqbWjJhj+nQJGUgkezz9g@mail.gmail.com>
- <CABVgOSmRbZqDw83f1Z14nSSVQTeFOvyehXhB=NnbaaANrwe=FQ@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <52959e99-4105-3de9-730c-c46894b82bdd@infradead.org>
-Date:   Wed, 21 Oct 2020 14:30:53 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+ <fa84c31f-218f-76be-87de-aa85c3c9b621@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <CABVgOSmRbZqDw83f1Z14nSSVQTeFOvyehXhB=NnbaaANrwe=FQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fa84c31f-218f-76be-87de-aa85c3c9b621@infradead.org>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 10/21/20 2:29 PM, David Gow wrote:
-> On Thu, Oct 22, 2020 at 5:15 AM Brendan Higgins
-> <brendanhiggins@google.com> wrote:
->>
->> On Tue, Oct 20, 2020 at 12:37 AM Geert Uytterhoeven
->> <geert@linux-m68k.org> wrote:
->>>
->>> EXT4_KUNIT_TESTS selects EXT4_FS, thus enabling an optional feature the
->>> user may not want to enable.  Fix this by making the test depend on
->>> EXT4_FS instead.
->>>
->>> Fixes: 1cbeab1b242d16fd ("ext4: add kunit test for decoding extended timestamps")
->>> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
->>
->> If I remember correctly, having EXT4_KUNIT_TESTS select EXT4_FS was
->> something that Ted specifically requested, but I don't have any strong
->> feelings on it either way.
+On Wed, Oct 21, 2020 at 02:16:56PM -0700, Randy Dunlap wrote:
+> On 10/21/20 2:15 PM, Brendan Higgins wrote:
+> > On Tue, Oct 20, 2020 at 12:37 AM Geert Uytterhoeven
+> > <geert@linux-m68k.org> wrote:
+> >>
+> >> EXT4_KUNIT_TESTS selects EXT4_FS, thus enabling an optional feature the
+> >> user may not want to enable.  Fix this by making the test depend on
+> >> EXT4_FS instead.
+> >>
+> >> Fixes: 1cbeab1b242d16fd ("ext4: add kunit test for decoding extended timestamps")
+> >> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > 
+> > If I remember correctly, having EXT4_KUNIT_TESTS select EXT4_FS was
+> > something that Ted specifically requested, but I don't have any strong
+> > feelings on it either way.
 > 
-> For what it's worth, the upcoming FAT filesystem tests[1] are also
-> select-ing FAT_FS at the moment, so if this changes here, I'll likely
-> update it there as well.
-> 
-> -- David
-> 
-> [1]: https://lore.kernel.org/linux-kselftest/20201021061713.1545931-1-davidgow@google.com/T/#u
-> 
+> omg, please No. depends on is the right fix here.
 
-then hopefully both get updated. This is just backwards.
+So my requirement which led to that particular request is to keep what
+needs to be placed in .kunitconfig to a small and reasonable set.
 
--- 
-~Randy
+Per Documentation/dev-tools/kunit, we start by:
+
+    cd $PATH_TO_LINUX_REPO
+    cp arch/um/configs/kunit_defconfig .kunitconfig
+
+we're then supposed to add whatever Kunit tests we want to enable, to wit:
+
+CONFIG_EXT4_KUNIT_TESTS=y
+
+so that .kunitconfig would look like this:
+
+CONFIG_KUNIT=y
+CONFIG_KUNIT_TEST=y
+CONFIG_KUNIT_EXAMPLE_TEST=y
+CONFIG_EXT4_KUNIT_TESTS=y
+
+... and then you should be able to run:
+
+./tools/testing/kunit/kunit.py run
+
+... and have the kunit tests run.  I would *not* like to have to put a
+huge long list of CONFIG_* dependencies into the .kunitconfig file.
+
+I'm don't particularly care how this gets achieved, but please think
+about how to make it easy for a kernel developer to run a specific set
+of subsystem unit tests.  (In fact, being able to do something like
+"kunit.py run fs/ext4 fs/jbd2" or maybe "kunit.py run fs/..." would be
+*great*.  No need to fuss with hand editing the .kunitconfig file at
+all would be **wonderful**.
+
+Cheers,
+
+					- Ted
 
