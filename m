@@ -2,72 +2,59 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F13FC294B31
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 Oct 2020 12:25:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15FBE294D69
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 Oct 2020 15:23:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441681AbgJUKZH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 21 Oct 2020 06:25:07 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33788 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441675AbgJUKZG (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 21 Oct 2020 06:25:06 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 25446ACE5;
-        Wed, 21 Oct 2020 10:25:05 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 5A5521E0E97; Wed, 21 Oct 2020 12:25:03 +0200 (CEST)
-Date:   Wed, 21 Oct 2020 12:25:03 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Xianting Tian <tian.xianting@h3c.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4: remove the null check of bio_vec page
-Message-ID: <20201021102503.GC19726@quack2.suse.cz>
-References: <20201020082201.34257-1-tian.xianting@h3c.com>
+        id S2438167AbgJUNX2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 21 Oct 2020 09:23:28 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:52864 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2438107AbgJUNX2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 21 Oct 2020 09:23:28 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kVE5O-0000iy-BV; Wed, 21 Oct 2020 13:23:26 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] ext4: remove redundant assignment of variable ex
+Date:   Wed, 21 Oct 2020 14:23:26 +0100
+Message-Id: <20201021132326.148052-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201020082201.34257-1-tian.xianting@h3c.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 20-10-20 16:22:01, Xianting Tian wrote:
-> bv_page can't be NULL in a valid bio_vec, so we can remove the NULL check,
-> as we did in other places when calling bio_for_each_segment_all() to go
-> through all bio_vec of a bio.
-> 
-> Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-Thanks for the patch. It looks good to me. You can add:
+Variable ex is assigned a variable that is not being read, the assignment
+is redundant and can be removed.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ fs/ext4/extents.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-								Honza
-
-> ---
->  fs/ext4/page-io.c | 3 ---
->  1 file changed, 3 deletions(-)
-> 
-> diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c
-> index defd2e10d..cb135a944 100644
-> --- a/fs/ext4/page-io.c
-> +++ b/fs/ext4/page-io.c
-> @@ -111,9 +111,6 @@ static void ext4_finish_bio(struct bio *bio)
->  		unsigned under_io = 0;
->  		unsigned long flags;
->  
-> -		if (!page)
-> -			continue;
-> -
->  		if (fscrypt_is_bounce_page(page)) {
->  			bounce_page = page;
->  			page = fscrypt_pagecache_page(bounce_page);
-> -- 
-> 2.17.1
-> 
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index 6b33b9c86b00..80fac488769c 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -5993,7 +5993,6 @@ int ext4_ext_replay_set_iblocks(struct inode *inode)
+ 			kfree(path);
+ 			break;
+ 		}
+-		ex = path2[path2->p_depth].p_ext;
+ 		for (i = 0; i <= max(path->p_depth, path2->p_depth); i++) {
+ 			cmp1 = cmp2 = 0;
+ 			if (i <= path->p_depth)
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.27.0
+
