@@ -2,109 +2,101 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B165F295092
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 Oct 2020 18:18:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14CAF29517A
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 Oct 2020 19:25:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2444408AbgJUQSQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 21 Oct 2020 12:18:16 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42254 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437328AbgJUQSP (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 21 Oct 2020 12:18:15 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C55D1ABA2;
-        Wed, 21 Oct 2020 16:18:14 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 8DE281E0E89; Wed, 21 Oct 2020 18:18:14 +0200 (CEST)
-Date:   Wed, 21 Oct 2020 18:18:14 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu
-Subject: Re: [PATCH v10 2/9] ext4: add fast_commit feature and handling for
- extended mount options
-Message-ID: <20201021161814.GC25702@quack2.suse.cz>
-References: <20201015203802.3597742-1-harshadshirwadkar@gmail.com>
- <20201015203802.3597742-3-harshadshirwadkar@gmail.com>
+        id S2437552AbgJURZ3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 21 Oct 2020 13:25:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390251AbgJURZ3 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 21 Oct 2020 13:25:29 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58EA3C0613CE
+        for <linux-ext4@vger.kernel.org>; Wed, 21 Oct 2020 10:25:27 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id bc23so750576edb.5
+        for <linux-ext4@vger.kernel.org>; Wed, 21 Oct 2020 10:25:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CGl2uGos3BxyKPRHcDYVGvmVI/PJPBJAkWSwmMlobUA=;
+        b=AtfsTMO+BMbTWvhmqlhKNgq1ZuTsjRFK8Eue1qKBgU3kXhw1koxaROaNZX31JB+bPL
+         OHaSeWxnBZAAXq8qjIPDPpc+uHH2XoUbkleC/J/o+YJXVple82wJZ90KPv+DW6dCJpVZ
+         9EBWvAFzDfUgicMGKyeYMk22YGs2dvE8VpacdQmFfuuVPbalZgh+uwp5F4n7ircP8o3Y
+         UbKLEHFuzPqXb93cSTsfi5YjN4TcIXQNZd1NyNcVZKdIgzzJaLG6OWmvhVB6ybzv8fYd
+         vlAMWprk4sqso1L21/1B9mwJvO/zzqSYQTG+YQp4Xe5nvMPCw+9DkbO71Yqrx+O1Bsau
+         Gvcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CGl2uGos3BxyKPRHcDYVGvmVI/PJPBJAkWSwmMlobUA=;
+        b=mfqsuWeydtxvSLd8Rf7P6dPgyJJSbENc/p1HxwFo81IGlMadFtMQty8+CCC9NF4snn
+         mIJ1Z415Z9NzYiNYVm0doECG99k8aG5JGexSu09OoQACVuI+y8Mk+LfM6KnyqtE7PZe3
+         mOVAoCRoWgybifwlkX6QrIJ0rIyzS2VzP+V/PyOlsVMSem2rqdmLIhH4tNUgK6mkheUD
+         rB3H14CNIhTvQUpv2X9MRuHrt5DfEQsBT43HArx28X0e4bq4H0hXFzYozC8vZdrw8rcw
+         eCILZY3ZB5UG+pIj1icI2y2PSGlSaEvPOiNguOizEXRahCq5wvQHkaXy3m8EL6x8SOu5
+         2ctw==
+X-Gm-Message-State: AOAM530erIKRi11tL4eLXzJI0CljdccQrPTuTAJiyTw0o/dPhJCbm3sU
+        5MCb0Q4p9XOy2RqdbBf+EA34B4TXXuIpbfh3VG0=
+X-Google-Smtp-Source: ABdhPJz15iD1oEEtnsfjMeL9Qc5sK5JxbqD6obg+NWSntu5a1d3h1kmp3iDp6y0ZKRZZnyqSdV3vQkmPKbTWr1P54HQ=
+X-Received: by 2002:a05:6402:1c04:: with SMTP id ck4mr4221338edb.274.1603301126032;
+ Wed, 21 Oct 2020 10:25:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201015203802.3597742-3-harshadshirwadkar@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201015203802.3597742-1-harshadshirwadkar@gmail.com>
+ <20201015203802.3597742-2-harshadshirwadkar@gmail.com> <20201021160423.GB25702@quack2.suse.cz>
+In-Reply-To: <20201021160423.GB25702@quack2.suse.cz>
+From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
+Date:   Wed, 21 Oct 2020 10:25:14 -0700
+Message-ID: <CAD+ocbyp1PBS-GeU4r75DBE-r15HT6PJSk_t0zordFv3hH2Fjg@mail.gmail.com>
+Subject: Re: [PATCH v10 1/9] doc: update ext4 and journalling docs to include
+ fast commit feature
+To:     Jan Kara <jack@suse.cz>
+Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 15-10-20 13:37:54, Harshad Shirwadkar wrote:
-> We are running out of mount option bits. Add handling for using
-> s_mount_opt2. Add ext4 and jbd2 fast commit feature flag and also add
-> ability to turn off the fast commit feature in Ext4.
-> 
-> Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-> ---
->  fs/ext4/ext4.h       |  4 ++++
->  fs/ext4/super.c      | 27 ++++++++++++++++++++++-----
->  include/linux/jbd2.h |  5 ++++-
->  3 files changed, 30 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 1879531a119f..02d7dc378505 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -1213,6 +1213,8 @@ struct ext4_inode_info {
->  #define EXT4_MOUNT2_EXPLICIT_JOURNAL_CHECKSUM	0x00000008 /* User explicitly
->  						specified journal checksum */
->  
-> +#define EXT4_MOUNT2_JOURNAL_FAST_COMMIT	0x00000010 /* Journal fast commit */
-> +
->  #define clear_opt(sb, opt)		EXT4_SB(sb)->s_mount_opt &= \
->  						~EXT4_MOUNT_##opt
->  #define set_opt(sb, opt)		EXT4_SB(sb)->s_mount_opt |= \
-> @@ -1813,6 +1815,7 @@ static inline bool ext4_verity_in_progress(struct inode *inode)
->  #define EXT4_FEATURE_COMPAT_RESIZE_INODE	0x0010
->  #define EXT4_FEATURE_COMPAT_DIR_INDEX		0x0020
->  #define EXT4_FEATURE_COMPAT_SPARSE_SUPER2	0x0200
-> +#define EXT4_FEATURE_COMPAT_FAST_COMMIT		0x0400
->  #define EXT4_FEATURE_COMPAT_STABLE_INODES	0x0800
+Thanks Jan for taking a look at the patches.
 
-Is fast commit really a compat feature? IMO if there are fast commits
-stored in the journal, the filesystem is actually incompatible with the
-old kernels because data we guranteed to be permanenly stored may be
-invisible for the old kernel (since it won't replay fastcommit
-transactions).
+On Wed, Oct 21, 2020 at 9:04 AM Jan Kara <jack@suse.cz> wrote:
+>
+> On Thu 15-10-20 13:37:53, Harshad Shirwadkar wrote:
+> > +   * - EXT4_FC_TAG_CREAT
+> > +     - Create directory entry for a newly created file
+> > +     - ``struct ext4_fc_dentry_info``
+> > +     - Stores the parent inode numer, inode number and directory entry of the
+>                                   ^^^ number
+Ack
+>
+> > +       newly created file
+> > +   * - EXT4_FC_TAG_LINK
+> > +     - Link a directory entry to an inode
+> > +     - ``struct ext4_fc_dentry_info``
+> > +     - Stores the parent inode numer, inode number and directory entry
+>                                   ^^^^ number
+Ack
+>
+> BTW, how is EXT4_FC_TAG_CREAT different from EXT4_FC_TAG_LINK? It seems
+> like they describe essentially the same operation?
+In the replay path, creat has to do certain things that link doesn't.
+For example, "creat" needs to mark the inode as used in the bitmap and
+also if it's a directory that's being created, it needs to initialize
+the "." and ".." dirents in the directory. That's why we need
+different tags.
+>
+> > +   * - EXT4_FC_TAG_UNLINK
+> > +     - Unink a directory entry of an inode
+>           ^^^^ Unlink
+Ack
 
-...
-
-Oh, now I see that the journal FAST_COMMIT is actually incompat. So what's
-the point of compat ext4 feature with incompat JBD2 feature?
-
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 901c1c938276..70256a240442 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -1709,7 +1709,7 @@ enum {
->  	Opt_dioread_nolock, Opt_dioread_lock,
->  	Opt_discard, Opt_nodiscard, Opt_init_itable, Opt_noinit_itable,
->  	Opt_max_dir_size_kb, Opt_nojournal_checksum, Opt_nombcache,
-> -	Opt_prefetch_block_bitmaps,
-> +	Opt_prefetch_block_bitmaps, Opt_no_fc,
-
-It would be more consistent to use a name 'Opt_nofc' and IMHO 'fc' is
-really too short an ambiguous. I agree "nofastcommit" is somewhat long but
-still OK and much more descriptive...
-
->  };
->  
->  static const match_table_t tokens = {
-> @@ -1796,6 +1796,7 @@ static const match_table_t tokens = {
->  	{Opt_init_itable, "init_itable=%u"},
->  	{Opt_init_itable, "init_itable"},
->  	{Opt_noinit_itable, "noinit_itable"},
-> +	{Opt_no_fc, "no_fc"},
-
-And here "nofastcommit", or perhaps "nofast_commit".
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Thanks,
+Harshad
+>
+>                                                                         Honza
+> --
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
