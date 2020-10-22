@@ -2,131 +2,129 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C14929550A
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 Oct 2020 01:07:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AED9C2956AC
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 Oct 2020 05:21:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2507038AbgJUXHZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 21 Oct 2020 19:07:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60596 "EHLO
+        id S2443490AbgJVDVe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 21 Oct 2020 23:21:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2507032AbgJUXHY (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 21 Oct 2020 19:07:24 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE02C0613CE;
-        Wed, 21 Oct 2020 16:07:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=2dR+3lcuV/E+b2J/xvzO1yZQ9dnsa13/I5Reb3BJkgw=; b=U7Buj/VunPk7Yvc+3gaM6Q5CNP
-        ITTWi8LdXv27ZmwS5zWcx6XA82+Ozb9MjeaOtg7a40SyK38v15VxyAfp4p9YpdxlepxtcRFS12N8x
-        5b1bpsrGrqYGwzkZeOD26n3ZVhmX0d8XxGq/P2Svr0O7L8l1+fIcCm5r7Zd9kAjHxjAmCKVoObuPp
-        /1qoUFBMMcVAeLSRprR8UPeUuA0HlIH0q3mQ87udjSqMe83eog3JxcQtFGURpiEWYpqTWOSuJjwY/
-        gbuBXEL0rIWxNBz8CSzbEZGIB9cFUBTzw9SqZp723f5ZnQuRyk+WROaEn6ATedfzuI9lk8hdmQwJI
-        nxDIsPJQ==;
-Received: from [2601:1c0:6280:3f0::507c]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kVNCS-0000A6-UB; Wed, 21 Oct 2020 23:07:21 +0000
-Subject: Re: [PATCH] ext: EXT4_KUNIT_TESTS should depend on EXT4_FS instead of
- selecting it
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        linux-ext4@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Gow <davidgow@google.com>
-References: <20201020073740.29081-1-geert@linux-m68k.org>
- <CAFd5g44dGaKyDQGPeanE1G8MPzVdVkqbWjJhj+nQJGUgkezz9g@mail.gmail.com>
- <fa84c31f-218f-76be-87de-aa85c3c9b621@infradead.org>
- <20201021223649.GP181507@mit.edu>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <b51d57fd-061a-26f3-5ecc-8efecbc95a49@infradead.org>
-Date:   Wed, 21 Oct 2020 16:07:15 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <20201021223649.GP181507@mit.edu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        with ESMTP id S2443456AbgJVDVe (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 21 Oct 2020 23:21:34 -0400
+Received: from forwardcorp1o.mail.yandex.net (forwardcorp1o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::193])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34FF6C0613CE
+        for <linux-ext4@vger.kernel.org>; Wed, 21 Oct 2020 20:21:34 -0700 (PDT)
+Received: from sas1-ec30c78b6c5b.qloud-c.yandex.net (sas1-ec30c78b6c5b.qloud-c.yandex.net [IPv6:2a02:6b8:c14:2704:0:640:ec30:c78b])
+        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id E50E82E1642;
+        Thu, 22 Oct 2020 06:21:28 +0300 (MSK)
+Received: from sas2-32987e004045.qloud-c.yandex.net (sas2-32987e004045.qloud-c.yandex.net [2a02:6b8:c08:b889:0:640:3298:7e00])
+        by sas1-ec30c78b6c5b.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id O0MAaWpw8n-LSwSrmrO;
+        Thu, 22 Oct 2020 06:21:28 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1603336888; bh=G1ktneX22klVaD6/lNI7Nw7H3XB8CqdBLiWONshHEZM=;
+        h=Message-Id:Date:Subject:To:From:Cc;
+        b=F47PehNCAg+NFrB3NWQGEIBgSaqpOzy28h/hblaeyKcw0BxKPLVQX9Ly6M+E231la
+         BsOM8kAsz0owJDjeLAE6QrMzaE3oywXaU5nDomI/2PLmu6cqKb5ZRqzRlNeDATkxee
+         zVBt7rsHallUYYQWXGY+pba6Go6F5IoJfBq9lNz8=
+Authentication-Results: sas1-ec30c78b6c5b.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from kernel1.search.yandex.net (kernel1.search.yandex.net [2a02:6b8:c02:550:0:604:9094:6282])
+        by sas2-32987e004045.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id 6d2tTe6k38-LSm4vlgj;
+        Thu, 22 Oct 2020 06:21:28 +0300
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client certificate not present)
+From:   Roman Anufriev <dotdot@yandex-team.ru>
+To:     linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, jack@suse.cz, dmtrmonakhov@yandex-team.ru,
+        dotdot@yandex-team.ru
+Subject: [PATCH v4 1/2] ext4: add helpers for checking whether quota can be enabled/is journalled
+Date:   Thu, 22 Oct 2020 06:20:59 +0300
+Message-Id: <1603336860-16153-1-git-send-email-dotdot@yandex-team.ru>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 10/21/20 3:36 PM, Theodore Y. Ts'o wrote:
-> On Wed, Oct 21, 2020 at 02:16:56PM -0700, Randy Dunlap wrote:
->> On 10/21/20 2:15 PM, Brendan Higgins wrote:
->>> On Tue, Oct 20, 2020 at 12:37 AM Geert Uytterhoeven
->>> <geert@linux-m68k.org> wrote:
->>>>
->>>> EXT4_KUNIT_TESTS selects EXT4_FS, thus enabling an optional feature the
->>>> user may not want to enable.  Fix this by making the test depend on
->>>> EXT4_FS instead.
->>>>
->>>> Fixes: 1cbeab1b242d16fd ("ext4: add kunit test for decoding extended timestamps")
->>>> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
->>>
->>> If I remember correctly, having EXT4_KUNIT_TESTS select EXT4_FS was
->>> something that Ted specifically requested, but I don't have any strong
->>> feelings on it either way.
->>
->> omg, please No. depends on is the right fix here.
-> 
-> So my requirement which led to that particular request is to keep what
-> needs to be placed in .kunitconfig to a small and reasonable set.
-> 
-> Per Documentation/dev-tools/kunit, we start by:
-> 
->     cd $PATH_TO_LINUX_REPO
->     cp arch/um/configs/kunit_defconfig .kunitconfig
-> 
-> we're then supposed to add whatever Kunit tests we want to enable, to wit:
-> 
-> CONFIG_EXT4_KUNIT_TESTS=y
-> 
-> so that .kunitconfig would look like this:
-> 
-> CONFIG_KUNIT=y
-> CONFIG_KUNIT_TEST=y
-> CONFIG_KUNIT_EXAMPLE_TEST=y
-> CONFIG_EXT4_KUNIT_TESTS=y
-> 
-> ... and then you should be able to run:
-> 
-> ./tools/testing/kunit/kunit.py run
-> 
-> ... and have the kunit tests run.  I would *not* like to have to put a
-> huge long list of CONFIG_* dependencies into the .kunitconfig file.
-> 
-> I'm don't particularly care how this gets achieved, but please think
-> about how to make it easy for a kernel developer to run a specific set
-> of subsystem unit tests.  (In fact, being able to do something like
-> "kunit.py run fs/ext4 fs/jbd2" or maybe "kunit.py run fs/..." would be
-> *great*.  No need to fuss with hand editing the .kunitconfig file at
-> all would be **wonderful**.
+Right now, there are several places, where we check whether fs is
+capable of enabling quota or if quota is journalled with quite long
+and non-self-descriptive condition statements.
 
-I understand the wish for ease of use, but this is still the tail
-wagging the dog.
+This patch wraps these statements into helpers for better readability
+and easier usage.
 
-The primary documentation for 'select' is
-Documentation/kbuild/kconfig-language.rst, which says:
+Signed-off-by: Roman Anufriev <dotdot@yandex-team.ru>
+---
+ fs/ext4/ext4.h      | 15 +++++++++++++++
+ fs/ext4/ext4_jbd2.h |  9 +++------
+ fs/ext4/super.c     |  5 +----
+ 3 files changed, 19 insertions(+), 10 deletions(-)
 
-  Note:
-	select should be used with care. select will force
-	a symbol to a value without visiting the dependencies.
-	By abusing select you are able to select a symbol FOO even
-	if FOO depends on BAR that is not set.
-	In general use select only for non-visible symbols
-	(no prompts anywhere) and for symbols with no dependencies.
-	That will limit the usefulness but on the other hand avoid
-	the illegal configurations all over.
-
-
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 250e905..897df24 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -3251,6 +3251,21 @@ static inline void ext4_unlock_group(struct super_block *sb,
+ 	spin_unlock(ext4_group_lock_ptr(sb, group));
+ }
+ 
++#ifdef CONFIG_QUOTA
++static inline bool ext4_quota_capable(struct super_block *sb)
++{
++	return (test_opt(sb, QUOTA) || ext4_has_feature_quota(sb));
++}
++
++static inline bool ext4_is_quota_journalled(struct super_block *sb)
++{
++	struct ext4_sb_info *sbi = EXT4_SB(sb);
++
++	return (ext4_has_feature_quota(sb) ||
++		sbi->s_qf_names[USRQUOTA] || sbi->s_qf_names[GRPQUOTA]);
++}
++#endif
++
+ /*
+  * Block validity checking
+  */
+diff --git a/fs/ext4/ext4_jbd2.h b/fs/ext4/ext4_jbd2.h
+index 00dc668..a124c68 100644
+--- a/fs/ext4/ext4_jbd2.h
++++ b/fs/ext4/ext4_jbd2.h
+@@ -86,17 +86,14 @@
+ #ifdef CONFIG_QUOTA
+ /* Amount of blocks needed for quota update - we know that the structure was
+  * allocated so we need to update only data block */
+-#define EXT4_QUOTA_TRANS_BLOCKS(sb) ((test_opt(sb, QUOTA) ||\
+-		ext4_has_feature_quota(sb)) ? 1 : 0)
++#define EXT4_QUOTA_TRANS_BLOCKS(sb) ((ext4_quota_capable(sb)) ? 1 : 0)
+ /* Amount of blocks needed for quota insert/delete - we do some block writes
+  * but inode, sb and group updates are done only once */
+-#define EXT4_QUOTA_INIT_BLOCKS(sb) ((test_opt(sb, QUOTA) ||\
+-		ext4_has_feature_quota(sb)) ?\
++#define EXT4_QUOTA_INIT_BLOCKS(sb) ((ext4_quota_capable(sb)) ?\
+ 		(DQUOT_INIT_ALLOC*(EXT4_SINGLEDATA_TRANS_BLOCKS(sb)-3)\
+ 		 +3+DQUOT_INIT_REWRITE) : 0)
+ 
+-#define EXT4_QUOTA_DEL_BLOCKS(sb) ((test_opt(sb, QUOTA) ||\
+-		ext4_has_feature_quota(sb)) ?\
++#define EXT4_QUOTA_DEL_BLOCKS(sb) ((ext4_quota_capable(sb)) ?\
+ 		(DQUOT_DEL_ALLOC*(EXT4_SINGLEDATA_TRANS_BLOCKS(sb)-3)\
+ 		 +3+DQUOT_DEL_REWRITE) : 0)
+ #else
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 9d01318..a988cf3 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -6158,11 +6158,8 @@ static int ext4_release_dquot(struct dquot *dquot)
+ static int ext4_mark_dquot_dirty(struct dquot *dquot)
+ {
+ 	struct super_block *sb = dquot->dq_sb;
+-	struct ext4_sb_info *sbi = EXT4_SB(sb);
+ 
+-	/* Are we journaling quotas? */
+-	if (ext4_has_feature_quota(sb) ||
+-	    sbi->s_qf_names[USRQUOTA] || sbi->s_qf_names[GRPQUOTA]) {
++	if (ext4_is_quota_journalled(sb)) {
+ 		dquot_mark_dquot_dirty(dquot);
+ 		return ext4_write_dquot(dquot);
+ 	} else {
 -- 
-~Randy
+2.7.4
 
