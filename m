@@ -2,110 +2,201 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 902AD297111
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 Oct 2020 16:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1A482971E3
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 Oct 2020 17:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1750281AbgJWOIN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 23 Oct 2020 10:08:13 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:36609 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1750250AbgJWOIN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Oct 2020 10:08:13 -0400
-Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 09NE7ipV024993
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Oct 2020 10:07:45 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 9B7A2420107; Fri, 23 Oct 2020 10:07:44 -0400 (EDT)
-Date:   Fri, 23 Oct 2020 10:07:44 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Brendan Higgins <brendanhiggins@google.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        linux-ext4@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Gow <davidgow@google.com>
-Subject: Re: [PATCH] ext: EXT4_KUNIT_TESTS should depend on EXT4_FS instead
- of selecting it
-Message-ID: <20201023140744.GS181507@mit.edu>
-References: <20201020073740.29081-1-geert@linux-m68k.org>
- <CAFd5g44dGaKyDQGPeanE1G8MPzVdVkqbWjJhj+nQJGUgkezz9g@mail.gmail.com>
- <fa84c31f-218f-76be-87de-aa85c3c9b621@infradead.org>
- <20201021223649.GP181507@mit.edu>
- <CAFd5g44ymt3h6=_h3muHb9A6pPXaTnfhnixYrSny_sEUKGnzzQ@mail.gmail.com>
+        id S465523AbgJWPGL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 23 Oct 2020 11:06:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S461528AbgJWPGK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Oct 2020 11:06:10 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39F7BC0613CE;
+        Fri, 23 Oct 2020 08:06:10 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id t14so1488882pgg.1;
+        Fri, 23 Oct 2020 08:06:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cOkCttaR0bC+4/s3OhAlnJb8FuiFIwQlMyKpigG8dkI=;
+        b=pFREwHdtLPQZmiTj8UQXEeuy9cmHFRUbUCtz+jETwBYbX8Fi7yzUGESD6Qvh0ZAxHR
+         ZFlrFzC+UDnJcHOfad12GTiXKcQ01F/bry3iRzK+DT8JSvQecsQrP1vcIxjbtIYgvGHw
+         uhL4pP1tS4NL0tKBwi/hv2z24CkByZulgdi2vxo1IHrvX2jy9vohwpwB+fVzWgZNhre9
+         t8So6jTNE8/J+yYhIPeLCNr3XWBKs4lpVkhs2XKy02MkoNS4ITETMKdvx6SBxh4JDlrN
+         FOhmgXMnX70JmMSNw9OI6uro4n95eGaVIkeoKMHsJqZb5/zhb/VTXr6oxu6w5ybzZlMA
+         6LIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cOkCttaR0bC+4/s3OhAlnJb8FuiFIwQlMyKpigG8dkI=;
+        b=essW8S4Y0PIEWxqQdwxWeEoY7J37tB6cUytCqrI1RkhXvVV1ZvT2rtFA9FRqmMJq34
+         N0QCXBFQsRf15SE9YaFfCmytSNES5Djz3554hDxADxreAd2GB+wAlsM30RQ/mm5IIOCQ
+         eDPWJjBhaq6Xmp+2OUzAROdYvcsYIQs2hXpYlI9HSbfhGi/Z3+J8OSknAUjH4LuTpbbY
+         vgCrmniwHrDDVOx0u42Rp3SfjjVFHJuIF62OcwuOWbwXGic4i7stLm+K2aQ/hFFxFNBJ
+         3lkqURiXFrmIo7ELwoXHTG1Ca0IWGpNftFG67BHR9rkjN1x+01YAQIpzxT0tp1P9hAua
+         v8ew==
+X-Gm-Message-State: AOAM531EGoXTUkQH7plSSEn7cnjcAd1/H8VINWyhuLm6DCHuA1gX1aKX
+        QOV9INTeiuqyUhreDpEoydgVQaM9I17g1tXW
+X-Google-Smtp-Source: ABdhPJy+G+QRKUIq2q5O0AbyDACZK1LnjZBNu9jE4BW7rj5lUUjlAVaQEcEaigJVkn4aUzpNH2EvKg==
+X-Received: by 2002:a17:90b:1c0d:: with SMTP id oc13mr3275849pjb.192.1603465569743;
+        Fri, 23 Oct 2020 08:06:09 -0700 (PDT)
+Received: from arpitha-Inspiron-7570.lan ([106.51.242.32])
+        by smtp.gmail.com with ESMTPSA id 78sm2430532pfz.211.2020.10.23.08.06.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Oct 2020 08:06:08 -0700 (PDT)
+From:   Arpitha Raghunandan <98.arpi@gmail.com>
+To:     brendanhiggins@google.com, skhan@linuxfoundation.org,
+        elver@google.com, yzaikin@google.com, tytso@mit.edu,
+        adilger.kernel@dilger.ca
+Cc:     Arpitha Raghunandan <98.arpi@gmail.com>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org
+Subject: [PATCH v2 1/2] kunit: Support for Parameterized Testing
+Date:   Fri, 23 Oct 2020 20:35:36 +0530
+Message-Id: <20201023150536.282568-1-98.arpi@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFd5g44ymt3h6=_h3muHb9A6pPXaTnfhnixYrSny_sEUKGnzzQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 04:52:52PM -0700, Brendan Higgins wrote:
-> So you, me, Luis, David, and a whole bunch of other people have been
-> thinking about this problem for a while. What if we just put
-> kunitconfig fragments in directories along side the test files they
-> enable?
-> 
-> For example, we could add a file to fs/ext4/kunitconfig which contains:
-> 
-> CONFIG_EXT4_FS=y
-> CONFIG_EXT4_KUNIT_TESTS=y
-> 
-> We could do something similar in fs/jdb2, etc.
-> 
-> Obviously some logically separate KUnit tests (different maintainers,
-> different Kconfig symbols, etc) reside in the same directory, for
-> these we could name the kunitconfig file something like
-> lib/list-test.kunitconfig (not a great example because lists are
-> always built into Linux), but you get the idea.
-> 
-> Then like Ted suggested, if you call kunit.py run foo/bar, then
-> 
-> if bar is a directory, then kunit.py will look for foo/bar/kunitconfig
-> 
-> if bar is a file ending with .kunitconfig like foo/bar.kunitconfig,
-> then it will use that kunitconfig
-> 
-> if bar is '...' (foo/...) then kunit.py will look for all kunitconfigs
-> underneath foo.
-> 
-> Once all the kunitconfigs have been resolved, they will be merged into
-> the .kunitconfig. If they can be successfully merged together, the new
-> .kunitconfig will then continue to function as it currently does.
+Implementation of support for parameterized testing in KUnit.
 
-I was thinking along a similar set of lines this morning.  One thing
-I'd add in addition to your suggestion to that is to change how
-.kunitconfig is interpreted such that
+Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+---
+Changes v1->v2:
+- Use of a generator method to access test case parameters
 
-CONFIG_KUNIT=y
+ include/kunit/test.h | 45 ++++++++++++++++++++++++++++++++++++++++++++
+ lib/kunit/test.c     | 20 +++++++++++++++++++-
+ 2 files changed, 64 insertions(+), 1 deletion(-)
 
-is always implied, so it doesn't have to be specified explicitly, and
-that if a line like:
+diff --git a/include/kunit/test.h b/include/kunit/test.h
+index a423fffefea0..c417ac140326 100644
+--- a/include/kunit/test.h
++++ b/include/kunit/test.h
+@@ -141,6 +141,7 @@ struct kunit;
+ struct kunit_case {
+ 	void (*run_case)(struct kunit *test);
+ 	const char *name;
++	void* (*generate_params)(struct kunit *test, void *prev);
+ 
+ 	/* private: internal use only. */
+ 	bool success;
+@@ -162,6 +163,9 @@ static inline char *kunit_status_to_string(bool status)
+  * &struct kunit_case for an example on how to use it.
+  */
+ #define KUNIT_CASE(test_name) { .run_case = test_name, .name = #test_name }
++#define KUNIT_CASE_PARAM(test_name, gen_params)			\
++		{ .run_case = test_name, .name = #test_name,	\
++		  .generate_params = gen_params }
+ 
+ /**
+  * struct kunit_suite - describes a related collection of &struct kunit_case
+@@ -208,6 +212,15 @@ struct kunit {
+ 	const char *name; /* Read only after initialization! */
+ 	char *log; /* Points at case log after initialization */
+ 	struct kunit_try_catch try_catch;
++	/* param_values points to test case parameters in parameterized tests */
++	void *param_values;
++	/*
++	 * current_param stores the index of the parameter in
++	 * the array of parameters in parameterized tests.
++	 * current_param + 1 is printed to indicate the parameter
++	 * that causes the test to fail in case of test failure.
++	 */
++	int current_param;
+ 	/*
+ 	 * success starts as true, and may only be set to false during a
+ 	 * test case; thus, it is safe to update this across multiple
+@@ -1742,4 +1755,36 @@ do {									       \
+ 						fmt,			       \
+ 						##__VA_ARGS__)
+ 
++/**
++ * kunit_param_generator_helper() - Helper method for test parameter generators
++ * 				    required in parameterized tests.
++ * @test: The test context object.
++ * @prev_param: a pointer to the previous test parameter, NULL for first parameter.
++ * @param_array: a user-supplied pointer to an array of test parameters.
++ * @array_size: number of test parameters in the array.
++ * @type_size: size of one test parameter.
++ */
++static inline void *kunit_param_generator_helper(struct kunit *test,
++					void *prev_param,
++					void *param_array,
++					size_t array_size,
++					size_t type_size)
++{
++	KUNIT_ASSERT_EQ(test, (prev_param - param_array) % type_size, 0);
++
++	if (!prev_param)
++		return param_array;
++
++	KUNIT_ASSERT_GE(test, prev_param, param_array);
++
++	if (prev_param + type_size < param_array + (array_size * type_size))
++		return prev_param + type_size;
++	else
++		return NULL;
++}
++
++#define KUNIT_PARAM_GENERATOR_HELPER(test, prev_param, param_array, param_type) \
++	kunit_param_generator_helper(test, prev_param, param_array,		\
++				ARRAY_SIZE(param_array), sizeof(param_type))
++
+ #endif /* _KUNIT_TEST_H */
+diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+index 750704abe89a..0e6ffe6384a7 100644
+--- a/lib/kunit/test.c
++++ b/lib/kunit/test.c
+@@ -127,6 +127,11 @@ unsigned int kunit_test_case_num(struct kunit_suite *suite,
+ }
+ EXPORT_SYMBOL_GPL(kunit_test_case_num);
+ 
++static void kunit_print_failed_param(struct kunit *test)
++{
++	kunit_err(test, "\n\tTest failed at parameter: %d\n", test->current_param + 1);
++}
++
+ static void kunit_print_string_stream(struct kunit *test,
+ 				      struct string_stream *stream)
+ {
+@@ -168,6 +173,8 @@ static void kunit_fail(struct kunit *test, struct kunit_assert *assert)
+ 	assert->format(assert, stream);
+ 
+ 	kunit_print_string_stream(test, stream);
++	if (test->param_values)
++		kunit_print_failed_param(test);
+ 
+ 	WARN_ON(string_stream_destroy(stream));
+ }
+@@ -239,7 +246,18 @@ static void kunit_run_case_internal(struct kunit *test,
+ 		}
+ 	}
+ 
+-	test_case->run_case(test);
++	if (!test_case->generate_params) {
++		test_case->run_case(test);
++	} else {
++		test->param_values = test_case->generate_params(test, NULL);
++		test->current_param = 0;
++
++		while (test->param_values) {
++			test_case->run_case(test);
++			test->param_values = test_case->generate_params(test, test->param_values);
++			test->current_param++;
++		}
++	}
+ }
+ 
+ static void kunit_case_internal_cleanup(struct kunit *test)
+-- 
+2.25.1
 
-fs/ext4
-
-or
-
-mm
-
-etc. occurs, that will cause a include of the Kunitconfig (I'd using a
-capitalized version of the filename like Kconfig, so that it's easier
-to see in a directory listing) in the named directory.
-
-That way, .kunitconfig is backwards compatible, but it also allows
-people to put a one-liner into .kunitconfig to enable the unit tests
-for that particular directory.
-
-What do folks think?
-
-Cheers,
-
-						- Ted
