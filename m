@@ -2,121 +2,84 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5FF5297349
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 Oct 2020 18:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B63B329734F
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 Oct 2020 18:13:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S373762AbgJWQNi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 23 Oct 2020 12:13:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45792 "EHLO
+        id S1751388AbgJWQNy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 23 Oct 2020 12:13:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S373717AbgJWQNh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Oct 2020 12:13:37 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 626D6C0613CE
-        for <linux-ext4@vger.kernel.org>; Fri, 23 Oct 2020 09:13:37 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id m16so2155458ljo.6
-        for <linux-ext4@vger.kernel.org>; Fri, 23 Oct 2020 09:13:37 -0700 (PDT)
+        with ESMTP id S373717AbgJWQNx (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Oct 2020 12:13:53 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CA60C0613CE
+        for <linux-ext4@vger.kernel.org>; Fri, 23 Oct 2020 09:13:52 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id v22so1144384ply.12
+        for <linux-ext4@vger.kernel.org>; Fri, 23 Oct 2020 09:13:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=00MtloA4epAgbkDjmipSVtmQY2Z7CvZ+2H9mxbgSdAk=;
-        b=EfOjCbh/KoyYQZm6AAXQ46QMQGUjW+TjaPGrPIUmnxJrIcjVVBiNWQ6lgn0+nsyBxU
-         NiC7RT2SK66b7dooNOPEA9xVahK5kynWwXHAjzVcEMHBQ9az84rW1EyTvXEqNvcBUZgL
-         A/i6uC8lhmDUaHwe3OYsjwfMNXp6/RLWxKJn4CCIwlSs9khxZ3mECulHNqaJV9jgAz3s
-         mw93nDMRTXm8owh05URbJ/EU/G5MI9PzpH42Y0iCC2qxqgNAcLmFxrAS2hkcOnzwY74v
-         a8FaVrhGNa/Ue9J7SfAAKYmVl/d89XFvLV7cNEdD/30uWMfvyL0oMh/FW5lZy2Hppgzv
-         f/Jg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eKbzV3eW/q+iJwAdHzxPnvy/nmMxCVdTWVw5EB4VqCY=;
+        b=PNAnG0H0HSixOUNcyrBhy75Lq1BhwYXsMfgqZxBCQEWomqUBoVRabeEFIaGr3h+BC/
+         K2q9r6t/Bwoh5+8F3SrZE8smLlmaoWHknIn3VQkjD1VWD60r1229iIwGowepfTlKChvV
+         3aPEWWkFTSq4pyzft6grW5s8zzKWMd8qWlymv+GIVovVsX77X5M1+9f/w1wuqETTdSIv
+         P0Dzz5c9+XsQL0EnnLC2zp3zlkNd2iImLgDu/m2PTBBiHbaM7kkFwMIBri5ki+Hbyn0B
+         UZXEEWRA9qJQeGUOQxma72tRTyK7F0gdpJpm6YH0f9BpfZqKsMf4oe3sBqikvXnhCgUH
+         AJYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=00MtloA4epAgbkDjmipSVtmQY2Z7CvZ+2H9mxbgSdAk=;
-        b=K7Ff9W7w2E/h2aAilZcyQicWx/HrS0kqhFUeIdnN10qRTHXasjhvsL/KYnADAlEFX+
-         S6XwTGgR4Va20HeOSPskwTQsNAWAlKnF/28CqqTqNk+teEZsXTMV+iMcmGhp6KrLUKOB
-         z/YewN9z7rTSgsrh33xH26ACqU24W1LoyePFRNhh47zIYr56LBktfy5L10uKgtPWeozE
-         yibMeZfMxHcngoDZ8kIseX1qG17MJFCYX5qqB8T6SLI1l2jxo2C1xATqBxKBXTH2nzQW
-         RexuJeCk/HoUpItLdcVUK9VINj3fUWTCwVVUniPZwYAZDXDkG7/K2dF8YsmvVjmUmdH1
-         7OrA==
-X-Gm-Message-State: AOAM531wyCoamrII0ipso0CnuIfV578YATjWzkvpnsZuAED8RoNuIZM3
-        wnirBDzhBI3qxTJ9RLCg0/Q3cHscWS35eS/ygzXfP4b3clQ=
-X-Google-Smtp-Source: ABdhPJyDH+3f5/MRyMRgj50T+GDp2CK2t9+KL01MXHu2rdfiy67qqnOajOGvQ8oXV2rB6xtbnBbcjRthCHhStq/UhoU=
-X-Received: by 2002:a2e:a310:: with SMTP id l16mr1166452lje.36.1603469615720;
- Fri, 23 Oct 2020 09:13:35 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eKbzV3eW/q+iJwAdHzxPnvy/nmMxCVdTWVw5EB4VqCY=;
+        b=eVlvkuHY6CosLb8Qx8AeKZoQv+XO0aLk9RUl5U38CrTkSl/CTAQexIxxlk7nnOKhAM
+         n/t6uzv286S03x4ou0L7uniiMRB1+gzsS8C/KC8qoMSX57lYnTiwLPygV/+gH+k+NnTe
+         v5xtnLM8GDJcjpe8w5oJqHLGvY5SZbGENEFH9svZUdszT1prRUHd3PhNJkikpPAhnU3W
+         tZ6x2T4AzO6V993/qwHAsWqvJLdyf7D2eIpqQIdx/p/H2PSwXbO3kmMh6OMmyd2tyYjw
+         pV7oPsJnggWodimi3R6JI4z0YPmNi0U5KIBuUzS2mJrS1+XF110Sll3rPOmPnK1Osbaj
+         tSaQ==
+X-Gm-Message-State: AOAM531fpSj+RssnUbp5KZX+FDkbb5obZA8hAaznj3yqeRqNwd+sGeny
+        VFyDeHTLgZINWCi1chbJrUar4Tb4O/Q=
+X-Google-Smtp-Source: ABdhPJyh5Iv7bSoEeCHUefTphprE50o+7mG7kszL/w4PcaVK4k3bWejhDCzg4SSIpyuBlJmMQe+Xaw==
+X-Received: by 2002:a17:902:864b:b029:d3:ce46:2829 with SMTP id y11-20020a170902864bb02900d3ce462829mr3240949plt.16.1603469631467;
+        Fri, 23 Oct 2020 09:13:51 -0700 (PDT)
+Received: from harshads-520.kir.corp.google.com ([2620:15c:17:10:a6ae:11ff:fe11:86a2])
+        by smtp.googlemail.com with ESMTPSA id t15sm1536213pfq.201.2020.10.23.09.13.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Oct 2020 09:13:50 -0700 (PDT)
+From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Subject: [PATCH] ext4: fix double locking in ext4_fc_commit_dentry_updates()
+Date:   Fri, 23 Oct 2020 09:13:39 -0700
+Message-Id: <20201023161339.1449437-1-harshadshirwadkar@gmail.com>
+X-Mailer: git-send-email 2.29.0.rc2.309.g374f81d7ae-goog
 MIME-Version: 1.0
-References: <CAJJtKouWTz2bZC8nUr4G8v=7Hh4-AbYg7Ea3yKk4Mk2gSRuP1g@mail.gmail.com>
- <20201023135410.GR181507@mit.edu>
-In-Reply-To: <20201023135410.GR181507@mit.edu>
-From:   Radivoje Jovanovic <radivojejovanovic@gmail.com>
-Date:   Fri, 23 Oct 2020 09:13:24 -0700
-Message-ID: <CAJJtKotk+9N=A=9gSuKaKumTeSupW0fkoG2ZWKsmyHW2ckO+vQ@mail.gmail.com>
-Subject: Re: ext4 and dd of emmc
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Thank you for responding Theodore,
-My answers inline below.
+Fixed double locking of sbi->s_fc_lock in the above function
+as reported by kernel-test-robot.
 
-On Fri, Oct 23, 2020 at 6:54 AM Theodore Y. Ts'o <tytso@mit.edu> wrote:
->
-> On Thu, Oct 22, 2020 at 10:46:18AM -0700, Radivoje Jovanovic wrote:
-> > Hello,
-> > I am creating empty  4GB ext4 partition on emmc with parted like this:
-> > parted -s -a optimal /dev/emmcblk0 mkpart data ext4 1024 5120
-> > mkfs.ext4 /dev/mmcblk0p7 (this is the partition that was created in
-> > the previous step)
-> >
-> > I do not mount this partition before I do dd of the emmc.
-> > dd of the emmc is done like this:
-> > dd if=/dev/emmcblk0 | gzip -c | dd of=./image.bin
-> >
-> > after this I write back the emmc with the same binary file:
-> > dd if=./image.bin | gunzip -c | dd of=. /dev/emmcblk0
->
-> Is the root file system (or any file system mounted read/write)
-> located on /dev/emmcblk0?  You seem to imply that /dev/emmcblk0p7 was
-> mounted read write, so that would appear to be the case.  If so,
-> that's a bad idea.  Don't do that.   It's not safe.
+Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+---
+ fs/ext4/fast_commit.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-No emmc partitions are mounted ever before binary copy takes place.
-The partitions are mounted only after the binary copy is fully completed.
->
-> > at the boot the kernel reports:
-> > EXT4-fs (mmcblk0p7): warning: mounting fs with errors, running e2fsck
-> > is recommended
->
-> That's probably because of the fact that mmcblk0p7 was moounted
-> read/write at the time when you tried to save and restore img.bin.
-> *Never* mess with a block device containing a mounted file system like
-> this.
->
-Again, the partitions were not mounted before dd was performed.
+diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+index 447c8d93f480..1d72f8f13a05 100644
+--- a/fs/ext4/fast_commit.c
++++ b/fs/ext4/fast_commit.c
+@@ -964,7 +964,6 @@ static int ext4_fc_commit_dentry_updates(journal_t *journal, u32 *crc)
+ 			fc_dentry->fcd_parent, fc_dentry->fcd_ino,
+ 			fc_dentry->fcd_name.len,
+ 			fc_dentry->fcd_name.name, crc)) {
+-			spin_lock(&sbi->s_fc_lock);
+ 			ret = -ENOSPC;
+ 			goto lock_and_exit;
+ 		}
+-- 
+2.29.0.rc2.309.g374f81d7ae-goog
 
-> > Buffer I/O error on dev mmcblk0p7, logical block 0, lost sync page write
-> > EXT4-fs (mmcblk0p7): I/O error while writing superblock
->
-> That implies that an I/O error from the eMMC device.  That's a
-> hardware issue, *probably* not related to the fact that partition was
-> not mounted, but rather by lousy hardware Quality Assurance along the
-> way.  If the hardware device is throwing I/O errors, you need to root
-> cause that issue first before worrying about any file system
-> complaints.
->
-Yes this message does look like a HW failure. However, I am able to
-reproduce this
-on two different emmc models and over 10 different emmc chips across 2
-different plarforms,
-so I would not think it is really a HW issue.
-
-Thanks.,
-Ogi
-
-> Cheers,
->
->                                                 - Ted
-Thanks
-Ogi
