@@ -2,118 +2,121 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CE142972D2
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 Oct 2020 17:48:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5FF5297349
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 Oct 2020 18:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S463661AbgJWPsF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 23 Oct 2020 11:48:05 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59478 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S463613AbgJWPsF (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 23 Oct 2020 11:48:05 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 40331AB95;
-        Fri, 23 Oct 2020 15:48:04 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 18B7F1E1348; Fri, 23 Oct 2020 17:48:04 +0200 (CEST)
-Date:   Fri, 23 Oct 2020 17:48:04 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Roman Anufriev <dotdot@yandex-team.ru>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu, jack@suse.cz,
-        dmtrmonakhov@yandex-team.ru
-Subject: Re: [PATCH v4 2/2] ext4: print quota journalling mode on (re-)mount
-Message-ID: <20201023154804.GD9119@quack2.suse.cz>
-References: <1603336860-16153-1-git-send-email-dotdot@yandex-team.ru>
- <1603336860-16153-2-git-send-email-dotdot@yandex-team.ru>
+        id S373762AbgJWQNi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 23 Oct 2020 12:13:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S373717AbgJWQNh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Oct 2020 12:13:37 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 626D6C0613CE
+        for <linux-ext4@vger.kernel.org>; Fri, 23 Oct 2020 09:13:37 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id m16so2155458ljo.6
+        for <linux-ext4@vger.kernel.org>; Fri, 23 Oct 2020 09:13:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=00MtloA4epAgbkDjmipSVtmQY2Z7CvZ+2H9mxbgSdAk=;
+        b=EfOjCbh/KoyYQZm6AAXQ46QMQGUjW+TjaPGrPIUmnxJrIcjVVBiNWQ6lgn0+nsyBxU
+         NiC7RT2SK66b7dooNOPEA9xVahK5kynWwXHAjzVcEMHBQ9az84rW1EyTvXEqNvcBUZgL
+         A/i6uC8lhmDUaHwe3OYsjwfMNXp6/RLWxKJn4CCIwlSs9khxZ3mECulHNqaJV9jgAz3s
+         mw93nDMRTXm8owh05URbJ/EU/G5MI9PzpH42Y0iCC2qxqgNAcLmFxrAS2hkcOnzwY74v
+         a8FaVrhGNa/Ue9J7SfAAKYmVl/d89XFvLV7cNEdD/30uWMfvyL0oMh/FW5lZy2Hppgzv
+         f/Jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=00MtloA4epAgbkDjmipSVtmQY2Z7CvZ+2H9mxbgSdAk=;
+        b=K7Ff9W7w2E/h2aAilZcyQicWx/HrS0kqhFUeIdnN10qRTHXasjhvsL/KYnADAlEFX+
+         S6XwTGgR4Va20HeOSPskwTQsNAWAlKnF/28CqqTqNk+teEZsXTMV+iMcmGhp6KrLUKOB
+         z/YewN9z7rTSgsrh33xH26ACqU24W1LoyePFRNhh47zIYr56LBktfy5L10uKgtPWeozE
+         yibMeZfMxHcngoDZ8kIseX1qG17MJFCYX5qqB8T6SLI1l2jxo2C1xATqBxKBXTH2nzQW
+         RexuJeCk/HoUpItLdcVUK9VINj3fUWTCwVVUniPZwYAZDXDkG7/K2dF8YsmvVjmUmdH1
+         7OrA==
+X-Gm-Message-State: AOAM531wyCoamrII0ipso0CnuIfV578YATjWzkvpnsZuAED8RoNuIZM3
+        wnirBDzhBI3qxTJ9RLCg0/Q3cHscWS35eS/ygzXfP4b3clQ=
+X-Google-Smtp-Source: ABdhPJyDH+3f5/MRyMRgj50T+GDp2CK2t9+KL01MXHu2rdfiy67qqnOajOGvQ8oXV2rB6xtbnBbcjRthCHhStq/UhoU=
+X-Received: by 2002:a2e:a310:: with SMTP id l16mr1166452lje.36.1603469615720;
+ Fri, 23 Oct 2020 09:13:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1603336860-16153-2-git-send-email-dotdot@yandex-team.ru>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <CAJJtKouWTz2bZC8nUr4G8v=7Hh4-AbYg7Ea3yKk4Mk2gSRuP1g@mail.gmail.com>
+ <20201023135410.GR181507@mit.edu>
+In-Reply-To: <20201023135410.GR181507@mit.edu>
+From:   Radivoje Jovanovic <radivojejovanovic@gmail.com>
+Date:   Fri, 23 Oct 2020 09:13:24 -0700
+Message-ID: <CAJJtKotk+9N=A=9gSuKaKumTeSupW0fkoG2ZWKsmyHW2ckO+vQ@mail.gmail.com>
+Subject: Re: ext4 and dd of emmc
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 22-10-20 06:21:00, Roman Anufriev wrote:
-> Right now, it is hard to understand which quota journalling type is enabled:
-> you need to be quite familiar with kernel code and trace it or really
-> understand what different combinations of fs flags/mount options lead to.
-> 
-> This patch adds printing of current quota jounalling mode on each
-> mount/remount, thus making it easier to check it at a glance/in autotests.
-> The semantics is similar to ext4 data journalling modes:
-> 
-> * journalled - quota configured, journalling will be enabled
-> * writeback  - quota configured, journalling won't be enabled
-> * none       - quota isn't configured
-> * disabled   - kernel compiled without CONFIG_QUOTA feature
-> 
-> Signed-off-by: Roman Anufriev <dotdot@yandex-team.ru>
+Thank you for responding Theodore,
+My answers inline below.
 
-Looks good to me. You can add:
+On Fri, Oct 23, 2020 at 6:54 AM Theodore Y. Ts'o <tytso@mit.edu> wrote:
+>
+> On Thu, Oct 22, 2020 at 10:46:18AM -0700, Radivoje Jovanovic wrote:
+> > Hello,
+> > I am creating empty  4GB ext4 partition on emmc with parted like this:
+> > parted -s -a optimal /dev/emmcblk0 mkpart data ext4 1024 5120
+> > mkfs.ext4 /dev/mmcblk0p7 (this is the partition that was created in
+> > the previous step)
+> >
+> > I do not mount this partition before I do dd of the emmc.
+> > dd of the emmc is done like this:
+> > dd if=/dev/emmcblk0 | gzip -c | dd of=./image.bin
+> >
+> > after this I write back the emmc with the same binary file:
+> > dd if=./image.bin | gunzip -c | dd of=. /dev/emmcblk0
+>
+> Is the root file system (or any file system mounted read/write)
+> located on /dev/emmcblk0?  You seem to imply that /dev/emmcblk0p7 was
+> mounted read write, so that would appear to be the case.  If so,
+> that's a bad idea.  Don't do that.   It's not safe.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+No emmc partitions are mounted ever before binary copy takes place.
+The partitions are mounted only after the binary copy is fully completed.
+>
+> > at the boot the kernel reports:
+> > EXT4-fs (mmcblk0p7): warning: mounting fs with errors, running e2fsck
+> > is recommended
+>
+> That's probably because of the fact that mmcblk0p7 was moounted
+> read/write at the time when you tried to save and restore img.bin.
+> *Never* mess with a block device containing a mounted file system like
+> this.
+>
+Again, the partitions were not mounted before dd was performed.
 
-								Honza
+> > Buffer I/O error on dev mmcblk0p7, logical block 0, lost sync page write
+> > EXT4-fs (mmcblk0p7): I/O error while writing superblock
+>
+> That implies that an I/O error from the eMMC device.  That's a
+> hardware issue, *probably* not related to the fact that partition was
+> not mounted, but rather by lousy hardware Quality Assurance along the
+> way.  If the hardware device is throwing I/O errors, you need to root
+> cause that issue first before worrying about any file system
+> complaints.
+>
+Yes this message does look like a HW failure. However, I am able to
+reproduce this
+on two different emmc models and over 10 different emmc chips across 2
+different plarforms,
+so I would not think it is really a HW issue.
 
-> ---
->  fs/ext4/super.c | 23 ++++++++++++++++++++---
->  1 file changed, 20 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index a988cf3..f2ddba4 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -3985,6 +3985,21 @@ static void ext4_set_resv_clusters(struct super_block *sb)
->  	atomic64_set(&sbi->s_resv_clusters, resv_clusters);
->  }
->  
-> +static const char *ext4_quota_mode(struct super_block *sb)
-> +{
-> +#ifdef CONFIG_QUOTA
-> +	if (!ext4_quota_capable(sb))
-> +		return "none";
-> +
-> +	if (EXT4_SB(sb)->s_journal && ext4_is_quota_journalled(sb))
-> +		return "journalled";
-> +	else
-> +		return "writeback";
-> +#else
-> +	return "disabled";
-> +#endif
-> +}
-> +
->  static int ext4_fill_super(struct super_block *sb, void *data, int silent)
->  {
->  	struct dax_device *dax_dev = fs_dax_get_by_bdev(sb->s_bdev);
-> @@ -5039,10 +5054,11 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
->  
->  	if (___ratelimit(&ext4_mount_msg_ratelimit, "EXT4-fs mount"))
->  		ext4_msg(sb, KERN_INFO, "mounted filesystem with%s. "
-> -			 "Opts: %.*s%s%s", descr,
-> +			 "Opts: %.*s%s%s. Quota mode: %s.", descr,
->  			 (int) sizeof(sbi->s_es->s_mount_opts),
->  			 sbi->s_es->s_mount_opts,
-> -			 *sbi->s_es->s_mount_opts ? "; " : "", orig_data);
-> +			 *sbi->s_es->s_mount_opts ? "; " : "", orig_data,
-> +			 ext4_quota_mode(sb));
->  
->  	if (es->s_error_count)
->  		mod_timer(&sbi->s_err_report, jiffies + 300*HZ); /* 5 minutes */
-> @@ -5979,7 +5995,8 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
->  	 */
->  	*flags = (*flags & ~vfs_flags) | (sb->s_flags & vfs_flags);
->  
-> -	ext4_msg(sb, KERN_INFO, "re-mounted. Opts: %s", orig_data);
-> +	ext4_msg(sb, KERN_INFO, "re-mounted. Opts: %s. Quota mode: %s.",
-> +		 orig_data, ext4_quota_mode(sb));
->  	kfree(orig_data);
->  	return 0;
->  
-> -- 
-> 2.7.4
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Thanks.,
+Ogi
+
+> Cheers,
+>
+>                                                 - Ted
+Thanks
+Ogi
