@@ -2,91 +2,68 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00F022992CD
-	for <lists+linux-ext4@lfdr.de>; Mon, 26 Oct 2020 17:48:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4CA82994E5
+	for <lists+linux-ext4@lfdr.de>; Mon, 26 Oct 2020 19:11:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1786382AbgJZQs0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 26 Oct 2020 12:48:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43326 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1781112AbgJZQsM (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 26 Oct 2020 12:48:12 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D56F5ACF5;
-        Mon, 26 Oct 2020 16:48:10 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 9E3A81E10F5; Mon, 26 Oct 2020 17:48:10 +0100 (CET)
-Date:   Mon, 26 Oct 2020 17:48:10 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: Strange SEEK_HOLE / SEEK_DATA behavior
-Message-ID: <20201026164810.GI28769@quack2.suse.cz>
-References: <20201026145710.GF28769@quack2.suse.cz>
- <20201026151404.GR20115@casper.infradead.org>
+        id S1789245AbgJZSLl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 26 Oct 2020 14:11:41 -0400
+Received: from mail-qv1-f68.google.com ([209.85.219.68]:33270 "EHLO
+        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1783565AbgJZSLk (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 26 Oct 2020 14:11:40 -0400
+Received: by mail-qv1-f68.google.com with SMTP id w9so4762338qvj.0
+        for <linux-ext4@vger.kernel.org>; Mon, 26 Oct 2020 11:11:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wXbdbicKVeXDRSO9MY7B1zqIT3oHv+LTHNtkKPt2D2A=;
+        b=c1etfYcK4UNhq0LLeOS3Fyh2e89joQELvnJVPIbaj1PWxbTphDsP0AjrZNeoBzlS5Q
+         9Vc9V4DtO54YtziHvzgJd/VUGo2LkbvXnN6FWCpvWZCwCL41WH4/MztPmFEl1teTQxqw
+         C4yKXYKJY5GpMxboXZzlnSt/9rCemQusXpalfDg7cf8AGFxMol3mWQgoqmtBi0TLleM8
+         ge7o+r2S7KDzHYYojoADRVsvln7pDRE2hoW9STGUerFkkVbV7OB4CAO49jRvQU7eCi7c
+         CRQVJmVZHnsTkA3QvN2MiHs2yvLPrafKpvtrKpRUZSx0/q56gFdFIsEuXibDEFD4svFx
+         fkvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wXbdbicKVeXDRSO9MY7B1zqIT3oHv+LTHNtkKPt2D2A=;
+        b=VcNJnYWfdqcOfDr7nEecMipU1V+f85GwZ1kr3faRbjWedH9ebZtGFKEynwxuwjDyTC
+         jelbgVJX7vfWNXm2HpR1IzA8nxoECb0eENTNqUqL/RW9i2J+7s3mI2VaPZ8a7dUd3ijp
+         M5EzV34yH2MfamAL95L/vnHB+BJM5GtecU3vhGMl/zSid6TPHnWoJ6VakhlQUdFE/D+N
+         yv3ZDho973GzHSfwFnM3O6rWWu7kCQFtXR3jJGsxVFoWYqfo6XUnZqWdywIKRLscUzb5
+         7QVBPusekNe6rubkneZ10GfQBFyUKrup5kPuvQJ2aulSicSi3vMxihl37ct/diACCraF
+         HjnA==
+X-Gm-Message-State: AOAM532yd6ByYsm2VhO2kGnFMIRHyUjTrmJx+82bJEzBGCgtMTD7BPnW
+        cauuKXSchrRnuoS2kxyyTPeAbGs40UJpJ9W6Hl8X
+X-Google-Smtp-Source: ABdhPJxCVt0hlOpjCr4DRBoxaQZuxsKFgDcYuSZvK1o2Qz94wNBVxtgEEFyFN1OHIAFTWCkpOw8UBiG+JoZum53bHpE=
+X-Received: by 2002:ad4:46a8:: with SMTP id br8mr18327630qvb.24.1603735899186;
+ Mon, 26 Oct 2020 11:11:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201026151404.GR20115@casper.infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201023150536.282568-1-98.arpi@gmail.com> <20201023150634.282631-1-98.arpi@gmail.com>
+In-Reply-To: <20201023150634.282631-1-98.arpi@gmail.com>
+From:   Iurii Zaikin <yzaikin@google.com>
+Date:   Mon, 26 Oct 2020 11:11:02 -0700
+Message-ID: <CAAXuY3q6c3d5kkLOqsG2LBmBYS4d9qRuEeZ2ChpJF1OVTkV5gw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] fs: ext4: Modify inode-test.c to use KUnit
+ parameterized testing feature
+To:     Arpitha Raghunandan <98.arpi@gmail.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Marco Elver <elver@google.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 26-10-20 15:14:04, Matthew Wilcox wrote:
-> On Mon, Oct 26, 2020 at 03:57:10PM +0100, Jan Kara wrote:
-> > Hello!
-> > 
-> > When reviewing Matthew's THP patches I've noticed one odd behavior which
-> > got copied from current iomap seek hole/data helpers. Currently we have:
-> > 
-> > # fallocate -l 4096 testfile
-> > # xfs_io -x -c "seek -h 0" testfile
-> > Whence	Result
-> > HOLE	0
-> > # dd if=testfile bs=4096 count=1 of=/dev/null
-> > # xfs_io -x -c "seek -h 0" testfile
-> > Whence	Result
-> > HOLE	4096
-> > 
-> > So once we read from an unwritten extent, the areas with cached pages
-> > suddently become treated as data. Later when pages get evicted, they become
-> > treated as holes again. Strictly speaking I wouldn't say this is a bug
-> > since nobody promises we won't treat holes as data but it looks weird.
-> > Shouldn't we treat clean pages over unwritten extents still as holes and
-> > only once the page becomes dirty treat is as data? What do other people
-> > think?
-> 
-> I think we actually discussed this recently.  Unless I misunderstood
-> one or both messages:
-> 
-> https://lore.kernel.org/linux-fsdevel/20201014223743.GD7391@dread.disaster.area/
-
-Thanks for the link. That indeed explains it, the concern is that if we'd
-check for PageDirty like I suggested, then it would be racy (page could
-have been written out just before we found it but after we've received
-block mapping from the filesystem). So using PageUptodate is less racy
-(although still somewhat racy because page could be also reclaimed).
-
-> I agree it's not great, but I'm not sure it's worth getting it "right"
-> by tracking whether a page contains only zeroes.
-
-Yeah, I don't think it's worth it just for this.
-
-> I have been vaguely thinking about optimising for read-mostly workloads
-> on sparse files by storing a magic entry that means "use the zero
-> page" in the page cache instead of a page, like DAX does (only better).
-> It hasn't risen to the top of my list yet.  Does anyone have a workload
-> that would benefit from it?
-> 
-> (I don't mean "can anybody construct one"; that's trivially possible.
-> I mean, do any customers care about the performance of that workload?)
-
-No workload comes to my mind now.
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> +static struct timestamp_expectation test_data[] = {
+Can you mark this and the rest of the hardcoded values as the const they are?
