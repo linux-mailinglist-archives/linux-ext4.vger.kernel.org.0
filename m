@@ -2,121 +2,183 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8CF92999AA
-	for <lists+linux-ext4@lfdr.de>; Mon, 26 Oct 2020 23:29:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0167299A40
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Oct 2020 00:14:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394424AbgJZW24 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 26 Oct 2020 18:28:56 -0400
-Received: from mail-ej1-f65.google.com ([209.85.218.65]:35119 "EHLO
-        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394413AbgJZW24 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 26 Oct 2020 18:28:56 -0400
-Received: by mail-ej1-f65.google.com with SMTP id p5so16181908ejj.2;
-        Mon, 26 Oct 2020 15:28:53 -0700 (PDT)
+        id S2395529AbgJZXOR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 26 Oct 2020 19:14:17 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:44334 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2395525AbgJZXOQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 26 Oct 2020 19:14:16 -0400
+Received: by mail-ot1-f68.google.com with SMTP id e20so9529568otj.11
+        for <linux-ext4@vger.kernel.org>; Mon, 26 Oct 2020 16:14:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Q5TvNsaVlP/v1waQo2fJokFjg82jq6VV+7J94XPAoyE=;
-        b=WzDyNwYol8TFmAY+cXVbW1Sx8M+rtCj2/MQaZtq/gX20miib2yDtzcZXIsXy5v2qDF
-         ELoLTBMIsWlNg5Je+Xnk1nNEgb2x20eA1mQzDGmSbzojjfwOY0Zlldg1nfG25CvD4Zhz
-         P4127mdv4gu29bClbLg5W51lnc1LJtoSLe06Xa4ettFQqEwuEKNw/NUhaAwpEYyl9Con
-         dh5VRa9asNBlMtBwBBkPs2uOOD+Ch6uMwmL26I/PbPKpu9VeVfHs5kAkHZzGnhi9cge5
-         oHCFiSwBI/wk/R2WXNB/3DLaOYXQCV5OZCguyyqiwjZBSRBlpDYehZ/1w4JxhGUvFrdV
-         wDPA==
+        bh=rtnCo2BEv8dnTOOlZbPQs4uRATJRDmvi8k9IkHEHV5Q=;
+        b=ruFYXNTj8pNpWPLqOuBoMGZdA1RA5EAmAmEILKFH8Jk1iMOYp6nHwx0GSH/4xR39CI
+         RVTtjQlCCTRUovbcRKK2VOnrn3NnoAVYcIj13VfKtN4wmHtAfvO+jPhyZKl9GHtxkJHN
+         rI+GONJ+IwxadIlUFjeBKrbrjcdjSqsR4Kj0fLI3RTJFM1n/w8JVC+gc5NS5Bcc972rY
+         aWXnHXzgbMgLjSYfYE7XdpA5SntRanq98SBIdHOz73VQjYh9r+U6FvFZgSESb24+XmAz
+         tjyd5V9ybLs2K7KBA/iGfAhmvd7KGimB/3Qih9/lJ2ra0BcP/AKWMWcq7WyK899g+DEt
+         XI5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Q5TvNsaVlP/v1waQo2fJokFjg82jq6VV+7J94XPAoyE=;
-        b=Xj4hG7CvrNAtwuDwi/Vp6VwzG4CjExqZg1ivSeX8e95QjlvYNONJzyosJBbfPkfd+2
-         jhETAPNYvqTeWLc4PS4FVu8PmEMW2QGGmTNYmsNcWN1yCjtUJx3IIKTdTRiTYhDMXnWe
-         oEND4zMn9JLuP0ZGpz3f9EQI08A1qaYrvza/NVi6oHu2tBX0sWhvWnZpP6F7YnROsiWl
-         /m2pF3fTInb4D9uu/qQtW0ekkKywx7SwWy99ACDabcKld90ZiobWgiVpHXp7LPAePeAr
-         UNIAINScC3f521gScKDuOdoJVy6Z5N0i0znbIB1IDac9vYAVA1BufhGtAIRqYVX/06Rm
-         B6CQ==
-X-Gm-Message-State: AOAM531pJWBxwKbRFM+WiD1vdzoVqsYyRcOUel6+2eDvrnBJFmV408xW
-        Ut0JjBblfI7PnVTrbMSsFgcEFJr02Yic+WGeciytoUfKEEI=
-X-Google-Smtp-Source: ABdhPJwU+t4RWyZuNxhOsEjApL1SJaJADNHEQda/2rxM+wohJn5ppqqhvuqZF3QlV/4qesSn2R68LyzGIJWRdeXGQxY=
-X-Received: by 2002:a17:906:640d:: with SMTP id d13mr17345666ejm.223.1603751332639;
- Mon, 26 Oct 2020 15:28:52 -0700 (PDT)
+        bh=rtnCo2BEv8dnTOOlZbPQs4uRATJRDmvi8k9IkHEHV5Q=;
+        b=O7XjUs/AYmEQDU8yp/IGu2y0murGuuaAsphyZgmg0Tpc+wLt9AqoVCtvfoP3+lxq6Z
+         Vr91MTCAeVN76IykxfR9qXNA/fcUeWcprFBBgHPQHMqE+FU63kKcxys4N1nHxIYivpG7
+         +9XmVqO2vEJ/aZNzqvHTZ+NyQl+sm5rHNrx/8dOeo5MkPdJPj0Iqr2H6Sg0eG7pfn7wb
+         +GqEu8ZE+MHHKYjoVhCyg3WwXc5s2Yo/hws38iZBjaoEV76MJhxc+8Ozyk33XTYud/Dd
+         0vvvw+QA/k050G0z6YN06qnRC8MfybIPamK8ouxhYEmAcjq439Imf+6j5ZBoMmmoH9YW
+         VehQ==
+X-Gm-Message-State: AOAM530TK+jSE0evaPul5rVLkx7VB23B0GBfmvkfSftw9nmSzcZsEqp/
+        /kiCZZtanfiDbptpEmQPWmkxKgHx/s52MqxDMbw4Ow==
+X-Google-Smtp-Source: ABdhPJw0F4J4BcLEjSwsurEvo/n9/PqQmt7GchLvDFbNDOZ2IfLtrGTPdNrNvzacbvn5uqCj+klJlJlGCH/v1WBWOY0=
+X-Received: by 2002:a9d:649:: with SMTP id 67mr17364102otn.233.1603754054772;
+ Mon, 26 Oct 2020 16:14:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201024140115.GA35973@xps-13-7390>
-In-Reply-To: <20201024140115.GA35973@xps-13-7390>
-From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
-Date:   Mon, 26 Oct 2020 15:28:41 -0700
-Message-ID: <CAD+ocby3hA0GCm5Rf6T3UF+2UWgWoUjrz7=VzbeUMjX6Qx8D5g@mail.gmail.com>
-Subject: Re: [PATCH] ext4: properly check for dirty state in ext4_inode_datasync_dirty()
-To:     Andrea Righi <andrea.righi@canonical.com>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>,
+References: <20201026183523.82749-1-98.arpi@gmail.com>
+In-Reply-To: <20201026183523.82749-1-98.arpi@gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 27 Oct 2020 00:14:03 +0100
+Message-ID: <CANpmjNNQtGC_jDp8TSHRHOMXi7aTQgwjtUiCWE+YqBgq-G2z5Q@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] kunit: Support for Parameterized Testing
+To:     Arpitha Raghunandan <98.arpi@gmail.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        skhan@linuxfoundation.org, Iurii Zaikin <yzaikin@google.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Thanks Andrea for catching and sending out a fix for this.
-
-On Sat, Oct 24, 2020 at 7:01 AM Andrea Righi <andrea.righi@canonical.com> wrote:
+On Mon, 26 Oct 2020 at 19:36, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
 >
-> ext4_inode_datasync_dirty() needs to return 'true' if the inode is
-> dirty, 'false' otherwise, but the logic seems to be incorrectly changed
-> by commit aa75f4d3daae ("ext4: main fast-commit commit path").
+> Implementation of support for parameterized testing in KUnit.
+> This approach requires the creation of a test case using the
+> KUNIT_CASE_PARAM macro that accepts a generator function as input.
+> This generator function should return the next parameter given the
+> previous parameter in parameterized tests. It also provides
+> a macro to generate common-case generators.
 >
-> This introduces a problem with swap files that are always failing to be
-> activated, showing this error in dmesg:
->
->  [   34.406479] swapon: file is not committed
->
-> Simple test case to reproduce the problem:
->
->   # fallocate -l 8G swapfile
->   # chmod 0600 swapfile
->   # mkswap swapfile
->   # swapon swapfile
->
-> Fix the logic to return the proper state of the inode.
->
-> Link: https://lore.kernel.org/lkml/20201024131333.GA32124@xps-13-7390
-> Fixes: aa75f4d3daae ("ext4: main fast-commit commit path")
-> Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
+> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+> Co-developed-by: Marco Elver <elver@google.com>
+> Signed-off-by: Marco Elver <elver@google.com>
 > ---
->  fs/ext4/inode.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 03c2253005f0..a890a17ab7e1 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -3308,8 +3308,8 @@ static bool ext4_inode_datasync_dirty(struct inode *inode)
->         if (journal) {
->                 if (jbd2_transaction_committed(journal,
->                                         EXT4_I(inode)->i_datasync_tid))
-> -                       return true;
-> -               return atomic_read(&EXT4_SB(inode->i_sb)->s_fc_subtid) >=
-> +                       return false;
-> +               return atomic_read(&EXT4_SB(inode->i_sb)->s_fc_subtid) <
->                         EXT4_I(inode)->i_fc_committed_subtid;
-In addition, the above condition should only be checked if fast
-commits are enabled. So, in effect this overall condition will look
-like this:
+> Changes v2->v3:
+> - Modifictaion of generator macro and method
 
-if (journal) {
-    if (jbd2_transaction_committed(journal, EXT4_I(inode)->i_datasync_tid))
-        return false;
-    if (test_opt2(sb, JOURNAL_FAST_COMMIT))
-        return atomic_read(&EXT4_SB(inode->i_sb)->s_fc_subtid) <
-EXT4_I(inode)->i_fc_committed_subtid;
-    return true;
-}
+Great to see it worked as expected!
+
+> Changes v1->v2:
+> - Use of a generator method to access test case parameters
+>
+>  include/kunit/test.h | 32 ++++++++++++++++++++++++++++++++
+>  lib/kunit/test.c     | 20 +++++++++++++++++++-
+>  2 files changed, 51 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/kunit/test.h b/include/kunit/test.h
+> index a423fffefea0..16bf9f334e2c 100644
+> --- a/include/kunit/test.h
+> +++ b/include/kunit/test.h
+> @@ -142,6 +142,12 @@ struct kunit_case {
+>         void (*run_case)(struct kunit *test);
+>         const char *name;
+>
+> +       /*
+> +        * Pointer to test parameter generator function.
+> +        * Used only for parameterized tests.
+
+What I meant was to give a description of the protocol, so that if
+somebody wanted, they could (without reading the implementation)
+implement their own custom generator without the helper macro.
+
+E.g. something like: "The generator function is used to lazily
+generate a series of arbitrarily typed values that fit into a void*.
+The argument @prev is the previously returned value, which should be
+used to derive the next value; @prev is set to NULL on the initial
+generator call. When no more values are available, the generator must
+return NULL."
+
+> +        */
+> +       void* (*generate_params)(void *prev);
+> +
+>         /* private: internal use only. */
+>         bool success;
+>         char *log;
+> @@ -162,6 +168,9 @@ static inline char *kunit_status_to_string(bool status)
+>   * &struct kunit_case for an example on how to use it.
+>   */
+>  #define KUNIT_CASE(test_name) { .run_case = test_name, .name = #test_name }
+> +#define KUNIT_CASE_PARAM(test_name, gen_params)                        \
+> +               { .run_case = test_name, .name = #test_name,    \
+> +                 .generate_params = gen_params }
+>
+>  /**
+>   * struct kunit_suite - describes a related collection of &struct kunit_case
+> @@ -208,6 +217,15 @@ struct kunit {
+>         const char *name; /* Read only after initialization! */
+>         char *log; /* Points at case log after initialization */
+>         struct kunit_try_catch try_catch;
+> +       /* param_values points to test case parameters in parameterized tests */
+> +       void *param_values;
+> +       /*
+> +        * current_param stores the index of the parameter in
+> +        * the array of parameters in parameterized tests.
+> +        * current_param + 1 is printed to indicate the parameter
+> +        * that causes the test to fail in case of test failure.
+> +        */
+> +       int current_param;
+>         /*
+>          * success starts as true, and may only be set to false during a
+>          * test case; thus, it is safe to update this across multiple
+> @@ -1742,4 +1760,18 @@ do {                                                                            \
+>                                                 fmt,                           \
+>                                                 ##__VA_ARGS__)
+>
+> +/**
+> + * KUNIT_PARAM_GENERATOR() - Helper method for test parameter generators
+> + *                          required in parameterized tests.
+
+This is only for arrays, which is why I suggested KUNIT_ARRAY_PARAM()
+as the name.
+
+A generator can very well be implemented without an array, so this
+macro name is confusing. In future somebody might want to provide a
+macro that takes a start + end value (and maybe a step value) to
+generate a series of values. That generator could be named
+KUNIT_RANGE_PARAM(name, start, end, step) and gives us a generator
+that is also named name##_gen_params. (If you want to try implementing
+that macro, I'd suggest doing it as a separate patch.)
+
+And I don't think we need to put "GENERATOR" into the name of these
+macros, because the generators are now the fundamental method with
+which to get parameterized tests. We don't need to state the obvious,
+in favor of some brevity.
+
+> + * @name:  prefix of the name for the test parameter generator function.
+> + * @prev: a pointer to the previous test parameter, NULL for first parameter.
+> + * @array: a user-supplied pointer to an array of test parameters.
+> + */
+> +#define KUNIT_PARAM_GENERATOR(name, array)                                                     \
+> +       static void *name##_gen_params(void *prev)                                              \
+> +       {                                                                                       \
+> +               typeof((array)[0]) * __next = prev ? ((typeof(__next)) prev) + 1 : (array);     \
+> +               return __next - (array) < ARRAY_SIZE((array)) ? __next : NULL;                  \
+> +       }
+> +
+>  #endif /* _KUNIT_TEST_H */
 
 Thanks,
-Harshad
-
->         }
->
-> --
-> 2.27.0
->
+-- Marco
