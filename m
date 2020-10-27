@@ -2,114 +2,422 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8596729BAB6
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Oct 2020 17:13:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 767A429C249
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Oct 2020 18:34:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1807473AbgJ0QK6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 27 Oct 2020 12:10:58 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:36590 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1807463AbgJ0QKz (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Oct 2020 12:10:55 -0400
-Received: from mail-wm1-f69.google.com ([209.85.128.69])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <mauricio.oliveira@canonical.com>)
-        id 1kXRYi-00062o-Nm
-        for linux-ext4@vger.kernel.org; Tue, 27 Oct 2020 16:10:52 +0000
-Received: by mail-wm1-f69.google.com with SMTP id 22so765289wmo.3
-        for <linux-ext4@vger.kernel.org>; Tue, 27 Oct 2020 09:10:52 -0700 (PDT)
+        id S1820266AbgJ0ReR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 27 Oct 2020 13:34:17 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:40715 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1820258AbgJ0ReO (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Oct 2020 13:34:14 -0400
+Received: by mail-qt1-f194.google.com with SMTP id m9so1602794qth.7
+        for <linux-ext4@vger.kernel.org>; Tue, 27 Oct 2020 10:34:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DJdrHkP5GhFWBxOBTxYJLlq85LF0Y8rsT83lHf4BoXA=;
+        b=rElie7nCB2CSbeT6c/CaRa3JHjFQyZbh0vMF7smW6sS0e7lP2rguaapbfqKZlnXJMt
+         H/al2Ps4yGge5TkCv7RwrkHawwOXy7AJkP6a/iHLDnTJvdGRLGrXBrr8QHt4+yioaM7L
+         jm5b8mvRFwige6iwO7e8ADEX+VDoGG6tk9ObciKNvJ/nDOLSqFj9Bih4li5/oehtBTtQ
+         HTj5kT4vsEwtH4CacmE/gNkfyvQUZep5AoMjgt2VbxMKwj/AeKBpLHynlUJJOdSdLoKM
+         ZHyiJ1lH32gzTeEwyueSWFnkIQ8aVPKVnxVB0hEwI3ylp/eOUfkYi538tWiNR0Gj79Ui
+         cp8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=3FiwKhTTNUXKE1vlkDwixEE7F2+Xm0xm6j2vCTDuLYI=;
-        b=oVIsEyViP7auzwoOuLIGoldxs2vYYx5yVBSY5ess+1560ctfM7bYYEq/ElDS/j9iXo
-         dvOal8RFzawMkZ6zEMiHkVN+HcYgyu5/vXH070TXBDzszV1KSo3HXl1354DkDqn8flsO
-         r1xccTvtoK35qfpJL7pfS74RVyi3X/9kPU/NCFH9wuPlML1MO411ZJKcqkxovQcSQTRo
-         jG868bNoTjlxeoaDZheR2wbtxzYvsij1d1UQtsnB2JbEs5ESwFAlZMXkCpu4BoI2nf9o
-         QoXmKyVpIzAc3e63bFBJUgp7fFF/YMJg8LnaecIAm4hcMVMZsjtSyTLZ5Tc+WE8OyB0N
-         b9Gg==
-X-Gm-Message-State: AOAM533H79zPEXyxTBhyJHBw3o4T1/yYoD4PsIYUEgDl7D3V6NVVzs8u
-        BvjIoMPVE4ap2WD3tQv1uvH+XLw0gT2Qb5+zgtgjKUXpGcdMpX9/vB/Er8lyiFZFuaReARAntZu
-        oUYZ1aY0e5zwdlBOD3FKXpkxBBd/FBzInrJLnK27PKUGwprnfz5uACp4=
-X-Received: by 2002:a5d:6a4f:: with SMTP id t15mr3686952wrw.126.1603815052354;
-        Tue, 27 Oct 2020 09:10:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwXkk3MBOVKtjZWseFKSoCSz+aiXiRqbKxnid0echYsEjrlkrvTjrzGJljeEFN89XwXENdIuJxRU3H5gCf+d4k=
-X-Received: by 2002:a5d:6a4f:: with SMTP id t15mr3686931wrw.126.1603815052088;
- Tue, 27 Oct 2020 09:10:52 -0700 (PDT)
+        bh=DJdrHkP5GhFWBxOBTxYJLlq85LF0Y8rsT83lHf4BoXA=;
+        b=dNp5E5tvhp5DvtEmAf/IMf+7GIl2C+SJiQJltlhKYPzCiiD/BvBDjfll3ZTAlRgzpy
+         ++rkhUNL5ehS8g7x/BK+EGTBDcaMwLG5i9bWiSrUKH+SFVWh5kHHrkYPSbmK8vMQhdoz
+         fPV53/b4cBug0aLHexUIJQ9BjQ1eKS/dRj41CVQ7Q8lC8Y6f2nt96WuGUCIjvqpr5ycS
+         hvHG/izy45r123zZJzwXko0iQyPuVJIit32+reQ4Z0ctLHuNEs/xiJVrBaQSE8q9mg1T
+         xV+aVwzu+pNQ9LKAE2Kry+RWiMYAYHPZV2tqIRNP8oCVTH0JajSv+1DxKC60A0TuwgNe
+         P5tg==
+X-Gm-Message-State: AOAM5317UWi2GKHeV20uZ1m6cPWESWXaS+eG8fS6I6Wqxqlt8kPScr4a
+        k0/GwixsaXAiyhE2w6/R8dGDR/4kXpcHF1l97kcu
+X-Google-Smtp-Source: ABdhPJz/W/bHvKVWc1klsC77yaMfEuw1Y1K6JU//5irH2wtAr3GVuUgYh1g/Klv2dAUfqxNmvqxd3qxjKjau5y/TcQQ=
+X-Received: by 2002:ac8:4e49:: with SMTP id e9mr3216124qtw.114.1603820051180;
+ Tue, 27 Oct 2020 10:34:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201027132751.29858-1-jack@suse.cz>
-In-Reply-To: <20201027132751.29858-1-jack@suse.cz>
-From:   Mauricio Faria de Oliveira <mfo@canonical.com>
-Date:   Tue, 27 Oct 2020 13:10:39 -0300
-Message-ID: <CAO9xwp0AtCLG77g6fWgu9un9XPD3d5U6ZtjWc3FRJrB8NK44SQ@mail.gmail.com>
-Subject: Re: [PATCH] ext4: Fix mmap write protection for data=journal mode
-To:     Jan Kara <jack@suse.cz>
-Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org
+References: <20201026183523.82749-1-98.arpi@gmail.com> <20201026183639.82883-1-98.arpi@gmail.com>
+In-Reply-To: <20201026183639.82883-1-98.arpi@gmail.com>
+From:   Iurii Zaikin <yzaikin@google.com>
+Date:   Tue, 27 Oct 2020 10:33:34 -0700
+Message-ID: <CAAXuY3o9Xe-atK0Mja6qXLncUhmmVf4pR7hsANsqaoUX71RXVg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] fs: ext4: Modify inode-test.c to use KUnit
+ parameterized testing feature
+To:     Arpitha Raghunandan <98.arpi@gmail.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Marco Elver <elver@google.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hey Jan,
-
-On Tue, Oct 27, 2020 at 10:27 AM Jan Kara <jack@suse.cz> wrote:
 >
-> Commit afb585a97f81 "ext4: data=journal: write-protect pages on
-> j_submit_inode_data_buffers()") added calls ext4_jbd2_inode_add_write()
-> to track inode ranges whose mappings need to get write-protected during
-> transaction commits. However the added calls use wrong start of a range
-> (0 instead of page offset) and so write protection is not necessarily
-> effective. Use correct range start to fix the problem.
+> Modify fs/ext4/inode-test.c to use the parameterized testing
+> feature of KUnit.
 >
-> Fixes: afb585a97f81 ("ext4: data=journal: write-protect pages on j_submit_inode_data_buffers()")
-> Signed-off-by: Jan Kara <jack@suse.cz>
+> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
 > ---
->  fs/ext4/inode.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+> Changes v2->v3:
+> - Marked hardcoded test data const
+> - Modification based on latest implementation of KUnit parameterized testing
+> Changes v1->v2:
+> - Modification based on latest implementation of KUnit parameterized testing
 >
-> Mauricio, I think this could be the reason for occasional test failures you
-> were still seeing. Can you try whether this patch fixes those for you? Thanks!
+>  fs/ext4/inode-test.c | 314 ++++++++++++++++++++++---------------------
+>  1 file changed, 158 insertions(+), 156 deletions(-)
 >
-
-Thanks! Nice catch. Sure, I'll give it a try and follow up.
-
-Just as FYI, I've been working on debugging and instrumentation to
-identify the corner cases
-where the page has not been write protected; but got a slower pace due
-to other work items.
-
-cheers,
-Mauricio
-
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 03c2253005f0..f4a599c6dcde 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -1918,7 +1918,7 @@ static int __ext4_journalled_writepage(struct page *page,
->         }
->         if (ret == 0)
->                 ret = err;
-> -       err = ext4_jbd2_inode_add_write(handle, inode, 0, len);
-> +       err = ext4_jbd2_inode_add_write(handle, inode, page_offset(page), len);
->         if (ret == 0)
->                 ret = err;
->         EXT4_I(inode)->i_datasync_tid = handle->h_transaction->t_tid;
-> @@ -6157,7 +6157,8 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
->                         if (ext4_walk_page_buffers(handle, page_buffers(page),
->                                         0, len, NULL, write_end_fn))
->                                 goto out_error;
-> -                       if (ext4_jbd2_inode_add_write(handle, inode, 0, len))
-> +                       if (ext4_jbd2_inode_add_write(handle, inode,
-> +                                                     page_offset(page), len))
->                                 goto out_error;
->                         ext4_set_inode_state(inode, EXT4_STATE_JDATA);
->                 } else {
+> diff --git a/fs/ext4/inode-test.c b/fs/ext4/inode-test.c
+> index d62d802c9c12..3a449623b775 100644
+> --- a/fs/ext4/inode-test.c
+> +++ b/fs/ext4/inode-test.c
+> @@ -80,6 +80,139 @@ struct timestamp_expectation {
+>         bool lower_bound;
+>  };
+>
+> +static const struct timestamp_expectation test_data[] = {
+> +       {
+> +               .test_case_name = LOWER_BOUND_NEG_NO_EXTRA_BITS_CASE,
+> +               .msb_set = true,
+> +               .lower_bound = true,
+> +               .extra_bits = 0,
+> +               .expected = {.tv_sec = -0x80000000LL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = UPPER_BOUND_NEG_NO_EXTRA_BITS_CASE,
+> +               .msb_set = true,
+> +               .lower_bound = false,
+> +               .extra_bits = 0,
+> +               .expected = {.tv_sec = -1LL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = LOWER_BOUND_NONNEG_NO_EXTRA_BITS_CASE,
+> +               .msb_set = false,
+> +               .lower_bound = true,
+> +               .extra_bits = 0,
+> +               .expected = {0LL, 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = UPPER_BOUND_NONNEG_NO_EXTRA_BITS_CASE,
+> +               .msb_set = false,
+> +               .lower_bound = false,
+> +               .extra_bits = 0,
+> +               .expected = {.tv_sec = 0x7fffffffLL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = LOWER_BOUND_NEG_LO_1_CASE,
+> +               .msb_set = true,
+> +               .lower_bound = true,
+> +               .extra_bits = 1,
+> +               .expected = {.tv_sec = 0x80000000LL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = UPPER_BOUND_NEG_LO_1_CASE,
+> +               .msb_set = true,
+> +               .lower_bound = false,
+> +               .extra_bits = 1,
+> +               .expected = {.tv_sec = 0xffffffffLL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = LOWER_BOUND_NONNEG_LO_1_CASE,
+> +               .msb_set = false,
+> +               .lower_bound = true,
+> +               .extra_bits = 1,
+> +               .expected = {.tv_sec = 0x100000000LL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = UPPER_BOUND_NONNEG_LO_1_CASE,
+> +               .msb_set = false,
+> +               .lower_bound = false,
+> +               .extra_bits = 1,
+> +               .expected = {.tv_sec = 0x17fffffffLL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = LOWER_BOUND_NEG_HI_1_CASE,
+> +               .msb_set = true,
+> +               .lower_bound = true,
+> +               .extra_bits =  2,
+> +               .expected = {.tv_sec = 0x180000000LL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = UPPER_BOUND_NEG_HI_1_CASE,
+> +               .msb_set = true,
+> +               .lower_bound = false,
+> +               .extra_bits = 2,
+> +               .expected = {.tv_sec = 0x1ffffffffLL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = LOWER_BOUND_NONNEG_HI_1_CASE,
+> +               .msb_set = false,
+> +               .lower_bound = true,
+> +               .extra_bits = 2,
+> +               .expected = {.tv_sec = 0x200000000LL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = UPPER_BOUND_NONNEG_HI_1_CASE,
+> +               .msb_set = false,
+> +               .lower_bound = false,
+> +               .extra_bits = 2,
+> +               .expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = UPPER_BOUND_NONNEG_HI_1_NS_1_CASE,
+> +               .msb_set = false,
+> +               .lower_bound = false,
+> +               .extra_bits = 6,
+> +               .expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 1L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = LOWER_BOUND_NONNEG_HI_1_NS_MAX_CASE,
+> +               .msb_set = false,
+> +               .lower_bound = true,
+> +               .extra_bits = 0xFFFFFFFF,
+> +               .expected = {.tv_sec = 0x300000000LL,
+> +                            .tv_nsec = MAX_NANOSECONDS},
+> +       },
+> +
+> +       {
+> +               .test_case_name = LOWER_BOUND_NONNEG_EXTRA_BITS_1_CASE,
+> +               .msb_set = false,
+> +               .lower_bound = true,
+> +               .extra_bits = 3,
+> +               .expected = {.tv_sec = 0x300000000LL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = UPPER_BOUND_NONNEG_EXTRA_BITS_1_CASE,
+> +               .msb_set = false,
+> +               .lower_bound = false,
+> +               .extra_bits = 3,
+> +               .expected = {.tv_sec = 0x37fffffffLL, .tv_nsec = 0L},
+> +       }
+> +};
+> +
+> +KUNIT_PARAM_GENERATOR(ext4_inode, test_data);
+> +
+>  static time64_t get_32bit_time(const struct timestamp_expectation * const test)
+>  {
+>         if (test->msb_set) {
+> @@ -101,166 +234,35 @@ static time64_t get_32bit_time(const struct timestamp_expectation * const test)
+>   */
+>  static void inode_test_xtimestamp_decoding(struct kunit *test)
+>  {
+> -       const struct timestamp_expectation test_data[] = {
+> -               {
+> -                       .test_case_name = LOWER_BOUND_NEG_NO_EXTRA_BITS_CASE,
+> -                       .msb_set = true,
+> -                       .lower_bound = true,
+> -                       .extra_bits = 0,
+> -                       .expected = {.tv_sec = -0x80000000LL, .tv_nsec = 0L},
+> -               },
+> -
+> -               {
+> -                       .test_case_name = UPPER_BOUND_NEG_NO_EXTRA_BITS_CASE,
+> -                       .msb_set = true,
+> -                       .lower_bound = false,
+> -                       .extra_bits = 0,
+> -                       .expected = {.tv_sec = -1LL, .tv_nsec = 0L},
+> -               },
+> -
+> -               {
+> -                       .test_case_name = LOWER_BOUND_NONNEG_NO_EXTRA_BITS_CASE,
+> -                       .msb_set = false,
+> -                       .lower_bound = true,
+> -                       .extra_bits = 0,
+> -                       .expected = {0LL, 0L},
+> -               },
+> -
+> -               {
+> -                       .test_case_name = UPPER_BOUND_NONNEG_NO_EXTRA_BITS_CASE,
+> -                       .msb_set = false,
+> -                       .lower_bound = false,
+> -                       .extra_bits = 0,
+> -                       .expected = {.tv_sec = 0x7fffffffLL, .tv_nsec = 0L},
+> -               },
+> -
+> -               {
+> -                       .test_case_name = LOWER_BOUND_NEG_LO_1_CASE,
+> -                       .msb_set = true,
+> -                       .lower_bound = true,
+> -                       .extra_bits = 1,
+> -                       .expected = {.tv_sec = 0x80000000LL, .tv_nsec = 0L},
+> -               },
+> -
+> -               {
+> -                       .test_case_name = UPPER_BOUND_NEG_LO_1_CASE,
+> -                       .msb_set = true,
+> -                       .lower_bound = false,
+> -                       .extra_bits = 1,
+> -                       .expected = {.tv_sec = 0xffffffffLL, .tv_nsec = 0L},
+> -               },
+> -
+> -               {
+> -                       .test_case_name = LOWER_BOUND_NONNEG_LO_1_CASE,
+> -                       .msb_set = false,
+> -                       .lower_bound = true,
+> -                       .extra_bits = 1,
+> -                       .expected = {.tv_sec = 0x100000000LL, .tv_nsec = 0L},
+> -               },
+> -
+> -               {
+> -                       .test_case_name = UPPER_BOUND_NONNEG_LO_1_CASE,
+> -                       .msb_set = false,
+> -                       .lower_bound = false,
+> -                       .extra_bits = 1,
+> -                       .expected = {.tv_sec = 0x17fffffffLL, .tv_nsec = 0L},
+> -               },
+> -
+> -               {
+> -                       .test_case_name = LOWER_BOUND_NEG_HI_1_CASE,
+> -                       .msb_set = true,
+> -                       .lower_bound = true,
+> -                       .extra_bits =  2,
+> -                       .expected = {.tv_sec = 0x180000000LL, .tv_nsec = 0L},
+> -               },
+> -
+> -               {
+> -                       .test_case_name = UPPER_BOUND_NEG_HI_1_CASE,
+> -                       .msb_set = true,
+> -                       .lower_bound = false,
+> -                       .extra_bits = 2,
+> -                       .expected = {.tv_sec = 0x1ffffffffLL, .tv_nsec = 0L},
+> -               },
+> -
+> -               {
+> -                       .test_case_name = LOWER_BOUND_NONNEG_HI_1_CASE,
+> -                       .msb_set = false,
+> -                       .lower_bound = true,
+> -                       .extra_bits = 2,
+> -                       .expected = {.tv_sec = 0x200000000LL, .tv_nsec = 0L},
+> -               },
+> -
+> -               {
+> -                       .test_case_name = UPPER_BOUND_NONNEG_HI_1_CASE,
+> -                       .msb_set = false,
+> -                       .lower_bound = false,
+> -                       .extra_bits = 2,
+> -                       .expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 0L},
+> -               },
+> -
+> -               {
+> -                       .test_case_name = UPPER_BOUND_NONNEG_HI_1_NS_1_CASE,
+> -                       .msb_set = false,
+> -                       .lower_bound = false,
+> -                       .extra_bits = 6,
+> -                       .expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 1L},
+> -               },
+> -
+> -               {
+> -                       .test_case_name = LOWER_BOUND_NONNEG_HI_1_NS_MAX_CASE,
+> -                       .msb_set = false,
+> -                       .lower_bound = true,
+> -                       .extra_bits = 0xFFFFFFFF,
+> -                       .expected = {.tv_sec = 0x300000000LL,
+> -                                    .tv_nsec = MAX_NANOSECONDS},
+> -               },
+> -
+> -               {
+> -                       .test_case_name = LOWER_BOUND_NONNEG_EXTRA_BITS_1_CASE,
+> -                       .msb_set = false,
+> -                       .lower_bound = true,
+> -                       .extra_bits = 3,
+> -                       .expected = {.tv_sec = 0x300000000LL, .tv_nsec = 0L},
+> -               },
+> -
+> -               {
+> -                       .test_case_name = UPPER_BOUND_NONNEG_EXTRA_BITS_1_CASE,
+> -                       .msb_set = false,
+> -                       .lower_bound = false,
+> -                       .extra_bits = 3,
+> -                       .expected = {.tv_sec = 0x37fffffffLL, .tv_nsec = 0L},
+> -               }
+> -       };
+> -
+>         struct timespec64 timestamp;
+> -       int i;
+> -
+> -       for (i = 0; i < ARRAY_SIZE(test_data); ++i) {
+> -               timestamp.tv_sec = get_32bit_time(&test_data[i]);
+> -               ext4_decode_extra_time(&timestamp,
+> -                                      cpu_to_le32(test_data[i].extra_bits));
+> -
+> -               KUNIT_EXPECT_EQ_MSG(test,
+> -                                   test_data[i].expected.tv_sec,
+> -                                   timestamp.tv_sec,
+> -                                   CASE_NAME_FORMAT,
+> -                                   test_data[i].test_case_name,
+> -                                   test_data[i].msb_set,
+> -                                   test_data[i].lower_bound,
+> -                                   test_data[i].extra_bits);
+> -               KUNIT_EXPECT_EQ_MSG(test,
+> -                                   test_data[i].expected.tv_nsec,
+> -                                   timestamp.tv_nsec,
+> -                                   CASE_NAME_FORMAT,
+> -                                   test_data[i].test_case_name,
+> -                                   test_data[i].msb_set,
+> -                                   test_data[i].lower_bound,
+> -                                   test_data[i].extra_bits);
+> -       }
+> +
+> +       struct timestamp_expectation *test_param =
+> +                       (struct timestamp_expectation *)(test->param_values);
+> +
+> +       timestamp.tv_sec = get_32bit_time(test_param);
+> +       ext4_decode_extra_time(&timestamp,
+> +                              cpu_to_le32(test_param->extra_bits));
+> +
+> +       KUNIT_EXPECT_EQ_MSG(test,
+> +                           test_param->expected.tv_sec,
+> +                           timestamp.tv_sec,
+> +                           CASE_NAME_FORMAT,
+> +                           test_param->test_case_name,
+> +                           test_param->msb_set,
+> +                           test_param->lower_bound,
+> +                           test_param->extra_bits);
+> +       KUNIT_EXPECT_EQ_MSG(test,
+> +                           test_param->expected.tv_nsec,
+> +                           timestamp.tv_nsec,
+> +                           CASE_NAME_FORMAT,
+> +                           test_param->test_case_name,
+> +                           test_param->msb_set,
+> +                           test_param->lower_bound,
+> +                           test_param->extra_bits);
+>  }
+>
+>  static struct kunit_case ext4_inode_test_cases[] = {
+> -       KUNIT_CASE(inode_test_xtimestamp_decoding),
+> +       KUNIT_CASE_PARAM(inode_test_xtimestamp_decoding, ext4_inode_gen_params),
+>         {}
+>  };
+>
 > --
-> 2.16.4
+> 2.25.1
 >
 
-
--- 
-Mauricio Faria de Oliveira
+Reviewed-by: Iurii Zaikin <yzaikin@google.com>
