@@ -2,108 +2,279 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FB7F29C7AE
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Oct 2020 19:46:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D91E29C8A6
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Oct 2020 20:22:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1829022AbgJ0SqG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 27 Oct 2020 14:46:06 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:37885 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1824035AbgJ0SpV (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Oct 2020 14:45:21 -0400
-Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 09RIj7Ie008005
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Oct 2020 14:45:08 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 862BB420107; Tue, 27 Oct 2020 14:45:07 -0400 (EDT)
-Date:   Tue, 27 Oct 2020 14:45:07 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Jan Kara <jack@suse.cz>
-Cc:     harshad shirwadkar <harshadshirwadkar@gmail.com>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Jayashree <jaya@cs.utexas.edu>, vijay@cs.utexas.edu
-Subject: Re: [PATCH v10 5/9] ext4: main fast-commit commit path
-Message-ID: <20201027184507.GD5691@mit.edu>
-References: <20201015203802.3597742-1-harshadshirwadkar@gmail.com>
- <20201015203802.3597742-6-harshadshirwadkar@gmail.com>
- <20201023103013.GF25702@quack2.suse.cz>
- <CAD+ocbws2J0boxfNA+gahWwTAqm8-Pef9_WkcwwKFjpiJhvJKw@mail.gmail.com>
- <20201027142910.GB16090@quack2.suse.cz>
+        id S1829838AbgJ0TWM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 27 Oct 2020 15:22:12 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:35358 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1829805AbgJ0TVU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Oct 2020 15:21:20 -0400
+Received: by mail-ot1-f68.google.com with SMTP id n11so2164972ota.2
+        for <linux-ext4@vger.kernel.org>; Tue, 27 Oct 2020 12:21:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nq9zEmsra/I9FskgMrWZwW4jiUKeh83zVbLmEJ7frGY=;
+        b=hvjUrxeTnpKW11JqdRolGFlbjn/yYSrDZSBljizuyw98mqP/+42EJQeRg9IQ5N+mbt
+         YK2asUVglRI0DGIMMA0SukSkVKO7BBMoEon9z5v8NkWZ9NvpMjDliPv4EDItaiS4FvwQ
+         QgYoAx6QZCybILjrpxVneAnrCX85O3TAAA+oqfx7fhQxAhGcMxJfgaiq9Rt0Ezd82qdo
+         rY7s7IViuNeP83O+ESncQvl8OwQZRhroog8poJljzzQIzrwxTnEwKDThGOkxQb3BPAxe
+         W094rE9JA/5P+q8mqfIk8HX63+GoKCRylqUyl98aSIgjs2n5ZsAZ4D4STjBTdagEkVgd
+         fH1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nq9zEmsra/I9FskgMrWZwW4jiUKeh83zVbLmEJ7frGY=;
+        b=NImDCwX0YYM22jicB59Oq5VBUQE8HdRU7/9oIn9jx2iG6sbfxn2HQj76o++RRq5IZQ
+         9Sy0g5rYJTPnPAw8vUV0cBF6JeDVPqC+TvgqHfluIjIYZD0HpGyD3yASqHNyIF29wSbz
+         vvvSiVpyztLjlyCx/iXjkNcrfZebao19VF4DFr+CeRhpSFQYu8J2QYUUqnr5k+ps6cAt
+         mEkW20v3fnIgPeeqTcdtjlegAd0FrxHcVinDJcb3RYgVbeURhSUKHN2Uw+1o/5SaXHWM
+         0K9BGjfQrY6tHp0d+F06/HAwD6e5HcsBG42qL+lpLXej4QbOgu2iUs4waqe34w5W5DoQ
+         k21Q==
+X-Gm-Message-State: AOAM532ZgiPVNJrTOpwFUpu794cT/HwdBXe8Iy8JQVe4cEyD+hMNea9d
+        Zf4Lz9+DPxrMpVua6B7VrOHneo4zINZEC4ZmzO7Ucg==
+X-Google-Smtp-Source: ABdhPJy41BE4xOtJgLoRUFUKd9T1jBqd55u8WiBk96SxzAPFBFX6yYc4b2eAoutgdTlEIJ0P6ZKJ3efEcKknqzr3n/M=
+X-Received: by 2002:a9d:649:: with SMTP id 67mr2645328otn.233.1603826477947;
+ Tue, 27 Oct 2020 12:21:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201027142910.GB16090@quack2.suse.cz>
+References: <20201027174630.85213-1-98.arpi@gmail.com>
+In-Reply-To: <20201027174630.85213-1-98.arpi@gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 27 Oct 2020 20:21:05 +0100
+Message-ID: <CANpmjNOpbXHs4gs9Ro-u7hyN_zZ7s3AqDcdDy1Nqxq4ckThugA@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] kunit: Support for Parameterized Testing
+To:     Arpitha Raghunandan <98.arpi@gmail.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        skhan@linuxfoundation.org, Iurii Zaikin <yzaikin@google.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 03:29:10PM +0100, Jan Kara wrote:
-> 
-> OK, I see. Maybe add a paragraph about this to fastcommit doc? I agree that
-> we can leave these optimizations for later, I was just wondering whether
-> there isn't some fundamental reason why global flush would be required and
-> I'm happy to hear that there isn't.
-> 
-> The advantage of soft_consistency as you call it would be IMO most seen if
-> there's relatively heavy non-fsync IO load in parallel with frequent fsyncs
-> of a tiny file. And such load is not infrequent in practice. I agree that
-> benchmarks like dbench are unlikely to benefit from soft_consistency since
-> all IO the benchmark does is in fact forced by fsync.
-> 
-> I also think that with soft_consistency we could benefit (e.g. on SSD
-> storage) from having several fast-commit areas in the journal so multiple
-> fastcommits can run in parallel. But that's also for some later
-> experimentation...
+On Tue, 27 Oct 2020 at 18:47, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+>
+> Implementation of support for parameterized testing in KUnit.
+> This approach requires the creation of a test case using the
+> KUNIT_CASE_PARAM macro that accepts a generator function as input.
+> This generator function should return the next parameter given the
+> previous parameter in parameterized tests. It also provides
+> a macro to generate common-case generators.
+>
+> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+> Co-developed-by: Marco Elver <elver@google.com>
+> Signed-off-by: Marco Elver <elver@google.com>
+> ---
+> Changes v3->v4:
+> - Rename kunit variables
+> - Rename generator function helper macro
+> - Add documentation for generator approach
+> - Display test case name in case of failure along with param index
+> Changes v2->v3:
+> - Modifictaion of generator macro and method
+> Changes v1->v2:
+> - Use of a generator method to access test case parameters
+>
+>  include/kunit/test.h | 34 ++++++++++++++++++++++++++++++++++
+>  lib/kunit/test.c     | 21 ++++++++++++++++++++-
+>  2 files changed, 54 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/kunit/test.h b/include/kunit/test.h
+> index 9197da792336..ec2307ee9bb0 100644
+> --- a/include/kunit/test.h
+> +++ b/include/kunit/test.h
+> @@ -107,6 +107,13 @@ struct kunit;
+>   *
+>   * @run_case: the function representing the actual test case.
+>   * @name:     the name of the test case.
+> + * @generate_params: the generator function for parameterized tests.
+> + *
+> + * The generator function is used to lazily generate a series of
+> + * arbitrarily typed values that fit into a void*. The argument @prev
+> + * is the previously returned value, which should be used to derive the
+> + * next value; @prev is set to NULL on the initial generator call.
+> + * When no more values are available, the generator must return NULL.
+>   *
 
-Right, so this is the reason why I wasn't super-excited by the
-proposal to document crash recovery semantics in Linux file systems
-proposed by Jayashree Mohan and Prof. Vijay Chidambaram last year[1].  I
-knew that we were planning the Fast Commit work (Jayashree and Vijay,
-this is a simplified version of the proposal made by Park and Shin in
-their iJournaling paper[2]) and having something document that an
-fsync(2) to one file guarantees that changes made to some other file
-that were made "earlier" would disallow this particular optimization.
+Hmm, should this really be the first paragraph? I think it should be
+the paragraph before "Example:" maybe. But then that paragraph should
+refer to generate_params e.g. "The generator function @generate_params
+is used to ........".
 
-[1] http://lore.kernel.org/r/1552418820-18102-1-git-send-email-jaya@cs.utexas.edu
-[2] https://www.usenix.org/conference/atc17/technical-sessions/presentation/park
+The other option you have is to move this paragraph to the kernel-doc
+comment for KUNIT_CASE_PARAM, which seems to be missing a kernel-doc
+comment.
 
-That being said, I was afraid that there *were* applications that
-might be (wrongly) making this assumption, even though it wasn't
-guaranteed by POSIX.  So when it didn't make much difference for
-benchmarks, and given that our original goal was to speed up NFS file
-serving, where every single NFS RPC has to be synchronous before an
-acknowledgement is sent back to the client, we decided to take the
-conservative path --- at least for now.
+>   * A test case is a function with the signature,
+>   * ``void (*)(struct kunit *)``
+> @@ -141,6 +148,7 @@ struct kunit;
+>  struct kunit_case {
+>         void (*run_case)(struct kunit *test);
+>         const char *name;
+> +       void* (*generate_params)(void *prev);
+>
+>         /* private: internal use only. */
+>         bool success;
+> @@ -162,6 +170,9 @@ static inline char *kunit_status_to_string(bool status)
+>   * &struct kunit_case for an example on how to use it.
+>   */
+>  #define KUNIT_CASE(test_name) { .run_case = test_name, .name = #test_name }
 
-I do agree with you that I can certainly think of workloads where not
-requiring entanglement of unrelated file writes via fsync(2) could be
-a huge performance win.
+I.e. create a new kernel-doc comment for KUNIT_CASE_PARAM here, and
+simply move the paragraph describing the generator protocol into that
+comment.
 
-One of the things that I did discuss with Harshad was using some
-hueristics, where if there are two "unrelated" applications (e.g.,
-different session id, or process group leader, or different uid,
-etc. --- details to be determined layer), we would not entangele
-writes to unrelated files via fsync(2), while forcing files written by
-the same application to share fate with one another even if only file
-is fsync'ed.  Hopefully, this would head off the possibility of
-another O_PONIES[3] controversy while still giving most of the
-benefits of not making fsync(2) a global file system barrier.  It
-would be hell to document in a standards specification, so the
-official rule would still be "fsync(2) only applies to the single
-file, and anything else is an accident of the implementation", per
-POSIX.
+> +#define KUNIT_CASE_PARAM(test_name, gen_params)                        \
+> +               { .run_case = test_name, .name = #test_name,    \
+> +                 .generate_params = gen_params }
+>
+>  /**
+>   * struct kunit_suite - describes a related collection of &struct kunit_case
+> @@ -208,6 +219,15 @@ struct kunit {
+>         const char *name; /* Read only after initialization! */
+>         char *log; /* Points at case log after initialization */
+>         struct kunit_try_catch try_catch;
+> +       /* param_value points to test case parameters in parameterized tests */
 
-[3] https://lwn.net/Articles/322823/
+Hmm, not quite: param_value is the current parameter value for a test
+case. Most likely it's a pointer, but it doesn't need to be.
 
-I still think the right answer is a new system call which takes an
-array of file descriptors, so the application can explicitly declare
-which set of files can be reliably fsync'ed in the same transaction
-commit.  The downside is that this would require applications to
-change what they are doing, and it would take the better part of a
-decade before we could assume well-written applications are explicitly
-declaring their crash recovery needs.
+> +       void *param_value;
+> +       /*
+> +        * param_index stores the index of the parameter in
+> +        * parameterized tests. param_index + 1 is printed
+> +        * to indicate the parameter that causes the test
+> +        * to fail in case of test failure.
+> +        */
 
-					- Ted
+I think this comment needs to be reformatted, because you can use at
+the very least use 80 cols per line. (If you use vim, visual select
+and do 'gq'.)
+
+> +       int param_index;
+>         /*
+>          * success starts as true, and may only be set to false during a
+>          * test case; thus, it is safe to update this across multiple
+> @@ -1742,4 +1762,18 @@ do {                                                                            \
+>                                                 fmt,                           \
+>                                                 ##__VA_ARGS__)
+>
+> +/**
+> + * KUNIT_ARRAY_PARAM() - Helper method for test parameter generators
+> + *                      required in parameterized tests.
+> + * @name:  prefix of the name for the test parameter generator function.
+> + *        It will be suffixed by "_gen_params".
+> + * @array: a user-supplied pointer to an array of test parameters.
+> + */
+> +#define KUNIT_ARRAY_PARAM(name, array)                                                         \
+> +       static void *name##_gen_params(void *prev)                                              \
+> +       {                                                                                       \
+> +               typeof((array)[0]) * __next = prev ? ((typeof(__next)) prev) + 1 : (array);     \
+> +               return __next - (array) < ARRAY_SIZE((array)) ? __next : NULL;                  \
+> +       }
+> +
+>  #endif /* _KUNIT_TEST_H */
+> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+> index 750704abe89a..8ad908b61494 100644
+> --- a/lib/kunit/test.c
+> +++ b/lib/kunit/test.c
+> @@ -127,6 +127,12 @@ unsigned int kunit_test_case_num(struct kunit_suite *suite,
+>  }
+>  EXPORT_SYMBOL_GPL(kunit_test_case_num);
+>
+> +static void kunit_print_failed_param(struct kunit *test)
+> +{
+> +       kunit_err(test, "\n\tTest failed at:\n\ttest case: %s\n\tparameter: %d\n",
+> +                                               test->name, test->param_index + 1);
+> +}
+
+Hmm, perhaps I wasn't clear, but I think I also misunderstood how the
+test case successes are presented: they are not, and it's all bunched
+into a single test case.
+
+Firstly, kunit_err() already prints the test name, so if we want
+something like "  # : the_test_case_name: failed at parameter #X",
+simply having
+
+    kunit_err(test, "failed at parameter #%d\n", test->param_index + 1)
+
+would be what you want.
+
+But I think I missed that parameters do not actually produce a set of
+test cases (sorry for noticing late). I think in their current form,
+the parameterized tests would not be useful for my tests, because each
+of my tests have test cases that have specific init and exit
+functions. For each parameter, these would also need to run.
+
+Ideally, each parameter produces its own independent test case
+"test_case#param_index". That way, CI systems will also be able to
+logically separate different test case params, simply because each
+param produced its own distinct test case.
+
+So, for example, we would get a series of test cases from something
+like KUNIT_CASE_PARAM(test_case, foo_gen_params), and in the output
+we'd see:
+
+    ok X - test_case#1
+    ok X - test_case#2
+    ok X - test_case#3
+    ok X - test_case#4
+    ....
+
+Would that make more sense?
+
+That way we'd ensure that test-case specific initialization and
+cleanup done in init and exit functions is properly taken care of, and
+you wouldn't need kunit_print_failed_param().
+
+AFAIK, for what I propose you'd have to modify kunit_print_ok_not_ok()
+(show param_index if parameterized test) and probably
+kunit_run_case_catch_errors() (generate params and set
+test->param_value and param_index).
+
+Was there a reason why each param cannot be a distinct test case? If
+not, I think this would be more useful.
+
+>  static void kunit_print_string_stream(struct kunit *test,
+>                                       struct string_stream *stream)
+>  {
+> @@ -168,6 +174,8 @@ static void kunit_fail(struct kunit *test, struct kunit_assert *assert)
+>         assert->format(assert, stream);
+>
+>         kunit_print_string_stream(test, stream);
+> +       if (test->param_value)
+> +               kunit_print_failed_param(test);
+>
+>         WARN_ON(string_stream_destroy(stream));
+>  }
+> @@ -239,7 +247,18 @@ static void kunit_run_case_internal(struct kunit *test,
+>                 }
+>         }
+>
+> -       test_case->run_case(test);
+> +       if (!test_case->generate_params) {
+> +               test_case->run_case(test);
+> +       } else {
+> +               test->param_value = test_case->generate_params(NULL);
+> +               test->param_index = 0;
+> +
+> +               while (test->param_value) {
+> +                       test_case->run_case(test);
+> +                       test->param_value = test_case->generate_params(test->param_value);
+> +                       test->param_index++;
+> +               }
+> +       }
+
+Thanks,
+-- Marco
