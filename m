@@ -2,123 +2,170 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D515629A639
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Oct 2020 09:10:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37A3A29A73F
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Oct 2020 10:05:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394648AbgJ0IKG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 27 Oct 2020 04:10:06 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:34518 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390550AbgJ0IKE (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Oct 2020 04:10:04 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09R89R1B048553;
-        Tue, 27 Oct 2020 08:10:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=sVDZEZm3RA+4j9FG1sRi417xEvsK90qw+uivVTy63/Y=;
- b=RNz4V/yA4Abf6bGW+gpNFxfz5P+TtU+X03QQ1hFxKnWqSoXRQ8I6YGCJ/mHJXBxTf0+m
- aWK+iTiOpkQ5LKTYyTpktPB6hZpnMTzSMCUW2mT1yYYjZpceGSef9wFgppXWWZ/jZ3lR
- MHBu+3csdT8Bhvo+nOzriFT4lSaGoLtHZoOmr4HQrhe613AEldQng1jKQeJoQ9rUTrjs
- 8p4iczarUfjoanYCAuZl9D5cLnzeU82Xy2qEVxPfcHniCAjZqcH61OPe6rRcJ9eXnb7T
- 0aWPpTS+QSZ5Er+wu2AxFAqn8aYOiUcqszpTAnxh3N4qT8mjXC5JBOittBFjmrKrs1Xz hQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 34cc7kre7s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 27 Oct 2020 08:10:02 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09R8A1dK057416;
-        Tue, 27 Oct 2020 08:10:01 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 34cx5wtw5f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 27 Oct 2020 08:10:01 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09R89xKU004198;
-        Tue, 27 Oct 2020 08:09:59 GMT
-Received: from mwanda (/10.175.160.91)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 27 Oct 2020 01:09:59 -0700
-Date:   Tue, 27 Oct 2020 11:09:54 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     harshadshirwadkar@gmail.com
-Cc:     linux-ext4@vger.kernel.org
-Subject: [bug report] ext4: fast commit recovery path
-Message-ID: <20201027080954.GA2513442@mwanda>
+        id S2895299AbgJ0JD5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 27 Oct 2020 05:03:57 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:38203 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2895296AbgJ0JD4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Oct 2020 05:03:56 -0400
+Received: by mail-ot1-f66.google.com with SMTP id b2so494747ots.5
+        for <linux-ext4@vger.kernel.org>; Tue, 27 Oct 2020 02:03:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mMR/HImx8HeIWOB1IW4d4ooUwHbJnSc4ChopXkol+tY=;
+        b=Xg2AvIHdQY3taxJqct+JFiPWoBWewED7SFBkf4BNfR8mWwmjMyETCb7JSxfSEs0hPf
+         rbB3JqF2ytHB7sdY7A0nMedrzTQKTen4NmuBvIyzFus5llPQA6pXSCAMQ6+FEMJnwbUL
+         PzDkMEmWnJC0dpKvP6NgS3wIU8J9wM0m/dPRroMHL7iVwBQl+PQAGqm0EpGAahxKp7IT
+         3lZ7zIO+ZPxfVkt6qx7UGfvOKrzzXSobfGAmI3qvkLKVUx5TeFmMPl7c6SP19c22VBea
+         TxQrpdjd1oQGrZUd8t3wEaghVw5V369fiJkpMO3fMWc+z2zqZvioeorot5DL4qZrwbz7
+         6Q5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mMR/HImx8HeIWOB1IW4d4ooUwHbJnSc4ChopXkol+tY=;
+        b=e0KAadNOM08vRcd8CMbWyhGYPNnK2Rs5B/mdjuQhCusJhOiNo5j+T27/UC0KPWd5Gp
+         +dY2lD9mgkLUZetJ7hd70x70Q3Xx0bBqDDYCCa6C5+OdZXV5nnXD+ts9sMCIlHBRwb3r
+         1etXKkz3rtDGcxHluMU2tCv8f+aM22OlI06PzPncph4iUKuV4MchbxXcpEzqSDXri+XI
+         whilo7klOB2Io1CTAOuwmh5mT6FXBkD/leQc+PZaUVCKCCKpkK9oUMJMZixgn4hhTtaC
+         1Viy+M2WPZEGc7CfCVE5jqug6tLlBCVxSm/jGKnFVbycHv/qwqhi5I45+oic+pFYI9fF
+         bDpg==
+X-Gm-Message-State: AOAM5331ls8asLQXxUrBGDhczMbXbU5wi3t6QPLuqY+Ui40M1x/zt2AD
+        74CBDtOvWME2cNuYjxe2XQzcYaWu1iC0Kf2+2E2yKg==
+X-Google-Smtp-Source: ABdhPJydV7HAJnVLV858KglXx9BeIvDM+HKegy4BHuUfvYe2R4pzwEQ10NdLr42Xw7Ixiclt+mW3kOlv1r6uNqDoQog=
+X-Received: by 2002:a9d:3a65:: with SMTP id j92mr811798otc.17.1603789435179;
+ Tue, 27 Oct 2020 02:03:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9786 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 mlxlogscore=778
- suspectscore=3 bulkscore=0 malwarescore=0 spamscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010270054
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9786 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=1 adultscore=0
- malwarescore=0 spamscore=0 clxscore=1015 mlxscore=0 suspectscore=3
- priorityscore=1501 impostorscore=0 bulkscore=1 phishscore=0
- mlxlogscore=784 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010270054
+References: <20201026183523.82749-1-98.arpi@gmail.com>
+In-Reply-To: <20201026183523.82749-1-98.arpi@gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 27 Oct 2020 10:03:43 +0100
+Message-ID: <CANpmjNMnkXLFeQU6xZNwj3bWqE4Ap47wQKkL3-0ENX+R1YoLOg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] kunit: Support for Parameterized Testing
+To:     Arpitha Raghunandan <98.arpi@gmail.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        skhan@linuxfoundation.org, Iurii Zaikin <yzaikin@google.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello Harshad Shirwadkar,
+I just tried to give this a spin on some of my tests and noticed some
+more things (apologies for the multiple rounds of comments):
 
-The patch 8016e29f4362: "ext4: fast commit recovery path" from Oct
-15, 2020, leads to the following static checker warning:
+On Mon, 26 Oct 2020 at 19:36, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+[...]
+>  /**
+>   * struct kunit_suite - describes a related collection of &struct kunit_case
+> @@ -208,6 +217,15 @@ struct kunit {
+>         const char *name; /* Read only after initialization! */
+>         char *log; /* Points at case log after initialization */
+>         struct kunit_try_catch try_catch;
+> +       /* param_values points to test case parameters in parameterized tests */
+> +       void *param_values;
 
-	fs/ext4/fast_commit.c:1620 ext4_fc_replay_add_range()
-	warn: 'path' is an error pointer or valid
+This should be singular, i.e. "param_value", since the generator only
+generates 1 value for each test. Whether or not that value is a
+pointer that points to more than 1 value or is an integer etc. is
+entirely test-dependent.
 
-fs/ext4/fast_commit.c
-  1600          cur = start;
-  1601          remaining = len;
-  1602          jbd_debug(1, "ADD_RANGE, lblk %d, pblk %lld, len %d, unwritten %d, inode %ld\n",
-  1603                    start, start_pblk, len, ext4_ext_is_unwritten(ex),
-  1604                    inode->i_ino);
-  1605  
-  1606          while (remaining > 0) {
-  1607                  map.m_lblk = cur;
-  1608                  map.m_len = remaining;
-  1609                  map.m_pblk = 0;
-  1610                  ret = ext4_map_blocks(NULL, inode, &map, 0);
-  1611  
-  1612                  if (ret < 0) {
-  1613                          iput(inode);
-  1614                          return 0;
-  1615                  }
-  1616  
-  1617                  if (ret == 0) {
-  1618                          /* Range is not mapped */
-  1619                          path = ext4_find_extent(inode, cur, NULL, 0);
-  1620                          if (!path)
-  1621                                  continue;
-                                ^^^^^^^^^^^^^^^^
-"path" can't be NULL, this should be an IS_ERR() test.  It's sort of
-surprising to me that we continue here instead of returning an error.
+> +       /*
+> +        * current_param stores the index of the parameter in
+> +        * the array of parameters in parameterized tests.
+> +        * current_param + 1 is printed to indicate the parameter
+> +        * that causes the test to fail in case of test failure.
+> +        */
+> +       int current_param;
 
-  1622                          memset(&newex, 0, sizeof(newex));
-  1623                          newex.ee_block = cpu_to_le32(cur);
-  1624                          ext4_ext_store_pblock(
-  1625                                  &newex, start_pblk + cur - start);
-  1626                          newex.ee_len = cpu_to_le16(map.m_len);
-  1627                          if (ext4_ext_is_unwritten(ex))
-  1628                                  ext4_ext_mark_unwritten(&newex);
-  1629                          down_write(&EXT4_I(inode)->i_data_sem);
-  1630                          ret = ext4_ext_insert_extent(
-  1631                                  NULL, inode, &path, &newex, 0);
-  1632                          up_write((&EXT4_I(inode)->i_data_sem));
-  1633                          ext4_ext_drop_refs(path);
-  1634                          kfree(path);
-  1635                          if (ret) {
-  1636                                  iput(inode);
-  1637                                  return 0;
-  1638                          }
-  1639                          goto next;
-  1640                  }
-  1641  
-  1642                  if (start_pblk + cur - start != map.m_pblk) {
+I think, per your comment above, this should be named "param_index".
+Also, I would suggest removing the mention of "array" in the comment,
+because the parameters aren't dependent on use of an array.
 
-regards,
-dan carpenter
+>         /*
+>          * success starts as true, and may only be set to false during a
+>          * test case; thus, it is safe to update this across multiple
+> @@ -1742,4 +1760,18 @@ do {                                                                            \
+>                                                 fmt,                           \
+>                                                 ##__VA_ARGS__)
+>
+> +/**
+> + * KUNIT_PARAM_GENERATOR() - Helper method for test parameter generators
+> + *                          required in parameterized tests.
+> + * @name:  prefix of the name for the test parameter generator function.
+> + * @prev: a pointer to the previous test parameter, NULL for first parameter.
+> + * @array: a user-supplied pointer to an array of test parameters.
+> + */
+> +#define KUNIT_PARAM_GENERATOR(name, array)                                                     \
+> +       static void *name##_gen_params(void *prev)                                              \
+> +       {                                                                                       \
+> +               typeof((array)[0]) * __next = prev ? ((typeof(__next)) prev) + 1 : (array);     \
+> +               return __next - (array) < ARRAY_SIZE((array)) ? __next : NULL;                  \
+> +       }
+> +
+>  #endif /* _KUNIT_TEST_H */
+> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+> index 750704abe89a..b70ab9b12f3b 100644
+> --- a/lib/kunit/test.c
+> +++ b/lib/kunit/test.c
+> @@ -127,6 +127,11 @@ unsigned int kunit_test_case_num(struct kunit_suite *suite,
+>  }
+>  EXPORT_SYMBOL_GPL(kunit_test_case_num);
+>
+> +static void kunit_print_failed_param(struct kunit *test)
+> +{
+> +       kunit_err(test, "\n\tTest failed at parameter: %d\n", test->current_param + 1);
+> +}
+
+Is this the only place where the param index is used? It might be
+helpful to show the index together with the test-case name, otherwise
+we get a series of test cases in the output which are all named the
+same which can be confusing.
+
+>  static void kunit_print_string_stream(struct kunit *test,
+>                                       struct string_stream *stream)
+>  {
+> @@ -168,6 +173,8 @@ static void kunit_fail(struct kunit *test, struct kunit_assert *assert)
+>         assert->format(assert, stream);
+>
+>         kunit_print_string_stream(test, stream);
+> +       if (test->param_values)
+> +               kunit_print_failed_param(test);
+>
+>         WARN_ON(string_stream_destroy(stream));
+>  }
+> @@ -239,7 +246,18 @@ static void kunit_run_case_internal(struct kunit *test,
+>                 }
+>         }
+>
+> -       test_case->run_case(test);
+> +       if (!test_case->generate_params) {
+> +               test_case->run_case(test);
+> +       } else {
+> +               test->param_values = test_case->generate_params(NULL);
+> +               test->current_param = 0;
+> +
+> +               while (test->param_values) {
+> +                       test_case->run_case(test);
+> +                       test->param_values = test_case->generate_params(test->param_values);
+> +                       test->current_param++;
+> +               }
+> +       }
+>  }
+
+Looking forward to v4. :-)
+
+Thanks,
+-- Marco
