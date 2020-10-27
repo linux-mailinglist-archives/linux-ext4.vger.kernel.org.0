@@ -2,440 +2,188 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9386129B180
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Oct 2020 15:31:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6043629B252
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Oct 2020 15:41:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1760027AbgJ0Oay (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 27 Oct 2020 10:30:54 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40134 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1759333AbgJ0O3O (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:29:14 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2834DAC1F;
-        Tue, 27 Oct 2020 14:29:11 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id CB20F1E10F5; Tue, 27 Oct 2020 15:29:10 +0100 (CET)
-Date:   Tue, 27 Oct 2020 15:29:10 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     harshad shirwadkar <harshadshirwadkar@gmail.com>
-Cc:     Jan Kara <jack@suse.cz>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v10 5/9] ext4: main fast-commit commit path
-Message-ID: <20201027142910.GB16090@quack2.suse.cz>
-References: <20201015203802.3597742-1-harshadshirwadkar@gmail.com>
- <20201015203802.3597742-6-harshadshirwadkar@gmail.com>
- <20201023103013.GF25702@quack2.suse.cz>
- <CAD+ocbws2J0boxfNA+gahWwTAqm8-Pef9_WkcwwKFjpiJhvJKw@mail.gmail.com>
+        id S1420711AbgJ0OjZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 27 Oct 2020 10:39:25 -0400
+Received: from mail-pj1-f67.google.com ([209.85.216.67]:55793 "EHLO
+        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2899174AbgJ0OjX (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Oct 2020 10:39:23 -0400
+Received: by mail-pj1-f67.google.com with SMTP id c17so881772pjo.5;
+        Tue, 27 Oct 2020 07:39:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Jq4p9ZOCOpULvr9rjXRr1hfcbCktqSPvgN26N3fDMKI=;
+        b=P2rHbNkCxVqv3VzLZrI9pRiekGKij2jCTuLBGnFuzNzKo232QsfG5w1r/Ncmxekom+
+         FFG8bIkBe7md8JwLjdqcGVeZGkV7Pq3nVV3VLIKFTdh1WdUEpKSE0MwJM29wEhJUo0de
+         Z2hg45xbwDwnBTwgLx9hQPLCm7zrVUlcqZ3TrnhSs8xQ18hW0zm+PZSXAyG3okq7iQgD
+         pZzm37irrPmVMmjxbC9qrynZkt1FrCY60Hb18mZrpzAqWvD0lSZKFPVP6OnSI8dQKPUE
+         +3T0Ne7Ji1MMYO4ddfIrx8kQHzrz5SopDaNxWAsZI369AADhnGxRRnt6jFNNcJxkWFKP
+         K0UA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Jq4p9ZOCOpULvr9rjXRr1hfcbCktqSPvgN26N3fDMKI=;
+        b=Q11zpA2Jsh3x93AFopGaxv7k3uGkMoWyeSQ9TJaIUqlpmRfHV2BjPTNsI41CumDl0w
+         PG0sC7ygTSuddbpX5ZNOjOZg3HJBcfnGwcV0j2KBkORxwUGPd5FyFatLItP3vOfti+k9
+         pwQWal7UYJPgsfJSG85x6yNSfnOHHMfne7XgCtaP/UeOz3VxvJ7jbN59EnRAl6A1G/pR
+         EN5+tpKTNM2dn7fQfazfU8dAxKCeVbH33sdrnU7xaI0O0K6gIiLqwmUldRtoeYMant9l
+         G/m94Wmyr/JG4xf3wZYSgecdCKgdluLg0RXpggi2fwvVeoAUwEy03HSesbbL+qsTrs1d
+         m4Kg==
+X-Gm-Message-State: AOAM530pH/+nfC2p0a7qMhIdZQqX3qoBkzrW/Eag6S/Yqx8lJcQwTgXl
+        eFWEP6pHP9mQQYbQMV/Cq/E4jltruJQph+SY
+X-Google-Smtp-Source: ABdhPJzXa1Xh/0Y5jrlOMXl+jhRdt0b7jdQnNTre8jc74QTXFQrzuJKmJJtiY0V93QdH6AsI1Bpjgg==
+X-Received: by 2002:a17:902:b78c:b029:d4:da94:8766 with SMTP id e12-20020a170902b78cb02900d4da948766mr2632161pls.31.1603809561465;
+        Tue, 27 Oct 2020 07:39:21 -0700 (PDT)
+Received: from [192.168.86.81] ([106.51.240.100])
+        by smtp.gmail.com with ESMTPSA id x16sm2554341pff.14.2020.10.27.07.39.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Oct 2020 07:39:20 -0700 (PDT)
+Subject: Re: [PATCH v3 1/2] kunit: Support for Parameterized Testing
+To:     Marco Elver <elver@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        skhan@linuxfoundation.org, Iurii Zaikin <yzaikin@google.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org
+References: <20201026183523.82749-1-98.arpi@gmail.com>
+ <CANpmjNMnkXLFeQU6xZNwj3bWqE4Ap47wQKkL3-0ENX+R1YoLOg@mail.gmail.com>
+From:   Arpitha Raghunandan <98.arpi@gmail.com>
+Message-ID: <5c38ba07-f910-ed0a-1a75-85240effaea7@gmail.com>
+Date:   Tue, 27 Oct 2020 20:09:14 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAD+ocbws2J0boxfNA+gahWwTAqm8-Pef9_WkcwwKFjpiJhvJKw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CANpmjNMnkXLFeQU6xZNwj3bWqE4Ap47wQKkL3-0ENX+R1YoLOg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 26-10-20 13:55:47, harshad shirwadkar wrote:
-> > > + *
-> > > + * The fast commit space at the end of above operations would look like this:
-> > > + *      [HEAD] [CREAT A] [UNLINK B] [TAIL] [ADD_RANGE A] [DEL_RANGE A] [TAIL]
-> > > + *             |<---  Fast Commit 1   --->|<---      Fast Commit 2     ---->|
-> > > + *
-> > > + * Replay code should thus check for all the valid tails in the FC area.
-> >
-> > And one design question: Why do we record unlink of B here? I was kind of
-> > hoping that fastcommit due to fsync(A) would record only operations related
-> > to A. Because the way you wrote it, fast commit is inherently still a
-> > filesystem-global operation requiring global ordering of metadata changes
-> > with all the scalability bottlenecks current journalling code has. It's
-> > faster by some factor due to more efficient packing of "small" changes not
-> > fundamentally faster AFAICT...
-> So given that fsync() for Ext4 traditionally resulted in syncing of
-> all the dirty inodes / buffers. If we fsync() only the file in
-> question, I'm worried that we may break some of the existing
-> applications. In the earlier version of the series, I had a
-> "soft_consistency" mode which did exactly that. It broke a bunch of
-> xfstests that had this assumption. Also, in my tests I didn't see a
-> big performance difference between these fast commits and the fast
-> commits with soft consistency. Most probably, that's because the
-> benchmarks perform a fsync on all the files and current fast commits
-> give it a batching effect which soft consistency mode would fail to
-> provide.
+On 27/10/20 2:33 pm, Marco Elver wrote:
+> I just tried to give this a spin on some of my tests and noticed some
+> more things (apologies for the multiple rounds of comments):
 > 
-> But I'm not fixated on this, I think it's still good to have
-> soft_consistency mode. Good thing is this doesn't affect the on-disk
-> format. So, this is something that can be gradually added to Ext4.
-
-OK, I see. Maybe add a paragraph about this to fastcommit doc? I agree that
-we can leave these optimizations for later, I was just wondering whether
-there isn't some fundamental reason why global flush would be required and
-I'm happy to hear that there isn't.
-
-The advantage of soft_consistency as you call it would be IMO most seen if
-there's relatively heavy non-fsync IO load in parallel with frequent fsyncs
-of a tiny file. And such load is not infrequent in practice. I agree that
-benchmarks like dbench are unlikely to benefit from soft_consistency since
-all IO the benchmark does is in fact forced by fsync.
-
-I also think that with soft_consistency we could benefit (e.g. on SSD
-storage) from having several fast-commit areas in the journal so multiple
-fastcommits can run in parallel. But that's also for some later
-experimentation...
-
-> > > +
-> > > +     mutex_lock(&ei->i_fc_lock);
-> > > +     if (running_txn_tid == ei->i_sync_tid) {
-> > > +             update = true;
-> > > +     } else {
-> > > +             ext4_fc_reset_inode(inode);
-> > > +             ei->i_sync_tid = running_txn_tid;
-> > > +     }
-> > > +     ret = __fc_track_fn(inode, args, update);
-> > > +     mutex_unlock(&ei->i_fc_lock);
-> > > +
-> > > +     if (!enqueue)
-> > > +             return ret;
-> > > +
-> > > +     spin_lock(&sbi->s_fc_lock);
-> > > +     if (list_empty(&EXT4_I(inode)->i_fc_list))
-> > > +             list_add_tail(&EXT4_I(inode)->i_fc_list,
-> > > +                             (sbi->s_mount_state & EXT4_FC_COMMITTING) ?
-> > > +                             &sbi->s_fc_q[FC_Q_STAGING] :
-> > > +                             &sbi->s_fc_q[FC_Q_MAIN]);
-> > > +     spin_unlock(&sbi->s_fc_lock);
-> >
-> > OK, so how do you prevent inode from being freed while it is still on
-> > i_fc_list? I don't see anything preventing that and it could cause nasty
-> > use-after-free issues. Note that for similar reasons JBD2 uses external
-> > separately allocated inode for jbd2_inode so that it can have separate
-> > lifetime (related to transaction commits) from struct ext4_inode_info.
-> So, if you see the function ext4_fc_del() above, it's called from
-> ext4_clear_inode(). What ext4_fc_del() does is that, if the inode is
-> not being committed, it just removes it from the list. If that inode
-> was deleted, we have a separate dentry queue which will record the
-> deletion of the inode, so we don't really need the struct
-> ext4_inode_info for recording that on-disk. However, if the inode is
-> being committed (this is figured out by checking the per inode
-> COMMITTING state), ext4_fc_del() waits until the completion.
-
-But I don't think this quite works. Consider the following scenario:
-
-inode I gets modified in transaction T
-  you add I to FC list
-
-memory pressure reclaims I from memory
-  you remove I from FC list
-
-open(I) -> inode gets loaded to memory again. Not tracked in FC list.
-fsync(I) -> nothing to do, FC list is empty
-<crash>
-
-And 'I' now doesn't contain data in should because T didn't commit yet and
-FC was empty.
-
-> > > +
-> > > +     return ret;
-> > > +}
-> > > +
-> > > +struct __track_dentry_update_args {
-> > > +     struct dentry *dentry;
-> > > +     int op;
-> > > +};
-> > > +
-> > > +/* __track_fn for directory entry updates. Called with ei->i_fc_lock. */
-> > > +static void ext4_fc_submit_bh(struct super_block *sb)
-> > > +{
-> > > +     int write_flags = REQ_SYNC;
-> > > +     struct buffer_head *bh = EXT4_SB(sb)->s_fc_bh;
-> > > +
-> > > +     if (test_opt(sb, BARRIER))
-> > > +             write_flags |= REQ_FUA | REQ_PREFLUSH;
-> >
-> > Submitting each fastcommit buffer with REQ_FUA | REQ_PREFLUSH is
-> > unnecessarily expensive (especially if there will be unrelated writes
-> > happening to the filesystem while fastcommit is running). If nothing else,
-> > it's enough to have REQ_PREFLUSH only once during the whole fastcommit to
-> > flush out written back data blocks (plus journal device may be different
-> > from the filesystem device so you need to be flushing the filesystem device
-> > for this - see how the jbd2 commit code does this).
-> >
-> > Also REQ_FUA on each block may be overkill for devices that don't support
-> > it natively (and thus REQ_FUA is simulated with full write cache pre and
-> > post flush) - for such devices it would be better to just write out
-> > fastcommit normally and then issue one cache flush. With careful
-> > checksumming, block ID tagging and such, it should be safe against disk
-> > reordering writes. But I guess we can leave this optimization as a TODO
-> > item for later (but I think it would be good to design the on-disk format of
-> > fastcommit blocks so that it does not rely on FUA writes).
-> I see. The on disk format doesn't rely on FUA / PREFLUSH, I added it
-> based on the observation that in most cases all the fast commit info
-> was written in 1 block only. I didn't see much difference in the
-> performance but I get your point. I'll add this as a TODO in the code
-> for now.
-
-OK, the performance optimization can wait for later but the flushing of
-proper device needs to be fixed soon - as I wrote above REQ_PREFLUSH is not
-enough (and needed at all) when the journal device is different from the
-filesystem device.
-
-> > > +/*
-> > > + * Complete a fast commit by writing tail tag.
-> > > + *
-> > > + * Writing tail tag marks the end of a fast commit. In order to guarantee
-> > > + * atomicity, after writing tail tag, even if there's space remaining
-> > > + * in the block, next commit shouldn't use it. That's why tail tag
-> > > + * has the length as that of the remaining space on the block.
-> > > + */
-> > > +static int ext4_fc_write_tail(struct super_block *sb, u32 crc)
-> > > +{
-> > > +     struct ext4_sb_info *sbi = EXT4_SB(sb);
-> > > +     struct ext4_fc_tl tl;
-> > > +     struct ext4_fc_tail tail;
-> > > +     int off, bsize = sbi->s_journal->j_blocksize;
-> > > +     u8 *dst;
-> > > +
-> > > +     /*
-> > > +      * ext4_fc_reserve_space takes care of allocating an extra block if
-> > > +      * there's no enough space on this block for accommodating this tail.
-> > > +      */
-> > > +     dst = ext4_fc_reserve_space(sb, sizeof(tl) + sizeof(tail), &crc);
-> > > +     if (!dst)
-> > > +             return -ENOSPC;
-> > > +
-> > > +     off = sbi->s_fc_bytes % bsize;
-> > > +
-> > > +     tl.fc_tag = cpu_to_le16(EXT4_FC_TAG_TAIL);
-> > > +     tl.fc_len = cpu_to_le16(bsize - off - 1 + sizeof(struct ext4_fc_tail));
-> > > +     sbi->s_fc_bytes = round_up(sbi->s_fc_bytes, bsize);
-> > > +
-> > > +     ext4_fc_memcpy(sb, dst, &tl, sizeof(tl), &crc);
-> > > +     dst += sizeof(tl);
-> > > +     tail.fc_tid = cpu_to_le32(sbi->s_journal->j_running_transaction->t_tid);
-> > > +     ext4_fc_memcpy(sb, dst, &tail.fc_tid, sizeof(tail.fc_tid), &crc);
-> > > +     dst += sizeof(tail.fc_tid);
-> > > +     tail.fc_crc = cpu_to_le32(crc);
-> > > +     ext4_fc_memcpy(sb, dst, &tail.fc_crc, sizeof(tail.fc_crc), NULL);
-> > > +
-> > > +     ext4_fc_submit_bh(sb);
-> > > +
-> > > +     return 0;
-> > > +}
-> >
-> > Is there a reason to pass CRC all around (so you have to have special
-> > functions like ext4_fc_memcpy(), ext4_fc_memzero(), ...) instead of just
-> > creating the whole block and then computing CRC in one go?
-> >
-> > In fact, as looking through the code, it seems to me it would be slightly
-> > nicer layer separation and interface if JBD2 provided functions for storage
-> > of data blobs and handled the details of space & block management,
-> > checksums, writeout, on recovery verification of correctness (so it would
-> > just provide back a stream of blobs for FS to replay). Just an idea for
-> > consideration, the current interface isn't too bad and we can change it
-> > later if we decide so.
-> I designed this keeping DAX mode in mind where we would benefit if we
-> don't use buffer heads and blocks. There is no block level CRC, but
-> CRC covers all the tags either from the start or from the last tail
-> tag (whichever comes first). This kind of CRC can span across
-> multipleblocks or we could have multiple CRCs in one block. Passing
-> CRC around helps us to compute CRC as we write tags to storage. In DAX
-> mode, this would allow fast commit commits to be smaller than block
-> size. DAX mode code isn't implemented completely yet, but I wanted to
-> make sure that the design of on-disk format is consistent and
-> efficient for both DAX and non-DAX modes.
-
-OK, I understand. Thanks for explanation!
-
-> > > +
-> > > +/*
-> > > + * Adds tag, length, value and updates CRC. Returns true if tlv was added.
-> > > + * Returns false if there's not enough space.
-> > > + */
-> > > + */
-> > > +static int ext4_fc_write_inode(struct inode *inode, u32 *crc)
-> > > +{
-> > > +     struct ext4_inode_info *ei = EXT4_I(inode);
-> > > +     int inode_len = EXT4_GOOD_OLD_INODE_SIZE;
-> > > +     int ret;
-> > > +     struct ext4_iloc iloc;
-> > > +     struct ext4_fc_inode fc_inode;
-> > > +     struct ext4_fc_tl tl;
-> > > +     u8 *dst;
-> > > +
-> > > +     ret = ext4_get_inode_loc(inode, &iloc);
-> > > +     if (ret)
-> > > +             return ret;
-> > > +
-> > > +     if (EXT4_INODE_SIZE(inode->i_sb) > EXT4_GOOD_OLD_INODE_SIZE)
-> > > +             inode_len += ei->i_extra_isize;
-> > > +
-> > > +     fc_inode.fc_ino = cpu_to_le32(inode->i_ino);
-> > > +     tl.fc_tag = cpu_to_le16(EXT4_FC_TAG_INODE);
-> > > +     tl.fc_len = cpu_to_le16(inode_len + sizeof(fc_inode.fc_ino));
-> > > +
-> > > +     dst = ext4_fc_reserve_space(inode->i_sb,
-> > > +                     sizeof(tl) + inode_len + sizeof(fc_inode.fc_ino), crc);
-> > > +     if (!dst)
-> > > +             return -ECANCELED;
-> > > +
-> > > +     if (!ext4_fc_memcpy(inode->i_sb, dst, &tl, sizeof(tl), crc))
-> > > +             return -ECANCELED;
-> > > +     dst += sizeof(tl);
-> > > +     if (!ext4_fc_memcpy(inode->i_sb, dst, &fc_inode, sizeof(fc_inode), crc))
-> > > +             return -ECANCELED;
-> > > +     dst += sizeof(fc_inode);
-> > > +     if (!ext4_fc_memcpy(inode->i_sb, dst, (u8 *)ext4_raw_inode(&iloc),
-> > > +                                     inode_len, crc))
-> > > +             return -ECANCELED;
-> >
-> > Isn't this racy? What guarantees the inode state you record here is a valid
-> > one for the fastcommit? I mean this gets called at the time of fastcommit
-> > (i.e., fsync), so a fastcommit code must record changes to all other
-> > metadata that relate to the currently recorded inode state. But this isn't
-> > serialized in any way (AFAICT) with on-going inode changes so how can
-> > fastcommit code guarantee that? This is a similar case as a problem I
-> > describe below...
-> So we have ext4_fc_start_update(inode) / ext4_fc_stop_update(inode)
-> which is called by all the operations that happen on an inode. If the
-> inode in question is undergoing a fast commit, ext4_fc_start_update()
-> will block. So that ensures that inode won't be modified once fast
-> commit starts. So, in general, before doing any fast commit related
-> operation, we'll first put the inode in committing state, that's the
-> state of the inode which will be committed on-disk in fast commit.
-
-I see. See the case below for my comments.
-
-> > > +
-> > > +     return 0;
-> > > +}
-> > > +
-> > > +/*
-> > > + * Writes updated data ranges for the inode in question. Updates CRC.
-> > > + * Returns 0 on success, error otherwise.
-> > > + */
-> > > +static int ext4_fc_write_inode_data(struct inode *inode, u32 *crc)
-> > > +{
-> > > +     ext4_lblk_t old_blk_size, cur_lblk_off, new_blk_size;
-> > > +     struct ext4_inode_info *ei = EXT4_I(inode);
-> > > +     struct ext4_map_blocks map;
-> > > +     struct ext4_fc_add_range fc_ext;
-> > > +     struct ext4_fc_del_range lrange;
-> > > +     struct ext4_extent *ex;
-> > > +     int ret;
-> > > +
-> > > +     mutex_lock(&ei->i_fc_lock);
-> > > +     if (ei->i_fc_lblk_len == 0) {
-> > > +             mutex_unlock(&ei->i_fc_lock);
-> > > +             return 0;
-> > > +     }
-> > > +     old_blk_size = ei->i_fc_lblk_start;
-> > > +     new_blk_size = ei->i_fc_lblk_start + ei->i_fc_lblk_len - 1;
-> > > +     ei->i_fc_lblk_len = 0;
-> > > +     mutex_unlock(&ei->i_fc_lock);
-> > > +
-> > > +     cur_lblk_off = old_blk_size;
-> > > +     jbd_debug(1, "%s: will try writing %d to %d for inode %ld\n",
-> > > +               __func__, cur_lblk_off, new_blk_size, inode->i_ino);
-> > > +
-> > > +     while (cur_lblk_off <= new_blk_size) {
-> > > +             map.m_lblk = cur_lblk_off;
-> > > +             map.m_len = new_blk_size - cur_lblk_off + 1;
-> > > +             ret = ext4_map_blocks(NULL, inode, &map, 0);
-> > > +             if (ret < 0)
-> > > +                     return -ECANCELED;
-> >
-> > So isn't this actually racy with a risk of stale data exposure? Consider a
-> > situation like:
-> >
-> > Task 1:                         Task 2:
-> > pwrite(file, buf, 8192, 0)
-> > punch(file, 0, 4096)
-> > fsync(file)
-> >   writeout range 4096-8192
-> >   fastcommit for inode range 0-8192
-> >                                 pwrite(file, buf, 4096, 0)
-> >     ext4_map_blocks(file)
-> >       - reports that block at offset 0 is mapped so that is recorded in
-> >         fastcommit record. But data for that is not written so after a
-> >         crash we'd expose stale data in that block.
-> >
-> > Am I missing something?
-> So the way this gets handled is before entering this function, the
-> inode enters COMMITTING state (in ext4_fc_submit_inode_data_all
-> function). Once in COMMITTING state, all the inodes on this inode get
-> paused. Also, the commit path waits until all the ongoing updates on
-> that inode are completed. Once they are completed, only then its data
-> buffers are flushed and this ext4_map_blocks is called. So Task-2 here
-> would have either completely finished or would wait until the end of
-> this inode's commit. I realize that I should probably add more
-> comments to make this more clearer in the code. But is handling it
-> this way sufficient or am I missing any more cases?
-
-I see. In principle this should work. But I don't like that we have yet
-another mechanism that needs to properly wrap inode changes to make
-fastcommits work. And if we get it wrong somewhere, the breakage will be
-almost impossible to notice until someone looses data after a power
-failure. So it seems a bit fragile to me.
-
-Ideally I think we would reuse the current transaction machinery for this
-somehow (so that changes added through one transaction handle would behave
-atomically wrt to fastcommits) but the details are not clear to me yet. I
-need to think more about this...
-
-> > > +
-> > > +             if (map.m_len == 0) {
-> > > +                     cur_lblk_off++;
-> > > +                     continue;
-> > > +             }
-> > > +
-> > > @@ -271,6 +272,7 @@ static ssize_t ext4_buffered_write_iter(struct kiocb *iocb,
-> > >
-> > >  out:
-> > >       inode_unlock(inode);
-> > > +     ext4_fc_stop_update(inode);
-> > >       if (likely(ret > 0)) {
-> > >               iocb->ki_pos += ret;
-> > >               ret = generic_write_sync(iocb, ret);
-> > > @@ -534,7 +536,9 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
-> > >                       goto out;
-> > >               }
-> > >
-> > > +             ext4_fc_start_update(inode);
-> > >               ret = ext4_orphan_add(handle, inode);
-> > > +             ext4_fc_stop_update(inode);
-> >
-> > Why is here protected only the orphan addition? What about other changes
-> > happening to the inode during direct write?
-> This is the only change that is protected by handle in this function.
-> What I'm trying to do here (and in other places) is that anything that
-> happens between ext4_journal_start() and ext4_journal_stop() happens
-> atomically. The way to guarantee that is to ensure that the same block
-> is also surrounded by ext4_fc_start_update(inode) and
-> ext4_fc_stop_update(inode).
+> On Mon, 26 Oct 2020 at 19:36, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+> [...]
+>>  /**
+>>   * struct kunit_suite - describes a related collection of &struct kunit_case
+>> @@ -208,6 +217,15 @@ struct kunit {
+>>         const char *name; /* Read only after initialization! */
+>>         char *log; /* Points at case log after initialization */
+>>         struct kunit_try_catch try_catch;
+>> +       /* param_values points to test case parameters in parameterized tests */
+>> +       void *param_values;
 > 
-> I also realized while looking at this comment is that we probably need
-> a new TLV for adding orphan inode to the list?
+> This should be singular, i.e. "param_value", since the generator only
+> generates 1 value for each test. Whether or not that value is a
+> pointer that points to more than 1 value or is an integer etc. is
+> entirely test-dependent.
+> 
+>> +       /*
+>> +        * current_param stores the index of the parameter in
+>> +        * the array of parameters in parameterized tests.
+>> +        * current_param + 1 is printed to indicate the parameter
+>> +        * that causes the test to fail in case of test failure.
+>> +        */
+>> +       int current_param;
+> 
+> I think, per your comment above, this should be named "param_index".
+> Also, I would suggest removing the mention of "array" in the comment,
+> because the parameters aren't dependent on use of an array.
+> 
+>>         /*
+>>          * success starts as true, and may only be set to false during a
+>>          * test case; thus, it is safe to update this across multiple
+>> @@ -1742,4 +1760,18 @@ do {                                                                            \
+>>                                                 fmt,                           \
+>>                                                 ##__VA_ARGS__)
+>>
+>> +/**
+>> + * KUNIT_PARAM_GENERATOR() - Helper method for test parameter generators
+>> + *                          required in parameterized tests.
+>> + * @name:  prefix of the name for the test parameter generator function.
+>> + * @prev: a pointer to the previous test parameter, NULL for first parameter.
+>> + * @array: a user-supplied pointer to an array of test parameters.
+>> + */
+>> +#define KUNIT_PARAM_GENERATOR(name, array)                                                     \
+>> +       static void *name##_gen_params(void *prev)                                              \
+>> +       {                                                                                       \
+>> +               typeof((array)[0]) * __next = prev ? ((typeof(__next)) prev) + 1 : (array);     \
+>> +               return __next - (array) < ARRAY_SIZE((array)) ? __next : NULL;                  \
+>> +       }
+>> +
+>>  #endif /* _KUNIT_TEST_H */
+>> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+>> index 750704abe89a..b70ab9b12f3b 100644
+>> --- a/lib/kunit/test.c
+>> +++ b/lib/kunit/test.c
+>> @@ -127,6 +127,11 @@ unsigned int kunit_test_case_num(struct kunit_suite *suite,
+>>  }
+>>  EXPORT_SYMBOL_GPL(kunit_test_case_num);
+>>
+>> +static void kunit_print_failed_param(struct kunit *test)
+>> +{
+>> +       kunit_err(test, "\n\tTest failed at parameter: %d\n", test->current_param + 1);
+>> +}
+> 
+> Is this the only place where the param index is used? It might be
+> helpful to show the index together with the test-case name, otherwise
+> we get a series of test cases in the output which are all named the
+> same which can be confusing.
+> 
 
-> > Also I don't see anything tracking inode changes due to writes through mmap?
-> > How is that supposed to work?
-> Right, I have missed those. I see that mmap function
-> ext4_page_mkwrite() calls ext4_jbd2_inode_add_write that tells jbd2
-> what is the range that needs to be written for the inode in question.
-> I guess I can just update that function to update inode's FC range as
-> well?
+Yes, this is the only place param index is used.
 
-Yes, you need to add tracking of the page range handled in
-ext4_page_mkwrite() to FC.
+>>  static void kunit_print_string_stream(struct kunit *test,
+>>                                       struct string_stream *stream)
+>>  {
+>> @@ -168,6 +173,8 @@ static void kunit_fail(struct kunit *test, struct kunit_assert *assert)
+>>         assert->format(assert, stream);
+>>
+>>         kunit_print_string_stream(test, stream);
+>> +       if (test->param_values)
+>> +               kunit_print_failed_param(test);
+>>
+>>         WARN_ON(string_stream_destroy(stream));
+>>  }
+>> @@ -239,7 +246,18 @@ static void kunit_run_case_internal(struct kunit *test,
+>>                 }
+>>         }
+>>
+>> -       test_case->run_case(test);
+>> +       if (!test_case->generate_params) {
+>> +               test_case->run_case(test);
+>> +       } else {
+>> +               test->param_values = test_case->generate_params(NULL);
+>> +               test->current_param = 0;
+>> +
+>> +               while (test->param_values) {
+>> +                       test_case->run_case(test);
+>> +                       test->param_values = test_case->generate_params(test->param_values);
+>> +                       test->current_param++;
+>> +               }
+>> +       }
+>>  }
+> 
+> Looking forward to v4. :-)
+> 
+> Thanks,
+> -- Marco
+> 
 
-I've also realized that you probably need to disable fastcommits when data
-journaling is enabled for the inode (probably just disable fastcommit
-feature with data=jounral mount option, make inode ineligible if it has
-'journal data' flag set).
-
-									Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+I will make all the suggested changes.
+Thanks!
