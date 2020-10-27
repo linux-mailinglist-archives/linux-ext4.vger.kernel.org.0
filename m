@@ -2,77 +2,73 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72EB029A8C2
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Oct 2020 11:07:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BF4729AD49
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Oct 2020 14:27:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896739AbgJ0KBG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 27 Oct 2020 06:01:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42514 "EHLO mail.kernel.org"
+        id S2900685AbgJ0N15 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 27 Oct 2020 09:27:57 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58620 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896053AbgJ0Jvn (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 27 Oct 2020 05:51:43 -0400
-Received: from mail.kernel.org (ip5f5ad5af.dynamic.kabel-deutschland.de [95.90.213.175])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA9F424199;
-        Tue, 27 Oct 2020 09:51:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603792301;
-        bh=nmVlHJl4ky1onYW7Dq+mrJQd7XAD9Hsjyr0pZ7lcwnE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gfA4ech+UxL7gl/KMolyJ45N5ZQ5YTWHlr0nl6u/lRLKHTorLbFYfForbQXrl1JpC
-         P/egqjtOJ+mjvCPGko4KCwjbgMVTgINy0wvgLWUMZu6OgJuK1/ceLnjnuA/zGWGAJi
-         WsubpSveoltMGUAGQjNzhN/6XOQ6f6YBwKJpn36Q=
-Received: from mchehab by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1kXLdj-003FFT-OF; Tue, 27 Oct 2020 10:51:39 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
-        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 23/32] jbd2: fix a kernel-doc markup
-Date:   Tue, 27 Oct 2020 10:51:27 +0100
-Message-Id: <6055927ada2015b55b413cdd2670533bdc9a8da2.1603791716.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1603791716.git.mchehab+huawei@kernel.org>
-References: <cover.1603791716.git.mchehab+huawei@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+        id S2900681AbgJ0N15 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 27 Oct 2020 09:27:57 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E3AB0ACAC;
+        Tue, 27 Oct 2020 13:27:55 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 9D51D1E10F5; Tue, 27 Oct 2020 14:27:55 +0100 (CET)
+From:   Jan Kara <jack@suse.cz>
+To:     Ted Tso <tytso@mit.edu>
+Cc:     <linux-ext4@vger.kernel.org>,
+        Mauricio Faria de Oliveira <mfo@canonical.com>,
+        Jan Kara <jack@suse.cz>
+Subject: [PATCH] ext4: Fix mmap write protection for data=journal mode
+Date:   Tue, 27 Oct 2020 14:27:51 +0100
+Message-Id: <20201027132751.29858-1-jack@suse.cz>
+X-Mailer: git-send-email 2.16.4
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The kernel-doc markup that documents _fc_replay_callback is
-missing an asterisk, causing this warning:
+Commit afb585a97f81 "ext4: data=journal: write-protect pages on
+j_submit_inode_data_buffers()") added calls ext4_jbd2_inode_add_write()
+to track inode ranges whose mappings need to get write-protected during
+transaction commits. However the added calls use wrong start of a range
+(0 instead of page offset) and so write protection is not necessarily
+effective. Use correct range start to fix the problem.
 
-	../include/linux/jbd2.h:1271: warning: Function parameter or member 'j_fc_replay_callback' not described in 'journal_s'
-
-When building the docs.
-
-Fixes: 609f928af48f ("jbd2: fast commit recovery path")
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: afb585a97f81 ("ext4: data=journal: write-protect pages on j_submit_inode_data_buffers()")
+Signed-off-by: Jan Kara <jack@suse.cz>
 ---
- include/linux/jbd2.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/ext4/inode.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index fb3d71ad6eea..3c5f76ce88f1 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -1253,7 +1253,7 @@ struct journal_s
- 	 */
- 	void (*j_fc_cleanup_callback)(struct journal_s *journal, int);
- 
--	/*
-+	/**
- 	 * @j_fc_replay_callback:
- 	 *
- 	 * File-system specific function that performs replay of a fast
+Mauricio, I think this could be the reason for occasional test failures you
+were still seeing. Can you try whether this patch fixes those for you? Thanks!
+
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 03c2253005f0..f4a599c6dcde 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -1918,7 +1918,7 @@ static int __ext4_journalled_writepage(struct page *page,
+ 	}
+ 	if (ret == 0)
+ 		ret = err;
+-	err = ext4_jbd2_inode_add_write(handle, inode, 0, len);
++	err = ext4_jbd2_inode_add_write(handle, inode, page_offset(page), len);
+ 	if (ret == 0)
+ 		ret = err;
+ 	EXT4_I(inode)->i_datasync_tid = handle->h_transaction->t_tid;
+@@ -6157,7 +6157,8 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
+ 			if (ext4_walk_page_buffers(handle, page_buffers(page),
+ 					0, len, NULL, write_end_fn))
+ 				goto out_error;
+-			if (ext4_jbd2_inode_add_write(handle, inode, 0, len))
++			if (ext4_jbd2_inode_add_write(handle, inode,
++						      page_offset(page), len))
+ 				goto out_error;
+ 			ext4_set_inode_state(inode, EXT4_STATE_JDATA);
+ 		} else {
 -- 
-2.26.2
+2.16.4
 
