@@ -2,124 +2,108 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C24729C4F4
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Oct 2020 19:08:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FB7F29C7AE
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Oct 2020 19:46:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1823966AbgJ0SBP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 27 Oct 2020 14:01:15 -0400
-Received: from mail-ej1-f67.google.com ([209.85.218.67]:37088 "EHLO
-        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1823956AbgJ0SBF (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Oct 2020 14:01:05 -0400
-Received: by mail-ej1-f67.google.com with SMTP id p9so3540749eji.4
-        for <linux-ext4@vger.kernel.org>; Tue, 27 Oct 2020 11:01:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/GEl6E0e0p4EV61X36fKF8GZsP0/NttcxUtb8/BC5qU=;
-        b=pUpzP8JF5OtoMg7kiEW3Llgu3nnJGbNA/i4RgMqMODisMargRY69Z94AXWrQNTLfSQ
-         JmNwCOtlzrFcAggQHMIRMsHkboAJL/oBjNA+7O5Mwf2PF6eJ4v7igb1r9aBoXgAF0VRa
-         pDd/FS7XUbfh82FGzbCGSTavByS4KggLekjNd/547iW1OvdFXeINBsn1kEXJJaIV3gdi
-         31KWAngmSkgYU1MM+uB474b0MlZMpLmIX68+QRelWdFtIMrNGqhg5PVoc6naB9Vvr8jz
-         +SV255ZRxXlFOZSsMqc292jp8g/m1WBPFrNZHRjfmLgLqC4JvlJQANPt7rIyd+8LzA47
-         BVRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/GEl6E0e0p4EV61X36fKF8GZsP0/NttcxUtb8/BC5qU=;
-        b=mBQa3O1kfOi0JAXq5WxGpYeOG7Q0o66/5hvccottyjo4lW8RhZ7Z9ThnayY5uvee6w
-         UX1JcxWAArjsMLzRUTgULfhR32JzxG1o89aN0E4k2svbpBrTFKFsaB3CYDp7LAM+7bb8
-         Jl7S6VANeWhA0UoG1siteuTvwPqeJYxDCIb8+p18F6c8W+3Ex7c9r0zk4wql/4ZMBAPk
-         1MEWsrXdTWBGWcwHQX/frHAlvwgTLVMLAeTO5b4vW0LOp0X8LoyubrPTuC2uHvc4G/4R
-         KLvfuy3ccUL02lf6qJ0/7N95e2vpNkt+Bk9j62po0QsGa4INa6wxgJ1QdOnMO6zDHtHj
-         k3Tw==
-X-Gm-Message-State: AOAM530Uk9yY3ouEYdq9l4Hp65lGfKj5ON04QNdLtx4lsQJ3qbpGTFBk
-        IhuiK5aMCN9NYzKYpWgVJxNFmrPtP4TLM7j0mRjCnQwBKXg=
-X-Google-Smtp-Source: ABdhPJzWVwEbwZ1HfaO/caQJZmL7G/b9kob0+/VLd0jv3fPmrtVaAekcvuWhxMKBtJ4fRSAc/YKMWehcldfj9hpgH8I=
-X-Received: by 2002:a17:906:640d:: with SMTP id d13mr3464782ejm.223.1603821662773;
- Tue, 27 Oct 2020 11:01:02 -0700 (PDT)
+        id S1829022AbgJ0SqG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 27 Oct 2020 14:46:06 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:37885 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1824035AbgJ0SpV (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Oct 2020 14:45:21 -0400
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 09RIj7Ie008005
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 27 Oct 2020 14:45:08 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 862BB420107; Tue, 27 Oct 2020 14:45:07 -0400 (EDT)
+Date:   Tue, 27 Oct 2020 14:45:07 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Jan Kara <jack@suse.cz>
+Cc:     harshad shirwadkar <harshadshirwadkar@gmail.com>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Jayashree <jaya@cs.utexas.edu>, vijay@cs.utexas.edu
+Subject: Re: [PATCH v10 5/9] ext4: main fast-commit commit path
+Message-ID: <20201027184507.GD5691@mit.edu>
+References: <20201015203802.3597742-1-harshadshirwadkar@gmail.com>
+ <20201015203802.3597742-6-harshadshirwadkar@gmail.com>
+ <20201023103013.GF25702@quack2.suse.cz>
+ <CAD+ocbws2J0boxfNA+gahWwTAqm8-Pef9_WkcwwKFjpiJhvJKw@mail.gmail.com>
+ <20201027142910.GB16090@quack2.suse.cz>
 MIME-Version: 1.0
-References: <20201027080954.GA2513442@mwanda>
-In-Reply-To: <20201027080954.GA2513442@mwanda>
-From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
-Date:   Tue, 27 Oct 2020 11:00:51 -0700
-Message-ID: <CAD+ocbxnLG_h4HeQUV8yN-=uYet3V8Yv8gNEGuJaGVGobdekYw@mail.gmail.com>
-Subject: Re: [bug report] ext4: fast commit recovery path
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027142910.GB16090@quack2.suse.cz>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Dan,
+On Tue, Oct 27, 2020 at 03:29:10PM +0100, Jan Kara wrote:
+> 
+> OK, I see. Maybe add a paragraph about this to fastcommit doc? I agree that
+> we can leave these optimizations for later, I was just wondering whether
+> there isn't some fundamental reason why global flush would be required and
+> I'm happy to hear that there isn't.
+> 
+> The advantage of soft_consistency as you call it would be IMO most seen if
+> there's relatively heavy non-fsync IO load in parallel with frequent fsyncs
+> of a tiny file. And such load is not infrequent in practice. I agree that
+> benchmarks like dbench are unlikely to benefit from soft_consistency since
+> all IO the benchmark does is in fact forced by fsync.
+> 
+> I also think that with soft_consistency we could benefit (e.g. on SSD
+> storage) from having several fast-commit areas in the journal so multiple
+> fastcommits can run in parallel. But that's also for some later
+> experimentation...
 
-On Tue, Oct 27, 2020 at 1:10 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
->
-> Hello Harshad Shirwadkar,
->
-> The patch 8016e29f4362: "ext4: fast commit recovery path" from Oct
-> 15, 2020, leads to the following static checker warning:
->
->         fs/ext4/fast_commit.c:1620 ext4_fc_replay_add_range()
->         warn: 'path' is an error pointer or valid
->
-> fs/ext4/fast_commit.c
->   1600          cur = start;
->   1601          remaining = len;
->   1602          jbd_debug(1, "ADD_RANGE, lblk %d, pblk %lld, len %d, unwritten %d, inode %ld\n",
->   1603                    start, start_pblk, len, ext4_ext_is_unwritten(ex),
->   1604                    inode->i_ino);
->   1605
->   1606          while (remaining > 0) {
->   1607                  map.m_lblk = cur;
->   1608                  map.m_len = remaining;
->   1609                  map.m_pblk = 0;
->   1610                  ret = ext4_map_blocks(NULL, inode, &map, 0);
->   1611
->   1612                  if (ret < 0) {
->   1613                          iput(inode);
->   1614                          return 0;
->   1615                  }
->   1616
->   1617                  if (ret == 0) {
->   1618                          /* Range is not mapped */
->   1619                          path = ext4_find_extent(inode, cur, NULL, 0);
->   1620                          if (!path)
->   1621                                  continue;
->                                 ^^^^^^^^^^^^^^^^
-> "path" can't be NULL, this should be an IS_ERR() test.  It's sort of
-> surprising to me that we continue here instead of returning an error.
-Thanks for pointing this out. We should check using IS_ERR() here.
-Also, I agree that instead of "continue" we should be returning an
-error. If not we'd be stuck in this loop forever.
+Right, so this is the reason why I wasn't super-excited by the
+proposal to document crash recovery semantics in Linux file systems
+proposed by Jayashree Mohan and Prof. Vijay Chidambaram last year[1].  I
+knew that we were planning the Fast Commit work (Jayashree and Vijay,
+this is a simplified version of the proposal made by Park and Shin in
+their iJournaling paper[2]) and having something document that an
+fsync(2) to one file guarantees that changes made to some other file
+that were made "earlier" would disallow this particular optimization.
 
-Thanks,
-Harshad
->
->   1622                          memset(&newex, 0, sizeof(newex));
->   1623                          newex.ee_block = cpu_to_le32(cur);
->   1624                          ext4_ext_store_pblock(
->   1625                                  &newex, start_pblk + cur - start);
->   1626                          newex.ee_len = cpu_to_le16(map.m_len);
->   1627                          if (ext4_ext_is_unwritten(ex))
->   1628                                  ext4_ext_mark_unwritten(&newex);
->   1629                          down_write(&EXT4_I(inode)->i_data_sem);
->   1630                          ret = ext4_ext_insert_extent(
->   1631                                  NULL, inode, &path, &newex, 0);
->   1632                          up_write((&EXT4_I(inode)->i_data_sem));
->   1633                          ext4_ext_drop_refs(path);
->   1634                          kfree(path);
->   1635                          if (ret) {
->   1636                                  iput(inode);
->   1637                                  return 0;
->   1638                          }
->   1639                          goto next;
->   1640                  }
->   1641
->   1642                  if (start_pblk + cur - start != map.m_pblk) {
->
-> regards,
-> dan carpenter
+[1] http://lore.kernel.org/r/1552418820-18102-1-git-send-email-jaya@cs.utexas.edu
+[2] https://www.usenix.org/conference/atc17/technical-sessions/presentation/park
+
+That being said, I was afraid that there *were* applications that
+might be (wrongly) making this assumption, even though it wasn't
+guaranteed by POSIX.  So when it didn't make much difference for
+benchmarks, and given that our original goal was to speed up NFS file
+serving, where every single NFS RPC has to be synchronous before an
+acknowledgement is sent back to the client, we decided to take the
+conservative path --- at least for now.
+
+I do agree with you that I can certainly think of workloads where not
+requiring entanglement of unrelated file writes via fsync(2) could be
+a huge performance win.
+
+One of the things that I did discuss with Harshad was using some
+hueristics, where if there are two "unrelated" applications (e.g.,
+different session id, or process group leader, or different uid,
+etc. --- details to be determined layer), we would not entangele
+writes to unrelated files via fsync(2), while forcing files written by
+the same application to share fate with one another even if only file
+is fsync'ed.  Hopefully, this would head off the possibility of
+another O_PONIES[3] controversy while still giving most of the
+benefits of not making fsync(2) a global file system barrier.  It
+would be hell to document in a standards specification, so the
+official rule would still be "fsync(2) only applies to the single
+file, and anything else is an accident of the implementation", per
+POSIX.
+
+[3] https://lwn.net/Articles/322823/
+
+I still think the right answer is a new system call which takes an
+array of file descriptors, so the application can explicitly declare
+which set of files can be reliably fsync'ed in the same transaction
+commit.  The downside is that this would require applications to
+change what they are doing, and it would take the better part of a
+decade before we could assume well-written applications are explicitly
+declaring their crash recovery needs.
+
+					- Ted
