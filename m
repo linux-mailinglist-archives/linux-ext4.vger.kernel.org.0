@@ -2,96 +2,123 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0789629A5E6
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Oct 2020 08:55:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D515629A639
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Oct 2020 09:10:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2508451AbgJ0Hzg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 27 Oct 2020 03:55:36 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:37336 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2508445AbgJ0Hzf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Oct 2020 03:55:35 -0400
-Received: by mail-oi1-f193.google.com with SMTP id f7so403827oib.4
-        for <linux-ext4@vger.kernel.org>; Tue, 27 Oct 2020 00:55:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DOZ/or+uXcofLUI05AASj9pqYEI1+H4nTxttRQeOH3w=;
-        b=p0ybGNuotD2awoJRp4EIUps3i33wWnSBscgfxKE+PLT03BAAfghsklin5UQ1AI5LHb
-         NKoqRRtTa/rJIBjm2EWYL+fKZ+pwXGCG9lFC5kLy0Hdm9u+zLFyksmaM+WRGUtZjYNoj
-         c3ikMGBTs+zDygIBiywKzSXWg5zfr96Pqw/VHcrTy79z5wSofz4rPXO8K3QreT1V7ylJ
-         uM14o74YCSexauZZ3iyZwyKFTdex1g9v2Uxpx9ISawxwvePFy+zZMHYdiDvPsHcAYaUx
-         0iMz9wq8LP+Qv4HgF0HBr2ybRH2ImmsnCgs1B6Prd2o6mLH7LAvmdo4V8xgU5YDNOs28
-         Oz5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DOZ/or+uXcofLUI05AASj9pqYEI1+H4nTxttRQeOH3w=;
-        b=e/oh3udAdKKaQ2zcW04K9TuKN7tEDHTTMqhKI1pZPMF86FhlkLkvjxFFf41D1IMgch
-         WggwOSZTNSFdWn+dpvkvdwOKYNPepEWNtxWR9ix96bJmZsgtnwrLqelBRbOIjzKI/ZTi
-         V7eGyyAjw67iQwkbla+z+cpHMpZ6Gu4HMOimj2beEYyxW1nUXOKbfAQstQD0Kma4wnbP
-         ij2vJF7hvXW3/GJTdrJjLc+sYGe9OqReSYV+Lv7rUU88//vF2cYXMBRE6lNTCe+HkCcP
-         Xn9vUqtNAnazzWJeSFllCevp13F0NYNAZkV+pLpdH0BnjCkLkSCfxjVXEbIXzWvVsEIj
-         3+3w==
-X-Gm-Message-State: AOAM531xxVywoxCPtHQg3IVO0dlj22v5ijTR59uZFOWK2nbfH/qGpEdA
-        OLf1DxGzgZi6rSIxgKITPlNxWIzDYCRBb4zsblne7g==
-X-Google-Smtp-Source: ABdhPJy9DnGoYipYvpataI7s7gEKop4LEknvR99sUFOYQrgxmqfLbYJYMFlpKS8G5wR7l7le8Ljz97l7WA1fdaM5ZvA=
-X-Received: by 2002:a54:4812:: with SMTP id j18mr632555oij.70.1603785333575;
- Tue, 27 Oct 2020 00:55:33 -0700 (PDT)
+        id S2394648AbgJ0IKG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 27 Oct 2020 04:10:06 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:34518 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390550AbgJ0IKE (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Oct 2020 04:10:04 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09R89R1B048553;
+        Tue, 27 Oct 2020 08:10:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=sVDZEZm3RA+4j9FG1sRi417xEvsK90qw+uivVTy63/Y=;
+ b=RNz4V/yA4Abf6bGW+gpNFxfz5P+TtU+X03QQ1hFxKnWqSoXRQ8I6YGCJ/mHJXBxTf0+m
+ aWK+iTiOpkQ5LKTYyTpktPB6hZpnMTzSMCUW2mT1yYYjZpceGSef9wFgppXWWZ/jZ3lR
+ MHBu+3csdT8Bhvo+nOzriFT4lSaGoLtHZoOmr4HQrhe613AEldQng1jKQeJoQ9rUTrjs
+ 8p4iczarUfjoanYCAuZl9D5cLnzeU82Xy2qEVxPfcHniCAjZqcH61OPe6rRcJ9eXnb7T
+ 0aWPpTS+QSZ5Er+wu2AxFAqn8aYOiUcqszpTAnxh3N4qT8mjXC5JBOittBFjmrKrs1Xz hQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 34cc7kre7s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 27 Oct 2020 08:10:02 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09R8A1dK057416;
+        Tue, 27 Oct 2020 08:10:01 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 34cx5wtw5f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 27 Oct 2020 08:10:01 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09R89xKU004198;
+        Tue, 27 Oct 2020 08:09:59 GMT
+Received: from mwanda (/10.175.160.91)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 27 Oct 2020 01:09:59 -0700
+Date:   Tue, 27 Oct 2020 11:09:54 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     harshadshirwadkar@gmail.com
+Cc:     linux-ext4@vger.kernel.org
+Subject: [bug report] ext4: fast commit recovery path
+Message-ID: <20201027080954.GA2513442@mwanda>
 MIME-Version: 1.0
-References: <20201026183523.82749-1-98.arpi@gmail.com>
-In-Reply-To: <20201026183523.82749-1-98.arpi@gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 27 Oct 2020 08:55:22 +0100
-Message-ID: <CANpmjNMNd2fMmqsmBMSTwD6Cp0OBORjTgDBiDOzXD1zVyELLnw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] kunit: Support for Parameterized Testing
-To:     Arpitha Raghunandan <98.arpi@gmail.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        skhan@linuxfoundation.org, Iurii Zaikin <yzaikin@google.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9786 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 mlxlogscore=778
+ suspectscore=3 bulkscore=0 malwarescore=0 spamscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010270054
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9786 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=1 adultscore=0
+ malwarescore=0 spamscore=0 clxscore=1015 mlxscore=0 suspectscore=3
+ priorityscore=1501 impostorscore=0 bulkscore=1 phishscore=0
+ mlxlogscore=784 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010270054
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, 26 Oct 2020 at 19:36, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
-[...]
->          * success starts as true, and may only be set to false during a
->          * test case; thus, it is safe to update this across multiple
-> @@ -1742,4 +1760,18 @@ do {                                                                            \
->                                                 fmt,                           \
->                                                 ##__VA_ARGS__)
->
-> +/**
-> + * KUNIT_PARAM_GENERATOR() - Helper method for test parameter generators
-> + *                          required in parameterized tests.
-> + * @name:  prefix of the name for the test parameter generator function.
+Hello Harshad Shirwadkar,
 
-This could mention that the generator function will be suffixed by
-"_gen_params".
+The patch 8016e29f4362: "ext4: fast commit recovery path" from Oct
+15, 2020, leads to the following static checker warning:
 
-> + * @prev: a pointer to the previous test parameter, NULL for first parameter.
-> + * @array: a user-supplied pointer to an array of test parameters.
-> + */
+	fs/ext4/fast_commit.c:1620 ext4_fc_replay_add_range()
+	warn: 'path' is an error pointer or valid
 
-I just noticed this: the interface of this macro does not include
-"prev" (which is an argument of the generated function, but not
-supplied to this macro; "prev" should hopefully be explained in the
-other comment you're adding for the new struct field). So, the
-kernel-doc comment here should only list the actual arguments of this
-macro, which is only "name" and "array".
+fs/ext4/fast_commit.c
+  1600          cur = start;
+  1601          remaining = len;
+  1602          jbd_debug(1, "ADD_RANGE, lblk %d, pblk %lld, len %d, unwritten %d, inode %ld\n",
+  1603                    start, start_pblk, len, ext4_ext_is_unwritten(ex),
+  1604                    inode->i_ino);
+  1605  
+  1606          while (remaining > 0) {
+  1607                  map.m_lblk = cur;
+  1608                  map.m_len = remaining;
+  1609                  map.m_pblk = 0;
+  1610                  ret = ext4_map_blocks(NULL, inode, &map, 0);
+  1611  
+  1612                  if (ret < 0) {
+  1613                          iput(inode);
+  1614                          return 0;
+  1615                  }
+  1616  
+  1617                  if (ret == 0) {
+  1618                          /* Range is not mapped */
+  1619                          path = ext4_find_extent(inode, cur, NULL, 0);
+  1620                          if (!path)
+  1621                                  continue;
+                                ^^^^^^^^^^^^^^^^
+"path" can't be NULL, this should be an IS_ERR() test.  It's sort of
+surprising to me that we continue here instead of returning an error.
 
-> +#define KUNIT_PARAM_GENERATOR(name, array)                                                     \
-[...]
+  1622                          memset(&newex, 0, sizeof(newex));
+  1623                          newex.ee_block = cpu_to_le32(cur);
+  1624                          ext4_ext_store_pblock(
+  1625                                  &newex, start_pblk + cur - start);
+  1626                          newex.ee_len = cpu_to_le16(map.m_len);
+  1627                          if (ext4_ext_is_unwritten(ex))
+  1628                                  ext4_ext_mark_unwritten(&newex);
+  1629                          down_write(&EXT4_I(inode)->i_data_sem);
+  1630                          ret = ext4_ext_insert_extent(
+  1631                                  NULL, inode, &path, &newex, 0);
+  1632                          up_write((&EXT4_I(inode)->i_data_sem));
+  1633                          ext4_ext_drop_refs(path);
+  1634                          kfree(path);
+  1635                          if (ret) {
+  1636                                  iput(inode);
+  1637                                  return 0;
+  1638                          }
+  1639                          goto next;
+  1640                  }
+  1641  
+  1642                  if (start_pblk + cur - start != map.m_pblk) {
 
-Thanks,
--- Marco
+regards,
+dan carpenter
