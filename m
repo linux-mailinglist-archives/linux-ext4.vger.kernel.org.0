@@ -2,39 +2,39 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB9C2299D5B
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Oct 2020 01:06:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE14D299EA6
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Oct 2020 01:17:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438646AbgJ0AF7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 26 Oct 2020 20:05:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54116 "EHLO mail.kernel.org"
+        id S2440661AbgJ0AQs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 26 Oct 2020 20:16:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2438167AbgJ0AFO (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 26 Oct 2020 20:05:14 -0400
+        id S2411534AbgJ0AKb (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 26 Oct 2020 20:10:31 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B657E20882;
-        Tue, 27 Oct 2020 00:05:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B71E2087C;
+        Tue, 27 Oct 2020 00:10:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603757113;
-        bh=jvrQeHg/oQEgAi5597Y8RqY/n70i6FEULjgF1fYF0WU=;
+        s=default; t=1603757431;
+        bh=D6HTFfDrOcFlIEIdxFRblmsSQYl9Cvw0/G7reCTd+cg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bv5DZY/hL4JNPElJWH2hYgVrTSTbwiTIenZGyNpfX27v9Y3+kxIFWZmbjJdhYT5+G
-         4DOwQ5bLZw/bjnQMipEchIW5LFJuS64hWP78fZ7VQGMZ65V621+8JdpdAVzdl5csl/
-         CU3Ylycc3j+a2pPziQh3SX/z0szxYgx6V5aRx5oY=
+        b=k5vRl02qodEbejuBymGMeJQ2wZjVw93Dom3ceVzb+sMWaIxz1s7WsCT4pUSAd3N46
+         lWy7Gr9NpZa7Iq4P6ITux1eIK0D/HwdsczDlksEP8LZCpxyCStjVIVgr065uFzMTHJ
+         LnBPuLOqWv6Qxt0RM+7v9VgSVJwSGYwWaLHxvKk0=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Jan Kara <jack@suse.cz>, Andreas Dilger <adilger@dilger.ca>,
         Ritesh Harjani <riteshh@linux.ibm.com>,
         Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
         linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 49/60] ext4: Detect already used quota file early
-Date:   Mon, 26 Oct 2020 20:04:04 -0400
-Message-Id: <20201027000415.1026364-49-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 37/46] ext4: Detect already used quota file early
+Date:   Mon, 26 Oct 2020 20:09:36 -0400
+Message-Id: <20201027000946.1026923-37-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201027000415.1026364-1-sashal@kernel.org>
-References: <20201027000415.1026364-1-sashal@kernel.org>
+In-Reply-To: <20201027000946.1026923-1-sashal@kernel.org>
+References: <20201027000946.1026923-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -68,10 +68,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 5 insertions(+)
 
 diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 0c15ff19acbd4..16ea7cfd130c0 100644
+index 634c822d1dc98..d941b0cee5f8e 100644
 --- a/fs/ext4/super.c
 +++ b/fs/ext4/super.c
-@@ -5752,6 +5752,11 @@ static int ext4_quota_on(struct super_block *sb, int type, int format_id,
+@@ -5626,6 +5626,11 @@ static int ext4_quota_on(struct super_block *sb, int type, int format_id,
  	/* Quotafile not on the same filesystem? */
  	if (path->dentry->d_sb != sb)
  		return -EXDEV;
