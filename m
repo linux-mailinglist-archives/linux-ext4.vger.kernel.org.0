@@ -2,89 +2,55 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC21E29CA8E
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Oct 2020 21:44:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 301BA29CB4E
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Oct 2020 22:34:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S373163AbgJ0UoI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 27 Oct 2020 16:44:08 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:44576 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2505096AbgJ0UoF (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Oct 2020 16:44:05 -0400
-Received: by mail-pf1-f195.google.com with SMTP id 133so1603239pfx.11
-        for <linux-ext4@vger.kernel.org>; Tue, 27 Oct 2020 13:44:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=m7PGhnwmiNEUHnrZwoGZYSfpdcHmffqQQyDqVwh7p2g=;
-        b=DbutXaYo0DqMFBwcf4GFyuti6pNYLI3oByQlUQ7y+G2wa31AlAC3c1lr6nGAMFXjSt
-         PBBrR8rGgwLjlQO/7oQGoNocKULakDCgT/EqeR8HdMWBkYqVgrZcwq6W9aPJbUrK4WWW
-         db0w04+vBJ9VScO68uPmnUhf53h2+ey5EYe6s22prpW+q91Ah+WjfssZwTVl24+tHHKA
-         NBzx4YklI0TTdHFrgxKl8Esmu5S5fnAZjxlkjEZ1B6kB/kHPKJ1zJdvkiT/knQH6x/0Y
-         mo2v8CFBxjuj2Bcdyg836KlfiW9FWQVwMn9EzTy7Mq8z+3VyHqnJCy8eysmPWbuZOa4D
-         Ud3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=m7PGhnwmiNEUHnrZwoGZYSfpdcHmffqQQyDqVwh7p2g=;
-        b=hVNscMqFmUqSIybyNXj5OPFpItKV3K48xxdokXlgbFWhtyrRbiwFTirAvx7kE9xVQz
-         t8ksqd+JzDfdUQwtw1Ik9+nSjIJ4h0zGCfz4KSEHWhB7Ge7ce5/VTaMJ4p7h1tPWkzE0
-         6tQhmlJZxftItlUIO+ELiTsCJW88h2X/oKGYWSbMCIKgA/PUcFW3ttMgqiaVzCX421oa
-         aLUC/DhaXGWDiCJMjM0aKibiUW7D4j9zU7WAwA+Z9GKbFEYvNyr2PVE1UuS9wj6N2MPf
-         6zSPPL0pn92EmpmjSp17Xb7wirj3jiBP/MguAOdtiAlREnFoCScSkyN7945UA8mlQA4D
-         895A==
-X-Gm-Message-State: AOAM532HMBeITdbSq9ljSABLMVg9Gfh0HRAEriApOlNt3bhat2dFRfjd
-        e2K7AFUjK775q0n8cCArG0ROMObcROPTLQ==
-X-Google-Smtp-Source: ABdhPJwaOcFc57Ms5/Ig8z33vrpGiIyDcwX1JG33xphsBuescU7uxrHK2a/IOfSW+eIVQZe1quFuaw==
-X-Received: by 2002:a62:6885:0:b029:164:51c0:b849 with SMTP id d127-20020a6268850000b029016451c0b849mr2035330pfc.58.1603831444183;
-        Tue, 27 Oct 2020 13:44:04 -0700 (PDT)
-Received: from harshads-520.kir.corp.google.com ([2620:15c:17:10:a6ae:11ff:fe11:86a2])
-        by smtp.googlemail.com with ESMTPSA id f4sm3153017pfc.63.2020.10.27.13.44.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 13:44:03 -0700 (PDT)
-From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu, Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH] ext4: use IS_ERR() for error checking of path
-Date:   Tue, 27 Oct 2020 13:43:42 -0700
-Message-Id: <20201027204342.2794949-1-harshadshirwadkar@gmail.com>
-X-Mailer: git-send-email 2.29.0.rc2.309.g374f81d7ae-goog
+        id S374150AbgJ0Vet (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 27 Oct 2020 17:34:49 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:41574 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S374132AbgJ0Ves (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Oct 2020 17:34:48 -0400
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 09RLQbBt015134
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 27 Oct 2020 17:26:38 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 9F4BB420107; Tue, 27 Oct 2020 17:26:37 -0400 (EDT)
+Date:   Tue, 27 Oct 2020 17:26:37 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 23/32] jbd2: fix a kernel-doc markup
+Message-ID: <20201027212637.GF5691@mit.edu>
+References: <cover.1603791716.git.mchehab+huawei@kernel.org>
+ <6055927ada2015b55b413cdd2670533bdc9a8da2.1603791716.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6055927ada2015b55b413cdd2670533bdc9a8da2.1603791716.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-With this fix, fast commit recovery code uses IS_ERR() for path
-returned by ext4_find_extent.
+On Tue, Oct 27, 2020 at 10:51:27AM +0100, Mauro Carvalho Chehab wrote:
+> The kernel-doc markup that documents _fc_replay_callback is
+> missing an asterisk, causing this warning:
+> 
+> 	../include/linux/jbd2.h:1271: warning: Function parameter or member 'j_fc_replay_callback' not described in 'journal_s'
+> 
+> When building the docs.
+> 
+> Fixes: 609f928af48f ("jbd2: fast commit recovery path")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-Fixes: 8016e29f4362 ("ext4: fast commit recovery path")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
----
- fs/ext4/fast_commit.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Thanks, I'm accomulating some bug fix patches to push to Linus, so
+I'll grab this for the ext4 git tree.
 
-diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index 3ee43fd6d5aa..8d43058386c3 100644
---- a/fs/ext4/fast_commit.c
-+++ b/fs/ext4/fast_commit.c
-@@ -1616,8 +1616,10 @@ static int ext4_fc_replay_add_range(struct super_block *sb,
- 		if (ret == 0) {
- 			/* Range is not mapped */
- 			path = ext4_find_extent(inode, cur, NULL, 0);
--			if (!path)
--				continue;
-+			if (IS_ERR(path)) {
-+				iput(inode);
-+				return 0;
-+			}
- 			memset(&newex, 0, sizeof(newex));
- 			newex.ee_block = cpu_to_le32(cur);
- 			ext4_ext_store_pblock(
--- 
-2.29.0.rc2.309.g374f81d7ae-goog
-
+     	       	       	    	- Ted
