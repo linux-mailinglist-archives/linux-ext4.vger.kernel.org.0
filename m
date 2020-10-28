@@ -2,165 +2,303 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFDDD29D79D
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Oct 2020 23:28:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B020E29D912
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Oct 2020 23:44:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733029AbgJ1WYp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 28 Oct 2020 18:24:45 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:44474 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732941AbgJ1WY0 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 28 Oct 2020 18:24:26 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09SMJFPM172285;
-        Wed, 28 Oct 2020 22:24:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=9z10xMVcuhTeCp1KBESvCxRUUhDSAblD5Dwcu8HA9ec=;
- b=mXIIOKjSezussF3BeD1gp1G+O/SEgu6uz2/dwynYj9ncwaSv8Is8EnoZfiub8i7rX1s1
- 7bAxgbUxejQp70aWJthwyuMiEu0IknJQAzTBOQhDY7mQr4HLzjBYihqQESP+PuFceNew
- mhGuu0EFHyyQqSJL/iEj24JvETHtJr4q+E9Bdfxta0CIl3G7lzbCf7vK9mFXXyqL/HO6
- jCgwBhzcu9bKgIz7XYW/krCkBBBFRcsonn9AFWRGCxzb1xmui+/c70qrty7s6ehFHshY
- RvgUjYID0EheJlwBtzjfecw5VrrqkfcDC1muiQBaYKq1hjbhGe4B3xgE+rwSh+SJ9mH0 Gw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 34c9sb25xq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 28 Oct 2020 22:24:14 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09SMKLah180153;
-        Wed, 28 Oct 2020 22:24:14 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 34cx1shev4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 28 Oct 2020 22:24:13 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09SMODvk001220;
-        Wed, 28 Oct 2020 22:24:13 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 28 Oct 2020 15:24:12 -0700
-Date:   Wed, 28 Oct 2020 15:24:11 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     guaneryu@gmail.com, linux-xfs@vger.kernel.org,
-        fstests@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 1/9] common: extract rt extent size for
- _get_file_block_size
-Message-ID: <20201028222411.GE1061252@magnolia>
-References: <160382528936.1202316.2338876126552815991.stgit@magnolia>
- <160382529579.1202316.931742119756545034.stgit@magnolia>
- <20201028074119.GA2750@infradead.org>
+        id S2389509AbgJ1Wn4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 28 Oct 2020 18:43:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389503AbgJ1Wnz (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 28 Oct 2020 18:43:55 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9123BC0613CF;
+        Wed, 28 Oct 2020 15:43:55 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id f21so352264plr.5;
+        Wed, 28 Oct 2020 15:43:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=oaa8geg/T7Mkg1IhrPZ9ojItG/nEdjLtTyyx3XiRm1g=;
+        b=iXpwEKz4ahjXONPencKe1/fGUjTiRHXYhjFkWnYTO/LyraTFF82uNHLqAEZBITozVX
+         wSE2C0eWJjmfzlCrdqJU4gToJwL9zYQt3CoL5jYkVnAbTUcCEMOrbjnGSTyB0OajDSzY
+         0MdPKWc0+3GKM2aM7xvoVCFTshTkbxcyOiP8jnajHiAYsqB1Dgs5o40jLXH2mqh23tog
+         Td5089h6p1IAfsadUCDJagHAuNMaYoanED4Z3Osg9fSPJWv2OQ3brSAFsiB2NIEksgYg
+         xFFTLmyiBSaj1Y7W2n9ATS6iBvIKhf2CEmunsNqt0Z3M2BypMEiV4xsquHzRCI8La8RT
+         Wytw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oaa8geg/T7Mkg1IhrPZ9ojItG/nEdjLtTyyx3XiRm1g=;
+        b=HVB1yCR7d7lSDWk+w7xmwPknwJbFn7Py2PEGC6XUhOvyJaa1iF1uJPrM7qBNHIOHFS
+         s1AGwiwW9mlpfwTAlBDAQ1cTQRkXIooYTWULyCdhXrFEuT6KjtxUm8b2YOo2ZjKiECiq
+         O+cf27952tvj5zGWh1c6Iidf6WLY++1e/VMWqsHtSznPLuCyHn3qMGrXSh8Bx6cW0pvh
+         yQdNfxdzwQpYcXB7q0DkFntHMfqPh8YDl4hdwQCVuciQu+DDBZ2GmvrDcJG2TyajsX8v
+         LsbvnvNZVXeNgX0ACT05PtxAKMgEF9OSQdBDmEobBsTwNsznudSHVTF+YAfySnw2QD0a
+         sRmw==
+X-Gm-Message-State: AOAM5325rCAKQwA1Vd+DRXvIN1TadLN2d9CHyabqhpIyJLYEnJD49fNv
+        kyZ1zKDZ4FAkiAiQYqMqkrVZj/BQj27mdOYH
+X-Google-Smtp-Source: ABdhPJybZt79yEe27byzOwh0sHeZgjRxRq2Pvo32WalOk1EF/2tFMOJayyDjsZx6fTAePmIzTIeISQ==
+X-Received: by 2002:a17:902:6505:b029:d5:f870:4d20 with SMTP id b5-20020a1709026505b02900d5f8704d20mr6721566plk.34.1603874728042;
+        Wed, 28 Oct 2020 01:45:28 -0700 (PDT)
+Received: from [192.168.86.81] ([106.51.242.167])
+        by smtp.gmail.com with ESMTPSA id ck21sm4196820pjb.56.2020.10.28.01.45.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Oct 2020 01:45:27 -0700 (PDT)
+Subject: Re: [PATCH v4 1/2] kunit: Support for Parameterized Testing
+To:     Marco Elver <elver@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        skhan@linuxfoundation.org, Iurii Zaikin <yzaikin@google.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org
+References: <20201027174630.85213-1-98.arpi@gmail.com>
+ <CANpmjNOpbXHs4gs9Ro-u7hyN_zZ7s3AqDcdDy1Nqxq4ckThugA@mail.gmail.com>
+From:   Arpitha Raghunandan <98.arpi@gmail.com>
+Message-ID: <5aa41bb7-79fa-bcd6-ef51-e27dabceb5cf@gmail.com>
+Date:   Wed, 28 Oct 2020 14:15:22 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201028074119.GA2750@infradead.org>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9788 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 bulkscore=0
- suspectscore=1 malwarescore=0 mlxlogscore=999 mlxscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010280137
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9788 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 malwarescore=0 lowpriorityscore=0 bulkscore=0
- priorityscore=1501 spamscore=0 phishscore=0 clxscore=1015 suspectscore=1
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010280137
+In-Reply-To: <CANpmjNOpbXHs4gs9Ro-u7hyN_zZ7s3AqDcdDy1Nqxq4ckThugA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 07:41:19AM +0000, Christoph Hellwig wrote:
-> On Tue, Oct 27, 2020 at 12:01:35PM -0700, Darrick J. Wong wrote:
-> > From: Darrick J. Wong <darrick.wong@oracle.com>
-> > 
-> > _get_file_block_size is intended to return the size (in bytes) of the
-> > fundamental allocation unit for a file.  This is required for remapping
-> > operations like fallocate and reflink, which can only operate on
-> > allocation units.  Since the XFS realtime volume can be configure for
-> > allocation units larger than 1 fs block, we need to factor that in here.
+On 28/10/20 12:51 am, Marco Elver wrote:
+> On Tue, 27 Oct 2020 at 18:47, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+>>
+>> Implementation of support for parameterized testing in KUnit.
+>> This approach requires the creation of a test case using the
+>> KUNIT_CASE_PARAM macro that accepts a generator function as input.
+>> This generator function should return the next parameter given the
+>> previous parameter in parameterized tests. It also provides
+>> a macro to generate common-case generators.
+>>
+>> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+>> Co-developed-by: Marco Elver <elver@google.com>
+>> Signed-off-by: Marco Elver <elver@google.com>
+>> ---
+>> Changes v3->v4:
+>> - Rename kunit variables
+>> - Rename generator function helper macro
+>> - Add documentation for generator approach
+>> - Display test case name in case of failure along with param index
+>> Changes v2->v3:
+>> - Modifictaion of generator macro and method
+>> Changes v1->v2:
+>> - Use of a generator method to access test case parameters
+>>
+>>  include/kunit/test.h | 34 ++++++++++++++++++++++++++++++++++
+>>  lib/kunit/test.c     | 21 ++++++++++++++++++++-
+>>  2 files changed, 54 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/include/kunit/test.h b/include/kunit/test.h
+>> index 9197da792336..ec2307ee9bb0 100644
+>> --- a/include/kunit/test.h
+>> +++ b/include/kunit/test.h
+>> @@ -107,6 +107,13 @@ struct kunit;
+>>   *
+>>   * @run_case: the function representing the actual test case.
+>>   * @name:     the name of the test case.
+>> + * @generate_params: the generator function for parameterized tests.
+>> + *
+>> + * The generator function is used to lazily generate a series of
+>> + * arbitrarily typed values that fit into a void*. The argument @prev
+>> + * is the previously returned value, which should be used to derive the
+>> + * next value; @prev is set to NULL on the initial generator call.
+>> + * When no more values are available, the generator must return NULL.
+>>   *
 > 
-> Should this also cover the ext4 bigalloc clusters?  Or do they not
-> matter for fallocate?
+> Hmm, should this really be the first paragraph? I think it should be
+> the paragraph before "Example:" maybe. But then that paragraph should
+> refer to generate_params e.g. "The generator function @generate_params
+> is used to ........".
+> 
+> The other option you have is to move this paragraph to the kernel-doc
+> comment for KUNIT_CASE_PARAM, which seems to be missing a kernel-doc
+> comment.
+> 
+>>   * A test case is a function with the signature,
+>>   * ``void (*)(struct kunit *)``
+>> @@ -141,6 +148,7 @@ struct kunit;
+>>  struct kunit_case {
+>>         void (*run_case)(struct kunit *test);
+>>         const char *name;
+>> +       void* (*generate_params)(void *prev);
+>>
+>>         /* private: internal use only. */
+>>         bool success;
+>> @@ -162,6 +170,9 @@ static inline char *kunit_status_to_string(bool status)
+>>   * &struct kunit_case for an example on how to use it.
+>>   */
+>>  #define KUNIT_CASE(test_name) { .run_case = test_name, .name = #test_name }
+> 
+> I.e. create a new kernel-doc comment for KUNIT_CASE_PARAM here, and
+> simply move the paragraph describing the generator protocol into that
+> comment.
+> 
 
-They don't matter for fallocate, because ext4 doesn't require clusters
-to be fully allocated like ocfs2 and xfs do.
+I will make this change.
 
-This means that all the bigalloc codepaths have this horrible "implied
-cluster allocation" thing sprinkled everywhere where to map in a single
-block you have to scan left and right in the extent map to see if anyone
-already mapped something.  And even more strangely, extent tree blocks
-don't do this, so it seems to waste the entire cluster past the first fs
-block.
+>> +#define KUNIT_CASE_PARAM(test_name, gen_params)                        \
+>> +               { .run_case = test_name, .name = #test_name,    \
+>> +                 .generate_params = gen_params }
+>>
+>>  /**
+>>   * struct kunit_suite - describes a related collection of &struct kunit_case
+>> @@ -208,6 +219,15 @@ struct kunit {
+>>         const char *name; /* Read only after initialization! */
+>>         char *log; /* Points at case log after initialization */
+>>         struct kunit_try_catch try_catch;
+>> +       /* param_value points to test case parameters in parameterized tests */
+> 
+> Hmm, not quite: param_value is the current parameter value for a test
+> case. Most likely it's a pointer, but it doesn't need to be.
+> 
+>> +       void *param_value;
+>> +       /*
+>> +        * param_index stores the index of the parameter in
+>> +        * parameterized tests. param_index + 1 is printed
+>> +        * to indicate the parameter that causes the test
+>> +        * to fail in case of test failure.
+>> +        */
+> 
+> I think this comment needs to be reformatted, because you can use at
+> the very least use 80 cols per line. (If you use vim, visual select
+> and do 'gq'.)
+> 
+>> +       int param_index;
+>>         /*
+>>          * success starts as true, and may only be set to false during a
+>>          * test case; thus, it is safe to update this across multiple
+>> @@ -1742,4 +1762,18 @@ do {                                                                            \
+>>                                                 fmt,                           \
+>>                                                 ##__VA_ARGS__)
+>>
+>> +/**
+>> + * KUNIT_ARRAY_PARAM() - Helper method for test parameter generators
+>> + *                      required in parameterized tests.
+>> + * @name:  prefix of the name for the test parameter generator function.
+>> + *        It will be suffixed by "_gen_params".
+>> + * @array: a user-supplied pointer to an array of test parameters.
+>> + */
+>> +#define KUNIT_ARRAY_PARAM(name, array)                                                         \
+>> +       static void *name##_gen_params(void *prev)                                              \
+>> +       {                                                                                       \
+>> +               typeof((array)[0]) * __next = prev ? ((typeof(__next)) prev) + 1 : (array);     \
+>> +               return __next - (array) < ARRAY_SIZE((array)) ? __next : NULL;                  \
+>> +       }
+>> +
+>>  #endif /* _KUNIT_TEST_H */
+>> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+>> index 750704abe89a..8ad908b61494 100644
+>> --- a/lib/kunit/test.c
+>> +++ b/lib/kunit/test.c
+>> @@ -127,6 +127,12 @@ unsigned int kunit_test_case_num(struct kunit_suite *suite,
+>>  }
+>>  EXPORT_SYMBOL_GPL(kunit_test_case_num);
+>>
+>> +static void kunit_print_failed_param(struct kunit *test)
+>> +{
+>> +       kunit_err(test, "\n\tTest failed at:\n\ttest case: %s\n\tparameter: %d\n",
+>> +                                               test->name, test->param_index + 1);
+>> +}
+> 
+> Hmm, perhaps I wasn't clear, but I think I also misunderstood how the
+> test case successes are presented: they are not, and it's all bunched
+> into a single test case.
+> 
+> Firstly, kunit_err() already prints the test name, so if we want
+> something like "  # : the_test_case_name: failed at parameter #X",
+> simply having
+> 
+>     kunit_err(test, "failed at parameter #%d\n", test->param_index + 1)
+> 
+> would be what you want.
+> 
+> But I think I missed that parameters do not actually produce a set of
+> test cases (sorry for noticing late). I think in their current form,
+> the parameterized tests would not be useful for my tests, because each
+> of my tests have test cases that have specific init and exit
+> functions. For each parameter, these would also need to run.
+> 
+> Ideally, each parameter produces its own independent test case
+> "test_case#param_index". That way, CI systems will also be able to
+> logically separate different test case params, simply because each
+> param produced its own distinct test case.
+> 
+> So, for example, we would get a series of test cases from something
+> like KUNIT_CASE_PARAM(test_case, foo_gen_params), and in the output
+> we'd see:
+> 
+>     ok X - test_case#1
+>     ok X - test_case#2
+>     ok X - test_case#3
+>     ok X - test_case#4
+>     ....
+> 
+> Would that make more sense?
+> 
+> That way we'd ensure that test-case specific initialization and
+> cleanup done in init and exit functions is properly taken care of, and
+> you wouldn't need kunit_print_failed_param().
+> 
+> AFAIK, for what I propose you'd have to modify kunit_print_ok_not_ok()
+> (show param_index if parameterized test) and probably
+> kunit_run_case_catch_errors() (generate params and set
+> test->param_value and param_index).
+> 
+> Was there a reason why each param cannot be a distinct test case? If
+> not, I think this would be more useful.
+> 
 
-But I guess it /does/ mean that _get_file_block_size doesn't have to do
-anything special for ext*.
+Oh, I hadn't considered this earlier. I will try it out for the next version.
 
---D
+>>  static void kunit_print_string_stream(struct kunit *test,
+>>                                       struct string_stream *stream)
+>>  {
+>> @@ -168,6 +174,8 @@ static void kunit_fail(struct kunit *test, struct kunit_assert *assert)
+>>         assert->format(assert, stream);
+>>
+>>         kunit_print_string_stream(test, stream);
+>> +       if (test->param_value)
+>> +               kunit_print_failed_param(test);
+>>
+>>         WARN_ON(string_stream_destroy(stream));
+>>  }
+>> @@ -239,7 +247,18 @@ static void kunit_run_case_internal(struct kunit *test,
+>>                 }
+>>         }
+>>
+>> -       test_case->run_case(test);
+>> +       if (!test_case->generate_params) {
+>> +               test_case->run_case(test);
+>> +       } else {
+>> +               test->param_value = test_case->generate_params(NULL);
+>> +               test->param_index = 0;
+>> +
+>> +               while (test->param_value) {
+>> +                       test_case->run_case(test);
+>> +                       test->param_value = test_case->generate_params(test->param_value);
+>> +                       test->param_index++;
+>> +               }
+>> +       }
+> 
+> Thanks,
+> -- Marco
+> 
 
-> > Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-> > ---
-> >  common/rc  |   13 ++++++++++---
-> >  common/xfs |   20 ++++++++++++++++++++
-> >  2 files changed, 30 insertions(+), 3 deletions(-)
-> > 
-> > 
-> > diff --git a/common/rc b/common/rc
-> > index 27a27ea3..41f93047 100644
-> > --- a/common/rc
-> > +++ b/common/rc
-> > @@ -3974,11 +3974,18 @@ _get_file_block_size()
-> >  		echo "Missing mount point argument for _get_file_block_size"
-> >  		exit 1
-> >  	fi
-> > -	if [ "$FSTYP" = "ocfs2" ]; then
-> > +
-> > +	case "$FSTYP" in
-> > +	"ocfs2")
-> >  		stat -c '%o' $1
-> > -	else
-> > +		;;
-> > +	"xfs")
-> > +		_xfs_get_file_block_size $1
-> > +		;;
-> > +	*)
-> >  		_get_block_size $1
-> > -	fi
-> > +		;;
-> > +	esac
-> >  }
-> >  
-> >  # Get the minimum block size of an fs.
-> > diff --git a/common/xfs b/common/xfs
-> > index 79dab058..3f5c14ba 100644
-> > --- a/common/xfs
-> > +++ b/common/xfs
-> > @@ -174,6 +174,26 @@ _scratch_mkfs_xfs()
-> >  	return $mkfs_status
-> >  }
-> >  
-> > +# Get the size of an allocation unit of a file.  Normally this is just the
-> > +# block size of the file, but for realtime files, this is the realtime extent
-> > +# size.
-> > +_xfs_get_file_block_size()
-> > +{
-> > +	local path="$1"
-> > +
-> > +	if ! ($XFS_IO_PROG -c "stat -v" "$path" 2>&1 | egrep -q '(rt-inherit|realtime)'); then
-> > +		_get_block_size "$path"
-> > +		return
-> > +	fi
-> > +
-> > +	# Otherwise, call xfs_info until we find a mount point or the root.
-> > +	path="$(readlink -m "$path")"
-> > +	while ! $XFS_INFO_PROG "$path" &>/dev/null && [ "$path" != "/" ]; do
-> > +		path="$(dirname "$path")"
-> > +	done
-> > +	$XFS_INFO_PROG "$path" | grep realtime | sed -e 's/^.*extsz=\([0-9]*\).*$/\1/g'
-> > +}
-> > +
-> >  # xfs_check script is planned to be deprecated. But, we want to
-> >  # be able to invoke "xfs_check" behavior in xfstests in order to
-> >  # maintain the current verification levels.
-> > 
-> ---end quoted text---
+I'll make all the suggested changes.
+Thanks!
