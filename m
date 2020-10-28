@@ -2,303 +2,322 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B020E29D912
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Oct 2020 23:44:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC43829DA63
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Oct 2020 00:21:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389509AbgJ1Wn4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 28 Oct 2020 18:43:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58062 "EHLO
+        id S2390165AbgJ1XVU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 28 Oct 2020 19:21:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389503AbgJ1Wnz (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 28 Oct 2020 18:43:55 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9123BC0613CF;
-        Wed, 28 Oct 2020 15:43:55 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id f21so352264plr.5;
-        Wed, 28 Oct 2020 15:43:55 -0700 (PDT)
+        with ESMTP id S2390159AbgJ1XVT (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 28 Oct 2020 19:21:19 -0400
+Received: from mail-ot1-x349.google.com (mail-ot1-x349.google.com [IPv6:2607:f8b0:4864:20::349])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23494C0613CF
+        for <linux-ext4@vger.kernel.org>; Wed, 28 Oct 2020 16:21:19 -0700 (PDT)
+Received: by mail-ot1-x349.google.com with SMTP id q8so297948otk.6
+        for <linux-ext4@vger.kernel.org>; Wed, 28 Oct 2020 16:21:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=oaa8geg/T7Mkg1IhrPZ9ojItG/nEdjLtTyyx3XiRm1g=;
-        b=iXpwEKz4ahjXONPencKe1/fGUjTiRHXYhjFkWnYTO/LyraTFF82uNHLqAEZBITozVX
-         wSE2C0eWJjmfzlCrdqJU4gToJwL9zYQt3CoL5jYkVnAbTUcCEMOrbjnGSTyB0OajDSzY
-         0MdPKWc0+3GKM2aM7xvoVCFTshTkbxcyOiP8jnajHiAYsqB1Dgs5o40jLXH2mqh23tog
-         Td5089h6p1IAfsadUCDJagHAuNMaYoanED4Z3Osg9fSPJWv2OQ3brSAFsiB2NIEksgYg
-         xFFTLmyiBSaj1Y7W2n9ATS6iBvIKhf2CEmunsNqt0Z3M2BypMEiV4xsquHzRCI8La8RT
-         Wytw==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=1/i2c0SC6wZobAU+Tu0hGE5jxQ0Keyv62xXz9WV6lJ0=;
+        b=dsbDym1iYo4ykNmI7B3/7rmn6lj5Dnxlyv5b8IOj27YGnFRXhNfrtMgtXAp9CJkxqr
+         nsrxWYWBcaM/HJL/VCDaEMvH81rPXm9Oyt8HS8SUyS1oyouF5hStFjMW89yF2g4m1C7D
+         gOna9fjSNHajiG1g3+FnRTrEoiZ6Ev6wcoe5SDuIF+ZxqibX/rMRspa70YZ54oRUHBvV
+         hefIW011sj3y8Rib1DOZDs+LM+iGnoPkvi7a/O7zBJaNhhC3YiC5MDOd1jOyPArcYXpk
+         2KhWSTIEk21/3BQkBPjvuGi2wMZUnbT/D7KKGJxWkekANWo7WgSw2Jr9sqHPE+24udmx
+         j24A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=oaa8geg/T7Mkg1IhrPZ9ojItG/nEdjLtTyyx3XiRm1g=;
-        b=HVB1yCR7d7lSDWk+w7xmwPknwJbFn7Py2PEGC6XUhOvyJaa1iF1uJPrM7qBNHIOHFS
-         s1AGwiwW9mlpfwTAlBDAQ1cTQRkXIooYTWULyCdhXrFEuT6KjtxUm8b2YOo2ZjKiECiq
-         O+cf27952tvj5zGWh1c6Iidf6WLY++1e/VMWqsHtSznPLuCyHn3qMGrXSh8Bx6cW0pvh
-         yQdNfxdzwQpYcXB7q0DkFntHMfqPh8YDl4hdwQCVuciQu+DDBZ2GmvrDcJG2TyajsX8v
-         LsbvnvNZVXeNgX0ACT05PtxAKMgEF9OSQdBDmEobBsTwNsznudSHVTF+YAfySnw2QD0a
-         sRmw==
-X-Gm-Message-State: AOAM5325rCAKQwA1Vd+DRXvIN1TadLN2d9CHyabqhpIyJLYEnJD49fNv
-        kyZ1zKDZ4FAkiAiQYqMqkrVZj/BQj27mdOYH
-X-Google-Smtp-Source: ABdhPJybZt79yEe27byzOwh0sHeZgjRxRq2Pvo32WalOk1EF/2tFMOJayyDjsZx6fTAePmIzTIeISQ==
-X-Received: by 2002:a17:902:6505:b029:d5:f870:4d20 with SMTP id b5-20020a1709026505b02900d5f8704d20mr6721566plk.34.1603874728042;
-        Wed, 28 Oct 2020 01:45:28 -0700 (PDT)
-Received: from [192.168.86.81] ([106.51.242.167])
-        by smtp.gmail.com with ESMTPSA id ck21sm4196820pjb.56.2020.10.28.01.45.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Oct 2020 01:45:27 -0700 (PDT)
-Subject: Re: [PATCH v4 1/2] kunit: Support for Parameterized Testing
-To:     Marco Elver <elver@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        skhan@linuxfoundation.org, Iurii Zaikin <yzaikin@google.com>,
-        Theodore Ts'o <tytso@mit.edu>,
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=1/i2c0SC6wZobAU+Tu0hGE5jxQ0Keyv62xXz9WV6lJ0=;
+        b=UHBQFXXADvzV4CU79FynN/LWUGDjrmO2VzOg+DW99xs1Sm7C9d0qnfO0auLadb20D9
+         GXSbHWxQE/pgRnP6BP+PgIrJby9tJ+jVCb4QSzZBK80E9a9XHPV02ZyT77LL5NSShb5L
+         K5UErim3Dgq7DYS2q2cZdZBrlcWJcNNSJWKUKt6bjXGucO8YHYvF1MS+iE6GnaliQXYi
+         +oelYv3I/ssns0W2IHF6SR4fiLeU1uyQsfJx5LffKRqqdv/U5IrCTaYOqfgGq6LyL6R8
+         veV0PeTRVHFRSGRtuuop24sBlAJ4HjD1l2JZEzCTUQ2xEv7X5LJegFG0oaRwFj6hmTgf
+         PD8Q==
+X-Gm-Message-State: AOAM532FyXajcgPhZ8k8Gbrsi2pxz0kV5Tm85kSdlVft477Tfx3Yn49C
+        3GWiCl9m4oxXB5uJk5D2/34m4ogIr3c=
+X-Google-Smtp-Source: ABdhPJyrGz7SE64q8nCAYGiAkjE8UmMYrX+yqv32+RJxaoamYdTNwevZ6gm3JhOb/NsMEulwYh0m36mXRa8=
+Sender: "drosen via sendgmr" <drosen@drosen.c.googlers.com>
+X-Received: from drosen.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:4e6f])
+ (user=drosen job=sendgmr) by 2002:a17:90b:f85:: with SMTP id
+ ft5mr465436pjb.1.1603861708247; Tue, 27 Oct 2020 22:08:28 -0700 (PDT)
+Date:   Wed, 28 Oct 2020 05:08:20 +0000
+Message-Id: <20201028050820.1636571-1-drosen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.0.rc2.309.g374f81d7ae-goog
+Subject: [PATCH] ext4: Use generic casefolding support
+From:   Daniel Rosenberg <drosen@google.com>
+To:     "Theodore Y . Ts'o" <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-ext4@vger.kernel.org
-References: <20201027174630.85213-1-98.arpi@gmail.com>
- <CANpmjNOpbXHs4gs9Ro-u7hyN_zZ7s3AqDcdDy1Nqxq4ckThugA@mail.gmail.com>
-From:   Arpitha Raghunandan <98.arpi@gmail.com>
-Message-ID: <5aa41bb7-79fa-bcd6-ef51-e27dabceb5cf@gmail.com>
-Date:   Wed, 28 Oct 2020 14:15:22 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <CANpmjNOpbXHs4gs9Ro-u7hyN_zZ7s3AqDcdDy1Nqxq4ckThugA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kernel-team@android.com, Daniel Rosenberg <drosen@google.com>,
+        Eric Biggers <ebiggers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 28/10/20 12:51 am, Marco Elver wrote:
-> On Tue, 27 Oct 2020 at 18:47, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
->>
->> Implementation of support for parameterized testing in KUnit.
->> This approach requires the creation of a test case using the
->> KUNIT_CASE_PARAM macro that accepts a generator function as input.
->> This generator function should return the next parameter given the
->> previous parameter in parameterized tests. It also provides
->> a macro to generate common-case generators.
->>
->> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
->> Co-developed-by: Marco Elver <elver@google.com>
->> Signed-off-by: Marco Elver <elver@google.com>
->> ---
->> Changes v3->v4:
->> - Rename kunit variables
->> - Rename generator function helper macro
->> - Add documentation for generator approach
->> - Display test case name in case of failure along with param index
->> Changes v2->v3:
->> - Modifictaion of generator macro and method
->> Changes v1->v2:
->> - Use of a generator method to access test case parameters
->>
->>  include/kunit/test.h | 34 ++++++++++++++++++++++++++++++++++
->>  lib/kunit/test.c     | 21 ++++++++++++++++++++-
->>  2 files changed, 54 insertions(+), 1 deletion(-)
->>
->> diff --git a/include/kunit/test.h b/include/kunit/test.h
->> index 9197da792336..ec2307ee9bb0 100644
->> --- a/include/kunit/test.h
->> +++ b/include/kunit/test.h
->> @@ -107,6 +107,13 @@ struct kunit;
->>   *
->>   * @run_case: the function representing the actual test case.
->>   * @name:     the name of the test case.
->> + * @generate_params: the generator function for parameterized tests.
->> + *
->> + * The generator function is used to lazily generate a series of
->> + * arbitrarily typed values that fit into a void*. The argument @prev
->> + * is the previously returned value, which should be used to derive the
->> + * next value; @prev is set to NULL on the initial generator call.
->> + * When no more values are available, the generator must return NULL.
->>   *
-> 
-> Hmm, should this really be the first paragraph? I think it should be
-> the paragraph before "Example:" maybe. But then that paragraph should
-> refer to generate_params e.g. "The generator function @generate_params
-> is used to ........".
-> 
-> The other option you have is to move this paragraph to the kernel-doc
-> comment for KUNIT_CASE_PARAM, which seems to be missing a kernel-doc
-> comment.
-> 
->>   * A test case is a function with the signature,
->>   * ``void (*)(struct kunit *)``
->> @@ -141,6 +148,7 @@ struct kunit;
->>  struct kunit_case {
->>         void (*run_case)(struct kunit *test);
->>         const char *name;
->> +       void* (*generate_params)(void *prev);
->>
->>         /* private: internal use only. */
->>         bool success;
->> @@ -162,6 +170,9 @@ static inline char *kunit_status_to_string(bool status)
->>   * &struct kunit_case for an example on how to use it.
->>   */
->>  #define KUNIT_CASE(test_name) { .run_case = test_name, .name = #test_name }
-> 
-> I.e. create a new kernel-doc comment for KUNIT_CASE_PARAM here, and
-> simply move the paragraph describing the generator protocol into that
-> comment.
-> 
+This switches ext4 over to the generic support provided in libfs.
 
-I will make this change.
+Since casefolded dentries behave the same in ext4 and f2fs, we decrease
+the maintenance burden by unifying them, and any optimizations will
+immediately apply to both.
 
->> +#define KUNIT_CASE_PARAM(test_name, gen_params)                        \
->> +               { .run_case = test_name, .name = #test_name,    \
->> +                 .generate_params = gen_params }
->>
->>  /**
->>   * struct kunit_suite - describes a related collection of &struct kunit_case
->> @@ -208,6 +219,15 @@ struct kunit {
->>         const char *name; /* Read only after initialization! */
->>         char *log; /* Points at case log after initialization */
->>         struct kunit_try_catch try_catch;
->> +       /* param_value points to test case parameters in parameterized tests */
-> 
-> Hmm, not quite: param_value is the current parameter value for a test
-> case. Most likely it's a pointer, but it doesn't need to be.
-> 
->> +       void *param_value;
->> +       /*
->> +        * param_index stores the index of the parameter in
->> +        * parameterized tests. param_index + 1 is printed
->> +        * to indicate the parameter that causes the test
->> +        * to fail in case of test failure.
->> +        */
-> 
-> I think this comment needs to be reformatted, because you can use at
-> the very least use 80 cols per line. (If you use vim, visual select
-> and do 'gq'.)
-> 
->> +       int param_index;
->>         /*
->>          * success starts as true, and may only be set to false during a
->>          * test case; thus, it is safe to update this across multiple
->> @@ -1742,4 +1762,18 @@ do {                                                                            \
->>                                                 fmt,                           \
->>                                                 ##__VA_ARGS__)
->>
->> +/**
->> + * KUNIT_ARRAY_PARAM() - Helper method for test parameter generators
->> + *                      required in parameterized tests.
->> + * @name:  prefix of the name for the test parameter generator function.
->> + *        It will be suffixed by "_gen_params".
->> + * @array: a user-supplied pointer to an array of test parameters.
->> + */
->> +#define KUNIT_ARRAY_PARAM(name, array)                                                         \
->> +       static void *name##_gen_params(void *prev)                                              \
->> +       {                                                                                       \
->> +               typeof((array)[0]) * __next = prev ? ((typeof(__next)) prev) + 1 : (array);     \
->> +               return __next - (array) < ARRAY_SIZE((array)) ? __next : NULL;                  \
->> +       }
->> +
->>  #endif /* _KUNIT_TEST_H */
->> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
->> index 750704abe89a..8ad908b61494 100644
->> --- a/lib/kunit/test.c
->> +++ b/lib/kunit/test.c
->> @@ -127,6 +127,12 @@ unsigned int kunit_test_case_num(struct kunit_suite *suite,
->>  }
->>  EXPORT_SYMBOL_GPL(kunit_test_case_num);
->>
->> +static void kunit_print_failed_param(struct kunit *test)
->> +{
->> +       kunit_err(test, "\n\tTest failed at:\n\ttest case: %s\n\tparameter: %d\n",
->> +                                               test->name, test->param_index + 1);
->> +}
-> 
-> Hmm, perhaps I wasn't clear, but I think I also misunderstood how the
-> test case successes are presented: they are not, and it's all bunched
-> into a single test case.
-> 
-> Firstly, kunit_err() already prints the test name, so if we want
-> something like "  # : the_test_case_name: failed at parameter #X",
-> simply having
-> 
->     kunit_err(test, "failed at parameter #%d\n", test->param_index + 1)
-> 
-> would be what you want.
-> 
-> But I think I missed that parameters do not actually produce a set of
-> test cases (sorry for noticing late). I think in their current form,
-> the parameterized tests would not be useful for my tests, because each
-> of my tests have test cases that have specific init and exit
-> functions. For each parameter, these would also need to run.
-> 
-> Ideally, each parameter produces its own independent test case
-> "test_case#param_index". That way, CI systems will also be able to
-> logically separate different test case params, simply because each
-> param produced its own distinct test case.
-> 
-> So, for example, we would get a series of test cases from something
-> like KUNIT_CASE_PARAM(test_case, foo_gen_params), and in the output
-> we'd see:
-> 
->     ok X - test_case#1
->     ok X - test_case#2
->     ok X - test_case#3
->     ok X - test_case#4
->     ....
-> 
-> Would that make more sense?
-> 
-> That way we'd ensure that test-case specific initialization and
-> cleanup done in init and exit functions is properly taken care of, and
-> you wouldn't need kunit_print_failed_param().
-> 
-> AFAIK, for what I propose you'd have to modify kunit_print_ok_not_ok()
-> (show param_index if parameterized test) and probably
-> kunit_run_case_catch_errors() (generate params and set
-> test->param_value and param_index).
-> 
-> Was there a reason why each param cannot be a distinct test case? If
-> not, I think this would be more useful.
-> 
+Signed-off-by: Daniel Rosenberg <drosen@google.com>
+Reviewed-by: Eric Biggers <ebiggers@google.com>
+---
+ fs/ext4/dir.c   | 64 ++-----------------------------------------------
+ fs/ext4/ext4.h  | 12 ----------
+ fs/ext4/hash.c  |  2 +-
+ fs/ext4/namei.c | 20 +++++++---------
+ fs/ext4/super.c | 12 +++++-----
+ 5 files changed, 17 insertions(+), 93 deletions(-)
 
-Oh, I hadn't considered this earlier. I will try it out for the next version.
+diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
+index 5b81f3b080ee..ca50c90adc4c 100644
+--- a/fs/ext4/dir.c
++++ b/fs/ext4/dir.c
+@@ -669,68 +669,8 @@ const struct file_operations ext4_dir_operations = {
+ };
+ 
+ #ifdef CONFIG_UNICODE
+-static int ext4_d_compare(const struct dentry *dentry, unsigned int len,
+-			  const char *str, const struct qstr *name)
+-{
+-	struct qstr qstr = {.name = str, .len = len };
+-	const struct dentry *parent = READ_ONCE(dentry->d_parent);
+-	const struct inode *inode = d_inode_rcu(parent);
+-	char strbuf[DNAME_INLINE_LEN];
+-
+-	if (!inode || !IS_CASEFOLDED(inode) ||
+-	    !EXT4_SB(inode->i_sb)->s_encoding) {
+-		if (len != name->len)
+-			return -1;
+-		return memcmp(str, name->name, len);
+-	}
+-
+-	/*
+-	 * If the dentry name is stored in-line, then it may be concurrently
+-	 * modified by a rename.  If this happens, the VFS will eventually retry
+-	 * the lookup, so it doesn't matter what ->d_compare() returns.
+-	 * However, it's unsafe to call utf8_strncasecmp() with an unstable
+-	 * string.  Therefore, we have to copy the name into a temporary buffer.
+-	 */
+-	if (len <= DNAME_INLINE_LEN - 1) {
+-		memcpy(strbuf, str, len);
+-		strbuf[len] = 0;
+-		qstr.name = strbuf;
+-		/* prevent compiler from optimizing out the temporary buffer */
+-		barrier();
+-	}
+-
+-	return ext4_ci_compare(inode, name, &qstr, false);
+-}
+-
+-static int ext4_d_hash(const struct dentry *dentry, struct qstr *str)
+-{
+-	const struct ext4_sb_info *sbi = EXT4_SB(dentry->d_sb);
+-	const struct unicode_map *um = sbi->s_encoding;
+-	const struct inode *inode = d_inode_rcu(dentry);
+-	unsigned char *norm;
+-	int len, ret = 0;
+-
+-	if (!inode || !IS_CASEFOLDED(inode) || !um)
+-		return 0;
+-
+-	norm = kmalloc(PATH_MAX, GFP_ATOMIC);
+-	if (!norm)
+-		return -ENOMEM;
+-
+-	len = utf8_casefold(um, str, norm, PATH_MAX);
+-	if (len < 0) {
+-		if (ext4_has_strict_mode(sbi))
+-			ret = -EINVAL;
+-		goto out;
+-	}
+-	str->hash = full_name_hash(dentry, norm, len);
+-out:
+-	kfree(norm);
+-	return ret;
+-}
+-
+ const struct dentry_operations ext4_dentry_ops = {
+-	.d_hash = ext4_d_hash,
+-	.d_compare = ext4_d_compare,
++	.d_hash = generic_ci_d_hash,
++	.d_compare = generic_ci_d_compare,
+ };
+ #endif
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 254d1c26bea8..662d0f40431e 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -1443,14 +1443,6 @@ struct ext4_super_block {
+ 
+ #define EXT4_ENC_UTF8_12_1	1
+ 
+-/*
+- * Flags for ext4_sb_info.s_encoding_flags.
+- */
+-#define EXT4_ENC_STRICT_MODE_FL	(1 << 0)
+-
+-#define ext4_has_strict_mode(sbi) \
+-	(sbi->s_encoding_flags & EXT4_ENC_STRICT_MODE_FL)
+-
+ /*
+  * fourth extended-fs super-block data in memory
+  */
+@@ -1500,10 +1492,6 @@ struct ext4_sb_info {
+ 	struct kobject s_kobj;
+ 	struct completion s_kobj_unregister;
+ 	struct super_block *s_sb;
+-#ifdef CONFIG_UNICODE
+-	struct unicode_map *s_encoding;
+-	__u16 s_encoding_flags;
+-#endif
+ 
+ 	/* Journaling */
+ 	struct journal_s *s_journal;
+diff --git a/fs/ext4/hash.c b/fs/ext4/hash.c
+index 2924261226e0..a92eb79de0cc 100644
+--- a/fs/ext4/hash.c
++++ b/fs/ext4/hash.c
+@@ -275,7 +275,7 @@ int ext4fs_dirhash(const struct inode *dir, const char *name, int len,
+ 		   struct dx_hash_info *hinfo)
+ {
+ #ifdef CONFIG_UNICODE
+-	const struct unicode_map *um = EXT4_SB(dir->i_sb)->s_encoding;
++	const struct unicode_map *um = dir->i_sb->s_encoding;
+ 	int r, dlen;
+ 	unsigned char *buff;
+ 	struct qstr qstr = {.name = name, .len = len };
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index 5159830dacb8..f458d1d81d96 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -1285,8 +1285,8 @@ static void dx_insert_block(struct dx_frame *frame, u32 hash, ext4_lblk_t block)
+ int ext4_ci_compare(const struct inode *parent, const struct qstr *name,
+ 		    const struct qstr *entry, bool quick)
+ {
+-	const struct ext4_sb_info *sbi = EXT4_SB(parent->i_sb);
+-	const struct unicode_map *um = sbi->s_encoding;
++	const struct super_block *sb = parent->i_sb;
++	const struct unicode_map *um = sb->s_encoding;
+ 	int ret;
+ 
+ 	if (quick)
+@@ -1298,7 +1298,7 @@ int ext4_ci_compare(const struct inode *parent, const struct qstr *name,
+ 		/* Handle invalid character sequence as either an error
+ 		 * or as an opaque byte sequence.
+ 		 */
+-		if (ext4_has_strict_mode(sbi))
++		if (sb_has_strict_encoding(sb))
+ 			return -EINVAL;
+ 
+ 		if (name->len != entry->len)
+@@ -1315,7 +1315,7 @@ void ext4_fname_setup_ci_filename(struct inode *dir, const struct qstr *iname,
+ {
+ 	int len;
+ 
+-	if (!IS_CASEFOLDED(dir) || !EXT4_SB(dir->i_sb)->s_encoding) {
++	if (!IS_CASEFOLDED(dir) || !dir->i_sb->s_encoding) {
+ 		cf_name->name = NULL;
+ 		return;
+ 	}
+@@ -1324,7 +1324,7 @@ void ext4_fname_setup_ci_filename(struct inode *dir, const struct qstr *iname,
+ 	if (!cf_name->name)
+ 		return;
+ 
+-	len = utf8_casefold(EXT4_SB(dir->i_sb)->s_encoding,
++	len = utf8_casefold(dir->i_sb->s_encoding,
+ 			    iname, cf_name->name,
+ 			    EXT4_NAME_LEN);
+ 	if (len <= 0) {
+@@ -1361,7 +1361,7 @@ static inline bool ext4_match(const struct inode *parent,
+ #endif
+ 
+ #ifdef CONFIG_UNICODE
+-	if (EXT4_SB(parent->i_sb)->s_encoding && IS_CASEFOLDED(parent)) {
++	if (parent->i_sb->s_encoding && IS_CASEFOLDED(parent)) {
+ 		if (fname->cf_name.name) {
+ 			struct qstr cf = {.name = fname->cf_name.name,
+ 					  .len = fname->cf_name.len};
+@@ -2180,9 +2180,6 @@ static int ext4_add_entry(handle_t *handle, struct dentry *dentry,
+ 	struct buffer_head *bh = NULL;
+ 	struct ext4_dir_entry_2 *de;
+ 	struct super_block *sb;
+-#ifdef CONFIG_UNICODE
+-	struct ext4_sb_info *sbi;
+-#endif
+ 	struct ext4_filename fname;
+ 	int	retval;
+ 	int	dx_fallback=0;
+@@ -2199,9 +2196,8 @@ static int ext4_add_entry(handle_t *handle, struct dentry *dentry,
+ 		return -EINVAL;
+ 
+ #ifdef CONFIG_UNICODE
+-	sbi = EXT4_SB(sb);
+-	if (ext4_has_strict_mode(sbi) && IS_CASEFOLDED(dir) &&
+-	    sbi->s_encoding && utf8_validate(sbi->s_encoding, &dentry->d_name))
++	if (sb_has_strict_encoding(sb) && IS_CASEFOLDED(dir) &&
++	    sb->s_encoding && utf8_validate(sb->s_encoding, &dentry->d_name))
+ 		return -EINVAL;
+ #endif
+ 
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 2fe141ff3c7e..1a9dfa804a4b 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -1288,7 +1288,7 @@ static void ext4_put_super(struct super_block *sb)
+ 	fs_put_dax(sbi->s_daxdev);
+ 	fscrypt_free_dummy_policy(&sbi->s_dummy_enc_policy);
+ #ifdef CONFIG_UNICODE
+-	utf8_unload(sbi->s_encoding);
++	utf8_unload(sb->s_encoding);
+ #endif
+ 	kfree(sbi);
+ }
+@@ -4303,7 +4303,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+ 		goto failed_mount;
+ 
+ #ifdef CONFIG_UNICODE
+-	if (ext4_has_feature_casefold(sb) && !sbi->s_encoding) {
++	if (ext4_has_feature_casefold(sb) && !sb->s_encoding) {
+ 		const struct ext4_sb_encodings *encoding_info;
+ 		struct unicode_map *encoding;
+ 		__u16 encoding_flags;
+@@ -4334,8 +4334,8 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+ 			 "%s-%s with flags 0x%hx", encoding_info->name,
+ 			 encoding_info->version?:"\b", encoding_flags);
+ 
+-		sbi->s_encoding = encoding;
+-		sbi->s_encoding_flags = encoding_flags;
++		sb->s_encoding = encoding;
++		sb->s_encoding_flags = encoding_flags;
+ 	}
+ #endif
+ 
+@@ -4975,7 +4975,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+ 	}
+ 
+ #ifdef CONFIG_UNICODE
+-	if (sbi->s_encoding)
++	if (sb->s_encoding)
+ 		sb->s_d_op = &ext4_dentry_ops;
+ #endif
+ 
+@@ -5184,7 +5184,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+ 		crypto_free_shash(sbi->s_chksum_driver);
+ 
+ #ifdef CONFIG_UNICODE
+-	utf8_unload(sbi->s_encoding);
++	utf8_unload(sb->s_encoding);
+ #endif
+ 
+ #ifdef CONFIG_QUOTA
+-- 
+2.29.0.rc2.309.g374f81d7ae-goog
 
->>  static void kunit_print_string_stream(struct kunit *test,
->>                                       struct string_stream *stream)
->>  {
->> @@ -168,6 +174,8 @@ static void kunit_fail(struct kunit *test, struct kunit_assert *assert)
->>         assert->format(assert, stream);
->>
->>         kunit_print_string_stream(test, stream);
->> +       if (test->param_value)
->> +               kunit_print_failed_param(test);
->>
->>         WARN_ON(string_stream_destroy(stream));
->>  }
->> @@ -239,7 +247,18 @@ static void kunit_run_case_internal(struct kunit *test,
->>                 }
->>         }
->>
->> -       test_case->run_case(test);
->> +       if (!test_case->generate_params) {
->> +               test_case->run_case(test);
->> +       } else {
->> +               test->param_value = test_case->generate_params(NULL);
->> +               test->param_index = 0;
->> +
->> +               while (test->param_value) {
->> +                       test_case->run_case(test);
->> +                       test->param_value = test_case->generate_params(test->param_value);
->> +                       test->param_index++;
->> +               }
->> +       }
-> 
-> Thanks,
-> -- Marco
-> 
-
-I'll make all the suggested changes.
-Thanks!
