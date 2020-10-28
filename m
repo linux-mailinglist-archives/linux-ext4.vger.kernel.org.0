@@ -2,104 +2,211 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6792929E273
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 Oct 2020 03:14:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1C2029E19A
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Oct 2020 03:02:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726741AbgJ2COe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 28 Oct 2020 22:14:34 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:28904 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726776AbgJ1Vfk (ORCPT
+        id S1727351AbgJ1Vsx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 28 Oct 2020 17:48:53 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:35556 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726080AbgJ1VnW (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:35:40 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09S4WliL042557;
-        Wed, 28 Oct 2020 00:33:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=Zl37AZXairTdHgkwm1QP/KXTOciNg0D8eezgRstoutI=;
- b=AaNyw8FtAIfEbYQItLs37c1l2SwrtWl0uP066o+Tg3bILFUwGW/xohOT5SLA1trp5aLI
- o4TD1qT9GuZsb6wvaPbyFiPyzi3DY47LO1YQJQg+P7dNdAxKD262+4Xl08HydRbppTzz
- W2VkY75BFP51dOhR0ZdQCzxgWwnT1aDkp7b4cpwZOLUlzWkALGV9la8RrRyIRiuUnlWZ
- Q8WlK3hi04WbGrNfaPcHShH6mSMPCMI2rL0YczBoGqWY4JhZzjCzd1Yzq/AD3DrYZSIh
- c+yRXO7vh9PvxGhIAPs/gyzT2v9e86gYnNNJhwmP7U6/Q/pc3vqKDHq1BTaSIbaz6KZM Rw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 34ec5ur226-1
+        Wed, 28 Oct 2020 17:43:22 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09S6VwT8041644;
+        Wed, 28 Oct 2020 02:45:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=Bbgs0Z0QSxiyBsuFYhMyOmSTvVA6L0TfO+yMN5+y2ds=;
+ b=NZbdzUrG4jTNHFo5W/bU3UWfg2aaiw3VFlbGBBoh4HOOvbEk9gZAJdBNDIXJcbZDerKC
+ nTVb49oxuFfZaaTl5D43pXQBEK2/Jz/u1RVeIWoLDhKHMSq/Jem07JH7nd0a/pngp2nd
+ DewwQqgxf8WH5XDRo7W7VHXM7rUsMVYgXG2TeDO0x084dnvDmdaw1Ne+eEA2xRXyw1eN
+ Wq8KQ2+uQ/gmt5fT8It31jn2ePARPeXpx8R3wzX9SAjRIcZNBs9m8RcIcU/j0vfc5vRz
+ 9KARPi/+SDY3sjw/SXv4AFT9MGVjpnKlpEFOGHgbHwABtOttUOrTkxZWmWbhsWtd8fI4 iw== 
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34esjkf1hv-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Oct 2020 00:33:08 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09S4X7Zk043438;
-        Wed, 28 Oct 2020 00:33:07 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 34ec5ur21p-1
+        Wed, 28 Oct 2020 02:45:05 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09S6g2iJ017266;
+        Wed, 28 Oct 2020 06:45:03 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma02fra.de.ibm.com with ESMTP id 34esn307ra-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Oct 2020 00:33:07 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09S4Wo2D018174;
-        Wed, 28 Oct 2020 04:33:05 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma03fra.de.ibm.com with ESMTP id 34cbw823sa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Oct 2020 04:33:05 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09S4X3b026476964
+        Wed, 28 Oct 2020 06:45:02 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09S6j0a110420512
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 28 Oct 2020 04:33:03 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 54F25A4051;
-        Wed, 28 Oct 2020 04:33:03 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EFB8BA4040;
-        Wed, 28 Oct 2020 04:33:01 +0000 (GMT)
-Received: from [9.199.33.247] (unknown [9.199.33.247])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 28 Oct 2020 04:33:01 +0000 (GMT)
-Subject: Re: [PATCH] ext4: properly check for dirty state in
- ext4_inode_datasync_dirty()
-To:     harshad shirwadkar <harshadshirwadkar@gmail.com>
-Cc:     Andrea Righi <andrea.righi@canonical.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20201024140115.GA35973@xps-13-7390>
- <CAD+ocby3hA0GCm5Rf6T3UF+2UWgWoUjrz7=VzbeUMjX6Qx8D5g@mail.gmail.com>
- <da6697a0-4a23-ee68-fa2e-121b3d23c972@linux.ibm.com>
- <CAD+ocbz0NpXYK9fCxpEYGz6fvWJ_SLw+rYQ2yo3UbKJbbEX8hg@mail.gmail.com>
+        Wed, 28 Oct 2020 06:45:00 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7BBB742047;
+        Wed, 28 Oct 2020 06:45:00 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B599D42042;
+        Wed, 28 Oct 2020 06:44:58 +0000 (GMT)
+Received: from riteshh-domain.ibmuc.com (unknown [9.199.33.247])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 28 Oct 2020 06:44:58 +0000 (GMT)
 From:   Ritesh Harjani <riteshh@linux.ibm.com>
-Message-ID: <f41af253-bd90-805d-a304-71f2f8f454f7@linux.ibm.com>
-Date:   Wed, 28 Oct 2020 10:03:01 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+To:     fstests@vger.kernel.org
+Cc:     Jan Kara <jack@suse.cz>, anju@linux.vnet.ibm.com,
+        Eryu Guan <guan@eryu.me>,
+        Christian Kujau <lists@nerdbynature.de>,
+        linux-ext4@vger.kernel.org, Ritesh Harjani <riteshh@linux.ibm.com>
+Subject: [PATCH 1/1] generic: Add test to check for mounting a huge sparse dm device
+Date:   Wed, 28 Oct 2020 12:14:52 +0530
+Message-Id: <daec44e9f2e3ce483b7845065db3bf148ff5cd2c.1603864280.git.riteshh@linux.ibm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <CAD+ocbz0NpXYK9fCxpEYGz6fvWJ_SLw+rYQ2yo3UbKJbbEX8hg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
  definitions=2020-10-28_01:2020-10-26,2020-10-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- lowpriorityscore=0 adultscore=0 phishscore=0 mlxlogscore=999
- impostorscore=0 malwarescore=0 priorityscore=1501 spamscore=0
- suspectscore=0 mlxscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2010280023
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
+ adultscore=0 mlxscore=0 phishscore=0 bulkscore=0 lowpriorityscore=0
+ malwarescore=0 clxscore=1015 priorityscore=1501 suspectscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010280038
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Add this test (which Christian Kujau reported) to check for regression
+caused due to ext4 bmap aops implementation was moved to use iomap APIs.
+jbd2 calls bmap() kernel function from fs/inode.c which was failing since
+iomap_bmap() implementation earlier returned 0 for block addr > INT_MAX.
+This regression was fixed with following kernel commit [1]
+commit b75dfde1212991b24b220c3995101c60a7b8ae74
+("fibmap: Warn and return an error in case of block > INT_MAX")
+[1]: https://patchwork.ozlabs.org/patch/1279914
 
+w/o the kernel fix we get below error and mount fails
 
-On 10/28/20 9:18 AM, harshad shirwadkar wrote:
-> Actually the simpler fix for this in case of fast commits is to check
-> if the inode is on the fast commit list or not. Since we clear the
-> fast commit list after every fast and / or full commit, it's always
-> true that if the inode is not on the list, that means it isn't dirty.
-> This will simplify the logic here and then we can probably get rid of
-> i_fc_committed_subtid field altogether. I'll test this and send out a
-> patch.
+[ 1461.988701] run fstests generic/613 at 2020-10-27 19:57:34
+[ 1530.511978] jbd2_journal_init_inode: Cannot locate journal superblock
+[ 1530.513310] EXT4-fs (dm-1): Could not load journal inode
 
-Yes, sounds like a better solution. Thanks!
+Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+---
+ common/rc             | 10 +++++++
+ tests/generic/613     | 66 +++++++++++++++++++++++++++++++++++++++++++
+ tests/generic/613.out |  3 ++
+ tests/generic/group   |  1 +
+ 4 files changed, 80 insertions(+)
+ create mode 100755 tests/generic/613
+ create mode 100644 tests/generic/613.out
 
--ritesh
+diff --git a/common/rc b/common/rc
+index 27a27ea36f75..b0c353c4c107 100644
+--- a/common/rc
++++ b/common/rc
+@@ -1607,6 +1607,16 @@ _require_scratch_size()
+ 	[ $devsize -lt $1 ] && _notrun "scratch dev too small"
+ }
+
++# require a scratch dev of a minimum size (in kb) and should not be checked
++# post test
++_require_scratch_size_nocheck()
++{
++	[ $# -eq 1 ] || _fail "_require_scratch_size: expected size param"
++
++	_require_scratch_nocheck
++	local devsize=`_get_device_size $SCRATCH_DEV`
++	[ $devsize -lt $1 ] && _notrun "scratch dev too small"
++}
+
+ # this test needs a test partition - check we're ok & mount it
+ #
+diff --git a/tests/generic/613 b/tests/generic/613
+new file mode 100755
+index 000000000000..b426ef91cacf
+--- /dev/null
++++ b/tests/generic/613
+@@ -0,0 +1,66 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2020 Christian Kujau. All Rights Reserved.
++# Copyright (c) 2020 Ritesh Harjani. All Rights Reserved.
++#
++# FS QA Test generic/613
++#
++# Since the test is not specific to ext4, hence adding it to generic.
++# Add this test to check for regression which was reported when ext4 bmap
++# aops was moved to use iomap APIs. jbd2 calls bmap() kernel function
++# from fs/inode.c which was failing since iomap_bmap() implementation earlier
++# returned 0 for block addr > INT_MAX.
++# This regression was fixed with following kernel commit [1]
++# commit b75dfde1212991b24b220c3995101c60a7b8ae74
++# ("fibmap: Warn and return an error in case of block > INT_MAX")
++# [1]: https://patchwork.ozlabs.org/patch/1279914
++#
++seq=`basename $0`
++seqres=$RESULT_DIR/$seq
++echo "QA output created by $seq"
++
++here=`pwd`
++tmp=/tmp/$$
++status=1	# failure is the default!
++trap "_cleanup; exit \$status" 0 1 2 3 15
++
++_cleanup()
++{
++	_dmhugedisk_cleanup
++	cd /
++	rm -f $tmp.*
++}
++
++# get standard environment, filters and checks
++. ./common/rc
++. ./common/filter
++. ./common/dmhugedisk
++
++# remove previous $seqres.full before test
++rm -f $seqres.full
++
++# Modify as appropriate.
++_supported_fs generic
++_require_dmhugedisk
++_require_scratch_size_nocheck $((4 * 1024 * 1024)) #kB
++
++# For 1k bs with ext4, mkfs was failing maybe due to size limitation.
++if [ "$FSTYP" = "ext4" ]; then
++	export MKFS_OPTIONS="-F -b 4096"
++fi
++
++# 17TB dm huge-test-zer0 device
++# (in terms of 512 sectors)
++sectors=$((2*1024*1024*1024*17))
++chunk_size=128
++
++_dmhugedisk_init $sectors $chunk_size
++_mkfs_dev $DMHUGEDISK_DEV
++_mount $DMHUGEDISK_DEV $SCRATCH_MNT || _fail "mount failed for $DMHUGEDISK_DEV $SCRATCH_MNT"
++testfile=$SCRATCH_MNT/testfile-$seq
++
++$XFS_IO_PROG -fc "pwrite -S 0xaa 0 1m" -c "fsync" $testfile | _filter_xfs_io
++
++# success, all done
++status=0
++exit
+diff --git a/tests/generic/613.out b/tests/generic/613.out
+new file mode 100644
+index 000000000000..4747b7596499
+--- /dev/null
++++ b/tests/generic/613.out
+@@ -0,0 +1,3 @@
++QA output created by 613
++wrote 1048576/1048576 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+diff --git a/tests/generic/group b/tests/generic/group
+index 8054d874f005..360d145d2036 100644
+--- a/tests/generic/group
++++ b/tests/generic/group
+@@ -615,3 +615,4 @@
+ 610 auto quick prealloc zero
+ 611 auto quick attr
+ 612 auto quick clone
++613 auto mount quick
+--
+2.26.2
+
