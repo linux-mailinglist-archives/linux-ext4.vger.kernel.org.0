@@ -2,171 +2,233 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E62929E647
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 Oct 2020 09:22:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5365129E5EA
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Oct 2020 09:12:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729335AbgJ2IWQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 29 Oct 2020 04:22:16 -0400
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:37040 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725982AbgJ2IWN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 29 Oct 2020 04:22:13 -0400
-X-Greylist: delayed 21238 seconds by postgrey-1.27 at vger.kernel.org; Thu, 29 Oct 2020 04:21:55 EDT
-Received: from dread.disaster.area (pa49-179-6-140.pa.nsw.optusnet.com.au [49.179.6.140])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 5E73A58C9C6;
-        Thu, 29 Oct 2020 13:27:34 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1kXxf3-005Q9Q-Vd; Thu, 29 Oct 2020 13:27:33 +1100
-Date:   Thu, 29 Oct 2020 13:27:33 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-fsdevel@vger.kernel.org,
-        John Johansen <john.johansen@canonical.com>,
-        James Morris <jmorris@namei.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Mrunal Patel <mpatel@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Theodore Tso <tytso@mit.edu>, Alban Crequy <alban@kinvolk.io>,
-        Tycho Andersen <tycho@tycho.ws>,
-        David Howells <dhowells@redhat.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Jann Horn <jannh@google.com>,
-        Seth Forshee <seth.forshee@canonical.com>,
-        =?iso-8859-1?Q?St=E9phane?= Graber <stgraber@ubuntu.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Lennart Poettering <lennart@poettering.net>,
-        "Eric W. Biederman" <ebiederm@xmission.com>, smbarber@chromium.org,
-        Phil Estes <estesp@gmail.com>, Serge Hallyn <serge@hallyn.com>,
-        Kees Cook <keescook@chromium.org>,
-        Todd Kjos <tkjos@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        containers@lists.linux-foundation.org,
-        linux-security-module@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        linux-audit@redhat.com, linux-integrity@vger.kernel.org,
-        selinux@vger.kernel.org
-Subject: Re: [PATCH 00/34] fs: idmapped mounts
-Message-ID: <20201029022733.GB306023@dread.disaster.area>
-References: <20201029003252.2128653-1-christian.brauner@ubuntu.com>
+        id S1727214AbgJ2IMo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 29 Oct 2020 04:12:44 -0400
+Received: from mga04.intel.com ([192.55.52.120]:23002 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726938AbgJ2IMn (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 29 Oct 2020 04:12:43 -0400
+IronPort-SDR: jotmbA/m4sfi1YSR7vIgMiQeCFyB6KduJ3r23ap20dbA4zd3UicvvKZDMC81yWGenNB/8LkhUx
+ Ehq4pwRYzvbg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9788"; a="165782273"
+X-IronPort-AV: E=Sophos;i="5.77,428,1596524400"; 
+   d="scan'208";a="165782273"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2020 20:08:34 -0700
+IronPort-SDR: 1ld/fqoT7wPboIofs1lH7ldt9xNIyhR4CUUSjc4fp1bFGp7Xuurerzj1Ng1vfcPkzC09Cg51GE
+ Zax+xTj2FPqA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,428,1596524400"; 
+   d="scan'208";a="468978502"
+Received: from lkp-server02.sh.intel.com (HELO 72b1a4bebef6) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 28 Oct 2020 20:08:33 -0700
+Received: from kbuild by 72b1a4bebef6 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kXyIi-000018-Hg; Thu, 29 Oct 2020 03:08:32 +0000
+Date:   Thu, 29 Oct 2020 11:08:08 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+Subject: [ext4:dev] BUILD SUCCESS 00c69f98e83d3cdb8910e0d4d4c89fc41a3a05d1
+Message-ID: <5f9a3218.X5mzvWNawMSoQlaU%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201029003252.2128653-1-christian.brauner@ubuntu.com>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0 cx=a_idp_d
-        a=uDU3YIYVKEaHT0eX+MXYOQ==:117 a=uDU3YIYVKEaHT0eX+MXYOQ==:17
-        a=8nJEP1OIZ-IA:10 a=afefHYAZSVUA:10 a=7-415B0cAAAA:8
-        a=7FRnUTRuY4COAZBt7UUA:9 a=wPNLvfGTeEIA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 01:32:18AM +0100, Christian Brauner wrote:
-> Hey everyone,
-> 
-> I vanished for a little while to focus on this work here so sorry for
-> not being available by mail for a while.
-> 
-> Since quite a long time we have issues with sharing mounts between
-> multiple unprivileged containers with different id mappings, sharing a
-> rootfs between multiple containers with different id mappings, and also
-> sharing regular directories and filesystems between users with different
-> uids and gids. The latter use-cases have become even more important with
-> the availability and adoption of systemd-homed (cf. [1]) to implement
-> portable home directories.
-> 
-> The solutions we have tried and proposed so far include the introduction
-> of fsid mappings, a tiny overlay based filesystem, and an approach to
-> call override creds in the vfs. None of these solutions have covered all
-> of the above use-cases.
-> 
-> The solution proposed here has it's origins in multiple discussions
-> during Linux Plumbers 2017 during and after the end of the containers
-> microconference.
-> To the best of my knowledge this involved Aleksa, Stéphane, Eric, David,
-> James, and myself. A variant of the solution proposed here has also been
-> discussed, again to the best of my knowledge, after a Linux conference
-> in St. Petersburg in Russia between Christoph, Tycho, and myself in 2017
-> after Linux Plumbers.
-> I've taken the time to finally implement a working version of this
-> solution over the last weeks to the best of my abilities. Tycho has
-> signed up for this sligthly crazy endeavour as well and he has helped
-> with the conversion of the xattr codepaths.
-> 
-> The core idea is to make idmappings a property of struct vfsmount
-> instead of tying it to a process being inside of a user namespace which
-> has been the case for all other proposed approaches.
-> It means that idmappings become a property of bind-mounts, i.e. each
-> bind-mount can have a separate idmapping. This has the obvious advantage
-> that idmapped mounts can be created inside of the initial user
-> namespace, i.e. on the host itself instead of requiring the caller to be
-> located inside of a user namespace. This enables such use-cases as e.g.
-> making a usb stick available in multiple locations with different
-> idmappings (see the vfat port that is part of this patch series).
-> 
-> The vfsmount struct gains a new struct user_namespace member. The
-> idmapping of the user namespace becomes the idmapping of the mount. A
-> caller that is either privileged with respect to the user namespace of
-> the superblock of the underlying filesystem or a caller that is
-> privileged with respect to the user namespace a mount has been idmapped
-> with can create a new bind-mount and mark it with a user namespace. The
-> user namespace the mount will be marked with can be specified by passing
-> a file descriptor refering to the user namespace as an argument to the
-> new mount_setattr() syscall together with the new MOUNT_ATTR_IDMAP flag.
-> By default vfsmounts are marked with the initial user namespace and no
-> behavioral or performance changes should be observed. All mapping
-> operations are nops for the initial user namespace.
-> 
-> When a file/inode is accessed through an idmapped mount the i_uid and
-> i_gid of the inode will be remapped according to the user namespace the
-> mount has been marked with. When a new object is created based on the
-> fsuid and fsgid of the caller they will similarly be remapped according
-> to the user namespace of the mount they care created from.
-> 
-> This means the user namespace of the mount needs to be passed down into
-> a few relevant inode_operations. This mostly includes inode operations
-> that create filesystem objects or change file attributes.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git  dev
+branch HEAD: 00c69f98e83d3cdb8910e0d4d4c89fc41a3a05d1  ext4: use IS_ERR() for error checking of path
 
-That's really quite ... messy.
+elapsed time: 724m
 
-Maybe I'm missing something, but if you have the user_ns to be used
-for the VFS operation we are about to execute then why can't we use
-the same model as current_fsuid/current_fsgid() for passing the
-filesystem credentials down to the filesystem operations?  i.e.
-attach it to the current->cred->fs_userns, and then the filesystem
-code that actually needs to know the current userns can call
-current_fs_user_ns() instead of current_user_ns().  i.e.
+configs tested: 170
+configs skipped: 2
 
-#define current_fs_user_ns()	\
-	(current->cred->fs_userns ? current->cred->fs_userns \
-				  : current->cred->userns)
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-At this point, the filesystem will now always have the correct
-userns it is supposed to use for mapping the uid/gid, right?
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+openrisc                         alldefconfig
+powerpc                 mpc8272_ads_defconfig
+mips                        maltaup_defconfig
+sh                           se7721_defconfig
+arc                          axs103_defconfig
+powerpc                    socrates_defconfig
+powerpc64                           defconfig
+arm                         nhk8815_defconfig
+arm                          pxa3xx_defconfig
+ia64                                defconfig
+arm                          prima2_defconfig
+ia64                        generic_defconfig
+mips                          malta_defconfig
+sh                          lboxre2_defconfig
+alpha                            alldefconfig
+sh                          r7780mp_defconfig
+arm                            lart_defconfig
+mips                      bmips_stb_defconfig
+arm                        magician_defconfig
+m68k                        mvme147_defconfig
+powerpc                 mpc8313_rdb_defconfig
+arm                              zx_defconfig
+c6x                         dsk6455_defconfig
+parisc                generic-32bit_defconfig
+powerpc                    gamecube_defconfig
+arm                      integrator_defconfig
+powerpc                     mpc5200_defconfig
+powerpc                      chrp32_defconfig
+arc                     haps_hs_smp_defconfig
+m68k                       m5249evb_defconfig
+arm                           tegra_defconfig
+powerpc                 mpc834x_mds_defconfig
+arm                     davinci_all_defconfig
+mips                     loongson1b_defconfig
+sh                           se7343_defconfig
+mips                             allyesconfig
+powerpc                 mpc836x_rdk_defconfig
+powerpc                      bamboo_defconfig
+arm                      pxa255-idp_defconfig
+xtensa                           alldefconfig
+powerpc                     tqm8560_defconfig
+s390                       zfcpdump_defconfig
+powerpc                    ge_imp3a_defconfig
+mips                      fuloong2e_defconfig
+h8300                    h8300h-sim_defconfig
+mips                          ath79_defconfig
+powerpc                 mpc8315_rdb_defconfig
+arc                 nsimosci_hs_smp_defconfig
+sh                        edosk7760_defconfig
+sh                ecovec24-romimage_defconfig
+riscv                            alldefconfig
+powerpc                     asp8347_defconfig
+powerpc                     mpc512x_defconfig
+powerpc                      walnut_defconfig
+mips                     decstation_defconfig
+m68k                        m5407c3_defconfig
+mips                            gpr_defconfig
+mips                      malta_kvm_defconfig
+powerpc                 mpc8560_ads_defconfig
+arm                        multi_v5_defconfig
+arm                         s5pv210_defconfig
+arm                          tango4_defconfig
+arm                          badge4_defconfig
+powerpc                     tqm8540_defconfig
+sh                  sh7785lcr_32bit_defconfig
+mips                malta_qemu_32r6_defconfig
+sh                             espt_defconfig
+arm                          ixp4xx_defconfig
+um                            kunit_defconfig
+m68k                          multi_defconfig
+powerpc                    sam440ep_defconfig
+sh                          urquell_defconfig
+sh                          sdk7780_defconfig
+powerpc                     pseries_defconfig
+sh                              ul2_defconfig
+arm                            zeus_defconfig
+sh                          rsk7264_defconfig
+powerpc                    klondike_defconfig
+riscv                    nommu_virt_defconfig
+ia64                      gensparse_defconfig
+arm                          pxa168_defconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a002-20201026
+i386                 randconfig-a003-20201026
+i386                 randconfig-a005-20201026
+i386                 randconfig-a001-20201026
+i386                 randconfig-a006-20201026
+i386                 randconfig-a004-20201026
+i386                 randconfig-a002-20201028
+i386                 randconfig-a005-20201028
+i386                 randconfig-a003-20201028
+i386                 randconfig-a001-20201028
+i386                 randconfig-a004-20201028
+i386                 randconfig-a006-20201028
+x86_64               randconfig-a011-20201028
+x86_64               randconfig-a013-20201028
+x86_64               randconfig-a016-20201028
+x86_64               randconfig-a015-20201028
+x86_64               randconfig-a012-20201028
+x86_64               randconfig-a014-20201028
+x86_64               randconfig-a011-20201026
+x86_64               randconfig-a013-20201026
+x86_64               randconfig-a016-20201026
+x86_64               randconfig-a015-20201026
+x86_64               randconfig-a012-20201026
+x86_64               randconfig-a014-20201026
+i386                 randconfig-a016-20201028
+i386                 randconfig-a014-20201028
+i386                 randconfig-a015-20201028
+i386                 randconfig-a013-20201028
+i386                 randconfig-a012-20201028
+i386                 randconfig-a011-20201028
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-Also, if we are passing work off to worker threads, duplicating
-the current creds will capture this information and won't leave
-random landmines where stuff doesn't work as it should because the
-worker thread is unaware of the userns that it is supposed to be
-doing filesytsem operations under...
+clang tested configs:
+x86_64               randconfig-a001-20201028
+x86_64               randconfig-a002-20201028
+x86_64               randconfig-a003-20201028
+x86_64               randconfig-a006-20201028
+x86_64               randconfig-a005-20201028
+x86_64               randconfig-a004-20201028
+x86_64               randconfig-a001-20201026
+x86_64               randconfig-a003-20201026
+x86_64               randconfig-a002-20201026
+x86_64               randconfig-a006-20201026
+x86_64               randconfig-a004-20201026
+x86_64               randconfig-a005-20201026
 
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
