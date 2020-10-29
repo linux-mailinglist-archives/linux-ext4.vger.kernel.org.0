@@ -2,126 +2,90 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 958AE29F0FB
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 Oct 2020 17:15:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B8EF29F0C3
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Oct 2020 17:09:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726370AbgJ2QPT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 29 Oct 2020 12:15:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726195AbgJ2QPS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 29 Oct 2020 12:15:18 -0400
-X-Greylist: delayed 611 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 29 Oct 2020 09:15:18 PDT
-Received: from gardel.0pointer.net (gardel.0pointer.net [IPv6:2a01:238:43ed:c300:10c3:bcf3:3266:da74])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0BF6C0613CF;
-        Thu, 29 Oct 2020 09:15:18 -0700 (PDT)
-Received: from gardel-login.0pointer.net (gardel.0pointer.net [85.214.157.71])
-        by gardel.0pointer.net (Postfix) with ESMTP id 8D3CAE80409;
-        Thu, 29 Oct 2020 17:05:05 +0100 (CET)
-Received: by gardel-login.0pointer.net (Postfix, from userid 1000)
-        id E22A4160834; Thu, 29 Oct 2020 17:05:03 +0100 (CET)
-Date:   Thu, 29 Oct 2020 17:05:02 +0100
-From:   Lennart Poettering <lennart@poettering.net>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-fsdevel@vger.kernel.org,
-        John Johansen <john.johansen@canonical.com>,
-        James Morris <jmorris@namei.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Mrunal Patel <mpatel@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Theodore Tso <tytso@mit.edu>, Alban Crequy <alban@kinvolk.io>,
-        Tycho Andersen <tycho@tycho.ws>,
-        David Howells <dhowells@redhat.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Jann Horn <jannh@google.com>,
-        Seth Forshee <seth.forshee@canonical.com>,
-        =?iso-8859-1?Q?St=E9phane?= Graber <stgraber@ubuntu.com>,
-        Aleksa Sarai <cyphar@cyphar.com>, smbarber@chromium.org,
-        Phil Estes <estesp@gmail.com>, Serge Hallyn <serge@hallyn.com>,
-        Kees Cook <keescook@chromium.org>,
-        Todd Kjos <tkjos@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        containers@lists.linux-foundation.org,
-        linux-security-module@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        linux-audit@redhat.com, linux-integrity@vger.kernel.org,
-        selinux@vger.kernel.org
-Subject: Re: [PATCH 00/34] fs: idmapped mounts
-Message-ID: <20201029160502.GA333141@gardel-login>
-References: <20201029003252.2128653-1-christian.brauner@ubuntu.com>
- <87pn51ghju.fsf@x220.int.ebiederm.org>
+        id S1725824AbgJ2QJD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 29 Oct 2020 12:09:03 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:8582 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725804AbgJ2QJD (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 29 Oct 2020 12:09:03 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09TG2mxI069176;
+        Thu, 29 Oct 2020 12:08:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=fd2bK6kwpd1iIHb5OaJq2cGqkcTRhpfKXsKW4sN3csM=;
+ b=eZw3Us42dPZmnIvgkkAU7BEOTwpC++9KserMLYMBLTvsVn7e4AIXYIBot7fCSuh9NB7j
+ nEZB1hkOsLaTipAHL5eyMZpXjqCFXCcWCNm3WzSFCNQDl1SZ/icTHGxsbX53HOnjjz72
+ +xj6+GeGBv6lXLcg4VN2f81K1tuj3rRiqFuuISvlsPLAow5g8BlFoTWYn9cRsPthe8Z/
+ NB6yl0sWeIKMg+JXQbdmRQ3ZgiTkYlE5Q07pzW0UvOVXgFqIvCOgp8sHQWW3asbUDwt0
+ jOcZPM1hybmGkNC7gXQ9fJu5Rl/Ne9yykzBUsBFrccU2nlUSsEvtjJMkAHU/APsG6FMR /Q== 
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34fyn4b3ua-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Oct 2020 12:08:41 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09TG7lWk001140;
+        Thu, 29 Oct 2020 16:08:39 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma05fra.de.ibm.com with ESMTP id 34fv15r4w1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Oct 2020 16:08:39 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09TG8aKl23331238
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Oct 2020 16:08:37 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D5303A4060;
+        Thu, 29 Oct 2020 16:08:36 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9E5BDA4054;
+        Thu, 29 Oct 2020 16:08:35 +0000 (GMT)
+Received: from [9.199.33.247] (unknown [9.199.33.247])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 29 Oct 2020 16:08:35 +0000 (GMT)
+Subject: Re: [PATCH] ext4: do not use extent after put_bh
+To:     yangerkun <yangerkun@huawei.com>, adilger@dilger.ca
+Cc:     tytso@mit.edu, jack@suse.com, linux-ext4@vger.kernel.org
+References: <20201028055617.2569255-1-yangerkun@huawei.com>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Message-ID: <93d5b1bf-0cf9-a483-ff5d-40a6a9c4b92b@linux.ibm.com>
+Date:   Thu, 29 Oct 2020 21:38:34 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87pn51ghju.fsf@x220.int.ebiederm.org>
+In-Reply-To: <20201028055617.2569255-1-yangerkun@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-10-29_08:2020-10-29,2020-10-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=2 malwarescore=0
+ phishscore=0 spamscore=0 priorityscore=1501 impostorscore=0 adultscore=0
+ bulkscore=0 lowpriorityscore=0 mlxscore=0 clxscore=1011 mlxlogscore=957
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010290111
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Do, 29.10.20 10:47, Eric W. Biederman (ebiederm@xmission.com) wrote:
 
-> Is that the use case you are looking at removing the need for
-> systemd-homed to avoid chowning after lugging encrypted home directories
-> from one system to another?  Why would it be desirable to avoid the
-> chown?
 
-Yes, I am very interested in seeing Christian's work succeed, for the
-usecase in systemd-homed. In systemd-homed each user gets their own
-private file system, and these fs shall be owned by the user's local
-UID, regardless in which system it is used. The UID should be an
-artifact of the local, individual system in this model, and thus
-the UID on of the same user/home on system A might be picked as 1010
-and on another as 1543, and on a third as 1323, and it shouldn't
-matter. This way, home directories become migratable without having to
-universially sync UID assignments: it doesn't matter anymore what the
-local UID is.
+On 10/28/20 11:26 AM, yangerkun wrote:
+> ext4_ext_search_right will read more extent block and call put_bh after
+> we get the information we need. However ret_ex will break this and may
+> cause use-after-free once pagecache has been freed. Fix it by dup the
+> extent we need.
 
-Right now we do a recursive chown() at login time to ensure the home
-dir is properly owned. This has two disadvantages:
 
-1. It's slow. In particular on large home dirs, it takes a while to go
-   through the whole user's homedir tree and chown/adjust ACLs for
-   everything.
+It would be good if we have a test case to reproduce it. Do you?
+Ideally it should go in fstests, if you have some way to forcefully
+reproduce it/simulate it. Let me know, if needed, I can as well help to
+get those into fstests.
 
-2. Because it is so slow we take a shortcut right now: if the
-   top-level home dir inode itself is owned by the correct user, we
-   skip the recursive chowning. This means in the typical case where a
-   user uses the same system most of the time, and thus the UID is
-   stable we can avoid the slowness. But this comes at a drawback: if
-   the user for some reason ends up with files in their homedir owned
-   by an unrelated user, then we'll never notice or readjust.
-
-> If the goal is to solve fragmented administration of uid assignment I
-> suggest that it might be better to solve the administration problem so
-> that all of the uids of interest get assigned the same way on all of the
-> systems of interest.
-
-Well, the goal is to make things simple and be able to use the home
-dir everywhere without any prior preparation, without central UID
-assignment authority.
-
-The goal is to have a scheme that requires no administration, by
-making the UID management problem go away. Hence, if you suggest
-solving this by having a central administrative authority: this is
-exactly what the model wants to get away from.
-
-Or to say this differently: just because I personally use three
-different computers, I certainly don't want to set up LDAP or sync
-UIDs manually.
-
-Lennart
-
---
-Lennart Poettering, Berlin
+-ritesh
