@@ -2,86 +2,216 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0370729E3BE
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 Oct 2020 08:21:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF1F429E3B0
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Oct 2020 08:20:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725904AbgJ2HVP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 29 Oct 2020 03:21:15 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:37982 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725949AbgJ2HUr (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 29 Oct 2020 03:20:47 -0400
-Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 09T4Otbv032668
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 29 Oct 2020 00:24:56 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 72E2E420107; Thu, 29 Oct 2020 00:24:55 -0400 (EDT)
-Date:   Thu, 29 Oct 2020 00:24:55 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: GIT PULL] ext4 fixes for 5.10-rc2
-Message-ID: <20201029042455.GA1241260@mit.edu>
+        id S1725781AbgJ2HUM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 29 Oct 2020 03:20:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725767AbgJ2HUM (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 29 Oct 2020 03:20:12 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D14EEC08EBB4
+        for <linux-ext4@vger.kernel.org>; Thu, 29 Oct 2020 00:20:11 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id z5so2340372iob.1
+        for <linux-ext4@vger.kernel.org>; Thu, 29 Oct 2020 00:20:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sargun.me; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=fYJuh784A+cg3Z8+1Zy80X4u98CkOOu8oSlOndn6LP8=;
+        b=ukkHuDX6yvhUUuB02MVOivG/WA5Ojyb5VYHv669wm4UAXDWp5nAXmbtMTBCfLFoPb9
+         sVpgKjyc2zqVxegUtGLSbRzLGexJM5lQuzckbt8qF8u/HiyA4E0h7EUabZqAmLhOGN8T
+         oEGcB9xpnrhEwAKkcmxDeaZNHBU6zCIIWxMdo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=fYJuh784A+cg3Z8+1Zy80X4u98CkOOu8oSlOndn6LP8=;
+        b=hHm65CpBrvtPtplK1b73lArDYgyfmym1J2rdZ85yXLigbcj1gNjZfcsJRb+5OBxGvs
+         /xJmgWi9ScHJx4j46gK/5HnMX4+CHuVjOFqXOf/fmChdfH3ELI2ILVDHaChqIi3TqjbO
+         YhcXVM4bfyOs/Bo8pEitzscAa5UNggmXsxgPXb0sBVs7VCmcj1ivV9BM9XGUyVxdS5I/
+         zJ7Iu5si6fozA11YPxJ0q2XPcO78emBZkW5LYiFwszvyRnG/1fif2mbadPeWIEd8S/cJ
+         T0VQwMcaIQpGrG/ZBQwtz0tB4INZqUUNECgnZDTJ/Dqe/wbnxaIvDZwx06kUTYy1743G
+         lmrg==
+X-Gm-Message-State: AOAM532we/7eFxBLWVMgZI2D9E7IzNCFUCKD0TLeW/sAe9kTX0JXzBTy
+        Vnr0l7LlbExeP38Yp/9SbYFUaA==
+X-Google-Smtp-Source: ABdhPJyOF/iJB70V4z6Kj5OehxU+n1aNhIuE8pqzjl3KXVgPoawDTq88ZFqqZglnxTR3mWhjdU4O1Q==
+X-Received: by 2002:a6b:c9c9:: with SMTP id z192mr2361774iof.175.1603956010838;
+        Thu, 29 Oct 2020 00:20:10 -0700 (PDT)
+Received: from ircssh-2.c.rugged-nimbus-611.internal (80.60.198.104.bc.googleusercontent.com. [104.198.60.80])
+        by smtp.gmail.com with ESMTPSA id k6sm1247023iov.26.2020.10.29.00.20.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 29 Oct 2020 00:20:10 -0700 (PDT)
+Date:   Thu, 29 Oct 2020 07:20:08 +0000
+From:   Sargun Dhillon <sargun@sargun.me>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-fsdevel@vger.kernel.org,
+        Lennart Poettering <lennart@poettering.net>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        containers@lists.linux-foundation.org,
+        Tycho Andersen <tycho@tycho.ws>,
+        Miklos Szeredi <miklos@szeredi.hu>, smbarber@chromium.org,
+        linux-ext4@vger.kernel.org, Mrunal Patel <mpatel@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Arnd Bergmann <arnd@arndb.de>, Jann Horn <jannh@google.com>,
+        selinux@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
+        Seth Forshee <seth.forshee@canonical.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        David Howells <dhowells@redhat.com>,
+        John Johansen <john.johansen@canonical.com>,
+        Theodore Tso <tytso@mit.edu>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        linux-unionfs@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-audit@redhat.com,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-api@vger.kernel.org,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Alban Crequy <alban@kinvolk.io>,
+        linux-integrity@vger.kernel.org, Todd Kjos <tkjos@google.com>
+Subject: Re: [PATCH 00/34] fs: idmapped mounts
+Message-ID: <20201029071946.GA29881@ircssh-2.c.rugged-nimbus-611.internal>
+References: <20201029003252.2128653-1-christian.brauner@ubuntu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201029003252.2128653-1-christian.brauner@ubuntu.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The following changes since commit 96485e4462604744d66bf4301557d996d80b85eb:
+On Thu, Oct 29, 2020 at 01:32:18AM +0100, Christian Brauner wrote:
+> Hey everyone,
+> 
+> I vanished for a little while to focus on this work here so sorry for
+> not being available by mail for a while.
+> 
+> Since quite a long time we have issues with sharing mounts between
+> multiple unprivileged containers with different id mappings, sharing a
+> rootfs between multiple containers with different id mappings, and also
+> sharing regular directories and filesystems between users with different
+> uids and gids. The latter use-cases have become even more important with
+> the availability and adoption of systemd-homed (cf. [1]) to implement
+> portable home directories.
+> 
+> The solutions we have tried and proposed so far include the introduction
+> of fsid mappings, a tiny overlay based filesystem, and an approach to
+> call override creds in the vfs. None of these solutions have covered all
+> of the above use-cases.
+> 
+> The solution proposed here has it's origins in multiple discussions
+> during Linux Plumbers 2017 during and after the end of the containers
+> microconference.
+> To the best of my knowledge this involved Aleksa, Stéphane, Eric, David,
+> James, and myself. A variant of the solution proposed here has also been
+> discussed, again to the best of my knowledge, after a Linux conference
+> in St. Petersburg in Russia between Christoph, Tycho, and myself in 2017
+> after Linux Plumbers.
+> I've taken the time to finally implement a working version of this
+> solution over the last weeks to the best of my abilities. Tycho has
+> signed up for this sligthly crazy endeavour as well and he has helped
+> with the conversion of the xattr codepaths.
+> 
+> The core idea is to make idmappings a property of struct vfsmount
+> instead of tying it to a process being inside of a user namespace which
+> has been the case for all other proposed approaches.
+> It means that idmappings become a property of bind-mounts, i.e. each
+> bind-mount can have a separate idmapping. This has the obvious advantage
+> that idmapped mounts can be created inside of the initial user
+> namespace, i.e. on the host itself instead of requiring the caller to be
+> located inside of a user namespace. This enables such use-cases as e.g.
+> making a usb stick available in multiple locations with different
+> idmappings (see the vfat port that is part of this patch series).
+> 
+> The vfsmount struct gains a new struct user_namespace member. The
+> idmapping of the user namespace becomes the idmapping of the mount. A
+> caller that is either privileged with respect to the user namespace of
+> the superblock of the underlying filesystem or a caller that is
+> privileged with respect to the user namespace a mount has been idmapped
+> with can create a new bind-mount and mark it with a user namespace. The
+> user namespace the mount will be marked with can be specified by passing
+> a file descriptor refering to the user namespace as an argument to the
+> new mount_setattr() syscall together with the new MOUNT_ATTR_IDMAP flag.
+> By default vfsmounts are marked with the initial user namespace and no
+> behavioral or performance changes should be observed. All mapping
+> operations are nops for the initial user namespace.
+> 
+> When a file/inode is accessed through an idmapped mount the i_uid and
+> i_gid of the inode will be remapped according to the user namespace the
+> mount has been marked with. When a new object is created based on the
+> fsuid and fsgid of the caller they will similarly be remapped according
+> to the user namespace of the mount they care created from.
+> 
+> This means the user namespace of the mount needs to be passed down into
+> a few relevant inode_operations. This mostly includes inode operations
+> that create filesystem objects or change file attributes. Some of them
+> such as ->getattr() don't even need to change since they pass down a
+> struct path and thus the struct vfsmount is already available. Other
+> inode operations need to be adapted to pass down the user namespace the
+> vfsmount has been marked with. Al was nice enough to point out that he
+> will not tolerate struct vfsmount being passed to filesystems and that I
+> should pass down the user namespace directly; which is what I did.
+> The inode struct itself is never altered whenever the i_uid and i_gid
+> need to be mapped, i.e. i_uid and i_gid are only remapped at the time of
+> the check. An inode once initialized (during lookup or object creation)
+> is never altered when accessed through an idmapped mount.
+> 
+> To limit the amount of noise in this first iteration we have not changed
+> the existing inode operations but rather introduced a few new struct
+> inode operation methods such as ->mkdir_mapped which pass down the user
+> namespace of the mount they have been called from. Should this solution
+> be worth pursuing we have no problem adapting the existing inode
+> operations instead.
+> 
+> In order to support idmapped mounts, filesystems need to be changed and
+> mark themselves with the FS_ALLOW_IDMAP flag in fs_flags. In this first
+> iteration I tried to illustrate this by changing three different
+> filesystem with different levels of complexity. Of course with some bias
+> towards urgent use-cases and filesystems I was at least a little more
+> familiar with. However, Tycho and I (and others) have no problem
+> converting each filesystem one-by-one. This first iteration includes fat
+> (msdos and vfat), ext4, and overlayfs (both with idmapped lower and
+> upper directories and idmapped merged directories). I'm sure I haven't
+> gotten everything right for all three of them in the first version of
+> this patch.
+> 
 
-  Merge tag 'ext4_for_linus' of git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4 (2020-10-22 10:31:08 -0700)
+Thanks for this patchset. It's been a long-time coming.
 
-are available in the Git repository at:
+I'm curious as to for the most cases, how much the new fs mount APIs help, and 
+if focusing on those could solve the problem for everything other than bind 
+mounts? Specifically, the idea of doing fsopen (creation of fs_context) under 
+the user namespace of question, and relying on a user with CAP_SYS_ADMIN to call 
+fsmount[1]. I think this is actually especially valuable for places like 
+overlayfs that use the entire cred object, as opposed to just the uid / gid. I 
+imagine that soon, most filesystems will support the new mount APIs, and not set 
+the global flag if they don't need to.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_fixes
+How popular is the "vfsmount (bind mounts) needs different uid mappings" use 
+case?
 
-for you to fetch changes up to 6694875ef8045cdb1e6712ee9b68fe08763507d8:
+The other thing I worry about is the "What UID are you really?" game that's been 
+a thing recently. For example, you can have a different user namespace UID 
+mapping for your network namespace that netfilter checks[2], and a different one 
+for your mount namespace, and a different one that the process is actually in.
+This proliferation of different mappings makes auditing, and doing things like
+writing perf toolings more difficult (since I think bpf_get_current_uid_gid
+use the initial user namespace still [3]).
 
-  ext4: indicate that fast_commit is available via /sys/fs/ext4/feature/... (2020-10-28 13:43:22 -0400)
+[1]: https://lore.kernel.org/linux-nfs/20201016123745.9510-4-sargun@sargun.me/T/#u
+[2]: https://elixir.bootlin.com/linux/v5.9.1/source/net/netfilter/xt_owner.c#L37
+[3]: https://elixir.bootlin.com/linux/v5.9.1/source/kernel/bpf/helpers.c#L196
 
-----------------------------------------------------------------
-Bug fixes for the new ext4 fast commit feature, plus a fix for the
-data=journal bug fix.  Also use the generic casefolding support which
-has now landed in fs/libfs.c for 5.10.
-
-----------------------------------------------------------------
-Andrea Righi (1):
-      ext4: properly check for dirty state in ext4_inode_datasync_dirty()
-
-Daniel Rosenberg (1):
-      ext4: use generic casefolding support
-
-Harshad Shirwadkar (4):
-      ext4: fix double locking in ext4_fc_commit_dentry_updates()
-      ext4: make num of fast commit blocks configurable
-      ext4: use s_mount_flags instead of s_mount_state for fast commit state
-      ext4: use IS_ERR() for error checking of path
-
-Jan Kara (1):
-      ext4: fix mmap write protection for data=journal mode
-
-Mauro Carvalho Chehab (1):
-      jbd2: fix a kernel-doc markup
-
-Theodore Ts'o (1):
-      ext4: indicate that fast_commit is available via /sys/fs/ext4/feature/...
-
-yangerkun (1):
-      ext4: do not use extent after put_bh
-
- fs/ext4/dir.c         | 64 ++--------------------------------------------------------------
- fs/ext4/ext4.h        | 20 ++++----------------
- fs/ext4/extents.c     | 30 +++++++++++++++---------------
- fs/ext4/fast_commit.c | 37 ++++++++++++++++++++++++-------------
- fs/ext4/hash.c        |  2 +-
- fs/ext4/inode.c       | 15 +++++++++------
- fs/ext4/namei.c       | 20 ++++++++------------
- fs/ext4/super.c       | 16 ++++++++--------
- fs/ext4/sysfs.c       |  2 ++
- include/linux/jbd2.h  |  7 +++++--
- 10 files changed, 78 insertions(+), 135 deletions(-)
