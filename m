@@ -2,69 +2,110 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 438C929FA84
-	for <lists+linux-ext4@lfdr.de>; Fri, 30 Oct 2020 02:23:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4268829FAF3
+	for <lists+linux-ext4@lfdr.de>; Fri, 30 Oct 2020 02:57:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726063AbgJ3BXo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 29 Oct 2020 21:23:44 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:6708 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726017AbgJ3BXo (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 29 Oct 2020 21:23:44 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CMl2738Gnzkc7m;
-        Fri, 30 Oct 2020 09:23:43 +0800 (CST)
-Received: from [10.174.179.106] (10.174.179.106) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 30 Oct 2020 09:23:38 +0800
-Subject: Re: [PATCH] ext4: do not use extent after put_bh
-To:     Ritesh Harjani <riteshh@linux.ibm.com>, <adilger@dilger.ca>
-CC:     <tytso@mit.edu>, <jack@suse.com>, <linux-ext4@vger.kernel.org>
-References: <20201028055617.2569255-1-yangerkun@huawei.com>
- <93d5b1bf-0cf9-a483-ff5d-40a6a9c4b92b@linux.ibm.com>
-From:   yangerkun <yangerkun@huawei.com>
-Message-ID: <a77ce068-aa0f-77f3-abc4-58c0224757b0@huawei.com>
-Date:   Fri, 30 Oct 2020 09:23:38 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1725861AbgJ3B52 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 29 Oct 2020 21:57:28 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:39976 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725372AbgJ3B52 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 29 Oct 2020 21:57:28 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09TKxMhp076672;
+        Thu, 29 Oct 2020 21:04:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=b9Eybl/kXwCQLEYPHlsMF9500flCIdapjz1uqSSLeGA=;
+ b=N4Oz3H6zho41m1HWactdv86yx+yYx1oGG9QQecIdaViuGrwv4svCDlC0knSTZre4pEF0
+ vZxQtTGuwG5MLrcwzB+8rSCt9TqcX9O0ho9kNeFt5UnouC2sWfBNvUAr3eXbyyRXX2Pg
+ /VcErpRKGfTNSKrnUr4iLiyirmGwHyQn6coRdwJuDb/M6IRv/V1zNGCDJhELsdG4lfSv
+ r/lzw19t3sqgWfFM/y7txqFWp8O/If0jdXNC4vWzw7GXCX1i1Iu2/u96oZDF32eVlvm1
+ Df50R9iNSRBAIUVBmDa4VSZXMFz2t4vay1/ifRCAtbR7S3tL+s5nrRpqHbk6nhqcirmR ww== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 34c9sb7797-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 29 Oct 2020 21:04:32 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09TKuPw5172410;
+        Thu, 29 Oct 2020 21:04:31 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 34cx1tp8tc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Oct 2020 21:04:31 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09TL4PmC019065;
+        Thu, 29 Oct 2020 21:04:25 GMT
+Received: from localhost (/10.159.244.77)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 29 Oct 2020 14:04:25 -0700
+Date:   Thu, 29 Oct 2020 14:04:24 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     fstests@vger.kernel.org, anju@linux.vnet.ibm.com,
+        Eryu Guan <guan@eryu.me>, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH 3/3] common/rc: source common/xfs and common/btrfs
+Message-ID: <20201029210424.GD1061252@magnolia>
+References: <cover.1604000570.git.riteshh@linux.ibm.com>
+ <8d7db41971a227c5bd83677464d139399607e720.1604000570.git.riteshh@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <93d5b1bf-0cf9-a483-ff5d-40a6a9c4b92b@linux.ibm.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.106]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8d7db41971a227c5bd83677464d139399607e720.1604000570.git.riteshh@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9789 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 bulkscore=0
+ suspectscore=1 malwarescore=0 mlxlogscore=999 mlxscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010290146
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9789 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 malwarescore=0 lowpriorityscore=0 bulkscore=0
+ priorityscore=1501 spamscore=0 phishscore=0 clxscore=1011 suspectscore=1
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010290146
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-
-
-在 2020/10/30 0:08, Ritesh Harjani 写道:
+On Fri, Oct 30, 2020 at 01:22:53AM +0530, Ritesh Harjani wrote:
+> Without this patch I am unable to test for multiple different
+> filesystem sections for the same tests. Since we anyway have only
+> function definitions in these files, so it should be ok to source it
+> by default too.
+> e.g. when I run ./check -s btrfs tests/generic/613 with 3 different [***_fs]
+> sections from local.config file, I see below failures.
 > 
+> ./common/rc: line 2801: _check_btrfs_filesystem: command not found
 > 
-> On 10/28/20 11:26 AM, yangerkun wrote:
->> ext4_ext_search_right will read more extent block and call put_bh after
->> we get the information we need. However ret_ex will break this and may
->> cause use-after-free once pagecache has been freed. Fix it by dup the
->> extent we need.
+> ./check -s xfs_4k -g swap (for XFS this fails like below)
+> ./common/rc: line 749: _scratch_mkfs_xfs: command not found
+> check: failed to mkfs $SCRATCH_DEV using specified options
 > 
+> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> ---
+>  common/rc | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> It would be good if we have a test case to reproduce it. Do you?
-> Ideally it should go in fstests, if you have some way to forcefully
-> reproduce it/simulate it. Let me know, if needed, I can as well help to
-> get those into fstests.
+> diff --git a/common/rc b/common/rc
+> index 4c59968a6bd3..e9ba1b6e8265 100644
+> --- a/common/rc
+> +++ b/common/rc
+> @@ -3,6 +3,8 @@
+>  # Copyright (c) 2000-2006 Silicon Graphics, Inc.  All Rights Reserved.
+>  
+>  . common/config
+> +. ./common/xfs
+> +. ./common/btrfs
 
-Sorry for that. I found this bug while reading source code. Not with a 
-testcase.
+Uhh, what happens if you run xfs and nfs one after the other?
 
-And time leave for drop pagecache is so small(time between 
-get_implied_cluster_alloc and ext4_ext_search_right in 
-ext4_ext_map_blocks, other caller for ext4_ext_search_right won't use 
-@ret_ex). It may difficult to reproduce it expect a delay injection.
+--D
 
-Thanks,
-Kun.
-
+>  
+>  BC=$(which bc 2> /dev/null) || BC=
+>  
+> -- 
+> 2.26.2
 > 
-> -ritesh
-> .
