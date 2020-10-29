@@ -2,189 +2,95 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 518D329F3E3
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 Oct 2020 19:13:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D39DD29F593
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Oct 2020 20:53:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725808AbgJ2SEs convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Thu, 29 Oct 2020 14:04:48 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:38029 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725747AbgJ2SEr (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 29 Oct 2020 14:04:47 -0400
-Received: from mail-lf1-f43.google.com ([209.85.167.43])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <stgraber@ubuntu.com>)
-        id 1kYCHz-0003yS-Sl
-        for linux-ext4@vger.kernel.org; Thu, 29 Oct 2020 18:04:44 +0000
-Received: by mail-lf1-f43.google.com with SMTP id y184so2517975lfa.12
-        for <linux-ext4@vger.kernel.org>; Thu, 29 Oct 2020 11:04:43 -0700 (PDT)
-X-Gm-Message-State: AOAM532cASKT6E1uFwyrUbi3aN6eCt1OfBNKf3FLZdOlCjN/IvgsT/sA
-        sahsnGIyM7jXC6n/XkcrLbzu6vruozpHsFbYps9gmg==
-X-Google-Smtp-Source: ABdhPJzOR+GvYdcxThjeYM4q+BnWieqIoL3kVTr7F9zyXSA8NyVuuYCL1zVggZkDC4pHflRK6EVUPiYtBnL0ZVxrdaQ=
-X-Received: by 2002:ac2:5c49:: with SMTP id s9mr1955451lfp.14.1603994683268;
- Thu, 29 Oct 2020 11:04:43 -0700 (PDT)
+        id S1725862AbgJ2TxQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 29 Oct 2020 15:53:16 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38726 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725780AbgJ2TxP (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 29 Oct 2020 15:53:15 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09TJWGvv099474;
+        Thu, 29 Oct 2020 15:53:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=6ckVYkG3rz+Dh40rH7ktk+hyT+SyLyYm11nHgXNnLQ8=;
+ b=IVr8Zf6A2Smqj0VJPdBptw7p/tQ/l90vLTEqS3FTx96qVqhJtbbgY7uH8YFZw+LgG7P0
+ TBLn0UfGloQIW3PQmZLrib5dHCuOTaeLd/vM2iTDxJnBYDqY5kXwRLRolwFJ8VsgAE0T
+ yU0dnkAF4XI24YpIKpwQbmdTF6DEDJyGlOzxC4OOfLpCwUuW4OzwbxrEje6kdDZ9ZOHI
+ OSWej308esATxW4ENiYBBVDctWNhue6/0vGWXJLd/aaFobgSfaGgLVJemd7q6Z8iz2qm
+ OeuIBtj/43ky0NxWOzxqiDpjV5Q/m22/AzscyEnNlkAPJ8xBOiRiquTDqLTrD19mb+iq Uw== 
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34fnh068x9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Oct 2020 15:53:12 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09TJmK1O025113;
+        Thu, 29 Oct 2020 19:53:10 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma02fra.de.ibm.com with ESMTP id 34fvc487cr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Oct 2020 19:53:10 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09TJr8uF33948084
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Oct 2020 19:53:08 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 533E94C050;
+        Thu, 29 Oct 2020 19:53:08 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 92EB54C044;
+        Thu, 29 Oct 2020 19:53:06 +0000 (GMT)
+Received: from riteshh-domain.ibmuc.com (unknown [9.199.33.247])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 29 Oct 2020 19:53:06 +0000 (GMT)
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+To:     fstests@vger.kernel.org
+Cc:     anju@linux.vnet.ibm.com, Eryu Guan <guan@eryu.me>,
+        linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-xfs@vger.kernel.org, Ritesh Harjani <riteshh@linux.ibm.com>
+Subject: [PATCH 0/3] fstests: Fix tests which checks for swapfile support
+Date:   Fri, 30 Oct 2020 01:22:50 +0530
+Message-Id: <cover.1604000570.git.riteshh@linux.ibm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20201029003252.2128653-1-christian.brauner@ubuntu.com>
- <87pn51ghju.fsf@x220.int.ebiederm.org> <20201029161231.GA108315@cisco> <87blglc77y.fsf@x220.int.ebiederm.org>
-In-Reply-To: <87blglc77y.fsf@x220.int.ebiederm.org>
-From:   =?UTF-8?Q?St=C3=A9phane_Graber?= <stgraber@ubuntu.com>
-Date:   Thu, 29 Oct 2020 14:04:31 -0400
-X-Gmail-Original-Message-ID: <CA+enf=vn1TgdLx9TR3m=wdBzbZxRbxK4NFY4NdYn0v5gzewCyw@mail.gmail.com>
-Message-ID: <CA+enf=vn1TgdLx9TR3m=wdBzbZxRbxK4NFY4NdYn0v5gzewCyw@mail.gmail.com>
-Subject: Re: [PATCH 00/34] fs: idmapped mounts
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Tycho Andersen <tycho@tycho.pizza>,
-        Andy Lutomirski <luto@kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Stephen Barber <smbarber@chromium.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        linux-ext4@vger.kernel.org, Mrunal Patel <mpatel@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Arnd Bergmann <arnd@arndb.de>, Jann Horn <jannh@google.com>,
-        selinux@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
-        Seth Forshee <seth.forshee@canonical.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Lennart Poettering <lennart@poettering.net>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        David Howells <dhowells@redhat.com>,
-        John Johansen <john.johansen@canonical.com>,
-        Theodore Tso <tytso@mit.edu>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        linux-security-module@vger.kernel.org, linux-audit@redhat.com,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Alban Crequy <alban@kinvolk.io>,
-        linux-integrity@vger.kernel.org,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Todd Kjos <tkjos@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-10-29_11:2020-10-29,2020-10-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
+ mlxlogscore=852 lowpriorityscore=0 clxscore=1011 impostorscore=0
+ suspectscore=13 priorityscore=1501 adultscore=0 phishscore=0
+ malwarescore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010290131
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 12:45 PM Eric W. Biederman
-<ebiederm@xmission.com> wrote:
->
-> Tycho Andersen <tycho@tycho.pizza> writes:
->
-> > Hi Eric,
-> >
-> > On Thu, Oct 29, 2020 at 10:47:49AM -0500, Eric W. Biederman wrote:
-> >> Christian Brauner <christian.brauner@ubuntu.com> writes:
-> >>
-> >> > Hey everyone,
-> >> >
-> >> > I vanished for a little while to focus on this work here so sorry for
-> >> > not being available by mail for a while.
-> >> >
-> >> > Since quite a long time we have issues with sharing mounts between
-> >> > multiple unprivileged containers with different id mappings, sharing a
-> >> > rootfs between multiple containers with different id mappings, and also
-> >> > sharing regular directories and filesystems between users with different
-> >> > uids and gids. The latter use-cases have become even more important with
-> >> > the availability and adoption of systemd-homed (cf. [1]) to implement
-> >> > portable home directories.
-> >>
-> >> Can you walk us through the motivating use case?
-> >>
-> >> As of this year's LPC I had the distinct impression that the primary use
-> >> case for such a feature was due to the RLIMIT_NPROC problem where two
-> >> containers with the same users still wanted different uid mappings to
-> >> the disk because the users were conflicting with each other because of
-> >> the per user rlimits.
-> >>
-> >> Fixing rlimits is straight forward to implement, and easier to manage
-> >> for implementations and administrators.
-> >
-> > Our use case is to have the same directory exposed to several
-> > different containers which each have disjoint ID mappings.
->
-> Why do the you have disjoint ID mappings for the users that are writing
-> to disk with the same ID?
->
-> >> Reading up on systemd-homed it appears to be a way to have encrypted
-> >> home directories.  Those home directories can either be encrypted at the
-> >> fs or at the block level.  Those home directories appear to have the
-> >> goal of being luggable between systems.  If the systems in question
-> >> don't have common administration of uids and gids after lugging your
-> >> encrypted home directory to another system chowning the files is
-> >> required.
-> >>
-> >> Is that the use case you are looking at removing the need for
-> >> systemd-homed to avoid chowning after lugging encrypted home directories
-> >> from one system to another?  Why would it be desirable to avoid the
-> >> chown?
-> >
-> > Not just systemd-homed, but LXD has to do this,
->
-> I asked why the same disk users are assigned different kuids and the
-> only reason I have heard that LXD does this is the RLIMIT_NPROC problem.
->
-> Perhaps there is another reason.
->
-> In part this is why I am eager to hear peoples use case, and why I was
-> trying very hard to make certain we get the requirements.
->
-> I want the real requirements though and some thought, not just we did
-> this and it hurts.  Changning the uids on write is a very hard problem,
-> and not just in implementating it but also in maintaining and
-> understanding what is going on.
+For more details, pls refer commit msg of each patch.
 
-The most common cases where shiftfs is used or where folks would like
-to use it today are (by importance):
- - Fast container creation (by not having to uid/gid shift all files
-in the downloaded image)
- - Sharing data between the host system and a container (some paths
-under /home being the most common)
- - Sharing data between unprivileged containers with a disjointed map
- - Sharing data between multiple containers, some privileged, some unprivileged
+Patch-1: modifies _require_scratch_swapfile() to check swapon only for btrfs
+Patch-2: adds a swapfile test for fallocate files for ext4, xfs (assuming
+both FS supports and thus should pass).
+Patch-3: added to support tests to run when multiple config section present
+in local.config file.
 
-Fixing the ulimit issue only takes care of one of those (3rd item), it
-does not solve any of the other cases.
+Ritesh Harjani (3):
+  common/rc: Make swapon check in _require_scratch_swapfile() specific to btrfs
+  shared/001: Verify swapon on fallocated files for supported FS
+  common/rc: source common/xfs and common/btrfs
 
-The first item on there alone can be quite significant. Creation and
-startup of a regular Debian container on my system takes around 500ms
-when shiftfs is used (btrfs/lvm/zfs copy-on-write clone of the image,
-setup shiftfs, start container) compared to 2-3s when running without
-it (same clone, followed by rewrite of all uid/gid present on the fs,
-including acls and capabilities, then start container). And that's on
-a fast system with an NVME SSD and a small rootfs. We have had reports
-of a few users running on slow spinning rust with large containers
-where shifting can take several minutes.
+ common/rc            | 20 +++++----
+ tests/shared/001     | 97 ++++++++++++++++++++++++++++++++++++++++++++
+ tests/shared/001.out |  6 +++
+ tests/shared/group   |  1 +
+ 4 files changed, 116 insertions(+), 8 deletions(-)
+ create mode 100755 tests/shared/001
+ create mode 100644 tests/shared/001.out
 
-The second item can technically be worked around without shifted
-bind-mounts by doing userns map hole punching, mapping the user's
-uid/gid from the host straight into the container. The downside to
-this is that another shifting pass becomes needed for any file outside
-of the bind-mounted path (or it would become owned by -1/-1) and it's
-very much not dynamic, requiring the container be stopped, config
-updated by the user, /etc/subuid and subgid maps being updated and
-container started back up. If you need another user/group be exposed,
-start all over again...
-This is far more complex, slow and disruptive than the shifted
-approach where we just need to do:
-   lxc config device add MY-CONTAINER home disk source=/home
-path=/home shift=true
-To inject a new mount of /home from the host into the container with a
-shifting layer in place, no need to reconfig subuid/subgid, no need to
-re-create the userns to update the mapping and no need to go through
-the container's rootfs for any file which may now need remapping
-because of the map change.
+--
+2.26.2
 
-Stéphane
-
-> Eric
-> _______________________________________________
-> Containers mailing list
-> Containers@lists.linux-foundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/containers
