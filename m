@@ -2,155 +2,138 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1F652A04EA
-	for <lists+linux-ext4@lfdr.de>; Fri, 30 Oct 2020 13:02:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B062A0653
+	for <lists+linux-ext4@lfdr.de>; Fri, 30 Oct 2020 14:18:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726424AbgJ3MCJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 30 Oct 2020 08:02:09 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:39709 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725808AbgJ3MCJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 30 Oct 2020 08:02:09 -0400
-Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1kYT6V-0006JV-Px; Fri, 30 Oct 2020 12:01:59 +0000
-Date:   Fri, 30 Oct 2020 13:01:57 +0100
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-fsdevel@vger.kernel.org,
-        John Johansen <john.johansen@canonical.com>,
-        James Morris <jmorris@namei.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Mrunal Patel <mpatel@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Theodore Tso <tytso@mit.edu>, Alban Crequy <alban@kinvolk.io>,
-        Tycho Andersen <tycho@tycho.ws>,
-        David Howells <dhowells@redhat.com>,
-        James Bottomley <james.bottomley@hansenpartnership.com>,
-        Jann Horn <jannh@google.com>,
-        Seth Forshee <seth.forshee@canonical.com>,
-        =?utf-8?B?U3TDqXBoYW5l?= Graber <stgraber@ubuntu.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Lennart Poettering <lennart@poettering.net>,
-        "Eric W. Biederman" <ebiederm@xmission.com>, smbarber@chromium.org,
-        Phil Estes <estesp@gmail.com>, Serge Hallyn <serge@hallyn.com>,
-        Kees Cook <keescook@chromium.org>,
-        Todd Kjos <tkjos@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        containers@lists.linux-foundation.org,
-        linux-security-module@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        linux-audit@redhat.com, linux-integrity@vger.kernel.org,
-        selinux@vger.kernel.org
-Subject: Re: [PATCH 00/34] fs: idmapped mounts
-Message-ID: <20201030120157.exz4rxmebruh7bgp@wittgenstein>
-References: <20201029003252.2128653-1-christian.brauner@ubuntu.com>
- <8E455D54-FED4-4D06-8CB7-FC6291C64259@amacapital.net>
+        id S1726612AbgJ3NSi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 30 Oct 2020 09:18:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29071 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726617AbgJ3NSh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 30 Oct 2020 09:18:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604063916;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IpBz9HE0+LF1roOf+93vzSdfOChLyFY4c0u+B2Dio2o=;
+        b=gXdQIRypedSj06Bt48/L2+ZORCQnxiiSqjqugwVnSs6fnqGUD9SoF2Lz+DEjlRL1ckp/vi
+        mNWkkK5WWyl0NA4jDqXIOfVlowx2CjcTCv5SJgmQziNyfqvy822X51p6B9qiWP/0VuP9Bd
+        nIQNRoYBo1G1AtFBUl8vD/AIkf7Jc7o=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-373-UgVc5cf0MX2JsHjS2xyaxg-1; Fri, 30 Oct 2020 09:18:34 -0400
+X-MC-Unique: UgVc5cf0MX2JsHjS2xyaxg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 75044188C130;
+        Fri, 30 Oct 2020 13:18:32 +0000 (UTC)
+Received: from bfoster (ovpn-113-186.rdu2.redhat.com [10.10.113.186])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 97D875B4A7;
+        Fri, 30 Oct 2020 13:18:31 +0000 (UTC)
+Date:   Fri, 30 Oct 2020 09:18:29 -0400
+From:   Brian Foster <bfoster@redhat.com>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     fstests@vger.kernel.org, anju@linux.vnet.ibm.com,
+        Eryu Guan <guan@eryu.me>, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH 1/3] common/rc: Make swapon check in
+ _require_scratch_swapfile() specific to btrfs
+Message-ID: <20201030131829.GB1794672@bfoster>
+References: <cover.1604000570.git.riteshh@linux.ibm.com>
+ <6070d16aab6a61bbbc988fc68cc727c21ec7baef.1604000570.git.riteshh@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8E455D54-FED4-4D06-8CB7-FC6291C64259@amacapital.net>
+In-Reply-To: <6070d16aab6a61bbbc988fc68cc727c21ec7baef.1604000570.git.riteshh@linux.ibm.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 02:58:55PM -0700, Andy Lutomirski wrote:
+On Fri, Oct 30, 2020 at 01:22:51AM +0530, Ritesh Harjani wrote:
+> swapon/off check in _require_scratch_swapfile() was specifically added
+> for btrfs[1]/[2] since in previous kernels, swapfile was not supported on btrfs.
+> This rather masks the issue sometimes with swapon system call in
+> case if it fails.
+> for e.g. in latest ext4 upstream tree when "-g quick" (which ran swap tests too)
+> was tested, all swap tests resulted into "_notrun" since swapon failed
+> inside _require_scratch_swapfile() itself.
+> Whereas this failure on ext4 was actually due to a regression with latest
+> fast-commit patch, which went un-noticed.
+> Hence make this swapon/off check only specific to btrfs.
+> Tested default config of xfs/btrfs/ext4/f2fs with this patch.
 > 
+> With this change on buggy kernel, we could clearly catch the swap failures.
+> e.g.
+> generic/472 17s ...
+> <...>
+> @@ -1,4 +1,7 @@
+> QA output created by 472
+> regular swap
+> +swapon: Invalid argument
+> too long swap
+> +swapon: Invalid argument
+> tiny swap
+> +swapon: Invalid argument
+> ...
+> (Run 'diff -u /home/qemu/src/tools-work/xfstests-dev/tests/generic/472.out \
+> /home/qemu/src/tools-work/xfstests-dev/results//ext4/generic/472.out.bad' \
+> to see the entire diff)
 > 
-> > On Oct 28, 2020, at 5:35 PM, Christian Brauner <christian.brauner@ubuntu.com> wrote:
-> > 
-> > ﻿Hey everyone,
-> > 
-> > I vanished for a little while to focus on this work here so sorry for
-> > not being available by mail for a while.
-> > 
-> > Since quite a long time we have issues with sharing mounts between
-> > multiple unprivileged containers with different id mappings, sharing a
-> > rootfs between multiple containers with different id mappings, and also
-> > sharing regular directories and filesystems between users with different
-> > uids and gids. The latter use-cases have become even more important with
-> > the availability and adoption of systemd-homed (cf. [1]) to implement
-> > portable home directories.
-> > 
-> > The solutions we have tried and proposed so far include the introduction
-> > of fsid mappings, a tiny overlay based filesystem, and an approach to
-> > call override creds in the vfs. None of these solutions have covered all
-> > of the above use-cases.
-> > 
-> > The solution proposed here has it's origins in multiple discussions
-> > during Linux Plumbers 2017 during and after the end of the containers
-> > microconference.
-> > To the best of my knowledge this involved Aleksa, Stéphane, Eric, David,
-> > James, and myself. A variant of the solution proposed here has also been
-> > discussed, again to the best of my knowledge, after a Linux conference
-> > in St. Petersburg in Russia between Christoph, Tycho, and myself in 2017
-> > after Linux Plumbers.
-> > I've taken the time to finally implement a working version of this
-> > solution over the last weeks to the best of my abilities. Tycho has
-> > signed up for this sligthly crazy endeavour as well and he has helped
-> > with the conversion of the xattr codepaths.
-> > 
-> > The core idea is to make idmappings a property of struct vfsmount
-> > instead of tying it to a process being inside of a user namespace which
-> > has been the case for all other proposed approaches.
-> > It means that idmappings become a property of bind-mounts, i.e. each
-> > bind-mount can have a separate idmapping. This has the obvious advantage
-> > that idmapped mounts can be created inside of the initial user
-> > namespace, i.e. on the host itself instead of requiring the caller to be
-> > located inside of a user namespace. This enables such use-cases as e.g.
-> > making a usb stick available in multiple locations with different
-> > idmappings (see the vfat port that is part of this patch series).
-> > 
-> > The vfsmount struct gains a new struct user_namespace member. The
-> > idmapping of the user namespace becomes the idmapping of the mount. A
-> > caller that is either privileged with respect to the user namespace of
-> > the superblock of the underlying filesystem or a caller that is
-> > privileged with respect to the user namespace a mount has been idmapped
-> > with can create a new bind-mount and mark it with a user namespace.
+> [1]: 8c96cfbfe530 ("generic/35[67]: disable swapfile tests on Btrfs")
+> [2]: bd6d67ee598e ("generic: enable swapfile tests on Btrfs")
 > 
-> So one way of thinking about this is that a user namespace that has an idmapped mount can, effectively, create or chown files with *any* on-disk uid or gid by doing it directly (if that uid exists in-namespace, which is likely for interesting ids like 0) or by creating a new userns with that id inside.
+> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> ---
+>  common/rc | 18 ++++++++++--------
+>  1 file changed, 10 insertions(+), 8 deletions(-)
 > 
-> For a file system that is private to a container, this seems moderately safe, although this may depend on what exactly “private” means. We probably want a mechanism such that, if you are outside the namespace, a reference to a file with the namespace’s vfsmnt does not confer suid privilege.
-> 
-> Imagine the following attack: user creates a namespace with a root user and arranges to get an idmapped fs, e.g. by inserting an ext4 usb stick or using whatever container management tool does this.  Inside the namespace, the user creates a suid-root file.
-> 
-> Now, outside the namespace, the user has privilege over the namespace.  (I’m assuming there is some tool that will idmap things in a namespace owned by an unprivileged user, which seems likely.). So the user makes a new bind mount and if maps it to the init namespace. Game over.
-> 
-> So I think we need to have some control to mitigate this in a comprehensible way. A big hammer would be to require nosuid. A smaller hammer might be to say that you can’t create a new idmapped mount unless you have privilege over the userns that you want to use for the idmap and to say that a vfsmnt’s paths don’t do suid outside the idmap namespace.  We already do the latter for the vfsmnt’s mntns’s userns.
+> diff --git a/common/rc b/common/rc
+> index b0c353c4c107..4c59968a6bd3 100644
+> --- a/common/rc
+> +++ b/common/rc
+> @@ -2358,18 +2358,20 @@ _require_scratch_swapfile()
+>  	[ -n "$SELINUX_MOUNT_OPTIONS" ] && export \
+>  		SELINUX_MOUNT_OPTIONS="-o context=system_u:object_r:swapfile_t:s0"
+>  
+> -	_scratch_mount
+> +	if [ "$FSTYP" = "btrfs" ]; then
+> +		_scratch_mount
+> +
+> +		# Minimum size for mkswap is 10 pages
+> +		_format_swapfile "$SCRATCH_MNT/swap" $(($(get_page_size) * 10))
+>  
+> -	# Minimum size for mkswap is 10 pages
+> -	_format_swapfile "$SCRATCH_MNT/swap" $(($(get_page_size) * 10))
+> +		if ! swapon "$SCRATCH_MNT/swap" >/dev/null 2>&1; then
+> +			_scratch_unmount
+> +			_notrun "swapfiles are not supported"
+> +		fi
+>  
+> -	if ! swapon "$SCRATCH_MNT/swap" >/dev/null 2>&1; then
+> +		swapoff "$SCRATCH_MNT/swap" >/dev/null 2>&1
+>  		_scratch_unmount
+> -		_notrun "swapfiles are not supported"
+>  	fi
+> -
+> -	swapoff "$SCRATCH_MNT/swap" >/dev/null 2>&1
+> -	_scratch_unmount
+>  }
 
-With this series, in order to create an idmapped mount the user must
-either be cap_sys_admin in the superblock of the underlying filesystem
-or if the mount is already idmapped and they want to create another
-idmapped mount from it they must have cap_sys_admin in the userns that
-the mount is currrently marked with. It is also not possible to change
-an idmapped mount once it has been idmapped, i.e. the user must create a
-new detached bind-mount first.
+This factors out the majority of this function for !btrfs cases to the
+point where it doesn't do anything swap related. Perhaps it would be
+more clear to do something like '[ $FSTYP = "btrfs" ] &&
+_require_scratch_swapfile()' in the actual tests that require filtering
+out on btrfs..?
 
-> 
-> Hmm.  What happens if we require that an idmap userns equal the vfsmnt’s mntns’s userns?  Is that too limiting?
-> 
-> I hope that whatever solution gets used is straightforward enough to wrap one’s head around.
-> 
-> > When a file/inode is accessed through an idmapped mount the i_uid and
-> > i_gid of the inode will be remapped according to the user namespace the
-> > mount has been marked with. When a new object is created based on the
-> > fsuid and fsgid of the caller they will similarly be remapped according
-> > to the user namespace of the mount they care created from.
-> 
-> By “mapped according to”, I presume you mean that the on-disk uid/gid is the gid as seen in the user namespace in question.
+Brian
 
-If I understand you correctly, then yes.
+>  
+>  # Check that a fs has enough free space (in 1024b blocks)
+> -- 
+> 2.26.2
+> 
+
