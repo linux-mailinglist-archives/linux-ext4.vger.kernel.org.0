@@ -2,110 +2,146 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4268829FAF3
-	for <lists+linux-ext4@lfdr.de>; Fri, 30 Oct 2020 02:57:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 749F429FB21
+	for <lists+linux-ext4@lfdr.de>; Fri, 30 Oct 2020 03:18:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725861AbgJ3B52 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 29 Oct 2020 21:57:28 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:39976 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725372AbgJ3B52 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 29 Oct 2020 21:57:28 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09TKxMhp076672;
-        Thu, 29 Oct 2020 21:04:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=b9Eybl/kXwCQLEYPHlsMF9500flCIdapjz1uqSSLeGA=;
- b=N4Oz3H6zho41m1HWactdv86yx+yYx1oGG9QQecIdaViuGrwv4svCDlC0knSTZre4pEF0
- vZxQtTGuwG5MLrcwzB+8rSCt9TqcX9O0ho9kNeFt5UnouC2sWfBNvUAr3eXbyyRXX2Pg
- /VcErpRKGfTNSKrnUr4iLiyirmGwHyQn6coRdwJuDb/M6IRv/V1zNGCDJhELsdG4lfSv
- r/lzw19t3sqgWfFM/y7txqFWp8O/If0jdXNC4vWzw7GXCX1i1Iu2/u96oZDF32eVlvm1
- Df50R9iNSRBAIUVBmDa4VSZXMFz2t4vay1/ifRCAtbR7S3tL+s5nrRpqHbk6nhqcirmR ww== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 34c9sb7797-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 29 Oct 2020 21:04:32 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09TKuPw5172410;
-        Thu, 29 Oct 2020 21:04:31 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 34cx1tp8tc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Oct 2020 21:04:31 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09TL4PmC019065;
-        Thu, 29 Oct 2020 21:04:25 GMT
-Received: from localhost (/10.159.244.77)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 29 Oct 2020 14:04:25 -0700
-Date:   Thu, 29 Oct 2020 14:04:24 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     fstests@vger.kernel.org, anju@linux.vnet.ibm.com,
-        Eryu Guan <guan@eryu.me>, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH 3/3] common/rc: source common/xfs and common/btrfs
-Message-ID: <20201029210424.GD1061252@magnolia>
-References: <cover.1604000570.git.riteshh@linux.ibm.com>
- <8d7db41971a227c5bd83677464d139399607e720.1604000570.git.riteshh@linux.ibm.com>
+        id S1725931AbgJ3CSJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 29 Oct 2020 22:18:09 -0400
+Received: from mail.hallyn.com ([178.63.66.53]:38118 "EHLO mail.hallyn.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725781AbgJ3CSJ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 29 Oct 2020 22:18:09 -0400
+Received: by mail.hallyn.com (Postfix, from userid 1001)
+        id 027D69B4; Thu, 29 Oct 2020 21:18:05 -0500 (CDT)
+Date:   Thu, 29 Oct 2020 21:18:05 -0500
+From:   "Serge E. Hallyn" <serge@hallyn.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Aleksa Sarai <cyphar@cyphar.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-fsdevel@vger.kernel.org,
+        John Johansen <john.johansen@canonical.com>,
+        James Morris <jmorris@namei.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Mrunal Patel <mpatel@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Theodore Tso <tytso@mit.edu>, Alban Crequy <alban@kinvolk.io>,
+        Tycho Andersen <tycho@tycho.ws>,
+        David Howells <dhowells@redhat.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Jann Horn <jannh@google.com>,
+        Seth Forshee <seth.forshee@canonical.com>,
+        =?iso-8859-1?Q?St=E9phane?= Graber <stgraber@ubuntu.com>,
+        Lennart Poettering <lennart@poettering.net>,
+        smbarber@chromium.org, Phil Estes <estesp@gmail.com>,
+        Serge Hallyn <serge@hallyn.com>,
+        Kees Cook <keescook@chromium.org>,
+        Todd Kjos <tkjos@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        containers@lists.linux-foundation.org,
+        linux-security-module@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-unionfs@vger.kernel.org,
+        linux-audit@redhat.com, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org
+Subject: Re: [PATCH 00/34] fs: idmapped mounts
+Message-ID: <20201030021805.GA20489@mail.hallyn.com>
+References: <20201029003252.2128653-1-christian.brauner@ubuntu.com>
+ <87pn51ghju.fsf@x220.int.ebiederm.org>
+ <20201029155148.5odu4j2kt62ahcxq@yavin.dot.cyphar.com>
+ <87361xdm4c.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8d7db41971a227c5bd83677464d139399607e720.1604000570.git.riteshh@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9789 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 bulkscore=0
- suspectscore=1 malwarescore=0 mlxlogscore=999 mlxscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010290146
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9789 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 malwarescore=0 lowpriorityscore=0 bulkscore=0
- priorityscore=1501 spamscore=0 phishscore=0 clxscore=1011 suspectscore=1
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010290146
+In-Reply-To: <87361xdm4c.fsf@x220.int.ebiederm.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 01:22:53AM +0530, Ritesh Harjani wrote:
-> Without this patch I am unable to test for multiple different
-> filesystem sections for the same tests. Since we anyway have only
-> function definitions in these files, so it should be ok to source it
-> by default too.
-> e.g. when I run ./check -s btrfs tests/generic/613 with 3 different [***_fs]
-> sections from local.config file, I see below failures.
+On Thu, Oct 29, 2020 at 11:37:23AM -0500, Eric W. Biederman wrote:
+> Aleksa Sarai <cyphar@cyphar.com> writes:
 > 
-> ./common/rc: line 2801: _check_btrfs_filesystem: command not found
+> > On 2020-10-29, Eric W. Biederman <ebiederm@xmission.com> wrote:
+> >> Christian Brauner <christian.brauner@ubuntu.com> writes:
+> >> 
+> >> > Hey everyone,
+> >> >
+> >> > I vanished for a little while to focus on this work here so sorry for
+> >> > not being available by mail for a while.
+> >> >
+> >> > Since quite a long time we have issues with sharing mounts between
+> >> > multiple unprivileged containers with different id mappings, sharing a
+> >> > rootfs between multiple containers with different id mappings, and also
+> >> > sharing regular directories and filesystems between users with different
+> >> > uids and gids. The latter use-cases have become even more important with
+> >> > the availability and adoption of systemd-homed (cf. [1]) to implement
+> >> > portable home directories.
+> >> 
+> >> Can you walk us through the motivating use case?
+> >> 
+> >> As of this year's LPC I had the distinct impression that the primary use
+> >> case for such a feature was due to the RLIMIT_NPROC problem where two
+> >> containers with the same users still wanted different uid mappings to
+> >> the disk because the users were conflicting with each other because of
+> >> the per user rlimits.
+> >> 
+> >> Fixing rlimits is straight forward to implement, and easier to manage
+> >> for implementations and administrators.
+> >
+> > This is separate to the question of "isolated user namespaces" and
+> > managing different mappings between containers. This patchset is solving
+> > the same problem that shiftfs solved -- sharing a single directory tree
+> > between containers that have different ID mappings. rlimits (nor any of
+> > the other proposals we discussed at LPC) will help with this problem.
 > 
-> ./check -s xfs_4k -g swap (for XFS this fails like below)
-> ./common/rc: line 749: _scratch_mkfs_xfs: command not found
-> check: failed to mkfs $SCRATCH_DEV using specified options
+> First and foremost: A uid shift on write to a filesystem is a security
+> bug waiting to happen.  This is especially in the context of facilities
+> like iouring, that play very agressive games with how process context
+> makes it to  system calls.
 > 
-> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
-> ---
->  common/rc | 2 ++
->  1 file changed, 2 insertions(+)
+> The only reason containers were not immediately exploitable when iouring
+> was introduced is because the mechanisms are built so that even if
+> something escapes containment the security properties still apply.
+> Changes to the uid when writing to the filesystem does not have that
+> property.  The tiniest slip in containment will be a security issue.
 > 
-> diff --git a/common/rc b/common/rc
-> index 4c59968a6bd3..e9ba1b6e8265 100644
-> --- a/common/rc
-> +++ b/common/rc
-> @@ -3,6 +3,8 @@
->  # Copyright (c) 2000-2006 Silicon Graphics, Inc.  All Rights Reserved.
->  
->  . common/config
-> +. ./common/xfs
-> +. ./common/btrfs
+> This is not even the least bit theoretical.  I have seem reports of how
+> shitfs+overlayfs created a situation where anyone could read
+> /etc/shadow.
+> 
+> If you are going to write using the same uid to disk from different
+> containers the question becomes why can't those containers configure
+> those users to use the same kuid?
 
-Uhh, what happens if you run xfs and nfs one after the other?
+Because if user 'myapp' in two otherwise isolated containers both have
+the same kuid, so that they can write to a shared directory, then root
+in container 1 has privilege over all files owned by 'myapp' in
+container 2.
 
---D
+Whereas if they can each have distinct kuids, but when writing to the
+shared fs have a shared uid not otherwise belonging to either container,
+their rootfs's can remain completely off limits to each other.
 
->  
->  BC=$(which bc 2> /dev/null) || BC=
->  
-> -- 
-> 2.26.2
+> What fixing rlimits does is it fixes one of the reasons that different
+> containers could not share the same kuid for users that want to write to
+> disk with the same uid.
 > 
+> 
+> I humbly suggest that it will be more secure, and easier to maintain for
+> both developers and users if we fix the reasons people want different
+> containers to have the same user running with different kuids.
+> 
+> If not what are the reasons we fundamentally need the same on-disk user
+> using multiple kuids in the kernel?
+> 
+> Eric
