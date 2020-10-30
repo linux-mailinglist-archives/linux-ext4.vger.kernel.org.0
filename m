@@ -2,57 +2,121 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 012A529FB29
-	for <lists+linux-ext4@lfdr.de>; Fri, 30 Oct 2020 03:25:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14E3F2A01EE
+	for <lists+linux-ext4@lfdr.de>; Fri, 30 Oct 2020 10:57:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725797AbgJ3CY7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 29 Oct 2020 22:24:59 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7101 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgJ3CY7 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 29 Oct 2020 22:24:59 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CMmNp1RF9zLqQR;
-        Fri, 30 Oct 2020 10:24:58 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 30 Oct 2020 10:24:48 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <linux-ext4@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH] MAINTAINERS: add missing file in ext4 entry
-Date:   Fri, 30 Oct 2020 10:24:35 +0800
-Message-ID: <20201030022435.1136-1-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.26.2
+        id S1726234AbgJ3J5g (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 30 Oct 2020 05:57:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726014AbgJ3J5f (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 30 Oct 2020 05:57:35 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC7D9C0613CF;
+        Fri, 30 Oct 2020 02:57:35 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id q1so5977144ilt.6;
+        Fri, 30 Oct 2020 02:57:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/KHmwpEf5KO59HQ9FXioTrkHMQnSCZyA82voNpwNnxU=;
+        b=GRHC3d3uHyqgAX2bNvYF5h8/iEP8by/R6OwvXZSq+WCITM51vMsZn4GtwUmgPBcPTE
+         JIFj14HuPPgbTZQIawYp/WdHFcCfbmwDz6AQau0lHfSWxoyRMIQGFCa6mC/lT/vC48Fh
+         wYTYSi05HENiGIZrygUitWfPOvtbzSnv0hw2foQqpN3bXy/biCRwd2YEEEo1sCaotdD+
+         hA6wLP2AV/oTN011TL9T9aeU4s8MfJlR9YyL3VBEDUL1hZNcVpgED15piK/dbU9mR+9J
+         OBeYqC0iHVutFieBZGl23BYx95gCrsOrOmHBWMlmgoUyWbvcB9q8hEMkjqBqpL+HaXhc
+         2LDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/KHmwpEf5KO59HQ9FXioTrkHMQnSCZyA82voNpwNnxU=;
+        b=MPYeG5L3Q4s2ik9jeEeYMYcCvIkcSlUffhLZDzg3IhIpsmJdcbB1SBeSO2uNQxTqw6
+         AdR+Pk4NZ/jPEFHAubpei1Lk6cyB2FbMwEavNR7cKlLJGYlVYT2qatKXixSlEELIN6Fo
+         5+M32rGJFEEO1lDM7BRnoVF9UjdsBE+YJ4bPZjoiVmCIzsm2E7+W5+xQcTCTCgJT6das
+         VTNDavB6lE6NSKHKs7lVE/DlnCGwdZH+zc4d4GtIY5Hwn+jlMdt8xyZ7pggI+BXxJuR9
+         4t7SujPC3ui0ImpSRlo4Pm2azPK0Sgy/H6nCKSCZTTxmJtsRtcaxlkBZGeDLtqIhYk9K
+         zVuA==
+X-Gm-Message-State: AOAM531nz1pG6hSWVBeyE2EIT9gmzLLCNiMKVZaVDQGYk/mK0KiJ60Fm
+        o3TfoJSCwm+3Ot7l60Hd68aIzznNHz9v1XbmCBA=
+X-Google-Smtp-Source: ABdhPJxFlt//ACc/IV26fZ1qCGgWOIH/npCA4rcrvS/8aohcRHMILRDfiUHL83JStMqAq2lFcdcahBWGZNVdziI1h1E=
+X-Received: by 2002:a05:6e02:14c9:: with SMTP id o9mr1218968ilk.137.1604051855144;
+ Fri, 30 Oct 2020 02:57:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+References: <20201029003252.2128653-1-christian.brauner@ubuntu.com> <20201029003252.2128653-34-christian.brauner@ubuntu.com>
+In-Reply-To: <20201029003252.2128653-34-christian.brauner@ubuntu.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Fri, 30 Oct 2020 11:57:24 +0200
+Message-ID: <CAOQ4uxjyNB2zE+GE8Wmwjq__C7e4mrWMrS8RDVOOQFLtezjTkg@mail.gmail.com>
+Subject: Re: [PATCH 33/34] overlayfs: handle idmapped merged mounts
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        John Johansen <john.johansen@canonical.com>,
+        James Morris <jmorris@namei.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Mrunal Patel <mpatel@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Theodore Tso <tytso@mit.edu>, Alban Crequy <alban@kinvolk.io>,
+        Tycho Andersen <tycho@tycho.ws>,
+        David Howells <dhowells@redhat.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Jann Horn <jannh@google.com>,
+        Seth Forshee <seth.forshee@canonical.com>,
+        =?UTF-8?Q?St=C3=A9phane_Graber?= <stgraber@ubuntu.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Lennart Poettering <lennart@poettering.net>,
+        "Eric W. Biederman" <ebiederm@xmission.com>, smbarber@chromium.org,
+        Phil Estes <estesp@gmail.com>, Serge Hallyn <serge@hallyn.com>,
+        Kees Cook <keescook@chromium.org>,
+        Todd Kjos <tkjos@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Ext4 <linux-ext4@vger.kernel.org>,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        Linux Audit <linux-audit@redhat.com>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        selinux@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-include/trace/events/ext4.h belongs to ext4 module, add the file path into
-ext4 entry in MAINTAINERS.
+> -int ovl_permission(struct inode *inode, int mask)
+> +int ovl_permission_mapped(struct user_namespace *user_ns,
+> +                         struct inode *inode, int mask)
+>  {
+>         struct inode *upperinode = ovl_inode_upper(inode);
+>         struct inode *realinode = upperinode ?: ovl_inode_lower(inode);
+> -       struct user_namespace *user_ns;
+> +       struct user_namespace *real_user_ns;
+>         const struct cred *old_cred;
+>         int err;
+>
+> @@ -302,15 +313,15 @@ int ovl_permission(struct inode *inode, int mask)
+>         }
+>
+>         if (upperinode)
+> -               user_ns = ovl_upper_mnt_user_ns(OVL_FS(inode->i_sb));
+> +               real_user_ns = ovl_upper_mnt_user_ns(OVL_FS(inode->i_sb));
+>         else
+> -               user_ns = OVL_I(inode)->lower_user_ns;
+> +               real_user_ns = OVL_I(inode)->lower_user_ns;
 
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+These changes look strange in this patch. Better use real_user_ns in previous
+patch.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e73636b75f29..d1d4e49a695a 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -6618,6 +6618,7 @@ Q:	http://patchwork.ozlabs.org/project/linux-ext4/list/
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git
- F:	Documentation/filesystems/ext4/
- F:	fs/ext4/
-+F:	include/trace/events/ext4.h
- 
- Extended Verification Module (EVM)
- M:	Mimi Zohar <zohar@linux.ibm.com>
--- 
-2.26.2
-
+Thanks,
+Amir.
