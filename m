@@ -2,192 +2,155 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 200DD2A04A9
-	for <lists+linux-ext4@lfdr.de>; Fri, 30 Oct 2020 12:47:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F652A04EA
+	for <lists+linux-ext4@lfdr.de>; Fri, 30 Oct 2020 13:02:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726083AbgJ3Lrs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 30 Oct 2020 07:47:48 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:58830 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725993AbgJ3Lrs (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 30 Oct 2020 07:47:48 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09UBkNxu069602;
-        Fri, 30 Oct 2020 11:47:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=OBnNKN12ZuSW4asIHWaUGYpXDoEnArO+3hI590rTBEE=;
- b=dXqD0cl7D1SlsK2k6Wtu4zQUf9wZt4IftetF1cGN9AjpB3OAO/PGcMEsPadt1QfzV8hx
- FoxX2AzI+bqYHRFZ+Moa/0KLOBHc4u95BXgh1lSNX4+lkgNe1J1Vre5LpDUMiJiPR9eu
- wYXBEGll5rejebUpwnCDMWTiD18lq7wvDlAebBSLtY0wusQs7KWJ5011nSUl2FCNm86c
- o9CRSBPBi6O8NzXr5VdhvPX02XPr5hXAYgf+LoY9QTR28t9DriWrMbxqjnLPXzcbCMe/
- T2PR+o7O0K3LybMZSRbMIBfrRz0uqG0nphI4UYx1E7B0ho8wwpXod9DtkRO7ctEFEZph cQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 34cc7m9a5q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 30 Oct 2020 11:47:44 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09UBiYmt176130;
-        Fri, 30 Oct 2020 11:47:44 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 34cwuqvsmn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 30 Oct 2020 11:47:44 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09UBlh0D022927;
-        Fri, 30 Oct 2020 11:47:43 GMT
-Received: from mwanda (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 30 Oct 2020 04:47:42 -0700
-Date:   Fri, 30 Oct 2020 14:47:37 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     mfo@canonical.com
-Cc:     linux-ext4@vger.kernel.org
-Subject: [bug report] ext4: data=journal: fixes for ext4_page_mkwrite()
-Message-ID: <20201030114737.GC3251003@mwanda>
+        id S1726424AbgJ3MCJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 30 Oct 2020 08:02:09 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:39709 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725808AbgJ3MCJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 30 Oct 2020 08:02:09 -0400
+Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1kYT6V-0006JV-Px; Fri, 30 Oct 2020 12:01:59 +0000
+Date:   Fri, 30 Oct 2020 13:01:57 +0100
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-fsdevel@vger.kernel.org,
+        John Johansen <john.johansen@canonical.com>,
+        James Morris <jmorris@namei.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Mrunal Patel <mpatel@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Theodore Tso <tytso@mit.edu>, Alban Crequy <alban@kinvolk.io>,
+        Tycho Andersen <tycho@tycho.ws>,
+        David Howells <dhowells@redhat.com>,
+        James Bottomley <james.bottomley@hansenpartnership.com>,
+        Jann Horn <jannh@google.com>,
+        Seth Forshee <seth.forshee@canonical.com>,
+        =?utf-8?B?U3TDqXBoYW5l?= Graber <stgraber@ubuntu.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Lennart Poettering <lennart@poettering.net>,
+        "Eric W. Biederman" <ebiederm@xmission.com>, smbarber@chromium.org,
+        Phil Estes <estesp@gmail.com>, Serge Hallyn <serge@hallyn.com>,
+        Kees Cook <keescook@chromium.org>,
+        Todd Kjos <tkjos@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        containers@lists.linux-foundation.org,
+        linux-security-module@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-unionfs@vger.kernel.org,
+        linux-audit@redhat.com, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org
+Subject: Re: [PATCH 00/34] fs: idmapped mounts
+Message-ID: <20201030120157.exz4rxmebruh7bgp@wittgenstein>
+References: <20201029003252.2128653-1-christian.brauner@ubuntu.com>
+ <8E455D54-FED4-4D06-8CB7-FC6291C64259@amacapital.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9789 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxscore=0 bulkscore=0
- spamscore=0 adultscore=0 malwarescore=0 mlxlogscore=999 suspectscore=3
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010300091
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9789 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 adultscore=0
- malwarescore=0 spamscore=0 clxscore=1011 mlxscore=0 suspectscore=3
- priorityscore=1501 impostorscore=0 bulkscore=0 phishscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010300091
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8E455D54-FED4-4D06-8CB7-FC6291C64259@amacapital.net>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello Mauricio Faria de Oliveira,
+On Thu, Oct 29, 2020 at 02:58:55PM -0700, Andy Lutomirski wrote:
+> 
+> 
+> > On Oct 28, 2020, at 5:35 PM, Christian Brauner <christian.brauner@ubuntu.com> wrote:
+> > 
+> > ﻿Hey everyone,
+> > 
+> > I vanished for a little while to focus on this work here so sorry for
+> > not being available by mail for a while.
+> > 
+> > Since quite a long time we have issues with sharing mounts between
+> > multiple unprivileged containers with different id mappings, sharing a
+> > rootfs between multiple containers with different id mappings, and also
+> > sharing regular directories and filesystems between users with different
+> > uids and gids. The latter use-cases have become even more important with
+> > the availability and adoption of systemd-homed (cf. [1]) to implement
+> > portable home directories.
+> > 
+> > The solutions we have tried and proposed so far include the introduction
+> > of fsid mappings, a tiny overlay based filesystem, and an approach to
+> > call override creds in the vfs. None of these solutions have covered all
+> > of the above use-cases.
+> > 
+> > The solution proposed here has it's origins in multiple discussions
+> > during Linux Plumbers 2017 during and after the end of the containers
+> > microconference.
+> > To the best of my knowledge this involved Aleksa, Stéphane, Eric, David,
+> > James, and myself. A variant of the solution proposed here has also been
+> > discussed, again to the best of my knowledge, after a Linux conference
+> > in St. Petersburg in Russia between Christoph, Tycho, and myself in 2017
+> > after Linux Plumbers.
+> > I've taken the time to finally implement a working version of this
+> > solution over the last weeks to the best of my abilities. Tycho has
+> > signed up for this sligthly crazy endeavour as well and he has helped
+> > with the conversion of the xattr codepaths.
+> > 
+> > The core idea is to make idmappings a property of struct vfsmount
+> > instead of tying it to a process being inside of a user namespace which
+> > has been the case for all other proposed approaches.
+> > It means that idmappings become a property of bind-mounts, i.e. each
+> > bind-mount can have a separate idmapping. This has the obvious advantage
+> > that idmapped mounts can be created inside of the initial user
+> > namespace, i.e. on the host itself instead of requiring the caller to be
+> > located inside of a user namespace. This enables such use-cases as e.g.
+> > making a usb stick available in multiple locations with different
+> > idmappings (see the vfat port that is part of this patch series).
+> > 
+> > The vfsmount struct gains a new struct user_namespace member. The
+> > idmapping of the user namespace becomes the idmapping of the mount. A
+> > caller that is either privileged with respect to the user namespace of
+> > the superblock of the underlying filesystem or a caller that is
+> > privileged with respect to the user namespace a mount has been idmapped
+> > with can create a new bind-mount and mark it with a user namespace.
+> 
+> So one way of thinking about this is that a user namespace that has an idmapped mount can, effectively, create or chown files with *any* on-disk uid or gid by doing it directly (if that uid exists in-namespace, which is likely for interesting ids like 0) or by creating a new userns with that id inside.
+> 
+> For a file system that is private to a container, this seems moderately safe, although this may depend on what exactly “private” means. We probably want a mechanism such that, if you are outside the namespace, a reference to a file with the namespace’s vfsmnt does not confer suid privilege.
+> 
+> Imagine the following attack: user creates a namespace with a root user and arranges to get an idmapped fs, e.g. by inserting an ext4 usb stick or using whatever container management tool does this.  Inside the namespace, the user creates a suid-root file.
+> 
+> Now, outside the namespace, the user has privilege over the namespace.  (I’m assuming there is some tool that will idmap things in a namespace owned by an unprivileged user, which seems likely.). So the user makes a new bind mount and if maps it to the init namespace. Game over.
+> 
+> So I think we need to have some control to mitigate this in a comprehensible way. A big hammer would be to require nosuid. A smaller hammer might be to say that you can’t create a new idmapped mount unless you have privilege over the userns that you want to use for the idmap and to say that a vfsmnt’s paths don’t do suid outside the idmap namespace.  We already do the latter for the vfsmnt’s mntns’s userns.
 
-The patch 64a9f1449950: "ext4: data=journal: fixes for
-ext4_page_mkwrite()" from Oct 5, 2020, leads to the following static
-checker warning:
+With this series, in order to create an idmapped mount the user must
+either be cap_sys_admin in the superblock of the underlying filesystem
+or if the mount is already idmapped and they want to create another
+idmapped mount from it they must have cap_sys_admin in the userns that
+the mount is currrently marked with. It is also not possible to change
+an idmapped mount once it has been idmapped, i.e. the user must create a
+new detached bind-mount first.
 
-	fs/ext4/inode.c:6136 ext4_page_mkwrite()
-	error: uninitialized symbol 'get_block'.
+> 
+> Hmm.  What happens if we require that an idmap userns equal the vfsmnt’s mntns’s userns?  Is that too limiting?
+> 
+> I hope that whatever solution gets used is straightforward enough to wrap one’s head around.
+> 
+> > When a file/inode is accessed through an idmapped mount the i_uid and
+> > i_gid of the inode will be remapped according to the user namespace the
+> > mount has been marked with. When a new object is created based on the
+> > fsuid and fsgid of the caller they will similarly be remapped according
+> > to the user namespace of the mount they care created from.
+> 
+> By “mapped according to”, I presume you mean that the on-disk uid/gid is the gid as seen in the user namespace in question.
 
-fs/ext4/inode.c
-  6040  vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
-  6041  {
-  6042          struct vm_area_struct *vma = vmf->vma;
-  6043          struct page *page = vmf->page;
-  6044          loff_t size;
-  6045          unsigned long len;
-  6046          int err;
-  6047          vm_fault_t ret;
-  6048          struct file *file = vma->vm_file;
-  6049          struct inode *inode = file_inode(file);
-  6050          struct address_space *mapping = inode->i_mapping;
-  6051          handle_t *handle;
-  6052          get_block_t *get_block;
-                ^^^^^^^^^^^^^^^^^^^^^^
-
-  6053          int retries = 0;
-  6054  
-  6055          if (unlikely(IS_IMMUTABLE(inode)))
-  6056                  return VM_FAULT_SIGBUS;
-  6057  
-  6058          sb_start_pagefault(inode->i_sb);
-  6059          file_update_time(vma->vm_file);
-  6060  
-  6061          down_read(&EXT4_I(inode)->i_mmap_sem);
-  6062  
-  6063          err = ext4_convert_inline_data(inode);
-  6064          if (err)
-  6065                  goto out_ret;
-  6066  
-  6067          /*
-  6068           * On data journalling we skip straight to the transaction handle:
-  6069           * there's no delalloc; page truncated will be checked later; the
-  6070           * early return w/ all buffers mapped (calculates size/len) can't
-  6071           * be used; and there's no dioread_nolock, so only ext4_get_block.
-  6072           */
-  6073          if (ext4_should_journal_data(inode))
-  6074                  goto retry_alloc;
-                        ^^^^^^^^^^^^^^^^
-This goto is new.
-
-  6075  
-  6076          /* Delalloc case is easy... */
-  6077          if (test_opt(inode->i_sb, DELALLOC) &&
-  6078              !ext4_nonda_switch(inode->i_sb)) {
-  6079                  do {
-  6080                          err = block_page_mkwrite(vma, vmf,
-  6081                                                     ext4_da_get_block_prep);
-  6082                  } while (err == -ENOSPC &&
-  6083                         ext4_should_retry_alloc(inode->i_sb, &retries));
-  6084                  goto out_ret;
-  6085          }
-  6086  
-  6087          lock_page(page);
-  6088          size = i_size_read(inode);
-  6089          /* Page got truncated from under us? */
-  6090          if (page->mapping != mapping || page_offset(page) > size) {
-  6091                  unlock_page(page);
-  6092                  ret = VM_FAULT_NOPAGE;
-  6093                  goto out;
-  6094          }
-  6095  
-  6096          if (page->index == size >> PAGE_SHIFT)
-  6097                  len = size & ~PAGE_MASK;
-  6098          else
-  6099                  len = PAGE_SIZE;
-  6100          /*
-  6101           * Return if we have all the buffers mapped. This avoids the need to do
-  6102           * journal_start/journal_stop which can block and take a long time
-  6103           *
-  6104           * This cannot be done for data journalling, as we have to add the
-  6105           * inode to the transaction's list to writeprotect pages on commit.
-  6106           */
-  6107          if (page_has_buffers(page)) {
-  6108                  if (!ext4_walk_page_buffers(NULL, page_buffers(page),
-  6109                                              0, len, NULL,
-  6110                                              ext4_bh_unmapped)) {
-  6111                          /* Wait so that we don't change page under IO */
-  6112                          wait_for_stable_page(page);
-  6113                          ret = VM_FAULT_LOCKED;
-  6114                          goto out;
-  6115                  }
-  6116          }
-  6117          unlock_page(page);
-  6118          /* OK, we need to fill the hole... */
-  6119          if (ext4_should_dioread_nolock(inode))
-  6120                  get_block = ext4_get_block_unwritten;
-  6121          else
-  6122                  get_block = ext4_get_block;
-                        ^^^^^^^^^^^^^^^^^^^^^^^^^^
-Initialized here.
-
-  6123  retry_alloc:
-  6124          handle = ext4_journal_start(inode, EXT4_HT_WRITE_PAGE,
-  6125                                      ext4_writepage_trans_blocks(inode));
-  6126          if (IS_ERR(handle)) {
-  6127                  ret = VM_FAULT_SIGBUS;
-  6128                  goto out;
-  6129          }
-  6130          /*
-  6131           * Data journalling can't use block_page_mkwrite() because it
-  6132           * will set_buffer_dirty() before do_journal_get_write_access()
-  6133           * thus might hit warning messages for dirty metadata buffers.
-  6134           */
-  6135          if (!ext4_should_journal_data(inode)) {
-  6136                  err = block_page_mkwrite(vma, vmf, get_block);
-                                                           ^^^^^^^^^
-Smatch warning here.
-
-  6137          } else {
-  6138                  lock_page(page);
-  6139                  size = i_size_read(inode);
-  6140                  /* Page got truncated from under us? */
-  6141                  if (page->mapping != mapping || page_offset(page) > size) {
-  6142                          ret = VM_FAULT_NOPAGE;
-  6143                          goto out_error;
-
-regards,
-dan carpenter
+If I understand you correctly, then yes.
