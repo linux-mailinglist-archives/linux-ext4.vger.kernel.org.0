@@ -2,121 +2,93 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14E3F2A01EE
-	for <lists+linux-ext4@lfdr.de>; Fri, 30 Oct 2020 10:57:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 088632A04A5
+	for <lists+linux-ext4@lfdr.de>; Fri, 30 Oct 2020 12:46:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726234AbgJ3J5g (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 30 Oct 2020 05:57:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726014AbgJ3J5f (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 30 Oct 2020 05:57:35 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC7D9C0613CF;
-        Fri, 30 Oct 2020 02:57:35 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id q1so5977144ilt.6;
-        Fri, 30 Oct 2020 02:57:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/KHmwpEf5KO59HQ9FXioTrkHMQnSCZyA82voNpwNnxU=;
-        b=GRHC3d3uHyqgAX2bNvYF5h8/iEP8by/R6OwvXZSq+WCITM51vMsZn4GtwUmgPBcPTE
-         JIFj14HuPPgbTZQIawYp/WdHFcCfbmwDz6AQau0lHfSWxoyRMIQGFCa6mC/lT/vC48Fh
-         wYTYSi05HENiGIZrygUitWfPOvtbzSnv0hw2foQqpN3bXy/biCRwd2YEEEo1sCaotdD+
-         hA6wLP2AV/oTN011TL9T9aeU4s8MfJlR9YyL3VBEDUL1hZNcVpgED15piK/dbU9mR+9J
-         OBeYqC0iHVutFieBZGl23BYx95gCrsOrOmHBWMlmgoUyWbvcB9q8hEMkjqBqpL+HaXhc
-         2LDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/KHmwpEf5KO59HQ9FXioTrkHMQnSCZyA82voNpwNnxU=;
-        b=MPYeG5L3Q4s2ik9jeEeYMYcCvIkcSlUffhLZDzg3IhIpsmJdcbB1SBeSO2uNQxTqw6
-         AdR+Pk4NZ/jPEFHAubpei1Lk6cyB2FbMwEavNR7cKlLJGYlVYT2qatKXixSlEELIN6Fo
-         5+M32rGJFEEO1lDM7BRnoVF9UjdsBE+YJ4bPZjoiVmCIzsm2E7+W5+xQcTCTCgJT6das
-         VTNDavB6lE6NSKHKs7lVE/DlnCGwdZH+zc4d4GtIY5Hwn+jlMdt8xyZ7pggI+BXxJuR9
-         4t7SujPC3ui0ImpSRlo4Pm2azPK0Sgy/H6nCKSCZTTxmJtsRtcaxlkBZGeDLtqIhYk9K
-         zVuA==
-X-Gm-Message-State: AOAM531nz1pG6hSWVBeyE2EIT9gmzLLCNiMKVZaVDQGYk/mK0KiJ60Fm
-        o3TfoJSCwm+3Ot7l60Hd68aIzznNHz9v1XbmCBA=
-X-Google-Smtp-Source: ABdhPJxFlt//ACc/IV26fZ1qCGgWOIH/npCA4rcrvS/8aohcRHMILRDfiUHL83JStMqAq2lFcdcahBWGZNVdziI1h1E=
-X-Received: by 2002:a05:6e02:14c9:: with SMTP id o9mr1218968ilk.137.1604051855144;
- Fri, 30 Oct 2020 02:57:35 -0700 (PDT)
+        id S1726297AbgJ3Lqf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 30 Oct 2020 07:46:35 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:55526 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726072AbgJ3Lqe (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 30 Oct 2020 07:46:34 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09UBjktJ151431;
+        Fri, 30 Oct 2020 11:46:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=IP8KAf+VKVAVn1VgSu2fLjdVudPJ1EuYRy8qQhlPJvs=;
+ b=Qm2Et2ASP/AxCaoxFNalaoxBf7ElMUTUkecZLq+mSoMMxY5W23z+E6pECcjFzmVEuE4g
+ lSM4n5wXVDGOZ1u5/wDZCXYKhRABB12QjVHpxoTeSaqP6JkIo8VIyJhDpveY6g9FG0rn
+ VJD721wDnFL5Gt20l/EhKlux2mWAR0+YbCuK9JTzeWkKwdsRfTt223Zz/uU7ytn/qZPU
+ n+cWKUywYKIXddRnTNS7P89EjS1RGbwyNzCxsD00IlYpAFaKAj+vb3G/dv+acqXhQE9x
+ vYWNrkhvIkxTPaumdzv2NsBZT5zFo64FxOzfxvOlNaf9soME9SuVbLZ5bc3ea1QSwOdU 4Q== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 34c9sb9exp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 30 Oct 2020 11:46:30 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09UBkR5O065036;
+        Fri, 30 Oct 2020 11:46:29 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 34cx1uchd6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 30 Oct 2020 11:46:29 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09UBkRvW013767;
+        Fri, 30 Oct 2020 11:46:27 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 30 Oct 2020 04:46:26 -0700
+Date:   Fri, 30 Oct 2020 14:46:20 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>,
+        Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] ext4: silence an uninitialized variable warning
+Message-ID: <20201030114620.GB3251003@mwanda>
 MIME-Version: 1.0
-References: <20201029003252.2128653-1-christian.brauner@ubuntu.com> <20201029003252.2128653-34-christian.brauner@ubuntu.com>
-In-Reply-To: <20201029003252.2128653-34-christian.brauner@ubuntu.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Fri, 30 Oct 2020 11:57:24 +0200
-Message-ID: <CAOQ4uxjyNB2zE+GE8Wmwjq__C7e4mrWMrS8RDVOOQFLtezjTkg@mail.gmail.com>
-Subject: Re: [PATCH 33/34] overlayfs: handle idmapped merged mounts
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        John Johansen <john.johansen@canonical.com>,
-        James Morris <jmorris@namei.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Mrunal Patel <mpatel@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Theodore Tso <tytso@mit.edu>, Alban Crequy <alban@kinvolk.io>,
-        Tycho Andersen <tycho@tycho.ws>,
-        David Howells <dhowells@redhat.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Jann Horn <jannh@google.com>,
-        Seth Forshee <seth.forshee@canonical.com>,
-        =?UTF-8?Q?St=C3=A9phane_Graber?= <stgraber@ubuntu.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Lennart Poettering <lennart@poettering.net>,
-        "Eric W. Biederman" <ebiederm@xmission.com>, smbarber@chromium.org,
-        Phil Estes <estesp@gmail.com>, Serge Hallyn <serge@hallyn.com>,
-        Kees Cook <keescook@chromium.org>,
-        Todd Kjos <tkjos@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Ext4 <linux-ext4@vger.kernel.org>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        Linux Audit <linux-audit@redhat.com>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        selinux@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9789 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 bulkscore=0
+ suspectscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010300091
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9789 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 malwarescore=0 lowpriorityscore=0 bulkscore=0
+ priorityscore=1501 spamscore=0 phishscore=0 clxscore=1015 suspectscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010300091
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-> -int ovl_permission(struct inode *inode, int mask)
-> +int ovl_permission_mapped(struct user_namespace *user_ns,
-> +                         struct inode *inode, int mask)
->  {
->         struct inode *upperinode = ovl_inode_upper(inode);
->         struct inode *realinode = upperinode ?: ovl_inode_lower(inode);
-> -       struct user_namespace *user_ns;
-> +       struct user_namespace *real_user_ns;
->         const struct cred *old_cred;
->         int err;
->
-> @@ -302,15 +313,15 @@ int ovl_permission(struct inode *inode, int mask)
->         }
->
->         if (upperinode)
-> -               user_ns = ovl_upper_mnt_user_ns(OVL_FS(inode->i_sb));
-> +               real_user_ns = ovl_upper_mnt_user_ns(OVL_FS(inode->i_sb));
->         else
-> -               user_ns = OVL_I(inode)->lower_user_ns;
-> +               real_user_ns = OVL_I(inode)->lower_user_ns;
+Smatch complains that "i" can be uninitialized if we don't enter the
+loop.  I don't know if it's possible but we may as well silence this
+warning.
 
-These changes look strange in this patch. Better use real_user_ns in previous
-patch.
+Fixes: 8016e29f4362 ("ext4: fast commit recovery path")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ fs/ext4/mballoc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Amir.
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 85abbfb98cbe..9e8faf851c59 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -5167,7 +5167,7 @@ static ext4_fsblk_t ext4_mb_new_blocks_simple(handle_t *handle,
+ 	struct super_block *sb = ar->inode->i_sb;
+ 	ext4_group_t group;
+ 	ext4_grpblk_t blkoff;
+-	int  i;
++	int i = 0;
+ 	ext4_fsblk_t goal, block;
+ 	struct ext4_super_block *es = EXT4_SB(sb)->s_es;
+ 
+-- 
+2.28.0
+
