@@ -2,58 +2,58 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27F842A1A6D
+	by mail.lfdr.de (Postfix) with ESMTP id A3CA22A1A6E
 	for <lists+linux-ext4@lfdr.de>; Sat, 31 Oct 2020 21:05:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728557AbgJaUFp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 31 Oct 2020 16:05:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54656 "EHLO
+        id S1728559AbgJaUFr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 31 Oct 2020 16:05:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728548AbgJaUFp (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 31 Oct 2020 16:05:45 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63AB8C0617A6
-        for <linux-ext4@vger.kernel.org>; Sat, 31 Oct 2020 13:05:45 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id a3so1127659pjh.1
-        for <linux-ext4@vger.kernel.org>; Sat, 31 Oct 2020 13:05:45 -0700 (PDT)
+        with ESMTP id S1728548AbgJaUFq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 31 Oct 2020 16:05:46 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA3F6C0617A6
+        for <linux-ext4@vger.kernel.org>; Sat, 31 Oct 2020 13:05:46 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id t22so4690262plr.9
+        for <linux-ext4@vger.kernel.org>; Sat, 31 Oct 2020 13:05:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Nt+4VGgjCfkjTVcj1yCMSxMjSVDW1JAndgvTTFGZxeg=;
-        b=iXhLh/Tbs+QNY2NrMqZ2wf90n6qvgg67Ag9Qgvf+5/wbhHU03Uw+d+0cTXaKEsutBr
-         SpFj+cF0eo+W/KicOsC/n3sHiQFx/Uu00L2AqBD6JYQrVR/z8EJMBoiJoYYfC5Yn/BOp
-         wDHNuLHVUlS/jODHCFzA2p5Q7fYI1/bdq81nJT7LyIDhhVs/rvs6KAyeTfRaTD9IXxKU
-         ql/j4LjWzofB2Op7R7/OUGrQ+/JZqdqoXnHoB35t9L6cu7bDrVRwaazKbuJyRxIDbaw+
-         RA1dgL0AYEJaHYNJAXV5w8lSrx0XcSl+/2FoOze1yG1iOAv/ZgktbhhBrWCgFHLRIt4v
-         AkIw==
+        bh=ZVRI2X5aEPsIi6w5YLhArQYyxBVr01gAKnoRjVfQuDU=;
+        b=VIAQ6J0bHlVGKEo2wAFQvq/xiPHFEnsroiwBlR3mJB34WhAdl4T7fikiAT+X2dBO23
+         WAJUKuyL3N21PPY3LPLxPs/zfwxLHuFI6AROyUUQ2jWpr9DzflLErYZup81eXgaRw1gL
+         lRia9lInX8rCN0IqTPL5HTqoqjXIHuGdFcvuiJ49eheWqFI9c6Cgp4QwB9ESmnPvPwKq
+         jUeTJhw+GSD4HYSK7GPJkTt1NFxR2O9B5HfDbw6N0zMvNs0klnDOtb5ziH0rHdPxLtv9
+         oBNgqsSsVvhTm15cZkcm/nrKBFRrsIhheWQ9rtVn+QRE2pMrjCZUFWnQCvEI73x7QBsS
+         8IMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Nt+4VGgjCfkjTVcj1yCMSxMjSVDW1JAndgvTTFGZxeg=;
-        b=em4Wv1w6x8iat/PVVCEwawr81+hc6ptDsPfwb/XCj3bmUTwMnMrd5NB9S2m+UNmomn
-         zcKXFPsR8dxbimh/BvGdBfCwUMy92cZvLRv5EkRLIH87aqD2veFsjWEMom3SA1VJH4Vw
-         QVKQSpu1aO//IhNcajNMpJwaxrTPXfsbjX69YQReOSQpnND3+erbusx8HY8XQAB0yiBr
-         hhvz0VZX+X32ZIBx4k6efGeTJ4yZiUrC4P5BkOQBihUSMCRXGrLTqfn2Xd4CGOh/jjVH
-         kmXEuB56jYUEbxOobDbKCU/bn5T+HLqSB2UpHvZn86fdl97igbBxj3jyqb6K2sALpFdA
-         Uv6w==
-X-Gm-Message-State: AOAM530pFUDSq1f20EuLHnYQoCtvIS+mnc2pCdR3wCyav7/WbBZkCg24
-        61NheETSTaQ4Jys7VSLEv+uWxK44cEI=
-X-Google-Smtp-Source: ABdhPJxRamGWkoR8T1lZ//BPyuQmJQHGIJJK2oy3srddw4hXIC0HvMzOHvKanKgZXNEGTJaIoiRc/w==
-X-Received: by 2002:a17:902:7088:b029:d6:8072:9ce1 with SMTP id z8-20020a1709027088b02900d680729ce1mr15091523plk.11.1604174744436;
-        Sat, 31 Oct 2020 13:05:44 -0700 (PDT)
+        bh=ZVRI2X5aEPsIi6w5YLhArQYyxBVr01gAKnoRjVfQuDU=;
+        b=ij4/fPKhZdVSCQKOnxQJjS+Gog2Lj8cPzCnDmmhT6rOwbst97MDQt6PsT3wkH9PPeW
+         XxHwbCbvd4mvO7sha22D9Xf+9KSUdJc34TeO1jtzDonJuMG5z8Yh2MCKJwiuFtUV/Qtd
+         sLb4sAu+lkmW2dUk1NLPqOtDVOPpM6UFKuWPaJCvBefcRH2H0286DmnBVwr+ZYl3fHiG
+         zKsI6GgcxW8FmmPIDix7VHrRWk0OZ/cu+ELZrZv4j9Au6KWobxnTNPhP+FuqFs6aB7We
+         cn00IUH4IgZfsimAq2x3WNTYxXvW3cbX/Ndm1ffHXv2caquIiSFdtArFDQ1grqqt8vA7
+         ZqVA==
+X-Gm-Message-State: AOAM531WUyPB6xC2z30exI0RMLdm3iu1AdU/2Xs5vifmki0MrgZ43crO
+        Q09u8W0FdjWuLbwYpfYQ58MG9CqzRkc=
+X-Google-Smtp-Source: ABdhPJxzQucC7smkshEe2ZlnPUYNTNj3KgOqyxBzLZkHK1qpHrRxIY/VXD805JVoGG3Rvqs+2veizg==
+X-Received: by 2002:a17:90b:378c:: with SMTP id mz12mr9888769pjb.137.1604174745849;
+        Sat, 31 Oct 2020 13:05:45 -0700 (PDT)
 Received: from harshads-520.kir.corp.google.com ([2620:15c:17:10:a6ae:11ff:fe11:86a2])
-        by smtp.googlemail.com with ESMTPSA id t15sm17177102pjq.3.2020.10.31.13.05.43
+        by smtp.googlemail.com with ESMTPSA id t15sm17177102pjq.3.2020.10.31.13.05.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 31 Oct 2020 13:05:43 -0700 (PDT)
+        Sat, 31 Oct 2020 13:05:44 -0700 (PDT)
 From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 To:     linux-ext4@vger.kernel.org
 Cc:     tytso@mit.edu, jack@suse.cz,
         Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Subject: [PATCH 04/10] ext4: clean up the JBD2 API that initializes fast commits
-Date:   Sat, 31 Oct 2020 13:05:12 -0700
-Message-Id: <20201031200518.4178786-5-harshadshirwadkar@gmail.com>
+Subject: [PATCH 05/10] jbd2: fix fast commit journalling APIs
+Date:   Sat, 31 Oct 2020 13:05:13 -0700
+Message-Id: <20201031200518.4178786-6-harshadshirwadkar@gmail.com>
 X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
 In-Reply-To: <20201031200518.4178786-1-harshadshirwadkar@gmail.com>
 References: <20201031200518.4178786-1-harshadshirwadkar@gmail.com>
@@ -63,243 +63,174 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This patch cleans up the jbd2_fc_init() API and its related functions
-to simplify enabling fast commits and configuring the number of blocks
-that fast commits will use. With this change, the number of fast
-commit blocks to use is solely determined by the JBD2 layer. However,
-whether or not to use fast commits is determined by the file
-system. The file system just calls jbd2_fc_init() to tell the JBD2
-layer that it is interested in enabling fast commits. JBD2 layer
-determines how many blocks to use for fast commits (based on the value
-found in the JBD2 superblock).
+This patch adds a few misc fixes for jbd2 fast commit functions.
 
-Suggested-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 ---
- fs/ext4/fast_commit.c | 12 +-------
- fs/jbd2/commit.c      |  2 +-
- fs/jbd2/journal.c     | 66 +++++++++++++++++++++++++++----------------
- fs/jbd2/recovery.c    |  2 +-
- include/linux/jbd2.h  |  3 +-
- 5 files changed, 46 insertions(+), 39 deletions(-)
+ fs/ext4/fast_commit.c |  2 +-
+ fs/jbd2/commit.c      |  9 +++++++++
+ fs/jbd2/journal.c     | 28 +++++++++++++---------------
+ include/linux/jbd2.h  | 10 +++++++---
+ 4 files changed, 30 insertions(+), 19 deletions(-)
 
 diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index 5c3af472287a..1b62d82b9622 100644
+index 1b62d82b9622..b1ca55c7d32a 100644
 --- a/fs/ext4/fast_commit.c
 +++ b/fs/ext4/fast_commit.c
-@@ -2082,8 +2082,6 @@ static int ext4_fc_replay(journal_t *journal, struct buffer_head *bh,
- 
- void ext4_fc_init(struct super_block *sb, journal_t *journal)
- {
--	int num_fc_blocks;
--
- 	/*
- 	 * We set replay callback even if fast commit disabled because we may
- 	 * could still have fast commit blocks that need to be replayed even if
-@@ -2093,15 +2091,7 @@ void ext4_fc_init(struct super_block *sb, journal_t *journal)
- 	if (!test_opt2(sb, JOURNAL_FAST_COMMIT))
- 		return;
- 	journal->j_fc_cleanup_callback = ext4_fc_cleanup;
--	if (!buffer_uptodate(journal->j_sb_buffer)
--		&& ext4_read_bh_lock(journal->j_sb_buffer, REQ_META | REQ_PRIO,
--					true)) {
--		ext4_msg(sb, KERN_ERR, "I/O error on journal");
--		return;
--	}
--	num_fc_blocks = be32_to_cpu(journal->j_superblock->s_num_fc_blks);
--	if (jbd2_fc_init(journal, num_fc_blocks ? num_fc_blocks :
--					EXT4_NUM_FC_BLKS)) {
-+	if (jbd2_fc_init(journal)) {
- 		pr_warn("Error while enabling fast commits, turning off.");
- 		ext4_clear_feature_fast_commit(sb);
- 	}
+@@ -1134,7 +1134,7 @@ int ext4_fc_commit(journal_t *journal, tid_t commit_tid)
+ 		"Fast commit ended with blks = %d, reason = %d, subtid - %d",
+ 		nblks, reason, subtid);
+ 	if (reason == EXT4_FC_REASON_FC_FAILED)
+-		return jbd2_fc_end_commit_fallback(journal, commit_tid);
++		return jbd2_fc_end_commit_fallback(journal);
+ 	if (reason == EXT4_FC_REASON_FC_START_FAILED ||
+ 		reason == EXT4_FC_REASON_INELIGIBLE)
+ 		return jbd2_complete_transaction(journal, commit_tid);
 diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
-index fa688e163a80..353534403769 100644
+index 353534403769..2444414ad89e 100644
 --- a/fs/jbd2/commit.c
 +++ b/fs/jbd2/commit.c
-@@ -801,7 +801,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
- 		if (first_block < journal->j_tail)
- 			freed += journal->j_last - journal->j_first;
- 		/* Update tail only if we free significant amount of space */
--		if (freed < journal->j_maxlen / 4)
-+		if (freed < (journal->j_maxlen - journal->j_fc_wbufsize) / 4)
- 			update_tail = 0;
+@@ -450,6 +450,15 @@ void jbd2_journal_commit_transaction(journal_t *journal)
+ 		schedule();
+ 		write_lock(&journal->j_state_lock);
+ 		finish_wait(&journal->j_fc_wait, &wait);
++		/*
++		 * TODO: by blocking fast commits here, we are increasing
++		 * fsync() latency slightly. Strictly speaking, we don't need
++		 * to block fast commits until the transaction enters T_FLUSH
++		 * state. So an optimization is possible where we block new fast
++		 * commits here and wait for existing ones to complete
++		 * just before we enter T_FLUSH. That way, the existing fast
++		 * commits and this full commit can proceed parallely.
++		 */
  	}
- 	J_ASSERT(commit_transaction->t_state == T_COMMIT);
+ 	write_unlock(&journal->j_state_lock);
+ 
 diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index 0c7c42bd530f..ea15f55aff5c 100644
+index ea15f55aff5c..368727ef3912 100644
 --- a/fs/jbd2/journal.c
 +++ b/fs/jbd2/journal.c
-@@ -1357,14 +1357,6 @@ static journal_t *journal_init_common(struct block_device *bdev,
- 	if (!journal->j_wbuf)
- 		goto err_cleanup;
+@@ -734,10 +734,12 @@ int jbd2_fc_begin_commit(journal_t *journal, tid_t tid)
+ 	if (!journal->j_stats.ts_tid)
+ 		return -EINVAL;
  
--	if (journal->j_fc_wbufsize > 0) {
--		journal->j_fc_wbuf = kmalloc_array(journal->j_fc_wbufsize,
--					sizeof(struct buffer_head *),
--					GFP_KERNEL);
--		if (!journal->j_fc_wbuf)
--			goto err_cleanup;
--	}
--
- 	bh = getblk_unmovable(journal->j_dev, start, journal->j_blocksize);
- 	if (!bh) {
- 		pr_err("%s: Cannot get buffer for journal superblock\n",
-@@ -1378,19 +1370,21 @@ static journal_t *journal_init_common(struct block_device *bdev,
+-	if (tid <= journal->j_commit_sequence)
++	write_lock(&journal->j_state_lock);
++	if (tid <= journal->j_commit_sequence) {
++		write_unlock(&journal->j_state_lock);
+ 		return -EALREADY;
++	}
  
- err_cleanup:
- 	kfree(journal->j_wbuf);
--	kfree(journal->j_fc_wbuf);
- 	jbd2_journal_destroy_revoke(journal);
- 	kfree(journal);
- 	return NULL;
- }
+-	write_lock(&journal->j_state_lock);
+ 	if (journal->j_flags & JBD2_FULL_COMMIT_ONGOING ||
+ 	    (journal->j_flags & JBD2_FAST_COMMIT_ONGOING)) {
+ 		DEFINE_WAIT(wait);
+@@ -777,13 +779,19 @@ static int __jbd2_fc_end_commit(journal_t *journal, tid_t tid, bool fallback)
  
--int jbd2_fc_init(journal_t *journal, int num_fc_blks)
-+int jbd2_fc_init(journal_t *journal)
+ int jbd2_fc_end_commit(journal_t *journal)
  {
--	journal->j_fc_wbufsize = num_fc_blks;
--	journal->j_fc_wbuf = kmalloc_array(journal->j_fc_wbufsize,
--				sizeof(struct buffer_head *), GFP_KERNEL);
--	if (!journal->j_fc_wbuf)
--		return -ENOMEM;
-+	/*
-+	 * Only set j_fc_wbufsize here to indicate that the client file
-+	 * system is interested in using fast commits. The actual number of
-+	 * fast commit blocks is found inside jbd2_superblock and is only
-+	 * valid if j_fc_wbufsize is non-zero. The real value of j_fc_wbufsize
-+	 * gets set in journal_reset().
-+	 */
-+	journal->j_fc_wbufsize = JBD2_MIN_FC_BLOCKS;
- 	return 0;
+-	return __jbd2_fc_end_commit(journal, 0, 0);
++	return __jbd2_fc_end_commit(journal, 0, false);
  }
- EXPORT_SYMBOL(jbd2_fc_init);
-@@ -1500,7 +1494,7 @@ static void journal_fail_superblock(journal_t *journal)
- static int journal_reset(journal_t *journal)
+ EXPORT_SYMBOL(jbd2_fc_end_commit);
+ 
+-int jbd2_fc_end_commit_fallback(journal_t *journal, tid_t tid)
++int jbd2_fc_end_commit_fallback(journal_t *journal)
  {
- 	journal_superblock_t *sb = journal->j_superblock;
--	unsigned long long first, last;
-+	unsigned long long first, last, num_fc_blocks;
- 
- 	first = be32_to_cpu(sb->s_first);
- 	last = be32_to_cpu(sb->s_maxlen);
-@@ -1513,6 +1507,28 @@ static int journal_reset(journal_t *journal)
- 
- 	journal->j_first = first;
- 
-+	/*
-+	 * At this point, fast commit recovery has finished. Now, we solely
-+	 * rely on the file system to decide whether it wants fast commits
-+	 * or not. File system that wishes to use fast commits must have
-+	 * already called jbd2_fc_init() before we get here.
-+	 */
-+	if (journal->j_fc_wbufsize > 0)
-+		jbd2_journal_set_features(journal, 0, 0,
-+					  JBD2_FEATURE_INCOMPAT_FAST_COMMIT);
-+	else
-+		jbd2_journal_clear_features(journal, 0, 0,
-+					  JBD2_FEATURE_INCOMPAT_FAST_COMMIT);
+-	return __jbd2_fc_end_commit(journal, tid, 1);
++	tid_t tid;
 +
-+	/* If valid, prefer the value found in superblock over the default */
-+	num_fc_blocks = be32_to_cpu(sb->s_num_fc_blks);
-+	if (num_fc_blocks > 0 && num_fc_blocks < last)
-+		journal->j_fc_wbufsize = num_fc_blocks;
-+
-+	if (jbd2_has_feature_fast_commit(journal))
-+		journal->j_fc_wbuf = kmalloc_array(journal->j_fc_wbufsize,
-+					sizeof(struct buffer_head *), GFP_KERNEL);
-+
- 	if (jbd2_has_feature_fast_commit(journal) &&
- 	    journal->j_fc_wbufsize > 0) {
- 		journal->j_fc_last = last;
-@@ -1531,7 +1547,8 @@ static int journal_reset(journal_t *journal)
- 	journal->j_commit_sequence = journal->j_transaction_sequence - 1;
- 	journal->j_commit_request = journal->j_commit_sequence;
++	read_lock(&journal->j_state_lock);
++	tid = journal->j_running_transaction ?
++		journal->j_running_transaction->t_tid : 0;
++	read_unlock(&journal->j_state_lock);
++	return __jbd2_fc_end_commit(journal, tid, true);
+ }
+ EXPORT_SYMBOL(jbd2_fc_end_commit_fallback);
  
--	journal->j_max_transaction_buffers = journal->j_maxlen / 4;
-+	journal->j_max_transaction_buffers =
-+		(journal->j_maxlen - journal->j_fc_wbufsize) / 4;
+@@ -865,7 +873,6 @@ int jbd2_fc_get_buf(journal_t *journal, struct buffer_head **bh_out)
+ 	int fc_off;
+ 
+ 	*bh_out = NULL;
+-	write_lock(&journal->j_state_lock);
+ 
+ 	if (journal->j_fc_off + journal->j_fc_first < journal->j_fc_last) {
+ 		fc_off = journal->j_fc_off;
+@@ -874,7 +881,6 @@ int jbd2_fc_get_buf(journal_t *journal, struct buffer_head **bh_out)
+ 	} else {
+ 		ret = -EINVAL;
+ 	}
+-	write_unlock(&journal->j_state_lock);
+ 
+ 	if (ret)
+ 		return ret;
+@@ -887,11 +893,7 @@ int jbd2_fc_get_buf(journal_t *journal, struct buffer_head **bh_out)
+ 	if (!bh)
+ 		return -ENOMEM;
+ 
+-	lock_buffer(bh);
+ 
+-	clear_buffer_uptodate(bh);
+-	set_buffer_dirty(bh);
+-	unlock_buffer(bh);
+ 	journal->j_fc_wbuf[fc_off] = bh;
+ 
+ 	*bh_out = bh;
+@@ -909,9 +911,7 @@ int jbd2_fc_wait_bufs(journal_t *journal, int num_blks)
+ 	struct buffer_head *bh;
+ 	int i, j_fc_off;
+ 
+-	read_lock(&journal->j_state_lock);
+ 	j_fc_off = journal->j_fc_off;
+-	read_unlock(&journal->j_state_lock);
  
  	/*
- 	 * As a special case, if the on-disk copy is already marked as needing
-@@ -1872,6 +1889,7 @@ static int load_superblock(journal_t *journal)
- {
- 	int err;
- 	journal_superblock_t *sb;
-+	int num_fc_blocks;
+ 	 * Wait in reverse order to minimize chances of us being woken up before
+@@ -939,9 +939,7 @@ int jbd2_fc_release_bufs(journal_t *journal)
+ 	struct buffer_head *bh;
+ 	int i, j_fc_off;
  
- 	err = journal_get_superblock(journal);
- 	if (err)
-@@ -1884,10 +1902,12 @@ static int load_superblock(journal_t *journal)
- 	journal->j_first = be32_to_cpu(sb->s_first);
- 	journal->j_errno = be32_to_cpu(sb->s_errno);
+-	read_lock(&journal->j_state_lock);
+ 	j_fc_off = journal->j_fc_off;
+-	read_unlock(&journal->j_state_lock);
  
--	if (jbd2_has_feature_fast_commit(journal) &&
--	    journal->j_fc_wbufsize > 0) {
-+	if (jbd2_has_feature_fast_commit(journal)) {
- 		journal->j_fc_last = be32_to_cpu(sb->s_maxlen);
--		journal->j_last = journal->j_fc_last - journal->j_fc_wbufsize;
-+		num_fc_blocks = be32_to_cpu(sb->s_num_fc_blks);
-+		if (!num_fc_blocks || num_fc_blocks >= journal->j_fc_last)
-+			num_fc_blocks = JBD2_MIN_FC_BLOCKS;
-+		journal->j_last = journal->j_fc_last - num_fc_blocks;
- 		journal->j_fc_first = journal->j_last + 1;
- 		journal->j_fc_off = 0;
- 	} else {
-@@ -1954,9 +1974,6 @@ int jbd2_journal_load(journal_t *journal)
- 	 */
- 	journal->j_flags &= ~JBD2_ABORT;
- 
--	if (journal->j_fc_wbufsize > 0)
--		jbd2_journal_set_features(journal, 0, 0,
--					  JBD2_FEATURE_INCOMPAT_FAST_COMMIT);
- 	/* OK, we've finished with the dynamic journal bits:
- 	 * reinitialise the dynamic contents of the superblock in memory
- 	 * and reset them on disk. */
-@@ -2040,8 +2057,7 @@ int jbd2_journal_destroy(journal_t *journal)
- 		jbd2_journal_destroy_revoke(journal);
- 	if (journal->j_chksum_driver)
- 		crypto_free_shash(journal->j_chksum_driver);
--	if (journal->j_fc_wbufsize > 0)
--		kfree(journal->j_fc_wbuf);
-+	kfree(journal->j_fc_wbuf);
- 	kfree(journal->j_wbuf);
- 	kfree(journal);
- 
-diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
-index eb2606133cd8..822f16cbf9b3 100644
---- a/fs/jbd2/recovery.c
-+++ b/fs/jbd2/recovery.c
-@@ -134,7 +134,7 @@ static int jread(struct buffer_head **bhp, journal_t *journal,
- 
- 	*bhp = NULL;
- 
--	if (offset >= journal->j_maxlen) {
-+	if (offset >= journal->j_maxlen + journal->j_fc_wbufsize) {
- 		printk(KERN_ERR "JBD2: corrupted journal superblock\n");
- 		return -EFSCORRUPTED;
- 	}
+ 	/*
+ 	 * Wait in reverse order to minimize chances of us being woken up before
 diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index 1d5566af48ac..9b4e87a0068b 100644
+index 9b4e87a0068b..df1285da7276 100644
 --- a/include/linux/jbd2.h
 +++ b/include/linux/jbd2.h
-@@ -68,6 +68,7 @@ extern void *jbd2_alloc(size_t size, gfp_t flags);
- extern void jbd2_free(void *ptr, size_t size);
+@@ -946,7 +946,9 @@ struct journal_s
+ 	 * @j_fc_off:
+ 	 *
+ 	 * Number of fast commit blocks currently allocated.
+-	 * [j_state_lock].
++	 * [j_state_lock]. During the commit path, this variable is not
++	 * protected by j_state_lock since only one process performs commit
++	 * at a time.
+ 	 */
+ 	unsigned long		j_fc_off;
  
- #define JBD2_MIN_JOURNAL_BLOCKS 1024
-+#define JBD2_MIN_FC_BLOCKS	256
+@@ -1110,7 +1112,9 @@ struct journal_s
  
- #ifdef __KERNEL__
+ 	/**
+ 	 * @j_fc_wbuf: Array of fast commit bhs for
+-	 * jbd2_journal_commit_transaction.
++	 * jbd2_journal_commit_transaction. During the commit path, this
++	 * variable is not protected by j_state_lock since only one process
++	 * performs commit at a time.
+ 	 */
+ 	struct buffer_head	**j_fc_wbuf;
  
-@@ -1614,7 +1615,7 @@ extern void __jbd2_journal_drop_transaction(journal_t *, transaction_t *);
- extern int jbd2_cleanup_journal_tail(journal_t *);
- 
- /* Fast commit related APIs */
--int jbd2_fc_init(journal_t *journal, int num_fc_blks);
-+int jbd2_fc_init(journal_t *journal);
+@@ -1618,7 +1622,7 @@ extern int jbd2_cleanup_journal_tail(journal_t *);
+ int jbd2_fc_init(journal_t *journal);
  int jbd2_fc_begin_commit(journal_t *journal, tid_t tid);
  int jbd2_fc_end_commit(journal_t *journal);
- int jbd2_fc_end_commit_fallback(journal_t *journal, tid_t tid);
+-int jbd2_fc_end_commit_fallback(journal_t *journal, tid_t tid);
++int jbd2_fc_end_commit_fallback(journal_t *journal);
+ int jbd2_fc_get_buf(journal_t *journal, struct buffer_head **bh_out);
+ int jbd2_submit_inode_data(struct jbd2_inode *jinode);
+ int jbd2_wait_inode_data(journal_t *journal, struct jbd2_inode *jinode);
 -- 
 2.29.1.341.ge80a0c044ae-goog
 
