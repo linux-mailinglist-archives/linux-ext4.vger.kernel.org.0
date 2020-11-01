@@ -2,59 +2,113 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 680142A1D5A
-	for <lists+linux-ext4@lfdr.de>; Sun,  1 Nov 2020 11:38:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34C492A1E9C
+	for <lists+linux-ext4@lfdr.de>; Sun,  1 Nov 2020 15:41:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726317AbgKAKig (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 1 Nov 2020 05:38:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53130 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726145AbgKAKig (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Sun, 1 Nov 2020 05:38:36 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 61F502080A;
-        Sun,  1 Nov 2020 10:38:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604227115;
-        bh=kT4U+hpjwiXR7kNlPgarRqNhSt/kq7ZaLXhFmR2LbQQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KwZghQSo6asyOSwAGcIuzY0UE8Ll7TcWerMF4HiY437wTMEeZMLuI4+ismHuP+O0B
-         5sf5Bpkyc2MdV5C39/CcQGZpBrRfiKuj2XPnQFywZCi/nLoXJJFRlm0Dxn2xhbHTo9
-         y1qhSdw37v3ZRWB6tH0DXiuEkOKdWX9SIyvhzzGE=
-Date:   Sun, 1 Nov 2020 11:39:06 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     stable@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 4.19 0/5] backport some more fscrypt fixes to 4.19
-Message-ID: <20201101103906.GA2689688@kroah.com>
-References: <20201031220553.1085782-1-ebiggers@kernel.org>
+        id S1726529AbgKAOlY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 1 Nov 2020 09:41:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726458AbgKAOlY (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 1 Nov 2020 09:41:24 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6378C0617A6;
+        Sun,  1 Nov 2020 06:41:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=JLQ1tQXc9bAL3Tc10fp3l/hgY8fF0ZkXSA4m3zd3IYM=; b=RTKMydVtbSPCwZGEemrV2Qaq7t
+        ZlkjBevTM42JrP+u77IXmMh8iPEGF6aqpVgKyc6AUjmGP+mqol7anlD9ldBfIgYJAhRuSrV0new+H
+        YSIqTXP3bAuELZ527GOXoMFavVhV0IJzIkBfzs2KQzeEn0ZQWDkrPH6UapYvgzp7rsxp0bksTKGBj
+        vvTUjJaB6biygJluyLveCHr/mpIsrKXfJBrAaQoMTYuPQzq9DY8anRXKCMpkKGnpJ2UOskRcAQWLn
+        sRKALkArBQDn9PfEAPB7vrAnaUbFoETA7stMPHzH3xyjePWgxRox5oXiVfyZUrT/lheIvlD97cB9p
+        g6+8nZfA==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kZEXc-0006Hp-5O; Sun, 01 Nov 2020 14:41:08 +0000
+Date:   Sun, 1 Nov 2020 14:41:08 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-fsdevel@vger.kernel.org,
+        John Johansen <john.johansen@canonical.com>,
+        James Morris <jmorris@namei.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Mrunal Patel <mpatel@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Theodore Tso <tytso@mit.edu>, Alban Crequy <alban@kinvolk.io>,
+        Tycho Andersen <tycho@tycho.ws>,
+        David Howells <dhowells@redhat.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Jann Horn <jannh@google.com>,
+        Seth Forshee <seth.forshee@canonical.com>,
+        St??phane Graber <stgraber@ubuntu.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Lennart Poettering <lennart@poettering.net>,
+        "Eric W. Biederman" <ebiederm@xmission.com>, smbarber@chromium.org,
+        Phil Estes <estesp@gmail.com>, Serge Hallyn <serge@hallyn.com>,
+        Kees Cook <keescook@chromium.org>,
+        Todd Kjos <tkjos@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        containers@lists.linux-foundation.org,
+        linux-security-module@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-unionfs@vger.kernel.org,
+        linux-audit@redhat.com, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org
+Subject: Re: [PATCH 01/34] namespace: take lock_mount_hash() directly when
+ changing flags
+Message-ID: <20201101144108.GA23378@infradead.org>
+References: <20201029003252.2128653-1-christian.brauner@ubuntu.com>
+ <20201029003252.2128653-2-christian.brauner@ubuntu.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201031220553.1085782-1-ebiggers@kernel.org>
+In-Reply-To: <20201029003252.2128653-2-christian.brauner@ubuntu.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Oct 31, 2020 at 03:05:48PM -0700, Eric Biggers wrote:
-> Backport some fscrypt fixes from upstream 5.2 to 4.19-stable.
-> 
-> This is needed to get 'kvm-xfstests -c ext4,f2fs,ubifs -g encrypt' to
-> fully pass on 4.19-stable.  Before, generic/397 and generic/429 failed
-> on UBIFS due to missing "fscrypt: fix race where ->lookup() marks
-> plaintext dentry as ciphertext".
-> 
-> This also fixes some bugs that aren't yet covered by the xfstests.
-> E.g., "fs, fscrypt: clear DCACHE_ENCRYPTED_NAME when unaliasing
-> directory" fixes a bug that caused real-world problems on Chrome OS.
-> 
-> Some relatively straightforward adjustments were needed to the patches,
-> mainly due to the refactoring of fscrypt.h that was done in 5.1.
+> index cebaa3e81794..20ee291a7af4 100644
+> --- a/fs/namespace.c
+> +++ b/fs/namespace.c
+> @@ -463,7 +463,6 @@ static int mnt_make_readonly(struct mount *mnt)
+>  {
+>  	int ret = 0;
+>  
+> -	lock_mount_hash();
 
-All now queued up, thanks!
+What about adding a lockdep_assert_lock_held in all the functions
+that used to take the lock to document the assumptions?
 
-greg k-h
+>  static int __mnt_unmake_readonly(struct mount *mnt)
+>  {
+> -	lock_mount_hash();
+>  	mnt->mnt.mnt_flags &= ~MNT_READONLY;
+> -	unlock_mount_hash();
+>  	return 0;
+
+This helper is rather pointless now.
+
+>  static void set_mount_attributes(struct mount *mnt, unsigned int mnt_flags)
+>  {
+> -	lock_mount_hash();
+>  	mnt_flags |= mnt->mnt.mnt_flags & ~MNT_USER_SETTABLE_MASK;
+>  	mnt->mnt.mnt_flags = mnt_flags;
+>  	touch_mnt_namespace(mnt->mnt_ns);
+> -	unlock_mount_hash();
+
+In linux-next there is an additional notify_mount after the unlock here.
+
+Also while you touch this lock_mount_hash/unlock_mount_hash could be
+moved to namespace.c and maked static now.
