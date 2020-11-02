@@ -2,193 +2,187 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3DB92A1F7E
-	for <lists+linux-ext4@lfdr.de>; Sun,  1 Nov 2020 17:24:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E9FF2A251E
+	for <lists+linux-ext4@lfdr.de>; Mon,  2 Nov 2020 08:23:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727022AbgKAQYk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 1 Nov 2020 11:24:40 -0500
-Received: from out20-73.mail.aliyun.com ([115.124.20.73]:44653 "EHLO
-        out20-73.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726549AbgKAQYj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 1 Nov 2020 11:24:39 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07438824|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0365477-0.00737177-0.95608;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047199;MF=guan@eryu.me;NM=1;PH=DS;RN=6;RT=6;SR=0;TI=SMTPD_---.IrDrt1W_1604247868;
-Received: from localhost(mailfrom:guan@eryu.me fp:SMTPD_---.IrDrt1W_1604247868)
-          by smtp.aliyun-inc.com(10.147.40.2);
-          Mon, 02 Nov 2020 00:24:28 +0800
-Date:   Mon, 2 Nov 2020 00:24:27 +0800
-From:   Eryu Guan <guan@eryu.me>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     fstests@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        anju@linux.vnet.ibm.com, Christian Kujau <lists@nerdbynature.de>,
-        linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 1/1] generic: Add test to check for mounting a huge
- sparse dm device
-Message-ID: <20201101162427.GF3853@desktop>
-References: <daec44e9f2e3ce483b7845065db3bf148ff5cd2c.1603864280.git.riteshh@linux.ibm.com>
+        id S1727806AbgKBHXG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 2 Nov 2020 02:23:06 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:33518 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727743AbgKBHXG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 2 Nov 2020 02:23:06 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A27MRwB187986;
+        Mon, 2 Nov 2020 07:23:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=9qIA6H2LRTfPEGwysSBpivfJSXyQ7DgbiXirFjUjuMs=;
+ b=kvmzONFLS5hkuwuiOm7WeXjacTs/EWZNIJ/zBTns3MqKNkZJmroNpjEwmtcWuKJ/iRC8
+ 6M8TGBtLoEkstlycU37zJvPM6cYRDlrCqdRtHp+zLzJpmNxw81P1umo/16nCIkkv5JRL
+ 5lZQ9rtMPz1zSzXDzLULA+Ti1UzNqOfYb4cSisSClr8hlPL3yvtQWrr5md6tPy+CcqCe
+ vAO0Z22ledQuQ0MiQFnOEPOvMUQQpClknEmjW2BNEqZLC7Het7srm/bddwwJBL/YU2kX
+ R61+XogUm5joEa27uCMjC8c1qCDMYF6UMylBN85fxXHY1fC3HZEIN2ip3ii+9CzqfzqH dg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 34hhw2acn0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 02 Nov 2020 07:23:03 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A27KL6c029801;
+        Mon, 2 Nov 2020 07:23:02 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 34hw0enc94-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 02 Nov 2020 07:23:02 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0A27N1YT027816;
+        Mon, 2 Nov 2020 07:23:01 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sun, 01 Nov 2020 23:23:01 -0800
+Date:   Mon, 2 Nov 2020 10:22:55 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     boyu.mt@taobao.com
+Cc:     linux-ext4@vger.kernel.org
+Subject: [bug report] ext4: let ext4_truncate handle inline data correctly
+Message-ID: <20201102072255.GA3954239@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <daec44e9f2e3ce483b7845065db3bf148ff5cd2c.1603864280.git.riteshh@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9792 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0 bulkscore=0
+ mlxscore=0 suspectscore=3 spamscore=0 mlxlogscore=461 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011020057
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9792 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 mlxscore=0
+ suspectscore=3 clxscore=1011 priorityscore=1501 impostorscore=0
+ spamscore=0 lowpriorityscore=0 mlxlogscore=490 phishscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011020057
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 12:14:52PM +0530, Ritesh Harjani wrote:
-> Add this test (which Christian Kujau reported) to check for regression
-> caused due to ext4 bmap aops implementation was moved to use iomap APIs.
-> jbd2 calls bmap() kernel function from fs/inode.c which was failing since
-> iomap_bmap() implementation earlier returned 0 for block addr > INT_MAX.
-> This regression was fixed with following kernel commit [1]
-> commit b75dfde1212991b24b220c3995101c60a7b8ae74
-> ("fibmap: Warn and return an error in case of block > INT_MAX")
-> [1]: https://patchwork.ozlabs.org/patch/1279914
-> 
-> w/o the kernel fix we get below error and mount fails
-> 
-> [ 1461.988701] run fstests generic/613 at 2020-10-27 19:57:34
-> [ 1530.511978] jbd2_journal_init_inode: Cannot locate journal superblock
-> [ 1530.513310] EXT4-fs (dm-1): Could not load journal inode
-> 
-> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
-> ---
->  common/rc             | 10 +++++++
->  tests/generic/613     | 66 +++++++++++++++++++++++++++++++++++++++++++
->  tests/generic/613.out |  3 ++
->  tests/generic/group   |  1 +
->  4 files changed, 80 insertions(+)
->  create mode 100755 tests/generic/613
->  create mode 100644 tests/generic/613.out
-> 
-> diff --git a/common/rc b/common/rc
-> index 27a27ea36f75..b0c353c4c107 100644
-> --- a/common/rc
-> +++ b/common/rc
-> @@ -1607,6 +1607,16 @@ _require_scratch_size()
->  	[ $devsize -lt $1 ] && _notrun "scratch dev too small"
->  }
-> 
-> +# require a scratch dev of a minimum size (in kb) and should not be checked
-> +# post test
-> +_require_scratch_size_nocheck()
-> +{
-> +	[ $# -eq 1 ] || _fail "_require_scratch_size: expected size param"
-> +
-> +	_require_scratch_nocheck
-> +	local devsize=`_get_device_size $SCRATCH_DEV`
-> +	[ $devsize -lt $1 ] && _notrun "scratch dev too small"
-> +}
+[ Ancient warning.  Still looks valid though.  - dan ]
 
-Seems there's no need to introduce this new helper, just open-coded
+Hello Tao Ma,
 
-# comments on why we use _nocheck here
-_require_scratch_nocheck
-_require_scratch_size $size
+The patch aef1c8513c1f: "ext4: let ext4_truncate handle inline data
+correctly" from Dec 10, 2012, leads to the following static checker
+warning:
 
-> 
->  # this test needs a test partition - check we're ok & mount it
->  #
-> diff --git a/tests/generic/613 b/tests/generic/613
-> new file mode 100755
-> index 000000000000..b426ef91cacf
-> --- /dev/null
-> +++ b/tests/generic/613
-> @@ -0,0 +1,66 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2020 Christian Kujau. All Rights Reserved.
-> +# Copyright (c) 2020 Ritesh Harjani. All Rights Reserved.
-> +#
-> +# FS QA Test generic/613
-> +#
-> +# Since the test is not specific to ext4, hence adding it to generic.
-> +# Add this test to check for regression which was reported when ext4 bmap
-> +# aops was moved to use iomap APIs. jbd2 calls bmap() kernel function
-> +# from fs/inode.c which was failing since iomap_bmap() implementation earlier
-> +# returned 0 for block addr > INT_MAX.
-> +# This regression was fixed with following kernel commit [1]
-> +# commit b75dfde1212991b24b220c3995101c60a7b8ae74
-> +# ("fibmap: Warn and return an error in case of block > INT_MAX")
-> +# [1]: https://patchwork.ozlabs.org/patch/1279914
-> +#
-> +seq=`basename $0`
-> +seqres=$RESULT_DIR/$seq
-> +echo "QA output created by $seq"
-> +
-> +here=`pwd`
-> +tmp=/tmp/$$
-> +status=1	# failure is the default!
-> +trap "_cleanup; exit \$status" 0 1 2 3 15
-> +
-> +_cleanup()
-> +{
-> +	_dmhugedisk_cleanup
-> +	cd /
-> +	rm -f $tmp.*
-> +}
-> +
-> +# get standard environment, filters and checks
-> +. ./common/rc
-> +. ./common/filter
-> +. ./common/dmhugedisk
-> +
-> +# remove previous $seqres.full before test
-> +rm -f $seqres.full
-> +
-> +# Modify as appropriate.
-> +_supported_fs generic
-> +_require_dmhugedisk
-> +_require_scratch_size_nocheck $((4 * 1024 * 1024)) #kB
-> +
-> +# For 1k bs with ext4, mkfs was failing maybe due to size limitation.
+fs/ext4/inline.c:1956 ext4_inline_data_truncate()
+warn: inconsistent returns 'EXT4_I(inode)->xattr_sem'.
+  Locked on  : 1885
+  Unlocked on: 1956
 
-I think that's because only 4k blocksize ext4 supports filesystems
-greater than 16T.
+fs/ext4/inline.c
+  1861  int ext4_inline_data_truncate(struct inode *inode, int *has_inline)
+  1862  {
+  1863          handle_t *handle;
+  1864          int inline_size, value_len, needed_blocks, no_expand, err = 0;
+  1865          size_t i_size;
+  1866          void *value = NULL;
+  1867          struct ext4_xattr_ibody_find is = {
+  1868                  .s = { .not_found = -ENODATA, },
+  1869          };
+  1870          struct ext4_xattr_info i = {
+  1871                  .name_index = EXT4_XATTR_INDEX_SYSTEM,
+  1872                  .name = EXT4_XATTR_SYSTEM_DATA,
+  1873          };
+  1874  
+  1875  
+  1876          needed_blocks = ext4_writepage_trans_blocks(inode);
+  1877          handle = ext4_journal_start(inode, EXT4_HT_INODE, needed_blocks);
+  1878          if (IS_ERR(handle))
+  1879                  return PTR_ERR(handle);
+  1880  
+  1881          ext4_write_lock_xattr(inode, &no_expand);
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Take the lock
 
-> +if [ "$FSTYP" = "ext4" ]; then
-> +	export MKFS_OPTIONS="-F -b 4096"
-> +fi
+  1882          if (!ext4_has_inline_data(inode)) {
+  1883                  *has_inline = 0;
+  1884                  ext4_journal_stop(handle);
+  1885                  return 0;
 
-I'd check for fs block size after mkfs and _notrun if it's ext4 and
-block_size < 4k. So we don't have to overwrite MKFS_OPTIONS and run the
-test multiple times forcely in, for example ext4-1k config & ext4-4k
-config.
+Not unlocked.
 
-Thanks,
-Eryu
+  1886          }
+  1887  
+  1888          if ((err = ext4_orphan_add(handle, inode)) != 0)
+  1889                  goto out;
+  1890  
+  1891          if ((err = ext4_get_inode_loc(inode, &is.iloc)) != 0)
+  1892                  goto out;
+  1893  
+  1894          down_write(&EXT4_I(inode)->i_data_sem);
+  1895          i_size = inode->i_size;
+  1896          inline_size = ext4_get_inline_size(inode);
+  1897          EXT4_I(inode)->i_disksize = i_size;
+  1898  
+  1899          if (i_size < inline_size) {
+  1900                  /* Clear the content in the xattr space. */
+  1901                  if (inline_size > EXT4_MIN_INLINE_DATA_SIZE) {
+  1902                          if ((err = ext4_xattr_ibody_find(inode, &i, &is)) != 0)
+  1903                                  goto out_error;
+  1904  
+  1905                          BUG_ON(is.s.not_found);
+  1906  
+  1907                          value_len = le32_to_cpu(is.s.here->e_value_size);
+  1908                          value = kmalloc(value_len, GFP_NOFS);
+  1909                          if (!value) {
+  1910                                  err = -ENOMEM;
+  1911                                  goto out_error;
+  1912                          }
+  1913  
+  1914                          err = ext4_xattr_ibody_get(inode, i.name_index,
+  1915                                                     i.name, value, value_len);
+  1916                          if (err <= 0)
+  1917                                  goto out_error;
+  1918  
+  1919                          i.value = value;
+  1920                          i.value_len = i_size > EXT4_MIN_INLINE_DATA_SIZE ?
+  1921                                          i_size - EXT4_MIN_INLINE_DATA_SIZE : 0;
+  1922                          err = ext4_xattr_ibody_inline_set(handle, inode,
+  1923                                                            &i, &is);
+  1924                          if (err)
+  1925                                  goto out_error;
+  1926                  }
+  1927  
+  1928                  /* Clear the content within i_blocks. */
+  1929                  if (i_size < EXT4_MIN_INLINE_DATA_SIZE) {
+  1930                          void *p = (void *) ext4_raw_inode(&is.iloc)->i_block;
+  1931                          memset(p + i_size, 0,
+  1932                                 EXT4_MIN_INLINE_DATA_SIZE - i_size);
+  1933                  }
+  1934  
+  1935                  EXT4_I(inode)->i_inline_size = i_size <
+  1936                                          EXT4_MIN_INLINE_DATA_SIZE ?
+  1937                                          EXT4_MIN_INLINE_DATA_SIZE : i_size;
+  1938          }
+  1939  
+  1940  out_error:
+  1941          up_write(&EXT4_I(inode)->i_data_sem);
+  1942  out:
+  1943          brelse(is.iloc.bh);
+  1944          ext4_write_unlock_xattr(inode, &no_expand);
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Unlocked here.
 
-> +
-> +# 17TB dm huge-test-zer0 device
-> +# (in terms of 512 sectors)
-> +sectors=$((2*1024*1024*1024*17))
-> +chunk_size=128
-> +
-> +_dmhugedisk_init $sectors $chunk_size
-> +_mkfs_dev $DMHUGEDISK_DEV
-> +_mount $DMHUGEDISK_DEV $SCRATCH_MNT || _fail "mount failed for $DMHUGEDISK_DEV $SCRATCH_MNT"
-> +testfile=$SCRATCH_MNT/testfile-$seq
-> +
-> +$XFS_IO_PROG -fc "pwrite -S 0xaa 0 1m" -c "fsync" $testfile | _filter_xfs_io
-> +
-> +# success, all done
-> +status=0
-> +exit
-> diff --git a/tests/generic/613.out b/tests/generic/613.out
-> new file mode 100644
-> index 000000000000..4747b7596499
-> --- /dev/null
-> +++ b/tests/generic/613.out
-> @@ -0,0 +1,3 @@
-> +QA output created by 613
-> +wrote 1048576/1048576 bytes at offset 0
-> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> diff --git a/tests/generic/group b/tests/generic/group
-> index 8054d874f005..360d145d2036 100644
-> --- a/tests/generic/group
-> +++ b/tests/generic/group
-> @@ -615,3 +615,4 @@
->  610 auto quick prealloc zero
->  611 auto quick attr
->  612 auto quick clone
-> +613 auto mount quick
-> --
-> 2.26.2
+  1945          kfree(value);
+  1946          if (inode->i_nlink)
+  1947                  ext4_orphan_del(handle, inode);
+  1948  
+  1949          if (err == 0) {
+  1950                  inode->i_mtime = inode->i_ctime = current_time(inode);
+  1951                  err = ext4_mark_inode_dirty(handle, inode);
+  1952                  if (IS_SYNC(inode))
+  1953                          ext4_handle_sync(handle);
+  1954          }
+  1955          ext4_journal_stop(handle);
+  1956          return err;
+  1957  }
+
+regards,
+dan carpenter
