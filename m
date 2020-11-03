@@ -2,172 +2,225 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A3AD2A4881
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Nov 2020 15:47:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C03F2A4B7F
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Nov 2020 17:29:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728198AbgKCOqw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 3 Nov 2020 09:46:52 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33962 "EHLO mx2.suse.de"
+        id S1728209AbgKCQ3q (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 3 Nov 2020 11:29:46 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44514 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728173AbgKCOqs (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 3 Nov 2020 09:46:48 -0500
+        id S1728299AbgKCQ3q (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 3 Nov 2020 11:29:46 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C30F5ACAE;
-        Tue,  3 Nov 2020 14:46:46 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 49FE4AC3F;
+        Tue,  3 Nov 2020 16:29:44 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 7FEA31E12FB; Tue,  3 Nov 2020 15:46:46 +0100 (CET)
-Date:   Tue, 3 Nov 2020 15:46:46 +0100
+        id 02B4E1E12FB; Tue,  3 Nov 2020 17:29:43 +0100 (CET)
+Date:   Tue, 3 Nov 2020 17:29:43 +0100
 From:   Jan Kara <jack@suse.cz>
 To:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu, jack@suse.cz
-Subject: Re: [PATCH 03/10] ext4: pass handle to ext4_fc_track_* functions
-Message-ID: <20201103144646.GG3440@quack2.suse.cz>
+Subject: Re: [PATCH 04/10] ext4: clean up the JBD2 API that initializes fast
+ commits
+Message-ID: <20201103162943.GH3440@quack2.suse.cz>
 References: <20201031200518.4178786-1-harshadshirwadkar@gmail.com>
- <20201031200518.4178786-4-harshadshirwadkar@gmail.com>
+ <20201031200518.4178786-5-harshadshirwadkar@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201031200518.4178786-4-harshadshirwadkar@gmail.com>
+In-Reply-To: <20201031200518.4178786-5-harshadshirwadkar@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat 31-10-20 13:05:11, Harshad Shirwadkar wrote:
-> Use transaction id found in handle->h_transaction->h_tid for tracking
-> fast commit updates. This patch also restructures ext4_unlink to make
-> handle available inside ext4_unlink for fast commit tracking.
+On Sat 31-10-20 13:05:12, Harshad Shirwadkar wrote:
+> This patch cleans up the jbd2_fc_init() API and its related functions
+> to simplify enabling fast commits and configuring the number of blocks
+> that fast commits will use. With this change, the number of fast
+> commit blocks to use is solely determined by the JBD2 layer. However,
+> whether or not to use fast commits is determined by the file
+> system. The file system just calls jbd2_fc_init() to tell the JBD2
+> layer that it is interested in enabling fast commits. JBD2 layer
+> determines how many blocks to use for fast commits (based on the value
+> found in the JBD2 superblock).
 > 
 > Suggested-by: Jan Kara <jack@suse.cz>
 > Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 
-Thanks for the patch. Couple of comments below:
+Thanks for the cleanup. Some comments below...
 
-> @@ -4651,8 +4652,6 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
->  		     FALLOC_FL_COLLAPSE_RANGE | FALLOC_FL_ZERO_RANGE |
->  		     FALLOC_FL_INSERT_RANGE))
->  		return -EOPNOTSUPP;
-> -	ext4_fc_track_range(inode, offset >> blkbits,
-> -			(offset + len - 1) >> blkbits);
+> diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
+> index fa688e163a80..353534403769 100644
+> --- a/fs/jbd2/commit.c
+> +++ b/fs/jbd2/commit.c
+> @@ -801,7 +801,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
+>  		if (first_block < journal->j_tail)
+>  			freed += journal->j_last - journal->j_first;
+>  		/* Update tail only if we free significant amount of space */
+> -		if (freed < journal->j_maxlen / 4)
+> +		if (freed < (journal->j_maxlen - journal->j_fc_wbufsize) / 4)
+>  			update_tail = 0;
 
-Why do you delete the ext4_fc_track_range() call here?
+This change seems unrelated to the API change in jbd2_fc_init(). Can you
+please separate fix for journal length handling into a separate patch with
+a proper changelog etc.?
 
-> diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-> index 354f81ff819d..5c3af472287a 100644
-> --- a/fs/ext4/fast_commit.c
-> +++ b/fs/ext4/fast_commit.c
-> @@ -323,15 +323,18 @@ static inline int ext4_fc_is_ineligible(struct super_block *sb)
->   * If enqueue is set, this function enqueues the inode in fast commit list.
->   */
->  static int ext4_fc_track_template(
-> -	struct inode *inode, int (*__fc_track_fn)(struct inode *, void *, bool),
-> +	handle_t *handle, struct inode *inode,
-> +	int (*__fc_track_fn)(struct inode *, void *, bool),
->  	void *args, int enqueue)
+Also can you perhaps rename j_maxlen to j_total_len to give better hint
+that there may be multiple parts of the journal and provide wrapper
+jbd2_transaction_space(journal) for the
+(journal->j_maxlen - journal->j_fc_wbufsize) expression because that's kind
+of implementation detail of the current fastcommit code.
+
+> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+> index 0c7c42bd530f..ea15f55aff5c 100644
+> --- a/fs/jbd2/journal.c
+> +++ b/fs/jbd2/journal.c
+> @@ -1357,14 +1357,6 @@ static journal_t *journal_init_common(struct block_device *bdev,
+>  	if (!journal->j_wbuf)
+>  		goto err_cleanup;
+>  
+> -	if (journal->j_fc_wbufsize > 0) {
+> -		journal->j_fc_wbuf = kmalloc_array(journal->j_fc_wbufsize,
+> -					sizeof(struct buffer_head *),
+> -					GFP_KERNEL);
+> -		if (!journal->j_fc_wbuf)
+> -			goto err_cleanup;
+> -	}
+> -
+>  	bh = getblk_unmovable(journal->j_dev, start, journal->j_blocksize);
+>  	if (!bh) {
+>  		pr_err("%s: Cannot get buffer for journal superblock\n",
+> @@ -1378,19 +1370,21 @@ static journal_t *journal_init_common(struct block_device *bdev,
+>  
+>  err_cleanup:
+>  	kfree(journal->j_wbuf);
+> -	kfree(journal->j_fc_wbuf);
+>  	jbd2_journal_destroy_revoke(journal);
+>  	kfree(journal);
+>  	return NULL;
+>  }
+>  
+> -int jbd2_fc_init(journal_t *journal, int num_fc_blks)
+> +int jbd2_fc_init(journal_t *journal)
 >  {
-> -	tid_t running_txn_tid;
->  	bool update = false;
->  	struct ext4_inode_info *ei = EXT4_I(inode);
->  	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
-> +	tid_t tid = 0;
->  	int ret;
->  
-> +	if (ext4_handle_valid(handle) && handle->h_transaction)
-> +		tid = handle->h_transaction->t_tid;
+> -	journal->j_fc_wbufsize = num_fc_blks;
+> -	journal->j_fc_wbuf = kmalloc_array(journal->j_fc_wbufsize,
+> -				sizeof(struct buffer_head *), GFP_KERNEL);
+> -	if (!journal->j_fc_wbuf)
+> -		return -ENOMEM;
+> +	/*
+> +	 * Only set j_fc_wbufsize here to indicate that the client file
+> +	 * system is interested in using fast commits. The actual number of
+> +	 * fast commit blocks is found inside jbd2_superblock and is only
+> +	 * valid if j_fc_wbufsize is non-zero. The real value of j_fc_wbufsize
+> +	 * gets set in journal_reset().
+> +	 */
+> +	journal->j_fc_wbufsize = JBD2_MIN_FC_BLOCKS;
+>  	return 0;
+>  }
 
-The handle->h_transaction check is pointless here. It is always true. And
-if you move the tid fetching after the JOURNAL_FAST_COMMIT check below, you
-don't need the ext4_handle_valid() check either as fastcommit cannot be
-enabled without a journal.
+When looking at this, is there a reason why jbd2_fc_init() still exists?  I
+mean why not just make the rule that the journal has FC block number set
+iff FC gets enabled? Anything else seems a bit confusing to me and also
+dangerous - imagine we have fs with FC running, we write some FCs and then
+crash. Then on system recovery we mount with no_fc mount option. We have
+just lost data on the filesystem AFAIU... So I'd just remove all the mount
+options related to fastcommits and leave everything to the journal setup
+(which can be modified with e2fsprogs if needed) to keep things simple.
 
->  	if (!test_opt2(inode->i_sb, JOURNAL_FAST_COMMIT) ||
->  	    (sbi->s_mount_state & EXT4_FC_REPLAY))
->  		return -EOPNOTSUPP;
-
-
-> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-> index 5159830dacb8..f3f8bf61072e 100644
-> --- a/fs/ext4/namei.c
-> +++ b/fs/ext4/namei.c
-> @@ -2631,7 +2631,7 @@ static int ext4_create(struct inode *dir, struct dentry *dentry, umode_t mode,
->  		inode_save = inode;
->  		ihold(inode_save);
->  		err = ext4_add_nondir(handle, dentry, &inode);
-> -		ext4_fc_track_create(inode_save, dentry);
-> +		ext4_fc_track_create(handle, inode_save, dentry);
->  		iput(inode_save);
->  	}
->  	if (handle)
-> @@ -2668,7 +2668,7 @@ static int ext4_mknod(struct inode *dir, struct dentry *dentry,
->  		ihold(inode_save);
->  		err = ext4_add_nondir(handle, dentry, &inode);
->  		if (!err)
-> -			ext4_fc_track_create(inode_save, dentry);
-> +			ext4_fc_track_create(handle, inode_save, dentry);
->  		iput(inode_save);
->  	}
-
-Not directly related to this patch but why do you bother with 'inode_save'
-in the above cases? I guess you're afraid by the comment that "inode
-reference is consumed by the dentry" but since you have a dentry reference
-as well, you can be sure that the inode stays around...
-
->  	if (handle)
-> @@ -2833,7 +2833,7 @@ static int ext4_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
->  		iput(inode);
->  		goto out_retry;
->  	}
-> -	ext4_fc_track_create(inode, dentry);
-> +	ext4_fc_track_create(handle, inode, dentry);
->  	ext4_inc_count(dir);
-
-And I was also wondering why all the directory tracking functions take both
-dentry and the inode. You can fetch inode from a dentry with d_inode()
-helper so I don't see a reason for passing it separately. That is, in a
-couple of places you call ext4_fc_track_*() before d_instantiate[_new]() so
-dentry isn't fully setup yet but there's nothing which prevents you from
-calling it after d_instantiate().
-
-The only possible exception to this is the ext4_rename() code. There you
-don't have suitable dentry for the link tracking so this would need to
-explicitely pass the inode & dentry. But that place can just call a low
-level wrapper allowing that. All the other places can use a higher level
-function which just takes the dentry.
-
->  static int ext4_unlink(struct inode *dir, struct dentry *dentry)
+>  EXPORT_SYMBOL(jbd2_fc_init);
+> @@ -1500,7 +1494,7 @@ static void journal_fail_superblock(journal_t *journal)
+>  static int journal_reset(journal_t *journal)
 >  {
-> +	handle_t *handle;
->  	int retval;
+>  	journal_superblock_t *sb = journal->j_superblock;
+> -	unsigned long long first, last;
+> +	unsigned long long first, last, num_fc_blocks;
 >  
->  	if (unlikely(ext4_forced_shutdown(EXT4_SB(dir->i_sb))))
-> @@ -3282,9 +3273,16 @@ static int ext4_unlink(struct inode *dir, struct dentry *dentry)
->  	if (retval)
->  		goto out_trace;
+>  	first = be32_to_cpu(sb->s_first);
+>  	last = be32_to_cpu(sb->s_maxlen);
+> @@ -1513,6 +1507,28 @@ static int journal_reset(journal_t *journal)
 >  
-> -	retval = __ext4_unlink(dir, &dentry->d_name, d_inode(dentry));
-> +	handle = ext4_journal_start(dir, EXT4_HT_DIR,
-> +				    EXT4_DATA_TRANS_BLOCKS(dir->i_sb));
-> +	if (IS_ERR(handle)) {
-> +		retval = PTR_ERR(handle);
-> +		goto out_trace;
-> +	}
+>  	journal->j_first = first;
+>  
+> +	/*
+> +	 * At this point, fast commit recovery has finished. Now, we solely
+> +	 * rely on the file system to decide whether it wants fast commits
+> +	 * or not. File system that wishes to use fast commits must have
+> +	 * already called jbd2_fc_init() before we get here.
+> +	 */
+> +	if (journal->j_fc_wbufsize > 0)
+> +		jbd2_journal_set_features(journal, 0, 0,
+> +					  JBD2_FEATURE_INCOMPAT_FAST_COMMIT);
+> +	else
+> +		jbd2_journal_clear_features(journal, 0, 0,
+> +					  JBD2_FEATURE_INCOMPAT_FAST_COMMIT);
 > +
-> +	retval = __ext4_unlink(handle, dir, &dentry->d_name, d_inode(dentry));
->  	if (!retval)
-> -		ext4_fc_track_unlink(d_inode(dentry), dentry);
-> +		ext4_fc_track_unlink(handle, d_inode(dentry), dentry);
->  #ifdef CONFIG_UNICODE
->  	/* VFS negative dentries are incompatible with Encoding and
->  	 * Case-insensitiveness. Eventually we'll want avoid
-> @@ -3295,6 +3293,8 @@ static int ext4_unlink(struct inode *dir, struct dentry *dentry)
->  	if (IS_CASEFOLDED(dir))
->  		d_invalidate(dentry);
->  #endif
-> +	if (handle)
-> +		ext4_journal_stop(handle);
+> +	/* If valid, prefer the value found in superblock over the default */
+> +	num_fc_blocks = be32_to_cpu(sb->s_num_fc_blks);
+> +	if (num_fc_blocks > 0 && num_fc_blocks < last)
+> +		journal->j_fc_wbufsize = num_fc_blocks;
+> +
+> +	if (jbd2_has_feature_fast_commit(journal))
+> +		journal->j_fc_wbuf = kmalloc_array(journal->j_fc_wbufsize,
+> +					sizeof(struct buffer_head *), GFP_KERNEL);
+> +
+>  	if (jbd2_has_feature_fast_commit(journal) &&
+>  	    journal->j_fc_wbufsize > 0) {
+>  		journal->j_fc_last = last;
+> @@ -1531,7 +1547,8 @@ static int journal_reset(journal_t *journal)
+>  	journal->j_commit_sequence = journal->j_transaction_sequence - 1;
+>  	journal->j_commit_request = journal->j_commit_sequence;
+>  
+> -	journal->j_max_transaction_buffers = journal->j_maxlen / 4;
+> +	journal->j_max_transaction_buffers =
+> +		(journal->j_maxlen - journal->j_fc_wbufsize) / 4;
+>  
+>  	/*
+>  	 * As a special case, if the on-disk copy is already marked as needing
+> @@ -1872,6 +1889,7 @@ static int load_superblock(journal_t *journal)
+>  {
+>  	int err;
+>  	journal_superblock_t *sb;
+> +	int num_fc_blocks;
+>  
+>  	err = journal_get_superblock(journal);
+>  	if (err)
+> @@ -1884,10 +1902,12 @@ static int load_superblock(journal_t *journal)
+>  	journal->j_first = be32_to_cpu(sb->s_first);
+>  	journal->j_errno = be32_to_cpu(sb->s_errno);
+>  
+> -	if (jbd2_has_feature_fast_commit(journal) &&
+> -	    journal->j_fc_wbufsize > 0) {
+> +	if (jbd2_has_feature_fast_commit(journal)) {
+>  		journal->j_fc_last = be32_to_cpu(sb->s_maxlen);
+> -		journal->j_last = journal->j_fc_last - journal->j_fc_wbufsize;
+> +		num_fc_blocks = be32_to_cpu(sb->s_num_fc_blks);
+> +		if (!num_fc_blocks || num_fc_blocks >= journal->j_fc_last)
 
-How could 'handle' be NULL here?
+I think this needs to be stricter - we need the check that the journal is
+at least JBD2_MIN_JOURNAL_BLOCKS long (which happens at the beginning of
+journal_reset()) to happen after we've subtracted fastcommit blocks...
+
+> +			num_fc_blocks = JBD2_MIN_FC_BLOCKS;
+> +		journal->j_last = journal->j_fc_last - num_fc_blocks;
+>  		journal->j_fc_first = journal->j_last + 1;
+>  		journal->j_fc_off = 0;
+>  	} else {
+...
+> diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
+> index eb2606133cd8..822f16cbf9b3 100644
+> --- a/fs/jbd2/recovery.c
+> +++ b/fs/jbd2/recovery.c
+> @@ -134,7 +134,7 @@ static int jread(struct buffer_head **bhp, journal_t *journal,
+>  
+>  	*bhp = NULL;
+>  
+> -	if (offset >= journal->j_maxlen) {
+> +	if (offset >= journal->j_maxlen + journal->j_fc_wbufsize) {
+
+This looks wrong since j_maxlen is currently including fastcommit blocks...
 
 								Honza
 -- 
