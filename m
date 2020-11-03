@@ -2,86 +2,84 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AFF62A4BBD
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Nov 2020 17:38:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2086A2A4BC4
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Nov 2020 17:42:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727901AbgKCQiw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 3 Nov 2020 11:38:52 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52366 "EHLO mx2.suse.de"
+        id S1727530AbgKCQmF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 3 Nov 2020 11:42:05 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55172 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726018AbgKCQiv (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 3 Nov 2020 11:38:51 -0500
+        id S1725993AbgKCQmF (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 3 Nov 2020 11:42:05 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C1396ADDB;
-        Tue,  3 Nov 2020 16:38:50 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 30D7FB240;
+        Tue,  3 Nov 2020 16:42:04 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 6ADF91E12FB; Tue,  3 Nov 2020 17:38:50 +0100 (CET)
-Date:   Tue, 3 Nov 2020 17:38:50 +0100
+        id 9E6B51E12FB; Tue,  3 Nov 2020 17:42:03 +0100 (CET)
+Date:   Tue, 3 Nov 2020 17:42:03 +0100
 From:   Jan Kara <jack@suse.cz>
 To:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu, jack@suse.cz
-Subject: Re: [PATCH 05/10] jbd2: fix fast commit journalling APIs
-Message-ID: <20201103163850.GI3440@quack2.suse.cz>
+Subject: Re: [PATCH 06/10] ext4: dedpulicate the code to wait on inode that's
+ being committed
+Message-ID: <20201103164203.GJ3440@quack2.suse.cz>
 References: <20201031200518.4178786-1-harshadshirwadkar@gmail.com>
- <20201031200518.4178786-6-harshadshirwadkar@gmail.com>
+ <20201031200518.4178786-7-harshadshirwadkar@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201031200518.4178786-6-harshadshirwadkar@gmail.com>
+In-Reply-To: <20201031200518.4178786-7-harshadshirwadkar@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat 31-10-20 13:05:13, Harshad Shirwadkar wrote:
-> This patch adds a few misc fixes for jbd2 fast commit functions.
+On Sat 31-10-20 13:05:14, Harshad Shirwadkar wrote:
+> This patch removes the deduplicates the code that implements waiting
+> on inode that's being committed. That code is moved into a new
+> function.
 > 
+> Suggested-by: Jan Kara <jack@suse.cz>
 > Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 
-Please no "misc fixes" patches. If you have trouble writing good
-explanatory changelog, it's usually a sign you're trying to cram too much
-into a single commit :). In this case I'd split it into 3 changes:
+Looks good to me. Just one nit below:
 
-1) TODO update.
-2) Removal of j_state_lock protection (with comment updates)
-3) Fix of journal->j_running_transaction->t_tid handling.
-
-> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-> index 9b4e87a0068b..df1285da7276 100644
-> --- a/include/linux/jbd2.h
-> +++ b/include/linux/jbd2.h
-> @@ -946,7 +946,9 @@ struct journal_s
->  	 * @j_fc_off:
->  	 *
->  	 * Number of fast commit blocks currently allocated.
-> -	 * [j_state_lock].
-> +	 * [j_state_lock]. During the commit path, this variable is not
-
-Please remove the [j_state_lock] annotation when the entry isn't really
-protected by j_state_lock... Also I'd maybe rephrase the comment like
-"Accessed only during fastcommit, currenly only a single process can
-perform fastcommit at a time."
-
-> +	 * protected by j_state_lock since only one process performs commit
-> +	 * at a time.
->  	 */
->  	unsigned long		j_fc_off;
+> diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+> index b1ca55c7d32a..0f2543220d1d 100644
+> --- a/fs/ext4/fast_commit.c
+> +++ b/fs/ext4/fast_commit.c
+> @@ -155,6 +155,28 @@ void ext4_fc_init_inode(struct inode *inode)
+>  	ei->i_fc_committed_subtid = 0;
+>  }
 >  
-> @@ -1110,7 +1112,9 @@ struct journal_s
->  
->  	/**
->  	 * @j_fc_wbuf: Array of fast commit bhs for
-> -	 * jbd2_journal_commit_transaction.
-> +	 * jbd2_journal_commit_transaction. During the commit path, this
-> +	 * variable is not protected by j_state_lock since only one process
-> +	 * performs commit at a time.
->  	 */
->  	struct buffer_head	**j_fc_wbuf;
+> +static void ext4_fc_wait_committing_inode(struct inode *inode)
+> +{
+> +	wait_queue_head_t *wq;
+> +	struct ext4_inode_info *ei = EXT4_I(inode);
+> +
 
-Here the bh's aren't really used in jbd2_journal_commit_transaction() are
-they? Please fix that when updating the comment. Also I'd find a
-reformulation like I suggested for the comment above more comprehensible.
+Maybe add lockdep_assert_held(&EXT4_SB(inode->i_sb)->s_fc_lock) here to
+make sure the function is called properly? It's kind of unobvious
+requirement (but hard to avoid)...
+
+> +#if (BITS_PER_LONG < 64)
+> +	DEFINE_WAIT_BIT(wait, &ei->i_state_flags,
+> +			EXT4_STATE_FC_COMMITTING);
+> +	wq = bit_waitqueue(&ei->i_state_flags,
+> +				EXT4_STATE_FC_COMMITTING);
+> +#else
+> +	DEFINE_WAIT_BIT(wait, &ei->i_flags,
+> +			EXT4_STATE_FC_COMMITTING);
+> +	wq = bit_waitqueue(&ei->i_flags,
+> +				EXT4_STATE_FC_COMMITTING);
+> +#endif
+> +	prepare_to_wait(wq, &wait.wq_entry, TASK_UNINTERRUPTIBLE);
+> +	spin_unlock(&EXT4_SB(inode->i_sb)->s_fc_lock);
+> +	schedule();
+> +	finish_wait(wq, &wait.wq_entry);
+> +}
+> +
 
 								Honza
 -- 
