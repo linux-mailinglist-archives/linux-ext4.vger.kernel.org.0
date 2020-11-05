@@ -2,306 +2,182 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2553E2A7959
-	for <lists+linux-ext4@lfdr.de>; Thu,  5 Nov 2020 09:30:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D07062A7BD6
+	for <lists+linux-ext4@lfdr.de>; Thu,  5 Nov 2020 11:30:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730274AbgKEIaa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 5 Nov 2020 03:30:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727731AbgKEIa2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 5 Nov 2020 03:30:28 -0500
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC686C0613CF
-        for <linux-ext4@vger.kernel.org>; Thu,  5 Nov 2020 00:30:28 -0800 (PST)
-Received: by mail-oi1-x243.google.com with SMTP id t143so861376oif.10
-        for <linux-ext4@vger.kernel.org>; Thu, 05 Nov 2020 00:30:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fkuZsUOVhJV1Ad+u1YfqB0fBlaMURczWfLzaGVwvWSY=;
-        b=tyPkD/mPzHvFNYSxyA1XcS23bfAagwQ24kx6Dt89XKfM31FNb+KZvpkVFxhzMGRzYu
-         EkDBvjVwLYD22Tyc8VycqEiQOnpFYIul/0S64MVhH0WvmvsQnWXWkpFSH4jg1PBypMd3
-         NT8MlKqIiaQmxc8ssAI13hgJ0KUKlHziNJ/FUq4SSv+yu2LofDk0c7nuty1aspo5qJJz
-         Qthr6pxYahaIcstv/lMUp3D68FjhyrQVqnhiKHF5vLaL5FegOU+3B8eiwqRzAfhbbxgb
-         DtBpOKUMJ6YcK3trss4oSNjsrQBNR5uOxUFt0EfXa3/2kV7BacQhxeBLdlWlJ3eQkUyG
-         dL6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fkuZsUOVhJV1Ad+u1YfqB0fBlaMURczWfLzaGVwvWSY=;
-        b=qXFGukteKFD8J2NKcKVr5qUKDMXdw2Q9reJahZP4wJH+dyf+rRB34LbSZ3+sOjHTX/
-         gm3vSV5vrhGBsx/Co1ifQ3AZzGKGxZlNFJu5sxAYxvKFEcd4gtCMKcwpciQdNVnTFKrU
-         pRYIIfioLsJyF7ABriMobmqBILYdcHvktdJ4ivXMEIdixO6AzksVlVtR7PA9CuIgD2+c
-         2d8D+RTh+VmU3pvnO79TSgdFFhclpkVyKJpjd9hGgzK5fs5bqxyQWuiHEEygrZOGTnRd
-         t0gjyJumOk06h5JSESEItifgjZcCgzhEt5o0R4gZcWIMRGf0n7/BorfxE6ZztiAjvz7A
-         +uLA==
-X-Gm-Message-State: AOAM533V4YrR2cY25gcbg2D2zoeFKu6+ZKZR3A4EACvunixiIHHo7zIq
-        BDr7Iie/ozfhaL+DwmI+4B2OTWbr/k2W/ZjQZageTA==
-X-Google-Smtp-Source: ABdhPJxmkF4nv8Utu37j+MvtkmPCj01a6rYJA7RpZ13Tei3SnC2uFfpvNY3TUeJQU/e5t6mmkC7DrcwvbBCbM6Zn43U=
-X-Received: by 2002:a54:4812:: with SMTP id j18mr940805oij.70.1604565027831;
- Thu, 05 Nov 2020 00:30:27 -0800 (PST)
+        id S1727836AbgKEKa1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 5 Nov 2020 05:30:27 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58382 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726152AbgKEKa1 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 5 Nov 2020 05:30:27 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9CF02AB95;
+        Thu,  5 Nov 2020 10:30:25 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id DEE221E130B; Thu,  5 Nov 2020 11:30:24 +0100 (CET)
+Date:   Thu, 5 Nov 2020 11:30:24 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     harshad shirwadkar <harshadshirwadkar@gmail.com>
+Cc:     Jan Kara <jack@suse.cz>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>
+Subject: Re: [PATCH 04/10] ext4: clean up the JBD2 API that initializes fast
+ commits
+Message-ID: <20201105103024.GA32718@quack2.suse.cz>
+References: <20201031200518.4178786-1-harshadshirwadkar@gmail.com>
+ <20201031200518.4178786-5-harshadshirwadkar@gmail.com>
+ <20201103162943.GH3440@quack2.suse.cz>
+ <CAD+ocbykJ61MmkLqq78p=AOT0f_6j066J3ivNHjXJVbtLEvNag@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201027174630.85213-1-98.arpi@gmail.com> <CANpmjNOpbXHs4gs9Ro-u7hyN_zZ7s3AqDcdDy1Nqxq4ckThugA@mail.gmail.com>
- <73c4e46c-10f1-9362-b4fb-94ea9d74e9b2@gmail.com>
-In-Reply-To: <73c4e46c-10f1-9362-b4fb-94ea9d74e9b2@gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 5 Nov 2020 09:30:16 +0100
-Message-ID: <CANpmjNPxqQM0_f14ZwV3rHZzwhCtqx2fbOhHmXmiJawou6=z6Q@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] kunit: Support for Parameterized Testing
-To:     Arpitha Raghunandan <98.arpi@gmail.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        skhan@linuxfoundation.org, Iurii Zaikin <yzaikin@google.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAD+ocbykJ61MmkLqq78p=AOT0f_6j066J3ivNHjXJVbtLEvNag@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, 5 Nov 2020 at 08:32, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
->
-> On 28/10/20 12:51 am, Marco Elver wrote:
-> > On Tue, 27 Oct 2020 at 18:47, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
-> >>
-> >> Implementation of support for parameterized testing in KUnit.
-> >> This approach requires the creation of a test case using the
-> >> KUNIT_CASE_PARAM macro that accepts a generator function as input.
-> >> This generator function should return the next parameter given the
-> >> previous parameter in parameterized tests. It also provides
-> >> a macro to generate common-case generators.
-> >>
-> >> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
-> >> Co-developed-by: Marco Elver <elver@google.com>
-> >> Signed-off-by: Marco Elver <elver@google.com>
-> >> ---
-> >> Changes v3->v4:
-> >> - Rename kunit variables
-> >> - Rename generator function helper macro
-> >> - Add documentation for generator approach
-> >> - Display test case name in case of failure along with param index
-> >> Changes v2->v3:
-> >> - Modifictaion of generator macro and method
-> >> Changes v1->v2:
-> >> - Use of a generator method to access test case parameters
-> >>
-> >>  include/kunit/test.h | 34 ++++++++++++++++++++++++++++++++++
-> >>  lib/kunit/test.c     | 21 ++++++++++++++++++++-
-> >>  2 files changed, 54 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/include/kunit/test.h b/include/kunit/test.h
-> >> index 9197da792336..ec2307ee9bb0 100644
-> >> --- a/include/kunit/test.h
-> >> +++ b/include/kunit/test.h
-> >> @@ -107,6 +107,13 @@ struct kunit;
-> >>   *
-> >>   * @run_case: the function representing the actual test case.
-> >>   * @name:     the name of the test case.
-> >> + * @generate_params: the generator function for parameterized tests.
-> >> + *
-> >> + * The generator function is used to lazily generate a series of
-> >> + * arbitrarily typed values that fit into a void*. The argument @prev
-> >> + * is the previously returned value, which should be used to derive the
-> >> + * next value; @prev is set to NULL on the initial generator call.
-> >> + * When no more values are available, the generator must return NULL.
-> >>   *
+On Wed 04-11-20 11:52:24, harshad shirwadkar wrote:
+> On Tue, Nov 3, 2020 at 8:29 AM Jan Kara <jack@suse.cz> wrote:
+> > > -int jbd2_fc_init(journal_t *journal, int num_fc_blks)
+> > > +int jbd2_fc_init(journal_t *journal)
+> > >  {
+> > > -     journal->j_fc_wbufsize = num_fc_blks;
+> > > -     journal->j_fc_wbuf = kmalloc_array(journal->j_fc_wbufsize,
+> > > -                             sizeof(struct buffer_head *), GFP_KERNEL);
+> > > -     if (!journal->j_fc_wbuf)
+> > > -             return -ENOMEM;
+> > > +     /*
+> > > +      * Only set j_fc_wbufsize here to indicate that the client file
+> > > +      * system is interested in using fast commits. The actual number of
+> > > +      * fast commit blocks is found inside jbd2_superblock and is only
+> > > +      * valid if j_fc_wbufsize is non-zero. The real value of j_fc_wbufsize
+> > > +      * gets set in journal_reset().
+> > > +      */
+> > > +     journal->j_fc_wbufsize = JBD2_MIN_FC_BLOCKS;
+> > >       return 0;
+> > >  }
 > >
-> > Hmm, should this really be the first paragraph? I think it should be
-> > the paragraph before "Example:" maybe. But then that paragraph should
-> > refer to generate_params e.g. "The generator function @generate_params
-> > is used to ........".
-> >
-> > The other option you have is to move this paragraph to the kernel-doc
-> > comment for KUNIT_CASE_PARAM, which seems to be missing a kernel-doc
-> > comment.
-> >
-> >>   * A test case is a function with the signature,
-> >>   * ``void (*)(struct kunit *)``
-> >> @@ -141,6 +148,7 @@ struct kunit;
-> >>  struct kunit_case {
-> >>         void (*run_case)(struct kunit *test);
-> >>         const char *name;
-> >> +       void* (*generate_params)(void *prev);
-> >>
-> >>         /* private: internal use only. */
-> >>         bool success;
-> >> @@ -162,6 +170,9 @@ static inline char *kunit_status_to_string(bool status)
-> >>   * &struct kunit_case for an example on how to use it.
-> >>   */
-> >>  #define KUNIT_CASE(test_name) { .run_case = test_name, .name = #test_name }
-> >
-> > I.e. create a new kernel-doc comment for KUNIT_CASE_PARAM here, and
-> > simply move the paragraph describing the generator protocol into that
-> > comment.
-> >
-> >> +#define KUNIT_CASE_PARAM(test_name, gen_params)                        \
-> >> +               { .run_case = test_name, .name = #test_name,    \
-> >> +                 .generate_params = gen_params }
-> >>
-> >>  /**
-> >>   * struct kunit_suite - describes a related collection of &struct kunit_case
-> >> @@ -208,6 +219,15 @@ struct kunit {
-> >>         const char *name; /* Read only after initialization! */
-> >>         char *log; /* Points at case log after initialization */
-> >>         struct kunit_try_catch try_catch;
-> >> +       /* param_value points to test case parameters in parameterized tests */
-> >
-> > Hmm, not quite: param_value is the current parameter value for a test
-> > case. Most likely it's a pointer, but it doesn't need to be.
-> >
-> >> +       void *param_value;
-> >> +       /*
-> >> +        * param_index stores the index of the parameter in
-> >> +        * parameterized tests. param_index + 1 is printed
-> >> +        * to indicate the parameter that causes the test
-> >> +        * to fail in case of test failure.
-> >> +        */
-> >
-> > I think this comment needs to be reformatted, because you can use at
-> > the very least use 80 cols per line. (If you use vim, visual select
-> > and do 'gq'.)
-> >
-> >> +       int param_index;
-> >>         /*
-> >>          * success starts as true, and may only be set to false during a
-> >>          * test case; thus, it is safe to update this across multiple
-> >> @@ -1742,4 +1762,18 @@ do {                                                                            \
-> >>                                                 fmt,                           \
-> >>                                                 ##__VA_ARGS__)
-> >>
-> >> +/**
-> >> + * KUNIT_ARRAY_PARAM() - Helper method for test parameter generators
-> >> + *                      required in parameterized tests.
-> >> + * @name:  prefix of the name for the test parameter generator function.
-> >> + *        It will be suffixed by "_gen_params".
-> >> + * @array: a user-supplied pointer to an array of test parameters.
-> >> + */
-> >> +#define KUNIT_ARRAY_PARAM(name, array)                                                         \
-> >> +       static void *name##_gen_params(void *prev)                                              \
-> >> +       {                                                                                       \
-> >> +               typeof((array)[0]) * __next = prev ? ((typeof(__next)) prev) + 1 : (array);     \
-> >> +               return __next - (array) < ARRAY_SIZE((array)) ? __next : NULL;                  \
-> >> +       }
-> >> +
-> >>  #endif /* _KUNIT_TEST_H */
-> >> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-> >> index 750704abe89a..8ad908b61494 100644
-> >> --- a/lib/kunit/test.c
-> >> +++ b/lib/kunit/test.c
-> >> @@ -127,6 +127,12 @@ unsigned int kunit_test_case_num(struct kunit_suite *suite,
-> >>  }
-> >>  EXPORT_SYMBOL_GPL(kunit_test_case_num);
-> >>
-> >> +static void kunit_print_failed_param(struct kunit *test)
-> >> +{
-> >> +       kunit_err(test, "\n\tTest failed at:\n\ttest case: %s\n\tparameter: %d\n",
-> >> +                                               test->name, test->param_index + 1);
-> >> +}
-> >
-> > Hmm, perhaps I wasn't clear, but I think I also misunderstood how the
-> > test case successes are presented: they are not, and it's all bunched
-> > into a single test case.
-> >
-> > Firstly, kunit_err() already prints the test name, so if we want
-> > something like "  # : the_test_case_name: failed at parameter #X",
-> > simply having
-> >
-> >     kunit_err(test, "failed at parameter #%d\n", test->param_index + 1)
-> >
-> > would be what you want.
-> >
-> > But I think I missed that parameters do not actually produce a set of
-> > test cases (sorry for noticing late). I think in their current form,
-> > the parameterized tests would not be useful for my tests, because each
-> > of my tests have test cases that have specific init and exit
-> > functions. For each parameter, these would also need to run.
-> >
-> > Ideally, each parameter produces its own independent test case
-> > "test_case#param_index". That way, CI systems will also be able to
-> > logically separate different test case params, simply because each
-> > param produced its own distinct test case.
-> >
-> > So, for example, we would get a series of test cases from something
-> > like KUNIT_CASE_PARAM(test_case, foo_gen_params), and in the output
-> > we'd see:
-> >
-> >     ok X - test_case#1
-> >     ok X - test_case#2
-> >     ok X - test_case#3
-> >     ok X - test_case#4
-> >     ....
-> >
-> > Would that make more sense?
-> >
-> > That way we'd ensure that test-case specific initialization and
-> > cleanup done in init and exit functions is properly taken care of, and
-> > you wouldn't need kunit_print_failed_param().
-> >
-> > AFAIK, for what I propose you'd have to modify kunit_print_ok_not_ok()
-> > (show param_index if parameterized test) and probably
-> > kunit_run_case_catch_errors() (generate params and set
-> > test->param_value and param_index).
-> >
-> > Was there a reason why each param cannot be a distinct test case? If
-> > not, I think this would be more useful.
-> >
->
-> I tried adding support to run each parameter as a distinct test case by
-> making changes to kunit_run_case_catch_errors(). The issue here is that
-> since the results are displayed in KTAP format, this change will result in
-> each parameter being considered a subtest of another subtest (test case
-> in KUnit).
+> > When looking at this, is there a reason why jbd2_fc_init() still exists?  I
+> > mean why not just make the rule that the journal has FC block number set
+> > iff FC gets enabled? Anything else seems a bit confusing to me and also
+> > dangerous - imagine we have fs with FC running, we write some FCs and then
+> > crash. Then on system recovery we mount with no_fc mount option. We have
+> > just lost data on the filesystem AFAIU... So I'd just remove all the mount
+> > options related to fastcommits and leave everything to the journal setup
+> > (which can be modified with e2fsprogs if needed) to keep things simple.
+> The problem is whether or not to use fast commits is the file system's
+> call. The JBD2 feature flag will be cleared on a clean unmount and if
+> we rely solely on the JBD2 feature flag, fast commit will be turned
+> off after a clean unmount. Whereas the FS compat flag is the source of
+> truth about whether fast commit needs to be used or not. That's why we
+> need an API for the file system to tell JBD2 to still do fast commits.
 
-Do you have example output? That might help understand what's going on.
+Yes, I meant the API could be just that the filesystem either calls
+jbd2_journal_set_features() with FASTCOMMIT feature or it won't. Similarly
+to how e.g. JBD2_FEATURE_INCOMPAT_64BIT is handled. No need for
+jbd2_fc_init() function AFAICT.
 
-> To make this work, a lot of changes in other parts will be required,
-> and it will get complicated. Running all parameters as one test case seems
-> to be a better option right now. So for now, I will modify what is displayed
-> by kunit_err() in case of test failure.
->
-> >>  static void kunit_print_string_stream(struct kunit *test,
-> >>                                       struct string_stream *stream)
-> >>  {
-> >> @@ -168,6 +174,8 @@ static void kunit_fail(struct kunit *test, struct kunit_assert *assert)
-> >>         assert->format(assert, stream);
-> >>
-> >>         kunit_print_string_stream(test, stream);
-> >> +       if (test->param_value)
-> >> +               kunit_print_failed_param(test);
-> >>
-> >>         WARN_ON(string_stream_destroy(stream));
-> >>  }
-> >> @@ -239,7 +247,18 @@ static void kunit_run_case_internal(struct kunit *test,
-> >>                 }
-> >>         }
-> >>
-> >> -       test_case->run_case(test);
-> >> +       if (!test_case->generate_params) {
-> >> +               test_case->run_case(test);
-> >> +       } else {
-> >> +               test->param_value = test_case->generate_params(NULL);
-> >> +               test->param_index = 0;
-> >> +
-> >> +               while (test->param_value) {
-> >> +                       test_case->run_case(test);
-> >> +                       test->param_value = test_case->generate_params(test->param_value);
-> >> +                       test->param_index++;
-> >> +               }
-> >> +       }
+> Mount options that override the feature flag in Ext4 were mainly meant
+> for debugging purposes. So, perhaps there should be a clear warning
+> message in the kernel if any of these options are used? Even if we get
+> rid of the mount options, we still need the jbd2_fc_init() API for the
+> FS to tell JBD2 that it wants to use fast commit. Note that even if
+> jbd2_fc_init() is not called, JBD2 will still try to replay fast
+> commit blocks.
+
+
+
+> > >  EXPORT_SYMBOL(jbd2_fc_init);
+> > > @@ -1500,7 +1494,7 @@ static void journal_fail_superblock(journal_t *journal)
+> > >  static int journal_reset(journal_t *journal)
+> > >  {
+> > >       journal_superblock_t *sb = journal->j_superblock;
+> > > -     unsigned long long first, last;
+> > > +     unsigned long long first, last, num_fc_blocks;
+> > >
+> > >       first = be32_to_cpu(sb->s_first);
+> > >       last = be32_to_cpu(sb->s_maxlen);
+> > > @@ -1513,6 +1507,28 @@ static int journal_reset(journal_t *journal)
+> > >
+> > >       journal->j_first = first;
+> > >
+> > > +     /*
+> > > +      * At this point, fast commit recovery has finished. Now, we solely
+> > > +      * rely on the file system to decide whether it wants fast commits
+> > > +      * or not. File system that wishes to use fast commits must have
+> > > +      * already called jbd2_fc_init() before we get here.
+> > > +      */
+> > > +     if (journal->j_fc_wbufsize > 0)
+> > > +             jbd2_journal_set_features(journal, 0, 0,
+> > > +                                       JBD2_FEATURE_INCOMPAT_FAST_COMMIT);
+> > > +     else
+> > > +             jbd2_journal_clear_features(journal, 0, 0,
+> > > +                                       JBD2_FEATURE_INCOMPAT_FAST_COMMIT);
+> > > +
+> > > +     /* If valid, prefer the value found in superblock over the default */
+> > > +     num_fc_blocks = be32_to_cpu(sb->s_num_fc_blks);
+> > > +     if (num_fc_blocks > 0 && num_fc_blocks < last)
+> > > +             journal->j_fc_wbufsize = num_fc_blocks;
+> > > +
+> > > +     if (jbd2_has_feature_fast_commit(journal))
+> > > +             journal->j_fc_wbuf = kmalloc_array(journal->j_fc_wbufsize,
+> > > +                                     sizeof(struct buffer_head *), GFP_KERNEL);
+> > > +
+> > >       if (jbd2_has_feature_fast_commit(journal) &&
+> > >           journal->j_fc_wbufsize > 0) {
+> > >               journal->j_fc_last = last;
+> > > @@ -1531,7 +1547,8 @@ static int journal_reset(journal_t *journal)
+> > >       journal->j_commit_sequence = journal->j_transaction_sequence - 1;
+> > >       journal->j_commit_request = journal->j_commit_sequence;
+> > >
+> > > -     journal->j_max_transaction_buffers = journal->j_maxlen / 4;
+> > > +     journal->j_max_transaction_buffers =
+> > > +             (journal->j_maxlen - journal->j_fc_wbufsize) / 4;
+> > >
+> > >       /*
+> > >        * As a special case, if the on-disk copy is already marked as needing
+> > > @@ -1872,6 +1889,7 @@ static int load_superblock(journal_t *journal)
+> > >  {
+> > >       int err;
+> > >       journal_superblock_t *sb;
+> > > +     int num_fc_blocks;
+> > >
+> > >       err = journal_get_superblock(journal);
+> > >       if (err)
+> > > @@ -1884,10 +1902,12 @@ static int load_superblock(journal_t *journal)
+> > >       journal->j_first = be32_to_cpu(sb->s_first);
+> > >       journal->j_errno = be32_to_cpu(sb->s_errno);
+> > >
+> > > -     if (jbd2_has_feature_fast_commit(journal) &&
+> > > -         journal->j_fc_wbufsize > 0) {
+> > > +     if (jbd2_has_feature_fast_commit(journal)) {
+> > >               journal->j_fc_last = be32_to_cpu(sb->s_maxlen);
+> > > -             journal->j_last = journal->j_fc_last - journal->j_fc_wbufsize;
+> > > +             num_fc_blocks = be32_to_cpu(sb->s_num_fc_blks);
+> > > +             if (!num_fc_blocks || num_fc_blocks >= journal->j_fc_last)
 > >
-> > Thanks,
-> > -- Marco
-> >
->
-> --
-> You received this message because you are subscribed to the Google Groups "KUnit Development" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to kunit-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/kunit-dev/73c4e46c-10f1-9362-b4fb-94ea9d74e9b2%40gmail.com.
+> > I think this needs to be stricter - we need the check that the journal is
+> > at least JBD2_MIN_JOURNAL_BLOCKS long (which happens at the beginning of
+> > journal_reset()) to happen after we've subtracted fastcommit blocks...
+> So are you saying that with FC, the minimum journal size is
+> JBD2_MIN_JOURNAL_BLOCKS + JBD2_MIN_FC_BLOCKS? I was assuming that we
+
+Yes. JBD2_MIN_JOURNAL_BLOCKS is minimum number of blocks we need for normal
+commits to get reasonable behavior. So as you say with fastcommits enabled,
+the minimal journal size is JBD2_MIN_JOURNAL_BLOCKS + JBD2_MIN_FC_BLOCKS.
+
+> will reserve JBD2_MIN_FC_BLOCKS (256) blocks out of the total journal
+> size. That way the users who rely on the journal size to be 1024
+> blocks, won't see a difference in journal size even after turning FC
+> on. But I'm not sure if that's something we should care about.
+
+Well, e2fsprogs need to check journal size when enabling fastcommits so
+that we don't get invalid configurations.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
