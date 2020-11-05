@@ -2,664 +2,398 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE4D12A8604
-	for <lists+linux-ext4@lfdr.de>; Thu,  5 Nov 2020 19:21:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E10C2A87A4
+	for <lists+linux-ext4@lfdr.de>; Thu,  5 Nov 2020 20:55:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729783AbgKESVj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 5 Nov 2020 13:21:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52992 "EHLO
+        id S1732160AbgKETzQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 5 Nov 2020 14:55:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726214AbgKESVj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 5 Nov 2020 13:21:39 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28B07C0613CF
-        for <linux-ext4@vger.kernel.org>; Thu,  5 Nov 2020 10:21:39 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id f12so490181pjp.4
-        for <linux-ext4@vger.kernel.org>; Thu, 05 Nov 2020 10:21:39 -0800 (PST)
+        with ESMTP id S1732043AbgKETzO (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 5 Nov 2020 14:55:14 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D5FDC0613CF
+        for <linux-ext4@vger.kernel.org>; Thu,  5 Nov 2020 11:55:12 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id h2so2782204wmm.0
+        for <linux-ext4@vger.kernel.org>; Thu, 05 Nov 2020 11:55:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:mime-version:subject:date:references:cc:to:message-id;
-        bh=JbblGZvCILuwKe5mlKxIz6OgnDiv+b1Y74PGe1PVBKw=;
-        b=frg/XiaWgyUK1EYlAGIZLF5LOq2VIZAthAr/WBGIYLoE1TwLCf0/qrxDFDIdjt16YM
-         bMTrSeCd436bt1v2upTg6JSMrsY2QBF46Mtumuyl3vCxBew/Lga8mhO3ZsXkcj2zdsLh
-         qydcqWEp/W6WIomckYj9y8lMqae9RcpTMqnczZ1XzafeilvoAHdlwhl6RlBtBfEyV7DV
-         3Hrj+qUJZArs9AAP6+AjQ0MaXfFiYSzU8l2/gxnlmJcSCqy59Au9Cw+GusQK7hRU5o9U
-         RNyJC8nxjKSkLaxMCT94PF8uVCvMZdt0foF1Y0CRJgrbh+RlOpn1UTkLhRrJ3VkIRWG9
-         8dMg==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=MZwKDRqQrsQ4zOtuDWn8CpYHSaA3PZfjgaxfQ8Lvz/A=;
+        b=NBn+saBUkqIqJpqtHqt6rtowzapePx1k8oKQTFP5PxeuOA3G0OkNG41bPksIwelbYO
+         PejAhTKrb/eDzyCC08ZxjmSiAAur9pEit+ILEUm7F+Dyom01AsRBEl2LT2e7oTMvcqze
+         19RLUwVVEdsMLJg8252nlHStnHyjlufXCodHavgjkGa1HQmLelZjKvJ+ETarJNeGdaIr
+         oAoZ6TfWvKDB4E19ggLKP/kfP2YDdosadqaJDwsOCp9/zX5kkyCGOxBU0jW2MOxJJvdk
+         ea8XPYUgoplya+AX67ysNkUfMQ39/IoKtrJzsk7PWkq8Ty8EX9G2ARdrfcQTg86a228w
+         7E7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:mime-version:subject:date:references:cc:to
-         :message-id;
-        bh=JbblGZvCILuwKe5mlKxIz6OgnDiv+b1Y74PGe1PVBKw=;
-        b=eLMMp7Q2C2/y2N+THJGw0VeGxDVD6qjohGFwY7+u5J8tZNHYhCQYO5oa7Ofr2BeKPQ
-         3CY9xaAEgwzegL7Xi16tObx8Zuzdzsvn8pVlOym9bWkcTMWCqB6HXFpqgziGZUJuexNH
-         A/9V5ZdWvxGoEqrgN9i7twg5FJVik4NoRBShPjrCprle7qcwny+KPCg9kAaiXF2lbcxo
-         wq51zAqxhNp0ruQftZONsJyN1jpWRm456GfSzBTXgD07zePfgqhStnsLLJP1rAFvZHMt
-         WV698NM1Ts5omUAONzTN2cqdWJynsvB6jb5sMJmBwAnIsZzR9BNRbQnWo5NAGMHsrnGK
-         XWLg==
-X-Gm-Message-State: AOAM530ic6QRUpAXfUu1Ez7bqSAD7OfbMLG3ZS4SSyA+DLq9BLLLROI3
-        /CgpCe5SsXWzYbqdcAZKF5VVMvJOzOZOUbA4
-X-Google-Smtp-Source: ABdhPJz3949FfQM/5OAwyBzYaJl+r6X1k6yNqZV0DefxfvzLd3DmvLAoFBLQ64hfoyR3U/kb4AF2Ow==
-X-Received: by 2002:a17:90a:8c:: with SMTP id a12mr3642520pja.155.1604600497921;
-        Thu, 05 Nov 2020 10:21:37 -0800 (PST)
-Received: from [192.168.10.160] (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id nv7sm2659118pjb.27.2020.11.05.10.21.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 05 Nov 2020 10:21:37 -0800 (PST)
-From:   Andreas Dilger <adilger@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_DD4ECBDD-6ECA-4ABD-A5A9-6EACD2E3F827";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: [PATCH] [RFC] Asynchronous unlink/truncate patch for ext3
-Date:   Thu, 5 Nov 2020 11:21:33 -0700
-References: <20051207002316.GA14509@schatzie.adilger.int>
-Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-Message-Id: <64D58E46-3B59-4DB6-BF4C-2CA585C07FFE@dilger.ca>
-X-Mailer: Apple Mail (2.3273)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=MZwKDRqQrsQ4zOtuDWn8CpYHSaA3PZfjgaxfQ8Lvz/A=;
+        b=FzN2DmxT+wBpTbX+Hy6JFvViF6uNAdkqP2EUYScEij16zKKA6X+QQFUju2qDuiMHED
+         TNAjbQ9EypfC6cZ3lW+1BEE9gUS03EsBC+26nRnrEQPtArK/BbmtFJOrH/A8QgMDsC3r
+         KvmvfR3B7Z3r15m17LBalwQthQOSO7fbVBiryxzORLiswjkLXoXj2UuUAYP/g8wnqGOn
+         d5B8vum08ibjghoOZ/oucMmf0D8GkCO8TK/cciFITnZPrQXmfyyz2GzQZOHceVE47KI9
+         8XzmniXb0TcvDT1wxGpQE8V7xleAJdgkVwDFnfECdzFD7sfRUTaQ9WopvkWgwUYQ8M52
+         DsUQ==
+X-Gm-Message-State: AOAM531nnkdeepaguPiVs6CGLvVyUp2xvnvsUTMJ2yGAPUdbhLk5M3m6
+        RUsR1/eE0EsNYRoj9OK3+rlBxw==
+X-Google-Smtp-Source: ABdhPJwWdi8jg48/kPf5VHWeippxva2nmrLkrBaPBC/MBg75Uqf/eoJFRq4gHLJavMs6I4ZNbOeVnA==
+X-Received: by 2002:a1c:205:: with SMTP id 5mr4334979wmc.7.1604606110996;
+        Thu, 05 Nov 2020 11:55:10 -0800 (PST)
+Received: from elver.google.com ([100.105.32.75])
+        by smtp.gmail.com with ESMTPSA id b124sm647288wmh.13.2020.11.05.11.55.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 11:55:10 -0800 (PST)
+Date:   Thu, 5 Nov 2020 20:55:03 +0100
+From:   Marco Elver <elver@google.com>
+To:     Arpitha Raghunandan <98.arpi@gmail.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        skhan@linuxfoundation.org, Iurii Zaikin <yzaikin@google.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] kunit: Support for Parameterized Testing
+Message-ID: <20201105195503.GA2399621@elver.google.com>
+References: <20201027174630.85213-1-98.arpi@gmail.com>
+ <CANpmjNOpbXHs4gs9Ro-u7hyN_zZ7s3AqDcdDy1Nqxq4ckThugA@mail.gmail.com>
+ <73c4e46c-10f1-9362-b4fb-94ea9d74e9b2@gmail.com>
+ <CANpmjNPxqQM0_f14ZwV3rHZzwhCtqx2fbOhHmXmiJawou6=z6Q@mail.gmail.com>
+ <77d6dc66-1086-a9ae-ccbc-bb062ff81437@gmail.com>
+ <CANpmjNORLJ4b_uwBB8v2h5cxoZF2SMTaz5K6QP37PxdUJDZUDA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CANpmjNORLJ4b_uwBB8v2h5cxoZF2SMTaz5K6QP37PxdUJDZUDA@mail.gmail.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Thu, Nov 05, 2020 at 04:02PM +0100, Marco Elver wrote:
+> On Thu, 5 Nov 2020 at 15:30, Arpitha Raghunandan <98.arpi@gmail.com> wrot=
+e:
+[...]
+> > >> I tried adding support to run each parameter as a distinct test case=
+ by
+> > >> making changes to kunit_run_case_catch_errors(). The issue here is t=
+hat
+> > >> since the results are displayed in KTAP format, this change will res=
+ult in
+> > >> each parameter being considered a subtest of another subtest (test c=
+ase
+> > >> in KUnit).
+> > >
+> > > Do you have example output? That might help understand what's going o=
+n.
+> > >
+> >
+> > The change that I tried can be seen here (based on the v4 patch):
+> > https://gist.github.com/arpi-r/4822899087ca4cc34572ed9e45cc5fee.
+> >
+> > Using the kunit tool, I get this error:
+> >
+> > [19:20:41] [ERROR]  expected 7 test suites, but got -1
+> > [ERROR] no tests run!
+> > [19:20:41] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > [19:20:41] Testing complete. 0 tests run. 0 failed. 0 crashed.
+> >
+> > But this error is only because of how the tool displays the results.
+> > The test actually does run, as can be seen in the dmesg output:
+> >
+> > TAP version 14
+> > 1..7
+> >     # Subtest: ext4_inode_test
+> >     1..1
+> >     ok 1 - inode_test_xtimestamp_decoding 1
+> >     ok 1 - inode_test_xtimestamp_decoding 2
+> >     ok 1 - inode_test_xtimestamp_decoding 3
+> >     ok 1 - inode_test_xtimestamp_decoding 4
+> >     ok 1 - inode_test_xtimestamp_decoding 5
+> >     ok 1 - inode_test_xtimestamp_decoding 6
+> >     ok 1 - inode_test_xtimestamp_decoding 7
+> >     ok 1 - inode_test_xtimestamp_decoding 8
+> >     ok 1 - inode_test_xtimestamp_decoding 9
+> >     ok 1 - inode_test_xtimestamp_decoding 10
+> >     ok 1 - inode_test_xtimestamp_decoding 11
+> >     ok 1 - inode_test_xtimestamp_decoding 12
+> >     ok 1 - inode_test_xtimestamp_decoding 13
+> >     ok 1 - inode_test_xtimestamp_decoding 14
+> >     ok 1 - inode_test_xtimestamp_decoding 15
+> >     ok 1 - inode_test_xtimestamp_decoding 16
+> > ok 1 - ext4_inode_test
+> > (followed by other kunit test outputs)
+>=20
+> Hmm, interesting. Let me play with your patch a bit.
+>=20
+> One option is to just have the test case number increment as well,
+> i.e. have this:
+> |    ok 1 - inode_test_xtimestamp_decoding#1
+> |    ok 2 - inode_test_xtimestamp_decoding#2
+> |    ok 3 - inode_test_xtimestamp_decoding#3
+> |    ok 4 - inode_test_xtimestamp_decoding#4
+> |    ok 5 - inode_test_xtimestamp_decoding#5
+> ...
+>=20
+> Or is there something else I missed?
 
---Apple-Mail=_DD4ECBDD-6ECA-4ABD-A5A9-6EACD2E3F827
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+Right, so TAP wants the exact number of tests it will run ahead of time.
+In which case we can still put the results of each parameterized test in
+a diagnostic. Please see my proposed patch below, which still does
+proper initialization/destruction of each parameter case as if it was
+its own test case.
 
-Per discussion earlier today, included here is a copy of the old
-asynchronous delete thread patch that we previously used in Lustre
-to speed up unlink() and truncate(0) before we had extents.  This
-patch is also available from the Lustre git repositories:
+With it the output looks as follows:
 
-=
-https://git.whamcloud.com/?p=3Dfs/lustre-release.git;f=3Dlustre/kernel_pat=
-ches/patches/ext3-delete_thread-2.4.29.patch;hb=3D9b6f9d17a35188f5f4dbfae8=
-40164b999a7a78a2
+| TAP version 14
+| 1..6
+|     # Subtest: ext4_inode_test
+|     1..1
+|     # ok param#0 - inode_test_xtimestamp_decoding
+|     # ok param#1 - inode_test_xtimestamp_decoding
+|     # ok param#2 - inode_test_xtimestamp_decoding
+|     # ok param#3 - inode_test_xtimestamp_decoding
+|     # ok param#4 - inode_test_xtimestamp_decoding
+|     # ok param#5 - inode_test_xtimestamp_decoding
+|     # ok param#6 - inode_test_xtimestamp_decoding
+|     # ok param#7 - inode_test_xtimestamp_decoding
+|     # ok param#8 - inode_test_xtimestamp_decoding
+|     # ok param#9 - inode_test_xtimestamp_decoding
+|     # ok param#10 - inode_test_xtimestamp_decoding
+|     # ok param#11 - inode_test_xtimestamp_decoding
+|     # ok param#12 - inode_test_xtimestamp_decoding
+|     # ok param#13 - inode_test_xtimestamp_decoding
+|     # ok param#14 - inode_test_xtimestamp_decoding
+|     # ok param#15 - inode_test_xtimestamp_decoding
+|     ok 1 - inode_test_xtimestamp_decoding
+| ok 1 - ext4_inode_test
 
-=
-https://github.com/lustre/lustre-release/blob/1.4.10/lustre/kernel_patches=
-/patches/ext3-delete_thread-2.4.29.patch
+Would that be reasonable? If so, feel free to take the patch and
+test/adjust as required.
 
-This patch is based on ext3 and the 2.4.29 kernel, so it will need
-updating, but I think the general idea is reasonably solid, and the
-code worked for years without issues before it was deprecated.  The
-"asyncdel" mount option enables this behavior on a filesystem.
+I'm not sure on the best format -- is there is a recommended format for
+parameterized test result output? If not, I suppose we can put anything
+we like into the diagnostic.
 
-There is no support for extent-mapped files (which would only need
-to copy the extent flag over), nor is there support for metadata_csum,
-which would cause checksums for the extent blocks to be invalid when
-blocks are swapped to a new inode, similar to the EXT4_BOOT_LOADER_INO
-issue that was recently hit.
+Thanks,
+-- Marco
 
+------ >8 ------
 
-When files are being unlinked or truncated to zero, a temporary inode
-is allocated and the blocks are moved to that temp inode, and then a
-per-superblock background thread is woken to handle this work.  The
-temporary inode is added to the orphan list in case of crash, and is
-processed normally at mount time like other orphan inodes.
+=46rom ccbf4e2e190a2d7c6a94a51c9b1fb3b9a940e578 Mon Sep 17 00:00:00 2001
+=46rom: Arpitha Raghunandan <98.arpi@gmail.com>
+Date: Tue, 27 Oct 2020 23:16:30 +0530
+Subject: [PATCH] kunit: Support for Parameterized Testing
 
-This not only defers the inode indirect block iteration, it also
-avoids increasing the foreground transaction size for the truncate.
+Implementation of support for parameterized testing in KUnit.
+This approach requires the creation of a test case using the
+KUNIT_CASE_PARAM macro that accepts a generator function as input.
+This generator function should return the next parameter given the
+previous parameter in parameterized tests. It also provides
+a macro to generate common-case generators.
 
-The blocks of files temporarily in the delete queue are tracked in
-an in-memory counter, and there is a wait queue for callers needing
-space to wait on, but the blocks are not actually subtracted from the
-statfs counters in this patch, nor does block or inode allocation
-actually wait on the thread if they run out of space.
-
-Signed-off-by: Andreas Dilger <adilger@dilger.ca>
-Signed-off-by: Alex Zhuravlev <alex@clusterfs.com>
+Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+Co-developed-by: Marco Elver <elver@google.com>
+Signed-off-by: Marco Elver <elver@google.com>
 ---
- fs/ext3/file.c             |    4 +
- fs/ext3/inode.c            |  112 +++++++++++++++++++++++++++++++++++
- fs/ext3/namei.c            |   38 +++++++++++-
- fs/ext3/super.c            |  142 =
-++++++++++++++++++++++++++++++++++++++++++++-
- include/linux/ext3_fs.h    |    5 +
- include/linux/ext3_fs_sb.h |   10 +++
- 6 files changed, 309 insertions(+), 2 deletions(-)
+Changes v4->v5:
+- Update kernel-doc comments.
+- Use const void* for generator return and prev value types.
+- Add kernel-doc comment for KUNIT_ARRAY_PARAM.
+- Rework parameterized test case execution strategy: each parameter is exec=
+uted
+  as if it was its own test case, with its own test initialization and clea=
+nup
+  (init and exit are called, etc.). However, we cannot add new test cases p=
+er TAP
+  protocol once we have already started execution. Instead, log the result =
+of
+  each parameter run as a diagnostic comment.
+Changes v3->v4:
+- Rename kunit variables
+- Rename generator function helper macro
+- Add documentation for generator approach
+- Display test case name in case of failure along with param index
+Changes v2->v3:
+- Modifictaion of generator macro and method
+Changes v1->v2:
+- Use of a generator method to access test case parameters
+---
+ include/kunit/test.h | 36 ++++++++++++++++++++++++++++++++++
+ lib/kunit/test.c     | 46 +++++++++++++++++++++++++++++++-------------
+ 2 files changed, 69 insertions(+), 13 deletions(-)
 
-
-Index: linux-2.4.29/fs/ext3/super.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- linux-2.4.29.orig/fs/ext3/super.c	2005-05-03 15:53:33.047533872 =
-+0300
-+++ linux-2.4.29/fs/ext3/super.c	2005-05-03 15:54:47.192262160 =
-+0300
-@@ -400,6 +400,127 @@
- 	}
- }
-
-+#ifdef EXT3_DELETE_THREAD
-+/*
-+ * Delete inodes in a loop until there are no more to be deleted.
-+ * Normally, we run in the background doing the deletes and sleeping =
-again,
-+ * and clients just add new inodes to be deleted onto the end of the =
-list.
-+ * If someone is concerned about free space (e.g. block allocation or =
-similar)
-+ * then they can sleep on s_delete_waiter_queue and be woken up when =
-space
-+ * has been freed.
-+ */
-+int ext3_delete_thread(void *data)
-+{
-+	struct super_block *sb =3D data;
-+	struct ext3_sb_info *sbi =3D EXT3_SB(sb);
-+	struct task_struct *tsk =3D current;
-+
-+	/* Almost like daemonize, but not quite */
-+	exit_mm(current);
-+	tsk->session =3D 1;
-+	tsk->pgrp =3D 1;
-+	tsk->tty =3D NULL;
-+	exit_files(current);
-+	reparent_to_init();
-+
-+	sprintf(tsk->comm, "kdelext3-%s", kdevname(sb->s_dev));
-+	sigfillset(&tsk->blocked);
-+
-+	/*tsk->flags |=3D PF_KERNTHREAD;*/
-+
-+	INIT_LIST_HEAD(&sbi->s_delete_list);
-+	wake_up(&sbi->s_delete_waiter_queue);
-+	ext3_debug("delete thread on %s started\n", =
-kdevname(sb->s_dev));
-+
-+	/* main loop */
-+	for (;;) {
-+		wait_event_interruptible(sbi->s_delete_thread_queue,
-+					 =
-!list_empty(&sbi->s_delete_list) ||
-+					 !test_opt(sb, ASYNCDEL));
-+		ext3_debug("%s woken up: %lu inodes, %lu blocks\n",
-+			   =
-tsk->comm,sbi->s_delete_inodes,sbi->s_delete_blocks);
-+
-+		spin_lock(&sbi->s_delete_lock);
-+		if (list_empty(&sbi->s_delete_list)) {
-+			clear_opt(sbi->s_mount_opt, ASYNCDEL);
-+			memset(&sbi->s_delete_list, 0,
-+			       sizeof(sbi->s_delete_list));
-+			spin_unlock(&sbi->s_delete_lock);
-+			ext3_debug("delete thread on %s exiting\n",
-+				   kdevname(sb->s_dev));
-+			wake_up(&sbi->s_delete_waiter_queue);
-+			break;
-+		}
-+
-+		while (!list_empty(&sbi->s_delete_list)) {
-+			struct inode =
-*inode=3Dlist_entry(sbi->s_delete_list.next,
-+						       struct inode, =
-i_devices);
-+			unsigned long blocks =3D inode->i_blocks >>
-+							=
-(inode->i_blkbits - 9);
-+
-+			list_del_init(&inode->i_devices);
-+			spin_unlock(&sbi->s_delete_lock);
-+			ext3_debug("%s delete ino %lu blk %lu\n",
-+				   tsk->comm, inode->i_ino, blocks);
-+
-+			J_ASSERT(EXT3_I(inode)->i_state & =
-EXT3_STATE_DELETE);
-+			J_ASSERT(inode->i_nlink =3D=3D 1);
-+			inode->i_nlink =3D 0;
-+			iput(inode);
-+
-+			spin_lock(&sbi->s_delete_lock);
-+			sbi->s_delete_blocks -=3D blocks;
-+			sbi->s_delete_inodes--;
-+		}
-+		if (sbi->s_delete_blocks !=3D 0 || sbi->s_delete_inodes =
-!=3D 0) {
-+			ext3_warning(sb, __FUNCTION__,
-+				     "%lu blocks, %lu inodes on =
-list?\n",
-+				     =
-sbi->s_delete_blocks,sbi->s_delete_inodes);
-+			sbi->s_delete_blocks =3D 0;
-+			sbi->s_delete_inodes =3D 0;
-+		}
-+		spin_unlock(&sbi->s_delete_lock);
-+		wake_up(&sbi->s_delete_waiter_queue);
-+	}
-+
-+	return 0;
-+}
-+
-+static void ext3_start_delete_thread(struct super_block *sb)
-+{
-+	struct ext3_sb_info *sbi =3D EXT3_SB(sb);
-+	int rc;
-+
-+	spin_lock_init(&sbi->s_delete_lock);
-+	init_waitqueue_head(&sbi->s_delete_thread_queue);
-+	init_waitqueue_head(&sbi->s_delete_waiter_queue);
-+
-+	if (!test_opt(sb, ASYNCDEL))
-+		return;
-+
-+	rc =3D kernel_thread(ext3_delete_thread, sb, CLONE_VM | =
-CLONE_FILES);
-+	if (rc < 0)
-+		printk(KERN_ERR "EXT3-fs: cannot start delete thread: rc =
-%d\n",
-+		       rc);
-+	else
-+		wait_event(sbi->s_delete_waiter_queue, =
-sbi->s_delete_list.next);
-+}
-+
-+static void ext3_stop_delete_thread(struct ext3_sb_info *sbi)
-+{
-+	if (sbi->s_delete_list.next =3D=3D 0)	/* thread never started =
-*/
-+		return;
-+
-+	clear_opt(sbi->s_mount_opt, ASYNCDEL);
-+	wake_up(&sbi->s_delete_thread_queue);
-+	wait_event(sbi->s_delete_waiter_queue,
-+			sbi->s_delete_list.next =3D=3D 0 && =
-sbi->s_delete_inodes =3D=3D 0);
-+}
-+#else
-+#define ext3_start_delete_thread(sbi) do {} while(0)
-+#define ext3_stop_delete_thread(sbi) do {} while(0)
-+#endif /* EXT3_DELETE_THREAD */
-+
- void ext3_put_super (struct super_block * sb)
- {
- 	struct ext3_sb_info *sbi =3D EXT3_SB(sb);
-@@ -407,6 +528,9 @@
- 	kdev_t j_dev =3D sbi->s_journal->j_dev;
- 	int i;
-
-+#ifdef EXT3_DELETE_THREAD
-+	J_ASSERT(sbi->s_delete_inodes =3D=3D 0);
-+#endif
- 	ext3_xattr_put_super(sb);
- 	journal_destroy(sbi->s_journal);
- 	if (!(sb->s_flags & MS_RDONLY)) {
-@@ -526,6 +650,13 @@
- 			clear_opt (*mount_options, XATTR_USER);
- 		else
- #endif
-+#ifdef EXT3_DELETE_THREAD
-+		if (!strcmp(this_char, "asyncdel"))
-+			set_opt(*mount_options, ASYNCDEL);
-+		else if (!strcmp(this_char, "noasyncdel"))
-+			clear_opt(*mount_options, ASYNCDEL);
-+		else
-+#endif
- 		if (!strcmp (this_char, "bsddf"))
- 			clear_opt (*mount_options, MINIX_DF);
- 		else if (!strcmp (this_char, "nouid32")) {
-@@ -1244,6 +1375,7 @@
- 	}
-
- 	ext3_setup_super (sb, es, sb->s_flags & MS_RDONLY);
-+	ext3_start_delete_thread(sb);
- 	EXT3_SB(sb)->s_mount_state |=3D EXT3_ORPHAN_FS;
- 	ext3_orphan_cleanup(sb, es);
- 	EXT3_SB(sb)->s_mount_state &=3D ~EXT3_ORPHAN_FS;
-@@ -1626,7 +1758,12 @@
- static int ext3_sync_fs(struct super_block *sb)
- {
- 	tid_t target;
--
-+
-+	if (atomic_read(&sb->s_active) =3D=3D 0) {
-+		/* fs is being umounted: time to stop delete thread */
-+		ext3_stop_delete_thread(EXT3_SB(sb));
-+	}
-+
- 	sb->s_dirt =3D 0;
- 	target =3D log_start_commit(EXT3_SB(sb)->s_journal, NULL);
- 	log_wait_commit(EXT3_SB(sb)->s_journal, target);
-@@ -1690,6 +1827,9 @@
- 	if (!parse_options(data, &tmp, sbi, &tmp, 1))
- 		return -EINVAL;
-
-+	if (!test_opt(sb, ASYNCDEL) || (*flags & MS_RDONLY))
-+		ext3_stop_delete_thread(sbi);
-+
- 	if (sbi->s_mount_opt & EXT3_MOUNT_ABORT)
- 		ext3_abort(sb, __FUNCTION__, "Abort forced by user");
-
-Index: linux-2.4.29/fs/ext3/inode.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- linux-2.4.29.orig/fs/ext3/inode.c	2005-05-03 15:53:36.555000656 =
-+0300
-+++ linux-2.4.29/fs/ext3/inode.c	2005-05-03 15:53:56.901907456 =
-+0300
-@@ -2562,6 +2562,118 @@
- 	return err;
- }
-
-+#ifdef EXT3_DELETE_THREAD
-+/* Move blocks from to-be-truncated inode over to a new inode, and =
-delete
-+ * that one from the delete thread instead.  This avoids a lot of =
-latency
-+ * when truncating large files.
+diff --git a/include/kunit/test.h b/include/kunit/test.h
+index 9197da792336..ae5488a37e48 100644
+--- a/include/kunit/test.h
++++ b/include/kunit/test.h
+@@ -107,6 +107,7 @@ struct kunit;
+  *
+  * @run_case: the function representing the actual test case.
+  * @name:     the name of the test case.
++ * @generate_params: the generator function for parameterized tests.
+  *
+  * A test case is a function with the signature,
+  * ``void (*)(struct kunit *)``
+@@ -141,6 +142,7 @@ struct kunit;
+ struct kunit_case {
+ 	void (*run_case)(struct kunit *test);
+ 	const char *name;
++	const void* (*generate_params)(const void *prev);
+=20
+ 	/* private: internal use only. */
+ 	bool success;
+@@ -163,6 +165,22 @@ static inline char *kunit_status_to_string(bool status)
+  */
+ #define KUNIT_CASE(test_name) { .run_case =3D test_name, .name =3D #test_n=
+ame }
+=20
++/**
++ * KUNIT_CASE_PARAM - A helper for creation a parameterized &struct kunit_=
+case
 + *
-+ * If we have any problem deferring the truncate, just truncate it =
-right away.
-+ * If we defer it, we also mark how many blocks it would free, so that =
-we
-+ * can keep the statfs data correct, and we know if we should sleep on =
-the
-+ * delete thread when we run out of space.
++ * @test_name: a reference to a test case function.
++ * @gen_params: a reference to a parameter generator function.
++ *
++ * The generator function ``const void* gen_params(const void *prev)`` is =
+used
++ * to lazily generate a series of arbitrarily typed values that fit into a
++ * void*. The argument @prev is the previously returned value, which shoul=
+d be
++ * used to derive the next value; @prev is set to NULL on the initial gene=
+rator
++ * call.  When no more values are available, the generator must return NUL=
+L.
 + */
-+void ext3_truncate_thread(struct inode *old_inode)
-+{
-+	struct ext3_sb_info *sbi =3D EXT3_SB(old_inode->i_sb);
-+	struct ext3_inode_info *nei, *oei =3D EXT3_I(old_inode);
-+	struct inode *new_inode;
-+	handle_t *handle;
-+	unsigned long blocks =3D old_inode->i_blocks >> =
-(old_inode->i_blkbits-9);
++#define KUNIT_CASE_PARAM(test_name, gen_params)			\
++		{ .run_case =3D test_name, .name =3D #test_name,	\
++		  .generate_params =3D gen_params }
 +
-+	if (!test_opt(old_inode->i_sb, ASYNCDEL) || =
-!sbi->s_delete_list.next)
-+		goto out_truncate;
-+
-+	/* XXX This is a temporary limitation for code simplicity.
-+	 *     We could truncate to arbitrary sizes at some later time.
-+	 */
-+	if (old_inode->i_size !=3D 0)
-+		goto out_truncate;
-+
-+	/* We may want to truncate the inode immediately and not defer =
-it */
-+	if (IS_SYNC(old_inode) || blocks <=3D EXT3_NDIR_BLOCKS ||
-+	    old_inode->i_size > oei->i_disksize)
-+		goto out_truncate;
-+
-+	/* We can't use the delete thread as-is during real orphan =
-recovery,
-+	 * as we add to the orphan list here, causing =
-ext3_orphan_cleanup()
-+	 * to loop endlessly.  It would be nice to do so, but needs =
-work.
-+	 */
-+	if (oei->i_state & EXT3_STATE_DELETE ||
-+	    sbi->s_mount_state & EXT3_ORPHAN_FS) {
-+		ext3_debug("doing deferred inode %lu delete (%lu =
-blocks)\n",
-+			   old_inode->i_ino, blocks);
-+		goto out_truncate;
-+	}
-+
-+	ext3_discard_prealloc(old_inode);
-+
-+	/* old_inode   =3D 1
-+	 * new_inode   =3D sb + GDT + ibitmap
-+	 * orphan list =3D 1 inode/superblock for add, 2 inodes for del
-+	 * quota files =3D 2 * EXT3_SINGLEDATA_TRANS_BLOCKS
-+	 */
-+	handle =3D ext3_journal_start(old_inode, 7);
-+	if (IS_ERR(handle))
-+		goto out_truncate;
-+
-+	new_inode =3D ext3_new_inode(handle, old_inode, =
-old_inode->i_mode);
-+	if (IS_ERR(new_inode)) {
-+		ext3_debug("truncate inode %lu directly (no new =
-inodes)\n",
-+			   old_inode->i_ino);
-+		goto out_journal;
-+	}
-+
-+	nei =3D EXT3_I(new_inode);
-+
-+	down_write(&oei->truncate_sem);
-+	new_inode->i_size =3D old_inode->i_size;
-+	new_inode->i_blocks =3D old_inode->i_blocks;
-+	new_inode->i_uid =3D old_inode->i_uid;
-+	new_inode->i_gid =3D old_inode->i_gid;
-+	new_inode->i_nlink =3D 1;
-+
-+	/* FIXME when we do arbitrary truncates */
-+	old_inode->i_blocks =3D oei->i_file_acl ? old_inode->i_blksize / =
-512 : 0;
-+	old_inode->i_mtime =3D old_inode->i_ctime =3D CURRENT_TIME;
-+
-+	memcpy(nei->i_data, oei->i_data, sizeof(nei->i_data));
-+	memset(oei->i_data, 0, sizeof(oei->i_data));
-+
-+	nei->i_disksize =3D oei->i_disksize;
-+	nei->i_state |=3D EXT3_STATE_DELETE;
-+	up_write(&oei->truncate_sem);
-+
-+	if (ext3_orphan_add(handle, new_inode) < 0)
-+		goto out_journal;
-+
-+	if (ext3_orphan_del(handle, old_inode) < 0) {
-+		ext3_orphan_del(handle, new_inode);
-+		iput(new_inode);
-+		goto out_journal;
-+	}
-+
-+	ext3_journal_stop(handle, old_inode);
-+
-+	spin_lock(&sbi->s_delete_lock);
-+	J_ASSERT(list_empty(&new_inode->i_devices));
-+	list_add_tail(&new_inode->i_devices, &sbi->s_delete_list);
-+	sbi->s_delete_blocks +=3D blocks;
-+	sbi->s_delete_inodes++;
-+	spin_unlock(&sbi->s_delete_lock);
-+
-+	ext3_debug("delete inode %lu (%lu blocks) by thread\n",
-+		   new_inode->i_ino, blocks);
-+
-+	wake_up(&sbi->s_delete_thread_queue);
-+	return;
-+
-+out_journal:
-+	ext3_journal_stop(handle, old_inode);
-+out_truncate:
-+	ext3_truncate(old_inode);
-+}
-+#endif /* EXT3_DELETE_THREAD */
-+
- /*
-  * On success, We end up with an outstanding reference count against
-  * iloc->bh.  This _must_ be cleaned up later.
-Index: linux-2.4.29/fs/ext3/file.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- linux-2.4.29.orig/fs/ext3/file.c	2005-04-07 19:31:00.000000000 =
-+0300
-+++ linux-2.4.29/fs/ext3/file.c	2005-05-03 15:53:56.902907304 +0300
-@@ -123,7 +123,11 @@
- };
-
- struct inode_operations ext3_file_inode_operations =3D {
-+#ifdef EXT3_DELETE_THREAD
-+	truncate:	ext3_truncate_thread,	/* BKL held */
-+#else
- 	truncate:	ext3_truncate,		/* BKL held */
-+#endif
- 	setattr:	ext3_setattr,		/* BKL held */
- 	setxattr:	ext3_setxattr,		/* BKL held */
- 	getxattr:	ext3_getxattr,		/* BKL held */
-Index: linux-2.4.29/fs/ext3/namei.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- linux-2.4.29.orig/fs/ext3/namei.c	2005-05-03 15:53:33.044534328 =
-+0300
-+++ linux-2.4.29/fs/ext3/namei.c	2005-05-03 15:53:56.905906848 =
-+0300
-@@ -838,6 +838,40 @@
- 	return retval;
- }
-
-+#ifdef EXT3_DELETE_THREAD
-+static int ext3_try_to_delay_deletion(struct inode *inode)
-+{
-+	struct ext3_sb_info *sbi =3D EXT3_SB(inode->i_sb);
-+	struct ext3_inode_info *ei =3D EXT3_I(inode);
-+	unsigned long blocks;
-+
-+	if (!test_opt(inode->i_sb, ASYNCDEL))
-+		return 0;
-+
-+	/* We may want to delete the inode immediately and not defer it =
+ /**
+  * struct kunit_suite - describes a related collection of &struct kunit_ca=
+se
+  *
+@@ -208,6 +226,10 @@ struct kunit {
+ 	const char *name; /* Read only after initialization! */
+ 	char *log; /* Points at case log after initialization */
+ 	struct kunit_try_catch try_catch;
++	/* param_value is the current parameter value for a test case. */
++	const void *param_value;
++	/* param_index stores the index of the parameter in parameterized tests. =
 */
-+	blocks =3D inode->i_blocks >> (inode->i_blkbits - 9);
-+	if (IS_SYNC(inode) || blocks <=3D EXT3_NDIR_BLOCKS)
-+		return 0;
++	int param_index;
+ 	/*
+ 	 * success starts as true, and may only be set to false during a
+ 	 * test case; thus, it is safe to update this across multiple
+@@ -1742,4 +1764,18 @@ do {									       \
+ 						fmt,			       \
+ 						##__VA_ARGS__)
+=20
++/**
++ * KUNIT_ARRAY_PARAM() - Define test parameter generator from an array.
++ * @name:  prefix for the test parameter generator function.
++ * @array: array of test parameters.
++ *
++ * Define function @name_gen_params which uses @array to generate paramete=
+rs.
++ */
++#define KUNIT_ARRAY_PARAM(name, array)								\
++	static const void *name##_gen_params(const void *prev)					\
++	{											\
++		typeof((array)[0]) * __next =3D prev ? ((typeof(__next)) prev) + 1 : (ar=
+ray);	\
++		return __next - (array) < ARRAY_SIZE((array)) ? __next : NULL;			\
++	}
 +
-+	inode->i_nlink =3D 1;
-+	atomic_inc(&inode->i_count);
-+	ei->i_state |=3D EXT3_STATE_DELETE;
-+
-+	spin_lock(&sbi->s_delete_lock);
-+	J_ASSERT(list_empty(&inode->i_devices));
-+	list_add_tail(&inode->i_devices, &sbi->s_delete_list);
-+	sbi->s_delete_blocks +=3D blocks;
-+	sbi->s_delete_inodes++;
-+	spin_unlock(&sbi->s_delete_lock);
-+
-+	wake_up(&sbi->s_delete_thread_queue);
-+
-+	return 0;
-+}
-+#else
-+#define ext3_try_to_delay_deletion(inode) do {} while (0)
-+#endif
-+
- static int ext3_unlink(struct inode * dir, struct dentry *dentry)
+ #endif /* _KUNIT_TEST_H */
+diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+index 750704abe89a..453ebe4da77d 100644
+--- a/lib/kunit/test.c
++++ b/lib/kunit/test.c
+@@ -325,29 +325,25 @@ static void kunit_catch_run_case(void *data)
+  * occur in a test case and reports them as failures.
+  */
+ static void kunit_run_case_catch_errors(struct kunit_suite *suite,
+-					struct kunit_case *test_case)
++					struct kunit_case *test_case,
++					struct kunit *test)
  {
- 	int retval;
-@@ -878,8 +912,10 @@
- 	dir->u.ext3_i.i_flags &=3D ~EXT3_INDEX_FL;
- 	ext3_mark_inode_dirty(handle, dir);
- 	inode->i_nlink--;
--	if (!inode->i_nlink)
-+	if (!inode->i_nlink) {
-+		ext3_try_to_delay_deletion(inode);
- 		ext3_orphan_add(handle, inode);
-+	}
- 	inode->i_ctime =3D dir->i_ctime;
- 	ext3_mark_inode_dirty(handle, inode);
- 	retval =3D 0;
-Index: linux-2.4.29/include/linux/ext3_fs.h
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- linux-2.4.29.orig/include/linux/ext3_fs.h	2005-05-03 =
-15:53:37.124914016 +0300
-+++ linux-2.4.29/include/linux/ext3_fs.h	2005-05-03 =
-15:53:56.907906544 +0300
-@@ -188,6 +188,7 @@
-  */
- #define EXT3_STATE_JDATA		0x00000001 /* journaled data =
-exists */
- #define EXT3_STATE_NEW			0x00000002 /* inode is newly =
-created */
-+#define EXT3_STATE_DELETE		0x00000010 /* deferred delete =
-inode */
-
- /*
-  * ioctl commands
-@@ -315,6 +316,7 @@
- #define EXT3_MOUNT_UPDATE_JOURNAL	0x1000	/* Update the journal =
-format */
- #define EXT3_MOUNT_NO_UID32		0x2000  /* Disable 32-bit UIDs =
-*/
- #define EXT3_MOUNT_XATTR_USER		0x4000	/* Extended user =
-attributes */
-+#define EXT3_MOUNT_ASYNCDEL		0x20000 /* Delayed deletion */
-
- /* Compatibility, for having both ext2_fs.h and ext3_fs.h included at =
-once */
- #ifndef _LINUX_EXT2_FS_H
-@@ -639,6 +641,9 @@
- extern void ext3_dirty_inode(struct inode *);
- extern int ext3_change_inode_journal_flag(struct inode *, int);
- extern void ext3_truncate (struct inode *);
-+#ifdef EXT3_DELETE_THREAD
-+extern void ext3_truncate_thread(struct inode *inode);
-+#endif
- extern void ext3_set_inode_flags(struct inode *);
-
- /* ioctl.c */
-Index: linux-2.4.29/include/linux/ext3_fs_sb.h
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- linux-2.4.29.orig/include/linux/ext3_fs_sb.h	2005-05-03 =
-15:53:33.048533720 +0300
-+++ linux-2.4.29/include/linux/ext3_fs_sb.h	2005-05-03 =
-15:53:56.909906240 +0300
-@@ -29,6 +29,8 @@
-
- #define EXT3_MAX_GROUP_LOADED	8
-
-+#define EXT3_DELETE_THREAD
+ 	struct kunit_try_catch_context context;
+ 	struct kunit_try_catch *try_catch;
+-	struct kunit test;
+=20
+-	kunit_init_test(&test, test_case->name, test_case->log);
+-	try_catch =3D &test.try_catch;
++	kunit_init_test(test, test_case->name, test_case->log);
++	try_catch =3D &test->try_catch;
+=20
+ 	kunit_try_catch_init(try_catch,
+-			     &test,
++			     test,
+ 			     kunit_try_run_case,
+ 			     kunit_catch_run_case);
+-	context.test =3D &test;
++	context.test =3D test;
+ 	context.suite =3D suite;
+ 	context.test_case =3D test_case;
+ 	kunit_try_catch_run(try_catch, &context);
+=20
+-	test_case->success =3D test.success;
+-
+-	kunit_print_ok_not_ok(&test, true, test_case->success,
+-			      kunit_test_case_num(suite, test_case),
+-			      test_case->name);
++	test_case->success =3D test->success;
+ }
+=20
+ int kunit_run_tests(struct kunit_suite *suite)
+@@ -356,8 +352,32 @@ int kunit_run_tests(struct kunit_suite *suite)
+=20
+ 	kunit_print_subtest_start(suite);
+=20
+-	kunit_suite_for_each_test_case(suite, test_case)
+-		kunit_run_case_catch_errors(suite, test_case);
++	kunit_suite_for_each_test_case(suite, test_case) {
++		struct kunit test =3D { .param_value =3D NULL, .param_index =3D 0 };
++		bool test_success =3D true;
 +
- /*
-  * third extended-fs super-block data in memory
-  */
-@@ -74,6 +76,14 @@
- 	struct timer_list turn_ro_timer;	/* For turning read-only =
-(crash simulation) */
- 	wait_queue_head_t ro_wait_queue;	/* For people waiting =
-for the fs to go read-only */
- #endif
-+#ifdef EXT3_DELETE_THREAD
-+	spinlock_t s_delete_lock;
-+	struct list_head s_delete_list;
-+	unsigned long s_delete_blocks;
-+	unsigned long s_delete_inodes;
-+	wait_queue_head_t s_delete_thread_queue;
-+	wait_queue_head_t s_delete_waiter_queue;
-+#endif
- };
++		if (test_case->generate_params)
++			test.param_value =3D test_case->generate_params(NULL);
++
++		do {
++			kunit_run_case_catch_errors(suite, test_case, &test);
++			test_success &=3D test_case->success;
++
++			if (test_case->generate_params) {
++				kunit_log(KERN_INFO, &test,
++					  KUNIT_SUBTEST_INDENT
++					  "# %s param#%d - %s",
++					  kunit_status_to_string(test.success),
++					  test.param_index, test_case->name);
++				test.param_value =3D test_case->generate_params(test.param_value);
++				test.param_index++;
++			}
++		} while (test.param_value);
++
++		kunit_print_ok_not_ok(&test, true, test_success,
++				      kunit_test_case_num(suite, test_case),
++				      test_case->name);
++	}
+=20
+ 	kunit_print_subtest_end(suite);
+=20
+--=20
+2.29.1.341.ge80a0c044ae-goog
 
- #endif	/* _LINUX_EXT3_FS_SB */
-
-
-Cheers, Andreas
-
-
---Apple-Mail=_DD4ECBDD-6ECA-4ABD-A5A9-6EACD2E3F827
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl+kQq4ACgkQcqXauRfM
-H+CiUA/9H3ONZhG78AQBQEEaUqkA4Q1leBMCpaBGcnbupeGPJCbhpXBP1BgVwCNE
-F6vjmW0rWs2WMVc5VEniyUi/hTv248Ka9mmb5v8ysOxqtyrV5YwsIJqFBGy/q1zh
-hdyEYeqDQ7nwt1dvE5FLBb/sJyG5SVtILj9nmdK1oXyPAr5xAklJ1vZLP5c+L6F3
-k1p2MdMoNeJkFZK2+djva+8EdobulH0KW7LAzrja0MaSGIMYgz1bjmih/W+P3w7n
-pf8+JCpmDmrbdl2gBU5xOlOzDMb+3a9fXOzAHOHzthbdadAzWKN46TolxeXBSDoW
-MWUkAL10cOALw7QZTdIHnEyP3Qo1va9cMPWG+7nXDs5JW7q74syKqXfyHC6y+TfT
-W3IYQ2RN5QSFDOl7s5sMHl6fQPXQFX98D7fhk+rgm6i08n74NCfRfmWhFTBi7FnN
-tX0b/lSdXWihuonPCq1hF40XIsuzb1QXP+0dlstOSFHhyUUhPHNOXWDi9AL9PJgi
-yDbP2o0Jg3XQTA1DnHUhWMEaSSCytejuxVS8RK8yX14HNfzEeLELzK+tu1x8lYFl
-YW+yAr1bsT/DPaGUC7RAalyT0NpsoiXvCWxZzf25vNxWCvwFMEa0rwnyN2Z2dwJj
-Efd0H2wpzvwtzjOqxcqXyZ2wm5dvXbIfJwGP+n6DGtI3VE39WBQ=
-=qzlI
------END PGP SIGNATURE-----
-
---Apple-Mail=_DD4ECBDD-6ECA-4ABD-A5A9-6EACD2E3F827--
