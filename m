@@ -2,104 +2,66 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7028D2A9B3D
-	for <lists+linux-ext4@lfdr.de>; Fri,  6 Nov 2020 18:52:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 103DC2A9BB7
+	for <lists+linux-ext4@lfdr.de>; Fri,  6 Nov 2020 19:18:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727708AbgKFRwI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 6 Nov 2020 12:52:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55760 "EHLO mail.kernel.org"
+        id S1727805AbgKFSSJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 6 Nov 2020 13:18:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726034AbgKFRwI (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 6 Nov 2020 12:52:08 -0500
+        id S1727183AbgKFSSJ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 6 Nov 2020 13:18:09 -0500
 Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2C12C206F4;
-        Fri,  6 Nov 2020 17:52:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 63D5820720;
+        Fri,  6 Nov 2020 18:18:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604685127;
-        bh=+rTplTiRHCg1rSJZZILvtbrGwQkXqYXlY1s1r0lYRj8=;
+        s=default; t=1604686688;
+        bh=CUAy/4GGBuJwzt3VtaNVZT/66W43SJeHWjpVtLIEq8A=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F+nspiyMoaHUdjgkHdvyFN7TjbEJuDH6E5/gsmZuQpTJ6Mks2/ZX4fEULddQILtyV
-         C7jt0GUYyptvY1wCY7opIUGuK05/rWJKZ2Nq2AKh4tIxtV2snaP7LPmb7Zl/GVdo80
-         PcEgKyh7Eeuuc2cdyoVGCZzROsapb3faNVR4/9Wg=
-Date:   Fri, 6 Nov 2020 09:52:05 -0800
+        b=Se4bh0561wvFb2RweQ0oeyXfOjV30DsUhl9tV9oRrF1P3u+rxg9SkpQOyJQPh4B6/
+         P9/T87OOvy1sfPrzf4cHI4bB9ocsVhppxviFgijnNba5i+ypcDG1ZHyM/WASWfwu6m
+         tsODG9khnaxUFg0SkMkcgwUchdUZ1xkS/EP/mNcY=
+Date:   Fri, 6 Nov 2020 10:18:06 -0800
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org
-Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] fs/inode.c: make inode_init_always() initialize i_ino to
- 0
-Message-ID: <20201106175205.GE845@sol.localdomain>
-References: <20201031004420.87678-1-ebiggers@kernel.org>
+To:     Arnaud Ferraris <arnaud.ferraris@collabora.com>
+Cc:     linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 00/11] e2fsprogs: improve case-insensitive fs support
+Message-ID: <20201106181806.GA79496@sol.localdomain>
+References: <20201105161642.87488-1-arnaud.ferraris@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201031004420.87678-1-ebiggers@kernel.org>
+In-Reply-To: <20201105161642.87488-1-arnaud.ferraris@collabora.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 05:44:20PM -0700, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
+On Thu, Nov 05, 2020 at 05:16:32PM +0100, Arnaud Ferraris wrote:
+> Hello,
 > 
-> Currently inode_init_always() doesn't initialize i_ino to 0.  This is
-> unexpected because unlike the other inode fields that aren't initialized
-> by inode_init_always(), i_ino isn't guaranteed to end up back at its
-> initial value after the inode is freed.  Only one filesystem (XFS)
-> actually sets set i_ino back to 0 when freeing its inodes.
+> This patch series improves e2fsprogs for case-insensitive filesystems.
 > 
-> So, callers of new_inode() see some random previous i_ino.  Normally
-> that's fine, since normally i_ino isn't accessed before being set.
-> There can be edge cases where that isn't necessarily true, though.
+> First, it allows tune2fs to enable the 'casefold' feature on existing
+> filesystems.
 > 
-> The one I've run into is that on ext4, when creating an encrypted file,
-> the new file's encryption key has to be set up prior to the jbd2
-> transaction, and thus prior to i_ino being set.  If something goes
-> wrong, fs/crypto/ may log warning or error messages, which normally
-> include i_ino.  So it needs to know whether it is valid to include i_ino
-> yet or not.  Also, on some files i_ino needs to be hashed for use in the
-> crypto, so fs/crypto/ needs to know whether that can be done yet or not.
+> Then, it improves e2fsck by allowing it to:
+> - fix entries containing invalid UTF-8 characters
+> - detect duplicated entries
 > 
-> There are ways this could be worked around, either in fs/crypto/ or in
-> fs/ext4/.  But, it seems there's no reason not to just fix
-> inode_init_always() to do the expected thing and initialize i_ino to 0.
+> By default, invalid filenames are only checked when strict mode is enabled.
+> A new option is therefore added to allow the user to force this verification.
 > 
-> So, do that, and also remove the initialization in jfs_fill_super() that
-> becomes redundant.
+> This series has been tested by running xfstests, and by manually corrupting
+> the test filesystem using debugfs as well.
 > 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
->  fs/inode.c     | 1 +
->  fs/jfs/super.c | 1 -
->  2 files changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/inode.c b/fs/inode.c
-> index 9d78c37b00b81..eb001129f157c 100644
-> --- a/fs/inode.c
-> +++ b/fs/inode.c
-> @@ -142,6 +142,7 @@ int inode_init_always(struct super_block *sb, struct inode *inode)
->  	atomic_set(&inode->i_count, 1);
->  	inode->i_op = &empty_iops;
->  	inode->i_fop = &no_open_fops;
-> +	inode->i_ino = 0;
->  	inode->__i_nlink = 1;
->  	inode->i_opflags = 0;
->  	if (sb->s_xattr)
-> diff --git a/fs/jfs/super.c b/fs/jfs/super.c
-> index b2dc4d1f9dcc5..1f0ffabbde566 100644
-> --- a/fs/jfs/super.c
-> +++ b/fs/jfs/super.c
-> @@ -551,7 +551,6 @@ static int jfs_fill_super(struct super_block *sb, void *data, int silent)
->  		ret = -ENOMEM;
->  		goto out_unload;
->  	}
-> -	inode->i_ino = 0;
->  	inode->i_size = i_size_read(sb->s_bdev->bd_inode);
->  	inode->i_mapping->a_ops = &jfs_metapage_aops;
->  	inode_fake_hash(inode);
-> 
+> Best regards,
+> Arnaud
 
-Al, any thoughts on this?
+Can you Cc "Daniel Rosenberg <drosen@google.com>" on future versions of this?
+I'm not sure whether he's subscribed to linux-ext4.
+
+Thanks!
 
 - Eric
