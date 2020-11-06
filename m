@@ -2,55 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C05D2A9C79
-	for <lists+linux-ext4@lfdr.de>; Fri,  6 Nov 2020 19:39:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 224672A9CA1
+	for <lists+linux-ext4@lfdr.de>; Fri,  6 Nov 2020 19:46:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727257AbgKFSi6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 6 Nov 2020 13:38:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55266 "EHLO
+        id S1727828AbgKFSqK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 6 Nov 2020 13:46:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727069AbgKFSi4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 6 Nov 2020 13:38:56 -0500
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69CF4C0613D2
-        for <linux-ext4@vger.kernel.org>; Fri,  6 Nov 2020 10:38:56 -0800 (PST)
-Received: by mail-ot1-x342.google.com with SMTP id a15so414762otf.5
-        for <linux-ext4@vger.kernel.org>; Fri, 06 Nov 2020 10:38:56 -0800 (PST)
+        with ESMTP id S1726447AbgKFSqK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 6 Nov 2020 13:46:10 -0500
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 688B3C0613CF
+        for <linux-ext4@vger.kernel.org>; Fri,  6 Nov 2020 10:46:10 -0800 (PST)
+Received: by mail-ot1-x341.google.com with SMTP id j14so2165956ots.1
+        for <linux-ext4@vger.kernel.org>; Fri, 06 Nov 2020 10:46:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=YxHuRb9btK6fIk12CKU8DqhKvsu/vUJtkdyol4DJ8ic=;
-        b=XIn0aYLWh5cfYI8YC8hnnl+xITpJDnJfsx1CLbBNUc+eCZZd57DKArsvW7NDUqVSt1
-         LheCTXJR5A2xA9YYkLBgHiNAFh0oWTUTNf3j6wEN6ZsXKsOSbE4ZvTs4h+FpXAIFXeyt
-         Pmij+rPN/c2LZwrq9SM4W6hND4HiVPfiI1cD2ERzy6Hd5GJ0fd6CkwQh6r5w/2ZwMTTA
-         +S5xw1FmFZmLSVBxFCRBcLTSF6cmUwmsKCL10xkwBZNcb2q3Lm+IkI5xlJn62nAxiMJP
-         xd/L4tYnn0i3ENSMpCo5fGMt6h5HbECCZK40m4p9ZJuA+34kehcoRo8kdBykFutyedKG
-         8YyA==
+        bh=ElN3AyTjh5aMXmGHUFTcrTsMazikTf7o2LtiuSniYZ4=;
+        b=D5+Q8S8gQ/D72X/54r2aCENNdmG3qQ/uSOs4qlrC+meTGrBxWzyUhbGN5AcVRTbEoX
+         aBSlJSl6MMdPmek/r8GTKw7FWl8xaY2+bPHhNZzTHG/0p2owpuWq/aKHsdju2u8Fnvzi
+         vUDnyU57uiirO5PL4roeYjBl10DFZqt4pZ5UO/cJGeBRMCpUP0Hh/3nCf1LJ50MLGTOb
+         1mRyWLZT4mNkiGXwj1Y4seayHJZR0/rogLS8o4xfuxPZsiC75TDzUe7IbEPkul49oP6t
+         YZmd+0T8fWEzyfDN/uM1DegNmzRu9xJlEABocHUEQaG6ygy2Lvg9lKy3Vb+HQqWkvMXg
+         lY0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=YxHuRb9btK6fIk12CKU8DqhKvsu/vUJtkdyol4DJ8ic=;
-        b=MUIvb1peUP52vWQH+lp9cG872S5sTwcrbIfC/CSJA03WMVTxTKkp6OOFFjsBxEHpbg
-         Cml1aVb/nMHbjn25K2NE3tKeHwWJu+13daxYWxQzm1lbUJUnpl+qHrNZncD0ONKAXRMB
-         bcyVBJ4XYp0I3nRcwPu+BP0finySC2vOboH5LR/xP1IoWpSDJxL8txOEY/9zLROofptT
-         rpMW7d6gK5eBJiH+Ih5ZbcEuEN07kB/+1U2g1gqCnsZEaOa6yr1fN6rzvp6cqPypZfPt
-         q7ugJbbP165lZcs2uIPI+M/H60c2Mo/ygLraNe+6WtgxmAfTTyrsQIco2+37f4jdba1w
-         PCHQ==
-X-Gm-Message-State: AOAM530UraV0jRFlQuRM5nPcXVos8rVq/IzPVUS1mlxNABPvZllRrElH
-        pep3xMGZody7orj5nFQJ6xbHFaOMCcf0NSmVdCkH3w==
-X-Google-Smtp-Source: ABdhPJxNcc3J7eTwqEeCUsfredQHDe3wiEWZuB9t+2mZJN3+7jqYuEo+q+e2qHzI5HQK1c1ykKTjqQ8tIuyGLvZ7mOQ=
-X-Received: by 2002:a9d:65d5:: with SMTP id z21mr1849209oth.251.1604687935680;
- Fri, 06 Nov 2020 10:38:55 -0800 (PST)
+        bh=ElN3AyTjh5aMXmGHUFTcrTsMazikTf7o2LtiuSniYZ4=;
+        b=VJsQH3MsUZl8G06th0vkb5vnjaoP7TTA7aTicTXxWlY7UMFPnqFJnQf48Vvk19f4QT
+         fbJopTY82mDcreSCrgirJftIXLeErKN3zaLOlmJnrVVykKjSwt8C6vEUis3YtiQKYYmq
+         dTI1LjOSsyJLXcbMh8BfUzgo6BINPfHb3rSKx+++BROXVsO8Q0AJQrfSsAawY7uiXe6T
+         cLeROqOMk47SwlvVaRgSZclO6a/bTK/LUxZJJCvTErEpzBt4/DTnBP7RINYqnb/pahd0
+         nwLSgJPQ8E+u+zU7qAdCwf5G76EhW/JTTb+T9qTS3dn04ba7CN42yXssrUK6IIPiii1v
+         gZHw==
+X-Gm-Message-State: AOAM531iATiV3ccg/P1vRUl8aqltqkVgNrWWjLRlIaZfSxcO+N8fzGMU
+        HU2sYOMKg6KSPDcEt8DqbO1Iv8+HlOPb3ldiI6R5GA==
+X-Google-Smtp-Source: ABdhPJyh/Y4j/Wq2GsZz2D7bg/jo7/og/6yXxY6CRqxe+L0UEXv1UfKub2quFBwezIXP7sjaOGFzFmPQYxb0C85z3RU=
+X-Received: by 2002:a9d:65d5:: with SMTP id z21mr1868950oth.251.1604688369657;
+ Fri, 06 Nov 2020 10:46:09 -0800 (PST)
 MIME-Version: 1.0
-References: <20201106182657.30492-1-98.arpi@gmail.com> <20201106182850.30602-1-98.arpi@gmail.com>
-In-Reply-To: <20201106182850.30602-1-98.arpi@gmail.com>
+References: <20201106182657.30492-1-98.arpi@gmail.com>
+In-Reply-To: <20201106182657.30492-1-98.arpi@gmail.com>
 From:   Marco Elver <elver@google.com>
-Date:   Fri, 6 Nov 2020 19:38:44 +0100
-Message-ID: <CANpmjNP4+ByVyabqiDy1KW94XBEMG3j4jqugY3kN+C-w1kEVhA@mail.gmail.com>
-Subject: Re: [PATCH v5 2/2] fs: ext4: Modify inode-test.c to use KUnit
- parameterized testing feature
+Date:   Fri, 6 Nov 2020 19:45:58 +0100
+Message-ID: <CANpmjNPsACW1mZmkWiCSeXfvAGaxAS5sHtYMu0-DfE7ec2pFMA@mail.gmail.com>
+Subject: Re: [PATCH v5 1/2] kunit: Support for Parameterized Testing
 To:     Arpitha Raghunandan <98.arpi@gmail.com>
 Cc:     Brendan Higgins <brendanhiggins@google.com>,
         skhan@linuxfoundation.org, Iurii Zaikin <yzaikin@google.com>,
@@ -67,17 +66,44 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, 6 Nov 2020 at 19:29, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
-> Modify fs/ext4/inode-test.c to use the parameterized testing
-> feature of KUnit.
+On Fri, 6 Nov 2020 at 19:28, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+>
+> Implementation of support for parameterized testing in KUnit.
+> This approach requires the creation of a test case using the
+> KUNIT_CASE_PARAM macro that accepts a generator function as input.
+> This generator function should return the next parameter given the
+> previous parameter in parameterized tests. It also provides
+> a macro to generate common-case generators.
 >
 > Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
-> ---
+> Co-developed-by: Marco Elver <elver@google.com>
+> Signed-off-by: Marco Elver <elver@google.com>
 [...]
->  fs/ext4/inode-test.c | 314 ++++++++++++++++++++++---------------------
->  1 file changed, 158 insertions(+), 156 deletions(-)
+> -       kunit_suite_for_each_test_case(suite, test_case)
+> -               kunit_run_case_catch_errors(suite, test_case);
+> +       kunit_suite_for_each_test_case(suite, test_case) {
+> +               struct kunit test = { .param_value = NULL, .param_index = 0 };
+> +               bool test_success = true;
+> +
+> +               if (test_case->generate_params)
+> +                       test.param_value = test_case->generate_params(NULL);
+> +
+> +               do {
+> +                       kunit_run_case_catch_errors(suite, test_case, &test);
+> +                       test_success &= test_case->success;
+> +
+> +                       if (test_case->generate_params) {
+> +                               kunit_log(KERN_INFO, &test,
+> +                                       KUNIT_SUBTEST_INDENT
+> +                                       "# %s: param-%d %s",
+> +                                       test_case->name, test.param_index,
+> +                                       kunit_status_to_string(test.success));
 
-Acked-by: Marco Elver <elver@google.com>
+Sorry, I still found something. The patch I sent had this aligned with
+the '(', whereas when I apply this patch it no longer is aligned. Why?
+
+I see the rest of the file also aligns arguments with opening '(', so
+I think your change is inconsistent.
 
 Thanks,
 -- Marco
