@@ -2,83 +2,75 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 462F42AA272
-	for <lists+linux-ext4@lfdr.de>; Sat,  7 Nov 2020 06:00:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D07F2AA27B
+	for <lists+linux-ext4@lfdr.de>; Sat,  7 Nov 2020 06:10:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727671AbgKGFAc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 7 Nov 2020 00:00:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727676AbgKGFAc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 7 Nov 2020 00:00:32 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94822C0613D3
-        for <linux-ext4@vger.kernel.org>; Fri,  6 Nov 2020 21:00:30 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id m16so3740618ljo.6
-        for <linux-ext4@vger.kernel.org>; Fri, 06 Nov 2020 21:00:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=voEsZPkyjZD18rzLtdDPpUVqOWAqR2u8yHFoISL5tWA=;
-        b=ozEJnOM2IixHrnCPEtGb8FlqnzWcNz+owQfR7J4Eue5meJU/pZItrdTH+v0KHF0cFo
-         3lLpgXRPOSHF6gUusRw2FxmWULcNJa0AV7m/aCcn8kIQWrxpaenHvu4ZfGHc3ZiZiZBW
-         WVFQB3tG8c63Lifd0NAKzG5T8ez3LWkaxc26yiUmwNA314ZHSabqU+PFVT0gGvfiPp6W
-         TZYs2MYDYb1AFpUxW2W+wjZVFeZkYueQs6SaJyl5/oe0ESlReMhwk+xbeJ3Y9Y4s1GXs
-         07Fe+pa4L7AXyhtkqeXfpjSsJGpKXdPXYPYdYX2eifPUuJxWYcbqFN0iESHwomlTY+gt
-         bJGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=voEsZPkyjZD18rzLtdDPpUVqOWAqR2u8yHFoISL5tWA=;
-        b=PLkcIhMPWqlNsQant+jIYUDruyTGrhQrtTv3yy2tZJteZhBSboQXuw2J1ocRUjAy1g
-         m/1TVcIB7Y9+AELUCJO2L3qAujUdOCXLWx9pP/MAsZQZGqfXXEU77ZWhrH1FwDeqOi7e
-         x4oL5rtHOS2dJ3ie+V1ATxH43MlxnbG9yRcQz+Om5AhsVTPjedTAoDQECjm5aeOSfcsR
-         cxSYN7ecjsDiaDVWDYqcnTDBDW30HgtRR5cScRspHwm5hd9iTnck3USTNUlr6+FijDah
-         yXbSESv8MTSLL5cmeimS7aOPhT+qMf/vxXlIukJ4PJ0nprFlqPWkHcu29vSF/LyDT0gK
-         /Vuw==
-X-Gm-Message-State: AOAM531/HVDQz/JFv4UVtmLyJofJ/GH2536T032iQudrWUsnT0o5eWys
-        GNYX8yLfjlGC4xzOVIO5q62m5rU88sKVbnBa+r3GxQ==
-X-Google-Smtp-Source: ABdhPJxRL+E/FG0jMGqNmEVkiK0JKDx1AmCZa7th6GCMdfj5xVmIDB1v0qf0mRD8QdCKNL5aBnnNUOaJn4UczaqLpNs=
-X-Received: by 2002:a2e:9a89:: with SMTP id p9mr2070693lji.363.1604725228766;
- Fri, 06 Nov 2020 21:00:28 -0800 (PST)
+        id S1727356AbgKGFKd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 7 Nov 2020 00:10:33 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:55279 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726032AbgKGFKc (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 7 Nov 2020 00:10:32 -0500
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0A75A5mr005910
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 7 Nov 2020 00:10:06 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id B5801420107; Sat,  7 Nov 2020 00:10:05 -0500 (EST)
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
+Cc:     harshads@google.com, "Theodore Ts'o" <tytso@mit.edu>
+Subject: [PATCH 1/2] ext4: fix sparse warnings in fast_commit code
+Date:   Sat,  7 Nov 2020 00:09:58 -0500
+Message-Id: <20201107050959.2561329-1-tytso@mit.edu>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20201106192154.51514-1-98.arpi@gmail.com> <20201106192249.51574-1-98.arpi@gmail.com>
-In-Reply-To: <20201106192249.51574-1-98.arpi@gmail.com>
-From:   David Gow <davidgow@google.com>
-Date:   Sat, 7 Nov 2020 13:00:17 +0800
-Message-ID: <CABVgOSkdwPHLSVQRZX_HoRNokgLFq8ue2gm6zVHWvkD=1-dFyQ@mail.gmail.com>
-Subject: Re: [PATCH v6 2/2] fs: ext4: Modify inode-test.c to use KUnit
- parameterized testing feature
-To:     Arpitha Raghunandan <98.arpi@gmail.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Marco Elver <elver@google.com>,
-        Iurii Zaikin <yzaikin@google.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Nov 7, 2020 at 3:23 AM Arpitha Raghunandan <98.arpi@gmail.com> wrote:
->
-> Modify fs/ext4/inode-test.c to use the parameterized testing
-> feature of KUnit.
->
-> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
-> ---
+Add missing __acquire() and __releases() annotations, and make
+fc_ineligible_reasons[] static, as it is not used outside of
+fs/ext4/fast_commit.c.
 
-This looks good to me. Thanks!
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ fs/ext4/fast_commit.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Reviewed-by: David Gow <davidgow@google.com>
+diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+index 5cd6630ab1b9..f2033e13a273 100644
+--- a/fs/ext4/fast_commit.c
++++ b/fs/ext4/fast_commit.c
+@@ -156,6 +156,7 @@ void ext4_fc_init_inode(struct inode *inode)
+ 
+ /* This function must be called with sbi->s_fc_lock held. */
+ static void ext4_fc_wait_committing_inode(struct inode *inode)
++__releases(&EXT4_SB(inode->i_sb)->s_fc_lock)
+ {
+ 	wait_queue_head_t *wq;
+ 	struct ext4_inode_info *ei = EXT4_I(inode);
+@@ -911,6 +912,8 @@ static int ext4_fc_wait_inode_data_all(journal_t *journal)
+ 
+ /* Commit all the directory entry updates */
+ static int ext4_fc_commit_dentry_updates(journal_t *journal, u32 *crc)
++__acquires(&sbi->s_fc_lock)
++__releases(&sbi->s_fc_lock)
+ {
+ 	struct super_block *sb = (struct super_block *)(journal->j_private);
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
+@@ -2106,7 +2109,7 @@ void ext4_fc_init(struct super_block *sb, journal_t *journal)
+ 	journal->j_fc_cleanup_callback = ext4_fc_cleanup;
+ }
+ 
+-const char *fc_ineligible_reasons[] = {
++static const char *fc_ineligible_reasons[] = {
+ 	"Extended attributes changed",
+ 	"Cross rename",
+ 	"Journal flag changed",
+-- 
+2.28.0
 
--- David
