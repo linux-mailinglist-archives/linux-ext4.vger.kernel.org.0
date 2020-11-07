@@ -2,82 +2,191 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C496E2AA27A
-	for <lists+linux-ext4@lfdr.de>; Sat,  7 Nov 2020 06:10:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C1C2AA455
+	for <lists+linux-ext4@lfdr.de>; Sat,  7 Nov 2020 11:06:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727693AbgKGFKR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 7 Nov 2020 00:10:17 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:55207 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726032AbgKGFKQ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 7 Nov 2020 00:10:16 -0500
-Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0A75ABXS005961
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 7 Nov 2020 00:10:11 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 02AE5420107; Sat,  7 Nov 2020 00:10:10 -0500 (EST)
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-Cc:     harshads@google.com, "Theodore Ts'o" <tytso@mit.edu>,
-        stable@kernel.org
-Subject: [PATCH 2/2] jbd2: fix up sparse warnings in checkpoint code
-Date:   Sat,  7 Nov 2020 00:09:59 -0500
-Message-Id: <20201107050959.2561329-2-tytso@mit.edu>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201107050959.2561329-1-tytso@mit.edu>
-References: <20201107050959.2561329-1-tytso@mit.edu>
+        id S1728106AbgKGKGn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 7 Nov 2020 05:06:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727890AbgKGKGm (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 7 Nov 2020 05:06:42 -0500
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6A0EC0613CF
+        for <linux-ext4@vger.kernel.org>; Sat,  7 Nov 2020 02:06:40 -0800 (PST)
+Received: by mail-oi1-x244.google.com with SMTP id k26so4327792oiw.0
+        for <linux-ext4@vger.kernel.org>; Sat, 07 Nov 2020 02:06:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TErsauc9tpAzI6S5cYpbCRvl4twcQzw2HKSJ2d2Z+Qg=;
+        b=cFZKFASwAfugNcZhz/FuAFmwgIJgslvWVTlXGObXW4GVaiNx5l+4SITTnhwIes3oiJ
+         reYnqBcoLt6G3wNTxTLRdKwgOg7Ns7cE5FqN5L4rV7tMFTjEp2540lKCJlUvc52aoVKR
+         0YjZ0+zMCT0aW++pNadjtwASHdwbGcnxya4d7uBY6bTaj1NGc6B9kOGdHCcbOMUKZvXf
+         bJd1gYeIAayqwjDTVfshWKIZxHJX7MEwCH3td/atGMHmO6tHjcBdloKYwzPy6HyHIlWy
+         +nIGIc8yTT0VDKRsKtvKA7fit+ZKdqNJdSHlD/fEWKCd9D7kRQN5jIMqPlF0YA+MdZGz
+         t+Ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TErsauc9tpAzI6S5cYpbCRvl4twcQzw2HKSJ2d2Z+Qg=;
+        b=nKk/b+EYTXEqO29FikoNM5alFGknX8Yhsxmt7KHugHO95ST5RvOpc05ZJokHW1PBra
+         YegzrN/qONpwbgHvqGNdHkRAshOQGqp//TBEyhUR8BUW0SsK9uK8THKELj3SBSr6F96U
+         QliywZ37wNu55qLmorF6f4YqKHFAMba2KUL7sVouFfbWkYCc+QimqPSODLMN7DKGlTwA
+         V2/Fxc67i/jpAujaoydzUmHbbPL9JP9m1HO0MEE0Z9XI3o+BEOBGaH8uo8ofpLWBufUx
+         zFdjwYioUzrFUCmmPCPjpyne+QtNV+QGurPO468+v26/I5A2VL0J+RiCpkcNimMPWD+X
+         9cng==
+X-Gm-Message-State: AOAM532giYaZdHSxPmLJKe7UVxXJxb+WVnujb2OWSLK10i6mVxPozwY9
+        5vBviiwC9nympNLtr4z65ujjbyWrV9i81Trh4BW9dg==
+X-Google-Smtp-Source: ABdhPJxb+xfOZ9jVhfWoVlbABCI67vL5rewh1ARjZCLWNyu463apeEQlWxjA1SZroi07HqVGkXthuRthzuku33QQCxw=
+X-Received: by 2002:aca:6206:: with SMTP id w6mr3818129oib.121.1604743599913;
+ Sat, 07 Nov 2020 02:06:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201106192154.51514-1-98.arpi@gmail.com> <CABVgOSkQ6+y7OGw2494cJa2b60EkSjncLNAgc9cJDbS=X9J3WA@mail.gmail.com>
+In-Reply-To: <CABVgOSkQ6+y7OGw2494cJa2b60EkSjncLNAgc9cJDbS=X9J3WA@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Sat, 7 Nov 2020 11:06:28 +0100
+Message-ID: <CANpmjNNp2RUCE_ypp2R4MznikTYRYeCDuF7VMp+Hbh=55KWa3A@mail.gmail.com>
+Subject: Re: [PATCH v6 1/2] kunit: Support for Parameterized Testing
+To:     David Gow <davidgow@google.com>
+Cc:     Arpitha Raghunandan <98.arpi@gmail.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Add missing __acquires() and __releases() annotations.  Also, in an
-"this should never happen" WARN_ON check, if it *does* actually
-happen, we need to release j_state_lock since this function is always
-supposed to release that lock.  Otherwise, things will quickly grind
-to a halt after the WARN_ON trips.
+On Sat, 7 Nov 2020 at 05:58, David Gow <davidgow@google.com> wrote:
+> On Sat, Nov 7, 2020 at 3:22 AM Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+> >
+> > Implementation of support for parameterized testing in KUnit.
+> > This approach requires the creation of a test case using the
+> > KUNIT_CASE_PARAM macro that accepts a generator function as input.
+> > This generator function should return the next parameter given the
+> > previous parameter in parameterized tests. It also provides
+> > a macro to generate common-case generators.
+> >
+> > Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+> > Co-developed-by: Marco Elver <elver@google.com>
+> > Signed-off-by: Marco Elver <elver@google.com>
+> > ---
+>
+> This looks good to me! A couple of minor thoughts about the output
+> format below, but I'm quite happy to have this as-is regardless.
+>
+> Reviewed-by: David Gow <davidgow@google.com>
+>
+> Cheers,
+> -- David
+>
+> > Changes v5->v6:
+> > - Fix alignment to maintain consistency
+> > Changes v4->v5:
+> > - Update kernel-doc comments.
+> > - Use const void* for generator return and prev value types.
+> > - Add kernel-doc comment for KUNIT_ARRAY_PARAM.
+> > - Rework parameterized test case execution strategy: each parameter is executed
+> >   as if it was its own test case, with its own test initialization and cleanup
+> >   (init and exit are called, etc.). However, we cannot add new test cases per TAP
+> >   protocol once we have already started execution. Instead, log the result of
+> >   each parameter run as a diagnostic comment.
+> > Changes v3->v4:
+> > - Rename kunit variables
+> > - Rename generator function helper macro
+> > - Add documentation for generator approach
+> > - Display test case name in case of failure along with param index
+> > Changes v2->v3:
+> > - Modifictaion of generator macro and method
+> > Changes v1->v2:
+> > - Use of a generator method to access test case parameters
+> >
+> >  include/kunit/test.h | 36 ++++++++++++++++++++++++++++++++++
+> >  lib/kunit/test.c     | 46 +++++++++++++++++++++++++++++++-------------
+> >  2 files changed, 69 insertions(+), 13 deletions(-)
+> >
+> > diff --git a/include/kunit/test.h b/include/kunit/test.h
+> > index db1b0ae666c4..16616d3974f9 100644
+> > --- a/include/kunit/test.h
+> > +++ b/include/kunit/test.h
+> > @@ -107,6 +107,7 @@ struct kunit;
+[...]
+> > -       kunit_suite_for_each_test_case(suite, test_case)
+> > -               kunit_run_case_catch_errors(suite, test_case);
+> > +       kunit_suite_for_each_test_case(suite, test_case) {
+> > +               struct kunit test = { .param_value = NULL, .param_index = 0 };
+> > +               bool test_success = true;
+> > +
+> > +               if (test_case->generate_params)
+> > +                       test.param_value = test_case->generate_params(NULL);
+> > +
+> > +               do {
+> > +                       kunit_run_case_catch_errors(suite, test_case, &test);
+> > +                       test_success &= test_case->success;
+> > +
+> > +                       if (test_case->generate_params) {
+> > +                               kunit_log(KERN_INFO, &test,
+> > +                                         KUNIT_SUBTEST_INDENT
+> > +                                         "# %s: param-%d %s",
+>
+> Would it make sense to have this imitate the TAP format a bit more?
+> So, have "# [ok|not ok] - [name]" as the format? [name] could be
+> something like "[test_case->name]:param-[index]" or similar.
+> If we keep it commented out and don't indent it further, it won't
+> formally be a nested test (though if we wanted to support those later,
+> it'd be easy to add), but I think it would be nicer to be consistent
+> here.
 
-Fixes: 96f1e0974575 ("jbd2: avoid long hold times of j_state_lock...")
-Cc: stable@kernel.org
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
----
- fs/jbd2/checkpoint.c  | 2 ++
- fs/jbd2/transaction.c | 4 +++-
- 2 files changed, 5 insertions(+), 1 deletion(-)
+The previous attempt [1] at something similar failed because it seems
+we'd need to teach kunit-tool new tricks [2], too.
+[1] https://lkml.kernel.org/r/20201105195503.GA2399621@elver.google.com
+[2] https://lkml.kernel.org/r/20201106123433.GA3563235@elver.google.com
 
-diff --git a/fs/jbd2/checkpoint.c b/fs/jbd2/checkpoint.c
-index 263f02ad8ebf..472932b9e6bc 100644
---- a/fs/jbd2/checkpoint.c
-+++ b/fs/jbd2/checkpoint.c
-@@ -106,6 +106,8 @@ static int __try_to_free_cp_buf(struct journal_head *jh)
-  * for a checkpoint to free up some space in the log.
-  */
- void __jbd2_log_wait_for_space(journal_t *journal)
-+__acquires(&journal->j_state_lock)
-+__releases(&journal->j_state_lock)
- {
- 	int nblocks, space_left;
- 	/* assert_spin_locked(&journal->j_state_lock); */
-diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-index 43985738aa86..d54f04674e8e 100644
---- a/fs/jbd2/transaction.c
-+++ b/fs/jbd2/transaction.c
-@@ -195,8 +195,10 @@ static void wait_transaction_switching(journal_t *journal)
- 	DEFINE_WAIT(wait);
- 
- 	if (WARN_ON(!journal->j_running_transaction ||
--		    journal->j_running_transaction->t_state != T_SWITCH))
-+		    journal->j_running_transaction->t_state != T_SWITCH)) {
-+		read_unlock(&journal->j_state_lock);
- 		return;
-+	}
- 	prepare_to_wait(&journal->j_wait_transaction_locked, &wait,
- 			TASK_UNINTERRUPTIBLE);
- 	read_unlock(&journal->j_state_lock);
--- 
-2.28.0
+So if we go with a different format, we might need a patch before this
+one to make kunit-tool compatible with that type of diagnostic.
 
+Currently I think we have the following proposals for a format:
+
+1. The current "# [test_case->name]: param-[index] [ok|not ok]" --
+this works well, because no changes to kunit-tool are required, and it
+also picks up the diagnostic context for the case and displays that on
+test failure.
+
+2. Your proposed "# [ok|not ok] - [test_case->name]:param-[index]".
+As-is, this needs a patch for kunit-tool as well. I just checked, and
+if we change it to "# [ok|not ok] - [test_case->name]: param-[index]"
+(note the space after ':') it works without changing kunit-tool. ;-)
+
+3. Something like "# [ok|not ok] param-[index] - [test_case->name]",
+which I had played with earlier but kunit-tool is definitely not yet
+happy with.
+
+So my current preference is (2) with the extra space (no change to
+kunit-tool required). WDYT?
+
+> My other suggestion -- albeit one outside the scope of this initial
+> version -- would be to allow the "param-%d" name to be overridden
+> somehow by a test. For example, the ext4 inode test has names for all
+> its test cases: it'd be nice to be able to display those instead (even
+> if they're not formatted as identifiers as-is).
+
+Right, I was thinking about this, but it'd need a way to optionally
+pass another function that converts const void* params to readable
+strings. But as you say, we should do that as a follow-up patch later
+because it might require a few more iterations.
+
+[...]
+
+Thanks,
+-- Marco
