@@ -2,191 +2,227 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0C1C2AA455
-	for <lists+linux-ext4@lfdr.de>; Sat,  7 Nov 2020 11:06:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 408582AA67A
+	for <lists+linux-ext4@lfdr.de>; Sat,  7 Nov 2020 16:58:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728106AbgKGKGn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 7 Nov 2020 05:06:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57786 "EHLO
+        id S1726043AbgKGP6o (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 7 Nov 2020 10:58:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727890AbgKGKGm (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 7 Nov 2020 05:06:42 -0500
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6A0EC0613CF
-        for <linux-ext4@vger.kernel.org>; Sat,  7 Nov 2020 02:06:40 -0800 (PST)
-Received: by mail-oi1-x244.google.com with SMTP id k26so4327792oiw.0
-        for <linux-ext4@vger.kernel.org>; Sat, 07 Nov 2020 02:06:40 -0800 (PST)
+        with ESMTP id S1726455AbgKGP6n (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 7 Nov 2020 10:58:43 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19151C0613CF
+        for <linux-ext4@vger.kernel.org>; Sat,  7 Nov 2020 07:58:42 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id x15so1576616pll.2
+        for <linux-ext4@vger.kernel.org>; Sat, 07 Nov 2020 07:58:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TErsauc9tpAzI6S5cYpbCRvl4twcQzw2HKSJ2d2Z+Qg=;
-        b=cFZKFASwAfugNcZhz/FuAFmwgIJgslvWVTlXGObXW4GVaiNx5l+4SITTnhwIes3oiJ
-         reYnqBcoLt6G3wNTxTLRdKwgOg7Ns7cE5FqN5L4rV7tMFTjEp2540lKCJlUvc52aoVKR
-         0YjZ0+zMCT0aW++pNadjtwASHdwbGcnxya4d7uBY6bTaj1NGc6B9kOGdHCcbOMUKZvXf
-         bJd1gYeIAayqwjDTVfshWKIZxHJX7MEwCH3td/atGMHmO6tHjcBdloKYwzPy6HyHIlWy
-         +nIGIc8yTT0VDKRsKtvKA7fit+ZKdqNJdSHlD/fEWKCd9D7kRQN5jIMqPlF0YA+MdZGz
-         t+Ug==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=TpF3slMatQgkTK4jzVKgzgOPdgG3dN/vynMXvLn747k=;
+        b=FQSPwAYelJHxN1NrYTp6XKNOub1eXIBZvJkwQ/ZLlWY62MhqQAmpVvswdLyNvtOn8F
+         jt58dTDaaazcMZfVPrrghOVyRRZsojU4JUtN0ZYtF59pjhKmV/Q9v/PM1x6XTcZTE3DZ
+         XQ2RirRRrpJ+u3LA0UZVV/Zq6ei9z2Lc4aPhVG9h6qA7hLDemdItcsilsBQDK3ngMz8G
+         1PJOBRBdR3H03DGSMNpC8/JDJ1lYKftEaLCWvw9sznZsdtzk1uxtiYqyF1GAT1n5hGa5
+         ZAX3/mE7AgFFC8v4tM2U1aw4L+fLMZEniNj+z3lkv+nE7tqBflaz1h6RxcZk4bab77X1
+         Bc3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TErsauc9tpAzI6S5cYpbCRvl4twcQzw2HKSJ2d2Z+Qg=;
-        b=nKk/b+EYTXEqO29FikoNM5alFGknX8Yhsxmt7KHugHO95ST5RvOpc05ZJokHW1PBra
-         YegzrN/qONpwbgHvqGNdHkRAshOQGqp//TBEyhUR8BUW0SsK9uK8THKELj3SBSr6F96U
-         QliywZ37wNu55qLmorF6f4YqKHFAMba2KUL7sVouFfbWkYCc+QimqPSODLMN7DKGlTwA
-         V2/Fxc67i/jpAujaoydzUmHbbPL9JP9m1HO0MEE0Z9XI3o+BEOBGaH8uo8ofpLWBufUx
-         zFdjwYioUzrFUCmmPCPjpyne+QtNV+QGurPO468+v26/I5A2VL0J+RiCpkcNimMPWD+X
-         9cng==
-X-Gm-Message-State: AOAM532giYaZdHSxPmLJKe7UVxXJxb+WVnujb2OWSLK10i6mVxPozwY9
-        5vBviiwC9nympNLtr4z65ujjbyWrV9i81Trh4BW9dg==
-X-Google-Smtp-Source: ABdhPJxb+xfOZ9jVhfWoVlbABCI67vL5rewh1ARjZCLWNyu463apeEQlWxjA1SZroi07HqVGkXthuRthzuku33QQCxw=
-X-Received: by 2002:aca:6206:: with SMTP id w6mr3818129oib.121.1604743599913;
- Sat, 07 Nov 2020 02:06:39 -0800 (PST)
-MIME-Version: 1.0
-References: <20201106192154.51514-1-98.arpi@gmail.com> <CABVgOSkQ6+y7OGw2494cJa2b60EkSjncLNAgc9cJDbS=X9J3WA@mail.gmail.com>
-In-Reply-To: <CABVgOSkQ6+y7OGw2494cJa2b60EkSjncLNAgc9cJDbS=X9J3WA@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Sat, 7 Nov 2020 11:06:28 +0100
-Message-ID: <CANpmjNNp2RUCE_ypp2R4MznikTYRYeCDuF7VMp+Hbh=55KWa3A@mail.gmail.com>
-Subject: Re: [PATCH v6 1/2] kunit: Support for Parameterized Testing
-To:     David Gow <davidgow@google.com>
-Cc:     Arpitha Raghunandan <98.arpi@gmail.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=TpF3slMatQgkTK4jzVKgzgOPdgG3dN/vynMXvLn747k=;
+        b=uFjpMIHTfo1KVuSV4w15vCot8hlTENFzTe8VAfkiUwPpSvhwZIixDC2o3/zJ+hoP7I
+         wrr1Ciph/yrghhZl+hdhTq+/gHnvviUkEDjDM2JiKZpmNZXR+wgv/njMXyPMJEBYScii
+         4yFXbz/CslvjivAnQjEnBVPdXuN0aSiUMsHiLFEMlstVoS8wnR6JsWMkXg2aptCNfiZV
+         W+dkoDHzYYI3A/+f5aokIG1sx/+gYWouUr2Z8//xhZC/obJq1TkU95PU9YC32GF6VRxi
+         uGfSPzZPuHaw/eEBWKcy9B5PvpZmaLU+B0OXNCbdoRKpNKILkA3XfgAuOjusxDmqLB+c
+         5w3w==
+X-Gm-Message-State: AOAM532g3FUP7SJeu480q8/XLeqgpxqbcMXKKxrDK3QawFkyKevWDGPV
+        B3QpSvztYIoSZKTrBiUw+DY5d2c4RYA=
+X-Google-Smtp-Source: ABdhPJzc2sQ5md5qvuw5cfDvaqbcN4TG87qy50yd7BBg2Gp4I+4iR5bH7n+IjPNub6XKc+rf2COFVg==
+X-Received: by 2002:a17:90a:d590:: with SMTP id v16mr4780100pju.88.1604764721517;
+        Sat, 07 Nov 2020 07:58:41 -0800 (PST)
+Received: from VM-0-6-centos.localdomain ([119.28.90.140])
+        by smtp.gmail.com with ESMTPSA id e81sm6049956pfh.104.2020.11.07.07.58.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 07 Nov 2020 07:58:41 -0800 (PST)
+From:   Chunguang Xu <brookxu.cn@gmail.com>
+X-Google-Original-From: Chunguang Xu <brookxu@tencent.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org
+Subject: [PATCH RESEND 1/8] ext4: use ext4_assert() to replace J_ASSERT()
+Date:   Sat,  7 Nov 2020 23:58:11 +0800
+Message-Id: <1604764698-4269-1-git-send-email-brookxu@tencent.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, 7 Nov 2020 at 05:58, David Gow <davidgow@google.com> wrote:
-> On Sat, Nov 7, 2020 at 3:22 AM Arpitha Raghunandan <98.arpi@gmail.com> wrote:
-> >
-> > Implementation of support for parameterized testing in KUnit.
-> > This approach requires the creation of a test case using the
-> > KUNIT_CASE_PARAM macro that accepts a generator function as input.
-> > This generator function should return the next parameter given the
-> > previous parameter in parameterized tests. It also provides
-> > a macro to generate common-case generators.
-> >
-> > Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
-> > Co-developed-by: Marco Elver <elver@google.com>
-> > Signed-off-by: Marco Elver <elver@google.com>
-> > ---
->
-> This looks good to me! A couple of minor thoughts about the output
-> format below, but I'm quite happy to have this as-is regardless.
->
-> Reviewed-by: David Gow <davidgow@google.com>
->
-> Cheers,
-> -- David
->
-> > Changes v5->v6:
-> > - Fix alignment to maintain consistency
-> > Changes v4->v5:
-> > - Update kernel-doc comments.
-> > - Use const void* for generator return and prev value types.
-> > - Add kernel-doc comment for KUNIT_ARRAY_PARAM.
-> > - Rework parameterized test case execution strategy: each parameter is executed
-> >   as if it was its own test case, with its own test initialization and cleanup
-> >   (init and exit are called, etc.). However, we cannot add new test cases per TAP
-> >   protocol once we have already started execution. Instead, log the result of
-> >   each parameter run as a diagnostic comment.
-> > Changes v3->v4:
-> > - Rename kunit variables
-> > - Rename generator function helper macro
-> > - Add documentation for generator approach
-> > - Display test case name in case of failure along with param index
-> > Changes v2->v3:
-> > - Modifictaion of generator macro and method
-> > Changes v1->v2:
-> > - Use of a generator method to access test case parameters
-> >
-> >  include/kunit/test.h | 36 ++++++++++++++++++++++++++++++++++
-> >  lib/kunit/test.c     | 46 +++++++++++++++++++++++++++++++-------------
-> >  2 files changed, 69 insertions(+), 13 deletions(-)
-> >
-> > diff --git a/include/kunit/test.h b/include/kunit/test.h
-> > index db1b0ae666c4..16616d3974f9 100644
-> > --- a/include/kunit/test.h
-> > +++ b/include/kunit/test.h
-> > @@ -107,6 +107,7 @@ struct kunit;
-[...]
-> > -       kunit_suite_for_each_test_case(suite, test_case)
-> > -               kunit_run_case_catch_errors(suite, test_case);
-> > +       kunit_suite_for_each_test_case(suite, test_case) {
-> > +               struct kunit test = { .param_value = NULL, .param_index = 0 };
-> > +               bool test_success = true;
-> > +
-> > +               if (test_case->generate_params)
-> > +                       test.param_value = test_case->generate_params(NULL);
-> > +
-> > +               do {
-> > +                       kunit_run_case_catch_errors(suite, test_case, &test);
-> > +                       test_success &= test_case->success;
-> > +
-> > +                       if (test_case->generate_params) {
-> > +                               kunit_log(KERN_INFO, &test,
-> > +                                         KUNIT_SUBTEST_INDENT
-> > +                                         "# %s: param-%d %s",
->
-> Would it make sense to have this imitate the TAP format a bit more?
-> So, have "# [ok|not ok] - [name]" as the format? [name] could be
-> something like "[test_case->name]:param-[index]" or similar.
-> If we keep it commented out and don't indent it further, it won't
-> formally be a nested test (though if we wanted to support those later,
-> it'd be easy to add), but I think it would be nicer to be consistent
-> here.
+From: Chunguang Xu <brookxu@tencent.com>
 
-The previous attempt [1] at something similar failed because it seems
-we'd need to teach kunit-tool new tricks [2], too.
-[1] https://lkml.kernel.org/r/20201105195503.GA2399621@elver.google.com
-[2] https://lkml.kernel.org/r/20201106123433.GA3563235@elver.google.com
+There are currently multiple forms of assertion, such as J_ASSERT().
+J_ASEERT() is provided for the jbd module, which is a public module.
+Maybe we should use custom ASSERT() like other file systems, such as
+xfs, which would be better.
 
-So if we go with a different format, we might need a patch before this
-one to make kunit-tool compatible with that type of diagnostic.
+Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+---
+ fs/ext4/balloc.c   |  2 +-
+ fs/ext4/ext4.h     | 10 ++++++++++
+ fs/ext4/fsync.c    |  2 +-
+ fs/ext4/indirect.c |  4 ++--
+ fs/ext4/inode.c    | 10 +++++-----
+ fs/ext4/namei.c    | 12 ++++--------
+ fs/ext4/super.c    |  2 +-
+ 7 files changed, 24 insertions(+), 18 deletions(-)
 
-Currently I think we have the following proposals for a format:
+diff --git a/fs/ext4/balloc.c b/fs/ext4/balloc.c
+index 1d640b1..2d7f4eb 100644
+--- a/fs/ext4/balloc.c
++++ b/fs/ext4/balloc.c
+@@ -185,7 +185,7 @@ static int ext4_init_block_bitmap(struct super_block *sb,
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
+ 	ext4_fsblk_t start, tmp;
+ 
+-	J_ASSERT_BH(bh, buffer_locked(bh));
++	ext4_assert(buffer_locked(bh));
+ 
+ 	/* If checksum is bad mark all blocks used to prevent allocation
+ 	 * essentially implementing a per-group read-only flag. */
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 1b399ca..bd88b4a 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -98,6 +98,16 @@
+ #define ext_debug(ino, fmt, ...)	no_printk(fmt, ##__VA_ARGS__)
+ #endif
+ 
++#define ext4_assert(assert)						\
++do {									\
++	if (unlikely(!(assert))) {					\
++		printk(KERN_EMERG					\
++		       "Assertion failure in %s() at %s:%d: '%s'\n",	\
++		       __func__, __FILE__, __LINE__, #assert);		\
++		BUG();							\
++	}								\
++} while (0)
++
+ /* data type for block offset of block group */
+ typedef int ext4_grpblk_t;
+ 
+diff --git a/fs/ext4/fsync.c b/fs/ext4/fsync.c
+index a42ca95..7e74279 100644
+--- a/fs/ext4/fsync.c
++++ b/fs/ext4/fsync.c
+@@ -136,7 +136,7 @@ int ext4_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+ 	if (unlikely(ext4_forced_shutdown(sbi)))
+ 		return -EIO;
+ 
+-	J_ASSERT(ext4_journal_current_handle() == NULL);
++	ext4_assert(ext4_journal_current_handle() == NULL);
+ 
+ 	trace_ext4_sync_file_enter(file, datasync);
+ 
+diff --git a/fs/ext4/indirect.c b/fs/ext4/indirect.c
+index 05efa682..bffc5e4 100644
+--- a/fs/ext4/indirect.c
++++ b/fs/ext4/indirect.c
+@@ -534,8 +534,8 @@ int ext4_ind_map_blocks(handle_t *handle, struct inode *inode,
+ 	ext4_fsblk_t first_block = 0;
+ 
+ 	trace_ext4_ind_map_blocks_enter(inode, map->m_lblk, map->m_len, flags);
+-	J_ASSERT(!(ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS)));
+-	J_ASSERT(handle != NULL || (flags & EXT4_GET_BLOCKS_CREATE) == 0);
++	ext4_assert(!(ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS)));
++	ext4_assert(handle != NULL || (flags & EXT4_GET_BLOCKS_CREATE) == 0);
+ 	depth = ext4_block_to_path(inode, map->m_lblk, offsets,
+ 				   &blocks_to_boundary);
+ 
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 0d8385a..67fa932 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -830,8 +830,8 @@ struct buffer_head *ext4_getblk(handle_t *handle, struct inode *inode,
+ 	int create = map_flags & EXT4_GET_BLOCKS_CREATE;
+ 	int err;
+ 
+-	J_ASSERT((EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY)
+-		 || handle != NULL || create == 0);
++	ext4_assert((EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY)
++		    || handle != NULL || create == 0);
+ 
+ 	map.m_lblk = block;
+ 	map.m_len = 1;
+@@ -846,9 +846,9 @@ struct buffer_head *ext4_getblk(handle_t *handle, struct inode *inode,
+ 	if (unlikely(!bh))
+ 		return ERR_PTR(-ENOMEM);
+ 	if (map.m_flags & EXT4_MAP_NEW) {
+-		J_ASSERT(create != 0);
+-		J_ASSERT((EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY)
+-			 || (handle != NULL));
++		ext4_assert(create != 0);
++		ext4_assert((EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY)
++			    || (handle != NULL));
+ 
+ 		/*
+ 		 * Now that we do not always journal data, we should
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index 3350926..9177352 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -182,10 +182,6 @@ static struct buffer_head *__ext4_read_dirblock(struct inode *inode,
+ 	return bh;
+ }
+ 
+-#ifndef assert
+-#define assert(test) J_ASSERT(test)
+-#endif
+-
+ #ifdef DX_DEBUG
+ #define dxtrace(command) command
+ #else
+@@ -849,7 +845,7 @@ struct stats dx_show_entries(struct dx_hash_info *hinfo, struct inode *dir,
+ 					break;
+ 				}
+ 			}
+-			assert (at == p - 1);
++			ext4_assert(at == p - 1);
+ 		}
+ 
+ 		at = p - 1;
+@@ -1265,8 +1261,8 @@ static void dx_insert_block(struct dx_frame *frame, u32 hash, ext4_lblk_t block)
+ 	struct dx_entry *old = frame->at, *new = old + 1;
+ 	int count = dx_get_count(entries);
+ 
+-	assert(count < dx_get_limit(entries));
+-	assert(old < entries + count);
++	ext4_assert(count < dx_get_limit(entries));
++	ext4_assert(old < entries + count);
+ 	memmove(new + 1, new, (char *)(entries + count) - (char *)(new));
+ 	dx_set_hash(new, hash);
+ 	dx_set_block(new, block);
+@@ -2961,7 +2957,7 @@ int ext4_orphan_add(handle_t *handle, struct inode *inode)
+ 	 * hold i_mutex, or the inode can not be referenced from outside,
+ 	 * so i_nlink should not be bumped due to race
+ 	 */
+-	J_ASSERT((S_ISREG(inode->i_mode) || S_ISDIR(inode->i_mode) ||
++	ext4_assert((S_ISREG(inode->i_mode) || S_ISDIR(inode->i_mode) ||
+ 		  S_ISLNK(inode->i_mode)) || inode->i_nlink == 0);
+ 
+ 	BUFFER_TRACE(sbi->s_sbh, "get_write_access");
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index c3b8645..5006c42 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -1251,7 +1251,7 @@ static void ext4_put_super(struct super_block *sb)
+ 	 * in-memory list had better be clean by this point. */
+ 	if (!list_empty(&sbi->s_orphan))
+ 		dump_orphan_list(sb, sbi);
+-	J_ASSERT(list_empty(&sbi->s_orphan));
++	ext4_assert(list_empty(&sbi->s_orphan));
+ 
+ 	sync_blockdev(sb->s_bdev);
+ 	invalidate_bdev(sb->s_bdev);
+-- 
+1.8.3.1
 
-1. The current "# [test_case->name]: param-[index] [ok|not ok]" --
-this works well, because no changes to kunit-tool are required, and it
-also picks up the diagnostic context for the case and displays that on
-test failure.
-
-2. Your proposed "# [ok|not ok] - [test_case->name]:param-[index]".
-As-is, this needs a patch for kunit-tool as well. I just checked, and
-if we change it to "# [ok|not ok] - [test_case->name]: param-[index]"
-(note the space after ':') it works without changing kunit-tool. ;-)
-
-3. Something like "# [ok|not ok] param-[index] - [test_case->name]",
-which I had played with earlier but kunit-tool is definitely not yet
-happy with.
-
-So my current preference is (2) with the extra space (no change to
-kunit-tool required). WDYT?
-
-> My other suggestion -- albeit one outside the scope of this initial
-> version -- would be to allow the "param-%d" name to be overridden
-> somehow by a test. For example, the ext4 inode test has names for all
-> its test cases: it'd be nice to be able to display those instead (even
-> if they're not formatted as identifiers as-is).
-
-Right, I was thinking about this, but it'd need a way to optionally
-pass another function that converts const void* params to readable
-strings. But as you say, we should do that as a follow-up patch later
-because it might require a few more iterations.
-
-[...]
-
-Thanks,
--- Marco
