@@ -2,57 +2,57 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F0052AA883
-	for <lists+linux-ext4@lfdr.de>; Sun,  8 Nov 2020 01:11:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 462732AA886
+	for <lists+linux-ext4@lfdr.de>; Sun,  8 Nov 2020 01:12:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726060AbgKHALw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 7 Nov 2020 19:11:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46860 "EHLO
+        id S1726614AbgKHAMP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 7 Nov 2020 19:12:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726043AbgKHALw (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 7 Nov 2020 19:11:52 -0500
+        with ESMTP id S1726099AbgKHAMP (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 7 Nov 2020 19:12:15 -0500
 Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F44DC0613CF
-        for <linux-ext4@vger.kernel.org>; Sat,  7 Nov 2020 16:11:50 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id o9so7167698ejg.1
-        for <linux-ext4@vger.kernel.org>; Sat, 07 Nov 2020 16:11:50 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3005C0613CF
+        for <linux-ext4@vger.kernel.org>; Sat,  7 Nov 2020 16:12:14 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id f23so504943ejk.2
+        for <linux-ext4@vger.kernel.org>; Sat, 07 Nov 2020 16:12:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=sQown+dXN/7MJi/851IyRYaN1mLN+qK5QG4KY26yItE=;
-        b=YiyurmZG+NU9Q9je6zjY/9T6stJkvPXofDqyWjdclVh9kDcDYlaMAt1HLAY/zC6mhj
-         12jTMcOez5QcDu0Nx+s0FnEuHG0gUpm4FtRgr/HCGCPocXbZytovgk8JTS9CPpEzOwLs
-         YVi4cpm8fhLFz5BR8cWE+ga2Cqu1LSuZSrY6E2Vwi74ug18v9sSlQ+xUA5K5UYNd2KTb
-         ZWY4G4VMPr02Qt9Pwd75GlM8nqh6DzphnvJrPp2JGq6quVN7VQG3COFavrJopfyam81N
-         rSrJ3kPrBWrz7qtq+yUU4pL2e/M2v8udVhtunIE9xU7pAKL746yt66xANc6Mw8sBBguc
-         XluA==
+        bh=J6ir1umg82Hpz9yS9hntzbm2kCu9EX5Rd7cz2s11lJs=;
+        b=HjYbSl/K1419XcHV+4Pc5u8N/IWJlxslFpXm6uTi+H0Sojx52ovQA0s0oO1Tw7H5HH
+         xsJz3y+AU5qZOCgcUWGwwMy8nxw0Nps+6x4gqe/RUK3Yrm8GoCaDFOsPNd2vtC3BsSzS
+         Cqx5pSJhlB+X6pIHTttT9+LfZIoG+S/Tt8AJSYAcmMRblk+na3zoZ6HSxQtYUOg+Ol8j
+         FXDrjH5JpMBSdj8sLU7hoQsTHy/KevFgASXV71lGFnj2h3OARiVF3OfH4GY0va4nfinP
+         s8zCTXEDNcbCsfxRLTPMBQNCa+Hy77vkerT+29X6RzoFEoGex4jIMZaFl6tdgczN+lNG
+         i9Dw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=sQown+dXN/7MJi/851IyRYaN1mLN+qK5QG4KY26yItE=;
-        b=CBtJGEvdTeDK5i0RFRJ25e0yefrfbisfxveBPjXUZ/WqofvuIdOVVLrImxBEfLtOXR
-         MQRF6rTQqm0Q4+hY3yDQlrSEDIit09d2kLFy6X1i9VWIEQRnzRTZgAuciwMAdiEBp5QG
-         vfcenPMN+8ob2D/Jbc8JJdjWPQF7YicOEGXswPu7eHSEwwY0B0cn949oFfqBvhvBH9zr
-         C00kMQvSoZHLB9PbE2+914CeXnZJeePHhVxP+wRVn1mcnaYnVrfaaRM16RU9TjiuzP8x
-         VRZz9woUNwGH/Rbx+v8IT4NcNfpneq/4u+RtUV2UdccbaYRPFwbL8aQmIP+IryGbsjdG
-         9xGA==
-X-Gm-Message-State: AOAM530mOWA74x/TBilS5bs/5GAAB4kCM2C8c3dBcPdFKyaH+B5c96Gl
-        t/R3NrCP0JbAUujav3P8cdPjoqSA8+URk349/1Y=
-X-Google-Smtp-Source: ABdhPJwR/YzGAZyZ7CXBQbIY+tTxVdMgPrSp1bEtGO0c/7uBClVZADrN1MEipdStBNlVeEyzC6OY28c5FCMl+EuR11I=
-X-Received: by 2002:a17:906:f148:: with SMTP id gw8mr8454698ejb.192.1604794308879;
- Sat, 07 Nov 2020 16:11:48 -0800 (PST)
+        bh=J6ir1umg82Hpz9yS9hntzbm2kCu9EX5Rd7cz2s11lJs=;
+        b=mlJWjI/aXEIQLH0VCoxc2xuqHqqW4HF+WmfWM4raI1oGyKvPNTw8tB3DZxMPCZ3gc5
+         Hw0x5YSBF7neov9CFCJ1+lxlsNfA7Hhb1lGSWp/AT9AOjzmMJAsItKtiPALH4x0ZFufD
+         +dtkjUiUi/GmaWPZfjxpGUg6IXVwQi9t4Q5ixATVCiGhVN4KhoTLfWYaEWPVpEvThEaG
+         zCouNBffykB78jZVcNFPNL4cta8phvUBchO4gRdiYwhgrzlDsa6O8bGhDBWGHewiA0yR
+         D7k58yEtST22gE1gJFXa/0TP91lsklZpv2PYfJ0FMAQHuTLb7/cE5xWaPk2paTB9alRK
+         XcOw==
+X-Gm-Message-State: AOAM531E+rZfAStqfA0NuJWStBxhXJWRbal0vKYskiX50N5fqtpGCYeJ
+        yncqAE6R2xnpa+irLJ4qdiyTXON94jfA3zTkcws=
+X-Google-Smtp-Source: ABdhPJyqFJUZFuCa+fgUf8REVCTTaBSFWD4m54Ekvlwxf6jcTHTuV1/V0Rnhm8ShAVEzx3PGnfJf0BScBpf8mefjXHg=
+X-Received: by 2002:a17:906:fcc2:: with SMTP id qx2mr8923484ejb.549.1604794333484;
+ Sat, 07 Nov 2020 16:12:13 -0800 (PST)
 MIME-Version: 1.0
-References: <20201107050959.2561329-1-tytso@mit.edu>
-In-Reply-To: <20201107050959.2561329-1-tytso@mit.edu>
+References: <20201107050959.2561329-1-tytso@mit.edu> <20201107050959.2561329-2-tytso@mit.edu>
+In-Reply-To: <20201107050959.2561329-2-tytso@mit.edu>
 From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
-Date:   Sat, 7 Nov 2020 16:11:37 -0800
-Message-ID: <CAD+ocbxxSAUeLdF59b3aHcSktO2asac-oxbSsDCWwFkJjHnFiA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] ext4: fix sparse warnings in fast_commit code
+Date:   Sat, 7 Nov 2020 16:12:02 -0800
+Message-ID: <CAD+ocbzQKM0UFzQ2KLKXxW_RYkqf7kMHxw6CzpsRzoVbToDogw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] jbd2: fix up sparse warnings in checkpoint code
 To:     "Theodore Ts'o" <tytso@mit.edu>
 Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Harshad Shirwadkar <harshads@google.com>
+        Harshad Shirwadkar <harshads@google.com>, stable@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
@@ -62,47 +62,51 @@ Thanks for the change, it looks good to me.
 
 - Harshad
 
-On Fri, Nov 6, 2020 at 9:14 PM Theodore Ts'o <tytso@mit.edu> wrote:
+On Fri, Nov 6, 2020 at 9:12 PM Theodore Ts'o <tytso@mit.edu> wrote:
 >
-> Add missing __acquire() and __releases() annotations, and make
-> fc_ineligible_reasons[] static, as it is not used outside of
-> fs/ext4/fast_commit.c.
+> Add missing __acquires() and __releases() annotations.  Also, in an
+> "this should never happen" WARN_ON check, if it *does* actually
+> happen, we need to release j_state_lock since this function is always
+> supposed to release that lock.  Otherwise, things will quickly grind
+> to a halt after the WARN_ON trips.
 >
+> Fixes: 96f1e0974575 ("jbd2: avoid long hold times of j_state_lock...")
+> Cc: stable@kernel.org
 > Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 > ---
->  fs/ext4/fast_commit.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+>  fs/jbd2/checkpoint.c  | 2 ++
+>  fs/jbd2/transaction.c | 4 +++-
+>  2 files changed, 5 insertions(+), 1 deletion(-)
 >
-> diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-> index 5cd6630ab1b9..f2033e13a273 100644
-> --- a/fs/ext4/fast_commit.c
-> +++ b/fs/ext4/fast_commit.c
-> @@ -156,6 +156,7 @@ void ext4_fc_init_inode(struct inode *inode)
->
->  /* This function must be called with sbi->s_fc_lock held. */
->  static void ext4_fc_wait_committing_inode(struct inode *inode)
-> +__releases(&EXT4_SB(inode->i_sb)->s_fc_lock)
+> diff --git a/fs/jbd2/checkpoint.c b/fs/jbd2/checkpoint.c
+> index 263f02ad8ebf..472932b9e6bc 100644
+> --- a/fs/jbd2/checkpoint.c
+> +++ b/fs/jbd2/checkpoint.c
+> @@ -106,6 +106,8 @@ static int __try_to_free_cp_buf(struct journal_head *jh)
+>   * for a checkpoint to free up some space in the log.
+>   */
+>  void __jbd2_log_wait_for_space(journal_t *journal)
+> +__acquires(&journal->j_state_lock)
+> +__releases(&journal->j_state_lock)
 >  {
->         wait_queue_head_t *wq;
->         struct ext4_inode_info *ei = EXT4_I(inode);
-> @@ -911,6 +912,8 @@ static int ext4_fc_wait_inode_data_all(journal_t *journal)
+>         int nblocks, space_left;
+>         /* assert_spin_locked(&journal->j_state_lock); */
+> diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
+> index 43985738aa86..d54f04674e8e 100644
+> --- a/fs/jbd2/transaction.c
+> +++ b/fs/jbd2/transaction.c
+> @@ -195,8 +195,10 @@ static void wait_transaction_switching(journal_t *journal)
+>         DEFINE_WAIT(wait);
 >
->  /* Commit all the directory entry updates */
->  static int ext4_fc_commit_dentry_updates(journal_t *journal, u32 *crc)
-> +__acquires(&sbi->s_fc_lock)
-> +__releases(&sbi->s_fc_lock)
->  {
->         struct super_block *sb = (struct super_block *)(journal->j_private);
->         struct ext4_sb_info *sbi = EXT4_SB(sb);
-> @@ -2106,7 +2109,7 @@ void ext4_fc_init(struct super_block *sb, journal_t *journal)
->         journal->j_fc_cleanup_callback = ext4_fc_cleanup;
->  }
->
-> -const char *fc_ineligible_reasons[] = {
-> +static const char *fc_ineligible_reasons[] = {
->         "Extended attributes changed",
->         "Cross rename",
->         "Journal flag changed",
+>         if (WARN_ON(!journal->j_running_transaction ||
+> -                   journal->j_running_transaction->t_state != T_SWITCH))
+> +                   journal->j_running_transaction->t_state != T_SWITCH)) {
+> +               read_unlock(&journal->j_state_lock);
+>                 return;
+> +       }
+>         prepare_to_wait(&journal->j_wait_transaction_locked, &wait,
+>                         TASK_UNINTERRUPTIBLE);
+>         read_unlock(&journal->j_state_lock);
 > --
 > 2.28.0
 >
