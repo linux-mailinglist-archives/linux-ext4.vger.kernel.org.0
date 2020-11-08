@@ -2,111 +2,84 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 462732AA886
-	for <lists+linux-ext4@lfdr.de>; Sun,  8 Nov 2020 01:12:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42D0B2AA89E
+	for <lists+linux-ext4@lfdr.de>; Sun,  8 Nov 2020 01:41:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726614AbgKHAMP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 7 Nov 2020 19:12:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726099AbgKHAMP (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 7 Nov 2020 19:12:15 -0500
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3005C0613CF
-        for <linux-ext4@vger.kernel.org>; Sat,  7 Nov 2020 16:12:14 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id f23so504943ejk.2
-        for <linux-ext4@vger.kernel.org>; Sat, 07 Nov 2020 16:12:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=J6ir1umg82Hpz9yS9hntzbm2kCu9EX5Rd7cz2s11lJs=;
-        b=HjYbSl/K1419XcHV+4Pc5u8N/IWJlxslFpXm6uTi+H0Sojx52ovQA0s0oO1Tw7H5HH
-         xsJz3y+AU5qZOCgcUWGwwMy8nxw0Nps+6x4gqe/RUK3Yrm8GoCaDFOsPNd2vtC3BsSzS
-         Cqx5pSJhlB+X6pIHTttT9+LfZIoG+S/Tt8AJSYAcmMRblk+na3zoZ6HSxQtYUOg+Ol8j
-         FXDrjH5JpMBSdj8sLU7hoQsTHy/KevFgASXV71lGFnj2h3OARiVF3OfH4GY0va4nfinP
-         s8zCTXEDNcbCsfxRLTPMBQNCa+Hy77vkerT+29X6RzoFEoGex4jIMZaFl6tdgczN+lNG
-         i9Dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=J6ir1umg82Hpz9yS9hntzbm2kCu9EX5Rd7cz2s11lJs=;
-        b=mlJWjI/aXEIQLH0VCoxc2xuqHqqW4HF+WmfWM4raI1oGyKvPNTw8tB3DZxMPCZ3gc5
-         Hw0x5YSBF7neov9CFCJ1+lxlsNfA7Hhb1lGSWp/AT9AOjzmMJAsItKtiPALH4x0ZFufD
-         +dtkjUiUi/GmaWPZfjxpGUg6IXVwQi9t4Q5ixATVCiGhVN4KhoTLfWYaEWPVpEvThEaG
-         zCouNBffykB78jZVcNFPNL4cta8phvUBchO4gRdiYwhgrzlDsa6O8bGhDBWGHewiA0yR
-         D7k58yEtST22gE1gJFXa/0TP91lsklZpv2PYfJ0FMAQHuTLb7/cE5xWaPk2paTB9alRK
-         XcOw==
-X-Gm-Message-State: AOAM531E+rZfAStqfA0NuJWStBxhXJWRbal0vKYskiX50N5fqtpGCYeJ
-        yncqAE6R2xnpa+irLJ4qdiyTXON94jfA3zTkcws=
-X-Google-Smtp-Source: ABdhPJyqFJUZFuCa+fgUf8REVCTTaBSFWD4m54Ekvlwxf6jcTHTuV1/V0Rnhm8ShAVEzx3PGnfJf0BScBpf8mefjXHg=
-X-Received: by 2002:a17:906:fcc2:: with SMTP id qx2mr8923484ejb.549.1604794333484;
- Sat, 07 Nov 2020 16:12:13 -0800 (PST)
+        id S1726171AbgKHAlA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 7 Nov 2020 19:41:00 -0500
+Received: from mout.gmx.net ([212.227.17.20]:36341 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726043AbgKHAk7 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sat, 7 Nov 2020 19:40:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1604796053;
+        bh=mWjJ0DimkQwVS54NM2sHgfMoe5IdgjJ/+4WF1B+qSqk=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=Tw2DfqbjweXEwICfxJl5BtYyA0Uhmhhy5iOAQ5SORJ4kcEUPk+zqw8ClmmOJcSN3Y
+         hYTi5H4+XEA/m6x8kLCEeNVO6KoJemeR42vJ3duqWNlB3qKQQB3jLP77JxmDsCWtjj
+         qadyZ4JMBZyQ57k0YA6tTyhp0LCZ0e6t3wJMKM4o=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([37.201.214.162]) by mail.gmx.com (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1N7zFj-1kEtDK2wGx-01550s; Sun, 08
+ Nov 2020 01:40:53 +0100
+From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     linux-doc@vger.kernel.org
+Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Jan Kara <jack@suse.com>, Jonathan Corbet <corbet@lwn.net>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] docs: filesystems: Reduce ext2.rst to one top-level heading
+Date:   Sun,  8 Nov 2020 01:40:45 +0100
+Message-Id: <20201108004045.1378676-1-j.neuschaefer@gmx.net>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20201107050959.2561329-1-tytso@mit.edu> <20201107050959.2561329-2-tytso@mit.edu>
-In-Reply-To: <20201107050959.2561329-2-tytso@mit.edu>
-From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
-Date:   Sat, 7 Nov 2020 16:12:02 -0800
-Message-ID: <CAD+ocbzQKM0UFzQ2KLKXxW_RYkqf7kMHxw6CzpsRzoVbToDogw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] jbd2: fix up sparse warnings in checkpoint code
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Harshad Shirwadkar <harshads@google.com>, stable@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:FrMulFltGVWOjEpimVwcelAsU54AfJhW7agEtWJr3SUQ6i/FENY
+ IsEZuhmLJmtq7HLKvlDZTC7GErNatFT+tBBLwkdNPQwuXhFNMk5VKBDzD63ahnJhc4jmA8b
+ 52gqZkKIFj4EShMxt/q6jzJQG+QulT02AP0U0i1zDWkth5p9z+/pSjHWrjcqfCdZkbB+5v6
+ JYSPDXK+74a3nzHNBuF2Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Yxo3+nVz7NI=:qnGx4iHfeeuwuMGNDE7hYE
+ e5MJvWmsFUTzJM9TqZuW8vfel8ty+P1Daswlu7l369/PSvLytbMQjhr5XHzQAj5WuU7WiyDBe
+ K59LizNUBEwICICgg08attubAoHTTZ5WjRS9Mw1BwWQmLo2QJMXKa28joR0r/v42Xyb+Ecd/B
+ rvtsG1eAnyP8RiVrgUo6o4T8lqFu2YGKSbL0XMGYR1vEm9KScSf8+NOelaLCuFHLedchBV86m
+ p/RpFu8gg9j7OgG149R2qbK+/JabqHc//Xdmu1oQEvYCgqvGPldr3kyAVRM4lSHq1UEcUyUZU
+ 2GzPxYG/DM236++Rb7WfffuUNyDweeZup8rfJ4CesUdSvL3orPq+plMrkU8SAXHLWNiBynNeI
+ rY27V9l2VecvbWlePW9mh8SYHFj48SlhTxG+42ez5Nt8hZ4X/EcELOgXDv669/pw3FtSQyIhR
+ aJFNg21fl6r/iDWoJYWMWyTuDx/pE+szsu/wfHXlfkPhlZPxg4u4DPVd7RewxvcE4oGlnaaZM
+ sTm86F/Q3BOhFh0QEP7PLB0hUbpD7aFTvn+fULqdPtEMVPODT02cwOx3s+2CHLQU2OGS+QoH8
+ H+I5tyomYIo9HBG+a8GrjiNtLW3drEjOUb7d9tteTfFvPLXn+xFpvc/Jz5+KGUsev1KR8sXqY
+ Z2/g4R6GBYuOQbY4rYQIUyd8RGjX/gFORfSiyfsfXak9fTw1IZDsa3iUzq5ki+jClwhqXgGZh
+ iOstyHJsykJZDlEdq7wk9xAu52JcVbG5BcdXVhYB8InVHiFMAQIj27nTn+IliIpiFXHM9msDY
+ LxFSQzvpCvFVKPZUQBicneRyEkXhAbxF/AnZXngpAUK9vzenMGt8pe9e/EyE9DsO+Uv4XXmJO
+ ifdk5e8KI7CscBzCHJcUPh8h3uNgKw9IJYdqYEUH4=
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Thanks for the change, it looks good to me.
+This prevents the other headings like "Options" and "Specification" from
+leaking out and being listed separately in the table of contents.
 
-- Harshad
+Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+=2D--
+ Documentation/filesystems/ext2.rst | 1 +
+ 1 file changed, 1 insertion(+)
 
-On Fri, Nov 6, 2020 at 9:12 PM Theodore Ts'o <tytso@mit.edu> wrote:
->
-> Add missing __acquires() and __releases() annotations.  Also, in an
-> "this should never happen" WARN_ON check, if it *does* actually
-> happen, we need to release j_state_lock since this function is always
-> supposed to release that lock.  Otherwise, things will quickly grind
-> to a halt after the WARN_ON trips.
->
-> Fixes: 96f1e0974575 ("jbd2: avoid long hold times of j_state_lock...")
-> Cc: stable@kernel.org
-> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-> ---
->  fs/jbd2/checkpoint.c  | 2 ++
->  fs/jbd2/transaction.c | 4 +++-
->  2 files changed, 5 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/jbd2/checkpoint.c b/fs/jbd2/checkpoint.c
-> index 263f02ad8ebf..472932b9e6bc 100644
-> --- a/fs/jbd2/checkpoint.c
-> +++ b/fs/jbd2/checkpoint.c
-> @@ -106,6 +106,8 @@ static int __try_to_free_cp_buf(struct journal_head *jh)
->   * for a checkpoint to free up some space in the log.
->   */
->  void __jbd2_log_wait_for_space(journal_t *journal)
-> +__acquires(&journal->j_state_lock)
-> +__releases(&journal->j_state_lock)
->  {
->         int nblocks, space_left;
->         /* assert_spin_locked(&journal->j_state_lock); */
-> diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-> index 43985738aa86..d54f04674e8e 100644
-> --- a/fs/jbd2/transaction.c
-> +++ b/fs/jbd2/transaction.c
-> @@ -195,8 +195,10 @@ static void wait_transaction_switching(journal_t *journal)
->         DEFINE_WAIT(wait);
->
->         if (WARN_ON(!journal->j_running_transaction ||
-> -                   journal->j_running_transaction->t_state != T_SWITCH))
-> +                   journal->j_running_transaction->t_state != T_SWITCH)) {
-> +               read_unlock(&journal->j_state_lock);
->                 return;
-> +       }
->         prepare_to_wait(&journal->j_wait_transaction_locked, &wait,
->                         TASK_UNINTERRUPTIBLE);
->         read_unlock(&journal->j_state_lock);
-> --
-> 2.28.0
->
+diff --git a/Documentation/filesystems/ext2.rst b/Documentation/filesystem=
+s/ext2.rst
+index d83dbbb162e20..c2fce22cfd035 100644
+=2D-- a/Documentation/filesystems/ext2.rst
++++ b/Documentation/filesystems/ext2.rst
+@@ -1,6 +1,7 @@
+ .. SPDX-License-Identifier: GPL-2.0
+
+
++=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+ The Second Extended Filesystem
+ =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+
+=2D-
+2.28.0
+
