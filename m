@@ -2,85 +2,51 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 649132AC5EF
-	for <lists+linux-ext4@lfdr.de>; Mon,  9 Nov 2020 21:27:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B90172AC621
+	for <lists+linux-ext4@lfdr.de>; Mon,  9 Nov 2020 21:46:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729658AbgKIU1I (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 9 Nov 2020 15:27:08 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54912 "EHLO mx2.suse.de"
+        id S1730205AbgKIUpp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 9 Nov 2020 15:45:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58256 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726952AbgKIU1I (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 9 Nov 2020 15:27:08 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 066A4AB95;
-        Mon,  9 Nov 2020 20:27:07 +0000 (UTC)
-Date:   Mon, 9 Nov 2020 21:27:05 +0100
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] xfs: show the dax option in mount options.
-Message-ID: <20201109202705.GZ29778@kitsune.suse.cz>
-References: <cover.1604948373.git.msuchanek@suse.de>
- <f9f7ba25e97dacd92c09eb3ee6a4aca8b4f72b00.1604948373.git.msuchanek@suse.de>
- <20201109192419.GC9695@magnolia>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201109192419.GC9695@magnolia>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1730096AbgKIUpo (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 9 Nov 2020 15:45:44 -0500
+Subject: Re: [GIT PULL] ext4 cleanups for 5.10-rc4
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604954744;
+        bh=h/Pinh10cboDuZRDBaavb0V/lxi5J66R01FXSXof0nI=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=HdJfnTlS9NYVx6DwxhJiaIJRgVFT2IuuMwqcI2JoRzASRu7+foCAM+NcY3IAxDqI1
+         E9J4pRuf+Ut4tADsY3rgjG691p1xVwY4d4jd5rlf/cu8LQH8morIAuuySN1pLtjs23
+         XZL+Jj/nX07asFXI7kTIeJYlbnzf4YBt4AigrFgI=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20201109173809.GA2916982@mit.edu>
+References: <20201109173809.GA2916982@mit.edu>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20201109173809.GA2916982@mit.edu>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_cleanups
+X-PR-Tracked-Commit-Id: 05d5233df85e9621597c5838e95235107eb624a2
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 91808cd6c24359eee0c1eb7a06ea02dac358cbb5
+Message-Id: <160495474400.25406.8560233228341633322.pr-tracker-bot@kernel.org>
+Date:   Mon, 09 Nov 2020 20:45:44 +0000
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-ext4@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 11:24:19AM -0800, Darrick J. Wong wrote:
-> On Mon, Nov 09, 2020 at 08:10:08PM +0100, Michal Suchanek wrote:
-> > xfs accepts both dax and dax_enum but shows only dax_enum. Show both
-> > options.
-> > 
-> > Fixes: 8d6c3446ec23 ("fs/xfs: Make DAX mount option a tri-state")
-> > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
-> > ---
-> >  fs/xfs/xfs_super.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
-> > index e3e229e52512..a3b00003840d 100644
-> > --- a/fs/xfs/xfs_super.c
-> > +++ b/fs/xfs/xfs_super.c
-> > @@ -163,7 +163,7 @@ xfs_fs_show_options(
-> >  		{ XFS_MOUNT_GRPID,		",grpid" },
-> >  		{ XFS_MOUNT_DISCARD,		",discard" },
-> >  		{ XFS_MOUNT_LARGEIO,		",largeio" },
-> > -		{ XFS_MOUNT_DAX_ALWAYS,		",dax=always" },
-> > +		{ XFS_MOUNT_DAX_ALWAYS,		",dax,dax=always" },
-> 
-> NAK, programs that require DAX semantics for files stored on XFS must
-> call statx to detect the STATX_ATTR_DAX flag, as outlined in "Enabling
-> DAX on xfs" in Documentation/filesystems/dax.txt.
-statx can be used to query S_DAX.  NOTE that only regular files will
-ever have S_DAX set and therefore statx will never indicate that S_DAX
-is set on directories.
+The pull request you sent on Mon, 9 Nov 2020 12:38:09 -0500:
 
-The filesystem may not have any files so statx cannot be used.
+> git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_cleanups
 
-If you reject this method of detection please provide an actual usable
-alternative.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/91808cd6c24359eee0c1eb7a06ea02dac358cbb5
 
-Thanks
+Thank you!
 
-Michal
-
-> 
-> --D
-> 
-> >  		{ XFS_MOUNT_DAX_NEVER,		",dax=never" },
-> >  		{ 0, NULL }
-> >  	};
-> > -- 
-> > 2.26.2
-> > 
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
