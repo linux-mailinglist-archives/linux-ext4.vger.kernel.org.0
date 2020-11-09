@@ -2,70 +2,152 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F7462AB4DF
-	for <lists+linux-ext4@lfdr.de>; Mon,  9 Nov 2020 11:28:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 378552ABAD6
+	for <lists+linux-ext4@lfdr.de>; Mon,  9 Nov 2020 14:23:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728937AbgKIK16 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 9 Nov 2020 05:27:58 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54662 "EHLO mx2.suse.de"
+        id S2388070AbgKINVY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 9 Nov 2020 08:21:24 -0500
+Received: from mga11.intel.com ([192.55.52.93]:56851 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726535AbgKIK15 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 9 Nov 2020 05:27:57 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8B05FAD8C;
-        Mon,  9 Nov 2020 10:27:56 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 64EE31E1311; Mon,  9 Nov 2020 11:27:55 +0100 (CET)
-Date:   Mon, 9 Nov 2020 11:27:55 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>
-Cc:     linux-doc@vger.kernel.org, Jan Kara <jack@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] docs: filesystems: Reduce ext2.rst to one top-level
- heading
-Message-ID: <20201109102755.GB21934@quack2.suse.cz>
-References: <20201108004045.1378676-1-j.neuschaefer@gmx.net>
+        id S1731445AbgKINVV (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:21:21 -0500
+IronPort-SDR: AfwWEmur0C8DaanKu+8FjiAamM304CSOvKGeUec8hCoAojSruaYq0+vDcHJYfmbUFrRBVBWpfT
+ 9FbCzjrOhB3w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9799"; a="166286899"
+X-IronPort-AV: E=Sophos;i="5.77,463,1596524400"; 
+   d="scan'208";a="166286899"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 05:21:19 -0800
+IronPort-SDR: nn8tetSCZmIEK1N3AaNjOTJ00pu0PKrVpoU4L1YgIQAlmPrXYDmkBXsw5HWOtIcjlFHAi3Ou+P
+ gfFpEAy+/7ew==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,463,1596524400"; 
+   d="scan'208";a="354125007"
+Received: from lkp-server01.sh.intel.com (HELO d0be80f1a028) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 09 Nov 2020 05:21:18 -0800
+Received: from kbuild by d0be80f1a028 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kc76c-0000C2-KJ; Mon, 09 Nov 2020 13:21:10 +0000
+Date:   Mon, 09 Nov 2020 21:20:51 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+Subject: [ext4:dev] BUILD SUCCESS 05d5233df85e9621597c5838e95235107eb624a2
+Message-ID: <5fa94233.ddPPOcg3+skkz45X%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201108004045.1378676-1-j.neuschaefer@gmx.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sun 08-11-20 01:40:45, Jonathan Neuschäfer wrote:
-> This prevents the other headings like "Options" and "Specification" from
-> leaking out and being listed separately in the table of contents.
-> 
-> Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git  dev
+branch HEAD: 05d5233df85e9621597c5838e95235107eb624a2  jbd2: fix up sparse warnings in checkpoint code
 
-Thanks! I'll queue this fix into my tree.
+elapsed time: 722m
 
-								Honza
+configs tested: 89
+configs skipped: 2
 
-> ---
->  Documentation/filesystems/ext2.rst | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/filesystems/ext2.rst b/Documentation/filesystems/ext2.rst
-> index d83dbbb162e20..c2fce22cfd035 100644
-> --- a/Documentation/filesystems/ext2.rst
-> +++ b/Documentation/filesystems/ext2.rst
-> @@ -1,6 +1,7 @@
->  .. SPDX-License-Identifier: GPL-2.0
-> 
-> 
-> +==============================
->  The Second Extended Filesystem
->  ==============================
-> 
-> --
-> 2.28.0
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                               defconfig
+arm64                            allyesconfig
+arm                              allyesconfig
+arm                              allmodconfig
+openrisc                 simple_smp_defconfig
+xtensa                  cadence_csp_defconfig
+mips                      maltaaprp_defconfig
+xtensa                generic_kc705_defconfig
+arm                          iop32x_defconfig
+arc                                 defconfig
+mips                      fuloong2e_defconfig
+sh                         microdev_defconfig
+arm                            mmp2_defconfig
+arm                          collie_defconfig
+sh                        sh7757lcr_defconfig
+m68k                        m5307c3_defconfig
+arm                             rpc_defconfig
+m68k                        m5272c3_defconfig
+c6x                              alldefconfig
+powerpc                      pmac32_defconfig
+arm                          imote2_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allyesconfig
+m68k                             allmodconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+sh                               allmodconfig
+h8300                            allyesconfig
+parisc                           allyesconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                               defconfig
+i386                                defconfig
+sparc                            allyesconfig
+mips                             allmodconfig
+mips                             allyesconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20201109
+x86_64               randconfig-a002-20201109
+x86_64               randconfig-a003-20201109
+x86_64               randconfig-a005-20201109
+x86_64               randconfig-a006-20201109
+x86_64               randconfig-a001-20201109
+i386                 randconfig-a004-20201109
+i386                 randconfig-a006-20201109
+i386                 randconfig-a005-20201109
+i386                 randconfig-a001-20201109
+i386                 randconfig-a003-20201109
+i386                 randconfig-a002-20201109
+i386                 randconfig-a014-20201109
+i386                 randconfig-a015-20201109
+i386                 randconfig-a016-20201109
+i386                 randconfig-a011-20201109
+i386                 randconfig-a012-20201109
+riscv                            allyesconfig
+riscv                            allmodconfig
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                              defconfig
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a012-20201109
+x86_64               randconfig-a015-20201109
+x86_64               randconfig-a013-20201109
+x86_64               randconfig-a011-20201109
+x86_64               randconfig-a014-20201109
+x86_64               randconfig-a016-20201109
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
