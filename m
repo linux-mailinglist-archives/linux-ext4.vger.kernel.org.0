@@ -2,175 +2,245 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25A352ACEB9
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Nov 2020 06:00:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E94142AD053
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 Nov 2020 08:21:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731904AbgKJFAC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 10 Nov 2020 00:00:02 -0500
-Received: from mga17.intel.com ([192.55.52.151]:12625 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729454AbgKJE77 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 9 Nov 2020 23:59:59 -0500
-IronPort-SDR: b21jH+8daNxFd9MhjXJ+hcbKWYaVf+1LuxpUVENj4DuN0lfPZ6JFWJv2XzpSDg/I8fO29ydhkv
- QgXh15BrSwxQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="149768142"
-X-IronPort-AV: E=Sophos;i="5.77,465,1596524400"; 
-   d="scan'208";a="149768142"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 20:59:55 -0800
-IronPort-SDR: hhtGbVHiYEduO62f/jUORNlQE29+PA61IlKuvPXTtZvvOlHxHT75TW+y4i0J9B1O2lrgZ7K2Sp
- gskiAxl5TCew==
-X-IronPort-AV: E=Sophos;i="5.77,465,1596524400"; 
-   d="scan'208";a="531063331"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 20:59:54 -0800
-Date:   Mon, 9 Nov 2020 20:59:54 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kexec@lists.infradead.org, linux-bcache@vger.kernel.org,
-        linux-mtd@lists.infradead.org, devel@driverdev.osuosl.org,
-        linux-efi@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-aio@kvack.org,
-        io-uring@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-um@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net,
-        reiserfs-devel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-nilfs@vger.kernel.org, cluster-devel@redhat.com,
-        ecryptfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-rdma@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-cachefs@redhat.com,
-        samba-technical@lists.samba.org, intel-wired-lan@lists.osuosl.org
-Subject: Re: [PATCH RFC PKS/PMEM 05/58] kmap: Introduce k[un]map_thread
-Message-ID: <20201110045954.GL3976735@iweiny-DESK2.sc.intel.com>
-References: <20201009195033.3208459-1-ira.weiny@intel.com>
- <20201009195033.3208459-6-ira.weiny@intel.com>
- <87h7pyhv3f.fsf@nanos.tec.linutronix.de>
+        id S1730713AbgKJHVI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 10 Nov 2020 02:21:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728538AbgKJHVG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 10 Nov 2020 02:21:06 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FA86C0613D3
+        for <linux-ext4@vger.kernel.org>; Mon,  9 Nov 2020 23:21:06 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id y25so12595507lja.9
+        for <linux-ext4@vger.kernel.org>; Mon, 09 Nov 2020 23:21:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=tJU1aurExwbUVBfccNutoeNpTC+zhOBLVOQA13GCzvQ=;
+        b=uWHW9oTszJEYw3u2jb8lZirZrpGMCMF3U48lt0AqkK0OhZezRKOYV9HVeEnpJFhex/
+         OpmsMu8Bupdi4p/aghHOUnyYeYeKPe5rAZg4ebJ+AiNYWzCYKm+e2bf6H757dByjt3B/
+         7kS8XceUDbnC0/IxNVurLkcUHBYKe+ZxgiR/sv7/aKmQozHHcmNapD7fo4me52YgMpTB
+         49JifLApZOxe26pMA5njEOo4UitVECzWWdbKZiUkUWXoB6C6WlHPhPaNHUSIiHkn93vP
+         nCPRwlmWixCRZ0IfpE7BxjQ+cwxjiLfPwcPEbkhU7MLk0dkTovM9pUkf4PCwIk00lkmo
+         X6wA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=tJU1aurExwbUVBfccNutoeNpTC+zhOBLVOQA13GCzvQ=;
+        b=BKyGv9BORjfMZmP7aKSgMTTgygwNmcEqUQqd5tDpM13rSmryaPJliP/O+m/bE1iO2P
+         3E9pajFaxyQYNiz+UQLhdo4XXnn4Vt68cM4uauBNHQOdr+EgcxjJTphG3MoxnpUz/jAi
+         yGSY5YcNhdvfKws1IUSkjmIMXxW8RzDC9LEkBUmxNBpHjrPY6xDY61+vOpAm8hn59MmH
+         VsD2uPMlRq1eYh9p9hlDsA3ztVXAPKc9zPzgGBqU7/zxOF7shZapScNtN70dwHZ1Vfv4
+         zkaR7BwAjhsSpOWO5Sfl/O7w4rNQjS6sTjdwgjOO2y8syTk7MHiyR1EDpVCce4mq6ZXl
+         O6gQ==
+X-Gm-Message-State: AOAM531RiRYwItsjx97V3yrZYZ7B2kwi9pxYBczZDBxztX+Wtmz0zKAI
+        BQ1+4bO1ln++sooRgwod5l3N+lZnKtapJxxCM7cEpg==
+X-Google-Smtp-Source: ABdhPJz8GugbWn35s3Aee6iTYjwpUcVN9a/lKKSwllJpp9+hwk/dLsxsDsPk+0B1PsJbeu7p0y2fyN978Kkm/Yv+ir0=
+X-Received: by 2002:a2e:9746:: with SMTP id f6mr8042879ljj.270.1604992861337;
+ Mon, 09 Nov 2020 23:21:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87h7pyhv3f.fsf@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+References: <20201106192154.51514-1-98.arpi@gmail.com> <CABVgOSkQ6+y7OGw2494cJa2b60EkSjncLNAgc9cJDbS=X9J3WA@mail.gmail.com>
+ <CANpmjNNp2RUCE_ypp2R4MznikTYRYeCDuF7VMp+Hbh=55KWa3A@mail.gmail.com> <47a05c5a-485d-026b-c1c3-476ed1a97856@gmail.com>
+In-Reply-To: <47a05c5a-485d-026b-c1c3-476ed1a97856@gmail.com>
+From:   David Gow <davidgow@google.com>
+Date:   Tue, 10 Nov 2020 15:20:49 +0800
+Message-ID: <CABVgOSkZ9k6bHPp=LVATWfokMSrEuD87jOfE5MiVYAEbZMmaQQ@mail.gmail.com>
+Subject: Re: [PATCH v6 1/2] kunit: Support for Parameterized Testing
+To:     Arpitha Raghunandan <98.arpi@gmail.com>
+Cc:     Marco Elver <elver@google.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 02:13:56AM +0100, Thomas Gleixner wrote:
-> Ira,
-> 
-> On Fri, Oct 09 2020 at 12:49, ira weiny wrote:
-> > From: Ira Weiny <ira.weiny@intel.com>
+On Mon, Nov 9, 2020 at 2:49 PM Arpitha Raghunandan <98.arpi@gmail.com> wrot=
+e:
+>
+> On 07/11/20 3:36 pm, Marco Elver wrote:
+> > On Sat, 7 Nov 2020 at 05:58, David Gow <davidgow@google.com> wrote:
+> >> On Sat, Nov 7, 2020 at 3:22 AM Arpitha Raghunandan <98.arpi@gmail.com>=
+ wrote:
+> >>>
+> >>> Implementation of support for parameterized testing in KUnit.
+> >>> This approach requires the creation of a test case using the
+> >>> KUNIT_CASE_PARAM macro that accepts a generator function as input.
+> >>> This generator function should return the next parameter given the
+> >>> previous parameter in parameterized tests. It also provides
+> >>> a macro to generate common-case generators.
+> >>>
+> >>> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+> >>> Co-developed-by: Marco Elver <elver@google.com>
+> >>> Signed-off-by: Marco Elver <elver@google.com>
+> >>> ---
+> >>
+> >> This looks good to me! A couple of minor thoughts about the output
+> >> format below, but I'm quite happy to have this as-is regardless.
+> >>
+> >> Reviewed-by: David Gow <davidgow@google.com>
+> >>
+> >> Cheers,
+> >> -- David
+> >>
+> >>> Changes v5->v6:
+> >>> - Fix alignment to maintain consistency
+> >>> Changes v4->v5:
+> >>> - Update kernel-doc comments.
+> >>> - Use const void* for generator return and prev value types.
+> >>> - Add kernel-doc comment for KUNIT_ARRAY_PARAM.
+> >>> - Rework parameterized test case execution strategy: each parameter i=
+s executed
+> >>>   as if it was its own test case, with its own test initialization an=
+d cleanup
+> >>>   (init and exit are called, etc.). However, we cannot add new test c=
+ases per TAP
+> >>>   protocol once we have already started execution. Instead, log the r=
+esult of
+> >>>   each parameter run as a diagnostic comment.
+> >>> Changes v3->v4:
+> >>> - Rename kunit variables
+> >>> - Rename generator function helper macro
+> >>> - Add documentation for generator approach
+> >>> - Display test case name in case of failure along with param index
+> >>> Changes v2->v3:
+> >>> - Modifictaion of generator macro and method
+> >>> Changes v1->v2:
+> >>> - Use of a generator method to access test case parameters
+> >>>
+> >>>  include/kunit/test.h | 36 ++++++++++++++++++++++++++++++++++
+> >>>  lib/kunit/test.c     | 46 +++++++++++++++++++++++++++++++-----------=
+--
+> >>>  2 files changed, 69 insertions(+), 13 deletions(-)
+> >>>
+> >>> diff --git a/include/kunit/test.h b/include/kunit/test.h
+> >>> index db1b0ae666c4..16616d3974f9 100644
+> >>> --- a/include/kunit/test.h
+> >>> +++ b/include/kunit/test.h
+> >>> @@ -107,6 +107,7 @@ struct kunit;
+> > [...]
+> >>> -       kunit_suite_for_each_test_case(suite, test_case)
+> >>> -               kunit_run_case_catch_errors(suite, test_case);
+> >>> +       kunit_suite_for_each_test_case(suite, test_case) {
+> >>> +               struct kunit test =3D { .param_value =3D NULL, .param=
+_index =3D 0 };
+> >>> +               bool test_success =3D true;
+> >>> +
+> >>> +               if (test_case->generate_params)
+> >>> +                       test.param_value =3D test_case->generate_para=
+ms(NULL);
+> >>> +
+> >>> +               do {
+> >>> +                       kunit_run_case_catch_errors(suite, test_case,=
+ &test);
+> >>> +                       test_success &=3D test_case->success;
+> >>> +
+> >>> +                       if (test_case->generate_params) {
+> >>> +                               kunit_log(KERN_INFO, &test,
+> >>> +                                         KUNIT_SUBTEST_INDENT
+> >>> +                                         "# %s: param-%d %s",
+> >>
+> >> Would it make sense to have this imitate the TAP format a bit more?
+> >> So, have "# [ok|not ok] - [name]" as the format? [name] could be
+> >> something like "[test_case->name]:param-[index]" or similar.
+> >> If we keep it commented out and don't indent it further, it won't
+> >> formally be a nested test (though if we wanted to support those later,
+> >> it'd be easy to add), but I think it would be nicer to be consistent
+> >> here.
 > >
-> > To correctly support the semantics of kmap() with Kernel protection keys
-> > (PKS), kmap() may be required to set the protections on multiple
-> > processors (globally).  Enabling PKS globally can be very expensive
-> > depending on the requested operation.  Furthermore, enabling a domain
-> > globally reduces the protection afforded by PKS.
+> > The previous attempt [1] at something similar failed because it seems
+> > we'd need to teach kunit-tool new tricks [2], too.
+> > [1] https://lkml.kernel.org/r/20201105195503.GA2399621@elver.google.com
+> > [2] https://lkml.kernel.org/r/20201106123433.GA3563235@elver.google.com
 > >
-> > Most kmap() (Aprox 209 of 229) callers use the map within a single thread and
-> > have no need for the protection domain to be enabled globally.  However, the
-> > remaining callers do not follow this pattern and, as best I can tell, expect
-> > the mapping to be 'global' and available to any thread who may access the
-> > mapping.[1]
+> > So if we go with a different format, we might need a patch before this
+> > one to make kunit-tool compatible with that type of diagnostic.
 > >
-> > We don't anticipate global mappings to pmem, however in general there is a
-> > danger in changing the semantics of kmap().  Effectively, this would cause an
-> > unresolved page fault with little to no information about why the failure
-> > occurred.
+> > Currently I think we have the following proposals for a format:
 > >
-> > To resolve this a number of options were considered.
+> > 1. The current "# [test_case->name]: param-[index] [ok|not ok]" --
+> > this works well, because no changes to kunit-tool are required, and it
+> > also picks up the diagnostic context for the case and displays that on
+> > test failure.
 > >
-> > 1) Attempt to change all the thread local kmap() calls to kmap_atomic()[2]
-> > 2) Introduce a flags parameter to kmap() to indicate if the mapping should be
-> >    global or not
-> > 3) Change ~20 call sites to 'kmap_global()' to indicate that they require a
-> >    global enablement of the pages.
-> > 4) Change ~209 call sites to 'kmap_thread()' to indicate that the mapping is to
-> >    be used within that thread of execution only
+> > 2. Your proposed "# [ok|not ok] - [test_case->name]:param-[index]".
+> > As-is, this needs a patch for kunit-tool as well. I just checked, and
+> > if we change it to "# [ok|not ok] - [test_case->name]: param-[index]"
+> > (note the space after ':') it works without changing kunit-tool. ;-)
 > >
-> > Option 1 is simply not feasible.  Option 2 would require all of the call sites
-> > of kmap() to change.  Option 3 seems like a good minimal change but there is a
-> > danger that new code may miss the semantic change of kmap() and not get the
-> > behavior the developer intended.  Therefore, #4 was chosen.
-> 
-> There is Option #5:
+> > 3. Something like "# [ok|not ok] param-[index] - [test_case->name]",
+> > which I had played with earlier but kunit-tool is definitely not yet
+> > happy with.
+> >
+> > So my current preference is (2) with the extra space (no change to
+> > kunit-tool required). WDYT?
+> >
 
-There is now yes.  :-D
+Hmm=E2=80=A6 that failure in kunit_tool is definitely a bug: we shouldn't c=
+are
+what comes after the comment character except if it's an explicit
+subtest declaration or a crash. I'll try to put a patch together to
+fix it, but I'd rather not delay this just for that.
 
-> 
-> Convert the thread local kmap() invocations to the proposed kmap_local()
-> interface which is coming along [1].
+In any thought about this a bit more, It turns out that the proposed
+KTAP spec[1] discourages the use of ':', except as part of a subtest
+declaration, or perhaps an as-yet-unspecified fully-qualified test
+name. The latter is what I was going for, but if it's actively
+breaking kunit_tool, we might want to hold off on it.
 
-I've been trying to follow that thread.
+If we were to try to treat these as subtests in accordance with that
+spec, the way we'd want to use one of these options:
+A) "[ok|not ok] [index] - param-[index]" -- This doesn't mention the
+test case name, but otherwise treats things exactly the same way we
+treat existing subtests.
 
-> 
-> That solves a couple of issues:
-> 
->  1) It relieves the current kmap_atomic() usage sites from the implict
->     pagefault/preempt disable semantics which apply even when
->     CONFIG_HIGHMEM is disabled. kmap_local() still can be invoked from
->     atomic context.
-> 
->  2) Due to #1 it allows to replace the conditional usage of kmap() and
->     kmap_atomic() for purely thread local mappings.
-> 
->  3) It puts the burden on the HIGHMEM inflicted systems
-> 
->  4) It is actually more efficient for most of the pure thread local use
->     cases on HIGHMEM inflicted systems because it avoids the overhead of
->     the global lock and the potential kmap slot exhaustion. A potential
->     preemption will be more expensive, but that's not really the case we
->     want to optimize for.
-> 
->  5) It solves the RT issue vs. kmap_atomic()
-> 
-> So instead of creating yet another variety of kmap() which is just
-> scratching the particular PKRS itch, can we please consolidate all of
-> that on the wider reaching kmap_local() approach?
+B) "[ok|not ok] [index] - [test_case->name]" -- This doesn't name the
+"subtest", just gives repeated results with the same name.
 
-Yes I agree.  We absolutely don't want more kmap*() calls and I was hoping to
-dovetail into your kmap_local() work.[2]
+C) "[ok|not ok] [index] - [test_case->name][separator]param-[index]"
+-- This is equivalent to my suggestion with a separator of ":", or 2
+above with a separator of ": ". The in-progress spec doesn't yet
+specify how these fully-qualified names would work, other than that
+they'd use a colon somewhere, and if we comment it out, ": " is
+required.
 
-I've pivoted away from this work a bit to clean up all the
-kmap()/memcpy*()/kunmaps() as discussed elsewhere in the thread first.[3]  I
-was hoping your work would land and then I could s/kmap_thread()/kmap_local()/
-on all of these patches.
+>
+> Which format do we finally go with?
+>
 
-Also, we can convert the new memcpy_*_page() calls to kmap_local() as well.
-[For now my patch just uses kmap_atomic().]
+I'm actually going to make another wild suggestion for this, which is
+a combination of (1) and (A):
+"# [test_case->name]: [ok|not ok] [index] - param-[index]"
 
-I've not looked at all of the patches in your latest version.  Have you
-included converting any of the kmap() call sites?  I thought you were more
-focused on converting the kmap_atomic() to kmap_local()?
+This gives us a KTAP-compliant result line, except prepended with "#
+[test_case->name]: ", which makes it formally a diagnostic line,
+rather than an actual subtest. Putting the test name at the start
+matches what kunit_tool is expecting at the moment. If we then want to
+turn it into a proper subtest, we can just get rid of that prefix (and
+add the appropriate counts elsewhere).
 
-Ira
+Does that sound good?
 
-> 
-> Thanks,
-> 
->         tglx
->      
-> [1] https://lore.kernel.org/lkml/20201103092712.714480842@linutronix.de/
 
-[2] https://lore.kernel.org/lkml/20201012195354.GC2046448@iweiny-DESK2.sc.intel.com/
-[3] https://lore.kernel.org/lkml/20201009213434.GA839@sol.localdomain/
-    https://lore.kernel.org/lkml/20201013200149.GI3576660@ZenIV.linux.org.uk/
+> [...]
 
+Thanks,
+-- David
+
+[1]: https://lore.kernel.org/linux-kselftest/CY4PR13MB1175B804E31E502221BC8=
+163FD830@CY4PR13MB1175.namprd13.prod.outlook.com/T/
