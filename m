@@ -2,165 +2,145 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25A9D2AD3DE
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Nov 2020 11:35:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C24512AD57A
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 Nov 2020 12:42:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726825AbgKJKfY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 10 Nov 2020 05:35:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726280AbgKJKfY (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 10 Nov 2020 05:35:24 -0500
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABEE7C0613CF
-        for <linux-ext4@vger.kernel.org>; Tue, 10 Nov 2020 02:35:23 -0800 (PST)
-Received: by mail-ot1-x343.google.com with SMTP id y22so12011890oti.10
-        for <linux-ext4@vger.kernel.org>; Tue, 10 Nov 2020 02:35:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=O9J78ygcMCgUaBelKJGuBDpmTHHQsSZqL7xxo9X1FXA=;
-        b=iihJcLKgP4TSrgi/XOpJJLxcsC62DsZSrPSTjA7lSmML5YPgIbfpXonIcaUFoZ4xND
-         ol7Q40wpQdgn6+48hn4iIVJ6RPMWatx/ll/y5aX3iBAd7l/30optiS9wz43TMfCYv+h2
-         3LULW2nv89gzaqh0QYHdlgFn2P0+LzgIU90KRsO6wMHpQ0w8DsUOkkgMf0fXnRBMJxed
-         HtTMfxmVjzq/58yo17tXXg3HgGhrb84M40048Zb30zqZibfvPSs5A6k35uGVuJ4lFW8e
-         8EoBkoS3jGroVu5o/+71qHhYl/uiJ51xqICPvfWaZ+TSea4oO2tjl6O2lwl0D7vgzrKB
-         BI5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=O9J78ygcMCgUaBelKJGuBDpmTHHQsSZqL7xxo9X1FXA=;
-        b=q5Qym9iF7aTmqJWZh1kT7QhGTQuj/E8hPJKAnANiJQrE18ICuvU+CrPm0QuAF8XxEb
-         J1O5dLsdnhoSupeUtytWrhVAeS76WcfC8QtslS+t5FmzNTx7fxuduHWujPgmoOUsBVft
-         6HGfh9nrQjMVVCGXK5/OEyvHR6xTRH7CAt96AcSD+1PBDwDfEQPbJSvxNh58ldkiDM0C
-         bw1Q+PZssvBXdBkNGYKwJqYj3TfU5rYoJKn5Go1CEYReCpWLcyKTRBENaz/UL5a94jCE
-         tff84DwVUiTBLg86UKOo9M93vRO4x+Bldc73r5E3/3NiwiIGogIQHC7XVuYJk+4BypG6
-         G1uQ==
-X-Gm-Message-State: AOAM530Dngqc44Czkw2II0lxt5Qpk4zHDglLSYwo52Ur+P/IcU18fslS
-        7M9bZ59tUiirW8OH4YyPuZ7WAxSa8iAgcznqOMrjSQ==
-X-Google-Smtp-Source: ABdhPJwnxEs/Uy6X8cWrXNv3gk8aEzJNoK265lQPtFA5Tp98fsZsbenX9qhYvw3oT3pOA4i1EhG2MWTej8+yAivp6AM=
-X-Received: by 2002:a9d:f44:: with SMTP id 62mr14385069ott.17.1605004522694;
- Tue, 10 Nov 2020 02:35:22 -0800 (PST)
+        id S1726884AbgKJLmF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 10 Nov 2020 06:42:05 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48560 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726428AbgKJLmE (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 10 Nov 2020 06:42:04 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 22F39ABD1;
+        Tue, 10 Nov 2020 11:42:03 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id AB3531E130B; Tue, 10 Nov 2020 12:42:02 +0100 (CET)
+Date:   Tue, 10 Nov 2020 12:42:02 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Chris Friesen <chris.friesen@windriver.com>
+Cc:     linux-ext4@vger.kernel.org
+Subject: Re: looking for assistance with jbd2 (and other processes) hung
+ trying to write to disk
+Message-ID: <20201110114202.GF20780@quack2.suse.cz>
+References: <17a059de-6e95-ef97-6e0a-5e52af1b9a04@windriver.com>
 MIME-Version: 1.0
-References: <20201106192154.51514-1-98.arpi@gmail.com> <CABVgOSkQ6+y7OGw2494cJa2b60EkSjncLNAgc9cJDbS=X9J3WA@mail.gmail.com>
- <CANpmjNNp2RUCE_ypp2R4MznikTYRYeCDuF7VMp+Hbh=55KWa3A@mail.gmail.com>
- <47a05c5a-485d-026b-c1c3-476ed1a97856@gmail.com> <CABVgOSkZ9k6bHPp=LVATWfokMSrEuD87jOfE5MiVYAEbZMmaQQ@mail.gmail.com>
-In-Reply-To: <CABVgOSkZ9k6bHPp=LVATWfokMSrEuD87jOfE5MiVYAEbZMmaQQ@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 10 Nov 2020 11:35:11 +0100
-Message-ID: <CANpmjNMzNauQVNKK_ToWDKrwT1LKY7Tb+ApG8drX8wtBkBbWQQ@mail.gmail.com>
-Subject: Re: [PATCH v6 1/2] kunit: Support for Parameterized Testing
-To:     David Gow <davidgow@google.com>
-Cc:     Arpitha Raghunandan <98.arpi@gmail.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <17a059de-6e95-ef97-6e0a-5e52af1b9a04@windriver.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, 10 Nov 2020 at 08:21, David Gow <davidgow@google.com> wrote:
-[...]
-> > >
-> > > The previous attempt [1] at something similar failed because it seems
-> > > we'd need to teach kunit-tool new tricks [2], too.
-> > > [1] https://lkml.kernel.org/r/20201105195503.GA2399621@elver.google.c=
-om
-> > > [2] https://lkml.kernel.org/r/20201106123433.GA3563235@elver.google.c=
-om
-> > >
-> > > So if we go with a different format, we might need a patch before thi=
-s
-> > > one to make kunit-tool compatible with that type of diagnostic.
-> > >
-> > > Currently I think we have the following proposals for a format:
-> > >
-> > > 1. The current "# [test_case->name]: param-[index] [ok|not ok]" --
-> > > this works well, because no changes to kunit-tool are required, and i=
-t
-> > > also picks up the diagnostic context for the case and displays that o=
-n
-> > > test failure.
-> > >
-> > > 2. Your proposed "# [ok|not ok] - [test_case->name]:param-[index]".
-> > > As-is, this needs a patch for kunit-tool as well. I just checked, and
-> > > if we change it to "# [ok|not ok] - [test_case->name]: param-[index]"
-> > > (note the space after ':') it works without changing kunit-tool. ;-)
-> > >
-> > > 3. Something like "# [ok|not ok] param-[index] - [test_case->name]",
-> > > which I had played with earlier but kunit-tool is definitely not yet
-> > > happy with.
-> > >
-> > > So my current preference is (2) with the extra space (no change to
-> > > kunit-tool required). WDYT?
-> > >
->
-> Hmm=E2=80=A6 that failure in kunit_tool is definitely a bug: we shouldn't=
- care
-> what comes after the comment character except if it's an explicit
-> subtest declaration or a crash. I'll try to put a patch together to
-> fix it, but I'd rather not delay this just for that.
->
-> In any thought about this a bit more, It turns out that the proposed
-> KTAP spec[1] discourages the use of ':', except as part of a subtest
-> declaration, or perhaps an as-yet-unspecified fully-qualified test
-> name. The latter is what I was going for, but if it's actively
-> breaking kunit_tool, we might want to hold off on it.
->
-> If we were to try to treat these as subtests in accordance with that
-> spec, the way we'd want to use one of these options:
-> A) "[ok|not ok] [index] - param-[index]" -- This doesn't mention the
-> test case name, but otherwise treats things exactly the same way we
-> treat existing subtests.
->
-> B) "[ok|not ok] [index] - [test_case->name]" -- This doesn't name the
-> "subtest", just gives repeated results with the same name.
->
-> C) "[ok|not ok] [index] - [test_case->name][separator]param-[index]"
-> -- This is equivalent to my suggestion with a separator of ":", or 2
-> above with a separator of ": ". The in-progress spec doesn't yet
-> specify how these fully-qualified names would work, other than that
-> they'd use a colon somewhere, and if we comment it out, ": " is
-> required.
->
-> >
-> > Which format do we finally go with?
-> >
->
-> I'm actually going to make another wild suggestion for this, which is
-> a combination of (1) and (A):
-> "# [test_case->name]: [ok|not ok] [index] - param-[index]"
->
-> This gives us a KTAP-compliant result line, except prepended with "#
-> [test_case->name]: ", which makes it formally a diagnostic line,
-> rather than an actual subtest. Putting the test name at the start
-> matches what kunit_tool is expecting at the moment. If we then want to
-> turn it into a proper subtest, we can just get rid of that prefix (and
-> add the appropriate counts elsewhere).
->
-> Does that sound good?
+Hello!
 
-Sounds reasonable to me!  The repetition of [index] seems unnecessary
-for now, but I think if we at some point have a way to get a string
-representation of a param, we can substitute param-[index] with a
-string that represents the param.
+On Mon 09-11-20 15:11:58, Chris Friesen wrote:
+> I'm running a 3.10.0-1127.rt56.1093 CentOS kernel.  I realize you don't
+> support this particular kernel but I'm hoping for some general pointers.
+> 
+> I've got a system with four "housekeeping" CPUs, with rcu_nocbs and
+> hohz_full used to reduce system overhead on the "application" CPUs, with
+> four CPUs set as "isolcpus" to try and isolate them even further.  I have a
+> crashdump vmcore file from a softdog expiry when the process that pets the
+> softdog hung trying to write to /dev/log after the unix socket backlog had
+> been reached.
+> 
+> I can see a "jbd2/nvme2n1p4-" process that appears to be hung for over 9
+> minutes waiting to commit a transaction.  /dev/nvme2n1p4 corresponds to the
+> root filesystem.  The "ps" and "bt" output from the crashdump are below.
+> syslog-ng is also blocked waiting on filesystem access, and there are other
+> tasks also blocked on disk, including a few jbd2 tasks that are associated
+> with device mapper.
 
-Note that once we want to make it a real subtest, we'd need to run the
-generator twice, once to get the number of params and then to run the
-tests. If we require that param generators are deterministic in the
-number of params generated, this is not a problem.
+Yeah, 9 minutes seems far too long.
 
-Thanks,
--- Marco
+> Can anyone give some suggestions on how to track down what's causing the
+> delay here?  I suspect there's a race condition somewhere similar to what
+> happened with https://access.redhat.com/solutions/3226391, although that one
+> was specific to device-mapper and the root filesystem here is directly on
+> the nvme device.
+
+Sadly I don't have access to RH portal to be able to check what that hang
+was about...
+
+> crash> ps -m 930
+> [0 00:09:11.694] [UN]  PID: 930    TASK: ffffa14b5f9032c0  CPU: 1 COMMAND:
+> "jbd2/nvme2n1p4-"
+> 
+
+Are the tasks below the only ones hanging in D state (UN state in crash)?
+Because I can see processes are waiting for the locked buffer but it is
+unclear who is holding the buffer lock...
+
+> crash> bt 930
+> PID: 930    TASK: ffffa14b5f9032c0  CPU: 1   COMMAND: "jbd2/nvme2n1p4-"
+>  #0 [ffffa14b5ff0ba20] __schedule at ffffffffafe1b959
+>  #1 [ffffa14b5ff0bab0] schedule at ffffffffafe1be80
+>  #2 [ffffa14b5ff0bac8] schedule_timeout at ffffffffafe19d4c
+>  #3 [ffffa14b5ff0bb70] io_schedule_timeout at ffffffffafe1ab6d
+>  #4 [ffffa14b5ff0bba0] io_schedule at ffffffffafe1ac08
+>  #5 [ffffa14b5ff0bbb0] bit_wait_io at ffffffffafe1a561
+>  #6 [ffffa14b5ff0bbc8] __wait_on_bit at ffffffffafe1a087
+>  #7 [ffffa14b5ff0bc08] out_of_line_wait_on_bit at ffffffffafe1a1f1
+>  #8 [ffffa14b5ff0bc80] __wait_on_buffer at ffffffffaf85068a
+>  #9 [ffffa14b5ff0bc90] jbd2_journal_commit_transaction at ffffffffc0e543fc
+> [jbd2]
+> #10 [ffffa14b5ff0be48] kjournald2 at ffffffffc0e5a6ad [jbd2]
+> #11 [ffffa14b5ff0bec8] kthread at ffffffffaf6ad781
+> #12 [ffffa14b5ff0bf50] ret_from_fork_nospec_begin at ffffffffafe1fe5d
+> 
+> Possibly of interest, syslog-ng is also blocked waiting on filesystem
+> access:
+> 
+> crash> bt 1912
+> PID: 1912   TASK: ffffa14b62dc2610  CPU: 1   COMMAND: "syslog-ng"
+>  #0 [ffffa14b635b7980] __schedule at ffffffffafe1b959
+>  #1 [ffffa14b635b7a10] schedule at ffffffffafe1be80
+>  #2 [ffffa14b635b7a28] schedule_timeout at ffffffffafe19d4c
+>  #3 [ffffa14b635b7ad0] io_schedule_timeout at ffffffffafe1ab6d
+>  #4 [ffffa14b635b7b00] io_schedule at ffffffffafe1ac08
+>  #5 [ffffa14b635b7b10] bit_wait_io at ffffffffafe1a561
+>  #6 [ffffa14b635b7b28] __wait_on_bit at ffffffffafe1a087
+>  #7 [ffffa14b635b7b68] out_of_line_wait_on_bit at ffffffffafe1a1f1
+>  #8 [ffffa14b635b7be0] do_get_write_access at ffffffffc0e51e94 [jbd2]
+>  #9 [ffffa14b635b7c80] jbd2_journal_get_write_access at ffffffffc0e521b7
+> [jbd2]
+> #10 [ffffa14b635b7ca0] __ext4_journal_get_write_access at ffffffffc0eb8e31
+> [ext4]
+> #11 [ffffa14b635b7cd0] ext4_reserve_inode_write at ffffffffc0e87fa0 [ext4]
+> #12 [ffffa14b635b7d00] ext4_mark_inode_dirty at ffffffffc0e8801e [ext4]
+> #13 [ffffa14b635b7d58] ext4_dirty_inode at ffffffffc0e8bc40 [ext4]
+> #14 [ffffa14b635b7d78] __mark_inode_dirty at ffffffffaf84855d
+> #15 [ffffa14b635b7da8] ext4_setattr at ffffffffc0e8b558 [ext4]
+> #16 [ffffa14b635b7e18] notify_change at ffffffffaf8363fc
+> #17 [ffffa14b635b7e60] chown_common at ffffffffaf8128ac
+> #18 [ffffa14b635b7f08] sys_fchown at ffffffffaf813fb7
+> #19 [ffffa14b635b7f50] tracesys at ffffffffafe202a8 (via system_call)
+> 
+> One of the hung jbd2 tasks associated with device mapper:
+> 
+> crash> bt 1489
+> PID: 1489   TASK: ffffa14b641f0000  CPU: 1   COMMAND: "jbd2/dm-0-8"
+>  #0 [ffffa14b5fab7a20] __schedule at ffffffffafe1b959
+>  #1 [ffffa14b5fab7ab0] schedule at ffffffffafe1be80
+>  #2 [ffffa14b5fab7ac8] schedule_timeout at ffffffffafe19d4c
+>  #3 [ffffa14b5fab7b70] io_schedule_timeout at ffffffffafe1ab6d
+>  #4 [ffffa14b5fab7ba0] io_schedule at ffffffffafe1ac08
+>  #5 [ffffa14b5fab7bb0] bit_wait_io at ffffffffafe1a561
+>  #6 [ffffa14b5fab7bc8] __wait_on_bit at ffffffffafe1a087
+>  #7 [ffffa14b5fab7c08] out_of_line_wait_on_bit at ffffffffafe1a1f1
+>  #8 [ffffa14b5fab7c80] __wait_on_buffer at ffffffffaf85068a
+>  #9 [ffffa14b5fab7c90] jbd2_journal_commit_transaction at ffffffffc0e543fc
+> [jbd2]
+> #10 [ffffa14b5fab7e48] kjournald2 at ffffffffc0e5a6ad [jbd2]
+> #11 [ffffa14b5fab7ec8] kthread at ffffffffaf6ad781
+> #12 [ffffa14b5fab7f50] ret_from_fork_nospec_begin at ffffffffafe1fe5d
+> 
+> Thanks,
+> 
+> Chris
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
