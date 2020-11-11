@@ -2,215 +2,134 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB902AFA19
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 Nov 2020 21:57:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C95662AFABB
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 Nov 2020 22:52:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726205AbgKKU5H (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 11 Nov 2020 15:57:07 -0500
-Received: from mga07.intel.com ([134.134.136.100]:29706 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725933AbgKKU5G (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 11 Nov 2020 15:57:06 -0500
-IronPort-SDR: j8jczW6fJQRIj70B3fUkWcHrsIcN3oFw3U96m2J2dIJPw8k5z7cYkXyAlOMWZJdWD3AK1NonW9
- iLRHcP4BaA6A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9802"; a="234380872"
-X-IronPort-AV: E=Sophos;i="5.77,470,1596524400"; 
-   d="scan'208";a="234380872"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 12:55:36 -0800
-IronPort-SDR: 8ACfUccHUCj0b711CCW6XBmuSsIrub3+XVHpgFgsJevE32rTP70E+32sm0gI5WrfocX/TvbD0O
- jBPleFT3hIuQ==
-X-IronPort-AV: E=Sophos;i="5.77,470,1596524400"; 
-   d="scan'208";a="541948451"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 12:55:35 -0800
-From:   ira.weiny@intel.com
-To:     Jan Kara <jack@suse.com>
-Cc:     Ira Weiny <ira.weiny@intel.com>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] fs/ext2: Use ext2_put_page
-Date:   Wed, 11 Nov 2020 12:55:30 -0800
-Message-Id: <20201111205530.436692-1-ira.weiny@intel.com>
-X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
+        id S1726108AbgKKVw2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 11 Nov 2020 16:52:28 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:49736 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725933AbgKKVw2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 11 Nov 2020 16:52:28 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 4A0CE1F45DAF
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     dhowells@redhat.com
+Cc:     viro@zeniv.linux.org.uk, tytso@mit.edu, khazhy@google.com,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel@collabora.com
+Subject: [PATCH RFC v2 0/8] Superblock Notifications
+Date:   Wed, 11 Nov 2020 16:52:05 -0500
+Message-Id: <20201111215213.4152354-1-krisman@collabora.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Ira Weiny <ira.weiny@intel.com>
+Hi,
 
-There are 3 places in namei.c where the equivalent of ext2_put_page() is
-open coded on a page which was returned from the ext2_get_page() call
-[through the use of ext2_find_entry() and ext2_dotdot()].
+This is a second RFC with an implementation to support superblock and
+specifically ext4 notifications over the watch_queue interface, as
+originally proposed by David Howells.  The original cover letter
+follows.
 
-Move ext2_get_page() and ext2_put_page() to ext2.h in order to help
-clarify the use of the get/put and then use ext2_put_page() in namei.c
+This version of the RFC introduces the design changes requested by Ted
+on the previous version (thanks).  It folds the _inode_error and
+_inode_warning types into their error and warning counterparts.  This
+version also introduces a patch to samples/ exemplifying how the
+interface can be used.
 
-Also add a comment regarding the proper way to release the page returned
-from ext2_find_entry() and ext2_dotdot().
+I'm still sending it as an RFC as I'd love to gather a bit more
+feedback, before actually proposing it for merging.
 
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+Dave, can you comment on the changes to watch_queue and how it fits
+your original watch_queue model?
+
+The reasoning for this work, and some background can be found in the
+cover letter below.
+
+I also shared the patches at:
+
+https://gitlab.collabora.com/krisman/linux.git
+
+under the tag ext4-error-notifications_RFC-v2
+
+Thanks,
 
 ---
+Original cover letter:
 
-This was originally part of the kmap_thread() series here:
+Google has been using an out-of-tree mechanism for error notification in
+Ext4 and we decided it is time to push for an upstream solution.  This
+would surely fit on top of David's notification work.
 
-https://lore.kernel.org/lkml/20201009195033.3208459-37-ira.weiny@intel.com/
+This patchset is an attempt to restart that discussion.  It forward ports
+some code from David on top of Linus tree, adds features to
+watch_queue and implements ext4 support.
 
-But this is really a valid clean up regardless of the
-kmap_thread[local]() changes.
+The new notifications are designed after ext4 messages, so it exposes
+notifications types to fit that filesystem, but it doesn't change much
+to other filesystems, so it should be easily extensible.
+
+I'm aware of the discussion around fsinfo, but I'd like to ask if there
+are other missing pieces and what we could do to help that work go
+upstream.  From a previous mailing list discussion, Linus complained
+about lack of users as a main reason for it to not be merged, so hey! :)
+
+In addition, I'd like to ask for feedback on the current implementation,
+specifically regarding the passing of extra unformatted information at
+the end of the notification and the ext4 support.
+
+The work, as shared on this patchset can be found at:
+
+  https://gitlab.collabora.com/krisman/linux.git -b ext4-error-notifications
+
+And there is an example code at:
+
+  https://gitlab.collabora.com/krisman/ext4-watcher
+
+I'm Cc'ing Khazhismel Kumykov, from Google, who can provide more
+information about their use case, if requested.
 ---
- fs/ext2/dir.c   | 33 ++++++++-------------------------
- fs/ext2/ext2.h  | 27 +++++++++++++++++++++++++++
- fs/ext2/namei.c | 15 +++++----------
- 3 files changed, 40 insertions(+), 35 deletions(-)
 
-diff --git a/fs/ext2/dir.c b/fs/ext2/dir.c
-index 70355ab6740e..8acd77a66ff4 100644
---- a/fs/ext2/dir.c
-+++ b/fs/ext2/dir.c
-@@ -66,12 +66,6 @@ static inline unsigned ext2_chunk_size(struct inode *inode)
- 	return inode->i_sb->s_blocksize;
- }
- 
--static inline void ext2_put_page(struct page *page)
--{
--	kunmap(page);
--	put_page(page);
--}
--
- /*
-  * Return the offset into page `page_nr' of the last valid
-  * byte in that page, plus one.
-@@ -196,25 +190,6 @@ static bool ext2_check_page(struct page *page, int quiet)
- 	return false;
- }
- 
--static struct page * ext2_get_page(struct inode *dir, unsigned long n,
--				   int quiet)
--{
--	struct address_space *mapping = dir->i_mapping;
--	struct page *page = read_mapping_page(mapping, n, NULL);
--	if (!IS_ERR(page)) {
--		kmap(page);
--		if (unlikely(!PageChecked(page))) {
--			if (PageError(page) || !ext2_check_page(page, quiet))
--				goto fail;
--		}
--	}
--	return page;
--
--fail:
--	ext2_put_page(page);
--	return ERR_PTR(-EIO);
--}
--
- /*
-  * NOTE! unlike strncmp, ext2_match returns 1 for success, 0 for failure.
-  *
-@@ -336,6 +311,8 @@ ext2_readdir(struct file *file, struct dir_context *ctx)
-  * returns the page in which the entry was found (as a parameter - res_page),
-  * and the entry itself. Page is returned mapped and unlocked.
-  * Entry is guaranteed to be valid.
-+ *
-+ * On Success ext2_put_page() should be called on *res_page.
-  */
- struct ext2_dir_entry_2 *ext2_find_entry (struct inode *dir,
- 			const struct qstr *child, struct page **res_page)
-@@ -401,6 +378,12 @@ struct ext2_dir_entry_2 *ext2_find_entry (struct inode *dir,
- 	return de;
- }
- 
-+/**
-+ * Return the '..' directory entry and the page in which the entry was found
-+ * (as a parameter - p).
-+ *
-+ * On Success ext2_put_page() should be called on *p.
-+ */
- struct ext2_dir_entry_2 * ext2_dotdot (struct inode *dir, struct page **p)
- {
- 	struct page *page = ext2_get_page(dir, 0, 0);
-diff --git a/fs/ext2/ext2.h b/fs/ext2/ext2.h
-index 5136b7289e8d..b4403f96858b 100644
---- a/fs/ext2/ext2.h
-+++ b/fs/ext2/ext2.h
-@@ -16,6 +16,8 @@
- #include <linux/blockgroup_lock.h>
- #include <linux/percpu_counter.h>
- #include <linux/rbtree.h>
-+#include <linux/mm.h>
-+#include <linux/highmem.h>
- 
- /* XXX Here for now... not interested in restructing headers JUST now */
- 
-@@ -745,6 +747,31 @@ extern int ext2_delete_entry (struct ext2_dir_entry_2 *, struct page *);
- extern int ext2_empty_dir (struct inode *);
- extern struct ext2_dir_entry_2 * ext2_dotdot (struct inode *, struct page **);
- extern void ext2_set_link(struct inode *, struct ext2_dir_entry_2 *, struct page *, struct inode *, int);
-+static inline void ext2_put_page(struct page *page)
-+{
-+	kunmap(page);
-+	put_page(page);
-+}
-+
-+static inline struct page * ext2_get_page(struct inode *dir, unsigned long n,
-+				   int quiet)
-+{
-+	struct address_space *mapping = dir->i_mapping;
-+	struct page *page = read_mapping_page(mapping, n, NULL);
-+	if (!IS_ERR(page)) {
-+		kmap(page);
-+		if (unlikely(!PageChecked(page))) {
-+			if (PageError(page) || !ext2_check_page(page, quiet))
-+				goto fail;
-+		}
-+	}
-+	return page;
-+
-+fail:
-+	ext2_put_page(page);
-+	return ERR_PTR(-EIO);
-+}
-+
- 
- /* ialloc.c */
- extern struct inode * ext2_new_inode (struct inode *, umode_t, const struct qstr *);
-diff --git a/fs/ext2/namei.c b/fs/ext2/namei.c
-index 5bf2c145643b..ea980f1e2e99 100644
---- a/fs/ext2/namei.c
-+++ b/fs/ext2/namei.c
-@@ -389,23 +389,18 @@ static int ext2_rename (struct inode * old_dir, struct dentry * old_dentry,
- 	if (dir_de) {
- 		if (old_dir != new_dir)
- 			ext2_set_link(old_inode, dir_de, dir_page, new_dir, 0);
--		else {
--			kunmap(dir_page);
--			put_page(dir_page);
--		}
-+		else
-+			ext2_put_page(dir_page);
- 		inode_dec_link_count(old_dir);
- 	}
- 	return 0;
- 
- 
- out_dir:
--	if (dir_de) {
--		kunmap(dir_page);
--		put_page(dir_page);
--	}
-+	if (dir_de)
-+		ext2_put_page(dir_page);
- out_old:
--	kunmap(old_page);
--	put_page(old_page);
-+	ext2_put_page(old_page);
- out:
- 	return err;
- }
+David Howells (3):
+  watch_queue: Make watch_sizeof() check record size
+  security: Add hooks to rule on setting a watch for superblock
+  vfs: Add superblock notifications
+
+Gabriel Krisman Bertazi (5):
+  watch_queue: Support a text field at the end of the notification
+  vfs: Include origin of the SB error notification
+  fs: Add more superblock error subtypes
+  ext4: Implement SB error notification through watch_sb
+  samples: watch_queue: Add sample of SB notifications
+
+ arch/x86/entry/syscalls/syscall_32.tbl |   1 +
+ arch/x86/entry/syscalls/syscall_64.tbl |   1 +
+ fs/Kconfig                             |  12 ++
+ fs/ext4/super.c                        |  31 +++--
+ fs/super.c                             | 127 +++++++++++++++++++++
+ include/linux/fs.h                     | 150 +++++++++++++++++++++++++
+ include/linux/lsm_hook_defs.h          |   1 +
+ include/linux/lsm_hooks.h              |   4 +
+ include/linux/security.h               |  13 +++
+ include/linux/syscalls.h               |   2 +
+ include/linux/watch_queue.h            |  21 +++-
+ include/uapi/asm-generic/unistd.h      |   4 +-
+ include/uapi/linux/watch_queue.h       |  54 ++++++++-
+ kernel/sys_ni.c                        |   3 +
+ kernel/watch_queue.c                   |  29 ++++-
+ samples/watch_queue/Makefile           |   2 +-
+ samples/watch_queue/watch_sb.c         | 114 +++++++++++++++++++
+ security/security.c                    |   6 +
+ 18 files changed, 556 insertions(+), 19 deletions(-)
+ create mode 100644 samples/watch_queue/watch_sb.c
+
 -- 
-2.28.0.rc0.12.gb6a658bd00c9
+2.29.2
 
