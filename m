@@ -2,245 +2,215 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8347C2AF8C0
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 Nov 2020 20:13:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FB902AFA19
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 Nov 2020 21:57:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726101AbgKKTN5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 11 Nov 2020 14:13:57 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:34862 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725949AbgKKTN4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 11 Nov 2020 14:13:56 -0500
-Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0ABJDpfW010061
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Nov 2020 14:13:52 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 86122420107; Wed, 11 Nov 2020 14:13:51 -0500 (EST)
-Date:   Wed, 11 Nov 2020 14:13:51 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Heads up: data corruption with AIO/DIO with unwritten blocks when
- blocksize < page size
-Message-ID: <20201111191351.GA3489984@mit.edu>
+        id S1726205AbgKKU5H (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 11 Nov 2020 15:57:07 -0500
+Received: from mga07.intel.com ([134.134.136.100]:29706 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725933AbgKKU5G (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 11 Nov 2020 15:57:06 -0500
+IronPort-SDR: j8jczW6fJQRIj70B3fUkWcHrsIcN3oFw3U96m2J2dIJPw8k5z7cYkXyAlOMWZJdWD3AK1NonW9
+ iLRHcP4BaA6A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9802"; a="234380872"
+X-IronPort-AV: E=Sophos;i="5.77,470,1596524400"; 
+   d="scan'208";a="234380872"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 12:55:36 -0800
+IronPort-SDR: 8ACfUccHUCj0b711CCW6XBmuSsIrub3+XVHpgFgsJevE32rTP70E+32sm0gI5WrfocX/TvbD0O
+ jBPleFT3hIuQ==
+X-IronPort-AV: E=Sophos;i="5.77,470,1596524400"; 
+   d="scan'208";a="541948451"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 12:55:35 -0800
+From:   ira.weiny@intel.com
+To:     Jan Kara <jack@suse.com>
+Cc:     Ira Weiny <ira.weiny@intel.com>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] fs/ext2: Use ext2_put_page
+Date:   Wed, 11 Nov 2020 12:55:30 -0800
+Message-Id: <20201111205530.436692-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="BOKacYhQ+x31HxR3"
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+From: Ira Weiny <ira.weiny@intel.com>
 
---BOKacYhQ+x31HxR3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+There are 3 places in namei.c where the equivalent of ext2_put_page() is
+open coded on a page which was returned from the ext2_get_page() call
+[through the use of ext2_find_entry() and ext2_dotdot()].
 
-I noticed that we are occasionally seeing data corruption when block
-size is less than page size and we are doing AIO/DIO with unwritten
-regions.  Fortunately, in practice most applications which use AIO/DIO
-make sure all of the data files are pre-zeroed and initialized --- we
-only noticed this because of another bug where the pre-zeroing of the
-blocks after fallocate(2) got accidentally skipped.
+Move ext2_get_page() and ext2_put_page() to ext2.h in order to help
+clarify the use of the get/put and then use ext2_put_page() in namei.c
 
-This can be seen using the following xfstests which I've attached to
-this message.  It's not a reliable failure; the test is failing 70% of
-the time, and in fact most individual AIO operations don't actually
-corrupt data.  When it does fail, the file system is fine, but there
-are checksum failures in the data blocks.
+Also add a comment regarding the proper way to release the page returned
+from ext2_find_entry() and ext2_dotdot().
 
-verify: bad magic header b587, wanted acca at file /xt-vdc/test-file offset 539779072, length 4198400 (requested block: offset=539779072, length=4198400)
-       hdr_fail data dumped as test-file.539779072.hdr_fail
-fio: pid=4891, err=84/file:verify.c:1444, func=async_verify, error=Invalid or incomplete multibyte or wide character
-crc32c: verify failed at file /xt-vdc/test-file offset 2728620032, length 4198400 (requested block: offset=2728620032, length=4198400, flags=84)
-       Expected CRC: e61a5d6a
-       Received CRC: e390f0ed
-       received data dumped as test-file.2728620032.received
-       expected data dumped as test-file.2728620032.expected
-crc32c: verify failed at file /xt-vdc/test-file offset 3029954560, length 4198400 (requested block: offset=3029954560, length=4198400, flags=84)
-       Expected CRC: b56632a2
-       Received CRC: 427982ce
-       received data dumped as test-file.3029954560.received
-       expected data dumped as test-file.3029954560.expected
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 
-Sample run:
+---
 
-TESTRUNID: tytso-20201110144948
-KERNEL:    kernel 5.10.0-rc3-xfstests-00032-g91808cd6c243 #2012 SMP Mon Nov 9 21:37:55 EST 2020
-x86_64
-CMDLINE:   -C 20 generic/999
+This was originally part of the kmap_thread() series here:
 
-ext4/4k: 20 tests, 756 seconds
-ext4/1k: 20 tests, 14 failures, 808 seconds
-  Failures: generic/999 generic/999 generic/999 generic/999
-    generic/999 generic/999 generic/999 generic/999 generic/999
-    generic/999 generic/999 generic/999 generic/999 generic/999
-ext4/ext3: 20 tests, 20 skipped, 83 seconds
-ext4/encrypt: 20 tests, 20 skipped, 12 seconds
-ext4/nojournal: 20 tests, 756 seconds
-ext4/ext3conv: 20 tests, 753 seconds
-ext4/adv: 20 tests, 751 seconds
-ext4/dioread_nolock: 20 tests, 755 seconds
-ext4/data_journal: 20 tests, 20 skipped, 17 seconds
-ext4/bigalloc: 20 tests, 1049 seconds
-ext4/bigalloc_1k: 20 tests, 762 seconds
-Totals: 220 tests, 60 skipped, 14 failures, 0 errors, 6502s
+https://lore.kernel.org/lkml/20201009195033.3208459-37-ira.weiny@intel.com/
 
-I haven't had a chance to look at this, but I wanted to report this to
-the ext4 list.  This is actually much better than before we moved to
-using IOMAP for direct I/O, when we were failing this for all
-conigurations(!) which support Direct I/O.
+But this is really a valid clean up regardless of the
+kmap_thread[local]() changes.
+---
+ fs/ext2/dir.c   | 33 ++++++++-------------------------
+ fs/ext2/ext2.h  | 27 +++++++++++++++++++++++++++
+ fs/ext2/namei.c | 15 +++++----------
+ 3 files changed, 40 insertions(+), 35 deletions(-)
 
-TESTRUNID: tytso-20201111100315
-KERNEL:    kernel 4.19.84-xfstests #2 SMP Fri Nov 15 13:38:45 EST 2019 x86_64
-CMDLINE:   -C 5 generic/999 --kernel gs://gce-xfstests/bzImage-4.19
+diff --git a/fs/ext2/dir.c b/fs/ext2/dir.c
+index 70355ab6740e..8acd77a66ff4 100644
+--- a/fs/ext2/dir.c
++++ b/fs/ext2/dir.c
+@@ -66,12 +66,6 @@ static inline unsigned ext2_chunk_size(struct inode *inode)
+ 	return inode->i_sb->s_blocksize;
+ }
+ 
+-static inline void ext2_put_page(struct page *page)
+-{
+-	kunmap(page);
+-	put_page(page);
+-}
+-
+ /*
+  * Return the offset into page `page_nr' of the last valid
+  * byte in that page, plus one.
+@@ -196,25 +190,6 @@ static bool ext2_check_page(struct page *page, int quiet)
+ 	return false;
+ }
+ 
+-static struct page * ext2_get_page(struct inode *dir, unsigned long n,
+-				   int quiet)
+-{
+-	struct address_space *mapping = dir->i_mapping;
+-	struct page *page = read_mapping_page(mapping, n, NULL);
+-	if (!IS_ERR(page)) {
+-		kmap(page);
+-		if (unlikely(!PageChecked(page))) {
+-			if (PageError(page) || !ext2_check_page(page, quiet))
+-				goto fail;
+-		}
+-	}
+-	return page;
+-
+-fail:
+-	ext2_put_page(page);
+-	return ERR_PTR(-EIO);
+-}
+-
+ /*
+  * NOTE! unlike strncmp, ext2_match returns 1 for success, 0 for failure.
+  *
+@@ -336,6 +311,8 @@ ext2_readdir(struct file *file, struct dir_context *ctx)
+  * returns the page in which the entry was found (as a parameter - res_page),
+  * and the entry itself. Page is returned mapped and unlocked.
+  * Entry is guaranteed to be valid.
++ *
++ * On Success ext2_put_page() should be called on *res_page.
+  */
+ struct ext2_dir_entry_2 *ext2_find_entry (struct inode *dir,
+ 			const struct qstr *child, struct page **res_page)
+@@ -401,6 +378,12 @@ struct ext2_dir_entry_2 *ext2_find_entry (struct inode *dir,
+ 	return de;
+ }
+ 
++/**
++ * Return the '..' directory entry and the page in which the entry was found
++ * (as a parameter - p).
++ *
++ * On Success ext2_put_page() should be called on *p.
++ */
+ struct ext2_dir_entry_2 * ext2_dotdot (struct inode *dir, struct page **p)
+ {
+ 	struct page *page = ext2_get_page(dir, 0, 0);
+diff --git a/fs/ext2/ext2.h b/fs/ext2/ext2.h
+index 5136b7289e8d..b4403f96858b 100644
+--- a/fs/ext2/ext2.h
++++ b/fs/ext2/ext2.h
+@@ -16,6 +16,8 @@
+ #include <linux/blockgroup_lock.h>
+ #include <linux/percpu_counter.h>
+ #include <linux/rbtree.h>
++#include <linux/mm.h>
++#include <linux/highmem.h>
+ 
+ /* XXX Here for now... not interested in restructing headers JUST now */
+ 
+@@ -745,6 +747,31 @@ extern int ext2_delete_entry (struct ext2_dir_entry_2 *, struct page *);
+ extern int ext2_empty_dir (struct inode *);
+ extern struct ext2_dir_entry_2 * ext2_dotdot (struct inode *, struct page **);
+ extern void ext2_set_link(struct inode *, struct ext2_dir_entry_2 *, struct page *, struct inode *, int);
++static inline void ext2_put_page(struct page *page)
++{
++	kunmap(page);
++	put_page(page);
++}
++
++static inline struct page * ext2_get_page(struct inode *dir, unsigned long n,
++				   int quiet)
++{
++	struct address_space *mapping = dir->i_mapping;
++	struct page *page = read_mapping_page(mapping, n, NULL);
++	if (!IS_ERR(page)) {
++		kmap(page);
++		if (unlikely(!PageChecked(page))) {
++			if (PageError(page) || !ext2_check_page(page, quiet))
++				goto fail;
++		}
++	}
++	return page;
++
++fail:
++	ext2_put_page(page);
++	return ERR_PTR(-EIO);
++}
++
+ 
+ /* ialloc.c */
+ extern struct inode * ext2_new_inode (struct inode *, umode_t, const struct qstr *);
+diff --git a/fs/ext2/namei.c b/fs/ext2/namei.c
+index 5bf2c145643b..ea980f1e2e99 100644
+--- a/fs/ext2/namei.c
++++ b/fs/ext2/namei.c
+@@ -389,23 +389,18 @@ static int ext2_rename (struct inode * old_dir, struct dentry * old_dentry,
+ 	if (dir_de) {
+ 		if (old_dir != new_dir)
+ 			ext2_set_link(old_inode, dir_de, dir_page, new_dir, 0);
+-		else {
+-			kunmap(dir_page);
+-			put_page(dir_page);
+-		}
++		else
++			ext2_put_page(dir_page);
+ 		inode_dec_link_count(old_dir);
+ 	}
+ 	return 0;
+ 
+ 
+ out_dir:
+-	if (dir_de) {
+-		kunmap(dir_page);
+-		put_page(dir_page);
+-	}
++	if (dir_de)
++		ext2_put_page(dir_page);
+ out_old:
+-	kunmap(old_page);
+-	put_page(old_page);
++	ext2_put_page(old_page);
+ out:
+ 	return err;
+ }
+-- 
+2.28.0.rc0.12.gb6a658bd00c9
 
-ext4/4k: 5 tests, 5 failures, 184 seconds
-  Failures: generic/999 generic/999 generic/999 generic/999 
-    generic/999 
-ext4/1k: 5 tests, 5 failures, 192 seconds
-  Failures: generic/999 generic/999 generic/999 generic/999 
-    generic/999 
-ext4/ext3: 5 tests, 5 skipped, 13 seconds
-ext4/encrypt: 5 tests, 5 skipped, 4 seconds
-ext4/nojournal: 5 tests, 5 failures, 184 seconds
-  Failures: generic/999 generic/999 generic/999 generic/999 
-    generic/999 
-ext4/ext3conv: 5 tests, 5 failures, 185 seconds
-  Failures: generic/999 generic/999 generic/999 generic/999 
-    generic/999 
-ext4/adv: 5 tests, 5 failures, 182 seconds
-  Failures: generic/999 generic/999 generic/999 generic/999 
-    generic/999 
-ext4/dioread_nolock: 5 tests, 5 failures, 184 seconds
-  Failures: generic/999 generic/999 generic/999 generic/999 
-    generic/999 
-ext4/data_journal: 5 tests, 5 skipped, 5 seconds
-ext4/bigalloc: 5 tests, 5 failures, 254 seconds
-  Failures: generic/999 generic/999 generic/999 generic/999 
-    generic/999 
-ext4/bigalloc_1k: 5 tests, 5 failures, 186 seconds
-  Failures: generic/999 generic/999 generic/999 generic/999 
-    generic/999 
-Totals: 55 tests, 15 skipped, 40 failures, 0 errors, 1573s
-
-	   	     	      	 	   - Ted
-
---BOKacYhQ+x31HxR3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename=999
-
-#! /bin/bash
-# SPDX-License-Identifier: GPL-2.0
-
-#
-# FSQA Test No. 999
-#
-# AIO/DIO stress test
-# Run random AIO/DIO activity on an file system with unwritten regions
-#
-seq=`basename $0`
-seqres=$RESULT_DIR/$seq
-echo "QA output created by $seq"
-
-here=`pwd`
-tmp=/tmp/$$
-fio_config=$tmp.fio
-status=1	# failure is the default!
-trap "rm -f $tmp.*; exit \$status" 0 1 2 3 15
-
-# get standard environment, filters and checks
-. ./common/rc
-. ./common/filter
-
-# real QA test starts here
-_supported_fs generic
-_supported_os Linux
-_require_test
-_require_scratch
-_require_odirect
-_require_block_device $SCRATCH_DEV
-
-NUM_JOBS=$((4*LOAD_FACTOR))
-BLK_DEV_SIZE=`blockdev --getsz $SCRATCH_DEV`
-FILE_SIZE=$(((BLK_DEV_SIZE * 512) * 3 / 4))
-
-max_file_size=$((5 * 1024 * 1024 * 1024))
-if [ $max_file_size -lt $FILE_SIZE ]; then
-	FILE_SIZE=$max_file_size
-fi
-SIZE=$((FILE_SIZE / 2))
-
-cat >$fio_config <<EOF
-###########
-# $seq test fio activity
-# Filenames derived from jobsname and jobid like follows:
-# ${JOB_NAME}.${JOB_ID}.${ITERATION_ID}
-[global]
-ioengine=libaio
-bs=128k
-directory=${SCRATCH_MNT}
-filesize=${FILE_SIZE}
-size=${SIZE}
-iodepth=$((128*$LOAD_FACTOR))
-fallocate=native
-
-# Perform direct aio and verify data
-# This test case should check use-after-free issues
-[aio-dio-verifier]
-numjobs=1
-verify=crc32c-intel
-verify_fatal=1
-verify_dump=1
-verify_backlog=1024
-verify_async=4
-direct=1
-blocksize_range=4100k-8200k
-blockalign=4k
-rw=randwrite
-filename=test-file
-
-EOF
-
-rm -f $seqres.full
-
-_require_fio $fio_config
-_require_xfs_io_command "falloc"
-
-_workout()
-{
-	echo ""
-	echo "Run fio with random aio-dio pattern"
-	echo ""
-	cat $fio_config >>  $seqres.full
-	run_check $FIO_PROG $fio_config
-}
-
-_scratch_mkfs >> $seqres.full 2>&1
-_scratch_mount
-
-if ! _workout; then
-	_scratch_unmount 2>/dev/null
-	exit
-fi
-
-if ! _scratch_unmount; then
-	echo "failed to umount"
-	status=1
-	exit
-fi
-status=0
-exit
-
---BOKacYhQ+x31HxR3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="999.out"
-
-QA output created by 999
-
-Run fio with random aio-dio pattern
-
-
---BOKacYhQ+x31HxR3--
