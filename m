@@ -2,108 +2,107 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 574A12AFE67
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Nov 2020 06:38:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16FD02AFF86
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Nov 2020 07:04:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728612AbgKLFh6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 12 Nov 2020 00:37:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34456 "EHLO
+        id S1725960AbgKLGEB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 12 Nov 2020 01:04:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727925AbgKLClA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 11 Nov 2020 21:41:00 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25529C0617A6
-        for <linux-ext4@vger.kernel.org>; Wed, 11 Nov 2020 18:41:00 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id e21so2875275pgr.11
-        for <linux-ext4@vger.kernel.org>; Wed, 11 Nov 2020 18:41:00 -0800 (PST)
+        with ESMTP id S1725860AbgKLGEB (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 12 Nov 2020 01:04:01 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D285C0613D1
+        for <linux-ext4@vger.kernel.org>; Wed, 11 Nov 2020 22:04:00 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id w4so3239073pgg.13
+        for <linux-ext4@vger.kernel.org>; Wed, 11 Nov 2020 22:04:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=TPVBYTjJe0hHmPnczFzGKQ6IA34dXAh8mCwAyisyNuc=;
-        b=HsIKmy2mHTXPwQWLxT4t4wMTLWDqRF5L0W6i0qLwHTLP0BTicyOwRlVS/u3RGVkS3C
-         RJu4DtUK8Lh1VeQ0Fs8R5cbJEOb/KIkknyTWSIlbVMHhwEeu7GDekDQ/SV18yfChQ43u
-         f5vBpgZwYvIZXfftSHO6UNWQ2nO1I3Cblgwuwic4geXh3UcAEcVGpwC88AbQgivqgoih
-         5Qk4grVFGf2rvo2ZlDamtz3W2G2rSwLcQNC+AHJ4Ef7IfjYB5tNvaoZKN+2kjzfT9PFn
-         e5JMHTGUxFXQH+qS5+PJ/EIdj0wMijhOFFGs6yDsANBc0YNo66B2zmJuqpMIiwdoAcWL
-         a3wA==
+        bh=ovbGZgaEiNcjZ0KYxO02Ls57Y2gfjA4R09sCsp67T5s=;
+        b=YCD1ByvTJ4Ea6eiEQA2VRPKzjY3FH6UkMr1XiokjVaObhjrTiT5Qo0hl4lQzSXIw6O
+         R1fOmPKWwKjt2UNZUlOMGJS3w57sEAA14RuPtjLFENXbqr4tpe0/ptb/k9GqJhmjCs6X
+         S6Qurf/oi+6sd6ezeof1Mg3hwZtr7RA4BpE77uIdJv8LIMLpmzWc09OM18YJe4yrcLG3
+         pk0h439aE3oqEkeYQKBF5Pad7fnZG14DoA0cCkBlbUHH1EQLf4uokll3RFRB4zXyGwCa
+         rY99ERiA54Nv20NVAwz1sr2Bx+aC9gdExKY5Udr5jBoAFsP2wqAYFKQgFmoyF+En0/VB
+         X89A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=TPVBYTjJe0hHmPnczFzGKQ6IA34dXAh8mCwAyisyNuc=;
-        b=nJWY0tbjlkjWfnS94hRf1r2KE3zxlTthK3zxF2Rg2nOuYx1+IjOb5qnP5ixKczcczE
-         9qsyLgTgiwljsMz2lJDf7pnVowq4YVYEmMjVUMHHXyIO8uI7c7RiIUo3uQ82JZ4TZE3g
-         oDco9J8hB4M/XLDdgq2WUuT84Xet0UiG8+p5Q0/FrGPJoGAXcEuVfyotlGH9PP8jwbsB
-         wks6iBoes+dKSYuE7bn4lH1wFNSWQpbJ0QIC9oXs4VdHWiWbJ9U00KPoXLs+U1zozXmH
-         kEukKGB+H8NyYUjy0bWXtKgHhV6MuXrhTL4eY1pDjO2QWOP5s5fFKb7n3pDXjy4DNRIj
-         /kTg==
-X-Gm-Message-State: AOAM531bzgYn2omTOKej9YBQwJSAEqa6k1wBkkMRsvjd4dnSnQnWmrEn
-        gmnncO0lrrFNAOvojeiXOcEUrGtPzt3IEA==
-X-Google-Smtp-Source: ABdhPJxyWqEnhtC2yWsqGmtNX7PfX0PEmHE0bU42jkynWKfam4h3j/TgIeVQcJC3A4TtJNl389fptg==
-X-Received: by 2002:a62:2cc1:0:b029:18c:85f5:864b with SMTP id s184-20020a622cc10000b029018c85f5864bmr502272pfs.29.1605148859471;
-        Wed, 11 Nov 2020 18:40:59 -0800 (PST)
-Received: from google.com (154.137.233.35.bc.googleusercontent.com. [35.233.137.154])
-        by smtp.gmail.com with ESMTPSA id p4sm3814925pjo.6.2020.11.11.18.40.58
+        bh=ovbGZgaEiNcjZ0KYxO02Ls57Y2gfjA4R09sCsp67T5s=;
+        b=IW68DJey1rnU3FUG7ZV10JWFXBIMqimp5wfB4EaiKSuxcb5P0ZoW8VDM+8BVvXjofL
+         UOc6rT4LqCPX+xaSlELoA6Ri6qCubISGbUNVGN1UXq9xO3l9JCLoKqWs9Qjn95FiU/qg
+         MVOjWQPZqIPQBiEZDtAcIIbGH5P4iIUZJ6MjBImTj4wLKR2ExZ6fGvUTTZrm84hseH3J
+         pYCU2FmW8LB05FNaiC8Lmrbs9Qys+gD5vhclQ9yuI1DpOinaWZCaSzTtWjMCcOyo5dVr
+         9XmsIzTvC2znq/FW7SX/klhxb73oF6+sBKoVne04YpKX26fFI6IHiIgsYir49+wvd3oX
+         pePA==
+X-Gm-Message-State: AOAM530wH7xCNdn4r7twoYQud4n1yxIZe8/GXnhPAlzoIjBZlZSRwW67
+        O5qViaM0Y/uUCgYvJWpO7ds=
+X-Google-Smtp-Source: ABdhPJzs6Nf1dJTc0ZzgGr9GIAgY3xsE3kpKkXz2+aEXnf3Tyu3GXaGT+KAg4eRTcLW1ZVQoB24eXQ==
+X-Received: by 2002:a63:b55e:: with SMTP id u30mr23979579pgo.381.1605161039972;
+        Wed, 11 Nov 2020 22:03:59 -0800 (PST)
+Received: from localhost ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id q23sm4766950pfg.192.2020.11.11.22.03.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 18:40:58 -0800 (PST)
-Date:   Thu, 12 Nov 2020 02:40:54 +0000
-From:   Satya Tangirala <satyat@google.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: Re: [PATCH] fscrypt: fix inline encryption not used on new files
-Message-ID: <20201112024054.GA4042272@google.com>
-References: <20201111015224.303073-1-ebiggers@kernel.org>
+        Wed, 11 Nov 2020 22:03:59 -0800 (PST)
+Date:   Thu, 12 Nov 2020 14:03:53 +0800
+From:   Murphy Zhou <jencce.kernel@gmail.com>
+To:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
+        Harshad Shirwadkar <harshads@google.com>,
+        Murphy Zhou <jencce.kernel@gmail.com>
+Subject: Re: [PATCH] ext4: handle dax mount option collision
+Message-ID: <20201112060353.db4ky4ulug3eegst@xzhoux.usersys.redhat.com>
+References: <20201111183209.447175-1-harshads@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201111015224.303073-1-ebiggers@kernel.org>
+In-Reply-To: <20201111183209.447175-1-harshads@google.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 05:52:24PM -0800, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
+On Wed, Nov 11, 2020 at 10:32:09AM -0800, Harshad Shirwadkar wrote:
+> Mount options dax=inode and dax=never collided with fast_commit and
+> journal checksum. Redefine the mount flags to remove the collision.
+
+Tested OK.
+
+Thanks for the quick fix.
 > 
-> The new helper function fscrypt_prepare_new_inode() runs before
-> S_ENCRYPTED has been set on the new inode.  This accidentally made
-> fscrypt_select_encryption_impl() never enable inline encryption on newly
-> created files, due to its use of fscrypt_needs_contents_encryption()
-> which only returns true when S_ENCRYPTED is set.
-> 
-> Fix this by using S_ISREG() directly instead of
-> fscrypt_needs_contents_encryption(), analogous to what
-> select_encryption_mode() does.
-> 
-> I didn't notice this earlier because by design, the user-visible
-> behavior is the same (other than performance, potentially) regardless of
-> whether inline encryption is used or not.
-> 
-> Fixes: a992b20cd4ee ("fscrypt: add fscrypt_prepare_new_inode() and fscrypt_set_context()")
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> Reported-by: Murphy Zhou <jencce.kernel@gmail.com>
+> Fixes: 9cb20f94afcd2 ("fs/ext4: Make DAX mount option a tri-state")
+> Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 > ---
->  fs/crypto/inline_crypt.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  fs/ext4/ext4.h | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> diff --git a/fs/crypto/inline_crypt.c b/fs/crypto/inline_crypt.c
-> index 89bffa82ed74a..c57bebfa48fea 100644
-> --- a/fs/crypto/inline_crypt.c
-> +++ b/fs/crypto/inline_crypt.c
-> @@ -74,7 +74,7 @@ int fscrypt_select_encryption_impl(struct fscrypt_info *ci)
->  	int i;
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 1b399cafb15a..bf9429484462 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -1231,13 +1231,13 @@ struct ext4_inode_info {
+>  						      blocks */
+>  #define EXT4_MOUNT2_HURD_COMPAT		0x00000004 /* Support HURD-castrated
+>  						      file systems */
+> -#define EXT4_MOUNT2_DAX_NEVER		0x00000008 /* Do not allow Direct Access */
+> -#define EXT4_MOUNT2_DAX_INODE		0x00000010 /* For printing options only */
+> -
+>  #define EXT4_MOUNT2_EXPLICIT_JOURNAL_CHECKSUM	0x00000008 /* User explicitly
+>  						specified journal checksum */
 >  
->  	/* The file must need contents encryption, not filenames encryption */
-> -	if (!fscrypt_needs_contents_encryption(inode))
-> +	if (!S_ISREG(inode->i_mode))
->  		return 0;
+>  #define EXT4_MOUNT2_JOURNAL_FAST_COMMIT	0x00000010 /* Journal fast commit */
+> +#define EXT4_MOUNT2_DAX_NEVER		0x00000020 /* Do not allow Direct Access */
+> +#define EXT4_MOUNT2_DAX_INODE		0x00000040 /* For printing options only */
+> +
 >  
->  	/* The crypto mode must have a blk-crypto counterpart */
-> 
-> base-commit: 92cfcd030e4b1de11a6b1edb0840e55c26332d31
+>  #define clear_opt(sb, opt)		EXT4_SB(sb)->s_mount_opt &= \
+>  						~EXT4_MOUNT_##opt
 > -- 
-> 2.29.2
+> 2.29.2.222.g5d2a92d10f8-goog
 > 
-Looks good to me. Please feel free to add
-Reviewed-by: Satya Tangirala <satyat@google.com>
+
+-- 
+Murphy
