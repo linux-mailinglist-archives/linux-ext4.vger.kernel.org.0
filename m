@@ -2,196 +2,108 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 613382AFE65
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Nov 2020 06:38:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 574A12AFE67
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Nov 2020 06:38:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729424AbgKLFhv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 12 Nov 2020 00:37:51 -0500
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:47170 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728642AbgKLBuA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 11 Nov 2020 20:50:00 -0500
-Received: from dread.disaster.area (pa49-179-6-140.pa.nsw.optusnet.com.au [49.179.6.140])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 9861458B977;
-        Thu, 12 Nov 2020 12:49:53 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1kd1kG-00ADL6-Sy; Thu, 12 Nov 2020 12:49:52 +1100
-Date:   Thu, 12 Nov 2020 12:49:52 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] xfs: show the dax option in mount options.
-Message-ID: <20201112014952.GL7391@dread.disaster.area>
-References: <cover.1604948373.git.msuchanek@suse.de>
- <f9f7ba25e97dacd92c09eb3ee6a4aca8b4f72b00.1604948373.git.msuchanek@suse.de>
- <20201109192419.GC9695@magnolia>
- <20201109202705.GZ29778@kitsune.suse.cz>
- <20201109210823.GI7391@dread.disaster.area>
- <20201111102848.GD29778@kitsune.suse.cz>
+        id S1728612AbgKLFh6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 12 Nov 2020 00:37:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727925AbgKLClA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 11 Nov 2020 21:41:00 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25529C0617A6
+        for <linux-ext4@vger.kernel.org>; Wed, 11 Nov 2020 18:41:00 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id e21so2875275pgr.11
+        for <linux-ext4@vger.kernel.org>; Wed, 11 Nov 2020 18:41:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TPVBYTjJe0hHmPnczFzGKQ6IA34dXAh8mCwAyisyNuc=;
+        b=HsIKmy2mHTXPwQWLxT4t4wMTLWDqRF5L0W6i0qLwHTLP0BTicyOwRlVS/u3RGVkS3C
+         RJu4DtUK8Lh1VeQ0Fs8R5cbJEOb/KIkknyTWSIlbVMHhwEeu7GDekDQ/SV18yfChQ43u
+         f5vBpgZwYvIZXfftSHO6UNWQ2nO1I3Cblgwuwic4geXh3UcAEcVGpwC88AbQgivqgoih
+         5Qk4grVFGf2rvo2ZlDamtz3W2G2rSwLcQNC+AHJ4Ef7IfjYB5tNvaoZKN+2kjzfT9PFn
+         e5JMHTGUxFXQH+qS5+PJ/EIdj0wMijhOFFGs6yDsANBc0YNo66B2zmJuqpMIiwdoAcWL
+         a3wA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TPVBYTjJe0hHmPnczFzGKQ6IA34dXAh8mCwAyisyNuc=;
+        b=nJWY0tbjlkjWfnS94hRf1r2KE3zxlTthK3zxF2Rg2nOuYx1+IjOb5qnP5ixKczcczE
+         9qsyLgTgiwljsMz2lJDf7pnVowq4YVYEmMjVUMHHXyIO8uI7c7RiIUo3uQ82JZ4TZE3g
+         oDco9J8hB4M/XLDdgq2WUuT84Xet0UiG8+p5Q0/FrGPJoGAXcEuVfyotlGH9PP8jwbsB
+         wks6iBoes+dKSYuE7bn4lH1wFNSWQpbJ0QIC9oXs4VdHWiWbJ9U00KPoXLs+U1zozXmH
+         kEukKGB+H8NyYUjy0bWXtKgHhV6MuXrhTL4eY1pDjO2QWOP5s5fFKb7n3pDXjy4DNRIj
+         /kTg==
+X-Gm-Message-State: AOAM531bzgYn2omTOKej9YBQwJSAEqa6k1wBkkMRsvjd4dnSnQnWmrEn
+        gmnncO0lrrFNAOvojeiXOcEUrGtPzt3IEA==
+X-Google-Smtp-Source: ABdhPJxyWqEnhtC2yWsqGmtNX7PfX0PEmHE0bU42jkynWKfam4h3j/TgIeVQcJC3A4TtJNl389fptg==
+X-Received: by 2002:a62:2cc1:0:b029:18c:85f5:864b with SMTP id s184-20020a622cc10000b029018c85f5864bmr502272pfs.29.1605148859471;
+        Wed, 11 Nov 2020 18:40:59 -0800 (PST)
+Received: from google.com (154.137.233.35.bc.googleusercontent.com. [35.233.137.154])
+        by smtp.gmail.com with ESMTPSA id p4sm3814925pjo.6.2020.11.11.18.40.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 18:40:58 -0800 (PST)
+Date:   Thu, 12 Nov 2020 02:40:54 +0000
+From:   Satya Tangirala <satyat@google.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: Re: [PATCH] fscrypt: fix inline encryption not used on new files
+Message-ID: <20201112024054.GA4042272@google.com>
+References: <20201111015224.303073-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201111102848.GD29778@kitsune.suse.cz>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0 cx=a_idp_d
-        a=uDU3YIYVKEaHT0eX+MXYOQ==:117 a=uDU3YIYVKEaHT0eX+MXYOQ==:17
-        a=8nJEP1OIZ-IA:10 a=nNwsprhYR40A:10 a=7-415B0cAAAA:8
-        a=VtnXJFtyVPRg2aRurhEA:9 a=wPNLvfGTeEIA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <20201111015224.303073-1-ebiggers@kernel.org>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 11:28:48AM +0100, Michal Suchánek wrote:
-> On Tue, Nov 10, 2020 at 08:08:23AM +1100, Dave Chinner wrote:
-> > On Mon, Nov 09, 2020 at 09:27:05PM +0100, Michal Suchánek wrote:
-> > > On Mon, Nov 09, 2020 at 11:24:19AM -0800, Darrick J. Wong wrote:
-> > > > On Mon, Nov 09, 2020 at 08:10:08PM +0100, Michal Suchanek wrote:
-> > > > > xfs accepts both dax and dax_enum but shows only dax_enum. Show both
-> > > > > options.
-> > > > > 
-> > > > > Fixes: 8d6c3446ec23 ("fs/xfs: Make DAX mount option a tri-state")
-> > > > > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
-> > > > > ---
-> > > > >  fs/xfs/xfs_super.c | 2 +-
-> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > > 
-> > > > > diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
-> > > > > index e3e229e52512..a3b00003840d 100644
-> > > > > --- a/fs/xfs/xfs_super.c
-> > > > > +++ b/fs/xfs/xfs_super.c
-> > > > > @@ -163,7 +163,7 @@ xfs_fs_show_options(
-> > > > >  		{ XFS_MOUNT_GRPID,		",grpid" },
-> > > > >  		{ XFS_MOUNT_DISCARD,		",discard" },
-> > > > >  		{ XFS_MOUNT_LARGEIO,		",largeio" },
-> > > > > -		{ XFS_MOUNT_DAX_ALWAYS,		",dax=always" },
-> > > > > +		{ XFS_MOUNT_DAX_ALWAYS,		",dax,dax=always" },
-> > > > 
-> > > > NAK, programs that require DAX semantics for files stored on XFS must
-> > > > call statx to detect the STATX_ATTR_DAX flag, as outlined in "Enabling
-> > > > DAX on xfs" in Documentation/filesystems/dax.txt.
-> > > statx can be used to query S_DAX.  NOTE that only regular files will
-> > > ever have S_DAX set and therefore statx will never indicate that S_DAX
-> > > is set on directories.
-> > 
-> > Yup, by design.
-> > 
-> > The application doesn't need to do anything complex to make this
-> > work. If the app wants to use DAX, then it should use
-> > FS_IOC_FS{GS}ETXATTR to always set the on disk per inode DAX flags
-> > for it's data dirs and files, and then STATX_ATTR_DAX will *always*
-> > tell it whether DAX is actively in use at runtime. It's pretty
-> > simple, really.
-> > 
-> > > The filesystem may not have any files so statx cannot be used.
-> > 
-> > Really?  The app or installer is about to *write to the fs* and has
-> > all the permissions it needs to modify the contents of the fs. It's
-> > pretty simple to create a tmpdir, set the DAX flag on the tmpdir,
-> > then create a tmpfile in the tmpdir and run STATX_ATTR_DAX on it to
-> > see if DAX is active or not.....
+On Tue, Nov 10, 2020 at 05:52:24PM -0800, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> Have you ever seen a 'wizard' style installer?
-
-I wrote my first one in 1995 on Windows NT 3.51 using Installshield.
-
-> Like one that firsts asks what to install, and then presents a list of
-> suitable locations that have enough space, supported filesystem features
-> enabled, and whatnot?
-
-Hold on, 1995 is calling me. The application I was packaging used
-ACLs. But the NTFS version created by windows NT 3.1 was
-incompatible as ACL support didn't arrive until NT 3.51 and service
-pack 4(?) for NT 3.1. Yes, I had to write code to probe the
-filesystems to detect whether ACL support was available or not by
--trying to create an ACL-.
-
-I guess you could say "been there, done that, learnt the lesson".
-
-> So to present a list of mountpoints that support DAX one has to scribble
-> over every mountpoint on the system?
-
-If you are filtering storage options presented to the user by
-supported features, then you have to probe for them in some way.
-And that means you have to consider that many option filesystem
-features that applications use cannot be detected via mount options
-checking the filesytem config. That is, there are features that can
-only be discovered by actually testing whether they work or not.
-
-> That sounds ridiculous.
-
-Reality is a harsh mistress. :/
-
-[snip the rest because you're being ridiculous]
-
-Are you aware of ndctl?
-
-$ ndctl list
-[
-  {
-    "dev":"namespace1.0",
-    "mode":"fsdax",
-    "map":"mem",
-    "size":8589934592,
-    "sector_size":512,
-    "blockdev":"pmem1"
-  },
-  {
-    "dev":"namespace0.0",
-    "mode":"fsdax",
-    "map":"mem",
-    "size":8589934592,
-    "sector_size":512,
-    "blockdev":"pmem0"
-  }
-]
-
-Oh, look there are two block devices on this machine that are
-configured for filesystem DAX (fsdax). They are /dev/pmem0 and
-/dev/pmem1.
-
-What filesytsems are on them?
-
-$ lsblk -o NAME,SIZE,FSTYPE,MOUNTPOINT /dev/pmem0 /dev/pmem1
-NAME  SIZE FSTYPE MOUNTPOINT
-pmem1   8G ext4   /mnt/test
-pmem0   8G xfs    /mnt/scratch
-$
-
-One XFs, one ext4, both of which will be using DAX capable unless
-the dax=never mount option is set. Which:
-
-$ mount  |grep pmem
-/dev/pmem0 on /mnt/scratch type xfs (rw,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota)
-/dev/pmem1 on /mnt/test type ext4 (rw,relatime)
-$
-
-is not set on either mount.
-
-Hence both filesystems at DAX capable and enabled, and should be
-presented as options to the user as such.
-
-And all this comes about because DAX is a property of the block
-device, not the filesystem. Hence the only time a DAX capable
-filesystem on a block device that is DAX capable will not be DAX
-capable is if the dax=never is set...
-
-Of course, this is just encoding how existing filesystems behave -
-it's not a requirement for future filesytsems so they may use other
-mechanisms for enabling/disabling DAX. Which leaves you with the
-only reliable mechanism of creating filesystem and checking
-statx(STATX_ATTR_DAX)....
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+> The new helper function fscrypt_prepare_new_inode() runs before
+> S_ENCRYPTED has been set on the new inode.  This accidentally made
+> fscrypt_select_encryption_impl() never enable inline encryption on newly
+> created files, due to its use of fscrypt_needs_contents_encryption()
+> which only returns true when S_ENCRYPTED is set.
+> 
+> Fix this by using S_ISREG() directly instead of
+> fscrypt_needs_contents_encryption(), analogous to what
+> select_encryption_mode() does.
+> 
+> I didn't notice this earlier because by design, the user-visible
+> behavior is the same (other than performance, potentially) regardless of
+> whether inline encryption is used or not.
+> 
+> Fixes: a992b20cd4ee ("fscrypt: add fscrypt_prepare_new_inode() and fscrypt_set_context()")
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+>  fs/crypto/inline_crypt.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/crypto/inline_crypt.c b/fs/crypto/inline_crypt.c
+> index 89bffa82ed74a..c57bebfa48fea 100644
+> --- a/fs/crypto/inline_crypt.c
+> +++ b/fs/crypto/inline_crypt.c
+> @@ -74,7 +74,7 @@ int fscrypt_select_encryption_impl(struct fscrypt_info *ci)
+>  	int i;
+>  
+>  	/* The file must need contents encryption, not filenames encryption */
+> -	if (!fscrypt_needs_contents_encryption(inode))
+> +	if (!S_ISREG(inode->i_mode))
+>  		return 0;
+>  
+>  	/* The crypto mode must have a blk-crypto counterpart */
+> 
+> base-commit: 92cfcd030e4b1de11a6b1edb0840e55c26332d31
+> -- 
+> 2.29.2
+> 
+Looks good to me. Please feel free to add
+Reviewed-by: Satya Tangirala <satyat@google.com>
