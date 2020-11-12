@@ -2,187 +2,196 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F6262AFACF
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 Nov 2020 22:53:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 613382AFE65
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Nov 2020 06:38:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726970AbgKKVw6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 11 Nov 2020 16:52:58 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:49830 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726188AbgKKVw6 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 11 Nov 2020 16:52:58 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id 6716E1F45DC8
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     dhowells@redhat.com
-Cc:     viro@zeniv.linux.org.uk, tytso@mit.edu, khazhy@google.com,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel@collabora.com
-Subject: [PATCH RFC v2 8/8] samples: watch_queue: Add sample of SB notifications
-Date:   Wed, 11 Nov 2020 16:52:13 -0500
-Message-Id: <20201111215213.4152354-9-krisman@collabora.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201111215213.4152354-1-krisman@collabora.com>
-References: <20201111215213.4152354-1-krisman@collabora.com>
+        id S1729424AbgKLFhv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 12 Nov 2020 00:37:51 -0500
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:47170 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728642AbgKLBuA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 11 Nov 2020 20:50:00 -0500
+Received: from dread.disaster.area (pa49-179-6-140.pa.nsw.optusnet.com.au [49.179.6.140])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 9861458B977;
+        Thu, 12 Nov 2020 12:49:53 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1kd1kG-00ADL6-Sy; Thu, 12 Nov 2020 12:49:52 +1100
+Date:   Thu, 12 Nov 2020 12:49:52 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] xfs: show the dax option in mount options.
+Message-ID: <20201112014952.GL7391@dread.disaster.area>
+References: <cover.1604948373.git.msuchanek@suse.de>
+ <f9f7ba25e97dacd92c09eb3ee6a4aca8b4f72b00.1604948373.git.msuchanek@suse.de>
+ <20201109192419.GC9695@magnolia>
+ <20201109202705.GZ29778@kitsune.suse.cz>
+ <20201109210823.GI7391@dread.disaster.area>
+ <20201111102848.GD29778@kitsune.suse.cz>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201111102848.GD29778@kitsune.suse.cz>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0 cx=a_idp_d
+        a=uDU3YIYVKEaHT0eX+MXYOQ==:117 a=uDU3YIYVKEaHT0eX+MXYOQ==:17
+        a=8nJEP1OIZ-IA:10 a=nNwsprhYR40A:10 a=7-415B0cAAAA:8
+        a=VtnXJFtyVPRg2aRurhEA:9 a=wPNLvfGTeEIA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This sample demonstrates how to use the watch_sb syscall.  It exposes
-notifications like the following:
+On Wed, Nov 11, 2020 at 11:28:48AM +0100, Michal Suchánek wrote:
+> On Tue, Nov 10, 2020 at 08:08:23AM +1100, Dave Chinner wrote:
+> > On Mon, Nov 09, 2020 at 09:27:05PM +0100, Michal Suchánek wrote:
+> > > On Mon, Nov 09, 2020 at 11:24:19AM -0800, Darrick J. Wong wrote:
+> > > > On Mon, Nov 09, 2020 at 08:10:08PM +0100, Michal Suchanek wrote:
+> > > > > xfs accepts both dax and dax_enum but shows only dax_enum. Show both
+> > > > > options.
+> > > > > 
+> > > > > Fixes: 8d6c3446ec23 ("fs/xfs: Make DAX mount option a tri-state")
+> > > > > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+> > > > > ---
+> > > > >  fs/xfs/xfs_super.c | 2 +-
+> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > > 
+> > > > > diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
+> > > > > index e3e229e52512..a3b00003840d 100644
+> > > > > --- a/fs/xfs/xfs_super.c
+> > > > > +++ b/fs/xfs/xfs_super.c
+> > > > > @@ -163,7 +163,7 @@ xfs_fs_show_options(
+> > > > >  		{ XFS_MOUNT_GRPID,		",grpid" },
+> > > > >  		{ XFS_MOUNT_DISCARD,		",discard" },
+> > > > >  		{ XFS_MOUNT_LARGEIO,		",largeio" },
+> > > > > -		{ XFS_MOUNT_DAX_ALWAYS,		",dax=always" },
+> > > > > +		{ XFS_MOUNT_DAX_ALWAYS,		",dax,dax=always" },
+> > > > 
+> > > > NAK, programs that require DAX semantics for files stored on XFS must
+> > > > call statx to detect the STATX_ATTR_DAX flag, as outlined in "Enabling
+> > > > DAX on xfs" in Documentation/filesystems/dax.txt.
+> > > statx can be used to query S_DAX.  NOTE that only regular files will
+> > > ever have S_DAX set and therefore statx will never indicate that S_DAX
+> > > is set on directories.
+> > 
+> > Yup, by design.
+> > 
+> > The application doesn't need to do anything complex to make this
+> > work. If the app wants to use DAX, then it should use
+> > FS_IOC_FS{GS}ETXATTR to always set the on disk per inode DAX flags
+> > for it's data dirs and files, and then STATX_ATTR_DAX will *always*
+> > tell it whether DAX is actively in use at runtime. It's pretty
+> > simple, really.
+> > 
+> > > The filesystem may not have any files so statx cannot be used.
+> > 
+> > Really?  The app or installer is about to *write to the fs* and has
+> > all the permissions it needs to modify the contents of the fs. It's
+> > pretty simple to create a tmpdir, set the DAX flag on the tmpdir,
+> > then create a tmpfile in the tmpdir and run STATX_ATTR_DAX on it to
+> > see if DAX is active or not.....
+> 
+> Have you ever seen a 'wizard' style installer?
 
-  root@host:~# ./watch_sb /mnt
-  read() = 93
-  NOTIFY[000]: ty=000002 sy=01 i=0300005d
-    SB AT ext4_remount:5636 ERROR: 16 inode=0 block=0
-    description: Abort forced by user
-  read() = 96
-  NOTIFY[000]: ty=000002 sy=01 i=03000060
-    SB AT ext4_lookup:1706 ERROR: 0 inode=13 block=0
-    description: iget: bogus i_mode (45)
+I wrote my first one in 1995 on Windows NT 3.51 using Installshield.
 
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
----
- samples/watch_queue/Makefile   |   2 +-
- samples/watch_queue/watch_sb.c | 114 +++++++++++++++++++++++++++++++++
- 2 files changed, 115 insertions(+), 1 deletion(-)
- create mode 100644 samples/watch_queue/watch_sb.c
+> Like one that firsts asks what to install, and then presents a list of
+> suitable locations that have enough space, supported filesystem features
+> enabled, and whatnot?
 
-diff --git a/samples/watch_queue/Makefile b/samples/watch_queue/Makefile
-index c0db3a6bc524..6067d57a5bb1 100644
---- a/samples/watch_queue/Makefile
-+++ b/samples/watch_queue/Makefile
-@@ -1,4 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0-only
--userprogs-always-y += watch_test
-+userprogs-always-y += watch_test watch_sb
- 
- userccflags += -I usr/include
-diff --git a/samples/watch_queue/watch_sb.c b/samples/watch_queue/watch_sb.c
-new file mode 100644
-index 000000000000..51b660334f6b
---- /dev/null
-+++ b/samples/watch_queue/watch_sb.c
-@@ -0,0 +1,114 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Use watch_sb to watch for SB notifications.
-+ *
-+ * Copyright (C) 2020 Collabora Ltd.
-+ * Written by Gabriel Krisman Bertazi <krisman@collabora.com>
-+ *   Based on watch_test.c by David Howells (dhowells@redhat.com)
-+ */
-+
-+#include <stdio.h>
-+#include <unistd.h>
-+#include <stdlib.h>
-+#include <err.h>
-+#include <string.h>
-+#include<sys/ioctl.h>
-+#include <linux/watch_queue.h>
-+
-+#ifndef __NR_watch_sb
-+# define __NR_watch_sb 441
-+#endif
-+
-+static void consumer(int fd)
-+{
-+	unsigned char buffer[433], *p, *end;
-+	union {
-+		struct watch_notification n;
-+		unsigned char buf1[128];
-+		struct superblock_error_notification sen;
-+		struct superblock_warning_notification swn;
-+		struct superblock_msg_notification smn;
-+	} n;
-+	ssize_t buf_len;
-+
-+	for (;;) {
-+		buf_len = read(fd, buffer, sizeof(buffer));
-+		if (buf_len == -1)
-+			err(1, "read");
-+
-+		if (buf_len == 0) {
-+			printf("-- END --\n");
-+			return;
-+		}
-+
-+		if (buf_len > sizeof(buffer)) {
-+			err(1, "Read buffer overrun: %zd\n", buf_len);
-+			return;
-+		}
-+
-+		printf("read() = %zd\n", buf_len);
-+
-+		p = buffer;
-+		end = buffer + buf_len;
-+		while (p < end) {
-+			size_t largest, len;
-+
-+			largest = end - p;
-+			if (largest > 128)
-+				largest = 128;
-+			if (largest < sizeof(struct watch_notification))
-+				err(1, "Short message header: %zu\n", largest);
-+
-+			memcpy(&n, p, largest);
-+
-+			printf("NOTIFY[%03zx]: ty=%06x sy=%02x i=%08x\n",
-+			       p - buffer, n.n.type, n.n.subtype, n.n.info);
-+
-+			len = n.n.info & WATCH_INFO_LENGTH;
-+			if (len < sizeof(n.n) || len > largest)
-+				err(1, "Bad message length: %zu/%zu\n", len, largest);
-+
-+			switch (n.n.subtype) {
-+			case NOTIFY_SUPERBLOCK_ERROR:
-+				printf("\t SB AT %s:%d ERROR: %d inode=%llu block=%llu\n",
-+				       n.sen.function, n.sen.line, n.sen.error_number,
-+				       n.sen.inode, n.sen.block);
-+				if (len > sizeof(n.sen))
-+					printf("description: %s\n", n.sen.desc);
-+				break;
-+			case NOTIFY_SUPERBLOCK_MSG:
-+				printf("\t Ext4 MSG: %s\n", n.smn.desc);
-+				break;
-+			case NOTIFY_SUPERBLOCK_WARNING:
-+				printf("\t SB AT %s:%d WARNING inode=%llu block=%llu\n",
-+				       n.swn.function, n.swn.line, n.swn.inode, n.swn.block);
-+				if (len > sizeof(n.sen))
-+					printf("description: %s\n", n.swn.desc);
-+				break;
-+			default:
-+				printf("unknown subtype %c\n", n.n.subtype);
-+			}
-+			p += len;
-+		}
-+	}
-+}
-+
-+int main (int argc, char **argv)
-+{
-+	int fd[2];
-+
-+	if (argc != 2)
-+		errx(1, "Missing mount point\n");
-+
-+	if (syscall(293, fd, O_NOTIFICATION_PIPE) < 0)
-+		err(1, "Failed to open pipe\n");
-+
-+	if (ioctl(fd[0], IOC_WATCH_QUEUE_SET_SIZE, 256) < 0)
-+		err(1, "ioctl fail\n");
-+
-+	if (syscall(__NR_watch_sb, 0, argv[1], NULL, fd[0], 0x3) < 0)
-+		err(1, "Failed to watch SB\n");
-+
-+	consumer(fd[0]);
-+
-+	return 0;
-+}
+Hold on, 1995 is calling me. The application I was packaging used
+ACLs. But the NTFS version created by windows NT 3.1 was
+incompatible as ACL support didn't arrive until NT 3.51 and service
+pack 4(?) for NT 3.1. Yes, I had to write code to probe the
+filesystems to detect whether ACL support was available or not by
+-trying to create an ACL-.
+
+I guess you could say "been there, done that, learnt the lesson".
+
+> So to present a list of mountpoints that support DAX one has to scribble
+> over every mountpoint on the system?
+
+If you are filtering storage options presented to the user by
+supported features, then you have to probe for them in some way.
+And that means you have to consider that many option filesystem
+features that applications use cannot be detected via mount options
+checking the filesytem config. That is, there are features that can
+only be discovered by actually testing whether they work or not.
+
+> That sounds ridiculous.
+
+Reality is a harsh mistress. :/
+
+[snip the rest because you're being ridiculous]
+
+Are you aware of ndctl?
+
+$ ndctl list
+[
+  {
+    "dev":"namespace1.0",
+    "mode":"fsdax",
+    "map":"mem",
+    "size":8589934592,
+    "sector_size":512,
+    "blockdev":"pmem1"
+  },
+  {
+    "dev":"namespace0.0",
+    "mode":"fsdax",
+    "map":"mem",
+    "size":8589934592,
+    "sector_size":512,
+    "blockdev":"pmem0"
+  }
+]
+
+Oh, look there are two block devices on this machine that are
+configured for filesystem DAX (fsdax). They are /dev/pmem0 and
+/dev/pmem1.
+
+What filesytsems are on them?
+
+$ lsblk -o NAME,SIZE,FSTYPE,MOUNTPOINT /dev/pmem0 /dev/pmem1
+NAME  SIZE FSTYPE MOUNTPOINT
+pmem1   8G ext4   /mnt/test
+pmem0   8G xfs    /mnt/scratch
+$
+
+One XFs, one ext4, both of which will be using DAX capable unless
+the dax=never mount option is set. Which:
+
+$ mount  |grep pmem
+/dev/pmem0 on /mnt/scratch type xfs (rw,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota)
+/dev/pmem1 on /mnt/test type ext4 (rw,relatime)
+$
+
+is not set on either mount.
+
+Hence both filesystems at DAX capable and enabled, and should be
+presented as options to the user as such.
+
+And all this comes about because DAX is a property of the block
+device, not the filesystem. Hence the only time a DAX capable
+filesystem on a block device that is DAX capable will not be DAX
+capable is if the dax=never is set...
+
+Of course, this is just encoding how existing filesystems behave -
+it's not a requirement for future filesytsems so they may use other
+mechanisms for enabling/disabling DAX. Which leaves you with the
+only reliable mechanism of creating filesystem and checking
+statx(STATX_ATTR_DAX)....
+
+Cheers,
+
+Dave.
 -- 
-2.29.2
-
+Dave Chinner
+david@fromorbit.com
