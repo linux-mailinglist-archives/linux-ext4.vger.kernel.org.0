@@ -2,258 +2,175 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3AEA2B098E
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Nov 2020 17:09:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC7562B0B76
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Nov 2020 18:43:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728810AbgKLQJV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 12 Nov 2020 11:09:21 -0500
-Received: from mga12.intel.com ([192.55.52.136]:36386 "EHLO mga12.intel.com"
+        id S1726162AbgKLRnH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 12 Nov 2020 12:43:07 -0500
+Received: from mga18.intel.com ([134.134.136.126]:5392 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728233AbgKLQJT (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 12 Nov 2020 11:09:19 -0500
-IronPort-SDR: fl4LmYVTz8Aeg0FJ12Qh9FBi5C4Tbfn/JOthXGnY4lk+MBcTwTWF0J28Bx2j6Qu0gIp34XSeRo
- 9ZGqDoVkad9Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9803"; a="149604659"
+        id S1726102AbgKLRnG (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 12 Nov 2020 12:43:06 -0500
+IronPort-SDR: kjJpmFM9fSzq/rbARXA9GgdjZKRYu1K9ugl+I6Cg8Rm+GEzJaMwHoUcTM3qljdvmMYaD1jTv8a
+ 3S/0zYckEbTg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9803"; a="158127445"
 X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; 
-   d="scan'208";a="149604659"
+   d="scan'208";a="158127445"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 08:08:52 -0800
-IronPort-SDR: 2WX/zC3wXdVeZl/AHCgFTjbTnPW/A7H3Vj8UrR8ERgMF0jxm3H7G8JXCnbAqmpVee/zAhSLClB
- F8zifaZLIrtQ==
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 09:42:48 -0800
+IronPort-SDR: pTP+0//zWAygGsYSUMfU2BlOtKrO1g1gFXdQg6CTfaSaM/bmK0dpZ1LAuIN4lAvIjCpqDC8GeO
+ W08JnmRhNvFg==
 X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; 
-   d="scan'208";a="366401499"
+   d="scan'208";a="542341826"
 Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 08:08:50 -0800
-Date:   Thu, 12 Nov 2020 08:08:49 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>,
-        Dave Chinner <david@fromorbit.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 09:42:47 -0800
+From:   ira.weiny@intel.com
+To:     Jan Kara <jack@suse.com>
+Cc:     Ira Weiny <ira.weiny@intel.com>, linux-ext4@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] xfs: show the dax option in mount options.
-Message-ID: <20201112160848.GS3976735@iweiny-DESK2.sc.intel.com>
-References: <cover.1604948373.git.msuchanek@suse.de>
- <f9f7ba25e97dacd92c09eb3ee6a4aca8b4f72b00.1604948373.git.msuchanek@suse.de>
- <20201109192419.GC9695@magnolia>
- <20201109202705.GZ29778@kitsune.suse.cz>
- <20201109210823.GI7391@dread.disaster.area>
- <20201111102848.GD29778@kitsune.suse.cz>
- <20201112014952.GL7391@dread.disaster.area>
- <20201112111217.GF29778@kitsune.suse.cz>
- <20201112151046.GD27697@quack2.suse.cz>
+Subject: [PATCH V2] fs/ext2: Use ext2_put_page
+Date:   Thu, 12 Nov 2020 09:42:44 -0800
+Message-Id: <20201112174244.701325-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
+In-Reply-To: <20201111205530.436692-1-ira.weiny@intel.com>
+References: <20201111205530.436692-1-ira.weiny@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201112151046.GD27697@quack2.suse.cz>
-User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 04:10:46PM +0100, Jan Kara wrote:
-> On Thu 12-11-20 12:12:17, Michal Suchánek wrote:
-> > On Thu, Nov 12, 2020 at 12:49:52PM +1100, Dave Chinner wrote:
-> > > On Wed, Nov 11, 2020 at 11:28:48AM +0100, Michal Suchánek wrote:
-> > > > On Tue, Nov 10, 2020 at 08:08:23AM +1100, Dave Chinner wrote:
-> > > > > On Mon, Nov 09, 2020 at 09:27:05PM +0100, Michal Suchánek wrote:
-> > > > > > On Mon, Nov 09, 2020 at 11:24:19AM -0800, Darrick J. Wong wrote:
-> > > > > > > On Mon, Nov 09, 2020 at 08:10:08PM +0100, Michal Suchanek wrote:
-> > > > > > > > xfs accepts both dax and dax_enum but shows only dax_enum. Show both
-> > > > > > > > options.
-> > > > > > > > 
-> > > > > > > > Fixes: 8d6c3446ec23 ("fs/xfs: Make DAX mount option a tri-state")
-> > > > > > > > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
-> > > > > > > > ---
-> > > > > > > >  fs/xfs/xfs_super.c | 2 +-
-> > > > > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > > > > > 
-> > > > > > > > diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
-> > > > > > > > index e3e229e52512..a3b00003840d 100644
-> > > > > > > > --- a/fs/xfs/xfs_super.c
-> > > > > > > > +++ b/fs/xfs/xfs_super.c
-> > > > > > > > @@ -163,7 +163,7 @@ xfs_fs_show_options(
-> > > > > > > >  		{ XFS_MOUNT_GRPID,		",grpid" },
-> > > > > > > >  		{ XFS_MOUNT_DISCARD,		",discard" },
-> > > > > > > >  		{ XFS_MOUNT_LARGEIO,		",largeio" },
-> > > > > > > > -		{ XFS_MOUNT_DAX_ALWAYS,		",dax=always" },
-> > > > > > > > +		{ XFS_MOUNT_DAX_ALWAYS,		",dax,dax=always" },
+From: Ira Weiny <ira.weiny@intel.com>
 
-I only caught this thread yesterday sorry about that...
+There are 3 places in namei.c where the equivalent of ext2_put_page() is
+open coded on a page which was returned from the ext2_get_page() call
+[through the use of ext2_find_entry() and ext2_dotdot()].
 
-FWIW I think it odd to have this string.  Because what does 'dax,dax=always'
-mean?  dax=always is not the only way the FS can support DAX.  The default
-'dax=inode' also means the FS supports DAX.  So I'm not sure this is really
-even giving you what you want.
+Move ext2_put_page() to ext2.h and use it in namei.c
 
-> > > > > > > 
-> > > > > > > NAK, programs that require DAX semantics for files stored on XFS must
-> > > > > > > call statx to detect the STATX_ATTR_DAX flag, as outlined in "Enabling
-> > > > > > > DAX on xfs" in Documentation/filesystems/dax.txt.
-> > > > > > statx can be used to query S_DAX.  NOTE that only regular files will
-> > > > > > ever have S_DAX set and therefore statx will never indicate that S_DAX
-> > > > > > is set on directories.
-> > > > > 
-> > > > > Yup, by design.
-> > > > > 
-> > > > > The application doesn't need to do anything complex to make this
-> > > > > work. If the app wants to use DAX, then it should use
-> > > > > FS_IOC_FS{GS}ETXATTR to always set the on disk per inode DAX flags
-> > > > > for it's data dirs and files, and then STATX_ATTR_DAX will *always*
-> > > > > tell it whether DAX is actively in use at runtime. It's pretty
-> > > > > simple, really.
-> > > > > 
-> > > > > > The filesystem may not have any files so statx cannot be used.
-> > > > > 
-> > > > > Really?  The app or installer is about to *write to the fs* and has
-> > > > > all the permissions it needs to modify the contents of the fs. It's
-> > > > > pretty simple to create a tmpdir, set the DAX flag on the tmpdir,
-> > > > > then create a tmpfile in the tmpdir and run STATX_ATTR_DAX on it to
-> > > > > see if DAX is active or not.....
-> > > > 
-> > > > Have you ever seen a 'wizard' style installer?
-> > > 
-> > > I wrote my first one in 1995 on Windows NT 3.51 using Installshield.
+Also add a comment regarding the proper way to release the page returned
+from ext2_find_entry() and ext2_dotdot().
 
-I'm confused about this talk of an installer.  If 1 FS supports DAX and the
-other, say 10, do not; what happens when you install something special which
-to support DAX?  But what if the user of that software uses one of the other
-10 FS's?
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 
-I think it has already been mentioned that the software needs this check at run
-time to be correct.
+---
+Changes from V1:
+	Reported-by: kernel test robot <lkp@intel.com>
+	move ext2_get_page() back to dir.c; my testing must have had the
+	wrong .config because I did not see the compile error
+	yesterday...
 
-> > > 
-> > > > Like one that firsts asks what to install, and then presents a list of
-> > > > suitable locations that have enough space, supported filesystem features
-> > > > enabled, and whatnot?
-> > > 
-> > > Hold on, 1995 is calling me. The application I was packaging used
-> > > ACLs. But the NTFS version created by windows NT 3.1 was
-> > > incompatible as ACL support didn't arrive until NT 3.51 and service
-> > > pack 4(?) for NT 3.1. Yes, I had to write code to probe the
-> > > filesystems to detect whether ACL support was available or not by
-> > > -trying to create an ACL-.
-> > > 
-> > > I guess you could say "been there, done that, learnt the lesson".
-> > So we are trying to be as bad as Windows now?
-> > > 
-> > > > So to present a list of mountpoints that support DAX one has to scribble
-> > > > over every mountpoint on the system?
-> > > 
-> > > If you are filtering storage options presented to the user by
-> > > supported features, then you have to probe for them in some way.
-> > > And that means you have to consider that many option filesystem
-> > > features that applications use cannot be detected via mount options
-> > > checking the filesytem config. That is, there are features that can
-> > > only be discovered by actually testing whether they work or not.
-> > > 
-> > > > That sounds ridiculous.
-> > > 
-> > > Reality is a harsh mistress. :/
-> > > 
-> > > [snip the rest because you're being ridiculous]
-> > > 
-> > > Are you aware of ndctl?
-> > > 
-> > > $ ndctl list
-> > > [
-> > >   {
-> > >     "dev":"namespace1.0",
-> > >     "mode":"fsdax",
-> > >     "map":"mem",
-> > >     "size":8589934592,
-> > >     "sector_size":512,
-> > >     "blockdev":"pmem1"
-> > >   },
-> > >   {
-> > >     "dev":"namespace0.0",
-> > >     "mode":"fsdax",
-> > >     "map":"mem",
-> > >     "size":8589934592,
-> > >     "sector_size":512,
-> > >     "blockdev":"pmem0"
-> > >   }
-> > > ]
-> > Yes, that tells me that the device can be configured for dax. Not if the
-> > filesystem will use it.
-> > > 
-> > > Oh, look there are two block devices on this machine that are
-> > > configured for filesystem DAX (fsdax). They are /dev/pmem0 and
-> > > /dev/pmem1.
-> > > 
-> > > What filesytsems are on them?
-> > > 
-> > > $ lsblk -o NAME,SIZE,FSTYPE,MOUNTPOINT /dev/pmem0 /dev/pmem1
-> > > NAME  SIZE FSTYPE MOUNTPOINT
-> > > pmem1   8G ext4   /mnt/test
-> > > pmem0   8G xfs    /mnt/scratch
-> > > $
-> > > 
-> > > One XFs, one ext4, both of which will be using DAX capable unless
-> > > the dax=never mount option is set. Which:
-> > Or the bock size does not match page size. Or whatever other requirement
-> > the filesystem might have is not met.
-> > > 
-> > > $ mount  |grep pmem
-> > > /dev/pmem0 on /mnt/scratch type xfs (rw,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota)
-> > > /dev/pmem1 on /mnt/test type ext4 (rw,relatime)
-> > > $
-> > > 
-> > > is not set on either mount.
-> > > 
-> > > Hence both filesystems at DAX capable and enabled, and should be
-> > > presented as options to the user as such.
-> > No, it is not the case. That is why it would make sense for the kernel
-> > to make the information about DAX availability accessible somewhere.
+This was originally part of the kmap_thread() series here:
 
-But again at run time the software needs to verify it is being asked to operate
-on a FS which supports DAX.  So I don't think what you are proposing is going
-to work all of the time.
+https://lore.kernel.org/lkml/20201009195033.3208459-37-ira.weiny@intel.com/
 
-> > > 
-> > > And all this comes about because DAX is a property of the block
-> > > device, not the filesystem. Hence the only time a DAX capable
-> > > filesystem on a block device that is DAX capable will not be DAX
-> > > capable is if the dax=never is set...
-> > See, it is not property of the block device. It is property of the mount
-> > point. The availability on the device is one requirement but the
-> > filesystem options affect availability to the user in the end.
-> 
-> No, it is not really a property of the mountpoint either. If anything it is
-> a property of the inode. Two different inodes on the very same filesystem,
-> one may support DAX the other will not (think for example of XFS real-time
-> volumes, or simply inodes with / without S_DAX flag set). And we are back
-> at what Dave tries to get accross. As inconvenient as it is
-> statx(STATX_ATTR_DAX) is the only way to tell.
-> 
-> > > Of course, this is just encoding how existing filesystems behave -
-> > > it's not a requirement for future filesytsems so they may use other
-> > > mechanisms for enabling/disabling DAX. Which leaves you with the
-> > > only reliable mechanism of creating filesystem and checking
-> > > statx(STATX_ATTR_DAX)....
-> > Or the kernel could just tell the user. But right, information is power,
-> > and keeping the user in the dark is much more entertaining.
-> 
-> I think it would be more productive if you actually answered Ted's
-> question: Exactly which application got broken by the change? I know for a
-> fact that one large DB vendor was parsing mount options in /proc/mounts to
-> determine whether their DB can use DAX or not (and this was already a
-> "cleaned up" method because before this they were parsing VMA flags in
-> /proc/<pid>/smaps which is even worse). But in this case they also seemed
-> OK to switch to statx() once it is available...
+But this is really a valid clean up regardless of the
+kmap_thread[local]() changes.
+---
+ fs/ext2/dir.c   | 14 ++++++++------
+ fs/ext2/ext2.h  |  7 +++++++
+ fs/ext2/namei.c | 15 +++++----------
+ 3 files changed, 20 insertions(+), 16 deletions(-)
 
-I agree.  I struggled over these options and what to present when I added the
-feature and I never intended to break anything.
+diff --git a/fs/ext2/dir.c b/fs/ext2/dir.c
+index 70355ab6740e..14aa45316ad2 100644
+--- a/fs/ext2/dir.c
++++ b/fs/ext2/dir.c
+@@ -66,12 +66,6 @@ static inline unsigned ext2_chunk_size(struct inode *inode)
+ 	return inode->i_sb->s_blocksize;
+ }
+ 
+-static inline void ext2_put_page(struct page *page)
+-{
+-	kunmap(page);
+-	put_page(page);
+-}
+-
+ /*
+  * Return the offset into page `page_nr' of the last valid
+  * byte in that page, plus one.
+@@ -336,6 +330,8 @@ ext2_readdir(struct file *file, struct dir_context *ctx)
+  * returns the page in which the entry was found (as a parameter - res_page),
+  * and the entry itself. Page is returned mapped and unlocked.
+  * Entry is guaranteed to be valid.
++ *
++ * On Success ext2_put_page() should be called on *res_page.
+  */
+ struct ext2_dir_entry_2 *ext2_find_entry (struct inode *dir,
+ 			const struct qstr *child, struct page **res_page)
+@@ -401,6 +397,12 @@ struct ext2_dir_entry_2 *ext2_find_entry (struct inode *dir,
+ 	return de;
+ }
+ 
++/**
++ * Return the '..' directory entry and the page in which the entry was found
++ * (as a parameter - p).
++ *
++ * On Success ext2_put_page() should be called on *p.
++ */
+ struct ext2_dir_entry_2 * ext2_dotdot (struct inode *dir, struct page **p)
+ {
+ 	struct page *page = ext2_get_page(dir, 0, 0);
+diff --git a/fs/ext2/ext2.h b/fs/ext2/ext2.h
+index 5136b7289e8d..2a4175fbaf5e 100644
+--- a/fs/ext2/ext2.h
++++ b/fs/ext2/ext2.h
+@@ -16,6 +16,8 @@
+ #include <linux/blockgroup_lock.h>
+ #include <linux/percpu_counter.h>
+ #include <linux/rbtree.h>
++#include <linux/mm.h>
++#include <linux/highmem.h>
+ 
+ /* XXX Here for now... not interested in restructing headers JUST now */
+ 
+@@ -745,6 +747,11 @@ extern int ext2_delete_entry (struct ext2_dir_entry_2 *, struct page *);
+ extern int ext2_empty_dir (struct inode *);
+ extern struct ext2_dir_entry_2 * ext2_dotdot (struct inode *, struct page **);
+ extern void ext2_set_link(struct inode *, struct ext2_dir_entry_2 *, struct page *, struct inode *, int);
++static inline void ext2_put_page(struct page *page)
++{
++	kunmap(page);
++	put_page(page);
++}
+ 
+ /* ialloc.c */
+ extern struct inode * ext2_new_inode (struct inode *, umode_t, const struct qstr *);
+diff --git a/fs/ext2/namei.c b/fs/ext2/namei.c
+index 5bf2c145643b..ea980f1e2e99 100644
+--- a/fs/ext2/namei.c
++++ b/fs/ext2/namei.c
+@@ -389,23 +389,18 @@ static int ext2_rename (struct inode * old_dir, struct dentry * old_dentry,
+ 	if (dir_de) {
+ 		if (old_dir != new_dir)
+ 			ext2_set_link(old_inode, dir_de, dir_page, new_dir, 0);
+-		else {
+-			kunmap(dir_page);
+-			put_page(dir_page);
+-		}
++		else
++			ext2_put_page(dir_page);
+ 		inode_dec_link_count(old_dir);
+ 	}
+ 	return 0;
+ 
+ 
+ out_dir:
+-	if (dir_de) {
+-		kunmap(dir_page);
+-		put_page(dir_page);
+-	}
++	if (dir_de)
++		ext2_put_page(dir_page);
+ out_old:
+-	kunmap(old_page);
+-	put_page(old_page);
++	ext2_put_page(old_page);
+ out:
+ 	return err;
+ }
+-- 
+2.28.0.rc0.12.gb6a658bd00c9
 
-That said, I'm not sure what exactly is broken.  Moreover, I'm concerned that
-there may be more wrong here than just the lack of a 'dax' option string in the
-mount.
-
-Ira
