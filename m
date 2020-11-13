@@ -2,55 +2,58 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CC542B136A
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 Nov 2020 01:44:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 120842B152F
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 Nov 2020 05:59:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726041AbgKMAn7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 12 Nov 2020 19:43:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50910 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725929AbgKMAn7 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 12 Nov 2020 19:43:59 -0500
-Subject: Re: [GIT PULL] another fscrypt fix for 5.10-rc4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605228238;
-        bh=BIe5HMjS9gt50Hxj+EvtbJmyK6vmFdQ/47oHVfN9Wac=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=v4aVOxObp/Bh95+DWGWwHvPWYLKI4tS+miiHRyVUCTSXsFZh3G/gb8ZOkRRqtCo41
-         xrm/mGmBFFzW8H42Ri1vam2cM2NS3jcU+hyfixzrtf7UMa06AnEFZFOWKWz+18D6Bm
-         MLTqgGg0h0LsHGmUdJFJYaYlfABEtJXjGxHXDVSY=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <X63CTrVsH3WD+xcE@sol.localdomain>
-References: <X63CTrVsH3WD+xcE@sol.localdomain>
-X-PR-Tracked-List-Id: <linux-ext4.vger.kernel.org>
-X-PR-Tracked-Message-Id: <X63CTrVsH3WD+xcE@sol.localdomain>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
-X-PR-Tracked-Commit-Id: d19d8d345eecd9247cbe6cbf27aef271bd88aba7
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 585e5b17b92dead8a3aca4e3c9876fbca5f7e0ba
-Message-Id: <160522823863.10618.11737091089665240139.pr-tracker-bot@kernel.org>
-Date:   Fri, 13 Nov 2020 00:43:58 +0000
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Satya Tangirala <satyat@google.com>
+        id S1726146AbgKME6w (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 12 Nov 2020 23:58:52 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:37066 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726054AbgKME6w (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 12 Nov 2020 23:58:52 -0500
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0AD4wmdn023755
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Nov 2020 23:58:49 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 9B01A420107; Thu, 12 Nov 2020 23:58:48 -0500 (EST)
+Date:   Thu, 12 Nov 2020 23:58:48 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] more ext4 fixes for v5.10-rc4
+Message-ID: <20201113045848.GA3987678@mit.edu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The pull request you sent on Thu, 12 Nov 2020 15:16:30 -0800:
+The following changes since commit 52d1998d09af92d44ffce7454637dd3fd1afdc7d:
 
-> https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
+  Merge tag 'fscrypt-for-linus' of git://git.kernel.org/pub/scm/fs/fscrypt/fscrypt (2020-11-10 10:05:37 -0800)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/585e5b17b92dead8a3aca4e3c9876fbca5f7e0ba
+are available in the Git repository at:
 
-Thank you!
+  git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_bugfixes
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+for you to fetch changes up to d196e229a80c39254f4adbc312f55f5198e98941:
+
+  Revert "ext4: fix superblock checksum calculation race" (2020-11-11 14:24:18 -0500)
+
+----------------------------------------------------------------
+Two ext4 bug fixes, one via a revert of a commit sent during the merge window.
+
+----------------------------------------------------------------
+Harshad Shirwadkar (1):
+      ext4: handle dax mount option collision
+
+Theodore Ts'o (1):
+      Revert "ext4: fix superblock checksum calculation race"
+
+ fs/ext4/ext4.h  |  6 +++---
+ fs/ext4/super.c | 11 -----------
+ 2 files changed, 3 insertions(+), 14 deletions(-)
