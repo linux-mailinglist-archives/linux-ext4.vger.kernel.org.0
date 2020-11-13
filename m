@@ -2,319 +2,149 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE7F62B1551
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 Nov 2020 06:17:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B3212B17FF
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 Nov 2020 10:16:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726147AbgKMFRY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 13 Nov 2020 00:17:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726133AbgKMFRX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 13 Nov 2020 00:17:23 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42FC8C0613D1
-        for <linux-ext4@vger.kernel.org>; Thu, 12 Nov 2020 21:17:23 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id j205so12023319lfj.6
-        for <linux-ext4@vger.kernel.org>; Thu, 12 Nov 2020 21:17:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+INEfGGZXNHSOmr0KJz0TjhHBab12YSaK6rBcZVOv6g=;
-        b=jnA8QCNOmppuZyCzgPGu7usknCJvYC0/HJdLzVUepnnGowEIREq0sZJFvB3oXkHLAG
-         E0x8uAPx20/DUeT1GtuvzlZtaQWL9wVew4E1so1+2kTPpOpZcQh1bb0Z9cY1hbgxN3ww
-         QqBUx49Bj+g4TmLNlKIq8KSKfSBKJi7tRqwOF9VeCX2L/0PqxV08P/fWwcyzqKum1X1X
-         CgpnzgFUcimZG9p+e5NYJq+518pine24+RAVj7lXINQrnlioOfqXCWjBvEC1aXPTggPm
-         AWxr5NRQ6cgOn+cdONF9x/K7LtJQ0s4SPDdw21hYyfrsomJXYYvV1m4kLRIWiC4sN8xF
-         JKIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+INEfGGZXNHSOmr0KJz0TjhHBab12YSaK6rBcZVOv6g=;
-        b=TCccKzX5/tTN+wtMI2pRgH/imET9IvIqZoNTyJHtN12oE6nU1tEfu3pw5RaI7ltL+P
-         +az0i5MBKlMsGEIaWOFY26pnbLAHaQp5jrZluBhji+uIUX0UOoTwBt+tw+J+BalsEQ0s
-         +NDmOROEDp6MxbxqMt4CjMomvNfMB1cWfyvYtMqn2MGZmGzvfU2oiXmVJtND3lEwChc5
-         HwD//oDr8rByX9MkVZNbknW15L3Vm21kW9v3oNa0EaGkXtm94GyWyG7WNQppKclfxeSq
-         1Y3hmQwsBeuMOmHdQ4zNaBLB+IVHTzsVsseWaTse5dY0s+u2U3rsRyqJTWl1vNWvNm6t
-         hgPQ==
-X-Gm-Message-State: AOAM533mq28LYZmgFme/FWcaHAVQThNYj1thXx39jv0W0LXNs6cnZZv0
-        7FBuDQcrS4IARwGnqkfQlJX5uTy9c2mUl3C5y4hbiw==
-X-Google-Smtp-Source: ABdhPJyMb4jJfS3OkZr9RkF6eOui00I3gCtolwBMMh3hqbFXCWjmd4Kkp+93U4uDoS6+5P9cYgeKfj9wlN94lP0NmsQ=
-X-Received: by 2002:a05:6512:683:: with SMTP id t3mr179573lfe.234.1605244639627;
- Thu, 12 Nov 2020 21:17:19 -0800 (PST)
-MIME-Version: 1.0
-References: <20201106192154.51514-1-98.arpi@gmail.com> <CABVgOSkQ6+y7OGw2494cJa2b60EkSjncLNAgc9cJDbS=X9J3WA@mail.gmail.com>
- <CANpmjNNp2RUCE_ypp2R4MznikTYRYeCDuF7VMp+Hbh=55KWa3A@mail.gmail.com>
- <47a05c5a-485d-026b-c1c3-476ed1a97856@gmail.com> <CABVgOSkZ9k6bHPp=LVATWfokMSrEuD87jOfE5MiVYAEbZMmaQQ@mail.gmail.com>
- <BY5PR13MB29336C5BE374D69939DCADABFDE90@BY5PR13MB2933.namprd13.prod.outlook.com>
- <CABVgOSnJAgWvTTABaF082LuYjAoAWzrBsyu9sT7x4GGMVsOD6Q@mail.gmail.com>
- <BY5PR13MB293305FE7ED35EC2B2C81AF1FDE80@BY5PR13MB2933.namprd13.prod.outlook.com>
- <CABVgOSn0vUvHFTPPnFGCmg0pEotwr6TQXQieRV=EMqs1QmFYUw@mail.gmail.com> <20201112123706.GA2457520@elver.google.com>
-In-Reply-To: <20201112123706.GA2457520@elver.google.com>
-From:   David Gow <davidgow@google.com>
-Date:   Fri, 13 Nov 2020 13:17:07 +0800
-Message-ID: <CABVgOSkjExNtGny=CDT1WVaXUVgSEaf7hwx8=VY4atN5ot10KQ@mail.gmail.com>
-Subject: Re: [PATCH v6 1/2] kunit: Support for Parameterized Testing
-To:     Marco Elver <elver@google.com>
-Cc:     "Bird, Tim" <Tim.Bird@sony.com>,
-        Arpitha Raghunandan <98.arpi@gmail.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-kernel-mentees@lists.linuxfoundation.org" 
-        <linux-kernel-mentees@lists.linuxfoundation.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
+        id S1726275AbgKMJQU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Fri, 13 Nov 2020 04:16:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42318 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726268AbgKMJQS (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 13 Nov 2020 04:16:18 -0500
+From:   bugzilla-daemon@bugzilla.kernel.org
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 210185] New: kernel BUG at fs/ext4/page-io.c:126!
+Date:   Fri, 13 Nov 2020 09:16:17 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: new
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: emchroma@gmail.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: bug_id short_desc product version
+ cf_kernel_version rep_platform op_sys cf_tree bug_status bug_severity
+ priority component assigned_to reporter cf_regression
+Message-ID: <bug-210185-13602@https.bugzilla.kernel.org/>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 8:37 PM Marco Elver <elver@google.com> wrote:
->
-> On Thu, Nov 12, 2020 at 04:18PM +0800, David Gow wrote:
-> > On Thu, Nov 12, 2020 at 12:55 AM Bird, Tim <Tim.Bird@sony.com> wrote:
-> [...]
-> > > > kunit_tool has a bug when parsing the comments / diagnostic lines,
-> > > > which requires a ": " to be present. This is a bug, which is being
-> > > > fixed[1], so while it's _nice_ to not trigger it, it's not really an
-> > > > important long-term goal of the format. In any case, this kunit_tool
-> > > > issue only affects the comment lines: if the per-parameter result line
-> > > > is an actual result, rather than just a diagnostic, this shouldn't be
-> > > > a problem.
-> > > >
-> > > > In any case, I still prefer my proposed option for now -- noting that
-> > > > these per-parameter results are not actually supposed to be parsed --
-> > > > with then the possibility of expanding them to actual nested results
-> > > > later should we wish. But if the idea of having TAP-like lines in
-> > > > diagnostics seems too dangerous (e.g. because people will try to parse
-> > > > them anyway), then I think the options we have are to stick to the
-> > > > output format given in the current version of this patch (which
-> > > > doesn't resemble a TAP result), make each parameterised version its
-> > > > own test (without a "container test", which would require a bit of
-> > > > extra work while computing test plans), or to hold this whole feature
-> > > > back until we can support arbitrary test hierarchies in KUnit.
-> > > It seems like you're missing a 4th option, which is just tack the parameter
-> > > name on, without using a colon, and have these testcases treated
-> > > as unique within the context of the super-test.  Is there some reason
-> > > these can't be expressed as individual testcases in the parent test?
-> > >
-> >
-> > No: there's no fundamental reason why we couldn't do that, though
-> > there are some things which make it suboptiomal, IMHO.
-> >
-> > Firstly, there could be a lot of parameters, and that by not grouping
-> > them together it could make dealing with the results a little
-> > unwieldy. The other side of that is that it'll result in tests being
-> > split up and renamed as they're ported to use this, whereas if the
-> > whole test shows up once (with subtests or without), the old test name
-> > can still be there, with a single PASS/FAIL for the whole test.
->
-> Agree, it's suboptimal and having the parameterized not be absorbed by
-> the whole suite would be strongly preferred.
->
-> > (It also might be a little tricky with the current implementation to
-> > produce the test plan, as the parameters come from a generator, and I
-> > don't think there's a way of getting the number of parameters ahead of
-> > time. That's a problem with the sub-subtest model, too, though at
-> > least there it's a little more isolated from other tests.)
->
-> The whole point of generators, as I envisage it, is to also provide the
-> ability for varying parameters dependent on e.g. environment,
-> configuration, number of CPUs, etc. The current array-based generator is
-> the simplest possible use-case.
->
-> However, we *can* require generators generate a deterministic number of
-> parameters when called multiple times on the same system.
+https://bugzilla.kernel.org/show_bug.cgi?id=210185
 
-I think this is a reasonable compromise, though it's not actually
-essential. As I understand the TAP spec, the test plan is actually
-optional (and/or can be at the end of the sequence of tests), though
-kunit_tool currently only supports having it at the beginning (which
-is strongly preferred by the spec anyway). I think we could get away
-with having it at the bottom of the subtest results though, which
-would save having to run the generator twice, when subtest support is
-added to kunit_tool.
+            Bug ID: 210185
+           Summary: kernel BUG at fs/ext4/page-io.c:126!
+           Product: File System
+           Version: 2.5
+    Kernel Version: 5.9.8
+          Hardware: x86-64
+                OS: Linux
+              Tree: Mainline
+            Status: NEW
+          Severity: normal
+          Priority: P1
+         Component: ext4
+          Assignee: fs_ext4@kernel-bugs.osdl.org
+          Reporter: emchroma@gmail.com
+        Regression: No
 
-> To that end, I propose a v7 (below) that takes care of getting number of
-> parameters (and also displays descriptions for each parameter where
-> available).
->
-> Now it is up to you how you want to turn the output from diagnostic
-> lines into something TAP compliant, because now we have the number of
-> parameters and can turn it into a subsubtest. But I think kunit-tool
-> doesn't understand subsubtests yet, so I suggest we take these patches,
-> and then somebody can prepare kunit-tool.
->
+We get the following error on several machines with kernel 5.9.8 (the same with
+5.9.1).
+The setup on all machines is identical. The error happens after 10-15 minutes
+of
+moderate I/O with a threaded application.
 
-This sounds good to me. The only thing I'm not sure about is the
-format of the parameter description: thus far test names be valid C
-identifier names, due to the fact they're named after the test
-function. I don't think there's a fundamental reason parameters (and
-hence, potentially, subsubtests) need to follow that convention as
-well, but it does look a bit odd.  Equally, the square brackets around
-the description shouldn't be necessary according to the TAP spec, but
-do seem to make things a little more readable, particuarly with the
-names in the ext4 inode test. I'm not too worried about either of
-those, though: I'm sure it'll look fine once I've got used to it.
+[ 2443.940844] kernel BUG at fs/ext4/page-io.c:126!
+[ 2443.941045] invalid opcode: 0000 [#1] SMP PTI
+[ 2443.941070] CPU: 8 PID: 982 Comm: kworker/u64:1 Not tainted 5.9.8-kd-cluster
+#1
+[ 2443.941111] Hardware name: Supermicro SYS-1028GQ-TR/X10DGQ, BIOS 1.0a
+08/14/2015
+[ 2443.941183] Workqueue: ext4-rsv-conversion ext4_end_io_rsv_work [ext4]
+[ 2443.941234] RIP: 0010:ext4_finish_bio+0x25e/0x260 [ext4]
+[ 2443.941262] Code: da 49 c1 e6 06 4c 03 30 e9 11 fe ff ff 48 83 c4 30 5b 5d
+41 5c 41 5d 41 5e 41 5f c3 4d 8b 7e 28 4c 89 74 24 28 e9 2b fe ff ff <0f> 0b 0f
+1f 44 00 00 48 8b 07 48 39 c7 0f 85 cf 00 00 00 f6 47 28
+[ 2443.941365] RSP: 0018:ffffb1c68731bd98 EFLAGS: 00010246
+[ 2443.941391] RAX: 0000000000000081 RBX: ffff9e662470f000 RCX:
+0000000000000001
+[ 2443.941413] RDX: 0000000000001000 RSI: 0000000000000001 RDI:
+0000000000001000
+[ 2443.941436] RBP: 0000000000000000 R08: ffff9e6834e68800 R09:
+0000000000000000
+[ 2443.941457] R10: ffffb1c68731bd00 R11: 0000000000000000 R12:
+ffff9e662470f000
+[ 2443.941480] R13: ffff9e65f71fcc18 R14: ffffe6bb792cb0c0 R15:
+ffff9e66b626e2d8
+[ 2443.941502] FS:  0000000000000000(0000) GS:ffff9e783fa00000(0000)
+knlGS:0000000000000000
+[ 2443.941527] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 2443.941545] CR2: 0000564319c27638 CR3: 0000000fce3ae002 CR4:
+00000000001706e0
+[ 2443.941568] Call Trace:
+[ 2443.941593]  ext4_release_io_end+0x48/0xf0 [ext4]
+[ 2443.941618]  ext4_end_io_rsv_work+0xbd/0x180 [ext4]
+[ 2443.941637]  process_one_work+0x199/0x380
+[ 2443.941653]  ? pwq_activate_delayed_work+0x3b/0xa0
+[ 2443.941671]  worker_thread+0x4f/0x3b0
+[ 2443.941685]  ? rescuer_thread+0x360/0x360
+[ 2443.941700]  kthread+0xfc/0x130
+[ 2443.941712]  ? kthread_associate_blkcg+0x90/0x90
+[ 2443.941729]  ret_from_fork+0x22/0x30
+[ 2443.942216] Modules linked in: nfsv3 nfs_acl xt_conntrack xt_MASQUERADE
+nf_conntrack_netlink nfnetlink xfrm_user xfrm_algo xt_addrtype iptable_filter
+iptable_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 br_netfilter
+bridge bpfilter 8021q garp mrp stp llc rpcsec_gss_krb5 auth_rpcgss nfsv4
+dns_resolver nfs lockd grace nfs_ssc fscache overlay intel_rapl_msr iTCO_wdt
+intel_pmc_bxt iTCO_vendor_support intel_rapl_common sb_edac
+x86_pkg_temp_thermal intel_powerclamp coretemp kvm_intel kvm irqbypass
+crct10dif_pclmul crc32_pclmul ghash_clmulni_intel aesni_intel crypto_simd
+cryptd glue_helper rapl intel_cstate intel_uncore pcspkr ast drm_vram_helper
+drm_ttm_helper ttm drm_kms_helper cec joydev sg drm snd_hda_codec_hdmi lpc_ich
+snd_hda_intel snd_intel_dspcfg snd_hda_codec mei_me mei snd_hda_core snd_hwdep
+snd_pcm snd_timer snd soundcore ioatdma acpi_ipmi ipmi_si ipmi_devintf
+ipmi_msghandler evdev acpi_power_meter acpi_pad tiny_power_button button
+ecryptfs cbc encrypted_keys parport_pc ppdev
+[ 2443.942244]  lp parport sunrpc ip_tables x_tables autofs4 hid_generic usbhid
+hid ext4 crc16 mbcache jbd2 raid10 raid456 async_raid6_recov async_memcpy
+async_pq async_xor async_tx xor sd_mod t10_pi raid6_pq libcrc32c crc32c_generic
+raid1 raid0 multipath linear md_mod ahci libahci ehci_pci ehci_hcd libata igb
+i2c_i801 i2c_algo_bit crc32c_intel scsi_mod i2c_smbus usbcore dca wmi
+[ 2443.948743] ---[ end trace f72fe3c4ac9cf471 ]---
+[ 2443.952835] RIP: 0010:ext4_finish_bio+0x25e/0x260 [ext4]
+[ 2443.953707] Code: da 49 c1 e6 06 4c 03 30 e9 11 fe ff ff 48 83 c4 30 5b 5d
+41 5c 41 5d 41 5e 41 5f c3 4d 8b 7e 28 4c 89 74 24 28 e9 2b fe ff ff <0f> 0b 0f
+1f 44 00 00 48 8b 07 48 39 c7 0f 85 cf 00 00 00 f6 47 28
+[ 2443.955098] RSP: 0018:ffffb1c68731bd98 EFLAGS: 00010246
+[ 2443.955755] RAX: 0000000000000081 RBX: ffff9e662470f000 RCX:
+0000000000000001
+[ 2443.956572] RDX: 0000000000001000 RSI: 0000000000000001 RDI:
+0000000000001000
+[ 2443.957394] RBP: 0000000000000000 R08: ffff9e6834e68800 R09:
+0000000000000000
+[ 2443.958071] R10: ffffb1c68731bd00 R11: 0000000000000000 R12:
+ffff9e662470f000
+[ 2443.958790] R13: ffff9e65f71fcc18 R14: ffffe6bb792cb0c0 R15:
+ffff9e66b626e2d8
+[ 2443.959509] FS:  0000000000000000(0000) GS:ffff9e783fa00000(0000)
+knlGS:0000000000000000
+[ 2443.960272] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 2443.961139] CR2: 0000564319c27638 CR3: 0000000fce3ae002 CR4:
+00000000001706e0
 
-
-
-> Or did I miss something else?
->
-> > > > Personally, I'd rather not hold this feature back, and prefer to have
-> > > > a single combined result available, so would just stick with v6 if
-> > > > so...
-> > > >
-> > > > Does that make sense?
-> > >
-> > > I understand what you are saying, but this seems like a step backwards.
-> > > We already know that having just numbers to represent a test case is not
-> > > very human friendly. The same will go for these parameter case numbers.
-> > > I admit to not following this kunit test parameterization effort, so I don't
-> > > know the background of how the numbers relate to the parameters.
-> > > But there must be some actual semantic meaning to each of the parameter
-> > > cases.  Not conveying that meaning as part of the test case name seems like
-> > > a missed opportunity.
-> >
-> > Yeah: I'm not a big fan of just numbering the parameters either: the
-> > plan is to eventually support naming these. Basically, the goal is to
-> > be able to run the same test code repeatedly with different inputs
-> > (which may be programmatically generated): depending on the testcase /
-> > parameter generator in question, the numbers may mean something
-> > specific, but it's not necessarily the case. Certainly in most cases,
-> > the order of these parameters is unlikely to matter, so having the
-> > number be part of the test name isn't ideal there: it's unlikely to
-> > have semantic meaning, and worst-case could be unstable due to code
-> > changes.
->
-> We can name them. Probably a good idea to do it while we can, as I think
-> the best design is changing the generator function signature.
->
-
-This works for me. I was thinking of having a separate
-parameter_to_string() function, but I think this is better.
-
-> > > I'm at a little of a loss as to why, if you have valid testcase results, you would
-> > > shy away from putting them into a format that is machine-readable.  If it's because
-> > > the tooling is not there, then IMHO you should fix the tooling.
-> >
-> > I think the real disconnect here is the ambiguity between treating
-> > each run-through with a different parameter as its own test case,
-> > versus an implementation detail of the single "meta testcase". Since
-> > parameters are not really named/ordered properly, (and the example is
-> > replacing a single test) it feels more like an implementation detail
-> > to me.
-> >
-> > > I realize that perfect is the enemy of good enough, and that there's value for humans
-> > > to see these testcase results and manually interpret them, even if they are put into
-> > > a syntax that automated parsers will ignore.  However, I do think there's a danger that
-> > > this syntax will get canonicalized. Personally, I'd rather see the testcases
-> > > with parameters show up in the parsable results.  I'd rather sacrifice the hierarchy
-> > > than the results.
-> >
-> > With the state of things at the moment, I don't think the individual
-> > results for given parameters are as useful as the overall result for
-> > the test (run over all parameters), so for me the hierarchy is more
-> > important than the actual results. There are certainly a lot of things
-> > we can do to make the results more useful (supporting named
-> > parameters, for one), and actually supporting the extra level of
-> > nesting in the tooling would make it possible to have both.
->
-> Named parameters are supported in my proposed v7 (see below). I think
-> it's now up to you what the format should be, as now it's just a matter
-> of changing 2 prints' formats to some non-diagnostic TAP compliant
-> output (but I have no idea what ;-)).
-
-Thanks -- I think the changes from this v7 to a TAP compliant format
-should mostly just be replacing the "# [test_name]" with an extra
-level of indentation. We'll just have to add support for it to
-kunit_tool's parser (which has been in need of work anyway.)
-
-> > There is of course another possibility -- to just not print the
-> > individual parameter results at all (the parameters will likely show
-> > up in the assertion messages of failures anyway -- especially if, as
-> > in the example, the _MSG() variants are used). That's probably
-> > slightly easier to read than a huge list of parameters which are all
-> > "ok" anyway...
->
-> To me this is not acceptable, as I'd like to see some progress feedback
-> for long tests.
-
-Hopefully most tests don't take long enough that this level of
-feedback is necessary (and those that do could always log diagnostic
-lines themselves), but I'm also happy with these being printed out
-here.
-
-> > In any case, I'm happy to leave the final decision here to Arpitha and
-> > Marco, so long as we don't actually violate the TAP/KTAP spec and
-> > kunit_tool is able to read at least the top-level result. My
-> > preference is still to go either with the "# [test_case->name]:
-> > [ok|not ok] [index] - param-[index]", or to get rid of the
-> > per-parameter results entirely for now (or just print out a diagnostic
-> > message on failure). In any case, it's a decision we can revisit once
-> > we have support for named parameters, better tooling, or a better idea
-> > of how people are actually using this.
->
-> Right, so I think we'll be in a better place if we implement: 1)
-> parameter to description conversion support, 2) counting parameters. So
-> I decided to see what it looks like, and it wasn't too bad. I just don't
-> know how you want to fix kunit-tool to make these non-diagnostic lines
-> and not complain, but as I said, it'd be good to not block these
-> patches.
-
-Yup, I tried this v7, and it looks good to me. The kunit_tool work
-will probably be a touch more involved, so I definitely don't want to
-hold up supporting this on that.
-
-My only thoughts on the v7 patch are:
-- I don't think we actually need the parameter count yet (or perhaps
-ever if we go with subtests as planned), so I be okay with getting rid
-of that.
-- It'd be a possibility to get rid of the square brackets from the
-output, and if we still want them, make them part of the test itself:
-if this were TAP formatted, those brackets would be part of the
-subsubtest name.
-
->
-> It currently looks like this:
->
-> | TAP version 14
-> | 1..6
-> |     # Subtest: ext4_inode_test
-> |     1..1
-> |     # inode_test_xtimestamp_decoding: Test with 1..16 params
-> |     # inode_test_xtimestamp_decoding: ok 1 - [1901-12-13 Lower bound of 32bit < 0 timestamp, no extra bits]
-> |     # inode_test_xtimestamp_decoding: ok 2 - [1969-12-31 Upper bound of 32bit < 0 timestamp, no extra bits]
-> |     # inode_test_xtimestamp_decoding: ok 3 - [1970-01-01 Lower bound of 32bit >=0 timestamp, no extra bits]
-> |     # inode_test_xtimestamp_decoding: ok 4 - [2038-01-19 Upper bound of 32bit >=0 timestamp, no extra bits]
-> |     # inode_test_xtimestamp_decoding: ok 5 - [2038-01-19 Lower bound of 32bit <0 timestamp, lo extra sec bit on]
-> |     # inode_test_xtimestamp_decoding: ok 6 - [2106-02-07 Upper bound of 32bit <0 timestamp, lo extra sec bit on]
-> |     # inode_test_xtimestamp_decoding: ok 7 - [2106-02-07 Lower bound of 32bit >=0 timestamp, lo extra sec bit on]
-> |     # inode_test_xtimestamp_decoding: ok 8 - [2174-02-25 Upper bound of 32bit >=0 timestamp, lo extra sec bit on]
-> |     # inode_test_xtimestamp_decoding: ok 9 - [2174-02-25 Lower bound of 32bit <0 timestamp, hi extra sec bit on]
-> |     # inode_test_xtimestamp_decoding: ok 10 - [2242-03-16 Upper bound of 32bit <0 timestamp, hi extra sec bit on]
-> |     # inode_test_xtimestamp_decoding: ok 11 - [2242-03-16 Lower bound of 32bit >=0 timestamp, hi extra sec bit on]
-> |     # inode_test_xtimestamp_decoding: ok 12 - [2310-04-04 Upper bound of 32bit >=0 timestamp, hi extra sec bit on]
-> |     # inode_test_xtimestamp_decoding: ok 13 - [2310-04-04 Upper bound of 32bit>=0 timestamp, hi extra sec bit 1. 1 ns]
-> |     # inode_test_xtimestamp_decoding: ok 14 - [2378-04-22 Lower bound of 32bit>= timestamp. Extra sec bits 1. Max ns]
-> |     # inode_test_xtimestamp_decoding: ok 15 - [2378-04-22 Lower bound of 32bit >=0 timestamp. All extra sec bits on]
-> |     # inode_test_xtimestamp_decoding: ok 16 - [2446-05-10 Upper bound of 32bit >=0 timestamp. All extra sec bits on]
-> |     ok 1 - inode_test_xtimestamp_decoding
-> | ok 1 - ext4_inode_test
->
-> Changing the format of the 2 prints to something else TAP-compliant
-> should be easy enough once kunit-tool supports subsubtests. :-)
->
-> I hope this is a reasonable compromise for now.
-
-Yeah: this seems like a great compromise until kunit_tool is improved.
-
-Thanks a bunch,
--- David
+-- 
+You are receiving this mail because:
+You are watching the assignee of the bug.
