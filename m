@@ -2,65 +2,52 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 407BB2B27AB
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 Nov 2020 23:03:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 261A02B2881
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 Nov 2020 23:25:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726158AbgKMWDw convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Fri, 13 Nov 2020 17:03:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51588 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725885AbgKMWDq (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 13 Nov 2020 17:03:46 -0500
-From:   bugzilla-daemon@bugzilla.kernel.org
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 210185] kernel BUG at fs/ext4/page-io.c:126!
-Date:   Fri, 13 Nov 2020 22:03:45 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: emchroma@gmail.com
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-210185-13602-v8SX3zxXwo@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-210185-13602@https.bugzilla.kernel.org/>
-References: <bug-210185-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        id S1726020AbgKMWYc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 13 Nov 2020 17:24:32 -0500
+Received: from forwardcorp1j.mail.yandex.net ([5.45.199.163]:48086 "EHLO
+        forwardcorp1j.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725866AbgKMWYb (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 13 Nov 2020 17:24:31 -0500
+Received: from sas1-ec30c78b6c5b.qloud-c.yandex.net (sas1-ec30c78b6c5b.qloud-c.yandex.net [IPv6:2a02:6b8:c14:2704:0:640:ec30:c78b])
+        by forwardcorp1j.mail.yandex.net (Yandex) with ESMTP id 027972E1477;
+        Sat, 14 Nov 2020 01:24:29 +0300 (MSK)
+Received: from sas2-d40aa8807eff.qloud-c.yandex.net (sas2-d40aa8807eff.qloud-c.yandex.net [2a02:6b8:c08:b921:0:640:d40a:a880])
+        by sas1-ec30c78b6c5b.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id eqBv7YGGxr-OSxm4Nwj;
+        Sat, 14 Nov 2020 01:24:28 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1605306268; bh=JiyOG15v6+8OsAdqdcl0QmQVXsLLYlEzfbVEjAlxteY=;
+        h=Message-ID:In-Reply-To:Subject:To:From:References:Date:cc;
+        b=fItCy9Sw84TcE/IWtG6drntUuBNbq5HTa3HmoYKxAeTCu0V9nUkSC3VR2cC7RdC6s
+         P2VR/Y+DZJnMt4f+0DmyPd8W/MZ+EWW5VWTQ1MvY2c1Bk8FSh+x9w8h8PXogf21P4N
+         f+D/d8SLSMuwTD6GlGApbTQjesTQvlC1S9LTxvKE=
+Authentication-Results: sas1-ec30c78b6c5b.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from dynamic-vpn.dhcp.yndx.net (dynamic-vpn.dhcp.yndx.net [2a02:6b8:b080:7316::1:4])
+        by sas2-d40aa8807eff.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id fnNrktIFIT-OSmmLZLn;
+        Sat, 14 Nov 2020 01:24:28 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+Date:   Sat, 14 Nov 2020 01:24:27 +0300 (MSK)
+From:   Roman Anufriev <dotdot@yandex-team.ru>
+X-X-Sender: dotdot@dotdot-osx
+To:     tytso@mit.edu
+cc:     linux-ext4@vger.kernel.org, jack@suse.cz,
+        dmtrmonakhov@yandex-team.ru, dotdot@yandex-team.ru
+Subject: Re: [PATCH v4 2/2] ext4: print quota journalling mode on
+ (re-)mount
+In-Reply-To: <20201023154804.GD9119@quack2.suse.cz>
+Message-ID: <alpine.OSX.2.23.453.2011140120160.58713@dotdot-osx>
+References: <1603336860-16153-1-git-send-email-dotdot@yandex-team.ru> <1603336860-16153-2-git-send-email-dotdot@yandex-team.ru> <20201023154804.GD9119@quack2.suse.cz>
+User-Agent: Alpine 2.23 (OSX 453 2020-06-18)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=210185
+Hi! My patch was reviewed by Jan Kara, could you please take a look at it?
 
---- Comment #2 from emchroma@gmail.com ---
-(In reply to Amy from comment #1)
-
-> What application were you running, if I may ask?
-
-Hi Amy,
-
-it happens with AutoCtk (https://github.com/ksettaluri6/AutoCkt), so some
-Python code. Everything runs fine with kernel 5.7.2, last week we went to
-kernel 5.9.1 and this bug appeared. Today I've tried with it kernel 5.9.8, but
-no luck.
-
-The machine is unstable after this bug happens. The load goues up but we can't
-kill the python processes, they're all in state D. Also, a clean reboot is not
-possible, only a hard reset helps.
-
--- 
-You are receiving this mail because:
-You are watching the assignee of the bug.
+ 								Roman
