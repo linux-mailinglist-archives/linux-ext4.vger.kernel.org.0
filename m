@@ -2,179 +2,194 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 746FB2B18F8
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 Nov 2020 11:23:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A622B2B190D
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 Nov 2020 11:31:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726290AbgKMKXy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 13 Nov 2020 05:23:54 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33186 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726176AbgKMKXx (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 13 Nov 2020 05:23:53 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0A705ABD1;
-        Fri, 13 Nov 2020 10:23:52 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id A930A1E1312; Fri, 13 Nov 2020 11:23:51 +0100 (CET)
-Date:   Fri, 13 Nov 2020 11:23:51 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     ira.weiny@intel.com
-Cc:     Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2] fs/ext2: Use ext2_put_page
-Message-ID: <20201113102351.GA11601@quack2.suse.cz>
-References: <20201111205530.436692-1-ira.weiny@intel.com>
- <20201112174244.701325-1-ira.weiny@intel.com>
+        id S1726342AbgKMKbH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 13 Nov 2020 05:31:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726184AbgKMKbF (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 13 Nov 2020 05:31:05 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD534C0617A6
+        for <linux-ext4@vger.kernel.org>; Fri, 13 Nov 2020 02:31:04 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id b6so9212551wrt.4
+        for <linux-ext4@vger.kernel.org>; Fri, 13 Nov 2020 02:31:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=P5UyDjLS/2j5NOQXFG9JlqktY1ORdwFsk3E8r8jdx9g=;
+        b=QvmfEZp1GR7cR7jYyHNvp7jmshkyLAUcvw5UZ+tIfWrp8FdnIuBQq+HeYxeqR2YQM2
+         B3v3dfgtwwRQNo0hZCXSfLg2gYHq7gUiuWRqXtdLDvbnF6zqM5f2PhftiYLGdccFQKbs
+         1hABKGykYHD3amk32f2xyTBU+B+D1eAEsX2cOVOteH5cbapv2opX9/VNFGZOZN1BKzbh
+         eutWT0ipfgBRukbd8eH9VZSSxMafzAa8oMeRZ9MHDKSfjA5MYDLvxLqk7xn/dkGAGWcu
+         OfYGPkF5dYxT8VyWSa6iiz/Ppb7ORagfg5GZ8y7iVkvNlacT2tvgmGVZmS8ORLVEWCe8
+         VJZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=P5UyDjLS/2j5NOQXFG9JlqktY1ORdwFsk3E8r8jdx9g=;
+        b=Ez65vzCz8lFD2HQK9dBCBbVrbFqVgEIbaDVt+/10htxzkicvhg11kIfFys6FM1w24L
+         ZjX/pqfSJNkabE1upS7idBcErhjUmM66czsLXcjq9z8B/D+SsRioVQ8pTGWWDI9LdhLF
+         VbiSlZabdIFjfh3lFB8mcl4T90rdOzJ7D7yk9LDmMZeHjS3TGvh/DMUmpX8jNTP73Wjh
+         70GCe3Rl/v/ULCCfFJ8/d7/3uqIkvOhCpeAu5pgrZqy1GQJQc/xJA9GOE1DEzzfPZGPM
+         +CFeiuU3sVTdGH0eli4hE+N2e+nCoSv76ORoOg63sCJcp+xFeWPLAx5gAlQIK3mbH9t4
+         BbKw==
+X-Gm-Message-State: AOAM533VcHxTx9OOnNwDh9rxFSlCypGCz3NXl5E14+8uyqeRgEi6PB/9
+        Xs094rwQp23KIU+wudA7fch1Fw==
+X-Google-Smtp-Source: ABdhPJzSamfywisqfvIkrQffiLHRG8vrI4VkRiZPKk9wtZObNBU9jFTVzdIxhEcKMyLlAFoPY6RWUg==
+X-Received: by 2002:adf:eb4c:: with SMTP id u12mr2687568wrn.73.1605263463113;
+        Fri, 13 Nov 2020 02:31:03 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
+        by smtp.gmail.com with ESMTPSA id n23sm9713848wmk.24.2020.11.13.02.31.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Nov 2020 02:31:01 -0800 (PST)
+Date:   Fri, 13 Nov 2020 11:30:56 +0100
+From:   Marco Elver <elver@google.com>
+To:     David Gow <davidgow@google.com>
+Cc:     "Bird, Tim" <Tim.Bird@sony.com>,
+        Arpitha Raghunandan <98.arpi@gmail.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-kernel-mentees@lists.linuxfoundation.org" 
+        <linux-kernel-mentees@lists.linuxfoundation.org>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
+Subject: Re: [PATCH v6 1/2] kunit: Support for Parameterized Testing
+Message-ID: <20201113103056.GA1568882@elver.google.com>
+References: <CABVgOSkQ6+y7OGw2494cJa2b60EkSjncLNAgc9cJDbS=X9J3WA@mail.gmail.com>
+ <CANpmjNNp2RUCE_ypp2R4MznikTYRYeCDuF7VMp+Hbh=55KWa3A@mail.gmail.com>
+ <47a05c5a-485d-026b-c1c3-476ed1a97856@gmail.com>
+ <CABVgOSkZ9k6bHPp=LVATWfokMSrEuD87jOfE5MiVYAEbZMmaQQ@mail.gmail.com>
+ <BY5PR13MB29336C5BE374D69939DCADABFDE90@BY5PR13MB2933.namprd13.prod.outlook.com>
+ <CABVgOSnJAgWvTTABaF082LuYjAoAWzrBsyu9sT7x4GGMVsOD6Q@mail.gmail.com>
+ <BY5PR13MB293305FE7ED35EC2B2C81AF1FDE80@BY5PR13MB2933.namprd13.prod.outlook.com>
+ <CABVgOSn0vUvHFTPPnFGCmg0pEotwr6TQXQieRV=EMqs1QmFYUw@mail.gmail.com>
+ <20201112123706.GA2457520@elver.google.com>
+ <CABVgOSkjExNtGny=CDT1WVaXUVgSEaf7hwx8=VY4atN5ot10KQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201112174244.701325-1-ira.weiny@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CABVgOSkjExNtGny=CDT1WVaXUVgSEaf7hwx8=VY4atN5ot10KQ@mail.gmail.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 12-11-20 09:42:44, ira.weiny@intel.com wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
+On Fri, Nov 13, 2020 at 01:17PM +0800, David Gow wrote:
+> On Thu, Nov 12, 2020 at 8:37 PM Marco Elver <elver@google.com> wrote:
+[...]
+> > > (It also might be a little tricky with the current implementation to
+> > > produce the test plan, as the parameters come from a generator, and I
+> > > don't think there's a way of getting the number of parameters ahead of
+> > > time. That's a problem with the sub-subtest model, too, though at
+> > > least there it's a little more isolated from other tests.)
+> >
+> > The whole point of generators, as I envisage it, is to also provide the
+> > ability for varying parameters dependent on e.g. environment,
+> > configuration, number of CPUs, etc. The current array-based generator is
+> > the simplest possible use-case.
+> >
+> > However, we *can* require generators generate a deterministic number of
+> > parameters when called multiple times on the same system.
 > 
-> There are 3 places in namei.c where the equivalent of ext2_put_page() is
-> open coded on a page which was returned from the ext2_get_page() call
-> [through the use of ext2_find_entry() and ext2_dotdot()].
-> 
-> Move ext2_put_page() to ext2.h and use it in namei.c
-> 
-> Also add a comment regarding the proper way to release the page returned
-> from ext2_find_entry() and ext2_dotdot().
-> 
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> 
-> ---
-> Changes from V1:
-> 	Reported-by: kernel test robot <lkp@intel.com>
-> 	move ext2_get_page() back to dir.c; my testing must have had the
-> 	wrong .config because I did not see the compile error
-> 	yesterday...
+> I think this is a reasonable compromise, though it's not actually
+> essential. As I understand the TAP spec, the test plan is actually
+> optional (and/or can be at the end of the sequence of tests), though
+> kunit_tool currently only supports having it at the beginning (which
+> is strongly preferred by the spec anyway). I think we could get away
+> with having it at the bottom of the subtest results though, which
+> would save having to run the generator twice, when subtest support is
+> added to kunit_tool.
 
-Drat, and I forgot a compilation test as well :-| My bad. Thanks for the
-fix anyway!
-	
-								Honza
+I can't find this in the TAP spec, where should I look? Perhaps we
+shouldn't venture too far off the beaten path, given we might not be the
+only ones that want to parse this output.
 
+> > To that end, I propose a v7 (below) that takes care of getting number of
+> > parameters (and also displays descriptions for each parameter where
+> > available).
+> >
+> > Now it is up to you how you want to turn the output from diagnostic
+> > lines into something TAP compliant, because now we have the number of
+> > parameters and can turn it into a subsubtest. But I think kunit-tool
+> > doesn't understand subsubtests yet, so I suggest we take these patches,
+> > and then somebody can prepare kunit-tool.
+> >
+> 
+> This sounds good to me. The only thing I'm not sure about is the
+> format of the parameter description: thus far test names be valid C
+> identifier names, due to the fact they're named after the test
+> function. I don't think there's a fundamental reason parameters (and
+> hence, potentially, subsubtests) need to follow that convention as
+> well, but it does look a bit odd.  Equally, the square brackets around
+> the description shouldn't be necessary according to the TAP spec, but
+> do seem to make things a little more readable, particuarly with the
+> names in the ext4 inode test. I'm not too worried about either of
+> those, though: I'm sure it'll look fine once I've got used to it.
 
+The parameter description doesn't need to be a C identifier. At least
+that's what I could immediately glean from TAP v13 spec (I'm looking
+here: https://testanything.org/tap-version-13-specification.html and see
+e.g. "ok 1 - Input file opened" ...).
+
+[...]
+> > > In any case, I'm happy to leave the final decision here to Arpitha and
+> > > Marco, so long as we don't actually violate the TAP/KTAP spec and
+> > > kunit_tool is able to read at least the top-level result. My
+> > > preference is still to go either with the "# [test_case->name]:
+> > > [ok|not ok] [index] - param-[index]", or to get rid of the
+> > > per-parameter results entirely for now (or just print out a diagnostic
+> > > message on failure). In any case, it's a decision we can revisit once
+> > > we have support for named parameters, better tooling, or a better idea
+> > > of how people are actually using this.
+> >
+> > Right, so I think we'll be in a better place if we implement: 1)
+> > parameter to description conversion support, 2) counting parameters. So
+> > I decided to see what it looks like, and it wasn't too bad. I just don't
+> > know how you want to fix kunit-tool to make these non-diagnostic lines
+> > and not complain, but as I said, it'd be good to not block these
+> > patches.
 > 
-> This was originally part of the kmap_thread() series here:
+> Yup, I tried this v7, and it looks good to me. The kunit_tool work
+> will probably be a touch more involved, so I definitely don't want to
+> hold up supporting this on that.
 > 
-> https://lore.kernel.org/lkml/20201009195033.3208459-37-ira.weiny@intel.com/
+> My only thoughts on the v7 patch are:
+> - I don't think we actually need the parameter count yet (or perhaps
+> ever if we go with subtests as planned), so I be okay with getting rid
+> of that.
+
+As noted above, perhaps we should keep it for compatibility with other
+parsers and CI systems we don't have much control over. It'd be a shame
+if 99% of KUnit output can be parsed by some partially compliant parser,
+yet this would break it.
+
+> - It'd be a possibility to get rid of the square brackets from the
+> output, and if we still want them, make them part of the test itself:
+> if this were TAP formatted, those brackets would be part of the
+> subsubtest name.
+
+I don't mind. It's just that we can't prescribe a format, and as
+seen below the descriptions include characters -<>=,. which can be
+confusing. But perhaps you're right, so let's remove them.
+
+But as noted, TAP doesn't seem to care. So let's remove them.
+
+[...]
+> > I hope this is a reasonable compromise for now.
 > 
-> But this is really a valid clean up regardless of the
-> kmap_thread[local]() changes.
-> ---
->  fs/ext2/dir.c   | 14 ++++++++------
->  fs/ext2/ext2.h  |  7 +++++++
->  fs/ext2/namei.c | 15 +++++----------
->  3 files changed, 20 insertions(+), 16 deletions(-)
-> 
-> diff --git a/fs/ext2/dir.c b/fs/ext2/dir.c
-> index 70355ab6740e..14aa45316ad2 100644
-> --- a/fs/ext2/dir.c
-> +++ b/fs/ext2/dir.c
-> @@ -66,12 +66,6 @@ static inline unsigned ext2_chunk_size(struct inode *inode)
->  	return inode->i_sb->s_blocksize;
->  }
->  
-> -static inline void ext2_put_page(struct page *page)
-> -{
-> -	kunmap(page);
-> -	put_page(page);
-> -}
-> -
->  /*
->   * Return the offset into page `page_nr' of the last valid
->   * byte in that page, plus one.
-> @@ -336,6 +330,8 @@ ext2_readdir(struct file *file, struct dir_context *ctx)
->   * returns the page in which the entry was found (as a parameter - res_page),
->   * and the entry itself. Page is returned mapped and unlocked.
->   * Entry is guaranteed to be valid.
-> + *
-> + * On Success ext2_put_page() should be called on *res_page.
->   */
->  struct ext2_dir_entry_2 *ext2_find_entry (struct inode *dir,
->  			const struct qstr *child, struct page **res_page)
-> @@ -401,6 +397,12 @@ struct ext2_dir_entry_2 *ext2_find_entry (struct inode *dir,
->  	return de;
->  }
->  
-> +/**
-> + * Return the '..' directory entry and the page in which the entry was found
-> + * (as a parameter - p).
-> + *
-> + * On Success ext2_put_page() should be called on *p.
-> + */
->  struct ext2_dir_entry_2 * ext2_dotdot (struct inode *dir, struct page **p)
->  {
->  	struct page *page = ext2_get_page(dir, 0, 0);
-> diff --git a/fs/ext2/ext2.h b/fs/ext2/ext2.h
-> index 5136b7289e8d..2a4175fbaf5e 100644
-> --- a/fs/ext2/ext2.h
-> +++ b/fs/ext2/ext2.h
-> @@ -16,6 +16,8 @@
->  #include <linux/blockgroup_lock.h>
->  #include <linux/percpu_counter.h>
->  #include <linux/rbtree.h>
-> +#include <linux/mm.h>
-> +#include <linux/highmem.h>
->  
->  /* XXX Here for now... not interested in restructing headers JUST now */
->  
-> @@ -745,6 +747,11 @@ extern int ext2_delete_entry (struct ext2_dir_entry_2 *, struct page *);
->  extern int ext2_empty_dir (struct inode *);
->  extern struct ext2_dir_entry_2 * ext2_dotdot (struct inode *, struct page **);
->  extern void ext2_set_link(struct inode *, struct ext2_dir_entry_2 *, struct page *, struct inode *, int);
-> +static inline void ext2_put_page(struct page *page)
-> +{
-> +	kunmap(page);
-> +	put_page(page);
-> +}
->  
->  /* ialloc.c */
->  extern struct inode * ext2_new_inode (struct inode *, umode_t, const struct qstr *);
-> diff --git a/fs/ext2/namei.c b/fs/ext2/namei.c
-> index 5bf2c145643b..ea980f1e2e99 100644
-> --- a/fs/ext2/namei.c
-> +++ b/fs/ext2/namei.c
-> @@ -389,23 +389,18 @@ static int ext2_rename (struct inode * old_dir, struct dentry * old_dentry,
->  	if (dir_de) {
->  		if (old_dir != new_dir)
->  			ext2_set_link(old_inode, dir_de, dir_page, new_dir, 0);
-> -		else {
-> -			kunmap(dir_page);
-> -			put_page(dir_page);
-> -		}
-> +		else
-> +			ext2_put_page(dir_page);
->  		inode_dec_link_count(old_dir);
->  	}
->  	return 0;
->  
->  
->  out_dir:
-> -	if (dir_de) {
-> -		kunmap(dir_page);
-> -		put_page(dir_page);
-> -	}
-> +	if (dir_de)
-> +		ext2_put_page(dir_page);
->  out_old:
-> -	kunmap(old_page);
-> -	put_page(old_page);
-> +	ext2_put_page(old_page);
->  out:
->  	return err;
->  }
-> -- 
-> 2.28.0.rc0.12.gb6a658bd00c9
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> Yeah: this seems like a great compromise until kunit_tool is improved.
+
+Thank you!
+
+-- Marco
