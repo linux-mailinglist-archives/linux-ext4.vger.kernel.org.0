@@ -2,51 +2,69 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 424692B22FD
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 Nov 2020 18:49:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6AAE2B2527
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 Nov 2020 21:10:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726291AbgKMRtH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 13 Nov 2020 12:49:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53376 "EHLO mail.kernel.org"
+        id S1726477AbgKMUKV convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Fri, 13 Nov 2020 15:10:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726166AbgKMRtH (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 13 Nov 2020 12:49:07 -0500
-Subject: Re: [GIT PULL] more ext4 fixes for v5.10-rc4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605289746;
-        bh=uy6JqF9hPqeCTlv/daN1loa2XyvaQkfuNjPHEGF0eEA=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=gxmNE4Og5dopW7j8zmabxjgeGq3P2tvYSXSF7qVdn3iNPEwuo76HF5GfCo4Ci33+g
-         d1Hhw72d8BQm2G5jferWebbhqHQ1Zmcg8bTBiIGRoZUVnVt24m4sWJoeOelE85FoK+
-         1AexwrCKK1Nu6O3JUZ00ENx7FC+M5FJEjjsuQzIQ=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201113045848.GA3987678@mit.edu>
-References: <20201113045848.GA3987678@mit.edu>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201113045848.GA3987678@mit.edu>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_bugfixes
-X-PR-Tracked-Commit-Id: d196e229a80c39254f4adbc312f55f5198e98941
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: d3ba7afcc11fe9146def1664c32762d5a6a47713
-Message-Id: <160528974654.4613.124994218218605930.pr-tracker-bot@kernel.org>
-Date:   Fri, 13 Nov 2020 17:49:06 +0000
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+        id S1726439AbgKMUKV (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 13 Nov 2020 15:10:21 -0500
+From:   bugzilla-daemon@bugzilla.kernel.org
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 210185] kernel BUG at fs/ext4/page-io.c:126!
+Date:   Fri, 13 Nov 2020 20:10:20 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: enbyamy@gmail.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: cc
+Message-ID: <bug-210185-13602-ebKRR1LdC2@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-210185-13602@https.bugzilla.kernel.org/>
+References: <bug-210185-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The pull request you sent on Thu, 12 Nov 2020 23:58:48 -0500:
+https://bugzilla.kernel.org/show_bug.cgi?id=210185
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_bugfixes
+Amy (enbyamy@gmail.com) changed:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/d3ba7afcc11fe9146def1664c32762d5a6a47713
+           What    |Removed                     |Added
+----------------------------------------------------------------------------
+                 CC|                            |enbyamy@gmail.com
 
-Thank you!
+--- Comment #1 from Amy (enbyamy@gmail.com) ---
+Hey there!
+
+Traced back that file. That line runs page_buffers(), which launches a bug if
+PagePrivate is false. 
+
+#define page_buffers(page)                                      \
+        ({                                                      \
+                BUG_ON(!PagePrivate(page));                     \
+                ((struct buffer_head *)page_private(page));     \
+        })
+
+What application were you running, if I may ask?
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+You are receiving this mail because:
+You are watching the assignee of the bug.
