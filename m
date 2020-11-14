@@ -2,233 +2,346 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9BE82B2C1B
-	for <lists+linux-ext4@lfdr.de>; Sat, 14 Nov 2020 09:18:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB3682B2D27
+	for <lists+linux-ext4@lfdr.de>; Sat, 14 Nov 2020 13:38:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726618AbgKNISW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 14 Nov 2020 03:18:22 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:7499 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726599AbgKNISW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 14 Nov 2020 03:18:22 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CY7WS0NGrzhl09;
-        Sat, 14 Nov 2020 16:18:12 +0800 (CST)
-Received: from [10.174.179.106] (10.174.179.106) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 14 Nov 2020 16:18:12 +0800
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>
-CC:     <linux-ext4@vger.kernel.org>, "zhangyi (F)" <yi.zhang@huawei.com>,
-        Hou Tao <houtao1@huawei.com>, <zhangxiaoxu5@huawei.com>,
-        Ye Bin <yebin10@huawei.com>, <hejie3@huawei.com>
-From:   yangerkun <yangerkun@huawei.com>
-Subject: [Bug report] journal data mode trigger panic in
- jbd2_journal_commit_transaction
-Message-ID: <68b9650e-bef2-69e2-ab5e-8aaddaf46cfe@huawei.com>
-Date:   Sat, 14 Nov 2020 16:18:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726591AbgKNMi0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 14 Nov 2020 07:38:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726307AbgKNMiZ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 14 Nov 2020 07:38:25 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C03C5C0613D1;
+        Sat, 14 Nov 2020 04:38:23 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id b3so5799492pls.11;
+        Sat, 14 Nov 2020 04:38:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uWtnBe6zf3rDL/cmbZ7kBTpq82w5L6H7f6kIRwMwNPE=;
+        b=YedoWX1gGXiUP4fQMtD+wXeRJCtiM5SgqYbCYPvSQC28VwRafeeYIIbdx9/H/i3HUe
+         1/hIWSIEStihhoIB/yW1cZkhldZj8eP1bov1AaYlC8cEeP1J1qjJgPImIvUZNrQbu0wR
+         +BFmS801gzZx38rMuVdfAoA/BAnPDzVQwmAh7swC2i/x5V876kAfImwMVSmXQUhHQBvL
+         EPFO1ZdnGf5wFWBxG5O4F4Vg97lMwUkcdxoPIwgTBs0UIWH/Ig1NC/F1CUCBekLdG4av
+         gJe+AHvoaBa8sl59SnHUclrlEv/G4U2I2vjioMwNDcHqgi1DB2ljJWB4PvUZrGNyJjgy
+         hvVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uWtnBe6zf3rDL/cmbZ7kBTpq82w5L6H7f6kIRwMwNPE=;
+        b=n/6QNbQJrtDplFa767vRIAKe0Ftstr2g6GBB4So7f3yFGEMA/R6lYEwNRj3iQ3RDmQ
+         V8s9SdAAnt8zNAovZVCON84xFegRiq+XSvYSp8OIgHQ8iSRlqcTkypNXEf7K2Ic1Sy5z
+         mckIjFYRD0n1D7tciw6VELRtotjT5TBhtMuhNgvHI4CXHxMGwVA8QWw6MbdWLqvQeCbW
+         Z5jxmAW/fuMoK96pIyLi9zRa29djLuOCwcUF6RQtUCM6veHy3piLeAmhDFzMaUTVA9rx
+         namgfGnAw82qdGfvsFU0ZVy8057xXZGXIukPpC09C5HOWXXCUawjrkd7+G3dzQiEUJaL
+         ydTg==
+X-Gm-Message-State: AOAM530N0VfxhfkIiuUUGrRis/H2EWGeynHKlzRg1GYkkhNLpdjx9Rf2
+        VM32DXUwtqDmMdooSoYnbDxyNT3/sojS6w==
+X-Google-Smtp-Source: ABdhPJyrwkFvu6P/k//Ck+Q6TTY5zM+uRRtLRtofbCmfb5/wlmdYGnK+LF9v01dzbFQHZM3SQxrOrA==
+X-Received: by 2002:a17:90a:80c6:: with SMTP id k6mr7577358pjw.73.1605357503053;
+        Sat, 14 Nov 2020 04:38:23 -0800 (PST)
+Received: from arpitha-Inspiron-7570.lan ([106.51.242.81])
+        by smtp.gmail.com with ESMTPSA id y129sm11016945pgy.84.2020.11.14.04.38.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 14 Nov 2020 04:38:22 -0800 (PST)
+From:   Arpitha Raghunandan <98.arpi@gmail.com>
+To:     brendanhiggins@google.com, skhan@linuxfoundation.org,
+        elver@google.com, yzaikin@google.com, tytso@mit.edu,
+        adilger.kernel@dilger.ca, Tim.Bird@sony.com, davidgow@google.com
+Cc:     Arpitha Raghunandan <98.arpi@gmail.com>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org
+Subject: [PATCH v7 1/2] kunit: Support for Parameterized Testing
+Date:   Sat, 14 Nov 2020 18:06:48 +0530
+Message-Id: <20201114123648.97857-1-98.arpi@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.106]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi,
+Implementation of support for parameterized testing in KUnit. This
+approach requires the creation of a test case using the
+KUNIT_CASE_PARAM() macro that accepts a generator function as input.
 
-While using ext4 with data=journal(3.10 kernel), we meet a problem that 
-we think may never happend...
+This generator function should return the next parameter given the
+previous parameter in parameterized tests. It also provides a macro to
+generate common-case generators based on arrays. Generators may also
+optionally provide a human-readable description of parameters, which is
+displayed where available.
 
-[421306.834334] JBD2: Spotted dirty metadata buffer (dev = vda2, blocknr 
-= 5092931). There's a risk of filesystem corruption in case of system crash.
-[421306.834375] JBD2: Spotted dirty metadata buffer (dev = vda2, blocknr 
-= 5092931). There's a risk of filesystem corruption in case of system crash.
-[421306.841728] JBD2: Spotted dirty metadata buffer (dev = vda2, blocknr 
-= 5092931). There's a risk of filesystem corruption in case of system crash.
-[421306.859799] ------------[ cut here ]------------
-[421306.860616] kernel BUG at fs/jbd2/commit.c:1030!
-[421306.861285] invalid opcode: 0000 [#1] SMP
-[421306.861996] CPU: 3 PID: 1594 Comm: jbd2/vda2-8 Kdump: loaded
-...
-[421306.877080] Call Trace:
-[421306.877406]  [<ffffffffc045d069>] kjournald2+0xc9/0x260 [jbd2]
-[421306.878133]  [<ffffffff914c16c0>] ? wake_up_atomic_t+0x30/0x30
-[421306.878851]  [<ffffffffc045cfa0>] ? commit_timeout+0x10/0x10 [jbd2]
-[421306.879609]  [<ffffffff914c06a1>] kthread+0xd1/0xe0
-[421306.880200]  [<ffffffff914c05d0>] ? insert_kthread_work+0x40/0x40
-[421306.880949]  [<ffffffff91b3965d>] ret_from_fork_nospec_begin+0x7/0x21
-[421306.881737]  [<ffffffff914c05d0>] ? insert_kthread_work+0x40/0x40
+Note, currently the result of each parameter run is displayed in
+diagnostic lines, and only the overall test case output summarizes
+TAP-compliant success or failure of all parameter runs. In future, when
+supported by kunit-tool, these can be turned into subsubtest outputs.
 
-Crash code in jbd2_journal_commit_transaction:
+Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+Co-developed-by: Marco Elver <elver@google.com>
+Signed-off-by: Marco Elver <elver@google.com>
+---
+Changes v6->v7:
+- Clarify commit message.
+- Introduce ability to optionally generate descriptions for parameters;
+  if no description is provided, we'll still print 'param-N'.
+- Change diagnostic line format to:
+        # <test-case-name>: <ok|not ok> N - [<param description>]
 
-jbd2_journal_commit_transaction(...)
-{
-     ...
-     while (commit_transaction->t_forget) {
-     ...
-     if (buffer_jbddirty(bh)) {
-         ...
-     } else {
-         J_ASSERT_BH(bh, !buffer_dirty(bh));
-         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-         ...
-     }
-}
+Changes v5->v6:
+- Fix alignment to maintain consistency
 
-1. the warning and the panic show that someone can dirty buffer directly;
-2. the state in buffer and page show that we may call ext4_punch_hole or 
-zero_range just before now;
+Changes v4->v5:
+- Update kernel-doc comments.
+- Use const void* for generator return and prev value types.
+- Add kernel-doc comment for KUNIT_ARRAY_PARAM.
+- Rework parameterized test case execution strategy: each parameter is executed
+  as if it was its own test case, with its own test initialization and cleanup
+  (init and exit are called, etc.). However, we cannot add new test cases per TAP
+  protocol once we have already started execution. Instead, log the result of
+  each parameter run as a diagnostic comment.
 
-crash> buffer_head ffff971220f3caf8
-struct buffer_head {
-   b_state = 5308419, BH_State|BH_RevokeValid|BH_JBD|BH_Uptodate|BH_Dirty
-   b_this_page = 0xffff971220f3caf8,
-   b_page = 0xffffdb4e8e897cc0,
-   b_blocknr = 5092931,
-   b_size = 4096,
-   b_data = 0xffff9711a25f3000 ...
-   b_bdev = 0x0,
-   b_end_io = 0x0,
-   b_private = 0xffff97114c04faf0,
-   b_assoc_buffers = {
-     next = 0xffff971220f3cb40,
-     prev = 0xffff971220f3cb40
-   },
-   b_assoc_map = 0x0,
-   b_count = {
-     counter = 2
-   }
-}
+Changes v3->v4:
+- Rename kunit variables
+- Rename generator function helper macro
+- Add documentation for generator approach
+- Display test case name in case of failure along with param index
 
-crash> page 0xffffdb4e8e897cc0
-struct page {
-   flags = 31525193096628284,
-   mapping = 0x0,
-   {
-     {
-       index = 766,
-     ...
-     private = 0xffff971220f3caf8,
-     ...
-}
+Changes v2->v3:
+- Modifictaion of generator macro and method
 
-3. the b_blocknr in buffer_head and index in page show that the buffer 
-wont be a metadata block.
+Changes v1->v2:
+- Use of a generator method to access test case parameters
+Changes v6->v7:
+- Clarify commit message.
+- Introduce ability to optionally generate descriptions for parameters;
+  if no description is provided, we'll still print 'param-N'.
+- Change diagnostic line format to:
+        # <test-case-name>: <ok|not ok> N - [<param description>]
+- Before execution of parameterized test case, count number of
+  parameters and display number of parameters. Currently also as a
+  diagnostic line, but this may be used in future to generate a subsubtest
+  plan. A requirement of this change is that generators must generate a
+  deterministic number of parameters.
 
-For now, what I have seen that can dirty buffer directly is 
-ext4_page_mkwrite(64a9f1449950 ("ext4: data=journal: fixes for 
-ext4_page_mkwrite()")), and runing ext4_punch_hole with keep_size 
-/ext4_page_mkwrite parallel can trigger above warning easily.
+Changes v5->v6:
+- Fix alignment to maintain consistency
 
-a. first, file with 4K size punch hole to 0 with keep size
+Changes v4->v5:
+- Update kernel-doc comments.
+- Use const void* for generator return and prev value types.
+- Add kernel-doc comment for KUNIT_ARRAY_PARAM.
+- Rework parameterized test case execution strategy: each parameter is executed
+  as if it was its own test case, with its own test initialization and cleanup
+  (init and exit are called, etc.). However, we cannot add new test cases per TAP
+  protocol once we have already started execution. Instead, log the result of
+  each parameter run as a diagnostic comment.
 
-mmap1:                     mmap2:                  commit:
-ext4_page_fault
-  create new page
-  and lock page
-...
-unlock page
-                            ext4_page_fault
-                             find and lock the
-                             page mmap1 create
-                            ...
-                            unlock_page
+Changes v3->v4:
+- Rename kunit variables
+- Rename generator function helper macro
+- Add documentation for generator approach
+- Display test case name in case of failure along with param index
 
-ext4_page_mkwrite
-  lock page
-  (has buffer&&unmap)
-  or goto out
-  unlock page
-                            ext4_page_mkwrite
-                             lock_page
-                             (has buffer&&unmap)
-                             or goto out
-                             unlock page
-  start handle(trans 1)
-  __block_page_mkwrite
-   lock page
-   (page->mapping==
-   inode->mapping) or
-   goto out
-   block_commit_write
-    set_buffer_dirty
-  ext4_walk_page_buffers
-   do_journal_get_write_access
-    clear_buffer_dirty
-...
-unlock_page
-                              start_handle(trans 2)
-                               __block_page_mkwrite
-                                lock page
-                                ...(same as mmap1)
-                                 set_buffer_dirty  trans1 1 commit:
-                                ...                bh moving from one
-                                                   list to other list
-                                                   (like shadow), and
-                                                   warn_dirty_buffer!
-                                unlock page
+Changes v2->v3:
+- Modifictaion of generator macro and method
 
+Changes v1->v2:
+- Use of a generator method to access test case parameters
 
+ include/kunit/test.h | 51 ++++++++++++++++++++++++++++++++++++++
+ lib/kunit/test.c     | 59 ++++++++++++++++++++++++++++++++++----------
+ 2 files changed, 97 insertions(+), 13 deletions(-)
 
-However, the same testcase won't trigger the panic. We can seen that 
-ext4_punch_hole and ext4_page_mkwrite all will try to lock page. So, if 
-punch_hole first, we won't set buffer dirty since page->mapping has been 
-set to NULL. And if ext4_page_mkwrite first, we won't seen buffer dirty 
-since do_journal_get_write_access will clear it.
-
-Besides, the panic code was protected by jbd_lock_bh_state, and the 
-information of bh show that we has call journal_unmap_buffer for it. So, 
-the panic code may never be trigger...
-
-punch hole:
-ext4_punch_hole
-   ...
-   lock_page
-   truncate_inode_page
-     truncate_complete_page
-       do_invalidatepage
-         ...
-         journal_unmap_buffer
-       delete_from_page_cache
-         remove page from radix tree, and set page->mapping = NULL,
-         so we won't find this page
-   unlock_page
-
-
-mmap:
-ext4_page_fault
-   find and create new page(without bh)
-...
-unlock_page
-
-ext4_page_mkwrite
-   lock_page
-   (has buffer && unmap) or will go out
-   unlock_page
-   start_handle
-   __block_page_mkwrite
-     lock_page
-     (page->mapping != inode->i_mapping) or go out
-     block_commit_write
-       set_buffer_dirty
-   ext4_walk_page_buffers
-     do_journal_get_write_access
-       clear_buffer_dirty =========> after unlock page, wont seen dirty
-...
-unlock_page
-
-
-
-The above assumption was based on we can only dirty buffer directly by 
-ext4_page_mkwrite. Maybe there exists other way too? Or, the analysis 
-above exists some bug...
-
-
-Thanks,
-Kun.
-
-
+diff --git a/include/kunit/test.h b/include/kunit/test.h
+index db1b0ae666c4..cf5f33b1c890 100644
+--- a/include/kunit/test.h
++++ b/include/kunit/test.h
+@@ -94,6 +94,9 @@ struct kunit;
+ /* Size of log associated with test. */
+ #define KUNIT_LOG_SIZE	512
+ 
++/* Maximum size of parameter description string. */
++#define KUNIT_PARAM_DESC_SIZE 64
++
+ /*
+  * TAP specifies subtest stream indentation of 4 spaces, 8 spaces for a
+  * sub-subtest.  See the "Subtests" section in
+@@ -107,6 +110,7 @@ struct kunit;
+  *
+  * @run_case: the function representing the actual test case.
+  * @name:     the name of the test case.
++ * @generate_params: the generator function for parameterized tests.
+  *
+  * A test case is a function with the signature,
+  * ``void (*)(struct kunit *)``
+@@ -141,6 +145,7 @@ struct kunit;
+ struct kunit_case {
+ 	void (*run_case)(struct kunit *test);
+ 	const char *name;
++	const void* (*generate_params)(const void *prev, char *desc);
+ 
+ 	/* private: internal use only. */
+ 	bool success;
+@@ -163,6 +168,27 @@ static inline char *kunit_status_to_string(bool status)
+  */
+ #define KUNIT_CASE(test_name) { .run_case = test_name, .name = #test_name }
+ 
++/**
++ * KUNIT_CASE_PARAM - A helper for creation a parameterized &struct kunit_case
++ *
++ * @test_name: a reference to a test case function.
++ * @gen_params: a reference to a parameter generator function.
++ *
++ * The generator function::
++ *
++ *	const void* gen_params(const void *prev, char *desc)
++ *
++ * is used to lazily generate a series of arbitrarily typed values that fit into
++ * a void*. The argument @prev is the previously returned value, which should be
++ * used to derive the next value; @prev is set to NULL on the initial generator
++ * call. When no more values are available, the generator must return NULL.
++ * Optionally write a string into @desc (size of KUNIT_PARAM_DESC_SIZE)
++ * describing the parameter.
++ */
++#define KUNIT_CASE_PARAM(test_name, gen_params)			\
++		{ .run_case = test_name, .name = #test_name,	\
++		  .generate_params = gen_params }
++
+ /**
+  * struct kunit_suite - describes a related collection of &struct kunit_case
+  *
+@@ -208,6 +234,10 @@ struct kunit {
+ 	const char *name; /* Read only after initialization! */
+ 	char *log; /* Points at case log after initialization */
+ 	struct kunit_try_catch try_catch;
++	/* param_value is the current parameter value for a test case. */
++	const void *param_value;
++	/* param_index stores the index of the parameter in parameterized tests. */
++	int param_index;
+ 	/*
+ 	 * success starts as true, and may only be set to false during a
+ 	 * test case; thus, it is safe to update this across multiple
+@@ -1742,4 +1772,25 @@ do {									       \
+ 						fmt,			       \
+ 						##__VA_ARGS__)
+ 
++/**
++ * KUNIT_ARRAY_PARAM() - Define test parameter generator from an array.
++ * @name:  prefix for the test parameter generator function.
++ * @array: array of test parameters.
++ * @get_desc: function to convert param to description; NULL to use default
++ *
++ * Define function @name_gen_params which uses @array to generate parameters.
++ */
++#define KUNIT_ARRAY_PARAM(name, array, get_desc)						\
++	static const void *name##_gen_params(const void *prev, char *desc)			\
++	{											\
++		typeof((array)[0]) * __next = prev ? ((typeof(__next)) prev) + 1 : (array);	\
++		if (__next - (array) < ARRAY_SIZE((array))) {					\
++			void (*__get_desc)(typeof(__next), char *) = get_desc;			\
++			if (__get_desc)								\
++				__get_desc(__next, desc);					\
++			return __next;								\
++		}										\
++		return NULL;									\
++	}
++
+ #endif /* _KUNIT_TEST_H */
+diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+index 750704abe89a..ec9494e914ef 100644
+--- a/lib/kunit/test.c
++++ b/lib/kunit/test.c
+@@ -325,39 +325,72 @@ static void kunit_catch_run_case(void *data)
+  * occur in a test case and reports them as failures.
+  */
+ static void kunit_run_case_catch_errors(struct kunit_suite *suite,
+-					struct kunit_case *test_case)
++					struct kunit_case *test_case,
++					struct kunit *test)
+ {
+ 	struct kunit_try_catch_context context;
+ 	struct kunit_try_catch *try_catch;
+-	struct kunit test;
+ 
+-	kunit_init_test(&test, test_case->name, test_case->log);
+-	try_catch = &test.try_catch;
++	kunit_init_test(test, test_case->name, test_case->log);
++	try_catch = &test->try_catch;
+ 
+ 	kunit_try_catch_init(try_catch,
+-			     &test,
++			     test,
+ 			     kunit_try_run_case,
+ 			     kunit_catch_run_case);
+-	context.test = &test;
++	context.test = test;
+ 	context.suite = suite;
+ 	context.test_case = test_case;
+ 	kunit_try_catch_run(try_catch, &context);
+ 
+-	test_case->success = test.success;
+-
+-	kunit_print_ok_not_ok(&test, true, test_case->success,
+-			      kunit_test_case_num(suite, test_case),
+-			      test_case->name);
++	test_case->success = test->success;
+ }
+ 
+ int kunit_run_tests(struct kunit_suite *suite)
+ {
++	char param_desc[KUNIT_PARAM_DESC_SIZE];
+ 	struct kunit_case *test_case;
+ 
+ 	kunit_print_subtest_start(suite);
+ 
+-	kunit_suite_for_each_test_case(suite, test_case)
+-		kunit_run_case_catch_errors(suite, test_case);
++	kunit_suite_for_each_test_case(suite, test_case) {
++		struct kunit test = { .param_value = NULL, .param_index = 0 };
++		bool test_success = true;
++
++		if (test_case->generate_params) {
++			/* Get initial param. */
++			param_desc[0] = '\0';
++			test.param_value = test_case->generate_params(NULL, param_desc);
++		}
++
++		do {
++			kunit_run_case_catch_errors(suite, test_case, &test);
++			test_success &= test_case->success;
++
++			if (test_case->generate_params) {
++				if (param_desc[0] == '\0') {
++					snprintf(param_desc, sizeof(param_desc),
++						 "param-%d", test.param_index);
++				}
++
++				kunit_log(KERN_INFO, &test,
++					  KUNIT_SUBTEST_INDENT
++					  "# %s: %s %d - %s",
++					  test_case->name,
++					  kunit_status_to_string(test.success),
++					  test.param_index + 1, param_desc);
++
++				/* Get next param. */
++				param_desc[0] = '\0';
++				test.param_value = test_case->generate_params(test.param_value, param_desc);
++				test.param_index++;
++			}
++		} while (test.param_value);
++
++		kunit_print_ok_not_ok(&test, true, test_success,
++				      kunit_test_case_num(suite, test_case),
++				      test_case->name);
++	}
+ 
+ 	kunit_print_subtest_end(suite);
+ 
+-- 
+2.25.1
 
