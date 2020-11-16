@@ -2,76 +2,77 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DC992B4505
-	for <lists+linux-ext4@lfdr.de>; Mon, 16 Nov 2020 14:52:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3B3F2B51B6
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Nov 2020 20:58:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728752AbgKPNuf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 16 Nov 2020 08:50:35 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:39115 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727248AbgKPNue (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 16 Nov 2020 08:50:34 -0500
-Received: from mail-wr1-f72.google.com ([209.85.221.72])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <mauricio.oliveira@canonical.com>)
-        id 1keets-0002Br-0h
-        for linux-ext4@vger.kernel.org; Mon, 16 Nov 2020 13:50:32 +0000
-Received: by mail-wr1-f72.google.com with SMTP id v5so11083670wrr.0
-        for <linux-ext4@vger.kernel.org>; Mon, 16 Nov 2020 05:50:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8cftLcfcc+49VWAqvawkZOJxhoRB57qpK4TLnSigujo=;
-        b=PDpi/fVYJOPL6FF6L39siw1JKoPOlzIoh85RzqXuRTpGMpj1Y4U+xSdRCYSNmDtd5s
-         +IG+zG/qQBLP3wY3dskyaCgYRP8wF4bT2FRbtt72dmn0VL8xQI9IH2q1A2P6w/oa6g7V
-         cQL2F6E0xqC9ECvb91vASw9G6a0IBEYAb/QBpW2CZjpXdiePf/12uzW1+xffsbGdBf6g
-         b01GQfz6+i8RL+4G574yhv2M9/8Nayn3xlwJChTzbJ7xZ/koOIUKAP3vUiLLOoLPMJXb
-         tTLrebcBPvzmgXv4t2Bk9t8tSZC2UPZQ80tNHgs7XI7Nqtm7NYmN7W7eZqHM34DCSmrs
-         0b1w==
-X-Gm-Message-State: AOAM530z56YexDZPjakRMUBi5dQIzWcAsA7uYj5G5cxSKzk3aFSO3ezL
-        U/im1hJyC95adnJg37z6st4YAItQ7w+aI4vn62+x0lBe7rM9RKIljKIZjiqmN9ZUC6EL5IFbFSQ
-        kHt6mm5Kj5LOURMP7Q/oYuRxpPkaBuLPaTryBcBPy4CUv1ifzal7w+EI=
-X-Received: by 2002:a1c:3c8a:: with SMTP id j132mr15314508wma.75.1605534631114;
-        Mon, 16 Nov 2020 05:50:31 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx9FZ+LW7QK8IxvfYKw8HZM2nBmqOroIn8kydjvs7JXbwrLCYUogyLsAlSID8SwZrvJAHfNt/83skS0HoJSbjw=
-X-Received: by 2002:a1c:3c8a:: with SMTP id j132mr15314490wma.75.1605534630968;
- Mon, 16 Nov 2020 05:50:30 -0800 (PST)
+        id S1731284AbgKPT5c (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 16 Nov 2020 14:57:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47140 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727393AbgKPT5b (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 16 Nov 2020 14:57:31 -0500
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3F2E9208C7;
+        Mon, 16 Nov 2020 19:57:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605556650;
+        bh=6RPbSG5ZGTSSJuW1urRI9ZBEHEj5MnZv8gXJG/wiN6A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BrHroKrhpagvLzB8zargNvVRoz06679F5N42v8zCP6bQjk3fPVCrN9hgEfTn18kuC
+         ua+EKY1SJLQwNd/92GqsZrUr1i01Ha3D75s/v0xJY67rQXR3xbTu+Yw+xQgi6v7fN6
+         3+Yixow9Po01WG+62ru+iCDKn6DLD429XSBPB48I=
+Date:   Mon, 16 Nov 2020 11:57:28 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        Victor Hsieh <victorhsieh@google.com>,
+        Jes Sorensen <Jes.Sorensen@gmail.com>,
+        Luca Boccassi <luca.boccassi@gmail.com>,
+        Martijn Coenen <maco@android.com>,
+        Paul Lawrence <paullawrence@google.com>
+Subject: Re: [PATCH 0/4] fs-verity cleanups
+Message-ID: <X7LZqLKKwtse2tWy@sol.localdomain>
+References: <20201113211918.71883-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-References: <68b9650e-bef2-69e2-ab5e-8aaddaf46cfe@huawei.com>
-In-Reply-To: <68b9650e-bef2-69e2-ab5e-8aaddaf46cfe@huawei.com>
-From:   Mauricio Oliveira <mauricio.oliveira@canonical.com>
-Date:   Mon, 16 Nov 2020 10:50:18 -0300
-Message-ID: <CAO9xwp12E1wjErfX-Ef6+OKnme_ENOx22Hh=44g9cLn7aBr3-w@mail.gmail.com>
-Subject: Re: [Bug report] journal data mode trigger panic in jbd2_journal_commit_transaction
-To:     yangerkun <yangerkun@huawei.com>
-Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca,
-        Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
-        "zhangyi (F)" <yi.zhang@huawei.com>, Hou Tao <houtao1@huawei.com>,
-        zhangxiaoxu5@huawei.com, Ye Bin <yebin10@huawei.com>,
-        hejie3@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201113211918.71883-1-ebiggers@kernel.org>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Kun,
+On Fri, Nov 13, 2020 at 01:19:14PM -0800, Eric Biggers wrote:
+> This patchset renames some names that have been causing confusion:
+> 
+> - fsverity_signed_digest is renamed to fsverity_formatted_digest
+> 
+> - "fs-verity file measurement" is renamed to "fs-verity file digest"
+> 
+> In addition, this patchset moves fsverity_descriptor and
+> fsverity_formatted_digest to the UAPI header because userspace programs
+> may need them in order to sign files.
+> 
+> Eric Biggers (4):
+>   fs-verity: remove filenames from file comments
+>   fs-verity: rename fsverity_signed_digest to fsverity_formatted_digest
+>   fs-verity: rename "file measurement" to "file digest"
+>   fs-verity: move structs needed for file signing to UAPI header
+> 
+>  Documentation/filesystems/fsverity.rst | 68 ++++++++++++--------------
+>  fs/verity/enable.c                     |  8 +--
+>  fs/verity/fsverity_private.h           | 36 ++------------
+>  fs/verity/hash_algs.c                  |  2 +-
+>  fs/verity/init.c                       |  2 +-
+>  fs/verity/measure.c                    | 12 ++---
+>  fs/verity/open.c                       | 24 ++++-----
+>  fs/verity/signature.c                  | 14 +++---
+>  fs/verity/verify.c                     |  2 +-
+>  include/uapi/linux/fsverity.h          | 49 +++++++++++++++++++
+>  10 files changed, 116 insertions(+), 101 deletions(-)
 
-On Sat, Nov 14, 2020 at 5:18 AM yangerkun <yangerkun@huawei.com> wrote:
-> While using ext4 with data=journal(3.10 kernel), we meet a problem that
-> we think may never happend...
-[...]
+All applied to fscrypt.git#fsverity for 5.11.  But as always, more reviews are
+always appreciated.
 
-Could you please confirm you mean 5.10-rc* kernel instead of 3.10?
-(It seems so as you mention a recent commit below.)  Thanks!
-
-> For now, what I have seen that can dirty buffer directly is
-> ext4_page_mkwrite(64a9f1449950 ("ext4: data=journal: fixes for
-> ext4_page_mkwrite()")), and runing ext4_punch_hole with keep_size
-> /ext4_page_mkwrite parallel can trigger above warning easily.
-[...]
-
-
--- 
-Mauricio Faria de Oliveira
+- Eric
