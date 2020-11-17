@@ -2,186 +2,141 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4475C2B7290
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Nov 2020 00:44:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A90EA2B72AE
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Nov 2020 00:52:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727900AbgKQXlk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 17 Nov 2020 18:41:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727736AbgKQXlj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Nov 2020 18:41:39 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AD73C0617A7
-        for <linux-ext4@vger.kernel.org>; Tue, 17 Nov 2020 15:41:39 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id u19so304552lfr.7
-        for <linux-ext4@vger.kernel.org>; Tue, 17 Nov 2020 15:41:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/VY+nQ2+UO2kcxbgAdKN/xAgZTIoZN8mXsaR1/QilVU=;
-        b=z58pW0BS88wNFYMWYjt0AVNlmSMk43J53u4ImfvAycVmnZdAEpvCNtZumx/+A0xWJU
-         xiQZ09czG0P5tZEHxQJxOXNCbnCHBSzlmebEQcufwk+3R+XToxmNxFkX/rUiw9RdfDHd
-         /wi9mJZ7/55xEX3OL/v1sXoL3vUVjR1+ZWMDbX9m3JtcXd+HNZA2XyYAlbbay7AF/1uF
-         IdBOenz+w60eSdFUmQuLmBIi+EfhKIdh2duixAuTRqZksuWxf75uXuye2FxFl1k/Oqtu
-         FPIvl9Q0bR8yE19fH0H7FopV3rEuu1ZLa+gh6gS7s07uKoh5xGwqRSSSvop3DGd2MNri
-         nQ/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/VY+nQ2+UO2kcxbgAdKN/xAgZTIoZN8mXsaR1/QilVU=;
-        b=DBRtrVzJP1HktRaQc5vCj35/0rQhvJAmBHLByURJU5j0tOc+Q62EPgkRFlHWaRISEA
-         NKhi8Zar3Q5ysMP0WTLA/ORlSlRtfkRQgrINqD/MZVnHDrxNCPQwGpJ15yooYMJ3o5mS
-         VSx20Jbj6FSLU5sLr2oPptNkVTlx0vN7TXCeUhDAfOivamwgLbP7BzDZSPqw3KLwzyX/
-         Cx8YAIpIgsbVs6a0Q8+n9GVoJkfTaiYOkNOC4JZd4YkuNMdw06AtVcZtzS80fIMRIimJ
-         hHxtGA7ap8e2tQJEcOpTLxJ7oIes8v6Qi8YntsCJ4Orfp7951qCRHtotaDtWsOFd2a5U
-         FUuw==
-X-Gm-Message-State: AOAM5338BD14pVeyWtnd4aWN51zOSvgyNqHGc8wS2wdiQCOjZCRvy3r3
-        yVLlVCzwTlaqTnd/GJdk6QaUYQ==
-X-Google-Smtp-Source: ABdhPJzQu7X3lREJOVWuD7GAs2Xvm8gSDnb/ql5+zreK46MHGQ5FFbfih3+EFYqiS/L5HsrRxhu3Qw==
-X-Received: by 2002:a19:8083:: with SMTP id b125mr2763067lfd.23.1605656497660;
-        Tue, 17 Nov 2020 15:41:37 -0800 (PST)
-Received: from localhost.localdomain (c-92d7225c.014-348-6c756e10.bbcust.telenor.se. [92.34.215.146])
-        by smtp.gmail.com with ESMTPSA id n20sm3293035lfl.249.2020.11.17.15.41.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 15:41:36 -0800 (PST)
-From:   Linus Walleij <linus.walleij@linaro.org>
-To:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
-Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-api@vger.kernel.org, qemu-devel@nongnu.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Florian Weimer <fw@deneb.enyo.de>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Eric Blake <eblake@redhat.com>,
-        =?UTF-8?q?=E7=BD=97=E5=8B=87=E5=88=9A?= <luoyonggang@gmail.com>
-Subject: [PATCH v4] fcntl: Add 32bit filesystem mode
-Date:   Wed, 18 Nov 2020 00:39:28 +0100
-Message-Id: <20201117233928.255671-1-linus.walleij@linaro.org>
-X-Mailer: git-send-email 2.26.2
+        id S1726918AbgKQXvb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 17 Nov 2020 18:51:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35738 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725771AbgKQXva (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 17 Nov 2020 18:51:30 -0500
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1656520707;
+        Tue, 17 Nov 2020 23:51:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605657089;
+        bh=6oD4Vlgq7Wd1NXyfD+kSPMdBxHmOX6ZkXGlIFmIH4BQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gly9nQ6TM/lHuVl02OETZV37z3djuNsAQ3+chLTTbWFUAzmh4Hz9hSSVpcnUuaPCI
+         ypbLiCuYb2OCXHUVPGvHX18xS7udPgpuSaV6/QyWWkm34z8GatbTe5xDcnoNiZkSOi
+         MUgjwIhBjNgFypCqtT9ZM10BsoC8acFL07TG4DAc=
+Date:   Tue, 17 Nov 2020 15:51:27 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Satya Tangirala <satyat@google.com>
+Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v7 2/8] blk-crypto: don't require user buffer alignment
+Message-ID: <X7Rh/5ADHVywDtpq@sol.localdomain>
+References: <20201117140708.1068688-1-satyat@google.com>
+ <20201117140708.1068688-3-satyat@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117140708.1068688-3-satyat@google.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-It was brought to my attention that this bug from 2018 was
-still unresolved: 32 bit emulators like QEMU were given
-64 bit hashes when running 32 bit emulation on 64 bit systems.
+On Tue, Nov 17, 2020 at 02:07:02PM +0000, Satya Tangirala wrote:
+> Previously, blk-crypto-fallback required the offset and length of each bvec
+> in a bio to be aligned to the crypto data unit size. This patch enables
+> blk-crypto-fallback to work even if that's not the case - the requirement
+> now is only that the total length of the data in the bio is aligned to
+> the crypto data unit size.
+> 
+> Now that blk-crypto-fallback can handle bvecs not aligned to crypto data
+> units, and we've ensured that bios are not split in the middle of a
+> crypto data unit, we can relax the alignment check done by blk-crypto.
 
-This adds a flag to the fcntl() F_GETFD and F_SETFD operations
-to set the underlying filesystem into 32bit mode even if the
-file handle was opened using 64bit mode without the compat
-syscalls.
+I think the blk-crypto.c and blk-crypto-fallback.c changes belong in different
+patches.
 
-Programs that need the 32 bit file system behavior need to
-issue a fcntl() system call such as in this example:
+There should also be a brief explanation of why this is needed (make the
+alignment requirements on direct I/O to encrypted files somewhat more similar to
+standard unencrypted files, right)?.
 
-  #define FD_32BIT_MODE 2
+Also, how were the blk-crypto-fallback changes tested?
 
-  int main(int argc, char** argv) {
-    DIR* dir;
-    int err;
-    int mode;
-    int fd;
+> @@ -305,45 +374,57 @@ static bool blk_crypto_fallback_encrypt_bio(struct bio **bio_ptr)
+>  	}
+>  
+>  	memcpy(curr_dun, bc->bc_dun, sizeof(curr_dun));
+> -	sg_init_table(&src, 1);
+> -	sg_init_table(&dst, 1);
+>  
+> -	skcipher_request_set_crypt(ciph_req, &src, &dst, data_unit_size,
+> +	skcipher_request_set_crypt(ciph_req, src, dst, data_unit_size,
+>  				   iv.bytes);
+>  
+> -	/* Encrypt each page in the bounce bio */
+> +	/*
+> +	 * Encrypt each data unit in the bounce bio.
+> +	 *
+> +	 * Take care to handle the case where a data unit spans bio segments.
+> +	 * This can happen when data_unit_size > logical_block_size.
+> +	 */
+>  	for (i = 0; i < enc_bio->bi_vcnt; i++) {
+> -		struct bio_vec *enc_bvec = &enc_bio->bi_io_vec[i];
+> -		struct page *plaintext_page = enc_bvec->bv_page;
+> +		struct bio_vec *bv = &enc_bio->bi_io_vec[i];
+> +		struct page *plaintext_page = bv->bv_page;
+>  		struct page *ciphertext_page =
+>  			mempool_alloc(blk_crypto_bounce_page_pool, GFP_NOIO);
+> +		unsigned int offset_in_bv = 0;
+>  
+> -		enc_bvec->bv_page = ciphertext_page;
+> +		bv->bv_page = ciphertext_page;
+>  
+>  		if (!ciphertext_page) {
+>  			src_bio->bi_status = BLK_STS_RESOURCE;
+>  			goto out_free_bounce_pages;
+>  		}
+>  
+> -		sg_set_page(&src, plaintext_page, data_unit_size,
+> -			    enc_bvec->bv_offset);
+> -		sg_set_page(&dst, ciphertext_page, data_unit_size,
+> -			    enc_bvec->bv_offset);
+> -
+> -		/* Encrypt each data unit in this page */
+> -		for (j = 0; j < enc_bvec->bv_len; j += data_unit_size) {
+> -			blk_crypto_dun_to_iv(curr_dun, &iv);
+> -			if (crypto_wait_req(crypto_skcipher_encrypt(ciph_req),
+> -					    &wait)) {
+> -				i++;
+> -				src_bio->bi_status = BLK_STS_IOERR;
+> -				goto out_free_bounce_pages;
+> +		while (offset_in_bv < bv->bv_len) {
+> +			unsigned int n = min(bv->bv_len - offset_in_bv,
+> +					     data_unit_size - du_filled);
+> +			sg_set_page(&src[sg_idx], plaintext_page, n,
+> +				    bv->bv_offset + offset_in_bv);
+> +			sg_set_page(&dst[sg_idx], ciphertext_page, n,
+> +				    bv->bv_offset + offset_in_bv);
+> +			sg_idx++;
+> +			offset_in_bv += n;
+> +			du_filled += n;
+> +			if (du_filled == data_unit_size) {
+> +				blk_crypto_dun_to_iv(curr_dun, &iv);
+> +				if (crypto_wait_req(crypto_skcipher_encrypt(ciph_req),
+> +						    &wait)) {
+> +					src_bio->bi_status = BLK_STS_IOERR;
+> +					goto out_free_bounce_pages;
+> +				}
+> +				bio_crypt_dun_increment(curr_dun, 1);
+> +				sg_idx = 0;
+> +				du_filled = 0;
 
-    dir = opendir("/boot");
-    fd = dirfd(dir);
-    mode = fcntl(fd, F_GETFD);
-    mode |= FD_32BIT_MODE;
-    err = fcntl(fd, F_SETFD, mode);
-    if (err) {
-      printf("fcntl() failed! err=%d\n", err);
-      return 1;
-    }
-    printf("dir=%p\n", dir);
-    printf("readdir(dir)=%p\n", readdir(dir));
-    printf("errno=%d: %s\n", errno, strerror(errno));
-    return 0;
-  }
+This is leaking a bounce page if crypto_skcipher_encrypt() fails.  This can be
+fixed either by keeping the 'i++' that was on the error path before, or by
+moving the i++ in the for statement to just below to where the bounce page was
+successfully allocated.
 
-This can be pretty hard to test since C libraries and linux
-userspace security extensions aggressively filter the parameters
-that are passed down and allowed to commit into actual system
-calls.
-
-Cc: Florian Weimer <fw@deneb.enyo.de>
-Cc: Peter Maydell <peter.maydell@linaro.org>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Eric Blake <eblake@redhat.com>
-Reported-by: 罗勇刚(Yonggang Luo) <luoyonggang@gmail.com>
-Suggested-by: Theodore Ts'o <tytso@mit.edu>
-Link: https://bugs.launchpad.net/qemu/+bug/1805913
-Link: https://lore.kernel.org/lkml/87bm56vqg4.fsf@mid.deneb.enyo.de/
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=205957
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
-ChangeLog v3 RESEND 1-> v4:
-- Update the example in the commit message to a read/modify/write
-  version.
-- Notice that Yonggang Luo sees the sema problem on i386 binaries
-  as we see on ARM 32bit binaries.
-ChangeLog v3->v3 RESEND 1:
-- Resending during the v5.10 merge window to get attention.
-ChangeLog v2->v3:
-- Realized that I also have to clear the flag correspondingly
-  if someone ask for !FD_32BIT_MODE after setting it the
-  first time.
-ChangeLog v1->v2:
-- Use a new flag FD_32BIT_MODE to F_GETFD and F_SETFD
-  instead of a new fcntl operation, there is already a fcntl
-  operation to set random flags.
-- Sorry for taking forever to respin this patch :(
----
- fs/fcntl.c                       | 7 +++++++
- include/uapi/asm-generic/fcntl.h | 8 ++++++++
- 2 files changed, 15 insertions(+)
-
-diff --git a/fs/fcntl.c b/fs/fcntl.c
-index 19ac5baad50f..6c32edc4099a 100644
---- a/fs/fcntl.c
-+++ b/fs/fcntl.c
-@@ -335,10 +335,17 @@ static long do_fcntl(int fd, unsigned int cmd, unsigned long arg,
- 		break;
- 	case F_GETFD:
- 		err = get_close_on_exec(fd) ? FD_CLOEXEC : 0;
-+		/* Report 32bit file system mode */
-+		if (filp->f_mode & FMODE_32BITHASH)
-+			err |= FD_32BIT_MODE;
- 		break;
- 	case F_SETFD:
- 		err = 0;
- 		set_close_on_exec(fd, arg & FD_CLOEXEC);
-+		if (arg & FD_32BIT_MODE)
-+			filp->f_mode |= FMODE_32BITHASH;
-+		else
-+			filp->f_mode &= ~FMODE_32BITHASH;
- 		break;
- 	case F_GETFL:
- 		err = filp->f_flags;
-diff --git a/include/uapi/asm-generic/fcntl.h b/include/uapi/asm-generic/fcntl.h
-index 9dc0bf0c5a6e..edd3573cb7ef 100644
---- a/include/uapi/asm-generic/fcntl.h
-+++ b/include/uapi/asm-generic/fcntl.h
-@@ -160,6 +160,14 @@ struct f_owner_ex {
- 
- /* for F_[GET|SET]FL */
- #define FD_CLOEXEC	1	/* actually anything with low bit set goes */
-+/*
-+ * This instructs the kernel to provide 32bit semantics (such as hashes) from
-+ * the file system layer, when running a userland that depend on 32bit
-+ * semantics on a kernel that supports 64bit userland, but does not use the
-+ * compat ioctl() for e.g. open(), so that the kernel would otherwise assume
-+ * that the userland process is capable of dealing with 64bit semantics.
-+ */
-+#define FD_32BIT_MODE	2
- 
- /* for posix fcntl() and lockf() */
- #ifndef F_RDLCK
--- 
-2.26.2
-
+- Eric
