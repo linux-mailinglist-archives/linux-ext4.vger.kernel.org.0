@@ -2,144 +2,102 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72FE62B58D5
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Nov 2020 05:31:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEF012B5A37
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Nov 2020 08:21:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726524AbgKQE2f (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 16 Nov 2020 23:28:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44800 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725804AbgKQE2f (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 16 Nov 2020 23:28:35 -0500
-Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 265382463D;
-        Tue, 17 Nov 2020 04:28:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605587314;
-        bh=9y0exohYjyxk5jiJ93JicBe//G14qZJKLu96RNf8udc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=U5xJI1ZFG6t/NOXZAOAJ2NvidPqX9aLMxtmiiv5K5A4dLKCncWhATDIFCQTEE43Cr
-         qq9uouK7HlGbqzAUCo2eYF65fAG2KPt4xmDUTEtOTfy5sZIp6x9zddPt3RwtieD97q
-         mpj3xzC4hzTf5vIklPjkITGA8jCY7513Xe5rgJKc=
-Date:   Mon, 16 Nov 2020 20:28:32 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] ext4: Fix checksum errors with indexed dirs
-Message-ID: <X7NRcBMnsR3w1K7X@sol.localdomain>
-References: <20200205173025.12221-1-jack@suse.cz>
+        id S1726387AbgKQHVI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 17 Nov 2020 02:21:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726181AbgKQHVH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Nov 2020 02:21:07 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE61C0617A7
+        for <linux-ext4@vger.kernel.org>; Mon, 16 Nov 2020 23:21:07 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id b17so23081933ljf.12
+        for <linux-ext4@vger.kernel.org>; Mon, 16 Nov 2020 23:21:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=80Js5MzpHp2BBoeVGpXRsYdQ6UcFRe8F27UXWyhna1Y=;
+        b=AZI9q7Hh5V0M3ulX5rXXq94IdrHcPbKhKzMBw8pHrITVB6DhBINSuSLKZM56RV08Ut
+         zePZpSkaopondOCx+ODPU34lvDF/Qa8tF2O3CDRuL36QlTT7cpy+xdRayULsVWPpwV/q
+         VTu0648DGbdPC+1Gycuz14zyTF0aFXT3C7KHogy6bm8ZP8QBV+Sk9XWrSyCHB3afX+4f
+         O417S8E0LRdNxUzquMgDuoWrcOsuEHEB64DYSWU3mHUQdS25kVEezV8KUCjIUbCPX6kr
+         WuY9jLzfi42uTOpIJ0kXXEkSnf3Dt4Upw/vhj9JcSBNkt1TbhtlO4QK5HMZ4Y0HZYoLi
+         Uzng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=80Js5MzpHp2BBoeVGpXRsYdQ6UcFRe8F27UXWyhna1Y=;
+        b=mLsXNtVEhaLzq2u7+qI9qYBaWUkMZdvt127KfaDdUUgLH0nionYO4vcHvyqg8cohrP
+         u+cfM71G07ns7Bq+8HSE7/KmDqo6ttZ0EkbKiRN0u1dlIev7uMk+dE6WR81y0TpGWghd
+         A9XduSA+2QKNTonYfVzEWg+6rz+2sIKJmMkkheP0zRxliz1vHy9UsLKcFpNEdN/+8q2O
+         As7/UiIRj7KRfL/1+Frn4/uedFsIFehXy3jd4mWr5PtvPGhNzA2L7meDFFtnNzJBS9m0
+         75nCLeDcVE1G3yXWswBF52B+cGClYFJuwDvc3iLxhw/2RnMoTSYA29FFXXCdHUW7UtQL
+         LJLw==
+X-Gm-Message-State: AOAM531je5RVVqT+CTH+MM5d6aGcVPrReN2sSSryxrFqm1+kA/6PVvNG
+        J2HA29jvHqHCWeKcFzO9afbae/J65lZA7GwxfbDnOQ==
+X-Google-Smtp-Source: ABdhPJywGgbQ9i2Pw0CnqEmzP1/KTa/qYi1ggHVULwNavreJq3J/8m6hrHchGZDgMVWmiB61tHAZNSCM4ssJCrw8kg8=
+X-Received: by 2002:a2e:8504:: with SMTP id j4mr1204429lji.169.1605597665336;
+ Mon, 16 Nov 2020 23:21:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200205173025.12221-1-jack@suse.cz>
+References: <20201116054035.211498-1-98.arpi@gmail.com>
+In-Reply-To: <20201116054035.211498-1-98.arpi@gmail.com>
+From:   David Gow <davidgow@google.com>
+Date:   Tue, 17 Nov 2020 15:20:53 +0800
+Message-ID: <CABVgOSkoQahYqMJ3dD1_X2+rF3OgwT658+8HRM2EZ5e0-94jmw@mail.gmail.com>
+Subject: Re: [PATCH v9 1/2] kunit: Support for Parameterized Testing
+To:     Arpitha Raghunandan <98.arpi@gmail.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Marco Elver <elver@google.com>,
+        Iurii Zaikin <yzaikin@google.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Bird, Tim" <Tim.Bird@sony.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Jan,
-
-On Wed, Feb 05, 2020 at 06:30:25PM +0100, Jan Kara wrote:
-> DIR_INDEX has been introduced as a compat ext4 feature. That means that
-> even kernels / tools that don't understand the feature may modify the
-> filesystem. This works because for kernels not understanding indexed dir
-> format, internal htree nodes appear just as empty directory entries.
-> Index dir aware kernels then check the htree structure is still
-> consistent before using the data. This all worked reasonably well until
-> metadata checksums were introduced. The problem is that these
-> effectively made DIR_INDEX only ro-compatible because internal htree
-> nodes store checksums in a different place than normal directory blocks.
-> Thus any modification ignorant to DIR_INDEX (or just clearing
-> EXT4_INDEX_FL from the inode) will effectively cause checksum mismatch
-> and trigger kernel errors. So we have to be more careful when dealing
-> with indexed directories on filesystems with checksumming enabled.
-> 
-> 1) We just disallow loading and directory inodes with EXT4_INDEX_FL when
-> DIR_INDEX is not enabled. This is harsh but it should be very rare (it
-> means someone disabled DIR_INDEX on existing filesystem and didn't run
-> e2fsck), e2fsck can fix the problem, and we don't want to answer the
-> difficult question: "Should we rather corrupt the directory more or
-> should we ignore that DIR_INDEX feature is not set?"
-> 
-> 2) When we find out htree structure is corrupted (but the filesystem and
-> the directory should in support htrees), we continue just ignoring htree
-> information for reading but we refuse to add new entries to the
-> directory to avoid corrupting it more.
-> 
-> CC: stable@vger.kernel.org
-> Fixes: dbe89444042a ("ext4: Calculate and verify checksums for htree nodes")
-> Signed-off-by: Jan Kara <jack@suse.cz>
+On Mon, Nov 16, 2020 at 1:41 PM Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+>
+> Implementation of support for parameterized testing in KUnit. This
+> approach requires the creation of a test case using the
+> KUNIT_CASE_PARAM() macro that accepts a generator function as input.
+>
+> This generator function should return the next parameter given the
+> previous parameter in parameterized tests. It also provides a macro to
+> generate common-case generators based on arrays. Generators may also
+> optionally provide a human-readable description of parameters, which is
+> displayed where available.
+>
+> Note, currently the result of each parameter run is displayed in
+> diagnostic lines, and only the overall test case output summarizes
+> TAP-compliant success or failure of all parameter runs. In future, when
+> supported by kunit-tool, these can be turned into subsubtest outputs.
+>
+> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+> Co-developed-by: Marco Elver <elver@google.com>
+> Signed-off-by: Marco Elver <elver@google.com>
 > ---
->  fs/ext4/dir.c   | 14 ++++++++------
->  fs/ext4/ext4.h  |  5 ++++-
->  fs/ext4/inode.c | 13 +++++++++++++
->  fs/ext4/namei.c |  7 +++++++
->  4 files changed, 32 insertions(+), 7 deletions(-)
-> 
-> diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
-> index 9f00fc0bf21d..cb9ea593b544 100644
-> --- a/fs/ext4/dir.c
-> +++ b/fs/ext4/dir.c
-> @@ -129,12 +129,14 @@ static int ext4_readdir(struct file *file, struct dir_context *ctx)
->  		if (err != ERR_BAD_DX_DIR) {
->  			return err;
->  		}
-> -		/*
-> -		 * We don't set the inode dirty flag since it's not
-> -		 * critical that it get flushed back to the disk.
-> -		 */
-> -		ext4_clear_inode_flag(file_inode(file),
-> -				      EXT4_INODE_INDEX);
-> +		/* Can we just clear INDEX flag to ignore htree information? */
-> +		if (!ext4_has_metadata_csum(sb)) {
-> +			/*
-> +			 * We don't set the inode dirty flag since it's not
-> +			 * critical that it gets flushed back to the disk.
-> +			 */
-> +			ext4_clear_inode_flag(inode, EXT4_INODE_INDEX);
-> +		}
->  	}
->  
->  	if (ext4_has_inline_data(inode)) {
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index f8578caba40d..1fd6c1e2ce2a 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -2482,8 +2482,11 @@ void ext4_insert_dentry(struct inode *inode,
->  			struct ext4_filename *fname);
->  static inline void ext4_update_dx_flag(struct inode *inode)
->  {
-> -	if (!ext4_has_feature_dir_index(inode->i_sb))
-> +	if (!ext4_has_feature_dir_index(inode->i_sb)) {
-> +		/* ext4_iget() should have caught this... */
-> +		WARN_ON_ONCE(ext4_has_feature_metadata_csum(inode->i_sb));
->  		ext4_clear_inode_flag(inode, EXT4_INODE_INDEX);
-> +	}
->  }
+[Resending this because my email client re-defaulted to HTML! Aarrgh!]
 
-This new WARN_ON_ONCE() gets triggered by the following commands:
+This looks good to me! I tested it in UML and x86-64 w/ KASAN, and
+both worked fine.
 
-	mkfs.ext4 -O ^dir_index /dev/vdc
-	mount /dev/vdc /vdc
-	mkdir /vdc/dir
+Reviewed-by: David Gow <davidgow@google.com>
+Tested-by: David Gow <davidgow@google.com>
 
-WARNING: CPU: 1 PID: 305 at fs/ext4/ext4.h:2700 add_dirent_to_buf+0x1d0/0x1e0 fs/ext4/namei.c:2039
-CPU: 1 PID: 305 Comm: mkdir Not tainted 5.10.0-rc4 #14
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ArchLinux 1.14.0-1 04/01/2014
-RIP: 0010:ext4_update_dx_flag fs/ext4/ext4.h:2700 [inline]
-RIP: 0010:add_dirent_to_buf+0x1d0/0x1e0 fs/ext4/namei.c:2038
-[...]
-Call Trace:
- ext4_add_entry+0x179/0x4d0 fs/ext4/namei.c:2248
- ext4_mkdir+0x1c0/0x320 fs/ext4/namei.c:2814
- vfs_mkdir+0xcc/0x130 fs/namei.c:3650
- do_mkdirat+0x81/0x120 fs/namei.c:3673
- __do_sys_mkdir fs/namei.c:3689 [inline]
+Thanks for sticking with this!
 
-
-What is intended here?  metadata_csum && ^dir_index is a weird combination,
-but it's technically valid, right?
-
-- Eric
+-- David
