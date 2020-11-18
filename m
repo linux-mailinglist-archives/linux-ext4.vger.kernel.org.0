@@ -2,124 +2,94 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75D152B77BF
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Nov 2020 09:00:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFB612B79DA
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Nov 2020 10:00:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727237AbgKRH5p (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 18 Nov 2020 02:57:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35658 "EHLO mail.kernel.org"
+        id S1727387AbgKRJAi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 18 Nov 2020 04:00:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727181AbgKRH5m (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 18 Nov 2020 02:57:42 -0500
-Received: from sol.attlocal.net (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        id S1727160AbgKRJAh (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 18 Nov 2020 04:00:37 -0500
+Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 72022246B2;
-        Wed, 18 Nov 2020 07:57:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CDBBD24248;
+        Wed, 18 Nov 2020 09:00:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605686261;
-        bh=FaJPS+4AhsPK9Hjqvyuvxb/1dnxymbnVlmZfAPn5gcU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ETs/fepezweXiR3RVvD/V08ZO2J+3w+axT1045ZXG0ySoHoOPkv8KQGhsYkhLcqGs
-         xVfQzJxdV+6XoMxfSSp/QZ/D0rjuhBJeN1gE+7S7o11NaQpjRy4O4ZLCXloc3aUcTV
-         L4jkljPJYdapxPjojPTtKPw+RVYI5VVc0BNtD4bQ=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH 5/5] fscrypt: remove unnecessary calls to fscrypt_require_key()
-Date:   Tue, 17 Nov 2020 23:56:09 -0800
-Message-Id: <20201118075609.120337-6-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201118075609.120337-1-ebiggers@kernel.org>
-References: <20201118075609.120337-1-ebiggers@kernel.org>
+        s=default; t=1605690036;
+        bh=i9tBV0oZBsTReps0EogPqekfIEGahPYtFjMV0dB8U+U=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TjCzdqFScODCSwu2HqQV/hZsXCizf8cSQGNq0E4s6V9KEfsorLbCddbZe5wx8Pvfq
+         QUGYUe3B/02nyoOG++Le+tTxAzAu8vcdiXUBicX/furVaJA/8OMu9uobWvcycgmi68
+         YbRE+d1hXTXxUMEjluROqGJr09HxR0jj4VUdy1Xg=
+Received: by mail-oi1-f174.google.com with SMTP id k26so1444194oiw.0;
+        Wed, 18 Nov 2020 01:00:36 -0800 (PST)
+X-Gm-Message-State: AOAM5313tO3mHx/3SRkk+XORL/lHPnGwNAKy3KQYTXXo6mpolRhfYxoJ
+        afM+Acg1VYntv5yx1GcZlsCjkIg0lrKpH2xtYIA=
+X-Google-Smtp-Source: ABdhPJydSZXfIA6Ryj/nqlJBnSxKnJFPoskTXFwxpwxSaoVGbr/P/APPPfzylLk92sw1xEZ6AWYdYCMkzWbPDL2wVtI=
+X-Received: by 2002:aca:180a:: with SMTP id h10mr2022489oih.4.1605690035742;
+ Wed, 18 Nov 2020 01:00:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201012220620.124408-1-linus.walleij@linaro.org>
+ <20201013092240.GI32292@arm.com> <CACRpkdZoMoUQX+CPd31qwjXSKJvaZ6=jcFvUrK_3hkxaUWJNJg@mail.gmail.com>
+In-Reply-To: <CACRpkdZoMoUQX+CPd31qwjXSKJvaZ6=jcFvUrK_3hkxaUWJNJg@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 18 Nov 2020 10:00:19 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2SN2zeK=dj01Br-m86rJmK8mOyH=gHAidwSPgKAEthVw@mail.gmail.com>
+Message-ID: <CAK8P3a2SN2zeK=dj01Br-m86rJmK8mOyH=gHAidwSPgKAEthVw@mail.gmail.com>
+Subject: Re: [PATCH v3 RESEND] fcntl: Add 32bit filesystem mode
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Dave Martin <Dave.Martin@arm.com>, "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        QEMU Developers <qemu-devel@nongnu.org>,
+        Florian Weimer <fw@deneb.enyo.de>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Andy Lutomirski <luto@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On Wed, Nov 18, 2020 at 12:38 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> On Tue, Oct 13, 2020 at 11:22 AM Dave Martin <Dave.Martin@arm.com> wrote:
+>
+> > >       case F_SETFD:
+> > >               err = 0;
+> > >               set_close_on_exec(fd, arg & FD_CLOEXEC);
+> > > +             if (arg & FD_32BIT_MODE)
+> > > +                     filp->f_mode |= FMODE_32BITHASH;
+> > > +             else
+> > > +                     filp->f_mode &= ~FMODE_32BITHASH;
+> >
+> > This seems inconsistent?  F_SETFD is for setting flags on a file
+> > descriptor.  Won't setting a flag on filp here instead cause the
+> > behaviour to change for all file descriptors across the system that are
+> > open on this struct file?  Compare set_close_on_exec().
+> >
+> > I don't see any discussion on whether this should be an F_SETFL or an
+> > F_SETFD, though I see F_SETFD was Ted's suggestion originally.
+>
+> I cannot honestly say I know the semantic difference.
+>
+> I would ask the QEMU people how a user program would expect
+> the flag to behave.
 
-In an encrypted directory, a regular dentry (one that doesn't have the
-no-key name flag) can only be created if the directory's encryption key
-is available.
+I agree it should either use F_SETFD to set a bit in the fdtable structure
+like set_close_on_exec() or it should use F_SETFL to set a bit in
+filp->f_mode.
 
-Therefore the calls to fscrypt_require_key() in __fscrypt_prepare_link()
-and __fscrypt_prepare_rename() are unnecessary, as these functions
-already check that the dentries they're given aren't no-key names.
+It appears the reason FMODE_32BITHASH is part of  filp->f_mode
+is that the only user today is nfsd, which does not have a file
+descriptor but only has a struct file. Similarly, the only code that
+understands the difference (ext4_readdir()) has no reference to
+the file descriptor.
 
-Remove these unnecessary calls to fscrypt_require_key().
+If this becomes an O_DIR32BITHASH flag for F_SETFL,
+I suppose it should also be supported by openat2().
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/crypto/hooks.c       | 26 ++++++++------------------
- include/linux/fscrypt.h |  3 +--
- 2 files changed, 9 insertions(+), 20 deletions(-)
-
-diff --git a/fs/crypto/hooks.c b/fs/crypto/hooks.c
-index 061418be4b08..c582e2ddb39c 100644
---- a/fs/crypto/hooks.c
-+++ b/fs/crypto/hooks.c
-@@ -54,15 +54,12 @@ EXPORT_SYMBOL_GPL(fscrypt_file_open);
- int __fscrypt_prepare_link(struct inode *inode, struct inode *dir,
- 			   struct dentry *dentry)
- {
--	int err;
--
--	err = fscrypt_require_key(dir);
--	if (err)
--		return err;
--
--	/* ... in case we looked up no-key name before key was added */
- 	if (fscrypt_is_nokey_name(dentry))
- 		return -ENOKEY;
-+	/*
-+	 * We don't need to separately check that the directory inode's key is
-+	 * available, as it's implied by the dentry not being a no-key name.
-+	 */
- 
- 	if (!fscrypt_has_permitted_context(dir, inode))
- 		return -EXDEV;
-@@ -75,20 +72,13 @@ int __fscrypt_prepare_rename(struct inode *old_dir, struct dentry *old_dentry,
- 			     struct inode *new_dir, struct dentry *new_dentry,
- 			     unsigned int flags)
- {
--	int err;
--
--	err = fscrypt_require_key(old_dir);
--	if (err)
--		return err;
--
--	err = fscrypt_require_key(new_dir);
--	if (err)
--		return err;
--
--	/* ... in case we looked up no-key name(s) before key was added */
- 	if (fscrypt_is_nokey_name(old_dentry) ||
- 	    fscrypt_is_nokey_name(new_dentry))
- 		return -ENOKEY;
-+	/*
-+	 * We don't need to separately check that the directory inodes' keys are
-+	 * available, as it's implied by the dentries not being no-key names.
-+	 */
- 
- 	if (old_dir != new_dir) {
- 		if (IS_ENCRYPTED(new_dir) &&
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index 8e1d31c959bf..0c9e64969b73 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -710,8 +710,7 @@ static inline int fscrypt_require_key(struct inode *inode)
-  *
-  * A new link can only be added to an encrypted directory if the directory's
-  * encryption key is available --- since otherwise we'd have no way to encrypt
-- * the filename.  Therefore, we first set up the directory's encryption key (if
-- * not already done) and return an error if it's unavailable.
-+ * the filename.
-  *
-  * We also verify that the link will not violate the constraint that all files
-  * in an encrypted directory tree use the same encryption policy.
--- 
-2.29.2
-
+       Arnd
