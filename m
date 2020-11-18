@@ -2,84 +2,111 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 930AA2B7A94
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Nov 2020 10:46:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D14762B7B50
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Nov 2020 11:31:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726251AbgKRJp3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 18 Nov 2020 04:45:29 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:51609 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726249AbgKRJp3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 Nov 2020 04:45:29 -0500
-Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1kfK1c-0001pZ-AY; Wed, 18 Nov 2020 09:45:17 +0000
-Date:   Wed, 18 Nov 2020 10:45:13 +0100
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-fsdevel@vger.kernel.org,
-        John Johansen <john.johansen@canonical.com>,
-        James Morris <jmorris@namei.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Mrunal Patel <mpatel@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Theodore Tso <tytso@mit.edu>, Alban Crequy <alban@kinvolk.io>,
-        Tycho Andersen <tycho@tycho.ws>,
-        David Howells <dhowells@redhat.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Jann Horn <jannh@google.com>,
-        Seth Forshee <seth.forshee@canonical.com>,
-        =?utf-8?B?U3TDqXBoYW5l?= Graber <stgraber@ubuntu.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Lennart Poettering <lennart@poettering.net>,
-        "Eric W. Biederman" <ebiederm@xmission.com>, smbarber@chromium.org,
-        Phil Estes <estesp@gmail.com>, Serge Hallyn <serge@hallyn.com>,
-        Kees Cook <keescook@chromium.org>,
-        Todd Kjos <tkjos@google.com>,
-        containers@lists.linux-foundation.org,
-        linux-security-module@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-audit@redhat.com,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org
-Subject: Re: [PATCH v2 00/39] fs: idmapped mounts
-Message-ID: <20201118094513.itchk5nx75er6wh6@wittgenstein>
-References: <20201115103718.298186-1-christian.brauner@ubuntu.com>
- <20201117165433.316f5625@lwn.net>
+        id S1726390AbgKRKac convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Wed, 18 Nov 2020 05:30:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46104 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725804AbgKRKac (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 18 Nov 2020 05:30:32 -0500
+From:   bugzilla-daemon@bugzilla.kernel.org
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 210185] kernel BUG at fs/ext4/page-io.c:126!
+Date:   Wed, 18 Nov 2020 10:30:31 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: emchroma@gmail.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-210185-13602-LM8XHz3BnI@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-210185-13602@https.bugzilla.kernel.org/>
+References: <bug-210185-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201117165433.316f5625@lwn.net>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 04:54:33PM -0700, Jonathan Corbet wrote:
-> On Sun, 15 Nov 2020 11:36:39 +0100
-> Christian Brauner <christian.brauner@ubuntu.com> wrote:
-> 
-> One quick question...
-> 
-> > I have written a simple tool available at
-> > https://github.com/brauner/mount-idmapped that allows to create idmapped
-> > mounts so people can play with this patch series.
-> 
-> I spent a while looking at that tool.  When actually setting the namespace
-> for the mapping, it uses MOUNT_ATTR_SHIFT rather than MOUNT_ATTR_IDMAP.
-> The value is the same, so I expect it works...:)  But did that perhaps not
-> get updated to reflect a name change?
+https://bugzilla.kernel.org/show_bug.cgi?id=210185
 
-Yep, that was my mistake. I'll fix it up in the repo for that tool now
-and maybe improve it a little too! :)
+--- Comment #4 from emchroma@gmail.com ---
+(In reply to Theodore Tso from comment #3)
 
-Christian
+Hi Theodore,
+
+> How easily can you reproduce the problem?  
+
+on each invocation.
+
+> Can you give us instructions for a reliable repro (e.g., download AutoCtk,
+> run it with these options and this input file, and it will crash in N
+> minutes)?
+
+You'll need Anaconda, Ngspice and AutoCkt. I'm on debian and I've apt-get
+ngspice. I'll try a step by step procedure for Anaconda and AutoCkt
+
+We're using https://repo.anaconda.com/archive/Anaconda3-2020.02-Linux-x86_64.sh
+Download and install Anaconda
+
+# activate base environment
+$ . .bashrc
+
+# upgrade pip
+$ pip install --upgrade pip
+
+# download AutoCkt
+$ git clone https://github.com/ksettaluri6/AutoCkt.git
+
+# create autockt_updated environment, use the attached autockt_updated.yml,
+# not the environment provided by AutoCkt
+$ conda env create -f autockt_updated.yml
+
+# activate environment autockt_upgraded
+$ conda activate autockt_updated
+
+# copy the attached parameter file to AutoCkt/autockt
+$ cp val_autobag_ray_hyperparameter_tuning.py AutoCkt/autockt
+
+# run AutoCkt
+$ cd AutoCkt
+$ python autockt/gen_specs.py --num_specs 600
+$ ipython
+$ run autockt/val_autobag_ray_hyperparameter_tuning.py # this is in the IPython
+shell
+
+AutoCkt creates a lot of files in /tmp/ckt_da and /tmp/ray. tmp is on the root
+partition and
+our root is rather small (100G), therefore we start a python script to delete
+files/directories
+older than 10 minutes in /tmp/ckt_da from a second shell
+
+# cleanup /tmp/ckt_da
+$ python auto_delete_old_tmp_ckt_da_files.py
+
+AutoCkt is very verbose and you'll probably see some warnings, but it should
+run. On our machines
+it usually takes 10-15 minutes, sometimes up to 30 minutes until the bug
+appears.
+
+Not sure whether it matters, but we're using software raid1 for the root
+partition.
+
+-- 
+You are receiving this mail because:
+You are watching the assignee of the bug.
