@@ -2,59 +2,60 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD75A2B80F0
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Nov 2020 16:42:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 262002B80F1
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Nov 2020 16:42:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727611AbgKRPl7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        id S1727614AbgKRPl7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
         Wed, 18 Nov 2020 10:41:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50332 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727412AbgKRPl4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 Nov 2020 10:41:56 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B36D3C0613D4
-        for <linux-ext4@vger.kernel.org>; Wed, 18 Nov 2020 07:41:56 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id k7so2894169ybm.13
-        for <linux-ext4@vger.kernel.org>; Wed, 18 Nov 2020 07:41:56 -0800 (PST)
+        with ESMTP id S1727608AbgKRPl6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 Nov 2020 10:41:58 -0500
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70E2EC0613D6
+        for <linux-ext4@vger.kernel.org>; Wed, 18 Nov 2020 07:41:58 -0800 (PST)
+Received: by mail-pf1-x44a.google.com with SMTP id f5so1403153pfa.18
+        for <linux-ext4@vger.kernel.org>; Wed, 18 Nov 2020 07:41:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=UTLg+CGayr6X9HdLF8+fpEo3MODBqTn3f897ddxuEjs=;
-        b=BDECphOEIpEXkOKBYjk/D/nv8Pm1Fa/e9bN6pkg+LtHTdcpbv328LDo3TQObT9M3J5
-         lV6STdBylxmP6QE/Dp49NkjQ3qKtHV03o7jAApprSamBexGFzluZiZ5YbdRGXLBnl/nQ
-         fl6jfxBwUsNbhEZ45EuYCz2/43vP8MON3ze1SdGetmoYLjRhNP7JLFxKXv9ymfOEPCWa
-         CVIwbA4ii+apOdX0zCJtIq2NsrSN7d7dkSknEzyTfJ4ZTNGqiO6Q5b6bO2CuEE+fMG4s
-         mCey+PZOJM91Cn9G2kH1rAEQWBJQomzU1A4N//o/uwjWL12qsBbGE0RAiLw2gEyqNDV1
-         bLuw==
+        bh=JxnBQe88GuM4rIndOAjxTgYOiO3eiDXcKskI+rG/+KI=;
+        b=pLOuQcrASmKWhw907+WAg4vizEODBbT5/xBrU5Qj6k+QZTgsYannD7PloWovrvTJL9
+         Xs0U5XSw6D9z0A44heOuqZKxCdCexP7kfLD2imZIYbd2N9nKxIwfrTBQc/gCM/2cGgXA
+         zDsnMEuBRPz8QAEpT2Qyw4Apjo9ZqJC1QBz9T8LxdlmHyNmIJet+2WUMnE1W4Nz3WNtA
+         LiyDRx9sJuAgJacovVT21l6A+xVlpGj2mvlk6vJVNXx9XCs0kUzyWLQp/q6tleAB/KVL
+         b4e2TJqCHxOQbhfapbDcKtBH3O7OoEonhOvF51IEDVKTPo+q9bQd23qZdbIqK0EMMfYK
+         mX5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=UTLg+CGayr6X9HdLF8+fpEo3MODBqTn3f897ddxuEjs=;
-        b=oWS5af2FBaWhW+hPhYNJwXqelGdmbgTphGbVH6HQnkaCfbggilrj6lCaZ0p8rtXG1e
-         8iHVIH6Cw/A8wsFTyFJgeHyfpbeqLzwpgbmNF7f5wjRoJ9wFjHEPJcm7gjLwXnqU/Lcf
-         eeLerqsBIXm2wNjNArRQGBor6/rIwpi2omkCJg1H0bvaLsFjRYj+Q/yTJ8EuVpJ6KOxv
-         L0AIN6xiDW1/uRuqBRPVb4l81z1lwJGRj24fFHw0M6tteQfWu7JxGd6gmewqYBDmktYE
-         29L8MT7Qc+uF//23IjM4/p9YI3YAHwfg/5BQgllD3kN1GGDaTjyrbjt3k8447UsypOeL
-         RJ0g==
-X-Gm-Message-State: AOAM532XfhoxXqF64o1A3xNkfO4z3mQz2W4T2I5BYNianB7fXb3zmmAz
-        OnA4niKl3FOutzcwcMSOTFhPzE5MtXRl5Ra7Zd/I3TimHSG5Lmu2gci6RCtzmrQqK6Bo9/ob4XE
-        ZbcTlBBpd4bnJ9NMxPBWMaMiEuk6DgsYCC1oOjGymh8eMH50pWouXWU4pWeuIx0RX3guePiWrCV
-        xLX5KOYTw=
-X-Google-Smtp-Source: ABdhPJw+EPF+egPC2g7jXAP3AWlf4o/flFAvAS4PD+0wCsL8S9NuQM8/TenVfkQvZgquwE8h7ZrUiA8CSpe3KRUW50o=
+        bh=JxnBQe88GuM4rIndOAjxTgYOiO3eiDXcKskI+rG/+KI=;
+        b=ALPdrEZK9gZW7bSePBJNQkSm6BWb8zjOlvk7UCVgbZ2iwzLvsAgkVnrrf3acx8lRAN
+         4tO360GWNiwDX6n37G2Uy0ovaOcfdRKR1wJdnU7IYoi34QnrotlAidNAoh0WapaJAw3Q
+         UGVCVPabdSI1eYJeswmF+inRzDXNY9bOHF8mjiVAVolH/ox9Lvv/3hMrJKE6C/muhtJW
+         m+yqafn4byfiuBKlHOa6VJ7fUVK6CQMQQ4PXKy3BY41Z8xLJV6XZHMeLSZB2TS31USmA
+         vkgqKawdvf+41vIcBz4NYSHz0bLQDPvVeDCeXTomMlBhajYOy7wTMvko1qoj6KavqptG
+         XeVg==
+X-Gm-Message-State: AOAM530AZebbr9xCCmKJGl2FfH2sVZcKmVCbTnFVUOoYVqmAsF4sPuKF
+        pjhMdX5G5udfYNdvF4UxJBjA7u9tp7JnTCS0moFmgqiyabSyTVA1+SIib0pQTNotbuoH9ZoPfNe
+        8q6L7c24azVdsN4U+AAKfZ9Tf0M2fdRmSdGpoG7oBZL0NpPm6x95HQHbX92+0SRCVel7uTRODDV
+        2xTaZpgjw=
+X-Google-Smtp-Source: ABdhPJw5M/pssc0+RyTdq9zuIB9H2G4AgUOhKSAk8p01NbynalVUMbedC52CStU3pU1kjHSPHeYvzo2b2XzNz6ZWaFw=
 Sender: "saranyamohan via sendgmr" 
         <saranyamohan@saranyamohan.svl.corp.google.com>
 X-Received: from saranyamohan.svl.corp.google.com ([100.116.76.178])
- (user=saranyamohan job=sendgmr) by 2002:a25:874e:: with SMTP id
- e14mr7372803ybn.112.1605714115826; Wed, 18 Nov 2020 07:41:55 -0800 (PST)
-Date:   Wed, 18 Nov 2020 07:39:34 -0800
+ (user=saranyamohan job=sendgmr) by 2002:a17:902:c154:b029:d6:efa5:4ce7 with
+ SMTP id 20-20020a170902c154b02900d6efa54ce7mr4893452plj.73.1605714117781;
+ Wed, 18 Nov 2020 07:41:57 -0800 (PST)
+Date:   Wed, 18 Nov 2020 07:39:35 -0800
 In-Reply-To: <20201118153947.3394530-1-saranyamohan@google.com>
-Message-Id: <20201118153947.3394530-49-saranyamohan@google.com>
+Message-Id: <20201118153947.3394530-50-saranyamohan@google.com>
 Mime-Version: 1.0
 References: <20201118153947.3394530-1-saranyamohan@google.com>
 X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
-Subject: [RFC PATCH v3 48/61] e2fsck: reset @inodes_to_rebuild if restart
+Subject: [RFC PATCH v3 49/61] e2fsck: fix build for make rpm
 From:   Saranya Muruganandam <saranyamohan@google.com>
 To:     linux-ext4@vger.kernel.org, tytso@mit.edu
 Cc:     adilger.kernel@dilger.ca, Wang Shilong <wshilong@ddn.com>,
@@ -66,46 +67,65 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Wang Shilong <wshilong@ddn.com>
 
-Verify multiple thread on a corrupted images hit following bug:
-
-pass1.c:2902: e2fsck_pass1_thread_prepare:
-Assertion `global_ctx->inodes_to_rebuild == NULL' failed.
-Signal (6) SIGABRT si_code=SI_TKILL
-./e2fsck/e2fsck[0x43829e]
-/lib64/libpthread.so.0(+0x14b20)[0x7f3b45135b20]
-/lib64/libc.so.6(gsignal+0x145)[0x7f3b44f2c625]
-/lib64/libc.so.6(abort+0x12b)[0x7f3b44f158d9]
-/lib64/libc.so.6(+0x257a9)[0x7f3b44f157a9]
-/lib64/libc.so.6(+0x34a66)[0x7f3b44f24a66]
-./e2fsck/e2fsck(e2fsck_pass1+0x1662)[0x423572]
-./e2fsck/e2fsck(e2fsck_run+0x5a)[0x41611a]
-./e2fsck/e2fsck(main+0x1608)[0x4121b8]
-/lib64/libc.so.6(__libc_start_main+0xf3)[0x7f3b44f171a3]
-./e2fsck/e2fsck(_start+0x2e)[0x413dde]
-
-@inodes_to_rebuild could be not NULL after we restart pass1
+link e2fsck with -lpthread properly to make rpm pass.
 
 Signed-off-by: Wang Shilong <wshilong@ddn.com>
 Signed-off-by: Saranya Muruganandam <saranyamohan@google.com>
 ---
- e2fsck/e2fsck.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ MCONFIG.in         | 1 +
+ e2fsck/Makefile.in | 9 +++++----
+ 2 files changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/e2fsck/e2fsck.c b/e2fsck/e2fsck.c
-index 1fd57504..a03550c0 100644
---- a/e2fsck/e2fsck.c
-+++ b/e2fsck/e2fsck.c
-@@ -75,6 +75,10 @@ errcode_t e2fsck_reset_context(e2fsck_t ctx)
- 		ext2fs_free_block_bitmap(ctx->block_found_map);
- 		ctx->block_found_map = 0;
- 	}
-+	if (ctx->inodes_to_rebuild) {
-+		ext2fs_free_inode_bitmap(ctx->inodes_to_rebuild);
-+		ctx->inodes_to_rebuild = 0;
-+	}
- 	if (ctx->inode_link_info) {
- 		ext2fs_free_icount(ctx->inode_link_info);
- 		ctx->inode_link_info = 0;
+diff --git a/MCONFIG.in b/MCONFIG.in
+index 0598f21b..a85e24f1 100644
+--- a/MCONFIG.in
++++ b/MCONFIG.in
+@@ -146,6 +146,7 @@ DEPLIBUUID = @DEPLIBUUID@
+ DEPLIBSUPPORT = $(LIB)/libsupport@STATIC_LIB_EXT@
+ DEPLIBBLKID = @DEPLIBBLKID@ @PRIVATE_LIBS_CMT@ $(DEPLIBUUID)
+ TESTENV = LD_LIBRARY_PATH="$(LIB):$${LD_LIBRARY_PATH}" DYLD_LIBRARY_PATH="$(LIB):$${DYLD_LIBRARY_PATH}"
++SEM_INIT_LIB = @SEM_INIT_LIB@
+ 
+ STATIC_LIBSS = $(LIB)/libss@STATIC_LIB_EXT@ @DLOPEN_LIB@
+ STATIC_LIBCOM_ERR = $(LIB)/libcom_err@STATIC_LIB_EXT@ @SEM_INIT_LIB@
+diff --git a/e2fsck/Makefile.in b/e2fsck/Makefile.in
+index 6e25d27d..0ec11952 100644
+--- a/e2fsck/Makefile.in
++++ b/e2fsck/Makefile.in
+@@ -16,20 +16,21 @@ MANPAGES=	e2fsck.8
+ FMANPAGES=	e2fsck.conf.5
+ 
+ LIBS= $(LIBSUPPORT) $(LIBEXT2FS) $(LIBCOM_ERR) $(LIBBLKID) $(LIBUUID) \
+-	$(LIBINTL) $(LIBE2P) $(LIBMAGIC) $(SYSLIBS)
++	$(LIBINTL) $(LIBE2P) $(LIBMAGIC) $(SYSLIBS) $(SEM_INIT_LIB)
+ DEPLIBS= $(DEPLIBSUPPORT) $(LIBEXT2FS) $(DEPLIBCOM_ERR) $(DEPLIBBLKID) \
+ 	 $(DEPLIBUUID) $(DEPLIBE2P)
+ 
+ STATIC_LIBS= $(STATIC_LIBSUPPORT) $(STATIC_LIBEXT2FS) $(STATIC_LIBCOM_ERR) \
+ 	     $(STATIC_LIBBLKID) $(STATIC_LIBUUID) $(LIBINTL) $(STATIC_LIBE2P) \
+-	     $(LIBMAGIC) $(SYSLIBS)
++	     $(LIBMAGIC) $(SYSLIBS) $(SEM_INIT_LIB)
+ STATIC_DEPLIBS= $(DEPSTATIC_LIBSUPPORT) $(STATIC_LIBEXT2FS) \
+ 		$(DEPSTATIC_LIBCOM_ERR) $(DEPSTATIC_LIBBLKID) \
+ 		$(DEPSTATIC_LIBUUID) $(DEPSTATIC_LIBE2P)
+ 
+ PROFILED_LIBS= $(PROFILED_LIBSUPPORT) $(PROFILED_LIBEXT2FS) \
+ 	       $(PROFILED_LIBCOM_ERR) $(PROFILED_LIBBLKID) $(PROFILED_LIBUUID) \
+-	       $(PROFILED_LIBE2P) $(LIBINTL) $(LIBMAGIC) $(SYSLIBS)
++	       $(PROFILED_LIBE2P) $(LIBINTL) $(LIBMAGIC) $(SYSLIBS) \
++	       $(SEM_INIT_LIB)
+ PROFILED_DEPLIBS= $(DEPPROFILED_LIBSUPPORT) $(PROFILED_LIBEXT2FS) \
+ 		  $(DEPPROFILED_LIBCOM_ERR) $(DEPPROFILED_LIBBLKID) \
+ 		  $(DEPPROFILED_LIBUUID) $(DEPPROFILED_LIBE2P)
+@@ -115,7 +116,7 @@ all-static:: e2fsck.static
+ 
+ e2fsck: $(OBJS)  $(DEPLIBS)
+ 	$(E) "	LD $@"
+-	$(Q) $(LD) $(ALL_LDFLAGS) $(RDYNAMIC) -o e2fsck $(OBJS) $(LIBS) 
++	$(Q) $(LD) $(ALL_LDFLAGS) $(RDYNAMIC) -o e2fsck $(OBJS) $(LIBS)
+ 
+ e2fsck.static: $(OBJS) $(STATIC_DEPLIBS)
+ 	$(E) "	LD $@"
 -- 
 2.29.2.299.gdc1121823c-goog
 
