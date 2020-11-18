@@ -2,108 +2,180 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 054CB2B80F5
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Nov 2020 16:42:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C4CE2B80F4
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Nov 2020 16:42:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727635AbgKRPmO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        id S1727622AbgKRPmO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
         Wed, 18 Nov 2020 10:42:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50368 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727435AbgKRPmG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 Nov 2020 10:42:06 -0500
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C7AC0613D6
-        for <linux-ext4@vger.kernel.org>; Wed, 18 Nov 2020 07:42:06 -0800 (PST)
-Received: by mail-pf1-x449.google.com with SMTP id 190so1410372pfz.16
-        for <linux-ext4@vger.kernel.org>; Wed, 18 Nov 2020 07:42:06 -0800 (PST)
+        with ESMTP id S1727460AbgKRPmJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 Nov 2020 10:42:09 -0500
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA231C061A48
+        for <linux-ext4@vger.kernel.org>; Wed, 18 Nov 2020 07:42:08 -0800 (PST)
+Received: by mail-qk1-x749.google.com with SMTP id b191so1759924qkc.10
+        for <linux-ext4@vger.kernel.org>; Wed, 18 Nov 2020 07:42:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=U8cT2QAxIu96iJauReA/Bomb7qYfmerVWdtdZDUXkJc=;
-        b=ieWkSbTJT2eRJ0ussxH4h+s7Q9RzySxvlo/HcKSWQ41JRkrxV8Fzi7GK+3y/fT5Ii0
-         C3A82WjR/130nzSX501okoxhDg4pOVPz7pJlXKrrgsVR+WWpD0BDlMDQSYyJrEVizVuC
-         xlElv+Gd+v95iuJJbOCadJd4R0D6KrtKx277mMYCq2T2Vm0ARt+F/IOKura+nAdmQjiG
-         +NW/HIuj0mfGGtO4KkfkEVZNuvpk5+IDBYijri7HjbKbj7icdj8pXcWa499/d9GBgCeq
-         eN+Zgk3isFkZrgLgD+uHza9mHVHRA876+jl96QQUW6x9yH23kuNdnzeBHpr+b7FC0AZi
-         G5OA==
+        bh=aTfARycfPe5TMTx5lZg7EVRgT2qvCg6B5B2Q6/C3RLw=;
+        b=ThZjbXk50/HkJw0Dg8BJQRrRhAjwDm8m7vW/Bl9MifeXkHxoGoPZb6v48Ldpfo2lL6
+         tr9DImth9kDbSYpEaTPgAnQ4HmUdHYMneefd0DUlsd/3FJ75wiaLSSRYqeh0df2TtOY4
+         15x4VqmFSAWj3wtDKcnzvUVrA/ksH/b+xGafQuK9maq3DCuS2nydh1abQl4/l4e5MUZ3
+         q5M4PJH50cvISlxvI/3gQaO93O3X/tzPogwunG7j9AyIUJsfNLWTmZk8b0nlDd0M1+3B
+         sPTnTP2qAfQIpIf/T1lIBvbJNZOrGsM4N56NDGkIkG6JBYdyqJZ6a2vgwwmKAehYFphB
+         n3Xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=U8cT2QAxIu96iJauReA/Bomb7qYfmerVWdtdZDUXkJc=;
-        b=oPKDRUFwKbWMdCs6q9pKCgGbP5Anrg+Da1NTcSvtG9aJc8aZr8W91cHq+y7yZsIC/7
-         pct3TCOm3m7mJNRtlYSUKCy64lveGfx+qBSAz/C4Z493WaHAqLMO8lEmkoMXC0621hQy
-         WqU1zKi3jsa+QLAXUkPY7d32qqAlJR3SHCSC/9KtYzMLckIEFF6ccp0Q/4kGiFz/yMlt
-         3YzhFiZNtgRsly5IfqPO/ZYo5w1AV22WRtpc48ZHRHaMHzDHK9+qF8HTUdmKW89aj+zu
-         S52NtK1q3LL1how7LxNfSXI5Ne1aWAsAb/UAa7MoSIIAkCIc77mKHjviaYQHp0jgDEna
-         yRTA==
-X-Gm-Message-State: AOAM5325HFflxzGgIpjVfwmSRge6rtwOrH+z5bM8w4iLczT7WMzM6Ain
-        L0jt97ZQaq+Fkl9qui1KinPxJN8eP8MR2iYZO042aiiliRa00NPF6e7Aee4H09lycXkuGQatyRe
-        vyX81dmnH0+nDXLG+T55LqN1iwA18Ty3sEL8fbd+ATncmTlBJMvXze5JVGJUBjMuh5KO7ZmuWy1
-        RfAlArwrI=
-X-Google-Smtp-Source: ABdhPJxJCO87gq/s83j2s7BtGFQSCdze9wgLoP2bZ9yP6jW2UUdL4zCoH0SrX/m7gPblcQxn2ofjIAsth3kneWI1ZSQ=
+        bh=aTfARycfPe5TMTx5lZg7EVRgT2qvCg6B5B2Q6/C3RLw=;
+        b=BIpcH77oLrRxiXJvSGHrO4mIZJ+lgqFzyxJWEDA1pExmIuhNxEd0O9+oAOJSewHa9M
+         w7t0DV4ateQRX6Zujxqd+8kKyMT/sfjvYWs6FceuHrTHxNRqRrvmQrpVPQK0xdu1ZhMG
+         kY5rMvQn51ceELHri5WyU7UEw3VolgL/nlb/TwWueA+uRYxzDM2rnTfw0GZAJOOaAvEQ
+         cfAax+zmXev/iaXXURxHKM4ccVSXLYxWAaeaxotfpznD3vKM7ef0vJ7gZfFYUlpuSmYN
+         d1C5ppAfrVhG32kDSfOBEX0XJB1HJdvAwOgj+ZBrOgLQ2uXIQkv/cU56/nkblt1N4xg2
+         E+ew==
+X-Gm-Message-State: AOAM533NnRlQNy2UrFuEoWn9+0hUYsUd+yPkffez8h0o0u8NSSFmH34a
+        B0ixr+DEpVo6RmQAYmiL/9jYzG6q5F/sKAuXHPN/u/ZZDuRurX5+uzeroOmRJn3O+eANaR1cuc1
+        YCB0VkD18eJtgmsx3PgzUwXBGl62KJg26Q1ApzuFXsdL2eZsj4kWbPB7x9XB+1NXQfPoFu3yKxY
+        8iUhJpcSo=
+X-Google-Smtp-Source: ABdhPJy2DCkQug/vrHg4ddX/6ngLNGTdc38EEjCNGwDHXhZUEyIggF3FeIG8PGDvMEkslL195dUqGsNmHF47ZZc3EF0=
 Sender: "saranyamohan via sendgmr" 
         <saranyamohan@saranyamohan.svl.corp.google.com>
 X-Received: from saranyamohan.svl.corp.google.com ([100.116.76.178])
- (user=saranyamohan job=sendgmr) by 2002:a17:902:8c8a:b029:d6:d1e7:e78e with
- SMTP id t10-20020a1709028c8ab02900d6d1e7e78emr4744264plo.39.1605714126081;
- Wed, 18 Nov 2020 07:42:06 -0800 (PST)
-Date:   Wed, 18 Nov 2020 07:39:39 -0800
+ (user=saranyamohan job=sendgmr) by 2002:a0c:f9c8:: with SMTP id
+ j8mr5220496qvo.17.1605714127986; Wed, 18 Nov 2020 07:42:07 -0800 (PST)
+Date:   Wed, 18 Nov 2020 07:39:40 -0800
 In-Reply-To: <20201118153947.3394530-1-saranyamohan@google.com>
-Message-Id: <20201118153947.3394530-54-saranyamohan@google.com>
+Message-Id: <20201118153947.3394530-55-saranyamohan@google.com>
 Mime-Version: 1.0
 References: <20201118153947.3394530-1-saranyamohan@google.com>
 X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
-Subject: [RFC PATCH v3 53/61] e2fsck: fix f_multithread_ok test
+Subject: [RFC PATCH v3 54/61] e2fsck: fix race in ext2fs_read_bitmaps()
 From:   Saranya Muruganandam <saranyamohan@google.com>
 To:     linux-ext4@vger.kernel.org, tytso@mit.edu
-Cc:     adilger.kernel@dilger.ca, Andreas Dilger <adilger@whamcloud.com>,
+Cc:     adilger.kernel@dilger.ca, Wang Shilong <wshilong@ddn.com>,
         Saranya Muruganandam <saranyamohan@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Andreas Dilger <adilger@whamcloud.com>
+From: Wang Shilong <wshilong@ddn.com>
 
-Don't use $OUT for both the input amd output of a pipeline,
-as the output file is truncated befor the input is read.
+During corruption testing hiting following segfault:
 
-Fix the handling in the failure case to generate the
-*.failed file, and print the actual $test_name instead
-of "test_name".
+Multiple threads triggered to read bitmaps
+Signal (11) SIGSEGV si_code=SEGV_MAPERR fault addr=0x200
+./e2fsck[0x4382ae]
+/lib64/libpthread.so.0(+0x14b20)[0x7f5854d2fb20]
+./e2fsck(ext2fs_rb_insert_color+0xc)[0x46ac0c]
+./e2fsck[0x467bb4]
+./e2fsck[0x467e6d]
+./e2fsck[0x45ba95]
+./e2fsck[0x45c124]
+/lib64/libpthread.so.0(+0x94e2)[0x7f5854d244e2]
+/lib64/libc.so.6(clone+0x43)[0x7f5854beb6c3]
 
-Signed-off-by: Andreas Dilger <adilger@whamcloud.com>
+Problem is @block_map might be set NULL if one of
+thread exit, move such kind of cleanup operation
+to main thread after all threads exit.
+
+Another potential problem is e2fsck_read_bitmap()
+could be called during pass1, this need be serialized,
+serialize it in the pass1.
+
+Signed-off-by: Wang Shilong <wshilong@ddn.com>
 Signed-off-by: Saranya Muruganandam <saranyamohan@google.com>
 ---
- tests/f_multithread_ok/script | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ e2fsck/pass1.c          |  2 +-
+ lib/ext2fs/rw_bitmaps.c | 25 ++++++++-----------------
+ 2 files changed, 9 insertions(+), 18 deletions(-)
 
-diff --git a/tests/f_multithread_ok/script b/tests/f_multithread_ok/script
-index 4010881b..c62c93ce 100644
---- a/tests/f_multithread_ok/script
-+++ b/tests/f_multithread_ok/script
-@@ -5,15 +5,15 @@ SKIP_CLEANUP="true"
+diff --git a/e2fsck/pass1.c b/e2fsck/pass1.c
+index e98cda9f..3899d710 100644
+--- a/e2fsck/pass1.c
++++ b/e2fsck/pass1.c
+@@ -4183,9 +4183,9 @@ report_problem:
+ 					}
+ 					continue;
+ 				}
++				e2fsck_pass1_fix_lock(ctx);
+ 				e2fsck_read_bitmaps(ctx);
+ 				pb->inode_modified = 1;
+-				e2fsck_pass1_fix_lock(ctx);
+ 				pctx->errcode =
+ 					ext2fs_extent_delete(ehandle, 0);
+ 				e2fsck_pass1_fix_unlock(ctx);
+diff --git a/lib/ext2fs/rw_bitmaps.c b/lib/ext2fs/rw_bitmaps.c
+index 95de9b1c..eb791202 100644
+--- a/lib/ext2fs/rw_bitmaps.c
++++ b/lib/ext2fs/rw_bitmaps.c
+@@ -445,14 +445,6 @@ success_cleanup:
+ 	return 0;
  
- . $cmd_dir/run_e2fsck
+ cleanup:
+-	if (do_block) {
+-		ext2fs_free_block_bitmap(fs->block_map);
+-		fs->block_map = 0;
+-	}
+-	if (do_inode) {
+-		ext2fs_free_inode_bitmap(fs->inode_map);
+-		fs->inode_map = 0;
+-	}
+ 	if (inode_bitmap)
+ 		ext2fs_free_mem(&inode_bitmap);
+ 	if (block_bitmap)
+@@ -463,9 +455,12 @@ cleanup:
  
--cat $OUT1 | grep -v Thread > $OUT1
--rm -f $test_name.ok $test_name.failed
--cmp -s $OUT1 $EXP1
-+grep -v Thread $OUT1 > $OUT1.tmp
-+cmp -s $OUT1.tmp $EXP1
- status1=$?
- if [ "$status1" -eq 0 ]; then
- 	echo "$test_name: $test_description: ok"
- 	touch $test_name.ok
- else
--	echo "test_name: $test_description: failed"
-+	echo "$test_name: $test_description: failed"
-+	cmp $OUT1.tmp $EXP1 > $test_name.failed
- fi
+ }
  
- unset IMAGE FSCK_OPT SECOND_FSCK_OPT OUT1 OUT2 EXP1 EXP2 
+-static errcode_t read_bitmaps_range_end(ext2_filsys fs, int do_inode, int do_block)
++static errcode_t read_bitmaps_range_end(ext2_filsys fs, int do_inode, int do_block,
++					errcode_t retval)
+ {
+-	errcode_t retval = 0;
++
++	if (retval)
++		goto cleanup;
+ 
+ 	/* Mark group blocks for any BLOCK_UNINIT groups */
+ 	if (do_block) {
+@@ -474,7 +469,7 @@ static errcode_t read_bitmaps_range_end(ext2_filsys fs, int do_inode, int do_blo
+ 			goto cleanup;
+ 	}
+ 
+-	return retval;
++	return 0;
+ cleanup:
+ 	if (do_block) {
+ 		ext2fs_free_block_bitmap(fs->block_map);
+@@ -497,10 +492,8 @@ static errcode_t read_bitmaps_range(ext2_filsys fs, int do_inode, int do_block,
+ 		return retval;
+ 
+ 	retval = read_bitmaps_range_start(fs, do_inode, do_block, start, end, NULL, NULL);
+-	if (retval)
+-		return retval;
+ 
+-	return read_bitmaps_range_end(fs, do_inode, do_block);
++	return read_bitmaps_range_end(fs, do_inode, do_block, retval);
+ }
+ 
+ #ifdef CONFIG_PFSCK
+@@ -636,9 +629,7 @@ out:
+ 	free(thread_infos);
+ 	free(thread_ids);
+ 
+-	if (!retval)
+-		retval = read_bitmaps_range_end(fs, do_inode, do_block);
+-
++	retval = read_bitmaps_range_end(fs, do_inode, do_block, retval);
+ 	if (!retval) {
+ 		if (do_inode)
+ 			fs->flags &= ~EXT2_FLAG_IBITMAP_TAIL_PROBLEM;
 -- 
 2.29.2.299.gdc1121823c-goog
 
