@@ -2,150 +2,108 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 151BA2B80F3
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Nov 2020 16:42:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 054CB2B80F5
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Nov 2020 16:42:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727617AbgKRPmD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 18 Nov 2020 10:42:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50350 "EHLO
+        id S1727635AbgKRPmO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 18 Nov 2020 10:42:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726089AbgKRPmC (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 Nov 2020 10:42:02 -0500
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 818D4C0613D4
-        for <linux-ext4@vger.kernel.org>; Wed, 18 Nov 2020 07:42:02 -0800 (PST)
-Received: by mail-pg1-x549.google.com with SMTP id v2so1524932pgv.2
-        for <linux-ext4@vger.kernel.org>; Wed, 18 Nov 2020 07:42:02 -0800 (PST)
+        with ESMTP id S1727435AbgKRPmG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 Nov 2020 10:42:06 -0500
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C7AC0613D6
+        for <linux-ext4@vger.kernel.org>; Wed, 18 Nov 2020 07:42:06 -0800 (PST)
+Received: by mail-pf1-x449.google.com with SMTP id 190so1410372pfz.16
+        for <linux-ext4@vger.kernel.org>; Wed, 18 Nov 2020 07:42:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=8oyeSDoHSskTjE71/BgsMrVoYjV8qLw3qKErTKdSEIU=;
-        b=S6/og6DTzs5jAHDoWBG2uZ+aTMDKscwnLKuZKHRIg+9jEFNYL1l4mTB8SOb28fwIuq
-         +LKmu1ChgD66My1+LTumj995zRYcNObmBzFS2MIVOSj7s9CnkR4Po11ebUuGVX8cJ5+T
-         iFSG3G6pYayUwz1j2cO7zobsKCAPhoytgpdWtqI6sgbSSz2iXIGV3rzB5x/gMDFLKGgh
-         PJ+tKrYh4ktO58kqT695gc3a/XXj2ZsPpW9g9lbgtmwifmxQshB1Fp/NDzytMis3dtfC
-         du4BGWlDLeAbQxv3OITotpwC89tJ/Qb2BEh+vBDj157vJz2q0kGY04sCl1KC0DhqZ1Gu
-         4kXQ==
+        bh=U8cT2QAxIu96iJauReA/Bomb7qYfmerVWdtdZDUXkJc=;
+        b=ieWkSbTJT2eRJ0ussxH4h+s7Q9RzySxvlo/HcKSWQ41JRkrxV8Fzi7GK+3y/fT5Ii0
+         C3A82WjR/130nzSX501okoxhDg4pOVPz7pJlXKrrgsVR+WWpD0BDlMDQSYyJrEVizVuC
+         xlElv+Gd+v95iuJJbOCadJd4R0D6KrtKx277mMYCq2T2Vm0ARt+F/IOKura+nAdmQjiG
+         +NW/HIuj0mfGGtO4KkfkEVZNuvpk5+IDBYijri7HjbKbj7icdj8pXcWa499/d9GBgCeq
+         eN+Zgk3isFkZrgLgD+uHza9mHVHRA876+jl96QQUW6x9yH23kuNdnzeBHpr+b7FC0AZi
+         G5OA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=8oyeSDoHSskTjE71/BgsMrVoYjV8qLw3qKErTKdSEIU=;
-        b=bsxVU3DKaTQQtlZKo5oMTSloMkOrZGtpQaZSiOacE+asn9hlUESM9xdqPUNbvaN+RM
-         fwuvTpejh0btXiZQfngKi8HHzRlJ9/9YVIDPgL/8dXrllLCJfCcFqg+3wPXWHSMGS6do
-         UKgSlmGXgP7evccv9m5n96UJukJR+QsjJcCFMG9B5mywEuvOxvRHk3nABqV1rP5nmtek
-         ZWzUfeGIxHxpHsW7BTzba0lus94yNTd1GFtljGa7OBp/hPtig3A/K0bBwDDW4EypXTDg
-         fghwR5zREe6NhwrV/DWa9J7TvfyqqTLeFxo1GHbXhB/graOIbyfhYNAsNeWOaiHEcSN/
-         eNVQ==
-X-Gm-Message-State: AOAM532DCWc960/s6td8SPDEhlH9aotKHpFCJEre7Y+OP0XFQNmg9rVH
-        E+fyl3OYQkNaTZxEK7b/VvCU0IdmdnhBoWqxSPkTrvRxP86KSZJXGkl7/WhmJUnwi7xVBPsP1qc
-        6UuWIsosn3dFWDA3IeLiOjt9E72Bponle7yY9OqHYvoHsWBjJ62D9LFk2I41VM20BGi2Xk+PIWB
-        cdgze31Ww=
-X-Google-Smtp-Source: ABdhPJzHJ/upZ9qzE6UOssmsqoxgyzRozQW4y5GpcKM8GJTM9eRzStv+mD8Qx1it7PVHqwaZdYqeFGj4kGwOre01UZM=
+        bh=U8cT2QAxIu96iJauReA/Bomb7qYfmerVWdtdZDUXkJc=;
+        b=oPKDRUFwKbWMdCs6q9pKCgGbP5Anrg+Da1NTcSvtG9aJc8aZr8W91cHq+y7yZsIC/7
+         pct3TCOm3m7mJNRtlYSUKCy64lveGfx+qBSAz/C4Z493WaHAqLMO8lEmkoMXC0621hQy
+         WqU1zKi3jsa+QLAXUkPY7d32qqAlJR3SHCSC/9KtYzMLckIEFF6ccp0Q/4kGiFz/yMlt
+         3YzhFiZNtgRsly5IfqPO/ZYo5w1AV22WRtpc48ZHRHaMHzDHK9+qF8HTUdmKW89aj+zu
+         S52NtK1q3LL1how7LxNfSXI5Ne1aWAsAb/UAa7MoSIIAkCIc77mKHjviaYQHp0jgDEna
+         yRTA==
+X-Gm-Message-State: AOAM5325HFflxzGgIpjVfwmSRge6rtwOrH+z5bM8w4iLczT7WMzM6Ain
+        L0jt97ZQaq+Fkl9qui1KinPxJN8eP8MR2iYZO042aiiliRa00NPF6e7Aee4H09lycXkuGQatyRe
+        vyX81dmnH0+nDXLG+T55LqN1iwA18Ty3sEL8fbd+ATncmTlBJMvXze5JVGJUBjMuh5KO7ZmuWy1
+        RfAlArwrI=
+X-Google-Smtp-Source: ABdhPJxJCO87gq/s83j2s7BtGFQSCdze9wgLoP2bZ9yP6jW2UUdL4zCoH0SrX/m7gPblcQxn2ofjIAsth3kneWI1ZSQ=
 Sender: "saranyamohan via sendgmr" 
         <saranyamohan@saranyamohan.svl.corp.google.com>
 X-Received: from saranyamohan.svl.corp.google.com ([100.116.76.178])
- (user=saranyamohan job=sendgmr) by 2002:a17:90b:293:: with SMTP id
- az19mr46500pjb.1.1605714121628; Wed, 18 Nov 2020 07:42:01 -0800 (PST)
-Date:   Wed, 18 Nov 2020 07:39:37 -0800
+ (user=saranyamohan job=sendgmr) by 2002:a17:902:8c8a:b029:d6:d1e7:e78e with
+ SMTP id t10-20020a1709028c8ab02900d6d1e7e78emr4744264plo.39.1605714126081;
+ Wed, 18 Nov 2020 07:42:06 -0800 (PST)
+Date:   Wed, 18 Nov 2020 07:39:39 -0800
 In-Reply-To: <20201118153947.3394530-1-saranyamohan@google.com>
-Message-Id: <20201118153947.3394530-52-saranyamohan@google.com>
+Message-Id: <20201118153947.3394530-54-saranyamohan@google.com>
 Mime-Version: 1.0
 References: <20201118153947.3394530-1-saranyamohan@google.com>
 X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
-Subject: [RFC PATCH v3 51/61] configure: enable pfsck by default
+Subject: [RFC PATCH v3 53/61] e2fsck: fix f_multithread_ok test
 From:   Saranya Muruganandam <saranyamohan@google.com>
 To:     linux-ext4@vger.kernel.org, tytso@mit.edu
-Cc:     adilger.kernel@dilger.ca, Wang Shilong <wshilong@ddn.com>,
+Cc:     adilger.kernel@dilger.ca, Andreas Dilger <adilger@whamcloud.com>,
         Saranya Muruganandam <saranyamohan@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Wang Shilong <wshilong@ddn.com>
+From: Andreas Dilger <adilger@whamcloud.com>
 
-Since most of work has been done, compile e2fsprogs
-with pfsck enabled by default.
+Don't use $OUT for both the input amd output of a pipeline,
+as the output file is truncated befor the input is read.
 
-So it could testing widely now.
+Fix the handling in the failure case to generate the
+*.failed file, and print the actual $test_name instead
+of "test_name".
 
-Signed-off-by: Wang Shilong <wshilong@ddn.com>
+Signed-off-by: Andreas Dilger <adilger@whamcloud.com>
 Signed-off-by: Saranya Muruganandam <saranyamohan@google.com>
 ---
- configure    | 13 +++++++++++--
- configure.ac | 13 ++++++++++---
- 2 files changed, 21 insertions(+), 5 deletions(-)
+ tests/f_multithread_ok/script | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/configure b/configure
-index 1bb7a325..511de4a1 100755
---- a/configure
-+++ b/configure
-@@ -1589,7 +1589,7 @@ Optional Features:
-   --disable-tdb           disable tdb support
-   --disable-bmap-stats    disable collection of bitmap stats.
-   --enable-bmap-stats-ops enable collection of additional bitmap stats
--  --enable-pfsck     enable parallel e2fsck
-+  --disable-pfsck     disable parallel e2fsck
-   --disable-nls           do not use Native Language Support
-   --enable-threads={posix|solaris|pth|windows}
-                           specify multithreading API
-@@ -6169,8 +6169,17 @@ $as_echo "Enabling parallel e2fsck" >&6; }
- fi
+diff --git a/tests/f_multithread_ok/script b/tests/f_multithread_ok/script
+index 4010881b..c62c93ce 100644
+--- a/tests/f_multithread_ok/script
++++ b/tests/f_multithread_ok/script
+@@ -5,15 +5,15 @@ SKIP_CLEANUP="true"
  
+ . $cmd_dir/run_e2fsck
+ 
+-cat $OUT1 | grep -v Thread > $OUT1
+-rm -f $test_name.ok $test_name.failed
+-cmp -s $OUT1 $EXP1
++grep -v Thread $OUT1 > $OUT1.tmp
++cmp -s $OUT1.tmp $EXP1
+ status1=$?
+ if [ "$status1" -eq 0 ]; then
+ 	echo "$test_name: $test_description: ok"
+ 	touch $test_name.ok
  else
--  { $as_echo "$as_me:${as_lineno-$LINENO}: result: Disabling parallel e2fsck" >&5
-+  if test -z "PTHREAD_LIB"
-+then
-+	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: Disabling parallel e2fsck" >&5
- $as_echo "Disabling parallel e2fsck" >&6; }
-+else
-+
-+$as_echo "#define CONFIG_PFSCK 1" >>confdefs.h
-+
-+	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: Enabling parallel e2fsck by default" >&5
-+$as_echo "Enabling parallel e2fsck by default" >&6; }
-+fi
- 
+-	echo "test_name: $test_description: failed"
++	echo "$test_name: $test_description: failed"
++	cmp $OUT1.tmp $EXP1 > $test_name.failed
  fi
  
-diff --git a/configure.ac b/configure.ac
-index e73dbf50..2dacd6c8 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -877,13 +877,13 @@ fi
- AC_MSG_RESULT([Disabling additional bitmap statistics by default])
- )
- dnl
--dnl handle --enable-pfsck
-+dnl handle --disable-pfsck
- dnl
- PTHREAD_LIB=''
- AC_CHECK_LIB(pthread,pthread_join,PTHREAD_LIB=-pthread)
- AC_SUBST(PTHREAD_LIB)
- AC_ARG_ENABLE([pfsck],
--[  --enable-pfsck     enable parallel e2fsck],
-+[  --disable-pfsck     disable parallel e2fsck],
- if test "$enableval" = "no" || test -z "PTHREAD_LIB"
- then
- 	AC_MSG_RESULT([Disabling parallel e2fsck])
-@@ -893,7 +893,14 @@ else
- 	AC_MSG_RESULT([Enabling parallel e2fsck])
- fi
- ,
--AC_MSG_RESULT([Disabling parallel e2fsck])
-+if test -z "PTHREAD_LIB"
-+then
-+	AC_MSG_RESULT([Disabling parallel e2fsck])
-+else
-+	AC_DEFINE(CONFIG_PFSCK, 1,
-+		[Define to 1 if parallel e2fsck is enabled])
-+	AC_MSG_RESULT([Enabling parallel e2fsck by default])
-+fi
- )
- dnl
- dnl
+ unset IMAGE FSCK_OPT SECOND_FSCK_OPT OUT1 OUT2 EXP1 EXP2 
 -- 
 2.29.2.299.gdc1121823c-goog
 
