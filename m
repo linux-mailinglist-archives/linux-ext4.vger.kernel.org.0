@@ -2,249 +2,305 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59FD62B80F8
+	by mail.lfdr.de (Postfix) with ESMTP id C69D22B80F9
 	for <lists+linux-ext4@lfdr.de>; Wed, 18 Nov 2020 16:42:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727646AbgKRPmQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 18 Nov 2020 10:42:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50392 "EHLO
+        id S1727647AbgKRPmR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 18 Nov 2020 10:42:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727633AbgKRPmO (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 Nov 2020 10:42:14 -0500
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9F24C0613D4
-        for <linux-ext4@vger.kernel.org>; Wed, 18 Nov 2020 07:42:13 -0800 (PST)
-Received: by mail-pf1-x449.google.com with SMTP id u3so1390454pfm.22
-        for <linux-ext4@vger.kernel.org>; Wed, 18 Nov 2020 07:42:13 -0800 (PST)
+        with ESMTP id S1727629AbgKRPmQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 Nov 2020 10:42:16 -0500
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EECF3C0613D4
+        for <linux-ext4@vger.kernel.org>; Wed, 18 Nov 2020 07:42:15 -0800 (PST)
+Received: by mail-pl1-x64a.google.com with SMTP id x3so1394461plr.23
+        for <linux-ext4@vger.kernel.org>; Wed, 18 Nov 2020 07:42:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=W6rzihCPF7UlsyHHaLuAFfmf9xopI8dxJp/W6QNsfwk=;
-        b=HK3BJvrAKA0WvPBDJPe3DM3KlGJ+EbfEsirJHno6aHRYClkh5nEmhAXNDYZSxoi70x
-         KrNAzJfnhii44CeFnPDru+hobjnLUVTyOisZkplo9SijzNSV7O5AcCNGyVCGsSEzxSTL
-         mUjr5fgBQ7CYfPNDJcCW8josxZd61DGImuphj3KXMyWXVVpqDMqntsTYnb1IJQ27yVk5
-         dih9Pnuf5ZoQUqznYTtnn5/ofJ3EAP3yDHkkKlcz4MlPK3IZpVKBoS8QhqRVqpEW9CGE
-         4QH5IBRIj977+GYU/xTaWvXoxsCLpq83OlO1gd75a9h7pyQaw9WMZKNNBOggHFXWw1/N
-         3qPg==
+        bh=AMvkoRCCFsGkzkWRSSMZqjAs0Ax8qqFNLPWjD1f+sNw=;
+        b=iy4Qkr6EoAiNyRhnNHcSQ8doFB7RbZkzRIPB8Q8eMYW0H0JvRBY33yM4YQi1OI7JFI
+         JW2DSL9r3ApKhdi3miEts3JlxH8IK2H0hkALlusotTGYAVKzvWS92URa4FzlWrj8UilW
+         LzaH9zUkhbhkeyijUrT8oUmMliGwSjL/wU0JkW2roi/xlidnuZtCk/G6xqU2EwM4AXjh
+         zku3a/8PRXlsARQKyj+2h5U4v0jXyx+8DVHI/dhvg1zpGU0ZMLOL1t4ATLPt23vvGNXC
+         4d/RXTL9saE8KxasXojlvrLjOfpkb87RANlqNhAWBwIYMGgapLitr45PM/FwGD22TpJa
+         Kfpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=W6rzihCPF7UlsyHHaLuAFfmf9xopI8dxJp/W6QNsfwk=;
-        b=i8jGIQ+jyg565aJAZLlwVURbV0L9AZRNjUVUBsIySZMdcA21aC1QQ3T89UlRHDJnRn
-         6Mt59wFMZeDkJKMVJtmUJ2013jOqZncW+M3qp3tmjl44wtMDBXZW/nPuRiUPSRu8JChQ
-         sTKQVpcMoHgzAlRlHSJZrAfgiZiZ7z29XeiUeT9B2l6xwr0/jfDIMmBRd1FvRVkwVxfA
-         rnvKYAdRSN7spF7jbA/LYN1DE+VENClo73NhTcVkMp6tLuryIukOti0jW+Q/IrtJQMEM
-         zSbMkph8zgkgtCFHSV6iIR7VqDSM75/sp+ejF0sIERrkHpxDN/HZfJEn5dd1XhxGC9LO
-         jb9w==
-X-Gm-Message-State: AOAM532WNr1Lz+xFImgTCL11Efxi+QPph+JxsVr0RnciXpmi2fiprnX3
-        9z6iEGVznxRtDCazzMkmzO8zhvJvKxZ7Mn7JZOtsphHq3YPGijHtcUn9PVXtbLcN0pSmtAAwt65
-        iM87ACAATxc2aTXrsP5DjZ4UcD0PPXw7ROtnvetnqyJaUIoxuZ4NAJzCIw4gDNrxsBekKaTZyv6
-        NDPeCgEqY=
-X-Google-Smtp-Source: ABdhPJyKDuVjAvFf3NyFopb/zzYEFjlSS9ZQ1ktp2J6VOZHp2A0QyppnrzhaQDHLtW3S1gs3DmEHikaGKvGg6tELDFI=
+        bh=AMvkoRCCFsGkzkWRSSMZqjAs0Ax8qqFNLPWjD1f+sNw=;
+        b=uVyxJxG8rErsLzhp2FbozhnNo8Vqjrv54+cspPB0WrZXUxJbTzlM1Iq8aFk1dC9RkT
+         E8BhSkwTARt4eiJ1PGsl71ly31sHEW3NXqZ2HxkhYJq89/iALtMOzJ+OjBDSOthcHMUB
+         q9xCvkLbUBs3O21BzztVxe5hWwJXqHgifFKz3vbKFa8b21rFkdnHaacl4rwhhVrVdjrw
+         uRryzBQ/SMEK4XaA0WFnk8bpxzdtR1fq8+JMJl89FBqwU51Fg8vsYg5HwDEhnqMlrR7B
+         3BLbkA1SyLjq082p52WHr+tzbxANGTvgzzyrJ/AIUbDVhRvWK6J7cWpYuFDF7TIb5zgL
+         GxLw==
+X-Gm-Message-State: AOAM532eRYpukw52cRXxVbFeP0KAz1AvPtEjJw/1CzjFeUxrvPBuaxPR
+        ZtsrpihTnHAGHKVtq/Sexb+zIgHmjLcW+ZHeq8v9QECn2DXAAJqxRKLjrqpkMbtdecyryUFuQr6
+        cj7jrtJ9S0NiPAmYVUurT1ja5SFFt0SVSsouRtAfE0cx2PZTctGRjwmcWDdhQx2yLKsq8HsWfO0
+        i7gCU+jrM=
+X-Google-Smtp-Source: ABdhPJyVh9uMShOsIHfe1dTVvxanWom7kNQC+sl1JieTodHNDva4ORcld6NONW6b/8sCJnuMH43dyLxb/FeJOUs8YSk=
 Sender: "saranyamohan via sendgmr" 
         <saranyamohan@saranyamohan.svl.corp.google.com>
 X-Received: from saranyamohan.svl.corp.google.com ([100.116.76.178])
- (user=saranyamohan job=sendgmr) by 2002:a62:1896:0:b029:197:491c:be38 with
- SMTP id 144-20020a6218960000b0290197491cbe38mr5020930pfy.15.1605714133245;
- Wed, 18 Nov 2020 07:42:13 -0800 (PST)
-Date:   Wed, 18 Nov 2020 07:39:43 -0800
+ (user=saranyamohan job=sendgmr) by 2002:a17:902:b613:b029:d9:56e:d93c with
+ SMTP id b19-20020a170902b613b02900d9056ed93cmr4972664pls.14.1605714135181;
+ Wed, 18 Nov 2020 07:42:15 -0800 (PST)
+Date:   Wed, 18 Nov 2020 07:39:44 -0800
 In-Reply-To: <20201118153947.3394530-1-saranyamohan@google.com>
-Message-Id: <20201118153947.3394530-58-saranyamohan@google.com>
+Message-Id: <20201118153947.3394530-59-saranyamohan@google.com>
 Mime-Version: 1.0
 References: <20201118153947.3394530-1-saranyamohan@google.com>
 X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
-Subject: [RFC PATCH v3 57/61] ext2fs: fix to set tail flags with pfsck enabled
+Subject: [RFC PATCH v3 58/61] e2fsck: misc cleanups for pfsck
 From:   Saranya Muruganandam <saranyamohan@google.com>
 To:     linux-ext4@vger.kernel.org, tytso@mit.edu
-Cc:     adilger.kernel@dilger.ca, Wang Shilong <wshilong@ddn.com>,
+Cc:     adilger.kernel@dilger.ca, Andreas Dilger <adilger@whamcloud.com>,
         Saranya Muruganandam <saranyamohan@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Wang Shilong <wshilong@ddn.com>
+From: Andreas Dilger <adilger@whamcloud.com>
 
-If any of block/inode bitmap block checksum error happen,
-tail flag should be set properly.
+Add -m option description to e2fsck.8 man page.
 
-However, we firstly set tail flags in each thread, after
-threads finish we clear those tail problem wrongly.
+Rename e2fsck_struct fs_num_threads to pfs_num_threads to avoid
+confusion with the ext2_filsys fs_num_threads field, and move
+thread_info to be together with the other CONFIG_PFSCK fields.
 
-This will make fsck miss bitmap checksum erors later,
-patch try to fix the problem by move all this kind of
-logic in read_bitmaps_range_end()
+Move ext2_filsys fs_num_threads to fit into the __u16 "pad" field
+to avoid consuming one of the few remaining __u32 reserved fields.
 
-Signed-off-by: Wang Shilong <wshilong@ddn.com>
+Fix a few print format warnings.
+
+Signed-off-by: Andreas Dilger <adilger@whamcloud.com>
 Signed-off-by: Saranya Muruganandam <saranyamohan@google.com>
 ---
- lib/ext2fs/rw_bitmaps.c | 46 +++++++++++++++++------------------------
- 1 file changed, 19 insertions(+), 27 deletions(-)
+ e2fsck/e2fsck.8.in  |  8 +++++++-
+ e2fsck/e2fsck.h     | 13 +++++--------
+ e2fsck/pass1.c      | 29 +++++++++++++++--------------
+ e2fsck/unix.c       |  4 ++--
+ lib/ext2fs/ext2fs.h |  5 ++---
+ 5 files changed, 31 insertions(+), 28 deletions(-)
 
-diff --git a/lib/ext2fs/rw_bitmaps.c b/lib/ext2fs/rw_bitmaps.c
-index 5fde2632..b66ba773 100644
---- a/lib/ext2fs/rw_bitmaps.c
-+++ b/lib/ext2fs/rw_bitmaps.c
-@@ -264,7 +264,7 @@ cleanup:
- 
- static errcode_t read_bitmaps_range_start(ext2_filsys fs, int do_inode, int do_block,
- 					  dgrp_t start, dgrp_t end, pthread_mutex_t *mutex,
--					  io_channel io)
-+					  io_channel io, int *tail_flags)
- {
- 	dgrp_t i;
- 	char *block_bitmap = 0, *inode_bitmap = 0;
-@@ -272,7 +272,6 @@ static errcode_t read_bitmaps_range_start(ext2_filsys fs, int do_inode, int do_b
- 	errcode_t retval = 0;
- 	int block_nbytes = EXT2_CLUSTERS_PER_GROUP(fs->super) / 8;
- 	int inode_nbytes = EXT2_INODES_PER_GROUP(fs->super) / 8;
--	int tail_flags = 0;
- 	int csum_flag;
- 	unsigned int	cnt;
- 	blk64_t	blk;
-@@ -343,7 +342,7 @@ static errcode_t read_bitmaps_range_start(ext2_filsys fs, int do_inode, int do_b
- 			blk_itr += cnt;
- 			blk_cnt -= cnt;
- 		}
--		goto success_cleanup;
-+		goto cleanup;
- 	}
- 
- 	blk_itr += ((blk64_t)start * (block_nbytes << 3));
-@@ -374,7 +373,7 @@ static errcode_t read_bitmaps_range_start(ext2_filsys fs, int do_inode, int do_b
- 				}
- 				if (!bitmap_tail_verify((unsigned char *) block_bitmap,
- 							block_nbytes, fs->blocksize - 1))
--					tail_flags |= EXT2_FLAG_BBITMAP_TAIL_PROBLEM;
-+					*tail_flags |= EXT2_FLAG_BBITMAP_TAIL_PROBLEM;
- 			} else
- 				memset(block_bitmap, 0, block_nbytes);
- 			cnt = block_nbytes << 3;
-@@ -414,7 +413,7 @@ static errcode_t read_bitmaps_range_start(ext2_filsys fs, int do_inode, int do_b
- 				}
- 				if (!bitmap_tail_verify((unsigned char *) inode_bitmap,
- 							inode_nbytes, fs->blocksize - 1))
--					tail_flags |= EXT2_FLAG_IBITMAP_TAIL_PROBLEM;
-+					*tail_flags |= EXT2_FLAG_IBITMAP_TAIL_PROBLEM;
- 			} else
- 				memset(inode_bitmap, 0, inode_nbytes);
- 			cnt = inode_nbytes << 3;
-@@ -430,14 +429,6 @@ static errcode_t read_bitmaps_range_start(ext2_filsys fs, int do_inode, int do_b
- 		}
- 	}
- 
--success_cleanup:
--	if (start == 0 && end == fs->group_desc_count - 1) {
--		if (inode_bitmap)
--			fs->flags &= ~EXT2_FLAG_IBITMAP_TAIL_PROBLEM;
--		if (block_bitmap)
--			fs->flags &= ~EXT2_FLAG_BBITMAP_TAIL_PROBLEM;
--	}
--	fs->flags |= tail_flags;
- cleanup:
- 	if (inode_bitmap)
- 		ext2fs_free_mem(&inode_bitmap);
-@@ -450,7 +441,7 @@ cleanup:
- }
- 
- static errcode_t read_bitmaps_range_end(ext2_filsys fs, int do_inode, int do_block,
--					errcode_t retval)
-+					errcode_t retval, int tail_flags)
- {
- 
- 	if (retval)
-@@ -461,7 +452,11 @@ static errcode_t read_bitmaps_range_end(ext2_filsys fs, int do_inode, int do_blo
- 		retval = mark_uninit_bg_group_blocks(fs);
- 		if (retval)
- 			goto cleanup;
-+		fs->flags &= ~EXT2_FLAG_BBITMAP_TAIL_PROBLEM;
- 	}
-+	if (do_inode)
-+		fs->flags &= ~EXT2_FLAG_IBITMAP_TAIL_PROBLEM;
-+	fs->flags |= tail_flags;
- 
- 	return 0;
- cleanup:
-@@ -480,14 +475,16 @@ static errcode_t read_bitmaps_range(ext2_filsys fs, int do_inode, int do_block,
- 				    dgrp_t start, dgrp_t end)
- {
- 	errcode_t retval;
-+	int tail_flags = 0;
- 
- 	retval = read_bitmaps_range_prepare(fs, do_inode, do_block);
- 	if (retval)
- 		return retval;
- 
--	retval = read_bitmaps_range_start(fs, do_inode, do_block, start, end, NULL, NULL);
-+	retval = read_bitmaps_range_start(fs, do_inode, do_block, start, end, NULL,
-+					  NULL, &tail_flags);
- 
--	return read_bitmaps_range_end(fs, do_inode, do_block, retval);
-+	return read_bitmaps_range_end(fs, do_inode, do_block, retval, tail_flags);
- }
- 
- #ifdef CONFIG_PFSCK
-@@ -499,6 +496,7 @@ struct read_bitmaps_thread_info {
- 	dgrp_t		rbt_grp_end;
- 	errcode_t	rbt_retval;
- 	pthread_mutex_t *rbt_mutex;
-+	int		rbt_tail_flags;
- 	io_channel      rbt_io;
+diff --git a/e2fsck/e2fsck.8.in b/e2fsck/e2fsck.8.in
+index 4e3890b2..404d07fe 100644
+--- a/e2fsck/e2fsck.8.in
++++ b/e2fsck/e2fsck.8.in
+@@ -8,7 +8,7 @@ e2fsck \- check a Linux ext2/ext3/ext4 file system
+ .SH SYNOPSIS
+ .B e2fsck
+ [
+-.B \-pacnyrdfkvtDFV
++.B \-pacnyrdfkmvtDFV
+ ]
+ [
+ .B \-b
+@@ -329,6 +329,12 @@ Set the bad blocks list to be the list of blocks specified by
+ option, except the bad blocks list is cleared before the blocks listed
+ in the file are added to the bad blocks list.)
+ .TP
++.B \-m " threads"
++Run e2fsck with up to the specified number of
++.IR threads .
++The actual number of threads may be lower, if the filesystem does not
++have enough block groups to effectively parallelize the workload.
++.TP
+ .B \-n
+ Open the filesystem read-only, and assume an answer of `no' to all
+ questions.  Allows
+diff --git a/e2fsck/e2fsck.h b/e2fsck/e2fsck.h
+index 1469c3e1..362e128c 100644
+--- a/e2fsck/e2fsck.h
++++ b/e2fsck/e2fsck.h
+@@ -243,8 +243,8 @@ struct e2fsck_thread {
+ 	dgrp_t		et_group_next;
+ 	/* Scanned inode number */
+ 	ext2_ino_t	et_inode_number;
+-	char		et_log_buf[2048];
+ 	char		et_log_length;
++	char		et_log_buf[2048];
  };
- 
-@@ -534,7 +532,7 @@ static void* read_bitmaps_thread(void *data)
- 	rbt->rbt_retval = read_bitmaps_range_start(rbt->rbt_fs,
- 				rbt->rbt_do_inode, rbt->rbt_do_block,
- 				rbt->rbt_grp_start, rbt->rbt_grp_end,
--				rbt->rbt_mutex, rbt->rbt_io);
-+				rbt->rbt_mutex, rbt->rbt_io, &rbt->rbt_tail_flags);
- 	return NULL;
- }
  #endif
-@@ -550,7 +548,7 @@ static errcode_t read_bitmaps(ext2_filsys fs, int do_inode, int do_block)
- 	errcode_t retval;
- 	errcode_t rc;
- 	dgrp_t average_group;
--	int i;
-+	int i, tail_flags = 0;
- 	io_manager manager = unix_io_manager;
- #else
- 	int num_threads = 1;
-@@ -584,6 +582,7 @@ static errcode_t read_bitmaps(ext2_filsys fs, int do_inode, int do_block)
- 		thread_infos[i].rbt_do_inode = do_inode;
- 		thread_infos[i].rbt_do_block = do_block;
- 		thread_infos[i].rbt_mutex = &rbt_mutex;
-+		thread_infos[i].rbt_tail_flags = 0;
- 		if (i == 0)
- 			thread_infos[i].rbt_grp_start = 0;
- 		else
-@@ -614,6 +613,7 @@ static errcode_t read_bitmaps(ext2_filsys fs, int do_inode, int do_block)
- 		rc = thread_infos[i].rbt_retval;
- 		if (rc && !retval)
- 			retval = rc;
-+		tail_flags |= thread_infos[i].rbt_tail_flags;
- 		io_channel_close(thread_infos[i].rbt_io);
+ 
+@@ -333,11 +333,6 @@ struct e2fsck_struct {
+ 	ext2_ino_t		stashed_ino;
+ 	struct ext2_inode	*stashed_inode;
+ 
+-	/* if @global_ctx is null, this field is unused */
+-#ifdef CONFIG_PFSCK
+-	struct e2fsck_thread	 thread_info;
+-#endif
+-
+ 	/*
+ 	 * Location of the lost and found directory
+ 	 */
+@@ -450,7 +445,9 @@ struct e2fsck_struct {
+ 	/* Undo file */
+ 	char *undo_file;
+ #ifdef CONFIG_PFSCK
+-	__u32			 fs_num_threads;
++	/* if @global_ctx is null, this field is unused */
++	struct e2fsck_thread	 thread_info;
++	__u32			 pfs_num_threads;
+ 	__u32			 mmp_update_thread;
+ 	int			 fs_need_locking;
+ 	/* serialize fix operation for multiple threads */
+@@ -689,7 +686,7 @@ int check_backup_super_block(e2fsck_t ctx);
+ void check_resize_inode(e2fsck_t ctx);
+ 
+ /* util.c */
+-#define E2FSCK_MAX_THREADS	(65536)
++#define E2FSCK_MAX_THREADS	(65535)
+ extern void *e2fsck_allocate_memory(e2fsck_t ctx, unsigned long size,
+ 				    const char *description);
+ extern int ask(e2fsck_t ctx, const char * string, int def);
+diff --git a/e2fsck/pass1.c b/e2fsck/pass1.c
+index 7768119b..8d4e2675 100644
+--- a/e2fsck/pass1.c
++++ b/e2fsck/pass1.c
+@@ -1260,7 +1260,7 @@ static void e2fsck_pass1_set_thread_num(e2fsck_t ctx)
+ {
+ 	unsigned flexbg_size = 1;
+ 	ext2_filsys fs = ctx->fs;
+-	int num_threads = ctx->fs_num_threads;
++	int num_threads = ctx->pfs_num_threads;
+ 	int max_threads;
+ 
+ 	if (num_threads < 1) {
+@@ -1280,6 +1280,8 @@ static void e2fsck_pass1_set_thread_num(e2fsck_t ctx)
+ 	max_threads = fs->group_desc_count / flexbg_size;
+ 	if (max_threads == 0)
+ 		max_threads = 1;
++	if (max_threads > E2FSCK_MAX_THREADS)
++		max_threads = E2FSCK_MAX_THREADS;
+ 
+ 	if (num_threads > max_threads) {
+ 		fprintf(stderr, "Use max possible thread num: %d instead\n",
+@@ -1287,7 +1289,7 @@ static void e2fsck_pass1_set_thread_num(e2fsck_t ctx)
+ 		num_threads = max_threads;
  	}
  out:
-@@ -623,15 +623,7 @@ out:
- 	free(thread_infos);
- 	free(thread_ids);
- 
--	retval = read_bitmaps_range_end(fs, do_inode, do_block, retval);
--	if (!retval) {
--		if (do_inode)
--			fs->flags &= ~EXT2_FLAG_IBITMAP_TAIL_PROBLEM;
--		if (do_block)
--			fs->flags &= ~EXT2_FLAG_BBITMAP_TAIL_PROBLEM;
--	}
--
--	return retval;
-+	return read_bitmaps_range_end(fs, do_inode, do_block, retval, tail_flags);
- #endif
+-	ctx->fs_num_threads = num_threads;
++	ctx->pfs_num_threads = num_threads;
+ 	ctx->fs->fs_num_threads = num_threads;
  }
+ #endif
+@@ -1315,7 +1317,7 @@ static errcode_t e2fsck_pass1_prepare(e2fsck_t ctx)
  
+ #ifdef CONFIG_PFSCK
+ 	/* don't use more than 1/10 of memory for threads checking */
+-	readahead_kb = get_memory_size() / (10 * ctx->fs_num_threads);
++	readahead_kb = get_memory_size() / (10 * ctx->pfs_num_threads);
+ 	/* maybe better disable RA if this is too small? */
+ 	if (ctx->readahead_kb > readahead_kb)
+ 		ctx->readahead_kb = readahead_kb;
+@@ -1373,7 +1375,7 @@ static errcode_t e2fsck_pass1_prepare(e2fsck_t ctx)
+ #ifdef	CONFIG_PFSCK
+ 	pthread_rwlock_init(&ctx->fs_fix_rwlock, NULL);
+ 	pthread_rwlock_init(&ctx->fs_block_map_rwlock, NULL);
+-	if (ctx->fs_num_threads > 1)
++	if (ctx->pfs_num_threads > 1)
+ 		ctx->fs_need_locking = 1;
+ #endif
+ 
+@@ -1633,7 +1635,7 @@ void e2fsck_pass1_run(e2fsck_t ctx)
+ 	if (ctx->global_ctx) {
+ 		if (ctx->options & E2F_OPT_DEBUG &&
+ 		    ctx->options & E2F_OPT_MULTITHREAD)
+-			fprintf(stderr, "thread %d jumping to group %d\n",
++			fprintf(stderr, "thread %d jumping to group %u\n",
+ 					ctx->thread_info.et_thread_index,
+ 					ctx->thread_info.et_group_start);
+ 		pctx.errcode = ext2fs_inode_scan_goto_blockgroup(scan,
+@@ -3129,11 +3131,11 @@ static int e2fsck_pass1_thread_join(e2fsck_t global_ctx, e2fsck_t thread_ctx)
+ static int e2fsck_pass1_threads_join(struct e2fsck_thread_info *infos,
+ 				     e2fsck_t global_ctx)
+ {
+-	errcode_t			 rc;
+-	errcode_t			 ret = 0;
+-	int				 i;
+-	struct e2fsck_thread_info	*pinfo;
+-	int				 num_threads = global_ctx->fs_num_threads;
++	errcode_t rc;
++	errcode_t ret = 0;
++	struct e2fsck_thread_info *pinfo;
++	int num_threads = global_ctx->pfs_num_threads;
++	int i;
+ 
+ 	/* merge invalid bitmaps will recalculate it */
+ 	global_ctx->invalid_bitmaps = 0;
+@@ -3199,7 +3201,7 @@ static void *e2fsck_pass1_thread(void *arg)
+ out:
+ 	if (thread_ctx->options & E2F_OPT_MULTITHREAD)
+ 		log_out(thread_ctx,
+-			_("Scanned group range [%lu, %lu), inodes %lu\n"),
++			_("Scanned group range [%u, %u), inodes %u\n"),
+ 			thread_ctx->thread_info.et_group_start,
+ 			thread_ctx->thread_info.et_group_end,
+ 			thread_ctx->thread_info.et_inode_number);
+@@ -3225,7 +3227,7 @@ static int e2fsck_pass1_threads_start(struct e2fsck_thread_info **pinfo,
+ 	int				 i;
+ 	e2fsck_t			 thread_ctx;
+ 	dgrp_t				 average_group;
+-	int				 num_threads = global_ctx->fs_num_threads;
++	int num_threads = global_ctx->pfs_num_threads;
+ #ifdef DEBUG_THREADS
+ 	struct e2fsck_thread_debug	 thread_debug =
+ 		{PTHREAD_MUTEX_INITIALIZER, PTHREAD_COND_INITIALIZER, 0};
+@@ -3329,8 +3331,7 @@ void e2fsck_pass1(e2fsck_t ctx)
+ 	if (retval)
+ 		return;
+ #ifdef CONFIG_PFSCK
+-	if (ctx->fs_num_threads > 1 ||
+-	    ctx->options & E2F_OPT_MULTITHREAD) {
++	if (ctx->pfs_num_threads > 1 || ctx->options & E2F_OPT_MULTITHREAD) {
+ 		need_single = 0;
+ 		e2fsck_pass1_multithread(ctx);
+ 	}
+diff --git a/e2fsck/unix.c b/e2fsck/unix.c
+index cd31bcd5..bebc19ed 100644
+--- a/e2fsck/unix.c
++++ b/e2fsck/unix.c
+@@ -908,12 +908,12 @@ static errcode_t PRS(int argc, char *argv[], e2fsck_t *ret_ctx)
+ 					_("Invalid multiple thread num.\n"));
+ 			if (thread_num > E2FSCK_MAX_THREADS) {
+ 				fprintf(stderr,
+-					_("threads %lu too large (max %lu)\n"),
++					_("threads %lu too large (max %u)\n"),
+ 					thread_num, E2FSCK_MAX_THREADS);
+ 				fatal_error(ctx, 0);
+ 			}
+ 			ctx->options |= E2F_OPT_MULTITHREAD;
+-			ctx->fs_num_threads = thread_num;
++			ctx->pfs_num_threads = thread_num;
+ 			break;
+ #endif
+ 		case 'n':
+diff --git a/lib/ext2fs/ext2fs.h b/lib/ext2fs/ext2fs.h
+index 616c9412..f74303f4 100644
+--- a/lib/ext2fs/ext2fs.h
++++ b/lib/ext2fs/ext2fs.h
+@@ -254,12 +254,11 @@ struct struct_ext2_filsys {
+ 	time_t				now;
+ 	int				cluster_ratio_bits;
+ 	__u16				default_bitmap_type;
+-	__u16				pad;
+-	__u32				fs_num_threads;
++	__u16				fs_num_threads;
+ 	/*
+ 	 * Reserved for future expansion
+ 	 */
+-	__u32				reserved[4];
++	__u32				reserved[5];
+ 
+ 	/*
+ 	 * Reserved for the use of the calling application.
 -- 
 2.29.2.299.gdc1121823c-goog
 
