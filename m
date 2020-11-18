@@ -2,305 +2,134 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C69D22B80F9
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Nov 2020 16:42:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F0952B80FA
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Nov 2020 16:42:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727647AbgKRPmR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 18 Nov 2020 10:42:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50398 "EHLO
+        id S1727649AbgKRPmT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 18 Nov 2020 10:42:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727629AbgKRPmQ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 Nov 2020 10:42:16 -0500
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EECF3C0613D4
-        for <linux-ext4@vger.kernel.org>; Wed, 18 Nov 2020 07:42:15 -0800 (PST)
-Received: by mail-pl1-x64a.google.com with SMTP id x3so1394461plr.23
-        for <linux-ext4@vger.kernel.org>; Wed, 18 Nov 2020 07:42:15 -0800 (PST)
+        with ESMTP id S1727629AbgKRPmT (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 Nov 2020 10:42:19 -0500
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B14CAC0613D4
+        for <linux-ext4@vger.kernel.org>; Wed, 18 Nov 2020 07:42:17 -0800 (PST)
+Received: by mail-pj1-x1049.google.com with SMTP id 7so1327030pjm.3
+        for <linux-ext4@vger.kernel.org>; Wed, 18 Nov 2020 07:42:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=AMvkoRCCFsGkzkWRSSMZqjAs0Ax8qqFNLPWjD1f+sNw=;
-        b=iy4Qkr6EoAiNyRhnNHcSQ8doFB7RbZkzRIPB8Q8eMYW0H0JvRBY33yM4YQi1OI7JFI
-         JW2DSL9r3ApKhdi3miEts3JlxH8IK2H0hkALlusotTGYAVKzvWS92URa4FzlWrj8UilW
-         LzaH9zUkhbhkeyijUrT8oUmMliGwSjL/wU0JkW2roi/xlidnuZtCk/G6xqU2EwM4AXjh
-         zku3a/8PRXlsARQKyj+2h5U4v0jXyx+8DVHI/dhvg1zpGU0ZMLOL1t4ATLPt23vvGNXC
-         4d/RXTL9saE8KxasXojlvrLjOfpkb87RANlqNhAWBwIYMGgapLitr45PM/FwGD22TpJa
-         Kfpw==
+        bh=1P7rffJ7thv4qkZFeY0lM2jm0Zu/jaf+KpsPdqhTum0=;
+        b=gJ2IzK5clZe7HMWQUhCGfcogPLtSwZLHJsrOM02Q+Gw6ruTBCe7RT+fbjyJnEzUBNx
+         dpJAEhMzUb51oJceXvsqxV3VXONmqf6EMOiwpAWXNA1Qt9FUW6GqOO1/885mO5lLPWwN
+         1eJXBdPaH5OoRA0VGPQkE1TBHsssYm+0KET3kVJeR/UBJ7GiDkWoJYcTHJbJdqMq0j+U
+         r4zSvjAMRIvyquVoVYVIR4ODtlT8NBe+O6eYjB2VfKLt815SQmvNU00pK4UWpDfNPhfj
+         4kHd+BI/nIGOOOiSIHR9aPORWz1WxsJXTt9bdOsiFVtTHwnGEoB/nnDqSnTyFcC/M3tt
+         uLJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=AMvkoRCCFsGkzkWRSSMZqjAs0Ax8qqFNLPWjD1f+sNw=;
-        b=uVyxJxG8rErsLzhp2FbozhnNo8Vqjrv54+cspPB0WrZXUxJbTzlM1Iq8aFk1dC9RkT
-         E8BhSkwTARt4eiJ1PGsl71ly31sHEW3NXqZ2HxkhYJq89/iALtMOzJ+OjBDSOthcHMUB
-         q9xCvkLbUBs3O21BzztVxe5hWwJXqHgifFKz3vbKFa8b21rFkdnHaacl4rwhhVrVdjrw
-         uRryzBQ/SMEK4XaA0WFnk8bpxzdtR1fq8+JMJl89FBqwU51Fg8vsYg5HwDEhnqMlrR7B
-         3BLbkA1SyLjq082p52WHr+tzbxANGTvgzzyrJ/AIUbDVhRvWK6J7cWpYuFDF7TIb5zgL
-         GxLw==
-X-Gm-Message-State: AOAM532eRYpukw52cRXxVbFeP0KAz1AvPtEjJw/1CzjFeUxrvPBuaxPR
-        ZtsrpihTnHAGHKVtq/Sexb+zIgHmjLcW+ZHeq8v9QECn2DXAAJqxRKLjrqpkMbtdecyryUFuQr6
-        cj7jrtJ9S0NiPAmYVUurT1ja5SFFt0SVSsouRtAfE0cx2PZTctGRjwmcWDdhQx2yLKsq8HsWfO0
-        i7gCU+jrM=
-X-Google-Smtp-Source: ABdhPJyVh9uMShOsIHfe1dTVvxanWom7kNQC+sl1JieTodHNDva4ORcld6NONW6b/8sCJnuMH43dyLxb/FeJOUs8YSk=
+        bh=1P7rffJ7thv4qkZFeY0lM2jm0Zu/jaf+KpsPdqhTum0=;
+        b=E6RhyhGE/69aDu2Qkvd303sWGomw8xrzYAbwlLM9vP5+qovqqM5oGW19Iyfjgy0k1F
+         Jt1s/HdtEYWQFEItc7HXDaqniySnhmT+fbMSs/MA6Ch8lHhk1usxY2fGyGnSQ8RU3uh8
+         +ckc/VPitUp6T6aiR28+1r0u5j4J33YL6IXq9AZjbxhuXqgs0njHacsDkbpo+zMStY5C
+         MgcwK/lKkZl8XWNiuPawn7SgtOhrqfnPbfFxlZse0DeSEYGC7KoN10uJKeEGgpUEFlO1
+         VEAtXKz8HmEOg6hJk99p/YkuwxwTaKh5bWdb9pegAhUzCObAnGD5ltrtfeBuzCvW3a26
+         2TCQ==
+X-Gm-Message-State: AOAM5316b8nc5hhs5/5kywCXkfVEsRyERbfiNq8MCrPJ8SGM7IA55uHD
+        8xl5XN0xZYFWBzl0JHIvLdf2oN+nW5MqAYXe02o0833dEK0wxbc3dKRRIl4XX/1QY9v9TmDWExn
+        CAEwXQN70iK5XcrfGDHu4ppLZ4LJ/J7oTkN5VF8LXYHz/zVQkZn/ohJN2e4WOVkXziLoJ9KBmAl
+        XNb/dS51U=
+X-Google-Smtp-Source: ABdhPJzGs0m+TpJGTDHeg9e/hYdqtLqX7DbqHbVe9DDsewMMxerDMup+M4w0g+aR9555onHXatU5p8Yv0hM9tB+H2HI=
 Sender: "saranyamohan via sendgmr" 
         <saranyamohan@saranyamohan.svl.corp.google.com>
 X-Received: from saranyamohan.svl.corp.google.com ([100.116.76.178])
- (user=saranyamohan job=sendgmr) by 2002:a17:902:b613:b029:d9:56e:d93c with
- SMTP id b19-20020a170902b613b02900d9056ed93cmr4972664pls.14.1605714135181;
- Wed, 18 Nov 2020 07:42:15 -0800 (PST)
-Date:   Wed, 18 Nov 2020 07:39:44 -0800
+ (user=saranyamohan job=sendgmr) by 2002:a63:c00b:: with SMTP id
+ h11mr8488387pgg.7.1605714137104; Wed, 18 Nov 2020 07:42:17 -0800 (PST)
+Date:   Wed, 18 Nov 2020 07:39:45 -0800
 In-Reply-To: <20201118153947.3394530-1-saranyamohan@google.com>
-Message-Id: <20201118153947.3394530-59-saranyamohan@google.com>
+Message-Id: <20201118153947.3394530-60-saranyamohan@google.com>
 Mime-Version: 1.0
 References: <20201118153947.3394530-1-saranyamohan@google.com>
 X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
-Subject: [RFC PATCH v3 58/61] e2fsck: misc cleanups for pfsck
+Subject: [RFC PATCH v3 59/61] e2fsck: update mmp block race
 From:   Saranya Muruganandam <saranyamohan@google.com>
 To:     linux-ext4@vger.kernel.org, tytso@mit.edu
-Cc:     adilger.kernel@dilger.ca, Andreas Dilger <adilger@whamcloud.com>,
+Cc:     adilger.kernel@dilger.ca, Wang Shilong <wshilong@ddn.com>,
         Saranya Muruganandam <saranyamohan@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Andreas Dilger <adilger@whamcloud.com>
+From: Wang Shilong <wshilong@ddn.com>
 
-Add -m option description to e2fsck.8 man page.
+Update mmp block is only expected in one thread, @mmp_update_thread
+is used to get/set active thread number, however this should
+be set globally shared with different threads rather than be private
+per thread.
 
-Rename e2fsck_struct fs_num_threads to pfs_num_threads to avoid
-confusion with the ext2_filsys fs_num_threads field, and move
-thread_info to be together with the other CONFIG_PFSCK fields.
-
-Move ext2_filsys fs_num_threads to fit into the __u16 "pad" field
-to avoid consuming one of the few remaining __u32 reserved fields.
-
-Fix a few print format warnings.
-
-Signed-off-by: Andreas Dilger <adilger@whamcloud.com>
+Signed-off-by: Wang Shilong <wshilong@ddn.com>
 Signed-off-by: Saranya Muruganandam <saranyamohan@google.com>
 ---
- e2fsck/e2fsck.8.in  |  8 +++++++-
- e2fsck/e2fsck.h     | 13 +++++--------
- e2fsck/pass1.c      | 29 +++++++++++++++--------------
- e2fsck/unix.c       |  4 ++--
- lib/ext2fs/ext2fs.h |  5 ++---
- 5 files changed, 31 insertions(+), 28 deletions(-)
+ e2fsck/pass1.c | 20 +++++++++-----------
+ 1 file changed, 9 insertions(+), 11 deletions(-)
 
-diff --git a/e2fsck/e2fsck.8.in b/e2fsck/e2fsck.8.in
-index 4e3890b2..404d07fe 100644
---- a/e2fsck/e2fsck.8.in
-+++ b/e2fsck/e2fsck.8.in
-@@ -8,7 +8,7 @@ e2fsck \- check a Linux ext2/ext3/ext4 file system
- .SH SYNOPSIS
- .B e2fsck
- [
--.B \-pacnyrdfkvtDFV
-+.B \-pacnyrdfkmvtDFV
- ]
- [
- .B \-b
-@@ -329,6 +329,12 @@ Set the bad blocks list to be the list of blocks specified by
- option, except the bad blocks list is cleared before the blocks listed
- in the file are added to the bad blocks list.)
- .TP
-+.B \-m " threads"
-+Run e2fsck with up to the specified number of
-+.IR threads .
-+The actual number of threads may be lower, if the filesystem does not
-+have enough block groups to effectively parallelize the workload.
-+.TP
- .B \-n
- Open the filesystem read-only, and assume an answer of `no' to all
- questions.  Allows
-diff --git a/e2fsck/e2fsck.h b/e2fsck/e2fsck.h
-index 1469c3e1..362e128c 100644
---- a/e2fsck/e2fsck.h
-+++ b/e2fsck/e2fsck.h
-@@ -243,8 +243,8 @@ struct e2fsck_thread {
- 	dgrp_t		et_group_next;
- 	/* Scanned inode number */
- 	ext2_ino_t	et_inode_number;
--	char		et_log_buf[2048];
- 	char		et_log_length;
-+	char		et_log_buf[2048];
- };
- #endif
- 
-@@ -333,11 +333,6 @@ struct e2fsck_struct {
- 	ext2_ino_t		stashed_ino;
- 	struct ext2_inode	*stashed_inode;
- 
--	/* if @global_ctx is null, this field is unused */
--#ifdef CONFIG_PFSCK
--	struct e2fsck_thread	 thread_info;
--#endif
--
- 	/*
- 	 * Location of the lost and found directory
- 	 */
-@@ -450,7 +445,9 @@ struct e2fsck_struct {
- 	/* Undo file */
- 	char *undo_file;
- #ifdef CONFIG_PFSCK
--	__u32			 fs_num_threads;
-+	/* if @global_ctx is null, this field is unused */
-+	struct e2fsck_thread	 thread_info;
-+	__u32			 pfs_num_threads;
- 	__u32			 mmp_update_thread;
- 	int			 fs_need_locking;
- 	/* serialize fix operation for multiple threads */
-@@ -689,7 +686,7 @@ int check_backup_super_block(e2fsck_t ctx);
- void check_resize_inode(e2fsck_t ctx);
- 
- /* util.c */
--#define E2FSCK_MAX_THREADS	(65536)
-+#define E2FSCK_MAX_THREADS	(65535)
- extern void *e2fsck_allocate_memory(e2fsck_t ctx, unsigned long size,
- 				    const char *description);
- extern int ask(e2fsck_t ctx, const char * string, int def);
 diff --git a/e2fsck/pass1.c b/e2fsck/pass1.c
-index 7768119b..8d4e2675 100644
+index 8d4e2675..a51fe20f 100644
 --- a/e2fsck/pass1.c
 +++ b/e2fsck/pass1.c
-@@ -1260,7 +1260,7 @@ static void e2fsck_pass1_set_thread_num(e2fsck_t ctx)
- {
- 	unsigned flexbg_size = 1;
- 	ext2_filsys fs = ctx->fs;
--	int num_threads = ctx->fs_num_threads;
-+	int num_threads = ctx->pfs_num_threads;
- 	int max_threads;
+@@ -1501,6 +1501,7 @@ void e2fsck_pass1_run(e2fsck_t ctx)
+ 	struct ea_quota	ea_ibody_quota;
+ 	struct process_inode_block *inodes_to_process;
+ 	int		process_inode_count, check_mmp;
++	e2fsck_t	global_ctx = ctx->global_ctx ? ctx->global_ctx : ctx;
  
- 	if (num_threads < 1) {
-@@ -1280,6 +1280,8 @@ static void e2fsck_pass1_set_thread_num(e2fsck_t ctx)
- 	max_threads = fs->group_desc_count / flexbg_size;
- 	if (max_threads == 0)
- 		max_threads = 1;
-+	if (max_threads > E2FSCK_MAX_THREADS)
-+		max_threads = E2FSCK_MAX_THREADS;
- 
- 	if (num_threads > max_threads) {
- 		fprintf(stderr, "Use max possible thread num: %d instead\n",
-@@ -1287,7 +1289,7 @@ static void e2fsck_pass1_set_thread_num(e2fsck_t ctx)
- 		num_threads = max_threads;
- 	}
- out:
--	ctx->fs_num_threads = num_threads;
-+	ctx->pfs_num_threads = num_threads;
- 	ctx->fs->fs_num_threads = num_threads;
- }
- #endif
-@@ -1315,7 +1317,7 @@ static errcode_t e2fsck_pass1_prepare(e2fsck_t ctx)
- 
- #ifdef CONFIG_PFSCK
- 	/* don't use more than 1/10 of memory for threads checking */
--	readahead_kb = get_memory_size() / (10 * ctx->fs_num_threads);
-+	readahead_kb = get_memory_size() / (10 * ctx->pfs_num_threads);
- 	/* maybe better disable RA if this is too small? */
- 	if (ctx->readahead_kb > readahead_kb)
- 		ctx->readahead_kb = readahead_kb;
-@@ -1373,7 +1375,7 @@ static errcode_t e2fsck_pass1_prepare(e2fsck_t ctx)
+ 	init_resource_track(&rtrack, ctx->fs->io);
+ 	clear_problem_context(&pctx);
+@@ -1652,14 +1653,11 @@ void e2fsck_pass1_run(e2fsck_t ctx)
+ 		check_mmp = 0;
+ 		e2fsck_pass1_check_lock(ctx);
  #ifdef	CONFIG_PFSCK
- 	pthread_rwlock_init(&ctx->fs_fix_rwlock, NULL);
- 	pthread_rwlock_init(&ctx->fs_block_map_rwlock, NULL);
--	if (ctx->fs_num_threads > 1)
-+	if (ctx->pfs_num_threads > 1)
- 		ctx->fs_need_locking = 1;
- #endif
- 
-@@ -1633,7 +1635,7 @@ void e2fsck_pass1_run(e2fsck_t ctx)
- 	if (ctx->global_ctx) {
- 		if (ctx->options & E2F_OPT_DEBUG &&
- 		    ctx->options & E2F_OPT_MULTITHREAD)
--			fprintf(stderr, "thread %d jumping to group %d\n",
-+			fprintf(stderr, "thread %d jumping to group %u\n",
- 					ctx->thread_info.et_thread_index,
- 					ctx->thread_info.et_group_start);
- 		pctx.errcode = ext2fs_inode_scan_goto_blockgroup(scan,
-@@ -3129,11 +3131,11 @@ static int e2fsck_pass1_thread_join(e2fsck_t global_ctx, e2fsck_t thread_ctx)
- static int e2fsck_pass1_threads_join(struct e2fsck_thread_info *infos,
- 				     e2fsck_t global_ctx)
- {
--	errcode_t			 rc;
--	errcode_t			 ret = 0;
--	int				 i;
--	struct e2fsck_thread_info	*pinfo;
--	int				 num_threads = global_ctx->fs_num_threads;
-+	errcode_t rc;
-+	errcode_t ret = 0;
-+	struct e2fsck_thread_info *pinfo;
-+	int num_threads = global_ctx->pfs_num_threads;
-+	int i;
- 
- 	/* merge invalid bitmaps will recalculate it */
- 	global_ctx->invalid_bitmaps = 0;
-@@ -3199,7 +3201,7 @@ static void *e2fsck_pass1_thread(void *arg)
- out:
- 	if (thread_ctx->options & E2F_OPT_MULTITHREAD)
- 		log_out(thread_ctx,
--			_("Scanned group range [%lu, %lu), inodes %lu\n"),
-+			_("Scanned group range [%u, %u), inodes %u\n"),
- 			thread_ctx->thread_info.et_group_start,
- 			thread_ctx->thread_info.et_group_end,
- 			thread_ctx->thread_info.et_inode_number);
-@@ -3225,7 +3227,7 @@ static int e2fsck_pass1_threads_start(struct e2fsck_thread_info **pinfo,
- 	int				 i;
- 	e2fsck_t			 thread_ctx;
- 	dgrp_t				 average_group;
--	int				 num_threads = global_ctx->fs_num_threads;
-+	int num_threads = global_ctx->pfs_num_threads;
- #ifdef DEBUG_THREADS
- 	struct e2fsck_thread_debug	 thread_debug =
- 		{PTHREAD_MUTEX_INITIALIZER, PTHREAD_COND_INITIALIZER, 0};
-@@ -3329,8 +3331,7 @@ void e2fsck_pass1(e2fsck_t ctx)
- 	if (retval)
- 		return;
- #ifdef CONFIG_PFSCK
--	if (ctx->fs_num_threads > 1 ||
--	    ctx->options & E2F_OPT_MULTITHREAD) {
-+	if (ctx->pfs_num_threads > 1 || ctx->options & E2F_OPT_MULTITHREAD) {
- 		need_single = 0;
- 		e2fsck_pass1_multithread(ctx);
- 	}
-diff --git a/e2fsck/unix.c b/e2fsck/unix.c
-index cd31bcd5..bebc19ed 100644
---- a/e2fsck/unix.c
-+++ b/e2fsck/unix.c
-@@ -908,12 +908,12 @@ static errcode_t PRS(int argc, char *argv[], e2fsck_t *ret_ctx)
- 					_("Invalid multiple thread num.\n"));
- 			if (thread_num > E2FSCK_MAX_THREADS) {
- 				fprintf(stderr,
--					_("threads %lu too large (max %lu)\n"),
-+					_("threads %lu too large (max %u)\n"),
- 					thread_num, E2FSCK_MAX_THREADS);
- 				fatal_error(ctx, 0);
+-		if (!ctx->mmp_update_thread) {
++		if (!global_ctx->mmp_update_thread) {
+ 			e2fsck_pass1_block_map_w_lock(ctx);
+-			if (!ctx->mmp_update_thread) {
+-				if (ctx->global_ctx)
+-					ctx->mmp_update_thread =
+-						ctx->thread_info.et_thread_index + 1;
+-				else
+-					ctx->mmp_update_thread = 1;
++			if (!global_ctx->mmp_update_thread) {
++				global_ctx->mmp_update_thread =
++					ctx->thread_info.et_thread_index + 1;
+ 				check_mmp = 1;
  			}
- 			ctx->options |= E2F_OPT_MULTITHREAD;
--			ctx->fs_num_threads = thread_num;
-+			ctx->pfs_num_threads = thread_num;
- 			break;
- #endif
- 		case 'n':
-diff --git a/lib/ext2fs/ext2fs.h b/lib/ext2fs/ext2fs.h
-index 616c9412..f74303f4 100644
---- a/lib/ext2fs/ext2fs.h
-+++ b/lib/ext2fs/ext2fs.h
-@@ -254,12 +254,11 @@ struct struct_ext2_filsys {
- 	time_t				now;
- 	int				cluster_ratio_bits;
- 	__u16				default_bitmap_type;
--	__u16				pad;
--	__u32				fs_num_threads;
-+	__u16				fs_num_threads;
- 	/*
- 	 * Reserved for future expansion
- 	 */
--	__u32				reserved[4];
-+	__u32				reserved[5];
+ 			e2fsck_pass1_block_map_w_unlock(ctx);
+@@ -1667,8 +1665,8 @@ void e2fsck_pass1_run(e2fsck_t ctx)
  
- 	/*
- 	 * Reserved for the use of the calling application.
+ 		/* only one active thread could update mmp block. */
+ 		e2fsck_pass1_block_map_r_lock(ctx);
+-		if (!ctx->global_ctx || ctx->mmp_update_thread ==
+-			(ctx->thread_info.et_thread_index + 1))
++		if (global_ctx->mmp_update_thread ==
++		    ctx->thread_info.et_thread_index + 1)
+ 			check_mmp = 1;
+ 		e2fsck_pass1_block_map_r_unlock(ctx);
+ #else
+@@ -2396,8 +2394,8 @@ endit:
+ #ifdef	CONFIG_PFSCK
+ 	/* reset update_thread after this thread exit */
+ 	e2fsck_pass1_block_map_w_lock(ctx);
+-	if (ctx->mmp_update_thread)
+-		ctx->mmp_update_thread = 0;
++	if (check_mmp)
++		global_ctx->mmp_update_thread = 0;
+ 	e2fsck_pass1_block_map_w_unlock(ctx);
+ #endif
+ }
 -- 
 2.29.2.299.gdc1121823c-goog
 
