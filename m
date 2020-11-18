@@ -2,76 +2,125 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2C502B845D
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Nov 2020 20:07:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 132402B86B0
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Nov 2020 22:34:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726982AbgKRTF6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 18 Nov 2020 14:05:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60866 "EHLO mail.kernel.org"
+        id S1726699AbgKRVee (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 18 Nov 2020 16:34:34 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52676 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726224AbgKRTF5 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 18 Nov 2020 14:05:57 -0500
-Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9639220B1F;
-        Wed, 18 Nov 2020 19:05:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605726357;
-        bh=czhwXJzBR4zdRxRmpiz6/CDV6S0jGgxbOLv7GLXvEi0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UjOF4cr4HY06mtasTjDvTwJSyxBGG8YJAp+6mdTN+4xE8fSYavbczWX1lWh//WqVo
-         rVQRLoTh1cbSKnB2SOlxbd17YT9Ed1+EP0inyaWja+lnpiyWvsNYG7igsxzyw9MeTg
-         vYcQGBsopsYIMipvK1Y5rj7tjY+R+FNEWIA1tzVo=
-Date:   Wed, 18 Nov 2020 11:05:54 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Daniel Rosenberg <drosen@google.com>
-Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chao Yu <chao@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Richard Weinberger <richard@nod.at>,
-        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mtd@lists.infradead.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v3 3/3] f2fs: Handle casefolding with Encryption
-Message-ID: <X7Vwkgb8tqJh+mOr@sol.localdomain>
-References: <20201118064245.265117-1-drosen@google.com>
- <20201118064245.265117-4-drosen@google.com>
+        id S1726433AbgKRVea (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 18 Nov 2020 16:34:30 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7321BB01E;
+        Wed, 18 Nov 2020 21:34:24 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id D8FEB1E1334; Wed, 18 Nov 2020 15:58:38 +0100 (CET)
+Date:   Wed, 18 Nov 2020 15:58:38 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Jan Kara <jack@suse.cz>, Ted Tso <tytso@mit.edu>,
+        linux-ext4@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] ext4: Fix checksum errors with indexed dirs
+Message-ID: <20201118145838.GP1981@quack2.suse.cz>
+References: <20200205173025.12221-1-jack@suse.cz>
+ <X7NRcBMnsR3w1K7X@sol.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201118064245.265117-4-drosen@google.com>
+In-Reply-To: <X7NRcBMnsR3w1K7X@sol.localdomain>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 06:42:45AM +0000, Daniel Rosenberg wrote:
-> Expand f2fs's casefolding support to include encrypted directories.  To
-> index casefolded+encrypted directories, we use the SipHash of the
-> casefolded name, keyed by a key derived from the directory's fscrypt
-> master key.  This ensures that the dirhash doesn't leak information
-> about the plaintext filenames.
-> 
-> Encryption keys are unavailable during roll-forward recovery, so we
-> can't compute the dirhash when recovering a new dentry in an encrypted +
-> casefolded directory.  To avoid having to force a checkpoint when a new
-> file is fsync'ed, store the dirhash on-disk appended to i_name.
-> 
-> This patch incorporates work by Eric Biggers <ebiggers@google.com>
-> and Jaegeuk Kim <jaegeuk@kernel.org>.
-> 
-> Co-developed-by: Eric Biggers <ebiggers@google.com>
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> Signed-off-by: Daniel Rosenberg <drosen@google.com>
+Hi Eric!
 
-Looks good.  If it's needed (some may claim it's not needed because I have a
-Co-developed-by), you can add:
+On Mon 16-11-20 20:28:32, Eric Biggers wrote:
+> On Wed, Feb 05, 2020 at 06:30:25PM +0100, Jan Kara wrote:
+> > DIR_INDEX has been introduced as a compat ext4 feature. That means that
+> > even kernels / tools that don't understand the feature may modify the
+> > filesystem. This works because for kernels not understanding indexed dir
+> > format, internal htree nodes appear just as empty directory entries.
+> > Index dir aware kernels then check the htree structure is still
+> > consistent before using the data. This all worked reasonably well until
+> > metadata checksums were introduced. The problem is that these
+> > effectively made DIR_INDEX only ro-compatible because internal htree
+> > nodes store checksums in a different place than normal directory blocks.
+> > Thus any modification ignorant to DIR_INDEX (or just clearing
+> > EXT4_INDEX_FL from the inode) will effectively cause checksum mismatch
+> > and trigger kernel errors. So we have to be more careful when dealing
+> > with indexed directories on filesystems with checksumming enabled.
+> > 
+> > 1) We just disallow loading and directory inodes with EXT4_INDEX_FL when
+> > DIR_INDEX is not enabled. This is harsh but it should be very rare (it
+> > means someone disabled DIR_INDEX on existing filesystem and didn't run
+> > e2fsck), e2fsck can fix the problem, and we don't want to answer the
+> > difficult question: "Should we rather corrupt the directory more or
+> > should we ignore that DIR_INDEX feature is not set?"
+> > 
+> > 2) When we find out htree structure is corrupted (but the filesystem and
+> > the directory should in support htrees), we continue just ignoring htree
+> > information for reading but we refuse to add new entries to the
+> > directory to avoid corrupting it more.
+> > 
+> > CC: stable@vger.kernel.org
+> > Fixes: dbe89444042a ("ext4: Calculate and verify checksums for htree nodes")
+> > Signed-off-by: Jan Kara <jack@suse.cz>
+> > ---
+> >  fs/ext4/dir.c   | 14 ++++++++------
+> >  fs/ext4/ext4.h  |  5 ++++-
+> >  fs/ext4/inode.c | 13 +++++++++++++
+> >  fs/ext4/namei.c |  7 +++++++
+> >  4 files changed, 32 insertions(+), 7 deletions(-)
 
-	Reviewed-by: Eric Biggers <ebiggers@google.com>
+...
 
-- Eric
+> > diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> > index f8578caba40d..1fd6c1e2ce2a 100644
+> > --- a/fs/ext4/ext4.h
+> > +++ b/fs/ext4/ext4.h
+> > @@ -2482,8 +2482,11 @@ void ext4_insert_dentry(struct inode *inode,
+> >  			struct ext4_filename *fname);
+> >  static inline void ext4_update_dx_flag(struct inode *inode)
+> >  {
+> > -	if (!ext4_has_feature_dir_index(inode->i_sb))
+> > +	if (!ext4_has_feature_dir_index(inode->i_sb)) {
+> > +		/* ext4_iget() should have caught this... */
+> > +		WARN_ON_ONCE(ext4_has_feature_metadata_csum(inode->i_sb));
+> >  		ext4_clear_inode_flag(inode, EXT4_INODE_INDEX);
+> > +	}
+> >  }
+> 
+> This new WARN_ON_ONCE() gets triggered by the following commands:
+> 
+> 	mkfs.ext4 -O ^dir_index /dev/vdc
+> 	mount /dev/vdc /vdc
+> 	mkdir /vdc/dir
+> 
+> WARNING: CPU: 1 PID: 305 at fs/ext4/ext4.h:2700 add_dirent_to_buf+0x1d0/0x1e0 fs/ext4/namei.c:2039
+> CPU: 1 PID: 305 Comm: mkdir Not tainted 5.10.0-rc4 #14
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ArchLinux 1.14.0-1 04/01/2014
+> RIP: 0010:ext4_update_dx_flag fs/ext4/ext4.h:2700 [inline]
+> RIP: 0010:add_dirent_to_buf+0x1d0/0x1e0 fs/ext4/namei.c:2038
+> [...]
+> Call Trace:
+>  ext4_add_entry+0x179/0x4d0 fs/ext4/namei.c:2248
+>  ext4_mkdir+0x1c0/0x320 fs/ext4/namei.c:2814
+>  vfs_mkdir+0xcc/0x130 fs/namei.c:3650
+>  do_mkdirat+0x81/0x120 fs/namei.c:3673
+>  __do_sys_mkdir fs/namei.c:3689 [inline]
+> 
+> What is intended here?  metadata_csum && ^dir_index is a weird combination,
+> but it's technically valid, right?
+
+Indeed the WARN_ON_ONCE() is wrong. It should also check that
+EXT4_INODE_INDEX is set. The idea of the warning is that when we just clear
+EXT4_INODE_INDEX flag, checksums will become invalid so generally that's
+not desirable... I'll send a fix. Thanks for report!
+
+									Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
