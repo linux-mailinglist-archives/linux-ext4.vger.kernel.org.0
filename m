@@ -2,387 +2,156 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68D432B8B53
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Nov 2020 07:10:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 131A92B928B
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Nov 2020 13:29:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726300AbgKSGJP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 Nov 2020 01:09:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726235AbgKSGJO (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Nov 2020 01:09:14 -0500
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFEEDC061A4A
-        for <linux-ext4@vger.kernel.org>; Wed, 18 Nov 2020 22:09:13 -0800 (PST)
-Received: by mail-pg1-x54a.google.com with SMTP id p21so3178323pgb.11
-        for <linux-ext4@vger.kernel.org>; Wed, 18 Nov 2020 22:09:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=SLgs0iQsLlWyiqMNFAp8InT80xc0xnNJ/w2SdIsedrM=;
-        b=lEc9IwJtnrFU+I4LOy2er5MPCDhqqE/c40hbLUsMFIYsdGfhSZpjSz4jC8JPbz3E9v
-         /bQuOLrR5d32nLFwFisNqwWNSPWda2GLLfL/kV1xs2fOGOn2gDiYE+xd5hGEE+NiDtnC
-         t0dZXN/ju8qMKRSLtfEPaak7bA5C+rrgRU83NhjMhWqGNClbhVau9HvTtPb+P2VznjXn
-         2lpa/o7mvvE1LabacNKeqMTdgBO+s9ph9kugH1csugsZaiVgNUX9EBVt0ROQdAPlk4Rh
-         vj1ZY7OlrIVrZ1eYVt3+Tj/wX1MOqVtyMhc5rh34E14ttvK4Lo8jYv24lj4vwWcA22ha
-         a8uQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=SLgs0iQsLlWyiqMNFAp8InT80xc0xnNJ/w2SdIsedrM=;
-        b=gUFEbZHFVAMjDUd1r4+8+UV0x5PnDI4qSd1cCm30eQtndXToYKKsIclmVlOil0aurA
-         oPhf4ecXR1r7NgkS2s1uLyIZXEHsN7V3iNgBHLMHmwwOaT9WMv3SfR3evAmmofBM4lpm
-         cMapi2+60OzYU+JbGiZ8s9qedWAwr5OKXn2630RisAWLdr/EKWg1T4VY6KVqJA3AMJOe
-         IZQQ/QMlmcDWtOr7RWbstxGITdeNvlDEsoE4himev29zYjmKmXTeHkm/bQ1qWXmDj+99
-         kcb7qbH80ThxS9O2C5IX/GTg/qDWgbgmT+wqCw1l6uO4z2rmo/pyC5N/keqMnO/9xjGE
-         KpdA==
-X-Gm-Message-State: AOAM533S31rVzjkoc+8BR1OvURNwFy9DEvgIIRSESe/iqVK7J0TZm+Pb
-        Ga6aF3kBP0I9wwJlwEPn6PFyLv++pks=
-X-Google-Smtp-Source: ABdhPJyB7QPSPVEs1F2sx8O7KdJNLvoh03OdvLY+1uoa+NQsKLx7MvNb/Uqzugm43Q4OJhg0Fwc8eA2Whf0=
-Sender: "drosen via sendgmr" <drosen@drosen.c.googlers.com>
-X-Received: from drosen.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:4e6f])
- (user=drosen job=sendgmr) by 2002:a63:cc07:: with SMTP id x7mr9267752pgf.209.1605766153372;
- Wed, 18 Nov 2020 22:09:13 -0800 (PST)
-Date:   Thu, 19 Nov 2020 06:09:04 +0000
-In-Reply-To: <20201119060904.463807-1-drosen@google.com>
-Message-Id: <20201119060904.463807-4-drosen@google.com>
-Mime-Version: 1.0
-References: <20201119060904.463807-1-drosen@google.com>
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH v4 3/3] f2fs: Handle casefolding with Encryption
-From:   Daniel Rosenberg <drosen@google.com>
-To:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chao Yu <chao@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Richard Weinberger <richard@nod.at>,
-        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mtd@lists.infradead.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel-team@android.com, Daniel Rosenberg <drosen@google.com>,
-        Eric Biggers <ebiggers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1727049AbgKSM0o (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 Nov 2020 07:26:44 -0500
+Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:17156 "EHLO
+        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726845AbgKSM0o (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 19 Nov 2020 07:26:44 -0500
+Received: from pps.filterd (m0148664.ppops.net [127.0.0.1])
+        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AJCGvcX008112;
+        Thu, 19 Nov 2020 12:26:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=pps0720;
+ bh=0emI7px4z+u63UZ0ZSvPQgOhuYq/8G1D4bwuFWOwA8s=;
+ b=PoJIsyPRl08AF6yfil9sHJBwQ18DYVlfIyfdbI57l3YUbZNAGoQz0XQabVFoAByjIHBQ
+ D5dYqykD3nW78aZm5pPa82SCYkRlxu900KESl9zOs6mST2RD/Nu/zhoxfzQYyWiz0OB4
+ gwp6DMQUKP7SmlfxZ3XOMJZ0rGv+FbmXnt+hyDZcBlwNgt0/QSU098iMBSMVOZ3I4DHh
+ UU4bH2rBi9lDNNFU+S7u7qdbGSJPD4wR3f8dUbcKQojFHjRP+9XZi/c8eZxkK7Swb6V2
+ 9Rlvgu7JpJMN06XDQi63ehgj7WRCsaoVfr5MjwoH30tkjcHUnJ3arsiPd7E9a+Fw7vHH jw== 
+Received: from g9t5008.houston.hpe.com (g9t5008.houston.hpe.com [15.241.48.72])
+        by mx0b-002e3701.pphosted.com with ESMTP id 34vgcbk0wg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Nov 2020 12:26:38 +0000
+Received: from G1W8106.americas.hpqcorp.net (g1w8106.austin.hp.com [16.193.72.61])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by g9t5008.houston.hpe.com (Postfix) with ESMTPS id 6985C59;
+        Thu, 19 Nov 2020 12:26:37 +0000 (UTC)
+Received: from G9W9209.americas.hpqcorp.net (16.220.66.156) by
+ G1W8106.americas.hpqcorp.net (16.193.72.61) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 19 Nov 2020 12:26:35 +0000
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (15.241.52.11) by
+ G9W9209.americas.hpqcorp.net (16.220.66.156) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2 via Frontend Transport; Thu, 19 Nov 2020 12:26:35 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HI51BC+cta0F6cIEsGbeyI8KmlURVEYKH/W4KUPWfQFGvAosPVO80rPw/G3zt7lS01HCI8XOYx8Zt24Yrba8DuALxuaVvLI9lnSitc2S84MJKzlnjpoQpOYMbMS5JmT+jFEnstI3md5R/nC3Qq5ElPzEAJRSJyplv681F1yd9FbpIAkxhDDfRGyV/pgC52+1d+TNcWDoGIaeVbz7z7mutBROilJ3a/1499qwdmAhd+4HdC63IIjg0RslDBg9p3hXYYIr9yGds8OGhBEUqkBBnBhzuhN+r4ljyZbsOsSpbvZIRC/bZs4naMLMCielyeYRUYtnkiKnHf9KyXw50KMZWg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0emI7px4z+u63UZ0ZSvPQgOhuYq/8G1D4bwuFWOwA8s=;
+ b=lAxPHn7Pq4SfKflbfrLXdAmsXkhFdTxdc4ECys+DjNROwpVEkk/7rOtNfYPeI/ML8qVWIle48EpqSWVrCMgx+pwGNdf0f4nt/GLFDGGj+DVU0YzW8eOAdXIPnwLD4HXiHnCXZ8KyGYz2FlAo11RtZ/nkwRyI+VwWpO54HkYABCszxzCJ0jfS0Rdu5WGSjP/8YYtUfwa+TWAMfiIy7tFbhX5O1RwmzjF8wyAeseACHT7vPXQ0yxAGMX4dsuehKl56kjuiuQySLIPegolKYlYdPKyWVjZQE7J3/2zHrxv/uqFokauphA1howc1ssYvyvCax57Uytut8xDoJwv1OV+Ozg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=hpe.com; dmarc=pass action=none header.from=hpe.com; dkim=pass
+ header.d=hpe.com; arc=none
+Received: from TU4PR8401MB1181.NAMPRD84.PROD.OUTLOOK.COM
+ (2a01:111:e400:7716::10) by TU4PR8401MB1135.NAMPRD84.PROD.OUTLOOK.COM
+ (2a01:111:e400:7714::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28; Thu, 19 Nov
+ 2020 12:26:34 +0000
+Received: from TU4PR8401MB1181.NAMPRD84.PROD.OUTLOOK.COM
+ ([fe80::fdc8:7994:39c9:b159]) by TU4PR8401MB1181.NAMPRD84.PROD.OUTLOOK.COM
+ ([fe80::fdc8:7994:39c9:b159%7]) with mapi id 15.20.3589.024; Thu, 19 Nov 2020
+ 12:26:34 +0000
+From:   "Lyashkov, Alexey" <alexey.lyashkov@hpe.com>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        =?utf-8?B?0JHQu9Cw0LPQvtC00LDRgNC10L3QutC+INCQ0YDRgtGR0Lw=?= 
+        <artem.blagodarenko@gmail.com>
+CC:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
+        Theodore Tso <tytso@google.com>
+Subject: Re: [PATCH] libfs: Fix DIO mode aligment
+Thread-Topic: [PATCH] libfs: Fix DIO mode aligment
+Thread-Index: AQHWqS98Ux7JmHKkRkWLHTDBEn/6w6nMmrSAgABAAwCAAuOigA==
+Date:   Thu, 19 Nov 2020 12:26:34 +0000
+Message-ID: <B8DE3834-1B3F-4E1E-B342-51E04E4FD278@hpe.com>
+References: <20201023112659.1559-1-artem.blagodarenko@gmail.com>
+ <19A3D721-93C0-42F3-ACBA-DE15B4685F9F@gmail.com>
+ <20201117191918.GB529216@mit.edu>
+In-Reply-To: <20201117191918.GB529216@mit.edu>
+Accept-Language: en-GB, en-US
+Content-Language: en-GB
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: mit.edu; dkim=none (message not signed)
+ header.d=none;mit.edu; dmarc=none action=none header.from=hpe.com;
+x-originating-ip: [31.28.251.133]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: df58aa70-9c54-45cf-3d91-08d88c865a9a
+x-ms-traffictypediagnostic: TU4PR8401MB1135:
+x-microsoft-antispam-prvs: <TU4PR8401MB1135D866D14EED9384035310F7E00@TU4PR8401MB1135.NAMPRD84.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:4941;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: PYuEuKg+Y5d9Rgjh/RryiZcxAxgw2GgHdxGl4iBDRkEko5c+JcecEwgNjpLHl0TidyYdFHO1SshW3b0aayKBIO/4zBH75dUSGcEhXLN8tlU7j7+Or9glGV0U+pwGKTEynTwpjOWujz8oVCgZNMjM3g5QHmjRvDlnmEurDTwffj/X3q3lPZhEvzw7/xkYBHJcQtmSXQZW6QuxlAXdBk64fwMqHfJu3uCWyTemq0gZQxODIbT7Z5DsLofpUodCEEmVdNkOg+q6RKHYrD2CcOdIBGC9cMjBmnK0oijPXU903Tkhzw1wKX4cV4PzNBbe6iTLyLoYIKw76Nh0nRqUiMDMZg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TU4PR8401MB1181.NAMPRD84.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(376002)(346002)(396003)(366004)(39860400002)(136003)(71200400001)(6486002)(64756008)(83380400001)(186003)(54906003)(36756003)(4326008)(6512007)(478600001)(2906002)(66946007)(66556008)(33656002)(66446008)(5660300002)(2616005)(110136005)(26005)(76116006)(6506007)(316002)(8676002)(86362001)(8936002)(66476007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: Xe6x3xterXu0OngsskNZrjikJy3R/pJw+7R2gDb2EtsMEgHE/8LGH5SXuVvqznb4VHI9btkqcrEbwmC3Oo068sMFkrb17h8EwQv4YYhg5MiB57FAQzPwBKYl2OJhGgMmiifoD53rNAQLQwXqq+o+NIcGQv8PsnFtmVoRbFgo7BA68p0SPcUHMMZEQvL6yR6z50tQMUO9anYIER//yfTuo1I4drWiHdJUNwMeam4w1TSFdaCKzlYlFyX5FJ74G7qGVeY0u1MtvA/RPtfbmbN5begjzLPYf9GspYeOOcgLaCNkwiLCZQES7qolllvqBvknghOanNt+bUCIgMQEwST9KZQ4ILzO+sWMbpriwK/2XD+FjRdh8uqEAtwCVAmQrFtCCrv8u6M3+mk3fjjapt9YKnE7QsLtd7pdaxBxYSy3QUk3P5T1+Ry/UH4NSNSoK5nxQI62qeeI1nXzxQqCkFhAl4DNKXYoEIf2vQTCF1Q8v6e7mHLbsszOWaPSp7HNz4WG7hRKZuhETD4nXrVbjFQCu+Bxu5uC8dbE5NNYEveF7EmXzr2xiH2JvKwLZ59hOAxCTefJq7Tf0LgBaDohr8xcYMY65KvJpfkrFG7g65e7PGbcP/Ijm08yzEiigb+jmtRtSNzrxZ3XvL8GEeKnVt/nExbZcWdutA6veO5ruCfF5nCKnFgdBsJGMd0WIf1UioFHWjUwXBSOEsjFEvx0ezhEyEfrD0wr5/rvTAuax92mtfwpzHcYdmEPLCdiuj77jC+kSFX33nFwWhyF1RHvepgq3rhDEX51HcCXQ/P60DGmmSpBKuHB2TZo1dniddgyHdXSujntyXyMsv2DdtHomF0hL+tg3QE4UfJy4LB7qSwkvkAkNbKgQFGnWZ1KB8o5z+VuybchvEZU/kgy3dLLYd4IRw==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <4F140CFFA110CE448D6F816B553B0791@NAMPRD84.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TU4PR8401MB1181.NAMPRD84.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: df58aa70-9c54-45cf-3d91-08d88c865a9a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Nov 2020 12:26:34.5619
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 105b2061-b669-4b31-92ac-24d304d195dc
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Lb/nS8O7rpRx8/K59CeRF2PEqV3UaOO9MMaC1XN+i3t8jwMcbHUxbL/MoBwI6/i8t/KaY0aISRhd7vwhirGe4A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TU4PR8401MB1135
+X-OriginatorOrg: hpe.com
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-19_08:2020-11-19,2020-11-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ malwarescore=0 mlxlogscore=999 priorityscore=1501 impostorscore=0
+ adultscore=0 clxscore=1011 spamscore=0 lowpriorityscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011190093
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Expand f2fs's casefolding support to include encrypted directories.  To
-index casefolded+encrypted directories, we use the SipHash of the
-casefolded name, keyed by a key derived from the directory's fscrypt
-master key.  This ensures that the dirhash doesn't leak information
-about the plaintext filenames.
-
-Encryption keys are unavailable during roll-forward recovery, so we
-can't compute the dirhash when recovering a new dentry in an encrypted +
-casefolded directory.  To avoid having to force a checkpoint when a new
-file is fsync'ed, store the dirhash on-disk appended to i_name.
-
-This patch incorporates work by Eric Biggers <ebiggers@google.com>
-and Jaegeuk Kim <jaegeuk@kernel.org>.
-
-Co-developed-by: Eric Biggers <ebiggers@google.com>
-Signed-off-by: Eric Biggers <ebiggers@google.com>
-Signed-off-by: Daniel Rosenberg <drosen@google.com>
-Reviewed-by: Eric Biggers <ebiggers@google.com>
----
- fs/f2fs/dir.c      | 98 +++++++++++++++++++++++++++++++++++-----------
- fs/f2fs/f2fs.h     |  8 ++--
- fs/f2fs/hash.c     | 11 +++++-
- fs/f2fs/inline.c   |  4 ++
- fs/f2fs/recovery.c | 12 +++++-
- fs/f2fs/super.c    |  6 ---
- 6 files changed, 106 insertions(+), 33 deletions(-)
-
-diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
-index 71fdf5076461..82b58d1f80eb 100644
---- a/fs/f2fs/dir.c
-+++ b/fs/f2fs/dir.c
-@@ -5,6 +5,7 @@
-  * Copyright (c) 2012 Samsung Electronics Co., Ltd.
-  *             http://www.samsung.com/
-  */
-+#include <asm/unaligned.h>
- #include <linux/fs.h>
- #include <linux/f2fs_fs.h>
- #include <linux/sched/signal.h>
-@@ -206,30 +207,55 @@ static struct f2fs_dir_entry *find_in_block(struct inode *dir,
- /*
-  * Test whether a case-insensitive directory entry matches the filename
-  * being searched for.
-+ *
-+ * Returns 1 for a match, 0 for no match, and -errno on an error.
-  */
--static bool f2fs_match_ci_name(const struct inode *dir, const struct qstr *name,
-+static int f2fs_match_ci_name(const struct inode *dir, const struct qstr *name,
- 			       const u8 *de_name, u32 de_name_len)
- {
- 	const struct super_block *sb = dir->i_sb;
- 	const struct unicode_map *um = sb->s_encoding;
-+	struct fscrypt_str decrypted_name = FSTR_INIT(NULL, de_name_len);
- 	struct qstr entry = QSTR_INIT(de_name, de_name_len);
- 	int res;
- 
-+	if (IS_ENCRYPTED(dir)) {
-+		const struct fscrypt_str encrypted_name =
-+			FSTR_INIT((u8 *)de_name, de_name_len);
-+
-+		if (WARN_ON_ONCE(!fscrypt_has_encryption_key(dir)))
-+			return -EINVAL;
-+
-+		decrypted_name.name = kmalloc(de_name_len, GFP_KERNEL);
-+		if (!decrypted_name.name)
-+			return -ENOMEM;
-+		res = fscrypt_fname_disk_to_usr(dir, 0, 0, &encrypted_name,
-+						&decrypted_name);
-+		if (res < 0)
-+			goto out;
-+		entry.name = decrypted_name.name;
-+		entry.len = decrypted_name.len;
-+	}
-+
- 	res = utf8_strncasecmp_folded(um, name, &entry);
--	if (res < 0) {
--		/*
--		 * In strict mode, ignore invalid names.  In non-strict mode,
--		 * fall back to treating them as opaque byte sequences.
--		 */
--		if (sb_has_strict_encoding(sb) || name->len != entry.len)
--			return false;
--		return !memcmp(name->name, entry.name, name->len);
-+	/*
-+	 * In strict mode, ignore invalid names.  In non-strict mode,
-+	 * fall back to treating them as opaque byte sequences.
-+	 */
-+	if (res < 0 && !sb_has_strict_encoding(sb)) {
-+		res = name->len == entry.len &&
-+				memcmp(name->name, entry.name, name->len) == 0;
-+	} else {
-+		/* utf8_strncasecmp_folded returns 0 on match */
-+		res = (res == 0);
- 	}
--	return res == 0;
-+out:
-+	kfree(decrypted_name.name);
-+	return res;
- }
- #endif /* CONFIG_UNICODE */
- 
--static inline bool f2fs_match_name(const struct inode *dir,
-+static inline int f2fs_match_name(const struct inode *dir,
- 				   const struct f2fs_filename *fname,
- 				   const u8 *de_name, u32 de_name_len)
- {
-@@ -256,6 +282,7 @@ struct f2fs_dir_entry *f2fs_find_target_dentry(const struct f2fs_dentry_ptr *d,
- 	struct f2fs_dir_entry *de;
- 	unsigned long bit_pos = 0;
- 	int max_len = 0;
-+	int res = 0;
- 
- 	if (max_slots)
- 		*max_slots = 0;
-@@ -273,10 +300,15 @@ struct f2fs_dir_entry *f2fs_find_target_dentry(const struct f2fs_dentry_ptr *d,
- 			continue;
- 		}
- 
--		if (de->hash_code == fname->hash &&
--		    f2fs_match_name(d->inode, fname, d->filename[bit_pos],
--				    le16_to_cpu(de->name_len)))
--			goto found;
-+		if (de->hash_code == fname->hash) {
-+			res = f2fs_match_name(d->inode, fname,
-+					      d->filename[bit_pos],
-+					      le16_to_cpu(de->name_len));
-+			if (res < 0)
-+				return ERR_PTR(res);
-+			if (res)
-+				goto found;
-+		}
- 
- 		if (max_slots && max_len > *max_slots)
- 			*max_slots = max_len;
-@@ -326,7 +358,11 @@ static struct f2fs_dir_entry *find_in_level(struct inode *dir,
- 		}
- 
- 		de = find_in_block(dir, dentry_page, fname, &max_slots);
--		if (de) {
-+		if (IS_ERR(de)) {
-+			*res_page = ERR_CAST(de);
-+			de = NULL;
-+			break;
-+		} else if (de) {
- 			*res_page = dentry_page;
- 			break;
- 		}
-@@ -448,17 +484,39 @@ void f2fs_set_link(struct inode *dir, struct f2fs_dir_entry *de,
- 	f2fs_put_page(page, 1);
- }
- 
--static void init_dent_inode(const struct f2fs_filename *fname,
-+static void init_dent_inode(struct inode *dir, struct inode *inode,
-+			    const struct f2fs_filename *fname,
- 			    struct page *ipage)
- {
- 	struct f2fs_inode *ri;
- 
-+	if (!fname) /* tmpfile case? */
-+		return;
-+
- 	f2fs_wait_on_page_writeback(ipage, NODE, true, true);
- 
- 	/* copy name info. to this inode page */
- 	ri = F2FS_INODE(ipage);
- 	ri->i_namelen = cpu_to_le32(fname->disk_name.len);
- 	memcpy(ri->i_name, fname->disk_name.name, fname->disk_name.len);
-+	if (IS_ENCRYPTED(dir)) {
-+		file_set_enc_name(inode);
-+		/*
-+		 * Roll-forward recovery doesn't have encryption keys available,
-+		 * so it can't compute the dirhash for encrypted+casefolded
-+		 * filenames.  Append it to i_name if possible.  Else, disable
-+		 * roll-forward recovery of the dentry (i.e., make fsync'ing the
-+		 * file force a checkpoint) by setting LOST_PINO.
-+		 */
-+		if (IS_CASEFOLDED(dir)) {
-+			if (fname->disk_name.len + sizeof(f2fs_hash_t) <=
-+			    F2FS_NAME_LEN)
-+				put_unaligned(fname->hash, (f2fs_hash_t *)
-+					&ri->i_name[fname->disk_name.len]);
-+			else
-+				file_lost_pino(inode);
-+		}
-+	}
- 	set_page_dirty(ipage);
- }
- 
-@@ -541,11 +599,7 @@ struct page *f2fs_init_inode_metadata(struct inode *inode, struct inode *dir,
- 			return page;
- 	}
- 
--	if (fname) {
--		init_dent_inode(fname, page);
--		if (IS_ENCRYPTED(dir))
--			file_set_enc_name(inode);
--	}
-+	init_dent_inode(dir, inode, fname, page);
- 
- 	/*
- 	 * This file should be checkpointed during fsync.
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 62b4f31d30e2..878308736761 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -533,9 +533,11 @@ struct f2fs_filename {
- #ifdef CONFIG_UNICODE
- 	/*
- 	 * For casefolded directories: the casefolded name, but it's left NULL
--	 * if the original name is not valid Unicode or if the filesystem is
--	 * doing an internal operation where usr_fname is also NULL.  In these
--	 * cases we fall back to treating the name as an opaque byte sequence.
-+	 * if the original name is not valid Unicode, if the directory is both
-+	 * casefolded and encrypted and its encryption key is unavailable, or if
-+	 * the filesystem is doing an internal operation where usr_fname is also
-+	 * NULL.  In all these cases we fall back to treating the name as an
-+	 * opaque byte sequence.
- 	 */
- 	struct fscrypt_str cf_name;
- #endif
-diff --git a/fs/f2fs/hash.c b/fs/f2fs/hash.c
-index de841aaf3c43..e3beac546c63 100644
---- a/fs/f2fs/hash.c
-+++ b/fs/f2fs/hash.c
-@@ -111,7 +111,9 @@ void f2fs_hash_filename(const struct inode *dir, struct f2fs_filename *fname)
- 		 * If the casefolded name is provided, hash it instead of the
- 		 * on-disk name.  If the casefolded name is *not* provided, that
- 		 * should only be because the name wasn't valid Unicode, so fall
--		 * back to treating the name as an opaque byte sequence.
-+		 * back to treating the name as an opaque byte sequence.  Note
-+		 * that to handle encrypted directories, the fallback must use
-+		 * usr_fname (plaintext) rather than disk_name (ciphertext).
- 		 */
- 		WARN_ON_ONCE(!fname->usr_fname->name);
- 		if (fname->cf_name.name) {
-@@ -121,6 +123,13 @@ void f2fs_hash_filename(const struct inode *dir, struct f2fs_filename *fname)
- 			name = fname->usr_fname->name;
- 			len = fname->usr_fname->len;
- 		}
-+		if (IS_ENCRYPTED(dir)) {
-+			struct qstr tmp = QSTR_INIT(name, len);
-+
-+			fname->hash =
-+				cpu_to_le32(fscrypt_fname_siphash(dir, &tmp));
-+			return;
-+		}
- 	}
- #endif
- 	fname->hash = cpu_to_le32(TEA_hash_name(name, len));
-diff --git a/fs/f2fs/inline.c b/fs/f2fs/inline.c
-index 70384e31788d..92e9852d316a 100644
---- a/fs/f2fs/inline.c
-+++ b/fs/f2fs/inline.c
-@@ -332,6 +332,10 @@ struct f2fs_dir_entry *f2fs_find_in_inline_dir(struct inode *dir,
- 	make_dentry_ptr_inline(dir, &d, inline_dentry);
- 	de = f2fs_find_target_dentry(&d, fname, NULL);
- 	unlock_page(ipage);
-+	if (IS_ERR(de)) {
-+		*res_page = ERR_CAST(de);
-+		de = NULL;
-+	}
- 	if (de)
- 		*res_page = ipage;
- 	else
-diff --git a/fs/f2fs/recovery.c b/fs/f2fs/recovery.c
-index 4f12ade6410a..0947d36af1a8 100644
---- a/fs/f2fs/recovery.c
-+++ b/fs/f2fs/recovery.c
-@@ -5,6 +5,7 @@
-  * Copyright (c) 2012 Samsung Electronics Co., Ltd.
-  *             http://www.samsung.com/
-  */
-+#include <asm/unaligned.h>
- #include <linux/fs.h>
- #include <linux/f2fs_fs.h>
- #include "f2fs.h"
-@@ -128,7 +129,16 @@ static int init_recovered_filename(const struct inode *dir,
- 	}
- 
- 	/* Compute the hash of the filename */
--	if (IS_CASEFOLDED(dir)) {
-+	if (IS_ENCRYPTED(dir) && IS_CASEFOLDED(dir)) {
-+		/*
-+		 * In this case the hash isn't computable without the key, so it
-+		 * was saved on-disk.
-+		 */
-+		if (fname->disk_name.len + sizeof(f2fs_hash_t) > F2FS_NAME_LEN)
-+			return -EINVAL;
-+		fname->hash = get_unaligned((f2fs_hash_t *)
-+				&raw_inode->i_name[fname->disk_name.len]);
-+	} else if (IS_CASEFOLDED(dir)) {
- 		err = f2fs_init_casefolded_name(dir, fname);
- 		if (err)
- 			return err;
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index f51d52591c99..42293b7ceaf2 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -3399,12 +3399,6 @@ static int f2fs_setup_casefold(struct f2fs_sb_info *sbi)
- 		struct unicode_map *encoding;
- 		__u16 encoding_flags;
- 
--		if (f2fs_sb_has_encrypt(sbi)) {
--			f2fs_err(sbi,
--				"Can't mount with encoding and encryption");
--			return -EINVAL;
--		}
--
- 		if (f2fs_sb_read_encoding(sbi->raw_super, &encoding_info,
- 					  &encoding_flags)) {
- 			f2fs_err(sbi,
--- 
-2.29.2.454.gaff20da3a2-goog
-
+VHNvLA0KDQpUaGlzIHNpdHVhdGlvbiBoaXQgd2l0aCBtb2Rlcm4gaGRkIHdpdGggNGsgYmxvY2sg
+c2l6ZSBhbmQgZTJpbWFnZSBjaGFuZ2VkIHRvIHVzZSBESVJFQ1QgSU8gaW5zdGVhZCBvZiBidWZm
+ZXJlZC4NCmUyZnNwcm9ncyB0cmllcyB0byByZWFkIGEgc3VwZXIgbG9jayBvbiBvZmZzZXQgMWsg
+YW5kIGl0IGNhdXNlZCB0byBzZXQgRlMgYmxvY2sgc2l6ZSB0byAxayBhbmQgc2Vjb25kIGJsb2Nr
+IHJlYWRpbmcuDQoobWFueSBvdGhlciBwbGFjZXMgZXhpc3QsIGJ1dCBpdCBzaW1wbGVzdCkuDQo+
+Pg0KICAgICAgICBpZiAoc3VwZXJibG9jaykgew0KICAgICAgICAgICAgICAgIGlmICghYmxvY2tf
+c2l6ZSkgew0KICAgICAgICAgICAgICAgICAgICAgICAgcmV0dmFsID0gRVhUMl9FVF9JTlZBTElE
+X0FSR1VNRU5UOw0KICAgICAgICAgICAgICAgICAgICAgICAgZ290byBjbGVhbnVwOw0KICAgICAg
+ICAgICAgICAgIH0NCiAgICAgICAgICAgICAgICBpb19jaGFubmVsX3NldF9ibGtzaXplKGZzLT5p
+bywgYmxvY2tfc2l6ZSk7DQogICAgICAgICAgICAgICAgZ3JvdXBfYmxvY2sgPSBzdXBlcmJsb2Nr
+Ow0KICAgICAgICAgICAgICAgIGZzLT5vcmlnX3N1cGVyID0gMDsNCiAgICAgICAgfSBlbHNlIHsN
+CiAgICAgICAgICAgICAgICBpb19jaGFubmVsX3NldF9ibGtzaXplKGZzLT5pbywgU1VQRVJCTE9D
+S19PRkZTRVQpOyA8PDw8PCB0aGlzIGlzIHByb2JsZW0NCiAgICAgICAgICAgICAgICBzdXBlcmJs
+b2NrID0gMTsNCiAgICAgICAgICAgICAgICBncm91cF9ibG9jayA9IDA7DQogICAgICAgICAgICAg
+ICAgcmV0dmFsID0gZXh0MmZzX2dldF9tZW0oU1VQRVJCTE9DS19TSVpFLCAmZnMtPm9yaWdfc3Vw
+ZXIpOw0KICAgICAgICAgICAgICAgIGlmIChyZXR2YWwpDQogICAgICAgICAgICAgICAgICAgICAg
+ICBnb3RvIGNsZWFudXA7DQogICAgICAgIH0NCiAgICAgICAgcmV0dmFsID0gaW9fY2hhbm5lbF9y
+ZWFkX2Jsayhmcy0+aW8sIHN1cGVyYmxvY2ssIC1TVVBFUkJMT0NLX1NJWkUsDQogICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgZnMtPnN1cGVyKTsNCj4+DQpJdCBjYXVzZWQgZXJy
+b3JzIGxpa2UNCiMgZTJpbWFnZSAtUSAvZGV2L21kNjUgL3RtcC9ub2RlMDVfaW1hZ2Vfb3V0DQpl
+MmltYWdlIDEuNDUuNi5jcjEgKDE0LUF1Zy0yMDIwKQ0KZTJpbWFnZTogQXR0ZW1wdCB0byByZWFk
+IGJsb2NrIGZyb20gZmlsZXN5c3RlbSByZXN1bHRlZCBpbiBzaG9ydCByZWFkIHdoaWxlIHRyeWlu
+ZyB0byBvcGVuIC9kZXYvbWQ2NQ0KQ291bGRu4oCZdCBmaW5kIHZhbGlkIGZpbGVzeXN0ZW0gc3Vw
+ZXJibG9jay4NCg0KSXQgbG9va3MgbGlrZSBJIGRvbid0IGZpcnN0IHBlcnNvbiB0byBmb3VuZCBh
+IGJ1ZywgYXMgc29tZW9uZSB3YXMgYWRkIA0KDQpBbGV4DQoNCu+7v09uIDE3LzExLzIwMjAsIDIy
+OjE5LCAiVGhlb2RvcmUgWS4gVHMnbyIgPHR5dHNvQG1pdC5lZHU+IHdyb3RlOg0KDQogICAgT24g
+VHVlLCBOb3YgMTcsIDIwMjAgYXQgMDY6MzA6MTFQTSArMDMwMCwg0JHQu9Cw0LPQvtC00LDRgNC1
+0L3QutC+INCQ0YDRgtGR0Lwgd3JvdGU6DQogICAgPiBIZWxsbywNCiAgICA+IA0KICAgID4gQW55
+IHRob3VnaHRzIGFib3V0IHRoaXMgY2hhbmdlPyBUaGFua3MuDQoNCiAgICBJJ20gdHJ5aW5nIHRv
+IHRoaW5rIG9mIHNpdHVhdGlvbnMgd2hlcmUgdGhpcyBjb3VsZCBhY3R1YWxseSB0cmlnZ2VyIGlu
+DQogICAgcmVhbCBsaWZlLiAgVGhlIG9ubHkgb25lIEkgY2FuIHRoaW5rIG9mIGlzIGlmIGEgZmls
+ZSBzeXN0ZW0gd2l0aCBhIDFrDQogICAgYmxvY2sgZmlsZSBzeXN0ZW0gaXMgbG9jYXRlZCBvbiBh
+biBhbiBBZHZhbmNlZCBGb3JtYXREcml2ZSB3aXRoIGEgNGsNCiAgICBzZWN0b3Igc2l6ZS4NCg0K
+ICAgIFdoYXQgd2FzIHRoZSB1c2UgY2FzZSB3aGVyZSB0aGlzIHdhcyBhY3R1YWxseSBhbiBpc3N1
+ZT8NCg0KICAgICAgICAgCSAgICAgCSAgICAgIAkgICAgCSAgICAgLSBUZWQNCg0K
