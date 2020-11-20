@@ -2,192 +2,180 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D71762BB533
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Nov 2020 20:25:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 291892BB500
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Nov 2020 20:19:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732323AbgKTTZB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 20 Nov 2020 14:25:01 -0500
-Received: from gateway34.websitewelcome.com ([192.185.148.194]:26141 "EHLO
-        gateway34.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732304AbgKTTZB (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 20 Nov 2020 14:25:01 -0500
-Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
-        by gateway34.websitewelcome.com (Postfix) with ESMTP id ECE6D4E9FCD
-        for <linux-ext4@vger.kernel.org>; Fri, 20 Nov 2020 13:02:31 -0600 (CST)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id gBfzkKZwgfgo0gBfzkDLzX; Fri, 20 Nov 2020 13:02:31 -0600
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=+4VxQ3E1SMf3fqpPxA59SXnFTIYnqNYQQfNHAF4XRGw=; b=n09KqYnyKHrO7dveIUWc55mzig
-        y4HUZZbrqh9oIGiAW16mTaR8pcvnAozTxI+rYVVIt9CxAErudOIqW44giqY0jAAxUq2Az5FkJRw8D
-        DdYM3ceCwzW72Iyh3zFwKX+btf9zXkIFnOla0anfthw4DZBTFFqyoxwOvEOl2OJ26TOTLqWU9obCG
-        intkFNaJRljaeNwR96RWCduzT1c1ht64s9kRw8R+vb7ftuKF/SC10c1DXlPqmQL512w8QCfyvTWtG
-        dzgy+MeNJCgbGq47RynDwYUz9POm4OiFKWoqxvHGtR/GFZ1BW9GSDXleqWC/tOZ433VaTMSGJy7Ut
-        yE2h40Yg==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:52198 helo=[192.168.15.4])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1kgBfw-0000VH-WA; Fri, 20 Nov 2020 13:02:29 -0600
-Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
-To:     Joe Perches <joe@perches.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-kernel@vger.kernel.org
-Cc:     alsa-devel@alsa-project.org, amd-gfx@lists.freedesktop.org,
-        bridge@lists.linux-foundation.org, ceph-devel@vger.kernel.org,
-        cluster-devel@redhat.com, coreteam@netfilter.org,
-        devel@driverdev.osuosl.org, dm-devel@redhat.com,
-        drbd-dev@lists.linbit.com, dri-devel@lists.freedesktop.org,
-        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
-        intel-gfx@lists.freedesktop.org, intel-wired-lan@lists.osuosl.org,
-        keyrings@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
-        linux-acpi@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-atm-general@lists.sourceforge.net,
-        linux-block@vger.kernel.org, linux-can@vger.kernel.org,
-        linux-cifs@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-decnet-user@lists.sourceforge.net,
-        linux-ext4@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        linux-geode@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-hams@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-i3c@lists.infradead.org, linux-ide@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-mm@kvack.org,
-        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, nouveau@lists.freedesktop.org,
-        op-tee@lists.trustedfirmware.org, oss-drivers@netronome.com,
-        patches@opensource.cirrus.com, rds-devel@oss.oracle.com,
-        reiserfs-devel@vger.kernel.org, samba-technical@lists.samba.org,
-        selinux@vger.kernel.org, target-devel@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net,
-        usb-storage@lists.one-eyed-alien.net,
-        virtualization@lists.linux-foundation.org,
-        wcn36xx@lists.infradead.org, x86@kernel.org,
-        xen-devel@lists.xenproject.org, linux-hardening@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Kees Cook <keescook@chromium.org>
-References: <cover.1605896059.git.gustavoars@kernel.org>
- <3e0bbb1644fe53d79322c2feb28ccaf3e20c0e94.camel@perches.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Autocrypt: addr=gustavo@embeddedor.com; keydata=
- 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
- AP7RWS474w==
-Message-ID: <9f986394-125a-81f7-7696-fe1a9f4eb4f5@embeddedor.com>
-Date:   Fri, 20 Nov 2020 13:02:34 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730477AbgKTTQY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 20 Nov 2020 14:16:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729432AbgKTTQW (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 20 Nov 2020 14:16:22 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ACAEC0613CF
+        for <linux-ext4@vger.kernel.org>; Fri, 20 Nov 2020 11:16:22 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id m9so8121934pgb.4
+        for <linux-ext4@vger.kernel.org>; Fri, 20 Nov 2020 11:16:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xY1CG2+GPkGd3C1xQXa64REjnTkKoaMtaJNKB1F9SdI=;
+        b=ngrfatKWWBK3F65TLnIt+Ei0pexQ8FqA6sz7FBPsgbeZ2RmuLhZ26TLJ23hyy972Vc
+         fYliwosU/wY4H7adSwXqwd0owFmKkD+T3aKYDwWAdqyFr18EVFpWa5jmnf/7VSMzqc7w
+         K7ngGagG1xkGiHLnKkbenA41rjFWNKewjGIiDGtPxN+18fikATPTK2gJ0jCk9nBYybra
+         LNsOWofFsmZFwiijG7OTV1x4mZPh4OqP4WqMfM+ynjUQO5y1+8BFe4Oax0HX10crgh5z
+         YUuJxEoZ6eK5fm3oy7vnJJUNJNbjZHj8NnmxIFvMirjTwXo0IM458BMGeiIoJcp85psu
+         p+og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xY1CG2+GPkGd3C1xQXa64REjnTkKoaMtaJNKB1F9SdI=;
+        b=R1vlxOgYDjw2IfH43DzMp9ONIOKWRlbI8ODzdF5r6hKCOLJHJV4CHZBFIriDnHPU3Z
+         BNKlcodc0QYF0SnHo8UlPvC3TfcVQJKlFy4+4Ob2C3Lka+NeLG06RafIMlgpmnwt0jl0
+         vTX5WLptDAco2RNtA+wESscMYc1QIhN3z/JJvHPo9Ia7pdJoDLIh01Xe27N4JfPRo1Q9
+         S9Vv/zJ7qPJXSfbYQAKMSRjAdMFzenUfs3IQok0uPHGGkPvBPeqfxWLJ7La9xBZiJ6da
+         ZnoNC1zpwJPUGZh3XzzyVJkBBMEE/byg4ASnNIWuEusaTN6GebQ4xLQGEUHVLTj6ZTNg
+         4MIA==
+X-Gm-Message-State: AOAM530tQnGrOW80n/AsgyNBILdn2IldtqIlriUzskkIZCJ3NSlI6u8X
+        fu3uuAO1ug7ttjgkwtDYNIgIJOry2Io=
+X-Google-Smtp-Source: ABdhPJxHUkWCYTecAaivsPCEgqfm5mUbpcERmz7rewrdUPKPsWeSzj8/KwepQug4ELX5K3FQlIPCyQ==
+X-Received: by 2002:a62:7e81:0:b029:197:c3e2:4ad9 with SMTP id z123-20020a627e810000b0290197c3e24ad9mr7763657pfc.35.1605899781228;
+        Fri, 20 Nov 2020 11:16:21 -0800 (PST)
+Received: from harshads-520.kir.corp.google.com ([2620:15c:17:10:a6ae:11ff:fe11:86a2])
+        by smtp.googlemail.com with ESMTPSA id o9sm4370480pjr.2.2020.11.20.11.16.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 11:16:20 -0800 (PST)
+From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Subject: [PATCH 00/15] Fast commits support for e2fsprogs
+Date:   Fri, 20 Nov 2020 11:15:51 -0800
+Message-Id: <20201120191606.2224881-1-harshadshirwadkar@gmail.com>
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
 MIME-Version: 1.0
-In-Reply-To: <3e0bbb1644fe53d79322c2feb28ccaf3e20c0e94.camel@perches.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1kgBfw-0000VH-WA
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.4]) [187.162.31.110]:52198
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 30
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+This patch series adds fast commits support in e2fsprogs. This
+includes fast commit recovery support in e2fsck and fast commit
+configuration support in mke2fs and tune2fs. Along with that this
+patch series also makes e2fsck/recovery.c identical with
+jbd2/recovery.c in kernel. In addition, this patch imports and makes
+fast_commit.h (the file that contains on-disk formats for fast
+commits) byte identical with the kernel.
 
+The recovery logic for fast commits follows the same steps as that of
+the recovery logic in kernel. The general guidining principle for the
+fast commit replay is that the individual tags found in fast commit
+area store the result of the operation as their paylod instead of
+storing the procedure itself. The recovery logic enforces this result
+onto the filesystem thereby making the fast commit replay
+idempotent. Unlike kernel, there's no atomic oepration support in
+e2fsprogs yet. So, it's possible that we may crash while we are in the
+middle of replaying of a fast commit tag. The only way to recover from
+that situation would be to run fsck. That's why we mark the file
+system as unclean before the fast commit replay and make it clean at
+the end.
 
-On 11/20/20 12:28, Joe Perches wrote:
-> On Fri, 2020-11-20 at 12:21 -0600, Gustavo A. R. Silva wrote:
->> Hi all,
->>
->> This series aims to fix almost all remaining fall-through warnings in
->> order to enable -Wimplicit-fallthrough for Clang.
->>
->> In preparation to enable -Wimplicit-fallthrough for Clang, explicitly
->> add multiple break/goto/return/fallthrough statements instead of just
->> letting the code fall through to the next case.
->>
->> Notice that in order to enable -Wimplicit-fallthrough for Clang, this
->> change[1] is meant to be reverted at some point. So, this patch helps
->> to move in that direction.
-> 
-> This was a bit hard to parse for a second or three.
-> 
-> Thanks Gustavo.
-> 
-> How was this change done?
+This series adds new regression test that performs fast commit
+replay. I ensured that all the regressions tests pass.
 
-I audited case by case in order to determine the best fit for each
-situation. Depending on the surrounding logic, sometimes it makes
-more sense a goto or a fallthrough rather than merely a break.
+Verified that all the tests pass:
+367 tests succeeded     0 tests failed
 
-Thanks
---
-Gustavo
+New fast commit recovery test:
+j_recover_fast_commit: ok
+
+The patch series invalidates the initial version of the patch series
+which was sent back in Mar 2020. Since then the fast commit code in
+kernel has evolved a lot (including the on-disk format change). So,
+this patch series is based on the new fast commit kernel code (which
+is available in upstream kernel now). This patch series is a complete
+revamp of the original series.
+
+Github: https://github.com/harshadjs/e2fsprogs/tree/fast-commit-v2
+
+Harshad Shirwadkar (15):
+  ext2fs: move calculate_summary_stats to ext2fs lib
+  ext2fs, e2fsck: add kernel endian-ness conversion macros
+  e2fsck: port fc changes from kernel's recovery.c to e2fsck
+  mke2fs, dumpe2fs: make fast commit blocks configurable
+  mke2fs, tune2fs: update man page with fast commit info
+  ext2fs: add new APIs needed for fast commits
+  e2fsck: add function to rewrite extent tree
+  e2fsck: add fast commit setup code
+  e2fsck: add fast commit scan pass
+  e2fsck: add fast commit replay skeleton
+  e2fsck: add fc replay for link, unlink, creat tags
+  e2fsck: add replay for add_range, del_range, and inode tags
+  debugfs: add fast commit support to logdump
+  tests: add fast commit recovery tests
+  ext4: fix tests to account for new dumpe2fs output
+
+ debugfs/journal.c                       |  10 +-
+ debugfs/logdump.c                       | 122 ++++-
+ e2fsck/e2fsck.h                         |  32 ++
+ e2fsck/extents.c                        | 168 +++---
+ e2fsck/journal.c                        | 656 +++++++++++++++++++++++-
+ e2fsck/recovery.c                       | 232 ++++++---
+ e2fsck/unix.c                           |   8 +-
+ lib/e2p/e2p.h                           |   1 +
+ lib/e2p/ljs.c                           |  16 +-
+ lib/ext2fs/bitops.h                     |   8 +
+ lib/ext2fs/ext2_fs.h                    |   1 +
+ lib/ext2fs/ext2fs.h                     |  33 +-
+ lib/ext2fs/extent.c                     |  56 ++
+ lib/ext2fs/fast_commit.h                | 201 ++++++++
+ lib/ext2fs/initialize.c                 |  94 ++++
+ lib/ext2fs/jfs_compat.h                 |  19 +-
+ lib/ext2fs/kernel-jbd.h                 |  19 +-
+ lib/ext2fs/mkjournal.c                  |  99 ++--
+ lib/ext2fs/unlink.c                     |   6 +-
+ misc/dumpe2fs.c                         |  10 +-
+ misc/mke2fs.8.in                        |  21 +
+ misc/mke2fs.c                           |  24 +-
+ misc/tune2fs.8.in                       |  25 +
+ misc/tune2fs.c                          |  67 +--
+ misc/util.c                             |  63 ++-
+ misc/util.h                             |   4 +-
+ resize/resize2fs.c                      |   6 +-
+ tests/d_corrupt_journal_nr_users/expect |   6 +-
+ tests/f_jnl_errno/expect.0              |   6 +-
+ tests/f_opt_extent/expect               |   2 +-
+ tests/i_bitmaps/expect                  |   8 +-
+ tests/j_ext_dumpe2fs/expect             |   6 +-
+ tests/j_recover_fast_commit/commands    |   4 +
+ tests/j_recover_fast_commit/expect      |  23 +
+ tests/j_recover_fast_commit/image.gz    | Bin 0 -> 3595 bytes
+ tests/j_recover_fast_commit/script      |  26 +
+ tests/m_bigjournal/expect.1             |   6 +-
+ tests/m_extent_journal/expect.1         |   6 +-
+ tests/m_resize_inode_meta_bg/expect.1   |   6 +-
+ tests/m_rootdir/expect                  |   6 +-
+ tests/r_32to64bit/expect                |   6 +-
+ tests/r_32to64bit_meta/expect           |   4 +-
+ tests/r_32to64bit_move_itable/expect    |   8 +-
+ tests/r_64to32bit/expect                |   6 +-
+ tests/r_64to32bit_meta/expect           |   4 +-
+ tests/r_move_itable_nostride/expect     |   6 +-
+ tests/r_move_itable_realloc/expect      |   6 +-
+ tests/t_disable_mcsum/expect            |   4 +-
+ tests/t_disable_mcsum_noinitbg/expect   |   6 +-
+ tests/t_disable_mcsum_yesinitbg/expect  |   4 +-
+ tests/t_enable_mcsum/expect             |   6 +-
+ tests/t_enable_mcsum_ext3/expect        |  10 +-
+ tests/t_enable_mcsum_initbg/expect      |   6 +-
+ 53 files changed, 1829 insertions(+), 353 deletions(-)
+ create mode 100644 lib/ext2fs/fast_commit.h
+ create mode 100644 tests/j_recover_fast_commit/commands
+ create mode 100644 tests/j_recover_fast_commit/expect
+ create mode 100644 tests/j_recover_fast_commit/image.gz
+ create mode 100755 tests/j_recover_fast_commit/script
+
+-- 
+2.29.2.454.gaff20da3a2-goog
+
