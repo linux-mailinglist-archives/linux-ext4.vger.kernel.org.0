@@ -2,159 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B94312BA0BD
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Nov 2020 04:05:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E69F82BA140
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Nov 2020 04:38:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726468AbgKTDDR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 Nov 2020 22:03:17 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7658 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726365AbgKTDDR (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Nov 2020 22:03:17 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CchDy08knz15PMm;
-        Fri, 20 Nov 2020 11:02:58 +0800 (CST)
-Received: from [10.174.179.106] (10.174.179.106) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 20 Nov 2020 11:03:06 +0800
-Subject: Re: [Bug report] journal data mode trigger panic in
- jbd2_journal_commit_transaction
-From:   yangerkun <yangerkun@huawei.com>
-To:     Mauricio Oliveira <mauricio.oliveira@canonical.com>
-CC:     "Theodore Y . Ts'o" <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, <linux-ext4@vger.kernel.org>,
-        "zhangyi (F)" <yi.zhang@huawei.com>, Hou Tao <houtao1@huawei.com>,
-        <zhangxiaoxu5@huawei.com>, Ye Bin <yebin10@huawei.com>,
-        <hejie3@huawei.com>
-References: <68b9650e-bef2-69e2-ab5e-8aaddaf46cfe@huawei.com>
- <CAO9xwp12E1wjErfX-Ef6+OKnme_ENOx22Hh=44g9cLn7aBr3-w@mail.gmail.com>
- <c4c16548-1f37-a63e-de38-de5812bcc97e@huawei.com>
- <CAO9xwp37T_pDohXYOpHhb-KhDYUBEMR0qDN0NJvCLRUoG3CK2Q@mail.gmail.com>
- <17d7ecde-5fda-cd03-6fef-e7b8250489f9@huawei.com>
-Message-ID: <14879a89-b6d2-e142-2ea3-23fbb041444b@huawei.com>
-Date:   Fri, 20 Nov 2020 11:03:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726982AbgKTDg3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 Nov 2020 22:36:29 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:52534 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726282AbgKTDg3 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Nov 2020 22:36:29 -0500
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0AK3a1It028283
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Nov 2020 22:36:01 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id D84FC420107; Thu, 19 Nov 2020 22:36:00 -0500 (EST)
+Date:   Thu, 19 Nov 2020 22:36:00 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Jan Kara <jack@suse.cz>
+Cc:     yebin <yebin10@huawei.com>, jack@suse.com,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 0/2] Fix race between do_invalidatepage and
+ init_page_buffers
+Message-ID: <20201120033600.GA695373@mit.edu>
+References: <20200822082218.2228697-1-yebin10@huawei.com>
+ <20200824155143.GH24877@quack2.suse.cz>
+ <5F447351.6060207@huawei.com>
+ <20200825084137.GA32298@quack2.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <17d7ecde-5fda-cd03-6fef-e7b8250489f9@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.106]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200825084137.GA32298@quack2.suse.cz>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Tue, Aug 25, 2020 at 10:41:37AM +0200, Jan Kara wrote:
+> On Tue 25-08-20 10:11:29, yebin wrote:
+> > Your patch certainly can fix the problem with my testcases, but I don't
+> > think it's a good way. There are other paths that can call
+> > do_invalidatepage , for instance block ioctl to discard and zero_range.
+> 
+> OK, good point! So my patch is a cleanup that stands on its own and we
+> should do it regardless. But I agree we need more to completely fix this.
+> I don't quite like the callback you've added just for this special case
+> (furthermore it grows size of every buffer_head and there can be lots of
+> those). But I agree with the general idea that we shouldn't discard buffers
+> that the filesystem is working with.
+> 
+> In fact I believe that fallocate(2) and zeroout/discard ioctls should
+> return EBUSY if they are run against a mounted device because with 99%
+> probability something went wrong and you're accidentally discarding the
+> wrong device. But maybe I'm wrong. I'll run this idea through other fs
+> developers.
 
+I'm going through old patches, and I'm trying to figure out where did
+we end up on this issue?   Did we come to a conclusion on this?
 
-在 2020/11/20 10:54, yangerkun 写道:
-> 
-> 
-> 在 2020/11/19 21:12, Mauricio Oliveira 写道:
->> On Thu, Nov 19, 2020 at 1:25 AM yangerkun <yangerkun@huawei.com> wrote:
->>>
->>>
->>>
->>> 在 2020/11/16 21:50, Mauricio Oliveira 写道:
->>>> Hi Kun,
->>>>
->>>> On Sat, Nov 14, 2020 at 5:18 AM yangerkun <yangerkun@huawei.com> wrote:
->>>>> While using ext4 with data=journal(3.10 kernel), we meet a problem 
->>>>> that
->>>>> we think may never happend...
->>>> [...]
->>>>
->>>> Could you please confirm you mean 5.10-rc* kernel instead of 3.10?
->>>> (It seems so as you mention a recent commit below.)  Thanks!
->>>>
->>>>> For now, what I have seen that can dirty buffer directly is
->>>>> ext4_page_mkwrite(64a9f1449950 ("ext4: data=journal: fixes for
->>>>> ext4_page_mkwrite()")), and runing ext4_punch_hole with keep_size
->>>>> /ext4_page_mkwrite parallel can trigger above warning easily.
->>>> [...]
->>>>
->>>>
->>>
->>> Hi,
->>>
->>> Sorry for the long delay reply... And thanks a lot for your advise! The
->>> bug trigger with a very low probability. So won't trigger with 5.10 can
->>> not prove no bug exist in 5.10.
->>>
->>
->> No worries, and thanks for following up.
->> So I understand that the bug report was indeed on 3.10, and 5.10-rcN
->> is not yet confirmed.
->>
->>> Google a lot and notice that someone before has report the same bug[1].
->>> '3b136499e906 ("ext4: fix data corruption in data=journal mode")' seems
->>> fix the problem. I will try to understand this, and give a analysis
->>> about how to reproduce it!
->>
->> Cool, thanks!
->>
->>> Thanks,
->>> Kun.
->>
->>
->>
-> Hi,
-> 
-> The follow step can reproduce the bug[1] reported before easily. And the 
-> bug we meet seems same. Following patch will fix the bug.
-> 
-> 3b136499e906 ext4: fix data corruption in data=journal mode
-> b90197b65518 ext4: use private version of page_zero_new_buffers() for 
-> data=journal mode
-> 
-> 
-> 1. mkfs.ext4
-> 2. touch $tofile(ino == 12)
-> 3. touch $fromfile(ino == 13) and write 4k to fromfile and sync
-> 
-> mmap $fromfile 4k
-> and write 4k
-> to $tofile
-> 
-> ...
-> generic_perform_write
->   ext4_write_begin
->    ext4_journal_start
->    (trans 1)
->   if (ino == 12) sleep for 30s
->   ...                           truncate $fromfile
->                                 to 0
->   copied=0,bytes=4k
->   ext4_journalled_write_end
->    page_zero_new_buffers
->     mark_buffer_dirty
->    write_end_fn
->     ...
->     __jbd2_journal_file_buffer
->      test_clear_buffer_dirty
->      __jbd2_journal_temp_unlink_buffer
-            this will mark buffer dirty again!
->    ext4_journal_stop
->    (trans 1)
->                                                   trans1 commit
->                                                   ...
->    ext4_truncate_failed_write
->     ...
->     journal_unmap_buffer
->      set_buffer_freed
->                                                   forget list
->                                                    ...
->                                                    clear_buffer_jbddirty
->                                                    ...
->                                                    J_ASSERT_BH(bh,
->                                                    !buffer_dirty(bh))
->                                                    ^^^^^^^^^^^^^^^^^
->                                                    trigger the bug...
-> 
-> 
-> 
-> [1]. https://www.spinics.net/lists/linux-ext4/msg56447.html
-> 
-> Thanks,
-> Kun.
-> .
+One other thing which I noticed when looking at the original patch was
+shouldn't lvreduce not be allowed to run on a LV which has a mounted
+file system on its block device?
+
+					- Ted
