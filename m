@@ -2,541 +2,222 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4C292BB510
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Nov 2020 20:19:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C2702BB5F8
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Nov 2020 20:53:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732288AbgKTTQp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 20 Nov 2020 14:16:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732276AbgKTTQo (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 20 Nov 2020 14:16:44 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47CE2C0613CF
-        for <linux-ext4@vger.kernel.org>; Fri, 20 Nov 2020 11:16:44 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id v12so8767848pfm.13
-        for <linux-ext4@vger.kernel.org>; Fri, 20 Nov 2020 11:16:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=z0hzlz8HwLKz6qwhsD2BujHz+YW0z2tjXKA4WWmM0ew=;
-        b=nfLhP9YcWg8HKjYImav9iw0M9S2Q22KSsxEaDF5DHCM1pdZ89XPCmtFO529MiEodTg
-         BWdGxNMVXDxjaiFVqnc9qxZcWR8EzBI/JShFsk1f+X4tjNH+mFm424i+8ggjPcqclRS1
-         cg5Kds3GpStcDwLUS3RQhMHiujpAUxeAm+8h6qVW2oEoRv5l5m89Z2tbaKOET0dZP8Mf
-         1IHBL9obh6tFRnUM5sXcHUPOW2ZvTzAQv128tmRekFDgEiMPjlMyZmbd5clVxBxS/9iT
-         otu4hA0/ZfHckSfnW90qupqe1HDS1Ypy3sxEgosEYOyhnDpdV0W8s7+Rg67VnBZrg/Fe
-         Rv6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=z0hzlz8HwLKz6qwhsD2BujHz+YW0z2tjXKA4WWmM0ew=;
-        b=rAEezlfjG8ryRLiwjyXOPUe2eqhZ+YYOPEbSN0tOd/WAyAGCtTMcThBy70CxaZlVAO
-         s4Y2zcfdeQEmoRA3/fy0bCrS2OPfZeLB2gPb/Ck4Oi8eBjrJL+eVAivFP8PnYDM8G/Na
-         jUX7Yq89HcLy6zSY6D37V4E0nfyvTcIIDLuTP6cc3E82nUOL5eK3BZr+ywcseDRV3VU4
-         k32IHoZWE+xuAtpofCY47JV3xm+Aa4spQr+4FlaTQDzMM1I6iArMpN81MIOOH+nEsIdT
-         rQk+rQud9PQm+j9C2wQ/sfOGwiAOKQBSVVt4U+vvA/R6YHFgnY55VjpfsVmWasY2aeMT
-         X9ug==
-X-Gm-Message-State: AOAM530jXctOyA3XJ4arWH71AejRRmfoCgDitMNjO7yaqIHO5kYVofSY
-        qDTjPuJ+byB98TRwtv5acYDUpELhl1k=
-X-Google-Smtp-Source: ABdhPJxfByswgPZkwwLZOGVeHzsyIfBPUlWdxqA1RlOJoay4qMyIIxWNhZ2U/Y4NMfcRDnydvPIQMg==
-X-Received: by 2002:a05:6a00:80e:b029:196:1cad:b64 with SMTP id m14-20020a056a00080eb02901961cad0b64mr15314605pfk.5.1605899803059;
-        Fri, 20 Nov 2020 11:16:43 -0800 (PST)
-Received: from harshads-520.kir.corp.google.com ([2620:15c:17:10:a6ae:11ff:fe11:86a2])
-        by smtp.googlemail.com with ESMTPSA id o9sm4370480pjr.2.2020.11.20.11.16.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 11:16:41 -0800 (PST)
-From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu, Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Subject: [PATCH 15/15] ext4: fix tests to account for new dumpe2fs output
-Date:   Fri, 20 Nov 2020 11:16:06 -0800
-Message-Id: <20201120191606.2224881-16-harshadshirwadkar@gmail.com>
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-In-Reply-To: <20201120191606.2224881-1-harshadshirwadkar@gmail.com>
-References: <20201120191606.2224881-1-harshadshirwadkar@gmail.com>
+        id S1729907AbgKTTvh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 20 Nov 2020 14:51:37 -0500
+Received: from gateway31.websitewelcome.com ([192.185.143.33]:13586 "EHLO
+        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729782AbgKTTvh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 20 Nov 2020 14:51:37 -0500
+Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
+        by gateway31.websitewelcome.com (Postfix) with ESMTP id 3C3258EF6B
+        for <linux-ext4@vger.kernel.org>; Fri, 20 Nov 2020 13:04:52 -0600 (CST)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id gBiGk3jbposA0gBiGkba6q; Fri, 20 Nov 2020 13:04:52 -0600
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=o6HouBgCeARvPDycxq+DQL9GTuV0FZaznhFf+B5lvvQ=; b=RC17bKQEy60oNUOsP9/+FoFba3
+        7IOvK7tatxfYFulfXrzo1R1inJiR70+fGm96EOiyxuGoF10JW8F/HPs+jPpuI495euTAFQHufGSAV
+        KFk2OzUW7hWgtf7v4LM6Poy7NupLGz6fEDbexZ2hS8wrxAWAlGQM9lxjgUTuzQh4+AEwwhtM/J+sO
+        AoW8/bIYU33TR8wm0Dkj1ZL5b4OT77sQWi2RWgP14r2tlNn5M1PdILrguUL1Nl2Hy0yV5KIqCCVAo
+        j0nfxV1qHzIcwVylK9t1AWmoK15QajwvXxprFA+S9YfES+wOdY+ET5oNf4zzGyJ24cDNT8LjZrCcC
+        nhh+2ALA==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:52360 helo=[192.168.15.4])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1kgBiD-00024G-7d; Fri, 20 Nov 2020 13:04:49 -0600
+Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
+To:     Jakub Kicinski <kuba@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        amd-gfx@lists.freedesktop.org, bridge@lists.linux-foundation.org,
+        ceph-devel@vger.kernel.org, cluster-devel@redhat.com,
+        coreteam@netfilter.org, devel@driverdev.osuosl.org,
+        dm-devel@redhat.com, drbd-dev@lists.linbit.com,
+        dri-devel@lists.freedesktop.org, GR-everest-linux-l2@marvell.com,
+        GR-Linux-NIC-Dev@marvell.com, intel-gfx@lists.freedesktop.org,
+        intel-wired-lan@lists.osuosl.org, keyrings@vger.kernel.org,
+        linux1394-devel@lists.sourceforge.net, linux-acpi@vger.kernel.org,
+        linux-afs@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net,
+        linux-block@vger.kernel.org, linux-can@vger.kernel.org,
+        linux-cifs@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-decnet-user@lists.sourceforge.net,
+        linux-ext4@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        linux-geode@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-hams@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-i3c@lists.infradead.org, linux-ide@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-mm@kvack.org,
+        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, nouveau@lists.freedesktop.org,
+        op-tee@lists.trustedfirmware.org, oss-drivers@netronome.com,
+        patches@opensource.cirrus.com, rds-devel@oss.oracle.com,
+        reiserfs-devel@vger.kernel.org, samba-technical@lists.samba.org,
+        selinux@vger.kernel.org, target-devel@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net,
+        usb-storage@lists.one-eyed-alien.net,
+        virtualization@lists.linux-foundation.org,
+        wcn36xx@lists.infradead.org, x86@kernel.org,
+        xen-devel@lists.xenproject.org, linux-hardening@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>,
+        Kees Cook <keescook@chromium.org>
+References: <cover.1605896059.git.gustavoars@kernel.org>
+ <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Autocrypt: addr=gustavo@embeddedor.com; keydata=
+ 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
+ AP7RWS474w==
+Message-ID: <4609d49b-4dd3-c017-b76e-a8a536871c05@embeddedor.com>
+Date:   Fri, 20 Nov 2020 13:04:55 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1kgBiD-00024G-7d
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.4]) [187.162.31.110]:52360
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 107
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-dumpe2fs tool now is capable of reporting number of fast commit
-blocks. There were slight changes in the output of dumpe2fs outside of
-fast commits. This patch fixes the regression tests to expect the new
-output.
 
-Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
----
- tests/d_corrupt_journal_nr_users/expect |  6 ++++--
- tests/f_jnl_errno/expect.0              |  6 ++++--
- tests/f_opt_extent/expect               |  2 +-
- tests/i_bitmaps/expect                  |  8 +++++---
- tests/j_ext_dumpe2fs/expect             |  6 ++++--
- tests/m_bigjournal/expect.1             |  6 ++++--
- tests/m_extent_journal/expect.1         |  6 ++++--
- tests/m_resize_inode_meta_bg/expect.1   |  6 ++++--
- tests/m_rootdir/expect                  |  6 ++++--
- tests/r_32to64bit/expect                |  6 +++---
- tests/r_32to64bit_meta/expect           |  4 ++--
- tests/r_32to64bit_move_itable/expect    |  8 ++++----
- tests/r_64to32bit/expect                |  6 +++---
- tests/r_64to32bit_meta/expect           |  4 ++--
- tests/r_move_itable_nostride/expect     |  6 ++++--
- tests/r_move_itable_realloc/expect      |  6 ++++--
- tests/t_disable_mcsum/expect            |  4 ++--
- tests/t_disable_mcsum_noinitbg/expect   |  6 +++---
- tests/t_disable_mcsum_yesinitbg/expect  |  4 ++--
- tests/t_enable_mcsum/expect             |  6 +++---
- tests/t_enable_mcsum_ext3/expect        | 10 +++++-----
- tests/t_enable_mcsum_initbg/expect      |  6 +++---
- 22 files changed, 74 insertions(+), 54 deletions(-)
+Hi,
 
-diff --git a/tests/d_corrupt_journal_nr_users/expect b/tests/d_corrupt_journal_nr_users/expect
-index cdfb49a0..656d35c3 100644
---- a/tests/d_corrupt_journal_nr_users/expect
-+++ b/tests/d_corrupt_journal_nr_users/expect
-@@ -34,8 +34,10 @@ Default directory hash:   half_md4
- Journal backup:           inode blocks
- Checksum type:            crc32c
- Journal features:         (none)
--Journal size:             4096k
--Journal length:           1024
-+Total journal size:       4096k
-+Total journal blocks:     1024
-+Max transaction length:   1024
-+Fast commit length:       0
- Journal sequence:         0x00000001
- Journal start:            0
- Journal number of users:  9999
-diff --git a/tests/f_jnl_errno/expect.0 b/tests/f_jnl_errno/expect.0
-index 2a9426d9..96fb01a7 100644
---- a/tests/f_jnl_errno/expect.0
-+++ b/tests/f_jnl_errno/expect.0
-@@ -31,8 +31,10 @@ Journal inode:            8
- Default directory hash:   half_md4
- Journal backup:           inode blocks
- Journal features:         (none)
--Journal size:             1024k
--Journal length:           1024
-+Total journal size:       1024k
-+Total journal blocks:     1024
-+Max transaction length:   1024
-+Fast commit length:       0
- Journal sequence:         0x00000005
- Journal start:            0
- 
-diff --git a/tests/f_opt_extent/expect b/tests/f_opt_extent/expect
-index 6d1f9d11..9d2021e8 100644
---- a/tests/f_opt_extent/expect
-+++ b/tests/f_opt_extent/expect
-@@ -35,7 +35,7 @@ Change in FS metadata:
-  Free inodes:              65047
-  First block:              1
-  Block size:               1024
--@@ -48,8 +48,8 @@
-+@@ -50,8 +50,8 @@
-    Block bitmap at 262 (+261)
-    Inode bitmap at 278 (+277)
-    Inode table at 294-549 (+293)
-diff --git a/tests/i_bitmaps/expect b/tests/i_bitmaps/expect
-index fb9d8f1f..6199bb7c 100644
---- a/tests/i_bitmaps/expect
-+++ b/tests/i_bitmaps/expect
-@@ -1,6 +1,8 @@
--46,50d45
-+46,52d45
- < Journal features:         (none)
--< Journal size:             1024k
--< Journal length:           1024
-+< Total journal size:       1024k
-+< Total journal blocks:     1024
-+< Max transaction length:   1024
-+< Fast commit length:       0
- < Journal sequence:         0x00000001
- < Journal start:            0
-diff --git a/tests/j_ext_dumpe2fs/expect b/tests/j_ext_dumpe2fs/expect
-index db77a36d..2838bbd1 100644
---- a/tests/j_ext_dumpe2fs/expect
-+++ b/tests/j_ext_dumpe2fs/expect
-@@ -43,8 +43,10 @@ Desired extra isize:      28
- Default directory hash:   half_md4
- Checksum type:            crc32c
- Journal features:         journal_64bit journal_checksum_v3
--Journal size:             2048k
--Journal length:           2048
-+Total journal size:       2048k
-+Total journal blocks:     2048
-+Max transaction length:   2048
-+Fast commit length:       0
- Journal first block:      3
- Journal sequence:         0x00000003
- Journal start:            0
-diff --git a/tests/m_bigjournal/expect.1 b/tests/m_bigjournal/expect.1
-index 80f71d1f..eb0e3bc3 100644
---- a/tests/m_bigjournal/expect.1
-+++ b/tests/m_bigjournal/expect.1
-@@ -42,8 +42,10 @@ Journal inode:            8
- Default directory hash:   half_md4
- Journal backup:           inode blocks
- Journal features:         (none)
--Journal size:             5000M
--Journal length:           1280000
-+Total journal size:       5000M
-+Total journal blocks:     1280000
-+Max transaction length:   1280000
-+Fast commit length:       0
- Journal sequence:         0x00000001
- Journal start:            0
- 
-diff --git a/tests/m_extent_journal/expect.1 b/tests/m_extent_journal/expect.1
-index cfc052a8..9a9219e9 100644
---- a/tests/m_extent_journal/expect.1
-+++ b/tests/m_extent_journal/expect.1
-@@ -48,8 +48,10 @@ Journal inode:            8
- Default directory hash:   half_md4
- Journal backup:           inode blocks
- Journal features:         (none)
--Journal size:             4096k
--Journal length:           4096
-+Total journal size:       4096k
-+Total journal blocks:     4096
-+Max transaction length:   4096
-+Fast commit length:       0
- Journal sequence:         0x00000001
- Journal start:            0
- 
-diff --git a/tests/m_resize_inode_meta_bg/expect.1 b/tests/m_resize_inode_meta_bg/expect.1
-index 6a7f3993..7feaed9d 100644
---- a/tests/m_resize_inode_meta_bg/expect.1
-+++ b/tests/m_resize_inode_meta_bg/expect.1
-@@ -51,8 +51,10 @@ Journal inode:            8
- Default directory hash:   half_md4
- Journal backup:           inode blocks
- Journal features:         (none)
--Journal size:             4096k
--Journal length:           1024
-+Total journal size:       4096k
-+Total journal blocks:     1024
-+Max transaction length:   1024
-+Fast commit length:       0
- Journal sequence:         0x00000001
- Journal start:            0
- 
-diff --git a/tests/m_rootdir/expect b/tests/m_rootdir/expect
-index 113ffc64..dbc79772 100644
---- a/tests/m_rootdir/expect
-+++ b/tests/m_rootdir/expect
-@@ -36,8 +36,10 @@ Default directory hash:   half_md4
- Journal backup:           inode blocks
- Checksum type:            crc32c
- Journal features:         (none)
--Journal size:             1024k
--Journal length:           1024
-+Total journal size:       1024k
-+Total journal blocks:     1024
-+Max transaction length:   1024
-+Fast commit length:       0
- Journal sequence:         0x00000001
- Journal start:            0
- 
-diff --git a/tests/r_32to64bit/expect b/tests/r_32to64bit/expect
-index c6816b7f..de573b3e 100644
---- a/tests/r_32to64bit/expect
-+++ b/tests/r_32to64bit/expect
-@@ -47,7 +47,7 @@ Change in FS metadata:
-  Blocks per group:         8192
-  Fragments per group:      8192
-  Inodes per group:         1024
--@@ -41,16 +41,16 @@
-+@@ -43,16 +43,16 @@
-  
-  
-  group:block:super:gdt:bbitmap:ibitmap:itable
-@@ -70,7 +70,7 @@ Change in FS metadata:
-  10:81921:-1:-1:270:286:2852
-  11:90113:-1:-1:271:287:3108
-  12:98305:-1:-1:272:288:3364
--@@ -66,9 +66,9 @@
-+@@ -68,9 +68,9 @@
-  22:180225:-1:-1:131079:131095:132641
-  23:188417:-1:-1:131080:131096:132897
-  24:196609:-1:-1:131081:131097:133153
-@@ -82,7 +82,7 @@ Change in FS metadata:
-  28:229377:-1:-1:131085:131101:134177
-  29:237569:-1:-1:131086:131102:134433
-  30:245761:-1:-1:131087:131103:134689
--@@ -90,7 +90,7 @@
-+@@ -92,7 +92,7 @@
-  46:376833:-1:-1:262159:262175:265761
-  47:385025:-1:-1:262160:262176:266017
-  48:393217:-1:-1:393217:393233:393249
-diff --git a/tests/r_32to64bit_meta/expect b/tests/r_32to64bit_meta/expect
-index c4f39266..70babbd9 100644
---- a/tests/r_32to64bit_meta/expect
-+++ b/tests/r_32to64bit_meta/expect
-@@ -46,7 +46,7 @@ Change in FS metadata:
-  Blocks per group:         8192
-  Fragments per group:      8192
-  Inodes per group:         1024
--@@ -55,9 +55,9 @@
-+@@ -57,9 +57,9 @@
-  12:98305:-1:-1:15:31:3107
-  13:106497:-1:-1:16:32:3363
-  14:114689:-1:-1:17:33:3619
-@@ -59,7 +59,7 @@ Change in FS metadata:
-  18:147457:-1:-1:131075:131091:131617
-  19:155649:-1:-1:131076:131092:131873
-  20:163841:-1:-1:131077:131093:132129
--@@ -87,9 +87,9 @@
-+@@ -89,9 +89,9 @@
-  44:360449:-1:-1:262158:262174:265250
-  45:368641:-1:-1:262159:262175:265506
-  46:376833:-1:-1:262160:262176:265762
-diff --git a/tests/r_32to64bit_move_itable/expect b/tests/r_32to64bit_move_itable/expect
-index 0a3b78e7..a1d2aebc 100644
---- a/tests/r_32to64bit_move_itable/expect
-+++ b/tests/r_32to64bit_move_itable/expect
-@@ -46,7 +46,7 @@ Change in FS metadata:
-  Blocks per group:         8192
-  Fragments per group:      8192
-  Inodes per group:         1024
--@@ -39,16 +39,16 @@
-+@@ -41,16 +41,16 @@
-  
-  
-  group:block:super:gdt:bbitmap:ibitmap:itable
-@@ -69,7 +69,7 @@ Change in FS metadata:
-  10:81921:-1:-1:81921:81922:81923
-  11:90113:-1:-1:90113:90114:90115
-  12:98305:-1:-1:98305:98306:98307
--@@ -64,9 +64,9 @@
-+@@ -66,9 +66,9 @@
-  22:180225:-1:-1:180225:180226:180227
-  23:188417:-1:-1:188417:188418:188419
-  24:196609:-1:-1:196609:196610:196611
-@@ -81,7 +81,7 @@ Change in FS metadata:
-  28:229377:-1:-1:229377:229378:229379
-  29:237569:-1:-1:237569:237570:237571
-  30:245761:-1:-1:245761:245762:245763
--@@ -88,7 +88,7 @@
-+@@ -90,7 +90,7 @@
-  46:376833:-1:-1:376833:376834:376835
-  47:385025:-1:-1:385025:385026:385027
-  48:393217:-1:-1:393217:393218:393219
-@@ -90,7 +90,7 @@ Change in FS metadata:
-  50:409601:-1:-1:409601:409602:409603
-  51:417793:-1:-1:417793:417794:417795
-  52:425985:-1:-1:425985:425986:425987
--@@ -120,7 +120,7 @@
-+@@ -122,7 +122,7 @@
-  78:638977:-1:-1:638977:638978:638979
-  79:647169:-1:-1:647169:647170:647171
-  80:655361:-1:-1:655361:655362:655363
-diff --git a/tests/r_64to32bit/expect b/tests/r_64to32bit/expect
-index 7dff2a05..eb609fbd 100644
---- a/tests/r_64to32bit/expect
-+++ b/tests/r_64to32bit/expect
-@@ -46,7 +46,7 @@ Change in FS metadata:
-  Reserved GDT blocks:      256
-  Blocks per group:         8192
-  Fragments per group:      8192
--@@ -42,16 +40,16 @@
-+@@ -44,16 +42,16 @@
-  
-  
-  group:block:super:gdt:bbitmap:ibitmap:itable
-@@ -69,7 +69,7 @@ Change in FS metadata:
-  10:81921:-1:-1:272:288:2854
-  11:90113:-1:-1:273:289:3110
-  12:98305:-1:-1:274:290:3366
--@@ -67,9 +65,9 @@
-+@@ -69,9 +67,9 @@
-  22:180225:-1:-1:131079:131095:132641
-  23:188417:-1:-1:131080:131096:132897
-  24:196609:-1:-1:131081:131097:133153
-@@ -81,7 +81,7 @@ Change in FS metadata:
-  28:229377:-1:-1:131085:131101:134177
-  29:237569:-1:-1:131086:131102:134433
-  30:245761:-1:-1:131087:131103:134689
--@@ -91,7 +89,7 @@
-+@@ -93,7 +91,7 @@
-  46:376833:-1:-1:262159:262175:265761
-  47:385025:-1:-1:262160:262176:266017
-  48:393217:-1:-1:393217:393233:393249
-diff --git a/tests/r_64to32bit_meta/expect b/tests/r_64to32bit_meta/expect
-index b17a8784..70655909 100644
---- a/tests/r_64to32bit_meta/expect
-+++ b/tests/r_64to32bit_meta/expect
-@@ -46,7 +46,7 @@ Change in FS metadata:
-  Blocks per group:         8192
-  Fragments per group:      8192
-  Inodes per group:         1024
--@@ -56,9 +54,9 @@
-+@@ -58,9 +56,9 @@
-  12:98305:-1:-1:15:31:3107
-  13:106497:-1:-1:16:32:3363
-  14:114689:-1:-1:17:33:3619
-@@ -59,7 +59,7 @@ Change in FS metadata:
-  18:147457:-1:-1:131076:131092:131618
-  19:155649:-1:-1:131077:131093:131874
-  20:163841:-1:-1:131078:131094:132130
--@@ -88,9 +86,9 @@
-+@@ -90,9 +88,9 @@
-  44:360449:-1:-1:262158:262174:265250
-  45:368641:-1:-1:262159:262175:265506
-  46:376833:-1:-1:262160:262176:265762
-diff --git a/tests/r_move_itable_nostride/expect b/tests/r_move_itable_nostride/expect
-index 098cbfc5..74c2cc0a 100644
---- a/tests/r_move_itable_nostride/expect
-+++ b/tests/r_move_itable_nostride/expect
-@@ -52,8 +52,10 @@ Journal inode:            8
- Default directory hash:   half_md4
- Journal backup:           inode blocks
- Journal features:         (none)
--Journal size:             16M
--Journal length:           16384
-+Total journal size:       16M
-+Total journal blocks:     16384
-+Max transaction length:   16384
-+Fast commit length:       0
- Journal sequence:         0x00000001
- Journal start:            0
- 
-diff --git a/tests/r_move_itable_realloc/expect b/tests/r_move_itable_realloc/expect
-index f9a7f515..67f2fe4a 100644
---- a/tests/r_move_itable_realloc/expect
-+++ b/tests/r_move_itable_realloc/expect
-@@ -51,8 +51,10 @@ Journal inode:            8
- Default directory hash:   half_md4
- Journal backup:           inode blocks
- Journal features:         (none)
--Journal size:             16M
--Journal length:           16384
-+Total journal size:       16M
-+Total journal blocks:     16384
-+Max transaction length:   16384
-+Fast commit length:       0
- Journal sequence:         0x00000001
- Journal start:            0
- 
-diff --git a/tests/t_disable_mcsum/expect b/tests/t_disable_mcsum/expect
-index 3341ad71..bfa21b89 100644
---- a/tests/t_disable_mcsum/expect
-+++ b/tests/t_disable_mcsum/expect
-@@ -34,8 +34,8 @@ Change in FS metadata:
-  Journal backup:           inode blocks
- -Checksum type:            crc32c
-  Journal features:         (none)
-- Journal size:             16M
-- Journal length:           16384
-+ Total journal size:       16M
-+ Total journal blocks:     16384
- Pass 1: Checking inodes, blocks, and sizes
- Pass 2: Checking directory structure
- Pass 3: Checking directory connectivity
-diff --git a/tests/t_disable_mcsum_noinitbg/expect b/tests/t_disable_mcsum_noinitbg/expect
-index 62eca4e9..fe61fcbc 100644
---- a/tests/t_disable_mcsum_noinitbg/expect
-+++ b/tests/t_disable_mcsum_noinitbg/expect
-@@ -34,9 +34,9 @@ Change in FS metadata:
-  Journal backup:           inode blocks
- -Checksum type:            crc32c
-  Journal features:         (none)
-- Journal size:             16M
-- Journal length:           16384
--@@ -48,18 +47,18 @@
-+ Total journal size:       16M
-+ Total journal blocks:     16384
-+@@ -50,18 +49,18 @@
-    Block bitmap at 262 (+261)
-    Inode bitmap at 278 (+277)
-    Inode table at 294-549 (+293)
-diff --git a/tests/t_disable_mcsum_yesinitbg/expect b/tests/t_disable_mcsum_yesinitbg/expect
-index 7e3485fe..b9062489 100644
---- a/tests/t_disable_mcsum_yesinitbg/expect
-+++ b/tests/t_disable_mcsum_yesinitbg/expect
-@@ -34,8 +34,8 @@ Change in FS metadata:
-  Journal backup:           inode blocks
- -Checksum type:            crc32c
-  Journal features:         (none)
-- Journal size:             16M
-- Journal length:           16384
-+ Total journal size:       16M
-+ Total journal blocks:     16384
- Pass 1: Checking inodes, blocks, and sizes
- Pass 2: Checking directory structure
- Pass 3: Checking directory connectivity
-diff --git a/tests/t_enable_mcsum/expect b/tests/t_enable_mcsum/expect
-index cb0aef62..fcb0ed16 100644
---- a/tests/t_enable_mcsum/expect
-+++ b/tests/t_enable_mcsum/expect
-@@ -58,9 +58,9 @@ Change in FS metadata:
-  Journal backup:           inode blocks
- +Checksum type:            crc32c
-  Journal features:         (none)
-- Journal size:             16M
-- Journal length:           16384
--@@ -47,8 +48,8 @@
-+ Total journal size:       16M
-+ Total journal blocks:     16384
-+@@ -49,8 +50,8 @@
-    Block bitmap at 262 (+261)
-    Inode bitmap at 278 (+277)
-    Inode table at 294-549 (+293)
-diff --git a/tests/t_enable_mcsum_ext3/expect b/tests/t_enable_mcsum_ext3/expect
-index 11c5a26d..549e60e9 100644
---- a/tests/t_enable_mcsum_ext3/expect
-+++ b/tests/t_enable_mcsum_ext3/expect
-@@ -37,9 +37,9 @@ Change in FS metadata:
-  Journal backup:           inode blocks
- +Checksum type:            crc32c
-  Journal features:         (none)
-- Journal size:             16M
-- Journal length:           16384
--@@ -37,7 +38,7 @@
-+ Total journal size:       16M
-+ Total journal blocks:     16384
-+@@ -39,7 +40,7 @@
-  Journal start:            0
-  
-  
-@@ -48,7 +48,7 @@ Change in FS metadata:
-    Primary superblock at 1, Group descriptors at 2-3
-    Reserved GDT blocks at 4-259
-    Block bitmap at 260 (+259)
--@@ -46,7 +47,7 @@
-+@@ -48,7 +49,7 @@
-    0 free blocks, 1013 free inodes, 2 directories
-    Free blocks: 
-    Free inodes: 12-1024
-@@ -57,7 +57,7 @@ Change in FS metadata:
-    Backup superblock at 8193, Group descriptors at 8194-8195
-    Reserved GDT blocks at 8196-8451
-    Block bitmap at 8452 (+259)
--@@ -55,6 +56,6 @@
-+@@ -57,6 +58,6 @@
-    0 free blocks, 1024 free inodes, 0 directories
-    Free blocks: 
-    Free inodes: 1025-2048
-diff --git a/tests/t_enable_mcsum_initbg/expect b/tests/t_enable_mcsum_initbg/expect
-index a37648bf..987141f1 100644
---- a/tests/t_enable_mcsum_initbg/expect
-+++ b/tests/t_enable_mcsum_initbg/expect
-@@ -58,9 +58,9 @@ Change in FS metadata:
-  Journal backup:           inode blocks
- +Checksum type:            crc32c
-  Journal features:         (none)
-- Journal size:             16M
-- Journal length:           16384
--@@ -41,24 +42,24 @@
-+ Total journal size:       16M
-+ Total journal blocks:     16384
-+@@ -43,24 +44,24 @@
-  Journal start:            0
-  
-  
--- 
-2.29.2.454.gaff20da3a2-goog
+On 11/20/20 12:53, Jakub Kicinski wrote:
+> On Fri, 20 Nov 2020 12:21:39 -0600 Gustavo A. R. Silva wrote:
+>> This series aims to fix almost all remaining fall-through warnings in
+>> order to enable -Wimplicit-fallthrough for Clang.
+>>
+>> In preparation to enable -Wimplicit-fallthrough for Clang, explicitly
+>> add multiple break/goto/return/fallthrough statements instead of just
+>> letting the code fall through to the next case.
+>>
+>> Notice that in order to enable -Wimplicit-fallthrough for Clang, this
+>> change[1] is meant to be reverted at some point. So, this patch helps
+>> to move in that direction.
+>>
+>> Something important to mention is that there is currently a discrepancy
+>> between GCC and Clang when dealing with switch fall-through to empty case
+>> statements or to cases that only contain a break/continue/return
+>> statement[2][3][4].
+> 
+> Are we sure we want to make this change? Was it discussed before?
+> 
+> Are there any bugs Clangs puritanical definition of fallthrough helped
+> find?
+> 
+> IMVHO compiler warnings are supposed to warn about issues that could
+> be bugs. Falling through to default: break; can hardly be a bug?!
 
+The justification for this is explained in this same changelog text:
+
+Now that the -Wimplicit-fallthrough option has been globally enabled[5],
+any compiler should really warn on missing either a fallthrough annotation
+or any of the other case-terminating statements (break/continue/return/
+goto) when falling through to the next case statement. Making exceptions
+to this introduces variation in case handling which may continue to lead
+to bugs, misunderstandings, and a general lack of robustness. The point
+of enabling options like -Wimplicit-fallthrough is to prevent human error
+and aid developers in spotting bugs before their code is even built/
+submitted/committed, therefore eliminating classes of bugs. So, in order
+to really accomplish this, we should, and can, move in the direction of
+addressing any error-prone scenarios and get rid of the unintentional
+fallthrough bug-class in the kernel, entirely, even if there is some minor
+redundancy. Better to have explicit case-ending statements than continue to
+have exceptions where one must guess as to the right result. The compiler
+will eliminate any actual redundancy.
+
+Note that there is already a patch in mainline that addresses almost
+40,000 of these issues[6].
+
+[1] commit e2079e93f562c ("kbuild: Do not enable -Wimplicit-fallthrough for clang for now")
+[2] ClangBuiltLinux#636
+[3] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=91432
+[4] https://godbolt.org/z/xgkvIh
+[5] commit a035d552a93b ("Makefile: Globally enable fall-through warning")
+[6] commit 4169e889e588 ("include: jhash/signal: Fix fall-through warnings for Clang")
+
+Thanks
+--
+Gustavo
