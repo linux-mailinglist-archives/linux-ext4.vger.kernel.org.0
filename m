@@ -2,57 +2,57 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C19012BB50E
+	by mail.lfdr.de (Postfix) with ESMTP id 55DB42BB50D
 	for <lists+linux-ext4@lfdr.de>; Fri, 20 Nov 2020 20:19:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732274AbgKTTQn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        id S1732270AbgKTTQn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
         Fri, 20 Nov 2020 14:16:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48554 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732200AbgKTTQm (ORCPT
+        with ESMTP id S1732257AbgKTTQm (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Fri, 20 Nov 2020 14:16:42 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20ECFC0613CF
-        for <linux-ext4@vger.kernel.org>; Fri, 20 Nov 2020 11:16:41 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id c66so8802688pfa.4
-        for <linux-ext4@vger.kernel.org>; Fri, 20 Nov 2020 11:16:41 -0800 (PST)
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 925CDC061A04
+        for <linux-ext4@vger.kernel.org>; Fri, 20 Nov 2020 11:16:42 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id r18so8112044pgu.6
+        for <linux-ext4@vger.kernel.org>; Fri, 20 Nov 2020 11:16:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=aq+mQbTZB8JdqawelikdF6sYXjAnMc5tHSNbbcALgwo=;
-        b=MTK2FdxzZL6hdjHUyC6cgw5Gf382dyEZ31dbz9aPTlfRg5Kefi+yP+ZMEMh1qjnWwu
-         j3jaUyZVshva0WTPDJS22cZOOinoFHMWwkpzAGvWMjpsO+/b0zKp70dHs5pk8canrnXg
-         n/xo620EtpPnXBDpOUoj4x8X7cGBl/3yssaDT047IWmNQMLBf8PQSa1XHi+4Y9N08wU1
-         7NWTkhesvs9KAjUOnvAWryRFY622AEBQ0XVfrGfBMgE33jvI+KnojwIQhWyKRi2w5EG7
-         N48bqyo1TVs1jurQGCALwJC9ayIEU5N/9S1g0lnKBexk4gIypnJew2dBHATosUfNMMFm
-         XOtw==
+        bh=mGxPJmgwdj47SE+aKI9OYp28RhTZr5pYTnMDSjDyNi0=;
+        b=Tvf3ztuIS8dsXrzNNl1CH/TaPT8q3Q0u3t4IkerGHJy/hubpf0JR8jI/MzY1Q0SPNX
+         KKn0R43bMtFB7K3wxt29KUYuhS5/SuKwO2wtFutZPZ+qEoC3fwkavR9hHoT0mMMb932i
+         8iK2FZMNP0Ae7f54Twz3c4fCLo5IDREehCcun827Isk/cvR7Sl/hYq5op/tjc0NDSwhQ
+         aChZDBt3yauLN7pG631NZbajMzmuVzyZ1rNM5LFiJzvXmQFQ81gk4NLqzhxB48zj2duN
+         JDBismYInhisSkezGEGC6ixE3jdeY5J9ovGo3SEIG++PupN8ffaSPzBEjYhHfIl7vwor
+         7swg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=aq+mQbTZB8JdqawelikdF6sYXjAnMc5tHSNbbcALgwo=;
-        b=FQV7W1VLNavSP+8QehJnQ9Fu3s7+eh1S/YG0FmDcGZwuIH3txlWdp+7gnf88Xllxlz
-         mEb71zULKyXKKn0Ec8hMQQpMLh42Ccln/vdRDcA3ZWaoQnm7SCGTS3Xwi7cAZIRyrdiY
-         HU+OPJI2fgDKrGEBDFPjulxndzlNmF08MKLs7Gf6Cbpr5iM87lUDcufeDD/XG9GKgN8v
-         JYZPcueNyCZcHBdkQZ5Gv5XTkUE33k8+ZojowyIFpCZvpQxK8qeV+pCkHwcEDM5/Lt5k
-         MQS1OOP6CaSM1u2cPXD2RUOlVhW4N3scxpT9vvXLLKuxk04fqTG9cffghwnRGFFJCnaI
-         dzCg==
-X-Gm-Message-State: AOAM5337RBEvRqcCeK7t+RLj1Pam81hcdW44JGQqVCDl0SO1NoZjg7kN
-        92r9kVl3+SZbw4tv5zv2OcfblQsqYi8=
-X-Google-Smtp-Source: ABdhPJzVFfmZW/066pw28fatgLF42ZjZWZdO73n6/B4xm+xNpSrBrg/ecfqX3v5iWtrQ4n2eQaUUMg==
-X-Received: by 2002:a17:90b:19c4:: with SMTP id nm4mr10441311pjb.222.1605899800167;
-        Fri, 20 Nov 2020 11:16:40 -0800 (PST)
+        bh=mGxPJmgwdj47SE+aKI9OYp28RhTZr5pYTnMDSjDyNi0=;
+        b=esejNXV9oUalDRi13NEpeus0ks8dEV71ji6QKt1ah1Qcs5R3BNcMFRvaFHiCAbjeFJ
+         ygfoAEqyOdKoS556JnZrnV0YS5PoWmI+iO60WzAlIX8BgpEd3TvXZLvTEiEmpSP/bkvI
+         a3VXN15W/0m/Xq04xkeZWZNCaZXM5EdIgod/FkNdZOzYy5jFIvyR8IjHnsiaBNPE8v3d
+         /MuXmca/+F3oROiWTGirsy88T7EOj1q781jFFj7Su6fok7SJvgzwOncHa98iZbt1jgo6
+         EYZOtCPOiXppoSHDJcNa+lnqihB+EEqs/5MhdPr8gzC1CLgIzsrCys1N/yuQpEYodfqV
+         XOmQ==
+X-Gm-Message-State: AOAM530zANmRLFy/GK/zJIVpprg9pFv8LnKXhE1zhBhw61m/RqTgFYUE
+        TTM2hGx6y+gvle0UehGgEIkFG7R98yE=
+X-Google-Smtp-Source: ABdhPJz3n04hBRDWcsBKGEc8KFmuGIEHtGbZFplO0250rRhspZFDQHhq49bxqVYEnE3EaiM/f3IBEg==
+X-Received: by 2002:a17:90a:f0f:: with SMTP id 15mr11982476pjy.127.1605899801564;
+        Fri, 20 Nov 2020 11:16:41 -0800 (PST)
 Received: from harshads-520.kir.corp.google.com ([2620:15c:17:10:a6ae:11ff:fe11:86a2])
-        by smtp.googlemail.com with ESMTPSA id o9sm4370480pjr.2.2020.11.20.11.16.38
+        by smtp.googlemail.com with ESMTPSA id o9sm4370480pjr.2.2020.11.20.11.16.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 11:16:38 -0800 (PST)
+        Fri, 20 Nov 2020 11:16:40 -0800 (PST)
 From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 To:     linux-ext4@vger.kernel.org
 Cc:     tytso@mit.edu, Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Subject: [PATCH 13/15] debugfs: add fast commit support to logdump
-Date:   Fri, 20 Nov 2020 11:16:04 -0800
-Message-Id: <20201120191606.2224881-14-harshadshirwadkar@gmail.com>
+Subject: [PATCH 14/15] tests: add fast commit recovery tests
+Date:   Fri, 20 Nov 2020 11:16:05 -0800
+Message-Id: <20201120191606.2224881-15-harshadshirwadkar@gmail.com>
 X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
 In-Reply-To: <20201120191606.2224881-1-harshadshirwadkar@gmail.com>
 References: <20201120191606.2224881-1-harshadshirwadkar@gmail.com>
@@ -62,227 +62,134 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Add fast commit support for debugfs logdump. The debugfs output looks
-like this:
-
-debugfs 1.46-WIP (20-Mar-2020)
-debugfs:  logdump
-Journal starts at block 1, transaction 2
-Found expected sequence 2, type 1 (descriptor block) at block 1
-Found expected sequence 2, type 2 (commit block) at block 10
-No magic number at block 11: end of journal.
-
-*** Fast Commit Area ***
-tag HEAD, features 0x0, tid 3
-tag INODE, inode 14
-tag ADD_RANGE, inode 14, lblk 0, pblk 1091, len 1
-tag DEL_RANGE, inode 14, lblk 1, len 1
-tag CREAT_DENTRY, parent 12, ino 14, name "new"
-tag DEL_ENTRY, parent 12, ino 13, name "old"
-tag INODE, inode 13
-tag ADD_RANGE, inode 13, lblk 0, pblk 1603, len 16
-tag ADD_RANGE, inode 13, lblk 16, pblk 1092, len 240
-tag CREAT_DENTRY, parent 12, ino 13, name "data"
-tag INODE, inode 14
-tag INODE, inode 13
-tag TAIL, tid 3
+Add j_recover_fast_commit test that ensure that e2fsck is able to
+recover a disk from fast commit log.
 
 Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 ---
- debugfs/logdump.c | 122 ++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 117 insertions(+), 5 deletions(-)
+ tests/j_recover_fast_commit/commands |   4 ++++
+ tests/j_recover_fast_commit/expect   |  23 +++++++++++++++++++++++
+ tests/j_recover_fast_commit/image.gz | Bin 0 -> 3595 bytes
+ tests/j_recover_fast_commit/script   |  26 ++++++++++++++++++++++++++
+ 4 files changed, 53 insertions(+)
+ create mode 100644 tests/j_recover_fast_commit/commands
+ create mode 100644 tests/j_recover_fast_commit/expect
+ create mode 100644 tests/j_recover_fast_commit/image.gz
+ create mode 100755 tests/j_recover_fast_commit/script
 
-diff --git a/debugfs/logdump.c b/debugfs/logdump.c
-index 16889954..151be3e2 100644
---- a/debugfs/logdump.c
-+++ b/debugfs/logdump.c
-@@ -33,6 +33,7 @@ extern char *optarg;
- #include "debugfs.h"
- #include "blkid/blkid.h"
- #include "jfs_user.h"
-+#include "ext2fs/fast_commit.h"
- #include <uuid/uuid.h>
- 
- enum journal_location {JOURNAL_IS_INTERNAL, JOURNAL_IS_EXTERNAL};
-@@ -65,6 +66,9 @@ static void dump_metadata_block(FILE *, struct journal_source *,
- 				unsigned int, unsigned int, unsigned int,
- 				int, tid_t);
- 
-+static void dump_fc_block(FILE *out_file, char *buf, int blocksize,
-+			  int transaction, int *fc_done, int dump_old);
+diff --git a/tests/j_recover_fast_commit/commands b/tests/j_recover_fast_commit/commands
+new file mode 100644
+index 00000000..74e20e4e
+--- /dev/null
++++ b/tests/j_recover_fast_commit/commands
+@@ -0,0 +1,4 @@
++ls
++ls a/
++ex a/new
++ex a/data
+diff --git a/tests/j_recover_fast_commit/expect b/tests/j_recover_fast_commit/expect
+new file mode 100644
+index 00000000..2fc1e53f
+--- /dev/null
++++ b/tests/j_recover_fast_commit/expect
+@@ -0,0 +1,23 @@
++test_filesys: recovering journal
++Pass 1: Checking inodes, blocks, and sizes
++Pass 2: Checking directory structure
++Pass 3: Checking directory connectivity
++Pass 4: Checking reference counts
++Pass 5: Checking group summary information
++test_filesys: 14/256 files (14.3% non-contiguous), 1365/2048 blocks
++Exit status is 0
++debugfs: ls
++ 2  (12) .    2  (12) ..    11  (20) lost+found    12  (968) a   
++debugfs: ls a/
++ 12  (12) .    2  (12) ..    13  (12) data    14  (976) new   
++debugfs: ex a/new
++Level Entries       Logical      Physical Length Flags
++ 0/ 0   1/  1     0 -     0  1107 -  1107      1 
++debugfs: ex a/data
++Level Entries       Logical      Physical Length Flags
++ 0/ 1   1/  1     0 -   255  1618            256
++ 1/ 1   1/  5     0 -    15  1619 -  1634     16 
++ 1/ 1   2/  5    16 -    31  1601 -  1616     16 
++ 1/ 1   3/  5    32 -    63  1985 -  2016     32 
++ 1/ 1   4/  5    64 -   127  1537 -  1600     64 
++ 1/ 1   5/  5   128 -   255  1793 -  1920    128 
+diff --git a/tests/j_recover_fast_commit/image.gz b/tests/j_recover_fast_commit/image.gz
+new file mode 100644
+index 0000000000000000000000000000000000000000..b7357afc46bec8a0154d5746fa2fce86c2341efc
+GIT binary patch
+literal 3595
+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
+HWGCd`W!a1I
+
+literal 0
+HcmV?d00001
+
+diff --git a/tests/j_recover_fast_commit/script b/tests/j_recover_fast_commit/script
+new file mode 100755
+index 00000000..6bdb8258
+--- /dev/null
++++ b/tests/j_recover_fast_commit/script
+@@ -0,0 +1,26 @@
++#!/bin/bash
 +
- static void do_hexdump (FILE *, char *, int);
- 
- #define WRAP(jsb, blocknr)					\
-@@ -353,6 +357,7 @@ static void dump_journal(char *cmdname, FILE *out_file,
- 	journal_header_t	*header;
- 	tid_t			transaction;
- 	unsigned int		blocknr = 0;
-+	int			fc_done;
- 
- 	/* First, check to see if there's an ext2 superblock header */
- 	retval = read_journal_block(cmdname, source, 0, buf, 2048);
-@@ -410,7 +415,7 @@ static void dump_journal(char *cmdname, FILE *out_file,
- 	if (!blocknr) {
- 		/* Empty journal, nothing to do. */
- 		if (!dump_old)
--			return;
-+			goto fc;
- 		else
- 			blocknr = 1;
- 	}
-@@ -420,7 +425,7 @@ static void dump_journal(char *cmdname, FILE *out_file,
- 				((ext2_loff_t) blocknr) * blocksize,
- 				buf, blocksize);
- 		if (retval)
--			return;
-+			break;
- 
- 		header = (journal_header_t *) buf;
- 
-@@ -431,7 +436,7 @@ static void dump_journal(char *cmdname, FILE *out_file,
- 		if (magic != JBD2_MAGIC_NUMBER) {
- 			fprintf (out_file, "No magic number at block %u: "
- 				 "end of journal.\n", blocknr);
--			return;
-+			break;
- 		}
- 
- 		if (sequence != transaction) {
-@@ -439,7 +444,7 @@ static void dump_journal(char *cmdname, FILE *out_file,
- 				 "block %u: end of journal.\n",
- 				 sequence, transaction, blocknr);
- 			if (!dump_old)
--				return;
-+				break;
- 		}
- 
- 		if (dump_descriptors) {
-@@ -473,9 +478,25 @@ static void dump_journal(char *cmdname, FILE *out_file,
- 		default:
- 			fprintf (out_file, "Unexpected block type %u at "
- 				 "block %u.\n", blocktype, blocknr);
--			return;
-+			break;
- 		}
- 	}
++FSCK_OPT=-fy
++IMAGE=$test_dir/image.gz
++CMDS=$test_dir/commands
 +
-+fc:
-+	blocknr = be32_to_cpu(jsb->s_maxlen) - jbd2_journal_get_num_fc_blks(jsb) + 1;
-+	while (blocknr <= be32_to_cpu(jsb->s_maxlen)) {
-+		retval = read_journal_block(cmdname, source,
-+				((ext2_loff_t) blocknr) * blocksize,
-+				buf, blocksize);
-+		if (retval)
-+			return;
++gunzip < $IMAGE > $TMPFILE
 +
-+		dump_fc_block(out_file, buf, blocksize, transaction, &fc_done,
-+			dump_old);
-+		if (!dump_old && fc_done)
-+			break;
-+		blocknr++;
-+	}
- }
- 
- static inline size_t journal_super_tag_bytes(journal_superblock_t *jsb)
-@@ -496,6 +517,97 @@ static inline size_t journal_super_tag_bytes(journal_superblock_t *jsb)
- 	return sz - sizeof(__u32);
- }
- 
-+static void dump_fc_block(FILE *out_file, char *buf, int blocksize,
-+	int transaction, int *fc_done, int dump_old)
-+{
-+	struct ext4_fc_tl	*tl;
-+	struct ext4_fc_head	*head;
-+	struct ext4_fc_add_range	*add_range;
-+	struct ext4_fc_del_range	*del_range;
-+	struct ext4_fc_dentry_info	*dentry_info;
-+	struct ext4_fc_tail		*tail;
-+	struct ext3_extent	*ex;
++# Run fsck to fix things?
++EXP=$test_dir/expect
++OUT=$test_name.log
 +
-+	*fc_done = 0;
-+	fc_for_each_tl(buf, buf + blocksize, tl) {
-+		switch (le16_to_cpu(tl->fc_tag)) {
-+		case EXT4_FC_TAG_ADD_RANGE:
-+			add_range =
-+				(struct ext4_fc_add_range *)ext4_fc_tag_val(tl);
-+			ex = (struct ext3_extent *)add_range->fc_ex;
-+			fprintf(out_file,
-+				"tag %s, inode %d, lblk %d, pblk %ld, len %d\n",
-+				tag2str(tl->fc_tag),
-+				le32_to_cpu(add_range->fc_ino),
-+				le32_to_cpu(ex->ee_block),
-+				le32_to_cpu(ex->ee_start) +
-+				(((__u64) le16_to_cpu(ex->ee_start_hi)) << 32),
-+				le16_to_cpu(ex->ee_len) > EXT_INIT_MAX_LEN ?
-+				le16_to_cpu(ex->ee_len) - EXT_INIT_MAX_LEN :
-+				le16_to_cpu(ex->ee_len));
-+			break;
-+		case EXT4_FC_TAG_DEL_RANGE:
-+			del_range =
-+				(struct ext4_fc_del_range *)ext4_fc_tag_val(tl);
-+			fprintf(out_file, "tag %s, inode %d, lblk %d, len %d\n",
-+				tag2str(tl->fc_tag),
-+				le32_to_cpu(del_range->fc_ino),
-+				le32_to_cpu(del_range->fc_lblk),
-+				le32_to_cpu(del_range->fc_len));
-+			break;
-+		case EXT4_FC_TAG_LINK:
-+		case EXT4_FC_TAG_UNLINK:
-+		case EXT4_FC_TAG_CREAT:
-+			dentry_info =
-+				(struct ext4_fc_dentry_info *)
-+					ext4_fc_tag_val(tl);
-+			fprintf(out_file,
-+				"tag %s, parent %d, ino %d, name \"%s\"\n",
-+				tag2str(tl->fc_tag),
-+				le32_to_cpu(dentry_info->fc_parent_ino),
-+				le32_to_cpu(dentry_info->fc_ino),
-+				dentry_info->fc_dname);
-+			break;
-+		case EXT4_FC_TAG_INODE:
-+			fprintf(out_file, "tag %s, inode %d\n",
-+				tag2str(tl->fc_tag),
-+				le32_to_cpu(((struct ext4_fc_inode *)
-+					ext4_fc_tag_val(tl))->fc_ino));
-+			break;
-+		case EXT4_FC_TAG_PAD:
-+			fprintf(out_file, "tag %s\n", tag2str(tl->fc_tag));
-+			break;
-+		case EXT4_FC_TAG_TAIL:
-+			tail = (struct ext4_fc_tail *)ext4_fc_tag_val(tl);
-+			fprintf(out_file, "tag %s, tid %d\n",
-+				tag2str(tl->fc_tag),
-+				le32_to_cpu(tail->fc_tid));
-+			if (!dump_old &&
-+				le32_to_cpu(tail->fc_tid) < transaction) {
-+				*fc_done = 1;
-+				return;
-+			}
-+			break;
-+		case EXT4_FC_TAG_HEAD:
-+			fprintf(out_file, "\n*** Fast Commit Area ***\n");
-+			head = (struct ext4_fc_head *)ext4_fc_tag_val(tl);
-+			fprintf(out_file, "tag %s, features 0x%x, tid %d\n",
-+				tag2str(tl->fc_tag),
-+				le32_to_cpu(head->fc_features),
-+				le32_to_cpu(head->fc_tid));
-+			if (!dump_old &&
-+				le32_to_cpu(head->fc_tid) < transaction) {
-+				*fc_done = 1;
-+				return;
-+			}
-+			break;
-+		default:
-+			*fc_done = 1;
-+			break;
-+		}
-+	}
-+}
++cp $TMPFILE /tmp/debugthis
++$FSCK $FSCK_OPT -E journal_only -N test_filesys $TMPFILE 2>&1 | head -n 1000 | tail -n +2 > $OUT
++echo "Exit status is $?" >> $OUT
 +
- static void dump_descriptor_block(FILE *out_file,
- 				  struct journal_source *source,
- 				  char *buf,
++$DEBUGFS -f $CMDS $TMPFILE >> $OUT 2>/dev/null
++
++# Figure out what happened
++if cmp -s $EXP $OUT; then
++	echo "$test_name: $test_description: ok"
++	touch $test_name.ok
++else
++	echo "$test_name: $test_description: failed"
++	diff -u $EXP $OUT >> $test_name.failed
++fi
 -- 
 2.29.2.454.gaff20da3a2-goog
 
