@@ -2,158 +2,129 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA7C12BB7DA
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Nov 2020 21:50:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41C512BB82B
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Nov 2020 22:16:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729985AbgKTUsL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 20 Nov 2020 15:48:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34836 "EHLO
+        id S1728228AbgKTVQC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 20 Nov 2020 16:16:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729718AbgKTUsG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 20 Nov 2020 15:48:06 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCA55C061A4C
-        for <linux-ext4@vger.kernel.org>; Fri, 20 Nov 2020 12:48:04 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id q10so9032588pfn.0
-        for <linux-ext4@vger.kernel.org>; Fri, 20 Nov 2020 12:48:04 -0800 (PST)
+        with ESMTP id S1727961AbgKTVQB (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 20 Nov 2020 16:16:01 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBD71C061A4A
+        for <linux-ext4@vger.kernel.org>; Fri, 20 Nov 2020 13:15:59 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id t21so8394386pgl.3
+        for <linux-ext4@vger.kernel.org>; Fri, 20 Nov 2020 13:15:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=v0uQ3+ZvQ790GJbfbb1ESqfRrqQ38XoL7hho1t1Gb0k=;
-        b=avd4TaFUM+Ab56B8iWTc3giej2JyPXQeNqj8Vqwh4pMfYMm6E7ROZ43KbUMGq3c2kN
-         Y7wgImiWtwhH33QCuhXwX5xfYnbd8ZoAoymaiVLMsflRM4OrtMTi7raBVieCeB5e9/kv
-         qCr4nXKui27aGXF6t1ziK2ispJ9UlbNRnpYGc=
+        bh=h3PVNgWJ4wv679ueVcfOMGTzPLuWakBRGW5tpcXVwpU=;
+        b=dU4KoiHZzIEflMXxYsdAq02/ZtKHAbVYN3DUKz1jjW6FqozuzDqj1HhoL1AotmA6iH
+         J0FPfOX8vroNiQrqM3+Mg92Tbbg8Ta4YWvs2XOfQEnQO7II6Vndq8Xm0uvHveSP/s0Nq
+         YqotYUJAiv3Sjru2HYlJJBB0l/Fq8aCCvoJwg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=v0uQ3+ZvQ790GJbfbb1ESqfRrqQ38XoL7hho1t1Gb0k=;
-        b=BMT9WQS99X9f+wo2MB1IfqcnQ+uVJM4363tpgn2vJYOskT3aG1F4YtZwwvgjyjDFwI
-         nEzkLzuiFxMo4zh5tA6PaKzqQ5KV71HIPoQFwMUd7OljntAAE7eEgsMtPIxR2hcFkS5P
-         dRnOZjdBADpWbrrJr1vSojhd5h+VD2FQ9c7zDEIs+MVte4064AKqQHrG9KgTrOW3O4jJ
-         j6ksJ+3uo1YV/JwNh3EVRrtnSUrX8grryBFDHu7jLj0HZ44jfqoI/wMyYG/5vsINw9j+
-         ADYjOVhUUWnad51Li+MfsD+fSHBvFspvZAtAa71RnyIWxWwvHcYmVWEaUvO3ZB7/ZHAJ
-         7IRA==
-X-Gm-Message-State: AOAM530yhYEv3aPXQkBetc/SgJMWvgdGGwFaJSDp08ll20BB+jbRuMci
-        L1fy0UBG0aTmEzCdcSALY9WfdpALVd+H9MiR
-X-Google-Smtp-Source: ABdhPJzEbaB+IYipfwOUXoCmdplAutZXXBsmC8OBp1xOfb5CPZl7t2eHSBKNbswFZQhoeAMsBYl7Qg==
-X-Received: by 2002:a62:d108:0:b029:163:d3cf:f00e with SMTP id z8-20020a62d1080000b0290163d3cff00emr15313890pfg.43.1605905283088;
-        Fri, 20 Nov 2020 12:48:03 -0800 (PST)
+        bh=h3PVNgWJ4wv679ueVcfOMGTzPLuWakBRGW5tpcXVwpU=;
+        b=ekJFNaxcaPAPuMpSOmqKnIMsjjXJoiHfDBKxISvD+DHAwhtwoc19CJ99hu/FJtDrD0
+         u6j2qsqbCGZO7WpK0gyIWog1aCHYJ+a5UQNYYkQPZ90CPxrfAFUKGya1Mg1EKfoO2wp+
+         n9Jxk7rNkYoWeCGfN7MO9OklQGqhZVeMDzIa5CG5hQXNNUudDsHzMjvfad7qKQXRt1Td
+         9WfLSI/hkiWuRZOActRFtB2RWPrCyrDL+muWUKkTorNyEfYwDaLl5xrbKhf9+T0eAuxU
+         PsCrGvQZpwKH/nj8cX5/Ja0ik3SzsvZd7r6SulhNFOUsuDOv6At2eO3k93W1WZVyqyjZ
+         Dg4Q==
+X-Gm-Message-State: AOAM533rbPIHKH7lfFjMV8N4F9/hBMC/M72872YUyXbjTXmtDUf8tWH2
+        RQw6Q6RYfwN1CxDB4KGuwtaSoA==
+X-Google-Smtp-Source: ABdhPJxKoNsqmJfw8FXBuNWzYTFCvMP4QSPsIPE4HroDYde9n5FBnmXaYeQPf9Hkrj1TBoT0dMj64g==
+X-Received: by 2002:aa7:8ac1:0:b029:197:7198:e943 with SMTP id b1-20020aa78ac10000b02901977198e943mr14806170pfd.58.1605906959108;
+        Fri, 20 Nov 2020 13:15:59 -0800 (PST)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id a67sm3215381pfa.77.2020.11.20.12.48.01
+        by smtp.gmail.com with ESMTPSA id k9sm4598556pfi.188.2020.11.20.13.15.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 12:48:02 -0800 (PST)
-Date:   Fri, 20 Nov 2020 12:48:01 -0800
+        Fri, 20 Nov 2020 13:15:58 -0800 (PST)
+Date:   Fri, 20 Nov 2020 13:15:57 -0800
 From:   Kees Cook <keescook@chromium.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        amd-gfx@lists.freedesktop.org, bridge@lists.linux-foundation.org,
-        ceph-devel@vger.kernel.org, cluster-devel@redhat.com,
-        coreteam@netfilter.org, devel@driverdev.osuosl.org,
-        dm-devel@redhat.com, drbd-dev@lists.linbit.com,
-        dri-devel@lists.freedesktop.org, GR-everest-linux-l2@marvell.com,
-        GR-Linux-NIC-Dev@marvell.com, intel-gfx@lists.freedesktop.org,
-        intel-wired-lan@lists.osuosl.org, keyrings@vger.kernel.org,
-        linux1394-devel@lists.sourceforge.net, linux-acpi@vger.kernel.org,
-        linux-afs@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-atm-general@lists.sourceforge.net,
-        linux-block@vger.kernel.org, linux-can@vger.kernel.org,
-        linux-cifs@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-decnet-user@lists.sourceforge.net,
-        linux-ext4@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        linux-geode@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-hams@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-i3c@lists.infradead.org, linux-ide@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-mm@kvack.org,
-        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, nouveau@lists.freedesktop.org,
-        op-tee@lists.trustedfirmware.org, oss-drivers@netronome.com,
-        patches@opensource.cirrus.com, rds-devel@oss.oracle.com,
-        reiserfs-devel@vger.kernel.org, samba-technical@lists.samba.org,
-        selinux@vger.kernel.org, target-devel@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net,
-        usb-storage@lists.one-eyed-alien.net,
-        virtualization@lists.linux-foundation.org,
-        wcn36xx@lists.infradead.org, x86@kernel.org,
-        xen-devel@lists.xenproject.org, linux-hardening@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>
-Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
-Message-ID: <202011201244.78E002D5@keescook>
-References: <cover.1605896059.git.gustavoars@kernel.org>
- <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <202011201129.B13FDB3C@keescook>
- <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-fsdevel@vger.kernel.org,
+        John Johansen <john.johansen@canonical.com>,
+        James Morris <jmorris@namei.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Mrunal Patel <mpatel@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Theodore Tso <tytso@mit.edu>, Alban Crequy <alban@kinvolk.io>,
+        Tycho Andersen <tycho@tycho.ws>,
+        David Howells <dhowells@redhat.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Jann Horn <jannh@google.com>,
+        Seth Forshee <seth.forshee@canonical.com>,
+        =?iso-8859-1?Q?St=E9phane?= Graber <stgraber@ubuntu.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Lennart Poettering <lennart@poettering.net>,
+        "Eric W. Biederman" <ebiederm@xmission.com>, smbarber@chromium.org,
+        Phil Estes <estesp@gmail.com>, Serge Hallyn <serge@hallyn.com>,
+        Todd Kjos <tkjos@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        containers@lists.linux-foundation.org,
+        linux-security-module@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-audit@redhat.com,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v2 39/39] tests: add vfs/idmapped mounts test suite
+Message-ID: <202011201300.B158F1E4B@keescook>
+References: <20201115103718.298186-1-christian.brauner@ubuntu.com>
+ <20201115103718.298186-40-christian.brauner@ubuntu.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201115103718.298186-40-christian.brauner@ubuntu.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 11:51:42AM -0800, Jakub Kicinski wrote:
-> On Fri, 20 Nov 2020 11:30:40 -0800 Kees Cook wrote:
-> > On Fri, Nov 20, 2020 at 10:53:44AM -0800, Jakub Kicinski wrote:
-> > > On Fri, 20 Nov 2020 12:21:39 -0600 Gustavo A. R. Silva wrote:  
-> > > > This series aims to fix almost all remaining fall-through warnings in
-> > > > order to enable -Wimplicit-fallthrough for Clang.
-> > > > 
-> > > > In preparation to enable -Wimplicit-fallthrough for Clang, explicitly
-> > > > add multiple break/goto/return/fallthrough statements instead of just
-> > > > letting the code fall through to the next case.
-> > > > 
-> > > > Notice that in order to enable -Wimplicit-fallthrough for Clang, this
-> > > > change[1] is meant to be reverted at some point. So, this patch helps
-> > > > to move in that direction.
-> > > > 
-> > > > Something important to mention is that there is currently a discrepancy
-> > > > between GCC and Clang when dealing with switch fall-through to empty case
-> > > > statements or to cases that only contain a break/continue/return
-> > > > statement[2][3][4].  
-> > > 
-> > > Are we sure we want to make this change? Was it discussed before?
-> > > 
-> > > Are there any bugs Clangs puritanical definition of fallthrough helped
-> > > find?
-> > > 
-> > > IMVHO compiler warnings are supposed to warn about issues that could
-> > > be bugs. Falling through to default: break; can hardly be a bug?!  
-> > 
-> > It's certainly a place where the intent is not always clear. I think
-> > this makes all the cases unambiguous, and doesn't impact the machine
-> > code, since the compiler will happily optimize away any behavioral
-> > redundancy.
-> 
-> If none of the 140 patches here fix a real bug, and there is no change
-> to machine code then it sounds to me like a W=2 kind of a warning.
+On Sun, Nov 15, 2020 at 11:37:18AM +0100, Christian Brauner wrote:
+> This adds a whole test suite for idmapped mounts but in order to ensure that
+> there are no regression for the vfs itself it also includes tests for correct
+> functionality on non-idmapped mounts. The following tests are currently
+> available with more to come in the future:
 
-I'd like to avoid splitting common -W options between default and W=2
-just based on the compiler. Getting -Wimplicit-fallthrough enabled found
-plenty of bugs, so making sure it works correctly for both compilers
-feels justified to me. (This is just a subset of the same C language
-short-coming.)
+Awesome! :)
 
-> I think clang is just being annoying here, but if I'm the only one who
-> feels this way chances are I'm wrong :)
+Some glitches in the build, though... something about the ordering or
+the Make rules produces odd results on a failure:
 
-It's being pretty pedantic, but I don't think it's unreasonable to
-explicitly state how every case ends. GCC's silence for the case of
-"fall through to a break" doesn't really seem justified.
+$ make
+gcc -g -I../../../../usr/include/ -Wall -O2 -pthread    xattr.c internal.h utils.c utils.h -lcap -o /home/kees/src/linux-build/seccomp/tools/testing/selftests/idmap_mounts/xattr
+gcc -g -I../../../../usr/include/ -Wall -O2 -pthread    core.c internal.h utils.c utils.h -lcap -o /home/kees/src/linux-build/seccomp/tools/testing/selftests/idmap_mounts/core
+core.c:19:10: fatal error: sys/acl.h: No such file or directory
+   19 | #include <sys/acl.h>
+      |          ^~~~~~~~~~~
+compilation terminated.
+make: *** [../lib.mk:139: /home/kees/src/linux-build/seccomp/tools/testing/selftests/idmap_mounts/core]
+Error 1
+$ make
+make: Nothing to be done for 'all'.
+$ file xattr core
+xattr: ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=7a3c1951e54f20e657b4181c1be77c7183a54f81, for GNU/Linux 3.2.0, with debug_info, not stripped
+core:  GCC precompiled header (version 014) for C
+
+Even after I install libacl1-dev, I still get a "core" file output which
+breaks attempts to build again. :)
+
+
+Is there any way to have the test suite not depend on
+__NR_mount_setattr? Running this test on older kernels fails everything.
+
 
 -- 
 Kees Cook
