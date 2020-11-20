@@ -2,107 +2,107 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B92492BB455
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Nov 2020 20:00:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7209A2BB46F
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Nov 2020 20:00:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731864AbgKTSud (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 20 Nov 2020 13:50:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33818 "EHLO mail.kernel.org"
+        id S1732073AbgKTSxw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 20 Nov 2020 13:53:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34856 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728797AbgKTSuc (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 20 Nov 2020 13:50:32 -0500
-Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        id S1730460AbgKTSxv (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 20 Nov 2020 13:53:51 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7CF212242B;
-        Fri, 20 Nov 2020 18:50:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D19712242B;
+        Fri, 20 Nov 2020 18:53:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605898231;
-        bh=2GkBOMd7CukxlpckOlpmJEVMrKsNhNOcejaVCTvUEd8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AOuM++Ph1LRNJ05RYsUSv2UYNrSZhccF+8xm6t+9i34VXG1PO74yNE1BfXT4AHyqX
-         oHWo54HGrtQ+yDawTJW4EPoeNz2tyM/m3vnbueOtTl+dDGDm1057IJpMJnr89AGJFK
-         HNmlziosh1mLEznp39Ay23JobXpuKCCCKkV067qk=
-Date:   Fri, 20 Nov 2020 10:50:30 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org
-Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] fs/inode.c: make inode_init_always() initialize i_ino to
- 0
-Message-ID: <X7gP9iuTuRp9MHpP@sol.localdomain>
-References: <20201031004420.87678-1-ebiggers@kernel.org>
- <20201106175205.GE845@sol.localdomain>
+        s=default; t=1605898429;
+        bh=RlEnelajx5E1UvOiu4TwGuYZq41CYqRzy+OE2vpEZwM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=y6BwGzsUDu1zr4tV0nGpfLuqNb1AQVwTl3HIlZXKXQmalkVaXzcKTw6PaiYzn6cs4
+         cCrQcjpmBltf5qc0pbll6lEfWSr4jv5MMDA/VHBdadKQQtZqXFk9pYOspqu5FdKf1A
+         HiIo+vycYYhwL3jW0KIV5eL5D/2xlLalPiHVxUuA=
+Date:   Fri, 20 Nov 2020 10:53:44 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        amd-gfx@lists.freedesktop.org, bridge@lists.linux-foundation.org,
+        ceph-devel@vger.kernel.org, cluster-devel@redhat.com,
+        coreteam@netfilter.org, devel@driverdev.osuosl.org,
+        dm-devel@redhat.com, drbd-dev@lists.linbit.com,
+        dri-devel@lists.freedesktop.org, GR-everest-linux-l2@marvell.com,
+        GR-Linux-NIC-Dev@marvell.com, intel-gfx@lists.freedesktop.org,
+        intel-wired-lan@lists.osuosl.org, keyrings@vger.kernel.org,
+        linux1394-devel@lists.sourceforge.net, linux-acpi@vger.kernel.org,
+        linux-afs@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net,
+        linux-block@vger.kernel.org, linux-can@vger.kernel.org,
+        linux-cifs@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-decnet-user@lists.sourceforge.net,
+        linux-ext4@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        linux-geode@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-hams@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-i3c@lists.infradead.org, linux-ide@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-mm@kvack.org,
+        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, nouveau@lists.freedesktop.org,
+        op-tee@lists.trustedfirmware.org, oss-drivers@netronome.com,
+        patches@opensource.cirrus.com, rds-devel@oss.oracle.com,
+        reiserfs-devel@vger.kernel.org, samba-technical@lists.samba.org,
+        selinux@vger.kernel.org, target-devel@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net,
+        usb-storage@lists.one-eyed-alien.net,
+        virtualization@lists.linux-foundation.org,
+        wcn36xx@lists.infradead.org, x86@kernel.org,
+        xen-devel@lists.xenproject.org, linux-hardening@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
+Message-ID: <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <cover.1605896059.git.gustavoars@kernel.org>
+References: <cover.1605896059.git.gustavoars@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201106175205.GE845@sol.localdomain>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 09:52:05AM -0800, Eric Biggers wrote:
-> On Fri, Oct 30, 2020 at 05:44:20PM -0700, Eric Biggers wrote:
-> > From: Eric Biggers <ebiggers@google.com>
-> > 
-> > Currently inode_init_always() doesn't initialize i_ino to 0.  This is
-> > unexpected because unlike the other inode fields that aren't initialized
-> > by inode_init_always(), i_ino isn't guaranteed to end up back at its
-> > initial value after the inode is freed.  Only one filesystem (XFS)
-> > actually sets set i_ino back to 0 when freeing its inodes.
-> > 
-> > So, callers of new_inode() see some random previous i_ino.  Normally
-> > that's fine, since normally i_ino isn't accessed before being set.
-> > There can be edge cases where that isn't necessarily true, though.
-> > 
-> > The one I've run into is that on ext4, when creating an encrypted file,
-> > the new file's encryption key has to be set up prior to the jbd2
-> > transaction, and thus prior to i_ino being set.  If something goes
-> > wrong, fs/crypto/ may log warning or error messages, which normally
-> > include i_ino.  So it needs to know whether it is valid to include i_ino
-> > yet or not.  Also, on some files i_ino needs to be hashed for use in the
-> > crypto, so fs/crypto/ needs to know whether that can be done yet or not.
-> > 
-> > There are ways this could be worked around, either in fs/crypto/ or in
-> > fs/ext4/.  But, it seems there's no reason not to just fix
-> > inode_init_always() to do the expected thing and initialize i_ino to 0.
-> > 
-> > So, do that, and also remove the initialization in jfs_fill_super() that
-> > becomes redundant.
-> > 
-> > Signed-off-by: Eric Biggers <ebiggers@google.com>
-> > ---
-> >  fs/inode.c     | 1 +
-> >  fs/jfs/super.c | 1 -
-> >  2 files changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/inode.c b/fs/inode.c
-> > index 9d78c37b00b81..eb001129f157c 100644
-> > --- a/fs/inode.c
-> > +++ b/fs/inode.c
-> > @@ -142,6 +142,7 @@ int inode_init_always(struct super_block *sb, struct inode *inode)
-> >  	atomic_set(&inode->i_count, 1);
-> >  	inode->i_op = &empty_iops;
-> >  	inode->i_fop = &no_open_fops;
-> > +	inode->i_ino = 0;
-> >  	inode->__i_nlink = 1;
-> >  	inode->i_opflags = 0;
-> >  	if (sb->s_xattr)
-> > diff --git a/fs/jfs/super.c b/fs/jfs/super.c
-> > index b2dc4d1f9dcc5..1f0ffabbde566 100644
-> > --- a/fs/jfs/super.c
-> > +++ b/fs/jfs/super.c
-> > @@ -551,7 +551,6 @@ static int jfs_fill_super(struct super_block *sb, void *data, int silent)
-> >  		ret = -ENOMEM;
-> >  		goto out_unload;
-> >  	}
-> > -	inode->i_ino = 0;
-> >  	inode->i_size = i_size_read(sb->s_bdev->bd_inode);
-> >  	inode->i_mapping->a_ops = &jfs_metapage_aops;
-> >  	inode_fake_hash(inode);
-> > 
+On Fri, 20 Nov 2020 12:21:39 -0600 Gustavo A. R. Silva wrote:
+> This series aims to fix almost all remaining fall-through warnings in
+> order to enable -Wimplicit-fallthrough for Clang.
 > 
-> Al, any thoughts on this?
+> In preparation to enable -Wimplicit-fallthrough for Clang, explicitly
+> add multiple break/goto/return/fallthrough statements instead of just
+> letting the code fall through to the next case.
 > 
+> Notice that in order to enable -Wimplicit-fallthrough for Clang, this
+> change[1] is meant to be reverted at some point. So, this patch helps
+> to move in that direction.
+> 
+> Something important to mention is that there is currently a discrepancy
+> between GCC and Clang when dealing with switch fall-through to empty case
+> statements or to cases that only contain a break/continue/return
+> statement[2][3][4].
 
-Ping?
+Are we sure we want to make this change? Was it discussed before?
+
+Are there any bugs Clangs puritanical definition of fallthrough helped
+find?
+
+IMVHO compiler warnings are supposed to warn about issues that could
+be bugs. Falling through to default: break; can hardly be a bug?!
