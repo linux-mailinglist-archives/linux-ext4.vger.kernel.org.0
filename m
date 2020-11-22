@@ -2,68 +2,115 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C38792BC9BC
-	for <lists+linux-ext4@lfdr.de>; Sun, 22 Nov 2020 22:50:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C71B42BFBF2
+	for <lists+linux-ext4@lfdr.de>; Sun, 22 Nov 2020 23:11:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726591AbgKVVtc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 22 Nov 2020 16:49:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726339AbgKVVtb (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 22 Nov 2020 16:49:31 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 755E4C0613CF;
-        Sun, 22 Nov 2020 13:49:31 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id bo9so14841476ejb.13;
-        Sun, 22 Nov 2020 13:49:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:sender:from:mime-version:content-transfer-encoding
-         :content-description:subject:to:date:reply-to;
-        bh=holMzMixu6L4mPkY4KLX0AXrH3B7KLU6Q1+gVZ1hbDo=;
-        b=R+9VbmLaoqiA1G9rI1KaYOdCxQLH8rUkLjeCm9JG6KVnmOUbJ7b1RNsQ1f2Sjh9OoL
-         Y12Om4u44P61YTtboU/XDrj4w7O22SAPTTFpJPmTj01cbiSa2dy0WzqjsYt0X3xSPiND
-         W/RMQh9jHs+/n8ZbxpL2fNpwJXXLR6RT5KmxOiAOKdohnlBB198mjPEziSf/W/DnwKKF
-         2c9vVSUFZ8vlMMjjmN7jm8nmlx1luyVBOvkISqgsDJ1q5SrBKtYwDRP51jHYWB88CZes
-         KMWKDG0jTPHoxy2L7YDSUYR60b0/BQ59wtVq2VgUkN2x3M1f6KeP0xi0ovTTZRXdqLpG
-         pgtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:sender:from:mime-version
-         :content-transfer-encoding:content-description:subject:to:date
-         :reply-to;
-        bh=holMzMixu6L4mPkY4KLX0AXrH3B7KLU6Q1+gVZ1hbDo=;
-        b=Z2KSf7TYed6lFSXqo7txy3H57Gu+AbPKqpD4ntnREZMFd0DJsoFxyEobruH8paTTHE
-         0yrIBSM5Oz+iz3xCJy3BoYvxpGBCnNj+sSyqOEK25wctKl+noXiXXTu/fK23YCayPyLX
-         b+8iPDX9yLepqKj0IqVn1cz3eAPVSbziKt5ZR49FRkkhEy9xQZ9nUGjcGwtHK/2Sixbg
-         3BtdML1HQE+EV/UGt9c+XrirY+E0W6UYjA+PBd/qZVugTi1dvFdeKHvNv5yed0uT/W2x
-         AJiyuopfI8PaGQ4Y9dwhS92cTsYEhuFfkaz1FZFipWWgu1mFJ5rnFgLzhSJEaV4bNHm5
-         3bIQ==
-X-Gm-Message-State: AOAM533+vpApcfn3bYNUGokXmOgEPxRS2L0whdAgGUEZFXGG6W8k8Aqf
-        rOrOBL9sdx9E8YpblZbiKy0=
-X-Google-Smtp-Source: ABdhPJzr0I5FdnJKO7TmNp3j4HwUBLVbvlrvvUkE9isr9Bg/wOS+pngOAnYu+EOyZZfZpha52zV6SQ==
-X-Received: by 2002:a17:906:17d1:: with SMTP id u17mr40221456eje.229.1606081770259;
-        Sun, 22 Nov 2020 13:49:30 -0800 (PST)
-Received: from [192.168.43.48] ([197.210.35.67])
-        by smtp.gmail.com with ESMTPSA id e17sm4016232edc.45.2020.11.22.13.49.25
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Sun, 22 Nov 2020 13:49:29 -0800 (PST)
-Message-ID: <5fbadce9.1c69fb81.8dfc7.11be@mx.google.com>
-Sender: Baniko Diallo <banidiallo23@gmail.com>
-From:   Adelina Zeuki <adelinazeuki@gmail.com>
-X-Google-Original-From: "Adelina Zeuki" <  adelinazeuki@gmail.comm >
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1726416AbgKVWK7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 22 Nov 2020 17:10:59 -0500
+Received: from asavdk4.altibox.net ([109.247.116.15]:51724 "EHLO
+        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725782AbgKVWK6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 22 Nov 2020 17:10:58 -0500
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk4.altibox.net (Postfix) with ESMTPS id 2C52280567;
+        Sun, 22 Nov 2020 23:10:42 +0100 (CET)
+Date:   Sun, 22 Nov 2020 23:10:40 +0100
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Jakub Kicinski <kuba@kernel.org>, alsa-devel@alsa-project.org,
+        linux-atm-general@lists.sourceforge.net,
+        reiserfs-devel@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        linux-ide@vger.kernel.org, dm-devel@redhat.com,
+        keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
+        GR-everest-linux-l2@marvell.com, wcn36xx@lists.infradead.org,
+        samba-technical@lists.samba.org, linux-i3c@lists.infradead.org,
+        linux1394-devel@lists.sourceforge.net,
+        linux-afs@lists.infradead.org,
+        usb-storage@lists.one-eyed-alien.net, drbd-dev@lists.linbit.com,
+        devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
+        rds-devel@oss.oracle.com,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-scsi@vger.kernel.org, linux-rdma@vger.kernel.org,
+        oss-drivers@netronome.com, bridge@lists.linux-foundation.org,
+        linux-security-module@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org,
+        linux-stm32@st-md-mailman.stormreply.com, cluster-devel@redhat.com,
+        linux-acpi@vger.kernel.org, coreteam@netfilter.org,
+        intel-wired-lan@lists.osuosl.org, linux-input@vger.kernel.org,
+        Miguel Ojeda <ojeda@kernel.org>,
+        tipc-discussion@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        selinux@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, linux-geode@lists.infradead.org,
+        linux-can@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-gpio@vger.kernel.org, op-tee@lists.trustedfirmware.org,
+        linux-mediatek@lists.infradead.org, xen-devel@lists.xenproject.org,
+        nouveau@lists.freedesktop.org, linux-hams@vger.kernel.org,
+        ceph-devel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        target-devel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-hwmon@vger.kernel.org, x86@kernel.org,
+        linux-nfs@vger.kernel.org, GR-Linux-NIC-Dev@marvell.com,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        linux-decnet-user@lists.sourceforge.net, linux-mmc@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-renesas-soc@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-usb@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, patches@opensource.cirrus.com,
+        Joe Perches <joe@perches.com>, linux-integrity@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
+Message-ID: <20201122221040.GD566387@ravnborg.org>
+References: <cover.1605896059.git.gustavoars@kernel.org>
+ <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <202011201129.B13FDB3C@keescook>
+ <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <202011220816.8B6591A@keescook>
+ <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Hello !!
-To:     Recipients <adelinazeuki@gmail.comm>
-Date:   Sun, 22 Nov 2020 21:49:19 +0000
-Reply-To: adelinazeuki@gmail.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=VafZwmh9 c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=VwQbUJbxAAAA:8 a=pGLkceISAAAA:8
+        a=7T594MSkF3521FIrX4wA:9 a=CjuIK1q_8ugA:10 a=AjGcO6oz07-iQ99wixmX:22
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi dear,
+Hi James.
 
-Can i talk with you ?
+> > > If none of the 140 patches here fix a real bug, and there is no
+> > > change to machine code then it sounds to me like a W=2 kind of a
+> > > warning.
+> > 
+> > FWIW, this series has found at least one bug so far:
+> > https://lore.kernel.org/lkml/CAFCwf11izHF=g1mGry1fE5kvFFFrxzhPSM6qKAO8gxSp=Kr_CQ@mail.gmail.com/
+> 
+> 
+> Well, it's a problem in an error leg, sure, but it's not a really
+> compelling reason for a 141 patch series, is it?  All that fixing this
+> error will do is get the driver to print "oh dear there's a problem"
+> under four more conditions than it previously did.
+
+You are asking the wrong question here.
+
+Yuo should ask  how many hours could have been saved by all the bugs
+people have been fighting with and then fixed *before* the code
+hit the kernel at all.
+
+My personal experience is that I, more than once, have had errors
+related to a missing break in my code. So this warnings is IMO a win.
+
+And if we are only ~100 patches to have it globally enabled then it is a
+no-brainer in my book.
+
+	Sam
