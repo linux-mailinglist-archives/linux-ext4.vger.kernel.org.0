@@ -2,134 +2,148 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73DC42BC3A8
-	for <lists+linux-ext4@lfdr.de>; Sun, 22 Nov 2020 06:14:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 204D92BC6E0
+	for <lists+linux-ext4@lfdr.de>; Sun, 22 Nov 2020 17:18:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726461AbgKVFMk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 22 Nov 2020 00:12:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51392 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726232AbgKVFMj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Sun, 22 Nov 2020 00:12:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606021957;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kkf8a6qy5yhhSG9mvfioRD8ySsdwKXfzz3BkGnvDRY4=;
-        b=XYb82dh9zqLCQACkLtEv1KegeDZ7BXKLgOZOd0K1i8ULcb4qwWKGhTOHAiBe9B28GpTud+
-        xzQWJjweDj5jZMtE22/QNXGChIBx4U8XhlOYEqFgluht3C6mx23n2RC6d5BzkM6K148112
-        HM9BwjgfldT0C9uZ8ek9edZLkj0/MNY=
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
- [209.85.210.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-184-WOhRvES6OmiiyLHVsJNaNw-1; Sun, 22 Nov 2020 00:12:34 -0500
-X-MC-Unique: WOhRvES6OmiiyLHVsJNaNw-1
-Received: by mail-pf1-f200.google.com with SMTP id c79so10338293pfc.20
-        for <linux-ext4@vger.kernel.org>; Sat, 21 Nov 2020 21:12:34 -0800 (PST)
+        id S1728103AbgKVQRQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 22 Nov 2020 11:17:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728126AbgKVQRL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 22 Nov 2020 11:17:11 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5C43C061A4A
+        for <linux-ext4@vger.kernel.org>; Sun, 22 Nov 2020 08:17:06 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id x24so296058pfn.6
+        for <linux-ext4@vger.kernel.org>; Sun, 22 Nov 2020 08:17:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9LoGd3XD212DnUOzzxWdBwAHKcFiABUM1eku/Z5s9PQ=;
+        b=ECdUiFozoGotedNMltHxGvt7ELeQp/og9KGaJat0+erwcdPPWVCrU8KkW+JV4RYPeo
+         GTWUobzmr0s313q/lzhn4jF5RxJP4nhZO/aj20hZaH8d/g/a456RbO+LKniOS4LntN7M
+         GHx9cYZv8xWYKIg8n9C3ZJn+Q+L/6/s35hbx0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=kkf8a6qy5yhhSG9mvfioRD8ySsdwKXfzz3BkGnvDRY4=;
-        b=cRuzui7sFkDIs9sxiOBknkFZjk1W3d6kO6OpMI1YzP5xLLPxMkp3LHbcR918TnwI6r
-         wjw+g3990gsLAZvSvOlFUyhrUrP5tF4gcQCZVmDk9m310EW+ykEpYb5vtYgAaNQXJF/q
-         0KP8SFWFO1sgtg8nEyaqsXDLiTQxAvjmTmMaotwEorDDJMlMj4AoomRQrTDt+3toCBRL
-         9os67IXX8trQ0+8rhjkl6EUg5STaY09NDMCvGDW4f5JTGR72zQduKdAUbYJocaQmbDyi
-         XXJ3Z7xxsN5gnljhQ3G5VWLeewMuUdPsS7VMqet0e3xnbePS9FvEbHgbbG3hAqQ0zX3S
-         3ZbA==
-X-Gm-Message-State: AOAM532hUaaIhGPJb5dviB6Co+M9+D+/xxKmHgzY6cf3XkFmVVi1GBKw
-        aHn9dTtf3ba7pam9Kjjv89mhx0m18/dPWgGt8le+hRumY6ONLb5IqRCQD6/kyv70JmBzwAtTKAe
-        sudnEWl1D4p+SgoYBwiNLew==
-X-Received: by 2002:a63:4513:: with SMTP id s19mr22764171pga.254.1606021953658;
-        Sat, 21 Nov 2020 21:12:33 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwhkBDDpVzvwVvP6QvR7b7bk5JCtZ4ytNenw2ZosC6tbrjTUa7xakgrk4oLyDhCHqqDiw3bXw==
-X-Received: by 2002:a63:4513:: with SMTP id s19mr22764154pga.254.1606021953454;
-        Sat, 21 Nov 2020 21:12:33 -0800 (PST)
-Received: from xiangao.remote.csb ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id b21sm9346038pji.24.2020.11.21.21.12.26
+         :mime-version:content-disposition:in-reply-to;
+        bh=9LoGd3XD212DnUOzzxWdBwAHKcFiABUM1eku/Z5s9PQ=;
+        b=YeWLclr3h5zoh26QY1ztIkIY+wjOTN1T79iQw/RKxnICLzRHhRWKNe1uvbV7za8uLJ
+         dBY/UZU8RHskRpyKBXQowWrgv4iwE/FqNKWqdiBEbKEqNkBAPQNLW6Cx1dW+/5MrVak2
+         D7jBaMiIL95PrVUHh1zZudW7Ksn5YNmqsYkXU5m6QZqblMGJsuyFjUxhpB5lvIL6v549
+         TJ7NymbLlrBJ129zp16b/JpBsfFgjTJFWylo0tVgQB2bfC2Qez3wEnBh2iK/yJde4FPC
+         QOOtOdIIh6a5c81E+Ej60flcWYrNh28Hgelj+dxlcOrtTTBSKckxg+RuCpXfnepdviyE
+         8Qfw==
+X-Gm-Message-State: AOAM530neKzPK836370QJyLfsHEo36nnTzth7qKc1jM8noNPE8BL50Qw
+        cMqaHkIwmyWfAwDd+10OIltgSlp3zw2x1i2v
+X-Google-Smtp-Source: ABdhPJwZLmFbbTaRxBkTtuJWbjEgTUtKMFpd77L8KmHflX2OUVWZyNqpGNaeYR87Y149sjgotBbRUA==
+X-Received: by 2002:a62:790f:0:b029:18a:ae57:353f with SMTP id u15-20020a62790f0000b029018aae57353fmr22300068pfc.78.1606061825417;
+        Sun, 22 Nov 2020 08:17:05 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id t5sm10642660pjj.31.2020.11.22.08.17.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Nov 2020 21:12:33 -0800 (PST)
-Date:   Sun, 22 Nov 2020 13:12:18 +0800
-From:   Gao Xiang <hsiangkao@redhat.com>
-To:     Daniel Rosenberg <drosen@google.com>
-Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chao Yu <chao@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Richard Weinberger <richard@nod.at>,
-        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mtd@lists.infradead.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel-team@android.com, Eric Biggers <ebiggers@google.com>
-Subject: Re: [PATCH v4 2/3] fscrypt: Have filesystems handle their d_ops
-Message-ID: <20201122051218.GA2717478@xiangao.remote.csb>
-References: <20201119060904.463807-1-drosen@google.com>
- <20201119060904.463807-3-drosen@google.com>
+        Sun, 22 Nov 2020 08:17:04 -0800 (PST)
+Date:   Sun, 22 Nov 2020 08:17:03 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        amd-gfx@lists.freedesktop.org, bridge@lists.linux-foundation.org,
+        ceph-devel@vger.kernel.org, cluster-devel@redhat.com,
+        coreteam@netfilter.org, devel@driverdev.osuosl.org,
+        dm-devel@redhat.com, drbd-dev@lists.linbit.com,
+        dri-devel@lists.freedesktop.org, GR-everest-linux-l2@marvell.com,
+        GR-Linux-NIC-Dev@marvell.com, intel-gfx@lists.freedesktop.org,
+        intel-wired-lan@lists.osuosl.org, keyrings@vger.kernel.org,
+        linux1394-devel@lists.sourceforge.net, linux-acpi@vger.kernel.org,
+        linux-afs@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net,
+        linux-block@vger.kernel.org, linux-can@vger.kernel.org,
+        linux-cifs@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-decnet-user@lists.sourceforge.net,
+        linux-ext4@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        linux-geode@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-hams@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-i3c@lists.infradead.org, linux-ide@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-mm@kvack.org,
+        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, nouveau@lists.freedesktop.org,
+        op-tee@lists.trustedfirmware.org, oss-drivers@netronome.com,
+        patches@opensource.cirrus.com, rds-devel@oss.oracle.com,
+        reiserfs-devel@vger.kernel.org, samba-technical@lists.samba.org,
+        selinux@vger.kernel.org, target-devel@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net,
+        usb-storage@lists.one-eyed-alien.net,
+        virtualization@lists.linux-foundation.org,
+        wcn36xx@lists.infradead.org, x86@kernel.org,
+        xen-devel@lists.xenproject.org, linux-hardening@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>
+Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
+Message-ID: <202011220816.8B6591A@keescook>
+References: <cover.1605896059.git.gustavoars@kernel.org>
+ <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <202011201129.B13FDB3C@keescook>
+ <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201119060904.463807-3-drosen@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi all,
-
-On Thu, Nov 19, 2020 at 06:09:03AM +0000, Daniel Rosenberg wrote:
-> This shifts the responsibility of setting up dentry operations from
-> fscrypt to the individual filesystems, allowing them to have their own
-> operations while still setting fscrypt's d_revalidate as appropriate.
+On Fri, Nov 20, 2020 at 11:51:42AM -0800, Jakub Kicinski wrote:
+> On Fri, 20 Nov 2020 11:30:40 -0800 Kees Cook wrote:
+> > On Fri, Nov 20, 2020 at 10:53:44AM -0800, Jakub Kicinski wrote:
+> > > On Fri, 20 Nov 2020 12:21:39 -0600 Gustavo A. R. Silva wrote:  
+> > > > This series aims to fix almost all remaining fall-through warnings in
+> > > > order to enable -Wimplicit-fallthrough for Clang.
+> > > > 
+> > > > In preparation to enable -Wimplicit-fallthrough for Clang, explicitly
+> > > > add multiple break/goto/return/fallthrough statements instead of just
+> > > > letting the code fall through to the next case.
+> > > > 
+> > > > Notice that in order to enable -Wimplicit-fallthrough for Clang, this
+> > > > change[1] is meant to be reverted at some point. So, this patch helps
+> > > > to move in that direction.
+> > > > 
+> > > > Something important to mention is that there is currently a discrepancy
+> > > > between GCC and Clang when dealing with switch fall-through to empty case
+> > > > statements or to cases that only contain a break/continue/return
+> > > > statement[2][3][4].  
+> > > 
+> > > Are we sure we want to make this change? Was it discussed before?
+> > > 
+> > > Are there any bugs Clangs puritanical definition of fallthrough helped
+> > > find?
+> > > 
+> > > IMVHO compiler warnings are supposed to warn about issues that could
+> > > be bugs. Falling through to default: break; can hardly be a bug?!  
+> > 
+> > It's certainly a place where the intent is not always clear. I think
+> > this makes all the cases unambiguous, and doesn't impact the machine
+> > code, since the compiler will happily optimize away any behavioral
+> > redundancy.
 > 
-> Most filesystems can just use generic_set_encrypted_ci_d_ops, unless
-> they have their own specific dentry operations as well. That operation
-> will set the minimal d_ops required under the circumstances.
-> 
-> Since the fscrypt d_ops are set later on, we must set all d_ops there,
-> since we cannot adjust those later on. This should not result in any
-> change in behavior.
-> 
-> Signed-off-by: Daniel Rosenberg <drosen@google.com>
-> Acked-by: Eric Biggers <ebiggers@google.com>
-> ---
+> If none of the 140 patches here fix a real bug, and there is no change
+> to machine code then it sounds to me like a W=2 kind of a warning.
 
-...
+FWIW, this series has found at least one bug so far:
+https://lore.kernel.org/lkml/CAFCwf11izHF=g1mGry1fE5kvFFFrxzhPSM6qKAO8gxSp=Kr_CQ@mail.gmail.com/
 
->  extern const struct file_operations ext4_dir_operations;
->  
-> -#ifdef CONFIG_UNICODE
-> -extern const struct dentry_operations ext4_dentry_ops;
-> -#endif
-> -
->  /* file.c */
->  extern const struct inode_operations ext4_file_inode_operations;
->  extern const struct file_operations ext4_file_operations;
-> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-> index 33509266f5a0..12a417ff5648 100644
-> --- a/fs/ext4/namei.c
-> +++ b/fs/ext4/namei.c
-> @@ -1614,6 +1614,7 @@ static struct buffer_head *ext4_lookup_entry(struct inode *dir,
->  	struct buffer_head *bh;
->  
->  	err = ext4_fname_prepare_lookup(dir, dentry, &fname);
-> +	generic_set_encrypted_ci_d_ops(dentry);
-
-One thing might be worth noticing is that currently overlayfs might
-not work properly when dentry->d_sb->s_encoding is set even only some
-subdirs are CI-enabled but the others not, see generic_set_encrypted_ci_d_ops(),
-ovl_mount_dir_noesc => ovl_dentry_weird()
-
-For more details, see:
-https://android-review.googlesource.com/c/device/linaro/hikey/+/1483316/2#message-2e1f6ab0010a3e35e7d8effea73f60341f84ee4d
-
-Just found it by chance (and not sure if it's vital for now), and
-a kind reminder about this.
-
-Thanks,
-Gao Xiang
-
+-- 
+Kees Cook
