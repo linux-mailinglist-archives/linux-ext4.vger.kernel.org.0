@@ -2,85 +2,113 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 280702C17CE
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Nov 2020 22:43:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D726F2C1830
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 Nov 2020 23:11:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731316AbgKWVih (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 23 Nov 2020 16:38:37 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:55772 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1731017AbgKWVig (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 23 Nov 2020 16:38:36 -0500
-Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0ANLcQKP016024
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Nov 2020 16:38:27 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id ACA8F420136; Mon, 23 Nov 2020 16:38:26 -0500 (EST)
-Date:   Mon, 23 Nov 2020 16:38:26 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Saranya Muruganandam <saranyamohan@google.com>
-Cc:     linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca,
-        Li Xi <lixi@ddn.com>, Wang Shilong <wshilong@ddn.com>
-Subject: Re: [RFC PATCH v3 02/61] e2fsck: copy context when using
- multi-thread fsck
-Message-ID: <20201123213826.GE132317@mit.edu>
-References: <20201118153947.3394530-1-saranyamohan@google.com>
- <20201118153947.3394530-3-saranyamohan@google.com>
+        id S1732343AbgKWWHA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 23 Nov 2020 17:07:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732349AbgKWWHA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 23 Nov 2020 17:07:00 -0500
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93177C061A52
+        for <linux-ext4@vger.kernel.org>; Mon, 23 Nov 2020 14:06:59 -0800 (PST)
+Received: by mail-ed1-x543.google.com with SMTP id k4so18757789edl.0
+        for <linux-ext4@vger.kernel.org>; Mon, 23 Nov 2020 14:06:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ArDHvUzfUiZzh94W960BgkUJZn/5DnacTXHC4Nbv9kI=;
+        b=Ihm9gWe+6m2iCUrCqSrzj2hxvAUOkkHpCGtwhE41f3Rdh8c80xsJegtLMifcQSq7l4
+         MQxmEg8qFYnoifRMupAHJLQd5lYZm+n6GzQdGqoyCuHFxDt3fXMsW4siDYXty7uFQyR+
+         ZiLBHsJEHGtWXoprHv+EbMvUbaSfI62VdYDnQ6kSau+U/tc34IQsesxRL2sYZY1EAFs1
+         LsTOG7yiGz9YGo+XzQObpUnu50coOcAWET1QWObW0HN2FliSyDT2/hew7cMEOL8j6Rt4
+         CkHD0bLpWTrv0L4vHLaw7qmLF7A/4zumynmI5rzULQJ1fukCf4JWCo9n/ipboGbcKUNv
+         ClRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ArDHvUzfUiZzh94W960BgkUJZn/5DnacTXHC4Nbv9kI=;
+        b=VTxkj/I1w/8DBvnfYOYi7P/r+EhoHXcJJaxoNc+2k+WRZoyDvhQE+V/ptjCpeCrZ8a
+         iRYpqnpz1SBOepeaTFbn/YyE5s/qkv74irtr0Sfv6FH+YqbdfjJpRt2wVX3gOEII4phM
+         qILT6A9PBJuVbG5Djpl3y130LfRTIkuoYsitrPf6Fk9fopOXaJmLGECq7dkGgP+HJ67X
+         hLNEAs6tI/m5U2UQRF+rYE6cAAPw46dXehrEmOKJ2J9csdZMR+0vnH7ky0NhqLPzP5yZ
+         ymoYXNvG7FLZo/oSoAe8m+syHMZZhURHxZtD8c/v6iqBir9eRIWnclo0I3XYEQlAKWHi
+         XIZQ==
+X-Gm-Message-State: AOAM531QjFlAUndxVVR1Lw4ognfGnOMDrX9pLrizq5YIXYVsy9L6USuk
+        lZD8okIG4y8qbRTL23RGFYLkxljHgbja0QGzwjBn
+X-Google-Smtp-Source: ABdhPJyCGu6X9xaHoLXWBbQARSvPVPAoR3jFBNgP4UppEnyulyojvZlb/ppHqsSx8lMhDFxNpQsOSthLAo4GmR/YyTM=
+X-Received: by 2002:a50:a6d0:: with SMTP id f16mr1171069edc.135.1606169217904;
+ Mon, 23 Nov 2020 14:06:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201118153947.3394530-3-saranyamohan@google.com>
+References: <20201115103718.298186-1-christian.brauner@ubuntu.com>
+ <20201115103718.298186-32-christian.brauner@ubuntu.com> <CAHC9VhQ5gcOa0+KKDtKEgg_v4SZV2hPdaKUbPGJAQrVB8mn0jA@mail.gmail.com>
+ <20201123074157.fqus6fgtcytydp2c@wittgenstein>
+In-Reply-To: <20201123074157.fqus6fgtcytydp2c@wittgenstein>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 23 Nov 2020 17:06:46 -0500
+Message-ID: <CAHC9VhTrYDEAkaLbwtF7hQS=8HpM4wx7A_fN4=9pL6EAM-KPGw@mail.gmail.com>
+Subject: Re: [PATCH v2 31/39] audit: handle idmapped mounts
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-fsdevel@vger.kernel.org,
+        John Johansen <john.johansen@canonical.com>,
+        James Morris <jmorris@namei.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Mrunal Patel <mpatel@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Theodore Tso <tytso@mit.edu>, Alban Crequy <alban@kinvolk.io>,
+        Tycho Andersen <tycho@tycho.ws>,
+        David Howells <dhowells@redhat.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Jann Horn <jannh@google.com>,
+        Seth Forshee <seth.forshee@canonical.com>,
+        =?UTF-8?Q?St=C3=A9phane_Graber?= <stgraber@ubuntu.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Lennart Poettering <lennart@poettering.net>,
+        "Eric W. Biederman" <ebiederm@xmission.com>, smbarber@chromium.org,
+        Phil Estes <estesp@gmail.com>, Serge Hallyn <serge@hallyn.com>,
+        Kees Cook <keescook@chromium.org>,
+        Todd Kjos <tkjos@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        containers@lists.linux-foundation.org,
+        linux-security-module@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-audit@redhat.com,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 07:38:48AM -0800, Saranya Muruganandam wrote:
-> From: Li Xi <lixi@ddn.com>
-> 
-> This patch only copy the context to a new one when -m is enabled.
-> It doesn't actually start any thread. When pass1 test finishes,
-> the new context is copied back to the original context.
-> 
-> Since the signal handler only changes the original context, so
-> add global_ctx in "struct e2fsck_struct" and use that to check
-> whether there is any signal of canceling.
-> 
-> This patch handles the long jump properly so that all the existing
-> tests can be passed even the context has been copied. Otherwise,
-> test f_expisize_ea_del would fail when aborting.
+On Mon, Nov 23, 2020 at 2:42 AM Christian Brauner
+<christian.brauner@ubuntu.com> wrote:
+> On Sun, Nov 22, 2020 at 05:17:39PM -0500, Paul Moore wrote:
+> > On Sun, Nov 15, 2020 at 5:43 AM Christian Brauner
+> > <christian.brauner@ubuntu.com> wrote:
+> > >
+> > > Audit will sometimes log the inode's i_uid and i_gid. Enable audit to log the
+> > > mapped inode when it is accessed from an idmapped mount.
+> >
+> > I mentioned this in an earlier patch in this patchset, but it is worth
+>
+> I did not receive that message.
 
-The patch description is a bit misleading.  What this is really about
-is adding the infrastructure to start and join threads in pass #1.
-Since we presumably will add multiple threading support for other
-passes, the one-line summary and commit description should make this
-clear, so that in the future, when a future developer is trying to
-examine the 60+ commits in this patch series, it will be a bit easier
-for them to understand what is happening.
+I'm guessing just a slow mail relay somewhere as you responded to both
+of my emails on this patchset, I think we're all set for now :)
 
-It might also be good to explain the patch series that this only
-starts a single thread, since this patch series is really only about
-adding the multi-threading machinery.
+Thanks.
 
-Some questions which immediately come up is whether it makes sense to
-have this machinery in e2fsck/pass1.c, or whether some of this is more
-general and should be in e2fsck/util.c --- although obviously some
-portion of the code when we are merging the results from the pass will
-be pass specific.  Of course, none of this is in this commit, so it's
-hard for me to see whether or not it will make sense in the long run.
-
-We can refactor the code later, or in a future patch series, but the
-point is that it's hard for me to tell whether the existing function
-breakdown makes the most amount of sense in the first reading of the
-patches.  If you have an opinion of what's the better way to do
-things, having looked at the whole patch series, feel free to move
-some of the refactoring into the earlier patches; the patch series
-doesn't have to reflect the developmental history of the changes, and
-for the purposes of patch review, it's often simpler when you change
-earlier patches to simplify things --- although that can make it
-harder since then you'll have to rework later patches.  (If it's too
-hard, it's fine to leave things as they are.)
-
-            	   	   	 	- Ted
+-- 
+paul moore
+www.paul-moore.com
