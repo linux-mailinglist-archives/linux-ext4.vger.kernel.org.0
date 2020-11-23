@@ -2,171 +2,582 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 357562C13FF
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Nov 2020 20:10:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 789762C14E0
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 Nov 2020 20:58:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732732AbgKWS4T (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 23 Nov 2020 13:56:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59120 "EHLO
+        id S1730212AbgKWTxn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 23 Nov 2020 14:53:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728971AbgKWS4O (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 23 Nov 2020 13:56:14 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00615C0613CF;
-        Mon, 23 Nov 2020 10:56:12 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id r127so13134731yba.10;
-        Mon, 23 Nov 2020 10:56:12 -0800 (PST)
+        with ESMTP id S1729009AbgKWTxm (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 23 Nov 2020 14:53:42 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1DB5C0613CF
+        for <linux-ext4@vger.kernel.org>; Mon, 23 Nov 2020 11:53:41 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id i19so25045464ejx.9
+        for <linux-ext4@vger.kernel.org>; Mon, 23 Nov 2020 11:53:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=KNG9rf3jiBLOHJ1Qe+5HClUHwDC8G2v5PJoNSRMQj2o=;
-        b=ZA1WcoeOdsWbRfOoumZEJTLTRH6V2Lpq2CDbZ0VVs1hbOT/vd/v8/YkJaULhb4MkV5
-         MHmDtgQZ7Y6vQOoRafNcjdab1m8jmYbh8Ox0xcyAJF866JXyArBCoNYzebFkQV1wRZF3
-         r3hM3WSnIq7Ht5VQ2PIwvurJMfamtV7PLgYZxEoHoT74qEv3IGeXPryfDRdu7AW/qetQ
-         L1ocOXaYsoIrsq1AVQ8cgaa4G2qWRkZviQ+mOBHOVW/MFUti3ALLJAr2MKUeWh+s4BW6
-         tAJsdEl41qUIuUvcW5DdLnVlmhWMC8lZFuXyyo4x1R3eX3DaWLHh1JzDrRZDt/CN6qga
-         036w==
+        bh=I0u9H4Jxb39tQf5kn+0YXtiQUh06tcjAIKfMOKmSff8=;
+        b=KkxNote5Dx5FQgKmymi6hk6pHS4lsA4mGkQ2nUP/w5oX2ZPRtcCwVOVP/XX8YJYr/k
+         2REsiWq3+CFQ5Wv10lZXaKTQ/j5ajTbd+71PNFWn24FTewz62q65UZjroIsolhQTlanU
+         XsFwWJDzpcIqRp4ibOXbsDQHwdhXxfFCaMUeKMU/clOeogY1igpFLoWU2nZwbr8e+jDM
+         lKejayoi4FyM9qfSFeZp0an7Ar6wUuC14tCNT/zY5WywbgtlxOwQb4yLde6ttPoXKdMT
+         4W0tIkibCGkdoA+Me6hftGDwUrYLD1b40VydQ/7qk6hhyqvtdeIks9J6FvI21nHrmOQz
+         dBBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=KNG9rf3jiBLOHJ1Qe+5HClUHwDC8G2v5PJoNSRMQj2o=;
-        b=VbZ3df0KDvvcjS3oqE4FKJaZu54g4MCdauiP/ZXziJ057Qx+7gO7Xq0DclJJwhkD7A
-         V6wIvyE+iMUTqz9Et4Z5swtCvEVohOYgCr45PQIT1naTPGLjdngls6PaxJ+2dTpwG1sS
-         2J24JWWgll1XCaG4p5TRtdZUw6zFy8CD4ZY8+HNTau19MRyRUhc0Rog1oJz/01j+Rfnb
-         WQq0qXGIb+h89MExl9hJwrFqamYs85+hsGdPRw0lifURgwY7tjHV2PXA1XofJs4XbGTP
-         NEC3DNi0ZW4kVx5Dh9aHDLI9NF0b3y4MyZAlGF5HprxmF8/01jZ1NEiPPRMmDsEjbPZl
-         WrcQ==
-X-Gm-Message-State: AOAM530c8BEunJnR0wvAHz7GM7Tlf3BoUFJdhEyagiplOb8fmebtcUxB
-        ATgeO04Jk0JP04fO5wqwIYLVC06oaCpaZhmWiko=
-X-Google-Smtp-Source: ABdhPJyhWLCSkpSmtD0p55Cmpr9Ao1aJs0IYHWLu4Tcyj9q39OBvqgrIxMZMaEy7w1zacpD3mVr5R93EsjzwMBkGuSA=
-X-Received: by 2002:a25:df55:: with SMTP id w82mr977719ybg.135.1606157772316;
- Mon, 23 Nov 2020 10:56:12 -0800 (PST)
+        bh=I0u9H4Jxb39tQf5kn+0YXtiQUh06tcjAIKfMOKmSff8=;
+        b=nPr7Mic/yyee7WYWKgCnROew8KgrcMQq+NVyriPwv/9Nd/L+XO1A+TKRYugQYB7nba
+         fttd2ArFo46365t73OcAbSLzgB6VWExF6i3heCERAaA9FIJVdN+k+JOv9wiiMu9NRD1h
+         mVsF1/6ZrnsCnClmJxoxw/T3AwAEje2azY9aklvtFe32CvGT4Qezli84oZFHRb3CD0gQ
+         M7WqsXlte4n/4ZTJcX7K9XSwVNdncVav6mrvIYR/bDiQJSNV8cWbTrQn/R3F2vvl7Rog
+         EC705oEFEEarTPdIfnJGQNb51lyneesuzXO+MBY8afxD/qk0VPkxxTs1+42nnTq7h3fG
+         kzZQ==
+X-Gm-Message-State: AOAM532IcZqCjaxBbiEngQt1Y3ALUEpdXnxl1xVc4A5G7KlZ+qkx4d+O
+        1BpsBUbNPZ+6o+NsyDdzzXoz5UsUvAmp8u2G1/YYfJq9jgM=
+X-Google-Smtp-Source: ABdhPJyDWVmD3n+hht39m/UUXa3AARMx3wE5queL2fnZviv3kbauMc9VNp4qvr4BD2hCiJSEn7Yva5fLNDmL0s2uuB4=
+X-Received: by 2002:a17:906:1317:: with SMTP id w23mr1148918ejb.120.1606161220349;
+ Mon, 23 Nov 2020 11:53:40 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1605896059.git.gustavoars@kernel.org> <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <202011201129.B13FDB3C@keescook> <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <202011220816.8B6591A@keescook> <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
- <CANiq72nZrHWTA4_Msg6MP9snTyenC6-eGfD27CyfNSu7QoVZbw@mail.gmail.com>
- <1c7d7fde126bc0acf825766de64bf2f9b888f216.camel@HansenPartnership.com>
- <CANiq72m22Jb5_+62NnwX8xds2iUdWDMAqD8PZw9cuxdHd95W0A@mail.gmail.com> <fc45750b6d0277c401015b7aa11e16cd15f32ab2.camel@HansenPartnership.com>
-In-Reply-To: <fc45750b6d0277c401015b7aa11e16cd15f32ab2.camel@HansenPartnership.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Mon, 23 Nov 2020 19:56:01 +0100
-Message-ID: <CANiq72k5tpDoDPmJ0ZWc1DGqm+81Gi-uEENAtvEs9v3SZcx6_Q@mail.gmail.com>
-Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
-To:     James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        alsa-devel@alsa-project.org, amd-gfx@lists.freedesktop.org,
-        bridge@lists.linux-foundation.org, ceph-devel@vger.kernel.org,
-        cluster-devel@redhat.com, coreteam@netfilter.org,
-        devel@driverdev.osuosl.org, dm-devel@redhat.com,
-        drbd-dev@lists.linbit.com, dri-devel@lists.freedesktop.org,
-        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
-        intel-gfx@lists.freedesktop.org, intel-wired-lan@lists.osuosl.org,
-        keyrings@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
-        linux-acpi@vger.kernel.org, linux-afs@lists.infradead.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-arm-msm@vger.kernel.org,
-        linux-atm-general@lists.sourceforge.net,
-        linux-block@vger.kernel.org, linux-can@vger.kernel.org,
-        linux-cifs@vger.kernel.org,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-decnet-user@lists.sourceforge.net,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-fbdev@vger.kernel.org, linux-geode@lists.infradead.org,
-        linux-gpio@vger.kernel.org, linux-hams@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-i3c@lists.infradead.org,
-        linux-ide@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-input <linux-input@vger.kernel.org>,
-        linux-integrity@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-mmc@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
-        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        netfilter-devel@vger.kernel.org, nouveau@lists.freedesktop.org,
-        op-tee@lists.trustedfirmware.org, oss-drivers@netronome.com,
-        patches@opensource.cirrus.com, rds-devel@oss.oracle.com,
-        reiserfs-devel@vger.kernel.org, samba-technical@lists.samba.org,
-        selinux@vger.kernel.org, target-devel@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net,
-        usb-storage@lists.one-eyed-alien.net,
-        virtualization@lists.linux-foundation.org,
-        wcn36xx@lists.infradead.org,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        xen-devel@lists.xenproject.org, linux-hardening@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>
+References: <20201118153947.3394530-1-saranyamohan@google.com> <20201118153947.3394530-2-saranyamohan@google.com>
+In-Reply-To: <20201118153947.3394530-2-saranyamohan@google.com>
+From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
+Date:   Mon, 23 Nov 2020 11:53:28 -0800
+Message-ID: <CAD+ocbxr=GkMHvzWAWyv5U0N9g_J4hEAx7CgUmaA2Gmx=XupeQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 01/61] e2fsck: add -m option for multithread
+To:     Saranya Muruganandam <saranyamohan@google.com>
+Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Li Xi <lixi@ddn.com>, Wang Shilong <wshilong@ddn.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 4:58 PM James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
+This patch looks good to me. You can add -
+
+Reviewed-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+
+
+On Wed, Nov 18, 2020 at 7:42 AM Saranya Muruganandam
+<saranyamohan@google.com> wrote:
 >
-> Well, I used git.  It says that as of today in Linus' tree we have 889
-> patches related to fall throughs and the first series went in in
-> october 2017 ... ignoring a couple of outliers back to February.
-
-I can see ~10k insertions over ~1k commits and 15 years that mention a
-fallthrough in the entire repo. That is including some commits (like
-the biggest one, 960 insertions) that have nothing to do with C
-fallthrough. A single kernel release has an order of magnitude more
-changes than this...
-
-But if we do the math, for an author, at even 1 minute per line change
-and assuming nothing can be automated at all, it would take 1 month of
-work. For maintainers, a couple of trivial lines is noise compared to
-many other patches.
-
-In fact, this discussion probably took more time than the time it
-would take to review the 200 lines. :-)
-
-> We're also complaining about the inability to recruit maintainers:
+> From: Li Xi <lixi@ddn.com>
 >
-> https://www.theregister.com/2020/06/30/hard_to_find_linux_maintainers_says_torvalds/
+> -m option is added but no actual functionality is added. This
+> patch only adds the logic that when -m is specified, one of
+> -p/-y/-n options should be specified. And when -m is specified,
+> -C shouldn't be specified and the completion progress report won't
+> be triggered by sending SIGUSR1/SIGUSR2 signals. This simplifies
+> the implementation of multi-thread fsck in the future.
 >
-> And burn out:
+> Completion progress support with multi-thread fsck will be added
+> back after multi-thread fsck implementation is finished. Right
+> now, disable it to simplify the implementation of multi-thread fsck.
 >
-> http://antirez.com/news/129
-
-Accepting trivial and useful 1-line patches is not what makes a
-voluntary maintainer quit... Thankless work with demanding deadlines is.
-
-> The whole crux of your argument seems to be maintainers' time isn't
-> important so we should accept all trivial patches
-
-I have not said that, at all. In fact, I am a voluntary one and I
-welcome patches like this. It takes very little effort on my side to
-review and it helps the kernel overall. Paid maintainers are the ones
-that can take care of big features/reviews.
-
-> What I'm actually trying to articulate is a way of measuring value of
-> the patch vs cost ... it has nothing really to do with who foots the
-> actual bill.
-
-I understand your point, but you were the one putting it in terms of a
-junior FTE. In my view, 1 month-work (worst case) is very much worth
-removing a class of errors from a critical codebase.
-
-> One thesis I'm actually starting to formulate is that this continual
-> devaluing of maintainers is why we have so much difficulty keeping and
-> recruiting them.
-
-That may very well be true, but I don't feel anybody has devalued
-maintainers in this discussion.
-
-Cheers,
-Miguel
+> Signed-off-by: Li Xi <lixi@ddn.com>
+> Signed-off-by: Wang Shilong <wshilong@ddn.com>
+> Signed-off-by: Saranya Muruganandam <saranyamohan@google.com>
+> ---
+>  e2fsck/e2fsck.h                         |  1 +
+>  e2fsck/unix.c                           | 31 ++++++++++++++++++++-----
+>  tests/f_multithread/expect.1            | 23 ++++++++++++++++++
+>  tests/f_multithread/expect.2            |  7 ++++++
+>  tests/f_multithread/image.gz            |  1 +
+>  tests/f_multithread/name                |  1 +
+>  tests/f_multithread/script              |  4 ++++
+>  tests/f_multithread_completion/expect.1 |  2 ++
+>  tests/f_multithread_completion/expect.2 | 23 ++++++++++++++++++
+>  tests/f_multithread_completion/image.gz |  1 +
+>  tests/f_multithread_completion/name     |  1 +
+>  tests/f_multithread_completion/script   |  4 ++++
+>  tests/f_multithread_no/expect.1         | 24 +++++++++++++++++++
+>  tests/f_multithread_no/expect.2         | 23 ++++++++++++++++++
+>  tests/f_multithread_no/image.gz         |  1 +
+>  tests/f_multithread_no/name             |  1 +
+>  tests/f_multithread_no/script           |  4 ++++
+>  tests/f_multithread_preen/expect.1      | 11 +++++++++
+>  tests/f_multithread_preen/expect.2      | 23 ++++++++++++++++++
+>  tests/f_multithread_preen/image.gz      |  1 +
+>  tests/f_multithread_preen/name          |  1 +
+>  tests/f_multithread_preen/script        |  4 ++++
+>  tests/f_multithread_yes/expect.1        |  2 ++
+>  tests/f_multithread_yes/expect.2        | 23 ++++++++++++++++++
+>  tests/f_multithread_yes/image.gz        |  1 +
+>  tests/f_multithread_yes/name            |  1 +
+>  tests/f_multithread_yes/script          |  4 ++++
+>  27 files changed, 217 insertions(+), 6 deletions(-)
+>  create mode 100644 tests/f_multithread/expect.1
+>  create mode 100644 tests/f_multithread/expect.2
+>  create mode 120000 tests/f_multithread/image.gz
+>  create mode 100644 tests/f_multithread/name
+>  create mode 100644 tests/f_multithread/script
+>  create mode 100644 tests/f_multithread_completion/expect.1
+>  create mode 100644 tests/f_multithread_completion/expect.2
+>  create mode 120000 tests/f_multithread_completion/image.gz
+>  create mode 100644 tests/f_multithread_completion/name
+>  create mode 100644 tests/f_multithread_completion/script
+>  create mode 100644 tests/f_multithread_no/expect.1
+>  create mode 100644 tests/f_multithread_no/expect.2
+>  create mode 120000 tests/f_multithread_no/image.gz
+>  create mode 100644 tests/f_multithread_no/name
+>  create mode 100644 tests/f_multithread_no/script
+>  create mode 100644 tests/f_multithread_preen/expect.1
+>  create mode 100644 tests/f_multithread_preen/expect.2
+>  create mode 120000 tests/f_multithread_preen/image.gz
+>  create mode 100644 tests/f_multithread_preen/name
+>  create mode 100644 tests/f_multithread_preen/script
+>  create mode 100644 tests/f_multithread_yes/expect.1
+>  create mode 100644 tests/f_multithread_yes/expect.2
+>  create mode 120000 tests/f_multithread_yes/image.gz
+>  create mode 100644 tests/f_multithread_yes/name
+>  create mode 100644 tests/f_multithread_yes/script
+>
+> diff --git a/e2fsck/e2fsck.h b/e2fsck/e2fsck.h
+> index 85f953b2..e2784248 100644
+> --- a/e2fsck/e2fsck.h
+> +++ b/e2fsck/e2fsck.h
+> @@ -177,6 +177,7 @@ struct resource_track {
+>  #define E2F_OPT_ICOUNT_FULLMAP 0x20000 /* use an array for inode counts */
+>  #define E2F_OPT_UNSHARE_BLOCKS  0x40000
+>  #define E2F_OPT_CLEAR_UNINIT   0x80000 /* Hack to clear the uninit bit */
+> +#define E2F_OPT_MULTITHREAD    0x100000 /* Use multiple threads to speedup */
+>
+>  /*
+>   * E2fsck flags
+> diff --git a/e2fsck/unix.c b/e2fsck/unix.c
+> index 1cb51672..051b31a5 100644
+> --- a/e2fsck/unix.c
+> +++ b/e2fsck/unix.c
+> @@ -75,13 +75,14 @@ int journal_enable_debug = -1;
+>  static void usage(e2fsck_t ctx)
+>  {
+>         fprintf(stderr,
+> -               _("Usage: %s [-panyrcdfktvDFV] [-b superblock] [-B blocksize]\n"
+> +               _("Usage: %s [-pamnyrcdfktvDFV] [-b superblock] [-B blocksize]\n"
+>                 "\t\t[-l|-L bad_blocks_file] [-C fd] [-j external_journal]\n"
+>                 "\t\t[-E extended-options] [-z undo_file] device\n"),
+>                 ctx->program_name);
+>
+>         fprintf(stderr, "%s", _("\nEmergency help:\n"
+>                 " -p                   Automatic repair (no questions)\n"
+> +               " -m                   multiple threads to speedup fsck\n"
+>                 " -n                   Make no changes to the filesystem\n"
+>                 " -y                   Assume \"yes\" to all questions\n"
+>                 " -c                   Check for bad blocks and add them to the badblock list\n"
+> @@ -847,7 +848,8 @@ static errcode_t PRS(int argc, char *argv[], e2fsck_t *ret_ctx)
+>
+>         phys_mem_kb = get_memory_size() / 1024;
+>         ctx->readahead_kb = ~0ULL;
+> -       while ((c = getopt(argc, argv, "panyrcC:B:dE:fvtFVM:b:I:j:P:l:L:N:SsDkz:")) != EOF)
+> +
+> +       while ((c = getopt(argc, argv, "pamnyrcC:B:dE:fvtFVM:b:I:j:P:l:L:N:SsDkz:")) != EOF)
+>                 switch (c) {
+>                 case 'C':
+>                         ctx->progress = e2fsck_update_progress;
+> @@ -888,6 +890,9 @@ static errcode_t PRS(int argc, char *argv[], e2fsck_t *ret_ctx)
+>                         }
+>                         ctx->options |= E2F_OPT_PREEN;
+>                         break;
+> +               case 'm':
+> +                       ctx->options |= E2F_OPT_MULTITHREAD;
+> +                       break;
+>                 case 'n':
+>                         if (ctx->options & (E2F_OPT_YES|E2F_OPT_PREEN))
+>                                 goto conflict_opt;
+> @@ -1006,6 +1011,18 @@ static errcode_t PRS(int argc, char *argv[], e2fsck_t *ret_ctx)
+>                         _("The -n and -l/-L options are incompatible."));
+>                 fatal_error(ctx, 0);
+>         }
+> +       if (ctx->options & E2F_OPT_MULTITHREAD) {
+> +               if ((ctx->options & (E2F_OPT_YES|E2F_OPT_NO|E2F_OPT_PREEN)) == 0) {
+> +                       com_err(ctx->program_name, 0, "%s",
+> +                               _("The -m option should be used together with one of -p/-y/-n options."));
+> +                       fatal_error(ctx, 0);
+> +               }
+> +               if (ctx->progress) {
+> +                       com_err(ctx->program_name, 0, "%s",
+> +                               _("Only one of the options -C or -m may be specified."));
+> +                       fatal_error(ctx, 0);
+> +               }
+> +       }
+>         if (ctx->options & E2F_OPT_NO)
+>                 ctx->options |= E2F_OPT_READONLY;
+>
+> @@ -1112,10 +1129,12 @@ static errcode_t PRS(int argc, char *argv[], e2fsck_t *ret_ctx)
+>  #ifdef SA_RESTART
+>         sa.sa_flags = SA_RESTART;
+>  #endif
+> -       sa.sa_handler = signal_progress_on;
+> -       sigaction(SIGUSR1, &sa, 0);
+> -       sa.sa_handler = signal_progress_off;
+> -       sigaction(SIGUSR2, &sa, 0);
+> +       if ((ctx->options & E2F_OPT_MULTITHREAD) == 0) {
+> +               sa.sa_handler = signal_progress_on;
+> +               sigaction(SIGUSR1, &sa, 0);
+> +               sa.sa_handler = signal_progress_off;
+> +               sigaction(SIGUSR2, &sa, 0);
+> +       }
+>  #endif
+>
+>         /* Update our PATH to include /sbin if we need to run badblocks  */
+> diff --git a/tests/f_multithread/expect.1 b/tests/f_multithread/expect.1
+> new file mode 100644
+> index 00000000..e2b954d0
+> --- /dev/null
+> +++ b/tests/f_multithread/expect.1
+> @@ -0,0 +1,23 @@
+> +ext2fs_open2: Bad magic number in super-block
+> +../e2fsck/e2fsck: Superblock invalid, trying backup blocks...
+> +Pass 1: Checking inodes, blocks, and sizes
+> +Pass 2: Checking directory structure
+> +Pass 3: Checking directory connectivity
+> +Pass 4: Checking reference counts
+> +Pass 5: Checking group summary information
+> +Free blocks count wrong for group #0 (7987, counted=7982).
+> +Fix? yes
+> +
+> +Free blocks count wrong (11602, counted=11597).
+> +Fix? yes
+> +
+> +Free inodes count wrong for group #0 (1493, counted=1488).
+> +Fix? yes
+> +
+> +Free inodes count wrong (2997, counted=2992).
+> +Fix? yes
+> +
+> +
+> +test_filesys: ***** FILE SYSTEM WAS MODIFIED *****
+> +test_filesys: 16/3008 files (0.0% non-contiguous), 403/12000 blocks
+> +Exit status is 1
+> diff --git a/tests/f_multithread/expect.2 b/tests/f_multithread/expect.2
+> new file mode 100644
+> index 00000000..a833aefc
+> --- /dev/null
+> +++ b/tests/f_multithread/expect.2
+> @@ -0,0 +1,7 @@
+> +Pass 1: Checking inodes, blocks, and sizes
+> +Pass 2: Checking directory structure
+> +Pass 3: Checking directory connectivity
+> +Pass 4: Checking reference counts
+> +Pass 5: Checking group summary information
+> +test_filesys: 16/3008 files (0.0% non-contiguous), 403/12000 blocks
+> +Exit status is 0
+> diff --git a/tests/f_multithread/image.gz b/tests/f_multithread/image.gz
+> new file mode 120000
+> index 00000000..0fd40018
+> --- /dev/null
+> +++ b/tests/f_multithread/image.gz
+> @@ -0,0 +1 @@
+> +../f_zero_super/image.gz
+> \ No newline at end of file
+> diff --git a/tests/f_multithread/name b/tests/f_multithread/name
+> new file mode 100644
+> index 00000000..df838ea6
+> --- /dev/null
+> +++ b/tests/f_multithread/name
+> @@ -0,0 +1 @@
+> +test "e2fsck -m" option
+> \ No newline at end of file
+> diff --git a/tests/f_multithread/script b/tests/f_multithread/script
+> new file mode 100644
+> index 00000000..0fe96cd0
+> --- /dev/null
+> +++ b/tests/f_multithread/script
+> @@ -0,0 +1,4 @@
+> +FSCK_OPT="-fy -m"
+> +SECOND_FSCK_OPT=-yf
+> +
+> +. $cmd_dir/run_e2fsck
+> diff --git a/tests/f_multithread_completion/expect.1 b/tests/f_multithread_completion/expect.1
+> new file mode 100644
+> index 00000000..61cac9bb
+> --- /dev/null
+> +++ b/tests/f_multithread_completion/expect.1
+> @@ -0,0 +1,2 @@
+> +../e2fsck/e2fsck: Only one of the options -C or -m may be specified.
+> +Exit status is 8
+> diff --git a/tests/f_multithread_completion/expect.2 b/tests/f_multithread_completion/expect.2
+> new file mode 100644
+> index 00000000..e2b954d0
+> --- /dev/null
+> +++ b/tests/f_multithread_completion/expect.2
+> @@ -0,0 +1,23 @@
+> +ext2fs_open2: Bad magic number in super-block
+> +../e2fsck/e2fsck: Superblock invalid, trying backup blocks...
+> +Pass 1: Checking inodes, blocks, and sizes
+> +Pass 2: Checking directory structure
+> +Pass 3: Checking directory connectivity
+> +Pass 4: Checking reference counts
+> +Pass 5: Checking group summary information
+> +Free blocks count wrong for group #0 (7987, counted=7982).
+> +Fix? yes
+> +
+> +Free blocks count wrong (11602, counted=11597).
+> +Fix? yes
+> +
+> +Free inodes count wrong for group #0 (1493, counted=1488).
+> +Fix? yes
+> +
+> +Free inodes count wrong (2997, counted=2992).
+> +Fix? yes
+> +
+> +
+> +test_filesys: ***** FILE SYSTEM WAS MODIFIED *****
+> +test_filesys: 16/3008 files (0.0% non-contiguous), 403/12000 blocks
+> +Exit status is 1
+> diff --git a/tests/f_multithread_completion/image.gz b/tests/f_multithread_completion/image.gz
+> new file mode 120000
+> index 00000000..0fd40018
+> --- /dev/null
+> +++ b/tests/f_multithread_completion/image.gz
+> @@ -0,0 +1 @@
+> +../f_zero_super/image.gz
+> \ No newline at end of file
+> diff --git a/tests/f_multithread_completion/name b/tests/f_multithread_completion/name
+> new file mode 100644
+> index 00000000..a959045d
+> --- /dev/null
+> +++ b/tests/f_multithread_completion/name
+> @@ -0,0 +1 @@
+> +test "e2fsck -m" option conflicts with "-C"
+> \ No newline at end of file
+> diff --git a/tests/f_multithread_completion/script b/tests/f_multithread_completion/script
+> new file mode 100644
+> index 00000000..bf23cd61
+> --- /dev/null
+> +++ b/tests/f_multithread_completion/script
+> @@ -0,0 +1,4 @@
+> +FSCK_OPT="-fy -m -C 1"
+> +SECOND_FSCK_OPT=-yf
+> +
+> +. $cmd_dir/run_e2fsck
+> diff --git a/tests/f_multithread_no/expect.1 b/tests/f_multithread_no/expect.1
+> new file mode 100644
+> index 00000000..d14c4083
+> --- /dev/null
+> +++ b/tests/f_multithread_no/expect.1
+> @@ -0,0 +1,24 @@
+> +ext2fs_open2: Bad magic number in super-block
+> +../e2fsck/e2fsck: Superblock invalid, trying backup blocks...
+> +Pass 1: Checking inodes, blocks, and sizes
+> +Pass 2: Checking directory structure
+> +Pass 3: Checking directory connectivity
+> +Pass 4: Checking reference counts
+> +Pass 5: Checking group summary information
+> +Free blocks count wrong for group #0 (7987, counted=7982).
+> +Fix? no
+> +
+> +Free blocks count wrong (11602, counted=11597).
+> +Fix? no
+> +
+> +Free inodes count wrong for group #0 (1493, counted=1488).
+> +Fix? no
+> +
+> +Free inodes count wrong (2997, counted=2992).
+> +Fix? no
+> +
+> +
+> +test_filesys: ********** WARNING: Filesystem still has errors **********
+> +
+> +test_filesys: 11/3008 files (0.0% non-contiguous), 398/12000 blocks
+> +Exit status is 4
+> diff --git a/tests/f_multithread_no/expect.2 b/tests/f_multithread_no/expect.2
+> new file mode 100644
+> index 00000000..e2b954d0
+> --- /dev/null
+> +++ b/tests/f_multithread_no/expect.2
+> @@ -0,0 +1,23 @@
+> +ext2fs_open2: Bad magic number in super-block
+> +../e2fsck/e2fsck: Superblock invalid, trying backup blocks...
+> +Pass 1: Checking inodes, blocks, and sizes
+> +Pass 2: Checking directory structure
+> +Pass 3: Checking directory connectivity
+> +Pass 4: Checking reference counts
+> +Pass 5: Checking group summary information
+> +Free blocks count wrong for group #0 (7987, counted=7982).
+> +Fix? yes
+> +
+> +Free blocks count wrong (11602, counted=11597).
+> +Fix? yes
+> +
+> +Free inodes count wrong for group #0 (1493, counted=1488).
+> +Fix? yes
+> +
+> +Free inodes count wrong (2997, counted=2992).
+> +Fix? yes
+> +
+> +
+> +test_filesys: ***** FILE SYSTEM WAS MODIFIED *****
+> +test_filesys: 16/3008 files (0.0% non-contiguous), 403/12000 blocks
+> +Exit status is 1
+> diff --git a/tests/f_multithread_no/image.gz b/tests/f_multithread_no/image.gz
+> new file mode 120000
+> index 00000000..0fd40018
+> --- /dev/null
+> +++ b/tests/f_multithread_no/image.gz
+> @@ -0,0 +1 @@
+> +../f_zero_super/image.gz
+> \ No newline at end of file
+> diff --git a/tests/f_multithread_no/name b/tests/f_multithread_no/name
+> new file mode 100644
+> index 00000000..fa49692e
+> --- /dev/null
+> +++ b/tests/f_multithread_no/name
+> @@ -0,0 +1 @@
+> +test "e2fsck -m" option works with "-n"
+> \ No newline at end of file
+> diff --git a/tests/f_multithread_no/script b/tests/f_multithread_no/script
+> new file mode 100644
+> index 00000000..b93deb3a
+> --- /dev/null
+> +++ b/tests/f_multithread_no/script
+> @@ -0,0 +1,4 @@
+> +FSCK_OPT="-fn -m"
+> +SECOND_FSCK_OPT=-yf
+> +
+> +. $cmd_dir/run_e2fsck
+> diff --git a/tests/f_multithread_preen/expect.1 b/tests/f_multithread_preen/expect.1
+> new file mode 100644
+> index 00000000..b4b0cd9a
+> --- /dev/null
+> +++ b/tests/f_multithread_preen/expect.1
+> @@ -0,0 +1,11 @@
+> +../e2fsck/e2fsck: Bad magic number in super-block while trying to open test.img
+> +test_filesys:
+> +The superblock could not be read or does not describe a valid ext2/ext3/ext4
+> +filesystem.  If the device is valid and it really contains an ext2/ext3/ext4
+> +filesystem (and not swap or ufs or something else), then the superblock
+> +is corrupt, and you might try running e2fsck with an alternate superblock:
+> +    e2fsck -b 8193 <device>
+> + or
+> +    e2fsck -b 32768 <device>
+> +
+> +Exit status is 8
+> diff --git a/tests/f_multithread_preen/expect.2 b/tests/f_multithread_preen/expect.2
+> new file mode 100644
+> index 00000000..e2b954d0
+> --- /dev/null
+> +++ b/tests/f_multithread_preen/expect.2
+> @@ -0,0 +1,23 @@
+> +ext2fs_open2: Bad magic number in super-block
+> +../e2fsck/e2fsck: Superblock invalid, trying backup blocks...
+> +Pass 1: Checking inodes, blocks, and sizes
+> +Pass 2: Checking directory structure
+> +Pass 3: Checking directory connectivity
+> +Pass 4: Checking reference counts
+> +Pass 5: Checking group summary information
+> +Free blocks count wrong for group #0 (7987, counted=7982).
+> +Fix? yes
+> +
+> +Free blocks count wrong (11602, counted=11597).
+> +Fix? yes
+> +
+> +Free inodes count wrong for group #0 (1493, counted=1488).
+> +Fix? yes
+> +
+> +Free inodes count wrong (2997, counted=2992).
+> +Fix? yes
+> +
+> +
+> +test_filesys: ***** FILE SYSTEM WAS MODIFIED *****
+> +test_filesys: 16/3008 files (0.0% non-contiguous), 403/12000 blocks
+> +Exit status is 1
+> diff --git a/tests/f_multithread_preen/image.gz b/tests/f_multithread_preen/image.gz
+> new file mode 120000
+> index 00000000..0fd40018
+> --- /dev/null
+> +++ b/tests/f_multithread_preen/image.gz
+> @@ -0,0 +1 @@
+> +../f_zero_super/image.gz
+> \ No newline at end of file
+> diff --git a/tests/f_multithread_preen/name b/tests/f_multithread_preen/name
+> new file mode 100644
+> index 00000000..90d199df
+> --- /dev/null
+> +++ b/tests/f_multithread_preen/name
+> @@ -0,0 +1 @@
+> +test "e2fsck -m" option works with "-p"
+> \ No newline at end of file
+> diff --git a/tests/f_multithread_preen/script b/tests/f_multithread_preen/script
+> new file mode 100644
+> index 00000000..ecb79cd6
+> --- /dev/null
+> +++ b/tests/f_multithread_preen/script
+> @@ -0,0 +1,4 @@
+> +FSCK_OPT="-fp -m"
+> +SECOND_FSCK_OPT=-yf
+> +
+> +. $cmd_dir/run_e2fsck
+> diff --git a/tests/f_multithread_yes/expect.1 b/tests/f_multithread_yes/expect.1
+> new file mode 100644
+> index 00000000..8b780ecf
+> --- /dev/null
+> +++ b/tests/f_multithread_yes/expect.1
+> @@ -0,0 +1,2 @@
+> +../e2fsck/e2fsck: The -m option should be used together with one of -p/-y/-n options.
+> +Exit status is 8
+> diff --git a/tests/f_multithread_yes/expect.2 b/tests/f_multithread_yes/expect.2
+> new file mode 100644
+> index 00000000..e2b954d0
+> --- /dev/null
+> +++ b/tests/f_multithread_yes/expect.2
+> @@ -0,0 +1,23 @@
+> +ext2fs_open2: Bad magic number in super-block
+> +../e2fsck/e2fsck: Superblock invalid, trying backup blocks...
+> +Pass 1: Checking inodes, blocks, and sizes
+> +Pass 2: Checking directory structure
+> +Pass 3: Checking directory connectivity
+> +Pass 4: Checking reference counts
+> +Pass 5: Checking group summary information
+> +Free blocks count wrong for group #0 (7987, counted=7982).
+> +Fix? yes
+> +
+> +Free blocks count wrong (11602, counted=11597).
+> +Fix? yes
+> +
+> +Free inodes count wrong for group #0 (1493, counted=1488).
+> +Fix? yes
+> +
+> +Free inodes count wrong (2997, counted=2992).
+> +Fix? yes
+> +
+> +
+> +test_filesys: ***** FILE SYSTEM WAS MODIFIED *****
+> +test_filesys: 16/3008 files (0.0% non-contiguous), 403/12000 blocks
+> +Exit status is 1
+> diff --git a/tests/f_multithread_yes/image.gz b/tests/f_multithread_yes/image.gz
+> new file mode 120000
+> index 00000000..0fd40018
+> --- /dev/null
+> +++ b/tests/f_multithread_yes/image.gz
+> @@ -0,0 +1 @@
+> +../f_zero_super/image.gz
+> \ No newline at end of file
+> diff --git a/tests/f_multithread_yes/name b/tests/f_multithread_yes/name
+> new file mode 100644
+> index 00000000..3a703195
+> --- /dev/null
+> +++ b/tests/f_multithread_yes/name
+> @@ -0,0 +1 @@
+> +test "e2fsck -m" option works with "-y"
+> \ No newline at end of file
+> diff --git a/tests/f_multithread_yes/script b/tests/f_multithread_yes/script
+> new file mode 100644
+> index 00000000..38891f6a
+> --- /dev/null
+> +++ b/tests/f_multithread_yes/script
+> @@ -0,0 +1,4 @@
+> +FSCK_OPT="-f -m"
+> +SECOND_FSCK_OPT=-yf
+> +
+> +. $cmd_dir/run_e2fsck
+> --
+> 2.29.2.299.gdc1121823c-goog
+>
