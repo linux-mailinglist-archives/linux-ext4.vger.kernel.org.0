@@ -2,90 +2,99 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11BD72C186B
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Nov 2020 23:31:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 300742C1897
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 Nov 2020 23:44:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731102AbgKWWaj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 23 Nov 2020 17:30:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46198 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728649AbgKWWai (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 23 Nov 2020 17:30:38 -0500
-Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 75A21206D5;
-        Mon, 23 Nov 2020 22:30:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606170638;
-        bh=qMsLhguUfZGHthn8o/bIe+LRx3PrKd4xYprbL94g5Es=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DNfDxTnuJc/9ZOQO+U1ViZqPntmi9u+PapFohdzgovjh/jy/Yy4xVB33Rww+qBRm7
-         az2CJzZnLZkYf7iatMCzDNGSHVMHyPoXq/qiSNoa3lsby8//RGmrveXMtq3Cqen2Q2
-         SidiEvRqa7Jbzx0Zmg8juZV1Q8JiUJnD9dIkecsc=
-Date:   Mon, 23 Nov 2020 14:30:35 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     Daniel Rosenberg <drosen@google.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chao Yu <chao@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Richard Weinberger <richard@nod.at>,
-        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mtd@lists.infradead.org, kernel-team@android.com
-Subject: Re: [PATCH v4 2/3] fscrypt: Have filesystems handle their d_ops
-Message-ID: <X7w4C8GAy+P9KNU6@sol.localdomain>
-References: <20201119060904.463807-1-drosen@google.com>
- <20201119060904.463807-3-drosen@google.com>
- <87y2iuj8y2.fsf@collabora.com>
+        id S1731427AbgKWWjG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 23 Nov 2020 17:39:06 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:37474 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1731007AbgKWWjG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 23 Nov 2020 17:39:06 -0500
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0ANMcuSH003238
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 23 Nov 2020 17:38:57 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 90E97420136; Mon, 23 Nov 2020 17:38:56 -0500 (EST)
+Date:   Mon, 23 Nov 2020 17:38:56 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Saranya Muruganandam <saranyamohan@google.com>
+Cc:     linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca,
+        Li Xi <lixi@ddn.com>, Wang Shilong <wshilong@ddn.com>
+Subject: Re: [RFC PATCH v3 08/61] e2fsck: open io-channel when copying fs
+Message-ID: <20201123223856.GH132317@mit.edu>
+References: <20201118153947.3394530-1-saranyamohan@google.com>
+ <20201118153947.3394530-9-saranyamohan@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87y2iuj8y2.fsf@collabora.com>
+In-Reply-To: <20201118153947.3394530-9-saranyamohan@google.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Nov 21, 2020 at 11:45:41PM -0500, Gabriel Krisman Bertazi wrote:
-> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> > index 6633b20224d5..0288bedf46e1 100644
-> > --- a/fs/ext4/super.c
-> > +++ b/fs/ext4/super.c
-> > @@ -4968,11 +4968,6 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
-> >  		goto failed_mount4;
-> >  	}
-> >  
-> > -#ifdef CONFIG_UNICODE
-> > -	if (sb->s_encoding)
-> > -		sb->s_d_op = &ext4_dentry_ops;
-> > -#endif
+On Wed, Nov 18, 2020 at 07:38:54AM -0800, Saranya Muruganandam wrote:
+> From: Li Xi <lixi@ddn.com>
 > 
-> This change has the side-effect of removing the capability of the root
-> directory from being case-insensitive.  It is not a backward
-> incompatible change because there is no way to make the root directory
-> CI at the moment (it is never empty). But this restriction seems
-> artificial. Is there a real reason to prevent the root inode from being
-> case-insensitive?
+> This patch also add writethrough flag to the thread io-channel.
+> When multiple threads write the same disk, we don't want the
+> data being saved in memory cache. This will be useful in the
+> future, but even without that flag, the tests can be passed too.
 > 
+> This patch also cleanup the io channel cache of the global
+> context. Otherwise, after pass1 step, the next steps would use
+> old data saved in the cache. And the cached data might have
+> already been overwritten in pass1.
 
-The problem is that the "lost+found" directory is special in that e2fsck needs
-to be able to find it.
+See my previous comments about why io_managers will almost certainly
+need to be thread-aware.  This commit modifies undo_io.c, but it can't
+possibly work as-is, since you can't have multiple copies of the undo
+manager from different threads trying to update a single undo file.
+So these changes, by themselves, can't possibly be sufficient.
 
-That's the reason why ext4 doesn't allow the root directory to be encrypted.
-(And encrypting the root directory isn't really useful anyway, since if the goal
-is to encrypt a whole filesystem with one key, dm-crypt is a better solution.)
+Instead of doing things incrementally, my suggestion is that we figure
+out how to make io_managers thread-safe and we get it right *first*,
+instead of making incremental changes throughout the patch series.
+I'd also suggest that we figure out some kind of test framework so we
+can test io_managers in isolation, so we can do stress tests, as well
+as functional correctness tests as unit tests.
 
-Casefolding is a bit less problematic than encryption.  But it still doesn't
-entirely work, as e.g. if you name the directory "LOST+FOUND" instead (the
-directory is casefolded after all...), then e2fsck can't find it.
+Once we have that, let's merge these changes in incrementally into
+e2fsprogs, so we can have clean, well-designed and well-tested
+low-level infrastructure, which will be easier for us to review.
 
-Unless there's a real use case for the root directory being casefolded and
-people are willing to fix e2fsck, I think we should just make ext4 return an
-error when setting the casefold flag on the root directory, like it does when
-trying to enable encryption on the root directory.
+> diff --git a/lib/ext2fs/ext2_io.h b/lib/ext2fs/ext2_io.h
+> index 5540900a..4ad2fec8 100644
+> --- a/lib/ext2fs/ext2_io.h
+> +++ b/lib/ext2fs/ext2_io.h
+> @@ -81,6 +81,7 @@ struct struct_io_manager {
+>  	errcode_t (*write_blk)(io_channel channel, unsigned long block,
+>  			       int count, const void *data);
+>  	errcode_t (*flush)(io_channel channel);
+> +	errcode_t (*flush_cleanup)(io_channel channel);
+>  	errcode_t (*write_byte)(io_channel channel, unsigned long offset,
+>  				int count, const void *data);
+>  	errcode_t (*set_option)(io_channel channel, const char *option,
 
-- Eric
+Please don't add new functions into the middle of struct_io_manager.
+There is a long reserved[14] to add padding to the structure for a
+reason.  Add a new function pointer just before the reserved[] array,
+and then decrement the padding count.
+
+The reason for this is that it's technically allowed for applications
+to provide their own io_manager to the library, which may be stacked
+on top of an some other io_manager (as is the case for undo
+iomanager).  Or it might because the userspace application is
+providing their own io manager to interface with some other OS ---
+maybe Windows, or Fuschia in the future, who knows?
+
+So if we add a new function pointer to the middle of
+struct_io_manager, this breaks the ABI, and that's a Bad Thing, as it
+may cause surprises in the future for applications which are using
+shared libraries and we update with a newer version of the shared
+library without doing a major version bump of the shared library.
+
+		      	      	      	   - Ted
