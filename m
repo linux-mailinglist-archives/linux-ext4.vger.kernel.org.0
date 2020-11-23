@@ -2,68 +2,85 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EDD72C17AB
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Nov 2020 22:32:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 280702C17CE
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 Nov 2020 22:43:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728974AbgKWV26 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 23 Nov 2020 16:28:58 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:54128 "EHLO
+        id S1731316AbgKWVih (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 23 Nov 2020 16:38:37 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:55772 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726325AbgKWV25 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 23 Nov 2020 16:28:57 -0500
+        with ESMTP id S1731017AbgKWVig (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 23 Nov 2020 16:38:36 -0500
 Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0ANLSmYT012536
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0ANLcQKP016024
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Nov 2020 16:28:48 -0500
+        Mon, 23 Nov 2020 16:38:27 -0500
 Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id D889A420136; Mon, 23 Nov 2020 16:28:47 -0500 (EST)
-Date:   Mon, 23 Nov 2020 16:28:47 -0500
+        id ACA8F420136; Mon, 23 Nov 2020 16:38:26 -0500 (EST)
+Date:   Mon, 23 Nov 2020 16:38:26 -0500
 From:   "Theodore Y. Ts'o" <tytso@mit.edu>
 To:     Saranya Muruganandam <saranyamohan@google.com>
 Cc:     linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca,
         Li Xi <lixi@ddn.com>, Wang Shilong <wshilong@ddn.com>
-Subject: Re: [RFC PATCH v3 01/61] e2fsck: add -m option for multithread
-Message-ID: <20201123212847.GD132317@mit.edu>
+Subject: Re: [RFC PATCH v3 02/61] e2fsck: copy context when using
+ multi-thread fsck
+Message-ID: <20201123213826.GE132317@mit.edu>
 References: <20201118153947.3394530-1-saranyamohan@google.com>
- <20201118153947.3394530-2-saranyamohan@google.com>
+ <20201118153947.3394530-3-saranyamohan@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201118153947.3394530-2-saranyamohan@google.com>
+In-Reply-To: <20201118153947.3394530-3-saranyamohan@google.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 07:38:47AM -0800, Saranya Muruganandam wrote:
+On Wed, Nov 18, 2020 at 07:38:48AM -0800, Saranya Muruganandam wrote:
 > From: Li Xi <lixi@ddn.com>
 > 
-> -m option is added but no actual functionality is added. This
-> patch only adds the logic that when -m is specified, one of
-> -p/-y/-n options should be specified. And when -m is specified,
-> -C shouldn't be specified and the completion progress report won't
-> be triggered by sending SIGUSR1/SIGUSR2 signals. This simplifies
-> the implementation of multi-thread fsck in the future.
+> This patch only copy the context to a new one when -m is enabled.
+> It doesn't actually start any thread. When pass1 test finishes,
+> the new context is copied back to the original context.
 > 
-> Completion progress support with multi-thread fsck will be added
-> back after multi-thread fsck implementation is finished. Right
-> now, disable it to simplify the implementation of multi-thread fsck.
+> Since the signal handler only changes the original context, so
+> add global_ctx in "struct e2fsck_struct" and use that to check
+> whether there is any signal of canceling.
 > 
-> Signed-off-by: Li Xi <lixi@ddn.com>
-> Signed-off-by: Wang Shilong <wshilong@ddn.com>
-> Signed-off-by: Saranya Muruganandam <saranyamohan@google.com>
+> This patch handles the long jump properly so that all the existing
+> tests can be passed even the context has been copied. Otherwise,
+> test f_expisize_ea_del would fail when aborting.
 
-I'm a bit surprised the changes to the e2fsck man page aren't
-inclulded in this patch.  I see the man page changes were added in
-"e2fsck: misc cleanups for pfsck", which I would have merged into
-other patches, but that's a bit of a nit-pick.  (The way I normally do
-these sorts of changes is to expert the patches using "git
-format-patch", and then I'll use an editor to move patch hunks around,
-and then apply them all using "git am".  Or I'll using something like
-the "guilt" program, which is essentially quilt for git patch series.)
+The patch description is a bit misleading.  What this is really about
+is adding the infrastructure to start and join threads in pass #1.
+Since we presumably will add multiple threading support for other
+passes, the one-line summary and commit description should make this
+clear, so that in the future, when a future developer is trying to
+examine the 60+ commits in this patch series, it will be a bit easier
+for them to understand what is happening.
 
-(Don't worry about making changes for this, unless you're going to be
-making lots of other changes to the patch series.)
+It might also be good to explain the patch series that this only
+starts a single thread, since this patch series is really only about
+adding the multi-threading machinery.
 
-       	       	     	     	- Ted
+Some questions which immediately come up is whether it makes sense to
+have this machinery in e2fsck/pass1.c, or whether some of this is more
+general and should be in e2fsck/util.c --- although obviously some
+portion of the code when we are merging the results from the pass will
+be pass specific.  Of course, none of this is in this commit, so it's
+hard for me to see whether or not it will make sense in the long run.
+
+We can refactor the code later, or in a future patch series, but the
+point is that it's hard for me to tell whether the existing function
+breakdown makes the most amount of sense in the first reading of the
+patches.  If you have an opinion of what's the better way to do
+things, having looked at the whole patch series, feel free to move
+some of the refactoring into the earlier patches; the patch series
+doesn't have to reflect the developmental history of the changes, and
+for the purposes of patch review, it's often simpler when you change
+earlier patches to simplify things --- although that can make it
+harder since then you'll have to rework later patches.  (If it's too
+hard, it's fine to leave things as they are.)
+
+            	   	   	 	- Ted
