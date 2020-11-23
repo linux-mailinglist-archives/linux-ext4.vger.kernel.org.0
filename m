@@ -2,54 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 789762C14E0
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Nov 2020 20:58:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 422DB2C14E1
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 Nov 2020 20:58:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730212AbgKWTxn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 23 Nov 2020 14:53:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39790 "EHLO
+        id S1728930AbgKWTzo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 23 Nov 2020 14:55:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729009AbgKWTxm (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 23 Nov 2020 14:53:42 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1DB5C0613CF
-        for <linux-ext4@vger.kernel.org>; Mon, 23 Nov 2020 11:53:41 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id i19so25045464ejx.9
-        for <linux-ext4@vger.kernel.org>; Mon, 23 Nov 2020 11:53:41 -0800 (PST)
+        with ESMTP id S1728463AbgKWTzn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 23 Nov 2020 14:55:43 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC288C0613CF
+        for <linux-ext4@vger.kernel.org>; Mon, 23 Nov 2020 11:55:41 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id o21so25048204ejb.3
+        for <linux-ext4@vger.kernel.org>; Mon, 23 Nov 2020 11:55:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=I0u9H4Jxb39tQf5kn+0YXtiQUh06tcjAIKfMOKmSff8=;
-        b=KkxNote5Dx5FQgKmymi6hk6pHS4lsA4mGkQ2nUP/w5oX2ZPRtcCwVOVP/XX8YJYr/k
-         2REsiWq3+CFQ5Wv10lZXaKTQ/j5ajTbd+71PNFWn24FTewz62q65UZjroIsolhQTlanU
-         XsFwWJDzpcIqRp4ibOXbsDQHwdhXxfFCaMUeKMU/clOeogY1igpFLoWU2nZwbr8e+jDM
-         lKejayoi4FyM9qfSFeZp0an7Ar6wUuC14tCNT/zY5WywbgtlxOwQb4yLde6ttPoXKdMT
-         4W0tIkibCGkdoA+Me6hftGDwUrYLD1b40VydQ/7qk6hhyqvtdeIks9J6FvI21nHrmOQz
-         dBBg==
+        bh=G2DpbiQR09VFypr+YtLed/kgdlEXJxeKkk7Ms6zKLMc=;
+        b=tcN3jdvoQrkgnFUslLnK1njbvoaN2w2xindNbCoirmnnrRQwzvQzjXlZzqGjy5+Iqk
+         mn/060pP30TWPNzxcsx0zI2vXRJNhRXJJKXMYTqOcfEHFJGpgT0FycXF3YdXbc+LZ6Dr
+         Hp4AFyRh6Pw72VFAxTFavv0FZMaMvW6AmbTVwpz08sb81P5DtDdKlc1sZ2lfrvKNUs9t
+         e/BkbSAlyYIl16pcEiZAn+QEsDdL6SSu7LLjNOrSBjh1NaAXt5jj3D2M1lSdCcn12VSE
+         o/1isB10MHZs06ISDmiKGBesYJN6p4tnUj/MjIYNm3GU8QQyQCcixnFVILgYUk0AeUuq
+         IYGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=I0u9H4Jxb39tQf5kn+0YXtiQUh06tcjAIKfMOKmSff8=;
-        b=nPr7Mic/yyee7WYWKgCnROew8KgrcMQq+NVyriPwv/9Nd/L+XO1A+TKRYugQYB7nba
-         fttd2ArFo46365t73OcAbSLzgB6VWExF6i3heCERAaA9FIJVdN+k+JOv9wiiMu9NRD1h
-         mVsF1/6ZrnsCnClmJxoxw/T3AwAEje2azY9aklvtFe32CvGT4Qezli84oZFHRb3CD0gQ
-         M7WqsXlte4n/4ZTJcX7K9XSwVNdncVav6mrvIYR/bDiQJSNV8cWbTrQn/R3F2vvl7Rog
-         EC705oEFEEarTPdIfnJGQNb51lyneesuzXO+MBY8afxD/qk0VPkxxTs1+42nnTq7h3fG
-         kzZQ==
-X-Gm-Message-State: AOAM532IcZqCjaxBbiEngQt1Y3ALUEpdXnxl1xVc4A5G7KlZ+qkx4d+O
-        1BpsBUbNPZ+6o+NsyDdzzXoz5UsUvAmp8u2G1/YYfJq9jgM=
-X-Google-Smtp-Source: ABdhPJyDWVmD3n+hht39m/UUXa3AARMx3wE5queL2fnZviv3kbauMc9VNp4qvr4BD2hCiJSEn7Yva5fLNDmL0s2uuB4=
-X-Received: by 2002:a17:906:1317:: with SMTP id w23mr1148918ejb.120.1606161220349;
- Mon, 23 Nov 2020 11:53:40 -0800 (PST)
+        bh=G2DpbiQR09VFypr+YtLed/kgdlEXJxeKkk7Ms6zKLMc=;
+        b=lfh5L/KJXoQT+6A51lCAvNVMSgvidcbjKkdm1LbkHLU0GxCXnbTGx8K0RbAsXjFZse
+         0NBK/62jq38nl3L0DM0yXK/VFtUwAGmFr1q+66YrgAJ9zGxcNLsm1meQzBUHtE81eYlW
+         qj6saSXsKzuB/K1qspNt2WpDE6uRO6pY3nT7engOAFw+EibwN3YA0ezoSZotAuw7Hx8j
+         QpK826nJEwrUKVsSNxZicoK+ibze9lhSyd7i5+opTFT11hNbUA4W49uYwOCyFbaEV8sD
+         0Q9fsrucO8N/UUAOcujKDBfEur9Cx0SEsb1kvI4oqDJoE/RNjU2Bxtaz8l1olqBYhX44
+         7Iig==
+X-Gm-Message-State: AOAM533D2ZOTWPpee+wpL+rQN2K7JWdpyoN+2lJc5uTSffNbiUY54OO1
+        8n+KsD95vQIqganLv2LUcVzzx6+E+oKtn+Rn0gE=
+X-Google-Smtp-Source: ABdhPJzxEoCx5yzX7nKcWxeiy6+KMjsnBK1pcp8j60ajvrTzxWqRFkFAvM30lnQ0181fiGvTStJ6yaIEXCKrEThQCEI=
+X-Received: by 2002:a17:906:71d3:: with SMTP id i19mr1106913ejk.187.1606161340528;
+ Mon, 23 Nov 2020 11:55:40 -0800 (PST)
 MIME-Version: 1.0
-References: <20201118153947.3394530-1-saranyamohan@google.com> <20201118153947.3394530-2-saranyamohan@google.com>
-In-Reply-To: <20201118153947.3394530-2-saranyamohan@google.com>
+References: <20201118153947.3394530-1-saranyamohan@google.com> <20201118153947.3394530-3-saranyamohan@google.com>
+In-Reply-To: <20201118153947.3394530-3-saranyamohan@google.com>
 From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
-Date:   Mon, 23 Nov 2020 11:53:28 -0800
-Message-ID: <CAD+ocbxr=GkMHvzWAWyv5U0N9g_J4hEAx7CgUmaA2Gmx=XupeQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 01/61] e2fsck: add -m option for multithread
+Date:   Mon, 23 Nov 2020 11:55:29 -0800
+Message-ID: <CAD+ocbziW_Rr90k0RWFZKQJ1czFPpoE5-0VAYvxevs6mU1sHFQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 02/61] e2fsck: copy context when using multi-thread fsck
 To:     Saranya Muruganandam <saranyamohan@google.com>
 Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
         "Theodore Y. Ts'o" <tytso@mit.edu>,
@@ -60,524 +60,233 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This patch looks good to me. You can add -
+Thanks for the patch. I noticed that this patch doesn't compile. It's
+because it needs "global_ctx" to be present in the e2fsck_struct but
+it gets added later in the patch series in the patch 1e1b0216
+("LU-8465 e2fsck: open io-channel when copying fs"). Given that this
+and also a couple of other patches need global_ctx, should we split
+1e1b0216 ("LU-8465 e2fsck: open io-channel when copying fs") should we
+add global_ctx in this patch or as a separate patch before this?
 
-Reviewed-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 
-
-On Wed, Nov 18, 2020 at 7:42 AM Saranya Muruganandam
+On Wed, Nov 18, 2020 at 7:43 AM Saranya Muruganandam
 <saranyamohan@google.com> wrote:
 >
 > From: Li Xi <lixi@ddn.com>
 >
-> -m option is added but no actual functionality is added. This
-> patch only adds the logic that when -m is specified, one of
-> -p/-y/-n options should be specified. And when -m is specified,
-> -C shouldn't be specified and the completion progress report won't
-> be triggered by sending SIGUSR1/SIGUSR2 signals. This simplifies
-> the implementation of multi-thread fsck in the future.
+> This patch only copy the context to a new one when -m is enabled.
+> It doesn't actually start any thread. When pass1 test finishes,
+> the new context is copied back to the original context.
 >
-> Completion progress support with multi-thread fsck will be added
-> back after multi-thread fsck implementation is finished. Right
-> now, disable it to simplify the implementation of multi-thread fsck.
+> Since the signal handler only changes the original context, so
+> add global_ctx in "struct e2fsck_struct" and use that to check
+> whether there is any signal of canceling.
+>
+> This patch handles the long jump properly so that all the existing
+> tests can be passed even the context has been copied. Otherwise,
+> test f_expisize_ea_del would fail when aborting.
 >
 > Signed-off-by: Li Xi <lixi@ddn.com>
 > Signed-off-by: Wang Shilong <wshilong@ddn.com>
 > Signed-off-by: Saranya Muruganandam <saranyamohan@google.com>
 > ---
->  e2fsck/e2fsck.h                         |  1 +
->  e2fsck/unix.c                           | 31 ++++++++++++++++++++-----
->  tests/f_multithread/expect.1            | 23 ++++++++++++++++++
->  tests/f_multithread/expect.2            |  7 ++++++
->  tests/f_multithread/image.gz            |  1 +
->  tests/f_multithread/name                |  1 +
->  tests/f_multithread/script              |  4 ++++
->  tests/f_multithread_completion/expect.1 |  2 ++
->  tests/f_multithread_completion/expect.2 | 23 ++++++++++++++++++
->  tests/f_multithread_completion/image.gz |  1 +
->  tests/f_multithread_completion/name     |  1 +
->  tests/f_multithread_completion/script   |  4 ++++
->  tests/f_multithread_no/expect.1         | 24 +++++++++++++++++++
->  tests/f_multithread_no/expect.2         | 23 ++++++++++++++++++
->  tests/f_multithread_no/image.gz         |  1 +
->  tests/f_multithread_no/name             |  1 +
->  tests/f_multithread_no/script           |  4 ++++
->  tests/f_multithread_preen/expect.1      | 11 +++++++++
->  tests/f_multithread_preen/expect.2      | 23 ++++++++++++++++++
->  tests/f_multithread_preen/image.gz      |  1 +
->  tests/f_multithread_preen/name          |  1 +
->  tests/f_multithread_preen/script        |  4 ++++
->  tests/f_multithread_yes/expect.1        |  2 ++
->  tests/f_multithread_yes/expect.2        | 23 ++++++++++++++++++
->  tests/f_multithread_yes/image.gz        |  1 +
->  tests/f_multithread_yes/name            |  1 +
->  tests/f_multithread_yes/script          |  4 ++++
->  27 files changed, 217 insertions(+), 6 deletions(-)
->  create mode 100644 tests/f_multithread/expect.1
->  create mode 100644 tests/f_multithread/expect.2
->  create mode 120000 tests/f_multithread/image.gz
->  create mode 100644 tests/f_multithread/name
->  create mode 100644 tests/f_multithread/script
->  create mode 100644 tests/f_multithread_completion/expect.1
->  create mode 100644 tests/f_multithread_completion/expect.2
->  create mode 120000 tests/f_multithread_completion/image.gz
->  create mode 100644 tests/f_multithread_completion/name
->  create mode 100644 tests/f_multithread_completion/script
->  create mode 100644 tests/f_multithread_no/expect.1
->  create mode 100644 tests/f_multithread_no/expect.2
->  create mode 120000 tests/f_multithread_no/image.gz
->  create mode 100644 tests/f_multithread_no/name
->  create mode 100644 tests/f_multithread_no/script
->  create mode 100644 tests/f_multithread_preen/expect.1
->  create mode 100644 tests/f_multithread_preen/expect.2
->  create mode 120000 tests/f_multithread_preen/image.gz
->  create mode 100644 tests/f_multithread_preen/name
->  create mode 100644 tests/f_multithread_preen/script
->  create mode 100644 tests/f_multithread_yes/expect.1
->  create mode 100644 tests/f_multithread_yes/expect.2
->  create mode 120000 tests/f_multithread_yes/image.gz
->  create mode 100644 tests/f_multithread_yes/name
->  create mode 100644 tests/f_multithread_yes/script
+>  e2fsck/pass1.c | 114 +++++++++++++++++++++++++++++++++++++++++++++----
+>  e2fsck/unix.c  |   1 +
+>  2 files changed, 107 insertions(+), 8 deletions(-)
 >
-> diff --git a/e2fsck/e2fsck.h b/e2fsck/e2fsck.h
-> index 85f953b2..e2784248 100644
-> --- a/e2fsck/e2fsck.h
-> +++ b/e2fsck/e2fsck.h
-> @@ -177,6 +177,7 @@ struct resource_track {
->  #define E2F_OPT_ICOUNT_FULLMAP 0x20000 /* use an array for inode counts */
->  #define E2F_OPT_UNSHARE_BLOCKS  0x40000
->  #define E2F_OPT_CLEAR_UNINIT   0x80000 /* Hack to clear the uninit bit */
-> +#define E2F_OPT_MULTITHREAD    0x100000 /* Use multiple threads to speedup */
+> diff --git a/e2fsck/pass1.c b/e2fsck/pass1.c
+> index 8eecd958..64d237d3 100644
+> --- a/e2fsck/pass1.c
+> +++ b/e2fsck/pass1.c
+> @@ -1144,7 +1144,22 @@ static int quota_inum_is_reserved(ext2_filsys fs, ext2_ino_t ino)
+>         return 0;
+>  }
+>
+> -void e2fsck_pass1(e2fsck_t ctx)
+> +static int e2fsck_should_abort(e2fsck_t ctx)
+> +{
+> +       e2fsck_t global_ctx;
+> +
+> +       if (ctx->flags & E2F_FLAG_SIGNAL_MASK)
+> +               return 1;
+> +
+> +       if (ctx->global_ctx) {
+> +               global_ctx = ctx->global_ctx;
+> +               if (global_ctx->flags & E2F_FLAG_SIGNAL_MASK)
+> +                       return 1;
+> +       }
+> +       return 0;
+> +}
+> +
+> +void e2fsck_pass1_thread(e2fsck_t ctx)
+>  {
+>         int     i;
+>         __u64   max_sizes;
+> @@ -1360,7 +1375,7 @@ void e2fsck_pass1(e2fsck_t ctx)
+>                 if (ino > ino_threshold)
+>                         pass1_readahead(ctx, &ra_group, &ino_threshold);
+>                 ehandler_operation(old_op);
+> -               if (ctx->flags & E2F_FLAG_SIGNAL_MASK)
+> +               if (e2fsck_should_abort(ctx))
+>                         goto endit;
+>                 if (pctx.errcode == EXT2_ET_BAD_BLOCK_IN_INODE_TABLE) {
+>                         /*
+> @@ -1955,7 +1970,7 @@ void e2fsck_pass1(e2fsck_t ctx)
+>                 if (process_inode_count >= ctx->process_inode_size) {
+>                         process_inodes(ctx, block_buf);
+>
+> -                       if (ctx->flags & E2F_FLAG_SIGNAL_MASK)
+> +                       if (e2fsck_should_abort(ctx))
+>                                 goto endit;
+>                 }
+>         }
+> @@ -2068,6 +2083,89 @@ endit:
+>         else
+>                 ctx->invalid_bitmaps++;
+>  }
+> +
+> +static errcode_t e2fsck_pass1_thread_prepare(e2fsck_t global_ctx, e2fsck_t *thread_ctx)
+> +{
+> +       errcode_t       retval;
+> +       e2fsck_t        thread_context;
+> +
+> +       retval = ext2fs_get_mem(sizeof(struct e2fsck_struct), &thread_context);
+> +       if (retval) {
+> +               com_err(global_ctx->program_name, retval, "while allocating memory");
+> +               return retval;
+> +       }
+> +       memcpy(thread_context, global_ctx, sizeof(struct e2fsck_struct));
+> +       thread_context->fs->priv_data = thread_context;
+> +       thread_context->global_ctx = global_ctx;
+> +
+> +       *thread_ctx = thread_context;
+> +       return 0;
+> +}
+> +
+> +static int e2fsck_pass1_thread_join(e2fsck_t global_ctx, e2fsck_t thread_ctx)
+> +{
+> +       int     flags = global_ctx->flags;
+> +#ifdef HAVE_SETJMP_H
+> +       jmp_buf old_jmp;
+> +
+> +       memcpy(old_jmp, global_ctx->abort_loc, sizeof(jmp_buf));
+> +#endif
+> +       memcpy(global_ctx, thread_ctx, sizeof(struct e2fsck_struct));
+> +#ifdef HAVE_SETJMP_H
+> +       memcpy(global_ctx->abort_loc, old_jmp, sizeof(jmp_buf));
+> +#endif
+> +       /* Keep the global singal flags*/
+> +       global_ctx->flags |= (flags & E2F_FLAG_SIGNAL_MASK) |
+> +                            (global_ctx->flags & E2F_FLAG_SIGNAL_MASK);
+> +
+> +       global_ctx->fs->priv_data = global_ctx;
+> +       ext2fs_free_mem(&thread_ctx);
+> +       return 0;
+> +}
+> +
+> +void e2fsck_pass1_multithread(e2fsck_t ctx)
+> +{
+> +       errcode_t       retval;
+> +       e2fsck_t        thread_ctx;
+> +
+> +       retval = e2fsck_pass1_thread_prepare(ctx, &thread_ctx);
+> +       if (retval) {
+> +               com_err(ctx->program_name, 0,
+> +                       _("while preparing pass1 thread\n"));
+> +               ctx->flags |= E2F_FLAG_ABORT;
+> +               return;
+> +       }
+> +
+> +#ifdef HAVE_SETJMP_H
+> +       /*
+> +        * When fatal_error() happens, jump to here. The thread
+> +        * context's flags will be saved, but its abort_loc will
+> +        * be overwritten by original jump buffer for the later
+> +        * tests.
+> +        */
+> +       if (setjmp(thread_ctx->abort_loc)) {
+> +               thread_ctx->flags &= ~E2F_FLAG_SETJMP_OK;
+> +               e2fsck_pass1_thread_join(ctx, thread_ctx);
+> +               return;
+> +       }
+> +       thread_ctx->flags |= E2F_FLAG_SETJMP_OK;
+> +#endif
+> +
+> +       e2fsck_pass1_thread(thread_ctx);
+> +       retval = e2fsck_pass1_thread_join(ctx, thread_ctx);
+> +       if (retval) {
+> +               com_err(ctx->program_name, 0,
+> +                       _("while joining pass1 thread\n"));
+> +               ctx->flags |= E2F_FLAG_ABORT;
+> +               return;
+> +       }
+> +}
+> +
+> +void e2fsck_pass1(e2fsck_t ctx)
+> +{
+> +       e2fsck_pass1_multithread(ctx);
+> +}
+> +
+>  #undef FINISH_INODE_LOOP
 >
 >  /*
->   * E2fsck flags
+> @@ -2130,7 +2228,7 @@ static void process_inodes(e2fsck_t ctx, char *block_buf)
+>                 ehandler_operation(buf);
+>                 check_blocks(ctx, &pctx, block_buf,
+>                              &inodes_to_process[i].ea_ibody_quota);
+> -               if (ctx->flags & E2F_FLAG_SIGNAL_MASK)
+> +               if (e2fsck_should_abort(ctx))
+>                         break;
+>         }
+>         ctx->stashed_inode = old_stashed_inode;
+> @@ -3300,7 +3398,7 @@ static void check_blocks(e2fsck_t ctx, struct problem_context *pctx,
+>         inlinedata_fs = ext2fs_has_feature_inline_data(ctx->fs->super);
+>
+>         if (check_ext_attr(ctx, pctx, block_buf, &ea_block_quota)) {
+> -               if (ctx->flags & E2F_FLAG_SIGNAL_MASK)
+> +               if (e2fsck_should_abort(ctx))
+>                         goto out;
+>                 pb.num_blocks += EXT2FS_B2C(ctx->fs, ea_block_quota.blocks);
+>         }
+> @@ -3355,7 +3453,7 @@ static void check_blocks(e2fsck_t ctx, struct problem_context *pctx,
+>         }
+>         end_problem_latch(ctx, PR_LATCH_BLOCK);
+>         end_problem_latch(ctx, PR_LATCH_TOOBIG);
+> -       if (ctx->flags & E2F_FLAG_SIGNAL_MASK)
+> +       if (e2fsck_should_abort(ctx))
+>                 goto out;
+>         if (pctx->errcode)
+>                 fix_problem(ctx, PR_1_BLOCK_ITERATE, pctx);
+> @@ -3836,7 +3934,7 @@ static int process_bad_block(ext2_filsys fs,
+>                                 *block_nr = 0;
+>                                 return BLOCK_CHANGED;
+>                         }
+> -                       if (ctx->flags & E2F_FLAG_SIGNAL_MASK)
+> +                       if (e2fsck_should_abort(ctx))
+>                                 return BLOCK_ABORT;
+>                 } else
+>                         mark_block_used(ctx, blk);
+> @@ -3933,7 +4031,7 @@ static int process_bad_block(ext2_filsys fs,
+>                         *block_nr = 0;
+>                         return BLOCK_CHANGED;
+>                 }
+> -               if (ctx->flags & E2F_FLAG_SIGNAL_MASK)
+> +               if (e2fsck_should_abort(ctx))
+>                         return BLOCK_ABORT;
+>                 return 0;
+>         }
 > diff --git a/e2fsck/unix.c b/e2fsck/unix.c
-> index 1cb51672..051b31a5 100644
+> index 051b31a5..42f616e2 100644
 > --- a/e2fsck/unix.c
 > +++ b/e2fsck/unix.c
-> @@ -75,13 +75,14 @@ int journal_enable_debug = -1;
->  static void usage(e2fsck_t ctx)
->  {
->         fprintf(stderr,
-> -               _("Usage: %s [-panyrcdfktvDFV] [-b superblock] [-B blocksize]\n"
-> +               _("Usage: %s [-pamnyrcdfktvDFV] [-b superblock] [-B blocksize]\n"
->                 "\t\t[-l|-L bad_blocks_file] [-C fd] [-j external_journal]\n"
->                 "\t\t[-E extended-options] [-z undo_file] device\n"),
->                 ctx->program_name);
->
->         fprintf(stderr, "%s", _("\nEmergency help:\n"
->                 " -p                   Automatic repair (no questions)\n"
-> +               " -m                   multiple threads to speedup fsck\n"
->                 " -n                   Make no changes to the filesystem\n"
->                 " -y                   Assume \"yes\" to all questions\n"
->                 " -c                   Check for bad blocks and add them to the badblock list\n"
-> @@ -847,7 +848,8 @@ static errcode_t PRS(int argc, char *argv[], e2fsck_t *ret_ctx)
->
->         phys_mem_kb = get_memory_size() / 1024;
->         ctx->readahead_kb = ~0ULL;
-> -       while ((c = getopt(argc, argv, "panyrcC:B:dE:fvtFVM:b:I:j:P:l:L:N:SsDkz:")) != EOF)
-> +
-> +       while ((c = getopt(argc, argv, "pamnyrcC:B:dE:fvtFVM:b:I:j:P:l:L:N:SsDkz:")) != EOF)
->                 switch (c) {
->                 case 'C':
->                         ctx->progress = e2fsck_update_progress;
-> @@ -888,6 +890,9 @@ static errcode_t PRS(int argc, char *argv[], e2fsck_t *ret_ctx)
->                         }
->                         ctx->options |= E2F_OPT_PREEN;
->                         break;
-> +               case 'm':
-> +                       ctx->options |= E2F_OPT_MULTITHREAD;
-> +                       break;
->                 case 'n':
->                         if (ctx->options & (E2F_OPT_YES|E2F_OPT_PREEN))
->                                 goto conflict_opt;
-> @@ -1006,6 +1011,18 @@ static errcode_t PRS(int argc, char *argv[], e2fsck_t *ret_ctx)
->                         _("The -n and -l/-L options are incompatible."));
->                 fatal_error(ctx, 0);
+> @@ -1445,6 +1445,7 @@ int main (int argc, char *argv[])
 >         }
-> +       if (ctx->options & E2F_OPT_MULTITHREAD) {
-> +               if ((ctx->options & (E2F_OPT_YES|E2F_OPT_NO|E2F_OPT_PREEN)) == 0) {
-> +                       com_err(ctx->program_name, 0, "%s",
-> +                               _("The -m option should be used together with one of -p/-y/-n options."));
-> +                       fatal_error(ctx, 0);
-> +               }
-> +               if (ctx->progress) {
-> +                       com_err(ctx->program_name, 0, "%s",
-> +                               _("Only one of the options -C or -m may be specified."));
-> +                       fatal_error(ctx, 0);
-> +               }
-> +       }
->         if (ctx->options & E2F_OPT_NO)
->                 ctx->options |= E2F_OPT_READONLY;
+>         reserve_stdio_fds();
 >
-> @@ -1112,10 +1129,12 @@ static errcode_t PRS(int argc, char *argv[], e2fsck_t *ret_ctx)
->  #ifdef SA_RESTART
->         sa.sa_flags = SA_RESTART;
->  #endif
-> -       sa.sa_handler = signal_progress_on;
-> -       sigaction(SIGUSR1, &sa, 0);
-> -       sa.sa_handler = signal_progress_off;
-> -       sigaction(SIGUSR2, &sa, 0);
-> +       if ((ctx->options & E2F_OPT_MULTITHREAD) == 0) {
-> +               sa.sa_handler = signal_progress_on;
-> +               sigaction(SIGUSR1, &sa, 0);
-> +               sa.sa_handler = signal_progress_off;
-> +               sigaction(SIGUSR2, &sa, 0);
-> +       }
->  #endif
->
->         /* Update our PATH to include /sbin if we need to run badblocks  */
-> diff --git a/tests/f_multithread/expect.1 b/tests/f_multithread/expect.1
-> new file mode 100644
-> index 00000000..e2b954d0
-> --- /dev/null
-> +++ b/tests/f_multithread/expect.1
-> @@ -0,0 +1,23 @@
-> +ext2fs_open2: Bad magic number in super-block
-> +../e2fsck/e2fsck: Superblock invalid, trying backup blocks...
-> +Pass 1: Checking inodes, blocks, and sizes
-> +Pass 2: Checking directory structure
-> +Pass 3: Checking directory connectivity
-> +Pass 4: Checking reference counts
-> +Pass 5: Checking group summary information
-> +Free blocks count wrong for group #0 (7987, counted=7982).
-> +Fix? yes
-> +
-> +Free blocks count wrong (11602, counted=11597).
-> +Fix? yes
-> +
-> +Free inodes count wrong for group #0 (1493, counted=1488).
-> +Fix? yes
-> +
-> +Free inodes count wrong (2997, counted=2992).
-> +Fix? yes
-> +
-> +
-> +test_filesys: ***** FILE SYSTEM WAS MODIFIED *****
-> +test_filesys: 16/3008 files (0.0% non-contiguous), 403/12000 blocks
-> +Exit status is 1
-> diff --git a/tests/f_multithread/expect.2 b/tests/f_multithread/expect.2
-> new file mode 100644
-> index 00000000..a833aefc
-> --- /dev/null
-> +++ b/tests/f_multithread/expect.2
-> @@ -0,0 +1,7 @@
-> +Pass 1: Checking inodes, blocks, and sizes
-> +Pass 2: Checking directory structure
-> +Pass 3: Checking directory connectivity
-> +Pass 4: Checking reference counts
-> +Pass 5: Checking group summary information
-> +test_filesys: 16/3008 files (0.0% non-contiguous), 403/12000 blocks
-> +Exit status is 0
-> diff --git a/tests/f_multithread/image.gz b/tests/f_multithread/image.gz
-> new file mode 120000
-> index 00000000..0fd40018
-> --- /dev/null
-> +++ b/tests/f_multithread/image.gz
-> @@ -0,0 +1 @@
-> +../f_zero_super/image.gz
-> \ No newline at end of file
-> diff --git a/tests/f_multithread/name b/tests/f_multithread/name
-> new file mode 100644
-> index 00000000..df838ea6
-> --- /dev/null
-> +++ b/tests/f_multithread/name
-> @@ -0,0 +1 @@
-> +test "e2fsck -m" option
-> \ No newline at end of file
-> diff --git a/tests/f_multithread/script b/tests/f_multithread/script
-> new file mode 100644
-> index 00000000..0fe96cd0
-> --- /dev/null
-> +++ b/tests/f_multithread/script
-> @@ -0,0 +1,4 @@
-> +FSCK_OPT="-fy -m"
-> +SECOND_FSCK_OPT=-yf
-> +
-> +. $cmd_dir/run_e2fsck
-> diff --git a/tests/f_multithread_completion/expect.1 b/tests/f_multithread_completion/expect.1
-> new file mode 100644
-> index 00000000..61cac9bb
-> --- /dev/null
-> +++ b/tests/f_multithread_completion/expect.1
-> @@ -0,0 +1,2 @@
-> +../e2fsck/e2fsck: Only one of the options -C or -m may be specified.
-> +Exit status is 8
-> diff --git a/tests/f_multithread_completion/expect.2 b/tests/f_multithread_completion/expect.2
-> new file mode 100644
-> index 00000000..e2b954d0
-> --- /dev/null
-> +++ b/tests/f_multithread_completion/expect.2
-> @@ -0,0 +1,23 @@
-> +ext2fs_open2: Bad magic number in super-block
-> +../e2fsck/e2fsck: Superblock invalid, trying backup blocks...
-> +Pass 1: Checking inodes, blocks, and sizes
-> +Pass 2: Checking directory structure
-> +Pass 3: Checking directory connectivity
-> +Pass 4: Checking reference counts
-> +Pass 5: Checking group summary information
-> +Free blocks count wrong for group #0 (7987, counted=7982).
-> +Fix? yes
-> +
-> +Free blocks count wrong (11602, counted=11597).
-> +Fix? yes
-> +
-> +Free inodes count wrong for group #0 (1493, counted=1488).
-> +Fix? yes
-> +
-> +Free inodes count wrong (2997, counted=2992).
-> +Fix? yes
-> +
-> +
-> +test_filesys: ***** FILE SYSTEM WAS MODIFIED *****
-> +test_filesys: 16/3008 files (0.0% non-contiguous), 403/12000 blocks
-> +Exit status is 1
-> diff --git a/tests/f_multithread_completion/image.gz b/tests/f_multithread_completion/image.gz
-> new file mode 120000
-> index 00000000..0fd40018
-> --- /dev/null
-> +++ b/tests/f_multithread_completion/image.gz
-> @@ -0,0 +1 @@
-> +../f_zero_super/image.gz
-> \ No newline at end of file
-> diff --git a/tests/f_multithread_completion/name b/tests/f_multithread_completion/name
-> new file mode 100644
-> index 00000000..a959045d
-> --- /dev/null
-> +++ b/tests/f_multithread_completion/name
-> @@ -0,0 +1 @@
-> +test "e2fsck -m" option conflicts with "-C"
-> \ No newline at end of file
-> diff --git a/tests/f_multithread_completion/script b/tests/f_multithread_completion/script
-> new file mode 100644
-> index 00000000..bf23cd61
-> --- /dev/null
-> +++ b/tests/f_multithread_completion/script
-> @@ -0,0 +1,4 @@
-> +FSCK_OPT="-fy -m -C 1"
-> +SECOND_FSCK_OPT=-yf
-> +
-> +. $cmd_dir/run_e2fsck
-> diff --git a/tests/f_multithread_no/expect.1 b/tests/f_multithread_no/expect.1
-> new file mode 100644
-> index 00000000..d14c4083
-> --- /dev/null
-> +++ b/tests/f_multithread_no/expect.1
-> @@ -0,0 +1,24 @@
-> +ext2fs_open2: Bad magic number in super-block
-> +../e2fsck/e2fsck: Superblock invalid, trying backup blocks...
-> +Pass 1: Checking inodes, blocks, and sizes
-> +Pass 2: Checking directory structure
-> +Pass 3: Checking directory connectivity
-> +Pass 4: Checking reference counts
-> +Pass 5: Checking group summary information
-> +Free blocks count wrong for group #0 (7987, counted=7982).
-> +Fix? no
-> +
-> +Free blocks count wrong (11602, counted=11597).
-> +Fix? no
-> +
-> +Free inodes count wrong for group #0 (1493, counted=1488).
-> +Fix? no
-> +
-> +Free inodes count wrong (2997, counted=2992).
-> +Fix? no
-> +
-> +
-> +test_filesys: ********** WARNING: Filesystem still has errors **********
-> +
-> +test_filesys: 11/3008 files (0.0% non-contiguous), 398/12000 blocks
-> +Exit status is 4
-> diff --git a/tests/f_multithread_no/expect.2 b/tests/f_multithread_no/expect.2
-> new file mode 100644
-> index 00000000..e2b954d0
-> --- /dev/null
-> +++ b/tests/f_multithread_no/expect.2
-> @@ -0,0 +1,23 @@
-> +ext2fs_open2: Bad magic number in super-block
-> +../e2fsck/e2fsck: Superblock invalid, trying backup blocks...
-> +Pass 1: Checking inodes, blocks, and sizes
-> +Pass 2: Checking directory structure
-> +Pass 3: Checking directory connectivity
-> +Pass 4: Checking reference counts
-> +Pass 5: Checking group summary information
-> +Free blocks count wrong for group #0 (7987, counted=7982).
-> +Fix? yes
-> +
-> +Free blocks count wrong (11602, counted=11597).
-> +Fix? yes
-> +
-> +Free inodes count wrong for group #0 (1493, counted=1488).
-> +Fix? yes
-> +
-> +Free inodes count wrong (2997, counted=2992).
-> +Fix? yes
-> +
-> +
-> +test_filesys: ***** FILE SYSTEM WAS MODIFIED *****
-> +test_filesys: 16/3008 files (0.0% non-contiguous), 403/12000 blocks
-> +Exit status is 1
-> diff --git a/tests/f_multithread_no/image.gz b/tests/f_multithread_no/image.gz
-> new file mode 120000
-> index 00000000..0fd40018
-> --- /dev/null
-> +++ b/tests/f_multithread_no/image.gz
-> @@ -0,0 +1 @@
-> +../f_zero_super/image.gz
-> \ No newline at end of file
-> diff --git a/tests/f_multithread_no/name b/tests/f_multithread_no/name
-> new file mode 100644
-> index 00000000..fa49692e
-> --- /dev/null
-> +++ b/tests/f_multithread_no/name
-> @@ -0,0 +1 @@
-> +test "e2fsck -m" option works with "-n"
-> \ No newline at end of file
-> diff --git a/tests/f_multithread_no/script b/tests/f_multithread_no/script
-> new file mode 100644
-> index 00000000..b93deb3a
-> --- /dev/null
-> +++ b/tests/f_multithread_no/script
-> @@ -0,0 +1,4 @@
-> +FSCK_OPT="-fn -m"
-> +SECOND_FSCK_OPT=-yf
-> +
-> +. $cmd_dir/run_e2fsck
-> diff --git a/tests/f_multithread_preen/expect.1 b/tests/f_multithread_preen/expect.1
-> new file mode 100644
-> index 00000000..b4b0cd9a
-> --- /dev/null
-> +++ b/tests/f_multithread_preen/expect.1
-> @@ -0,0 +1,11 @@
-> +../e2fsck/e2fsck: Bad magic number in super-block while trying to open test.img
-> +test_filesys:
-> +The superblock could not be read or does not describe a valid ext2/ext3/ext4
-> +filesystem.  If the device is valid and it really contains an ext2/ext3/ext4
-> +filesystem (and not swap or ufs or something else), then the superblock
-> +is corrupt, and you might try running e2fsck with an alternate superblock:
-> +    e2fsck -b 8193 <device>
-> + or
-> +    e2fsck -b 32768 <device>
-> +
-> +Exit status is 8
-> diff --git a/tests/f_multithread_preen/expect.2 b/tests/f_multithread_preen/expect.2
-> new file mode 100644
-> index 00000000..e2b954d0
-> --- /dev/null
-> +++ b/tests/f_multithread_preen/expect.2
-> @@ -0,0 +1,23 @@
-> +ext2fs_open2: Bad magic number in super-block
-> +../e2fsck/e2fsck: Superblock invalid, trying backup blocks...
-> +Pass 1: Checking inodes, blocks, and sizes
-> +Pass 2: Checking directory structure
-> +Pass 3: Checking directory connectivity
-> +Pass 4: Checking reference counts
-> +Pass 5: Checking group summary information
-> +Free blocks count wrong for group #0 (7987, counted=7982).
-> +Fix? yes
-> +
-> +Free blocks count wrong (11602, counted=11597).
-> +Fix? yes
-> +
-> +Free inodes count wrong for group #0 (1493, counted=1488).
-> +Fix? yes
-> +
-> +Free inodes count wrong (2997, counted=2992).
-> +Fix? yes
-> +
-> +
-> +test_filesys: ***** FILE SYSTEM WAS MODIFIED *****
-> +test_filesys: 16/3008 files (0.0% non-contiguous), 403/12000 blocks
-> +Exit status is 1
-> diff --git a/tests/f_multithread_preen/image.gz b/tests/f_multithread_preen/image.gz
-> new file mode 120000
-> index 00000000..0fd40018
-> --- /dev/null
-> +++ b/tests/f_multithread_preen/image.gz
-> @@ -0,0 +1 @@
-> +../f_zero_super/image.gz
-> \ No newline at end of file
-> diff --git a/tests/f_multithread_preen/name b/tests/f_multithread_preen/name
-> new file mode 100644
-> index 00000000..90d199df
-> --- /dev/null
-> +++ b/tests/f_multithread_preen/name
-> @@ -0,0 +1 @@
-> +test "e2fsck -m" option works with "-p"
-> \ No newline at end of file
-> diff --git a/tests/f_multithread_preen/script b/tests/f_multithread_preen/script
-> new file mode 100644
-> index 00000000..ecb79cd6
-> --- /dev/null
-> +++ b/tests/f_multithread_preen/script
-> @@ -0,0 +1,4 @@
-> +FSCK_OPT="-fp -m"
-> +SECOND_FSCK_OPT=-yf
-> +
-> +. $cmd_dir/run_e2fsck
-> diff --git a/tests/f_multithread_yes/expect.1 b/tests/f_multithread_yes/expect.1
-> new file mode 100644
-> index 00000000..8b780ecf
-> --- /dev/null
-> +++ b/tests/f_multithread_yes/expect.1
-> @@ -0,0 +1,2 @@
-> +../e2fsck/e2fsck: The -m option should be used together with one of -p/-y/-n options.
-> +Exit status is 8
-> diff --git a/tests/f_multithread_yes/expect.2 b/tests/f_multithread_yes/expect.2
-> new file mode 100644
-> index 00000000..e2b954d0
-> --- /dev/null
-> +++ b/tests/f_multithread_yes/expect.2
-> @@ -0,0 +1,23 @@
-> +ext2fs_open2: Bad magic number in super-block
-> +../e2fsck/e2fsck: Superblock invalid, trying backup blocks...
-> +Pass 1: Checking inodes, blocks, and sizes
-> +Pass 2: Checking directory structure
-> +Pass 3: Checking directory connectivity
-> +Pass 4: Checking reference counts
-> +Pass 5: Checking group summary information
-> +Free blocks count wrong for group #0 (7987, counted=7982).
-> +Fix? yes
-> +
-> +Free blocks count wrong (11602, counted=11597).
-> +Fix? yes
-> +
-> +Free inodes count wrong for group #0 (1493, counted=1488).
-> +Fix? yes
-> +
-> +Free inodes count wrong (2997, counted=2992).
-> +Fix? yes
-> +
-> +
-> +test_filesys: ***** FILE SYSTEM WAS MODIFIED *****
-> +test_filesys: 16/3008 files (0.0% non-contiguous), 403/12000 blocks
-> +Exit status is 1
-> diff --git a/tests/f_multithread_yes/image.gz b/tests/f_multithread_yes/image.gz
-> new file mode 120000
-> index 00000000..0fd40018
-> --- /dev/null
-> +++ b/tests/f_multithread_yes/image.gz
-> @@ -0,0 +1 @@
-> +../f_zero_super/image.gz
-> \ No newline at end of file
-> diff --git a/tests/f_multithread_yes/name b/tests/f_multithread_yes/name
-> new file mode 100644
-> index 00000000..3a703195
-> --- /dev/null
-> +++ b/tests/f_multithread_yes/name
-> @@ -0,0 +1 @@
-> +test "e2fsck -m" option works with "-y"
-> \ No newline at end of file
-> diff --git a/tests/f_multithread_yes/script b/tests/f_multithread_yes/script
-> new file mode 100644
-> index 00000000..38891f6a
-> --- /dev/null
-> +++ b/tests/f_multithread_yes/script
-> @@ -0,0 +1,4 @@
-> +FSCK_OPT="-f -m"
-> +SECOND_FSCK_OPT=-yf
-> +
-> +. $cmd_dir/run_e2fsck
+> +       ctx->global_ctx = NULL;
+>         set_up_logging(ctx);
+>         if (ctx->logf) {
+>                 int i;
 > --
 > 2.29.2.299.gdc1121823c-goog
 >
