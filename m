@@ -2,75 +2,177 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EEC02C34BF
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Nov 2020 00:43:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E02542C34DF
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Nov 2020 00:47:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729747AbgKXXm0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 24 Nov 2020 18:42:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41492 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728982AbgKXXm0 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 24 Nov 2020 18:42:26 -0500
-Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 608562100A;
-        Tue, 24 Nov 2020 23:42:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606261345;
-        bh=KAJWl0OBsGQqeiLErWrRxDNjM1Wbv9mxXjghZ+pYMxc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0O9/cSvw5+fLkdPBEZCzDs8Laf2SY6KdYW3Z/6HYrcr0IJ6EeqKAisLs5uEM4ePpC
-         crUJACZMk75/hZFUxitjd2eP47PoB0h7bABvIHcn2y18fIf8Eptke/KsuCFhDtWdoQ
-         bTUOA7zCF+KCeWdQdkrLvT0i9pe/CQyz18SUBjUw=
-Date:   Tue, 24 Nov 2020 15:42:22 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] fscrypt: simplify master key locking
-Message-ID: <X72aXth+cz3k7uvD@sol.localdomain>
-References: <20201117032626.320275-1-ebiggers@kernel.org>
+        id S2389617AbgKXXqk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 24 Nov 2020 18:46:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389467AbgKXXqh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Nov 2020 18:46:37 -0500
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16964C0613D6;
+        Tue, 24 Nov 2020 15:46:35 -0800 (PST)
+Received: by mail-qk1-x743.google.com with SMTP id v143so1231304qkb.2;
+        Tue, 24 Nov 2020 15:46:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=H+rGPaoJ9R3rr7zK4cuxMwlBlLpdlGUAwlQnvIZjZd8=;
+        b=rGjC6KnGzC9NIfLo6IfoTM7C5TiZmv4q08vYNRt8cewMWpFhbX886WW47/gIiopas/
+         e2jKhT73QJs/dRAIbILcJdQSFnVW9dal1rOBoIKd0ECBe+nqcukIgJrBRfX2wbZlPbrR
+         27L+0GE9CXpbAta7TZEIdoDweQHp+sEvmypYMH9hyutdrnRkkklGbspFfFiZY+HYfDHj
+         jsH/8tjPy+0JiTdJWitSDoQxXZntWXoEWL0cWLR+fmdpM332GBoSCjfuWUHY88IWDiPh
+         04ztpEPYlCjpB7IXy1yQhW/otwe7DgKcwtOpyIrk5XdAw3ZKiOAkll08YWpT8S+NhzMx
+         e/Gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=H+rGPaoJ9R3rr7zK4cuxMwlBlLpdlGUAwlQnvIZjZd8=;
+        b=Q8UP4W0HGBkwtYdUGzC4W5wcRfwkwmxV+LOTgIizLDL5whLBTS7f/iGqJfniyi7Eup
+         Nn2GfgcTCPceWkSJ/IvDKZFFGlv6fhp+hZaqbyhJI23N/ZwqigiporL4NWPjuCb4ZS7A
+         EAtybcUExkAb/B6dJA3G82Hk//AYkujwJxt32VnH4pw4CR5mJRSof0VpsVxqzuU8aooF
+         LiGDuCP8YKA8aAwdVdriWK2cfIz8e5RbegXYl/ESyf2kqhnsVmq8AAAEVpLiC8z/wDRl
+         yscoc8UmTOdkDFQeFa/SfUpKXwbNyFCnm7+49/6OLggkhv87Zg2av0811qHAVU8Glu6n
+         QgBQ==
+X-Gm-Message-State: AOAM530z1OU9XtXekfaDmI3PfjVfPfIFfgfSBH3Y94eu0TmaXEbhTxDG
+        lrKRLphCsfWXGphZYVjvP7GkPNXxftvFO8I+bac=
+X-Google-Smtp-Source: ABdhPJzOwu2wFsHHn8A1YNPfZeoFLdmnMgNDFogUYxSXdSyfkKR4RJ+IXZpEdbdh4p7RHhstmUROclNZOq0Hltp8jFg=
+X-Received: by 2002:a5b:40e:: with SMTP id m14mr627984ybp.33.1606261594309;
+ Tue, 24 Nov 2020 15:46:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117032626.320275-1-ebiggers@kernel.org>
+References: <cover.1605896059.git.gustavoars@kernel.org> <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <202011201129.B13FDB3C@keescook> <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <202011220816.8B6591A@keescook> <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
+ <CANiq72nZrHWTA4_Msg6MP9snTyenC6-eGfD27CyfNSu7QoVZbw@mail.gmail.com>
+ <alpine.LNX.2.23.453.2011230938390.7@nippy.intranet> <CANiq72=z+tmuey9wj3Kk7wX5s0hTHpsQdLhAqcOVNrHon6xn5Q@mail.gmail.com>
+ <alpine.LNX.2.23.453.2011241036520.7@nippy.intranet>
+In-Reply-To: <alpine.LNX.2.23.453.2011241036520.7@nippy.intranet>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Wed, 25 Nov 2020 00:46:23 +0100
+Message-ID: <CANiq72=Ybm2MHmOizo1xQ_QYGuvbthtnLbwCkr8AFb8PcfmuQw@mail.gmail.com>
+Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
+To:     Finn Thain <fthain@telegraphics.com.au>
+Cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Kees Cook <keescook@chromium.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        alsa-devel@alsa-project.org, amd-gfx@lists.freedesktop.org,
+        bridge@lists.linux-foundation.org, ceph-devel@vger.kernel.org,
+        cluster-devel@redhat.com, coreteam@netfilter.org,
+        devel@driverdev.osuosl.org, dm-devel@redhat.com,
+        drbd-dev@lists.linbit.com, dri-devel@lists.freedesktop.org,
+        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+        intel-gfx@lists.freedesktop.org, intel-wired-lan@lists.osuosl.org,
+        keyrings@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
+        linux-acpi@vger.kernel.org, linux-afs@lists.infradead.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-arm-msm@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net,
+        linux-block@vger.kernel.org, linux-can@vger.kernel.org,
+        linux-cifs@vger.kernel.org,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-decnet-user@lists.sourceforge.net,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-fbdev@vger.kernel.org, linux-geode@lists.infradead.org,
+        linux-gpio@vger.kernel.org, linux-hams@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-i3c@lists.infradead.org,
+        linux-ide@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-input <linux-input@vger.kernel.org>,
+        linux-integrity@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-mmc@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
+        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org, nouveau@lists.freedesktop.org,
+        op-tee@lists.trustedfirmware.org, oss-drivers@netronome.com,
+        patches@opensource.cirrus.com, rds-devel@oss.oracle.com,
+        reiserfs-devel@vger.kernel.org, samba-technical@lists.samba.org,
+        selinux@vger.kernel.org, target-devel@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net,
+        usb-storage@lists.one-eyed-alien.net,
+        virtualization@lists.linux-foundation.org,
+        wcn36xx@lists.infradead.org,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        xen-devel@lists.xenproject.org, linux-hardening@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 07:26:26PM -0800, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> The stated reasons for separating fscrypt_master_key::mk_secret_sem from
-> the standard semaphore contained in every 'struct key' no longer apply.
-> 
-> First, due to commit a992b20cd4ee ("fscrypt: add
-> fscrypt_prepare_new_inode() and fscrypt_set_context()"),
-> fscrypt_get_encryption_info() is no longer called from within a
-> filesystem transaction.
-> 
-> Second, due to commit d3ec10aa9581 ("KEYS: Don't write out to userspace
-> while holding key semaphore"), the semaphore for the "keyring" key type
-> no longer ranks above page faults.
-> 
-> That leaves performance as the only possible reason to keep the separate
-> mk_secret_sem.  Specifically, having mk_secret_sem reduces the
-> contention between setup_file_encryption_key() and
-> FS_IOC_{ADD,REMOVE}_ENCRYPTION_KEY.  However, these ioctls aren't
-> executed often, so this doesn't seem to be worth the extra complexity.
-> 
-> Therefore, simplify the locking design by just using key->sem instead of
-> mk_secret_sem.
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
->  fs/crypto/fscrypt_private.h | 19 ++++++-------------
->  fs/crypto/hooks.c           |  8 +++++---
->  fs/crypto/keyring.c         |  8 +-------
->  fs/crypto/keysetup.c        | 20 +++++++++-----------
->  4 files changed, 21 insertions(+), 34 deletions(-)
+On Tue, Nov 24, 2020 at 1:58 AM Finn Thain <fthain@telegraphics.com.au> wrote:
+>
+> What I meant was that you've used pessimism as if it was fact.
 
-Applied to fscrypt.git#master for 5.11.
+"future mistakes that it might prevent" is neither pessimism nor states a fact.
 
-- Eric
+> For example, "There is no way to guess what the effect would be if the
+> compiler trained programmers to add a knee-jerk 'break' statement to avoid
+> a warning".
+
+It is only knee-jerk if you think you are infallible.
+
+> Moreover, what I meant was that preventing programmer mistakes is a
+> problem to be solved by development tools
+
+This warning comes from a development tool -- the compiler.
+
+> The idea that retro-fitting new
+> language constructs onto mature code is somehow necessary to "prevent
+> future mistakes" is entirely questionable.
+
+The kernel is not a frozen codebase.
+
+Further, "mature code vs. risk of change" arguments don't apply here
+because the semantics of the program and binary output isn't changing.
+
+> Sure. And if you put -Wimplicit-fallthrough into the Makefile and if that
+> leads to well-intentioned patches that cause regressions, it is partly on
+> you.
+
+Again: adding a `fallthrough` does not change the program semantics.
+If you are a maintainer and want to cross-check, compare the codegen.
+
+> Have you ever considered the overall cost of the countless
+> -Wpresume-incompetence flags?
+
+Yeah: negative. On the other hand, the overall cost of the countless
+-fI-am-infallible flags is very noticeable.
+
+> Perhaps you pay the power bill for a build farm that produces logs that
+> no-one reads? Perhaps you've run git bisect, knowing that the compiler
+> messages are not interesting? Or compiled software in using a language
+> that generates impenetrable messages? If so, here's a tip:
+>
+> # grep CFLAGS /etc/portage/make.conf
+> CFLAGS="... -Wno-all -Wno-extra ..."
+> CXXFLAGS="${CFLAGS}"
+>
+> Now allow me some pessimism: the hardware upgrades, gigawatt hours and
+> wait time attributable to obligatory static analyses are a net loss.
+
+If you really believe compiler warnings and static analysis are
+useless and costly, I think there is not much point in continuing the
+discussion.
+
+> No, it's not for me to prove that such patches don't affect code
+> generation. That's for the patch author and (unfortunately) for reviewers.
+
+I was not asking you to prove it. I am stating that proving it is very easy.
+
+Cheers,
+Miguel
