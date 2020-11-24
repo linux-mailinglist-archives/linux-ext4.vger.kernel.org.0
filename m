@@ -2,136 +2,96 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DDE02C1F59
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Nov 2020 09:03:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A7EE2C258D
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Nov 2020 13:20:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730363AbgKXICf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 24 Nov 2020 03:02:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39320 "EHLO
+        id S2387525AbgKXMTS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 24 Nov 2020 07:19:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728890AbgKXICe (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Nov 2020 03:02:34 -0500
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11CC0C0613CF
-        for <linux-ext4@vger.kernel.org>; Tue, 24 Nov 2020 00:02:34 -0800 (PST)
-Received: by mail-ot1-x344.google.com with SMTP id k3so18517874otp.12
-        for <linux-ext4@vger.kernel.org>; Tue, 24 Nov 2020 00:02:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=a594DHYDSH28ozJvU6Q2cBNN/U0tDhb9dpOOY+Zf8ek=;
-        b=ZLeC2pXRxS7ioJzWcYY9jJ/Np48Q6UGh5Gsvxkyd73LF4tfwf8TLhewXJTemf3Jwxx
-         X7jKioju8zjZw6KC2hyAUQh8KdjAn4BYilk4LZ/TOyVQ+LIb/HsCOe7kNkmXNOQO/Uyb
-         jyr5vgrWK7sjx0NieksUlsASyKp5d6OXcUEjq6XnPDaVpGoS8nfJdjr4IGJQzY2zI5GP
-         z2ItB7Jz1rRzgJpb3exTUoZBnhzLOIGzzVGjfJyrPogi4RD9ZMM16HePxM3y3aKLFRWc
-         /mvwIDbPN6GAHDYH+pChgCdXtyxsUGeS1RxxYqjZ6AEiNKpVKwoCrPcQPsFaSR6seUcq
-         sJNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=a594DHYDSH28ozJvU6Q2cBNN/U0tDhb9dpOOY+Zf8ek=;
-        b=St4N5FiKLecA0Yl0ts3Hg4l24PoekRrnTysha6qbg45Gyt1x1geWyJ7i8o5vtYPGQV
-         VZEOul7Cs/bIh52vDomZ7iZPgedmlJMcjHq78L9ZP4RvNqdYcCdydLUpAN6BggRqXZ5K
-         4HhS7jvcOw2OtMUp1mmHkONfGN8OU7lolhYtPT0buOUzBTY2EGOS+F0qlOn8L3FWZJej
-         ux8xd0esoei8k9/0Iig4lPJH/QRQmuR2QYLQWuBNDPhyAIUqovW5tIaJX4esDv35X9C3
-         ADQ9j2/nCq34y+WNmC9hZDMvgTBnHPlQd7+2Up4aIKC0GapcslF0O6V4VKhePh3zms0y
-         Ytng==
-X-Gm-Message-State: AOAM5330yEM6u1yIYEHOfECLgRxjEG64s1ZTG14wdI52oINWSEtasgWk
-        H1lPz3jvmTpEYpagm+9OAzPlUrzZb+2rfq142HRvQ8SgEQ+p4A==
-X-Google-Smtp-Source: ABdhPJyhU4UCNA5E8Kwo//NGX/pFWA9xTcgIEzo/Ro/rMxJ7ogdtEI+hGnzxmYgfdxM9qtIEZmZxaNzNJ3xe/7hYKPw=
-X-Received: by 2002:a05:6830:1c76:: with SMTP id s22mr2516951otg.233.1606204953329;
- Tue, 24 Nov 2020 00:02:33 -0800 (PST)
-MIME-Version: 1.0
-References: <20201116054035.211498-1-98.arpi@gmail.com> <CABVgOSkoQahYqMJ3dD1_X2+rF3OgwT658+8HRM2EZ5e0-94jmw@mail.gmail.com>
- <CANpmjNOhb13YthVHmXxMjpD2JZUO4H2Z1KZSKqHeFUv-RbM5+Q@mail.gmail.com> <CABVgOSnGnkCnAyAqVoLhMGb6XV_irtYB7pyOTon5Scab8GxKtg@mail.gmail.com>
-In-Reply-To: <CABVgOSnGnkCnAyAqVoLhMGb6XV_irtYB7pyOTon5Scab8GxKtg@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 24 Nov 2020 09:02:21 +0100
-Message-ID: <CANpmjNNfNJWJ7avZrRkwvtx2Vv7oR9V8=dmcWW_irotmKWQWGw@mail.gmail.com>
-Subject: Re: [PATCH v9 1/2] kunit: Support for Parameterized Testing
-To:     David Gow <davidgow@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Arpitha Raghunandan <98.arpi@gmail.com>,
-        Iurii Zaikin <yzaikin@google.com>,
+        with ESMTP id S1729172AbgKXMTR (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Nov 2020 07:19:17 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 826ACC0613D6;
+        Tue, 24 Nov 2020 04:19:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=uvDfFcTJVIdXBGR+joN6zXz154p6r479ClVsKuidpag=; b=AoYEmNwScc3ZhYqB9VycOafUC5
+        2v8rbvnu68twnK4hQ1ICV3Qzd3tbpCIgVcqUSI2A3/4FgAKbdGgoPE3j691S9i44M+3BMOp+ucZpe
+        WYTpbzzzuC8m5I6rqbpj7uJxVy2iPPq4BbrJt3tnjp156mNc79iiEIPR+k4akIFcqQYYTWMEGNmOn
+        GTS+ei+v5ogGFPnIWlWKqtnu9wWzezGV6iDyvZWWbfaK41ZVxjD7qnMAJMwYOli6+LnTRhtDS8F/J
+        ATpzt8UTjj6e/hWbcAEtZdqToH0AwcokShCJbDWUIV5xBWmnCgjfTQnUGBa3qUsMVttttRPptukAc
+        Xc1lNbWw==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1khXHs-0002FJ-2w; Tue, 24 Nov 2020 12:19:12 +0000
+Date:   Tue, 24 Nov 2020 12:19:12 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>,
+        syzbot <syzbot+3622cea378100f45d59f@syzkaller.appspotmail.com>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Bird, Tim" <Tim.Bird@sony.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Theodore Ts'o <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>, Qian Cai <cai@lca.pw>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Jens Axboe <axboe@kernel.dk>, linux-fsdevel@vger.kernel.org,
+        linux-xfs@vger.kernel.org
+Subject: Re: kernel BUG at fs/ext4/inode.c:LINE!
+Message-ID: <20201124121912.GZ4327@casper.infradead.org>
+References: <000000000000d3a33205add2f7b2@google.com>
+ <20200828100755.GG7072@quack2.suse.cz>
+ <20200831100340.GA26519@quack2.suse.cz>
+ <CAHk-=wivRS_1uy326sLqKuwerbL0APyKYKwa+vWVGsQg8sxhLw@mail.gmail.com>
+ <alpine.LSU.2.11.2011231928140.4305@eggly.anvils>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LSU.2.11.2011231928140.4305@eggly.anvils>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, 24 Nov 2020 at 08:25, David Gow <davidgow@google.com> wrote:
->
-> On Mon, Nov 23, 2020 at 9:08 PM Marco Elver <elver@google.com> wrote:
-> >
-> > On Tue, 17 Nov 2020 at 08:21, David Gow <davidgow@google.com> wrote:
-> > > On Mon, Nov 16, 2020 at 1:41 PM Arpitha Raghunandan <98.arpi@gmail.com> wrote:
-> > > >
-> > > > Implementation of support for parameterized testing in KUnit. This
-> > > > approach requires the creation of a test case using the
-> > > > KUNIT_CASE_PARAM() macro that accepts a generator function as input.
-> > > >
-> > > > This generator function should return the next parameter given the
-> > > > previous parameter in parameterized tests. It also provides a macro to
-> > > > generate common-case generators based on arrays. Generators may also
-> > > > optionally provide a human-readable description of parameters, which is
-> > > > displayed where available.
-> > > >
-> > > > Note, currently the result of each parameter run is displayed in
-> > > > diagnostic lines, and only the overall test case output summarizes
-> > > > TAP-compliant success or failure of all parameter runs. In future, when
-> > > > supported by kunit-tool, these can be turned into subsubtest outputs.
-> > > >
-> > > > Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
-> > > > Co-developed-by: Marco Elver <elver@google.com>
-> > > > Signed-off-by: Marco Elver <elver@google.com>
-> > > > ---
-> > > [Resending this because my email client re-defaulted to HTML! Aarrgh!]
-> > >
-> > > This looks good to me! I tested it in UML and x86-64 w/ KASAN, and
-> > > both worked fine.
-> > >
-> > > Reviewed-by: David Gow <davidgow@google.com>
-> > > Tested-by: David Gow <davidgow@google.com>
-> >
-> > Thank you!
-> >
-> > > Thanks for sticking with this!
-> >
-> > Will these patches be landing in 5.11 or 5.12?
-> >
->
-> I can't think of any reason not to have these in 5.11. We haven't
-> started staging things in the kselftest/kunit branch for 5.11 yet,
-> though.
->
-> Patch 2 will probably need to be acked by Ted for ext4 first.
+On Mon, Nov 23, 2020 at 08:07:24PM -0800, Hugh Dickins wrote:
+> Twice now, when exercising ext4 looped on shmem huge pages, I have crashed
+> on the PF_ONLY_HEAD check inside PageWaiters(): ext4_finish_bio() calling
+> end_page_writeback() calling wake_up_page() on tail of a shmem huge page,
+> no longer an ext4 page at all.
+> 
+> The problem is that PageWriteback is not accompanied by a page reference
+> (as the NOTE at the end of test_clear_page_writeback() acknowledges): as
+> soon as TestClearPageWriteback has been done, that page could be removed
+> from page cache, freed, and reused for something else by the time that
+> wake_up_page() is reached.
+> 
+> https://lore.kernel.org/linux-mm/20200827122019.GC14765@casper.infradead.org/
+> Matthew Wilcox suggested avoiding or weakening the PageWaiters() tail
+> check; but I'm paranoid about even looking at an unreferenced struct page,
+> lest its memory might itself have already been reused or hotremoved (and
+> wake_up_page_bit() may modify that memory with its ClearPageWaiters()).
+> 
+> Then on crashing a second time, realized there's a stronger reason against
+> that approach.  If my testing just occasionally crashes on that check,
+> when the page is reused for part of a compound page, wouldn't it be much
+> more common for the page to get reused as an order-0 page before reaching
+> wake_up_page()?  And on rare occasions, might that reused page already be
+> marked PageWriteback by its new user, and already be waited upon?  What
+> would that look like?
+> 
+> It would look like BUG_ON(PageWriteback) after wait_on_page_writeback()
+> in write_cache_pages() (though I have never seen that crash myself).
 
-Patch 2 had already had 1 Reviewed-by on v3 that got lost. The core
-bits of that test haven't changed since then, but I can't tell if it
-needs a re-review.
-
-https://lkml.kernel.org/r/CAAXuY3o9Xe-atK0Mja6qXLncUhmmVf4pR7hsANsqaoUX71RXVg@mail.gmail.com
-
-Thanks,
--- Marco
-
-> Brendan, Shuah: can you make sure this doesn't get lost in patchwork?
->
-> Cheers,
-> -- David
->
-> > > -- David
-> >
-> > Thanks,
-> > -- Marco
+I don't think this is it.  write_cache_pages() holds a reference to the
+page -- indeed, it holds the page lock!  So this particular race cannot
+cause the page to get recycled.  I still have no good ideas what this
+is :-(
