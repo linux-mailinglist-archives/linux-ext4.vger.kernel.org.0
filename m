@@ -2,144 +2,148 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C4462C3314
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Nov 2020 22:33:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 672CD2C3382
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Nov 2020 22:47:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732644AbgKXVdB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 24 Nov 2020 16:33:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52606 "EHLO
+        id S2387594AbgKXVrA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 24 Nov 2020 16:47:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732361AbgKXVct (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Nov 2020 16:32:49 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A049C08E85F
-        for <linux-ext4@vger.kernel.org>; Tue, 24 Nov 2020 13:32:47 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id s63so357758pgc.8
-        for <linux-ext4@vger.kernel.org>; Tue, 24 Nov 2020 13:32:47 -0800 (PST)
+        with ESMTP id S1732603AbgKXVrA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Nov 2020 16:47:00 -0500
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20853C061A4E
+        for <linux-ext4@vger.kernel.org>; Tue, 24 Nov 2020 13:47:00 -0800 (PST)
+Received: by mail-oi1-x244.google.com with SMTP id a130so355273oif.7
+        for <linux-ext4@vger.kernel.org>; Tue, 24 Nov 2020 13:47:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nUebvx46WK355IC8BSYKhA86maU/C5TyOra9y/oS07E=;
-        b=lzAwh4po+9zegkg/2K9x7CHiUUthvj2PFJyxHwt1QdcZQIdrGCSiE3JgzWuDiv+VMN
-         KwBJ/6n/jsAIvSMb6eOJqvl2BVv6D2OMXP8giSKXaaH9JwLNdR2oULKAXe3g8bDVfAub
-         65Ll+320/JpDsvMBOWCFVSOrRLSDK1WOgK6ns=
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=04YZn/oOi9cwlQjeUz6wAhKNr23VM3kG20feokh0qeg=;
+        b=VzQAooJ4hoEvvjBCc+1Qt2u70siZAJm6h9WtKGpP0ywmkQ1vspYXHydmfQoTf4ym3I
+         oqKJzcR5krrs+o2BlUzYp3kcBIpfa6E6ew96qdIC2DTZU5N5pj5QjitRF0O5vAP3DLm/
+         Rw71YTkXEZBmOi1/VFYN3Po6znE+JQDeN5AQ5GT8PpDyb4DUQYVH9RDLVPxXCtlzpqGL
+         NLPgS8k2q9XJZCcEqp0jixScddihjCkoUiurydf3GmXYEZPzwqkjXKYbEuCjos3F0Dgj
+         X3M8gEHfAlkVbtkko2WkcUF0RRIGEvajB3ukYdimzdhZa9OdqeypZLEs6CnYwqCUGZF7
+         gNSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nUebvx46WK355IC8BSYKhA86maU/C5TyOra9y/oS07E=;
-        b=lV6VtnswVUPuiheh6olvKXi9AD5WiAxneNTphE1jYUkYJrwTtKt/xxDxGwuuPWhTQ/
-         e4E3NgrCan3y/5/X8OdvcpPwW5+nMToeHj09QFO6+ngcfVoWXsOq0z03jXawxuNEkNTz
-         rQbk9Um4/64GvR22sok9Gip4NaDSktvSmOgHbSnFrADgYNfPcCSLbYgLrfLspUcu+UXF
-         RfYhB8La6+1qH0rVLTSw7mJVGaH9AKmxYKnVoSg0iKIoXQYhdd1YE1PxVOAGFLYc3Kt0
-         Rwk/jSzhRDwlB+KzumihT/F6nT3TdNufiMq0rGwpR7uAO4hXa4NpRAm/PrhGFfomPsaW
-         HS8w==
-X-Gm-Message-State: AOAM53212HW5E7bCB5n+lzQGevNrXcXtIqVxBIgFDBVvUGoywOALxuYJ
-        9d/d9EPxaPs7erZg9nSaVUoz6Q==
-X-Google-Smtp-Source: ABdhPJyp86bHnh+pX/bbtyJvtymIhKFSWtRW4h5d/m2XI4eSElpEXSRnILd/bhh2ok8eYrLt5J5YAQ==
-X-Received: by 2002:a17:90a:e2d4:: with SMTP id fr20mr212344pjb.202.1606253566770;
-        Tue, 24 Nov 2020 13:32:46 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id k6sm5489pfd.169.2020.11.24.13.32.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 13:32:45 -0800 (PST)
-Date:   Tue, 24 Nov 2020 13:32:44 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Joe Perches <joe@perches.com>,
-        Jakub Kicinski <kuba@kernel.org>, alsa-devel@alsa-project.org,
-        linux-atm-general@lists.sourceforge.net,
-        reiserfs-devel@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        linux-ide@vger.kernel.org, dm-devel@redhat.com,
-        keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
-        GR-everest-linux-l2@marvell.com, wcn36xx@lists.infradead.org,
-        samba-technical@lists.samba.org, linux-i3c@lists.infradead.org,
-        linux1394-devel@lists.sourceforge.net,
-        linux-afs@lists.infradead.org,
-        usb-storage@lists.one-eyed-alien.net, drbd-dev@lists.linbit.com,
-        devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
-        rds-devel@oss.oracle.com,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-scsi@vger.kernel.org, linux-rdma@vger.kernel.org,
-        oss-drivers@netronome.com, bridge@lists.linux-foundation.org,
-        linux-security-module@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org,
-        linux-stm32@st-md-mailman.stormreply.com, cluster-devel@redhat.com,
-        linux-acpi@vger.kernel.org, coreteam@netfilter.org,
-        intel-wired-lan@lists.osuosl.org, linux-input@vger.kernel.org,
-        Miguel Ojeda <ojeda@kernel.org>,
-        tipc-discussion@lists.sourceforge.net, linux-ext4@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        selinux@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, linux-geode@lists.infradead.org,
-        linux-can@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-gpio@vger.kernel.org, op-tee@lists.trustedfirmware.org,
-        linux-mediatek@lists.infradead.org, xen-devel@lists.xenproject.org,
-        nouveau@lists.freedesktop.org, linux-hams@vger.kernel.org,
-        ceph-devel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
-        x86@kernel.org, linux-nfs@vger.kernel.org,
-        GR-Linux-NIC-Dev@marvell.com, linux-mm@kvack.org,
-        netdev@vger.kernel.org, linux-decnet-user@lists.sourceforge.net,
-        linux-mmc@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-sctp@vger.kernel.org, linux-usb@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        patches@opensource.cirrus.com, linux-integrity@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [Intel-wired-lan] [PATCH 000/141] Fix fall-through warnings for
- Clang
-Message-ID: <202011241327.BB28F12F6@keescook>
-References: <202011201129.B13FDB3C@keescook>
- <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <202011220816.8B6591A@keescook>
- <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
- <ca071decb87cc7e905411423c05a48f9fd2f58d7.camel@perches.com>
- <0147972a72bc13f3629de8a32dee6f1f308994b5.camel@HansenPartnership.com>
- <d8d1e9add08cdd4158405e77762d4946037208f8.camel@perches.com>
- <dbd2cb703ed9eefa7dde9281ea26ab0f7acc8afe.camel@HansenPartnership.com>
- <20201123130348.GA3119@embeddedor>
- <8f5611bb015e044fa1c0a48147293923c2d904e4.camel@HansenPartnership.com>
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=04YZn/oOi9cwlQjeUz6wAhKNr23VM3kG20feokh0qeg=;
+        b=A2QcNW1Q5OsF6p+0r2ZZ0A84or5Uv7TlmXsSuclOqqSwL7SfvBVr0lkVhKQTntUKSk
+         fixKxb9jRgJDXXEa+S1fWoUWmo/SZHTOJy5AdSo+CU1rVGUPK+mHqhwjd6/ZYc3cbO9i
+         243uFV3Hy+HrOrxqI3tJJyM5zhrZS0z5gFSKkC5unLZItAB/D7OUbFyNTt1imNRUZdPm
+         UnXBAeXxFmV65vgEpOUYbzj4VKWwXsSLcXHF6m2suKBCglZCf/1g47z0x2BzuKfGdogl
+         NHrlg3NPsz6jQmWJdn/LGWQyB72iS3det3juduoNf/ZNQR6lo62/1ILGobUNtRv8Q6tD
+         2SEQ==
+X-Gm-Message-State: AOAM5331bZiOMbJl7EjnNJbQBrTR8PAGpc0EAMSoDwdjf+tLrFZ2vGv7
+        624kjfjqO9omjjlUNaatRNAjFQ==
+X-Google-Smtp-Source: ABdhPJxOVg+Bowm05sagrPqp3xv+YibTG16pRL9z0qkeXz1sv96JtkxPJaBWAFfkjlhlZQfRI/zZYw==
+X-Received: by 2002:aca:f5c8:: with SMTP id t191mr213734oih.40.1606254419120;
+        Tue, 24 Nov 2020 13:46:59 -0800 (PST)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id a4sm139138otj.29.2020.11.24.13.46.56
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Tue, 24 Nov 2020 13:46:58 -0800 (PST)
+Date:   Tue, 24 Nov 2020 13:46:44 -0800 (PST)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+cc:     Matthew Wilcox <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>, Jan Kara <jack@suse.cz>,
+        syzbot <syzbot+3622cea378100f45d59f@syzkaller.appspotmail.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Theodore Ts'o <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>, Qian Cai <cai@lca.pw>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>
+Subject: Re: kernel BUG at fs/ext4/inode.c:LINE!
+In-Reply-To: <CAHk-=wj9n5y7pu=SVVGwd5-FbjMGS6uoFU4RpzVLbuOfwBifUA@mail.gmail.com>
+Message-ID: <alpine.LSU.2.11.2011241322540.1777@eggly.anvils>
+References: <000000000000d3a33205add2f7b2@google.com> <20200828100755.GG7072@quack2.suse.cz> <20200831100340.GA26519@quack2.suse.cz> <CAHk-=wivRS_1uy326sLqKuwerbL0APyKYKwa+vWVGsQg8sxhLw@mail.gmail.com> <alpine.LSU.2.11.2011231928140.4305@eggly.anvils>
+ <20201124121912.GZ4327@casper.infradead.org> <alpine.LSU.2.11.2011240810470.1029@eggly.anvils> <20201124183351.GD4327@casper.infradead.org> <CAHk-=wjtGAUP5fydxR8iWbzB65p2XvM0BrHE=PkPLQcJ=kq_8A@mail.gmail.com> <20201124201552.GE4327@casper.infradead.org>
+ <CAHk-=wj9n5y7pu=SVVGwd5-FbjMGS6uoFU4RpzVLbuOfwBifUA@mail.gmail.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8f5611bb015e044fa1c0a48147293923c2d904e4.camel@HansenPartnership.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 08:31:30AM -0800, James Bottomley wrote:
-> Really, no ... something which produces no improvement has no value at
-> all ... we really shouldn't be wasting maintainer time with it because
-> it has a cost to merge.  I'm not sure we understand where the balance
-> lies in value vs cost to merge but I am confident in the zero value
-> case.
+On Tue, 24 Nov 2020, Linus Torvalds wrote:
+> On Tue, Nov 24, 2020 at 12:16 PM Matthew Wilcox <willy@infradead.org> wrote:
+> >
+> > So my s/if/while/ suggestion is wrong and we need to do something to
+> > prevent spurious wakeups.  Unless we bury the spurious wakeup logic
+> > inside wait_on_page_writeback() ...
+> 
+> We can certainly make the "if()" in that loop be a "while()'.
+> 
+> That's basically what the old code did - simply by virtue of the
+> wakeup not happening if the writeback bit was set in
+> wake_page_function():
+> 
+>         if (test_bit(key->bit_nr, &key->page->flags))
+>                 return -1;
+> 
+> of course, the race was still there - because the writeback bit might
+> be clear at that point, but another CPU would reallocate and dirty it,
+> and then autoremove_wake_function() would happen anyway.
+> 
+> But back in the bad old days, the wait_on_page_bit_common() code would
+> then double-check in a loop, so it would catch that case, re-insert
+> itself on the wait queue, and try again. Except for the DROP case,
+> which isn't used by writeback.
+> 
+> Anyway, making that "if()" be a "while()" in wait_on_page_writeback()
+> would basically re-introduce that old behavior. I don't really care,
+> because it was the lock bit that really mattered, the writeback bit is
+> not really all that interesting (except from a "let's fix this bug"
+> angle)
+> 
+> I'm not 100% sure I like the fragility of this writeback thing.
+> 
+> Anyway, I'm certainly happy with either model, whether it be an added
+> while() in wait_on_page_writeback(), or it be the page reference count
+> in end_page_writeback().
+> 
+> Strong opinions?
 
-What? We can't measure how many future bugs aren't introduced because the
-kernel requires explicit case flow-control statements for all new code.
+Responding to "Strong opinions?" before having digested Matthew's
+DMA sequence (no, not his DNA sequence).
 
-We already enable -Wimplicit-fallthrough globally, so that's not the
-discussion. The issue is that Clang is (correctly) even more strict
-than GCC for this, so these are the remaining ones to fix for full Clang
-coverage too.
+I think it comes down to whether my paranoia (about accessing an
+unreferenced struct page) is realistic or not: since I do hold
+that paranoia, I do prefer (whatever variant of) my patch.
 
-People have spent more time debating this already than it would have
-taken to apply the patches. :)
+I'm not a memory hotremove guy. I did search mm/memory_hotplug.c
+for references to rcu or stop_machine(), but found none.  I can
+imagine that the memory containing the struct pages would be
+located elsewhere than the memory itself, with some strong
+barrier in between removals; but think there were patches posted
+just a few days ago, with intent to allocate struct pages from
+the same memory block.  It would be easy to forget this writeback
+issue when hotremove advances, if we don't fix it properly now.
 
-This is about robustness and language wrangling. It's a big code-base,
-and this is the price of our managing technical debt for permanent
-robustness improvements. (The numbers I ran from Gustavo's earlier
-patches were that about 10% of the places adjusted were identified as
-legitimate bugs being fixed. This final series may be lower, but there
-are still bugs being found from it -- we need to finish this and shut
-the door on it for good.)
+Another problem with the s/if/while/ solution: I think Matthew
+pointed to another patch needed, to prevent wake_up_page_bit()
+from doing an inappropriate ClearPageWaiters (I've not studied
+that patch); and would also need a further patch to deal with
+my PF_ONLY_HEAD VM_BUG_ON(PageTail).  More?
 
--- 
-Kees Cook
+I think the unreferenced struct page asks for trouble.
+
+Hugh
