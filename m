@@ -2,87 +2,104 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D169D2C1B97
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Nov 2020 03:48:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F9092C1BBA
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Nov 2020 03:49:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728117AbgKXCpJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 23 Nov 2020 21:45:09 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:45004 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728120AbgKXCpJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 23 Nov 2020 21:45:09 -0500
-Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0AO2j0ua009772
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Nov 2020 21:45:00 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id CF782420136; Mon, 23 Nov 2020 21:44:59 -0500 (EST)
-Date:   Mon, 23 Nov 2020 21:44:59 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Saranya Muruganandam <saranyamohan@google.com>
-Cc:     linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca,
-        Wang Shilong <wshilong@ddn.com>
-Subject: Re: [RFC PATCH v3 46/61] ext2fs: parallel bitmap loading
-Message-ID: <20201124024459.GN132317@mit.edu>
-References: <20201118153947.3394530-1-saranyamohan@google.com>
- <20201118153947.3394530-47-saranyamohan@google.com>
+        id S1728798AbgKXCsm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 23 Nov 2020 21:48:42 -0500
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:53350 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725907AbgKXCsl (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 23 Nov 2020 21:48:41 -0500
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id EF15F2AA0D;
+        Mon, 23 Nov 2020 21:48:35 -0500 (EST)
+Date:   Tue, 24 Nov 2020 13:48:34 +1100 (AEDT)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     Joe Perches <joe@perches.com>
+cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Kees Cook <keescook@chromium.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        alsa-devel@alsa-project.org, amd-gfx@lists.freedesktop.org,
+        bridge@lists.linux-foundation.org, ceph-devel@vger.kernel.org,
+        cluster-devel@redhat.com, coreteam@netfilter.org,
+        devel@driverdev.osuosl.org, dm-devel@redhat.com,
+        drbd-dev@lists.linbit.com, dri-devel@lists.freedesktop.org,
+        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+        intel-gfx@lists.freedesktop.org, intel-wired-lan@lists.osuosl.org,
+        keyrings@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
+        linux-acpi@vger.kernel.org, linux-afs@lists.infradead.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-arm-msm@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net,
+        linux-block@vger.kernel.org, linux-can@vger.kernel.org,
+        linux-cifs@vger.kernel.org,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-decnet-user@lists.sourceforge.net,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-fbdev@vger.kernel.org, linux-geode@lists.infradead.org,
+        linux-gpio@vger.kernel.org, linux-hams@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-i3c@lists.infradead.org,
+        linux-ide@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-input <linux-input@vger.kernel.org>,
+        linux-integrity@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-mmc@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
+        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org, nouveau@lists.freedesktop.org,
+        op-tee@lists.trustedfirmware.org, oss-drivers@netronome.com,
+        patches@opensource.cirrus.com, rds-devel@oss.oracle.com,
+        reiserfs-devel@vger.kernel.org, samba-technical@lists.samba.org,
+        selinux@vger.kernel.org, target-devel@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net,
+        usb-storage@lists.one-eyed-alien.net,
+        virtualization@lists.linux-foundation.org,
+        wcn36xx@lists.infradead.org,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        xen-devel@lists.xenproject.org, linux-hardening@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>
+Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
+In-Reply-To: <e72a1aaef8673553a3ee9dfa033d6e893e00abcd.camel@perches.com>
+Message-ID: <alpine.LNX.2.23.453.2011241210310.7@nippy.intranet>
+References: <cover.1605896059.git.gustavoars@kernel.org>  <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>  <202011201129.B13FDB3C@keescook>  <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>  <202011220816.8B6591A@keescook>
+  <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>  <CANiq72nZrHWTA4_Msg6MP9snTyenC6-eGfD27CyfNSu7QoVZbw@mail.gmail.com>  <alpine.LNX.2.23.453.2011230938390.7@nippy.intranet>  <CANiq72=z+tmuey9wj3Kk7wX5s0hTHpsQdLhAqcOVNrHon6xn5Q@mail.gmail.com>
+  <alpine.LNX.2.23.453.2011241036520.7@nippy.intranet> <e72a1aaef8673553a3ee9dfa033d6e893e00abcd.camel@perches.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201118153947.3394530-47-saranyamohan@google.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 07:39:32AM -0800, Saranya Muruganandam wrote:
-> From: Wang Shilong <wshilong@ddn.com>
+
+On Mon, 23 Nov 2020, Joe Perches wrote:
+
+> On Tue, 2020-11-24 at 11:58 +1100, Finn Thain wrote:
+> > it's not for me to prove that such patches don't affect code 
+> > generation. That's for the patch author and (unfortunately) for 
+> > reviewers.
 > 
-> In our benchmarking for PiB size filesystem, pass5 takes
-> 10446s to finish and 99.5% of time takes on reading bitmaps.
+> Ideally, that proof would be provided by the compilation system itself 
+> and not patch authors nor reviewers nor maintainers.
 > 
-> It makes sense to reading bitmaps using multiple threads,
-> a quickly benchmark show 10446s to 626s with 64 threads.
+> Unfortunately gcc does not guarantee repeatability or deterministic 
+> output. To my knowledge, neither does clang.
 > 
-> Signed-off-by: Wang Shilong <wshilong@ddn.com>
-> Signed-off-by: Saranya Muruganandam <saranyamohan@google.com>
 
-Note: This patch will *explode* with much hilarity if num_threads is
-greater than the number of block groups.  That's because the
-ext2fs_get_avg_group() will return 1 if fs_num_threads is greater than
-group_desc_count.
+Yes, I've said the same thing myself. But having attempted it, I now think 
+this is a hard problem. YMMV.
 
-This will result in the group start and end limits to go beyond the
-array boundaries.... and then *boom*.  So there will probably need to
-be some kind of safety checks if the caller has set fs_num_threads to
-a value which is much larger than is appropriate for a given file
-system.
-
-
-Speaking of which, relying on fs_num_threads being set by e2fsck means
-that we won't get the benefits of the parallel block bitmap reads for
-debugfs and dumpe2fs.  So we should think about how the other tools
-should trigger read bitmaps.  And this might be something that we want
-to do independent of whether we are doing parallel fsck.
-
-Suggested approach:
-
-1) Create create ext2fs_is_device_rotational() which returns whether
-or not a particular device is a HDD, or a non-rotational device (e.g.,
-SSD, GCE PD, AWS EBS, etc.), using rotational as a proxy for "reading
-using multiple threads is a good thing".
-
-2) Create an ext2fs_get_num_procs() which calls
-sysconf(_SC_NPROCESSOR_ONLN) if sysconf and _SC_NPROESSOR_ONLN is
-available.  If not, there may be other OS-specific ways of determining
-the number of CPU's available.
-
-3) If HAVE_PTHREADS and the number of block groups is greater than the
-number of CPU's * 2, a function that (for now) we drop in libsupport
-will set fs->fs_num_threads to the number of processors as the
-default.  There may not be a reason to change the default for debugfs
-and dumpe2fs, but for e2fsck, this would be used for the default, but
-it could be over-ridden via "-E multithread=<number of threads>".
-
-   	    		    			       - Ted
+https://lore.kernel.org/linux-scsi/alpine.LNX.2.22.394.2004281017310.12@nippy.intranet/
+https://lore.kernel.org/linux-scsi/alpine.LNX.2.22.394.2005211358460.8@nippy.intranet/
