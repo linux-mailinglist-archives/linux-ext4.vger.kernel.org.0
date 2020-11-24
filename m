@@ -2,99 +2,75 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 053322C34B0
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Nov 2020 00:32:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EEC02C34BF
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Nov 2020 00:43:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388761AbgKXXbs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 24 Nov 2020 18:31:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388294AbgKXXbs (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Nov 2020 18:31:48 -0500
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF1BEC0613D6
-        for <linux-ext4@vger.kernel.org>; Tue, 24 Nov 2020 15:31:47 -0800 (PST)
-Received: by mail-lj1-x243.google.com with SMTP id y10so305444ljc.7
-        for <linux-ext4@vger.kernel.org>; Tue, 24 Nov 2020 15:31:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vZpDzZfRGW5JQ+z/SLaL70l0Y+Id271dyPmoJFXV3Yg=;
-        b=eMtd8miSV5Q4HzVm9lx1snZ252JU2LUG08CXEG9MZekZ6i7RMmkka/lMY+IPVuJ23L
-         PqhYtLLZg6ffJmiv3yaDYTznuv3dIQ4YBw1pOJz9r2vKjiack1bfddd/lir5cfbryUH+
-         /Jt2/UYsF/gTRVYdgZmuNAbHMgKvTDtyzGHaA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vZpDzZfRGW5JQ+z/SLaL70l0Y+Id271dyPmoJFXV3Yg=;
-        b=oBOWYgB8h6HH8Gs4RKNmjq0ngrR8aQHdM8Lf3dMmJ5uNw6REYSnOwxcmmFTxGw3Y9i
-         UO88FY571rZ3zdNCMIQ6/Ktjn+KeBVWeHje5iUj1BU5NgMrk7pC4/H/Zs7zIRMBVs18B
-         Rr4k+P29RxXjN7RnH7WiNfKMEVsLl69aCKNGq/phS5AKJppfErBJ5jPWE+PkL5Jr1gfm
-         x1j+ZrrPFiCXktMN3ucR5XB8R+LxH//G3x8pZ4Byrg1X64E31dyvjQXjnZk2TON3BKyt
-         +WZEM3vu41PyG6SqijzaKwMypAyZN1Befl2ObT7cZiIt7b2yzeNyujbH3G5EjVD9i+wQ
-         ZFZw==
-X-Gm-Message-State: AOAM533MhhuxbWriIYvA2tTg8E+1kLRYe0QgVC0sq1OAA+LGFibO2wq3
-        tZyJt24D4InOGI5uFWCG3XSq6Z6USeDH5A==
-X-Google-Smtp-Source: ABdhPJyETX8R10+tFAsNSph7UgtsDqtbaAS1IK+7KgBuHibDKGGY5eAM9qsPsMJOyXyI6ZB0+vrkzg==
-X-Received: by 2002:a2e:b4d0:: with SMTP id r16mr244564ljm.24.1606260705994;
-        Tue, 24 Nov 2020 15:31:45 -0800 (PST)
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
-        by smtp.gmail.com with ESMTPSA id l18sm53000ljj.60.2020.11.24.15.31.45
-        for <linux-ext4@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Nov 2020 15:31:45 -0800 (PST)
-Received: by mail-lf1-f42.google.com with SMTP id d17so494305lfq.10
-        for <linux-ext4@vger.kernel.org>; Tue, 24 Nov 2020 15:31:45 -0800 (PST)
-X-Received: by 2002:a19:ed0f:: with SMTP id y15mr172684lfy.352.1606260312243;
- Tue, 24 Nov 2020 15:25:12 -0800 (PST)
+        id S1729747AbgKXXm0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 24 Nov 2020 18:42:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41492 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728982AbgKXXm0 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 24 Nov 2020 18:42:26 -0500
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 608562100A;
+        Tue, 24 Nov 2020 23:42:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606261345;
+        bh=KAJWl0OBsGQqeiLErWrRxDNjM1Wbv9mxXjghZ+pYMxc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0O9/cSvw5+fLkdPBEZCzDs8Laf2SY6KdYW3Z/6HYrcr0IJ6EeqKAisLs5uEM4ePpC
+         crUJACZMk75/hZFUxitjd2eP47PoB0h7bABvIHcn2y18fIf8Eptke/KsuCFhDtWdoQ
+         bTUOA7zCF+KCeWdQdkrLvT0i9pe/CQyz18SUBjUw=
+Date:   Tue, 24 Nov 2020 15:42:22 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] fscrypt: simplify master key locking
+Message-ID: <X72aXth+cz3k7uvD@sol.localdomain>
+References: <20201117032626.320275-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-References: <000000000000d3a33205add2f7b2@google.com> <20200828100755.GG7072@quack2.suse.cz>
- <20200831100340.GA26519@quack2.suse.cz> <CAHk-=wivRS_1uy326sLqKuwerbL0APyKYKwa+vWVGsQg8sxhLw@mail.gmail.com>
- <alpine.LSU.2.11.2011231928140.4305@eggly.anvils> <20201124121912.GZ4327@casper.infradead.org>
- <alpine.LSU.2.11.2011240810470.1029@eggly.anvils> <20201124183351.GD4327@casper.infradead.org>
- <CAHk-=wjtGAUP5fydxR8iWbzB65p2XvM0BrHE=PkPLQcJ=kq_8A@mail.gmail.com>
- <20201124201552.GE4327@casper.infradead.org> <CAHk-=wj9n5y7pu=SVVGwd5-FbjMGS6uoFU4RpzVLbuOfwBifUA@mail.gmail.com>
- <alpine.LSU.2.11.2011241322540.1777@eggly.anvils>
-In-Reply-To: <alpine.LSU.2.11.2011241322540.1777@eggly.anvils>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 24 Nov 2020 15:24:56 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjiVtroOvNkuptH0GofVUvOMw4wmmaXdnGPPT8y8+MbyQ@mail.gmail.com>
-Message-ID: <CAHk-=wjiVtroOvNkuptH0GofVUvOMw4wmmaXdnGPPT8y8+MbyQ@mail.gmail.com>
-Subject: Re: kernel BUG at fs/ext4/inode.c:LINE!
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        syzbot <syzbot+3622cea378100f45d59f@syzkaller.appspotmail.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        "Theodore Ts'o" <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>, Qian Cai <cai@lca.pw>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117032626.320275-1-ebiggers@kernel.org>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 1:47 PM Hugh Dickins <hughd@google.com> wrote:
->
-> I think the unreferenced struct page asks for trouble.
+On Mon, Nov 16, 2020 at 07:26:26PM -0800, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> The stated reasons for separating fscrypt_master_key::mk_secret_sem from
+> the standard semaphore contained in every 'struct key' no longer apply.
+> 
+> First, due to commit a992b20cd4ee ("fscrypt: add
+> fscrypt_prepare_new_inode() and fscrypt_set_context()"),
+> fscrypt_get_encryption_info() is no longer called from within a
+> filesystem transaction.
+> 
+> Second, due to commit d3ec10aa9581 ("KEYS: Don't write out to userspace
+> while holding key semaphore"), the semaphore for the "keyring" key type
+> no longer ranks above page faults.
+> 
+> That leaves performance as the only possible reason to keep the separate
+> mk_secret_sem.  Specifically, having mk_secret_sem reduces the
+> contention between setup_file_encryption_key() and
+> FS_IOC_{ADD,REMOVE}_ENCRYPTION_KEY.  However, these ioctls aren't
+> executed often, so this doesn't seem to be worth the extra complexity.
+> 
+> Therefore, simplify the locking design by just using key->sem instead of
+> mk_secret_sem.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+>  fs/crypto/fscrypt_private.h | 19 ++++++-------------
+>  fs/crypto/hooks.c           |  8 +++++---
+>  fs/crypto/keyring.c         |  8 +-------
+>  fs/crypto/keysetup.c        | 20 +++++++++-----------
+>  4 files changed, 21 insertions(+), 34 deletions(-)
 
-I do agree.
+Applied to fscrypt.git#master for 5.11.
 
-I've applied your second patch (the smaller one that just takes a ref
-around the critical section). If somebody comes up with some great
-alternative, we can always revisit this.
-
-            Linus
+- Eric
