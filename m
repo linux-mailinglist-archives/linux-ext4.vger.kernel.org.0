@@ -2,133 +2,92 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 073932C28DC
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Nov 2020 15:02:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDE912C293B
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Nov 2020 15:19:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726817AbgKXOAB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 24 Nov 2020 09:00:01 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:54719 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726085AbgKXOAA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Nov 2020 09:00:00 -0500
-Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1khYrD-0002SV-VO; Tue, 24 Nov 2020 13:59:48 +0000
-Date:   Tue, 24 Nov 2020 14:59:46 +0100
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Tycho Andersen <tycho@tycho.pizza>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Christoph Hellwig <hch@lst.de>,
-        Jonathan Corbet <corbet@lwn.net>, smbarber@chromium.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        linux-ext4@vger.kernel.org, Mrunal Patel <mpatel@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Arnd Bergmann <arnd@arndb.de>, Jann Horn <jannh@google.com>,
-        selinux@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
-        Seth Forshee <seth.forshee@canonical.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Lennart Poettering <lennart@poettering.net>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        David Howells <dhowells@redhat.com>,
-        John Johansen <john.johansen@canonical.com>,
-        Theodore Tso <tytso@mit.edu>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        containers@lists.linux-foundation.org,
-        linux-security-module@vger.kernel.org, linux-audit@redhat.com,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Alban Crequy <alban@kinvolk.io>,
-        linux-integrity@vger.kernel.org,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Todd Kjos <tkjos@google.com>
-Subject: Re: [PATCH v2 07/39] mount: attach mappings to mounts
-Message-ID: <20201124135946.27krt6za2qapyx43@wittgenstein>
-References: <20201115103718.298186-1-christian.brauner@ubuntu.com>
- <20201115103718.298186-8-christian.brauner@ubuntu.com>
- <20201123154719.GD4025434@cisco>
- <20201123162428.GA24807@cisco>
- <20201124123035.hbv4sstyoucht7xp@wittgenstein>
- <20201124133740.GA52954@cisco>
- <20201124134035.2l36avuaqp6gxyum@wittgenstein>
- <20201124134459.GB52954@cisco>
+        id S2388254AbgKXORv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 24 Nov 2020 09:17:51 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:36772 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730508AbgKXORu (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Nov 2020 09:17:50 -0500
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0AOEHUsm019840
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Nov 2020 09:17:31 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 26D5B420136; Tue, 24 Nov 2020 09:17:30 -0500 (EST)
+Date:   Tue, 24 Nov 2020 09:17:30 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Saranya Muruganandam <saranyamohan@google.com>
+Cc:     linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca,
+        Li Xi <lixi@ddn.com>, Wang Shilong <wshilong@ddn.com>
+Subject: Re: [RFC PATCH v3 08/61] e2fsck: open io-channel when copying fs
+Message-ID: <20201124141730.GP132317@mit.edu>
+References: <20201118153947.3394530-1-saranyamohan@google.com>
+ <20201118153947.3394530-9-saranyamohan@google.com>
+ <20201123223856.GH132317@mit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201124134459.GB52954@cisco>
+In-Reply-To: <20201123223856.GH132317@mit.edu>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 08:44:59AM -0500, Tycho Andersen wrote:
-> On Tue, Nov 24, 2020 at 02:40:35PM +0100, Christian Brauner wrote:
-> > On Tue, Nov 24, 2020 at 08:37:40AM -0500, Tycho Andersen wrote:
-> > > On Tue, Nov 24, 2020 at 01:30:35PM +0100, Christian Brauner wrote:
-> > > > On Mon, Nov 23, 2020 at 11:24:28AM -0500, Tycho Andersen wrote:
-> > > > > On Mon, Nov 23, 2020 at 10:47:19AM -0500, Tycho Andersen wrote:
-> > > > > > On Sun, Nov 15, 2020 at 11:36:46AM +0100, Christian Brauner wrote:
-> > > > > > > +static inline struct user_namespace *mnt_user_ns(const struct vfsmount *mnt)
-> > > > > > > +{
-> > > > > > > +	return mnt->mnt_user_ns;
-> > > > > > > +}
-> > > > > > 
-> > > > > > I think you might want a READ_ONCE() here. Right now it seems ok, since the
-> > > > > > mnt_user_ns can't change, but if we ever allow it to change (and I see you have
-> > > > > > a idmapped_mounts_wip_v2_allow_to_change_idmapping branch on your public tree
-> > > > > > :D), the pattern of,
-> > > > > > 
-> > > > > >         user_ns = mnt_user_ns(path->mnt);
-> > > > > >         if (mnt_idmapped(path->mnt)) {
-> > > > > >                 uid = kuid_from_mnt(user_ns, uid);
-> > > > > >                 gid = kgid_from_mnt(user_ns, gid);
-> > > > > >         }
-> > > > > > 
-> > > > > > could race.
-> > > > > 
-> > > > > Actually, isn't a race possible now?
-> > > > > 
-> > > > > kuid_from_mnt(mnt_user_ns(path->mnt) /* &init_user_ns */);
-> > > > > WRITE_ONCE(mnt->mnt.mnt_user_ns, user_ns);
-> > > > > WRITE_ONCE(m->mnt.mnt_flags, flags);
-> > > > > kgid_from_mnt(mnt_user_ns(path->mnt) /* the right user ns */);
-> > > > > 
-> > > > > So maybe it should be:
-> > > > > 
-> > > > >          if (mnt_idmapped(path->mnt)) {
-> > > > >                  barrier();
-> > > > >                  user_ns = mnt_user_ns(path->mnt);
-> > > > >                  uid = kuid_from_mnt(user_ns, uid);
-> > > > >                  gid = kgid_from_mnt(user_ns, gid);
-> > > > >          }
-> > > > > 
-> > > > > since there's no data dependency between mnt_idmapped() and
-> > > > > mnt_user_ns()?
-> > > > 
-> > > > I think I had something to handle this case in another branch of mine.
-> > > > The READ_ONCE() you mentioned in another patch I had originally dropped
-> > > > because I wasn't sure whether it works on pointers but after talking to
-> > > > Jann and David it seems that it handles pointers fine.
-> > > > Let me take a look and fix it in the next version. I just finished
-> > > > porting the test suite to xfstests as Christoph requested and I'm
-> > > > looking at this now.
-> > > 
-> > > Another way would be to just have mnt_idmapped() test
-> > > mnt_user_ns() != &init_user_ns instead of the flags; then I think you
-> > > get the data dependency and thus correct ordering for free.
+On Mon, Nov 23, 2020 at 05:38:56PM -0500, Theodore Y. Ts'o wrote:
+> On Wed, Nov 18, 2020 at 07:38:54AM -0800, Saranya Muruganandam wrote:
+> > From: Li Xi <lixi@ddn.com>
 > > 
-> > I indeed dropped mnt_idmapped() which is unnecessary. :)
-> 
-> It still might be a nice helper to prevent people from checking the
-> flags and forgetting that there's a memory ordering issue, though.
+> > This patch also add writethrough flag to the thread io-channel.
+> > When multiple threads write the same disk, we don't want the
+> > data being saved in memory cache. This will be useful in the
+> > future, but even without that flag, the tests can be passed too.
+> > 
+> > This patch also cleanup the io channel cache of the global
+> > context. Otherwise, after pass1 step, the next steps would use
+> > old data saved in the cache. And the cached data might have
+> > already been overwritten in pass1.
 
-I just mentioned this offline but for the record: the flag is gone since
-we can rely on the pointer alone. :)
+Thinking about this so more, what I'd suggest is the following.
 
-Christian
+1) We define a new flag, IO_FLAG_THREADED, which instructs the
+io_manager that it should provide thread-safety.  For all io managers
+defined in libext2fs, if they do not support the flag, they will
+return a newly defined error code, EXT2_ET_IO_CHANNEL_NO_SUPPORT_FLAG.
+Ideally, all of them should support IO_FLAG_THREADED, even undo_io,
+even if that means just throwing a pthread rwlock around all of its
+read/write operations.  
+
+2) We also define a two options which can be set via
+io_channel_set_option(), so that the "writethrough" and "cache"
+options can be set to on or off via "writethrough=on", "cache=off",
+"cache=on", etc.  This allows parallel reads to the unix io manager to
+avoid needing any locks --- since pthread doesn't support spinlocks,
+and mutexes are going to be rather expensive for highly contended
+operations such as parallel read operations when reading bitmaps.
+
+(In fact, some of the bugs that I saw when playing with the parallel
+bitmap reading was probably cacused by the fact that there were
+multiple threads trying to play with unix_io's cache without any
+locking protection; and there's no real benefit to having any kind of
+caching when reading the block bitmaps, and if we spin off separate
+io_channels for each thread while reading the block bitmaps, the cache
+will be *purely* useless.  The cache also doesn't do us much good when
+we are reading the bitmaps, or during pass 1, even if we aren't
+multi-threading, so having a way to turn off the cache is probably a
+mild performance improvement even in the non-threaded case.)
+
+And as I think I mentioned earlier, let's do some of these preparatory
+changes to support parallel fsck *first*, since it'll be a lot easier
+to review a bunch of shorter, patch series which are less than, say,
+3-6 patches at a time, and once those get in, we can do with the next
+step --- as opposed to a monster set of 61 commits.
+
+     	    	       	 	 - Ted
+
+P.S.  Finally, if we use a single shared io_manager which is threading
+aware, I don't think we'll need the flush_cleanup() operation proposed
+in this patch, since the cache will always be consistent.
