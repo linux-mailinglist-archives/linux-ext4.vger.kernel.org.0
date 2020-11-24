@@ -2,40 +2,73 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 142A72C31CB
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Nov 2020 21:16:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 957B02C3205
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Nov 2020 21:35:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730478AbgKXUQA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 24 Nov 2020 15:16:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40624 "EHLO
+        id S1731233AbgKXUey (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 24 Nov 2020 15:34:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728617AbgKXUP7 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Nov 2020 15:15:59 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4251EC0613D6;
-        Tue, 24 Nov 2020 12:15:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=r81uB21KgkrQOks2IFcrN3ZOTlRJS3bUyN7vYcsmfFs=; b=UlG140+SGaMtrTfp69FggRQZT2
-        ua4M8lWOfBdQjG/fVnSThO5rTs+SVW0D2ckxd67Q5PXBI012Svr53SElnjEBQ+BcbPkWpOxyit+zn
-        JTXRW5S2yebgbbbmDgc4SFbBo62a4s2goDFOD29PLJHpuYbtlskUkcK1oY2q8AqYKLjKIVZrciXIo
-        8sB3tfUXK8DxuWA5cWodBpAwcn47cgqWVQOrhQMuFyK+3SYe54Btds2vzaHA8+m3McQZpOae8rEkS
-        zNABYfLBTEFYtw0ObLKVnr5Xk2HUBZ7nwD5GQBoOLe7GuQ8l8WJPcLvo/eHwfuGAOMtbiasHd1pLF
-        cvFQA94w==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1khejA-0001KH-FM; Tue, 24 Nov 2020 20:15:52 +0000
-Date:   Tue, 24 Nov 2020 20:15:52 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
+        with ESMTP id S1731184AbgKXUex (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Nov 2020 15:34:53 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A9F0C061A4D
+        for <linux-ext4@vger.kernel.org>; Tue, 24 Nov 2020 12:34:53 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id j205so30747329lfj.6
+        for <linux-ext4@vger.kernel.org>; Tue, 24 Nov 2020 12:34:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AEOjqbrPL7ThHmqZn4HHPdQNZCU9KRjN0OANoYqF+LI=;
+        b=YiUauuLl4oDGTRL45zuGDHR2J5VSlaFB7O6pBpiLin0jYi4oMDEyJ6WnB0ezsU1+lJ
+         /Xr+VMmFy6Yl0v0tfocLf0a2OpJoR4jkrZf+QWqP87nKzXSlOFC8xx9JTBLeqme23GEA
+         yBj2rHCTti3flo3PfXBjCwjdx6z70F417NynU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AEOjqbrPL7ThHmqZn4HHPdQNZCU9KRjN0OANoYqF+LI=;
+        b=YCQJ5LjWDWh9mWC4G/fbYfEPkYdLoBZ4YuHgLjXntX1IwYaQsm7HPDmNNMyryGhp+V
+         bPMGxsEFBPGbwzU/jEfua25X3bm22D4QdZQJxbs2Hr2XHjK7jqsvxmv1N3biJPHrkUdf
+         v17WVY7mEiipxjV/vRY/Rlsg2u2lQfPANcMlXpAXJrMY0vlAF+LMDexZbVYyZsLZ20wS
+         nMqdLhpMNXv4KSHkZkOo2J9pdyO///6jLXlDSqNv0kV+gLlOtik2p5GYwRjCETPUN1oy
+         0HjRmArWoIDJStD8+96YmZtBqRRQUdZ7qQmjcOIBjcqaMsm4Af8T5/fsJjxSXJFxRHV/
+         5+fQ==
+X-Gm-Message-State: AOAM531yfUXmp5SbuStG9QTV30XBMPYmFRCx7SwolyxnsMiN5hrTbl3a
+        RotSE5WMeFHAwPeitbMjRHeBXVmKzXBKMQ==
+X-Google-Smtp-Source: ABdhPJyOEyZ0HAi8JsIR6lDhiAt1rBL5NKL2hFo+UuEdZBJzFthe81apF+VpYbDcFgtjVmBSgN4iZQ==
+X-Received: by 2002:ac2:490c:: with SMTP id n12mr2233819lfi.311.1606250091131;
+        Tue, 24 Nov 2020 12:34:51 -0800 (PST)
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
+        by smtp.gmail.com with ESMTPSA id r16sm18050lji.8.2020.11.24.12.34.49
+        for <linux-ext4@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Nov 2020 12:34:50 -0800 (PST)
+Received: by mail-lj1-f175.google.com with SMTP id b17so23534212ljf.12
+        for <linux-ext4@vger.kernel.org>; Tue, 24 Nov 2020 12:34:49 -0800 (PST)
+X-Received: by 2002:a2e:8701:: with SMTP id m1mr27321lji.314.1606250089295;
+ Tue, 24 Nov 2020 12:34:49 -0800 (PST)
+MIME-Version: 1.0
+References: <000000000000d3a33205add2f7b2@google.com> <20200828100755.GG7072@quack2.suse.cz>
+ <20200831100340.GA26519@quack2.suse.cz> <CAHk-=wivRS_1uy326sLqKuwerbL0APyKYKwa+vWVGsQg8sxhLw@mail.gmail.com>
+ <alpine.LSU.2.11.2011231928140.4305@eggly.anvils> <20201124121912.GZ4327@casper.infradead.org>
+ <alpine.LSU.2.11.2011240810470.1029@eggly.anvils> <20201124183351.GD4327@casper.infradead.org>
+ <CAHk-=wjtGAUP5fydxR8iWbzB65p2XvM0BrHE=PkPLQcJ=kq_8A@mail.gmail.com> <20201124201552.GE4327@casper.infradead.org>
+In-Reply-To: <20201124201552.GE4327@casper.infradead.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 24 Nov 2020 12:34:33 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wj9n5y7pu=SVVGwd5-FbjMGS6uoFU4RpzVLbuOfwBifUA@mail.gmail.com>
+Message-ID: <CAHk-=wj9n5y7pu=SVVGwd5-FbjMGS6uoFU4RpzVLbuOfwBifUA@mail.gmail.com>
+Subject: Re: kernel BUG at fs/ext4/inode.c:LINE!
+To:     Matthew Wilcox <willy@infradead.org>
 Cc:     Hugh Dickins <hughd@google.com>, Jan Kara <jack@suse.cz>,
         syzbot <syzbot+3622cea378100f45d59f@syzkaller.appspotmail.com>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Ext4 Developers List <linux-ext4@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Theodore Ts'o <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>,
+        "Theodore Ts'o" <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>,
         Oleg Nesterov <oleg@redhat.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         "Kirill A. Shutemov" <kirill@shutemov.name>,
@@ -47,119 +80,47 @@ Cc:     Hugh Dickins <hughd@google.com>, Jan Kara <jack@suse.cz>,
         Jens Axboe <axboe@kernel.dk>,
         linux-fsdevel <linux-fsdevel@vger.kernel.org>,
         linux-xfs <linux-xfs@vger.kernel.org>
-Subject: Re: kernel BUG at fs/ext4/inode.c:LINE!
-Message-ID: <20201124201552.GE4327@casper.infradead.org>
-References: <000000000000d3a33205add2f7b2@google.com>
- <20200828100755.GG7072@quack2.suse.cz>
- <20200831100340.GA26519@quack2.suse.cz>
- <CAHk-=wivRS_1uy326sLqKuwerbL0APyKYKwa+vWVGsQg8sxhLw@mail.gmail.com>
- <alpine.LSU.2.11.2011231928140.4305@eggly.anvils>
- <20201124121912.GZ4327@casper.infradead.org>
- <alpine.LSU.2.11.2011240810470.1029@eggly.anvils>
- <20201124183351.GD4327@casper.infradead.org>
- <CAHk-=wjtGAUP5fydxR8iWbzB65p2XvM0BrHE=PkPLQcJ=kq_8A@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjtGAUP5fydxR8iWbzB65p2XvM0BrHE=PkPLQcJ=kq_8A@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 11:00:42AM -0800, Linus Torvalds wrote:
-> On Tue, Nov 24, 2020 at 10:33 AM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > We could fix this by turning that 'if' into a 'while' in
-> > write_cache_pages().
-> 
-> That might be the simplest patch indeed.
-> 
-> At the same time, I do worry about other cases like this: while
-> spurious wakeup events are normal and happen in other places, this is
-> a bit different.
-> 
-> This is literally a wakeup that leaks from a previous use of a page,
-> and makes us think that something could have happened to the new use.
-> 
-> The unlock_page() case presumably never hits that, because even if we
-> have some unlock without a page ref (which I don't think can happen,
-> but whatever..), the exclusive nature of "lock_page()" means that no
-> locker can care - once you get the lock, you own the page./
-> 
-> The writeback code is special in that the writeback bit isn't some
-> kind of exclusive bit, but this code kind of expected it to be that.
-> 
-> So I'd _like_ to have something like
-> 
->         WARN_ON_ONCE(!page_count(page));
-> 
-> in the wake_up_page_bit() function, to catch things that wake up a
-> page that has already been released and might be reused..
-> 
-> And that would require the "get_page()" to be done when we set the
-> writeback bit and queue the page up for IO (so that then
-> end_page_writeback() would clear the bit, do the wakeup, and then drop
-> the ref).
-> 
-> Hugh's second patch isn't pretty - I think the "get_page()" is
-> conceptually in the wrong place - but it "works" in that it keeps that
-> "implicit page reference" being kept by the PG_writeback bit, and then
-> it takes an explicit page reference before it clears the bit.
-> 
-> So while I don't love the whole "PG_writeback is an implicit reference
-> to the page" model, Hugh's patch at least makes that model much more
-> straightforward: we really either have that PG_writeback, _or_ we have
-> a real ref to the page, and we never have that odd "we could actually
-> lose the page" situation.
-> 
-> So I think I prefer Hugh's two-liner over your one-liner suggestion.
-> 
-> But your one-liner is technically not just smaller, it obviously also
-> avoids the whole mucking with the atomic page ref.
-> 
-> I don't _think_ that the extra get/put overhead could possibly really
-> matter: doing the writeback is going to be a lot more expensive
-> anyway. And an atomic access to a 'struct page' sounds expensive, but
-> that cacheline is already likely dirty in the L1 cache because we've
-> touch page->flags and done other things to it).
-> 
-> So I'd personally be inclined to go with Hugh's patch. Comments?
+On Tue, Nov 24, 2020 at 12:16 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> So my s/if/while/ suggestion is wrong and we need to do something to
+> prevent spurious wakeups.  Unless we bury the spurious wakeup logic
+> inside wait_on_page_writeback() ...
 
-My only objection to Hugh's patch is that it may cause us to fail
-to split pages when we can currently split them.  That is, we do:
+We can certainly make the "if()" in that loop be a "while()'.
 
-	wait_on_page_writeback()
-	if (page_has_private(page))
-		do_invalidatepage(page, offset, length);
-	split_huge_page()
+That's basically what the old code did - simply by virtue of the
+wakeup not happening if the writeback bit was set in
+wake_page_function():
 
-(at least we do in my THP patchset; not sure if there's any of that
-in the kernel today), and the extra reference held for a few nanoseconds
-after calling wake_up_page() will cause us to fail to split the page.
-It probably doesn't matter; there has to be a fallback path anyway.
+        if (test_bit(key->bit_nr, &key->page->flags))
+                return -1;
 
-Now I'm looking at that codepath, and the race that Hugh uncovered now
-looks like a real bug.  Consider this sequence:
+of course, the race was still there - because the writeback bit might
+be clear at that point, but another CPU would reallocate and dirty it,
+and then autoremove_wake_function() would happen anyway.
 
-page allocated, added to page cache, dirtied, writeback started
+But back in the bad old days, the wait_on_page_bit_common() code would
+then double-check in a loop, so it would catch that case, re-insert
+itself on the wait queue, and try again. Except for the DROP case,
+which isn't used by writeback.
 
---- thread A ---
-end_page_writeback()
-	test_clear_page_writeback
---- ctx switch to thread B ---
-alloc page, add to page cache, dirty page, start page writeback,
-truncate_inode_pages_range()
-	wait_on_page_writeback()
---- ctx switch to thread A ---
-	wake_up_page()
---- ctx switch to thread B ---
-free page
-alloc page
-write new data to page
+Anyway, making that "if()" be a "while()" in wait_on_page_writeback()
+would basically re-introduce that old behavior. I don't really care,
+because it was the lock bit that really mattered, the writeback bit is
+not really all that interesting (except from a "let's fix this bug"
+angle)
 
-... now the DMA actually starts to do page writeback, and it's writing
-the new data.
+I'm not 100% sure I like the fragility of this writeback thing.
 
-So my s/if/while/ suggestion is wrong and we need to do something to
-prevent spurious wakeups.  Unless we bury the spurious wakeup logic
-inside wait_on_page_writeback() ...
+Anyway, I'm certainly happy with either model, whether it be an added
+while() in wait_on_page_writeback(), or it be the page reference count
+in end_page_writeback().
+
+Strong opinions?
+
+            Linus
