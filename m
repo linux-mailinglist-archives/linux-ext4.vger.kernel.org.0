@@ -2,163 +2,89 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECF1D2C1AE6
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Nov 2020 02:34:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B55D22C1B22
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Nov 2020 03:01:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728858AbgKXBdH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 23 Nov 2020 20:33:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729350AbgKXBdF (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 23 Nov 2020 20:33:05 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D833C061A53
-        for <linux-ext4@vger.kernel.org>; Mon, 23 Nov 2020 17:33:05 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id w187so2304689pfd.5
-        for <linux-ext4@vger.kernel.org>; Mon, 23 Nov 2020 17:33:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1Fpt+3NGNjcuXPoKd+YKzvfWCCI+i2QS11ln4xb/K2c=;
-        b=mZ10EKN9Q6HwSmECmmsUHbUHF/oTLT4c/YpQVGCE0gPLnlz6SgHQW3ieQ7zeUHJnUi
-         XUPs+F1GoZaFLBKWU3CvMTPUTS8a5+RdM3NBjgdsJpNB5L7Gee8a5rDblh6bnWIWT9TK
-         uir+AjWjaGJnRAA0K84IM0yu+WQnaSePUaJNJPiE7LfLBhB3Pd0A4gWblql3Lao7defI
-         n9Uw15itvZVSId22hyle+f6GM1M4THjCwMgL7v1hyU5f7oNm+YC3/Fk6KnTIGBq7Lgby
-         +eM5Ju8Jh9l5BxBe3HwjA5bt+bnUjVm7e9zM9zQUlIbVcSVLiqKYS2m+arIIzBAIXu/j
-         s+uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1Fpt+3NGNjcuXPoKd+YKzvfWCCI+i2QS11ln4xb/K2c=;
-        b=ZB6Y1Ob7o4k6GvbSr4SkwMVU6Y5hkZIRcI1eO3GQuvSZC2hgf5HvYsiTqVyk/d1kz3
-         YEQIcWJlVBtvkv9Y+d3AH7bh+LmJannJWubw6HKfsc3WQQ2A5vNkVXVSaDTy9BASa7Rx
-         Yk6j1nsOS2a7nZ9wAwVJKeMXdqK0Envb1tmYwBrtxoLweagYwrbsqZE/QfF0joc56GVb
-         DC9uApi7G6Lmq+luLpc7n2QK/FXNoPklhGHLqP/FoBH531avhedOUZ/UgDQ9/5oH746p
-         vAFTBwzGcU/v6K4E6It7tQTvl65G2/L5l4xplKokWNWdtRMe+TXHhTtzmwi2zR7j6uCM
-         oWJw==
-X-Gm-Message-State: AOAM532NWykqMzcF8CFWKj7RfZT6C44spnvWG3DdIBQ2dhbM5PKggXjZ
-        MP0FsHzZBYjX5QxTenIod2rEZBcmD95pnhnnLlqILA==
-X-Google-Smtp-Source: ABdhPJwQDF2vxX46wbajF4ioOOwzM/J33jC4qlEIQ0nX0CJ8Ae2/iYNAtfiNkgC6UbM9BT3sKlieSNPFWrTquhIIwSk=
-X-Received: by 2002:a65:6a4e:: with SMTP id o14mr1859973pgu.263.1606181584110;
- Mon, 23 Nov 2020 17:33:04 -0800 (PST)
+        id S1727423AbgKXCA2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 23 Nov 2020 21:00:28 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:38663 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727089AbgKXCA2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 23 Nov 2020 21:00:28 -0500
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0AO20Lwf029306
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 23 Nov 2020 21:00:21 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id E3C65420136; Mon, 23 Nov 2020 21:00:20 -0500 (EST)
+Date:   Mon, 23 Nov 2020 21:00:20 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Saranya Muruganandam <saranyamohan@google.com>
+Cc:     linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca,
+        Wang Shilong <wshilong@ddn.com>, Li Xi <lixi@ddn.com>
+Subject: Re: [RFC PATCH v3 14/61] e2fsck: merge bitmaps after thread completes
+Message-ID: <20201124020020.GL132317@mit.edu>
+References: <20201118153947.3394530-1-saranyamohan@google.com>
+ <20201118153947.3394530-15-saranyamohan@google.com>
 MIME-Version: 1.0
-References: <cover.1605896059.git.gustavoars@kernel.org> <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <202011201129.B13FDB3C@keescook> <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <202011220816.8B6591A@keescook>
-In-Reply-To: <202011220816.8B6591A@keescook>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 23 Nov 2020 17:32:51 -0800
-Message-ID: <CAKwvOdntVfXj2WRR5n6Kw7BfG7FdKpTeHeh5nPu5AzwVMhOHTg@mail.gmail.com>
-Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        bridge@lists.linux-foundation.org, ceph-devel@vger.kernel.org,
-        cluster-devel@redhat.com, coreteam@netfilter.org,
-        devel@driverdev.osuosl.org, dm-devel@redhat.com,
-        drbd-dev@lists.linbit.com,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
-        intel-gfx@lists.freedesktop.org, intel-wired-lan@lists.osuosl.org,
-        keyrings@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
-        linux-acpi@vger.kernel.org, linux-afs@lists.infradead.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-atm-general@lists.sourceforge.net,
-        linux-block@vger.kernel.org, linux-can@vger.kernel.org,
-        linux-cifs@vger.kernel.org,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        linux-decnet-user@lists.sourceforge.net,
-        linux-ext4@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        linux-geode@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-hams@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-i3c@lists.infradead.org, linux-ide@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-mmc@vger.kernel.org,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-rdma@vger.kernel.org,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-scsi@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        netfilter-devel@vger.kernel.org, nouveau@lists.freedesktop.org,
-        op-tee@lists.trustedfirmware.org, oss-drivers@netronome.com,
-        patches@opensource.cirrus.com, rds-devel@oss.oracle.com,
-        reiserfs-devel@vger.kernel.org, samba-technical@lists.samba.org,
-        selinux@vger.kernel.org, target-devel@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net,
-        usb-storage@lists.one-eyed-alien.net,
-        virtualization@lists.linux-foundation.org,
-        wcn36xx@lists.infradead.org,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        xen-devel@lists.xenproject.org, linux-hardening@vger.kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201118153947.3394530-15-saranyamohan@google.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sun, Nov 22, 2020 at 8:17 AM Kees Cook <keescook@chromium.org> wrote:
->
-> On Fri, Nov 20, 2020 at 11:51:42AM -0800, Jakub Kicinski wrote:
-> > If none of the 140 patches here fix a real bug, and there is no change
-> > to machine code then it sounds to me like a W=2 kind of a warning.
->
-> FWIW, this series has found at least one bug so far:
-> https://lore.kernel.org/lkml/CAFCwf11izHF=g1mGry1fE5kvFFFrxzhPSM6qKAO8gxSp=Kr_CQ@mail.gmail.com/
+On Wed, Nov 18, 2020 at 07:39:00AM -0800, Saranya Muruganandam wrote:
+> From: Wang Shilong <wshilong@ddn.com>
+> 
+> A new method merge_bmap has been added to bitmap operations. But
+> only red-black bitmap has that operation now.
+> 
+> Signed-off-by: Li Xi <lixi@ddn.com>
+> Signed-off-by: Wang Shilong <wshilong@ddn.com>
+> Signed-off-by: Saranya Muruganandam <saranyamohan@google.com>
 
-So looks like the bulk of these are:
-switch (x) {
-  case 0:
-    ++x;
-  default:
-    break;
-}
+There are hacks to deal with the fact that only the read-block bitmap
+backend supports merge_bmap in this patch series.  Why not implement
+that for *all* of the back ends, along with some unit tests; it's
+going to be less work than working around failures due to partial
+implementation of merge_bmap --- and the workarounds weren't complete
+in any case; you can force the use of a particular back-end via
+/etc/e2fsck.conf --- see the function
+e2fsck_allocate_{block,inode}_bmap() in e2fsck/util.c.
 
-I have a patch that fixes those up for clang:
-https://reviews.llvm.org/D91895
+This was mainly way of forcing additional testing of the backend
+implementations, and also so we could test/tune whether certain
+backends were preferable for certain file systems for different ways
+in which block/inode bitmaps are used by e2fsck --- but it's possible
+for an sysadmin / SRE to explicitly set them on a production e2fsck,
+and it would be preferable if things didn't blow up because we took a
+shortcut and didn't implement merge_bmap for all of the bitmap
+backends.   (It's *really* not that hard, anyway....)
 
-There's 3 other cases that don't quite match between GCC and Clang I
-observe in the kernel:
-switch (x) {
-  case 0:
-    ++x;
-  default:
-    goto y;
-}
-y:;
+> +static void e2fsck_pass1_free_bitmap(ext2fs_generic_bitmap *bitmap)
+> +{
+> +	if (*bitmap) {
+> +		ext2fs_free_generic_bmap(*bitmap);
+> +		*bitmap = NULL;
+> +	}
+> +
+> +}
 
-switch (x) {
-  case 0:
-    ++x;
-  default:
-    return;
-}
+I'm not sure why this is needed?  ext2fs_free_Generic_bmap() will
+already return if NULL is passed into it.
 
-switch (x) {
-  case 0:
-    ++x;
-  default:
-    ;
-}
+Also, by the end of the patch series, there are no callers of this
+function....
 
-Based on your link, and Nathan's comment on my patch, maybe Clang
-should continue to warn for the above (at least the `default: return;`
-case) and GCC should change?  While the last case looks harmless,
-there were only 1 or 2 across the tree in my limited configuration
-testing; I really think we should just add `break`s for those.
--- 
-Thanks,
-~Nick Desaulniers
+And again, please separate out the libext2fs changes from the e2fsck
+changes, do the libext2fs changes first, and there should really be
+some unit tests of merge_bmap so we can validate that it works
+correctly before we drop it into use with e2fsck.
+
+There should also be better documentation of what dup and dup_allowed
+in merge_bmap().
+
+	  	    	    	     - Ted
