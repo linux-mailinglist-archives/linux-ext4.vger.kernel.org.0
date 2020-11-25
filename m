@@ -2,118 +2,140 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAD192C4A4F
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Nov 2020 23:03:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEC862C4A6D
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Nov 2020 23:10:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732793AbgKYWBf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 25 Nov 2020 17:01:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54134 "EHLO
+        id S1733106AbgKYWJX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 25 Nov 2020 17:09:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732790AbgKYWBf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 25 Nov 2020 17:01:35 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2027EC0617A7
-        for <linux-ext4@vger.kernel.org>; Wed, 25 Nov 2020 14:01:25 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id b17so33512ljf.12
-        for <linux-ext4@vger.kernel.org>; Wed, 25 Nov 2020 14:01:25 -0800 (PST)
+        with ESMTP id S1732997AbgKYWJU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 25 Nov 2020 17:09:20 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F6DCC08E862
+        for <linux-ext4@vger.kernel.org>; Wed, 25 Nov 2020 14:09:20 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id m9so3638478pgb.4
+        for <linux-ext4@vger.kernel.org>; Wed, 25 Nov 2020 14:09:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=AHzxZjopdvwPb49v26gZFbNssQM0UPZ06yGo+z/tU6c=;
-        b=K6cXzXGOWYp0YH8Ec/Cd6PHGW9EpUSbmb9ZLhiSPBPTgyeTuwWtAay+X+GE1FcohAq
-         hcJeoMobg7GDcznqwyVEvp6b40v9HTHCqQ0yBJT4GDTt9n9UsIf+QJAhwPLCQk+aWHsg
-         V4KTpIAvGlGRiVee5Cm69yvIVM2IWQyahDf98=
+        bh=u18D3LcbSYuoMMQXGcZuOSSHQ97aqFAj6PSwZPKzyfI=;
+        b=WifNdkiftaOaD4ZZckvIqaLo1oDpErEfQOeEaPPqC9ugBqwKDiWX7cyNX9NNokqABc
+         3rs8Xkh/xt0eSkb8xVKJLxbZ9ctD9N09POwkigNrKsLe837qPjgVNlPjii1YQ7Ys5fEN
+         J1ztqI2SdAxczb+fxW5+t1BuuInt0J3EnKhYhGXUx/Ycs4OeMqDUGayCvZ/rK/2hwzHv
+         fvNTfM4yxqfrW/W8EGBwEJD3ef8E6CIFveHPM/2Vwj3USBV6V1sXpGOaikzNc+dcQTTs
+         sQr+N2RUFmFahGpkDJgGJRdpjSZFKGXDT4Evw9946EQKZvU8LN7QRJCs+4k3wXo2GKBl
+         nncg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=AHzxZjopdvwPb49v26gZFbNssQM0UPZ06yGo+z/tU6c=;
-        b=rZbC56IyVc6AwIy93QHpPlLJTGvuyc0fg6pfT6brYwJN2ljjogz8Bl6c/LTAXMTKT5
-         b2N3qvvcpF5XsR0grZLcK9HqiHahLCVReYb3KP1fEBb/k3lSfKJiX1otDOZhT7MqEmjf
-         N/gXKKnGlDWUTHGBIea+yvI3clVLhFhEgnFs/bQtteqmw9vGH6t+IG/c+iDMLGSQ2q4h
-         PBVwBIUxYuetmR+T/eNRgMfpCZg1tjv0zXLTbZZ6Fii5LYYAHgjI6/meRXzsjPWFPAwZ
-         D7HAER/xhWMdrq0g0VdMPDg9I5inPyH46eYJAOnhKtOMw1WKYQd4O6pld76/2a6WAbfG
-         mbhw==
-X-Gm-Message-State: AOAM530mJ2K8M/W7Upby4CMqCKdH5ELH1DKtIPeUImpOIeBLxTMIKCs1
-        hz2PHFFAls7FBKCreNO7M3Mtwr16nyxDoA==
-X-Google-Smtp-Source: ABdhPJztMswaEFYrIR7P8o1mQlVImfiYnXIB26mlnkCsz/Ddd6+uBGEpPKXYaCoROyQeyFYa64kcgQ==
-X-Received: by 2002:a2e:985a:: with SMTP id e26mr49683ljj.157.1606341682004;
-        Wed, 25 Nov 2020 14:01:22 -0800 (PST)
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
-        by smtp.gmail.com with ESMTPSA id 15sm70575lfo.75.2020.11.25.14.01.19
-        for <linux-ext4@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Nov 2020 14:01:20 -0800 (PST)
-Received: by mail-lf1-f42.google.com with SMTP id d8so5291136lfa.1
-        for <linux-ext4@vger.kernel.org>; Wed, 25 Nov 2020 14:01:19 -0800 (PST)
-X-Received: by 2002:a19:ed0f:: with SMTP id y15mr92782lfy.352.1606341679142;
- Wed, 25 Nov 2020 14:01:19 -0800 (PST)
+        bh=u18D3LcbSYuoMMQXGcZuOSSHQ97aqFAj6PSwZPKzyfI=;
+        b=EdLPRuLRHZVQJ7DnuYb0DrEx3EU7V+br0aLhzBxyTINfRg0RAlka9D3QDCVPzlpOOF
+         qB976pR26iXCVoMPgzjth55svTtr+Yedb+hhQWZDsD0/TrJfA0/6lwwqw26zA42sZ0Oc
+         QizLROxUr8Atk9MHK1NpoObaZcb70wdk9XbIF2Go4EdgB8lBO/jo1Ux0rDDPPWoWKdcV
+         VnqMRo9GC22eF03vBw0rifsAsL4SjkEcAO5tfLUICyQF68cOaFbcqeQw55Haq99Kcw5h
+         DtuXSHIwBqyMZEmwpcP9s4WGaCH/GpSORrisq2XmBxmxuZXIlqKHkscH+O3LwRLPK/5H
+         AohA==
+X-Gm-Message-State: AOAM531wjIYtSFzMEK20lpEi7gprFqeT4UpjBuooiEbEecvL6H7/hQJc
+        6t2p2Qv33plkS+8uQoryo/EX/yyaf0lw7DeMppb3mA==
+X-Google-Smtp-Source: ABdhPJxX4YdX/dgPSH4qNW13nZ+NPFnsWrpBgteZRS2UfRF2x25a9zmwdzqZA/h0sTtapVP+ZBS7Enbowp+5Zxn/Mxo=
+X-Received: by 2002:a17:90a:d250:: with SMTP id o16mr6463569pjw.25.1606342159332;
+ Wed, 25 Nov 2020 14:09:19 -0800 (PST)
 MIME-Version: 1.0
-References: <000000000000d3a33205add2f7b2@google.com> <20200828100755.GG7072@quack2.suse.cz>
- <20200831100340.GA26519@quack2.suse.cz> <CAHk-=wivRS_1uy326sLqKuwerbL0APyKYKwa+vWVGsQg8sxhLw@mail.gmail.com>
- <alpine.LSU.2.11.2011231928140.4305@eggly.anvils> <20201124121912.GZ4327@casper.infradead.org>
- <alpine.LSU.2.11.2011240810470.1029@eggly.anvils> <20201124183351.GD4327@casper.infradead.org>
- <CAHk-=wjtGAUP5fydxR8iWbzB65p2XvM0BrHE=PkPLQcJ=kq_8A@mail.gmail.com>
- <20201124201552.GE4327@casper.infradead.org> <CAHk-=wj9n5y7pu=SVVGwd5-FbjMGS6uoFU4RpzVLbuOfwBifUA@mail.gmail.com>
- <alpine.LSU.2.11.2011241322540.1777@eggly.anvils> <CAHk-=wjiVtroOvNkuptH0GofVUvOMw4wmmaXdnGPPT8y8+MbyQ@mail.gmail.com>
- <CAHk-=wix0YNq1U8iroRLpx+fCUGE8RG3asY8Zm4vyH-g4UhbPg@mail.gmail.com>
-In-Reply-To: <CAHk-=wix0YNq1U8iroRLpx+fCUGE8RG3asY8Zm4vyH-g4UhbPg@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 25 Nov 2020 14:01:03 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiavm+uTti1SmuwvBQyu-0OC_6c3Y1v7kpunmPnjVRsSQ@mail.gmail.com>
-Message-ID: <CAHk-=wiavm+uTti1SmuwvBQyu-0OC_6c3Y1v7kpunmPnjVRsSQ@mail.gmail.com>
-Subject: Re: kernel BUG at fs/ext4/inode.c:LINE!
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        syzbot <syzbot+3622cea378100f45d59f@syzkaller.appspotmail.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        "Theodore Ts'o" <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>, Qian Cai <cai@lca.pw>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>
+References: <202011201129.B13FDB3C@keescook> <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <202011220816.8B6591A@keescook> <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
+ <ca071decb87cc7e905411423c05a48f9fd2f58d7.camel@perches.com>
+ <0147972a72bc13f3629de8a32dee6f1f308994b5.camel@HansenPartnership.com>
+ <d8d1e9add08cdd4158405e77762d4946037208f8.camel@perches.com>
+ <dbd2cb703ed9eefa7dde9281ea26ab0f7acc8afe.camel@HansenPartnership.com>
+ <20201123130348.GA3119@embeddedor> <8f5611bb015e044fa1c0a48147293923c2d904e4.camel@HansenPartnership.com>
+ <202011241327.BB28F12F6@keescook> <a841536fe65bb33f1c72ce2455a6eb47a0107565.camel@HansenPartnership.com>
+ <CAKwvOdkGBn7nuWTAqrORMeN1G+w3YwBfCqqaRD2nwvoAXKi=Aw@mail.gmail.com> <20201125082405.1d8c23dc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201125082405.1d8c23dc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 25 Nov 2020 14:09:08 -0800
+Message-ID: <CAKwvOdkWGE5qdFZUuMzcL63LDOu_iZQJOGbeBNjcPi8sJPMkag@mail.gmail.com>
+Subject: Re: [Intel-wired-lan] [PATCH 000/141] Fix fall-through warnings for Clang
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Joe Perches <joe@perches.com>, alsa-devel@alsa-project.org,
+        linux-atm-general@lists.sourceforge.net,
+        reiserfs-devel@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        linux-fbdev@vger.kernel.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        linux-ide@vger.kernel.org, dm-devel@redhat.com,
+        keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
+        GR-everest-linux-l2@marvell.com, wcn36xx@lists.infradead.org,
+        samba-technical@lists.samba.org, linux-i3c@lists.infradead.org,
+        linux1394-devel@lists.sourceforge.net,
+        linux-afs@lists.infradead.org,
+        usb-storage@lists.one-eyed-alien.net, drbd-dev@lists.linbit.com,
+        devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-scsi@vger.kernel.org,
+        linux-rdma@vger.kernel.org, oss-drivers@netronome.com,
+        bridge@lists.linux-foundation.org,
+        linux-security-module@vger.kernel.org,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        linux-stm32@st-md-mailman.stormreply.com, cluster-devel@redhat.com,
+        linux-acpi@vger.kernel.org, coreteam@netfilter.org,
+        intel-wired-lan@lists.osuosl.org, linux-input@vger.kernel.org,
+        Miguel Ojeda <ojeda@kernel.org>,
+        tipc-discussion@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        selinux@vger.kernel.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        intel-gfx@lists.freedesktop.org, linux-geode@lists.infradead.org,
+        linux-can@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-gpio@vger.kernel.org, op-tee@lists.trustedfirmware.org,
+        linux-mediatek@lists.infradead.org, xen-devel@lists.xenproject.org,
+        nouveau@lists.freedesktop.org, linux-hams@vger.kernel.org,
+        ceph-devel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-hwmon@vger.kernel.org,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        linux-nfs@vger.kernel.org, GR-Linux-NIC-Dev@marvell.com,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-decnet-user@lists.sourceforge.net, linux-mmc@vger.kernel.org,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-sctp@vger.kernel.org, linux-usb@vger.kernel.org,
+        netfilter-devel@vger.kernel.org,
+        =?UTF-8?Q?open_list=3AHARDWARE_RANDOM_NUMBER_GENERATOR_CORE_=3Clinux=2Dcrypt?=
+         =?UTF-8?Q?o=40vger=2Ekernel=2Eorg=3E=2C_patches=40opensource=2Ecirrus=2Ecom=2C_linux=2Dint?=
+         =?UTF-8?Q?egrity=40vger=2Ekernel=2Eorg=2C_target=2Ddevel=40vger=2Ekernel=2Eorg=2C_linux=2D?=
+         =?UTF-8?Q?hardening=40vger=2Ekernel=2Eorg=2C_Jonathan_Cameron_=3CJonathan=2ECamero?=
+         =?UTF-8?Q?n=40huawei=2Ecom=3E=2C_Greg_KH?= 
+        <gregkh@linuxfoundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 1:30 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+On Wed, Nov 25, 2020 at 8:24 AM Jakub Kicinski <kuba@kernel.org> wrote:
 >
-> I'm not sure I'm willing to write and test the real patch, but it
-> doesn't look _too_ nasty from just looking at the code. The bookmark
-> thing makes it important to only actually clear the bit at the end (as
-> does the handoff case anyway), but the way wake_up_page_bit() is
-> written, that's actually very straightforward - just after the
-> while-loop. That's when we've woken up everybody.
+> Applying a real patch set and then getting a few follow ups the next day
+> for trivial coding things like fallthrough missing or static missing,
+> just because I didn't have the full range of compilers to check with
+> before applying makes me feel pretty shitty, like I'm not doing a good
+> job. YMMV.
 
-Actually, there's a problem. We don't know if we've done the hand-off
-or not, so we don't know if we should clear the bit after waking
-everybody up or not.
-
-We set that WQ_FLAG_DONE bit for the hand-0off case, but only the
-woken party sees that - the waker itself doesn't know about it (and we
-have no good way to return it in that call chain: wake_up_page_bit ->
-__wake_up_locked_key_bookmark -> __wake_up_common ->
-wake_page_function().
-
-We could easily hide the flag in the "bookmark" wait queue entry, but
-that smells a bit hacky to me.
-
-So I don't think it's worth it, unless somebody really wants to give it a try.
-
-But if it turns out that the page ref change from Hugh causes some
-unexpected problem, we do have this model as a backup.
-
-            Linus
+I understand. Everyone feels that way, except maybe Bond villains and
+robots.  My advice in that case is don't take it personally.  We're
+working with a language that's more error prone relative to others.
+While one would like to believe they are flawless, over time they
+can't beat the aggregate statistics.  A balance between Imposter
+Syndrome and Dunning Kruger is walked by all software developers, and
+the fear of making mistakes in public is one of the number one reasons
+folks don't take the plunge contributing to open source software or
+even the kernel.  My advice to them is "don't sweat the small stuff."
+-- 
+Thanks,
+~Nick Desaulniers
