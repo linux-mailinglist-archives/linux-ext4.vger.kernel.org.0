@@ -2,155 +2,111 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFD9C2C49EB
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Nov 2020 22:31:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2EBC2C4A02
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Nov 2020 22:35:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732201AbgKYVao (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 25 Nov 2020 16:30:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732177AbgKYVao (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 25 Nov 2020 16:30:44 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22A32C0613D4
-        for <linux-ext4@vger.kernel.org>; Wed, 25 Nov 2020 13:30:44 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id d8so5194016lfa.1
-        for <linux-ext4@vger.kernel.org>; Wed, 25 Nov 2020 13:30:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tOPQoHjgvYUvh+HHnKxiG8jONSzsA15qJMnLlNlgP0M=;
-        b=g9y81DNQmmhmWGTiGwiN1BpWJR901eSsmOaWRaDAPAF045hxvt7onry/8Zvu9QMIoO
-         Mj7cMnjDGxU6hMF6tVoIt4bsojN6gPJ4SXLznmP+jMHmyniwn5WHjj2vQ6xOOO0OJlr6
-         V8poGWCE2wHSk99omymX/xHLo/xmK1pAoTF0c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tOPQoHjgvYUvh+HHnKxiG8jONSzsA15qJMnLlNlgP0M=;
-        b=Qk/FqGTNgckvOg6htY6RrjA6VAdNtWwP/r6l+yhAFzRVl98fADAGSXF3I/XH/C9onO
-         2Sr1qZMY08QRj9HIsNF9RXnwSMrAJrS2JrVYr8rFA0ZKqLVNVdIlMCDZNXSQY7Z1Ubf3
-         UQTVemijM0Lj8QYja6V3j+OR/Z+c+OUNAcHttBhTBB+QMYUf9bDMGIudjQVXoa9vXwA3
-         +54/OViL/M9fB77izlGnonePilhlI9xbrdTNKZAK5ps1batadgYPcWI59adHThMVOx3a
-         B7xXZLhzPBZN5CppBYvbGxqs76uuOeX6KfjFYnKd+tz9fYVpks8DNbTYQ42+xbeot3MN
-         4uLg==
-X-Gm-Message-State: AOAM531ouAolcy2nYi6we/2//t8lXNNLkG0DRG7JXAknyLTNdJTKwfGC
-        YTqkkGn2K21bd/bM9nxf2SDs2zgSZsbU5Q==
-X-Google-Smtp-Source: ABdhPJzX5FCG8T58fXRuXsdHHHK4rC2nb5UyPxd9ZWMclCtVcORYTb169VndGqEscqQ2SyfXaNXTgw==
-X-Received: by 2002:a19:c705:: with SMTP id x5mr76577lff.16.1606339842181;
-        Wed, 25 Nov 2020 13:30:42 -0800 (PST)
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
-        by smtp.gmail.com with ESMTPSA id j131sm60234lfd.209.2020.11.25.13.30.37
-        for <linux-ext4@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Nov 2020 13:30:40 -0800 (PST)
-Received: by mail-lj1-f178.google.com with SMTP id f24so3773315ljk.13
-        for <linux-ext4@vger.kernel.org>; Wed, 25 Nov 2020 13:30:37 -0800 (PST)
-X-Received: by 2002:a05:651c:339:: with SMTP id b25mr15104ljp.285.1606339837289;
- Wed, 25 Nov 2020 13:30:37 -0800 (PST)
+        id S1731885AbgKYVdd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 25 Nov 2020 16:33:33 -0500
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:38476 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730364AbgKYVdc (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 25 Nov 2020 16:33:32 -0500
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 9789F29FB0;
+        Wed, 25 Nov 2020 16:33:24 -0500 (EST)
+Date:   Thu, 26 Nov 2020 08:33:24 +1100 (AEDT)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Joe Perches <joe@perches.com>,
+        Jakub Kicinski <kuba@kernel.org>, alsa-devel@alsa-project.org,
+        linux-atm-general@lists.sourceforge.net,
+        reiserfs-devel@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        linux-fbdev@vger.kernel.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        linux-ide@vger.kernel.org, dm-devel@redhat.com,
+        keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
+        GR-everest-linux-l2@marvell.com, wcn36xx@lists.infradead.org,
+        samba-technical@lists.samba.org, linux-i3c@lists.infradead.org,
+        linux1394-devel@lists.sourceforge.net,
+        linux-afs@lists.infradead.org,
+        usb-storage@lists.one-eyed-alien.net, drbd-dev@lists.linbit.com,
+        devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-scsi@vger.kernel.org,
+        linux-rdma@vger.kernel.org, oss-drivers@netronome.com,
+        bridge@lists.linux-foundation.org,
+        linux-security-module@vger.kernel.org,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        linux-stm32@st-md-mailman.stormreply.com, cluster-devel@redhat.com,
+        linux-acpi@vger.kernel.org, coreteam@netfilter.org,
+        intel-wired-lan@lists.osuosl.org, linux-input@vger.kernel.org,
+        Miguel Ojeda <ojeda@kernel.org>,
+        tipc-discussion@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        selinux@vger.kernel.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        intel-gfx@lists.freedesktop.org, linux-geode@lists.infradead.org,
+        linux-can@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-gpio@vger.kernel.org, op-tee@lists.trustedfirmware.org,
+        linux-mediatek@lists.infradead.org, xen-devel@lists.xenproject.org,
+        nouveau@lists.freedesktop.org, linux-hams@vger.kernel.org,
+        ceph-devel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-hwmon@vger.kernel.org,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        linux-nfs@vger.kernel.org, GR-Linux-NIC-Dev@marvell.com,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-decnet-user@lists.sourceforge.net, linux-mmc@vger.kernel.org,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-sctp@vger.kernel.org, linux-usb@vger.kernel.org,
+        netfilter-devel@vger.kernel.org,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>, patches@opensource.cirrus.com,
+        linux-integrity@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [Intel-wired-lan] [PATCH 000/141] Fix fall-through warnings for
+ Clang
+In-Reply-To: <CAKwvOdkGBn7nuWTAqrORMeN1G+w3YwBfCqqaRD2nwvoAXKi=Aw@mail.gmail.com>
+Message-ID: <alpine.LNX.2.23.453.2011260750300.6@nippy.intranet>
+References: <202011201129.B13FDB3C@keescook> <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <202011220816.8B6591A@keescook> <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com> <ca071decb87cc7e905411423c05a48f9fd2f58d7.camel@perches.com>
+ <0147972a72bc13f3629de8a32dee6f1f308994b5.camel@HansenPartnership.com> <d8d1e9add08cdd4158405e77762d4946037208f8.camel@perches.com> <dbd2cb703ed9eefa7dde9281ea26ab0f7acc8afe.camel@HansenPartnership.com> <20201123130348.GA3119@embeddedor>
+ <8f5611bb015e044fa1c0a48147293923c2d904e4.camel@HansenPartnership.com> <202011241327.BB28F12F6@keescook> <a841536fe65bb33f1c72ce2455a6eb47a0107565.camel@HansenPartnership.com> <CAKwvOdkGBn7nuWTAqrORMeN1G+w3YwBfCqqaRD2nwvoAXKi=Aw@mail.gmail.com>
 MIME-Version: 1.0
-References: <000000000000d3a33205add2f7b2@google.com> <20200828100755.GG7072@quack2.suse.cz>
- <20200831100340.GA26519@quack2.suse.cz> <CAHk-=wivRS_1uy326sLqKuwerbL0APyKYKwa+vWVGsQg8sxhLw@mail.gmail.com>
- <alpine.LSU.2.11.2011231928140.4305@eggly.anvils> <20201124121912.GZ4327@casper.infradead.org>
- <alpine.LSU.2.11.2011240810470.1029@eggly.anvils> <20201124183351.GD4327@casper.infradead.org>
- <CAHk-=wjtGAUP5fydxR8iWbzB65p2XvM0BrHE=PkPLQcJ=kq_8A@mail.gmail.com>
- <20201124201552.GE4327@casper.infradead.org> <CAHk-=wj9n5y7pu=SVVGwd5-FbjMGS6uoFU4RpzVLbuOfwBifUA@mail.gmail.com>
- <alpine.LSU.2.11.2011241322540.1777@eggly.anvils> <CAHk-=wjiVtroOvNkuptH0GofVUvOMw4wmmaXdnGPPT8y8+MbyQ@mail.gmail.com>
-In-Reply-To: <CAHk-=wjiVtroOvNkuptH0GofVUvOMw4wmmaXdnGPPT8y8+MbyQ@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 25 Nov 2020 13:30:20 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wix0YNq1U8iroRLpx+fCUGE8RG3asY8Zm4vyH-g4UhbPg@mail.gmail.com>
-Message-ID: <CAHk-=wix0YNq1U8iroRLpx+fCUGE8RG3asY8Zm4vyH-g4UhbPg@mail.gmail.com>
-Subject: Re: kernel BUG at fs/ext4/inode.c:LINE!
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        syzbot <syzbot+3622cea378100f45d59f@syzkaller.appspotmail.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        "Theodore Ts'o" <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>, Qian Cai <cai@lca.pw>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 3:24 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> I've applied your second patch (the smaller one that just takes a ref
-> around the critical section). If somebody comes up with some great
-> alternative, we can always revisit this.
+On Wed, 25 Nov 2020, Nick Desaulniers wrote:
 
-Hmm.
+> So developers and distributions using Clang can't have 
+> -Wimplicit-fallthrough enabled because GCC is less strict (which has 
+> been shown in this thread to lead to bugs)?  We'd like to have nice 
+> things too, you know.
+> 
 
-I'm not sure about "great alternative", but it strikes me that we
-*could* move the clearing of the PG_writeback bit _into_
-wake_up_page_bit(), under the page waitqueue lock.
+Apparently the GCC developers don't want you to have "nice things" either. 
+Do you think that the kernel should drop gcc in favour of clang?
+Or do you think that a codebase can somehow satisfy multiple checkers and 
+their divergent interpretations of the language spec?
 
-IOW, we could make the rule be that the bit isn't actually cleared
-before calling wake_up_page() at all, and we'd clear it with something
-like
+> This is not a shiny new warning; it's already on for GCC and has existed 
+> in both compilers for multiple releases.
+> 
 
-    unsigned long flags = READ_ONCE(page->flags);
+Perhaps you're referring to the compiler feature that lead to the 
+ill-fated, tree-wide /* fallthrough */ patch series.
 
-    // We can clear PG_writeback directly if PG_waiters isn't set
-    while (!(flags & (1ul << PG_waiters))) {
-        unsigned long new = flags & ~(1ul << PG_writeback);
-        // PG_writeback was already clear??!!?
-        if (WARN_ON_ONCE(new == flags))
-            return;
-        new = cmpxchg(&page->flags, flags, new);
-        if (likely(flags == new))
-            return;
-        flags = new;
-    }
-
-    // Otherwise, clear the bit at the end - but under the
-    // page waitqueue lock - inside wake_up_page_bit()
-    return wake_up_page_bit(..);
-
-instead.
-
-That would basically make the bit clearing atomic wrt the PG_waiters
-flags - either using that atomic cmpxchg, or by doing it under the
-page queue lock so that it's atomic wrt any new waiters.
-
-This seems conceptually like the right thing to do - and if would also
-make the (fair) exclusive lock hand-off case atomic too, because the
-bit we're waking up on would never be cleared if it gets handed off
-directly.
-
-The above is entirely untested crap written in my MUA, and obviously
-requires that all callers of wake_up_page() be moved to that new world
-order, but I think we only have two cases: unlock_page() and
-end_page_writeback().
-
-And unlock_page() already has that
-"clear_bit_unlock_is_negative_byte()" special case that is an ugly
-special case of PG_waiters atomicity. So we'd get rid of that, because
-the cmpxchg loop would be the better model.
-
-I'm not sure I'm willing to write and test the real patch, but it
-doesn't look _too_ nasty from just looking at the code. The bookmark
-thing makes it important to only actually clear the bit at the end (as
-does the handoff case anyway), but the way wake_up_page_bit() is
-written, that's actually very straightforward - just after the
-while-loop. That's when we've woken up everybody.
-
-So I'm sending this idea out to see if somebody can shoot it down, or
-even wants to possibly even try to do it..
-
-                Linus
+When the ink dries on the C23 language spec and the implementations figure 
+out how to interpret it then sure, enforce the warning for new code -- the 
+cost/benefit analysis is straight forward. However, the case for patching 
+existing mature code is another story.
