@@ -2,87 +2,88 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAD1A2C4AEE
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Nov 2020 23:45:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C2ED2C4B2C
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Nov 2020 00:03:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731768AbgKYWom (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 25 Nov 2020 17:44:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60934 "EHLO
+        id S1728963AbgKYXCr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 25 Nov 2020 18:02:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727070AbgKYWok (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 25 Nov 2020 17:44:40 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B6EAC0613D4;
-        Wed, 25 Nov 2020 14:44:40 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id a3so235503wmb.5;
-        Wed, 25 Nov 2020 14:44:40 -0800 (PST)
+        with ESMTP id S1728675AbgKYXCq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 25 Nov 2020 18:02:46 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E42C0617A7;
+        Wed, 25 Nov 2020 15:02:45 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id t4so68357wrr.12;
+        Wed, 25 Nov 2020 15:02:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mMrMdknFbsC77SFRvwwD3pm1cwl3V2MP65kzVJE6tY4=;
-        b=mE3/9/w1S1BsFafykdzrNl6nUKLQtv3irXzEz/AwtJdLppuZQnzVWeoYFC7Qb5OQef
-         2DAcZ7D6Froq/rlKPIBwqGtt0C/0XmhDJf/Ua0btTGl1wBl77rh04suLM7Drqc/fd1vb
-         erjCUGXrwTRfKAEK60/5plkWP59Lm5M7QZ9ENMraFyUEU5TYdKtuuKGBjQ65xtLyj0UE
-         nayIBzzwS8QdOAkDbWxTvDHZJGPoguOAiztDitejPSo1Rp931ceTN4KgHMls79AEVEp8
-         0UjkiGW0It0CwNfB/koaXcS1sEgjLFm2K1jcT9QDdZUmcgiCMPoll+6KvJ2hAfFlaA1V
-         8PSw==
+        bh=ha42UWMtlXOL8kfvC1XpFKttY73p7G2gxviD5bIo2Ac=;
+        b=cK16XuXEr1UlZZi/GgHF7dItPstb+7yZ2QUTp5Dxvdc6OIX52ygirnUAKuRVBOH+dK
+         A20pmgUIw2HuGZFFAXCmBSAdjpUAnHlbQW6vzVJQphFFEbO8NHcI7pY1E1IYv6o5k0Qf
+         jXWsM0ddqTXTn/1nZTXycpkYVMfbhxZxJ9mV7kOEU+Tec/es0pgNM20lzmzFkZBYIURn
+         HK2FiFuW7CXMZxeXIL3yJ5bCH/J8M2hkcorgk3PecLezXYs+oTw3zVRlNq6FEGJfSXMe
+         e5NpXkmlA2dB6AmhViUGWqJQAiQop1G/7Q0C0bZUhlLDOGEFt9XX9+Dv47nZ0Rj6T1x/
+         IsxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=mMrMdknFbsC77SFRvwwD3pm1cwl3V2MP65kzVJE6tY4=;
-        b=s3HcFD83fswtv3xvGmOKykyMAbTuH/ZoyjV3bPHw150+3A3e+YcTmOGSNT84yiP9Fq
-         a53GJBddq9sm0yHCm1NvRBIt3cuyTkKRd7gD0orWSb0aZw+klHh3qRu1xrNVKHFfD2P0
-         AHSYyHrv14FMkJrR0jamTs138Hrue1uqlsoTWzKYDF0rnG2HwEwBAe0EGCoJm2CzGqYx
-         RP9Qet/wa23vNr0rQhh7aio4RIZ9FbZfzWlEm6UQYIA7tzaN/oIbrN3pD13XomRhZyht
-         zgXrdFOAW2MluLB12hXnI+LCZX2y9/NCkUEYW/xym28NIrHG/+re/xtQnppkq6ZoTzKO
-         0v7w==
-X-Gm-Message-State: AOAM5306KaR62FxidIA4MvAnzNNbxk+AXgwBl/AuBgU3QdG21VBjl02t
-        SbyQQELzAa+AQZgRzuCzZ1A=
-X-Google-Smtp-Source: ABdhPJzVXPr1uOlB1vaw2cfl6zSoOiLq1F6oo5r6Yg/UanqxqpZONWe00UKvdrBaRFZ4o0pgYT/ByA==
-X-Received: by 2002:a7b:cf0a:: with SMTP id l10mr6364382wmg.103.1606344279394;
-        Wed, 25 Nov 2020 14:44:39 -0800 (PST)
+        bh=ha42UWMtlXOL8kfvC1XpFKttY73p7G2gxviD5bIo2Ac=;
+        b=EZ1sHP5y4bIz8FH5XVXgjLQgnG2x4dnCIhnFjQy6jE+sBV6j86jIwkXefElTPsZxaw
+         06goq9L4iUkfAjC/GGVDi+S/Pgc7hn8xuBmODBNwg7L5lOmcLZ7a2jIIC417rpG01Ssg
+         UrNQk7jirFNv14EEbVAErekh5WppRQHpvv+aNsNvBNI3yaUPizY8zc1McQzsA3znhm2H
+         jh7KxBxt8M1UMteAyRveMlRMtjHxe8ABarEeWIOPidvUi4J/bR1XEQhZhy2gixUnQaEO
+         oGns+E1NugO8MH5pzvlxgJh68thcslWBMA0Yn/7LGgxO394on0HPrlngMTYFcTC/pTBp
+         zJ8Q==
+X-Gm-Message-State: AOAM530/M0//wDJBX2OxhveroGx0YIaMktzcLNS1ao3aUQEg5uLeGwuw
+        oaUcFQbayeP9J7Q/0RR/Hrc=
+X-Google-Smtp-Source: ABdhPJzir63ZhkohioP0Ktx42tkGcEWW5m4eKxg+CUjAscHddZDwqHZSdjbm/E0JNHFBggGwkKFODQ==
+X-Received: by 2002:a5d:474b:: with SMTP id o11mr180470wrs.235.1606345364309;
+        Wed, 25 Nov 2020 15:02:44 -0800 (PST)
 Received: from [192.168.1.122] (cpc92720-cmbg20-2-0-cust364.5-4.cable.virginm.net. [82.21.83.109])
-        by smtp.gmail.com with ESMTPSA id h15sm6411655wrw.15.2020.11.25.14.44.35
+        by smtp.gmail.com with ESMTPSA id u129sm5552667wme.9.2020.11.25.15.02.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Nov 2020 14:44:38 -0800 (PST)
+        Wed, 25 Nov 2020 15:02:43 -0800 (PST)
 Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Jakub Kicinski <kuba@kernel.org>,
+To:     Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
         "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        alsa-devel@alsa-project.org, amd-gfx@lists.freedesktop.org,
+        LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
         bridge@lists.linux-foundation.org, ceph-devel@vger.kernel.org,
         cluster-devel@redhat.com, coreteam@netfilter.org,
         devel@driverdev.osuosl.org, dm-devel@redhat.com,
-        drbd-dev@lists.linbit.com, dri-devel@lists.freedesktop.org,
+        drbd-dev@lists.linbit.com,
+        dri-devel <dri-devel@lists.freedesktop.org>,
         GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
         intel-gfx@lists.freedesktop.org, intel-wired-lan@lists.osuosl.org,
         keyrings@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
         linux-acpi@vger.kernel.org, linux-afs@lists.infradead.org,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-arm-msm@vger.kernel.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
         linux-atm-general@lists.sourceforge.net,
         linux-block@vger.kernel.org, linux-can@vger.kernel.org,
         linux-cifs@vger.kernel.org,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
         linux-decnet-user@lists.sourceforge.net,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-fbdev@vger.kernel.org, linux-geode@lists.infradead.org,
-        linux-gpio@vger.kernel.org, linux-hams@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-i3c@lists.infradead.org,
-        linux-ide@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-input <linux-input@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        linux-geode@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-hams@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-i3c@lists.infradead.org, linux-ide@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
         linux-integrity@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-mmc@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
+        linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-mmc@vger.kernel.org,
+        Linux Memory Management List <linux-mm@kvack.org>,
         linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-rdma@vger.kernel.org,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
         linux-scsi@vger.kernel.org, linux-sctp@vger.kernel.org,
         linux-security-module@vger.kernel.org,
         linux-stm32@st-md-mailman.stormreply.com,
@@ -100,7 +101,6 @@ Cc:     Kees Cook <keescook@chromium.org>,
         wcn36xx@lists.infradead.org,
         "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
         xen-devel@lists.xenproject.org, linux-hardening@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
         Nathan Chancellor <natechancellor@gmail.com>,
         Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>
 References: <cover.1605896059.git.gustavoars@kernel.org>
@@ -108,21 +108,15 @@ References: <cover.1605896059.git.gustavoars@kernel.org>
  <202011201129.B13FDB3C@keescook>
  <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
  <202011220816.8B6591A@keescook>
- <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
- <CANiq72nZrHWTA4_Msg6MP9snTyenC6-eGfD27CyfNSu7QoVZbw@mail.gmail.com>
- <1c7d7fde126bc0acf825766de64bf2f9b888f216.camel@HansenPartnership.com>
- <CANiq72m22Jb5_+62NnwX8xds2iUdWDMAqD8PZw9cuxdHd95W0A@mail.gmail.com>
- <fc45750b6d0277c401015b7aa11e16cd15f32ab2.camel@HansenPartnership.com>
- <CANiq72k5tpDoDPmJ0ZWc1DGqm+81Gi-uEENAtvEs9v3SZcx6_Q@mail.gmail.com>
- <4993259d01a0064f8bb22770503490f9252f3659.camel@HansenPartnership.com>
- <CANiq72kqO=bYMJnFS2uYRpgWATJ=uXxZuNUsTXT+3aLtrpnzvQ@mail.gmail.com>
+ <CAKwvOdntVfXj2WRR5n6Kw7BfG7FdKpTeHeh5nPu5AzwVMhOHTg@mail.gmail.com>
+ <202011241324.B3439A2@keescook>
 From:   Edward Cree <ecree.xilinx@gmail.com>
-Message-ID: <44005bde-f6d4-5eaa-39b8-1a5efeedb2d3@gmail.com>
-Date:   Wed, 25 Nov 2020 22:44:35 +0000
+Message-ID: <99a9ffd7-6356-b81d-6e08-7ed74b6fb82c@gmail.com>
+Date:   Wed, 25 Nov 2020 23:02:40 +0000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <CANiq72kqO=bYMJnFS2uYRpgWATJ=uXxZuNUsTXT+3aLtrpnzvQ@mail.gmail.com>
+In-Reply-To: <202011241324.B3439A2@keescook>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
@@ -130,60 +124,18 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 25/11/2020 00:32, Miguel Ojeda wrote:
-> I have said *authoring* lines of *this* kind takes a minute per line.
-> Specifically: lines fixing the fallthrough warning mechanically and
-> repeatedly where the compiler tells you to, and doing so full-time for
-> a month.
-<snip>
-> It is useful since it makes intent clear.
-To make the intent clear, you have to first be certain that you
- understand the intent; otherwise by adding either a break or a
- fallthrough to suppress the warning you are just destroying the
- information that "the intent of this code is unknown".
-Figuring out the intent of a piece of unfamiliar code takes more
- than 1 minute; just because
+On 24/11/2020 21:25, Kees Cook wrote:
+> I still think this isn't right -- it's a case statement that runs off
+> the end without an explicit flow control determination.
+
+Proves too much — for instance
     case foo:
-        thing;
     case bar:
-        break;
- produces identical code to
-    case foo:
         thing;
         break;
-    case bar:
-        break;
- doesn't mean that *either* is correct — maybe the author meant
- to write
-    case foo:
-        return thing;
-    case bar:
-        break;
- and by inserting that break you've destroyed the marker that
- would direct someone who knew what the code was about to look
- at that point in the code and spot the problem.
-Thus, you *always* have to look at more than just the immediate
- mechanical context of the code, to make a proper judgement that
- yes, this was the intent.  If you think that that sort of thing
- can be done in an *average* time of one minute, then I hope you
- stay away from code I'm responsible for!
-One minute would be an optimistic target for code that, as the
- maintainer, one is already somewhat familiar with.  For code
- that you're seeing for the first time, as is usually the case
- with the people doing these mechanical fix-a-warning patches,
- it's completely unrealistic.
-
-A warning is only useful because it makes you *think* about the
- code.  If you suppress the warning without doing that thinking,
- then you made the warning useless; and if the warning made you
- think about code that didn't *need* it, then the warning was
- useless from the start.
-
-So make your mind up: does Clang's stricter -Wimplicit-fallthrough
- flag up code that needs thought (in which case the fixes take
- effort both to author and to review) or does it flag up code
- that can be mindlessly "fixed" (in which case the warning is
- worthless)?  Proponents in this thread seem to be trying to
- have it both ways.
+ doesn't require a fallthrough; after case foo:, and afaik
+ no-one is suggesting it should.  Yet it, too, is "a case
+ statement that runs off the end without an explicit flow
+ control determination".
 
 -ed
