@@ -2,291 +2,179 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B24D2C356D
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Nov 2020 01:25:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E6352C358E
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Nov 2020 01:33:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727398AbgKYAYw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 24 Nov 2020 19:24:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35472 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727372AbgKYAYt (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 24 Nov 2020 19:24:49 -0500
-Received: from sol.attlocal.net (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1722821973;
-        Wed, 25 Nov 2020 00:24:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606263888;
-        bh=DVK6Cv8eMmHD4Mdw9Fv5x1aRtgQJLUbKLl+tIxUBawc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HUM7wu+uioFHT8DZk0TfcbzTpxC8O/Aoezrvrc7iOwGX/o2T3iNqSLbnO0OrGF5up
-         QCYRscl8eF0gn6U/d7CHvdGUsX7SznDUYUggS/2BFrgUfQnAaSUYfuKMkYn/eM6oI4
-         xsTTt4by8u5QS83DDBVwY4GNiHqbuk1n0N1s7x2k=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH 9/9] fscrypt: allow deleting files with unsupported encryption policy
-Date:   Tue, 24 Nov 2020 16:23:36 -0800
-Message-Id: <20201125002336.274045-10-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201125002336.274045-1-ebiggers@kernel.org>
-References: <20201125002336.274045-1-ebiggers@kernel.org>
+        id S1727370AbgKYAcb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 24 Nov 2020 19:32:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726805AbgKYAca (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Nov 2020 19:32:30 -0500
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDA17C0613D6;
+        Tue, 24 Nov 2020 16:32:29 -0800 (PST)
+Received: by mail-qk1-x742.google.com with SMTP id x25so81283qkj.3;
+        Tue, 24 Nov 2020 16:32:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QqqubA90NyDjnD5SH+OxnZbso0TzlLiuZ5gzRUm0zsY=;
+        b=DYdo15DH5n4eMCA51W2vXZfybVLPbTpwO6CR+j1CET94cx9FmUQEkAzz4OadVdmrht
+         /5QscdfYh1sAKLvu6dkrheNjvEoR4Mdvvl3diWkBzFiGJNP9BCqxLhr4zTkKEaaVMxi5
+         qUA6kNkUTJzI9KEPxIujLpbBVVOhJKSQSAf+FeTM6jY84RGcXl9jGks4AfD2ojo1GxQQ
+         uEwHm9wuAxdOf70IRL+AXs8sujZOQd+kSEI1eU2QAsFia5W6QaIddZOITngYX9DSKM5R
+         mNvBJUTqyzODtQONxErP8O8dRkCcVm25oDOfEuyrse782pSy0gFJjFFgzHOgMIi8mZem
+         jSGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QqqubA90NyDjnD5SH+OxnZbso0TzlLiuZ5gzRUm0zsY=;
+        b=snqjE+pgbH+a6/A7jPlUdXy2whhW302EjrjCMPv8wi67+5UYB1mcpxLsEMa2AwWdgE
+         Z3ogb3mnS6cm39pBmugB8Yyu3qPz760xuqoEdTA1d8tmPLlwAVAV87k5lE6QwmJQRd9e
+         bUxQIDg/Aaoiuj5RrObJi3RhJzwmp+x9jUs2l/R/QX5GALJ5ha3cBth6BWrqbsnY+SlQ
+         9oM5wRkqwL45XieMtADalKIGCusgMlLWbdZl9/yyhUjSbsPmZba8gE28h7YJsD1zRePl
+         9PJZy42UDve6Tl95p/M8loj5o0/C+9jo+P8wdQPCB7Hs234mYNhFWxcaapjdhHr5aCdM
+         iBSQ==
+X-Gm-Message-State: AOAM532bS9JGxvfssjcio/Twt5CRLZKuxDtn69ZFpXhjuvaRA8Ki9on5
+        /J2Dw0UU4S5F0wRU7qA4z43bOMQibjftG4sZpvQ=
+X-Google-Smtp-Source: ABdhPJwwVKQFQuxzNO/2Mi/lJ3RUII3vPq9FIwhq+sZ6y3vyBbFPDKm/uCaEGwo9LU3j1fjBVCpYTO563lD14rGXSok=
+X-Received: by 2002:a25:5f0f:: with SMTP id t15mr779915ybb.26.1606264348932;
+ Tue, 24 Nov 2020 16:32:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1605896059.git.gustavoars@kernel.org> <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <202011201129.B13FDB3C@keescook> <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <202011220816.8B6591A@keescook> <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
+ <CANiq72nZrHWTA4_Msg6MP9snTyenC6-eGfD27CyfNSu7QoVZbw@mail.gmail.com>
+ <1c7d7fde126bc0acf825766de64bf2f9b888f216.camel@HansenPartnership.com>
+ <CANiq72m22Jb5_+62NnwX8xds2iUdWDMAqD8PZw9cuxdHd95W0A@mail.gmail.com>
+ <fc45750b6d0277c401015b7aa11e16cd15f32ab2.camel@HansenPartnership.com>
+ <CANiq72k5tpDoDPmJ0ZWc1DGqm+81Gi-uEENAtvEs9v3SZcx6_Q@mail.gmail.com> <4993259d01a0064f8bb22770503490f9252f3659.camel@HansenPartnership.com>
+In-Reply-To: <4993259d01a0064f8bb22770503490f9252f3659.camel@HansenPartnership.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Wed, 25 Nov 2020 01:32:17 +0100
+Message-ID: <CANiq72kqO=bYMJnFS2uYRpgWATJ=uXxZuNUsTXT+3aLtrpnzvQ@mail.gmail.com>
+Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
+To:     James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        alsa-devel@alsa-project.org, amd-gfx@lists.freedesktop.org,
+        bridge@lists.linux-foundation.org, ceph-devel@vger.kernel.org,
+        cluster-devel@redhat.com, coreteam@netfilter.org,
+        devel@driverdev.osuosl.org, dm-devel@redhat.com,
+        drbd-dev@lists.linbit.com, dri-devel@lists.freedesktop.org,
+        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+        intel-gfx@lists.freedesktop.org, intel-wired-lan@lists.osuosl.org,
+        keyrings@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
+        linux-acpi@vger.kernel.org, linux-afs@lists.infradead.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-arm-msm@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net,
+        linux-block@vger.kernel.org, linux-can@vger.kernel.org,
+        linux-cifs@vger.kernel.org,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-decnet-user@lists.sourceforge.net,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-fbdev@vger.kernel.org, linux-geode@lists.infradead.org,
+        linux-gpio@vger.kernel.org, linux-hams@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-i3c@lists.infradead.org,
+        linux-ide@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-input <linux-input@vger.kernel.org>,
+        linux-integrity@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-mmc@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
+        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org, nouveau@lists.freedesktop.org,
+        op-tee@lists.trustedfirmware.org, oss-drivers@netronome.com,
+        patches@opensource.cirrus.com, rds-devel@oss.oracle.com,
+        reiserfs-devel@vger.kernel.org, samba-technical@lists.samba.org,
+        selinux@vger.kernel.org, target-devel@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net,
+        usb-storage@lists.one-eyed-alien.net,
+        virtualization@lists.linux-foundation.org,
+        wcn36xx@lists.infradead.org,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        xen-devel@lists.xenproject.org, linux-hardening@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On Mon, Nov 23, 2020 at 9:38 PM James Bottomley
+<James.Bottomley@hansenpartnership.com> wrote:
+>
+> So you think a one line patch should take one minute to produce ... I
+> really don't think that's grounded in reality.
 
-Currently it's impossible to delete files that use an unsupported
-encryption policy, as the kernel will just return an error when
-performing any operation on the top-level encrypted directory, even just
-a path lookup into the directory or opening the directory for readdir.
+No, I have not said that. Please don't put words in my mouth (again).
 
-More specifically, this occurs in any of the following cases:
+I have said *authoring* lines of *this* kind takes a minute per line.
+Specifically: lines fixing the fallthrough warning mechanically and
+repeatedly where the compiler tells you to, and doing so full-time for
+a month.
 
-- The encryption context has an unrecognized version number.  Current
-  kernels know about v1 and v2, but there could be more versions in the
-  future.
+For instance, take the following one from Gustavo. Are you really
+saying it takes 12 minutes (your number) to write that `break;`?
 
-- The encryption context has unrecognized encryption modes
-  (FSCRYPT_MODE_*) or flags (FSCRYPT_POLICY_FLAG_*), an unrecognized
-  combination of modes, or reserved bits set.
+diff --git a/drivers/gpu/drm/via/via_irq.c b/drivers/gpu/drm/via/via_irq.c
+index 24cc445169e2..a3e0fb5b8671 100644
+--- a/drivers/gpu/drm/via/via_irq.c
++++ b/drivers/gpu/drm/via/via_irq.c
+@@ -364,6 +364,7 @@ int via_wait_irq(struct drm_device *dev, void
+*data, struct drm_file *file_priv)
+                irqwait->request.sequence +=
+                        atomic_read(&cur_irq->irq_received);
+                irqwait->request.type &= ~_DRM_VBLANK_RELATIVE;
++               break;
+        case VIA_IRQ_ABSOLUTE:
+                break;
+        default:
 
-- The encryption key has been added and the encryption modes are
-  recognized but aren't available in the crypto API -- for example, a
-  directory is encrypted with FSCRYPT_MODE_ADIANTUM but the kernel
-  doesn't have CONFIG_CRYPTO_ADIANTUM enabled.
+>  I suppose a one line
+> patch only takes a minute to merge with b4 if no-one reviews or tests
+> it, but that's not really desirable.
 
-It's desirable to return errors for most operations on files that use an
-unsupported encryption policy, but the current behavior is too strict.
-We need to allow enough to delete files, so that people can't be stuck
-with undeletable files when downgrading kernel versions.  That includes
-allowing directories to be listed and allowing dentries to be looked up.
+I have not said that either. I said reviewing and merging those are
+noise compared to any complex patch. Testing should be done by the
+author comparing codegen.
 
-Fix this by modifying the key setup logic to treat an unsupported
-encryption policy in the same way as "key unavailable" in the cases that
-are required for a recursive delete to work: preparing for a readdir or
-a dentry lookup, revalidating a dentry, or checking whether an inode has
-the same encryption policy as its parent directory.
+> Part of what I'm trying to measure is the "and useful" bit because
+> that's not a given.
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/crypto/fname.c           |  8 ++++++--
- fs/crypto/fscrypt_private.h |  4 ++--
- fs/crypto/hooks.c           |  4 ++--
- fs/crypto/keysetup.c        | 19 +++++++++++++++++--
- fs/crypto/policy.c          | 22 ++++++++++++++--------
- include/linux/fscrypt.h     |  9 ++++++---
- 6 files changed, 47 insertions(+), 19 deletions(-)
+It is useful since it makes intent clear. It also catches actual bugs,
+which is even more valuable.
 
-diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
-index 1fbe6c24d705..988dadf7a94d 100644
---- a/fs/crypto/fname.c
-+++ b/fs/crypto/fname.c
-@@ -404,7 +404,7 @@ int fscrypt_setup_filename(struct inode *dir, const struct qstr *iname,
- 		fname->disk_name.len = iname->len;
- 		return 0;
- 	}
--	ret = fscrypt_get_encryption_info(dir);
-+	ret = fscrypt_get_encryption_info(dir, lookup);
- 	if (ret)
- 		return ret;
- 
-@@ -560,7 +560,11 @@ int fscrypt_d_revalidate(struct dentry *dentry, unsigned int flags)
- 		return -ECHILD;
- 
- 	dir = dget_parent(dentry);
--	err = fscrypt_get_encryption_info(d_inode(dir));
-+	/*
-+	 * Pass allow_unsupported=true, so that files with an unsupported
-+	 * encryption policy can be deleted.
-+	 */
-+	err = fscrypt_get_encryption_info(d_inode(dir), true);
- 	valid = !fscrypt_has_encryption_key(d_inode(dir));
- 	dput(dir);
- 
-diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-index c1c302656c34..f0bed6b06fa6 100644
---- a/fs/crypto/fscrypt_private.h
-+++ b/fs/crypto/fscrypt_private.h
-@@ -571,7 +571,7 @@ int fscrypt_derive_dirhash_key(struct fscrypt_info *ci,
- void fscrypt_hash_inode_number(struct fscrypt_info *ci,
- 			       const struct fscrypt_master_key *mk);
- 
--int fscrypt_get_encryption_info(struct inode *inode);
-+int fscrypt_get_encryption_info(struct inode *inode, bool allow_unsupported);
- 
- /**
-  * fscrypt_require_key() - require an inode's encryption key
-@@ -589,7 +589,7 @@ int fscrypt_get_encryption_info(struct inode *inode);
- static inline int fscrypt_require_key(struct inode *inode)
- {
- 	if (IS_ENCRYPTED(inode)) {
--		int err = fscrypt_get_encryption_info(inode);
-+		int err = fscrypt_get_encryption_info(inode, false);
- 
- 		if (err)
- 			return err;
-diff --git a/fs/crypto/hooks.c b/fs/crypto/hooks.c
-index 1c16dba222d9..79570e0e8e61 100644
---- a/fs/crypto/hooks.c
-+++ b/fs/crypto/hooks.c
-@@ -116,7 +116,7 @@ EXPORT_SYMBOL_GPL(__fscrypt_prepare_lookup);
- 
- int __fscrypt_prepare_readdir(struct inode *dir)
- {
--	return fscrypt_get_encryption_info(dir);
-+	return fscrypt_get_encryption_info(dir, true);
- }
- EXPORT_SYMBOL_GPL(__fscrypt_prepare_readdir);
- 
-@@ -332,7 +332,7 @@ const char *fscrypt_get_symlink(struct inode *inode, const void *caddr,
- 	 * Try to set up the symlink's encryption key, but we can continue
- 	 * regardless of whether the key is available or not.
- 	 */
--	err = fscrypt_get_encryption_info(inode);
-+	err = fscrypt_get_encryption_info(inode, false);
- 	if (err)
- 		return ERR_PTR(err);
- 	has_key = fscrypt_has_encryption_key(inode);
-diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index 6339b3069a40..261293fb7097 100644
---- a/fs/crypto/keysetup.c
-+++ b/fs/crypto/keysetup.c
-@@ -546,6 +546,11 @@ fscrypt_setup_encryption_info(struct inode *inode,
- /**
-  * fscrypt_get_encryption_info() - set up an inode's encryption key
-  * @inode: the inode to set up the key for.  Must be encrypted.
-+ * @allow_unsupported: if %true, treat an unsupported encryption policy (or
-+ *		       unrecognized encryption context) the same way as the key
-+ *		       being unavailable, instead of returning an error.  Use
-+ *		       %false unless the operation being performed is needed in
-+ *		       order for files (or directories) to be deleted.
-  *
-  * Set up ->i_crypt_info, if it hasn't already been done.
-  *
-@@ -556,7 +561,7 @@ fscrypt_setup_encryption_info(struct inode *inode,
-  *	   encryption key is unavailable.  (Use fscrypt_has_encryption_key() to
-  *	   distinguish these cases.)  Also can return another -errno code.
-  */
--int fscrypt_get_encryption_info(struct inode *inode)
-+int fscrypt_get_encryption_info(struct inode *inode, bool allow_unsupported)
- {
- 	int res;
- 	union fscrypt_context ctx;
-@@ -567,24 +572,34 @@ int fscrypt_get_encryption_info(struct inode *inode)
- 
- 	res = inode->i_sb->s_cop->get_context(inode, &ctx, sizeof(ctx));
- 	if (res < 0) {
-+		if (res == -ERANGE && allow_unsupported)
-+			return 0;
- 		fscrypt_warn(inode, "Error %d getting encryption context", res);
- 		return res;
- 	}
- 
- 	res = fscrypt_policy_from_context(&policy, &ctx, res);
- 	if (res) {
-+		if (allow_unsupported)
-+			return 0;
- 		fscrypt_warn(inode,
- 			     "Unrecognized or corrupt encryption context");
- 		return res;
- 	}
- 
--	if (!fscrypt_supported_policy(&policy, inode))
-+	if (!fscrypt_supported_policy(&policy, inode)) {
-+		if (allow_unsupported)
-+			return 0;
- 		return -EINVAL;
-+	}
- 
- 	res = fscrypt_setup_encryption_info(inode, &policy,
- 					    fscrypt_context_nonce(&ctx),
- 					    IS_CASEFOLDED(inode) &&
- 					    S_ISDIR(inode->i_mode));
-+
-+	if (res == -ENOPKG && allow_unsupported) /* Algorithm unavailable? */
-+		res = 0;
- 	if (res == -ENOKEY)
- 		res = 0;
- 	return res;
-diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
-index faa0f21daa68..a51cef6bd27f 100644
---- a/fs/crypto/policy.c
-+++ b/fs/crypto/policy.c
-@@ -590,7 +590,7 @@ EXPORT_SYMBOL_GPL(fscrypt_ioctl_get_nonce);
- int fscrypt_has_permitted_context(struct inode *parent, struct inode *child)
- {
- 	union fscrypt_policy parent_policy, child_policy;
--	int err;
-+	int err, err1, err2;
- 
- 	/* No restrictions on file types which are never encrypted */
- 	if (!S_ISREG(child->i_mode) && !S_ISDIR(child->i_mode) &&
-@@ -620,19 +620,25 @@ int fscrypt_has_permitted_context(struct inode *parent, struct inode *child)
- 	 * In any case, if an unexpected error occurs, fall back to "forbidden".
- 	 */
- 
--	err = fscrypt_get_encryption_info(parent);
-+	err = fscrypt_get_encryption_info(parent, true);
- 	if (err)
- 		return 0;
--	err = fscrypt_get_encryption_info(child);
-+	err = fscrypt_get_encryption_info(child, true);
- 	if (err)
- 		return 0;
- 
--	err = fscrypt_get_policy(parent, &parent_policy);
--	if (err)
--		return 0;
-+	err1 = fscrypt_get_policy(parent, &parent_policy);
-+	err2 = fscrypt_get_policy(child, &child_policy);
- 
--	err = fscrypt_get_policy(child, &child_policy);
--	if (err)
-+	/*
-+	 * Allow the case where the parent and child both have an unrecognized
-+	 * encryption policy, so that files with an unrecognized encryption
-+	 * policy can be deleted.
-+	 */
-+	if (err1 == -EINVAL && err2 == -EINVAL)
-+		return 1;
-+
-+	if (err1 || err2)
- 		return 0;
- 
- 	return fscrypt_policies_equal(&parent_policy, &child_policy);
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index 4b163f5e58e9..d23156d1ac94 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -753,8 +753,9 @@ static inline int fscrypt_prepare_rename(struct inode *old_dir,
-  *
-  * Prepare for ->lookup() in a directory which may be encrypted by determining
-  * the name that will actually be used to search the directory on-disk.  If the
-- * directory's encryption key is available, then the lookup is assumed to be by
-- * plaintext name; otherwise, it is assumed to be by no-key name.
-+ * directory's encryption policy is supported by this kernel and its encryption
-+ * key is available, then the lookup is assumed to be by plaintext name;
-+ * otherwise, it is assumed to be by no-key name.
-  *
-  * This also installs a custom ->d_revalidate() method which will invalidate the
-  * dentry if it was created without the key and the key is later added.
-@@ -786,7 +787,9 @@ static inline int fscrypt_prepare_lookup(struct inode *dir,
-  * form rather than in no-key form.
-  *
-  * Return: 0 on success; -errno on error.  Note that the encryption key being
-- *	   unavailable is not considered an error.
-+ *	   unavailable is not considered an error.  It is also not an error if
-+ *	   the encryption policy is unsupported by this kernel; that is treated
-+ *	   like the key being unavailable, so that files can still be deleted.
-  */
- static inline int fscrypt_prepare_readdir(struct inode *dir)
- {
--- 
-2.29.2
+> Well, you know, subsystems are very different in terms of the amount of
+> patches a maintainer has to process per release cycle of the kernel.
+> If a maintainer is close to capacity, additional patches, however
+> trivial, become a problem.  If a maintainer has spare cycles, trivial
+> patches may look easy.
 
+First of all, voluntary maintainers choose their own workload.
+Furthermore, we already measure capacity in the `MAINTAINERS` file:
+maintainers can state they can only handle a few patches. Finally, if
+someone does not have time for a trivial patch, they are very unlikely
+to have any time to review big ones.
+
+> You seem to be saying that because you find it easy to merge trivial
+> patches, everyone should.
+
+Again, I have not said anything of the sort.
+
+Cheers,
+Miguel
