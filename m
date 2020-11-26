@@ -2,161 +2,213 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03EC82C4F2B
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Nov 2020 08:14:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFC7A2C579A
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Nov 2020 15:54:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388324AbgKZHMa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 26 Nov 2020 02:12:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54624 "EHLO
+        id S2391268AbgKZOxn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 26 Nov 2020 09:53:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388278AbgKZHMa (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 26 Nov 2020 02:12:30 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA2F0C0613D4
-        for <linux-ext4@vger.kernel.org>; Wed, 25 Nov 2020 23:12:29 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id 62so925918pgg.12
-        for <linux-ext4@vger.kernel.org>; Wed, 25 Nov 2020 23:12:29 -0800 (PST)
+        with ESMTP id S2391237AbgKZOxk (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 26 Nov 2020 09:53:40 -0500
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2597BC0617A7;
+        Thu, 26 Nov 2020 06:53:40 -0800 (PST)
+Received: by mail-yb1-xb42.google.com with SMTP id 2so1842167ybc.12;
+        Thu, 26 Nov 2020 06:53:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:mime-version:subject:message-id:date:cc:to;
-        bh=KLAUlAgivmC6G1ULXN0tUHyasPVivqaVUD9plYEEGJA=;
-        b=0cm7kC4vJO0YyH7Tm7uzlNrmtxLFV6/4Czpt8Fyq80HuCfMJb7EbtlldyZSlL5JMEc
-         n5po5LPqSsjB5bfyYqGWpC1VXIJ3ow2Y3Bsnf0cQ1pGwdBRqaydzH3GbAYB09XV/TF2g
-         xyrJmheTxkoFg/pyoiGKmjuSvD9ucuZEO0ll7f6LGTsT5mH1zlFHSXo+7RXZcur5vhee
-         IwgIV6nZIBr1Kopgm0lYY1MG2dDI4C0Zibp0cs9bxqsXu4Z+j76JiZaQQyjQ6gGvepSP
-         eUdxIEXYby/0wy+OPPQWQ6JHIzIZoOAgQvpGF6PYNBGdH9z/8azaVXchzNdsNZJmfD8/
-         VGIw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=DTotsfb8u+PB0eT0g4gTrA/vgT4HfiDZTYQ/geteWC4=;
+        b=QWuS1TBfImi/m9J+5lB37414TjwoB+kfRyX/7ohuLNDuEazbBA4fEE506RPmuhzrQT
+         KCYao+uRLv4Su9SW/eKLjGfymcNDAcVP9irkT5MfO/ys+N1YXqwwODp/at6Hjf5mbn7y
+         sEjBq+fitA5RwLT9szzutyPemHxF/3vzz+qMkDnIA1HF+rIjtAU7PcoRO+GQ0ANzP2/3
+         4RgPAdoGGim7svP8Zrp9IWC0s7kVtrSQn/PXobh5aGfJoVk3uyVZYliED/q0Nk6tCoA8
+         W9fyUHPup50QVVdVd9NqYx0m2pkDUcyuxLwwV68mOS3NFLJOgvtFKpngAgg7rBEfKLyO
+         Kn5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:mime-version:subject:message-id:date:cc:to;
-        bh=KLAUlAgivmC6G1ULXN0tUHyasPVivqaVUD9plYEEGJA=;
-        b=fgvCEq5gT+rnKaxXI+iaZgZjhd9jL5tNErjb6DThqf8QF7+/bffIDWk031tZzgiwGD
-         Pkqr0FhXHvc0PElIvffAw5GC76F2Xq4NWXPM3S4/XWc078ISA/SzchPctLgNHIh6JWYA
-         Q5/MAP9X/GeOBW9iHJcURJZ3ooMgxLeDZvTVSOEB16Mht7dZY+kc0u2Ie+ribaKRWzjr
-         cM1vVPO/4lAl+jiiTzorRf9v+enqToXPVfgdZk8BxVASCqWxQmXtEOU+4ta2NIcJv8l8
-         z3UQKJ5LzK/Ke0sI3/RAGfDKriQD7MTlYCydLUtrV+sZTGmb6fSqxrm6ow306VuhX0Gd
-         u5WQ==
-X-Gm-Message-State: AOAM531cmtnqNiW4C+x8UoYJdIGVZk8kIlN9u8SA4iRA249Ha5sNZl9X
-        YEh+yEoz8Uc1ZINCKvG2KjJ27A==
-X-Google-Smtp-Source: ABdhPJzFqThqyGJEY9MPOFuq1BNsBSrtfdW2W5JvjwZprT2j7jVPKsrQF+7B7frm3ea432fpe9G0HQ==
-X-Received: by 2002:a17:90a:578f:: with SMTP id g15mr1350163pji.3.1606374749264;
-        Wed, 25 Nov 2020 23:12:29 -0800 (PST)
-Received: from [192.168.10.160] (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id b80sm3767904pfb.40.2020.11.25.23.12.27
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 25 Nov 2020 23:12:28 -0800 (PST)
-From:   Andreas Dilger <adilger@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_09D24D27-AFDD-4A32-9FC0-2980A2FDE36E";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: backup/restore of fscrypt files
-Message-Id: <D1AD7D55-94D6-4C19-96B4-BAD0FD33CF49@dilger.ca>
-Date:   Thu, 26 Nov 2020 00:12:26 -0700
-Cc:     linux-fscrypt@vger.kernel.org,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=DTotsfb8u+PB0eT0g4gTrA/vgT4HfiDZTYQ/geteWC4=;
+        b=mBK0BS6TVWjBRFU3odjyPBI0qUdtX5J2whJBBOZokPbmjZIFVhPQnqE5GmfY4vHvbV
+         HT2pTD/gdZPIyz+Ka8PZGwpqbqdnkJfeOU9ZWd1J0G+AjKdTWQiUQCXttTdwVpWBkqMv
+         ZINBj1InBzUZ/P06rN6Bt3BjJ6CSLqJSeAuQxg9CxkWZIOoaLDaG++1QWREVsBaSYvRt
+         rJ6vRbz1dUvdEIH2YPGs/ain50d2odcAPpiaD9QrMy94hESh3GeN4484YDZQR0EzvWHR
+         D1wuVku4ZKmbiM7N92dZI/sc7+qWB6e5/CKVhuCqFPMTebfStQrhTXq966yIKfcdlSzb
+         lORw==
+X-Gm-Message-State: AOAM530vshkiTFDvlahcV12UmE3qEmIlTM0l8dSkFhzBb5xKoNJCfxZ0
+        N+i4NOp+YhaNoPiX0GTlQqWA0Bm14r406uJVaEc=
+X-Google-Smtp-Source: ABdhPJxnOXTYq+iR4KCiqWmvI5brXjGTtWFP5n3J8AJAa70YoLiXvitjZtrbfPlByRts+Q0mJZBucXgMnTrbOCoAA44=
+X-Received: by 2002:a25:aac5:: with SMTP id t63mr5128050ybi.22.1606402419264;
+ Thu, 26 Nov 2020 06:53:39 -0800 (PST)
+MIME-Version: 1.0
+References: <cover.1605896059.git.gustavoars@kernel.org> <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <202011201129.B13FDB3C@keescook> <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <202011220816.8B6591A@keescook> <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
+ <CANiq72nZrHWTA4_Msg6MP9snTyenC6-eGfD27CyfNSu7QoVZbw@mail.gmail.com>
+ <1c7d7fde126bc0acf825766de64bf2f9b888f216.camel@HansenPartnership.com>
+ <CANiq72m22Jb5_+62NnwX8xds2iUdWDMAqD8PZw9cuxdHd95W0A@mail.gmail.com>
+ <fc45750b6d0277c401015b7aa11e16cd15f32ab2.camel@HansenPartnership.com>
+ <CANiq72k5tpDoDPmJ0ZWc1DGqm+81Gi-uEENAtvEs9v3SZcx6_Q@mail.gmail.com>
+ <4993259d01a0064f8bb22770503490f9252f3659.camel@HansenPartnership.com>
+ <CANiq72kqO=bYMJnFS2uYRpgWATJ=uXxZuNUsTXT+3aLtrpnzvQ@mail.gmail.com> <44005bde-f6d4-5eaa-39b8-1a5efeedb2d3@gmail.com>
+In-Reply-To: <44005bde-f6d4-5eaa-39b8-1a5efeedb2d3@gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Thu, 26 Nov 2020 15:53:27 +0100
+Message-ID: <CANiq72nobq=ptWK-qWxU91JHqkKhMcRtJNnw2XJd5-vSJWZd8Q@mail.gmail.com>
+Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
+To:     Edward Cree <ecree.xilinx@gmail.com>
+Cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Kees Cook <keescook@chromium.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        alsa-devel@alsa-project.org,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        bridge@lists.linux-foundation.org, ceph-devel@vger.kernel.org,
+        cluster-devel@redhat.com, coreteam@netfilter.org,
+        devel@driverdev.osuosl.org, dm-devel@redhat.com,
+        drbd-dev@lists.linbit.com,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+        intel-gfx@lists.freedesktop.org, intel-wired-lan@lists.osuosl.org,
+        keyrings@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
+        linux-acpi@vger.kernel.org, linux-afs@lists.infradead.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-atm-general@lists.sourceforge.net,
+        linux-block@vger.kernel.org, linux-can@vger.kernel.org,
+        linux-cifs@vger.kernel.org,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-decnet-user@lists.sourceforge.net,
         Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Sebastien Buisson <sbuisson@ddn.com>
-To:     Eric Biggers <ebiggers@kernel.org>, Theodore Ts'o <tytso@mit.edu>
-X-Mailer: Apple Mail (2.3273)
+        linux-fbdev@vger.kernel.org, linux-geode@lists.infradead.org,
+        linux-gpio@vger.kernel.org, linux-hams@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-i3c@lists.infradead.org,
+        linux-ide@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-input <linux-input@vger.kernel.org>,
+        linux-integrity@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-mmc@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
+        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-scsi@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org, nouveau@lists.freedesktop.org,
+        op-tee@lists.trustedfirmware.org, oss-drivers@netronome.com,
+        patches@opensource.cirrus.com, rds-devel@oss.oracle.com,
+        reiserfs-devel@vger.kernel.org, samba-technical@lists.samba.org,
+        selinux@vger.kernel.org, target-devel@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net,
+        usb-storage@lists.one-eyed-alien.net,
+        virtualization@lists.linux-foundation.org,
+        wcn36xx@lists.infradead.org,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        xen-devel@lists.xenproject.org, linux-hardening@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Wed, Nov 25, 2020 at 11:44 PM Edward Cree <ecree.xilinx@gmail.com> wrote=
+:
+>
+> To make the intent clear, you have to first be certain that you
+>  understand the intent; otherwise by adding either a break or a
+>  fallthrough to suppress the warning you are just destroying the
+>  information that "the intent of this code is unknown".
 
---Apple-Mail=_09D24D27-AFDD-4A32-9FC0-2980A2FDE36E
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+If you don't know what the intent of your own code is, then you
+*already* have a problem in your hands.
 
-Currently it is not possible to do backup/restore of fscrypted files =
-without the
-encryption key for a number of reasons.  However, it is desirable to be =
-able to
-backup/restore filesystems with encrypted files for numerous reasons.
+> Figuring out the intent of a piece of unfamiliar code takes more
+>  than 1 minute; just because
+>     case foo:
+>         thing;
+>     case bar:
+>         break;
+>  produces identical code to
+>     case foo:
+>         thing;
+>         break;
+>     case bar:
+>         break;
+>  doesn't mean that *either* is correct =E2=80=94 maybe the author meant
 
-My understanding is that there are two significant obstacles for this to =
-work:
-- the file size reported to userspace for an encrypted file is the =
-"real" file size,
-  but there is data stored beyond "i_size" that is required for =
-decrypting the file
-- the per-inode 16-byte nonce that would need to be backed up and =
-restored for
-  later decryption to be possible
+What takes 1 minute is adding it *mechanically* by the author, i.e. so
+that you later compare whether codegen is the same.
 
-I'm wondering if it makes sense for stat() to report the size rounded up =
-to the end
-of the encryption block for encrypted files, and then report the "real" =
-size and
-nonce in virtual xattrs (e.g. "trusted.fscrypt_size" and =
-"trusted.fscrypt_nonce")
-so that encrypted files can be backed up and restored using normal =
-utilities like
-tar and rsync if the xattrs are also copied.
+>  to write
+>     case foo:
+>         return thing;
+>     case bar:
+>         break;
+>  and by inserting that break you've destroyed the marker that
+>  would direct someone who knew what the code was about to look
+>  at that point in the code and spot the problem.
 
-A (small) added benefit of rounding the size of encrypted files up to =
-the end of the
-encryption block is that it makes fingerprinting of files by their size =
-a bit harder.
-Changing the size returned by stat() is not (IMHO) problematic, since it =
-is not
-currently possible to directly read encrypted files without the key =
-anyway.
+Then it means you already have a bug. This patchset gives the
+maintainer a chance to notice it, which is a good thing. The "you've
+destroyed the market" claim is bogus, because:
+  1. you were not looking into it
+  2. you didn't notice the bug so far
+  3. is implicit -- harder to spot
+  4. is only useful if you explicitly take a look at this kind of bug.
+So why don't you do it now?
 
+> Thus, you *always* have to look at more than just the immediate
+>  mechanical context of the code, to make a proper judgement that
+>  yes, this was the intent.
 
-The use of "trusted" xattrs would limit the backup/restore of encrypted =
-files to
-privileged users.  We could use "user" xattrs to allow backup by =
-non-root users, but
-that would re-expose the real file size to userspace (not worse than =
-today), and
-would corrupt the file if the size or nonce xattrs were modified by the =
-user.
+I find that is the responsibility of the maintainers and reviewers for
+tree-wide patches like this, assuming they want. They can also keep
+the behavior (and the bugs) without spending time. Their choice.
 
-It isn't clear whether there is a huge benefit of users to be able to =
-backup/restore
-their own files while encrypted.  For single-user systems, the user will =
-have root
-access anyway, while administrators of multi-user systems need =
-privileged access for
-shared filesystems backup/restore anyway.
+> If you think that that sort of thing
+>  can be done in an *average* time of one minute, then I hope you
+>  stay away from code I'm responsible for!
 
-I'm probably missing some issues here, but hopefully this isn't an =
-intractable problem.
+Please don't accuse others of recklessness or incompetence, especially
+if you didn't understand what they said.
 
-Cheers, Andreas
+> A warning is only useful because it makes you *think* about the
+>  code.  If you suppress the warning without doing that thinking,
+>  then you made the warning useless; and if the warning made you
+>  think about code that didn't *need* it, then the warning was
+>  useless from the start.
 
+We are not suppressing the warning. Quite the opposite, in fact.
 
+> So make your mind up: does Clang's stricter -Wimplicit-fallthrough
+>  flag up code that needs thought (in which case the fixes take
+>  effort both to author and to review)
 
+As I said several times already, it does take time to review if the
+maintainer wants to take the chance to see if they had a bug to begin
+with, but it does not require thought for the author if they just go
+for equivalent codegen.
 
+> or does it flag up code
+>  that can be mindlessly "fixed" (in which case the warning is
+>  worthless)?  Proponents in this thread seem to be trying to
+>  have it both ways.
 
+A warning is not worthless just because you can mindlessly fix it.
+There are many counterexamples, e.g. many
+checkpatch/lint/lang-format/indentation warnings, functional ones like
+the `if (a =3D b)` warning...
 
---Apple-Mail=_09D24D27-AFDD-4A32-9FC0-2980A2FDE36E
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl+/VVoACgkQcqXauRfM
-H+D+0xAAgZACUffyWgI92gwzdcYsOgbfZZt5RzrCimEFRGoEVTc67Do8LlkC3RIG
-P3kR/93yCGw+elltSznDndSCCSFqqXcATLC81MuILVdnyrGKio7WA4nALStg0gC5
-w3Guxb5LTRDhLFqDMRpfnQiOrkmekvdRLW1DZWDn71pbiXwGyMW3kuySl6R29YXA
-HMRomIdq9Q7bdYUmL0xg7HrCFb4QN701AriXHZ5yv+RXWLZ0WNxVAS7z74MtBzGf
-EKT4PBGjT8w1DXvfeJD7pkcQHDjirrQdHsSHWV9gYFbV+RznmD+Do/5D1ljnptYH
-QYlcjqx5dKSI0WBwrPDnmLXSe3xH5FxpheKFFMZvL2VpT3h1PPrEQbL3EoCuwADd
-Xd7BOhHbDNPwX5I+VM0L9cC7vUrIPJzdu9rtnAi0IpyfCv04TFJWqoZuRXvxmuAM
-IQCC8M0o/acHMoh3hqMcWF0/iot7/oMoAvYu6eG9iKCO9nmLit6U3eVo8HGMacdd
-X3xGNH4LiH7Fjydp2VUHFmG9vnpHpoK4shvFC0TkLfHXfT4hqfI5N19alzEV5Wm7
-WSwlzewROM7Hdf5NYH9JL64yDuw6ecz+qisuZTX9gToQYvxIjb4MsKm7wH8DCtrh
-lcOnRc3fo0qv4OPbZQpzIY638fKWDHG/r4hRN1beAjz48u3i87g=
-=BaeX
------END PGP SIGNATURE-----
-
---Apple-Mail=_09D24D27-AFDD-4A32-9FC0-2980A2FDE36E--
+Cheers,
+Miguel
