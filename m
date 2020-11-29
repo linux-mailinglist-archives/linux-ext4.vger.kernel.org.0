@@ -2,527 +2,214 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87FD02C78E7
-	for <lists+linux-ext4@lfdr.de>; Sun, 29 Nov 2020 12:45:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBF0A2C7B66
+	for <lists+linux-ext4@lfdr.de>; Sun, 29 Nov 2020 22:33:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727676AbgK2Lob (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 29 Nov 2020 06:44:31 -0500
-Received: from out20-38.mail.aliyun.com ([115.124.20.38]:46097 "EHLO
-        out20-38.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725882AbgK2Loa (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 29 Nov 2020 06:44:30 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436282|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.111087-0.00052837-0.888385;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047208;MF=guan@eryu.me;NM=1;PH=DS;RN=6;RT=6;SR=0;TI=SMTPD_---.J0cNNlx_1606650216;
-Received: from localhost(mailfrom:guan@eryu.me fp:SMTPD_---.J0cNNlx_1606650216)
-          by smtp.aliyun-inc.com(10.147.44.118);
-          Sun, 29 Nov 2020 19:43:37 +0800
-Date:   Sun, 29 Nov 2020 19:43:36 +0800
-From:   Eryu Guan <guan@eryu.me>
-To:     Pratik Rajesh Sampat <psampat@linux.ibm.com>
-Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
-        riteshh@linux.ibm.com, sourabhjain@linux.ibm.com,
-        pratik.r.sampat@gmail.com
-Subject: Re: [PATCH] generic: ENOSPC regression test in a multi-threaded
- scenario
-Message-ID: <20201129114336.GS3853@desktop>
-References: <20201127105415.41831-1-psampat@linux.ibm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201127105415.41831-1-psampat@linux.ibm.com>
+        id S1726440AbgK2VdI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 29 Nov 2020 16:33:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726293AbgK2VdH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 29 Nov 2020 16:33:07 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6838AC0613D2
+        for <linux-ext4@vger.kernel.org>; Sun, 29 Nov 2020 13:32:27 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id b23so5328555pls.11
+        for <linux-ext4@vger.kernel.org>; Sun, 29 Nov 2020 13:32:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=PZUV6Pl5obp90HIlVRrYFs5F5irEqrrKQ+rhwdUxs/U=;
+        b=xBjm4c7iPr4vbzlpeOHtIqq8cC1yej31p8l5cgqeEdA0kx7ZuQaJKh3Heo9n9f/Grr
+         efVfK/yCh+1p5aEYflUSK/ee9vUU8XeDI8dCh49Ibs/xVSTjMqHs0JUAm7HMD4RAbbLq
+         7GLZPgUwQq8BIIfrqM9So+TdharW4AF2pxGrP8sgguvVdPSmnYmmoizL95m5WF4Lru76
+         S0z/rrvvhj5YxT30BAkP6BXwfhx1tjxXKLukQyzGSlRDkQfqG6S3DHdnkn+LdG+QoC1Z
+         oMcsZoRNi0oNItE+DzPfU7tvhkGkWEoW3mWRVKyIbBKDLRTDpPm1jWZmTpsMh2qw6oVM
+         gP8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=PZUV6Pl5obp90HIlVRrYFs5F5irEqrrKQ+rhwdUxs/U=;
+        b=nqqvPpKRYGMHV2QX7LDq/sozX1ZUlmUy6UzWzWA5xwlfT+0LoYBT6hs7Izu2vszN2A
+         pGTubUZf6xl5ctyLOQUeauX94UNnskCgvq9DjeBpvQouZQNHCMrNywLJhaxmipLJMNgP
+         PwHDdGcBEwyxQScpEdYnH+QwKu/N7UbeckRCrYR/3S5pnCkdpZppGtSE8ZqV2F8eNPFC
+         Stu1Og+YO9KRiAOnJtCuS3P1QXzxVWIbH5aMDEyKBUiIUWBrZ/COErRNMjMRiVZiZ1Cy
+         6d8S27KnZ18CBlg0QAGDX17R7fQQep3y3thBXOcOXbi28qzy+cUMYZmXlr6oLaRELGEO
+         t4Qw==
+X-Gm-Message-State: AOAM533h51l+nM6vBAwhihHQlct9g7mb4fqa3qlDtvipC/iIMCYgS3DY
+        Laa+C+ExLiQxq/ZGOw3tYqabaw==
+X-Google-Smtp-Source: ABdhPJxzBmW5X59YPxZTilHTFucJFvlhzlTBKIqtJyGc9mvaPzXRFQBorz+AOE4QeqFHTU72bL791g==
+X-Received: by 2002:a17:902:bd05:b029:d6:f041:f5b with SMTP id p5-20020a170902bd05b02900d6f0410f5bmr16040166pls.9.1606685546647;
+        Sun, 29 Nov 2020 13:32:26 -0800 (PST)
+Received: from [192.168.10.160] (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id 21sm14156174pfw.105.2020.11.29.13.32.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 29 Nov 2020 13:32:25 -0800 (PST)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <13C51452-1690-4F47-8B72-873D2511193D@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_4745588D-386F-4484-8893-14E4BF1C3289";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH] ext4: Fix deadlock with fs freezing and EA inodes
+Date:   Sun, 29 Nov 2020 14:32:23 -0700
+In-Reply-To: <20201127110649.24730-1-jack@suse.cz>
+Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        stable@vger.kernel.org, Tahsin Erdogan <tahsin@google.com>
+To:     Jan Kara <jack@suse.cz>
+References: <20201127110649.24730-1-jack@suse.cz>
+X-Mailer: Apple Mail (2.3273)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Nov 27, 2020 at 04:24:15PM +0530, Pratik Rajesh Sampat wrote:
-> Test allocation strategies of the file system and validate space
-> anomalies as reported by the system versus the allocated by the
-> program.
-> 
-> The test is motivated by a bug in ext4 systems where-in ENOSPC is
-> reported by the file system even though enough space for allocations is
-> available[1].
-> [1]: https://patchwork.ozlabs.org/patch/1294003
 
-I see that the referenced patch has been upstreamed, Would you please
-reference the commit with commit id and title as well? So it's easier to
-know which commit fixed the bug.
+--Apple-Mail=_4745588D-386F-4484-8893-14E4BF1C3289
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset=us-ascii
 
+On Nov 27, 2020, at 4:06 AM, Jan Kara <jack@suse.cz> wrote:
 > 
-> Suggested-by: Ritesh Harjani <riteshh@linux.ibm.com>
-> Co-authored-by: Sourabh Jain <sourabhjain@linux.ibm.com>
+> Xattr code using inodes with large xattr data can end up dropping last
+> inode reference (and thus deleting the inode) from places like
+> ext4_xattr_set_entry(). That function is called with transaction started
+> and so ext4_evict_inode() can deadlock against fs freezing like:
 > 
-> Signed-off-by: Sourabh Jain <sourabhjain@linux.ibm.com>
-> Signed-off-by: Pratik Rajesh Sampat <psampat@linux.ibm.com>
+> CPU1					CPU2
+> 
+> removexattr()				freeze_super()
+>  vfs_removexattr()
+>    ext4_xattr_set()
+>      handle = ext4_journal_start()
+>      ...
+>      ext4_xattr_set_entry()
+>        iput(old_ea_inode)
+>          ext4_evict_inode(old_ea_inode)
+> 					  sb->s_writers.frozen = SB_FREEZE_FS;
+> 					  sb_wait_write(sb, SB_FREEZE_FS);
+> 					  ext4_freeze()
+> 					    jbd2_journal_lock_updates()
+> 					      -> blocks waiting for all
+> 					         handles to stop
+>            sb_start_intwrite()
+> 	      -> blocks as sb is already in SB_FREEZE_FS state
+> 
+> Generally it is advisable to delete inodes from a separate transaction
+> as it can consume quite some credits however in this case it would be
+> quite clumsy and furthermore the credits for inode deletion are quite
+> limited and already accounted for. So just tweak ext4_evict_inode() to
+> avoid freeze protection if we have transaction already started and thus
+> it is not really needed anyway.
+> 
+> CC: stable@vger.kernel.org
+> Fixes: dec214d00e0d ("ext4: xattr inode deduplication")
+> CC: Tahsin Erdogan <tahsin@google.com>
+> Signed-off-by: Jan Kara <jack@suse.cz>
+
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+
 > ---
->  src/Makefile          |   2 +-
->  src/t_enospc.c        | 186 ++++++++++++++++++++++++++++++++++++++++++
-
-Need an entry in .gitignore as well.
-
->  tests/generic/618     | 168 ++++++++++++++++++++++++++++++++++++++
->  tests/generic/618.out |   2 +
->  tests/generic/group   |   1 +
->  5 files changed, 358 insertions(+), 1 deletion(-)
->  create mode 100644 src/t_enospc.c
->  create mode 100755 tests/generic/618
->  create mode 100644 tests/generic/618.out
+> fs/ext4/inode.c | 19 ++++++++++++++-----
+> 1 file changed, 14 insertions(+), 5 deletions(-)
 > 
-> diff --git a/src/Makefile b/src/Makefile
-> index 919d77c4..32940142 100644
-> --- a/src/Makefile
-> +++ b/src/Makefile
-> @@ -17,7 +17,7 @@ TARGETS = dirstress fill fill2 getpagesize holes lstat64 \
->  	t_mmap_cow_race t_mmap_fallocate fsync-err t_mmap_write_ro \
->  	t_ext4_dax_journal_corruption t_ext4_dax_inline_corruption \
->  	t_ofd_locks t_mmap_collision mmap-write-concurrent \
-> -	t_get_file_time t_create_short_dirs t_create_long_dirs
-> +	t_get_file_time t_create_short_dirs t_create_long_dirs t_enospc
->  
->  LINUX_TARGETS = xfsctl bstat t_mtab getdevicesize preallo_rw_pattern_reader \
->  	preallo_rw_pattern_writer ftrunc trunc fs_perms testx looptest \
-> diff --git a/src/t_enospc.c b/src/t_enospc.c
-> new file mode 100644
-> index 00000000..a0a8c783
-> --- /dev/null
-> +++ b/src/t_enospc.c
-> @@ -0,0 +1,186 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2020 IBM.
-> + * All Rights Reserved.
-> + *
-> + * simple mmap write multithreaded test
-> + */
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <stdbool.h>
-> +#include <unistd.h>
-> +#include <fcntl.h>
-> +#include <string.h>
-> +#include <assert.h>
-> +#include <sys/mman.h>
-> +#include <pthread.h>
-> +#include <signal.h>
-> +
-> +#define pr_debug(fmt, ...) do { \
-> +    if (verbose) { \
-> +        printf (fmt, ##__VA_ARGS__); \
-> +    } \
-> +} while (0)
-> +
-> +struct thread_s {
-> +	int id;
-> +};
-> +
-> +static float file_ratio[2] = {0.5, 0.5};
-> +static unsigned long fsize = 0;
-> +static char *base_dir = ".";
-> +static char *ratio = "1";
-> +
-> +static bool use_fallocate = false;
-> +static bool verbose = false;
-> +
-> +pthread_barrier_t bar;
-> +
-> +void handle_sigbus(int sig)
-> +{
-> +	pr_debug("Enospc test failed with SIGBUS\n");
-> +	exit(7);
-> +}
-> +
-> +void enospc_test(int id)
-> +{
-> +	int fd;
-> +	char fpath[255] = {0};
-> +	char *addr;
-> +	unsigned long size = 0;
-> +
-> +	if (id % 2 == 0)
-> +		size = fsize * file_ratio[0];
-> +	else
-> +		size = fsize * file_ratio[1];
-
-What's the purpose of this ratio? Some comments would be good.
-
-> +
-> +	pthread_barrier_wait(&bar);
-> +
-> +	sprintf(fpath, "%s/mmap-file-%d", base_dir, id);
-> +	pr_debug("Test write phase starting file %s fsize %lu, id %d\n", fpath, size, id);
-> +
-> +	signal(SIGBUS, handle_sigbus);
-> +
-> +	fd = open(fpath, O_RDWR | O_CREAT, 0644);
-> +	if (fd < 0) {
-> +		pr_debug("Open failed\n");
-> +		exit(1);
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 72534319fae5..777eb08b29cd 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -175,6 +175,7 @@ void ext4_evict_inode(struct inode *inode)
+> 	 */
+> 	int extra_credits = 6;
+> 	struct ext4_xattr_inode_array *ea_inode_array = NULL;
+> +	bool freeze_protected = false;
+> 
+> 	trace_ext4_evict_inode(inode);
+> 
+> @@ -232,9 +233,14 @@ void ext4_evict_inode(struct inode *inode)
+> 
+> 	/*
+> 	 * Protect us against freezing - iput() caller didn't have to have any
+> -	 * protection against it
+> +	 * protection against it. When we are in a running transaction though,
+> +	 * we are already protected against freezing and we cannot grab further
+> +	 * protection due to lock ordering constraints.
+> 	 */
+> -	sb_start_intwrite(inode->i_sb);
+> +	if (!ext4_journal_current_handle()) {
+> +		sb_start_intwrite(inode->i_sb);
+> +		freeze_protected = true;
 > +	}
-> +
-> +	if (use_fallocate)
-> +		assert(fallocate(fd, 0, 0, fsize) == 0);
-                                           ^^^^^^ should be size?
-> +	else
-> +		assert(ftruncate(fd, size) == 0);
-> +
-> +	addr = mmap(NULL, size, PROT_WRITE, MAP_SHARED, fd, 0);
-> +	assert(addr != MAP_FAILED);
-> +
-> +	for (int i = 0; i < size; i++) {
-> +		addr[i] = 0xAB;
-> +	}
-> +
-> +	assert(munmap(addr, size) != -1);
-> +	close(fd);
-> +	pr_debug("Test write phase completed...file %s, fsize %lu, id %d\n", fpath, size, id);
-> +}
-> +
-> +void *spawn_test_thread(void *arg)
-> +{
-> +	struct thread_s *thread_info = (struct thread_s *)arg;
-> +	pthread_t tid;
-> +
-> +	tid = pthread_self();
-> +	pr_debug("Inside thread %lu %d\n", tid, thread_info->id);
-> +	enospc_test(thread_info->id);
-> +	return NULL;
-> +}
-> +
-> +void _run_test(int threads)
-> +{
-> +	pthread_t tid[threads];
-> +
-> +	pthread_barrier_init(&bar, NULL, threads+1);
-> +	for (int i = 0; i < threads; i++) {
-> +		struct thread_s *thread_info = (struct thread_s *) malloc(sizeof(struct thread_s));
-> +		thread_info->id = i;
-> +		assert(pthread_create(&tid[i], NULL, spawn_test_thread, thread_info) == 0);
-> +	}
-> +
-> +	pthread_barrier_wait(&bar);
-> +
-> +	for (int i = 0; i <threads; i++) {
-> +		assert(pthread_join(tid[i], NULL) == 0);
-> +	}
-> +
-> +	pthread_barrier_destroy(&bar);
-> +	return;
-> +}
-> +
-> +static void usage(void)
-> +{
-> +	printf("\nUsage: t_enospc [options]\n\n"
-> +	       " -t                    thread count\n"
-> +	       " -s size               file size\n"
-> +	       " -p path               set base path\n"
-> +	       " -f fallocate          use fallocate instead of ftruncate\n"
-> +	       " -v verbose            print debug information\n"
-> +	       " -r ratio              ratio of file sizes\n");
+> 
+> 	if (!IS_NOQUOTA(inode))
+> 		extra_credits += EXT4_MAXQUOTAS_DEL_BLOCKS(inode->i_sb);
+> @@ -253,7 +259,8 @@ void ext4_evict_inode(struct inode *inode)
+> 		 * cleaned up.
+> 		 */
+> 		ext4_orphan_del(NULL, inode);
+> -		sb_end_intwrite(inode->i_sb);
+> +		if (freeze_protected)
+> +			sb_end_intwrite(inode->i_sb);
+> 		goto no_delete;
+> 	}
+> 
+> @@ -294,7 +301,8 @@ void ext4_evict_inode(struct inode *inode)
+> stop_handle:
+> 		ext4_journal_stop(handle);
+> 		ext4_orphan_del(NULL, inode);
+> -		sb_end_intwrite(inode->i_sb);
+> +		if (freeze_protected)
+> +			sb_end_intwrite(inode->i_sb);
+> 		ext4_xattr_inode_array_free(ea_inode_array);
+> 		goto no_delete;
+> 	}
+> @@ -323,7 +331,8 @@ void ext4_evict_inode(struct inode *inode)
+> 	else
+> 		ext4_free_inode(handle, inode);
+> 	ext4_journal_stop(handle);
+> -	sb_end_intwrite(inode->i_sb);
+> +	if (freeze_protected)
+> +		sb_end_intwrite(inode->i_sb);
+> 	ext4_xattr_inode_array_free(ea_inode_array);
+> 	return;
+> no_delete:
+> --
+> 2.16.4
+> 
 
-It'd good to describe the acceptable ratio format as well.
 
-> +}
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	int opt;
-> +	int threads = 0;
-> +	char *ratio_ptr;
-> +
-> +	while ((opt = getopt(argc, argv, ":r:p:t:s:vf")) != -1) {
-> +		switch(opt) {
-> +		case 't':
-> +			threads = atoi(optarg);
-> +			pr_debug("Testing with (%d) threads\n", threads);
-> +			break;
-> +		case 's':
-> +			fsize = atoi(optarg);
-> +			pr_debug("size: %lu Bytes\n", fsize);
-> +			break;
-> +		case 'p':
-> +			base_dir = optarg;
-> +			break;
-> +		case 'r':
-> +			ratio = optarg;
-> +			ratio_ptr = strtok(ratio, ",");
-> +			if (ratio_ptr[0] == '1') {
-> +				file_ratio[0] = 1;
-> +				file_ratio[1] = 1;
-> +				break;
-> +			}
-> +			if (ratio_ptr != NULL)
-> +				file_ratio[0] = strtod(ratio_ptr, NULL);
-> +			ratio_ptr = strtok(NULL, ",");
-> +			if (ratio_ptr != NULL)
-> +				file_ratio[1] = strtod(ratio_ptr, NULL);
-> +			break;
-> +		case 'f':
-> +			use_fallocate = true;
-> +			break;
-> +		case 'v':
-> +			verbose = true;
-> +			break;
-> +		case '?':
-> +			usage();
-> +			exit(1);
-> +		}
-> +	}
-> +
-> +	/* Sanity test of parameters */
-> +	assert(threads);
-> +	assert(fsize);
-> +	assert(file_ratio[0]);
-> +	assert(file_ratio[1]);
-> +
-> +	pr_debug("Testing with (%d) threads\n", threads);
-> +	pr_debug("size: %lu Bytes\n", fsize);
-> +
-> +	_run_test(threads);
-> +	return 0;
-> +}
-> diff --git a/tests/generic/618 b/tests/generic/618
-> new file mode 100755
-> index 00000000..57216b3d
-> --- /dev/null
-> +++ b/tests/generic/618
-> @@ -0,0 +1,168 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2020 IBM Corporation. All Rights Reserved.
-> +#
-> +# FS QA Test 618
+Cheers, Andreas
 
-Add an empty line here.
 
-> +# ENOSPC regression test in a multi-threaded scenario. Test allocation
-> +# strategies of the file system and validate space anomalies as reported by
-> +# the system versus the allocated by the program.
-> +#
-> +# With this we should be able to catch similar regressions as reported on
-> +# ext4 on 5.7 kernel which was fixed by patch [1]
-> +# [1]: https://patchwork.ozlabs.org/patch/1294003
-> +#
-> +seq=`basename $0`
-> +seqres=$RESULT_DIR/$seq
-> +echo "QA output created by $seq"
-> +
-> +here=`pwd`
-> +tmp=/tmp/$$
-> +status=1	# failure is the default!
-> +trap "_cleanup; exit \$status" 0 1 2 3 15
-> +
-> +FS_SIZE=$((240*1024*1024)) # 240MB
-> +DEBUG=0 # set to 1 to enable debug statements in shell and c-prog
 
-I think DEBUG could be on by default, and append all debug output to
-$seqres.full
 
-> +FACT=0.7
-> +
-> +# Disk allocation methods
-> +FALLOCATE=1
 
-This needs _require_xfs_io_command "falloc", so filesystem that doesn't
-support fallocate(2) will _notrun.
 
-> +FTRUNCATE=2
-> +
-> +# Helps to build TEST_VECTORS
-> +SMALL_FILE_SIZE=$((512 * 1024)) # in Bytes
-> +BIG_FILE_SIZE=$((1536 * 1024))  # in Bytes
-> +MIX_FILE_SIZE=$((2048 * 1024))  # (BIG + SMALL small file size)
-> +
-> +_cleanup()
-> +{
-> +	cd /
-> +	rm -f $tmp.*
-> +}
-> +
-> +# get standard environment, filters and checks
-> +. ./common/rc
-> +. ./common/filter
-> +
-> +# remove previous $seqres.full before test
-> +rm -f $seqres.full
-> +
-> +# Modify as appropriate.
-> +_supported_fs generic
-> +_require_test
+--Apple-Mail=_4745588D-386F-4484-8893-14E4BF1C3289
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
 
-$TEST_DIR is not used, this could be skipped.
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
 
-> +_require_scratch
-> +_require_test_program "t_enospc"
-> +
-> +debug()
-> +{
-> +	if [ $DEBUG -eq 1 ]; then
-> +		echo >&2 "func->${FUNCNAME[1]}: $1"
-> +	fi
-> +}
-> +
-> +# Calculate the number of threads needed to fill the disk space
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl/EE2cACgkQcqXauRfM
+H+AiAA/+MfU2q0LlzWdtvXtjKWnx0YI2oRrdAYPYpXw/QQJWdLEivIUbOOjjuBGL
+ug1YTGMwB4YHC2CqR8zJxlEQhejzXeS1v6cc2SYsvGpASdCJfqtczzxj8w6401m9
+8T36NOjDP95sgNRvRnQx42Xv3pUYHtAJjfI5NlnjZsaBQEleDZK84374Y4Mao9S3
+xa7JZmRFBt+hMCjkRL6buY/ErfSIP17KTjdTGz2xrW2tL8KKVHW1OAJkUWRXZYC6
+Z+aX3FwdlS99gQqzEcH5YWPCsxKvnWqgHHANXh1LGqFe+xvzVfzQjd6ICtsRJRnY
+EN7zKn1YqJ91W15kI3gRnT0z7GZDj17B6ii3YSIpoCzTt72IYviUHOU3B1pUfNGh
+Afbztp797K0X6XO+X+jSyIWW9ijTeUXAPD+KOMuAkPPNC4WfmRgsh2COTWixM/Ol
+tKApWo2LgsG9uMU8JoWOzzZgT5RCOqfTYCViK2y6hw5WbbIQSS6JYVUuxqIUmpD4
+n8tpxuwcaIOTY62Ws2K3nvfUGRlgXDwt/dcNrHTj49NTiOTvnF+AbSG/HuKTRfV3
+XeBaZurPyh/+1hsTKJ5bbfMuffYvap/DHSds4Jex/0dMNZCnzB+WsNMvO3O7hqJq
+IMhXcEG1dTsa6z9s39AC4JUzHgD6X8h/28WAM/dPjI99KiVcQCc=
+=P2LX
+-----END PGP SIGNATURE-----
 
-Would you please describe the arguments in comments?
-
-> +calc_thread_cnt()
-> +{
-> +	local file_ratio_unit=$1
-> +	local file_ratio=$2
-> +	local disk_saturation=$3
-> +	local tot_avail_size
-> +	local avail_size
-> +	local thread_cnt
-> +
-> +	IFS=',' read -ra fratio <<< $file_ratio
-> +	file_ratio_cnt=${#fratio[@]}
-> +
-> +	tot_avail_size=$(df --block-size=1 $SCRATCH_DEV | awk 'FNR == 2 { print $4 }')
-
-Use $DF_PROG or _df_device instead of pure 'df', as they deal with long
-device name correctly, which causes the output to be wrapped.
-
-Other 'df' usages should be fixed as well.
-
-> +	avail_size=$(echo $tot_avail_size*$disk_saturation | bc)
-
-Use $BC_PROG instead of bc.
-
-> +	thread_cnt=$(echo "$file_ratio_cnt*($avail_size/$file_ratio_unit)" | bc)
-> +
-> +	debug "Total available size: $tot_avail_size"
-> +	debug "Available size: $avail_size"
-> +	debug "Thread count: $thread_cnt"
-> +
-> +	echo ${thread_cnt}
-> +}
-> +
-> +run_testcase()
-> +{
-> +	IFS=':' read -ra args <<< $1
-> +	local test_name=${args[0]}
-> +	local file_ratio_unit=${args[1]}
-> +	local file_ratio=${args[2]}
-> +	local disk_saturation=${args[3]}
-> +	local disk_alloc_method=${args[4]}
-> +	local test_iteration_cnt=${args[5]}
-
-Describing the arguments would be good.
-
-> +	local extra_args=""
-> +	local thread_cnt
-> +
-> +	if [ "$disk_alloc_method" == "$FTRUNCATE" ]; then
-                                       ^^^^^^^^^ should be FALLOCATE ?
-'-f' means use fallocate in t_enospc.
-
-> +		extra_args="$extra_args -f"
-> +	fi
-> +
-> +	# enable the debug statements in c program
-> +	if [ "$DEBUG" -eq 1 ]; then
-> +		extra_args="$extra_args -v"
-> +	fi
-> +
-> +	for i in $(eval echo "{1..$test_iteration_cnt}")
-> +	do
-
-fstests perfer for loop format as
-
-	for ...; do
-		<commands>
-	done
-
-> +		# Setup the device
-> +		_scratch_mkfs_sized $FS_SIZE >> $seqres.full 2>&1
-> +		_scratch_mount
-> +
-> +		thread_cnt=$(calc_thread_cnt $file_ratio_unit $file_ratio $disk_saturation)
-> +
-> +		debug "====== Test details starts ======"
-> +		debug "Test name: $test_name"
-> +		debug "File ratio unit: $file_ratio_unit"
-> +		debug "File ratio: $file_ratio"
-> +		debug "Disk saturation $disk_saturation"
-> +		debug "Disk alloc method $disk_alloc_method"
-> +		debug "Test iteration count: $test_iteration_cnt"
-> +		debug "Extra arg: $extra_args"
-> +		debug "Thread count: $thread_cnt"
-> +		debug "============ end ==============="
-> +
-> +		# Start the test
-> +		$here/src/t_enospc -t $thread_cnt -s $file_ratio_unit -r $file_ratio -p $SCRATCH_MNT $extra_args
-> +
-> +		status=$(echo $?)
-> +		if [ $status -ne 0 ]; then
-> +			use_per=$(df -h | grep $SCRATCH_MNT | awk '{print substr($5, 1, length($5)-1)}' | bc)
-> +			alloc_per=$(echo "$FACT * 100" | bc)
-                                          ^^^^^ should be $disk_saturation ?
-> +			# We are here since t_nospc failed with an error code.
-                                            ^^^^^^^ t_enospc
-> +			# If the used filesystem space is still < available space - that means
-> +			# the test failed due to FS wrongly reported ENOSPC.
-> +			if [ $(echo "$use_per < $alloc_per" | bc) -ne 0 ]; then
-> +				if [ $status -eq 134 ]; then
-> +					echo "FAIL: Aborted assertion faliure"
-> +				elif [ $status -eq 7 ]; then
-> +					echo "FAIL: ENOSPC BUS faliure"
-> +				fi
-
-Please comment where 134 and 7 come from, I have to look at t_enospc.c
-to know it returns 7 on SIGBUS.
-
-> +				echo "$test_name failed at iteration count: $i"
-> +				echo "$(df -h $SCRATCH_MNT)"
-> +				echo "Allocated: $alloc_per% Used: $use_per%"
-> +				exit
-> +			fi
-> +		fi
-> +
-> +		# Make space for other tests
-> +		_scratch_unmount
-> +	done
-> +}
-> +
-> +declare -a TEST_VECTORS=(
-> +# test-name:file-ratio-unit:file-ratio:disk-saturation:disk-alloc-method:test-iteration-cnt
-> +"Small-file-test:$SMALL_FILE_SIZE:1:$FACT:$FALLOCATE:3"
-> +"Big-file-test:$BIG_FILE_SIZE:1:$FACT:$FALLOCATE:3"
-> +"Mix-file-test:$MIX_FILE_SIZE:0.75,0.25:$FACT:$FALLOCATE:3"
-
-$FTRUNCATE is not tested?
-
-> +)
-> +
-> +# real QA test starts here
-> +for i in "${TEST_VECTORS[@]}"; do
-> +	run_testcase $i
-> +done
-> +
-> +echo "Silence is golden"
-> +status=0
-> +exit
-> diff --git a/tests/generic/618.out b/tests/generic/618.out
-> new file mode 100644
-> index 00000000..8940b72f
-> --- /dev/null
-> +++ b/tests/generic/618.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 618
-> +Silence is golden
-> diff --git a/tests/generic/group b/tests/generic/group
-> index 94e860b8..dc668c06 100644
-> --- a/tests/generic/group
-> +++ b/tests/generic/group
-> @@ -620,3 +620,4 @@
->  615 auto rw
->  616 auto rw io_uring stress
->  617 auto rw io_uring stress
-> +618 auto rw stress
-
-Add ennospc group, and drop stress group.
-
-Thanks,
-Eryu
-
-> -- 
-> 2.28.0
+--Apple-Mail=_4745588D-386F-4484-8893-14E4BF1C3289--
