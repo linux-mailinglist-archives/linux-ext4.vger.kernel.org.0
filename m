@@ -2,111 +2,127 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B7D42C82BC
-	for <lists+linux-ext4@lfdr.de>; Mon, 30 Nov 2020 12:00:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD1EC2C8D03
+	for <lists+linux-ext4@lfdr.de>; Mon, 30 Nov 2020 19:41:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728652AbgK3LAZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 30 Nov 2020 06:00:25 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55318 "EHLO mx2.suse.de"
+        id S2388178AbgK3Sjz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 30 Nov 2020 13:39:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727656AbgK3LAZ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 30 Nov 2020 06:00:25 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 89353AD20;
-        Mon, 30 Nov 2020 10:59:43 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 2DA981E131B; Mon, 30 Nov 2020 11:59:43 +0100 (CET)
-Date:   Mon, 30 Nov 2020 11:59:43 +0100
-From:   Jan Kara <jack@suse.cz>
+        id S2388154AbgK3Sjv (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 30 Nov 2020 13:39:51 -0500
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CEB7C20725;
+        Mon, 30 Nov 2020 18:39:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606761550;
+        bh=iyiVXouYuLi8CR86GzyUdOgKT90WbpSteoJW5M4oEVk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aXy2QaN2MB+nWvfSaoJBWlS6qrs0U5NvQwY+332G7XNAe4FwosH+SNz7wPXVbNa/U
+         8cpYTs4w421Ab3JmQ4JYYMBNqH+VWqSiI28EqPoL3V3zlKDxwHSP+oZPJlAIrvhPzM
+         wf04wz61EO5+cSNbuIxLWXFNc3DxWAHE1Ufapupw=
+Date:   Mon, 30 Nov 2020 10:39:08 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
 To:     Andreas Dilger <adilger@dilger.ca>
-Cc:     Jan Kara <jack@suse.cz>, Eric Biggers <ebiggers@kernel.org>,
-        Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 02/12] ext4: Remove redundant sb checksum recomputation
-Message-ID: <20201130105943.GI11250@quack2.suse.cz>
-References: <20201127113405.26867-1-jack@suse.cz>
- <20201127113405.26867-3-jack@suse.cz>
- <301139FC-B346-4199-B26E-1FF0CB970746@dilger.ca>
+Cc:     Theodore Ts'o <tytso@mit.edu>, linux-fscrypt@vger.kernel.org,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Sebastien Buisson <sbuisson@ddn.com>
+Subject: Re: backup/restore of fscrypt files
+Message-ID: <X8U8TG2ie77YiCF5@sol.localdomain>
+References: <D1AD7D55-94D6-4C19-96B4-BAD0FD33CF49@dilger.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <301139FC-B346-4199-B26E-1FF0CB970746@dilger.ca>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <D1AD7D55-94D6-4C19-96B4-BAD0FD33CF49@dilger.ca>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sun 29-11-20 15:11:05, Andreas Dilger wrote:
-> On Nov 27, 2020, at 4:33 AM, Jan Kara <jack@suse.cz> wrote:
-> > 
-> > Superblock is written out either through ext4_commit_super() or through
-> > ext4_handle_dirty_super(). In both cases we recompute the checksum so it
-> > is not necessary to recompute it after updating superblock free inodes &
-> > blocks counters.
-> 
-> I searched through the code to see where s_sbh is being used, and it
-> looks like there is one case that doesn't update the checksum using
-> ext4_handle_dirty_super(), namely:
-> 
-> ext4_file_ioctl(cmd=FS_IOC_GET_ENCRYPTION_PWSALT)
-> {
->                         err = ext4_journal_get_write_access(handle, sbi->s_sbh);
->                         if (err)
->                                 goto pwsalt_err_journal;
->                         generate_random_uuid(sbi->s_es->s_encrypt_pw_salt);
->                         err = ext4_handle_dirty_metadata(handle, NULL,
->                                                          sbi->s_sbh);
-> 
-> I don't think that is a problem with this patch, per se, but looks like
-> a bug that could be hit in rare cases with fscrypt + metadata_csum.  It
-> would only happen once per filesystem, and would normally be hidden by
-> later superblock updates, but should probably be fixed anyway.
+Hi Andreas,
 
-Yeah, good spotting. I'll write a fix for this.
-
-> Reviewed-by: Andreas Dilger <adilger@dilger.ca>
-
-Thanks for review!
-
-								Honza
-
+On Thu, Nov 26, 2020 at 12:12:26AM -0700, Andreas Dilger wrote:
+> Currently it is not possible to do backup/restore of fscrypted files without the
+> encryption key for a number of reasons.  However, it is desirable to be able to
+> backup/restore filesystems with encrypted files for numerous reasons.
 > 
-> > Signed-off-by: Jan Kara <jack@suse.cz>
-> > ---
-> > fs/ext4/super.c | 2 --
-> > 1 file changed, 2 deletions(-)
-> > 
-> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> > index 2b08b162075c..61e6e5f156f3 100644
-> > --- a/fs/ext4/super.c
-> > +++ b/fs/ext4/super.c
-> > @@ -5004,13 +5004,11 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
-> > 	block = ext4_count_free_clusters(sb);
-> > 	ext4_free_blocks_count_set(sbi->s_es,
-> > 				   EXT4_C2B(sbi, block));
-> > -	ext4_superblock_csum_set(sb);
-> > 	err = percpu_counter_init(&sbi->s_freeclusters_counter, block,
-> > 				  GFP_KERNEL);
-> > 	if (!err) {
-> > 		unsigned long freei = ext4_count_free_inodes(sb);
-> > 		sbi->s_es->s_free_inodes_count = cpu_to_le32(freei);
-> > -		ext4_superblock_csum_set(sb);
-> > 		err = percpu_counter_init(&sbi->s_freeinodes_counter, freei,
-> > 					  GFP_KERNEL);
-> > 	}
-> > --
-> > 2.16.4
-> > 
+> My understanding is that there are two significant obstacles for this to work:
+> - the file size reported to userspace for an encrypted file is the "real" file size,
+>   but there is data stored beyond "i_size" that is required for decrypting the file
+> - the per-inode 16-byte nonce that would need to be backed up and restored for
+>   later decryption to be possible
 > 
+> I'm wondering if it makes sense for stat() to report the size rounded up to the end
+> of the encryption block for encrypted files, and then report the "real" size and
+> nonce in virtual xattrs (e.g. "trusted.fscrypt_size" and "trusted.fscrypt_nonce")
+> so that encrypted files can be backed up and restored using normal utilities like
+> tar and rsync if the xattrs are also copied.
 > 
-> Cheers, Andreas
+> A (small) added benefit of rounding the size of encrypted files up to the end of the
+> encryption block is that it makes fingerprinting of files by their size a bit harder.
+> Changing the size returned by stat() is not (IMHO) problematic, since it is not
+> currently possible to directly read encrypted files without the key anyway.
 > 
+> The use of "trusted" xattrs would limit the backup/restore of encrypted files to
+> privileged users.  We could use "user" xattrs to allow backup by non-root users, but
+> that would re-expose the real file size to userspace (not worse than today), and
+> would corrupt the file if the size or nonce xattrs were modified by the user.
 > 
+> It isn't clear whether there is a huge benefit of users to be able to backup/restore
+> their own files while encrypted.  For single-user systems, the user will have root
+> access anyway, while administrators of multi-user systems need privileged access for
+> shared filesystems backup/restore anyway.
 > 
-> 
+> I'm probably missing some issues here, but hopefully this isn't an intractable problem.
 > 
 
+There would be a lot more to it than what you describe.
 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+First, filenames are encrypted too.  As a result, there would have to be new
+ioctls to allow backing up and restoring encrypted filenames.  The existing
+no-key names (the names the kernel shows when you list an encrypted dir) don't
+work for this, as due to the NAME_MAX limit, they don't necessarily encode the
+whole ciphertext.  There would have to be new APIs which operate on raw
+ciphertexts (which may contain the '/' or '\0' bytes) of up to NAME_MAX bytes.
+
+Similarly for symlinks; there would have to be new ioctls to read and create
+them, as the existing readlink() and symlink() system calls won't necessarily
+work.  Granted, handling symlinks correctly is less critical than filenames, as
+we *could* just encode the whole symlink target in base64 and say that if you
+create a symlink target over 3072 bytes you're out of luck.  That would be
+problematic, but less so than limiting encrypted filenames to ~180 bytes...
+
+So for that and various other reasons such as the ordering of different
+operations (when restoring a directory, will it be marked as encrypted before or
+after the files are created in it, etc.), I think allowing 'rsync' or 'tar' to
+work transparently isn't going to be possible.  Instead, a new tool that knows
+how to use ioctls to back up and restore encrypted files would be needed.
+
+Then there is the issue of ordering and how different operations would interact
+with each other.  This proposal would require the ability to open() a regular
+file that doesn't have its encryption key available, and read and write from it.
+open() gives you a file descriptor on which lots of other things could be called
+too, so we'd need to make sure to explicitly prevent a lot of things which we
+didn't have to worry about before, like fallocate() and various ioctl()s.  Then,
+what happens if someone adds an encryption key -- when does the file's page
+cache get invalidated, and how does it get synchronized with any ongoing I/O, or
+memory maps that may exist, and so on.  (Allowing only direct I/O on files that
+don't have encryption key unavailable may help...)
+
+Or what happens if an encrypted directory is "under construction", and someone
+tries to access it with the key, but its fscrypt_nonce hasn't been restored yet.
+And how are such directories represented on-disk -- what does the encryption
+xattr actually contain.  Requiring the encryption policy and nonce to be set
+*before* anything is created in the directory would make things simpler, I
+think...  Also similarly for setting the real file size -- requiring that it be
+set before anything can be written to the file may help.
+
+As for changing the i_size reported to userspace on encrypted files without the
+key to include the whole final encrypted block, I don't think that would be an
+issue by itself.  Note that it doesn't really "make fingerprinting of files by
+their size a bit harder", as i_size would still be unencrypted on-disk.
+
+- Eric
