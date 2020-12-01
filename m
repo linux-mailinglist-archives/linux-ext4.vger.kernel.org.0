@@ -2,151 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 172312CAFF8
-	for <lists+linux-ext4@lfdr.de>; Tue,  1 Dec 2020 23:30:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 315922CB09C
+	for <lists+linux-ext4@lfdr.de>; Wed,  2 Dec 2020 00:01:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727695AbgLAW3Y (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 1 Dec 2020 17:29:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36010 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727685AbgLAW3X (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 1 Dec 2020 17:29:23 -0500
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95B33C0613D6
-        for <linux-ext4@vger.kernel.org>; Tue,  1 Dec 2020 14:28:43 -0800 (PST)
-Received: by mail-il1-x141.google.com with SMTP id x15so3320911ilq.1
-        for <linux-ext4@vger.kernel.org>; Tue, 01 Dec 2020 14:28:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zEVORstsrTaSUgGGMeR0Tq7V6fCGhtA2/JQrS+CPcPM=;
-        b=P1DviP74adgMmlwWKQrywJMta3DKhYPt7EEAf7M9nSMiOTTKSo2CvaGYxrVV4kEnl/
-         B42RELckfkTh6KC+dDfnenfHzx2WM5MoeqWh6UmsCv0d+EE93QvFCF2kaHKBX/lpIOZb
-         KrmZNE56Y3CIOeQaCnp6rLdZhw2c0pi3aiHHA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zEVORstsrTaSUgGGMeR0Tq7V6fCGhtA2/JQrS+CPcPM=;
-        b=f2f27MUTcPqgGupyWFvPzJB0iWDjTt/VXQCPbhDb1rMfQqRF4fO5Xg7MroNichvisF
-         QUZTsVGpHfgcp+kMHXkQ2D5M8W9FhlGLsefJwhuzQ54paA6nbJpWpDq9yM3sUATgj+KG
-         IhgLh4Nkrv6v6QLplHhoVCzKHIYvM+NoozI4K97fBLKPon5stP3nxUbY3nYIiUWXJciV
-         +r81/IXxVp/lWMUKetfGmb/Qhu9uSAyzWOnfS0HvBAiYnE2ivXAzk1KDwHAk8R0XRxrZ
-         VI7bmIIQhnFuhmJlN9Ns8uyDmmq7rjBvfdNt56g/OwiWagilYZQDdOtMD+pyG2RueJkL
-         nijA==
-X-Gm-Message-State: AOAM533NT+Fo6qbj7rnfK9VCE+cMJatus2MNVEV8cSYr0CFMtDmv3URp
-        q/OcR7InMGfYm7n8UXCvKjyxzg==
-X-Google-Smtp-Source: ABdhPJyoyG9ADgJ6dsBiNM1XKs7dyiBINsra2s2Ul2TQ/NhNuX+TnwTAu5r8ljVvYPPBgzF65GRHfw==
-X-Received: by 2002:a92:512:: with SMTP id q18mr4738719ile.147.1606861722917;
-        Tue, 01 Dec 2020 14:28:42 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id r21sm462090ioa.20.2020.12.01.14.28.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Dec 2020 14:28:42 -0800 (PST)
-Subject: Re: [PATCH v9 1/2] kunit: Support for Parameterized Testing
-To:     Brendan Higgins <brendanhiggins@google.com>,
-        David Gow <davidgow@google.com>,
-        Arpitha Raghunandan <98.arpi@gmail.com>
-Cc:     Marco Elver <elver@google.com>, Theodore Ts'o <tytso@mit.edu>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Bird, Tim" <Tim.Bird@sony.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-ext4@vger.kernel.org, skhan@linuxfoundation.org
-References: <20201116054035.211498-1-98.arpi@gmail.com>
- <CABVgOSkoQahYqMJ3dD1_X2+rF3OgwT658+8HRM2EZ5e0-94jmw@mail.gmail.com>
- <CANpmjNOhb13YthVHmXxMjpD2JZUO4H2Z1KZSKqHeFUv-RbM5+Q@mail.gmail.com>
- <CABVgOSnGnkCnAyAqVoLhMGb6XV_irtYB7pyOTon5Scab8GxKtg@mail.gmail.com>
- <CAFd5g4768o7UtOmM3X0X5upD0uF3j-=g3txi0_Ue3z8oM_Ghow@mail.gmail.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <505b8cd0-a61e-5ec3-7e0b-239d0ff55d56@linuxfoundation.org>
-Date:   Tue, 1 Dec 2020 15:28:41 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1726598AbgLAXAt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 1 Dec 2020 18:00:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45700 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726344AbgLAXAs (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 1 Dec 2020 18:00:48 -0500
+Date:   Tue, 1 Dec 2020 15:00:06 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606863608;
+        bh=UfPQWdK3xBzO1ApIT0Gn7pd2KneFS4j8rVtIyl7vrbg=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MfiWeMWuaKPYMaaNv9SarNLRpZv08vfHzR572Es3sRYwsmPjO71SF5djmfQppon1c
+         D6snuuoylEaT+4eMUrBNlzy1IIRX679LmvlxeGbnhmZknXKzg8u4+teHK7CsizAs+6
+         ge14TfRlVCJUZjbOHdANYPfd3CGZTIgupPhJoVtU=
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 2/9] f2fs: remove f2fs_dir_open()
+Message-ID: <X8bK9l/9N03++CYM@sol.localdomain>
+References: <20201125002336.274045-1-ebiggers@kernel.org>
+ <20201125002336.274045-3-ebiggers@kernel.org>
+ <9522461b-b854-76ac-29c7-160f0f078823@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <CAFd5g4768o7UtOmM3X0X5upD0uF3j-=g3txi0_Ue3z8oM_Ghow@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9522461b-b854-76ac-29c7-160f0f078823@huawei.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 11/30/20 3:22 PM, Brendan Higgins wrote:
-> On Mon, Nov 23, 2020 at 11:25 PM David Gow <davidgow@google.com> wrote:
->>
->> On Mon, Nov 23, 2020 at 9:08 PM Marco Elver <elver@google.com> wrote:
->>>
->>> On Tue, 17 Nov 2020 at 08:21, David Gow <davidgow@google.com> wrote:
->>>> On Mon, Nov 16, 2020 at 1:41 PM Arpitha Raghunandan <98.arpi@gmail.com> wrote:
->>>>>
->>>>> Implementation of support for parameterized testing in KUnit. This
->>>>> approach requires the creation of a test case using the
->>>>> KUNIT_CASE_PARAM() macro that accepts a generator function as input.
->>>>>
->>>>> This generator function should return the next parameter given the
->>>>> previous parameter in parameterized tests. It also provides a macro to
->>>>> generate common-case generators based on arrays. Generators may also
->>>>> optionally provide a human-readable description of parameters, which is
->>>>> displayed where available.
->>>>>
->>>>> Note, currently the result of each parameter run is displayed in
->>>>> diagnostic lines, and only the overall test case output summarizes
->>>>> TAP-compliant success or failure of all parameter runs. In future, when
->>>>> supported by kunit-tool, these can be turned into subsubtest outputs.
->>>>>
->>>>> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
->>>>> Co-developed-by: Marco Elver <elver@google.com>
->>>>> Signed-off-by: Marco Elver <elver@google.com>
->>>>> ---
->>>> [Resending this because my email client re-defaulted to HTML! Aarrgh!]
->>>>
->>>> This looks good to me! I tested it in UML and x86-64 w/ KASAN, and
->>>> both worked fine.
->>>>
->>>> Reviewed-by: David Gow <davidgow@google.com>
->>>> Tested-by: David Gow <davidgow@google.com>
->>>
->>> Thank you!
->>>
->>>> Thanks for sticking with this!
->>>
->>> Will these patches be landing in 5.11 or 5.12?
->>>
->>
->> I can't think of any reason not to have these in 5.11. We haven't
->> started staging things in the kselftest/kunit branch for 5.11 yet,
->> though.
->>
->> Patch 2 will probably need to be acked by Ted for ext4 first.
->>
->> Brendan, Shuah: can you make sure this doesn't get lost in patchwork?
+On Thu, Nov 26, 2020 at 03:04:55PM +0800, Chao Yu wrote:
+> On 2020/11/25 8:23, Eric Biggers wrote:
+> > From: Eric Biggers <ebiggers@google.com>
+> > 
+> > Since encrypted directories can be opened without their encryption key
+> > being available, and each readdir tries to set up the key, trying to set
 > 
-> Looks good to me. I would definitely like to pick this up. But yeah,
-> in order to pick up 2/2 we will need an ack from either Ted or Iurii.
+> readdir -> readdir/lookup?
+
+Yes, ->lookup() tries to set up the key too.  It's different because ->lookup()
+doesn't require that the directory be open.  But I suppose that's another reason
+why setting up the directory's key in ->open() isn't useful.
+
+I'll add something about that.
+
+- Eric
+
 > 
-> Ted seems to be busy right now, so I think I will just ask Shuah to go
-> ahead and pick this patch up by itself and we or Ted can pick up patch
-> 2/2 later.
+> > up the key in ->open() too isn't really useful.
+> > 
+> > Just remove it so that directories don't need an ->open() method
+> > anymore, and so that we eliminate a use of fscrypt_get_encryption_info()
+> > (which I'd like to stop exporting to filesystems).
+> > 
+> > Signed-off-by: Eric Biggers <ebiggers@google.com>
 > 
-> Cheers
+> Reviewed-by: Chao Yu <yuchao0@huawei.com>
 > 
-
-I am seeing
-
-ERROR: need consistent spacing around '*' (ctx:WxV)
-#272: FILE: include/kunit/test.h:1786:
-+		typeof((array)[0]) *__next = prev ? ((typeof(__next)) prev) + 1 : 
-(array);	\
-  		                   ^
-
-Can you look into this and send v10?
-
-thanks,
--- Shuah
+> Thanks,
