@@ -2,109 +2,155 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C2A62CB0C3
-	for <lists+linux-ext4@lfdr.de>; Wed,  2 Dec 2020 00:23:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A45802CB0CE
+	for <lists+linux-ext4@lfdr.de>; Wed,  2 Dec 2020 00:32:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726943AbgLAXXP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 1 Dec 2020 18:23:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28499 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726873AbgLAXXP (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 1 Dec 2020 18:23:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606864908;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=/VrWq4ROZEETaUG6m+Wv8n9gH98JhhhsUtPF4KnUL34=;
-        b=cG6Q6PYaC6038yM32uUs7dDDR9TpnovVQesCrVOmhKe/wVWslogRtjhcsgbisQU/a1dCta
-        P9Eh7rmI+yEbdRUdbeWQqFPVgMRRiIhy3dh1WhTOjXXY0tqzAR1qVkKMjon31OZIe8yMe/
-        fAybrrFN7s/6jHQ+hmxnuirFRdaXyK4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-26-T4dzLGELMqmpzahP1zvfXw-1; Tue, 01 Dec 2020 18:21:46 -0500
-X-MC-Unique: T4dzLGELMqmpzahP1zvfXw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 49DF01076027;
-        Tue,  1 Dec 2020 23:21:45 +0000 (UTC)
-Received: from liberator.sandeen.net (ovpn04.gateway.prod.ext.phx2.redhat.com [10.5.9.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4189010013C1;
-        Tue,  1 Dec 2020 23:21:41 +0000 (UTC)
-From:   Eric Sandeen <sandeen@redhat.com>
-Subject: [PATCH V2] uapi: fix statx attribute value overlap for DAX &
- MOUNT_ROOT
-To:     torvalds@linux-foundation.org,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        David Howells <dhowells@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-man@vger.kernel.org,
-        linux-kernel@vger.kernel.org, xfs <linux-xfs@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, Xiaoli Feng <xifeng@redhat.com>,
-        Eric Sandeen <sandeen@redhat.com>
-Message-ID: <3e28d2c7-fbe5-298a-13ba-dcd8fd504666@redhat.com>
-Date:   Tue, 1 Dec 2020 17:21:40 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.0
+        id S1727157AbgLAXcn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 1 Dec 2020 18:32:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727113AbgLAXcm (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 1 Dec 2020 18:32:42 -0500
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD627C0613D6
+        for <linux-ext4@vger.kernel.org>; Tue,  1 Dec 2020 15:32:02 -0800 (PST)
+Received: by mail-ot1-x344.google.com with SMTP id n12so3468089otk.0
+        for <linux-ext4@vger.kernel.org>; Tue, 01 Dec 2020 15:32:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qatnj/FNqaZ+ECXKGoFl0+ahWNatAD/GWmAFXeDRJQM=;
+        b=awn9xZYFYPP8d4N7JYbiimYAXu2Qt6OiesaX9d0YsLeK5vBZ6zjJorN0ylQ9Mm4e8r
+         hSX6nk+pRrn3FhJmhGaPhVHJf0ayigkpjjbjBGHaC7UnmkJel98ElBUUCUeJ+egvLrAk
+         Z/JohGhI1i+7Gu6dMdOBcOaCo8Mof41wF+3y8bADMhapKhMiMGQkXak6lJPgu0uuw4s4
+         KXjC+4sNZosHOvcNSu/h+y/YbCgjo9TOPT+G5tNzTRXq+yV7eR1qCwEFwRFTGwozppeo
+         pSweIifim5oan7zodp/2a4dYpMcSn+HQAgDKZOxkwXXpep8p60T59Yta9vanVcF+00Pi
+         OgFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qatnj/FNqaZ+ECXKGoFl0+ahWNatAD/GWmAFXeDRJQM=;
+        b=dL83mGAyqk0G9Tkc5/MpXyITHpiAg8LnoEZ6rINdTzsJSgRAM2gAs0p8FvabDafivZ
+         pW68eM3ry/BiUxbipeDS3Y912+Rt2fb9ww0X0omADMgqUt4qaCdVFiJEV7UQLaXkxMIT
+         MsQ/bY+0+TinOIG+K+Ha9NG7UyesG6APw+5m15e3kiBr1mUC0qtJFlF3pVpVSOVGuras
+         ETFo8Z0Re8R75VkOf7ATh37HRTf7iNc0MQZH8Y6v7lsizVITXgbKVdpB+NfS9lZR1xIw
+         NIeMYA1pGjJRE22pGmpqyng22YLLxHARHEuZOIMw4bJeMoaKacpVYq7/taKWnaI9ZCSi
+         S9pQ==
+X-Gm-Message-State: AOAM5322HRVPsxbzY3jkQqpvU0IovTRNWLuaWQkrN7Dre02TnOqTNSt5
+        unzzEP+lNVlyCs9HhbjcHsLFOm1k37ehrBU5xLOG5g==
+X-Google-Smtp-Source: ABdhPJz/36KpN1WvMgoRTCuz9DIhS7HBCPsjrvLJzDcsAseeN5SvuBZkEgRGwYf1aPe0KsPwYmZQN2oA8wwIn6w9Vvo=
+X-Received: by 2002:a9d:6317:: with SMTP id q23mr3704860otk.251.1606865521640;
+ Tue, 01 Dec 2020 15:32:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <20201116054035.211498-1-98.arpi@gmail.com> <CABVgOSkoQahYqMJ3dD1_X2+rF3OgwT658+8HRM2EZ5e0-94jmw@mail.gmail.com>
+ <CANpmjNOhb13YthVHmXxMjpD2JZUO4H2Z1KZSKqHeFUv-RbM5+Q@mail.gmail.com>
+ <CABVgOSnGnkCnAyAqVoLhMGb6XV_irtYB7pyOTon5Scab8GxKtg@mail.gmail.com>
+ <CAFd5g4768o7UtOmM3X0X5upD0uF3j-=g3txi0_Ue3z8oM_Ghow@mail.gmail.com> <505b8cd0-a61e-5ec3-7e0b-239d0ff55d56@linuxfoundation.org>
+In-Reply-To: <505b8cd0-a61e-5ec3-7e0b-239d0ff55d56@linuxfoundation.org>
+From:   Marco Elver <elver@google.com>
+Date:   Wed, 2 Dec 2020 00:31:49 +0100
+Message-ID: <CANpmjNMOMD+2OhBWNh5XuFufbm1bhXTUm4Y3_YiNNdfC=G2xdQ@mail.gmail.com>
+Subject: Re: [PATCH v9 1/2] kunit: Support for Parameterized Testing
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        David Gow <davidgow@google.com>,
+        Arpitha Raghunandan <98.arpi@gmail.com>,
+        "Theodore Ts'o" <tytso@mit.edu>, Iurii Zaikin <yzaikin@google.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Bird, Tim" <Tim.Bird@sony.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-[*] Note: This needs to be merged as soon as possible as it's introducing an incompatible UAPI change...
+On Tue, 1 Dec 2020 at 23:28, Shuah Khan <skhan@linuxfoundation.org> wrote:
+>
+> On 11/30/20 3:22 PM, Brendan Higgins wrote:
+> > On Mon, Nov 23, 2020 at 11:25 PM David Gow <davidgow@google.com> wrote:
+> >>
+> >> On Mon, Nov 23, 2020 at 9:08 PM Marco Elver <elver@google.com> wrote:
+> >>>
+> >>> On Tue, 17 Nov 2020 at 08:21, David Gow <davidgow@google.com> wrote:
+> >>>> On Mon, Nov 16, 2020 at 1:41 PM Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+> >>>>>
+> >>>>> Implementation of support for parameterized testing in KUnit. This
+> >>>>> approach requires the creation of a test case using the
+> >>>>> KUNIT_CASE_PARAM() macro that accepts a generator function as input.
+> >>>>>
+> >>>>> This generator function should return the next parameter given the
+> >>>>> previous parameter in parameterized tests. It also provides a macro to
+> >>>>> generate common-case generators based on arrays. Generators may also
+> >>>>> optionally provide a human-readable description of parameters, which is
+> >>>>> displayed where available.
+> >>>>>
+> >>>>> Note, currently the result of each parameter run is displayed in
+> >>>>> diagnostic lines, and only the overall test case output summarizes
+> >>>>> TAP-compliant success or failure of all parameter runs. In future, when
+> >>>>> supported by kunit-tool, these can be turned into subsubtest outputs.
+> >>>>>
+> >>>>> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+> >>>>> Co-developed-by: Marco Elver <elver@google.com>
+> >>>>> Signed-off-by: Marco Elver <elver@google.com>
+> >>>>> ---
+> >>>> [Resending this because my email client re-defaulted to HTML! Aarrgh!]
+> >>>>
+> >>>> This looks good to me! I tested it in UML and x86-64 w/ KASAN, and
+> >>>> both worked fine.
+> >>>>
+> >>>> Reviewed-by: David Gow <davidgow@google.com>
+> >>>> Tested-by: David Gow <davidgow@google.com>
+> >>>
+> >>> Thank you!
+> >>>
+> >>>> Thanks for sticking with this!
+> >>>
+> >>> Will these patches be landing in 5.11 or 5.12?
+> >>>
+> >>
+> >> I can't think of any reason not to have these in 5.11. We haven't
+> >> started staging things in the kselftest/kunit branch for 5.11 yet,
+> >> though.
+> >>
+> >> Patch 2 will probably need to be acked by Ted for ext4 first.
+> >>
+> >> Brendan, Shuah: can you make sure this doesn't get lost in patchwork?
+> >
+> > Looks good to me. I would definitely like to pick this up. But yeah,
+> > in order to pick up 2/2 we will need an ack from either Ted or Iurii.
+> >
+> > Ted seems to be busy right now, so I think I will just ask Shuah to go
+> > ahead and pick this patch up by itself and we or Ted can pick up patch
+> > 2/2 later.
+> >
+> > Cheers
+> >
+>
+> I am seeing
+>
+> ERROR: need consistent spacing around '*' (ctx:WxV)
+> #272: FILE: include/kunit/test.h:1786:
+> +               typeof((array)[0]) *__next = prev ? ((typeof(__next)) prev) + 1 :
+> (array);        \
+>                                    ^
+>
+> Can you look into this and send v10?
 
-STATX_ATTR_MOUNT_ROOT and STATX_ATTR_DAX got merged with the same value,
-so one of them needs fixing. Move STATX_ATTR_DAX.
+This is a false positive. I pointed this out here before:
+https://lkml.kernel.org/r/CANpmjNNhpe6TYt0KmBCCR-Wfz1Bxd8qnhiwegwnDQsxRAWmUMg@mail.gmail.com
 
-While we're in here, clarify the value-matching scheme for some of the
-attributes, and explain why the value for DAX does not match.
+checkpatch.pl thinks this is a multiplication, but this is a pointer,
+so the spacing here is correct.
 
-Fixes: 80340fe3605c ("statx: add mount_root")
-Fixes: 712b2698e4c0 ("fs/stat: Define DAX statx attribute")
-Reported-by: David Howells <dhowells@redhat.com>
-Signed-off-by: Eric Sandeen <sandeen@redhat.com>
-Reviewed-by: David Howells <dhowells@redhat.com>
----
-V2: Change flag value per Darrick Wong
-    Tweak comment per Darrick Wong
-    Add Fixes: tags & reported-by & RVB per dhowells
+Thanks,
+-- Marco
 
- include/uapi/linux/stat.h | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
-index 82cc58fe9368..1500a0f58041 100644
---- a/include/uapi/linux/stat.h
-+++ b/include/uapi/linux/stat.h
-@@ -171,9 +171,12 @@ struct statx {
-  * be of use to ordinary userspace programs such as GUIs or ls rather than
-  * specialised tools.
-  *
-- * Note that the flags marked [I] correspond to generic FS_IOC_FLAGS
-+ * Note that the flags marked [I] correspond to the FS_IOC_SETFLAGS flags
-  * semantically.  Where possible, the numerical value is picked to correspond
-- * also.
-+ * also.  Note that the DAX attribute indicates that the file is in the CPU
-+ * direct access state.  It does not correspond to the per-inode flag that
-+ * some filesystems support.
-+ *
-  */
- #define STATX_ATTR_COMPRESSED		0x00000004 /* [I] File is compressed by the fs */
- #define STATX_ATTR_IMMUTABLE		0x00000010 /* [I] File is marked immutable */
-@@ -183,7 +186,7 @@ struct statx {
- #define STATX_ATTR_AUTOMOUNT		0x00001000 /* Dir: Automount trigger */
- #define STATX_ATTR_MOUNT_ROOT		0x00002000 /* Root of a mount */
- #define STATX_ATTR_VERITY		0x00100000 /* [I] Verity protected file */
--#define STATX_ATTR_DAX			0x00002000 /* [I] File is DAX */
-+#define STATX_ATTR_DAX			0x00200000 /* File is currently in DAX state */
- 
- 
- #endif /* _UAPI_LINUX_STAT_H */
--- 
-2.17.0
-
+> thanks,
+> -- Shuah
