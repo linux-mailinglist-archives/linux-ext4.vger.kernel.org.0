@@ -2,106 +2,106 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69A7E2CC8C7
-	for <lists+linux-ext4@lfdr.de>; Wed,  2 Dec 2020 22:20:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A7862CC906
+	for <lists+linux-ext4@lfdr.de>; Wed,  2 Dec 2020 22:43:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729365AbgLBVT6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 2 Dec 2020 16:19:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45926 "EHLO mail.kernel.org"
+        id S2387678AbgLBVmc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 2 Dec 2020 16:42:32 -0500
+Received: from mga12.intel.com ([192.55.52.136]:34686 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726671AbgLBVT6 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 2 Dec 2020 16:19:58 -0500
-Date:   Wed, 2 Dec 2020 13:19:15 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1606943957;
-        bh=T1jS0TLREKTdAknWoqwA00WbPpnYlmjR/Fhr6qk4nL8=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lVTqJI3TwZQu+2D02F/tgDg/D2rYG3cspRDn/xTEEwHlj/Xw3SbnOnwWREbpbn85e
-         R5cRda7BPATO5f14LC909XOf2yLX18mBJiQ1RTw8w2Itpgm04fKOqI0nvTaA2suyVd
-         BLow2XCnqAE99FAYa4uyfZzceR+hEmfQnWJsyL3vAPR3ZXTYiZvF7JAroOmkb6HTJB
-         Yt/FFdWlrKIIxNiRCe5+8V1cXCcd0peh1gAEe7s72BufUKHtO2hVOGMxCzef2LdvYe
-         nDJ4DPTUEO27YtTD1Q0XlM9gZl/kkyUV0CMWy5xTzIz/N6/cN1IqQt3+ofiAfNwJD+
-         d8F0AB9UMOrUA==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org
-Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] fs/inode.c: make inode_init_always() initialize i_ino to
- 0
-Message-ID: <X8gE01JQANXhenMC@gmail.com>
-References: <20201031004420.87678-1-ebiggers@kernel.org>
- <20201106175205.GE845@sol.localdomain>
- <X7gP9iuTuRp9MHpP@sol.localdomain>
+        id S1726309AbgLBVmc (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 2 Dec 2020 16:42:32 -0500
+IronPort-SDR: P1DQ244u4J5trZ2CW1gWIDMpwu4O1HBAn+N/OgCPi3vRqVc9Zp5fevr+bP5nMWMiGDsEhL9GkM
+ hsR+2JuDLSKA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="152345748"
+X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
+   d="scan'208";a="152345748"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 13:41:51 -0800
+IronPort-SDR: 2QJCNzsEBVMH4I8OWQapC/iFvj9Eh/m/3JafMG46DhRJMRcKQvjYVRsFPbIOB3nqwkskPxyKne
+ XmGQxAZyPAnQ==
+X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
+   d="scan'208";a="550223437"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 13:41:50 -0800
+From:   ira.weiny@intel.com
+To:     fstests@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Eric Sandeen <sandeen@redhat.com>
+Cc:     Ira Weiny <ira.weiny@intel.com>, linux-kernel@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        Jeff Moyer <jmoyer@redhat.com>, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        David Howells <dhowells@redhat.com>
+Subject: [PATCH] common/rc: Fix _check_s_dax()
+Date:   Wed,  2 Dec 2020 13:41:45 -0800
+Message-Id: <20201202214145.1563433-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X7gP9iuTuRp9MHpP@sol.localdomain>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 10:50:30AM -0800, Eric Biggers wrote:
-> On Fri, Nov 06, 2020 at 09:52:05AM -0800, Eric Biggers wrote:
-> > On Fri, Oct 30, 2020 at 05:44:20PM -0700, Eric Biggers wrote:
-> > > From: Eric Biggers <ebiggers@google.com>
-> > > 
-> > > Currently inode_init_always() doesn't initialize i_ino to 0.  This is
-> > > unexpected because unlike the other inode fields that aren't initialized
-> > > by inode_init_always(), i_ino isn't guaranteed to end up back at its
-> > > initial value after the inode is freed.  Only one filesystem (XFS)
-> > > actually sets set i_ino back to 0 when freeing its inodes.
-> > > 
-> > > So, callers of new_inode() see some random previous i_ino.  Normally
-> > > that's fine, since normally i_ino isn't accessed before being set.
-> > > There can be edge cases where that isn't necessarily true, though.
-> > > 
-> > > The one I've run into is that on ext4, when creating an encrypted file,
-> > > the new file's encryption key has to be set up prior to the jbd2
-> > > transaction, and thus prior to i_ino being set.  If something goes
-> > > wrong, fs/crypto/ may log warning or error messages, which normally
-> > > include i_ino.  So it needs to know whether it is valid to include i_ino
-> > > yet or not.  Also, on some files i_ino needs to be hashed for use in the
-> > > crypto, so fs/crypto/ needs to know whether that can be done yet or not.
-> > > 
-> > > There are ways this could be worked around, either in fs/crypto/ or in
-> > > fs/ext4/.  But, it seems there's no reason not to just fix
-> > > inode_init_always() to do the expected thing and initialize i_ino to 0.
-> > > 
-> > > So, do that, and also remove the initialization in jfs_fill_super() that
-> > > becomes redundant.
-> > > 
-> > > Signed-off-by: Eric Biggers <ebiggers@google.com>
-> > > ---
-> > >  fs/inode.c     | 1 +
-> > >  fs/jfs/super.c | 1 -
-> > >  2 files changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/fs/inode.c b/fs/inode.c
-> > > index 9d78c37b00b81..eb001129f157c 100644
-> > > --- a/fs/inode.c
-> > > +++ b/fs/inode.c
-> > > @@ -142,6 +142,7 @@ int inode_init_always(struct super_block *sb, struct inode *inode)
-> > >  	atomic_set(&inode->i_count, 1);
-> > >  	inode->i_op = &empty_iops;
-> > >  	inode->i_fop = &no_open_fops;
-> > > +	inode->i_ino = 0;
-> > >  	inode->__i_nlink = 1;
-> > >  	inode->i_opflags = 0;
-> > >  	if (sb->s_xattr)
-> > > diff --git a/fs/jfs/super.c b/fs/jfs/super.c
-> > > index b2dc4d1f9dcc5..1f0ffabbde566 100644
-> > > --- a/fs/jfs/super.c
-> > > +++ b/fs/jfs/super.c
-> > > @@ -551,7 +551,6 @@ static int jfs_fill_super(struct super_block *sb, void *data, int silent)
-> > >  		ret = -ENOMEM;
-> > >  		goto out_unload;
-> > >  	}
-> > > -	inode->i_ino = 0;
-> > >  	inode->i_size = i_size_read(sb->s_bdev->bd_inode);
-> > >  	inode->i_mapping->a_ops = &jfs_metapage_aops;
-> > >  	inode_fake_hash(inode);
-> > > 
-> > 
-> > Al, any thoughts on this?
+From: Ira Weiny <ira.weiny@intel.com>
 
-Ping.
+There is a conflict with the user visible statx bits 'mount root' and
+'dax'.  The kernel is changing the dax bit to correct this conflict.[1]
+
+Adjust _check_s_dax() to use the new bit.  Because DAX tests do not run
+on root mounts, STATX_ATTR_MOUNT_ROOT should always be 0, therefore we
+can allow either bit to indicate DAX and cover any kernel which may be
+running.
+
+[1] https://lore.kernel.org/lkml/3e28d2c7-fbe5-298a-13ba-dcd8fd504666@redhat.com/
+
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+---
+
+I went ahead and used Christoph's suggestion regarding using both bits.
+
+---
+ common/rc | 23 ++++++++++++++++++-----
+ 1 file changed, 18 insertions(+), 5 deletions(-)
+
+diff --git a/common/rc b/common/rc
+index b5a504e0dcb4..322e682e5239 100644
+--- a/common/rc
++++ b/common/rc
+@@ -3221,11 +3221,24 @@ _check_s_dax()
+ 	local exp_s_dax=$2
+ 
+ 	local attributes=$($XFS_IO_PROG -c 'statx -r' $target | awk '/stat.attributes / { print $3 }')
+-	if [ $exp_s_dax -eq 0 ]; then
+-		(( attributes & 0x2000 )) && echo "$target has unexpected S_DAX flag"
+-	else
+-		(( attributes & 0x2000 )) || echo "$target doesn't have expected S_DAX flag"
+-	fi
++
++	# The attribute bit value, STATX_ATTR_DAX (0x2000), conflicted with
++	# STATX_ATTR_MOUNT_ROOT.  Therefore, STATX_ATTR_DAX was changed to
++	# 0x00200000.
++	#
++	# Because DAX tests do not run on root mounts, STATX_ATTR_MOUNT_ROOT
++	# should always be 0, therefore we can allow either bit to indicate DAX
++	# and cover any kernel which may be running.
++
++        if [ $(( attributes & 0x00200000 )) -ne 0 ] || [ $(( attributes & 0x2000 )) -ne 0 ]; then
++                if [ $exp_s_dax -eq 0 ]; then
++                        echo "$target has unexpected S_DAX flag"
++                fi
++        else
++                if [ $exp_s_dax -ne 0 ]; then
++                        echo "$target doesn't have expected S_DAX flag"
++                fi
++        fi
+ }
+ 
+ _check_xflag()
+-- 
+2.28.0.rc0.12.gb6a658bd00c9
+
