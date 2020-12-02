@@ -2,70 +2,50 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A90082CC230
-	for <lists+linux-ext4@lfdr.de>; Wed,  2 Dec 2020 17:27:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C20AD2CC2B5
+	for <lists+linux-ext4@lfdr.de>; Wed,  2 Dec 2020 17:49:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387402AbgLBQZa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 2 Dec 2020 11:25:30 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43441 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727942AbgLBQZ3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 2 Dec 2020 11:25:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606926244;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/KvFOz7MMzTDoHF0bJjNyv+MeqNtUt9D2w2PnLZk360=;
-        b=VTsFX55mTLZYLsedCLJEsbLRF6MZwoBLU9RSF4aLZ70ErgdC8AVbUkHXUTUs53/HYOtUJ6
-        sy2q5DUpXCqjUP/0kSVBRZeRKKGhiqIQG98w671EpqTJot0hdmk6HlnCi7DLMEV6xtRoLe
-        xB5cdfU99B6wSRmxfrqBPDAOcJ3M7eE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-139-9wNKgQKzOJy9g31KKd79iw-1; Wed, 02 Dec 2020 11:24:00 -0500
-X-MC-Unique: 9wNKgQKzOJy9g31KKd79iw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EAA4F100E421;
-        Wed,  2 Dec 2020 16:23:58 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-159.rdu2.redhat.com [10.10.112.159])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 94C285D9C6;
-        Wed,  2 Dec 2020 16:23:53 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <CAJfpegt6w4h28VLctpaH46r2pkbcUNJ4pUhwUqZ-zbrOrXPEEQ@mail.gmail.com>
-References: <CAJfpegt6w4h28VLctpaH46r2pkbcUNJ4pUhwUqZ-zbrOrXPEEQ@mail.gmail.com> <3e28d2c7-fbe5-298a-13ba-dcd8fd504666@redhat.com> <20201202160049.GD1447340@iweiny-DESK2.sc.intel.com>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     dhowells@redhat.com, Ira Weiny <ira.weiny@intel.com>,
-        Eric Sandeen <sandeen@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        linux-fsdevel@vger.kernel.org,
-        linux-man <linux-man@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, xfs <linux-xfs@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, Xiaoli Feng <xifeng@redhat.com>
-Subject: Re: [PATCH V2] uapi: fix statx attribute value overlap for DAX & MOUNT_ROOT
+        id S1728654AbgLBQs0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 2 Dec 2020 11:48:26 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:60872 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726525AbgLBQsZ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 2 Dec 2020 11:48:25 -0500
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0B2Glb83032380
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 2 Dec 2020 11:47:37 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 3EB66420136; Wed,  2 Dec 2020 11:47:37 -0500 (EST)
+Date:   Wed, 2 Dec 2020 11:47:37 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Cc:     linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 01/15] ext2fs: move calculate_summary_stats to ext2fs lib
+Message-ID: <20201202164737.GE390058@mit.edu>
+References: <20201120191606.2224881-1-harshadshirwadkar@gmail.com>
+ <20201120191606.2224881-2-harshadshirwadkar@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <641396.1606926232.1@warthog.procyon.org.uk>
-Date:   Wed, 02 Dec 2020 16:23:52 +0000
-Message-ID: <641397.1606926232@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201120191606.2224881-2-harshadshirwadkar@gmail.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Miklos Szeredi <miklos@szeredi.hu> wrote:
-
-> Stable cc also?
+On Fri, Nov 20, 2020 at 11:15:52AM -0800, Harshad Shirwadkar wrote:
+> The function calculate_summary_stats sets the global metadata of the
+> file system. Tune2fs had this function defined statically in
+> tune2fs.c. Fast commit replay needs this function to set global
+> metadata at the end of the replay phase. So, move this function to
+> libext2fs.
 > 
-> Cc: <stable@vger.kernel.org> # 5.8
+> Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 
-That seems to be unnecessary, provided there's a Fixes: tag.
+Looks good,
 
-David
+Reviewed-by: Theodore Ts'o <tytso@mit.edu>
 
+					- Ted
