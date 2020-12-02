@@ -2,133 +2,83 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 340E72CB3DE
-	for <lists+linux-ext4@lfdr.de>; Wed,  2 Dec 2020 05:22:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4722C2CB630
+	for <lists+linux-ext4@lfdr.de>; Wed,  2 Dec 2020 09:05:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728312AbgLBEVn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 1 Dec 2020 23:21:43 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:44762 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727375AbgLBEVm (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 1 Dec 2020 23:21:42 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B24Ixi9098441;
-        Wed, 2 Dec 2020 04:20:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=IoUSY1Rx9GPU+8n33gzJjRRryGMyGmmSb9uVbdF0/h0=;
- b=LTdz4/2y11iBoFXIscjVNSPNWI2eoj5PBRJP+3t/+zz6KQ/8bCbNtiSBIxRFGqs0IhtV
- wv657qRaudQBbjRyqE6zg4WZ5bZbHKYW9kVVj8Sqinvlv9oJ67xdXgtskNleOR3LiJPm
- 2n0tvhBgG5nC3XSdzSx00JFxW5hiVnwnoIVF4jf47TveTZ1Mnv5bSE50iKx8uqR4GtOX
- irvJsASt9F8zKGmfJoVRTTWl8DTiJM4CmiOqQtpnm4+KCk/5tf5NDB80Tf6wS9Dg/IHC
- gXEozTkGNDyucFnou6G7fdtTpbxcuwrBXVGSu68tHmDbS6O/otBArMnvr4mFC5YgSVYI +w== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 353egkp0xd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 02 Dec 2020 04:20:55 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B24AP4Y072940;
-        Wed, 2 Dec 2020 04:18:55 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 35404nrh7m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 02 Dec 2020 04:18:55 +0000
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B24IrjE018314;
-        Wed, 2 Dec 2020 04:18:53 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 02 Dec 2020 04:18:53 +0000
-Date:   Tue, 1 Dec 2020 20:18:52 -0800
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Eric Sandeen <sandeen@redhat.com>
-Cc:     torvalds@linux-foundation.org,
+        id S2387734AbgLBIEi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 2 Dec 2020 03:04:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387539AbgLBIEh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 2 Dec 2020 03:04:37 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 627A0C0613CF;
+        Wed,  2 Dec 2020 00:03:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=uDBxn7MSIWHkb+0YhIz9IAuuaks9YFfm8h/fjLDE0Gg=; b=DyLJfLwoYd7AJsMsJ639+D7rFC
+        Sv0fi5GI4grXGVtC7zThS3idLOU7j3eFG72t5458yA/ypko/CVOG9EQItQ3aTWtAnaVjpAL0XMBFc
+        RVtS8VFzkZzU3vlIDnAWIEjmz2zBRrOvSSYWjAAdnF6YsCwV/kyyIks3+xXDTS5rIviQupaKv97yT
+        BSZ5/jVWJmUOyFshZNHwobY6eYHKamM7Wrj2m7vdE1lrNEeo5LzhRd4xL6BkcF2tRqk8EQpwCjrB/
+        jxhn7CbHD1jY3FYNnP7CqomcGEvAuFc4bJ929jRjgb7kd0aNwH2Ax+ylhqS4e0yPsNZZeopdj3+7J
+        v1AbBNiA==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kkN70-0004Jt-2u; Wed, 02 Dec 2020 08:03:42 +0000
+Date:   Wed, 2 Dec 2020 08:03:42 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Eric Sandeen <sandeen@sandeen.net>,
+        Dave Chinner <david@fromorbit.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Eric Sandeen <sandeen@redhat.com>,
         Miklos Szeredi <mszeredi@redhat.com>,
         Ira Weiny <ira.weiny@intel.com>,
         David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-man@vger.kernel.org,
-        linux-kernel@vger.kernel.org, xfs <linux-xfs@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, Xiaoli Feng <xifeng@redhat.com>
-Subject: Re: [PATCH V2] uapi: fix statx attribute value overlap for DAX &
- MOUNT_ROOT
-Message-ID: <20201202041852.GA106272@magnolia>
-References: <3e28d2c7-fbe5-298a-13ba-dcd8fd504666@redhat.com>
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-man <linux-man@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        xfs <linux-xfs@vger.kernel.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Xiaoli Feng <xifeng@redhat.com>
+Subject: Re: [PATCH 2/2] statx: move STATX_ATTR_DAX attribute handling to
+ filesystems
+Message-ID: <20201202080342.GB15726@infradead.org>
+References: <e388f379-cd11-a5d2-db82-aa1aa518a582@redhat.com>
+ <05a0f4fd-7f62-8fbc-378d-886ccd5b3f11@redhat.com>
+ <20201201173905.GI143045@magnolia>
+ <20201201205243.GK2842436@dread.disaster.area>
+ <9ab51770-1917-fc05-ff57-7677f17b6e44@sandeen.net>
+ <CAHk-=wjymrd42E6XfiXwR3NF5Fs4EhTzhUukCojEWpz0Vagvtw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3e28d2c7-fbe5-298a-13ba-dcd8fd504666@redhat.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9822 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 bulkscore=0
- malwarescore=0 mlxscore=0 mlxlogscore=999 phishscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012020024
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9822 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 suspectscore=1
- phishscore=0 mlxlogscore=999 lowpriorityscore=0 malwarescore=0
- priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1015 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012020025
+In-Reply-To: <CAHk-=wjymrd42E6XfiXwR3NF5Fs4EhTzhUukCojEWpz0Vagvtw@mail.gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 05:21:40PM -0600, Eric Sandeen wrote:
-> [*] Note: This needs to be merged as soon as possible as it's introducing an incompatible UAPI change...
+On Tue, Dec 01, 2020 at 02:12:19PM -0800, Linus Torvalds wrote:
+> On Tue, Dec 1, 2020 at 2:03 PM Eric Sandeen <sandeen@sandeen.net> wrote:
+> >
+> > That's why I was keen to just add DAX unconditionally at this point, and if we want
+> > to invent/refine meanings for the mask, we can still try to do that?
 > 
-> STATX_ATTR_MOUNT_ROOT and STATX_ATTR_DAX got merged with the same value,
-> so one of them needs fixing. Move STATX_ATTR_DAX.
+> Oh Gods.  Let's *not* make this some "random filesystem choice" where
+> now semantics depends on what some filesystem decided to do, and
+> different filesystems have very subtly different semantics.
 > 
-> While we're in here, clarify the value-matching scheme for some of the
-> attributes, and explain why the value for DAX does not match.
+> This all screams "please keep this in the VFS layer" so that we at
+> least have _one_ place where these kinds of decisions are made.
 > 
-> Fixes: 80340fe3605c ("statx: add mount_root")
-> Fixes: 712b2698e4c0 ("fs/stat: Define DAX statx attribute")
-> Reported-by: David Howells <dhowells@redhat.com>
-> Signed-off-by: Eric Sandeen <sandeen@redhat.com>
-> Reviewed-by: David Howells <dhowells@redhat.com>
+> I suspect very very few people actually end up caring about any of the
+> STATX flags at all, of course. The fact that the DAX one was
+> apparently entirely the wrong bit argues that this isn't all that
+> important.
 
-Looks fine to me,
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-
---D
-
-> ---
-> V2: Change flag value per Darrick Wong
->     Tweak comment per Darrick Wong
->     Add Fixes: tags & reported-by & RVB per dhowells
-> 
->  include/uapi/linux/stat.h | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
-> index 82cc58fe9368..1500a0f58041 100644
-> --- a/include/uapi/linux/stat.h
-> +++ b/include/uapi/linux/stat.h
-> @@ -171,9 +171,12 @@ struct statx {
->   * be of use to ordinary userspace programs such as GUIs or ls rather than
->   * specialised tools.
->   *
-> - * Note that the flags marked [I] correspond to generic FS_IOC_FLAGS
-> + * Note that the flags marked [I] correspond to the FS_IOC_SETFLAGS flags
->   * semantically.  Where possible, the numerical value is picked to correspond
-> - * also.
-> + * also.  Note that the DAX attribute indicates that the file is in the CPU
-> + * direct access state.  It does not correspond to the per-inode flag that
-> + * some filesystems support.
-> + *
->   */
->  #define STATX_ATTR_COMPRESSED		0x00000004 /* [I] File is compressed by the fs */
->  #define STATX_ATTR_IMMUTABLE		0x00000010 /* [I] File is marked immutable */
-> @@ -183,7 +186,7 @@ struct statx {
->  #define STATX_ATTR_AUTOMOUNT		0x00001000 /* Dir: Automount trigger */
->  #define STATX_ATTR_MOUNT_ROOT		0x00002000 /* Root of a mount */
->  #define STATX_ATTR_VERITY		0x00100000 /* [I] Verity protected file */
-> -#define STATX_ATTR_DAX			0x00002000 /* [I] File is DAX */
-> +#define STATX_ATTR_DAX			0x00200000 /* File is currently in DAX state */
->  
->  
->  #endif /* _UAPI_LINUX_STAT_H */
-> -- 
-> 2.17.0
-> 
+Agreed.  That whole support interface is just weird.  But the only
+thing that remotely makes (a little bit of) sense is to just set all
+bits known about by this particular kernel in the VFS.  Everything else
+is going to be a complete mess.
