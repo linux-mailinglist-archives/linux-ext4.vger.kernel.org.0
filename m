@@ -2,69 +2,120 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB6672CBA02
-	for <lists+linux-ext4@lfdr.de>; Wed,  2 Dec 2020 11:02:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6477E2CBC48
+	for <lists+linux-ext4@lfdr.de>; Wed,  2 Dec 2020 13:04:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388449AbgLBKCB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 2 Dec 2020 05:02:01 -0500
-Received: from verein.lst.de ([213.95.11.211]:53409 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388089AbgLBKCA (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 2 Dec 2020 05:02:00 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id C39C267373; Wed,  2 Dec 2020 11:01:14 +0100 (CET)
-Date:   Wed, 2 Dec 2020 11:01:14 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-fsdevel@vger.kernel.org,
-        John Johansen <john.johansen@canonical.com>,
-        James Morris <jmorris@namei.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Mrunal Patel <mpatel@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Theodore Tso <tytso@mit.edu>, Alban Crequy <alban@kinvolk.io>,
-        Tycho Andersen <tycho@tycho.ws>,
-        David Howells <dhowells@redhat.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Seth Forshee <seth.forshee@canonical.com>,
-        =?iso-8859-1?Q?St=E9phane?= Graber <stgraber@ubuntu.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Lennart Poettering <lennart@poettering.net>,
-        "Eric W. Biederman" <ebiederm@xmission.com>, smbarber@chromium.org,
-        Phil Estes <estesp@gmail.com>, Serge Hallyn <serge@hallyn.com>,
-        Kees Cook <keescook@chromium.org>,
-        Todd Kjos <tkjos@google.com>, Paul Moore <paul@paul-moore.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        containers@lists.linux-foundation.org, fstests@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-integrity@vger.kernel.org,
-        selinux@vger.kernel.org
-Subject: Re: [PATCH v3 04/38] fs: add mount_setattr()
-Message-ID: <20201202100114.GA7360@lst.de>
-References: <20201128213527.2669807-1-christian.brauner@ubuntu.com> <20201128213527.2669807-5-christian.brauner@ubuntu.com> <20201201104907.GD27730@lst.de> <20201202094218.ym5zqnulwz6gj6eo@wittgenstein> <20201202094751.GA6129@lst.de> <20201202095547.GA6408@lst.de> <20201202095745.bhazopysyw5kbiee@wittgenstein>
+        id S1729380AbgLBMC0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 2 Dec 2020 07:02:26 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8231 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726442AbgLBMC0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 2 Dec 2020 07:02:26 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CmHcN6fK4zkkWH;
+        Wed,  2 Dec 2020 20:01:08 +0800 (CST)
+Received: from [10.174.179.86] (10.174.179.86) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 2 Dec 2020 20:01:39 +0800
+Subject: Re: [PATCH] jbd2: clear JBD2_ABORT flag before journal_reset to
+ update log tail info when load journal
+To:     Likai <li.kai4@h3c.com>, "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jan Kara <jack@suse.cz>
+References: <20200111022542.5008-1-li.kai4@h3c.com>
+ <20200114103119.GE6466@quack2.suse.cz> <20200117212657.GF448999@mit.edu>
+ <453bb3b47a214a429abb5c2e38c494c8@h3c.com>
+CC:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "joseph.qi@linux.alibaba.com" <joseph.qi@linux.alibaba.com>,
+        "gechangwei@live.cn" <gechangwei@live.cn>,
+        Wangyong <wang.yongD@h3c.com>, Wangxibo <wang.xibo@h3c.com>
+From:   yebin <yebin10@huawei.com>
+Message-ID: <5FC78223.8070000@huawei.com>
+Date:   Wed, 2 Dec 2020 20:01:39 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201202095745.bhazopysyw5kbiee@wittgenstein>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <453bb3b47a214a429abb5c2e38c494c8@h3c.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.86]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 10:57:45AM +0100, Christian Brauner wrote:
-> Sounds good!
-> If we make this a preparatory patch do you want to be recorded in the
-> author field?
+Have you really encountered the problem of file system inconsistency 
+caused by non-replay of logs?
 
-No need to record me in any way.  This was just whiteboard coding.
+(1) if (needs_recovery==0)
+      jbd2_journal_wipe will call jbd2_mark_journal_empty to update 
+s_start and s_sequence.
+
+(2) if (needs_recovery == 1)
+   ext4_fill_super:
+......
+   if (needs_recovery) {
+          ext4_msg(sb, KERN_INFO, "recovery complete");
+          ext4_mark_recovery_complete(sb, es);    -->Will update s_start 
+and s_sequence
+  }
+......
+   Recently, I encountered the problem of inconsistent file system data, 
+which may be
+caused by the log not replaying during fsck. But according to the 
+description of your
+patch, the s_start and the  s_sequence will all be updated.
+   Therefore, I doubt whether the problem you described really exists.
+
+
+On 2020/1/20 14:30, Likai wrote:
+> On 2020/1/18 5:27, Theodore Y. Ts'o wrote:
+>> On Tue, Jan 14, 2020 at 11:31:19AM +0100, Jan Kara wrote:
+>>> Thanks for the patch! Just some small comments below:
+>>>
+>>> On Sat 11-01-20 10:25:42, Kai Li wrote:
+>>>> Fixes: 85e0c4e89c1b "jbd2: if the journal is aborted then don't allow update of the log tail"
+>>> This tag should come at the bottom of the changelog (close to your
+>>> Signed-off-by).
+>>>
+>>>> If journal is dirty when mount, it will be replayed but jbd2 sb
+>>>> log tail cannot be updated to mark a new start because
+>>>> journal->j_flags has already been set with JBD2_ABORT first
+>>>> in journal_init_common.
+>>>> When a new transaction is committed, it will be recorded in block 1
+>>>> first(journal->j_tail is set to 1 in journal_reset). If emergency
+>>>> restart again before journal super block is updated unfortunately,
+>>>> the new recorded trans will not be replayed in the next mount.
+>>>> It is danerous which may lead to metadata corruption for file system.
+>>> I'd slightly rephrase the text here so that it is more easily readable and
+>>> correct some grammar mistakes. Something like:
+>>>
+>>> If the journal is dirty when the filesystem is mounted, jbd2 will replay
+>>> the journal but the journal superblock will not be updated by
+>>> journal_reset() because JBD2_ABORT flag is still set (it was set in
+>>> journal_init_common()). This is problematic because when a new transaction
+>>> is then committed, it will be recorded in block 1 (journal->j_tail was set
+>>> to 1 in journal_reset()). If unclean shutdown happens again before the
+>>> journal superblock is updated, the new recorded transaction will not be
+>>> replayed during the next mount (because of stale sb->s_start and
+>>> sb->s_sequence values) which can lead to filesystem corruption.
+>>>
+>>> Otherwise the patch looks good to me so feel free to add:
+>>>
+>>> Reviewed-by: Jan Kara <jack@suse.cz>
+>>>
+>>> (again this is added to the bottom of the changelog like the 'Fixes' tag or
+>>> 'Signed-off-by' tag).
+>> Thanks, applied with a fixed up commit description.
+>>
+>> 		       	     	       - Ted
+>>
+> Sorry for reply so late due to my business trip recently.  This new
+> comment is ok and more clear. Thanks.
+>
+>                                                                         
+>                                                                         
+>        - Kai
+>
+> .
+>
+
