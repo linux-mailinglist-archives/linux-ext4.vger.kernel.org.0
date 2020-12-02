@@ -2,46 +2,100 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4711C2CC2CD
-	for <lists+linux-ext4@lfdr.de>; Wed,  2 Dec 2020 17:55:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7C4D2CC320
+	for <lists+linux-ext4@lfdr.de>; Wed,  2 Dec 2020 18:11:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728375AbgLBQzZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 2 Dec 2020 11:55:25 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:33959 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728348AbgLBQzY (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 2 Dec 2020 11:55:24 -0500
-Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0B2Gs8hR002586
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 2 Dec 2020 11:54:08 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 33864420136; Wed,  2 Dec 2020 11:54:08 -0500 (EST)
-Date:   Wed, 2 Dec 2020 11:54:08 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 03/15] e2fsck: port fc changes from kernel's recovery.c
- to e2fsck
-Message-ID: <20201202165408.GG390058@mit.edu>
-References: <20201120191606.2224881-1-harshadshirwadkar@gmail.com>
- <20201120191606.2224881-4-harshadshirwadkar@gmail.com>
+        id S2387627AbgLBRLd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 2 Dec 2020 12:11:33 -0500
+Received: from sandeen.net ([63.231.237.45]:56874 "EHLO sandeen.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728380AbgLBRLc (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 2 Dec 2020 12:11:32 -0500
+Received: from liberator.sandeen.net (liberator.sandeen.net [10.0.0.146])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by sandeen.net (Postfix) with ESMTPSA id 1EAB1146296;
+        Wed,  2 Dec 2020 11:10:34 -0600 (CST)
+To:     ira.weiny@intel.com, fstests@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        Jeff Moyer <jmoyer@redhat.com>, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Eric Sandeen <sandeen@redhat.com>,
+        David Howells <dhowells@redhat.com>
+References: <20201202160701.1458658-1-ira.weiny@intel.com>
+From:   Eric Sandeen <sandeen@sandeen.net>
+Subject: Re: [RFC PATCH] common/rc: Fix _check_s_dax() for kernel 5.10
+Message-ID: <b131a2a6-f02f-9a91-4de1-01a77b76577a@sandeen.net>
+Date:   Wed, 2 Dec 2020 11:10:50 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201120191606.2224881-4-harshadshirwadkar@gmail.com>
+In-Reply-To: <20201202160701.1458658-1-ira.weiny@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 11:15:54AM -0800, Harshad Shirwadkar wrote:
-> This patch makes recovery.c identical with fast commit kernel changes.
+On 12/2/20 10:07 AM, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
 > 
-> Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+> There is a conflict with the user visible statx bits 'mount root' and
+> 'dax'.  The kernel is shifting the dax bit.[1]
+> 
+> Adjust _check_s_dax() to use the new bit.
+> 
+> [1] https://lore.kernel.org/lkml/3e28d2c7-fbe5-298a-13ba-dcd8fd504666@redhat.com/
+> 
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> 
+> ---
+> 
+> I'm not seeing an easy way to check for kernel version.  It seems like that is
+> the right thing to do.  So do I need to do that by hand or is that something
+> xfstests does not worry about?
 
-Looks good,
+xfstests gets used on distro kernels too, so relying on kernel version isn't
+really something we can use to make determinations like this, unfortunately.
 
-Reviewed-by: Theodore Ts'o <tytso@mit.edu>
+Probably the best we can do is hope that the change makes it to stable and
+distro kernels quickly, and the old flag fades into obscurity.
 
+Maybe worth a comment in the test mentioning the SNAFU, though, for anyone
+investigating it when it fails on older kernels?
+
+> Ira
+> 
+> ---
+>  common/rc | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/common/rc b/common/rc
+> index b5a504e0dcb4..3d45e233954f 100644
+> --- a/common/rc
+> +++ b/common/rc
+> @@ -3222,9 +3222,9 @@ _check_s_dax()
+>  
+>  	local attributes=$($XFS_IO_PROG -c 'statx -r' $target | awk '/stat.attributes / { print $3 }')
+>  	if [ $exp_s_dax -eq 0 ]; then
+> -		(( attributes & 0x2000 )) && echo "$target has unexpected S_DAX flag"
+> +		(( attributes & 0x00200000 )) && echo "$target has unexpected S_DAX flag"
+>  	else
+> -		(( attributes & 0x2000 )) || echo "$target doesn't have expected S_DAX flag"
+> +		(( attributes & 0x00200000 )) || echo "$target doesn't have expected S_DAX flag"
+
+I suppose you could add a test for 0x2000 in this failure case, and echo "Is your kernel missing
+commit xxxxxx?" as another hint.
+
+-Eric
+
+>  	fi
+>  }
+>  
+> 
