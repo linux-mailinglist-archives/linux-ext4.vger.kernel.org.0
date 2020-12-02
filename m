@@ -2,105 +2,175 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 596E72CC910
-	for <lists+linux-ext4@lfdr.de>; Wed,  2 Dec 2020 22:48:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94C6D2CC997
+	for <lists+linux-ext4@lfdr.de>; Wed,  2 Dec 2020 23:26:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728355AbgLBVrN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 2 Dec 2020 16:47:13 -0500
-Received: from mga12.intel.com ([192.55.52.136]:35055 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726646AbgLBVrM (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 2 Dec 2020 16:47:12 -0500
-IronPort-SDR: d5tK3cdokoC6yc2tGvy2mpAu6eMaUmzsPGvCwwxn+BY+eInw+2mikHo9PWv8IxtsIYRZm0j/Zh
- jytjM1UMS7HQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="152346583"
-X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
-   d="scan'208";a="152346583"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 13:46:32 -0800
-IronPort-SDR: 63r2hOH28lGBrb5+aNs8JtEfc3rF5jVDNVCmUbmcxKHQ/Cjrr2iCKMsMUYShTiJvbihV7WLpvX
- lZxC9VHeIrSw==
-X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
-   d="scan'208";a="481714327"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 13:46:31 -0800
-From:   ira.weiny@intel.com
-To:     fstests@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Eric Sandeen <sandeen@redhat.com>
-Cc:     Ira Weiny <ira.weiny@intel.com>, linux-kernel@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Jeff Moyer <jmoyer@redhat.com>, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        David Howells <dhowells@redhat.com>
-Subject: [PATCH V2] common/rc: Fix _check_s_dax()
-Date:   Wed,  2 Dec 2020 13:46:29 -0800
-Message-Id: <20201202214629.1563760-1-ira.weiny@intel.com>
-X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
-In-Reply-To: <20201202214145.1563433-1-ira.weiny@intel.com>
-References: <20201202214145.1563433-1-ira.weiny@intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1727511AbgLBW0M (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 2 Dec 2020 17:26:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727373AbgLBW0L (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 2 Dec 2020 17:26:11 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E223C0617A7
+        for <linux-ext4@vger.kernel.org>; Wed,  2 Dec 2020 14:25:31 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id v1so1838414pjr.2
+        for <linux-ext4@vger.kernel.org>; Wed, 02 Dec 2020 14:25:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=5utOZVf3veGfMRoQbf2Yx/BFy8qrmXGBXUjzJ8dKZ44=;
+        b=0GCKxWP2V5HaarOWgPvAdnTXx2FRqhPN6H35kJgFG3cmfCi3Mddc/k9uZy+S4h4RDb
+         GWBTdRXy44u1W/nWYPm+u+lkq4wJf2L4nVB5o2OjsEbewfP8nzxKvEhWSMVrSC0kOvgb
+         0HxT5OC7CC6zKJfKgWvYI06cW2z5Phvfgnj5CcLaKtsgSIa1sQGX6oJp4DGArUZMhAdu
+         vLg3EdS/BuQWOoz3IKjtHpV7T2vxkNo9dDNFEmcIc0gvSZDIqsDmYo+F6yJL1uo54bch
+         xJ5Q+grshGBi7lOzhF4S2LMjssIrN+Y9pZ7B1MvPnIRMtvy489e4qHIuK8pAywGAbEvV
+         YIvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=5utOZVf3veGfMRoQbf2Yx/BFy8qrmXGBXUjzJ8dKZ44=;
+        b=H6tcKVzy68aqvk+t6F3K+lVTbB5GW/loI2+AdhFNC9ghwjZoI8hFJwJ0Vjia0sJ+ow
+         +kSrbtXOH+V7VOyb4OoEKx9IlRbL9rZWdrB6a5z8geB384Lcx4gLv4T/xp+8ZzKj1LwL
+         UVDCX4Hm4xKiZpYOjOXhp84rIMiAi9Yp6QRkaajvvvZln/BFpLE9j9660I7oFiT2CVq9
+         6u69zF5Hol85L+TuQnxdYK7/dPF8pqDJ4SpJvt8wSLVZrip2xVytHEwIg78iWi/rAX3y
+         eDMPvkA0Z6bPZ22/FurtguyYlBsUA+9wGKHH7AtqTrJVd1K6GqVJK2FMWzYlds1YF2Sj
+         HK7A==
+X-Gm-Message-State: AOAM533FyBwuSs2pl3Yl/qwZ0fuIdQN/yDKihOEPQt21u63ic8YAqcfg
+        KILueTjT758/b/Uc4gXTzFSnJOur06u9vIv8
+X-Google-Smtp-Source: ABdhPJw2pnDywanmCG7P6trWRpLjwJHWFEhzfNkYWRCskdYELm+ojAXsHpq14/R1YtqT0yrv9Dcmgw==
+X-Received: by 2002:a17:902:8691:b029:d7:e0f9:b1b with SMTP id g17-20020a1709028691b02900d7e0f90b1bmr271552plo.37.1606947929537;
+        Wed, 02 Dec 2020 14:25:29 -0800 (PST)
+Received: from [192.168.10.160] (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id h4sm70851pgp.8.2020.12.02.14.25.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 02 Dec 2020 14:25:28 -0800 (PST)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <047AD2C4-4E34-4325-B2B6-02E240ED50DD@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_68D5BA99-AE77-4AE7-932A-159B4173426B";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH 0/9] Allow deleting files with unsupported encryption
+ policy
+Date:   Wed, 2 Dec 2020 15:25:25 -0700
+In-Reply-To: <X8gCKTx96rXUMh0i@gmail.com>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org
+To:     Eric Biggers <ebiggers@kernel.org>
+References: <20201125002336.274045-1-ebiggers@kernel.org>
+ <X8gCKTx96rXUMh0i@gmail.com>
+X-Mailer: Apple Mail (2.3273)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Ira Weiny <ira.weiny@intel.com>
 
-There is a conflict with the user visible statx bits 'mount root' and
-'dax'.  The kernel is changing the dax bit to correct this conflict.[1]
+--Apple-Mail=_68D5BA99-AE77-4AE7-932A-159B4173426B
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-Adjust _check_s_dax() to use the new bit.  Because DAX tests do not run
-on root mounts, STATX_ATTR_MOUNT_ROOT should always be 0, therefore we
-can allow either bit to indicate DAX and cover any kernel which may be
-running.
+On Dec 2, 2020, at 2:07 PM, Eric Biggers <ebiggers@kernel.org> wrote:
+>=20
+> On Tue, Nov 24, 2020 at 04:23:27PM -0800, Eric Biggers wrote:
+>> Currently it's impossible to delete files that use an unsupported
+>> encryption policy, as the kernel will just return an error when
+>> performing any operation on the top-level encrypted directory, even =
+just
+>> a path lookup into the directory or opening the directory for =
+readdir.
+>>=20
+>> It's desirable to return errors for most operations on files that use =
+an
+>> unsupported encryption policy, but the current behavior is too =
+strict.
+>> We need to allow enough to delete files, so that people can't be =
+stuck
+>> with undeletable files when downgrading kernel versions.  That =
+includes
+>> allowing directories to be listed and allowing dentries to be looked =
+up.
+>>=20
+>> This series fixes this (on ext4, f2fs, and ubifs) by treating an
+>> unsupported encryption policy in the same way as "key unavailable" in
+>> the cases that are required for a recursive delete to work.
+>>=20
+>> The actual fix is in patch 9, so see that for more details.
+>>=20
+>> Patches 1-8 are cleanups that prepare for the actual fix by removing
+>> direct use of fscrypt_get_encryption_info() by filesystems.
+>>=20
+>> This patchset applies to branch "master" (commit 4a4b8721f1a5) of
+>> https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git.
+>>=20
+>> Eric Biggers (9):
+>>  ext4: remove ext4_dir_open()
+>>  f2fs: remove f2fs_dir_open()
+>>  ubifs: remove ubifs_dir_open()
+>>  ext4: don't call fscrypt_get_encryption_info() from dx_show_leaf()
+>>  fscrypt: introduce fscrypt_prepare_readdir()
+>>  fscrypt: move body of fscrypt_prepare_setattr() out-of-line
+>>  fscrypt: move fscrypt_require_key() to fscrypt_private.h
+>>  fscrypt: unexport fscrypt_get_encryption_info()
+>>  fscrypt: allow deleting files with unsupported encryption policy
+>>=20
+>> fs/crypto/fname.c           |  8 +++-
+>> fs/crypto/fscrypt_private.h | 28 ++++++++++++++
+>> fs/crypto/hooks.c           | 16 +++++++-
+>> fs/crypto/keysetup.c        | 20 ++++++++--
+>> fs/crypto/policy.c          | 22 +++++++----
+>> fs/ext4/dir.c               | 16 ++------
+>> fs/ext4/namei.c             | 10 +----
+>> fs/f2fs/dir.c               | 10 +----
+>> fs/ubifs/dir.c              | 11 +-----
+>> include/linux/fscrypt.h     | 75 =
++++++++++++++++++++------------------
+>> 10 files changed, 126 insertions(+), 90 deletions(-)
+>>=20
+>>=20
+>> base-commit: 4a4b8721f1a5e4b01e45b3153c68d5a1014b25de
+>=20
+> Any more comments on this patch series?
 
-[1] https://lore.kernel.org/lkml/3e28d2c7-fbe5-298a-13ba-dcd8fd504666@redhat.com/
+I think the general idea makes sense.  I'll review the ext4 patches in =
+the series.
 
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
----
 
-Changes for V2:
-	Fix bad indentation whitespace.
+Cheers, Andreas
 
- common/rc | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
 
-diff --git a/common/rc b/common/rc
-index b5a504e0dcb4..9418f7bc8dab 100644
---- a/common/rc
-+++ b/common/rc
-@@ -3221,10 +3221,23 @@ _check_s_dax()
- 	local exp_s_dax=$2
- 
- 	local attributes=$($XFS_IO_PROG -c 'statx -r' $target | awk '/stat.attributes / { print $3 }')
--	if [ $exp_s_dax -eq 0 ]; then
--		(( attributes & 0x2000 )) && echo "$target has unexpected S_DAX flag"
-+
-+	# The attribute bit value, STATX_ATTR_DAX (0x2000), conflicted with
-+	# STATX_ATTR_MOUNT_ROOT.  Therefore, STATX_ATTR_DAX was changed to
-+	# 0x00200000.
-+	#
-+	# Because DAX tests do not run on root mounts, STATX_ATTR_MOUNT_ROOT
-+	# should always be 0, therefore we can allow either bit to indicate DAX
-+	# and cover any kernel which may be running.
-+
-+	if [ $(( attributes & 0x00200000 )) -ne 0 ] || [ $(( attributes & 0x2000 )) -ne 0 ]; then
-+		if [ $exp_s_dax -eq 0 ]; then
-+			echo "$target has unexpected S_DAX flag"
-+		fi
- 	else
--		(( attributes & 0x2000 )) || echo "$target doesn't have expected S_DAX flag"
-+		if [ $exp_s_dax -ne 0 ]; then
-+			echo "$target doesn't have expected S_DAX flag"
-+		fi
- 	fi
- }
- 
--- 
-2.28.0.rc0.12.gb6a658bd00c9
 
+
+
+
+--Apple-Mail=_68D5BA99-AE77-4AE7-932A-159B4173426B
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl/IFFUACgkQcqXauRfM
+H+CrkBAAmi+u5EOfLwZ4a5VQwxEzgad3GDbuBgmWS1SBHEetbx+9IRVZ6usAo4Ce
+8AN1KeZFZcVbPD2Qjo3mAULr8MzuJEOP6qKsMUKT/0zN1LAmd4J8oMnfk0aJBKl0
+SXKoKNuHi7CXHIiimj1zqZa8ToaEm30zlmSwRYRy/AbBnT2PIluKaDehsiSJoq1a
+r5KXAI3WlsnOVzmp32PVeHnvAVLsb9hCSwZYZDNmawT0GR+0dupyMinz5fx0XP/N
+QPY32OjFavTd2ON1Q0+f07nbKnbXn1gIWOVI8/z80EoXYuyIgJvAqUjou3O7LFBS
+6FpDmoMNx+cJBBfGlJkC/PeuqapF9SICwuP+d0Sc0bkn+R2rxsFSSjJUbVrxf/k7
+qW0Urs/amJS6fjuZIZntzfaHAD+x782+dqAyBH4d5Z4pGiFaSBo8cdHbLcX627Uf
+8THXBZzkpCOUGypQUPT2+zjA6VMxLJV5HwddG86p0GwLEi3o/YCm3R8xrbLelq4G
+SMJLpcicYnD7UbcukGJHVZvchSClprDbIlBjgP9ArcLzQ4FYJ7OS6TU5EL8NkoE3
+7FVtrDvS9ypXmqWx6n+X7sVfGCV0NRjBacINaYmwlv9ZCs5DUXS8w4HSXse/kc4m
+JINcTZoFZHSG2H0vfRnxnC6oUXE54gAalfjOOZobMLEOHR8Fw3I=
+=ZB7J
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_68D5BA99-AE77-4AE7-932A-159B4173426B--
