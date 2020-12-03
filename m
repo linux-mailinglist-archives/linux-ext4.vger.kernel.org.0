@@ -2,156 +2,125 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55E7E2CD22C
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Dec 2020 10:09:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4779D2CD310
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Dec 2020 10:58:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726623AbgLCJIr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 3 Dec 2020 04:08:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387417AbgLCJIn (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Dec 2020 04:08:43 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 413DFC061A4F
-        for <linux-ext4@vger.kernel.org>; Thu,  3 Dec 2020 01:08:03 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id 81so1275326ioc.13
-        for <linux-ext4@vger.kernel.org>; Thu, 03 Dec 2020 01:08:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=74uO1/t37YPwzY2IgX0iwzNHyHsHeMRe/OnM5c1rYkk=;
-        b=eBGAu01BJ7pLj83+gnLYKzxbwx0GGpfO42EPDHHQqiKy+l+zICwZDdpgDUou58g4d0
-         VTdt5vmYaLsLVc2CuyiM19A4r+8Z3x96sQ23HVYfkQYl4jPxvuGSjdCrk1pB5Ydz0uNL
-         jgQCIV1z5k8/FZzjhOlHq0x5vUOarXdxt+MMfjmxWSxnJvNHLSt6xHZj8a+xEyZ006K/
-         TZSuh3cLRDWAqykPWD803quDrPG+uicR+bB7SA848sVFXcLV6uiBk0K9+IND1i/L0vqK
-         rvzansy8jZr4kP8G2WOw0O2qZ2GWSwZRJnYfie+ijeBREu/lt0ERL5QcENIm0WPrEksO
-         f7+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=74uO1/t37YPwzY2IgX0iwzNHyHsHeMRe/OnM5c1rYkk=;
-        b=sy65+z6tN4LnmlkCdAjCtXGac2Ds+f5URdFOr3cJMOu5O/9I0uORTWflZ/1La/gYKZ
-         dds9zUK9LPqyH41LQWZQqfkmBb22369xDhtWBnoi1KOiVDVdBrPvpJe6rVGjk4gEfhuL
-         21kc4OI1QpGuf0pf7/A7B16ViN3huD42fWx+g47P1VvN6ma7i7j3BhzCvHjsxERy/N7i
-         hSXPfd3trT1ueYr+a/zlfux6I5+PvctjKgrjqP5xXgepXi8HDKLsMGumMnF5jLL7hnEu
-         8NizuL7vyLr48lQnrFFL4FsD19evpsmt0FJX+nSgdm6ZjHDBJ/VNQTV271phWLKvDN21
-         k+EQ==
-X-Gm-Message-State: AOAM530Vw85kh0nTp7alm7iKMZniB1MPEqbXreNAzW0ISlORN2D5cDl1
-        PWONKDGqIZdloLExG0ge45M9spi/cWXhhkCxcDw=
-X-Google-Smtp-Source: ABdhPJz+HlmQQq3FD9QhMfmNxXK+QNO7QQl6eQlnVn5WE6OMGR2nWetQOGcsV4/Ges3TTKCNATT8YuSG8TJ1PLedfhQ=
-X-Received: by 2002:a5d:8356:: with SMTP id q22mr2436261ior.50.1606986482518;
- Thu, 03 Dec 2020 01:08:02 -0800 (PST)
+        id S2388536AbgLCJ6p convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Thu, 3 Dec 2020 04:58:45 -0500
+Received: from smtp.h3c.com ([60.191.123.50]:59635 "EHLO h3cspam02-ex.h3c.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388483AbgLCJ6o (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 3 Dec 2020 04:58:44 -0500
+X-Greylist: delayed 6058 seconds by postgrey-1.27 at vger.kernel.org; Thu, 03 Dec 2020 04:58:42 EST
+Received: from h3cspam02-ex.h3c.com (localhost [127.0.0.2] (may be forged))
+        by h3cspam02-ex.h3c.com with ESMTP id 0B38Hgsh099569
+        for <linux-ext4@vger.kernel.org>; Thu, 3 Dec 2020 16:17:42 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from DAG2EX05-BASE.srv.huawei-3com.com ([10.8.0.68])
+        by h3cspam02-ex.h3c.com with ESMTP id 0B38FxA0095873;
+        Thu, 3 Dec 2020 16:15:59 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) by
+ DAG2EX05-BASE.srv.huawei-3com.com (10.8.0.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 3 Dec 2020 16:16:02 +0800
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074])
+ by DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074%7]) with
+ mapi id 15.01.2106.002; Thu, 3 Dec 2020 16:16:02 +0800
+From:   Tianxianting <tian.xianting@h3c.com>
+To:     Jan Kara <jack@suse.cz>, "tytso@mit.edu" <tytso@mit.edu>
+CC:     "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] ext4: remove the null check of bio_vec page
+Thread-Topic: [PATCH] ext4: remove the null check of bio_vec page
+Thread-Index: AQHWpruDhYzwIts0bkGkoCqDPV0JCqmhVUyAgAQSuiD//39fAIBAY6/Q
+Date:   Thu, 3 Dec 2020 08:16:01 +0000
+Message-ID: <6859d08c4dd44de9b7a040c160046359@h3c.com>
+References: <20201020082201.34257-1-tian.xianting@h3c.com>
+ <20201021102503.GC19726@quack2.suse.cz>
+ <113ad7d2cbfd43a9972ad37df66e5542@h3c.com>
+ <20201023165644.GG9119@quack2.suse.cz>
+In-Reply-To: <20201023165644.GG9119@quack2.suse.cz>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.99.141.128]
+x-sender-location: DAG2
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-References: <CAKJOkCoUGPctXEcJWZFo+d62CSBmYjxFr1D0j74OY2ijynMyUA@mail.gmail.com>
- <1870131.usQuhbGJ8B@merkaba>
-In-Reply-To: <1870131.usQuhbGJ8B@merkaba>
-From:   lokesh jaliminche <lokesh.jaliminche@gmail.com>
-Date:   Thu, 3 Dec 2020 01:07:51 -0800
-Message-ID: <CAKJOkCrBMhLKZjp4=1KJv3uY+xFBN0KEjDx_ix=88xr0oegD+w@mail.gmail.com>
-Subject: Re: improved performance in case of data journaling
-To:     Martin Steigerwald <martin@lichtvoll.de>
-Cc:     Ext4 <linux-ext4@vger.kernel.org>,
-        Andrew Morton <akpm@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-DNSRBL: 
+X-MAIL: h3cspam02-ex.h3c.com 0B38FxA0095873
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Martin,
+Thanks Jan
+Hi Ted Tso, Could I get your opinion of this patch?  thanks
 
-thanks for the quick response,
+-----Original Message-----
+From: Jan Kara [mailto:jack@suse.cz] 
+Sent: Saturday, October 24, 2020 12:57 AM
+To: tianxianting (RD) <tian.xianting@h3c.com>
+Cc: Jan Kara <jack@suse.cz>; tytso@mit.edu; adilger.kernel@dilger.ca; linux-ext4@vger.kernel.org; linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ext4: remove the null check of bio_vec page
 
-Apologies from my side, I should have posted my fio job description
-with the fio logs
-Anyway here is my fio workload.
+On Fri 23-10-20 16:38:16, Tianxianting wrote:
+> Thanks Jan
+> Can be the patch applied?
 
-[global]
-filename=3D/mnt/ext4/test
-direct=3D1
-runtime=3D30s
-time_based
-size=3D100G
-group_reporting
+Ted Tso is the ext4 maintainer so he should eventually pick up and apply the patch. But since there's merge window currently open, I guess he's busy shuffling patches to send to Linus. I'd expect he'll get to your patch in a week or two.
 
-[writer]
-new_group
-rate_iops=3D250000
-bs=3D4k
-iodepth=3D1
-ioengine=3Dsync
-rw=3Drandomwrite
-numjobs=3D1
+								Honza
 
-I am using Intel Optane SSD so it's certainly very fast.
-
-I agree that delayed logging could help to hide the performance
-degradation due to actual writes to SSD. However as per the iostat
-output data is definitely crossing the block layer and since
-data journaling logs both data and metadata I am wondering why
-or how IO requests see reduced latencies compared to metadata
-journaling or even no journaling.
-
-Also, I am using direct IO mode so ideally, it should not be using any type
-of caching. I am not sure if it's applicable to journal writes but the whol=
-e
-point of journaling is to prevent data loss in case of abrupt failures. So
-caching journal writes may result in data loss unless we are using NVRAM.
-
-So questions come to my mind are
-1. why writes without journaling are having long latencies as compared to
-    writes requests with metadata and data journaling?
-2. Since metadata journaling have relatively fewer journal writes than data
-    journaling why writes with data journaling is faster than no journaling=
- and
-    metadata journaling mode?
-3. If there is an optimization that allows data journaling to be so fast wi=
-thout
-   any risk of data loss, why the same optimization is not used in
-case of metadata
-   journaling?
-
-On Thu, Dec 3, 2020 at 12:20 AM Martin Steigerwald <martin@lichtvoll.de> wr=
-ote:
->
-> lokesh jaliminche - 03.12.20, 08:28:49 CET:
-> > I have been doing experiments to analyze the impact of data journaling
-> > on IO latencies. Theoretically, data journaling should show long
-> > latencies as compared to metadata journaling. However, I observed
-> > that when I enable data journaling I see improved performance. Is
-> > there any specific optimization for data journaling in the write
-> > path?
->
-> This has been discussed before as Andrew Morton found that data
-> journalling would be surprisingly fast with interactive write workloads.
-> I would need to look it up in my performance training slides or use
-> internet search to find the reference to that discussion again.
->
-> AFAIR even Andrew had no explanation for that. So I thought why would I
-> have one? However an idea came to my mind: The journal is a sequential
-> area on the disk. This could help with harddisks I thought at least if
-> if it I/O mostly to the same not too big location/file =E2=80=93 as you d=
-id not
-> post it, I don't know exactly what your fio job file is doing. However th=
-e
-> latencies you posted as well as the device name certainly point to fast
-> flash storage :).
->
-> Another idea that just came to my mind is: AFAIK ext4 uses quite some
-> delayed logging and relogging. That means if a block in the journal is
-> changed another time within a certain time frame Ext4 changes it in
-> memory before the journal block is written out to disk. Thus if the same
-> block if overwritten again and again in short time, at least some of the
-> updates would only happen in RAM. That might help latencies even with
-> NVMe flash as RAM usually still is faster.
->
-> Of course I bet that Ext4 maintainers have a more accurate or detailed
-> explanation than I do. But that was at least my idea about this.
->
-> Best,
+> 
+> -----Original Message-----
+> From: Jan Kara [mailto:jack@suse.cz]
+> Sent: Wednesday, October 21, 2020 6:25 PM
+> To: tianxianting (RD) <tian.xianting@h3c.com>
+> Cc: tytso@mit.edu; adilger.kernel@dilger.ca; jack@suse.cz; 
+> linux-ext4@vger.kernel.org; linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH] ext4: remove the null check of bio_vec page
+> 
+> On Tue 20-10-20 16:22:01, Xianting Tian wrote:
+> > bv_page can't be NULL in a valid bio_vec, so we can remove the NULL 
+> > check, as we did in other places when calling
+> > bio_for_each_segment_all() to go through all bio_vec of a bio.
+> > 
+> > Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+> 
+> Thanks for the patch. It looks good to me. You can add:
+> 
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> 
+> 								Honza
+> 
+> > ---
+> >  fs/ext4/page-io.c | 3 ---
+> >  1 file changed, 3 deletions(-)
+> > 
+> > diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c index
+> > defd2e10d..cb135a944 100644
+> > --- a/fs/ext4/page-io.c
+> > +++ b/fs/ext4/page-io.c
+> > @@ -111,9 +111,6 @@ static void ext4_finish_bio(struct bio *bio)
+> >  		unsigned under_io = 0;
+> >  		unsigned long flags;
+> >  
+> > -		if (!page)
+> > -			continue;
+> > -
+> >  		if (fscrypt_is_bounce_page(page)) {
+> >  			bounce_page = page;
+> >  			page = fscrypt_pagecache_page(bounce_page);
+> > --
+> > 2.17.1
+> > 
 > --
-> Martin
->
->
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
+--
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
