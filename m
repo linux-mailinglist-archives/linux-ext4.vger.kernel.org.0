@@ -2,91 +2,163 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 202CE2CCCC9
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Dec 2020 03:46:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C98042CCF0E
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Dec 2020 07:19:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728287AbgLCCpq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 2 Dec 2020 21:45:46 -0500
-Received: from mga09.intel.com ([134.134.136.24]:42056 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725893AbgLCCpq (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 2 Dec 2020 21:45:46 -0500
-IronPort-SDR: vwVPEfuTvxupxXteHk9FI48+5tcRTM9Ay+DJexvkkUT+XpSLw/IpAGiKfdrGJOma6nGTpgXtey
- r7VlkYUnKJHA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="173284224"
-X-IronPort-AV: E=Sophos;i="5.78,388,1599548400"; 
-   d="scan'208";a="173284224"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 18:45:05 -0800
-IronPort-SDR: PGAN7asU6CT7MhvSoks4tzPepYKMkHCPYKjWpAlnBlN7Eguo/8nq5n485HI2O0v69vXLklCK4g
- iXXaILwCUJ3g==
-X-IronPort-AV: E=Sophos;i="5.78,388,1599548400"; 
-   d="scan'208";a="481796846"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 18:45:04 -0800
-Date:   Wed, 2 Dec 2020 18:45:04 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Eric Sandeen <sandeen@redhat.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
+        id S1728888AbgLCGTP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 3 Dec 2020 01:19:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728318AbgLCGTP (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Dec 2020 01:19:15 -0500
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4528DC061A4D;
+        Wed,  2 Dec 2020 22:18:35 -0800 (PST)
+Received: by mail-il1-x143.google.com with SMTP id y9so914280ilb.0;
+        Wed, 02 Dec 2020 22:18:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WWc60qRkgAP4/AhDOQSUVOyIFCAFSIZPZYbAmsVDLvA=;
+        b=EqpQt8WKlMC8JpSDIKOhSMtpE8OLP1oVgZoGnQCqrKr5aya3IfoFAIVVV7pxqHhBNC
+         vH8CZ69gqkbB/jsZcwclPIJpseIVlVfnBw5ef+COmtquSWN8IH+fFdTneGPeyDN7I11F
+         llHyti6dL8jqm+rZxrPMEhbLNGHgL2eNFOEHSD+qzFKO6bkF337ruSgWlIvBxljO78zQ
+         pbxUr0pR5FGT4C2OSJSx5NgMgSG5uyL2d0rCI1oXuHac1xlbrFAr9oSmyUCxfi0cW5Al
+         UYo62/Kvvdj1QNdaBCbNxOcjje6IVKc/7GoacsW9wP018ySMJhSQkl2LZR8gdUhZ/i0k
+         1C+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WWc60qRkgAP4/AhDOQSUVOyIFCAFSIZPZYbAmsVDLvA=;
+        b=Cx9Z67zY+YSWqiergWd5Oy9+XOzN+Hh5PqG0P8SjpfRbDp+cS7rzGHKZzZNwqoZlhA
+         9fp4W9mvPN9qzoHMGTRypjiZR0jhXzTtRucbRcD4ZL+1I3hYKotpfYN5lKXwQN1/2rpp
+         bLqERdAyW7UgkaY/FqleBVrleeJqsjkvr375XQ2+W0X8taEhsJ6+r47/TqiTvwFR8SEa
+         8N6SRim5bgN93k3MyXpIRNbaZfoEYy1ottOMvnFOBu6wo5xDncaURvkbh70hLMXbySSt
+         clnBtoI//9+6qCgiuAvrmitWGX+UBWWtDCqRj95FlUsqQh6R4Iges9EJ64ukROKN2iL0
+         5ahg==
+X-Gm-Message-State: AOAM5302uJOUbPdLCtM2MhWrsl83D71naepYL4ne6BvUO7fEdCqfLvc/
+        DkWoZl49734oMWzvlgWEt2Cr6q6pxyXstKhRMKI=
+X-Google-Smtp-Source: ABdhPJz36LCXTX0/SCIOBeXZg650dbCCwPENwVekcYOEKfG4AR3MNh3N57CJyu1yS3dMiCG4Jr+vOaeTZ+tl7lnJmvM=
+X-Received: by 2002:a92:da82:: with SMTP id u2mr1725751iln.137.1606976314613;
+ Wed, 02 Dec 2020 22:18:34 -0800 (PST)
+MIME-Version: 1.0
+References: <3e28d2c7-fbe5-298a-13ba-dcd8fd504666@redhat.com>
+ <20201202160049.GD1447340@iweiny-DESK2.sc.intel.com> <CAJfpegt6w4h28VLctpaH46r2pkbcUNJ4pUhwUqZ-zbrOrXPEEQ@mail.gmail.com>
+ <641397.1606926232@warthog.procyon.org.uk> <CAJfpegsQxi+_ttNshHu5MP+uLn3px9+nZRoTLTxh9-xwU8s1yg@mail.gmail.com>
+ <X8flmVAwl0158872@kroah.com> <20201202204045.GM2842436@dread.disaster.area> <X8gBUc0fkdh6KK01@kroah.com>
+In-Reply-To: <X8gBUc0fkdh6KK01@kroah.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Thu, 3 Dec 2020 08:18:23 +0200
+Message-ID: <CAOQ4uxhNvTxEo_-wkHy-KO8Jhz0Amh-g2Nz+PzN_8OODWJPz7w@mail.gmail.com>
+Subject: Re: [PATCH V2] uapi: fix statx attribute value overlap for DAX & MOUNT_ROOT
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
         David Howells <dhowells@redhat.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Eric Sandeen <sandeen@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Miklos Szeredi <mszeredi@redhat.com>,
         linux-fsdevel <linux-fsdevel@vger.kernel.org>,
         linux-man <linux-man@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
         xfs <linux-xfs@vger.kernel.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Xiaoli Feng <xifeng@redhat.com>
-Subject: Re: [PATCH 1/2] uapi: fix statx attribute value overlap for DAX &
- MOUNT_ROOT
-Message-ID: <20201203024504.GA1563847@iweiny-DESK2.sc.intel.com>
-References: <e388f379-cd11-a5d2-db82-aa1aa518a582@redhat.com>
- <7027520f-7c79-087e-1d00-743bdefa1a1e@redhat.com>
- <20201202021633.GA1455219@iweiny-DESK2.sc.intel.com>
- <CAHk-=wjiU5Fq7aG0-H6QN1ZsK-U3Hw1K310N2z_eCPPDTKeysA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjiU5Fq7aG0-H6QN1ZsK-U3Hw1K310N2z_eCPPDTKeysA@mail.gmail.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+        Ext4 <linux-ext4@vger.kernel.org>,
+        Xiaoli Feng <xifeng@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, Jan Kara <jack@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 12:42:08PM -0800, Linus Torvalds wrote:
-> On Tue, Dec 1, 2020 at 6:16 PM Ira Weiny <ira.weiny@intel.com> wrote:
-> >
-> > This will force a change to xfstests at a minimum.  And I do know of users who
-> > have been using this value.  But I have gotten inquires about using the feature
-> > so there are users out there.
-> 
-> If it's only a few tests that fail, I wouldn't worry about it, and the
-> tests should just be updated.
+> > It seems like this can all be avoided simply by scheduling the
+> > automated fixes scans once the upstream kernel is released, not
+> > while it is still being stabilised by -rc releases. That way stable
+> > kernels get better tested fixes, they still get the same quantity of
+> > fixes, and upstream developers have some margin to detect and
+> > correct regressions in fixes before they get propagated to users.
+>
+> So the "magic" -final release from Linus would cause this to happen?
+> That means that the world would go for 3 months without some known fixes
+> being applied to the tree?  That's not acceptable to me, as I started
+> doing this because it was needed to be done, not just because I wanted
+> to do more work...
+>
 
-Done[1]
+Nobody was trying to undermine the need for expediting important fixes
+into stable kernels. Quite the contrary.
 
-> 
-> But if there are real user concerns, we may need to have some kind of
-> compat code. Because of the whole "no regressions" thing.
-> 
-> What would the typical failure cases be in practice?
+> > It also creates a clear demarcation between fixes and cc: stable for
+> > maintainers and developers: only patches with a cc: stable will be
+> > backported immediately to stable. Developers know what patches need
+> > urgent backports and, unlike developers, the automated fixes scan
+> > does not have the subject matter expertise or background to make
+> > that judgement....
+>
+> Some subsystems do not have such clear demarcation at all.  Heck, some
+> subsystems don't even add a cc: stable to known major fixes.  And that's
+> ok, the goal of the stable kernel work is to NOT impose additional work
+> on developers or maintainers if they don't want to do that work.
+>
 
-The failure will be a user not seeing their file operating in DAX mode when
-they expect it to.
+Greg,
 
-I discussed this with Dan Williams today.  He and I agreed the flag is new
-enough that we don't think users have any released code to the API just yet.
-So I think we will be ok.
+Please acknowledge that there is something to improve.
+Saying that some subsystems maintainers don't care is not a great
+argument for subsystem maintainers that do care and try to improve the process.
 
-Also, after learning what the other flag was for I agree with Christoph that
-the impact is going to be minimal since users are not typically operating on
-the root inode.
+I am speaking here both as a maintainer of a downstream stable kernel,
+who cares specifically about xfs fixes and as an upstream developer who
+"contributes" patches to stable kernels. And I am not a passive contributor
+to stable kernels. I try to take good care of overlayfs and fsnotify patches
+being properly routed to stable kernels, as well as prepping the patches
+for backport-ability during review and occasional backporting.
+I also try to help with auditing the AUTOSEL patch selection of xfs.
 
-So I think we are ok with just making the change and getting it into stable
-quickly.
+The process can improve. This is an indisputable fact, because as contributors
+we want to improve the quality of the stable kernels but missing the
+tools to do so.
+
+As a downstream user of stable kernels I learned to wait out a few .y releases
+after xfs fixes have flowed in. This is possible because xfs stable
+fixes are not
+flowing that often.
+Do you see what happened? You did not make the problem go away, but pushed
+it down to your downstream users.
+I would not have complained unless I thought that we could do better.
+
+Here is a recent example, where during patch review, I requested NOT to include
+any stable backport triggers [1]:
+"...We should consider sending this to stable, but maybe let's merge
+first and let it
+ run in master for a while before because it is not a clear and
+immediate danger..."
+
+This is just one patch and I put a mental trigger to myself to stop it
+during stable
+patch review if it gets selected, but you can see how this solution
+does not scale.
+
+As a developer and as a reviewer, I wish (as Dave implied) that I had a way to
+communicate to AUTOSEL that auto backport of this patch has more risk than
+the risk of not backporting. I could also use a way to communicate
+that this patch
+(although may fix a bug) should be "treated as a feature", meaning that it needs
+a full release cycle to stabilize should not see the light of day
+before the upstream
+.0 release. Some fixes are just like that.
+
+The question is how to annotate these changes.
+Thinking out loud:
+    Cc: stable@vger.kernel.org#v5.9<<v5.10
+    Cc: stable@vger.kernel.org#v5.9<<v5.10-rc5
+
+For patches that need to soak a few cycles in master or need to linger in
+master until the .0 release.
 
 Thanks,
-Ira
+Amir.
 
-[1] https://lore.kernel.org/lkml/20201202214629.1563760-1-ira.weiny@intel.com/
+[1] https://lore.kernel.org/linux-unionfs/CAOQ4uxiUTsXEdQsE275qxTh61tZOB+-wqCp6gaNLkOw5ueUJgw@mail.gmail.com/
