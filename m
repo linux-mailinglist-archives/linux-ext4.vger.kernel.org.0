@@ -2,125 +2,69 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4779D2CD310
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Dec 2020 10:58:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C78EF2CD824
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Dec 2020 14:48:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388536AbgLCJ6p convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Thu, 3 Dec 2020 04:58:45 -0500
-Received: from smtp.h3c.com ([60.191.123.50]:59635 "EHLO h3cspam02-ex.h3c.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388483AbgLCJ6o (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 3 Dec 2020 04:58:44 -0500
-X-Greylist: delayed 6058 seconds by postgrey-1.27 at vger.kernel.org; Thu, 03 Dec 2020 04:58:42 EST
-Received: from h3cspam02-ex.h3c.com (localhost [127.0.0.2] (may be forged))
-        by h3cspam02-ex.h3c.com with ESMTP id 0B38Hgsh099569
-        for <linux-ext4@vger.kernel.org>; Thu, 3 Dec 2020 16:17:42 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from DAG2EX05-BASE.srv.huawei-3com.com ([10.8.0.68])
-        by h3cspam02-ex.h3c.com with ESMTP id 0B38FxA0095873;
-        Thu, 3 Dec 2020 16:15:59 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) by
- DAG2EX05-BASE.srv.huawei-3com.com (10.8.0.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 3 Dec 2020 16:16:02 +0800
-Received: from DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074])
- by DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074%7]) with
- mapi id 15.01.2106.002; Thu, 3 Dec 2020 16:16:02 +0800
-From:   Tianxianting <tian.xianting@h3c.com>
-To:     Jan Kara <jack@suse.cz>, "tytso@mit.edu" <tytso@mit.edu>
-CC:     "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] ext4: remove the null check of bio_vec page
-Thread-Topic: [PATCH] ext4: remove the null check of bio_vec page
-Thread-Index: AQHWpruDhYzwIts0bkGkoCqDPV0JCqmhVUyAgAQSuiD//39fAIBAY6/Q
-Date:   Thu, 3 Dec 2020 08:16:01 +0000
-Message-ID: <6859d08c4dd44de9b7a040c160046359@h3c.com>
-References: <20201020082201.34257-1-tian.xianting@h3c.com>
- <20201021102503.GC19726@quack2.suse.cz>
- <113ad7d2cbfd43a9972ad37df66e5542@h3c.com>
- <20201023165644.GG9119@quack2.suse.cz>
-In-Reply-To: <20201023165644.GG9119@quack2.suse.cz>
-Accept-Language: en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.99.141.128]
-x-sender-location: DAG2
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1726826AbgLCNqw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 3 Dec 2020 08:46:52 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:52366 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725966AbgLCNqv (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Dec 2020 08:46:51 -0500
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0B3DjdIr014834
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 3 Dec 2020 08:45:40 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 58FF3420136; Thu,  3 Dec 2020 08:45:39 -0500 (EST)
+Date:   Thu, 3 Dec 2020 08:45:39 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Satya Tangirala <satyat@google.com>
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>, Chao Yu <chao@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Eric Biggers <ebiggers@google.com>
+Subject: Re: [PATCH v7 6/8] ext4: support direct I/O with fscrypt using
+ blk-crypto
+Message-ID: <20201203134539.GB441757@mit.edu>
+References: <20201117140708.1068688-1-satyat@google.com>
+ <20201117140708.1068688-7-satyat@google.com>
 MIME-Version: 1.0
-X-DNSRBL: 
-X-MAIL: h3cspam02-ex.h3c.com 0B38FxA0095873
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117140708.1068688-7-satyat@google.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Thanks Jan
-Hi Ted Tso, Could I get your opinion of this patch?  thanks
+On Tue, Nov 17, 2020 at 02:07:06PM +0000, Satya Tangirala wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> Wire up ext4 with fscrypt direct I/O support. Direct I/O with fscrypt is
+> only supported through blk-crypto (i.e. CONFIG_BLK_INLINE_ENCRYPTION must
+> have been enabled, the 'inlinecrypt' mount option must have been specified,
+> and either hardware inline encryption support must be present or
+> CONFIG_BLK_INLINE_ENCYRPTION_FALLBACK must have been enabled). Further,
+> direct I/O on encrypted files is only supported when the *length* of the
+> I/O is aligned to the filesystem block size (which is *not* necessarily the
+> same as the block device's block size).
+> 
+> fscrypt_limit_io_blocks() is called before setting up the iomap to ensure
+> that the blocks of each bio that iomap will submit will have contiguous
+> DUNs. Note that fscrypt_limit_io_blocks() is normally a no-op, as normally
+> the DUNs simply increment along with the logical blocks. But it's needed
+> to handle an edge case in one of the fscrypt IV generation methods.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> Co-developed-by: Satya Tangirala <satyat@google.com>
+> Signed-off-by: Satya Tangirala <satyat@google.com>
+> Reviewed-by: Jaegeuk Kim <jaegeuk@kernel.org>
 
------Original Message-----
-From: Jan Kara [mailto:jack@suse.cz] 
-Sent: Saturday, October 24, 2020 12:57 AM
-To: tianxianting (RD) <tian.xianting@h3c.com>
-Cc: Jan Kara <jack@suse.cz>; tytso@mit.edu; adilger.kernel@dilger.ca; linux-ext4@vger.kernel.org; linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4: remove the null check of bio_vec page
+Acked-by: Theodore Ts'o <tytso@mit.edu>
 
-On Fri 23-10-20 16:38:16, Tianxianting wrote:
-> Thanks Jan
-> Can be the patch applied?
-
-Ted Tso is the ext4 maintainer so he should eventually pick up and apply the patch. But since there's merge window currently open, I guess he's busy shuffling patches to send to Linus. I'd expect he'll get to your patch in a week or two.
-
-								Honza
-
-> 
-> -----Original Message-----
-> From: Jan Kara [mailto:jack@suse.cz]
-> Sent: Wednesday, October 21, 2020 6:25 PM
-> To: tianxianting (RD) <tian.xianting@h3c.com>
-> Cc: tytso@mit.edu; adilger.kernel@dilger.ca; jack@suse.cz; 
-> linux-ext4@vger.kernel.org; linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH] ext4: remove the null check of bio_vec page
-> 
-> On Tue 20-10-20 16:22:01, Xianting Tian wrote:
-> > bv_page can't be NULL in a valid bio_vec, so we can remove the NULL 
-> > check, as we did in other places when calling
-> > bio_for_each_segment_all() to go through all bio_vec of a bio.
-> > 
-> > Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
-> 
-> Thanks for the patch. It looks good to me. You can add:
-> 
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> 
-> 								Honza
-> 
-> > ---
-> >  fs/ext4/page-io.c | 3 ---
-> >  1 file changed, 3 deletions(-)
-> > 
-> > diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c index
-> > defd2e10d..cb135a944 100644
-> > --- a/fs/ext4/page-io.c
-> > +++ b/fs/ext4/page-io.c
-> > @@ -111,9 +111,6 @@ static void ext4_finish_bio(struct bio *bio)
-> >  		unsigned under_io = 0;
-> >  		unsigned long flags;
-> >  
-> > -		if (!page)
-> > -			continue;
-> > -
-> >  		if (fscrypt_is_bounce_page(page)) {
-> >  			bounce_page = page;
-> >  			page = fscrypt_pagecache_page(bounce_page);
-> > --
-> > 2.17.1
-> > 
-> --
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
---
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
