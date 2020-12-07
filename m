@@ -2,66 +2,65 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC4D52D1479
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Dec 2020 16:11:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8D432D172C
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Dec 2020 18:10:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726840AbgLGPLK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 7 Dec 2020 10:11:10 -0500
-Received: from ssl.serverraum.org ([176.9.125.105]:34855 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726311AbgLGPLJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Dec 2020 10:11:09 -0500
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 9FC2322E0A;
-        Mon,  7 Dec 2020 16:10:27 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1607353827;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=wa7mfcuPecF7gpQwpDx0LYocwUQoOJPeyOlLst5l3R8=;
-        b=RIfgFSsKMEbsurvMPnJmmDYSr/zCEVUWqyviNbBT1iB99U+CHdjE45zmy1kSxfPWOVj6AT
-        7lLOLpk4uFdYRgUi+64kiWkoFm4N0SXkr13rPCBdR6kzxeKtvUGNTfQDmKaJ6q8yNMK/pP
-        lO3D1rXFPS2vkWil61EWnsyd8cJY588=
+        id S1727364AbgLGRJl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 7 Dec 2020 12:09:41 -0500
+Received: from verein.lst.de ([213.95.11.211]:42778 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725822AbgLGRJl (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 7 Dec 2020 12:09:41 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 94B8F67373; Mon,  7 Dec 2020 18:08:53 +0100 (CET)
+Date:   Mon, 7 Dec 2020 18:08:53 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-fsdevel@vger.kernel.org,
+        John Johansen <john.johansen@canonical.com>,
+        James Morris <jmorris@namei.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Mrunal Patel <mpatel@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Theodore Tso <tytso@mit.edu>, Alban Crequy <alban@kinvolk.io>,
+        Tycho Andersen <tycho@tycho.ws>,
+        David Howells <dhowells@redhat.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Seth Forshee <seth.forshee@canonical.com>,
+        =?iso-8859-1?Q?St=E9phane?= Graber <stgraber@ubuntu.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Lennart Poettering <lennart@poettering.net>,
+        "Eric W. Biederman" <ebiederm@xmission.com>, smbarber@chromium.org,
+        Phil Estes <estesp@gmail.com>, Serge Hallyn <serge@hallyn.com>,
+        Kees Cook <keescook@chromium.org>,
+        Todd Kjos <tkjos@google.com>, Paul Moore <paul@paul-moore.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        containers@lists.linux-foundation.org,
+        linux-security-module@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v4 04/40] fs: split out functions to hold writers
+Message-ID: <20201207170853.GA13614@lst.de>
+References: <20201203235736.3528991-1-christian.brauner@ubuntu.com> <20201203235736.3528991-5-christian.brauner@ubuntu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 07 Dec 2020 16:10:27 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     linux-ext4@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-block@vger.kernel.org
-Subject: discard feature, mkfs.ext4 and mmc default fallback to normal erase
- op
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <97c4bb65c8a3e688b191d57e9f06aa5a@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201203235736.3528991-5-christian.brauner@ubuntu.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi,
+Looks good,
 
-The problem I'm having is that I'm trying to install debian on
-an embedded system onto an sdcard. During installation it will
-format the target filesystem, but the "mkfs.ext4 -F /dev/mmcblk0p2"
-takes ages.
-
-What I've found out so far:
-  - mkfs.ext4 tries to discard all blocks on the target device
-  - with my target device being an sdcard it seems to fallback
-    to normal erase [1], with erase_arg being set to what the card
-    is capable of [2]
-
-Now I'm trying to figure out if this behavior is intended. I guess
-one can reduce it to "blkdiscard /dev/mmcblk0p2". Should this
-actually fall back to normal erasing or should it return -EOPNOTSUPP?
-
--michael
-
-[1] 
-https://elixir.bootlin.com/linux/v5.9.12/source/drivers/mmc/core/block.c#L1063
-[2] 
-https://elixir.bootlin.com/linux/v5.9.12/source/drivers/mmc/core/mmc.c#L1751
+Reviewed-by: Christoph Hellwig <hch@lst.de>
