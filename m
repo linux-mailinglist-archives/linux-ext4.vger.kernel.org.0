@@ -2,199 +2,160 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2E7C2D2F4F
-	for <lists+linux-ext4@lfdr.de>; Tue,  8 Dec 2020 17:19:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EBC72D303A
+	for <lists+linux-ext4@lfdr.de>; Tue,  8 Dec 2020 17:53:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729374AbgLHQSo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 8 Dec 2020 11:18:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726069AbgLHQSo (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 8 Dec 2020 11:18:44 -0500
-Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96A18C0613D6
-        for <linux-ext4@vger.kernel.org>; Tue,  8 Dec 2020 08:18:03 -0800 (PST)
-Received: by mail-ua1-x92e.google.com with SMTP id n18so5775113ual.9
-        for <linux-ext4@vger.kernel.org>; Tue, 08 Dec 2020 08:18:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mbhQFLdCZ96w5QgWAp8Vujq+g3QNVh3Nk4mA27hHp4E=;
-        b=AgMVHkahg2pNl5nrPVCbBT6B42GivboG1Yz/6C5NBBO/M2kq7nj3AtQORQH/Tz3SDy
-         hqq7b0OosMo40YDshPaDilSCSjaj5ZYq5hI5tdW4Uig/9HxEIQVvlQGSok/vW2+tOtzK
-         JthEGykf4eNRVxdThvsfkJFLbHgoDpquHPVXZONp2qrH4Jrf2cV+UMDxtzW8884yaoAW
-         wyceVnJbTTdL1ZqHpGr1A3XNDe8NCxKMumXB5CSDv7Lvh/vs2lLQxrM98Uv6WRx4fhp2
-         18NOUlunN2xd7t1OR+IAh1nabV3jHV6G2cBmuZh9KXWEMUtKR7mys+Kil346lysIVuK7
-         coqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mbhQFLdCZ96w5QgWAp8Vujq+g3QNVh3Nk4mA27hHp4E=;
-        b=FmR8igQ82SIeoA3PMfVTNz5K4vliAl+htmx1TVWI7uCtEs8nHZAtElu3yNu4xR+RXG
-         YN9ynxK1oj9CXAoW9xH7ii8JozukiCFW3XNpayO51cqodYQPNkP/EV6UBjfriuq4Dxu/
-         KsGb8oSiPYAIYMt5Vr9buQ7eNj3ZCqCmJaoawaGQNBlLf/NuF72kF3WMeuVP6WDiuIVO
-         OPXh6wXBqNxV7XjwFR/2V3rOvFUNATWxfz1EvDiK72omU/3bryRjm2LiVCoyc5O00WI6
-         NtBhG13RZcKYQBCE2WGberR+9ibXT3Bf90gNZK/QhNzhc8z6mbz4l0uTH6QKeogPnlNk
-         oqJA==
-X-Gm-Message-State: AOAM531Wc2QSbObdIs5VPo49q4IVxumCxXHssUsr4pnlE1yOAwx7CYn4
-        XeiL7hOj848eVdtMUGXnSKD5sIYd6wXsdPamsHChRA==
-X-Google-Smtp-Source: ABdhPJzxv8o/M3YY8OFK/T3OqqY6UqmQZxHO883P7R6h8izIJvHIhNlJw8HwiAOuyi446Y2TIIwJJBYA0FYRT8aSAMM=
-X-Received: by 2002:a9f:3e4b:: with SMTP id c11mr15703128uaj.19.1607444282471;
- Tue, 08 Dec 2020 08:18:02 -0800 (PST)
-MIME-Version: 1.0
-References: <97c4bb65c8a3e688b191d57e9f06aa5a@walle.cc> <20201207183534.GA52960@mit.edu>
- <2edcf8e344937b3c5b92a0b87ebd13bd@walle.cc> <20201208024057.GC52960@mit.edu>
- <CAPDyKFpY+M_FVXCyeg+97jAgDSqhGDTNoND8CQDMWH-e09KGKQ@mail.gmail.com> <d7041bbb403698ac1097f7740f364467@walle.cc>
-In-Reply-To: <d7041bbb403698ac1097f7740f364467@walle.cc>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 8 Dec 2020 17:17:26 +0100
-Message-ID: <CAPDyKFqFT9g8OnyxEOEiATgmkgdCceu_G3drKqX3NawxSDV0kg@mail.gmail.com>
+        id S1730469AbgLHQxF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 8 Dec 2020 11:53:05 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:36239 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730439AbgLHQxE (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 8 Dec 2020 11:53:04 -0500
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0B8GqESk012309
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 8 Dec 2020 11:52:15 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 6CDE7420136; Tue,  8 Dec 2020 11:52:14 -0500 (EST)
+Date:   Tue, 8 Dec 2020 11:52:14 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Michael Walle <michael@walle.cc>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>, linux-ext4@vger.kernel.org,
+        linux-mmc@vger.kernel.org,
+        linux-block <linux-block@vger.kernel.org>
 Subject: Re: discard feature, mkfs.ext4 and mmc default fallback to normal
  erase op
-To:     Michael Walle <michael@walle.cc>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <20201208165214.GD52960@mit.edu>
+References: <97c4bb65c8a3e688b191d57e9f06aa5a@walle.cc>
+ <20201207183534.GA52960@mit.edu>
+ <2edcf8e344937b3c5b92a0b87ebd13bd@walle.cc>
+ <20201208024057.GC52960@mit.edu>
+ <CAPDyKFpY+M_FVXCyeg+97jAgDSqhGDTNoND8CQDMWH-e09KGKQ@mail.gmail.com>
+ <d7041bbb403698ac1097f7740f364467@walle.cc>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d7041bbb403698ac1097f7740f364467@walle.cc>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, 8 Dec 2020 at 12:26, Michael Walle <michael@walle.cc> wrote:
->
-> Hi Ulf, Hi Ted,
->
-> Am 2020-12-08 10:49, schrieb Ulf Hansson:
-> > On Tue, 8 Dec 2020 at 03:41, Theodore Y. Ts'o <tytso@mit.edu> wrote:
-> >> On Mon, Dec 07, 2020 at 09:39:32PM +0100, Michael Walle wrote:
-> >> > > There are three different MMC commands which are defined:
-> >> > >
-> >> > > 1) DISCARD
-> >> > > 2) ERASE
-> >> > > 3) SECURE ERASE
-> >> > >
-> >> > > The first two are expected to be fast, since it only involves clearing
-> >> > > some metadata fields in the Flash Translation Layer (FTL), so that the
-> >> > > LBA's in the specified range are no longer mapped to a flash page.
-> >> >
-> >> > Mh, where is it specified that the erase command is fast? According
-> >> > to the Physical Layer Simplified Specification Version 8.00:
-> >> >
-> >> >  The actual erase time may be quite long, and the host may issue CMD7
-> >> >  to deselect thhe card or perform card disconnection, as described in
-> >> >  the Block Write section, above.
-> >
-> > Before I go into some more detail, of course I fully agree that
-> > dealing with erase/discard from the eMMC/SD specifications (and other
-> > types of devices) point of view isn't entirely easy. :-)
-> >
-> > But I also think we can do better than currently, at least for eMMC/SD.
-> >
-> >>
-> >> I looked at the eMMC specification from JEDEC (JESD84-A44) and there,
-> >> both the "erase" and "trim" are specified that the work is to be
-> >> queued to be done at a time which is convenient to the controller
-> >> (read: FTL).  This is in contrast to the "secure erase" and "secure
-> >> trim" commands, where the erasing has to be done NOW NOW NOW for "high
-> >> security applications".
->
-> Oh this might also be because I've cited from the wrong place, namely
-> the
-> mmc_init_card() function. But what I really meant was the sd card
-> equivalent
-> which should be mmc_read_ssr(). Sorry.
->
->         discard_support = UNSTUFF_BITS(resp, 313 - 288, 1);
->         card->erase_arg = (card->scr.sda_specx && discard_support) ?
->                             SD_DISCARD_ARG : SD_ERASE_ARG;
-
-I assumed you were referring to this, but good that you pointed this
-out, for clarity.
-
->
-> >> The only difference between "erase" and "trim" seems to be that erahse
-> >> has to be done in units of the "erase groups" which is typically
-> >> larger than the "write pages" which is the granularity required by the
-> >> trim command.  There is also a comment that when you are erasing the
-> >> entire partition, "erase" is preferred over "trim".  (Presumably
-> >> because it is more convenient?  The spec is not clear.)
-> >>
-> >> Unfortunately, the SD Card spec and the eMMC spec both read like they
-> >> were written by a standards committee stacked by hardware engineers.
-> >> It doesn't look like they had file system engineers in the room,
-> >> because the distinctions between "erase" and "trim" are pretty silly,
-> >> and not well defined.  Aside from what I wrote, the spec is remarkably
-> >> silent about what the host OS can depend upon.
-> >
-> > Moreover, the specs have evolved over the years. Somehow, we need to
-> > map a REQ_OP_DISCARD and   to the best matching
-> > operation that the currently inserted eMMC/SD card supports...
->
+On Tue, Dec 08, 2020 at 12:26:22PM +0100, Michael Walle wrote:
 > Do we really need to map these functions? What if we don't have an
 > actual discard, but just a slow erase (I'm now assuming that erase
 > will likely be slow on sdcards)? Can't we just tell the user space
-> there is no discard? Like on a normal HDD?
-
-I have considered that, but not sure what would be the best option.
-
-> I really don't know the
+> there is no discard? Like on a normal HDD? I really don't know the
 > implications, seems like mmc_erase() is just there for the linux
 > discard feature.
 
-mmc_erase() is used for both REQ_OP_DISCARD and REQ_OP_SECURE_ERASE,
-but that's an implementation detail that we can change, of course.
+So the potential gotcha here is that "discard" is important for
+reducing write amplification, and thus improving the lifespan of
+devices.  (See my reference to the Tesla engine controller story
+earlier.)  So if a device doesn't have "discard" but has "erase", and
+"erase" is fast, then skipping the discard could end up significantly
+reducing the lifespan of your product, and we're back to the NHTSA
+investigating whether they should stick Tesla for the $1500 engine
+controller replacement when cards die early.
 
-Honestly, the hole erase/discard support in the mmc core deserves a
-cleanup and I am looking at that (occasionally).
+I guess the JEDEC spec does specify a way to query the card for how
+long an erase takes, but I don't have the knowledge about how the
+actual real-world implementations of these specs (and their many
+variants over the years) actually behave.  Can the erase times that
+they advertise actually be trusted to be accurate?  How many of them
+actually supply erase times at all, no matter what the spec says?
 
->
 > Coming from the user space side. Does mkfs.ext4 assumes its pre-discard
 > is fast? I'd think so, right? I'd presume it was intented to tell the
 > FTL of the block device, "hey these blocks are unused, you can do some
 > wear leveling with them".
 
-I would assume that too.
+Yes, the assumption is that discard is fast.  Exactly how fast seems
+to vary; this is one of the reasons why there are three different ways
+to do discards on a file system after files are deleted.  One way is
+to do them after the deleted definitely won't be unwound (i.e., after
+the ext4 journal commit).  But on some devices, the discard command,
+while fast, is slow enough that this will compete with the I/O
+completion times of other read commands, thus degrading system
+performance.  So you can also execute the trim commands out of cron,
+using the fstrim command, which will run the discards in the
+background, and the system administrator can adjust when fstrim is
+executed during times wheno performance isn't critical.  (e.g., when
+the phone is on a charger in the middle of the night, or at 4am local
+time, etc.)  Finally, you can configure e2fsck to run the discards
+after the file system consistency check is done.
 
-On the other hand, I guess there are situations when user space could
-live with slow formatting times. In particular if the goal is to let
-card clean up its internal garbage, as a way to improve "performance"
-for later I/O writes.
+The reason why we have to leave this up to the system administrators
+is that we have essentially no guidance from the device how slow the
+discard command might be, how it intereferes with other device
+operations, and whether the discard might be more likely ignored if
+the device is busy.  So it might be that the discard will more likely
+improve write endurance when it is done when the device is idle.  All
+of the speccs (SCSI, SATA, UFS, eMMC, SD) are remarkable unhelpful
+because performance considerations is generally consider "out of
+scope" of standards committees.  They want to leave that up to market
+forces; which is why big companies (at handset vendors, hyperscale
+cloud providers, systems integrators, etc.) have to spend as much
+money doing certification testing before deciding which products to
+buy; think of it as a full-employment act for storage engineers.  :-)
 
->
-> > Long time time ago, both the SD and eMMC spec introduced support for
-> > real discards commands, as being hints to the card without any
-> > guarantees of what will happen to the data from a logical or a
-> > physical point of view. If the card supports that, we should use it as
-> > the first option for REQ_OP_DISCARD. Although, what should we pick as
-> > the second best option, when the card doesn't support discard - that's
-> > when it becomes more tricky. And the similar applies for
-> > REQ_OP_SECURE_ERASE, or course.
-> >
-> > If you have any suggestions for how we can improve in the above
-> > decisions, feel free to suggest something.
-> >
-> > Another issue that most likely is causing poor performance for
-> > REQ_OP_DISCARD/REQ_OP_SECURE_ERASE for eMMC/SD, is that in
-> > mmc_queue_setup_discard() we set up the maximum discard sectors
-> > allowed per request and the discard granularity.
-> >
-> > To find performance bottlenecks, I would start looking at what actual
-> > eMMC/SD commands/args we end up mapping towards the
-> > REQ_OP_DISCARD/REQ_OP_SECURE_ERASE requests. Then definitely, I would
-> > also look at the values we end up picking as max discard sectors and
-> > the discard granularity.
->
+But yes, mke2fs assumes that discard is sufficiently fast that it
+doing it at file system format time is extremely reasonable.  The
+bigger concern is that we can't necessarily count on discard zero'ing
+the inode table, and there are robustness reasons (especially if
+before we had metadata checksums) where it makes file system repairs
+much more robust if the inode table is zero'ed ahead of time.
+
 > I'm just about finding some SD cards and looking how they behave timing
 > wise and what they report they support (ie. erase or discard). Looks
 > like other cards are doing better. But I'd have to find out if they
 > support the discard (mine doesn't) and if they are slow too if I force
 > them to use the normal erase.
 
-Sounds great, looking forward to hear more about your findings.
+The challenge is that this sort of thing gets rapidly out of date, and
+it's not just SD cards but also eMMC devices which are built into
+various embedded devices, high-end SDHC cards, etc., etc.  So doing
+this gets very expensive.
 
-[...]
+That being said, both ext4 and f2fs do pre-discards as part of the
+format step, since improving write endurance is important; customers
+get cranky when their $1000 smart phones die an early death.  So an SD
+card that behaves the way yours does would probably get disqualified
+very early in the certification step if it were ever intended to be
+used in an Android handset, since pretty much all Android devices, or
+embedded devices for that matter, use either f2fs or ext4.  That's one
+of the reasons why I was a bit surprised that your device had such an
+"interesting" performance profile.  Maybe it was intended for use in
+digital cameras, and digital camerase don't issue discards?  I don't
+know....
 
-Kind regards
-Uffe
+> > I agree, these are the three levels that make sense to support.
+> > 
+> > Honestly I haven't been paying enough attention to discussions for the
+> > generic block layer around discards. However, considering what you
+> > just stated above, we seem to be missing one request operation, don't
+> > we?
+
+Yes, that's true.  We only have "discard" and "secure discard".  Part
+of that is because that's the only levels which are available for
+SSD's, for which I have the same general complaint vis-a-vis standards
+committees and the general lack of usefulness for file system
+engineers.
+
+For example, pretty much everyone in the enterprise and hyperscale
+cloud world assume that low-numbered LBA's have better performance
+profiles, and are located physically at the outer diameter of HDD's,
+compared to high-number'ed LBA's.  But that's nothing which is
+specified by the standards committees, because "performance
+considerations are out of scope".  Yet we still have to engineer
+storage systems which assume this to be true, even though nothing in
+the formal specs guarantees this.  We just have to trust that anyone
+who tries to sell a HDD for which this isn't true, even if it is
+"standards complaint", is going to have a bad time, and trust that
+this is enough.  (Perhaps this is why when a certain HDD manufacturer
+tried to sell HDD's containing drive-managed SMR for the NAS market,
+without disclosing this fact to consumers, this generated a massive
+backlash....  Simply being standards compliant is not enough.)
+
+					- Ted
