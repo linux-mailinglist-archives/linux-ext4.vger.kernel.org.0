@@ -2,78 +2,72 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F2B02D2B8E
-	for <lists+linux-ext4@lfdr.de>; Tue,  8 Dec 2020 14:01:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDC692D2DDA
+	for <lists+linux-ext4@lfdr.de>; Tue,  8 Dec 2020 16:06:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727831AbgLHNBJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 8 Dec 2020 08:01:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22807 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726228AbgLHNBJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 8 Dec 2020 08:01:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607432382;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KJuycivZ+AGkxRm8Uh8ZFQ/EkEn5NEsY/G+sybB3iCk=;
-        b=jJYGbGZQTUoDpQsiWKDDJLP1PnmwX5h1P5c34QUIvVV5iDAkHrSEpjNwAea0pAmghYarjT
-        BiFLuDA0M7bUzTHZ5wwtdLi522QnnuZcynhnqjzib2KM8wRIM9nSLO10FZYiy8o+NU4bGs
-        M07tWmrDSywTavm+KYCdicMZS0nR0JA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-119-YPk_nV1tMeGdtiy9SzJOuA-1; Tue, 08 Dec 2020 07:59:39 -0500
-X-MC-Unique: YPk_nV1tMeGdtiy9SzJOuA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9040A84E251;
-        Tue,  8 Dec 2020 12:59:37 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-116-67.rdu2.redhat.com [10.10.116.67])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1F7EE10023AC;
-        Tue,  8 Dec 2020 12:59:34 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20201208003117.342047-1-krisman@collabora.com>
-References: <20201208003117.342047-1-krisman@collabora.com>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     dhowells@redhat.com, viro@zeniv.linux.org.uk, tytso@mit.edu,
-        khazhy@google.com, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        kernel@collabora.com
-Subject: Re: [PATCH 0/8] Superblock Notifications
+        id S1729972AbgLHPGK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 8 Dec 2020 10:06:10 -0500
+Received: from verein.lst.de ([213.95.11.211]:46580 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729471AbgLHPGJ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 8 Dec 2020 10:06:09 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 64C856736F; Tue,  8 Dec 2020 16:05:21 +0100 (CET)
+Date:   Tue, 8 Dec 2020 16:05:20 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-fsdevel@vger.kernel.org,
+        John Johansen <john.johansen@canonical.com>,
+        James Morris <jmorris@namei.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Mrunal Patel <mpatel@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Theodore Tso <tytso@mit.edu>, Alban Crequy <alban@kinvolk.io>,
+        Tycho Andersen <tycho@tycho.ws>,
+        David Howells <dhowells@redhat.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Seth Forshee <seth.forshee@canonical.com>,
+        =?iso-8859-1?Q?St=E9phane?= Graber <stgraber@ubuntu.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Lennart Poettering <lennart@poettering.net>,
+        "Eric W. Biederman" <ebiederm@xmission.com>, smbarber@chromium.org,
+        Phil Estes <estesp@gmail.com>, Serge Hallyn <serge@hallyn.com>,
+        Kees Cook <keescook@chromium.org>,
+        Todd Kjos <tkjos@google.com>, Paul Moore <paul@paul-moore.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        containers@lists.linux-foundation.org,
+        linux-security-module@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org
+Subject: Re: [PATCH v4 06/40] fs: add mount_setattr()
+Message-ID: <20201208150520.GA8252@lst.de>
+References: <20201203235736.3528991-1-christian.brauner@ubuntu.com> <20201203235736.3528991-7-christian.brauner@ubuntu.com> <20201207171456.GC13614@lst.de> <20201208103707.px6buexwuusn6d3f@wittgenstein>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <953339.1607432374.1@warthog.procyon.org.uk>
-Date:   Tue, 08 Dec 2020 12:59:34 +0000
-Message-ID: <953340.1607432374@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201208103707.px6buexwuusn6d3f@wittgenstein>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Gabriel Krisman Bertazi <krisman@collabora.com> wrote:
+On Tue, Dec 08, 2020 at 11:37:07AM +0100, Christian Brauner wrote:
+> You want a v5 with the changes you requested before you continue
+> reviewing? Otherwise I'll just let you go through v4.
 
-> After the two previous RFCs this is an attempt to get the ball spinning
-> again.
-> 
-> The problem I'm trying to solve is providing an interface to monitor
-> filesystem errors.  This patchset includes an example implementation of
-> ext4 error notification.  This goes obviously on top of the watch_queue
-> mechanism.
+I don't think it is worth resending so quickly.  We're not going to
+make 5.11 for this series anyway.
 
-Thanks for picking this up and advancing it.
-
-> Regarding the buffer overrun issue that would require fsinfo or another
-> method to expose counters, I think they can be added at a later date
-> with no change to what this patch series attempts to do, therefore I'm
-> proposing we don't wait for fsinfo before getting this merged.
-
-That's fine, but anyone wanting to use this will need to be aware that
-overruns are a problem.
-
-David
-
+I plan to add XFS support as a learning exercise, but I'll probably need
+a little more time to get to that.
