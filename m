@@ -2,21 +2,21 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D3F82D287A
-	for <lists+linux-ext4@lfdr.de>; Tue,  8 Dec 2020 11:09:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80F872D290E
+	for <lists+linux-ext4@lfdr.de>; Tue,  8 Dec 2020 11:38:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728988AbgLHKII (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 8 Dec 2020 05:08:08 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:37384 "EHLO
+        id S1728767AbgLHKh7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 8 Dec 2020 05:37:59 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:38573 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727122AbgLHKIH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 8 Dec 2020 05:08:07 -0500
+        with ESMTP id S1726138AbgLHKh6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 8 Dec 2020 05:37:58 -0500
 Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
         by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <christian.brauner@ubuntu.com>)
-        id 1kmZtq-0001Ek-3Q; Tue, 08 Dec 2020 10:07:14 +0000
-Date:   Tue, 8 Dec 2020 11:07:10 +0100
+        id 1kmaMp-0003ta-EI; Tue, 08 Dec 2020 10:37:11 +0000
+Date:   Tue, 8 Dec 2020 11:37:07 +0100
 From:   Christian Brauner <christian.brauner@ubuntu.com>
 To:     Christoph Hellwig <hch@lst.de>
 Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
@@ -52,30 +52,72 @@ Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
         linux-security-module@vger.kernel.org, linux-api@vger.kernel.org,
         linux-ext4@vger.kernel.org, linux-integrity@vger.kernel.org,
         selinux@vger.kernel.org
-Subject: Re: [PATCH v4 05/40] fs: add attr_flags_to_mnt_flags helper
-Message-ID: <20201208100710.7hmim5663xeqnivu@wittgenstein>
+Subject: Re: [PATCH v4 06/40] fs: add mount_setattr()
+Message-ID: <20201208103707.px6buexwuusn6d3f@wittgenstein>
 References: <20201203235736.3528991-1-christian.brauner@ubuntu.com>
- <20201203235736.3528991-6-christian.brauner@ubuntu.com>
- <20201207171021.GB13614@lst.de>
+ <20201203235736.3528991-7-christian.brauner@ubuntu.com>
+ <20201207171456.GC13614@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201207171021.GB13614@lst.de>
+In-Reply-To: <20201207171456.GC13614@lst.de>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 06:10:21PM +0100, Christoph Hellwig wrote:
-> > @@ -3450,6 +3450,28 @@ SYSCALL_DEFINE5(mount, char __user *, dev_name, char __user *, dir_name,
-> >  	return ret;
-> >  }
-> >  
-> > +#define FSMOUNT_VALID_FLAGS                                                    \
-> > +	(MOUNT_ATTR_RDONLY | MOUNT_ATTR_NOSUID | MOUNT_ATTR_NODEV |            \
-> > +	 MOUNT_ATTR_NOEXEC | MOUNT_ATTR__ATIME | MOUNT_ATTR_NODIRATIME)
+On Mon, Dec 07, 2020 at 06:14:56PM +0100, Christoph Hellwig wrote:
+> > +	switch (attr->propagation) {
+> > +	case 0:
+> > +		kattr->propagation = 0;
+> > +		break;
+> > +	case MS_UNBINDABLE:
+> > +		kattr->propagation = MS_UNBINDABLE;
+> > +		break;
+> > +	case MS_PRIVATE:
+> > +		kattr->propagation = MS_PRIVATE;
+> > +		break;
+> > +	case MS_SLAVE:
+> > +		kattr->propagation = MS_SLAVE;
+> > +		break;
+> > +	case MS_SHARED:
+> > +		kattr->propagation = MS_SHARED;
+> > +		break;
+> > +	default:
+> > +		return -EINVAL;
+> > +	}
 > 
-> Any good reason for aligning the \ using spaces all the way out?
+> This can be shortened to:
+> 
+> #define MOUNT_SETATTR_PROPAGATION_FLAGS \
+> 	(MS_UNBINDABLE | MS_PRIVATE | MS_SLAVE | MS_SHARED)
+> 
+> 	if (attr->propagation & ~MOUNT_SETATTR_PROPAGATION_FLAGS)
+> 		return -EINVAL;
+> 	if (hweight32(attr->propagation & MOUNT_SETATTR_PROPAGATION_FLAGS) > 1)
+> 		return -EINVAL;
+> 	kattr->propagation = attr->propagation;
 
-That's just my clang-format config I use with vim. When I do Ctrl + E it
-automatically aligns them on the closest "tab boundary. I'll fix this
-up.
+Looks good! I've applied that.
+
+> 
+> > +asmlinkage long sys_mount_setattr(int dfd, const char __user *path, unsigned int flags,
+> 
+> Overly long line.
+
+Folded after @path now.
+
+> 
+> Otherwise looks good:
+> 
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+
+Thanks, I've pushed out the changes to:
+https://git.kernel.org/brauner/h/idmapped_mounts
+the original v4 can now be found at:
+https://git.kernel.org/brauner/h/idmapped_mounts_v4
+
+You want a v5 with the changes you requested before you continue
+reviewing? Otherwise I'll just let you go through v4.
+
+Thanks!
+Christian
