@@ -2,191 +2,113 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A91E22D44D2
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Dec 2020 15:53:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 181A62D46DD
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Dec 2020 17:37:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732319AbgLIOwo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 9 Dec 2020 09:52:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732325AbgLIOwm (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 9 Dec 2020 09:52:42 -0500
-Received: from mail-vk1-xa2f.google.com (mail-vk1-xa2f.google.com [IPv6:2607:f8b0:4864:20::a2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 030FAC061794
-        for <linux-ext4@vger.kernel.org>; Wed,  9 Dec 2020 06:52:01 -0800 (PST)
-Received: by mail-vk1-xa2f.google.com with SMTP id w66so394320vka.3
-        for <linux-ext4@vger.kernel.org>; Wed, 09 Dec 2020 06:52:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LdMQ4ENUJAwDKpq6YGuzjxRRhbtj63eVZUaKhU3HWx4=;
-        b=WusDzr6lbmJcpg7SlW+CJ9WoxWVL0WYU3va7KO80XJ/idS8gQKVqlgSIfTd8/l4bJI
-         +fp842fy9wDLEkWjL5UU+EM7v/1raLon67cpxhDenquRw5C6yegTwQbcHyoc873GjtM6
-         XGqOghMwHoq2UfN/n+W9l8ZmLq7y7QW09aI/vMCNkfMGd4K+XamHOzBlkE99BfT/eYrj
-         6G60MHKLL0hvHXq3xXjVQfbp6oo6DZZj1T0CGMP/NEt54DyY3AxQ1olP0wkDzZgF3+Hu
-         nZi4D61NDIbc0hsQs516L8EdT/9Si6fZ6GKuDeNWT+AkE+3l7CdKPpWH6DZnuF6iQpNA
-         nBCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LdMQ4ENUJAwDKpq6YGuzjxRRhbtj63eVZUaKhU3HWx4=;
-        b=tAdNss9RTwIHrtekf8bu/yYzGu57r+HFYA0u/JF2bQ1D6dCHVCL9dDTczha9yke2Tt
-         wLUfzk+Ch6xr4gCP38GfE4rdA8GAznrbkZ1/EmfanF7UifiO793HdaoKAZrTFvJ73wQC
-         I9trSr2ee18a0x4SnJne2Jdp9B1Tx/wEA3HMHFA//LtNQBh3BGNqPKzBpA2BFguLPvhD
-         Grq3zwqLAQz2+N3C+XR6GL47IpBN8HsME/Emog3xGCi5xH4hQk55agqcpvMmqpaLhSRp
-         YOT/bkyaUVPmJSeDfxT4qjYGHtLRC3K6ZgXV553uZpFojnzxFqyoFolhQfkHabm2pYAO
-         GZFA==
-X-Gm-Message-State: AOAM5332GeuSUjtRhzBub2gKE9zSxVVodYvuPrttheY33PbzB2K1yEIz
-        yvCkOEyqFOvMDDleGF/nXMLwhE95KSei5ouKkOmDJQ==
-X-Google-Smtp-Source: ABdhPJxLMJiclWLbEVkhdiex2z02t+bsvo4kzUXNOWOXd3kibkzblj+Jly65Bgz0STAEqM9AUer3aG4gvYdnemVe9Kw=
-X-Received: by 2002:a1f:dec2:: with SMTP id v185mr2358196vkg.8.1607525520925;
- Wed, 09 Dec 2020 06:52:00 -0800 (PST)
-MIME-Version: 1.0
-References: <97c4bb65c8a3e688b191d57e9f06aa5a@walle.cc> <20201207183534.GA52960@mit.edu>
- <2edcf8e344937b3c5b92a0b87ebd13bd@walle.cc> <20201208024057.GC52960@mit.edu>
- <CAPDyKFpY+M_FVXCyeg+97jAgDSqhGDTNoND8CQDMWH-e09KGKQ@mail.gmail.com>
- <d7041bbb403698ac1097f7740f364467@walle.cc> <20201208165214.GD52960@mit.edu>
-In-Reply-To: <20201208165214.GD52960@mit.edu>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 9 Dec 2020 15:51:24 +0100
-Message-ID: <CAPDyKFrpccdMyqsxTi2dotbtr3_7hL0hUjWXc5Sx52kGnrDuLw@mail.gmail.com>
-Subject: Re: discard feature, mkfs.ext4 and mmc default fallback to normal
- erase op
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+        id S1730471AbgLIQgj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 9 Dec 2020 11:36:39 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:51922 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730461AbgLIQg3 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 9 Dec 2020 11:36:29 -0500
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0B9GZX6O005765
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 9 Dec 2020 11:35:34 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id A87AF420136; Wed,  9 Dec 2020 11:35:33 -0500 (EST)
+Date:   Wed, 9 Dec 2020 11:35:33 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
 Cc:     Michael Walle <michael@walle.cc>, linux-ext4@vger.kernel.org,
         "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
         linux-block <linux-block@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: discard feature, mkfs.ext4 and mmc default fallback to normal
+ erase op
+Message-ID: <20201209163533.GI52960@mit.edu>
+References: <97c4bb65c8a3e688b191d57e9f06aa5a@walle.cc>
+ <20201207183534.GA52960@mit.edu>
+ <2edcf8e344937b3c5b92a0b87ebd13bd@walle.cc>
+ <20201208024057.GC52960@mit.edu>
+ <CAPDyKFpY+M_FVXCyeg+97jAgDSqhGDTNoND8CQDMWH-e09KGKQ@mail.gmail.com>
+ <d7041bbb403698ac1097f7740f364467@walle.cc>
+ <20201208165214.GD52960@mit.edu>
+ <CAPDyKFrpccdMyqsxTi2dotbtr3_7hL0hUjWXc5Sx52kGnrDuLw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPDyKFrpccdMyqsxTi2dotbtr3_7hL0hUjWXc5Sx52kGnrDuLw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, 8 Dec 2020 at 17:52, Theodore Y. Ts'o <tytso@mit.edu> wrote:
->
-> On Tue, Dec 08, 2020 at 12:26:22PM +0100, Michael Walle wrote:
-> > Do we really need to map these functions? What if we don't have an
-> > actual discard, but just a slow erase (I'm now assuming that erase
-> > will likely be slow on sdcards)? Can't we just tell the user space
-> > there is no discard? Like on a normal HDD? I really don't know the
-> > implications, seems like mmc_erase() is just there for the linux
-> > discard feature.
->
-> So the potential gotcha here is that "discard" is important for
-> reducing write amplification, and thus improving the lifespan of
-> devices.  (See my reference to the Tesla engine controller story
-> earlier.)  So if a device doesn't have "discard" but has "erase", and
-> "erase" is fast, then skipping the discard could end up significantly
-> reducing the lifespan of your product, and we're back to the NHTSA
-> investigating whether they should stick Tesla for the $1500 engine
-> controller replacement when cards die early.
+On Wed, Dec 09, 2020 at 03:51:24PM +0100, Ulf Hansson wrote:
+> 
+> Even if the discarded blocks are flushed at some wisely selected
+> point, when the device is idle, that doesn't guarantee that the
+> internal garbage collection runs inside the device. In the end that
+> depends on the FW implementation of the card - and I assume it's
+> likely triggered based on some internal idle time and the amount of
+> "garbage" there is to deal with.
 
-Yes, exactly. The point about wear leveling and the lifespan of the
-device are critical.
+At least from a file system perspective, I don't care when the
+internal garbage collection actually runs inside the device.  What I
+do care is that (a) a read to a discarded sector returns zero's after
+it has been discard (or the storage device needs to tell me I can't
+count on that), and (b) that eventually, for write endurance reasons,
+the garbage collection will *eventually* happen.
 
-That said, we should continue to map discard requests to legacy erase
-commands for SD cards, unless the card supports the new discard, of
-course.
+If the list of erase blocks or flash pages that are not in use are
+tracked in such a way that they are actually garbage collected before
+the device actually needs free blocks, it really doesn't matter if it
+happens right away, or hours later.  (If the device is 90% free,
+because it was just formatted and we did a pre-discard at format time,
+then it could happen hours or days later.)
 
-One thing I realized though, is that we should probably announce and
-implement support for secure erase (QUEUE_FLAG_SECERASE) for SD cards,
-as that seems to map well towards with the erase command.
+But if the device's FTL is too incompetent such that it loses track of
+which erase blocks / flash pages do need to be GC'ed, such that it
+impacts device lifetime... well then, that's sad, and it would be nice
+to find out about this without having to do an expensive,
+time-consuming certification process.  (OTOH, all the big companies
+are doing hardware certifications anyway, because you can't fully
+trust the storage vendors, and how many storage vendors are really
+going to admit, or make it easy to determine, "the FTL is so
+cost-optimized that it's cr*p"?  :-)
 
-An erase is specified in the SD spec as, after the erase the data is
-either "0" or "1", which I guess is what is expected from a
-REQ_OP_SECURE_ERASE operation?
+Having a way to tell the storage device that it would be better to
+suspend GC, or to accelerate GC, because we know the device is about
+to become much less likely to perform writes, would certainly be a
+good and useful thing to do, although I see that as mostly being
+useful for improving I/O performance, especially for low-end flash ---
+I suspect that for high-end SSD's, which are designed so that they can
+handle continuous write streams without much performance degradation,
+they have enough oomph in their internal CPU that they can do GC's in
+real-time while the device is under a continuous random write workload
+with only minimal performance impacts.
 
->
-> I guess the JEDEC spec does specify a way to query the card for how
-> long an erase takes, but I don't have the knowledge about how the
-> actual real-world implementations of these specs (and their many
-> variants over the years) actually behave.  Can the erase times that
-> they advertise actually be trusted to be accurate?  How many of them
-> actually supply erase times at all, no matter what the spec says?
+> *) Use the runtime PM framework to detect an idle period and then
+> trigger background operations. The problem is, that we don't really
+> know how long we will be idle, meaning that we don't know if it's
+> really a wise decision to trigger the background operations in the
+> end.
+> 
+> **) Invent a new type of generic block request, as to let userspace
+> trigger this.
 
-For eMMC discard commands are fast, but probably also trim commands.
-For erase I don't know.
+I think you really want to give userspace the ability to trigger this.
+Whether it's via a generic block request, or an ioctl, I'll leave that
+to the people maintain the driver and/or block layer.  That's because
+userspace will have knowledge to things like, "the screen is off", or
+"the phone is on the wireless charger and/or the user has said, "OK,
+Google, goodnight" to trigger the night-time home automation commands.
 
-Then, whether the corresponding "erase times" that are be specified in
-the eMMC registers, I guess those always refer to the worst case
-scenario. I don't know how useful they really are in the end.
+We can of course try to make some automatic determinations based on
+the runtime PM framework, but that doesn't necessarily tell us the
+likelihood that the system will become busy in the future; OTOH, maybe
+that doesn't matter, if the storage needs only a very tiny amount of
+time after it's told, "stop GC", to finish up what it's doing so it
+can respond to I/O request at full speed?
 
-In any case, we may end up with poor erase/discard performance,
-because of internal FW implementations.
-
-Although, what I think we may be able to improve, both from eMMC and
-SD point of view, is to allow more blocks per discard/erase operation.
-But honestly, I don't know how big of a problem this is, even if just
-staring at the code, gives me some ideas.
-
->
-> > Coming from the user space side. Does mkfs.ext4 assumes its pre-discard
-> > is fast? I'd think so, right? I'd presume it was intented to tell the
-> > FTL of the block device, "hey these blocks are unused, you can do some
-> > wear leveling with them".
->
-> Yes, the assumption is that discard is fast.  Exactly how fast seems
-> to vary; this is one of the reasons why there are three different ways
-> to do discards on a file system after files are deleted.  One way is
-> to do them after the deleted definitely won't be unwound (i.e., after
-> the ext4 journal commit).  But on some devices, the discard command,
-> while fast, is slow enough that this will compete with the I/O
-> completion times of other read commands, thus degrading system
-> performance.  So you can also execute the trim commands out of cron,
-> using the fstrim command, which will run the discards in the
-> background, and the system administrator can adjust when fstrim is
-> executed during times wheno performance isn't critical.  (e.g., when
-> the phone is on a charger in the middle of the night, or at 4am local
-> time, etc.)  Finally, you can configure e2fsck to run the discards
-> after the file system consistency check is done.
->
-> The reason why we have to leave this up to the system administrators
-> is that we have essentially no guidance from the device how slow the
-> discard command might be, how it intereferes with other device
-> operations, and whether the discard might be more likely ignored if
-> the device is busy.  So it might be that the discard will more likely
-> improve write endurance when it is done when the device is idle.  All
-> of the speccs (SCSI, SATA, UFS, eMMC, SD) are remarkable unhelpful
-> because performance considerations is generally consider "out of
-> scope" of standards committees.  They want to leave that up to market
-> forces; which is why big companies (at handset vendors, hyperscale
-> cloud providers, systems integrators, etc.) have to spend as much
-> money doing certification testing before deciding which products to
-> buy; think of it as a full-employment act for storage engineers.  :-)
-
-A few comments related to the above.
-
-Even if the discarded blocks are flushed at some wisely selected
-point, when the device is idle, that doesn't guarantee that the
-internal garbage collection runs inside the device. In the end that
-depends on the FW implementation of the card - and I assume it's
-likely triggered based on some internal idle time and the amount of
-"garbage" there is to deal with.
-
-For both eMMC and SD cards, the specs define commands for how to
-manually control the background operations inside the cards. In
-principle, this allows us to tell the card when it's a good time to
-run garbage collection (and when not to).
-
-Both for eMMC and SD, we are not using this, yet. However, I have been
-playing with a couple of different ideas to explore this:
-
-*) Use the runtime PM framework to detect an idle period and then
-trigger background operations. The problem is, that we don't really
-know how long we will be idle, meaning that we don't know if it's
-really a wise decision to trigger the background operations in the
-end.
-
-**) Invent a new type of generic block request, as to let userspace
-trigger this.
-
-Of course, another option is also to leave this as is, thus relying on
-the internal FW of the card to act the best it can.
-
-Do you have any thoughts around this?
-
-[...]
-
-Kind regards
-Uffe
+						- Ted
