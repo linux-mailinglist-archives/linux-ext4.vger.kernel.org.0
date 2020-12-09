@@ -2,167 +2,191 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 674702D42B8
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Dec 2020 14:07:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A91E22D44D2
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Dec 2020 15:53:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731861AbgLINHC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 9 Dec 2020 08:07:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51876 "EHLO
+        id S1732319AbgLIOwo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 9 Dec 2020 09:52:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732017AbgLING4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 9 Dec 2020 08:06:56 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3207FC0613CF;
-        Wed,  9 Dec 2020 05:06:16 -0800 (PST)
-Received: from localhost (unknown [IPv6:2804:14c:132:242d::1000])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: krisman)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 24A531F45318;
-        Wed,  9 Dec 2020 13:06:12 +0000 (GMT)
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     David Howells <dhowells@redhat.com>, viro@zeniv.linux.org.uk,
-        tytso@mit.edu, khazhy@google.com, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        kernel@collabora.com
-Subject: Re: [PATCH 5/8] vfs: Include origin of the SB error notification
-Organization: Collabora
-References: <20201208003117.342047-6-krisman@collabora.com>
-        <20201208003117.342047-1-krisman@collabora.com>
-        <952750.1607431868@warthog.procyon.org.uk>
-        <87r1o05ua6.fsf@collabora.com> <20201208184123.GC106255@magnolia>
-        <87lfe85c6b.fsf@collabora.com> <20201209032425.GD106255@magnolia>
-Date:   Wed, 09 Dec 2020 10:06:07 -0300
-In-Reply-To: <20201209032425.GD106255@magnolia> (Darrick J. Wong's message of
-        "Tue, 8 Dec 2020 19:24:25 -0800")
-Message-ID: <87h7ov5dts.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        with ESMTP id S1732325AbgLIOwm (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 9 Dec 2020 09:52:42 -0500
+Received: from mail-vk1-xa2f.google.com (mail-vk1-xa2f.google.com [IPv6:2607:f8b0:4864:20::a2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 030FAC061794
+        for <linux-ext4@vger.kernel.org>; Wed,  9 Dec 2020 06:52:01 -0800 (PST)
+Received: by mail-vk1-xa2f.google.com with SMTP id w66so394320vka.3
+        for <linux-ext4@vger.kernel.org>; Wed, 09 Dec 2020 06:52:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LdMQ4ENUJAwDKpq6YGuzjxRRhbtj63eVZUaKhU3HWx4=;
+        b=WusDzr6lbmJcpg7SlW+CJ9WoxWVL0WYU3va7KO80XJ/idS8gQKVqlgSIfTd8/l4bJI
+         +fp842fy9wDLEkWjL5UU+EM7v/1raLon67cpxhDenquRw5C6yegTwQbcHyoc873GjtM6
+         XGqOghMwHoq2UfN/n+W9l8ZmLq7y7QW09aI/vMCNkfMGd4K+XamHOzBlkE99BfT/eYrj
+         6G60MHKLL0hvHXq3xXjVQfbp6oo6DZZj1T0CGMP/NEt54DyY3AxQ1olP0wkDzZgF3+Hu
+         nZi4D61NDIbc0hsQs516L8EdT/9Si6fZ6GKuDeNWT+AkE+3l7CdKPpWH6DZnuF6iQpNA
+         nBCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LdMQ4ENUJAwDKpq6YGuzjxRRhbtj63eVZUaKhU3HWx4=;
+        b=tAdNss9RTwIHrtekf8bu/yYzGu57r+HFYA0u/JF2bQ1D6dCHVCL9dDTczha9yke2Tt
+         wLUfzk+Ch6xr4gCP38GfE4rdA8GAznrbkZ1/EmfanF7UifiO793HdaoKAZrTFvJ73wQC
+         I9trSr2ee18a0x4SnJne2Jdp9B1Tx/wEA3HMHFA//LtNQBh3BGNqPKzBpA2BFguLPvhD
+         Grq3zwqLAQz2+N3C+XR6GL47IpBN8HsME/Emog3xGCi5xH4hQk55agqcpvMmqpaLhSRp
+         YOT/bkyaUVPmJSeDfxT4qjYGHtLRC3K6ZgXV553uZpFojnzxFqyoFolhQfkHabm2pYAO
+         GZFA==
+X-Gm-Message-State: AOAM5332GeuSUjtRhzBub2gKE9zSxVVodYvuPrttheY33PbzB2K1yEIz
+        yvCkOEyqFOvMDDleGF/nXMLwhE95KSei5ouKkOmDJQ==
+X-Google-Smtp-Source: ABdhPJxLMJiclWLbEVkhdiex2z02t+bsvo4kzUXNOWOXd3kibkzblj+Jly65Bgz0STAEqM9AUer3aG4gvYdnemVe9Kw=
+X-Received: by 2002:a1f:dec2:: with SMTP id v185mr2358196vkg.8.1607525520925;
+ Wed, 09 Dec 2020 06:52:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <97c4bb65c8a3e688b191d57e9f06aa5a@walle.cc> <20201207183534.GA52960@mit.edu>
+ <2edcf8e344937b3c5b92a0b87ebd13bd@walle.cc> <20201208024057.GC52960@mit.edu>
+ <CAPDyKFpY+M_FVXCyeg+97jAgDSqhGDTNoND8CQDMWH-e09KGKQ@mail.gmail.com>
+ <d7041bbb403698ac1097f7740f364467@walle.cc> <20201208165214.GD52960@mit.edu>
+In-Reply-To: <20201208165214.GD52960@mit.edu>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 9 Dec 2020 15:51:24 +0100
+Message-ID: <CAPDyKFrpccdMyqsxTi2dotbtr3_7hL0hUjWXc5Sx52kGnrDuLw@mail.gmail.com>
+Subject: Re: discard feature, mkfs.ext4 and mmc default fallback to normal
+ erase op
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     Michael Walle <michael@walle.cc>, linux-ext4@vger.kernel.org,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-"Darrick J. Wong" <darrick.wong@oracle.com> writes:
-
-> On Tue, Dec 08, 2020 at 04:29:32PM -0300, Gabriel Krisman Bertazi wrote:
->> "Darrick J. Wong" <darrick.wong@oracle.com> writes:
->> 
->> > On Tue, Dec 08, 2020 at 09:58:25AM -0300, Gabriel Krisman Bertazi wrote:
->> >> David Howells <dhowells@redhat.com> writes:
->> >> 
->> >> > Gabriel Krisman Bertazi <krisman@collabora.com> wrote:
->> >> >
->> >> >> @@ -130,6 +131,8 @@ struct superblock_error_notification {
->> >
->> > FWIW I wonder if this really should be inode_error_notification?
->> >
->> > If (for example) ext4 discovered an error in the blockgroup descriptor
->> > and wanted to report it, the inode and block numbers would be
->> > irrelevant, but the blockgroup number would be nice to have.
->> 
->> A previous RFC had superblock_error_notification and
->> superblock_inode_error_notification split, I think we can recover that.
->> 
->> >
->> >> >>  	__u32	error_cookie;
->> >> >>  	__u64	inode;
->> >> >>  	__u64	block;
->> >> >> +	char	function[SB_NOTIFICATION_FNAME_LEN];
->> >> >> +	__u16	line;
->> >> >>  	char	desc[0];
->> >> >>  };
->> >> >
->> >> > As Darrick said, this is a UAPI breaker, so you shouldn't do this (you can,
->> >> > however, merge this ahead a patch).  Also, I would put the __u16 before the
->> >> > char[].
->> >> >
->> >> > That said, I'm not sure whether it's useful to include the function name and
->> >> > line.  Both fields are liable to change over kernel commits, so it's not
->> >> > something userspace can actually interpret.  I think you're better off dumping
->> >> > those into dmesg.
->> >> >
->> >> > Further, this reduces the capacity of desc[] significantly - I don't know if
->> >> > that's a problem.
->> >> 
->> >> Yes, that is a big problem as desc is already quite limited.  I don't
->> >
->> > How limited?
->> 
->> The largest notification is 128 bytes, the one with the biggest header
->> is superblock_error_notification which leaves 56 bytes for description.
->> 
->> >
->> >> think it is a problem for them to change between kernel versions, as the
->> >> monitoring userspace can easily associate it with the running kernel.
->> >
->> > How do you make that association?  $majordistro's 4.18 kernel is not the
->> > same as the upstream 4.18.  Wouldn't you rather the notification message
->> > be entirely self-describing rather than depending on some external
->> > information about the sender?
->> 
->> True.  I was thinking on my use case where the customer controls their
->> infrastructure and would specialize their userspace tools, but that is
->> poor design on my part.  A self describing mechanism would be better.
->> 
->> >
->> >> The alternative would be generating something like unique IDs for each
->> >> error notification in the filesystem, no?
->> >> 
->> >> > And yet further, there's no room for addition of new fields with the desc[]
->> >> > buffer on the end.  Now maybe you're planning on making use of desc[] for
->> >> > text-encoding?
->> >> 
->> >> Yes.  I would like to be able to provide more details on the error,
->> >> without having a unique id.  For instance, desc would have the formatted
->> >> string below, describing the warning:
->> >> 
->> >> ext4_warning(inode->i_sb, "couldn't mark inode dirty (err %d)", err);
->> >
->> > Depending on the upper limit on the length of messages, I wonder if you
->> > could split the superblock notification and the description string into
->> > separate messages (with maybe the error cookie to tie them together) so
->> > that the struct isn't limited by having a VLA on the end, and the
->> > description can be more or less an arbitrary string?
->> >
->> > (That said I'm not familiar with the watch queue system so I have no
->> > idea if chained messages even make sense here, or are already
->> > implemented in some other way, or...)
->> 
->> I don't see any support for chaining messages in the current watch_queue
->> implementation, I'd need to extend the interface to support it.  I
->> considered this idea before, given the small description size, but I
->> thought it would be over-complicated, even though much more future
->> proof.  I will look into that.
->> 
->> What about the kernel exporting a per-filesystem table, as a build
->> target or in /sys/fs/<fs>/errors, that has descriptions strings for each
->> error?  Then the notification can have only the FS type, index to the
->> table and params.  This won't exactly be self-describing as you wanted
->> but, differently from function:line, it removes the need for the source
->> code, and allows localization.  The per-filesystem table would be
->> stable ABI, of course.
+On Tue, 8 Dec 2020 at 17:52, Theodore Y. Ts'o <tytso@mit.edu> wrote:
 >
-> Yikes.  I don't think people are going to be ok with a message table
-> where we can never remove the strings.  I bet GregKH won't like that
-> either (one value per sysfs file).
+> On Tue, Dec 08, 2020 at 12:26:22PM +0100, Michael Walle wrote:
+> > Do we really need to map these functions? What if we don't have an
+> > actual discard, but just a slow erase (I'm now assuming that erase
+> > will likely be slow on sdcards)? Can't we just tell the user space
+> > there is no discard? Like on a normal HDD? I really don't know the
+> > implications, seems like mmc_erase() is just there for the linux
+> > discard feature.
+>
+> So the potential gotcha here is that "discard" is important for
+> reducing write amplification, and thus improving the lifespan of
+> devices.  (See my reference to the Tesla engine controller story
+> earlier.)  So if a device doesn't have "discard" but has "erase", and
+> "erase" is fast, then skipping the discard could end up significantly
+> reducing the lifespan of your product, and we're back to the NHTSA
+> investigating whether they should stick Tesla for the $1500 engine
+> controller replacement when cards die early.
 
-Indeed, sysfs seems out of question.  In fact the string format doesn't
-even need to be in the kernel, and we don't need the strings to be sent
-as part of the notifications.  What if we can have a bunch of
-notification types, specific for each error message, and a library in
-userspace that parses the notifications and understands the parameters
-passed?  The library then displays the data as they wish.
+Yes, exactly. The point about wear leveling and the lifespan of the
+device are critical.
 
-> (Maybe I misread that and all you meant by stable ABI is the fact that
-> the table exists at a given path and the notification message gives you
-> a index into ... wherever we put it.)
+That said, we should continue to map discard requests to legacy erase
+commands for SD cards, unless the card supports the new discard, of
+course.
 
-The kernel could even export the table as a build-time target, that
-get's installed into X. But even that is not necessary if a library can
-make sense of a notification that uniquely identifies each error and
-only includes the useful debug parameters without any string formatting?
+One thing I realized though, is that we should probably announce and
+implement support for secure erase (QUEUE_FLAG_SECERASE) for SD cards,
+as that seems to map well towards with the erase command.
 
--- 
-Gabriel Krisman Bertazi
+An erase is specified in the SD spec as, after the erase the data is
+either "0" or "1", which I guess is what is expected from a
+REQ_OP_SECURE_ERASE operation?
+
+>
+> I guess the JEDEC spec does specify a way to query the card for how
+> long an erase takes, but I don't have the knowledge about how the
+> actual real-world implementations of these specs (and their many
+> variants over the years) actually behave.  Can the erase times that
+> they advertise actually be trusted to be accurate?  How many of them
+> actually supply erase times at all, no matter what the spec says?
+
+For eMMC discard commands are fast, but probably also trim commands.
+For erase I don't know.
+
+Then, whether the corresponding "erase times" that are be specified in
+the eMMC registers, I guess those always refer to the worst case
+scenario. I don't know how useful they really are in the end.
+
+In any case, we may end up with poor erase/discard performance,
+because of internal FW implementations.
+
+Although, what I think we may be able to improve, both from eMMC and
+SD point of view, is to allow more blocks per discard/erase operation.
+But honestly, I don't know how big of a problem this is, even if just
+staring at the code, gives me some ideas.
+
+>
+> > Coming from the user space side. Does mkfs.ext4 assumes its pre-discard
+> > is fast? I'd think so, right? I'd presume it was intented to tell the
+> > FTL of the block device, "hey these blocks are unused, you can do some
+> > wear leveling with them".
+>
+> Yes, the assumption is that discard is fast.  Exactly how fast seems
+> to vary; this is one of the reasons why there are three different ways
+> to do discards on a file system after files are deleted.  One way is
+> to do them after the deleted definitely won't be unwound (i.e., after
+> the ext4 journal commit).  But on some devices, the discard command,
+> while fast, is slow enough that this will compete with the I/O
+> completion times of other read commands, thus degrading system
+> performance.  So you can also execute the trim commands out of cron,
+> using the fstrim command, which will run the discards in the
+> background, and the system administrator can adjust when fstrim is
+> executed during times wheno performance isn't critical.  (e.g., when
+> the phone is on a charger in the middle of the night, or at 4am local
+> time, etc.)  Finally, you can configure e2fsck to run the discards
+> after the file system consistency check is done.
+>
+> The reason why we have to leave this up to the system administrators
+> is that we have essentially no guidance from the device how slow the
+> discard command might be, how it intereferes with other device
+> operations, and whether the discard might be more likely ignored if
+> the device is busy.  So it might be that the discard will more likely
+> improve write endurance when it is done when the device is idle.  All
+> of the speccs (SCSI, SATA, UFS, eMMC, SD) are remarkable unhelpful
+> because performance considerations is generally consider "out of
+> scope" of standards committees.  They want to leave that up to market
+> forces; which is why big companies (at handset vendors, hyperscale
+> cloud providers, systems integrators, etc.) have to spend as much
+> money doing certification testing before deciding which products to
+> buy; think of it as a full-employment act for storage engineers.  :-)
+
+A few comments related to the above.
+
+Even if the discarded blocks are flushed at some wisely selected
+point, when the device is idle, that doesn't guarantee that the
+internal garbage collection runs inside the device. In the end that
+depends on the FW implementation of the card - and I assume it's
+likely triggered based on some internal idle time and the amount of
+"garbage" there is to deal with.
+
+For both eMMC and SD cards, the specs define commands for how to
+manually control the background operations inside the cards. In
+principle, this allows us to tell the card when it's a good time to
+run garbage collection (and when not to).
+
+Both for eMMC and SD, we are not using this, yet. However, I have been
+playing with a couple of different ideas to explore this:
+
+*) Use the runtime PM framework to detect an idle period and then
+trigger background operations. The problem is, that we don't really
+know how long we will be idle, meaning that we don't know if it's
+really a wise decision to trigger the background operations in the
+end.
+
+**) Invent a new type of generic block request, as to let userspace
+trigger this.
+
+Of course, another option is also to leave this as is, thus relying on
+the internal FW of the card to act the best it can.
+
+Do you have any thoughts around this?
+
+[...]
+
+Kind regards
+Uffe
