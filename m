@@ -2,186 +2,231 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B13722D3939
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Dec 2020 04:25:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A1972D3969
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Dec 2020 05:05:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727254AbgLIDZX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 8 Dec 2020 22:25:23 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:44690 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725789AbgLIDZX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 8 Dec 2020 22:25:23 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B93Nugk045915;
-        Wed, 9 Dec 2020 03:24:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=K8aClBMRVYokWWuO1V9mT0g9fN0gk6W4m2aWoAT7LVY=;
- b=K0+F92ZRPR5GPBEgsOD7pzt6dLRm7gICFNJJsrgHAO1M1e5VPTKDR1Ggw8XibHLBGQak
- jvz20R0Jn9Y22JdNZJC9D4Pg49h1B6dLf0QujJiMSdF5r+v5UxhbW8XFsmgik/SgSmmz
- l6rRHVHks+DPCnTgmOyYHiMA+AUoNAPD6OOOiPIIZFVNhvYVkOPR05zyBFLFdgPD11e2
- RargWX+WBVayf8T+FL3qr1D8ZT0Q78+zy9dC0P2dM+6+podoYqtl4rN3E/2jnCCItQ1w
- WRWwjwUylOsdxZ0wJFWea6sRbgfYW1GE0ds4R5eGklrsyGL8AilPhh36GtG+z8PW1pEV NQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 3581mqx04k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 09 Dec 2020 03:24:30 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B93KfTx141591;
-        Wed, 9 Dec 2020 03:24:29 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 358kytxcrh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 09 Dec 2020 03:24:29 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B93ORx1019135;
-        Wed, 9 Dec 2020 03:24:27 GMT
-Received: from localhost (/10.159.152.73)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 08 Dec 2020 19:24:27 -0800
-Date:   Tue, 8 Dec 2020 19:24:25 -0800
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     David Howells <dhowells@redhat.com>, viro@zeniv.linux.org.uk,
-        tytso@mit.edu, khazhy@google.com, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        kernel@collabora.com
-Subject: Re: [PATCH 5/8] vfs: Include origin of the SB error notification
-Message-ID: <20201209032425.GD106255@magnolia>
-References: <20201208003117.342047-6-krisman@collabora.com>
- <20201208003117.342047-1-krisman@collabora.com>
- <952750.1607431868@warthog.procyon.org.uk>
- <87r1o05ua6.fsf@collabora.com>
- <20201208184123.GC106255@magnolia>
- <87lfe85c6b.fsf@collabora.com>
+        id S1726832AbgLIEEg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 8 Dec 2020 23:04:36 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:58714 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725911AbgLIEEg (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 8 Dec 2020 23:04:36 -0500
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B942AMd016067;
+        Tue, 8 Dec 2020 23:03:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=AsnMMUjxtiyADZpc5hylXyUZvdur9rYhvhs5q29HBxg=;
+ b=Y8bvT4X6gr6zk3nfNMJYcheDI5WNseVO4Grjx/2tCbAn8zdRTGjnvR5Gg/qCwQnuxjB4
+ 44dGZHPjXCC01Y7/mFN2Ciu4ZfRLkV/K72021aZ+vRKQ2OuGylZK3IsqSKlPJR4wmhgJ
+ dlOaTz6Y68Sdq64Vzz/2WVb/3DytMx/GdReEzdWgnp0mq8Cm2mEJrQI0hFSAsvXzq5BO
+ 2fFf3sh+c1HfVRPwKXwHXrzt8dzZkGh17/ZYFLJinCY9NoWjC5t13qy6jNA3w/d8YI7q
+ cXvlveOfx3fbmQOxTM0GJQJWYwRwDGNpNhgipsmppArbksgpp+uXmHG16GY3pP8lHTW5 GA== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35apm00rqb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Dec 2020 23:03:49 -0500
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B942EIj016302;
+        Wed, 9 Dec 2020 04:03:47 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 3583svm2wp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Dec 2020 04:03:47 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B943jwp26542476
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 9 Dec 2020 04:03:45 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0E8BF52054;
+        Wed,  9 Dec 2020 04:03:45 +0000 (GMT)
+Received: from riteshh-domain.ibmuc.com (unknown [9.199.34.110])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 671645204F;
+        Wed,  9 Dec 2020 04:03:43 +0000 (GMT)
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+To:     fstests@vger.kernel.org
+Cc:     guan@eryu.me, anju@linux.vnet.ibm.com, lists@nerdbynature.de,
+        linux-ext4@vger.kernel.org, Ritesh Harjani <riteshh@linux.ibm.com>
+Subject: [PATCHv3 1/1] generic: Add test to check for mounting a huge sparse dm device
+Date:   Wed,  9 Dec 2020 09:33:41 +0530
+Message-Id: <4e4755473e28f8d662bc709b909e25cab0785604.1607486295.git.riteshh@linux.ibm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87lfe85c6b.fsf@collabora.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 mlxscore=0
- malwarescore=0 suspectscore=1 mlxlogscore=999 bulkscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012090021
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 mlxlogscore=999
- clxscore=1015 malwarescore=0 priorityscore=1501 adultscore=0
- lowpriorityscore=0 phishscore=0 spamscore=0 impostorscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012090022
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-09_02:2020-12-08,2020-12-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1015
+ malwarescore=0 priorityscore=1501 mlxlogscore=999 adultscore=0
+ phishscore=0 impostorscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012090023
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 04:29:32PM -0300, Gabriel Krisman Bertazi wrote:
-> "Darrick J. Wong" <darrick.wong@oracle.com> writes:
-> 
-> > On Tue, Dec 08, 2020 at 09:58:25AM -0300, Gabriel Krisman Bertazi wrote:
-> >> David Howells <dhowells@redhat.com> writes:
-> >> 
-> >> > Gabriel Krisman Bertazi <krisman@collabora.com> wrote:
-> >> >
-> >> >> @@ -130,6 +131,8 @@ struct superblock_error_notification {
-> >
-> > FWIW I wonder if this really should be inode_error_notification?
-> >
-> > If (for example) ext4 discovered an error in the blockgroup descriptor
-> > and wanted to report it, the inode and block numbers would be
-> > irrelevant, but the blockgroup number would be nice to have.
-> 
-> A previous RFC had superblock_error_notification and
-> superblock_inode_error_notification split, I think we can recover that.
-> 
-> >
-> >> >>  	__u32	error_cookie;
-> >> >>  	__u64	inode;
-> >> >>  	__u64	block;
-> >> >> +	char	function[SB_NOTIFICATION_FNAME_LEN];
-> >> >> +	__u16	line;
-> >> >>  	char	desc[0];
-> >> >>  };
-> >> >
-> >> > As Darrick said, this is a UAPI breaker, so you shouldn't do this (you can,
-> >> > however, merge this ahead a patch).  Also, I would put the __u16 before the
-> >> > char[].
-> >> >
-> >> > That said, I'm not sure whether it's useful to include the function name and
-> >> > line.  Both fields are liable to change over kernel commits, so it's not
-> >> > something userspace can actually interpret.  I think you're better off dumping
-> >> > those into dmesg.
-> >> >
-> >> > Further, this reduces the capacity of desc[] significantly - I don't know if
-> >> > that's a problem.
-> >> 
-> >> Yes, that is a big problem as desc is already quite limited.  I don't
-> >
-> > How limited?
-> 
-> The largest notification is 128 bytes, the one with the biggest header
-> is superblock_error_notification which leaves 56 bytes for description.
-> 
-> >
-> >> think it is a problem for them to change between kernel versions, as the
-> >> monitoring userspace can easily associate it with the running kernel.
-> >
-> > How do you make that association?  $majordistro's 4.18 kernel is not the
-> > same as the upstream 4.18.  Wouldn't you rather the notification message
-> > be entirely self-describing rather than depending on some external
-> > information about the sender?
-> 
-> True.  I was thinking on my use case where the customer controls their
-> infrastructure and would specialize their userspace tools, but that is
-> poor design on my part.  A self describing mechanism would be better.
-> 
-> >
-> >> The alternative would be generating something like unique IDs for each
-> >> error notification in the filesystem, no?
-> >> 
-> >> > And yet further, there's no room for addition of new fields with the desc[]
-> >> > buffer on the end.  Now maybe you're planning on making use of desc[] for
-> >> > text-encoding?
-> >> 
-> >> Yes.  I would like to be able to provide more details on the error,
-> >> without having a unique id.  For instance, desc would have the formatted
-> >> string below, describing the warning:
-> >> 
-> >> ext4_warning(inode->i_sb, "couldn't mark inode dirty (err %d)", err);
-> >
-> > Depending on the upper limit on the length of messages, I wonder if you
-> > could split the superblock notification and the description string into
-> > separate messages (with maybe the error cookie to tie them together) so
-> > that the struct isn't limited by having a VLA on the end, and the
-> > description can be more or less an arbitrary string?
-> >
-> > (That said I'm not familiar with the watch queue system so I have no
-> > idea if chained messages even make sense here, or are already
-> > implemented in some other way, or...)
-> 
-> I don't see any support for chaining messages in the current watch_queue
-> implementation, I'd need to extend the interface to support it.  I
-> considered this idea before, given the small description size, but I
-> thought it would be over-complicated, even though much more future
-> proof.  I will look into that.
-> 
-> What about the kernel exporting a per-filesystem table, as a build
-> target or in /sys/fs/<fs>/errors, that has descriptions strings for each
-> error?  Then the notification can have only the FS type, index to the
-> table and params.  This won't exactly be self-describing as you wanted
-> but, differently from function:line, it removes the need for the source
-> code, and allows localization.  The per-filesystem table would be
-> stable ABI, of course.
+Add this test to check for regression which was reported when ext4 bmap
+aops was moved to use iomap APIs. jbd2 calls bmap() kernel function
+from fs/inode.c which was failing since iomap_bmap() implementation earlier
+returned 0 for block addr > INT_MAX.
+This regression was fixed with following kernel commit [1]
+commit b75dfde1212991b24b220c3995101c60a7b8ae74
+("fibmap: Warn and return an error in case of block > INT_MAX")
+[1]: https://patchwork.ozlabs.org/patch/1279914
 
-Yikes.  I don't think people are going to be ok with a message table
-where we can never remove the strings.  I bet GregKH won't like that
-either (one value per sysfs file).
+w/o the kernel fix we get below errors and mount fails
 
-(Maybe I misread that and all you meant by stable ABI is the fact that
-the table exists at a given path and the notification message gives you
-a index into ... wherever we put it.)
+[ 1461.988701] run fstests generic/613 at 2020-10-27 19:57:34
+[ 1530.406645] ------------[ cut here ]------------
+[ 1530.407332] would truncate bmap result
+[ 1530.408956] WARNING: CPU: 0 PID: 6401 at fs/iomap/fiemap.c:116
+iomap_bmap_actor+0x43/0x50
+[ 1530.410607] Modules linked in:
+[ 1530.411024] CPU: 0 PID: 6401 Comm: mount Tainted: G        W
+<...>
+ 1530.511978] jbd2_journal_init_inode: Cannot locate journal superblock
+ [ 1530.513310] EXT4-fs (dm-1): Could not load journal inode
 
---D
+Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+---
+v2->v3: Addressed review comments from Eryu [1]
+[1]: https://patchwork.kernel.org/patch/11951463
+ common/rc             | 31 ++++++++++++++++++++++
+ tests/generic/620     | 62 +++++++++++++++++++++++++++++++++++++++++++
+ tests/generic/620.out |  3 +++
+ tests/generic/group   |  1 +
+ 4 files changed, 97 insertions(+)
+ create mode 100755 tests/generic/620
+ create mode 100644 tests/generic/620.out
 
-> 
-> -- 
-> Gabriel Krisman Bertazi
+diff --git a/common/rc b/common/rc
+index 5911a6c89a78..33b5b598a198 100644
+--- a/common/rc
++++ b/common/rc
+@@ -1608,6 +1608,37 @@ _require_scratch_size()
+ 	[ $devsize -lt $1 ] && _notrun "scratch dev too small"
+ }
+
++# require a scratch dev of a minimum size (in kb) and should not be checked
++# post test
++_require_scratch_size_nocheck()
++{
++	[ $# -eq 1 ] || _fail "_require_scratch_size: expected size param"
++
++	_require_scratch_nocheck
++	local devsize=`_get_device_size $SCRATCH_DEV`
++	[ $devsize -lt $1 ] && _notrun "scratch dev too small"
++}
++
++# require scratch fs which supports >16T of filesystem size.
++_require_scratch_16T_support()
++{
++	case $FSTYP in
++	ext2|ext3|f2fs)
++		_notrun "$FSTYP doesn't support >16T filesystem"
++		;;
++	ext4)
++		_scratch_mkfs >> $seqres.full 2>&1
++		_scratch_mount
++		local blocksize=$(_get_block_size $SCRATCH_MNT)
++		if [ $blocksize -lt 4096 ]; then
++			_notrun "This test requires >16T fs support"
++		fi
++		_scratch_unmount
++		;;
++	*)
++		;;
++	esac
++}
+
+ # this test needs a test partition - check we're ok & mount it
+ #
+diff --git a/tests/generic/620 b/tests/generic/620
+new file mode 100755
+index 000000000000..ad63fa9ab4e6
+--- /dev/null
++++ b/tests/generic/620
+@@ -0,0 +1,62 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2020 Christian Kujau. All Rights Reserved.
++# Copyright (c) 2020 Ritesh Harjani. All Rights Reserved.
++#
++# FS QA Test generic/620
++#
++# Since the test is not specific to ext4, hence adding it to generic.
++# Add this test to check for regression which was reported when ext4 bmap
++# aops was moved to use iomap APIs. jbd2 calls bmap() kernel function
++# from fs/inode.c which was failing since iomap_bmap() implementation earlier
++# returned 0 for block addr > INT_MAX.
++# This regression was fixed with following kernel commit [1]
++# commit b75dfde1212991b24b220c3995101c60a7b8ae74
++# ("fibmap: Warn and return an error in case of block > INT_MAX")
++# [1]: https://patchwork.ozlabs.org/patch/1279914
++#
++seq=`basename $0`
++seqres=$RESULT_DIR/$seq
++echo "QA output created by $seq"
++
++here=`pwd`
++tmp=/tmp/$$
++status=1	# failure is the default!
++trap "_cleanup; exit \$status" 0 1 2 3 15
++
++_cleanup()
++{
++	_dmhugedisk_cleanup
++	cd /
++	rm -f $tmp.*
++}
++
++# get standard environment, filters and checks
++. ./common/rc
++. ./common/filter
++. ./common/dmhugedisk
++
++# remove previous $seqres.full before test
++rm -f $seqres.full
++
++# Modify as appropriate.
++_supported_fs generic
++_require_scratch_16T_support
++_require_scratch_size_nocheck $((4 * 1024 * 1024)) #kB
++_require_dmhugedisk
++
++# 17TB dm huge-test-zer0 device
++# (in terms of 512 sectors)
++sectors=$((2*1024*1024*1024*17))
++chunk_size=128
++
++_dmhugedisk_init $sectors $chunk_size
++_mkfs_dev $DMHUGEDISK_DEV
++_mount $DMHUGEDISK_DEV $SCRATCH_MNT || _fail "mount failed for $DMHUGEDISK_DEV $SCRATCH_MNT"
++testfile=$SCRATCH_MNT/testfile-$seq
++
++$XFS_IO_PROG -fc "pwrite -S 0xaa 0 1m" -c "fsync" $testfile | _filter_xfs_io
++
++# success, all done
++status=0
++exit
+diff --git a/tests/generic/620.out b/tests/generic/620.out
+new file mode 100644
+index 000000000000..9a51e9e2cb8c
+--- /dev/null
++++ b/tests/generic/620.out
+@@ -0,0 +1,3 @@
++QA output created by 620
++wrote 1048576/1048576 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+diff --git a/tests/generic/group b/tests/generic/group
+index 15a2f40e2520..d8758d7f6a5f 100644
+--- a/tests/generic/group
++++ b/tests/generic/group
+@@ -622,3 +622,4 @@
+ 617 auto rw io_uring stress
+ 618 auto quick attr
+ 619 auto rw enospc
++620 auto mount quick
+--
+2.26.2
+
