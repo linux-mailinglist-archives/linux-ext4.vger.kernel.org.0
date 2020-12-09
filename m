@@ -2,104 +2,138 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F5B52D3C59
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Dec 2020 08:35:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E44AE2D415B
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Dec 2020 12:49:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728245AbgLIHdw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 9 Dec 2020 02:33:52 -0500
-Received: from mail-il1-f198.google.com ([209.85.166.198]:49774 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728020AbgLIHdw (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 9 Dec 2020 02:33:52 -0500
-Received: by mail-il1-f198.google.com with SMTP id m14so621100ila.16
-        for <linux-ext4@vger.kernel.org>; Tue, 08 Dec 2020 23:33:36 -0800 (PST)
+        id S1730354AbgLILtI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 9 Dec 2020 06:49:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729260AbgLILtC (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 9 Dec 2020 06:49:02 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75162C0617A6
+        for <linux-ext4@vger.kernel.org>; Wed,  9 Dec 2020 03:48:13 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id p4so872735pfg.0
+        for <linux-ext4@vger.kernel.org>; Wed, 09 Dec 2020 03:48:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Mtb5OPTwUpFzeHbPN9TpmTd1/voU4iC6gRA12yXTX7w=;
+        b=Ddqqdooke6uoZebPACRRlwpkJuKsPcBqdCKjbwhvD5sZzGIhEUZLxJqc/TkPT+k4WG
+         YHkam0T0viogxCex2uJLDdtG/ccFXq+RkH/xaMiohqnU0Vz/n9zqF3QkCXFaHkxEmAIU
+         GQMa1kG07D6lQ9f0j/A7p60EonmSnB3FS8McEEduS/x4aBuMhg7XZNV7ryHxYoKatJPH
+         wNXlZkckaHa1X+lIQyR9q5HQvYKkj/L/eKyUhMGBIIcOKNZVoWOVDt6eUDmbUej+wncR
+         0MqmgvHuNY9q/AVnZTc/JW+dsqtFkXWBLwsM1/swwq/Yi1hqmY/FIaUN4w1sMDEyEZov
+         tYPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=fqgdtXNXsphP7dzwRFVwAVgzQW8ckR3/RpP8iw9eAlU=;
-        b=UOf9KSIoh8S+JlrVSwKX+hvrCyqABdUZUrdYTOxQFr2zYnmQLfRtTlf/JKjtXwzyhe
-         BcEfE9lYBWpyCr9Mb6943Af5CBygSopvRGGUOCZLtqbNIGYP8ljMTEkDkvei6ug6XNMh
-         ixwvUmMmUQ/4O7G9DcQfse1Lsg4WbSNJfH0okreqRgUSZgFyqmqjivpBcIC1ptnaDZ3D
-         5gLaMXtTPM0pSdXPRoGnpfaoHeyyW3uSXe3PDpPLinYdvA5yLovBg9MsZrzF7skfm+Op
-         8xCwhxiFN2h+RvKyOXQsmPf/khDjXFRn1jf3E/FfCcnQlF2GAmE8xnhC/Rk+QDGV+24Z
-         GCew==
-X-Gm-Message-State: AOAM5337GZU4ROVTF9RUbbirq0KRQRFf/CN3MZqUbTV97ge84mXGAzx+
-        e/cUZOewcm54BGxzKiWIUAZj6UcC6SwusWgRqX7FFJhXxEAl
-X-Google-Smtp-Source: ABdhPJwzD4gC4lAai93nEFQE2k9fFCjo4GpCsM7yrAmjoe+vTcUY7NeccDu9yWNhWrUYuGlIuNZ0EMSzxK/DVvqLVzrMp8+C3btg
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Mtb5OPTwUpFzeHbPN9TpmTd1/voU4iC6gRA12yXTX7w=;
+        b=PBhkt53sLfzVIpcErzvX91SiEn+BmQEq5KWTnjwgr54L/C+x+2I3M/DQuTMMQJKXBy
+         VBKkzcU1TIphsG+98crCYdhkEteyJFR70oH/1ljFnHBkZoUFvVU9JElG2IiS05WoNlK6
+         UXITG4pmMaZxv66D/R+OB7wr5zvhQfG0HKarq259zyAcyRj2ZgtDaDbrHy/kkd1vyleD
+         WBpYrjDDEBAXMyuT0+PEFk/sx0lOVAUoEc4cA0HTRmikaXcrBOFtEOHVmwYUKP1u0+5h
+         Z/r5HxST/8vUFdAPW4CCh2ZS7H14n8nA9oJvBfF8H2rWARGiuwUTODG04A63QxSWZ2RI
+         4iTQ==
+X-Gm-Message-State: AOAM531fOj5HG55eZXUB/QJRYiGab4QZd3XQlcEjakYXL+R+EKaiaIhG
+        20XSVJpRfeevYI9dZnUmrGoWFQUTd/E=
+X-Google-Smtp-Source: ABdhPJxDtsJ6pT9YLV1AoxZixgIC915jvIT/y1BO4hCg8+9cXWlCHrbEaL7wVhkJUVEnLVL9rZvCeg==
+X-Received: by 2002:a63:2805:: with SMTP id o5mr1602266pgo.339.1607514492842;
+        Wed, 09 Dec 2020 03:48:12 -0800 (PST)
+Received: from [127.0.0.1] ([203.205.141.51])
+        by smtp.gmail.com with ESMTPSA id p6sm1969503pjt.13.2020.12.09.03.48.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Dec 2020 03:48:12 -0800 (PST)
+Subject: Re: [PATCH RESEND 4/8] ext4: add the gdt block of meta_bg to
+ system_zone
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
+References: <1604764698-4269-1-git-send-email-brookxu@tencent.com>
+ <1604764698-4269-4-git-send-email-brookxu@tencent.com>
+ <20201203150841.GM441757@mit.edu>
+ <4770d6b2-bb9f-7bc5-4fbd-2104bfeba7c2@gmail.com>
+ <20201209043415.GG52960@mit.edu>
+From:   brookxu <brookxu.cn@gmail.com>
+Message-ID: <dd6c2921-1397-4b1a-5a20-23956f9cf956@gmail.com>
+Date:   Wed, 9 Dec 2020 19:48:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-X-Received: by 2002:a02:37c2:: with SMTP id r185mr1271712jar.107.1607499191461;
- Tue, 08 Dec 2020 23:33:11 -0800 (PST)
-Date:   Tue, 08 Dec 2020 23:33:11 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000048a9de05b603126a@google.com>
-Subject: UBSAN: shift-out-of-bounds in ext4_fill_super
-From:   syzbot <syzbot+345b75652b1d24227443@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, clang-built-linux@googlegroups.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        natechancellor@gmail.com, ndesaulniers@google.com,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201209043415.GG52960@mit.edu>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    15ac8fdb Add linux-next specific files for 20201207
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1125c923500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3696b8138207d24d
-dashboard link: https://syzkaller.appspot.com/bug?extid=345b75652b1d24227443
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=151bf86b500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=139212cb500000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+345b75652b1d24227443@syzkaller.appspotmail.com
-
-loop0: detected capacity change from 4 to 0
-================================================================================
-UBSAN: shift-out-of-bounds in fs/ext4/super.c:4190:25
-shift exponent 589825 is too large for 32-bit type 'int'
-CPU: 1 PID: 8498 Comm: syz-executor023 Not tainted 5.10.0-rc6-next-20201207-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
- __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
- ext4_fill_super.cold+0x154/0x3ce fs/ext4/super.c:4190
- mount_bdev+0x34d/0x410 fs/super.c:1366
- legacy_get_tree+0x105/0x220 fs/fs_context.c:592
- vfs_get_tree+0x89/0x2f0 fs/super.c:1496
- do_new_mount fs/namespace.c:2896 [inline]
- path_mount+0x12ae/0x1e70 fs/namespace.c:3227
- do_mount fs/namespace.c:3240 [inline]
- __do_sys_mount fs/namespace.c:3448 [inline]
- __se_sys_mount fs/namespace.c:3425 [inline]
- __x64_sys_mount+0x27f/0x300 fs/namespace.c:3425
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x446d6a
-Code: b8 08 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 fd ad fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 da ad fb ff c3 66 0f 1f 84 00 00 00 00 00
-RSP: 002b:00007ffc2d215018 EFLAGS: 00000206 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007ffc2d215070 RCX: 0000000000446d6a
-RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007ffc2d215030
-RBP: 00007ffc2d215030 R08: 00007ffc2d215070 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000206 R12: 0000000000000001
-R13: 0000000000000004 R14: 0000000000000003 R15: 0000000000000003
-================================================================================
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Theodore Y. Ts'o wrote on 2020/12/9 12:34:
+> On Fri, Dec 04, 2020 at 09:26:49AM +0800, brookxu wrote:
+>>
+>> Theodore Y. Ts'o wrote on 2020/12/3 23:08:
+>>> On Sat, Nov 07, 2020 at 11:58:14PM +0800, Chunguang Xu wrote:
+>>>> From: Chunguang Xu <brookxu@tencent.com>
+>>>>
+>>>> In order to avoid poor search efficiency of system_zone, the
+>>>> system only adds metadata of some sparse group to system_zone.
+>>>> In the meta_bg scenario, the non-sparse group may contain gdt
+>>>> blocks. Perhaps we should add these blocks to system_zone to
+>>>> improve fault tolerance without significantly reducing system
+>>>> performance.
+>>
+>> Thanks, in the large-market scenario, if we deal with all groups,
+>> the system_zone will be very large, which may reduce performance.
+>> I think the previous method is good, but it needs to be changed
+>> slightly, so that the fault tolerance in the meta_bg scenario
+>> can be improved without the risk of performance degradation.
+> 
+> OK, I see.   But this is not actually reliable:
+> 
+>>>> +		if ((i < 5) || ((i % flex_size) == 0)) {
+> 
+> This only works if the flex_size is less than or equal to 64 (assuming
+> a 4k blocksize).  That's because on 64-bit file systems, we can fit 64
+> block group descripters in a 4k block group descriptor block, so
+> that's the size of the meta_bg.  The default flex_bg size is 16, but
+> it's quite possible to create a file system via "mke2fs -t ext4 -G
+> 256".  In that case, the flex_size will be 256, and we would not be
+> including all of the meta_bg groups.  So i % flex_size needs to be
+> replaced by "i % meta_bg_size", where meta_bg_size would be
+> initialized to EXT4_DESC_PER_BLOCK(sb).
+> 
+> Does that make sense?
+Maybe I missed something. If i% meta_bg_size is used instead, if
+flex_size <64, then we will miss some flex_bg. There seems to be
+a contradiction here. In the scenario where only flex_bg is
+enabled, it may not be appropriate to use meta_bg_size. In the
+scenario where only meta_bg is enabled, it may not be appropriate
+to use flex_size.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+As you said before, it maybe better to remove
+
+	if ((i <5) || ((i% flex_size) == 0))
+
+and do it for all groups. 
+
+In this way we won't miss some flex_bg, meta_bg, and sparse_bg.
+I tested it on an 80T disk and found that the performance loss
+was small:
+
+ unpatched kernel:
+ ext4_setup_system_zone() takes 524ms, 
+ mount-3137    [006] ....    89.548026: ext4_setup_system_zone: (ext4_setup_system_zone+0x0/0x3f0)
+ mount-3137    [006] d...    90.072895: ext4_setup_system_zone_1: (ext4_fill_super+0x2057/0x39b0 <- ext4_setup_system_zone)
+
+ patched kernel:
+ ext4_setup_system_zone() takes 552ms, 
+ mount-4425    [006] ....   402.555793: ext4_setup_system_zone: (ext4_setup_system_zone+0x0/0x3d0)
+ mount-4425    [006] d...   403.107307: ext4_setup_system_zone_1: (ext4_fill_super+0x2057/0x39b0 <- ext4_setup_system_zone)
+> 
+> 						- Ted
+> 
