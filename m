@@ -2,59 +2,71 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9E762D606A
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Dec 2020 16:50:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06F9B2D6186
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Dec 2020 17:19:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392003AbgLJPtT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 10 Dec 2020 10:49:19 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:38436 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2390955AbgLJPtO (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Dec 2020 10:49:14 -0500
-Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0BAFmMjK006942
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Dec 2020 10:48:22 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 12C19420136; Thu, 10 Dec 2020 10:48:22 -0500 (EST)
-Date:   Thu, 10 Dec 2020 10:48:21 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     harshad shirwadkar <harshadshirwadkar@gmail.com>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH 06/15] ext2fs: add new APIs needed for fast commits
-Message-ID: <20201210154821.GR52960@mit.edu>
-References: <20201120191606.2224881-1-harshadshirwadkar@gmail.com>
- <20201120191606.2224881-7-harshadshirwadkar@gmail.com>
- <20201202184458.GJ390058@mit.edu>
- <CAD+ocbxTHNDwqyucTif7n65pgiapTH1Exgh6F7fJQNDSkmXEcg@mail.gmail.com>
+        id S1733203AbgLJQSy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 10 Dec 2020 11:18:54 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35552 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727337AbgLJQSt (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 10 Dec 2020 11:18:49 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A4EE6AE95;
+        Thu, 10 Dec 2020 16:18:07 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 348D31E1354; Thu, 10 Dec 2020 17:18:06 +0100 (CET)
+Date:   Thu, 10 Dec 2020 17:18:06 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     xiakaixu1987@gmail.com
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, Kaixu Xia <kaixuxia@tencent.com>
+Subject: Re: [PATCH] ext4: remove the unused EXT4_CURRENT_REV macro
+Message-ID: <20201210161806.GB31725@quack2.suse.cz>
+References: <1605164202-31120-1-git-send-email-kaixuxia@tencent.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAD+ocbxTHNDwqyucTif7n65pgiapTH1Exgh6F7fJQNDSkmXEcg@mail.gmail.com>
+In-Reply-To: <1605164202-31120-1-git-send-email-kaixuxia@tencent.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 05:45:27PM -0800, harshad shirwadkar wrote:
-> I see that makes sense. In that case, I'll rename the function to
-> errcode_t ext2fs_decode_extent(struct ext2fs_extent *dst, void *src).
-> I wonder if it's okay if we make this function return an error in case
-> the on-disk format is not sane. If we do that, we can add
-> ext2fs_validate_extent() later. Does that make sense?
+On Thu 12-11-20 14:56:42, xiakaixu1987@gmail.com wrote:
+> From: Kaixu Xia <kaixuxia@tencent.com>
+> 
+> There are no callers of the EXT4_CURRENT_REV macro, so remove it.
+> 
+> Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
 
-Sure, that works for me.
+I guess this has fallen through the cracks? The cleanup looks good to me.
+You can add:
 
-Something that you should think about at some point is how much impact
-would be supporting an alternate on-disk extent node structure (for
-the leaf and/or intermediate nodes) have on Fast Commit?  Obviously
-doing this would a new an INCOMPAT feature at the file system level,
-so we probably won't need any additional version negotiation in the
-fast commit journal header itself, but how many tags would need to be
-changed if we were to extend the extent tree structure sometime in the
-future?
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-Cheers,
+								Honza
 
-						- Ted
+> ---
+>  fs/ext4/ext4.h | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index bf9429484462..cf1c01139f26 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -1858,7 +1858,6 @@ static inline bool ext4_verity_in_progress(struct inode *inode)
+>  #define EXT4_GOOD_OLD_REV	0	/* The good old (original) format */
+>  #define EXT4_DYNAMIC_REV	1	/* V2 format w/ dynamic inode sizes */
+>  
+> -#define EXT4_CURRENT_REV	EXT4_GOOD_OLD_REV
+>  #define EXT4_MAX_SUPP_REV	EXT4_DYNAMIC_REV
+>  
+>  #define EXT4_GOOD_OLD_INODE_SIZE 128
+> -- 
+> 2.20.0
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
