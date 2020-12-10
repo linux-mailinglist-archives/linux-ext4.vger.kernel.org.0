@@ -2,21 +2,24 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93F652D68E7
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Dec 2020 21:38:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFA7E2D68F8
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Dec 2020 21:40:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393822AbgLJUhl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 10 Dec 2020 15:37:41 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:52264 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404659AbgLJUhe (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Dec 2020 15:37:34 -0500
+        id S2404229AbgLJUjV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 10 Dec 2020 15:39:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404526AbgLJUjG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Dec 2020 15:39:06 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EB54C0613D6
+        for <linux-ext4@vger.kernel.org>; Thu, 10 Dec 2020 12:38:26 -0800 (PST)
 Received: from localhost (unknown [IPv6:2804:14c:132:242d::1000])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
         (Authenticated sender: krisman)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id E23071F45C51;
-        Thu, 10 Dec 2020 20:36:51 +0000 (GMT)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id A4C361F45C51;
+        Thu, 10 Dec 2020 20:38:23 +0000 (GMT)
 From:   Gabriel Krisman Bertazi <krisman@collabora.com>
 To:     Arnaud Ferraris <arnaud.ferraris@collabora.com>
 Cc:     linux-ext4@vger.kernel.org, drosen@google.com, ebiggers@kernel.org,
@@ -26,10 +29,10 @@ Subject: Re: [PATCH RESEND v2 05/12] e2fsck: add new problem for casefolded
 Organization: Collabora
 References: <20201210150353.91843-1-arnaud.ferraris@collabora.com>
         <20201210150353.91843-6-arnaud.ferraris@collabora.com>
-Date:   Thu, 10 Dec 2020 17:36:46 -0300
+Date:   Thu, 10 Dec 2020 17:38:18 -0300
 In-Reply-To: <20201210150353.91843-6-arnaud.ferraris@collabora.com> (Arnaud
         Ferraris's message of "Thu, 10 Dec 2020 16:03:46 +0100")
-Message-ID: <87im992yap.fsf@collabora.com>
+Message-ID: <87eejx2y85.fsf@collabora.com>
 User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -74,7 +77,8 @@ Arnaud Ferraris <arnaud.ferraris@collabora.com> writes:
 > +/* Casefolded directory entry has illegal characters in its name */
 > +#define PR_2_BAD_CASEFOLDED_NAME		0x0200053
 
-This should be 0x020053 (yours has an extra 0)
+Also, PR_2_BAD_ENCODED_NAME makes more sense than CASEFOLDED.  The
+name is encoded in utf-8 but not casefolded on-disk.
 
 > +
 >  /*
