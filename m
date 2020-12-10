@@ -2,64 +2,84 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 274872D665E
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Dec 2020 20:26:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93F652D68E7
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Dec 2020 21:38:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393383AbgLJTZB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 10 Dec 2020 14:25:01 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:35868 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393324AbgLJTYo (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Dec 2020 14:24:44 -0500
-Received: by mail-io1-f69.google.com with SMTP id y197so4713402iof.3
-        for <linux-ext4@vger.kernel.org>; Thu, 10 Dec 2020 11:24:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=Xa0iQU8Q/C+YSjMiw9XJ96Kz4N4tah7/BH4NCXeOx4M=;
-        b=a+hG1AqXPAfEu+sTBbLYY1yPFodvb1dSsJp9uRr08Al8ssLwjjlQ3+HgBe8wWj+zV+
-         G5dw5Ihwr0ezlIGwNtiNbrCKpMkfvl+fSWEvK8qDofcYc0N8rkl5GqCcsPRlAZsUYfte
-         p6wwtmOVjq6wY5Srl/ZzvjBKMjBRNZR2eC51LlIufSM1tXxTxJTa6I1IpDng8AKNvdPM
-         KyFdnHW3xnFsNDglm+v1QgSMEBs5kdukCRPKTEDXXGN2GgUxNGJjoJUbgxvwKlO0l03U
-         ez3Zrs6eZUqDUK6DQgNd0KKi4IJqOX+6x/fAPB8wcaeAsWutEd4e3HC9GcrRf1/58fiv
-         XhDg==
-X-Gm-Message-State: AOAM530KZfePlnIDS877r1b/rQ62KB3bsqgjeYXIMTt4Kdmoam0/vRpU
-        wdSc/zQa4y+4M84cfGATL1bfqqooquOa6LGF2OQhlZzffGQ5
-X-Google-Smtp-Source: ABdhPJw89+a7UPMpCsZTfxcSNJBk4rtWLQnGEptKIq8hWLFCqIinN+sPXA8GzWSfq1CEL5GO5Krtdag6Leg0Ep3Ab4QTo1ofp8+a
-MIME-Version: 1.0
-X-Received: by 2002:a92:d0c8:: with SMTP id y8mr10133578ila.46.1607628243790;
- Thu, 10 Dec 2020 11:24:03 -0800 (PST)
-Date:   Thu, 10 Dec 2020 11:24:03 -0800
-In-Reply-To: <CACT4Y+a+ZwwEup7xgfsJth-=T-o-tYNHpVc0m4ePx0fj9LBHZw@mail.gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000066f16005b6211ed2@google.com>
-Subject: Re: UBSAN: shift-out-of-bounds in ext4_fill_super
-From:   syzbot <syzbot+345b75652b1d24227443@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, clang-built-linux@googlegroups.com,
-        dvyukov@google.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, natechancellor@gmail.com,
-        ndesaulniers@google.com, syzkaller-bugs@googlegroups.com,
+        id S2393822AbgLJUhl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 10 Dec 2020 15:37:41 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:52264 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404659AbgLJUhe (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Dec 2020 15:37:34 -0500
+Received: from localhost (unknown [IPv6:2804:14c:132:242d::1000])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: krisman)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id E23071F45C51;
+        Thu, 10 Dec 2020 20:36:51 +0000 (GMT)
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     Arnaud Ferraris <arnaud.ferraris@collabora.com>
+Cc:     linux-ext4@vger.kernel.org, drosen@google.com, ebiggers@kernel.org,
         tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH RESEND v2 05/12] e2fsck: add new problem for casefolded
+ name check
+Organization: Collabora
+References: <20201210150353.91843-1-arnaud.ferraris@collabora.com>
+        <20201210150353.91843-6-arnaud.ferraris@collabora.com>
+Date:   Thu, 10 Dec 2020 17:36:46 -0300
+In-Reply-To: <20201210150353.91843-6-arnaud.ferraris@collabora.com> (Arnaud
+        Ferraris's message of "Thu, 10 Dec 2020 16:03:46 +0100")
+Message-ID: <87im992yap.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+Arnaud Ferraris <arnaud.ferraris@collabora.com> writes:
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+> ---
+> Changes in v2:
+>   - added in this version
+>
+>  e2fsck/problem.c | 5 +++++
+>  e2fsck/problem.h | 3 +++
+>  2 files changed, 8 insertions(+)
+>
+> diff --git a/e2fsck/problem.c b/e2fsck/problem.c
+> index e79c853b..2b596303 100644
+> --- a/e2fsck/problem.c
+> +++ b/e2fsck/problem.c
+> @@ -1805,6 +1805,11 @@ static struct e2fsck_problem problem_table[] = {
+>  	  N_("Encrypted @E references @i %Di, which has a different encryption policy.\n"),
+>  	  PROMPT_CLEAR, 0, 0, 0, 0 },
+>  
+> +	/* Casefolded directory entry has illegal characters in its name */
+> +	{ PR_2_BAD_CASEFOLDED_NAME,
+> +	  N_("@E has illegal UTF-8 characters in its name.\n"),
+> +	  PROMPT_FIX, 0, 0, 0, 0 },
+> +
+>  	/* Pass 3 errors */
+>  
+>  	/* Pass 3: Checking directory connectivity */
+> diff --git a/e2fsck/problem.h b/e2fsck/problem.h
+> index 4185e517..a8806fd4 100644
+> --- a/e2fsck/problem.h
+> +++ b/e2fsck/problem.h
+> @@ -1028,6 +1028,9 @@ struct problem_context {
+>  /* Encrypted directory contains file with different encryption policy */
+>  #define PR_2_INCONSISTENT_ENCRYPTION_POLICY	0x020052
+>  
+> +/* Casefolded directory entry has illegal characters in its name */
+> +#define PR_2_BAD_CASEFOLDED_NAME		0x0200053
 
-Reported-and-tested-by: syzbot+345b75652b1d24227443@syzkaller.appspotmail.com
+This should be 0x020053 (yours has an extra 0)
 
-Tested on:
+> +
+>  /*
+>   * Pass 3 errors
+>   */
 
-commit:         e360ba58 ext4: fix a memory leak of ext4_free_data
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fe9725f8845d9fe6
-dashboard link: https://syzkaller.appspot.com/bug?extid=345b75652b1d24227443
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=1166cf17500000
-
-Note: testing is done by a robot and is best-effort only.
+-- 
+Gabriel Krisman Bertazi
