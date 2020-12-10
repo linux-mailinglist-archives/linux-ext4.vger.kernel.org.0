@@ -2,197 +2,178 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 766832D58CD
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Dec 2020 12:03:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29F252D5C90
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Dec 2020 14:59:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732986AbgLJLBi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 10 Dec 2020 06:01:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56714 "EHLO
+        id S2389703AbgLJN6H (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 10 Dec 2020 08:58:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732895AbgLJLB0 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Dec 2020 06:01:26 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C4D5C0613CF
-        for <linux-ext4@vger.kernel.org>; Thu, 10 Dec 2020 03:00:46 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id v3so2571580plz.13
-        for <linux-ext4@vger.kernel.org>; Thu, 10 Dec 2020 03:00:46 -0800 (PST)
+        with ESMTP id S1729717AbgLJN5v (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Dec 2020 08:57:51 -0500
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D737C0613D6
+        for <linux-ext4@vger.kernel.org>; Thu, 10 Dec 2020 05:57:11 -0800 (PST)
+Received: by mail-qv1-xf44.google.com with SMTP id p12so2361353qvj.13
+        for <linux-ext4@vger.kernel.org>; Thu, 10 Dec 2020 05:57:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=A/B/TMC4m/KOiElN1kAnJ1ZdckJKUitgHTM8C8zOfSY=;
-        b=OtJysURBebZYAlh1rxkhwBVmNJ5G/EAYg+EAjQmdwszTd7MH7NhlvI99jHJa/VOPKt
-         qVN9P7HNucIgPrcu52RM/ZTXdPU+2ZkV5RfuzwVPNUkfE12cEPmQsmd87XZypDxfAPZx
-         73RZnxJ7Rk6iDwHXWhyKH5nKMC5CWy7HPSRdmVPUFLNIvTGXdfMiMrLJUSWdm3scObTc
-         08tdjFe1Do4SI11VRyjDexSN4hOFajtFpMRCNliGVE296C8VzOvZ+M1kCW3HFvFU4oqk
-         JZy5+7I1RebqGVkBjUULQ/FXtAP60sI96WsikkWPr7XFXq8KenWgJH2yJVHRN9V5RoOB
-         9j7A==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KyrMMU0omj6NS8PnhNAq4zKjR5kYFuT9HRGwfp3GnV0=;
+        b=ULeEqyb056eyx8EiootK7RvHCnxkIU9jq28VFsRh/sxEfXUNy0zQKilqwunnEg6A0w
+         67vLdEwQVVlFRVdfzc3nDO5m3MI9roIHwkmE8rmUUjSwEYhLy95JLC/GnpSsT47lAgru
+         YqRzsBl6MCj8rD93nXeHISMBcFzUu5TRIeFhKKimC3fA6wYgHywopPCOPBvbBHki/UYz
+         dWq+rFFCDVaPK/80+IMmfPis8SHwUVQ0piMf1Wp5dyTC6YhD5G8uWygyxEVvUKst4sKo
+         66aK6Lf/Ba3gkcbq7f58478FiJ+HAbLCjfiszYyZi9croU9h72fIrGrB5tgqlJrj2NJi
+         Yhfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=A/B/TMC4m/KOiElN1kAnJ1ZdckJKUitgHTM8C8zOfSY=;
-        b=hMzBDj8/1GS0zpCkx4Mq09NvY1zOfbmudxEcz80QSci/K5cs8MWoDbtA6xWz+Sai6U
-         VAnWTjv9f3dFjN5Qc9w6Ud+2q4u0R8LJJNySvAyMowdR5DVgUy29PVRgmQortbvgobox
-         ZtPA9Em515eMPlpKE6xMfu8dwuD54v4dmIrYOgdfUuyIgq6weLd3EdaUCC49lK7keUc2
-         qS/TH2stL9Nz0CsfAp8G/H0fSIAVea8cgWEuIwZUEKjFrb7OHUPZISfq6n9LZpkeqZ7g
-         ROmx+jOwwJ7ey2bbkMhbx9dTO0l7l3nh17G6obvZ6QLsjJWi9xFgr+zPgj2HLpf11ifn
-         0hEQ==
-X-Gm-Message-State: AOAM531+jRM03st/sFptwUUxvbaSc/3+y4k6JU69KcW7MN4RfSK0xEzK
-        QEVXoFukpTXgwONswnAKTca1MUTrkVo=
-X-Google-Smtp-Source: ABdhPJztetQZc1LZdGVg7rd3mlS1Xai3icQ8BmgxQStQ6+QwDO//CyMSY3OU/FsyuDOQXqTcQFJuEQ==
-X-Received: by 2002:a17:902:854b:b029:db:c725:edcd with SMTP id d11-20020a170902854bb02900dbc725edcdmr5905005plo.64.1607598045629;
-        Thu, 10 Dec 2020 03:00:45 -0800 (PST)
-Received: from [127.0.0.1] ([203.205.141.49])
-        by smtp.gmail.com with ESMTPSA id a1sm5710874pfo.56.2020.12.10.03.00.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Dec 2020 03:00:45 -0800 (PST)
-Subject: Re: [PATCH RESEND 4/8] ext4: add the gdt block of meta_bg to
- system_zone
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
-References: <1604764698-4269-1-git-send-email-brookxu@tencent.com>
- <1604764698-4269-4-git-send-email-brookxu@tencent.com>
- <20201203150841.GM441757@mit.edu>
- <4770d6b2-bb9f-7bc5-4fbd-2104bfeba7c2@gmail.com>
- <20201209043415.GG52960@mit.edu>
- <dd6c2921-1397-4b1a-5a20-23956f9cf956@gmail.com>
- <20201209193935.GO52960@mit.edu>
-From:   brookxu <brookxu.cn@gmail.com>
-Message-ID: <87352ab8-b57d-d4bc-6e3d-d4823ab4a38d@gmail.com>
-Date:   Thu, 10 Dec 2020 19:00:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KyrMMU0omj6NS8PnhNAq4zKjR5kYFuT9HRGwfp3GnV0=;
+        b=Zt9DFqkiUzNGdOLlrD7iOS7f7f78yL9C9l3RjejQ4AHAiJ3O6BD0IjgNgOK+Rr6UO3
+         NWU0mSfbMk/T1ICeWHY5HqToDIk+8NV3bMHpEoemIAtTdE7urcGe6cJwyXmYPhMFxnpe
+         V1R4tZaLSHiodQsvbamI5oVpsqXYINAnxBNHLzWrKDohIwMfVYw7Sv3x3OKqVFr8Gj39
+         qrL8Z7ywfLvHt5NUPkVYla1Q7yJlhycj+Jwn6j8jthfsvQK9MFvVpXtujAQpvXaTmqj3
+         5ihlixeJBorFf8nwWWqAB/zXLhN4tnzdcSItpjBWPQTQCT5/NS9xaJ3ZjcDuWchAdhX6
+         iHAw==
+X-Gm-Message-State: AOAM532y1QHWtV+oyxzSTpDfA9HjC72HzE4w2xIpgsuWRnH5c3n0Rots
+        TL9BbSkhCXOALpzmQC0odIKkGQ3n/3mb9neuDjsdsItfgMou99qq
+X-Google-Smtp-Source: ABdhPJy9MpIaNivKN4A0rekYPQ+E7wYjFJcXc6cZ81XnIBiWFZhqXPzZp3NzpSJBLeHNLXwKZPDeef4OvcRn0oPHab4=
+X-Received: by 2002:a0c:d80e:: with SMTP id h14mr9359940qvj.13.1607608630272;
+ Thu, 10 Dec 2020 05:57:10 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201209193935.GO52960@mit.edu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201210023638.GP52960@mit.edu> <00000000000024030c05b61412e6@google.com>
+ <CACT4Y+bkaVq1RzONGuPJxu-pSyCSRrEs7xV0sa2n0oLNkicHQQ@mail.gmail.com>
+In-Reply-To: <CACT4Y+bkaVq1RzONGuPJxu-pSyCSRrEs7xV0sa2n0oLNkicHQQ@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 10 Dec 2020 14:56:58 +0100
+Message-ID: <CACT4Y+a+ZwwEup7xgfsJth-=T-o-tYNHpVc0m4ePx0fj9LBHZw@mail.gmail.com>
+Subject: Re: UBSAN: shift-out-of-bounds in ext4_fill_super
+To:     syzbot <syzbot+345b75652b1d24227443@syzkaller.appspotmail.com>
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-ext4@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        "Theodore Ts'o" <tytso@mit.edu>
+Content-Type: multipart/mixed; boundary="0000000000005903b905b61c8d61"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+--0000000000005903b905b61c8d61
+Content-Type: text/plain; charset="UTF-8"
+
+On Thu, Dec 10, 2020 at 9:09 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+>
+> On Thu, Dec 10, 2020 at 4:50 AM syzbot
+> <syzbot+345b75652b1d24227443@syzkaller.appspotmail.com> wrote:
+> >
+> > Hello,
+> >
+> > syzbot tried to test the proposed patch but the build/boot failed:
+> >
+> > failed to checkout kernel repo git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git on commit e360ba58d067a30a4e3e7d55ebdd919885a058d6: failed to run ["git" "fetch" "--tags" "d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8"]: exit status 1
+> > From git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4
+> >  * [new branch]                bisect-test-ext4-035     -> d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8/bisect-test-ext4-035
+> >  * [new branch]                bisect-test-generic-307  -> d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8/bisect-test-generic-307
+> >  * [new branch]                dev                      -> d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8/dev
+> >  * [new branch]                ext4-3.18                -> d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8/ext4-3.18
+> >  * [new branch]                ext4-4.1                 -> d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8/ext4-4.1
+> >  * [new branch]                ext4-4.4                 -> d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8/ext4-4.4
+> >  * [new branch]                ext4-4.9                 -> d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8/ext4-4.9
+> >  * [new branch]                ext4-dax                 -> d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8/ext4-dax
+> >  * [new branch]                ext4-tools               -> d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8/ext4-tools
+> >  * [new branch]                fix-bz-206443            -> d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8/fix-bz-206443
+> >  * [new branch]                for-stable               -> d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8/for-stable
+> >  * [new branch]                fsverity                 -> d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8/fsverity
+> >  * [new branch]                lazy_journal             -> d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8/lazy_journal
+> >  * [new branch]                master                   -> d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8/master
+> >  * [new branch]                origin                   -> d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8/origin
+> >  * [new branch]                pu                       -> d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8/pu
+> >  * [new branch]                test                     -> d06f7b29746c7f0a52f349ff7fbf2a3f22d27cf8/test
+> >  * [new tag]                   ext4-for-linus-5.8-rc1-2 -> ext4-for-linus-5.8-rc1-2
+> >  ! [rejected]                  ext4_for_linus           -> ext4_for_linus  (would clobber existing tag)
+>
+> Interesting. First time I see this. Should syzkaller use 'git fetch
+> --tags --force"?...
+> StackOverflow suggests it should help:
+> https://stackoverflow.com/questions/58031165/how-to-get-rid-of-would-clobber-existing-tag
 
 
-Theodore Y. Ts'o wrote on 2020/12/10 3:39:
-> On Wed, Dec 09, 2020 at 07:48:09PM +0800, brookxu wrote:
->>
->> Maybe I missed something. If i% meta_bg_size is used instead, if
->> flex_size <64, then we will miss some flex_bg. There seems to be
->> a contradiction here. In the scenario where only flex_bg is
->> enabled, it may not be appropriate to use meta_bg_size. In the
->> scenario where only meta_bg is enabled, it may not be appropriate
->> to use flex_size.
->>
->> As you said before, it maybe better to remove
->>
->> 	if ((i <5) || ((i% flex_size) == 0))
->>
->> and do it for all groups.
-> 
-> I don't think the original (i % flex_size) made any sense in the first
-> place.
-> 
-> What flex_bg does is that it collects the allocation bitmaps and inode
-> tables for each block group and locates them within the first block
-> group in a flex_bg.  It doesn't have anything to do with whether or
-> not a particular block group has a backup copy of the superblock and
-> block group descriptor table --- in non-meta_bg file systems and the
-> meta_bg file systems where the block group is less than
-> s_first_meta_bg * EXT4_DESC_PER_BLOCK(sb).  And the condition in
-> question is only about whether or not to add the backup superblock and
-> backup block group descriptors.  So checking for i % flex_size made no
-> sense, and I'm not sure that check was there in the first place.
+I've added --force to fetches:
+https://github.com/google/syzkaller/commit/9a72bc3440b65a01187ba4277b49d6bd821079cd
+ and it should be deployed by now. Let's try again:
 
-I think we should add backup sb and gdt to system_zone, because
-these blocks should not be used by applications. In fact, I
-think we may have done some work.
+#syz test git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git
+e360ba58d067a30a4e3e7d55ebdd919885a058d6
 
->> In this way weh won't miss some flex_bg, meta_bg, and sparse_bg.
->> I tested it on an 80T disk and found that the performance loss
->> was small:
->>
->>  unpatched kernel:
->>  ext4_setup_system_zone() takes 524ms, 
->>
->>  patched kernel:
->>  ext4_setup_system_zone() takes 552ms, 
-> 
-> I don't really care that much about the time it takes to execute
-> ext4_setup_system_zone().
-> 
-> The really interesting question is how large is the rb_tree
-> constructed by that function, and what is the percentage increase of
-> time that the ext4_inode_block_valid() function takes.  (e.g., how
-> much additional memory is the system_blks tree taking, and how deep is
-> that tree, since ext4_inode_block_valid() gets called every time we
-> allocate or free a block, and every time we need to validate an extent
-> tree node.
+--0000000000005903b905b61c8d61
+Content-Type: application/octet-stream; name=patch
+Content-Disposition: attachment; filename=patch
+Content-Transfer-Encoding: base64
+Content-ID: <f_kiiwnrjf0>
+X-Attachment-Id: f_kiiwnrjf0
 
-During detailed analysis, I found that when the current logic
-calls ext4_setup_system_zone(), s_log_groups_per_flex has not
-been initialized, and flex_size is always 1, which seems to
-be a mistake. therefore
-
-if (ext4_bg_has_super(sb, i) &&
-                    ((i <5) || ((i% flex_size) == 0)))
-
-Degenerate to
-
-if (ext4_bg_has_super(sb, i))
-
-So, the existing implementation just adds the backup super
-block in sparse_group to system_zone. Due to this mistake,
-the behavior of the system in the flex_bg scenario happens to
-be correct?
-
-I tested it in three scenarios: only meta_bg, only flex_bg,
-both flex_bg and meta_bg were enabled. The test results are as
-follows:
-
-Meta_bg only
- unpacthed kernel:
- ext4_setup_system_zone time 866 count 1309087
- 
- pacthed kernel:
- ext4_setup_system_zone time 841 count 1309087
-
-Since the backup gdt of meta_bg and BB are connected, they can
-be merged, so no additional nodes are added.
-
-Flex_bg only
- unpacthed kernel:
- ext4_setup_system_zone time 529 count 41016
-
- pacthed kernel:
- ext4_setup_system_zone time 553 count 41016
-
-The system behavior has not changed. All sparse_group backup sb
-and gdt are still added, so no additional nodes are added.
-
-Meta_bg & Flex_bg only
- unpacthed kernel:
- ext4_setup_system_zone time 535 count 41016
- 
- pacthed kernel:
- ext4_setup_system_zone time 571 count 61508
-
-In addition to sparse_group, the system needs to add the backup
-gdt of meta_bg to the system. Set
-
-	N=max(flex_bg_size / meta_bg_size, 1)
-
-then every N meta_bg has a gdt block that can be merged into 
-the node corresponding to flex_bg, such as flex_bg_size < meta_bg_size,
-then the number of new nodes is 2 * nr_meta_bg. On this 80T
-disk, the maximum depth of rbtree is 2log(n+1). According to
-this calculation, in this test case, the depth of rbtree is
-not increased. Thus, there is no major performance overhead.
-
-Maybe we can deal with it in the same way as discussed before?
-
-> Cheers,
-> 
-> 						- Ted
-> 
+RnJvbSAzZDNiYzMwM2E4YThmNzEyM2NmNDg2ZjQ5ZmE5MDYwMTE2ZmExNDY1IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBUaGVvZG9yZSBUcydvIDx0eXRzb0BtaXQuZWR1PgpEYXRlOiBX
+ZWQsIDkgRGVjIDIwMjAgMTU6NTk6MTEgLTA1MDAKU3ViamVjdDogW1BBVENIXSBleHQ0OiBjaGVj
+ayBmb3IgaW52YWxpZCBibG9jayBzaXplIGVhcmx5IHdoZW4gbW91bnRpbmcgYSBmaWxlCiBzeXN0
+ZW0KCkNoZWNrIGZvciB2YWxpZCBibG9jayBzaXplIGRpcmVjdGx5IGJ5IHZhbGlkYXRpbmcgc19s
+b2dfYmxvY2tfc2l6ZTsgd2UKd2VyZSBkb2luZyB0aGlzIGluIHR3byBwbGFjZXMuICBGaXJzdCwg
+YnkgY2FsY3VsYXRpbmcgYmxvY2tzaXplIHZpYQpCTE9DS19TSVpFIDw8IHNfbG9nX2Jsb2NrX3Np
+emUsIGFuZCB0aGVuIGNoZWNraW5nIHRoYXQgdGhlIGJsb2Nrc2l6ZQp3YXMgdmFsaWQuICBBbmQg
+dGhlbiBzZWNvbmRseSwgYnkgY2hlY2tpbmcgc19sb2dfYmxvY2tfc2l6ZSBkaXJlY3RseS4KClRo
+ZSBmaXJzdCBjaGVjayBpcyBub3QgcmVsaWFibGUsIGFuZCBjYW4gdHJpZ2dlciBhbiBVQlNBTiB3
+YXJuaW5nIGlmCnNfbG9nX2Jsb2NrX3NpemUgb24gYSBtYWxpY2lvdXNseSBjb3JydXB0ZWQgc3Vw
+ZXJibG9jayBpcyBncmVhdGVyIHRoYW4KMjIuICBUaGlzIGlzIGhhcm1sZXNzLCBzaW5jZSB0aGUg
+c2Vjb25kIHRlc3Qgd2lsbCBjb3JyZWN0bHkgcmVqZWN0IHRoZQptYWxpY2lvdXNseSBmdXp6ZWQg
+ZmlsZSBzeXN0ZW0sIGJ1dCB0byBtYWtlIHN5emJvdCBzaHV0IHVwLCBhbmQKYmVjYXVzZSB0aGUg
+dHdvIGNoZWNrcyBhcmUgZHVwbGljYXRpdmUgaW4gYW55IGNhc2UsIGRlbGV0ZSB0aGUKYmxvY2tz
+aXplIGNoZWNrLCBhbmQgbW92ZSB0aGUgc19sb2dfYmxvY2tfc2l6ZSBlYXJsaWVyIGluCmV4dDRf
+ZmlsbF9zdXBlcigpLgoKU2lnbmVkLW9mZi1ieTogVGhlb2RvcmUgVHMnbyA8dHl0c29AbWl0LmVk
+dT4KUmVwb3J0ZWQtYnk6IHN5emJvdCszNDViNzU2NTJiMWQyNDIyNzQ0M0BzeXprYWxsZXIuYXBw
+c3BvdG1haWwuY29tCi0tLQogZnMvZXh0NC9zdXBlci5jIHwgNDAgKysrKysrKysrKysrKysrKy0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogMSBmaWxlIGNoYW5nZWQsIDE2IGluc2VydGlvbnMoKyks
+IDI0IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2ZzL2V4dDQvc3VwZXIuYyBiL2ZzL2V4dDQv
+c3VwZXIuYwppbmRleCBmODYyMjBhOGRmNTAuLjRhMTZiYmYwNDMyYyAxMDA2NDQKLS0tIGEvZnMv
+ZXh0NC9zdXBlci5jCisrKyBiL2ZzL2V4dDQvc3VwZXIuYwpAQCAtNDIwMiwxOCArNDIwMiwyNSBA
+QCBzdGF0aWMgaW50IGV4dDRfZmlsbF9zdXBlcihzdHJ1Y3Qgc3VwZXJfYmxvY2sgKnNiLCB2b2lk
+ICpkYXRhLCBpbnQgc2lsZW50KQogCSAqLwogCXNiaS0+c19saV93YWl0X211bHQgPSBFWFQ0X0RF
+Rl9MSV9XQUlUX01VTFQ7CiAKLQlibG9ja3NpemUgPSBCTE9DS19TSVpFIDw8IGxlMzJfdG9fY3B1
+KGVzLT5zX2xvZ19ibG9ja19zaXplKTsKLQotCWlmIChibG9ja3NpemUgPT0gUEFHRV9TSVpFKQot
+CQlzZXRfb3B0KHNiLCBESU9SRUFEX05PTE9DSyk7Ci0KLQlpZiAoYmxvY2tzaXplIDwgRVhUNF9N
+SU5fQkxPQ0tfU0laRSB8fAotCSAgICBibG9ja3NpemUgPiBFWFQ0X01BWF9CTE9DS19TSVpFKSB7
+CisJaWYgKGxlMzJfdG9fY3B1KGVzLT5zX2xvZ19ibG9ja19zaXplKSA+CisJICAgIChFWFQ0X01B
+WF9CTE9DS19MT0dfU0laRSAtIEVYVDRfTUlOX0JMT0NLX0xPR19TSVpFKSkgewogCQlleHQ0X21z
+ZyhzYiwgS0VSTl9FUlIsCi0JCSAgICAgICAiVW5zdXBwb3J0ZWQgZmlsZXN5c3RlbSBibG9ja3Np
+emUgJWQgKCVkIGxvZ19ibG9ja19zaXplKSIsCi0JCQkgYmxvY2tzaXplLCBsZTMyX3RvX2NwdShl
+cy0+c19sb2dfYmxvY2tfc2l6ZSkpOworCQkJICJJbnZhbGlkIGxvZyBibG9jayBzaXplOiAldSIs
+CisJCQkgbGUzMl90b19jcHUoZXMtPnNfbG9nX2Jsb2NrX3NpemUpKTsKIAkJZ290byBmYWlsZWRf
+bW91bnQ7CiAJfQorCWlmIChsZTMyX3RvX2NwdShlcy0+c19sb2dfY2x1c3Rlcl9zaXplKSA+CisJ
+ICAgIChFWFQ0X01BWF9DTFVTVEVSX0xPR19TSVpFIC0gRVhUNF9NSU5fQkxPQ0tfTE9HX1NJWkUp
+KSB7CisJCWV4dDRfbXNnKHNiLCBLRVJOX0VSUiwKKwkJCSAiSW52YWxpZCBsb2cgY2x1c3RlciBz
+aXplOiAldSIsCisJCQkgbGUzMl90b19jcHUoZXMtPnNfbG9nX2NsdXN0ZXJfc2l6ZSkpOworCQln
+b3RvIGZhaWxlZF9tb3VudDsKKwl9CisKKwlibG9ja3NpemUgPSBFWFQ0X01JTl9CTE9DS19TSVpF
+IDw8IGxlMzJfdG9fY3B1KGVzLT5zX2xvZ19ibG9ja19zaXplKTsKKworCWlmIChibG9ja3NpemUg
+PT0gUEFHRV9TSVpFKQorCQlzZXRfb3B0KHNiLCBESU9SRUFEX05PTE9DSyk7CiAKIAlpZiAobGUz
+Ml90b19jcHUoZXMtPnNfcmV2X2xldmVsKSA9PSBFWFQ0X0dPT0RfT0xEX1JFVikgewogCQlzYmkt
+PnNfaW5vZGVfc2l6ZSA9IEVYVDRfR09PRF9PTERfSU5PREVfU0laRTsKQEAgLTQ0MzIsMjEgKzQ0
+MzksNiBAQCBzdGF0aWMgaW50IGV4dDRfZmlsbF9zdXBlcihzdHJ1Y3Qgc3VwZXJfYmxvY2sgKnNi
+LCB2b2lkICpkYXRhLCBpbnQgc2lsZW50KQogCWlmICghZXh0NF9mZWF0dXJlX3NldF9vayhzYiwg
+KHNiX3Jkb25seShzYikpKSkKIAkJZ290byBmYWlsZWRfbW91bnQ7CiAKLQlpZiAobGUzMl90b19j
+cHUoZXMtPnNfbG9nX2Jsb2NrX3NpemUpID4KLQkgICAgKEVYVDRfTUFYX0JMT0NLX0xPR19TSVpF
+IC0gRVhUNF9NSU5fQkxPQ0tfTE9HX1NJWkUpKSB7Ci0JCWV4dDRfbXNnKHNiLCBLRVJOX0VSUiwK
+LQkJCSAiSW52YWxpZCBsb2cgYmxvY2sgc2l6ZTogJXUiLAotCQkJIGxlMzJfdG9fY3B1KGVzLT5z
+X2xvZ19ibG9ja19zaXplKSk7Ci0JCWdvdG8gZmFpbGVkX21vdW50OwotCX0KLQlpZiAobGUzMl90
+b19jcHUoZXMtPnNfbG9nX2NsdXN0ZXJfc2l6ZSkgPgotCSAgICAoRVhUNF9NQVhfQ0xVU1RFUl9M
+T0dfU0laRSAtIEVYVDRfTUlOX0JMT0NLX0xPR19TSVpFKSkgewotCQlleHQ0X21zZyhzYiwgS0VS
+Tl9FUlIsCi0JCQkgIkludmFsaWQgbG9nIGNsdXN0ZXIgc2l6ZTogJXUiLAotCQkJIGxlMzJfdG9f
+Y3B1KGVzLT5zX2xvZ19jbHVzdGVyX3NpemUpKTsKLQkJZ290byBmYWlsZWRfbW91bnQ7Ci0JfQot
+CiAJaWYgKGxlMTZfdG9fY3B1KHNiaS0+c19lcy0+c19yZXNlcnZlZF9nZHRfYmxvY2tzKSA+IChi
+bG9ja3NpemUgLyA0KSkgewogCQlleHQ0X21zZyhzYiwgS0VSTl9FUlIsCiAJCQkgIk51bWJlciBv
+ZiByZXNlcnZlZCBHRFQgYmxvY2tzIGluc2FuZWx5IGxhcmdlOiAlZCIsCg==
+--0000000000005903b905b61c8d61--
