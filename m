@@ -2,214 +2,64 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05F3F2D650C
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Dec 2020 19:31:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 274872D665E
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Dec 2020 20:26:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390831AbgLJSbR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 10 Dec 2020 13:31:17 -0500
-Received: from mga11.intel.com ([192.55.52.93]:31020 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390797AbgLJOeT (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 10 Dec 2020 09:34:19 -0500
-IronPort-SDR: l/x2GBCiZLVvyhyM4fI1ZMyttVagMngDgFQ66x4fUSAEBAx7VK01d6WeKZnAn07aAeleoF+USR
- W+snC3/KALVg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="170753928"
-X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; 
-   d="scan'208";a="170753928"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2020 06:33:36 -0800
-IronPort-SDR: m1AcTgsT5lHLy7Sp0U9sspKm9Zoh6SkEj8bILwIm6cDgpYNB7J3csdiAkkbnm5d8WEB4JHqQZz
- 6idsHnInemgA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; 
-   d="scan'208";a="333348488"
-Received: from lkp-server01.sh.intel.com (HELO ecc0cebe68d1) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 10 Dec 2020 06:33:35 -0800
-Received: from kbuild by ecc0cebe68d1 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1knN0g-0000K3-NS; Thu, 10 Dec 2020 14:33:34 +0000
-Date:   Thu, 10 Dec 2020 22:32:52 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-Subject: [ext4:dev] BUILD SUCCESS 696c1c70a14f8c96d85fc794aaabf4835e2fffc6
-Message-ID: <5fd23194.XLcr8jVr3kf5XlIe%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S2393383AbgLJTZB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 10 Dec 2020 14:25:01 -0500
+Received: from mail-io1-f69.google.com ([209.85.166.69]:35868 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393324AbgLJTYo (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Dec 2020 14:24:44 -0500
+Received: by mail-io1-f69.google.com with SMTP id y197so4713402iof.3
+        for <linux-ext4@vger.kernel.org>; Thu, 10 Dec 2020 11:24:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=Xa0iQU8Q/C+YSjMiw9XJ96Kz4N4tah7/BH4NCXeOx4M=;
+        b=a+hG1AqXPAfEu+sTBbLYY1yPFodvb1dSsJp9uRr08Al8ssLwjjlQ3+HgBe8wWj+zV+
+         G5dw5Ihwr0ezlIGwNtiNbrCKpMkfvl+fSWEvK8qDofcYc0N8rkl5GqCcsPRlAZsUYfte
+         p6wwtmOVjq6wY5Srl/ZzvjBKMjBRNZR2eC51LlIufSM1tXxTxJTa6I1IpDng8AKNvdPM
+         KyFdnHW3xnFsNDglm+v1QgSMEBs5kdukCRPKTEDXXGN2GgUxNGJjoJUbgxvwKlO0l03U
+         ez3Zrs6eZUqDUK6DQgNd0KKi4IJqOX+6x/fAPB8wcaeAsWutEd4e3HC9GcrRf1/58fiv
+         XhDg==
+X-Gm-Message-State: AOAM530KZfePlnIDS877r1b/rQ62KB3bsqgjeYXIMTt4Kdmoam0/vRpU
+        wdSc/zQa4y+4M84cfGATL1bfqqooquOa6LGF2OQhlZzffGQ5
+X-Google-Smtp-Source: ABdhPJw89+a7UPMpCsZTfxcSNJBk4rtWLQnGEptKIq8hWLFCqIinN+sPXA8GzWSfq1CEL5GO5Krtdag6Leg0Ep3Ab4QTo1ofp8+a
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a92:d0c8:: with SMTP id y8mr10133578ila.46.1607628243790;
+ Thu, 10 Dec 2020 11:24:03 -0800 (PST)
+Date:   Thu, 10 Dec 2020 11:24:03 -0800
+In-Reply-To: <CACT4Y+a+ZwwEup7xgfsJth-=T-o-tYNHpVc0m4ePx0fj9LBHZw@mail.gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000066f16005b6211ed2@google.com>
+Subject: Re: UBSAN: shift-out-of-bounds in ext4_fill_super
+From:   syzbot <syzbot+345b75652b1d24227443@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, clang-built-linux@googlegroups.com,
+        dvyukov@google.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, natechancellor@gmail.com,
+        ndesaulniers@google.com, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git  dev
-branch HEAD: 696c1c70a14f8c96d85fc794aaabf4835e2fffc6  ext4: check for invalid block size early when trying to mount a fs
+Hello,
 
-elapsed time: 725m
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-configs tested: 153
-configs skipped: 3
+Reported-and-tested-by: syzbot+345b75652b1d24227443@syzkaller.appspotmail.com
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Tested on:
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sh                          kfr2r09_defconfig
-x86_64                           alldefconfig
-arm                     am200epdkit_defconfig
-arm                  colibri_pxa270_defconfig
-arm                          lpd270_defconfig
-powerpc                      tqm8xx_defconfig
-arc                        vdk_hs38_defconfig
-powerpc                      walnut_defconfig
-ia64                         bigsur_defconfig
-m68k                        mvme16x_defconfig
-mips                        omega2p_defconfig
-ia64                        generic_defconfig
-um                             i386_defconfig
-arm                           corgi_defconfig
-m68k                        m5307c3_defconfig
-powerpc                     ppa8548_defconfig
-powerpc                     kilauea_defconfig
-powerpc                      makalu_defconfig
-powerpc                  iss476-smp_defconfig
-arm                         socfpga_defconfig
-alpha                            alldefconfig
-arm                        vexpress_defconfig
-powerpc                 mpc836x_rdk_defconfig
-sh                          rsk7264_defconfig
-sh                             sh03_defconfig
-arm                          simpad_defconfig
-arm                    vt8500_v6_v7_defconfig
-sh                        edosk7760_defconfig
-arm                       imx_v6_v7_defconfig
-powerpc                 mpc85xx_cds_defconfig
-mips                         tb0219_defconfig
-mips                  maltasmvp_eva_defconfig
-mips                     cu1000-neo_defconfig
-powerpc                     rainier_defconfig
-arm                           viper_defconfig
-m68k                         apollo_defconfig
-arm                          pcm027_defconfig
-mips                          ath25_defconfig
-powerpc                 mpc834x_mds_defconfig
-arm                        oxnas_v6_defconfig
-s390                                defconfig
-arm                        spear6xx_defconfig
-arm                         s3c6400_defconfig
-mips                         db1xxx_defconfig
-mips                            ar7_defconfig
-arm                       versatile_defconfig
-powerpc                        icon_defconfig
-arc                              allyesconfig
-arm                           tegra_defconfig
-arm                        multi_v5_defconfig
-mips                          ath79_defconfig
-powerpc                     redwood_defconfig
-powerpc                 linkstation_defconfig
-mips                           mtx1_defconfig
-sh                             shx3_defconfig
-powerpc                     tqm8541_defconfig
-m68k                             alldefconfig
-arm                          ep93xx_defconfig
-arm                        cerfcube_defconfig
-arm                       multi_v4t_defconfig
-nios2                            alldefconfig
-arm                       aspeed_g5_defconfig
-powerpc                 canyonlands_defconfig
-sh                      rts7751r2d1_defconfig
-mips                         bigsur_defconfig
-mips                           xway_defconfig
-mips                         cobalt_defconfig
-mips                        nlm_xlp_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20201209
-i386                 randconfig-a005-20201209
-i386                 randconfig-a001-20201209
-i386                 randconfig-a002-20201209
-i386                 randconfig-a006-20201209
-i386                 randconfig-a003-20201209
-i386                 randconfig-a001-20201210
-i386                 randconfig-a004-20201210
-i386                 randconfig-a003-20201210
-i386                 randconfig-a002-20201210
-i386                 randconfig-a005-20201210
-i386                 randconfig-a006-20201210
-x86_64               randconfig-a016-20201209
-x86_64               randconfig-a012-20201209
-x86_64               randconfig-a013-20201209
-x86_64               randconfig-a014-20201209
-x86_64               randconfig-a015-20201209
-x86_64               randconfig-a011-20201209
-i386                 randconfig-a013-20201209
-i386                 randconfig-a014-20201209
-i386                 randconfig-a011-20201209
-i386                 randconfig-a015-20201209
-i386                 randconfig-a012-20201209
-i386                 randconfig-a016-20201209
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+commit:         e360ba58 ext4: fix a memory leak of ext4_free_data
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git
+kernel config:  https://syzkaller.appspot.com/x/.config?x=fe9725f8845d9fe6
+dashboard link: https://syzkaller.appspot.com/bug?extid=345b75652b1d24227443
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=1166cf17500000
 
-clang tested configs:
-x86_64               randconfig-a004-20201209
-x86_64               randconfig-a006-20201209
-x86_64               randconfig-a005-20201209
-x86_64               randconfig-a001-20201209
-x86_64               randconfig-a002-20201209
-x86_64               randconfig-a003-20201209
-x86_64               randconfig-a003-20201210
-x86_64               randconfig-a006-20201210
-x86_64               randconfig-a002-20201210
-x86_64               randconfig-a005-20201210
-x86_64               randconfig-a004-20201210
-x86_64               randconfig-a001-20201210
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Note: testing is done by a robot and is best-effort only.
