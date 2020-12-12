@@ -2,159 +2,113 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BFAC2D85AE
-	for <lists+linux-ext4@lfdr.de>; Sat, 12 Dec 2020 11:07:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4486E2D8710
+	for <lists+linux-ext4@lfdr.de>; Sat, 12 Dec 2020 15:14:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438583AbgLLKGo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 12 Dec 2020 05:06:44 -0500
-Received: from smtp-out-no.shaw.ca ([64.59.134.9]:56179 "EHLO
-        smtp-out-no.shaw.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437368AbgLLKGn (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 12 Dec 2020 05:06:43 -0500
-X-Greylist: delayed 428 seconds by postgrey-1.27 at vger.kernel.org; Sat, 12 Dec 2020 05:06:42 EST
-Received: from cabot.adilger.int ([70.77.221.9])
-        by shaw.ca with ESMTP
-        id o1fTkfLK5tdldo1fUkAY05; Sat, 12 Dec 2020 02:58:25 -0700
-X-Authority-Analysis: v=2.4 cv=INe8tijG c=1 sm=1 tr=0 ts=5fd49441
- a=2Y6h5+ypAxmHcsumz2f7Og==:117 a=2Y6h5+ypAxmHcsumz2f7Og==:17 a=ySfo2T4IAAAA:8
- a=XHBN5R38jSZPtdUxAFIA:9 a=tMomuHDIUWStJmtT:21 a=FT4KXUcYLKzXBloV:21
- a=ZUkhVnNHqyo2at-WnAgH:22
-From:   Andreas Dilger <adilger@dilger.ca>
-To:     tytso@mit.edu
-Cc:     linux-ext4@vger.kernel.org, Andreas Dilger <adilger@whamcloud.com>
-Subject: [PATCH] misc: replace remaining loff_t with ext2_loff_t
-Date:   Sat, 12 Dec 2020 02:58:23 -0700
-Message-Id: <20201212095823.35563-1-adilger@dilger.ca>
-X-Mailer: git-send-email 2.14.3 (Apple Git-98)
-X-CMAE-Envelope: MS4xfBNPqHuEeU4vxHayxdW7CUK7uVIGqOP3a5LFPP2CboUKmN/s6DAzJ545tMWVlFc83ZNgJfLVJLGLbm4bPvruiMQh/Xlh2KXi+r/UUBOtCo9TpAPvBwYd
- 78/kWNiYkPKUY23ET1Iv+8NUOkGFy66ldYi625bDtUNOKHLxjSlwbSFCarnDRo4Hn+srFQ7WhoCArT1Kw1F/6sFPaFt/tnHtVmUOuqP0gRNNo8dbTIEDG39Q
- QNqX4561hRn9u0ny/0mDlg==
+        id S1727142AbgLLONv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 12 Dec 2020 09:13:51 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:38115 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725800AbgLLONv (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 12 Dec 2020 09:13:51 -0500
+Received: by mail-il1-f200.google.com with SMTP id e10so9494544ils.5
+        for <linux-ext4@vger.kernel.org>; Sat, 12 Dec 2020 06:13:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=XazMq+T2mE11tpZMIR+EQUcLWgHPeuEdA3COL5lTxkY=;
+        b=OoVhl9eT6dtU2KmhKCuKwSqN/Y17VZ42aWGDnLjCNe2+Xho9ZhICvY3Nv4wwmBg5U2
+         FHNgBHnLsy0JhcyHCKHkgV4MqnorN6Dc5Pcb6GqM3R3q+UQw6FCxRkdSLX0SjOb7aiZt
+         YzCBjjLPzNPiFuykiUxDDH7xmdxkLnVnACFUjeX+hxG3LBPIIYQaaRiugKVmRuvGC5KW
+         ytgjb9mpnIOA1uqhB+b/5L/kl+VxO2tVVyNjKJDivq/YktjMk1ssUWbWSMkRp5MlFgYT
+         hdvwoxBZU+Mbq28VxZr0QMn+yOqYUWsvuBT0SRB3GRWzGQSS6hr0XXE+tYzkNslsbMhQ
+         YAnQ==
+X-Gm-Message-State: AOAM532pzZxBrWgPMt/vAX3lfGKerS76idSDd2B/ZmsngLlmc4A+DWHK
+        JD8yhWD9E1Uj3hbf+MxiiYDJvj8nOxot9AqjZbWVQUZ2lirq
+X-Google-Smtp-Source: ABdhPJx106Z6cBdjKm11r36+ybkHIPRmzunIjiryXWeO7CVbyqRJXS3o3WLJEg3f5Vgsye1ThuMO4CF6FJFvWycl+xFaQdqA0WaP
+MIME-Version: 1.0
+X-Received: by 2002:a05:6e02:cb:: with SMTP id r11mr23109652ilq.11.1607782390554;
+ Sat, 12 Dec 2020 06:13:10 -0800 (PST)
+Date:   Sat, 12 Dec 2020 06:13:10 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000043e88405b6450217@google.com>
+Subject: WARNING in ext4_xattr_set_entry
+From:   syzbot <syzbot+98b881fdd8ebf45ab4ae@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Andreas Dilger <adilger@whamcloud.com>
+Hello,
 
-Replace the remaining loff_t uses with ext2_loff_t, as
-was done in patch 1df6a4555, since loff_t is a GCC'ism
-and is not portable.
+syzbot found the following issue on:
 
-Signed-off-by: Andreas Dilger <adilger@whamcloud.com>
+HEAD commit:    cd796ed3 Merge tag 'trace-v5.10-rc7' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14721287500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e597c2b53c984cd8
+dashboard link: https://syzkaller.appspot.com/bug?extid=98b881fdd8ebf45ab4ae
+compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17f0f703500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13307137500000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+98b881fdd8ebf45ab4ae@syzkaller.appspotmail.com
+
+EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue
+ext4 filesystem being mounted at /root/file0 supports timestamps until 2038 (0x7fffffff)
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 8454 at fs/ext4/xattr.c:1640 ext4_xattr_set_entry+0x30d0/0x3860 fs/ext4/xattr.c:1640
+Modules linked in:
+CPU: 1 PID: 8454 Comm: syz-executor801 Not tainted 5.10.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:ext4_xattr_set_entry+0x30d0/0x3860 fs/ext4/xattr.c:1640
+Code: ff ff ff eb 05 e8 20 ad 5c ff 49 bd 00 00 00 00 00 fc ff df 48 8b 1c 24 48 8b ac 24 90 00 00 00 e9 b9 fd ff ff e8 00 ad 5c ff <0f> 0b e9 a1 d6 ff ff 48 8b 7c 24 78 4c 89 e6 e8 5c 81 c8 ff 49 8d
+RSP: 0018:ffffc9000142f718 EFLAGS: 00010293
+RAX: ffffffff82187230 RBX: 0000000000000000 RCX: ffff88801abc1a40
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 1ffff92000285f5d R08: ffffffff821848ca R09: ffffffff89600dd0
+R10: ffffffff89800000 R11: ffffffff898006be R12: 0000000000000001
+R13: dffffc0000000000 R14: ffffc9000142fae8 R15: ffff8880291d9020
+FS:  000000000151a880(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000560573deec1e CR3: 00000000117d2000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ ext4_xattr_block_set+0x386/0x3c50 fs/ext4/xattr.c:1942
+ ext4_xattr_set_handle+0xead/0x1ed0 fs/ext4/xattr.c:2390
+ ext4_xattr_set+0x1d8/0x310 fs/ext4/xattr.c:2491
+ __vfs_setxattr+0x3be/0x400 fs/xattr.c:177
+ __vfs_setxattr_noperm+0x11e/0x4b0 fs/xattr.c:208
+ vfs_setxattr+0xde/0x270 fs/xattr.c:283
+ setxattr+0x167/0x340 fs/xattr.c:548
+ path_setxattr+0x109/0x1c0 fs/xattr.c:567
+ __do_sys_lsetxattr fs/xattr.c:589 [inline]
+ __se_sys_lsetxattr fs/xattr.c:585 [inline]
+ __x64_sys_lsetxattr+0xb4/0xd0 fs/xattr.c:585
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x4445a9
+Code: 8d d7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 5b d7 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffd1c974678 EFLAGS: 00000246 ORIG_RAX: 00000000000000bd
+RAX: ffffffffffffffda RBX: 0030656c69662f2e RCX: 00000000004445a9
+RDX: 0000000000000000 RSI: 00000000200001c0 RDI: 0000000020000140
+RBP: 00000000006cf018 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000402190
+R13: 0000000000402220 R14: 0000000000000000 R15: 0000000000000000
+
+
 ---
- contrib/fallocate.c |  4 ++--
- misc/e4defrag.c     | 21 +++++++++++----------
- misc/findsuper.c    |  4 ++--
- 3 files changed, 15 insertions(+), 14 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/contrib/fallocate.c b/contrib/fallocate.c
-index d4273d881d1a..16c08ab37e83 100644
---- a/contrib/fallocate.c
-+++ b/contrib/fallocate.c
-@@ -95,8 +95,8 @@ int main(int argc, char **argv)
- 	int	fd;
- 	char	*fname;
- 	int	opt;
--	loff_t	length = -2LL;
--	loff_t	offset = 0;
-+	ext2_loff_t length = -2LL;
-+	ext2_loff_t offset = 0;
- 	int	falloc_mode = 0;
- 	int	error;
- 	int	tflag = 0;
-diff --git a/misc/e4defrag.c b/misc/e4defrag.c
-index c6c6f134cd4f..47be2e03b8d2 100644
---- a/misc/e4defrag.c
-+++ b/misc/e4defrag.c
-@@ -362,7 +362,7 @@ static int page_in_core(int fd, struct move_extent defrag_data,
- {
- 	long	pagesize;
- 	void	*page = NULL;
--	loff_t	offset, end_offset, length;
-+	ext2_loff_t offset, end_offset, length;
- 
- 	if (vec == NULL || *vec != NULL)
- 		return -1;
-@@ -371,8 +371,8 @@ static int page_in_core(int fd, struct move_extent defrag_data,
- 	if (pagesize < 0)
- 		return -1;
- 	/* In mmap, offset should be a multiple of the page size */
--	offset = (loff_t)defrag_data.orig_start * block_size;
--	length = (loff_t)defrag_data.len * block_size;
-+	offset = (ext2_loff_t)defrag_data.orig_start * block_size;
-+	length = (ext2_loff_t)defrag_data.len * block_size;
- 	end_offset = offset + length;
- 	/* Round the offset down to the nearest multiple of pagesize */
- 	offset = (offset / pagesize) * pagesize;
-@@ -418,18 +418,18 @@ static int defrag_fadvise(int fd, struct move_extent defrag_data,
- 			    SYNC_FILE_RANGE_WRITE |
- 			    SYNC_FILE_RANGE_WAIT_AFTER;
- 	unsigned int	i;
--	loff_t	offset;
-+	ext2_loff_t	offset;
- 
- 	if (pagesize < 1)
- 		return -1;
- 
--	offset = (loff_t)defrag_data.orig_start * block_size;
-+	offset = (ext2_loff_t)defrag_data.orig_start * block_size;
- 	offset = (offset / pagesize) * pagesize;
- 
- #ifdef HAVE_SYNC_FILE_RANGE
- 	/* Sync file for fadvise process */
- 	if (sync_file_range(fd, offset,
--		(loff_t)pagesize * page_num, sync_flag) < 0)
-+		(ext2_loff_t)pagesize * page_num, sync_flag) < 0)
- 		return -1;
- #endif
- 
-@@ -1286,7 +1286,8 @@ out:
-  * @start:		logical offset for defrag target file
-  * @file_size:		defrag target filesize
-  */
--static void print_progress(const char *file, loff_t start, loff_t file_size)
-+static void print_progress(const char *file, ext2_loff_t start,
-+			   ext2_loff_t file_size)
- {
- 	int percent = (start * 100) / file_size;
- 	printf("\033[79;0H\033[K[%u/%u]%s:\t%3d%%",
-@@ -1308,7 +1309,7 @@ static void print_progress(const char *file, loff_t start, loff_t file_size)
- static int call_defrag(int fd, int donor_fd, const char *file,
- 	const struct stat64 *buf, struct fiemap_extent_list *ext_list_head)
- {
--	loff_t	start = 0;
-+	ext2_loff_t	start = 0;
- 	unsigned int	page_num;
- 	unsigned char	*vec = NULL;
- 	int	defraged_ret = 0;
-@@ -1561,8 +1562,8 @@ static int file_defrag(const char *file, const struct stat64 *buf,
- 	orig_group_tmp = orig_group_head;
- 	do {
- 		ret = fallocate64(donor_fd, 0,
--		  (loff_t)orig_group_tmp->start->data.logical * block_size,
--		  (loff_t)orig_group_tmp->len * block_size);
-+		  (ext2_loff_t)orig_group_tmp->start->data.logical * block_size,
-+		  (ext2_loff_t)orig_group_tmp->len * block_size);
- 		if (ret < 0) {
- 			if (mode_flag & DETAIL) {
- 				PRINT_FILE_NAME(file);
-diff --git a/misc/findsuper.c b/misc/findsuper.c
-index 765295c3b4b6..7e78c1fc819a 100644
---- a/misc/findsuper.c
-+++ b/misc/findsuper.c
-@@ -115,11 +115,11 @@ static void usage(void)
- int main(int argc, char *argv[])
- {
- 	int skiprate=512;		/* one sector */
--	loff_t sk=0, skl=0;
-+	ext2_loff_t sk=0, skl=0;
- 	int fd;
- 	char *s;
- 	time_t tm, last = time(0);
--	loff_t interval = 1024 * 1024;
-+	ext2_loff_t interval = 1024 * 1024;
- 	int c, print_jnl_copies = 0;
- 	const char * device_name;
- 	struct ext2_super_block ext2;
--- 
-2.14.3 (Apple Git-98)
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
