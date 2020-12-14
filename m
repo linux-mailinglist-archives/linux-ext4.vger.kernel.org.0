@@ -2,54 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAAAA2DA050
-	for <lists+linux-ext4@lfdr.de>; Mon, 14 Dec 2020 20:24:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 828C02DA066
+	for <lists+linux-ext4@lfdr.de>; Mon, 14 Dec 2020 20:27:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440959AbgLNTYC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 14 Dec 2020 14:24:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34500 "EHLO
+        id S2502032AbgLNT0p (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 14 Dec 2020 14:26:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2440916AbgLNTX4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 14 Dec 2020 14:23:56 -0500
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F515C0613D3
-        for <linux-ext4@vger.kernel.org>; Mon, 14 Dec 2020 11:23:16 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id k4so18411848edl.0
-        for <linux-ext4@vger.kernel.org>; Mon, 14 Dec 2020 11:23:16 -0800 (PST)
+        with ESMTP id S2440454AbgLNT0Q (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 14 Dec 2020 14:26:16 -0500
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEDE6C0613D6
+        for <linux-ext4@vger.kernel.org>; Mon, 14 Dec 2020 11:25:35 -0800 (PST)
+Received: by mail-ed1-x543.google.com with SMTP id b2so18428516edm.3
+        for <linux-ext4@vger.kernel.org>; Mon, 14 Dec 2020 11:25:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ghHpJV67+wKgi5mH36xWRJHPfw2tmD3zuq771YBph+4=;
-        b=RrXQvsekFlFHIcMQod3TAGlC0QsBNVH6+miXqheLOem+h8FkMQ9KiHBUFdRndl3Be7
-         mZMc+xkMoWgs0rEVP+9BCwXA01APlR5Co/F3f8GsqcwH2kZGJEH/e/1hIrFMUXC1/WGW
-         6d0LJEFvYNcVvxsIknH8dsaqkuKxsetkc4O0OFrm6LFC/ATUuF0CY7fPbvITPUVwsjI6
-         1xaw9c1VALl/RrzNZ/CPlx8TNyFNOCivHREZiNI37NwcQrh8jllGSIwTKawguiPB3YZy
-         LmHynxlECxlYcZAHOMdFJDuXZMEUkuV3MsP9yuPiLuI5mSi817mty3yidx3yXPyJfeFM
-         DGcA==
+        bh=uGakVfnUHTotaBa8u50t+RuW90jXuEMteJbj2e6oUjA=;
+        b=ZBrSEKxtZNtKx+vOiGN9Oxpjj7oMBAoEx0+GmFYdB4xCKIDpRu7FDirDAUOiSKllOC
+         srfajQP0WfHJNP0mqzXcm57IDlNSNnt3DLMALni2/Rw9451w+C+Il+0JAg1DJ8SiY3jT
+         gVpYc0S0V64fP5fa8MSQeE0kSL+HvTNRMTkehA83Uvx0sBqloy6mLrhMC5mLaVzOhbc9
+         DCV4jxIjis73yAVKX1CVKh3d/sziWSvTSEriRjGz17UtRyOWFUvVEhsfmGrCon/kT7me
+         WxjnWLv2/iKzd0PjmM9wLFX2NXeHt7vDQtfbKyIfHn7muZXXf4zH24GMGfKsCNp9iQ5x
+         hV+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ghHpJV67+wKgi5mH36xWRJHPfw2tmD3zuq771YBph+4=;
-        b=eaL70LpxhRnEnrgGKnTomU71B6b2ifGBcFPxBgQSr9nKn0r+FQN6s/9mtPBDMTAp71
-         o0+1M5kdCXmpE2fTkOvRpZVChZeOAXtaDZ+PywWmEyjLxfKq1KJ+MqEI0O5pb54LVy91
-         evFaF6fGSPLLpCYeZ5oE+bLFu2zjuEAK/Qjp2AJlxBdPg1snMT/XViFFGGXGfRsDVQLv
-         teEVNwKGLjoxakBbRfgmpgZoqAwvUJCLWqK5PqfBy91/0I5cC9Btu8fGi08rdWkQpSah
-         /vDoPR/2vKuxPJ2P4/53KRNI+NVgv1yySXm9asPMbWGuo5viL01UrSWCpDJtw34r3XG/
-         e7sQ==
-X-Gm-Message-State: AOAM531/Kk/xDo//O7fLAsElYn5SBRuBe55p9JSQAM+1sTYZjq67Waqp
-        G1GuWiEU/a4Kn/l5DPXGrbAcdhZqflJx6hAgwYU=
-X-Google-Smtp-Source: ABdhPJzPfXl877dk+5a5MhGc+8iwFTFHAK6RA/e9J4wNkoTQd9v7QkEFcjMIMQsLZ2GlJWcPbyXTBAEtbld+H5XoU/A=
-X-Received: by 2002:aa7:cf85:: with SMTP id z5mr11927913edx.274.1607973795156;
- Mon, 14 Dec 2020 11:23:15 -0800 (PST)
+        bh=uGakVfnUHTotaBa8u50t+RuW90jXuEMteJbj2e6oUjA=;
+        b=ryRKWxyeD7WsykUab84vIINGshQzpXylifqnuk/lj8iE2JimKFYDQMBry3fPZwdmeu
+         IVgEohswj584zibXZQtVYsFqSKucuEfAv1HWafL8R0oGr8wCmYjKmcWHigNQubNxOZpT
+         CuQ5AMgkUy+xK8My0ZHuBrAef6C2Fj1UZFG7o6UDiP3zMaO8UZXc70tbeoUl1pH3uXTG
+         76wNNBdver06UQGb7XvJvfu2e9op0LsXeF9vB94MAS1mGk3/CnX89xsDzarxiKDiBv4r
+         t/pVv0lS/4O1QxwUulFgMpObG7IQQuN1bBbah0Lz/4KC+R/rtfiCmEdKNP0O9SgwV/mB
+         SW8A==
+X-Gm-Message-State: AOAM530lAxZSZbVA4MQfk/zrYsrQdoui928Re6zO0GjhuLaEEtxWrtWx
+        N/P/mGkOo4Ru1xEYdwnInuE34XTHnz6CUM2ZfOA=
+X-Google-Smtp-Source: ABdhPJwFg8tB7BEOYP3WC0+1Ig496VIvSqJKt0mQj22ZGPONqJVeWUlWTO9l787DTl6mZF8Z7CdvzOM1cx+Medehico=
+X-Received: by 2002:a05:6402:1516:: with SMTP id f22mr25931013edw.382.1607973934534;
+ Mon, 14 Dec 2020 11:25:34 -0800 (PST)
 MIME-Version: 1.0
-References: <20201127113405.26867-1-jack@suse.cz> <20201127113405.26867-9-jack@suse.cz>
-In-Reply-To: <20201127113405.26867-9-jack@suse.cz>
+References: <20201127113405.26867-1-jack@suse.cz> <20201127113405.26867-10-jack@suse.cz>
+In-Reply-To: <20201127113405.26867-10-jack@suse.cz>
 From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
-Date:   Mon, 14 Dec 2020 11:23:04 -0800
-Message-ID: <CAD+ocbwLVsjrB1HRsOm-mD6zm+1Et1C5FcwcGvNmt-AkuZo4Uw@mail.gmail.com>
-Subject: Re: [PATCH 08/12] ext4: Combine ext4_handle_error() and save_error_info()
+Date:   Mon, 14 Dec 2020 11:25:23 -0800
+Message-ID: <CAD+ocbw9WGMuDf0ytdvzPSgkvtVBxo=uROS7WqhYEHLs3nttBQ@mail.gmail.com>
+Subject: Re: [PATCH 09/12] ext4: Drop sync argument of ext4_commit_super()
 To:     Jan Kara <jack@suse.cz>
 Cc:     Ted Tso <tytso@mit.edu>,
         Ext4 Developers List <linux-ext4@vger.kernel.org>
@@ -58,116 +58,176 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Nov 27, 2020 at 3:38 AM Jan Kara <jack@suse.cz> wrote:
+Looks good to me.
+
+Reviewed-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+
+On Fri, Nov 27, 2020 at 10:25 AM Jan Kara <jack@suse.cz> wrote:
 >
-> save_error_info() is always called together with ext4_handle_error().
-> Combine them into a single call and move unconditional bits out of
-> save_error_info() into ext4_handle_error().
+> Everybody passes 1 as sync argument of ext4_commit_super(). Just drop
+> it.
 >
 > Signed-off-by: Jan Kara <jack@suse.cz>
 > ---
->  fs/ext4/super.c | 31 +++++++++++++++----------------
->  1 file changed, 15 insertions(+), 16 deletions(-)
+>  fs/ext4/super.c | 47 ++++++++++++++++++++++-------------------------
+>  1 file changed, 22 insertions(+), 25 deletions(-)
 >
 > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 2d7dc0908cdd..73a09b73fc11 100644
+> index 73a09b73fc11..aae12ea1466a 100644
 > --- a/fs/ext4/super.c
 > +++ b/fs/ext4/super.c
-> @@ -592,9 +592,6 @@ static void __save_error_info(struct super_block *sb, int error,
+> @@ -65,7 +65,7 @@ static struct ratelimit_state ext4_mount_msg_ratelimit;
+>  static int ext4_load_journal(struct super_block *, struct ext4_super_block *,
+>                              unsigned long journal_devnum);
+>  static int ext4_show_options(struct seq_file *seq, struct dentry *root);
+> -static int ext4_commit_super(struct super_block *sb, int sync);
+> +static int ext4_commit_super(struct super_block *sb);
+>  static int ext4_mark_recovery_complete(struct super_block *sb,
+>                                         struct ext4_super_block *es);
+>  static int ext4_clear_journal_err(struct super_block *sb,
+> @@ -621,7 +621,7 @@ static void save_error_info(struct super_block *sb, int error,
+>  {
+>         __save_error_info(sb, error, ino, block, func, line);
+>         if (!bdev_read_only(sb->s_bdev))
+> -               ext4_commit_super(sb, 1);
+> +               ext4_commit_super(sb);
+>  }
+>
+>  /* Deal with the reporting of failure conditions on a filesystem such as
+> @@ -686,7 +686,7 @@ static void flush_stashed_error_work(struct work_struct *work)
+>         struct ext4_sb_info *sbi = container_of(work, struct ext4_sb_info,
+>                                                 s_error_work);
+>
+> -       ext4_commit_super(sbi->s_sb, 1);
+> +       ext4_commit_super(sbi->s_sb);
+>  }
+>
+>  #define ext4_error_ratelimit(sb)                                       \
+> @@ -1151,7 +1151,7 @@ static void ext4_put_super(struct super_block *sb)
+>                 es->s_state = cpu_to_le16(sbi->s_mount_state);
+>         }
+>         if (!sb_rdonly(sb))
+> -               ext4_commit_super(sb, 1);
+> +               ext4_commit_super(sb);
+>
+>         rcu_read_lock();
+>         group_desc = rcu_dereference(sbi->s_group_desc);
+> @@ -2641,7 +2641,7 @@ static int ext4_setup_super(struct super_block *sb, struct ext4_super_block *es,
+>         if (sbi->s_journal)
+>                 ext4_set_feature_journal_needs_recovery(sb);
+>
+> -       err = ext4_commit_super(sb, 1);
+> +       err = ext4_commit_super(sb);
+>  done:
+>         if (test_opt(sb, DEBUG))
+>                 printk(KERN_INFO "[EXT4 FS bs=%lu, gc=%u, "
+> @@ -4862,7 +4862,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+>         if (DUMMY_ENCRYPTION_ENABLED(sbi) && !sb_rdonly(sb) &&
+>             !ext4_has_feature_encrypt(sb)) {
+>                 ext4_set_feature_encrypt(sb);
+> -               ext4_commit_super(sb, 1);
+> +               ext4_commit_super(sb);
+>         }
+>
+>         /*
+> @@ -5415,7 +5415,7 @@ static int ext4_load_journal(struct super_block *sb,
+>                 es->s_journal_dev = cpu_to_le32(journal_devnum);
+>
+>                 /* Make sure we flush the recovery flag to disk. */
+> -               ext4_commit_super(sb, 1);
+> +               ext4_commit_super(sb);
+>         }
+>
+>         return 0;
+> @@ -5425,7 +5425,7 @@ static int ext4_load_journal(struct super_block *sb,
+>         return err;
+>  }
+>
+> -static int ext4_commit_super(struct super_block *sb, int sync)
+> +static int ext4_commit_super(struct super_block *sb)
 >  {
 >         struct ext4_sb_info *sbi = EXT4_SB(sb);
+>         struct ext4_super_block *es = EXT4_SB(sb)->s_es;
+> @@ -5502,8 +5502,7 @@ static int ext4_commit_super(struct super_block *sb, int sync)
 >
-> -       EXT4_SB(sb)->s_mount_state |= EXT4_ERROR_FS;
-> -       if (bdev_read_only(sb->s_bdev))
-> -               return;
->         /* We default to EFSCORRUPTED error... */
->         if (error == 0)
->                 error = EFSCORRUPTED;
-> @@ -647,13 +644,19 @@ static void save_error_info(struct super_block *sb, int error,
->   * used to deal with unrecoverable failures such as journal IO errors or ENOMEM
->   * at a critical moment in log management.
->   */
-> -static void ext4_handle_error(struct super_block *sb, bool force_ro)
-> +static void ext4_handle_error(struct super_block *sb, bool force_ro, int error,
-> +                             __u32 ino, __u64 block,
-> +                             const char *func, unsigned int line)
->  {
->         journal_t *journal = EXT4_SB(sb)->s_journal;
->
-> +       EXT4_SB(sb)->s_mount_state |= EXT4_ERROR_FS;
->         if (test_opt(sb, WARN_ON_ERROR))
->                 WARN_ON_ONCE(1);
->
-> +       if (!bdev_read_only(sb->s_bdev))
-> +               save_error_info(sb, error, ino, block, func, line);
-> +
->         if (sb_rdonly(sb) || (!force_ro && test_opt(sb, ERRORS_CONT)))
->                 return;
->
-> @@ -710,8 +713,7 @@ void __ext4_error(struct super_block *sb, const char *function,
->                        sb->s_id, function, line, current->comm, &vaf);
->                 va_end(args);
+>         BUFFER_TRACE(sbh, "marking dirty");
+>         ext4_superblock_csum_set(sb);
+> -       if (sync)
+> -               lock_buffer(sbh);
+> +       lock_buffer(sbh);
+>         if (buffer_write_io_error(sbh) || !buffer_uptodate(sbh)) {
+>                 /*
+>                  * Oh, dear.  A previous attempt to write the
+> @@ -5519,16 +5518,14 @@ static int ext4_commit_super(struct super_block *sb, int sync)
+>                 set_buffer_uptodate(sbh);
 >         }
-> -       save_error_info(sb, error, 0, block, function, line);
-> -       ext4_handle_error(sb, force_ro);
-> +       ext4_handle_error(sb, force_ro, error, 0, block, function, line);
+>         mark_buffer_dirty(sbh);
+> -       if (sync) {
+> -               unlock_buffer(sbh);
+> -               error = __sync_dirty_buffer(sbh,
+> -                       REQ_SYNC | (test_opt(sb, BARRIER) ? REQ_FUA : 0));
+> -               if (buffer_write_io_error(sbh)) {
+> -                       ext4_msg(sb, KERN_ERR, "I/O error while writing "
+> -                              "superblock");
+> -                       clear_buffer_write_io_error(sbh);
+> -                       set_buffer_uptodate(sbh);
+> -               }
+> +       unlock_buffer(sbh);
+> +       error = __sync_dirty_buffer(sbh,
+> +               REQ_SYNC | (test_opt(sb, BARRIER) ? REQ_FUA : 0));
+> +       if (buffer_write_io_error(sbh)) {
+> +               ext4_msg(sb, KERN_ERR, "I/O error while writing "
+> +                      "superblock");
+> +               clear_buffer_write_io_error(sbh);
+> +               set_buffer_uptodate(sbh);
+>         }
+>         return error;
+>  }
+> @@ -5559,7 +5556,7 @@ static int ext4_mark_recovery_complete(struct super_block *sb,
+>
+>         if (ext4_has_feature_journal_needs_recovery(sb) && sb_rdonly(sb)) {
+>                 ext4_clear_feature_journal_needs_recovery(sb);
+> -               ext4_commit_super(sb, 1);
+> +               ext4_commit_super(sb);
+>         }
+>  out:
+>         jbd2_journal_unlock_updates(journal);
+> @@ -5601,7 +5598,7 @@ static int ext4_clear_journal_err(struct super_block *sb,
+>
+>                 EXT4_SB(sb)->s_mount_state |= EXT4_ERROR_FS;
+>                 es->s_state |= cpu_to_le16(EXT4_ERROR_FS);
+> -               ext4_commit_super(sb, 1);
+> +               ext4_commit_super(sb);
+>
+>                 jbd2_journal_clear_err(journal);
+>                 jbd2_journal_update_sb_errno(journal);
+> @@ -5703,7 +5700,7 @@ static int ext4_freeze(struct super_block *sb)
+>                 ext4_clear_feature_journal_needs_recovery(sb);
+>         }
+>
+> -       error = ext4_commit_super(sb, 1);
+> +       error = ext4_commit_super(sb);
+>  out:
+>         if (journal)
+>                 /* we rely on upper layer to stop further updates */
+> @@ -5725,7 +5722,7 @@ static int ext4_unfreeze(struct super_block *sb)
+>                 ext4_set_feature_journal_needs_recovery(sb);
+>         }
+>
+> -       ext4_commit_super(sb, 1);
+> +       ext4_commit_super(sb);
+>         return 0;
 >  }
 >
->  void __ext4_error_inode(struct inode *inode, const char *function,
-> @@ -741,9 +743,8 @@ void __ext4_error_inode(struct inode *inode, const char *function,
->                                current->comm, &vaf);
->                 va_end(args);
->         }
-> -       save_error_info(inode->i_sb, error, inode->i_ino, block,
-> -                       function, line);
-> -       ext4_handle_error(inode->i_sb, false);
-> +       ext4_handle_error(inode->i_sb, false, error, inode->i_ino, block,
-> +                         function, line);
->  }
->
->  void __ext4_error_file(struct file *file, const char *function,
-> @@ -780,9 +781,8 @@ void __ext4_error_file(struct file *file, const char *function,
->                                current->comm, path, &vaf);
->                 va_end(args);
->         }
-> -       save_error_info(inode->i_sb, EFSCORRUPTED, inode->i_ino, block,
-> -                       function, line);
-> -       ext4_handle_error(inode->i_sb, false);
-> +       ext4_handle_error(inode->i_sb, false, EFSCORRUPTED, inode->i_ino, block,
-> +                         function, line);
->  }
->
->  const char *ext4_decode_error(struct super_block *sb, int errno,
-> @@ -849,8 +849,7 @@ void __ext4_std_error(struct super_block *sb, const char *function,
->                        sb->s_id, function, line, errstr);
+> @@ -5985,7 +5982,7 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
 >         }
 >
-> -       save_error_info(sb, -errno, 0, 0, function, line);
-> -       ext4_handle_error(sb, false);
-> +       ext4_handle_error(sb, false, -errno, 0, 0, function, line);
->  }
->
->  void __ext4_msg(struct super_block *sb,
-> @@ -944,13 +943,13 @@ __acquires(bitlock)
->         if (test_opt(sb, ERRORS_CONT)) {
->                 if (test_opt(sb, WARN_ON_ERROR))
->                         WARN_ON_ONCE(1);
-> +               EXT4_SB(sb)->s_mount_state |= EXT4_ERROR_FS;
-Since you moved the bdev_read_only() check from __save_error_info to
-ext4_handle_error(), should we add that check here?
-
-- Harshad
->                 __save_error_info(sb, EFSCORRUPTED, ino, block, function, line);
->                 schedule_work(&EXT4_SB(sb)->s_error_work);
->                 return;
+>         if (sbi->s_journal == NULL && !(old_sb_flags & SB_RDONLY)) {
+> -               err = ext4_commit_super(sb, 1);
+> +               err = ext4_commit_super(sb);
+>                 if (err)
+>                         goto restore_opts;
 >         }
->         ext4_unlock_group(sb, grp);
-> -       save_error_info(sb, EFSCORRUPTED, ino, block, function, line);
-> -       ext4_handle_error(sb, false);
-> +       ext4_handle_error(sb, false, EFSCORRUPTED, ino, block, function, line);
->         /*
->          * We only get here in the ERRORS_RO case; relocking the group
->          * may be dangerous, but nothing bad will happen since the
 > --
 > 2.16.4
 >
