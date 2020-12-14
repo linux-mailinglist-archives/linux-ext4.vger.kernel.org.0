@@ -2,232 +2,138 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 828C02DA066
-	for <lists+linux-ext4@lfdr.de>; Mon, 14 Dec 2020 20:27:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F3F92DA183
+	for <lists+linux-ext4@lfdr.de>; Mon, 14 Dec 2020 21:28:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502032AbgLNT0p (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 14 Dec 2020 14:26:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2440454AbgLNT0Q (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 14 Dec 2020 14:26:16 -0500
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEDE6C0613D6
-        for <linux-ext4@vger.kernel.org>; Mon, 14 Dec 2020 11:25:35 -0800 (PST)
-Received: by mail-ed1-x543.google.com with SMTP id b2so18428516edm.3
-        for <linux-ext4@vger.kernel.org>; Mon, 14 Dec 2020 11:25:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uGakVfnUHTotaBa8u50t+RuW90jXuEMteJbj2e6oUjA=;
-        b=ZBrSEKxtZNtKx+vOiGN9Oxpjj7oMBAoEx0+GmFYdB4xCKIDpRu7FDirDAUOiSKllOC
-         srfajQP0WfHJNP0mqzXcm57IDlNSNnt3DLMALni2/Rw9451w+C+Il+0JAg1DJ8SiY3jT
-         gVpYc0S0V64fP5fa8MSQeE0kSL+HvTNRMTkehA83Uvx0sBqloy6mLrhMC5mLaVzOhbc9
-         DCV4jxIjis73yAVKX1CVKh3d/sziWSvTSEriRjGz17UtRyOWFUvVEhsfmGrCon/kT7me
-         WxjnWLv2/iKzd0PjmM9wLFX2NXeHt7vDQtfbKyIfHn7muZXXf4zH24GMGfKsCNp9iQ5x
-         hV+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uGakVfnUHTotaBa8u50t+RuW90jXuEMteJbj2e6oUjA=;
-        b=ryRKWxyeD7WsykUab84vIINGshQzpXylifqnuk/lj8iE2JimKFYDQMBry3fPZwdmeu
-         IVgEohswj584zibXZQtVYsFqSKucuEfAv1HWafL8R0oGr8wCmYjKmcWHigNQubNxOZpT
-         CuQ5AMgkUy+xK8My0ZHuBrAef6C2Fj1UZFG7o6UDiP3zMaO8UZXc70tbeoUl1pH3uXTG
-         76wNNBdver06UQGb7XvJvfu2e9op0LsXeF9vB94MAS1mGk3/CnX89xsDzarxiKDiBv4r
-         t/pVv0lS/4O1QxwUulFgMpObG7IQQuN1bBbah0Lz/4KC+R/rtfiCmEdKNP0O9SgwV/mB
-         SW8A==
-X-Gm-Message-State: AOAM530lAxZSZbVA4MQfk/zrYsrQdoui928Re6zO0GjhuLaEEtxWrtWx
-        N/P/mGkOo4Ru1xEYdwnInuE34XTHnz6CUM2ZfOA=
-X-Google-Smtp-Source: ABdhPJwFg8tB7BEOYP3WC0+1Ig496VIvSqJKt0mQj22ZGPONqJVeWUlWTO9l787DTl6mZF8Z7CdvzOM1cx+Medehico=
-X-Received: by 2002:a05:6402:1516:: with SMTP id f22mr25931013edw.382.1607973934534;
- Mon, 14 Dec 2020 11:25:34 -0800 (PST)
+        id S2503135AbgLNU2O (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 14 Dec 2020 15:28:14 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:34055 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2503226AbgLNU2C (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 14 Dec 2020 15:28:02 -0500
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0BEKR1Ss004945
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Dec 2020 15:27:02 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 7DCE8420136; Mon, 14 Dec 2020 15:27:01 -0500 (EST)
+Date:   Mon, 14 Dec 2020 15:27:01 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     harshad shirwadkar <harshadshirwadkar@gmail.com>
+Cc:     Haotian Li <lihaotian9@huawei.com>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        "liuzhiqiang (I)" <liuzhiqiang26@huawei.com>,
+        linfeilong <linfeilong@huawei.com>, liangyun2@huawei.com
+Subject: Re: [PATCH] e2fsck: Avoid changes on recovery flags when
+ jbd2_journal_recover() failed
+Message-ID: <20201214202701.GI575698@mit.edu>
+References: <1bb3c556-4635-061b-c2dc-df10c15e6398@huawei.com>
+ <CAD+ocbxAyyFqoD6AYQVjQyqFzZde3+QOnUhC-VikAq4A3_t8JA@mail.gmail.com>
+ <3e3c18f6-9f45-da04-9e81-ebf1ae16747e@huawei.com>
+ <CAD+ocbz=mp8k2Ruqiagq7ZDfhGui29X8Wz-_7698zaghzH4BXA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201127113405.26867-1-jack@suse.cz> <20201127113405.26867-10-jack@suse.cz>
-In-Reply-To: <20201127113405.26867-10-jack@suse.cz>
-From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
-Date:   Mon, 14 Dec 2020 11:25:23 -0800
-Message-ID: <CAD+ocbw9WGMuDf0ytdvzPSgkvtVBxo=uROS7WqhYEHLs3nttBQ@mail.gmail.com>
-Subject: Re: [PATCH 09/12] ext4: Drop sync argument of ext4_commit_super()
-To:     Jan Kara <jack@suse.cz>
-Cc:     Ted Tso <tytso@mit.edu>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAD+ocbz=mp8k2Ruqiagq7ZDfhGui29X8Wz-_7698zaghzH4BXA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Looks good to me.
+On Mon, Dec 14, 2020 at 10:44:29AM -0800, harshad shirwadkar wrote:
+> Hi Haotian,
+> 
+> Yeah perhaps these are the only recoverable errors. I also think that
+> we can't surely say that these errors are recoverable always. That's
+> because in some setups, these errors may still be unrecoverable (for
+> example, if the machine is running under low memory). I still feel
+> that we should ask the user about whether they want to continue or
+> not. The reason is that firstly if we don't allow running e2fsck in
+> these cases, I wonder what would the user do with their file system -
+> they can't mount / can't run fsck, right? Secondly, not doing that
+> would be a regression. I wonder if some setups would have chosen to
+> ignore journal recovery if there are errors during journal recovery
+> and with this fix they may start seeing that their file systems aren't
+> getting repaired.
 
-Reviewed-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+It may very well be that there are corrupted file system structures
+that could lead to ENOMEM.  If so, I'd consider that someone we should
+be explicitly checking for in e2fsck, and it's actually relatively
+unlikely in the jbd2 recovery code, since that's fairly straight
+forward --- except I'd be concerned about potential cases in your Fast
+Commit code, since there's quite a bit more complexity when parsing
+the fast commit journal.
 
-On Fri, Nov 27, 2020 at 10:25 AM Jan Kara <jack@suse.cz> wrote:
->
-> Everybody passes 1 as sync argument of ext4_commit_super(). Just drop
-> it.
->
-> Signed-off-by: Jan Kara <jack@suse.cz>
-> ---
->  fs/ext4/super.c | 47 ++++++++++++++++++++++-------------------------
->  1 file changed, 22 insertions(+), 25 deletions(-)
->
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 73a09b73fc11..aae12ea1466a 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -65,7 +65,7 @@ static struct ratelimit_state ext4_mount_msg_ratelimit;
->  static int ext4_load_journal(struct super_block *, struct ext4_super_block *,
->                              unsigned long journal_devnum);
->  static int ext4_show_options(struct seq_file *seq, struct dentry *root);
-> -static int ext4_commit_super(struct super_block *sb, int sync);
-> +static int ext4_commit_super(struct super_block *sb);
->  static int ext4_mark_recovery_complete(struct super_block *sb,
->                                         struct ext4_super_block *es);
->  static int ext4_clear_journal_err(struct super_block *sb,
-> @@ -621,7 +621,7 @@ static void save_error_info(struct super_block *sb, int error,
->  {
->         __save_error_info(sb, error, ino, block, func, line);
->         if (!bdev_read_only(sb->s_bdev))
-> -               ext4_commit_super(sb, 1);
-> +               ext4_commit_super(sb);
->  }
->
->  /* Deal with the reporting of failure conditions on a filesystem such as
-> @@ -686,7 +686,7 @@ static void flush_stashed_error_work(struct work_struct *work)
->         struct ext4_sb_info *sbi = container_of(work, struct ext4_sb_info,
->                                                 s_error_work);
->
-> -       ext4_commit_super(sbi->s_sb, 1);
-> +       ext4_commit_super(sbi->s_sb);
->  }
->
->  #define ext4_error_ratelimit(sb)                                       \
-> @@ -1151,7 +1151,7 @@ static void ext4_put_super(struct super_block *sb)
->                 es->s_state = cpu_to_le16(sbi->s_mount_state);
->         }
->         if (!sb_rdonly(sb))
-> -               ext4_commit_super(sb, 1);
-> +               ext4_commit_super(sb);
->
->         rcu_read_lock();
->         group_desc = rcu_dereference(sbi->s_group_desc);
-> @@ -2641,7 +2641,7 @@ static int ext4_setup_super(struct super_block *sb, struct ext4_super_block *es,
->         if (sbi->s_journal)
->                 ext4_set_feature_journal_needs_recovery(sb);
->
-> -       err = ext4_commit_super(sb, 1);
-> +       err = ext4_commit_super(sb);
->  done:
->         if (test_opt(sb, DEBUG))
->                 printk(KERN_INFO "[EXT4 FS bs=%lu, gc=%u, "
-> @@ -4862,7 +4862,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
->         if (DUMMY_ENCRYPTION_ENABLED(sbi) && !sb_rdonly(sb) &&
->             !ext4_has_feature_encrypt(sb)) {
->                 ext4_set_feature_encrypt(sb);
-> -               ext4_commit_super(sb, 1);
-> +               ext4_commit_super(sb);
->         }
->
->         /*
-> @@ -5415,7 +5415,7 @@ static int ext4_load_journal(struct super_block *sb,
->                 es->s_journal_dev = cpu_to_le32(journal_devnum);
->
->                 /* Make sure we flush the recovery flag to disk. */
-> -               ext4_commit_super(sb, 1);
-> +               ext4_commit_super(sb);
->         }
->
->         return 0;
-> @@ -5425,7 +5425,7 @@ static int ext4_load_journal(struct super_block *sb,
->         return err;
->  }
->
-> -static int ext4_commit_super(struct super_block *sb, int sync)
-> +static int ext4_commit_super(struct super_block *sb)
->  {
->         struct ext4_sb_info *sbi = EXT4_SB(sb);
->         struct ext4_super_block *es = EXT4_SB(sb)->s_es;
-> @@ -5502,8 +5502,7 @@ static int ext4_commit_super(struct super_block *sb, int sync)
->
->         BUFFER_TRACE(sbh, "marking dirty");
->         ext4_superblock_csum_set(sb);
-> -       if (sync)
-> -               lock_buffer(sbh);
-> +       lock_buffer(sbh);
->         if (buffer_write_io_error(sbh) || !buffer_uptodate(sbh)) {
->                 /*
->                  * Oh, dear.  A previous attempt to write the
-> @@ -5519,16 +5518,14 @@ static int ext4_commit_super(struct super_block *sb, int sync)
->                 set_buffer_uptodate(sbh);
->         }
->         mark_buffer_dirty(sbh);
-> -       if (sync) {
-> -               unlock_buffer(sbh);
-> -               error = __sync_dirty_buffer(sbh,
-> -                       REQ_SYNC | (test_opt(sb, BARRIER) ? REQ_FUA : 0));
-> -               if (buffer_write_io_error(sbh)) {
-> -                       ext4_msg(sb, KERN_ERR, "I/O error while writing "
-> -                              "superblock");
-> -                       clear_buffer_write_io_error(sbh);
-> -                       set_buffer_uptodate(sbh);
-> -               }
-> +       unlock_buffer(sbh);
-> +       error = __sync_dirty_buffer(sbh,
-> +               REQ_SYNC | (test_opt(sb, BARRIER) ? REQ_FUA : 0));
-> +       if (buffer_write_io_error(sbh)) {
-> +               ext4_msg(sb, KERN_ERR, "I/O error while writing "
-> +                      "superblock");
-> +               clear_buffer_write_io_error(sbh);
-> +               set_buffer_uptodate(sbh);
->         }
->         return error;
->  }
-> @@ -5559,7 +5556,7 @@ static int ext4_mark_recovery_complete(struct super_block *sb,
->
->         if (ext4_has_feature_journal_needs_recovery(sb) && sb_rdonly(sb)) {
->                 ext4_clear_feature_journal_needs_recovery(sb);
-> -               ext4_commit_super(sb, 1);
-> +               ext4_commit_super(sb);
->         }
->  out:
->         jbd2_journal_unlock_updates(journal);
-> @@ -5601,7 +5598,7 @@ static int ext4_clear_journal_err(struct super_block *sb,
->
->                 EXT4_SB(sb)->s_mount_state |= EXT4_ERROR_FS;
->                 es->s_state |= cpu_to_le16(EXT4_ERROR_FS);
-> -               ext4_commit_super(sb, 1);
-> +               ext4_commit_super(sb);
->
->                 jbd2_journal_clear_err(journal);
->                 jbd2_journal_update_sb_errno(journal);
-> @@ -5703,7 +5700,7 @@ static int ext4_freeze(struct super_block *sb)
->                 ext4_clear_feature_journal_needs_recovery(sb);
->         }
->
-> -       error = ext4_commit_super(sb, 1);
-> +       error = ext4_commit_super(sb);
->  out:
->         if (journal)
->                 /* we rely on upper layer to stop further updates */
-> @@ -5725,7 +5722,7 @@ static int ext4_unfreeze(struct super_block *sb)
->                 ext4_set_feature_journal_needs_recovery(sb);
->         }
->
-> -       ext4_commit_super(sb, 1);
-> +       ext4_commit_super(sb);
->         return 0;
->  }
->
-> @@ -5985,7 +5982,7 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
->         }
->
->         if (sbi->s_journal == NULL && !(old_sb_flags & SB_RDONLY)) {
-> -               err = ext4_commit_super(sb, 1);
-> +               err = ext4_commit_super(sb);
->                 if (err)
->                         goto restore_opts;
->         }
-> --
-> 2.16.4
->
+This isn't a new concern; we've already talked a about the fact the
+fast commit needs to have a lot more sanity checks to look for
+maliciously --- or syzbot generated, which may be the same thing :-)
+--- inconsistent fields causing the e2fsck reply code to behave in
+unexpected way, which might include trying to allocate insane amounts
+of memory, array buffer overruns, etc.
+
+But assuming that ENOMEM is always due to operational concerns, as
+opposed to file system corruption, may not always be a safe
+assumption.
+
+Something else to consider is from the perspective of a naive system
+administrator, if there is an bad media sector in the journal, simply
+always aborting the e2fsck run may not allow them an easy way to
+recover.  Simply ignoring the journal and allowing the next write to
+occur, at which point the HDD or SSD will redirect the write to a bad
+sector spare spool, will allow for an automatic recovery.  Simply
+always causing e2fsck to fail, would actually result in a worse
+outcome in this particular case.
+
+(This is especially true for a mobile device, where the owner is not
+likely to have access to the serial console to manually run e2fsck,
+and where if they can't automatically recover, they will have to take
+their phone to the local cell phone carrier store for repairs ---
+which is *not* something that a cellular provider will enjoy, and they
+will tend to choose other cell phone models to feature as
+supported/featured devices.  So an increased number of failures which
+cann't be automatically recovered cause the carrier to choose to
+feature, say, a Xiaomi phone over a ZTE phone.)
+
+> I'm wondering if you saw any a situation in your setup where exiting
+> e2fsck helped? If possible, could you share what kind of errors were
+> seen in journal recovery and what was the expected behavior? Maybe
+> that would help us decide on the right behavior.
+
+Seconded; I think we should try to understand why it is that e2fsck is
+failing with these sorts of errors.  It may be that there are better
+ways of solving the high-level problem.
+
+For example, the new libext2fs bitmap backends were something that I
+added because when running a large number of e2fsck processes in
+parallel on a server machine with dozens of HDD spindles was causing
+e2fsck processes to run slowly due to memory contention.  We fixed it
+by making e2fsck more memory efficient, by improving the bitmap
+implementations --- but if that hadn't been sufficient, I had also
+considered adding support to make /sbin/fsck "smarter" by limiting the
+number of fsck.XXX processes that would get started simultaneously,
+since that could actually cause the file system check to run faster by
+reducing memory thrashing.  (The trick would have been how to make
+fsck smart enough to automatically tune the number of parallel fsck
+processes to allow, since asking the system administrator to manually
+tune the max number of processes would be annoying to the sysadmin,
+and would mean that the feature would never get used outside of $WORK
+in practice.)
+
+So is the actual underlying problem that e2fsck is running out of
+memory?  If so, is it because there simply isn't enough physical
+memory available?  Is it being run in a cgroup container which is too
+small?  Or is it because too many file systems are being checked in
+parallel at the same time?  
+
+Or is it I/O errors that you are concerned with?  And how do you know
+that they are not permanent errors; is thie caused by something like
+fibre channel connections being flaky?
+
+Or is this a hypotethical worry, as opposed to something which is
+causing operational problems right now?
+
+Cheers,
+
+					- Ted
+					
