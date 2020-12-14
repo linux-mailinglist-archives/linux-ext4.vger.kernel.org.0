@@ -2,131 +2,102 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA4932D918F
-	for <lists+linux-ext4@lfdr.de>; Mon, 14 Dec 2020 02:28:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFFC82D92FB
+	for <lists+linux-ext4@lfdr.de>; Mon, 14 Dec 2020 06:52:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437707AbgLNB16 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 13 Dec 2020 20:27:58 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:9434 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731697AbgLNB16 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 13 Dec 2020 20:27:58 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CvNyv0NthzhrwC;
-        Mon, 14 Dec 2020 09:26:47 +0800 (CST)
-Received: from [10.174.177.113] (10.174.177.113) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 14 Dec 2020 09:27:05 +0800
-Subject: Re: [PATCH] e2fsck: Avoid changes on recovery flags when
- jbd2_journal_recover() failed
-To:     harshad shirwadkar <harshadshirwadkar@gmail.com>
-CC:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        "liuzhiqiang (I)" <liuzhiqiang26@huawei.com>,
-        linfeilong <linfeilong@huawei.com>, <tytso@alum.mit.edu>,
-        <liangyun2@huawei.com>
-References: <1bb3c556-4635-061b-c2dc-df10c15e6398@huawei.com>
- <CAD+ocbxAyyFqoD6AYQVjQyqFzZde3+QOnUhC-VikAq4A3_t8JA@mail.gmail.com>
-From:   Haotian Li <lihaotian9@huawei.com>
-Message-ID: <3e3c18f6-9f45-da04-9e81-ebf1ae16747e@huawei.com>
-Date:   Mon, 14 Dec 2020 09:27:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.1.0
+        id S2390125AbgLNFvG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 14 Dec 2020 00:51:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35748 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388095AbgLNFvC (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 14 Dec 2020 00:51:02 -0500
+Date:   Sun, 13 Dec 2020 21:50:19 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607925021;
+        bh=26wjFmCwOjxbjwCPVnXE7SyqfSynEV7b+ddO/h17k4I=;
+        h=From:To:Cc:Subject:From;
+        b=n/muPa2CduuxaSl+0TEAyvxRjflWJBxicz+gMGJDNpvNXQogxADu7X/WVccGdAlqi
+         xZmuIv3FwteKOr+Qlv5ddaktdmXQSJIeBxTQzP16O7fUFoPzMSDKpKdMu63zQ/rf4L
+         nkHx5mxptVdfc2WBUpiRT71HanPgKK5fmug5mHDGtTbGZJ04bJI4hhRlBraAVBb4nv
+         2cZYgMGX+sIph52A0SHSdKjUYTKcBWNBX29/dwftRvi2vV6JlukFQMNZnsxn+m7tOy
+         ADB2dQgI4vwseN0mcDjFLUWzBh0NPkgsiv/xrwLG41ZNV1WkrtMPXaL3OR1Cb1vFdS
+         nTBmup/vMTS6A==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [GIT PULL] fscrypt updates for 5.11
+Message-ID: <X9b9G8p8AiRAzDwV@sol.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <CAD+ocbxAyyFqoD6AYQVjQyqFzZde3+QOnUhC-VikAq4A3_t8JA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.113]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Harshad,
+The following changes since commit 09162bc32c880a791c6c0668ce0745cf7958f576:
 
-Thanks for your review. I think you are right, so I try to find
-all the recoverable err_codes in journal recovery. But I have no
-idea to distinguish all the err_codes. Only the following three
-err_codes I think may be recoverable. -ENOMEM,EXT2_ET_NO_MEMORY
-,-EIO. In these cases, I think we probably don't need ask user if
-they want to continue or not, only tell them why journal recover
-failed and exit instead. Because, the reason cause these cases
-may not disk errors, we need try to avoid the changes on the disk.
-What do you think?
+  Linux 5.10-rc4 (2020-11-15 16:44:31 -0800)
 
-Thanks,
-Haotian
+are available in the Git repository at:
 
-在 2020/12/12 6:07, harshad shirwadkar 写道:
-> Hi Haotian,
-> 
-> Thanks for your patch. I noticed that the following test fails:
-> 
-> $ make -j 64
-> ...
-> 365 tests succeeded     1 tests failed
-> Tests failed: j_corrupt_revoke_rcount
-> make: *** [Makefile:397: test_post] Error 1
-> 
-> This test fails because the test expects e2fsck to continue even if
-> the journal superblock is corrupt and with your patch e2fsck exits
-> immediately. This brings up a higher level question - if we abort on
-> errors when recovery fails during fsck, how would that problem get
-> fixed if we don't run fsck? In this particular example, the journal
-> superblock is corrupt and that is an unrecoverable error. I wonder if
-> instead we should check for certain specific transient errors such as
-> -ENOMEM and only then exit? I suspect even in those cases we probably
-> should ask the user if they would like to continue or not. What do you
-> think?
-> 
-> Thanks,
-> Harshad
-> 
-> 
-> On Fri, Dec 11, 2020 at 4:19 AM Haotian Li <lihaotian9@huawei.com> wrote:
->>
->> jbd2_journal_revocer() may fail when some error occers
->> such as ENOMEM. However, jsb->s_start is still cleared
->> by func e2fsck_journal_release(). This may break
->> consistency between metadata and data in disk. Sometimes,
->> failure in jbd2_journal_revocer() is temporary but retry
->> e2fsck will skip the journal recovery when the temporary
->> problem is fixed.
->>
->> To fix this case, we use "fatal_error" instead "goto errout"
->> when recover journal failed. We think if journal recovery
->> fails, we need send error message to user and reserve the
->> recovery flags to recover the journal when try e2fsck again.
->>
->> Reported-by: Liangyun <liangyun2@huawei.com>
->> Signed-off-by: Haotian Li <lihaotian9@huawei.com>
->> Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
->> ---
->>  e2fsck/journal.c | 9 +++++++--
->>  1 file changed, 7 insertions(+), 2 deletions(-)
->>
->> diff --git a/e2fsck/journal.c b/e2fsck/journal.c
->> index 7d9f1b40..546beafd 100644
->> --- a/e2fsck/journal.c
->> +++ b/e2fsck/journal.c
->> @@ -952,8 +952,13 @@ static errcode_t recover_ext3_journal(e2fsck_t ctx)
->>                 goto errout;
->>
->>         retval = -jbd2_journal_recover(journal);
->> -       if (retval)
->> -               goto errout;
->> +       if (retval && retval != EFSBADCRC && retval != EFSCORRUPTED) {
->> +               ctx->fs->flags &= ~EXT2_FLAG_VALID;
->> +               com_err(ctx->program_name, 0,
->> +                                       _("Journal recovery failed "
->> +                                         "on %s\n"), ctx->device_name);
->> +               fatal_error(ctx, 0);
->> +       }
->>
->>         if (journal->j_failed_commit) {
->>                 pctx.ino = journal->j_failed_commit;
->> --
->> 2.19.1
->>
-> .
-> 
+  https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
+
+for you to fetch changes up to a14d0b6764917b21ee6fdfd2a8a4c2920fbefcce:
+
+  fscrypt: allow deleting files with unsupported encryption policy (2020-12-02 18:25:01 -0800)
+
+----------------------------------------------------------------
+
+This release there are some fixes for longstanding problems, as well as
+some cleanups:
+
+- Fix a race condition where a duplicate filename could be created in an
+  encrypted directory if a syscall that creates a new filename raced
+  with the directory's encryption key being added.
+
+- Allow deleting files that use an unsupported encryption policy.
+
+- Simplify the locking for 'struct fscrypt_master_key'.
+
+- Remove kernel-internal constants from the UAPI header.
+
+As usual, all these patches have been in linux-next with no reported
+issues, and I've tested them with xfstests.
+
+----------------------------------------------------------------
+Eric Biggers (16):
+      fscrypt: remove kernel-internal constants from UAPI header
+      fscrypt: add fscrypt_is_nokey_name()
+      ext4: prevent creating duplicate encrypted filenames
+      f2fs: prevent creating duplicate encrypted filenames
+      ubifs: prevent creating duplicate encrypted filenames
+      fscrypt: remove unnecessary calls to fscrypt_require_key()
+      fscrypt: simplify master key locking
+      ext4: remove ext4_dir_open()
+      f2fs: remove f2fs_dir_open()
+      ubifs: remove ubifs_dir_open()
+      ext4: don't call fscrypt_get_encryption_info() from dx_show_leaf()
+      fscrypt: introduce fscrypt_prepare_readdir()
+      fscrypt: move body of fscrypt_prepare_setattr() out-of-line
+      fscrypt: move fscrypt_require_key() to fscrypt_private.h
+      fscrypt: unexport fscrypt_get_encryption_info()
+      fscrypt: allow deleting files with unsupported encryption policy
+
+ fs/crypto/fname.c            |   8 +++-
+ fs/crypto/fscrypt_private.h  |  56 +++++++++++++++-------
+ fs/crypto/hooks.c            |  55 +++++++++++----------
+ fs/crypto/keyring.c          |  10 +---
+ fs/crypto/keysetup.c         |  44 +++++++++++------
+ fs/crypto/policy.c           |  27 +++++++----
+ fs/ext4/dir.c                |  16 ++-----
+ fs/ext4/namei.c              |  13 ++---
+ fs/f2fs/dir.c                |  10 +---
+ fs/f2fs/f2fs.h               |   2 +
+ fs/ubifs/dir.c               |  28 +++++------
+ include/linux/fscrypt.h      | 112 ++++++++++++++++++++++++++++---------------
+ include/uapi/linux/fscrypt.h |   5 +-
+ 13 files changed, 227 insertions(+), 159 deletions(-)
