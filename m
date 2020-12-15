@@ -2,196 +2,168 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C48F2DA577
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Dec 2020 02:15:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD1B32DA8BB
+	for <lists+linux-ext4@lfdr.de>; Tue, 15 Dec 2020 08:44:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726473AbgLOBOv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 14 Dec 2020 20:14:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728289AbgLOBOq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 14 Dec 2020 20:14:46 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D36F4C061793
-        for <linux-ext4@vger.kernel.org>; Mon, 14 Dec 2020 17:14:05 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id h186so2966400pfe.0
-        for <linux-ext4@vger.kernel.org>; Mon, 14 Dec 2020 17:14:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:subject:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vTvDNWdEA4hZKsryJgBlw03/sVfatrcozcTg5ftj3hs=;
-        b=O2cK33pEOjWVCyRNZON4p77SrGQKiarakeB/l1QGUronujoYGDOsELDiCKgP7u6It0
-         +2TCAtrPBY1VR4whLANmTko0Te8o32IgvMZIu+77jHeVRJviWIwTyrFgCzd03p/b/7iA
-         YZVWGFNPjsK37iQ4fAorHBLdi6jqZZFK6caZCwuw1uqgLf87rSJIjlwTtTf94bPTyhF8
-         fjQjzF6CpY51PR1Sui8yCR2vab1jG8skbJMSRwxGypCeuI1qfcU7bLf6D9GZ9gACHJK7
-         xbORG4C7dpgbPRdkxSL06x7qmkXrWK9SwvDHF9P+dPK4pJWnhoywA4QdhEzZ4DREHDnP
-         zUfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vTvDNWdEA4hZKsryJgBlw03/sVfatrcozcTg5ftj3hs=;
-        b=Qytc0Wcn6R7844bayKAmZPKB9P0HGDL5PYYR7G8jq2ufw1b15httGvUZcbqLK/PXYX
-         baCMsnt44DrPWF1ixQXeYvFkSuSPmUO586TVNLkGhTwzDuWPZU0fw2yNxI9I6WDbyhqO
-         /fPvK1ni5gOk+rjFcKUQxqeCkjxmM45fGxmn1CV/onTSio9evOMNWto9mImDLZaJ4eWE
-         eI7rDC1FSafaUcPon1qUmkDLnf35iKTQy8YcwM1bZNFddAYBnczmf1mYRdsDmJzukH7O
-         8MyYSNBjij+ejDTokFVAeToUph8C2ARCIwKfqstY2LY6yHzOC6/NobFY6xpOpCqx5669
-         igUg==
-X-Gm-Message-State: AOAM533Ce/GVtoe3Kav12AlEvGSCyKwSKH7+soTOvhFnCdjbUi2x54uN
-        XYN1JmyU1PhSZst2dq8OyPE+XTr+d1A=
-X-Google-Smtp-Source: ABdhPJwCUa0SQyqDMFKcbxWbh+KqAIfJuPCHJDu3CNzNGYKMzG3xFPOyPVlHpGdAUhZXulpVwkEQlw==
-X-Received: by 2002:a65:6109:: with SMTP id z9mr27007222pgu.190.1607994844835;
-        Mon, 14 Dec 2020 17:14:04 -0800 (PST)
-Received: from [192.168.255.10] ([203.205.141.47])
-        by smtp.gmail.com with ESMTPSA id h16sm21901064pgd.62.2020.12.14.17.14.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Dec 2020 17:14:03 -0800 (PST)
-From:   brookxu <brookxu.cn@gmail.com>
-Subject: Re: [PATCH RESEND 4/8] ext4: add the gdt block of meta_bg to
- system_zone
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
-References: <1604764698-4269-1-git-send-email-brookxu@tencent.com>
- <1604764698-4269-4-git-send-email-brookxu@tencent.com>
- <20201203150841.GM441757@mit.edu>
- <4770d6b2-bb9f-7bc5-4fbd-2104bfeba7c2@gmail.com>
- <20201209043415.GG52960@mit.edu>
- <dd6c2921-1397-4b1a-5a20-23956f9cf956@gmail.com>
- <20201209193935.GO52960@mit.edu>
-Message-ID: <1704f274-fe41-4215-8e6e-ff09d080cdd5@gmail.com>
-Date:   Tue, 15 Dec 2020 09:14:00 +0800
+        id S1726815AbgLOHoK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 15 Dec 2020 02:44:10 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:9889 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726588AbgLOHoH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Dec 2020 02:44:07 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Cw9GJ1h5Tz7Gk5;
+        Tue, 15 Dec 2020 15:42:48 +0800 (CST)
+Received: from [10.174.177.71] (10.174.177.71) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 15 Dec 2020 15:43:18 +0800
+Subject: Re: [PATCH] e2fsck: Avoid changes on recovery flags when
+ jbd2_journal_recover() failed
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        harshad shirwadkar <harshadshirwadkar@gmail.com>
+CC:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        "liuzhiqiang (I)" <liuzhiqiang26@huawei.com>,
+        linfeilong <linfeilong@huawei.com>, <liangyun2@huawei.com>
+References: <1bb3c556-4635-061b-c2dc-df10c15e6398@huawei.com>
+ <CAD+ocbxAyyFqoD6AYQVjQyqFzZde3+QOnUhC-VikAq4A3_t8JA@mail.gmail.com>
+ <3e3c18f6-9f45-da04-9e81-ebf1ae16747e@huawei.com>
+ <CAD+ocbz=mp8k2Ruqiagq7ZDfhGui29X8Wz-_7698zaghzH4BXA@mail.gmail.com>
+ <20201214202701.GI575698@mit.edu>
+From:   Haotian Li <lihaotian9@huawei.com>
+Message-ID: <1384512f-9c8b-d8d7-cb38-824a76b742fc@huawei.com>
+Date:   Tue, 15 Dec 2020 15:43:17 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+ Thunderbird/78.1.0
 MIME-Version: 1.0
-In-Reply-To: <20201209193935.GO52960@mit.edu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20201214202701.GI575698@mit.edu>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.71]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi, Ted, how do you think of this, should we need to go ahead? Thanks.
+Thanks for your review. I agree with you that it's more important
+to understand the errors found by e2fsck. we'll decribe the case
+below about this problem.
 
-Theodore Y. Ts'o wrote on 2020/12/10 3:39:
-> On Wed, Dec 09, 2020 at 07:48:09PM +0800, brookxu wrote:
+The probelm we find actually in a remote storage case. It means
+e2fsck's read or write may fail because of the network packet loss.
+At first time, some packet loss errors happen during e2fsck's journal
+recovery (using fsck -a), then recover failed. At second time, we
+fix the network problem and run e2fsck again, but it still has errors
+when we try to mount. Then we set jsb->s_start journal flags and retry
+e2fsck, the problem is fixed. So we suspect something wrong on e2fsck's
+journal recovery, probably the bug we've described on the patch.
+
+Certainly, directly exit is not a good way to fix this problem.
+just like what Harshad said, we need tell user what happen and listen
+user's decision, continue e2fsck or not. If we want to safely use
+e2fsck without human intervention (using fsck -a), I wonder if we need
+provide a safe mechanism to complate the fast check but avoid changes
+on journal or something else which may be fixed in feature (such
+as jsb->s_start flag)?
+
+Thanks
+Haotian
+
+ÔÚ 2020/12/15 4:27, Theodore Y. Ts'o Ð´µÀ:
+> On Mon, Dec 14, 2020 at 10:44:29AM -0800, harshad shirwadkar wrote:
+>> Hi Haotian,
 >>
->> Maybe I missed something. If i% meta_bg_size is used instead, if
->> flex_size <64, then we will miss some flex_bg. There seems to be
->> a contradiction here. In the scenario where only flex_bg is
->> enabled, it may not be appropriate to use meta_bg_size. In the
->> scenario where only meta_bg is enabled, it may not be appropriate
->> to use flex_size.
->>
->> As you said before, it maybe better to remove
->>
->> 	if ((i <5) || ((i% flex_size) == 0))
->>
->> and do it for all groups.
+>> Yeah perhaps these are the only recoverable errors. I also think that
+>> we can't surely say that these errors are recoverable always. That's
+>> because in some setups, these errors may still be unrecoverable (for
+>> example, if the machine is running under low memory). I still feel
+>> that we should ask the user about whether they want to continue or
+>> not. The reason is that firstly if we don't allow running e2fsck in
+>> these cases, I wonder what would the user do with their file system -
+>> they can't mount / can't run fsck, right? Secondly, not doing that
+>> would be a regression. I wonder if some setups would have chosen to
+>> ignore journal recovery if there are errors during journal recovery
+>> and with this fix they may start seeing that their file systems aren't
+>> getting repaired.
 > 
-> I don't think the original (i % flex_size) made any sense in the first
-> place.
+> It may very well be that there are corrupted file system structures
+> that could lead to ENOMEM.  If so, I'd consider that someone we should
+> be explicitly checking for in e2fsck, and it's actually relatively
+> unlikely in the jbd2 recovery code, since that's fairly straight
+> forward --- except I'd be concerned about potential cases in your Fast
+> Commit code, since there's quite a bit more complexity when parsing
+> the fast commit journal.
 > 
-> What flex_bg does is that it collects the allocation bitmaps and inode
-> tables for each block group and locates them within the first block
-> group in a flex_bg.  It doesn't have anything to do with whether or
-> not a particular block group has a backup copy of the superblock and
-> block group descriptor table --- in non-meta_bg file systems and the
-> meta_bg file systems where the block group is less than
-> s_first_meta_bg * EXT4_DESC_PER_BLOCK(sb).  And the condition in
-> question is only about whether or not to add the backup superblock and
-> backup block group descriptors.  So checking for i % flex_size made no
-> sense, and I'm not sure that check was there in the first place.
-
-I think we should add backup sb and gdt to system_zone, because
-these blocks should not be used by applications. In fact, I
-think we may have done some work.
-
->> In this way weh won't miss some flex_bg, meta_bg, and sparse_bg.
->> I tested it on an 80T disk and found that the performance loss
->> was small:
->>
->>  unpatched kernel:
->>  ext4_setup_system_zone() takes 524ms, 
->>
->>  patched kernel:
->>  ext4_setup_system_zone() takes 552ms, 
+> This isn't a new concern; we've already talked a about the fact the
+> fast commit needs to have a lot more sanity checks to look for
+> maliciously --- or syzbot generated, which may be the same thing :-)
+> --- inconsistent fields causing the e2fsck reply code to behave in
+> unexpected way, which might include trying to allocate insane amounts
+> of memory, array buffer overruns, etc.
 > 
-> I don't really care that much about the time it takes to execute
-> ext4_setup_system_zone().
+> But assuming that ENOMEM is always due to operational concerns, as
+> opposed to file system corruption, may not always be a safe
+> assumption.
 > 
-> The really interesting question is how large is the rb_tree
-> constructed by that function, and what is the percentage increase of
-> time that the ext4_inode_block_valid() function takes.  (e.g., how
-> much additional memory is the system_blks tree taking, and how deep is
-> that tree, since ext4_inode_block_valid() gets called every time we
-> allocate or free a block, and every time we need to validate an extent
-> tree node.
-
-During detailed analysis, I found that when the current logic
-calls ext4_setup_system_zone(), s_log_groups_per_flex has not
-been initialized, and flex_size is always 1, which seems to
-be a mistake. therefore
-
-if (ext4_bg_has_super(sb, i) &&
-                    ((i <5) || ((i% flex_size) == 0)))
-
-Degenerate to
-
-if (ext4_bg_has_super(sb, i))
-
-So, the existing implementation just adds the backup sb and gdt
-in sparse_group to system_zone. Due to this mistake, the behavior
-of the system in the flex_bg scenario happens to be correct?
-
-I tested it in three scenarios: only meta_bg, only flex_bg,
-both flex_bg and meta_bg were enabled. The test results are as
-follows:
-
-Meta_bg only
- unpacthed kernel:
- ext4_setup_system_zone time 866ms count 1309087(number of nodes inside rbtree)
- 
- pacthed kernel:
- ext4_setup_system_zone time 841ms count 1309087(number of nodes inside rbtree)
-
-Since the backup gdt of meta_bg and BB are connected, they can
-be merged, so no additional nodes are added.
-
-Flex_bg only
- unpacthed kernel:
- ext4_setup_system_zone time 529ms count 41016(number of nodes inside rbtree)
-
- pacthed kernel:
- ext4_setup_system_zone time 553ms count 41016(number of nodes inside rbtree)
-
-The system behavior has not changed. All sparse_group backup sb
-and gdt are still added, so no additional nodes are added.
-
-Meta_bg & Flex_bg only
- unpacthed kernel:
- ext4_setup_system_zone time 535ms count 41016(number of nodes inside rbtree)
- 
- pacthed kernel:
- ext4_setup_system_zone time 571ms count 61508(number of nodes inside rbtree)
-
-In addition to sparse_group, the system needs to add the backup
-gdt of meta_bg to the system. Set
-
-	N=max(flex_bg_size / meta_bg_size, 1)
-
-then every N meta_bg has a gdt block that can be merged into 
-the node corresponding to flex_bg, such as flex_bg_size < meta_bg_size,
-then the number of new nodes is 2 * nr_meta_bg. On this 80T
-disk, the maximum depth of rbtree is 2log(n+1). According to
-this calculation, in this test case, the depth of rbtree is
-not increased. Thus, there is no major performance overhead.
-
-Maybe we can deal with it in the same way as discussed before?
-
+> Something else to consider is from the perspective of a naive system
+> administrator, if there is an bad media sector in the journal, simply
+> always aborting the e2fsck run may not allow them an easy way to
+> recover.  Simply ignoring the journal and allowing the next write to
+> occur, at which point the HDD or SSD will redirect the write to a bad
+> sector spare spool, will allow for an automatic recovery.  Simply
+> always causing e2fsck to fail, would actually result in a worse
+> outcome in this particular case.
+> 
+> (This is especially true for a mobile device, where the owner is not
+> likely to have access to the serial console to manually run e2fsck,
+> and where if they can't automatically recover, they will have to take
+> their phone to the local cell phone carrier store for repairs ---
+> which is *not* something that a cellular provider will enjoy, and they
+> will tend to choose other cell phone models to feature as
+> supported/featured devices.  So an increased number of failures which
+> cann't be automatically recovered cause the carrier to choose to
+> feature, say, a Xiaomi phone over a ZTE phone.)
+> 
+>> I'm wondering if you saw any a situation in your setup where exiting
+>> e2fsck helped? If possible, could you share what kind of errors were
+>> seen in journal recovery and what was the expected behavior? Maybe
+>> that would help us decide on the right behavior.
+> 
+> Seconded; I think we should try to understand why it is that e2fsck is
+> failing with these sorts of errors.  It may be that there are better
+> ways of solving the high-level problem.
+> 
+> For example, the new libext2fs bitmap backends were something that I
+> added because when running a large number of e2fsck processes in
+> parallel on a server machine with dozens of HDD spindles was causing
+> e2fsck processes to run slowly due to memory contention.  We fixed it
+> by making e2fsck more memory efficient, by improving the bitmap
+> implementations --- but if that hadn't been sufficient, I had also
+> considered adding support to make /sbin/fsck "smarter" by limiting the
+> number of fsck.XXX processes that would get started simultaneously,
+> since that could actually cause the file system check to run faster by
+> reducing memory thrashing.  (The trick would have been how to make
+> fsck smart enough to automatically tune the number of parallel fsck
+> processes to allow, since asking the system administrator to manually
+> tune the max number of processes would be annoying to the sysadmin,
+> and would mean that the feature would never get used outside of $WORK
+> in practice.)
+> 
+> So is the actual underlying problem that e2fsck is running out of
+> memory?  If so, is it because there simply isn't enough physical
+> memory available?  Is it being run in a cgroup container which is too
+> small?  Or is it because too many file systems are being checked in
+> parallel at the same time?  
+> 
+> Or is it I/O errors that you are concerned with?  And how do you know
+> that they are not permanent errors; is thie caused by something like
+> fibre channel connections being flaky?
+> 
+> Or is this a hypotethical worry, as opposed to something which is
+> causing operational problems right now?
+> 
 > Cheers,
 > 
-> 						- Ted
+> 					- Ted
+> 					
+> .
 > 
