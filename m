@@ -2,78 +2,80 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7542DB4ED
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Dec 2020 21:20:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 420D72DB6EF
+	for <lists+linux-ext4@lfdr.de>; Wed, 16 Dec 2020 00:11:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727045AbgLOUTY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 15 Dec 2020 15:19:24 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:44541 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726845AbgLOUTN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Dec 2020 15:19:13 -0500
-Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0BFKD6HJ000404
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Dec 2020 15:13:07 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 3A77B420280; Tue, 15 Dec 2020 15:13:06 -0500 (EST)
-Date:   Tue, 15 Dec 2020 15:13:06 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     brookxu <brookxu.cn@gmail.com>
-Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH RESEND 4/8] ext4: add the gdt block of meta_bg to
- system_zone
-Message-ID: <X9kY0htqhvFDNn20@mit.edu>
-References: <1604764698-4269-1-git-send-email-brookxu@tencent.com>
- <1604764698-4269-4-git-send-email-brookxu@tencent.com>
- <20201203150841.GM441757@mit.edu>
- <4770d6b2-bb9f-7bc5-4fbd-2104bfeba7c2@gmail.com>
- <20201209043415.GG52960@mit.edu>
- <dd6c2921-1397-4b1a-5a20-23956f9cf956@gmail.com>
- <20201209193935.GO52960@mit.edu>
- <1704f274-fe41-4215-8e6e-ff09d080cdd5@gmail.com>
+        id S1726861AbgLOXKp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 15 Dec 2020 18:10:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731480AbgLOXHB (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Dec 2020 18:07:01 -0500
+Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [IPv6:2001:67c:2050::465:101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 171BBC061794
+        for <linux-ext4@vger.kernel.org>; Tue, 15 Dec 2020 15:06:19 -0800 (PST)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:105:465:1:2:0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4CwYlr3p8zzQlPP;
+        Wed, 16 Dec 2020 00:06:16 +0100 (CET)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hauke-m.de; s=MBO0001;
+        t=1608073574;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=PdBu5/dS0A5FMYLL7n5/QECaLJXqewcylpkvhK7v3hc=;
+        b=1NsITmRLNdHN0W14UnH64azRVB07il84+QHv48YJntgGii9nQOGkXL9ao4kbxsOAqKMZOY
+        OBvkkIIrjg9KoIAj98/Nkxvvq3zEKSWl8whzerm1vPCUg9+b1v9/RgnEc6vjQDAEhL/2gA
+        tWo3REoPKDSuMDsRFjXCxR4hCOejoFDAuwJruOjDmQx9WLuaYyy/0FOQNdlY8xXlYsgBpz
+        WjD/kd0SN3jWH6baXvRAU1pZNghK1ScO50ZvGMT8mec4jJrWVQ5nK7GJApzTFEEv5R8hMu
+        i94EJdIb1VFaVqep1QJRLacAEoq0rzen04yVmqS1D74wq4tENYDML/5NwI7GYA==
+Received: from smtp2.mailbox.org ([80.241.60.241])
+        by spamfilter05.heinlein-hosting.de (spamfilter05.heinlein-hosting.de [80.241.56.123]) (amavisd-new, port 10030)
+        with ESMTP id SRVRdS2jEZhF; Wed, 16 Dec 2020 00:06:13 +0100 (CET)
+From:   Hauke Mehrtens <hauke@hauke-m.de>
+To:     tytso@mit.edu
+Cc:     linux-ext4@vger.kernel.org, Hauke Mehrtens <hauke@hauke-m.de>
+Subject: [PATCH e2fsprogs] build: Add SYSLIBS to e4crypt linking
+Date:   Wed, 16 Dec 2020 00:05:57 +0100
+Message-Id: <20201215230557.17211-1-hauke@hauke-m.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1704f274-fe41-4215-8e6e-ff09d080cdd5@gmail.com>
+Content-Transfer-Encoding: 8bit
+X-MBO-SPAM-Probability: 
+X-Rspamd-Score: -5.00 / 15.00 / 15.00
+X-Rspamd-Queue-Id: A9246185D
+X-Rspamd-UID: 611443
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-You did your test on a 80T file system, but that's not where someone
-would be using meta_bg.  Meta_bg ges used for much larger file systems
-than that!  With meta_bg, we have 3 block group descriptors every 64
-block groups.  Each block group describes 128M of memory.  So for that
-means we are going to have 3 entries in the system zone tree for every_
-8GB of file system space, 383,216 entries for every PB.  Given that
-each entry is 40 bytes, that means that the block_validity entries
-will consume 15 megabytes per PB.
+The $(SYSLIBS) was missing when linking the e4crypt application. This is
+available in the e4crypt.profiled variant, so I assume this was just
+missing in the normal variant and is not left out intentionally.
 
-Now, one third of these entries overlap with the flex_bg entries
-(meta_bg groups are in the first, second, and last block group of each
-meta_bg, where are 64 block groups in 4k file systems), and of course,
-the default flex_bg size of 16 block groups means that there are
-524,288 entries per PB.  So if we include all backup sb and block
-groups, in a 1 PB file system, there will be roughly 786,432 entries
-in a 1 PB file system.  (I'm ignoring the entries for the backup
-superblocks, but that's only about 20 or so extra entries.)
+This fixes building e2fsprogrs with -fsanitize=undefined in the global
+CFLAGS nad LDFLAGS.
 
-So for a flex_bg 1PB file system, the amount of memory for a
-block_validity data structure is roughly 20M, and including all backup
-descriptors for meta_bg on a flex_bg + meta_bg setup is roughly 30M.
+Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+---
+ misc/Makefile.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I agree with you that for a non-meta_bg file system, including all of
-the backup superblock and block group descriptors is not going to be
-large.  But while protecting the meta_bg group descriptors is
-worthwhile, protecting the backup meta_bg's is not free, and will
-increase the size of the tree by 33%.
+diff --git a/misc/Makefile.in b/misc/Makefile.in
+index fde01775..ae1fc42e 100644
+--- a/misc/Makefile.in
++++ b/misc/Makefile.in
+@@ -248,7 +248,7 @@ e4defrag: $(E4DEFRAG_OBJS) $(DEPLIBS)
+ e4crypt: $(E4CRYPT_OBJS) $(DEPLIBS) $(DEPSTATIC_LIBUUID)
+ 	$(E) "	LD $@"
+ 	$(Q) $(CC) $(ALL_LDFLAGS) -o e4crypt $(E4CRYPT_OBJS) \
+-		$(LIBUUID) $(LIBS)
++		$(LIBUUID) $(LIBS) $(SYSLIBS)
+ 
+ e4defrag.profiled: $(E4DEFRAG_OBJS) $(PROFILED_DEPLIBS)
+ 	$(E) "	LD $@"
+-- 
+2.20.1
 
-I'm also wondering whether or not Lustre (where they do have some file
-systems that are in the PB range) have run into overhead issues with
-block_validity.
-
-What do folks think?
-
-						- Ted
