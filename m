@@ -2,85 +2,91 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A59C82DBE14
-	for <lists+linux-ext4@lfdr.de>; Wed, 16 Dec 2020 10:57:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 941592DBE6E
+	for <lists+linux-ext4@lfdr.de>; Wed, 16 Dec 2020 11:14:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726087AbgLPJ4s (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 16 Dec 2020 04:56:48 -0500
-Received: from mx2.suse.de ([195.135.220.15]:51700 "EHLO mx2.suse.de"
+        id S1725889AbgLPKMa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 16 Dec 2020 05:12:30 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43496 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726026AbgLPJ4s (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 16 Dec 2020 04:56:48 -0500
+        id S1725820AbgLPKMa (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 16 Dec 2020 05:12:30 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CDE84AE87;
-        Wed, 16 Dec 2020 09:56:06 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id A1037AC7F;
+        Wed, 16 Dec 2020 10:11:48 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 555BA1E135E; Wed, 16 Dec 2020 10:56:06 +0100 (CET)
-Date:   Wed, 16 Dec 2020 10:56:06 +0100
+        id 2963D1E135E; Wed, 16 Dec 2020 11:11:47 +0100 (CET)
+Date:   Wed, 16 Dec 2020 11:11:47 +0100
 From:   Jan Kara <jack@suse.cz>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 07/12] ext4: Defer saving error info from atomic context
-Message-ID: <20201216095606.GA21258@quack2.suse.cz>
+To:     harshad shirwadkar <harshadshirwadkar@gmail.com>
+Cc:     Jan Kara <jack@suse.cz>, Ted Tso <tytso@mit.edu>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+Subject: Re: [PATCH 08/12] ext4: Combine ext4_handle_error() and
+ save_error_info()
+Message-ID: <20201216101147.GB21258@quack2.suse.cz>
 References: <20201127113405.26867-1-jack@suse.cz>
- <20201127113405.26867-8-jack@suse.cz>
- <X9mbnUqNFnJSN1S8@mit.edu>
- <X9mdzfqfC1HJC4ts@mit.edu>
+ <20201127113405.26867-9-jack@suse.cz>
+ <CAD+ocbwLVsjrB1HRsOm-mD6zm+1Et1C5FcwcGvNmt-AkuZo4Uw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <X9mdzfqfC1HJC4ts@mit.edu>
+In-Reply-To: <CAD+ocbwLVsjrB1HRsOm-mD6zm+1Et1C5FcwcGvNmt-AkuZo4Uw@mail.gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 16-12-20 00:40:29, Theodore Y. Ts'o wrote:
-> Applied with the following additional change folded in:
+On Mon 14-12-20 11:23:04, harshad shirwadkar wrote:
+> On Fri, Nov 27, 2020 at 3:38 AM Jan Kara <jack@suse.cz> wrote:
+> >
+> > save_error_info() is always called together with ext4_handle_error().
+> > Combine them into a single call and move unconditional bits out of
+> > save_error_info() into ext4_handle_error().
+> >
+> > Signed-off-by: Jan Kara <jack@suse.cz>
+> > ---
+> >  fs/ext4/super.c | 31 +++++++++++++++----------------
+> >  1 file changed, 15 insertions(+), 16 deletions(-)
+> >
+> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> > index 2d7dc0908cdd..73a09b73fc11 100644
+> > --- a/fs/ext4/super.c
+> > +++ b/fs/ext4/super.c
+> > @@ -592,9 +592,6 @@ static void __save_error_info(struct super_block *sb, int error,
+> >  {
+> >         struct ext4_sb_info *sbi = EXT4_SB(sb);
+> >
+> > -       EXT4_SB(sb)->s_mount_state |= EXT4_ERROR_FS;
+> > -       if (bdev_read_only(sb->s_bdev))
+> > -               return;
+> >         /* We default to EFSCORRUPTED error... */
+> >         if (error == 0)
+> >                 error = EFSCORRUPTED;
 
-Cool. Thanks for fixing this!
+...
+
+> > @@ -944,13 +943,13 @@ __acquires(bitlock)
+> >         if (test_opt(sb, ERRORS_CONT)) {
+> >                 if (test_opt(sb, WARN_ON_ERROR))
+> >                         WARN_ON_ONCE(1);
+> > +               EXT4_SB(sb)->s_mount_state |= EXT4_ERROR_FS;
+> Since you moved the bdev_read_only() check from __save_error_info to
+> ext4_handle_error(), should we add that check here?
+
+Thanks for the review! Now that I'm looking at it, you're probably right it
+would be safer.  That being said I don't think it really matters:
+a) Because I don't think this function can get called on read-only bdev
+b) Because functions processing the work item will find out the sb is
+   read-only and won't do anything. But it's really wasted work.
+
+I can see Ted didn't merge this patch yet. So I'll resend the series from
+this patch because after fixing this it required a bit of rebasing. Also I
+have two more additional fixes in the series based on Andreas' feedback.
+
+Thanks again for looking into the series!
 
 								Honza
-
-
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 0c18f50f2207..9d0ce11bd48e 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -5475,17 +5475,21 @@ static int ext4_commit_super(struct super_block *sb, int sync)
->  	spin_lock(&sbi->s_error_lock);
->  	if (sbi->s_add_error_count > 0) {
->  		es->s_state |= cpu_to_le16(EXT4_ERROR_FS);
-> -		__ext4_update_tstamp(&es->s_first_error_time,
-> -				     &es->s_first_error_time_hi,
-> -				     sbi->s_first_error_time);
-> -		strncpy(es->s_first_error_func, sbi->s_first_error_func,
-> -			sizeof(es->s_first_error_func));
-> -		es->s_first_error_line = cpu_to_le32(sbi->s_first_error_line);
-> -		es->s_first_error_ino = cpu_to_le32(sbi->s_first_error_ino);
-> -		es->s_first_error_block = cpu_to_le64(sbi->s_first_error_block);
-> -		es->s_first_error_errcode =
-> +		if (!es->s_first_error_time && !es->s_first_error_time_hi) {
-> +			__ext4_update_tstamp(&es->s_first_error_time,
-> +					     &es->s_first_error_time_hi,
-> +					     sbi->s_first_error_time);
-> +			strncpy(es->s_first_error_func, sbi->s_first_error_func,
-> +				sizeof(es->s_first_error_func));
-> +			es->s_first_error_line =
-> +				cpu_to_le32(sbi->s_first_error_line);
-> +			es->s_first_error_ino =
-> +				cpu_to_le32(sbi->s_first_error_ino);
-> +			es->s_first_error_block =
-> +				cpu_to_le64(sbi->s_first_error_block);
-> +			es->s_first_error_errcode =
->  				ext4_errno_to_code(sbi->s_first_error_code);
-> -
-> +		}
->  		__ext4_update_tstamp(&es->s_last_error_time,
->  				     &es->s_last_error_time_hi,
->  				     sbi->s_last_error_time);
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
