@@ -2,128 +2,101 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73CAE2DD65B
-	for <lists+linux-ext4@lfdr.de>; Thu, 17 Dec 2020 18:37:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB2A72DD84C
+	for <lists+linux-ext4@lfdr.de>; Thu, 17 Dec 2020 19:30:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728967AbgLQRhP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 17 Dec 2020 12:37:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727857AbgLQRhP (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Dec 2020 12:37:15 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F4138C061794
-        for <linux-ext4@vger.kernel.org>; Thu, 17 Dec 2020 09:36:34 -0800 (PST)
-Received: from xps.home (unknown [IPv6:2a01:e35:2fb5:1510:779a:3a80:1322:d34a])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: aferraris)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id E3DA61F45D1B;
-        Thu, 17 Dec 2020 17:35:54 +0000 (GMT)
-From:   Arnaud Ferraris <arnaud.ferraris@collabora.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     drosen@google.com, krisman@collabora.com, ebiggers@kernel.org,
-        tytso@mit.edu, Arnaud Ferraris <arnaud.ferraris@collabora.com>
-Subject: [PATCH v3 12/12] tests: f_bad_fname: Test fixes of invalid filenames and duplicates
-Date:   Thu, 17 Dec 2020 18:35:44 +0100
-Message-Id: <20201217173544.52953-13-arnaud.ferraris@collabora.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201217173544.52953-1-arnaud.ferraris@collabora.com>
-References: <20201217173544.52953-1-arnaud.ferraris@collabora.com>
+        id S1729846AbgLQS2o (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 17 Dec 2020 13:28:44 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:50528 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728192AbgLQS2o (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Dec 2020 13:28:44 -0500
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0BHIRjAs031424
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Dec 2020 13:27:45 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id E8524420280; Thu, 17 Dec 2020 13:27:44 -0500 (EST)
+Date:   Thu, 17 Dec 2020 13:27:44 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Richard Weinberger <richard@nod.at>
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ext4: Don't leak old mountpoint samples
+Message-ID: <X9ujIOJG/HqMr88R@mit.edu>
+References: <20201201151301.22025-1-richard@nod.at>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201201151301.22025-1-richard@nod.at>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Gabriel Krisman Bertazi <krisman@collabora.com>
+On Tue, Dec 01, 2020 at 04:13:01PM +0100, Richard Weinberger wrote:
+> As soon the first file is opened, ext4 samples the mountpoint
+> of the filesystem in 64 bytes of the super block.
+> It does so using strlcpy(), this means that the remaining bytes
+> in the super block string buffer are untouched.
+> If the mount point before had a longer path than the current one,
+> it can be reconstructed.
+> 
+> Consider the case where the fs was mounted to "/media/johnjdeveloper"
+> and later to "/".
+> The the super block buffer then contains "/\x00edia/johnjdeveloper".
+> 
+> This case was seen in the wild and caused confusion how the name
+> of a developer ands up on the super block of a filesystem used
+> in production...
+> 
+> Fix this by clearing the string buffer before writing to it,
+> 
+> Signed-off-by: Richard Weinberger <richard@nod.at>
 
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-Signed-off-by: Arnaud Ferraris <arnaud.ferraris@collabora.com>
----
- tests/f_bad_fname/expect.1 |  22 ++++++++++++++++++++++
- tests/f_bad_fname/expect.2 |   7 +++++++
- tests/f_bad_fname/image.gz | Bin 0 -> 802 bytes
- tests/f_bad_fname/name     |   1 +
- 4 files changed, 30 insertions(+)
- create mode 100644 tests/f_bad_fname/expect.1
- create mode 100644 tests/f_bad_fname/expect.2
- create mode 100644 tests/f_bad_fname/image.gz
- create mode 100644 tests/f_bad_fname/name
+Thank for reporting this issue.  In fact, the better fix is to use
+strncpy().  See my revised patch for an explanation of why....
 
-diff --git a/tests/f_bad_fname/expect.1 b/tests/f_bad_fname/expect.1
-new file mode 100644
-index 00000000..1d860b22
---- /dev/null
-+++ b/tests/f_bad_fname/expect.1
-@@ -0,0 +1,22 @@
-+Pass 1: Checking inodes, blocks, and sizes
-+Pass 2: Checking directory structure
-+Entry 'AM-^?' in /ci_dir (12) has illegal characters in its name.
-+Fix? yes
-+
-+Entry 'AM-~' in /ci_dir (12) has illegal characters in its name.
-+Fix? yes
-+
-+Duplicate entry 'A.' found.
-+	Marking /ci_dir (12) to be rebuilt.
-+
-+Pass 3: Checking directory connectivity
-+Pass 3A: Optimizing directories
-+Entry 'A.' in /ci_dir (12) has a non-unique filename.
-+Rename to A.~0? yes
-+
-+Pass 4: Checking reference counts
-+Pass 5: Checking group summary information
-+
-+test_filesys: ***** FILE SYSTEM WAS MODIFIED *****
-+test_filesys: 14/16 files (0.0% non-contiguous), 22/100 blocks
-+Exit status is 1
-diff --git a/tests/f_bad_fname/expect.2 b/tests/f_bad_fname/expect.2
-new file mode 100644
-index 00000000..13de1c08
---- /dev/null
-+++ b/tests/f_bad_fname/expect.2
-@@ -0,0 +1,7 @@
-+Pass 1: Checking inodes, blocks, and sizes
-+Pass 2: Checking directory structure
-+Pass 3: Checking directory connectivity
-+Pass 4: Checking reference counts
-+Pass 5: Checking group summary information
-+test_filesys: 14/16 files (0.0% non-contiguous), 22/100 blocks
-+Exit status is 0
-diff --git a/tests/f_bad_fname/image.gz b/tests/f_bad_fname/image.gz
-new file mode 100644
-index 0000000000000000000000000000000000000000..a8b3fc6b8397a7859d9697c462f24f498bb57fd8
-GIT binary patch
-literal 802
-zcmb2|=HU3ZwK|T0IWspgJ(c0@9p4PuP!Wa)#-G*9mUQmd6)h1gP)&N{wkF^Lhf?9g
-zMNtKcnpXpOe4{cJM+7ff`jtKW--4vV=~{YsIv=@RXj&kBGDu*_q5yNH8;i;k=a=78
-z@%4!p{B((@Y#;x**}v1?o!R+$Msd2?XQhT^yX=m-bnO%AUveTi<+L?Vc;L6)A5Olh
-zkgUC!Xa6hu>if4lZ+<+wuKRbcPoc`uZ6eD**?bcdtk2o`_gzv|PMx0hpO>@$rmu^(
-z?AyKU``I-=Pp&oC_H)|fqtg6-`@Wz0F1_p<&)<1R{~GSt@b*UM($5jzk<&|Eqb!S5
-zC;dI25?e2O?evSo@-lf#pZaR%b#MCjIm7kh&2Lv9-_JR}c*edv`_`Z5uit04m}T9R
-zvg*S}s~^PYF7Q0{{O`dNpFUM?$$I|tgvVE&{hDl_R{mvAe|KZ^|CzPI7iX&P%Zr_C
-zZ@M!(>662efM5S2S5LLK+`4<&P40-^kkj^ie!o3`-2B-7*Z-%7h5kQqb@iJ6?SA`q
-zEzOyqebrVf!FKA``uEYh>$GmalAq=J*SUCQeTLpw{<BN}E!=s<-emf(_Gdx=FT?;P
-zy@8Ut>+2WHWLy0EcfE6{wREm~%<NmA*IwBd@H(K;H0a*{^XGG{ukTy`&U`}Su8{AQ
-z@BceZp7Q<wb+ftkJKq&Dpn&P+Z;rhAk+dfKoOr+6AFEkXu17w<Ki@Zh-s(lSqDt<$
-z_q}+p!+tI;b$j=wtnKr7?5{m$tlIMVebwjxKa=<Ve7|$+y+8WCt}>q26LNIByx0HF
-zdH5@Ouk^p<-#3bF)m~g&Irr<c^Y&}Z{~y2aS`&EAK6>}r`pP?ZBEOZ}g`cy3`d{tq
-z*BSM{UoQRmzSZQvY*fe5KXYH}*Z*qVr}y*p&-cgVKG&N_7JkaOdT;h8y<<UbLG{Z`
-z3(CHJe*4V2-2Qg%U+dGK<aa&!b6u~#rZUZa`&H|C5pNk8Q9MX0=fSHl{Bc6hCNNB3
-GWB>rT_?(Xb
+commit cdc9ad7d3f201a77749432878fb4caa490862de6
+Author: Theodore Ts'o <tytso@mit.edu>
+Date:   Thu Dec 17 13:24:15 2020 -0500
 
-literal 0
-HcmV?d00001
+    ext4: don't leak old mountpoint samples
+    
+    When the first file is opened, ext4 samples the mountpoint of the
+    filesystem in 64 bytes of the super block.  It does so using
+    strlcpy(), this means that the remaining bytes in the super block
+    string buffer are untouched.  If the mount point before had a longer
+    path than the current one, it can be reconstructed.
+    
+    Consider the case where the fs was mounted to "/media/johnjdeveloper"
+    and later to "/".  The super block buffer then contains
+    "/\x00edia/johnjdeveloper".
+    
+    This case was seen in the wild and caused confusion how the name
+    of a developer ands up on the super block of a filesystem used
+    in production...
+    
+    Fix this by using strncpy() instead of strlcpy().  The superblock
+    field is defined to be a fixed-size char array, and it is already
+    marked using __nonstring in fs/ext4/ext4.h.  The consumer of the field
+    in e2fsprogs already assumes that in the case of a 64+ byte mount
+    path, that s_last_mounted will not be NUL terminated.
+    
+    Reported-by: Richard Weinberger <richard@nod.at>
+    Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 
-diff --git a/tests/f_bad_fname/name b/tests/f_bad_fname/name
-new file mode 100644
-index 00000000..675165a6
---- /dev/null
-+++ b/tests/f_bad_fname/name
-@@ -0,0 +1 @@
-+Case-insensitive directory with broken file names
--- 
-2.29.2
-
+diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+index 1cd3d26e3217..349b27f0dda0 100644
+--- a/fs/ext4/file.c
++++ b/fs/ext4/file.c
+@@ -810,7 +810,7 @@ static int ext4_sample_last_mounted(struct super_block *sb,
+ 	if (err)
+ 		goto out_journal;
+ 	lock_buffer(sbi->s_sbh);
+-	strlcpy(sbi->s_es->s_last_mounted, cp,
++	strncpy(sbi->s_es->s_last_mounted, cp,
+ 		sizeof(sbi->s_es->s_last_mounted));
+ 	ext4_superblock_csum_set(sb);
+ 	unlock_buffer(sbi->s_sbh);
