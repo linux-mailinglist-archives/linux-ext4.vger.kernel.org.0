@@ -2,229 +2,177 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F5F72DDC8F
-	for <lists+linux-ext4@lfdr.de>; Fri, 18 Dec 2020 02:08:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0C632DDC98
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Dec 2020 02:15:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730665AbgLRBHf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 17 Dec 2020 20:07:35 -0500
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:34849 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729123AbgLRBHf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 17 Dec 2020 20:07:35 -0500
-Received: from dread.disaster.area (pa49-179-6-140.pa.nsw.optusnet.com.au [49.179.6.140])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 68B2958FE29;
-        Fri, 18 Dec 2020 12:06:48 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1kq4EH-0055xX-Rv; Fri, 18 Dec 2020 12:06:45 +1100
-Date:   Fri, 18 Dec 2020 12:06:45 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     dhowells@redhat.com, viro@zeniv.linux.org.uk, tytso@mit.edu,
-        khazhy@google.com, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        kernel@collabora.com
-Subject: Re: [PATCH 4/8] vfs: Add superblock notifications
-Message-ID: <20201218010645.GA1199812@dread.disaster.area>
-References: <20201208003117.342047-1-krisman@collabora.com>
- <20201208003117.342047-5-krisman@collabora.com>
- <20201210220914.GG4170059@dread.disaster.area>
- <87ft4cukor.fsf@collabora.com>
+        id S1731611AbgLRBOZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 17 Dec 2020 20:14:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727106AbgLRBOZ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Dec 2020 20:14:25 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08916C0617A7
+        for <linux-ext4@vger.kernel.org>; Thu, 17 Dec 2020 17:13:45 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id v14so666729wml.1
+        for <linux-ext4@vger.kernel.org>; Thu, 17 Dec 2020 17:13:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JxVq7ktOF8QY5ZNPkGkFxqSEvUCzsrwWqmuPLFI4HTE=;
+        b=ZnjgjDf94p3zSOEsvyb1AQ+fLfhu0a5YoppuF34ecMrpmhHP05ka89Rg8DQlCfmhy7
+         8cEgZf7ff+SS7KnMuKNd5WzEXAni0qaXxYPAyXiWcZhU37KW8+YOB3cCwNaUmIebfSlj
+         n9LFm9+P5zkcOQgZxLEKrOjy7P8iKesBUk3huETgmmExfAiYoG0TPVG5kbLv8w7xXS4h
+         GuqRhn5waywoO6psPtnihF/98TD3Q6o+DB8I3A5JZ9F6v8qBCrINkTekY/OMA1hTXI3o
+         Rl9idj/P4QNBAV4CALbGoIizKrbki5nTWFzxe2i7AYyBnWtIpPS+WUcCI7W61jnKgwBg
+         v8DQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JxVq7ktOF8QY5ZNPkGkFxqSEvUCzsrwWqmuPLFI4HTE=;
+        b=k8udlkMW4Echls9r9QlGPNomHeAoFsVImJCKozIFC/ndzaeB8KauKAp2RpRdg7kjwr
+         WGRzWRhpKUVRtF2z/5nrgqSPto7sih9FXaVXhZNfEIVaQ7kK7kF4HLhbOzafGF4U6naa
+         iHrGJ1gRkm/veusOQSccHcDVfEbtOavbPT0RNy3DfBUfpGA46oF23CKZVCiJf2Tl1cj8
+         LgFal1Bm3Qvuys3vXa+Pr3ncVQFn+r42QEOgl7yy6v2BokZJauHB98pejus+8D9TdV56
+         svGHd/m+o+3zvncsMbrG9DIiDxN/sX9oT1rh0L8Y/k8T9wLcQkCymozJhWiFSZcWwyIY
+         B1+Q==
+X-Gm-Message-State: AOAM531noRijr6WQy5QbhXGZur9nmdbQzEwnvk0pJvkFBSHg5vpTLTgl
+        LwZLnuoqnPJ4xihJ6ofoOo9RWTaJ8ql5nub5F50=
+X-Google-Smtp-Source: ABdhPJw9xUkaRaU2Qn7kU75iiItX0aMOetXJVTuHbkzgFy5ujo8xkJ3jLchCaoG6Co5RuSe0Cid13FHxWA49qixvPHQ=
+X-Received: by 2002:a1c:f715:: with SMTP id v21mr1887234wmh.2.1608254023624;
+ Thu, 17 Dec 2020 17:13:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87ft4cukor.fsf@collabora.com>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0 cx=a_idp_d
-        a=uDU3YIYVKEaHT0eX+MXYOQ==:117 a=uDU3YIYVKEaHT0eX+MXYOQ==:17
-        a=kj9zAlcOel0A:10 a=zTNgK-yGK50A:10 a=20KFwNOVAAAA:8 a=bIklqNNcAAAA:8
-        a=7-415B0cAAAA:8 a=BAjqJaPzbBLsPg9D8GYA:9 a=9gaeUh4213YzDVK8:21
-        a=21pc6Q3nKQSEouU-:21 a=CjuIK1q_8ugA:10 a=EkVPmbJYC8N8lJNKmfU-:22
-        a=biEYGPWJfzWAr4FL6Ov7:22
+References: <20201118153947.3394530-1-saranyamohan@google.com>
+ <20201118153947.3394530-3-saranyamohan@google.com> <20201217235638.GB6908@magnolia>
+In-Reply-To: <20201217235638.GB6908@magnolia>
+From:   Wang Shilong <wangshilong1991@gmail.com>
+Date:   Fri, 18 Dec 2020 09:13:25 +0800
+Message-ID: <CAP9B-QkipnMyxJ83WZd9Lhz2KDUh_6RMFnhzG8OoV_jJpqveYg@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 02/61] e2fsck: copy context when using multi-thread fsck
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     Saranya Muruganandam <saranyamohan@google.com>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        "Theodore Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca,
+        Li Xi <lixi@ddn.com>, Wang Shilong <wshilong@ddn.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 05:55:32PM -0300, Gabriel Krisman Bertazi wrote:
-> 
-> 
-> Dave,
-> 
-> Thanks a lot for the very detailed review.
-> 
-> > On Mon, Dec 07, 2020 at 09:31:13PM -0300, Gabriel Krisman Bertazi wrote:
-> >> From: David Howells <dhowells@redhat.com>
-> >> 
-> >> Add a superblock event notification facility whereby notifications about
-> >> superblock events, such as I/O errors (EIO), quota limits being hit
-> >> (EDQUOT) and running out of space (ENOSPC) can be reported to a monitoring
-> >> process asynchronously.  Note that this does not cover vfsmount topology
-> >> changes.  watch_mount() is used for that.
+On Fri, Dec 18, 2020 at 8:01 AM Darrick J. Wong <darrick.wong@oracle.com> wrote:
+>
+> On Wed, Nov 18, 2020 at 07:38:48AM -0800, Saranya Muruganandam wrote:
+> > From: Li Xi <lixi@ddn.com>
 > >
-> > watch_mount() is not in the upstream tree, nor is it defined in this
-> > patch set.
-> 
-> 
-> That is my mistake, not the author's.  I picked this from a longer series that has
-> a watch_mount implementation, but didn't include it.  Only the commit message
-> is bad, not the patch absence.
-> 
-> >> Records are of the following format:
-> >> 
-> >> 	struct superblock_notification {
-> >> 		struct watch_notification watch;
-> >> 		__u64	sb_id;
-> >> 	} *n;
-> >> 
-> >> Where:
-> >> 
-> >> 	n->watch.type will be WATCH_TYPE_SB_NOTIFY.
-> >> 
-> >> 	n->watch.subtype will indicate the type of event, such as
-> >> 	NOTIFY_SUPERBLOCK_READONLY.
-> >> 
-> >> 	n->watch.info & WATCH_INFO_LENGTH will indicate the length of the
-> >> 	record.
-> >> 
-> >> 	n->watch.info & WATCH_INFO_ID will be the fifth argument to
-> >> 	watch_sb(), shifted.
-> >> 
-> >> 	n->watch.info & NOTIFY_SUPERBLOCK_IS_NOW_RO will be used for
-> >> 	NOTIFY_SUPERBLOCK_READONLY, being set if the superblock becomes
-> >> 	R/O, and being cleared otherwise.
-> >> 
-> >> 	n->sb_id will be the ID of the superblock, as can be retrieved with
-> >> 	the fsinfo() syscall, as part of the fsinfo_sb_notifications
-> >> 	attribute in the watch_id field.
-> >> 
-> >> Note that it is permissible for event records to be of variable length -
-> >> or, at least, the length may be dependent on the subtype.  Note also that
-> >> the queue can be shared between multiple notifications of various types.
+> > This patch only copy the context to a new one when -m is enabled.
+> > It doesn't actually start any thread. When pass1 test finishes,
+> > the new context is copied back to the original context.
 > >
-> > /me puts on his "We really, really, REALLY suck at APIs" hat.
+> > Since the signal handler only changes the original context, so
+> > add global_ctx in "struct e2fsck_struct" and use that to check
+> > whether there is any signal of canceling.
 > >
-> > This adds a new syscall that has a complex structure associated with
-> > in. This needs a full man page specification written for it
-> > describing the parameters, the protocol structures, behaviour, etc
-> > before we can really review this. It really also needs full test
-> > infrastructure for every aspect of the syscall written from the man
-> > page (not the implementation) for fstests so that we end up with a
-> > consistent implementation for every filesystem that implements these
-> > watches.
-> 
-> I see.  I was thinking the other way around, getting a design accepted
-> by you all before writing down documentation, but that makes a lot of
-> sense. In fact, I'm taking a step back and writing a text proposal,
-> without patches, such that we can agree on the main points before I
-> start coding.
-> 
-> > Other things:
+> > This patch handles the long jump properly so that all the existing
+> > tests can be passed even the context has been copied. Otherwise,
+> > test f_expisize_ea_del would fail when aborting.
 > >
-> > - Scoping: inode/block related information is not "superblock"
-> >   information. What about errors in non-inode related objects?
-> 
-> The previous RFC separated inode error notifications from other types,
-> but my idea was to have different notifications types for each object.
-> 
-> 
-> > - offets into files/devices/objects need to be in bytes, not blocks
-> > - errors can span multiple contiguous blocks, so the notification
-> >   needs to report the -byte range- the error corresponds to.
-> > - superblocks can have multiple block devices under them with
-> >   individual address ranges. Hence we need {object,dev,offset,len}
-> >   to uniquely identify where an error occurred in a filesystem.
-> > - userspace face structures need padding and flags/version/size
-> >   information so we can tell what shape the structure being passed
-> >   is. It is guaranteed that we will want to expand the structure
-> >   definitions in future, maybe even deprecate some...
-> > - syscall has no flags field.
-> > - syscall is of "at" type (relative path via dfd) so probably shoudl
-> >   be called "watch..._at()"
-> 
-> will do all the above.
-> 
+> > Signed-off-by: Li Xi <lixi@ddn.com>
+> > Signed-off-by: Wang Shilong <wshilong@ddn.com>
+> > Signed-off-by: Saranya Muruganandam <saranyamohan@google.com>
+> > ---
+> >  e2fsck/pass1.c | 114 +++++++++++++++++++++++++++++++++++++++++++++----
+> >  e2fsck/unix.c  |   1 +
+> >  2 files changed, 107 insertions(+), 8 deletions(-)
 > >
-> > Fundamentally, though, I'm struggling to understand what the
-> > difference between watch_mount() and watch_sb() is going to be.
-> > "superblock" watches seem like the wrong abstraction for a path
-> > based watch interface. Superblocks can be shared across multiple
-> > disjoint paths, subvolumes and even filesystems.
-> 
-> As far as I understand the original patchset, watch_mount was designed
-> to monitor mountpoint operations (mount, umount,.. ) in a sub-tree,
-> while watch_sb monitors filesystem operations and errors.  I'm not
-> working with watch_mount, my current interest is in having a
-> notifications mechanism for filesystem errors, which seemed to fit
-> nicely with the watch_sb patchset for watch_queue.
+> > diff --git a/e2fsck/pass1.c b/e2fsck/pass1.c
+> > index 8eecd958..64d237d3 100644
+> > --- a/e2fsck/pass1.c
+> > +++ b/e2fsck/pass1.c
+> > @@ -1144,7 +1144,22 @@ static int quota_inum_is_reserved(ext2_filsys fs, ext2_ino_t ino)
+> >       return 0;
+> >  }
+> >
+> > -void e2fsck_pass1(e2fsck_t ctx)
+> > +static int e2fsck_should_abort(e2fsck_t ctx)
+> > +{
+> > +     e2fsck_t global_ctx;
+> > +
+> > +     if (ctx->flags & E2F_FLAG_SIGNAL_MASK)
+> > +             return 1;
+> > +
+> > +     if (ctx->global_ctx) {
+> > +             global_ctx = ctx->global_ctx;
+> > +             if (global_ctx->flags & E2F_FLAG_SIGNAL_MASK)
+> > +                     return 1;
+> > +     }
+> > +     return 0;
+> > +}
+> > +
+> > +void e2fsck_pass1_thread(e2fsck_t ctx)
+> >  {
+> >       int     i;
+> >       __u64   max_sizes;
+> > @@ -1360,7 +1375,7 @@ void e2fsck_pass1(e2fsck_t ctx)
+> >               if (ino > ino_threshold)
+> >                       pass1_readahead(ctx, &ra_group, &ino_threshold);
+> >               ehandler_operation(old_op);
+> > -             if (ctx->flags & E2F_FLAG_SIGNAL_MASK)
+> > +             if (e2fsck_should_abort(ctx))
+> >                       goto endit;
+> >               if (pctx.errcode == EXT2_ET_BAD_BLOCK_IN_INODE_TABLE) {
+> >                       /*
+> > @@ -1955,7 +1970,7 @@ void e2fsck_pass1(e2fsck_t ctx)
+> >               if (process_inode_count >= ctx->process_inode_size) {
+> >                       process_inodes(ctx, block_buf);
+> >
+> > -                     if (ctx->flags & E2F_FLAG_SIGNAL_MASK)
+> > +                     if (e2fsck_should_abort(ctx))
+> >                               goto endit;
+> >               }
+> >       }
+> > @@ -2068,6 +2083,89 @@ endit:
+> >       else
+> >               ctx->invalid_bitmaps++;
+> >  }
+> > +
+> > +static errcode_t e2fsck_pass1_thread_prepare(e2fsck_t global_ctx, e2fsck_t *thread_ctx)
+> > +{
+> > +     errcode_t       retval;
+> > +     e2fsck_t        thread_context;
+> > +
+> > +     retval = ext2fs_get_mem(sizeof(struct e2fsck_struct), &thread_context);
+>
+> Hm, so I guess the strategy here is that parallel e2fsck makes
+> per-thread copies of the ext2_filsys and e2fsck_t global contexts?
+> And then after the threaded parts complete, each thread merges its
+> per-thread contexts back into the global one, right?
 
-<shrug>
+Yes.
 
-The previous patches are not part of your proposal, and if they are
-not likely to be merged, then we don't really care what they are
-or what they did. The only thing that matters here is what your
-patchset is trying to implement and whether that is appropriate or
-not...
+>
+> This means that we have to be careful to track which fields in those
+> cloned contexts have been updated by the thread so that we can copy them
+> back and not lose any data.
+>
+> I'm wondering if for future maintainability it would be better to track
+> the per-thread data in a separate structure to make it very explicit
+> which data (sub)structures are effectively per-thread and hence don't
+> require locking?
 
-> > The path based user API is really asking to watch a mount, not a
-> > superblock. We don't otherwise expose superblocks to userspace at
-> > all, so this seems like the API is somewhat exposing internal kernel
-> > implementation behind mounts. However, there -is- a watch_mount()
-> > syscall floating around somewhere, so it makes me wonder exactly why
-> > we need a second syscall and interface protocol to expose
-> > essentially the same path-based watch information to userspace.
-> 
-> I think these are indeed different syscalls, but maybe a bit misnamed.
-> 
-> If not by path, how could we uniquely identify an entire filesystem?
+Maybe use a per-thread structure is better maintained, but i am not sure
+we could remove locking completely.
 
-Exactly why do we need to uniquely identify a filesystem based on
-it's superblock? Surely it's already been identified by path by the
-application that registered the watch?
+Locking is mostly used for fix, because fixing is serialized now
+and for some global structure which could be used seldomly
+but could simplify codes.
 
-> Maybe pointing to a block device that has a valid filesystem and in the
-> case of fs spawning through multiple devices, consider all of them?  But
-> that would not work for some misc filesystems, like tmpfs.
-
-It can't be block device based at all - think NFS, CIFS, etc. We
-can't use UUIDs, because not all filesystem have them, and snapshots
-often have identical UUIDs.
-
-Really, I think "superblock" notifications are extremely problematic
-because the same superblock can be shared across different security
-contexts. I'm not sure what the solution might be, but I really
-don't like the idea of a mechanism that can report errors in objects
-outside the visibility of a namespaced container to that container
-just because it has access to some path inside a much bigger
-filesystem that is mostly out of bounds to that container.
-
-> > Without having that syscall the same patchset, or a reference to
-> > that patchset (and man page documenting the interface), I have no
-> > idea what it does or why it is different or why it can't be used for
-> > these error notifications....
-> 
-> As a short summary, My goal is an error reporting mechanism for ext4
-> (preferably that can also be used by other filesystems)
-
-There's no "preferably" here. Either it is generic and usable by all
-other filesystems, or it's not functionality that should be merged
-into the VFS or exposed by a syscall.
-
-> that allows a
-> userspace application to monitor errors on the filesystem without losing
-> information and without having to parse a convoluted dmesg.  The
-> watch_queue API seem to expose exactly the infrastructure for this kind
-> of thing.  As I said, I'm gonna send a proposal with more details
-> because, I'd really like to have something that can be used by several
-> filesystems.
-
-Yes, I know what the desired functionality is, it's just that it's
-not as simple as "redirect global error messages to global pipe"
-such as what we do with printk and dmesg...
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+>
+> (I ask that mostly because I'm having a hard time figuring out which
+> fields are supposed to be shared and which ones aren't...)
+>
+> --D
+>
+> > +     if (retval) {
+> > +             com_err(global_ctx->program_name, retval, "while allocating memory");
