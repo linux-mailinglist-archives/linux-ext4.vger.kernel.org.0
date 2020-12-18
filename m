@@ -2,209 +2,229 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9302DDC4A
-	for <lists+linux-ext4@lfdr.de>; Fri, 18 Dec 2020 01:08:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5F72DDC8F
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Dec 2020 02:08:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732113AbgLRAIK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 17 Dec 2020 19:08:10 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:34302 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727172AbgLRAIJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Dec 2020 19:08:09 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BHNs2Ek153132;
-        Fri, 18 Dec 2020 00:07:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=hqqoayJPswmANHoF71Dg2sSPX/g0jkYd2+Q3Bh+oD3s=;
- b=wEXx5eh2rWQS0016RSK7yE0A8H6sZX9bGGOHmaYMdLEncL7pE6oRA6d8YDB860e8iGhR
- r6UXrCyEpGxZ39jJQ8a3eulZ5+jTyZA1lpu0p0i5BaEI7o3gE/jrAriJUN3Dv9IDgma6
- wcRq0jfbmQTs3By9OxS7WhwaAKs/Qr91W6Nd5mbLPOXkQtd4A0lYV1GZaUzqlACifUwO
- QheqJ+TkrBeOH05oK/CGdFwVKjb2qK+kNNQYjSHDV2Pn5hsx5yZ7QKZQD42MyzoaHgcn
- bq763iLRPVuZgPxRI/CJ601o3p+WuJIrI+Fi4up/yePKPAAJrkDAjv/O6ph+if4mXS/S MA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 35ckcbr8je-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 18 Dec 2020 00:07:19 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BHNuGou064260;
-        Fri, 18 Dec 2020 00:05:18 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 35d7t14a65-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 18 Dec 2020 00:05:18 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0BI05HVt005076;
-        Fri, 18 Dec 2020 00:05:17 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 17 Dec 2020 16:05:16 -0800
-Date:   Thu, 17 Dec 2020 16:05:15 -0800
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Saranya Muruganandam <saranyamohan@google.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, Wang Shilong <wshilong@ddn.com>
-Subject: Re: [RFC PATCH v3 31/61] e2fsck: split and merge invalid bitmaps
-Message-ID: <20201218000515.GC6908@magnolia>
-References: <20201118153947.3394530-1-saranyamohan@google.com>
- <20201118153947.3394530-32-saranyamohan@google.com>
+        id S1730665AbgLRBHf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 17 Dec 2020 20:07:35 -0500
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:34849 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729123AbgLRBHf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 17 Dec 2020 20:07:35 -0500
+Received: from dread.disaster.area (pa49-179-6-140.pa.nsw.optusnet.com.au [49.179.6.140])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 68B2958FE29;
+        Fri, 18 Dec 2020 12:06:48 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1kq4EH-0055xX-Rv; Fri, 18 Dec 2020 12:06:45 +1100
+Date:   Fri, 18 Dec 2020 12:06:45 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     dhowells@redhat.com, viro@zeniv.linux.org.uk, tytso@mit.edu,
+        khazhy@google.com, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        kernel@collabora.com
+Subject: Re: [PATCH 4/8] vfs: Add superblock notifications
+Message-ID: <20201218010645.GA1199812@dread.disaster.area>
+References: <20201208003117.342047-1-krisman@collabora.com>
+ <20201208003117.342047-5-krisman@collabora.com>
+ <20201210220914.GG4170059@dread.disaster.area>
+ <87ft4cukor.fsf@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201118153947.3394530-32-saranyamohan@google.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9838 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0
- mlxlogscore=999 spamscore=0 mlxscore=0 suspectscore=0 malwarescore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012170154
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9838 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- priorityscore=1501 mlxscore=0 suspectscore=0 adultscore=0 phishscore=0
- malwarescore=0 impostorscore=0 lowpriorityscore=0 clxscore=1015
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012170154
+In-Reply-To: <87ft4cukor.fsf@collabora.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0 cx=a_idp_d
+        a=uDU3YIYVKEaHT0eX+MXYOQ==:117 a=uDU3YIYVKEaHT0eX+MXYOQ==:17
+        a=kj9zAlcOel0A:10 a=zTNgK-yGK50A:10 a=20KFwNOVAAAA:8 a=bIklqNNcAAAA:8
+        a=7-415B0cAAAA:8 a=BAjqJaPzbBLsPg9D8GYA:9 a=9gaeUh4213YzDVK8:21
+        a=21pc6Q3nKQSEouU-:21 a=CjuIK1q_8ugA:10 a=EkVPmbJYC8N8lJNKmfU-:22
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 07:39:17AM -0800, Saranya Muruganandam wrote:
-> From: Wang Shilong <wshilong@ddn.com>
+On Fri, Dec 11, 2020 at 05:55:32PM -0300, Gabriel Krisman Bertazi wrote:
 > 
-> Invalid bitmaps are splitted per thread, and we
-> should merge them after thread finish.
-
-For a large filesystem, would it make more sense to merge results
-periodically to reduce the peak memory consumption?  That might not be
-all that high of a peak though since the end merges could be deleting
-records from the per-thread data structure after each succesful
-insertion merge.
-
---D
-
-> Signed-off-by: Wang Shilong <wshilong@ddn.com>
-> Signed-off-by: Saranya Muruganandam <saranyamohan@google.com>
-> ---
->  e2fsck/pass1.c | 71 ++++++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 71 insertions(+)
 > 
-> diff --git a/e2fsck/pass1.c b/e2fsck/pass1.c
-> index 49bdba21..29954e88 100644
-> --- a/e2fsck/pass1.c
-> +++ b/e2fsck/pass1.c
-> @@ -2379,6 +2379,62 @@ out:
->  	return retval;
->  }
->  
-> +static void e2fsck_pass1_copy_invalid_bitmaps(e2fsck_t global_ctx,
-> +					      e2fsck_t thread_ctx)
-> +{
-> +	dgrp_t i, j;
-> +	dgrp_t grp_start = thread_ctx->thread_info.et_group_start;
-> +	dgrp_t grp_end = thread_ctx->thread_info.et_group_end;
-> +	dgrp_t total = grp_end - grp_start;
-> +
-> +	thread_ctx->invalid_inode_bitmap_flag =
-> +			e2fsck_allocate_memory(global_ctx, sizeof(int) * total,
-> +						"invalid_inode_bitmap");
-> +	thread_ctx->invalid_block_bitmap_flag =
-> +			e2fsck_allocate_memory(global_ctx, sizeof(int) * total,
-> +					       "invalid_block_bitmap");
-> +	thread_ctx->invalid_inode_table_flag =
-> +			e2fsck_allocate_memory(global_ctx, sizeof(int) * total,
-> +					       "invalid_inode_table");
-> +
-> +	memcpy(thread_ctx->invalid_block_bitmap_flag,
-> +	       &global_ctx->invalid_block_bitmap_flag[grp_start],
-> +	       total * sizeof(int));
-> +	memcpy(thread_ctx->invalid_inode_bitmap_flag,
-> +	       &global_ctx->invalid_inode_bitmap_flag[grp_start],
-> +	       total * sizeof(int));
-> +	memcpy(thread_ctx->invalid_inode_table_flag,
-> +	       &global_ctx->invalid_inode_table_flag[grp_start],
-> +	       total * sizeof(int));
-> +
-> +	thread_ctx->invalid_bitmaps = 0;
-> +	for (i = grp_start, j = 0; i < grp_end; i++, j++) {
-> +		if (thread_ctx->invalid_block_bitmap_flag[j])
-> +			thread_ctx->invalid_bitmaps++;
-> +		if (thread_ctx->invalid_inode_bitmap_flag[j])
-> +			thread_ctx->invalid_bitmaps++;
-> +		if (thread_ctx->invalid_inode_table_flag[j])
-> +			thread_ctx->invalid_bitmaps++;
-> +	}
-> +}
-> +
-> +static void e2fsck_pass1_merge_invalid_bitmaps(e2fsck_t global_ctx,
-> +					       e2fsck_t thread_ctx)
-> +{
-> +	dgrp_t i, j;
-> +	dgrp_t grp_start = thread_ctx->thread_info.et_group_start;
-> +	dgrp_t grp_end = thread_ctx->thread_info.et_group_end;
-> +	dgrp_t total = grp_end - grp_start;
-> +
-> +	memcpy(&global_ctx->invalid_block_bitmap_flag[grp_start],
-> +	       thread_ctx->invalid_block_bitmap_flag, total * sizeof(int));
-> +	memcpy(&global_ctx->invalid_inode_bitmap_flag[grp_start],
-> +	       thread_ctx->invalid_inode_bitmap_flag, total * sizeof(int));
-> +	memcpy(&global_ctx->invalid_inode_table_flag[grp_start],
-> +	       thread_ctx->invalid_inode_table_flag, total * sizeof(int));
-> +	global_ctx->invalid_bitmaps += thread_ctx->invalid_bitmaps;
-> +}
-> +
->  static errcode_t e2fsck_pass1_thread_prepare(e2fsck_t global_ctx, e2fsck_t *thread_ctx,
->  					     int thread_index, int num_threads)
->  {
-> @@ -2455,6 +2511,7 @@ static errcode_t e2fsck_pass1_thread_prepare(e2fsck_t global_ctx, e2fsck_t *thre
->  		goto out_fs;
->  	}
->  	*thread_ctx = thread_context;
-> +	e2fsck_pass1_copy_invalid_bitmaps(global_ctx, thread_context);
->  	return 0;
->  out_fs:
->  	ext2fs_free_mem(&thread_fs);
-> @@ -2589,6 +2646,10 @@ static int e2fsck_pass1_thread_join_one(e2fsck_t global_ctx, e2fsck_t thread_ctx
->  	ext2_ino_t dx_dir_info_count = global_ctx->dx_dir_info_count;
->  	ext2_u32_list dirs_to_hash = global_ctx->dirs_to_hash;
->  	quota_ctx_t qctx = global_ctx->qctx;
-> +	int *invalid_block_bitmap_flag = global_ctx->invalid_block_bitmap_flag;
-> +	int *invalid_inode_bitmap_flag = global_ctx->invalid_inode_bitmap_flag;
-> +	int *invalid_inode_table_flag  = global_ctx->invalid_inode_table_flag;
-> +	int invalid_bitmaps = global_ctx->invalid_bitmaps;
->  
->  #ifdef HAVE_SETJMP_H
->  	jmp_buf		 old_jmp;
-> @@ -2667,6 +2728,11 @@ static int e2fsck_pass1_thread_join_one(e2fsck_t global_ctx, e2fsck_t thread_ctx
->  					      thread_ctx->qctx);
->  	if (retval)
->  		return retval;
-> +	global_ctx->invalid_block_bitmap_flag = invalid_block_bitmap_flag;
-> +	global_ctx->invalid_inode_bitmap_flag = invalid_inode_bitmap_flag;
-> +	global_ctx->invalid_inode_table_flag = invalid_inode_table_flag;
-> +	global_ctx->invalid_bitmaps = invalid_bitmaps;
-> +	e2fsck_pass1_merge_invalid_bitmaps(global_ctx, thread_ctx);
->  
->  	retval = e2fsck_pass1_merge_bitmap(global_fs,
->  				&thread_ctx->inode_used_map,
-> @@ -2739,6 +2805,9 @@ static int e2fsck_pass1_thread_join(e2fsck_t global_ctx, e2fsck_t thread_ctx)
->  	if (thread_ctx->dirs_to_hash)
->  		ext2fs_badblocks_list_free(thread_ctx->dirs_to_hash);
->  	quota_release_context(&thread_ctx->qctx);
-> +	ext2fs_free_mem(&thread_ctx->invalid_block_bitmap_flag);
-> +	ext2fs_free_mem(&thread_ctx->invalid_inode_bitmap_flag);
-> +	ext2fs_free_mem(&thread_ctx->invalid_inode_table_flag);
->  	ext2fs_free_mem(&thread_ctx);
->  
->  	return retval;
-> @@ -2752,6 +2821,8 @@ static int e2fsck_pass1_threads_join(struct e2fsck_thread_info *infos,
->  	int				 i;
->  	struct e2fsck_thread_info	*pinfo;
->  
-> +	/* merge invalid bitmaps will recalculate it */
-> +	global_ctx->invalid_bitmaps = 0;
->  	for (i = 0; i < num_threads; i++) {
->  		pinfo = &infos[i];
->  
-> -- 
-> 2.29.2.299.gdc1121823c-goog
+> Dave,
 > 
+> Thanks a lot for the very detailed review.
+> 
+> > On Mon, Dec 07, 2020 at 09:31:13PM -0300, Gabriel Krisman Bertazi wrote:
+> >> From: David Howells <dhowells@redhat.com>
+> >> 
+> >> Add a superblock event notification facility whereby notifications about
+> >> superblock events, such as I/O errors (EIO), quota limits being hit
+> >> (EDQUOT) and running out of space (ENOSPC) can be reported to a monitoring
+> >> process asynchronously.  Note that this does not cover vfsmount topology
+> >> changes.  watch_mount() is used for that.
+> >
+> > watch_mount() is not in the upstream tree, nor is it defined in this
+> > patch set.
+> 
+> 
+> That is my mistake, not the author's.  I picked this from a longer series that has
+> a watch_mount implementation, but didn't include it.  Only the commit message
+> is bad, not the patch absence.
+> 
+> >> Records are of the following format:
+> >> 
+> >> 	struct superblock_notification {
+> >> 		struct watch_notification watch;
+> >> 		__u64	sb_id;
+> >> 	} *n;
+> >> 
+> >> Where:
+> >> 
+> >> 	n->watch.type will be WATCH_TYPE_SB_NOTIFY.
+> >> 
+> >> 	n->watch.subtype will indicate the type of event, such as
+> >> 	NOTIFY_SUPERBLOCK_READONLY.
+> >> 
+> >> 	n->watch.info & WATCH_INFO_LENGTH will indicate the length of the
+> >> 	record.
+> >> 
+> >> 	n->watch.info & WATCH_INFO_ID will be the fifth argument to
+> >> 	watch_sb(), shifted.
+> >> 
+> >> 	n->watch.info & NOTIFY_SUPERBLOCK_IS_NOW_RO will be used for
+> >> 	NOTIFY_SUPERBLOCK_READONLY, being set if the superblock becomes
+> >> 	R/O, and being cleared otherwise.
+> >> 
+> >> 	n->sb_id will be the ID of the superblock, as can be retrieved with
+> >> 	the fsinfo() syscall, as part of the fsinfo_sb_notifications
+> >> 	attribute in the watch_id field.
+> >> 
+> >> Note that it is permissible for event records to be of variable length -
+> >> or, at least, the length may be dependent on the subtype.  Note also that
+> >> the queue can be shared between multiple notifications of various types.
+> >
+> > /me puts on his "We really, really, REALLY suck at APIs" hat.
+> >
+> > This adds a new syscall that has a complex structure associated with
+> > in. This needs a full man page specification written for it
+> > describing the parameters, the protocol structures, behaviour, etc
+> > before we can really review this. It really also needs full test
+> > infrastructure for every aspect of the syscall written from the man
+> > page (not the implementation) for fstests so that we end up with a
+> > consistent implementation for every filesystem that implements these
+> > watches.
+> 
+> I see.  I was thinking the other way around, getting a design accepted
+> by you all before writing down documentation, but that makes a lot of
+> sense. In fact, I'm taking a step back and writing a text proposal,
+> without patches, such that we can agree on the main points before I
+> start coding.
+> 
+> > Other things:
+> >
+> > - Scoping: inode/block related information is not "superblock"
+> >   information. What about errors in non-inode related objects?
+> 
+> The previous RFC separated inode error notifications from other types,
+> but my idea was to have different notifications types for each object.
+> 
+> 
+> > - offets into files/devices/objects need to be in bytes, not blocks
+> > - errors can span multiple contiguous blocks, so the notification
+> >   needs to report the -byte range- the error corresponds to.
+> > - superblocks can have multiple block devices under them with
+> >   individual address ranges. Hence we need {object,dev,offset,len}
+> >   to uniquely identify where an error occurred in a filesystem.
+> > - userspace face structures need padding and flags/version/size
+> >   information so we can tell what shape the structure being passed
+> >   is. It is guaranteed that we will want to expand the structure
+> >   definitions in future, maybe even deprecate some...
+> > - syscall has no flags field.
+> > - syscall is of "at" type (relative path via dfd) so probably shoudl
+> >   be called "watch..._at()"
+> 
+> will do all the above.
+> 
+> >
+> > Fundamentally, though, I'm struggling to understand what the
+> > difference between watch_mount() and watch_sb() is going to be.
+> > "superblock" watches seem like the wrong abstraction for a path
+> > based watch interface. Superblocks can be shared across multiple
+> > disjoint paths, subvolumes and even filesystems.
+> 
+> As far as I understand the original patchset, watch_mount was designed
+> to monitor mountpoint operations (mount, umount,.. ) in a sub-tree,
+> while watch_sb monitors filesystem operations and errors.  I'm not
+> working with watch_mount, my current interest is in having a
+> notifications mechanism for filesystem errors, which seemed to fit
+> nicely with the watch_sb patchset for watch_queue.
+
+<shrug>
+
+The previous patches are not part of your proposal, and if they are
+not likely to be merged, then we don't really care what they are
+or what they did. The only thing that matters here is what your
+patchset is trying to implement and whether that is appropriate or
+not...
+
+> > The path based user API is really asking to watch a mount, not a
+> > superblock. We don't otherwise expose superblocks to userspace at
+> > all, so this seems like the API is somewhat exposing internal kernel
+> > implementation behind mounts. However, there -is- a watch_mount()
+> > syscall floating around somewhere, so it makes me wonder exactly why
+> > we need a second syscall and interface protocol to expose
+> > essentially the same path-based watch information to userspace.
+> 
+> I think these are indeed different syscalls, but maybe a bit misnamed.
+> 
+> If not by path, how could we uniquely identify an entire filesystem?
+
+Exactly why do we need to uniquely identify a filesystem based on
+it's superblock? Surely it's already been identified by path by the
+application that registered the watch?
+
+> Maybe pointing to a block device that has a valid filesystem and in the
+> case of fs spawning through multiple devices, consider all of them?  But
+> that would not work for some misc filesystems, like tmpfs.
+
+It can't be block device based at all - think NFS, CIFS, etc. We
+can't use UUIDs, because not all filesystem have them, and snapshots
+often have identical UUIDs.
+
+Really, I think "superblock" notifications are extremely problematic
+because the same superblock can be shared across different security
+contexts. I'm not sure what the solution might be, but I really
+don't like the idea of a mechanism that can report errors in objects
+outside the visibility of a namespaced container to that container
+just because it has access to some path inside a much bigger
+filesystem that is mostly out of bounds to that container.
+
+> > Without having that syscall the same patchset, or a reference to
+> > that patchset (and man page documenting the interface), I have no
+> > idea what it does or why it is different or why it can't be used for
+> > these error notifications....
+> 
+> As a short summary, My goal is an error reporting mechanism for ext4
+> (preferably that can also be used by other filesystems)
+
+There's no "preferably" here. Either it is generic and usable by all
+other filesystems, or it's not functionality that should be merged
+into the VFS or exposed by a syscall.
+
+> that allows a
+> userspace application to monitor errors on the filesystem without losing
+> information and without having to parse a convoluted dmesg.  The
+> watch_queue API seem to expose exactly the infrastructure for this kind
+> of thing.  As I said, I'm gonna send a proposal with more details
+> because, I'd really like to have something that can be used by several
+> filesystems.
+
+Yes, I know what the desired functionality is, it's just that it's
+not as simple as "redirect global error messages to global pipe"
+such as what we do with printk and dmesg...
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
