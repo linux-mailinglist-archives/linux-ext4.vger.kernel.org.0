@@ -2,129 +2,105 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99D202DE366
-	for <lists+linux-ext4@lfdr.de>; Fri, 18 Dec 2020 14:46:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2719F2DE902
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Dec 2020 19:43:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726516AbgLRNqJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 18 Dec 2020 08:46:09 -0500
-Received: from sender2-op-o12.zoho.com.cn ([163.53.93.243]:17133 "EHLO
-        sender2-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726540AbgLRNqJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 18 Dec 2020 08:46:09 -0500
-X-Greylist: delayed 1004 seconds by postgrey-1.27 at vger.kernel.org; Fri, 18 Dec 2020 08:46:03 EST
-ARC-Seal: i=1; a=rsa-sha256; t=1608298110; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=PJI7BSydzTDGXQv6doml7CFfNUR21WMLzEVJPFm+l28KUGHdaiabDlEfo5gpMwgDyY4+bArGrCbwkpp3OvyUergcnH+YIsBn8nPjih8jQbKbWYzezcRPzl9+/g+6e3Y7xo2VGqxIZ1ikY4xXVdVFnlVUO1qovt/4M0Q4yFqPPb0=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1608298110; h=Cc:Date:From:Message-ID:Subject:To; 
-        bh=awXflIhmEnSwwuTtk1iHfgGZL5MVwlaN1kgEGSNkTpc=; 
-        b=qz077Y75qUZOfx5oVKsANHnZ422weEAdjJnb7PjpkcBkwfc5xdeDTbAHzH+sHJ+xubbNmDE3lgNGpgh5TRDo5ij7v4+R1jTj5E1UNamrNmGBoboDCmncpEH5Qqe8MVFCjviJHGGIRCAOhICNYl9sho8FL/5s0hrV6wZqiJ2nHAQ=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=mykernel.net;
-        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
-        dmarc=pass header.from=<cgxu519@mykernel.net> header.from=<cgxu519@mykernel.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1608298110;
-        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
-        h=From:To:Cc:Subject:Date:Message-Id;
-        bh=awXflIhmEnSwwuTtk1iHfgGZL5MVwlaN1kgEGSNkTpc=;
-        b=JerxTB0+0t4gqLPZMPA8LHkSj3wlzDo7aCiQlapj3h5+Cyogs3wvNMh9oURQT0XX
-        aa4m7UU/CdFVuQvQw6yKhpjWJYKbb8bJr/Nte+ayS1t4JPXWw/dJjRgH7S2HmP2gUsJ
-        aIxJLmWtpaZxXsqgDIuAr2p4jkKdX69vnUCAHGuE=
-Received: from localhost.localdomain (81.71.33.115 [81.71.33.115]) by mx.zoho.com.cn
-        with SMTPS id 1608298107117568.1965624674809; Fri, 18 Dec 2020 21:28:27 +0800 (CST)
-From:   Chengguang Xu <cgxu519@mykernel.net>
-To:     jack@suse.com
-Cc:     linux-ext4@vger.kernel.org, Chengguang Xu <cgxu519@mykernel.net>
-Subject: [PATCH] ext2: implement ->page_mkwrite
-Date:   Fri, 18 Dec 2020 21:27:57 +0800
-Message-Id: <20201218132757.279685-1-cgxu519@mykernel.net>
-X-Mailer: git-send-email 2.18.4
-X-ZohoCNMailClient: External
+        id S1728959AbgLRSl3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 18 Dec 2020 13:41:29 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:53996 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728678AbgLRSl0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 18 Dec 2020 13:41:26 -0500
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+        by linux.microsoft.com (Postfix) with ESMTPSA id A566A20B717A
+        for <linux-ext4@vger.kernel.org>; Fri, 18 Dec 2020 10:40:45 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A566A20B717A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1608316845;
+        bh=WYXNwMFuAHHnoHmHMz194R/Kg3qgeVJMxIPuJIyKz5A=;
+        h=From:Date:Subject:To:From;
+        b=KDd6TL88VuU+WyMfjVbfn2b3dNGfTIPlzncHLgZZnnjmYp3jTgOX0aBvKHcJWn1nO
+         aTZOZMhJJcnBhk7TIQ6yK1hndUjnaykfJKg8EDSyXXUTdwEldwGf0Yyg8Oqf0hgYDn
+         aoLajlCbJqgY7/6fxPV02kSTGj805FUnAvKxFO5Q=
+Received: by mail-pj1-f51.google.com with SMTP id b5so1810362pjk.2
+        for <linux-ext4@vger.kernel.org>; Fri, 18 Dec 2020 10:40:45 -0800 (PST)
+X-Gm-Message-State: AOAM53154rYbd2Ob0RM3V6uQdkA75UAAuAUDtVMW8tfqXHmAym6zvSG/
+        bO/FgtP+b/GOWy1ewvY10cKgKzXyyYZIfhctb/4=
+X-Google-Smtp-Source: ABdhPJzx/DFxwfCuFbXhoJa0DD92gVQ213WjW6YnyYWiMh5mf96SOITuET2hXm2S4gZp1x878ZbLnDjthY8aCaQnmZI=
+X-Received: by 2002:a17:902:7d84:b029:db:feae:425e with SMTP id
+ a4-20020a1709027d84b02900dbfeae425emr5675654plm.43.1608316845235; Fri, 18 Dec
+ 2020 10:40:45 -0800 (PST)
+MIME-Version: 1.0
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Fri, 18 Dec 2020 19:40:09 +0100
+X-Gmail-Original-Message-ID: <CAFnufp2zSthSbrOQ5JE6rKEANeFqvunCR3W5Bx2VgN_Q3NbLVg@mail.gmail.com>
+Message-ID: <CAFnufp2zSthSbrOQ5JE6rKEANeFqvunCR3W5Bx2VgN_Q3NbLVg@mail.gmail.com>
+Subject: discard and data=writeback
+To:     linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Currently ext2 uses generic mmap operations for non DAX file and
-filemap_page_mkwrite() does not check the block allocation for
-shared writable mmapped area on pagefault. In some cases like
-disk space exhaustion or disk quota limitation, it will cause silent
-data loss. This patch tries to check and do block preallocation on
-pagefault if necessary and explicitly return error to user when
-allocation failure.
+Hi,
 
-Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
----
- fs/ext2/file.c | 40 ++++++++++++++++++++++++++++++++++++----
- 1 file changed, 36 insertions(+), 4 deletions(-)
+I noticed a big slowdown on file removal, so I tried to remove the
+discard option, and it helped
+a lot.
+Obviously discarding blocks will have an overhead, but the strange
+thing is that it only
+does when using data=writeback:
 
-diff --git a/fs/ext2/file.c b/fs/ext2/file.c
-index 96044f5dbc0e..a34119415ef1 100644
---- a/fs/ext2/file.c
-+++ b/fs/ext2/file.c
-@@ -25,10 +25,34 @@
- #include <linux/quotaops.h>
- #include <linux/iomap.h>
- #include <linux/uio.h>
-+#include <linux/buffer_head.h>
- #include "ext2.h"
- #include "xattr.h"
- #include "acl.h"
- 
-+vm_fault_t ext2_page_mkwrite(struct vm_fault *vmf)
-+{
-+	struct vm_area_struct *vma = vmf->vma;
-+	struct inode *inode = file_inode(vma->vm_file);
-+	int err;
-+
-+	if (unlikely(IS_IMMUTABLE(inode)))
-+		return VM_FAULT_SIGBUS;
-+
-+	sb_start_pagefault(inode->i_sb);
-+	file_update_time(vma->vm_file);
-+	err = block_page_mkwrite(vma, vmf, ext2_get_block);
-+	sb_end_pagefault(inode->i_sb);
-+
-+	return block_page_mkwrite_return(err);
-+}
-+
-+const struct vm_operations_struct ext2_vm_ops = {
-+	.fault		= filemap_fault,
-+	.map_pages	= filemap_map_pages,
-+	.page_mkwrite	= ext2_page_mkwrite,
-+};
-+
- #ifdef CONFIG_FS_DAX
- static ssize_t ext2_dax_read_iter(struct kiocb *iocb, struct iov_iter *to)
- {
-@@ -123,15 +147,23 @@ static const struct vm_operations_struct ext2_dax_vm_ops = {
- 
- static int ext2_file_mmap(struct file *file, struct vm_area_struct *vma)
- {
-+	file_accessed(file);
- 	if (!IS_DAX(file_inode(file)))
--		return generic_file_mmap(file, vma);
-+		vma->vm_ops = &ext2_vm_ops;
-+	else
-+		vma->vm_ops = &ext2_dax_vm_ops;
- 
--	file_accessed(file);
--	vma->vm_ops = &ext2_dax_vm_ops;
- 	return 0;
- }
-+
- #else
--#define ext2_file_mmap	generic_file_mmap
-+static int ext2_file_mmap(struct file *file, struct vm_area_struct *vma)
-+{
-+	file_accessed(file);
-+	vma->vm_ops = &ext2_vm_ops;
-+	return 0;
-+}
-+
- #endif
- 
- /*
+Ordered:
+
+$ dmesg |grep EXT4
+[    0.243372] EXT4-fs (vda1): mounted filesystem with ordered data
+mode. Opts: (null)
+
+$ grep -w / /proc/mounts
+/dev/root / ext4 rw,noatime 0 0
+$ time rm -rf linux-5.10
+
+real    0m0.454s
+user    0m0.029s
+sys     0m0.409s
+
+$ grep -w / /proc/mounts
+/dev/root / ext4 rw,noatime,discard 0 0
+$ time rm -rf linux-5.10
+
+real    0m0.554s
+user    0m0.051s
+sys     0m0.403s
+
+Writeback:
+
+$ dmesg |grep EXT4
+[    0.243909] EXT4-fs (vda1): mounted filesystem with writeback data
+mode. Opts: (null)
+
+$ grep -w / /proc/mounts
+/dev/root / ext4 rw,noatime 0 0
+$ time rm -rf linux-5.10
+
+real    0m0.440s
+user    0m0.030s
+sys     0m0.407s
+
+$ grep -w / /proc/mounts
+/dev/root / ext4 rw,noatime,discard 0 0
+$ time rm -rf linux-5.10
+
+real    0m3.763s
+user    0m0.030s
+sys     0m0.876s
+
+It seems that ext4_issue_discard() is called ~300 times with data=ordered
+and ~50k times with data=writeback.
+I'm using vanilla 5.10.1 kernel.
+
+Any thoughts?
+
+Regards,
 -- 
-2.18.4
-
+per aspera ad upstream
