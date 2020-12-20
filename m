@@ -2,103 +2,109 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBB342DF36D
-	for <lists+linux-ext4@lfdr.de>; Sun, 20 Dec 2020 04:45:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94A3B2DF5EB
+	for <lists+linux-ext4@lfdr.de>; Sun, 20 Dec 2020 16:40:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727249AbgLTDov (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 19 Dec 2020 22:44:51 -0500
-Received: from mail-il1-f197.google.com ([209.85.166.197]:34728 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726817AbgLTDov (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 19 Dec 2020 22:44:51 -0500
-Received: by mail-il1-f197.google.com with SMTP id c72so6232112ila.1
-        for <linux-ext4@vger.kernel.org>; Sat, 19 Dec 2020 19:44:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=UubbcTnFvAdUtoFBZ+hCLa1NkxHJbmCBB4mCfGjoNzc=;
-        b=DBlaK08Mpcbx1sylloZPiRsT0+002fcUbsX4y+02OD2ak6W0strc0XcaOXV6gObqTJ
-         Syn+8eHaVWz9pP285zV0cYM67X/yCrtmmAG+Wf+difNdxp1qJZs0vfaz9Nv4nTs6Dzgn
-         JQvMpQuzKuUQGuOX4TS24vGuN1lbwHzP1lqWlGlql7u0aPXgipUrSg+5Ukw1I0kehaau
-         s0n1ko4pkjQYnwe9036oZS0vEsizMxrUnJbJKycj7O7NYEeGlCDlwx+VGrhhQBkmc5bV
-         DpmurxpTL+VdIGCpTYWZSMXLicdLAFYV7wLf3mXVLMyrWhXGH750a5JE1+sB9qES3Qn2
-         Kuaw==
-X-Gm-Message-State: AOAM5337uf1PuBAkQs4Yocy8W132yCJXn8cUIm8lONf8253js2T5SnTg
-        7ALQXW2SBbIPc1N345t307fdfG+uc/YQrXnQymoizPuaMGKO
-X-Google-Smtp-Source: ABdhPJwX8qhKyoJbSUGIjokthVh4nyAx842fsSvzfDHXWiEmnnqdEUEqxVEYbhdSZOaR0ktXGNs/z1Mse29eILcxDLbZtoHhmPI9
+        id S1727663AbgLTPjw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 20 Dec 2020 10:39:52 -0500
+Received: from out20-50.mail.aliyun.com ([115.124.20.50]:36277 "EHLO
+        out20-50.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727667AbgLTPjw (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 20 Dec 2020 10:39:52 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.074958|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0155462-0.00128685-0.983167;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047202;MF=guan@eryu.me;NM=1;PH=DS;RN=5;RT=5;SR=0;TI=SMTPD_---.J9OH26p_1608478746;
+Received: from localhost(mailfrom:guan@eryu.me fp:SMTPD_---.J9OH26p_1608478746)
+          by smtp.aliyun-inc.com(10.147.41.120);
+          Sun, 20 Dec 2020 23:39:06 +0800
+Date:   Sun, 20 Dec 2020 23:39:06 +0800
+From:   Eryu Guan <guan@eryu.me>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, anju@linux.vnet.ibm.com
+Subject: Re: [PATCHv2 1/2] common/rc: Add whitelisted FS support in
+ _require_scratch_swapfile()
+Message-ID: <20201220153906.GC3853@desktop>
+References: <f161a49e6e3476d83c35b8e6a111644110ec4c8c.1608094988.git.riteshh@linux.ibm.com>
+ <3bd1f738-93b7-038d-6db9-7bf6a330b1ea@linux.ibm.com>
 MIME-Version: 1.0
-X-Received: by 2002:a02:c850:: with SMTP id r16mr10235491jao.18.1608435849939;
- Sat, 19 Dec 2020 19:44:09 -0800 (PST)
-Date:   Sat, 19 Dec 2020 19:44:09 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007acf2605b6dd2767@google.com>
-Subject: WARNING in ext4_evict_inode
-From:   syzbot <syzbot+f3e5bd9358af6c9a28c5@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3bd1f738-93b7-038d-6db9-7bf6a330b1ea@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+On Wed, Dec 16, 2020 at 10:53:45AM +0530, Ritesh Harjani wrote:
+> 
+> 
+> On 12/16/20 10:47 AM, Ritesh Harjani wrote:
+> > Filesystems e.g. ext4 and XFS supports swapon by default and an error
+> > returned with swapon should be treated as a failure. Hence
+> > add ext4/xfs as whitelisted fstype in _require_scratch_swapfile()
+> > 
+> > Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> > ---
+> > v1->v2: Addressed comments from Eryu @[1]
+> > [1]: https://patchwork.kernel.org/project/fstests/cover/cover.1604000570.git.riteshh@linux.ibm.com/
+> > 
+> >   common/rc | 20 ++++++++++++++++----
+> >   1 file changed, 16 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/common/rc b/common/rc
+> > index 33b5b598a198..635b77a005c6 100644
+> > --- a/common/rc
+> > +++ b/common/rc
+> > @@ -2380,6 +2380,7 @@ _format_swapfile() {
+> >   # Check that the filesystem supports swapfiles
+> >   _require_scratch_swapfile()
+> >   {
+> > +	local fstyp=$FSTYP
+> >   	_require_scratch
+> >   	_require_command "$MKSWAP_PROG" "mkswap"
+> > 
+> > @@ -2401,10 +2402,21 @@ _require_scratch_swapfile()
+> >   	# Minimum size for mkswap is 10 pages
+> >   	_format_swapfile "$SCRATCH_MNT/swap" $(($(get_page_size) * 10))
+> > 
+> > -	if ! swapon "$SCRATCH_MNT/swap" >/dev/null 2>&1; then
+> > -		_scratch_unmount
+> > -		_notrun "swapfiles are not supported"
+> > -	fi
+> > +	# For whitelisted fstyp swapon should not fail.
+> > +	case "$fstyp" in
+> > +	ext4|xfs)
+> > +		if ! swapon "$SCRATCH_MNT/swap" >/dev/null 2>&1; then
+> > +			_scratch_unmount
+> > +			_fail "swapon failed for $fstyp"
+> 
+> @Eryu,
+> As of now I added _fail() if swapon failed for given whitelisting fstype.
+> Do you think this is alright, or should I just ignore the error in
 
-syzbot found the following issue on:
+I think it's reasonable.
 
-HEAD commit:    3db1a3fa Merge tag 'staging-5.11-rc1' of git://git.kernel...
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=15c2f30f500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2764fc28a92339f9
-dashboard link: https://syzkaller.appspot.com/bug?extid=f3e5bd9358af6c9a28c5
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+But I'd like to leave the patchset on the list for review for another
+week, to see if ext4 and/or xfs folks will chime in and have different
+thoughts.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Thanks,
+Eryu
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f3e5bd9358af6c9a28c5@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 8514 at fs/ext4/inode.c:229 ext4_evict_inode+0x112c/0x1800 fs/ext4/inode.c:229
-Modules linked in:
-CPU: 1 PID: 8514 Comm: syz-executor.1 Not tainted 5.10.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:ext4_evict_inode+0x112c/0x1800 fs/ext4/inode.c:229
-Code: 05 72 d6 d3 0a 01 e8 ea 75 ae 06 e9 08 f5 ff ff c7 44 24 2c 06 00 00 00 c7 44 24 28 06 00 00 00 e9 9f f6 ff ff e8 54 29 6b ff <0f> 0b e9 34 f4 ff ff e8 48 29 6b ff e8 73 07 57 ff 31 ff 41 89 c5
-RSP: 0018:ffffc9000166fcb8 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 1ffff920002cdf9e RCX: ffffffff8205683e
-RDX: ffff8880125fb580 RSI: ffffffff8205740c RDI: 0000000000000005
-RBP: ffff888059bf0338 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
-R13: ffff888015bb1070 R14: ffffffff895fec20 R15: ffff888059bf4b00
-FS:  000000000258e940(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b30522000 CR3: 0000000047a9c000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- evict+0x2ed/0x750 fs/inode.c:578
- iput_final fs/inode.c:1654 [inline]
- iput.part.0+0x3fe/0x820 fs/inode.c:1680
- iput+0x58/0x70 fs/inode.c:1670
- do_unlinkat+0x40b/0x660 fs/namei.c:3903
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45dea7
-Code: 00 66 90 b8 58 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 ad b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 b8 57 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 8d b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fff0cd52098 EFLAGS: 00000246 ORIG_RAX: 0000000000000057
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 000000000045dea7
-RDX: 00007fff0cd520b0 RSI: 00007fff0cd520b0 RDI: 00007fff0cd52140
-RBP: 0000000000000714 R08: 0000000000000000 R09: 000000000000001b
-R10: 0000000000000015 R11: 0000000000000246 R12: 00007fff0cd531d0
-R13: 000000000258fa60 R14: 0000000000000000 R15: 00000000000ab9e5
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> case of such FS?
+> 
+> 
+> 
+> > +		fi
+> > +		;;
+> > +	*)
+> > +		if ! swapon "$SCRATCH_MNT/swap" >/dev/null 2>&1; then
+> > +			_scratch_unmount
+> > +			_notrun "swapfiles are not supported"
+> > +		fi
+> > +		;;
+> > +	esac
+> > 
+> >   	swapoff "$SCRATCH_MNT/swap" >/dev/null 2>&1
+> >   	_scratch_unmount
+> > --
+> > 2.26.2
+> > 
