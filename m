@@ -2,101 +2,70 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E472DFC9B
-	for <lists+linux-ext4@lfdr.de>; Mon, 21 Dec 2020 15:14:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 964422DFD5B
+	for <lists+linux-ext4@lfdr.de>; Mon, 21 Dec 2020 16:17:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726889AbgLUONk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 21 Dec 2020 09:13:40 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38750 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726614AbgLUONk (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 21 Dec 2020 09:13:40 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E4245AD57;
-        Mon, 21 Dec 2020 14:12:57 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 97F8F1E1332; Mon, 21 Dec 2020 15:12:57 +0100 (CET)
-Date:   Mon, 21 Dec 2020 15:12:57 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Matthew Wilcox <willy@infradead.org>
+        id S1725953AbgLUPRU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 21 Dec 2020 10:17:20 -0500
+Received: from casper.infradead.org ([90.155.50.34]:42962 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725826AbgLUPRU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 21 Dec 2020 10:17:20 -0500
+X-Greylist: delayed 1078 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Dec 2020 10:17:19 EST
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=BLzw6+zjh2rdSHdmNGpYDXRXsmUwYCvcQt9chPzOa7U=; b=t79vddqgv5Z/JEAuj+pP7dMB+z
+        rFsHF/unk8uEwlNNGR6rOV/bmVbEQ3JaisuqyzR8cplsVbCj7+le3vcpa2EKrQ16CEiUqHCiH5rA9
+        xMaue/iFO4x35e5Rq4MiHWFAWF4grGL83O94mgcB6iCv+di+S/mlmKgBaUXFqICXhZF6G5hDrU5H7
+        o7tUTpF7K7dEbZIX3ut0PuNEpqzuqnXkDzIKW7xB3ph2xdfdSxIW6ha5FvFBM/1bZYtFPyCYQCkHq
+        DBBGITOliGDA2SaTdAefd8iUY0s8VKP9kVDfLezJWbdoQ/K1AVgVXECaPD/pyl0CMi7d2ZasDQ+7Q
+        VsAvXPJQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1krMdv-0002jS-RL; Mon, 21 Dec 2020 14:58:35 +0000
+Date:   Mon, 21 Dec 2020 14:58:35 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jan Kara <jack@suse.cz>
 Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
         Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>
 Subject: Re: set_page_dirty vs truncate
-Message-ID: <20201221141257.GC13601@quack2.suse.cz>
+Message-ID: <20201221145835.GB874@casper.infradead.org>
 References: <20201218160531.GL15600@casper.infradead.org>
  <20201218220316.GO15600@casper.infradead.org>
+ <20201221141257.GC13601@quack2.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201218220316.GO15600@casper.infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201221141257.GC13601@quack2.suse.cz>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri 18-12-20 22:03:16, Matthew Wilcox wrote:
-> On Fri, Dec 18, 2020 at 04:05:31PM +0000, Matthew Wilcox wrote:
-> > A number of implementations of ->set_page_dirty check whether the page
-> > has been truncated (ie page->mapping has become NULL since entering
-> > set_page_dirty()).  Several other implementations assume that they can do
-> > page->mapping->host to get to the inode.  So either some implementations
-> > are doing unnecessary checks or others are vulnerable to a NULL pointer
-> > dereference if truncate() races with set_page_dirty().
-> > 
-> > I'm touching ->set_page_dirty() anyway as part of the page folio
-> > conversion.  I'm thinking about passing in the mapping so there's no
-> > need to look at page->mapping.
-> > 
-> > The comments on set_page_dirty() and set_page_dirty_lock() suggests
-> > there's no consistency in whether truncation is blocked or not; we're
-> > only guaranteed that the inode itself won't go away.  But maybe the
-> > comments are stale.
-> 
-> The comments are, I believe, not stale.  Here's some syzbot
-> reports which indicate that ext4 is seeing races between set_page_dirty()
-> and truncate():
-> 
->  https://groups.google.com/g/syzkaller-lts-bugs/c/s9fHu162zhQ/m/Phnf6ucaAwAJ
-> 
-> The reproducer includes calls to ftruncate(), so that would suggest
-> that's what's going on.
-> 
-> I would suggest just deleting this line:
-> 
->         WARN_ON_ONCE(!page_has_buffers(page));
-> 
-> I'm not sure what value the other WARN_ON_ONCE adds.  Maybe just replace
-> ext4_set_page_dirty with __set_page_dirty_buffers in the aops?  I'd defer
-> to an ext4 expert on this ...
+On Mon, Dec 21, 2020 at 03:12:57PM +0100, Jan Kara wrote:
+> But overall even with GUP woes fixed up, set_page_dirty() called by a PUP
+> user could still see already truncated page. So it has to deal with it.
 
-Please no. We've added this WARN_ON_ONCE() in 6dcc693bc57 ("ext4: warn when
-page is dirtied without buffers") to catch problems with page pinning
-earlier so that we get more diagnostic information before we actually BUG_ON()
-in the writeback code ;).
+Thanks!  That was really helpful.  We have a number of currently-buggy
+filesystems which assume they can do inode = page->mapping->host without
+checking that page->mapping is not NULL.
 
-To give more context: The question in which states we can see a page in
-set_page_dirty() is actually filesystem dependent. Filesystems such as
-ext4, xfs, btrfs expect to have full control over page dirtying because for
-them it's a question of fs consistency (due to journalling requirements,
-delayed allocation accounting etc.). Generally they expect the page can be
-dirtied only through ->page_mkwrite() or through ->write_iter() and lock
-things accordingly to maintain consistency. Except there's stuff like GUP
-which breaks these assumptions - GUP users will trigger ->page_mkwrite()
-but page can be writeprotected and cleaned long before GUP user modifies
-page data and calls set_page_dirty(). Which is the main point why we came
-up with pin_user_pages() so that MM / filesystems can detect there are page
-references which can potentially modify & dirty a page and can count with
-it (the "count with it" part is still missing, I have some clear ideas how
-to do it but didn't get to it yet). And the syzkaller reproducer you
-reference above is exactly one of the paths using GUP (actually already
-pin_user_pages() these days) that can get fs into inconsistent state.
+Anyway, since I'm changing the set_page_dirty signature for folios,
+this feels like the right time to pass in the page's mapping.
+__set_page_dirty() rechecks the mapping under the i_pages lock, so we
+won't do anything inappropriate if the page has been truncated.
 
-But overall even with GUP woes fixed up, set_page_dirty() called by a PUP
-user could still see already truncated page. So it has to deal with it.
+You can find the whole thing at
+https://git.infradead.org/users/willy/pagecache.git/shortlog/refs/heads/folio
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+but the important bit is:
+
+-       /* Set a page dirty.  Return true if this dirtied it */
+-       int (*set_page_dirty)(struct page *page);
++       /* Set a folio dirty.  Return true if this dirtied it */
++       bool (*set_page_dirty)(struct address_space *, struct folio *);
+
+I'm kind of tempted to rename it to ->dirty_folio(), but I'm also fine
+with leaving it this way.
+
