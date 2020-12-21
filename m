@@ -2,119 +2,101 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED7852DF7F0
-	for <lists+linux-ext4@lfdr.de>; Mon, 21 Dec 2020 04:05:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07E472DFC9B
+	for <lists+linux-ext4@lfdr.de>; Mon, 21 Dec 2020 15:14:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725783AbgLUDF2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 20 Dec 2020 22:05:28 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:48694 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725497AbgLUDF2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 20 Dec 2020 22:05:28 -0500
-Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0BL34cO2026704
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 20 Dec 2020 22:04:39 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 911B5420280; Sun, 20 Dec 2020 22:04:38 -0500 (EST)
-Date:   Sun, 20 Dec 2020 22:04:38 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: discard and data=writeback
-Message-ID: <X+AQxkC9MbuxNVRm@mit.edu>
-References: <CAFnufp2zSthSbrOQ5JE6rKEANeFqvunCR3W5Bx2VgN_Q3NbLVg@mail.gmail.com>
+        id S1726889AbgLUONk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 21 Dec 2020 09:13:40 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38750 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726614AbgLUONk (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 21 Dec 2020 09:13:40 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E4245AD57;
+        Mon, 21 Dec 2020 14:12:57 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 97F8F1E1332; Mon, 21 Dec 2020 15:12:57 +0100 (CET)
+Date:   Mon, 21 Dec 2020 15:12:57 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>
+Subject: Re: set_page_dirty vs truncate
+Message-ID: <20201221141257.GC13601@quack2.suse.cz>
+References: <20201218160531.GL15600@casper.infradead.org>
+ <20201218220316.GO15600@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAFnufp2zSthSbrOQ5JE6rKEANeFqvunCR3W5Bx2VgN_Q3NbLVg@mail.gmail.com>
+In-Reply-To: <20201218220316.GO15600@casper.infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 07:40:09PM +0100, Matteo Croce wrote:
+On Fri 18-12-20 22:03:16, Matthew Wilcox wrote:
+> On Fri, Dec 18, 2020 at 04:05:31PM +0000, Matthew Wilcox wrote:
+> > A number of implementations of ->set_page_dirty check whether the page
+> > has been truncated (ie page->mapping has become NULL since entering
+> > set_page_dirty()).  Several other implementations assume that they can do
+> > page->mapping->host to get to the inode.  So either some implementations
+> > are doing unnecessary checks or others are vulnerable to a NULL pointer
+> > dereference if truncate() races with set_page_dirty().
+> > 
+> > I'm touching ->set_page_dirty() anyway as part of the page folio
+> > conversion.  I'm thinking about passing in the mapping so there's no
+> > need to look at page->mapping.
+> > 
+> > The comments on set_page_dirty() and set_page_dirty_lock() suggests
+> > there's no consistency in whether truncation is blocked or not; we're
+> > only guaranteed that the inode itself won't go away.  But maybe the
+> > comments are stale.
 > 
-> I noticed a big slowdown on file removal, so I tried to remove the
-> discard option, and it helped
-> a lot.
-> Obviously discarding blocks will have an overhead, but the strange
-> thing is that it only
-> does when using data=writeback:
+> The comments are, I believe, not stale.  Here's some syzbot
+> reports which indicate that ext4 is seeing races between set_page_dirty()
+> and truncate():
+> 
+>  https://groups.google.com/g/syzkaller-lts-bugs/c/s9fHu162zhQ/m/Phnf6ucaAwAJ
+> 
+> The reproducer includes calls to ftruncate(), so that would suggest
+> that's what's going on.
+> 
+> I would suggest just deleting this line:
+> 
+>         WARN_ON_ONCE(!page_has_buffers(page));
+> 
+> I'm not sure what value the other WARN_ON_ONCE adds.  Maybe just replace
+> ext4_set_page_dirty with __set_page_dirty_buffers in the aops?  I'd defer
+> to an ext4 expert on this ...
 
-If data=ordered mount option is enabled, when you have allocating
-buffered writes pending, the data block writes are forced out *before*
-we write out the journal blocks, followed by a cache flush, followed
-by the commit block (which is either written with the Forced Unit
-Attention bit set if the storage device supports this, or the commit
-block is followed by another cache flush).  After the journal commit
-block is written out, then if the discard mount option is enabled,
-then all blocks that were released during the last joutnal transaction
-are then discarded.
+Please no. We've added this WARN_ON_ONCE() in 6dcc693bc57 ("ext4: warn when
+page is dirtied without buffers") to catch problems with page pinning
+earlier so that we get more diagnostic information before we actually BUG_ON()
+in the writeback code ;).
 
-If data=writeback is enabled, then we do *not* flush out any dirty
-pages in the page cache that were allocated during the previous
-transaction.  This means that if you crash, it is possible that
-freshly inodes that contain freshly allocated blocks may have stale
-data in those new allocated blocks.  This blocks might include some
-other users' e-mails, medical records, cryptographic keys, or other
-PII.   Which is why data=ordered is the default.
+To give more context: The question in which states we can see a page in
+set_page_dirty() is actually filesystem dependent. Filesystems such as
+ext4, xfs, btrfs expect to have full control over page dirtying because for
+them it's a question of fs consistency (due to journalling requirements,
+delayed allocation accounting etc.). Generally they expect the page can be
+dirtied only through ->page_mkwrite() or through ->write_iter() and lock
+things accordingly to maintain consistency. Except there's stuff like GUP
+which breaks these assumptions - GUP users will trigger ->page_mkwrite()
+but page can be writeprotected and cleaned long before GUP user modifies
+page data and calls set_page_dirty(). Which is the main point why we came
+up with pin_user_pages() so that MM / filesystems can detect there are page
+references which can potentially modify & dirty a page and can count with
+it (the "count with it" part is still missing, I have some clear ideas how
+to do it but didn't get to it yet). And the syzkaller reproducer you
+reference above is exactly one of the paths using GUP (actually already
+pin_user_pages() these days) that can get fs into inconsistent state.
 
-So if data=ordered and data=writeback makes any difference, the first
-question I'd have to ask is whether any dirty pages in the page cache,
-or any background writes happening in parallel with the rm -rf
-command.
+But overall even with GUP woes fixed up, set_page_dirty() called by a PUP
+user could still see already truncated page. So it has to deal with it.
 
-> It seems that ext4_issue_discard() is called ~300 times with data=ordered
-> and ~50k times with data=writeback.
-
-ext4_issue_discard() gets called for each contiguous set of blocks
-that were released in a particular jbd2 transaction.  So if you are
-deleting 100 files, and all of those files are unlinked in a single
-transaction, and all of those blocks belonging to those files belong
-to a single contiguous block region, then ext4_issue_discard() will be
-called only once.  If you delete a single file, but all of its blocks
-are heavily fragmented, then ext4_issue_discard() be called a thousand
-times.
-
-If you delete 100 files, all of which are contiguous, but each file is
-in a different part of the disk, then ext4_issue_discard() might be
-called 100 times.
-
-So that implies that your experiment may not be repeatable; did you
-make sure the file system was freshly reformatted before you wrote out
-the files in the directory you are deleting?  And was the directory
-written out in exactly the same way?  And did you make sure all of the
-writes were flushed out to disk before you tried timing the "rm -rf"
-command?  And did you make sure that there weren't any other processes
-running that might be issuing other file system operations (either
-data or metadata heavy) that might be interfering with the "rm -rf"
-operation?  What kind of storage device were you using?  (An SSD; a
-USB thumb drive; some kind of Cloud emulated block device?)
-
-Note that benchmarking the file system operations is *hard*.  When I
-worked with a graduate student working on a paper describing a
-prototype of a file system enhancement to ext4 to optimize ext4 for
-drive-managed SMR drives[1], the graduate student spent *way* more
-time getting reliable, repeatable benchmarks than making changes to
-ext4 for the prototype.  (It turns out the SMR GC operations caused
-variations in write speeds, which meant the writeback throughput
-measurements would fluctuate wildly, which then influenced the
-writeback cache ratio, which in turn massively influenced the how
-aggressively the writeback threads would behave, which in turn
-massively influenced the filebench and postmark numbers.)
-
-[1] https://www.usenix.org/conference/fast17/technical-sessions/presentation/aghayev
-
-So there can be variability caused by how blocks are allocated at the
-file system; how the SSD is assigning blocks to flash erase blocks;
-how the SSD's GC operation influences its write speed, which can in
-turn influence the kernel's measured writeback throughput; different
-SSD's or Cloud block devices can have very different discard
-performance that can vary based on past write history, yadda, yadda,
-yadda.
-
-Cheers,
-
-					- Ted
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
