@@ -2,156 +2,137 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95D2F2E0C4B
-	for <lists+linux-ext4@lfdr.de>; Tue, 22 Dec 2020 16:01:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B09512E0D6C
+	for <lists+linux-ext4@lfdr.de>; Tue, 22 Dec 2020 17:35:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727373AbgLVPAr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 22 Dec 2020 10:00:47 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:36950 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727193AbgLVPAr (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 22 Dec 2020 10:00:47 -0500
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 178F320B83F2
-        for <linux-ext4@vger.kernel.org>; Tue, 22 Dec 2020 07:00:05 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 178F320B83F2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1608649206;
-        bh=g2nqEd4zB/hia2SJ/pN+xDzNDNvXoQaBzRotn2NR0KM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=f09XEQCav3Dr/yGa4NwdeUYq+OHS6J8zus/uYtCNVLzW+S12LpdGorHUWZZzdk49T
-         Q2bZo4YjoXyGEX587pO7618dYgeRF+DRiBS9F9AAuq7/GAGH3R2mESYG8EGx9GizvV
-         SyeeFIhg7YkE588+B9wNXnhhgTvhJreybmiq/pWo=
-Received: by mail-pj1-f46.google.com with SMTP id m5so1471572pjv.5
-        for <linux-ext4@vger.kernel.org>; Tue, 22 Dec 2020 07:00:05 -0800 (PST)
-X-Gm-Message-State: AOAM533qOb/RdSiHUcwtjxFpyaZUf3txoUAV8ntjEWvgu4uo+dA9Aa9Z
-        +CGx0pxynFy4rtgerVzS3VCtsZsOz97ErClU/JQ=
-X-Google-Smtp-Source: ABdhPJxXTurWCUjnV8uTqbKZrrUcCXpInu0NNhB4mPb9lF26EUIAzYqBWIo0xkHGV9iUexNzaHqDCbn+ik1rOme0z3w=
-X-Received: by 2002:a17:902:7d84:b029:db:feae:425e with SMTP id
- a4-20020a1709027d84b02900dbfeae425emr21488714plm.43.1608649205620; Tue, 22
- Dec 2020 07:00:05 -0800 (PST)
-MIME-Version: 1.0
+        id S1727764AbgLVQe5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 22 Dec 2020 11:34:57 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:57639 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727590AbgLVQe5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 22 Dec 2020 11:34:57 -0500
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0BMGY6pj012553
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Dec 2020 11:34:07 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 6AC5A420280; Tue, 22 Dec 2020 11:34:06 -0500 (EST)
+Date:   Tue, 22 Dec 2020 11:34:06 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     linux-ext4@vger.kernel.org
+Subject: Re: discard and data=writeback
+Message-ID: <X+If/kAwiaMdaBtF@mit.edu>
 References: <CAFnufp2zSthSbrOQ5JE6rKEANeFqvunCR3W5Bx2VgN_Q3NbLVg@mail.gmail.com>
  <X+AQxkC9MbuxNVRm@mit.edu>
-In-Reply-To: <X+AQxkC9MbuxNVRm@mit.edu>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Tue, 22 Dec 2020 15:59:29 +0100
-X-Gmail-Original-Message-ID: <CAFnufp1N-k+MWWsC0G1EhGvzRjiQn3G8qPw=6uqE1wjwnPgmqA@mail.gmail.com>
-Message-ID: <CAFnufp1N-k+MWWsC0G1EhGvzRjiQn3G8qPw=6uqE1wjwnPgmqA@mail.gmail.com>
-Subject: Re: discard and data=writeback
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+ <CAFnufp1N-k+MWWsC0G1EhGvzRjiQn3G8qPw=6uqE1wjwnPgmqA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFnufp1N-k+MWWsC0G1EhGvzRjiQn3G8qPw=6uqE1wjwnPgmqA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 4:04 AM Theodore Y. Ts'o <tytso@mit.edu> wrote:
->
-> So that implies that your experiment may not be repeatable; did you
-> make sure the file system was freshly reformatted before you wrote out
-> the files in the directory you are deleting?  And was the directory
-> written out in exactly the same way?  And did you make sure all of the
-> writes were flushed out to disk before you tried timing the "rm -rf"
-> command?  And did you make sure that there weren't any other processes
-> running that might be issuing other file system operations (either
-> data or metadata heavy) that might be interfering with the "rm -rf"
-> operation?  What kind of storage device were you using?  (An SSD; a
-> USB thumb drive; some kind of Cloud emulated block device?)
->
+On Tue, Dec 22, 2020 at 03:59:29PM +0100, Matteo Croce wrote:
+> 
+> I'm issuing sync + sleep(10) after the extraction, so the writes
+> should all be flushed.
+> Also, I repeated the test three times, with very similar results:
 
-I got another machine with a faster NVME disk. I discarded the whole
-drive before partitioning it, this drive is very fast in discarding
-blocks:
-# time blkdiscard -f /dev/nvme0n1p1
+So that means the problem is not due to page cache writeback
+interfering with the discards.  So it's most likely that the problem
+is due to how the blocks are allocated and laid out when using
+data=ordered vs data=writeback.
 
-real    0m1.356s
-user    0m0.003s
-sys     0m0.000s
+Some experiments to try next.  After extracting the files with
+data=ordered and data=writeback on a freshly formatted file system,
+use "e2freefrag" to see how the free space is fragmented.  This will
+tell us how the file system is doing from a holistic perspective, in
+terms of blocks allocated to the extracted files.  (E2freefrag is
+showing you the blocks *not* allocated, of course, but that's a mirror
+image dual of the blocks that *are* allocated, especially if you start
+from an identical known state; hence the use of a freshly formatted
+file system.)
 
-Also, the drive is pretty big compared to the dataset size, so it's
-unlikely to be fragmented:
+Next, we can see how individual files look like with respect to
+fragmentation.  This can be done via using filefrag on all of the
+files, e.g:
 
-# lsblk /dev/nvme0n1
-NAME        MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
-nvme0n1     259:0    0  1.7T  0 disk
-=E2=94=94=E2=94=80nvme0n1p1 259:1    0  1.7T  0 part /media
-# df -h /media
-Filesystem      Size  Used Avail Use% Mounted on
-/dev/nvme0n1p1  1.8T  1.2G  1.7T   1% /media
-# du -sh /media/linux-5.10/
-1.1G    /media/linux-5.10/
+       find . -type f -print0  | xargs -0 filefrag
 
-I'm issuing sync + sleep(10) after the extraction, so the writes
-should all be flushed.
-Also, I repeated the test three times, with very similar results:
+Another way to get similar (although not identical) information is via
+running "e2fsck -E fragcheck" on a file system.  How they differ is
+especially more of a big deal on ext3 file systems without extents and
+flex_bg, since filefrag tries to take into account metadata blocks
+such as indirect blocks and extent tree blocks, and e2fsck -E
+fragcheck does not; but it's good enough for getting a good gestalt
+for the files' overall fragmentation --- and note that as long as the
+average fragment size is at least a megabyte or two, some
+fragmentation really isn't that much of a problem from a real-world
+performance perspective.  People can get way too invested in trying to
+get to perfection with 100% fragmentation-free files.  The problem
+with doing this at the expense of all else is that you can end up
+making the overall free space fragmentation worse as the file system
+ages, at which point the file system performance really dives through
+the floor as the file system approaches 100%, or even 80-90% full,
+especially on HDD's.  For SSD's fragmentation doesn't matter quite so
+much, unless the average fragment size is *really* small, and when you
+are discarded freed blocks.
 
-# dmesg |grep EXT4-fs
-[12807.847559] EXT4-fs (nvme0n1p1): mounted filesystem with ordered
-data mode. Opts: data=3Dordered,discard
+Even if the files are showing no substantial difference in
+fragmentation, and the free space is equally A-OK with respect to
+fragmentation, the other possibility is the *layout* of the blocks are
+such that the order in which they are deleted using rm -rf ends up
+being less friendly from a discard perspective.  This can happen if
+the directory hierarchy is big enough, and/or the journal size is
+small enough, that the rm -rf requires multiple journal transactions
+to complete.  That's because with mount -o discard, we do the discards
+after each transaction commit, and it might be that even though the
+used blocks are perfectly contiguous, because of the order in which
+the files end up getting deleted, we end up needing to discard them in
+smaller chunks.
 
-# tar xf ~/linux-5.10.tar ; sync ; sleep 10
-# time rm -rf linux-5.10/
+For example, one could imagine a case where you have a million 4k
+files, and they are allocated contiguously, but if you get
+super-unlucky, such that in the first transaction you delete all of
+the odd-numbered files, and in second transaction you delete all of
+the even-numbered files, you might need to do a million 4k discards
+--- but if all of the deletes could fit into a single transaction, you
+would only need to do a single million block discard operation.
 
-real    0m1.607s
-user    0m0.048s
-sys     0m1.559s
-# tar xf ~/linux-5.10.tar ; sync ; sleep 10
-# time rm -rf linux-5.10/
+Finally, you may want to consider whether or not mount -o discard
+really makes sense or not.  For most SSD's, especially high-end SSD's,
+it probably doesn't make that much difference.  That's because when
+you overwrite a sector, the SSD knows (or should know; this might not
+be some really cheap, crappy low-end flash devices; but on those
+devices, discard might not be making uch of a difference anyway), that
+the old contents of the sector is no longer needed.  Hence an
+overwrite effectively is an "implied discard".  So long as there is a
+sufficient number of free erase blocks, the SSD might be able to keep
+up doing the GC for those "implied discards", and so accelerating the
+process by sending explicit discards after every journal transaction
+might not be necessary.  Or, maybe it's sufficient to run "fstrim"
+every week at Sunday 3am local time; or maybe even fstrim once a night
+or fstrim once a month --- your mileage may vary.
 
-real    0m1.634s
-user    0m0.080s
-sys     0m1.553s
-# tar xf ~/linux-5.10.tar ; sync ; sleep 10
-# time rm -rf linux-5.10/
+It's going to vary from SSD to SSD and from workload to workload, but
+you might find that mount -o discard isn't buying you all that much
+--- if you run a random write workload, and you don't notice any
+performance degradation, and you don't notice an increase in the SSD's
+write amplification numbers (if they are provided by your SSD), then
+you might very well find that it's not worth it to use mount -o
+discard.
 
-real    0m1.604s
-user    0m0.052s
-sys     0m1.552s
-
-
-# dmesg |grep EXT4-fs
-[13133.953978] EXT4-fs (nvme0n1p1): mounted filesystem with writeback
-data mode. Opts: data=3Dwriteback,discard
-
-# tar xf ~/linux-5.10.tar ; sync ; sleep 10
-# time rm -rf linux-5.10/
-
-real    1m29.443s
-user    0m0.073s
-sys     0m2.520s
-# tar xf ~/linux-5.10.tar ; sync ; sleep 10
-# time rm -rf linux-5.10/
-
-real    1m29.409s
-user    0m0.081s
-sys     0m2.518s
-# tar xf ~/linux-5.10.tar ; sync ; sleep 10
-# time rm -rf linux-5.10/
-
-real    1m19.283s
-user    0m0.068s
-sys     0m2.505s
-
-> Note that benchmarking the file system operations is *hard*.  When I
-> worked with a graduate student working on a paper describing a
-> prototype of a file system enhancement to ext4 to optimize ext4 for
-> drive-managed SMR drives[1], the graduate student spent *way* more
-> time getting reliable, repeatable benchmarks than making changes to
-> ext4 for the prototype.  (It turns out the SMR GC operations caused
-> variations in write speeds, which meant the writeback throughput
-> measurements would fluctuate wildly, which then influenced the
-> writeback cache ratio, which in turn massively influenced the how
-> aggressively the writeback threads would behave, which in turn
-> massively influenced the filebench and postmark numbers.)
->
-> [1] https://www.usenix.org/conference/fast17/technical-sessions/presentat=
-ion/aghayev
->
-
-Interesting!
+I personally don't bother using mount -o discard, and instead
+periodically run fstrim, on my personal machines.  Part of that is
+because I'm mostly just reading and replying to emails, building
+kernels and editing text files, and that is not nearly as stressful on
+the FTL as a full-blown random write workload (for example, if you
+were running a database supporting a transaction processing workload).
 
 Cheers,
---=20
-per aspera ad upstream
+
+						- Ted
