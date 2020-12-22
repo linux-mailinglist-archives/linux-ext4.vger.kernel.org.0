@@ -2,137 +2,149 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B09512E0D6C
-	for <lists+linux-ext4@lfdr.de>; Tue, 22 Dec 2020 17:35:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC2BD2E0DFA
+	for <lists+linux-ext4@lfdr.de>; Tue, 22 Dec 2020 18:49:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727764AbgLVQe5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 22 Dec 2020 11:34:57 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:57639 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727590AbgLVQe5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 22 Dec 2020 11:34:57 -0500
-Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0BMGY6pj012553
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Dec 2020 11:34:07 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 6AC5A420280; Tue, 22 Dec 2020 11:34:06 -0500 (EST)
-Date:   Tue, 22 Dec 2020 11:34:06 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: discard and data=writeback
-Message-ID: <X+If/kAwiaMdaBtF@mit.edu>
-References: <CAFnufp2zSthSbrOQ5JE6rKEANeFqvunCR3W5Bx2VgN_Q3NbLVg@mail.gmail.com>
- <X+AQxkC9MbuxNVRm@mit.edu>
- <CAFnufp1N-k+MWWsC0G1EhGvzRjiQn3G8qPw=6uqE1wjwnPgmqA@mail.gmail.com>
+        id S1727916AbgLVRsL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 22 Dec 2020 12:48:11 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35356 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727387AbgLVRsL (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 22 Dec 2020 12:48:11 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E18B8ABA1;
+        Tue, 22 Dec 2020 17:47:29 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 95C5F1E1364; Tue, 22 Dec 2020 18:47:29 +0100 (CET)
+Date:   Tue, 22 Dec 2020 18:47:29 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     lokesh jaliminche <lokesh.jaliminche@gmail.com>
+Cc:     Martin Steigerwald <martin@lichtvoll.de>,
+        Ext4 <linux-ext4@vger.kernel.org>,
+        Andrew Morton <akpm@linuxfoundation.org>
+Subject: Re: improved performance in case of data journaling
+Message-ID: <20201222174729.GD22832@quack2.suse.cz>
+References: <CAKJOkCoUGPctXEcJWZFo+d62CSBmYjxFr1D0j74OY2ijynMyUA@mail.gmail.com>
+ <1870131.usQuhbGJ8B@merkaba>
+ <CAKJOkCrBMhLKZjp4=1KJv3uY+xFBN0KEjDx_ix=88xr0oegD+w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAFnufp1N-k+MWWsC0G1EhGvzRjiQn3G8qPw=6uqE1wjwnPgmqA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKJOkCrBMhLKZjp4=1KJv3uY+xFBN0KEjDx_ix=88xr0oegD+w@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 03:59:29PM +0100, Matteo Croce wrote:
+Hi!
+
+On Thu 03-12-20 01:07:51, lokesh jaliminche wrote:
+> Hi Martin,
 > 
-> I'm issuing sync + sleep(10) after the extraction, so the writes
-> should all be flushed.
-> Also, I repeated the test three times, with very similar results:
+> thanks for the quick response,
+> 
+> Apologies from my side, I should have posted my fio job description
+> with the fio logs
+> Anyway here is my fio workload.
+> 
+> [global]
+> filename=/mnt/ext4/test
+> direct=1
+> runtime=30s
+> time_based
+> size=100G
+> group_reporting
+> 
+> [writer]
+> new_group
+> rate_iops=250000
+> bs=4k
+> iodepth=1
+> ioengine=sync
+> rw=randomwrite
+> numjobs=1
+> 
+> I am using Intel Optane SSD so it's certainly very fast.
+> 
+> I agree that delayed logging could help to hide the performance
+> degradation due to actual writes to SSD. However as per the iostat
+> output data is definitely crossing the block layer and since
+> data journaling logs both data and metadata I am wondering why
+> or how IO requests see reduced latencies compared to metadata
+> journaling or even no journaling.
+> 
+> Also, I am using direct IO mode so ideally, it should not be using any type
+> of caching. I am not sure if it's applicable to journal writes but the whole
+> point of journaling is to prevent data loss in case of abrupt failures. So
+> caching journal writes may result in data loss unless we are using NVRAM.
 
-So that means the problem is not due to page cache writeback
-interfering with the discards.  So it's most likely that the problem
-is due to how the blocks are allocated and laid out when using
-data=ordered vs data=writeback.
+Well, first bear in mind that in data=journal mode, ext4 does not support
+direct IO so all the IO is in fact buffered. So your random-write workload
+will be transformed to semilinear writeback of the page cache pages. Now 
+I think given your SSD storage this performs much better because the
+journalling thread commiting data will drive large IOs (IO to the journal
+will be sequential) and even when the journal is filled and we have to
+checkpoint, we will run many IOs in parallel which is beneficial for SSDs.
+Whereas without data journalling your fio job will just run one IO at a
+time which is far from utilizing full SSD bandwidth.
 
-Some experiments to try next.  After extracting the files with
-data=ordered and data=writeback on a freshly formatted file system,
-use "e2freefrag" to see how the free space is fragmented.  This will
-tell us how the file system is doing from a holistic perspective, in
-terms of blocks allocated to the extracted files.  (E2freefrag is
-showing you the blocks *not* allocated, of course, but that's a mirror
-image dual of the blocks that *are* allocated, especially if you start
-from an identical known state; hence the use of a freshly formatted
-file system.)
+So to summarize you see better results with data journalling because you in
+fact do buffered IO under the hood :).
 
-Next, we can see how individual files look like with respect to
-fragmentation.  This can be done via using filefrag on all of the
-files, e.g:
+								Honza
 
-       find . -type f -print0  | xargs -0 filefrag
-
-Another way to get similar (although not identical) information is via
-running "e2fsck -E fragcheck" on a file system.  How they differ is
-especially more of a big deal on ext3 file systems without extents and
-flex_bg, since filefrag tries to take into account metadata blocks
-such as indirect blocks and extent tree blocks, and e2fsck -E
-fragcheck does not; but it's good enough for getting a good gestalt
-for the files' overall fragmentation --- and note that as long as the
-average fragment size is at least a megabyte or two, some
-fragmentation really isn't that much of a problem from a real-world
-performance perspective.  People can get way too invested in trying to
-get to perfection with 100% fragmentation-free files.  The problem
-with doing this at the expense of all else is that you can end up
-making the overall free space fragmentation worse as the file system
-ages, at which point the file system performance really dives through
-the floor as the file system approaches 100%, or even 80-90% full,
-especially on HDD's.  For SSD's fragmentation doesn't matter quite so
-much, unless the average fragment size is *really* small, and when you
-are discarded freed blocks.
-
-Even if the files are showing no substantial difference in
-fragmentation, and the free space is equally A-OK with respect to
-fragmentation, the other possibility is the *layout* of the blocks are
-such that the order in which they are deleted using rm -rf ends up
-being less friendly from a discard perspective.  This can happen if
-the directory hierarchy is big enough, and/or the journal size is
-small enough, that the rm -rf requires multiple journal transactions
-to complete.  That's because with mount -o discard, we do the discards
-after each transaction commit, and it might be that even though the
-used blocks are perfectly contiguous, because of the order in which
-the files end up getting deleted, we end up needing to discard them in
-smaller chunks.
-
-For example, one could imagine a case where you have a million 4k
-files, and they are allocated contiguously, but if you get
-super-unlucky, such that in the first transaction you delete all of
-the odd-numbered files, and in second transaction you delete all of
-the even-numbered files, you might need to do a million 4k discards
---- but if all of the deletes could fit into a single transaction, you
-would only need to do a single million block discard operation.
-
-Finally, you may want to consider whether or not mount -o discard
-really makes sense or not.  For most SSD's, especially high-end SSD's,
-it probably doesn't make that much difference.  That's because when
-you overwrite a sector, the SSD knows (or should know; this might not
-be some really cheap, crappy low-end flash devices; but on those
-devices, discard might not be making uch of a difference anyway), that
-the old contents of the sector is no longer needed.  Hence an
-overwrite effectively is an "implied discard".  So long as there is a
-sufficient number of free erase blocks, the SSD might be able to keep
-up doing the GC for those "implied discards", and so accelerating the
-process by sending explicit discards after every journal transaction
-might not be necessary.  Or, maybe it's sufficient to run "fstrim"
-every week at Sunday 3am local time; or maybe even fstrim once a night
-or fstrim once a month --- your mileage may vary.
-
-It's going to vary from SSD to SSD and from workload to workload, but
-you might find that mount -o discard isn't buying you all that much
---- if you run a random write workload, and you don't notice any
-performance degradation, and you don't notice an increase in the SSD's
-write amplification numbers (if they are provided by your SSD), then
-you might very well find that it's not worth it to use mount -o
-discard.
-
-I personally don't bother using mount -o discard, and instead
-periodically run fstrim, on my personal machines.  Part of that is
-because I'm mostly just reading and replying to emails, building
-kernels and editing text files, and that is not nearly as stressful on
-the FTL as a full-blown random write workload (for example, if you
-were running a database supporting a transaction processing workload).
-
-Cheers,
-
-						- Ted
+> So questions come to my mind are
+> 1. why writes without journaling are having long latencies as compared to
+>     writes requests with metadata and data journaling?
+> 2. Since metadata journaling have relatively fewer journal writes than data
+>     journaling why writes with data journaling is faster than no journaling and
+>     metadata journaling mode?
+> 3. If there is an optimization that allows data journaling to be so fast without
+>    any risk of data loss, why the same optimization is not used in
+> case of metadata
+>    journaling?
+> 
+> On Thu, Dec 3, 2020 at 12:20 AM Martin Steigerwald <martin@lichtvoll.de> wrote:
+> >
+> > lokesh jaliminche - 03.12.20, 08:28:49 CET:
+> > > I have been doing experiments to analyze the impact of data journaling
+> > > on IO latencies. Theoretically, data journaling should show long
+> > > latencies as compared to metadata journaling. However, I observed
+> > > that when I enable data journaling I see improved performance. Is
+> > > there any specific optimization for data journaling in the write
+> > > path?
+> >
+> > This has been discussed before as Andrew Morton found that data
+> > journalling would be surprisingly fast with interactive write workloads.
+> > I would need to look it up in my performance training slides or use
+> > internet search to find the reference to that discussion again.
+> >
+> > AFAIR even Andrew had no explanation for that. So I thought why would I
+> > have one? However an idea came to my mind: The journal is a sequential
+> > area on the disk. This could help with harddisks I thought at least if
+> > if it I/O mostly to the same not too big location/file – as you did not
+> > post it, I don't know exactly what your fio job file is doing. However the
+> > latencies you posted as well as the device name certainly point to fast
+> > flash storage :).
+> >
+> > Another idea that just came to my mind is: AFAIK ext4 uses quite some
+> > delayed logging and relogging. That means if a block in the journal is
+> > changed another time within a certain time frame Ext4 changes it in
+> > memory before the journal block is written out to disk. Thus if the same
+> > block if overwritten again and again in short time, at least some of the
+> > updates would only happen in RAM. That might help latencies even with
+> > NVMe flash as RAM usually still is faster.
+> >
+> > Of course I bet that Ext4 maintainers have a more accurate or detailed
+> > explanation than I do. But that was at least my idea about this.
+> >
+> > Best,
+> > --
+> > Martin
+> >
+> >
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
