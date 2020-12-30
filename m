@@ -2,112 +2,150 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B44332E7935
-	for <lists+linux-ext4@lfdr.de>; Wed, 30 Dec 2020 14:08:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE1AC2E7A3B
+	for <lists+linux-ext4@lfdr.de>; Wed, 30 Dec 2020 16:19:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727425AbgL3NF1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 30 Dec 2020 08:05:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54530 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727414AbgL3NFV (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 30 Dec 2020 08:05:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A1F02224DF;
-        Wed, 30 Dec 2020 13:03:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609333434;
-        bh=I16to6iu+1TDHyS0PAeAkx90hzR16tyVAzOrcwTgfac=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LM5KD454lzwMqAng5Rt4bGhAFxyY4JL3EXth4P8QmvNeBYST4FfHUZRy2sVPQ8dSV
-         ewHGhBgiDJKGpugYkKN3YS8UK0T0CZXM9AkkfVewhXJtGxMIUVN8BzAs/aihc74RHP
-         aqGyRmOXU5z/s7IMmliLRWBfE4HCAE8HyopjnDZtATSD+fON+vqv7Sj5YFR+B/kM3J
-         yDbSUsqJmqK4GkpaRJEKPYQr0blQDf5uF2oVYVeGUegRV/Jl3c6XfQ0u+nhrwTIvnH
-         RsqiaeYMBFKgvdfH0Ibkp+q5apt0O/ZLD6FF773KZkUlWDBdGAU1CrD6vlv8d0sHCr
-         4GbMhVEMl4k9A==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Chunguang Xu <brookxu@tencent.com>,
-        Tosk Robot <tencent_os_robot@tencent.com>,
-        Samuel Liao <samuelliao@tencent.com>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
-        linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 30/31] ext4: avoid s_mb_prefetch to be zero in individual scenarios
-Date:   Wed, 30 Dec 2020 08:03:12 -0500
-Message-Id: <20201230130314.3636961-30-sashal@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201230130314.3636961-1-sashal@kernel.org>
-References: <20201230130314.3636961-1-sashal@kernel.org>
+        id S1726203AbgL3PSB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 30 Dec 2020 10:18:01 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:38748 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725853AbgL3PSA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 30 Dec 2020 10:18:00 -0500
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 8270720B6C41
+        for <linux-ext4@vger.kernel.org>; Wed, 30 Dec 2020 07:17:19 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8270720B6C41
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1609341439;
+        bh=veaHwhtnGcj7k1ybWPhJvPoFZx5cJBkNSei1U33a99M=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=UNdoyIzwIdVAxtQimRc59bAb1HuNWikYvBVCYn5kLOBgoE8kvFn75sHLnHHQWDk9c
+         3MBcKTjH571uAikOU5v3ROf0rzlmL3F7x7hLLOW6VIqKCpyVT7W7MacOuwSPef4e6T
+         KJdJJblL/Lkcv5d1HnjTI11Vaq5cvD6Wd8kshdJ0=
+Received: by mail-pg1-f170.google.com with SMTP id c132so194080pga.3
+        for <linux-ext4@vger.kernel.org>; Wed, 30 Dec 2020 07:17:19 -0800 (PST)
+X-Gm-Message-State: AOAM531dWE/Uwiep8BNz5miFMOPlC2RC+zn9Cf/dKQq5/oX5lzG+WhAO
+        imldPCJu3+ZsJgxJ9hlja/i1fcrdTr7pykFfwJg=
+X-Google-Smtp-Source: ABdhPJyxI1EHQYt3h7wAhBHPIIL4uNaWkPtE61RiZJRiqDusEOTLBg0qr+GcdxsmmaTDakRloM5I+iqmKauyG2MmDBM=
+X-Received: by 2002:a05:6a00:a88:b029:19e:4ba8:bbe4 with SMTP id
+ b8-20020a056a000a88b029019e4ba8bbe4mr49891757pfl.41.1609341438819; Wed, 30
+ Dec 2020 07:17:18 -0800 (PST)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+References: <20201229054143epcms2p15ae3cce43bb3c503adf94528f354ba78@epcms2p1>
+ <CGME20201229054143epcms2p15ae3cce43bb3c503adf94528f354ba78@epcms2p5>
+ <CAFnufp39qXBtOfETsYz5LSoPZWik70uB=czmfpwiA8Hdwpi+dA@mail.gmail.com> <20201230052139epcms2p5d4b8d41625ebd7ea677500d1c05153ef@epcms2p5>
+In-Reply-To: <20201230052139epcms2p5d4b8d41625ebd7ea677500d1c05153ef@epcms2p5>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Wed, 30 Dec 2020 16:16:42 +0100
+X-Gmail-Original-Message-ID: <CAFnufp0zZL04L5UF_TY7+n91FjktG6Bb0J2j0f3eomXdnHGQ4A@mail.gmail.com>
+Message-ID: <CAFnufp0zZL04L5UF_TY7+n91FjktG6Bb0J2j0f3eomXdnHGQ4A@mail.gmail.com>
+Subject: Re: Re: discard and data=writeback
+To:     daejun7.park@samsung.com
+Cc:     "tytso@mit.edu" <tytso@mit.edu>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Chunguang Xu <brookxu@tencent.com>
+On Wed, Dec 30, 2020 at 6:21 AM Daejun Park <daejun7.park@samsung.com> wrote:
+>
+> > Hi,
+> > >
+> > > > # dmesg |grep EXT4-fs |tail -1
+> > > > [ 1594.829833] EXT4-fs (nvme0n1p1): mounted filesystem with ordered
+> > > > data mode. Opts: data=ordered,discard
+> > > > # blktrace /dev/nvme0n1 & sleep 1 ; time rm -rf /media/linux-5.10/ ; kill $!
+> > > > [1] 3032
+> > > >
+> > > > real    0m1.328s
+> > > > user    0m0.063s
+> > > > sys     0m1.231s
+> > > > # === nvme0n1 ===
+> > > >   CPU  0:                    0 events,        0 KiB data
+> > > >   CPU  1:                    0 events,        0 KiB data
+> > > >   CPU  2:                    0 events,        0 KiB data
+> > > >   CPU  3:                 1461 events,       69 KiB data
+> > > >   CPU  4:                    1 events,        1 KiB data
+> > > >   CPU  5:                    0 events,        0 KiB data
+> > > >   CPU  6:                    0 events,        0 KiB data
+> > > >   CPU  7:                    0 events,        0 KiB data
+> > > >   Total:                  1462 events (dropped 0),       69 KiB data
+> > > >
+> > > >
+> > > > # dmesg |grep EXT4-fs |tail -1
+> > > > [ 1734.837651] EXT4-fs (nvme0n1p1): mounted filesystem with writeback
+> > > > data mode. Opts: data=writeback,discard
+> > > > # blktrace /dev/nvme0n1 & sleep 1 ; time rm -rf /media/linux-5.10/ ; kill $!
+> > > > [1] 3069
+> > > >
+> > > > real    1m30.273s
+> > > > user    0m0.139s
+> > > > sys     0m3.084s
+> > > > # === nvme0n1 ===
+> > > >   CPU  0:               133830 events,     6274 KiB data
+> > > >   CPU  1:                21878 events,     1026 KiB data
+> > > >   CPU  2:                46365 events,     2174 KiB data
+> > > >   CPU  3:                98116 events,     4600 KiB data
+> > > >   CPU  4:               290902 events,    13637 KiB data
+> > > >   CPU  5:                10926 events,      513 KiB data
+> > > >   CPU  6:                76861 events,     3603 KiB data
+> > > >   CPU  7:                17855 events,      837 KiB data
+> > > >   Total:                696733 events (dropped 0),    32660 KiB data
+> > > >
+> > >
+> > > In this result, there is few IO in ordered mode.
+> > >
+> > > As I understand (please correct this if I am wrong), with writeback +
+> > > discard, ext4_issue_discard is called immediately at each rm command.
+> > > However, with ordered mode, ext4_issue_discard is called when end of
+> > > committing a transaction to pace with the corresponding transaction.
+> > > It means, they are not discarded yet.
+> > >
+> > > Even with ordered mode, if sync is called after rm command,
+> > > ext4_issue_discard can be called due to transaction commit.
+> > > So, I think you will get similar results form writeback mode with sync
+> > > command.
+> > >
+> >
+> > Hi,
+> >
+> > that's what I get with data=ordered if I issue a sync after the removal:
+> >
+> > # time rm -rf /media/linux-5.10/ ; sync ; kill $!
+> >
+> > real    0m1.569s
+> > user    0m0.044s
+> > sys     0m1.508s
+> > #
+> >  === nvme0n1 ===
+> >  CPU  0:                10980 events,      515 KiB data
+> >  CPU  1:                    0 events,        0 KiB data
+> >  CPU  2:                    0 events,        0 KiB data
+> >  CPU  3:                   26 events,        2 KiB data
+> >  CPU  4:                 3601 events,      169 KiB data
+> >  CPU  5:                    0 events,        0 KiB data
+> >  CPU  6:                21786 events,     1022 KiB data
+> >  CPU  7:                    0 events,        0 KiB data
+> >  Total:                 36393 events (dropped 0),     1706 KiB data
+> >
+> > Still way less transactions than writeback.
+> >
+> The full trace you shared on this thread seems contains only on writeback
+> mode. In the trace, discards are issued by each deletion file by rm.
+>
+> If you share the full trace on ordered mode, it will help we analyze the
+> results. It is expected that number of discards will lower than writeback
+> mode, because discards can be merged on ordered mode.
+>
 
-[ Upstream commit 82ef1370b0c1757ab4ce29f34c52b4e93839b0aa ]
+Hi,
 
-Commit cfd732377221 ("ext4: add prefetching for block allocation
-bitmaps") introduced block bitmap prefetch, and expects to read block
-bitmaps of flex_bg through an IO.  However, it seems to ignore the
-value range of s_log_groups_per_flex.  In the scenario where the value
-of s_log_groups_per_flex is greater than 27, s_mb_prefetch or
-s_mb_prefetch_limit will overflow, cause a divide zero exception.
+I did the same blktrace with data=ordered,discard
+Find it here:
 
-In addition, the logic of calculating nr is also flawed, because the
-size of flexbg is fixed during a single mount, but s_mb_prefetch can
-be modified, which causes nr to fail to meet the value condition of
-[1, flexbg_size].
+https://drive.google.com/file/d/1gqffP9WPCME3_81xlXAQCiDlTK-Gqv4_/view?usp=sharing
 
-To solve this problem, we need to set the upper limit of
-s_mb_prefetch.  Since we expect to load block bitmaps of a flex_bg
-through an IO, we can consider determining a reasonable upper limit
-among the IO limit parameters.  After consideration, we chose
-BLK_MAX_SEGMENT_SIZE.  This is a good choice to solve divide zero
-problem and avoiding performance degradation.
-
-[ Some minor code simplifications to make the changes easy to follow -- TYT ]
-
-Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-Signed-off-by: Chunguang Xu <brookxu@tencent.com>
-Reviewed-by: Samuel Liao <samuelliao@tencent.com>
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
-Link: https://lore.kernel.org/r/1607051143-24508-1-git-send-email-brookxu@tencent.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/ext4/mballoc.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 24af9ed5c3e52..ca57c6bfee224 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -2395,9 +2395,9 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
- 
- 				nr = sbi->s_mb_prefetch;
- 				if (ext4_has_feature_flex_bg(sb)) {
--					nr = (group / sbi->s_mb_prefetch) *
--						sbi->s_mb_prefetch;
--					nr = nr + sbi->s_mb_prefetch - group;
-+					nr = 1 << sbi->s_log_groups_per_flex;
-+					nr -= group & (nr - 1);
-+					nr = min(nr, sbi->s_mb_prefetch);
- 				}
- 				prefetch_grp = ext4_mb_prefetch(sb, group,
- 							nr, &prefetch_ios);
-@@ -2733,7 +2733,8 @@ static int ext4_mb_init_backend(struct super_block *sb)
- 
- 	if (ext4_has_feature_flex_bg(sb)) {
- 		/* a single flex group is supposed to be read by a single IO */
--		sbi->s_mb_prefetch = 1 << sbi->s_es->s_log_groups_per_flex;
-+		sbi->s_mb_prefetch = min(1 << sbi->s_es->s_log_groups_per_flex,
-+			BLK_MAX_SEGMENT_SIZE >> (sb->s_blocksize_bits - 9));
- 		sbi->s_mb_prefetch *= 8; /* 8 prefetch IOs in flight at most */
- 	} else {
- 		sbi->s_mb_prefetch = 32;
+Thanks,
 -- 
-2.27.0
-
+per aspera ad upstream
