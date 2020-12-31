@@ -2,105 +2,122 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC0C2E7D9C
-	for <lists+linux-ext4@lfdr.de>; Thu, 31 Dec 2020 02:33:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 323262E7DA1
+	for <lists+linux-ext4@lfdr.de>; Thu, 31 Dec 2020 02:56:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726290AbgLaBdW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 30 Dec 2020 20:33:22 -0500
-Received: from mailout2.samsung.com ([203.254.224.25]:12002 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726285AbgLaBdV (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 30 Dec 2020 20:33:21 -0500
+        id S1726360AbgLaBxA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 30 Dec 2020 20:53:00 -0500
+Received: from mailout4.samsung.com ([203.254.224.34]:37714 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726289AbgLaBw7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 30 Dec 2020 20:52:59 -0500
 Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20201231013238epoutp02eeb897293f857c1c717237e04810dbdf~VqRcRGkbj2113821138epoutp02m
-        for <linux-ext4@vger.kernel.org>; Thu, 31 Dec 2020 01:32:38 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20201231013238epoutp02eeb897293f857c1c717237e04810dbdf~VqRcRGkbj2113821138epoutp02m
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20201231015216epoutp04846ff4863270dfb5f5bde44b165223ef~Vqil0z8vO3172131721epoutp04c
+        for <linux-ext4@vger.kernel.org>; Thu, 31 Dec 2020 01:52:16 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20201231015216epoutp04846ff4863270dfb5f5bde44b165223ef~Vqil0z8vO3172131721epoutp04c
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1609378358;
-        bh=D4kKCmHLjbqSFNsgta6NLMlj1yYxqAWKe9guecte5ac=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=uvUYcKu52/G770J8LoP2muiyFF3NOMDL9GNmwxqXDeaM05EdKuYlZ9wM3/s+wInkK
-         2UqYa4b6pS7EBNIT1Se6vZ+RMqWIOlN/PSid64rX1v+Oc4ngw9hQgQvS9A9RxnOac9
-         3So2/KTF+aSr74DEZQSan91EvaETBYKFCcSVfkGQ=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        s=mail20170921; t=1609379536;
+        bh=Pavx+2KlD0fJy/GmKeiLRdvuDhlWzwyoD9M4eFpU3s0=;
+        h=Subject:Reply-To:From:To:CC:Date:References:From;
+        b=I7AAeVKp4y01CXzFXdqRnq+kN5C2xSh5d8YWeR8OezrJaCOlLEuCkgtyQvuy7iO2l
+         SmNIV0oMfJqwEK9LmhHDbSYhBveadlfIIffJgz8I3Ih1O49sD7Uc6h7Rdqq73xyaWc
+         SKktl+EHVtQ/val1gp8kgPnDe7fv4c0J1RsJJ2Gg=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
         epcas2p1.samsung.com (KnoxPortal) with ESMTP id
-        20201231013237epcas2p1bef960e446694ca481f07c8b0b9cdbbf~VqRb5MZRW3091130911epcas2p1O;
-        Thu, 31 Dec 2020 01:32:37 +0000 (GMT)
-Received: from epsmges2p3.samsung.com (unknown [182.195.40.186]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4D5rHm6StgzMqYkd; Thu, 31 Dec
-        2020 01:32:36 +0000 (GMT)
-X-AuditID: b6c32a47-b81ff7000000148e-96-5fed2a34c349
-Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
-        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        23.51.05262.43A2DEF5; Thu, 31 Dec 2020 10:32:36 +0900 (KST)
+        20201231015216epcas2p11548875a00616ea24a0616c08e915fd5~Vqilk0bcI2957129571epcas2p1P;
+        Thu, 31 Dec 2020 01:52:16 +0000 (GMT)
+Received: from epsmges2p4.samsung.com (unknown [182.195.40.182]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4D5rkR2F7Fz4x9Q0; Thu, 31 Dec
+        2020 01:52:15 +0000 (GMT)
+X-AuditID: b6c32a48-50fff7000000cd1f-a1-5fed2ecd9a28
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        D3.44.52511.DCE2DEF5; Thu, 31 Dec 2020 10:52:13 +0900 (KST)
 Mime-Version: 1.0
-Subject: RE: Re: Re: discard and data=writeback
+Subject: [PATCH] ext4: Change list_for_each to list_for_each_entry
 Reply-To: daejun7.park@samsung.com
 Sender: Daejun Park <daejun7.park@samsung.com>
 From:   Daejun Park <daejun7.park@samsung.com>
-To:     Matteo Croce <mcroce@linux.microsoft.com>,
-        Daejun Park <daejun7.park@samsung.com>
-CC:     "tytso@mit.edu" <tytso@mit.edu>,
+To:     "tytso@mit.edu" <tytso@mit.edu>,
+        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
 X-Priority: 3
 X-Content-Kind-Code: NORMAL
-In-Reply-To: <CAFnufp0zZL04L5UF_TY7+n91FjktG6Bb0J2j0f3eomXdnHGQ4A@mail.gmail.com>
 X-CPGS-Detection: blocking_info_exchange
 X-Drm-Type: N,general
 X-Msg-Generator: Mail
 X-Msg-Type: PERSONAL
 X-Reply-Demand: N
-Message-ID: <20201231013236epcms2p63f3c167693f76407103422d8cd347725@epcms2p6>
-Date:   Thu, 31 Dec 2020 10:32:36 +0900
-X-CMS-MailID: 20201231013236epcms2p63f3c167693f76407103422d8cd347725
+Message-ID: <20201231015213epcms2p5ef76aa6b26ab74e045a86f6a13b31d51@epcms2p5>
+Date:   Thu, 31 Dec 2020 10:52:13 +0900
+X-CMS-MailID: 20201231015213epcms2p5ef76aa6b26ab74e045a86f6a13b31d51
 Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="utf-8"
 X-Sendblock-Type: AUTO_CONFIDENTIAL
 CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrPKsWRmVeSWpSXmKPExsWy7bCmqa6J1tt4g1f/DS1WPQi3mDnvDpvF
-        xV/zGS1ae36yO7B4/Np+lMmj6cxRZo++LasYPT5vkgtgicqxyUhNTEktUkjNS85PycxLt1Xy
-        Do53jjc1MzDUNbS0MFdSyEvMTbVVcvEJ0HXLzAHaqKRQlphTChQKSCwuVtK3synKLy1JVcjI
-        Ly6xVUotSMkpMDQs0CtOzC0uzUvXS87PtTI0MDAyBapMyMmY+nA5U8EjtopPB6+wNTDuZ+1i
-        5OSQEDCReP38BmMXIxeHkMAORolryzcBORwcvAKCEn93CIPUCAvoS6yYvJUFxBYSUJJYf3EW
-        O0RcT+LWwzWMIDabgI7E9BP3weIiAuES6073MYPYzAIJEheXT2eH2MUrMaP9KQuELS2xfflW
-        sF5OgUCJk2tWsEHENSR+LOtlhrBFJW6ufssOY78/Np8RwhaRaL13FqpGUOLBz91QcUmJY7s/
-        MEHY9RJb7/wC+0tCoIdR4vDOW1AP60tc69gIdgSvgK/Eg7U3wBawCKhKLFr/nAXkdwkBF4nt
-        88wg7peX2P52DjNImFlAU2L9Ln2ICmWJI7dYICr4JDoO/4X7cMe8J1AXqEms+7meCaJcRuLW
-        PEYI00Pi5LvoCYyKsxChPAvJplkImxYwMq9iFEstKM5NTy02KjBGjthNjOCUp+W+g3HG2w96
-        hxiZOBgPMUpwMCuJ8CYkvIoX4k1JrKxKLcqPLyrNSS0+xGgK9OJEZinR5Hxg0s0riTc0NTIz
-        M7A0tTA1M7JQEuctNngQLySQnliSmp2aWpBaBNPHxMEp1cAU/2TFI8e5jpXvmd5X/g9oLNw9
-        bXLGc/t2Ede9vg6W8tYewtMjTG48OWW/UG7bIfMO+2s6nRIB4uwL9i05J5T6IYWJ3+DIuzPX
-        GK2/q95/FviR/dQkZr97PA3VnPw3OdTCbeNf6Qpxb7j5RSloTYrs57T0z0l1uWoNXx908AbP
-        7/rwyVjyuJZIhm87q9z5jgstt81T9bf8ye9bn93sLjr/zln+hou1m7p9/fp+WlRM1fHxMVE+
-        vu/CRJ6Ua43TvL9XdX3VcthboJ07eaf7RjWltP7TcoL5UYWeD/aL5Ar+/HnnxR+eotXOrJba
-        WzbtDC7d8p2vMC3o66Sl1VzVT7S2hT3ekLjzoS0n75OJMkosxRmJhlrMRcWJAFWX7K4CBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrFKsWRmVeSWpSXmKPExsWy7bCmhe5ZvbfxBse2CVh8/dLBYjFz3h02
+        i8u75rBZtPb8ZHdg8WjZXO7RdOYos8fnTXIBzFE5NhmpiSmpRQqpecn5KZl56bZK3sHxzvGm
+        ZgaGuoaWFuZKCnmJuam2Si4+AbpumTlAy5QUyhJzSoFCAYnFxUr6djZF+aUlqQoZ+cUltkqp
+        BSk5BYaGBXrFibnFpXnpesn5uVaGBgZGpkCVCTkZ567tZS64xF2x9N5yxgbGz5xdjJwcEgIm
+        Env2vGcDsYUEdjBKPGwN6GLk4OAVEJT4u0MYJCws4CQx5/06FogSJYn1F2exQ8T1JG49XMMI
+        YrMJ6EhMP3EfLC4iECPR9GAnWJxZoE5iy4KdbBCreCVmtD9lgbClJbYv38oIYWtI/FjWywxh
+        i0rcXP2WHcZ+f2w+VI2IROu9s1A1ghIPfu6GiktKHNv9gQnCrpfYeucXUJwLyO5hlDi88xYr
+        REJf4lrHRhaIv3wlXr8Bm88ioCpx99NpqHtcJN7ee8UKcbO8xPa3c5hBypkFNCXW79IHMSUE
+        lCWO3GKBqOCT6Dj8lx3mqx3znkBdoCax7ud6JohyGYlb86CO9JB40trJDgnAQInVzffYJjAq
+        zEIE8ywka2chrF3AyLyKUSy1oDg3PbXYqMAEOWI3MYITnZbHDsbZbz/oHWJk4mA8xCjBwawk
+        wpuQ8CpeiDclsbIqtSg/vqg0J7X4EKMp0MMTmaVEk/OBqTavJN7Q1MjMzMDS1MLUzMhCSZy3
+        yOBBvJBAemJJanZqakFqEUwfEwenVANTy5diBYnD/TEroiYlvvGU9l+ZcMF6yp7IL02FU1Tv
+        dUnO2X1gxVUOF3aJnHdROlO7Vbwsnz44HH9I7FzPSkPhjUc9z68U3N53I0aR9/NLZs2/rjyn
+        Nm7oFa3Yp1h44Q4b74OP/ZtjmtODHnIHbhOT92f+++Amp2Pqn67FZ2YuWn3sy5wPSnZznDxs
+        eCo7te0c95w7W3XH8d2ljefrO3L5/9XNazaLXLVxidPkDXJPFpSl3bDqfRwUfPWsp+bho9dU
+        nmpFzv3nl5Pgq1I7UTorbPq8EwEXXK90Wt+7IvFZQcqiM3P5n2tma0qEN8XsmdUyod5qUpy5
+        pOn6xh8Cojc2RvSWHD7d8DFiR4rSaTtXJZbijERDLeai4kQANYXnNP0DAAA=
 DLP-Filter: Pass
 X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201229054143epcms2p15ae3cce43bb3c503adf94528f354ba78
-References: <CAFnufp0zZL04L5UF_TY7+n91FjktG6Bb0J2j0f3eomXdnHGQ4A@mail.gmail.com>
-        <20201229054143epcms2p15ae3cce43bb3c503adf94528f354ba78@epcms2p1>
-        <CAFnufp39qXBtOfETsYz5LSoPZWik70uB=czmfpwiA8Hdwpi+dA@mail.gmail.com>
-        <20201230052139epcms2p5d4b8d41625ebd7ea677500d1c05153ef@epcms2p5>
-        <CGME20201229054143epcms2p15ae3cce43bb3c503adf94528f354ba78@epcms2p6>
+X-CMS-RootMailID: 20201231015213epcms2p5ef76aa6b26ab74e045a86f6a13b31d51
+References: <CGME20201231015213epcms2p5ef76aa6b26ab74e045a86f6a13b31d51@epcms2p5>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi,
+list_for_each + list_entry can be changed to list_for_each_entry
+It reduces number of variables and lines.
 
-In the trace files, the amount of discard is almost the same in both modes.
-(ordered: 1096MB / writeback: 1078MB) However, there is a big difference in
-the average discard size per request. (ordered: 15.6KB / writeback: 34.2MB)
-In ext4, when data is deleted, discard is immediately issued in writeback
-mode. Therefore, the average size of discard commands is small and the
-number of discard commands is large.
-However, if it is not in the writeback mode, discard commands are issued by
-JBD after merging them. Therefore, the average size of discard is large and
-the number of discard commands is small.
+Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+---
+ fs/ext4/fast_commit.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-In conclusion, since discard commands are not merged in the writeback mode,
-many fragmented discard commands occur, so it affects the elapsed time of
-many file deletion. And it is not abnormal behavior of ext4 file system.
+diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+index 5b6bb3ef0f33..dc58471971db 100644
+--- a/fs/ext4/fast_commit.c
++++ b/fs/ext4/fast_commit.c
+@@ -915,13 +915,11 @@ static int ext4_fc_submit_inode_data_all(journal_t *journal)
+ 	struct super_block *sb = (struct super_block *)(journal->j_private);
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
+ 	struct ext4_inode_info *ei;
+-	struct list_head *pos;
+ 	int ret = 0;
+ 
+ 	spin_lock(&sbi->s_fc_lock);
+ 	ext4_set_mount_flag(sb, EXT4_MF_FC_COMMITTING);
+-	list_for_each(pos, &sbi->s_fc_q[FC_Q_MAIN]) {
+-		ei = list_entry(pos, struct ext4_inode_info, i_fc_list);
++	list_for_each_entry(ei, &sbi->s_fc_q[FC_Q_MAIN], i_fc_list) {
+ 		ext4_set_inode_state(&ei->vfs_inode, EXT4_STATE_FC_COMMITTING);
+ 		while (atomic_read(&ei->i_fc_updates)) {
+ 			DEFINE_WAIT(wait);
+@@ -1099,8 +1097,7 @@ static int ext4_fc_perform_commit(journal_t *journal)
+ 		goto out;
+ 	}
+ 
+-	list_for_each(pos, &sbi->s_fc_q[FC_Q_MAIN]) {
+-		iter = list_entry(pos, struct ext4_inode_info, i_fc_list);
++	list_for_each_entry(iter, &sbi->s_fc_q[FC_Q_MAIN], i_fc_list) {
+ 		inode = &iter->vfs_inode;
+ 		if (!ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING))
+ 			continue;
+-- 
+2.25.1
 
-Thanks,
-Daejun
