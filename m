@@ -2,118 +2,146 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC4012EA584
-	for <lists+linux-ext4@lfdr.de>; Tue,  5 Jan 2021 07:40:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3978E2EA95B
+	for <lists+linux-ext4@lfdr.de>; Tue,  5 Jan 2021 12:03:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726500AbhAEGj4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 5 Jan 2021 01:39:56 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:44092 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725966AbhAEGjz (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 5 Jan 2021 01:39:55 -0500
-Received: by mail-io1-f72.google.com with SMTP id a1so13334014ioa.11
-        for <linux-ext4@vger.kernel.org>; Mon, 04 Jan 2021 22:39:40 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=07g5Su3wVkEtBIc4bVk48l6HEb0Q5sYjwp4ioRKi5hU=;
-        b=I42Ng973ns3P+501RfoNEiQaHXuLmRkrkVA1PENravAVInk4knajmYYr3hi8tBWuJS
-         pXFSLuB8kwoyg5/Ei6bt+3quWCGFSQhEWEkz7DsRlzSF6pWvBr9kv1Xh7jm0m6h0UxFX
-         eUea/9PL1O3laIq/IEhiphqpGdnWEcLmiHaTtXyH2F+AvI7di0ZOp5+CyGIZSGw84nE8
-         RDNpVX8kJRZBFZXgjC9eRwveCJAorqY9huVYBBbgZPwKlcdiDTNJLgiW1LNidVvuIjLF
-         4seBe7LHxxdMV628zbPN0DwlLmynQxuTR6t7OvD2MzstbzBF02XcN8i9dUA8OQoOuJgk
-         yAcA==
-X-Gm-Message-State: AOAM532NFKHkvpZk4BJ5/bNRV0Lk2Aadr42dRYjeBHEUOgmyxtlQUI48
-        RTsl9inX5aefU1HcxpgGzgHSGrDh/RFCZz43R+YplUhxJmyX
-X-Google-Smtp-Source: ABdhPJx6D4Y5MFZZgTa+u1b2RKy1Qkv6OSZnadFTIxD+EgipGtewdV8XpNS0QheuDtwOGODD8lKq/sWaHb64Z+MiK2fBR111gudL
+        id S1729403AbhAELCF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 5 Jan 2021 06:02:05 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:11240 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728175AbhAELCD (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 5 Jan 2021 06:02:03 -0500
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 105AVu1N038618;
+        Tue, 5 Jan 2021 06:01:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=p15zEV4D+9XYfzCqfaNsH+8wxq6VnaBwWqF0rU+ciI4=;
+ b=XbNtsGo8Kv4SQzajQLMR7i094c9kAgLbaCReqWihrI44V7OG/ubRO9wjyvmK8gN3fkek
+ SbU4IvwekjZg2g0sXhkegLRMdNfGtp/KedcyJNIrWjHnkuHXmaFlKk5DKdIws8gA0+dX
+ U6zfb60ZOBOJ/zJQ7lxkV3ffkNfjaFZGI+dBmaGMDnlS7MU8eQQyLAD+GGzHENPgp6FX
+ LTB8V5fw/JnpY2ybUKUeDC8DHBmkT00KVkEah5NolfV7/5P/tUHIzpiomH1cSULK8kO/
+ nTlvOHk3+2cCDerfaQGVxNqcBpvXXc6ZkRIAony8DoHeF/I0uyOfIONWV0HiG1S/RhG7 kQ== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35vp6s9324-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Jan 2021 06:01:16 -0500
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 105AwRLF003340;
+        Tue, 5 Jan 2021 11:00:31 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03ams.nl.ibm.com with ESMTP id 35tgf8assu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Jan 2021 11:00:31 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 105B0TvI48759162
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 5 Jan 2021 11:00:29 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0B5B7A4066;
+        Tue,  5 Jan 2021 11:00:29 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BE854A407A;
+        Tue,  5 Jan 2021 11:00:27 +0000 (GMT)
+Received: from [9.199.32.130] (unknown [9.199.32.130])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  5 Jan 2021 11:00:27 +0000 (GMT)
+Subject: Re: [PATCHv2 1/2] common/rc: Add whitelisted FS support in
+ _require_scratch_swapfile()
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Eryu Guan <guan@eryu.me>
+Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, anju@linux.vnet.ibm.com
+References: <f161a49e6e3476d83c35b8e6a111644110ec4c8c.1608094988.git.riteshh@linux.ibm.com>
+ <3bd1f738-93b7-038d-6db9-7bf6a330b1ea@linux.ibm.com>
+ <20201220153906.GC3853@desktop> <20210104182545.GF6908@magnolia>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Message-ID: <24b16894-0ab5-b769-d05e-e55fa334706e@linux.ibm.com>
+Date:   Tue, 5 Jan 2021 16:30:27 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-X-Received: by 2002:a92:c986:: with SMTP id y6mr51391451iln.57.1609828754796;
- Mon, 04 Jan 2021 22:39:14 -0800 (PST)
-Date:   Mon, 04 Jan 2021 22:39:14 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000014357e05b82177c8@google.com>
-Subject: kernel BUG at fs/ext4/ext4.h:LINE!
-From:   syzbot <syzbot+b2947dd3e8c72dbe609b@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210104182545.GF6908@magnolia>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-05_01:2021-01-05,2021-01-05 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 clxscore=1015
+ lowpriorityscore=0 impostorscore=0 phishscore=0 malwarescore=0
+ priorityscore=1501 adultscore=0 bulkscore=0 spamscore=0 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101050061
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    f6e1ea19 Merge tag 'ceph-for-5.11-rc2' of git://github.com..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1364b1a3500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2455d075a1c4afa8
-dashboard link: https://syzkaller.appspot.com/bug?extid=b2947dd3e8c72dbe609b
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b2947dd3e8c72dbe609b@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-kernel BUG at fs/ext4/ext4.h:3221!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 12285 Comm: syz-executor.5 Not tainted 5.11.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3221 [inline]
-RIP: 0010:ext4_get_group_info+0x340/0x3a0 fs/ext4/ext4.h:3216
-Code: ff 48 c7 c2 c0 03 5f 89 be 83 02 00 00 48 c7 c7 a0 ff 5e 89 c6 05 6c 40 d2 0a 01 e8 f9 59 aa 06 e9 e4 fd ff ff e8 20 9e 69 ff <0f> 0b e8 c9 31 ac ff e9 16 fd ff ff e8 bf 31 ac ff e9 50 fd ff ff
-RSP: 0018:ffffc90002ddfc58 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 00000000ffff75e0 RCX: 0000000000000000
-RDX: ffff88806a563780 RSI: ffffffff8208d670 RDI: 0000000000000003
-RBP: ffff888021ef0000 R08: 0000000000000010 R09: 0000000000000000
-R10: ffffffff8208d3a0 R11: 0000000000000000 R12: ffff888021eee000
-R13: 0000000000000010 R14: ffff888021eee678 R15: ffffc90002ddfd60
-FS:  0000000002296940(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005643b7305d18 CR3: 000000002b612000 CR4: 0000000000350ee0
-Call Trace:
- ext4_mb_load_buddy_gfp+0xc6/0x1350 fs/ext4/mballoc.c:1156
- ext4_discard_preallocations+0x8c6/0xea0 fs/ext4/mballoc.c:4400
- ext4_release_file+0x2f0/0x370 fs/ext4/file.c:150
- __fput+0x283/0x920 fs/file_table.c:280
- task_work_run+0xdd/0x190 kernel/task_work.c:140
- tracehook_notify_resume include/linux/tracehook.h:189 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:174 [inline]
- exit_to_user_mode_prepare+0x249/0x250 kernel/entry/common.c:201
- __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
- syscall_exit_to_user_mode+0x19/0x50 kernel/entry/common.c:302
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x417b71
-Code: 75 14 b8 03 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 a4 1a 00 00 c3 48 83 ec 08 e8 0a fc ff ff 48 89 04 24 b8 03 00 00 00 0f 05 <48> 8b 3c 24 48 89 c2 e8 53 fc ff ff 48 89 d0 48 83 c4 08 48 3d 01
-RSP: 002b:00007ffe30828230 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
-RAX: 0000000000000000 RBX: 0000000000000005 RCX: 0000000000417b71
-RDX: 0000000000000000 RSI: ffffffff88edf75e RDI: 0000000000000004
-RBP: 0000000000000001 R08: ffffffff8128f848 R09: 0000000006ccd617
-R10: 00007ffe30828310 R11: 0000000000000293 R12: 000000000119ca00
-R13: 000000000119ca00 R14: 00000000000003e8 R15: 000000000119c0dc
-Modules linked in:
----[ end trace 321f8951b9d369a1 ]---
-RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3221 [inline]
-RIP: 0010:ext4_get_group_info+0x340/0x3a0 fs/ext4/ext4.h:3216
-Code: ff 48 c7 c2 c0 03 5f 89 be 83 02 00 00 48 c7 c7 a0 ff 5e 89 c6 05 6c 40 d2 0a 01 e8 f9 59 aa 06 e9 e4 fd ff ff e8 20 9e 69 ff <0f> 0b e8 c9 31 ac ff e9 16 fd ff ff e8 bf 31 ac ff e9 50 fd ff ff
-RSP: 0018:ffffc90002ddfc58 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 00000000ffff75e0 RCX: 0000000000000000
-RDX: ffff88806a563780 RSI: ffffffff8208d670 RDI: 0000000000000003
-RBP: ffff888021ef0000 R08: 0000000000000010 R09: 0000000000000000
-R10: ffffffff8208d3a0 R11: 0000000000000000 R12: ffff888021eee000
-R13: 0000000000000010 R14: ffff888021eee678 R15: ffffc90002ddfd60
-FS:  0000000002296940(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+On 1/4/21 11:55 PM, Darrick J. Wong wrote:
+> On Sun, Dec 20, 2020 at 11:39:06PM +0800, Eryu Guan wrote:
+>> On Wed, Dec 16, 2020 at 10:53:45AM +0530, Ritesh Harjani wrote:
+>>>
+>>>
+>>> On 12/16/20 10:47 AM, Ritesh Harjani wrote:
+>>>> Filesystems e.g. ext4 and XFS supports swapon by default and an error
+>>>> returned with swapon should be treated as a failure. Hence
+>>>> add ext4/xfs as whitelisted fstype in _require_scratch_swapfile()
+>>>>
+>>>> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+>>>> ---
+>>>> v1->v2: Addressed comments from Eryu @[1]
+>>>> [1]: https://patchwork.kernel.org/project/fstests/cover/cover.1604000570.git.riteshh@linux.ibm.com/
+>>>>
+>>>>    common/rc | 20 ++++++++++++++++----
+>>>>    1 file changed, 16 insertions(+), 4 deletions(-)
+>>>>
+>>>> diff --git a/common/rc b/common/rc
+>>>> index 33b5b598a198..635b77a005c6 100644
+>>>> --- a/common/rc
+>>>> +++ b/common/rc
+>>>> @@ -2380,6 +2380,7 @@ _format_swapfile() {
+>>>>    # Check that the filesystem supports swapfiles
+>>>>    _require_scratch_swapfile()
+>>>>    {
+>>>> +	local fstyp=$FSTYP
+>>>>    	_require_scratch
+>>>>    	_require_command "$MKSWAP_PROG" "mkswap"
+>>>>
+>>>> @@ -2401,10 +2402,21 @@ _require_scratch_swapfile()
+>>>>    	# Minimum size for mkswap is 10 pages
+>>>>    	_format_swapfile "$SCRATCH_MNT/swap" $(($(get_page_size) * 10))
+>>>>
+>>>> -	if ! swapon "$SCRATCH_MNT/swap" >/dev/null 2>&1; then
+>>>> -		_scratch_unmount
+>>>> -		_notrun "swapfiles are not supported"
+>>>> -	fi
+>>>> +	# For whitelisted fstyp swapon should not fail.
+> 
+> I would use a different phase than 'whitelisted', since that doesn't
+> tell us why ext4 and xfs are special:
+> 
+> # ext* and xfs have supported all variants of swap files since their
+> # introduction, so swapon should not fail.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Sounds ok to me.
+
+
+> 
+>>>> +	case "$fstyp" in
+> 
+> $FSTYP, not $fstyp
+
+sure I will use $FSTYP directly and remove local fstyp variable.
+
+> 
+>>>> +	ext4|xfs)
+> 
+> I would also add a few more FSTYPs here, since at least ext2 and ext3
+> supported swap files.  Are there other old fses that do?
+
+Sure, agreed. I will add ext2 & ext3 too.
+
+-ritesh
