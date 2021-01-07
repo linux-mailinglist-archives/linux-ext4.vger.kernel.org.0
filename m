@@ -2,94 +2,257 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C60F2ED0ED
-	for <lists+linux-ext4@lfdr.de>; Thu,  7 Jan 2021 14:39:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF47C2ED14E
+	for <lists+linux-ext4@lfdr.de>; Thu,  7 Jan 2021 15:03:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728589AbhAGNib (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 7 Jan 2021 08:38:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728026AbhAGNib (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 7 Jan 2021 08:38:31 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13945C0612F4;
-        Thu,  7 Jan 2021 05:37:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=3VXG1gjVht0cxl9ViTm3PDVS6dPgMzDNMoqL8tdmikk=; b=k64FnmbV4KB12EIuVh77t+bl1
-        J1Rcz2wbaBMBbYJXF+n3xQC676/dz0YE1rB2ymmNi3E8YvzTOKw8W2t4D36ZM6/YCUs5mYzo3pfAX
-        +5nN1SsuRbhqSKjuVPS0aWTGGkbyivSp+erTSrUTXjoQvIuoxjTHotYq/CGFhCknE+jtWDjOpRiFf
-        n0ksS53oJEuP5Odzn9Xar9/F/ODZBNLYdLGF6Oa5vL7eTFUMT25mPLTj35TOA60D42t5xfP+R+tW/
-        KuxQV0bBi1ixf4erXhXp8DdBtbiVVhOXf9iQz7AMFwbhvCUqMkFNXmwknRgx7FvUPVpzrER+ITOsR
-        hl9NLNZxA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45222)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1kxVU4-0002sQ-BI; Thu, 07 Jan 2021 13:37:48 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1kxVU3-0001DA-Bm; Thu, 07 Jan 2021 13:37:47 +0000
-Date:   Thu, 7 Jan 2021 13:37:47 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Will Deacon <will@kernel.org>, linux-toolchains@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: Aarch64 EXT4FS inode checksum failures - seems to be weak memory
- ordering issues
-Message-ID: <20210107133747.GP1551@shell.armlinux.org.uk>
-References: <20210105154726.GD1551@shell.armlinux.org.uk>
- <20210106115359.GB26994@C02TD0UTHF1T.local>
- <20210106135253.GJ1551@shell.armlinux.org.uk>
- <20210106172033.GA2165@willie-the-truck>
- <20210106223223.GM1551@shell.armlinux.org.uk>
- <20210107111841.GN1551@shell.armlinux.org.uk>
- <20210107124506.GO1551@shell.armlinux.org.uk>
- <CAK8P3a2TXPfFpgy+XjpDzOqt1qpDxufwiD-BLNbn4W_jpGp98g@mail.gmail.com>
+        id S1728545AbhAGODL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 7 Jan 2021 09:03:11 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60344 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728517AbhAGODK (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 7 Jan 2021 09:03:10 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D800BACAF;
+        Thu,  7 Jan 2021 14:02:28 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 974151E0872; Thu,  7 Jan 2021 15:02:28 +0100 (CET)
+Date:   Thu, 7 Jan 2021 15:02:28 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 11/13] fs: add a lazytime_expired method
+Message-ID: <20210107140228.GF12990@quack2.suse.cz>
+References: <20210105005452.92521-1-ebiggers@kernel.org>
+ <20210105005452.92521-12-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK8P3a2TXPfFpgy+XjpDzOqt1qpDxufwiD-BLNbn4W_jpGp98g@mail.gmail.com>
+In-Reply-To: <20210105005452.92521-12-ebiggers@kernel.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 02:16:25PM +0100, Arnd Bergmann wrote:
-> On Thu, Jan 7, 2021 at 1:47 PM Russell King - ARM Linux admin
-> <linux@armlinux.org.uk> wrote:
+On Mon 04-01-21 16:54:50, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> > Arnd has found via bisecting gcc:
-> >
-> > 7e8c2bd54af ("[AArch64] fix unsafe access to deallocated stack")
-> >
-> > which seems to be https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63293
-> >
-> > That seems to suggest that gcc-5.0.0 is also affected.
-> >
-> > Looking at the changelog in Debian's gcc-8.3 packages, this doesn't
-> > feature, so it's not easy just to look at the changelogs to work out
-> > which versions are affected.
+> Add a lazytime_expired method to 'struct super_operations'.  Filesystems
+> can implement this to be notified when an inode's lazytime timestamps
+> have expired and need to be written to disk.
 > 
-> I checked the history to confirm that all gcc-5 releases (5.0.x is pre-release)
-> and later have the fix.
+> This avoids any potential ambiguity with
+> ->dirty_inode(inode, I_DIRTY_SYNC), which can also mean a generic
+> dirtying of the inode, not just a lazytime timestamp expiration.
+> In particular, this will be useful for XFS.
 > 
-> The gcc bugzilla mentions backports into gcc-linaro, but I do not see
-> them in my git history.
+> If not implemented, then ->dirty_inode(inode, I_DIRTY_SYNC) continues to
+> be called.
+> 
+> Note that there are three cases where we have to make sure to call
+> lazytime_expired():
+> 
+> - __writeback_single_inode(): inode is being written now
+> - vfs_fsync_range(): inode is going to be synced
+> - iput(): inode is going to be evicted
+> 
+> In the latter two cases, the inode still needs to be put on the
+> writeback list.  So, we can't just replace the calls to
+> mark_inode_dirty_sync() with lazytime_expired().  Instead, add a new
+> flag I_DIRTY_TIME_EXPIRED which can be passed to __mark_inode_dirty().
+> It's like I_DIRTY_SYNC, except it causes the filesystem to be notified
+> of a lazytime expiration rather than a generic I_DIRTY_SYNC.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-So, do we raise the minimum gcc version for the kernel as a whole to 5.1
-or just for aarch64?
+Hum, seeing this patch I kind of wonder: Why don't we dirty the inode after
+expiring the lazytime timestamps with I_DIRTY_SYNC | I_DIRTY_TIME_EXPIRED
+and propagate I_DIRTY_TIME_EXPIRED even to ->dirty_inode() where XFS can
+catch it and act? Functionally it would be the same but we'd save a bunch
+of generic code and ->lazytime_expired helper used just by a single
+filesystem...
 
+								Honza
+
+> ---
+>  Documentation/filesystems/locking.rst |  2 ++
+>  Documentation/filesystems/vfs.rst     | 10 ++++++++++
+>  fs/fs-writeback.c                     | 27 ++++++++++++++++++++++-----
+>  fs/inode.c                            |  2 +-
+>  fs/sync.c                             |  2 +-
+>  include/linux/fs.h                    |  7 ++++++-
+>  6 files changed, 42 insertions(+), 8 deletions(-)
+> 
+> diff --git a/Documentation/filesystems/locking.rst b/Documentation/filesystems/locking.rst
+> index c0f2c7586531b..53088e2a93b69 100644
+> --- a/Documentation/filesystems/locking.rst
+> +++ b/Documentation/filesystems/locking.rst
+> @@ -150,6 +150,7 @@ prototypes::
+>  	void (*free_inode)(struct inode *);
+>  	void (*destroy_inode)(struct inode *);
+>  	void (*dirty_inode) (struct inode *, int flags);
+> +	void (*lazytime_expired) (struct inode *);
+>  	int (*write_inode) (struct inode *, struct writeback_control *wbc);
+>  	int (*drop_inode) (struct inode *);
+>  	void (*evict_inode) (struct inode *);
+> @@ -175,6 +176,7 @@ alloc_inode:
+>  free_inode:				called from RCU callback
+>  destroy_inode:
+>  dirty_inode:
+> +lazytime_expired:
+>  write_inode:
+>  drop_inode:				!!!inode->i_lock!!!
+>  evict_inode:
+> diff --git a/Documentation/filesystems/vfs.rst b/Documentation/filesystems/vfs.rst
+> index 287b80948a40b..02531b1421d01 100644
+> --- a/Documentation/filesystems/vfs.rst
+> +++ b/Documentation/filesystems/vfs.rst
+> @@ -231,6 +231,7 @@ filesystem.  As of kernel 2.6.22, the following members are defined:
+>  		void (*destroy_inode)(struct inode *);
+>  
+>  		void (*dirty_inode) (struct inode *, int flags);
+> +		void (*lazytime_expired) (struct inode *);
+>  		int (*write_inode) (struct inode *, int);
+>  		void (*drop_inode) (struct inode *);
+>  		void (*delete_inode) (struct inode *);
+> @@ -275,6 +276,15 @@ or bottom half).
+>  	not its data.  If the update needs to be persisted by fdatasync(),
+>  	then I_DIRTY_DATASYNC will be set in the flags argument.
+>  
+> +``lazytime_expired``
+> +	when the lazytime mount option is enabled, this method is
+> +	called when an inode's in-memory updated timestamps have
+> +	expired and thus need to be written to disk.  This happens
+> +	when the timestamps have been in memory for too long, when the
+> +	inode is going to be evicted, or when userspace triggers a
+> +	sync.  If this method is not implemented, then
+> +	->dirty_inode(inode, I_DIRTY_SYNC) is called instead.
+> +
+>  ``write_inode``
+>  	this method is called when the VFS needs to write an inode to
+>  	disc.  The second parameter indicates whether the write should
+> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+> index ed76112bd067b..f187fc3f854e4 100644
+> --- a/fs/fs-writeback.c
+> +++ b/fs/fs-writeback.c
+> @@ -1441,6 +1441,14 @@ static void requeue_inode(struct inode *inode, struct bdi_writeback *wb,
+>  	}
+>  }
+>  
+> +static void lazytime_expired(struct inode *inode)
+> +{
+> +	if (inode->i_sb->s_op->lazytime_expired)
+> +		inode->i_sb->s_op->lazytime_expired(inode);
+> +	else if (inode->i_sb->s_op->dirty_inode)
+> +		inode->i_sb->s_op->dirty_inode(inode, I_DIRTY_SYNC);
+> +}
+> +
+>  /*
+>   * Write out an inode and its dirty pages. Do not update the writeback list
+>   * linkage. That is left to the caller. The caller is also responsible for
+> @@ -1520,8 +1528,8 @@ __writeback_single_inode(struct inode *inode, struct writeback_control *wbc)
+>  		 * isn't enough.  Don't call mark_inode_dirty_sync(), as that
+>  		 * would put the inode back on the dirty list.
+>  		 */
+> -		if ((dirty & I_DIRTY_TIME) && inode->i_sb->s_op->dirty_inode)
+> -			inode->i_sb->s_op->dirty_inode(inode, I_DIRTY_SYNC);
+> +		if (dirty & I_DIRTY_TIME)
+> +			lazytime_expired(inode);
+>  
+>  		err = write_inode(inode, wbc);
+>  		if (ret == 0)
+> @@ -2231,8 +2239,9 @@ static noinline void block_dump___mark_inode_dirty(struct inode *inode)
+>   *
+>   * @inode: inode to mark
+>   * @flags: what kind of dirty, e.g. I_DIRTY_SYNC.  This can be a combination of
+> - *	   multiple I_DIRTY_* flags, except that I_DIRTY_TIME can't be combined
+> - *	   with I_DIRTY_PAGES.
+> + *	   multiple I_DIRTY_* flags, except that:
+> + *	   - I_DIRTY_TIME can't be combined with I_DIRTY_PAGES
+> + *	   - I_DIRTY_TIME_EXPIRED must be used by itself
+>   *
+>   * Mark an inode as dirty.  We notify the filesystem, then update the inode's
+>   * dirty flags.  Then, if needed we add the inode to the appropriate dirty list.
+> @@ -2260,7 +2269,15 @@ void __mark_inode_dirty(struct inode *inode, int flags)
+>  
+>  	trace_writeback_mark_inode_dirty(inode, flags);
+>  
+> -	if (flags & I_DIRTY_INODE) {
+> +	if (flags & I_DIRTY_TIME_EXPIRED) {
+> +		/*
+> +		 * Notify the filesystem about a lazytime timestamp expiration.
+> +		 * Afterwards, this case just turns into I_DIRTY_SYNC.
+> +		 */
+> +		WARN_ON_ONCE(flags & ~I_DIRTY_TIME_EXPIRED);
+> +		lazytime_expired(inode);
+> +		flags = I_DIRTY_SYNC;
+> +	} else if (flags & I_DIRTY_INODE) {
+>  		/*
+>  		 * Notify the filesystem about the inode being dirtied, so that
+>  		 * (if needed) it can update on-disk fields and journal the
+> diff --git a/fs/inode.c b/fs/inode.c
+> index d0fa43d8e9d5c..039b201a4743a 100644
+> --- a/fs/inode.c
+> +++ b/fs/inode.c
+> @@ -1673,7 +1673,7 @@ void iput(struct inode *inode)
+>  			atomic_inc(&inode->i_count);
+>  			spin_unlock(&inode->i_lock);
+>  			trace_writeback_lazytime_iput(inode);
+> -			mark_inode_dirty_sync(inode);
+> +			__mark_inode_dirty(inode, I_DIRTY_TIME_EXPIRED);
+>  			goto retry;
+>  		}
+>  		iput_final(inode);
+> diff --git a/fs/sync.c b/fs/sync.c
+> index 1373a610dc784..363071a3528e3 100644
+> --- a/fs/sync.c
+> +++ b/fs/sync.c
+> @@ -196,7 +196,7 @@ int vfs_fsync_range(struct file *file, loff_t start, loff_t end, int datasync)
+>  	if (!file->f_op->fsync)
+>  		return -EINVAL;
+>  	if (!datasync && (inode->i_state & I_DIRTY_TIME))
+> -		mark_inode_dirty_sync(inode);
+> +		__mark_inode_dirty(inode, I_DIRTY_TIME_EXPIRED);
+>  	return file->f_op->fsync(file, start, end, datasync);
+>  }
+>  EXPORT_SYMBOL(vfs_fsync_range);
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index 45a0303b2aeb6..8c5f5c5e62be4 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -1935,7 +1935,8 @@ struct super_operations {
+>  	void (*destroy_inode)(struct inode *);
+>  	void (*free_inode)(struct inode *);
+>  
+> -   	void (*dirty_inode) (struct inode *, int flags);
+> +	void (*dirty_inode) (struct inode *, int flags);
+> +	void (*lazytime_expired)(struct inode *);
+>  	int (*write_inode) (struct inode *, struct writeback_control *wbc);
+>  	int (*drop_inode) (struct inode *);
+>  	void (*evict_inode) (struct inode *);
+> @@ -2108,6 +2109,9 @@ static inline void kiocb_clone(struct kiocb *kiocb, struct kiocb *kiocb_src,
+>   *			(I_DIRTY_SYNC and/or I_DIRTY_DATASYNC) gets set.  I.e.
+>   *			either I_DIRTY_TIME *or* I_DIRTY_INODE can be set in
+>   *			i_state, but not both.  I_DIRTY_PAGES may still be set.
+> + * I_DIRTY_TIME_EXPIRED Passed to __mark_inode_dirty() to indicate the intent to
+> + *			expire the inode's timestamps.  Not stored in i_state.
+> + *
+>   * I_NEW		Serves as both a mutex and completion notification.
+>   *			New inodes set I_NEW.  If two processes both create
+>   *			the same inode, one of them will release its inode and
+> @@ -2173,6 +2177,7 @@ static inline void kiocb_clone(struct kiocb *kiocb, struct kiocb *kiocb_src,
+>  #define I_DIO_WAKEUP		(1 << __I_DIO_WAKEUP)
+>  #define I_LINKABLE		(1 << 10)
+>  #define I_DIRTY_TIME		(1 << 11)
+> +#define I_DIRTY_TIME_EXPIRED	(1 << 12)
+>  #define I_WB_SWITCH		(1 << 13)
+>  #define I_OVL_INUSE		(1 << 14)
+>  #define I_CREATING		(1 << 15)
+> -- 
+> 2.30.0
+> 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
