@@ -2,42 +2,33 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A99732EE830
-	for <lists+linux-ext4@lfdr.de>; Thu,  7 Jan 2021 23:15:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8390C2EE8A6
+	for <lists+linux-ext4@lfdr.de>; Thu,  7 Jan 2021 23:28:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728053AbhAGWPk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 7 Jan 2021 17:15:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726646AbhAGWPk (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 7 Jan 2021 17:15:40 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33291C0612F4;
-        Thu,  7 Jan 2021 14:15:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=hp/hzbK32x3dtwPGRRysL2rjHsQS0TM3qH9C23QvpIA=; b=j7hHcXeFfYP57LBpWFdXW7V+U
-        +Z6qUX2TtBeaa6rYBqBgNCiVvJT4ilYColt4Yvs0NBPxitPL4ichfEXLoev4YFuUPvGgowKub2LDd
-        AAe9iJDQpPwA9J4yx/uwzlLuBEP5TSDhawMa2Zes3IguK0D+su1mc6Q+31oJCXPCTeCZ8fQOQeVHw
-        1XfnbhMZ8VT+apBUPs/9Wg1nlVOdzrqwdYyMWxw7L/0r7tWp3puyrb2PFeDZOLFEXbHQ8itkvAZ9i
-        TSShIJO/Ke1uITaWdzD/ytM/4PaG/zGLJdt5pAIV2oHT0lUed972s4YgQG2P8V+vgWeV3IV3k50+u
-        tMHKXRq0w==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45240)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1kxdYR-0003GN-2H; Thu, 07 Jan 2021 22:14:51 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1kxdYM-0001W8-SH; Thu, 07 Jan 2021 22:14:46 +0000
-Date:   Thu, 7 Jan 2021 22:14:46 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+        id S1728739AbhAGW2e (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 7 Jan 2021 17:28:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42140 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728762AbhAGW2d (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 7 Jan 2021 17:28:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF989233A0;
+        Thu,  7 Jan 2021 22:27:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610058473;
+        bh=1PbX9hu0NL7rmJtULi9rAa4tgyH75fs0nUv2OGbIUHw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FoIP2zgOJueDtSXbOah/fQoWqVsSbNzBTZDwPTw26V9mwRZb7c+QYRqPx+4CODHmH
+         cOvPHjtPm6NPEjhZeaNq/WL1xTjOkDHOzsZmY3V90aGEmw2UID5ekd/TcsY0xQhCqI
+         fgjQQK7zvUm0vk95l+gY1Go5avKOAKPzVXqoSJoUNdz18noxVHPAl4SYCXkbB+0jAQ
+         bSjQahiAzBdeOJKV75hu3aRv284wUzUekHUIASdCImUaZYOjuBYKV11kxlIPdoizuJ
+         TZdIVnH0j1SU3fo2G+yDeCDbOr+6QXfzsJOJLhbGV9lDDIbcxWnJ+1DAfl7QBTYbL6
+         sTYt433/xpo/Q==
+Date:   Thu, 7 Jan 2021 14:27:51 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
 To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Theodore Ts'o <tytso@mit.edu>, Will Deacon <will@kernel.org>,
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Will Deacon <will@kernel.org>,
         linux-toolchains@vger.kernel.org,
         Mark Rutland <mark.rutland@arm.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
@@ -46,7 +37,7 @@ Cc:     Theodore Ts'o <tytso@mit.edu>, Will Deacon <will@kernel.org>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>
 Subject: Re: Aarch64 EXT4FS inode checksum failures - seems to be weak memory
  ordering issues
-Message-ID: <20210107221446.GS1551@shell.armlinux.org.uk>
+Message-ID: <X/eK5xIMK5yZ2/tl@gmail.com>
 References: <20210106115359.GB26994@C02TD0UTHF1T.local>
  <20210106135253.GJ1551@shell.armlinux.org.uk>
  <20210106172033.GA2165@willie-the-truck>
@@ -61,8 +52,6 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <CAK8P3a2svyz1KXSqSUMVeDqdag4f1VcERH9jpECSLsn-FWvZbw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
@@ -85,39 +74,19 @@ On Thu, Jan 07, 2021 at 10:48:05PM +0100, Arnd Bergmann wrote:
 > instead of going through the crypto layer? It seems that with Ard's
 > rework from 2018, that can just call the underlying architecture specific
 > implementation anyway.
+> 
 
-Yes, I've been wondering about that too. To me, it looks like the
-ext4 code performs a layering violation by going "under the covers"
-- there are accessor functions to set the CRC and retrieve it. ext4
-instead just makes the assumption that the CRC value is stored after
-struct shash_desc. Especially as the crypto/crc32c code references
-the value using:
+It looks like that would work, although note that crc32c_le() uses the shash API
+too, so it isn't any more "direct" than what ext4 does now.
 
-	struct chksum_desc_ctx *ctx = shash_desc_ctx(desc);
+Also, a potential issue is that the implementation of crc32c that crc32c_le()
+uses might be chosen too early if the architecture-specific implementation of
+crc32c is compiled as a module (e.g. crc32c-intel.ko).  There are two ways this
+could be fixed -- either by making it a proper library API like blake2s() that
+can call the architecture-specific code directly, or by reconfiguring things
+when a new crypto module is loaded (like what lib/crc-t10dif.c does).
 
-Not even crypto drivers are allowed to assume that desc+1 is where
-the CRC is stored.
+Until one of those is done, switching to crc32c_le() might cause performance
+regressions.
 
-However, struct shash_desc is already 128 bytes in size on aarch64,
-and the proper way of doing it via SHASH_DESC_ON_STACK() is overkill,
-being strangely 2 * sizeof(struct shash_desc) + 360 (which looks like
-another bug to me!)
-
-#define HASH_MAX_DESCSIZE       (sizeof(struct shash_desc) + 360)
-                                 ^^^^^^^^^^^^^^^^^^^^^^^^^
-#define SHASH_DESC_ON_STACK(shash, ctx)                           \
-        char __##shash##_desc[sizeof(struct shash_desc) +         \
-                              ^^^^^^^^^^^^^^^^^^^^^^^^^
-                HASH_MAX_DESCSIZE] CRYPTO_MINALIGN_ATTR; \
-        struct shash_desc *shash = (struct shash_desc *)__##shash##_desc
-
-So, I agree with you wrt crc32c_le(), especially as it would be more
-efficient, and as the use of crc32c is already hard coded in the ext4
-code - not only with crypto_alloc_shash("crc32c", 0, 0) but also with
-the fixed-size structure in ext4_chksum().
-
-However, it's ultimately up to the ext4 maintainers to decide.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+- Eric
