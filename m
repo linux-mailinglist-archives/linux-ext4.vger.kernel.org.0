@@ -2,108 +2,131 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2B6E2EEB5E
-	for <lists+linux-ext4@lfdr.de>; Fri,  8 Jan 2021 03:39:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EBF12EEE4F
+	for <lists+linux-ext4@lfdr.de>; Fri,  8 Jan 2021 09:06:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727009AbhAHChy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 7 Jan 2021 21:37:54 -0500
-Received: from mailout4.samsung.com ([203.254.224.34]:42117 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726281AbhAHChy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 7 Jan 2021 21:37:54 -0500
-Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210108023710epoutp047f356ad9f99189d0d86a996fc38dd37c~YIUFE6U5q1952119521epoutp040
-        for <linux-ext4@vger.kernel.org>; Fri,  8 Jan 2021 02:37:10 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210108023710epoutp047f356ad9f99189d0d86a996fc38dd37c~YIUFE6U5q1952119521epoutp040
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1610073431;
-        bh=l/KUfAhsFOgyUhrY21rqugRrtZWnNJOwIdHlX0ISaxg=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=hmDc5pLScQNB9PGbuNSRfHVF2AaYtmKk2bY3GS9V1e1kJHfKmmAaqNnjTvp+jUpE0
-         jbW1RpFZ+rfxeU3qy0UmYJ0dMPen+2lJh2ggU55TPLH18CNz2X4NRniAh8ufulVE+e
-         eiLRKD3ePDK0jMOP9UCL0A8PRfXja1kfFtMkccEE=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
-        20210108023710epcas2p4772412909ded44ae0b9d337e7e2896ed~YIUEq_vbe3132031320epcas2p4C;
-        Fri,  8 Jan 2021 02:37:10 +0000 (GMT)
-Received: from epsmges2p2.samsung.com (unknown [182.195.40.182]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4DBnLY1SBjz4x9Pt; Fri,  8 Jan
-        2021 02:37:09 +0000 (GMT)
-X-AuditID: b6c32a46-1efff7000000dbf8-1d-5ff7c553d592
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        95.06.56312.355C7FF5; Fri,  8 Jan 2021 11:37:07 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE: Re: [PATCH] ext4: Remove expensive flush on fast commit
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Andreas Dilger <adilger@dilger.ca>,
-        Daejun Park <daejun7.park@samsung.com>,
-        harshad shirwadkar <harshadshirwadkar@gmail.com>
-CC:     "tytso@mit.edu" <tytso@mit.edu>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <8A3C241B-9536-447B-B22D-F922D64731C7@dilger.ca>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210108023707epcms2p32beb982610c9460e5fb08f927c52ad1d@epcms2p3>
-Date:   Fri, 08 Jan 2021 11:37:07 +0900
-X-CMS-MailID: 20210108023707epcms2p32beb982610c9460e5fb08f927c52ad1d
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpgk+LIzCtJLcpLzFFi42LZdljTQjf46Pd4g2M3bCyWnXzEZLHqQbjF
-        ysYWJouZ8+6wWVzeNYfNorXnJ7sDm0fL5nKPnbPusns0nTnK7NG3ZRWjx+dNcgGsUTk2GamJ
-        KalFCql5yfkpmXnptkrewfHO8aZmBoa6hpYW5koKeYm5qbZKLj4Bum6ZOUD7lRTKEnNKgUIB
-        icXFSvp2NkX5pSWpChn5xSW2SqkFKTkFhoYFesWJucWleel6yfm5VoYGBkamQJUJORmvdqxk
-        LNjCVrFv6lX2BsbJrF2MnBwSAiYSlyZfAbK5OIQEdjBKzLh3ia2LkYODV0BQ4u8OYZAaYQEX
-        ifULGlhAbCEBJYn1F2exQ8T1JG49XMMIYrMJ6EhMP3EfLC4i0MQo8XNLJshMZoGFjBJdlyaw
-        QyzjlZjR/pQFwpaW2L58K1gzp4CtxPcNnUwQcQ2JH8t6mSFsUYmbq9+yw9jvj81nhLBFJFrv
-        nYWqEZR48HM3VFxS4tjuD1Bz6iW23vnFCHKEhEAPo8ThnbegPtaXuNaxEewIXgFfiSu35oDF
-        WQRUJfb+vQo11EVi+pQ1YHFmAXmJ7W/nMIMChVlAU2L9Ln0QU0JAWeLILRaICj6JjsN/4V7c
-        Me8J1AlqEut+rmeCKJeRuDUP6koPib7N+9knMCrOQgT0LCSrZiGsWsDIvIpRLLWgODc9tdio
-        wAg5bjcxgpOiltsOxilvP+gdYmTiYDzEKMHBrCTCa3HsS7wQb0piZVVqUX58UWlOavEhRlOg
-        JycyS4km5wPTcl5JvKGpkZmZgaWphamZkYWSOG+xwYN4IYH0xJLU7NTUgtQimD4mDk6pBqa6
-        qQFbVT9GMq9qZeGby7z79/dJesITtBJqOQR//zzVYZC12/6N1mL3gqJpH659+959TntjZbDV
-        Hmued9Z2SwsZzv0sj5soZxT2ckHMUe8lRhbbWb2ebruQPH33jfjIK9ur/ZIuHjOzZudxdz90
-        /PeEafcs9DYpMny7sUBVqM6ivr31k8HPqBamrgMBr6aEX5mxOlX6rFDUlldMc96+vdzS0fn1
-        6hslt28TZ3FV8dqcuLetee3jcxdnTmvTSxEXeZvml/lzFqvc8W4tgYSmXuEH7zm+805mKp+3
-        vDGpUJZHSeL3r/kHfwbWb99fkOYb8nvVigjZtn0W6QXHn2zpL/npHR9j/2raBIP9iQJCuRxK
-        LMUZiYZazEXFiQAkF7jnEwQAAA==
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210106013242epcms2p5b6b4ed8ca86f29456fdf56aa580e74b4
-References: <8A3C241B-9536-447B-B22D-F922D64731C7@dilger.ca>
-        <20210106013242epcms2p5b6b4ed8ca86f29456fdf56aa580e74b4@epcms2p5>
-        <CAD+ocbyp+SOzpDDYsJVpd+t+UcjanZRtR85dHLgykLdURhV5wA@mail.gmail.com>
-        <CGME20210106013242epcms2p5b6b4ed8ca86f29456fdf56aa580e74b4@epcms2p3>
+        id S1727179AbhAHIGD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 8 Jan 2021 03:06:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56370 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727146AbhAHIGD (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 8 Jan 2021 03:06:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 30460235DD;
+        Fri,  8 Jan 2021 08:05:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610093122;
+        bh=P36UVH/CUAeBjA9gTkQLitbCYT2ZLHNDXD3BeV+yI4M=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=gWHFzvWuWmNCfsnKnc6T/S6G34vE8qYUtFjmNeYnp1jnjo16fvudG1HnfBsuJrBF7
+         TCufIA+BDIkfbQ7bSY98pSWj14WI0105nFocr481oUEL9xxTbt3IVBJ9vJt4VxyjAD
+         ZbARfVu12hohbp8SMpptiP40ocGFQDC0n8fWyVMU5OMyHl9zAL9W/507x4jiS+cnlW
+         2QUu29wllnx41Gr2U9VqdKlMx/DFIbNATkj1iQqDah2+e2fWwwTMCYEfFOyOZLftFh
+         9bXDqANZOOSL5Sa1BlwWbKS72/YL57og4UQzheOIOL/UixzTQ9CuVE1RPwPWHGPheA
+         z+/NkVSShIZWA==
+Received: by mail-ot1-f44.google.com with SMTP id d20so8966994otl.3;
+        Fri, 08 Jan 2021 00:05:22 -0800 (PST)
+X-Gm-Message-State: AOAM5325aqReyvJ/yHcGbQ4mzTFBZ2zuTdeaI8rL2VSKiQirmS60Nn/p
+        JeN7PcmYSF9PVF8a0I3zCeHkQmss/a/0zgW5kLU=
+X-Google-Smtp-Source: ABdhPJzh+E/E3Pp5RtGMDM3xjtbLFnjN1MKG3E6aJ9LKXBT5t6PzGI2THP92k76xgd+IFvH4Sw9CgjVX9Vr7Wrp4baQ=
+X-Received: by 2002:a05:6830:1e14:: with SMTP id s20mr1797775otr.210.1610093121351;
+ Fri, 08 Jan 2021 00:05:21 -0800 (PST)
+MIME-Version: 1.0
+References: <20210106135253.GJ1551@shell.armlinux.org.uk> <20210106172033.GA2165@willie-the-truck>
+ <20210106223223.GM1551@shell.armlinux.org.uk> <20210107111841.GN1551@shell.armlinux.org.uk>
+ <20210107124506.GO1551@shell.armlinux.org.uk> <CAK8P3a2TXPfFpgy+XjpDzOqt1qpDxufwiD-BLNbn4W_jpGp98g@mail.gmail.com>
+ <20210107133747.GP1551@shell.armlinux.org.uk> <X/c2aqSvYCaB9sR6@mit.edu>
+ <CAK8P3a2svyz1KXSqSUMVeDqdag4f1VcERH9jpECSLsn-FWvZbw@mail.gmail.com>
+ <X/eK5xIMK5yZ2/tl@gmail.com> <20210107235328.GI6908@magnolia>
+In-Reply-To: <20210107235328.GI6908@magnolia>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 8 Jan 2021 09:05:05 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a24jhd13FrQsvt9kryRwn6p4bVxCn3LtGBUhO8a-q75iQ@mail.gmail.com>
+Message-ID: <CAK8P3a24jhd13FrQsvt9kryRwn6p4bVxCn3LtGBUhO8a-q75iQ@mail.gmail.com>
+Subject: Re: Aarch64 EXT4FS inode checksum failures - seems to be weak memory
+ ordering issues
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Will Deacon <will@kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-> > In the fast commit, it adds REQ_FUA and REQ_PREFLUSH on each fast commit
-> > block when barrier is enabled. However, in recovery phase, ext4 compares
-> > CRC value in the tail. So it is sufficient adds REQ_FUA and REQ_PREFLUSH
-> > on the block that has tail.
-> 
-> Does the tail block *always* contain a CRC, or is that dependent on
-> EXT4_FEATURE_RO_COMPAT_METADATA_CSUM, JBD2_FEATURE_INCOMPAT_CSUM_V2,
-> or JBD2_FEATURE_INCOMPAT_CSUM_V3 being enabled?
+On Fri, Jan 8, 2021 at 12:53 AM Darrick J. Wong <darrick.wong@oracle.com> wrote:
+>
+> On Thu, Jan 07, 2021 at 02:27:51PM -0800, Eric Biggers wrote:
+> > On Thu, Jan 07, 2021 at 10:48:05PM +0100, Arnd Bergmann wrote:
+> > > On Thu, Jan 7, 2021 at 5:27 PM Theodore Ts'o <tytso@mit.edu> wrote:
+> > > >
+> > > > On Thu, Jan 07, 2021 at 01:37:47PM +0000, Russell King - ARM Linux admin wrote:
+> > > > > > The gcc bugzilla mentions backports into gcc-linaro, but I do not see
+> > > > > > them in my git history.
+> > > > >
+> > > > > So, do we raise the minimum gcc version for the kernel as a whole to 5.1
+> > > > > or just for aarch64?
+> > > >
+> > > > Russell, Arnd, thanks so much for tracking down the root cause of the
+> > > > bug!
+> > >
+> > > There is one more thing that I wondered about when looking through
+> > > the ext4 code: Should it just call the crc32c_le() function directly
+> > > instead of going through the crypto layer? It seems that with Ard's
+> > > rework from 2018, that can just call the underlying architecture specific
+> > > implementation anyway.
+> > >
+> >
+> > It looks like that would work, although note that crc32c_le() uses the shash API
+> > too, so it isn't any more "direct" than what ext4 does now.
+>
+> Yes.
 
-In the fast commit, the tail block always contain a CRC.
- 
-> If one of those features is *required* before the FAST_COMMIT feature
-> can be used, then this patch looks OK.  Otherwise, the CSUM feature
-> should be checked before the FUA is skipped for non-tail blocks.
+Ah, I see. I had only noticed the architecture specific overrides for
+__crc32c_le(),
+and the global __weak crc32_le() function in lib/crc32.c, but failed to notice
+the crc32c_le() macro that redirects to crc32c().
 
-So, I think it is OK without checking other CSUM feature.
+> > Also, a potential issue is that the implementation of crc32c that crc32c_le()
+> > uses might be chosen too early if the architecture-specific implementation of
+> > crc32c is compiled as a module (e.g. crc32c-intel.ko).
+>
+> This was the primary reason I chose to do it this way for ext4.
+>
+> The other is that ext4 didn't use crc32c before metadata_csum, so
+> there's no point in pulling in the crypto layer if you're only going to
+> use older ext2 or ext3 filesystems.  That was 2010, maybe people have
+> stopped doing that?
 
-Thanks,
-Daejun
+The per-architecture overrides for __crc32c_le() are from 2018. With that
+it should be possible to just always have the fastest implementation
+(forcing them to be built-in normally), but not all architectures do this.
+
+> > There are two ways this
+> > could be fixed -- either by making it a proper library API like blake2s() that
+> > can call the architecture-specific code directly, or by reconfiguring things
+> > when a new crypto module is loaded (like what lib/crc-t10dif.c does).
+>
+> Though I would like to see the library functions gain the ability to use
+> whatever is the fastest mechanism available once we can be reasonably
+> certain that all the platform-specific drivers have been loaded.
+>
+> That said, IIRC most distros compile all of them into their
+> (increasingly large) vmlinuz files so maybe this isn't much of practical
+> concern?
+
+I recently made checked the missing dependencies of drivers that
+fail to 'select CRC32' but do call it directly. With those added, there
+are now around 200 drivers that include it, and in practice you would
+hardly find any kernel that doesn't have it built-in already. Most notably,
+jbd2 already calls crc32_be(), so it is impossible to build an EXT4
+without it. For memory-constrained embedded devices, it would probably
+be more valuable to build without the crypto layer than without crc32.
+
+       Arnd
