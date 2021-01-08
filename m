@@ -2,183 +2,108 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 368F32EEB43
-	for <lists+linux-ext4@lfdr.de>; Fri,  8 Jan 2021 03:27:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2B6E2EEB5E
+	for <lists+linux-ext4@lfdr.de>; Fri,  8 Jan 2021 03:39:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726703AbhAHC04 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 7 Jan 2021 21:26:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726666AbhAHC0z (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 7 Jan 2021 21:26:55 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75414C0612F5
-        for <linux-ext4@vger.kernel.org>; Thu,  7 Jan 2021 18:26:15 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id b8so4914478plx.0
-        for <linux-ext4@vger.kernel.org>; Thu, 07 Jan 2021 18:26:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=luDdg7XXyDwvXnZdD6ygdGvp+3kTJU9lQeguNQTRpqU=;
-        b=yp1ETCZQTCsO1E6aEVnIIPr71KsyUtIol1gvDChcfdldWH9z/jo3rzKoGhiPLLNjUJ
-         drJ8q57u8m+bH5ZaBWkRJT3qP6uwdarhDXb5bvFbPjJEdT6Ceg+m8nZ6huO6yOd6SIJc
-         /Cz2grG2gZZ9fE+Y8dAh2WBfyyamOpQkvVqcjXvnwGIiWC5Iujf5lX+iYj7g0UIyP3oF
-         UwZmJbzmZ7FdGtlIrlcR97wpXzdGtU9ng5yihyuUquYTFXfdyY0vXpuiin3QK8nNepLn
-         gA4YqUaHjOm8JbmrJDSN+YgwHDSNdk6O1Jz3v3v11Oi0NSHwSaKPzJqGCFjz0rxp5U9O
-         l1rQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=luDdg7XXyDwvXnZdD6ygdGvp+3kTJU9lQeguNQTRpqU=;
-        b=IR1sJ+Z96iJx3tCIvO3S4nPXoibfmqIG/X0m2Pk3WtjwCcY05p5skGcH5PWOXw0zSv
-         CSoHmX9sCPRp2O2UjwnXYm5bjPyw+Mkm8+ZoU2u+qdFk1aRMNt8kRQvScirAopxl7rz/
-         fWNMY7kAq8y4bi/E+wheb4f5fhDYgVNGOkj+qm/69LUuc0BNeLEKc8BU99Jvb8t9GyPl
-         MrL1yHXITvwyE9U1VsLb3n9lihnPuj/qKrMFGZGH1CiuTlDvEP8RdzwpOqgn0xgzeCpa
-         ajYUuWGZ4emVlBrp+yddCl2mCu32uEzj1I6tt9HAYx9c6jzTOk0mfXnlw2O5JKy9mkB5
-         fb/A==
-X-Gm-Message-State: AOAM5301mE5xj1fvKOj6I59dllxjfZj95X9wwuMa1sJCzt/RU3lvM1/D
-        JM+i71jn0Wd7DCf5rrSr4ePuEg==
-X-Google-Smtp-Source: ABdhPJxoy0OOAPYHD0E0wy/5EXKLXB/liUsySyu/vCSGyL99vHHJSYSWHPe/9yXbvOlSKRR8miLFNg==
-X-Received: by 2002:a17:90a:a24:: with SMTP id o33mr1373554pjo.191.1610072774908;
-        Thu, 07 Jan 2021 18:26:14 -0800 (PST)
-Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id x1sm6756810pfc.112.2021.01.07.18.26.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 07 Jan 2021 18:26:14 -0800 (PST)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <8A3C241B-9536-447B-B22D-F922D64731C7@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_336CE80D-E491-4ADD-ADCD-5E4DA97ECF62";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH] ext4: Remove expensive flush on fast commit
-Date:   Thu, 7 Jan 2021 19:26:11 -0700
-In-Reply-To: <CAD+ocbyp+SOzpDDYsJVpd+t+UcjanZRtR85dHLgykLdURhV5wA@mail.gmail.com>
-Cc:     "tytso@mit.edu" <tytso@mit.edu>,
+        id S1727009AbhAHChy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 7 Jan 2021 21:37:54 -0500
+Received: from mailout4.samsung.com ([203.254.224.34]:42117 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726281AbhAHChy (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 7 Jan 2021 21:37:54 -0500
+Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210108023710epoutp047f356ad9f99189d0d86a996fc38dd37c~YIUFE6U5q1952119521epoutp040
+        for <linux-ext4@vger.kernel.org>; Fri,  8 Jan 2021 02:37:10 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210108023710epoutp047f356ad9f99189d0d86a996fc38dd37c~YIUFE6U5q1952119521epoutp040
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1610073431;
+        bh=l/KUfAhsFOgyUhrY21rqugRrtZWnNJOwIdHlX0ISaxg=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=hmDc5pLScQNB9PGbuNSRfHVF2AaYtmKk2bY3GS9V1e1kJHfKmmAaqNnjTvp+jUpE0
+         jbW1RpFZ+rfxeU3qy0UmYJ0dMPen+2lJh2ggU55TPLH18CNz2X4NRniAh8ufulVE+e
+         eiLRKD3ePDK0jMOP9UCL0A8PRfXja1kfFtMkccEE=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
+        20210108023710epcas2p4772412909ded44ae0b9d337e7e2896ed~YIUEq_vbe3132031320epcas2p4C;
+        Fri,  8 Jan 2021 02:37:10 +0000 (GMT)
+Received: from epsmges2p2.samsung.com (unknown [182.195.40.182]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4DBnLY1SBjz4x9Pt; Fri,  8 Jan
+        2021 02:37:09 +0000 (GMT)
+X-AuditID: b6c32a46-1efff7000000dbf8-1d-5ff7c553d592
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        95.06.56312.355C7FF5; Fri,  8 Jan 2021 11:37:07 +0900 (KST)
+Mime-Version: 1.0
+Subject: RE: Re: [PATCH] ext4: Remove expensive flush on fast commit
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Andreas Dilger <adilger@dilger.ca>,
+        Daejun Park <daejun7.park@samsung.com>,
+        harshad shirwadkar <harshadshirwadkar@gmail.com>
+CC:     "tytso@mit.edu" <tytso@mit.edu>,
         "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-To:     daejun7.park@samsung.com,
-        harshad shirwadkar <harshadshirwadkar@gmail.com>
-References: <CGME20210106013242epcms2p5b6b4ed8ca86f29456fdf56aa580e74b4@epcms2p5>
- <20210106013242epcms2p5b6b4ed8ca86f29456fdf56aa580e74b4@epcms2p5>
- <CAD+ocbyp+SOzpDDYsJVpd+t+UcjanZRtR85dHLgykLdURhV5wA@mail.gmail.com>
-X-Mailer: Apple Mail (2.3273)
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <8A3C241B-9536-447B-B22D-F922D64731C7@dilger.ca>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20210108023707epcms2p32beb982610c9460e5fb08f927c52ad1d@epcms2p3>
+Date:   Fri, 08 Jan 2021 11:37:07 +0900
+X-CMS-MailID: 20210108023707epcms2p32beb982610c9460e5fb08f927c52ad1d
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpgk+LIzCtJLcpLzFFi42LZdljTQjf46Pd4g2M3bCyWnXzEZLHqQbjF
+        ysYWJouZ8+6wWVzeNYfNorXnJ7sDm0fL5nKPnbPusns0nTnK7NG3ZRWjx+dNcgGsUTk2GamJ
+        KalFCql5yfkpmXnptkrewfHO8aZmBoa6hpYW5koKeYm5qbZKLj4Bum6ZOUD7lRTKEnNKgUIB
+        icXFSvp2NkX5pSWpChn5xSW2SqkFKTkFhoYFesWJucWleel6yfm5VoYGBkamQJUJORmvdqxk
+        LNjCVrFv6lX2BsbJrF2MnBwSAiYSlyZfAbK5OIQEdjBKzLh3ia2LkYODV0BQ4u8OYZAaYQEX
+        ifULGlhAbCEBJYn1F2exQ8T1JG49XMMIYrMJ6EhMP3EfLC4i0MQo8XNLJshMZoGFjBJdlyaw
+        QyzjlZjR/pQFwpaW2L58K1gzp4CtxPcNnUwQcQ2JH8t6mSFsUYmbq9+yw9jvj81nhLBFJFrv
+        nYWqEZR48HM3VFxS4tjuD1Bz6iW23vnFCHKEhEAPo8ThnbegPtaXuNaxEewIXgFfiSu35oDF
+        WQRUJfb+vQo11EVi+pQ1YHFmAXmJ7W/nMIMChVlAU2L9Ln0QU0JAWeLILRaICj6JjsN/4V7c
+        Me8J1AlqEut+rmeCKJeRuDUP6koPib7N+9knMCrOQgT0LCSrZiGsWsDIvIpRLLWgODc9tdio
+        wAg5bjcxgpOiltsOxilvP+gdYmTiYDzEKMHBrCTCa3HsS7wQb0piZVVqUX58UWlOavEhRlOg
+        JycyS4km5wPTcl5JvKGpkZmZgaWphamZkYWSOG+xwYN4IYH0xJLU7NTUgtQimD4mDk6pBqa6
+        qQFbVT9GMq9qZeGby7z79/dJesITtBJqOQR//zzVYZC12/6N1mL3gqJpH659+959TntjZbDV
+        Hmued9Z2SwsZzv0sj5soZxT2ckHMUe8lRhbbWb2ebruQPH33jfjIK9ur/ZIuHjOzZudxdz90
+        /PeEafcs9DYpMny7sUBVqM6ivr31k8HPqBamrgMBr6aEX5mxOlX6rFDUlldMc96+vdzS0fn1
+        6hslt28TZ3FV8dqcuLetee3jcxdnTmvTSxEXeZvml/lzFqvc8W4tgYSmXuEH7zm+805mKp+3
+        vDGpUJZHSeL3r/kHfwbWb99fkOYb8nvVigjZtn0W6QXHn2zpL/npHR9j/2raBIP9iQJCuRxK
+        LMUZiYZazEXFiQAkF7jnEwQAAA==
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210106013242epcms2p5b6b4ed8ca86f29456fdf56aa580e74b4
+References: <8A3C241B-9536-447B-B22D-F922D64731C7@dilger.ca>
+        <20210106013242epcms2p5b6b4ed8ca86f29456fdf56aa580e74b4@epcms2p5>
+        <CAD+ocbyp+SOzpDDYsJVpd+t+UcjanZRtR85dHLgykLdURhV5wA@mail.gmail.com>
+        <CGME20210106013242epcms2p5b6b4ed8ca86f29456fdf56aa580e74b4@epcms2p3>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+> > In the fast commit, it adds REQ_FUA and REQ_PREFLUSH on each fast commit
+> > block when barrier is enabled. However, in recovery phase, ext4 compares
+> > CRC value in the tail. So it is sufficient adds REQ_FUA and REQ_PREFLUSH
+> > on the block that has tail.
+> 
+> Does the tail block *always* contain a CRC, or is that dependent on
+> EXT4_FEATURE_RO_COMPAT_METADATA_CSUM, JBD2_FEATURE_INCOMPAT_CSUM_V2,
+> or JBD2_FEATURE_INCOMPAT_CSUM_V3 being enabled?
 
---Apple-Mail=_336CE80D-E491-4ADD-ADCD-5E4DA97ECF62
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+In the fast commit, the tail block always contain a CRC.
+ 
+> If one of those features is *required* before the FAST_COMMIT feature
+> can be used, then this patch looks OK.  Otherwise, the CSUM feature
+> should be checked before the FUA is skipped for non-tail blocks.
 
-On Tue, Jan 5, 2021 at 5:32 PM Daejun Park <daejun7.park@samsung.com> =
-wrote:
->=20
-> In the fast commit, it adds REQ_FUA and REQ_PREFLUSH on each fast =
-commit
-> block when barrier is enabled. However, in recovery phase, ext4 =
-compares
-> CRC value in the tail. So it is sufficient adds REQ_FUA and =
-REQ_PREFLUSH
-> on the block that has tail.
+So, I think it is OK without checking other CSUM feature.
 
-Does the tail block *always* contain a CRC, or is that dependent on
-EXT4_FEATURE_RO_COMPAT_METADATA_CSUM, JBD2_FEATURE_INCOMPAT_CSUM_V2,
-or JBD2_FEATURE_INCOMPAT_CSUM_V3 being enabled?
-
-If one of those features is *required* before the FAST_COMMIT feature
-can be used, then this patch looks OK.  Otherwise, the CSUM feature
-should be checked before the FUA is skipped for non-tail blocks.
-
-Cheers, Andreas
-
-> Signed-off-by: Daejun Park <daejun7.park@samsung.com>
-> ---
-> fs/ext4/fast_commit.c | 10 +++++-----
-> 1 file changed, 5 insertions(+), 5 deletions(-)
->=20
-> diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-> index 4fcc21c25e79..e66507be334c 100644
-> --- a/fs/ext4/fast_commit.c
-> +++ b/fs/ext4/fast_commit.c
-> @@ -604,13 +604,13 @@ void ext4_fc_track_range(handle_t *handle, =
-struct inode *inode, ext4_lblk_t star
->        trace_ext4_fc_track_range(inode, start, end, ret);
-> }
->=20
-> -static void ext4_fc_submit_bh(struct super_block *sb)
-> +static void ext4_fc_submit_bh(struct super_block *sb, bool is_tail)
-> {
->        int write_flags =3D REQ_SYNC;
->        struct buffer_head *bh =3D EXT4_SB(sb)->s_fc_bh;
->=20
-> -       /* TODO: REQ_FUA | REQ_PREFLUSH is unnecessarily expensive. */
-> -       if (test_opt(sb, BARRIER))
-> +       /* Add REQ_FUA | REQ_PREFLUSH only its tail */
-> +       if (test_opt(sb, BARRIER) && is_tail)
->                write_flags |=3D REQ_FUA | REQ_PREFLUSH;
->        lock_buffer(bh);
->        set_buffer_dirty(bh);
-> @@ -684,7 +684,7 @@ static u8 *ext4_fc_reserve_space(struct =
-super_block *sb, int len, u32 *crc)
->                *crc =3D ext4_chksum(sbi, *crc, tl, sizeof(*tl));
->        if (pad_len > 0)
->                ext4_fc_memzero(sb, tl + 1, pad_len, crc);
-> -       ext4_fc_submit_bh(sb);
-> +       ext4_fc_submit_bh(sb, false);
->=20
->        ret =3D jbd2_fc_get_buf(EXT4_SB(sb)->s_journal, &bh);
->        if (ret)
-> @@ -741,7 +741,7 @@ static int ext4_fc_write_tail(struct super_block =
-*sb, u32 crc)
->        tail.fc_crc =3D cpu_to_le32(crc);
->        ext4_fc_memcpy(sb, dst, &tail.fc_crc, sizeof(tail.fc_crc), =
-NULL);
->=20
-> -       ext4_fc_submit_bh(sb);
-> +       ext4_fc_submit_bh(sb, true);
->=20
->        return 0;
-> }
-> --
-> 2.25.1
-
-
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_336CE80D-E491-4ADD-ADCD-5E4DA97ECF62
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl/3wsMACgkQcqXauRfM
-H+Bvsg//Y5fdGY7LiAoLcJ27WC3ILhpqMd8TaA06bove8p8+rlCQFFYDXC7lUWKE
-BagTLsNKzvFSB5EeuO2lXb2uWdCGb+eS5mkfGmUQDljBS/Ls7QHJlxFKjAnOmsK0
-bboRfDWGxDwj9kSUCbkRHYwxJOAPTBbDfYkcB1uc1wzACWH8lTy5conL18WAQECS
-PGxvFduSxRdyoSGueD7TPOsWEZQcZA0LPkVEYTgRufwJYhGwtTKYPt0fBq5n1beo
-WC8EtKPdudEE3jD+S1THuDrhnxmekZZu2h/JCtDa15N396qQt1HzPJ7AAdSgLIxk
-v+ltaC3K9g+zok4Yxokhq3kdghe/3/Wp5CCrp+vTx/ywmlZc31nfpxdqJi5HPSyK
-zNGTdUEeaMh9aJpeLwpDUtMSbrBHMR5A/Yy2vKMheyvEZQ1dR5NjFj3wPoWUSZAA
-G6pCRoB8UQNPPNQztquAhNEEp4LXVfdufTgg3GhsU7Ye6qDpQy15z2Dwxce4LGyW
-XzO31lrX5pYJgplYVfplNgdFwDx7APGFOOlpY9P4Kix/GQLgmrKkP8dSGCvq8/Vc
-LTr3a+1QAvUKWRL03vZv6knGRUNJ9vTJkW/TxbTBR6cq8xQx9ZhF4RVloxm/iMsH
-+Ij8RM+7RNmEYDUGsQCMsahr+LwdlzkiKzY1QDcK7nDaR+CcV/I=
-=d8v7
------END PGP SIGNATURE-----
-
---Apple-Mail=_336CE80D-E491-4ADD-ADCD-5E4DA97ECF62--
+Thanks,
+Daejun
