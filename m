@@ -2,122 +2,104 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C620E2EFB88
-	for <lists+linux-ext4@lfdr.de>; Sat,  9 Jan 2021 00:03:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CFF62EFE6A
+	for <lists+linux-ext4@lfdr.de>; Sat,  9 Jan 2021 09:00:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725844AbhAHXBb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 8 Jan 2021 18:01:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725791AbhAHXBb (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 8 Jan 2021 18:01:31 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85A26C061574;
-        Fri,  8 Jan 2021 15:00:49 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id ce23so16631047ejb.8;
-        Fri, 08 Jan 2021 15:00:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SerZUw76E8PWitt2ZWjFV34tgoYsGOgZpHOEqNd4RkE=;
-        b=Y81vC8t/Ak3PmS6ldjrzwIzm7N25NQavW/Uk9dB1jZslPuIVnRpfjn7tsqoYZbdXg3
-         YAV9UGJnAvXUG44hkcY70U1G7Ps+lEKaFJjdWbE+DKG2oC0qrE0KHa8iwiVxwTJgi7OB
-         /t/Bu0jr9jlQg0pGbvXJiRECOHmbo/QQ19xaVoAnqZjxK4rQ0GWbTZrJx0nT2RKQOv8p
-         i6CJlhpOVEBuw6+u72JMIAlwIiG6QcEjRn+MpnIyA5mPwxGKHCkQM2AuZemTMbzxtunT
-         fbBq2bGFjNzCao37zv06fvUaGygrwvrPGDz2XVWzoAqvu8+j4WBYs+tXVz0vvxxoZ9TX
-         GUgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SerZUw76E8PWitt2ZWjFV34tgoYsGOgZpHOEqNd4RkE=;
-        b=ZJ3M9/P365JGEQUuz4hoiDM/l2vkzJgVelZbR8y3nlQ4oaywyPcIHXzUMW8CC4ZHfl
-         gBio+5LwnESnfX27vE6xEltqV7uslaIico7lfkwY3or2Kq/B+udKzE7l0xKwBp1VIq2X
-         Tlt1sv1uwxfH3BFFwDFPIcP8u76KKQVmHScBFzvFHeNZ5Pjk1wuFX939wmAYxze3Sans
-         ulQc3PmkQtfd/1ZDBRJGt2mqnVdXbO/w4N4bkTpZ++nvcEOG+k9O7sRK5Lwx6hLxcG5M
-         l/7m2xcz8xpxbrejTrtOc3+LYNC8qQh83FYfLHDopIWJuYpJtrttPElV07fntr+ewo7o
-         zvLg==
-X-Gm-Message-State: AOAM5327ms29XwLIUA6IRXCDJATUxZ792nYcW0lylnq6JednMKnNrTkH
-        BZpS66YPmNZxHoMMHRiCefHXB41LxYe3zDxF8R4=
-X-Google-Smtp-Source: ABdhPJx4v+ylMlI3/5ZoK0zQHXFrto3kwca4fxGNrR1asEXTReDwb0ggK+r8/cuzWm+pa5plScxd+aDFk9DiacPWGsU=
-X-Received: by 2002:a17:906:b0c2:: with SMTP id bk2mr4149276ejb.223.1610146848129;
- Fri, 08 Jan 2021 15:00:48 -0800 (PST)
+        id S1726463AbhAIIAY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 9 Jan 2021 03:00:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40942 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725847AbhAIIAY (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sat, 9 Jan 2021 03:00:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A4A01238E8;
+        Sat,  9 Jan 2021 07:59:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610179183;
+        bh=ACg45O7fwl+jjbSXOKOgmB8S7GJDMNFMcVb39xwXyqc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=FUWwrKFxWbAldpKEGaeqArDF0GOisvWQyMA+9vwJkP4Bic2Uq485vNk3j8Xmtjzlu
+         4w/JNw6y22kZM6y+CvSS2vYHcsLC/LJ/N3mrIpb2Q0SsiAvgn/0KYmchTVoOf6aJAq
+         8vjVL2EEds2Iu/85xLzmecooyeyTMqUVpiZ/381FY3dgeNMe2M1GbuYGZp6wa0eIx6
+         /e8aOB7P2P1kY2v/z4a32ovGbtqrFPUp1xeZ/NvOuu+tbD6FOvKAC920ny3Z1ky7mV
+         RKnk6udMZy//aHEjWPnP6Lze4YLCscFq1/SlorEcOsou3Pl0TSpc+j2oHB51vPRerl
+         BcgHHVXXR3CVw==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Theodore Ts'o <tytso@mit.edu>, Christoph Hellwig <hch@lst.de>
+Subject: [PATCH v2 00/12] lazytime fix and cleanups
+Date:   Fri,  8 Jan 2021 23:58:51 -0800
+Message-Id: <20210109075903.208222-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-References: <CGME20201231015213epcms2p5ef76aa6b26ab74e045a86f6a13b31d51@epcms2p5>
- <20201231015213epcms2p5ef76aa6b26ab74e045a86f6a13b31d51@epcms2p5> <CAD+ocbwjVsiPNnp3RShN7eRDm5ZRDMwgk5uPO1at-KeX-osyqg@mail.gmail.com>
-In-Reply-To: <CAD+ocbwjVsiPNnp3RShN7eRDm5ZRDMwgk5uPO1at-KeX-osyqg@mail.gmail.com>
-From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
-Date:   Fri, 8 Jan 2021 15:00:37 -0800
-Message-ID: <CAD+ocbwuZ-y--YoC=1khtaQ1A2oYqyQtKGsvVHNvngzsuN0ByA@mail.gmail.com>
-Subject: Re: [PATCH] ext4: Change list_for_each to list_for_each_entry
-To:     daejun7.park@samsung.com
-Cc:     "tytso@mit.edu" <tytso@mit.edu>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hey Daejun,
+Hello,
 
-I was taking a look at this again, and just noticed one quick thing:
+Patch 1 fixes a bug in how __writeback_single_inode() handles lazytime
+expirations.  I originally reported this last year
+(https://lore.kernel.org/r/20200306004555.GB225345@gmail.com) because it
+causes the FS_IOC_REMOVE_ENCRYPTION_KEY ioctl to not work properly, as
+the bug causes inodes to remain dirty after a sync.
 
-On Tue, Jan 5, 2021 at 1:56 PM harshad shirwadkar
-<harshadshirwadkar@gmail.com> wrote:
->
-> Looks good to me, thanks!
->
-> Reviewed-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
->
-> On Wed, Dec 30, 2020 at 5:56 PM Daejun Park <daejun7.park@samsung.com> wrote:
-> >
-> > list_for_each + list_entry can be changed to list_for_each_entry
-> > It reduces number of variables and lines.
-> >
-> > Signed-off-by: Daejun Park <daejun7.park@samsung.com>
-> > ---
-> >  fs/ext4/fast_commit.c | 7 ++-----
-> >  1 file changed, 2 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-> > index 5b6bb3ef0f33..dc58471971db 100644
-> > --- a/fs/ext4/fast_commit.c
-> > +++ b/fs/ext4/fast_commit.c
-> > @@ -915,13 +915,11 @@ static int ext4_fc_submit_inode_data_all(journal_t *journal)
-> >         struct super_block *sb = (struct super_block *)(journal->j_private);
-> >         struct ext4_sb_info *sbi = EXT4_SB(sb);
-> >         struct ext4_inode_info *ei;
-> > -       struct list_head *pos;
-> >         int ret = 0;
-> >
-> >         spin_lock(&sbi->s_fc_lock);
-> >         ext4_set_mount_flag(sb, EXT4_MF_FC_COMMITTING);
-> > -       list_for_each(pos, &sbi->s_fc_q[FC_Q_MAIN]) {
-> > -               ei = list_entry(pos, struct ext4_inode_info, i_fc_list);
-> > +       list_for_each_entry(ei, &sbi->s_fc_q[FC_Q_MAIN], i_fc_list) {
-> >                 ext4_set_inode_state(&ei->vfs_inode, EXT4_STATE_FC_COMMITTING);
-> >                 while (atomic_read(&ei->i_fc_updates)) {
-> >                         DEFINE_WAIT(wait);
-> > @@ -1099,8 +1097,7 @@ static int ext4_fc_perform_commit(journal_t *journal)
-> >                 goto out;
-> >         }
-> >
-> > -       list_for_each(pos, &sbi->s_fc_q[FC_Q_MAIN]) {
-> > -               iter = list_entry(pos, struct ext4_inode_info, i_fc_list);
-Variable "pos" isn't used anymore after this patch. You removed it for
-the ext4_fc_submit_inode_data_all() function, but missed removing it
-in this function. That's throwing me a warning.
+It also turns out that lazytime on XFS is partially broken because it
+doesn't actually write timestamps to disk after a sync() or after
+dirtytime_expire_interval.  This is fixed by the same fix.
 
-Thanks,
-Harshad
+This supersedes previously proposed fixes, including
+https://lore.kernel.org/r/20200307020043.60118-1-tytso@mit.edu and
+https://lore.kernel.org/r/20200325122825.1086872-3-hch@lst.de from last
+year (which had some issues and didn't fix the XFS bug), and v1 of this
+patchset which took a different approach
+(https://lore.kernel.org/r/20210105005452.92521-1-ebiggers@kernel.org).
 
-> > +       list_for_each_entry(iter, &sbi->s_fc_q[FC_Q_MAIN], i_fc_list) {
-> >                 inode = &iter->vfs_inode;
-> >                 if (!ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING))
-> >                         continue;
-> > --
-> > 2.25.1
-> >
+Patches 2-12 then clean up various things related to lazytime and
+writeback, such as clarifying the semantics of ->dirty_inode() and the
+inode dirty flags, and improving comments.  Most of these patches could
+be applied independently if needed.
+
+This patchset applies to v5.11-rc2.
+
+Changed since v1:
+  - Switched to the fix suggested by Jan Kara, and dropped the
+    patches which introduced ->lazytime_expired().
+  - Fixed bugs in the fat and ext4 patches.
+  - Added patch "fs: improve comments for writeback_single_inode()".
+  - Reordered the patches a bit.
+  - Added Reviewed-by's.
+
+Eric Biggers (12):
+  fs: fix lazytime expiration handling in __writeback_single_inode()
+  fs: correctly document the inode dirty flags
+  fs: only specify I_DIRTY_TIME when needed in generic_update_time()
+  fat: only specify I_DIRTY_TIME when needed in fat_update_time()
+  fs: don't call ->dirty_inode for lazytime timestamp updates
+  fs: pass only I_DIRTY_INODE flags to ->dirty_inode
+  fs: clean up __mark_inode_dirty() a bit
+  fs: drop redundant check from __writeback_single_inode()
+  fs: improve comments for writeback_single_inode()
+  gfs2: don't worry about I_DIRTY_TIME in gfs2_fsync()
+  ext4: simplify i_state checks in __ext4_update_other_inode_time()
+  xfs: remove a stale comment from xfs_file_aio_write_checks()
+
+ Documentation/filesystems/vfs.rst |   5 +-
+ fs/ext4/inode.c                   |  20 +----
+ fs/f2fs/super.c                   |   3 -
+ fs/fat/misc.c                     |  23 +++---
+ fs/fs-writeback.c                 | 132 +++++++++++++++++-------------
+ fs/gfs2/file.c                    |   4 +-
+ fs/gfs2/super.c                   |   2 -
+ fs/inode.c                        |  38 +++++----
+ fs/xfs/xfs_file.c                 |   6 --
+ include/linux/fs.h                |  18 ++--
+ 10 files changed, 132 insertions(+), 119 deletions(-)
+
+
+base-commit: e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62
+-- 
+2.30.0
+
