@@ -2,77 +2,75 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9B5F2EFE88
-	for <lists+linux-ext4@lfdr.de>; Sat,  9 Jan 2021 09:01:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 208492F021F
+	for <lists+linux-ext4@lfdr.de>; Sat,  9 Jan 2021 18:13:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726784AbhAIIBG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 9 Jan 2021 03:01:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41216 "EHLO mail.kernel.org"
+        id S1726642AbhAIRMO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 9 Jan 2021 12:12:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38692 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726770AbhAIIBF (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Sat, 9 Jan 2021 03:01:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D30123A82;
-        Sat,  9 Jan 2021 07:59:47 +0000 (UTC)
+        id S1725872AbhAIRMO (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sat, 9 Jan 2021 12:12:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 52DF32343F;
+        Sat,  9 Jan 2021 17:11:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610179187;
-        bh=BCwJUP1PxHm+O0jkqtVgewHXBIFwwuWoM+6SlzLbD1w=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ArXO1T/oIWyOTfDCrsPPsTG1yBnlHnDCu6k2UEfX488lMMwJfExpGvUj0SUXv+FxB
-         m4ezNQbMe1EjoHp4x6xZAqwQnJSutFewWYmT15xz2E7W9rZge00zn1wiBTkHoKkjpX
-         h0q3ZUNyUClP4o0l4Adozv5UZU1xRDgRi4a8KYTobDCDPUem4XuPgUkAUZRLvilK0p
-         eqkCQUmAzzvv1/uV2gd56CRPjA31IT7rcxaRnJAIkeJK674YuHSEp/arfRElObux6C
-         kowNTi50o7F/O3FyN+dOUKU+XyOqSdMy6/oSBna+IAyh0gZNZTrxjNpxTPIXXDY7Ue
-         Hj9ligQjmJIVg==
+        s=k20201202; t=1610212293;
+        bh=i8Ku1/73rYowfl/ZwVRB3ZZQr3ISV6I1jnO+n26Fujk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=d4xvqIKvtTClFnLpzv7E3zlN8gpkDmspUC18y8blQE4mEjl6J6DwpUtkg0AsMFn1w
+         ahciPeIFOIkv0TJP21Q5uwxKXvqczOXaqsxkAdxXVwlK56MB8+oMpWb4Nw+NU/RxLy
+         4RN1VQdBnnYwcBHRHIoo4cH8g3cXIMNLklV7weqsNXYImcGPtwbDUg1HEEA2ymKlsX
+         7VcGOa7iZHIzvZSbFwgEOJKArpB7AGolFYsXhzq3Vczv2+9gDwbED9svjGEmxeDOix
+         AdBRfOG7b7GylsjDdJGyv9ZUWnrgrlXqXp0DGM4CA6dhfjb4ciODpHGf0HPh58yrTa
+         6gHyWRrhARYqw==
+Date:   Sat, 9 Jan 2021 09:11:31 -0800
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Theodore Ts'o <tytso@mit.edu>, Christoph Hellwig <hch@lst.de>
-Subject: [PATCH v2 12/12] xfs: remove a stale comment from xfs_file_aio_write_checks()
-Date:   Fri,  8 Jan 2021 23:59:03 -0800
-Message-Id: <20210109075903.208222-13-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210109075903.208222-1-ebiggers@kernel.org>
-References: <20210109075903.208222-1-ebiggers@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-xfs@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 01/13] fs: avoid double-writing inodes on lazytime
+ expiration
+Message-ID: <X/njw9b+qqK3vlMs@sol.localdomain>
+References: <20210105005452.92521-1-ebiggers@kernel.org>
+ <20210105005452.92521-2-ebiggers@kernel.org>
+ <20210107144709.GG12990@quack2.suse.cz>
+ <20210108090133.GD1438@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210108090133.GD1438@lst.de>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On Fri, Jan 08, 2021 at 10:01:33AM +0100, Christoph Hellwig wrote:
+> > +	/*
+> > +	 * If inode has dirty timestamps and we need to write them, call
+> > +	 * mark_inode_dirty_sync() to notify filesystem about it.
+> > +	 */
+> > +	if (inode->i_state & I_DIRTY_TIME &&
+> > +	    (wbc->for_sync || wbc->sync_mode == WB_SYNC_ALL ||
+> > +	     time_after(jiffies, inode->dirtied_time_when +
+> > +			dirtytime_expire_interval * HZ))) {
+> 
+> If we're touching this area, it would be nice to split this condition
+> into a readable helper ala:
+> 
+> static inline bool inode_needs_timestamp_sync(struct writeback_control *wbc,
+> 		struct inode *inode)
+> {
+> 	if (!(inode->i_state & I_DIRTY_TIME))
+> 		return false;
+> 	if (wbc->for_sync || wbc->sync_mode == WB_SYNC_ALL)
+> 		return true;
+> 	return time_after(jiffies, inode->dirtied_time_when +
+> 			  dirtytime_expire_interval * HZ);
+> }
 
-The comment in xfs_file_aio_write_checks() about calling file_modified()
-after dropping the ilock doesn't make sense, because the code that
-unconditionally acquires and drops the ilock was removed by
-commit 467f78992a07 ("xfs: reduce ilock hold times in
-xfs_file_aio_write_checks").
+I didn't end up doing this since it would only be called once, and IMO it's more
+readable to keep it inlined next to the comment that explains what's going on.
+Especially considering the later patch that drops the check for wbc->for_sync.
 
-Remove this outdated comment.
-
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/xfs/xfs_file.c | 6 ------
- 1 file changed, 6 deletions(-)
-
-diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-index 5b0f93f738372..4927c6653f15d 100644
---- a/fs/xfs/xfs_file.c
-+++ b/fs/xfs/xfs_file.c
-@@ -389,12 +389,6 @@ xfs_file_aio_write_checks(
- 	} else
- 		spin_unlock(&ip->i_flags_lock);
- 
--	/*
--	 * Updating the timestamps will grab the ilock again from
--	 * xfs_fs_dirty_inode, so we have to call it after dropping the
--	 * lock above.  Eventually we should look into a way to avoid
--	 * the pointless lock roundtrip.
--	 */
- 	return file_modified(file);
- }
- 
--- 
-2.30.0
-
+-  Eric
