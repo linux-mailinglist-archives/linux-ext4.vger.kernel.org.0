@@ -2,62 +2,76 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 989442F2E54
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Jan 2021 12:49:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9164F2F3176
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Jan 2021 14:26:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730730AbhALLrt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 12 Jan 2021 06:47:49 -0500
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:45828 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730958AbhALLrs (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 12 Jan 2021 06:47:48 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=xiaoguang.wang@linux.alibaba.com;NM=1;PH=DS;RN=2;SR=0;TI=SMTPD_---0ULWk8Hc_1610452025;
-Received: from 30.225.32.185(mailfrom:xiaoguang.wang@linux.alibaba.com fp:SMTPD_---0ULWk8Hc_1610452025)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 12 Jan 2021 19:47:06 +0800
-To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-From:   Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
-Subject: code questions about ext4_inode_datasync_dirty()
-Cc:     joseph qi <joseph.qi@linux.alibaba.com>
-Message-ID: <c95ac3d6-5e9c-b706-28f7-3bbe4b75964b@linux.alibaba.com>
-Date:   Tue, 12 Jan 2021 19:45:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1732730AbhALNVc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 12 Jan 2021 08:21:32 -0500
+Received: from bmailout2.hostsharing.net ([83.223.78.240]:49391 "EHLO
+        bmailout2.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732265AbhALNVc (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 12 Jan 2021 08:21:32 -0500
+Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
+        by bmailout2.hostsharing.net (Postfix) with ESMTPS id E08F82800B3D8;
+        Tue, 12 Jan 2021 14:20:49 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id D48D850D7E; Tue, 12 Jan 2021 14:20:49 +0100 (CET)
+Date:   Tue, 12 Jan 2021 14:20:49 +0100
+From:   Lukas Wunner <lukas@wunner.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        linux-toolchains@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: Aarch64 EXT4FS inode checksum failures - seems to be weak memory
+ ordering issues
+Message-ID: <20210112132049.GA26096@wunner.de>
+References: <20210106172033.GA2165@willie-the-truck>
+ <20210106223223.GM1551@shell.armlinux.org.uk>
+ <20210107111841.GN1551@shell.armlinux.org.uk>
+ <20210107124506.GO1551@shell.armlinux.org.uk>
+ <CAK8P3a2TXPfFpgy+XjpDzOqt1qpDxufwiD-BLNbn4W_jpGp98g@mail.gmail.com>
+ <20210107133747.GP1551@shell.armlinux.org.uk>
+ <CAK8P3a2J8fLjPhyV0XUeuRBdSo6rz1gU4wrQRyfzKQvwhf22ag@mail.gmail.com>
+ <X/gkMmObbkI4+ip/@hirez.programming.kicks-ass.net>
+ <20210108092655.GA4031@willie-the-truck>
+ <CAHk-=whnKkj5CSbj-uG_MVVUsPZ6ppd_MFhZf_kpXDkh2MAVRA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whnKkj5CSbj-uG_MVVUsPZ6ppd_MFhZf_kpXDkh2MAVRA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-hi,
+On Fri, Jan 08, 2021 at 12:02:53PM -0800, Linus Torvalds wrote:
+> I appreciate Arnd pointing out "--std=gnu11", though. What are the
+> actual relevant language improvements?
+> 
+> Variable declarations in for-loops is the only one I can think of. I
+> think that would clean up some code (and some macros), but might not
+> be compelling on its own.
 
-I use io_uring to evaluate ext4 randread performance(direct io), observed
-obvious overhead in jbd2_transaction_committed():
-Samples: 124K of event 'cycles:ppp', Event count (approx.): 80630088951
-Overhead  Command          Shared Object      Symbol
-    7.02%  io_uring-sq-per  [kernel.kallsyms]  [k] jbd2_transaction_committed
+Anonymous structs/unions.  I used to have a use case for that in
+struct efi_dev_path in include/linux/efi.h, but Ard Biesheuvel
+refactored it in a gnu89-compatible way for v5.7 with db8952e7094f.
 
-The codes:
-	/*
-	 * Writes that span EOF might trigger an I/O size update on completion,
-	 * so consider them to be dirty for the purpose of O_DSYNC, even if
-	 * there is no other metadata changes being made or are pending.
-	 */
-	iomap->flags = 0;
-	if (ext4_inode_datasync_dirty(inode) ||
-	    offset + length > i_size_read(inode))
-		iomap->flags |= IOMAP_F_DIRTY;
+[The above was copy-pasted from last time this discussion came up
+in July 2020.  Back then, Kirill Shutemov likewise mentioned the
+local variables in loops feature:
+https://lore.kernel.org/lkml/20200710111724.m4jaci73pykalxys@wunner.de/
+]
 
-ext4_inode_datasync_dirty() calls jbd2_transaction_committed(). Sorry, I don't spend
-much time to learn iomap codes yet, just ask a quick question here. Do we need to call
-ext4_inode_datasync_dirty() for a read operation?
+Thanks,
 
-If we must call ext4_inode_datasync_dirty() for a read operation, can we improve
-jbd2_transaction_committed() a bit, for example, have a quick check between
-inode->i_datasync_tid and j_commit_sequence, if inode->i_datasync_tid is less than
-or equal to j_commit_sequence, we also don't call jbd2_transaction_committed()?
-
-Regards,
-Xiaoguang Wang
+Lukas
