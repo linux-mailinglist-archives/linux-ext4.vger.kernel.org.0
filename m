@@ -2,85 +2,77 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 709562F210C
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 Jan 2021 21:46:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F9972F27A6
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Jan 2021 06:22:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390959AbhAKUpY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 11 Jan 2021 15:45:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37784 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391313AbhAKUpS (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 11 Jan 2021 15:45:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0922F222B6;
-        Mon, 11 Jan 2021 20:44:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610397877;
-        bh=M1OSN1vteho8Huw58TPHtw4Wnq7VMtKCfQ1CREQhDR0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=g6E1CBBApgNQRIvnyUYpczU4snTK3TxTIWiGp2D7l9axmxnf6NKFoHnat6vVu4e2x
-         I9XIFx85m+OaASnJa35GO1Lnq6n9jCT+wDbjGwYs6QheK3MCRNoAdJlZfYYodREnYB
-         o+3ziJVlenNjdNHZNq3EDaRlJJAlbS6mK1P7kvZryDnMiAPy1kFnfILWddwBcW6wxu
-         SELSewJq8rbzB/ndE+t+XbX/vEKHxLvi2jQezrrvts8jJ1y/+Ad2x5xKCgaHtetEX3
-         OZcpXXl3Hsh8sIV0cn0ov2lVF0/F8gETBM8QdHmHtC59U75feIsb+nL+o6/OlT3c++
-         dyjRmmLboidRg==
-Date:   Mon, 11 Jan 2021 12:44:35 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        Theodore Ts'o <tytso@mit.edu>, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v2 00/12] lazytime fix and cleanups
-Message-ID: <X/y4s12YrXiUwWfN@sol.localdomain>
+        id S2388386AbhALFV6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 12 Jan 2021 00:21:58 -0500
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:44302 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725554AbhALFV6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 12 Jan 2021 00:21:58 -0500
+Received: from dread.disaster.area (pa49-179-167-107.pa.nsw.optusnet.com.au [49.179.167.107])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 8C2BE826077;
+        Tue, 12 Jan 2021 16:21:15 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1kzC7G-005aGL-IW; Tue, 12 Jan 2021 16:21:14 +1100
+Date:   Tue, 12 Jan 2021 16:21:14 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Theodore Ts'o <tytso@mit.edu>
+Subject: Re: [PATCH v2 04/12] fat: only specify I_DIRTY_TIME when needed in
+ fat_update_time()
+Message-ID: <20210112052114.GS331610@dread.disaster.area>
 References: <20210109075903.208222-1-ebiggers@kernel.org>
- <20210111151517.GK18475@quack2.suse.cz>
+ <20210109075903.208222-5-ebiggers@kernel.org>
+ <20210111105201.GB2502@lst.de>
+ <X/ysA8PuJ/+JXQYL@sol.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210111151517.GK18475@quack2.suse.cz>
+In-Reply-To: <X/ysA8PuJ/+JXQYL@sol.localdomain>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=Ubgvt5aN c=1 sm=1 tr=0 cx=a_idp_d
+        a=+wqVUQIkAh0lLYI+QRsciw==:117 a=+wqVUQIkAh0lLYI+QRsciw==:17
+        a=kj9zAlcOel0A:10 a=EmqxpYm9HcoA:10 a=7-415B0cAAAA:8
+        a=joOgMYZwUYIHNJ8tGMoA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 04:15:17PM +0100, Jan Kara wrote:
-> Hi!
+On Mon, Jan 11, 2021 at 11:50:27AM -0800, Eric Biggers wrote:
+> On Mon, Jan 11, 2021 at 11:52:01AM +0100, Christoph Hellwig wrote:
+> > On Fri, Jan 08, 2021 at 11:58:55PM -0800, Eric Biggers wrote:
+> > > +	if ((flags & S_VERSION) && inode_maybe_inc_iversion(inode, false))
+> > > +		dirty_flags |= I_DIRTY_SYNC;
+> > 
+> > fat does not support i_version updates, so this bit can be skipped.
 > 
-> On Fri 08-01-21 23:58:51, Eric Biggers wrote:
-> > Hello,
-> > 
-> > Patch 1 fixes a bug in how __writeback_single_inode() handles lazytime
-> > expirations.  I originally reported this last year
-> > (https://lore.kernel.org/r/20200306004555.GB225345@gmail.com) because it
-> > causes the FS_IOC_REMOVE_ENCRYPTION_KEY ioctl to not work properly, as
-> > the bug causes inodes to remain dirty after a sync.
-> > 
-> > It also turns out that lazytime on XFS is partially broken because it
-> > doesn't actually write timestamps to disk after a sync() or after
-> > dirtytime_expire_interval.  This is fixed by the same fix.
-> > 
-> > This supersedes previously proposed fixes, including
-> > https://lore.kernel.org/r/20200307020043.60118-1-tytso@mit.edu and
-> > https://lore.kernel.org/r/20200325122825.1086872-3-hch@lst.de from last
-> > year (which had some issues and didn't fix the XFS bug), and v1 of this
-> > patchset which took a different approach
-> > (https://lore.kernel.org/r/20210105005452.92521-1-ebiggers@kernel.org).
-> > 
-> > Patches 2-12 then clean up various things related to lazytime and
-> > writeback, such as clarifying the semantics of ->dirty_inode() and the
-> > inode dirty flags, and improving comments.  Most of these patches could
-> > be applied independently if needed.
-> > 
-> > This patchset applies to v5.11-rc2.
-> 
-> The series look good to me. How do you plan to merge it (after resolving
-> Christoph's remarks)? I guess either Ted can take it through the ext4 tree
-> or I can take it through my tree...
-> 
+> Is that really the case?  Any filesystem (including fat) can be mounted with
+> "iversion", which causes SB_I_VERSION to be set.
 
-I think taking it through your tree would be best, unless Al or Ted wants to
-take it.
+That's a bug. Filesystems taht don't support persistent i_version on
+disk need to clear SB_I_VERSION in their mount and remount paths
+because the VFS iversion mount option was a complete screwup from
+the start.
 
-I'll probably separate out
-"xfs: remove a stale comment from xfs_file_aio_write_checks()",
-since it isn't really related anymore and could go in through the XFS tree.
+> A lot of filesystems (including fat) don't store i_version to disk, but it looks
+> like it will still get updated in-memory.  Could anything be relying on that?
 
-- Eric
+If they do, then they are broken by definition. i_version as
+reported to observers is defined as monotonically increasing with
+every change to the inode. i.e. it never goes backwards. Which, of
+course, it will do if you crash or even just unmount/mount a
+filesystem that doesn't persist it.
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
