@@ -2,105 +2,115 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2514B2F457C
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Jan 2021 08:45:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9DB62F4FF8
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Jan 2021 17:31:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725883AbhAMHpI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 13 Jan 2021 02:45:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725887AbhAMHpH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 13 Jan 2021 02:45:07 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8286FC061795
-        for <linux-ext4@vger.kernel.org>; Tue, 12 Jan 2021 23:44:27 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id r4so655842wmh.5
-        for <linux-ext4@vger.kernel.org>; Tue, 12 Jan 2021 23:44:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=scylladb-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=/heJO8JuiwWynfejNELMn+jLslnfJcq2KDsfSuPxcbQ=;
-        b=NlBz7GVjb4Q/1HDjQyOub+gmJxqQSKqZzMYL+oIcjfWmhVRv86zhY78pV2mUQnbeNE
-         C6o8QTcUX5LXssfy0z+a3QnvkkVCq0goZjMG31/G+Fb/fEpbbKtaONOyXkID4KP/1EmN
-         BoLKvrnZfEn+IZhtVloV3cYc1nzfSgC4FGCsvEu/jeFDp78J06XcY94XuRGkEqJp5fEE
-         zEb4Cum1WFYXjtT3OAt3B1hKEXJfQ/251AUXSc+82KfcNIBAJB+Z8nlz7XcgkE2IcCcM
-         QcY+yavRAYeO+fMqEsglH+I+w0KQtSkKNJZy5xzMjMs5IcDFkjGr7tUg4g13j9gdnC2c
-         /HnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=/heJO8JuiwWynfejNELMn+jLslnfJcq2KDsfSuPxcbQ=;
-        b=iQVpVz/pJC1WRnxg87h3oibLHHaLPsp5gWzx9ozQYCjLk6Q/2FA9wt5mdM9UquHxCe
-         u1y0G+lAc3ZHnmZYSrhqSGJmQjpDSncCz/ZTj+1UnVCj0i+PQ7zxm78MDbLYEXJvDNnD
-         fnpS0ML3J1Is2nIWkCYs+pTr4GF+I+8zgyFgQ5U5ViyKMLKGFNAC8n7N5WvG6pygNJ2U
-         aMlkzyHkuCKIGSjhVN7RFZjDwciBtSCWeB3o9SvFGjobFatWlHGtHRldXJbIS5HDIMzN
-         LzRJQXZQMraRWt7pcIlC6gljYRp0HZL6/uly9zezOwnu1qxruy0W5ax7KsdPqnoaoOHU
-         OJbA==
-X-Gm-Message-State: AOAM532BYYDzwE6sOATquXIJpnizLrbKNvca8dISiqPqtQRCG8Zgljx9
-        dmthUCf3rn+uDK01eG+HXVaHlg==
-X-Google-Smtp-Source: ABdhPJx7MW2aMt8z2+SBIHQjiNmjoSXt1hhH/So7B4H/JbgwgN6T6eFxrkIFaEv5nlsFLYOBoXX31Q==
-X-Received: by 2002:a1c:3d56:: with SMTP id k83mr666672wma.25.1610523865907;
-        Tue, 12 Jan 2021 23:44:25 -0800 (PST)
-Received: from tmp.scylladb.com (bzq-79-182-3-66.red.bezeqint.net. [79.182.3.66])
-        by smtp.googlemail.com with ESMTPSA id r20sm1902245wrg.66.2021.01.12.23.44.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 23:44:24 -0800 (PST)
-Subject: Re: fallocate(FALLOC_FL_ZERO_RANGE_BUT_REALLY) to avoid unwritten
- extents?
-To:     Andres Freund <andres@anarazel.de>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     Andreas Dilger <adilger@dilger.ca>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-block@vger.kernel.org
-References: <20201230062819.yinrrp6uwfegsqo3@alap3.anarazel.de>
- <20210104181958.GE6908@magnolia>
- <20210104191058.sryksqjnjjnn5raa@alap3.anarazel.de>
- <f6f75f11-5d5b-ae63-d584-4b6f09ff401e@scylladb.com>
- <20210112181600.GA1228497@infradead.org>
- <C8811877-48A9-4199-9F28-20F5B071AE36@dilger.ca>
- <20210112184339.GA1238746@infradead.org>
- <1C33DEE4-8BE9-4BF3-A589-E11532382B36@dilger.ca>
- <20210112211445.GC1164248@magnolia>
- <20210112213633.fb4tjlgvo6tznfr4@alap3.anarazel.de>
-From:   Avi Kivity <avi@scylladb.com>
-Message-ID: <6d982635-d978-e044-4cca-c140401eb0d3@scylladb.com>
-Date:   Wed, 13 Jan 2021 09:44:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1727012AbhAMQak (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 13 Jan 2021 11:30:40 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56606 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726812AbhAMQak (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 13 Jan 2021 11:30:40 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 69F31AD57;
+        Wed, 13 Jan 2021 16:29:58 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 1BACD1E08EE; Wed, 13 Jan 2021 17:29:58 +0100 (CET)
+Date:   Wed, 13 Jan 2021 17:29:58 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        Theodore Ts'o <tytso@mit.edu>, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v3 00/11] lazytime fix and cleanups
+Message-ID: <20210113162957.GA26686@quack2.suse.cz>
+References: <20210112190253.64307-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210112213633.fb4tjlgvo6tznfr4@alap3.anarazel.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210112190253.64307-1-ebiggers@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 1/12/21 11:36 PM, Andres Freund wrote:
-> Hi,
->
-> On 2021-01-12 13:14:45 -0800, Darrick J. Wong wrote:
->> ALLOCSP64 can only allocate pre-zeroed blocks as part of extending EOF,
->> whereas a new FZERO flag means that we can pre-zero an arbitrary range
->> of bytes in a file.  I don't know if Avi or Andres' usecases demand that
->> kind of flexibilty but I know I'd rather go for the more powerful
->> interface.
-> Postgres/I don't at the moment have a need to allocate "written" zeroed
-> space anywhere but EOF. I can see some potential uses for more flexible
-> pre-zeroing in the future though, but not very near term.
->
+Hello!
 
-Same here.
+On Tue 12-01-21 11:02:42, Eric Biggers wrote:
+> Patch 1 fixes a bug in how __writeback_single_inode() handles lazytime
+> expirations.  I originally reported this last year
+> (https://lore.kernel.org/r/20200306004555.GB225345@gmail.com) because it
+> causes the FS_IOC_REMOVE_ENCRYPTION_KEY ioctl to not work properly, as
+> the bug causes inodes to remain dirty after a sync.
+> 
+> It also turns out that lazytime on XFS is partially broken because it
+> doesn't actually write timestamps to disk after a sync() or after
+> dirtytime_expire_interval.  This is fixed by the same fix.
+> 
+> This supersedes previously proposed fixes, including
+> https://lore.kernel.org/r/20200307020043.60118-1-tytso@mit.edu and
+> https://lore.kernel.org/r/20200325122825.1086872-3-hch@lst.de from last
+> year (which had some issues and didn't fix the XFS bug), and v1 of this
+> patchset which took a different approach
+> (https://lore.kernel.org/r/20210105005452.92521-1-ebiggers@kernel.org).
+> 
+> Patches 2-11 then clean up various things related to lazytime and
+> writeback, such as clarifying the semantics of ->dirty_inode() and the
+> inode dirty flags, and improving comments.
+> 
+> This patchset applies to v5.11-rc2.
 
+Thanks for the patches. I've picked the patches to my tree. I plan to push
+patch 1/11 to Linus later this week, the rest of the cleanups will go to
+him during the next merge window.
 
-I also agree that it's better not to have the kernel fall back 
-internally on writing zeros, letting userspace do that. The assumption 
-is that WRITE SAME will be O(1)-ish and so can bypass scheduling 
-decisions, but if we need to write zeros, better let the application 
-throttle the rate.
+								Honza
 
-
+> 
+> Changed v2 => v3:
+>   - Changed ext4 patch to add a helper function
+>     inode_is_dirtytime_only() to include/linux/fs.h.
+>   - Dropped XFS cleanup patch, as it can be sent/applied separately.
+>   - Added Reviewed-by's.
+> 
+> Changed v1 => v2:
+>   - Switched to the fix suggested by Jan Kara, and dropped the
+>     patches which introduced ->lazytime_expired().
+>   - Fixed bugs in the fat and ext4 patches.
+>   - Added patch "fs: improve comments for writeback_single_inode()".
+>   - Reordered the patches a bit.
+>   - Added Reviewed-by's.
+> 
+> Eric Biggers (11):
+>   fs: fix lazytime expiration handling in __writeback_single_inode()
+>   fs: correctly document the inode dirty flags
+>   fs: only specify I_DIRTY_TIME when needed in generic_update_time()
+>   fat: only specify I_DIRTY_TIME when needed in fat_update_time()
+>   fs: don't call ->dirty_inode for lazytime timestamp updates
+>   fs: pass only I_DIRTY_INODE flags to ->dirty_inode
+>   fs: clean up __mark_inode_dirty() a bit
+>   fs: drop redundant check from __writeback_single_inode()
+>   fs: improve comments for writeback_single_inode()
+>   gfs2: don't worry about I_DIRTY_TIME in gfs2_fsync()
+>   ext4: simplify i_state checks in __ext4_update_other_inode_time()
+> 
+>  Documentation/filesystems/vfs.rst |   5 +-
+>  fs/ext4/inode.c                   |  20 +----
+>  fs/f2fs/super.c                   |   3 -
+>  fs/fat/misc.c                     |  23 +++---
+>  fs/fs-writeback.c                 | 132 +++++++++++++++++-------------
+>  fs/gfs2/file.c                    |   4 +-
+>  fs/gfs2/super.c                   |   2 -
+>  fs/inode.c                        |  38 +++++----
+>  include/linux/fs.h                |  33 ++++++--
+>  9 files changed, 146 insertions(+), 114 deletions(-)
+> 
+> 
+> base-commit: e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62
+> -- 
+> 2.30.0
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
