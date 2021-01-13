@@ -2,93 +2,78 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F14D22F5100
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Jan 2021 18:21:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A16A02F52B5
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Jan 2021 19:51:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728204AbhAMRU0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 13 Jan 2021 12:20:26 -0500
-Received: from mx2.suse.de ([195.135.220.15]:34688 "EHLO mx2.suse.de"
+        id S1728481AbhAMSuX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 13 Jan 2021 13:50:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728081AbhAMRU0 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 13 Jan 2021 12:20:26 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5B0DEACAC;
-        Wed, 13 Jan 2021 17:19:44 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id DA9031E083D; Wed, 13 Jan 2021 18:19:43 +0100 (CET)
-Date:   Wed, 13 Jan 2021 18:19:43 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        joseph qi <joseph.qi@linux.alibaba.com>
-Subject: Re: code questions about ext4_inode_datasync_dirty()
-Message-ID: <20210113171943.GB26686@quack2.suse.cz>
-References: <c95ac3d6-5e9c-b706-28f7-3bbe4b75964b@linux.alibaba.com>
+        id S1728311AbhAMSuX (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 13 Jan 2021 13:50:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D0DB207A3;
+        Wed, 13 Jan 2021 18:49:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610563782;
+        bh=jxqvBKT6pKQlxpXnEcXRV+aAp3XKL18v0jD9gTxQod8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XRBnyiwLdpRSOKPhWinMw36N+TRus/Bi7up7HkQNZcTu2N7ZEE5asNNB3uZspYeQg
+         XcCoNUuqI1V2/BmdZLbkPwyHPtPbzjGpWZw4eczh/1yXQQQGrbs8A4z3LiXQRkI5MK
+         O4SkOlqoZUA7DfFx5rFh2kHxEveVBymvHDMPzvsr7WQo31jKRyCrV8y82pcbuy7nZG
+         dsN2Xo37P+r1DIWl/vx3NhN6Aa9WEwnVax+49O6+LlCfiTiRrH6vhe/2U27DOG+0RX
+         sf3TdtlncT9iMYdzLxzujczxx3cNDXyhlEGX4np6afd/3GFHuniQgAjnR64Gy18mt4
+         MZJUIPQ0MGpPA==
+Date:   Wed, 13 Jan 2021 10:49:40 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        Theodore Ts'o <tytso@mit.edu>, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v3 00/11] lazytime fix and cleanups
+Message-ID: <X/9AxL5Mrt+CiKHx@sol.localdomain>
+References: <20210112190253.64307-1-ebiggers@kernel.org>
+ <20210113162957.GA26686@quack2.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c95ac3d6-5e9c-b706-28f7-3bbe4b75964b@linux.alibaba.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210113162957.GA26686@quack2.suse.cz>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi!
-
-On Tue 12-01-21 19:45:06, Xiaoguang Wang wrote:
-> I use io_uring to evaluate ext4 randread performance(direct io), observed
-> obvious overhead in jbd2_transaction_committed():
-> Samples: 124K of event 'cycles:ppp', Event count (approx.): 80630088951
-> Overhead  Command          Shared Object      Symbol
->    7.02%  io_uring-sq-per  [kernel.kallsyms]  [k] jbd2_transaction_committed
-
-Hum, that's quite a bit. Likely due to cacheline contention on
-j_state_lock. Thanks for reporting this!
-
-> The codes:
-> 	/*
-> 	 * Writes that span EOF might trigger an I/O size update on completion,
-> 	 * so consider them to be dirty for the purpose of O_DSYNC, even if
-> 	 * there is no other metadata changes being made or are pending.
-> 	 */
-> 	iomap->flags = 0;
-> 	if (ext4_inode_datasync_dirty(inode) ||
-> 	    offset + length > i_size_read(inode))
-> 		iomap->flags |= IOMAP_F_DIRTY;
+On Wed, Jan 13, 2021 at 05:29:58PM +0100, Jan Kara wrote:
+> Hello!
 > 
-> ext4_inode_datasync_dirty() calls jbd2_transaction_committed(). Sorry, I
-> don't spend much time to learn iomap codes yet, just ask a quick question
-> here. Do we need to call ext4_inode_datasync_dirty() for a read
-> operation?
+> On Tue 12-01-21 11:02:42, Eric Biggers wrote:
+> > Patch 1 fixes a bug in how __writeback_single_inode() handles lazytime
+> > expirations.  I originally reported this last year
+> > (https://lore.kernel.org/r/20200306004555.GB225345@gmail.com) because it
+> > causes the FS_IOC_REMOVE_ENCRYPTION_KEY ioctl to not work properly, as
+> > the bug causes inodes to remain dirty after a sync.
+> > 
+> > It also turns out that lazytime on XFS is partially broken because it
+> > doesn't actually write timestamps to disk after a sync() or after
+> > dirtytime_expire_interval.  This is fixed by the same fix.
+> > 
+> > This supersedes previously proposed fixes, including
+> > https://lore.kernel.org/r/20200307020043.60118-1-tytso@mit.edu and
+> > https://lore.kernel.org/r/20200325122825.1086872-3-hch@lst.de from last
+> > year (which had some issues and didn't fix the XFS bug), and v1 of this
+> > patchset which took a different approach
+> > (https://lore.kernel.org/r/20210105005452.92521-1-ebiggers@kernel.org).
+> > 
+> > Patches 2-11 then clean up various things related to lazytime and
+> > writeback, such as clarifying the semantics of ->dirty_inode() and the
+> > inode dirty flags, and improving comments.
+> > 
+> > This patchset applies to v5.11-rc2.
+> 
+> Thanks for the patches. I've picked the patches to my tree. I plan to push
+> patch 1/11 to Linus later this week, the rest of the cleanups will go to
+> him during the next merge window.
+> 
+> 								Honza
 
-So strictly speaking we don't need to know the value of IOMAP_F_DIRTY in
-that path (or any read path for that matter) but I'm somewhat reluctant to
-optimize out setting of this flag because later some user might start to
-depend on it being set correctly.
+Sounds good, thanks!
 
-> If we must call ext4_inode_datasync_dirty() for a read operation, can we improve
-> jbd2_transaction_committed() a bit, for example, have a quick check between
-> inode->i_datasync_tid and j_commit_sequence, if inode->i_datasync_tid is less than
-> or equal to j_commit_sequence, we also don't call jbd2_transaction_committed()?
-
-Well, the modification would belong directly to
-jbd2_transaction_committed(). Using j_commit_sequence is somewhat awkward
-since TIDs can wrap around and so very old TIDs can suddently start to give
-false positives leading to a strange results (this was one of motivations
-to switch jbd2_transaction_committed() to a comparison for equality). But
-it could certainly be done.
-
-But j_state_lock is a scalability bottleneck in other cases as well. So
-what I rather have in mind is that we could change transactions to be RCU
-freed and then a majority of places where we use
-
-  read_lock(&journal->j_state_lock);
-
-can be switched to using plain RCU which should significantly reduce the
-contention on the lock.
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+- Eric
