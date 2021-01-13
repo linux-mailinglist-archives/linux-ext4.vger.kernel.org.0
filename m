@@ -2,141 +2,209 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41EE52F3F99
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Jan 2021 01:46:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C1592F402A
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Jan 2021 01:47:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729351AbhALW3j (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 12 Jan 2021 17:29:39 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:33426 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394599AbhALW3Y (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 12 Jan 2021 17:29:24 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id B5A061C0B8B; Tue, 12 Jan 2021 23:28:40 +0100 (CET)
-Date:   Tue, 12 Jan 2021 23:28:40 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Josh Triplett <josh@joshtriplett.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        id S2438148AbhAMAnQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 12 Jan 2021 19:43:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392449AbhAMAeK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 12 Jan 2021 19:34:10 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24FCAC0617AA;
+        Tue, 12 Jan 2021 16:33:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=I9mSrNXmHFYMPApxgFQbDM45P8v8X64ckBsmGZBNtcc=; b=u46K90hkeHO3rgVFT8nIkAgzOu
+        URjQXngiZDy+HRu2wxUeRCxaK99ieki5JPU6LEoLpjhkVt8RQaLmgBoK0NLhGruy0JFl5qwVZ9cPS
+        SBniw1n3CBJVYJBUDWfaeMzEtZSYDwOFRVc7C9nhxeLaPFQjoJu2oIJ7p6N9bT8/PtXvBzktQxxnd
+        lRIYvTygjTQRLIo9G3UJCdSTY71pssx/RAVQAZanXGgnbufK9U6wyvZ9UVYX99gwEq42DMQDLHimz
+        u/83ju95Eitc0mOBWxZ9GyeE9wzkY074t/cE1JnWyD2WdLBsAqlep2idC+WvMkdxzcr/OJOiGlAaG
+        4EiP6yjQ==;
+Received: from [2601:1c0:6280:3f0::9abc]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kzU5g-0006Zu-CI; Wed, 13 Jan 2021 00:32:48 +0000
+Subject: Re: [PATCH v5 41/42] tests: extend mount_setattr tests
+To:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-fsdevel@vger.kernel.org
+Cc:     John Johansen <john.johansen@canonical.com>,
+        James Morris <jmorris@namei.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Arnd Bergmann <arnd@arndb.de>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ext4@vger.kernel.org
-Subject: Re: Malicious fs images was Re: ext4 regression in v5.9-rc2 from
- e7bfb5c9bb3d on ro fs with overlapped bitmaps
-Message-ID: <20210112222840.GA28214@duo.ucw.cz>
-References: <20201006050306.GA8098@localhost>
- <20201006133533.GC5797@mit.edu>
- <20201007080304.GB1112@localhost>
- <20201007143211.GA235506@mit.edu>
- <20201007201424.GB15049@localhost>
- <20201008021017.GD235506@mit.edu>
- <20201008222259.GA45658@localhost>
- <20201009143732.GJ235506@mit.edu>
- <20210110184101.GA4625@amd>
- <X/4YArRJMgGjSyZY@mit.edu>
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Mrunal Patel <mpatel@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Theodore Tso <tytso@mit.edu>, Alban Crequy <alban@kinvolk.io>,
+        Tycho Andersen <tycho@tycho.ws>,
+        David Howells <dhowells@redhat.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Seth Forshee <seth.forshee@canonical.com>,
+        =?UTF-8?Q?St=c3=a9phane_Graber?= <stgraber@ubuntu.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Lennart Poettering <lennart@poettering.net>,
+        "Eric W. Biederman" <ebiederm@xmission.com>, smbarber@chromium.org,
+        Phil Estes <estesp@gmail.com>, Serge Hallyn <serge@hallyn.com>,
+        Kees Cook <keescook@chromium.org>,
+        Todd Kjos <tkjos@google.com>, Paul Moore <paul@paul-moore.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        containers@lists.linux-foundation.org,
+        linux-security-module@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+References: <20210112220124.837960-1-christian.brauner@ubuntu.com>
+ <20210112220124.837960-42-christian.brauner@ubuntu.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <5060dcc4-09a3-0ccc-6080-aab3f6b9caef@infradead.org>
+Date:   Tue, 12 Jan 2021 16:32:32 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="T4sUOijqQbZv57TR"
-Content-Disposition: inline
-In-Reply-To: <X/4YArRJMgGjSyZY@mit.edu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210112220124.837960-42-christian.brauner@ubuntu.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Hi,
 
---T4sUOijqQbZv57TR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi!
+On 1/12/21 2:01 PM, Christian Brauner wrote:
+> ---
+> /* v2 */
+> patch introduced
+> 
+> /* v3 */
+> - Christoph Hellwig <hch@lst.de>, Darrick J. Wong <darrick.wong@oracle.com>:
+>   - Port main test-suite to xfstests.
+> 
+> /* v4 */
+> unchanged
+> 
+> /* v5 */
+> base-commit: 7c53f6b671f4aba70ff15e1b05148b10d58c2837
+> ---
+>  .../mount_setattr/mount_setattr_test.c        | 483 ++++++++++++++++++
+>  1 file changed, 483 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/mount_setattr/mount_setattr_test.c b/tools/testing/selftests/mount_setattr/mount_setattr_test.c
+> index 447b91c05cbd..4e94e566e040 100644
+> --- a/tools/testing/selftests/mount_setattr/mount_setattr_test.c
+> +++ b/tools/testing/selftests/mount_setattr/mount_setattr_test.c
+> @@ -108,15 +108,57 @@ struct mount_attr {
+>  	__u64 attr_set;
+>  	__u64 attr_clr;
+>  	__u64 propagation;
+> +	__u64 userns_fd;
+>  };
+>  #endif
 
-> > People want to use USB sticks from time to time. And while I
-> > understand XFS is so complex it is unsuitable for such use, I'd still
-> > expect bugs to be fixed there.
-> >=20
-> > I hope VFAT to be safe to mount, because that is very common on USB.
-> >=20
-> > I also hope ext2/3/4 is safe in that regard.
->=20
-> Ext4 will fix file system fuzzing attack bugs on a best efforts basis.
-> That is, when I have time, I've been known to stay up late to bugs
-> reported by fuzzers.  I hope ext4 is safe, but I'm not going to make
-> any guarantees that it is Bug-Free(tm).  If you want to trust it in
-> that way, you do so at your risk.
+...
 
-Good.
 
-> > Anyway it would be nice to have documentation explaining this. If I'm
-> > wrong about VFAT being safe, it would be good to know, and I guess
-> > many will be surprised that XFS is using different rules.
->=20
-> Using USB sticks is fine, so long as you trust the provenance of the
-> drive.  If you take a random USB stick that is handed to you by
+Does "/**" have any special meaning inside tools/testing/ and the
+selftest framework?  (I don't see any other such users.)
 
-Well... That makes passing data between Windows and Linux machines
-using USB stick "interesting", right?
+If not, can you just use the usual "/*" instead? (multiple locations)
 
-> someone whom you don't trust implicitly, or worse, that you picked up
-> abandoned on the sidewalk, there have been plenty of articles which
-> describe why this is a REALLY BAD IDEA, and even if you ignore
-> OS-level vuleranbilities, there are also firwmare and hardware based
-> vulerabilities that would put your computer at risk.  See [2] and
-> [3]
 
-I know, but bear with me.
+> +/**
+> + * Validate that negative fd values are rejected.
+> + */
+> +TEST_F(mount_setattr_idmapped, invalid_fd_negative)
+> +{
+...
 
-> As far as documentation is concerned, how far should we go?  Should
-> there be a warning in the execve(2) system call man page that you
-> shouldn't download random binaries from the network and execute them?  :-)
+> +}
+> +
+> +/**
+> + * Validate that excessively large fd values are rejected.
+> + */
+> +TEST_F(mount_setattr_idmapped, invalid_fd_large)
+> +{
+...
 
-No need to pull straw men for me.
+> +}
+> +
+> +/**
+> + * Validate that closed fd values are rejected.
+> + */
+> +TEST_F(mount_setattr_idmapped, invalid_fd_closed)
+> +{
+...
 
-This thread suggested that kernel is _not_ supposed to be robust
-against corrupt filesystems (because fsck is not integrated in
-kernel). Which was news to me (and I'm not the person that needs
-warning in execve documentation).
+> +	}
+> +}
+> +
+> +/**
+> + * Validate that the initial user namespace is rejected.
+> + */
+> +TEST_F(mount_setattr_idmapped, invalid_fd_initial_userns)
+> +{
+...
 
-I'd certainly like to hear that VFAT and EXT4 _is_ supposed to be
-robust in that way.
+> +/**
+> + * Validate that an attached mount in our mount namespace can be idmapped.
+> + * (The kernel enforces that the mount's mount namespace and the caller's mount
+> + *  namespace match.)
+> + */
+> +TEST_F(mount_setattr_idmapped, attached_mount_inside_current_mount_namespace)
+> +{
+> +}
+> +
+> +/**
+> + * Validate that idmapping a mount is rejected if the mount's mount namespace
+> + * and our mount namespace don't match.
+> + * (The kernel enforces that the mount's mount namespace and the caller's mount
+> + *  namespace match.)
+> + */
+> +TEST_F(mount_setattr_idmapped, attached_mount_outside_current_mount_namespace)
+> +{
+...
 
-And if we have filesystems where corrupt image is known to allow
-arbitrary code execution, we need to
+> +}
+> +
+> +/**
+> + * Validate that an attached mount in our mount namespace can be idmapped.
+> + */
+> +TEST_F(mount_setattr_idmapped, detached_mount_inside_current_mount_namespace)
+> +{
+...
 
-a) document that.
+> +}
+> +
+> +/**
+> + * Validate that a detached mount not in our mount namespace can be idmapped.
+> + */
+> +TEST_F(mount_setattr_idmapped, detached_mount_outside_current_mount_namespace)
+> +{
+...
 
-b) disable them when secure boot is enabled.
+> +}
+> +
+> +/**
+> + * Validate that currently changing the idmapping of an idmapped mount fails.
+> + */
+> +TEST_F(mount_setattr_idmapped, change_idmapping)
+> +{
 
-Because with secure boot, we are supposed to be secure against attacks
-=66rom root, and root can prepare malicious filesystems. ("The problem,
-simply put, is this: the objective of secure boot is to prevent the
-system from running any unsigned code in a privileged mode. So, if one
-boots a Linux system that, in turn, gives access to the machine to
-untrusted code, the entire purpose has been defeated. The consequences
-could hurt both locally (bad code could take control of the machine)
-and globally (the signing key used to boot Linux could be revoked), so
-it is an outcome that is worth avoiding. Doing so, however, requires
-placing limitations in the kernel so that not even root can circumvent
-the secure boot chain of trust." -- https://lwn.net/Articles/514985/
-).
 
-Best regards,
-								Pavel
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---T4sUOijqQbZv57TR
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX/4imAAKCRAw5/Bqldv6
-8igbAKCnfyP6mP9AHNkzvIsq1Z/ZDtXU8QCdEyaoLjawtnyub5W2dVUMRLpB6d0=
-=CR7u
------END PGP SIGNATURE-----
-
---T4sUOijqQbZv57TR--
+thanks.
+-- 
+~Randy
+You can't do anything without having to do something else first.
+-- Belefant's Law
