@@ -2,209 +2,115 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C1592F402A
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Jan 2021 01:47:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 463C52F4385
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Jan 2021 06:11:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438148AbhAMAnQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 12 Jan 2021 19:43:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392449AbhAMAeK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 12 Jan 2021 19:34:10 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24FCAC0617AA;
-        Tue, 12 Jan 2021 16:33:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=I9mSrNXmHFYMPApxgFQbDM45P8v8X64ckBsmGZBNtcc=; b=u46K90hkeHO3rgVFT8nIkAgzOu
-        URjQXngiZDy+HRu2wxUeRCxaK99ieki5JPU6LEoLpjhkVt8RQaLmgBoK0NLhGruy0JFl5qwVZ9cPS
-        SBniw1n3CBJVYJBUDWfaeMzEtZSYDwOFRVc7C9nhxeLaPFQjoJu2oIJ7p6N9bT8/PtXvBzktQxxnd
-        lRIYvTygjTQRLIo9G3UJCdSTY71pssx/RAVQAZanXGgnbufK9U6wyvZ9UVYX99gwEq42DMQDLHimz
-        u/83ju95Eitc0mOBWxZ9GyeE9wzkY074t/cE1JnWyD2WdLBsAqlep2idC+WvMkdxzcr/OJOiGlAaG
-        4EiP6yjQ==;
-Received: from [2601:1c0:6280:3f0::9abc]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kzU5g-0006Zu-CI; Wed, 13 Jan 2021 00:32:48 +0000
-Subject: Re: [PATCH v5 41/42] tests: extend mount_setattr tests
-To:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-fsdevel@vger.kernel.org
-Cc:     John Johansen <john.johansen@canonical.com>,
-        James Morris <jmorris@namei.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Mrunal Patel <mpatel@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Theodore Tso <tytso@mit.edu>, Alban Crequy <alban@kinvolk.io>,
-        Tycho Andersen <tycho@tycho.ws>,
-        David Howells <dhowells@redhat.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Seth Forshee <seth.forshee@canonical.com>,
-        =?UTF-8?Q?St=c3=a9phane_Graber?= <stgraber@ubuntu.com>,
+        id S1725969AbhAMFKV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 13 Jan 2021 00:10:21 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:46196 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725858AbhAMFKV (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 13 Jan 2021 00:10:21 -0500
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 10D59GRj008260
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Jan 2021 00:09:17 -0500
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 6FBB915C3453; Wed, 13 Jan 2021 00:09:16 -0500 (EST)
+Date:   Wed, 13 Jan 2021 00:09:16 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Lennart Poettering <lennart@poettering.net>,
-        "Eric W. Biederman" <ebiederm@xmission.com>, smbarber@chromium.org,
-        Phil Estes <estesp@gmail.com>, Serge Hallyn <serge@hallyn.com>,
-        Kees Cook <keescook@chromium.org>,
-        Todd Kjos <tkjos@google.com>, Paul Moore <paul@paul-moore.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        containers@lists.linux-foundation.org,
-        linux-security-module@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-References: <20210112220124.837960-1-christian.brauner@ubuntu.com>
- <20210112220124.837960-42-christian.brauner@ubuntu.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <5060dcc4-09a3-0ccc-6080-aab3f6b9caef@infradead.org>
-Date:   Tue, 12 Jan 2021 16:32:32 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ext4@vger.kernel.org
+Subject: Re: Malicious fs images was Re: ext4 regression in v5.9-rc2 from
+ e7bfb5c9bb3d on ro fs with overlapped bitmaps
+Message-ID: <X/6AfBJuX/ye+yt/@mit.edu>
+References: <20201006133533.GC5797@mit.edu>
+ <20201007080304.GB1112@localhost>
+ <20201007143211.GA235506@mit.edu>
+ <20201007201424.GB15049@localhost>
+ <20201008021017.GD235506@mit.edu>
+ <20201008222259.GA45658@localhost>
+ <20201009143732.GJ235506@mit.edu>
+ <20210110184101.GA4625@amd>
+ <X/4YArRJMgGjSyZY@mit.edu>
+ <20210112222840.GA28214@duo.ucw.cz>
 MIME-Version: 1.0
-In-Reply-To: <20210112220124.837960-42-christian.brauner@ubuntu.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210112222840.GA28214@duo.ucw.cz>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi,
-
-
-On 1/12/21 2:01 PM, Christian Brauner wrote:
-> ---
-> /* v2 */
-> patch introduced
+On Tue, Jan 12, 2021 at 11:28:40PM +0100, Pavel Machek wrote:
 > 
-> /* v3 */
-> - Christoph Hellwig <hch@lst.de>, Darrick J. Wong <darrick.wong@oracle.com>:
->   - Port main test-suite to xfstests.
-> 
-> /* v4 */
-> unchanged
-> 
-> /* v5 */
-> base-commit: 7c53f6b671f4aba70ff15e1b05148b10d58c2837
-> ---
->  .../mount_setattr/mount_setattr_test.c        | 483 ++++++++++++++++++
->  1 file changed, 483 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/mount_setattr/mount_setattr_test.c b/tools/testing/selftests/mount_setattr/mount_setattr_test.c
-> index 447b91c05cbd..4e94e566e040 100644
-> --- a/tools/testing/selftests/mount_setattr/mount_setattr_test.c
-> +++ b/tools/testing/selftests/mount_setattr/mount_setattr_test.c
-> @@ -108,15 +108,57 @@ struct mount_attr {
->  	__u64 attr_set;
->  	__u64 attr_clr;
->  	__u64 propagation;
-> +	__u64 userns_fd;
->  };
->  #endif
+> This thread suggested that kernel is _not_ supposed to be robust
+> against corrupt filesystems (because fsck is not integrated in
+> kernel). Which was news to me (and I'm not the person that needs
+> warning in execve documentation).
 
-...
+Define "supposed to be".  In the ideal world, the kernel should be
+robust against corrupt file systems.  In the ideal world, hard drives
+would never die, and memory bits would never get flipped due to cosmic
+rays, and so Intel would be correct that consumers don't need ECC
+memory.  In the ideal world, drivers would never make mistakes, and so
+seat belts would be completely unnecessasry.
 
+Unfortunately, we live in the real world.
 
-Does "/**" have any special meaning inside tools/testing/ and the
-selftest framework?  (I don't see any other such users.)
+And so there is risk associated with using various technologies, and
+that risk is not a binary 0% vs 100%.  In my mind, assuming that file
+systems are robust against maliciously created images is much like
+driving around without a seat belt.  There are plenty of people who
+drive without seat belts for years, and they haven't been killed yet.
+But it's not something *I* would do.  But hey, I also spent extra
+money to buy a personal desktop computer with ECC memory, and I don't
+go bicycling without a helment, either.
 
-If not, can you just use the usual "/*" instead? (multiple locations)
+You're free to decide what *you* want to do.  But I wouldn't take a
+random file system image from the Net and mount it without running
+fsck on the darned thing first.
 
+As far as secure boot is concerned, do you know how many zero days are
+out there with Windows machines?  I'm pretty sure there are vast
+numbers.  There are even more systems where the system adminsitrators
+haven't bothered to install latest updates, as well.
 
-> +/**
-> + * Validate that negative fd values are rejected.
-> + */
-> +TEST_F(mount_setattr_idmapped, invalid_fd_negative)
-> +{
-...
+> And if we have filesystems where corrupt image is known to allow
+> arbitrary code execution, we need to
 
-> +}
-> +
-> +/**
-> + * Validate that excessively large fd values are rejected.
-> + */
-> +TEST_F(mount_setattr_idmapped, invalid_fd_large)
-> +{
-...
+Define *known*.  If you look at the syzbot dashboard, there are
+hundreds of reproducers where root is able to crash a Linux server.
+Some number of them will almost certainly be exploitable.  The problem
+is it takes a huge amount of time to analyze them, and Syzbot's file
+system fuzzers are positively developer-hostile to root cause.  So
+usually I find and fix ext4 file system fuzzing reports via reports
+from other fuzzers, and then eventually syzbot realizes that the
+reproducer no longer works, and it gets closed out.
 
-> +}
-> +
-> +/**
-> + * Validate that closed fd values are rejected.
-> + */
-> +TEST_F(mount_setattr_idmapped, invalid_fd_closed)
-> +{
-...
+I'd certainly be willing to bet a beer or two that there are
+vulnerabilities in VFAT, but do I *know* that to be the case?  No,
+because I don't have the time to take a syzbot report relating to a
+file system and root cause it.  The time to extract out the image, and
+then figure out how to get a simple reproducer (as opposed to the mess
+that a syzbot reproducer that might be randomly toggling a network
+bridge interface on one thread while messing with a file system image
+on another) is easily 10-20 times the effort to actually *fix* the bug
+once we're able to come up with a trivial reproducer with a file
+system image which is a separate file so we can analyze it using file
+system debugging tools.
 
-> +	}
-> +}
-> +
-> +/**
-> + * Validate that the initial user namespace is rejected.
-> + */
-> +TEST_F(mount_setattr_idmapped, invalid_fd_initial_userns)
-> +{
-...
+I'm also *quite* confident that the NSA, KGB, and other state
+intelligence agencies have dozens of zero days for Windows, Linux,
+etc.  We just don't know in what subsystem they are in, so we can't
+just "disable them when secure boot is enabled".
 
-> +/**
-> + * Validate that an attached mount in our mount namespace can be idmapped.
-> + * (The kernel enforces that the mount's mount namespace and the caller's mount
-> + *  namespace match.)
-> + */
-> +TEST_F(mount_setattr_idmapped, attached_mount_inside_current_mount_namespace)
-> +{
-> +}
-> +
-> +/**
-> + * Validate that idmapping a mount is rejected if the mount's mount namespace
-> + * and our mount namespace don't match.
-> + * (The kernel enforces that the mount's mount namespace and the caller's mount
-> + *  namespace match.)
-> + */
-> +TEST_F(mount_setattr_idmapped, attached_mount_outside_current_mount_namespace)
-> +{
-...
-
-> +}
-> +
-> +/**
-> + * Validate that an attached mount in our mount namespace can be idmapped.
-> + */
-> +TEST_F(mount_setattr_idmapped, detached_mount_inside_current_mount_namespace)
-> +{
-...
-
-> +}
-> +
-> +/**
-> + * Validate that a detached mount not in our mount namespace can be idmapped.
-> + */
-> +TEST_F(mount_setattr_idmapped, detached_mount_outside_current_mount_namespace)
-> +{
-...
-
-> +}
-> +
-> +/**
-> + * Validate that currently changing the idmapping of an idmapped mount fails.
-> + */
-> +TEST_F(mount_setattr_idmapped, change_idmapping)
-> +{
-
-
-thanks.
--- 
-~Randy
-You can't do anything without having to do something else first.
--- Belefant's Law
+						- Ted
