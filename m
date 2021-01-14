@@ -2,24 +2,27 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34B7C2F6872
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Jan 2021 18:55:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC052F6C6E
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Jan 2021 21:45:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729487AbhANRzm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 14 Jan 2021 12:55:42 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:38811 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729326AbhANRzl (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Jan 2021 12:55:41 -0500
-Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1l06pa-0006dG-Cq; Thu, 14 Jan 2021 17:54:46 +0000
-Date:   Thu, 14 Jan 2021 18:54:41 +0100
-From:   Christian Brauner <christian.brauner@ubuntu.com>
+        id S1727194AbhANUoe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 14 Jan 2021 15:44:34 -0500
+Received: from mail107.syd.optusnet.com.au ([211.29.132.53]:58162 "EHLO
+        mail107.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726049AbhANUod (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 14 Jan 2021 15:44:33 -0500
+Received: from dread.disaster.area (pa49-179-167-107.pa.nsw.optusnet.com.au [49.179.167.107])
+        by mail107.syd.optusnet.com.au (Postfix) with ESMTPS id 84A94D5E47A;
+        Fri, 15 Jan 2021 07:43:35 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1l09Sw-006UW3-9I; Fri, 15 Jan 2021 07:43:34 +1100
+Date:   Fri, 15 Jan 2021 07:43:34 +1100
+From:   Dave Chinner <david@fromorbit.com>
 To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
         Christoph Hellwig <hch@infradead.org>,
         linux-fsdevel@vger.kernel.org,
         John Johansen <john.johansen@canonical.com>,
@@ -40,7 +43,7 @@ Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
         David Howells <dhowells@redhat.com>,
         James Bottomley <James.Bottomley@hansenpartnership.com>,
         Seth Forshee <seth.forshee@canonical.com>,
-        =?utf-8?B?U3TDqXBoYW5l?= Graber <stgraber@ubuntu.com>,
+        =?iso-8859-1?Q?St=E9phane?= Graber <stgraber@ubuntu.com>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Aleksa Sarai <cyphar@cyphar.com>,
         Lennart Poettering <lennart@poettering.net>,
@@ -54,13 +57,18 @@ Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
         linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
         linux-integrity@vger.kernel.org, selinux@vger.kernel.org
 Subject: Re: [PATCH v5 00/42] idmapped mounts
-Message-ID: <20210114175441.v5cbtzad3ejjcjsw@wittgenstein>
+Message-ID: <20210114204334.GK331610@dread.disaster.area>
 References: <20210112220124.837960-1-christian.brauner@ubuntu.com>
  <20210114171241.GA1164240@magnolia>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20210114171241.GA1164240@magnolia>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0 cx=a_idp_d
+        a=+wqVUQIkAh0lLYI+QRsciw==:117 a=+wqVUQIkAh0lLYI+QRsciw==:17
+        a=kj9zAlcOel0A:10 a=EmqxpYm9HcoA:10 a=7-415B0cAAAA:8
+        a=In5g3teRgiYIkOrEuZ4A:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
@@ -104,44 +112,26 @@ On Thu, Jan 14, 2021 at 09:12:41AM -0800, Darrick J. Wong wrote:
 > structure, which is then carried down the call stack to whatever
 > functions actually care about mapping kernel [ug]ids to their ondisk
 > versions?
-
-Yes. This requires not too many changes to the actual filesystems as you
-can see from the xfs conversion that Christoph has done.
-
 > 
 > Does quota still work after this patchset is applied?  There isn't any
 > mention of that in the cover letter and I don't see a code patch, so
 > does that mean everything just works?  I'm particularly curious about
-
-The most interesting quota codepaths I audited are dquot_transfer that
-transfers quota from one inode to another one during setattr. That
-happens via a struct iattr which will already contain correctly
-translated ia_uid and ia_gid values according to the mount the caller is
-coming from. I'll take another close look at that now and add tests for
-that if I can find some in xfstests.
-
 > whether there can exist processes with CAP_SYS_ADMIN and an idmapped
 > mount?  Syscalls like bulkstat and quotactl present file [ug]ids to
-
-Yes, that should be possible.
-
 > programs, but afaict there won't be any translating going on?
 
-quotactl operates on the superblock. So the caller would need a mapping
-in the user namespace of the superblock. That doesn't need to change.
-But we could in the future extend this to be on a per-mount basis if
-this was a desired use-case. I don't think it needs to happen right now
-though.
+bulkstat is not allowed inside user namespaces. It's an init
+namespace only thing because it provides unchecked/unbounded access
+to all inodes in the filesystem, not just those contained within a
+specific mount container.
 
-> 
-> (To be fair, bulkstat is an xfs-only thing, but quota control isn't.)
+Hence I don't think bulkstat output (and other initns+root only
+filesystem introspection APIs) should be subject to or concerned
+about idmapping.
 
-I'm certain we'll find more things to cover after the first version has
-landed. :)
-We for sure won't cover it all in the first iteration.
+Cheers,
 
-> 
-> I'll start skimming the patchset...
-
-Thanks!
-Christian
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
