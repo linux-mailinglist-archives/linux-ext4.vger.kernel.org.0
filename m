@@ -2,55 +2,47 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14F1F2F5964
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Jan 2021 04:42:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0753C2F596A
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Jan 2021 04:42:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726532AbhANDdp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 13 Jan 2021 22:33:45 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:36411 "EHLO
+        id S1727520AbhANDfG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 13 Jan 2021 22:35:06 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:36601 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726469AbhANDdo (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 13 Jan 2021 22:33:44 -0500
+        with ESMTP id S1727039AbhANDfG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 13 Jan 2021 22:35:06 -0500
 Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 10E3WpCu017056
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 10E3YAaB017414
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Jan 2021 22:32:51 -0500
+        Wed, 13 Jan 2021 22:34:11 -0500
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 16F3D15C3453; Wed, 13 Jan 2021 22:32:51 -0500 (EST)
-Date:   Wed, 13 Jan 2021 22:32:51 -0500
+        id 5774315C3453; Wed, 13 Jan 2021 22:34:10 -0500 (EST)
+Date:   Wed, 13 Jan 2021 22:34:10 -0500
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Yi Li <yili@winhong.com>, yilikernel@gmail.com,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Use IS_ERR instead of IS_ERR_OR_NULL and set inode null
- when IS_ERR.
-Message-ID: <X/+7Y5Cuj0IfKedA@mit.edu>
-References: <20201230033827.3996064-1-yili@winhong.com>
- <20210106130211.GB29271@quack2.suse.cz>
+To:     Daejun Park <daejun7.park@samsung.com>
+Cc:     "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ext4: Fix wrong list_splice in ext4_fc_cleanup
+Message-ID: <X/+7squC5Ikf6Pjp@mit.edu>
+References: <CGME20201230094851epcms2p6eeead8cc984379b37b2efd21af90fd1a@epcms2p6>
+ <20201230094851epcms2p6eeead8cc984379b37b2efd21af90fd1a@epcms2p6>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210106130211.GB29271@quack2.suse.cz>
+In-Reply-To: <20201230094851epcms2p6eeead8cc984379b37b2efd21af90fd1a@epcms2p6>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 02:02:11PM +0100, Jan Kara wrote:
-> On Wed 30-12-20 11:38:27, Yi Li wrote:
-> > 1: ext4_iget/ext4_find_extent never returns NULL, use IS_ERR
-> > instead of IS_ERR_OR_NULL to fix this.
-> > 
-> > 2: ext4_fc_replay_inode should set the inode to NULL when IS_ERR.
-> > and go to call iput properly.
-> > 
-> > Signed-off-by: Yi Li <yili@winhong.com>
+On Wed, Dec 30, 2020 at 06:48:51PM +0900, Daejun Park wrote:
+> After full/fast commit, entries in staging queue are promoted to main
+> queue. In ext4_fs_cleanup function, it splice to staging queue to
+> staging queue.
 > 
-> Thanks for the patch! It looks good to me. You can add:
-> 
-> Reviewed-by: Jan Kara <jack@suse.cz>
+> Signed-off-by: Daejun Park <daejun7.park@samsung.com>
 
 Thanks, applied.
 
