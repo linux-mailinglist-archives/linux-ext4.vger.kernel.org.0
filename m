@@ -2,96 +2,158 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BF5D2F74E7
-	for <lists+linux-ext4@lfdr.de>; Fri, 15 Jan 2021 10:09:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0124E2F7F58
+	for <lists+linux-ext4@lfdr.de>; Fri, 15 Jan 2021 16:20:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726439AbhAOJJE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 15 Jan 2021 04:09:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726375AbhAOJJD (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 15 Jan 2021 04:09:03 -0500
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B452C061757
-        for <linux-ext4@vger.kernel.org>; Fri, 15 Jan 2021 01:08:23 -0800 (PST)
-Received: by mail-yb1-xb43.google.com with SMTP id o144so4440038ybc.0
-        for <linux-ext4@vger.kernel.org>; Fri, 15 Jan 2021 01:08:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=EXawkuEu8qujCdp5VXTYFB7kys53gohho2JmEQ8WEHI=;
-        b=Z0ZX196lPPZaBfhliwYor6SdhrMH8Qkv5tVCERVY/jUPNLY1Pummq0rFegYojJw8CP
-         OW+WwK6yAFgQ9RnfJQ4yBhdHqBgR6J72NFds5pkrGDCS52PP9xGtRNSQDFiVeO6FhFW7
-         X8MFE+OY1A+FW7NHJWgoqRab7VDtyAiPbiGLj1cVg35X4AhmwbhZ38PnUzRJIbnNZl6L
-         DkMU9ZVHFDGqNnH1vwvp/V2vKR/LeFd/qXEkE2pgd2gJg9jgqXXBVgJKsbbMTBK220QY
-         YBoqtw7IkE4p8ilqssg8E2fWc7eVfke0owH9bBVhBPB5a16HOyPU7zNS8uYgaMQjgyzC
-         rhNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=EXawkuEu8qujCdp5VXTYFB7kys53gohho2JmEQ8WEHI=;
-        b=RbAWchbZUmcnlbCoImrkXOYuc0uoUi1ahNUlebv9SNbBkmPCrscDNgfwMiaWTGdB4o
-         CSHGuP+UQL+RSsOwxobjDc3KYZTkFB47WlWMPZMuvDPzCgCCmam+Q8zCnftXXqd11jq1
-         QLKcKIbMj+5AihuBmV0/Wr0PxVMzXMG4C3mAsUS8LKFxYd40oNywLpogQaibDyDP2abg
-         Steb2ZQi7XoLbz31zDuq7jaDN8i8uYqjllpHiNOd1VtTnvW9u0mO+sT1umbvrH+xIvOa
-         1w2JPR2rvkxsVkHCvoivvaoBgVSoJJorRO5wGM/9eCPJa2BIQ2YRlXzT+FoYs6ygD53W
-         3jKg==
-X-Gm-Message-State: AOAM531ijl3zX0id2CwauSilPeUkYDTaG0MERZy0LtUSLFK+B5lNkzGA
-        8ig6MyNnO05sXDEbYLlfOlDrRxOSP2TN7LdXRF0=
-X-Google-Smtp-Source: ABdhPJzWSTkkbG35CSGTWPU5r7tawyzQN/thNAq4GBzAM+MgH75q8K4Do/V4zcLQY3FIjZNofLJIUP4FkX6gI0INiFg=
-X-Received: by 2002:a5b:eca:: with SMTP id a10mr9689440ybs.91.1610701702432;
- Fri, 15 Jan 2021 01:08:22 -0800 (PST)
+        id S1732877AbhAOPUN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 15 Jan 2021 10:20:13 -0500
+Received: from mga03.intel.com ([134.134.136.65]:59828 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732391AbhAOPUM (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 15 Jan 2021 10:20:12 -0500
+IronPort-SDR: nqXD5cIfIDdAA2+/lK9bIG85+v/oPHEyKz5p4DnAHqpy3WbrLJCFBUGkJIM/75jz2Rz6Xq6Rff
+ 9McGAMDfDBHA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="178647979"
+X-IronPort-AV: E=Sophos;i="5.79,349,1602572400"; 
+   d="scan'208";a="178647979"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 07:18:00 -0800
+IronPort-SDR: qHTKnJ48VqMgoJ5ioL9mjQzJYaG+QSQm7eFW1f4hnneaqUSTzB5xHo4kdY/mogopghxin/UnoN
+ /xzas86omxhA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,349,1602572400"; 
+   d="scan'208";a="425343886"
+Received: from lkp-server01.sh.intel.com (HELO 260eafd5ecd0) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 15 Jan 2021 07:17:59 -0800
+Received: from kbuild by 260eafd5ecd0 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1l0QrO-0000Q2-Ex; Fri, 15 Jan 2021 15:17:58 +0000
+Date:   Fri, 15 Jan 2021 23:17:22 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+Subject: [ext4:dev] BUILD SUCCESS 8f4949dacec8c83e45922d8fcd4c51993650bb5f
+Message-ID: <6001b202.4LEW5ptr2cvXr03J%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Received: by 2002:a25:e443:0:0:0:0:0 with HTTP; Fri, 15 Jan 2021 01:08:22
- -0800 (PST)
-Reply-To: davidbensondrrhama222@gmail.com
-From:   " Dr Rhama David Benson," <drdavidbenson224@gmail.com>
-Date:   Fri, 15 Jan 2021 01:08:22 -0800
-Message-ID: <CAMBJ3uaO1SPpPrOFHEpMKeJXPfrPkE1k5-Gk5uAR7veAY-wQgw@mail.gmail.com>
-Subject: Please read carefully,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
--- 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+branch HEAD: 8f4949dacec8c83e45922d8fcd4c51993650bb5f  ext4: remove expensive flush on fast commit
 
+elapsed time: 722m
 
-From: Dr Rhama David Benson,
-Please read carefully,
+configs tested: 97
+configs skipped: 2
 
-This message might meet you in utmost surprise. However, it's just my
-urgent need for foreign partner that made me to contact you for this
-transaction. I got your contact from yahoo tourist search while I was
-searching for a foreign partner. I am assured of your capability and
-reliability to champion this business opportunity when I prayed about
-you.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-I am a banker by profession in Burkina-Faso, West Africa and currently
-holding the post of manager in account and auditing department in our
-bank. I have the opportunity of transferring the left over funds ($
-5.5 Million Dollars) belonging to our deceased customer who died along
-with his entire family in a plane crash
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                    ge_imp3a_defconfig
+i386                             alldefconfig
+powerpc                 mpc834x_itx_defconfig
+mips                     decstation_defconfig
+mips                         bigsur_defconfig
+powerpc                        cell_defconfig
+riscv                    nommu_k210_defconfig
+arm                          gemini_defconfig
+powerpc                 mpc8540_ads_defconfig
+sh                   secureedge5410_defconfig
+mips                           ip32_defconfig
+mips                        nlm_xlp_defconfig
+arm                  colibri_pxa300_defconfig
+sh                           se7712_defconfig
+powerpc                     rainier_defconfig
+powerpc                       ppc64_defconfig
+arm                        multi_v5_defconfig
+arm                          lpd270_defconfig
+arm                       mainstone_defconfig
+powerpc                      ep88xc_defconfig
+arm                        shmobile_defconfig
+m68k                        mvme147_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a002-20210115
+i386                 randconfig-a005-20210115
+i386                 randconfig-a006-20210115
+i386                 randconfig-a001-20210115
+i386                 randconfig-a003-20210115
+i386                 randconfig-a004-20210115
+i386                 randconfig-a012-20210115
+i386                 randconfig-a011-20210115
+i386                 randconfig-a016-20210115
+i386                 randconfig-a015-20210115
+i386                 randconfig-a013-20210115
+i386                 randconfig-a014-20210115
+x86_64               randconfig-a004-20210115
+x86_64               randconfig-a006-20210115
+x86_64               randconfig-a001-20210115
+x86_64               randconfig-a003-20210115
+x86_64               randconfig-a005-20210115
+x86_64               randconfig-a002-20210115
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-Hence; I am inviting you for a business deal where this money can be
-shared between us in the ratio of 60/40 if you agree to my business
-proposal. Further details of the transfer will be forwarded to you as
-soon as I receive your return mail as soon as you receive this letter.
+clang tested configs:
+x86_64               randconfig-a015-20210115
+x86_64               randconfig-a012-20210115
+x86_64               randconfig-a013-20210115
+x86_64               randconfig-a016-20210115
+x86_64               randconfig-a014-20210115
+x86_64               randconfig-a011-20210115
 
-Please indicate your willingness by sending the below information for
-more clarification and easy communication.
-For more details, Contact me for more details.
-
-(1) YOUR FULL NAME...............................
-(2) YOUR AGE AND SEX............................
-(3) YOUR CONTACT ADDRESS..................
-(4) YOUR PRIVATE PHONE N0..........
-(5) FAX NUMBER..............
-(6) YOUR COUNTRY OF ORIGIN..................
-(7) YOUR OCCUPATION.........................
-
-Trusting to hear from you immediately.
-Thanks & Best Regards,
-Dr Rhama David Benson.
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
