@@ -2,158 +2,117 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0124E2F7F58
-	for <lists+linux-ext4@lfdr.de>; Fri, 15 Jan 2021 16:20:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26FF12F80AB
+	for <lists+linux-ext4@lfdr.de>; Fri, 15 Jan 2021 17:24:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732877AbhAOPUN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 15 Jan 2021 10:20:13 -0500
-Received: from mga03.intel.com ([134.134.136.65]:59828 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732391AbhAOPUM (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 15 Jan 2021 10:20:12 -0500
-IronPort-SDR: nqXD5cIfIDdAA2+/lK9bIG85+v/oPHEyKz5p4DnAHqpy3WbrLJCFBUGkJIM/75jz2Rz6Xq6Rff
- 9McGAMDfDBHA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="178647979"
-X-IronPort-AV: E=Sophos;i="5.79,349,1602572400"; 
-   d="scan'208";a="178647979"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 07:18:00 -0800
-IronPort-SDR: qHTKnJ48VqMgoJ5ioL9mjQzJYaG+QSQm7eFW1f4hnneaqUSTzB5xHo4kdY/mogopghxin/UnoN
- /xzas86omxhA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,349,1602572400"; 
-   d="scan'208";a="425343886"
-Received: from lkp-server01.sh.intel.com (HELO 260eafd5ecd0) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 15 Jan 2021 07:17:59 -0800
-Received: from kbuild by 260eafd5ecd0 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1l0QrO-0000Q2-Ex; Fri, 15 Jan 2021 15:17:58 +0000
-Date:   Fri, 15 Jan 2021 23:17:22 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-Subject: [ext4:dev] BUILD SUCCESS 8f4949dacec8c83e45922d8fcd4c51993650bb5f
-Message-ID: <6001b202.4LEW5ptr2cvXr03J%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1729213AbhAOQYT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 15 Jan 2021 11:24:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725946AbhAOQYT (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 15 Jan 2021 11:24:19 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2766C0613C1;
+        Fri, 15 Jan 2021 08:23:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=EUWYO0kUNOPL0+8rq+jqNdckkmjaAICmJuUUQfapnmg=; b=JYVtCComagNhb7hqCp7+K8cypw
+        3uzb/XWKSiI2wd079jfEh54E6UXbFNCkIXVtdMz85yoJmiYJ9S2w+4QoKhU1MSjyIOqb1p214g57v
+        OYst5auFjT2CF13mk3P4uIRmdte6st+AwYPpwos0v4T/lMifmY9WrdQQJ/mDBdVXp56iuYGKsQtWe
+        O2pK8U4clVUk2Sb9MeZFm3JHZxeH3A33eY9EJJ0tIyij6zOm4YqyFbZOyr+g0qLdX/iyHinGps0g6
+        AsBdYcDqwjotOAlFnNds/nv+o8gK+6xKbVC4xJsqmvstk6kUedtXelBk3y7JipjaWC7Ly0vyoHz+5
+        /kQvaNBw==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l0RsA-0099BH-9Q; Fri, 15 Jan 2021 16:22:55 +0000
+Date:   Fri, 15 Jan 2021 16:22:50 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-fsdevel@vger.kernel.org,
+        John Johansen <john.johansen@canonical.com>,
+        James Morris <jmorris@namei.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Mrunal Patel <mpatel@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Theodore Tso <tytso@mit.edu>, Alban Crequy <alban@kinvolk.io>,
+        Tycho Andersen <tycho@tycho.ws>,
+        David Howells <dhowells@redhat.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Seth Forshee <seth.forshee@canonical.com>,
+        St?phane Graber <stgraber@ubuntu.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Lennart Poettering <lennart@poettering.net>,
+        "Eric W. Biederman" <ebiederm@xmission.com>, smbarber@chromium.org,
+        Phil Estes <estesp@gmail.com>, Serge Hallyn <serge@hallyn.com>,
+        Kees Cook <keescook@chromium.org>,
+        Todd Kjos <tkjos@google.com>, Paul Moore <paul@paul-moore.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        containers@lists.linux-foundation.org,
+        linux-security-module@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v5 37/42] xfs: support idmapped mounts
+Message-ID: <20210115162250.GA2179337@infradead.org>
+References: <20210112220124.837960-1-christian.brauner@ubuntu.com>
+ <20210112220124.837960-38-christian.brauner@ubuntu.com>
+ <20210114205154.GL331610@dread.disaster.area>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210114205154.GL331610@dread.disaster.area>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
-branch HEAD: 8f4949dacec8c83e45922d8fcd4c51993650bb5f  ext4: remove expensive flush on fast commit
+On Fri, Jan 15, 2021 at 07:51:54AM +1100, Dave Chinner wrote:
+> > @@ -813,7 +818,7 @@ xfs_setattr_nonsize(
+> >  	 * 	     Posix ACL code seems to care about this issue either.
+> >  	 */
+> >  	if (mask & ATTR_MODE) {
+> > -		error = posix_acl_chmod(&init_user_ns, inode, inode->i_mode);
+> > +		error = posix_acl_chmod(mnt_userns, inode, inode->i_mode);
+> >  		if (error)
+> >  			return error;
+> >  	}
+> > @@ -868,7 +873,7 @@ xfs_setattr_size(
+> >  		 * Use the regular setattr path to update the timestamps.
+> >  		 */
+> >  		iattr->ia_valid &= ~ATTR_SIZE;
+> > -		return xfs_setattr_nonsize(ip, iattr);
+> > +		return xfs_setattr_nonsize(&init_user_ns, ip, iattr);
+> 
+> Shouldn't that be passing mnt_userns?
 
-elapsed time: 722m
+As Christian already explained we an't hit this with anything related
+to uids/gids, the only thing that will be updated are the timestamps,
+as also mentioned in the comment that only makes it partially into the
+diff context.
 
-configs tested: 97
-configs skipped: 2
+> >  	trace_xfs_setattr(ip);
+> >  
+> > -	error = xfs_vn_change_ok(dentry, iattr);
+> > +	error = xfs_vn_change_ok(mnt_userns, dentry, iattr);
+> >  	if (error)
+> >  		return error;
+> >  	return xfs_setattr_size(ip, iattr);
+> 
+> And this passing mnt_userns down into xfs_setattr_size()?  Seems
+> like a bit of a landmine...
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                    ge_imp3a_defconfig
-i386                             alldefconfig
-powerpc                 mpc834x_itx_defconfig
-mips                     decstation_defconfig
-mips                         bigsur_defconfig
-powerpc                        cell_defconfig
-riscv                    nommu_k210_defconfig
-arm                          gemini_defconfig
-powerpc                 mpc8540_ads_defconfig
-sh                   secureedge5410_defconfig
-mips                           ip32_defconfig
-mips                        nlm_xlp_defconfig
-arm                  colibri_pxa300_defconfig
-sh                           se7712_defconfig
-powerpc                     rainier_defconfig
-powerpc                       ppc64_defconfig
-arm                        multi_v5_defconfig
-arm                          lpd270_defconfig
-arm                       mainstone_defconfig
-powerpc                      ep88xc_defconfig
-arm                        shmobile_defconfig
-m68k                        mvme147_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a002-20210115
-i386                 randconfig-a005-20210115
-i386                 randconfig-a006-20210115
-i386                 randconfig-a001-20210115
-i386                 randconfig-a003-20210115
-i386                 randconfig-a004-20210115
-i386                 randconfig-a012-20210115
-i386                 randconfig-a011-20210115
-i386                 randconfig-a016-20210115
-i386                 randconfig-a015-20210115
-i386                 randconfig-a013-20210115
-i386                 randconfig-a014-20210115
-x86_64               randconfig-a004-20210115
-x86_64               randconfig-a006-20210115
-x86_64               randconfig-a001-20210115
-x86_64               randconfig-a003-20210115
-x86_64               randconfig-a005-20210115
-x86_64               randconfig-a002-20210115
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a015-20210115
-x86_64               randconfig-a012-20210115
-x86_64               randconfig-a013-20210115
-x86_64               randconfig-a016-20210115
-x86_64               randconfig-a014-20210115
-x86_64               randconfig-a011-20210115
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+That being said we could just pass down the argument, even if it doesn't
+make much sense for the size update.
