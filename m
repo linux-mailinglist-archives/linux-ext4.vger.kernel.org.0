@@ -2,37 +2,30 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89B442F80B8
-	for <lists+linux-ext4@lfdr.de>; Fri, 15 Jan 2021 17:27:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BA4A2F8303
+	for <lists+linux-ext4@lfdr.de>; Fri, 15 Jan 2021 18:53:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732602AbhAOQ0l (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 15 Jan 2021 11:26:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727049AbhAOQ0k (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 15 Jan 2021 11:26:40 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 620ACC061757;
-        Fri, 15 Jan 2021 08:25:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Er+tBpIbbLuj0OIqdNy2chPN/Ve8hzD1kKT3RJP39d0=; b=rwXZgdKUw066MkReZNwTWvdrDZ
-        +O+Z5xhLd7/kx+ppy6ccAkQPteVkBvNBYeFaNHb1vOy5WPgAW8pROAq3ALviE/ofBGb5Z0OIJ5+AX
-        3aTO9JYoy07VWConrD3cxcC01n5AJ/XuQifDlQYUD7Zdk9xhYoZlPu08/WVLh1X6pEs1F95ixJXRs
-        GvyrkCwwE3486p2RN5bLzW9J4juLcJMEweckdeecRjBTjh/0ItC7SFnldUzVWbPOEdW/VcDQv0rsX
-        QN+h7onKLGjZ6CTuzd6MpZCvn+yYvVFCLUl5X+47PEYMBijpxrr/AfP2+Fj9IHKDJgSwUxYKCpsOi
-        aoK+IQOA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l0Rtf-0099Fq-85; Fri, 15 Jan 2021 16:24:27 +0000
-Date:   Fri, 15 Jan 2021 16:24:23 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        id S1726779AbhAORxM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 15 Jan 2021 12:53:12 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:33202 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726402AbhAORxL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 15 Jan 2021 12:53:11 -0500
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 10FHpKnV022119
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Jan 2021 12:51:21 -0500
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 3494715C399F; Fri, 15 Jan 2021 12:51:20 -0500 (EST)
+Date:   Fri, 15 Jan 2021 12:51:20 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
         Christian Brauner <christian.brauner@ubuntu.com>,
         Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
         linux-fsdevel@vger.kernel.org,
         John Johansen <john.johansen@canonical.com>,
         James Morris <jmorris@namei.org>,
@@ -47,7 +40,7 @@ Cc:     "Darrick J. Wong" <djwong@kernel.org>,
         Mrunal Patel <mpatel@redhat.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Andy Lutomirski <luto@kernel.org>,
-        Theodore Tso <tytso@mit.edu>, Alban Crequy <alban@kinvolk.io>,
+        Alban Crequy <alban@kinvolk.io>,
         Tycho Andersen <tycho@tycho.ws>,
         David Howells <dhowells@redhat.com>,
         James Bottomley <James.Bottomley@hansenpartnership.com>,
@@ -66,40 +59,52 @@ Cc:     "Darrick J. Wong" <djwong@kernel.org>,
         linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
         linux-integrity@vger.kernel.org, selinux@vger.kernel.org
 Subject: Re: [PATCH v5 00/42] idmapped mounts
-Message-ID: <20210115162423.GB2179337@infradead.org>
+Message-ID: <YAHWGMb9rTehRsRz@mit.edu>
 References: <20210112220124.837960-1-christian.brauner@ubuntu.com>
  <20210114171241.GA1164240@magnolia>
  <20210114204334.GK331610@dread.disaster.area>
+ <20210115162423.GB2179337@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210114204334.GK331610@dread.disaster.area>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20210115162423.GB2179337@infradead.org>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 07:43:34AM +1100, Dave Chinner wrote:
-> > That sounds neat.  AFAICT, the VFS passes the filesystem a mount userns
-> > structure, which is then carried down the call stack to whatever
-> > functions actually care about mapping kernel [ug]ids to their ondisk
-> > versions?
-> > 
-> > Does quota still work after this patchset is applied?  There isn't any
-> > mention of that in the cover letter and I don't see a code patch, so
-> > does that mean everything just works?  I'm particularly curious about
-> > whether there can exist processes with CAP_SYS_ADMIN and an idmapped
-> > mount?  Syscalls like bulkstat and quotactl present file [ug]ids to
-> > programs, but afaict there won't be any translating going on?
+On Fri, Jan 15, 2021 at 04:24:23PM +0000, Christoph Hellwig wrote:
 > 
-> bulkstat is not allowed inside user namespaces. It's an init
-> namespace only thing because it provides unchecked/unbounded access
-> to all inodes in the filesystem, not just those contained within a
-> specific mount container.
-> 
-> Hence I don't think bulkstat output (and other initns+root only
-> filesystem introspection APIs) should be subject to or concerned
-> about idmapping.
+> That is what the capabilities are designed for and we already check
+> for them.
 
-That is what the capabilities are designed for and we already check
-for them.
+So perhaps I'm confused, but my understanding is that in the
+containers world, capabilities are a lot more complicated.  There is:
+
+1) The initial namespace capability set
+
+2) The container's user-namespace capability set
+
+3) The namespace in which the file system is mounted --- which is
+      "usually, but not necessarily the initial namespace" and
+      presumably could potentially not necessarily be the current
+      container's user name space, is namespaces can be hierarchically
+      arranged.
+
+Is that correct?  If so, how does this patch set change things (if
+any), and and how does this interact with quota administration
+operations?
+
+On a related note, ext4 specifies a "reserved user" or "reserved
+group" which can access the reserved blocks.  If we have a file system
+which is mounted in a namespace running a container which is running
+RHEL or SLES, and in that container, we have a file system mounted (so
+it was not mounted in the initial namespace), with id-mapping --- and
+then there is a further sub-container created with its own user
+sub-namespace further mapping uids/gids --- will the right thing
+happen?  For that matter, how *is* the "right thing" defined?
+
+Sorry if this is a potentially stupid question, but I find user
+namespaces and id and capability mapping to be hopefully confusing for
+my tiny brain.  :-)
+
+						- Ted
