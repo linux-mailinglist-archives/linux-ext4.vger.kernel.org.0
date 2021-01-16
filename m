@@ -2,59 +2,122 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A533A2F8913
-	for <lists+linux-ext4@lfdr.de>; Sat, 16 Jan 2021 00:02:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B9242F89EC
+	for <lists+linux-ext4@lfdr.de>; Sat, 16 Jan 2021 01:28:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727322AbhAOXBt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 15 Jan 2021 18:01:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33652 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726556AbhAOXBr (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 15 Jan 2021 18:01:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 15DE723339;
-        Fri, 15 Jan 2021 23:01:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610751667;
-        bh=QTUgHN4CSEZqzsn2irWl4mPqICGEikhGZ2NcOnsv1Ro=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=cW9O/RbSGamwz9hZlrh116ZUNLsxEkWou498RDcgMhO7UK98yW3rKAk2juifYvycq
-         8DdAZBfSrO+lMP5q4vAajy7jEdXzTYNd2xbQKny1rXyIzMFfPYjkBnOryRgQJUisW2
-         yUxrBUXp/KIthj2gOwQlF8t0fPtwxlStWqfBig/Df5fuTkq/2eSyE4VD+ni7uXTeln
-         p7wNmxVOJ1/Aq5CYSko2EVNRAsG9DYuHl6JRdKGFYl+d7+MrTxoBMh0E/j02XRg/z/
-         g3wtzDGgEWnyFxBLMobP0qMVBNgUbGcvr0Qf3pMeGvpGwqyKC5CLF7iffE6Qr+Hse4
-         n7ncFEiT5SaFg==
-Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 0E4A460156;
-        Fri, 15 Jan 2021 23:01:07 +0000 (UTC)
-Subject: Re: [GIT PULL] ext4 bug fixes for v5.11-rc4
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YAIHHfxGQfj96di/@mit.edu>
-References: <YAIHHfxGQfj96di/@mit.edu>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YAIHHfxGQfj96di/@mit.edu>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_stable
-X-PR-Tracked-Commit-Id: e9f53353e166a67dfe4f8295100f8ac39d6cf10b
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 0bc9bc1d8b2fa0d5a7e2132e89c540099ea63172
-Message-Id: <161075166704.23598.17060319411892856713.pr-tracker-bot@kernel.org>
-Date:   Fri, 15 Jan 2021 23:01:07 +0000
+        id S1726795AbhAPA2N (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 15 Jan 2021 19:28:13 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:60998 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726176AbhAPA2N (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 15 Jan 2021 19:28:13 -0500
+Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1l0ZR2-0002Mr-95; Sat, 16 Jan 2021 00:27:20 +0000
+Date:   Sat, 16 Jan 2021 01:27:18 +0100
+From:   Christian Brauner <christian.brauner@ubuntu.com>
 To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Dave Chinner <david@fromorbit.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org,
+        John Johansen <john.johansen@canonical.com>,
+        James Morris <jmorris@namei.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Mrunal Patel <mpatel@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alban Crequy <alban@kinvolk.io>,
+        Tycho Andersen <tycho@tycho.ws>,
+        David Howells <dhowells@redhat.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Seth Forshee <seth.forshee@canonical.com>,
+        St?phane Graber <stgraber@ubuntu.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Lennart Poettering <lennart@poettering.net>,
+        "Eric W. Biederman" <ebiederm@xmission.com>, smbarber@chromium.org,
+        Phil Estes <estesp@gmail.com>, Serge Hallyn <serge@hallyn.com>,
+        Kees Cook <keescook@chromium.org>,
+        Todd Kjos <tkjos@google.com>, Paul Moore <paul@paul-moore.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        containers@lists.linux-foundation.org,
+        linux-security-module@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org
+Subject: Re: [PATCH v5 00/42] idmapped mounts
+Message-ID: <20210116002718.jjs6eov65cvwrata@wittgenstein>
+References: <20210112220124.837960-1-christian.brauner@ubuntu.com>
+ <20210114171241.GA1164240@magnolia>
+ <20210114204334.GK331610@dread.disaster.area>
+ <20210115162423.GB2179337@infradead.org>
+ <YAHWGMb9rTehRsRz@mit.edu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YAHWGMb9rTehRsRz@mit.edu>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The pull request you sent on Fri, 15 Jan 2021 16:20:29 -0500:
+On Fri, Jan 15, 2021 at 12:51:20PM -0500, Theodore Ts'o wrote:
+> On Fri, Jan 15, 2021 at 04:24:23PM +0000, Christoph Hellwig wrote:
+> > 
+> > That is what the capabilities are designed for and we already check
+> > for them.
+> 
+> So perhaps I'm confused, but my understanding is that in the
+> containers world, capabilities are a lot more complicated.  There is:
+> 
+> 1) The initial namespace capability set
+> 
+> 2) The container's user-namespace capability set
+> 
+> 3) The namespace in which the file system is mounted --- which is
+>       "usually, but not necessarily the initial namespace" and
+>       presumably could potentially not necessarily be the current
+>       container's user name space, is namespaces can be hierarchically
+>       arranged.
+> 
+> Is that correct?  If so, how does this patch set change things (if
+> any), and and how does this interact with quota administration
+> operations?
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_stable
+The cases you listed are correct. The patchset doesn't change them.
+Simply put, the patchset doesn't alter capability checking in any way.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/0bc9bc1d8b2fa0d5a7e2132e89c540099ea63172
+> 
+> On a related note, ext4 specifies a "reserved user" or "reserved
+> group" which can access the reserved blocks.  If we have a file system
+> which is mounted in a namespace running a container which is running
+> RHEL or SLES, and in that container, we have a file system mounted (so
+> it was not mounted in the initial namespace), with id-mapping --- and
+> then there is a further sub-container created with its own user
+> sub-namespace further mapping uids/gids --- will the right thing
+> happen?  For that matter, how *is* the "right thing" defined?
 
-Thank you!
+In short, nothing changes. Whatever happened before happens now.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Specifically s_resuid/s_resgid are superblock mount options and so never
+change on a per-mount basis and thus also aren't affected by idmapped
+mounts.
+
+> 
+> Sorry if this is a potentially stupid question, but I find user
+> namespaces and id and capability mapping to be hopefully confusing for
+> my tiny brain.  :-)
+
+No, I really appreciate the questions. :) My brain can most likely
+handle less. :)
+
+Christian
