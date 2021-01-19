@@ -2,82 +2,69 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DEB52FC3CE
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Jan 2021 23:40:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4B412FC3CC
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Jan 2021 23:40:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405452AbhASOcn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 19 Jan 2021 09:32:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388605AbhASJse (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Jan 2021 04:48:34 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8613C061573;
-        Tue, 19 Jan 2021 01:47:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=KBLdqigwXHa9zb4IKHjzXYIBtipeYgH3IvVF9mKe8Wc=; b=rkMudNvWO66HMSQr1C/riYx6VA
-        ITPbSZKgiBW4KcAtUmJmkUr1dBGlA/LNN3BGZBcxy4D6iuF9UCTZW8+fvX6Fs2HjXaH7Id164/C6p
-        8aX7aQWKUIb43BuHAt825NJDtfHZ03eFtv7j69IJStn2YxsSOCpKR6Ec83TqhIMYX2rT5ua6MVffv
-        dkDjTkT8HY7yNCIjlZIOXXuGVjfTfypwT0jzue7d0zu6Oqjhs9YmICue9ulItMg+VcpccEHVuyhvT
-        Git07uadZsjuEsjKkGCVR9P2D1ctpz0L0F93Xqf5Qcom70CCTkD4H7p/+v1MyKeAUkCnqLSoSIzQN
-        d/kOWGMA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l1nc6-00E8cK-3V; Tue, 19 Jan 2021 09:47:50 +0000
-Date:   Tue, 19 Jan 2021 09:47:50 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-fsdevel@vger.kernel.org,
-        John Johansen <john.johansen@canonical.com>,
-        James Morris <jmorris@namei.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Arnd Bergmann <arnd@arndb.de>,
+        id S2405466AbhASOcp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 19 Jan 2021 09:32:45 -0500
+Received: from m12-11.163.com ([220.181.12.11]:51586 "EHLO m12-11.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2405095AbhASLDf (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 19 Jan 2021 06:03:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=uJAp7e5ypVZ4XLiOT5
+        4yrh5KpEtB2S1xmeBJJYkfdgE=; b=lObkR0u28ixdwmm1NAJ2tKz6oB/lV3CQt3
+        wJo9Q9bo/6ETaaeKa8TaLVBl64yUvfwhzRzvHFr0sTiM23qFVmkSMmer5xLPw75T
+        38DSdkCJaRbl06UQPrmV2XVnOtbimeKjMvNONgMQ+uJgIChU/+MXu4z4IyqW225h
+        w+9V9u2gA=
+Received: from localhost.localdomain (unknown [119.3.119.20])
+        by smtp7 (Coremail) with SMTP id C8CowACXTHYavAZgerdFJg--.35392S4;
+        Tue, 19 Jan 2021 19:01:54 +0800 (CST)
+From:   Pan Bian <bianpan2016@163.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Mrunal Patel <mpatel@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Theodore Tso <tytso@mit.edu>, Alban Crequy <alban@kinvolk.io>,
-        Tycho Andersen <tycho@tycho.ws>,
-        David Howells <dhowells@redhat.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Seth Forshee <seth.forshee@canonical.com>,
-        St??phane Graber <stgraber@ubuntu.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Lennart Poettering <lennart@poettering.net>,
-        "Eric W. Biederman" <ebiederm@xmission.com>, smbarber@chromium.org,
-        Phil Estes <estesp@gmail.com>, Serge Hallyn <serge@hallyn.com>,
-        Kees Cook <keescook@chromium.org>,
-        Todd Kjos <tkjos@google.com>, Paul Moore <paul@paul-moore.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        containers@lists.linux-foundation.org,
-        linux-security-module@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        Mauricio V??squez Bernal <mauricio@kinvolk.io>
-Subject: Re: [PATCH v5 40/42] fs: introduce MOUNT_ATTR_IDMAP
-Message-ID: <20210119094750.GQ3364550@infradead.org>
-References: <20210112220124.837960-1-christian.brauner@ubuntu.com>
- <20210112220124.837960-41-christian.brauner@ubuntu.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210112220124.837960-41-christian.brauner@ubuntu.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+        Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pan Bian <bianpan2016@163.com>
+Subject: [PATCH] ext4: stop update inode before return
+Date:   Tue, 19 Jan 2021 03:01:21 -0800
+Message-Id: <20210119110121.36656-1-bianpan2016@163.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: C8CowACXTHYavAZgerdFJg--.35392S4
+X-Coremail-Antispam: 1Uf129KBjvdXoWruFWxCry8ArW5Cry3Kr17Wrg_yoW3Grb_Za
+        y0vw4xKrZ8Zwn3Cws5WF4avrn293yruF1rZrWxtF47Za40ya98uF4qqF9xAF4DWr12gr9x
+        ArykJFySyryxWjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUeWlk3UUUUU==
+X-Originating-IP: [119.3.119.20]
+X-CM-SenderInfo: held01tdqsiiqw6rljoofrz/1tbiDhkfclXly7W0CQABsI
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Generally looks good, but wouldn't it make sense to introduce the
-userns_fd in version 0 of the mount_attr structure instead of having
-two versions from the start?
+Stop inode updating before returning the error code.
+
+Fixes: aa75f4d3daae ("ext4: main fast-commit commit path")
+Signed-off-by: Pan Bian <bianpan2016@163.com>
+---
+ fs/ext4/inode.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index c173c8405856..64039bbb656d 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -5389,8 +5389,10 @@ int ext4_setattr(struct dentry *dentry, struct iattr *attr)
+ 			inode->i_gid = attr->ia_gid;
+ 		error = ext4_mark_inode_dirty(handle, inode);
+ 		ext4_journal_stop(handle);
+-		if (unlikely(error))
++		if (unlikely(error)) {
++			ext4_fc_stop_update(inode);
+ 			return error;
++		}
+ 	}
+ 
+ 	if (attr->ia_valid & ATTR_SIZE) {
+-- 
+2.17.1
+
