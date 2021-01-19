@@ -2,88 +2,122 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5685B2FAF2C
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Jan 2021 04:41:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45E882FAF30
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Jan 2021 04:45:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728703AbhASDlg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 18 Jan 2021 22:41:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54478 "EHLO
+        id S1728713AbhASDov (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 18 Jan 2021 22:44:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728690AbhASDld (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 18 Jan 2021 22:41:33 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EC27C061573
-        for <linux-ext4@vger.kernel.org>; Mon, 18 Jan 2021 19:40:52 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id v19so12155086pgj.12
-        for <linux-ext4@vger.kernel.org>; Mon, 18 Jan 2021 19:40:52 -0800 (PST)
+        with ESMTP id S1728573AbhASDor (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 18 Jan 2021 22:44:47 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66EAAC061573
+        for <linux-ext4@vger.kernel.org>; Mon, 18 Jan 2021 19:44:07 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id y205so5592568pfc.5
+        for <linux-ext4@vger.kernel.org>; Mon, 18 Jan 2021 19:44:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=dilger-ca.20150623.gappssmtp.com; s=20150623;
         h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
          :references;
-        bh=PGfjNXq6kQQR7eS17AeEF6df0fZnPpvtkWbRWExs/JM=;
-        b=PtnBgYE0iSjqyMdDfhpmWv8Lg0EG0N1/xh/CU7+k0yHp357EiZ2XzRL/VMYy0mIO9t
-         YLQqLYR8PB2Uf8p5s6kTzFDl9fpHEwe9rRcqiuiVNXjzGHc3qUpX1JDCXi4YNHlGdT4Y
-         BHUb+HFqH5VFYQuE0ID6HlTpOKYpaGoM14VQjau/wKgcet34CxzGfA5ur0zWJ1cmVEN0
-         nIi0sXmXLsSIs7SkFa2j2YEdcBLtzPdmQyyH1ooiwMgehezt1F4SlpqcLkszBMNv72l+
-         D3cVUYVbvxL3t9stHAY8n61buGUD1pv2t3xR50JKC6PWAFy2XSXCznMZGQX9ecq8JJBa
-         D2xA==
+        bh=/q04Qijbrtl7abjswNGUBJoouDR9KZ4AGaHH4rlP2KY=;
+        b=r5bPJWvRlFSKgksrAIbNf93/4kv/hO8kdTSG8UHzD2y8CtPRHkub6TAIv5DUTIjEeL
+         6Wly1efHI5tItuz3le41iA0Hi1hJ5QK7BUQ6uTp/E25J26ikBqncTDAteD9Lh/slyiNZ
+         bWpbJTVQiQ55rgJZm7mTBeEOPfbQB5RLa1lt1q7Gh1HzruL8im1M1Y077BHS50aS1GHm
+         lpHRm/icNGRh/VCuq4MLVyfuW0UBuwxa1Nb9LGMTJTtRB5LAXHbxymXm81T0sFCdSBk8
+         pFgN7HoEdpYNFxK/yA817w9NUcsi2gg+MY80fmN/4kdMwpBkpn9bnN435IrwCl2oiqbN
+         3pUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:message-id:mime-version:subject:date
          :in-reply-to:cc:to:references;
-        bh=PGfjNXq6kQQR7eS17AeEF6df0fZnPpvtkWbRWExs/JM=;
-        b=V1Y0D0dZ5g1JHgmc2rGAm4jawUGI4hvr79INNNy1Bw1J0sOo0TPWrSOuQFGqmm5Gl7
-         HB9TBz7zQeSkupaf5sVWf1Vvc2wMzfXt1qu+qUsqy+NsSXbajgdAUXsFdCfyEPk0gRiz
-         JTJoWPEVT/IroFlMsQsk5m/8ROps5Vsa6kbwPp9SUmrVVMAUFOpaxn7AdkrafM/l2aGQ
-         SdckaeN+S+yudNQZ+q+xryueWLdwqWGM+n2bDy3VacsSRq/bjOikYCSb84Le46jj+HWb
-         sY2sIkqF/j20wtcRO7xH/JnOr8V2Y4MNZeCnFL8TCvIlHHzqQOWDzZvr8cOxjy5rPdgI
-         rEHA==
-X-Gm-Message-State: AOAM530Ax8fEfrTR+zM9FzaAD8v9VVlAnRldsOQahjttFLP4mRM6/kA6
-        6HTlr+ygTqNuSDECiyWwzLmgq44vnVEgyRFB
-X-Google-Smtp-Source: ABdhPJwRUzFSx0nZUHVuH/f0gVBY6ebX5wd0Z8uBWYU4UYBSN1V5D136EL6iEO8ygmnXUnfJHPoW2w==
-X-Received: by 2002:a05:6a00:2d5:b029:1b9:67bd:b60f with SMTP id b21-20020a056a0002d5b02901b967bdb60fmr1900449pft.10.1611027651959;
-        Mon, 18 Jan 2021 19:40:51 -0800 (PST)
+        bh=/q04Qijbrtl7abjswNGUBJoouDR9KZ4AGaHH4rlP2KY=;
+        b=erk1GSM9cltcZADlqAXtH1ir/UOXt+J0GNn0vQkFHxvpD0b+eIdWLr5bM9ysmXyYfE
+         LGoIYhVWVuDqsUyrVb2oz1sOzGqRUWK9lq+NSiULw+tLqqY/oxXP/Lc32aa26P2AEJX9
+         lMNA8F96DWwDn3ytUtxJI146qZrgFhYxAEE5irJT2SLmGvMcZMF/AoFLKxG7qwYeigcU
+         X0w5zV3jSPYAM+hSwv/IK3GVOaAeRMDGvjTnY5zWem09ijEBcRzFUicLarysBBiP0dga
+         3OUVrSa0eBTSk1pbPv+dv5btvqiukvTkz0BQLk810yalytVl/siGSFf0A/qp2sHmcNyE
+         C74Q==
+X-Gm-Message-State: AOAM531nt2PRCZLIS22h3ndIUfLoihGRCCBTxKmsaWygNeUJ+ueftnch
+        YaKpmJXQOUdr3h0E3SSCkj6AQQ==
+X-Google-Smtp-Source: ABdhPJxsLd7xSWR3cUMbggUmXRw0HDCJ8gzKN5LVt3Rrnv3wsTZ+Fe+eALrsKl74cOEWjp4xgNVZsw==
+X-Received: by 2002:a63:1c13:: with SMTP id c19mr2563638pgc.359.1611027846835;
+        Mon, 18 Jan 2021 19:44:06 -0800 (PST)
 Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id v19sm846462pjg.50.2021.01.18.19.40.50
+        by smtp.gmail.com with ESMTPSA id f29sm16822840pgm.76.2021.01.18.19.44.05
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 18 Jan 2021 19:40:51 -0800 (PST)
+        Mon, 18 Jan 2021 19:44:05 -0800 (PST)
 From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <90D76828-C2EE-459A-A190-8E4FB51CE118@dilger.ca>
+Message-Id: <6D9D9B4D-65E5-4993-AC08-080B677BA78E@dilger.ca>
 Content-Type: multipart/signed;
- boundary="Apple-Mail=_BAFC053F-6A71-4A0C-B59D-A34062BEEE2F";
+ boundary="Apple-Mail=_CF7582DE-2906-4EF2-9ED9-35596B0D02B6";
  protocol="application/pgp-signature"; micalg=pgp-sha256
 Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: code questions about ext4_inode_datasync_dirty()
-Date:   Mon, 18 Jan 2021 20:40:47 -0700
-In-Reply-To: <20210113171943.GB26686@quack2.suse.cz>
-Cc:     Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        joseph qi <joseph.qi@linux.alibaba.com>
-To:     Jan Kara <jack@suse.cz>
-References: <c95ac3d6-5e9c-b706-28f7-3bbe4b75964b@linux.alibaba.com>
- <20210113171943.GB26686@quack2.suse.cz>
+Subject: Re: fallocate(FALLOC_FL_ZERO_RANGE_BUT_REALLY) to avoid unwritten
+ extents?
+Date:   Mon, 18 Jan 2021 20:44:04 -0700
+In-Reply-To: <6d982635-d978-e044-4cca-c140401eb0d3@scylladb.com>
+Cc:     Andres Freund <andres@anarazel.de>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-block@vger.kernel.org
+To:     Avi Kivity <avi@scylladb.com>
+References: <20201230062819.yinrrp6uwfegsqo3@alap3.anarazel.de>
+ <20210104181958.GE6908@magnolia>
+ <20210104191058.sryksqjnjjnn5raa@alap3.anarazel.de>
+ <f6f75f11-5d5b-ae63-d584-4b6f09ff401e@scylladb.com>
+ <20210112181600.GA1228497@infradead.org>
+ <C8811877-48A9-4199-9F28-20F5B071AE36@dilger.ca>
+ <20210112184339.GA1238746@infradead.org>
+ <1C33DEE4-8BE9-4BF3-A589-E11532382B36@dilger.ca>
+ <20210112211445.GC1164248@magnolia>
+ <20210112213633.fb4tjlgvo6tznfr4@alap3.anarazel.de>
+ <6d982635-d978-e044-4cca-c140401eb0d3@scylladb.com>
 X-Mailer: Apple Mail (2.3273)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 
---Apple-Mail=_BAFC053F-6A71-4A0C-B59D-A34062BEEE2F
-Content-Transfer-Encoding: 7bit
+--Apple-Mail=_CF7582DE-2906-4EF2-9ED9-35596B0D02B6
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain;
 	charset=us-ascii
 
-On Jan 13, 2021, at 10:19 AM, Jan Kara <jack@suse.cz> wrote:
-> 
-> Hi!
-> 
-> On Tue 12-01-21 19:45:06, Xiaoguang Wang wrote:
->> I use io_uring to evaluate ext4 randread performance(direct io), observed
->> obvious overhead in jbd2_transaction_committed():
+On Jan 13, 2021, at 12:44 AM, Avi Kivity <avi@scylladb.com> wrote:
+>=20
+> On 1/12/21 11:36 PM, Andres Freund wrote:
+>> Hi,
+>>=20
+>> On 2021-01-12 13:14:45 -0800, Darrick J. Wong wrote:
+>>> ALLOCSP64 can only allocate pre-zeroed blocks as part of extending =
+EOF,
+>>> whereas a new FZERO flag means that we can pre-zero an arbitrary =
+range
+>>> of bytes in a file.  I don't know if Avi or Andres' usecases demand =
+that
+>>> kind of flexibilty but I know I'd rather go for the more powerful
+>>> interface.
+>> Postgres/I don't at the moment have a need to allocate "written" =
+zeroed
+>> space anywhere but EOF. I can see some potential uses for more =
+flexible
+>> pre-zeroing in the future though, but not very near term.
+>>=20
+>=20
+> I also agree that it's better not to have the kernel fall back =
+internally on writing zeros, letting userspace do that. The assumption =
+is that WRITE SAME will be O(1)-ish and so can bypass scheduling =
+decisions, but if we need to write zeros, better let the application =
+throttle the rate.
 
-I was going to ask about this - is the filesystem mounted with noatime or
-relatime or lazytime?  Otherwise, it may be a lot of atime updates that are
-causing all of this journal traffic in what _should_ be a read-only workload?
+Writing zeroes from userspace has a *lot* more overhead when there is a =
+network
+filesystem involved.  It would be better to generate the zeroes on the =
+server,
+or directly in the disk than sending GB of zeroes over the network.
+
 
 Cheers, Andreas
 
@@ -92,7 +126,7 @@ Cheers, Andreas
 
 
 
---Apple-Mail=_BAFC053F-6A71-4A0C-B59D-A34062BEEE2F
+--Apple-Mail=_CF7582DE-2906-4EF2-9ED9-35596B0D02B6
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment;
 	filename=signature.asc
@@ -103,19 +137,19 @@ Content-Description: Message signed with OpenPGP
 -----BEGIN PGP SIGNATURE-----
 Comment: GPGTools - http://gpgtools.org
 
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmAGVL8ACgkQcqXauRfM
-H+DM5w/+IRoHDk0YxSLX03YIMfN6tK7QvRzwH7xoWnXSUGQuIryR02V698h0Sh1+
-1zxPfqReM1CqTIKq0hqOgb+M4mG5l4es8XxYYWjQfwS1zjCdlCvnp/cQsLXsukn7
-nWMescS587Xx/Ug1LuOabZtD7Xg/oNvyYptbGc7QOOn5gxvBbmzSzPxIzD5kFXEE
-n3wVic/KCAX04dK/crOlX11R1rImOSVq2VxcgyagW46X9ulrpT63GDdjYRFN9D/E
-p/rUkejdk+tqlnqh583qaw6G3a4NB/VBvchUo42WcpAuW3r0zXS0egzNzxuOs84/
-lV1OxZvlBPZipdBlNUVo/w3SRqALpjp/cyRVjwnqgR/6SH0gYR7wbKDemCkGm19N
-q5hLk0+Fj9dzGe16HHNrVcgbpOQw+Gqs84ucqC/DqWEnenN0PCJUuumFqAT0/w/Z
-it3JofKGRY+11gpJjjGyRIXl+v9YgV38jNRkT5kwW0YHsqAjI5szZgDUWGrkWTmh
-qh/94UQFBhYKzuLpSLnIp7m21xPLiIlrN1Py8pGXFmmhDW8TsosQUHDUHnoo14IW
-E+vITeHFRGYEvdvBtXEeIToCJMESY3ulTQTyyr5EnbNJ2iFP9SubIzPIb2zd0U+B
-epFk3EpQ50VeHQJz49I5g9/gV0o6EQCCMTjJO1Tt6kmqekSnphs=
-=8LuK
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmAGVYQACgkQcqXauRfM
+H+DLKQ/9GRaFCst/9Bjwd/poEF5jxdM6qxtvLh1IreNdo5xYT9CWaWcV9RGSCTud
+TPy82XDn/ml2FBV2XLsxyOXv5bjG89/Y1EWQpbsrF3p+mxak2+Qw/0PqL1sJSi7H
+kb7hVGrB16n6mLKUZpnHSMiXBl/1K8Mq3YWPY43svLd7l2zCpC6TpgzCYfxpdgid
+c7T9wifVH4gPz8A/PQ26MAL9oABbozDOak3ZdOJQrMWnlfqG18MtGArwAbxWG2c2
+feMxx8givW6DXtxgk9OMyZYAwYrb6hGc4hK3f7r1SO6zaaCfpvUt7pupGjT15vTn
+ZtxHQDgb4bgb/DI5NFPxB0+0a9+oO1nW/oU6Fhccl6bwVpdtFUrCJOa1D0pRuVlU
+zdr4jVOCrsGmXDtPvJtWFrLuPgj8SVwuBvuPWaxWSTgZ/ADewV4lp0NhZymmmvVL
+FzNE1ta9Z9QO3oC+FH679/xuIAReBKmQudS9dfLgVrEhhevuRqfVWnL9fP1svK+U
+85tBBYgOZDe4V5rA/c+nIhGmG37cE5y1Ei5ngaDf/jiL+V728W561dT7DYU0+CjE
+T3LLNhYGj991vpFZBs3jn+/87gtdilP+me2OjpFug8jyL7wFbOquhXIgdE3WLUlr
+wIq3T3GDX7afC3jEN8JXEoV0oZidbBUsUdCoDfLWpJ+zQdjXfY8=
+=imFu
 -----END PGP SIGNATURE-----
 
---Apple-Mail=_BAFC053F-6A71-4A0C-B59D-A34062BEEE2F--
+--Apple-Mail=_CF7582DE-2906-4EF2-9ED9-35596B0D02B6--
