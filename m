@@ -2,65 +2,120 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53EB62FACAD
-	for <lists+linux-ext4@lfdr.de>; Mon, 18 Jan 2021 22:32:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5685B2FAF2C
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Jan 2021 04:41:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394571AbhARV0y (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 18 Jan 2021 16:26:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54368 "EHLO
+        id S1728703AbhASDlg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 18 Jan 2021 22:41:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388296AbhARKIy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 18 Jan 2021 05:08:54 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C202EC061575
-        for <linux-ext4@vger.kernel.org>; Mon, 18 Jan 2021 02:08:13 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id h4so18161166qkk.4
-        for <linux-ext4@vger.kernel.org>; Mon, 18 Jan 2021 02:08:13 -0800 (PST)
+        with ESMTP id S1728690AbhASDld (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 18 Jan 2021 22:41:33 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EC27C061573
+        for <linux-ext4@vger.kernel.org>; Mon, 18 Jan 2021 19:40:52 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id v19so12155086pgj.12
+        for <linux-ext4@vger.kernel.org>; Mon, 18 Jan 2021 19:40:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=tP6pZVY3LaTqEQeS14S/P6qtBgr2gHYlg1u2+4gvsag=;
-        b=s6Rh2gYdEYFNJOPtbDmCKoO3kIhgK8R7bGbkEw4JoBAj2crSrw65FqngtSfSDu92aN
-         EFHMIdqx6qYly8hXP6EYA6Ze3tEzqCW3QFQWJ3rexKODQPbI2LJZZ0yKuvAURqQGiVY8
-         NsoKR84hdemHh2rp4qYQVi+MQbuEHGnH6w20Acz5F9Vbw4I7BfzFth1hI6JNyavCawlF
-         a76rsDqaNy+tBSexgLdnByVlJOweEEeuCDHX4u4EV8vJnYeZ3gPi90sMaYWjmS5RA4Ni
-         P9hSvsfnxjsrSiiXjogQJKk5h6E0+t1DSYfh0mJikrO54Qd3uspCueivaO7SceSeNZoH
-         CD8A==
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=PGfjNXq6kQQR7eS17AeEF6df0fZnPpvtkWbRWExs/JM=;
+        b=PtnBgYE0iSjqyMdDfhpmWv8Lg0EG0N1/xh/CU7+k0yHp357EiZ2XzRL/VMYy0mIO9t
+         YLQqLYR8PB2Uf8p5s6kTzFDl9fpHEwe9rRcqiuiVNXjzGHc3qUpX1JDCXi4YNHlGdT4Y
+         BHUb+HFqH5VFYQuE0ID6HlTpOKYpaGoM14VQjau/wKgcet34CxzGfA5ur0zWJ1cmVEN0
+         nIi0sXmXLsSIs7SkFa2j2YEdcBLtzPdmQyyH1ooiwMgehezt1F4SlpqcLkszBMNv72l+
+         D3cVUYVbvxL3t9stHAY8n61buGUD1pv2t3xR50JKC6PWAFy2XSXCznMZGQX9ecq8JJBa
+         D2xA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=tP6pZVY3LaTqEQeS14S/P6qtBgr2gHYlg1u2+4gvsag=;
-        b=Z+ngV7iIJXAcbS2NdWcSum41GJ6m6NlibLFaOd5Ggby8T1yvUg2iLtC/WotTZjfjnW
-         O2Vovwhd/2S1Veo3ullX2x0G4khfjC8xyliYScgtLtxijJSNajSMks3zSrCn2o5iG6xT
-         qE+i/kpvR63CC/GWA0z0skQc+ZxxTnqURDN8g37Ex2u1jJK/IE9myNKpYDJD0/pu+EK1
-         V590AkQqrotwltq5S960SbDgUSiLwXHkpB0lZ1EVYm3bhTzSYYKt938pUg3GjzFAQs49
-         FCmmcurfTve+0GFHzJmJGKIF6Z2IOdnW7XZcsAC5vS/xszwicutrAz7W+kbdz+5jNX/c
-         8xQg==
-X-Gm-Message-State: AOAM531aX68C6PHujkNIqwikUcxSD+2wKcqro8a9Sb7xQTa40ObTibdc
-        yKbQyKrMacmsleUaERYJtU5p9tl4QFR1r3XO0DU=
-X-Google-Smtp-Source: ABdhPJxBkzus7ZwShb1Zxg8xUS7E9e4hPDLGRZ0fNeaRA8DgLGjX4rSFkAJSluhOKdkVnR/AMpdZQqFWxzIJmaS7mQM=
-X-Received: by 2002:a37:aace:: with SMTP id t197mr23647142qke.175.1610964493073;
- Mon, 18 Jan 2021 02:08:13 -0800 (PST)
-MIME-Version: 1.0
-Received: by 2002:ac8:76d3:0:0:0:0:0 with HTTP; Mon, 18 Jan 2021 02:08:12
- -0800 (PST)
-Reply-To: barristerdinkarim09@gmail.com
-From:   Din Karim <genbrucewilliams@gmail.com>
-Date:   Mon, 18 Jan 2021 10:08:12 +0000
-Message-ID: <CAOGH4DZ8YnxQJAGt8g2maT1rYE0jca+BiXwqvi1uink2r5rK5w@mail.gmail.com>
-Subject: Hello
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=PGfjNXq6kQQR7eS17AeEF6df0fZnPpvtkWbRWExs/JM=;
+        b=V1Y0D0dZ5g1JHgmc2rGAm4jawUGI4hvr79INNNy1Bw1J0sOo0TPWrSOuQFGqmm5Gl7
+         HB9TBz7zQeSkupaf5sVWf1Vvc2wMzfXt1qu+qUsqy+NsSXbajgdAUXsFdCfyEPk0gRiz
+         JTJoWPEVT/IroFlMsQsk5m/8ROps5Vsa6kbwPp9SUmrVVMAUFOpaxn7AdkrafM/l2aGQ
+         SdckaeN+S+yudNQZ+q+xryueWLdwqWGM+n2bDy3VacsSRq/bjOikYCSb84Le46jj+HWb
+         sY2sIkqF/j20wtcRO7xH/JnOr8V2Y4MNZeCnFL8TCvIlHHzqQOWDzZvr8cOxjy5rPdgI
+         rEHA==
+X-Gm-Message-State: AOAM530Ax8fEfrTR+zM9FzaAD8v9VVlAnRldsOQahjttFLP4mRM6/kA6
+        6HTlr+ygTqNuSDECiyWwzLmgq44vnVEgyRFB
+X-Google-Smtp-Source: ABdhPJwRUzFSx0nZUHVuH/f0gVBY6ebX5wd0Z8uBWYU4UYBSN1V5D136EL6iEO8ygmnXUnfJHPoW2w==
+X-Received: by 2002:a05:6a00:2d5:b029:1b9:67bd:b60f with SMTP id b21-20020a056a0002d5b02901b967bdb60fmr1900449pft.10.1611027651959;
+        Mon, 18 Jan 2021 19:40:51 -0800 (PST)
+Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id v19sm846462pjg.50.2021.01.18.19.40.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 18 Jan 2021 19:40:51 -0800 (PST)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <90D76828-C2EE-459A-A190-8E4FB51CE118@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_BAFC053F-6A71-4A0C-B59D-A34062BEEE2F";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: code questions about ext4_inode_datasync_dirty()
+Date:   Mon, 18 Jan 2021 20:40:47 -0700
+In-Reply-To: <20210113171943.GB26686@quack2.suse.cz>
+Cc:     Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        joseph qi <joseph.qi@linux.alibaba.com>
+To:     Jan Kara <jack@suse.cz>
+References: <c95ac3d6-5e9c-b706-28f7-3bbe4b75964b@linux.alibaba.com>
+ <20210113171943.GB26686@quack2.suse.cz>
+X-Mailer: Apple Mail (2.3273)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello dear,
 
-I am still waiting for your Email response, you did receive my first
-email to you????
+--Apple-Mail=_BAFC053F-6A71-4A0C-B59D-A34062BEEE2F
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset=us-ascii
 
-Respectfully Yours,
+On Jan 13, 2021, at 10:19 AM, Jan Kara <jack@suse.cz> wrote:
+> 
+> Hi!
+> 
+> On Tue 12-01-21 19:45:06, Xiaoguang Wang wrote:
+>> I use io_uring to evaluate ext4 randread performance(direct io), observed
+>> obvious overhead in jbd2_transaction_committed():
 
-Mr  Din Karim(Esq)
+I was going to ask about this - is the filesystem mounted with noatime or
+relatime or lazytime?  Otherwise, it may be a lot of atime updates that are
+causing all of this journal traffic in what _should_ be a read-only workload?
+
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_BAFC053F-6A71-4A0C-B59D-A34062BEEE2F
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmAGVL8ACgkQcqXauRfM
+H+DM5w/+IRoHDk0YxSLX03YIMfN6tK7QvRzwH7xoWnXSUGQuIryR02V698h0Sh1+
+1zxPfqReM1CqTIKq0hqOgb+M4mG5l4es8XxYYWjQfwS1zjCdlCvnp/cQsLXsukn7
+nWMescS587Xx/Ug1LuOabZtD7Xg/oNvyYptbGc7QOOn5gxvBbmzSzPxIzD5kFXEE
+n3wVic/KCAX04dK/crOlX11R1rImOSVq2VxcgyagW46X9ulrpT63GDdjYRFN9D/E
+p/rUkejdk+tqlnqh583qaw6G3a4NB/VBvchUo42WcpAuW3r0zXS0egzNzxuOs84/
+lV1OxZvlBPZipdBlNUVo/w3SRqALpjp/cyRVjwnqgR/6SH0gYR7wbKDemCkGm19N
+q5hLk0+Fj9dzGe16HHNrVcgbpOQw+Gqs84ucqC/DqWEnenN0PCJUuumFqAT0/w/Z
+it3JofKGRY+11gpJjjGyRIXl+v9YgV38jNRkT5kwW0YHsqAjI5szZgDUWGrkWTmh
+qh/94UQFBhYKzuLpSLnIp7m21xPLiIlrN1Py8pGXFmmhDW8TsosQUHDUHnoo14IW
+E+vITeHFRGYEvdvBtXEeIToCJMESY3ulTQTyyr5EnbNJ2iFP9SubIzPIb2zd0U+B
+epFk3EpQ50VeHQJz49I5g9/gV0o6EQCCMTjJO1Tt6kmqekSnphs=
+=8LuK
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_BAFC053F-6A71-4A0C-B59D-A34062BEEE2F--
