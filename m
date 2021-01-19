@@ -2,165 +2,93 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 569492FB92A
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Jan 2021 15:35:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9B4A2FB953
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Jan 2021 15:35:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728709AbhASOVZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 19 Jan 2021 09:21:25 -0500
-Received: from pitta.toroid.org ([136.243.148.74]:54140 "EHLO pitta.toroid.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732221AbhASJUT (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 19 Jan 2021 04:20:19 -0500
-X-Greylist: delayed 604 seconds by postgrey-1.27 at vger.kernel.org; Tue, 19 Jan 2021 04:20:17 EST
-Received: from ullu.lweshal.in (unknown [10.1.1.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by pitta.toroid.org (Postfix) with ESMTPS id 1508FFA61ED
-        for <linux-ext4@vger.kernel.org>; Tue, 19 Jan 2021 10:09:30 +0100 (CET)
-Received: from ams by ullu.lweshal.in with local (Exim 4.94)
-        (envelope-from <ams@toroid.org>)
-        id 1l1n0y-003Yj5-Bz
-        for linux-ext4@vger.kernel.org; Tue, 19 Jan 2021 14:39:28 +0530
-Date:   Tue, 19 Jan 2021 14:39:28 +0530
-From:   Abhijit Menon-Sen <ams@toroid.org>
-To:     linux-ext4@vger.kernel.org
-Subject: advice on recovery from fs corruption
-Message-ID: <YAahyLpaEjiNhRk+@toroid.org>
+        id S2404535AbhASO2h (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 19 Jan 2021 09:28:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387421AbhASJ2M (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Jan 2021 04:28:12 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F4204C061573;
+        Tue, 19 Jan 2021 01:27:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Cyfg7cDbWy/IPZ5awSQp2Q1kduN8Yx/DetEnfOJ3/Ps=; b=hgXOWzDXEAqTZlmh2ClzTTHRUY
+        kNqj/YWNpIiNNZI4h7sTjieFjx9mprWMfZnRcp8t7TacpXmDaaQp4cwed1L+LImBNTC7PkR19OlFw
+        l74TZkUfg/yb2+351DtCkqJGjGA//VMbi64D9uMwjjFg6zEbkgDUYAPoWGhYImQW9OYMYb9x33Cok
+        z6ZNSrca6AZn9M8SO/a8rCa6k7GCEA7AJ2cCB+cWjOWTS5FoeF5pVii0a+ABJnK9EaOXngmZLovSz
+        1mUgRxoG8YYjkwysnzGCtHVHdcb4hxB5A6snhHSjwlWoWmZx48iwjn33REIhr4uahIzSn2loXZTeh
+        Ub5giDlg==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l1nIL-00E79Y-KZ; Tue, 19 Jan 2021 09:27:25 +0000
+Date:   Tue, 19 Jan 2021 09:27:25 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-fsdevel@vger.kernel.org,
+        John Johansen <john.johansen@canonical.com>,
+        James Morris <jmorris@namei.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Mrunal Patel <mpatel@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Theodore Tso <tytso@mit.edu>, Alban Crequy <alban@kinvolk.io>,
+        Tycho Andersen <tycho@tycho.ws>,
+        David Howells <dhowells@redhat.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Seth Forshee <seth.forshee@canonical.com>,
+        St??phane Graber <stgraber@ubuntu.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Lennart Poettering <lennart@poettering.net>,
+        "Eric W. Biederman" <ebiederm@xmission.com>, smbarber@chromium.org,
+        Phil Estes <estesp@gmail.com>, Serge Hallyn <serge@hallyn.com>,
+        Kees Cook <keescook@chromium.org>,
+        Todd Kjos <tkjos@google.com>, Paul Moore <paul@paul-moore.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        containers@lists.linux-foundation.org,
+        linux-security-module@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v5 15/42] fs: add file_user_ns() helper
+Message-ID: <20210119092725.GG3361757@infradead.org>
+References: <20210112220124.837960-1-christian.brauner@ubuntu.com>
+ <20210112220124.837960-16-christian.brauner@ubuntu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210112220124.837960-16-christian.brauner@ubuntu.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi.
+On Tue, Jan 12, 2021 at 11:00:57PM +0100, Christian Brauner wrote:
+> Add a simple helper to retrieve the user namespace associated with the
+> vfsmount of a file. Christoph correctly points out that this makes
+> codepaths (e.g. ioctls) way easier to follow that would otherwise
+> dereference via mnt_user_ns(file->f_path.mnt).
+> 
+> In order to make file_user_ns() static inline we'd need to include
+> mount.h in either file.h or fs.h which seems undesirable so let's simply
+> not force file_user_ns() to be inline.
 
-Summary: I have an ext4 filesystem on a LUKS-encrypted device, and I
-carelessly overwrote the first ~2.5GB of the underlying block device
-with dd(1). While chastising myself for being so unforgivably careless,
-I humbly request advice on trying to recover anything from the corrupted
-filesystem, which is still mounted.
+I'd be tempted to just make this an inline.
 
-Here's the block device and filesystem in question:
+Otherwise this looks ok:
 
-    NAME           MAJ:MIN RM  SIZE RO TYPE  MOUNTPOINT
-    sdb              8:16   0  7.2T  0 disk
-    └─sdb1           8:17   0  7.2T  0 part
-      └─sdb1_crypt 254:2    0  7.2T  0 crypt /media/nas/l1
-
-    /dev/mapper/sdb1_crypt is active and is in use.
-      type:    n/a
-      cipher:  aes-xts-plain64
-      keysize: 256 bits
-      device:  /dev/sdb1
-      offset:  4096 sectors
-      size:    15493750784 sectors
-      mode:    read/write
-
-    Filesystem              1K-blocks       Used  Available Use% Mounted on
-    /dev/mapper/sdb1_crypt 7696239772 3081218516 4615021256  41% /media/nas/l1
-
-I ran `dd if=ubuntu.iso of=/dev/sdb bs=8M status=progress oflag=direct`,
-which wrote 2715254784 bytes to /dev/sdb.
-
-The device is still mounted, and as soon as I realised that I ran this
-command on the wrong machine (it had already completed), I started to
-rsync a couple of directories off onto another volume.
-
-One rsync is still copying files, but now "ls" under /media/nas/l1 shows
-nothing, not even lost+found. The cp -a I started finished successfully
-(with I/O errors on a few files), but that shell also sees no other
-files now. dmesg shows many errors like this:
-
-    [1185480.158594] EXT4-fs error (device dm-2): ext4_get_branch:171: inode #81696398: block 2403213648: comm cp: invalid block
-    [1185480.159125] EXT4-fs error (device dm-2): ext4_map_blocks:605: inode #81696398: block 2403213648: comm cp: lblock 13 mapped to illegal pblock 2403213648 (length 1)
-    …
-    [1187747.065781] EXT4-fs error (device dm-2): htree_dirblock_to_tree:1023: inode #2: block 1239: comm ls: bad entry in directory: rec_len % 4 != 0 - offset=0, inode=1002371330, rec_len=24822, name_len=20, size=4096
-
-Along with the superblock, I guess the block group descriptors were
-overwritten, and enough of the inode tables that it can't find the root
-directory or lost+found any more. Definitely not the recommended way to
-install Ubuntu.
-
-Here's what `dumpe2fs -h /dev/mapper/sdb1_crypt` shows. (Is it getting
-this information from one of the backup superblocks?)
-
-    dumpe2fs 1.44.5 (15-Dec-2018)
-    Filesystem volume name:   <none>
-    Last mounted on:          /media/nas/l1
-    Filesystem UUID:          602da5a3-9b1d-4a44-a55f-60e333b107cd
-    Filesystem magic number:  0xEF53
-    Filesystem revision #:    1 (dynamic)
-    Filesystem features:      ext_attr resize_inode dir_index filetype sparse_super large_file
-    Filesystem flags:         signed_directory_hash
-    Default mount options:    user_xattr acl
-    Filesystem state:         not clean with errors
-    Errors behavior:          Continue
-    Filesystem OS type:       Linux
-    Inode count:              200480768
-    Block count:              1936718848
-    Reserved block count:     0
-    Free blocks:              1153755314
-    Free inodes:              198450506
-    First block:              0
-    Block size:               4096
-    Fragment size:            4096
-    Reserved GDT blocks:      562
-    Blocks per group:         32768
-    Fragments per group:      32768
-    Inodes per group:         3392
-    Inode blocks per group:   212
-    Filesystem created:       Sun Jan 20 22:32:01 2019
-    Last mount time:          Tue Jan  5 20:29:29 2021
-    Last write time:          Tue Jan 19 14:05:06 2021
-    Mount count:              1
-    Maximum mount count:      -1
-    Last checked:             Tue Jan  5 19:26:10 2021
-    Check interval:           0 (<none>)
-    Lifetime writes:          2744 GB
-    Reserved blocks uid:      0 (user root)
-    Reserved blocks gid:      0 (group root)
-    First inode:              11
-    Inode size:	          256
-    Required extra isize:     32
-    Desired extra isize:      32
-    Default directory hash:   half_md4
-    Directory Hash Seed:      f0788ffe-7f52-404b-8395-e6e219da154e
-    FS Error count:           17307
-    First error time:         Wed Jan  6 07:56:19 2021
-    First error function:     ext4_write_inode
-    First error line #:       5463
-    First error inode #:      163541339
-    First error block #:      1579843763
-    Last error time:          Tue Jan 19 14:05:06 2021
-    Last error function:      htree_dirblock_to_tree
-    Last error line #:        1023
-    Last error inode #:       2
-    Last error block #:       1239
-    ext2fs_read_bb_inode: Cannot iterate data blocks of an inode containing inline data
-
-A large portion of the contents of this filesystem are, unfortunately,
-irreplaceable. The data were protected only from disk failure, not from
-this sort of operator error, and I certainly regret making that decision
-years ago.
-
-I'm running `dd if=/dev/mapper/sdb1_crypt of=sdb1_crypt.img bs=8M
-status=progress` now to capture an image of the unencrypted blocks of
-the filesystem. I can't unmount the filesystem or anything, because I'll
-never be able to mount it again. I don't even have a backup of the LUKS
-header, nor an e2image for this filesystem.
-
-It'll take a couple of days to copy all of the blocks from sdb1_crypt
-(assuming nothing blows up in the interim). I'm willing to go to great
-lengths to try to recover some of the data (including writing code to
-trawl around the filesystem image, if needed).
-
-With sincere apologies for asking other people to spend time on my
-self-inflicted problem… what is the best approach to recovering as
-many of my files as possible?
-
-Thank you.
-
--- ams
+Reviewed-by: Christoph Hellwig <hch@lst.de>
