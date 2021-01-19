@@ -2,154 +2,121 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E882FAF30
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Jan 2021 04:45:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A5F82FB077
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Jan 2021 06:28:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728713AbhASDov (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 18 Jan 2021 22:44:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728573AbhASDor (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 18 Jan 2021 22:44:47 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66EAAC061573
-        for <linux-ext4@vger.kernel.org>; Mon, 18 Jan 2021 19:44:07 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id y205so5592568pfc.5
-        for <linux-ext4@vger.kernel.org>; Mon, 18 Jan 2021 19:44:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=/q04Qijbrtl7abjswNGUBJoouDR9KZ4AGaHH4rlP2KY=;
-        b=r5bPJWvRlFSKgksrAIbNf93/4kv/hO8kdTSG8UHzD2y8CtPRHkub6TAIv5DUTIjEeL
-         6Wly1efHI5tItuz3le41iA0Hi1hJ5QK7BUQ6uTp/E25J26ikBqncTDAteD9Lh/slyiNZ
-         bWpbJTVQiQ55rgJZm7mTBeEOPfbQB5RLa1lt1q7Gh1HzruL8im1M1Y077BHS50aS1GHm
-         lpHRm/icNGRh/VCuq4MLVyfuW0UBuwxa1Nb9LGMTJTtRB5LAXHbxymXm81T0sFCdSBk8
-         pFgN7HoEdpYNFxK/yA817w9NUcsi2gg+MY80fmN/4kdMwpBkpn9bnN435IrwCl2oiqbN
-         3pUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=/q04Qijbrtl7abjswNGUBJoouDR9KZ4AGaHH4rlP2KY=;
-        b=erk1GSM9cltcZADlqAXtH1ir/UOXt+J0GNn0vQkFHxvpD0b+eIdWLr5bM9ysmXyYfE
-         LGoIYhVWVuDqsUyrVb2oz1sOzGqRUWK9lq+NSiULw+tLqqY/oxXP/Lc32aa26P2AEJX9
-         lMNA8F96DWwDn3ytUtxJI146qZrgFhYxAEE5irJT2SLmGvMcZMF/AoFLKxG7qwYeigcU
-         X0w5zV3jSPYAM+hSwv/IK3GVOaAeRMDGvjTnY5zWem09ijEBcRzFUicLarysBBiP0dga
-         3OUVrSa0eBTSk1pbPv+dv5btvqiukvTkz0BQLk810yalytVl/siGSFf0A/qp2sHmcNyE
-         C74Q==
-X-Gm-Message-State: AOAM531nt2PRCZLIS22h3ndIUfLoihGRCCBTxKmsaWygNeUJ+ueftnch
-        YaKpmJXQOUdr3h0E3SSCkj6AQQ==
-X-Google-Smtp-Source: ABdhPJxsLd7xSWR3cUMbggUmXRw0HDCJ8gzKN5LVt3Rrnv3wsTZ+Fe+eALrsKl74cOEWjp4xgNVZsw==
-X-Received: by 2002:a63:1c13:: with SMTP id c19mr2563638pgc.359.1611027846835;
-        Mon, 18 Jan 2021 19:44:06 -0800 (PST)
-Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id f29sm16822840pgm.76.2021.01.18.19.44.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 18 Jan 2021 19:44:05 -0800 (PST)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <6D9D9B4D-65E5-4993-AC08-080B677BA78E@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_CF7582DE-2906-4EF2-9ED9-35596B0D02B6";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: fallocate(FALLOC_FL_ZERO_RANGE_BUT_REALLY) to avoid unwritten
- extents?
-Date:   Mon, 18 Jan 2021 20:44:04 -0700
-In-Reply-To: <6d982635-d978-e044-4cca-c140401eb0d3@scylladb.com>
-Cc:     Andres Freund <andres@anarazel.de>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-block@vger.kernel.org
-To:     Avi Kivity <avi@scylladb.com>
-References: <20201230062819.yinrrp6uwfegsqo3@alap3.anarazel.de>
- <20210104181958.GE6908@magnolia>
- <20210104191058.sryksqjnjjnn5raa@alap3.anarazel.de>
- <f6f75f11-5d5b-ae63-d584-4b6f09ff401e@scylladb.com>
- <20210112181600.GA1228497@infradead.org>
- <C8811877-48A9-4199-9F28-20F5B071AE36@dilger.ca>
- <20210112184339.GA1238746@infradead.org>
- <1C33DEE4-8BE9-4BF3-A589-E11532382B36@dilger.ca>
- <20210112211445.GC1164248@magnolia>
- <20210112213633.fb4tjlgvo6tznfr4@alap3.anarazel.de>
- <6d982635-d978-e044-4cca-c140401eb0d3@scylladb.com>
-X-Mailer: Apple Mail (2.3273)
+        id S2388350AbhASF2B (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 19 Jan 2021 00:28:01 -0500
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:63871 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727219AbhASFJH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Jan 2021 00:09:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1611032947; x=1642568947;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=jmrSa8deAEe1LJieS4GwadhMznrvItaU1cHEcGf0nvk=;
+  b=AJ+kLfsSJ4s07yDnlseG1ISGGXpWVyUnFL49c/GKPrU9mkELI+wPkQgM
+   k0Sr307YGaCRfbszrgkwae6u4u5+PF2WExHyAS4niMtdGlrMpa96wgYxX
+   3B0iiRd5Lc60P2FsQOBYgGRYjZm9V9hMjqd4Te2OvXkHRwWVSZtNQJOJB
+   JNXadhODsrLaKmZNKUfkCxPlcFBeFKDpkdXVEYsoMyhMUgE5f+rz/FEOZ
+   QrrGa3U4KHbx5KQn9l7nbpESN4LFl80EcDp8IwgB9ACrppt+nwnD/2f8Q
+   3T2DuSkwQOUY4qLxFZUMpfozg94uu1qvD1VFpy0wfzT+/1zw6lapxdyl6
+   A==;
+IronPort-SDR: 9IH0QRgyJGceub+HSw+OAYsR5g1UCjXvkRmOE7pb+OJfE20FELHvx3qtZPekjvtw1i86u9sDa3
+ Wd0vMOjW/VERMIeI5SKgiRawxhPaPi/nZJw5T3lIfIG+Vk3Auy9ROAiUG3v+gA4sqD+fkQ5+ue
+ JEhP0wVRB4xHIpobUtJZSI3/HPc9vV3NoBDJQ/aTDYgMjsXV1LJFK1j+d917YlZJLeZVrdT5zd
+ 1sCjSjLnqohrvTxj99NK/iKEHCJgpMxZIsRb021sQpVIGrQQSIKFfY+Lw/VPCAO9vMjo96CS2G
+ 1dA=
+X-IronPort-AV: E=Sophos;i="5.79,357,1602518400"; 
+   d="scan'208";a="162200901"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 19 Jan 2021 13:06:57 +0800
+IronPort-SDR: kcItOcwBlllKPIE0vRa1+mRTFZtJJbvDNuhgcrhd9IY4m04UCBUhtKuaMVVVeVxRMd6HO5zug3
+ NgoC8qBAlLOMdyKTOOvvsgp3JuNwOZ07vKUS8lQ6idDPGzTYsTX+PSMu7GqHzaa4R1uPAE8ACO
+ Ps/fy9eWrwsAhY7/XR2JujFhlqthtEncw9UDL1Tq1zwcd2Mpn9k9H7jHVp7VmhTh+3iq2/8/+D
+ rf8Ne1JB2PAWp7CI29odNbqyNjraTVnhvazDXd+z11HyHdIIDMYRdWDlzm8FelWaFQITFdCccg
+ pwvzAfSCO3v9OcNpwX+7iJEC
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 20:51:35 -0800
+IronPort-SDR: 2QvgFwKv1l58qACx1LkMFx25aQa2SIK+nja25KW+g1fGCIsFCI2aDBEoSVRt5vd+mstvmW96a+
+ 737tI66XYa3YGuNZc7mhzaBx90mzE+7INtx21d/7HVJL8Fs4lXsY46xoeP6qPWvnDZ3ihPj4yc
+ 0PHxNbwk5lPXU8GKWjmU1O8sK8W4HyOAc9WnAAEnbKb4wGAIm+2gNrXPeVygtgzGsA4DXXJ+Yd
+ mrqI036gzbWwtshapKuKgeKERGx47y7vTXELUquL2fc2urlWZF3SUiFLdWMNhtGfvEB6B//WSB
+ xEk=
+WDCIronportException: Internal
+Received: from vm.labspan.wdc.com (HELO vm.sc.wdc.com) ([10.6.137.102])
+  by uls-op-cesaip02.wdc.com with ESMTP; 18 Jan 2021 21:06:57 -0800
+From:   Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+To:     linux-block@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        drbd-dev@lists.linbit.com, linux-bcache@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        cluster-devel@redhat.com
+Cc:     jfs-discussion@lists.sourceforge.net, dm-devel@redhat.com,
+        axboe@kernel.dk, philipp.reisner@linbit.com,
+        lars.ellenberg@linbit.com, efremov@linux.com, colyli@suse.de,
+        kent.overstreet@gmail.com, agk@redhat.com, snitzer@redhat.com,
+        song@kernel.org, hch@lst.de, sagi@grimberg.me,
+        martin.petersen@oracle.com, viro@zeniv.linux.org.uk, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com, tytso@mit.edu,
+        adilger.kernel@dilger.ca, rpeterso@redhat.com, agruenba@redhat.com,
+        darrick.wong@oracle.com, shaggy@kernel.org, damien.lemoal@wdc.com,
+        naohiro.aota@wdc.com, jth@kernel.org, tj@kernel.org,
+        osandov@fb.com, bvanassche@acm.org, gustavo@embeddedor.com,
+        asml.silence@gmail.com, jefflexu@linux.alibaba.com,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Subject: [RFC PATCH 03/37] btrfs: use bio_init_fields in disk-io
+Date:   Mon, 18 Jan 2021 21:05:57 -0800
+Message-Id: <20210119050631.57073-4-chaitanya.kulkarni@wdc.com>
+X-Mailer: git-send-email 2.22.1
+In-Reply-To: <20210119050631.57073-1-chaitanya.kulkarni@wdc.com>
+References: <20210119050631.57073-1-chaitanya.kulkarni@wdc.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+---
+ fs/btrfs/disk-io.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
---Apple-Mail=_CF7582DE-2906-4EF2-9ED9-35596B0D02B6
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 765deefda92b..9a65432fc5e9 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -3637,10 +3637,8 @@ static int write_dev_supers(struct btrfs_device *device,
+ 		 * checking.
+ 		 */
+ 		bio = bio_alloc(GFP_NOFS, 1);
+-		bio_set_dev(bio, device->bdev);
+-		bio->bi_iter.bi_sector = bytenr >> SECTOR_SHIFT;
+-		bio->bi_private = device;
+-		bio->bi_end_io = btrfs_end_super_write;
++		bio_init_fields(bio, device->bdev, bytenr >> SECTOR_SHIFT,
++				device, btrfs_end_super_write, 0, 0);
+ 		__bio_add_page(bio, page, BTRFS_SUPER_INFO_SIZE,
+ 			       offset_in_page(bytenr));
+ 
+@@ -3748,11 +3746,10 @@ static void write_dev_flush(struct btrfs_device *device)
+ 		return;
+ 
+ 	bio_reset(bio);
+-	bio->bi_end_io = btrfs_end_empty_barrier;
+-	bio_set_dev(bio, device->bdev);
+ 	bio->bi_opf = REQ_OP_WRITE | REQ_SYNC | REQ_PREFLUSH;
+ 	init_completion(&device->flush_wait);
+-	bio->bi_private = &device->flush_wait;
++	bio_init_fields(bio, device->bdev, 0, &device->flush_wait,
++			btrfs_end_empty_barrier, 0, 0);
+ 
+ 	btrfsic_submit_bio(bio);
+ 	set_bit(BTRFS_DEV_STATE_FLUSH_SENT, &device->dev_state);
+-- 
+2.22.1
 
-On Jan 13, 2021, at 12:44 AM, Avi Kivity <avi@scylladb.com> wrote:
->=20
-> On 1/12/21 11:36 PM, Andres Freund wrote:
->> Hi,
->>=20
->> On 2021-01-12 13:14:45 -0800, Darrick J. Wong wrote:
->>> ALLOCSP64 can only allocate pre-zeroed blocks as part of extending =
-EOF,
->>> whereas a new FZERO flag means that we can pre-zero an arbitrary =
-range
->>> of bytes in a file.  I don't know if Avi or Andres' usecases demand =
-that
->>> kind of flexibilty but I know I'd rather go for the more powerful
->>> interface.
->> Postgres/I don't at the moment have a need to allocate "written" =
-zeroed
->> space anywhere but EOF. I can see some potential uses for more =
-flexible
->> pre-zeroing in the future though, but not very near term.
->>=20
->=20
-> I also agree that it's better not to have the kernel fall back =
-internally on writing zeros, letting userspace do that. The assumption =
-is that WRITE SAME will be O(1)-ish and so can bypass scheduling =
-decisions, but if we need to write zeros, better let the application =
-throttle the rate.
-
-Writing zeroes from userspace has a *lot* more overhead when there is a =
-network
-filesystem involved.  It would be better to generate the zeroes on the =
-server,
-or directly in the disk than sending GB of zeroes over the network.
-
-
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_CF7582DE-2906-4EF2-9ED9-35596B0D02B6
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmAGVYQACgkQcqXauRfM
-H+DLKQ/9GRaFCst/9Bjwd/poEF5jxdM6qxtvLh1IreNdo5xYT9CWaWcV9RGSCTud
-TPy82XDn/ml2FBV2XLsxyOXv5bjG89/Y1EWQpbsrF3p+mxak2+Qw/0PqL1sJSi7H
-kb7hVGrB16n6mLKUZpnHSMiXBl/1K8Mq3YWPY43svLd7l2zCpC6TpgzCYfxpdgid
-c7T9wifVH4gPz8A/PQ26MAL9oABbozDOak3ZdOJQrMWnlfqG18MtGArwAbxWG2c2
-feMxx8givW6DXtxgk9OMyZYAwYrb6hGc4hK3f7r1SO6zaaCfpvUt7pupGjT15vTn
-ZtxHQDgb4bgb/DI5NFPxB0+0a9+oO1nW/oU6Fhccl6bwVpdtFUrCJOa1D0pRuVlU
-zdr4jVOCrsGmXDtPvJtWFrLuPgj8SVwuBvuPWaxWSTgZ/ADewV4lp0NhZymmmvVL
-FzNE1ta9Z9QO3oC+FH679/xuIAReBKmQudS9dfLgVrEhhevuRqfVWnL9fP1svK+U
-85tBBYgOZDe4V5rA/c+nIhGmG37cE5y1Ei5ngaDf/jiL+V728W561dT7DYU0+CjE
-T3LLNhYGj991vpFZBs3jn+/87gtdilP+me2OjpFug8jyL7wFbOquhXIgdE3WLUlr
-wIq3T3GDX7afC3jEN8JXEoV0oZidbBUsUdCoDfLWpJ+zQdjXfY8=
-=imFu
------END PGP SIGNATURE-----
-
---Apple-Mail=_CF7582DE-2906-4EF2-9ED9-35596B0D02B6--
