@@ -2,179 +2,165 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 688FD2FB3EE
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Jan 2021 09:25:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 569492FB92A
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Jan 2021 15:35:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389713AbhASFZL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 19 Jan 2021 00:25:11 -0500
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:34502 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389640AbhASFHk (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Jan 2021 00:07:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1611032860; x=1642568860;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=2EwAg85Rl2+jMe62nRnS8RL98bOCXmnfO5riJrV6i0c=;
-  b=GjcXuKIfE7oPUJJM/Wi2vVnUpYud2gKvIpltIXHVNrAg3RsXPu43SSpM
-   wIW3+AVU6/Swl0XW8ZahSdWTuFz45x0PRFdfyO6jSRBESB3FGqMrqsV51
-   LqkiqQ6Mgcp5WA0fCSeOO9AkjTdUCbrZXnNCSfz2UwQChlBG1Ttqr5VHX
-   GXRzXfm92QORv96J/4QuRWF+9tkr+pcO4FELeyKPoafSsntR2wTSd/PaH
-   Iw7sQzoXv+E9E2JN2DSUUWOHaWKDpdqLHfZz17GiunoEXJigP+2IH4ZKA
-   x4hjKdDD2Xj6pDfIKfk4mM4S2sDepgL7SmTMUx4dUWt2yBgJNl9B9ln3F
-   w==;
-IronPort-SDR: 7F9V8E2gCFx1ENrckraC/aOPabyshxzdGR1mhufNzVCSB1ZQqnbgSiAulHQ+fQrQf0VUfZp2RQ
- lD9qauiuxEBB9PMtkyVUCtlbRRvbja4mqWOP92mvguWXYPFPRt0ywXlzt4nwaxSEuykNRTLHwY
- 46Oyg2LmyN3IKgagwVvK4ScZzXbnceF3nrKIl0BsSg9m7EerKdRxhTPeeLR437E7+7EOo/WM3N
- rxvlmtGFm6UcYsU0Qk1//34mDVQN7IyG+xRcn7TqkyNt+L1lv3J+Us9C6/ANlf4U03PgJBiMf4
- 7rY=
-X-IronPort-AV: E=Sophos;i="5.79,357,1602518400"; 
-   d="scan'208";a="268080837"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 19 Jan 2021 13:06:34 +0800
-IronPort-SDR: nICJNTCp5DZTCdEW+BDS8Z2snIrYrlMGiOG+8k41nZ+toTeWOlVhexX9dHTlwiqlcEC7mJSKUG
- Iy/fc+BGI7Gq8Tc8eNWRNodotuWudKLMuHWvPgvyglmYCy3CVY5v6y+KCctMt1KQr1t/A5vu6G
- EU8YQ12jfB7JSDNqLnc6qhTKltQXkH+QIkeCJgH1ExuBNJ/LLJLVkSZoi6pcXoZsChyTgxhzzc
- M/7G2USRTjBZjdX6m3rZ7UDS60bVW6YpGRy6Hay6Zi1n8mTtRVmKMccQ45eAk1w07M3Ya+tZ9I
- WeterqNf9O4H/xA4G74z3xOk
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 20:49:09 -0800
-IronPort-SDR: w8TQaHPmOf4afpFLhHFiHm4s9YBVvwz1nCheCJ4OBOH8yQ2UY0NC3Tt/JdFHF9KkeR+DlxZGUH
- e7bQB+02ddXqKaR8b/7v1Y7wXKviC9dKqJTPF9aSTC9cHooTn06sxWBBnh6ybRkpJPiq1eaXml
- Li9XSEIsEl1dTBAvxWyxQKBso9dBp+WZiRKxmJUsbAqs+G/qtiWTWXlVZWjYoZKV0OKSYwZfdM
- WxDGvor0MhqHOPvWCUI9b0h4sFeSeNraJk/cdT+mEYZtqS1ubVV2lyl7ZqDz6u2Z/jCzzw/RkG
- Jdo=
-WDCIronportException: Internal
-Received: from vm.labspan.wdc.com (HELO vm.sc.wdc.com) ([10.6.137.102])
-  by uls-op-cesaip02.wdc.com with ESMTP; 18 Jan 2021 21:06:34 -0800
-From:   Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-To:     linux-block@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        drbd-dev@lists.linbit.com, linux-bcache@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        cluster-devel@redhat.com
-Cc:     jfs-discussion@lists.sourceforge.net, dm-devel@redhat.com,
-        axboe@kernel.dk, philipp.reisner@linbit.com,
-        lars.ellenberg@linbit.com, efremov@linux.com, colyli@suse.de,
-        kent.overstreet@gmail.com, agk@redhat.com, snitzer@redhat.com,
-        song@kernel.org, hch@lst.de, sagi@grimberg.me,
-        martin.petersen@oracle.com, viro@zeniv.linux.org.uk, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com, tytso@mit.edu,
-        adilger.kernel@dilger.ca, rpeterso@redhat.com, agruenba@redhat.com,
-        darrick.wong@oracle.com, shaggy@kernel.org, damien.lemoal@wdc.com,
-        naohiro.aota@wdc.com, jth@kernel.org, tj@kernel.org,
-        osandov@fb.com, bvanassche@acm.org, gustavo@embeddedor.com,
-        asml.silence@gmail.com, jefflexu@linux.alibaba.com,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-Subject: [RFC PATCH 00/37] block: introduce bio_init_fields()
-Date:   Mon, 18 Jan 2021 21:05:54 -0800
-Message-Id: <20210119050631.57073-1-chaitanya.kulkarni@wdc.com>
-X-Mailer: git-send-email 2.22.1
+        id S1728709AbhASOVZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 19 Jan 2021 09:21:25 -0500
+Received: from pitta.toroid.org ([136.243.148.74]:54140 "EHLO pitta.toroid.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732221AbhASJUT (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 19 Jan 2021 04:20:19 -0500
+X-Greylist: delayed 604 seconds by postgrey-1.27 at vger.kernel.org; Tue, 19 Jan 2021 04:20:17 EST
+Received: from ullu.lweshal.in (unknown [10.1.1.2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by pitta.toroid.org (Postfix) with ESMTPS id 1508FFA61ED
+        for <linux-ext4@vger.kernel.org>; Tue, 19 Jan 2021 10:09:30 +0100 (CET)
+Received: from ams by ullu.lweshal.in with local (Exim 4.94)
+        (envelope-from <ams@toroid.org>)
+        id 1l1n0y-003Yj5-Bz
+        for linux-ext4@vger.kernel.org; Tue, 19 Jan 2021 14:39:28 +0530
+Date:   Tue, 19 Jan 2021 14:39:28 +0530
+From:   Abhijit Menon-Sen <ams@toroid.org>
+To:     linux-ext4@vger.kernel.org
+Subject: advice on recovery from fs corruption
+Message-ID: <YAahyLpaEjiNhRk+@toroid.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=y
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi,
+Hi.
 
-This is a *compile only RFC* which adds a generic helper to initialize
-the various fields of the bio that is repeated all the places in
-file-systems, block layer, and drivers.
+Summary: I have an ext4 filesystem on a LUKS-encrypted device, and I
+carelessly overwrote the first ~2.5GB of the underlying block device
+with dd(1). While chastising myself for being so unforgivably careless,
+I humbly request advice on trying to recover anything from the corrupted
+filesystem, which is still mounted.
 
-The new helper allows callers to initialize various members such as
-bdev, sector, private, end io callback, io priority, and write hints.
+Here's the block device and filesystem in question:
 
-The objective of this RFC is to only start a discussion, this it not 
-completely tested at all.                                                                                                            
-Following diff shows code level benefits of this helper :-
- 38 files changed, 124 insertions(+), 236 deletions(-)
+    NAME           MAJ:MIN RM  SIZE RO TYPE  MOUNTPOINT
+    sdb              8:16   0  7.2T  0 disk
+    └─sdb1           8:17   0  7.2T  0 part
+      └─sdb1_crypt 254:2    0  7.2T  0 crypt /media/nas/l1
 
--ck
+    /dev/mapper/sdb1_crypt is active and is in use.
+      type:    n/a
+      cipher:  aes-xts-plain64
+      keysize: 256 bits
+      device:  /dev/sdb1
+      offset:  4096 sectors
+      size:    15493750784 sectors
+      mode:    read/write
 
-Chaitanya Kulkarni (37):
-  block: introduce bio_init_fields() helper
-  fs: use bio_init_fields in block_dev
-  btrfs: use bio_init_fields in disk-io
-  btrfs: use bio_init_fields in volumes
-  ext4: use bio_init_fields in page_io
-  gfs2: use bio_init_fields in lops
-  gfs2: use bio_init_fields in meta_io
-  gfs2: use bio_init_fields in ops_fstype
-  iomap: use bio_init_fields in buffered-io
-  iomap: use bio_init_fields in direct-io
-  jfs: use bio_init_fields in logmgr
-  zonefs: use bio_init_fields in append
-  drdb: use bio_init_fields in actlog
-  drdb: use bio_init_fields in bitmap
-  drdb: use bio_init_fields in receiver
-  floppy: use bio_init_fields
-  pktcdvd: use bio_init_fields
-  bcache: use bio_init_fields in journal
-  bcache: use bio_init_fields in super
-  bcache: use bio_init_fields in writeback
-  dm-bufio: use bio_init_fields
-  dm-crypt: use bio_init_fields
-  dm-zoned: use bio_init_fields metadata
-  dm-zoned: use bio_init_fields target
-  dm-zoned: use bio_init_fields
-  dm log writes: use bio_init_fields
-  nvmet: use bio_init_fields in bdev-ns
-  target: use bio_init_fields in iblock
-  btrfs: use bio_init_fields in scrub
-  fs: use bio_init_fields in buffer
-  eros: use bio_init_fields in data
-  eros: use bio_init_fields in zdata
-  jfs: use bio_init_fields in metadata
-  nfs: use bio_init_fields in blocklayout
-  ocfs: use bio_init_fields in heartbeat
-  xfs: use bio_init_fields in xfs_buf
-  xfs: use bio_init_fields in xfs_log
+    Filesystem              1K-blocks       Used  Available Use% Mounted on
+    /dev/mapper/sdb1_crypt 7696239772 3081218516 4615021256  41% /media/nas/l1
 
- block/blk-lib.c                     | 13 +++++--------
- drivers/block/drbd/drbd_actlog.c    |  5 +----
- drivers/block/drbd/drbd_bitmap.c    |  5 +----
- drivers/block/drbd/drbd_receiver.c  | 11 +++--------
- drivers/block/floppy.c              |  5 +----
- drivers/block/pktcdvd.c             | 12 ++++--------
- drivers/md/bcache/journal.c         | 21 ++++++++-------------
- drivers/md/bcache/super.c           | 19 +++++--------------
- drivers/md/bcache/writeback.c       | 14 ++++++--------
- drivers/md/dm-bufio.c               |  5 +----
- drivers/md/dm-crypt.c               |  4 +---
- drivers/md/dm-log-writes.c          | 21 ++++++---------------
- drivers/md/dm-zoned-metadata.c      | 15 +++++----------
- drivers/md/dm-zoned-target.c        |  9 +++------
- drivers/md/md.c                     |  6 ++----
- drivers/nvme/target/io-cmd-bdev.c   |  4 +---
- drivers/target/target_core_iblock.c | 11 +++--------
- fs/block_dev.c                      | 17 +++++------------
- fs/btrfs/disk-io.c                  | 11 ++++-------
- fs/btrfs/scrub.c                    |  6 ++----
- fs/btrfs/volumes.c                  |  4 +---
- fs/buffer.c                         |  7 ++-----
- fs/erofs/data.c                     |  6 ++----
- fs/erofs/zdata.c                    |  9 +++------
- fs/ext4/page-io.c                   |  6 ++----
- fs/gfs2/lops.c                      |  6 ++----
- fs/gfs2/meta_io.c                   |  5 ++---
- fs/gfs2/ops_fstype.c                |  7 ++-----
- fs/iomap/buffered-io.c              |  5 ++---
- fs/iomap/direct-io.c                | 15 +++++----------
- fs/jfs/jfs_logmgr.c                 | 16 ++++------------
- fs/jfs/jfs_metapage.c               | 16 +++++++---------
- fs/nfs/blocklayout/blocklayout.c    |  8 ++------
- fs/ocfs2/cluster/heartbeat.c        |  4 +---
- fs/xfs/xfs_buf.c                    |  6 ++----
- fs/xfs/xfs_log.c                    |  6 ++----
- fs/zonefs/super.c                   |  7 +++----
- include/linux/bio.h                 | 13 +++++++++++++
- 38 files changed, 124 insertions(+), 236 deletions(-)
+I ran `dd if=ubuntu.iso of=/dev/sdb bs=8M status=progress oflag=direct`,
+which wrote 2715254784 bytes to /dev/sdb.
 
--- 
-2.22.1
+The device is still mounted, and as soon as I realised that I ran this
+command on the wrong machine (it had already completed), I started to
+rsync a couple of directories off onto another volume.
 
+One rsync is still copying files, but now "ls" under /media/nas/l1 shows
+nothing, not even lost+found. The cp -a I started finished successfully
+(with I/O errors on a few files), but that shell also sees no other
+files now. dmesg shows many errors like this:
+
+    [1185480.158594] EXT4-fs error (device dm-2): ext4_get_branch:171: inode #81696398: block 2403213648: comm cp: invalid block
+    [1185480.159125] EXT4-fs error (device dm-2): ext4_map_blocks:605: inode #81696398: block 2403213648: comm cp: lblock 13 mapped to illegal pblock 2403213648 (length 1)
+    …
+    [1187747.065781] EXT4-fs error (device dm-2): htree_dirblock_to_tree:1023: inode #2: block 1239: comm ls: bad entry in directory: rec_len % 4 != 0 - offset=0, inode=1002371330, rec_len=24822, name_len=20, size=4096
+
+Along with the superblock, I guess the block group descriptors were
+overwritten, and enough of the inode tables that it can't find the root
+directory or lost+found any more. Definitely not the recommended way to
+install Ubuntu.
+
+Here's what `dumpe2fs -h /dev/mapper/sdb1_crypt` shows. (Is it getting
+this information from one of the backup superblocks?)
+
+    dumpe2fs 1.44.5 (15-Dec-2018)
+    Filesystem volume name:   <none>
+    Last mounted on:          /media/nas/l1
+    Filesystem UUID:          602da5a3-9b1d-4a44-a55f-60e333b107cd
+    Filesystem magic number:  0xEF53
+    Filesystem revision #:    1 (dynamic)
+    Filesystem features:      ext_attr resize_inode dir_index filetype sparse_super large_file
+    Filesystem flags:         signed_directory_hash
+    Default mount options:    user_xattr acl
+    Filesystem state:         not clean with errors
+    Errors behavior:          Continue
+    Filesystem OS type:       Linux
+    Inode count:              200480768
+    Block count:              1936718848
+    Reserved block count:     0
+    Free blocks:              1153755314
+    Free inodes:              198450506
+    First block:              0
+    Block size:               4096
+    Fragment size:            4096
+    Reserved GDT blocks:      562
+    Blocks per group:         32768
+    Fragments per group:      32768
+    Inodes per group:         3392
+    Inode blocks per group:   212
+    Filesystem created:       Sun Jan 20 22:32:01 2019
+    Last mount time:          Tue Jan  5 20:29:29 2021
+    Last write time:          Tue Jan 19 14:05:06 2021
+    Mount count:              1
+    Maximum mount count:      -1
+    Last checked:             Tue Jan  5 19:26:10 2021
+    Check interval:           0 (<none>)
+    Lifetime writes:          2744 GB
+    Reserved blocks uid:      0 (user root)
+    Reserved blocks gid:      0 (group root)
+    First inode:              11
+    Inode size:	          256
+    Required extra isize:     32
+    Desired extra isize:      32
+    Default directory hash:   half_md4
+    Directory Hash Seed:      f0788ffe-7f52-404b-8395-e6e219da154e
+    FS Error count:           17307
+    First error time:         Wed Jan  6 07:56:19 2021
+    First error function:     ext4_write_inode
+    First error line #:       5463
+    First error inode #:      163541339
+    First error block #:      1579843763
+    Last error time:          Tue Jan 19 14:05:06 2021
+    Last error function:      htree_dirblock_to_tree
+    Last error line #:        1023
+    Last error inode #:       2
+    Last error block #:       1239
+    ext2fs_read_bb_inode: Cannot iterate data blocks of an inode containing inline data
+
+A large portion of the contents of this filesystem are, unfortunately,
+irreplaceable. The data were protected only from disk failure, not from
+this sort of operator error, and I certainly regret making that decision
+years ago.
+
+I'm running `dd if=/dev/mapper/sdb1_crypt of=sdb1_crypt.img bs=8M
+status=progress` now to capture an image of the unencrypted blocks of
+the filesystem. I can't unmount the filesystem or anything, because I'll
+never be able to mount it again. I don't even have a backup of the LUKS
+header, nor an e2image for this filesystem.
+
+It'll take a couple of days to copy all of the blocks from sdb1_crypt
+(assuming nothing blows up in the interim). I'm willing to go to great
+lengths to try to recover some of the data (including writing code to
+trawl around the filesystem image, if needed).
+
+With sincere apologies for asking other people to spend time on my
+self-inflicted problem… what is the best approach to recovering as
+many of my files as possible?
+
+Thank you.
+
+-- ams
