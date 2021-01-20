@@ -2,58 +2,58 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B10A92FDE10
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Jan 2021 01:43:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CAD22FDE0B
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Jan 2021 01:34:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393227AbhAUAan (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 20 Jan 2021 19:30:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59068 "EHLO
+        id S2403788AbhAUAb0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 20 Jan 2021 19:31:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732766AbhATVbh (ORCPT
+        with ESMTP id S1732777AbhATVbh (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Wed, 20 Jan 2021 16:31:37 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1759C0617A6
-        for <linux-ext4@vger.kernel.org>; Wed, 20 Jan 2021 13:26:51 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id m5so3037058pjv.5
-        for <linux-ext4@vger.kernel.org>; Wed, 20 Jan 2021 13:26:51 -0800 (PST)
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77105C0617A7
+        for <linux-ext4@vger.kernel.org>; Wed, 20 Jan 2021 13:26:53 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id cq1so2989917pjb.4
+        for <linux-ext4@vger.kernel.org>; Wed, 20 Jan 2021 13:26:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=LlLcW8fzUC32ddu0SX7GqKcyuiAZjcHSMTYkbPaWmfU=;
-        b=QAuXu+V2xQ18sDK4Jo0ccGvlnw1qBr4uxwSR7KRVizUF7SHOFPAABwh/8IfBhHBjKg
-         irSpueA0TmT3BUNubNsNMnJ++Xfn5D+ZHD6GHi0lGznoRRy2FEoouWATuhQEZHZlnPn6
-         uKdUqb+NpucH8fcCBHP8UBYh/fQDBlroPHY6msZx50SFk361zSik+cYZJ1XhrgAtpemz
-         DQHZZnkn0lwaaFaiGJ4mw5vcrfcrCOdvWmYCMHpZ5gqZclKhymWu/cgz4HM5GmqB423T
-         Uf6MlcCl8bIetBIP37Kqz3UULfERs5h40qW4jFTJd+a2V01R7rY5rKWIfCIePsVUlt3i
-         cstA==
+        bh=thAw4OXSnWgI7sXoiIob01Vqkxu7ID07i5f5HZREmX8=;
+        b=Cyytmfk9+RSXaKcSsRvFgs3k15ghi/Xs7lZd5Fx3Z8+T+lHnoCYHVELEf2vH4esXEm
+         lsr2wld+IM8sjdm5/JxcKG84QbN4E4oO3HmMiAh8M5pGzkm/hdp7WVZZKcqg2A8SUgrP
+         wQ7JEob/u6ncp6hcTz3lIta1p+rsuZOHEgojvOKggtn3Eq2y3CzCoWz3tPACg5ciDL+e
+         StpI+wV/fZEHdMhoZVzo7K5CEx2bUHksqvX7GA309IlTWvfbi75zD3e1ApjHg+aYAm+R
+         Uaf/aegiUYmJEWED88siVqLr2dk5FDRLL5KBBR1hDejX0XtuY5LU9wu5Aoh9zfcynCKh
+         5KKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=LlLcW8fzUC32ddu0SX7GqKcyuiAZjcHSMTYkbPaWmfU=;
-        b=PqMNfKAKBgAS7oDxiweOzMpbfXdDYX1GhaPO0XqgflNg6NNLC4hZ+qE+2BTP4xVEt4
-         nmARRC0FRdrCgpCvMhKMc55ewH3Gi+wh6zkanNPltjkZPoX6itWpu+ejli0pX+TrPa24
-         qq94Y6D0btgCsfHDu0Rt6BO+cuPGXavQ5NxPpG4ZkDW1Pa8+xvmi2YnTep3m9vnCYqtW
-         IloaZ7EmsamHK4jKrEr8TA6GBwXUiZVeBc5mmMkavfY+exeCiNqizSEQqzh3VaVrc03a
-         ZrauFEtEDaQUDT0t4vavGAY8e2V07luwjiBd9EhxNeaoMBoB5kVe7gDe+tSO1quFfvhk
-         rAhw==
-X-Gm-Message-State: AOAM531+Jq+uHQA51hHmL8EPEPrnoLJfXB37DEcuWQUQQmNCySZ3T+Z+
-        s/mo3k6C61+jK/oCuZIAwUh6edKOj5M=
-X-Google-Smtp-Source: ABdhPJwtZEGm3fi3W7ghn8JN6Di+i1U9zoYryZ7FoRPHf5+CyJZ1inER4/U3blWQ+o8h3tnqPzhe/w==
-X-Received: by 2002:a17:90b:1b50:: with SMTP id nv16mr7501410pjb.153.1611178010835;
-        Wed, 20 Jan 2021 13:26:50 -0800 (PST)
+        bh=thAw4OXSnWgI7sXoiIob01Vqkxu7ID07i5f5HZREmX8=;
+        b=Ozdju1k+nD0yYYKFzxpYwFyPJ1TAxxDUJw7vkeM0S3quiB5ZIXaWoUoP/VznaO+eMN
+         Y1wU1df2/pTqtgnasjUP5yUQ2O8l49+sApaESCbyNxqz1NODNlqqHITfxdofqkKbASP+
+         ZaJH9nd3C4tbCFlmaF/d0hTcnhKoU75PoUsk/eEDTpfMx3JaLs/ltz9q+r02vgDDKiZO
+         hJs5PoVCg4uZyVL/RKetj5Zk1q2MowXfozx+T2/unUERnJZlS2PYOzzOnk+bvDAAWEXo
+         ymfQdDlntm/EaQ9/fLieH1zzW7c1Job9ZnDxNUTrM4l2fFld2vqmcmvh571a2O2fqc5Q
+         CL4w==
+X-Gm-Message-State: AOAM533grN8GyYEU0Rd/UYN+D+bJXAtda5jEJ99RFvDjeUY9RRBD21dP
+        dfVMJROgivslUs8ViguXLBJMJSQ5ebk=
+X-Google-Smtp-Source: ABdhPJy5a7ev8XqxLSlGxDPU7WH/bbvqZxSz4/bfgse0h0cq2UNfXgPxpa1ouQrT7iWzE/WFsRu1IA==
+X-Received: by 2002:a17:90a:46cd:: with SMTP id x13mr6252304pjg.194.1611178012147;
+        Wed, 20 Jan 2021 13:26:52 -0800 (PST)
 Received: from harshads-520.kir.corp.google.com ([2620:15c:17:10:a6ae:11ff:fe11:86a2])
-        by smtp.googlemail.com with ESMTPSA id w1sm3396758pjt.23.2021.01.20.13.26.49
+        by smtp.googlemail.com with ESMTPSA id w1sm3396758pjt.23.2021.01.20.13.26.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 13:26:50 -0800 (PST)
+        Wed, 20 Jan 2021 13:26:51 -0800 (PST)
 From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 X-Google-Original-From: Harshad Shirwadkar <--global>
 To:     linux-ext4@vger.kernel.org
 Cc:     tytso@mit.edu, Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Subject: [PATCH v3 04/15] libext2fs: provide APIs to configure fast commit blocks
-Date:   Wed, 20 Jan 2021 13:26:30 -0800
-Message-Id: <20210120212641.526556-5-user@harshads-520.kir.corp.google.com>
+Subject: [PATCH v3 05/15] e2fsprogs: make userspace tools number of fast commits blocks aware
+Date:   Wed, 20 Jan 2021 13:26:31 -0800
+Message-Id: <20210120212641.526556-6-user@harshads-520.kir.corp.google.com>
 X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
 In-Reply-To: <20210120212641.526556-1-user@harshads-520.kir.corp.google.com>
 References: <20210120212641.526556-1-user@harshads-520.kir.corp.google.com>
@@ -65,349 +65,484 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 
-This patch adds new libext2fs that allow configuring number of fast
-commit blocks in journal superblock. We also add a struct
-ext2fs_journal_params which contains number of fast commit blocks and
-number of normal journal blocks. With this patch, the preferred way
-for configuring number of blocks with and without fast commits is:
+This patch makes number of fast commit blocks configurable. Also, the
+number of fast commit blocks can now be seen in dumpe2fs output.
 
-struct ext2fs_journal_params params;
+$ ./misc/mke2fs -O fast_commit -t ext4 image
+mke2fs 1.46-WIP (20-Mar-2020)
+Discarding device blocks: done
+Creating filesystem with 5120 1k blocks and 1280 inodes
+Allocating group tables: done
+Writing inode tables: done
+Creating journal (1040 blocks): done
+Writing superblocks and filesystem accounting information: done
 
-ext2fs_get_journal_params(&params, ...);
-params.num_journal_blocks = ...;
-params.num_fc_blocks = ...;
-ext2fs_create_journal_superblock2(..., &params, ...);
-         OR
-ext2fs_add_journal_inode3(..., &params, ...);
+$ ./misc/dumpe2fs image
+dumpe2fs 1.46-WIP (20-Mar-2020)
+...
+Journal features:         (none)
+Total journal size:       1040k
+Total journal blocks:     1040
+Max transaction length:   1024
+Fast commit length:       16
+Journal sequence:         0x00000001
+Journal start:            0
+
+$ ./misc/mke2fs -O fast_commit -t ext4 image -J fast_commit_size=256,size=1
+mke2fs 1.46-WIP (20-Mar-2020)
+Creating filesystem with 5120 1k blocks and 1280 inodes
+Allocating group tables: done
+Writing inode tables: done
+Creating journal (1280 blocks): done
+Writing superblocks and filesystem accounting information: done
+
+$ ./misc/dumpe2fs image
+dumpe2fs 1.46-WIP (20-Mar-2020)
+...
+Journal features:         (none)
+Total journal size:       1280k
+Total journal blocks:     1280
+Max transaction length:   1024
+Fast commit length:       256
+Journal sequence:         0x00000001
+Journal start:            0
+
+This patch also adds information about fast commit feature in mke2fs
+and tune2fs man pages.
 
 Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 ---
- lib/e2p/e2p.h          |  1 +
- lib/e2p/ljs.c          | 16 +++++--
- lib/ext2fs/ext2fs.h    | 18 ++++++++
- lib/ext2fs/mkjournal.c | 96 +++++++++++++++++++++++++++++++++++-------
- 4 files changed, 113 insertions(+), 18 deletions(-)
+ e2fsck/unix.c     | 26 +++++++++++++-------
+ misc/dumpe2fs.c   | 10 ++++++--
+ misc/mke2fs.8.in  | 21 ++++++++++++++++
+ misc/mke2fs.c     | 26 +++++++++++++-------
+ misc/tune2fs.8.in | 25 +++++++++++++++++++
+ misc/tune2fs.c    |  8 +++----
+ misc/util.c       | 61 ++++++++++++++++++++++++++++++++++-------------
+ misc/util.h       |  4 +++-
+ 8 files changed, 142 insertions(+), 39 deletions(-)
 
-diff --git a/lib/e2p/e2p.h b/lib/e2p/e2p.h
-index 90efb624..65702a7e 100644
---- a/lib/e2p/e2p.h
-+++ b/lib/e2p/e2p.h
-@@ -47,6 +47,7 @@ void print_fs_state (FILE * f, unsigned short state);
- int setflags (int fd, unsigned long flags);
- int setversion (int fd, unsigned long version);
+diff --git a/e2fsck/unix.c b/e2fsck/unix.c
+index 1cb51672..bf66605a 100644
+--- a/e2fsck/unix.c
++++ b/e2fsck/unix.c
+@@ -1394,6 +1394,7 @@ int main (int argc, char *argv[])
+ 	__u32 features[3];
+ 	char *cp;
+ 	enum quota_type qtype;
++	struct ext2fs_journal_params jparams;
  
-+#define E2P_LIST_JOURNAL_FLAG_FC		0x1
- void e2p_list_journal_super(FILE *f, char *journal_sb_buf,
- 			    int exp_block_size, int flags);
- 
-diff --git a/lib/e2p/ljs.c b/lib/e2p/ljs.c
-index 4ffe9b61..d118ec44 100644
---- a/lib/e2p/ljs.c
-+++ b/lib/e2p/ljs.c
-@@ -54,7 +54,12 @@ void e2p_list_journal_super(FILE *f, char *journal_sb_buf,
- 	unsigned int size;
- 	int j, printed = 0;
- 	unsigned int i, nr_users;
-+	int num_fc_blks = 0;
-+	int journal_blks = 0;
- 
-+	if (flags & E2P_LIST_JOURNAL_FLAG_FC)
-+		num_fc_blks = jbd_get_num_fc_blks((journal_superblock_t *)journal_sb_buf);
-+	journal_blks = ntohl(jsb->s_maxlen) - num_fc_blks;
- 	fprintf(f, "%s", "Journal features:        ");
- 	for (i=0, mask_ptr=&jsb->s_feature_compat; i <3; i++,mask_ptr++) {
- 		mask = e2p_be32(*mask_ptr);
-@@ -68,7 +73,7 @@ void e2p_list_journal_super(FILE *f, char *journal_sb_buf,
- 	if (printed == 0)
- 		fprintf(f, " (none)");
- 	fputc('\n', f);
--	fputs("Journal size:             ", f);
-+	fputs("Total journal size:       ", f);
- 	size = (ntohl(jsb->s_blocksize) / 1024) * ntohl(jsb->s_maxlen);
- 	if (size < 8192)
- 		fprintf(f, "%uk\n", size);
-@@ -78,8 +83,13 @@ void e2p_list_journal_super(FILE *f, char *journal_sb_buf,
- 	if (exp_block_size != (int) ntohl(jsb->s_blocksize))
- 		fprintf(f, "Journal block size:       %u\n",
- 			(unsigned int)ntohl(jsb->s_blocksize));
--	fprintf(f, "Journal length:           %u\n",
--		(unsigned int)ntohl(jsb->s_maxlen));
-+	fprintf(f, "Total journal blocks:     %u\n",
-+		(unsigned int)(journal_blks + num_fc_blks));
-+	fprintf(f, "Max transaction length:   %u\n",
-+		(unsigned int)journal_blks);
-+	fprintf(f, "Fast commit length:       %u\n",
-+		(unsigned int)num_fc_blks);
-+
- 	if (ntohl(jsb->s_first) != 1)
- 		fprintf(f, "Journal first block:      %u\n",
- 			(unsigned int)ntohl(jsb->s_first));
-diff --git a/lib/ext2fs/ext2fs.h b/lib/ext2fs/ext2fs.h
-index a8a6e091..ec841006 100644
---- a/lib/ext2fs/ext2fs.h
-+++ b/lib/ext2fs/ext2fs.h
-@@ -220,6 +220,12 @@ typedef struct ext2_file *ext2_file_t;
- #define EXT2_MKJOURNAL_LAZYINIT	0x0000002 /* don't zero journal inode before use*/
- #define EXT2_MKJOURNAL_NO_MNT_CHECK 0x0000004 /* don't check mount status */
- 
-+/*
-+ * Normal journal area size to fast commit area size ratio. This is used to
-+ * set default size of fast commit area.
-+ */
-+#define EXT2_JOURNAL_TO_FC_BLKS_RATIO		64
-+
- struct blk_alloc_ctx;
- struct opaque_ext2_group_desc;
- 
-@@ -1620,6 +1626,12 @@ extern errcode_t ext2fs_mkdir(ext2_filsys fs, ext2_ino_t parent, ext2_ino_t inum
- 			      const char *name);
- 
- /* mkjournal.c */
-+struct ext2fs_journal_params {
-+	blk_t num_journal_blocks;
-+	blk_t num_fc_blocks;
-+};
-+extern errcode_t ext2fs_get_journal_params(
-+		struct ext2fs_journal_params *params, ext2_filsys fs);
- extern errcode_t ext2fs_zero_blocks(ext2_filsys fs, blk_t blk, int num,
- 				    blk_t *ret_blk, int *ret_count);
- extern errcode_t ext2fs_zero_blocks2(ext2_filsys fs, blk64_t blk, int num,
-@@ -1627,12 +1639,18 @@ extern errcode_t ext2fs_zero_blocks2(ext2_filsys fs, blk64_t blk, int num,
- extern errcode_t ext2fs_create_journal_superblock(ext2_filsys fs,
- 						  __u32 num_blocks, int flags,
- 						  char  **ret_jsb);
-+extern errcode_t ext2fs_create_journal_superblock2(ext2_filsys fs,
-+						  struct ext2fs_journal_params *params,
-+						  int flags, char  **ret_jsb);
- extern errcode_t ext2fs_add_journal_device(ext2_filsys fs,
- 					   ext2_filsys journal_dev);
- extern errcode_t ext2fs_add_journal_inode(ext2_filsys fs, blk_t num_blocks,
- 					  int flags);
- extern errcode_t ext2fs_add_journal_inode2(ext2_filsys fs, blk_t num_blocks,
- 					   blk64_t goal, int flags);
-+extern errcode_t ext2fs_add_journal_inode3(ext2_filsys fs,
-+				    struct ext2fs_journal_params *params,
-+				    blk64_t goal, int flags);
- extern int ext2fs_default_journal_size(__u64 num_blocks);
- extern int ext2fs_journal_sb_start(int blocksize);
- 
-diff --git a/lib/ext2fs/mkjournal.c b/lib/ext2fs/mkjournal.c
-index f47f71e6..732ba7d6 100644
---- a/lib/ext2fs/mkjournal.c
-+++ b/lib/ext2fs/mkjournal.c
-@@ -12,6 +12,7 @@
- #include "config.h"
- #include <stdio.h>
- #include <string.h>
-+#include <assert.h>
- #if HAVE_UNISTD_H
- #include <unistd.h>
- #endif
-@@ -43,14 +44,14 @@
-  * This function automatically sets up the journal superblock and
-  * returns it as an allocated block.
-  */
--errcode_t ext2fs_create_journal_superblock(ext2_filsys fs,
--					   __u32 num_blocks, int flags,
--					   char  **ret_jsb)
-+errcode_t ext2fs_create_journal_superblock2(ext2_filsys fs,
-+					   struct ext2fs_journal_params *jparams,
-+					   int flags, char **ret_jsb)
- {
- 	errcode_t		retval;
- 	journal_superblock_t	*jsb;
- 
--	if (num_blocks < JBD2_MIN_JOURNAL_BLOCKS)
-+	if (jparams->num_journal_blocks < JBD2_MIN_JOURNAL_BLOCKS)
- 		return EXT2_ET_JOURNAL_TOO_SMALL;
- 
- 	if ((retval = ext2fs_get_mem(fs->blocksize, &jsb)))
-@@ -64,10 +65,11 @@ errcode_t ext2fs_create_journal_superblock(ext2_filsys fs,
- 	else
- 		jsb->s_header.h_blocktype = htonl(JBD2_SUPERBLOCK_V2);
- 	jsb->s_blocksize = htonl(fs->blocksize);
--	jsb->s_maxlen = htonl(num_blocks);
-+	jsb->s_maxlen = htonl(jparams->num_journal_blocks + jparams->num_fc_blocks);
- 	jsb->s_nr_users = htonl(1);
- 	jsb->s_first = htonl(1);
- 	jsb->s_sequence = htonl(1);
-+	jsb->s_num_fc_blks = htonl(jparams->num_fc_blocks);
- 	memcpy(jsb->s_uuid, fs->super->s_uuid, sizeof(fs->super->s_uuid));
+ 	clear_problem_context(&pctx);
+ 	sigcatcher_setup();
+@@ -1887,9 +1888,15 @@ print_unsupp_features:
  	/*
- 	 * If we're creating an external journal device, we need to
-@@ -82,20 +84,32 @@ errcode_t ext2fs_create_journal_superblock(ext2_filsys fs,
- 	return 0;
+ 	 * Save the journal size in megabytes.
+ 	 * Try and use the journal size from the backup else let e2fsck
+-	 * find the default journal size.
++	 * find the default journal size. If fast commit feature is enabled,
++	 * it is not clear how many of the journal blocks were fast commit
++	 * blocks. So, ignore the size of journal found in backup.
++	 *
++	 * TODO: Add a new backup type that captures fast commit info as
++	 * well.
+ 	 */
+-	if (sb->s_jnl_backup_type == EXT3_JNL_BACKUP_BLOCKS)
++	if (sb->s_jnl_backup_type == EXT3_JNL_BACKUP_BLOCKS &&
++		!ext2fs_has_feature_fast_commit(sb))
+ 		journal_size = (sb->s_jnl_blocks[15] << (32 - 20)) |
+ 			       (sb->s_jnl_blocks[16] >> 20);
+ 	else
+@@ -1911,9 +1918,13 @@ print_unsupp_features:
+ 	if (!ctx->invalid_bitmaps &&
+ 	    (ctx->flags & E2F_FLAG_JOURNAL_INODE)) {
+ 		if (fix_problem(ctx, PR_6_RECREATE_JOURNAL, &pctx)) {
+-			if (journal_size < 1024)
+-				journal_size = ext2fs_default_journal_size(ext2fs_blocks_count(fs->super));
+-			if (journal_size < 0) {
++			if (journal_size < 1024) {
++				ext2fs_get_journal_params(&jparams, fs);
++			} else {
++				jparams.num_journal_blocks = journal_size;
++				jparams.num_fc_blocks = 0;
++			}
++			if (jparams.num_journal_blocks < 0) {
+ 				ext2fs_clear_feature_journal(fs->super);
+ 				fs->flags &= ~EXT2_FLAG_MASTER_SB_ONLY;
+ 				log_out(ctx, "%s: Couldn't determine "
+@@ -1921,10 +1932,9 @@ print_unsupp_features:
+ 				goto no_journal;
+ 			}
+ 			log_out(ctx, _("Creating journal (%d blocks): "),
+-			       journal_size);
++			       jparams.num_journal_blocks);
+ 			fflush(stdout);
+-			retval = ext2fs_add_journal_inode(fs,
+-							  journal_size, 0);
++			retval = ext2fs_add_journal_inode3(fs, &jparams, ~0ULL, 0);
+ 			if (retval) {
+ 				log_out(ctx, "%s: while trying to create "
+ 					"journal\n", error_message(retval));
+diff --git a/misc/dumpe2fs.c b/misc/dumpe2fs.c
+index d295ba4d..e24dc4e6 100644
+--- a/misc/dumpe2fs.c
++++ b/misc/dumpe2fs.c
+@@ -364,6 +364,7 @@ static void print_inline_journal_information(ext2_filsys fs)
+ 	errcode_t		retval;
+ 	ext2_ino_t		ino = fs->super->s_journal_inum;
+ 	char			buf[1024];
++	int			flags;
+ 
+ 	if (fs->flags & EXT2_FLAG_IMAGE_FILE)
+ 		return;
+@@ -392,7 +393,9 @@ static void print_inline_journal_information(ext2_filsys fs)
+ 			_("Journal superblock magic number invalid!\n"));
+ 		exit(1);
+ 	}
+-	e2p_list_journal_super(stdout, buf, fs->blocksize, 0);
++	flags = ext2fs_has_feature_fast_commit(fs->super) ?
++			E2P_LIST_JOURNAL_FLAG_FC : 0;
++	e2p_list_journal_super(stdout, buf, fs->blocksize, flags);
  }
  
-+errcode_t ext2fs_create_journal_superblock(ext2_filsys fs, __u32 num_blocks,
-+					int flags, char **ret_sb)
+ static void print_journal_information(ext2_filsys fs)
+@@ -400,6 +403,7 @@ static void print_journal_information(ext2_filsys fs)
+ 	errcode_t	retval;
+ 	char		buf[1024];
+ 	journal_superblock_t	*jsb;
++	int		flags;
+ 
+ 	/* Get the journal superblock */
+ 	if ((retval = io_channel_read_blk64(fs->io,
+@@ -417,7 +421,9 @@ static void print_journal_information(ext2_filsys fs)
+ 			_("Couldn't find journal superblock magic numbers"));
+ 		exit(1);
+ 	}
+-	e2p_list_journal_super(stdout, buf, fs->blocksize, 0);
++	flags = ext2fs_has_feature_fast_commit(fs->super) ?
++			E2P_LIST_JOURNAL_FLAG_FC : 0;
++	e2p_list_journal_super(stdout, buf, fs->blocksize, flags);
+ }
+ 
+ static int check_mmp(ext2_filsys fs)
+diff --git a/misc/mke2fs.8.in b/misc/mke2fs.8.in
+index e6bfc6d6..2833b408 100644
+--- a/misc/mke2fs.8.in
++++ b/misc/mke2fs.8.in
+@@ -521,6 +521,27 @@ The size of the journal must be at least 1024 filesystem blocks
+ and may be no more than 10,240,000 filesystem blocks or half the total
+ file system size (whichever is smaller)
+ .TP
++.BI fast_commit_size= fast-commit-size
++Create an additional fast commit journal area of size
++.I fast-commit-size
++kilobytes.
++This option is only valid if
++.B fast_commit
++feature is enabled
++on the file system. If this option is not specified and if
++.B fast_commit
++feature is turned on, fast commit area size defaults to
++.I journal-size
++/ 64 megabytes. The total size of the journal with
++.B fast_commit
++feature set is
++.I journal-size
+++ (
++.I fast-commit-size
++* 1024) megabytes. The total journal size may be no more than
++10,240,000 filesystem blocks or half the total file system size
++(whichever is smaller).
++.TP
+ .BI location =journal-location
+ Specify the location of the journal.  The argument
+ .I journal-location
+diff --git a/misc/mke2fs.c b/misc/mke2fs.c
+index 8c8f5ea4..d7ce7c9d 100644
+--- a/misc/mke2fs.c
++++ b/misc/mke2fs.c
+@@ -93,6 +93,7 @@ static uid_t	root_uid;
+ static gid_t	root_gid;
+ int	journal_size;
+ int	journal_flags;
++int	journal_fc_size;
+ static int	lazy_itable_init;
+ static int	packed_meta_blocks;
+ int		no_copy_xattrs;
+@@ -604,9 +605,16 @@ static void create_journal_dev(ext2_filsys fs)
+ 	char			*buf;
+ 	blk64_t			blk, err_blk;
+ 	int			c, count, err_count;
++	struct ext2fs_journal_params	jparams;
+ 
+-	retval = ext2fs_create_journal_superblock(fs,
+-				  ext2fs_blocks_count(fs->super), 0, &buf);
++	retval = ext2fs_get_journal_params(&jparams, fs);
++	if (retval) {
++		com_err("create_journal_dev", retval, "%s",
++			_("while splitting the journal size"));
++		exit(1);
++	}
++
++	retval = ext2fs_create_journal_superblock2(fs, &jparams, 0, &buf);
+ 	if (retval) {
+ 		com_err("create_journal_dev", retval, "%s",
+ 			_("while initializing journal superblock"));
+@@ -1753,6 +1761,8 @@ profile_error:
+ 		case 'j':
+ 			if (!journal_size)
+ 				journal_size = -1;
++			if (!journal_fc_size)
++				journal_fc_size = -1;
+ 			break;
+ 		case 'J':
+ 			parse_journal_opts(optarg);
+@@ -2937,7 +2947,7 @@ int main (int argc, char *argv[])
+ 	badblocks_list	bb_list = 0;
+ 	badblocks_iterate	bb_iter;
+ 	blk_t		blk;
+-	unsigned int	journal_blocks = 0;
++	struct ext2fs_journal_params	jparams = {0};
+ 	unsigned int	i, checkinterval;
+ 	int		max_mnt_count;
+ 	int		val, hash_alg;
+@@ -3047,7 +3057,7 @@ int main (int argc, char *argv[])
+ 	/* Calculate journal blocks */
+ 	if (!journal_device && ((journal_size) ||
+ 	    ext2fs_has_feature_journal(&fs_param)))
+-		journal_blocks = figure_journal_size(journal_size, fs);
++		figure_journal_size(&jparams, journal_size, journal_fc_size, fs);
+ 
+ 	sprintf(opt_string, "tdb_data_size=%d", fs->blocksize <= 4096 ?
+ 		32768 : fs->blocksize * 8);
+@@ -3382,23 +3392,23 @@ int main (int argc, char *argv[])
+ 		free(journal_device);
+ 	} else if ((journal_size) ||
+ 		   ext2fs_has_feature_journal(&fs_param)) {
+-		overhead += EXT2FS_NUM_B2C(fs, journal_blocks);
++		overhead += EXT2FS_NUM_B2C(fs, jparams.num_journal_blocks + jparams.num_fc_blocks);
+ 		if (super_only) {
+ 			printf("%s", _("Skipping journal creation in super-only mode\n"));
+ 			fs->super->s_journal_inum = EXT2_JOURNAL_INO;
+ 			goto no_journal;
+ 		}
+ 
+-		if (!journal_blocks) {
++		if (!jparams.num_journal_blocks) {
+ 			ext2fs_clear_feature_journal(fs->super);
+ 			goto no_journal;
+ 		}
+ 		if (!quiet) {
+ 			printf(_("Creating journal (%u blocks): "),
+-			       journal_blocks);
++			       jparams.num_journal_blocks + jparams.num_fc_blocks);
+ 			fflush(stdout);
+ 		}
+-		retval = ext2fs_add_journal_inode2(fs, journal_blocks,
++		retval = ext2fs_add_journal_inode3(fs, &jparams,
+ 						   journal_location,
+ 						   journal_flags);
+ 		if (retval) {
+diff --git a/misc/tune2fs.8.in b/misc/tune2fs.8.in
+index 582d1da5..2114c623 100644
+--- a/misc/tune2fs.8.in
++++ b/misc/tune2fs.8.in
+@@ -357,6 +357,27 @@ and may be no more than 10,240,000 filesystem blocks.
+ There must be enough free space in the filesystem to create a journal of
+ that size.
+ .TP
++.BI fast_commit_size= fast-commit-size
++Create an additional fast commit journal area of size
++.I fast-commit-size
++kilobytes.
++This option is only valid if
++.B fast_commit
++feature is enabled
++on the file system. If this option is not specified and if
++.B fast_commit
++feature is turned on, fast commit area size defaults to
++.I journal-size
++/ 64 megabytes. The total size of the journal with
++.B fast_commit
++feature set is
++.I journal-size
+++ (
++.I fast-commit-size
++* 1024) megabytes. The total journal size may be no more than
++10,240,000 filesystem blocks or half the total file system size
++(whichever is smaller).
++.TP
+ .BI location =journal-location
+ Specify the location of the journal.  The argument
+ .I journal-location
+@@ -586,6 +607,10 @@ Setting the filesystem feature is equivalent to using the
+ .B \-j
+ option.
+ .TP
++.TP
++.B fast_commit
++Enable fast commit journaling feature to improve fsync latency.
++.TP
+ .B large_dir
+ Increase the limit on the number of files per directory.
+ .B Tune2fs
+diff --git a/misc/tune2fs.c b/misc/tune2fs.c
+index 670ed9e0..2307f18a 100644
+--- a/misc/tune2fs.c
++++ b/misc/tune2fs.c
+@@ -102,7 +102,7 @@ static int feature_64bit;
+ static int fsck_requested;
+ static char *undo_file;
+ 
+-int journal_size, journal_flags;
++int journal_size, journal_fc_size, journal_flags;
+ char *journal_device;
+ static blk64_t journal_location = ~0LL;
+ 
+@@ -1543,7 +1543,7 @@ mmp_error:
+  */
+ static int add_journal(ext2_filsys fs)
+ {
+-	unsigned long journal_blocks;
++	struct ext2fs_journal_params	jparams;
+ 	errcode_t	retval;
+ 	ext2_filsys	jfs;
+ 	io_manager	io_ptr;
+@@ -1589,13 +1589,13 @@ static int add_journal(ext2_filsys fs)
+ 	} else if (journal_size) {
+ 		fputs(_("Creating journal inode: "), stdout);
+ 		fflush(stdout);
+-		journal_blocks = figure_journal_size(journal_size, fs);
++		figure_journal_size(&jparams, journal_size, journal_fc_size, fs);
+ 
+ 		if (journal_location_string)
+ 			journal_location =
+ 				parse_num_blocks2(journal_location_string,
+ 						  fs->super->s_log_block_size);
+-		retval = ext2fs_add_journal_inode2(fs, journal_blocks,
++		retval = ext2fs_add_journal_inode3(fs, &jparams,
+ 						   journal_location,
+ 						   journal_flags);
+ 		if (retval) {
+diff --git a/misc/util.c b/misc/util.c
+index dcd2f0a7..48e623dc 100644
+--- a/misc/util.c
++++ b/misc/util.c
+@@ -200,6 +200,14 @@ void parse_journal_opts(const char *opts)
+ 			journal_size = strtoul(arg, &p, 0);
+ 			if (*p)
+ 				journal_usage++;
++		} else if (strcmp(token, "fast_commit_size") == 0) {
++			if (!arg) {
++				journal_usage++;
++				continue;
++			}
++			journal_fc_size = strtoul(arg, &p, 0);
++			if (*p)
++				journal_usage++;
+ 		} else if (!strcmp(token, "location")) {
+ 			if (!arg) {
+ 				journal_usage++;
+@@ -229,42 +237,63 @@ void parse_journal_opts(const char *opts)
+ 	free(buf);
+ }
+ 
++static inline int jsize_to_blks(ext2_filsys fs, int size)
 +{
-+	struct ext2fs_journal_params jparams;
++	return (size * 1024) / (fs->blocksize / 1024);
++}
 +
-+	jparams.num_journal_blocks = num_blocks;
-+	jparams.num_fc_blocks = 0;
-+
-+	return ext2fs_create_journal_superblock2(fs, &jparams, flags, ret_sb);
++/* Fast commit size is in KBs */
++static inline int fcsize_to_blks(ext2_filsys fs, int size)
++{
++	return (size * 1024) / (fs->blocksize);
 +}
 +
  /*
-  * This function writes a journal using POSIX routines.  It is used
-  * for creating external journals and creating journals on live
-  * filesystems.
+  * Determine the number of journal blocks to use, either via
+  * user-specified # of megabytes, or via some intelligently selected
+  * defaults.
+  *
+- * Find a reasonable journal file size (in blocks) given the number of blocks
+- * in the filesystem.  For very small filesystems, it is not reasonable to
+- * have a journal that fills more than half of the filesystem.
++ * Find a reasonable journal file size (in blocks) given the number of blocks in
++ * the filesystem. For very small filesystems, it is not reasonable to have a
++ * journal that fills more than half of the filesystem.
   */
- static errcode_t write_journal_file(ext2_filsys fs, char *filename,
--				    blk_t num_blocks, int flags)
-+				    struct ext2fs_journal_params *jparams,
-+				    int flags)
+-unsigned int figure_journal_size(int size, ext2_filsys fs)
++void figure_journal_size(struct ext2fs_journal_params *jparams,
++		int requested_j_size, int requested_fc_size, ext2_filsys fs)
  {
- 	errcode_t	retval;
- 	char		*buf = 0;
- 	int		fd, ret_size;
- 	blk_t		i;
+-	int j_blocks;
++	int total_blocks, ret;
  
--	if ((retval = ext2fs_create_journal_superblock(fs, num_blocks, flags,
-+	if ((retval = ext2fs_create_journal_superblock2(fs, jparams, flags,
- 						       &buf)))
- 		return retval;
- 
-@@ -119,7 +133,7 @@ static errcode_t write_journal_file(ext2_filsys fs, char *filename,
- 	if (flags & EXT2_MKJOURNAL_LAZYINIT)
- 		goto success;
- 
--	for (i = 1; i < num_blocks; i++) {
-+	for (i = 1; i < jparams->num_journal_blocks + jparams->num_fc_blocks; i++) {
- 		ret_size = write(fd, buf, fs->blocksize);
- 		if (ret_size < 0) {
- 			retval = errno;
-@@ -262,7 +276,8 @@ static blk64_t get_midpoint_journal_block(ext2_filsys fs)
-  * This function creates a journal using direct I/O routines.
-  */
- static errcode_t write_journal_inode(ext2_filsys fs, ext2_ino_t journal_ino,
--				     blk_t num_blocks, blk64_t goal, int flags)
-+				     struct ext2fs_journal_params *jparams,
-+				     blk64_t goal, int flags)
- {
- 	char			*buf;
- 	errcode_t		retval;
-@@ -271,7 +286,7 @@ static errcode_t write_journal_inode(ext2_filsys fs, ext2_ino_t journal_ino,
- 	int			falloc_flags = EXT2_FALLOCATE_FORCE_INIT;
- 	blk64_t			zblk;
- 
--	if ((retval = ext2fs_create_journal_superblock(fs, num_blocks, flags,
-+	if ((retval = ext2fs_create_journal_superblock2(fs, jparams, flags,
- 						       &buf)))
- 		return retval;
- 
-@@ -295,7 +310,8 @@ static errcode_t write_journal_inode(ext2_filsys fs, ext2_ino_t journal_ino,
- 	if (!(flags & EXT2_MKJOURNAL_LAZYINIT))
- 		falloc_flags |= EXT2_FALLOCATE_ZERO_BLOCKS;
- 
--	inode_size = (unsigned long long)fs->blocksize * num_blocks;
-+	inode_size = (unsigned long long)fs->blocksize *
-+			(jparams->num_journal_blocks + jparams->num_fc_blocks);
- 	inode.i_mtime = inode.i_ctime = fs->now ? fs->now : time(0);
- 	inode.i_links_count = 1;
- 	inode.i_mode = LINUX_S_IFREG | 0600;
-@@ -304,7 +320,8 @@ static errcode_t write_journal_inode(ext2_filsys fs, ext2_ino_t journal_ino,
- 		goto out2;
- 
- 	retval = ext2fs_fallocate(fs, falloc_flags, journal_ino,
--				  &inode, goal, 0, num_blocks);
-+				  &inode, goal, 0,
-+				  jparams->num_journal_blocks + jparams->num_fc_blocks);
- 	if (retval)
- 		goto out2;
- 
-@@ -358,6 +375,43 @@ int ext2fs_default_journal_size(__u64 num_blocks)
- 	return 262144;				/* 1 GB */
- }
- 
-+errcode_t ext2fs_get_journal_params(struct ext2fs_journal_params *params,
-+		ext2_filsys fs)
-+{
-+	blk_t total_blks;
-+	int ret;
-+
-+	memset(params, 0, sizeof(*params));
-+	if (ext2fs_has_feature_journal_dev(fs->super)) {
-+		total_blks = ext2fs_blocks_count(fs->super);
-+		if (total_blks < JBD2_MIN_JOURNAL_BLOCKS)
-+			return EXT2_ET_JOURNAL_TOO_SMALL;
-+
-+		if (!ext2fs_has_feature_fast_commit(fs->super)) {
-+			params->num_journal_blocks = total_blks;
-+			params->num_fc_blocks = 0;
-+			return 0;
-+		}
-+		params->num_journal_blocks = ext2fs_blocks_count(fs->super) *
-+				EXT2_JOURNAL_TO_FC_BLKS_RATIO /
-+				(EXT2_JOURNAL_TO_FC_BLKS_RATIO + 1);
-+		if (JBD2_MIN_JOURNAL_BLOCKS > params->num_journal_blocks)
-+			params->num_journal_blocks = JBD2_MIN_JOURNAL_BLOCKS;
-+		params->num_fc_blocks = total_blks - params->num_journal_blocks;
-+		return 0;
-+	}
-+
-+	ret = ext2fs_default_journal_size(ext2fs_blocks_count(fs->super));
-+	if (ret < 0)
-+		return EXT2_ET_JOURNAL_TOO_SMALL;
-+
-+	params->num_journal_blocks = ret;
-+	if (ext2fs_has_feature_fast_commit(fs->super))
-+		params->num_fc_blocks = params->num_journal_blocks /
-+			EXT2_JOURNAL_TO_FC_BLKS_RATIO;
-+	return 0;
-+}
-+
- int ext2fs_journal_sb_start(int blocksize)
- {
- 	if (blocksize == EXT2_MIN_BLOCK_SIZE)
-@@ -434,7 +488,7 @@ errcode_t ext2fs_add_journal_device(ext2_filsys fs, ext2_filsys journal_dev)
-  * POSIX routines if the filesystem is mounted, or using direct I/O
-  * functions if it is not.
-  */
--errcode_t ext2fs_add_journal_inode2(ext2_filsys fs, blk_t num_blocks,
-+errcode_t ext2fs_add_journal_inode3(ext2_filsys fs, struct ext2fs_journal_params *jparams,
- 				    blk64_t goal, int flags)
- {
- 	errcode_t		retval;
-@@ -486,7 +540,7 @@ errcode_t ext2fs_add_journal_inode2(ext2_filsys fs, blk_t num_blocks,
- 		 * filesystems is extremely rare these days...  Ignore it. */
- 		flags &= ~EXT2_MKJOURNAL_LAZYINIT;
- 
--		if ((retval = write_journal_file(fs, jfile, num_blocks, flags)))
-+		if ((retval = write_journal_file(fs, jfile, jparams, flags)))
- 			goto errout;
- 
- 		/* Get inode number of the journal file */
-@@ -528,7 +582,7 @@ errcode_t ext2fs_add_journal_inode2(ext2_filsys fs, blk_t num_blocks,
- 		}
- 		journal_ino = EXT2_JOURNAL_INO;
- 		if ((retval = write_journal_inode(fs, journal_ino,
--						  num_blocks, goal, flags)))
-+						  jparams, goal, flags)))
- 			return retval;
+-	j_blocks = ext2fs_default_journal_size(ext2fs_blocks_count(fs->super));
+-	if (j_blocks < 0) {
++	ret = ext2fs_get_journal_params(jparams, fs);
++	if (ret) {
+ 		fputs(_("\nFilesystem too small for a journal\n"), stderr);
+-		return 0;
++		return;
  	}
  
-@@ -546,6 +600,18 @@ errout:
- 	return retval;
+-	if (size > 0) {
+-		j_blocks = size * 1024 / (fs->blocksize	/ 1024);
+-		if (j_blocks < 1024 || j_blocks > 10240000) {
+-			fprintf(stderr, _("\nThe requested journal "
++	if (requested_j_size > 0 ||
++		(ext2fs_has_feature_fast_commit(fs->super) && requested_fc_size > 0)) {
++		if (requested_j_size > 0)
++			jparams->num_journal_blocks =
++				jsize_to_blks(fs, requested_j_size);
++		if (ext2fs_has_feature_fast_commit(fs->super) &&
++			requested_fc_size > 0)
++			jparams->num_fc_blocks =
++				fcsize_to_blks(fs, requested_fc_size);
++		else if (!ext2fs_has_feature_fast_commit(fs->super))
++			jparams->num_fc_blocks = 0;
++		total_blocks = jparams->num_journal_blocks + jparams->num_fc_blocks;
++		if (total_blocks < 1024 || total_blocks > 10240000) {
++			fprintf(stderr, _("\nThe total requested journal "
+ 				"size is %d blocks; it must be\n"
+ 				"between 1024 and 10240000 blocks.  "
+ 				"Aborting.\n"),
+-				j_blocks);
++				total_blocks);
+ 			exit(1);
+ 		}
+-		if ((unsigned) j_blocks > ext2fs_free_blocks_count(fs->super) / 2) {
+-			fputs(_("\nJournal size too big for filesystem.\n"),
++		if ((unsigned int) total_blocks > ext2fs_free_blocks_count(fs->super) / 2) {
++			fputs(_("\nTotal journal size too big for filesystem.\n"),
+ 			      stderr);
+ 			exit(1);
+ 		}
+ 	}
+-	return j_blocks;
  }
  
-+errcode_t ext2fs_add_journal_inode2(ext2_filsys fs, blk_t num_blocks,
-+				    blk64_t goal, int flags)
-+{
-+	struct ext2fs_journal_params jparams;
-+	errcode_t ret;
-+
-+	jparams.num_journal_blocks = num_blocks;
-+	jparams.num_fc_blocks = 0;
-+
-+	return ext2fs_add_journal_inode3(fs, &jparams, goal, flags);
-+}
-+
- errcode_t ext2fs_add_journal_inode(ext2_filsys fs, blk_t num_blocks, int flags)
- {
- 	return ext2fs_add_journal_inode2(fs, num_blocks, ~0ULL, flags);
+ void print_check_message(int mnt, unsigned int check)
+diff --git a/misc/util.h b/misc/util.h
+index 49b4b9c1..ccdc7fbc 100644
+--- a/misc/util.h
++++ b/misc/util.h
+@@ -11,6 +11,7 @@
+  */
+ 
+ extern int	 journal_size;
++extern int	 journal_fc_size;
+ extern int	 journal_flags;
+ extern char	*journal_device;
+ extern char	*journal_location_string;
+@@ -22,6 +23,7 @@ extern char *get_progname(char *argv_zero);
+ extern void proceed_question(int delay);
+ extern void parse_journal_opts(const char *opts);
+ extern void check_mount(const char *device, int force, const char *type);
+-extern unsigned int figure_journal_size(int size, ext2_filsys fs);
++extern void figure_journal_size(struct ext2fs_journal_params *jparams,
++		int requested_j_size, int requested_fc_size, ext2_filsys fs);
+ extern void print_check_message(int, unsigned int);
+ extern void dump_mmp_msg(struct mmp_struct *mmp, const char *msg);
 -- 
 2.30.0.284.gd98b1dd5eaa7-goog
 
