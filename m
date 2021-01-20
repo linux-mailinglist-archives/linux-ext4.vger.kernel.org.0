@@ -2,99 +2,96 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C472FCCEB
-	for <lists+linux-ext4@lfdr.de>; Wed, 20 Jan 2021 09:44:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F14A2FD0E5
+	for <lists+linux-ext4@lfdr.de>; Wed, 20 Jan 2021 14:00:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731050AbhATInU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 20 Jan 2021 03:43:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730935AbhATInI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 20 Jan 2021 03:43:08 -0500
-Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB79C061757
-        for <linux-ext4@vger.kernel.org>; Wed, 20 Jan 2021 00:42:27 -0800 (PST)
-Received: by mail-ua1-x92f.google.com with SMTP id g13so142172uaw.5
-        for <linux-ext4@vger.kernel.org>; Wed, 20 Jan 2021 00:42:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LcErNgQLVWOD8ZTCaEhXK6vs+u411+l0rmQgZ6zam9o=;
-        b=cncXbFMLNFZZMMMPVG/Cxaj4sOUIGJCzaSgMLUBQhIL3ueXk6g/Gd8aMHXGs1uDMcq
-         4tDdt48TteXTHB+MtkDISORE7UViRflrovrpIxP4OVXR3f26526nNL9SsIeio/venNVd
-         wXT9ExhAd4o0/EYvX1vgXZ9ek36X3Xu6woq1E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LcErNgQLVWOD8ZTCaEhXK6vs+u411+l0rmQgZ6zam9o=;
-        b=L1neE07byQAnOE0Z7q0WfqRUaaEnXde4j6KoBnsX0xxMariPmGt4P0S4qRDa1TMc//
-         ESYSTRkrReMKDhKTtW8QH1c9U4/cfjXZDkQdxKdCCGwmz97itQUfiEkBA565E+QzOdtt
-         Q1nSb+PC5Cl+w9yqGNyuyKMWpIkC8ZDD8k0Bjk07Xah5R/msUAkfurh7GdwvqGaGQGut
-         WrDQXyVPkhbNzCP8u6l2WB6Gm0Njx8cahAF4j1ta+33xNMOWc5oj36ziD2pGC3xQibSA
-         AbOFLp9xCtTNc22HsZ/UfTJTnjcFY5JAxxsT1GQOGRIDx+TxvarIRtCVDrpeIpwfLig2
-         GfFQ==
-X-Gm-Message-State: AOAM532nDN6OdwXGrxENGcvrKdUAehhdYO74HOU1D0afxkd+GwLRJKbG
-        HAcUd5X2PzDDbCI0Q3DezLBK6C4AIaOcIt4Bpv57hA==
-X-Google-Smtp-Source: ABdhPJyy86YCbwJ30iHzrIqN/bFimmSQ170g2aYsvj/+hAIdoZXcX4F74dLLSy2wdJwNOFd63TcqdINnFzqydo36OKQ=
-X-Received: by 2002:ab0:3c91:: with SMTP id a17mr5484553uax.9.1611132147206;
- Wed, 20 Jan 2021 00:42:27 -0800 (PST)
-MIME-Version: 1.0
-References: <20210105062857.3566-1-yangerkun@huawei.com> <X/+/3ui/TQ9LjtNZ@mit.edu>
- <CAOQ4uxh2V6LF_t8ZaAOr=CbDrY3A5d0qSR7XWVX8dStR9mME5w@mail.gmail.com>
-In-Reply-To: <CAOQ4uxh2V6LF_t8ZaAOr=CbDrY3A5d0qSR7XWVX8dStR9mME5w@mail.gmail.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Wed, 20 Jan 2021 09:42:16 +0100
-Message-ID: <CAJfpegsVYF2wCiMKfRUzS_MpH9UKPh8g7ucG6w9uOcQodAzRAQ@mail.gmail.com>
-Subject: Re: [PATCH v3] ext4: fix bug for rename with RENAME_WHITEOUT
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>,
-        harshad shirwadkar <harshadshirwadkar@gmail.com>,
-        yangerkun <yangerkun@huawei.com>,
-        Ext4 <linux-ext4@vger.kernel.org>,
+        id S2388812AbhATM64 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 20 Jan 2021 07:58:56 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:43216 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729022AbhATM2v (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 20 Jan 2021 07:28:51 -0500
+Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1l2CCh-0006rZ-My; Wed, 20 Jan 2021 12:03:15 +0000
+Date:   Wed, 20 Jan 2021 13:03:10 +0100
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Jann Horn <jannh@google.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        John Johansen <john.johansen@canonical.com>,
+        James Morris <jmorris@namei.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Arnd Bergmann <arnd@arndb.de>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, "zhangyi (F)" <yi.zhang@huawei.com>,
-        lihaotian <lihaotian9@huawei.com>, lutianxiong@huawei.com,
-        linfeilong <linfeilong@huawei.com>,
-        fstests <fstests@vger.kernel.org>,
-        Vijaychidambaram Velayudhan Pillai <vijay@cs.utexas.edu>
-Content-Type: text/plain; charset="UTF-8"
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Mrunal Patel <mpatel@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Theodore Tso <tytso@mit.edu>, Alban Crequy <alban@kinvolk.io>,
+        Tycho Andersen <tycho@tycho.ws>,
+        David Howells <dhowells@redhat.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Seth Forshee <seth.forshee@canonical.com>,
+        =?utf-8?B?U3TDqXBoYW5l?= Graber <stgraber@ubuntu.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Lennart Poettering <lennart@poettering.net>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Stephen Barber <smbarber@chromium.org>,
+        Phil Estes <estesp@gmail.com>, Serge Hallyn <serge@hallyn.com>,
+        Kees Cook <keescook@chromium.org>,
+        Todd Kjos <tkjos@google.com>, Paul Moore <paul@paul-moore.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-xfs@vger.kernel.org, linux-integrity@vger.kernel.org,
+        SElinux list <selinux@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v5 15/42] fs: add file_user_ns() helper
+Message-ID: <20210120120310.6tczonwl3rdtnyu3@wittgenstein>
+References: <20210112220124.837960-1-christian.brauner@ubuntu.com>
+ <20210112220124.837960-16-christian.brauner@ubuntu.com>
+ <CAG48ez3Ccr77+zH56YGimESf9jdy_xnQrebypn1TXEP3Q+xw=w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAG48ez3Ccr77+zH56YGimESf9jdy_xnQrebypn1TXEP3Q+xw=w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 7:57 AM Amir Goldstein <amir73il@gmail.com> wrote:
+On Tue, Jan 19, 2021 at 04:05:00PM +0100, Jann Horn wrote:
+> On Wed, Jan 13, 2021 at 1:52 AM Christian Brauner
+> <christian.brauner@ubuntu.com> wrote:
+> > Add a simple helper to retrieve the user namespace associated with the
+> > vfsmount of a file. Christoph correctly points out that this makes
+> > codepaths (e.g. ioctls) way easier to follow that would otherwise
+> > dereference via mnt_user_ns(file->f_path.mnt).
+> >
+> > In order to make file_user_ns() static inline we'd need to include
+> > mount.h in either file.h or fs.h which seems undesirable so let's simply
+> > not force file_user_ns() to be inline.
+> [...]
+> > +struct user_namespace *file_user_ns(struct file *file)
+> > +{
+> > +       return mnt_user_ns(file->f_path.mnt);
+> > +}
+> 
+> That name is confusing to me, because when I think of "the userns of a
+> file", it's file->f_cred->user_ns. There are a bunch of places that
+> look at that, as you can see from grepping for "f_cred->user_ns".
+> 
+> If you really want this to be a separate helper, can you maybe give it
+> a clearer name? file_mnt_user_ns(), or something like that, idk.
 
-> And as long as I am ranting, I'd like to point out that it is a shame
-> that whiteout
-> was not implemented as a special (constant) inode whose nlink is irrelevant
-> (or a special dirent with d_ino 0 and d_type DT_WHT for that matter).
-> It would have been a rather small RO_COMPAT on-disk change for ext4.
-> It could also be implemented in slightly more backward compat manner by
-> maintaining a valid nlink and postpone setting the RO_COMPAT flag until
-> EXT4_LINK_MAX is reached.
->
-> As things stand now, overlayfs makes an effort to maintain a singleton
-> hardlinked whiteout inode, without being able to use it with RENAME_WHITEOUT
-> and filesystems have to take special care to journal the metadata of all
-> individual whiteout inodes, without any added value to the only user
-> (overlayfs).
->
-> But I guess that train has left the station long ago...
-
-Not so, I believe.  Kernel internal interfaces are easy to change, and
-adding support for DT_WHT to overlayfs would mostly be a trivial
-undertaking.
-
-The big issue (as always) is userspace API's and not introducing
-DT_WHT there was a very deliberate choice.  Adding a translation layer
-from an internal whiteout representation to the userspace API also
-does not seem to be a very complex problem, but I haven't looked into
-that deeply.
-
-So AFAICS there's really nothing preventing the addition of whiteout
-objects to filesystems, other than developer dedication.
-
-Thanks,
-Miklos
+Done.
