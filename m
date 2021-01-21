@@ -2,127 +2,111 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4431B2FE22C
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Jan 2021 07:00:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBB222FE252
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Jan 2021 07:11:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726317AbhAUF7g (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 21 Jan 2021 00:59:36 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:38250 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726309AbhAUF7P (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 21 Jan 2021 00:59:15 -0500
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 10L5wQmX024801
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Jan 2021 00:58:26 -0500
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id E36AB15C35F5; Thu, 21 Jan 2021 00:58:25 -0500 (EST)
-Date:   Thu, 21 Jan 2021 00:58:25 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v3 06/15] ext2fs: add new APIs needed for fast commits
-Message-ID: <YAkYAeTL66Eq0OZE@mit.edu>
-References: <20210120212641.526556-1-user@harshads-520.kir.corp.google.com>
- <20210120212641.526556-7-user@harshads-520.kir.corp.google.com>
+        id S1726497AbhAUGEA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 21 Jan 2021 01:04:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393499AbhAUDBc (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 20 Jan 2021 22:01:32 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD714C0613CF;
+        Wed, 20 Jan 2021 19:00:51 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id l9so583797ejx.3;
+        Wed, 20 Jan 2021 19:00:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YdnR/g1AUsA802dFK4Bs9r1QCNRoeBKoAACTpgBxsAQ=;
+        b=S82oKn6Q+hAvCVWp3R9ocfOXM2/txxi1xOjHxUHmByrZ8kBz2L+vdZmpZsEoegtsH7
+         kEKPOe4hs5bnGP8bgsWbRPouosUnKNj9uWM25NvOl6npKH6Q3aIq351tyu35oZ16Gcd9
+         gI+/RZHwBoUQXrBob5pPzeDFlql7a72PNMpdC/G6NQL7jOeLy08k8OzSFgGhZ/81pKeb
+         bfGMAqvNxE6MPJJ+X7pfFTpMlP/b5cWbsk8wBXFKl5pUb3B1PIYLs2reLAOvnsUFUsv7
+         f1sf/+zO67e9eDmjS0bptW4tw0r9uzixuWtFOktEToRwo2mwE5lw5fhIJQSO5xGWaVtk
+         y6dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YdnR/g1AUsA802dFK4Bs9r1QCNRoeBKoAACTpgBxsAQ=;
+        b=ez9h2LlsuvWrYsPqp/PeF+WDfmqlNQbArORHLxSXOEglSJoXQgGO1qbofj49C2zR76
+         QME0+VhhuRakNmZQnYNwAFqJvBRjzcDp0+VKXHnG4i/lnLcHmAa2pXvd6VXi6VUtvEK5
+         5mKu3fvHenQji/0UfwZXh/NjDnGUZALGS/2NV89BOrO6+c36vb9l+M9L/CxOwJ4UJPh0
+         Ne8St4Uf0E3tocdo+8rQoWoz8qVD8VkpbtO8o5rsHAmLwSO3siEMI0+savsequQ2NRi/
+         r+VoaiNwHEA+MIzFlvu93p0EVMdO+H+N1Dz+0KppinyKsSBfQK+nZec+hZwGwnRJUi4n
+         Nx6g==
+X-Gm-Message-State: AOAM533fZeGuuVM+IMtHB9WAYJBYPR0JZRgY7vVzIWcez9FSQvyRRlJD
+        1I8IP3oT954QEQz91EpA0C2vILPUd4rAc4wHnmE=
+X-Google-Smtp-Source: ABdhPJx4hIKkKiU2iBKXjdqE5eWNNe7e0osIQ9gJJ07rfesCCPovnPnhiYH+s1vpHW57b+spuuKB7GPDWGgtgfAiGN4=
+X-Received: by 2002:a17:906:9619:: with SMTP id s25mr7999226ejx.345.1611198050485;
+ Wed, 20 Jan 2021 19:00:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210120212641.526556-7-user@harshads-520.kir.corp.google.com>
+References: <20210119050631.57073-1-chaitanya.kulkarni@wdc.com>
+In-Reply-To: <20210119050631.57073-1-chaitanya.kulkarni@wdc.com>
+From:   Julian Calaby <julian.calaby@gmail.com>
+Date:   Thu, 21 Jan 2021 14:00:38 +1100
+Message-ID: <CAGRGNgWLspr6M1COgX9cuDDgYdiXvQQjWQb7XYLsmFpfMYt0sA@mail.gmail.com>
+Subject: Re: [RFC PATCH 00/37] block: introduce bio_init_fields()
+To:     Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Cc:     linux-block@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        drbd-dev@lists.linbit.com, linux-bcache@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-nvme@lists.infradead.org,
+        Linux SCSI List <linux-scsi@vger.kernel.org>,
+        target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, cluster-devel@redhat.com,
+        jfs-discussion@lists.sourceforge.net, dm-devel@redhat.com,
+        Jens Axboe <axboe@kernel.dk>, philipp.reisner@linbit.com,
+        lars.ellenberg@linbit.com, Denis Efremov <efremov@linux.com>,
+        colyli@suse.de, kent.overstreet@gmail.com, agk@redhat.com,
+        snitzer@redhat.com, song@kernel.org,
+        Christoph Hellwig <hch@lst.de>, sagi@grimberg.me,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com, tytso@mit.edu,
+        adilger.kernel@dilger.ca, rpeterso@redhat.com, agruenba@redhat.com,
+        darrick.wong@oracle.com, shaggy@kernel.org, damien.lemoal@wdc.com,
+        naohiro.aota@wdc.com, jth@kernel.org, Tejun Heo <tj@kernel.org>,
+        osandov@fb.com, bvanassche@acm.org, gustavo@embeddedor.com,
+        asml.silence@gmail.com, jefflexu@linux.alibaba.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 01:26:32PM -0800, Harshad Shirwadkar wrote:
-> From: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-> 
-> This patch adds the following new APIs:
-> 
-> Count the total number of blocks occupied by inode including
-> intermediate extent tree nodes.
-> extern blk64_t ext2fs_count_blocks(ext2_filsys fs, ext2_ino_t ino,
->                                        struct ext2_inode *inode);
+Hi Chaitanya,
 
-I wonder if this should be something like this instead:
+On Tue, Jan 19, 2021 at 5:01 PM Chaitanya Kulkarni
+<chaitanya.kulkarni@wdc.com> wrote:
+>
+> Hi,
+>
+> This is a *compile only RFC* which adds a generic helper to initialize
+> the various fields of the bio that is repeated all the places in
+> file-systems, block layer, and drivers.
+>
+> The new helper allows callers to initialize various members such as
+> bdev, sector, private, end io callback, io priority, and write hints.
+>
+> The objective of this RFC is to only start a discussion, this it not
+> completely tested at all.
+> Following diff shows code level benefits of this helper :-
+>  38 files changed, 124 insertions(+), 236 deletions(-)
 
-extern errcode_t ext2fs_count_blocks(ext2_filsys fs, ext2_ino_t ino,
-                                     struct ext2_inode *inode, blk64_t *ret_count);
+On a more abstract note, I don't think this diffstat is actually
+illustrating the benefits of this as much as you think it is.
 
-The problem is that ext2fs_count_blocks() calls a whole series of
-ext2fs functions which could return errors:
+Yeah, we've reduced the code by 112 lines, but that's barely half the
+curn here. It looks, from the diffstat, that you've effectively
+reduced 2 lines into 1. That isn't much of a saving.
 
-> +	errcode = ext2fs_extent_open2(fs, ino, inode, &handle);
-> +	if (errcode)
-> +		goto out;
-> +
-> +	errcode = ext2fs_extent_get(handle, EXT2_EXTENT_ROOT, &extent);
-> +	if (errcode)
-> +		goto out;
+Thanks,
 
-... and any of these functions could return an error.  So we need to
-make sure errors are faithfully returned to the caller and handled
-correctly, instead of just having ext2fs_count_blocks returning a
-value of 0.
+-- 
+Julian Calaby
 
-
-I then started taking a look at the users of ext2fs_count_blocks() in
-e2fsck, and I ran into more concerns.  One of the problems here is
-that some of these functions get called by kernel code --- and kernel
-code has a different error handling convetion of negative errno's.
-
-And in some cases, I see we are doing this:
-
-static int ext4_fc_handle_inode(e2fsck_t ctx, struct ext4_fc_tl *tl)
-{
-	...
-	
-	ret = ext2fs_read_inode_full(ctx->fs, ino, (struct ext2_inode *)inode,
-					inode_len);
-	if (ret)
-		goto out;
-	...
-out:
-	ext2fs_free_mem(&inode);
-	return ret;
-}
-
-The problem here is that ext2fs_read_inode_full() returns an
-errcode_t, and this is getting cast to an int and returned as if it
-were a kernel error code.
-
-Also note that ext4_fc_replay() can return 0 or 1:
-
-#define JBD2_FC_REPLAY_STOP		0
-#define JBD2_FC_REPLAY_CONTINUE		1
-
-Fortunately, none of the functions that ext4_fc_*() call seem to be
-ones which could return in an ext2fs library returning EPERM (which is
-errno 1), but you see the potential risks of conflating an errcode_t
-and kernel negative errno convention.
-
-This is going to be a bit tricky to deal with, since an errcode_t can
-be a errno code, but it can also be one of the codes defined in
-lib/ext2fs/ext2_err.et, which get translated to numbers like:
-
-#define EXT2_ET_DIR_CORRUPTED                    (2133571363L)
-#define EXT2_ET_SHORT_READ                       (2133571364L)
-#define EXT2_ET_SHORT_WRITE                      (2133571365L)
-
-(See lib/ext2fs/ext2_err.h in the build directory of e2fsprogs and the
-com_err library found in lib/et.)
-
-So what we may need to do is to create a function which does a simple
-mapping of errcode_t values to negative errno's.  It doesn't need to
-be exact; in fact, a first pass might just map all errcode_t's greater
-than 256 to something like -EFAULT, and all normal errno's to -errno.
-
-We might also want to have it print a diagnistic message to stderr
-that prints error_message(retval) was encoutered in function __func__
-at line __LINE__.  Hopefully in actual practice they won't happen
-(unless a malicious attacker is feeding us a fuzzed file sytem), but
-if it does, it would be good if there is a useful message so we can
-actually debug what happened.
-
-      	   	  	     	    	     - Ted
+Email: julian.calaby@gmail.com
+Profile: http://www.google.com/profiles/julian.calaby/
