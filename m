@@ -2,20 +2,20 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 002A02FEE79
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Jan 2021 16:24:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB6BD2FEE7B
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Jan 2021 16:24:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732158AbhAUNZO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 21 Jan 2021 08:25:14 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:54169 "EHLO
+        id S1732048AbhAUNZM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 21 Jan 2021 08:25:12 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:54213 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731978AbhAUNWX (ORCPT
+        with ESMTP id S1731979AbhAUNWX (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Thu, 21 Jan 2021 08:22:23 -0500
 Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein.fritz.box)
         by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <christian.brauner@ubuntu.com>)
-        id 1l2Zu0-0005g7-MY; Thu, 21 Jan 2021 13:21:33 +0000
+        id 1l2Zu5-0005g7-AG; Thu, 21 Jan 2021 13:21:37 +0000
 From:   Christian Brauner <christian.brauner@ubuntu.com>
 To:     Alexander Viro <viro@zeniv.linux.org.uk>,
         Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org
@@ -51,26 +51,25 @@ Cc:     John Johansen <john.johansen@canonical.com>,
         linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
         linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
         Christian Brauner <christian.brauner@ubuntu.com>
-Subject: [PATCH v6 18/40] utimes: handle idmapped mounts
-Date:   Thu, 21 Jan 2021 14:19:37 +0100
-Message-Id: <20210121131959.646623-19-christian.brauner@ubuntu.com>
+Subject: [PATCH v6 19/40] fcntl: handle idmapped mounts
+Date:   Thu, 21 Jan 2021 14:19:38 +0100
+Message-Id: <20210121131959.646623-20-christian.brauner@ubuntu.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210121131959.646623-1-christian.brauner@ubuntu.com>
 References: <20210121131959.646623-1-christian.brauner@ubuntu.com>
 MIME-Version: 1.0
-X-Patch-Hashes: v=1; h=sha256; i=44kXqCfVtOQgFKzT2JXoGuiPGIT5dbn7iuHoFJrc8vE=; m=fnbUZ5UGVKFS/BL4Fs22j3jnis8STw4BWvoQB147YuE=; p=Y3rOll02aLsQtLHlyfzEpxjepW4qLLQsjQl3nf5dF2c=; g=22ce77554a328434b5730a0cbcd583e22f436b33
-X-Patch-Sig: m=pgp; i=christian.brauner@ubuntu.com; s=0x0x91C61BC06578DCA2; b=iHUEABYKAB0WIQRAhzRXHqcMeLMyaSiRxhvAZXjcogUCYAl9pQAKCRCRxhvAZXjcol2SAP9yEAx 7MI/hV77hhWE3fYi6udD+YR8EgkUUwvvTtU/SoQEAkuTOeKn37pvI5Mk/rSgKEgXpkWccNbXSv3GV rc22MQo=
+X-Patch-Hashes: v=1; h=sha256; i=79BfejdDgH1ldNWwCcl2HPMsbZ+QshNiYeRA/Vyc6bM=; m=detKBSkDkzsCnCPoymMn+7vpAMD0Y3cG0/3eXgQ49io=; p=Dq6/8kTkd489yO0TmXMobUvBDadTtEuojyAYcAIPKb4=; g=fca6e0371a145d55bbbad1474e2a9c625a75a05f
+X-Patch-Sig: m=pgp; i=christian.brauner@ubuntu.com; s=0x0x91C61BC06578DCA2; b=iHUEABYKAB0WIQRAhzRXHqcMeLMyaSiRxhvAZXjcogUCYAl9pQAKCRCRxhvAZXjcontYAP0T3jU 0qn4qmNVbFmqmqVvV+R2Yrdgzzgl83+2rLYGKQQD/QtLiTUddbVANLyE9giR/dq+mNVN4OT3ULUE+ aL0ypAM=
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Enable the vfs_utimes() helper to handle idmapped mounts by passing down
-the mount's user namespace. If the initial user namespace is passed
-nothing changes so non-idmapped mounts will see identical behavior as
-before.
+Enable the setfl() helper to handle idmapped mounts by passing down the
+mount's user namespace. If the initial user namespace is passed nothing
+changes so non-idmapped mounts will see identical behavior as before.
 
-Link: https://lore.kernel.org/r/20210112220124.837960-26-christian.brauner@ubuntu.com
+Link: https://lore.kernel.org/r/20210112220124.837960-27-christian.brauner@ubuntu.com
 Cc: Christoph Hellwig <hch@lst.de>
 Cc: David Howells <dhowells@redhat.com>
 Cc: Al Viro <viro@zeniv.linux.org.uk>
@@ -79,15 +78,13 @@ Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
 ---
 /* v2 */
-unchanged
+patch introduced
 
 /* v3 */
 unchanged
 
 /* v4 */
-- Serge Hallyn <serge@hallyn.com>:
-  - Use "mnt_userns" to refer to a vfsmount's userns everywhere to make
-    terminology consistent.
+unchanged
 
 /* v5 */
 unchanged
@@ -97,25 +94,32 @@ base-commit: 7c53f6b671f4aba70ff15e1b05148b10d58c2837
 base-commit: 19c329f6808995b142b3966301f217c831e7cf31
 
 - Christoph Hellwig <hch@lst.de>:
-  - Don't use unnecessary local variable just call mnt_user_ns()
-    directly.
+  - Use file_mnt_user_ns() helper.
 ---
- fs/utimes.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/fcntl.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/utimes.c b/fs/utimes.c
-index 4572b91ddb91..39f356017635 100644
---- a/fs/utimes.c
-+++ b/fs/utimes.c
-@@ -62,7 +62,7 @@ int vfs_utimes(const struct path *path, struct timespec64 *times)
- 	}
- retry_deleg:
- 	inode_lock(inode);
--	error = notify_change(&init_user_ns, path->dentry, &newattrs,
-+	error = notify_change(mnt_user_ns(path->mnt), path->dentry, &newattrs,
- 			      &delegated_inode);
- 	inode_unlock(inode);
- 	if (delegated_inode) {
+diff --git a/fs/fcntl.c b/fs/fcntl.c
+index 74d99731fd43..f6ac5285060d 100644
+--- a/fs/fcntl.c
++++ b/fs/fcntl.c
+@@ -25,6 +25,7 @@
+ #include <linux/user_namespace.h>
+ #include <linux/memfd.h>
+ #include <linux/compat.h>
++#include <linux/mount.h>
+ 
+ #include <linux/poll.h>
+ #include <asm/siginfo.h>
+@@ -46,7 +47,7 @@ static int setfl(int fd, struct file * filp, unsigned long arg)
+ 
+ 	/* O_NOATIME can only be set by the owner or superuser */
+ 	if ((arg & O_NOATIME) && !(filp->f_flags & O_NOATIME))
+-		if (!inode_owner_or_capable(&init_user_ns, inode))
++		if (!inode_owner_or_capable(file_mnt_user_ns(filp), inode))
+ 			return -EPERM;
+ 
+ 	/* required for strict SunOS emulation */
 -- 
 2.30.0
 
