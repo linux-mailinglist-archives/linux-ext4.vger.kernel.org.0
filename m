@@ -2,173 +2,119 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36BA82FF288
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Jan 2021 18:56:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24A5C2FF239
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Jan 2021 18:44:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733265AbhAUPnz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 21 Jan 2021 10:43:55 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:53783 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731810AbhAUNVZ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 21 Jan 2021 08:21:25 -0500
-Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein.fritz.box)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1l2Zsx-0005g7-Vb; Thu, 21 Jan 2021 13:20:28 +0000
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org
-Cc:     John Johansen <john.johansen@canonical.com>,
-        James Morris <jmorris@namei.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Mrunal Patel <mpatel@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Theodore Tso <tytso@mit.edu>, Alban Crequy <alban@kinvolk.io>,
-        Tycho Andersen <tycho@tycho.ws>,
-        David Howells <dhowells@redhat.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Seth Forshee <seth.forshee@canonical.com>,
-        =?UTF-8?q?St=C3=A9phane=20Graber?= <stgraber@ubuntu.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Lennart Poettering <lennart@poettering.net>,
-        "Eric W. Biederman" <ebiederm@xmission.com>, smbarber@chromium.org,
-        Phil Estes <estesp@gmail.com>, Serge Hallyn <serge@hallyn.com>,
-        Kees Cook <keescook@chromium.org>,
-        Todd Kjos <tkjos@google.com>, Paul Moore <paul@paul-moore.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        containers@lists.linux-foundation.org,
-        linux-security-module@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: [PATCH v6 02/40] fs: add id translation helpers
-Date:   Thu, 21 Jan 2021 14:19:21 +0100
-Message-Id: <20210121131959.646623-3-christian.brauner@ubuntu.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210121131959.646623-1-christian.brauner@ubuntu.com>
-References: <20210121131959.646623-1-christian.brauner@ubuntu.com>
+        id S2387453AbhAURnk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 21 Jan 2021 12:43:40 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:52931 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2388945AbhAURls (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 21 Jan 2021 12:41:48 -0500
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 10LHeuhJ016496
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 21 Jan 2021 12:40:57 -0500
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id A130115C35F5; Thu, 21 Jan 2021 12:40:56 -0500 (EST)
+Date:   Thu, 21 Jan 2021 12:40:56 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Murphy Zhou <jencce.kernel@gmail.com>
+Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org
+Subject: Re: ext4 regression panic
+Message-ID: <YAm8qH/0oo2ofSMR@mit.edu>
+References: <20210121101547.fwh35hov3hshogbz@xzhoux.usersys.redhat.com>
 MIME-Version: 1.0
-X-Patch-Hashes: v=1; h=sha256; i=DPHLY9J1WgTtTJIZfW+M0ys29DrUndhBq8NbMQ4LhTc=; m=Z8GBK4fC03sqIZqOXqQYkCcHQhdF7ERtuNE2eOhnSzE=; p=i6IwWhz0PkRJmocnM2jCkNT8zKQq005bIpkzoIXat+A=; g=ec4a8e87015d814e143e60b5b5e399b0589415a2
-X-Patch-Sig: m=pgp; i=christian.brauner@ubuntu.com; s=0x0x91C61BC06578DCA2; b=iHUEABYKAB0WIQRAhzRXHqcMeLMyaSiRxhvAZXjcogUCYAl9owAKCRCRxhvAZXjconzfAQDQavg rIQRRUmnUDAhPbiiIzXQemWyr2/c439+nPRr9LgEA1vZvPehXei8CIjRiOLT8+cPPAQyc9a5nYiYG h9Gl/gQ=
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210121101547.fwh35hov3hshogbz@xzhoux.usersys.redhat.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Add simple helpers to make it easy to map kuids into and from idmapped
-mounts. We provide simple wrappers that filesystems can use to e.g.
-initialize inodes similar to i_{uid,gid}_read() and i_{uid,gid}_write().
-Accessing an inode through an idmapped mount maps the i_uid and i_gid of
-the inode to the mount's user namespace. If the fsids are used to
-initialize inodes they are unmapped according to the mount's user
-namespace. Passing the initial user namespace to these helpers makes
-them a nop and so any non-idmapped paths will not be impacted.
+On Thu, Jan 21, 2021 at 06:15:47PM +0800, Murphy Zhou wrote:
+> Hi Jack,
+> 
+> A panic was introduced by this commit. It's easy and reliable to
+> reproduce.
+> 
+> commit 2d01ddc86606564fb08c56e3bc93a0693895f710
+> Author: Jan Kara <jack@suse.cz>
+> Date:   Wed Dec 16 11:18:40 2020 +0100
+> 
+>     ext4: save error info to sb through journal if available
 
-Link: https://lore.kernel.org/r/20210112220124.837960-9-christian.brauner@ubuntu.com
-Cc: David Howells <dhowells@redhat.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: linux-fsdevel@vger.kernel.org
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
----
-/* v2 */
-- Christoph Hellwig <hch@lst.de>:
-  - Get rid of the ifdefs and the config option that hid idmapped mounts.
+Hi Murphy,
 
-/* v3 */
-unchanged
+Thanks for the bug report.  What's happening is that we haven't yet
+initialized mballoc yet --- that happens in line 4943 of
+fs/ext4/super.c, in ext4_fill_super().
 
-/* v4 */
-- Serge Hallyn <serge@hallyn.com>:
-  - Use "mnt_userns" to refer to a vfsmount's userns everywhere to make
-    terminology consistent.
+But in line 4903 (in the case of the BZ #199275 reproducer), we
+attempt to fetch the root inode, which is fails because it is
+unallocated.  That then triggers a call to ext4_error(), which now
+results in a journalled change, since the journal is initialized
+starting in line 4793, and in line 4838, we set up the
+j_commit_callback, which is what ends up calling
+ext4_process_freed_data(), but since the multiblock allocator hasn't
+been set up yet, that causes the NULL pointer dereference.
 
-/* v5 */
-unchanged
-base-commit: 7c53f6b671f4aba70ff15e1b05148b10d58c2837
+So what we need to do is to *not* set up the callback until after the
+call to ext4_mb_init().
 
-/* v6 */
-unchanged
-base-commit: 19c329f6808995b142b3966301f217c831e7cf31
----
- include/linux/fs.h | 47 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 47 insertions(+)
+We should probably create an ext4-specific test in xfstests which
+tries mounting a small, deliberately corrupted file system, to make
+sure we handle this case correctly in the future.
 
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index fd0b80e6361d..3165998e2294 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -40,6 +40,7 @@
- #include <linux/build_bug.h>
- #include <linux/stddef.h>
- #include <linux/mount.h>
-+#include <linux/cred.h>
+						- Ted
+
+commit 6c2f9a8247273cf1108ff71c99680b7457f48318
+Author: Theodore Ts'o <tytso@mit.edu>
+Date:   Thu Jan 21 12:33:20 2021 -0500
+
+    ext4: don't try to processed freed blocks until mballoc is initialized
+    
+    If we try to make any changes via the journal between when the journal
+    is initialized, but before the multi-block allocated is initialized,
+    we will end up deferencing a NULL pointer when the journal commit
+    callback function calls ext4_process_freed_data().
+    
+    The proximate cause of this failure was commit 2d01ddc86606 ("ext4:
+    save error info to sb through journal if available") since file system
+    corruption problems detected before the call to ext4_mb_init() would
+    result in a journal commit before we aborted the mount of the file
+    system.... and we would then trigger the NULL pointer deref.
+    
+    Cc: Jan Kara <jack@suse.cz>
+    Reported by: Murphy Zhou <jencce.kernel@gmail.com>
+    Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 0f0db49031dc..802ef55f0a55 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -4876,7 +4876,6 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
  
- #include <asm/byteorder.h>
- #include <uapi/linux/fs.h>
-@@ -1573,6 +1574,52 @@ static inline void i_gid_write(struct inode *inode, gid_t gid)
- 	inode->i_gid = make_kgid(inode->i_sb->s_user_ns, gid);
- }
+ 	set_task_ioprio(sbi->s_journal->j_task, journal_ioprio);
  
-+static inline kuid_t kuid_into_mnt(struct user_namespace *mnt_userns,
-+				   kuid_t kuid)
-+{
-+	return make_kuid(mnt_userns, __kuid_val(kuid));
-+}
-+
-+static inline kgid_t kgid_into_mnt(struct user_namespace *mnt_userns,
-+				   kgid_t kgid)
-+{
-+	return make_kgid(mnt_userns, __kgid_val(kgid));
-+}
-+
-+static inline kuid_t i_uid_into_mnt(struct user_namespace *mnt_userns,
-+				    const struct inode *inode)
-+{
-+	return kuid_into_mnt(mnt_userns, inode->i_uid);
-+}
-+
-+static inline kgid_t i_gid_into_mnt(struct user_namespace *mnt_userns,
-+				    const struct inode *inode)
-+{
-+	return kgid_into_mnt(mnt_userns, inode->i_gid);
-+}
-+
-+static inline kuid_t kuid_from_mnt(struct user_namespace *mnt_userns,
-+				   kuid_t kuid)
-+{
-+	return KUIDT_INIT(from_kuid(mnt_userns, kuid));
-+}
-+
-+static inline kgid_t kgid_from_mnt(struct user_namespace *mnt_userns,
-+				   kgid_t kgid)
-+{
-+	return KGIDT_INIT(from_kgid(mnt_userns, kgid));
-+}
-+
-+static inline kuid_t fsuid_into_mnt(struct user_namespace *mnt_userns)
-+{
-+	return kuid_from_mnt(mnt_userns, current_fsuid());
-+}
-+
-+static inline kgid_t fsgid_into_mnt(struct user_namespace *mnt_userns)
-+{
-+	return kgid_from_mnt(mnt_userns, current_fsgid());
-+}
-+
- extern struct timespec64 current_time(struct inode *inode);
+-	sbi->s_journal->j_commit_callback = ext4_journal_commit_callback;
+ 	sbi->s_journal->j_submit_inode_data_buffers =
+ 		ext4_journal_submit_inode_data_buffers;
+ 	sbi->s_journal->j_finish_inode_data_buffers =
+@@ -4993,6 +4992,14 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+ 		goto failed_mount5;
+ 	}
  
- /*
--- 
-2.30.0
-
++	/*
++	 * We can only set up the journal commit callback once
++	 * mballoc is initialized
++	 */
++	if (sbi->s_journal)
++		sbi->s_journal->j_commit_callback =
++			ext4_journal_commit_callback;
++
+ 	block = ext4_count_free_clusters(sb);
+ 	ext4_free_blocks_count_set(sbi->s_es, 
+ 				   EXT4_C2B(sbi, block));
