@@ -2,56 +2,56 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3E462FF8D5
-	for <lists+linux-ext4@lfdr.de>; Fri, 22 Jan 2021 00:28:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 886B52FF8CF
+	for <lists+linux-ext4@lfdr.de>; Fri, 22 Jan 2021 00:26:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726571AbhAUX1Z (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 21 Jan 2021 18:27:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50762 "EHLO
+        id S1726561AbhAUX0v (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 21 Jan 2021 18:26:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726044AbhAUXFj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 21 Jan 2021 18:05:39 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A922AC061351
-        for <linux-ext4@vger.kernel.org>; Thu, 21 Jan 2021 15:03:45 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id 67so3652900ybh.22
-        for <linux-ext4@vger.kernel.org>; Thu, 21 Jan 2021 15:03:45 -0800 (PST)
+        with ESMTP id S1726111AbhAUXFp (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 21 Jan 2021 18:05:45 -0500
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0DAFC0612F2
+        for <linux-ext4@vger.kernel.org>; Thu, 21 Jan 2021 15:03:47 -0800 (PST)
+Received: by mail-pl1-x64a.google.com with SMTP id i2so1974623plt.14
+        for <linux-ext4@vger.kernel.org>; Thu, 21 Jan 2021 15:03:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=1ckCI9Tb/L8gev/gEmm7X0c/Y7ml6iq7ack/b5dDjYE=;
-        b=X2HZ0VgBO6retkgDPI/hc7hrVqJpli3v91VUSZGMkTuBAdGZGHSP1S1FQXAJngbCEz
-         EoBnCkl65VpF50pD6TqEcZWSidz54WMSsVPtzpPSvfNohUYXl27xMgQxvZNlzRxWDdNB
-         PjWWPhFygSLnu5/7x+VDslvjZB30+nb1dhEePKPJHqPE74VIuLRkEO77aa6QPFfAtpZ7
-         a3kwExIPUdQ7MAUGK5B5s4W8fW5MxiUrFAdlm6fJqkjZ0pSr9Zz7IU3nd1wGQByQWrEF
-         fe4L/8WSO99cW3nR7KrcBCNOU9//6BXJBxZt9xlQtc+tPFCKWydLHbFawFw8DU7zKf3y
-         fHLg==
+        bh=73jUIQHuj0265QRP8P3oVVOaSevfoFr6R3Pxp4Z8uk0=;
+        b=RpM4qKLA+63xTwFiz255mspkEHNICv4dlhm7EHfnRU0UFN2Ihke5P4zOrKCiazdR7d
+         bXOol4JvqiZOdRVsLQZnm4+9mSTLVh42aPGA5Y4Y5IB+y5B3KInSnmfMLfUe5WfbPlV5
+         VxFwpZ2Vqn0u1sbV9D8cI0VjEg3QNpJhpPWDPwb+anXbPJOiIr/ySdiPWgUfOjgjdgkA
+         IdEjApFDSNmguJFxEjGJY6eDJTmCCZhgIUZiGfP7Ni5urYiytgymML2bkgTyZ9IBfFd0
+         PUCS2z8FThCRQC0kEqTRjWh5yf4h+dirIoOYGRoPF8cFverIpktw4+4nKzBCaAqBcI22
+         stXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=1ckCI9Tb/L8gev/gEmm7X0c/Y7ml6iq7ack/b5dDjYE=;
-        b=TafRJnGep58e3R7Y7Asl0QvurImzi5raT2FiqV8yj8eAWsGP7ewXVYhIThN9u16N02
-         vK8Ren5XpwWmhZZbIp8mUMFMgYXFhI8K6hI/nfDdmBAVtNX4auIFxHOxOPEbmrPf1zeK
-         rnBk+n0YNb6NbWs5bdbC2Iq9+m2zHMLYz+/4IjeHe39SyhA27bGNajYROI5GvPHKFPnR
-         dEGu5tfdnnTKIooFsB38ijrheOLFXv6FuaNq2/Jj0dO4bRVWDeClX+ajVjvPKPxHLIuw
-         lZQM70Ts2e4LYCbU+f/nxQiA6mHusJCMtb/G0xkSkvuP7W8DcVvt+h0x+rLDzQOZt6Nb
-         f1aQ==
-X-Gm-Message-State: AOAM531aYRzQK2RCsxV5bQwNl4pBVigyhODTFPNvI99Nl0E9pUDIeEO4
-        6IIC5xI6UxijVvxzpm7v9tcd7YFwMRc=
-X-Google-Smtp-Source: ABdhPJxwqigOy2i/tD3YTQY4MNcnJ8qVtkw1pfvH4oaxwmRUFlyn2I/Ix//2uo7EiICH3ps8LTqwlWWs89o=
+        bh=73jUIQHuj0265QRP8P3oVVOaSevfoFr6R3Pxp4Z8uk0=;
+        b=TOkp6KPAJbvMHZVMJ6A9FD0Bc87WiML4HYf8FW0DajBcmvz/s91YF4FZgFTgzJ0kMw
+         31cmzOPVeQ6ap1ToJ/BjnVUvkngDoheOFaJ0hkAM90TiZ1pwvtSgfk8oOEilj03DnrxD
+         yfBz7axQzHGHHd5LmjDdff9evkGi1tP2PKEvb1i/6isNockoyc9THtfJ8gtYy+ZumAgC
+         hxpVv8e8vFhDzOlhO4QcOUfDwkqtn4XRZ94lzt8g8PCbW6tFOgbQ3xzDbDITquZz/6je
+         ehEzPB/d5/Pu+wRVcZQVrlVT/1egTBmdgdOXc2ZiwzPPLlY1VxCm0kbBQfd9zgzDebbR
+         eIgw==
+X-Gm-Message-State: AOAM532X96MKuX291Lw05cQfaQbQfqxKZ52jduutg3KO3FG0024LDp7A
+        /tw/h3vbxTOnF0VsbOu6YdCMPl7wkyE=
+X-Google-Smtp-Source: ABdhPJwJkQ2FWOp1yUHZk7nzCbAeBUq10CoEvBoJQOw9xo3NYsJVQXsuE+AArFPbdsM6X5/w9fvQdGdj3Ek=
 Sender: "satyat via sendgmr" <satyat@satyaprateek.c.googlers.com>
 X-Received: from satyaprateek.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:1092])
- (user=satyat job=sendgmr) by 2002:a25:bb8f:: with SMTP id y15mr2467322ybg.139.1611270224921;
- Thu, 21 Jan 2021 15:03:44 -0800 (PST)
-Date:   Thu, 21 Jan 2021 23:03:31 +0000
+ (user=satyat job=sendgmr) by 2002:a17:90b:370d:: with SMTP id
+ mg13mr1905409pjb.161.1611270227094; Thu, 21 Jan 2021 15:03:47 -0800 (PST)
+Date:   Thu, 21 Jan 2021 23:03:32 +0000
 In-Reply-To: <20210121230336.1373726-1-satyat@google.com>
-Message-Id: <20210121230336.1373726-4-satyat@google.com>
+Message-Id: <20210121230336.1373726-5-satyat@google.com>
 Mime-Version: 1.0
 References: <20210121230336.1373726-1-satyat@google.com>
 X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
-Subject: [PATCH v8 3/8] fscrypt: add functions for direct I/O support
+Subject: [PATCH v8 4/8] direct-io: add support for fscrypt using blk-crypto
 From:   Satya Tangirala <satyat@google.com>
 To:     "Theodore Y . Ts'o" <tytso@mit.edu>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
@@ -70,172 +70,69 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Introduce fscrypt_dio_supported() to check whether a direct I/O request
-is unsupported due to encryption constraints.
-
-Also introduce fscrypt_limit_io_blocks() to limit how many blocks can be
-added to a bio being prepared for direct I/O. This is needed for
-filesystems that use the iomap direct I/O implementation to avoid DUN
-wraparound in the middle of a bio (which is possible with the
-IV_INO_LBLK_32 IV generation method). Elsewhere fscrypt_mergeable_bio()
-is used for this, but iomap operates on logical ranges directly, so
-filesystems using iomap won't have a chance to call fscrypt_mergeable_bio()
-on every block added to a bio. So we need this function which limits a
-logical range in one go.
+Set bio crypt contexts on bios by calling into fscrypt when required,
+and explicitly check for DUN continuity when adding pages to the bio.
+(While DUN continuity is usually implied by logical block contiguity,
+this is not the case when using certain fscrypt IV generation methods
+like IV_INO_LBLK_32).
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 Co-developed-by: Satya Tangirala <satyat@google.com>
 Signed-off-by: Satya Tangirala <satyat@google.com>
+Reviewed-by: Jaegeuk Kim <jaegeuk@kernel.org>
 ---
- fs/crypto/crypto.c       |  8 +++++
- fs/crypto/inline_crypt.c | 74 ++++++++++++++++++++++++++++++++++++++++
- include/linux/fscrypt.h  | 18 ++++++++++
- 3 files changed, 100 insertions(+)
+ fs/direct-io.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
-index 4ef3f714046a..4fcca79f39ae 100644
---- a/fs/crypto/crypto.c
-+++ b/fs/crypto/crypto.c
-@@ -69,6 +69,14 @@ void fscrypt_free_bounce_page(struct page *bounce_page)
- }
- EXPORT_SYMBOL(fscrypt_free_bounce_page);
- 
-+/*
-+ * Generate the IV for the given logical block number within the given file.
-+ * For filenames encryption, lblk_num == 0.
-+ *
-+ * Keep this in sync with fscrypt_limit_io_blocks().  fscrypt_limit_io_blocks()
-+ * needs to know about any IV generation methods where the low bits of IV don't
-+ * simply contain the lblk_num (e.g., IV_INO_LBLK_32).
-+ */
- void fscrypt_generate_iv(union fscrypt_iv *iv, u64 lblk_num,
- 			 const struct fscrypt_info *ci)
- {
-diff --git a/fs/crypto/inline_crypt.c b/fs/crypto/inline_crypt.c
-index c57bebfa48fe..956f5bfab7a0 100644
---- a/fs/crypto/inline_crypt.c
-+++ b/fs/crypto/inline_crypt.c
-@@ -17,6 +17,7 @@
- #include <linux/buffer_head.h>
- #include <linux/sched/mm.h>
+diff --git a/fs/direct-io.c b/fs/direct-io.c
+index d53fa92a1ab6..f6672c4030e3 100644
+--- a/fs/direct-io.c
++++ b/fs/direct-io.c
+@@ -24,6 +24,7 @@
+ #include <linux/module.h>
+ #include <linux/types.h>
+ #include <linux/fs.h>
++#include <linux/fscrypt.h>
+ #include <linux/mm.h>
  #include <linux/slab.h>
-+#include <linux/uio.h>
- 
- #include "fscrypt_private.h"
- 
-@@ -363,3 +364,76 @@ bool fscrypt_mergeable_bio_bh(struct bio *bio,
- 	return fscrypt_mergeable_bio(bio, inode, next_lblk);
- }
- EXPORT_SYMBOL_GPL(fscrypt_mergeable_bio_bh);
-+
-+/**
-+ * fscrypt_dio_supported() - check whether a direct I/O request is unsupported
-+ *			     due to encryption constraints
-+ * @iocb: the file and position the I/O is targeting
-+ * @iter: the I/O data segment(s)
-+ *
-+ * Return: true if direct I/O is supported
-+ */
-+bool fscrypt_dio_supported(struct kiocb *iocb, struct iov_iter *iter)
-+{
-+	const struct inode *inode = file_inode(iocb->ki_filp);
-+	const unsigned int blocksize = i_blocksize(inode);
-+
-+	/* If the file is unencrypted, no veto from us. */
-+	if (!fscrypt_needs_contents_encryption(inode))
-+		return true;
-+
-+	/* We only support direct I/O with inline crypto, not fs-layer crypto */
-+	if (!fscrypt_inode_uses_inline_crypto(inode))
-+		return false;
-+
-+	/*
-+	 * Since the granularity of encryption is filesystem blocks, the I/O
-+	 * must be block aligned -- not just disk sector aligned.
-+	 */
-+	if (!IS_ALIGNED(iocb->ki_pos | iov_iter_count(iter), blocksize))
-+		return false;
-+
-+	return true;
-+}
-+EXPORT_SYMBOL_GPL(fscrypt_dio_supported);
-+
-+/**
-+ * fscrypt_limit_io_blocks() - limit I/O blocks to avoid discontiguous DUNs
-+ * @inode: the file on which I/O is being done
-+ * @lblk: the block at which the I/O is being started from
-+ * @nr_blocks: the number of blocks we want to submit starting at @lblk
-+ *
-+ * Determine the limit to the number of blocks that can be submitted in the bio
-+ * targeting @lblk without causing a data unit number (DUN) discontinuity.
-+ *
-+ * This is normally just @nr_blocks, as normally the DUNs just increment along
-+ * with the logical blocks.  (Or the file is not encrypted.)
-+ *
-+ * In rare cases, fscrypt can be using an IV generation method that allows the
-+ * DUN to wrap around within logically continuous blocks, and that wraparound
-+ * will occur.  If this happens, a value less than @nr_blocks will be returned
-+ * so that the wraparound doesn't occur in the middle of the bio.
-+ *
-+ * Return: the actual number of blocks that can be submitted
-+ */
-+u64 fscrypt_limit_io_blocks(const struct inode *inode, u64 lblk, u64 nr_blocks)
-+{
-+	const struct fscrypt_info *ci = inode->i_crypt_info;
-+	u32 dun;
-+
-+	if (!fscrypt_inode_uses_inline_crypto(inode))
-+		return nr_blocks;
-+
-+	if (nr_blocks <= 1)
-+		return nr_blocks;
-+
-+	if (!(fscrypt_policy_flags(&ci->ci_policy) &
-+	      FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32))
-+		return nr_blocks;
-+
-+	/* With IV_INO_LBLK_32, the DUN can wrap around from U32_MAX to 0. */
-+
-+	dun = ci->ci_hashed_ino + lblk;
-+
-+	return min_t(u64, nr_blocks, (u64)U32_MAX + 1 - dun);
-+}
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index 2ea1387bb497..d8dde02aee82 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -609,6 +609,10 @@ bool fscrypt_mergeable_bio(struct bio *bio, const struct inode *inode,
- bool fscrypt_mergeable_bio_bh(struct bio *bio,
- 			      const struct buffer_head *next_bh);
- 
-+bool fscrypt_dio_supported(struct kiocb *iocb, struct iov_iter *iter);
-+
-+u64 fscrypt_limit_io_blocks(const struct inode *inode, u64 lblk, u64 nr_blocks);
-+
- #else /* CONFIG_FS_ENCRYPTION_INLINE_CRYPT */
- 
- static inline bool __fscrypt_inode_uses_inline_crypto(const struct inode *inode)
-@@ -637,6 +641,20 @@ static inline bool fscrypt_mergeable_bio_bh(struct bio *bio,
+ #include <linux/highmem.h>
+@@ -392,6 +393,7 @@ dio_bio_alloc(struct dio *dio, struct dio_submit *sdio,
+ 	      sector_t first_sector, int nr_vecs)
  {
- 	return true;
- }
-+
-+static inline bool fscrypt_dio_supported(struct kiocb *iocb,
-+					 struct iov_iter *iter)
-+{
-+	const struct inode *inode = file_inode(iocb->ki_filp);
-+
-+	return !fscrypt_needs_contents_encryption(inode);
-+}
-+
-+static inline u64 fscrypt_limit_io_blocks(const struct inode *inode, u64 lblk,
-+					  u64 nr_blocks)
-+{
-+	return nr_blocks;
-+}
- #endif /* !CONFIG_FS_ENCRYPTION_INLINE_CRYPT */
+ 	struct bio *bio;
++	struct inode *inode = dio->inode;
  
- /**
+ 	/*
+ 	 * bio_alloc() is guaranteed to return a bio when allowed to sleep and
+@@ -399,6 +401,9 @@ dio_bio_alloc(struct dio *dio, struct dio_submit *sdio,
+ 	 */
+ 	bio = bio_alloc(GFP_KERNEL, nr_vecs);
+ 
++	fscrypt_set_bio_crypt_ctx(bio, inode,
++				  sdio->cur_page_fs_offset >> inode->i_blkbits,
++				  GFP_KERNEL);
+ 	bio_set_dev(bio, bdev);
+ 	bio->bi_iter.bi_sector = first_sector;
+ 	bio_set_op_attrs(bio, dio->op, dio->op_flags);
+@@ -763,9 +768,17 @@ static inline int dio_send_cur_page(struct dio *dio, struct dio_submit *sdio,
+ 		 * current logical offset in the file does not equal what would
+ 		 * be the next logical offset in the bio, submit the bio we
+ 		 * have.
++		 *
++		 * When fscrypt inline encryption is used, data unit number
++		 * (DUN) contiguity is also required.  Normally that's implied
++		 * by logical contiguity.  However, certain IV generation
++		 * methods (e.g. IV_INO_LBLK_32) don't guarantee it.  So, we
++		 * must explicitly check fscrypt_mergeable_bio() too.
+ 		 */
+ 		if (sdio->final_block_in_bio != sdio->cur_page_block ||
+-		    cur_offset != bio_next_offset)
++		    cur_offset != bio_next_offset ||
++		    !fscrypt_mergeable_bio(sdio->bio, dio->inode,
++					   cur_offset >> dio->inode->i_blkbits))
+ 			dio_bio_submit(dio, sdio);
+ 	}
+ 
 -- 
 2.30.0.280.ga3ce27912f-goog
 
