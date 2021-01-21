@@ -2,172 +2,154 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AD642FE4FC
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Jan 2021 09:30:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0BB92FE758
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Jan 2021 11:19:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727933AbhAUI0G (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 21 Jan 2021 03:26:06 -0500
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:11106 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726004AbhAUIZC (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 21 Jan 2021 03:25:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1611217519; x=1642753519;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=5xDViCNWTWpt74+S63VrlNc8LWu+dxnOf+RyPFe7hss=;
-  b=HhFVAA+E4+S3it4ImT8VrG7pgo76LoNpf/ueeRpCKVdFUK+XoSBoy2Ce
-   1+Bjl/3HIobrEoA/8pYuIfhSnc2KfTWNcKnq1cys+FwgP/HuaHLrauCoC
-   NKO7nws9Zs2Vgak87sS77bOJTxYrnTvu4sxgqp4g+GTRCdCo7Rg17foG6
-   YqVYRy2CmP7fvpEFFy7Pb0Q+lhj0p2yLTM1K//+nQ33LZRSl1GNqZz+dJ
-   KDEf8qXIdLtY5vKU2bVimiT86cwn79kYQh+PPmkG6e0EyaQcXM8YeS1c8
-   6U1V/F+AxGUv1rCrCJNjOdC9nMy8Ysg/SP7ZhQ+xjHzK2KbY3yj5gjvgs
-   g==;
-IronPort-SDR: nopY/1/vZtTbFd6l0+IpzksjZWV827taoYGdI6nTCvXcD+NT6atg+8pFyCQqv+c16JkaXOoL0D
- KZ4ZA1yIKpkpX5wZeHBX/9xKxHqY0oEbQqAoXtVeOlDWitYpkamuITHncU/F4of0v0+vfTCvA1
- 8qvStsDmXY9OCQe7EPLXrsBBarKmqoRU5iWs00KcZ6PkYEsEa49IMfyV+qwhw4SkboXxG08Km6
- tzg8JeOoO/gZkor8VHecJdk53+ftE6lSIRjTitLfOZZNK7atzziYHzHo7RWXAh9orbProOBDgX
- qkU=
-X-IronPort-AV: E=Sophos;i="5.79,363,1602518400"; 
-   d="scan'208";a="261948044"
-Received: from mail-bn8nam11lp2175.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.175])
-  by ob1.hgst.iphmx.com with ESMTP; 21 Jan 2021 16:43:06 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lw68XCNKrU/qui9r1XSPq6hnWUBUdN/CfDi270C7BJeOnIzrp6qBQlCcjU+S9EGPNdg/DQ8OYphkmMhy7CVeybh82BxKsz4MwvpLcFqZIiOBiSQjpDQ2Bqol9TSWenr6xXXpcqa3xNnfKtOclaOqXDe9MnJy6nuBYdY6xn3P2cH223ZYGc4Yc8qw1KxiWmgpftekj+FIBNuNiz7iUfzVH04NZ+jD1ozB3trYByAOZMz6ZU+c3NCyxa8JoMF/m62PWe0Md2WN9/pUQtGLkUgsHuk6lut1C/P6B3ex214voxw3DMPYPzPhMXbM++tqT3pYdhe93xkdY8lAPQY+rboeag==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=H0PH6GNao/klmOr5IzzIaOMg/PvFVYJ+pZQvveYwX64=;
- b=bOjNMUdbSeuUnFo9IrVW/LqAa07ep3nTQcmI2FgbBgtSEiGlbP9fxaIAWn2bLwbR0qxEwbpdToLb5qVWFFxaJfPspEcT6gxgUWyGagD3htFPcBoSUJobCMw95Ta5QLNipzaiy85bcNYkfnVc84J/ZnGPEkGjqpuM8TjJ28AgBENd0TJ28lmYt1CoJ/MssPzIgsbkg10pF6WAWCw5BgNsH3D9dOpKfeZ9EPW2PXfg4ZRHc/yakrCdIFQj9gu6QfyLcuag8hD2+fj0xanIYMuBDpIhztQAzTX6m6QXhR+FTzbm6JliOr6eDJ5KFR0uLV90E75pq3cV/uBINjreOzEzqg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        id S1729059AbhAUKRV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 21 Jan 2021 05:17:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728798AbhAUKQ4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 21 Jan 2021 05:16:56 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E4B5C061575
+        for <linux-ext4@vger.kernel.org>; Thu, 21 Jan 2021 02:15:56 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id x18so1022676pln.6
+        for <linux-ext4@vger.kernel.org>; Thu, 21 Jan 2021 02:15:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=H0PH6GNao/klmOr5IzzIaOMg/PvFVYJ+pZQvveYwX64=;
- b=tgQ731nUeMOhgE+X8aJokO/3/gyG/vVOcs6a2e/emcs4H/n2HmGEuaZba4xmEtuF7WrO9aQ4Anb5zLf+0Gh/62xUtq6RSHNCkq8+v/D73mis01yDlsTmWrqZaqc9MCJ4Vvx5Fzn5ynIqnpCID+L0WCfk+HJopSJseRjrC1PJxRk=
-Received: from DM6PR04MB4972.namprd04.prod.outlook.com (2603:10b6:5:fc::10) by
- DM5PR04MB1035.namprd04.prod.outlook.com (2603:10b6:4:3e::17) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3784.11; Thu, 21 Jan 2021 08:23:20 +0000
-Received: from DM6PR04MB4972.namprd04.prod.outlook.com
- ([fe80::9a1:f2ba:2679:8188]) by DM6PR04MB4972.namprd04.prod.outlook.com
- ([fe80::9a1:f2ba:2679:8188%7]) with mapi id 15.20.3763.010; Thu, 21 Jan 2021
- 08:23:20 +0000
-From:   Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
-To:     Julian Calaby <julian.calaby@gmail.com>
-CC:     "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "drbd-dev@lists.linbit.com" <drbd-dev@lists.linbit.com>,
-        "linux-bcache@vger.kernel.org" <linux-bcache@vger.kernel.org>,
-        "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        Linux SCSI List <linux-scsi@vger.kernel.org>,
-        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "cluster-devel@redhat.com" <cluster-devel@redhat.com>,
-        "jfs-discussion@lists.sourceforge.net" 
-        <jfs-discussion@lists.sourceforge.net>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>
-Subject: Re: [RFC PATCH 00/37] block: introduce bio_init_fields()
-Thread-Topic: [RFC PATCH 00/37] block: introduce bio_init_fields()
-Thread-Index: AQHW7iDfXiv5iuHOl0mGSxMcJ7OwhA==
-Date:   Thu, 21 Jan 2021 08:23:20 +0000
-Message-ID: <DM6PR04MB4972029B58F81B22033E31F386A10@DM6PR04MB4972.namprd04.prod.outlook.com>
-References: <20210119050631.57073-1-chaitanya.kulkarni@wdc.com>
- <CAGRGNgWLspr6M1COgX9cuDDgYdiXvQQjWQb7XYLsmFpfMYt0sA@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2600:1700:31ee:290:6c3f:2942:f9ba:e594]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 1b399c6d-302c-405d-7f89-08d8bde5cfd2
-x-ms-traffictypediagnostic: DM5PR04MB1035:
-x-microsoft-antispam-prvs: <DM5PR04MB103558D7CAA67BC277FBE0E586A19@DM5PR04MB1035.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: luBm2A9fQFDbAs+wwf5UQLQqGI+U9qrY9qOoLl278vLFEhZYF8PCPE1mzg6Tt00oqorUoJZeH6SroLCiDqfwK9XrIA5LmEasW9gV2WFpREOKVrf0vl5YIGT/uz5MOZLMc95bMXi+Hw5BHRva63Z5/1PuoE1WocRTm129bzScDkldj9CvFwvFGhDH9Et4QKMXUX+IciSSEzf5XTQnwBQ4Ce56JAClngNy5hTRHQCC5L4OmkCPDAyuCVPr/ljXo1Jgx+wBya1uqegcbpFR6wk99WVD4J4hLzl4XOz2eSJuA7hIeWxB1OEAXp8WrdWox86N/lXoRtgzme1lqsuaDmQHfwv/fCM9Q/yzofM2yqu2Jy068UIlRYCsj/6zdaLjN0gxaku4C3m0vY9X1srG/ZD+9g==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB4972.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(366004)(136003)(396003)(376002)(316002)(52536014)(6916009)(186003)(54906003)(5660300002)(76116006)(9686003)(55016002)(8936002)(71200400001)(83380400001)(4326008)(53546011)(7416002)(7696005)(8676002)(66476007)(91956017)(478600001)(33656002)(66946007)(64756008)(66556008)(86362001)(2906002)(66446008)(6506007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?iASZoPJYzsgBoHOG0e4uj4eYwMJzI7AYx9ibXkU8WlIY/45eI5Lozn9IMLqg?=
- =?us-ascii?Q?K1fUjrE61rIj9pVmoTN18nQMr+gvGY4G6wJ+Ny4pZYARx/NQUcSJcxlwZktO?=
- =?us-ascii?Q?bHqvL2+WTuwKfq2jk97rHh4iKZQYlGKj9o5IFGIIiC6E0WKGXNOAogExeiH7?=
- =?us-ascii?Q?tO53jk+LmhpLuLYm0OVz3gHZc25lTvqogVwbwvUqG3rX45XT/251vlSLhLDN?=
- =?us-ascii?Q?BiAaGVE7uBNDX6Lo7JJvKKpz+6vrvuvatx4hhONQ7MN7a+Zn8FxjYQrE2SUa?=
- =?us-ascii?Q?uH7RyUQL1jRl4VoRuKHUwCaNA0ebTkVOQKvC2VmJ6rJqt2gYMsgZjF2sAvYF?=
- =?us-ascii?Q?ZwtuZCJhEJsAawETHIlGBaxry0pr7057QSOs8vA7S+uAfyiqeL3YEqc6ejxT?=
- =?us-ascii?Q?RixON+06jvKRSioN7m1wLJ0XqsMUTEiwAu81zEEefyjFa/50E45jN0Pifbq2?=
- =?us-ascii?Q?YQIZxBpt2Hqxx1KKyTlN2pXg4IQbafIQchs+7TVmwY/vsp9tQR7uEafp0BDS?=
- =?us-ascii?Q?bu5T812yyckpVYAeXogWT4zDgQOCOO47FhLaIz3EFn6kvRW51FFMDKyBoiir?=
- =?us-ascii?Q?wXwhkX75FSf1Qw4pnCXK4hYvl2cDv1YYOEYl1WdmIjJ5O2HNpEWKeTvOxwCX?=
- =?us-ascii?Q?6grVS6+rBLLWAffAcMo7a016G35j79LX7hwn96/LgR3wCcwVNSh6y48Rw/g5?=
- =?us-ascii?Q?buriD3gNHqhP6WETZHEu3zlHI7zs9yJmY9x9tAS7fU8E1W8RjXRnFv3rsLTV?=
- =?us-ascii?Q?mGTcmEpB3F0x56xPLqIzECmw12+8LqLQ8UDlGJuGXusb8MbbIGileZPhB+uM?=
- =?us-ascii?Q?eYZwo7QTxj15lHNkB6nFsDURRPPebs3b77L/3uwexEDpxECQDVj7jI8ssHcj?=
- =?us-ascii?Q?+WRw7u4eTJ3rUDPixBZPxm7sdD54H8NacygfAoLOu7DQVosWaIjmoJMeqwei?=
- =?us-ascii?Q?UQpipq7k3iuDVr8GZd3RD+7YB2iiiLLxt9SAooJrWAExIIw2daPBw3LpDI2I?=
- =?us-ascii?Q?v+AxiMYRd5DaVrZHEoGe1XFXE53nsSzE545xeS/B8kIzqSQ6QWmjCxUgzTIz?=
- =?us-ascii?Q?RlRAUztqVUa3QAZZjmDwWD85Sb5txeijXEhtYjBST9cPs9YLaZg6pekySFU5?=
- =?us-ascii?Q?eMN2lhUlrZ6V1wO6BG46/XYS7R06vKBnUA=3D=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=wYV7R8qR27MnGkec4x2sHqQjzrvRujQL/ANQ0rNLbx0=;
+        b=S3SDdEnMK6DjGXVM0s+9y0VTXRPiXkxORkGJ6QtdogvDBB8hlIRzg/uI1taldhvvcG
+         AMykv2nLZV0FLvVDYh2i5krV8+FT/N3+JAYsLTz7k27gTawHFufdpeQ0vG4oUtXVBDat
+         w4cUa9YJn68DxuP88clCfKOd19ynOJZWUYBmzMslOrsCMcKBQoyuAO01lDcRoiiWOaPt
+         ekTHO9io8Gc/wKdDLpGH3l5AZqDTuxE2Wvuz5n1bcnJIYonexc4hL97RAHx3HHrr8jGD
+         tNGfcLovPMeSzoOtURGZVm51xzxOst7xhnLdq2N71WuOvWQICe2tjZxZ8T+SZCdKKW21
+         LkEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=wYV7R8qR27MnGkec4x2sHqQjzrvRujQL/ANQ0rNLbx0=;
+        b=KDES9lmrrCWWhgVtjmOth/WpMypkmH1F19NXsVujm5xdyfhGTAIR14sCm73R0jr0dj
+         0j8YgufOJE/U8meaXFBqfsOrYalYBhkIhi0f1SS56+pbVh589tQMwLBGN+i3OhCCjccX
+         +YANIcCBR8WMsfcnxUhcRkWs/kCRtxhThyN1uXuiEOL00HeaX8Lcb2kf9GZufeE83oQT
+         j9KOja2kaPfkTusuWWaQGxVpUTKN7U/IikFwWI/QhOVBLNXtd2qZuzagYtcy91i0FS4I
+         1jGWuk4hZeDLiL6cl/2u1cqecvEt3hReWt/9rAwVvdXDa5HZXv2ebcIOqH9g6lQHHuV+
+         pXHQ==
+X-Gm-Message-State: AOAM531sZLsk0hMK1os2Qj/SVfMW1eKpOlpGIciIz5pgXHY2mt0pvHEH
+        wylj22hPsfgTqg4+3y3zPVY=
+X-Google-Smtp-Source: ABdhPJz4ihwiffvWZpSUniE41njQBqsGAIPXi9I9Uw8G+tfPh9/vgDi4comxuXmIUsm3pUVfLXrPwA==
+X-Received: by 2002:a17:90a:7d08:: with SMTP id g8mr11144219pjl.180.1611224156100;
+        Thu, 21 Jan 2021 02:15:56 -0800 (PST)
+Received: from localhost ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id w20sm5746162pga.90.2021.01.21.02.15.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Jan 2021 02:15:55 -0800 (PST)
+Date:   Thu, 21 Jan 2021 18:15:47 +0800
+From:   Murphy Zhou <jencce.kernel@gmail.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>
+Subject: ext4 regression panic
+Message-ID: <20210121101547.fwh35hov3hshogbz@xzhoux.usersys.redhat.com>
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB4972.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1b399c6d-302c-405d-7f89-08d8bde5cfd2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Jan 2021 08:23:20.3555
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: q/0OYkC/ek5ytB2UVtDM2si2ySo1pVi+WyQqr0ClrR0sMEWiGpRaV17E+ClET0fPiMj8qHuKJIGPJIy3pAz1DySUTHtG+BdCm5OrLj07ghM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR04MB1035
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 1/20/21 7:01 PM, Julian Calaby wrote:=0A=
-> Hi Chaitanya,=0A=
->=0A=
-> On Tue, Jan 19, 2021 at 5:01 PM Chaitanya Kulkarni=0A=
-> <chaitanya.kulkarni@wdc.com> wrote:=0A=
->> Hi,=0A=
->>=0A=
->> This is a *compile only RFC* which adds a generic helper to initialize=
-=0A=
->> the various fields of the bio that is repeated all the places in=0A=
->> file-systems, block layer, and drivers.=0A=
->>=0A=
->> The new helper allows callers to initialize various members such as=0A=
->> bdev, sector, private, end io callback, io priority, and write hints.=0A=
->>=0A=
->> The objective of this RFC is to only start a discussion, this it not=0A=
->> completely tested at all.=0A=
->> Following diff shows code level benefits of this helper :-=0A=
->>  38 files changed, 124 insertions(+), 236 deletions(-)=0A=
-> On a more abstract note, I don't think this diffstat is actually=0A=
-> illustrating the benefits of this as much as you think it is.=0A=
->=0A=
-> Yeah, we've reduced the code by 112 lines, but that's barely half the=0A=
-> curn here. It looks, from the diffstat, that you've effectively=0A=
-> reduced 2 lines into 1. That isn't much of a saving.=0A=
->=0A=
-> Thanks,=0A=
-The diff stat is not the only measure since every component fs/driver=0A=
-has a different style and nested call it just to show the effect.=0A=
-Thanks for your comment, we have decided to go with the bio_new approach.=
-=0A=
-=0A=
-=0A=
+Hi Jack,
+
+A panic was introduced by this commit. It's easy and reliable to
+reproduce.
+
+commit 2d01ddc86606564fb08c56e3bc93a0693895f710
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Dec 16 11:18:40 2020 +0100
+
+    ext4: save error info to sb through journal if available
+
+
+--- Call trace ------------
+
+[44.391771] EXT4-fs error (device loop0): ext4_fill_super:4943: inode #2: comm mount: iget: root inode unallocated
+[44.401842] BUG: kernel NULL pointer dereference, address: 0000000000000034
+[44.406155] #PF: supervisor read access in kernel mode
+[44.409317] #PF: error_code(0x0000) - not-present page
+[44.412482] PGD 0 P4D 0
+[44.414085] Oops: 0000 [#1] SMP PTI
+[44.416256] CPU: 1 PID: 944 Comm: mount Tainted: G            E     5.11.0-rc4-master-19c329f68089 #46
+[44.422030] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-1.fc33 04/01/2014
+[44.427323] RIP: 0010:ext4_process_freed_data+0x74/0x590 [ext4]
+[44.431312] Code: 24 a8 02 00 00 49 8d 8c 24 a8 02 00 00 49 39 c8 74 7f 4c 89 c2 4c 89 c0 31 f6 eb 0e 48 8b 00 48 89 d6 48 39 c8 74 08 48 89 c2 <39> 68 34 74 ed 48 85 f6 74 5d 49 8b 84 24 a8 02 00 00 48 39 c8 74
+[44.442810] RSP: 0018:ffffaeaf00b2ba50 EFLAGS: 00010246
+[44.446185] RAX: 0000000000000000 RBX: ffffaeaf00b2ba78 RCX: ffff9390013ca2a8
+[44.450598] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff9390013ca288
+[44.454723] RBP: 0000000000000006 R08: 0000000000000000 R09: ffff93900443c5b0
+[44.458619] R10: 0000000000000002 R11: 0000000000000000 R12: ffff9390013ca000
+[44.462510] R13: ffff9390013ca288 R14: ffff9390013c8000 R15: ffff939016387fd0
+[44.466103] FS:  00007fe3f7b99c40(0000) GS:ffff9390a7040000(0000) knlGS:0000000000000000
+[44.470061] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[44.472896] CR2: 0000000000000034 CR3: 00000003c305a005 CR4: 0000000000020ee0
+[44.476306] Call Trace:
+[44.477494]  ? __mod_timer+0x25c/0x3d0
+[44.479223]  ext4_journal_commit_callback+0x4a/0xd0 [ext4]
+[44.481807]  jbd2_journal_commit_transaction+0x1a3b/0x1cc0 [jbd2]
+[44.484476]  ? jbd2_journal_destroy+0xc3/0x280 [jbd2]
+[44.486445]  jbd2_journal_destroy+0xc3/0x280 [jbd2]
+[44.488355]  ? finish_wait+0x80/0x80
+[44.489758]  ext4_fill_super+0x2250/0x3bc0 [ext4]
+[44.491651]  ? mount_bdev+0x185/0x1b0
+[44.493083]  ? ext4_calculate_overhead+0x4d0/0x4d0 [ext4]
+[44.495112]  mount_bdev+0x185/0x1b0
+[44.496312]  ? ext4_calculate_overhead+0x4d0/0x4d0 [ext4]
+[44.498173]  legacy_get_tree+0x27/0x40
+[44.499599]  vfs_get_tree+0x25/0xb0
+[44.500786]  path_mount+0x423/0xa40
+[44.501974]  __x64_sys_mount+0xe3/0x120
+[44.503275]  do_syscall_64+0x33/0x40
+[44.504512]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[44.506208] RIP: 0033:0x7fe3f7dcc5de
+
+--- Call trace End ------------
+
+# One step Reproducer
+
+https://bugzilla.kernel.org/show_bug.cgi?id=199179 (reproducer #1)
+https://bugzilla.kernel.org/show_bug.cgi?id=199275 (reproducer #2)
+
+  mount -o loop 88.img /mnt
+
+# git bisect log
+
+  git bisect start
+  # good: [235ecd36c7a93e4d6c73ac71137b8f1fa31148dd] MAINTAINERS: Update my email address
+  git bisect good 235ecd36c7a93e4d6c73ac71137b8f1fa31148dd
+  # bad: [19c329f6808995b142b3966301f217c831e7cf31] Linux 5.11-rc4
+  git bisect bad 19c329f6808995b142b3966301f217c831e7cf31
+  # good: [f97844f9c518172f813b7ece18a9956b1f70c1bb] dt-bindings: net: renesas,etheravb: RZ/G2H needs tx-internal-delay-ps
+  git bisect good f97844f9c518172f813b7ece18a9956b1f70c1bb
+  # good: [ea49c88f4071e2bdd55e78987f251ea54aa11004] Merge tag 'mkp-scsi-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/mkp/scsi
+  git bisect good ea49c88f4071e2bdd55e78987f251ea54aa11004
+  # good: [5ee88057889bbca5f5bb96031b62b3756b33e164] Merge tag 'drm-fixes-2021-01-15' of git://anongit.freedesktop.org/drm/drm
+  git bisect good 5ee88057889bbca5f5bb96031b62b3756b33e164
+  # bad: [b45e2da6e444280f8661dca439c1e377761b2877] Merge branch 'akpm' (patches from Andrew)
+  git bisect bad b45e2da6e444280f8661dca439c1e377761b2877
+  # good: [82821be8a2e14bdf359be577400be88b2f1eb8a7] Merge tag 'arm64-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux
+  git bisect good 82821be8a2e14bdf359be577400be88b2f1eb8a7
+  # bad: [0bc9bc1d8b2fa0d5a7e2132e89c540099ea63172] Merge tag 'ext4_for_linus_stable' of git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4
+  git bisect bad 0bc9bc1d8b2fa0d5a7e2132e89c540099ea63172
+  # bad: [23dd561ad9eae02b4d51bb502fe4e1a0666e9567] ext4: use IS_ERR instead of IS_ERR_OR_NULL and set inode null when IS_ERR
+  git bisect bad 23dd561ad9eae02b4d51bb502fe4e1a0666e9567
+  # bad: [2d01ddc86606564fb08c56e3bc93a0693895f710] ext4: save error info to sb through journal if available
+  git bisect bad 2d01ddc86606564fb08c56e3bc93a0693895f710
+  # good: [4392fbc4bab57db3760f0fb61258cb7089b37665] ext4: drop sync argument of ext4_commit_super()
+  git bisect good 4392fbc4bab57db3760f0fb61258cb7089b37665
+  # good: [05c2c00f3769abb9e323fcaca70d2de0b48af7ba] ext4: protect superblock modifications with a buffer lock
+  git bisect good 05c2c00f3769abb9e323fcaca70d2de0b48af7ba
+  # first bad commit: [2d01ddc86606564fb08c56e3bc93a0693895f710] ext4: save error info to sb through journal if available
+
+Thanks,
+-- 
+Murphy
