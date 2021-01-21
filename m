@@ -2,133 +2,194 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAB0A2FF6D8
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Jan 2021 22:12:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 530DD2FF863
+	for <lists+linux-ext4@lfdr.de>; Fri, 22 Jan 2021 00:04:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727569AbhAUVLC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 21 Jan 2021 16:11:02 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37604 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727717AbhAUVKb (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 21 Jan 2021 16:10:31 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0B180AC8F;
-        Thu, 21 Jan 2021 21:09:50 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id B2F221E0816; Thu, 21 Jan 2021 22:09:49 +0100 (CET)
-Date:   Thu, 21 Jan 2021 22:09:49 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Murphy Zhou <jencce.kernel@gmail.com>, Jan Kara <jack@suse.cz>,
-        linux-ext4@vger.kernel.org
-Subject: Re: ext4 regression panic
-Message-ID: <20210121210949.GH24063@quack2.suse.cz>
-References: <20210121101547.fwh35hov3hshogbz@xzhoux.usersys.redhat.com>
- <YAm8qH/0oo2ofSMR@mit.edu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YAm8qH/0oo2ofSMR@mit.edu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1725842AbhAUXEg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 21 Jan 2021 18:04:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725775AbhAUXE1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 21 Jan 2021 18:04:27 -0500
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E97C5C061786
+        for <linux-ext4@vger.kernel.org>; Thu, 21 Jan 2021 15:03:40 -0800 (PST)
+Received: by mail-qt1-x84a.google.com with SMTP id t5so2487526qti.5
+        for <linux-ext4@vger.kernel.org>; Thu, 21 Jan 2021 15:03:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=a86C6J2KAGK7N8gUuXwqncIpGvzm+wukETDy7ToYVa4=;
+        b=KEMt5GTLgB0F309NJ/ui9d0wbtXY4Ffss7tcitx4GSvL1eI92Um9URMa1KANG05fa0
+         dGOGUizaeQuZP45yQNN1mwXHpoQ2ga4p6mQ2OSu+G6FP10NkEVjxX0v3pkY07cEpYbo1
+         1jS28VTJSRoOgzn9XCUORVbCqccHajlNmMdwm3zIloJEx8q03KemuwG+iQvN17z1ciag
+         2TsJ6dVRI3QxFldm74zyost/zy86a8f84h+wVu0DKP8jeu9CbX0JZDhktdWNYxxOrsLE
+         IL0hye+W51IPiYxGrtf4yrCRqjq03ACkItiXwBfTiVrVb7XRmsDRhYYLvQ/Pq4WHXolm
+         K/cQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=a86C6J2KAGK7N8gUuXwqncIpGvzm+wukETDy7ToYVa4=;
+        b=LYyijg+FvX6Z6DQh2IrchughjXifraGSQAphYqE7Jw5kiWgfjqb9MRDzRBGji5DfVw
+         /GcTejJDYkJXFG80GsExwh3LSJW+FmaO42ISSFINL0P84mEw2mvSf6ToT+3tILDL5iN/
+         NSheMKOqaaXfFiOG/vR0dPcW21nk1D9pRDhVSzSq3zmvSRbhrgxBIkEKQ5efU7gNczXA
+         Z+wBGGMpTVqafWHCnj6ByRuMpmc5pAvV4ko44svNVIEap4XFyL09nxT78buE+DOC1rTb
+         UVIhkkr6ptusw5/i0e+ryua+BTHO2wZCmZyA/IpYlTs2/rsOfwUo3qApKinK7Lg26T60
+         7LNQ==
+X-Gm-Message-State: AOAM530Ok3Y0/rxoggu4DmgktzAPcFYLWbXpo+Ti9Fwku8RQyiNkW8pq
+        mBccf/A90Gap+LpHvHa1+VYChfLuxJU=
+X-Google-Smtp-Source: ABdhPJxWxaz7w6s2m6FBn5/tpe7d7n0Ntq7IDWS5vtwLqnUB2fZpoE5VgKC3P+2iYBpAUdhnybwb2HfbgUE=
+Sender: "satyat via sendgmr" <satyat@satyaprateek.c.googlers.com>
+X-Received: from satyaprateek.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:1092])
+ (user=satyat job=sendgmr) by 2002:a05:6214:4e2:: with SMTP id
+ cl2mr1744643qvb.27.1611270219738; Thu, 21 Jan 2021 15:03:39 -0800 (PST)
+Date:   Thu, 21 Jan 2021 23:03:28 +0000
+Message-Id: <20210121230336.1373726-1-satyat@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
+Subject: [PATCH v8 0/8] add support for direct I/O with fscrypt using blk-crypto
+From:   Satya Tangirala <satyat@google.com>
+To:     "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>, Chao Yu <chao@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Satya Tangirala <satyat@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 21-01-21 12:40:56, Theodore Ts'o wrote:
-> On Thu, Jan 21, 2021 at 06:15:47PM +0800, Murphy Zhou wrote:
-> > Hi Jack,
-> > 
-> > A panic was introduced by this commit. It's easy and reliable to
-> > reproduce.
-> > 
-> > commit 2d01ddc86606564fb08c56e3bc93a0693895f710
-> > Author: Jan Kara <jack@suse.cz>
-> > Date:   Wed Dec 16 11:18:40 2020 +0100
-> > 
-> >     ext4: save error info to sb through journal if available
-> 
-> Hi Murphy,
-> 
-> Thanks for the bug report.  What's happening is that we haven't yet
-> initialized mballoc yet --- that happens in line 4943 of
-> fs/ext4/super.c, in ext4_fill_super().
-> 
-> But in line 4903 (in the case of the BZ #199275 reproducer), we
-> attempt to fetch the root inode, which is fails because it is
-> unallocated.  That then triggers a call to ext4_error(), which now
-> results in a journalled change, since the journal is initialized
-> starting in line 4793, and in line 4838, we set up the
-> j_commit_callback, which is what ends up calling
-> ext4_process_freed_data(), but since the multiblock allocator hasn't
-> been set up yet, that causes the NULL pointer dereference.
-> 
-> So what we need to do is to *not* set up the callback until after the
-> call to ext4_mb_init().
-> 
-> We should probably create an ext4-specific test in xfstests which
-> tries mounting a small, deliberately corrupted file system, to make
-> sure we handle this case correctly in the future.
-> 
-> 						- Ted
+This patch series adds support for direct I/O with fscrypt using
+blk-crypto.
 
-Thanks for looking into this. You beat me to my fix (which was slightly
-different - I moved ext4_mb_init() somewhat earlier during mount). But this
-should work fine as well. So feel free to add:
+Till now, the blk-crypto-fallback expected the offset and length of each
+bvec in a bio to be aligned to the crypto data unit size. This in turn
+would mean that any user buffer used to read/write encrypted data using the
+blk-crypto framework would need to be aligned to the crypto data unit size.
+Patch 1 enables blk-crypto-fallback to work without this requirement. It
+also relaxes the alignment requirement that blk-crypto checks for - now,
+blk-crypto only requires that the length of the I/O is aligned to the
+crypto data unit size. This allows direct I/O support introduced in the
+later patches in this series to require extra alignment restrictions on
+user buffers.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Patch 2 relaxes the alignment check that blk-crypto performs on bios.
+blk-crypto would check that the offset and length of each bvec in a bio is
+aligned to the data unit size, since the blk-crypto-fallback required it.
+As this is no longer the case, blk-crypto now only checks that the total
+length of the bio is data unit size aligned.
 
-								Honza
+Patch 3 adds two functions to fscrypt that need to be called to determine
+if direct I/O is supported for a request.
 
-> 
-> commit 6c2f9a8247273cf1108ff71c99680b7457f48318
-> Author: Theodore Ts'o <tytso@mit.edu>
-> Date:   Thu Jan 21 12:33:20 2021 -0500
-> 
->     ext4: don't try to processed freed blocks until mballoc is initialized
->     
->     If we try to make any changes via the journal between when the journal
->     is initialized, but before the multi-block allocated is initialized,
->     we will end up deferencing a NULL pointer when the journal commit
->     callback function calls ext4_process_freed_data().
->     
->     The proximate cause of this failure was commit 2d01ddc86606 ("ext4:
->     save error info to sb through journal if available") since file system
->     corruption problems detected before the call to ext4_mb_init() would
->     result in a journal commit before we aborted the mount of the file
->     system.... and we would then trigger the NULL pointer deref.
->     
->     Cc: Jan Kara <jack@suse.cz>
->     Reported by: Murphy Zhou <jencce.kernel@gmail.com>
->     Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 0f0db49031dc..802ef55f0a55 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -4876,7 +4876,6 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
->  
->  	set_task_ioprio(sbi->s_journal->j_task, journal_ioprio);
->  
-> -	sbi->s_journal->j_commit_callback = ext4_journal_commit_callback;
->  	sbi->s_journal->j_submit_inode_data_buffers =
->  		ext4_journal_submit_inode_data_buffers;
->  	sbi->s_journal->j_finish_inode_data_buffers =
-> @@ -4993,6 +4992,14 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
->  		goto failed_mount5;
->  	}
->  
-> +	/*
-> +	 * We can only set up the journal commit callback once
-> +	 * mballoc is initialized
-> +	 */
-> +	if (sbi->s_journal)
-> +		sbi->s_journal->j_commit_callback =
-> +			ext4_journal_commit_callback;
-> +
->  	block = ext4_count_free_clusters(sb);
->  	ext4_free_blocks_count_set(sbi->s_es, 
->  				   EXT4_C2B(sbi, block));
+Patches 4 and 5 modify direct-io and iomap respectively to set bio crypt
+contexts on bios when appropriate by calling into fscrypt.
+
+Patches 6 and 7 allow ext4 and f2fs direct I/O to support fscrypt without
+falling back to buffered I/O.
+
+Patch 8 updates the fscrypt documentation for direct I/O support.
+The documentation now notes the required conditions for inline encryption
+and direct I/O on encrypted files.
+
+This patch series was tested by running xfstests with test_dummy_encryption
+with and without the 'inlinecrypt' mount option, and there were no
+meaningful regressions. Without any modification, xfstests skip any
+direct I/O test when using ext4/encrypt and f2fs/encrypt, so I modified
+xfstests not to skip those tests.
+
+Among those tests, generic/465 fails with ext4/encrypt because a bio ends
+up being split in the middle of a crypto data unit.  Patch 1 from v7 (which
+has been sent out as a separate patch series) fixes this.
+
+Note that the blk-crypto-fallback changes (Patch 1 in v8 in this series)
+were also tested through xfstests by using this series along with the patch
+series that ensures bios aren't split in the middle of a data unit (Patch 1
+from v7) - Some tests (such as generic/465 again) result in bvecs that
+don't contain a complete data unit (so a data unit is split across multiple
+bvecs), and only pass with this patch.
+
+Changes v7 => v8:
+ - Patch 1 from v7 (which ensured that bios aren't split in the middle of
+   a data unit) has been sent out in a separate patch series, as it's
+   required even without this patch series. That patch series can now
+   be found at
+   https://lore.kernel.org/linux-block/20210114154723.2495814-1-satyat@google.com/
+ - Patch 2 from v7 has been split into 2 patches (Patch 1 and 2 in v8).
+ - Update docs
+
+Changes v6 => v7:
+ - add patches 1 and 2 to allow blk-crypto to work with user buffers not
+   aligned to crypto data unit size, so that direct I/O doesn't require
+   that alignment either.
+ - some cleanups
+
+Changes v5 => v6:
+ - fix bug with fscrypt_limit_io_blocks() and make it ready for 64 bit
+   block numbers.
+ - remove Reviewed-by for Patch 1 due to significant changes from when
+   the Reviewed-by was given.
+
+Changes v4 => v5:
+ - replace fscrypt_limit_io_pages() with fscrypt_limit_io_block(), which
+   is now called by individual filesystems (currently only ext4) instead
+   of the iomap code. This new function serves the same end purpose as
+   the one it replaces (ensuring that DUNs within a bio are contiguous)
+   but operates purely with blocks instead of with pages.
+ - make iomap_dio_zero() set bio_crypt_ctx's again, instead of just a
+   WARN_ON() since some folks prefer that instead.
+ - add Reviewed-by's
+
+Changes v3 => v4:
+ - Fix bug in iomap_dio_bio_actor() where fscrypt_limit_io_pages() was
+   being called too early (thanks Eric!)
+ - Improve comments and fix formatting in documentation
+ - iomap_dio_zero() is only called to zero out partial blocks, but
+   direct I/O is only supported on encrypted files when I/O is
+   blocksize aligned, so it doesn't need to set encryption contexts on
+   bios. Replace setting the encryption context with a WARN_ON(). (Eric)
+
+Changes v2 => v3:
+ - add changelog to coverletter
+
+Changes v1 => v2:
+ - Fix bug in f2fs caused by replacing f2fs_post_read_required() with
+   !fscrypt_dio_supported() since the latter doesn't check for
+   compressed inodes unlike the former.
+ - Add patches 6 and 7 for fscrypt documentation
+ - cleanups and comments
+
+Eric Biggers (5):
+  fscrypt: add functions for direct I/O support
+  direct-io: add support for fscrypt using blk-crypto
+  iomap: support direct I/O with fscrypt using blk-crypto
+  ext4: support direct I/O with fscrypt using blk-crypto
+  f2fs: support direct I/O with fscrypt using blk-crypto
+
+Satya Tangirala (3):
+  block: blk-crypto-fallback: handle data unit split across multiple
+    bvecs
+  block: blk-crypto: relax alignment requirements for bvecs in bios
+  fscrypt: update documentation for direct I/O support
+
+ Documentation/filesystems/fscrypt.rst |  21 ++-
+ block/blk-crypto-fallback.c           | 203 ++++++++++++++++++++------
+ block/blk-crypto.c                    |  19 +--
+ fs/crypto/crypto.c                    |   8 +
+ fs/crypto/inline_crypt.c              |  74 ++++++++++
+ fs/direct-io.c                        |  15 +-
+ fs/ext4/file.c                        |  10 +-
+ fs/ext4/inode.c                       |   7 +
+ fs/f2fs/f2fs.h                        |   6 +-
+ fs/iomap/direct-io.c                  |   6 +
+ include/linux/fscrypt.h               |  18 +++
+ 11 files changed, 315 insertions(+), 72 deletions(-)
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.30.0.280.ga3ce27912f-goog
+
