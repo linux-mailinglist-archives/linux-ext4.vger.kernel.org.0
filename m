@@ -2,58 +2,58 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DECE82FFC52
-	for <lists+linux-ext4@lfdr.de>; Fri, 22 Jan 2021 06:46:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AFD62FFC55
+	for <lists+linux-ext4@lfdr.de>; Fri, 22 Jan 2021 06:46:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726498AbhAVFqI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 22 Jan 2021 00:46:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52306 "EHLO
+        id S1726528AbhAVFqW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 22 Jan 2021 00:46:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726472AbhAVFqF (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 22 Jan 2021 00:46:05 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FD24C06178A
-        for <linux-ext4@vger.kernel.org>; Thu, 21 Jan 2021 21:45:25 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id i5so2978561pgo.1
-        for <linux-ext4@vger.kernel.org>; Thu, 21 Jan 2021 21:45:25 -0800 (PST)
+        with ESMTP id S1726472AbhAVFqK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 22 Jan 2021 00:46:10 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35F97C06178B
+        for <linux-ext4@vger.kernel.org>; Thu, 21 Jan 2021 21:45:26 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id m6so2984724pfm.6
+        for <linux-ext4@vger.kernel.org>; Thu, 21 Jan 2021 21:45:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Vrofo34Z06TV0exyRoYDM8FaIHgtMtKJSkG6PKivnCE=;
-        b=ZCvVrJ4Hjc909sDJuoFEIv2IXxc48G8gDpywSeZ377hqwlu1+HUL1xpo4vn2DsMaWo
-         47n/Q8cpOk1ECZIgFgyjNzWYJnsTd/he7Yna1LB2plXkuFBdvaJILZ075Ues4V543bof
-         jGg5LPxyDyiOosdXqD8hy98CJeTlcAN2PKN8SSj8jOHMewAYt96Ek67JLzxG58pQuFRd
-         oJYMPhWE6/4TP9fxJhUdXskXSS9feWPxlI0uhaQDca8Zl4xZ7rc2YHmYOsI4by30kQuw
-         fjaD9839aehsm6MBAnS14U/k4bTPSaBpghx9MriD0BJk4g5w/xb0UNwW1I1i79vPr9oS
-         0BSg==
+        bh=C8gczVJwVOIq7YaRWe1R24U1NCeNSseRB7yWMSFZ6pU=;
+        b=Gm5JI3OeJcOHdu87eAZemRdPx/3Wf5rurzn0nXGHmlZUPZtGqphnoqR/w0xUT95sn6
+         41bLxC2QlWePBAiqmQnjp+5mPaHC+rVLnm47jrzv9hWJK4ET+spRMx0YyYUfhYvXGO3A
+         UCeI8OKQ3WZAezHzb6GKehfzHaGRbLXXf5GQEGkVMUKjYATowdA18AuWEdsIV8xqeYDJ
+         21y0FrkXThJ9Sw6Z6DYop2T36g5Hdy1+roR4YC9NM+P8Cg68AL9RHyV8u60DVQy3kxjG
+         HXjhDyNODQVk0XL25DMtcJHL/ZILLhXqk+sFkWD1YMnx6xg+E2sbuRXjgMs7/jDWotGC
+         5wxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Vrofo34Z06TV0exyRoYDM8FaIHgtMtKJSkG6PKivnCE=;
-        b=OcqFtQotg1ygll5TpLP7OevcMXvi7MZcxKp5Ywi4UmTv3BZoHuTZeWNjeyfJ+/gLvM
-         bN6EjpDOm9RocAj01AGb9/+sfVI5kLgA3iZslCI9dH7xAOxW9yYqnEUTgF11Lzgx0Xhc
-         TTrLAQQ/U1LR1LfUpSqOynIxfTLVj2w3uzP7yYsIvJ3hLn6x6Y5ybEQVVQVfV5MZtKfn
-         Z6FqUgZyfbCIZII+LvuG+ut2AqTspsY43uZd+cEfSmUHPMegt9hlWDFluZBQBGLQ3Kbn
-         zSWz2g7ANDrkg11nBHWSpSrhjCngLctmA0ub13qkuFv9Eo5WiTLO8QQ2/bKudibzaJOh
-         XvWw==
-X-Gm-Message-State: AOAM530xeN2N4mXJB2iVnOrl+frJf136W1H9mNEYjAsODY8s2L5i8TBK
-        5eHgjLDo7r2nzwyfuFyLRrDQPaXXPy4=
-X-Google-Smtp-Source: ABdhPJz0B5VDH0N8nCk6U0p1kMMKoazC2HEnfJ3G/dO1TMrq7AZfW1NQl5JUY0u+y78/TuK46DsIhw==
-X-Received: by 2002:a05:6a00:2296:b029:1b6:6972:2f2a with SMTP id f22-20020a056a002296b02901b669722f2amr3118216pfe.69.1611294324226;
-        Thu, 21 Jan 2021 21:45:24 -0800 (PST)
+        bh=C8gczVJwVOIq7YaRWe1R24U1NCeNSseRB7yWMSFZ6pU=;
+        b=mw94nGkMStPgIVMlyNHbLKEaxoYHkM1pYoVPX5UGsYplnA8GUqRU8CZxtfiJMo7jBh
+         7bU6vXeeVMA9Fnt9KVqffJiWZvQv6x/DWWaV4R39Wi89TWDfZpifM2OMISo82YeGkznr
+         9lk7Pnaz954HPbK/DHmlVnIGzU6lNFfW2TQwIupKrad5OSMKExnd4qMBOYz4pmFuv/0d
+         dx75YL2wd25ETUUQD/aOoNzI9g5u/Rv1Lxh3VSNGNR2gMY/5lTmWTN4FGqEXDfECMwv8
+         SVJyPwFhPfX2Fr7FNIs4scICi//Rfd682KtMLVEEkiNgtbRoQesmnNc0cEmlUWYfgs7z
+         My2A==
+X-Gm-Message-State: AOAM5330eyk1nHWkUhT2l8P0HCL9N5tfRs/GdjIEWMUndWyx7dVaj24Y
+        h0tH4xz5YBTS2o6LyU1xWEi/4wEOuLo=
+X-Google-Smtp-Source: ABdhPJxi0gy7BvEXAoUuYJbvGNpUL6lWemNMsD7iLAXqOiZKVXDmLAXIsr7bBCWBJ7dG8vc0rYVIXg==
+X-Received: by 2002:a62:ee18:0:b029:1b3:b9d2:6d7b with SMTP id e24-20020a62ee180000b02901b3b9d26d7bmr3161191pfi.32.1611294325308;
+        Thu, 21 Jan 2021 21:45:25 -0800 (PST)
 Received: from harshads-520.kir.corp.google.com ([2620:15c:17:10:a6ae:11ff:fe11:86a2])
-        by smtp.googlemail.com with ESMTPSA id gg6sm12245827pjb.2.2021.01.21.21.45.23
+        by smtp.googlemail.com with ESMTPSA id gg6sm12245827pjb.2.2021.01.21.21.45.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 21:45:23 -0800 (PST)
+        Thu, 21 Jan 2021 21:45:24 -0800 (PST)
 From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 X-Google-Original-From: Harshad Shirwadkar <--global>
 To:     linux-ext4@vger.kernel.org
 Cc:     tytso@mit.edu, Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Subject: [PATCH v4 5/8] e2fsck: add fast commit replay skeleton
-Date:   Thu, 21 Jan 2021 21:45:01 -0800
-Message-Id: <20210122054504.1498532-6-user@harshads-520.kir.corp.google.com>
+Subject: [PATCH v4 6/8] e2fsck: add fc replay for link, unlink, creat tags
+Date:   Thu, 21 Jan 2021 21:45:02 -0800
+Message-Id: <20210122054504.1498532-7-user@harshads-520.kir.corp.google.com>
 X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
 In-Reply-To: <20210122054504.1498532-1-user@harshads-520.kir.corp.google.com>
 References: <20210122054504.1498532-1-user@harshads-520.kir.corp.google.com>
@@ -65,101 +65,191 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 
-This function adds the skeleton for the replay path. Following patches
-in the series implement the handling for individual tags.
+Add fast commit replay for directory entry updates.
 
 Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 ---
- e2fsck/journal.c | 72 ++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 72 insertions(+)
+ e2fsck/journal.c    | 112 ++++++++++++++++++++++++++++++++++++++++++++
+ lib/ext2fs/ext2fs.h |   4 ++
+ lib/ext2fs/unlink.c |   6 +--
+ 3 files changed, 119 insertions(+), 3 deletions(-)
 
 diff --git a/e2fsck/journal.c b/e2fsck/journal.c
-index f1aa0fd6..007c32c6 100644
+index 007c32c6..2afe0929 100644
 --- a/e2fsck/journal.c
 +++ b/e2fsck/journal.c
-@@ -390,11 +390,83 @@ static int ext4_fc_replay(journal_t *journal, struct buffer_head *bh,
- {
- 	e2fsck_t ctx = journal->j_fs_dev->k_ctx;
- 	struct e2fsck_fc_replay_state *state = &ctx->fc_replay_state;
-+	int ret = JBD2_FC_REPLAY_CONTINUE;
-+	struct ext4_fc_tl *tl;
-+	__u8 *start, *end;
- 
- 	if (pass == PASS_SCAN) {
- 		state->fc_current_pass = PASS_SCAN;
- 		return ext4_fc_replay_scan(journal, bh, off, expected_tid);
- 	}
-+
-+	if (state->fc_replay_num_tags == 0)
-+		goto replay_done;
-+
-+	if (state->fc_current_pass != pass) {
-+		/* Starting replay phase */
-+		state->fc_current_pass = pass;
-+		/* We will reset checksums */
-+		ctx->fs->flags |= EXT2_FLAG_IGNORE_CSUM_ERRORS;
-+		ret = ext2fs_read_bitmaps(ctx->fs);
-+		if (ret) {
-+			jbd_debug(1, "Error %d while reading bitmaps\n", ret);
-+			return ret;
-+		}
-+		state->fc_super_state = ctx->fs->super->s_state;
-+		/*
-+		 * Mark the file system to indicate it contains errors. That's
-+		 * because the updates performed by fast commit replay code are
-+		 * not atomic and may result in incosistent file system if it
-+		 * crashes before the replay is complete.
-+		 */
-+		ctx->fs->super->s_state |= EXT2_ERROR_FS;
-+		ctx->fs->super->s_state |= EXT4_FC_REPLAY;
-+		ext2fs_mark_super_dirty(ctx->fs);
-+		ext2fs_flush(ctx->fs);
-+	}
-+
-+	start = (__u8 *)bh->b_data;
-+	end = (__u8 *)bh->b_data + journal->j_blocksize - 1;
-+
-+	fc_for_each_tl(start, end, tl) {
-+		if (state->fc_replay_num_tags == 0)
-+			goto replay_done;
-+		jbd_debug(3, "Replay phase processing %s tag\n",
-+				tag2str(le16_to_cpu(tl->fc_tag)));
-+		state->fc_replay_num_tags--;
-+		switch (le16_to_cpu(tl->fc_tag)) {
-+		case EXT4_FC_TAG_CREAT:
-+		case EXT4_FC_TAG_LINK:
-+		case EXT4_FC_TAG_UNLINK:
-+		case EXT4_FC_TAG_ADD_RANGE:
-+		case EXT4_FC_TAG_DEL_RANGE:
-+		case EXT4_FC_TAG_INODE:
-+		case EXT4_FC_TAG_TAIL:
-+		case EXT4_FC_TAG_PAD:
-+		case EXT4_FC_TAG_HEAD:
-+			break;
-+		default:
-+			ret = -ECANCELED;
-+			break;
-+		}
-+		if (ret < 0)
-+			break;
-+		ret = JBD2_FC_REPLAY_CONTINUE;
-+	}
-+	return ret;
-+replay_done:
-+	jbd_debug(1, "End of fast commit replay\n");
-+	if (state->fc_current_pass != pass)
-+		return JBD2_FC_REPLAY_STOP;
-+
-+	ext2fs_calculate_summary_stats(ctx->fs, 0 /* update bg also */);
-+	ext2fs_write_block_bitmap(ctx->fs);
-+	ext2fs_write_inode_bitmap(ctx->fs);
-+	ext2fs_mark_super_dirty(ctx->fs);
-+	ext2fs_set_gdt_csum(ctx->fs);
-+	ctx->fs->super->s_state = state->fc_super_state;
-+	ext2fs_flush(ctx->fs);
-+
- 	return JBD2_FC_REPLAY_STOP;
+@@ -380,6 +380,114 @@ static int ext4_fc_replay_scan(journal_t *j, struct buffer_head *bh,
+ out_err:
+ 	return ret;
  }
++
++static int __errcode_to_errno(errcode_t err, const char *func, int line)
++{
++	if (err == 0)
++		return 0;
++	fprintf(stderr, "Error \"%s\" encountered in function %s at line %d\n",
++		error_message(err), func, line);
++	if (err <= 256)
++		return -err;
++	return -EFAULT;
++}
++
++#define errcode_to_errno(err)	__errcode_to_errno(err, __func__, __LINE__)
++
++/* Helper struct for dentry replay routines */
++struct dentry_info_args {
++	int parent_ino, dname_len, ino, inode_len;
++	char *dname;
++};
++
++static inline void tl_to_darg(struct dentry_info_args *darg,
++				struct  ext4_fc_tl *tl)
++{
++	struct ext4_fc_dentry_info *fcd;
++	int tag = le16_to_cpu(tl->fc_tag);
++
++	fcd = (struct ext4_fc_dentry_info *)ext4_fc_tag_val(tl);
++
++	darg->parent_ino = le32_to_cpu(fcd->fc_parent_ino);
++	darg->ino = le32_to_cpu(fcd->fc_ino);
++	darg->dname = fcd->fc_dname;
++	darg->dname_len = ext4_fc_tag_len(tl) -
++			sizeof(struct ext4_fc_dentry_info);
++	darg->dname = malloc(darg->dname_len + 1);
++	memcpy(darg->dname, fcd->fc_dname, darg->dname_len);
++	darg->dname[darg->dname_len] = 0;
++	jbd_debug(1, "%s: %s, ino %d, parent %d\n",
++		tag == EXT4_FC_TAG_CREAT ? "create" :
++		(tag == EXT4_FC_TAG_LINK ? "link" :
++		(tag == EXT4_FC_TAG_UNLINK ? "unlink" : "error")),
++		darg->dname, darg->ino, darg->parent_ino);
++}
++
++static int ext4_fc_handle_unlink(e2fsck_t ctx, struct ext4_fc_tl *tl)
++{
++	struct ext2_inode inode;
++	struct dentry_info_args darg;
++	ext2_filsys fs = ctx->fs;
++	int ret;
++
++	tl_to_darg(&darg, tl);
++	ret = errcode_to_errno(
++		       ext2fs_unlink(ctx->fs, darg.parent_ino,
++				     darg.dname, darg.ino, 0));
++	/* It's okay if the above call fails */
++	free(darg.dname);
++	return ret;
++}
++
++static int ext4_fc_handle_link_and_create(e2fsck_t ctx, struct ext4_fc_tl *tl)
++{
++	struct dentry_info_args darg;
++	ext2_filsys fs = ctx->fs;
++	struct ext2_inode_large inode_large;
++	int ret, filetype, mode;
++
++	tl_to_darg(&darg, tl);
++	ret = errcode_to_errno(ext2fs_read_inode(fs, darg.ino,
++						 (struct ext2_inode *)&inode_large));
++	if (ret)
++		goto out;
++
++	mode = inode_large.i_mode;
++
++	if (LINUX_S_ISREG(mode))
++		filetype = EXT2_FT_REG_FILE;
++	else if (LINUX_S_ISDIR(mode))
++		filetype = EXT2_FT_DIR;
++	else if (LINUX_S_ISCHR(mode))
++		filetype = EXT2_FT_CHRDEV;
++	else if (LINUX_S_ISBLK(mode))
++		filetype = EXT2_FT_BLKDEV;
++	else if (LINUX_S_ISLNK(mode))
++		return EXT2_FT_SYMLINK;
++	else if (LINUX_S_ISFIFO(mode))
++		filetype = EXT2_FT_FIFO;
++	else if (LINUX_S_ISSOCK(mode))
++		filetype = EXT2_FT_SOCK;
++	else {
++		ret = -EINVAL;
++		goto out;
++	}
++
++	/*
++	 * Forcefully unlink if the same name is present and ignore the error
++	 * if any, since this dirent might not exist
++	 */
++	ext2fs_unlink(fs, darg.parent_ino, darg.dname, darg.ino,
++			EXT2FS_UNLINK_FORCE);
++
++	ret = errcode_to_errno(
++		       ext2fs_link(fs, darg.parent_ino, darg.dname, darg.ino,
++				   filetype));
++out:
++	free(darg.dname);
++	return ret;
++
++}
+ /*
+  * Main recovery path entry point. This function returns JBD2_FC_REPLAY_CONTINUE
+  * to indicate that it is expecting more fast commit blocks. It returns
+@@ -437,7 +545,11 @@ static int ext4_fc_replay(journal_t *journal, struct buffer_head *bh,
+ 		switch (le16_to_cpu(tl->fc_tag)) {
+ 		case EXT4_FC_TAG_CREAT:
+ 		case EXT4_FC_TAG_LINK:
++			ret = ext4_fc_handle_link_and_create(ctx, tl);
++			break;
+ 		case EXT4_FC_TAG_UNLINK:
++			ret = ext4_fc_handle_unlink(ctx, tl);
++			break;
+ 		case EXT4_FC_TAG_ADD_RANGE:
+ 		case EXT4_FC_TAG_DEL_RANGE:
+ 		case EXT4_FC_TAG_INODE:
+diff --git a/lib/ext2fs/ext2fs.h b/lib/ext2fs/ext2fs.h
+index 7a25e0e5..b1752ac7 100644
+--- a/lib/ext2fs/ext2fs.h
++++ b/lib/ext2fs/ext2fs.h
+@@ -1693,6 +1693,10 @@ extern errcode_t ext2fs_get_pathname(ext2_filsys fs, ext2_ino_t dir, ext2_ino_t
+ 			       char **name);
+ 
+ /* link.c */
++#define EXT2FS_UNLINK_FORCE		0x1	/* Forcefully unlink even if
++						 * the inode number doesn't
++						 * match the dirent
++						 */
+ errcode_t ext2fs_link(ext2_filsys fs, ext2_ino_t dir, const char *name,
+ 		      ext2_ino_t ino, int flags);
+ errcode_t ext2fs_unlink(ext2_filsys fs, ext2_ino_t dir, const char *name,
+diff --git a/lib/ext2fs/unlink.c b/lib/ext2fs/unlink.c
+index 8ab27ee2..3ec04cfb 100644
+--- a/lib/ext2fs/unlink.c
++++ b/lib/ext2fs/unlink.c
+@@ -49,7 +49,7 @@ static int unlink_proc(struct ext2_dir_entry *dirent,
+ 		if (strncmp(ls->name, dirent->name, ext2fs_dirent_name_len(dirent)))
+ 			return 0;
+ 	}
+-	if (ls->inode) {
++	if (!(ls->flags & EXT2FS_UNLINK_FORCE) && ls->inode) {
+ 		if (dirent->inode != ls->inode)
+ 			return 0;
+ 	} else {
+@@ -70,7 +70,7 @@ static int unlink_proc(struct ext2_dir_entry *dirent,
+ #endif
+ errcode_t ext2fs_unlink(ext2_filsys fs, ext2_ino_t dir,
+ 			const char *name, ext2_ino_t ino,
+-			int flags EXT2FS_ATTR((unused)))
++			int flags)
+ {
+ 	errcode_t	retval;
+ 	struct link_struct ls;
+@@ -86,7 +86,7 @@ errcode_t ext2fs_unlink(ext2_filsys fs, ext2_ino_t dir,
+ 	ls.name = name;
+ 	ls.namelen = name ? strlen(name) : 0;
+ 	ls.inode = ino;
+-	ls.flags = 0;
++	ls.flags = flags;
+ 	ls.done = 0;
+ 	ls.prev = 0;
  
 -- 
 2.30.0.280.ga3ce27912f-goog
