@@ -2,19 +2,19 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A8ED2FFB66
-	for <lists+linux-ext4@lfdr.de>; Fri, 22 Jan 2021 04:50:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35DCF2FFB99
+	for <lists+linux-ext4@lfdr.de>; Fri, 22 Jan 2021 05:16:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726472AbhAVDtf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 21 Jan 2021 22:49:35 -0500
-Received: from namei.org ([65.99.196.166]:52776 "EHLO mail.namei.org"
+        id S1726634AbhAVEQF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 21 Jan 2021 23:16:05 -0500
+Received: from namei.org ([65.99.196.166]:52828 "EHLO mail.namei.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726030AbhAVDtc (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 21 Jan 2021 22:49:32 -0500
+        id S1726030AbhAVEQE (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 21 Jan 2021 23:16:04 -0500
 Received: from localhost (localhost [127.0.0.1])
-        by mail.namei.org (Postfix) with ESMTPS id 1847E8CE;
-        Fri, 22 Jan 2021 03:47:59 +0000 (UTC)
-Date:   Fri, 22 Jan 2021 14:47:59 +1100 (AEDT)
+        by mail.namei.org (Postfix) with ESMTPS id 4E2B41BC;
+        Fri, 22 Jan 2021 04:14:30 +0000 (UTC)
+Date:   Fri, 22 Jan 2021 15:14:30 +1100 (AEDT)
 From:   James Morris <jmorris@namei.org>
 To:     Christian Brauner <christian.brauner@ubuntu.com>
 cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
@@ -49,11 +49,10 @@ cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
         linux-security-module@vger.kernel.org, linux-api@vger.kernel.org,
         linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
         linux-integrity@vger.kernel.org, selinux@vger.kernel.org
-Subject: Re: [PATCH v6 12/40] namei: handle idmapped mounts in may_*()
- helpers
-In-Reply-To: <20210121131959.646623-13-christian.brauner@ubuntu.com>
-Message-ID: <2ec5e6b6-768c-dad-3365-53c129579eb@namei.org>
-References: <20210121131959.646623-1-christian.brauner@ubuntu.com> <20210121131959.646623-13-christian.brauner@ubuntu.com>
+Subject: Re: [PATCH v6 16/40] open: handle idmapped mounts
+In-Reply-To: <20210121131959.646623-17-christian.brauner@ubuntu.com>
+Message-ID: <f99675af-c1-8a1a-34ef-1f701b5e9ec@namei.org>
+References: <20210121131959.646623-1-christian.brauner@ubuntu.com> <20210121131959.646623-17-christian.brauner@ubuntu.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
@@ -62,24 +61,21 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 On Thu, 21 Jan 2021, Christian Brauner wrote:
 
-> The may_follow_link(), may_linkat(), may_lookup(), may_open(),
-> may_o_create(), may_create_in_sticky(), may_delete(), and may_create()
-> helpers determine whether the caller is privileged enough to perform the
-> associated operations. Let them handle idmapped mounts by mapping the
-> inode or fsids according to the mount's user namespace. Afterwards the
-> checks are identical to non-idmapped inodes. The patch takes care to
-> retrieve the mount's user namespace right before performing permission
-> checks and passing it down into the fileystem so the user namespace
-> can't change in between by someone idmapping a mount that is currently
-> not idmapped. If the initial user namespace is passed nothing changes so
+> For core file operations such as changing directories or chrooting,
+> determining file access, changing mode or ownership the vfs will verify
+> that the caller is privileged over the inode. Extend the various helpers
+> to handle idmapped mounts. If the inode is accessed through an idmapped
+> mount map it into the mount's user namespace. Afterwards the permissions
+> checks are identical to non-idmapped mounts. When changing file
+> ownership we need to map the uid and gid from the mount's user
+> namespace. If the initial user namespace is passed nothing changes so
 > non-idmapped mounts will see identical behavior as before.
 > 
-> Link: https://lore.kernel.org/r/20210112220124.837960-20-christian.brauner@ubuntu.com
+> Link: https://lore.kernel.org/r/20210112220124.837960-24-christian.brauner@ubuntu.com
 > Cc: Christoph Hellwig <hch@lst.de>
 > Cc: David Howells <dhowells@redhat.com>
 > Cc: Al Viro <viro@zeniv.linux.org.uk>
 > Cc: linux-fsdevel@vger.kernel.org
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
 > Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
 
 
