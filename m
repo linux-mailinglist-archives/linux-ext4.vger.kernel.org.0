@@ -2,75 +2,81 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A54E300143
-	for <lists+linux-ext4@lfdr.de>; Fri, 22 Jan 2021 12:16:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8094D3005BF
+	for <lists+linux-ext4@lfdr.de>; Fri, 22 Jan 2021 15:43:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727440AbhAVLMT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 22 Jan 2021 06:12:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728159AbhAVLD1 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 22 Jan 2021 06:03:27 -0500
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A15A3C0613D6
-        for <linux-ext4@vger.kernel.org>; Fri, 22 Jan 2021 03:02:39 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by andre.telenet-ops.be with bizsmtp
-        id Kn2c240014C55Sk01n2cRg; Fri, 22 Jan 2021 12:02:36 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1l2uD5-005kge-L9; Fri, 22 Jan 2021 12:02:35 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1l2uD5-00Br6K-5O; Fri, 22 Jan 2021 12:02:35 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Iurii Zaikin <yzaikin@google.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH resend] ext: EXT4_KUNIT_TESTS should depend on EXT4_FS instead of selecting it
-Date:   Fri, 22 Jan 2021 12:02:34 +0100
-Message-Id: <20210122110234.2825685-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        id S1728780AbhAVOnk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 22 Jan 2021 09:43:40 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60932 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728612AbhAVOdQ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:33:16 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D71C5ADA2;
+        Fri, 22 Jan 2021 14:32:32 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 94D161E14C3; Fri, 22 Jan 2021 15:32:32 +0100 (CET)
+Date:   Fri, 22 Jan 2021 15:32:32 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 0/3 RFC] fs: Hole punch vs page cache filling races
+Message-ID: <20210122143232.GA1175@quack2.suse.cz>
+References: <20210120160611.26853-1-jack@suse.cz>
+ <20210121192755.GC4127393@casper.infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210121192755.GC4127393@casper.infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-EXT4_KUNIT_TESTS selects EXT4_FS, thus enabling an optional feature the
-user may not want to enable.  Fix this by making the test depend on
-EXT4_FS instead.
+On Thu 21-01-21 19:27:55, Matthew Wilcox wrote:
+> On Wed, Jan 20, 2021 at 05:06:08PM +0100, Jan Kara wrote:
+> > Hello,
+> > 
+> > Amir has reported [1] a that ext4 has a potential issues when reads can race
+> > with hole punching possibly exposing stale data from freed blocks or even
+> > corrupting filesystem when stale mapping data gets used for writeout. The
+> > problem is that during hole punching, new page cache pages can get instantiated
+> > in a punched range after truncate_inode_pages() has run but before the
+> > filesystem removes blocks from the file.  In principle any filesystem
+> > implementing hole punching thus needs to implement a mechanism to block
+> > instantiating page cache pages during hole punching to avoid this race. This is
+> > further complicated by the fact that there are multiple places that can
+> > instantiate pages in page cache.  We can have regular read(2) or page fault
+> > doing this but fadvise(2) or madvise(2) can also result in reading in page
+> > cache pages through force_page_cache_readahead().
+> 
+> Doesn't this indicate that we're doing truncates in the wrong order?
+> ie first we should deallocate the blocks, then we should free the page
+> cache that was caching the contents of those blocks.  We'd need to
+> make sure those pages in the page cache don't get written back to disc
+> (either by taking pages in the page cache off the lru list or having
+> the filesystem handle writeback of pages to a freed extent as a no-op).
 
-Fixes: 1cbeab1b242d16fd ("ext4: add kunit test for decoding extended timestamps")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-Discussion after previous submission at
-https://lore.kernel.org/linux-ext4/20201020073740.29081-1-geert@linux-m68k.org/
----
- fs/ext4/Kconfig | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Well, it depends on how much you wish to complicate the matters :).
+Filesystems have metadata information attached to pages (e.g. buffer
+heads), once you are removing blocks from a file, this information is
+becoming stale. So it makes perfect sense to first evict page cache to
+remove this metadata caching information and then remove blocks from
+on-disk structures.
 
-diff --git a/fs/ext4/Kconfig b/fs/ext4/Kconfig
-index 619dd35ddd48a973..86699c8cab281cbc 100644
---- a/fs/ext4/Kconfig
-+++ b/fs/ext4/Kconfig
-@@ -103,8 +103,7 @@ config EXT4_DEBUG
- 
- config EXT4_KUNIT_TESTS
- 	tristate "KUnit tests for ext4" if !KUNIT_ALL_TESTS
--	select EXT4_FS
--	depends on KUNIT
-+	depends on EXT4_FS && KUNIT
- 	default KUNIT_ALL_TESTS
- 	help
- 	  This builds the ext4 KUnit tests.
+You can obviously try to do it the other way around - i.e., first remove
+blocks from on-disk structures and then remove the cached information from
+the page cache. But then you have to make sure stale cached information
+isn't used until everything is in sync. So whichever way you slice it, you
+have information in two places, you need to keep it in sync and you need
+some synchronization between different updaters of this information
+in both places so that they cannot get those two places out of sync...
+
+TLDR: I don't see much benefit in switching the ordering.
+
+								Honza
 -- 
-2.25.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
