@@ -2,18 +2,18 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04AC4300A30
-	for <lists+linux-ext4@lfdr.de>; Fri, 22 Jan 2021 18:51:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E96CE300A02
+	for <lists+linux-ext4@lfdr.de>; Fri, 22 Jan 2021 18:42:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729173AbhAVRmD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 22 Jan 2021 12:42:03 -0500
-Received: from verein.lst.de ([213.95.11.211]:37533 "EHLO verein.lst.de"
+        id S1729224AbhAVRmM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 22 Jan 2021 12:42:12 -0500
+Received: from verein.lst.de ([213.95.11.211]:37560 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730109AbhAVRe0 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 22 Jan 2021 12:34:26 -0500
+        id S1729413AbhAVRfY (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 22 Jan 2021 12:35:24 -0500
 Received: by verein.lst.de (Postfix, from userid 2407)
-        id 7138F68B05; Fri, 22 Jan 2021 18:33:40 +0100 (CET)
-Date:   Fri, 22 Jan 2021 18:33:40 +0100
+        id 4C3BC68BFE; Fri, 22 Jan 2021 18:34:40 +0100 (CET)
+Date:   Fri, 22 Jan 2021 18:34:40 +0100
 From:   Christoph Hellwig <hch@lst.de>
 To:     Christian Brauner <christian.brauner@ubuntu.com>
 Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
@@ -52,28 +52,33 @@ Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
         Mauricio =?iso-8859-1?Q?V=E1squez?= Bernal 
         <mauricio@kinvolk.io>
 Subject: Re: [PATCH v6 35/40] fs: introduce MOUNT_ATTR_IDMAP
-Message-ID: <20210122173340.GA20658@lst.de>
-References: <20210121131959.646623-1-christian.brauner@ubuntu.com> <20210121131959.646623-36-christian.brauner@ubuntu.com>
+Message-ID: <20210122173440.GA20821@lst.de>
+References: <20210121131959.646623-1-christian.brauner@ubuntu.com> <20210121131959.646623-36-christian.brauner@ubuntu.com> <20210122173340.GA20658@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210121131959.646623-36-christian.brauner@ubuntu.com>
+In-Reply-To: <20210122173340.GA20658@lst.de>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
->  /*
->   * mount_setattr()
-> @@ -127,9 +128,10 @@ struct mount_attr {
->  	__u64 attr_set;
->  	__u64 attr_clr;
->  	__u64 propagation;
-> +	__u64 userns_fd;
->  };
->  
->  /* List of all mount_attr versions. */
-> -#define MOUNT_ATTR_SIZE_VER0	24 /* sizeof first published struct */
-> +#define MOUNT_ATTR_SIZE_VER0	32 /* sizeof first published struct */
+On Fri, Jan 22, 2021 at 06:33:40PM +0100, Christoph Hellwig wrote:
+> >  /*
+> >   * mount_setattr()
+> > @@ -127,9 +128,10 @@ struct mount_attr {
+> >  	__u64 attr_set;
+> >  	__u64 attr_clr;
+> >  	__u64 propagation;
+> > +	__u64 userns_fd;
+> >  };
+> >  
+> >  /* List of all mount_attr versions. */
+> > -#define MOUNT_ATTR_SIZE_VER0	24 /* sizeof first published struct */
+> > +#define MOUNT_ATTR_SIZE_VER0	32 /* sizeof first published struct */
+> 
+> I think this hunk needs to go into the patch adding the structure.
 
-I think this hunk needs to go into the patch adding the structure.
+But except for that the patch looks fine:
+
+Reviewed-by: Christoph Hellwig <hch@lst.de>
