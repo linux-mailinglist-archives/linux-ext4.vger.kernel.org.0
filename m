@@ -2,58 +2,58 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C2CE2FFCF0
-	for <lists+linux-ext4@lfdr.de>; Fri, 22 Jan 2021 07:46:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D359E2FFCED
+	for <lists+linux-ext4@lfdr.de>; Fri, 22 Jan 2021 07:45:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726714AbhAVGpm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 22 Jan 2021 01:45:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36580 "EHLO
+        id S1725771AbhAVGoz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 22 Jan 2021 01:44:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726157AbhAVGos (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 22 Jan 2021 01:44:48 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B06AC061756;
-        Thu, 21 Jan 2021 22:44:08 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id m5so3124452pjv.5;
-        Thu, 21 Jan 2021 22:44:08 -0800 (PST)
+        with ESMTP id S1726248AbhAVGou (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 22 Jan 2021 01:44:50 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC04C0613D6;
+        Thu, 21 Jan 2021 22:44:10 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id i5so3104200pgo.1;
+        Thu, 21 Jan 2021 22:44:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :in-reply-to:references;
-        bh=SCv9WbBLaFw12yY+K5yyRXH+JBMeFQpgNWRlefewUu0=;
-        b=M8Yi1b/3CIoDJ2lvoAshqMkbyUbKArG/tcFD1js2NupB2rbQ5ltPOKjVMiLwBAuGvq
-         hP41Y/odxLY9DbkiQqzqvkfCvrLzG3LbwhFaemhB80P44eIc9OgtdrPyiVxdc6qtG6Q6
-         2IyOso+2qsfOWImb0WnjToZYdIZSAwltmY5UXfKrdKHFA0aDTNi1+1CWTbMXtv7160vf
-         WckQgYGv1cHTIPWo5zjNfjuXt5zOVr7JGbZ68xs8fwoYI96qpuhA9e8G4Y7n0VtcOpf9
-         XFHOxejPd2S3XlMu+lM92964mQQWYstTY2WAf3ak9LlX8U+ElYfVMSeyOYjUOkUkmXtl
-         iTlw==
+        bh=jlKBTxlIwTzOGnww8ex4FQyBT2PusMVn+PCpRGE69LQ=;
+        b=Lpf3yPcMr0kSe8+1xH7EiJv+Jf/EyAhd7E1mMt4Ypo7sVC9Zga4HdLR0WrvP6fm2IR
+         rnLQRfAePlJv3ORt9cznQENhMtNegVwlu6Bm8CmR972WWZjq4Ffc293X79Ic4Jp6VVRE
+         8kWZKek82xoxKTy0PbttPa335okN9dfo/LpLKfKZO/CTor3fWM+Arhh8bfVKDKlBasm1
+         4Xrw+s5r9viaMwhou2EmUjRklwMW5YtAfSqJxo4L4NHT+gs9tRvrLTv3+zDvGWuit7r9
+         ua913GysW4WQoGumblz6lv8QgjupU3S8fA3qpwcxhzZoNQwceXgQGO4oWVRD3aYGX7H0
+         n4mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:in-reply-to:references;
-        bh=SCv9WbBLaFw12yY+K5yyRXH+JBMeFQpgNWRlefewUu0=;
-        b=URS7FPA9mNfVHyuL7K7UTLNWQjAMFV38y3++0PC5ZxNtjwxR68EEOQhs4jUrHine6a
-         UU9qHZO9CCZBK2Ixyqy721Dsg9beGcVKaFW/9CY6xZxOaEEz7i2UMpC6JoGzelW7EJjh
-         Zo1fg9UH50yaS4GgDzKZzu8bD7EHV7buhvYRCQC5BxJv7ppQWGunTbVTD3fLd85BvU5e
-         aL9mRDPPRRUe15zirwXjpDeHBk55LGRQW/UvU5VTrMSag0HuCKf/bs6tIu/MEyzScnWZ
-         hnxqqZMc+5wBDkxcwQYyQPFkElsG+G114e4ekYyuumc5RDoori+E4Jcpir3uB/5VDsMd
-         Cekw==
-X-Gm-Message-State: AOAM531ZVuKE9q7XvPqHkoCEcAmhpJLkr2hCzoIh9nfZpebvTLH8Ab8R
-        8/KvVZC7iH8po4z8oJNnujs=
-X-Google-Smtp-Source: ABdhPJzmsnMbmibVnaPxcOy7UBIBlVJcoqzmX0Zo319cQpBAARg8WYPdMzFCoNy6HXq7nEEcpiYWoA==
-X-Received: by 2002:a17:902:b203:b029:dc:973:3ad0 with SMTP id t3-20020a170902b203b02900dc09733ad0mr3483093plr.44.1611297848240;
-        Thu, 21 Jan 2021 22:44:08 -0800 (PST)
+        bh=jlKBTxlIwTzOGnww8ex4FQyBT2PusMVn+PCpRGE69LQ=;
+        b=WU1CNEV5yoLZZaadCp3FQfDalCJpkYsh5BalWbnVITLAEzWVbWxRMpgSp9X1GnKzFA
+         pxrogBIjQ+uMnGLZ5mUjwt2e6C1m4IqN/YZfMe/ZD6LoBFD4j3tLOHWjwerEuwWjYB61
+         3d1MixUb4JZlWQvG373EigMQSEHE45+LPepqfA0l+mHnqn8neN1r88kEVQmfP5SnPSfk
+         zWWPMC9tqJOMmvkM1gO7Y0O7vPvd7Fb2X+j1ZcZ8GvHoytkdVu0gjKVL7kURpu5LoX40
+         RX4XowFUxZYTb1oYsbA8NiG3W9SrRdaGmoXs5X/mPoIxHq2iM+3Xs1N1j1A5Xoce3M7p
+         k5mw==
+X-Gm-Message-State: AOAM533ICl4chJqbsRu+JxVI8NsQxa7J1QNQ2BW3pMy0H/aimBRntCth
+        L0Oupq/GnscKsU46jxjjBxVPr+MvJYxR5A==
+X-Google-Smtp-Source: ABdhPJwS8rhUFeee6lmt/dTYZgRxSCAgZ+LNFZqQQH0tC2Vybpz/FjEcGHFjHGnLsurkiiHCAeHEAw==
+X-Received: by 2002:a62:ddd1:0:b029:1b7:5651:f6ea with SMTP id w200-20020a62ddd10000b02901b75651f6eamr3670616pff.62.1611297849949;
+        Thu, 21 Jan 2021 22:44:09 -0800 (PST)
 Received: from VM-0-6-centos.localdomain ([119.28.90.140])
-        by smtp.gmail.com with ESMTPSA id t22sm8319641pgm.18.2021.01.21.22.44.06
+        by smtp.gmail.com with ESMTPSA id t22sm8319641pgm.18.2021.01.21.22.44.08
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 21 Jan 2021 22:44:07 -0800 (PST)
+        Thu, 21 Jan 2021 22:44:09 -0800 (PST)
 From:   Chunguang Xu <brookxu.cn@gmail.com>
 X-Google-Original-From: Chunguang Xu <brookxu@tencent.com>
 To:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.com
 Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 1/4] jbd2: make jdb2_debug module parameter per device
-Date:   Fri, 22 Jan 2021 14:43:19 +0800
-Message-Id: <b5a6fbe941f61289f15d84d9cad42df912daee7f.1611287342.git.brookxu@tencent.com>
+Subject: [RFC PATCH 2/4] jbd2: introduce some new log interfaces
+Date:   Fri, 22 Jan 2021 14:43:20 +0800
+Message-Id: <6e3677254fdf5be549f88b2274e0d67523bc1773.1611287342.git.brookxu@tencent.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <cover.1611287342.git.brookxu@tencent.com>
 References: <cover.1611287342.git.brookxu@tencent.com>
@@ -65,163 +65,92 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Chunguang Xu <brookxu@tencent.com>
 
-On a multi-disk machine, because jbd2's debugging switch is global,this
-confuses the logs of multiple disks. It is not easy to distinguish the
-logs of each disk and the amount of generated logs is very large. Or a
-separate debugging switch for each disk would be better, so that you
-can easily distinguish the logs of a certain disk.
+Compared to directly using numbers to indicate levels, using abstract
+error, warn, notice, info, debug to indicate levels may be more
+convenient for code reading and writing. Similar to other kernel
+modules, some basic log interfaces are introduced.
 
 Signed-off-by: Chunguang Xu <brookxu@tencent.com>
 ---
- fs/jbd2/journal.c     | 63 +++++++++++++++++++++++++++++++++++--------
- fs/jbd2/transaction.c |  2 +-
- include/linux/jbd2.h  |  7 +++++
- 3 files changed, 60 insertions(+), 12 deletions(-)
+ include/linux/jbd2.h | 58 +++++++++++++++++++++++++++++++-------------
+ 1 file changed, 41 insertions(+), 17 deletions(-)
 
-diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index 2dc944442802..ae147cc713c7 100644
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -48,14 +48,6 @@
- #include <linux/uaccess.h>
- #include <asm/page.h>
- 
--#ifdef CONFIG_JBD2_DEBUG
--ushort jbd2_journal_enable_debug __read_mostly;
--EXPORT_SYMBOL(jbd2_journal_enable_debug);
--
--module_param_named(jbd2_debug, jbd2_journal_enable_debug, ushort, 0644);
--MODULE_PARM_DESC(jbd2_debug, "Debugging level for jbd2");
--#endif
--
- EXPORT_SYMBOL(jbd2_journal_extend);
- EXPORT_SYMBOL(jbd2_journal_stop);
- EXPORT_SYMBOL(jbd2_journal_lock_updates);
-@@ -101,13 +93,13 @@ EXPORT_SYMBOL(jbd2_inode_cache);
- static int jbd2_journal_create_slab(size_t slab_size);
- 
- #ifdef CONFIG_JBD2_DEBUG
--void __jbd2_debug(int level, const char *file, const char *func,
-+void jbd2_log(int level, journal_t *j, const char *file, const char *func,
- 		  unsigned int line, const char *fmt, ...)
- {
- 	struct va_format vaf;
- 	va_list args;
- 
--	if (level > jbd2_journal_enable_debug)
-+	if (!j || level > j->j_debug_level)
- 		return;
- 	va_start(args, fmt);
- 	vaf.fmt = fmt;
-@@ -115,7 +107,7 @@ void __jbd2_debug(int level, const char *file, const char *func,
- 	printk(KERN_DEBUG "%s: (%s, %u): %pV", file, func, line, &vaf);
- 	va_end(args);
- }
--EXPORT_SYMBOL(__jbd2_debug);
-+EXPORT_SYMBOL(jbd2_log);
- #endif
- 
- /* Checksumming functions */
-@@ -1257,6 +1249,48 @@ static int jbd2_seq_info_release(struct inode *inode, struct file *file)
- 	return seq_release(inode, file);
- }
- 
-+#ifdef CONFIG_JBD2_DEBUG
-+static int jbd2_proc_debug_show(struct seq_file *m, void *v)
-+{
-+	journal_t *j = m->private;
-+
-+	seq_printf(m, "%d\n", j->j_debug_level);
-+	return 0;
-+}
-+
-+static int jbd2_proc_debug_open(struct inode *inode, struct file *file)
-+{
-+	journal_t *journal = PDE_DATA(inode);
-+
-+	return single_open(file, jbd2_proc_debug_show, journal);
-+}
-+
-+static ssize_t jbd2_proc_debug_write(struct file *file,
-+		const char __user *buffer, size_t count, loff_t *ppos)
-+{
-+	struct seq_file *seq = file->private_data;
-+	journal_t *j = seq->private;
-+	char c;
-+
-+	if (get_user(c, buffer))
-+		return -EFAULT;
-+
-+	if (c < '0' || c > '5')
-+		return -EINVAL;
-+
-+	j->j_debug_level = c - '0';
-+	return count;
-+}
-+
-+static const struct proc_ops jbd2_debug_proc_ops = {
-+	.proc_open	= jbd2_proc_debug_open,
-+	.proc_read	= seq_read,
-+	.proc_write	= jbd2_proc_debug_write,
-+	.proc_release	= single_release,
-+	.proc_lseek	= seq_lseek,
-+};
-+#endif
-+
- static const struct proc_ops jbd2_info_proc_ops = {
- 	.proc_open	= jbd2_seq_info_open,
- 	.proc_read	= seq_read,
-@@ -1272,12 +1306,19 @@ static void jbd2_stats_proc_init(journal_t *journal)
- 	if (journal->j_proc_entry) {
- 		proc_create_data("info", S_IRUGO, journal->j_proc_entry,
- 				 &jbd2_info_proc_ops, journal);
-+#ifdef CONFIG_JBD2_DEBUG
-+		proc_create_data("jbd2_debug", S_IRUGO, journal->j_proc_entry,
-+				 &jbd2_debug_proc_ops, journal);
-+#endif
- 	}
- }
- 
- static void jbd2_stats_proc_exit(journal_t *journal)
- {
- 	remove_proc_entry("info", journal->j_proc_entry);
-+#ifdef CONFIG_JBD2_DEBUG
-+	remove_proc_entry("jbd2_debug", journal->j_proc_entry);
-+#endif
- 	remove_proc_entry(journal->j_devname, proc_jbd2_stats);
- }
- 
-diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-index 9396666b7314..f25c6ff16165 100644
---- a/fs/jbd2/transaction.c
-+++ b/fs/jbd2/transaction.c
-@@ -150,7 +150,7 @@ static inline void update_t_max_wait(transaction_t *transaction,
- 				     unsigned long ts)
- {
- #ifdef CONFIG_JBD2_DEBUG
--	if (jbd2_journal_enable_debug &&
-+	if (transaction->t_journal->j_debug_level &&
- 	    time_after(transaction->t_start, ts)) {
- 		ts = jbd2_time_diff(ts, transaction->t_start);
- 		spin_lock(&transaction->t_handle_lock);
 diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index 99d3cd051ac3..600a2ea8324a 100644
+index 600a2ea8324a..d3d3ed33be30 100644
 --- a/include/linux/jbd2.h
 +++ b/include/linux/jbd2.h
-@@ -1211,6 +1211,13 @@ struct journal_s
- 	 */
- 	struct transaction_stats_s j_stats;
+@@ -47,23 +47,6 @@
+  */
+ #define JBD2_DEFAULT_MAX_COMMIT_AGE 5
  
-+#ifdef CONFIG_JBD2_DEBUG
-+	/**
-+	 * @j_debug_level: debugging level for jbd2.
-+	 */
-+	unsigned int j_debug_level;
-+#endif
+-#ifdef CONFIG_JBD2_DEBUG
+-/*
+- * Define JBD2_EXPENSIVE_CHECKING to enable more expensive internal
+- * consistency checks.  By default we don't do this unless
+- * CONFIG_JBD2_DEBUG is on.
+- */
+-#define JBD2_EXPENSIVE_CHECKING
+-extern ushort jbd2_journal_enable_debug;
+-void __jbd2_debug(int level, const char *file, const char *func,
+-		  unsigned int line, const char *fmt, ...);
+-
+-#define jbd_debug(n, fmt, a...) \
+-	__jbd2_debug((n), __FILE__, __func__, __LINE__, (fmt), ##a)
+-#else
+-#define jbd_debug(n, fmt, a...)    /**/
+-#endif
+-
+ extern void *jbd2_alloc(size_t size, gfp_t flags);
+ extern void jbd2_free(void *ptr, size_t size);
+ 
+@@ -104,6 +87,47 @@ typedef struct jbd2_journal_handle handle_t;	/* Atomic operation type */
+  * This is an opaque datatype.
+  **/
+ typedef struct journal_s	journal_t;	/* Journal control structure */
 +
- 	/**
- 	 * @j_failed_commit: Failed journal commit ID.
- 	 */
++#ifdef CONFIG_JBD2_DEBUG
++/*
++ * Define JBD2_EXPENSIVE_CHECKING to enable more expensive internal
++ * consistency checks.  By default we don't do this unless
++ * CONFIG_JBD2_DEBUG is on.
++ */
++#define JBD2_EXPENSIVE_CHECKING
++void jbd2_log(int level, journal_t *j, const char *file, const char *func,
++		      unsigned int line, const char *fmt, ...);
++
++#define JBD2_ERR	1	/* error conditions */
++#define JBD2_WARN	2	/* warning conditions */
++#define JBD2_NOTICE	3	/* normal but significant condition */
++#define JBD2_INFO	4	/* informational */
++#define JBD2_DEBUG	5	/* debug-level messages */
++
++#define jbd2_err(j, fmt, a...)						\
++	jbd2_log(JBD2_ERR, j, __FILE__, __func__, __LINE__, (fmt), ##a)
++
++#define jbd2_warn(j, fmt, a...)						\
++	jbd2_log(JBD2_WARN, j, __FILE__, __func__, __LINE__, (fmt), ##a)
++
++#define jbd2_notice(j, fmt, a...)					\
++	jbd2_log(JBD2_NOTICE, j, __FILE__, __func__, __LINE__, (fmt), ##a)
++
++#define jbd2_info(j, fmt, a...)						\
++	jbd2_log(JBD2_INFO, j, __FILE__, __func__, __LINE__, (fmt), ##a)
++
++#define jbd2_debug(j, fmt, a...)					\
++	jbd2_log(JBD2_DEBUG, j, __FILE__, __func__, __LINE__, (fmt), ##a)
++
++#else
++
++#define jbd2_err(j, fmt, a...)
++#define jbd2_warn(j, fmt, a...)
++#define jbd2_notice(j, fmt, a...)
++#define jbd2_info(j, fmt, a...)
++#define jbd2_debug(j, fmt, a...)
++
++#endif
+ #endif
+ 
+ /*
 -- 
 2.30.0
 
