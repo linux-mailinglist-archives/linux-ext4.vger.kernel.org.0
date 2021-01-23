@@ -2,252 +2,175 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFF5930128D
-	for <lists+linux-ext4@lfdr.de>; Sat, 23 Jan 2021 04:16:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F0EC30140E
+	for <lists+linux-ext4@lfdr.de>; Sat, 23 Jan 2021 09:58:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726516AbhAWDQe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 22 Jan 2021 22:16:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48016 "EHLO
+        id S1726243AbhAWI6O (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 23 Jan 2021 03:58:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726413AbhAWDQ2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 22 Jan 2021 22:16:28 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50860C06174A;
-        Fri, 22 Jan 2021 19:15:48 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id w18so5077811pfu.9;
-        Fri, 22 Jan 2021 19:15:48 -0800 (PST)
+        with ESMTP id S1725940AbhAWI6M (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 23 Jan 2021 03:58:12 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B32DC06174A
+        for <linux-ext4@vger.kernel.org>; Sat, 23 Jan 2021 00:57:32 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id m6so5388067pfm.6
+        for <linux-ext4@vger.kernel.org>; Sat, 23 Jan 2021 00:57:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MqEg3AXJCGnfDEjdnM6R+MZyPNmwSGFNN/i99lEytuc=;
-        b=dB9dNGxe9/nVVLDWdR5RF2PMhxYqwI6Q313PPv9YQTu+ICzz0PAd96DLBmuLMJQVl7
-         JgiHhkckJ7kXTdi5xhNVm24+CPJcleIHYEMkwAGetd8RNKpWm/K3qcJueLyArXU8PKBL
-         jIDyWbWoXtBmT+ms2QyK9NaPXJO8Gq2kbYIdmUv82SDToUbcA0DdT+rorBPJbYtJTIE4
-         m6HYdmF9A/Bi5T0ivExFYbetKRd+RLGZ3MyvvpxJxBaeKgD1pIFRx29a+28jblMFFNsv
-         nqT+3DHBK8YEluhBteSNnl1IlsQ/r0rdtSahbpHvMRse85AMJc4m4gsOyHd+CrTyK+h0
-         Y+yQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FHtOphut8LFOKRBKGCx7H0Bn12FAY4dvY3x6cqKFgn4=;
+        b=T/vFU0IUlif7edYM+BXKIOyhcpLVfWqlH7WyvVB9dDTv2noPv27iltEYHOW/f0vEJ5
+         K6Gbq3ACmSnPl8JKmzT20lrmvORkIuglJ+4xEMVT/RV9XTqzBd5HgB574qIxtDRg/SaC
+         UmXaNh9rOxV8ByVvIPf30ItA6XDIPwjxRc2oRu0tnPtbMgSYGoTXvQEucw3y7IPvKXgh
+         TwSZYqM4W4tedFh0EZlI0sj94jihN+Y1TyAcuuFFu94OClm5ZgkVWUBFkR3GJrk/fBR2
+         POpsrtwDdh7BWKpd8FkpoviHBM5rmCzPE//1ayBsSbNUI1wtkP4VkMKpSaiWG13Q9lbW
+         MJJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MqEg3AXJCGnfDEjdnM6R+MZyPNmwSGFNN/i99lEytuc=;
-        b=Rl3Y0ZEsB5um7nFcktKIcKDi6VI5kkAL67E3RpIyAiFsLGV5SOZL5/Gqsv/uY/AE4N
-         H4MTXjHadhSvmcxWD0NYdDwnLs1o+/ksuvAlYvswjTmWRBDbLUo8A+EjHPh6LUjwkJRy
-         lMtImPgd95Lnk28QUL4FZaarqZJ53Mald82sXNxEv3tFoHQDWoTY54oaZx7KRsJjmZnk
-         IkUJ+1+K2X4Hr2P8knrFWIG+OhiQnLa9X6yTuKHa/Z3vb0cROM/iaOX9IG9k2H7n/lFQ
-         03eTt8AybqBxBNvknUUPeS1hoJ980iBXwbKpdYpaYlO7mW67EDsUO4cjoYu9S59VmhxK
-         F9HA==
-X-Gm-Message-State: AOAM533qvFzlQWdPxt5AximW8+caKW5amxt72S44rDK4/X28UZHd/f+/
-        W+oM1mXCF7yqdYaApzNPItq1Ks/WwUXBtw==
-X-Google-Smtp-Source: ABdhPJz+HbOML5A1UmLBuejQl3uOmZiERasS47xvE2K3ZGgvReTd664mj7FxwQCFv7r9hykht3HPgg==
-X-Received: by 2002:a63:fc56:: with SMTP id r22mr4675327pgk.3.1611371747660;
-        Fri, 22 Jan 2021 19:15:47 -0800 (PST)
-Received: from [127.0.0.1] ([203.205.141.51])
-        by smtp.gmail.com with ESMTPSA id a189sm10830817pfd.117.2021.01.22.19.15.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Jan 2021 19:15:47 -0800 (PST)
-Subject: Re: [RFC PATCH 1/4] jbd2: make jdb2_debug module parameter per device
-To:     harshad shirwadkar <harshadshirwadkar@gmail.com>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>, jack@suse.com,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <cover.1611287342.git.brookxu@tencent.com>
- <b5a6fbe941f61289f15d84d9cad42df912daee7f.1611287342.git.brookxu@tencent.com>
- <CAD+ocbwonrZbaEsZ2L+e8QiRxsy56xdhaUYkLkPPdKBKPyE+vg@mail.gmail.com>
-From:   brookxu <brookxu.cn@gmail.com>
-Message-ID: <6f72c639-53a7-411c-4672-f559fd63d347@gmail.com>
-Date:   Sat, 23 Jan 2021 11:15:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FHtOphut8LFOKRBKGCx7H0Bn12FAY4dvY3x6cqKFgn4=;
+        b=AmOzERiNkx4VI0Ag0kYXStclDjlUO/jAIjcXkt/EGbkULCrBGEObrWTFZ3Q3bgMaWO
+         qTV59suA1sPDVcHUB4HfIwHGqjwKtxlhf82jEpvbQQWjPw44vCVFvULYgQdpvaweFboM
+         m2ulw+oWc9Gp6SVA/dqyCEJXJUoWsBb9NcLs+RrqfhwRiy17ZVnmSdVIaA027tSPm8Vd
+         AjKIv8PyUw1c4Ix8OEW0hTk7niSuWeeBUymC/JSgIM8BWJ6P+/8ZndvlBgh33PDMlJxa
+         cjM6VXcAI2l4bAsVdImgPNkgt5G4jd5tB9Ri/2P2SAdhaDH19vMyoqUjR4bAHc92dgBr
+         voCA==
+X-Gm-Message-State: AOAM531XTHRP1yCBJS7N3r3ls+MFJnoJ6DvACqePgu+g6OMsK+7cz9pf
+        /UUTFo2e8oSlOjH9ZycZF4A=
+X-Google-Smtp-Source: ABdhPJwb2cSqHo0Yvpnd2gPFJOsyW6W2Xsd/pdZG99g+ZSZnmvePRZ0aWExHYM8AuFuQEdx7tEYzGQ==
+X-Received: by 2002:a05:6a00:2353:b029:1ba:d824:f1dc with SMTP id j19-20020a056a002353b02901bad824f1dcmr8957344pfj.9.1611392251542;
+        Sat, 23 Jan 2021 00:57:31 -0800 (PST)
+Received: from localhost ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id b65sm11701731pga.54.2021.01.23.00.57.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Jan 2021 00:57:30 -0800 (PST)
+Date:   Sat, 23 Jan 2021 16:57:23 +0800
+From:   Murphy Zhou <jencce.kernel@gmail.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Murphy Zhou <jencce.kernel@gmail.com>,
+        linux-ext4@vger.kernel.org
+Subject: Re: ext4 regression panic
+Message-ID: <20210123085723.zobwxf6aik6jgfbn@xzhoux.usersys.redhat.com>
+References: <20210121101547.fwh35hov3hshogbz@xzhoux.usersys.redhat.com>
+ <YAm8qH/0oo2ofSMR@mit.edu>
+ <20210121210949.GH24063@quack2.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <CAD+ocbwonrZbaEsZ2L+e8QiRxsy56xdhaUYkLkPPdKBKPyE+vg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210121210949.GH24063@quack2.suse.cz>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-En...，your idea maybe better, thanks for your time.
+On Thu, Jan 21, 2021 at 10:09:49PM +0100, Jan Kara wrote:
+> On Thu 21-01-21 12:40:56, Theodore Ts'o wrote:
+> > On Thu, Jan 21, 2021 at 06:15:47PM +0800, Murphy Zhou wrote:
+> > > Hi Jack,
+> > > 
+> > > A panic was introduced by this commit. It's easy and reliable to
+> > > reproduce.
+> > > 
+> > > commit 2d01ddc86606564fb08c56e3bc93a0693895f710
+> > > Author: Jan Kara <jack@suse.cz>
+> > > Date:   Wed Dec 16 11:18:40 2020 +0100
+> > > 
+> > >     ext4: save error info to sb through journal if available
+> > 
+> > Hi Murphy,
+> > 
+> > Thanks for the bug report.  What's happening is that we haven't yet
+> > initialized mballoc yet --- that happens in line 4943 of
+> > fs/ext4/super.c, in ext4_fill_super().
+> > 
+> > But in line 4903 (in the case of the BZ #199275 reproducer), we
+> > attempt to fetch the root inode, which is fails because it is
+> > unallocated.  That then triggers a call to ext4_error(), which now
+> > results in a journalled change, since the journal is initialized
+> > starting in line 4793, and in line 4838, we set up the
+> > j_commit_callback, which is what ends up calling
+> > ext4_process_freed_data(), but since the multiblock allocator hasn't
+> > been set up yet, that causes the NULL pointer dereference.
+> > 
+> > So what we need to do is to *not* set up the callback until after the
+> > call to ext4_mb_init().
+> > 
+> > We should probably create an ext4-specific test in xfstests which
+> > tries mounting a small, deliberately corrupted file system, to make
+> > sure we handle this case correctly in the future.
+> > 
+> > 						- Ted
+> 
+> Thanks for looking into this. You beat me to my fix (which was slightly
+> different - I moved ext4_mb_init() somewhat earlier during mount). But this
+> should work fine as well. So feel free to add:
+> 
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> 
+> 								Honza
 
-harshad shirwadkar wrote on 2021/1/23 3:00:
-> I wonder if we should retain the existing module param as well apart
-> from the new device specific logging switch? If that switch is
-> enabled, we'll get jbd2 logs for all the devices. Given that the old
-> jbd2_debug interface was a module param, I wonder somebody somewhere
-> might have infrastructure on top of that to enable debugging for jbd2?
-> And by removing this interface we may accidentally break them?
+Hi Jack and Ted,
+
+This patch fixed it. Thanks for the quick fix!
+
+Murphy
+
 > 
-> On Thu, Jan 21, 2021 at 10:48 PM Chunguang Xu <brookxu.cn@gmail.com> wrote:
->>
->> From: Chunguang Xu <brookxu@tencent.com>
->>
->> On a multi-disk machine, because jbd2's debugging switch is global,this
->> confuses the logs of multiple disks. It is not easy to distinguish the
->> logs of each disk and the amount of generated logs is very large. Or a
->> separate debugging switch for each disk would be better, so that you
->> can easily distinguish the logs of a certain disk.
->>
->> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
->> ---
->>  fs/jbd2/journal.c     | 63 +++++++++++++++++++++++++++++++++++--------
->>  fs/jbd2/transaction.c |  2 +-
->>  include/linux/jbd2.h  |  7 +++++
->>  3 files changed, 60 insertions(+), 12 deletions(-)
->>
->> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
->> index 2dc944442802..ae147cc713c7 100644
->> --- a/fs/jbd2/journal.c
->> +++ b/fs/jbd2/journal.c
->> @@ -48,14 +48,6 @@
->>  #include <linux/uaccess.h>
->>  #include <asm/page.h>
->>
->> -#ifdef CONFIG_JBD2_DEBUG
->> -ushort jbd2_journal_enable_debug __read_mostly;
->> -EXPORT_SYMBOL(jbd2_journal_enable_debug);
->> -
->> -module_param_named(jbd2_debug, jbd2_journal_enable_debug, ushort, 0644);
->> -MODULE_PARM_DESC(jbd2_debug, "Debugging level for jbd2");
->> -#endif
->> -
->>  EXPORT_SYMBOL(jbd2_journal_extend);
->>  EXPORT_SYMBOL(jbd2_journal_stop);
->>  EXPORT_SYMBOL(jbd2_journal_lock_updates);
->> @@ -101,13 +93,13 @@ EXPORT_SYMBOL(jbd2_inode_cache);
->>  static int jbd2_journal_create_slab(size_t slab_size);
->>
->>  #ifdef CONFIG_JBD2_DEBUG
->> -void __jbd2_debug(int level, const char *file, const char *func,
->> +void jbd2_log(int level, journal_t *j, const char *file, const char *func,
->>                   unsigned int line, const char *fmt, ...)
->>  {
->>         struct va_format vaf;
->>         va_list args;
->>
->> -       if (level > jbd2_journal_enable_debug)
->> +       if (!j || level > j->j_debug_level)
->>                 return;
->>         va_start(args, fmt);
->>         vaf.fmt = fmt;
->> @@ -115,7 +107,7 @@ void __jbd2_debug(int level, const char *file, const char *func,
->>         printk(KERN_DEBUG "%s: (%s, %u): %pV", file, func, line, &vaf);
-> Now that you have journal_t passed to jbd2_log, it would also be good
-> to print the name of the device in this message. I think you can use
-> j->j_devname for that.
-> 
-> Thanks,
-> Harshad
->>         va_end(args);
->>  }
->> -EXPORT_SYMBOL(__jbd2_debug);
->> +EXPORT_SYMBOL(jbd2_log);
->>  #endif
->>
->>  /* Checksumming functions */
->> @@ -1257,6 +1249,48 @@ static int jbd2_seq_info_release(struct inode *inode, struct file *file)
->>         return seq_release(inode, file);
->>  }
->>
->> +#ifdef CONFIG_JBD2_DEBUG
->> +static int jbd2_proc_debug_show(struct seq_file *m, void *v)
->> +{
->> +       journal_t *j = m->private;
->> +
->> +       seq_printf(m, "%d\n", j->j_debug_level);
->> +       return 0;
->> +}
->> +
->> +static int jbd2_proc_debug_open(struct inode *inode, struct file *file)
->> +{
->> +       journal_t *journal = PDE_DATA(inode);
->> +
->> +       return single_open(file, jbd2_proc_debug_show, journal);
->> +}
->> +
->> +static ssize_t jbd2_proc_debug_write(struct file *file,
->> +               const char __user *buffer, size_t count, loff_t *ppos)
->> +{
->> +       struct seq_file *seq = file->private_data;
->> +       journal_t *j = seq->private;
->> +       char c;
->> +
->> +       if (get_user(c, buffer))
->> +               return -EFAULT;
->> +
->> +       if (c < '0' || c > '5')
->> +               return -EINVAL;
->> +
->> +       j->j_debug_level = c - '0';
->> +       return count;
->> +}
->> +
->> +static const struct proc_ops jbd2_debug_proc_ops = {
->> +       .proc_open      = jbd2_proc_debug_open,
->> +       .proc_read      = seq_read,
->> +       .proc_write     = jbd2_proc_debug_write,
->> +       .proc_release   = single_release,
->> +       .proc_lseek     = seq_lseek,
->> +};
->> +#endif
->> +
->>  static const struct proc_ops jbd2_info_proc_ops = {
->>         .proc_open      = jbd2_seq_info_open,
->>         .proc_read      = seq_read,
->> @@ -1272,12 +1306,19 @@ static void jbd2_stats_proc_init(journal_t *journal)
->>         if (journal->j_proc_entry) {
->>                 proc_create_data("info", S_IRUGO, journal->j_proc_entry,
->>                                  &jbd2_info_proc_ops, journal);
->> +#ifdef CONFIG_JBD2_DEBUG
->> +               proc_create_data("jbd2_debug", S_IRUGO, journal->j_proc_entry,
->> +                                &jbd2_debug_proc_ops, journal);
->> +#endif
->>         }
->>  }
->>
->>  static void jbd2_stats_proc_exit(journal_t *journal)
->>  {
->>         remove_proc_entry("info", journal->j_proc_entry);
->> +#ifdef CONFIG_JBD2_DEBUG
->> +       remove_proc_entry("jbd2_debug", journal->j_proc_entry);
->> +#endif
->>         remove_proc_entry(journal->j_devname, proc_jbd2_stats);
->>  }
->>
->> diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
->> index 9396666b7314..f25c6ff16165 100644
->> --- a/fs/jbd2/transaction.c
->> +++ b/fs/jbd2/transaction.c
->> @@ -150,7 +150,7 @@ static inline void update_t_max_wait(transaction_t *transaction,
->>                                      unsigned long ts)
->>  {
->>  #ifdef CONFIG_JBD2_DEBUG
->> -       if (jbd2_journal_enable_debug &&
->> +       if (transaction->t_journal->j_debug_level &&
->>             time_after(transaction->t_start, ts)) {
->>                 ts = jbd2_time_diff(ts, transaction->t_start);
->>                 spin_lock(&transaction->t_handle_lock);
->> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
->> index 99d3cd051ac3..600a2ea8324a 100644
->> --- a/include/linux/jbd2.h
->> +++ b/include/linux/jbd2.h
->> @@ -1211,6 +1211,13 @@ struct journal_s
->>          */
->>         struct transaction_stats_s j_stats;
->>
->> +#ifdef CONFIG_JBD2_DEBUG
->> +       /**
->> +        * @j_debug_level: debugging level for jbd2.
->> +        */
->> +       unsigned int j_debug_level;
->> +#endif
->> +
->>         /**
->>          * @j_failed_commit: Failed journal commit ID.
->>          */
->> --
->> 2.30.0
->>
+> > 
+> > commit 6c2f9a8247273cf1108ff71c99680b7457f48318
+> > Author: Theodore Ts'o <tytso@mit.edu>
+> > Date:   Thu Jan 21 12:33:20 2021 -0500
+> > 
+> >     ext4: don't try to processed freed blocks until mballoc is initialized
+> >     
+> >     If we try to make any changes via the journal between when the journal
+> >     is initialized, but before the multi-block allocated is initialized,
+> >     we will end up deferencing a NULL pointer when the journal commit
+> >     callback function calls ext4_process_freed_data().
+> >     
+> >     The proximate cause of this failure was commit 2d01ddc86606 ("ext4:
+> >     save error info to sb through journal if available") since file system
+> >     corruption problems detected before the call to ext4_mb_init() would
+> >     result in a journal commit before we aborted the mount of the file
+> >     system.... and we would then trigger the NULL pointer deref.
+> >     
+> >     Cc: Jan Kara <jack@suse.cz>
+> >     Reported by: Murphy Zhou <jencce.kernel@gmail.com>
+> >     Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+> > 
+> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> > index 0f0db49031dc..802ef55f0a55 100644
+> > --- a/fs/ext4/super.c
+> > +++ b/fs/ext4/super.c
+> > @@ -4876,7 +4876,6 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+> >  
+> >  	set_task_ioprio(sbi->s_journal->j_task, journal_ioprio);
+> >  
+> > -	sbi->s_journal->j_commit_callback = ext4_journal_commit_callback;
+> >  	sbi->s_journal->j_submit_inode_data_buffers =
+> >  		ext4_journal_submit_inode_data_buffers;
+> >  	sbi->s_journal->j_finish_inode_data_buffers =
+> > @@ -4993,6 +4992,14 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+> >  		goto failed_mount5;
+> >  	}
+> >  
+> > +	/*
+> > +	 * We can only set up the journal commit callback once
+> > +	 * mballoc is initialized
+> > +	 */
+> > +	if (sbi->s_journal)
+> > +		sbi->s_journal->j_commit_callback =
+> > +			ext4_journal_commit_callback;
+> > +
+> >  	block = ext4_count_free_clusters(sb);
+> >  	ext4_free_blocks_count_set(sbi->s_es, 
+> >  				   EXT4_C2B(sbi, block));
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
+
+-- 
+Murphy
