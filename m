@@ -2,144 +2,252 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFD3D3010FA
-	for <lists+linux-ext4@lfdr.de>; Sat, 23 Jan 2021 00:28:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFF5930128D
+	for <lists+linux-ext4@lfdr.de>; Sat, 23 Jan 2021 04:16:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728400AbhAVX1s (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 22 Jan 2021 18:27:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55382 "EHLO
+        id S1726516AbhAWDQe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 22 Jan 2021 22:16:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728253AbhAVX1p (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 22 Jan 2021 18:27:45 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37B15C0613D6
-        for <linux-ext4@vger.kernel.org>; Fri, 22 Jan 2021 15:27:03 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id u8so1522097ior.13
-        for <linux-ext4@vger.kernel.org>; Fri, 22 Jan 2021 15:27:03 -0800 (PST)
+        with ESMTP id S1726413AbhAWDQ2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 22 Jan 2021 22:16:28 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50860C06174A;
+        Fri, 22 Jan 2021 19:15:48 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id w18so5077811pfu.9;
+        Fri, 22 Jan 2021 19:15:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WuooQLj08FTndW6GG4FNdPUFeSvF4QeyXpQNaZQvMQU=;
-        b=YZ6nQ6FOxluHSewTFEdRxogFELFzJ61SLsAvjLFQZbuTGGMmwsF7JRUaxP7S0eEf3O
-         zi4YxhJ311FM5HaM9OKi926md/9trhVY4f8oQ2L69cHtC8SiOc/RvEONC0Brp8EzYXLW
-         lv6khpaUQGj21NLNM2haXeFieuHFHlPe5MsuHoJAAixyciIG/WrLFSbzGXn8urZA33tw
-         GkWrMip0Wro8nMmVc+kl4jfg0hBCevvC6rr682OGhXTOkMjl301uDZC7QbGb7Yz/vxMK
-         LBlL4RWfi61+hAnVPZfXrIwr9DYcO/sReuxxZfpkbORXS6rvMYifp7nAEYX563UTR1UV
-         Vw2w==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=MqEg3AXJCGnfDEjdnM6R+MZyPNmwSGFNN/i99lEytuc=;
+        b=dB9dNGxe9/nVVLDWdR5RF2PMhxYqwI6Q313PPv9YQTu+ICzz0PAd96DLBmuLMJQVl7
+         JgiHhkckJ7kXTdi5xhNVm24+CPJcleIHYEMkwAGetd8RNKpWm/K3qcJueLyArXU8PKBL
+         jIDyWbWoXtBmT+ms2QyK9NaPXJO8Gq2kbYIdmUv82SDToUbcA0DdT+rorBPJbYtJTIE4
+         m6HYdmF9A/Bi5T0ivExFYbetKRd+RLGZ3MyvvpxJxBaeKgD1pIFRx29a+28jblMFFNsv
+         nqT+3DHBK8YEluhBteSNnl1IlsQ/r0rdtSahbpHvMRse85AMJc4m4gsOyHd+CrTyK+h0
+         Y+yQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WuooQLj08FTndW6GG4FNdPUFeSvF4QeyXpQNaZQvMQU=;
-        b=YLG7FB+NOO6X+N8lfBDfMghjuSrm24HO0+k+jGsUVVOCQzWSH0qLm14jIJfugt3Azn
-         2lmetghjSXrhY61KOVHXi7iaZBOngVkqPnpvn7SRPsHaQZnNGNH8922pK2GfwUmJk16b
-         fCu7jfF2X/t34ObPtrKMGqw9Wtsx38utLM8KcT1+rytN5k3Uq7FQGZCAAGhgV3/uZgPk
-         devTe6kXD2tGBhnLTRRgE/3wZv48sPs1zd2QkuBsS6YZwA6DEteank59JBYJuULOVE66
-         jU+7M0+mpUiVW5rP8Z+XE5GsIdyKx+CzKl6KLghwb0HkeacHL4sty695y88e52seauRM
-         S3Fw==
-X-Gm-Message-State: AOAM533963X1Q9m4e0id1pX6z4dfCr9y/wcrgBQZxXaOluvPJN5Mn+ju
-        /JfoJ7GqzgDJxwJ/aj/Y2mMcgbiNxym+bRitEr/dKA==
-X-Google-Smtp-Source: ABdhPJx2/n88EpZhF9H0QRhbuIUDjLNzHy/G5ah/y4Nn1FpXH6Y4ko0ibuQnyPTD5D1W2NrSUOQ62tixsem0o23bO4I=
-X-Received: by 2002:a92:4101:: with SMTP id o1mr174997ila.82.1611358022134;
- Fri, 22 Jan 2021 15:27:02 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=MqEg3AXJCGnfDEjdnM6R+MZyPNmwSGFNN/i99lEytuc=;
+        b=Rl3Y0ZEsB5um7nFcktKIcKDi6VI5kkAL67E3RpIyAiFsLGV5SOZL5/Gqsv/uY/AE4N
+         H4MTXjHadhSvmcxWD0NYdDwnLs1o+/ksuvAlYvswjTmWRBDbLUo8A+EjHPh6LUjwkJRy
+         lMtImPgd95Lnk28QUL4FZaarqZJ53Mald82sXNxEv3tFoHQDWoTY54oaZx7KRsJjmZnk
+         IkUJ+1+K2X4Hr2P8knrFWIG+OhiQnLa9X6yTuKHa/Z3vb0cROM/iaOX9IG9k2H7n/lFQ
+         03eTt8AybqBxBNvknUUPeS1hoJ980iBXwbKpdYpaYlO7mW67EDsUO4cjoYu9S59VmhxK
+         F9HA==
+X-Gm-Message-State: AOAM533qvFzlQWdPxt5AximW8+caKW5amxt72S44rDK4/X28UZHd/f+/
+        W+oM1mXCF7yqdYaApzNPItq1Ks/WwUXBtw==
+X-Google-Smtp-Source: ABdhPJz+HbOML5A1UmLBuejQl3uOmZiERasS47xvE2K3ZGgvReTd664mj7FxwQCFv7r9hykht3HPgg==
+X-Received: by 2002:a63:fc56:: with SMTP id r22mr4675327pgk.3.1611371747660;
+        Fri, 22 Jan 2021 19:15:47 -0800 (PST)
+Received: from [127.0.0.1] ([203.205.141.51])
+        by smtp.gmail.com with ESMTPSA id a189sm10830817pfd.117.2021.01.22.19.15.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Jan 2021 19:15:47 -0800 (PST)
+Subject: Re: [RFC PATCH 1/4] jbd2: make jdb2_debug module parameter per device
+To:     harshad shirwadkar <harshadshirwadkar@gmail.com>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>, jack@suse.com,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <cover.1611287342.git.brookxu@tencent.com>
+ <b5a6fbe941f61289f15d84d9cad42df912daee7f.1611287342.git.brookxu@tencent.com>
+ <CAD+ocbwonrZbaEsZ2L+e8QiRxsy56xdhaUYkLkPPdKBKPyE+vg@mail.gmail.com>
+From:   brookxu <brookxu.cn@gmail.com>
+Message-ID: <6f72c639-53a7-411c-4672-f559fd63d347@gmail.com>
+Date:   Sat, 23 Jan 2021 11:15:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20210115181819.34732-1-ebiggers@kernel.org>
-In-Reply-To: <20210115181819.34732-1-ebiggers@kernel.org>
-From:   Victor Hsieh <victorhsieh@google.com>
-Date:   Fri, 22 Jan 2021 15:26:48 -0800
-Message-ID: <CAFCauYN12bWRn2N+uP455KuRmz7CQkCBXnz0B2sr5kCQtpJo4A@mail.gmail.com>
-Subject: Re: [PATCH 0/6] fs-verity: add an ioctl to read verity metadata
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-api@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAD+ocbwonrZbaEsZ2L+e8QiRxsy56xdhaUYkLkPPdKBKPyE+vg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-LGTM. Thanks!
+En...，your idea maybe better, thanks for your time.
 
-Reviewed-by: Victor Hsieh <victorhsieh@google.com>
-
-On Fri, Jan 15, 2021 at 10:19 AM Eric Biggers <ebiggers@kernel.org> wrote:
->
-> [This patchset applies to v5.11-rc3]
->
-> Add an ioctl FS_IOC_READ_VERITY_METADATA which allows reading verity
-> metadata from a file that has fs-verity enabled, including:
->
-> - The Merkle tree
-> - The fsverity_descriptor (not including the signature if present)
-> - The built-in signature, if present
->
-> This ioctl has similar semantics to pread().  It is passed the type of
-> metadata to read (one of the above three), and a buffer, offset, and
-> size.  It returns the number of bytes read or an error.
->
-> This ioctl doesn't make any assumption about where the metadata is
-> stored on-disk.  It does assume the metadata is in a stable format, but
-> that's basically already the case:
->
-> - The Merkle tree and fsverity_descriptor are defined by how fs-verity
->   file digests are computed; see the "File digest computation" section
->   of Documentation/filesystems/fsverity.rst.  Technically, the way in
->   which the levels of the tree are ordered relative to each other wasn't
->   previously specified, but it's logical to put the root level first.
->
-> - The built-in signature is the value passed to FS_IOC_ENABLE_VERITY.
->
-> This ioctl is useful because it allows writing a server program that
-> takes a verity file and serves it to a client program, such that the
-> client can do its own fs-verity compatible verification of the file.
-> This only makes sense if the client doesn't trust the server and if the
-> server needs to provide the storage for the client.
->
-> More concretely, there is interest in using this ability in Android to
-> export APK files (which are protected by fs-verity) to "protected VMs".
-> This would use Protected KVM (https://lwn.net/Articles/836693), which
-> provides an isolated execution environment without having to trust the
-> traditional "host".  A "guest" VM can boot from a signed image and
-> perform specific tasks in a minimum trusted environment using files that
-> have fs-verity enabled on the host, without trusting the host or
-> requiring that the guest has its own trusted storage.
->
-> Technically, it would be possible to duplicate the metadata and store it
-> in separate files for serving.  However, that would be less efficient
-> and would require extra care in userspace to maintain file consistency.
->
-> In addition to the above, the ability to read the built-in signatures is
-> useful because it allows a system that is using the in-kernel signature
-> verification to migrate to userspace signature verification.
->
-> This patchset has been tested by new xfstests which call this new ioctl
-> via a new subcommand for the 'fsverity' program from fsverity-utils.
->
-> Eric Biggers (6):
->   fs-verity: factor out fsverity_get_descriptor()
->   fs-verity: don't pass whole descriptor to fsverity_verify_signature()
->   fs-verity: add FS_IOC_READ_VERITY_METADATA ioctl
->   fs-verity: support reading Merkle tree with ioctl
->   fs-verity: support reading descriptor with ioctl
->   fs-verity: support reading signature with ioctl
->
->  Documentation/filesystems/fsverity.rst |  76 ++++++++++
->  fs/ext4/ioctl.c                        |   7 +
->  fs/f2fs/file.c                         |  11 ++
->  fs/verity/Makefile                     |   1 +
->  fs/verity/fsverity_private.h           |  13 +-
->  fs/verity/open.c                       | 133 +++++++++++------
->  fs/verity/read_metadata.c              | 195 +++++++++++++++++++++++++
->  fs/verity/signature.c                  |  20 +--
->  include/linux/fsverity.h               |  12 ++
->  include/uapi/linux/fsverity.h          |  14 ++
->  10 files changed, 417 insertions(+), 65 deletions(-)
->  create mode 100644 fs/verity/read_metadata.c
->
->
-> base-commit: 7c53f6b671f4aba70ff15e1b05148b10d58c2837
-> --
-> 2.30.0
->
+harshad shirwadkar wrote on 2021/1/23 3:00:
+> I wonder if we should retain the existing module param as well apart
+> from the new device specific logging switch? If that switch is
+> enabled, we'll get jbd2 logs for all the devices. Given that the old
+> jbd2_debug interface was a module param, I wonder somebody somewhere
+> might have infrastructure on top of that to enable debugging for jbd2?
+> And by removing this interface we may accidentally break them?
+> 
+> On Thu, Jan 21, 2021 at 10:48 PM Chunguang Xu <brookxu.cn@gmail.com> wrote:
+>>
+>> From: Chunguang Xu <brookxu@tencent.com>
+>>
+>> On a multi-disk machine, because jbd2's debugging switch is global,this
+>> confuses the logs of multiple disks. It is not easy to distinguish the
+>> logs of each disk and the amount of generated logs is very large. Or a
+>> separate debugging switch for each disk would be better, so that you
+>> can easily distinguish the logs of a certain disk.
+>>
+>> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+>> ---
+>>  fs/jbd2/journal.c     | 63 +++++++++++++++++++++++++++++++++++--------
+>>  fs/jbd2/transaction.c |  2 +-
+>>  include/linux/jbd2.h  |  7 +++++
+>>  3 files changed, 60 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+>> index 2dc944442802..ae147cc713c7 100644
+>> --- a/fs/jbd2/journal.c
+>> +++ b/fs/jbd2/journal.c
+>> @@ -48,14 +48,6 @@
+>>  #include <linux/uaccess.h>
+>>  #include <asm/page.h>
+>>
+>> -#ifdef CONFIG_JBD2_DEBUG
+>> -ushort jbd2_journal_enable_debug __read_mostly;
+>> -EXPORT_SYMBOL(jbd2_journal_enable_debug);
+>> -
+>> -module_param_named(jbd2_debug, jbd2_journal_enable_debug, ushort, 0644);
+>> -MODULE_PARM_DESC(jbd2_debug, "Debugging level for jbd2");
+>> -#endif
+>> -
+>>  EXPORT_SYMBOL(jbd2_journal_extend);
+>>  EXPORT_SYMBOL(jbd2_journal_stop);
+>>  EXPORT_SYMBOL(jbd2_journal_lock_updates);
+>> @@ -101,13 +93,13 @@ EXPORT_SYMBOL(jbd2_inode_cache);
+>>  static int jbd2_journal_create_slab(size_t slab_size);
+>>
+>>  #ifdef CONFIG_JBD2_DEBUG
+>> -void __jbd2_debug(int level, const char *file, const char *func,
+>> +void jbd2_log(int level, journal_t *j, const char *file, const char *func,
+>>                   unsigned int line, const char *fmt, ...)
+>>  {
+>>         struct va_format vaf;
+>>         va_list args;
+>>
+>> -       if (level > jbd2_journal_enable_debug)
+>> +       if (!j || level > j->j_debug_level)
+>>                 return;
+>>         va_start(args, fmt);
+>>         vaf.fmt = fmt;
+>> @@ -115,7 +107,7 @@ void __jbd2_debug(int level, const char *file, const char *func,
+>>         printk(KERN_DEBUG "%s: (%s, %u): %pV", file, func, line, &vaf);
+> Now that you have journal_t passed to jbd2_log, it would also be good
+> to print the name of the device in this message. I think you can use
+> j->j_devname for that.
+> 
+> Thanks,
+> Harshad
+>>         va_end(args);
+>>  }
+>> -EXPORT_SYMBOL(__jbd2_debug);
+>> +EXPORT_SYMBOL(jbd2_log);
+>>  #endif
+>>
+>>  /* Checksumming functions */
+>> @@ -1257,6 +1249,48 @@ static int jbd2_seq_info_release(struct inode *inode, struct file *file)
+>>         return seq_release(inode, file);
+>>  }
+>>
+>> +#ifdef CONFIG_JBD2_DEBUG
+>> +static int jbd2_proc_debug_show(struct seq_file *m, void *v)
+>> +{
+>> +       journal_t *j = m->private;
+>> +
+>> +       seq_printf(m, "%d\n", j->j_debug_level);
+>> +       return 0;
+>> +}
+>> +
+>> +static int jbd2_proc_debug_open(struct inode *inode, struct file *file)
+>> +{
+>> +       journal_t *journal = PDE_DATA(inode);
+>> +
+>> +       return single_open(file, jbd2_proc_debug_show, journal);
+>> +}
+>> +
+>> +static ssize_t jbd2_proc_debug_write(struct file *file,
+>> +               const char __user *buffer, size_t count, loff_t *ppos)
+>> +{
+>> +       struct seq_file *seq = file->private_data;
+>> +       journal_t *j = seq->private;
+>> +       char c;
+>> +
+>> +       if (get_user(c, buffer))
+>> +               return -EFAULT;
+>> +
+>> +       if (c < '0' || c > '5')
+>> +               return -EINVAL;
+>> +
+>> +       j->j_debug_level = c - '0';
+>> +       return count;
+>> +}
+>> +
+>> +static const struct proc_ops jbd2_debug_proc_ops = {
+>> +       .proc_open      = jbd2_proc_debug_open,
+>> +       .proc_read      = seq_read,
+>> +       .proc_write     = jbd2_proc_debug_write,
+>> +       .proc_release   = single_release,
+>> +       .proc_lseek     = seq_lseek,
+>> +};
+>> +#endif
+>> +
+>>  static const struct proc_ops jbd2_info_proc_ops = {
+>>         .proc_open      = jbd2_seq_info_open,
+>>         .proc_read      = seq_read,
+>> @@ -1272,12 +1306,19 @@ static void jbd2_stats_proc_init(journal_t *journal)
+>>         if (journal->j_proc_entry) {
+>>                 proc_create_data("info", S_IRUGO, journal->j_proc_entry,
+>>                                  &jbd2_info_proc_ops, journal);
+>> +#ifdef CONFIG_JBD2_DEBUG
+>> +               proc_create_data("jbd2_debug", S_IRUGO, journal->j_proc_entry,
+>> +                                &jbd2_debug_proc_ops, journal);
+>> +#endif
+>>         }
+>>  }
+>>
+>>  static void jbd2_stats_proc_exit(journal_t *journal)
+>>  {
+>>         remove_proc_entry("info", journal->j_proc_entry);
+>> +#ifdef CONFIG_JBD2_DEBUG
+>> +       remove_proc_entry("jbd2_debug", journal->j_proc_entry);
+>> +#endif
+>>         remove_proc_entry(journal->j_devname, proc_jbd2_stats);
+>>  }
+>>
+>> diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
+>> index 9396666b7314..f25c6ff16165 100644
+>> --- a/fs/jbd2/transaction.c
+>> +++ b/fs/jbd2/transaction.c
+>> @@ -150,7 +150,7 @@ static inline void update_t_max_wait(transaction_t *transaction,
+>>                                      unsigned long ts)
+>>  {
+>>  #ifdef CONFIG_JBD2_DEBUG
+>> -       if (jbd2_journal_enable_debug &&
+>> +       if (transaction->t_journal->j_debug_level &&
+>>             time_after(transaction->t_start, ts)) {
+>>                 ts = jbd2_time_diff(ts, transaction->t_start);
+>>                 spin_lock(&transaction->t_handle_lock);
+>> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+>> index 99d3cd051ac3..600a2ea8324a 100644
+>> --- a/include/linux/jbd2.h
+>> +++ b/include/linux/jbd2.h
+>> @@ -1211,6 +1211,13 @@ struct journal_s
+>>          */
+>>         struct transaction_stats_s j_stats;
+>>
+>> +#ifdef CONFIG_JBD2_DEBUG
+>> +       /**
+>> +        * @j_debug_level: debugging level for jbd2.
+>> +        */
+>> +       unsigned int j_debug_level;
+>> +#endif
+>> +
+>>         /**
+>>          * @j_failed_commit: Failed journal commit ID.
+>>          */
+>> --
+>> 2.30.0
+>>
