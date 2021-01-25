@@ -2,66 +2,65 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7A5B303511
-	for <lists+linux-ext4@lfdr.de>; Tue, 26 Jan 2021 06:35:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDD11304952
+	for <lists+linux-ext4@lfdr.de>; Tue, 26 Jan 2021 20:56:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387832AbhAZFe2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 26 Jan 2021 00:34:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46548 "EHLO
+        id S2387783AbhAZFdj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 26 Jan 2021 00:33:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732065AbhAZBbI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 25 Jan 2021 20:31:08 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20BABC061220;
-        Mon, 25 Jan 2021 16:50:08 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id j21so4119784pls.7;
-        Mon, 25 Jan 2021 16:50:08 -0800 (PST)
+        with ESMTP id S1729219AbhAYOAl (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 25 Jan 2021 09:00:41 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACF63C0617A9;
+        Mon, 25 Jan 2021 05:59:12 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id lw17so9148519pjb.0;
+        Mon, 25 Jan 2021 05:59:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=90gOqXB5kIgrCtezxzYynADxoGqHYZyZlhmhfaaFijY=;
-        b=dASJ6QC7vC3AsXlxSfTUL5EYu5Fo9DWo3oRgoZtwag1Q64ThVQAYlofDbVu5bPRcQk
-         1XHMr9KIJYgxlM2l+Fm9LshUZBE+JtLyj1FRY1flmXgmTQMCuW6nzJvEjysps2U5LsoC
-         RPLMCewbw0aV9TUi/2gzfrL7eQA2MckCGjyndG85TUHa842pEUb8QqtZ9cnxxyMCvKe7
-         obdmEd174RsNTj/pHaGrFOQSN5tq17K7JmnaYHHlc9GFySHaVhXBx+miM6pncYGTKzgf
-         qaUK3ME2+k4g1NACX15GZQ5Z8mjV5IJDau4FKh9Qk3p2P9GHUBJB1BRmFvcF3GJHevNU
-         2Ezg==
+        bh=YCNxOPt7j32/1EIvyQ0fS2gCRu3WbYw0TNwCSoOVYOQ=;
+        b=U7kddIv9K4+RMbg8YUbJIW5e5lm0/rMWTI6cwWVYOrxXuAds2QBxe+fEAhCG+K43QG
+         e3JtUe9DA2Z1YJLJJ4gsNpcPjH1fwHxG8UXYlzK11CFKPFFuBxBONSeBvyO1e1l1gsT8
+         HxoJKpJRmlnGY+TSmVzyLfHfny1hBX7KFUY02JCfGGSND8K3eLbefYUNeM9hCWHkKcku
+         tbKwEh3oJkclB2BNOUbKQc5ANQbq9ZdWoOX1ZGETcFa/GkBa6JmVg02x19qIM8BEe7Vm
+         OdLb68RodxJPemBqUqcSOBr8j3MOqLxZTDA3Yw9HU7RWCy8XEhQ/VlCqn3ffZ3IkC16m
+         5+Hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=90gOqXB5kIgrCtezxzYynADxoGqHYZyZlhmhfaaFijY=;
-        b=eBpTFzm2exebuJsxtOQCO+ys1MwD8vHO2czwJnfInLXYDqkcetnAIqDmSWVB4nGqzC
-         fumT0rStZyoCgQm91Np9yI4qwvO5veRRHlV58yDmgDBksUPaZ5AJWIMxV8VJ4JgXVYxr
-         52KUy0Efe/rmO5lzPKMWR3BvhI9U/inInRQPg7XYgtrO9bcD+JKhZw1H//SIXH2BWuB1
-         seRT/unXuwHzVKzs3+daOsOjWgdFlEfUtCNbrBFBXP42/UZtSHUsX45+JWrEfqpZT9pY
-         Yaf5vMGuP+65bdRqrg4Ki77V+QVWY+ykGjEQHOtokhs9mJ+UgulaXnqOYhlhERirIjHz
-         fBVw==
-X-Gm-Message-State: AOAM533v2G0nMWpXekMpIQ/UzgR3lWjejvojxKh76t9Mb23CoK0z630e
-        nZdU5Ubuf7VKOUIYOtrp7sHYttMl2+kvybGq
-X-Google-Smtp-Source: ABdhPJyab2pKuHBsULNFgbWe4b2guUQ7smJgOJ8t+XnhYliGNJZCvyCaNHtcC7Y2VcWG8IGh4V7PHQ==
-X-Received: by 2002:a17:90b:4acc:: with SMTP id mh12mr3054080pjb.10.1611622207203;
-        Mon, 25 Jan 2021 16:50:07 -0800 (PST)
-Received: from [127.0.0.1] ([203.205.141.50])
-        by smtp.gmail.com with ESMTPSA id v26sm1282031pff.195.2021.01.25.16.50.03
+        bh=YCNxOPt7j32/1EIvyQ0fS2gCRu3WbYw0TNwCSoOVYOQ=;
+        b=AyhPRvbgWaZbR4stDA5TQKPT3DV9+DP01tzWnU4myHXlD/6BP/q7W+gWCgiTtZIMWD
+         E3nJidJQfDsHpokL4P5d7+cF0DEJa3XgY+RPH/l1arw6DHATS8792LXWgBWySljVGBOe
+         sXK12hJFOT+gUjgJMXHxGmqocD3VEaTnPcc0YlgJ3LBhMBd6D50Av5cTgDE7uquLtFRb
+         a3IGV2SNIfntG1y8C12mBCv655sapFdMjtS4vRoR9Z1lNY+guKBC1qwL3mxRaUF3Qopr
+         I6/T2mbkwt/UwmK72KqhU27L+SaUU0nRSV633UNi9k4LUqMNr6a0U25chR/5nnn7mvI4
+         Vn7Q==
+X-Gm-Message-State: AOAM530EIJcSgv7wWFurFw02Q0sXm5XZ6nkpWfklwUxmaD/+bI1wV0ak
+        yHPfZGwuyHMXp8FQl/LhGLPa9W4tW0vbIVNj
+X-Google-Smtp-Source: ABdhPJx5FeX8a0GdQzhz6YSGSt3+jDk20i14nc7litXWkyqKlbbO1erv4O2wca+h7GOaUDMcN/xWiA==
+X-Received: by 2002:a17:902:e844:b029:de:5abb:7df1 with SMTP id t4-20020a170902e844b02900de5abb7df1mr529152plg.55.1611583152007;
+        Mon, 25 Jan 2021 05:59:12 -0800 (PST)
+Received: from [127.0.0.1] ([203.205.141.48])
+        by smtp.gmail.com with ESMTPSA id a14sm4587509pfl.169.2021.01.25.05.59.10
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Jan 2021 16:50:06 -0800 (PST)
-Subject: Re: [RFC PATCH v2 0/4] make jbd2 debug switch per device
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     adilger.kernel@dilger.ca, jack@suse.com,
-        harshadshirwadkar@gmail.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1611402263.git.brookxu@tencent.com>
- <YA89Ov+yuX6BHJpS@mit.edu>
+        Mon, 25 Jan 2021 05:59:11 -0800 (PST)
+Subject: Re: [RFC PATCH 0/4] make jbd2 debug switch per device
+To:     Jan Kara <jack@suse.cz>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1611287342.git.brookxu@tencent.com>
+ <20210125124117.GB1175@quack2.suse.cz>
 From:   brookxu <brookxu.cn@gmail.com>
-Message-ID: <c2bfc960-d86c-b20a-e3eb-7995200a5dd8@gmail.com>
-Date:   Tue, 26 Jan 2021 08:50:02 +0800
+Message-ID: <968d9c0f-153e-c187-4bc6-ab3cf7e257ca@gmail.com>
+Date:   Mon, 25 Jan 2021 21:59:09 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <YA89Ov+yuX6BHJpS@mit.edu>
+In-Reply-To: <20210125124117.GB1175@quack2.suse.cz>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -69,14 +68,14 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Thanks for your reply.
 
-
-Theodore Ts'o wrote on 2021/1/26 5:50:
-> On Sat, Jan 23, 2021 at 08:00:42PM +0800, Chunguang Xu wrote:
+Jan Kara wrote on 2021/1/25 20:41:
+> On Fri 22-01-21 14:43:18, Chunguang Xu wrote:
 >> On a multi-disk machine, because jbd2 debugging switch is global, this
 >> confuses the logs of multiple disks. It is not easy to distinguish the
->> logs of each disk and the amount of generated logs is very large. Maybe
->> a separate debugging switch for each disk would be better, so that we
+>> logs of each disk and the amount of generated logs is very large. Or a
+>> separate debugging switch for each disk would be better, so that you
 >> can easily distinguish the logs of a certain disk. 
 >>
 >> We can enable jbd2 debugging of a device in the following ways:
@@ -87,42 +86,28 @@ Theodore Ts'o wrote on 2021/1/26 5:50:
 >> will be lost. However, usually this will not have much impact on
 >> debugging.
 > 
-> The jbd debugging infrastructure dates back to the very beginnings of
-> ext3, when Stephen Tweedie added them while he was first implementing
-> the jbd layer.  So this dates back to a time before we had other
-> schemes like dynamic debug or tracepoints or eBPF.
-> I wonder if instead of trying to enhance our own bespoke debugging
-> system, instead we set up something like tracepoints where they would
-> be useful.  I'm not proposing that we try to replace all jbd_debug()
-> statements with tracepoints but I think it would be useful to look at
-> what sort of information would actually be *useful* on a production
-> server, and add those tracepoints to the jbd2 layer.  What I like
-> about tracepoints is you can enable them on a much more fine-grained
-> fashion; information is sent to userspace in a much more efficient
-> manner than printk; you can filter tracepoint events in the kernel,
-> before sending them to userspace; and if you want more sophisticated
-> filtering or aggregation, you can use eBPF.
-
-trace point, eBPF and other hook technologies are better for production
-environments. But for pure debugging work, adding hook points feels a bit
-heavy. However, your suggestion is very valuable, thank you very much.
-
-> What was the original use case which inspired this?  Were you indeed
-> trying to debug some kind of problem on a production system?  (Why did
-> you have multiple disks active at the same time?)  Was there a
-> specific problem you were trying to debug?  What debug level were you
-> using?  Which jbd_debug statements were most useful to you?  Which
-> just got in the way (but which had to be enabled given the log level
-> you needed to get the debug messages that you needed)?
-
-We only do this in the test environment, mainly to facilitate debugging.
-We will dynamically adjust the log level, sometimes it is 1, sometimes
-higher. There are two main reasons for multiple disks working at the same
-time. The first is that the system management tool will update the system
-disk, and the second is that the collaborative task will update other
-disks. During the actual debugging, we added more additional logs. The
-original logs of the system are useful, but some logs don't feel very
-meaningful. Thanks.
-
->     	      	      	    	     	      - Ted
+> OK, I didn't look at the series yet but I'm wondering: How are you using
+> jbd2 debugging? I mean obviously it isn't meant for production use but
+> rather for debugging JBD2 bugs so I'm kind of wondering in which case too
+> many messages matter.
+We perform stress testing on machines in the test environment, and use scripts
+to capture journal related logs to analyze problems. There are 12 disks on this
+machine, and each disk runs different jobs. Our test kernel also adds some
+additional function-related logs. If we adjust the log level to a higher level,
+a large number of logs have nothing to do with the disk to be observed. These
+logs are generated by system agents or coordinated tasks. This makes the log
+difficul to analyze.
+ 
+> And if the problem is that there's a problem with distinguishing messages
+> from multiple filesystems, then it would be perhaps more useful to add
+> journal identification to each message similarly as we do it with ext4
+> messages (likely by using journal->j_dev) - which is very simple to do
+> after your patches 3 and 4.
+Our test kernel did this. Because it broke the log format, I was not sure whether
+it would break something, so I didn't bring this part. Even if the device information
+is added, when there are more disks and the log level is higher, there will be a
+lot of irrelevant logs, which makes it necessary to consume a lot of CPU to filter
+messages. Therefore, a device-level switch is provided to make everything simpler.
+> 
+> 								Honza
 > 
