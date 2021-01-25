@@ -2,107 +2,110 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B17A303239
-	for <lists+linux-ext4@lfdr.de>; Tue, 26 Jan 2021 03:54:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21FC73031F5
+	for <lists+linux-ext4@lfdr.de>; Tue, 26 Jan 2021 03:40:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729296AbhAYOLg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 25 Jan 2021 09:11:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729257AbhAYOIq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 25 Jan 2021 09:08:46 -0500
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC08C06174A;
-        Mon, 25 Jan 2021 06:07:13 -0800 (PST)
-Received: by mail-io1-xd2e.google.com with SMTP id d81so26679257iof.3;
-        Mon, 25 Jan 2021 06:07:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MfJhOBecinWbFOTxZtZGMsUEJch79P7wyNbZhiMKN2k=;
-        b=tbw0OmMrl9G0M7V4hRbiSjrCPulxgRQ8a6kALEa9yseU/p/hu5Z7VVGkCxR93HWm44
-         GdlWi3h2FJLFwTmUuyLlX8KbQdGfebaKnUw5wCz5+n6uOMTpS4PTjb4k4ibML3ZeIuGW
-         Cja1i4hdcurLXOROaOa8uyS0yYi2T29thr4N93iHWPiftcFR+2ZYk/hZ5Xzr0WcJrJBb
-         KqPx8mCVLGDyb9bIrno17smLkWWc/FgkhpjgKhco3MTJ0tkfIGWjbmXrUuT//DPBeOVO
-         JaKjIL8/RsH9HVC1hiqmMPakp7BOW+9j+y0Dje27sZeX+O6eSQHKdrb1/ZxgsS9X3xWD
-         EYMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MfJhOBecinWbFOTxZtZGMsUEJch79P7wyNbZhiMKN2k=;
-        b=VfWLe1C8BldSHiDP+hu7FDi32a4kRdCe8ramZLeHDI5bX3CD8pDKKyS9+E5nVpS7M+
-         Z4wRjo58K3e9lfI+2LirF7rhRB9jOSWxUWqLOymETCo9GOFCgB7pjCRnwCxW3zJ8YjfD
-         IpvTW+SFvtE6ZQvW7ZncU7sbWS/2bXwYlsConIPkTzdnU3HB9yNOKNCGZVxZPpMlGOCM
-         oyL+pVCLYN82K0HRaaL+aJCKZM9bqPSBOaFjZ66VmBKXlBtfM5qsDC/l4gUdNJIuSP4j
-         ZXrrfdlyjjCq7TkiiQwfPZnNYSQ3MPDYHyat6fvzpaTAicWr21eqgvimafo1xTWgFSEW
-         /G6Q==
-X-Gm-Message-State: AOAM533Yb2deRDx8/M6g32qwREYH5lebvTbS2NIjT+7YanljzpdWbLMP
-        rtSUq9iEC5dQm2c/Xy24LGXpSfk2QfCDVkyvisA=
-X-Google-Smtp-Source: ABdhPJxFWlFj4oQv3EORI/Pn5HSHQB3dA3akAox4XAy+f4DX9tnDRCxTs1yLdlaRrAR4/IdnPjF3ivrkTcg2gEEbT94=
-X-Received: by 2002:a5e:da01:: with SMTP id x1mr544571ioj.100.1611583632785;
- Mon, 25 Jan 2021 06:07:12 -0800 (PST)
-MIME-Version: 1.0
-References: <cover.1611287342.git.brookxu@tencent.com> <20210125124117.GB1175@quack2.suse.cz>
-In-Reply-To: <20210125124117.GB1175@quack2.suse.cz>
-From:   =?UTF-8?B?6K645pil5YWJ?= <brookxu.cn@gmail.com>
-Date:   Mon, 25 Jan 2021 22:07:01 +0800
-Message-ID: <CADtkEectLRZRUfWEhQtaCgMUJY0Mik=XN5A-seHJxdBNjFMJ-w@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/4] make jbd2 debug switch per device
-To:     Jan Kara <jack@suse.cz>
+        id S1730670AbhAYQqd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 25 Jan 2021 11:46:33 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60924 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730558AbhAYQoU (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 25 Jan 2021 11:44:20 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3A424AD4E;
+        Mon, 25 Jan 2021 14:54:49 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id D570B1E14B3; Mon, 25 Jan 2021 15:54:48 +0100 (CET)
+Date:   Mon, 25 Jan 2021 15:54:48 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Chunguang Xu <brookxu.cn@gmail.com>
 Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        harshadshirwadkar@gmail.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2 2/4] jbd2: introduce some new log interfaces
+Message-ID: <20210125145448.GG1175@quack2.suse.cz>
+References: <cover.1611402263.git.brookxu@tencent.com>
+ <f19b925451351040a7e831bb1c96f062421c8ce8.1611402263.git.brookxu@tencent.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f19b925451351040a7e831bb1c96f062421c8ce8.1611402263.git.brookxu@tencent.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Thanks for your reply.
+On Sat 23-01-21 20:00:44, Chunguang Xu wrote:
+> From: Chunguang Xu <brookxu@tencent.com>
+> 
+> Compared to directly using numbers to indicate levels, using abstract
+> error, warn, notice, info, debug to indicate levels may be more
+> convenient for code reading and writing. Similar to other kernel
+> modules, some basic log interfaces are introduced.
+> 
+> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
 
-Jan Kara wrote on 2021/1/25 20:41:
-> On Fri 22-01-21 14:43:18, Chunguang Xu wrote:
->> On a multi-disk machine, because jbd2 debugging switch is global, this
->> confuses the logs of multiple disks. It is not easy to distinguish the
->> logs of each disk and the amount of generated logs is very large. Or a
->> separate debugging switch for each disk would be better, so that you
->> can easily distinguish the logs of a certain disk.
->>
->> We can enable jbd2 debugging of a device in the following ways:
->> echo X > /proc/fs/jbd2/sdX/jbd2_debug
->>
->> But there is a small disadvantage here. Because the debugging switch is
->> placed in the journal_t object, the log before the object is initialized
->> will be lost. However, usually this will not have much impact on
->> debugging.
->
-> OK, I didn't look at the series yet but I'm wondering: How are you using
-> jbd2 debugging? I mean obviously it isn't meant for production use but
-> rather for debugging JBD2 bugs so I'm kind of wondering in which case too
-> many messages matter.
-We perform stress testing on machines in the test environment, and use scripts
-to capture journal related logs to analyze problems. There are 12 disks on this
-machine, and each disk runs different jobs. Our test kernel also adds
-some additional
-function-related logs. If we adjust the log level to a higher level, a large
-number of logs have nothing to do with the disk to be observed. These logs are
-generated by system agents or coordinated tasks. This makes the log difficul
-to analyze.
+One more thing I've noticed when reading this patch:
 
-> And if the problem is that there's a problem with distinguishing messages
-> from multiple filesystems, then it would be perhaps more useful to add
-> journal identification to each message similarly as we do it with ext4
-> messages (likely by using journal->j_dev) - which is very simple to do
-> after your patches 3 and 4.
-Our test kernel did this. Because it broke the log format, I was not
-sure whether
-it would break something, so I didn't bring this part. Even if the
-device information
-is added, when there are more disks and the log level is higher, there will be a
-lot of irrelevant logs, which makes it necessary to consume a lot of
-CPU to filter
-messages. Therefore, a device-level switch is provided to make
-everything simpler.
->
->                                                               Honza
->
+> +
+> +#ifdef CONFIG_JBD2_DEBUG
+> +/*
+> + * Define JBD2_EXPENSIVE_CHECKING to enable more expensive internal
+> + * consistency checks.  By default we don't do this unless
+> + * CONFIG_JBD2_DEBUG is on.
+> + */
+> +#define JBD2_EXPENSIVE_CHECKING
+> +extern ushort jbd2_journal_enable_debug;
+> +void jbd2_log(int level, journal_t *j, const char *file, const char *func,
+> +		      unsigned int line, const char *fmt, ...);
+> +
+> +#define JBD2_ERR	1	/* error conditions */
+> +#define JBD2_WARN	2	/* warning conditions */
+> +#define JBD2_NOTICE	3	/* normal but significant condition */
+> +#define JBD2_INFO	4	/* informational */
+> +#define JBD2_DEBUG	5	/* debug-level messages */
+
+This is actually not true. All the jbd_debug() messages are really debug
+messages, not errors, not warnings. It is just a different level of detail.
+Honestly, these days, I'd rather discard all the levels, use pr_debug()
+function to print these messages inside jdb2_debug() and defer to
+CONFIG_DYNAMIC_DEBUG framework for configuration of which messages are
+interesting for a particular debug session.
+
+								Honza
+
+> +
+> +#define jbd2_err(j, fmt, a...)						\
+> +	jbd2_log(JBD2_ERR, j, __FILE__, __func__, __LINE__, (fmt), ##a)
+> +
+> +#define jbd2_warn(j, fmt, a...)						\
+> +	jbd2_log(JBD2_WARN, j, __FILE__, __func__, __LINE__, (fmt), ##a)
+> +
+> +#define jbd2_notice(j, fmt, a...)					\
+> +	jbd2_log(JBD2_NOTICE, j, __FILE__, __func__, __LINE__, (fmt), ##a)
+> +
+> +#define jbd2_info(j, fmt, a...)						\
+> +	jbd2_log(JBD2_INFO, j, __FILE__, __func__, __LINE__, (fmt), ##a)
+> +
+> +#define jbd2_debug(j, fmt, a...)					\
+> +	jbd2_log(JBD2_DEBUG, j, __FILE__, __func__, __LINE__, (fmt), ##a)
+> +
+> +#else
+> +
+> +#define jbd2_err(j, fmt, a...)
+> +#define jbd2_warn(j, fmt, a...)
+> +#define jbd2_notice(j, fmt, a...)
+> +#define jbd2_info(j, fmt, a...)
+> +#define jbd2_debug(j, fmt, a...)
+> +
+> +#endif
+>  #endif
+>  
+>  /*
+> -- 
+> 2.30.0
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
