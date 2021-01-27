@@ -2,60 +2,72 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E93F9305F12
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Jan 2021 16:06:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48B953060E9
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Jan 2021 17:23:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235525AbhA0PFh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 27 Jan 2021 10:05:37 -0500
-Received: from mail.ivde.bg ([84.1.246.67]:38822 "EHLO mail.ivde.bg"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235282AbhA0PB6 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 27 Jan 2021 10:01:58 -0500
-X-Greylist: delayed 479 seconds by postgrey-1.27 at vger.kernel.org; Wed, 27 Jan 2021 10:01:58 EST
-Received: from localhost (localhost [127.0.0.1])
-        by mail.ivde.bg (Postfix) with ESMTP id 13945C12BC
-        for <linux-ext4@vger.kernel.org>; Wed, 27 Jan 2021 16:53:16 +0200 (EET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ivde.bg; h=
-        content-language:content-transfer-encoding:content-type
-        :content-type:mime-version:user-agent:date:date:message-id
-        :subject:subject:from:from:received:received; s=mail; t=
-        1611759191; bh=gN2lTUs0IopON52cSWFg39wdFljWSxTd/ILRlIHCIfQ=; b=v
-        xbW3DQ0XS+6mxYtcxAsBQbFRYjxl8eH8iFV03V4UMoshtqqLqlHr8bO1RBeroOrB
-        TNE8V9e52ZKZfn8pdiyTbL2hmRSPJkZUtRkF5zS26g7AS2tDw3XF8SBRpf8u2K2N
-        x2SE0m2UICsbb9C7ombbbCiETeesparuA3WgzqFbzc=
-X-Virus-Scanned: Debian amavisd-new at mail.ivde.bg
-Received: from mail.ivde.bg ([127.0.0.1])
-        by localhost (mail.ivde.bg [127.0.0.1]) (amavisd-new, port 10026)
-        with LMTP for <linux-ext4@vger.kernel.org>;
-        Wed, 27 Jan 2021 16:53:11 +0200 (EET)
-Received: from [192.168.31.10] (vent.haskovo.ddns.bulsat.com [178.169.208.230])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ivde.bg (Postfix) with ESMTPSA id BC919C12B9
-        for <linux-ext4@vger.kernel.org>; Wed, 27 Jan 2021 16:53:11 +0200 (EET)
-To:     linux-ext4@vger.kernel.org
-From:   "Ivaylo M. Ivanov" <i.ivanov@ivde.bg>
-Subject: Please, do not remove mount options "nouser_xattr" and "noacl".
-Message-ID: <774a00eb-ed3a-584e-2f1b-2c7d0075586c@ivde.bg>
-Date:   Wed, 27 Jan 2021 16:53:09 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S237020AbhA0QWM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 27 Jan 2021 11:22:12 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:34315 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234244AbhA0QWJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Jan 2021 11:22:09 -0500
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 10RGLGhN004640
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Jan 2021 11:21:16 -0500
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 3F69415C3709; Wed, 27 Jan 2021 11:21:16 -0500 (EST)
+Date:   Wed, 27 Jan 2021 11:21:16 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     brookxu <brookxu.cn@gmail.com>
+Cc:     adilger.kernel@dilger.ca, jack@suse.com,
+        harshadshirwadkar@gmail.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2 0/4] make jbd2 debug switch per device
+Message-ID: <YBGS/FJ8boyxyaPn@mit.edu>
+References: <cover.1611402263.git.brookxu@tencent.com>
+ <YA89Ov+yuX6BHJpS@mit.edu>
+ <c2bfc960-d86c-b20a-e3eb-7995200a5dd8@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c2bfc960-d86c-b20a-e3eb-7995200a5dd8@gmail.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+On Tue, Jan 26, 2021 at 08:50:02AM +0800, brookxu wrote:
+> 
+> trace point, eBPF and other hook technologies are better for production
+> environments. But for pure debugging work, adding hook points feels a bit
+> heavy. However, your suggestion is very valuable, thank you very much.
 
-Please, do not remove mount options "nouser_xattr" and "noacl".
+What feels heavy?  The act of adding a new jbd_debug() statement to
+the sources, versus adding a new tracepoint?  Or how to enable a set
+of tracepoints versus setting a jbd_debug level (either globally, or
+per mount point)?  Or something else?
 
-I am using those to suppress xattr and acl in samba share to can scan 
-files with clamav
+If it's the latter (which is what I think it is), how often are you
+needing to add a new jbd_debug() statement *and* needing to run in a
+test environment where you have multiple disks?  How often is it
+useful to have multiple disks when doing your debugging?
 
-Regards,
-Ivaylo Ivanov
+I'm trying to understand why this has been useful to you, since that
+generally doesn't match with my development, testing, or debugging
+experience.  In general I try to test with one file system at a time,
+since I'm trying to find something reproducible.  Do you have cases
+where you need multiple file systems in your test environment in order
+to do your testing?  Why is that?  Is it because you're trying to use
+your production server code as your test reproducers?  And if so, I
+would have thought adding the jbd_debug() statements and sending lots
+of console print messages would distort the timing enough to make it
+hard to reproduce a problem in found in your production environment.
 
+It sounds like you have a very different set of test practices than
+what I'm used to, and I'm trying to understand it better.
+
+Cheers,
+
+						- Ted
