@@ -2,59 +2,59 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31C1730559B
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Jan 2021 09:26:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2EB6305599
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Jan 2021 09:26:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234005AbhA0IZu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 27 Jan 2021 03:25:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50486 "EHLO
+        id S234270AbhA0IZy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 27 Jan 2021 03:25:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234386AbhA0IXf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Jan 2021 03:23:35 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 315AEC061756;
-        Wed, 27 Jan 2021 00:22:55 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id h15so620310pli.8;
-        Wed, 27 Jan 2021 00:22:55 -0800 (PST)
+        with ESMTP id S234402AbhA0IXh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Jan 2021 03:23:37 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03862C0613ED;
+        Wed, 27 Jan 2021 00:22:57 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id p18so1050532pgm.11;
+        Wed, 27 Jan 2021 00:22:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :in-reply-to:references;
-        bh=+o++uQoGBJsTibH+2Cl/GaWZ3sJUCm3Xg9PNQlViHc0=;
-        b=fm7Uzj7pg33F4XeArqO0tkHlu5eAG3jI+GeqbEdpkxJbBHX5NZfqBXD4FSzbueCzzD
-         cm3XtuaOpYY0m1dRkKin4Q7t0t+tveFUFmpRctXP6P8NdQrs5g6mlm/f5yejLB5V+OtT
-         ydqXbBLFc5CWXVpizBaPmr4ig8H/x8/JoV/F3qaHETlMHHkzs8BJ07N5TeoXFhtoxuF3
-         6qujH3wr6mUyA9B+YxO6KizP4AVikyzm0zT4x8faZa0r3A3fLDY4QAsERQeNxKiSOTN2
-         ztpzHoTDi6CiQfUmg5gDADCz+UAFjTiO5vZLlmqD5xe1fPCxPC2rmBZ5b+c/ZmnKMVkm
-         /gGQ==
+        bh=LxrbqAM1++GEF2gcGqw/ycLmXycTOzgbHHp81cZPk7w=;
+        b=Q699JJ73Hkt9QTy4HRh5dkdtqjKYzE3mXMMFxPSmhpGcHbbKJx4R6pr5ra2+Ivo7eq
+         fyHklVr85os6XFsao2LU+KmY4T5L+3v9ReyctRjQttR+i5gz1bxLh8lG5hSqkItxLD0F
+         FwLrPj8nJasG6+ac70XJqtb2L/F/mN1Nb6Nbs18LhAUrmvBkBVB1tycxw190P45QA09D
+         gjvH0/DtFJwlb35IEjXiMZJLRuT3f84P29ukUdL4y0RV41NvPOrRh3LHpY6xJQslNBUU
+         gR1j1zlpI56xLGeu0RnxkAhSwT/01w8G1+Nk2gRPoJ+y6mWV4VpaA9ZMjvF1Gi7/E8Yz
+         il+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:in-reply-to:references;
-        bh=+o++uQoGBJsTibH+2Cl/GaWZ3sJUCm3Xg9PNQlViHc0=;
-        b=RqGVG4V3bZKIdw4Q2+CsAFczdkk8dmXojxtDdYqQmmW7P+HjkAf6S1rYOcQosL8Sa3
-         Z+3w+H0qM9WfaGejvr+2WrSdJofUldeF4FdfaeI3Ri/tomZerURs0+VohNlJXGqcd+on
-         DkLJvjFTas8xH1Sw9uvyaS3n5y8FiXy3RPeM9pp8lADP3mbLIb1isByX8XmBT16A38kA
-         fsKpzOBq1MmS5WwWBY7JiNY9xGH1zNWi8UELYl/hhrSgqUiJQNg5mys/QWCNHyaaY8Pu
-         /b3wve2x+6GgSzhx6aztOzgQUWX3HQyo/qmqsrcBQkd0WKFDMyhD3wLeFcRZZPIowiXI
-         TDOQ==
-X-Gm-Message-State: AOAM531POhzup3no89ydRXZo+wZVdczqDaDIg3/MBV1FprTo9ZIo/CU7
-        d4ysGAEvAOjcEFm4yOV6v3Y=
-X-Google-Smtp-Source: ABdhPJy+yPDpTDSNBODjuFjgcn9FMwYuJy4tlhoWs9sH/5fVSZtS4YpWCPVVJzGuYtk5ImV8CyvSSQ==
-X-Received: by 2002:a17:90a:5305:: with SMTP id x5mr4615559pjh.127.1611735774651;
-        Wed, 27 Jan 2021 00:22:54 -0800 (PST)
+        bh=LxrbqAM1++GEF2gcGqw/ycLmXycTOzgbHHp81cZPk7w=;
+        b=Dxog9ksD9+vN5bbumytNvPGVZwVdf4pC0d9GeKcqASydKPlzpP1aWE8RRMOEMZT4dU
+         NXNH8Z2ABEL4FgDCIv7hjBmYOlcujvUZ2Ac2+1btAis4bP9KTc8/dDB+CP5VuYSjkelk
+         O/0kppTdFVby8QgPndij0LzRu90ImiRgmXGPXwwWidtubIkF7iuGAWO1imHOtSv4+YNF
+         5sI8rsyseNROI3sOAZ76Vi7K7xPN7m5Pia669wZdkLDu0YcFqMZMtOQzAIQ7B/yBMgoR
+         5S4z1roH05cTsXjNIgdNWnHtOrytdXo9SF26KtVdFwqQFkEVrEgK0mm8AA5Xu9mmiptd
+         gt9w==
+X-Gm-Message-State: AOAM5323EHRiFRSx46FS/ftmQ5H9c2o0DL3sJC88x+B657/1pfjqll+I
+        qYR/7HyI5HSS0R3WowlLKVs=
+X-Google-Smtp-Source: ABdhPJwOuDYtxSshpmxu0zaDklNIkgegYeL555OcDWKKai4rMpxgRm1NPLIeJNdX76JWt2P9/MZZ5Q==
+X-Received: by 2002:a65:488d:: with SMTP id n13mr9726350pgs.315.1611735776513;
+        Wed, 27 Jan 2021 00:22:56 -0800 (PST)
 Received: from VM-0-6-centos.localdomain ([119.28.90.140])
-        by smtp.gmail.com with ESMTPSA id q17sm1499902pfl.143.2021.01.27.00.22.52
+        by smtp.gmail.com with ESMTPSA id q17sm1499902pfl.143.2021.01.27.00.22.54
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 27 Jan 2021 00:22:54 -0800 (PST)
+        Wed, 27 Jan 2021 00:22:56 -0800 (PST)
 From:   Chunguang Xu <brookxu.cn@gmail.com>
 X-Google-Original-From: Chunguang Xu <brookxu@tencent.com>
 To:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.com
 Cc:     harshadshirwadkar@gmail.com, linux-ext4@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v3 2/3] jbd2: update the arguments of jbd_debug()
-Date:   Wed, 27 Jan 2021 16:22:05 +0800
-Message-Id: <01c6819522f087c7be6f91b625a9211831fa39bc.1611733806.git.brookxu@tencent.com>
+Subject: [RFC PATCH v3 3/3] ext4: update the arguments of jbd_debug()
+Date:   Wed, 27 Jan 2021 16:22:06 +0800
+Message-Id: <efc1b70651d821d077d1a05e311acfe4c2cfd198.1611733806.git.brookxu@tencent.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <cover.1611733806.git.brookxu@tencent.com>
 References: <cover.1611733806.git.brookxu@tencent.com>
@@ -74,643 +74,395 @@ lost. However, usually this will not have much impact on debugging.
 
 Signed-off-by: Chunguang Xu <brookxu@tencent.com>
 ---
- fs/jbd2/checkpoint.c  |  6 +++---
- fs/jbd2/commit.c      | 32 ++++++++++++++++----------------
- fs/jbd2/journal.c     | 37 ++++++++++++++++---------------------
- fs/jbd2/recovery.c    | 32 ++++++++++++++++----------------
- fs/jbd2/revoke.c      |  8 ++++----
- fs/jbd2/transaction.c | 28 ++++++++++++++--------------
- 6 files changed, 69 insertions(+), 74 deletions(-)
+ fs/ext4/balloc.c      |  2 +-
+ fs/ext4/ext4_jbd2.c   |  4 +--
+ fs/ext4/fast_commit.c | 60 ++++++++++++++++++++++++-------------------
+ fs/ext4/indirect.c    |  4 +--
+ fs/ext4/inode.c       |  3 ++-
+ fs/ext4/namei.c       | 10 ++++----
+ fs/ext4/super.c       | 15 ++++++-----
+ 7 files changed, 54 insertions(+), 44 deletions(-)
 
-diff --git a/fs/jbd2/checkpoint.c b/fs/jbd2/checkpoint.c
-index 472932b9e6bc..332a208991a0 100644
---- a/fs/jbd2/checkpoint.c
-+++ b/fs/jbd2/checkpoint.c
-@@ -211,7 +211,7 @@ int jbd2_log_do_checkpoint(journal_t *journal)
- 	tid_t			this_tid;
- 	int			result, batch_count = 0;
+diff --git a/fs/ext4/balloc.c b/fs/ext4/balloc.c
+index f45f9feebe59..028b4d1d8cab 100644
+--- a/fs/ext4/balloc.c
++++ b/fs/ext4/balloc.c
+@@ -645,7 +645,7 @@ int ext4_should_retry_alloc(struct super_block *sb, int *retries)
+ 	if (EXT4_SB(sb)->s_mb_free_pending == 0)
+ 		return 0;
  
--	jbd_debug(1, "Start checkpoint\n");
-+	jbd_debug(journal, 1, "Start checkpoint\n");
- 
- 	/*
- 	 * First thing: if there are any transactions in the log which
-@@ -220,7 +220,7 @@ int jbd2_log_do_checkpoint(journal_t *journal)
- 	 */
- 	result = jbd2_cleanup_journal_tail(journal);
- 	trace_jbd2_checkpoint(journal, result);
--	jbd_debug(1, "cleanup_journal_tail returned %d\n", result);
-+	jbd_debug(journal, 1, "cleanup_journal_tail returned %d\n", result);
- 	if (result <= 0)
- 		return result;
- 
-@@ -676,5 +676,5 @@ void __jbd2_journal_drop_transaction(journal_t *journal, transaction_t *transact
- 
- 	trace_jbd2_drop_transaction(journal, transaction);
- 
--	jbd_debug(1, "Dropping transaction %d, all done\n", transaction->t_tid);
-+	jbd_debug(journal, 1, "Dropping transaction %d, all done\n", transaction->t_tid);
+-	jbd_debug(1, "%s: retrying operation after ENOSPC\n", sb->s_id);
++	jbd_debug(EXT4_SB(sb)->s_journal, 1, "%s: retrying operation after ENOSPC\n", sb->s_id);
+ 	jbd2_journal_force_commit_nested(EXT4_SB(sb)->s_journal);
+ 	return 1;
  }
-diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
-index b121d7d434c6..ccd510faf3f3 100644
---- a/fs/jbd2/commit.c
-+++ b/fs/jbd2/commit.c
-@@ -419,7 +419,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
+diff --git a/fs/ext4/ext4_jbd2.c b/fs/ext4/ext4_jbd2.c
+index be799040a415..0e1800768ec8 100644
+--- a/fs/ext4/ext4_jbd2.c
++++ b/fs/ext4/ext4_jbd2.c
+@@ -259,8 +259,8 @@ int __ext4_forget(const char *where, unsigned int line, handle_t *handle,
+ 	trace_ext4_forget(inode, is_metadata, blocknr);
+ 	BUFFER_TRACE(bh, "enter");
  
- 	/* Do we need to erase the effects of a prior jbd2_journal_flush? */
- 	if (journal->j_flags & JBD2_FLUSHED) {
--		jbd_debug(3, "super block updated\n");
-+		jbd_debug(journal, 3, "super block updated\n");
- 		mutex_lock_io(&journal->j_checkpoint_mutex);
- 		/*
- 		 * We hold j_checkpoint_mutex so tail cannot change under us.
-@@ -433,7 +433,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
- 						REQ_SYNC);
- 		mutex_unlock(&journal->j_checkpoint_mutex);
- 	} else {
--		jbd_debug(3, "superblock not updated\n");
-+		jbd_debug(journal, 3, "superblock not updated\n");
- 	}
+-	jbd_debug(4, "forgetting bh %p: is_metadata = %d, mode %o, "
+-		  "data mode %x\n",
++	jbd_debug(EXT4_SB(inode->i_sb)->s_journal, 4,
++		  "forgetting bh %p: is_metadata = %d, mode %o, data mode %x\n",
+ 		  bh, is_metadata, inode->i_mode,
+ 		  test_opt(inode->i_sb, DATA_FLAGS));
  
- 	J_ASSERT(journal->j_running_transaction != NULL);
-@@ -465,8 +465,8 @@ void jbd2_journal_commit_transaction(journal_t *journal)
- 	commit_transaction = journal->j_running_transaction;
+diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+index 0a14a7c87bf8..257ec136ac4c 100644
+--- a/fs/ext4/fast_commit.c
++++ b/fs/ext4/fast_commit.c
+@@ -865,7 +865,8 @@ static int ext4_fc_write_inode_data(struct inode *inode, u32 *crc)
+ 	mutex_unlock(&ei->i_fc_lock);
  
- 	trace_jbd2_start_commit(journal, commit_transaction);
--	jbd_debug(1, "JBD2: starting commit of transaction %d\n",
--			commit_transaction->t_tid);
-+	jbd_debug(journal, 1, "JBD2: starting commit of transaction %d\n",
-+		  commit_transaction->t_tid);
+ 	cur_lblk_off = old_blk_size;
+-	jbd_debug(1, "%s: will try writing %d to %d for inode %ld\n",
++	jbd_debug(EXT4_SB(inode->i_sb)->s_journal, 1,
++		  "%s: will try writing %d to %d for inode %ld\n",
+ 		  __func__, cur_lblk_off, new_blk_size, inode->i_ino);
  
- 	write_lock(&journal->j_state_lock);
- 	journal->j_fc_off = 0;
-@@ -549,7 +549,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
- 	__jbd2_journal_clean_checkpoint_list(journal, false);
- 	spin_unlock(&journal->j_list_lock);
- 
--	jbd_debug(3, "JBD2: commit phase 1\n");
-+	jbd_debug(journal, 3, "JBD2: commit phase 1\n");
- 
- 	/*
- 	 * Clear revoked flag to reflect there is no revoked buffers
-@@ -582,7 +582,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
- 	wake_up(&journal->j_wait_transaction_locked);
- 	write_unlock(&journal->j_state_lock);
- 
--	jbd_debug(3, "JBD2: commit phase 2a\n");
-+	jbd_debug(journal, 3, "JBD2: commit phase 2a\n");
- 
- 	/*
- 	 * Now start flushing things to disk, in the order they appear
-@@ -595,7 +595,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
- 	blk_start_plug(&plug);
- 	jbd2_journal_write_revoke_records(commit_transaction, &log_bufs);
- 
--	jbd_debug(3, "JBD2: commit phase 2b\n");
-+	jbd_debug(journal, 3, "JBD2: commit phase 2b\n");
- 
- 	/*
- 	 * Way to go: we have now written out all of the data for a
-@@ -651,7 +651,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
- 		if (!descriptor) {
- 			J_ASSERT (bufs == 0);
- 
--			jbd_debug(4, "JBD2: get descriptor\n");
-+			jbd_debug(journal, 4, "JBD2: get descriptor\n");
- 
- 			descriptor = jbd2_journal_get_descriptor_buffer(
- 							commit_transaction,
-@@ -661,7 +661,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
- 				continue;
- 			}
- 
--			jbd_debug(4, "JBD2: got buffer %llu (%p)\n",
-+			jbd_debug(journal, 4, "JBD2: got buffer %llu (%p)\n",
- 				(unsigned long long)descriptor->b_blocknr,
- 				descriptor->b_data);
- 			tagp = &descriptor->b_data[sizeof(journal_header_t)];
-@@ -746,7 +746,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
- 		    commit_transaction->t_buffers == NULL ||
- 		    space_left < tag_bytes + 16 + csum_size) {
- 
--			jbd_debug(4, "JBD2: Submit %d IOs\n", bufs);
-+			jbd_debug(journal, 4, "JBD2: Submit %d IOs\n", bufs);
- 
- 			/* Write an end-of-descriptor marker before
-                            submitting the IOs.  "tag" still points to
-@@ -848,7 +848,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
- 	   so we incur less scheduling load.
- 	*/
- 
--	jbd_debug(3, "JBD2: commit phase 3\n");
-+	jbd_debug(journal, 3, "JBD2: commit phase 3\n");
- 
- 	while (!list_empty(&io_bufs)) {
- 		struct buffer_head *bh = list_entry(io_bufs.prev,
-@@ -891,7 +891,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
- 
- 	J_ASSERT (commit_transaction->t_shadow_list == NULL);
- 
--	jbd_debug(3, "JBD2: commit phase 4\n");
-+	jbd_debug(journal, 3, "JBD2: commit phase 4\n");
- 
- 	/* Here we wait for the revoke record and descriptor record buffers */
- 	while (!list_empty(&log_bufs)) {
-@@ -915,7 +915,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
- 	if (err)
- 		jbd2_journal_abort(journal, err);
- 
--	jbd_debug(3, "JBD2: commit phase 5\n");
-+	jbd_debug(journal, 3, "JBD2: commit phase 5\n");
- 	write_lock(&journal->j_state_lock);
- 	J_ASSERT(commit_transaction->t_state == T_COMMIT_DFLUSH);
- 	commit_transaction->t_state = T_COMMIT_JFLUSH;
-@@ -954,7 +954,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
-            transaction can be removed from any checkpoint list it was on
-            before. */
- 
--	jbd_debug(3, "JBD2: commit phase 6\n");
-+	jbd_debug(journal, 3, "JBD2: commit phase 6\n");
- 
- 	J_ASSERT(list_empty(&commit_transaction->t_inode_list));
- 	J_ASSERT(commit_transaction->t_buffers == NULL);
-@@ -1131,7 +1131,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
- 
- 	/* Done with this transaction! */
- 
--	jbd_debug(3, "JBD2: commit phase 7\n");
-+	jbd_debug(journal, 3, "JBD2: commit phase 7\n");
- 
- 	J_ASSERT(commit_transaction->t_state == T_COMMIT_JFLUSH);
- 
-@@ -1173,7 +1173,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
- 		journal->j_fc_cleanup_callback(journal, 1);
- 
- 	trace_jbd2_end_commit(journal, commit_transaction);
--	jbd_debug(1, "JBD2: commit %d complete, head %d\n",
-+	jbd_debug(journal, 1, "JBD2: commit %d complete, head %d\n",
- 		  journal->j_commit_sequence, journal->j_tail_sequence);
- 
- 	write_lock(&journal->j_state_lock);
-diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index 5aca2aee96e5..c84ece7584f6 100644
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -204,11 +204,11 @@ static int kjournald2(void *arg)
- 	if (journal->j_flags & JBD2_UNMOUNT)
- 		goto end_loop;
- 
--	jbd_debug(1, "commit_sequence=%u, commit_request=%u\n",
--		journal->j_commit_sequence, journal->j_commit_request);
-+	jbd_debug(journal, 1, "commit_sequence=%u, commit_request=%u\n",
-+		  journal->j_commit_sequence, journal->j_commit_request);
- 
- 	if (journal->j_commit_sequence != journal->j_commit_request) {
--		jbd_debug(1, "OK, requests differ\n");
-+		jbd_debug(journal, 1, "OK, requests differ\n");
- 		write_unlock(&journal->j_state_lock);
- 		del_timer_sync(&journal->j_commit_timer);
- 		jbd2_journal_commit_transaction(journal);
-@@ -223,7 +223,7 @@ static int kjournald2(void *arg)
- 		 * good idea, because that depends on threads that may
- 		 * be already stopped.
- 		 */
--		jbd_debug(1, "Now suspending kjournald2\n");
-+		jbd_debug(journal, 1, "Now suspending kjournald2\n");
- 		write_unlock(&journal->j_state_lock);
- 		try_to_freeze();
- 		write_lock(&journal->j_state_lock);
-@@ -253,7 +253,7 @@ static int kjournald2(void *arg)
- 		finish_wait(&journal->j_wait_commit, &wait);
- 	}
- 
--	jbd_debug(1, "kjournald2 wakes\n");
-+	jbd_debug(journal, 1, "kjournald2 wakes\n");
- 
- 	/*
- 	 * Were we woken up by a commit wakeup event?
-@@ -261,7 +261,7 @@ static int kjournald2(void *arg)
- 	transaction = journal->j_running_transaction;
- 	if (transaction && time_after_eq(jiffies, transaction->t_expires)) {
- 		journal->j_commit_request = transaction->t_tid;
--		jbd_debug(1, "woke because of timeout\n");
-+		jbd_debug(journal, 1, "woke because of timeout\n");
- 	}
- 	goto loop;
- 
-@@ -269,7 +269,7 @@ static int kjournald2(void *arg)
- 	del_timer_sync(&journal->j_commit_timer);
- 	journal->j_task = NULL;
- 	wake_up(&journal->j_wait_done_commit);
--	jbd_debug(1, "Journal thread exiting.\n");
-+	jbd_debug(journal, 1, "Journal thread exiting.\n");
- 	write_unlock(&journal->j_state_lock);
- 	return 0;
- }
-@@ -501,7 +501,7 @@ int __jbd2_log_start_commit(journal_t *journal, tid_t target)
- 		 */
- 
- 		journal->j_commit_request = target;
--		jbd_debug(1, "JBD2: requesting commit %u/%u\n",
-+		jbd_debug(journal, 1, "JBD2: requesting commit %u/%u\n",
- 			  journal->j_commit_request,
- 			  journal->j_commit_sequence);
- 		journal->j_running_transaction->t_requested = jiffies;
-@@ -706,7 +706,7 @@ int jbd2_log_wait_commit(journal_t *journal, tid_t tid)
- 	}
- #endif
- 	while (tid_gt(tid, journal->j_commit_sequence)) {
--		jbd_debug(1, "JBD2: want %u, j_commit_sequence=%u\n",
-+		jbd_debug(journal, 1, "JBD2: want %u, j_commit_sequence=%u\n",
- 				  tid, journal->j_commit_sequence);
- 		read_unlock(&journal->j_state_lock);
- 		wake_up(&journal->j_wait_commit);
-@@ -1124,7 +1124,7 @@ int __jbd2_update_log_tail(journal_t *journal, tid_t tid, unsigned long block)
- 		freed += journal->j_last - journal->j_first;
- 
- 	trace_jbd2_update_log_tail(journal, tid, block, freed);
+ 	while (cur_lblk_off <= new_blk_size) {
+@@ -1207,7 +1208,7 @@ int ext4_fc_commit(journal_t *journal, tid_t commit_tid)
+ 				sbi->s_fc_avg_commit_time * 3) / 4;
+ 	else
+ 		sbi->s_fc_avg_commit_time = commit_time;
 -	jbd_debug(1,
 +	jbd_debug(journal, 1,
- 		  "Cleaning journal tail from %u to %u (offset %lu), "
- 		  "freeing %lu\n",
- 		  journal->j_tail_sequence, tid, block, freed);
-@@ -1500,10 +1500,6 @@ journal_t *jbd2_journal_init_inode(struct inode *inode)
- 		return NULL;
+ 		"Fast commit ended with blks = %d, reason = %d, subtid - %d",
+ 		nblks, reason, subtid);
+ 	if (reason == EXT4_FC_REASON_FC_FAILED)
+@@ -1319,14 +1320,15 @@ static int ext4_fc_replay_unlink(struct super_block *sb, struct ext4_fc_tl *tl)
+ 	inode = ext4_iget(sb, darg.ino, EXT4_IGET_NORMAL);
+ 
+ 	if (IS_ERR(inode)) {
+-		jbd_debug(1, "Inode %d not found", darg.ino);
++		jbd_debug(EXT4_SB(sb)->s_journal, 1, "Inode %d not found", darg.ino);
+ 		return 0;
  	}
  
--	jbd_debug(1, "JBD2: inode %s/%ld, size %lld, bits %d, blksize %ld\n",
--		  inode->i_sb->s_id, inode->i_ino, (long long) inode->i_size,
--		  inode->i_sb->s_blocksize_bits, inode->i_sb->s_blocksize);
--
- 	journal = journal_init_common(inode->i_sb->s_bdev, inode->i_sb->s_bdev,
- 			blocknr, inode->i_size >> inode->i_sb->s_blocksize_bits,
- 			inode->i_sb->s_blocksize);
-@@ -1579,7 +1575,7 @@ static int journal_reset(journal_t *journal)
- 	 * attempting a write to a potential-readonly device.
+ 	old_parent = ext4_iget(sb, darg.parent_ino,
+ 				EXT4_IGET_NORMAL);
+ 	if (IS_ERR(old_parent)) {
+-		jbd_debug(1, "Dir with inode  %d not found", darg.parent_ino);
++		jbd_debug(EXT4_SB(sb)->s_journal, 1, "Dir with inode  %d not found",
++			  darg.parent_ino);
+ 		iput(inode);
+ 		return 0;
+ 	}
+@@ -1351,21 +1353,22 @@ static int ext4_fc_replay_link_internal(struct super_block *sb,
+ 
+ 	dir = ext4_iget(sb, darg->parent_ino, EXT4_IGET_NORMAL);
+ 	if (IS_ERR(dir)) {
+-		jbd_debug(1, "Dir with inode %d not found.", darg->parent_ino);
++		jbd_debug(EXT4_SB(sb)->s_journal, 1,
++			  "Dir with inode %d not found.", darg->parent_ino);
+ 		dir = NULL;
+ 		goto out;
+ 	}
+ 
+ 	dentry_dir = d_obtain_alias(dir);
+ 	if (IS_ERR(dentry_dir)) {
+-		jbd_debug(1, "Failed to obtain dentry");
++		jbd_debug(EXT4_SB(sb)->s_journal, 1, "Failed to obtain dentry");
+ 		dentry_dir = NULL;
+ 		goto out;
+ 	}
+ 
+ 	dentry_inode = d_alloc(dentry_dir, &qstr_dname);
+ 	if (!dentry_inode) {
+-		jbd_debug(1, "Inode dentry not created.");
++		jbd_debug(EXT4_SB(sb)->s_journal, 1, "Inode dentry not created.");
+ 		ret = -ENOMEM;
+ 		goto out;
+ 	}
+@@ -1378,7 +1381,7 @@ static int ext4_fc_replay_link_internal(struct super_block *sb,
+ 	 * could complete.
  	 */
- 	if (sb->s_start == 0) {
--		jbd_debug(1, "JBD2: Skipping superblock update on recovered sb "
-+		jbd_debug(journal, 1, "JBD2: Skipping superblock update on recovered sb "
- 			"(start %ld, seq %u, errno %d)\n",
- 			journal->j_tail, journal->j_tail_sequence,
- 			journal->j_errno);
-@@ -1678,7 +1674,7 @@ int jbd2_journal_update_sb_log_tail(journal_t *journal, tid_t tail_tid,
- 		return -EIO;
+ 	if (ret && ret != -EEXIST) {
+-		jbd_debug(1, "Failed to link\n");
++		jbd_debug(EXT4_SB(sb)->s_journal, 1, "Failed to link\n");
+ 		goto out;
+ 	}
  
- 	BUG_ON(!mutex_is_locked(&journal->j_checkpoint_mutex));
--	jbd_debug(1, "JBD2: updating superblock (start %lu, seq %u)\n",
-+	jbd_debug(journal, 1, "JBD2: updating superblock (start %lu, seq %u)\n",
- 		  tail_block, tail_tid);
+@@ -1411,7 +1414,7 @@ static int ext4_fc_replay_link(struct super_block *sb, struct ext4_fc_tl *tl)
  
- 	lock_buffer(journal->j_sb_buffer);
-@@ -1719,7 +1715,7 @@ static void jbd2_mark_journal_empty(journal_t *journal, int write_op)
+ 	inode = ext4_iget(sb, darg.ino, EXT4_IGET_NORMAL);
+ 	if (IS_ERR(inode)) {
+-		jbd_debug(1, "Inode not found.");
++		jbd_debug(EXT4_SB(sb)->s_journal, 1, "Inode not found.");
+ 		return 0;
+ 	}
+ 
+@@ -1514,7 +1517,7 @@ static int ext4_fc_replay_inode(struct super_block *sb, struct ext4_fc_tl *tl)
+ 	/* Given that we just wrote the inode on disk, this SHOULD succeed. */
+ 	inode = ext4_iget(sb, ino, EXT4_IGET_NORMAL);
+ 	if (IS_ERR(inode)) {
+-		jbd_debug(1, "Inode not found.");
++		jbd_debug(EXT4_SB(sb)->s_journal, 1, "Inode not found.");
+ 		return -EFSCORRUPTED;
+ 	}
+ 
+@@ -1566,7 +1569,7 @@ static int ext4_fc_replay_create(struct super_block *sb, struct ext4_fc_tl *tl)
+ 
+ 	inode = ext4_iget(sb, darg.ino, EXT4_IGET_NORMAL);
+ 	if (IS_ERR(inode)) {
+-		jbd_debug(1, "inode %d not found.", darg.ino);
++		jbd_debug(EXT4_SB(sb)->s_journal, 1, "inode %d not found.", darg.ino);
+ 		inode = NULL;
+ 		ret = -EINVAL;
+ 		goto out;
+@@ -1579,7 +1582,7 @@ static int ext4_fc_replay_create(struct super_block *sb, struct ext4_fc_tl *tl)
+ 		 */
+ 		dir = ext4_iget(sb, darg.parent_ino, EXT4_IGET_NORMAL);
+ 		if (IS_ERR(dir)) {
+-			jbd_debug(1, "Dir %d not found.", darg.ino);
++			jbd_debug(EXT4_SB(sb)->s_journal, 1, "Dir %d not found.", darg.ino);
+ 			goto out;
+ 		}
+ 		ret = ext4_init_new_dir(NULL, dir, inode);
+@@ -1655,7 +1658,7 @@ static int ext4_fc_replay_add_range(struct super_block *sb,
+ 	inode = ext4_iget(sb, le32_to_cpu(fc_add_ex->fc_ino),
+ 				EXT4_IGET_NORMAL);
+ 	if (IS_ERR(inode)) {
+-		jbd_debug(1, "Inode not found.");
++		jbd_debug(EXT4_SB(sb)->s_journal, 1, "Inode not found.");
+ 		return 0;
+ 	}
+ 
+@@ -1667,7 +1670,8 @@ static int ext4_fc_replay_add_range(struct super_block *sb,
+ 
+ 	cur = start;
+ 	remaining = len;
+-	jbd_debug(1, "ADD_RANGE, lblk %d, pblk %lld, len %d, unwritten %d, inode %ld\n",
++	jbd_debug(EXT4_SB(sb)->s_journal, 1,
++		  "ADD_RANGE, lblk %d, pblk %lld, len %d, unwritten %d, inode %ld\n",
+ 		  start, start_pblk, len, ext4_ext_is_unwritten(ex),
+ 		  inode->i_ino);
+ 
+@@ -1736,9 +1740,10 @@ static int ext4_fc_replay_add_range(struct super_block *sb,
+ 		}
+ 
+ 		/* Range is mapped and needs a state change */
+-		jbd_debug(1, "Converting from %d to %d %lld",
+-				map.m_flags & EXT4_MAP_UNWRITTEN,
+-			ext4_ext_is_unwritten(ex), map.m_pblk);
++		jbd_debug(EXT4_SB(sb)->s_journal, 1,
++			  "Converting from %d to %d %lld",
++			  map.m_flags & EXT4_MAP_UNWRITTEN,
++			  ext4_ext_is_unwritten(ex), map.m_pblk);
+ 		ret = ext4_ext_replay_update_ex(inode, cur, map.m_len,
+ 					ext4_ext_is_unwritten(ex), map.m_pblk);
+ 		if (ret) {
+@@ -1779,15 +1784,16 @@ ext4_fc_replay_del_range(struct super_block *sb, struct ext4_fc_tl *tl)
+ 
+ 	inode = ext4_iget(sb, le32_to_cpu(lrange->fc_ino), EXT4_IGET_NORMAL);
+ 	if (IS_ERR(inode)) {
+-		jbd_debug(1, "Inode %d not found", le32_to_cpu(lrange->fc_ino));
++		jbd_debug(EXT4_SB(sb)->s_journal, 1, "Inode %d not found",
++			  le32_to_cpu(lrange->fc_ino));
+ 		return 0;
+ 	}
+ 
+ 	ret = ext4_fc_record_modified_inode(sb, inode->i_ino);
+ 
+-	jbd_debug(1, "DEL_RANGE, inode %ld, lblk %d, len %d\n",
+-			inode->i_ino, le32_to_cpu(lrange->fc_lblk),
+-			le32_to_cpu(lrange->fc_len));
++	jbd_debug(EXT4_SB(sb)->s_journal, 1, "DEL_RANGE, inode %ld, lblk %d, len %d\n",
++		  inode->i_ino, le32_to_cpu(lrange->fc_lblk),
++		  le32_to_cpu(lrange->fc_len));
+ 	while (remaining > 0) {
+ 		map.m_lblk = cur;
+ 		map.m_len = remaining;
+@@ -1811,7 +1817,7 @@ ext4_fc_replay_del_range(struct super_block *sb, struct ext4_fc_tl *tl)
+ 		le32_to_cpu(lrange->fc_lblk) << sb->s_blocksize_bits,
+ 		le32_to_cpu(lrange->fc_len) <<  sb->s_blocksize_bits);
+ 	if (ret)
+-		jbd_debug(1, "ext4_punch_hole returned %d", ret);
++		jbd_debug(EXT4_SB(sb)->s_journal, 1, "ext4_punch_hole returned %d", ret);
+ 	ext4_ext_replay_shrink_inode(inode,
+ 		i_size_read(inode) >> sb->s_blocksize_bits);
+ 	ext4_mark_inode_dirty(NULL, inode);
+@@ -1834,8 +1840,8 @@ static void ext4_fc_set_bitmaps_and_counters(struct super_block *sb)
+ 		inode = ext4_iget(sb, state->fc_modified_inodes[i],
+ 			EXT4_IGET_NORMAL);
+ 		if (IS_ERR(inode)) {
+-			jbd_debug(1, "Inode %d not found.",
+-				state->fc_modified_inodes[i]);
++			jbd_debug(EXT4_SB(sb)->s_journal, 1, "Inode %d not found.",
++				  state->fc_modified_inodes[i]);
+ 			continue;
+ 		}
+ 		cur = 0;
+@@ -1957,7 +1963,7 @@ static int ext4_fc_replay_scan(journal_t *journal,
+ 
+ 	state->fc_replay_expected_off++;
+ 	fc_for_each_tl(start, end, tl) {
+-		jbd_debug(3, "Scan phase, tag:%s, blk %lld\n",
++		jbd_debug(journal, 3, "Scan phase, tag:%s, blk %lld\n",
+ 			  tag2str(le16_to_cpu(tl->fc_tag)), bh->b_blocknr);
+ 		switch (le16_to_cpu(tl->fc_tag)) {
+ 		case EXT4_FC_TAG_ADD_RANGE:
+@@ -2052,7 +2058,7 @@ static int ext4_fc_replay(journal_t *journal, struct buffer_head *bh,
+ 		sbi->s_mount_state |= EXT4_FC_REPLAY;
+ 	}
+ 	if (!sbi->s_fc_replay_state.fc_replay_num_tags) {
+-		jbd_debug(1, "Replay stops\n");
++		jbd_debug(journal, 1, "Replay stops\n");
+ 		ext4_fc_set_bitmaps_and_counters(sb);
+ 		return 0;
+ 	}
+@@ -2073,7 +2079,7 @@ static int ext4_fc_replay(journal_t *journal, struct buffer_head *bh,
+ 			ext4_fc_set_bitmaps_and_counters(sb);
+ 			break;
+ 		}
+-		jbd_debug(3, "Replay phase, tag:%s\n",
++		jbd_debug(journal, 3, "Replay phase, tag:%s\n",
+ 				tag2str(le16_to_cpu(tl->fc_tag)));
+ 		state->fc_replay_num_tags--;
+ 		switch (le16_to_cpu(tl->fc_tag)) {
+diff --git a/fs/ext4/indirect.c b/fs/ext4/indirect.c
+index 1223a18c3ff9..c02729abd707 100644
+--- a/fs/ext4/indirect.c
++++ b/fs/ext4/indirect.c
+@@ -458,7 +458,7 @@ static int ext4_splice_branch(handle_t *handle,
+ 		 * the new i_size.  But that is not done here - it is done in
+ 		 * generic_commit_write->__mark_inode_dirty->ext4_dirty_inode.
+ 		 */
+-		jbd_debug(5, "splicing indirect only\n");
++		jbd_debug(EXT4_SB(ar->inode->i_sb)->s_journal, 5, "splicing indirect only\n");
+ 		BUFFER_TRACE(where->bh, "call ext4_handle_dirty_metadata");
+ 		err = ext4_handle_dirty_metadata(handle, ar->inode, where->bh);
+ 		if (err)
+@@ -470,7 +470,7 @@ static int ext4_splice_branch(handle_t *handle,
+ 		err = ext4_mark_inode_dirty(handle, ar->inode);
+ 		if (unlikely(err))
+ 			goto err_out;
+-		jbd_debug(5, "splicing direct\n");
++		jbd_debug(EXT4_SB(ar->inode->i_sb)->s_journal, 5, "splicing direct\n");
+ 	}
+ 	return err;
+ 
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index c173c8405856..bd1c74352a03 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -5212,7 +5212,8 @@ int ext4_write_inode(struct inode *inode, struct writeback_control *wbc)
+ 
+ 	if (EXT4_SB(inode->i_sb)->s_journal) {
+ 		if (ext4_journal_current_handle()) {
+-			jbd_debug(1, "called recursively, non-PF_MEMALLOC!\n");
++			jbd_debug(EXT4_SB(inode->i_sb)->s_journal, 1,
++				  "called recursively, non-PF_MEMALLOC!\n");
+ 			dump_stack();
+ 			return -EIO;
+ 		}
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index cf652ba3e74d..7ae23964db2f 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -3003,8 +3003,8 @@ int ext4_orphan_add(handle_t *handle, struct inode *inode)
+ 	} else
+ 		brelse(iloc.bh);
+ 
+-	jbd_debug(4, "superblock will point to %lu\n", inode->i_ino);
+-	jbd_debug(4, "orphan inode %lu will point to %d\n",
++	jbd_debug(sbi->s_journal, 4, "superblock will point to %lu\n", inode->i_ino);
++	jbd_debug(sbi->s_journal, 4, "orphan inode %lu will point to %d\n",
+ 			inode->i_ino, NEXT_ORPHAN(inode));
+ out:
+ 	ext4_std_error(sb, err);
+@@ -3039,7 +3039,7 @@ int ext4_orphan_del(handle_t *handle, struct inode *inode)
+ 	}
+ 
+ 	mutex_lock(&sbi->s_orphan_lock);
+-	jbd_debug(4, "remove inode %lu from orphan list\n", inode->i_ino);
++	jbd_debug(sbi->s_journal, 4, "remove inode %lu from orphan list\n", inode->i_ino);
+ 
+ 	prev = ei->i_orphan.prev;
+ 	list_del_init(&ei->i_orphan);
+@@ -3055,7 +3055,7 @@ int ext4_orphan_del(handle_t *handle, struct inode *inode)
+ 
+ 	ino_next = NEXT_ORPHAN(inode);
+ 	if (prev == &sbi->s_orphan) {
+-		jbd_debug(4, "superblock will point to %u\n", ino_next);
++		jbd_debug(sbi->s_journal, 4, "superblock will point to %u\n", ino_next);
+ 		BUFFER_TRACE(sbi->s_sbh, "get_write_access");
+ 		err = ext4_journal_get_write_access(handle, sbi->s_sbh);
+ 		if (err) {
+@@ -3073,7 +3073,7 @@ int ext4_orphan_del(handle_t *handle, struct inode *inode)
+ 		struct inode *i_prev =
+ 			&list_entry(prev, struct ext4_inode_info, i_orphan)->vfs_inode;
+ 
+-		jbd_debug(4, "orphan inode %lu will point to %u\n",
++		jbd_debug(sbi->s_journal, 4, "orphan inode %lu will point to %u\n",
+ 			  i_prev->i_ino, ino_next);
+ 		err = ext4_reserve_inode_write(handle, i_prev, &iloc2);
+ 		if (err) {
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 9a6f9875aa34..06c1d1a794bd 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -2989,7 +2989,7 @@ static void ext4_orphan_cleanup(struct super_block *sb,
+ 	int i;
+ #endif
+ 	if (!es->s_last_orphan) {
+-		jbd_debug(4, "no orphan inodes to clean up\n");
++		jbd_debug(EXT4_SB(sb)->s_journal, 4, "no orphan inodes to clean up\n");
  		return;
  	}
  
--	jbd_debug(1, "JBD2: Marking journal as empty (seq %u)\n",
-+	jbd_debug(journal, 1, "JBD2: Marking journal as empty (seq %u)\n",
- 		  journal->j_tail_sequence);
+@@ -3013,7 +3013,8 @@ static void ext4_orphan_cleanup(struct super_block *sb,
+ 				  "clearing orphan list.\n");
+ 			es->s_last_orphan = 0;
+ 		}
+-		jbd_debug(1, "Skipping orphan recovery on fs with errors.\n");
++		jbd_debug(EXT4_SB(sb)->s_journal, 1,
++			  "Skipping orphan recovery on fs with errors.\n");
+ 		return;
+ 	}
  
- 	sb->s_sequence = cpu_to_be32(journal->j_tail_sequence);
-@@ -1761,7 +1757,7 @@ void jbd2_journal_update_sb_errno(journal_t *journal)
- 	errcode = journal->j_errno;
- 	if (errcode == -ESHUTDOWN)
- 		errcode = 0;
--	jbd_debug(1, "JBD2: updating superblock error (errno %d)\n", errcode);
-+	jbd_debug(journal, 1, "JBD2: updating superblock error (errno %d)\n", errcode);
- 	sb->s_errno    = cpu_to_be32(errcode);
- 
- 	jbd2_write_superblock(journal, REQ_SYNC | REQ_FUA);
-@@ -2219,7 +2215,7 @@ int jbd2_journal_set_features(journal_t *journal, unsigned long compat,
- 	    compat & JBD2_FEATURE_COMPAT_CHECKSUM)
- 		compat &= ~JBD2_FEATURE_COMPAT_CHECKSUM;
- 
--	jbd_debug(1, "Setting new features 0x%lx/0x%lx/0x%lx\n",
-+	jbd_debug(journal, 1, "Setting new features 0x%lx/0x%lx/0x%lx\n",
- 		  compat, ro, incompat);
- 
- 	sb = journal->j_superblock;
-@@ -2288,7 +2284,7 @@ void jbd2_journal_clear_features(journal_t *journal, unsigned long compat,
- {
- 	journal_superblock_t *sb;
- 
--	jbd_debug(1, "Clear features 0x%lx/0x%lx/0x%lx\n",
-+	jbd_debug(journal, 1, "Clear features 0x%lx/0x%lx/0x%lx\n",
- 		  compat, ro, incompat);
- 
- 	sb = journal->j_superblock;
-@@ -2736,7 +2732,6 @@ static struct journal_head *journal_alloc_journal_head(void)
- #endif
- 	ret = kmem_cache_zalloc(jbd2_journal_head_cache, GFP_NOFS);
- 	if (!ret) {
--		jbd_debug(1, "out of memory for journal_head\n");
- 		pr_notice_ratelimited("ENOMEM in %s, retrying.\n", __func__);
- 		ret = kmem_cache_zalloc(jbd2_journal_head_cache,
- 				GFP_NOFS | __GFP_NOFAIL);
-diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
-index dc0694fcfcd1..7f91090876f5 100644
---- a/fs/jbd2/recovery.c
-+++ b/fs/jbd2/recovery.c
-@@ -245,15 +245,15 @@ static int fc_do_one_pass(journal_t *journal,
- 		return 0;
- 
- 	while (next_fc_block <= journal->j_fc_last) {
--		jbd_debug(3, "Fast commit replay: next block %ld",
-+		jbd_debug(journal, 3, "Fast commit replay: next block %ld",
- 			  next_fc_block);
- 		err = jread(&bh, journal, next_fc_block);
- 		if (err) {
--			jbd_debug(3, "Fast commit replay: read error");
-+			jbd_debug(journal, 3, "Fast commit replay: read error");
+@@ -3062,7 +3063,8 @@ static void ext4_orphan_cleanup(struct super_block *sb,
+ 		 * so, skip the rest.
+ 		 */
+ 		if (EXT4_SB(sb)->s_mount_state & EXT4_ERROR_FS) {
+-			jbd_debug(1, "Skipping orphan recovery on fs with errors.\n");
++			jbd_debug(EXT4_SB(sb)->s_journal, 1,
++				  "Skipping orphan recovery on fs with errors.\n");
+ 			es->s_last_orphan = 0;
  			break;
  		}
- 
--		jbd_debug(3, "Processing fast commit blk with seq %d");
-+		jbd_debug(journal, 3, "Processing fast commit blk with seq %d");
- 		err = journal->j_fc_replay_callback(journal, bh, pass,
- 					next_fc_block - journal->j_fc_first,
- 					expected_commit_id);
-@@ -264,7 +264,7 @@ static int fc_do_one_pass(journal_t *journal,
+@@ -3080,7 +3082,8 @@ static void ext4_orphan_cleanup(struct super_block *sb,
+ 				ext4_msg(sb, KERN_DEBUG,
+ 					"%s: truncating inode %lu to %lld bytes",
+ 					__func__, inode->i_ino, inode->i_size);
+-			jbd_debug(2, "truncating inode %lu to %lld bytes\n",
++			jbd_debug(EXT4_SB(sb)->s_journal, 2,
++				  "truncating inode %lu to %lld bytes\n",
+ 				  inode->i_ino, inode->i_size);
+ 			inode_lock(inode);
+ 			truncate_inode_pages(inode->i_mapping, inode->i_size);
+@@ -3094,7 +3097,7 @@ static void ext4_orphan_cleanup(struct super_block *sb,
+ 				ext4_msg(sb, KERN_DEBUG,
+ 					"%s: deleting unreferenced inode %lu",
+ 					__func__, inode->i_ino);
+-			jbd_debug(2, "deleting unreferenced inode %lu\n",
++			jbd_debug(EXT4_SB(sb)->s_journal, 2, "deleting unreferenced inode %lu\n",
+ 				  inode->i_ino);
+ 			nr_orphans++;
+ 		}
+@@ -5226,7 +5229,7 @@ static struct inode *ext4_get_journal_inode(struct super_block *sb,
+ 		return NULL;
  	}
  
- 	if (err)
--		jbd_debug(3, "Fast commit replay failed, err = %d\n", err);
-+		jbd_debug(journal, 3, "Fast commit replay failed, err = %d\n", err);
- 
- 	return err;
- }
-@@ -298,7 +298,7 @@ int jbd2_journal_recover(journal_t *journal)
- 	 */
- 
- 	if (!sb->s_start) {
--		jbd_debug(1, "No recovery required, last transaction %d\n",
-+		jbd_debug(journal, 1, "No recovery required, last transaction %d\n",
- 			  be32_to_cpu(sb->s_sequence));
- 		journal->j_transaction_sequence = be32_to_cpu(sb->s_sequence) + 1;
- 		return 0;
-@@ -310,10 +310,10 @@ int jbd2_journal_recover(journal_t *journal)
- 	if (!err)
- 		err = do_one_pass(journal, &info, PASS_REPLAY);
- 
--	jbd_debug(1, "JBD2: recovery, exit status %d, "
-+	jbd_debug(journal, 1, "JBD2: recovery, exit status %d, "
- 		  "recovered transactions %u to %u\n",
- 		  err, info.start_transaction, info.end_transaction);
--	jbd_debug(1, "JBD2: Replayed %d and revoked %d/%d blocks\n",
-+	jbd_debug(journal, 1, "JBD2: Replayed %d and revoked %d/%d blocks\n",
- 		  info.nr_replays, info.nr_revoke_hits, info.nr_revokes);
- 
- 	/* Restart the log at the next transaction ID, thus invalidating
-@@ -363,7 +363,7 @@ int jbd2_journal_skip_recovery(journal_t *journal)
- #ifdef CONFIG_JBD2_DEBUG
- 		int dropped = info.end_transaction - 
- 			be32_to_cpu(journal->j_superblock->s_sequence);
--		jbd_debug(1,
-+		jbd_debug(journal, 1,
- 			  "JBD2: ignoring %d transaction%s from the journal.\n",
- 			  dropped, (dropped == 1) ? "" : "s");
- #endif
-@@ -485,7 +485,7 @@ static int do_one_pass(journal_t *journal,
- 	if (pass == PASS_SCAN)
- 		info->start_transaction = first_commit_ID;
- 
--	jbd_debug(1, "Starting recovery pass %d\n", pass);
-+	jbd_debug(journal, 1, "Starting recovery pass %d\n", pass);
- 
- 	/*
- 	 * Now we walk through the log, transaction by transaction,
-@@ -511,7 +511,7 @@ static int do_one_pass(journal_t *journal,
- 			if (tid_geq(next_commit_ID, info->end_transaction))
- 				break;
- 
--		jbd_debug(2, "Scanning for sequence ID %u at %lu/%lu\n",
-+		jbd_debug(journal, 2, "Scanning for sequence ID %u at %lu/%lu\n",
- 			  next_commit_ID, next_log_block,
- 			  jbd2_has_feature_fast_commit(journal) ?
- 			  journal->j_fc_last : journal->j_last);
-@@ -520,7 +520,7 @@ static int do_one_pass(journal_t *journal,
- 		 * either the next descriptor block or the final commit
- 		 * record. */
- 
--		jbd_debug(3, "JBD2: checking block %ld\n", next_log_block);
-+		jbd_debug(journal, 3, "JBD2: checking block %ld\n", next_log_block);
- 		err = jread(&bh, journal, next_log_block);
- 		if (err)
- 			goto failed;
-@@ -543,7 +543,7 @@ static int do_one_pass(journal_t *journal,
- 
- 		blocktype = be32_to_cpu(tmp->h_blocktype);
- 		sequence = be32_to_cpu(tmp->h_sequence);
--		jbd_debug(3, "Found magic %d, sequence %d\n",
-+		jbd_debug(journal, 3, "Found magic %d, sequence %d\n",
- 			  blocktype, sequence);
- 
- 		if (sequence != next_commit_ID) {
-@@ -576,7 +576,7 @@ static int do_one_pass(journal_t *journal,
- 					goto failed;
- 				}
- 				need_check_commit_time = true;
--				jbd_debug(1,
-+				jbd_debug(journal, 1,
- 					"invalid descriptor block found in %lu\n",
- 					next_log_block);
- 			}
-@@ -759,7 +759,7 @@ static int do_one_pass(journal_t *journal,
- 				 * It likely does not belong to same journal,
- 				 * just end this recovery with success.
- 				 */
--				jbd_debug(1, "JBD2: Invalid checksum ignored in transaction %u, likely stale data\n",
-+				jbd_debug(journal, 1, "JBD2: Invalid checksum ignored in transaction %u, likely stale data\n",
- 					  next_commit_ID);
- 				err = 0;
- 				brelse(bh);
-@@ -828,7 +828,7 @@ static int do_one_pass(journal_t *journal,
- 			if (pass == PASS_SCAN &&
- 			    !jbd2_descriptor_block_csum_verify(journal,
- 							       bh->b_data)) {
--				jbd_debug(1, "JBD2: invalid revoke block found in %lu\n",
-+				jbd_debug(journal, 1, "JBD2: invalid revoke block found in %lu\n",
- 					  next_log_block);
- 				need_check_commit_time = true;
- 			}
-@@ -847,7 +847,7 @@ static int do_one_pass(journal_t *journal,
- 			continue;
- 
- 		default:
--			jbd_debug(3, "Unrecognised magic %d, end of scan.\n",
-+			jbd_debug(journal, 3, "Unrecognised magic %d, end of scan.\n",
- 				  blocktype);
- 			brelse(bh);
- 			goto done;
-diff --git a/fs/jbd2/revoke.c b/fs/jbd2/revoke.c
-index fa608788b93d..c806c190f347 100644
---- a/fs/jbd2/revoke.c
-+++ b/fs/jbd2/revoke.c
-@@ -398,7 +398,7 @@ int jbd2_journal_revoke(handle_t *handle, unsigned long long blocknr,
- 	}
- 	handle->h_revoke_credits--;
- 
--	jbd_debug(2, "insert revoke for block %llu, bh_in=%p\n",blocknr, bh_in);
-+	jbd_debug(journal, 2, "insert revoke for block %llu, bh_in=%p\n", blocknr, bh_in);
- 	err = insert_revoke_hash(journal, blocknr,
- 				handle->h_transaction->t_tid);
- 	BUFFER_TRACE(bh_in, "exit");
-@@ -428,7 +428,7 @@ int jbd2_journal_cancel_revoke(handle_t *handle, struct journal_head *jh)
- 	int did_revoke = 0;	/* akpm: debug */
- 	struct buffer_head *bh = jh2bh(jh);
- 
--	jbd_debug(4, "journal_head %p, cancelling revoke\n", jh);
-+	jbd_debug(journal, 4, "journal_head %p, cancelling revoke\n", jh);
- 
- 	/* Is the existing Revoke bit valid?  If so, we trust it, and
- 	 * only perform the full cancel if the revoke bit is set.  If
-@@ -444,7 +444,7 @@ int jbd2_journal_cancel_revoke(handle_t *handle, struct journal_head *jh)
- 	if (need_cancel) {
- 		record = find_revoke_record(journal, bh->b_blocknr);
- 		if (record) {
--			jbd_debug(4, "cancelled existing revoke on "
-+			jbd_debug(journal, 4, "cancelled existing revoke on "
- 				  "blocknr %llu\n", (unsigned long long)bh->b_blocknr);
- 			spin_lock(&journal->j_revoke_lock);
- 			list_del(&record->hash);
-@@ -560,7 +560,7 @@ void jbd2_journal_write_revoke_records(transaction_t *transaction,
- 	}
- 	if (descriptor)
- 		flush_descriptor(journal, descriptor, offset);
--	jbd_debug(1, "Wrote %d revoke records\n", count);
-+	jbd_debug(journal, 1, "Wrote %d revoke records\n", count);
- }
- 
- /*
-diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-index 3956fbc97fc4..e7072f311eb1 100644
---- a/fs/jbd2/transaction.c
-+++ b/fs/jbd2/transaction.c
-@@ -362,7 +362,7 @@ static int start_this_handle(journal_t *journal, handle_t *handle,
- 			return -ENOMEM;
- 	}
- 
--	jbd_debug(3, "New handle %p going live.\n", handle);
-+	jbd_debug(journal, 3, "New handle %p going live.\n", handle);
- 
- 	/*
- 	 * We need to hold j_state_lock until t_updates has been incremented,
-@@ -436,7 +436,7 @@ static int start_this_handle(journal_t *journal, handle_t *handle,
- 	handle->h_start_jiffies = jiffies;
- 	atomic_inc(&transaction->t_updates);
- 	atomic_inc(&transaction->t_handle_count);
--	jbd_debug(4, "Handle %p given %d credits (total %d, free %lu)\n",
-+	jbd_debug(journal, 4, "Handle %p given %d credits (total %d, free %lu)\n",
- 		  handle, blocks,
- 		  atomic_read(&transaction->t_outstanding_credits),
- 		  jbd2_log_space_left(journal));
-@@ -657,7 +657,7 @@ int jbd2_journal_extend(handle_t *handle, int nblocks, int revoke_records)
- 
- 	/* Don't extend a locked-down transaction! */
- 	if (transaction->t_state != T_RUNNING) {
--		jbd_debug(3, "denied handle %p %d blocks: "
-+		jbd_debug(journal, 3, "denied handle %p %d blocks: "
- 			  "transaction not running\n", handle, nblocks);
- 		goto error_out;
- 	}
-@@ -673,7 +673,7 @@ int jbd2_journal_extend(handle_t *handle, int nblocks, int revoke_records)
- 				   &transaction->t_outstanding_credits);
- 
- 	if (wanted > journal->j_max_transaction_buffers) {
--		jbd_debug(3, "denied handle %p %d blocks: "
-+		jbd_debug(journal, 3, "denied handle %p %d blocks: "
- 			  "transaction too large\n", handle, nblocks);
- 		atomic_sub(nblocks, &transaction->t_outstanding_credits);
- 		goto unlock;
-@@ -691,7 +691,7 @@ int jbd2_journal_extend(handle_t *handle, int nblocks, int revoke_records)
- 	handle->h_revoke_credits_requested += revoke_records;
- 	result = 0;
- 
--	jbd_debug(3, "extended handle %p by %d\n", handle, nblocks);
-+	jbd_debug(journal, 3, "extended handle %p by %d\n", handle, nblocks);
- unlock:
- 	spin_unlock(&transaction->t_handle_lock);
- error_out:
-@@ -781,7 +781,7 @@ int jbd2__journal_restart(handle_t *handle, int nblocks, int revoke_records,
- 	 * First unlink the handle from its current transaction, and start the
- 	 * commit on that.
- 	 */
--	jbd_debug(2, "restarting handle %p\n", handle);
-+	jbd_debug(journal, 2, "restarting handle %p\n", handle);
- 	stop_this_handle(handle);
- 	handle->h_transaction = NULL;
- 
-@@ -948,7 +948,7 @@ do_get_write_access(handle_t *handle, struct journal_head *jh,
- 
- 	journal = transaction->t_journal;
- 
--	jbd_debug(5, "journal_head %p, force_copy %d\n", jh, force_copy);
-+	jbd_debug(journal, 5, "journal_head %p, force_copy %d\n", jh, force_copy);
- 
- 	JBUFFER_TRACE(jh, "entry");
- repeat:
-@@ -1240,13 +1240,13 @@ int jbd2_journal_get_create_access(handle_t *handle, struct buffer_head *bh)
- 	struct journal_head *jh = jbd2_journal_add_journal_head(bh);
- 	int err;
- 
--	jbd_debug(5, "journal_head %p\n", jh);
- 	err = -EROFS;
- 	if (is_handle_aborted(handle))
- 		goto out;
- 	journal = transaction->t_journal;
- 	err = 0;
- 
-+	jbd_debug(journal, 5, "journal_head %p\n", jh);
- 	JBUFFER_TRACE(jh, "entry");
- 	/*
- 	 * The buffer may already belong to this transaction due to pre-zeroing
-@@ -1465,7 +1465,7 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
- 	 * of the running transaction.
- 	 */
- 	jh = bh2jh(bh);
--	jbd_debug(5, "journal_head %p\n", jh);
-+	jbd_debug(transaction->t_journal, 5, "journal_head %p\n", jh);
- 	JBUFFER_TRACE(jh, "entry");
- 
- 	/*
-@@ -1787,8 +1787,8 @@ int jbd2_journal_stop(handle_t *handle)
- 	pid_t pid;
- 
- 	if (--handle->h_ref > 0) {
--		jbd_debug(4, "h_ref %d -> %d\n", handle->h_ref + 1,
--						 handle->h_ref);
-+		jbd_debug(transaction->t_journal, 4, "h_ref %d -> %d\n",
-+			  handle->h_ref + 1, handle->h_ref);
- 		if (is_handle_aborted(handle))
- 			return -EIO;
- 		return 0;
-@@ -1807,7 +1807,7 @@ int jbd2_journal_stop(handle_t *handle)
- 	if (is_handle_aborted(handle))
- 		err = -EIO;
- 
--	jbd_debug(4, "Handle %p going down\n", handle);
-+	jbd_debug(journal, 4, "Handle %p going down\n", handle);
- 	trace_jbd2_handle_stats(journal->j_fs_dev->bd_dev,
- 				tid, handle->h_type, handle->h_line_no,
- 				jiffies - handle->h_start_jiffies,
-@@ -1885,7 +1885,7 @@ int jbd2_journal_stop(handle_t *handle)
- 		 * completes the commit thread, it just doesn't write
- 		 * anything to disk. */
- 
--		jbd_debug(2, "transaction too old, requesting commit for "
-+		jbd_debug(journal, 2, "transaction too old, requesting commit for "
- 					"handle %p\n", handle);
- 		/* This is non-blocking */
- 		jbd2_log_start_commit(journal, tid);
-@@ -2649,7 +2649,7 @@ static int jbd2_journal_file_inode(handle_t *handle, struct jbd2_inode *jinode,
- 		return -EROFS;
- 	journal = transaction->t_journal;
- 
--	jbd_debug(4, "Adding inode %lu, tid:%d\n", jinode->i_vfs_inode->i_ino,
-+	jbd_debug(journal, 4, "Adding inode %lu, tid:%d\n", jinode->i_vfs_inode->i_ino,
- 			transaction->t_tid);
- 
- 	spin_lock(&journal->j_list_lock);
+-	jbd_debug(2, "Journal inode found at %p: %lld bytes\n",
++	jbd_debug(EXT4_SB(sb)->s_journal, 2, "Journal inode found at %p: %lld bytes\n",
+ 		  journal_inode, journal_inode->i_size);
+ 	if (!S_ISREG(journal_inode->i_mode)) {
+ 		ext4_msg(sb, KERN_ERR, "invalid journal inode");
 -- 
 2.30.0
 
