@@ -2,100 +2,261 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5209307F2D
-	for <lists+linux-ext4@lfdr.de>; Thu, 28 Jan 2021 21:10:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F3CA308500
+	for <lists+linux-ext4@lfdr.de>; Fri, 29 Jan 2021 06:24:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231159AbhA1UJy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 28 Jan 2021 15:09:54 -0500
-Received: from spe6-3.ucebox.co.za ([197.242.159.209]:33672 "EHLO
-        spe6-3.ucebox.co.za" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231351AbhA1UH4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 28 Jan 2021 15:07:56 -0500
-X-Greylist: delayed 6416 seconds by postgrey-1.27 at vger.kernel.org; Thu, 28 Jan 2021 15:07:02 EST
-Received: from cornucopia.aserv.co.za ([154.0.175.203])
-        by spe4.ucebox.co.za with esmtps (TLSv1.2:AES128-GCM-SHA256:128)
-        (Exim 4.92)
-        (envelope-from <manornutgrovemanor@gmail.com>)
-        id 1l5Brs-0002Dc-Q5; Thu, 28 Jan 2021 20:18:43 +0200
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by cornucopia.aserv.co.za (Postfix) with ESMTPA id 37618C1250;
-        Thu, 28 Jan 2021 20:17:07 +0200 (SAST)
+        id S229656AbhA2FYf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 29 Jan 2021 00:24:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55346 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229459AbhA2FYf (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 29 Jan 2021 00:24:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 5E9AC64E02
+        for <linux-ext4@vger.kernel.org>; Fri, 29 Jan 2021 05:23:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611897834;
+        bh=mD6FWEmcUGH8F5GWoqYYRSWM1panHWYtzXAyyh1Jhuw=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=aDE7l9q9jVCy7u4h6GSdP7+PKLpMZcIhbJG1P/Frz5CttBmvvLo7Ucgg0TqHr+eZt
+         SDHFgBiZxOgQAWlDBIlvFmtqgOhQ/qTaaIVwdZGAy3hZKA4c5XDkqAVq7Gu8zB2Grj
+         ipwzo8Bz6of4tEcicsXWPPZkkVYsRF3GGnr0C9fk6wAmK/4dtADmZWSMcJOoyIQ+VM
+         Rg7F6mFVAPuAUheaTpMFlw4g3KIz8DsgB29LpWjzUduHAIHDnKvTZpkP2decpLXCpB
+         u/CdDjvaA/axWYcMAuB+Xon8B9hIRV2b2Wje3IigLvB5U8YtalB0vrLGmU2tsj8G/e
+         6TE8l099XUs5w==
+Received: by pdx-korg-bugzilla-2.web.codeaurora.org (Postfix, from userid 48)
+        id 46FE965303; Fri, 29 Jan 2021 05:23:54 +0000 (UTC)
+From:   bugzilla-daemon@bugzilla.kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 211315] [aarch64][xfstests/ext3 generic/472] swapon: Invalid
+ argument
+Date:   Fri, 29 Jan 2021 05:23:54 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext3@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext3
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: neolorry+bugzilla.kernel.org@googlemail.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext3@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-211315-13602-4DyraxW5pB@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-211315-13602@https.bugzilla.kernel.org/>
+References: <bug-211315-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 28 Jan 2021 20:17:07 +0200
-From:   Nut Grove Manor <manornutgrovemanor@gmail.com>
-To:     undisclosed-recipients:;
-Subject: Invitation To Quote
-User-Agent: Roundcube Webmail/1.4.1
-Message-ID: <b09951c581c69bcd4c3d48c21f6885b3@gmail.com>
-X-Sender: manornutgrovemanor@gmail.com
-X-Originating-IP: 154.0.175.203
-X-Afrihost-Domain: pesci.aserv.co.za
-X-Afrihost-Username: 154.0.175.203
-Authentication-Results: ucebox.co.za; auth=pass smtp.auth=154.0.175.203@pesci.aserv.co.za
-X-Afrihost-Outgoing-Class: unsure
-X-Afrihost-Outgoing-Evidence: Combined (0.71)
-X-Recommended-Action: accept
-X-Filter-ID: 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
- F2m4bBx/YCvbzEWyHpfJdFJnGm+sTRDggxgVxQ==
-X-Report-Abuse-To: spam@spe1.ucebox.co.za
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Good Day Sir
+https://bugzilla.kernel.org/show_bug.cgi?id=3D211315
 
-We are please to invite you/your company to quote the following item
-listed
-below:
+--- Comment #2 from bxue (neolorry+bugzilla.kernel.org@googlemail.com) ---
+(In reply to riteshh from comment #1)
+> Hello,
+>=20
+> Thanks for reporting this.
+> Ok, so earlier I thought I tested this on Power (pagesize=3D64K).
+> But it seems I had only tested with 1K blocksize but not with 2K.
+> On retrying it again with ext3 with 2K blocksize, I see it could be=20
+> reproduced on latest kernel on Power as well (where pagesize is 64K).
+> (gcc version 8.4.0)
+>=20
+> I will look more into what is causing this, but it seems it may be
+> coming from below path :-
+>=20
+> static int setup_swap_map_and_extents()
+> <...>
+>=20
+>       if (!nr_good_pages) {
+>               pr_warn("Empty swap-file\n");
+>               return -EINVAL;
+>       }
+> <...>
+>=20
+>=20
+> BTW, is ext3 with 2K bs some default configuration you use often on=20
+> arch64. Or was it mostly for testing purpose only?
 
-Product/Model No: TM9653 PRESSURE REGULATOR
-Product Name:MEKO
-Qty. 30 units
+Thanks for looking into this report.
 
-Compulsory,Kindly send your quotation
-for immediate approval.
+It's for test purpose. ext3 isn't our default fs, we just do regular QA tes=
+ting
+on aarch64 with ext3 1k/2k/4k blksize.
 
-Kind Regards,
-Albert Bourla
-PFIZER B.V Supply Chain Manager
-Tel: +31(0)208080 880
-ADDRESS: Rivium Westlaan 142, 2909 LD
-Capelle aan den IJssel, Netherlands
+-bxue
+
+>=20
+> -ritesh
+>=20
+>=20
+> On 1/22/21 4:19 PM, bugzilla-daemon@bugzilla.kernel.org wrote:
+> > https://bugzilla.kernel.org/show_bug.cgi?id=3D211315
+> >=20
+> >              Bug ID: 211315
+> >             Summary: [aarch64][xfstests/ext3 generic/472] swapon: Inval=
+id
+> >                      argument
+> >             Product: File System
+> >             Version: 2.5
+> >      Kernel Version: 5.11.0-0.rc4.20210120git45dfb8a5659a.131.eln108.aa=
+rch6
+> >                      4
+> >            Hardware: ARM
+> >                  OS: Linux
+> >                Tree: Mainline
+> >              Status: NEW
+> >            Severity: normal
+> >            Priority: P1
+> >           Component: ext3
+> >            Assignee: fs_ext3@kernel-bugs.osdl.org
+> >            Reporter: neolorry+bugzilla.kernel.org@googlemail.com
+> >          Regression: No
+> >=20
+> > xfstests generic/472 fails on ext3 on the latest kernel
+> > (kernel-5.11.0-0.rc4.20210120git45dfb8a5659a.131.eln108.aarch64 from
+> > https://koji.fedoraproject.org/koji/buildinfo?buildID=3D1671933). This =
+only
+> > happens on aarch64 and ext3 with 2048 block size. I can reproduce it on
+> > kernel-4.18 based RHEL-8 kernel as well.
+> >=20
+> > log
+> > ```
+> > # ./check -d -T generic/472
+> > FSTYP         -- ext3
+> > PLATFORM      -- Linux/aarch64 15-vm-16
+> > 5.11.0-0.rc4.20210120git45dfb8a5659a.131.eln108.aarch64 #1 SMP Wed Jan =
+20
+> > 23:39:54 UTC 2021
+> > MKFS_OPTIONS  -- -b 2048 /dev/vda3
+> > MOUNT_OPTIONS -- -o rw,relatime,seclabel -o
+> > context=3Dsystem_u:object_r:root_t:s0
+> > /dev/vda3 /scratch
+> >=20
+> > generic/472 103s ...    [05:31:22]QA output created by 472
+> > regular swap
+> > too long swap
+> > tiny swap
+> > swapon: Invalid argument
+> >   [05:32:15]- output mismatch (see
+> > /tmp/tmp.6xoJizCZKc/repo_xfstests/results//generic/472.out.bad)
+> >      --- tests/generic/472.out   2021-01-22 01:31:23.045484313 -0500
+> >      +++ /tmp/tmp.6xoJizCZKc/repo_xfstests/results//generic/472.out.bad
+> > 2021-01-22 05:32:15.217684365 -0500
+> >      @@ -2,3 +2,4 @@
+> >       regular swap
+> >       too long swap
+> >       tiny swap
+> >      +swapon: Invalid argument
+> >      ...
+> >      (Run 'diff -u /tmp/tmp.6xoJizCZKc/repo_xfstests/tests/generic/472.=
+out
+> > /tmp/tmp.6xoJizCZKc/repo_xfstests/results//generic/472.out.bad'  to see=
+ the
+> > entire diff)
+> > Ran: generic/472
+> > Failures: generic/472
+> > Failed 1 of 1 tests
+> > ```
+> >=20
+> > 472.full
+> > ```
+> > # cat /tmp/tmp.6xoJizCZKc/repo_xfstests/results//generic/472.full
+> > Creating filesystem with 5767168 2k blocks and 720896 inodes
+> > Filesystem UUID: 97619060-f6ec-4ed0-8984-01b4aefe86f8
+> > Superblock backups stored on blocks:
+> >          16384, 49152, 81920, 114688, 147456, 409600, 442368, 802816,
+> >          1327104,
+> >          2048000, 3981312, 5619712
+> >=20
+> > Allocating group tables: done
+> > Writing inode tables: done
+> > Creating journal (32768 blocks): done
+> > Writing superblocks and filesystem accounting information: done
+> >=20
+> > regular swap
+> > /usr/bin/chattr: Operation not supported while setting flags on
+> /scratch/swap
+> > wrote 2097152/2097152 bytes at offset 0
+> > 2 MiB, 512 ops; 0.1898 sec (10.534 MiB/sec and 2696.7097 ops/sec)
+> > too long swap
+> > /usr/bin/chattr: Operation not supported while setting flags on
+> /scratch/swap
+> > wrote 2097155/2097155 bytes at offset 0
+> > 2 MiB, 513 ops; 0.1231 sec (16.241 MiB/sec and 4165.7531 ops/sec)
+> > tiny swap
+> > /usr/bin/chattr: Operation not supported while setting flags on
+> /scratch/swap
+> > wrote 196608/196608 bytes at offset 0
+> > 192 KiB, 48 ops; 0.0130 sec (14.338 MiB/sec and 3670.5666 ops/sec)
+> > swapoff: /scratch/swap: swapoff failed: Invalid argument
+> > ```
+> >=20
+> > xfstests local.config
+> > ```
+> > FSTYP=3D"ext3"
+> > TEST_DIR=3D"/test"
+> > TEST_DEV=3D"/dev/vda4"
+> > SCRATCH_MNT=3D"/scratch"
+> > SCRATCH_DEV=3D"/dev/vda3"
+> > LOGWRITES_MNT=3D"/logwrites"
+> > LOGWRITES_DEV=3D"/dev/vda6"
+> > MKFS_OPTIONS=3D"-b 2048"
+> > MOUNT_OPTIONS=3D"-o rw,relatime,seclabel"
+> > TEST_FS_MOUNT_OPTS=3D"-o rw,relatime,seclabel"
+> > ```
+> >=20
+> > 64k page size
+> > ```
+> > # getconf PAGESIZE
+> > 65536
+> > ```
+> >=20
+> > fdisk -l
+> > ```
+> > # fdisk -l /dev/vda
+> > Disk /dev/vda: 100 GiB, 107374182400 bytes, 209715200 sectors
+> > Units: sectors of 1 * 512 =3D 512 bytes
+> > Sector size (logical/physical): 512 bytes / 512 bytes
+> > I/O size (minimum/optimal): 512 bytes / 512 bytes
+> > Disklabel type: gpt
+> > ```
+> >=20
+> > xfstests version
+> > ```
+> > # git rev-parse HEAD
+> > 4767884aff19e042ee3be51c88cf2c27a111707e
+> > # cat .git/config
+> > [core]
+> >          repositoryformatversion =3D 0
+> >          filemode =3D true
+> >          bare =3D false
+> >          logallrefupdates =3D true
+> > [remote "origin"]
+> >          url =3D git://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git
+> >          fetch =3D +refs/heads/*:refs/remotes/origin/*
+> > [branch "master"]
+> >          remote =3D origin
+> >          merge =3D refs/heads/master
+> > ```
+> >=20
+> > e2fsprogs version
+> > ```
+> > # rpm -q e2fsprogs
+> > e2fsprogs-1.45.6-1.el8.aarch64
+> > ```
+> >
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
