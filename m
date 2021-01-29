@@ -2,57 +2,57 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD63830901A
-	for <lists+linux-ext4@lfdr.de>; Fri, 29 Jan 2021 23:34:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 462B630901C
+	for <lists+linux-ext4@lfdr.de>; Fri, 29 Jan 2021 23:34:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233097AbhA2Wa6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 29 Jan 2021 17:30:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59462 "EHLO
+        id S233520AbhA2WbA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 29 Jan 2021 17:31:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233033AbhA2Waw (ORCPT
+        with ESMTP id S232902AbhA2Waw (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Fri, 29 Jan 2021 17:30:52 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F8FEC061574
-        for <linux-ext4@vger.kernel.org>; Fri, 29 Jan 2021 14:30:09 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id o7so7626344pgl.1
-        for <linux-ext4@vger.kernel.org>; Fri, 29 Jan 2021 14:30:09 -0800 (PST)
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92CF2C06174A
+        for <linux-ext4@vger.kernel.org>; Fri, 29 Jan 2021 14:30:10 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id o7so7626363pgl.1
+        for <linux-ext4@vger.kernel.org>; Fri, 29 Jan 2021 14:30:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Aoboxnj5WqsiQcKg0g2VI981APzucSJBjY9UVFTXo3Q=;
-        b=IAWr+FjtbxOkIAJrFICboDp4O0XGdebfCwob+fNloPfStBxsra5wWDpl0EdMKGK6/l
-         DLvyauyV9pF39Mx1pwOcs25JVuNT4uSGTrOueNjwKYo02jbugWEU9ecflIF+sjWti+Ky
-         CLAkMeLjs4mDCWwysKZTPhL1hC8cnrsSlIjil+bPNVwPdABnXPblXWUoD0csNGEhArNv
-         pwwMFpwD7uyFgyabiL46ngQ7LP7cJ/iF2lyFxVLOAiR1CIghLIvH+n2MgE3lsRq4nMY+
-         mLKPlSVNOz+StnxlbQmhqBfrH9cg/SqBu9akWw8aBWNpYbFRVgUZR1El5PDIZvif1LmU
-         X4qQ==
+        bh=xfOwVDspnIO1YFUaKbkqG+i39CROAQwGnLyL+vQ+YeI=;
+        b=OSoHxmvlZLej5m0TBF0nKwPWwkpep8oZhVgnwtr2j7ASAikoBzQnP4a313jZG7pR8J
+         sh4bUr/bDZxK4QRJ1lLmjqAhlupIQG5kbi7d0mQhDrLM4qco2txmmGFsjVuB9iPGS+67
+         33G3QbE1zmYRXNp7TA3BZGy9dlaYoF0wpJK4JJdIYLoXasNAslY++D/wWELDf2Yrv6Ed
+         9dgPcJpAx4BZypR+QjZorl8XvdIAyIAFOeee/rUcK8u+YddJ3gmOMEYudOCymYIjiULB
+         lG2C/ESg1sqVXMSqdwdACU07BY/I7UKie10m++oMg6+F+RTtIYuEdIRlpMTUxULlbo0C
+         eX6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Aoboxnj5WqsiQcKg0g2VI981APzucSJBjY9UVFTXo3Q=;
-        b=ojwTONa97ghUKgpeKLadVKM6+MffInbLAB8g1dSVDH4vOvQr4nnQxXUD8k+gqGF0ti
-         3MsZ69LCGovBKbwDpl+baR5mYnzFTtbai2DBqDFCD+C7UkAuEFprfYpJNdmMdQgLl4rJ
-         UKWUB2qBD90CS3xEFEyg6IUiC10MeYd2LpLOyk4phORrkYjFeFfuS67PhSC/NAMP8268
-         N1pvV3P6ARoq/Xo8A1SeNYlKbxbZJt2R7YrEjPnI6i0dJeO1GY5a+0heaRJEAtj8Y2lR
-         pm85Fy9eQjRodH325YkY3WcJfNThulz0O4Fc/33nY3IkRTDhf7/F0C+/L/mEJpNs9tBT
-         lLng==
-X-Gm-Message-State: AOAM532Q2DX3dxtngXOVJ3S5vEye+8Pg4tO4yPljaUG2CYeB9w3rR30j
-        NHTzA+g5nsVfgavc//KUsw1yfVoKxmY=
-X-Google-Smtp-Source: ABdhPJzGqcEJGJYXJCBU9+YCwut9wiv1I0RVRHRIw0iZilk1h56DeFD9pg79aa4j9uNbpeRUr0wKMg==
-X-Received: by 2002:aa7:9834:0:b029:1bc:8866:e270 with SMTP id q20-20020aa798340000b02901bc8866e270mr6298442pfl.17.1611959408534;
-        Fri, 29 Jan 2021 14:30:08 -0800 (PST)
+        bh=xfOwVDspnIO1YFUaKbkqG+i39CROAQwGnLyL+vQ+YeI=;
+        b=M5sOSZSD3RT5O102SiQNAfbsF/NavPTizm9hXUQHw41qLkX71esjRZRXWjIu/Q4cgl
+         euC1CFRz18UqEsPxWeUEgUH1jGlTP1/ixec2Vo/pMwX2IOjwo9q4fX8G+CKYYONdJ/sF
+         hK57Misz5w7RyqYNvtJ7Bcy7GVIQtPclN68inGbXKmRM1qQheqIYa/K9BfD9gwmTJIZu
+         doW/1GRG8I2K5JrvBk8vlHvMtaUlgDqygv5oEfpMIKZ9tAAk6aKMj0PEDRh0BYYxutqQ
+         1j+ZgUWBSinLSthzPjrBej4A/CsUw6I71QJittrSbC2xrS5dDuc2WNKoxCB1MSEcFzL5
+         PpzQ==
+X-Gm-Message-State: AOAM532zMi5AmXyNAakQ2mRQioM7RbLHzmXlI2NIwc+Un7H2N/vXOJdB
+        m3mdHLG9DtpXfcIL9Kc3GGz6p0M1Lfo=
+X-Google-Smtp-Source: ABdhPJzPaZvQx6bybLw/3hRgaUxP2+n8y7v8N0NRhvE1pEZ9JSb33epq+5HW/q+xcHNx/0uL2r5QOA==
+X-Received: by 2002:a63:f34f:: with SMTP id t15mr6571611pgj.239.1611959409755;
+        Fri, 29 Jan 2021 14:30:09 -0800 (PST)
 Received: from harshads-520.kir.corp.google.com ([2620:15c:17:10:a6ae:11ff:fe11:86a2])
-        by smtp.googlemail.com with ESMTPSA id d14sm9719358pfo.156.2021.01.29.14.30.07
+        by smtp.googlemail.com with ESMTPSA id d14sm9719358pfo.156.2021.01.29.14.30.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Jan 2021 14:30:07 -0800 (PST)
+        Fri, 29 Jan 2021 14:30:08 -0800 (PST)
 From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 To:     linux-ext4@vger.kernel.org
 Cc:     tytso@mit.edu, Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Subject: [PATCH 1/4] ext4: add MB_NUM_ORDERS macro
-Date:   Fri, 29 Jan 2021 14:29:28 -0800
-Message-Id: <20210129222931.623008-2-harshadshirwadkar@gmail.com>
+Subject: [PATCH 2/4] ext4: drop s_mb_bal_lock and convert protected fields to atomic
+Date:   Fri, 29 Jan 2021 14:29:29 -0800
+Message-Id: <20210129222931.623008-3-harshadshirwadkar@gmail.com>
 X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
 In-Reply-To: <20210129222931.623008-1-harshadshirwadkar@gmail.com>
 References: <20210129222931.623008-1-harshadshirwadkar@gmail.com>
@@ -62,99 +62,75 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-A few arrays in mballoc.c use the total number of valid orders as
-their size. Currently, this value is set as "sb->s_blocksize_bits +
-2". This makes code harder to read. So, instead add a new macro
-MB_NUM_ORDERS(sb) to make the code more readable.
+s_mb_buddies_generated gets used later in this patch series to
+determine if the cr 0 and cr 1 optimziations should be performed or
+not. Currently, s_mb_buddies_generated is protected under a
+spin_lock. In the allocation path, it is better if we don't depend on
+the lock and instead read the value atomically. In order to do that,
+we drop s_bal_lock altogether and we convert the only two protected
+fields by it s_mb_buddies_generated and s_mb_generation_time to atomic
+type.
 
 Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 ---
- fs/ext4/mballoc.c | 15 ++++++++-------
- fs/ext4/mballoc.h |  5 +++++
- 2 files changed, 13 insertions(+), 7 deletions(-)
+ fs/ext4/ext4.h    |  5 ++---
+ fs/ext4/mballoc.c | 13 +++++--------
+ 2 files changed, 7 insertions(+), 11 deletions(-)
 
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 64f25ea2fa7a..6dd127942208 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -1552,9 +1552,8 @@ struct ext4_sb_info {
+ 	atomic_t s_bal_goals;	/* goal hits */
+ 	atomic_t s_bal_breaks;	/* too long searches */
+ 	atomic_t s_bal_2orders;	/* 2^order hits */
+-	spinlock_t s_bal_lock;
+-	unsigned long s_mb_buddies_generated;
+-	unsigned long long s_mb_generation_time;
++	atomic_t s_mb_buddies_generated;	/* number of buddies generated */
++	atomic64_t s_mb_generation_time;
+ 	atomic_t s_mb_lost_chunks;
+ 	atomic_t s_mb_preallocated;
+ 	atomic_t s_mb_discarded;
 diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 99bf091fee10..625242e5c683 100644
+index 625242e5c683..11c56b0e6f35 100644
 --- a/fs/ext4/mballoc.c
 +++ b/fs/ext4/mballoc.c
-@@ -756,7 +756,7 @@ mb_set_largest_free_order(struct super_block *sb, struct ext4_group_info *grp)
+@@ -816,10 +816,8 @@ void ext4_mb_generate_buddy(struct super_block *sb,
+ 	clear_bit(EXT4_GROUP_INFO_NEED_INIT_BIT, &(grp->bb_state));
  
- 	grp->bb_largest_free_order = -1; /* uninit */
+ 	period = get_cycles() - period;
+-	spin_lock(&sbi->s_bal_lock);
+-	sbi->s_mb_buddies_generated++;
+-	sbi->s_mb_generation_time += period;
+-	spin_unlock(&sbi->s_bal_lock);
++	atomic_inc(&sbi->s_mb_buddies_generated);
++	atomic64_add(period, &sbi->s_mb_generation_time);
+ }
  
--	bits = sb->s_blocksize_bits + 1;
-+	bits = MB_NUM_ORDERS(sb) - 1;
- 	for (i = bits; i >= 0; i--) {
- 		if (grp->bb_counters[i] > 0) {
- 			grp->bb_largest_free_order = i;
-@@ -1930,7 +1930,7 @@ void ext4_mb_simple_scan_group(struct ext4_allocation_context *ac,
- 	int max;
+ /* The buddy information is attached the buddy cache inode
+@@ -2844,7 +2842,6 @@ int ext4_mb_init(struct super_block *sb)
  
- 	BUG_ON(ac->ac_2order <= 0);
--	for (i = ac->ac_2order; i <= sb->s_blocksize_bits + 1; i++) {
-+	for (i = ac->ac_2order; i < MB_NUM_ORDERS(sb); i++) {
- 		if (grp->bb_counters[i] == 0)
- 			continue;
- 
-@@ -2315,13 +2315,13 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
- 	 * We also support searching for power-of-two requests only for
- 	 * requests upto maximum buddy size we have constructed.
- 	 */
--	if (i >= sbi->s_mb_order2_reqs && i <= sb->s_blocksize_bits + 2) {
-+	if (i >= sbi->s_mb_order2_reqs && i <= MB_NUM_ORDERS(sb)) {
- 		/*
- 		 * This should tell if fe_len is exactly power of 2
- 		 */
- 		if ((ac->ac_g_ex.fe_len & (~(1 << (i - 1)))) == 0)
- 			ac->ac_2order = array_index_nospec(i - 1,
--							   sb->s_blocksize_bits + 2);
-+							   MB_NUM_ORDERS(sb));
- 	}
- 
- 	/* if stream allocation is enabled, use global goal */
-@@ -2806,7 +2806,7 @@ int ext4_mb_init(struct super_block *sb)
- 	unsigned max;
- 	int ret;
- 
--	i = (sb->s_blocksize_bits + 2) * sizeof(*sbi->s_mb_offsets);
-+	i = MB_NUM_ORDERS(sb) * sizeof(*sbi->s_mb_offsets);
- 
- 	sbi->s_mb_offsets = kmalloc(i, GFP_KERNEL);
- 	if (sbi->s_mb_offsets == NULL) {
-@@ -2814,7 +2814,7 @@ int ext4_mb_init(struct super_block *sb)
- 		goto out;
- 	}
- 
--	i = (sb->s_blocksize_bits + 2) * sizeof(*sbi->s_mb_maxs);
-+	i = MB_NUM_ORDERS(sb) * sizeof(*sbi->s_mb_maxs);
- 	sbi->s_mb_maxs = kmalloc(i, GFP_KERNEL);
- 	if (sbi->s_mb_maxs == NULL) {
- 		ret = -ENOMEM;
-@@ -2840,7 +2840,8 @@ int ext4_mb_init(struct super_block *sb)
- 		offset_incr = offset_incr >> 1;
- 		max = max >> 1;
- 		i++;
--	} while (i <= sb->s_blocksize_bits + 1);
-+	} while (i < MB_NUM_ORDERS(sb));
-+
  
  	spin_lock_init(&sbi->s_md_lock);
- 	spin_lock_init(&sbi->s_bal_lock);
-diff --git a/fs/ext4/mballoc.h b/fs/ext4/mballoc.h
-index e75b4749aa1c..68111a10cfee 100644
---- a/fs/ext4/mballoc.h
-+++ b/fs/ext4/mballoc.h
-@@ -78,6 +78,11 @@
-  */
- #define MB_DEFAULT_MAX_INODE_PREALLOC	512
+-	spin_lock_init(&sbi->s_bal_lock);
+ 	sbi->s_mb_free_pending = 0;
+ 	INIT_LIST_HEAD(&sbi->s_freed_data_list);
  
-+/*
-+ * Number of valid buddy orders
-+ */
-+#define MB_NUM_ORDERS(sb)		((sb)->s_blocksize_bits + 2)
-+
- struct ext4_free_data {
- 	/* this links the free block information from sb_info */
- 	struct list_head		efd_list;
+@@ -2980,9 +2977,9 @@ int ext4_mb_release(struct super_block *sb)
+ 				atomic_read(&sbi->s_bal_breaks),
+ 				atomic_read(&sbi->s_mb_lost_chunks));
+ 		ext4_msg(sb, KERN_INFO,
+-		       "mballoc: %lu generated and it took %Lu",
+-				sbi->s_mb_buddies_generated,
+-				sbi->s_mb_generation_time);
++		       "mballoc: %u generated and it took %llu",
++				atomic_read(&sbi->s_mb_buddies_generated),
++				atomic64_read(&sbi->s_mb_generation_time));
+ 		ext4_msg(sb, KERN_INFO,
+ 		       "mballoc: %u preallocated, %u discarded",
+ 				atomic_read(&sbi->s_mb_preallocated),
 -- 
 2.30.0.365.g02bc693789-goog
 
