@@ -2,261 +2,119 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F3CA308500
-	for <lists+linux-ext4@lfdr.de>; Fri, 29 Jan 2021 06:24:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08B54308CF2
+	for <lists+linux-ext4@lfdr.de>; Fri, 29 Jan 2021 20:05:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229656AbhA2FYf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 29 Jan 2021 00:24:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55346 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229459AbhA2FYf (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 29 Jan 2021 00:24:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 5E9AC64E02
-        for <linux-ext4@vger.kernel.org>; Fri, 29 Jan 2021 05:23:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611897834;
-        bh=mD6FWEmcUGH8F5GWoqYYRSWM1panHWYtzXAyyh1Jhuw=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=aDE7l9q9jVCy7u4h6GSdP7+PKLpMZcIhbJG1P/Frz5CttBmvvLo7Ucgg0TqHr+eZt
-         SDHFgBiZxOgQAWlDBIlvFmtqgOhQ/qTaaIVwdZGAy3hZKA4c5XDkqAVq7Gu8zB2Grj
-         ipwzo8Bz6of4tEcicsXWPPZkkVYsRF3GGnr0C9fk6wAmK/4dtADmZWSMcJOoyIQ+VM
-         Rg7F6mFVAPuAUheaTpMFlw4g3KIz8DsgB29LpWjzUduHAIHDnKvTZpkP2decpLXCpB
-         u/CdDjvaA/axWYcMAuB+Xon8B9hIRV2b2Wje3IigLvB5U8YtalB0vrLGmU2tsj8G/e
-         6TE8l099XUs5w==
-Received: by pdx-korg-bugzilla-2.web.codeaurora.org (Postfix, from userid 48)
-        id 46FE965303; Fri, 29 Jan 2021 05:23:54 +0000 (UTC)
-From:   bugzilla-daemon@bugzilla.kernel.org
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 211315] [aarch64][xfstests/ext3 generic/472] swapon: Invalid
- argument
-Date:   Fri, 29 Jan 2021 05:23:54 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext3@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext3
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: neolorry+bugzilla.kernel.org@googlemail.com
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext3@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-211315-13602-4DyraxW5pB@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-211315-13602@https.bugzilla.kernel.org/>
-References: <bug-211315-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        id S232887AbhA2TAY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 29 Jan 2021 14:00:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232873AbhA2TAF (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 29 Jan 2021 14:00:05 -0500
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ADF7C061574;
+        Fri, 29 Jan 2021 10:59:25 -0800 (PST)
+Received: by mail-io1-xd2a.google.com with SMTP id p72so10363785iod.12;
+        Fri, 29 Jan 2021 10:59:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OgYPIOqOXKdCc6WoLn7V5g+qgBdayVhc1PkpXTbqbXk=;
+        b=GnXjtF8HzAzo7iSmOer2r2dfDd2OuHi51oE0gzSSiRytHTVSOy5iQs0uzqX0gTl2b8
+         zbDWhAWHSHIasZ7KY+++5txY1UvOs2BqYUOp+QDqRg2APUImYqnX//tOVW5SWYQQpRa8
+         H8emcLul4AA5dgHMJcayZUvsjyqBy+dJPBOoexDD47vbJ8BCgcUOYyE24H5LGAZf9Igj
+         w4fFB5Uzu4ctdfwsjbYpWc4cvd1hkySYw8ootC3LDKA3lCXPKnbZFVKUn+D4ikKHt9aC
+         G3IoQKLla/NSfiKssAtsJLXr6AoSnnhKu4Lru+pQ2mZ15YCiw0CDH26yxc9KVMQac5jh
+         HmOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OgYPIOqOXKdCc6WoLn7V5g+qgBdayVhc1PkpXTbqbXk=;
+        b=G5zX4l79+OJ075amVbWGzVqLTpfjvqa/2KMwWH5Z3pSXABpF7FNY1FF/jbwFoJ+QLu
+         Bf9uQkW4Dh3VcazlhgOacLKbyU7AF3hVua2VfityHD3uqpwFF87EtUqlgmL6KpyP/1fD
+         DcSQ2bOXQSAZAPl19KqbFttlbnn2/qCUqWYYEy2t/e2FsNHu7Y1AfH3bDYyHQsxbcJ06
+         kQ+I5r6Gyo9BNHw7sdjpWfqoTsA/0h7bb35GqAdgUmuY3CqLiS8malJsgrsfoRZ+nWG3
+         7rcH4j9JWwkWsykP4sLvcPIRI7qILmQCeTa70OajN/Lv/OVZe8EEcpUJmjdDEc4gN68B
+         pe0Q==
+X-Gm-Message-State: AOAM533o5dqDaq2vutDtKU/V/yyT+WfxZwK/cHN8jRhUz2lQ4lAhPdzX
+        ay9PCuzb7MtD4/pfxgJR8b4=
+X-Google-Smtp-Source: ABdhPJwDhrl9IvxbuP8ngx1wk9KC9Wv5j0rdVczHynGOSlOGUzdnMwRF37HqP+Fb2L5Pk7hwIqe9lg==
+X-Received: by 2002:a02:cab2:: with SMTP id e18mr1122374jap.55.1611946765078;
+        Fri, 29 Jan 2021 10:59:25 -0800 (PST)
+Received: from llvm-development.us-central1-a.c.llvm-285123.internal (85.235.72.34.bc.googleusercontent.com. [34.72.235.85])
+        by smtp.googlemail.com with ESMTPSA id h10sm4846817ils.10.2021.01.29.10.59.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Jan 2021 10:59:24 -0800 (PST)
+From:   Vinicius Tinti <viniciustinti@gmail.com>
+To:     Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Vinicius Tinti <viniciustinti@gmail.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: [PATCH] ext4: Remove unreachable code
+Date:   Fri, 29 Jan 2021 18:58:56 +0000
+Message-Id: <20210129185856.158310-1-viniciustinti@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D211315
+By enabling -Wunreachable-code-aggressive on Clang the following code
+paths are unreachable.
 
---- Comment #2 from bxue (neolorry+bugzilla.kernel.org@googlemail.com) ---
-(In reply to riteshh from comment #1)
-> Hello,
->=20
-> Thanks for reporting this.
-> Ok, so earlier I thought I tested this on Power (pagesize=3D64K).
-> But it seems I had only tested with 1K blocksize but not with 2K.
-> On retrying it again with ext3 with 2K blocksize, I see it could be=20
-> reproduced on latest kernel on Power as well (where pagesize is 64K).
-> (gcc version 8.4.0)
->=20
-> I will look more into what is causing this, but it seems it may be
-> coming from below path :-
->=20
-> static int setup_swap_map_and_extents()
-> <...>
->=20
->       if (!nr_good_pages) {
->               pr_warn("Empty swap-file\n");
->               return -EINVAL;
->       }
-> <...>
->=20
->=20
-> BTW, is ext3 with 2K bs some default configuration you use often on=20
-> arch64. Or was it mostly for testing purpose only?
+Commit dd73b5d5cb67 ("ext4: convert dx_probe() to use the ERR_PTR
+convention")
+Commit ac27a0ec112a ("[PATCH] ext4: initial copy of files from ext3")
 
-Thanks for looking into this report.
+Clang warns:
 
-It's for test purpose. ext3 isn't our default fs, we just do regular QA tes=
-ting
-on aarch64 with ext3 1k/2k/4k blksize.
+fs/ext4/namei.c:831:17: warning: code will never be executed
+[-Wunreachable-code]
+                        unsigned n = count - 1;
+                                     ^~~~~
+fs/ext4/namei.c:830:7: note: silence by adding parentheses to mark code as
+explicitly dead
+                if (0) { // linear search cross check
+                    ^
+                    /* DISABLES CODE */ ( )
 
--bxue
+Signed-off-by: Vinicius Tinti <viniciustinti@gmail.com>
+---
+ fs/ext4/namei.c | 15 ---------------
+ 1 file changed, 15 deletions(-)
 
->=20
-> -ritesh
->=20
->=20
-> On 1/22/21 4:19 PM, bugzilla-daemon@bugzilla.kernel.org wrote:
-> > https://bugzilla.kernel.org/show_bug.cgi?id=3D211315
-> >=20
-> >              Bug ID: 211315
-> >             Summary: [aarch64][xfstests/ext3 generic/472] swapon: Inval=
-id
-> >                      argument
-> >             Product: File System
-> >             Version: 2.5
-> >      Kernel Version: 5.11.0-0.rc4.20210120git45dfb8a5659a.131.eln108.aa=
-rch6
-> >                      4
-> >            Hardware: ARM
-> >                  OS: Linux
-> >                Tree: Mainline
-> >              Status: NEW
-> >            Severity: normal
-> >            Priority: P1
-> >           Component: ext3
-> >            Assignee: fs_ext3@kernel-bugs.osdl.org
-> >            Reporter: neolorry+bugzilla.kernel.org@googlemail.com
-> >          Regression: No
-> >=20
-> > xfstests generic/472 fails on ext3 on the latest kernel
-> > (kernel-5.11.0-0.rc4.20210120git45dfb8a5659a.131.eln108.aarch64 from
-> > https://koji.fedoraproject.org/koji/buildinfo?buildID=3D1671933). This =
-only
-> > happens on aarch64 and ext3 with 2048 block size. I can reproduce it on
-> > kernel-4.18 based RHEL-8 kernel as well.
-> >=20
-> > log
-> > ```
-> > # ./check -d -T generic/472
-> > FSTYP         -- ext3
-> > PLATFORM      -- Linux/aarch64 15-vm-16
-> > 5.11.0-0.rc4.20210120git45dfb8a5659a.131.eln108.aarch64 #1 SMP Wed Jan =
-20
-> > 23:39:54 UTC 2021
-> > MKFS_OPTIONS  -- -b 2048 /dev/vda3
-> > MOUNT_OPTIONS -- -o rw,relatime,seclabel -o
-> > context=3Dsystem_u:object_r:root_t:s0
-> > /dev/vda3 /scratch
-> >=20
-> > generic/472 103s ...    [05:31:22]QA output created by 472
-> > regular swap
-> > too long swap
-> > tiny swap
-> > swapon: Invalid argument
-> >   [05:32:15]- output mismatch (see
-> > /tmp/tmp.6xoJizCZKc/repo_xfstests/results//generic/472.out.bad)
-> >      --- tests/generic/472.out   2021-01-22 01:31:23.045484313 -0500
-> >      +++ /tmp/tmp.6xoJizCZKc/repo_xfstests/results//generic/472.out.bad
-> > 2021-01-22 05:32:15.217684365 -0500
-> >      @@ -2,3 +2,4 @@
-> >       regular swap
-> >       too long swap
-> >       tiny swap
-> >      +swapon: Invalid argument
-> >      ...
-> >      (Run 'diff -u /tmp/tmp.6xoJizCZKc/repo_xfstests/tests/generic/472.=
-out
-> > /tmp/tmp.6xoJizCZKc/repo_xfstests/results//generic/472.out.bad'  to see=
- the
-> > entire diff)
-> > Ran: generic/472
-> > Failures: generic/472
-> > Failed 1 of 1 tests
-> > ```
-> >=20
-> > 472.full
-> > ```
-> > # cat /tmp/tmp.6xoJizCZKc/repo_xfstests/results//generic/472.full
-> > Creating filesystem with 5767168 2k blocks and 720896 inodes
-> > Filesystem UUID: 97619060-f6ec-4ed0-8984-01b4aefe86f8
-> > Superblock backups stored on blocks:
-> >          16384, 49152, 81920, 114688, 147456, 409600, 442368, 802816,
-> >          1327104,
-> >          2048000, 3981312, 5619712
-> >=20
-> > Allocating group tables: done
-> > Writing inode tables: done
-> > Creating journal (32768 blocks): done
-> > Writing superblocks and filesystem accounting information: done
-> >=20
-> > regular swap
-> > /usr/bin/chattr: Operation not supported while setting flags on
-> /scratch/swap
-> > wrote 2097152/2097152 bytes at offset 0
-> > 2 MiB, 512 ops; 0.1898 sec (10.534 MiB/sec and 2696.7097 ops/sec)
-> > too long swap
-> > /usr/bin/chattr: Operation not supported while setting flags on
-> /scratch/swap
-> > wrote 2097155/2097155 bytes at offset 0
-> > 2 MiB, 513 ops; 0.1231 sec (16.241 MiB/sec and 4165.7531 ops/sec)
-> > tiny swap
-> > /usr/bin/chattr: Operation not supported while setting flags on
-> /scratch/swap
-> > wrote 196608/196608 bytes at offset 0
-> > 192 KiB, 48 ops; 0.0130 sec (14.338 MiB/sec and 3670.5666 ops/sec)
-> > swapoff: /scratch/swap: swapoff failed: Invalid argument
-> > ```
-> >=20
-> > xfstests local.config
-> > ```
-> > FSTYP=3D"ext3"
-> > TEST_DIR=3D"/test"
-> > TEST_DEV=3D"/dev/vda4"
-> > SCRATCH_MNT=3D"/scratch"
-> > SCRATCH_DEV=3D"/dev/vda3"
-> > LOGWRITES_MNT=3D"/logwrites"
-> > LOGWRITES_DEV=3D"/dev/vda6"
-> > MKFS_OPTIONS=3D"-b 2048"
-> > MOUNT_OPTIONS=3D"-o rw,relatime,seclabel"
-> > TEST_FS_MOUNT_OPTS=3D"-o rw,relatime,seclabel"
-> > ```
-> >=20
-> > 64k page size
-> > ```
-> > # getconf PAGESIZE
-> > 65536
-> > ```
-> >=20
-> > fdisk -l
-> > ```
-> > # fdisk -l /dev/vda
-> > Disk /dev/vda: 100 GiB, 107374182400 bytes, 209715200 sectors
-> > Units: sectors of 1 * 512 =3D 512 bytes
-> > Sector size (logical/physical): 512 bytes / 512 bytes
-> > I/O size (minimum/optimal): 512 bytes / 512 bytes
-> > Disklabel type: gpt
-> > ```
-> >=20
-> > xfstests version
-> > ```
-> > # git rev-parse HEAD
-> > 4767884aff19e042ee3be51c88cf2c27a111707e
-> > # cat .git/config
-> > [core]
-> >          repositoryformatversion =3D 0
-> >          filemode =3D true
-> >          bare =3D false
-> >          logallrefupdates =3D true
-> > [remote "origin"]
-> >          url =3D git://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git
-> >          fetch =3D +refs/heads/*:refs/remotes/origin/*
-> > [branch "master"]
-> >          remote =3D origin
-> >          merge =3D refs/heads/master
-> > ```
-> >=20
-> > e2fsprogs version
-> > ```
-> > # rpm -q e2fsprogs
-> > e2fsprogs-1.45.6-1.el8.aarch64
-> > ```
-> >
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index cf652ba3e74d..1f64dbd7237b 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -827,21 +827,6 @@ dx_probe(struct ext4_filename *fname, struct inode *dir,
+ 				p = m + 1;
+ 		}
+ 
+-		if (0) { // linear search cross check
+-			unsigned n = count - 1;
+-			at = entries;
+-			while (n--)
+-			{
+-				dxtrace(printk(KERN_CONT ","));
+-				if (dx_get_hash(++at) > hash)
+-				{
+-					at--;
+-					break;
+-				}
+-			}
+-			ASSERT(at == p - 1);
+-		}
+-
+ 		at = p - 1;
+ 		dxtrace(printk(KERN_CONT " %x->%u\n",
+ 			       at == entries ? 0 : dx_get_hash(at),
+-- 
+2.25.1
 
---=20
-You may reply to this email to add a comment.
-
-You are receiving this mail because:
-You are watching the assignee of the bug.=
