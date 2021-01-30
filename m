@@ -2,299 +2,122 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB3A3094A2
-	for <lists+linux-ext4@lfdr.de>; Sat, 30 Jan 2021 12:01:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC7373094A6
+	for <lists+linux-ext4@lfdr.de>; Sat, 30 Jan 2021 12:06:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231733AbhA3K7M (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 30 Jan 2021 05:59:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230058AbhA3K7H (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 30 Jan 2021 05:59:07 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0899C061573
-        for <linux-ext4@vger.kernel.org>; Sat, 30 Jan 2021 02:58:26 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id kx7so7127890pjb.2
-        for <linux-ext4@vger.kernel.org>; Sat, 30 Jan 2021 02:58:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=1xmLTVh+x+bHVQHV+pcks3Pcd/alitj/vGHdUpX2N84=;
-        b=CNb22XAqsfZPbrgyOJM7Kp91327MV4mPHzeg1EUY+hwNYB2wYvKNzpldVYNb3DlweE
-         iuSQML6UuhMakt8AKRSZNm9IOKsQrq2G76VqKjT6bWZQ7ZD9ijA8OrQpdLMhKPkhq2D8
-         o+WtfoKCg3HuTu7pRbePGR6h8A0En+9g+TiDMa3lPCBFcRGV/TusNv59vR7GMSsjJ347
-         +cMSSBn3aiBJSwPucdseZ0xecNryPJgCrg9v4mn6MHGD1dQlQ2+HMJXPuZQVc/B19JhU
-         +p/TahZBEHARv11nemiCCPWiiAKbn5uXgPNM6Ys8mLVbSoQWbIfTA6HJo52kS10FyUlg
-         o3eg==
+        id S229987AbhA3LF6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 30 Jan 2021 06:05:58 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:43368 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229620AbhA3LF5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 30 Jan 2021 06:05:57 -0500
+Received: by mail-il1-f197.google.com with SMTP id b4so9615680ilj.10
+        for <linux-ext4@vger.kernel.org>; Sat, 30 Jan 2021 03:05:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=1xmLTVh+x+bHVQHV+pcks3Pcd/alitj/vGHdUpX2N84=;
-        b=HSaeip2o00pyvtY/TgQWgZtwXnqqqcYRvE33bL8c15gXo2SYaXTiCun+r7MU+jDQkP
-         fefj0kjKrWRzWW1B91VpzLLvikZo+W2ebHpx4gyj451d0/UzK+e+3FM5DUjJyUr7iP1u
-         jXcIn163bL6TGnvDqWcM8PNh7LBi3tI5cgNbBIevaeBirkGYC10gSi+HdvbIQR/+3XTb
-         +aJp2I++AEZuZjwvwTgMO0zCATIirRvHQqW+OXSIYNtt9RTb2MytW64oBgFzrwcCzedg
-         Vv91m8PVCqZgfuHE8uY6pbfEWo2SMjJOtv85TGsmtNyMD3PF8oCBZe0ZG+SYhbp2nT4S
-         +YTg==
-X-Gm-Message-State: AOAM533598ERZGbi4vjO1CL+WBBF0STUErRkQluzhbNx2fNBq59vaYkD
-        HxViQ+CgFX1qJVuQsnor//qYjpIqbg1ryiSf
-X-Google-Smtp-Source: ABdhPJygqanPVcjqvhykrVh5Btw2eUx/NSeOkBkNUBsaj4noPeCJgeAZX4Vq4f4MpDWq3RGP/dFGGg==
-X-Received: by 2002:a17:90a:e547:: with SMTP id ei7mr8905567pjb.34.1612004306143;
-        Sat, 30 Jan 2021 02:58:26 -0800 (PST)
-Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id 83sm11508927pfu.134.2021.01.30.02.58.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 30 Jan 2021 02:58:25 -0800 (PST)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <D99BC3ED-A31C-49A9-9EE0-F0BC75D78FAE@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_F3787EB7-12C2-4AFC-9B67-1F52779111DF";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH 4/4] ext4: add proc files to monitor new structures
-Date:   Sat, 30 Jan 2021 03:58:23 -0700
-In-Reply-To: <20210129222931.623008-5-harshadshirwadkar@gmail.com>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Alex Zhuravlev <bzzz@whamcloud.com>,
-        =?utf-8?B?0JHQu9Cw0LPQvtC00LDRgNC10L3QutC+INCQ0YDRgtGR0Lw=?= 
-        <artem.blagodarenko@gmail.com>
-To:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-References: <20210129222931.623008-1-harshadshirwadkar@gmail.com>
- <20210129222931.623008-5-harshadshirwadkar@gmail.com>
-X-Mailer: Apple Mail (2.3273)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=jCBSnhYhEzX3fnG+CyRibw/WOx8ApQmO7+F32f63PTk=;
+        b=hqZMs/UPuZYCynQCcbr6+b9n5fxF4hA1ytHjF3z6D4eJ/iKfSxIE0kmeQsS3S0G1wY
+         0z57ErjaKMFYJLtd+vFPVAzByRGMb3rEq4rkfMNaNI2UqIDjgHHh8Vi2zaTN8wW58gZ9
+         rSrHLq3aeZhFMcXAAr3c1ypDf37G+kCpZlkLOLFNIiwedjnfwkoahvvLztR0gtYQ0zKr
+         cALDu8XpQuOsfHiqEhxcU9suG1GOjJ91zSkcfCkiLe6CEfet/P5890iAjCZMZ+bTIawf
+         /2+Yx7PzTpg1KEjMQQlf2P4BHWGx+B6lzPwmGYXHKRjC3QdnX+TvdUAyA7CVZacVX3dR
+         k5dA==
+X-Gm-Message-State: AOAM532JKTBEFuSkC3BZAJpaNTQR3wJyLz9sJIcS0CTWgE3ZmnSfY9mE
+        iPQVrncIWLVgbCr9ncSNSrbJXA6RObuV93FEBEDQFVexwBNm
+X-Google-Smtp-Source: ABdhPJxqHQKx65sKV365XJS+R6hQXLKWru0dwR6RmmGnXjPCjtsNz2RsBBFz7eXX8MCZHUc/AjXaDUrBvEACyoxrTngsHIGqkPve
+MIME-Version: 1.0
+X-Received: by 2002:a02:c76b:: with SMTP id k11mr7469699jao.57.1612004716035;
+ Sat, 30 Jan 2021 03:05:16 -0800 (PST)
+Date:   Sat, 30 Jan 2021 03:05:16 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000079c56a05ba1c18c3@google.com>
+Subject: KASAN: use-after-free Read in ext4_xattr_set_entry (4)
+From:   syzbot <syzbot+4cb1e27475bf90a9b926@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Hello,
 
---Apple-Mail=_F3787EB7-12C2-4AFC-9B67-1F52779111DF
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+syzbot found the following issue on:
 
-On Jan 29, 2021, at 3:29 PM, Harshad Shirwadkar =
-<harshadshirwadkar@gmail.com> wrote:
->=20
-> This patch adds a new file "mb_structs" which allows us to see the
-> largest free order lists and the serialized average fragment tree.
+HEAD commit:    f8ad8187 fs/pipe: allow sendfile() to pipe again
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11b8ad10d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=96b123631a6700e9
+dashboard link: https://syzkaller.appspot.com/bug?extid=4cb1e27475bf90a9b926
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11131f94d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15c3761b500000
 
-It might make sense to split these two structs into separate files.
-On large filesystems, there will be millions of groups, so having
-to dump both structs to find out information about one or the other
-would be a lot of overhead.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+4cb1e27475bf90a9b926@syzkaller.appspotmail.com
 
-Also, while the "mb_groups" file can be large (one line per group)
-for millions of groups, the files added here may have millions of
-groups on the same line.  Text processing tools are used to dealing
-with many lines in a file, but are relatively poor at dealing with
-millions of characters on a single line...
+==================================================================
+BUG: KASAN: use-after-free in ext4_xattr_set_entry+0x3151/0x3780 fs/ext4/xattr.c:1586
+Read of size 4 at addr ffff888030c00004 by task syz-executor392/11280
 
-It would be good to have a "summary" file that dumps general info
-about these structs (e.g. the number of groups at each list order,
-depth of the rbtree).  That could be maintained easily for the c0
-lists at least, since the list is locked whenever a group is added
-and removed.
+CPU: 0 PID: 11280 Comm: syz-executor392 Not tainted 5.11.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:230
+ __kasan_report mm/kasan/report.c:396 [inline]
+ kasan_report.cold+0x79/0xd5 mm/kasan/report.c:413
+ ext4_xattr_set_entry+0x3151/0x3780 fs/ext4/xattr.c:1586
+ ext4_xattr_ibody_set+0x78/0x2b0 fs/ext4/xattr.c:2224
+ ext4_xattr_set_handle+0x8f4/0x13e0 fs/ext4/xattr.c:2380
+ ext4_xattr_set+0x13a/0x340 fs/ext4/xattr.c:2493
+ __vfs_setxattr+0x10e/0x170 fs/xattr.c:177
+ __vfs_setxattr_noperm+0x11a/0x4c0 fs/xattr.c:208
+ __vfs_setxattr_locked+0x1bf/0x250 fs/xattr.c:266
+ vfs_setxattr+0x135/0x320 fs/xattr.c:291
+ setxattr+0x1ff/0x290 fs/xattr.c:553
+ path_setxattr+0x170/0x190 fs/xattr.c:572
+ __do_sys_setxattr fs/xattr.c:587 [inline]
+ __se_sys_setxattr fs/xattr.c:583 [inline]
+ __x64_sys_setxattr+0xc0/0x160 fs/xattr.c:583
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x445589
+Code: e8 4c b3 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 0b cc fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fffdf5f9b28 EFLAGS: 00000246 ORIG_RAX: 00000000000000bc
+RAX: ffffffffffffffda RBX: 0000000000000016 RCX: 0000000000445589
+RDX: 0000000000000000 RSI: 0000000020000140 RDI: 0000000020000100
+RBP: 0000000001a18c30 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000000073d
+R13: 00007fffdf5f9ba0 R14: 0000000000000000 R15: 0000000000000000
 
-In Artem's patch to improve mballoc for large filesystems (which
-didn't land, but was useful anyway), there was an "mb_alloc_stats"
-file added:
+The buggy address belongs to the page:
+page:00000000f7ed6945 refcount:0 mapcount:-128 mapping:0000000000000000 index:0x1 pfn:0x30c00
+flags: 0xfff00000000000()
+raw: 00fff00000000000 ffffea0000c56508 ffffea0000c17d88 0000000000000000
+raw: 0000000000000001 0000000000000001 00000000ffffff7f 0000000000000000
+page dumped because: kasan: bad access detected
 
-=
-https://github.com/lustre/lustre-release/blob/master/ldiskfs/kernel_patche=
-s/patches/rhel8/ext4-simple-blockalloc.patch#L102
-
-/proc/fs/ldiskfs/dm-2/mb_alloc_stats:mballoc:
-/proc/fs/ldiskfs/dm-2/mb_alloc_stats:   blocks: 0
-/proc/fs/ldiskfs/dm-2/mb_alloc_stats:   reqs: 0
-/proc/fs/ldiskfs/dm-2/mb_alloc_stats:   success: 0
-/proc/fs/ldiskfs/dm-2/mb_alloc_stats:   extents_scanned: 0
-/proc/fs/ldiskfs/dm-2/mb_alloc_stats:           goal_hits: 0
-/proc/fs/ldiskfs/dm-2/mb_alloc_stats:           2^n_hits: 0
-/proc/fs/ldiskfs/dm-2/mb_alloc_stats:           breaks: 0
-/proc/fs/ldiskfs/dm-2/mb_alloc_stats:           lost: 0
-/proc/fs/ldiskfs/dm-2/mb_alloc_stats:   useless_c1_loops: 0
-/proc/fs/ldiskfs/dm-2/mb_alloc_stats:   useless_c2_loops: 0
-/proc/fs/ldiskfs/dm-2/mb_alloc_stats:   useless_c3_loops: 163
-/proc/fs/ldiskfs/dm-2/mb_alloc_stats:   skipped_c1_loops: 0
-/proc/fs/ldiskfs/dm-2/mb_alloc_stats:   skipped_c2_loops: 1230
-/proc/fs/ldiskfs/dm-2/mb_alloc_stats:   skipped_c3_loops: 0
-/proc/fs/ldiskfs/dm-2/mb_alloc_stats:   buddies_generated: 6305
-/proc/fs/ldiskfs/dm-2/mb_alloc_stats:   buddies_time_used: 20165523
-/proc/fs/ldiskfs/dm-2/mb_alloc_stats:   preallocated: 9943702
-/proc/fs/ldiskfs/dm-2/mb_alloc_stats:   discarded: 10506
-
-that would still be useful to maintain, since only a few of the lines
-are specific to his patch ({useless,skipped}_c[123]_loops)
-
-> Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-> ---
-> fs/ext4/ext4.h    |  1 +
-> fs/ext4/mballoc.c | 79 +++++++++++++++++++++++++++++++++++++++++++++++
-> fs/ext4/sysfs.c   |  2 ++
-> 3 files changed, 82 insertions(+)
->=20
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index da12a083bf52..835e304e3113 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -2809,6 +2809,7 @@ int __init ext4_fc_init_dentry_cache(void);
->=20
-> /* mballoc.c */
-> extern const struct seq_operations ext4_mb_seq_groups_ops;
-> +extern const struct seq_operations ext4_mb_seq_structs_ops;
-> extern long ext4_mb_stats;
-> extern long ext4_mb_max_to_scan;
-> extern int ext4_mb_init(struct super_block *);
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 413259477b03..ec4656903bd4 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -2741,6 +2741,85 @@ const struct seq_operations =
-ext4_mb_seq_groups_ops =3D {
-> 	.show   =3D ext4_mb_seq_groups_show,
-> };
->=20
-> +static void *ext4_mb_seq_structs_start(struct seq_file *seq, loff_t =
-*pos)
-> +{
-> +	struct super_block *sb =3D PDE_DATA(file_inode(seq->file));
-> +	unsigned long position;
-> +
-> +	read_lock(&EXT4_SB(sb)->s_mb_rb_lock);
-> +
-> +	if (*pos < 0 || *pos >=3D MB_NUM_ORDERS(sb) + =
-ext4_get_groups_count(sb))
-> +		return NULL;
-> +	position =3D *pos + 1;
-> +	return (void *) ((unsigned long) position);
-> +}
-> +
-> +static void *ext4_mb_seq_structs_next(struct seq_file *seq, void *v, =
-loff_t *pos)
-> +{
-> +	struct super_block *sb =3D PDE_DATA(file_inode(seq->file));
-> +	unsigned long position;
-> +
-> +	++*pos;
-> +	if (*pos < 0 || *pos >=3D MB_NUM_ORDERS(sb) + =
-ext4_get_groups_count(sb))
-> +		return NULL;
-> +	position =3D *pos + 1;
-> +	return (void *) ((unsigned long) position);
-> +}
-> +
-> +static int ext4_mb_seq_structs_show(struct seq_file *seq, void *v)
-> +{
-> +	struct super_block *sb =3D PDE_DATA(file_inode(seq->file));
-> +	struct ext4_sb_info *sbi =3D EXT4_SB(sb);
-> +	unsigned long position =3D ((unsigned long) v);
-> +	struct ext4_group_info *grpinfo;
-> +	struct rb_node *n;
-> +	int i;
-> +
-> +	position--;
-> +
-> +	if (position >=3D MB_NUM_ORDERS(sb)) {
-> +		position -=3D MB_NUM_ORDERS(sb);
-> +		if (position =3D=3D 0)
-> +			seq_puts(seq, "Group, Avg Fragment Size\n");
-> +		n =3D rb_first(&sbi->s_mb_avg_fragment_size_root);
-> +		for (i =3D 0; n && i < position; i++)
-> +			n =3D rb_next(n);
-> +		if (!n)
-> +			return 0;
-> +		grpinfo =3D rb_entry(n, struct ext4_group_info, =
-bb_avg_fragment_size_rb);
-> +		seq_printf(seq, "%d, %d\n",
-> +			   grpinfo->bb_group,
-> +			   grpinfo->bb_fragments ? grpinfo->bb_free / =
-grpinfo->bb_fragments : 0);
-> +		return 0;
-> +	}
-> +
-> +	if (position =3D=3D 0)
-> +		seq_puts(seq, "Largest Free Order Lists:\n");
-> +
-> +	seq_printf(seq, "[%ld]: ", position);
-> +	list_for_each_entry(grpinfo, =
-&sbi->s_mb_largest_free_orders[position],
-> +			    bb_largest_free_order_node)	{
-> +		seq_printf(seq, "%d ", grpinfo->bb_group);
-> +	}
-> +	seq_puts(seq, "\n");
-> +
-> +	return 0;
-> +}
-> +
-> +static void ext4_mb_seq_structs_stop(struct seq_file *seq, void *v)
-> +{
-> +	struct super_block *sb =3D PDE_DATA(file_inode(seq->file));
-> +
-> +	read_unlock(&EXT4_SB(sb)->s_mb_rb_lock);
-> +}
-> +
-> +const struct seq_operations ext4_mb_seq_structs_ops =3D {
-> +	.start  =3D ext4_mb_seq_structs_start,
-> +	.next   =3D ext4_mb_seq_structs_next,
-> +	.stop   =3D ext4_mb_seq_structs_stop,
-> +	.show   =3D ext4_mb_seq_structs_show,
-> +};
-> +
-> static struct kmem_cache *get_groupinfo_cache(int blocksize_bits)
-> {
-> 	int cache_index =3D blocksize_bits - EXT4_MIN_BLOCK_LOG_SIZE;
-> diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
-> index 4e27fe6ed3ae..828d58b98310 100644
-> --- a/fs/ext4/sysfs.c
-> +++ b/fs/ext4/sysfs.c
-> @@ -527,6 +527,8 @@ int ext4_register_sysfs(struct super_block *sb)
-> 					ext4_fc_info_show, sb);
-> 		proc_create_seq_data("mb_groups", S_IRUGO, sbi->s_proc,
-> 				&ext4_mb_seq_groups_ops, sb);
-> +		proc_create_seq_data("mb_structs", 0444, sbi->s_proc,
-> +				&ext4_mb_seq_structs_ops, sb);
-> 	}
-> 	return 0;
-> }
-> --
-> 2.30.0.365.g02bc693789-goog
->=20
+Memory state around the buggy address:
+ ffff888030bfff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff888030bfff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff888030c00000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+                   ^
+ ffff888030c00080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff888030c00100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+==================================================================
 
 
-Cheers, Andreas
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-
-
-
-
-
---Apple-Mail=_F3787EB7-12C2-4AFC-9B67-1F52779111DF
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmAVO88ACgkQcqXauRfM
-H+Bn+w/9HiJYPZ+eCCc8Tf+jcKc6PVzyYhjc0xBW98t0nzBEtjjAprYddLYauhEH
-cAuGff1hpkiVreQ3dU1EKugCUNXtPBVFwPJqIT9hEigtRq093sUQEIcjKCmf5Iy+
-ssLilrx18xsRaqwpCUGYSLzPfAuqUXd8033ETdvcxU7jVX59QVYxljtGldvMt6iT
-NVw+lg5YFu+jC+7THS2ySQ0Jet85fYBP2RgAl+5sOlgrcLWi3pE51o+99/uVFJ0O
-Ock0jlY2VpQ9Gh+3AjMGs3KN223PBqII0PbCzefwqML8t7+tUDgyTOm6SBYR0p12
-5zAZUAHhMnZ6alEHLEhuUgY0fxM1zs/FmSA4tomBoL1qcW0cT+xpDZu47/BSJFRF
-KPh9SNIsX0P90TMrQO9Yz5CHt9K7ArZb8J4aCXGAYSXWGUuksJXR+XuQI/bovq8c
-R/5pFhJuJbCTdV+M0w5sKnw4sAP2FIVO52y/SH1g1TIf6l9YsBtgrbeYDOm6j262
-3CBDv3KURStKgPSdS3w5r43dKm2olVG9+CSk317jEZJrgyPvPVPNZ8YgaoFxn/KQ
-Yie7aTf9zLuT+WAlik9qPVKWG4UpmM4A5qsmqQMZKxLvmbklaLrndHjgmbRkl1ZC
-vsT8A8hpjVzQjlH2Z+XnCnyHa8MOThkxgJ38SVYCjyWmy1mv4cU=
-=gNJ/
------END PGP SIGNATURE-----
-
---Apple-Mail=_F3787EB7-12C2-4AFC-9B67-1F52779111DF--
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
