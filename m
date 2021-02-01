@@ -2,118 +2,122 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B48230AE2E
-	for <lists+linux-ext4@lfdr.de>; Mon,  1 Feb 2021 18:42:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FB2730AFAB
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Feb 2021 19:42:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232040AbhBARmL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 1 Feb 2021 12:42:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49708 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232221AbhBARl6 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 1 Feb 2021 12:41:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 73B0A64E8F;
-        Mon,  1 Feb 2021 17:41:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612201270;
-        bh=ncqmDsFhj7U/pfLjxTxIC0UUwvGuJWuBwAK+JB++wOQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=H9Bsi5wgOZQMFGgRJhKLUHxOb0pcAzQ7s9jnZXuL345ZMS8cniSig7Lauh3LCV0cF
-         O2I3HtgIEhWb56LrTRFfRodPDh2lMCLHih8Z5QO16zD3Z37ypa3SOR3oS/gfNRTmPr
-         zo0e6UupdR28dgJmse+3H9lUsn7EdsmCzp7OGujNQkBr+m+FBCoao5czgRfIeH09yZ
-         ZK92JoAyAoGgWcVPHR2wXrVPK65JYJ/Kt08gEoN3zROuSQJsY96GJ8kxnJXYoPq6gS
-         Hi70v2fF3PkL63hXeWs0/8KRlUhJ5QkcJKbTS6GMBAK7e2W6dPuXHKhOIbuB5rKePd
-         Wpidxc/Uip2IQ==
-Date:   Mon, 1 Feb 2021 09:41:08 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     Theodore Ts'o <tytso@mit.edu>, linux-api@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-ext4@vger.kernel.org, Victor Hsieh <victorhsieh@google.com>
-Subject: Re: [PATCH 0/6] fs-verity: add an ioctl to read verity metadata
-Message-ID: <YBg9ND4pXqmFDE0s@sol.localdomain>
-References: <20210115181819.34732-1-ebiggers@kernel.org>
+        id S233111AbhBASmu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 1 Feb 2021 13:42:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233099AbhBASmp (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 1 Feb 2021 13:42:45 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AD50C061573;
+        Mon,  1 Feb 2021 10:42:03 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id l12so17777871wry.2;
+        Mon, 01 Feb 2021 10:42:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wmtu6bNpF5dPnSRFTlVUqn3pIC+xqRbu0mxekXQ1e2w=;
+        b=WssRBfUX/BP94btJvmYdMC1fwhYweLqdT/gL24i2x8cZbzZqcExDKOPndrRlHiP79a
+         +ZQy9+L8YnXCVSnptYFeVq08iWCvSgqdkWdwFv9UhfRLKdGlaVOV0c5EQkJBFztNGKiG
+         AtP2ywGwFmQXj6sWtdtlNgb5RXe8kqam2YN76dI0jccMUOQHCia2MGWxks8/woiKbSci
+         RULGqr0al2n8tg088fXcJVds9bdoq+A1+p00BszIm8eR3xNOGwWxjZnXiVffo7MA1in+
+         RpzAAAxQi+jZgBikBo+Z+UdVGhTXExfnl2ArBulZdu1H0/svJ+KuYreAvHkJ4lvEw01J
+         grfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wmtu6bNpF5dPnSRFTlVUqn3pIC+xqRbu0mxekXQ1e2w=;
+        b=aAYIB9CHW47cyM8jIn69axc4s+ndc0RGsmuc943HBgx9jsnNlGyCuHSRhPmh1dxYan
+         wdKgmwlHv/ERdiylJDi7TqQD6TuxUgGpumhmSZE73NCnHWkwyxeRJUiLbWDlOEEVS/dQ
+         6Wf32jeinVjRx0YXkGca/Y8o/znBFuNb8HtuCOfI8o0LApFSQLOlbb7ya4SgPheWE3mf
+         Q2xVBq0wUxKCv6B7XfwInxvUTgKwfXtawK/Rri01o8G7E6GxTQoYmhUfPt66BhNYdOpv
+         uXJUKNWDgbwwj9vJouV4gPQulWH9ANexsXD2Wv/Lp7pMDkZpXKgIGooE9ySsFtn4wFv9
+         lSRg==
+X-Gm-Message-State: AOAM533XaAeYFFLtsr+gn3XZ824bPVieReki3tv+AVDStD603fV5nrhW
+        onNQEQ2dupDQxz0k8odfb/7k/IK8efDOBAiwMww=
+X-Google-Smtp-Source: ABdhPJy1mD5KiQw9cpQUdYd28pbpaBz11CVQjBrnrPbhNCuFNUsXXIHBLMwYVjSHwmEsvwTcDFCXVXC/MfjTFpkCtZk=
+X-Received: by 2002:a05:6000:1543:: with SMTP id 3mr19861502wry.254.1612204921821;
+ Mon, 01 Feb 2021 10:42:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210115181819.34732-1-ebiggers@kernel.org>
+References: <AAB32610-D238-4137-96DE-33655AAAB545@dilger.ca>
+ <20210201003125.90257-1-viniciustinti@gmail.com> <20210201124924.GA3284018@infradead.org>
+ <CALD9WKxc0kMPCHSoikko+qYk2+ZLUy73+ryKGW9qMSpyzAobLA@mail.gmail.com> <YBg20AuSC3/9w2zz@mit.edu>
+In-Reply-To: <YBg20AuSC3/9w2zz@mit.edu>
+From:   Vinicius Tinti <viniciustinti@gmail.com>
+Date:   Mon, 1 Feb 2021 15:41:50 -0300
+Message-ID: <CALD9WKzO53AXQW-qQ82VZ41H5=cGdLTUiEoz3X6BmPkb6XaTag@mail.gmail.com>
+Subject: Re: [PATCH v2] ext4: Enable code path when DX_DEBUG is set
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 10:18:13AM -0800, Eric Biggers wrote:
-> [This patchset applies to v5.11-rc3]
-> 
-> Add an ioctl FS_IOC_READ_VERITY_METADATA which allows reading verity
-> metadata from a file that has fs-verity enabled, including:
-> 
-> - The Merkle tree
-> - The fsverity_descriptor (not including the signature if present)
-> - The built-in signature, if present
-> 
-> This ioctl has similar semantics to pread().  It is passed the type of
-> metadata to read (one of the above three), and a buffer, offset, and
-> size.  It returns the number of bytes read or an error.
-> 
-> This ioctl doesn't make any assumption about where the metadata is
-> stored on-disk.  It does assume the metadata is in a stable format, but
-> that's basically already the case:
-> 
-> - The Merkle tree and fsverity_descriptor are defined by how fs-verity
->   file digests are computed; see the "File digest computation" section
->   of Documentation/filesystems/fsverity.rst.  Technically, the way in
->   which the levels of the tree are ordered relative to each other wasn't
->   previously specified, but it's logical to put the root level first.
-> 
-> - The built-in signature is the value passed to FS_IOC_ENABLE_VERITY.
-> 
-> This ioctl is useful because it allows writing a server program that
-> takes a verity file and serves it to a client program, such that the
-> client can do its own fs-verity compatible verification of the file.
-> This only makes sense if the client doesn't trust the server and if the
-> server needs to provide the storage for the client.
-> 
-> More concretely, there is interest in using this ability in Android to
-> export APK files (which are protected by fs-verity) to "protected VMs".
-> This would use Protected KVM (https://lwn.net/Articles/836693), which
-> provides an isolated execution environment without having to trust the
-> traditional "host".  A "guest" VM can boot from a signed image and
-> perform specific tasks in a minimum trusted environment using files that
-> have fs-verity enabled on the host, without trusting the host or
-> requiring that the guest has its own trusted storage.
-> 
-> Technically, it would be possible to duplicate the metadata and store it
-> in separate files for serving.  However, that would be less efficient
-> and would require extra care in userspace to maintain file consistency.
-> 
-> In addition to the above, the ability to read the built-in signatures is
-> useful because it allows a system that is using the in-kernel signature
-> verification to migrate to userspace signature verification.
-> 
-> This patchset has been tested by new xfstests which call this new ioctl
-> via a new subcommand for the 'fsverity' program from fsverity-utils.
-> 
-> Eric Biggers (6):
->   fs-verity: factor out fsverity_get_descriptor()
->   fs-verity: don't pass whole descriptor to fsverity_verify_signature()
->   fs-verity: add FS_IOC_READ_VERITY_METADATA ioctl
->   fs-verity: support reading Merkle tree with ioctl
->   fs-verity: support reading descriptor with ioctl
->   fs-verity: support reading signature with ioctl
-> 
->  Documentation/filesystems/fsverity.rst |  76 ++++++++++
->  fs/ext4/ioctl.c                        |   7 +
->  fs/f2fs/file.c                         |  11 ++
->  fs/verity/Makefile                     |   1 +
->  fs/verity/fsverity_private.h           |  13 +-
->  fs/verity/open.c                       | 133 +++++++++++------
->  fs/verity/read_metadata.c              | 195 +++++++++++++++++++++++++
->  fs/verity/signature.c                  |  20 +--
->  include/linux/fsverity.h               |  12 ++
->  include/uapi/linux/fsverity.h          |  14 ++
->  10 files changed, 417 insertions(+), 65 deletions(-)
->  create mode 100644 fs/verity/read_metadata.c
+On Mon, Feb 1, 2021 at 2:13 PM Theodore Ts'o <tytso@mit.edu> wrote:
+>
+> On Mon, Feb 01, 2021 at 01:15:29PM -0300, Vinicius Tinti wrote:
+> > On Mon, Feb 1, 2021 at 9:49 AM Christoph Hellwig <hch@infradead.org> wrote:
+> > >
+> > > DX_DEBUG is completely dead code, so either kill it off or make it an
+> > > actual CONFIG_* symbol through Kconfig if it seems useful.
+> >
+> > About the unreachable code in "if (0)" I think it could be removed.
+> > It seems to be doing an extra check.
+> >
+> > About the DX_DEBUG I think I can do another patch adding it to Kconfig
+> > as you and Nathan suggested.
+>
+> Yes, it's doing another check which is useful in terms of early
+> detection of bugs when a developer has the code open for
+> modifications.  It slows down performance under normal circumstances,
+> and assuming the code is bug-free(tm), it's entirely unnecessary ---
+> which is why it's under an "if (0)".
 
-All applied to fscrypt.git#fsverity for 5.12.
+My goal is to avoid having a dead code. Three options come to mind.
 
-- Eric
+The first would be to add another #ifdef SOMETHING (suggest a name).
+But this doesn't remove the code and someone could enable it by accident.
+
+The second would be to add the code in a block comment. Then document
+that it is for checking an invariant. This will make it harder to cause
+problems.
+
+The third would be to remove the code and explain the invariant in a block
+comment. Maybe add a pseudo code too in the comment.
+
+What do you think?
+
+> However, if there *is* a bug, having an early detection that the
+> representation invariant of the data structure has been violated can
+> be useful in root causing a bug.  This would probably be clearer if
+> the code was pulled out into a separate function with comments
+> explaining that this is a rep invariant check.
+
+Good idea. I will do that too.
+
+> The main thing about DX_DEBUG right now is that it is **super**
+> verbose.  Unwary users who enable it.... will be sorry.  If we want to
+> make it to be a first-class feature enabled via CONFIG_EXT4_DEBUG, we
+> should convert all of the dx_trace calls to use pr_debug so they are
+> enabled only if dynamic debug enables those pr_debug() statements.
+> And this should absolutely be a separate patch.
+
+Agreed. For now I only want to focus on the "if (0)".
+
+Regards,
+Vinicius
+
+> Cheers,
+>
+>                                                 - Ted
