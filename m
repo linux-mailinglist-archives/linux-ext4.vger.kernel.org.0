@@ -2,158 +2,100 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD9BD30B291
-	for <lists+linux-ext4@lfdr.de>; Mon,  1 Feb 2021 23:09:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D54F30B2F0
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Feb 2021 23:51:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230168AbhBAWHk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 1 Feb 2021 17:07:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbhBAWGE (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 1 Feb 2021 17:06:04 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A451C0613D6;
-        Mon,  1 Feb 2021 14:05:23 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id b3so165586wrj.5;
-        Mon, 01 Feb 2021 14:05:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lXrTNqZ1a2NxntCInW2qtCvN4u7gpYCSwOi9amzGB3k=;
-        b=SgwYSbrvvUpYp+tyZ7e71TPaScwW7TXdeh+CYCIgudEMBM2UW2Viqfd3SKONnHamlZ
-         het5ll/X1CSgLRvRdx+C/HLH4tt/LGXeUqlCH88/ShTPM+cPlR7ywAST1eCfTOEd1jen
-         s//lmBLinbfdirdKDB7/QuxhOuOMI2lvGXzQyUUCn8OzDSM3e0a8BNGF1ti9gC1e960a
-         5PgE4M3OOQbs/vsPmQ6UhQTGx9UfObtU9LDUKIk62ES+SIAHQgjFOKpXaEM/nel9lvmR
-         G7vtbuqYKfS7IjH+ibucbYUQkYDX91tXd+Xq/i6Jkx+aQOJ3gSb6yJCgY276LCbV7HuL
-         ychQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lXrTNqZ1a2NxntCInW2qtCvN4u7gpYCSwOi9amzGB3k=;
-        b=rfmGlFH7L4bB4zpwvXUrgyYn7KHzhSmojWS+wxDQ9rses9Ad+uK3G6Hohkm/UJMFct
-         7afn27uD1gtZ9lFtEl/7ZVGwwS37kkE7V8skb8eTA12TTQ0zWk/LWION54/3tTASYWb5
-         r72ncqWzEVBoTxxijjAec5w9zR4tXj6kkmJF8IdYCoXrBnfv5lzg2SKQ221ye32N6I0K
-         jm0qRCZJYdQXaF7/Sey9jJqMqLKT91SEb5sDBf0ognecaLEheqPLK2s1xRyJ9/wTdZa7
-         LZ4gFnKR4NaYXqZ19KeJQiyAiUXrFPN0BIn5VJi6pB41vTxCZ4stt2WPApE+SNDsfvOq
-         kc+g==
-X-Gm-Message-State: AOAM533G7QgEhXBIHRg/VJIt4O2+4uiWSrufDUB1jta6kK35Ef3CPZ++
-        zdGlDw+3bfiP9hnc8thOm805NLohKTF/AqOe+wY=
-X-Google-Smtp-Source: ABdhPJyCqGRoRr94G8UsAS59zzgQKkariIHpoAW12U3We55qvp1D1SoV1dHYBHF7csf+VcKyDwPkWpjLBPV+M+sp6TI=
-X-Received: by 2002:adf:f303:: with SMTP id i3mr20222409wro.60.1612217122143;
- Mon, 01 Feb 2021 14:05:22 -0800 (PST)
-MIME-Version: 1.0
-References: <AAB32610-D238-4137-96DE-33655AAAB545@dilger.ca>
- <20210201003125.90257-1-viniciustinti@gmail.com> <20210201124924.GA3284018@infradead.org>
- <CALD9WKxc0kMPCHSoikko+qYk2+ZLUy73+ryKGW9qMSpyzAobLA@mail.gmail.com>
- <YBg20AuSC3/9w2zz@mit.edu> <CALD9WKzO53AXQW-qQ82VZ41H5=cGdLTUiEoz3X6BmPkb6XaTag@mail.gmail.com>
- <YBhuHJgZ3QPqHheV@mit.edu> <CAKwvOd=ny2TeYV8SGZMD+aj8Yb6OSYGKAzSb-45r-HKk6WTUCQ@mail.gmail.com>
- <YBh0ywVzkUIR3fXg@mit.edu> <CAKwvOdkZRdBzzW19sVAs+pX-7wWwN6AWrxUkkZwP8L4OT7SLfQ@mail.gmail.com>
-In-Reply-To: <CAKwvOdkZRdBzzW19sVAs+pX-7wWwN6AWrxUkkZwP8L4OT7SLfQ@mail.gmail.com>
-From:   Vinicius Tinti <viniciustinti@gmail.com>
-Date:   Mon, 1 Feb 2021 19:05:11 -0300
-Message-ID: <CALD9WKx6HREQeTRXuv81v-=DTVuznXG_56YFm2dM1GOG3s4BRQ@mail.gmail.com>
-Subject: Re: [PATCH v2] ext4: Enable code path when DX_DEBUG is set
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>,
+        id S230002AbhBAWtw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 1 Feb 2021 17:49:52 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:43439 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229753AbhBAWtv (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 1 Feb 2021 17:49:51 -0500
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 111MmsZW027971
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 1 Feb 2021 17:48:54 -0500
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 4C73615C39E2; Mon,  1 Feb 2021 17:48:54 -0500 (EST)
+Date:   Mon, 1 Feb 2021 17:48:54 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Vinicius Tinti <viniciustinti@gmail.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
         Christoph Hellwig <hch@infradead.org>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Nathan Chancellor <natechancellor@gmail.com>,
         Ext4 Developers List <linux-ext4@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
         clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH v2] ext4: Enable code path when DX_DEBUG is set
+Message-ID: <YBiFVgatiz+owBs9@mit.edu>
+References: <20210201003125.90257-1-viniciustinti@gmail.com>
+ <20210201124924.GA3284018@infradead.org>
+ <CALD9WKxc0kMPCHSoikko+qYk2+ZLUy73+ryKGW9qMSpyzAobLA@mail.gmail.com>
+ <YBg20AuSC3/9w2zz@mit.edu>
+ <CALD9WKzO53AXQW-qQ82VZ41H5=cGdLTUiEoz3X6BmPkb6XaTag@mail.gmail.com>
+ <YBhuHJgZ3QPqHheV@mit.edu>
+ <CAKwvOd=ny2TeYV8SGZMD+aj8Yb6OSYGKAzSb-45r-HKk6WTUCQ@mail.gmail.com>
+ <YBh0ywVzkUIR3fXg@mit.edu>
+ <CAKwvOdkZRdBzzW19sVAs+pX-7wWwN6AWrxUkkZwP8L4OT7SLfQ@mail.gmail.com>
+ <CALD9WKx6HREQeTRXuv81v-=DTVuznXG_56YFm2dM1GOG3s4BRQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALD9WKx6HREQeTRXuv81v-=DTVuznXG_56YFm2dM1GOG3s4BRQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 6:41 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
->
-> On Mon, Feb 1, 2021 at 1:38 PM Theodore Ts'o <tytso@mit.edu> wrote:
-> >
-> > On Mon, Feb 01, 2021 at 01:16:19PM -0800, Nick Desaulniers wrote:
-> > > I agree; Vinicius, my recommendation for -Wunreachable-* with Clang
-> > > was to see whether dead code identified by this more aggressive
-> > > diagnostic (than -Wunused-function) was to ask maintainers whether
-> > > code identified by it was intentionally dead and if they would
-> > > consider removing it.  If they say "no," that's fine, and doesn't need
-> > > to be pushed.  It's not clear to maintainers that:
-> > > 1. this warning is not on by default
-> > > 2. we're not looking to pursue turning this on by default
+On Mon, Feb 01, 2021 at 07:05:11PM -0300, Vinicius Tinti wrote:
+> 
+> The goal is to try to detect real bugs. In this instance specifically I
+> suggested to remove the "if (0) {...}" because it sounded like an
+> unused code.
+> 
+> If it is useful it is fine to keep.
 
-Ok. I will make it clear in next commit messages.
+The trick was that it was unused code, but it was pretty obviously
+deliberate, which should have implied that at some point, it was
+considered useful.   :-)
 
-> > >
-> > > If maintainers want to keep the dead code, that's fine, let them and
-> > > move on to the next instance to see if that's interesting (or not).
-> >
-> > It should be noted that in Documenting/process/coding-style.rst, there
-> > is an expicit recommendation to code in a way that will result in dead
-> > code warnings:
-> >
-> >    Within code, where possible, use the IS_ENABLED macro to convert a Kconfig
-> >    symbol into a C boolean expression, and use it in a normal C conditional:
-> >
-> >    .. code-block:: c
-> >
-> >         if (IS_ENABLED(CONFIG_SOMETHING)) {
-> >                 ...
-> >         }
-> >
-> >    The compiler will constant-fold the conditional away, and include or exclude
-> >    the block of code just as with an #ifdef, so this will not add any runtime
-> >    overhead.  However, this approach still allows the C compiler to see the code
-> >    inside the block, and check it for correctness (syntax, types, symbol
-> >    references, etc).  Thus, you still have to use an #ifdef if the code inside the
-> >    block references symbols that will not exist if the condition is not met.
-> >
-> > So our process documentation *explicitly* recommends against using
-> > #ifdef CONFIG_XXX ... #endif, and instead use something that will
-> > -Wunreachable-code-aggressive to cause the compiler to complain.
->
-> I agree.
+It was the fact that you were so determined to find a way to suppress
+the warning, suggesting multiple tactics, which made me wonder.... why
+were you going through so much effort to silence the warning if the
+goal was *not* to turn it on unconditionally everywhere?
 
-I agree too.
+I suspect the much more useful thing to consider is how can we suggest
+hueristics to the Clang folks to make the warning more helpful.  For
+example, Coverity will warn about the following:
 
-> >
-> > Hence, this is not a warning that we will *ever* be able to enable
-> > unconditionally ---
->
-> I agree.
->
-> > so why work hard to remove such warnings from the
-> > code?  If the goal is to see if we can detect real bugs using this
->
-> Because not every instance of -Wunreachable-code-aggressive may be that pattern.
+void test_func(unsigned int arg)
+{
+	if (arg < 0) {
+		printf("Hello, world\n")
+	}
+}
 
-The goal is to try to detect real bugs. In this instance specifically I
-suggested to remove the "if (0) {...}" because it sounded like an
-unused code.
+This is an example of dead code that is pretty clearly unintended ---
+and it's something that "clang -Wall" or "gcc -Wall" doesn't pick up
+on, but Coverity does.
 
-If it is useful it is fine to keep.
+So in cases where the code is explicitly doing "if (0)" or "if
+(IS_ENABLED(xxx))" where IS_ENABLED resolves down to zero due to
+preprocessor magic, arguably, that's not a useful compiler warning
+because it almost *certainly* is intentional.  But in the case of an
+unsigned int being compared to see if it is less than, or greater than
+or equal to 0, that's almost certainly a bug --- and yes, Coverity has
+found a real bug (tm) in my code due to that kind of static code
+analysis.  So it would actually be quite nice if there was a compiler
+warning (either gcc or clang, I don't really care which) which would
+reliably call that out without having the maintainer submit the code
+to Coverity for analysis.
 
-For now I am only looking for dead code that cannot be enabled
-by a configuration file or architecture. In fact, there are several
-warnings that I am ignoring because they are a dead code in my
-build but may not be in another.
+Cheers,
 
-> > technique, well and good.  If the data shows that this warning
-> > actually is useful in finding bugs, then manybe we can figure out a
-> > way that we can explicitly hint to the compiler that in *this* case,
-> > the maintainer actually knew what they were doing.
-> >
-> > But if an examination of the warnings shows that
-> > -Wunreachable-code-aggressive isn't actually finding any real bugs,
-> > then perhaps it's not worth it.
->
-> I agree. Hence the examination of instances found by Vinicius.
+							- Ted
 
-I liked the idea to create htree_rep_invariant_check. I will be doing
-that.
-
-Thanks for the help and suggestions.
-
-> --
-> Thanks,
-> ~Nick Desaulniers
+P.S.  If anyone wants to file a feature request bug with the Clang
+developers, feel free.  :-)
