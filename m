@@ -2,112 +2,119 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 063AC309FC5
-	for <lists+linux-ext4@lfdr.de>; Mon,  1 Feb 2021 01:50:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE3D930A431
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Feb 2021 10:18:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbhBAAtI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 31 Jan 2021 19:49:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50390 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229535AbhBAAtD (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Sun, 31 Jan 2021 19:49:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF70364E09;
-        Mon,  1 Feb 2021 00:48:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612140503;
-        bh=UiySlPbagcPbnKf+65+enUICXrYYE5z7ajBqABAZRtI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KNQVvgNEo5AHuTHkyqKFg+huyKQuigJnpXOdaRG4xPPQu6vDXVJIPRTj1gra2y9HZ
-         qg/NWHLb1oihyk4/upE97ogHLcgonrB6qh4eOiAW1jeEHx0L7VAUwqUstWsXYFtDB4
-         uMJu51X+2HU98kpgLtRNr61buysRRWEHwSGQnkd5hVVJ1ZlNkQdPZZRvtt0VF1gjTx
-         6NSU8Y4wxMKTUwdA4TkI55BsIM+59k6hXpQyfEzaMOYF1S+WjOOU5s2AYteVPrdqD4
-         p3bLZMpmrXB7KneRhX2FEAJvWIHw+1Gllm79XVsMsrh1OcPQ3j4ZLZ9Ekf0fIPp1o1
-         V1G2UhZcI7mgg==
-Date:   Sun, 31 Jan 2021 17:48:20 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Vinicius Tinti <viniciustinti@gmail.com>
-Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH v2] ext4: Enable code path when DX_DEBUG is set
-Message-ID: <20210201004820.GA26230@localhost>
-References: <AAB32610-D238-4137-96DE-33655AAAB545@dilger.ca>
- <20210201003125.90257-1-viniciustinti@gmail.com>
+        id S232802AbhBAJRR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 1 Feb 2021 04:17:17 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:47559 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232704AbhBAJQw (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 1 Feb 2021 04:16:52 -0500
+Received: by mail-il1-f197.google.com with SMTP id y12so4234314ilu.14
+        for <linux-ext4@vger.kernel.org>; Mon, 01 Feb 2021 01:16:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=PfqqKaGy38PTHwEubCQk5qbh0oisqJ7mRK3LM8lNjJY=;
+        b=gj5k50uwGmKGhELXSL45/AciFa5VBrNYP1dggbOvIDJ7HhOil00ahZ0EayH54x7vwr
+         dI0iHGyB6Vv4jIVWrFszAzzxW5lBbFj1yMj67ggieN9qguYDclT6ucnislZmuQM3XYPH
+         JPUwCvcsJpHUinDrA9OuAADVStXlyW21im/j43liI6KPNRV2G10YEnfgHsVcLU7pVzQM
+         J1Q0vsLzgxZWvnZ1ieo1SYpgzpif8c1OKIQ5KWl8GPAG4Gj3jcaWID7wVvhhGehW4p7O
+         ud8F2fDJ+yeCO5y5YcyZlXIWnD+bG7Nyw9TF48+maPd9yvx2pNwL+YlQUUOGNqUKuFJR
+         5hAg==
+X-Gm-Message-State: AOAM531ZpxWx9LTPHoxnE7/XotOU+2Janx7Wan6Ns0pdVF2+q1Rk9iJY
+        qvfg8AqmIE9MESK9wmQNZUm21gIEJBrCMK4qxHNbl7B8mV2Y
+X-Google-Smtp-Source: ABdhPJy72jHACnFpjQDXXr0NT17id6K/Xm/BMyAuipj0cTAREguj+4EI/3tftvdCAKyqobsM/Xgyb4ea8x+My4uTxDV18myrImoY
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210201003125.90257-1-viniciustinti@gmail.com>
+X-Received: by 2002:a05:6638:116:: with SMTP id x22mr13488247jao.93.1612170971594;
+ Mon, 01 Feb 2021 01:16:11 -0800 (PST)
+Date:   Mon, 01 Feb 2021 01:16:11 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000014448405ba42ce31@google.com>
+Subject: UBSAN: shift-out-of-bounds in ext4_mb_init
+From:   syzbot <syzbot+a8b4b0c60155e87e9484@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, adilger@whamcloud.com,
+        bzzz@whamcloud.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 12:31:25AM +0000, Vinicius Tinti wrote:
-> By enabling -Wunreachable-code-aggressive on Clang the following code
-> paths are unreachable.
-> 
-> This has been present since commit ac27a0ec112a ("[PATCH] ext4: initial
-> copy of files from ext3") and fs/ext3 had it present at the beginning of
-> git history. It has not been changed since.
-> 
-> Clang warns:
-> 
-> fs/ext4/namei.c:831:17: warning: code will never be executed
-> [-Wunreachable-code]
->                         unsigned n = count - 1;
->                                      ^~~~~
-> fs/ext4/namei.c:830:7: note: silence by adding parentheses to mark code as
-> explicitly dead
->                 if (0) { // linear search cross check
->                     ^
->                     /* DISABLES CODE */ ( )
-> 
-> Signed-off-by: Vinicius Tinti <viniciustinti@gmail.com>
-> ---
->  fs/ext4/namei.c | 23 ++++++++++++-----------
->  1 file changed, 12 insertions(+), 11 deletions(-)
-> 
-> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-> index cf652ba3e74d..46ae6a4e4be5 100644
-> --- a/fs/ext4/namei.c
-> +++ b/fs/ext4/namei.c
-> @@ -827,20 +827,21 @@ dx_probe(struct ext4_filename *fname, struct inode *dir,
->  				p = m + 1;
->  		}
->  
-> -		if (0) { // linear search cross check
-> -			unsigned n = count - 1;
-> -			at = entries;
-> -			while (n--)
-> +#ifdef DX_DEBUG
-> +		// linear search cross check
-> +		unsigned n = count - 1;
+Hello,
 
-You are going to introduce an instance of -Wdeclaration-after-statement
-here.
+syzbot found the following issue on:
 
-fs/ext4/namei.c:834:12: warning: ISO C90 forbids mixing declarations and
-code [-Wdeclaration-after-statement]
-                unsigned n = count - 1;
-                         ^
-1 warning generated.
+HEAD commit:    6642d600 Merge tag '5.11-rc5-smb3' of git://git.samba.org/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16f064acd00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9408d1770a50819c
+dashboard link: https://syzkaller.appspot.com/bug?extid=a8b4b0c60155e87e9484
+compiler:       clang version 11.0.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=127be3d8d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1065a9e8d00000
 
-The quick hack would be changing the
+The issue was bisected to:
 
-if (0) {
+commit cfd73237722135807967f389bcbda558a60a30d6
+Author: Alex Zhuravlev <bzzz@whamcloud.com>
+Date:   Tue Apr 21 07:54:07 2020 +0000
 
-to
+    ext4: add prefetching for block allocation bitmaps
 
-#ifdef DX_DEBUG
-    if (1) {
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13b5c1d8d00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1075c1d8d00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=17b5c1d8d00000
 
-but that seems kind of ugly.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a8b4b0c60155e87e9484@syzkaller.appspotmail.com
+Fixes: cfd732377221 ("ext4: add prefetching for block allocation bitmaps")
 
-Other options would be turning DX_DEBUG into a proper Kconfig symbol so
-that IS_ENABLED could be used or maybe combine it into
-CONFIG_EXT4_DEBUG.
+loop0: detected capacity change from 264192 to 0
+================================================================================
+UBSAN: shift-out-of-bounds in fs/ext4/mballoc.c:2713:24
+shift exponent 60 is too large for 32-bit type 'int'
+CPU: 1 PID: 8433 Comm: syz-executor484 Not tainted 5.11.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x137/0x1be lib/dump_stack.c:120
+ ubsan_epilogue lib/ubsan.c:148 [inline]
+ __ubsan_handle_shift_out_of_bounds+0x432/0x4d0 lib/ubsan.c:395
+ ext4_mb_init_backend fs/ext4/mballoc.c:2713 [inline]
+ ext4_mb_init+0x19bc/0x19f0 fs/ext4/mballoc.c:2898
+ ext4_fill_super+0xc2ec/0xfbe0 fs/ext4/super.c:4983
+ mount_bdev+0x26c/0x3a0 fs/super.c:1366
+ legacy_get_tree+0xea/0x180 fs/fs_context.c:592
+ vfs_get_tree+0x86/0x270 fs/super.c:1496
+ do_new_mount fs/namespace.c:2881 [inline]
+ path_mount+0x17ad/0x2a00 fs/namespace.c:3211
+ do_mount fs/namespace.c:3224 [inline]
+ __do_sys_mount fs/namespace.c:3432 [inline]
+ __se_sys_mount+0x28c/0x320 fs/namespace.c:3409
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x44710a
+Code: b8 08 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 fd ad fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 da ad fb ff c3 66 0f 1f 84 00 00 00 00 00
+RSP: 002b:00007ffc5b95ff48 EFLAGS: 00000206 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007ffc5b95ffa0 RCX: 000000000044710a
+RDX: 0000000020000000 RSI: 0000000020000180 RDI: 00007ffc5b95ff60
+RBP: 00007ffc5b95ff60 R08: 00007ffc5b95ffa0 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000206 R12: 0000000000000013
+R13: 0000000000000004 R14: 0000000000000003 R15: 0000000000000003
+================================================================================
 
-Cheers,
-Nathan
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
