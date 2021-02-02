@@ -2,28 +2,28 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F9C330C7D1
-	for <lists+linux-ext4@lfdr.de>; Tue,  2 Feb 2021 18:33:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F9EE30C7EC
+	for <lists+linux-ext4@lfdr.de>; Tue,  2 Feb 2021 18:36:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237460AbhBBRcP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 2 Feb 2021 12:32:15 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:50385 "EHLO
+        id S237533AbhBBRgA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 2 Feb 2021 12:36:00 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:50928 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S237560AbhBBRaE (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 2 Feb 2021 12:30:04 -0500
+        with ESMTP id S237515AbhBBRcy (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 2 Feb 2021 12:32:54 -0500
 Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 112HTFsT022179
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 112HW7kg023393
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 2 Feb 2021 12:29:16 -0500
+        Tue, 2 Feb 2021 12:32:08 -0500
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 70BAD15C39E2; Tue,  2 Feb 2021 12:29:15 -0500 (EST)
-Date:   Tue, 2 Feb 2021 12:29:15 -0500
+        id 5CA9215C39E2; Tue,  2 Feb 2021 12:32:07 -0500 (EST)
+Date:   Tue, 2 Feb 2021 12:32:07 -0500
 From:   "Theodore Ts'o" <tytso@mit.edu>
 To:     linux-ext4@vger.kernel.org
-Subject: [ANNOUNCE] e2fsprogs v1.45.7
-Message-ID: <YBmL619A+a+viwX7@mit.edu>
+Subject: [ANNOUNCE] e2fsprogs v1.46.0
+Message-ID: <YBmMlwBaoC58CARb@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -31,115 +31,131 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-I've released e2fsprogs 1.45.7 in all of the usual places; it's tagged
+I've released e2fsprogs 1.46.0 in all of the usual places; it's tagged
 in the git trees on git.kernel.org, github, and sourceforge, and
 available for download at:
 
-http://www.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v1.45.7
+http://www.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v1.46.0
 
 and
 
-http://prdownloads.sourceforge.net/e2fsprogs/e2fsprogs-1.45.7.tar.gz
+http://prdownloads.sourceforge.net/e2fsprogs/e2fsprogs-1.46.0.tar.gz
 
-The release notes for 1.45.7 can be found below.
+The release notes for 1.46.0 can be found below.  Note that there is a
+know build failulre if the Fuse libraries are not available (which is
+fixed in git), and a regression test failure (j_recover_fast_commit)
+on Big Endian systems which we are still investigating.  So there will
+probably be a v1.46.1 release relatively soon....
 
 Cheers,
 
                                         - Ted
 
-E2fsprogs 1.45.7 (January 28, 2021)
-==================================
+E2fsprogs 1.46.0 (January 29, 2021)
+===================================
 
-Updates/Fixes since v1.45.6:
+Updates/Fixes since v1.45.7:
 
 UI and Features
 ---------------
 
-Mke2fs will now warn when creating a file system on a DAX-capable device
-and the block size is incompatible with DAX.
+E2fsprogs now supports the fast_commit (COMPAT_FAST_COMMIT) feature.
+This feature, first available in Linux version 5.10, adds a fine-grained
+journalling which improves the latency of the fsync(2) system call.  It
+should also improve the performance of ext4 file systems exported via
+NFS.
 
-The chattr and lsattr programs now support using the 'x' attribute to
-set/get dax support on a particular file.
+E2fsprogs now supports the stable_inodes (COMPAT_STABLE_INODES) feature.
+This needed to support the siphash file system encryption algorithm,
+which calculates the initial vector (IV) for encryption based on the
+UUID and the inode number.  This means that we can't renumber inodes
+(for example, when shrinking a file system) and the UUID can't be
+changed without breaking the ability to decrypt the encryption.
 
-E2fsprogs now supports the gnu.* extended attribute namespace, which
-allows mke2fs -d to import the gnu.translator extended attributes.
+E2fsprogs now supports file systems which have both file system
+encryption and the casefold feature enabled.  This requires Linux
+version 5.10.
 
-Add support for the simultaneous enablement of the casefold and
-encryption features, which ext4 supports starting with the v5.5 Linux
-kernel.
+E2fsck now will check file names on file systems with case folding
+enabled to make sure the characters are valid UTF-8 characters.  This is
+done for file systems which enforce strict encodings, and optionally if
+the extended "check_encoding" option is requested.
+
+The fuse2fs program now supports the "-o norecovery" option, which will
+suppress any journal replay that might be necessary, and mounts the file
+system read-only.
+
+E2fsck will now find and fix file system corruptions when the encrypted
+files have a different policy from their containing directory.
+
+The "htree" command in debugfs now displays the metadata checksums for
+hash tree index blocks.
+
+Dumpe2fs will print the error code that Linux kernels newer than v5.6
+will save to indicate the class of error which triggered the ext4_error
+event.
+
+E2fsprogs programs (in particular, fuse2fs) can now update htree
+directories without clearing the htree index.
+
+Mke2fs now sets the s_overhead_cluster field, so that the kernel doesn't
+need to calculate it at mount time.  This speeds up mounting very large
+file systems.
 
 
 Fixes
 -----
 
-When trying to run debugfs on a mounted file system, it's possible for
-the superblock to be read in an inconsistent state; debugfs will now
-retry the open in the hopes that it will succeed.
+E2fsck will properly handle checking for duplicated file names when case
+folding is enabled.
 
-Fix an off-by-one error when validating the depth of an htree which
-caused e2fsck to potentially fail to notice an invalid htree.
+Fix various bugs where a maliciously corrupted file systems could case
+e2fsck and other e2fsprogs programs to crash.
 
-Fix potential buffer overrun in e2fsck when scanning directory blocks in
-pass 2. (Addresses Google Bug: #158564737)
+Tune2fs will properly recalculate directory block checksums when
+clearing the dir_index feature.
 
-Fix tune2fs so that it unlocks the MMP block if it can't perform the
-requested operation.
+Fix a bug in e2fsck directory rehashing which could fail with ENOSPC
+because it doesn't take into account the space needed for the metadata
+checksum, and doesn't create a sufficiently deep index tree.
 
-Fix mke2fs so it can import the contents of a directory using the -d
-option when it has inode numbers that are greater than 2**32.   Also fix
-an ommission were the extended attributes on the top-level directory was
-not getting copied to the root directory.
+Clarify the e2fsck messages when it resets the directory link count when
+it is set to the overflow value but it is no longer needed.
 
-Fix e4crypt so that the add_key operation uses the explicitly provided
-salt if it is provided.
-
-Fix resize2fs to prevent it from overflowing the block group descriptors
-from overflowing the first block group.  (This can only happen when the
-block size is 1k and the file system is very large.)
-
-Fix debugfs's set_super_value command so it can set 64-bit integer
-fields, such as s_kbytes_written.
-
-Fix filefrag so that it won't crash if the kernel returns zero for
-statfs(2)'s device id or if it returns a blocksize of zero the device's
-blocksize.  This only happens with kernel bugs, but filefrag shouldn't
-crash when the kernel returns an unexpected value.
-
-Fix a few bad error code returns in the unix and sparse I/O managers.
-(These errors rarely happen in real life; these were find thanks to a
-static code checker.)
-
-E2fsck will no longer try to fix duplicate file names in an encrypted
-directory by mutating the file name since that will cause the decrypted
-file name to be gibberish, or to contain invalid characters.
-
-Updated and clarified various man pages.
+The filefrag program can now request the kernel to display the extent
+status cache by using "filefrag -E".  (This requires Linux version 5.4
+or newer.)
 
 
 Performance, Internal Implementation, Development Support etc.
 --------------------------------------------------------------
 
-The misc/mke2fs.conf.in script now properly escaping of double quotes
-when incorporating the mke2fs.conf into the default_profile.c file.  The
-upstream version of the mke2fs.conf.in file doesn't have any double
-quotes, but this allows a customized distribution of e2fsprogs to have
-double quotes in its default mke2fs profile.
+Speed up mke2fs when creating large bigalloc file systems by optimizing
+ext2fs_convert_subcluster_bitmap().
 
-Speeded up mkfs.ext3 by batching calls to ext2fs_zero_blocks when
-zeroing the blocks for an indirect-block mapped journal inode.
+Bitmap blocks are now read using multiple threads (for systems with
+pthread support).  This speeds up dumpe2fs, e2fsck, and debugfs for very
+large file systems.
 
-Fixed portability problem for implementations of grep which don't
-support extended regexp's without the -E option.
+The dumpe2fs and tune2fs will now avoiding to read the block group
+descriptors when they are not needed, which speeds up these program when
+operating on very large file systems.
+
+Drop use of the sysctl(2) system call, which is deprecated in Linux.
+
+Add support for "configure --enable-developer-features" which enables
+features only meant for developer.  The first such feature is "e2fsck -E
+clear_all_uninit_bits", which clears the uninitialized bit on all
+extents for all inodes.  Note that this can end up exposing uninitialized
+data to userspace, and should only used in very specialized situations.
+
+The e2fsck/revoke.c and e2fsck/recovery.c files are now kept idential
+with the fs/jbd2 versions of these files in the kernel.
 
 Fix various compiler and Coverity warnings.
 
-Fixed portability issue which caused a build failure when mkdir -p is
-not thread safe; in that case, the Makefiles would not find the
-install_sh replacement script.
+Update to use gettext 0.19.8.  This also removes the built-in "intl"
+directory as this is now considered deprecated by gettext.  This means
+that if the system doesn't have gettext installed on the build system,
+we will simply disable NLS support.
 
-Fixed various Debian packaging issues.
-
-Synchronized changes from Android's AOSP e2fsprogs tree.
-
-Update the Dutch, Malay, and Serbian translations from the translation
-project.
