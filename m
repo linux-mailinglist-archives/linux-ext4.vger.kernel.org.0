@@ -2,60 +2,51 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C114030CDC8
-	for <lists+linux-ext4@lfdr.de>; Tue,  2 Feb 2021 22:14:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E87B30D241
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Feb 2021 04:54:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234228AbhBBVNF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 2 Feb 2021 16:13:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47358 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234123AbhBBVNE (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 2 Feb 2021 16:13:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 118AF64E2C;
-        Tue,  2 Feb 2021 21:12:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612300343;
-        bh=03p+YG0k6cqhvv/p/PcMm18f46IbvV/TYJlsk3PX5b0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OHydzpg6QbVaGqiors7IsACDmtwdYiisP/21fqrszCLrIMtss70kiyoQrV1hbEzrT
-         8S6XmP1+LvgnU4UyA0HfaksMAYUem16aeFDHEo1WndYo53/xCPtBXeZQnKju/UjKWm
-         9xQGzDdOs9/qQRIIRfKlhf/Cp1HMhXv5RCxMGOQlk9P8wVxYdUZf5cOKrFiACoSBTM
-         1Cs+X3LiMRfieFW7tEM6SSMDpapYwh7ZV9rNAfPY0+Db0r0ikuV8PhseQFRpGFn1oz
-         gJ3nR8MXxcMgpx4cwll93562IyL24R86q/lS/5gXgvu7zzzPItLELIJeGY8eKLdnlq
-         hx3aaGgYlfLCQ==
-Date:   Tue, 2 Feb 2021 13:12:21 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Theodore Ts'o <tytso@mit.edu>
+        id S231929AbhBCDw5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 2 Feb 2021 22:52:57 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:33535 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230000AbhBCDw4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 2 Feb 2021 22:52:56 -0500
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1133q4us017075
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 2 Feb 2021 22:52:05 -0500
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id A071215C39E2; Tue,  2 Feb 2021 22:52:04 -0500 (EST)
+Date:   Tue, 2 Feb 2021 22:52:04 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Benno Schulenberg <bensberg@telfort.nl>
 Cc:     linux-ext4@vger.kernel.org
-Subject: Re: [ANNOUNCE] e2fsprogs v1.46.0
-Message-ID: <YBnANYriLeiVUM1K@gmail.com>
-References: <YBmMlwBaoC58CARb@mit.edu>
+Subject: Re: [PATCH 1/2] tune2fs.8: fix various wording and formatting issues
+Message-ID: <YBod5PEglEcgGq2s@mit.edu>
+References: <20201020094829.3234-1-bensberg@telfort.nl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YBmMlwBaoC58CARb@mit.edu>
+In-Reply-To: <20201020094829.3234-1-bensberg@telfort.nl>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 12:32:07PM -0500, Theodore Ts'o wrote:
-> E2fsprogs now supports the stable_inodes (COMPAT_STABLE_INODES) feature.
-> This needed to support the siphash file system encryption algorithm,
-> which calculates the initial vector (IV) for encryption based on the
-> UUID and the inode number.  This means that we can't renumber inodes
-> (for example, when shrinking a file system) and the UUID can't be
-> changed without breaking the ability to decrypt the encryption.
+On Tue, Oct 20, 2020 at 11:48:28AM +0200, Benno Schulenberg wrote:
+> For example: the argument of -c had a mistaken plural "s", the argument
+> of -o was misformatted, the main description spoke of "options" instead
+> of "parameters" and used a mistaken "i.e." instead of "e.g.", and so on.
+> 
+> Also, sort the options in the synopsis alphabetically, to make it easier
+> to find a specific one and to match the order in which they are listed
+> further down.  Also, remove some excess spaces, harmonize the style of
+> some decriptions, sort d, w, m in the order of ascending duration, and
+> for consistency use hyphens instead of underscores in option arguments.
+> 
+> Signed-off-by: Benno Schulenberg <bensberg@telfort.nl>
 
-Note that in the new encryption formats which stable_inodes allows, the
-encryption algorithm is still AES-256-XTS, not SipHash.  (SipHash is a hash
-function, not an encryption algorithm.)  It's the key derivation and IV
-generation method that change.
+Thanks, applied.  (Apologies for missing this before the 1.45.7 release.)
 
-> E2fsprogs now supports file systems which have both file system
-> encryption and the casefold feature enabled.  This requires Linux
-> version 5.10.
-
-The kernel patches for encrypt + casefold on ext4 haven't been merged yet.  So
-this combination actually won't be supported until Linux 5.12 at the earliest.
-
-- Eric
+		  	     	 	 - Ted
