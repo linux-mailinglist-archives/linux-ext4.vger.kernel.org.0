@@ -2,72 +2,66 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B1C430D2D5
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Feb 2021 06:20:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0075530D2DB
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Feb 2021 06:24:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231377AbhBCFSI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 3 Feb 2021 00:18:08 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:45665 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229845AbhBCFSH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 3 Feb 2021 00:18:07 -0500
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1135GvnR020171
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 3 Feb 2021 00:16:58 -0500
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 80C2F15C39E2; Wed,  3 Feb 2021 00:16:57 -0500 (EST)
-Date:   Wed, 3 Feb 2021 00:16:57 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Eric Biggers <ebiggers@kernel.org>, linux-fsdevel@vger.kernel.org,
+        id S230193AbhBCFXG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 3 Feb 2021 00:23:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39544 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229988AbhBCFXA (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 3 Feb 2021 00:23:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DCBD64E24;
+        Wed,  3 Feb 2021 05:22:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612329738;
+        bh=cLNqVKFCW+BN80pXVHFeKzr4oNTwQ9E0KfoXAi7zrIg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aaO5bxjyzzw4Vmr+uTv4uCsf/zpdHQr4gp8MCzgkAGOsj90nf+8Oam6AoppLSCIz9
+         k10PqVSkqMADuT3ByUx3l1QLCUZj+BDYyGHCPNqHu4TkbMvU4I50pinhH6nAF/5lLL
+         W1voVC4IyjK+pvUdKyjcCaFAUEDsJMcD1DwFKACXP81UwQ1sznnELlVsK+LzzjMT+y
+         m0UpuTHHJetNKJwrqadmF/jaBH9pNbesr38OjLVoo1wWqOK3O3qFVk9ryn/2qHgOf/
+         NZ2//TuHHKXad0zqMT4I0L0UzRyng5NrMy5nuNUcUqlTHs58RBTLh2YwG7Nmf6wpdL
+         35iiURpKWp4Fg==
+Date:   Tue, 2 Feb 2021 21:22:16 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
         linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH v2 11/12] ext4: simplify i_state checks in
- __ext4_update_other_inode_time()
-Message-ID: <YBoxyQIdqRQT3jX5@mit.edu>
+        linux-f2fs-devel@lists.sourceforge.net,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v2 00/12] lazytime fix and cleanups
+Message-ID: <YBozCMnv1BT8ZyXG@sol.localdomain>
 References: <20210109075903.208222-1-ebiggers@kernel.org>
- <20210109075903.208222-12-ebiggers@kernel.org>
- <20210111105342.GE2502@lst.de>
- <X/yzzKhysdFUY/6o@sol.localdomain>
- <20210112132521.GB13780@lst.de>
+ <20210111151517.GK18475@quack2.suse.cz>
+ <X/y4s12YrXiUwWfN@sol.localdomain>
+ <YBowmPPHfZUTBgz1@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210112132521.GB13780@lst.de>
+In-Reply-To: <YBowmPPHfZUTBgz1@mit.edu>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 02:25:21PM +0100, Christoph Hellwig wrote:
-> > We could add:
+On Wed, Feb 03, 2021 at 12:11:52AM -0500, Theodore Ts'o wrote:
+> On Mon, Jan 11, 2021 at 12:44:35PM -0800, Eric Biggers wrote:
+> > > 
+> > > The series look good to me. How do you plan to merge it (after resolving
+> > > Christoph's remarks)? I guess either Ted can take it through the ext4 tree
+> > > or I can take it through my tree...
 > > 
-> > 	static inline bool other_inode_has_dirtytime(struct inode *inode)
-> > 	{
-> > 		return (inode->state & (I_FREEING | I_WILL_FREE |
-> > 					I_NEW | I_DIRTY_TIME)) == I_DIRTY_TIME;
-> > 	}
-> > 
-> > But it seems a bit weird when it's specific to ext4 at the moment.
-> > 
-> > Are you thinking that other filesystems will implement the same sort of
-> > opportunistic update, so we should add the helper now?
+> > I think taking it through your tree would be best, unless Al or Ted wants to
+> > take it.
 > 
-> For my taste these checks for flags is way too much black magic and will
-> trivially break when people add new flags.  So having a helper next to
-> the definition of the I_* flags that is well documented would be very,
-> very helpful.  My preferred naming would be something along the lines
-> of 'inode_is_dirty_lazytime_only()'.
+> I'm happy to take it through the ext4 tree.  Are you planning on
+> issuing a newer version of this patch series to resolve Christoph's
+> comments?
+> 
+> 					- Ted
 
-The name makes sense to me.  I'm not sure it's likely that there will
-be new types of dirtiness --- as near I can tell the I_DIRTY_TIME was
-the first time there has been any changes in a _really_ long time, but
-I agree that how the flags interact (even before we added
-I_DIRTY_TIME) involved no small amount of black magic, and it's the
-kind of thing that requires deep meditation before trying to make any
-changes, and then immediately slips out of one's L1 cache very shortly
-afterwards.  :-)
+I already sent out v3 of this series several weeks ago
+(https://lkml.kernel.org/r/20210112190253.64307-1-ebiggers@kernel.org),
+and Jan applied it already.
 
-					- Ted
+- Eric
