@@ -2,51 +2,62 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A3830DEB0
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Feb 2021 16:52:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3FD030DFC4
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Feb 2021 17:33:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234639AbhBCPvA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 3 Feb 2021 10:51:00 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:40285 "EHLO
+        id S233903AbhBCQc1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 3 Feb 2021 11:32:27 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:48832 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S234632AbhBCPut (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 3 Feb 2021 10:50:49 -0500
+        with ESMTP id S231571AbhBCQcY (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 3 Feb 2021 11:32:24 -0500
 Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 113FnXoE016131
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 113GVSIH004657
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 3 Feb 2021 10:49:34 -0500
+        Wed, 3 Feb 2021 11:31:29 -0500
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id B364015C39E2; Wed,  3 Feb 2021 10:49:33 -0500 (EST)
-Date:   Wed, 3 Feb 2021 10:49:33 -0500
+        id 76B1C15C39E2; Wed,  3 Feb 2021 11:31:28 -0500 (EST)
+Date:   Wed, 3 Feb 2021 11:31:28 -0500
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v2 00/12] lazytime fix and cleanups
-Message-ID: <YBrGDQ0eDOfz/14r@mit.edu>
-References: <20210109075903.208222-1-ebiggers@kernel.org>
- <20210111151517.GK18475@quack2.suse.cz>
- <X/y4s12YrXiUwWfN@sol.localdomain>
- <YBowmPPHfZUTBgz1@mit.edu>
- <YBozCMnv1BT8ZyXG@sol.localdomain>
+To:     Andreas Dilger <adilger@dilger.ca>
+Cc:     Daniel Rosenberg <drosen@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com, Paul Lawrence <paullawrence@google.com>
+Subject: Re: [PATCH 1/2] ext4: Handle casefolding with encryption
+Message-ID: <YBrP4NXAsvveIpwA@mit.edu>
+References: <20210203090745.4103054-2-drosen@google.com>
+ <56BC7E2D-A303-45AE-93B6-D8921189F604@dilger.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YBozCMnv1BT8ZyXG@sol.localdomain>
+In-Reply-To: <56BC7E2D-A303-45AE-93B6-D8921189F604@dilger.ca>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 09:22:16PM -0800, Eric Biggers wrote:
+On Wed, Feb 03, 2021 at 03:55:06AM -0700, Andreas Dilger wrote:
 > 
-> I already sent out v3 of this series several weeks ago
-> (https://lkml.kernel.org/r/20210112190253.64307-1-ebiggers@kernel.org),
-> and Jan applied it already.
+> It looks like this change will break the dirdata feature, which is similarly
+> storing a data field beyond the end of the dirent. However, that feature also
+> provides for flags stored in the high bits of the type field to indicate
+> which of the fields are in use there.
+> The first byte of each field stores
+> the length, so it can be skipped even if the content is not understood.
 
-Great, thanks.  Sorry, I missed it.
+Daniel, for context, the dirdata field is an out-of-tree feature which
+is used by Lustre, and so has fairly large deployed base.  So if there
+is a way that we can accomodate not breaking dirdata, that would be
+good.
 
-       		       	 	- Ted
+Did the ext4 casefold+encryption implementation escape out to any
+Android handsets?
+
+Thanks,
+
+					- Ted
