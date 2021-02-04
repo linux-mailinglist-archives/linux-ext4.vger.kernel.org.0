@@ -2,62 +2,79 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3FD030DFC4
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Feb 2021 17:33:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E64D130EBD5
+	for <lists+linux-ext4@lfdr.de>; Thu,  4 Feb 2021 06:24:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233903AbhBCQc1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 3 Feb 2021 11:32:27 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:48832 "EHLO
+        id S230126AbhBDFYR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 4 Feb 2021 00:24:17 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:38305 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231571AbhBCQcY (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 3 Feb 2021 11:32:24 -0500
+        with ESMTP id S229790AbhBDFYQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 4 Feb 2021 00:24:16 -0500
 Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 113GVSIH004657
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1145NSHR018005
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 3 Feb 2021 11:31:29 -0500
+        Thu, 4 Feb 2021 00:23:28 -0500
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 76B1C15C39E2; Wed,  3 Feb 2021 11:31:28 -0500 (EST)
-Date:   Wed, 3 Feb 2021 11:31:28 -0500
+        id 0953915C39E2; Thu,  4 Feb 2021 00:23:28 -0500 (EST)
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Andreas Dilger <adilger@dilger.ca>
-Cc:     Daniel Rosenberg <drosen@google.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel-team@android.com, Paul Lawrence <paullawrence@google.com>
-Subject: Re: [PATCH 1/2] ext4: Handle casefolding with encryption
-Message-ID: <YBrP4NXAsvveIpwA@mit.edu>
-References: <20210203090745.4103054-2-drosen@google.com>
- <56BC7E2D-A303-45AE-93B6-D8921189F604@dilger.ca>
+To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>,
+        Artem Blagodarenko <artem.blagodarenko@gmail.com>
+Subject: [PATCH] ext4: fix potential htree index checksum corruption
+Date:   Thu,  4 Feb 2021 00:23:21 -0500
+Message-Id: <20210204052321.224249-1-tytso@mit.edu>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <56BC7E2D-A303-45AE-93B6-D8921189F604@dilger.ca>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 03:55:06AM -0700, Andreas Dilger wrote:
-> 
-> It looks like this change will break the dirdata feature, which is similarly
-> storing a data field beyond the end of the dirent. However, that feature also
-> provides for flags stored in the high bits of the type field to indicate
-> which of the fields are in use there.
-> The first byte of each field stores
-> the length, so it can be skipped even if the content is not understood.
+In the case where we need to do an interior node split, and
+immediately afterwards, we are unable to allocate a new directory leaf
+block due to ENOSPC, the directory index checksum's will not be filled
+in correctly (and indeed, will not be correctly journalled).
 
-Daniel, for context, the dirdata field is an out-of-tree feature which
-is used by Lustre, and so has fairly large deployed base.  So if there
-is a way that we can accomodate not breaking dirdata, that would be
-good.
+This looks like a bug that was introduced when we added largedir
+support.  The original code doesn't make any sense (and should have
+been caught in code review), but it was hidden because most of the
+time, the index node checksum will be set by do_split().  But if
+do_split bails out due to ENOSPC, then ext4_handle_dirty_dx_node()
+won't get called, and so the directory index checksum field will not
+get set, leading to:
 
-Did the ext4 casefold+encryption implementation escape out to any
-Android handsets?
+EXT4-fs error (device sdb): dx_probe:858: inode #6635543: block 4022: comm nfsd: Directory index failed checksum
 
-Thanks,
+Google-Bug-Id: 176345532
+Fixes: e08ac99fa2a2 ("ext4: add largedir feature")
+Cc: Artem Blagodarenko <artem.blagodarenko@gmail.com>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ fs/ext4/namei.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-					- Ted
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index a6e28b4b5a95..115762180801 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -2411,11 +2411,10 @@ static int ext4_dx_add_entry(handle_t *handle, struct ext4_filename *fname,
+ 						   (frame - 1)->bh);
+ 			if (err)
+ 				goto journal_error;
+-			if (restart) {
+-				err = ext4_handle_dirty_dx_node(handle, dir,
+-							   frame->bh);
++			err = ext4_handle_dirty_dx_node(handle, dir,
++							frame->bh);
++			if (err)
+ 				goto journal_error;
+-			}
+ 		} else {
+ 			struct dx_root *dxroot;
+ 			memcpy((char *) entries2, (char *) entries,
+-- 
+2.30.0
+
