@@ -2,59 +2,59 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98AFE3157E6
-	for <lists+linux-ext4@lfdr.de>; Tue,  9 Feb 2021 21:47:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51E2A3157DE
+	for <lists+linux-ext4@lfdr.de>; Tue,  9 Feb 2021 21:44:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233676AbhBIUoO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 9 Feb 2021 15:44:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36176 "EHLO
+        id S233905AbhBIUmI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 9 Feb 2021 15:42:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233749AbhBIUhA (ORCPT
+        with ESMTP id S233689AbhBIUhA (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Tue, 9 Feb 2021 15:37:00 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E85A6C0698D5
-        for <linux-ext4@vger.kernel.org>; Tue,  9 Feb 2021 12:29:08 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id gx20so2370617pjb.1
-        for <linux-ext4@vger.kernel.org>; Tue, 09 Feb 2021 12:29:08 -0800 (PST)
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F44C0698D8
+        for <linux-ext4@vger.kernel.org>; Tue,  9 Feb 2021 12:29:11 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id o38so1704274pgm.9
+        for <linux-ext4@vger.kernel.org>; Tue, 09 Feb 2021 12:29:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=vo4q+8O2vAkuEJMBuosHNPgWOrCpbN9Drl+Ko4u9Ik0=;
-        b=hehygPpglKj3xIcft9TC3O9uKKrrzF0OS9OzXgodEMmoMS4db0k+FQwlyUticB12GQ
-         sYosDLBwe0TdNf0b9tSE1mC5gYjFyb2FxGhbmtk5vwuQg56iez7Sts0eOFYC1IkKJrfy
-         Y24TwI3cFIgWb1LM50pNAQD6Si2Cq2M6HwqI6dOvr1VybcMJjKIl2B12sY30Mh34AkKt
-         VBavbR2nkDRsTpVAyHgrKyCtQPhVmXyrZiJVxNGceXH6hV3rw1aQgXXMIX+jEFmwzI4B
-         pcVjuoiQDVEeRoHGvoZPaI+iknULLUX/72oOoDeJCyOF+rMa67U7M463xbCdpm0y8IC0
-         NVGg==
+        bh=Q3bcMPVMaB084N3tKlKrXHspi/RHe+qo2Ads4pGrgJY=;
+        b=QM4ll7Bywls7jajJApeMXmZPtU2vJLBwFqoLUeODQbpbBIuHiToW385FWBcqX3HbhX
+         8ERzAD15iTUBgY5Dki2TQD5YA/3WOqAEo1ikDmkppRbN1tHDinYcXPsP7MJbZDVub3CD
+         qMsP2FKHhPmh15m8YzTAfpVZxmN0rcEH2Cp7iWkNi11bNyIcuoVrK/KUZgua3vO0ea+x
+         c0uYwR7YVH/m1FF7pATEZd1Hw4+qEK5h+bErW94qI9lAwmQRgQUnHYBLSlOwhW5aD5bL
+         C0dlpmQT35zfE9Y4p+pxlReumQ+5Wxhgh9JTx4ZHGaXIr0TEa6XmEHkN9RMtg/2vlHSd
+         NLbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=vo4q+8O2vAkuEJMBuosHNPgWOrCpbN9Drl+Ko4u9Ik0=;
-        b=TjxzWvViQ5R3JPiag0KbjMCYch4GAnwRHs0TQoTvFpHM5rFJQa/b2NbCV4Utuo9Jmw
-         Kbumqxpxv1ZAruoT4uEhSZYP26MSOGV4SW70ZgEP0RqQ0kCpv5AbqGIJnsgcQtirBb9F
-         OJZXD53nupwHQkgDLZZNHZOGPtM8sbFslWAHiecVzUKG6LMyQlC1vf3mkCVzCrH3jXrO
-         /KbjHzlT733nYqaiAtbFoeoI6eFo3ky3W1/Lq6F9g3an4/XmwGabdDXZ+onTAXUfJdsA
-         1ipaPftsYEfUdbF9TV6NQ4VOgR/iupWK0/jai6mA6k2YBkKG+6pxGLOIf50kcL6jdjug
-         zF/g==
-X-Gm-Message-State: AOAM531UBCguqNrxv9ESgm5Ei5fEjdIZPdfaDWHAhBSRADZ2fMRQi+8w
-        EyFmv7ecAuU0PoyJR9FvV3/5WAenexM=
-X-Google-Smtp-Source: ABdhPJx4LsS7+65Dom5WhjZ1vno21EPNtwWFU6Ffv3h7mFHiybE7XVD4fFrinzaljOEiwA+MnEKwZQ==
-X-Received: by 2002:a17:90a:8906:: with SMTP id u6mr5754030pjn.223.1612902548089;
-        Tue, 09 Feb 2021 12:29:08 -0800 (PST)
+        bh=Q3bcMPVMaB084N3tKlKrXHspi/RHe+qo2Ads4pGrgJY=;
+        b=ZCyirDo+37ZFNjsQzYT5LxjM06iLztmkLGdEsbglrCTCV6hvf9wLU+Sw8xUFI5FcRw
+         +XD5ViBnetEyVN95271aPMORslAVlkWQj3+tivSLTtgvPwYsyWWIfr48XlqBVaWVTMO/
+         tZEcNcLFpqp3UhzUO9cULsg996wBHHHqLkKwm5IONzDfbz/mmWohGm/Yxog6m+WdFP3T
+         KX/CziZn7Knb1ck6C+34Rb+L9Nd9HRNOUgNMFdo49ZafY2VABuJo1e0g2ycea7L17reu
+         noUetGel2AJLE5q8E4EQjvTx6hBrkvzqEYkLgI2n4peyjE7Lz4Cq4fTaibHAfZm/E4N4
+         wdWA==
+X-Gm-Message-State: AOAM530dnImpPsKhTNSd4WDrc7FcMQXxAHAQ7Bax0GE7HMoaOPL6iD/Q
+        2ysLYPtm6na7p3R4uczRorPnr6e/RbA=
+X-Google-Smtp-Source: ABdhPJxj0CBJcCn1wKanlivVKz4+O31Qhd2b1H1MscR05FrhlMa4OS5KG+XcQiyVlD+WXSKXrK+t3w==
+X-Received: by 2002:a65:5b47:: with SMTP id y7mr23370440pgr.221.1612902551015;
+        Tue, 09 Feb 2021 12:29:11 -0800 (PST)
 Received: from harshads-520.kir.corp.google.com ([2620:15c:17:10:1d7c:b2d9:c196:949c])
-        by smtp.googlemail.com with ESMTPSA id p12sm3325827pju.35.2021.02.09.12.29.07
+        by smtp.googlemail.com with ESMTPSA id p12sm3325827pju.35.2021.02.09.12.29.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 12:29:07 -0800 (PST)
+        Tue, 09 Feb 2021 12:29:09 -0800 (PST)
 From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 To:     linux-ext4@vger.kernel.org
 Cc:     tytso@mit.edu, bzzz@whamcloud.com, artem.blagodarenko@gmail.com,
         sihara@ddn.com, adilger@dilger.ca,
         Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Subject: [PATCH v2 3/5] ext4: add MB_NUM_ORDERS macro
-Date:   Tue,  9 Feb 2021 12:28:55 -0800
-Message-Id: <20210209202857.4185846-4-harshadshirwadkar@gmail.com>
+Subject: [PATCH v2 5/5] ext4: add proc files to monitor new structures
+Date:   Tue,  9 Feb 2021 12:28:57 -0800
+Message-Id: <20210209202857.4185846-6-harshadshirwadkar@gmail.com>
 X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
 In-Reply-To: <20210209202857.4185846-1-harshadshirwadkar@gmail.com>
 References: <20210209202857.4185846-1-harshadshirwadkar@gmail.com>
@@ -64,100 +64,136 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-A few arrays in mballoc.c use the total number of valid orders as
-their size. Currently, this value is set as "sb->s_blocksize_bits +
-2". This makes code harder to read. So, instead add a new macro
-MB_NUM_ORDERS(sb) to make the code more readable.
+This patch adds a new file "mb_structs_summary" which allows us to see the
+summary of the new allocator structures added in this series.
 
 Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 ---
- fs/ext4/mballoc.c | 15 ++++++++-------
- fs/ext4/mballoc.h |  5 +++++
- 2 files changed, 13 insertions(+), 7 deletions(-)
+ fs/ext4/ext4.h    |  1 +
+ fs/ext4/mballoc.c | 84 +++++++++++++++++++++++++++++++++++++++++++++++
+ fs/ext4/sysfs.c   |  2 ++
+ 3 files changed, 87 insertions(+)
 
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 0601c997c87f..39830c07c27e 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -2817,6 +2817,7 @@ int __init ext4_fc_init_dentry_cache(void);
+ 
+ /* mballoc.c */
+ extern const struct seq_operations ext4_mb_seq_groups_ops;
++extern const struct seq_operations ext4_mb_seq_structs_summary_ops;
+ extern long ext4_mb_stats;
+ extern long ext4_mb_max_to_scan;
+ extern int ext4_seq_mb_stats_show(struct seq_file *seq, void *offset);
 diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index fffd0770e930..b7f25120547d 100644
+index 63562f5f42f1..d9cb74787a47 100644
 --- a/fs/ext4/mballoc.c
 +++ b/fs/ext4/mballoc.c
-@@ -756,7 +756,7 @@ mb_set_largest_free_order(struct super_block *sb, struct ext4_group_info *grp)
+@@ -2864,6 +2864,90 @@ int ext4_seq_mb_stats_show(struct seq_file *seq, void *offset)
+ 	return 0;
+ }
  
- 	grp->bb_largest_free_order = -1; /* uninit */
- 
--	bits = sb->s_blocksize_bits + 1;
-+	bits = MB_NUM_ORDERS(sb) - 1;
- 	for (i = bits; i >= 0; i--) {
- 		if (grp->bb_counters[i] > 0) {
- 			grp->bb_largest_free_order = i;
-@@ -1928,7 +1928,7 @@ void ext4_mb_simple_scan_group(struct ext4_allocation_context *ac,
- 	int max;
- 
- 	BUG_ON(ac->ac_2order <= 0);
--	for (i = ac->ac_2order; i <= sb->s_blocksize_bits + 1; i++) {
-+	for (i = ac->ac_2order; i < MB_NUM_ORDERS(sb); i++) {
- 		if (grp->bb_counters[i] == 0)
- 			continue;
- 
-@@ -2314,13 +2314,13 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
- 	 * We also support searching for power-of-two requests only for
- 	 * requests upto maximum buddy size we have constructed.
- 	 */
--	if (i >= sbi->s_mb_order2_reqs && i <= sb->s_blocksize_bits + 2) {
-+	if (i >= sbi->s_mb_order2_reqs && i <= MB_NUM_ORDERS(sb)) {
- 		/*
- 		 * This should tell if fe_len is exactly power of 2
- 		 */
- 		if ((ac->ac_g_ex.fe_len & (~(1 << (i - 1)))) == 0)
- 			ac->ac_2order = array_index_nospec(i - 1,
--							   sb->s_blocksize_bits + 2);
-+							   MB_NUM_ORDERS(sb));
- 	}
- 
- 	/* if stream allocation is enabled, use global goal */
-@@ -2850,7 +2850,7 @@ int ext4_mb_init(struct super_block *sb)
- 	unsigned max;
- 	int ret;
- 
--	i = (sb->s_blocksize_bits + 2) * sizeof(*sbi->s_mb_offsets);
-+	i = MB_NUM_ORDERS(sb) * sizeof(*sbi->s_mb_offsets);
- 
- 	sbi->s_mb_offsets = kmalloc(i, GFP_KERNEL);
- 	if (sbi->s_mb_offsets == NULL) {
-@@ -2858,7 +2858,7 @@ int ext4_mb_init(struct super_block *sb)
- 		goto out;
- 	}
- 
--	i = (sb->s_blocksize_bits + 2) * sizeof(*sbi->s_mb_maxs);
-+	i = MB_NUM_ORDERS(sb) * sizeof(*sbi->s_mb_maxs);
- 	sbi->s_mb_maxs = kmalloc(i, GFP_KERNEL);
- 	if (sbi->s_mb_maxs == NULL) {
- 		ret = -ENOMEM;
-@@ -2884,7 +2884,8 @@ int ext4_mb_init(struct super_block *sb)
- 		offset_incr = offset_incr >> 1;
- 		max = max >> 1;
- 		i++;
--	} while (i <= sb->s_blocksize_bits + 1);
-+	} while (i < MB_NUM_ORDERS(sb));
++static void *ext4_mb_seq_structs_summary_start(struct seq_file *seq, loff_t *pos)
++{
++	struct super_block *sb = PDE_DATA(file_inode(seq->file));
++	unsigned long position;
 +
- 
- 	spin_lock_init(&sbi->s_md_lock);
- 	sbi->s_mb_free_pending = 0;
-diff --git a/fs/ext4/mballoc.h b/fs/ext4/mballoc.h
-index 7597330dbdf8..02861406932f 100644
---- a/fs/ext4/mballoc.h
-+++ b/fs/ext4/mballoc.h
-@@ -78,6 +78,11 @@
-  */
- #define MB_DEFAULT_MAX_INODE_PREALLOC	512
- 
-+/*
-+ * Number of valid buddy orders
-+ */
-+#define MB_NUM_ORDERS(sb)		((sb)->s_blocksize_bits + 2)
++	read_lock(&EXT4_SB(sb)->s_mb_rb_lock);
 +
- struct ext4_free_data {
- 	/* this links the free block information from sb_info */
- 	struct list_head		efd_list;
++	if (*pos < 0 || *pos >= MB_NUM_ORDERS(sb) + 1)
++		return NULL;
++	position = *pos + 1;
++	return (void *) ((unsigned long) position);
++}
++
++static void *ext4_mb_seq_structs_summary_next(struct seq_file *seq, void *v, loff_t *pos)
++{
++	struct super_block *sb = PDE_DATA(file_inode(seq->file));
++	unsigned long position;
++
++	++*pos;
++	if (*pos < 0 || *pos >= MB_NUM_ORDERS(sb) + 1)
++		return NULL;
++	position = *pos + 1;
++	return (void *) ((unsigned long) position);
++}
++
++static int ext4_mb_seq_structs_summary_show(struct seq_file *seq, void *v)
++{
++	struct super_block *sb = PDE_DATA(file_inode(seq->file));
++	struct ext4_sb_info *sbi = EXT4_SB(sb);
++	unsigned long position = ((unsigned long) v);
++	struct ext4_group_info *grp;
++	struct rb_node *n;
++	int count, min, max;
++
++	position--;
++
++	if (position >= MB_NUM_ORDERS(sb)) {
++		seq_puts(seq, "Tree\n");
++		n = rb_first(&sbi->s_mb_avg_fragment_size_root);
++		if (!n) {
++			seq_puts(seq, "<Empty>\n");
++			return 0;
++		}
++		grp = rb_entry(n, struct ext4_group_info, bb_avg_fragment_size_rb);
++		min = grp->bb_fragments ? grp->bb_free / grp->bb_fragments : 0;
++		count = 1;
++		while (rb_next(n)) {
++			count++;
++			n = rb_next(n);
++		}
++		grp = rb_entry(n, struct ext4_group_info, bb_avg_fragment_size_rb);
++		max = grp->bb_fragments ? grp->bb_free / grp->bb_fragments : 0;
++
++		seq_printf(seq, "Min: %d, Max: %d, Num Nodes: %d\n",
++			   min, max, count);
++		return 0;
++	}
++
++	if (position == 0)
++		seq_puts(seq, "Largest Free Order Lists:\n");
++
++	seq_printf(seq, "Order %ld list: ", position);
++	count = 0;
++	list_for_each_entry(grp, &sbi->s_mb_largest_free_orders[position],
++			    bb_largest_free_order_node)
++		count++;
++	seq_printf(seq, "%d Groups\n", count);
++	return 0;
++}
++
++static void ext4_mb_seq_structs_summary_stop(struct seq_file *seq, void *v)
++{
++	struct super_block *sb = PDE_DATA(file_inode(seq->file));
++
++	read_unlock(&EXT4_SB(sb)->s_mb_rb_lock);
++}
++
++const struct seq_operations ext4_mb_seq_structs_summary_ops = {
++	.start  = ext4_mb_seq_structs_summary_start,
++	.next   = ext4_mb_seq_structs_summary_next,
++	.stop   = ext4_mb_seq_structs_summary_stop,
++	.show   = ext4_mb_seq_structs_summary_show,
++};
++
+ static struct kmem_cache *get_groupinfo_cache(int blocksize_bits)
+ {
+ 	int cache_index = blocksize_bits - EXT4_MIN_BLOCK_LOG_SIZE;
+diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
+index 752d1c261e2a..b78bc6b57bce 100644
+--- a/fs/ext4/sysfs.c
++++ b/fs/ext4/sysfs.c
+@@ -529,6 +529,8 @@ int ext4_register_sysfs(struct super_block *sb)
+ 				&ext4_mb_seq_groups_ops, sb);
+ 		proc_create_single_data("mb_stats", 0444, sbi->s_proc,
+ 				ext4_seq_mb_stats_show, sb);
++		proc_create_seq_data("mb_structs_summary", 0444, sbi->s_proc,
++				&ext4_mb_seq_structs_summary_ops, sb);
+ 	}
+ 	return 0;
+ }
 -- 
 2.30.0.478.g8a0d178c01-goog
 
