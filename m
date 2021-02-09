@@ -2,144 +2,193 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D27F0314E98
-	for <lists+linux-ext4@lfdr.de>; Tue,  9 Feb 2021 13:03:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C2A03150CA
+	for <lists+linux-ext4@lfdr.de>; Tue,  9 Feb 2021 14:50:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229821AbhBIMDE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 9 Feb 2021 07:03:04 -0500
-Received: from mx2.suse.de ([195.135.220.15]:41370 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229763AbhBIMBB (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 9 Feb 2021 07:01:01 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 371CDAD24;
-        Tue,  9 Feb 2021 12:00:18 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id DD3221E14AC; Tue,  9 Feb 2021 13:00:17 +0100 (CET)
-Date:   Tue, 9 Feb 2021 13:00:17 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
-Cc:     Jan Kara <jack@suse.cz>, tytso@mit.edu, Jan Kara <jack@suse.com>,
+        id S231980AbhBINuR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 9 Feb 2021 08:50:17 -0500
+Received: from mx1.hrz.uni-dortmund.de ([129.217.128.51]:64954 "EHLO
+        unimail.uni-dortmund.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231655AbhBINsZ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 9 Feb 2021 08:48:25 -0500
+Received: from [192.168.111.113] (p4fd97768.dip0.t-ipconnect.de [79.217.119.104])
+        (authenticated bits=0)
+        by unimail.uni-dortmund.de (8.16.1/8.16.1) with ESMTPSA id 119DlThC023984
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT);
+        Tue, 9 Feb 2021 14:47:29 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tu-dortmund.de;
+        s=unimail; t=1612878449;
+        bh=DiYMQGQvDgl93GaUMtEmjPC4E1Bm4ewHOTmmFK8yxkU=;
+        h=To:Cc:References:From:Subject:Date:In-Reply-To;
+        b=FOqiLk4BAjhPJd4UNdzzC1KGY4Bh/1rOkM6+G8VZuDeQS4MH8fMaqgj/UQCVDpF/Z
+         nCsIOVcbtqZoUBcskrd0IjCZDNt8vfMphVugLlxKL1yVIl5rZ+FGiAivZVaJOieuvR
+         gvz94wj+ckB//rJCJ8KIeIT6OAZyWWN1eU7VUR2g=
+To:     Jan Kara <jack@suse.cz>
+Cc:     tytso@mit.edu, Jan Kara <jack@suse.com>,
         Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
         linux-ext4@vger.kernel.org
-Subject: Re: [RFC] Fine-grained locking documentation for jbd2 data structures
-Message-ID: <20210209120017.GB19070@quack2.suse.cz>
 References: <20190408083500.66759-1-alexander.lochmann@tu-dortmund.de>
  <7827d153-f75c-89a2-1890-86e85f86c704@tu-dortmund.de>
  <14dbc946-b0c5-4165-3e6a-3cbe3c6a74b4@tu-dortmund.de>
  <20210208152750.GD30081@quack2.suse.cz>
  <02643d06-0066-a7c3-b6dd-2d190c8e0c41@tu-dortmund.de>
+ <20210209120017.GB19070@quack2.suse.cz>
+From:   Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
+Subject: Re: [RFC] Fine-grained locking documentation for jbd2 data structures
+Message-ID: <a086fca9-eac8-f897-1d28-eee977d7c12d@tu-dortmund.de>
+Date:   Tue, 9 Feb 2021 14:47:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <02643d06-0066-a7c3-b6dd-2d190c8e0c41@tu-dortmund.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210209120017.GB19070@quack2.suse.cz>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="4lnTMQHB5xg6nIAYKGp4egX3LFOiNlrM9"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 09-02-21 10:58:48, Alexander Lochmann wrote:
-> 
-> 
-> On 08.02.21 16:27, Jan Kara wrote:
-> > Hi Alexander!
-> > 
-> > On Fri 05-02-21 16:31:54, Alexander Lochmann wrote:
-> > > have you had the chance to review our results?
-> > 
-> > It fell through the cracks I guess. Thanks for pinging. Let me have a look.
-> > 
-> > > On 15.10.20 15:56, Alexander Lochmann wrote:
-> > > > Hi folks,
-> > > > 
-> > > > when comparing our generated locking documentation with the current
-> > > > documentation
-> > > > located in include/linux/jbd2.h, I found some inconsistencies. (Our
-> > > > approach: https://dl.acm.org/doi/10.1145/3302424.3303948)
-> > > > According to the official documentation, the following members should be
-> > > > read using a lock:
-> > > > journal_t
-> > > > - j_flags: j_state_lock
-> > > > - j_barrier_count: j_state_lock
-> > > > - j_running_transaction: j_state_lock
-> > > > - j_commit_sequence: j_state_lock
-> > > > - j_commit_request: j_state_lock
-> > > > transactiont_t
-> > > > - t_nr_buffers: j_list_lock
-> > > > - t_buffers: j_list_lock
-> > > > - t_reserved_list: j_list_lock
-> > > > - t_shadow_list: j_list_lock
-> > > > jbd2_inode
-> > > > - i_transaction: j_list_lock
-> > > > - i_next_transaction: j_list_lock
-> > > > - i_flags: j_list_lock
-> > > > - i_dirty_start: j_list_lock
-> > > > - i_dirty_start: j_list_lock
-> > > > 
-> > > > However, our results say that no locks are needed at all for *reading*
-> > > > those members.
-> > > >  From what I know, it is common wisdom that word-sized data types can be
-> > > > read without any lock in the Linux kernel.
-> > 
-> > Yes, although in last year, people try to convert these unlocked reads to
-> > READ_ONCE() or similar as otherwise the compiler is apparently allowed to
-> > generate code which is not safe. But that's a different story.
-> Is this ongoing work?
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--4lnTMQHB5xg6nIAYKGp4egX3LFOiNlrM9
+Content-Type: multipart/mixed; boundary="YFqjbLTaAS8ys6NEXFTugdufBqCyfkVJ9";
+ protected-headers="v1"
+From: Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
+To: Jan Kara <jack@suse.cz>
+Cc: tytso@mit.edu, Jan Kara <jack@suse.com>,
+ Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
+ linux-ext4@vger.kernel.org
+Message-ID: <a086fca9-eac8-f897-1d28-eee977d7c12d@tu-dortmund.de>
+Subject: Re: [RFC] Fine-grained locking documentation for jbd2 data structures
+References: <20190408083500.66759-1-alexander.lochmann@tu-dortmund.de>
+ <7827d153-f75c-89a2-1890-86e85f86c704@tu-dortmund.de>
+ <14dbc946-b0c5-4165-3e6a-3cbe3c6a74b4@tu-dortmund.de>
+ <20210208152750.GD30081@quack2.suse.cz>
+ <02643d06-0066-a7c3-b6dd-2d190c8e0c41@tu-dortmund.de>
+ <20210209120017.GB19070@quack2.suse.cz>
+In-Reply-To: <20210209120017.GB19070@quack2.suse.cz>
 
-Yes, in a way. It's mostly prompted by KCSAN warnings generated by syzbot
-;).
+--YFqjbLTaAS8ys6NEXFTugdufBqCyfkVJ9
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
 
-> Using such a macro would a) make our work much easier as we can instrument
-> them, and b) would tell less experienced developers that no locking is
-> needed.
+On 09.02.21 13:00, Jan Kara wrote:
+>>> Yes, although in last year, people try to convert these unlocked read=
+s to
+>>> READ_ONCE() or similar as otherwise the compiler is apparently allowe=
+d to
+>>> generate code which is not safe. But that's a different story.
+>> Is this ongoing work?
+>=20
+> Yes, in a way. It's mostly prompted by KCSAN warnings generated by syzb=
+ot
+> ;).
+>=20
+>> Using such a macro would a) make our work much easier as we can instru=
+ment
+>> them, and b) would tell less experienced developers that no locking is=
 
-Yes, I agree that it has some benefit for documentation and automatic
-checkers as well. OTOH code readability is sometimes hurt by this...
+>> needed.
+>=20
+> Yes, I agree that it has some benefit for documentation and automatic
+> checkers as well. OTOH code readability is sometimes hurt by this...
+>=20
+>> Does the usage of READ_ONCE() imply that no lock is needed?
+>=20
+> No, but it does indicate there's something unusual happening with the
+> variable - usually that variable write can race with this read.
+>=20
+>> Otherwise, one could introduce another macro for jbd2, such as #define=
 
-> Does the usage of READ_ONCE() imply that no lock is needed?
+>> READ_UNLOCKED() READ_ONCE(), which is more precise.
+>=20
+> Well, yes, but OTOH special macros for small subsystems like this are m=
+aking
+> more harm than good in terms of readability since people have to lookup=
 
-No, but it does indicate there's something unusual happening with the
-variable - usually that variable write can race with this read. 
+> what exactly they mean anyway.
+So the only option left would be a global macro such as READ_ONCE() I gue=
+ss.
+How hard would it be to establish such a global notation?
+It would make things a lot easier for LockDoc, because we can instrument =
 
-> Otherwise, one could introduce another macro for jbd2, such as #define
-> READ_UNLOCKED() READ_ONCE(), which is more precise.
+such a macro, and therefore can annotate those accesses.>
+> Definitely. The simplest case is: You can fetch
+> journal->j_running_transaction pointer any time without any problem. Bu=
+t
+> you can *dereference* it only if you hold the j_state_lock while fetchi=
+ng the
+> pointer and dereferencing it.
+Thx.
+>=20
+>> So sometimes requiring the lock is just the least
+>>> problematic solution - there's always the tradeoff between the speed =
+and
+>>> simplicity.
+>>>
+>>>>> All of the above members have word size, i.e., int, long, or ptr.
+>>>>> Is it therefore safe to split the locking documentation as follows?=
 
-Well, yes, but OTOH special macros for small subsystems like this are making
-more harm than good in terms of readability since people have to lookup
-what exactly they mean anyway.
+>>>>> @j_flags: General journaling state flags [r:nolocks, w:j_state_lock=
+]
+>>>
+>>> I've checked the code and we usually use unlocked reads for quick, po=
+ssibly
+>>> racy checks and if they indicate we may need to do something then tak=
+e the
+>>> lock and do a reliable check. This is quite common pattern, not sure =
+how to
+>>> best document this. Maybe like [j_state_lock, no lock for quick racy =
+checks]?
+>>>
+>> Yeah, I'm fine with that. Does this rule apply for the other members o=
+f
+>> journal_t (and transaction_t?) listed above?
+>=20
+> Yes.
+Thx. I'll submit a patch for those elements.
+For now, this will improve LockDoc's results as we can add "no locks=20
+needed" to our config for j_flags. We check whether the observed=20
+accesses match the documented locking rules.
+LockDoc will accept both results "j_list_lock" and "no locks needed" for =
 
->  Also note
-> > that although reading that particular word may be safe without any other
-> > locks, the lock still may be needed to safely interpret the value in the
-> > context of other fetched values (e.g., due to consistency among multiple
-> > structure members).
-> Just a side quest: Do you have an example for such a situation?
+reading j_flags.
+However, real faulty unlocked accesses will be concealed. :-(
 
-Definitely. The simplest case is: You can fetch
-journal->j_running_transaction pointer any time without any problem. But
-you can *dereference* it only if you hold the j_state_lock while fetching the
-pointer and dereferencing it.
+- Alex
+>=20
+> 								Honza
+>=20
 
-> So sometimes requiring the lock is just the least
-> > problematic solution - there's always the tradeoff between the speed and
-> > simplicity.
-> > 
-> > > > All of the above members have word size, i.e., int, long, or ptr.
-> > > > Is it therefore safe to split the locking documentation as follows?
-> > > > @j_flags: General journaling state flags [r:nolocks, w:j_state_lock]
-> > 
-> > I've checked the code and we usually use unlocked reads for quick, possibly
-> > racy checks and if they indicate we may need to do something then take the
-> > lock and do a reliable check. This is quite common pattern, not sure how to
-> > best document this. Maybe like [j_state_lock, no lock for quick racy checks]?
-> > 
-> Yeah, I'm fine with that. Does this rule apply for the other members of
-> journal_t (and transaction_t?) listed above?
+--=20
+Technische Universit=C3=A4t Dortmund
+Alexander Lochmann                PGP key: 0xBC3EF6FD
+Otto-Hahn-Str. 16                 phone:  +49.231.7556141
+D-44227 Dortmund                  fax:    +49.231.7556116
+http://ess.cs.tu-dortmund.de/Staff/al
 
-Yes.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+--YFqjbLTaAS8ys6NEXFTugdufBqCyfkVJ9--
+
+--4lnTMQHB5xg6nIAYKGp4egX3LFOiNlrM9
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEElhZsUHzVP0dbkjCRWT7tBbw+9v0FAmAiknEFAwAAAAAACgkQWT7tBbw+9v0W
+/A//S8Y6xiF/FRtvMLw1Zco8yJLoj7zu8zCnfdnd1UhAjR/d1s7LN8MFT+Xp2UVYN2acPwIGEU9V
+T+AhUtKqTfq8IZTbUz1mULsbQUWDBDjoy+uFEy288Z3vBVEfWz2kkgk5DRohQgUzHIftSGO24uVt
+5fZ3yhv6f3EAIZHk4Qw7CjA0f4HR3eVWpvKXDF0QXE/as4gA6hSr4qDPDdqsfHkkbDdPk554dXIx
+IzNGub5j51Jw6UTSskWWbf7axFPW85KXXicfoZYVWXt2g0/DH1joxINwNLJU5AG/g7V9dbIYO180
+jcbckYbBayZLl9BS8AviQZV6w7wRFzY9SFrPl4kEdJnNroPtIxpHBZ5SQnZFSFAKe2uP/4fEzrmm
+1FX1O+66/88iKnbQBhWLBM/l5lMEQb+/N+Ya57El+e/GKJyY0qTSFaRWVXxJGEGaaUHo/iuYDDaE
+pkQt+1Xt9ep/sX7cm+7itrMs8mHqP2ji2mJGe2Oo0g39esoBOX64s0ZJ7cLz8gXYTgn5gP2td4M+
+lXgGHAgj+Jrip+kNj+3uv3J3Oe+PYJmurhdXrZcIYjH4POuo51zC5xjb8fRny4CyPwFiAlw0Z1Bc
+lf+OJDqYaZXI3jgDruYGaG96kpAeGOkZfcXkzyaDS768iSHg5ifNhoMmVGPqV4WnN9+B2vj4AstB
+8r8=
+=WZPP
+-----END PGP SIGNATURE-----
+
+--4lnTMQHB5xg6nIAYKGp4egX3LFOiNlrM9--
