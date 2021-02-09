@@ -2,78 +2,144 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58177314E44
-	for <lists+linux-ext4@lfdr.de>; Tue,  9 Feb 2021 12:30:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D27F0314E98
+	for <lists+linux-ext4@lfdr.de>; Tue,  9 Feb 2021 13:03:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229741AbhBILaB convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Tue, 9 Feb 2021 06:30:01 -0500
-Received: from spam.auroraoh.com ([24.56.89.101]:45094 "EHLO
-        barracuda.auroraoh.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229862AbhBIL33 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 9 Feb 2021 06:29:29 -0500
-X-ASG-Debug-ID: 1612869160-112c0d6a7998b30001-1w8ZIA
-Received: from COASRV-MAIL2.auroraoh.loc (coasrv-mail2.auroraoh.loc [10.3.1.15]) by barracuda.auroraoh.com with ESMTP id hcLOHVeUsId5j8Og; Tue, 09 Feb 2021 06:12:40 -0500 (EST)
-X-Barracuda-Envelope-From: JanuskaD@auroraoh.com
-X-Barracuda-RBL-Trusted-Forwarder: 10.3.1.15
-Received: from [172.20.10.5] (197.210.29.8) by COASRV-MAIL2.auroraoh.loc
- (10.3.1.15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Tue, 9 Feb 2021
- 02:44:47 -0500
-Content-Type: text/plain; charset="iso-8859-1"
-X-Barracuda-RBL-Trusted-Forwarder: 172.20.10.5
+        id S229821AbhBIMDE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 9 Feb 2021 07:03:04 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41370 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229763AbhBIMBB (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 9 Feb 2021 07:01:01 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 371CDAD24;
+        Tue,  9 Feb 2021 12:00:18 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id DD3221E14AC; Tue,  9 Feb 2021 13:00:17 +0100 (CET)
+Date:   Tue, 9 Feb 2021 13:00:17 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
+Cc:     Jan Kara <jack@suse.cz>, tytso@mit.edu, Jan Kara <jack@suse.com>,
+        Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
+        linux-ext4@vger.kernel.org
+Subject: Re: [RFC] Fine-grained locking documentation for jbd2 data structures
+Message-ID: <20210209120017.GB19070@quack2.suse.cz>
+References: <20190408083500.66759-1-alexander.lochmann@tu-dortmund.de>
+ <7827d153-f75c-89a2-1890-86e85f86c704@tu-dortmund.de>
+ <14dbc946-b0c5-4165-3e6a-3cbe3c6a74b4@tu-dortmund.de>
+ <20210208152750.GD30081@quack2.suse.cz>
+ <02643d06-0066-a7c3-b6dd-2d190c8e0c41@tu-dortmund.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: We are a registered Private Loan Investment Company in the United Kingdom,
- we also registered with the Turkish British Chamber of Commerce and Industry
- (TBCCI) we have operations in Europe and Asia.
-To:     Recipients <januskad@auroraoh.com>
-X-ASG-Orig-Subj: We are a registered Private Loan Investment Company in the United Kingdom,
- we also registered with the Turkish British Chamber of Commerce and Industry
- (TBCCI) we have operations in Europe and Asia.
-From:   <januskad@auroraoh.com>
-Date:   Tue, 9 Feb 2021 15:44:01 +0800
-Reply-To: <cfolimiited@gmail.com>
-X-Priority: 1 (High)
-X-Antivirus: Avast (VPS 210207-2, 02/07/2021), Outbound message
-X-Antivirus-Status: Clean
-Message-ID: <abfae655-38d9-4867-92bb-3c2732a507cb@COASRV-MAIL2.auroraoh.loc>
-X-Originating-IP: [197.210.29.8]
-X-ClientProxiedBy: COASRV-MAIL3.auroraoh.loc (10.3.1.13) To
- COASRV-MAIL2.auroraoh.loc (10.3.1.15)
-X-Barracuda-Connect: coasrv-mail2.auroraoh.loc[10.3.1.15]
-X-Barracuda-Start-Time: 1612869160
-X-Barracuda-URL: https://10.3.1.12:443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at auroraoh.com
-X-Barracuda-Scan-Msg-Size: 755
-X-Barracuda-BRTS-Status: 1
-X-Barracuda-Spam-Score: 1.61
-X-Barracuda-Spam-Status: No, SCORE=1.61 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=5.0 tests=BSF_SC0_SA609_NRN, BSF_SC0_SA912_RP_FR, BSF_SC0_SA_TO_FROM_ADDR_MATCH, NO_REAL_NAME
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.87859
-        Rule breakdown below
-         pts rule name              description
-        ---- ---------------------- --------------------------------------------------
-        0.00 NO_REAL_NAME           From: does not include a real name
-        0.01 BSF_SC0_SA912_RP_FR    Custom Rule BSF_SC0_SA912_RP_FR
-        0.50 BSF_SC0_SA_TO_FROM_ADDR_MATCH Sender Address Matches Recipient
-                                   Address
-        1.10 BSF_SC0_SA609_NRN      Custom Rule SA609_NRN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <02643d06-0066-a7c3-b6dd-2d190c8e0c41@tu-dortmund.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-We are seeking for beneficiaries who source for fund to expand/relocating their business interest abroad. We are ready to fund projects outside Turkey and United Kingdom in the form of Soft Loan. We grant loans to both corporate and private entities at a low interest rate of 2% R.O.I per annul.
+On Tue 09-02-21 10:58:48, Alexander Lochmann wrote:
+> 
+> 
+> On 08.02.21 16:27, Jan Kara wrote:
+> > Hi Alexander!
+> > 
+> > On Fri 05-02-21 16:31:54, Alexander Lochmann wrote:
+> > > have you had the chance to review our results?
+> > 
+> > It fell through the cracks I guess. Thanks for pinging. Let me have a look.
+> > 
+> > > On 15.10.20 15:56, Alexander Lochmann wrote:
+> > > > Hi folks,
+> > > > 
+> > > > when comparing our generated locking documentation with the current
+> > > > documentation
+> > > > located in include/linux/jbd2.h, I found some inconsistencies. (Our
+> > > > approach: https://dl.acm.org/doi/10.1145/3302424.3303948)
+> > > > According to the official documentation, the following members should be
+> > > > read using a lock:
+> > > > journal_t
+> > > > - j_flags: j_state_lock
+> > > > - j_barrier_count: j_state_lock
+> > > > - j_running_transaction: j_state_lock
+> > > > - j_commit_sequence: j_state_lock
+> > > > - j_commit_request: j_state_lock
+> > > > transactiont_t
+> > > > - t_nr_buffers: j_list_lock
+> > > > - t_buffers: j_list_lock
+> > > > - t_reserved_list: j_list_lock
+> > > > - t_shadow_list: j_list_lock
+> > > > jbd2_inode
+> > > > - i_transaction: j_list_lock
+> > > > - i_next_transaction: j_list_lock
+> > > > - i_flags: j_list_lock
+> > > > - i_dirty_start: j_list_lock
+> > > > - i_dirty_start: j_list_lock
+> > > > 
+> > > > However, our results say that no locks are needed at all for *reading*
+> > > > those members.
+> > > >  From what I know, it is common wisdom that word-sized data types can be
+> > > > read without any lock in the Linux kernel.
+> > 
+> > Yes, although in last year, people try to convert these unlocked reads to
+> > READ_ONCE() or similar as otherwise the compiler is apparently allowed to
+> > generate code which is not safe. But that's a different story.
+> Is this ongoing work?
 
-We like to grant loan in the following sectors: oil/Gas, banking, real estate, stock speculation and mining, transportation, health sector and tobacco, Communication Services, Agriculture Forestry & Fishing, thus any sector. The terms are very flexible and interesting.
+Yes, in a way. It's mostly prompted by KCSAN warnings generated by syzbot
+;).
 
-Please contact us for more details;
+> Using such a macro would a) make our work much easier as we can instrument
+> them, and b) would tell less experienced developers that no locking is
+> needed.
 
+Yes, I agree that it has some benefit for documentation and automatic
+checkers as well. OTOH code readability is sometimes hurt by this...
 
-Kind regards,
+> Does the usage of READ_ONCE() imply that no lock is needed?
 
-Paul McCann
+No, but it does indicate there's something unusual happening with the
+variable - usually that variable write can race with this read. 
 
+> Otherwise, one could introduce another macro for jbd2, such as #define
+> READ_UNLOCKED() READ_ONCE(), which is more precise.
+
+Well, yes, but OTOH special macros for small subsystems like this are making
+more harm than good in terms of readability since people have to lookup
+what exactly they mean anyway.
+
+>  Also note
+> > that although reading that particular word may be safe without any other
+> > locks, the lock still may be needed to safely interpret the value in the
+> > context of other fetched values (e.g., due to consistency among multiple
+> > structure members).
+> Just a side quest: Do you have an example for such a situation?
+
+Definitely. The simplest case is: You can fetch
+journal->j_running_transaction pointer any time without any problem. But
+you can *dereference* it only if you hold the j_state_lock while fetching the
+pointer and dereferencing it.
+
+> So sometimes requiring the lock is just the least
+> > problematic solution - there's always the tradeoff between the speed and
+> > simplicity.
+> > 
+> > > > All of the above members have word size, i.e., int, long, or ptr.
+> > > > Is it therefore safe to split the locking documentation as follows?
+> > > > @j_flags: General journaling state flags [r:nolocks, w:j_state_lock]
+> > 
+> > I've checked the code and we usually use unlocked reads for quick, possibly
+> > racy checks and if they indicate we may need to do something then take the
+> > lock and do a reliable check. This is quite common pattern, not sure how to
+> > best document this. Maybe like [j_state_lock, no lock for quick racy checks]?
+> > 
+> Yeah, I'm fine with that. Does this rule apply for the other members of
+> journal_t (and transaction_t?) listed above?
+
+Yes.
+
+								Honza
 -- 
-This email has been checked for viruses by Avast antivirus software.
-https://www.avast.com/antivirus
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
