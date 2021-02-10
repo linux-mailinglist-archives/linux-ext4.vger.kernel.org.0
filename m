@@ -2,90 +2,117 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A69E2315E00
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 Feb 2021 05:05:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18CB1315F25
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 Feb 2021 06:46:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229999AbhBJEEv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 9 Feb 2021 23:04:51 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:34724 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229969AbhBJEEs (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 9 Feb 2021 23:04:48 -0500
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 11A43jtE014659
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 9 Feb 2021 23:03:46 -0500
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 5627215C3601; Tue,  9 Feb 2021 23:03:45 -0500 (EST)
-Date:   Tue, 9 Feb 2021 23:03:45 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Andreas Dilger <adilger@dilger.ca>
-Cc:     Daniel Rosenberg <drosen@google.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel-team@android.com, Paul Lawrence <paullawrence@google.com>
-Subject: Re: [PATCH 1/2] ext4: Handle casefolding with encryption
-Message-ID: <YCNbIdCsAsNcPuAL@mit.edu>
-References: <20210203090745.4103054-2-drosen@google.com>
- <56BC7E2D-A303-45AE-93B6-D8921189F604@dilger.ca>
- <YBrP4NXAsvveIpwA@mit.edu>
- <YCMZSjgUDtxaVem3@mit.edu>
- <42511E9D-3786-4E70-B6BE-D7CB8F524912@dilger.ca>
+        id S231447AbhBJFpM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 10 Feb 2021 00:45:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41986 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231426AbhBJFpJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 10 Feb 2021 00:45:09 -0500
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AE96C0613D6
+        for <linux-ext4@vger.kernel.org>; Tue,  9 Feb 2021 21:44:29 -0800 (PST)
+Received: by mail-io1-xd31.google.com with SMTP id f6so709604ioz.5
+        for <linux-ext4@vger.kernel.org>; Tue, 09 Feb 2021 21:44:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KxU8IRCGR97Dvk+7yTC7hx+Kq4dL2ppiigmq6snofR0=;
+        b=Ul0PbOnIGdeH63m0gJ+cUttf5WrJNBWQwEhcSLnozxqvGCSAltPPWZ8t3U4Lnb4KgP
+         yX9jMMv5qoCQWCk/k/iQgyq4P74jQIQFSihpOoVsLnJGfIQiB5uSrAWTC0ac0OK83xHC
+         a9eW3CDfMsdSpgsL9atO7fPm9JRXFEioHHq76Wwe8kuUT5bg4xD6SP/mYBgnvKh2XWnO
+         G31Wbj3VmQcMNpM++f/5qLd50NxvY6VXz2XcdEfdLnPgWgv4uypAxfL0g9CfGVAXY/P1
+         oLG0fidBYW9GERPlTnpltvbSnISXpx4TGl606aQIlxN0JJuvRKujHFVFfWZD+HGPGRm6
+         VOrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KxU8IRCGR97Dvk+7yTC7hx+Kq4dL2ppiigmq6snofR0=;
+        b=SIYw+w9J+vWH/j6ICQHZxdQxa2SklksJm572jRgpj2IraUI9kVOpCnc20Bwf+szVFY
+         jjCxIBn5PRoEe5kiMJYW4Nf+omxWryiAGZz9WAIlNZndaqYm3jRPodDyxaBuHO/Mpugs
+         Q+ub7BpQP/OcEP0V9a4rb3rJbpmuDlQmT40kxuZc7zwdiQ522d372NztPLk9qCDfBrfS
+         o+hDoZ+zrlx8cNvzJkBKRkGh+bdNRNnh/PHsn6k7jttroFU0Un6zGolCedEr8lAgqIIz
+         9DDVc9aB7gVNfI8X/e5oe8uXvxCWZZQnTsv/NHYwjWeyO4EyEXUHwLylJtH0kVhBISPX
+         rMcQ==
+X-Gm-Message-State: AOAM532wmDSpFKkfdfvyEK8BCIlJP3hx1m9zd7BKF1yoYTNDYf4dLdbt
+        eVtCwCnASkOfuYw97gjuX7pJDbQ2/MCs6yNDiz6D/w==
+X-Google-Smtp-Source: ABdhPJzx+44vbNZxM7chxO5QYuXJDZBMfs5kK6NrvfLTxPoxvDYZlzQL0u/bqd4ZbJZAEndortO67bfdT3O+gtyWlEg=
+X-Received: by 2002:a6b:da0f:: with SMTP id x15mr1167410iob.48.1612935868235;
+ Tue, 09 Feb 2021 21:44:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <42511E9D-3786-4E70-B6BE-D7CB8F524912@dilger.ca>
+References: <20210210013206.136227-1-dlatypov@google.com> <YCNF4yP1dB97zzwD@mit.edu>
+In-Reply-To: <YCNF4yP1dB97zzwD@mit.edu>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Tue, 9 Feb 2021 21:44:16 -0800
+Message-ID: <CAGS_qxqz0v2pLaJVoHTFsJ7TmDNiYGxpGJ0q0yVHmDrrO9--bg@mail.gmail.com>
+Subject: Re: [PATCH] ext4: add .kunitconfig fragment to enable ext4-specific tests
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     brendanhiggins@google.com, davidgow@google.com,
+        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        kunit-dev@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 08:03:10PM -0700, Andreas Dilger wrote:
-> Depending on the size of the "escape", it probably makes sense to move
-> toward having e2fsck migrate from the current mechanism to using dirdata
-> for all deployments.  In the current implementation, tools don't really
-> know for sure if there is data beyond the filename in the dirent or not.
+On Tue, Feb 9, 2021 at 6:33 PM Theodore Ts'o <tytso@mit.edu> wrote:
+>
+> On Tue, Feb 09, 2021 at 05:32:06PM -0800, Daniel Latypov wrote:
+> >
+> > After [2]:
+> >   $ ./tools/testing/kunit.py run --kunitconfig=fs/ext4/.kunitconfig
+>
+> Any chance that in the future this might become:
+>
+> $ ./tools/testing/kunit.py run --kunitconfig=fs/ext4
 
-It's actually quite well defined.  If dirdata is enabled, then we
-follow the dirdata rules.  If dirdata is *not* enabled, then if a
-directory inode has the case folding and encryption flags set, then
-there will be cryptographic data immediately following the filename.
-Otherwise, there is no valid data after the filename.
+I've been in favor of something like that for a while, but haven't
+gotten folks to agree on the details.
 
-> For example, what if casefold is enabled on an existing filesystem that
-> already has an encrypted directory?  Does the code _assume_ that there is
-> a hash beyond the name if the rec_len is long enough for this?
+Using bazel-like syntax for a bit, I'd really like it if we had some
+easy way to do
+$ kunit test //fs/...  # run all fs tests across all subdirs
 
-No, we will only expect there to be a hash beyond the name if
-EXT4_CASEFOLD_FL and EXT4_ENCRYPT_FL flags are set on the inode.  (And
-if the rec_len is not large enough, then that's a corrupted directory
-entry.)
+But since there's the possibility of having tests w/ incompatible
+requirements, I don't know that kunit.py can support it.
+(Tbh, I think just concatenating fragments would probably just work
+99% of the time so kunit.py could get away with doing that).
 
-> I guess it is implicit with the casefold+encryption case for dirents in
-> directories that have the encryption flag set in a filesystem that also
-> has casefold enabled, but it's definitely not friendly to these features
-> being enabled on an existing filesystem.
+So --kunitconfig=<path> is currently a compromise to give us a less
+controversial way of providing one-liners for testing a whole
+subdirectory.
 
-No, it's fine.  That's because the EXT4_CASEFOLD_FL inode flag can
-only be set if the EXT4_FEATURE_INCOMPAT_CASEFOLD is set in the
-superblock, and EXT4_ENCRYPT_FL inode flag can only be set if
-EXT4_FEATURE_INCOMPAT_ENCRYPT is set in the superblock, this is why it
-will be safe to enable of these features, since merely enabling the
-file system features only allows new directories to be created with
-both CASEFOLD_FL and ENCRYPT_FL set.
+I don't think there'd be too much opposition for --kunitconfig to
+automatically append ".kunitconfig" when passed a directory.
+But there might be some, since a reader might think --kunitconfig=dir/
+means it's recursing over all subdirs.
 
-The only restriction we would have is a file system has both the case
-folding and encryption features, it will *not* be safe to set the
-dirdata feature flag without first scanning all of the directories to
-see if there are any directories that have both the casefold and
-encrypt flags set on that inode, and if so, to convert all of the
-directory entries to use dirdata.  I don't think this is going to be a
-significant restriction in practice, though.
+>
+> Or better yet, syntactic sugar like:
+>
+> $ ./tools/testing/kunit.py test fs/ext4
 
-						- Ted
+The positional argument for run/exec is probably going to be taken by:
+https://lore.kernel.org/linux-kselftest/20210206000854.2037923-1-dlatypov@google.com/
+https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/commit/?h=kunit&id=5d31f71efcb6bce56ca3ab92eed0c8f2dbcc6f9a
 
+So we'd see something like:
+$ ./tools/testing/kunit.py run --kunitconfig=fs/ext4 '*inode*'
 
+Or if we set and followed naming conventions:
+$ ./tools/testing/kunit.py run --alltests "ext4-*"
+(this would take a lot longer to build however...)
+
+Filtering could also let us curate only a few, less granular
+.kunitconfig fragments (at the cost of higher build time).
+E.g.
+$ ./tools/testing/kunit.py run --kunitconfig=fs/ "ext4-*"
+
+>
+> would be really nice.
+>
+>                                                 - Ted
