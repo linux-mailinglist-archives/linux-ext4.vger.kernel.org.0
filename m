@@ -2,163 +2,128 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AE55318786
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Feb 2021 10:56:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45F8B318790
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Feb 2021 10:59:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230176AbhBKJzb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 11 Feb 2021 04:55:31 -0500
-Received: from mx1.hrz.uni-dortmund.de ([129.217.128.51]:33910 "EHLO
+        id S230109AbhBKJ5M (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 11 Feb 2021 04:57:12 -0500
+Received: from mx1.hrz.uni-dortmund.de ([129.217.128.51]:36104 "EHLO
         unimail.uni-dortmund.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230192AbhBKJwy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 11 Feb 2021 04:52:54 -0500
+        with ESMTP id S230144AbhBKJzL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 11 Feb 2021 04:55:11 -0500
 Received: from [192.168.111.113] (p4fd971d4.dip0.t-ipconnect.de [79.217.113.212])
         (authenticated bits=0)
-        by unimail.uni-dortmund.de (8.16.1/8.16.1) with ESMTPSA id 11B9ptWE008232
+        by unimail.uni-dortmund.de (8.16.1/8.16.1) with ESMTPSA id 11B9rpY7010928
         (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT);
-        Thu, 11 Feb 2021 10:51:55 +0100 (CET)
+        Thu, 11 Feb 2021 10:53:51 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tu-dortmund.de;
-        s=unimail; t=1613037116;
-        bh=G+2UnajnP81FFlxwuwxMT+3dMca/ftJn/4u+nnK9BC4=;
+        s=unimail; t=1613037232;
+        bh=hEny8mHNdB5omE4FqgLpGkOemODjAlaz9MQDbNDOuec=;
         h=Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=Lkp7Qn5LGpxWxk8Dgs7uy6LLcxu6sqdDA45MrlMCgrpWcvtrNz8ma4C2amyf3/LkI
-         qaniALZuvJRKVWqnOkQTMqCrirVGUWou+a1hX75sQREkeOcmd27Va6gGB14PlS+PZi
-         QLlD0TeKX4hLfUArd7RDvTGWTpzhqLK8Vn9oK7dY=
-Subject: [PATCH v2] Updated locking documentation for journal_t
+        b=dTBbDs5s2y2XfvCMZ+7qGnOL17EizipLyeD3HGWiyD3ozTYJHTdVO+ZBBnXpslzpg
+         wKfAdlkMhLMfP29RU2Q2RQgukK5276up5IrV+wdZUTmOZ8z94kSI4YC4yQwrAFKrGc
+         KK1rk0SjCG878UEMgR/924yv/PJUxPvZ2G5zf6XE=
+Subject: Re: [PATCH 1/2] Updated locking documentation for transaction_t
 To:     Jan Kara <jack@suse.cz>
 Cc:     Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
         "Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.com>,
         linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20210210095740.54881-1-alexander.lochmann@tu-dortmund.de>
- <20210211093754.GJ19070@quack2.suse.cz>
+ <20210210095740.54881-2-alexander.lochmann@tu-dortmund.de>
+ <20210211093027.GI19070@quack2.suse.cz>
 From:   Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
-Message-ID: <ad82c7a9-a624-4ed5-5ada-a6410c44c0b3@tu-dortmund.de>
-Date:   Thu, 11 Feb 2021 10:51:55 +0100
+Message-ID: <1803ac43-d6fc-4de8-78a0-7fc807f9c036@tu-dortmund.de>
+Date:   Thu, 11 Feb 2021 10:53:51 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210211093754.GJ19070@quack2.suse.cz>
+In-Reply-To: <20210211093027.GI19070@quack2.suse.cz>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="Ycz4DSNxyoWEiYKXLrSfByffiS1XQQsyc"
+ boundary="xR6At3BscXEfQMytnEQ6uJIgWbuzasC1X"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Ycz4DSNxyoWEiYKXLrSfByffiS1XQQsyc
-Content-Type: multipart/mixed; boundary="XeKzu853AAnfLW432352y3ymd1K11aocA";
+--xR6At3BscXEfQMytnEQ6uJIgWbuzasC1X
+Content-Type: multipart/mixed; boundary="b63HI2vDGUjw0rmQ83RumwUtZ7tnYQBbd";
  protected-headers="v1"
 From: Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
 To: Jan Kara <jack@suse.cz>
 Cc: Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
  Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.com>,
  linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <ad82c7a9-a624-4ed5-5ada-a6410c44c0b3@tu-dortmund.de>
-Subject: [PATCH v2] Updated locking documentation for journal_t
+Message-ID: <1803ac43-d6fc-4de8-78a0-7fc807f9c036@tu-dortmund.de>
+Subject: Re: [PATCH 1/2] Updated locking documentation for transaction_t
 References: <20210210095740.54881-1-alexander.lochmann@tu-dortmund.de>
- <20210211093754.GJ19070@quack2.suse.cz>
-In-Reply-To: <20210211093754.GJ19070@quack2.suse.cz>
+ <20210210095740.54881-2-alexander.lochmann@tu-dortmund.de>
+ <20210211093027.GI19070@quack2.suse.cz>
+In-Reply-To: <20210211093027.GI19070@quack2.suse.cz>
 
---XeKzu853AAnfLW432352y3ymd1K11aocA
+--b63HI2vDGUjw0rmQ83RumwUtZ7tnYQBbd
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-Some members of transaction_t are allowed to be read without
-any lock being held if consistency doesn't matter.
-Based on LockDoc's findings, we extended the locking
-documentation of those members.
-Each one of them is marked with a short comment:
-"no lock for quick racy checks".
 
-Signed-off-by: Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
-Signed-off-by: Horst Schirmeier <horst.schirmeier@tu-dortmund.de>
-Reviewed-by: Jan Kara <jack@suse.cz>
----
-  include/linux/jbd2.h | 10 +++++-----
-  1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index 18f77d9b1745..4dca33a063dd 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -768,7 +768,7 @@ enum passtype {PASS_SCAN, PASS_REVOKE, PASS_REPLAY};
-  struct journal_s
-  {
-  	/**
--	 * @j_flags: General journaling state flags [j_state_lock]
-+	 * @j_flags: General journaling state flags [j_state_lock, no lock for =
+On 11.02.21 10:30, Jan Kara wrote:
+>>   	 */
+>>   	unsigned long		t_log_start;
+>>  =20
+>> -	/* Number of buffers on the t_buffers list [j_list_lock] */
+>> +	/* Number of buffers on the t_buffers list [j_list_lock, no lock for=
+ quick racy checks] */
+>>   	int			t_nr_buffers;
+>=20
+> So this case is actually somewhat different now that I audited the uses=
+=2E
+> There are two types of users - commit code (fs/jbd2/commit.c) and other=
+s.
+> Other users properly use j_list_lock to access t_nr_buffers. Commit cod=
+e
+> does not use any locks because committing transaction is fully in
+> ownership of the jbd2 thread and all other users need to check & wait f=
+or
+> commit to be finished before doing anything with the transaction's buff=
+ers.
+Mhm I see.
+What about '[..., no locks needed for jbd2 thread]'?
 
-quick racy checks]
-  	 */
-  	unsigned long		j_flags;
+How do the others wait for the commit to be finished?
 
-@@ -808,7 +808,7 @@ struct journal_s
-  	/**
-  	 * @j_barrier_count:
-  	 *
--	 * Number of processes waiting to create a barrier lock [j_state_lock]
-+	 * Number of processes waiting to create a barrier lock [j_state_lock, =
-
-no lock for quick racy checks]
-  	 */
-  	int			j_barrier_count;
-
-@@ -821,7 +821,7 @@ struct journal_s
-  	 * @j_running_transaction:
-  	 *
-  	 * Transactions: The current running transaction...
--	 * [j_state_lock] [caller holding open handle]
-+	 * [j_state_lock, no lock for quick racy checks] [caller holding open=20
-handle]
-  	 */
-  	transaction_t		*j_running_transaction;
-
-@@ -1033,7 +1033,7 @@ struct journal_s
-  	 * @j_commit_sequence:
-  	 *
-  	 * Sequence number of the most recently committed transaction
--	 * [j_state_lock].
-+	 * [j_state_lock, no lock for quick racy checks].
-  	 */
-  	tid_t			j_commit_sequence;
-
-@@ -1041,7 +1041,7 @@ struct journal_s
-  	 * @j_commit_request:
-  	 *
-  	 * Sequence number of the most recent transaction wanting commit
--	 * [j_state_lock]
-+	 * [j_state_lock, no lock for quick racy checks]
-  	 */
-  	tid_t			j_commit_request;
+- Alex
 
 --=20
-2.20.1
+Technische Universit=C3=A4t Dortmund
+Alexander Lochmann                PGP key: 0xBC3EF6FD
+Otto-Hahn-Str. 16                 phone:  +49.231.7556141
+D-44227 Dortmund                  fax:    +49.231.7556116
+http://ess.cs.tu-dortmund.de/Staff/al
 
 
+--b63HI2vDGUjw0rmQ83RumwUtZ7tnYQBbd--
 
-
---XeKzu853AAnfLW432352y3ymd1K11aocA--
-
---Ycz4DSNxyoWEiYKXLrSfByffiS1XQQsyc
+--xR6At3BscXEfQMytnEQ6uJIgWbuzasC1X
 Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="OpenPGP_signature"
 
 -----BEGIN PGP SIGNATURE-----
 
-wsF5BAABCAAjFiEElhZsUHzVP0dbkjCRWT7tBbw+9v0FAmAk/jsFAwAAAAAACgkQWT7tBbw+9v2d
-iA/+OIItlenPIX84hr8W+cCkrWtxMOlH04PcakAieJKdAgXkEEiCDEDkaH9gXivog+9iOQ03uFvO
-AJtzn/s3wE8EfEmO10kGMOVy6G/0NvFx1DNlGFXDMHagxSXSTum2Jh1UwJKOSk02WdyQ2V/6h5GZ
-8oAUXWdh5cuRnOGniCxZPY+VfKp0s5lfyApWkAvIDO5jQkqbLenDW0sWs0bTl3N5bb9/rf5dqCqh
-mRevi6bnUBccnPvfIOR6fKbERhxklnpkYR54+JZRrq1Ml3A9uTSKLIKg7tACG2KwviI9sSNRao6A
-SYUU6Kx4U24kKx/LTNIck3wcwHCl5dx5QjxJ/yXE2nQXJ25oiYVSpBiSxNncP8V6YjdB2DAzMREB
-R6xg4y+Ho/dKC/6IOLsTU0PhCXar4FNpWNp6kkqAVZRHqXWVapyxYKZUdT3GK187rxAYvaKizSIv
-LZSP2UsjBQgcHDGXxOko4f+599XWQn26pqECFlruE541WDwpL4iu77DkFnd7v11pFNSedDO/u/nu
-nm77tRFKAfoUU1NtH9PXfVRgxh//XVYcwhzq1EZ1ezPOfAhNvv5wZRpUjer6giFm3G402O/bKUv7
-MgIFEx4NKM8K0DH1Ue+ohqNagUXzTxt0XJtYipGbbq/aTum84LRWND3gqj75Ri6msVo4xvP0fvh8
-gl0=
-=C5aW
+wsF5BAABCAAjFiEElhZsUHzVP0dbkjCRWT7tBbw+9v0FAmAk/q8FAwAAAAAACgkQWT7tBbw+9v3Z
+ChAAhoUoJXxPDqGorG3wSL5TocAPktm+zk4lWB1iSWFFSnIW9tHPIt3BU3TU/3WNP59XGRPy52Qv
+uPY16Es7Newbojhiay3+ImfAJjWjepm6+F0On4QHzQO/vMw+1n8s03V32V6fVB10EbV59rsjD9TJ
+uDtSSNaogT8E9q5dQe/xDlmmPQGrN/J35YdPowYC7qof1gRQLBJfpHyQyzWb06lvt6mBNg75fC7l
+7LfMnn6EqM5RdNva4DyfHPY7JaEkE9ktG3YnuPU5F3KvpE74luogqz5fC/CdZ7Kdv0Jv1Wi2X7AA
+/8dYb+d/zSLxtkndHKoCaXfWfL0A2X4hw2Nnpd+2C8nnRIO1q2CV8r+FILgatIPq1wgvovskmhQA
+fbGm4vh0Bw2gfMGGVtjGGgoLzT93XUMWQ7uD9VstQvchOB0vKfKy/Nzv4LLPRFS4lTWtVvZtJfQR
+rwD6KHQn7thgiVjgEoh9LAdtg7/FsvznOjcuOL+fPYA6acMkF+5aCemtel/fkrrbPP8QZk+eJj/O
+DkRSjSfBmnw6RSPkrolZ3y9kVzZFjqO7sUGCTVtey/URABPQb+VjtLS+1mJ7+QvnMSuDpd5aKAJH
+azfVgwCPrcopu+i7KYsTWzKpR4eENDmOWhUvzFvoko4dUVvU/N90H7Aelp/k1CUfvYEgJ4TlhJ/G
+CWc=
+=hu8m
 -----END PGP SIGNATURE-----
 
---Ycz4DSNxyoWEiYKXLrSfByffiS1XQQsyc--
+--xR6At3BscXEfQMytnEQ6uJIgWbuzasC1X--
