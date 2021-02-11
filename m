@@ -2,90 +2,77 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD10A318CCA
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Feb 2021 15:01:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3650B318D45
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Feb 2021 15:24:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231954AbhBKN5t (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 11 Feb 2021 08:57:49 -0500
-Received: from mx1.hrz.uni-dortmund.de ([129.217.128.51]:61956 "EHLO
-        unimail.uni-dortmund.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231404AbhBKNzw (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 11 Feb 2021 08:55:52 -0500
-Received: from ios.cs.uni-dortmund.de (ios.cs.uni-dortmund.de [129.217.43.100])
-        (authenticated bits=0)
-        by unimail.uni-dortmund.de (8.16.1/8.16.1) with ESMTPSA id 11BDsTww027233
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Thu, 11 Feb 2021 14:54:32 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tu-dortmund.de;
-        s=unimail; t=1613051672;
-        bh=gjOUwmU1t+wKdLBsPCfx+1FQK3F1VEP+faTt8VFJuks=;
-        h=From:To:Cc:Subject:Date;
-        b=J2kc+h7IwBue0pyKD5g3D5fOhDM3drVXAeknfJBJsPIwLtFm12gnG/OqTQ02vRLh2
-         lx4+bWZ0Ldcevm/UIYZUn5Yun6oQ+jY0nprMUdI7wo3cTc0PlTjcs0AF1VXXjtxSKS
-         s5wrg25DgIr4Dtasm/nYrrvhSgd7PkRyiMM6QpvE=
-From:   Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
-Cc:     Alexander Lochmann <alexander.lochmann@tu-dortmund.de>,
-        Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
-        "Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.com>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] Updated locking documentation for transaction_t
-Date:   Thu, 11 Feb 2021 14:54:23 +0100
-Message-Id: <20210211135424.42826-1-alexander.lochmann@tu-dortmund.de>
-X-Mailer: git-send-email 2.20.1
+        id S232284AbhBKOXl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 11 Feb 2021 09:23:41 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50644 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231881AbhBKOVc (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 11 Feb 2021 09:21:32 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613053242; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5Xww8RvxYre9GaHVK6ekS1+0MLJh705ok+8LcldaB5o=;
+        b=rN3S05xS7YtU3Rg6UqPw5SlbZI+AWmIcVh0JmVKvkqLZzI0YyLVfvB8sPv0Og+8cHxG+uD
+        1qAMd5eWkjWoC28ltY2cnhyCAiAnroZ163yR2yjOUhSefP/UfSBq05sgTOk3z73ngUp7DA
+        oRtsrVbP+NW+rdCm0yGZvFkbmlDsEvw=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 306AEB007;
+        Thu, 11 Feb 2021 14:20:42 +0000 (UTC)
+Date:   Thu, 11 Feb 2021 15:20:41 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Jan Kara <jack@suse.cz>, Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com>,
+        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Theodore Ts'o <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>
+Subject: Re: possible deadlock in start_this_handle (2)
+Message-ID: <YCU9OR7SfRpwl4+4@dhcp22.suse.cz>
+References: <000000000000563a0205bafb7970@google.com>
+ <20210211104947.GL19070@quack2.suse.cz>
+ <CACT4Y+b5gSAAtX3DUf-H3aRxbir44MTO6BCC3XYvN=6DniT+jw@mail.gmail.com>
+ <CACT4Y+a_iyaYY18Uw28bd178xjso=n6jfMBjyZuYJiNeo8x+LQ@mail.gmail.com>
+ <20210211121020.GO19070@quack2.suse.cz>
+ <YCUkaJFoPkl7ZvKE@dhcp22.suse.cz>
+ <20210211125717.GH308988@casper.infradead.org>
+ <YCUr99//z8hJmnDH@dhcp22.suse.cz>
+ <20210211132533.GI308988@casper.infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210211132533.GI308988@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Some members of transaction_t are allowed to be read without
-any lock being held if accessed from the correct context.
-We used LockDoc's findings to determine those members.
-Each member of them is marked with a short comment:
-"no lock needed for jbd2 thread".
+On Thu 11-02-21 13:25:33, Matthew Wilcox wrote:
+> On Thu, Feb 11, 2021 at 02:07:03PM +0100, Michal Hocko wrote:
+> > On Thu 11-02-21 12:57:17, Matthew Wilcox wrote:
+> > > > current->flags should be always manipulated from the user context. But
+> > > > who knows maybe there is a bug and some interrupt handler is calling it.
+> > > > This should be easy to catch no?
+> > > 
+> > > Why would it matter if it were?
+> > 
+> > I was thinking about a clobbered state because updates to ->flags are
+> > not atomic because this shouldn't ever be updated concurrently. So maybe
+> > a racing interrupt could corrupt the flags state?
+> 
+> I don't think that's possible.  Same-CPU races between interrupt and
+> process context are simpler because the CPU always observes its own writes
+> in order and the interrupt handler completes "between" two instructions.
 
-Signed-off-by: Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
-Signed-off-by: Horst Schirmeier <horst.schirmeier@tu-dortmund.de>
----
- include/linux/jbd2.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+I have to confess I haven't really thought the scenario through. My idea
+was to simply add a simple check for an irq context into ->flags setting
+routine because this should never be done in the first place. Not only
+for scope gfp flags but any other PF_ flags IIRC.
 
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index 99d3cd051ac3..1f19d19f6435 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -594,18 +594,18 @@ struct transaction_s
- 	 */
- 	unsigned long		t_log_start;
- 
--	/* Number of buffers on the t_buffers list [j_list_lock] */
-+	/* Number of buffers on the t_buffers list [j_list_lock, no locks needed for jbd2 thread] */
- 	int			t_nr_buffers;
- 
- 	/*
- 	 * Doubly-linked circular list of all buffers reserved but not yet
--	 * modified by this transaction [j_list_lock]
-+	 * modified by this transaction [j_list_lock, no locks needed for jbd2 thread]
- 	 */
- 	struct journal_head	*t_reserved_list;
- 
- 	/*
- 	 * Doubly-linked circular list of all metadata buffers owned by this
--	 * transaction [j_list_lock]
-+	 * transaction [j_list_lock, no locks needed for jbd2 thread]
- 	 */
- 	struct journal_head	*t_buffers;
- 
-@@ -631,7 +631,7 @@ struct transaction_s
- 	/*
- 	 * Doubly-linked circular list of metadata buffers being shadowed by log
- 	 * IO.  The IO buffers on the iobuf list and the shadow buffers on this
--	 * list match each other one for one at all times. [j_list_lock]
-+	 * list match each other one for one at all times. [j_list_lock, no locks needed for jbd2 thread]
- 	 */
- 	struct journal_head	*t_shadow_list;
- 
 -- 
-2.20.1
-
+Michal Hocko
+SUSE Labs
