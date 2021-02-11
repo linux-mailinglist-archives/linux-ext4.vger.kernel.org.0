@@ -2,734 +2,515 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 796303185D6
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Feb 2021 08:45:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9516D3185EB
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Feb 2021 08:56:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229702AbhBKHot (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 11 Feb 2021 02:44:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbhBKHoh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 11 Feb 2021 02:44:37 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59EBAC061574
-        for <linux-ext4@vger.kernel.org>; Wed, 10 Feb 2021 23:43:56 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id p21so6727769lfu.11
-        for <linux-ext4@vger.kernel.org>; Wed, 10 Feb 2021 23:43:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=JnvXoXKJDP+5cOYszLV3RHDYhcET1or+qZB68ZPw7J8=;
-        b=jiXLedDvRIcu/j4IQbe6TbyZvjkjhFGUI2IK73xOHfqUAEs8w3g0jLkshvi+5k4hdP
-         JltUng+Z+PmwZf3c62wLJqu72g/iFUlTv7Ju4vbjzcmXlKhKf/kq5AIhhAoJXbFDw6Yq
-         m/VWzXf+96i/5bv4oeppjqZPy6xJwKR7AfEfkE2HgvILbrxO1sSoOVFsPx3s1l+O6Q3n
-         lV0YAD8LqzJdxmLW2vkztTDAd/TIAy7j9Wj4XOvwtu1ajrRN9AoK7ly0VNJ8tF6LbQAa
-         jgX6BmCI5Bcv8w0F/h2I3eKhLNwYh+wBKDQeWtbvzwFo40zHerSgfTPTbfglcE98Jrvv
-         mkuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=JnvXoXKJDP+5cOYszLV3RHDYhcET1or+qZB68ZPw7J8=;
-        b=aH1IEj5Xp7vJprkNyQ8zAyAb5wT+muleS3cMcVytyo8iBtBqdzCtmPor7PCosKHTi3
-         eI6q773juQ14akW4YspV6vt2PMzL99Ymkv/HHhHkAPk8+EnmRU3avbEOnh34ubdCiEVW
-         URgxIApgio0kpdYFzr88Def6cT5zSxHi0SyJF3MC6sLFhIiA1pYuAqyPiN7lAiMEP4sw
-         cjXE55L9qmGSZeSI5mja2xuHEvU4cUeNpA4FC9VLPbHRN4OZb0UxWfScCMb8CInLwZbo
-         rusVwZmkIKtk6j+NZmbvIih9KKZdvPaG7sr/YnJFUpN/E4dI0QzwBagiNGuWiX935ovy
-         rIOA==
-X-Gm-Message-State: AOAM53373WbetuKIizpFR6yQw0t/UI7uliUyj5Yk4Ht8otP/EFgvaqK0
-        kyHy6P7o7MBKgYvC7dbyuUepWTIo8fEUmq33KFQ=
-X-Google-Smtp-Source: ABdhPJygXXWdLzfmFalP4YQUUMWV92AM6dmGtlHt/SpO/Rd+iEnALik/DJxSWFfxxjdbiNLWKm2y1Q==
-X-Received: by 2002:ac2:5cbc:: with SMTP id e28mr3965172lfq.588.1613029434588;
-        Wed, 10 Feb 2021 23:43:54 -0800 (PST)
-Received: from [192.168.10.10] ([5.8.48.45])
-        by smtp.gmail.com with ESMTPSA id d19sm814848ljj.51.2021.02.10.23.43.52
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 10 Feb 2021 23:43:54 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.7\))
+        id S229880AbhBKHyC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 11 Feb 2021 02:54:02 -0500
+Received: from mail-mw2nam10on2087.outbound.protection.outlook.com ([40.107.94.87]:32992
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229876AbhBKHx2 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 11 Feb 2021 02:53:28 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LvwJabWpfc5/GWBwKE3RH50qKGYDa8aIV7D2+0WlA+OEO1n5f+wvOpwwXM1QnIBPzjJpLDZ4ebx+XGah2ljdCrxpi18/6VagkIBXgitXmDEg/IcsfjMTkReywPDe6/fJpLBW+G+RF0UA30uYEmpY/GKMthIEn9VZd41CjKhC5p1ixCtlYSBEvC3Ngu8vvCz41w8vO4xKcDc5jkju/znTKXSEcp9FOsi0OtQUANoOeqvpZM0wubPS3/AiNnsqq5ADsA8ZXJETPOTPxPlE9NCWlMIs1v3Lu2MtxLV6/XL7DRitMzQ7v1U42qWfVgF+a7n5MlJquPAVhlyZg8ayw5LJlA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=S26+GNgV7P+vrS/HT96qlHG1adWO4xHvAwtQAYSec2o=;
+ b=lxuzk96BZ/C9cpqwDZWtLTOjh4afvBRLoJVUQ5hKbo3jGFslEw4JqRmIH/FmG0ZD7inSaQgLMhTso1BKcK3yITU9fwlHX1HY+5A/bf2qDFYQuqG41l3GE4aI3KLug03MgsXXeQT3dhGPtG5yWpatWgWLeUeMq2D2NJf/hUJaOIW5PyRVXZgaAJn62UnL13UqXQTTtG2jd0ID02oKCmTkZyB5sEWgsu79HS83XkN+3+zS2RpZG6Z2MP0f1Wv5EAIu4HEBWiK9vRCYWVXqFXTFYeiFOWcQjyZZu/6rEpWev4RFYeo5nb/CjV0ZOjyCogkGvz/P9PQjl4DMpqvy5SwaFQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=whamcloud.com; dmarc=pass action=none
+ header.from=whamcloud.com; dkim=pass header.d=whamcloud.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=whamcloud.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=S26+GNgV7P+vrS/HT96qlHG1adWO4xHvAwtQAYSec2o=;
+ b=PrRqdqFPUW2xOdph2f3HvctMeKT53eQXU1Mqsgw9CvdmvFlZr2IVyrT3nifN9Yxey07oeqdsx+Nc2qNvkRYeLFMTaaQnl7FBzwIK8Y1Eeyg2BQ/DBXYy9H8xNmC0tJPxPi4ZvZDHCAiSg41AavNvooGairw0mKOnaUO/83rLQlU=
+Received: from DM6PR19MB2441.namprd19.prod.outlook.com (2603:10b6:5:18d::16)
+ by DM6PR19MB3146.namprd19.prod.outlook.com (2603:10b6:5:6::15) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3825.23; Thu, 11 Feb 2021 07:53:14 +0000
+Received: from DM6PR19MB2441.namprd19.prod.outlook.com
+ ([fe80::7c07:e61d:86ff:781b]) by DM6PR19MB2441.namprd19.prod.outlook.com
+ ([fe80::7c07:e61d:86ff:781b%7]) with mapi id 15.20.3846.027; Thu, 11 Feb 2021
+ 07:53:14 +0000
+From:   Alex Zhuravlev <azhuravlev@whamcloud.com>
+To:     Alexey Lyashkov <alexey.lyashkov@gmail.com>
+CC:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        "tytso@mit.edu" <tytso@mit.edu>,
+        "artem.blagodarenko@gmail.com" <artem.blagodarenko@gmail.com>,
+        Shuichi Ihara <sihara@ddn.com>,
+        "adilger@dilger.ca" <adilger@dilger.ca>
 Subject: Re: [PATCH v2 4/5] ext4: improve cr 0 / cr 1 group scanning
-From:   Alexey Lyashkov <alexey.lyashkov@gmail.com>
-In-Reply-To: <20210209202857.4185846-5-harshadshirwadkar@gmail.com>
-Date:   Thu, 11 Feb 2021 10:43:50 +0300
-Cc:     linux-ext4 <linux-ext4@vger.kernel.org>, tytso@mit.edu,
-        bzzz@whamcloud.com, artem.blagodarenko@gmail.com, sihara@ddn.com,
-        adilger@dilger.ca
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <98DB0664-5802-4A66-A7D8-38ECA938F916@gmail.com>
+Thread-Topic: [PATCH v2 4/5] ext4: improve cr 0 / cr 1 group scanning
+Thread-Index: AQHW/yNcxtiFt0leBUaVWYVCTlJKOapSlP8AgAACn4A=
+Date:   Thu, 11 Feb 2021 07:53:14 +0000
+Message-ID: <1D86B3CF-0AA0-4A55-9FCD-49D08DE2E6D7@whamcloud.com>
 References: <20210209202857.4185846-1-harshadshirwadkar@gmail.com>
  <20210209202857.4185846-5-harshadshirwadkar@gmail.com>
-To:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-X-Mailer: Apple Mail (2.3445.9.7)
+ <98DB0664-5802-4A66-A7D8-38ECA938F916@gmail.com>
+In-Reply-To: <98DB0664-5802-4A66-A7D8-38ECA938F916@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=whamcloud.com;
+x-originating-ip: [78.107.234.162]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 477d3708-5a7c-4369-4a29-08d8ce62160b
+x-ms-traffictypediagnostic: DM6PR19MB3146:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR19MB314650F0FAFCE6FBDFD02CB6CB8C9@DM6PR19MB3146.namprd19.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 7tQwmh+ZzIXBqZlmYgeSqS2hZ3TeGjwJzIDgMXOCN+49RRZvN6WuAfqhrg3heE83gZqH0FcNbAHIV+Hqi3TEJcdXMtB3U51HtMt8rZtD6HPsK7qtBwtLWZAYz8t/CwHxmp/Xr2dzy9sGumdHbuxqRb3YGdi8cE27TrRkovJ0dgXEpVlye1Ri2mMKymnXcTCH3AtLvkUSaPWGhhKEAe7gDkR5oOOnu4gB8SzZLHY1jTXUwALwF5u1edtvLGtDXtYciXyIfsUishJpO+6L0YDpYk3Sw7KGFQStb/rq065s2JYlO6o57IDX2O7wJtIWNDu5jliIXsS/3dQW+6KtkwxzyeWcGEDG4CtTIuzgJFV7eGUHmyXm3NZVIxIbAtUc3OYhon9kr2mbc4d3TKIMJ4JMj2zxkiCj+8sidPPqtDYOgJRXyHskL+d0u9B9IjwmC7oczWwAtH5KaT91ThsN96K33QLce08sFL7xqZxMxgJN+ICmrljOojU4K2wwKE7vMoclr4leRunkw33el+V5+KbDlAthScqxzeAqFB3xrAl52lqQ+nf2hU7pF8XOtE2Ywe6bylSUy4ndSZBvCyy9KzkydQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR19MB2441.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(39850400004)(346002)(366004)(136003)(54906003)(8676002)(6506007)(66946007)(76116006)(91956017)(64756008)(66556008)(66476007)(71200400001)(316002)(66446008)(30864003)(6512007)(8936002)(33656002)(6486002)(36756003)(6916009)(86362001)(4326008)(2906002)(83380400001)(26005)(5660300002)(186003)(53546011)(2616005)(478600001)(45980500001)(579004);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?SE05aTNLTjJybEhkUXdBdTc2RGZkR3VmY09XdlpaVldhODhmN3lyeEhVRyto?=
+ =?utf-8?B?RkMzQnljay9ZaFQxY0dDdG80QVUzczlCTFFoN0swQkdROGlVcnRZMDlWdlpz?=
+ =?utf-8?B?d3pSaWdkQm05UG81aS82Yk96NGF6ZzBOeEFYT2docVcrN1FQeHNNNWkzTGIy?=
+ =?utf-8?B?dFdvVWNSOUtsSWJ3MldrSTVmazRUd1hreUcyenl4Mm82SitPbjRZOWVkMERw?=
+ =?utf-8?B?R28rK2xuQkdEWWEzNW9sZ1IyeEIydW1Da0Fvd3l2MEhhYlBycndZVWVwZ2cv?=
+ =?utf-8?B?QVpQQzlBL2hHaXNzM0paZWJzbCtYUUxLUGpGSnBvQ0Vadm5CNk9mQzQzcHAv?=
+ =?utf-8?B?Z0Uwc0ZmT0ROOTV4a3JzbWdoM1JCbXo5a3Azdk5JamRkc295VkYxRDI3WUVy?=
+ =?utf-8?B?SG5RWllhcVNUb2x0MTV3c0pvSjl4QWgxcmZOV2dpR242ZnVLTHc5L0ROc3Bx?=
+ =?utf-8?B?UUVtdnhLRWc4VjNqTXFSTFBRbDRuV1hwajJkWDVxVXV0c05ZK0lXZURRemhH?=
+ =?utf-8?B?Tzg3QjlJc1VWcGpxT0RIQTFNZFU2UE9GYVM5U0FVWGRXSUhENnVVWFQ4d1ZM?=
+ =?utf-8?B?SHBrY21pU3pMMWM3RU1rRGVpaitjVHZrZWMvNGZQL0U1VC8yc1BoUEU1NnZj?=
+ =?utf-8?B?QmlHUUlGaXVacFNzMDBiOHkzOU43SmVNOHNjQXpJaTlvcktoWlUvZllDUm9M?=
+ =?utf-8?B?Z3hDdTVpOXp6QlRDYnNjUlBJY1pJcHF0V1djNnFpQlBXT2pnWjVwbjNLRjVw?=
+ =?utf-8?B?YkVzUkdiV1FCdEN2Y2ZoOGpMMDhiZHF1SWkzTmZQK1pGNjNNeEhseGtVMUp4?=
+ =?utf-8?B?L2JXeStJT0c5Ym1zRkd1czJLTzAxU3VFdWxOTDFSODJDdDdsZ2lRRkdlVFN1?=
+ =?utf-8?B?TEo3NE5nVFZPbkpvbmZLQ2lQUXdGYXRjZG00SUtYRjVoazNWNGdYRlgxbUVr?=
+ =?utf-8?B?MTJtVUYxSUU2MWtrTlRBa1JIWU5OQzdpUm52ckVIQkQveHRER1hkcnNReUVo?=
+ =?utf-8?B?M0dXcXJNQ2YyeFE1cXJrZkhYZU9FZTc1d2hEWlpyckx2N3lGc1E5cnRDMFY2?=
+ =?utf-8?B?cERqbXpqZG9jLzBSQy9Qd3VxQzkvREZVR2hZYlNIQk1NdGVZcC9UMHdCeDVa?=
+ =?utf-8?B?R3FZWmZCUVlFekUyYW9rNThpcWxoblpPWU1FelZ3N0Y2OXJ5aXI0L1pYWnd1?=
+ =?utf-8?B?c1VkM0hzY3ZRQWl3cGI2ZTJaSDhaL1lyQUFaODRnN0wwc2lMTExla2lCZXVa?=
+ =?utf-8?B?NjNjR0dOMjdVTjNoVUpDWEphZjRaRjFjRWJ5MjZSalBENDdYYVVTTlIrWUoz?=
+ =?utf-8?B?ZXgxV0krWEIyQ3RkTkk1Q2dpTTJVVU4yMmZESDdYOHlhR0xMSG9DczhhV0gr?=
+ =?utf-8?B?VlpXUkhNK3VWK1hjM2hSTmdka3BCcEVFZHI2eFdTZ3drV0I0NGQya21zUG1C?=
+ =?utf-8?B?MkNJQlBQc0wvYVZsekFtRHNmd0NZalRXYnhhejk2MW4xamtrZjdsZldPSjM5?=
+ =?utf-8?B?NHhsY3VyU3N5Zkh3YWdDTjMxYmN6ZEkwVURpdzN1SmJqUDJaWUVpa2xFazkr?=
+ =?utf-8?B?QjZJS0k5Y1BGY1MwR0hkNG52Z2JvQll4V25IRjhKYWpSb2w2bFpkNnRlbmxP?=
+ =?utf-8?B?N2FuRW0xbFhPWEMvQ3YrNFVRZVJvU3JHd3NSOHQwdWNpa1BoN2VKR21LTFpC?=
+ =?utf-8?B?YW9QakNuUVU2bDBveTBQN2U0eTUxbFJUbU9POFZ0dDc2alM1UHIxQ3RhbUk3?=
+ =?utf-8?B?N2dxdFRlN2VTemtVdTU0aVZNUHoxY1pLNkxmMUVjS2tzMXBVNTRCZCtMQjlm?=
+ =?utf-8?B?Vkwyb0tXTE9IQTRaR3F2UT09?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <C8D64DB9874E9647AE8EA6C7F694DB30@namprd19.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: whamcloud.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR19MB2441.namprd19.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 477d3708-5a7c-4369-4a29-08d8ce62160b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Feb 2021 07:53:14.2711
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 753b6e26-6fd3-43e6-8248-3f1735d59bb4
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: U/gy7Fx466uDAgKe8hpPotCL+aib+xrqWT9kASUa+YceVFxpv58hhIt31St43621QAuuq9K1bWE1jPhpWi4EzQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR19MB3146
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Harshad,
-
-I glad you look into this complex code. I have one note about groups =
-scanning a specially with raid devices and cr0 loop.
-Once we have enough free space, cr 0 loop can found an unaligned for the =
-stripe fragment.
-in case raid devices, cr1 don=E2=80=99t produce an average size check - =
-just find an aligned chunk.
-So for raid devices CR 0 is useless, and CR1 don=E2=80=99t provide a =
-good results.
-
-Can you look to this problem also ?
-
-Alex
-
-> 9 =D1=84=D0=B5=D0=B2=D1=80. 2021 =D0=B3., =D0=B2 23:28, Harshad =
-Shirwadkar <harshadshirwadkar@gmail.com> =D0=BD=D0=B0=D0=BF=D0=B8=D1=81=D0=
-=B0=D0=BB(=D0=B0):
->=20
-> Instead of traversing through groups linearly, scan groups in specific
-> orders at cr 0 and cr 1. At cr 0, we want to find groups that have the
-> largest free order >=3D the order of the request. So, with this patch,
-> we maintain lists for each possible order and insert each group into a
-> list based on the largest free order in its buddy bitmap. During cr 0
-> allocation, we traverse these lists in the increasing order of largest
-> free orders. This allows us to find a group with the best available cr
-> 0 match in constant time. If nothing can be found, we fallback to cr 1
-> immediately.
->=20
-> At CR1, the story is slightly different. We want to traverse in the
-> order of increasing average fragment size. For CR1, we maintain a rb
-> tree of groupinfos which is sorted by average fragment size. Instead
-> of traversing linearly, at CR1, we traverse in the order of increasing
-> average fragment size, starting at the most optimal group. This brings
-> down cr 1 search complexity to log(num groups).
->=20
-> For cr >=3D 2, we just perform the linear search as before. Also, in
-> case of lock contention, we intermittently fallback to linear search
-> even in CR 0 and CR 1 cases. This allows us to proceed during the
-> allocation path even in case of high contention.
->=20
-> There is an opportunity to do optimization at CR2 too. That's because
-> at CR2 we only consider groups where bb_free counter (number of free
-> blocks) is greater than the request extent size. That's left as future
-> work.
->=20
-> All the changes introduced in this patch are protected under a new
-> mount option "mb_optimize_scan".
->=20
-> Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-> ---
-> fs/ext4/ext4.h    |  13 +-
-> fs/ext4/mballoc.c | 316 ++++++++++++++++++++++++++++++++++++++++++++--
-> fs/ext4/mballoc.h |   1 +
-> fs/ext4/super.c   |   6 +-
-> 4 files changed, 322 insertions(+), 14 deletions(-)
->=20
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 317b43420ecf..0601c997c87f 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -162,6 +162,8 @@ enum SHIFT_DIRECTION {
-> #define EXT4_MB_USE_RESERVED		0x2000
-> /* Do strict check for free blocks while retrying block allocation */
-> #define EXT4_MB_STRICT_CHECK		0x4000
-> +/* Avg fragment size rb tree lookup succeeded at least once for cr =3D =
-1 */
-> +#define EXT4_MB_CR1_OPTIMIZED		0x8000
->=20
-> struct ext4_allocation_request {
-> 	/* target inode for block we're allocating */
-> @@ -1247,7 +1249,9 @@ struct ext4_inode_info {
-> #define EXT4_MOUNT2_JOURNAL_FAST_COMMIT	0x00000010 /* Journal =
-fast commit */
-> #define EXT4_MOUNT2_DAX_NEVER		0x00000020 /* Do not allow =
-Direct Access */
-> #define EXT4_MOUNT2_DAX_INODE		0x00000040 /* For printing =
-options only */
-> -
-> +#define EXT4_MOUNT2_MB_OPTIMIZE_SCAN	0x00000080 /* Optimize group
-> +						    * scanning in =
-mballoc
-> +						    */
->=20
-> #define clear_opt(sb, opt)		EXT4_SB(sb)->s_mount_opt &=3D \
-> 						~EXT4_MOUNT_##opt
-> @@ -1527,6 +1531,10 @@ struct ext4_sb_info {
-> 	unsigned int s_mb_free_pending;
-> 	struct list_head s_freed_data_list;	/* List of blocks to be =
-freed
-> 						   after commit =
-completed */
-> +	struct rb_root s_mb_avg_fragment_size_root;
-> +	rwlock_t s_mb_rb_lock;
-> +	struct list_head *s_mb_largest_free_orders;
-> +	rwlock_t *s_mb_largest_free_orders_locks;
->=20
-> 	/* tunables */
-> 	unsigned long s_stripe;
-> @@ -3308,11 +3316,14 @@ struct ext4_group_info {
-> 	ext4_grpblk_t	bb_free;	/* total free blocks */
-> 	ext4_grpblk_t	bb_fragments;	/* nr of freespace fragments */
-> 	ext4_grpblk_t	bb_largest_free_order;/* order of largest frag =
-in BG */
-> +	ext4_group_t	bb_group;	/* Group number */
-> 	struct          list_head bb_prealloc_list;
-> #ifdef DOUBLE_CHECK
-> 	void            *bb_bitmap;
-> #endif
-> 	struct rw_semaphore alloc_sem;
-> +	struct rb_node	bb_avg_fragment_size_rb;
-> +	struct list_head bb_largest_free_order_node;
-> 	ext4_grpblk_t	bb_counters[];	/* Nr of free power-of-two-block
-> 					 * regions, index is order.
-> 					 * bb_counters[3] =3D 5 means
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index b7f25120547d..63562f5f42f1 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -147,7 +147,12 @@
->  * the group specified as the goal value in allocation context via
->  * ac_g_ex. Each group is first checked based on the criteria whether =
-it
->  * can be used for allocation. ext4_mb_good_group explains how the =
-groups are
-> - * checked.
-> + * checked. If "mb_optimize_scan" mount option is set, instead of =
-traversing
-> + * groups linearly starting at the goal, the groups are traversed in =
-an optimal
-> + * order according to each cr level, so as to minimize considering =
-groups which
-> + * would anyway be rejected by ext4_mb_good_group. This has a side =
-effect
-> + * though - subsequent allocations may not be close to each other. =
-And so,
-> + * the underlying device may get filled up in a non-linear fashion.
->  *
->  * Both the prealloc space are getting populated as above. So for the =
-first
->  * request we will hit the buddy cache which will result in this =
-prealloc
-> @@ -299,6 +304,8 @@
->  *  - bitlock on a group	(group)
->  *  - object (inode/locality)	(object)
->  *  - per-pa lock		(pa)
-> + *  - cr0 lists lock		(cr0)
-> + *  - cr1 tree lock		(cr1)
->  *
->  * Paths:
->  *  - new pa
-> @@ -328,6 +335,9 @@
->  *    group
->  *        object
->  *
-> + *  - allocation path (ext4_mb_regular_allocator)
-> + *    group
-> + *    cr0/cr1
->  */
-> static struct kmem_cache *ext4_pspace_cachep;
-> static struct kmem_cache *ext4_ac_cachep;
-> @@ -351,6 +361,9 @@ static void ext4_mb_generate_from_freelist(struct =
-super_block *sb, void *bitmap,
-> 						ext4_group_t group);
-> static void ext4_mb_new_preallocation(struct ext4_allocation_context =
-*ac);
->=20
-> +static bool ext4_mb_good_group(struct ext4_allocation_context *ac,
-> +			       ext4_group_t group, int cr);
-> +
-> /*
->  * The algorithm using this percpu seq counter goes below:
->  * 1. We sample the percpu discard_pa_seq counter before trying for =
-block
-> @@ -744,6 +757,243 @@ static void ext4_mb_mark_free_simple(struct =
-super_block *sb,
-> 	}
-> }
->=20
-> +static void ext4_mb_rb_insert(struct rb_root *root, struct rb_node =
-*new,
-> +			int (*cmp)(struct rb_node *, struct rb_node *))
-> +{
-> +	struct rb_node **iter =3D &root->rb_node, *parent =3D NULL;
-> +
-> +	while (*iter) {
-> +		parent =3D *iter;
-> +		if (cmp(new, *iter))
-> +			iter =3D &((*iter)->rb_left);
-> +		else
-> +			iter =3D &((*iter)->rb_right);
-> +	}
-> +
-> +	rb_link_node(new, parent, iter);
-> +	rb_insert_color(new, root);
-> +}
-> +
-> +static int
-> +ext4_mb_avg_fragment_size_cmp(struct rb_node *rb1, struct rb_node =
-*rb2)
-> +{
-> +	struct ext4_group_info *grp1 =3D rb_entry(rb1,
-> +						struct ext4_group_info,
-> +						=
-bb_avg_fragment_size_rb);
-> +	struct ext4_group_info *grp2 =3D rb_entry(rb2,
-> +						struct ext4_group_info,
-> +						=
-bb_avg_fragment_size_rb);
-> +	int num_frags_1, num_frags_2;
-> +
-> +	num_frags_1 =3D grp1->bb_fragments ?
-> +		grp1->bb_free / grp1->bb_fragments : 0;
-> +	num_frags_2 =3D grp2->bb_fragments ?
-> +		grp2->bb_free / grp2->bb_fragments : 0;
-> +
-> +	return (num_frags_1 < num_frags_2);
-> +}
-> +
-> +/*
-> + * Reinsert grpinfo into the avg_fragment_size tree with new average
-> + * fragment size.
-> + */
-> +static void
-> +mb_update_avg_fragment_size(struct super_block *sb, struct =
-ext4_group_info *grp)
-> +{
-> +	struct ext4_sb_info *sbi =3D EXT4_SB(sb);
-> +
-> +	if (!test_opt2(sb, MB_OPTIMIZE_SCAN))
-> +		return;
-> +
-> +	write_lock(&sbi->s_mb_rb_lock);
-> +	if (!RB_EMPTY_NODE(&grp->bb_avg_fragment_size_rb)) {
-> +		rb_erase(&grp->bb_avg_fragment_size_rb,
-> +				&sbi->s_mb_avg_fragment_size_root);
-> +		RB_CLEAR_NODE(&grp->bb_avg_fragment_size_rb);
-> +	}
-> +
-> +	ext4_mb_rb_insert(&sbi->s_mb_avg_fragment_size_root,
-> +		&grp->bb_avg_fragment_size_rb,
-> +		ext4_mb_avg_fragment_size_cmp);
-> +	write_unlock(&sbi->s_mb_rb_lock);
-> +}
-> +
-> +/*
-> + * Choose next group by traversing largest_free_order lists. Return 0 =
-if next
-> + * group was selected optimally. Return 1 if next group was not =
-selected
-> + * optimally. Updates *new_cr if cr level needs an update.
-> + */
-> +static int ext4_mb_choose_next_group_cr0(struct =
-ext4_allocation_context *ac,
-> +		int *new_cr, ext4_group_t *group, ext4_group_t ngroups)
-> +{
-> +	struct ext4_sb_info *sbi =3D EXT4_SB(ac->ac_sb);
-> +	struct ext4_group_info *iter, *grp;
-> +	int i;
-> +
-> +	if (ac->ac_status =3D=3D AC_STATUS_FOUND)
-> +		return 1;
-> +
-> +	grp =3D NULL;
-> +	for (i =3D ac->ac_2order; i < MB_NUM_ORDERS(ac->ac_sb); i++) {
-> +		if (list_empty(&sbi->s_mb_largest_free_orders[i]))
-> +			continue;
-> +		read_lock(&sbi->s_mb_largest_free_orders_locks[i]);
-> +		if (list_empty(&sbi->s_mb_largest_free_orders[i])) {
-> +			=
-read_unlock(&sbi->s_mb_largest_free_orders_locks[i]);
-> +			continue;
-> +		}
-> +		grp =3D NULL;
-> +		list_for_each_entry(iter, =
-&sbi->s_mb_largest_free_orders[i],
-> +				    bb_largest_free_order_node) {
-> +			/*
-> +			 * Perform this check without a lock, once we =
-lock
-> +			 * the group, we'll perform this check again.
-> +			 */
-> +			if (likely(ext4_mb_good_group(ac, =
-iter->bb_group, 0))) {
-> +				grp =3D iter;
-> +				break;
-> +			}
-> +		}
-> +		read_unlock(&sbi->s_mb_largest_free_orders_locks[i]);
-> +		if (grp)
-> +			break;
-> +	}
-> +
-> +	if (!grp) {
-> +		/* Increment cr and search again */
-> +		*new_cr =3D 1;
-> +	} else {
-> +		*group =3D grp->bb_group;
-> +		ac->ac_last_optimal_group =3D *group;
-> +	}
-> +	return 0;
-> +}
-> +
-> +/*
-> + * Choose next group by traversing average fragment size tree. Return =
-0 if next
-> + * group was selected optimally. Return 1 if next group could not =
-selected
-> + * optimally (due to lock contention). Updates *new_cr if cr lvel =
-needs an
-> + * update.
-> + */
-> +static int ext4_mb_choose_next_group_cr1(struct =
-ext4_allocation_context *ac,
-> +		int *new_cr, ext4_group_t *group, ext4_group_t ngroups)
-> +{
-> +	struct ext4_sb_info *sbi =3D EXT4_SB(ac->ac_sb);
-> +	int avg_fragment_size, best_so_far;
-> +	struct rb_node *node, *found;
-> +	struct ext4_group_info *grp;
-> +
-> +	/*
-> +	 * If there is contention on the lock, instead of waiting for =
-the lock
-> +	 * to become available, just continue searching lineraly. We'll =
-resume
-> +	 * our rb tree search later starting at =
-ac->ac_last_optimal_group.
-> +	 */
-> +	if (!read_trylock(&sbi->s_mb_rb_lock))
-> +		return 1;
-> +
-> +	if (ac->ac_flags & EXT4_MB_CR1_OPTIMIZED) {
-> +		/* We have found something at CR 1 in the past */
-> +		grp =3D ext4_get_group_info(ac->ac_sb, =
-ac->ac_last_optimal_group);
-> +		for (found =3D rb_next(&grp->bb_avg_fragment_size_rb); =
-found !=3D NULL;
-> +		     found =3D rb_next(found)) {
-> +			grp =3D rb_entry(found, struct ext4_group_info,
-> +				       bb_avg_fragment_size_rb);
-> +			/*
-> +			 * Perform this check without locking, we'll =
-lock later
-> +			 * to confirm.
-> +			 */
-> +			if (likely(ext4_mb_good_group(ac, grp->bb_group, =
-1)))
-> +				break;
-> +		}
-> +
-> +		goto done;
-> +	}
-> +
-> +	node =3D sbi->s_mb_avg_fragment_size_root.rb_node;
-> +	best_so_far =3D 0;
-> +	found =3D NULL;
-> +
-> +	while (node) {
-> +		grp =3D rb_entry(node, struct ext4_group_info,
-> +			       bb_avg_fragment_size_rb);
-> +		/*
-> +		 * Perform this check without locking, we'll lock later =
-to confirm.
-> +		 */
-> +		if (ext4_mb_good_group(ac, grp->bb_group, 1)) {
-> +			avg_fragment_size =3D grp->bb_fragments ?
-> +				grp->bb_free / grp->bb_fragments : 0;
-> +			if (!best_so_far || avg_fragment_size < =
-best_so_far) {
-> +				best_so_far =3D avg_fragment_size;
-> +				found =3D node;
-> +			}
-> +		}
-> +		if (avg_fragment_size > ac->ac_g_ex.fe_len)
-> +			node =3D node->rb_right;
-> +		else
-> +			node =3D node->rb_left;
-> +	}
-> +
-> +done:
-> +	if (found) {
-> +		grp =3D rb_entry(found, struct ext4_group_info,
-> +			       bb_avg_fragment_size_rb);
-> +		*group =3D grp->bb_group;
-> +		ac->ac_flags |=3D EXT4_MB_CR1_OPTIMIZED;
-> +	} else {
-> +		*new_cr =3D 2;
-> +	}
-> +
-> +	read_unlock(&sbi->s_mb_rb_lock);
-> +	ac->ac_last_optimal_group =3D *group;
-> +	return 0;
-> +}
-> +
-> +/*
-> + * ext4_mb_choose_next_group: choose next group for allocation.
-> + *
-> + * @ac        Allocation Context
-> + * @new_cr    This is an output parameter. If the there is no good =
-group available
-> + *            at current CR level, this field is updated to indicate =
-the new cr
-> + *            level that should be used.
-> + * @group     This is an input / output parameter. As an input it =
-indicates the last
-> + *            group used for allocation. As output, this field =
-indicates the
-> + *            next group that should be used.
-> + * @ngroups   Total number of groups
-> + */
-> +static void ext4_mb_choose_next_group(struct ext4_allocation_context =
-*ac,
-> +		int *new_cr, ext4_group_t *group, ext4_group_t ngroups)
-> +{
-> +	int ret;
-> +
-> +	*new_cr =3D ac->ac_criteria;
-> +
-> +	if (!test_opt2(ac->ac_sb, MB_OPTIMIZE_SCAN) ||
-> +	    *new_cr >=3D 2 ||
-> +	    !ext4_test_inode_flag(ac->ac_inode, EXT4_INODE_EXTENTS))
-> +		goto inc_and_return;
-> +
-> +	if (*new_cr =3D=3D 0) {
-> +		ret =3D ext4_mb_choose_next_group_cr0(ac, new_cr, group, =
-ngroups);
-> +		if (ret)
-> +			goto inc_and_return;
-> +	}
-> +	if (*new_cr =3D=3D 1) {
-> +		ret =3D ext4_mb_choose_next_group_cr1(ac, new_cr, group, =
-ngroups);
-> +		if (ret)
-> +			goto inc_and_return;
-> +	}
-> +	return;
-> +
-> +inc_and_return:
-> +	/*
-> +	 * Artificially restricted ngroups for non-extent
-> +	 * files makes group > ngroups possible on first loop.
-> +	 */
-> +	*group =3D *group + 1;
-> +	if (*group >=3D ngroups)
-> +		*group =3D 0;
-> +}
-> +
-> /*
->  * Cache the order of the largest free extent we have available in =
-this block
->  * group.
-> @@ -751,18 +1001,32 @@ static void ext4_mb_mark_free_simple(struct =
-super_block *sb,
-> static void
-> mb_set_largest_free_order(struct super_block *sb, struct =
-ext4_group_info *grp)
-> {
-> +	struct ext4_sb_info *sbi =3D EXT4_SB(sb);
-> 	int i;
-> -	int bits;
->=20
-> +	if (test_opt2(sb, MB_OPTIMIZE_SCAN) && =
-grp->bb_largest_free_order >=3D 0) {
-> +		write_lock(&sbi->s_mb_largest_free_orders_locks[
-> +					      =
-grp->bb_largest_free_order]);
-> +		list_del_init(&grp->bb_largest_free_order_node);
-> +		write_unlock(&sbi->s_mb_largest_free_orders_locks[
-> +					      =
-grp->bb_largest_free_order]);
-> +	}
-> 	grp->bb_largest_free_order =3D -1; /* uninit */
->=20
-> -	bits =3D MB_NUM_ORDERS(sb) - 1;
-> -	for (i =3D bits; i >=3D 0; i--) {
-> +	for (i =3D MB_NUM_ORDERS(sb) - 1; i >=3D 0; i--) {
-> 		if (grp->bb_counters[i] > 0) {
-> 			grp->bb_largest_free_order =3D i;
-> 			break;
-> 		}
-> 	}
-> +	if (test_opt2(sb, MB_OPTIMIZE_SCAN) && =
-grp->bb_largest_free_order >=3D 0) {
-> +		write_lock(&sbi->s_mb_largest_free_orders_locks[
-> +					      =
-grp->bb_largest_free_order]);
-> +		list_add_tail(&grp->bb_largest_free_order_node,
-> +		      =
-&sbi->s_mb_largest_free_orders[grp->bb_largest_free_order]);
-> +		write_unlock(&sbi->s_mb_largest_free_orders_locks[
-> +					      =
-grp->bb_largest_free_order]);
-> +	}
-> }
->=20
-> static noinline_for_stack
-> @@ -818,6 +1082,7 @@ void ext4_mb_generate_buddy(struct super_block =
-*sb,
-> 	period =3D get_cycles() - period;
-> 	atomic_inc(&sbi->s_mb_buddies_generated);
-> 	atomic64_add(period, &sbi->s_mb_generation_time);
-> +	mb_update_avg_fragment_size(sb, grp);
-> }
->=20
-> /* The buddy information is attached the buddy cache inode
-> @@ -1517,6 +1782,7 @@ static void mb_free_blocks(struct inode *inode, =
-struct ext4_buddy *e4b,
->=20
-> done:
-> 	mb_set_largest_free_order(sb, e4b->bd_info);
-> +	mb_update_avg_fragment_size(sb, e4b->bd_info);
-> 	mb_check_buddy(e4b);
-> }
->=20
-> @@ -1653,6 +1919,7 @@ static int mb_mark_used(struct ext4_buddy *e4b, =
-struct ext4_free_extent *ex)
-> 	}
-> 	mb_set_largest_free_order(e4b->bd_sb, e4b->bd_info);
->=20
-> +	mb_update_avg_fragment_size(e4b->bd_sb, e4b->bd_info);
-> 	ext4_set_bits(e4b->bd_bitmap, ex->fe_start, len0);
-> 	mb_check_buddy(e4b);
->=20
-> @@ -2346,17 +2613,20 @@ ext4_mb_regular_allocator(struct =
-ext4_allocation_context *ac)
-> 		 * from the goal value specified
-> 		 */
-> 		group =3D ac->ac_g_ex.fe_group;
-> +		ac->ac_last_optimal_group =3D group;
-> 		prefetch_grp =3D group;
->=20
-> -		for (i =3D 0; i < ngroups; group++, i++) {
-> -			int ret =3D 0;
-> +		for (i =3D 0; i < ngroups; i++) {
-> +			int ret =3D 0, new_cr;
-> +
-> 			cond_resched();
-> -			/*
-> -			 * Artificially restricted ngroups for =
-non-extent
-> -			 * files makes group > ngroups possible on first =
-loop.
-> -			 */
-> -			if (group >=3D ngroups)
-> -				group =3D 0;
-> +
-> +			ext4_mb_choose_next_group(ac, &new_cr, &group, =
-ngroups);
-> +
-> +			if (new_cr !=3D cr) {
-> +				cr =3D new_cr;
-> +				goto repeat;
-> +			}
->=20
-> 			/*
-> 			 * Batch reads of the block allocation bitmaps
-> @@ -2696,7 +2966,10 @@ int ext4_mb_add_groupinfo(struct super_block =
-*sb, ext4_group_t group,
-> 	INIT_LIST_HEAD(&meta_group_info[i]->bb_prealloc_list);
-> 	init_rwsem(&meta_group_info[i]->alloc_sem);
-> 	meta_group_info[i]->bb_free_root =3D RB_ROOT;
-> +	INIT_LIST_HEAD(&meta_group_info[i]->bb_largest_free_order_node);
-> +	RB_CLEAR_NODE(&meta_group_info[i]->bb_avg_fragment_size_rb);
-> 	meta_group_info[i]->bb_largest_free_order =3D -1;  /* uninit */
-> +	meta_group_info[i]->bb_group =3D group;
->=20
-> 	mb_group_bb_bitmap_alloc(sb, meta_group_info[i], group);
-> 	return 0;
-> @@ -2886,6 +3159,22 @@ int ext4_mb_init(struct super_block *sb)
-> 		i++;
-> 	} while (i < MB_NUM_ORDERS(sb));
->=20
-> +	sbi->s_mb_avg_fragment_size_root =3D RB_ROOT;
-> +	sbi->s_mb_largest_free_orders =3D
-> +		kmalloc_array(MB_NUM_ORDERS(sb), sizeof(struct =
-list_head),
-> +			GFP_KERNEL);
-> +	if (!sbi->s_mb_largest_free_orders)
-> +		goto out;
-> +	sbi->s_mb_largest_free_orders_locks =3D
-> +		kmalloc_array(MB_NUM_ORDERS(sb), sizeof(rwlock_t),
-> +			GFP_KERNEL);
-> +	if (!sbi->s_mb_largest_free_orders_locks)
-> +		goto out;
-> +	for (i =3D 0; i < MB_NUM_ORDERS(sb); i++) {
-> +		INIT_LIST_HEAD(&sbi->s_mb_largest_free_orders[i]);
-> +		rwlock_init(&sbi->s_mb_largest_free_orders_locks[i]);
-> +	}
-> +	rwlock_init(&sbi->s_mb_rb_lock);
->=20
-> 	spin_lock_init(&sbi->s_md_lock);
-> 	sbi->s_mb_free_pending =3D 0;
-> @@ -2949,6 +3238,8 @@ int ext4_mb_init(struct super_block *sb)
-> 	free_percpu(sbi->s_locality_groups);
-> 	sbi->s_locality_groups =3D NULL;
-> out:
-> +	kfree(sbi->s_mb_largest_free_orders);
-> +	kfree(sbi->s_mb_largest_free_orders_locks);
-> 	kfree(sbi->s_mb_offsets);
-> 	sbi->s_mb_offsets =3D NULL;
-> 	kfree(sbi->s_mb_maxs);
-> @@ -3005,6 +3296,7 @@ int ext4_mb_release(struct super_block *sb)
-> 		kvfree(group_info);
-> 		rcu_read_unlock();
-> 	}
-> +	kfree(sbi->s_mb_largest_free_orders);
-> 	kfree(sbi->s_mb_offsets);
-> 	kfree(sbi->s_mb_maxs);
-> 	iput(sbi->s_buddy_cache);
-> diff --git a/fs/ext4/mballoc.h b/fs/ext4/mballoc.h
-> index 02861406932f..1e86a8a0460d 100644
-> --- a/fs/ext4/mballoc.h
-> +++ b/fs/ext4/mballoc.h
-> @@ -166,6 +166,7 @@ struct ext4_allocation_context {
-> 	/* copy of the best found extent taken before preallocation =
-efforts */
-> 	struct ext4_free_extent ac_f_ex;
->=20
-> +	ext4_group_t ac_last_optimal_group;
-> 	__u32 ac_groups_considered;
-> 	__u16 ac_groups_scanned;
-> 	__u16 ac_found;
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 0f0db49031dc..a14363654cfd 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -154,6 +154,7 @@ static inline void __ext4_read_bh(struct =
-buffer_head *bh, int op_flags,
-> 	clear_buffer_verified(bh);
->=20
-> 	bh->b_end_io =3D end_io ? end_io : end_buffer_read_sync;
-> +
-> 	get_bh(bh);
-> 	submit_bh(REQ_OP_READ, op_flags, bh);
-> }
-> @@ -1687,7 +1688,7 @@ enum {
-> 	Opt_dioread_nolock, Opt_dioread_lock,
-> 	Opt_discard, Opt_nodiscard, Opt_init_itable, Opt_noinit_itable,
-> 	Opt_max_dir_size_kb, Opt_nojournal_checksum, Opt_nombcache,
-> -	Opt_prefetch_block_bitmaps,
-> +	Opt_prefetch_block_bitmaps, Opt_mb_optimize_scan,
-> #ifdef CONFIG_EXT4_DEBUG
-> 	Opt_fc_debug_max_replay, Opt_fc_debug_force
-> #endif
-> @@ -1788,6 +1789,7 @@ static const match_table_t tokens =3D {
-> 	{Opt_nombcache, "nombcache"},
-> 	{Opt_nombcache, "no_mbcache"},	/* for backward compatibility */
-> 	{Opt_prefetch_block_bitmaps, "prefetch_block_bitmaps"},
-> +	{Opt_mb_optimize_scan, "mb_optimize_scan"},
-> 	{Opt_removed, "check=3Dnone"},	/* mount option from ext2/3 */
-> 	{Opt_removed, "nocheck"},	/* mount option from ext2/3 */
-> 	{Opt_removed, "reservation"},	/* mount option from ext2/3 */
-> @@ -2008,6 +2010,8 @@ static const struct mount_opts {
-> 	{Opt_nombcache, EXT4_MOUNT_NO_MBCACHE, MOPT_SET},
-> 	{Opt_prefetch_block_bitmaps, EXT4_MOUNT_PREFETCH_BLOCK_BITMAPS,
-> 	 MOPT_SET},
-> +	{Opt_mb_optimize_scan, EXT4_MOUNT2_MB_OPTIMIZE_SCAN,
-> +	 MOPT_SET | MOPT_2 | MOPT_EXT4_ONLY},
-> #ifdef CONFIG_EXT4_DEBUG
-> 	{Opt_fc_debug_force, EXT4_MOUNT2_JOURNAL_FAST_COMMIT,
-> 	 MOPT_SET | MOPT_2 | MOPT_EXT4_ONLY},
-> --=20
-> 2.30.0.478.g8a0d178c01-goog
->=20
-
+DQpUaGVyZSBpcyBhIG1lY2hhbmlzbSB0byBoZWxwIG1iYWxsb2MgdG8gd29yayBiZXR0ZXIgd2l0
+aCBSQUlEIGRldmljZXMgLSB5b3UgY2FuIHNwZWNpZnkgc3RyaXBlIHNpemUgYXMgYSBtb3VudCBv
+cHRpb24sDQpUaGVuIG1iYWxsb2Mgd2lsbCBiZSB0cnlpbmcgdG8gbm9ybWFsaXNlIGFsbG9jYXRp
+b24gcmVxdWVzdHMgdG8gc3RyaXBlIHNpemUgYW5kIHRoZW4sIGhhdmluZyBzdHJpcGUgc2l6ZSBp
+cyBub3QgMl5OIHNpemUsDQptYmFsbG9jIHdpbGwgc2tpcCByYz0wIGFuZCBjcj0xIGluIHNvbWUg
+Y2FzZXMuDQoNClRoYW5rcywgQWxleA0KIA0KDQo+IE9uIDExIEZlYiAyMDIxLCBhdCAxMDo0Mywg
+QWxleGV5IEx5YXNoa292IDxhbGV4ZXkubHlhc2hrb3ZAZ21haWwuY29tPiB3cm90ZToNCj4gDQo+
+IEhpIEhhcnNoYWQsDQo+IA0KPiBJIGdsYWQgeW91IGxvb2sgaW50byB0aGlzIGNvbXBsZXggY29k
+ZS4gSSBoYXZlIG9uZSBub3RlIGFib3V0IGdyb3VwcyBzY2FubmluZyBhIHNwZWNpYWxseSB3aXRo
+IHJhaWQgZGV2aWNlcyBhbmQgY3IwIGxvb3AuDQo+IE9uY2Ugd2UgaGF2ZSBlbm91Z2ggZnJlZSBz
+cGFjZSwgY3IgMCBsb29wIGNhbiBmb3VuZCBhbiB1bmFsaWduZWQgZm9yIHRoZSBzdHJpcGUgZnJh
+Z21lbnQuDQo+IGluIGNhc2UgcmFpZCBkZXZpY2VzLCBjcjEgZG9u4oCZdCBwcm9kdWNlIGFuIGF2
+ZXJhZ2Ugc2l6ZSBjaGVjayAtIGp1c3QgZmluZCBhbiBhbGlnbmVkIGNodW5rLg0KPiBTbyBmb3Ig
+cmFpZCBkZXZpY2VzIENSIDAgaXMgdXNlbGVzcywgYW5kIENSMSBkb27igJl0IHByb3ZpZGUgYSBn
+b29kIHJlc3VsdHMuDQo+IA0KPiBDYW4geW91IGxvb2sgdG8gdGhpcyBwcm9ibGVtIGFsc28gPw0K
+PiANCj4gQWxleA0KPiANCj4+IDkg0YTQtdCy0YAuIDIwMjEg0LMuLCDQsiAyMzoyOCwgSGFyc2hh
+ZCBTaGlyd2Fka2FyIDxoYXJzaGFkc2hpcndhZGthckBnbWFpbC5jb20+INC90LDQv9C40YHQsNC7
+KNCwKToNCj4+IA0KPj4gSW5zdGVhZCBvZiB0cmF2ZXJzaW5nIHRocm91Z2ggZ3JvdXBzIGxpbmVh
+cmx5LCBzY2FuIGdyb3VwcyBpbiBzcGVjaWZpYw0KPj4gb3JkZXJzIGF0IGNyIDAgYW5kIGNyIDEu
+IEF0IGNyIDAsIHdlIHdhbnQgdG8gZmluZCBncm91cHMgdGhhdCBoYXZlIHRoZQ0KPj4gbGFyZ2Vz
+dCBmcmVlIG9yZGVyID49IHRoZSBvcmRlciBvZiB0aGUgcmVxdWVzdC4gU28sIHdpdGggdGhpcyBw
+YXRjaCwNCj4+IHdlIG1haW50YWluIGxpc3RzIGZvciBlYWNoIHBvc3NpYmxlIG9yZGVyIGFuZCBp
+bnNlcnQgZWFjaCBncm91cCBpbnRvIGENCj4+IGxpc3QgYmFzZWQgb24gdGhlIGxhcmdlc3QgZnJl
+ZSBvcmRlciBpbiBpdHMgYnVkZHkgYml0bWFwLiBEdXJpbmcgY3IgMA0KPj4gYWxsb2NhdGlvbiwg
+d2UgdHJhdmVyc2UgdGhlc2UgbGlzdHMgaW4gdGhlIGluY3JlYXNpbmcgb3JkZXIgb2YgbGFyZ2Vz
+dA0KPj4gZnJlZSBvcmRlcnMuIFRoaXMgYWxsb3dzIHVzIHRvIGZpbmQgYSBncm91cCB3aXRoIHRo
+ZSBiZXN0IGF2YWlsYWJsZSBjcg0KPj4gMCBtYXRjaCBpbiBjb25zdGFudCB0aW1lLiBJZiBub3Ro
+aW5nIGNhbiBiZSBmb3VuZCwgd2UgZmFsbGJhY2sgdG8gY3IgMQ0KPj4gaW1tZWRpYXRlbHkuDQo+
+PiANCj4+IEF0IENSMSwgdGhlIHN0b3J5IGlzIHNsaWdodGx5IGRpZmZlcmVudC4gV2Ugd2FudCB0
+byB0cmF2ZXJzZSBpbiB0aGUNCj4+IG9yZGVyIG9mIGluY3JlYXNpbmcgYXZlcmFnZSBmcmFnbWVu
+dCBzaXplLiBGb3IgQ1IxLCB3ZSBtYWludGFpbiBhIHJiDQo+PiB0cmVlIG9mIGdyb3VwaW5mb3Mg
+d2hpY2ggaXMgc29ydGVkIGJ5IGF2ZXJhZ2UgZnJhZ21lbnQgc2l6ZS4gSW5zdGVhZA0KPj4gb2Yg
+dHJhdmVyc2luZyBsaW5lYXJseSwgYXQgQ1IxLCB3ZSB0cmF2ZXJzZSBpbiB0aGUgb3JkZXIgb2Yg
+aW5jcmVhc2luZw0KPj4gYXZlcmFnZSBmcmFnbWVudCBzaXplLCBzdGFydGluZyBhdCB0aGUgbW9z
+dCBvcHRpbWFsIGdyb3VwLiBUaGlzIGJyaW5ncw0KPj4gZG93biBjciAxIHNlYXJjaCBjb21wbGV4
+aXR5IHRvIGxvZyhudW0gZ3JvdXBzKS4NCj4+IA0KPj4gRm9yIGNyID49IDIsIHdlIGp1c3QgcGVy
+Zm9ybSB0aGUgbGluZWFyIHNlYXJjaCBhcyBiZWZvcmUuIEFsc28sIGluDQo+PiBjYXNlIG9mIGxv
+Y2sgY29udGVudGlvbiwgd2UgaW50ZXJtaXR0ZW50bHkgZmFsbGJhY2sgdG8gbGluZWFyIHNlYXJj
+aA0KPj4gZXZlbiBpbiBDUiAwIGFuZCBDUiAxIGNhc2VzLiBUaGlzIGFsbG93cyB1cyB0byBwcm9j
+ZWVkIGR1cmluZyB0aGUNCj4+IGFsbG9jYXRpb24gcGF0aCBldmVuIGluIGNhc2Ugb2YgaGlnaCBj
+b250ZW50aW9uLg0KPj4gDQo+PiBUaGVyZSBpcyBhbiBvcHBvcnR1bml0eSB0byBkbyBvcHRpbWl6
+YXRpb24gYXQgQ1IyIHRvby4gVGhhdCdzIGJlY2F1c2UNCj4+IGF0IENSMiB3ZSBvbmx5IGNvbnNp
+ZGVyIGdyb3VwcyB3aGVyZSBiYl9mcmVlIGNvdW50ZXIgKG51bWJlciBvZiBmcmVlDQo+PiBibG9j
+a3MpIGlzIGdyZWF0ZXIgdGhhbiB0aGUgcmVxdWVzdCBleHRlbnQgc2l6ZS4gVGhhdCdzIGxlZnQg
+YXMgZnV0dXJlDQo+PiB3b3JrLg0KPj4gDQo+PiBBbGwgdGhlIGNoYW5nZXMgaW50cm9kdWNlZCBp
+biB0aGlzIHBhdGNoIGFyZSBwcm90ZWN0ZWQgdW5kZXIgYSBuZXcNCj4+IG1vdW50IG9wdGlvbiAi
+bWJfb3B0aW1pemVfc2NhbiIuDQo+PiANCj4+IFNpZ25lZC1vZmYtYnk6IEhhcnNoYWQgU2hpcndh
+ZGthciA8aGFyc2hhZHNoaXJ3YWRrYXJAZ21haWwuY29tPg0KPj4gLS0tDQo+PiBmcy9leHQ0L2V4
+dDQuaCAgICB8ICAxMyArLQ0KPj4gZnMvZXh0NC9tYmFsbG9jLmMgfCAzMTYgKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKystLQ0KPj4gZnMvZXh0NC9tYmFsbG9jLmgg
+fCAgIDEgKw0KPj4gZnMvZXh0NC9zdXBlci5jICAgfCAgIDYgKy0NCj4+IDQgZmlsZXMgY2hhbmdl
+ZCwgMzIyIGluc2VydGlvbnMoKyksIDE0IGRlbGV0aW9ucygtKQ0KPj4gDQo+PiBkaWZmIC0tZ2l0
+IGEvZnMvZXh0NC9leHQ0LmggYi9mcy9leHQ0L2V4dDQuaA0KPj4gaW5kZXggMzE3YjQzNDIwZWNm
+Li4wNjAxYzk5N2M4N2YgMTAwNjQ0DQo+PiAtLS0gYS9mcy9leHQ0L2V4dDQuaA0KPj4gKysrIGIv
+ZnMvZXh0NC9leHQ0LmgNCj4+IEBAIC0xNjIsNiArMTYyLDggQEAgZW51bSBTSElGVF9ESVJFQ1RJ
+T04gew0KPj4gI2RlZmluZSBFWFQ0X01CX1VTRV9SRVNFUlZFRAkJMHgyMDAwDQo+PiAvKiBEbyBz
+dHJpY3QgY2hlY2sgZm9yIGZyZWUgYmxvY2tzIHdoaWxlIHJldHJ5aW5nIGJsb2NrIGFsbG9jYXRp
+b24gKi8NCj4+ICNkZWZpbmUgRVhUNF9NQl9TVFJJQ1RfQ0hFQ0sJCTB4NDAwMA0KPj4gKy8qIEF2
+ZyBmcmFnbWVudCBzaXplIHJiIHRyZWUgbG9va3VwIHN1Y2NlZWRlZCBhdCBsZWFzdCBvbmNlIGZv
+ciBjciA9IDEgKi8NCj4+ICsjZGVmaW5lIEVYVDRfTUJfQ1IxX09QVElNSVpFRAkJMHg4MDAwDQo+
+PiANCj4+IHN0cnVjdCBleHQ0X2FsbG9jYXRpb25fcmVxdWVzdCB7DQo+PiAJLyogdGFyZ2V0IGlu
+b2RlIGZvciBibG9jayB3ZSdyZSBhbGxvY2F0aW5nICovDQo+PiBAQCAtMTI0Nyw3ICsxMjQ5LDkg
+QEAgc3RydWN0IGV4dDRfaW5vZGVfaW5mbyB7DQo+PiAjZGVmaW5lIEVYVDRfTU9VTlQyX0pPVVJO
+QUxfRkFTVF9DT01NSVQJMHgwMDAwMDAxMCAvKiBKb3VybmFsIGZhc3QgY29tbWl0ICovDQo+PiAj
+ZGVmaW5lIEVYVDRfTU9VTlQyX0RBWF9ORVZFUgkJMHgwMDAwMDAyMCAvKiBEbyBub3QgYWxsb3cg
+RGlyZWN0IEFjY2VzcyAqLw0KPj4gI2RlZmluZSBFWFQ0X01PVU5UMl9EQVhfSU5PREUJCTB4MDAw
+MDAwNDAgLyogRm9yIHByaW50aW5nIG9wdGlvbnMgb25seSAqLw0KPj4gLQ0KPj4gKyNkZWZpbmUg
+RVhUNF9NT1VOVDJfTUJfT1BUSU1JWkVfU0NBTgkweDAwMDAwMDgwIC8qIE9wdGltaXplIGdyb3Vw
+DQo+PiArCQkJCQkJICAgICogc2Nhbm5pbmcgaW4gbWJhbGxvYw0KPj4gKwkJCQkJCSAgICAqLw0K
+Pj4gDQo+PiAjZGVmaW5lIGNsZWFyX29wdChzYiwgb3B0KQkJRVhUNF9TQihzYiktPnNfbW91bnRf
+b3B0ICY9IFwNCj4+IAkJCQkJCX5FWFQ0X01PVU5UXyMjb3B0DQo+PiBAQCAtMTUyNyw2ICsxNTMx
+LDEwIEBAIHN0cnVjdCBleHQ0X3NiX2luZm8gew0KPj4gCXVuc2lnbmVkIGludCBzX21iX2ZyZWVf
+cGVuZGluZzsNCj4+IAlzdHJ1Y3QgbGlzdF9oZWFkIHNfZnJlZWRfZGF0YV9saXN0OwkvKiBMaXN0
+IG9mIGJsb2NrcyB0byBiZSBmcmVlZA0KPj4gCQkJCQkJICAgYWZ0ZXIgY29tbWl0IGNvbXBsZXRl
+ZCAqLw0KPj4gKwlzdHJ1Y3QgcmJfcm9vdCBzX21iX2F2Z19mcmFnbWVudF9zaXplX3Jvb3Q7DQo+
+PiArCXJ3bG9ja190IHNfbWJfcmJfbG9jazsNCj4+ICsJc3RydWN0IGxpc3RfaGVhZCAqc19tYl9s
+YXJnZXN0X2ZyZWVfb3JkZXJzOw0KPj4gKwlyd2xvY2tfdCAqc19tYl9sYXJnZXN0X2ZyZWVfb3Jk
+ZXJzX2xvY2tzOw0KPj4gDQo+PiAJLyogdHVuYWJsZXMgKi8NCj4+IAl1bnNpZ25lZCBsb25nIHNf
+c3RyaXBlOw0KPj4gQEAgLTMzMDgsMTEgKzMzMTYsMTQgQEAgc3RydWN0IGV4dDRfZ3JvdXBfaW5m
+byB7DQo+PiAJZXh0NF9ncnBibGtfdAliYl9mcmVlOwkvKiB0b3RhbCBmcmVlIGJsb2NrcyAqLw0K
+Pj4gCWV4dDRfZ3JwYmxrX3QJYmJfZnJhZ21lbnRzOwkvKiBuciBvZiBmcmVlc3BhY2UgZnJhZ21l
+bnRzICovDQo+PiAJZXh0NF9ncnBibGtfdAliYl9sYXJnZXN0X2ZyZWVfb3JkZXI7Lyogb3JkZXIg
+b2YgbGFyZ2VzdCBmcmFnIGluIEJHICovDQo+PiArCWV4dDRfZ3JvdXBfdAliYl9ncm91cDsJLyog
+R3JvdXAgbnVtYmVyICovDQo+PiAJc3RydWN0ICAgICAgICAgIGxpc3RfaGVhZCBiYl9wcmVhbGxv
+Y19saXN0Ow0KPj4gI2lmZGVmIERPVUJMRV9DSEVDSw0KPj4gCXZvaWQgICAgICAgICAgICAqYmJf
+Yml0bWFwOw0KPj4gI2VuZGlmDQo+PiAJc3RydWN0IHJ3X3NlbWFwaG9yZSBhbGxvY19zZW07DQo+
+PiArCXN0cnVjdCByYl9ub2RlCWJiX2F2Z19mcmFnbWVudF9zaXplX3JiOw0KPj4gKwlzdHJ1Y3Qg
+bGlzdF9oZWFkIGJiX2xhcmdlc3RfZnJlZV9vcmRlcl9ub2RlOw0KPj4gCWV4dDRfZ3JwYmxrX3QJ
+YmJfY291bnRlcnNbXTsJLyogTnIgb2YgZnJlZSBwb3dlci1vZi10d28tYmxvY2sNCj4+IAkJCQkJ
+ICogcmVnaW9ucywgaW5kZXggaXMgb3JkZXIuDQo+PiAJCQkJCSAqIGJiX2NvdW50ZXJzWzNdID0g
+NSBtZWFucw0KPj4gZGlmZiAtLWdpdCBhL2ZzL2V4dDQvbWJhbGxvYy5jIGIvZnMvZXh0NC9tYmFs
+bG9jLmMNCj4+IGluZGV4IGI3ZjI1MTIwNTQ3ZC4uNjM1NjJmNWY0MmYxIDEwMDY0NA0KPj4gLS0t
+IGEvZnMvZXh0NC9tYmFsbG9jLmMNCj4+ICsrKyBiL2ZzL2V4dDQvbWJhbGxvYy5jDQo+PiBAQCAt
+MTQ3LDcgKzE0NywxMiBAQA0KPj4gKiB0aGUgZ3JvdXAgc3BlY2lmaWVkIGFzIHRoZSBnb2FsIHZh
+bHVlIGluIGFsbG9jYXRpb24gY29udGV4dCB2aWENCj4+ICogYWNfZ19leC4gRWFjaCBncm91cCBp
+cyBmaXJzdCBjaGVja2VkIGJhc2VkIG9uIHRoZSBjcml0ZXJpYSB3aGV0aGVyIGl0DQo+PiAqIGNh
+biBiZSB1c2VkIGZvciBhbGxvY2F0aW9uLiBleHQ0X21iX2dvb2RfZ3JvdXAgZXhwbGFpbnMgaG93
+IHRoZSBncm91cHMgYXJlDQo+PiAtICogY2hlY2tlZC4NCj4+ICsgKiBjaGVja2VkLiBJZiAibWJf
+b3B0aW1pemVfc2NhbiIgbW91bnQgb3B0aW9uIGlzIHNldCwgaW5zdGVhZCBvZiB0cmF2ZXJzaW5n
+DQo+PiArICogZ3JvdXBzIGxpbmVhcmx5IHN0YXJ0aW5nIGF0IHRoZSBnb2FsLCB0aGUgZ3JvdXBz
+IGFyZSB0cmF2ZXJzZWQgaW4gYW4gb3B0aW1hbA0KPj4gKyAqIG9yZGVyIGFjY29yZGluZyB0byBl
+YWNoIGNyIGxldmVsLCBzbyBhcyB0byBtaW5pbWl6ZSBjb25zaWRlcmluZyBncm91cHMgd2hpY2gN
+Cj4+ICsgKiB3b3VsZCBhbnl3YXkgYmUgcmVqZWN0ZWQgYnkgZXh0NF9tYl9nb29kX2dyb3VwLiBU
+aGlzIGhhcyBhIHNpZGUgZWZmZWN0DQo+PiArICogdGhvdWdoIC0gc3Vic2VxdWVudCBhbGxvY2F0
+aW9ucyBtYXkgbm90IGJlIGNsb3NlIHRvIGVhY2ggb3RoZXIuIEFuZCBzbywNCj4+ICsgKiB0aGUg
+dW5kZXJseWluZyBkZXZpY2UgbWF5IGdldCBmaWxsZWQgdXAgaW4gYSBub24tbGluZWFyIGZhc2hp
+b24uDQo+PiAqDQo+PiAqIEJvdGggdGhlIHByZWFsbG9jIHNwYWNlIGFyZSBnZXR0aW5nIHBvcHVs
+YXRlZCBhcyBhYm92ZS4gU28gZm9yIHRoZSBmaXJzdA0KPj4gKiByZXF1ZXN0IHdlIHdpbGwgaGl0
+IHRoZSBidWRkeSBjYWNoZSB3aGljaCB3aWxsIHJlc3VsdCBpbiB0aGlzIHByZWFsbG9jDQo+PiBA
+QCAtMjk5LDYgKzMwNCw4IEBADQo+PiAqICAtIGJpdGxvY2sgb24gYSBncm91cAkoZ3JvdXApDQo+
+PiAqICAtIG9iamVjdCAoaW5vZGUvbG9jYWxpdHkpCShvYmplY3QpDQo+PiAqICAtIHBlci1wYSBs
+b2NrCQkocGEpDQo+PiArICogIC0gY3IwIGxpc3RzIGxvY2sJCShjcjApDQo+PiArICogIC0gY3Ix
+IHRyZWUgbG9jawkJKGNyMSkNCj4+ICoNCj4+ICogUGF0aHM6DQo+PiAqICAtIG5ldyBwYQ0KPj4g
+QEAgLTMyOCw2ICszMzUsOSBAQA0KPj4gKiAgICBncm91cA0KPj4gKiAgICAgICAgb2JqZWN0DQo+
+PiAqDQo+PiArICogIC0gYWxsb2NhdGlvbiBwYXRoIChleHQ0X21iX3JlZ3VsYXJfYWxsb2NhdG9y
+KQ0KPj4gKyAqICAgIGdyb3VwDQo+PiArICogICAgY3IwL2NyMQ0KPj4gKi8NCj4+IHN0YXRpYyBz
+dHJ1Y3Qga21lbV9jYWNoZSAqZXh0NF9wc3BhY2VfY2FjaGVwOw0KPj4gc3RhdGljIHN0cnVjdCBr
+bWVtX2NhY2hlICpleHQ0X2FjX2NhY2hlcDsNCj4+IEBAIC0zNTEsNiArMzYxLDkgQEAgc3RhdGlj
+IHZvaWQgZXh0NF9tYl9nZW5lcmF0ZV9mcm9tX2ZyZWVsaXN0KHN0cnVjdCBzdXBlcl9ibG9jayAq
+c2IsIHZvaWQgKmJpdG1hcCwNCj4+IAkJCQkJCWV4dDRfZ3JvdXBfdCBncm91cCk7DQo+PiBzdGF0
+aWMgdm9pZCBleHQ0X21iX25ld19wcmVhbGxvY2F0aW9uKHN0cnVjdCBleHQ0X2FsbG9jYXRpb25f
+Y29udGV4dCAqYWMpOw0KPj4gDQo+PiArc3RhdGljIGJvb2wgZXh0NF9tYl9nb29kX2dyb3VwKHN0
+cnVjdCBleHQ0X2FsbG9jYXRpb25fY29udGV4dCAqYWMsDQo+PiArCQkJICAgICAgIGV4dDRfZ3Jv
+dXBfdCBncm91cCwgaW50IGNyKTsNCj4+ICsNCj4+IC8qDQo+PiAqIFRoZSBhbGdvcml0aG0gdXNp
+bmcgdGhpcyBwZXJjcHUgc2VxIGNvdW50ZXIgZ29lcyBiZWxvdzoNCj4+ICogMS4gV2Ugc2FtcGxl
+IHRoZSBwZXJjcHUgZGlzY2FyZF9wYV9zZXEgY291bnRlciBiZWZvcmUgdHJ5aW5nIGZvciBibG9j
+aw0KPj4gQEAgLTc0NCw2ICs3NTcsMjQzIEBAIHN0YXRpYyB2b2lkIGV4dDRfbWJfbWFya19mcmVl
+X3NpbXBsZShzdHJ1Y3Qgc3VwZXJfYmxvY2sgKnNiLA0KPj4gCX0NCj4+IH0NCj4+IA0KPj4gK3N0
+YXRpYyB2b2lkIGV4dDRfbWJfcmJfaW5zZXJ0KHN0cnVjdCByYl9yb290ICpyb290LCBzdHJ1Y3Qg
+cmJfbm9kZSAqbmV3LA0KPj4gKwkJCWludCAoKmNtcCkoc3RydWN0IHJiX25vZGUgKiwgc3RydWN0
+IHJiX25vZGUgKikpDQo+PiArew0KPj4gKwlzdHJ1Y3QgcmJfbm9kZSAqKml0ZXIgPSAmcm9vdC0+
+cmJfbm9kZSwgKnBhcmVudCA9IE5VTEw7DQo+PiArDQo+PiArCXdoaWxlICgqaXRlcikgew0KPj4g
+KwkJcGFyZW50ID0gKml0ZXI7DQo+PiArCQlpZiAoY21wKG5ldywgKml0ZXIpKQ0KPj4gKwkJCWl0
+ZXIgPSAmKCgqaXRlciktPnJiX2xlZnQpOw0KPj4gKwkJZWxzZQ0KPj4gKwkJCWl0ZXIgPSAmKCgq
+aXRlciktPnJiX3JpZ2h0KTsNCj4+ICsJfQ0KPj4gKw0KPj4gKwlyYl9saW5rX25vZGUobmV3LCBw
+YXJlbnQsIGl0ZXIpOw0KPj4gKwlyYl9pbnNlcnRfY29sb3IobmV3LCByb290KTsNCj4+ICt9DQo+
+PiArDQo+PiArc3RhdGljIGludA0KPj4gK2V4dDRfbWJfYXZnX2ZyYWdtZW50X3NpemVfY21wKHN0
+cnVjdCByYl9ub2RlICpyYjEsIHN0cnVjdCByYl9ub2RlICpyYjIpDQo+PiArew0KPj4gKwlzdHJ1
+Y3QgZXh0NF9ncm91cF9pbmZvICpncnAxID0gcmJfZW50cnkocmIxLA0KPj4gKwkJCQkJCXN0cnVj
+dCBleHQ0X2dyb3VwX2luZm8sDQo+PiArCQkJCQkJYmJfYXZnX2ZyYWdtZW50X3NpemVfcmIpOw0K
+Pj4gKwlzdHJ1Y3QgZXh0NF9ncm91cF9pbmZvICpncnAyID0gcmJfZW50cnkocmIyLA0KPj4gKwkJ
+CQkJCXN0cnVjdCBleHQ0X2dyb3VwX2luZm8sDQo+PiArCQkJCQkJYmJfYXZnX2ZyYWdtZW50X3Np
+emVfcmIpOw0KPj4gKwlpbnQgbnVtX2ZyYWdzXzEsIG51bV9mcmFnc18yOw0KPj4gKw0KPj4gKwlu
+dW1fZnJhZ3NfMSA9IGdycDEtPmJiX2ZyYWdtZW50cyA/DQo+PiArCQlncnAxLT5iYl9mcmVlIC8g
+Z3JwMS0+YmJfZnJhZ21lbnRzIDogMDsNCj4+ICsJbnVtX2ZyYWdzXzIgPSBncnAyLT5iYl9mcmFn
+bWVudHMgPw0KPj4gKwkJZ3JwMi0+YmJfZnJlZSAvIGdycDItPmJiX2ZyYWdtZW50cyA6IDA7DQo+
+PiArDQo+PiArCXJldHVybiAobnVtX2ZyYWdzXzEgPCBudW1fZnJhZ3NfMik7DQo+PiArfQ0KPj4g
+Kw0KPj4gKy8qDQo+PiArICogUmVpbnNlcnQgZ3JwaW5mbyBpbnRvIHRoZSBhdmdfZnJhZ21lbnRf
+c2l6ZSB0cmVlIHdpdGggbmV3IGF2ZXJhZ2UNCj4+ICsgKiBmcmFnbWVudCBzaXplLg0KPj4gKyAq
+Lw0KPj4gK3N0YXRpYyB2b2lkDQo+PiArbWJfdXBkYXRlX2F2Z19mcmFnbWVudF9zaXplKHN0cnVj
+dCBzdXBlcl9ibG9jayAqc2IsIHN0cnVjdCBleHQ0X2dyb3VwX2luZm8gKmdycCkNCj4+ICt7DQo+
+PiArCXN0cnVjdCBleHQ0X3NiX2luZm8gKnNiaSA9IEVYVDRfU0Ioc2IpOw0KPj4gKw0KPj4gKwlp
+ZiAoIXRlc3Rfb3B0MihzYiwgTUJfT1BUSU1JWkVfU0NBTikpDQo+PiArCQlyZXR1cm47DQo+PiAr
+DQo+PiArCXdyaXRlX2xvY2soJnNiaS0+c19tYl9yYl9sb2NrKTsNCj4+ICsJaWYgKCFSQl9FTVBU
+WV9OT0RFKCZncnAtPmJiX2F2Z19mcmFnbWVudF9zaXplX3JiKSkgew0KPj4gKwkJcmJfZXJhc2Uo
+JmdycC0+YmJfYXZnX2ZyYWdtZW50X3NpemVfcmIsDQo+PiArCQkJCSZzYmktPnNfbWJfYXZnX2Zy
+YWdtZW50X3NpemVfcm9vdCk7DQo+PiArCQlSQl9DTEVBUl9OT0RFKCZncnAtPmJiX2F2Z19mcmFn
+bWVudF9zaXplX3JiKTsNCj4+ICsJfQ0KPj4gKw0KPj4gKwlleHQ0X21iX3JiX2luc2VydCgmc2Jp
+LT5zX21iX2F2Z19mcmFnbWVudF9zaXplX3Jvb3QsDQo+PiArCQkmZ3JwLT5iYl9hdmdfZnJhZ21l
+bnRfc2l6ZV9yYiwNCj4+ICsJCWV4dDRfbWJfYXZnX2ZyYWdtZW50X3NpemVfY21wKTsNCj4+ICsJ
+d3JpdGVfdW5sb2NrKCZzYmktPnNfbWJfcmJfbG9jayk7DQo+PiArfQ0KPj4gKw0KPj4gKy8qDQo+
+PiArICogQ2hvb3NlIG5leHQgZ3JvdXAgYnkgdHJhdmVyc2luZyBsYXJnZXN0X2ZyZWVfb3JkZXIg
+bGlzdHMuIFJldHVybiAwIGlmIG5leHQNCj4+ICsgKiBncm91cCB3YXMgc2VsZWN0ZWQgb3B0aW1h
+bGx5LiBSZXR1cm4gMSBpZiBuZXh0IGdyb3VwIHdhcyBub3Qgc2VsZWN0ZWQNCj4+ICsgKiBvcHRp
+bWFsbHkuIFVwZGF0ZXMgKm5ld19jciBpZiBjciBsZXZlbCBuZWVkcyBhbiB1cGRhdGUuDQo+PiAr
+ICovDQo+PiArc3RhdGljIGludCBleHQ0X21iX2Nob29zZV9uZXh0X2dyb3VwX2NyMChzdHJ1Y3Qg
+ZXh0NF9hbGxvY2F0aW9uX2NvbnRleHQgKmFjLA0KPj4gKwkJaW50ICpuZXdfY3IsIGV4dDRfZ3Jv
+dXBfdCAqZ3JvdXAsIGV4dDRfZ3JvdXBfdCBuZ3JvdXBzKQ0KPj4gK3sNCj4+ICsJc3RydWN0IGV4
+dDRfc2JfaW5mbyAqc2JpID0gRVhUNF9TQihhYy0+YWNfc2IpOw0KPj4gKwlzdHJ1Y3QgZXh0NF9n
+cm91cF9pbmZvICppdGVyLCAqZ3JwOw0KPj4gKwlpbnQgaTsNCj4+ICsNCj4+ICsJaWYgKGFjLT5h
+Y19zdGF0dXMgPT0gQUNfU1RBVFVTX0ZPVU5EKQ0KPj4gKwkJcmV0dXJuIDE7DQo+PiArDQo+PiAr
+CWdycCA9IE5VTEw7DQo+PiArCWZvciAoaSA9IGFjLT5hY18yb3JkZXI7IGkgPCBNQl9OVU1fT1JE
+RVJTKGFjLT5hY19zYik7IGkrKykgew0KPj4gKwkJaWYgKGxpc3RfZW1wdHkoJnNiaS0+c19tYl9s
+YXJnZXN0X2ZyZWVfb3JkZXJzW2ldKSkNCj4+ICsJCQljb250aW51ZTsNCj4+ICsJCXJlYWRfbG9j
+aygmc2JpLT5zX21iX2xhcmdlc3RfZnJlZV9vcmRlcnNfbG9ja3NbaV0pOw0KPj4gKwkJaWYgKGxp
+c3RfZW1wdHkoJnNiaS0+c19tYl9sYXJnZXN0X2ZyZWVfb3JkZXJzW2ldKSkgew0KPj4gKwkJCXJl
+YWRfdW5sb2NrKCZzYmktPnNfbWJfbGFyZ2VzdF9mcmVlX29yZGVyc19sb2Nrc1tpXSk7DQo+PiAr
+CQkJY29udGludWU7DQo+PiArCQl9DQo+PiArCQlncnAgPSBOVUxMOw0KPj4gKwkJbGlzdF9mb3Jf
+ZWFjaF9lbnRyeShpdGVyLCAmc2JpLT5zX21iX2xhcmdlc3RfZnJlZV9vcmRlcnNbaV0sDQo+PiAr
+CQkJCSAgICBiYl9sYXJnZXN0X2ZyZWVfb3JkZXJfbm9kZSkgew0KPj4gKwkJCS8qDQo+PiArCQkJ
+ICogUGVyZm9ybSB0aGlzIGNoZWNrIHdpdGhvdXQgYSBsb2NrLCBvbmNlIHdlIGxvY2sNCj4+ICsJ
+CQkgKiB0aGUgZ3JvdXAsIHdlJ2xsIHBlcmZvcm0gdGhpcyBjaGVjayBhZ2Fpbi4NCj4+ICsJCQkg
+Ki8NCj4+ICsJCQlpZiAobGlrZWx5KGV4dDRfbWJfZ29vZF9ncm91cChhYywgaXRlci0+YmJfZ3Jv
+dXAsIDApKSkgew0KPj4gKwkJCQlncnAgPSBpdGVyOw0KPj4gKwkJCQlicmVhazsNCj4+ICsJCQl9
+DQo+PiArCQl9DQo+PiArCQlyZWFkX3VubG9jaygmc2JpLT5zX21iX2xhcmdlc3RfZnJlZV9vcmRl
+cnNfbG9ja3NbaV0pOw0KPj4gKwkJaWYgKGdycCkNCj4+ICsJCQlicmVhazsNCj4+ICsJfQ0KPj4g
+Kw0KPj4gKwlpZiAoIWdycCkgew0KPj4gKwkJLyogSW5jcmVtZW50IGNyIGFuZCBzZWFyY2ggYWdh
+aW4gKi8NCj4+ICsJCSpuZXdfY3IgPSAxOw0KPj4gKwl9IGVsc2Ugew0KPj4gKwkJKmdyb3VwID0g
+Z3JwLT5iYl9ncm91cDsNCj4+ICsJCWFjLT5hY19sYXN0X29wdGltYWxfZ3JvdXAgPSAqZ3JvdXA7
+DQo+PiArCX0NCj4+ICsJcmV0dXJuIDA7DQo+PiArfQ0KPj4gKw0KPj4gKy8qDQo+PiArICogQ2hv
+b3NlIG5leHQgZ3JvdXAgYnkgdHJhdmVyc2luZyBhdmVyYWdlIGZyYWdtZW50IHNpemUgdHJlZS4g
+UmV0dXJuIDAgaWYgbmV4dA0KPj4gKyAqIGdyb3VwIHdhcyBzZWxlY3RlZCBvcHRpbWFsbHkuIFJl
+dHVybiAxIGlmIG5leHQgZ3JvdXAgY291bGQgbm90IHNlbGVjdGVkDQo+PiArICogb3B0aW1hbGx5
+IChkdWUgdG8gbG9jayBjb250ZW50aW9uKS4gVXBkYXRlcyAqbmV3X2NyIGlmIGNyIGx2ZWwgbmVl
+ZHMgYW4NCj4+ICsgKiB1cGRhdGUuDQo+PiArICovDQo+PiArc3RhdGljIGludCBleHQ0X21iX2No
+b29zZV9uZXh0X2dyb3VwX2NyMShzdHJ1Y3QgZXh0NF9hbGxvY2F0aW9uX2NvbnRleHQgKmFjLA0K
+Pj4gKwkJaW50ICpuZXdfY3IsIGV4dDRfZ3JvdXBfdCAqZ3JvdXAsIGV4dDRfZ3JvdXBfdCBuZ3Jv
+dXBzKQ0KPj4gK3sNCj4+ICsJc3RydWN0IGV4dDRfc2JfaW5mbyAqc2JpID0gRVhUNF9TQihhYy0+
+YWNfc2IpOw0KPj4gKwlpbnQgYXZnX2ZyYWdtZW50X3NpemUsIGJlc3Rfc29fZmFyOw0KPj4gKwlz
+dHJ1Y3QgcmJfbm9kZSAqbm9kZSwgKmZvdW5kOw0KPj4gKwlzdHJ1Y3QgZXh0NF9ncm91cF9pbmZv
+ICpncnA7DQo+PiArDQo+PiArCS8qDQo+PiArCSAqIElmIHRoZXJlIGlzIGNvbnRlbnRpb24gb24g
+dGhlIGxvY2ssIGluc3RlYWQgb2Ygd2FpdGluZyBmb3IgdGhlIGxvY2sNCj4+ICsJICogdG8gYmVj
+b21lIGF2YWlsYWJsZSwganVzdCBjb250aW51ZSBzZWFyY2hpbmcgbGluZXJhbHkuIFdlJ2xsIHJl
+c3VtZQ0KPj4gKwkgKiBvdXIgcmIgdHJlZSBzZWFyY2ggbGF0ZXIgc3RhcnRpbmcgYXQgYWMtPmFj
+X2xhc3Rfb3B0aW1hbF9ncm91cC4NCj4+ICsJICovDQo+PiArCWlmICghcmVhZF90cnlsb2NrKCZz
+YmktPnNfbWJfcmJfbG9jaykpDQo+PiArCQlyZXR1cm4gMTsNCj4+ICsNCj4+ICsJaWYgKGFjLT5h
+Y19mbGFncyAmIEVYVDRfTUJfQ1IxX09QVElNSVpFRCkgew0KPj4gKwkJLyogV2UgaGF2ZSBmb3Vu
+ZCBzb21ldGhpbmcgYXQgQ1IgMSBpbiB0aGUgcGFzdCAqLw0KPj4gKwkJZ3JwID0gZXh0NF9nZXRf
+Z3JvdXBfaW5mbyhhYy0+YWNfc2IsIGFjLT5hY19sYXN0X29wdGltYWxfZ3JvdXApOw0KPj4gKwkJ
+Zm9yIChmb3VuZCA9IHJiX25leHQoJmdycC0+YmJfYXZnX2ZyYWdtZW50X3NpemVfcmIpOyBmb3Vu
+ZCAhPSBOVUxMOw0KPj4gKwkJICAgICBmb3VuZCA9IHJiX25leHQoZm91bmQpKSB7DQo+PiArCQkJ
+Z3JwID0gcmJfZW50cnkoZm91bmQsIHN0cnVjdCBleHQ0X2dyb3VwX2luZm8sDQo+PiArCQkJCSAg
+ICAgICBiYl9hdmdfZnJhZ21lbnRfc2l6ZV9yYik7DQo+PiArCQkJLyoNCj4+ICsJCQkgKiBQZXJm
+b3JtIHRoaXMgY2hlY2sgd2l0aG91dCBsb2NraW5nLCB3ZSdsbCBsb2NrIGxhdGVyDQo+PiArCQkJ
+ICogdG8gY29uZmlybS4NCj4+ICsJCQkgKi8NCj4+ICsJCQlpZiAobGlrZWx5KGV4dDRfbWJfZ29v
+ZF9ncm91cChhYywgZ3JwLT5iYl9ncm91cCwgMSkpKQ0KPj4gKwkJCQlicmVhazsNCj4+ICsJCX0N
+Cj4+ICsNCj4+ICsJCWdvdG8gZG9uZTsNCj4+ICsJfQ0KPj4gKw0KPj4gKwlub2RlID0gc2JpLT5z
+X21iX2F2Z19mcmFnbWVudF9zaXplX3Jvb3QucmJfbm9kZTsNCj4+ICsJYmVzdF9zb19mYXIgPSAw
+Ow0KPj4gKwlmb3VuZCA9IE5VTEw7DQo+PiArDQo+PiArCXdoaWxlIChub2RlKSB7DQo+PiArCQln
+cnAgPSByYl9lbnRyeShub2RlLCBzdHJ1Y3QgZXh0NF9ncm91cF9pbmZvLA0KPj4gKwkJCSAgICAg
+ICBiYl9hdmdfZnJhZ21lbnRfc2l6ZV9yYik7DQo+PiArCQkvKg0KPj4gKwkJICogUGVyZm9ybSB0
+aGlzIGNoZWNrIHdpdGhvdXQgbG9ja2luZywgd2UnbGwgbG9jayBsYXRlciB0byBjb25maXJtLg0K
+Pj4gKwkJICovDQo+PiArCQlpZiAoZXh0NF9tYl9nb29kX2dyb3VwKGFjLCBncnAtPmJiX2dyb3Vw
+LCAxKSkgew0KPj4gKwkJCWF2Z19mcmFnbWVudF9zaXplID0gZ3JwLT5iYl9mcmFnbWVudHMgPw0K
+Pj4gKwkJCQlncnAtPmJiX2ZyZWUgLyBncnAtPmJiX2ZyYWdtZW50cyA6IDA7DQo+PiArCQkJaWYg
+KCFiZXN0X3NvX2ZhciB8fCBhdmdfZnJhZ21lbnRfc2l6ZSA8IGJlc3Rfc29fZmFyKSB7DQo+PiAr
+CQkJCWJlc3Rfc29fZmFyID0gYXZnX2ZyYWdtZW50X3NpemU7DQo+PiArCQkJCWZvdW5kID0gbm9k
+ZTsNCj4+ICsJCQl9DQo+PiArCQl9DQo+PiArCQlpZiAoYXZnX2ZyYWdtZW50X3NpemUgPiBhYy0+
+YWNfZ19leC5mZV9sZW4pDQo+PiArCQkJbm9kZSA9IG5vZGUtPnJiX3JpZ2h0Ow0KPj4gKwkJZWxz
+ZQ0KPj4gKwkJCW5vZGUgPSBub2RlLT5yYl9sZWZ0Ow0KPj4gKwl9DQo+PiArDQo+PiArZG9uZToN
+Cj4+ICsJaWYgKGZvdW5kKSB7DQo+PiArCQlncnAgPSByYl9lbnRyeShmb3VuZCwgc3RydWN0IGV4
+dDRfZ3JvdXBfaW5mbywNCj4+ICsJCQkgICAgICAgYmJfYXZnX2ZyYWdtZW50X3NpemVfcmIpOw0K
+Pj4gKwkJKmdyb3VwID0gZ3JwLT5iYl9ncm91cDsNCj4+ICsJCWFjLT5hY19mbGFncyB8PSBFWFQ0
+X01CX0NSMV9PUFRJTUlaRUQ7DQo+PiArCX0gZWxzZSB7DQo+PiArCQkqbmV3X2NyID0gMjsNCj4+
+ICsJfQ0KPj4gKw0KPj4gKwlyZWFkX3VubG9jaygmc2JpLT5zX21iX3JiX2xvY2spOw0KPj4gKwlh
+Yy0+YWNfbGFzdF9vcHRpbWFsX2dyb3VwID0gKmdyb3VwOw0KPj4gKwlyZXR1cm4gMDsNCj4+ICt9
+DQo+PiArDQo+PiArLyoNCj4+ICsgKiBleHQ0X21iX2Nob29zZV9uZXh0X2dyb3VwOiBjaG9vc2Ug
+bmV4dCBncm91cCBmb3IgYWxsb2NhdGlvbi4NCj4+ICsgKg0KPj4gKyAqIEBhYyAgICAgICAgQWxs
+b2NhdGlvbiBDb250ZXh0DQo+PiArICogQG5ld19jciAgICBUaGlzIGlzIGFuIG91dHB1dCBwYXJh
+bWV0ZXIuIElmIHRoZSB0aGVyZSBpcyBubyBnb29kIGdyb3VwIGF2YWlsYWJsZQ0KPj4gKyAqICAg
+ICAgICAgICAgYXQgY3VycmVudCBDUiBsZXZlbCwgdGhpcyBmaWVsZCBpcyB1cGRhdGVkIHRvIGlu
+ZGljYXRlIHRoZSBuZXcgY3INCj4+ICsgKiAgICAgICAgICAgIGxldmVsIHRoYXQgc2hvdWxkIGJl
+IHVzZWQuDQo+PiArICogQGdyb3VwICAgICBUaGlzIGlzIGFuIGlucHV0IC8gb3V0cHV0IHBhcmFt
+ZXRlci4gQXMgYW4gaW5wdXQgaXQgaW5kaWNhdGVzIHRoZSBsYXN0DQo+PiArICogICAgICAgICAg
+ICBncm91cCB1c2VkIGZvciBhbGxvY2F0aW9uLiBBcyBvdXRwdXQsIHRoaXMgZmllbGQgaW5kaWNh
+dGVzIHRoZQ0KPj4gKyAqICAgICAgICAgICAgbmV4dCBncm91cCB0aGF0IHNob3VsZCBiZSB1c2Vk
+Lg0KPj4gKyAqIEBuZ3JvdXBzICAgVG90YWwgbnVtYmVyIG9mIGdyb3Vwcw0KPj4gKyAqLw0KPj4g
+K3N0YXRpYyB2b2lkIGV4dDRfbWJfY2hvb3NlX25leHRfZ3JvdXAoc3RydWN0IGV4dDRfYWxsb2Nh
+dGlvbl9jb250ZXh0ICphYywNCj4+ICsJCWludCAqbmV3X2NyLCBleHQ0X2dyb3VwX3QgKmdyb3Vw
+LCBleHQ0X2dyb3VwX3Qgbmdyb3VwcykNCj4+ICt7DQo+PiArCWludCByZXQ7DQo+PiArDQo+PiAr
+CSpuZXdfY3IgPSBhYy0+YWNfY3JpdGVyaWE7DQo+PiArDQo+PiArCWlmICghdGVzdF9vcHQyKGFj
+LT5hY19zYiwgTUJfT1BUSU1JWkVfU0NBTikgfHwNCj4+ICsJICAgICpuZXdfY3IgPj0gMiB8fA0K
+Pj4gKwkgICAgIWV4dDRfdGVzdF9pbm9kZV9mbGFnKGFjLT5hY19pbm9kZSwgRVhUNF9JTk9ERV9F
+WFRFTlRTKSkNCj4+ICsJCWdvdG8gaW5jX2FuZF9yZXR1cm47DQo+PiArDQo+PiArCWlmICgqbmV3
+X2NyID09IDApIHsNCj4+ICsJCXJldCA9IGV4dDRfbWJfY2hvb3NlX25leHRfZ3JvdXBfY3IwKGFj
+LCBuZXdfY3IsIGdyb3VwLCBuZ3JvdXBzKTsNCj4+ICsJCWlmIChyZXQpDQo+PiArCQkJZ290byBp
+bmNfYW5kX3JldHVybjsNCj4+ICsJfQ0KPj4gKwlpZiAoKm5ld19jciA9PSAxKSB7DQo+PiArCQly
+ZXQgPSBleHQ0X21iX2Nob29zZV9uZXh0X2dyb3VwX2NyMShhYywgbmV3X2NyLCBncm91cCwgbmdy
+b3Vwcyk7DQo+PiArCQlpZiAocmV0KQ0KPj4gKwkJCWdvdG8gaW5jX2FuZF9yZXR1cm47DQo+PiAr
+CX0NCj4+ICsJcmV0dXJuOw0KPj4gKw0KPj4gK2luY19hbmRfcmV0dXJuOg0KPj4gKwkvKg0KPj4g
+KwkgKiBBcnRpZmljaWFsbHkgcmVzdHJpY3RlZCBuZ3JvdXBzIGZvciBub24tZXh0ZW50DQo+PiAr
+CSAqIGZpbGVzIG1ha2VzIGdyb3VwID4gbmdyb3VwcyBwb3NzaWJsZSBvbiBmaXJzdCBsb29wLg0K
+Pj4gKwkgKi8NCj4+ICsJKmdyb3VwID0gKmdyb3VwICsgMTsNCj4+ICsJaWYgKCpncm91cCA+PSBu
+Z3JvdXBzKQ0KPj4gKwkJKmdyb3VwID0gMDsNCj4+ICt9DQo+PiArDQo+PiAvKg0KPj4gKiBDYWNo
+ZSB0aGUgb3JkZXIgb2YgdGhlIGxhcmdlc3QgZnJlZSBleHRlbnQgd2UgaGF2ZSBhdmFpbGFibGUg
+aW4gdGhpcyBibG9jaw0KPj4gKiBncm91cC4NCj4+IEBAIC03NTEsMTggKzEwMDEsMzIgQEAgc3Rh
+dGljIHZvaWQgZXh0NF9tYl9tYXJrX2ZyZWVfc2ltcGxlKHN0cnVjdCBzdXBlcl9ibG9jayAqc2Is
+DQo+PiBzdGF0aWMgdm9pZA0KPj4gbWJfc2V0X2xhcmdlc3RfZnJlZV9vcmRlcihzdHJ1Y3Qgc3Vw
+ZXJfYmxvY2sgKnNiLCBzdHJ1Y3QgZXh0NF9ncm91cF9pbmZvICpncnApDQo+PiB7DQo+PiArCXN0
+cnVjdCBleHQ0X3NiX2luZm8gKnNiaSA9IEVYVDRfU0Ioc2IpOw0KPj4gCWludCBpOw0KPj4gLQlp
+bnQgYml0czsNCj4+IA0KPj4gKwlpZiAodGVzdF9vcHQyKHNiLCBNQl9PUFRJTUlaRV9TQ0FOKSAm
+JiBncnAtPmJiX2xhcmdlc3RfZnJlZV9vcmRlciA+PSAwKSB7DQo+PiArCQl3cml0ZV9sb2NrKCZz
+YmktPnNfbWJfbGFyZ2VzdF9mcmVlX29yZGVyc19sb2Nrc1sNCj4+ICsJCQkJCSAgICAgIGdycC0+
+YmJfbGFyZ2VzdF9mcmVlX29yZGVyXSk7DQo+PiArCQlsaXN0X2RlbF9pbml0KCZncnAtPmJiX2xh
+cmdlc3RfZnJlZV9vcmRlcl9ub2RlKTsNCj4+ICsJCXdyaXRlX3VubG9jaygmc2JpLT5zX21iX2xh
+cmdlc3RfZnJlZV9vcmRlcnNfbG9ja3NbDQo+PiArCQkJCQkgICAgICBncnAtPmJiX2xhcmdlc3Rf
+ZnJlZV9vcmRlcl0pOw0KPj4gKwl9DQo+PiAJZ3JwLT5iYl9sYXJnZXN0X2ZyZWVfb3JkZXIgPSAt
+MTsgLyogdW5pbml0ICovDQo+PiANCj4+IC0JYml0cyA9IE1CX05VTV9PUkRFUlMoc2IpIC0gMTsN
+Cj4+IC0JZm9yIChpID0gYml0czsgaSA+PSAwOyBpLS0pIHsNCj4+ICsJZm9yIChpID0gTUJfTlVN
+X09SREVSUyhzYikgLSAxOyBpID49IDA7IGktLSkgew0KPj4gCQlpZiAoZ3JwLT5iYl9jb3VudGVy
+c1tpXSA+IDApIHsNCj4+IAkJCWdycC0+YmJfbGFyZ2VzdF9mcmVlX29yZGVyID0gaTsNCj4+IAkJ
+CWJyZWFrOw0KPj4gCQl9DQo+PiAJfQ0KPj4gKwlpZiAodGVzdF9vcHQyKHNiLCBNQl9PUFRJTUla
+RV9TQ0FOKSAmJiBncnAtPmJiX2xhcmdlc3RfZnJlZV9vcmRlciA+PSAwKSB7DQo+PiArCQl3cml0
+ZV9sb2NrKCZzYmktPnNfbWJfbGFyZ2VzdF9mcmVlX29yZGVyc19sb2Nrc1sNCj4+ICsJCQkJCSAg
+ICAgIGdycC0+YmJfbGFyZ2VzdF9mcmVlX29yZGVyXSk7DQo+PiArCQlsaXN0X2FkZF90YWlsKCZn
+cnAtPmJiX2xhcmdlc3RfZnJlZV9vcmRlcl9ub2RlLA0KPj4gKwkJICAgICAgJnNiaS0+c19tYl9s
+YXJnZXN0X2ZyZWVfb3JkZXJzW2dycC0+YmJfbGFyZ2VzdF9mcmVlX29yZGVyXSk7DQo+PiArCQl3
+cml0ZV91bmxvY2soJnNiaS0+c19tYl9sYXJnZXN0X2ZyZWVfb3JkZXJzX2xvY2tzWw0KPj4gKwkJ
+CQkJICAgICAgZ3JwLT5iYl9sYXJnZXN0X2ZyZWVfb3JkZXJdKTsNCj4+ICsJfQ0KPj4gfQ0KPj4g
+DQo+PiBzdGF0aWMgbm9pbmxpbmVfZm9yX3N0YWNrDQo+PiBAQCAtODE4LDYgKzEwODIsNyBAQCB2
+b2lkIGV4dDRfbWJfZ2VuZXJhdGVfYnVkZHkoc3RydWN0IHN1cGVyX2Jsb2NrICpzYiwNCj4+IAlw
+ZXJpb2QgPSBnZXRfY3ljbGVzKCkgLSBwZXJpb2Q7DQo+PiAJYXRvbWljX2luYygmc2JpLT5zX21i
+X2J1ZGRpZXNfZ2VuZXJhdGVkKTsNCj4+IAlhdG9taWM2NF9hZGQocGVyaW9kLCAmc2JpLT5zX21i
+X2dlbmVyYXRpb25fdGltZSk7DQo+PiArCW1iX3VwZGF0ZV9hdmdfZnJhZ21lbnRfc2l6ZShzYiwg
+Z3JwKTsNCj4+IH0NCj4+IA0KPj4gLyogVGhlIGJ1ZGR5IGluZm9ybWF0aW9uIGlzIGF0dGFjaGVk
+IHRoZSBidWRkeSBjYWNoZSBpbm9kZQ0KPj4gQEAgLTE1MTcsNiArMTc4Miw3IEBAIHN0YXRpYyB2
+b2lkIG1iX2ZyZWVfYmxvY2tzKHN0cnVjdCBpbm9kZSAqaW5vZGUsIHN0cnVjdCBleHQ0X2J1ZGR5
+ICplNGIsDQo+PiANCj4+IGRvbmU6DQo+PiAJbWJfc2V0X2xhcmdlc3RfZnJlZV9vcmRlcihzYiwg
+ZTRiLT5iZF9pbmZvKTsNCj4+ICsJbWJfdXBkYXRlX2F2Z19mcmFnbWVudF9zaXplKHNiLCBlNGIt
+PmJkX2luZm8pOw0KPj4gCW1iX2NoZWNrX2J1ZGR5KGU0Yik7DQo+PiB9DQo+PiANCj4+IEBAIC0x
+NjUzLDYgKzE5MTksNyBAQCBzdGF0aWMgaW50IG1iX21hcmtfdXNlZChzdHJ1Y3QgZXh0NF9idWRk
+eSAqZTRiLCBzdHJ1Y3QgZXh0NF9mcmVlX2V4dGVudCAqZXgpDQo+PiAJfQ0KPj4gCW1iX3NldF9s
+YXJnZXN0X2ZyZWVfb3JkZXIoZTRiLT5iZF9zYiwgZTRiLT5iZF9pbmZvKTsNCj4+IA0KPj4gKwlt
+Yl91cGRhdGVfYXZnX2ZyYWdtZW50X3NpemUoZTRiLT5iZF9zYiwgZTRiLT5iZF9pbmZvKTsNCj4+
+IAlleHQ0X3NldF9iaXRzKGU0Yi0+YmRfYml0bWFwLCBleC0+ZmVfc3RhcnQsIGxlbjApOw0KPj4g
+CW1iX2NoZWNrX2J1ZGR5KGU0Yik7DQo+PiANCj4+IEBAIC0yMzQ2LDE3ICsyNjEzLDIwIEBAIGV4
+dDRfbWJfcmVndWxhcl9hbGxvY2F0b3Ioc3RydWN0IGV4dDRfYWxsb2NhdGlvbl9jb250ZXh0ICph
+YykNCj4+IAkJICogZnJvbSB0aGUgZ29hbCB2YWx1ZSBzcGVjaWZpZWQNCj4+IAkJICovDQo+PiAJ
+CWdyb3VwID0gYWMtPmFjX2dfZXguZmVfZ3JvdXA7DQo+PiArCQlhYy0+YWNfbGFzdF9vcHRpbWFs
+X2dyb3VwID0gZ3JvdXA7DQo+PiAJCXByZWZldGNoX2dycCA9IGdyb3VwOw0KPj4gDQo+PiAtCQlm
+b3IgKGkgPSAwOyBpIDwgbmdyb3VwczsgZ3JvdXArKywgaSsrKSB7DQo+PiAtCQkJaW50IHJldCA9
+IDA7DQo+PiArCQlmb3IgKGkgPSAwOyBpIDwgbmdyb3VwczsgaSsrKSB7DQo+PiArCQkJaW50IHJl
+dCA9IDAsIG5ld19jcjsNCj4+ICsNCj4+IAkJCWNvbmRfcmVzY2hlZCgpOw0KPj4gLQkJCS8qDQo+
+PiAtCQkJICogQXJ0aWZpY2lhbGx5IHJlc3RyaWN0ZWQgbmdyb3VwcyBmb3Igbm9uLWV4dGVudA0K
+Pj4gLQkJCSAqIGZpbGVzIG1ha2VzIGdyb3VwID4gbmdyb3VwcyBwb3NzaWJsZSBvbiBmaXJzdCBs
+b29wLg0KPj4gLQkJCSAqLw0KPj4gLQkJCWlmIChncm91cCA+PSBuZ3JvdXBzKQ0KPj4gLQkJCQln
+cm91cCA9IDA7DQo+PiArDQo+PiArCQkJZXh0NF9tYl9jaG9vc2VfbmV4dF9ncm91cChhYywgJm5l
+d19jciwgJmdyb3VwLCBuZ3JvdXBzKTsNCj4+ICsNCj4+ICsJCQlpZiAobmV3X2NyICE9IGNyKSB7
+DQo+PiArCQkJCWNyID0gbmV3X2NyOw0KPj4gKwkJCQlnb3RvIHJlcGVhdDsNCj4+ICsJCQl9DQo+
+PiANCj4+IAkJCS8qDQo+PiAJCQkgKiBCYXRjaCByZWFkcyBvZiB0aGUgYmxvY2sgYWxsb2NhdGlv
+biBiaXRtYXBzDQo+PiBAQCAtMjY5Niw3ICsyOTY2LDEwIEBAIGludCBleHQ0X21iX2FkZF9ncm91
+cGluZm8oc3RydWN0IHN1cGVyX2Jsb2NrICpzYiwgZXh0NF9ncm91cF90IGdyb3VwLA0KPj4gCUlO
+SVRfTElTVF9IRUFEKCZtZXRhX2dyb3VwX2luZm9baV0tPmJiX3ByZWFsbG9jX2xpc3QpOw0KPj4g
+CWluaXRfcndzZW0oJm1ldGFfZ3JvdXBfaW5mb1tpXS0+YWxsb2Nfc2VtKTsNCj4+IAltZXRhX2dy
+b3VwX2luZm9baV0tPmJiX2ZyZWVfcm9vdCA9IFJCX1JPT1Q7DQo+PiArCUlOSVRfTElTVF9IRUFE
+KCZtZXRhX2dyb3VwX2luZm9baV0tPmJiX2xhcmdlc3RfZnJlZV9vcmRlcl9ub2RlKTsNCj4+ICsJ
+UkJfQ0xFQVJfTk9ERSgmbWV0YV9ncm91cF9pbmZvW2ldLT5iYl9hdmdfZnJhZ21lbnRfc2l6ZV9y
+Yik7DQo+PiAJbWV0YV9ncm91cF9pbmZvW2ldLT5iYl9sYXJnZXN0X2ZyZWVfb3JkZXIgPSAtMTsg
+IC8qIHVuaW5pdCAqLw0KPj4gKwltZXRhX2dyb3VwX2luZm9baV0tPmJiX2dyb3VwID0gZ3JvdXA7
+DQo+PiANCj4+IAltYl9ncm91cF9iYl9iaXRtYXBfYWxsb2Moc2IsIG1ldGFfZ3JvdXBfaW5mb1tp
+XSwgZ3JvdXApOw0KPj4gCXJldHVybiAwOw0KPj4gQEAgLTI4ODYsNiArMzE1OSwyMiBAQCBpbnQg
+ZXh0NF9tYl9pbml0KHN0cnVjdCBzdXBlcl9ibG9jayAqc2IpDQo+PiAJCWkrKzsNCj4+IAl9IHdo
+aWxlIChpIDwgTUJfTlVNX09SREVSUyhzYikpOw0KPj4gDQo+PiArCXNiaS0+c19tYl9hdmdfZnJh
+Z21lbnRfc2l6ZV9yb290ID0gUkJfUk9PVDsNCj4+ICsJc2JpLT5zX21iX2xhcmdlc3RfZnJlZV9v
+cmRlcnMgPQ0KPj4gKwkJa21hbGxvY19hcnJheShNQl9OVU1fT1JERVJTKHNiKSwgc2l6ZW9mKHN0
+cnVjdCBsaXN0X2hlYWQpLA0KPj4gKwkJCUdGUF9LRVJORUwpOw0KPj4gKwlpZiAoIXNiaS0+c19t
+Yl9sYXJnZXN0X2ZyZWVfb3JkZXJzKQ0KPj4gKwkJZ290byBvdXQ7DQo+PiArCXNiaS0+c19tYl9s
+YXJnZXN0X2ZyZWVfb3JkZXJzX2xvY2tzID0NCj4+ICsJCWttYWxsb2NfYXJyYXkoTUJfTlVNX09S
+REVSUyhzYiksIHNpemVvZihyd2xvY2tfdCksDQo+PiArCQkJR0ZQX0tFUk5FTCk7DQo+PiArCWlm
+ICghc2JpLT5zX21iX2xhcmdlc3RfZnJlZV9vcmRlcnNfbG9ja3MpDQo+PiArCQlnb3RvIG91dDsN
+Cj4+ICsJZm9yIChpID0gMDsgaSA8IE1CX05VTV9PUkRFUlMoc2IpOyBpKyspIHsNCj4+ICsJCUlO
+SVRfTElTVF9IRUFEKCZzYmktPnNfbWJfbGFyZ2VzdF9mcmVlX29yZGVyc1tpXSk7DQo+PiArCQly
+d2xvY2tfaW5pdCgmc2JpLT5zX21iX2xhcmdlc3RfZnJlZV9vcmRlcnNfbG9ja3NbaV0pOw0KPj4g
+Kwl9DQo+PiArCXJ3bG9ja19pbml0KCZzYmktPnNfbWJfcmJfbG9jayk7DQo+PiANCj4+IAlzcGlu
+X2xvY2tfaW5pdCgmc2JpLT5zX21kX2xvY2spOw0KPj4gCXNiaS0+c19tYl9mcmVlX3BlbmRpbmcg
+PSAwOw0KPj4gQEAgLTI5NDksNiArMzIzOCw4IEBAIGludCBleHQ0X21iX2luaXQoc3RydWN0IHN1
+cGVyX2Jsb2NrICpzYikNCj4+IAlmcmVlX3BlcmNwdShzYmktPnNfbG9jYWxpdHlfZ3JvdXBzKTsN
+Cj4+IAlzYmktPnNfbG9jYWxpdHlfZ3JvdXBzID0gTlVMTDsNCj4+IG91dDoNCj4+ICsJa2ZyZWUo
+c2JpLT5zX21iX2xhcmdlc3RfZnJlZV9vcmRlcnMpOw0KPj4gKwlrZnJlZShzYmktPnNfbWJfbGFy
+Z2VzdF9mcmVlX29yZGVyc19sb2Nrcyk7DQo+PiAJa2ZyZWUoc2JpLT5zX21iX29mZnNldHMpOw0K
+Pj4gCXNiaS0+c19tYl9vZmZzZXRzID0gTlVMTDsNCj4+IAlrZnJlZShzYmktPnNfbWJfbWF4cyk7
+DQo+PiBAQCAtMzAwNSw2ICszMjk2LDcgQEAgaW50IGV4dDRfbWJfcmVsZWFzZShzdHJ1Y3Qgc3Vw
+ZXJfYmxvY2sgKnNiKQ0KPj4gCQlrdmZyZWUoZ3JvdXBfaW5mbyk7DQo+PiAJCXJjdV9yZWFkX3Vu
+bG9jaygpOw0KPj4gCX0NCj4+ICsJa2ZyZWUoc2JpLT5zX21iX2xhcmdlc3RfZnJlZV9vcmRlcnMp
+Ow0KPj4gCWtmcmVlKHNiaS0+c19tYl9vZmZzZXRzKTsNCj4+IAlrZnJlZShzYmktPnNfbWJfbWF4
+cyk7DQo+PiAJaXB1dChzYmktPnNfYnVkZHlfY2FjaGUpOw0KPj4gZGlmZiAtLWdpdCBhL2ZzL2V4
+dDQvbWJhbGxvYy5oIGIvZnMvZXh0NC9tYmFsbG9jLmgNCj4+IGluZGV4IDAyODYxNDA2OTMyZi4u
+MWU4NmE4YTA0NjBkIDEwMDY0NA0KPj4gLS0tIGEvZnMvZXh0NC9tYmFsbG9jLmgNCj4+ICsrKyBi
+L2ZzL2V4dDQvbWJhbGxvYy5oDQo+PiBAQCAtMTY2LDYgKzE2Niw3IEBAIHN0cnVjdCBleHQ0X2Fs
+bG9jYXRpb25fY29udGV4dCB7DQo+PiAJLyogY29weSBvZiB0aGUgYmVzdCBmb3VuZCBleHRlbnQg
+dGFrZW4gYmVmb3JlIHByZWFsbG9jYXRpb24gZWZmb3J0cyAqLw0KPj4gCXN0cnVjdCBleHQ0X2Zy
+ZWVfZXh0ZW50IGFjX2ZfZXg7DQo+PiANCj4+ICsJZXh0NF9ncm91cF90IGFjX2xhc3Rfb3B0aW1h
+bF9ncm91cDsNCj4+IAlfX3UzMiBhY19ncm91cHNfY29uc2lkZXJlZDsNCj4+IAlfX3UxNiBhY19n
+cm91cHNfc2Nhbm5lZDsNCj4+IAlfX3UxNiBhY19mb3VuZDsNCj4+IGRpZmYgLS1naXQgYS9mcy9l
+eHQ0L3N1cGVyLmMgYi9mcy9leHQ0L3N1cGVyLmMNCj4+IGluZGV4IDBmMGRiNDkwMzFkYy4uYTE0
+MzYzNjU0Y2ZkIDEwMDY0NA0KPj4gLS0tIGEvZnMvZXh0NC9zdXBlci5jDQo+PiArKysgYi9mcy9l
+eHQ0L3N1cGVyLmMNCj4+IEBAIC0xNTQsNiArMTU0LDcgQEAgc3RhdGljIGlubGluZSB2b2lkIF9f
+ZXh0NF9yZWFkX2JoKHN0cnVjdCBidWZmZXJfaGVhZCAqYmgsIGludCBvcF9mbGFncywNCj4+IAlj
+bGVhcl9idWZmZXJfdmVyaWZpZWQoYmgpOw0KPj4gDQo+PiAJYmgtPmJfZW5kX2lvID0gZW5kX2lv
+ID8gZW5kX2lvIDogZW5kX2J1ZmZlcl9yZWFkX3N5bmM7DQo+PiArDQo+PiAJZ2V0X2JoKGJoKTsN
+Cj4+IAlzdWJtaXRfYmgoUkVRX09QX1JFQUQsIG9wX2ZsYWdzLCBiaCk7DQo+PiB9DQo+PiBAQCAt
+MTY4Nyw3ICsxNjg4LDcgQEAgZW51bSB7DQo+PiAJT3B0X2Rpb3JlYWRfbm9sb2NrLCBPcHRfZGlv
+cmVhZF9sb2NrLA0KPj4gCU9wdF9kaXNjYXJkLCBPcHRfbm9kaXNjYXJkLCBPcHRfaW5pdF9pdGFi
+bGUsIE9wdF9ub2luaXRfaXRhYmxlLA0KPj4gCU9wdF9tYXhfZGlyX3NpemVfa2IsIE9wdF9ub2pv
+dXJuYWxfY2hlY2tzdW0sIE9wdF9ub21iY2FjaGUsDQo+PiAtCU9wdF9wcmVmZXRjaF9ibG9ja19i
+aXRtYXBzLA0KPj4gKwlPcHRfcHJlZmV0Y2hfYmxvY2tfYml0bWFwcywgT3B0X21iX29wdGltaXpl
+X3NjYW4sDQo+PiAjaWZkZWYgQ09ORklHX0VYVDRfREVCVUcNCj4+IAlPcHRfZmNfZGVidWdfbWF4
+X3JlcGxheSwgT3B0X2ZjX2RlYnVnX2ZvcmNlDQo+PiAjZW5kaWYNCj4+IEBAIC0xNzg4LDYgKzE3
+ODksNyBAQCBzdGF0aWMgY29uc3QgbWF0Y2hfdGFibGVfdCB0b2tlbnMgPSB7DQo+PiAJe09wdF9u
+b21iY2FjaGUsICJub21iY2FjaGUifSwNCj4+IAl7T3B0X25vbWJjYWNoZSwgIm5vX21iY2FjaGUi
+fSwJLyogZm9yIGJhY2t3YXJkIGNvbXBhdGliaWxpdHkgKi8NCj4+IAl7T3B0X3ByZWZldGNoX2Js
+b2NrX2JpdG1hcHMsICJwcmVmZXRjaF9ibG9ja19iaXRtYXBzIn0sDQo+PiArCXtPcHRfbWJfb3B0
+aW1pemVfc2NhbiwgIm1iX29wdGltaXplX3NjYW4ifSwNCj4+IAl7T3B0X3JlbW92ZWQsICJjaGVj
+az1ub25lIn0sCS8qIG1vdW50IG9wdGlvbiBmcm9tIGV4dDIvMyAqLw0KPj4gCXtPcHRfcmVtb3Zl
+ZCwgIm5vY2hlY2sifSwJLyogbW91bnQgb3B0aW9uIGZyb20gZXh0Mi8zICovDQo+PiAJe09wdF9y
+ZW1vdmVkLCAicmVzZXJ2YXRpb24ifSwJLyogbW91bnQgb3B0aW9uIGZyb20gZXh0Mi8zICovDQo+
+PiBAQCAtMjAwOCw2ICsyMDEwLDggQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBtb3VudF9vcHRzIHsN
+Cj4+IAl7T3B0X25vbWJjYWNoZSwgRVhUNF9NT1VOVF9OT19NQkNBQ0hFLCBNT1BUX1NFVH0sDQo+
+PiAJe09wdF9wcmVmZXRjaF9ibG9ja19iaXRtYXBzLCBFWFQ0X01PVU5UX1BSRUZFVENIX0JMT0NL
+X0JJVE1BUFMsDQo+PiAJIE1PUFRfU0VUfSwNCj4+ICsJe09wdF9tYl9vcHRpbWl6ZV9zY2FuLCBF
+WFQ0X01PVU5UMl9NQl9PUFRJTUlaRV9TQ0FOLA0KPj4gKwkgTU9QVF9TRVQgfCBNT1BUXzIgfCBN
+T1BUX0VYVDRfT05MWX0sDQo+PiAjaWZkZWYgQ09ORklHX0VYVDRfREVCVUcNCj4+IAl7T3B0X2Zj
+X2RlYnVnX2ZvcmNlLCBFWFQ0X01PVU5UMl9KT1VSTkFMX0ZBU1RfQ09NTUlULA0KPj4gCSBNT1BU
+X1NFVCB8IE1PUFRfMiB8IE1PUFRfRVhUNF9PTkxZfSwNCj4+IC0tIA0KPj4gMi4zMC4wLjQ3OC5n
+OGEwZDE3OGMwMS1nb29nDQo+PiANCj4gDQoNCg==
