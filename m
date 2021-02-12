@@ -2,105 +2,70 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 626D9319BFD
-	for <lists+linux-ext4@lfdr.de>; Fri, 12 Feb 2021 10:39:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9EE9319D47
+	for <lists+linux-ext4@lfdr.de>; Fri, 12 Feb 2021 12:22:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230233AbhBLJiz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 12 Feb 2021 04:38:55 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47989 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230240AbhBLJiv (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 12 Feb 2021 04:38:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613122644;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=AqGE9fwP+VHM6BqJNdLrJ/X6dr91TFMUpr8G6AtULv4=;
-        b=BPvsTYkVp+0AKc+ZFujtl2jwWUXQo3PX5L6V7fQp3d+WgSkf18X28jQnM7YeArpUaeP+Iu
-        2AbxOWG+O3CHlI8Lknoq98EBP0t3qtfH5pf3LbuBXF2AR/n/T7Lw352D1IFwNcqZKGMRiA
-        SuOFyFnvP+JeeDqA3Y5X5R1lQuFAfh8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-288-yrroi2GbMD-4ZWDbUJWrGA-1; Fri, 12 Feb 2021 04:37:22 -0500
-X-MC-Unique: yrroi2GbMD-4ZWDbUJWrGA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A356A100CC86
-        for <linux-ext4@vger.kernel.org>; Fri, 12 Feb 2021 09:37:21 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.40.192.128])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1EFCD60657
-        for <linux-ext4@vger.kernel.org>; Fri, 12 Feb 2021 09:37:20 +0000 (UTC)
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     linux-ext4@vger.kernel.org
-Subject: [PATCH] mmp: do not use O_DIRECT when working with regular file
-Date:   Fri, 12 Feb 2021 10:37:19 +0100
-Message-Id: <20210212093719.162065-1-lczerner@redhat.com>
+        id S230373AbhBLLUl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 12 Feb 2021 06:20:41 -0500
+Received: from www262.sakura.ne.jp ([202.181.97.72]:60765 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230238AbhBLLUS (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 12 Feb 2021 06:20:18 -0500
+Received: from fsav103.sakura.ne.jp (fsav103.sakura.ne.jp [27.133.134.230])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 11CBIE5c098656;
+        Fri, 12 Feb 2021 20:18:14 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav103.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav103.sakura.ne.jp);
+ Fri, 12 Feb 2021 20:18:14 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav103.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 11CBIEE2098653
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Fri, 12 Feb 2021 20:18:14 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: possible deadlock in start_this_handle (2)
+To:     Michal Hocko <mhocko@suse.com>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Jan Kara <jack@suse.cz>, Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com>,
+        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        "Theodore Ts'o" <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>
+References: <20210211104947.GL19070@quack2.suse.cz>
+ <CACT4Y+b5gSAAtX3DUf-H3aRxbir44MTO6BCC3XYvN=6DniT+jw@mail.gmail.com>
+ <CACT4Y+a_iyaYY18Uw28bd178xjso=n6jfMBjyZuYJiNeo8x+LQ@mail.gmail.com>
+ <20210211121020.GO19070@quack2.suse.cz> <YCUkaJFoPkl7ZvKE@dhcp22.suse.cz>
+ <20210211125717.GH308988@casper.infradead.org>
+ <YCUr99//z8hJmnDH@dhcp22.suse.cz>
+ <20210211132533.GI308988@casper.infradead.org>
+ <YCU9OR7SfRpwl4+4@dhcp22.suse.cz>
+ <20210211142630.GK308988@casper.infradead.org>
+ <YCVeLF8aZGfRVY3C@dhcp22.suse.cz>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <9cff0fbf-b6e7-1166-e4ba-d4573aef0c82@i-love.sakura.ne.jp>
+Date:   Fri, 12 Feb 2021 20:18:11 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <YCVeLF8aZGfRVY3C@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Currently the mmp block is read using O_DIRECT to avoid any caching tha
-may be done by the VM. However when working with regular files this
-creates alignment issues when the device of the host file system has
-sector size smaller than the blocksize of the file system in the file
-we're working with.
+On 2021/02/12 1:41, Michal Hocko wrote:
+> But I suspect we have drifted away from the original issue. I thought
+> that a simple check would help us narrow down this particular case and
+> somebody messing up from the IRQ context didn't sound like a completely
+> off.
+> 
 
-This can be reproduced with t_mmp_fail test when run on the device with
-4k sector size because the mke2fs fails when trying to read the mmp
-block.
-
-Fix it by disabling O_DIRECT when working with regular file. I don't
-think there is any risk of doing so since the file system layer, unlike
-shared block device, should guarantee cache consistency.
-
-Signed-off-by: Lukas Czerner <lczerner@redhat.com>
----
- lib/ext2fs/mmp.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
-
-diff --git a/lib/ext2fs/mmp.c b/lib/ext2fs/mmp.c
-index c21ae272..1ac22194 100644
---- a/lib/ext2fs/mmp.c
-+++ b/lib/ext2fs/mmp.c
-@@ -57,21 +57,21 @@ errcode_t ext2fs_mmp_read(ext2_filsys fs, blk64_t mmp_blk, void *buf)
- 	 * regardless of how the io_manager is doing reads, to avoid caching of
- 	 * the MMP block by the io_manager or the VM.  It needs to be fresh. */
- 	if (fs->mmp_fd <= 0) {
-+		struct stat st;
- 		int flags = O_RDWR | O_DIRECT;
- 
--retry:
-+		/*
-+		 * There is no reason for using O_DIRECT if we're working with
-+		 * regular file. Disabling it also avoids problems with
-+		 * alignment when the device of the host file system has sector
-+		 * size smaller than blocksize of the fs we're working with.
-+		 */
-+		if (stat(fs->device_name, &st) == 0 &&
-+		    S_ISREG(st.st_mode))
-+			flags &= ~O_DIRECT;
-+
- 		fs->mmp_fd = open(fs->device_name, flags);
- 		if (fs->mmp_fd < 0) {
--			struct stat st;
--
--			/* Avoid O_DIRECT for filesystem image files if open
--			 * fails, since it breaks when running on tmpfs. */
--			if (errno == EINVAL && (flags & O_DIRECT) &&
--			    stat(fs->device_name, &st) == 0 &&
--			    S_ISREG(st.st_mode)) {
--				flags &= ~O_DIRECT;
--				goto retry;
--			}
- 			retval = EXT2_ET_MMP_OPEN_DIRECT;
- 			goto out;
- 		}
--- 
-2.26.2
-
+ From my experience at https://lkml.kernel.org/r/201409192053.IHJ35462.JLOMOSOFFVtQFH@I-love.SAKURA.ne.jp ,
+I think we can replace direct PF_* manipulation with macros which do not receive "struct task_struct *" argument.
+Since TASK_PFA_TEST()/TASK_PFA_SET()/TASK_PFA_CLEAR() are for manipulating PFA_* flags on a remote thread, we can
+define similar ones for manipulating PF_* flags on current thread. Then, auditing dangerous users becomes easier.
