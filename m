@@ -2,83 +2,118 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CA8C31DA8E
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Feb 2021 14:34:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E143331DCEB
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Feb 2021 17:09:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231680AbhBQNcE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 17 Feb 2021 08:32:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34970 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233053AbhBQNbg (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 17 Feb 2021 08:31:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 37FFC64D5D
-        for <linux-ext4@vger.kernel.org>; Wed, 17 Feb 2021 13:30:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613568655;
-        bh=VuIKm35mODAyc0ezXzW7L2toqHc/aVGEW+P8oowDAkU=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=q99gatXHCVOAejkmXiYXRg7bpbtO1cq6Y83Seb/vcPQk2QC4uZR0gHzMYy4xBPVpt
-         U8x/xRiHEy3N+ugA5bHT1Xt0P4hibIkk/NMRY92DOpU4uKsyF3HjijrCJh198NlKlL
-         INejtf3Gmct8DBZMEcecidzBvdunAceyHveCmqZRlOSORDhDQxeEUA53yYwiyjayNe
-         Ih9pDpZqBvT+Va40KMkkUC8VuXLxG0hgt37pKkFosOT+98h1IjObbBIJg2+0UhXSXC
-         04hnf8NerfD9FSYavEB7PniygXxMa5K5UHmQ8mgU+chN/jZbvXip9JlY+Tb3buq/9e
-         nM+CSPLOVIGtA==
-Received: by pdx-korg-bugzilla-2.web.codeaurora.org (Postfix, from userid 48)
-        id 27830653C5; Wed, 17 Feb 2021 13:30:55 +0000 (UTC)
-From:   bugzilla-daemon@bugzilla.kernel.org
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 211733] ext4 file system unrecoverable corruption
-Date:   Wed, 17 Feb 2021 13:30:54 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: high
-X-Bugzilla-Who: martrw@yahoo.com
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-211733-13602-Wpi0Qw8Vf6@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-211733-13602@https.bugzilla.kernel.org/>
-References: <bug-211733-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        id S233982AbhBQQJD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 17 Feb 2021 11:09:03 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:38719 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233894AbhBQQJC (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 17 Feb 2021 11:09:02 -0500
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 11HG86UW020779
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 17 Feb 2021 11:08:06 -0500
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 0CF1F15C39E1; Wed, 17 Feb 2021 11:08:06 -0500 (EST)
+Date:   Wed, 17 Feb 2021 11:08:06 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Daniel Rosenberg <drosen@google.com>
+Cc:     Andreas Dilger <adilger@dilger.ca>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com, Paul Lawrence <paullawrence@google.com>
+Subject: Re: [PATCH 1/2] ext4: Handle casefolding with encryption
+Message-ID: <YC0/ZsQbKntSpl97@mit.edu>
+References: <20210203090745.4103054-2-drosen@google.com>
+ <56BC7E2D-A303-45AE-93B6-D8921189F604@dilger.ca>
+ <YBrP4NXAsvveIpwA@mit.edu>
+ <YCMZSjgUDtxaVem3@mit.edu>
+ <42511E9D-3786-4E70-B6BE-D7CB8F524912@dilger.ca>
+ <YCNbIdCsAsNcPuAL@mit.edu>
+ <CA+PiJmT2hfdRLztCdp3-tYBqAo+-ibmuyqLvq5nb+asFj4vL7A@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+PiJmT2hfdRLztCdp3-tYBqAo+-ibmuyqLvq5nb+asFj4vL7A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D211733
+On Tue, Feb 16, 2021 at 08:01:11PM -0800, Daniel Rosenberg wrote:
+> I'm not sure what the conflict is, at least format-wise. Naturally,
+> there would need to be some work to reconcile the two patches, but my
+> patch only alters the format for directories which are encrypted and
+> casefolded, which always must have the additional hash field. In the
+> case of dirdata along with encryption and casefolding, couldn't we
+> have the dirdata simply follow after the existing data? Since we
+> always already know the length, it'd be unambiguous where that would
+> start. Casefolding can only be altered on an empty directory, and you
+> can only enable encryption for an empty directory, so I'm not too
+> concerned there. I feel like having it swapping between the different
+> methods makes it more prone to bugs, although it would be doable. I've
+> started rebasing the dirdata patch on my end to see how easy it is to
+> mix the two. At a glance, they touch a lot of the same areas in
+> similar ways, so it shouldn't be too hard. It's more of a question of
+> which way we want to resolve that, and which patch goes first.
+> 
+> I've been trying to figure out how many devices in the field are using
+> casefolded encryption, but haven't found out yet. The code is
+> definitely available though, so I would not be surprised if it's being
+> used, or is about to be.
 
---- Comment #2 from martrw@yahoo.com ---
-Thank you very much for such a detailed response.  I acknowledge the lack of
-actionable data in the initial report.  The event was initially anticipated=
- to
-be a recoverable crisis and so no log data was captured to report.  In
-hindsight, this was a mistake.
+The problem is in how the space after the filename in a directory is
+encoded.  The dirdata format is (mildly) expandable, supporting up to
+4 different metadata chunks after the filename, using a very
+compatctly encoded TLV (or moral equivalent) scheme.  For directory
+inodes that have both the encyption and compression flags set, we have
+a single blob which gets used as the IV for the crypto.
 
-I do not think intentional reproduction of the event will occur.  Recovery =
-from
-this event was difficult and I am still not whole.  I would have to set up a
-separate machine with sacrificial data to not feel at extreme risk to do so=
-.=20
-However, should such a repetition occur, I will be much more detailed with =
-my
-report.
+So it's the difference between a simple blob that is only used for one
+thing in this particular case, and something which is the moral
+equivalent of simple ASN.1 or protobuf encoding.
 
-I greatly appreciate your patience, insight and attention to detail in your
-response.
+Currently, datadata has defined uses for 2 of the 4 "chunks", which is
+used in Lustre servers.  The proposal which Andreas has suggested is
+if the dirdata feature is supported, then the 3rd dirdata chunk would
+be used for the case where we currently used by the
+encrypted-casefolded extension, and the 4th would get reserved for a
+to-be-defined extension mechanism.
 
---=20
-You may reply to this email to add a comment.
+If there ext4 encrypted/casefold is not yet in use, and we can get the
+changes out to all potential users before they release products out
+into the field, then one approach would be to only support
+encrypted/casefold when dirdata is also enabled.
 
-You are receiving this mail because:
-You are watching the assignee of the bug.=
+If ext4 encrypted/casefold is in use, my suggestion is that we support
+both encrypted/casefold && !dirdata as you have currently implemented
+it, and encrypted/casefold && dirdata as Andreas has proposed.
+
+IIRC, supporting that Andreas's scheme essentially means that we use
+the top four bits in the rec_len field to indicate which chunks are
+present, and then for each chunk which is present, there is a 1 byte
+length followed by payload.  So that means in the case where it's
+encrypted/casefold && dirdata, the required storage of the directory
+entry would take one additional byte, plus setting a bit indicating
+that the encrypted/casefold dirdata chunk was present.
+
+So, no, they aren't incompatible ultimatly, but it might require a
+tiny bit more work to integrate the combined support for dirdata plus
+encrypted/casefold.  One way we can do this, if we have to support the
+current encrypted/casefold format because it's out there in deployed
+implementations already, is to integrate encrypted/casefold &&
+!dirdata first upstream, and then when we integrate dirdata into
+upstream, we'll have to add support for the encrypted/casefold &&
+dirdata case.  This means that we'll have two variants of the on-disk
+format to test and support, but I don't think it's the going to be
+that difficult.
+
+Andreas, anything you'd like to correct or add in this summary?
+
+	 	  	     		- Ted
