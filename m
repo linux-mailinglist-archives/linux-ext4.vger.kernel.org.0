@@ -2,248 +2,189 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D27F31EC61
-	for <lists+linux-ext4@lfdr.de>; Thu, 18 Feb 2021 17:39:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30A2931F229
+	for <lists+linux-ext4@lfdr.de>; Thu, 18 Feb 2021 23:21:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233778AbhBRQiR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 18 Feb 2021 11:38:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55086 "EHLO
+        id S229900AbhBRWVN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 18 Feb 2021 17:21:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230455AbhBRPMZ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 18 Feb 2021 10:12:25 -0500
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED30BC061788
-        for <linux-ext4@vger.kernel.org>; Thu, 18 Feb 2021 07:11:40 -0800 (PST)
-Received: by mail-qt1-x82c.google.com with SMTP id o21so1589279qtr.3
-        for <linux-ext4@vger.kernel.org>; Thu, 18 Feb 2021 07:11:40 -0800 (PST)
+        with ESMTP id S229862AbhBRWVH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 18 Feb 2021 17:21:07 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4729C061574
+        for <linux-ext4@vger.kernel.org>; Thu, 18 Feb 2021 14:20:24 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id a24so2053792plm.11
+        for <linux-ext4@vger.kernel.org>; Thu, 18 Feb 2021 14:20:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QmGcUUb0lOOZjJkF+Co3oT/JY7S3np8hVD15Hgd8EQk=;
-        b=reLYdq/UivrIqy2PPULtfQni/+raTNQo0A6vk712+oUy4BvuOCLu4zCIEy84VM9kj+
-         qSB7aBVj0qS7qtwHDgCxnwCP0cr4u4kLW9tMoJ5LMVEBw/PjLY7AfxLagdFcZ3IavKKu
-         5ayqnEf4Oes2kHtHO1Mnkt1TF3q6asQ6xjOqfxpGi+iyBRXC6FKXpvzqdQK3xfYZoppO
-         3ffvgtzPSs3749aJjsdkdJQ1hhWwcMZsMEo1EGirF4WAGf86OD60Q17PUIuV3Mh7ky/8
-         Q3pNWmCW/zsrhd5LKPTWEFdB2qsdpN0yyS6HoKJtTR3F9cSWkIkjoRrK1FJ6Jh1gxuo+
-         SLIw==
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=7dL31VOPhlVadC559CXIzXukrd2htPN/kcjc/U18jII=;
+        b=OJoQlDhkrzzJLeLKHIjTlV13nhjMsuB6mAr9GD03Ae6JsIin+iYjdZGiauYoctAADb
+         dOwRofpk9eIvHmP4O8O5VgDMgZutm4sAlrY5NUFiu6TarBaCrf2lNANftzTNRZMdJgm/
+         GpBbISwcvRqweGxbYnHAKUYVAXb81b/NAKaBA6x4moLD6SjfkDGWfs3J2kulyU3UvqxR
+         wlu7dWfmTewuNuQ5oUeUfRfqSV+R9ea4WdkVNvSY9txGBtrb8kLI35RlJhF2QwIOkoQ6
+         Fk8p7JWUYkyPuyGY7xZ+sbrN5WHavSlHXdUeoQ8v1d0r6SWTyQlHRVc7PumvWKn9Octp
+         kNoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QmGcUUb0lOOZjJkF+Co3oT/JY7S3np8hVD15Hgd8EQk=;
-        b=b1JAMn6x1eraNHj8EU0gn8BZ1/yrjLVhPL60+nYj39v6wKMBA8rjjXxtjKyT2szzUY
-         rMrC40m7q3JGGXSD4QjdiK/3xLAyLrIDjVeN9t7dQF3uz/Fl14BZI+wUJJIkzRwjGPvQ
-         hx09HL4clvQxWqqgKfCCsCEr6vDu9XFSdof1Pgpm/L3Aihr4QeISQhXlQL2pm9bfcIWd
-         mclazVptVvI8FTo5+nazHk0VbOVXKfHfZX/jRmSTwdFwOtvGXehscCKwCKfX+xEjU1Cw
-         Btso1UMTw77Wy7RsjFkwOLJvxKyQKR0kr7xFVw+MdsfbpGs6zvEaC1D+shf0EXydERTh
-         RXTw==
-X-Gm-Message-State: AOAM532mwAvk1Cauad/sF+/SK+NIs8A1OOD4FN5lED/pAyUpMKHGKYfl
-        gHubg8ePuKjuLLr7e3xuz5SoOcoc4pE=
-X-Google-Smtp-Source: ABdhPJzmnjJHWrtAxq8lLvk47f7VKDs/qztqBwj/U1LwINNKZsE6AmMIGkxm77E2L1KOonnXxgG4DA==
-X-Received: by 2002:ac8:6f4e:: with SMTP id n14mr4385438qtv.299.1613661099783;
-        Thu, 18 Feb 2021 07:11:39 -0800 (PST)
-Received: from localhost.localdomain (c-73-60-226-25.hsd1.nh.comcast.net. [73.60.226.25])
-        by smtp.gmail.com with ESMTPSA id y27sm2331470qtv.43.2021.02.18.07.11.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Feb 2021 07:11:39 -0800 (PST)
-From:   Eric Whitney <enwlinux@gmail.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu, Eric Whitney <enwlinux@gmail.com>
-Subject: [PATCH] ext4: shrink race window in ext4_should_retry_alloc()
-Date:   Thu, 18 Feb 2021 10:11:32 -0500
-Message-Id: <20210218151132.19678-1-enwlinux@gmail.com>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=7dL31VOPhlVadC559CXIzXukrd2htPN/kcjc/U18jII=;
+        b=RY5w0EVV6zb+j+7YXA9D7DvzlXMiGBlrUPHgvY4kNXgEy832f68v98DpIGl3N5jsPe
+         V41NvbtiuV3toXfhGYM8TybdTO7Qs83gd/wtpT4DpuTorz5f9zGyVjzrg0a87PSlpvpl
+         7Ue5IzIsXh8bIjxbeGA7FOTI9BzvsaFsoDSqXw78mB64/yRdr5+CV2NfMThdkKcqV0RQ
+         NlUpAH6uOlACg0yS1/emMPeh75bU10YQmvqCXI2fy/e2OUfv3U9gFAkU6QakXAgNoTtY
+         B0FAoop+colLLCLYrXSIvUhGoMG6DpI5CHNpadtp6xEOuE/NBwMJr3N1yAP89HLT28kf
+         hn2A==
+X-Gm-Message-State: AOAM531bPqy6wN26ITBddVBEZsvTh6n+Z5z+cmqqWgnKWuWbNg0cV/4h
+        nkax7GgjWH2uNydKY9ncpJJIGQ==
+X-Google-Smtp-Source: ABdhPJwux4s00nAWV6vOoLrTqoSpMC5IEmAw0aCxzR49O7UbhqwWqzFpH05ZokZ4cySQDW2kLTqnNg==
+X-Received: by 2002:a17:90a:bf0e:: with SMTP id c14mr2324753pjs.38.1613686824036;
+        Thu, 18 Feb 2021 14:20:24 -0800 (PST)
+Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id 6sm6751104pgv.70.2021.02.18.14.20.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 18 Feb 2021 14:20:23 -0800 (PST)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <BF8274AF-A9C6-40F4-8B99-FEBA82878C36@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_E2514ABE-4A4F-43EC-9362-AB76336AEC10";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH v2] mmp: do not use O_DIRECT when working with regular
+ file
+Date:   Thu, 18 Feb 2021 15:20:20 -0700
+In-Reply-To: <20210218095146.265302-1-lczerner@redhat.com>
+Cc:     linux-ext4@vger.kernel.org, Eric Sandeen <sandeen@redhat.com>
+To:     Lukas Czerner <lczerner@redhat.com>
+References: <20210212093719.162065-1-lczerner@redhat.com>
+ <20210218095146.265302-1-lczerner@redhat.com>
+X-Mailer: Apple Mail (2.3273)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-When generic/371 is run on kvm-xfstests using 5.10 and 5.11 kernels, it
-fails at significant rates on the two test scenarios that disable
-delayed allocation (ext3conv and data_journal) and force actual block
-allocation for the fallocate and pwrite functions in the test.  The
-failure rate on 5.10 for both ext3conv and data_journal on one test
-system typically runs about 85%.  On 5.11, the failure rate on ext3conv
-sometimes drops to as low as 1% while the rate on data_journal
-increases to nearly 100%.
 
-The observed failures are largely due to ext4_should_retry_alloc()
-cutting off block allocation retries when s_mb_free_pending (used to
-indicate that a transaction in progress will free blocks) is 0.
-However, free space is usually available when this occurs during runs
-of generic/371.  It appears that a thread attempting to allocate
-blocks is just missing transaction commits in other threads that
-increase the free cluster count and reset s_mb_free_pending while
-the allocating thread isn't running.  Explicitly testing for free space
-availability avoids this race.
+--Apple-Mail=_E2514ABE-4A4F-43EC-9362-AB76336AEC10
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-The current code uses a post-increment operator in the conditional
-expression that determines whether the retry limit has been exceeded.
-This means that the conditional expression uses the value of the
-retry counter before it's increased, resulting in an extra retry cycle.
-The current code actually retries twice before hitting its retry limit
-rather than once.
+On Feb 18, 2021, at 2:51 AM, Lukas Czerner <lczerner@redhat.com> wrote:
+>=20
+> Currently the mmp block is read using O_DIRECT to avoid any caching =
+that
+> may be done by the VM. However when working with regular files this
+> creates alignment issues when the device of the host file system has
+> sector size larger than the blocksize of the file system in the file
+> we're working with.
+>=20
+> This can be reproduced with t_mmp_fail test when run on the device =
+with
+> 4k sector size because the mke2fs fails when trying to read the mmp
+> block.
+>=20
+> Fix it by disabling O_DIRECT when working with regular files. I don't
+> think there is any risk of doing so since the file system layer, =
+unlike
+> shared block device, should guarantee cache consistency.
+>=20
+> Signed-off-by: Lukas Czerner <lczerner@redhat.com>
+> Reviewed-by: Eric Sandeen <sandeen@redhat.com>
 
-Increasing the retry limit to 3 from the current actual maximum retry
-count of 2 in combination with the change described above reduces the
-observed failure rate to less that 0.1% on both ext3conv and
-data_journal with what should be limited impact on users sensitive to
-the overhead caused by retries.
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 
-A per filesystem percpu counter exported via sysfs is added to allow
-users or developers to track the number of times the retry limit is
-exceeded without resorting to debugging methods.  This should provide
-some insight into worst case retry behavior.
+> ---
+> v2: Fix comment - it avoids problems when the sector size is larger =
+not
+>    smaller than blocksize
+>=20
+> lib/ext2fs/mmp.c | 22 +++++++++++-----------
+> 1 file changed, 11 insertions(+), 11 deletions(-)
+>=20
+> diff --git a/lib/ext2fs/mmp.c b/lib/ext2fs/mmp.c
+> index c21ae272..cca2873b 100644
+> --- a/lib/ext2fs/mmp.c
+> +++ b/lib/ext2fs/mmp.c
+> @@ -57,21 +57,21 @@ errcode_t ext2fs_mmp_read(ext2_filsys fs, blk64_t =
+mmp_blk, void *buf)
+> 	 * regardless of how the io_manager is doing reads, to avoid =
+caching of
+> 	 * the MMP block by the io_manager or the VM.  It needs to be =
+fresh. */
+> 	if (fs->mmp_fd <=3D 0) {
+> +		struct stat st;
+> 		int flags =3D O_RDWR | O_DIRECT;
+>=20
+> -retry:
+> +		/*
+> +		 * There is no reason for using O_DIRECT if we're =
+working with
+> +		 * regular file. Disabling it also avoids problems with
+> +		 * alignment when the device of the host file system has =
+sector
+> +		 * size larger than blocksize of the fs we're working =
+with.
+> +		 */
+> +		if (stat(fs->device_name, &st) =3D=3D 0 &&
+> +		    S_ISREG(st.st_mode))
+> +			flags &=3D ~O_DIRECT;
+> +
+> 		fs->mmp_fd =3D open(fs->device_name, flags);
+> 		if (fs->mmp_fd < 0) {
+> -			struct stat st;
+> -
+> -			/* Avoid O_DIRECT for filesystem image files if =
+open
+> -			 * fails, since it breaks when running on tmpfs. =
+*/
+> -			if (errno =3D=3D EINVAL && (flags & O_DIRECT) &&
+> -			    stat(fs->device_name, &st) =3D=3D 0 &&
+> -			    S_ISREG(st.st_mode)) {
+> -				flags &=3D ~O_DIRECT;
+> -				goto retry;
+> -			}
+> 			retval =3D EXT2_ET_MMP_OPEN_DIRECT;
+> 			goto out;
+> 		}
+> --
+> 2.26.2
+>=20
 
-Signed-off-by: Eric Whitney <enwlinux@gmail.com>
----
- fs/ext4/balloc.c | 38 ++++++++++++++++++++++++++------------
- fs/ext4/ext4.h   |  1 +
- fs/ext4/super.c  |  5 +++++
- fs/ext4/sysfs.c  |  7 +++++++
- 4 files changed, 39 insertions(+), 12 deletions(-)
 
-diff --git a/fs/ext4/balloc.c b/fs/ext4/balloc.c
-index f45f9feebe59..74a5172c2d83 100644
---- a/fs/ext4/balloc.c
-+++ b/fs/ext4/balloc.c
-@@ -626,27 +626,41 @@ int ext4_claim_free_clusters(struct ext4_sb_info *sbi,
- 
- /**
-  * ext4_should_retry_alloc() - check if a block allocation should be retried
-- * @sb:			super block
-- * @retries:		number of attemps has been made
-+ * @sb:			superblock
-+ * @retries:		number of retry attempts made so far
-  *
-- * ext4_should_retry_alloc() is called when ENOSPC is returned, and if
-- * it is profitable to retry the operation, this function will wait
-- * for the current or committing transaction to complete, and then
-- * return TRUE.  We will only retry once.
-+ * ext4_should_retry_alloc() is called when ENOSPC is returned while
-+ * attempting to allocate blocks.  If there's an indication that a pending
-+ * journal transaction might free some space and allow another attempt to
-+ * succeed, this function will wait for the current or committing transaction
-+ * to complete and then return TRUE.
-  */
- int ext4_should_retry_alloc(struct super_block *sb, int *retries)
- {
--	if (!ext4_has_free_clusters(EXT4_SB(sb), 1, 0) ||
--	    (*retries)++ > 1 ||
--	    !EXT4_SB(sb)->s_journal)
-+	struct ext4_sb_info *sbi = EXT4_SB(sb);
-+
-+	if (!sbi->s_journal)
- 		return 0;
- 
--	smp_mb();
--	if (EXT4_SB(sb)->s_mb_free_pending == 0)
-+	if (++(*retries) > 3) {
-+		percpu_counter_inc(&sbi->s_sra_exceeded_retry_limit);
- 		return 0;
-+	}
- 
-+	/*
-+	 * if there's no indication that blocks are about to be freed it's
-+	 * possible we just missed a transaction commit that did so
-+	 */
-+	smp_mb();
-+	if (sbi->s_mb_free_pending == 0)
-+		return ext4_has_free_clusters(sbi, 1, 0);
-+
-+	/*
-+	 * it's possible we've just missed a transaction commit here,
-+	 * so ignore the returned status
-+	 */
- 	jbd_debug(1, "%s: retrying operation after ENOSPC\n", sb->s_id);
--	jbd2_journal_force_commit_nested(EXT4_SB(sb)->s_journal);
-+	(void) jbd2_journal_force_commit_nested(sbi->s_journal);
- 	return 1;
- }
- 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 2866d249f3d2..8055ade70532 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -1484,6 +1484,7 @@ struct ext4_sb_info {
- 	struct percpu_counter s_freeinodes_counter;
- 	struct percpu_counter s_dirs_counter;
- 	struct percpu_counter s_dirtyclusters_counter;
-+	struct percpu_counter s_sra_exceeded_retry_limit;
- 	struct blockgroup_lock *s_blockgroup_lock;
- 	struct proc_dir_entry *s_proc;
- 	struct kobject s_kobj;
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 9a6f9875aa34..a871db52d1d2 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1210,6 +1210,7 @@ static void ext4_put_super(struct super_block *sb)
- 	percpu_counter_destroy(&sbi->s_freeinodes_counter);
- 	percpu_counter_destroy(&sbi->s_dirs_counter);
- 	percpu_counter_destroy(&sbi->s_dirtyclusters_counter);
-+	percpu_counter_destroy(&sbi->s_sra_exceeded_retry_limit);
- 	percpu_free_rwsem(&sbi->s_writepages_rwsem);
- #ifdef CONFIG_QUOTA
- 	for (i = 0; i < EXT4_MAXQUOTAS; i++)
-@@ -5004,6 +5005,9 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 	if (!err)
- 		err = percpu_counter_init(&sbi->s_dirtyclusters_counter, 0,
- 					  GFP_KERNEL);
-+	if (!err)
-+		err = percpu_counter_init(&sbi->s_sra_exceeded_retry_limit, 0,
-+					  GFP_KERNEL);
- 	if (!err)
- 		err = percpu_init_rwsem(&sbi->s_writepages_rwsem);
- 
-@@ -5117,6 +5121,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 	percpu_counter_destroy(&sbi->s_freeinodes_counter);
- 	percpu_counter_destroy(&sbi->s_dirs_counter);
- 	percpu_counter_destroy(&sbi->s_dirtyclusters_counter);
-+	percpu_counter_destroy(&sbi->s_sra_exceeded_retry_limit);
- 	percpu_free_rwsem(&sbi->s_writepages_rwsem);
- failed_mount5:
- 	ext4_ext_release(sb);
-diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
-index 075aa3a19ff5..a3d08276d441 100644
---- a/fs/ext4/sysfs.c
-+++ b/fs/ext4/sysfs.c
-@@ -24,6 +24,7 @@ typedef enum {
- 	attr_session_write_kbytes,
- 	attr_lifetime_write_kbytes,
- 	attr_reserved_clusters,
-+	attr_sra_exceeded_retry_limit,
- 	attr_inode_readahead,
- 	attr_trigger_test_error,
- 	attr_first_error_time,
-@@ -202,6 +203,7 @@ EXT4_ATTR_FUNC(delayed_allocation_blocks, 0444);
- EXT4_ATTR_FUNC(session_write_kbytes, 0444);
- EXT4_ATTR_FUNC(lifetime_write_kbytes, 0444);
- EXT4_ATTR_FUNC(reserved_clusters, 0644);
-+EXT4_ATTR_FUNC(sra_exceeded_retry_limit, 0444);
- 
- EXT4_ATTR_OFFSET(inode_readahead_blks, 0644, inode_readahead,
- 		 ext4_sb_info, s_inode_readahead_blks);
-@@ -251,6 +253,7 @@ static struct attribute *ext4_attrs[] = {
- 	ATTR_LIST(session_write_kbytes),
- 	ATTR_LIST(lifetime_write_kbytes),
- 	ATTR_LIST(reserved_clusters),
-+	ATTR_LIST(sra_exceeded_retry_limit),
- 	ATTR_LIST(inode_readahead_blks),
- 	ATTR_LIST(inode_goal),
- 	ATTR_LIST(mb_stats),
-@@ -374,6 +377,10 @@ static ssize_t ext4_attr_show(struct kobject *kobj,
- 		return snprintf(buf, PAGE_SIZE, "%llu\n",
- 				(unsigned long long)
- 				atomic64_read(&sbi->s_resv_clusters));
-+	case attr_sra_exceeded_retry_limit:
-+		return snprintf(buf, PAGE_SIZE, "%llu\n",
-+				(unsigned long long)
-+			percpu_counter_sum(&sbi->s_sra_exceeded_retry_limit));
- 	case attr_inode_readahead:
- 	case attr_pointer_ui:
- 		if (!ptr)
--- 
-2.20.1
+Cheers, Andreas
 
+
+
+
+
+
+--Apple-Mail=_E2514ABE-4A4F-43EC-9362-AB76336AEC10
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmAu6CQACgkQcqXauRfM
+H+AfrA/6AlAX/kkYCPnCcpYYpst5OnhqVuognTepTiqomM6muVFmDvgGx4R4EsQC
+Fh3CkrWzmieqSg6VeocYJ78zqei2+nfyng6dAWCJBjXwyQSQw5OFdffV6pUNMduZ
+Sbq35k1ChjLLgiFOjG9zy5eezbhnbsKiB7E0FDCthAXMX0QjOPQr/GUyvEm9yUb0
+nincySQSIBg1kIyRs4sYyVeHoxflEuMmvgHdCcXD6NmOFoSS/VRN6XfQTYqnsC7l
+FAgrC8wUB8h9iPZezjuF9TRtmFcrtyjQEcVRKm3CiN0hdE+ZFnJXRLmK58AVww1p
+w33F8Zu52Wap+P6TGkFgvQcQR/KpFGvIIfcfu5ze7hWyOu70TMXkeQjKL21sfCtc
+8rVKBjR++jxF+g8QM/Lgc48qOMuUTCJXN9yRk6+NFlgRt7TcbG/vAqfciwrtZa5w
+GBS1w8VWXXc42N+0bWG9L10zYvFTDxYV/qowl7aVjFyKtLyrsT2Qr8Gh23iI4nuK
+dbem1yuv0mmciI0xzQnImLGKtAOdT0In/mHO8xOQjhSv0aT0XEWecHMCftyMHYWr
+xcslkd/MIEu0hqCzya2nZa9nE6uzaVjTcZmyYxdN/U8xPLbGyqCdWfwjmTM81Gde
+ZgqxsqOARuvPIGDNBSiof2yqyyk61YQLX3DnLBxVgxQx7aNKJyg=
+=VClU
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_E2514ABE-4A4F-43EC-9362-AB76336AEC10--
