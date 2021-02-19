@@ -2,214 +2,208 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28D6031F89D
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 Feb 2021 12:50:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAAD531F994
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 Feb 2021 13:52:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbhBSLuE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 19 Feb 2021 06:50:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229681AbhBSLuC (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 19 Feb 2021 06:50:02 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A7C3C061574
-        for <linux-ext4@vger.kernel.org>; Fri, 19 Feb 2021 03:49:22 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id r23so18717834ljh.1
-        for <linux-ext4@vger.kernel.org>; Fri, 19 Feb 2021 03:49:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=QcsAf8sF/An4nFkoeX2qUC5D1sFZHqcyDgBRBYOczl4=;
-        b=KTjKyHlfiio5nZ/ydtTlLCcM5EEYdh+D9Ea3XaALNXKVtU/ukZ1H/YdFemzqHQiCDN
-         mkMl7IrDNhcAPAifNNyT1uDaTziFK16sqECrCGFbWB9Kaxvxjk9PAYX/Z9NNm2tWH2D2
-         XdUxbgoY7aCje8d0emQIG+94KGm59KJEyFX66MnCcFlHRIxRI+nFZlCRV7azHabzZVeN
-         We41/SlggqHhYW8eRsHaR8Fk2dgmUWxLwdmwoBGtbZ9EFQ23t4jlmjdHuxLD/J3oKXiV
-         o7ZlGftnTk1ynRvSg3C+wJT8cf3eK/83utAs+rhqlO2YY8L8cI3n//C1fYbC5Rvl+Ypb
-         xshw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=QcsAf8sF/An4nFkoeX2qUC5D1sFZHqcyDgBRBYOczl4=;
-        b=n+1+OdY57Ecrmk50ppZaXqY2212JbSbEzFmgwJvUuCGLWKjGo3KTYWkyhIJcYMwR+t
-         CyT0rafEsmMvpaE2h/ZyM5CYiOm6Wzojpi7a47h5onEhxGAStkkXgNgOL+L1sv0JXB4T
-         A6qvDvwsdBbPc6YpWYVCwlGKjx7JWsyArjjd3m6VhAPwwfU2dxWn1ozsBgpD5nSelYro
-         b9Oqrs3YpGyMggQa2BshxO96pxFJNLllMXOz6veiB0JoZANl8yIr4Wge9yKTcwKfuWwI
-         LYFF3ovk2fTJZ5HM9e/tZtXJpZAZr00v81uOtEHp1rSJxulMNZ/GAi4UIeGJKDm5EFr/
-         6Scg==
-X-Gm-Message-State: AOAM530YDwXAaQLQVwdLZNQpDA1BxMe1op1JKipxei7kGIHX7sVD2sTl
-        gACGltO4iqz9dAeaCJorpjY=
-X-Google-Smtp-Source: ABdhPJwXceC5tVAzbzj8vHNe4vcuo3fGVshYthEsq92vB1iJj3RwDy/8zpcr1yjNAWFMuMlIwwongw==
-X-Received: by 2002:a05:651c:155:: with SMTP id c21mr5604887ljd.250.1613735358564;
-        Fri, 19 Feb 2021 03:49:18 -0800 (PST)
-Received: from [192.168.1.5] ([5.8.48.45])
-        by smtp.gmail.com with ESMTPSA id z20sm904848lfj.178.2021.02.19.03.49.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 19 Feb 2021 03:49:18 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.7\))
-Subject: Re: [PATCH v2] mmp: do not use O_DIRECT when working with regular
- file
-From:   Alexey Lyashkov <alexey.lyashkov@gmail.com>
-In-Reply-To: <20210219105713.uu2mywenytfd2e5j@work>
-Date:   Fri, 19 Feb 2021 14:49:16 +0300
-Cc:     Andreas Dilger <adilger@dilger.ca>,
-        Artem Blagodarenko <artem.blagodarenko@gmail.com>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        Eric Sandeen <sandeen@redhat.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <E16FB371-5DFC-4A10-A9E2-36541FCF7D30@gmail.com>
-References: <20210212093719.162065-1-lczerner@redhat.com>
- <20210218095146.265302-1-lczerner@redhat.com>
- <BF8274AF-A9C6-40F4-8B99-FEBA82878C36@dilger.ca>
- <99A17D19-8764-4027-8B1E-E7ADBE5E2CEE@gmail.com>
- <20210219105713.uu2mywenytfd2e5j@work>
-To:     Lukas Czerner <lczerner@redhat.com>
-X-Mailer: Apple Mail (2.3445.9.7)
+        id S229720AbhBSMwS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 19 Feb 2021 07:52:18 -0500
+Received: from mga05.intel.com ([192.55.52.43]:4496 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229636AbhBSMwO (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 19 Feb 2021 07:52:14 -0500
+IronPort-SDR: ze2/b9YDcg3njAhndwqSF/5mHZfCMM2FEOaKls8uraguso2AUsMNpbhUK2e3DiljwhoFXn6nUj
+ t/WHMdFlHEXA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9899"; a="268685177"
+X-IronPort-AV: E=Sophos;i="5.81,189,1610438400"; 
+   d="scan'208";a="268685177"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2021 04:51:33 -0800
+IronPort-SDR: rulaPnrJr1/O6X8NGGi4pm7HrS4O7oZhaboON30yS72NFDyg4aXrbecMBayBDmRF8h5NmeaZ/p
+ ajobtkG9gBNw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,189,1610438400"; 
+   d="scan'208";a="428829477"
+Received: from lkp-server02.sh.intel.com (HELO cd560a204411) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 19 Feb 2021 04:51:32 -0800
+Received: from kbuild by cd560a204411 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lD5Fr-000APT-I3; Fri, 19 Feb 2021 12:51:31 +0000
+Date:   Fri, 19 Feb 2021 20:51:19 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+Subject: [ext4:dev] BUILD SUCCESS WITH WARNING
+ 0a76945fd1ba2ab44da7b578b311efdfedf92e6c
+Message-ID: <602fb447.FAPCH6QPs6uX6CEd%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Lukas,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+branch HEAD: 0a76945fd1ba2ab44da7b578b311efdfedf92e6c  ext4: add .kunitconfig fragment to enable ext4-specific tests
 
-because e2fsprogs have an bad assumption about IO size for the O_DIRECT =
-case.
-and because library uses a code like
->>
-set_block_size(1k);
-seek(fs, 1);
-read_block();
->>>
-which caused an 1k read inside of 4k disk block size not aligned by =
-block size, which is prohibited and caused an error report.
+possible Warning in current branch:
 
-Reference to patch.
-=
-https://patchwork.ozlabs.org/project/linux-ext4/patch/20201023112659.1559-=
-1-artem.blagodarenko@gmail.com/
+fs/ext4/extents.c:4456 ext4_alloc_file_blocks() error: uninitialized symbol 'ret'.
 
-Alex
+Warning ids grouped by kconfigs:
 
-> 19 =D1=84=D0=B5=D0=B2=D1=80. 2021 =D0=B3., =D0=B2 13:57, Lukas Czerner =
-<lczerner@redhat.com> =D0=BD=D0=B0=D0=BF=D0=B8=D1=81=D0=B0=D0=BB(=D0=B0):
->=20
-> On Fri, Feb 19, 2021 at 01:08:17PM +0300, Alexey Lyashkov wrote:
->> Andreas,
->>=20
->> What about to disable a O_DIRECT global on any block devices in the =
-e2fsprogs library as this don=E2=80=99t work on 4k disk drives at all ?
->> Instead of fixing an O_DIRECT access with patches sends early.
->=20
-> Why would it not work at all ? This is a fix for a specific problem =
-and
-> I am not currently aware of ony other problems e2fsprogs should have
-> with 4k sector size drives. Do you have a specific problem in mind ?
->=20
-> Thanks!
-> -Lukas
->=20
->>=20
->>=20
->> Alex
->>=20
->>> 19 =D1=84=D0=B5=D0=B2=D1=80. 2021 =D0=B3., =D0=B2 1:20, Andreas =
-Dilger <adilger@dilger.ca> =D0=BD=D0=B0=D0=BF=D0=B8=D1=81=D0=B0=D0=BB(=D0=B0=
-):
->>>=20
->>> On Feb 18, 2021, at 2:51 AM, Lukas Czerner <lczerner@redhat.com> =
-wrote:
->>>>=20
->>>> Currently the mmp block is read using O_DIRECT to avoid any caching =
-that
->>>> may be done by the VM. However when working with regular files this
->>>> creates alignment issues when the device of the host file system =
-has
->>>> sector size larger than the blocksize of the file system in the =
-file
->>>> we're working with.
->>>>=20
->>>> This can be reproduced with t_mmp_fail test when run on the device =
-with
->>>> 4k sector size because the mke2fs fails when trying to read the mmp
->>>> block.
->>>>=20
->>>> Fix it by disabling O_DIRECT when working with regular files. I =
-don't
->>>> think there is any risk of doing so since the file system layer, =
-unlike
->>>> shared block device, should guarantee cache consistency.
->>>>=20
->>>> Signed-off-by: Lukas Czerner <lczerner@redhat.com>
->>>> Reviewed-by: Eric Sandeen <sandeen@redhat.com>
->>>=20
->>> Reviewed-by: Andreas Dilger <adilger@dilger.ca>
->>>=20
->>>> ---
->>>> v2: Fix comment - it avoids problems when the sector size is larger =
-not
->>>>  smaller than blocksize
->>>>=20
->>>> lib/ext2fs/mmp.c | 22 +++++++++++-----------
->>>> 1 file changed, 11 insertions(+), 11 deletions(-)
->>>>=20
->>>> diff --git a/lib/ext2fs/mmp.c b/lib/ext2fs/mmp.c
->>>> index c21ae272..cca2873b 100644
->>>> --- a/lib/ext2fs/mmp.c
->>>> +++ b/lib/ext2fs/mmp.c
->>>> @@ -57,21 +57,21 @@ errcode_t ext2fs_mmp_read(ext2_filsys fs, =
-blk64_t mmp_blk, void *buf)
->>>> 	 * regardless of how the io_manager is doing reads, to avoid =
-caching of
->>>> 	 * the MMP block by the io_manager or the VM.  It needs to be =
-fresh. */
->>>> 	if (fs->mmp_fd <=3D 0) {
->>>> +		struct stat st;
->>>> 		int flags =3D O_RDWR | O_DIRECT;
->>>>=20
->>>> -retry:
->>>> +		/*
->>>> +		 * There is no reason for using O_DIRECT if we're =
-working with
->>>> +		 * regular file. Disabling it also avoids problems with
->>>> +		 * alignment when the device of the host file system has =
-sector
->>>> +		 * size larger than blocksize of the fs we're working =
-with.
->>>> +		 */
->>>> +		if (stat(fs->device_name, &st) =3D=3D 0 &&
->>>> +		    S_ISREG(st.st_mode))
->>>> +			flags &=3D ~O_DIRECT;
->>>> +
->>>> 		fs->mmp_fd =3D open(fs->device_name, flags);
->>>> 		if (fs->mmp_fd < 0) {
->>>> -			struct stat st;
->>>> -
->>>> -			/* Avoid O_DIRECT for filesystem image files if =
-open
->>>> -			 * fails, since it breaks when running on tmpfs. =
-*/
->>>> -			if (errno =3D=3D EINVAL && (flags & O_DIRECT) &&
->>>> -			    stat(fs->device_name, &st) =3D=3D 0 &&
->>>> -			    S_ISREG(st.st_mode)) {
->>>> -				flags &=3D ~O_DIRECT;
->>>> -				goto retry;
->>>> -			}
->>>> 			retval =3D EXT2_ET_MMP_OPEN_DIRECT;
->>>> 			goto out;
->>>> 		}
->>>> --
->>>> 2.26.2
->>>>=20
->>>=20
->>>=20
->>> Cheers, Andreas
->>>=20
->>>=20
->>>=20
->>>=20
->>>=20
->>=20
->=20
+gcc_recent_errors
+|-- i386-randconfig-m021-20210215
+|   `-- fs-ext4-extents.c-ext4_alloc_file_blocks()-error:uninitialized-symbol-ret-.
+`-- x86_64-randconfig-m001-20210218
+    `-- fs-ext4-extents.c-ext4_alloc_file_blocks()-error:uninitialized-symbol-ret-.
 
+elapsed time: 720m
+
+configs tested: 137
+configs skipped: 2
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+m68k                          amiga_defconfig
+powerpc                     ep8248e_defconfig
+powerpc                          g5_defconfig
+c6x                              alldefconfig
+powerpc                      pasemi_defconfig
+m68k                        mvme147_defconfig
+xtensa                           alldefconfig
+arm                          pxa910_defconfig
+arc                     nsimosci_hs_defconfig
+sh                   sh7724_generic_defconfig
+mips                       capcella_defconfig
+m68k                            mac_defconfig
+ia64                             allyesconfig
+arm                          collie_defconfig
+arm                              zx_defconfig
+powerpc                       holly_defconfig
+riscv                             allnoconfig
+c6x                        evmc6472_defconfig
+powerpc                     kilauea_defconfig
+arc                          axs103_defconfig
+m68k                       m5475evb_defconfig
+powerpc                      obs600_defconfig
+powerpc                      ppc6xx_defconfig
+sparc                       sparc32_defconfig
+sh                           sh2007_defconfig
+arm                             pxa_defconfig
+arm                       omap2plus_defconfig
+m68k                        mvme16x_defconfig
+mips                      bmips_stb_defconfig
+powerpc                 mpc836x_mds_defconfig
+riscv                            alldefconfig
+riscv                    nommu_virt_defconfig
+mips                      maltaaprp_defconfig
+arm                     eseries_pxa_defconfig
+m68k                        m5307c3_defconfig
+sh                             sh03_defconfig
+powerpc                      cm5200_defconfig
+arm                           stm32_defconfig
+mips                      malta_kvm_defconfig
+powerpc                     skiroot_defconfig
+arm                         bcm2835_defconfig
+arm                            mps2_defconfig
+sh                        sh7757lcr_defconfig
+nios2                         10m50_defconfig
+m68k                          sun3x_defconfig
+arm                           tegra_defconfig
+mips                        nlm_xlp_defconfig
+sh                          rsk7264_defconfig
+mips                  maltasmvp_eva_defconfig
+powerpc                     kmeter1_defconfig
+arm                          simpad_defconfig
+s390                       zfcpdump_defconfig
+m68k                             allyesconfig
+ia64                             allmodconfig
+ia64                                defconfig
+m68k                             allmodconfig
+m68k                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a003-20210218
+x86_64               randconfig-a001-20210218
+x86_64               randconfig-a004-20210218
+x86_64               randconfig-a002-20210218
+x86_64               randconfig-a005-20210218
+x86_64               randconfig-a006-20210218
+i386                 randconfig-a005-20210218
+i386                 randconfig-a003-20210218
+i386                 randconfig-a002-20210218
+i386                 randconfig-a004-20210218
+i386                 randconfig-a001-20210218
+i386                 randconfig-a006-20210218
+x86_64               randconfig-a013-20210217
+x86_64               randconfig-a016-20210217
+x86_64               randconfig-a012-20210217
+x86_64               randconfig-a015-20210217
+x86_64               randconfig-a014-20210217
+x86_64               randconfig-a011-20210217
+i386                 randconfig-a016-20210219
+i386                 randconfig-a012-20210219
+i386                 randconfig-a014-20210219
+i386                 randconfig-a013-20210219
+i386                 randconfig-a011-20210219
+i386                 randconfig-a015-20210219
+i386                 randconfig-a016-20210218
+i386                 randconfig-a012-20210218
+i386                 randconfig-a014-20210218
+i386                 randconfig-a013-20210218
+i386                 randconfig-a011-20210218
+i386                 randconfig-a015-20210218
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a012-20210218
+x86_64               randconfig-a016-20210218
+x86_64               randconfig-a013-20210218
+x86_64               randconfig-a015-20210218
+x86_64               randconfig-a011-20210218
+x86_64               randconfig-a014-20210218
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
