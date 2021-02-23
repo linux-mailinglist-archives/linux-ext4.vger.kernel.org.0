@@ -2,93 +2,109 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5101A322FC3
-	for <lists+linux-ext4@lfdr.de>; Tue, 23 Feb 2021 18:41:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4F70322FCA
+	for <lists+linux-ext4@lfdr.de>; Tue, 23 Feb 2021 18:43:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233668AbhBWRl7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 23 Feb 2021 12:41:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42186 "EHLO
+        id S233723AbhBWRnB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 23 Feb 2021 12:43:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233647AbhBWRl6 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 23 Feb 2021 12:41:58 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE635C06174A
-        for <linux-ext4@vger.kernel.org>; Tue, 23 Feb 2021 09:41:17 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id k13so33979435ejs.10
-        for <linux-ext4@vger.kernel.org>; Tue, 23 Feb 2021 09:41:17 -0800 (PST)
+        with ESMTP id S230019AbhBWRnA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 23 Feb 2021 12:43:00 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65E70C061786
+        for <linux-ext4@vger.kernel.org>; Tue, 23 Feb 2021 09:42:20 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id r5so3286736pfh.13
+        for <linux-ext4@vger.kernel.org>; Tue, 23 Feb 2021 09:42:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8N8//LW61kaV1lCJVHANDmFwIO/PEzKZzZOWWf6T27A=;
-        b=QNi0/QuYyf6nv8kN/KThAKeJ7yMvXp1YkdmbYvTwYZtZQPGeiUUeMFwNk5Ec+WA2mU
-         See4s/AsMnhWPE4fUW3Vt3/eFG+ODapomOkedwGoO0flE1+7CNDUNoXFWkDLtqI1THl/
-         7bUET6K6nU6GoeDWYCtFPbdycZVUd+ak/S9lC/PM+Fv1AEv8oHXHQevJPPKM78XBb1UG
-         LI5VpEibKV5zLJz76VuIKK91VtARF/o54D36DIdTDecapmZWTNadwHPJlEdUfI3OQ8vN
-         nbSJZ+BBim6wCEljUmjr5Xz75s8gP6XajQZp4NsFVNWfhxiquWUOAHEV6y8HViFcK4rx
-         Q8jg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OQo1kj2nVSRFSSFkZ42zbMx/gberwXa3UDbaiFT879Q=;
+        b=OxhJgNmkO0nSoeczR3+X5y/16xPmhltRjhVv3b6q+F9t49GPnXezU364jSHJeF5r6G
+         CNFq3MBsNABfzCy1X/iMupTHBB2wDmwNOl+Wk9DAB04BJ93db5Tcne1J0XzRhMpaSrts
+         SN2SaULlSQ7KpY42QDTjCpVEwJZh8xtk0o7toXbqkxZHqd3hoOHHnhes36jj/PAXzjqm
+         aFWqbN3J47W8cxV6HwgR3jv1qR/r7wfQ1Syw0pWLh8tenWW4QKbLshhzcqu7qPoAeXp2
+         ujQ65UXL37WLTChg2ceaogffBQ1QZLJzc0bwlxxS8I2mZPc7su+uY3TRt1AosYvi1ICl
+         hfBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8N8//LW61kaV1lCJVHANDmFwIO/PEzKZzZOWWf6T27A=;
-        b=r8NwExmaxYREMblsbEHsPc2BV5d66mWeJwcAio0pwfE0QZY5egEb1ATQzG3sxJhO0X
-         /QRYwtRJsv4OWcHeXaH8yebTe7h+GKz3uxRBZw2QIq1acsgHLs6sSqAJTw3uqDKpFnSQ
-         R4iDIhO1+dZP/Y+GeUd8uC/uYJAyHK8f500O5mdw3EZxbvpWe4vr71doVw3JdSxnWalU
-         tiMsLP8wjz5y4/O8QWFMhyx941uRaQF2BY1eE+qMUVqrlLUIuMcJkKq34GVBL3WoEwzn
-         csXBMzez3mtqpBbNF0Uo//Kls+KZDiI6K0KdbP5o/TX5bqJoAtDliuUjHT1nbh19Iqmu
-         +klQ==
-X-Gm-Message-State: AOAM533gZa+XOm6k6+YbBqAXdn0KHB5fyEJnYo+f7K+ZOCX3ZjpdXdsT
-        REkk8nbPfCkKLJrQxP7dRF1SxCkm3CwQo7qL3nH28Ls6uac=
-X-Google-Smtp-Source: ABdhPJyQPed/88oS3OpA68rjvJZ8FbWZ4lohA5egLXXWKHBvBSqDrHgLW3UX1Y4o8YAUEaXt9R8o2cSE2LlIPClm0Ow=
-X-Received: by 2002:a17:906:c210:: with SMTP id d16mr23166137ejz.187.1614102076571;
- Tue, 23 Feb 2021 09:41:16 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OQo1kj2nVSRFSSFkZ42zbMx/gberwXa3UDbaiFT879Q=;
+        b=DuYDvNGL2zYDuIJlztp09svawiBHncbSOiRa+w4GXkk8SpVq3EQjsp2Fib+MFKx0NQ
+         m3x8WM5eKpia/lk++xJP/cWK55AojQVMQxNA6h7WqTfrtf2A5sneL/il/+uHf6k4dBmO
+         UJ1zPQBqATtSEbNCCFByb2hTHqE5ZB4/JKRhhRjOR8rw5lBtifEOKBq5PMvsumIf5bdU
+         +tqN3rfbbiRXyQ6Uco4t2OFgFSXzNSzIV+q0DF855z2+Kn66d2AGB2iyc89mobHT005G
+         uh9k5PujK7eRRYgG7UdCnO4TaGOXDKYBFTYvxq95C1MwURi1RGlk0LpqbuU38Y+F3fgM
+         ldxw==
+X-Gm-Message-State: AOAM5304+ASr51876HBkdOtmBRpqGNAahbdnhf0OQIBamo8v5MOdByjR
+        F3LO8WKuVGJWk9ZfViwgDN2YNp4yzq0=
+X-Google-Smtp-Source: ABdhPJxicYBICcQ40pc0TrUNQswUqxNX57lWWaBUuWDlx75yUZy3V3E5YOd+kvYNIQE0+FDADZ95ow==
+X-Received: by 2002:a63:141e:: with SMTP id u30mr8816880pgl.31.1614102139657;
+        Tue, 23 Feb 2021 09:42:19 -0800 (PST)
+Received: from harshads-520.kir.corp.google.com ([2620:15c:17:10:9c60:903e:f56e:8b80])
+        by smtp.googlemail.com with ESMTPSA id gk14sm5527408pjb.2.2021.02.23.09.42.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Feb 2021 09:42:17 -0800 (PST)
+From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+X-Google-Original-From: Harshad Shirwadkar <harshads@google.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Subject: [PATCH v2 1/4] e2fsck: don't ignore return values in e2fsck_rewrite_extent_tree
+Date:   Tue, 23 Feb 2021 09:41:53 -0800
+Message-Id: <20210223174156.308507-1-harshads@google.com>
+X-Mailer: git-send-email 2.30.0.617.g56c4b15f3c-goog
 MIME-Version: 1.0
-References: <20210219210333.1439525-1-harshads@google.com> <20210219210333.1439525-4-harshads@google.com>
- <YDLpPr/DD/sSRuES@mit.edu>
-In-Reply-To: <YDLpPr/DD/sSRuES@mit.edu>
-From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
-Date:   Tue, 23 Feb 2021 09:41:05 -0800
-Message-ID: <CAD+ocbwro-Zu9O60QQFTZ2CvQtdyZN19_X3bghFyxJS=hChStg@mail.gmail.com>
-Subject: Re: [PATCH 4/4] e2fsck: initialize variable before first use in fast
- commit replay
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Thanks Ted, it makes sense, will fix this in V2.
+From: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 
-- Harshad
+Don't ignore return values of library function calls in
+e2fsck_rewrite_extent_tree.
 
-On Sun, Feb 21, 2021 at 3:14 PM Theodore Ts'o <tytso@mit.edu> wrote:
->
-> On Fri, Feb 19, 2021 at 01:03:33PM -0800, Harshad Shirwadkar wrote:
-> > From: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-> >
-> > Initialize ext2fs_ex variable in ext4_fc_replay_scan() before first
-> > use.
-> >
-> > Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
->
-> I wonder if we should make the following change to
-> ext2fs_decode_extent(), which will prevent other future bugs to
-> potential users of the function:
->
->         to->e_pblk = ext2fs_le32_to_cpu(from->ee_start) +
->                 ((__u64) ext2fs_le16_to_cpu(from->ee_start_hi)
->                         << 32);
->         to->e_lblk = ext2fs_le32_to_cpu(from->ee_block);
->         to->e_len = ext2fs_le16_to_cpu(from->ee_len);
-> -       to->e_flags |= EXT2_EXTENT_FLAGS_LEAF;
-> +       to->e_flags = EXT2_EXTENT_FLAGS_LEAF;
->
-> ext2fs_decode_extent() overwrites all other members of the structure,
-> so we might as well just initialize e_flags as opposed to depending
-> the caller to initiaize *to just for the sake of to->e_flags.
->
-> Cheers,
->
->                                         - Ted
+Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+---
+ e2fsck/extents.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
+
+diff --git a/e2fsck/extents.c b/e2fsck/extents.c
+index 600dbc97..018737af 100644
+--- a/e2fsck/extents.c
++++ b/e2fsck/extents.c
+@@ -290,8 +290,10 @@ errcode_t e2fsck_rewrite_extent_tree(e2fsck_t ctx, struct extent_list *list)
+ 	errcode_t err;
+ 
+ 	memset(&inode, 0, sizeof(inode));
+-	ext2fs_read_inode_full(ctx->fs, list->ino, EXT2_INODE(&inode),
+-				sizeof(inode));
++	err = ext2fs_read_inode_full(ctx->fs, list->ino, EXT2_INODE(&inode),
++				     sizeof(inode));
++	if (err)
++		return err;
+ 
+ 	/* Skip deleted inodes and inline data files */
+ 	if (inode.i_flags & EXT4_INLINE_DATA_FL)
+@@ -305,11 +307,11 @@ errcode_t e2fsck_rewrite_extent_tree(e2fsck_t ctx, struct extent_list *list)
+ 				  &blk_count);
+ 	if (err)
+ 		return err;
+-	ext2fs_iblk_set(ctx->fs, EXT2_INODE(&inode), blk_count);
+-	ext2fs_write_inode_full(ctx->fs, list->ino, EXT2_INODE(&inode),
+-		sizeof(inode));
+-
+-	return 0;
++	err = ext2fs_iblk_set(ctx->fs, EXT2_INODE(&inode), blk_count);
++	if (err)
++		return err;
++	return ext2fs_write_inode_full(ctx->fs, list->ino, EXT2_INODE(&inode),
++				       sizeof(inode));
+ }
+ 
+ errcode_t e2fsck_read_extents(e2fsck_t ctx, struct extent_list *extents)
+-- 
+2.30.0.617.g56c4b15f3c-goog
+
