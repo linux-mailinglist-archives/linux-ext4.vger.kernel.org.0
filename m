@@ -2,58 +2,58 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00FB5322FC8
-	for <lists+linux-ext4@lfdr.de>; Tue, 23 Feb 2021 18:43:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FA65322FCB
+	for <lists+linux-ext4@lfdr.de>; Tue, 23 Feb 2021 18:43:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233036AbhBWRnH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 23 Feb 2021 12:43:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42422 "EHLO
+        id S233065AbhBWRnK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 23 Feb 2021 12:43:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230019AbhBWRnD (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 23 Feb 2021 12:43:03 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DBA1C06178B
-        for <linux-ext4@vger.kernel.org>; Tue, 23 Feb 2021 09:42:23 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id c11so9228781pfp.10
-        for <linux-ext4@vger.kernel.org>; Tue, 23 Feb 2021 09:42:23 -0800 (PST)
+        with ESMTP id S232443AbhBWRnE (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 23 Feb 2021 12:43:04 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D7D7C061574
+        for <linux-ext4@vger.kernel.org>; Tue, 23 Feb 2021 09:42:24 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id n10so12820769pgl.10
+        for <linux-ext4@vger.kernel.org>; Tue, 23 Feb 2021 09:42:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=HnzL5gDkqRbD3IsFGdU42evoXK07lViYsNp8FnGdHwo=;
-        b=N54EV6uoywr+Y3NSoNcs5M2+oV6uO/8K4yrEuM+xmVksJjD7eTptk0EL0Y8UIIdodq
-         9RcRpxoT0Az/4XkXoAFjJ4iETAGdQlv58TWwSZUKTPi0OC1XMp5B5G3dXRd+ZzdYjxIP
-         ceh34W5kW5lWU6aUq3Bjp4cMmf09Iv5j6FEbLll1zk/JFVCLFf3q+k/ae/+Bn9InRXUm
-         zFtLI/lXAQNb0cHz+qsuMePGOH7BlBLN43D74kynwE9JcDyBz1Lfh6kRhObrhXtyHXiV
-         VAWN0S3L1H9JHCwzGCG19ZwPf+uDVN56jeIjr8hgozDYI5dE3baG6ebfbAonqapXBkbP
-         bGfQ==
+        bh=75c0REdhzMgWGu4NXzfQnu8KSZIrAqpqhx602Q2twFs=;
+        b=HoyW4bU7uDAkZJIvFShPPVu2NzBtapTcVzbyul64LSFy/luXjCzPpi6TSfZAiQBzuJ
+         GXWERaDufEPeZ36zBhi1SgUy5ZeI6ZebcNuGqnFadYTONH/iE3qvYJWO5GratIYfObM4
+         lbGEvY5BRcVLpbuBYT1VcJoHbm2CfyfK5VkohFkplMX1lceKWGcrs/cG6OZX7u4nbZ/P
+         4GKILgfacwrBm3Uu4ZX2zcY0Q9KyNl2uWaFHZTR6w15yCsoPsUHB2fDiSwzODCmP4BN0
+         DVo/DeoVnKAiCOlJD5RwsLj7cmuopJ1GXFEdENuTezOFe3QcooH+HyRD5LzM3pVh7ySb
+         9wwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=HnzL5gDkqRbD3IsFGdU42evoXK07lViYsNp8FnGdHwo=;
-        b=EF64K997QO1IFb87aJRFy7hzB+0xCHyCTgdYg559dwodDHEzMT5a38BaLrkSVh5pDt
-         D7rNtq8VvRbhyJZCMeWrFP1vucgBHyhlDVDZQG+sysTH9URDQ0SnPXkVQhOewZUnc9Dp
-         ZPKEM5Bkez+9qD/8MJAfXSjNC/LFgl+FF2knt7+H2GmAYiMl2IsGetgLrlp3/hSFcOWO
-         MTWAk+/WXrncm4BQOePZRvG5mZsgKv7napC3PYIdwcFRGdA5uCoHSFibTLFzG6jE/pPu
-         Jn8SE35A+a03b5AOxglicn2LjS59YRqVnMckm+vpFxEQq7uMetZzJkpos8VxU4r03EBs
-         XnCw==
-X-Gm-Message-State: AOAM530mAnU9awhbpA34tX1vU0+kmeFOtUn2KEIgaqklxGMjDAIawvQR
-        +/45nl55yziurzlGauhmr0v/AIlgNGE=
-X-Google-Smtp-Source: ABdhPJxxFzpJvXicDI5eB625u/yCX0fe7GMHyaRLd4EZwP3CuFFYl7Zy5cV2d+Aa+RyU3jeAgUqKRg==
-X-Received: by 2002:a62:187:0:b029:1da:e323:a96b with SMTP id 129-20020a6201870000b02901dae323a96bmr28465258pfb.28.1614102142568;
-        Tue, 23 Feb 2021 09:42:22 -0800 (PST)
+        bh=75c0REdhzMgWGu4NXzfQnu8KSZIrAqpqhx602Q2twFs=;
+        b=R5aCsDeff735O11WEnn93xIbdf8MwwYPiQui5HY4Osd+vddKyvzvwBbgTHKRn3hWrT
+         L3tj8rwKLP95A95wereIfFCsbwrmaNiDmo3IxhkCufi/UwnTDnS5Mw0xVQmQGxI/s+67
+         GyUMnX7Zedg8tHfwYz8YCg4ZMNZMaNWrrEcQz+4R7tD28Qrqwws7q3Qq4+MWfFtwjrpJ
+         k2E+DHlo9DHstxpOGF6cuJ012MSn4Bb8Y4oHk8l8TUhkcwyL3c6inrrlfHILDNH3WRSE
+         z8eqU8Jx1SY8XlrCvUbxEYHqJr2aHWnaATVP4FD28xIC2YUephbibLqNSuBxMwqJmUei
+         49aQ==
+X-Gm-Message-State: AOAM530zv9t/JhGVq3Lo2y3A6vCU1UjpY8/sV32a/4YT0P6f7WrKR714
+        xi8ycTDAMw6SYrvTzLltl9S7IecUsw0=
+X-Google-Smtp-Source: ABdhPJwDdHxaOvzbu8ZEiD2a1Dv/X+Ko76vuYUe8sZBACjnC1rG4vcV8tWGV3rPGSpp3Ys6oJOuECA==
+X-Received: by 2002:a65:5843:: with SMTP id s3mr8992998pgr.425.1614102143597;
+        Tue, 23 Feb 2021 09:42:23 -0800 (PST)
 Received: from harshads-520.kir.corp.google.com ([2620:15c:17:10:9c60:903e:f56e:8b80])
-        by smtp.googlemail.com with ESMTPSA id gk14sm5527408pjb.2.2021.02.23.09.42.20
+        by smtp.googlemail.com with ESMTPSA id gk14sm5527408pjb.2.2021.02.23.09.42.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Feb 2021 09:42:21 -0800 (PST)
+        Tue, 23 Feb 2021 09:42:22 -0800 (PST)
 From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 X-Google-Original-From: Harshad Shirwadkar <harshads@google.com>
 To:     linux-ext4@vger.kernel.org
 Cc:     tytso@mit.edu, Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Subject: [PATCH v2 3/4] e2fsck: add fallthrough comment in fc replay switch case
-Date:   Tue, 23 Feb 2021 09:41:55 -0800
-Message-Id: <20210223174156.308507-3-harshads@google.com>
+Subject: [PATCH v2 4/4] e2fsck: initialize variable before first use in fast commit replay
+Date:   Tue, 23 Feb 2021 09:41:56 -0800
+Message-Id: <20210223174156.308507-4-harshads@google.com>
 X-Mailer: git-send-email 2.30.0.617.g56c4b15f3c-goog
 In-Reply-To: <20210223174156.308507-1-harshads@google.com>
 References: <20210223174156.308507-1-harshads@google.com>
@@ -65,27 +65,43 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 
-During fast commit replay scan phase, in ext4_fc_replay_scan(), we
-want to fallthrough in switch case for EXT4_FC_TAG_ADD_RANGE case. Add
-a comment for that.
+Initialize ext2fs_ex variable in ext4_fc_replay_scan() before first
+use. Also ensure make ext2fs_decode_extent completely overwrite the
+extent structure passed to it as argument to prevent potential future
+bugs for the users of the function.
 
 Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 ---
- e2fsck/journal.c | 1 +
- 1 file changed, 1 insertion(+)
+ e2fsck/journal.c    | 2 +-
+ lib/ext2fs/extent.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/e2fsck/journal.c b/e2fsck/journal.c
-index 2708942a..a67ef745 100644
+index a67ef745..8e7ba819 100644
 --- a/e2fsck/journal.c
 +++ b/e2fsck/journal.c
-@@ -325,6 +325,7 @@ static int ext4_fc_replay_scan(journal_t *j, struct buffer_head *bh,
- 				ret = JBD2_FC_REPLAY_STOP;
- 			else
- 				ret = JBD2_FC_REPLAY_CONTINUE;
-+			/* fallthrough */
- 		case EXT4_FC_TAG_DEL_RANGE:
- 		case EXT4_FC_TAG_LINK:
- 		case EXT4_FC_TAG_UNLINK:
+@@ -289,7 +289,7 @@ static int ext4_fc_replay_scan(journal_t *j, struct buffer_head *bh,
+ 	struct ext4_fc_tail *tail;
+ 	__u8 *start, *end;
+ 	struct ext4_fc_head *head;
+-	struct ext2fs_extent ext2fs_ex;
++	struct ext2fs_extent ext2fs_ex = {0};
+ 
+ 	state = &ctx->fc_replay_state;
+ 
+diff --git a/lib/ext2fs/extent.c b/lib/ext2fs/extent.c
+index 9e611038..b324c7b0 100644
+--- a/lib/ext2fs/extent.c
++++ b/lib/ext2fs/extent.c
+@@ -1797,7 +1797,7 @@ errcode_t ext2fs_decode_extent(struct ext2fs_extent *to, void *addr, int len)
+ 			<< 32);
+ 	to->e_lblk = ext2fs_le32_to_cpu(from->ee_block);
+ 	to->e_len = ext2fs_le16_to_cpu(from->ee_len);
+-	to->e_flags |= EXT2_EXTENT_FLAGS_LEAF;
++	to->e_flags = EXT2_EXTENT_FLAGS_LEAF;
+ 	if (to->e_len > EXT_INIT_MAX_LEN) {
+ 		to->e_len -= EXT_INIT_MAX_LEN;
+ 		to->e_flags |= EXT2_EXTENT_FLAGS_UNINIT;
 -- 
 2.30.0.617.g56c4b15f3c-goog
 
