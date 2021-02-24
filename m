@@ -2,114 +2,133 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B626F323A27
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 Feb 2021 11:07:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B83F324067
+	for <lists+linux-ext4@lfdr.de>; Wed, 24 Feb 2021 16:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234733AbhBXKGM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 24 Feb 2021 05:06:12 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55612 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234314AbhBXKFv (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 24 Feb 2021 05:05:51 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B31DEAE05;
-        Wed, 24 Feb 2021 10:05:09 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 6EAFE1E14EF; Wed, 24 Feb 2021 11:05:09 +0100 (CET)
-Date:   Wed, 24 Feb 2021 11:05:09 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-Cc:     jack@suse.cz, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+a8b4b0c60155e87e9484@syzkaller.appspotmail.com,
-        tytso@mit.edu
-Subject: Re: [PATCH v2] fs/ext4: fix integer overflow in s_log_groups_per_flex
-Message-ID: <20210224100509.GB20583@quack2.suse.cz>
-References: <20210223170118.GD30433@quack2.suse.cz>
- <20210224095800.3350002-1-snovitoll@gmail.com>
+        id S233821AbhBXPBA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 24 Feb 2021 10:01:00 -0500
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:43540 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237001AbhBXNcn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 24 Feb 2021 08:32:43 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=eguan@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UPT6LS4_1614173506;
+Received: from localhost(mailfrom:eguan@linux.alibaba.com fp:SMTPD_---0UPT6LS4_1614173506)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 24 Feb 2021 21:31:46 +0800
+Date:   Wed, 24 Feb 2021 21:31:46 +0800
+From:   Eryu Guan <eguan@linux.alibaba.com>
+To:     Chengguang Xu <cgxu519@mykernel.net>
+Cc:     Su Yue <l@damenly.su>, guaneryu <guaneryu@gmail.com>,
+        fstests <fstests@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>
+Subject: Re: [PATCH] generic/473: fix expectation properly in out file
+Message-ID: <20210224133146.GE96449@e18g06458.et15sqa>
+References: <20210223134042.2212341-1-cgxu519@mykernel.net>
+ <4ki1rjgu.fsf@damenly.su>
+ <177d33c0982.10b8858b515683.1169986601273192029@mykernel.net>
+ <wnuxq0px.fsf@damenly.su>
+ <177d3666a3c.e47042d016248.8805085013477614929@mykernel.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210224095800.3350002-1-snovitoll@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <177d3666a3c.e47042d016248.8805085013477614929@mykernel.net>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 24-02-21 15:58:00, Sabyrzhan Tasbolatov wrote:
-> syzbot found UBSAN: shift-out-of-bounds in ext4_mb_init [1], when
-> 1 << sbi->s_es->s_log_groups_per_flex is bigger than UINT_MAX,
-> where sbi->s_mb_prefetch is unsigned integer type.
+On Wed, Feb 24, 2021 at 05:37:20PM +0800, Chengguang Xu wrote:
+>  ---- 在 星期三, 2021-02-24 17:22:35 Su Yue <l@damenly.su> 撰写 ----
+>  > 
+>  > On Wed 24 Feb 2021 at 16:51, Chengguang Xu <cgxu519@mykernel.net> 
+>  > wrote:
+>  > 
+>  > >  ---- 在 星期三, 2021-02-24 15:52:17 Su Yue <l@damenly.su> 撰写 
+>  > >  ----
+>  > >  >
+>  > >  > Cc to the author and linux-xfs, since it's xfsprogs related.
+>  > >  >
+>  > >  > On Tue 23 Feb 2021 at 21:40, Chengguang Xu 
+>  > >  > <cgxu519@mykernel.net>
+>  > >  > wrote:
+>  > >  >
+>  > >  > > It seems the expected result of testcase of "Hole + Data"
+>  > >  > > in generic/473 is not correct, so just fix it properly.
+>  > >  > >
+>  > >  >
+>  > >  > But it's not proper...
+>  > >  >
+>  > >  > > Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
+>  > >  > > ---
+>  > >  > >  tests/generic/473.out | 2 +-
+>  > >  > >  1 file changed, 1 insertion(+), 1 deletion(-)
+>  > >  > >
+>  > >  > > diff --git a/tests/generic/473.out b/tests/generic/473.out
+>  > >  > > index 75816388..f1ee5805 100644
+>  > >  > > --- a/tests/generic/473.out
+>  > >  > > +++ b/tests/generic/473.out
+>  > >  > > @@ -6,7 +6,7 @@ Data + Hole
+>  > >  > >  1: [256..287]: hole
+>  > >  > >  Hole + Data
+>  > >  > >  0: [0..127]: hole
+>  > >  > > -1: [128..255]: data
+>  > >  > > +1: [128..135]: data
+>  > >  > >
+>  > >  > The line is produced by `$XFS_IO_PROG -c "fiemap -v 0 65k" 
+>  > >  > $file |
+>  > >  > _filter_fiemap`.
+>  > >  > 0-64k is a hole and 64k-128k is a data extent.
+>  > >  > fiemap ioctl always returns *complete* ranges of extents.
+>  > >
+>  > > Manual testing result in latest kernel like below.
+>  > >
+>  > > [root@centos test]# uname -a
+>  > > Linux centos 5.11.0+ #5 SMP Tue Feb 23 21:02:27 CST 2021 x86_64 
+>  > > x86_64 x86_64 GNU/Linux
+>  > >
+>  > > [root@centos test]# xfs_io -V
+>  > > xfs_io version 5.0.0
+>  > >
+>  > > [root@centos test]# stat a
+>  > >   File: a
+>  > >   Size: 4194304         Blocks: 0          IO Block: 4096 
+>  > >   regular file
+>  > > Device: fc01h/64513d    Inode: 140         Links: 1
+>  > > Access: (0644/-rw-r--r--)  Uid: (    0/    root)   Gid: (    0/ 
+>  > > root)
+>  > > Access: 2021-02-24 16:33:20.235654140 +0800
+>  > > Modify: 2021-02-24 16:33:25.070641521 +0800
+>  > > Change: 2021-02-24 16:33:25.070641521 +0800
+>  > >  Birth: -
+>  > >
+>  > > [root@centos test]# xfs_io -c "pwrite 64k 64k" a
+>  > > wrote 65536/65536 bytes at offset 65536
+>  > > 64 KiB, 16 ops; 0.0000 sec (992.063 MiB/sec and 253968.2540 
+>  > > ops/sec)
+>  > >
+>  > > [root@VM-8-4-centos test]# xfs_io -c "fiemap -v 0 65k" a
+>  > > a:
+>  > >  EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
+>  > >    0: [0..127]:        hole               128
+>  > >    1: [128..135]:      360..367             8   0x1
+>  > >
+>  > 
+>  > Sorry, my carelessness. I only checked btrfs implementation but 
+>  > xfs
+>  > and ext4 do return the change you made.
+>  > 
 > 
-> 32 is the maximum allowed power of s_log_groups_per_flex. Following if
-> check will also trigger UBSAN shift-out-of-bound:
-> 
-> if (1 << sbi->s_es->s_log_groups_per_flex >= UINT_MAX) {
-> 
-> So I'm checking it against the raw number, perhaps there is another way
-> to calculate UINT_MAX max power. Also use min_t as to make sure it's
-> uint type.
-> 
-> [1] UBSAN: shift-out-of-bounds in fs/ext4/mballoc.c:2713:24
-> shift exponent 60 is too large for 32-bit type 'int'
-> Call Trace:
->  __dump_stack lib/dump_stack.c:79 [inline]
->  dump_stack+0x137/0x1be lib/dump_stack.c:120
->  ubsan_epilogue lib/ubsan.c:148 [inline]
->  __ubsan_handle_shift_out_of_bounds+0x432/0x4d0 lib/ubsan.c:395
->  ext4_mb_init_backend fs/ext4/mballoc.c:2713 [inline]
->  ext4_mb_init+0x19bc/0x19f0 fs/ext4/mballoc.c:2898
->  ext4_fill_super+0xc2ec/0xfbe0 fs/ext4/super.c:4983
-> 
-> Reported-by: syzbot+a8b4b0c60155e87e9484@syzkaller.appspotmail.com
-> Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+> Yeah, it seems there is no bad side effect to show  only specified range of extents
+> and keep all the same behavior is also good for testing. I can post a fix patch for
+> this but before that let us to wait some feedback from maintainers and experts.
 
-Looks good. Feel free to add:
+generic/473 is marked as broken by commit 715eac1a9e66 ("generic/47[23]:
+remove from auto/quick groups").
 
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
-> v2: updated > 32 condition to >= 32
-> 
-> > > +		if (sbi->s_es->s_log_groups_per_flex > 32) {
-> > 						    ^^ >= 32?
-> > 
-> > Otherwise the patch looks good.
-> > 
-> 
-> Thanks! Updated to >= 32 condition.
-> ---
->  fs/ext4/mballoc.c | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 99bf091fee10..a02fadf4fc84 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -2709,8 +2709,15 @@ static int ext4_mb_init_backend(struct super_block *sb)
->  	}
->  
->  	if (ext4_has_feature_flex_bg(sb)) {
-> -		/* a single flex group is supposed to be read by a single IO */
-> -		sbi->s_mb_prefetch = min(1 << sbi->s_es->s_log_groups_per_flex,
-> +		/* a single flex group is supposed to be read by a single IO.
-> +		 * 2 ^ s_log_groups_per_flex != UINT_MAX as s_mb_prefetch is
-> +		 * unsigned integer, so the maximum shift is 32.
-> +		 */
-> +		if (sbi->s_es->s_log_groups_per_flex >= 32) {
-> +			ext4_msg(sb, KERN_ERR, "too many log groups per flexible block group");
-> +			goto err_freesgi;
-> +		}
-> +		sbi->s_mb_prefetch = min_t(uint, 1 << sbi->s_es->s_log_groups_per_flex,
->  			BLK_MAX_SEGMENT_SIZE >> (sb->s_blocksize_bits - 9));
->  		sbi->s_mb_prefetch *= 8; /* 8 prefetch IOs in flight at most */
->  	} else {
-> -- 
-> 2.25.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Thanks,
+Eryu
