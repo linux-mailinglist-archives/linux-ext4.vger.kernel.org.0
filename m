@@ -2,107 +2,174 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAFA632351F
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 Feb 2021 02:21:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8A0632398F
+	for <lists+linux-ext4@lfdr.de>; Wed, 24 Feb 2021 10:37:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233867AbhBXBRW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 23 Feb 2021 20:17:22 -0500
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:36415 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234291AbhBXAnU (ORCPT
+        id S234656AbhBXJf4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 24 Feb 2021 04:35:56 -0500
+Received: from sender2-op-o12.zoho.com.cn ([163.53.93.243]:17192 "EHLO
+        sender2-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234349AbhBXJfF (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 23 Feb 2021 19:43:20 -0500
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.west.internal (Postfix) with ESMTP id AD265C8D
-        for <linux-ext4@vger.kernel.org>; Tue, 23 Feb 2021 19:42:02 -0500 (EST)
-Received: from imap8 ([10.202.2.58])
-  by compute2.internal (MEProxy); Tue, 23 Feb 2021 19:42:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        tinfoilwizard.net; h=mime-version:message-id:date:from:to
-        :subject:content-type; s=fm1; bh=OsWDuZesZnGexEiQawNah2K1Quh7bGB
-        EoMsBLdNGY0A=; b=UL9do+/IwDIhVqu+lwlVTtlGo9N1dBCIfzkFtWgRvnyc8nS
-        ZaHCxPKMX3kDdXg6sbKwJQSmbJgJ6Jd/IQeou3Rq6X1RIHiglhgTqGMzhe1YvBya
-        YDcKeTXcm2aBcU8mvz3tzfFa/H0Cu97WzkruyUh42N2FNcHPNVE/6uMam9i0qs+g
-        X+AWlIq62QxfLSlZRCqGm+PYVNw93M6/8/3goLUB+Z4QXMkIy+3YML09nnJWKoKT
-        Aj2K94BQ6sJaZDwDCVtFeKLO5M/neUcen+q/BWRDq8whfthZJnIumSoP6z8759bq
-        pZnVSBR/Wed3aKviNoeQLI7Vs0wRNoZzsLIqs9w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=content-type:date:from:message-id
-        :mime-version:subject:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm2; bh=OsWDuZesZnGexEiQawNah2K1Quh7b
-        GBEoMsBLdNGY0A=; b=gOljNgRqRhFllmd5NVIe4UXhFcjN98dAQRkWBOp0+YIpH
-        YWG8P70NQSlAdjeni0DvRmWr71X24RVaH0w+FFji8OOVyZv+ARRmfoOv4BiCSyiQ
-        Onp9thFlRJ4vm4YVzPs9veYrSI/ZvpL3r4N3XwcSW/kCLgJKhtqFneKxzp5RjtDL
-        7fKNZ+4wVC4VFbgfEW66F3bpkfv6wMXU9eRMubkPv8qa3nmBq3YtgiEJZK/tn9Mz
-        dGDOxSryHraU3ZigPWLNzI71BVBCWvisA3KOU+enArWVxJC3WbfRUMDJKLN3T9Px
-        jA6/u1pisCJhSdQA+xOP/3JvPQ6iaxiFH6cWasRJA==
-X-ME-Sender: <xms:2aA1YF6RJANPItm_gHHcMop6-FNGKmiFf5Hb8QxZNV4xedykraZ37g>
-    <xme:2aA1YC51yv9OXXFqOmjZyIA0XvNN1akS882ykbrSIuWGZGaEyGSOgrfKRa6s-RL1A
-    eGJZupRpvb2B8mmKA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrkeeigddvvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhepofgfggfkfffhvffutgesthdtredtre
-    ertdenucfhrhhomhepfdfuvggrmhhushcuvehonhhnohhrfdcuoehsvggrmhhushesthhi
-    nhhfohhilhifihiirghrugdrnhgvtheqnecuggftrfgrthhtvghrnhepkefgtdevhfejve
-    etleejtdegudeggfehieelkeejteekgefhuedvueehffdutdegnecuvehluhhsthgvrhfu
-    ihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshgvrghmuhhssehtihhnfhhoih
-    hlfihiiigrrhgurdhnvght
-X-ME-Proxy: <xmx:2aA1YMeQQ7BXvkmPkxPWDLJy4SvSt54xdJZtZraKHJC4JE5IvEmAEQ>
-    <xmx:2aA1YOLaLg_8rwYrc7LM5H8cuVmCiJg0et7k2uORcbieFVjwsqb9Dg>
-    <xmx:2aA1YJICNpCieWl3P28F09fIsso1Jz2N-sgAqvxzaO8eFNvJiulnVg>
-    <xmx:2qA1YOWJ5g6AY7o-7gaZEsI95XwyJrRMAYGWZ0IpFVfghcANur-ucw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id C65003A00CA; Tue, 23 Feb 2021 19:42:01 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-141-gf094924a34-fm-20210210.001-gf094924a
-Mime-Version: 1.0
-Message-Id: <dccc26c4-19be-4f07-a593-bec842500d09@www.fastmail.com>
-Date:   Tue, 23 Feb 2021 16:41:20 -0800
-From:   "Seamus Connor" <seamus@tinfoilwizard.net>
-To:     linux-ext4@vger.kernel.org
-Subject: reproducible corruption in journal
-Content-Type: text/plain
+        Wed, 24 Feb 2021 04:35:05 -0500
+X-Greylist: delayed 1056 seconds by postgrey-1.27 at vger.kernel.org; Wed, 24 Feb 2021 04:35:04 EST
+ARC-Seal: i=1; a=rsa-sha256; t=1614158188; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=FxQ9+njD8BI+w4IsRFrbyodzDlxedvroizBe6xmI0aRo8PXPHtHufHTx3MvrbJjapalK5mT1vozqjl1hFs3SNfiAnvLjG2qZSbXSlZ8DNUeVa2Y0LeFoz3zbifrM+cIy+S8MLCXHkun9UTWW/qAslHheoL1aFI8920ZzdyRHmdU=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1614158188; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
+        bh=o0fTyu9G7rUFQ/OGzxoVzPpUOsLKeXJKJVGoEv++MPM=; 
+        b=Xr6QmbCX/yZdKNtTsTVA/QcZVZ6PEM7oXw0VyawctekgxxfLG9Z7bd8Uq7cjin0l4Q+D+hu/+JAXSuek2Bm6kQuI8rpT0+eDLEiMcE2N3vRQ+Q4G0u4IkkrvkCJORSFuXGaoyQY7i1/vbYowLViwjDtReL/AKaGN/WuTnGiHAd8=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=mykernel.net;
+        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
+        dmarc=pass header.from=<cgxu519@mykernel.net> header.from=<cgxu519@mykernel.net>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1614158188;
+        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
+        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=o0fTyu9G7rUFQ/OGzxoVzPpUOsLKeXJKJVGoEv++MPM=;
+        b=a33ekXQ+rFtOCjV0llSSmqK94Te6QLAySW1vxcN2rx5wFMz07X9ZPVVO+mmKOupE
+        V+xc9tOeHXI0k3xf1MLs+bKSpAxY5510o2EQjAflU5A4Eo490oFSMYZf9bSI6C4avv4
+        Ft5VVfeeeGqXa1D+HzT/2BVEnans3qJJN1/dx/LE=
+Received: from mail.baihui.com by mx.zoho.com.cn
+        with SMTP id 1614158186224958.4758690489913; Wed, 24 Feb 2021 17:16:26 +0800 (CST)
+Date:   Wed, 24 Feb 2021 17:16:26 +0800
+From:   Chengguang Xu <cgxu519@mykernel.net>
+Reply-To: cgxu519@mykernel.net
+To:     "Su Yue" <l@damenly.su>
+Cc:     "guaneryu" <guaneryu@gmail.com>,
+        "fstests" <fstests@vger.kernel.org>,
+        "linux-fsdevel" <linux-fsdevel@vger.kernel.org>,
+        "linux-ext4" <linux-ext4@vger.kernel.org>,
+        "linux-xfs" <linux-xfs@vger.kernel.org>,
+        "linux-btrfs" <linux-btrfs@vger.kernel.org>
+Message-ID: <177d35346ec.11233c59d16029.4880134583713959983@mykernel.net>
+In-Reply-To: <177d33c0982.10b8858b515683.1169986601273192029@mykernel.net>
+References: <20210223134042.2212341-1-cgxu519@mykernel.net> <4ki1rjgu.fsf@damenly.su> <177d33c0982.10b8858b515683.1169986601273192029@mykernel.net>
+Subject: Re: [PATCH] generic/473: fix expectation properly in out file
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Importance: Medium
+User-Agent: ZohoCN Mail
+X-Mailer: ZohoCN Mail
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello All,
+ ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E4=B8=89, 2021-02-24 16:51:03 Chengguang=
+ Xu <cgxu519@mykernel.net> =E6=92=B0=E5=86=99 ----
+ >  ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E4=B8=89, 2021-02-24 15:52:17 Su Yue =
+<l@damenly.su> =E6=92=B0=E5=86=99 ----
+ >  >=20
+ >  > Cc to the author and linux-xfs, since it's xfsprogs related.
+ >  >=20
+ >  > On Tue 23 Feb 2021 at 21:40, Chengguang Xu <cgxu519@mykernel.net>=20
+ >  > wrote:
+ >  >=20
+ >  > > It seems the expected result of testcase of "Hole + Data"
+ >  > > in generic/473 is not correct, so just fix it properly.
+ >  > >
+ >  >=20
+ >  > But it's not proper...
+ >  >=20
+ >  > > Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
+ >  > > ---
+ >  > >  tests/generic/473.out | 2 +-
+ >  > >  1 file changed, 1 insertion(+), 1 deletion(-)
+ >  > >
+ >  > > diff --git a/tests/generic/473.out b/tests/generic/473.out
+ >  > > index 75816388..f1ee5805 100644
+ >  > > --- a/tests/generic/473.out
+ >  > > +++ b/tests/generic/473.out
+ >  > > @@ -6,7 +6,7 @@ Data + Hole
+ >  > >  1: [256..287]: hole
+ >  > >  Hole + Data
+ >  > >  0: [0..127]: hole
+ >  > > -1: [128..255]: data
+ >  > > +1: [128..135]: data
+ >  > >
+ >  > The line is produced by `$XFS_IO_PROG -c "fiemap -v 0 65k" $file |=20
+ >  > _filter_fiemap`.
+ >  > 0-64k is a hole and 64k-128k is a data extent.
+ >  > fiemap ioctl always returns *complete* ranges of extents.
 
-I am investigating an issue on our system where a filesystem is becoming corrupt. The underlying block device is provided by us, so we were suspicious that we were screwing something up. However, after gathering a repro of the issue with write logging (a slightly modified version of dm-log-writes), it looks like jbd2 is actually the one running into problems. Up to entry 2979 in our (dm-log-writes) log file, things seem OK:
+Finally, I found btrfs returns *complete* rangne of extents but xfs/ext4 do=
+es not. :-/
 
-    $ replay-log --log write_log --replay base_filesystem.ext4.tmp --limit 2979
-    $ debugfs base_filesystem.ext4.tmp -f <(echo logdump) | tail
-    debugfs 1.44.1 (24-Mar-2018)
-    Found expected sequence 12821, type 1 (descriptor block) at block 1791
-    Found expected sequence 12821, type 2 (commit block) at block 1795
-    Found expected sequence 12822, type 1 (descriptor block) at block 1796
-    Found expected sequence 12822, type 2 (commit block) at block 1802
-    Found expected sequence 12823, type 1 (descriptor block) at block 1803
-    Found expected sequence 12823, type 2 (commit block) at block 1810
-    Found expected sequence 12824, type 1 (descriptor block) at block 1811
-    Found expected sequence 12824, type 2 (commit block) at block 1815
-    Found expected sequence 12825, type 1 (descriptor block) at block 1816
-    No magic number at block 1821: end of journal.
 
-However once we replay the next IO things get a little weirder. 
+[root@VM-89-226-centos /test]# xfs_io -c "fiemap 0 65k" a
+a:
+        0: [0..127]: hole
+        1: [128..255]: 24576..24703
+[root@VM-89-226-centos /test]# xfs_io -c "fiemap 0 128k" a
+a:
+        0: [0..127]: hole
+        1: [128..255]: 24576..24703
 
-    $ ...--limit 2980 ...
-    Found expected sequence 12825, type 2 (commit block) at block 1821
-    Found sequence 12824 (not 12826) at block 1822: end of journal.
 
-And finally after replaying the next IO, it looks like a bunch of old entries in the journal get resurrected:
 
-    $ ...--limit 2981 ...
-    Found expected sequence 15454, type 1 (descriptor block) at block 15352
-    Found expected sequence 15454, type 2 (commit block) at block 15356
-
-If we fsck our filesystem image at IO 2981 or later, we get a bunch of errors. Before that it is clean. IO 2981 touches as single 4k block in inode 8's data blocks. When this corruption was produced, the filesystem is mounted rw,relatime,sync.
-
-This issue is reproduced by our workload, which is a smallish volume of writes every 30 seconds or so. Once the files are written, they are never modified, and are eventually deleted in a rotation style. During a torture test, we disable IO to the underlying block device, and before re-enabling it we fsck the contents of the device. It is here that we detect the corruption. We are detecting a corruption in around 1% of the events here.
-
-Our kernel is based on Ubuntu 16.04's 4.4 series kernel. We have many patches on top of this, but none inside of mm and fs, and none in block that should be relevant. The issue also reproduces on Linux 5.4 + our patch series, though I have not studied any reproductions there.
-
-My next step is to start going though the jbd2 code to figure out how it could be corrupted. Any assistance would be appreciated as I am mostly unfamiliar with this code. Does any one have some pointers at what to look at, or any recollection of similar issues? I can extract more information from the logs if it would help. I am also happy to share the images of the filesystem and the write log if someone wants to look at it.
-
-Thanks,
-Seamus
+ >=20
+ > Manual testing result in latest kernel like below.
+ >=20
+ > [root@centos test]# uname -a
+ > Linux centos 5.11.0+ #5 SMP Tue Feb 23 21:02:27 CST 2021 x86_64 x86_64 x=
+86_64 GNU/Linux
+ >=20
+ > [root@centos test]# xfs_io -V
+ > xfs_io version 5.0.0
+ >=20
+ > [root@centos test]# stat a
+ >   File: a
+ >   Size: 4194304         Blocks: 0          IO Block: 4096   regular file
+ > Device: fc01h/64513d    Inode: 140         Links: 1
+ > Access: (0644/-rw-r--r--)  Uid: (    0/    root)   Gid: (    0/    root)
+ > Access: 2021-02-24 16:33:20.235654140 +0800
+ > Modify: 2021-02-24 16:33:25.070641521 +0800
+ > Change: 2021-02-24 16:33:25.070641521 +0800
+ >  Birth: -
+ > =20
+ > [root@centos test]# xfs_io -c "pwrite 64k 64k" a
+ > wrote 65536/65536 bytes at offset 65536
+ > 64 KiB, 16 ops; 0.0000 sec (992.063 MiB/sec and 253968.2540 ops/sec)
+ >=20
+ > [root@VM-8-4-centos test]# xfs_io -c "fiemap -v 0 65k" a
+ > a:
+ >  EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
+ >    0: [0..127]:        hole               128
+ >    1: [128..135]:      360..367             8   0x1
+ >   =20
+ > [root@centos test]# xfs_io -c "fiemap -v 0 128k" a
+ > a:
+ >  EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
+ >    0: [0..127]:        hole               128
+ >    1: [128..255]:      360..487           128   0x1
+ >=20
+ >=20
+ >  >=20
+ >  > You may ask why the ending hole range is not aligned to 128 in=20
+ >  > 473.out. Because
+ >  > fiemap ioctl returns nothing of querying holes. xfs_io does the=20
+ >  > extra
+ >  > print work for holes.
+ >  >=20
+ >  > xfsprogs-dev/io/fiemap.c:
+ >  > for holes:
+ >  >  153     if (lstart > llast) {
+ >  >  154         print_hole(0, 0, 0, cur_extent, lflag, true, llast,=20
+ >  >  lstart);
+ >  >  155         cur_extent++;
+ >  >  156         num_printed++;
+ >  >  157     }
+ >  >=20
+ >  > for the ending hole:
+ >  >   381     if (cur_extent && last_logical < range_end)
+ >  >   382         print_hole(foff_w, boff_w, tot_w, cur_extent, lflag,=20
+ >  >   !vflag,
+ >  >   383                BTOBBT(last_logical), BTOBBT(range_end));
+ >  >=20
+ >  > >  Hole + Data + Hole
+ >  > >  0: [0..127]: hole
+ >  > >  1: [128..255]: data
+ >  >=20
+ >=20
