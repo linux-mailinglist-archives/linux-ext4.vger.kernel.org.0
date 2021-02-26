@@ -2,59 +2,95 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B46243255AE
-	for <lists+linux-ext4@lfdr.de>; Thu, 25 Feb 2021 19:39:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE061325B37
+	for <lists+linux-ext4@lfdr.de>; Fri, 26 Feb 2021 02:20:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233084AbhBYSi1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 25 Feb 2021 13:38:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34776 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233597AbhBYShc (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 25 Feb 2021 13:37:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 306D664F1C;
-        Thu, 25 Feb 2021 18:36:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614278199;
-        bh=QcRImuC+x+oZnT1THp/q3l/sW/W2q1s6fDey8pgKPWI=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=ghPnkmaXp7tfUZDmjxsGDmCBnn4IwzuFqsRslzOHtHx6xVl5TcyrygAUqovkrBKR6
-         Ph/q/0z0lsHLbWB137/j/794VgKB0ydInvHmoVLiTtz39RA75MwWna2S+KnhKfTDvS
-         jCkKp2vUSux0L4bnRhwiL97CbsB5cZsb9nXTKpgwrlOpBQ48iWtPHcFsnT5xyq7+HJ
-         HossQLVIzLhSWGFP/Izd14qVB9qhECvPs4SjW8sNyeqgnqu90hYkcbsdBwt/2VaksI
-         mprkuxWRlCGsm8xshdmoUCfafMA2YG+PtelVUiHHkJy9KSx8GpUk8jNRig0i630CaQ
-         bN6HAO1PEARMg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 13A5C60A0E;
-        Thu, 25 Feb 2021 18:36:39 +0000 (UTC)
-Subject: Re: [GIT PULL] ext4 changes for v5.12
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YDfJjd0JEhAHoC2n@mit.edu>
-References: <YDfJjd0JEhAHoC2n@mit.edu>
-X-PR-Tracked-List-Id: <linux-ext4.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YDfJjd0JEhAHoC2n@mit.edu>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus
-X-PR-Tracked-Commit-Id: 0a76945fd1ba2ab44da7b578b311efdfedf92e6c
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 6f9972bbfef57019519e1685254e876913a70463
-Message-Id: <161427819902.26451.17075634460070639012.pr-tracker-bot@kernel.org>
-Date:   Thu, 25 Feb 2021 18:36:39 +0000
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+        id S230029AbhBZBTw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 25 Feb 2021 20:19:52 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12208 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229707AbhBZBTs (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 25 Feb 2021 20:19:48 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DmsFR5r6LzlPM1;
+        Fri, 26 Feb 2021 09:16:59 +0800 (CST)
+Received: from [127.0.0.1] (10.174.176.117) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.498.0; Fri, 26 Feb 2021
+ 09:18:54 +0800
+Subject: Re: [PATCH] debugfs: fix memory leak problem in read_list()
+To:     Theodore Ts'o <tytso@mit.edu>,
+        harshad shirwadkar <harshadshirwadkar@gmail.com>
+CC:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linfeilong <linfeilong@huawei.com>,
+        lihaotian <lihaotian9@huawei.com>,
+        "lijinlin (A)" <lijinlin3@huawei.com>
+References: <c6fb0951-a472-dbb4-1970-fe9cece5d182@huawei.com>
+ <CAD+ocbwkQ4rMYhiOm4msnBH65vh6Pm25ZkPsC2pD0sFy68bPgA@mail.gmail.com>
+ <YDfYC+xUal5EdibL@mit.edu>
+From:   Zhiqiang Liu <liuzhiqiang26@huawei.com>
+Message-ID: <7a877f93-2500-b2f4-cf8e-971503ba54c6@huawei.com>
+Date:   Fri, 26 Feb 2021 09:18:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
+MIME-Version: 1.0
+In-Reply-To: <YDfYC+xUal5EdibL@mit.edu>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.117]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The pull request you sent on Thu, 25 Feb 2021 11:00:13 -0500:
+Thank you and harshad shirwadkar.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus
+On 2021/2/26 1:02, Theodore Ts'o wrote:
+> On Thu, Feb 25, 2021 at 07:51:09AM -0800, harshad shirwadkar wrote:
+>> On Sat, Feb 20, 2021 at 12:41 AM Zhiqiang Liu <liuzhiqiang26@huawei.com> wrote:
+>>>
+>>>
+>>> In read_list func, if strtoull() fails in while loop,
+>>> we will return the error code directly. Then, memory of
+>>> variable lst will be leaked without setting to *list.
+>>>
+>>> Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+>>> Signed-off-by: linfeilong <linfeilong@huawei.com>
+>>> ---
+>>>  debugfs/util.c | 12 ++++++++----
+>>>  1 file changed, 8 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/debugfs/util.c b/debugfs/util.c
+>>> index be6b550e..9e880548 100644
+>>> --- a/debugfs/util.c
+>>> +++ b/debugfs/util.c
+>>> @@ -530,12 +530,16 @@ errcode_t read_list(char *str, blk64_t **list, size_t *len)
+>>>
+>>>                 errno = 0;
+>>>                 y = x = strtoull(tok, &e, 0);
+>>> -               if (errno)
+>>> -                       return errno;
+>>> +               if (errno) {
+>>> +                       retval = errno;
+>>> +                       break;
+>>> +               }
+>> Shouldn't we have `goto err;` here instead of break? strtoull failure
+>> here indicates that no valid value was found, so instead of returning
+>> the allocated memory, we should just free the memory and return error.
+> 
+> As of commit 462c424500a5 ("debugfs: fix memory allocation failures
+> when parsing journal_write arguments") there is no longer the err:
+> goto target.  The goal is to move to a model where the caller is
+> exclusively responsible for freeing any allocated memory, since if
+> realloc() has gotten into the act, the memory pointed to in *list
+> would have been freed by realloc().  The fix is to make sure *list is
+> updated before we return.  This also allows the caller to have access
+> to the list of numbers parsed before we ran into an error.
+> 
+> So the Zhiqiang's patch is correc, and I will apply it.
+> 
+>        		  	   	       	 - Ted
+> 
+> .
+> 
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/6f9972bbfef57019519e1685254e876913a70463
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
