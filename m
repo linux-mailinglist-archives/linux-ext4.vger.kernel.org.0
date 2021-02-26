@@ -2,221 +2,140 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E450326786
-	for <lists+linux-ext4@lfdr.de>; Fri, 26 Feb 2021 20:39:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F56D3269A7
+	for <lists+linux-ext4@lfdr.de>; Fri, 26 Feb 2021 22:40:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230163AbhBZThx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 26 Feb 2021 14:37:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230220AbhBZThr (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 26 Feb 2021 14:37:47 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAD10C06178A
-        for <linux-ext4@vger.kernel.org>; Fri, 26 Feb 2021 11:36:30 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id w18so6931978pfu.9
-        for <linux-ext4@vger.kernel.org>; Fri, 26 Feb 2021 11:36:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=49EDlZVVSxTK87jM2E5PpJbXAaD48xgczLduYkRGSyQ=;
-        b=ddVTnTz7aP/3eS/Q+ykUHZDHGfoJBi1LTmwd8ddYhGHSFd7ZIcaZC2qMcPk2pWn66Y
-         rAfwgMyvcaGyVY0MMSQcDNuWL100T0/aTDegZyTRjCSWpYhnrKFt8KpJp71wulvetIJu
-         irl0nVEZ23ZKetAEmia0xCcfW9Bvxxv9wJy6NLPSGP4L3ikgU/ERkqO0tRX1lKwl0mxH
-         Wn9fvpeQpMe5xC6565P+d5xxRiINBy1eFciio3VQMt3RNR0x/9hqrfNe/uH7PMhVHXiO
-         PymTHd5CxZYzoVoUKLyf3jDxm+afw+Y3toObODzTJToIxOYr0MnnzZrIGbJInUBqlJuZ
-         xxIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=49EDlZVVSxTK87jM2E5PpJbXAaD48xgczLduYkRGSyQ=;
-        b=kHK9iv6wF/P69RmyWK2JCiuwFmaeIBO3ghz8A5Jit0Dy9hUQtwn3Geo/6DKY1UMptI
-         PE6ka10BPM/iecHmiHh1w8RxXV61Qn7qWrI53ohV+Lzf1BA2rThS7j/Ty9CC2A26X3hi
-         lZdFCwsxv4oTXL+8vFN+lqmdoyORldgFVqL5swoM0noUG4G4ft/BPXJxk+l4gbFjekUY
-         dgvzxNhxAXMAC9CVrM6/HIXFNyLHTmNT6En/s2jHdk7YKQACbsH6n3Pz9X/FZpPoON4F
-         DMwQm9C5cPKzprHcEMrLRZon6VoUVgZ/0fRi8DDov6foY+WrQK4Yp40rvNz9qVpyhozD
-         mkMA==
-X-Gm-Message-State: AOAM531QHrFu7bu8I4duJqdOKmVdEdTcUm2QgSVeONFHkX3RncFhbXzi
-        oxFghralVQV3r6lsR2LIFZqQ5ItD3To=
-X-Google-Smtp-Source: ABdhPJzQnYY03o6oDGxExeZvhfsI51EjS+AWPh6DitMf8nWW0ori+UQlu6KN3t2I72EXKzEV5aPQBg==
-X-Received: by 2002:a63:4b21:: with SMTP id y33mr4221058pga.73.1614368189578;
-        Fri, 26 Feb 2021 11:36:29 -0800 (PST)
-Received: from harshads-520.kir.corp.google.com ([2620:15c:17:10:e88c:d103:27dc:612d])
-        by smtp.googlemail.com with ESMTPSA id x129sm2935041pfc.96.2021.02.26.11.36.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 11:36:29 -0800 (PST)
-From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+        id S229915AbhBZVkY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 26 Feb 2021 16:40:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40792 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229823AbhBZVkX (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 26 Feb 2021 16:40:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 05AEE64F1F
+        for <linux-ext4@vger.kernel.org>; Fri, 26 Feb 2021 21:39:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614375583;
+        bh=aG63oRs3zvrtdg6+2XziDXXkNo+QXbKvSnsC37cziWE=;
+        h=From:To:Subject:Date:From;
+        b=Ey4yDaMBJm0SUTcJ57GCgn7hqZkbXe5k3q7l+cCG0oITA5ckYhUchNHEkhcsHfv3V
+         vbwtMvHqWnC9xdamargnoz3wVNvFSuiMLIsbE8+oDVtPae45MqG+1i0eQNsiV96jD/
+         gyISy7oh/f+HLQ3B7u8pmQp75cUyxiDqxBHJASY8veqmqbnlKtOZzmDqnhZWzKkRUt
+         nXtpyUw5NJVRbnedppB1Ek7Rbpp3LHe2IqF3Ne5qNm/OijaiEOJRPcVsrfqhr6GFv3
+         NZCRRJSgmQKnUjWuHLZ8qXQL1WknwgvSByol3ScDzF1XqNNuDmZsag3Le3DZIC6f0V
+         OHkY9UlCqqfLg==
+Received: by pdx-korg-bugzilla-2.web.codeaurora.org (Postfix, from userid 48)
+        id E2CFC61479; Fri, 26 Feb 2021 21:39:42 +0000 (UTC)
+From:   bugzilla-daemon@bugzilla.kernel.org
 To:     linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu, adilger@dilger.ca,
-        Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Subject: [PATCH v3 5/5] ext4: add proc files to monitor new structures
-Date:   Fri, 26 Feb 2021 11:36:12 -0800
-Message-Id: <20210226193612.1199321-6-harshadshirwadkar@gmail.com>
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-In-Reply-To: <20210226193612.1199321-1-harshadshirwadkar@gmail.com>
-References: <20210226193612.1199321-1-harshadshirwadkar@gmail.com>
+Subject: [Bug 211971] New: Incorrect fix by e2fsck for blocks_count
+ corruption
+Date:   Fri, 26 Feb 2021 21:39:42 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: new
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: tmahmud@iastate.edu
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: bug_id short_desc product version
+ cf_kernel_version rep_platform op_sys cf_tree bug_status bug_severity
+ priority component assigned_to reporter cf_regression attachments.created
+Message-ID: <bug-211971-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This patch adds a new file "mb_structs_summary" which allows us to see
-the summary of the new allocator structures added in this
-series. Here's the sample output of file:
+https://bugzilla.kernel.org/show_bug.cgi?id=3D211971
 
-optimize_scan: 1
-max_free_order_lists:
-        list_order_0_groups: 0
-        list_order_1_groups: 0
-        list_order_2_groups: 0
-        list_order_3_groups: 0
-        list_order_4_groups: 0
-        list_order_5_groups: 0
-        list_order_6_groups: 0
-        list_order_7_groups: 0
-        list_order_8_groups: 0
-        list_order_9_groups: 0
-        list_order_10_groups: 0
-        list_order_11_groups: 0
-        list_order_12_groups: 0
-        list_order_13_groups: 40
-fragment_size_tree:
-        tree_min: 16384
-        tree_max: 32768
-        tree_nodes: 40
+            Bug ID: 211971
+           Summary: Incorrect fix by e2fsck for blocks_count corruption
+           Product: File System
+           Version: 2.5
+    Kernel Version: Linux 5.4.0-65-generic
+          Hardware: x86-64
+                OS: Linux
+              Tree: Mainline
+            Status: NEW
+          Severity: normal
+          Priority: P1
+         Component: ext4
+          Assignee: fs_ext4@kernel-bugs.osdl.org
+          Reporter: tmahmud@iastate.edu
+        Regression: No
 
-Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
----
- fs/ext4/ext4.h    |  1 +
- fs/ext4/mballoc.c | 86 +++++++++++++++++++++++++++++++++++++++++++++++
- fs/ext4/sysfs.c   |  2 ++
- 3 files changed, 89 insertions(+)
+Created attachment 295497
+  --> https://bugzilla.kernel.org/attachment.cgi?id=3D295497&action=3Dedit
+log files from mke2fs, dumpe2fs and e2fsck
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index d792418c39ca..81209a749e75 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -2818,6 +2818,7 @@ int __init ext4_fc_init_dentry_cache(void);
- 
- /* mballoc.c */
- extern const struct seq_operations ext4_mb_seq_groups_ops;
-+extern const struct seq_operations ext4_mb_seq_structs_summary_ops;
- extern long ext4_mb_stats;
- extern long ext4_mb_max_to_scan;
- extern int ext4_seq_mb_stats_show(struct seq_file *seq, void *offset);
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index bcfd849bc61e..4378b36be8b9 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -2910,6 +2910,92 @@ int ext4_seq_mb_stats_show(struct seq_file *seq, void *offset)
- 	return 0;
- }
- 
-+static void *ext4_mb_seq_structs_summary_start(struct seq_file *seq, loff_t *pos)
-+{
-+	struct super_block *sb = PDE_DATA(file_inode(seq->file));
-+	unsigned long position;
-+
-+	read_lock(&EXT4_SB(sb)->s_mb_rb_lock);
-+
-+	if (*pos < 0 || *pos >= MB_NUM_ORDERS(sb) + 1)
-+		return NULL;
-+	position = *pos + 1;
-+	return (void *) ((unsigned long) position);
-+}
-+
-+static void *ext4_mb_seq_structs_summary_next(struct seq_file *seq, void *v, loff_t *pos)
-+{
-+	struct super_block *sb = PDE_DATA(file_inode(seq->file));
-+	unsigned long position;
-+
-+	++*pos;
-+	if (*pos < 0 || *pos >= MB_NUM_ORDERS(sb) + 1)
-+		return NULL;
-+	position = *pos + 1;
-+	return (void *) ((unsigned long) position);
-+}
-+
-+static int ext4_mb_seq_structs_summary_show(struct seq_file *seq, void *v)
-+{
-+	struct super_block *sb = PDE_DATA(file_inode(seq->file));
-+	struct ext4_sb_info *sbi = EXT4_SB(sb);
-+	unsigned long position = ((unsigned long) v);
-+	struct ext4_group_info *grp;
-+	struct rb_node *n;
-+	unsigned int count, min, max;
-+
-+	position--;
-+	if (position >= MB_NUM_ORDERS(sb)) {
-+		seq_puts(seq, "fragment_size_tree:\n");
-+		n = rb_first(&sbi->s_mb_avg_fragment_size_root);
-+		if (!n) {
-+			seq_puts(seq, "\ttree_min: 0\n\ttree_max: 0\n\ttree_nodes: 0\n");
-+			return 0;
-+		}
-+		grp = rb_entry(n, struct ext4_group_info, bb_avg_fragment_size_rb);
-+		min = grp->bb_fragments ? grp->bb_free / grp->bb_fragments : 0;
-+		count = 1;
-+		while (rb_next(n)) {
-+			count++;
-+			n = rb_next(n);
-+		}
-+		grp = rb_entry(n, struct ext4_group_info, bb_avg_fragment_size_rb);
-+		max = grp->bb_fragments ? grp->bb_free / grp->bb_fragments : 0;
-+
-+		seq_printf(seq, "\ttree_min: %u\n\ttree_max: %u\n\ttree_nodes: %u\n",
-+			   min, max, count);
-+		return 0;
-+	}
-+
-+	if (position == 0) {
-+		seq_printf(seq, "optimize_scan: %d\n",
-+			   test_opt2(sb, MB_OPTIMIZE_SCAN) ? 1 : 0);
-+		seq_puts(seq, "max_free_order_lists:\n");
-+	}
-+	count = 0;
-+	list_for_each_entry(grp, &sbi->s_mb_largest_free_orders[position],
-+			    bb_largest_free_order_node)
-+		count++;
-+	seq_printf(seq, "\tlist_order_%u_groups: %u\n",
-+		   (unsigned int)position, count);
-+
-+	return 0;
-+}
-+
-+static void ext4_mb_seq_structs_summary_stop(struct seq_file *seq, void *v)
-+{
-+	struct super_block *sb = PDE_DATA(file_inode(seq->file));
-+
-+	read_unlock(&EXT4_SB(sb)->s_mb_rb_lock);
-+}
-+
-+const struct seq_operations ext4_mb_seq_structs_summary_ops = {
-+	.start  = ext4_mb_seq_structs_summary_start,
-+	.next   = ext4_mb_seq_structs_summary_next,
-+	.stop   = ext4_mb_seq_structs_summary_stop,
-+	.show   = ext4_mb_seq_structs_summary_show,
-+};
-+
- static struct kmem_cache *get_groupinfo_cache(int blocksize_bits)
- {
- 	int cache_index = blocksize_bits - EXT4_MIN_BLOCK_LOG_SIZE;
-diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
-index 16b8a838f631..4a3b78684f83 100644
---- a/fs/ext4/sysfs.c
-+++ b/fs/ext4/sysfs.c
-@@ -525,6 +525,8 @@ int ext4_register_sysfs(struct super_block *sb)
- 				&ext4_mb_seq_groups_ops, sb);
- 		proc_create_single_data("mb_stats", 0444, sbi->s_proc,
- 				ext4_seq_mb_stats_show, sb);
-+		proc_create_seq_data("mb_structs_summary", 0444, sbi->s_proc,
-+				&ext4_mb_seq_structs_summary_ops, sb);
- 	}
- 	return 0;
- }
--- 
-2.30.1.766.gb4fecdf3b7-goog
+For an ext4 file system image with only one superblock, if the blocks_count
+field in superblock is corrupted, e2fsck fixed it incorrectly. In the fixed
+image, the corrupted blocks_count is unchanged and other fields (e.g., free
+blocks count) are changed accordingly.
+This issue also occurs in images with multiple superblocks too. For example,
+For an ext4 image with primary and backup superblock (backup superblocks are
+not located in default locations, e.g., it is located on 513rd block), if t=
+he
+blocks_count field in superblock is corrupted, e2fsck fixed it incorrectly.=
+ In
+the fixed image, the corrupted blocks_count is unchanged and other fields
+(e.g., free blocks count) are changed accordingly.
 
+e2fsprogs_version_used: e2fsprogs 1.45.6 (20-Mar-2020)=20
+The commands that I ran to recreate the scenario are:
+For image with only one superblock:
+
+dd if=3D/dev/zero bs=3D1024 count=3D8193 of=3D/home/hdd/image
+mke2fs -b 1024 image 8193
+debugfs -w image
+debugfs:  ssv blocks_count 4000
+debugfs:  q
+e2fsck -yf image
+e2fsck -yf image
+
+# e2fsck fixes the blocks_count corruption in correctly
+# In the clean image the blocks_count was 8193, in the fixed image the
+blocks_count is 4000
+#The second run of e2fsck is consistent with the first run, it doesn't fix
+anything, but blocks_count is still 4000
+# Expected that e2fsck would fix the blocks count corruption instead of
+changing other fields (e.g.,free blocks_count)
+
+For image with multiple superblocks:
+dd if=3D/dev/zero bs=3D1024 count=3D8193 of=3D/home/hdd/image1
+mke2fs -b 1024 -g 512 image1 8193
+debugfs -w image1
+debugfs:  ssv blocks_count 4000
+debugfs:  q
+e2fsck -yf image1
+e2fsck -yf image1=20=20
+
+# e2fsck fixes the blocks_count corruption in correctly
+# In the clean image the blocks_count was 8193, in the fixed image the
+blocks_count is 4000
+# The second run of e2fsck is consistent with the first run, it doesn't fix
+anything, but blocks_count is still 4000
+#There were 16 block groups in the clean image, but there are only 7 block
+groups in the fixed image
+# Expected that e2fsck would fix the blocks count corruption instead of
+changing other fields (e.g.,free blocks_count) and removing the block group=
+s.=20=20
+
+I attached the images and also the logs from mke2fs, dumpe2fs and e2fsck.
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
