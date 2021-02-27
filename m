@@ -2,305 +2,145 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC7EB326A5A
-	for <lists+linux-ext4@lfdr.de>; Sat, 27 Feb 2021 00:18:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ED9B326AE8
+	for <lists+linux-ext4@lfdr.de>; Sat, 27 Feb 2021 01:59:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229823AbhBZXSg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 26 Feb 2021 18:18:36 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:41971 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229618AbhBZXSg (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 26 Feb 2021 18:18:36 -0500
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 11QNHiKa032342
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 26 Feb 2021 18:17:45 -0500
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 6CCE215C39D2; Fri, 26 Feb 2021 18:17:44 -0500 (EST)
-Date:   Fri, 26 Feb 2021 18:17:44 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Artem Blagodarenko <artem.blagodarenko@gmail.com>
-Cc:     linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca,
-        Alexey Lyashkov <alexey.lyashkov@hpe.com>
-Subject: Re: [PATCH] libfs: Fix DIO mode aligment
-Message-ID: <YDmBmE159JOG8gRk@mit.edu>
-References: <20201023112659.1559-1-artem.blagodarenko@gmail.com>
+        id S230083AbhB0A7P (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 26 Feb 2021 19:59:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229863AbhB0A7P (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 26 Feb 2021 19:59:15 -0500
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55D8BC061574
+        for <linux-ext4@vger.kernel.org>; Fri, 26 Feb 2021 16:58:34 -0800 (PST)
+Received: by mail-ot1-x32e.google.com with SMTP id h22so10856542otr.6
+        for <linux-ext4@vger.kernel.org>; Fri, 26 Feb 2021 16:58:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fwOwOGqL/8hoQKZDtN6VWqaAjhvECRNAYLPZMtIaHK4=;
+        b=fUnDtnW5mbYS4fp0xIyCrqDGDo1XM8BybKy9aKdQ7O6DBzweCPlm8bdr5E7HO1+ehd
+         +an398yG2qZs4FVXV1Jb6nljN2mmWHpfwrlj0LStwOX6GIPTEmYxM//NhBXWJcc8H3az
+         6Q/0yxDuEY51bTMTWdyklNaUWWttCKYu9jwWKMXJVf4UT33blcsAO6Kl3GufiKV1lk/D
+         s3rAiEJDQNL1mAxlpjuqWmteBNuxMrZE89B9irvJf0OkgpoSeUKa3PhRGCs34np9Vayu
+         gd7uygw2R1DKJXCKBSMgU/wdbqnUINuJd8XcrqHhxHORRA0tsOexLkm18IbIWlBWgYdJ
+         y5WA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fwOwOGqL/8hoQKZDtN6VWqaAjhvECRNAYLPZMtIaHK4=;
+        b=dylxlkKUC/r6NrNhSOj6xaOLVg9veAgVGdGLcKn92KLcCkfp1rBdxPu/92AzdjVkxL
+         TiA87B21m81DzzJDtHdc9EhYuMMr5XPWRHTybnaKYNRjZtjxfZbxPp89jMVgadd0DERz
+         l1hSYBNvDEN4UIF/EihglmCcWiMU4PNOivfnIA/pjU8p20p+qWbnAub/un57QpvzLtPS
+         vFP+TjbfnxNmODZjmUqOBM3STtpegIyVVeIMwDhRTQkHaQrb1B2KUZvUHL6H/qRkeWPX
+         N6rmCJnT9LGFkPUCvpuXSRt7xwktEv8pOzH6ZDtoAP45ZR4YCzLz1StDSnhG7S/LeEH6
+         xzrA==
+X-Gm-Message-State: AOAM531SyI/q6NPt6k+heqXh3Q8DbyJSo2HVEEkt1vSR59SzJBv1S6uA
+        PydadUoC9zNXMENLM0WQeioY9CWDmMAxMZ9T/Ms=
+X-Google-Smtp-Source: ABdhPJwgm6HyACx13YKnCrJCX4YoOV3zK5rqcqfna9ir9BqeJg6Yf5+evrHDUEhlCtqdirVKFwuriMLg+s2M+9Xmrhw=
+X-Received: by 2002:a05:6830:1688:: with SMTP id k8mr4690122otr.45.1614387513714;
+ Fri, 26 Feb 2021 16:58:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201023112659.1559-1-artem.blagodarenko@gmail.com>
+References: <bug-211971-13602@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-211971-13602@https.bugzilla.kernel.org/>
+From:   Amy Parker <enbyamy@gmail.com>
+Date:   Fri, 26 Feb 2021 16:58:23 -0800
+Message-ID: <CAE1WUT6NueggML9Kf+JxB-dX=fyKrOhDszAnbt7UvFhQqwm3Gg@mail.gmail.com>
+Subject: Re: [Bug 211971] New: Incorrect fix by e2fsck for blocks_count corruption
+To:     bugzilla-daemon@bugzilla.kernel.org
+Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-I've rewritten the patch because it was simplest way to review the
-code.  The resulting code is simpler and has a smaller number of lines
-of code.  I don't have any 4k advanced format disks handy, so I'd
-appreciate it if someone can test it.  It passes the existing
-regression tests, and I've run a number of manual tests to simulate a
-advanced format HDD, with the tests being run with clang and UBSAN and
-ADDRSAN enabled.
+Can you replicate this on modern 5.4 from kernel.org? -generic kernels
+are from Canonical and are sometimes broken compared to upstream. If
+you can't replicate this on mainline, you'll need to contact
+Canonical. We can't do anything if the problem only persists on
+distribution kernels.
 
-If someone with access to an advanced format disk can test running
-debugfs -D on an advanced format disk, that would be great, thanks.
-
-	      	 	  	       - Ted
-
-commit c001596110e834a85b01a47a20811b318cb3b9e4
-Author: Theodore Ts'o <tytso@mit.edu>
-Date:   Fri Feb 26 17:41:06 2021 -0500
-
-    libext2fs: fix unix_io's Direct I/O support
-    
-    The previous Direct I/O support worked on HDD's with 512 byte logical
-    sector sizes, and on FreeBSD which required 4k aligned memory buffers.
-    However, it was incomplete and was not correctly working on HDD's with
-    4k logical sector sizes (aka Advanced Format Disks).
-    
-    Based on a patch from Alexey Lyashkov <alexey.lyashkov@hpe.com> but
-    rewritten to work with the latest e2fsprogs and to minimize changes to
-    make it easier to review.
-    
-    Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-    Reported-by: Artem Blagodarenko <artem.blagodarenko@gmail.com>
-
-diff --git a/lib/ext2fs/io_manager.c b/lib/ext2fs/io_manager.c
-index c395d615..996c31a1 100644
---- a/lib/ext2fs/io_manager.c
-+++ b/lib/ext2fs/io_manager.c
-@@ -134,9 +134,11 @@ errcode_t io_channel_alloc_buf(io_channel io, int count, void *ptr)
- 	else
- 		size = -count;
- 
--	if (io->align)
-+	if (io->align) {
-+		if (io->align > size)
-+			size = io->align;
- 		return ext2fs_get_memalign(size, io->align, ptr);
--	else
-+	} else
- 		return ext2fs_get_mem(size, ptr);
- }
- 
-diff --git a/lib/ext2fs/unix_io.c b/lib/ext2fs/unix_io.c
-index 73f5667e..8965535c 100644
---- a/lib/ext2fs/unix_io.c
-+++ b/lib/ext2fs/unix_io.c
-@@ -218,6 +218,8 @@ static errcode_t raw_read_blk(io_channel channel,
- 	int		actual = 0;
- 	unsigned char	*buf = bufv;
- 	ssize_t		really_read = 0;
-+	unsigned long long aligned_blk;
-+	int		align_size, offset;
- 
- 	size = (count < 0) ? -count : (ext2_loff_t) count * channel->block_size;
- 	mutex_lock(data, STATS_MTX);
-@@ -226,7 +228,7 @@ static errcode_t raw_read_blk(io_channel channel,
- 	location = ((ext2_loff_t) block * channel->block_size) + data->offset;
- 
- 	if (data->flags & IO_FLAG_FORCE_BOUNCE) {
--		if (ext2fs_llseek(data->dev, location, SEEK_SET) != location) {
-+		if (ext2fs_llseek(data->dev, location, SEEK_SET) < 0) {
- 			retval = errno ? errno : EXT2_ET_LLSEEK_FAILED;
- 			goto error_out;
- 		}
-@@ -237,6 +239,7 @@ static errcode_t raw_read_blk(io_channel channel,
- 	/* Try an aligned pread */
- 	if ((channel->align == 0) ||
- 	    (IS_ALIGNED(buf, channel->align) &&
-+	     IS_ALIGNED(location, channel->align) &&
- 	     IS_ALIGNED(size, channel->align))) {
- 		actual = pread64(data->dev, buf, size, location);
- 		if (actual == size)
-@@ -248,6 +251,7 @@ static errcode_t raw_read_blk(io_channel channel,
- 	if ((sizeof(off_t) >= sizeof(ext2_loff_t)) &&
- 	    ((channel->align == 0) ||
- 	     (IS_ALIGNED(buf, channel->align) &&
-+	      IS_ALIGNED(location, channel->align) &&
- 	      IS_ALIGNED(size, channel->align)))) {
- 		actual = pread(data->dev, buf, size, location);
- 		if (actual == size)
-@@ -256,12 +260,13 @@ static errcode_t raw_read_blk(io_channel channel,
- 	}
- #endif /* HAVE_PREAD */
- 
--	if (ext2fs_llseek(data->dev, location, SEEK_SET) != location) {
-+	if (ext2fs_llseek(data->dev, location, SEEK_SET) < 0) {
- 		retval = errno ? errno : EXT2_ET_LLSEEK_FAILED;
- 		goto error_out;
- 	}
- 	if ((channel->align == 0) ||
- 	    (IS_ALIGNED(buf, channel->align) &&
-+	     IS_ALIGNED(location, channel->align) &&
- 	     IS_ALIGNED(size, channel->align))) {
- 		actual = read(data->dev, buf, size);
- 		if (actual != size) {
-@@ -286,23 +291,39 @@ static errcode_t raw_read_blk(io_channel channel,
- 	 * to the O_DIRECT rules, so we need to do this the hard way...
- 	 */
- bounce_read:
-+	if ((channel->block_size > channel->align) &&
-+	    (channel->block_size % channel->align) == 0)
-+		align_size = channel->block_size;
-+	else
-+		align_size = channel->align;
-+	aligned_blk = location / align_size;
-+	offset = location % align_size;
-+
-+	if (ext2fs_llseek(data->dev, aligned_blk * align_size, SEEK_SET) < 0) {
-+		retval = errno ? errno : EXT2_ET_LLSEEK_FAILED;
-+		goto error_out;
-+	}
- 	while (size > 0) {
- 		mutex_lock(data, BOUNCE_MTX);
--		actual = read(data->dev, data->bounce, channel->block_size);
--		if (actual != channel->block_size) {
-+		actual = read(data->dev, data->bounce, align_size);
-+		if (actual != align_size) {
- 			mutex_unlock(data, BOUNCE_MTX);
- 			actual = really_read;
- 			buf -= really_read;
- 			size += really_read;
- 			goto short_read;
- 		}
--		actual = size;
--		if (size > channel->block_size)
--			actual = channel->block_size;
--		memcpy(buf, data->bounce, actual);
-+		if ((actual + offset) > align_size)
-+			actual = align_size - offset;
-+		if (actual > size)
-+			actual = size;
-+		memcpy(buf, data->bounce + offset, actual);
-+
- 		really_read += actual;
- 		size -= actual;
- 		buf += actual;
-+		offset = 0;
-+		aligned_blk++;
- 		mutex_unlock(data, BOUNCE_MTX);
- 	}
- 	return 0;
-@@ -326,6 +347,8 @@ static errcode_t raw_write_blk(io_channel channel,
- 	int		actual = 0;
- 	errcode_t	retval;
- 	const unsigned char *buf = bufv;
-+	unsigned long long aligned_blk;
-+	int		align_size, offset;
- 
- 	if (count == 1)
- 		size = channel->block_size;
-@@ -342,7 +365,7 @@ static errcode_t raw_write_blk(io_channel channel,
- 	location = ((ext2_loff_t) block * channel->block_size) + data->offset;
- 
- 	if (data->flags & IO_FLAG_FORCE_BOUNCE) {
--		if (ext2fs_llseek(data->dev, location, SEEK_SET) != location) {
-+		if (ext2fs_llseek(data->dev, location, SEEK_SET) < 0) {
- 			retval = errno ? errno : EXT2_ET_LLSEEK_FAILED;
- 			goto error_out;
- 		}
-@@ -353,6 +376,7 @@ static errcode_t raw_write_blk(io_channel channel,
- 	/* Try an aligned pwrite */
- 	if ((channel->align == 0) ||
- 	    (IS_ALIGNED(buf, channel->align) &&
-+	     IS_ALIGNED(location, channel->align) &&
- 	     IS_ALIGNED(size, channel->align))) {
- 		actual = pwrite64(data->dev, buf, size, location);
- 		if (actual == size)
-@@ -363,6 +387,7 @@ static errcode_t raw_write_blk(io_channel channel,
- 	if ((sizeof(off_t) >= sizeof(ext2_loff_t)) &&
- 	    ((channel->align == 0) ||
- 	     (IS_ALIGNED(buf, channel->align) &&
-+	      IS_ALIGNED(location, channel->align) &&
- 	      IS_ALIGNED(size, channel->align)))) {
- 		actual = pwrite(data->dev, buf, size, location);
- 		if (actual == size)
-@@ -370,13 +395,14 @@ static errcode_t raw_write_blk(io_channel channel,
- 	}
- #endif /* HAVE_PWRITE */
- 
--	if (ext2fs_llseek(data->dev, location, SEEK_SET) != location) {
-+	if (ext2fs_llseek(data->dev, location, SEEK_SET) < 0) {
- 		retval = errno ? errno : EXT2_ET_LLSEEK_FAILED;
- 		goto error_out;
- 	}
- 
- 	if ((channel->align == 0) ||
- 	    (IS_ALIGNED(buf, channel->align) &&
-+	     IS_ALIGNED(location, channel->align) &&
- 	     IS_ALIGNED(size, channel->align))) {
- 		actual = write(data->dev, buf, size);
- 		if (actual < 0) {
-@@ -400,40 +426,59 @@ static errcode_t raw_write_blk(io_channel channel,
- 	 * to the O_DIRECT rules, so we need to do this the hard way...
- 	 */
- bounce_write:
-+	if ((channel->block_size > channel->align) &&
-+	    (channel->block_size % channel->align) == 0)
-+		align_size = channel->block_size;
-+	else
-+		align_size = channel->align;
-+	aligned_blk = location / align_size;
-+	offset = location % align_size;
-+
- 	while (size > 0) {
-+		int actual_w;
-+
- 		mutex_lock(data, BOUNCE_MTX);
--		if (size < channel->block_size) {
-+		if (size < align_size || offset) {
-+			if (ext2fs_llseek(data->dev, aligned_blk * align_size,
-+					  SEEK_SET) < 0) {
-+				retval = errno ? errno : EXT2_ET_LLSEEK_FAILED;
-+				goto error_out;
-+			}
- 			actual = read(data->dev, data->bounce,
--				      channel->block_size);
--			if (actual != channel->block_size) {
-+				      align_size);
-+			if (actual != align_size) {
- 				if (actual < 0) {
- 					mutex_unlock(data, BOUNCE_MTX);
- 					retval = errno;
- 					goto error_out;
- 				}
- 				memset((char *) data->bounce + actual, 0,
--				       channel->block_size - actual);
-+				       align_size - actual);
- 			}
- 		}
- 		actual = size;
--		if (size > channel->block_size)
--			actual = channel->block_size;
--		memcpy(data->bounce, buf, actual);
--		if (ext2fs_llseek(data->dev, location, SEEK_SET) != location) {
-+		if ((actual + offset) > align_size)
-+			actual = align_size - offset;
-+		if (actual > size)
-+			actual = size;
-+		memcpy(((char *)data->bounce) + offset, buf, actual);
-+		if (ext2fs_llseek(data->dev, aligned_blk * align_size, SEEK_SET) < 0) {
- 			retval = errno ? errno : EXT2_ET_LLSEEK_FAILED;
- 			goto error_out;
- 		}
--		actual = write(data->dev, data->bounce, channel->block_size);
-+		actual_w = write(data->dev, data->bounce, align_size);
- 		mutex_unlock(data, BOUNCE_MTX);
--		if (actual < 0) {
-+		if (actual_w < 0) {
- 			retval = errno;
- 			goto error_out;
- 		}
--		if (actual != channel->block_size)
-+		if (actual_w != align_size)
- 			goto short_write;
- 		size -= actual;
- 		buf += actual;
- 		location += actual;
-+		aligned_blk++;
-+		offset = 0;
- 	}
- 	return 0;
- 
+On Fri, Feb 26, 2021 at 1:41 PM <bugzilla-daemon@bugzilla.kernel.org> wrote:
+>
+> https://bugzilla.kernel.org/show_bug.cgi?id=211971
+>
+>             Bug ID: 211971
+>            Summary: Incorrect fix by e2fsck for blocks_count corruption
+>            Product: File System
+>            Version: 2.5
+>     Kernel Version: Linux 5.4.0-65-generic
+>           Hardware: x86-64
+>                 OS: Linux
+>               Tree: Mainline
+>             Status: NEW
+>           Severity: normal
+>           Priority: P1
+>          Component: ext4
+>           Assignee: fs_ext4@kernel-bugs.osdl.org
+>           Reporter: tmahmud@iastate.edu
+>         Regression: No
+>
+> Created attachment 295497
+>   --> https://bugzilla.kernel.org/attachment.cgi?id=295497&action=edit
+> log files from mke2fs, dumpe2fs and e2fsck
+>
+> For an ext4 file system image with only one superblock, if the blocks_count
+> field in superblock is corrupted, e2fsck fixed it incorrectly. In the fixed
+> image, the corrupted blocks_count is unchanged and other fields (e.g., free
+> blocks count) are changed accordingly.
+> This issue also occurs in images with multiple superblocks too. For example,
+> For an ext4 image with primary and backup superblock (backup superblocks are
+> not located in default locations, e.g., it is located on 513rd block), if the
+> blocks_count field in superblock is corrupted, e2fsck fixed it incorrectly. In
+> the fixed image, the corrupted blocks_count is unchanged and other fields
+> (e.g., free blocks count) are changed accordingly.
+>
+> e2fsprogs_version_used: e2fsprogs 1.45.6 (20-Mar-2020)
+> The commands that I ran to recreate the scenario are:
+> For image with only one superblock:
+>
+> dd if=/dev/zero bs=1024 count=8193 of=/home/hdd/image
+> mke2fs -b 1024 image 8193
+> debugfs -w image
+> debugfs:  ssv blocks_count 4000
+> debugfs:  q
+> e2fsck -yf image
+> e2fsck -yf image
+>
+> # e2fsck fixes the blocks_count corruption in correctly
+> # In the clean image the blocks_count was 8193, in the fixed image the
+> blocks_count is 4000
+> #The second run of e2fsck is consistent with the first run, it doesn't fix
+> anything, but blocks_count is still 4000
+> # Expected that e2fsck would fix the blocks count corruption instead of
+> changing other fields (e.g.,free blocks_count)
+>
+> For image with multiple superblocks:
+> dd if=/dev/zero bs=1024 count=8193 of=/home/hdd/image1
+> mke2fs -b 1024 -g 512 image1 8193
+> debugfs -w image1
+> debugfs:  ssv blocks_count 4000
+> debugfs:  q
+> e2fsck -yf image1
+> e2fsck -yf image1
+>
+> # e2fsck fixes the blocks_count corruption in correctly
+> # In the clean image the blocks_count was 8193, in the fixed image the
+> blocks_count is 4000
+> # The second run of e2fsck is consistent with the first run, it doesn't fix
+> anything, but blocks_count is still 4000
+> #There were 16 block groups in the clean image, but there are only 7 block
+> groups in the fixed image
+> # Expected that e2fsck would fix the blocks count corruption instead of
+> changing other fields (e.g.,free blocks_count) and removing the block groups.
+>
+> I attached the images and also the logs from mke2fs, dumpe2fs and e2fsck.
+>
+> --
+> You may reply to this email to add a comment.
+>
+> You are receiving this mail because:
+> You are watching the assignee of the bug.
