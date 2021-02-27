@@ -2,61 +2,63 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ED9B326AE8
-	for <lists+linux-ext4@lfdr.de>; Sat, 27 Feb 2021 01:59:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E302F326AEA
+	for <lists+linux-ext4@lfdr.de>; Sat, 27 Feb 2021 02:00:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbhB0A7P (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 26 Feb 2021 19:59:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229863AbhB0A7P (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 26 Feb 2021 19:59:15 -0500
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55D8BC061574
-        for <linux-ext4@vger.kernel.org>; Fri, 26 Feb 2021 16:58:34 -0800 (PST)
-Received: by mail-ot1-x32e.google.com with SMTP id h22so10856542otr.6
-        for <linux-ext4@vger.kernel.org>; Fri, 26 Feb 2021 16:58:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fwOwOGqL/8hoQKZDtN6VWqaAjhvECRNAYLPZMtIaHK4=;
-        b=fUnDtnW5mbYS4fp0xIyCrqDGDo1XM8BybKy9aKdQ7O6DBzweCPlm8bdr5E7HO1+ehd
-         +an398yG2qZs4FVXV1Jb6nljN2mmWHpfwrlj0LStwOX6GIPTEmYxM//NhBXWJcc8H3az
-         6Q/0yxDuEY51bTMTWdyklNaUWWttCKYu9jwWKMXJVf4UT33blcsAO6Kl3GufiKV1lk/D
-         s3rAiEJDQNL1mAxlpjuqWmteBNuxMrZE89B9irvJf0OkgpoSeUKa3PhRGCs34np9Vayu
-         gd7uygw2R1DKJXCKBSMgU/wdbqnUINuJd8XcrqHhxHORRA0tsOexLkm18IbIWlBWgYdJ
-         y5WA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fwOwOGqL/8hoQKZDtN6VWqaAjhvECRNAYLPZMtIaHK4=;
-        b=dylxlkKUC/r6NrNhSOj6xaOLVg9veAgVGdGLcKn92KLcCkfp1rBdxPu/92AzdjVkxL
-         TiA87B21m81DzzJDtHdc9EhYuMMr5XPWRHTybnaKYNRjZtjxfZbxPp89jMVgadd0DERz
-         l1hSYBNvDEN4UIF/EihglmCcWiMU4PNOivfnIA/pjU8p20p+qWbnAub/un57QpvzLtPS
-         vFP+TjbfnxNmODZjmUqOBM3STtpegIyVVeIMwDhRTQkHaQrb1B2KUZvUHL6H/qRkeWPX
-         N6rmCJnT9LGFkPUCvpuXSRt7xwktEv8pOzH6ZDtoAP45ZR4YCzLz1StDSnhG7S/LeEH6
-         xzrA==
-X-Gm-Message-State: AOAM531SyI/q6NPt6k+heqXh3Q8DbyJSo2HVEEkt1vSR59SzJBv1S6uA
-        PydadUoC9zNXMENLM0WQeioY9CWDmMAxMZ9T/Ms=
-X-Google-Smtp-Source: ABdhPJwgm6HyACx13YKnCrJCX4YoOV3zK5rqcqfna9ir9BqeJg6Yf5+evrHDUEhlCtqdirVKFwuriMLg+s2M+9Xmrhw=
-X-Received: by 2002:a05:6830:1688:: with SMTP id k8mr4690122otr.45.1614387513714;
- Fri, 26 Feb 2021 16:58:33 -0800 (PST)
-MIME-Version: 1.0
-References: <bug-211971-13602@https.bugzilla.kernel.org/>
+        id S230084AbhB0A7S (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 26 Feb 2021 19:59:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38110 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229622AbhB0A7R (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 26 Feb 2021 19:59:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 98D1B64DBD
+        for <linux-ext4@vger.kernel.org>; Sat, 27 Feb 2021 00:58:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614387516;
+        bh=XWkdb7OnQjJ5bAore/z0t+WNU4mgPaeCzMlQRIr/1lU=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=OCD5JzVD83rx49C/MvKNIriWQjDCchgiO/t8Ik/4l4tdby98D0cV7FcfrjlPmPGdB
+         K9PMwcVZyrvPWEMwr/XLWORJ0MDw8g+NYDg6F0GbqCWRCag9FPKE8scIahx6OwvxLQ
+         hG//dxt2bbpKbAwj2XZiPXA1iKOUqy6Xd8UFougtu8TVO9Z/CDiZKQDd3fBd7mUWot
+         S02UnZC3FdB5CXdJJTRJASNTS7hrEGLJhhCNJkfZM5OUEEc63U+30lZoucHYY7xw3n
+         XdBv5Ehf5dSeNvu47Gi6LlHr7jaDlHDSmtfFaAqjWjVVBQAT6pNNYe1JcxF3mMY4j4
+         jBDcgL4fLzOMw==
+Received: by pdx-korg-bugzilla-2.web.codeaurora.org (Postfix, from userid 48)
+        id 7E26E652E8; Sat, 27 Feb 2021 00:58:36 +0000 (UTC)
+From:   bugzilla-daemon@bugzilla.kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 211971] Incorrect fix by e2fsck for blocks_count corruption
+Date:   Sat, 27 Feb 2021 00:58:36 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: enbyamy@gmail.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-211971-13602-r6IDKRIC6B@https.bugzilla.kernel.org/>
 In-Reply-To: <bug-211971-13602@https.bugzilla.kernel.org/>
-From:   Amy Parker <enbyamy@gmail.com>
-Date:   Fri, 26 Feb 2021 16:58:23 -0800
-Message-ID: <CAE1WUT6NueggML9Kf+JxB-dX=fyKrOhDszAnbt7UvFhQqwm3Gg@mail.gmail.com>
-Subject: Re: [Bug 211971] New: Incorrect fix by e2fsck for blocks_count corruption
-To:     bugzilla-daemon@bugzilla.kernel.org
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>
+References: <bug-211971-13602@https.bugzilla.kernel.org/>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+https://bugzilla.kernel.org/show_bug.cgi?id=3D211971
+
+--- Comment #1 from Amy (enbyamy@gmail.com) ---
 Can you replicate this on modern 5.4 from kernel.org? -generic kernels
 are from Canonical and are sometimes broken compared to upstream. If
 you can't replicate this on mainline, you'll need to contact
@@ -65,7 +67,7 @@ distribution kernels.
 
 On Fri, Feb 26, 2021 at 1:41 PM <bugzilla-daemon@bugzilla.kernel.org> wrote:
 >
-> https://bugzilla.kernel.org/show_bug.cgi?id=211971
+> https://bugzilla.kernel.org/show_bug.cgi?id=3D211971
 >
 >             Bug ID: 211971
 >            Summary: Incorrect fix by e2fsck for blocks_count corruption
@@ -84,17 +86,25 @@ On Fri, Feb 26, 2021 at 1:41 PM <bugzilla-daemon@bugzilla.kernel.org> wrote:
 >         Regression: No
 >
 > Created attachment 295497
->   --> https://bugzilla.kernel.org/attachment.cgi?id=295497&action=edit
+>   --> https://bugzilla.kernel.org/attachment.cgi?id=3D295497&action=3Dedit
 > log files from mke2fs, dumpe2fs and e2fsck
 >
-> For an ext4 file system image with only one superblock, if the blocks_count
-> field in superblock is corrupted, e2fsck fixed it incorrectly. In the fixed
-> image, the corrupted blocks_count is unchanged and other fields (e.g., free
+> For an ext4 file system image with only one superblock, if the blocks_cou=
+nt
+> field in superblock is corrupted, e2fsck fixed it incorrectly. In the fix=
+ed
+> image, the corrupted blocks_count is unchanged and other fields (e.g., fr=
+ee
 > blocks count) are changed accordingly.
-> This issue also occurs in images with multiple superblocks too. For example,
-> For an ext4 image with primary and backup superblock (backup superblocks are
-> not located in default locations, e.g., it is located on 513rd block), if the
-> blocks_count field in superblock is corrupted, e2fsck fixed it incorrectly. In
+> This issue also occurs in images with multiple superblocks too. For examp=
+le,
+> For an ext4 image with primary and backup superblock (backup superblocks =
+are
+> not located in default locations, e.g., it is located on 513rd block), if=
+ the
+> blocks_count field in superblock is corrupted, e2fsck fixed it incorrectl=
+y.
+> In
 > the fixed image, the corrupted blocks_count is unchanged and other fields
 > (e.g., free blocks count) are changed accordingly.
 >
@@ -102,7 +112,7 @@ On Fri, Feb 26, 2021 at 1:41 PM <bugzilla-daemon@bugzilla.kernel.org> wrote:
 > The commands that I ran to recreate the scenario are:
 > For image with only one superblock:
 >
-> dd if=/dev/zero bs=1024 count=8193 of=/home/hdd/image
+> dd if=3D/dev/zero bs=3D1024 count=3D8193 of=3D/home/hdd/image
 > mke2fs -b 1024 image 8193
 > debugfs -w image
 > debugfs:  ssv blocks_count 4000
@@ -119,7 +129,7 @@ On Fri, Feb 26, 2021 at 1:41 PM <bugzilla-daemon@bugzilla.kernel.org> wrote:
 > changing other fields (e.g.,free blocks_count)
 >
 > For image with multiple superblocks:
-> dd if=/dev/zero bs=1024 count=8193 of=/home/hdd/image1
+> dd if=3D/dev/zero bs=3D1024 count=3D8193 of=3D/home/hdd/image1
 > mke2fs -b 1024 -g 512 image1 8193
 > debugfs -w image1
 > debugfs:  ssv blocks_count 4000
@@ -130,12 +140,14 @@ On Fri, Feb 26, 2021 at 1:41 PM <bugzilla-daemon@bugzilla.kernel.org> wrote:
 > # e2fsck fixes the blocks_count corruption in correctly
 > # In the clean image the blocks_count was 8193, in the fixed image the
 > blocks_count is 4000
-> # The second run of e2fsck is consistent with the first run, it doesn't fix
+> # The second run of e2fsck is consistent with the first run, it doesn't f=
+ix
 > anything, but blocks_count is still 4000
 > #There were 16 block groups in the clean image, but there are only 7 block
 > groups in the fixed image
 > # Expected that e2fsck would fix the blocks count corruption instead of
-> changing other fields (e.g.,free blocks_count) and removing the block groups.
+> changing other fields (e.g.,free blocks_count) and removing the block gro=
+ups.
 >
 > I attached the images and also the logs from mke2fs, dumpe2fs and e2fsck.
 >
@@ -144,3 +156,9 @@ On Fri, Feb 26, 2021 at 1:41 PM <bugzilla-daemon@bugzilla.kernel.org> wrote:
 >
 > You are receiving this mail because:
 > You are watching the assignee of the bug.
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
