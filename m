@@ -2,156 +2,112 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C304F327393
-	for <lists+linux-ext4@lfdr.de>; Sun, 28 Feb 2021 18:13:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFAF832767C
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Mar 2021 04:52:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231313AbhB1RMp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 28 Feb 2021 12:12:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230461AbhB1RMj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 28 Feb 2021 12:12:39 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10048C06174A;
-        Sun, 28 Feb 2021 09:11:58 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id g5so23843438ejt.2;
-        Sun, 28 Feb 2021 09:11:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dfQ46OGWItLgoKPUR/Czwfd0qqTUSj25+jf5yrElG/4=;
-        b=GzeA/aDB2UBhnNVhm++I/Jk3Up7Sjll8FWko6UUVrR8GbwUj6tdWvj7U7T3p1JnaWE
-         tuDT5n8KyfWwgonEFcDAlbP9Wnm/lzI5ynLZd5zXrmZLcqy0e5qJFV+Ury6tgPUdhcIC
-         ZnUpySrUVv3A0oExsLsVOkNej6wDTO/NVed1e1lRxfeovoJIixufVCuML3LKRgEXHaK6
-         AQIpA41ncR2vIctG/YIpRBR7PPh4Vs9caRlig7rCLuPUPKUXlteysI6kNYwN/3Yc//ci
-         tD2NQsug/MYd9mQ+dWSVvw0ZV+w1YK/V6hQL8df04yN35+nWGaht76tutf0kiQ1Fxgq5
-         E6Vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dfQ46OGWItLgoKPUR/Czwfd0qqTUSj25+jf5yrElG/4=;
-        b=DFk3PQk4Tg5+x/JyUn1GIB9WRKbs4ZjvCjYZr9JKO8621MT6/JMbxVEVcdDoUwHVL+
-         For3KnKO03QZ25kxJo4JrfZHSkIeuz8ttxAxFkjgF2q6WYdlaegFsyL7pwebxMCJOuh/
-         NrMre9pjnYhb6I4oOeQe6UNOpaC6IPz2m13QnfLeVZ2YZGlmr1DYxmPi+bvVPkKasB7e
-         u9RBjICZzwxg7kg714yWmesb+O+Rtbcpc99VRzJxNj+AhqwCvcU1kFYQqrqosKdGeMu3
-         qv1KRTCKEbd/EDeY1ITs68EsyfQGwPqrqB4AdfJhZ2zoof+PofoZAtTFpktFx3ZcE2nA
-         XTjg==
-X-Gm-Message-State: AOAM5304vRkhWj/qH8naxa3syBxpk1crx5yAp/FsV3b7mRkxQxwuuOcN
-        4SYwXjH8z05UBhk34i8rBvOfdoP18tGg
-X-Google-Smtp-Source: ABdhPJw5sLbCUCcgxkhNvC6IgO3vmNaTgOeasYPBEho60Poa4WNRXoZ/cPiXNkLCHgbgyBJUziViqw==
-X-Received: by 2002:a17:906:acb:: with SMTP id z11mr3855755ejf.193.1614532316774;
-        Sun, 28 Feb 2021 09:11:56 -0800 (PST)
-Received: from localhost.localdomain ([46.53.249.223])
-        by smtp.gmail.com with ESMTPSA id fw3sm6654338ejb.82.2021.02.28.09.11.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Feb 2021 09:11:56 -0800 (PST)
-Date:   Sun, 28 Feb 2021 20:11:54 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, linux-arch@vger.kernel.org
-Subject: [PATCH 12/11] pragma once: scripted treewide conversion
-Message-ID: <YDvO2kmidKZaK26j@localhost.localdomain>
-References: <YDvLYzsGu+l1pQ2y@localhost.localdomain>
+        id S231853AbhCADwQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 28 Feb 2021 22:52:16 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:41028 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231411AbhCADwP (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 28 Feb 2021 22:52:15 -0500
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1213pQLl030893
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 28 Feb 2021 22:51:27 -0500
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 64B6015C3428; Sun, 28 Feb 2021 22:51:26 -0500 (EST)
+Date:   Sun, 28 Feb 2021 22:51:26 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     linux-ext4@vger.kernel.org
+Subject: [ANNOUNCE] e2fsprogs v1.46.2
+Message-ID: <YDxkvpmXBqrDGmz2@mit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YDvLYzsGu+l1pQ2y@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-[  Bcc a lot of lists so that people understand what's this is all         ]
-[  about without creating uber-cc-thread.                                  ]
-[  Apologies if I missed your subsystem                                    ]
-[  Please see [PATCH 11/11: pragma once: conversion script (in Python 2)]  ]
+I've released e2fsprogs 1.46.2 in all of the usual places; it's tagged
+in the git trees on git.kernel.org, github, and sourceforge, and
+available for download at:
 
-Hi, Linus.
+http://www.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v1.46.2
 
-Please run the script below from top-level directory, it will convert
-most kernel headers to #pragma once directive advancing them into
-21-st century.
+and
 
-The advantages are:
+http://prdownloads.sourceforge.net/e2fsprogs/e2fsprogs-1.46.2.tar.gz
 
-* less LOC
+The release notes for 1.46.2 can be found below.
 
-	18087 files changed, 18878 insertions(+), 99804 deletions(-)
-	= -81 kLOC (give or take)
+Cheers,
 
-* less mental tax on developers forced to name things which aren't even
-  real code
+                                        - Ted
 
-* less junk in preprocessor hashtables and editors/IDEs autocompletion
-  lists
+E2fsprogs 1.46.2 (February 28, 2021)
+===================================
 
-There are two bit exceptions: UAPI headers and ACPICA.
-Given ubiquity of #pragma once, I personally think even these subsystems
-should be converted in the future.
+Updates/Fixes since v1.46.1:
 
-Compile tested on alpha, arc, arm, arm64, h8300, ia64, m68k, microblaze,
-mips, nios2, parisc, powerpc, riscv, s390, sh, sparc, um-i386, um-x86_64,
-i386, x86_64, xtensa (allnoconfig, all defconfigs, allmodconfig with or
-without SMP/DEBUG_KERNEL + misc stuff).
+UI and Features
+---------------
 
-Not compile tested on csky, hexagon, nds32, openrisc. 
+Teach the tune2fs program to support "random" as an argument to the -c
+option, which sets the maximum mount count.  (Addresses Debian Bug:
+#926293)
 
-Love,
-	Alexey
-
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+Add support for the FS_NOCOMP_FL flag to chattr and lsattr.
 
 
+Fixes
+-----
 
-#!/bin/sh -x
-find . -type f -name '*.h' -print	|\
-LC_ALL=C sort				|\
-sed -e 's#^./##g'			|\
-xargs ./scripts/pragma-once.py
+When resizing a small file systems to a super-large file system size,
+avoid issuing some scary bitmap operation warnings.  (Addresses Github
+issue https://github.com/tytso/e2fsprogs/issues/60)
 
-find . -type d -name 'uapi' | xargs git checkout -f
-git checkout -f arch/alpha/include/asm/cmpxchg.h
-git checkout -f arch/arm/mach-imx/hardware.h
-git checkout -f arch/arm/mach-ixp4xx/include/mach/hardware.h
-git checkout -f arch/arm/mach-sa1100/include/mach/hardware.h
-git checkout -f arch/mips/include/asm/mips-cps.h
-git checkout -f arch/x86/boot/boot.h
-git checkout -f arch/x86/boot/ctype.h
-git checkout -f arch/x86/include/asm/cpufeatures.h
-git checkout -f arch/x86/include/asm/disabled-features.h
-git checkout -f arch/x86/include/asm/required-features.h
-git checkout -f arch/x86/include/asm/vmxfeatures.h
-git checkout -f arch/x86/include/asm/vvar.h
-git checkout -f drivers/acpi/acpica/
-git checkout -f drivers/gpu/drm/amd/pm/inc/vega10_ppsmc.h
-git checkout -f drivers/gpu/drm/amd/pm/powerplay/ppsmc.h
-git checkout -f drivers/input/misc/yealink.h
-git checkout -f drivers/media/usb/dvb-usb-v2/mxl111sf-demod.h
-git checkout -f drivers/media/usb/dvb-usb-v2/mxl111sf-tuner.h
-git checkout -f drivers/pcmcia/yenta_socket.h
-git checkout -f drivers/staging/rtl8723bs/include/hal_com_h2c.h
-git checkout -f include/linux/acpi.h
-git checkout -f include/linux/bitops.h
-git checkout -f include/linux/compiler_types.h
-git checkout -f include/linux/device.h
-git checkout -f include/linux/kbuild.h
-git checkout -f include/linux/libfdt_env.h
-git checkout -f include/linux/local_lock.h
-git checkout -f include/linux/spinlock.h
-git checkout -f include/linux/spinlock_api_smp.h
-git checkout -f include/linux/spinlock_types.h
-git checkout -f include/linux/tracepoint.h
-git checkout -f mm/gup_test.h
-git checkout -f net/batman-adv/main.h
-git checkout -f scripts/dtc/
-git checkout -f tools/include/linux/bitops.h
-git checkout -f tools/include/linux/compiler.h
-git checkout -f tools/testing/selftests/clone3/clone3_selftests.h
-git checkout -f tools/testing/selftests/futex/include/atomic.h
-git checkout -f tools/testing/selftests/futex/include/futextest.h
-git checkout -f tools/testing/selftests/futex/include/logging.h
-git checkout -f tools/testing/selftests/kselftest.h
-git checkout -f tools/testing/selftests/kselftest_harness.h
-git checkout -f tools/testing/selftests/pidfd/pidfd.h
-git checkout -f tools/testing/selftests/x86/helpers.h
+Fix the debugfs rdump and ls commands so they will work correctly for
+uid's and gid's => 65536.  (Addresses Github issue issue
+https://github.com/tytso/e2fsprogs/issues/63)
+
+Fix the debugfs write and symlink commands so they support targets which
+contain a pathname (instead of only working when writing a file or
+creating a symlink in the current directory).  (Addresses Github issue
+https://github.com/tytso/e2fsprogs/issues/61)
+
+Fix Direct I/O support on block devices where the logical block size is
+greater 1k.  (This includes Advanced Format HDD's, where the sector size
+is 4k, and IBM Mainframe DASD's, where the sector size is 2k.)
+
+Fix debugfs's logdump so it works on file systems whose block size is
+greater than 8k.
+
+Fix a where e2fsck could a crash when there is error while e2fsck is
+trying to open the file system, and e2fsck calls ext2fs_mmp_stop()
+before MMP has been initialized.  (Addresses Debian Bug: #696609)
+
+Improved error checking in the fast commit replay code in e2fsck.
+
+Updated and clarified the chattr man page.
+
+
+Performance, Internal Implementation, Development Support etc.
+--------------------------------------------------------------
+
+Fix various compiler and Coverity warnings.
+
+Update the Spanish translation from the translation project.
+
+Update the e2fsck/iscan.c test program so that it builds again.
+
+Fix an environmental dependency bug for the m_rootdir_acl regression
+test.
+
+Avoid the use of loff_t, which is not available for all compilers /
+system include files.
+
+Fix failure of the t_mmp_fail test when running on a device with a 4k
+logical sector size.
