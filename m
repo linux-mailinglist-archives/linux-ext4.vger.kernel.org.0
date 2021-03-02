@@ -2,72 +2,97 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E022E32AF66
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Mar 2021 04:26:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4108E32AF5C
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Mar 2021 04:26:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233886AbhCCATx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 2 Mar 2021 19:19:53 -0500
-Received: from m15114.mail.126.com ([220.181.15.114]:36482 "EHLO
-        m15114.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1448323AbhCBOTr (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 2 Mar 2021 09:19:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=OPG3GVG7sSDGQxYhC6
-        +zVbtEJXQAdC07eA7ZoSNv4No=; b=Qx/XyouHvf6y0/pucxfUJguPL7uEZFS9Wm
-        amleEYwiSrEUwrTyWJXf804BMBo04eKHEBzfa8GlTRL6sYCE6ZjKAIGlEszMaspu
-        C33nM5XhA0GQ7x5PkFgLrGsXd+MxUsqLi8jV/EfUHdqeai1Qc9iffu1uZ9YP7+c8
-        /DhMwygEg=
-Received: from pek-lpd-ccm3.wrs.com (unknown [60.247.85.82])
-        by smtp7 (Coremail) with SMTP id DsmowACXnW1CCT5gLDO0OQ--.27060S2;
-        Tue, 02 Mar 2021 17:45:44 +0800 (CST)
-From:   Zhaolong Zhang <zhangzl2013@126.com>
-To:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhaolong Zhang <zhangzl2013@126.com>
-Subject: [PATCH] ext4: fix bh ref count on error paths
-Date:   Tue,  2 Mar 2021 17:42:31 +0800
-Message-Id: <1614678151-70481-1-git-send-email-zhangzl2013@126.com>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: DsmowACXnW1CCT5gLDO0OQ--.27060S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrtrWrGF1ruF13ZFW5CFyxuFg_yoW3tFX_G3
-        4xXF48Gws8Xws7uws8Gw13Xrn2vrW8Krs5uF97ta15tFyjyr98CrnxAFZxZF1UWF4Sgr98
-        Gr1xZF1IkF92gjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRRT5l5UUUUU==
-X-Originating-IP: [60.247.85.82]
-X-CM-SenderInfo: x2kd0wt2osiiat6rjloofrz/1tbitQhJz1pEDFNYdgAAsU
+        id S234425AbhCCASV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 2 Mar 2021 19:18:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41060 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1383761AbhCBME1 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 2 Mar 2021 07:04:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 813D764F3C;
+        Tue,  2 Mar 2021 11:56:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614686184;
+        bh=QX92ayI+w7Oykb+H1OW64lrgEm8oAdPLoxkZQitIYGc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=JsmLGkTWvIjPHv6C2YThl18Ge2q/+QxbylOx5mXlTDiYNqOGE6pdPr+vfvQ89Cnai
+         MFs+wdEVlU1FaaJD1ct3YQbRvrwqKcrfArVFMGQxGCo23eulIESzNeMunODDHgzDvg
+         8tTZz9JQTBUOfwRsHNc0wEIQAwLAC03sP7RebbpDV29haJr/rMQPPJ9zQJSpvMEIa4
+         skZM/hETElfBK3bEqdPttZLMQdI2GgIUT9HM7DpAyOYTnxgF8t4fsWd8/gaLwQi8qM
+         +xjSixgxp+SuiI3aJ45aT0FMgrvSClx7eDrpVY1/yB6nDDlvs5Kf2qVwSxaBGPEOvt
+         c884kiFgLvVHA==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Murphy Zhou <jencce.kernel@gmail.com>, Jan Kara <jack@suse.cz>,
+        Sasha Levin <sashal@kernel.org>, linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.11 38/52] ext4: don't try to processed freed blocks until mballoc is initialized
+Date:   Tue,  2 Mar 2021 06:55:19 -0500
+Message-Id: <20210302115534.61800-38-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.1
+In-Reply-To: <20210302115534.61800-1-sashal@kernel.org>
+References: <20210302115534.61800-1-sashal@kernel.org>
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-__ext4_journalled_writepage should drop bhs' ref count on error paths
+From: Theodore Ts'o <tytso@mit.edu>
 
-Signed-off-by: Zhaolong Zhang <zhangzl2013@126.com>
+[ Upstream commit 027f14f5357279655c3ebc6d14daff8368d4f53f ]
+
+If we try to make any changes via the journal between when the journal
+is initialized, but before the multi-block allocated is initialized,
+we will end up deferencing a NULL pointer when the journal commit
+callback function calls ext4_process_freed_data().
+
+The proximate cause of this failure was commit 2d01ddc86606 ("ext4:
+save error info to sb through journal if available") since file system
+corruption problems detected before the call to ext4_mb_init() would
+result in a journal commit before we aborted the mount of the file
+system.... and we would then trigger the NULL pointer deref.
+
+Link: https://lore.kernel.org/r/YAm8qH/0oo2ofSMR@mit.edu
+Reported-by: Murphy Zhou <jencce.kernel@gmail.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/inode.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ fs/ext4/super.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 650c5acd2f2d..a79a9ea58c56 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -1938,13 +1938,13 @@ static int __ext4_journalled_writepage(struct page *page,
- 	if (!ret)
- 		ret = err;
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 9a6f9875aa34..2ae0af1c88c7 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -4875,7 +4875,6 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
  
--	if (!ext4_has_inline_data(inode))
--		ext4_walk_page_buffers(NULL, page_bufs, 0, len,
--				       NULL, bput_one);
- 	ext4_set_inode_state(inode, EXT4_STATE_JDATA);
- out:
- 	unlock_page(page);
- out_no_pagelock:
-+	if (!inline_data && page_bufs)
-+		ext4_walk_page_buffers(NULL, page_bufs, 0, len,
-+				       NULL, bput_one);
- 	brelse(inode_bh);
- 	return ret;
- }
+ 	set_task_ioprio(sbi->s_journal->j_task, journal_ioprio);
+ 
+-	sbi->s_journal->j_commit_callback = ext4_journal_commit_callback;
+ 	sbi->s_journal->j_submit_inode_data_buffers =
+ 		ext4_journal_submit_inode_data_buffers;
+ 	sbi->s_journal->j_finish_inode_data_buffers =
+@@ -4987,6 +4986,14 @@ no_journal:
+ 		goto failed_mount5;
+ 	}
+ 
++	/*
++	 * We can only set up the journal commit callback once
++	 * mballoc is initialized
++	 */
++	if (sbi->s_journal)
++		sbi->s_journal->j_commit_callback =
++			ext4_journal_commit_callback;
++
+ 	block = ext4_count_free_clusters(sb);
+ 	ext4_free_blocks_count_set(sbi->s_es, 
+ 				   EXT4_C2B(sbi, block));
 -- 
-2.26.1
+2.30.1
 
