@@ -2,38 +2,38 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4108E32AF5C
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Mar 2021 04:26:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37E5B32AF61
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Mar 2021 04:26:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234425AbhCCASV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 2 Mar 2021 19:18:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41060 "EHLO mail.kernel.org"
+        id S233835AbhCCATJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 2 Mar 2021 19:19:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1383761AbhCBME1 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 2 Mar 2021 07:04:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 813D764F3C;
-        Tue,  2 Mar 2021 11:56:23 +0000 (UTC)
+        id S1350239AbhCBMOO (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 2 Mar 2021 07:14:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 545AE64F6F;
+        Tue,  2 Mar 2021 11:57:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614686184;
-        bh=QX92ayI+w7Oykb+H1OW64lrgEm8oAdPLoxkZQitIYGc=;
+        s=k20201202; t=1614686249;
+        bh=bYXnqGtlBBbQ/TrgNTMF+Uq7rUVoZAJStA34vrdzmxs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JsmLGkTWvIjPHv6C2YThl18Ge2q/+QxbylOx5mXlTDiYNqOGE6pdPr+vfvQ89Cnai
-         MFs+wdEVlU1FaaJD1ct3YQbRvrwqKcrfArVFMGQxGCo23eulIESzNeMunODDHgzDvg
-         8tTZz9JQTBUOfwRsHNc0wEIQAwLAC03sP7RebbpDV29haJr/rMQPPJ9zQJSpvMEIa4
-         skZM/hETElfBK3bEqdPttZLMQdI2GgIUT9HM7DpAyOYTnxgF8t4fsWd8/gaLwQi8qM
-         +xjSixgxp+SuiI3aJ45aT0FMgrvSClx7eDrpVY1/yB6nDDlvs5Kf2qVwSxaBGPEOvt
-         c884kiFgLvVHA==
+        b=AU8iYW81rsfwzFtFvWr3XARWGi+xMhCGyijlH7z2GooiTIoT3spX+jIHtAD0KnMHu
+         5Rf2Dn3vu7td4QBbn7QsSxD4Keqb85eU09tPWCEflOKkBPH5vNxEeDfwFHadKVR5mg
+         bC9djjlbHgR9MMIrJmeiJ2NAy+xAC5Ih1EWvxctbxt92zYUSQ8hgznc2QSdJiyXxg5
+         4TnV+6CCQceGYSMkZrSFKDh4fyez26E/VvD9ipuzsTzSTXH+NlNDghkZfANVak0eGO
+         tYVNQzHEFGKaf3SJtE2ZlZjidxfJ6aEwxgVlCnJbz517WLoUnQeGXfmUddRPz1Ynnc
+         m+wRVnoj2nbvw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Theodore Ts'o <tytso@mit.edu>,
         Murphy Zhou <jencce.kernel@gmail.com>, Jan Kara <jack@suse.cz>,
         Sasha Levin <sashal@kernel.org>, linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.11 38/52] ext4: don't try to processed freed blocks until mballoc is initialized
-Date:   Tue,  2 Mar 2021 06:55:19 -0500
-Message-Id: <20210302115534.61800-38-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 34/47] ext4: don't try to processed freed blocks until mballoc is initialized
+Date:   Tue,  2 Mar 2021 06:56:33 -0500
+Message-Id: <20210302115646.62291-34-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210302115534.61800-1-sashal@kernel.org>
-References: <20210302115534.61800-1-sashal@kernel.org>
+In-Reply-To: <20210302115646.62291-1-sashal@kernel.org>
+References: <20210302115646.62291-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -67,10 +67,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 9a6f9875aa34..2ae0af1c88c7 100644
+index ea5aefa23a20..e30bf8f342c2 100644
 --- a/fs/ext4/super.c
 +++ b/fs/ext4/super.c
-@@ -4875,7 +4875,6 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+@@ -4876,7 +4876,6 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
  
  	set_task_ioprio(sbi->s_journal->j_task, journal_ioprio);
  
@@ -78,7 +78,7 @@ index 9a6f9875aa34..2ae0af1c88c7 100644
  	sbi->s_journal->j_submit_inode_data_buffers =
  		ext4_journal_submit_inode_data_buffers;
  	sbi->s_journal->j_finish_inode_data_buffers =
-@@ -4987,6 +4986,14 @@ no_journal:
+@@ -4993,6 +4992,14 @@ no_journal:
  		goto failed_mount5;
  	}
  
