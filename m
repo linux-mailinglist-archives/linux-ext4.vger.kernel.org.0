@@ -2,124 +2,138 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAA2632D44B
-	for <lists+linux-ext4@lfdr.de>; Thu,  4 Mar 2021 14:39:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AB0932D89B
+	for <lists+linux-ext4@lfdr.de>; Thu,  4 Mar 2021 18:27:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240738AbhCDNi7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 4 Mar 2021 08:38:59 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:13432 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241065AbhCDNid (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 4 Mar 2021 08:38:33 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DrsMt2L4JzjVKJ;
-        Thu,  4 Mar 2021 21:36:26 +0800 (CST)
-Received: from [10.174.176.202] (10.174.176.202) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 4 Mar 2021 21:37:43 +0800
-Subject: Re: [PATCH] block_dump: don't put the last refcount when marking
- inode dirty
-To:     Jan Kara <jack@suse.cz>
-CC:     <linux-fsdevel@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
-        <tytso@mit.edu>, <viro@zeniv.linux.org.uk>,
-        <linfeilong@huawei.com>, Ye Bin <yebin10@huawei.com>
-References: <20210226103103.3048803-1-yi.zhang@huawei.com>
- <20210301112102.GD25026@quack2.suse.cz>
-From:   "zhangyi (F)" <yi.zhang@huawei.com>
-Message-ID: <5f72dc70-9fb0-0d3b-dc31-f60d35929991@huawei.com>
-Date:   Thu, 4 Mar 2021 21:37:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S237409AbhCDR1R (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 4 Mar 2021 12:27:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40324 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239347AbhCDR1M (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 4 Mar 2021 12:27:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E386664E89;
+        Thu,  4 Mar 2021 17:26:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614878792;
+        bh=HB4loAXLWA5MoyQDvfOGFQeSomA30bqcWhsrZ2wxtsw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TFRhTk+0/ppdWpGnyHUxo6Gb/F0UjQUMOROnNxn+GSprEm5X8oX5gmpzN6xRwA9J9
+         KVwwRFZvXZ3gY1fFfRNdjgOdjDgZbAReN2aHjgNZ2mEDV+JQayw7cdCfPvK623by0N
+         w7jjIoMN/hKzcGwh+YIa3JNYvksroW4Z9vMFNluOX5p/aCIdRc0MNl73I6jBj1uByJ
+         Le9C9eepeV831JgDxJuoMXfI7DbRx8N9auvR49Zc6+CQAw+0saca14lm6DBBvYS4Ir
+         WxytlnNqmujBaSs6vdBwbGw6w+XHLD4hR0zEnynHOgXs3eBHX0TbHHxNJTNfwlo7m2
+         PekzeBi/fDf0g==
+Date:   Thu, 4 Mar 2021 09:26:31 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, anju@linux.vnet.ibm.com
+Subject: Re: [PATCH] iomap: Fix negative assignment to unsigned sis->pages in
+ iomap_swapfile_activate
+Message-ID: <20210304172631.GD7267@magnolia>
+References: <b39319ab99d9c5541b2cdc172a4b25f39cbaad50.1614838615.git.riteshh@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210301112102.GD25026@quack2.suse.cz>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.202]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b39319ab99d9c5541b2cdc172a4b25f39cbaad50.1614838615.git.riteshh@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2021/3/1 19:21, Jan Kara wrote:
-> On Fri 26-02-21 18:31:03, zhangyi (F) wrote:
->> There is an AA deadlock problem when using block_dump on ext4 file
->> system with data=journal mode.
->>
->>   watchdog: BUG: soft lockup - CPU#19 stuck for 22s! [jbd2/pmem0-8:1002]
->>   CPU: 19 PID: 1002 Comm: jbd2/pmem0-8
->>   RIP: 0010:queued_spin_lock_slowpath+0x60/0x3b0
->>   ...
->>   Call Trace:
->>    _raw_spin_lock+0x57/0x70
->>    jbd2_journal_invalidatepage+0x166/0x680
->>    __ext4_journalled_invalidatepage+0x8c/0x120
->>    ext4_journalled_invalidatepage+0x12/0x40
->>    truncate_cleanup_page+0x10e/0x1c0
->>    truncate_inode_pages_range+0x2c8/0xec0
->>    truncate_inode_pages_final+0x41/0x90
->>    ext4_evict_inode+0x254/0xac0
->>    evict+0x11c/0x2f0
->>    iput+0x20e/0x3a0
->>    dentry_unlink_inode+0x1bf/0x1d0
->>    __dentry_kill+0x14c/0x2c0
->>    dput+0x2bc/0x630
->>    block_dump___mark_inode_dirty.cold+0x5c/0x111
->>    __mark_inode_dirty+0x678/0x6b0
->>    mark_buffer_dirty+0x16e/0x1d0
->>    __jbd2_journal_temp_unlink_buffer+0x127/0x1f0
->>    __jbd2_journal_unfile_buffer+0x24/0x80
->>    __jbd2_journal_refile_buffer+0x12f/0x1b0
->>    jbd2_journal_commit_transaction+0x244b/0x3030
->>
->> The problem is a race between jbd2 committing data buffer and user
->> unlink the file concurrently. The jbd2 will get jh->b_state_lock and
->> redirty the inode's data buffer and inode itself. If block_dump is
->> enabled, it will try to find inode's dentry and invoke the last dput()
->> after the inode was unlinked. Then the evict procedure will unmap
->> buffer and get jh->b_state_lock again in journal_unmap_buffer(), and
->> finally lead to deadlock. It works fine if block_dump is not enabled
->> because the last evict procedure is not invoked in jbd2 progress and
->> the jh->b_state_lock will also prevent inode use after free.
->>
->> jbd2                                xxx
->>                                     vfs_unlink
->>                                      ext4_unlink
->> jbd2_journal_commit_transaction
->> **get jh->b_state_lock**
->> jbd2_journal_refile_buffer
->>  mark_buffer_dirty
->>   __mark_inode_dirty
->>    block_dump___mark_inode_dirty
->>     d_find_alias
->>                                      d_delete
->>                                       unhash
->>     dput  //put the last refcount
->>      evict
->>       journal_unmap_buffer
->>        **get jh->b_state_lock again**
->>
->> In most cases of where invoking mark_inode_dirty() will get inode's
->> refcount and the last iput may not happen, but it's not safe. After
->> checking the block_dump code, it only want to dump the file name of the
->> dirty inode, so there is no need to get and put denrty, and dump an
->> unhashed dentry is also fine. This patch remove the dget() && dput(),
->> print the dentry name directly.
->>
->> Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
->> Signed-off-by: yebin (H) <yebin10@huawei.com>
+On Thu, Mar 04, 2021 at 11:51:26AM +0530, Ritesh Harjani wrote:
+> In case if isi.nr_pages is 0, we are making sis->pages (which is
+> unsigned int) a huge value in iomap_swapfile_activate() by assigning -1.
+> This could cause a kernel crash in kernel v4.18 (with below signature).
+> Or could lead to unknown issues on latest kernel if the fake big swap gets
+> used.
 > 
-> Hrm, ok. Honestly, I wanted to just delete that code for a long time. IMO
-> tracepoints (and we have one in __mark_inode_dirty) are much more useful
-> for tracing anyway. This code exists only because it was there much before
-> tracepoints existed... Do you have a strong reason why are you using
-> block_dump instead of tracepoint trace_writeback_mark_inode_dirty() for
-> your monitoring?
+> Fix this issue by returning -EINVAL in case of nr_pages is 0, since it
+> is anyway a invalid swapfile. Looks like this issue will be hit when
+> we have pagesize < blocksize type of configuration.
 > 
+> I was able to hit the issue in case of a tiny swap file with below
+> test script.
+> https://raw.githubusercontent.com/riteshharjani/LinuxStudy/master/scripts/swap-issue.sh
 
-Hi, Jan. We just do some stress tests and find this issue, I'm not sure who
-are still using this old debug interface and gather it may need time. Could
-we firstly fix this issue, and then delete this code if no opposed?
+Can you turn this into a dangerous-group fstest, please?
 
-Thanks,
-Yi.
+> kernel crash analysis on v4.18
+> ==============================
+> On v4.18 kernel, it causes a kernel panic, since sis->pages becomes
+> a huge value and isi.nr_extents is 0. When 0 is returned it is
+> considered as a swapfile over NFS and SWP_FILE is set (sis->flags |= SWP_FILE).
+> Then when swapoff was getting called it was calling a_ops->swap_deactivate()
+> if (sis->flags & SWP_FILE) is true. Since a_ops->swap_deactivate() is
+> NULL in case of XFS, it causes below panic.
+
+Does the same reasoning apply to upstream?
+
+> Panic signature on v4.18 kernel:
+> =======================================
+> root@qemu:/home/qemu# [ 8291.723351] XFS (loop2): Unmounting Filesystem
+> [ 8292.123104] XFS (loop2): Mounting V5 Filesystem
+> [ 8292.132451] XFS (loop2): Ending clean mount
+> [ 8292.263362] Adding 4294967232k swap on /mnt1/test/swapfile.  Priority:-2 extents:1 across:274877906880k
+> [ 8292.277834] Unable to handle kernel paging request for instruction fetch
+> [ 8292.278677] Faulting instruction address: 0x00000000
+> cpu 0x19: Vector: 400 (Instruction Access) at [c0000009dd5b7ad0]
+>     pc: 0000000000000000
+>     lr: c0000000003eb9dc: destroy_swap_extents+0xfc/0x120
+>     sp: c0000009dd5b7d50
+>    msr: 8000000040009033
+>   current = 0xc0000009b6710080
+>   paca    = 0xc00000003ffcb280   irqmask: 0x03   irq_happened: 0x01
+>     pid   = 5604, comm = swapoff
+> Linux version 4.18.0 (riteshh@xxxxxxx) (gcc version 8.4.0 (Ubuntu 8.4.0-1ubuntu1~18.04)) #57 SMP Wed Mar 3 01:33:04 CST 2021
+> enter ? for help
+> [link register   ] c0000000003eb9dc destroy_swap_extents+0xfc/0x120
+> [c0000009dd5b7d50] c0000000025a7058 proc_poll_event+0x0/0x4 (unreliable)
+> [c0000009dd5b7da0] c0000000003f0498 sys_swapoff+0x3f8/0x910
+> [c0000009dd5b7e30] c00000000000bbe4 system_call+0x5c/0x70
+> --- Exception: c01 (System Call) at 00007ffff7d208d8
+> 
+> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> ---
+>  fs/iomap/swapfile.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/fs/iomap/swapfile.c b/fs/iomap/swapfile.c
+> index a648dbf6991e..67953678c99f 100644
+> --- a/fs/iomap/swapfile.c
+> +++ b/fs/iomap/swapfile.c
+> @@ -170,6 +170,15 @@ int iomap_swapfile_activate(struct swap_info_struct *sis,
+>  			return ret;
+>  	}
+> 
+> +	/*
+> +	 * In case if nr_pages is 0 then we better return -EINVAL
+> +	 * since it is anyway an empty swapfile.
+> +	 */
+> +	if (isi.nr_pages == 0) {
+> +		pr_warn("swapon: Empty swap-file\n");
+
+The swapfile might not be empty, it's just that we couldn't find even a
+single page's worth of contiguous space in the whole file.  I would
+suggest:
+
+	/*
+	 * If this swapfile doesn't contain even a single page-aligned
+	 * contiguous range of blocks, reject this useless swapfile to
+	 * prevent confusion later on.
+	 */
+	if (isi.nr_pages == 0) {
+		pr_warn("swapon: Cannot find a single usable page in file.\n");
+		return -EINVAL;
+	}
+
+--D
+
+> +		return -EINVAL;
+> +	}
+> +
+>  	*pagespan = 1 + isi.highest_ppage - isi.lowest_ppage;
+>  	sis->max = isi.nr_pages;
+>  	sis->pages = isi.nr_pages - 1;
+> --
+> 2.26.2
+> 
