@@ -2,128 +2,119 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2CC832E5CD
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Mar 2021 11:10:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CCE732E786
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Mar 2021 13:00:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229978AbhCEKK1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 5 Mar 2021 05:10:27 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54096 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229948AbhCEKKR (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 5 Mar 2021 05:10:17 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 89BB0AD2B;
-        Fri,  5 Mar 2021 10:10:16 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id D49211F2B2F; Fri,  5 Mar 2021 11:10:05 +0100 (CET)
-Date:   Fri, 5 Mar 2021 11:10:05 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     "zhangyi (F)" <yi.zhang@huawei.com>
-Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, tytso@mit.edu, viro@zeniv.linux.org.uk,
-        linfeilong@huawei.com, Ye Bin <yebin10@huawei.com>
-Subject: Re: [PATCH] block_dump: don't put the last refcount when marking
- inode dirty
-Message-ID: <20210305101005.GA14142@quack2.suse.cz>
-References: <20210226103103.3048803-1-yi.zhang@huawei.com>
- <20210301112102.GD25026@quack2.suse.cz>
- <5f72dc70-9fb0-0d3b-dc31-f60d35929991@huawei.com>
+        id S229582AbhCEMAJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 5 Mar 2021 07:00:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30926 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229505AbhCEMAG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 5 Mar 2021 07:00:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614945605;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dbRuqCLJ0qutCRyPJA4haV3cGk8yCCE3pYrj3olV3RY=;
+        b=Y6qDVpW+yiFv1bKgJFlFt5oeO3xdri0cUL4MPrOtNyl/8ZSAf67ZZJMgL806etOreNeb8e
+        m/IycsENTsLr8OmJmxaV9PMCHRzMgcH71JcZAvG+QzfNZUtIBfKvT+jWlao8gxh59kfV8s
+        dJZe1yj8qpP42jOJ53uKTG6rA6cG6l0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-544-pbvOxdsvOpeeu291v_adzQ-1; Fri, 05 Mar 2021 07:00:02 -0500
+X-MC-Unique: pbvOxdsvOpeeu291v_adzQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9FE2A108BD11;
+        Fri,  5 Mar 2021 12:00:01 +0000 (UTC)
+Received: from work (unknown [10.40.193.97])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B5407100164C;
+        Fri,  5 Mar 2021 12:00:00 +0000 (UTC)
+Date:   Fri, 5 Mar 2021 12:59:57 +0100
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     Sedat Dilek <sedat.dilek@gmail.com>
+Cc:     Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org
+Subject: Re: badblocks from e2fsprogs
+Message-ID: <20210305115957.x4gbppxpzxuvn2kd@work>
+References: <CA+icZUXzjAniVZMzS5ePNa6HrjWL6ZrpAgzWufy74zHSyN+urQ@mail.gmail.com>
+ <YD0DaqIbAf0T2tw2@mit.edu>
+ <CA+icZUXJpEEO4GS1fy9ANXCXJ2BtD_rd1tAtXLun++i0taZwSA@mail.gmail.com>
+ <YD0JfjnMtXzGguZ6@mit.edu>
+ <CA+icZUUruS8h=CiUwuSsbL9NmCXCvdfV-XFfV=Z=qOpR9b83XA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5f72dc70-9fb0-0d3b-dc31-f60d35929991@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CA+icZUUruS8h=CiUwuSsbL9NmCXCvdfV-XFfV=Z=qOpR9b83XA@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 04-03-21 21:37:42, zhangyi (F) wrote:
-> On 2021/3/1 19:21, Jan Kara wrote:
-> > On Fri 26-02-21 18:31:03, zhangyi (F) wrote:
-> >> There is an AA deadlock problem when using block_dump on ext4 file
-> >> system with data=journal mode.
-> >>
-> >>   watchdog: BUG: soft lockup - CPU#19 stuck for 22s! [jbd2/pmem0-8:1002]
-> >>   CPU: 19 PID: 1002 Comm: jbd2/pmem0-8
-> >>   RIP: 0010:queued_spin_lock_slowpath+0x60/0x3b0
-> >>   ...
-> >>   Call Trace:
-> >>    _raw_spin_lock+0x57/0x70
-> >>    jbd2_journal_invalidatepage+0x166/0x680
-> >>    __ext4_journalled_invalidatepage+0x8c/0x120
-> >>    ext4_journalled_invalidatepage+0x12/0x40
-> >>    truncate_cleanup_page+0x10e/0x1c0
-> >>    truncate_inode_pages_range+0x2c8/0xec0
-> >>    truncate_inode_pages_final+0x41/0x90
-> >>    ext4_evict_inode+0x254/0xac0
-> >>    evict+0x11c/0x2f0
-> >>    iput+0x20e/0x3a0
-> >>    dentry_unlink_inode+0x1bf/0x1d0
-> >>    __dentry_kill+0x14c/0x2c0
-> >>    dput+0x2bc/0x630
-> >>    block_dump___mark_inode_dirty.cold+0x5c/0x111
-> >>    __mark_inode_dirty+0x678/0x6b0
-> >>    mark_buffer_dirty+0x16e/0x1d0
-> >>    __jbd2_journal_temp_unlink_buffer+0x127/0x1f0
-> >>    __jbd2_journal_unfile_buffer+0x24/0x80
-> >>    __jbd2_journal_refile_buffer+0x12f/0x1b0
-> >>    jbd2_journal_commit_transaction+0x244b/0x3030
-> >>
-> >> The problem is a race between jbd2 committing data buffer and user
-> >> unlink the file concurrently. The jbd2 will get jh->b_state_lock and
-> >> redirty the inode's data buffer and inode itself. If block_dump is
-> >> enabled, it will try to find inode's dentry and invoke the last dput()
-> >> after the inode was unlinked. Then the evict procedure will unmap
-> >> buffer and get jh->b_state_lock again in journal_unmap_buffer(), and
-> >> finally lead to deadlock. It works fine if block_dump is not enabled
-> >> because the last evict procedure is not invoked in jbd2 progress and
-> >> the jh->b_state_lock will also prevent inode use after free.
-> >>
-> >> jbd2                                xxx
-> >>                                     vfs_unlink
-> >>                                      ext4_unlink
-> >> jbd2_journal_commit_transaction
-> >> **get jh->b_state_lock**
-> >> jbd2_journal_refile_buffer
-> >>  mark_buffer_dirty
-> >>   __mark_inode_dirty
-> >>    block_dump___mark_inode_dirty
-> >>     d_find_alias
-> >>                                      d_delete
-> >>                                       unhash
-> >>     dput  //put the last refcount
-> >>      evict
-> >>       journal_unmap_buffer
-> >>        **get jh->b_state_lock again**
-> >>
-> >> In most cases of where invoking mark_inode_dirty() will get inode's
-> >> refcount and the last iput may not happen, but it's not safe. After
-> >> checking the block_dump code, it only want to dump the file name of the
-> >> dirty inode, so there is no need to get and put denrty, and dump an
-> >> unhashed dentry is also fine. This patch remove the dget() && dput(),
-> >> print the dentry name directly.
-> >>
-> >> Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
-> >> Signed-off-by: yebin (H) <yebin10@huawei.com>
-> > 
-> > Hrm, ok. Honestly, I wanted to just delete that code for a long time. IMO
-> > tracepoints (and we have one in __mark_inode_dirty) are much more useful
-> > for tracing anyway. This code exists only because it was there much before
-> > tracepoints existed... Do you have a strong reason why are you using
-> > block_dump instead of tracepoint trace_writeback_mark_inode_dirty() for
-> > your monitoring?
-> > 
+On Mon, Mar 01, 2021 at 04:42:26PM +0100, Sedat Dilek wrote:
+> On Mon, Mar 1, 2021 at 4:34 PM Theodore Ts'o <tytso@mit.edu> wrote:
+> >
+> > On Mon, Mar 01, 2021 at 04:12:03PM +0100, Sedat Dilek wrote:
+> > >
+> > > OK, I see.
+> > > So I misunderstood the -o option.
+> >
+> > It was clearly documented in the man page:
+> >
+> >        -o output_file
+> >               Write the list of bad blocks to the specified file.
+> >               Without this option, badblocks displays the list on
+> >               its standard output.  The format of this file is
+> >               suitable for use by the -l option in e2fsck(8) or
+> >               mke2fs(8).
+> >
 > 
-> Hi, Jan. We just do some stress tests and find this issue, I'm not sure who
-> are still using this old debug interface and gather it may need time. Could
-> we firstly fix this issue, and then delete this code if no opposed?
+> RTFM.
+> 
+> > I will say that for modern disks, the usefulness of badblocks has
+> > decreased significantly over time.  That's because for modern-sized
+> > disks, it can often take more than 24 hours to do a full read on the
+> > entire disk surface --- and the factory testing done by HDD
+> > manufacturers is far more comprehensive.
+> >
+> > In addition, SMART (see the smartctl package) is a much more reliable
+> > and efficient way of judging disk health.
+> >
+> > The badblocks program was written over two decades ago, before the
+> > days of SATA, and even IDE disks, when disk controlls and HDD's were
+> > far more primitive.  These days, modern HDD and SSD will do their own
+> > bad block redirection from a built-in bad block sparing pool, and the
+> > usefulness of using badblocks has been significantly decreased.
+> >
+> 
+> Thanks for the clarification on badblocks usage and usefulness.
+> 
+> OK, I ran before badblocks:
+> 
+> 1. smartctl -a /dev/sdc (shell)
+> 2. gsmartcontrol (GUI)
+> 
+> The results showed me "this disk is healthy".
+> As you said: Both gave a very quick overview.
+> 
+> - Sedat -
 
-I'd do it the other way around :) Delete the code and only fix it if
-someone complains that the feature is still used and so we should not
-delete it. Will you send a patch or should I do it?
+Just note that not even the device firmware can't really know whether the
+block is good/bad unless it tries to read/write it. In that way I still
+find the badblocks useful because it can "force" the device to notice
+that there is something wrong and try to fix it (perhaps by remapping
+the bad block to spare one). Of course you could use dd for that, but
+there are several reasons why badblocks is still more convenient tool to
+do that.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+That said you should also check the SMART data _after_ you run the
+badblocks to see if it encountered any read errors and/or remapped some
+blocks.
+
+-Lukas
+
+> 
+> [1] https://superuser.com/questions/171195/how-to-check-the-health-of-a-hard-drive
+> 
+
