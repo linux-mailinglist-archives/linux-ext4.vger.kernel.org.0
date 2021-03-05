@@ -2,138 +2,155 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AB0932D89B
-	for <lists+linux-ext4@lfdr.de>; Thu,  4 Mar 2021 18:27:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97AC832DF28
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Mar 2021 02:37:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237409AbhCDR1R (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 4 Mar 2021 12:27:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40324 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239347AbhCDR1M (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 4 Mar 2021 12:27:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E386664E89;
-        Thu,  4 Mar 2021 17:26:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614878792;
-        bh=HB4loAXLWA5MoyQDvfOGFQeSomA30bqcWhsrZ2wxtsw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TFRhTk+0/ppdWpGnyHUxo6Gb/F0UjQUMOROnNxn+GSprEm5X8oX5gmpzN6xRwA9J9
-         KVwwRFZvXZ3gY1fFfRNdjgOdjDgZbAReN2aHjgNZ2mEDV+JQayw7cdCfPvK623by0N
-         w7jjIoMN/hKzcGwh+YIa3JNYvksroW4Z9vMFNluOX5p/aCIdRc0MNl73I6jBj1uByJ
-         Le9C9eepeV831JgDxJuoMXfI7DbRx8N9auvR49Zc6+CQAw+0saca14lm6DBBvYS4Ir
-         WxytlnNqmujBaSs6vdBwbGw6w+XHLD4hR0zEnynHOgXs3eBHX0TbHHxNJTNfwlo7m2
-         PekzeBi/fDf0g==
-Date:   Thu, 4 Mar 2021 09:26:31 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, anju@linux.vnet.ibm.com
-Subject: Re: [PATCH] iomap: Fix negative assignment to unsigned sis->pages in
- iomap_swapfile_activate
-Message-ID: <20210304172631.GD7267@magnolia>
-References: <b39319ab99d9c5541b2cdc172a4b25f39cbaad50.1614838615.git.riteshh@linux.ibm.com>
+        id S229599AbhCEBhf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 4 Mar 2021 20:37:35 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:13433 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229574AbhCEBhf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 4 Mar 2021 20:37:35 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Ds9LJ4wR4zjVb1;
+        Fri,  5 Mar 2021 09:36:08 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server (TLS) id 14.3.498.0; Fri, 5 Mar 2021
+ 09:37:27 +0800
+Subject: Re: [f2fs-dev] [PATCH 2/2] f2fs: fix error handling in
+ f2fs_end_enable_verity()
+To:     Eric Biggers <ebiggers@kernel.org>, <linux-ext4@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+CC:     <linux-fscrypt@vger.kernel.org>, <stable@vger.kernel.org>
+References: <20210302200420.137977-1-ebiggers@kernel.org>
+ <20210302200420.137977-3-ebiggers@kernel.org>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <9980e263-aa25-cf50-5a94-9f63a5ae667e@huawei.com>
+Date:   Fri, 5 Mar 2021 09:37:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b39319ab99d9c5541b2cdc172a4b25f39cbaad50.1614838615.git.riteshh@linux.ibm.com>
+In-Reply-To: <20210302200420.137977-3-ebiggers@kernel.org>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 11:51:26AM +0530, Ritesh Harjani wrote:
-> In case if isi.nr_pages is 0, we are making sis->pages (which is
-> unsigned int) a huge value in iomap_swapfile_activate() by assigning -1.
-> This could cause a kernel crash in kernel v4.18 (with below signature).
-> Or could lead to unknown issues on latest kernel if the fake big swap gets
-> used.
+On 2021/3/3 4:04, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> Fix this issue by returning -EINVAL in case of nr_pages is 0, since it
-> is anyway a invalid swapfile. Looks like this issue will be hit when
-> we have pagesize < blocksize type of configuration.
+> f2fs didn't properly clean up if verity failed to be enabled on a file:
 > 
-> I was able to hit the issue in case of a tiny swap file with below
-> test script.
-> https://raw.githubusercontent.com/riteshharjani/LinuxStudy/master/scripts/swap-issue.sh
-
-Can you turn this into a dangerous-group fstest, please?
-
-> kernel crash analysis on v4.18
-> ==============================
-> On v4.18 kernel, it causes a kernel panic, since sis->pages becomes
-> a huge value and isi.nr_extents is 0. When 0 is returned it is
-> considered as a swapfile over NFS and SWP_FILE is set (sis->flags |= SWP_FILE).
-> Then when swapoff was getting called it was calling a_ops->swap_deactivate()
-> if (sis->flags & SWP_FILE) is true. Since a_ops->swap_deactivate() is
-> NULL in case of XFS, it causes below panic.
-
-Does the same reasoning apply to upstream?
-
-> Panic signature on v4.18 kernel:
-> =======================================
-> root@qemu:/home/qemu# [ 8291.723351] XFS (loop2): Unmounting Filesystem
-> [ 8292.123104] XFS (loop2): Mounting V5 Filesystem
-> [ 8292.132451] XFS (loop2): Ending clean mount
-> [ 8292.263362] Adding 4294967232k swap on /mnt1/test/swapfile.  Priority:-2 extents:1 across:274877906880k
-> [ 8292.277834] Unable to handle kernel paging request for instruction fetch
-> [ 8292.278677] Faulting instruction address: 0x00000000
-> cpu 0x19: Vector: 400 (Instruction Access) at [c0000009dd5b7ad0]
->     pc: 0000000000000000
->     lr: c0000000003eb9dc: destroy_swap_extents+0xfc/0x120
->     sp: c0000009dd5b7d50
->    msr: 8000000040009033
->   current = 0xc0000009b6710080
->   paca    = 0xc00000003ffcb280   irqmask: 0x03   irq_happened: 0x01
->     pid   = 5604, comm = swapoff
-> Linux version 4.18.0 (riteshh@xxxxxxx) (gcc version 8.4.0 (Ubuntu 8.4.0-1ubuntu1~18.04)) #57 SMP Wed Mar 3 01:33:04 CST 2021
-> enter ? for help
-> [link register   ] c0000000003eb9dc destroy_swap_extents+0xfc/0x120
-> [c0000009dd5b7d50] c0000000025a7058 proc_poll_event+0x0/0x4 (unreliable)
-> [c0000009dd5b7da0] c0000000003f0498 sys_swapoff+0x3f8/0x910
-> [c0000009dd5b7e30] c00000000000bbe4 system_call+0x5c/0x70
-> --- Exception: c01 (System Call) at 00007ffff7d208d8
+> - It left verity metadata (pages past EOF) in the page cache, which
+>    would be exposed to userspace if the file was later extended.
 > 
-> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> - It didn't truncate the verity metadata at all (either from cache or
+>    from disk) if an error occurred while setting the verity bit.
+> 
+> Fix these bugs by adding a call to truncate_inode_pages() and ensuring
+> that we truncate the verity metadata (both from cache and from disk) in
+> all error paths.  Also rework the code to cleanly separate the success
+> path from the error paths, which makes it much easier to understand.
+> 
+> Reported-by: Yunlei He <heyunlei@hihonor.com>
+> Fixes: 95ae251fe828 ("f2fs: add fs-verity support")
+> Cc: <stable@vger.kernel.org> # v5.4+
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 > ---
->  fs/iomap/swapfile.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
+>   fs/f2fs/verity.c | 61 ++++++++++++++++++++++++++++++++----------------
+>   1 file changed, 41 insertions(+), 20 deletions(-)
 > 
-> diff --git a/fs/iomap/swapfile.c b/fs/iomap/swapfile.c
-> index a648dbf6991e..67953678c99f 100644
-> --- a/fs/iomap/swapfile.c
-> +++ b/fs/iomap/swapfile.c
-> @@ -170,6 +170,15 @@ int iomap_swapfile_activate(struct swap_info_struct *sis,
->  			return ret;
->  	}
-> 
+> diff --git a/fs/f2fs/verity.c b/fs/f2fs/verity.c
+> index 054ec852b5ea4..2db89967fde37 100644
+> --- a/fs/f2fs/verity.c
+> +++ b/fs/f2fs/verity.c
+> @@ -160,31 +160,52 @@ static int f2fs_end_enable_verity(struct file *filp, const void *desc,
+>   	};
+>   	int err = 0;
+>   
+> -	if (desc != NULL) {
+> -		/* Succeeded; write the verity descriptor. */
+> -		err = pagecache_write(inode, desc, desc_size, desc_pos);
 > +	/*
-> +	 * In case if nr_pages is 0 then we better return -EINVAL
-> +	 * since it is anyway an empty swapfile.
+> +	 * If an error already occurred (which fs/verity/ signals by passing
+> +	 * desc == NULL), then only clean-up is needed.
 > +	 */
-> +	if (isi.nr_pages == 0) {
-> +		pr_warn("swapon: Empty swap-file\n");
-
-The swapfile might not be empty, it's just that we couldn't find even a
-single page's worth of contiguous space in the whole file.  I would
-suggest:
-
-	/*
-	 * If this swapfile doesn't contain even a single page-aligned
-	 * contiguous range of blocks, reject this useless swapfile to
-	 * prevent confusion later on.
-	 */
-	if (isi.nr_pages == 0) {
-		pr_warn("swapon: Cannot find a single usable page in file.\n");
-		return -EINVAL;
-	}
-
---D
-
-> +		return -EINVAL;
-> +	}
+> +	if (desc == NULL)
+> +		goto cleanup;
+>   
+> -		/* Write all pages before clearing FI_VERITY_IN_PROGRESS. */
+> -		if (!err)
+> -			err = filemap_write_and_wait(inode->i_mapping);
+> -	}
+> +	/* Append the verity descriptor. */
+> +	err = pagecache_write(inode, desc, desc_size, desc_pos);
+> +	if (err)
+> +		goto cleanup;
+>   
+> -	/* If we failed, truncate anything we wrote past i_size. */
+> -	if (desc == NULL || err)
+> -		f2fs_truncate(inode);
+> +	/*
+> +	 * Write all pages (both data and verity metadata).  Note that this must
+> +	 * happen before clearing FI_VERITY_IN_PROGRESS; otherwise pages beyond
+> +	 * i_size won't be written properly.  For crash consistency, this also
+> +	 * must happen before the verity inode flag gets persisted.
+> +	 */
+> +	err = filemap_write_and_wait(inode->i_mapping);
+> +	if (err)
+> +		goto cleanup;
 > +
->  	*pagespan = 1 + isi.highest_ppage - isi.lowest_ppage;
->  	sis->max = isi.nr_pages;
->  	sis->pages = isi.nr_pages - 1;
-> --
-> 2.26.2
+> +	/* Set the verity xattr. */
+> +	err = f2fs_setxattr(inode, F2FS_XATTR_INDEX_VERITY,
+> +			    F2FS_XATTR_NAME_VERITY, &dloc, sizeof(dloc),
+> +			    NULL, XATTR_CREATE);
+> +	if (err)
+> +		goto cleanup;
+> +
+> +	/* Finally, set the verity inode flag. */
+> +	file_set_verity(inode);
+> +	f2fs_set_inode_flags(inode);
+> +	f2fs_mark_inode_dirty_sync(inode, true);
+>   
+>   	clear_inode_flag(inode, FI_VERITY_IN_PROGRESS);
+> +	return 0;
+>   
+> -	if (desc != NULL && !err) {
+> -		err = f2fs_setxattr(inode, F2FS_XATTR_INDEX_VERITY,
+> -				    F2FS_XATTR_NAME_VERITY, &dloc, sizeof(dloc),
+> -				    NULL, XATTR_CREATE);
+> -		if (!err) {
+> -			file_set_verity(inode);
+> -			f2fs_set_inode_flags(inode);
+> -			f2fs_mark_inode_dirty_sync(inode, true);
+> -		}
+> -	}
+> +cleanup:
+> +	/*
+> +	 * Verity failed to be enabled, so clean up by truncating any verity
+> +	 * metadata that was written beyond i_size (both from cache and from
+> +	 * disk) and clearing FI_VERITY_IN_PROGRESS.
+> +	 */
+> +	truncate_inode_pages(inode->i_mapping, inode->i_size);
+> +	f2fs_truncate(inode);
+
+Eric,
+
+Truncation can fail due to a lot of reasons, if we fail in f2fs_truncate(),
+do we need to at least print a message here? or it allows to keep those
+meta/data silently.
+
+One other concern is that how do you think of covering truncate_inode_pages &
+f2fs_truncate with F2FS_I(inode)->i_gc_rwsem[WRITE] lock to avoid racing with
+GC, so that page cache won't be revalidated after truncate_inode_pages().
+
+Thanks,
+
+> +	clear_inode_flag(inode, FI_VERITY_IN_PROGRESS); >   	return err;
+>   }
+>   
 > 
