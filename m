@@ -2,121 +2,177 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8728133055F
-	for <lists+linux-ext4@lfdr.de>; Mon,  8 Mar 2021 01:33:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71576330FC2
+	for <lists+linux-ext4@lfdr.de>; Mon,  8 Mar 2021 14:44:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233398AbhCHAc1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 7 Mar 2021 19:32:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233393AbhCHAcO (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 7 Mar 2021 19:32:14 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D8E1C061761
-        for <linux-ext4@vger.kernel.org>; Sun,  7 Mar 2021 16:32:14 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id s7so4040100plg.5
-        for <linux-ext4@vger.kernel.org>; Sun, 07 Mar 2021 16:32:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=6AB1N2CEv1uO/OWrbLkb4xKVAC6/jBjIAgWr7ep8KF8=;
-        b=VWCy9+1/e5XxIB5MV5Fe6l/NkVtBF4cfC/CBa/LEuWFw3r6BLsS/aDIpIm63a8hPKl
-         aPuvyhRk8mXB8MaILrw+/ZAjQLybx0l6eCHkmT90dUtnX24x26H8L1CZZdILX669T4T8
-         Dm4pnYOeBos6qSeXIKfODtYT24qVqR1LqjwPqhgooxgl8aXGoouPAxklz3y6LtDgIHkr
-         ZkF84qXR7xxR3LphlVxFjGCHnfsppio2JBBHezbkuaQfUNB/02MdAi8nDzNjhAwX0eln
-         tJH/EWF8w+8NYBUjGc0c8peNae4mnpFjUU2EQ85dxcdeRn+NHgID5oneV621X2iII52z
-         9Nbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=6AB1N2CEv1uO/OWrbLkb4xKVAC6/jBjIAgWr7ep8KF8=;
-        b=LUDnv4GOdSPTZ8D8vYSMDiadwo5P4IJ/e+A/5asneKqgj13whbpy7d14uWB018zJ7s
-         PaT7UylSC/wHBxY/pPUi2WkAFkflN4yKSlcMukz8eOioMw5KuCQKwu2cdOmwpdJaqpz+
-         TDNYMX+VmaKPTY5CoRYg6yzXiYjt80c0BeVtPDwonHuoDfCa9tT6pPBJRs2iC2FUndp6
-         eaeZKAJ56OciisPNCkw5lqjecaw4cu/4ZjXUV4JV5HLHN+M6gZ1HOSl+0hp3VaYD9/Qs
-         iifFsgpZJ5y70qjtt1LH3zoiTWlp+SF6OgkXTtkVK9IgeGzWczVOGQawb0nRtMFEB6mq
-         dZVg==
-X-Gm-Message-State: AOAM5330RttNr3yKNCRxAHd1M/fn2qBB5CjQ+0NqKEBJXnnmbs0k/Yvx
-        uaRqumkPnDa270MWYonDA+8bA4A7FdEm8Z5S9KI=
-X-Google-Smtp-Source: ABdhPJzfHsNxLA0ripzLurNnF1DJTwCR3kO75BM4+RaQZg28pSu1AfWDDMA3U6njWVx8/porMrW+mmqltwJR85t5QHU=
-X-Received: by 2002:a17:902:7401:b029:e4:5992:e64a with SMTP id
- g1-20020a1709027401b02900e45992e64amr18449001pll.75.1615163533483; Sun, 07
- Mar 2021 16:32:13 -0800 (PST)
+        id S229805AbhCHNnl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 8 Mar 2021 08:43:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23746 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229637AbhCHNni (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 8 Mar 2021 08:43:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615211017;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=eAPZcYzWe8t1pIlHAOfa2JsSLrxJ3AehEAVFLAD4nR0=;
+        b=d18P3uJpxQyK99aQsW11KYOH/1rpQzyl2VEC1K3s9cse9GVh44A6QZPvrUNi48VNoW+QZM
+        uBt9ZQxE/MoXj1gkuep/QTntNvu9loyjlnkhH4IOnZ5LRKwOfKxPItGyQjCHNU1jWnaS/X
+        0G91X3t4kYyepZexq3fdORcJyfsL25g=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-524-AxbwmjW6OhaRM828WdxbJA-1; Mon, 08 Mar 2021 08:43:33 -0500
+X-MC-Unique: AxbwmjW6OhaRM828WdxbJA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 88C8F881276;
+        Mon,  8 Mar 2021 13:43:32 +0000 (UTC)
+Received: from zlang-laptop.redhat.com (ovpn-12-62.pek2.redhat.com [10.72.12.62])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 10FCB60C04;
+        Mon,  8 Mar 2021 13:43:29 +0000 (UTC)
+From:   Zorro Lang <zlang@redhat.com>
+To:     fstests@vger.kernel.org
+Cc:     guan@eryu.me, sunke32@huawei.com, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org
+Subject: [PATCH v2] xfstests: rename RENAME_WHITEOUT test on fs no enough sapce
+Date:   Mon,  8 Mar 2021 21:43:27 +0800
+Message-Id: <20210308134327.345579-1-zlang@redhat.com>
 MIME-Version: 1.0
-Sender: mrsnadiaemaan5@gmail.com
-Received: by 2002:a17:90a:1182:0:0:0:0 with HTTP; Sun, 7 Mar 2021 16:32:13
- -0800 (PST)
-From:   Mrs Nadia Emaan <mrsnadiaemaan50@gmail.com>
-Date:   Mon, 8 Mar 2021 00:32:13 +0000
-X-Google-Sender-Auth: JeiXtIsroKRF3y0orwM9kIW__5s
-Message-ID: <CAOg3cV2YyHY=-mumg8bq5owAptO=8grRnQi0hv6Lf+khYHSLGQ@mail.gmail.com>
-Subject: May the peace of Almighty God be with You.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-May God Bless you,
+This's a regression test for linux 6b4b8e6b4ad8 ("ext4: fix bug for
+rename with RENAME_WHITEOUT"). Rename a file with RENAME_WHITEOUT
+flag might cause corruption when there's not enough space to
+complete this renaming operation.
 
-I am contacting you through this means because I need your urgent
-assistance and also help me to carry a charity project in your
-country. I found your email address as a true child of God for past
-few days now that I have been praying to know if you are really the
-chosen one for this great charity project, according to God's
-direction, after all prayers I am convinced, and I have decided to
-contact you. Please, i want you use the funds for the Lord's work,
-with confidence, read and respond now.
+Signed-off-by: Zorro Lang <zlang@redhat.com>
+Signed-off-by: Sun Ke <sunke32@huawei.com>
+---
 
+Hi,
 
-My name is Ms. Nadia Emaan Faroul , a widow, but currently based in West
-Africa since my life with my late husband, who was a businessman in
-this country before dying some years ago. We were married to many
-years without a child. He died after a brief illness that lasted only
-six days and I myself have been suffering from an ovarian cancer
-disease. At this moment I am about to finish the race in this way
-because the disease has reached a very bad stage, without any family
-member and without children. I hope you do not expose or betray this
-trust and I am sure that I am about to trust you for the mutual
-benefit of orphans and the less privileged. I have some funds that I
-inherited from my late husband, the total sum of ($ 12,500,000.00)
-deposited at a bank here in Burkina Faso. After knowing my current
-state of health, I decided to trust you with this fund, believing that
-you will use it in the way I will instruct here.
+Thanks for the reviewing from Eryu. V2 did below changes:
+1) Import ./common/renameat2 and _require_renameat2 whiteout
+2) Replace CHUNKS with NR_FILE
+3) Reduce the number of test files from 64*64 to 4*64
+4) Add to quick group 
 
+More details about the reviewing history, refer to:
+https://patchwork.kernel.org/project/fstests/patch/20210218071324.50413-1-zlang@redhat.com/
 
-you will use this $12.5 Million for public benefit as follows;
+Thanks,
+Zorro
 
-1. Establish An Orphanage Home To Help The Orphanages Children.
-2. Build A Hospital To Help The Poor.
-3. Build A Nursing Home For Elderly People Need Care & Meal.
+ tests/generic/626     | 74 +++++++++++++++++++++++++++++++++++++++++++
+ tests/generic/626.out |  2 ++
+ tests/generic/group   |  1 +
+ 3 files changed, 77 insertions(+)
+ create mode 100755 tests/generic/626
+ create mode 100644 tests/generic/626.out
 
-You will named them after my late husband.Therefore, I need you to
-help me and claim this money and use it for charities, for orphanages
-and provide justice and help to the poor, needy and to promote the
-words of God and the effort to maintain the house of God, according to
-the bible in the book of. Jeremiah 22: 15-16, without minding our
-different religions.
+diff --git a/tests/generic/626 b/tests/generic/626
+new file mode 100755
+index 00000000..1baa73f8
+--- /dev/null
++++ b/tests/generic/626
+@@ -0,0 +1,74 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2021 HUAWEI.  All Rights Reserved.
++# Copyright (c) 2021 Red Hat Inc.  All Rights Reserved.
++#
++# FS QA Test No. 626
++#
++# Test RENAME_WHITEOUT on filesystem without space to create one more inodes.
++# This is a regression test for kernel commit:
++#   6b4b8e6b4ad8 ("ext4: ext4: fix bug for rename with RENAME_WHITEOUT")
++#
++seq=`basename $0`
++seqres=$RESULT_DIR/$seq
++echo "QA output created by $seq"
++
++here=`pwd`
++tmp=/tmp/$$
++status=1	# failure is the default!
++trap "_cleanup; exit \$status" 0 1 2 3 15
++
++_cleanup()
++{
++	cd /
++	rm -f $tmp.*
++}
++
++# get standard environment, filters and checks
++. ./common/rc
++. ./common/filter
++. ./common/populate
++. ./common/renameat2
++
++# remove previous $seqres.full before test
++rm -f $seqres.full
++
++# real QA test starts here
++_supported_fs generic
++_require_scratch
++_require_renameat2 whiteout
++
++_scratch_mkfs_sized $((256 * 1024 * 1024)) >> $seqres.full 2>&1
++_scratch_mount
++
++# Create lots of files, to help to trigger the bug easily
++NR_FILE=$((4 * 64))
++for ((i=0; i<NR_FILE; i++));do
++	touch $SCRATCH_MNT/srcfile$i
++done
++# Try to fill the whole fs
++nr_free=$(stat -f -c '%f' $SCRATCH_MNT)
++blksz="$(_get_block_size $SCRATCH_MNT)"
++_fill_fs $((nr_free * blksz)) $SCRATCH_MNT/fill_space $blksz 0 >> $seqres.full 2>&1
++# Use empty files to fill the rest
++for ((i=0; i<10000; i++));do
++	touch $SCRATCH_MNT/fill_file$i 2>/dev/null
++	# Until no more files can be created
++	if [ $? -ne 0 ];then
++		break
++	fi
++done
++# ENOSPC is expected here
++for ((i=0; i<NR_FILE; i++));do
++	$here/src/renameat2 -w $SCRATCH_MNT/srcfile$i $SCRATCH_MNT/dstfile$i >> $seqres.full 2>&1
++done
++_scratch_cycle_mount
++# Expect no errors at here
++for ((i=0; i<NR_FILE; i++));do
++	ls -l $SCRATCH_MNT/srcfile$i >/dev/null
++done
++
++echo "Silence is golden"
++# success, all done
++status=0
++exit
+diff --git a/tests/generic/626.out b/tests/generic/626.out
+new file mode 100644
+index 00000000..130b2fef
+--- /dev/null
++++ b/tests/generic/626.out
+@@ -0,0 +1,2 @@
++QA output created by 626
++Silence is golden
+diff --git a/tests/generic/group b/tests/generic/group
+index 84db3789..c3448fe3 100644
+--- a/tests/generic/group
++++ b/tests/generic/group
+@@ -628,3 +628,4 @@
+ 623 auto quick shutdown
+ 624 auto quick verity
+ 625 auto quick verity
++626 auto quick rename enospc
+-- 
+2.29.2
 
-It will be a pleasure to compensate with 40% percent of the total
-money for your effort in handling the transaction, while 60% of the
-money will go to charity project.
-
-All I need from you is sincerity and ability to complete the task of
-God without any failure. It will be my pleasure to see that the bank
-has finally released and transferred the fund to your bank account in
-the country, even before I die here in the hospital, due to my current
-state of health, everything must be processed as soon as possible.
-
-I am waiting for your immediate response, if you are only interested
-in obtaining more details about the transaction and execution of this
-humanitarian project for the glory and honor of God.
-
-Sorry if you received this letter in your spam, is due to recent
-connection/network error here in the country.
-
-Please I am waiting for your urgent reply now.
-
-May God Bless you,
-Mrs. Nadia Emaan Faroul .
