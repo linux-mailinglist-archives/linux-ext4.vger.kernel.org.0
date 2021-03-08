@@ -2,180 +2,73 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 203AC331639
-	for <lists+linux-ext4@lfdr.de>; Mon,  8 Mar 2021 19:37:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFB8033180D
+	for <lists+linux-ext4@lfdr.de>; Mon,  8 Mar 2021 21:03:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230512AbhCHSg2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 8 Mar 2021 13:36:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55888 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230125AbhCHSgL (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 8 Mar 2021 13:36:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AFA606518A;
-        Mon,  8 Mar 2021 18:36:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615228570;
-        bh=Hv4YcZM0nn7U1j39JmRNZJV97rBy3ZTH91LINOoGeac=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Fq377U7ArxzX2uhn7DRlAsaxuNPrhYLxAHo+hJ7F0bioUTajVpECNEbA6LJOQxmPl
-         DyxdSpyv/E+5YtXtRnnnp/ynGZ/Is5blglCMSLb4MC/WF3TSO8Q+uGYl9JFm/v1DyF
-         S2W2G07n+Jm+LZ12jerKL9rSGd40amE7stNQSqkC01STFZKb+AbJ5clMmnU1GOukgJ
-         /jCAE4z90VJYB/ocSEhl/o4OdYThxkuRYPc6HrwuDZmXEfNcr0Uo85Ccu6hZpBYK1+
-         Ub866LIJYyGWQDvauevuzmBOKyagywJeCQ9Eu2iblX18o1pk/WUKOqa4zDGLaNy9tJ
-         hC5q+WBTRBHTg==
-Date:   Mon, 8 Mar 2021 10:36:10 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Zorro Lang <zlang@redhat.com>
-Cc:     fstests@vger.kernel.org, guan@eryu.me, sunke32@huawei.com,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v2] xfstests: rename RENAME_WHITEOUT test on fs no enough
- sapce
-Message-ID: <20210308183610.GX3419940@magnolia>
-References: <20210308134327.345579-1-zlang@redhat.com>
+        id S231424AbhCHUCc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 8 Mar 2021 15:02:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231732AbhCHUCX (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 8 Mar 2021 15:02:23 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A76AC06174A
+        for <linux-ext4@vger.kernel.org>; Mon,  8 Mar 2021 12:02:23 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id o10so7129557pgg.4
+        for <linux-ext4@vger.kernel.org>; Mon, 08 Mar 2021 12:02:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=5+KRHSh3GEC8ILOOPT4wMGlaFztgka8nVLbkrx4pNso=;
+        b=eoMTCEq0Ab/RxaPh6cfPnnYOXdyxdEYmYQV6qi4WKFVi8f0gQqKIctT4d9q3MHFFWp
+         mYgcmR5J3etP1e2E8rx8jvnPoZLJrxpoIU3yESxV8jPymEve+XfHyo98XAp9jvBq8QI8
+         1CUhiwvvwKSTO+ILwWmd4b5StDYpcjCQv32rT14seuHF0K1lqjVjEFafSJO1cl3UgHQm
+         +ZzCjbIXKWfR5B9rYVpNDAZB9+eh/CH5Rqq1QcHDDj5EAwDLCgOEmP28EWRWn85tFROI
+         yEPWpvS5viYX8NmgemAmlHbxRbtT9jccJpGbmsKCYP0dLDvwK4ZbqWlof88lR8DQUxM0
+         MGaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=5+KRHSh3GEC8ILOOPT4wMGlaFztgka8nVLbkrx4pNso=;
+        b=hc5PpO3yTggCDfMTfzB4RZNUbacjP+MuhIrts5q9pu4e9SBV5i5rmL6YdqGKPh80nK
+         5Ng6zHfWRfimP0APYYm8kBUF6PTdScTxUSvMLsH71z6XCDiRrqF7vizj1BLxCS1T5vSA
+         vcQ6G+7Vnb+PS8UPi8/6/ZY+1po/VFMhA2G0MAWp7iAlDoxmCOpjxm6ma8zdrZ2McZi7
+         ndpm3BwZDA/8LHdkR/MMtiAVqi0rYW8LA0PK5R3/Fozo2LJ45jZkFqF/GzF4d/45b6l6
+         643kJV0ZznXG2svKsMPmv6JAFj69VkvKQjGeGTSh/M8cXo9gAOWBzsE8NnVgQBEB/oFd
+         1Sxw==
+X-Gm-Message-State: AOAM5313S5A6X11G9gEB9Syp0p0cTqK6xy41QZ6JJ5JmhIOHw+sufadf
+        jN8Z/8E6/jiilzVaM4I1Ydp/xTvjbDX9bSaQhlYx0Li20OI=
+X-Google-Smtp-Source: ABdhPJzGuBx0awYdC5oQiDKxgrRO3YhOWz//iDAQ5tAxuvLJ/0elAG2STcnJnDmb9z32zx6M0j2JvQFcA7nLkAz8IMs=
+X-Received: by 2002:a62:8811:0:b029:1ef:2105:3594 with SMTP id
+ l17-20020a6288110000b02901ef21053594mr21559642pfd.70.1615233743074; Mon, 08
+ Mar 2021 12:02:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210308134327.345579-1-zlang@redhat.com>
+From:   George Goffe <grgoffe@gmail.com>
+Date:   Mon, 8 Mar 2021 12:01:46 -0800
+Message-ID: <CALCFxS7EwQbF47GNgaiuOVrw0n=OQBzHTH6JpoeiZ=tb1CYB1g@mail.gmail.com>
+Subject: Scrubbing filenames from meta-data dump of ext4 filesystems
+To:     linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 09:43:27PM +0800, Zorro Lang wrote:
-> This's a regression test for linux 6b4b8e6b4ad8 ("ext4: fix bug for
-> rename with RENAME_WHITEOUT"). Rename a file with RENAME_WHITEOUT
-> flag might cause corruption when there's not enough space to
-> complete this renaming operation.
-> 
-> Signed-off-by: Zorro Lang <zlang@redhat.com>
-> Signed-off-by: Sun Ke <sunke32@huawei.com>
+Howdy,
 
-Seems reasonable to me; does it pass on xfs?
+I'm helping to shoot a bug on a Fedora Core 35 system and have been
+requested to provide a meta-data dump of the problem filesystem. The
+filenames are restricted so I need to scrub this file  before sending
+it.
 
-If so,
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+Does ext4 have a facility whereby I can scrub the filenames from the dump?
 
---D
+Your help is appreciated.
 
-> ---
-> 
-> Hi,
-> 
-> Thanks for the reviewing from Eryu. V2 did below changes:
-> 1) Import ./common/renameat2 and _require_renameat2 whiteout
-> 2) Replace CHUNKS with NR_FILE
-> 3) Reduce the number of test files from 64*64 to 4*64
-> 4) Add to quick group 
-> 
-> More details about the reviewing history, refer to:
-> https://patchwork.kernel.org/project/fstests/patch/20210218071324.50413-1-zlang@redhat.com/
-> 
-> Thanks,
-> Zorro
-> 
->  tests/generic/626     | 74 +++++++++++++++++++++++++++++++++++++++++++
->  tests/generic/626.out |  2 ++
->  tests/generic/group   |  1 +
->  3 files changed, 77 insertions(+)
->  create mode 100755 tests/generic/626
->  create mode 100644 tests/generic/626.out
-> 
-> diff --git a/tests/generic/626 b/tests/generic/626
-> new file mode 100755
-> index 00000000..1baa73f8
-> --- /dev/null
-> +++ b/tests/generic/626
-> @@ -0,0 +1,74 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2021 HUAWEI.  All Rights Reserved.
-> +# Copyright (c) 2021 Red Hat Inc.  All Rights Reserved.
-> +#
-> +# FS QA Test No. 626
-> +#
-> +# Test RENAME_WHITEOUT on filesystem without space to create one more inodes.
-> +# This is a regression test for kernel commit:
-> +#   6b4b8e6b4ad8 ("ext4: ext4: fix bug for rename with RENAME_WHITEOUT")
-> +#
-> +seq=`basename $0`
-> +seqres=$RESULT_DIR/$seq
-> +echo "QA output created by $seq"
-> +
-> +here=`pwd`
-> +tmp=/tmp/$$
-> +status=1	# failure is the default!
-> +trap "_cleanup; exit \$status" 0 1 2 3 15
-> +
-> +_cleanup()
-> +{
-> +	cd /
-> +	rm -f $tmp.*
-> +}
-> +
-> +# get standard environment, filters and checks
-> +. ./common/rc
-> +. ./common/filter
-> +. ./common/populate
-> +. ./common/renameat2
-> +
-> +# remove previous $seqres.full before test
-> +rm -f $seqres.full
-> +
-> +# real QA test starts here
-> +_supported_fs generic
-> +_require_scratch
-> +_require_renameat2 whiteout
-> +
-> +_scratch_mkfs_sized $((256 * 1024 * 1024)) >> $seqres.full 2>&1
-> +_scratch_mount
-> +
-> +# Create lots of files, to help to trigger the bug easily
-> +NR_FILE=$((4 * 64))
-> +for ((i=0; i<NR_FILE; i++));do
-> +	touch $SCRATCH_MNT/srcfile$i
-> +done
-> +# Try to fill the whole fs
-> +nr_free=$(stat -f -c '%f' $SCRATCH_MNT)
-> +blksz="$(_get_block_size $SCRATCH_MNT)"
-> +_fill_fs $((nr_free * blksz)) $SCRATCH_MNT/fill_space $blksz 0 >> $seqres.full 2>&1
-> +# Use empty files to fill the rest
-> +for ((i=0; i<10000; i++));do
-> +	touch $SCRATCH_MNT/fill_file$i 2>/dev/null
-> +	# Until no more files can be created
-> +	if [ $? -ne 0 ];then
-> +		break
-> +	fi
-> +done
-> +# ENOSPC is expected here
-> +for ((i=0; i<NR_FILE; i++));do
-> +	$here/src/renameat2 -w $SCRATCH_MNT/srcfile$i $SCRATCH_MNT/dstfile$i >> $seqres.full 2>&1
-> +done
-> +_scratch_cycle_mount
-> +# Expect no errors at here
-> +for ((i=0; i<NR_FILE; i++));do
-> +	ls -l $SCRATCH_MNT/srcfile$i >/dev/null
-> +done
-> +
-> +echo "Silence is golden"
-> +# success, all done
-> +status=0
-> +exit
-> diff --git a/tests/generic/626.out b/tests/generic/626.out
-> new file mode 100644
-> index 00000000..130b2fef
-> --- /dev/null
-> +++ b/tests/generic/626.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 626
-> +Silence is golden
-> diff --git a/tests/generic/group b/tests/generic/group
-> index 84db3789..c3448fe3 100644
-> --- a/tests/generic/group
-> +++ b/tests/generic/group
-> @@ -628,3 +628,4 @@
->  623 auto quick shutdown
->  624 auto quick verity
->  625 auto quick verity
-> +626 auto quick rename enospc
-> -- 
-> 2.29.2
-> 
+Best regards,
+
+George...
+
+
+-- 
+It's not what you know that hurts you, it's what you KNOW that AINT
+so. WIll Rodgers
