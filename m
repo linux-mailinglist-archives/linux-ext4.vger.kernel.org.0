@@ -2,177 +2,144 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71576330FC2
-	for <lists+linux-ext4@lfdr.de>; Mon,  8 Mar 2021 14:44:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 096D733105C
+	for <lists+linux-ext4@lfdr.de>; Mon,  8 Mar 2021 15:06:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229805AbhCHNnl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 8 Mar 2021 08:43:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23746 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229637AbhCHNni (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 8 Mar 2021 08:43:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615211017;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=eAPZcYzWe8t1pIlHAOfa2JsSLrxJ3AehEAVFLAD4nR0=;
-        b=d18P3uJpxQyK99aQsW11KYOH/1rpQzyl2VEC1K3s9cse9GVh44A6QZPvrUNi48VNoW+QZM
-        uBt9ZQxE/MoXj1gkuep/QTntNvu9loyjlnkhH4IOnZ5LRKwOfKxPItGyQjCHNU1jWnaS/X
-        0G91X3t4kYyepZexq3fdORcJyfsL25g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-524-AxbwmjW6OhaRM828WdxbJA-1; Mon, 08 Mar 2021 08:43:33 -0500
-X-MC-Unique: AxbwmjW6OhaRM828WdxbJA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 88C8F881276;
-        Mon,  8 Mar 2021 13:43:32 +0000 (UTC)
-Received: from zlang-laptop.redhat.com (ovpn-12-62.pek2.redhat.com [10.72.12.62])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 10FCB60C04;
-        Mon,  8 Mar 2021 13:43:29 +0000 (UTC)
-From:   Zorro Lang <zlang@redhat.com>
-To:     fstests@vger.kernel.org
-Cc:     guan@eryu.me, sunke32@huawei.com, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Subject: [PATCH v2] xfstests: rename RENAME_WHITEOUT test on fs no enough sapce
-Date:   Mon,  8 Mar 2021 21:43:27 +0800
-Message-Id: <20210308134327.345579-1-zlang@redhat.com>
+        id S229872AbhCHOFz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 8 Mar 2021 09:05:55 -0500
+Received: from mx1.hrz.uni-dortmund.de ([129.217.128.51]:35720 "EHLO
+        unimail.uni-dortmund.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229701AbhCHOFp (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 8 Mar 2021 09:05:45 -0500
+Received: from [192.168.111.113] (p4fd97bae.dip0.t-ipconnect.de [79.217.123.174])
+        (authenticated bits=0)
+        by unimail.uni-dortmund.de (8.16.1/8.16.1) with ESMTPSA id 128E5YG9001571
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT);
+        Mon, 8 Mar 2021 15:05:34 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tu-dortmund.de;
+        s=unimail; t=1615212334;
+        bh=zRi/ax+YMjPGtr1+UjlQMw8tthe6i1Knja7s0lBnSts=;
+        h=To:Cc:References:From:Subject:Date:In-Reply-To;
+        b=K5LrqzYxFf61VDYBx7jLF7mA6lAhQUBFWasEdgnF1c8hmDT0zCqar/epfxhslAR7N
+         UALpcQbAaiA1JZFXa5sa5xqZeBGuzBmG+ZqiD56U8lynNW6DpPGNPI8MFx5Y6mDUtW
+         PK7fmEEhwfxTWOcH0Zq8+Lgbb9UiF1IMf8l3q2I4=
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
+        Jan Kara <jack@suse.cz>, Jan Kara <jack@suse.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <f63dd495-defb-adc4-aa91-6aacd7f441c7@tu-dortmund.de>
+ <a4709bc4-ee62-2cdc-0628-32e8fa73e8f9@tu-dortmund.de>
+ <YEJLuP6+Zy8/dq+D@mit.edu>
+ <667b3ec3-a522-05a9-31e8-87d8bfaa7adb@tu-dortmund.de>
+ <YEJWiXaZ+9H+2nBx@mit.edu>
+From:   Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
+Subject: Re: [RFC] inode.i_opflags - Usage of two different locking schemes
+Message-ID: <0f387f5b-a516-af45-856d-f38d1adfadf5@tu-dortmund.de>
+Date:   Mon, 8 Mar 2021 15:05:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <YEJWiXaZ+9H+2nBx@mit.edu>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="Ttm8mGlNMVfe7nbCbsCMw4KHu2VqQcARX"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This's a regression test for linux 6b4b8e6b4ad8 ("ext4: fix bug for
-rename with RENAME_WHITEOUT"). Rename a file with RENAME_WHITEOUT
-flag might cause corruption when there's not enough space to
-complete this renaming operation.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--Ttm8mGlNMVfe7nbCbsCMw4KHu2VqQcARX
+Content-Type: multipart/mixed; boundary="YjAJKbPSRDIAWGreUOUzkTD1cIcg201Xm";
+ protected-headers="v1"
+From: Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
+To: Theodore Ts'o <tytso@mit.edu>
+Cc: Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
+ Jan Kara <jack@suse.cz>, Jan Kara <jack@suse.com>,
+ linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <0f387f5b-a516-af45-856d-f38d1adfadf5@tu-dortmund.de>
+Subject: Re: [RFC] inode.i_opflags - Usage of two different locking schemes
+References: <f63dd495-defb-adc4-aa91-6aacd7f441c7@tu-dortmund.de>
+ <a4709bc4-ee62-2cdc-0628-32e8fa73e8f9@tu-dortmund.de>
+ <YEJLuP6+Zy8/dq+D@mit.edu>
+ <667b3ec3-a522-05a9-31e8-87d8bfaa7adb@tu-dortmund.de>
+ <YEJWiXaZ+9H+2nBx@mit.edu>
+In-Reply-To: <YEJWiXaZ+9H+2nBx@mit.edu>
 
-Signed-off-by: Zorro Lang <zlang@redhat.com>
-Signed-off-by: Sun Ke <sunke32@huawei.com>
----
+--YjAJKbPSRDIAWGreUOUzkTD1cIcg201Xm
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
 
-Thanks for the reviewing from Eryu. V2 did below changes:
-1) Import ./common/renameat2 and _require_renameat2 whiteout
-2) Replace CHUNKS with NR_FILE
-3) Reduce the number of test files from 64*64 to 4*64
-4) Add to quick group 
 
-More details about the reviewing history, refer to:
-https://patchwork.kernel.org/project/fstests/patch/20210218071324.50413-1-zlang@redhat.com/
+On 05.03.21 17:04, Theodore Ts'o wrote:
+> On Fri, Mar 05, 2021 at 04:35:47PM +0100, Alexander Lochmann wrote:
+>>
+>>
+>> On 05.03.21 16:18, Theodore Ts'o wrote:
+>>> 1)  I don't see where i_opflags is being read in ipc/mqueue.c at all,=
 
-Thanks,
-Zorro
+>>> either with or without i_rwsem.
+>>>
+>> It is read in fs/dcache.c
+>=20
+> So why is this unique to the mqueue inode then?  It might be helpful
+> to have explicit call stacks in the e-mail, in text form, when you
+> resend to LKML.
+It is unique to mqeue inode, because the control flow goes through=20
+ipc/mqueue.c where almost always the i_rwsem is taken.
+Hence, we see more memory accesses to an mqueue inode with the i_rwsem.
+The i_lock is less often hold compared to the i_rwsem.
+We conclude the i_rwsem is needed. So it might not be a contradiction at =
 
- tests/generic/626     | 74 +++++++++++++++++++++++++++++++++++++++++++
- tests/generic/626.out |  2 ++
- tests/generic/group   |  1 +
- 3 files changed, 77 insertions(+)
- create mode 100755 tests/generic/626
- create mode 100644 tests/generic/626.out
+all. It rather could be a flaw in our approach. :-/
 
-diff --git a/tests/generic/626 b/tests/generic/626
-new file mode 100755
-index 00000000..1baa73f8
---- /dev/null
-+++ b/tests/generic/626
-@@ -0,0 +1,74 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2021 HUAWEI.  All Rights Reserved.
-+# Copyright (c) 2021 Red Hat Inc.  All Rights Reserved.
-+#
-+# FS QA Test No. 626
-+#
-+# Test RENAME_WHITEOUT on filesystem without space to create one more inodes.
-+# This is a regression test for kernel commit:
-+#   6b4b8e6b4ad8 ("ext4: ext4: fix bug for rename with RENAME_WHITEOUT")
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+here=`pwd`
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+	cd /
-+	rm -f $tmp.*
-+}
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+. ./common/populate
-+. ./common/renameat2
-+
-+# remove previous $seqres.full before test
-+rm -f $seqres.full
-+
-+# real QA test starts here
-+_supported_fs generic
-+_require_scratch
-+_require_renameat2 whiteout
-+
-+_scratch_mkfs_sized $((256 * 1024 * 1024)) >> $seqres.full 2>&1
-+_scratch_mount
-+
-+# Create lots of files, to help to trigger the bug easily
-+NR_FILE=$((4 * 64))
-+for ((i=0; i<NR_FILE; i++));do
-+	touch $SCRATCH_MNT/srcfile$i
-+done
-+# Try to fill the whole fs
-+nr_free=$(stat -f -c '%f' $SCRATCH_MNT)
-+blksz="$(_get_block_size $SCRATCH_MNT)"
-+_fill_fs $((nr_free * blksz)) $SCRATCH_MNT/fill_space $blksz 0 >> $seqres.full 2>&1
-+# Use empty files to fill the rest
-+for ((i=0; i<10000; i++));do
-+	touch $SCRATCH_MNT/fill_file$i 2>/dev/null
-+	# Until no more files can be created
-+	if [ $? -ne 0 ];then
-+		break
-+	fi
-+done
-+# ENOSPC is expected here
-+for ((i=0; i<NR_FILE; i++));do
-+	$here/src/renameat2 -w $SCRATCH_MNT/srcfile$i $SCRATCH_MNT/dstfile$i >> $seqres.full 2>&1
-+done
-+_scratch_cycle_mount
-+# Expect no errors at here
-+for ((i=0; i<NR_FILE; i++));do
-+	ls -l $SCRATCH_MNT/srcfile$i >/dev/null
-+done
-+
-+echo "Silence is golden"
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/generic/626.out b/tests/generic/626.out
-new file mode 100644
-index 00000000..130b2fef
---- /dev/null
-+++ b/tests/generic/626.out
-@@ -0,0 +1,2 @@
-+QA output created by 626
-+Silence is golden
-diff --git a/tests/generic/group b/tests/generic/group
-index 84db3789..c3448fe3 100644
---- a/tests/generic/group
-+++ b/tests/generic/group
-@@ -628,3 +628,4 @@
- 623 auto quick shutdown
- 624 auto quick verity
- 625 auto quick verity
-+626 auto quick rename enospc
--- 
-2.29.2
+Besides from our current discussion:
+Does the i_lock protect i_opflags for both reading and writing?
 
+Cheers,
+Alex
+
+>=20
+> That's because the HTML file is ***huge*** (1.7Meg), and I'm having
+> trouble with my browser properly rendering it.  In any case, the html
+> claims to be showing the counter examples and I'm still stuck on the
+> *example*?
+>=20
+> Cheers,
+>=20
+> 					- Ted
+>=20
+
+--=20
+Technische Universit=C3=A4t Dortmund
+Alexander Lochmann                PGP key: 0xBC3EF6FD
+Otto-Hahn-Str. 16                 phone:  +49.231.7556141
+D-44227 Dortmund                  fax:    +49.231.7556116
+http://ess.cs.tu-dortmund.de/Staff/al
+
+
+--YjAJKbPSRDIAWGreUOUzkTD1cIcg201Xm--
+
+--Ttm8mGlNMVfe7nbCbsCMw4KHu2VqQcARX
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEElhZsUHzVP0dbkjCRWT7tBbw+9v0FAmBGLy0FAwAAAAAACgkQWT7tBbw+9v2A
+nRAAv957o36uDHSxDcTJtcqRTzX3QfhBHX9KZa8lLm22BniXZj7NkZY9qW842/BXQ3BYpgeCf2g+
+Qi5OuyEOsq7SfjQmFII3uHkdtbzcOyaRShO+InNKBK2t9hPWUNiwGqYV3/+UO2vtHMqTvFtkXrlq
+cbN7TBVrE8SII9ZMmLaAR0d6HSntFlXwpCcjylpmgWlcQGQi94jYra74OTvfGVd0xaiPmM1csmWN
+Oczopm268D1qatn4AkffCF4HDuATBuLMxLt4/ZMxi2bC/z6WQ7t8db6oMgu2IeprK2dhC12yOeNz
+/IlMTLFtMC/7IHEz2g4GalRfzDLRMVZWXpEYwEJwZhcqkaHhiYvlkxrF0reZ2ltiJbO4kxaIU0al
+jaNEyhcFiyLr19c0mbja54bKur8irM/FoBj0UOpUpfydEvQFKjuyMGGYCRwaNyoF+VFE903CY5yG
+K7T7KUcHkaSepGDLg91wtLTlh7bf3mXkNixkiQPkjC70s4F/HS8WxHF5lk8ANZehFTvYxtSPT/BI
+gECPuo/7qGlFWVVcKp7x7YOEnkD48WDryUTX71Qn/viJ9CR8OvGBaQG/Vagjw8OrGL8b7xDGLLep
+4ydqHDiPLBmgbOKV90W/N7SfSc6bJJSmMcnFDG2qOGMq7sfZ98gD9CPPV2JxCDtVQsM9B+xFa1eQ
+adY=
+=qEGQ
+-----END PGP SIGNATURE-----
+
+--Ttm8mGlNMVfe7nbCbsCMw4KHu2VqQcARX--
