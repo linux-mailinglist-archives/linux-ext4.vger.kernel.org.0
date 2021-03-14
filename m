@@ -2,325 +2,112 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6243339E8A
-	for <lists+linux-ext4@lfdr.de>; Sat, 13 Mar 2021 15:33:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF4AB339FEA
+	for <lists+linux-ext4@lfdr.de>; Sat, 13 Mar 2021 19:36:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233129AbhCMOcT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 13 Mar 2021 09:32:19 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:41178 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229615AbhCMOby (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 13 Mar 2021 09:31:54 -0500
-Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1lL5Iz-0006T4-55; Sat, 13 Mar 2021 14:31:49 +0000
-Date:   Sat, 13 Mar 2021 15:31:48 +0100
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Vivek Goyal <vgoyal@redhat.com>, Christoph Hellwig <hch@lst.de>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Theodore Tso <tytso@mit.edu>, Alban Crequy <alban@kinvolk.io>,
-        Tycho Andersen <tycho@tycho.ws>,
-        Seth Forshee <seth.forshee@canonical.com>,
-        =?utf-8?B?U3TDqXBoYW5l?= Graber <stgraber@ubuntu.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Serge Hallyn <serge@hallyn.com>, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v6 02/40] fs: add id translation helpers
-Message-ID: <20210313143148.d6rhgmhxwq6abb6y@wittgenstein>
-References: <20210121131959.646623-1-christian.brauner@ubuntu.com>
- <20210121131959.646623-3-christian.brauner@ubuntu.com>
- <20210313000529.GA181317@redhat.com>
+        id S234287AbhCMSgQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Sat, 13 Mar 2021 13:36:16 -0500
+Received: from smtp.econet.co.zw ([77.246.51.158]:65277 "EHLO
+        ironportDMZ.econet.co.zw" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234286AbhCMSf6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Sat, 13 Mar 2021 13:35:58 -0500
+X-Greylist: delayed 472 seconds by postgrey-1.27 at vger.kernel.org; Sat, 13 Mar 2021 13:35:46 EST
+IronPort-SDR: 2VH7uDjPUxuRF84kGIuoHHaISSCuqZi+ufUVCFmh+/0u/DCFCtj5VFDT1b4h9dNnVvA6flspH+
+ 3h9rw6M4gXRTOO/x00E/RP0IaZ5bJ/VFJjak29BaaBMRsZ8SomhBLF6NshxP1CgwykLJQtbFhT
+ f57yb5yFlreJnhCu99okX5fHlhFOs37BIGqeR55agFxRF7WOiDsNKvGtFuzjle44yqE/60PUcB
+ eSRuIQK9gCbtZaBXI6W4OKIxrnCmM+n1gcMJCNZUjbl9kcbsSMLo+94gqXFyBTYwkpasFfSfmL
+ xM0=
+IronPort-HdrOrdr: A9a23:z3onBKxoaNoCa6u/wVCbKrPwgr1zdoIgy1knxilNYDZSddGVkN
+ 3roe8S0gX6hC1UdHYrn92BP6foewK+ybde544NMbC+GDT3oWfAFuFfxKbr3jGIIUPD38FH06
+ MIScRDIfnRKXQ/ssrg+gm/FL8boeWv1Kyzn+/RwzNMYGhRGsddxjx0AAqaDUF6LTMubfFSKL
+ Om6tNDt36cfx0sA/iTPXUZQ/PF4+TCiZOOW29/Ozcc9AKMgTm0gYSULzGk2H4lIkpy6IZn1V
+ Lgmwz9opy5s/ehygLNvlWjiqh+qZ/EwttHCNfksLlwFhzcziKpYIhGfpHqhkFTnMifrG8wkN
+ /WowoxVv4DiU/sQg==
+X-IronPort-AV: E=Sophos;i="5.81,245,1610402400"; 
+   d="scan'208";a="3444522"
+Received: from unknown (HELO WVALE-MB-SVR-05.econetzw.local) ([192.168.101.173])
+  by ironportLAN.econet.co.zw with ESMTP; 13 Mar 2021 20:27:52 +0200
+Received: from WVALE-CAS-SVR-9.econetzw.local (192.168.101.184) by
+ WVALE-MB-SVR-05.econetzw.local (192.168.101.173) with Microsoft SMTP Server
+ (TLS) id 15.0.1473.3; Sat, 13 Mar 2021 20:27:48 +0200
+Received: from User (165.231.148.189) by WVALE-CAS-SVR-9.econetzw.local
+ (10.10.11.230) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Sat, 13 Mar 2021 20:27:59 +0200
+Reply-To: <r19772744@daum.net>
+From:   "Reem E. A" <chawora@econet.co.zw>
+Subject: Re:
+Date:   Sat, 13 Mar 2021 18:27:46 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210313000529.GA181317@redhat.com>
+Content-Type: text/plain; charset="Windows-1251"
+Content-Transfer-Encoding: 8BIT
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+Message-ID: <96f8ff6fe77b4507830ab5cf78a93340@WVALE-CAS-SVR-9.econetzw.local>
+To:     Undisclosed recipients:;
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 07:05:29PM -0500, Vivek Goyal wrote:
-> On Thu, Jan 21, 2021 at 02:19:21PM +0100, Christian Brauner wrote:
-> > Add simple helpers to make it easy to map kuids into and from idmapped
-> > mounts. We provide simple wrappers that filesystems can use to e.g.
-> > initialize inodes similar to i_{uid,gid}_read() and i_{uid,gid}_write().
-> > Accessing an inode through an idmapped mount maps the i_uid and i_gid of
-> > the inode to the mount's user namespace. If the fsids are used to
-> > initialize inodes they are unmapped according to the mount's user
-> > namespace. Passing the initial user namespace to these helpers makes
-> > them a nop and so any non-idmapped paths will not be impacted.
-> > 
-> > Link: https://lore.kernel.org/r/20210112220124.837960-9-christian.brauner@ubuntu.com
-> > Cc: David Howells <dhowells@redhat.com>
-> > Cc: Al Viro <viro@zeniv.linux.org.uk>
-> > Cc: linux-fsdevel@vger.kernel.org
-> > Reviewed-by: Christoph Hellwig <hch@lst.de>
-> > Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
-> > ---
-> > /* v2 */
-> > - Christoph Hellwig <hch@lst.de>:
-> >   - Get rid of the ifdefs and the config option that hid idmapped mounts.
-> > 
-> > /* v3 */
-> > unchanged
-> > 
-> > /* v4 */
-> > - Serge Hallyn <serge@hallyn.com>:
-> >   - Use "mnt_userns" to refer to a vfsmount's userns everywhere to make
-> >     terminology consistent.
-> > 
-> > /* v5 */
-> > unchanged
-> > base-commit: 7c53f6b671f4aba70ff15e1b05148b10d58c2837
-> > 
-> > /* v6 */
-> > unchanged
-> > base-commit: 19c329f6808995b142b3966301f217c831e7cf31
-> > ---
-> >  include/linux/fs.h | 47 ++++++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 47 insertions(+)
-> > 
-> > diff --git a/include/linux/fs.h b/include/linux/fs.h
-> > index fd0b80e6361d..3165998e2294 100644
-> > --- a/include/linux/fs.h
-> > +++ b/include/linux/fs.h
-> > @@ -40,6 +40,7 @@
-> >  #include <linux/build_bug.h>
-> >  #include <linux/stddef.h>
-> >  #include <linux/mount.h>
-> > +#include <linux/cred.h>
-> >  
-> >  #include <asm/byteorder.h>
-> >  #include <uapi/linux/fs.h>
-> > @@ -1573,6 +1574,52 @@ static inline void i_gid_write(struct inode *inode, gid_t gid)
-> >  	inode->i_gid = make_kgid(inode->i_sb->s_user_ns, gid);
-> >  }
-> >  
-> > +static inline kuid_t kuid_into_mnt(struct user_namespace *mnt_userns,
-> > +				   kuid_t kuid)
-> > +{
-> > +	return make_kuid(mnt_userns, __kuid_val(kuid));
-> > +}
-> > +
-> 
-> Hi Christian,
-> 
-> I am having little trouble w.r.t function names and trying to figure
-> out whether they are mapping id down or up.
-> 
-> For example, kuid_into_mnt() ultimately calls map_id_down(). That is,
-> id visible inside user namespace is mapped to host
-> (if observer is in init_user_ns, IIUC).
-> 
-> But fsuid_into_mnt() ultimately calls map_id_up(). That's take a kuid
-> and map it into the user_namespace.
-> 
-> So both the helpers end with into_mnt() but one maps id down and
-> other maps id up. I found this confusing and was wondering how
-> should I visualize it. So thought of asking you.
-> 
-> Is this intentional or can naming be improved so that *_into_mnt()
-> means one thing (Either map_id_up() or map_id_down()). And vice-a-versa
-> for *_from_mnt().
+Hello,
 
-[Trimming my crazy Cc list to not spam everyone.].
+My name is Ms. Reem Ebrahim Al-Hashimi, I am the "Minister of state
+and Petroleum" also "Minister of State for International Cooperation"
+in UAE. I write to you on behalf of my other "three (2) colleagues"
+who has approved me to solicit for your "partnership in claiming of
+{us$47=Million}" from a Financial Home on their behalf and
+for our "Mutual Benefits".
 
-Hey Vivek,
+The Fund {us$47=Million} is our share from the (over-invoiced) Oil/Gas
+deal with Turkish Government within 2013/2014, however, we
+don't want our government to know about the fund. If this proposal
+interests you, let me know, by sending me an email and I will send to
+you detailed information on how this business would be successfully
+transacted. Be informed that nobody knows about the secret of this
+fund except us, and we know how to carry out the entire transaction.
+So I am compelled to ask, that you will stand on our behalf and
+receive this fund into any account that is solely controlled by you.
 
-Thank you for your feedback, really appreciated!
+We will compensate you with 15% of the total amount involved as
+gratification for being our partner in this transaction. Reply to:
+reem.alhashimi@yandex.com
 
-The naming was intended to always signify that the helpers always return
-a k{u,g}id but I can certainly see how the naming isn't as clear as it
-should be for those helpers in other ways. I would suggest we remove
-such direct exposures of these helpers completely and make it simpler
-for callers by introducing very straightforward helpers. See the tiny
-patches below (only compile tested for now):
+Regards,
+Ms. Reem.
+This mail was sent through Econet Wireless, a Global telecoms leader.
 
-From 1bab0249295d0cad359f39a38e6171bcd2d68a60 Mon Sep 17 00:00:00 2001
-From: Christian Brauner <christian.brauner@ubuntu.com>
-Date: Sat, 13 Mar 2021 15:08:04 +0100
-Subject: [PATCH 1/2] fs: introduce fsuidgid_has_mapping() helper
+DISCLAIMER
 
-Don't open-code the checks and instead move them into a clean little
-helper we can call. This also reduces the risk that if we ever changing
-something here we forget to change all locations.
-
-Inspired-by: Vivek Goyal <vgoyal@redhat.com>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
----
- fs/namei.c         | 11 +++--------
- include/linux/fs.h | 13 +++++++++++++
- 2 files changed, 16 insertions(+), 8 deletions(-)
-
-diff --git a/fs/namei.c b/fs/namei.c
-index 216f16e74351..bc03cbc37ba7 100644
---- a/fs/namei.c
-+++ b/fs/namei.c
-@@ -2823,16 +2823,14 @@ static int may_delete(struct user_namespace *mnt_userns, struct inode *dir,
- static inline int may_create(struct user_namespace *mnt_userns,
- 			     struct inode *dir, struct dentry *child)
- {
--	struct user_namespace *s_user_ns;
- 	audit_inode_child(dir, child, AUDIT_TYPE_CHILD_CREATE);
- 	if (child->d_inode)
- 		return -EEXIST;
- 	if (IS_DEADDIR(dir))
- 		return -ENOENT;
--	s_user_ns = dir->i_sb->s_user_ns;
--	if (!kuid_has_mapping(s_user_ns, fsuid_into_mnt(mnt_userns)) ||
--	    !kgid_has_mapping(s_user_ns, fsgid_into_mnt(mnt_userns)))
-+	if (!fsuidgid_has_mapping(dir->i_sb, mnt_userns))
- 		return -EOVERFLOW;
-+
- 	return inode_permission(mnt_userns, dir, MAY_WRITE | MAY_EXEC);
- }
- 
-@@ -3034,14 +3032,11 @@ static int may_o_create(struct user_namespace *mnt_userns,
- 			const struct path *dir, struct dentry *dentry,
- 			umode_t mode)
- {
--	struct user_namespace *s_user_ns;
- 	int error = security_path_mknod(dir, dentry, mode, 0);
- 	if (error)
- 		return error;
- 
--	s_user_ns = dir->dentry->d_sb->s_user_ns;
--	if (!kuid_has_mapping(s_user_ns, fsuid_into_mnt(mnt_userns)) ||
--	    !kgid_has_mapping(s_user_ns, fsgid_into_mnt(mnt_userns)))
-+	if (!fsuidgid_has_mapping(dir->dentry->d_sb, mnt_userns))
- 		return -EOVERFLOW;
- 
- 	error = inode_permission(mnt_userns, dir->dentry->d_inode,
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index ec8f3ddf4a6a..a970a43afb0a 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -1620,6 +1620,19 @@ static inline kgid_t fsgid_into_mnt(struct user_namespace *mnt_userns)
- 	return kgid_from_mnt(mnt_userns, current_fsgid());
- }
- 
-+static inline bool fsuidgid_has_mapping(struct super_block *sb,
-+					struct user_namespace *mnt_userns)
-+{
-+	struct user_namespace *s_user_ns = sb->s_user_ns;
-+	if (!kuid_has_mapping(s_user_ns,
-+		kuid_from_mnt(mnt_userns, current_fsuid())))
-+		return false;
-+	if (!kgid_has_mapping(s_user_ns,
-+		kgid_from_mnt(mnt_userns, current_fsgid())))
-+		return false;
-+	return true;
-+}
-+
- extern struct timespec64 current_time(struct inode *inode);
- 
- /*
--- 
-2.27.0
+The information in this message is confidential and is legally privileged. It is intended solely for the addressee. Access to this message by anyone else is unauthorized. If received in error please accept our apologies and notify the sender immediately. You must also delete the original message from your machine. If you are not the intended recipient, any use, disclosure, copying, distribution or action taken in reliance of it, is prohibited and may be unlawful. The information, attachments, opinions or advice contained in this email are not the views or opinions of Econet Wireless, its subsidiaries or affiliates. Econet Wireless therefore accepts no liability for claims, losses, or damages arising from the inaccuracy, incorrectness, or lack of integrity of such information.
+[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/AgileBanner.png]
+WORK ISN'T A PLACE
+IT'S WHAT WE DO
+________________________________
 
 
-From 2f316f7de3ac96ecc8cc889724c0132e96b47b51 Mon Sep 17 00:00:00 2001
-From: Christian Brauner <christian.brauner@ubuntu.com>
-Date: Sat, 13 Mar 2021 15:11:55 +0100
-Subject: [PATCH 2/2] fs: introduce two little fs{u,g}id inode initialization
- helpers
 
-As Vivek pointed out we could tweak the names of the fs{u,g}id helpers.
-That's already good but the better approach is to not expose them in
-this way to filesystems at all and simply give the filesystems two
-helpers inode_fsuid_set() and inode_fsgid_set() that will do the right
-thing.
 
-Inspired-by: Vivek Goyal <vgoyal@redhat.com>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
----
- fs/ext4/ialloc.c   |  2 +-
- fs/inode.c         |  4 ++--
- fs/xfs/xfs_inode.c |  2 +-
- include/linux/fs.h | 10 ++++++----
- 4 files changed, 10 insertions(+), 8 deletions(-)
 
-diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
-index 633ae7becd61..755a68bb7e22 100644
---- a/fs/ext4/ialloc.c
-+++ b/fs/ext4/ialloc.c
-@@ -970,7 +970,7 @@ struct inode *__ext4_new_inode(struct user_namespace *mnt_userns,
- 		i_gid_write(inode, owner[1]);
- 	} else if (test_opt(sb, GRPID)) {
- 		inode->i_mode = mode;
--		inode->i_uid = fsuid_into_mnt(mnt_userns);
-+		inode_fsuid_set(inode, mnt_userns);
- 		inode->i_gid = dir->i_gid;
- 	} else
- 		inode_init_owner(mnt_userns, inode, dir, mode);
-diff --git a/fs/inode.c b/fs/inode.c
-index a047ab306f9a..21c5a620ca89 100644
---- a/fs/inode.c
-+++ b/fs/inode.c
-@@ -2148,7 +2148,7 @@ EXPORT_SYMBOL(init_special_inode);
- void inode_init_owner(struct user_namespace *mnt_userns, struct inode *inode,
- 		      const struct inode *dir, umode_t mode)
- {
--	inode->i_uid = fsuid_into_mnt(mnt_userns);
-+	inode_fsuid_set(inode, mnt_userns);
- 	if (dir && dir->i_mode & S_ISGID) {
- 		inode->i_gid = dir->i_gid;
- 
-@@ -2160,7 +2160,7 @@ void inode_init_owner(struct user_namespace *mnt_userns, struct inode *inode,
- 			 !capable_wrt_inode_uidgid(mnt_userns, dir, CAP_FSETID))
- 			mode &= ~S_ISGID;
- 	} else
--		inode->i_gid = fsgid_into_mnt(mnt_userns);
-+		inode_fsgid_set(inode, mnt_userns);
- 	inode->i_mode = mode;
- }
- EXPORT_SYMBOL(inode_init_owner);
-diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
-index 46a861d55e48..aa924db90cd9 100644
---- a/fs/xfs/xfs_inode.c
-+++ b/fs/xfs/xfs_inode.c
-@@ -812,7 +812,7 @@ xfs_init_new_inode(
- 
- 	if (dir && !(dir->i_mode & S_ISGID) &&
- 	    (mp->m_flags & XFS_MOUNT_GRPID)) {
--		inode->i_uid = fsuid_into_mnt(mnt_userns);
-+		inode_fsuid_set(inode, mnt_userns);
- 		inode->i_gid = dir->i_gid;
- 		inode->i_mode = mode;
- 	} else {
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index a970a43afb0a..b337daa6b191 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -1610,14 +1610,16 @@ static inline kgid_t kgid_from_mnt(struct user_namespace *mnt_userns,
- 	return KGIDT_INIT(from_kgid(mnt_userns, kgid));
- }
- 
--static inline kuid_t fsuid_into_mnt(struct user_namespace *mnt_userns)
-+static inline void inode_fsuid_set(struct inode *inode,
-+				   struct user_namespace *mnt_userns)
- {
--	return kuid_from_mnt(mnt_userns, current_fsuid());
-+	inode->i_uid = kuid_from_mnt(mnt_userns, current_fsuid());
- }
- 
--static inline kgid_t fsgid_into_mnt(struct user_namespace *mnt_userns)
-+static inline void inode_fsgid_set(struct inode *inode,
-+				   struct user_namespace *mnt_userns)
- {
--	return kgid_from_mnt(mnt_userns, current_fsgid());
-+	inode->i_gid = kgid_from_mnt(mnt_userns, current_fsgid());
- }
- 
- static inline bool fsuidgid_has_mapping(struct super_block *sb,
--- 
-2.27.0
+[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/telephone.png]
 
+
+
+
+[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/email.png]
+
+<mailto:>
+
+
+[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/location.png]
+
+
+
+
+[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/website.png]
+
+www.econet.co.zw<https://www.econet.co.zw>
+
+
+[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/inspired.jpg]
