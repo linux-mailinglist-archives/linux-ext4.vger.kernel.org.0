@@ -2,129 +2,359 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75D1433A295
-	for <lists+linux-ext4@lfdr.de>; Sun, 14 Mar 2021 05:09:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DDC433A86B
+	for <lists+linux-ext4@lfdr.de>; Sun, 14 Mar 2021 23:03:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234925AbhCNEId (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 13 Mar 2021 23:08:33 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:51102 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234916AbhCNEIP (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 13 Mar 2021 23:08:15 -0500
-Received: by mail-il1-f200.google.com with SMTP id x11so21556931ill.17
-        for <linux-ext4@vger.kernel.org>; Sat, 13 Mar 2021 20:08:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=TtkRA0Hu3Y+KLac0tFf6DWHs07p+A8tIMF93ZOTvvy0=;
-        b=cteWrZarRlYeKHMxRNTAVDwpxrHs4G750iT4NinIgtHwdjj9JVVGZj8dhafQhluXeA
-         kioOTVgNLnADizvXNWBwCBqxehs4CSm1eUlqKoZAKsTqvP/iWoMzvgZfCyKYvFZ4LyTz
-         55ypCew7bKqL22eqa4gJrr1gAvluy3dbfuir8z/yijVY2CrZKEIvHsGU2z3cW6IugU+G
-         tJHmTxK/n8ap67396rASfzY0WQjbLLsSZ8PDDBewqHQdBL01+QVuN2RdnPKgEzq7fCyj
-         jRVUpU/hzLQvaTDnMX/+TDPXFSwqK5bJjFi6W7UZGKNMbaOD3yIzmlx+S7uHlBIbc372
-         eo8g==
-X-Gm-Message-State: AOAM530+8QSGen/B5UW7h6mNcgbsUrehpdgRGR7l7lPctdXMscvB3Mke
-        ja3A7WoSBvxJ10ziFsOHFv9NwqLjhCEQ1xDo/NmMumOfMhuC
-X-Google-Smtp-Source: ABdhPJx8+spCpC+KYXpU3DKkRS28Iz80kuXaVe+UolCPrbcsUqEI+0wEE4dUkYExokMfLdoC9Ot+9IUHq5M53dM474dTZq/VJT0x
+        id S229540AbhCNWCg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 14 Mar 2021 18:02:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48949 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229480AbhCNWCf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Sun, 14 Mar 2021 18:02:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615759353;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4EK6hhWIbRoLqeWgTcfFUUNPNT97ooEQxQWo15yTnLQ=;
+        b=VarB1MDZhiXKBGyxw6e6ZTSBleb/Q3JaKNz0iaFaICVcrHGGU7Iuw35e9C5iMXq9To8Lv1
+        jvDWo9ca1W4+79THKAdxlW5xNuQT63NN5IHdrllPf+cHoz2Kmo5dKkU8pipvXtW+9uMcil
+        byX3ANhC3+HokzxmOLT7J/gkl9RXhU0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-369-NhuuvZxiPqO0az23AWwriA-1; Sun, 14 Mar 2021 18:02:30 -0400
+X-MC-Unique: NhuuvZxiPqO0az23AWwriA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7F3183E741;
+        Sun, 14 Mar 2021 22:02:27 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-112-132.rdu2.redhat.com [10.10.112.132])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0C0466E519;
+        Sun, 14 Mar 2021 22:02:26 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 91DB922054F; Sun, 14 Mar 2021 18:02:25 -0400 (EDT)
+Date:   Sun, 14 Mar 2021 18:02:25 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Theodore Tso <tytso@mit.edu>, Alban Crequy <alban@kinvolk.io>,
+        Tycho Andersen <tycho@tycho.ws>,
+        Seth Forshee <seth.forshee@canonical.com>,
+        =?iso-8859-1?Q?St=E9phane?= Graber <stgraber@ubuntu.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Serge Hallyn <serge@hallyn.com>, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v6 02/40] fs: add id translation helpers
+Message-ID: <20210314220225.GA223210@redhat.com>
+References: <20210121131959.646623-1-christian.brauner@ubuntu.com>
+ <20210121131959.646623-3-christian.brauner@ubuntu.com>
+ <20210313000529.GA181317@redhat.com>
+ <20210313143148.d6rhgmhxwq6abb6y@wittgenstein>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:610d:: with SMTP id v13mr3921173iob.132.1615694894955;
- Sat, 13 Mar 2021 20:08:14 -0800 (PST)
-Date:   Sat, 13 Mar 2021 20:08:14 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000477fa305bd774858@google.com>
-Subject: [syzbot] WARNING: ODEBUG bug in ext4_fill_super (3)
-From:   syzbot <syzbot+628472a2aac693ab0fcd@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, clang-built-linux@googlegroups.com,
-        jack@suse.cz, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, natechancellor@gmail.com,
-        nathan@kernel.org, ndesaulniers@google.com,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210313143148.d6rhgmhxwq6abb6y@wittgenstein>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+On Sat, Mar 13, 2021 at 03:31:48PM +0100, Christian Brauner wrote:
+> On Fri, Mar 12, 2021 at 07:05:29PM -0500, Vivek Goyal wrote:
+> > On Thu, Jan 21, 2021 at 02:19:21PM +0100, Christian Brauner wrote:
+> > > Add simple helpers to make it easy to map kuids into and from idmapped
+> > > mounts. We provide simple wrappers that filesystems can use to e.g.
+> > > initialize inodes similar to i_{uid,gid}_read() and i_{uid,gid}_write().
+> > > Accessing an inode through an idmapped mount maps the i_uid and i_gid of
+> > > the inode to the mount's user namespace. If the fsids are used to
+> > > initialize inodes they are unmapped according to the mount's user
+> > > namespace. Passing the initial user namespace to these helpers makes
+> > > them a nop and so any non-idmapped paths will not be impacted.
+> > > 
+> > > Link: https://lore.kernel.org/r/20210112220124.837960-9-christian.brauner@ubuntu.com
+> > > Cc: David Howells <dhowells@redhat.com>
+> > > Cc: Al Viro <viro@zeniv.linux.org.uk>
+> > > Cc: linux-fsdevel@vger.kernel.org
+> > > Reviewed-by: Christoph Hellwig <hch@lst.de>
+> > > Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
+> > > ---
+> > > /* v2 */
+> > > - Christoph Hellwig <hch@lst.de>:
+> > >   - Get rid of the ifdefs and the config option that hid idmapped mounts.
+> > > 
+> > > /* v3 */
+> > > unchanged
+> > > 
+> > > /* v4 */
+> > > - Serge Hallyn <serge@hallyn.com>:
+> > >   - Use "mnt_userns" to refer to a vfsmount's userns everywhere to make
+> > >     terminology consistent.
+> > > 
+> > > /* v5 */
+> > > unchanged
+> > > base-commit: 7c53f6b671f4aba70ff15e1b05148b10d58c2837
+> > > 
+> > > /* v6 */
+> > > unchanged
+> > > base-commit: 19c329f6808995b142b3966301f217c831e7cf31
+> > > ---
+> > >  include/linux/fs.h | 47 ++++++++++++++++++++++++++++++++++++++++++++++
+> > >  1 file changed, 47 insertions(+)
+> > > 
+> > > diff --git a/include/linux/fs.h b/include/linux/fs.h
+> > > index fd0b80e6361d..3165998e2294 100644
+> > > --- a/include/linux/fs.h
+> > > +++ b/include/linux/fs.h
+> > > @@ -40,6 +40,7 @@
+> > >  #include <linux/build_bug.h>
+> > >  #include <linux/stddef.h>
+> > >  #include <linux/mount.h>
+> > > +#include <linux/cred.h>
+> > >  
+> > >  #include <asm/byteorder.h>
+> > >  #include <uapi/linux/fs.h>
+> > > @@ -1573,6 +1574,52 @@ static inline void i_gid_write(struct inode *inode, gid_t gid)
+> > >  	inode->i_gid = make_kgid(inode->i_sb->s_user_ns, gid);
+> > >  }
+> > >  
+> > > +static inline kuid_t kuid_into_mnt(struct user_namespace *mnt_userns,
+> > > +				   kuid_t kuid)
+> > > +{
+> > > +	return make_kuid(mnt_userns, __kuid_val(kuid));
+> > > +}
+> > > +
+> > 
+> > Hi Christian,
+> > 
+> > I am having little trouble w.r.t function names and trying to figure
+> > out whether they are mapping id down or up.
+> > 
+> > For example, kuid_into_mnt() ultimately calls map_id_down(). That is,
+> > id visible inside user namespace is mapped to host
+> > (if observer is in init_user_ns, IIUC).
+> > 
+> > But fsuid_into_mnt() ultimately calls map_id_up(). That's take a kuid
+> > and map it into the user_namespace.
+> > 
+> > So both the helpers end with into_mnt() but one maps id down and
+> > other maps id up. I found this confusing and was wondering how
+> > should I visualize it. So thought of asking you.
+> > 
+> > Is this intentional or can naming be improved so that *_into_mnt()
+> > means one thing (Either map_id_up() or map_id_down()). And vice-a-versa
+> > for *_from_mnt().
+> 
+> [Trimming my crazy Cc list to not spam everyone.].
+> 
+> Hey Vivek,
+> 
+> Thank you for your feedback, really appreciated!
+> 
+> The naming was intended to always signify that the helpers always return
+> a k{u,g}id but I can certainly see how the naming isn't as clear as it
+> should be for those helpers in other ways. I would suggest we remove
+> such direct exposures of these helpers completely and make it simpler
+> for callers by introducing very straightforward helpers. See the tiny
+> patches below (only compile tested for now):
 
-syzbot found the following issue on:
+Hi Chirstian,
 
-HEAD commit:    28806e4d Merge tag 'media/v5.12-2' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=136d1bbcd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6bcf96204c1b8e77
-dashboard link: https://syzkaller.appspot.com/bug?extid=628472a2aac693ab0fcd
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1133abfad00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1191aab2d00000
+Thanks for the following patches. Now we are only left with
+kuid_from_mnt() and kuid_into_mnt() and I can wrap my head around
+it.
 
-The issue was bisected to:
+Thanks
+Vivek
 
-commit 2d01ddc86606564fb08c56e3bc93a0693895f710
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Dec 16 10:18:40 2020 +0000
+> 
+> From 1bab0249295d0cad359f39a38e6171bcd2d68a60 Mon Sep 17 00:00:00 2001
+> From: Christian Brauner <christian.brauner@ubuntu.com>
+> Date: Sat, 13 Mar 2021 15:08:04 +0100
+> Subject: [PATCH 1/2] fs: introduce fsuidgid_has_mapping() helper
+> 
+> Don't open-code the checks and instead move them into a clean little
+> helper we can call. This also reduces the risk that if we ever changing
+> something here we forget to change all locations.
+> 
+> Inspired-by: Vivek Goyal <vgoyal@redhat.com>
+> Cc: Christoph Hellwig <hch@lst.de>
+> Cc: Al Viro <viro@zeniv.linux.org.uk>
+> Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
+> ---
+>  fs/namei.c         | 11 +++--------
+>  include/linux/fs.h | 13 +++++++++++++
+>  2 files changed, 16 insertions(+), 8 deletions(-)
+> 
+> diff --git a/fs/namei.c b/fs/namei.c
+> index 216f16e74351..bc03cbc37ba7 100644
+> --- a/fs/namei.c
+> +++ b/fs/namei.c
+> @@ -2823,16 +2823,14 @@ static int may_delete(struct user_namespace *mnt_userns, struct inode *dir,
+>  static inline int may_create(struct user_namespace *mnt_userns,
+>  			     struct inode *dir, struct dentry *child)
+>  {
+> -	struct user_namespace *s_user_ns;
+>  	audit_inode_child(dir, child, AUDIT_TYPE_CHILD_CREATE);
+>  	if (child->d_inode)
+>  		return -EEXIST;
+>  	if (IS_DEADDIR(dir))
+>  		return -ENOENT;
+> -	s_user_ns = dir->i_sb->s_user_ns;
+> -	if (!kuid_has_mapping(s_user_ns, fsuid_into_mnt(mnt_userns)) ||
+> -	    !kgid_has_mapping(s_user_ns, fsgid_into_mnt(mnt_userns)))
+> +	if (!fsuidgid_has_mapping(dir->i_sb, mnt_userns))
+>  		return -EOVERFLOW;
+> +
+>  	return inode_permission(mnt_userns, dir, MAY_WRITE | MAY_EXEC);
+>  }
+>  
+> @@ -3034,14 +3032,11 @@ static int may_o_create(struct user_namespace *mnt_userns,
+>  			const struct path *dir, struct dentry *dentry,
+>  			umode_t mode)
+>  {
+> -	struct user_namespace *s_user_ns;
+>  	int error = security_path_mknod(dir, dentry, mode, 0);
+>  	if (error)
+>  		return error;
+>  
+> -	s_user_ns = dir->dentry->d_sb->s_user_ns;
+> -	if (!kuid_has_mapping(s_user_ns, fsuid_into_mnt(mnt_userns)) ||
+> -	    !kgid_has_mapping(s_user_ns, fsgid_into_mnt(mnt_userns)))
+> +	if (!fsuidgid_has_mapping(dir->dentry->d_sb, mnt_userns))
+>  		return -EOVERFLOW;
+>  
+>  	error = inode_permission(mnt_userns, dir->dentry->d_inode,
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index ec8f3ddf4a6a..a970a43afb0a 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -1620,6 +1620,19 @@ static inline kgid_t fsgid_into_mnt(struct user_namespace *mnt_userns)
+>  	return kgid_from_mnt(mnt_userns, current_fsgid());
+>  }
+>  
+> +static inline bool fsuidgid_has_mapping(struct super_block *sb,
+> +					struct user_namespace *mnt_userns)
+> +{
+> +	struct user_namespace *s_user_ns = sb->s_user_ns;
+> +	if (!kuid_has_mapping(s_user_ns,
+> +		kuid_from_mnt(mnt_userns, current_fsuid())))
+> +		return false;
+> +	if (!kgid_has_mapping(s_user_ns,
+> +		kgid_from_mnt(mnt_userns, current_fsgid())))
+> +		return false;
+> +	return true;
+> +}
+> +
+>  extern struct timespec64 current_time(struct inode *inode);
+>  
+>  /*
+> -- 
+> 2.27.0
+> 
+> 
+> From 2f316f7de3ac96ecc8cc889724c0132e96b47b51 Mon Sep 17 00:00:00 2001
+> From: Christian Brauner <christian.brauner@ubuntu.com>
+> Date: Sat, 13 Mar 2021 15:11:55 +0100
+> Subject: [PATCH 2/2] fs: introduce two little fs{u,g}id inode initialization
+>  helpers
+> 
+> As Vivek pointed out we could tweak the names of the fs{u,g}id helpers.
+> That's already good but the better approach is to not expose them in
+> this way to filesystems at all and simply give the filesystems two
+> helpers inode_fsuid_set() and inode_fsgid_set() that will do the right
+> thing.
+> 
+> Inspired-by: Vivek Goyal <vgoyal@redhat.com>
+> Cc: Christoph Hellwig <hch@lst.de>
+> Cc: Al Viro <viro@zeniv.linux.org.uk>
+> Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
+> ---
+>  fs/ext4/ialloc.c   |  2 +-
+>  fs/inode.c         |  4 ++--
+>  fs/xfs/xfs_inode.c |  2 +-
+>  include/linux/fs.h | 10 ++++++----
+>  4 files changed, 10 insertions(+), 8 deletions(-)
+> 
+> diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
+> index 633ae7becd61..755a68bb7e22 100644
+> --- a/fs/ext4/ialloc.c
+> +++ b/fs/ext4/ialloc.c
+> @@ -970,7 +970,7 @@ struct inode *__ext4_new_inode(struct user_namespace *mnt_userns,
+>  		i_gid_write(inode, owner[1]);
+>  	} else if (test_opt(sb, GRPID)) {
+>  		inode->i_mode = mode;
+> -		inode->i_uid = fsuid_into_mnt(mnt_userns);
+> +		inode_fsuid_set(inode, mnt_userns);
+>  		inode->i_gid = dir->i_gid;
+>  	} else
+>  		inode_init_owner(mnt_userns, inode, dir, mode);
+> diff --git a/fs/inode.c b/fs/inode.c
+> index a047ab306f9a..21c5a620ca89 100644
+> --- a/fs/inode.c
+> +++ b/fs/inode.c
+> @@ -2148,7 +2148,7 @@ EXPORT_SYMBOL(init_special_inode);
+>  void inode_init_owner(struct user_namespace *mnt_userns, struct inode *inode,
+>  		      const struct inode *dir, umode_t mode)
+>  {
+> -	inode->i_uid = fsuid_into_mnt(mnt_userns);
+> +	inode_fsuid_set(inode, mnt_userns);
+>  	if (dir && dir->i_mode & S_ISGID) {
+>  		inode->i_gid = dir->i_gid;
+>  
+> @@ -2160,7 +2160,7 @@ void inode_init_owner(struct user_namespace *mnt_userns, struct inode *inode,
+>  			 !capable_wrt_inode_uidgid(mnt_userns, dir, CAP_FSETID))
+>  			mode &= ~S_ISGID;
+>  	} else
+> -		inode->i_gid = fsgid_into_mnt(mnt_userns);
+> +		inode_fsgid_set(inode, mnt_userns);
+>  	inode->i_mode = mode;
+>  }
+>  EXPORT_SYMBOL(inode_init_owner);
+> diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
+> index 46a861d55e48..aa924db90cd9 100644
+> --- a/fs/xfs/xfs_inode.c
+> +++ b/fs/xfs/xfs_inode.c
+> @@ -812,7 +812,7 @@ xfs_init_new_inode(
+>  
+>  	if (dir && !(dir->i_mode & S_ISGID) &&
+>  	    (mp->m_flags & XFS_MOUNT_GRPID)) {
+> -		inode->i_uid = fsuid_into_mnt(mnt_userns);
+> +		inode_fsuid_set(inode, mnt_userns);
+>  		inode->i_gid = dir->i_gid;
+>  		inode->i_mode = mode;
+>  	} else {
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index a970a43afb0a..b337daa6b191 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -1610,14 +1610,16 @@ static inline kgid_t kgid_from_mnt(struct user_namespace *mnt_userns,
+>  	return KGIDT_INIT(from_kgid(mnt_userns, kgid));
+>  }
+>  
+> -static inline kuid_t fsuid_into_mnt(struct user_namespace *mnt_userns)
+> +static inline void inode_fsuid_set(struct inode *inode,
+> +				   struct user_namespace *mnt_userns)
+>  {
+> -	return kuid_from_mnt(mnt_userns, current_fsuid());
+> +	inode->i_uid = kuid_from_mnt(mnt_userns, current_fsuid());
+>  }
+>  
+> -static inline kgid_t fsgid_into_mnt(struct user_namespace *mnt_userns)
+> +static inline void inode_fsgid_set(struct inode *inode,
+> +				   struct user_namespace *mnt_userns)
+>  {
+> -	return kgid_from_mnt(mnt_userns, current_fsgid());
+> +	inode->i_gid = kgid_from_mnt(mnt_userns, current_fsgid());
+>  }
+>  
+>  static inline bool fsuidgid_has_mapping(struct super_block *sb,
+> -- 
+> 2.27.0
+> 
 
-    ext4: save error info to sb through journal if available
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=152b9d56d00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=172b9d56d00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=132b9d56d00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+628472a2aac693ab0fcd@syzkaller.appspotmail.com
-Fixes: 2d01ddc86606 ("ext4: save error info to sb through journal if available")
-
-ODEBUG: free active (active state 0) object type: timer_list hint: print_daily_error_info+0x0/0x1f0 fs/ext4/super.c:1334
-WARNING: CPU: 1 PID: 12723 at lib/debugobjects.c:505 debug_print_object+0x16e/0x250 lib/debugobjects.c:505
-Modules linked in:
-CPU: 0 PID: 12723 Comm: syz-executor932 Not tainted 5.12.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:debug_print_object+0x16e/0x250 lib/debugobjects.c:505
-Code: ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 af 00 00 00 48 8b 14 dd a0 06 c2 89 4c 89 ee 48 c7 c7 a0 fa c1 89 e8 fc 41 f8 04 <0f> 0b 83 05 05 7e fb 09 01 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e c3
-RSP: 0018:ffffc9000e6ef980 EFLAGS: 00010286
-
-RAX: 0000000000000000 RBX: 0000000000000003 RCX: 0000000000000000
-RDX: ffff88801d5e9bc0 RSI: ffffffff815c0d25 RDI: fffff52001cddf22
-RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff815b9abe R11: 0000000000000000 R12: ffffffff896d7da0
-R13: ffffffff89c200e0 R14: ffffffff81629d00 R15: dffffc0000000000
-FS:  0000000000f93300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fcda3ec0000 CR3: 00000000155a1000 CR4: 0000000000350ef0
-Call Trace:
- __debug_check_no_obj_freed lib/debugobjects.c:987 [inline]
- debug_check_no_obj_freed+0x301/0x420 lib/debugobjects.c:1018
- slab_free_hook mm/slub.c:1554 [inline]
- slab_free_freelist_hook+0x147/0x210 mm/slub.c:1600
- slab_free mm/slub.c:3161 [inline]
- kfree+0xe5/0x7f0 mm/slub.c:4213
- ext4_fill_super+0x84f/0xded0 fs/ext4/super.c:5182
- mount_bdev+0x34d/0x410 fs/super.c:1367
- legacy_get_tree+0x105/0x220 fs/fs_context.c:592
- vfs_get_tree+0x89/0x2f0 fs/super.c:1497
- do_new_mount fs/namespace.c:2903 [inline]
- path_mount+0x132a/0x1f90 fs/namespace.c:3233
- do_mount fs/namespace.c:3246 [inline]
- __do_sys_mount fs/namespace.c:3454 [inline]
- __se_sys_mount fs/namespace.c:3431 [inline]
- __x64_sys_mount+0x27f/0x300 fs/namespace.c:3431
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x445c0a
-Code: 48 c7 c2 c0 ff ff ff f7 d8 64 89 02 b8 ff ff ff ff eb d2 e8 a8 00 00 00 0f 1f 84 00 00 00 00 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe8bf4c3b8 EFLAGS: 00000202
- ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007ffe8bf4c410 RCX: 0000000000445c0a
-RDX: 0000000020000040 RSI: 0000000020000100 RDI: 00007ffe8bf4c3d0
-RBP: 00007ffe8bf4c3d0 R08: 00007ffe8bf4c410 R09: 0000000000000000
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
