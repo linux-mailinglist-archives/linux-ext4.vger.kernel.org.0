@@ -2,106 +2,129 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40EB233A286
-	for <lists+linux-ext4@lfdr.de>; Sun, 14 Mar 2021 04:59:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75D1433A295
+	for <lists+linux-ext4@lfdr.de>; Sun, 14 Mar 2021 05:09:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231756AbhCNDjH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 13 Mar 2021 22:39:07 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:32791 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229870AbhCNDii (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 13 Mar 2021 22:38:38 -0500
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 12E3cYlh017886
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 13 Mar 2021 22:38:34 -0500
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id D0E5615C3AA2; Sat, 13 Mar 2021 22:38:33 -0500 (EST)
-Date:   Sat, 13 Mar 2021 22:38:33 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Shashidhar Patil <shashidhar.patil@gmail.com>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: jbd2 task hung in jbd2_journal_commit_transaction
-Message-ID: <YE2FOTpWOaidmT52@mit.edu>
-References: <CADve3d51po2wh6rmgrzM8-k9h=JzE9+mC57Y5V2BxfFkKPFMsw@mail.gmail.com>
- <YEtjuGZCfD+7vCFd@mit.edu>
- <CADve3d7bioEAMwQ=i8KZ=hjrBDMk7gJK8kTUu2E5Q=W_KbUMPg@mail.gmail.com>
+        id S234925AbhCNEId (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 13 Mar 2021 23:08:33 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:51102 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234916AbhCNEIP (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 13 Mar 2021 23:08:15 -0500
+Received: by mail-il1-f200.google.com with SMTP id x11so21556931ill.17
+        for <linux-ext4@vger.kernel.org>; Sat, 13 Mar 2021 20:08:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=TtkRA0Hu3Y+KLac0tFf6DWHs07p+A8tIMF93ZOTvvy0=;
+        b=cteWrZarRlYeKHMxRNTAVDwpxrHs4G750iT4NinIgtHwdjj9JVVGZj8dhafQhluXeA
+         kioOTVgNLnADizvXNWBwCBqxehs4CSm1eUlqKoZAKsTqvP/iWoMzvgZfCyKYvFZ4LyTz
+         55ypCew7bKqL22eqa4gJrr1gAvluy3dbfuir8z/yijVY2CrZKEIvHsGU2z3cW6IugU+G
+         tJHmTxK/n8ap67396rASfzY0WQjbLLsSZ8PDDBewqHQdBL01+QVuN2RdnPKgEzq7fCyj
+         jRVUpU/hzLQvaTDnMX/+TDPXFSwqK5bJjFi6W7UZGKNMbaOD3yIzmlx+S7uHlBIbc372
+         eo8g==
+X-Gm-Message-State: AOAM530+8QSGen/B5UW7h6mNcgbsUrehpdgRGR7l7lPctdXMscvB3Mke
+        ja3A7WoSBvxJ10ziFsOHFv9NwqLjhCEQ1xDo/NmMumOfMhuC
+X-Google-Smtp-Source: ABdhPJx8+spCpC+KYXpU3DKkRS28Iz80kuXaVe+UolCPrbcsUqEI+0wEE4dUkYExokMfLdoC9Ot+9IUHq5M53dM474dTZq/VJT0x
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CADve3d7bioEAMwQ=i8KZ=hjrBDMk7gJK8kTUu2E5Q=W_KbUMPg@mail.gmail.com>
+X-Received: by 2002:a6b:610d:: with SMTP id v13mr3921173iob.132.1615694894955;
+ Sat, 13 Mar 2021 20:08:14 -0800 (PST)
+Date:   Sat, 13 Mar 2021 20:08:14 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000477fa305bd774858@google.com>
+Subject: [syzbot] WARNING: ODEBUG bug in ext4_fill_super (3)
+From:   syzbot <syzbot+628472a2aac693ab0fcd@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, clang-built-linux@googlegroups.com,
+        jack@suse.cz, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, natechancellor@gmail.com,
+        nathan@kernel.org, ndesaulniers@google.com,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Mar 13, 2021 at 01:29:43PM +0530, Shashidhar Patil wrote:
-> > From what I can tell zswap is using writepage(), and since the swap
-> > file should be *completely* preallocated and initialized, we should
-> > never be trying to start a handle from zswap.  This should prevent the
-> > deadlock from happening.  If zswap is doing something which is causing
-> > ext4 to start a handle when it tries to writeout a swap page, then
-> > that would certainly be a problem.  But that really shouldn't be the
-> > case.
-> 
-> Yes. But the the first sys_write() called by the application did
-> allocate an journal handle as required and since
-> this specific request now is waiting for IO to complete the handle is
-> not closed. Elsewhere in jbd2 task the commit_transaction is
-> blocked since there is one or more open journalling handles. Is my
-> understanding correct ?
+Hello,
 
-Yes, that's correct.  When we start a transaction commit, either
-because the 5 second commit interval has been reached, or there isn't
-enough room in the journal for a particular handle to start (when we
-start a file system mutation, we estimate the worst case number of
-blocks that might need to be modified, and hence require space in the
-journal), we first (a) stop any new handles from being started, and
-then (b) wait for all currently running handles to complete.
+syzbot found the following issue on:
 
-If one handle takes a lot longer to complete than all the others,
-while we are waiting for that last handle to finish, the commit can
-not make forward progress, and no other file system operation which
-requires modifying metadata can proceed.  As a result, we try to keep
-the time between starting a handle and stopping a handle as short as
-possible.  For example, if possible, we will try to read a block that
-might be needed by a mutation operation *before* we start the handle.
-That's not always possible, but we try to do that whenever possible,
-and there are various tracepoints and other debugging facilities so we
-can see which types of file system mutations require holding handles
-longest, so we can try to optimize them.
+HEAD commit:    28806e4d Merge tag 'media/v5.12-2' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=136d1bbcd00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6bcf96204c1b8e77
+dashboard link: https://syzkaller.appspot.com/bug?extid=628472a2aac693ab0fcd
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1133abfad00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1191aab2d00000
 
-> 4,1737846,1121675697013,-; schedule+0x36/0x80
-> 4,1737847,1121675697015,-; io_schedule+0x16/0x40
-> 4,1737848,1121675697016,-; blk_mq_get_tag+0x161/0x250
-> 4,1737849,1121675697018,-; ? wait_woken+0x80/0x80
-> 4,1737850,1121675697020,-; blk_mq_get_request+0xdc/0x3b0
-> 4,1737851,1121675697021,-; blk_mq_make_request+0x128/0x5b0
-> 4,1737852,1121675697023,-; generic_make_request+0x122/0x2f0
-> 4,1737853,1121675697024,-; ? bio_alloc_bioset+0xd2/0x1e0
-> 4,1737854,1121675697026,-; submit_bio+0x73/0x140
-> .....
-> So all those IO requests are waiting for response from the raid port,
-> is that right ?
-> 
-> But the megaraid_sas driver( the system has LSI MEGARAID port) in most
-> cases handles the unresponsive behavior
-> by resetting the device. IN this case the reset did not happen, maybe
-> there is some other bug in the megaraid driver.
+The issue was bisected to:
 
-Yes, it's not necessarily a problem with the storage device or the
-host bus adapter; it could also be some kind of bug in the device
-driver --- or even the block layer, although that's much, much less
-likely (mostly because a lot of people would be complaining if that
-were the case).
+commit 2d01ddc86606564fb08c56e3bc93a0693895f710
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Dec 16 10:18:40 2020 +0000
 
-If you have access to a SCSI/SATA bus snooper which can be inserted in
-between the storage device (HDD/SSD) and the LSI Megaraid, that might
-be helpful in terms of trying to figure out what is going on.  Failing
-that, you'll probably find some way to add/use debugging
-hooks/tracepoints in the driver.
+    ext4: save error info to sb through journal if available
 
-Good luck,
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=152b9d56d00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=172b9d56d00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=132b9d56d00000
 
-					- Ted
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+628472a2aac693ab0fcd@syzkaller.appspotmail.com
+Fixes: 2d01ddc86606 ("ext4: save error info to sb through journal if available")
+
+ODEBUG: free active (active state 0) object type: timer_list hint: print_daily_error_info+0x0/0x1f0 fs/ext4/super.c:1334
+WARNING: CPU: 1 PID: 12723 at lib/debugobjects.c:505 debug_print_object+0x16e/0x250 lib/debugobjects.c:505
+Modules linked in:
+CPU: 0 PID: 12723 Comm: syz-executor932 Not tainted 5.12.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:debug_print_object+0x16e/0x250 lib/debugobjects.c:505
+Code: ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 af 00 00 00 48 8b 14 dd a0 06 c2 89 4c 89 ee 48 c7 c7 a0 fa c1 89 e8 fc 41 f8 04 <0f> 0b 83 05 05 7e fb 09 01 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e c3
+RSP: 0018:ffffc9000e6ef980 EFLAGS: 00010286
+
+RAX: 0000000000000000 RBX: 0000000000000003 RCX: 0000000000000000
+RDX: ffff88801d5e9bc0 RSI: ffffffff815c0d25 RDI: fffff52001cddf22
+RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815b9abe R11: 0000000000000000 R12: ffffffff896d7da0
+R13: ffffffff89c200e0 R14: ffffffff81629d00 R15: dffffc0000000000
+FS:  0000000000f93300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fcda3ec0000 CR3: 00000000155a1000 CR4: 0000000000350ef0
+Call Trace:
+ __debug_check_no_obj_freed lib/debugobjects.c:987 [inline]
+ debug_check_no_obj_freed+0x301/0x420 lib/debugobjects.c:1018
+ slab_free_hook mm/slub.c:1554 [inline]
+ slab_free_freelist_hook+0x147/0x210 mm/slub.c:1600
+ slab_free mm/slub.c:3161 [inline]
+ kfree+0xe5/0x7f0 mm/slub.c:4213
+ ext4_fill_super+0x84f/0xded0 fs/ext4/super.c:5182
+ mount_bdev+0x34d/0x410 fs/super.c:1367
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+ vfs_get_tree+0x89/0x2f0 fs/super.c:1497
+ do_new_mount fs/namespace.c:2903 [inline]
+ path_mount+0x132a/0x1f90 fs/namespace.c:3233
+ do_mount fs/namespace.c:3246 [inline]
+ __do_sys_mount fs/namespace.c:3454 [inline]
+ __se_sys_mount fs/namespace.c:3431 [inline]
+ __x64_sys_mount+0x27f/0x300 fs/namespace.c:3431
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x445c0a
+Code: 48 c7 c2 c0 ff ff ff f7 d8 64 89 02 b8 ff ff ff ff eb d2 e8 a8 00 00 00 0f 1f 84 00 00 00 00 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe8bf4c3b8 EFLAGS: 00000202
+ ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007ffe8bf4c410 RCX: 0000000000445c0a
+RDX: 0000000020000040 RSI: 0000000020000100 RDI: 00007ffe8bf4c3d0
+RBP: 00007ffe8bf4c3d0 R08: 00007ffe8bf4c410 R09: 0000000000000000
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
