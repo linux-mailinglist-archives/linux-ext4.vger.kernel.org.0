@@ -2,79 +2,159 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B93033DA72
-	for <lists+linux-ext4@lfdr.de>; Tue, 16 Mar 2021 18:15:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1121333E147
+	for <lists+linux-ext4@lfdr.de>; Tue, 16 Mar 2021 23:20:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238717AbhCPRPA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 16 Mar 2021 13:15:00 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42968 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239090AbhCPROa (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 16 Mar 2021 13:14:30 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4F0E1AC24;
-        Tue, 16 Mar 2021 17:14:29 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 1945B1F2C4C; Tue, 16 Mar 2021 18:14:29 +0100 (CET)
-Date:   Tue, 16 Mar 2021 18:14:29 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
-        Jan Kara <jack@suse.cz>, Jan Kara <jack@suse.com>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC] inode.i_opflags - Usage of two different locking schemes
-Message-ID: <20210316171429.GA22701@quack2.suse.cz>
-References: <f63dd495-defb-adc4-aa91-6aacd7f441c7@tu-dortmund.de>
- <a4709bc4-ee62-2cdc-0628-32e8fa73e8f9@tu-dortmund.de>
- <YEJLuP6+Zy8/dq+D@mit.edu>
- <667b3ec3-a522-05a9-31e8-87d8bfaa7adb@tu-dortmund.de>
- <YEJWiXaZ+9H+2nBx@mit.edu>
- <0f387f5b-a516-af45-856d-f38d1adfadf5@tu-dortmund.de>
+        id S230519AbhCPWUB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 16 Mar 2021 18:20:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230516AbhCPWTp (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 16 Mar 2021 18:19:45 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 652FDC06174A
+        for <linux-ext4@vger.kernel.org>; Tue, 16 Mar 2021 15:19:34 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id 30so13072118ple.4
+        for <linux-ext4@vger.kernel.org>; Tue, 16 Mar 2021 15:19:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sBTnSalP/z3G254t2NEbX+RyOCoPl0mp4fDHt3aTXP4=;
+        b=DcgfVxoWY5oy2kYzIBVyYLUxUUx7m7ZoUYawmIiEimb6Fh+XbhXcYmX6Br7PzCdWpH
+         lebrLI/LTejHFJhhbsSoo95sBJe75ctT9UmojIv2FgyDQ5nU1Sv9Yr/uEIjjjXlXkSXU
+         zaw3NqDF6aMsnBWKEo4Y6ZopQU6+mwmYN1cZzYAotsulcuNuu8q86maBoqKfB/9+XVT7
+         MRjtyCd4H1CFTIaTSjnXi2Sb2CHh99N1AoW4aBH9J7adQAf6LgTQSwK/DoyVdUcjDqNH
+         dnrN6zifxGPOjvZ3jYetIqIR4Dd7V784HjTD7LOHjE5X0Kn+VK1uwcmPJ1cUdcKHQe0o
+         y/Ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sBTnSalP/z3G254t2NEbX+RyOCoPl0mp4fDHt3aTXP4=;
+        b=kSn86AfKHObcfI7XM8gGR32GkWnurUntD6Xh7Hj2UonRQB67ZSZvCjT83kQQa1OXI+
+         mr8CiQ+wzGOfqZHOFVM34btD32EbTgXemA2QMoKPRhNh0GCVY+HmFxUMWP3ZbqOrAacL
+         sp6ZJHWXpo7Wegr2MjpKpQM2pzNxeuLzB9GHcfeUDmnee599LDXIzkNd8jeIzhtcoOzc
+         uMCJks057MGWrsdqlMlPs5Hore+pMnmrHziaqHAlr+CIeJfjUtTNVRj0Qowq3IacEofv
+         PqIeCH+L/fgFmxIcaPEyeu9I6kicoNHh/vGqPwKcwkpl6bebXNmBDRnjA/kpmPlxkYgP
+         kXIw==
+X-Gm-Message-State: AOAM533ZDrUFrJNNOOrcrT17i+/b0D7Rpz1+9BjbbGo9B8RWK6wF0rIw
+        FdvZC7//+MifxZDd6y0U+6OnIhcrWk4=
+X-Google-Smtp-Source: ABdhPJzzqyrWwZdUao71nCOrhVhFaiMomOEk/fi/Yl1vedXJVj5VPLRjF2vjBvATNVFVP4TGh5iCbw==
+X-Received: by 2002:a17:90a:c587:: with SMTP id l7mr1086998pjt.115.1615933173433;
+        Tue, 16 Mar 2021 15:19:33 -0700 (PDT)
+Received: from harshads-520.kir.corp.google.com ([2620:15c:17:10:d892:4f02:5a89:8908])
+        by smtp.googlemail.com with ESMTPSA id b7sm18630794pgh.37.2021.03.16.15.19.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 15:19:31 -0700 (PDT)
+From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     amir73il@gmail.com, tytso@mit.edu,
+        Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Subject: [PATCH] ext4: add rename whiteout support for fast commit
+Date:   Tue, 16 Mar 2021 15:19:21 -0700
+Message-Id: <20210316221921.1124955-1-harshadshirwadkar@gmail.com>
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0f387f5b-a516-af45-856d-f38d1adfadf5@tu-dortmund.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 08-03-21 15:05:33, Alexander Lochmann wrote:
-> On 05.03.21 17:04, Theodore Ts'o wrote:
-> > On Fri, Mar 05, 2021 at 04:35:47PM +0100, Alexander Lochmann wrote:
-> > > 
-> > > 
-> > > On 05.03.21 16:18, Theodore Ts'o wrote:
-> > > > 1)  I don't see where i_opflags is being read in ipc/mqueue.c at all,
-> > > > either with or without i_rwsem.
-> > > > 
-> > > It is read in fs/dcache.c
-> > 
-> > So why is this unique to the mqueue inode then?  It might be helpful
-> > to have explicit call stacks in the e-mail, in text form, when you
-> > resend to LKML.
-> It is unique to mqeue inode, because the control flow goes through
-> ipc/mqueue.c where almost always the i_rwsem is taken.
-> Hence, we see more memory accesses to an mqueue inode with the i_rwsem.
-> The i_lock is less often hold compared to the i_rwsem.
-> We conclude the i_rwsem is needed. So it might not be a contradiction at
-> all. It rather could be a flaw in our approach. :-/
-> 
-> Besides from our current discussion:
-> Does the i_lock protect i_opflags for both reading and writing?
+This patch adds rename whiteout support in fast commits. Note that the
+whiteout object that gets created is actually char device. Which
+imples, the function ext4_inode_journal_mode(struct inode *inode)
+would return "JOURNAL_DATA" for this inode. This has a consequence in
+fast commit code that it will make creation of the whiteout object a
+fast-commit ineligible behavior and thus will fall back to full
+commits. With this patch, this can be observed by running fast commits
+with rename whiteout and seeing the stats generated by ext4_fc_stats
+tracepoint as follows:
 
-So i_lock is supposed to protect i_opflags for writing AFAICT. For reading
-we don't seem to bother in some cases and I agree that is potentially
-problematic. It is *mostly* OK because we initialize i_opflags when loading
-inode into memory / adding it to dcache. But sometimes we also update them
-while the inode is alive. Now this is fine for the particular flag we
-update but in theory, if the compiler wants to screw us and stores
-temporarily some nonsensical value in i_opflags we'd have a problem. This
-is mostly a theoretical issue but eventually we probably want to fix this.
+ext4_fc_stats: dev 254:32 fc ineligible reasons:
+XATTR:0, CROSS_RENAME:0, JOURNAL_FLAG_CHANGE:0, NO_MEM:0, SWAP_BOOT:0,
+RESIZE:0, RENAME_DIR:0, FALLOC_RANGE:0, INODE_JOURNAL_DATA:16;
+num_commits:6, ineligible: 6, numblks: 3
 
-								Honza
+So in short, this patch guarantees that in case of rename whiteout, we
+fall back to full commits.
+
+Amir mentioned that instead of creating a new whiteout object for
+every rename, we can create a static whiteout object with irrelevant
+nlink. That will make fast commits to not fall back to full
+commit. But until this happens, this patch will ensure correctness by
+falling back to full commits.
+
+Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+---
+ fs/ext4/ext4.h        | 2 ++
+ fs/ext4/fast_commit.c | 9 +++++++--
+ fs/ext4/namei.c       | 3 +++
+ 3 files changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index f6a36a0e07c1..d7039e86d705 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -2807,6 +2807,8 @@ void __ext4_fc_track_link(handle_t *handle, struct inode *inode,
+ 	struct dentry *dentry);
+ void ext4_fc_track_unlink(handle_t *handle, struct dentry *dentry);
+ void ext4_fc_track_link(handle_t *handle, struct dentry *dentry);
++void __ext4_fc_track_create(handle_t *handle, struct inode *inode,
++			    struct dentry *dentry);
+ void ext4_fc_track_create(handle_t *handle, struct dentry *dentry);
+ void ext4_fc_track_inode(handle_t *handle, struct inode *inode);
+ void ext4_fc_mark_ineligible(struct super_block *sb, int reason);
+diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+index 619412134bbf..d5c4aaa69665 100644
+--- a/fs/ext4/fast_commit.c
++++ b/fs/ext4/fast_commit.c
+@@ -513,10 +513,10 @@ void ext4_fc_track_link(handle_t *handle, struct dentry *dentry)
+ 	__ext4_fc_track_link(handle, d_inode(dentry), dentry);
+ }
+ 
+-void ext4_fc_track_create(handle_t *handle, struct dentry *dentry)
++void __ext4_fc_track_create(handle_t *handle, struct inode *inode,
++			  struct dentry *dentry)
+ {
+ 	struct __track_dentry_update_args args;
+-	struct inode *inode = d_inode(dentry);
+ 	int ret;
+ 
+ 	args.dentry = dentry;
+@@ -527,6 +527,11 @@ void ext4_fc_track_create(handle_t *handle, struct dentry *dentry)
+ 	trace_ext4_fc_track_create(inode, dentry, ret);
+ }
+ 
++void ext4_fc_track_create(handle_t *handle, struct dentry *dentry)
++{
++	__ext4_fc_track_create(handle, d_inode(dentry), dentry);
++}
++
+ /* __track_fn for inode tracking */
+ static int __track_inode(struct inode *inode, void *arg, bool update)
+ {
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index 115762180801..38176c36dda5 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -3846,6 +3846,7 @@ static int ext4_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 		retval = ext4_mark_inode_dirty(handle, whiteout);
+ 		if (unlikely(retval))
+ 			goto end_rename;
++
+ 	}
+ 	if (!new.bh) {
+ 		retval = ext4_add_entry(handle, new.dentry, old.inode);
+@@ -3919,6 +3920,8 @@ static int ext4_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 			ext4_fc_track_unlink(handle, new.dentry);
+ 		__ext4_fc_track_link(handle, old.inode, new.dentry);
+ 		__ext4_fc_track_unlink(handle, old.inode, old.dentry);
++		if (whiteout)
++			__ext4_fc_track_create(handle, whiteout, old.dentry);
+ 	}
+ 
+ 	if (new.inode) {
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.31.0.rc2.261.g7f71774620-goog
+
