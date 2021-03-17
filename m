@@ -2,182 +2,143 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05B9E33EFD5
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Mar 2021 12:54:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09CC733F54C
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Mar 2021 17:17:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231512AbhCQLxd convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Wed, 17 Mar 2021 07:53:33 -0400
-Received: from smtp.econet.co.zw ([77.246.51.158]:14129 "EHLO
-        ironportDMZ.econet.co.zw" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231506AbhCQLxI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 17 Mar 2021 07:53:08 -0400
-IronPort-SDR: lcR7rzMPMna261jvNN7DlegkSE7vKDbnHtkUBVdYHRq6AQqZbPcESKHoXAPWEwjaxdA2kcWm99
- BqcaQUAKdEWyjb8MVy01TsHfS3RA/Z7nAE8zYFL+FxHRT6buxKRSZeGMwXgyQXuQEv8I2xZjpm
- QGJVzk/qFAQOdlSdr5GsGzBMSglh4HyQYd08lleuns89v5Exo4WMxh2GcmUQ3HnWB8aiu+pqYH
- MlW55eSu0Wbt9O0Q9R/BJggblWwhusc7Q3Px7wMgbUGJeMIKmdWWpcdDDFOUSJuei7xTtDpdxd
- tQk=
-X-IronPort-AV: E=Sophos;i="5.81,256,1610402400"; 
-   d="scan'208";a="6585147"
-X-IPAS-Result: =?us-ascii?q?A2D4/wDZ51Fg/yNlqMADgX2DL4Elk1mDcZR7hXeCOYUdD?=
- =?us-ascii?q?AEBAQEFgg4VBwMGBAGGJAeCEEgBAQEcAQUCAgIBAgMBAQwBhFdQEk2DG7B1m?=
- =?us-ascii?q?10mgmKFXA0FARECAV+DJ4NfDzdgEyMbFikTRSsVTxEJMAFCA5AhJS+Ke6kfi?=
- =?us-ascii?q?2+KAYI0imDISYgmjWWHbAECnUEBBQWBQg?=
-IronPort-PHdr: A9a23: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
-IronPort-HdrOrdr: A9a23:ApZ9va8Mxuoie/CQMBRuk+BqI+orLtY04lQ7vn1ZYxpTb8Ceio
- SSjO0WvCWE6go5dXk8lbm7WJWobmjb8fdOjrU5GZeHcE3YtHCzLIdkhLGP/xTFFzfl/uBQkY
- dMGpIObeHYNlRxgcbk7ATQKb9JqrS62ZulnOLPi0pqJDsKV4ha4xpkEQHeK0VqRWB9dP4EPa
- CB7clKrSfIQwV1Uu2HABA+MdTrlpngj5T9eyccCxom8gWVrD+h5bLgCTeZ2woTSD9D6qcZ/W
- /JuQr/4amorvehoyW260bjq7JMltPnyshKGcyLjekYIjjhkRyQf4h6V6acsD1dmpDJ1GoX
-Received: from unknown (HELO wvale-mb-svr-06.econetzw.local) ([192.168.101.174])
-  by ironportLAN.econet.co.zw with ESMTP; 16 Mar 2021 13:06:59 +0200
-Received: from WVALE-CAS-SVR-9.econetzw.local (192.168.101.184) by
- wvale-mb-svr-06.econetzw.local (192.168.101.174) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Tue, 16 Mar 2021 13:01:00 +0200
-Received: from User (165.231.148.189) by WVALE-CAS-SVR-9.econetzw.local
- (10.10.11.230) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 16 Mar 2021 13:05:15 +0200
-Reply-To: <r19772744@daum.net>
-From:   "Reem E. A" <ecosureoperations@econet.co.zw>
-Subject: OKKEH
-Date:   Tue, 16 Mar 2021 12:04:53 -0700
+        id S232570AbhCQQRV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 17 Mar 2021 12:17:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232571AbhCQQRJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 17 Mar 2021 12:17:09 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B20AC06174A
+        for <linux-ext4@vger.kernel.org>; Wed, 17 Mar 2021 09:17:09 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id u62so26540213oib.6
+        for <linux-ext4@vger.kernel.org>; Wed, 17 Mar 2021 09:17:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eub6Qa+t0wZaFRuaZ9m0w5UB2wWeCg4kRwZeXes5U20=;
+        b=I/KC5FSTuibeBJGHl43AxGwXZ5YsKBSfsPrkU4Kw0FcLsWlu9Z2hgWpZNN4J3/eOTE
+         WXkBCEefY6HP/odUHW+8vu6IkVKvvuIbgSiqE2GuaQuEtSwnGdnWo7mydnHNiQk6PVuW
+         Btj6K76bA2Llb/CWHYUwldjJoaVaGXScb0nIBOKRmqoZ1TVMwiaoa5YWFp8D1j+sR60k
+         lp0esVYkv/j3XUkFth304Oe8JvvS0gIXbuISQ2ME9dphSyCXZmaZCmVBaALlDn/WuHpT
+         +sjRPJvtYsBuoajs8YsB149DwTGKBRqbPQ5pESVEiTnzvmn5WOzPBTvFexaOAceEFJCl
+         ylNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eub6Qa+t0wZaFRuaZ9m0w5UB2wWeCg4kRwZeXes5U20=;
+        b=qgfVwPj4Pg1hn26rYB7YlkFe0r2dCh4f64KLxYnwp+B0eiVmAZMG/X/G71P5eQbZQn
+         dH51moydNXzyoENMyx8r7ps6sLpcmrkqdpm9QcD+wbmxrabjspl0V0KzNIT6qKWN8bNe
+         2x8vHp19gCLtZTOh4OD/sP0xS0jnGVlC8UZNk2z/vFa3wQHXMivLSqiVQ/PlRQKknbZQ
+         55MEf/mhkMX/nnnWaNvJpnC2CdIoz4Yy4EhTIDr/WQq/DLzSw+QdreNwLiwwsM9hz/4H
+         FXP5K98ezWIn2XdgjAyQWE3p+rGbolcetfbmTroqcQCaoNdUYCohrtxbMjtwX61Tq024
+         bTog==
+X-Gm-Message-State: AOAM532rL6nPxvHNnKbMHxIxOBQ3KUbBllYmBVBlZKhEnKqCtsCtQ1DY
+        K1KZfLQl6QlJc60fT7t4ALusTMw3wQu6qhVK/yzvnoRkmfY=
+X-Google-Smtp-Source: ABdhPJxZxKyCRQiIeXmmL3H1PjMes5mzJzYJcMVNAFchmDtDnCUA35fitpF9QhlvIAsQiDyff1fcWZEmXVf/0G5HLME=
+X-Received: by 2002:aca:578b:: with SMTP id l133mr3138412oib.96.1615993267843;
+ Wed, 17 Mar 2021 08:01:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="Windows-1251"
-Content-Transfer-Encoding: 8BIT
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-ID: <5749848fa2a54a738cb73039bed68c32@WVALE-CAS-SVR-9.econetzw.local>
-To:     Undisclosed recipients:;
+References: <CADve3d51po2wh6rmgrzM8-k9h=JzE9+mC57Y5V2BxfFkKPFMsw@mail.gmail.com>
+ <YEtjuGZCfD+7vCFd@mit.edu> <CADve3d7bioEAMwQ=i8KZ=hjrBDMk7gJK8kTUu2E5Q=W_KbUMPg@mail.gmail.com>
+ <YE2FOTpWOaidmT52@mit.edu>
+In-Reply-To: <YE2FOTpWOaidmT52@mit.edu>
+From:   Shashidhar Patil <shashidhar.patil@gmail.com>
+Date:   Wed, 17 Mar 2021 20:30:56 +0530
+Message-ID: <CADve3d4h7QmxJUCe8ggHtSb41PbDnvZoj4_m74hHgYD96xjZNw@mail.gmail.com>
+Subject: Re: jbd2 task hung in jbd2_journal_commit_transaction
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Dear Friend
+Hi Theodore,
+      Thank you for the details about the journalling layer and
+insight into the block device layer.
+ I think Good luck might have clicked. The swap file in our case is
+attached to a loop block device before enabling swap using swapon.
+Since loop driver processes its IO requests by calling
+vfs_iter_write() the write requests re-enter the ext4
+filesystem/journalling code.
+Is that right ? There seems to be a possibility of cylic dependency.
 
-My name is Ms. Reem Ebrahim Al-Hashimi, I am the "Minister of state
-for International Cooperation" in UAE. I write to you on behalf of
-my other "two (2) colleagues" who has Authorized me to solicit for
-your "partnership in claiming of {us$47=Million}" from a Financial
-Home on their behalf and for our "Mutual Benefits".
-
-The said Fund {us$47=Million} is our share from the (over-invoiced) Oil/Gas
-deal with Turkish Government within 2013/2014. Because of the nature of the
-deal we don't want our government to know about the fund that is why we
-decided to contact you. If this proposal interests you, let me know, by
-sending me an email and I will send to you detailed information on how this
-business would be successfully transacted. Be informed that nobody knows about
-the secret of this fund except us, and we know how to carry out the entire
-transaction. So I am compelled to ask, that you will stand on our behalf and
-receive this fund into any account that is solely controlled by you.
-
-We will compensate you with 15% of the total amount involved as
-gratification for being our partner in this transaction. Reply to:
- reem.alhashimi@yandex.com
-
-Regards,
-Ms. Reem.
-This mail was sent through Econet Wireless, a Global telecoms leader.
-
-DISCLAIMER
-
-The information in this message is confidential and is legally privileged. It is intended solely for the addressee. Access to this message by anyone else is unauthorized. If received in error please accept our apologies and notify the sender immediately. You must also delete the original message from your machine. If you are not the intended recipient, any use, disclosure, copying, distribution or action taken in reliance of it, is prohibited and may be unlawful. The information, attachments, opinions or advice contained in this email are not the views or opinions of Econet Wireless, its subsidiaries or affiliates. Econet Wireless therefore accepts no liability for claims, losses, or damages arising from the inaccuracy, incorrectness, or lack of integrity of such information.
-[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/AgileBanner.png]
-WORK ISN'T A PLACE
-IT'S WHAT WE DO
-________________________________
-
-EcoSure Operations
-
-
-
-[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/telephone.png]
-
-
-
-
-[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/email.png]
-
-ecosureoperations@econet.co.zw<mailto:ecosureoperations@econet.co.zw>
-
-
-[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/location.png]
-
-
-
-
-[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/website.png]
-
-www.econet.co.zw<https://www.econet.co.zw>
-
-
-[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/inspired.jpg]
+Thanks
+-Shashidhar
+On Sun, Mar 14, 2021 at 9:08 AM Theodore Ts'o <tytso@mit.edu> wrote:
+>
+> On Sat, Mar 13, 2021 at 01:29:43PM +0530, Shashidhar Patil wrote:
+> > > From what I can tell zswap is using writepage(), and since the swap
+> > > file should be *completely* preallocated and initialized, we should
+> > > never be trying to start a handle from zswap.  This should prevent the
+> > > deadlock from happening.  If zswap is doing something which is causing
+> > > ext4 to start a handle when it tries to writeout a swap page, then
+> > > that would certainly be a problem.  But that really shouldn't be the
+> > > case.
+> >
+> > Yes. But the the first sys_write() called by the application did
+> > allocate an journal handle as required and since
+> > this specific request now is waiting for IO to complete the handle is
+> > not closed. Elsewhere in jbd2 task the commit_transaction is
+> > blocked since there is one or more open journalling handles. Is my
+> > understanding correct ?
+>
+> Yes, that's correct.  When we start a transaction commit, either
+> because the 5 second commit interval has been reached, or there isn't
+> enough room in the journal for a particular handle to start (when we
+> start a file system mutation, we estimate the worst case number of
+> blocks that might need to be modified, and hence require space in the
+> journal), we first (a) stop any new handles from being started, and
+> then (b) wait for all currently running handles to complete.
+>
+> If one handle takes a lot longer to complete than all the others,
+> while we are waiting for that last handle to finish, the commit can
+> not make forward progress, and no other file system operation which
+> requires modifying metadata can proceed.  As a result, we try to keep
+> the time between starting a handle and stopping a handle as short as
+> possible.  For example, if possible, we will try to read a block that
+> might be needed by a mutation operation *before* we start the handle.
+> That's not always possible, but we try to do that whenever possible,
+> and there are various tracepoints and other debugging facilities so we
+> can see which types of file system mutations require holding handles
+> longest, so we can try to optimize them.
+>
+> > 4,1737846,1121675697013,-; schedule+0x36/0x80
+> > 4,1737847,1121675697015,-; io_schedule+0x16/0x40
+> > 4,1737848,1121675697016,-; blk_mq_get_tag+0x161/0x250
+> > 4,1737849,1121675697018,-; ? wait_woken+0x80/0x80
+> > 4,1737850,1121675697020,-; blk_mq_get_request+0xdc/0x3b0
+> > 4,1737851,1121675697021,-; blk_mq_make_request+0x128/0x5b0
+> > 4,1737852,1121675697023,-; generic_make_request+0x122/0x2f0
+> > 4,1737853,1121675697024,-; ? bio_alloc_bioset+0xd2/0x1e0
+> > 4,1737854,1121675697026,-; submit_bio+0x73/0x140
+> > .....
+> > So all those IO requests are waiting for response from the raid port,
+> > is that right ?
+> >
+> > But the megaraid_sas driver( the system has LSI MEGARAID port) in most
+> > cases handles the unresponsive behavior
+> > by resetting the device. IN this case the reset did not happen, maybe
+> > there is some other bug in the megaraid driver.
+>
+> Yes, it's not necessarily a problem with the storage device or the
+> host bus adapter; it could also be some kind of bug in the device
+> driver --- or even the block layer, although that's much, much less
+> likely (mostly because a lot of people would be complaining if that
+> were the case).
+>
+> If you have access to a SCSI/SATA bus snooper which can be inserted in
+> between the storage device (HDD/SSD) and the LSI Megaraid, that might
+> be helpful in terms of trying to figure out what is going on.  Failing
+> that, you'll probably find some way to add/use debugging
+> hooks/tracepoints in the driver.
+>
+> Good luck,
+>
+>                                         - Ted
