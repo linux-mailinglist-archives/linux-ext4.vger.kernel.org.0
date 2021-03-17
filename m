@@ -2,64 +2,125 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E77FA33F642
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Mar 2021 18:06:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF6BA33FA31
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Mar 2021 21:58:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229608AbhCQRGP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 17 Mar 2021 13:06:15 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:44665 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229591AbhCQRGE (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 17 Mar 2021 13:06:04 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        id S233406AbhCQU6J (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 17 Mar 2021 16:58:09 -0400
+Received: from mx1.hrz.uni-dortmund.de ([129.217.128.51]:60615 "EHLO
+        unimail.uni-dortmund.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233606AbhCQU5t (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 17 Mar 2021 16:57:49 -0400
+Received: from [192.168.111.103] (p4fd975c2.dip0.t-ipconnect.de [79.217.117.194])
         (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 12HH5xxj031661
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Mar 2021 13:06:00 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id A6E9F15C39C8; Wed, 17 Mar 2021 13:05:59 -0400 (EDT)
-Date:   Wed, 17 Mar 2021 13:05:59 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Shashidhar Patil <shashidhar.patil@gmail.com>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: jbd2 task hung in jbd2_journal_commit_transaction
-Message-ID: <YFI299oMXylsG9kB@mit.edu>
-References: <CADve3d51po2wh6rmgrzM8-k9h=JzE9+mC57Y5V2BxfFkKPFMsw@mail.gmail.com>
- <YEtjuGZCfD+7vCFd@mit.edu>
- <CADve3d7bioEAMwQ=i8KZ=hjrBDMk7gJK8kTUu2E5Q=W_KbUMPg@mail.gmail.com>
- <YE2FOTpWOaidmT52@mit.edu>
- <CADve3d4h7QmxJUCe8ggHtSb41PbDnvZoj4_m74hHgYD96xjZNw@mail.gmail.com>
+        by unimail.uni-dortmund.de (8.16.1/8.16.1) with ESMTPSA id 12HKvbBE011213
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT);
+        Wed, 17 Mar 2021 21:57:38 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tu-dortmund.de;
+        s=unimail; t=1616014658;
+        bh=K+a8c+n3uYKrcQ4YEDKq+ACmy6NKdSX55u22gqzFhPI=;
+        h=Subject:From:To:Cc:References:Date:In-Reply-To;
+        b=ePom3An5c9eK8eBQpMBfg+tFpPiofj1xUOasOYIBstTTS1yIP+E9dIPXWeoKgtxhq
+         QoG5/5Eb+gBEf0TN3rsYj72bnqEJrQwE5RzT1ZFMmt1EyxNsrh98YEsYaPxHfXiyAU
+         gFYgA/1aDkBIfBzLxCl+wwdFdum3+eL4nyHiDgJw=
+Subject: Re: [PATCH v2] Updated locking documentation for journal_t
+From:   Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
+        "Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210210095740.54881-1-alexander.lochmann@tu-dortmund.de>
+ <20210211093754.GJ19070@quack2.suse.cz>
+ <ad82c7a9-a624-4ed5-5ada-a6410c44c0b3@tu-dortmund.de>
+Message-ID: <31c3e70b-c513-a9ac-8d94-211d80221942@tu-dortmund.de>
+Date:   Wed, 17 Mar 2021 21:57:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CADve3d4h7QmxJUCe8ggHtSb41PbDnvZoj4_m74hHgYD96xjZNw@mail.gmail.com>
+In-Reply-To: <ad82c7a9-a624-4ed5-5ada-a6410c44c0b3@tu-dortmund.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 08:30:56PM +0530, Shashidhar Patil wrote:
-> Hi Theodore,
->       Thank you for the details about the journalling layer and
-> insight into the block device layer.
->  I think Good luck might have clicked. The swap file in our case is
-> attached to a loop block device before enabling swap using swapon.
-> Since loop driver processes its IO requests by calling
-> vfs_iter_write() the write requests re-enter the ext4
-> filesystem/journalling code.
-> Is that right ? There seems to be a possibility of cylic dependency.
+Does this patch look good to you?
+Might it be ready to be merged?
 
-If that hypothesis is correct, you should see an example of that in
-one of your stack traces; do you?  The loop device creates struct file
-where the file is opened using O_DIRECT.  In the O_DIRECT code path,
-assuming the file was fully allocate and initialized, it shouldn't
-involve starting a journal handle.
+- Alex
 
-That being said, why are you using a loop device for a swap device at
-all?  Using a swap file directly is going to be much more efficient,
-and decrease the stack depth and CPU cycles needed to do a swap out if
-nothing else.  If you can reliably reproduce the problem, what happens
-if you use a swap file directly and cut out the loop device as a swap
-device?   Does it make the problem go away?
+On 11.02.21 10:51, Alexander Lochmann wrote:
+> Some members of transaction_t are allowed to be read without
+> any lock being held if consistency doesn't matter.
+> Based on LockDoc's findings, we extended the locking
+> documentation of those members.
+> Each one of them is marked with a short comment:
+> "no lock for quick racy checks".
+> 
+> Signed-off-by: Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
+> Signed-off-by: Horst Schirmeier <horst.schirmeier@tu-dortmund.de>
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> ---
+>  include/linux/jbd2.h | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+> index 18f77d9b1745..4dca33a063dd 100644
+> --- a/include/linux/jbd2.h
+> +++ b/include/linux/jbd2.h
+> @@ -768,7 +768,7 @@ enum passtype {PASS_SCAN, PASS_REVOKE, PASS_REPLAY};
+>  struct journal_s
+>  {
+>      /**
+> -     * @j_flags: General journaling state flags [j_state_lock]
+> +     * @j_flags: General journaling state flags [j_state_lock, no lock
+> for quick racy checks]
+>       */
+>      unsigned long        j_flags;
+> 
+> @@ -808,7 +808,7 @@ struct journal_s
+>      /**
+>       * @j_barrier_count:
+>       *
+> -     * Number of processes waiting to create a barrier lock [j_state_lock]
+> +     * Number of processes waiting to create a barrier lock
+> [j_state_lock, no lock for quick racy checks]
+>       */
+>      int            j_barrier_count;
+> 
+> @@ -821,7 +821,7 @@ struct journal_s
+>       * @j_running_transaction:
+>       *
+>       * Transactions: The current running transaction...
+> -     * [j_state_lock] [caller holding open handle]
+> +     * [j_state_lock, no lock for quick racy checks] [caller holding
+> open handle]
+>       */
+>      transaction_t        *j_running_transaction;
+> 
+> @@ -1033,7 +1033,7 @@ struct journal_s
+>       * @j_commit_sequence:
+>       *
+>       * Sequence number of the most recently committed transaction
+> -     * [j_state_lock].
+> +     * [j_state_lock, no lock for quick racy checks].
+>       */
+>      tid_t            j_commit_sequence;
+> 
+> @@ -1041,7 +1041,7 @@ struct journal_s
+>       * @j_commit_request:
+>       *
+>       * Sequence number of the most recent transaction wanting commit
+> -     * [j_state_lock]
+> +     * [j_state_lock, no lock for quick racy checks]
+>       */
+>      tid_t            j_commit_request;
+> 
 
-					- Ted
+-- 
+Technische Universität Dortmund
+Alexander Lochmann                PGP key: 0xBC3EF6FD
+Otto-Hahn-Str. 16                 phone:  +49.231.7556141
+D-44227 Dortmund                  fax:    +49.231.7556116
+http://ess.cs.tu-dortmund.de/Staff/al
