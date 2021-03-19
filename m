@@ -2,254 +2,166 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F3EA3416AF
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 Mar 2021 08:35:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D059341791
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 Mar 2021 09:37:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234248AbhCSHeq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 19 Mar 2021 03:34:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50496 "EHLO
+        id S234330AbhCSIgy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 19 Mar 2021 04:36:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234226AbhCSHeW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 19 Mar 2021 03:34:22 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B1D6C06174A
-        for <linux-ext4@vger.kernel.org>; Fri, 19 Mar 2021 00:34:22 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id t16so4996750pfg.1
-        for <linux-ext4@vger.kernel.org>; Fri, 19 Mar 2021 00:34:22 -0700 (PDT)
+        with ESMTP id S234288AbhCSIgj (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 19 Mar 2021 04:36:39 -0400
+Received: from mail-vk1-xa33.google.com (mail-vk1-xa33.google.com [IPv6:2607:f8b0:4864:20::a33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74A8FC06174A
+        for <linux-ext4@vger.kernel.org>; Fri, 19 Mar 2021 01:36:39 -0700 (PDT)
+Received: by mail-vk1-xa33.google.com with SMTP id f11so1905830vkl.9
+        for <linux-ext4@vger.kernel.org>; Fri, 19 Mar 2021 01:36:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=nbnKhdVcsKcWt4bFQ9bWyl6lOm5l04clTzstRcPKGGE=;
-        b=UHJV9tgxOpol1BPi4OBljpOrGXaGDE6FMvkKa7inNrbhZ8zoHg2Oi1qQR/B1mOxW2I
-         hW8pNOIRn7X8bhWJl42RvsXzBEwXQRsItfoudH6mtmDDklNphfn/HLscjV2hSaJcaI+B
-         g8xIsOgERPfH28kAF0KjTMK/+BoMwvDfXGEg6wHG4ahrbHy7CVMJ0pRyJ8WWWk0kShCU
-         cBdPRHb3KPv7AsrQvZ9+q7rurJyCB6EvZaSxcOWq/R74QvtlIfCKAcD1yOyt19km5xNS
-         imOjLPfoW9dKTqxaFKVjCDvRXblMxUCKnkIIyfvtNuhfW0ticBVULABHQ2+Bb5MRFIk4
-         apHw==
+        bh=V4zhu0iRCwggJtth86gVHoOF9LsK67CiVV+65APy0lw=;
+        b=NgCrMxdUv4Dd24ZJIvn8txNnJehnCB0Ef7rmPJEieE+/Pctto1uAw6wc8B+cAtlWPK
+         VogFl9h1lhnO/pQRfQNdNah50HLP2xzpEuCnE3YgrDtMJwGvVcwuif9zFRL72kwm9DBt
+         MWvTGTqzBo/n60C6tmFnyjn7KQ95cqhO2fEH4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=nbnKhdVcsKcWt4bFQ9bWyl6lOm5l04clTzstRcPKGGE=;
-        b=k3Tr01KtTh2Jl4VjZnXvEjvglQTb6J7fQmKf6m2E/wdmriFHUk18t+RlIrVii1sQWI
-         K4ASoay1QoKPLPVsGVWBoEcvOq38YzRRxBSDRrPdD8gn7o+XCpIUVvyJZa7FjYXGvamK
-         XIeHxu6jy2FEjAg3drUT6p3De5sDLTFvJlngZkjZqMKVfS3YQRc1++vYz0Vu0C7moS2u
-         1dpOodOySQHzVE1fSSfum+YJymBZ+QQ2fMES4xT4aoS3wT9hIjPmmXU6vyoP8yNibBwx
-         RBkJU0/DTleGSZvoaoTYADLde5ry+wB6b4+ggm1cjypdBlwlfD49v/nYe9Cive8f/TZ3
-         oIaw==
-X-Gm-Message-State: AOAM5315f/F/hfVNIbkis4jQUFEPZ9TeqsyRUckMC/qotIKQ9MVokcNy
-        BQdVgygdszPovq1n8ER43tLhICaecoM=
-X-Google-Smtp-Source: ABdhPJwEpfh6Q6H8LbbI8UyUTjo3GMxpYhBRSG8+8Z6Vb3PBynEyNnxQLPcHVc51hAYZd9r+TL0ei+y7YHY=
-X-Received: from drosen.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:4e6f])
- (user=drosen job=sendgmr) by 2002:a17:903:228c:b029:e6:a755:1cc6 with SMTP id
- b12-20020a170903228cb02900e6a7551cc6mr13289578plh.83.1616139262143; Fri, 19
- Mar 2021 00:34:22 -0700 (PDT)
-Date:   Fri, 19 Mar 2021 07:34:14 +0000
-In-Reply-To: <20210319073414.1381041-1-drosen@google.com>
-Message-Id: <20210319073414.1381041-3-drosen@google.com>
-Mime-Version: 1.0
-References: <20210319073414.1381041-1-drosen@google.com>
-X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH v2 2/2] ext4: Optimize match for casefolded encrypted dirs
-From:   Daniel Rosenberg <drosen@google.com>
-To:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel-team@android.com, Daniel Rosenberg <drosen@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=V4zhu0iRCwggJtth86gVHoOF9LsK67CiVV+65APy0lw=;
+        b=GbaBYZ/iRaWjbK8NU2SAYuaydoPMGEPL84vw2xWsTdBrDmDiY6taHU81XM3vVRUa4I
+         wH6MJIkC2xGjEFwm/DwqkgJOdoszxyVKmJGxnQAuyXwqmJPz4D10SXYcqdxIxLnDU7mB
+         fujJkl2b3jcUAN+KsNLYzbAXsb/UVoWhDjEHmgbzh5k0ACg7VzuKwFaNyvaCmp93k8Sv
+         1oOFa1dUgSNH71qZp4r0hkw/K7YRzpVFpZlee2IdIJobSbQhaF+YrjhO1Q3ggUBkMUqP
+         uPVqxbS0mgozRc84VRHttK7bkMBviZGuQgSKf+0dLzY152t81qIQr3lz9dOlaDiBcwos
+         soUQ==
+X-Gm-Message-State: AOAM531uEo9rR9Bs1xPQscCenbdHrbaEkWa5ModmdegdvgxVZb7y1HMJ
+        Uow3yEcAltOKIyRKrhF6+HTbZL9VZtYAAVwp3MM2PH1OI5clSA==
+X-Google-Smtp-Source: ABdhPJyOcUk9BCpUQ0OmCXVP5bM2ZRg/vsU1onqAIu9UwyE5TCXFqJUpY3TQHcZ9BOa0vAr40gKFZ8brFU5MB+38h8k=
+X-Received: by 2002:a05:6122:54:: with SMTP id q20mr1666620vkn.3.1616142998580;
+ Fri, 19 Mar 2021 01:36:38 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210316221921.1124955-1-harshadshirwadkar@gmail.com>
+ <CAOQ4uxiD8WGLeSftqL6dOfz_kNp+YSE7qfXYG34Pea4j8G7CxA@mail.gmail.com>
+ <CAD+ocbzMv6SyUUZFnBE0gTnHf8yvMFfq6Dm9rdnLXoUrh7gYkg@mail.gmail.com> <CAOQ4uxg+d2WoPEL2mC5H3d0uxh-_HGw3Bhyrun=z4O2nCg-yNQ@mail.gmail.com>
+In-Reply-To: <CAOQ4uxg+d2WoPEL2mC5H3d0uxh-_HGw3Bhyrun=z4O2nCg-yNQ@mail.gmail.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Fri, 19 Mar 2021 09:36:27 +0100
+Message-ID: <CAJfpeguiFU5qv-L-jeXBhc+PqeMOUoVnPO3EN4xOB0nCH9Z2cA@mail.gmail.com>
+Subject: Re: [PATCH] ext4: add rename whiteout support for fast commit
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     harshad shirwadkar <harshadshirwadkar@gmail.com>,
+        Ext4 <linux-ext4@vger.kernel.org>, Theodore Tso <tytso@mit.edu>,
+        overlayfs <linux-unionfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Matching names with casefolded encrypting directories requires
-decrypting entries to confirm case since we are case preserving. We can
-avoid needing to decrypt if our hash values don't match.
+On Fri, Mar 19, 2021 at 6:52 AM Amir Goldstein <amir73il@gmail.com> wrote:
+>
+> [adding overlayfs list]
+>
+> On Fri, Mar 19, 2021 at 3:32 AM harshad shirwadkar
+> <harshadshirwadkar@gmail.com> wrote:
+> >
+> > Thanks for the review Amir.
+> >
+> > Sure changing the subject makes sense.
+> >
+> > Also, on further discussions on Ext4 conference call, we also thought
+> > that with this patch, overlayfs customers would not benefit from fast
+> > commits much if they call renames often. So, in order to really make
+> > rename whiteout a fast commit compatible operation, we probably would
+> > need to add support in fast commit to replay a char device creation
+> > event (since whiteout object is a char device). That would imply, we
+> > would need to do careful versioning and would need to burn an on-disk
+> > feature flag.
+> >
+> > An alternative to this would be to have a static whiteout object with
+> > irrelevant nlink count and to have every rename point to that object
+> > instead. Based on how we decide to implement that, at max only the
+> > first rename operation would be fast commit incompatible since that's
+> > when this object would get created. All the further operations would
+> > be fast commit compatible. The big benefit of this approach is that
+> > this way we don't have to add support for char device creation in fast
+> > commit replay code and thus we don't have to worry about versioning.
+> >
+>
+> I'm glad to hear that, Harshad.
+>
+> Please note that creating a static whiteout object on-disk is one possible
+> implementation option. Not creating any object on-disk may be even better.
 
-Signed-off-by: Daniel Rosenberg <drosen@google.com>
----
- fs/ext4/ext4.h  | 17 ++++++++-------
- fs/ext4/namei.c | 55 ++++++++++++++++++++++++++-----------------------
- 2 files changed, 38 insertions(+), 34 deletions(-)
+I don't really get it.  What's the advantage of not having an object?
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index dafa528c4d9f..181d07791efb 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -2637,9 +2637,9 @@ extern unsigned ext4_free_clusters_after_init(struct super_block *sb,
- ext4_fsblk_t ext4_inode_to_goal_block(struct inode *);
- 
- #ifdef CONFIG_UNICODE
--extern void ext4_fname_setup_ci_filename(struct inode *dir,
-+extern int ext4_fname_setup_ci_filename(struct inode *dir,
- 					 const struct qstr *iname,
--					 struct fscrypt_str *fname);
-+					 struct ext4_filename *fname);
- #endif
- 
- #ifdef CONFIG_FS_ENCRYPTION
-@@ -2670,9 +2670,9 @@ static inline int ext4_fname_setup_filename(struct inode *dir,
- 	ext4_fname_from_fscrypt_name(fname, &name);
- 
- #ifdef CONFIG_UNICODE
--	ext4_fname_setup_ci_filename(dir, iname, &fname->cf_name);
-+	err = ext4_fname_setup_ci_filename(dir, iname, fname);
- #endif
--	return 0;
-+	return err;
- }
- 
- static inline int ext4_fname_prepare_lookup(struct inode *dir,
-@@ -2689,9 +2689,9 @@ static inline int ext4_fname_prepare_lookup(struct inode *dir,
- 	ext4_fname_from_fscrypt_name(fname, &name);
- 
- #ifdef CONFIG_UNICODE
--	ext4_fname_setup_ci_filename(dir, &dentry->d_name, &fname->cf_name);
-+	err = ext4_fname_setup_ci_filename(dir, &dentry->d_name, fname);
- #endif
--	return 0;
-+	return err;
- }
- 
- static inline void ext4_fname_free_filename(struct ext4_filename *fname)
-@@ -2716,15 +2716,16 @@ static inline int ext4_fname_setup_filename(struct inode *dir,
- 					    int lookup,
- 					    struct ext4_filename *fname)
- {
-+	int err = 0;
- 	fname->usr_fname = iname;
- 	fname->disk_name.name = (unsigned char *) iname->name;
- 	fname->disk_name.len = iname->len;
- 
- #ifdef CONFIG_UNICODE
--	ext4_fname_setup_ci_filename(dir, iname, &fname->cf_name);
-+	err = ext4_fname_setup_ci_filename(dir, iname, fname);
- #endif
- 
--	return 0;
-+	return err;
- }
- 
- static inline int ext4_fname_prepare_lookup(struct inode *dir,
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 97d2755b9775..1fb7128220ce 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -816,7 +816,9 @@ dx_probe(struct ext4_filename *fname, struct inode *dir,
- 	if (hinfo->hash_version <= DX_HASH_TEA)
- 		hinfo->hash_version += EXT4_SB(dir->i_sb)->s_hash_unsigned;
- 	hinfo->seed = EXT4_SB(dir->i_sb)->s_hash_seed;
--	if (fname && fname_name(fname))
-+	/* hash is already computed for encrypted casefolded directory */
-+	if (fname && fname_name(fname) &&
-+				!(IS_ENCRYPTED(dir) && IS_CASEFOLDED(dir)))
- 		ext4fs_dirhash(dir, fname_name(fname), fname_len(fname), hinfo);
- 	hash = hinfo->hash;
- 
-@@ -1367,19 +1369,21 @@ static int ext4_ci_compare(const struct inode *parent, const struct qstr *name,
- 	return ret;
- }
- 
--void ext4_fname_setup_ci_filename(struct inode *dir, const struct qstr *iname,
--				  struct fscrypt_str *cf_name)
-+int ext4_fname_setup_ci_filename(struct inode *dir, const struct qstr *iname,
-+				  struct ext4_filename *name)
- {
-+	struct fscrypt_str *cf_name = &name->cf_name;
-+	struct dx_hash_info *hinfo = &name->hinfo;
- 	int len;
- 
- 	if (!IS_CASEFOLDED(dir) || !dir->i_sb->s_encoding) {
- 		cf_name->name = NULL;
--		return;
-+		return 0;
- 	}
- 
- 	cf_name->name = kmalloc(EXT4_NAME_LEN, GFP_NOFS);
- 	if (!cf_name->name)
--		return;
-+		return -ENOMEM;
- 
- 	len = utf8_casefold(dir->i_sb->s_encoding,
- 			    iname, cf_name->name,
-@@ -1387,10 +1391,18 @@ void ext4_fname_setup_ci_filename(struct inode *dir, const struct qstr *iname,
- 	if (len <= 0) {
- 		kfree(cf_name->name);
- 		cf_name->name = NULL;
--		return;
- 	}
- 	cf_name->len = (unsigned) len;
-+	if (!IS_ENCRYPTED(dir))
-+		return 0;
- 
-+	hinfo->hash_version = DX_HASH_SIPHASH;
-+	hinfo->seed = NULL;
-+	if (cf_name->name)
-+		ext4fs_dirhash(dir, cf_name->name, cf_name->len, hinfo);
-+	else
-+		ext4fs_dirhash(dir, iname->name, iname->len, hinfo);
-+	return 0;
- }
- #endif
- 
-@@ -1420,16 +1432,12 @@ static bool ext4_match(struct inode *parent,
- 			struct qstr cf = {.name = fname->cf_name.name,
- 					  .len = fname->cf_name.len};
- 			if (IS_ENCRYPTED(parent)) {
--				struct dx_hash_info hinfo;
--
--				hinfo.hash_version = DX_HASH_SIPHASH;
--				hinfo.seed = NULL;
--				ext4fs_dirhash(parent, fname->cf_name.name,
--						fname_len(fname), &hinfo);
--				if (hinfo.hash != EXT4_DIRENT_HASH(de) ||
--						hinfo.minor_hash !=
--						    EXT4_DIRENT_MINOR_HASH(de))
-+				if (fname->hinfo.hash != EXT4_DIRENT_HASH(de) ||
-+					fname->hinfo.minor_hash !=
-+						EXT4_DIRENT_MINOR_HASH(de)) {
-+
- 					return 0;
-+				}
- 			}
- 			return !ext4_ci_compare(parent, &cf, de->name,
- 							de->name_len, true);
-@@ -2058,15 +2066,11 @@ void ext4_insert_dentry(struct inode *dir,
- 	de->name_len = fname_len(fname);
- 	memcpy(de->name, fname_name(fname), fname_len(fname));
- 	if (ext4_hash_in_dirent(dir)) {
--		struct dx_hash_info hinfo;
-+		struct dx_hash_info *hinfo = &fname->hinfo;
- 
--		hinfo.hash_version = DX_HASH_SIPHASH;
--		hinfo.seed = NULL;
--		ext4fs_dirhash(dir, fname_usr_name(fname),
--				fname_len(fname), &hinfo);
--		EXT4_DIRENT_HASHES(de)->hash = cpu_to_le32(hinfo.hash);
-+		EXT4_DIRENT_HASHES(de)->hash = cpu_to_le32(hinfo->hash);
- 		EXT4_DIRENT_HASHES(de)->minor_hash =
--				cpu_to_le32(hinfo.minor_hash);
-+						cpu_to_le32(hinfo->minor_hash);
- 	}
- }
- 
-@@ -2216,10 +2220,9 @@ static int make_indexed_dir(handle_t *handle, struct ext4_filename *fname,
- 	if (fname->hinfo.hash_version <= DX_HASH_TEA)
- 		fname->hinfo.hash_version += EXT4_SB(dir->i_sb)->s_hash_unsigned;
- 	fname->hinfo.seed = EXT4_SB(dir->i_sb)->s_hash_seed;
--	if (ext4_hash_in_dirent(dir))
--		ext4fs_dirhash(dir, fname_usr_name(fname),
--				fname_len(fname), &fname->hinfo);
--	else
-+
-+	/* casefolded encrypted hashes are computed on fname setup */
-+	if (!ext4_hash_in_dirent(dir))
- 		ext4fs_dirhash(dir, fname_name(fname),
- 				fname_len(fname), &fname->hinfo);
- 
--- 
-2.31.0.rc2.261.g7f71774620-goog
+Readdir returning DT_WHT internally might be nice, but I'd be careful
+with exporting that to userspace, since it's likely to cause more
+problems that it solves.   And on the stat(2) interface adding S_IFWHT
+or even worse: ENOENT are really out of the question due to backward
+incompatibility with almost every application.
 
+> One other challenge is how to handle users trying to make operations
+> on the upper layer directly (migrating images etc).
+> As long as the tools still observe the whiteout as a chadev (with stat(2))
+> then export and import should work fine (creating a real chardev on import).
+
+Right.
+
+Can't mkfs.ext4 just create the static object?  That sounds to me like
+the simplest approach.
+
+Thanks,
+Miklos
+
+
+Thanks,
+Miklos
+>
+> I had suggested the static object approach because it should be pretty
+> simple to implement and add e2fsprogs support for.
+>
+> However, if we look at the requirements for RENAME_WHITEOUT,
+> the resulting directory entry does not actually need to point to any
+> object on-disk at all.
+>
+> An alternative implementation would be to create a directory entry
+> with {d_ino = 0, d_type = DT_WHT}. Lookup of this entry will return
+> a reference to a singleton read-only ext4 whiteout inode object, which
+> does not reside on disk, so fast commit is irrelevant in that sense.
+> i_nlink should be handled carefully, but that should be easier from
+> doing that for a static on-disk object.
+>
+> I am not sure how userland tools handle DT_WHT, but I see that
+> other filesystems can emit this value in theory and man rename(2)
+> claims that BSD uses DT_WHT, so the common tools should be
+> able to handle it.
+>
+> As far as overlayfs is concerned:
+> 1. ovl_lookup() will find an IS_WHITEOUT() inode as usual
+> 2. ovl_dir_read_merged() will need this small patch (below) and will
+>     not access the inode object at all
+> 3. At first, ovl_whiteout() -> vfs_whiteout() can still create a usual chardev
+> 4. Later, we can initiate the overlayfs instance singleton whiteout
+>     reference in ovl_check_rename_whiteout() and ovl_whiteout() will
+>     never get -EMLINK when linking this whiteout object
+>
+> If there are tools that try to change  inode permissions recursively on the
+> upper layer (?) there may be a problem with those read-only whiteouts
+> although the permission of a whiteout is a moot concept.
+>
+> Thanks,
+> Amir.
+>
+> --- a/fs/overlayfs/readdir.c
+> +++ b/fs/overlayfs/readdir.c
+> @@ -161,7 +161,7 @@ static struct ovl_cache_entry
+> *ovl_cache_entry_new(struct ovl_readdir_data *rdd,
+>         if (ovl_calc_d_ino(rdd, p))
+>                 p->ino = 0;
+>         p->is_upper = rdd->is_upper;
+> -       p->is_whiteout = false;
+> +       p->is_whiteout = (d_type == DT_WHT);
+>
+>         if (d_type == DT_CHR) {
+>                 p->next_maybe_whiteout = rdd->first_maybe_whiteout;
