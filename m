@@ -2,82 +2,180 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68D9034145F
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 Mar 2021 05:49:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65A7C341446
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 Mar 2021 05:40:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229447AbhCSEtG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 19 Mar 2021 00:49:06 -0400
-Received: from elcelearning.net ([213.229.86.18]:54750 "EHLO
-        host.secservnett.com" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
-        with ESMTP id S229946AbhCSEsi (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 19 Mar 2021 00:48:38 -0400
-X-Greylist: delayed 24336 seconds by postgrey-1.27 at vger.kernel.org; Fri, 19 Mar 2021 00:48:38 EDT
-Received: from secservnett.com (ec2-3-14-131-102.us-east-2.compute.amazonaws.com [3.14.131.102])
-        by host.secservnett.com (Postfix) with ESMTPA id 1E6352812A89
-        for <linux-ext4@vger.kernel.org>; Thu, 18 Mar 2021 15:43:39 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 host.secservnett.com 1E6352812A89
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=secservnett.com;
-        s=default; t=1616082219;
-        bh=SzZho7iX500NWujrxe0OF9Q1+ri/Wiu7SIarQ/92wfM=;
-        h=Reply-To:From:To:Subject:Date:From;
-        b=hmC8roXtLeCZgqnEo8YyyzeSV/7/3L6dE7w+IoXZvXPhLs97jPs91fsvvcnsNPDJf
-         7EyRcVUPUwsMWpoA2iPirbh8ViP0kT2ouOhvdRyX17gA0HQE4xjB8pai/dCeVIgzSC
-         wKjCFc134Uc3alGPSlIH/wroR6AdSvgqkK7KULhg=
-DKIM-Filter: OpenDKIM Filter v2.11.0 host.secservnett.com 1E6352812A89
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=secservnett.com;
-        s=default; t=1616082219;
-        bh=SzZho7iX500NWujrxe0OF9Q1+ri/Wiu7SIarQ/92wfM=;
-        h=Reply-To:From:To:Subject:Date:From;
-        b=hmC8roXtLeCZgqnEo8YyyzeSV/7/3L6dE7w+IoXZvXPhLs97jPs91fsvvcnsNPDJf
-         7EyRcVUPUwsMWpoA2iPirbh8ViP0kT2ouOhvdRyX17gA0HQE4xjB8pai/dCeVIgzSC
-         wKjCFc134Uc3alGPSlIH/wroR6AdSvgqkK7KULhg=
-Reply-To: muhammadfaraz02@securesvsmail.com
-From:   M Faraz <muhammadfaraz02@secservnett.com>
-To:     linux-ext4@vger.kernel.org
-Subject: Partnership
-Date:   18 Mar 2021 23:43:38 +0800
-Message-ID: <20210318234338.2EA8D19880D42F8E@secservnett.com>
-Mime-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        id S233714AbhCSEjs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 19 Mar 2021 00:39:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233711AbhCSEjn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 19 Mar 2021 00:39:43 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B2C4C06174A
+        for <linux-ext4@vger.kernel.org>; Thu, 18 Mar 2021 21:39:43 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id z15so3476433oic.8
+        for <linux-ext4@vger.kernel.org>; Thu, 18 Mar 2021 21:39:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eiCNyNXWGJ498v+sy6dOJtpGaQS8Wn1e9nIrsk5GdWs=;
+        b=HDhI/Z1bOx0uWOlcoDhH0L2QUpWhwMHnptxHruNzqhdDZROiARFuoXHX3e5hQnTmd2
+         gD6XI7/fbvXNtvM6yPmF/nJ2C7FKPNoOuaV+zRdQ/6qt65l5NE0mgNF71kp7bvRGNvjA
+         Nv3McMEOOR3K3cCoefwSIPIRSefrR3qKa07jrSyUx9hLpLrbKhKTTCp4iyneLKaPd8jN
+         LYYo24uBhKrXQo5KyalIAMkp9hjxu7UK0HnhfmzGO0Vy7l1bPG70xt6Q+6LxBxzxUXCJ
+         cdvytFoanQxkRP3D7ZwmplHO1A/1rcKzf+cOt7qRhxG66HAhml2+T3RvCGIW3FmnaSC2
+         82TA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eiCNyNXWGJ498v+sy6dOJtpGaQS8Wn1e9nIrsk5GdWs=;
+        b=KQOW5o9brr4aSBycJiDdtQfXO8IPcSV47mRjp0VeTUs5mgEnoQb/c8ueU1GQgrO+4i
+         NXYKJeL/gEc9SfrtDXHJgzbrjvblarSXVskvI8XXYV3eMNJEHS7s0w8+mK3YO/quTMkx
+         i/ICiVy0VwyGbUsi5OIoSNmNzZFFRP1tp+wVbM4cjwby2CJdfPorF8Q5Ji25RqpnX8/F
+         DLPt70UYal7B3ElEu1mjNizAbzhsIyaJ/DbyszNQiw4GsTsXACNe2M/kJicQLnxIaMk9
+         oR5mmL3R6EqvWJ7jNhFd5qcyFKCxUu8TOU8PZoml3ePkqZfdvpu9CLEYH26W/5r79dKu
+         Grvw==
+X-Gm-Message-State: AOAM533OxkYAp092uy/EnKxWfJ3kAgLtKECdUyNTqteOLKXHBDUNmoiU
+        BdMp1sVC+/gQcbj2G8p5fatx9QdDrj+POUBzYdPG5/+7OWg=
+X-Google-Smtp-Source: ABdhPJzdeOJ7ZFkeGp3U8/KXWV9iaIzOZEhj0r8vTBe9GyhCGdoepfbQDOMYEsmOSklMNr81whVTRy+IZgy8Djv9sHc=
+X-Received: by 2002:aca:b9c1:: with SMTP id j184mr5383879oif.5.1616128782835;
+ Thu, 18 Mar 2021 21:39:42 -0700 (PDT)
+MIME-Version: 1.0
+References: <CADve3d51po2wh6rmgrzM8-k9h=JzE9+mC57Y5V2BxfFkKPFMsw@mail.gmail.com>
+ <YEtjuGZCfD+7vCFd@mit.edu> <CADve3d7bioEAMwQ=i8KZ=hjrBDMk7gJK8kTUu2E5Q=W_KbUMPg@mail.gmail.com>
+ <YE2FOTpWOaidmT52@mit.edu> <CADve3d4h7QmxJUCe8ggHtSb41PbDnvZoj4_m74hHgYD96xjZNw@mail.gmail.com>
+ <YFI299oMXylsG9kB@mit.edu>
+In-Reply-To: <YFI299oMXylsG9kB@mit.edu>
+From:   Shashidhar Patil <shashidhar.patil@gmail.com>
+Date:   Fri, 19 Mar 2021 10:09:31 +0530
+Message-ID: <CADve3d6AhC+N60C0qCXvbojxEh4FWDik-1_o4LfDM9mE04Byww@mail.gmail.com>
+Subject: Re: jbd2 task hung in jbd2_journal_commit_transaction
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello there,
+Hi Theodore,
+    I forgot to include two important  details , the stack trace of
+loop0 driver and sar output, which clearly nail  the problem.
+The losetup with Ubuntu16.05 does not have O_DIRECT support  and we
+were not aware of bypassing of journalling if
+O_DIRECT combined with preallocated file scenario.
 
-Good day. I sent you an email a few days ago but I did not=20
-receive a reply. I am not sure if you got that email or not. I am=20
-Muhammad Faraz. I got your contact from an online business=20
-directory and I am contacting you because I have a proposition=20
-that could be of great interest to you. I want you to keep an=20
-open mind while reading this proposal. I represent the interest=20
-of my brother in-law who was a former minister in the Syrian=20
-Government. As you probably know, there is a lot of crisis going=20
-on currently in that part of the world and my brother in-law has=20
-been one of the few people to publicly oppose the Government's=20
-policy on this senseless war and killings of innocent citizens=20
-and have been trying to advocate for a more peaceful and=20
-prosperous country. Unfortunately, his unwavering support for the=20
-rebels who are fighting to put an end to the war has caused him=20
-to fall out with the ruling party and he now has reasons to be=20
-believe that his life is at risk. In order to ensure that his=20
-family is taken care of and protected incase anything happens to=20
-him, he has asked me to help him find a foreign partner with good=20
-business acumen that can help him secure and invest his assets=20
-that he has in Europe. This is why I have contacted you. I=20
-searched online and saw your profile so I thought you would be=20
-interested in this opportunity.
+Using the loop we could track the swap load using sysstat, but
+otherwise no other major requirement.
+With loop I could reproduce the problem only twice using stress-ng
+being run for 20 time for 15 seconds interval.
+The problem happens highly random so it may take more number of tries
+in some cases.
 
-Do you have investment ideas or business projects that these=20
-funds can be invested into? Please note that he wants this done=20
-very discretely and I will be acting as his eyes and ears during=20
-the course of this transaction. He is also prepared to compensate=20
-you very much for your efforts so this would be worth your time.=20
-If this proposal interests you, kindly respond so that I can give=20
-you more details.
+With direct swap file I tried many times and could not see the issue.
+The system continues to function fine after terminating the tests.
+The loop is now removed and swap file is activated directly in the
+deployed systems where the issue was seen every couple of
+weeks. Awaiting for few weeks before concluding about the problem/solution.
 
-Regards,
+Logs below.
 
-Muhammad.
+backtrace:
+
+6,1725650,1121675639291,-;loop0           D    0  2090      2 0x80000080
+4,1725651,1121675639293,-;Call Trace:
+4,1725652,1121675639295,-; __schedule+0x3d6/0x8b0
+4,1725653,1121675639296,-; schedule+0x36/0x80
+4,1725654,1121675639298,-; wait_transaction_locked+0x8a/0xd0
+4,1725655,1121675639300,-; ? wait_woken+0x80/0x80
+4,1725656,1121675639302,-; add_transaction_credits+0x1cd/0x2b0
+4,1725657,1121675639303,-; ? __wake_up_common_lock+0x8e/0xc0
+4,1725658,1121675639305,-; start_this_handle+0x103/0x410
+4,1725659,1121675639306,-; ? _cond_resched+0x1a/0x50
+4,1725660,1121675639310,-; ? kmem_cache_alloc+0x115/0x1c0
+4,1725661,1121675639311,-; jbd2__journal_start+0xdb/0x1f0
+4,1725662,1121675639314,-; ? ext4_dirty_inode+0x32/0x70
+4,1725663,1121675639317,-; __ext4_journal_start_sb+0x6d/0x120
+4,1725664,1121675639318,-; ext4_dirty_inode+0x32/0x70
+4,1725665,1121675639322,-; __mark_inode_dirty+0x184/0x3b0
+4,1725666,1121675639325,-; generic_update_time+0x7b/0xd0
+4,1725667,1121675639326,-; ? current_time+0x32/0x70
+4,1725668,1121675639328,-; file_update_time+0xbe/0x110
+4,1725669,1121675639330,-; __generic_file_write_iter+0x9d/0x1f0
+4,1725670,1121675639331,-; ? kmem_cache_free+0x1d1/0x1e0
+4,1725671,1121675639333,-; ext4_file_write_iter+0xc4/0x3b0
+4,1725672,1121675639336,-; do_iter_readv_writev+0x111/0x180
+4,1725673,1121675639337,-; do_iter_write+0x87/0x1a0
+4,1725674,1121675639339,-; vfs_iter_write+0x19/0x30
+4,1725675,1121675639343,-; lo_write_bvec+0x69/0x110
+4,1725676,1121675639344,-; loop_queue_work+0x8ff/0xa60
+4,1725677,1121675639346,-; ? __switch_to_asm+0x35/0x70
+4,1725678,1121675639347,-; ? __switch_to_asm+0x35/0x70
+4,1725679,1121675639348,-; ? __schedule+0x3de/0x8b0
+4,1725680,1121675639350,-; kthread_worker_fn+0x85/0x1f0
+4,1725681,1121675639351,-; loop_kthread_worker_fn+0x1e/0x20
+4,1725682,1121675639352,-; kthread+0x105/0x140
+4,1725683,1121675639353,-; ? loop_get_status64+0x90/0x90
+4,1725684,1121675639354,-; ? kthread_bind+0x40/0x40
+4,1725685,1121675639356,-; ret_from_fork+0x35/0x40
+
+sar output:
+
+root@maglev-master-190:/data/tmp/customers/weber/var/log/sysstat# sar
+-d -f sa10 | grep dev7
+
+Linux 4.15.0-117-generic (maglev-master-1)      03/10/21
+_x86_64_        (88 CPU)
+
+00:00:01          DEV       tps     rkB/s     wkB/s   areq-sz
+aqu-sz     await     svctm     %util
+00:05:01       dev7-0      1.74      0.92      6.02      4.00
+0.29    184.17     28.01      4.86
+00:15:01       dev7-0      4.77      3.35     15.74      4.00
+0.53    119.11     14.67      7.00
+00:25:01       dev7-0      0.48      1.54      0.37      4.00
+0.00      1.31      0.20      0.01
+00:35:01       dev7-0      0.48      1.03      0.88      4.00
+0.00      4.80      0.25      0.01
+00:45:01       dev7-0      0.56      1.43      0.82      4.00
+0.00      1.13      0.31      0.02
+00:55:01       dev7-0      0.88      2.39      1.13      4.00
+0.03     34.22     11.67      1.03
+01:05:01       dev7-0      0.88      1.47      2.03      4.00
+0.06     75.12     18.69      1.64
+01:15:01       dev7-0      1.45      0.08      5.71      4.00
+94.30    387.62    605.50     87.62
+01:25:01       dev7-0      0.00      0.00      0.00      0.00
+128.00      0.00      0.00    100.00
+01:35:01       dev7-0      0.00      0.00      0.00      0.00
+128.00      0.00      0.00    100.00
+
+On Wed, Mar 17, 2021 at 10:36 PM Theodore Ts'o <tytso@mit.edu> wrote:
+>
+> On Wed, Mar 17, 2021 at 08:30:56PM +0530, Shashidhar Patil wrote:
+> > Hi Theodore,
+> >       Thank you for the details about the journalling layer and
+> > insight into the block device layer.
+> >  I think Good luck might have clicked. The swap file in our case is
+> > attached to a loop block device before enabling swap using swapon.
+> > Since loop driver processes its IO requests by calling
+> > vfs_iter_write() the write requests re-enter the ext4
+> > filesystem/journalling code.
+> > Is that right ? There seems to be a possibility of cylic dependency.
+>
+> If that hypothesis is correct, you should see an example of that in
+> one of your stack traces; do you?  The loop device creates struct file
+> where the file is opened using O_DIRECT.  In the O_DIRECT code path,
+> assuming the file was fully allocate and initialized, it shouldn't
+> involve starting a journal handle.
+>
+> That being said, why are you using a loop device for a swap device at
+> all?  Using a swap file directly is going to be much more efficient,
+> and decrease the stack depth and CPU cycles needed to do a swap out if
+> nothing else.  If you can reliably reproduce the problem, what happens
+> if you use a swap file directly and cut out the loop device as a swap
+> device?   Does it make the problem go away?
+>
+>                                         - Ted
