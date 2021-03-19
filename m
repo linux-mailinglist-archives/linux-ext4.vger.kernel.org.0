@@ -2,93 +2,93 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 262F3341041
-	for <lists+linux-ext4@lfdr.de>; Thu, 18 Mar 2021 23:17:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64F3534117A
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 Mar 2021 01:32:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232096AbhCRWQu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 18 Mar 2021 18:16:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43694 "EHLO
+        id S231422AbhCSAbs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 18 Mar 2021 20:31:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232018AbhCRWQY (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 18 Mar 2021 18:16:24 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E910C06174A
-        for <linux-ext4@vger.kernel.org>; Thu, 18 Mar 2021 15:16:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=k7Ro5lc1J0OxwKXJ6kFoLtpqg9O1mEoih7hEmVUixZg=; b=AnqKu79NWW6atjWst3/ugWiUIX
-        wSFbMGIB7DgrifgIKIzT6+O3AkxwebN3YqzS05BzeANnZRSPalv3eFxx94O9s1+NgvmBpgaFUPqCr
-        lim62ywtKg4nGPeIizKWEACD6ericAu2NFOz1DsyrFadCjW5KMSQtHZJfetKkrNZsy+RH4OCPe68z
-        FECqcw7dOWpaxGDj29vkviFJJPeZNQ4Y8/mkRoxsTzmpSCuMRJHxS+B8zHBsdbgzlgKQmpdFhG5iX
-        P07h7gD/i+Ny0oD40VZU9yvk8pzgHbekNoVK87fnGEHfYTS2pecEc6+l+r9OmCLutwWJ6KN+n2vdL
-        2ke7Zwzg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lN0wG-003YZ8-Hn; Thu, 18 Mar 2021 22:16:21 +0000
-Date:   Thu, 18 Mar 2021 22:16:20 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Eric Whitney <enwlinux@gmail.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu
-Subject: Re: generic/418 regression seen on 5.12-rc3
-Message-ID: <20210318221620.GW3420@casper.infradead.org>
-References: <20210318181613.GA13891@localhost.localdomain>
- <20210318201506.GU3420@casper.infradead.org>
- <20210318213808.GA26924@localhost.localdomain>
+        with ESMTP id S231394AbhCSAbk (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 18 Mar 2021 20:31:40 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA6D0C06174A;
+        Thu, 18 Mar 2021 17:31:39 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id o11so2527855pgs.4;
+        Thu, 18 Mar 2021 17:31:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oCj2ToX9GCCPyWC+y9XAU0OjtPq0vsBVNVC+AP3EALc=;
+        b=thmxeNzhpah1sIKJugQmjoohSX75Om4Md4HFMt+IgN/eJuuf0rA8HyBoZNbOCeUPuf
+         /2QmxDdxV3Ion/xMstzvYJut7Uu4MZqWDwWUzDg1OT6bCoqBlMwIHonnHrTUoRa1ThRg
+         RwzoMmP9xz25eGqRCBg7MT6AzrTsnociSz7FMnmuiQCN+3lceBJqAmftOO73H2jEDsNE
+         IMhnmkiooQAcWFxpY+fVLeqbSJj7DhbysMXKedbymhs/e1xlvBWoE09u/YZm+5o7qLEf
+         xUSt3tQvW5467tZFHksXs9Whnxu2fwCUoUpx29Z4U+yK1iesPJ/O+nWfqk5q/p4A7gYb
+         VNkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oCj2ToX9GCCPyWC+y9XAU0OjtPq0vsBVNVC+AP3EALc=;
+        b=f1oZ7KC2J4gCjg690RJTVYT9EE2lG66XxBtMQTUhrwag6dNbXYpuUNUTXSmI/cCX1d
+         act2IovW58AbKE9bFXpmiiph4Z5FFNiqXxy3SvCjmMRrhN25/rrc21vBnstIpR7zkkT2
+         0nzgX4aE/oywgCmC4xM7hgb5eIK+bIvbvRb8g2AlyrsVw5LPlCC1OkbFkUwlc9dDC4Rk
+         ZTMt9tNclhtB7GVJGNTaWQwmzhKPINpUpEUuPbM6/8nXxsRsFzAble8OISXVlUcO2uEV
+         kPAmLLzJ6pceX+tyf8Qby3C/CKoUdMqcUNGuNfedoXwY3D1zZL3iFNJHkDH6Uawp6GU0
+         7Jww==
+X-Gm-Message-State: AOAM5323vEGqm74fFq3E8+xPHUd9BK8mJg5QJgBbML9rRYWxadZeu5N9
+        uNOcxMjB7pQ1e8y1js6kIAc=
+X-Google-Smtp-Source: ABdhPJyDu/1zw03Dk3iyEisrSR2rKyeb+nrgxAEHyM2f1QzIYX+azNTqEtzsSpYZ37SPUtQjrh1aLw==
+X-Received: by 2002:aa7:952c:0:b029:1f1:533c:40d7 with SMTP id c12-20020aa7952c0000b02901f1533c40d7mr6573459pfp.81.1616113899410;
+        Thu, 18 Mar 2021 17:31:39 -0700 (PDT)
+Received: from localhost.localdomain ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id q14sm3549718pff.94.2021.03.18.17.31.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Mar 2021 17:31:38 -0700 (PDT)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: liu.xuzhi@zte.com.cn
+To:     jack@suse.com
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Liu xuzhi <liu.xuzhi@zte.com.cn>
+Subject: [PATCH] fs/ext2/: fix misspellings using codespell tool
+Date:   Thu, 18 Mar 2021 17:31:31 -0700
+Message-Id: <20210319003131.484738-1-liu.xuzhi@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210318213808.GA26924@localhost.localdomain>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 05:38:08PM -0400, Eric Whitney wrote:
-> * Matthew Wilcox <willy@infradead.org>:
-> > On Thu, Mar 18, 2021 at 02:16:13PM -0400, Eric Whitney wrote:
-> > > As mentioned in today's ext4 concall, I've seen generic/418 fail from time to
-> > > time when run on 5.12-rc3 and 5.12-rc1 kernels.  This first occurred when
-> > > running the 1k test case using kvm-xfstests.  I was then able to bisect the
-> > > failure to a patch landed in the -rc1 merge window:
-> > > 
-> > > (bd8a1f3655a7) mm/filemap: support readpage splitting a page
-> > 
-> > Thanks for letting me know.  This failure is new to me.
-> 
-> Sure - it's useful to know that it's new to you.  Ted said he's also going
-> to test XFS with a large number of generic/418 trials which would be a
-> useful comparison.  However, he's had no luck as yet reproducing what I've
-> seen on his Google compute engine test setup running ext4.
-> 
-> > 
-> > I don't understand it; this patch changes the behaviour of buffered reads
-> > from waiting on a page with a refcount held to waiting on a page without
-> > the refcount held, then starting the lookup from scratch once the page
-> > is unlocked.  I find it hard to believe this introduces a /new/ failure.
-> > Either it makes an existing failure easier to hit, or there's a subtle
-> > bug in the retry logic that I'm not seeing.
-> > 
-> 
-> For keeping Murphy at bay I'm rerunning the bisection from scratch just
-> to make sure I come out at the same patch.  The initial bisection looked
-> clean, but when dealing with a failure that occurs probabilistically it's
-> easy enough to get it wrong.  Is this patch revertable in -rc1 or -rc3?
-> Ordinarily I like to do that for confirmation.
+From: Liu xuzhi <liu.xuzhi@zte.com.cn>
 
-Alas, not easily.  I've built a lot on top of it since then.  I could
-probably come up with a moral reversion (and will have to if we can't
-figure out why it's causing a problem!)
+A typo is found out by codespell tool in 1107th lines of super.c:
 
-> And there's always the chance that a latent ext4 bug is being hit.
+$ codespell ./fs/ext2/
+./super.c:1107: fileystem  ==> filesystem
 
-That would also be valuable information to find out.  If this
-patch is exposing a latent bug, I can't think what it might be.
+Fix a typo found by codespell.
 
-> I'd be very happy to run whatever debugging patches you might want, though
-> you might want to wait until I've reproduced the bisection result.  The
-> offsets vary, unfortunately - I've seen 1024, 2048, and 3072 reported when
-> running a file system with 4k blocks.
+Signed-off-by: Liu xuzhi <liu.xuzhi@zte.com.cn>
+---
+ fs/ext2/super.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-As I expected, but thank you for being willing to run debug patches.
-I'll wait for you to confirm the bisection and then work up something
-that'll help figure out what's going on.
+diff --git a/fs/ext2/super.c b/fs/ext2/super.c
+index 6c4753277916..d2fd9707e953 100644
+--- a/fs/ext2/super.c
++++ b/fs/ext2/super.c
+@@ -1104,7 +1104,7 @@ static int ext2_fill_super(struct super_block *sb, void *data, int silent)
+ 	get_random_bytes(&sbi->s_next_generation, sizeof(u32));
+ 	spin_lock_init(&sbi->s_next_gen_lock);
+ 
+-	/* per fileystem reservation list head & lock */
++	/* per filesystem reservation list head & lock */
+ 	spin_lock_init(&sbi->s_rsv_window_lock);
+ 	sbi->s_rsv_window_root = RB_ROOT;
+ 	/*
+-- 
+2.25.1
+
