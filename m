@@ -2,180 +2,146 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65A7C341446
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 Mar 2021 05:40:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1CA0341510
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 Mar 2021 06:53:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233714AbhCSEjs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 19 Mar 2021 00:39:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41218 "EHLO
+        id S233920AbhCSFwf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 19 Mar 2021 01:52:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233711AbhCSEjn (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 19 Mar 2021 00:39:43 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B2C4C06174A
-        for <linux-ext4@vger.kernel.org>; Thu, 18 Mar 2021 21:39:43 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id z15so3476433oic.8
-        for <linux-ext4@vger.kernel.org>; Thu, 18 Mar 2021 21:39:43 -0700 (PDT)
+        with ESMTP id S233756AbhCSFwG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 19 Mar 2021 01:52:06 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26A76C06174A;
+        Thu, 18 Mar 2021 22:52:06 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id v3so4872788ioq.2;
+        Thu, 18 Mar 2021 22:52:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=eiCNyNXWGJ498v+sy6dOJtpGaQS8Wn1e9nIrsk5GdWs=;
-        b=HDhI/Z1bOx0uWOlcoDhH0L2QUpWhwMHnptxHruNzqhdDZROiARFuoXHX3e5hQnTmd2
-         gD6XI7/fbvXNtvM6yPmF/nJ2C7FKPNoOuaV+zRdQ/6qt65l5NE0mgNF71kp7bvRGNvjA
-         Nv3McMEOOR3K3cCoefwSIPIRSefrR3qKa07jrSyUx9hLpLrbKhKTTCp4iyneLKaPd8jN
-         LYYo24uBhKrXQo5KyalIAMkp9hjxu7UK0HnhfmzGO0Vy7l1bPG70xt6Q+6LxBxzxUXCJ
-         cdvytFoanQxkRP3D7ZwmplHO1A/1rcKzf+cOt7qRhxG66HAhml2+T3RvCGIW3FmnaSC2
-         82TA==
+        bh=rFEUCsXB/846GPTkksZ0MN9Gughl9FrFefeL2AgymC8=;
+        b=jUqDRjzzBert2lOnmK3GKqrOzOpVX/FrIXwQhOgJ3CC9OgXZF8QdYhKCCrcMog46jE
+         zr6dq2oqQgnHmVQbphZJQXkUcmWzBFc46vxdm+Igus4KeeGWCINLHMoL1W2wH5Oabxy6
+         zOZo7TSLXRFJRW12Hq7uIFISsAapq2tWguVZojl1RWwxa84p8Fy6m6pTp8HVJv7u9fhD
+         PxZiAhdcaB7EXNKQpTRemg7skK9TLZ9f+ZklgtWZvzOjCd6H3i1kPKwTWHvuzv8EO2mL
+         WnGv8kzXMPxrjRI+KCdgDkq0trHm5gqA7r9hh79HUD7FH/AjLIHGDKZ4q9n0SoBsKZrN
+         6cow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=eiCNyNXWGJ498v+sy6dOJtpGaQS8Wn1e9nIrsk5GdWs=;
-        b=KQOW5o9brr4aSBycJiDdtQfXO8IPcSV47mRjp0VeTUs5mgEnoQb/c8ueU1GQgrO+4i
-         NXYKJeL/gEc9SfrtDXHJgzbrjvblarSXVskvI8XXYV3eMNJEHS7s0w8+mK3YO/quTMkx
-         i/ICiVy0VwyGbUsi5OIoSNmNzZFFRP1tp+wVbM4cjwby2CJdfPorF8Q5Ji25RqpnX8/F
-         DLPt70UYal7B3ElEu1mjNizAbzhsIyaJ/DbyszNQiw4GsTsXACNe2M/kJicQLnxIaMk9
-         oR5mmL3R6EqvWJ7jNhFd5qcyFKCxUu8TOU8PZoml3ePkqZfdvpu9CLEYH26W/5r79dKu
-         Grvw==
-X-Gm-Message-State: AOAM533OxkYAp092uy/EnKxWfJ3kAgLtKECdUyNTqteOLKXHBDUNmoiU
-        BdMp1sVC+/gQcbj2G8p5fatx9QdDrj+POUBzYdPG5/+7OWg=
-X-Google-Smtp-Source: ABdhPJzdeOJ7ZFkeGp3U8/KXWV9iaIzOZEhj0r8vTBe9GyhCGdoepfbQDOMYEsmOSklMNr81whVTRy+IZgy8Djv9sHc=
-X-Received: by 2002:aca:b9c1:: with SMTP id j184mr5383879oif.5.1616128782835;
- Thu, 18 Mar 2021 21:39:42 -0700 (PDT)
+        bh=rFEUCsXB/846GPTkksZ0MN9Gughl9FrFefeL2AgymC8=;
+        b=tVJGTN0fakX26q5Gt3wrt683rwCg0Oz4uoM/EngezJ9tnDDlaQhlJaLxqCPqCGYPg8
+         2bgcn/gwEt5ez5KPjxDdtZxHf4jVuq4nJPVAbIxoHcgq1TsMW0gVMYggrMYI3mFYEPUW
+         C153WmiuQGt3wxLc1EZRuIbqGdm7Vr1JXV+mtw7RYwGn90YuQFO2si1RAFE5WqyTt2LL
+         zSHuibF3xRz0XiCs9OndqV3iV+sgq2gkA4t0kLMWxZTcgA+YRghIey2W7LldgqXqiYSo
+         RS2J95x8Y+2GKUPZxoE1Wbw8CB5Ya+53Jdx7m8aOyy8tgPlMb20D7EbppugxXO+6Zba4
+         09mw==
+X-Gm-Message-State: AOAM532lHgtGXj4/rKyxyKlv+kdjyae8uDc7aranFs+pUsK980NbjYwh
+        hsH6+2MyXiCjHONfbflzc0x81tuo/TVEwTga2k20aHZgWMo=
+X-Google-Smtp-Source: ABdhPJyYk1EFF/LztG1Ubn763IGlb8GnJ/ky4LkYv8NJ1KUe76W3DQ01bH/SFmhoE/tfIH8HlwfYL10FMgwUc/xFAks=
+X-Received: by 2002:a6b:4411:: with SMTP id r17mr1520221ioa.64.1616133125575;
+ Thu, 18 Mar 2021 22:52:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <CADve3d51po2wh6rmgrzM8-k9h=JzE9+mC57Y5V2BxfFkKPFMsw@mail.gmail.com>
- <YEtjuGZCfD+7vCFd@mit.edu> <CADve3d7bioEAMwQ=i8KZ=hjrBDMk7gJK8kTUu2E5Q=W_KbUMPg@mail.gmail.com>
- <YE2FOTpWOaidmT52@mit.edu> <CADve3d4h7QmxJUCe8ggHtSb41PbDnvZoj4_m74hHgYD96xjZNw@mail.gmail.com>
- <YFI299oMXylsG9kB@mit.edu>
-In-Reply-To: <YFI299oMXylsG9kB@mit.edu>
-From:   Shashidhar Patil <shashidhar.patil@gmail.com>
-Date:   Fri, 19 Mar 2021 10:09:31 +0530
-Message-ID: <CADve3d6AhC+N60C0qCXvbojxEh4FWDik-1_o4LfDM9mE04Byww@mail.gmail.com>
-Subject: Re: jbd2 task hung in jbd2_journal_commit_transaction
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
+References: <20210316221921.1124955-1-harshadshirwadkar@gmail.com>
+ <CAOQ4uxiD8WGLeSftqL6dOfz_kNp+YSE7qfXYG34Pea4j8G7CxA@mail.gmail.com> <CAD+ocbzMv6SyUUZFnBE0gTnHf8yvMFfq6Dm9rdnLXoUrh7gYkg@mail.gmail.com>
+In-Reply-To: <CAD+ocbzMv6SyUUZFnBE0gTnHf8yvMFfq6Dm9rdnLXoUrh7gYkg@mail.gmail.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Fri, 19 Mar 2021 07:51:54 +0200
+Message-ID: <CAOQ4uxg+d2WoPEL2mC5H3d0uxh-_HGw3Bhyrun=z4O2nCg-yNQ@mail.gmail.com>
+Subject: Re: [PATCH] ext4: add rename whiteout support for fast commit
+To:     harshad shirwadkar <harshadshirwadkar@gmail.com>
+Cc:     Ext4 <linux-ext4@vger.kernel.org>, Theodore Tso <tytso@mit.edu>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        overlayfs <linux-unionfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Theodore,
-    I forgot to include two important  details , the stack trace of
-loop0 driver and sar output, which clearly nail  the problem.
-The losetup with Ubuntu16.05 does not have O_DIRECT support  and we
-were not aware of bypassing of journalling if
-O_DIRECT combined with preallocated file scenario.
+[adding overlayfs list]
 
-Using the loop we could track the swap load using sysstat, but
-otherwise no other major requirement.
-With loop I could reproduce the problem only twice using stress-ng
-being run for 20 time for 15 seconds interval.
-The problem happens highly random so it may take more number of tries
-in some cases.
-
-With direct swap file I tried many times and could not see the issue.
-The system continues to function fine after terminating the tests.
-The loop is now removed and swap file is activated directly in the
-deployed systems where the issue was seen every couple of
-weeks. Awaiting for few weeks before concluding about the problem/solution.
-
-Logs below.
-
-backtrace:
-
-6,1725650,1121675639291,-;loop0           D    0  2090      2 0x80000080
-4,1725651,1121675639293,-;Call Trace:
-4,1725652,1121675639295,-; __schedule+0x3d6/0x8b0
-4,1725653,1121675639296,-; schedule+0x36/0x80
-4,1725654,1121675639298,-; wait_transaction_locked+0x8a/0xd0
-4,1725655,1121675639300,-; ? wait_woken+0x80/0x80
-4,1725656,1121675639302,-; add_transaction_credits+0x1cd/0x2b0
-4,1725657,1121675639303,-; ? __wake_up_common_lock+0x8e/0xc0
-4,1725658,1121675639305,-; start_this_handle+0x103/0x410
-4,1725659,1121675639306,-; ? _cond_resched+0x1a/0x50
-4,1725660,1121675639310,-; ? kmem_cache_alloc+0x115/0x1c0
-4,1725661,1121675639311,-; jbd2__journal_start+0xdb/0x1f0
-4,1725662,1121675639314,-; ? ext4_dirty_inode+0x32/0x70
-4,1725663,1121675639317,-; __ext4_journal_start_sb+0x6d/0x120
-4,1725664,1121675639318,-; ext4_dirty_inode+0x32/0x70
-4,1725665,1121675639322,-; __mark_inode_dirty+0x184/0x3b0
-4,1725666,1121675639325,-; generic_update_time+0x7b/0xd0
-4,1725667,1121675639326,-; ? current_time+0x32/0x70
-4,1725668,1121675639328,-; file_update_time+0xbe/0x110
-4,1725669,1121675639330,-; __generic_file_write_iter+0x9d/0x1f0
-4,1725670,1121675639331,-; ? kmem_cache_free+0x1d1/0x1e0
-4,1725671,1121675639333,-; ext4_file_write_iter+0xc4/0x3b0
-4,1725672,1121675639336,-; do_iter_readv_writev+0x111/0x180
-4,1725673,1121675639337,-; do_iter_write+0x87/0x1a0
-4,1725674,1121675639339,-; vfs_iter_write+0x19/0x30
-4,1725675,1121675639343,-; lo_write_bvec+0x69/0x110
-4,1725676,1121675639344,-; loop_queue_work+0x8ff/0xa60
-4,1725677,1121675639346,-; ? __switch_to_asm+0x35/0x70
-4,1725678,1121675639347,-; ? __switch_to_asm+0x35/0x70
-4,1725679,1121675639348,-; ? __schedule+0x3de/0x8b0
-4,1725680,1121675639350,-; kthread_worker_fn+0x85/0x1f0
-4,1725681,1121675639351,-; loop_kthread_worker_fn+0x1e/0x20
-4,1725682,1121675639352,-; kthread+0x105/0x140
-4,1725683,1121675639353,-; ? loop_get_status64+0x90/0x90
-4,1725684,1121675639354,-; ? kthread_bind+0x40/0x40
-4,1725685,1121675639356,-; ret_from_fork+0x35/0x40
-
-sar output:
-
-root@maglev-master-190:/data/tmp/customers/weber/var/log/sysstat# sar
--d -f sa10 | grep dev7
-
-Linux 4.15.0-117-generic (maglev-master-1)      03/10/21
-_x86_64_        (88 CPU)
-
-00:00:01          DEV       tps     rkB/s     wkB/s   areq-sz
-aqu-sz     await     svctm     %util
-00:05:01       dev7-0      1.74      0.92      6.02      4.00
-0.29    184.17     28.01      4.86
-00:15:01       dev7-0      4.77      3.35     15.74      4.00
-0.53    119.11     14.67      7.00
-00:25:01       dev7-0      0.48      1.54      0.37      4.00
-0.00      1.31      0.20      0.01
-00:35:01       dev7-0      0.48      1.03      0.88      4.00
-0.00      4.80      0.25      0.01
-00:45:01       dev7-0      0.56      1.43      0.82      4.00
-0.00      1.13      0.31      0.02
-00:55:01       dev7-0      0.88      2.39      1.13      4.00
-0.03     34.22     11.67      1.03
-01:05:01       dev7-0      0.88      1.47      2.03      4.00
-0.06     75.12     18.69      1.64
-01:15:01       dev7-0      1.45      0.08      5.71      4.00
-94.30    387.62    605.50     87.62
-01:25:01       dev7-0      0.00      0.00      0.00      0.00
-128.00      0.00      0.00    100.00
-01:35:01       dev7-0      0.00      0.00      0.00      0.00
-128.00      0.00      0.00    100.00
-
-On Wed, Mar 17, 2021 at 10:36 PM Theodore Ts'o <tytso@mit.edu> wrote:
+On Fri, Mar 19, 2021 at 3:32 AM harshad shirwadkar
+<harshadshirwadkar@gmail.com> wrote:
 >
-> On Wed, Mar 17, 2021 at 08:30:56PM +0530, Shashidhar Patil wrote:
-> > Hi Theodore,
-> >       Thank you for the details about the journalling layer and
-> > insight into the block device layer.
-> >  I think Good luck might have clicked. The swap file in our case is
-> > attached to a loop block device before enabling swap using swapon.
-> > Since loop driver processes its IO requests by calling
-> > vfs_iter_write() the write requests re-enter the ext4
-> > filesystem/journalling code.
-> > Is that right ? There seems to be a possibility of cylic dependency.
+> Thanks for the review Amir.
 >
-> If that hypothesis is correct, you should see an example of that in
-> one of your stack traces; do you?  The loop device creates struct file
-> where the file is opened using O_DIRECT.  In the O_DIRECT code path,
-> assuming the file was fully allocate and initialized, it shouldn't
-> involve starting a journal handle.
+> Sure changing the subject makes sense.
 >
-> That being said, why are you using a loop device for a swap device at
-> all?  Using a swap file directly is going to be much more efficient,
-> and decrease the stack depth and CPU cycles needed to do a swap out if
-> nothing else.  If you can reliably reproduce the problem, what happens
-> if you use a swap file directly and cut out the loop device as a swap
-> device?   Does it make the problem go away?
+> Also, on further discussions on Ext4 conference call, we also thought
+> that with this patch, overlayfs customers would not benefit from fast
+> commits much if they call renames often. So, in order to really make
+> rename whiteout a fast commit compatible operation, we probably would
+> need to add support in fast commit to replay a char device creation
+> event (since whiteout object is a char device). That would imply, we
+> would need to do careful versioning and would need to burn an on-disk
+> feature flag.
 >
->                                         - Ted
+> An alternative to this would be to have a static whiteout object with
+> irrelevant nlink count and to have every rename point to that object
+> instead. Based on how we decide to implement that, at max only the
+> first rename operation would be fast commit incompatible since that's
+> when this object would get created. All the further operations would
+> be fast commit compatible. The big benefit of this approach is that
+> this way we don't have to add support for char device creation in fast
+> commit replay code and thus we don't have to worry about versioning.
+>
+
+I'm glad to hear that, Harshad.
+
+Please note that creating a static whiteout object on-disk is one possible
+implementation option. Not creating any object on-disk may be even better.
+
+I had suggested the static object approach because it should be pretty
+simple to implement and add e2fsprogs support for.
+
+However, if we look at the requirements for RENAME_WHITEOUT,
+the resulting directory entry does not actually need to point to any
+object on-disk at all.
+
+An alternative implementation would be to create a directory entry
+with {d_ino = 0, d_type = DT_WHT}. Lookup of this entry will return
+a reference to a singleton read-only ext4 whiteout inode object, which
+does not reside on disk, so fast commit is irrelevant in that sense.
+i_nlink should be handled carefully, but that should be easier from
+doing that for a static on-disk object.
+
+I am not sure how userland tools handle DT_WHT, but I see that
+other filesystems can emit this value in theory and man rename(2)
+claims that BSD uses DT_WHT, so the common tools should be
+able to handle it.
+
+As far as overlayfs is concerned:
+1. ovl_lookup() will find an IS_WHITEOUT() inode as usual
+2. ovl_dir_read_merged() will need this small patch (below) and will
+    not access the inode object at all
+3. At first, ovl_whiteout() -> vfs_whiteout() can still create a usual chardev
+4. Later, we can initiate the overlayfs instance singleton whiteout
+    reference in ovl_check_rename_whiteout() and ovl_whiteout() will
+    never get -EMLINK when linking this whiteout object
+
+One other challenge is how to handle users trying to make operations
+on the upper layer directly (migrating images etc).
+As long as the tools still observe the whiteout as a chadev (with stat(2))
+then export and import should work fine (creating a real chardev on import).
+
+If there are tools that try to change  inode permissions recursively on the
+upper layer (?) there may be a problem with those read-only whiteouts
+although the permission of a whiteout is a moot concept.
+
+Thanks,
+Amir.
+
+--- a/fs/overlayfs/readdir.c
++++ b/fs/overlayfs/readdir.c
+@@ -161,7 +161,7 @@ static struct ovl_cache_entry
+*ovl_cache_entry_new(struct ovl_readdir_data *rdd,
+        if (ovl_calc_d_ino(rdd, p))
+                p->ino = 0;
+        p->is_upper = rdd->is_upper;
+-       p->is_whiteout = false;
++       p->is_whiteout = (d_type == DT_WHT);
+
+        if (d_type == DT_CHR) {
+                p->next_maybe_whiteout = rdd->first_maybe_whiteout;
