@@ -2,88 +2,97 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0307D341A77
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 Mar 2021 11:52:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 061B0341F30
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 Mar 2021 15:17:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229805AbhCSKwM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 19 Mar 2021 06:52:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbhCSKwH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 19 Mar 2021 06:52:07 -0400
-Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 318E0C06174A
-        for <linux-ext4@vger.kernel.org>; Fri, 19 Mar 2021 03:52:06 -0700 (PDT)
-Received: by mail-vs1-xe34.google.com with SMTP id b5so3221164vsl.9
-        for <linux-ext4@vger.kernel.org>; Fri, 19 Mar 2021 03:52:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DyU0kfhyJ9K9PwDpeZgafjUaj5wayL2Dd1uu3ttNySA=;
-        b=X8iKjZKkXYwh3BR84dUDizD/1NFrlbgZCIGwoUQIOsscM/6j6yFdalp+0zHlY0afLn
-         2TTOEZwIma6EHaZtjOqsTYsEb8tM38HBkrCQKxJekX0F6Gu8kT4t4O/jhs4t1r4qM08d
-         IsqnUJVbVcdM3PYW9BAKdBv2zowZxdkW2mVcU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DyU0kfhyJ9K9PwDpeZgafjUaj5wayL2Dd1uu3ttNySA=;
-        b=WNt49dcjibX68hNVjIjt7jY/lZeHUDgRPG4FqFMBVajw0wWHMYnEXP0vbZVYcad9lI
-         cbFw8aYpyuBciMQ0QpmN3rYMStsA0/lFSbKI/7YfX6Cb7/3R7XKAbYNi54yk9zn7Zyuh
-         k52QD1k+UQxfL4iP7rdl6XJ2EUBUMoqryrZYZtAx2qsLzAwJ9xv5lwkZc3os264GFnJg
-         fQG3dv2aDrdSLanVpzk5uc49zM/UrsvntyUOCAUNZU91srbkFLiegEfcu386GX0wVJ+x
-         uOiEZWUDKpSnGlX+c92wTk+RtzZk1MVyDEWdpm65sdj8lIbDGzTND5qvW1Vj1NXLwCPv
-         CLJQ==
-X-Gm-Message-State: AOAM530QsqddLkPVjHHwGbNwsG1Z6+ZvLdtuCDHLu9FwwX35n6gIQDMj
-        vViUNg6orbdauha/8MzCZwx4NSIx3PsfwItkkKGjSQ==
-X-Google-Smtp-Source: ABdhPJyKXHCKa1uQYDJ36wfBLGH7zSQQ4glHPyYkdKrk6MfMGZWPApUav49zfHhz35XD+Gis8mq8yciY5zILs46+sW0=
-X-Received: by 2002:a67:f7d2:: with SMTP id a18mr1977372vsp.21.1616151125453;
- Fri, 19 Mar 2021 03:52:05 -0700 (PDT)
+        id S230146AbhCSOQn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 19 Mar 2021 10:16:43 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:56063 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230079AbhCSOQP (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 19 Mar 2021 10:16:15 -0400
+Received: from fsav106.sakura.ne.jp (fsav106.sakura.ne.jp [27.133.134.233])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 12JEFlYg085436;
+        Fri, 19 Mar 2021 23:15:47 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav106.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav106.sakura.ne.jp);
+ Fri, 19 Mar 2021 23:15:47 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav106.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 12JEFkPv085433
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Fri, 19 Mar 2021 23:15:47 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [syzbot] KCSAN: data-race in start_this_handle /
+ start_this_handle
+To:     Marco Elver <elver@google.com>, "Theodore Ts'o" <tytso@mit.edu>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+30774a6acf6a2cf6d535@syzkaller.appspotmail.com>,
+        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, Jan Kara <jack@suse.cz>
+References: <0000000000008de88005bd40ac36@google.com>
+ <20210311142503.GA31816@quack2.suse.cz>
+ <CACT4Y+ZtBwv1aXUumTXnWzAi7LEpJ6CZemGyVR2FC6_YO2E4EQ@mail.gmail.com>
+ <YEoybjJpCQzNx15r@elver.google.com> <YEo3gYOU/VnmHCeV@mit.edu>
+ <CANpmjNNwvDDcDnfDtwCKKpGVnHEuwhn5tP+eK0CH7R_FgQgCtA@mail.gmail.com>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <9dd08907-654c-bc38-fd9f-4324304152af@i-love.sakura.ne.jp>
+Date:   Fri, 19 Mar 2021 23:15:42 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210316221921.1124955-1-harshadshirwadkar@gmail.com>
- <CAOQ4uxiD8WGLeSftqL6dOfz_kNp+YSE7qfXYG34Pea4j8G7CxA@mail.gmail.com>
- <CAD+ocbzMv6SyUUZFnBE0gTnHf8yvMFfq6Dm9rdnLXoUrh7gYkg@mail.gmail.com>
- <CAOQ4uxg+d2WoPEL2mC5H3d0uxh-_HGw3Bhyrun=z4O2nCg-yNQ@mail.gmail.com>
- <CAJfpeguiFU5qv-L-jeXBhc+PqeMOUoVnPO3EN4xOB0nCH9Z2cA@mail.gmail.com> <CAOQ4uxjcQWQ9n1rO7=js2SQ8-ZEbX2Wjvq-6ZGCyy5X5CJcTbw@mail.gmail.com>
-In-Reply-To: <CAOQ4uxjcQWQ9n1rO7=js2SQ8-ZEbX2Wjvq-6ZGCyy5X5CJcTbw@mail.gmail.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Fri, 19 Mar 2021 11:51:54 +0100
-Message-ID: <CAJfpegsGpaFdLcmUsBW66qhJSfXuog=3UbsZ50O_FSw2WUGhJA@mail.gmail.com>
-Subject: Re: [PATCH] ext4: add rename whiteout support for fast commit
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     harshad shirwadkar <harshadshirwadkar@gmail.com>,
-        Ext4 <linux-ext4@vger.kernel.org>, Theodore Tso <tytso@mit.edu>,
-        overlayfs <linux-unionfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CANpmjNNwvDDcDnfDtwCKKpGVnHEuwhn5tP+eK0CH7R_FgQgCtA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 11:35 AM Amir Goldstein <amir73il@gmail.com> wrote:
+On 2021/03/12 0:54, Marco Elver wrote:
+>> But the more we could have the compiler automatically figure out
+>> things without needing an explicit tag, it would seem to me that this
+>> would be better, since manual tagging is going to be more error-prone.
+> 
+> What you're alluding to here would go much further than a data race
+> detector ("data race" is still just defined by the memory model). The
+> wish that there was a static analysis tool that would automatically
+> understand the "concurrency semantics as intended by the developer" is
+> something that'd be nice to have, but just doesn't seem realistic.
+> Because how can a tool tell what the developer intended, without input
+> from that developer?
 
-> One thing that we will probably need to do is use the RENAME_WHITEOUT
-> interface as the explicit way to create the shared whiteout instead of using
-> vfs_whiteout() for filesystems that support RENAME_WHITEOUT
-> (we check for RENAME_WHITEOUT support anyway).
->
-> The only thing that bothered me in moving from per-ovl-instance singleton
-> to per-ext4-singleton is what happens if someone tries to (say) chown -R
-> the upper layer or some other offline modification that was working up to
-> now and seemed to make sense.
+Input from developers is very important for not only compilers and tools
+but also allowing bug-explorers to understand what is happening.
+ext4 currently has
 
-Eek.
+  possible deadlock in start_this_handle (2)
+  https://syzkaller.appspot.com/bug?id=38c060d5757cbc13fdffd46e80557c645fbe79ba
 
->
-> Surely, the ext4 singleton whiteout cannot allow modifications like that,
-> so what do we do about this? Let those scripts fail (if they exist) and
-> let their owners fix them to skip errors on whiteouts?
+which even maintainers cannot understand what is happening.
+How can bug-explorers know implicit logic which maintainers believe safe and correct?
+It is possible that some oversight in implicit logic is the cause of
+"possible deadlock in start_this_handle (2)".
+Making implicit assumptions clear helps understanding.
 
-Might try that.  But the no-regressions rule means we'd have to change
-that in case it breaks something.
+Will "KCSAN: data-race in start_this_handle / start_this_handle" be addressed by marking?
+syzbot is already waiting for
+"KCSAN: data-race in jbd2_journal_dirty_metadata / jbd2_journal_dirty_metadata" at
+https://syzkaller.appspot.com/bug?id=5eb10023f53097f003e72c6a7c1a6f14b7c22929 .
 
-Thanks,
-Miklos
+> 
+> If there's worry marking accesses is error-prone, then that might be a
+> signal that the concurrency design is too complex (or the developer
+> hasn't considered all cases).
+> 
+> For that reason, we need to mark accesses to tell the compiler and
+> tooling where to expect concurrency, so that 1) the compiler generates
+> correct code, and 2) tooling such as KCSAN can double-check what the
+> developer intended is actually what's happening.
 
-> Thanks,
-> Amir.
+and 3) bug-explorers can understand what the developers are assuming/missing.
+
