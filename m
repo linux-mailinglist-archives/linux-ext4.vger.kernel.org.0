@@ -2,94 +2,59 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A8D343410
-	for <lists+linux-ext4@lfdr.de>; Sun, 21 Mar 2021 19:32:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08D0734354A
+	for <lists+linux-ext4@lfdr.de>; Sun, 21 Mar 2021 23:00:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230101AbhCUSbl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 21 Mar 2021 14:31:41 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:52686 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230042AbhCUSbV (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 21 Mar 2021 14:31:21 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 12LIVHRX016263
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 21 Mar 2021 14:31:18 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id BB29615C39CA; Sun, 21 Mar 2021 14:31:17 -0400 (EDT)
-Date:   Sun, 21 Mar 2021 14:31:17 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] ext4 fixes for v5.12
-Message-ID: <YFeQ9eBFn5JELyYo@mit.edu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+        id S231379AbhCUV74 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 21 Mar 2021 17:59:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46386 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231338AbhCUV7g (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sun, 21 Mar 2021 17:59:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 2F4B661943;
+        Sun, 21 Mar 2021 21:59:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616363976;
+        bh=+hUe5tocz/fAp5Edahbuy+pW7jeUHfZR12RM5/HntYk=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=pXYc+9VSVK0G9x91CbXcuiowUC3sml01pcLdcNLy4VZsjGvgejPf57pAA0C1m5mh/
+         HzkN/+/9Fs5lBgIKG/kM7+lKF82AEtjIaoiHdg4UDwaf8+Xis03aDaoygsa3cdTTyx
+         mr4tGlgzgyc+gFopiDuKQMcw5YOSvNGT13j8D7Ahhau3i1U1D/2Wyl8VB+DDuMHE31
+         Rp/3DTONqEtvlJZQx+hOHEgIYzH7IeMAGNiiEj3JNCL5PAHZPQ3P/pgOP1NbrH32b1
+         78xmjFt0BunBID+3UIyVQSdM2birEmX/KV681bFpW+C8PPPPnWP/NLKrYYUtbKzVL6
+         Gx1gLyw4WuMYw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2101860A5B;
+        Sun, 21 Mar 2021 21:59:36 +0000 (UTC)
+Subject: Re: [GIT PULL] ext4 fixes for v5.12
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YFeQ9eBFn5JELyYo@mit.edu>
+References: <YFeQ9eBFn5JELyYo@mit.edu>
+X-PR-Tracked-List-Id: <linux-ext4.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YFeQ9eBFn5JELyYo@mit.edu>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_stable
+X-PR-Tracked-Commit-Id: 64395d950bc476106b39341e42ebfd4d2eb71d2c
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: d7f5f1bd3c240c4d527c0871a38dc3d61255ea9e
+Message-Id: <161636397607.4823.16885662605201776739.pr-tracker-bot@kernel.org>
+Date:   Sun, 21 Mar 2021 21:59:36 +0000
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
+The pull request you sent on Sun, 21 Mar 2021 14:31:17 -0400:
 
-  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+> git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_stable
 
-are available in the Git repository at:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/d7f5f1bd3c240c4d527c0871a38dc3d61255ea9e
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_stable
+Thank you!
 
-for you to fetch changes up to 64395d950bc476106b39341e42ebfd4d2eb71d2c:
-
-  ext4: initialize ret to suppress smatch warning (2021-03-21 00:45:37 -0400)
-
-----------------------------------------------------------------
-Miscellaneous ext4 bug fixes for v5.12.
-
-----------------------------------------------------------------
-Eric Biggers (1):
-      ext4: fix error handling in ext4_end_enable_verity()
-
-Eric Whitney (1):
-      ext4: shrink race window in ext4_should_retry_alloc()
-
-Harshad Shirwadkar (1):
-      ext4: fix rename whiteout with fast commit
-
-Jan Kara (2):
-      ext4: add reclaim checks to xattr code
-      ext4: fix timer use-after-free on failed mount
-
-Pan Bian (1):
-      ext4: stop inode update before return
-
-Sabyrzhan Tasbolatov (1):
-      fs/ext4: fix integer overflow in s_log_groups_per_flex
-
-Shijie Luo (1):
-      ext4: fix potential error in ext4_do_update_inode
-
-Theodore Ts'o (1):
-      ext4: initialize ret to suppress smatch warning
-
-Zhaolong Zhang (1):
-      ext4: fix bh ref count on error paths
-
-zhangyi (F) (3):
-      ext4: find old entry again if failed to rename whiteout
-      ext4: do not iput inode under running transaction in ext4_rename()
-      ext4: do not try to set xattr into ea_inode if value is empty
-
- fs/ext4/balloc.c      | 38 +++++++++++++++++--------
- fs/ext4/ext4.h        |  3 ++
- fs/ext4/extents.c     |  2 +-
- fs/ext4/fast_commit.c |  9 ++++--
- fs/ext4/inode.c       | 18 ++++++------
- fs/ext4/mballoc.c     | 11 ++++++--
- fs/ext4/namei.c       | 50 +++++++++++++++++++++++++--------
- fs/ext4/super.c       |  7 ++++-
- fs/ext4/sysfs.c       |  7 +++++
- fs/ext4/verity.c      | 89 ++++++++++++++++++++++++++++++++++++-----------------------
- fs/ext4/xattr.c       |  6 +++-
- 11 files changed, 168 insertions(+), 72 deletions(-)
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
