@@ -2,52 +2,82 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13F8E3448F1
-	for <lists+linux-ext4@lfdr.de>; Mon, 22 Mar 2021 16:13:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 328B434492A
+	for <lists+linux-ext4@lfdr.de>; Mon, 22 Mar 2021 16:25:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230113AbhCVPMn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 22 Mar 2021 11:12:43 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:56342 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231409AbhCVPMa (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 22 Mar 2021 11:12:30 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 12MFC6gY006691
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 22 Mar 2021 11:12:07 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 0B6B415C39CC; Mon, 22 Mar 2021 11:12:06 -0400 (EDT)
-Date:   Mon, 22 Mar 2021 11:12:05 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     yi.zhang@huawei.com, torvalds@linux-foundation.org,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] ext4 fixes for v5.12
-Message-ID: <YFizxSL2PKrIdyzy@mit.edu>
-References: <YFgIZe4vMRDm+g8u@mit.edu>
- <20210322121052.GA17398@gondor.apana.org.au>
+        id S230040AbhCVPY5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 22 Mar 2021 11:24:57 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13658 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229665AbhCVPYg (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 22 Mar 2021 11:24:36 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F3ysS6kvPznTVF;
+        Mon, 22 Mar 2021 23:22:04 +0800 (CST)
+Received: from [10.174.176.202] (10.174.176.202) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 22 Mar 2021 23:24:24 +0800
+From:   Zhang Yi <yi.zhang@huawei.com>
+To:     Jan Kara <jack@suse.cz>
+CC:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        yangerkun <yangerkun@huawei.com>
+Subject: [BUG && Question] question of SB_ACTIVE flag in ext4_orphan_cleanup()
+Message-ID: <8a6864dd-7e6c-5268-2b5b-1010f99d2a1b@huawei.com>
+Date:   Mon, 22 Mar 2021 23:24:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210322121052.GA17398@gondor.apana.org.au>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.202]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 11:10:52PM +1100, Herbert Xu wrote:
-> Theodore Ts'o <tytso@mit.edu> wrote:
-> > 
-> > From: 曹子德(Theodore Y Ts'o) <tytso@mit.edu>
-> 
-> "Yue" doesn't seem to match your second character which is usually
-> romanised as "Tze" in Cantonese, could it be
-> 
-> 	曹予德
+Hi, Jan.
 
-Quite right.  I hadn't noticed that I had the wrong character when I
-cut and pasted.  Thanks for pointing that out!
+We find a use after free problem when CONFIG_QUOTA is enabled, the detail of
+this problem is below.
 
-    		 	    	     - Ted
+mount_bdev()
+	ext4_fill_super()
+		sb->s_root = d_make_root(root);
+		ext4_orphan_cleanup()
+			sb->s_flags |= SB_ACTIVE; <--- 1. mark sb active
+			ext4_orphan_get()
+			ext4_truncate()
+				ext4_block_truncate_page()
+					mark_buffer_dirty <--- 2. dirty inode
+			iput()
+				iput_final  <--- 3. put into lru list
+		ext4_mark_recovery_complete  <--- 4. failed and return error
+		sb->s_root = NULL;
+	deactivate_locked_super()
+		kill_block_super()
+			generic_shutdown_super()
+				<--- 5. did not evict_inodes
+		put_super()
+			__put_super()
+				<--- 6. put super block
+
+Because of the truncated inodes was dirty and will write them back later, it
+will trigger use after free problem. Now the question is why we need to set
+SB_ACTIVE bit when enable CONFIG_QUOTA below?
+
+  #ifdef CONFIG_QUOTA
+          /* Needed for iput() to work correctly and not trash data */
+          sb->s_flags |= SB_ACTIVE;
+
+This code was merged long long ago in v2.6.6, IIUC, it may not affect
+the quota statistics it we evict inode directly in the last iput.
+In order to slove this UAF problem, I'm not sure is there any side effect
+if we just remove this code, or remove SB_ACTIVE and call evict_inodes()
+in the error path of ext4_fill_super().
+
+Could you give some suggestions?
+
+Thanks,
+Yi.
