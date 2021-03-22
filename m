@@ -2,92 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76F3534364F
-	for <lists+linux-ext4@lfdr.de>; Mon, 22 Mar 2021 02:34:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB9123436F7
+	for <lists+linux-ext4@lfdr.de>; Mon, 22 Mar 2021 04:02:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229962AbhCVBeW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 21 Mar 2021 21:34:22 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:14836 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229728AbhCVBeB (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 21 Mar 2021 21:34:01 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F3cRj36j2z927r;
-        Mon, 22 Mar 2021 09:32:01 +0800 (CST)
-Received: from [10.174.176.202] (10.174.176.202) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 22 Mar 2021 09:33:55 +0800
+        id S229931AbhCVDBp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 21 Mar 2021 23:01:45 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:36628 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229761AbhCVDBM (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 21 Mar 2021 23:01:12 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 12M30rIo010178
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 21 Mar 2021 23:00:54 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 6616815C39CA; Sun, 21 Mar 2021 23:00:53 -0400 (EDT)
+Date:   Sun, 21 Mar 2021 23:00:53 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     "zhangyi (F)" <yi.zhang@huawei.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Subject: Re: [GIT PULL] ext4 fixes for v5.12
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Theodore Ts'o <tytso@mit.edu>
-CC:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+Message-ID: <YFgIZe4vMRDm+g8u@mit.edu>
 References: <YFeQ9eBFn5JELyYo@mit.edu>
  <CAHk-=wjahvxdYmEgZEOqSSOVdTP-Njqbh6e8=PDVtt4Md7qHNg@mail.gmail.com>
-From:   "zhangyi (F)" <yi.zhang@huawei.com>
-Message-ID: <ca33cb6a-9be9-1a2c-efa3-1dc5996897f6@huawei.com>
-Date:   Mon, 22 Mar 2021 09:33:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+ <ca33cb6a-9be9-1a2c-efa3-1dc5996897f6@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wjahvxdYmEgZEOqSSOVdTP-Njqbh6e8=PDVtt4Md7qHNg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.202]
-X-CFilter-Loop: Reflected
+In-Reply-To: <ca33cb6a-9be9-1a2c-efa3-1dc5996897f6@huawei.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2021/3/22 6:23, Linus Torvalds wrote:
-> On Sun, Mar 21, 2021 at 11:31 AM Theodore Ts'o <tytso@mit.edu> wrote:
->>
->> zhangyi (F) (3):
->>       ext4: find old entry again if failed to rename whiteout
->>       ext4: do not iput inode under running transaction in ext4_rename()
->>       ext4: do not try to set xattr into ea_inode if value is empty
+On Mon, Mar 22, 2021 at 09:33:54AM +0800, zhangyi (F) wrote:
 > 
-> Side note: this is obviously entirely up to the author, but I think it
-> would be nice if we would encourage people to use their native names
-> if/when they want to.
-> 
-> Maybe this "zhangyi (F)" is how they _want_ to write their name in the
-> kernel, and that's obviously fine if so.
-> 
-> But at the same time, coming from Finland, I remember how people who
-> had the "odd" characters (åäö) in their name ended up replacing them
-> with the US-ASCII version (generally "aa" "ae" and "oe"), and it
-> always just looked bad to a native speaker. Particularly annoying in
-> public contexts.
-> 
-> At the same time, for the same reason, I can also understand people
-> not wanting to even expose those characters at all, because then
-> non-native speakers invariably messed it up even worse...
-> 
-> Anyway, I think and hope that we have the infrastructure to do it
-> right not just for Latin1, but the more complex non-Western character
-> sets too.
-> 
-> And as a result should possibly encourage people to use their native
-> names if they want to. At least make people aware that it _should_
-> work.
-> 
-> Again, maybe I'm barking up the wrong tree, and in this case "zhangyi
-> (F) <yi.zhang@huawei.com>" is just what zhangyi prefers simply because
-> it's easier/more convenient.
-> 
-> But I just wanted to mention it, because we _do_ have examples of it
-> working. Not many, but some:
-> 
->     git log --pretty="%an" --since=2.years | sort -u | tail
-> 
-> including examples of having the Westernized name in parenthesis for
-> the "use that one if you can't do the real one" case..
-> 
-Hi, Linus.
+> I will use my real name "Yi Zhang" next time.
+>
 
-I will use my real name "Yi Zhang" next time.
+Hi Yi,
 
-Thanks,
-Yi.
+I think what Linus was suggsting was that if people wanted, they could
+do something like this in their git commits:
+
+From: 曹子德(Theodore Y Ts'o) <tytso@mit.edu>
+
+I don't do this because my legal name is actually Theodore Yue Tak
+Ts'o (where Ts'o Yue Tak is the standard romanization of my Chinese
+name in Cantonese --- my parents were from Hong Kong), and even though
+Cantonese is technically the first langauge I learned as a child, at
+this point I'm probably more fluent in Spanish (my third language)
+than Cantonese.  :-)
+
+In any case, git and e-mail should be able to handle non-Roman
+characters so if you want to insert your name in Chinese in your Git
+authorship, please feel free to do so.  Or not --- it's totally up to
+you.
+
+Cheers,
+
+					- Ted
