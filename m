@@ -2,172 +2,97 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3098734542B
-	for <lists+linux-ext4@lfdr.de>; Tue, 23 Mar 2021 01:50:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E58A3467B3
+	for <lists+linux-ext4@lfdr.de>; Tue, 23 Mar 2021 19:33:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231526AbhCWAuQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 22 Mar 2021 20:50:16 -0400
-Received: from mga14.intel.com ([192.55.52.115]:55384 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231441AbhCWAt5 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 22 Mar 2021 20:49:57 -0400
-IronPort-SDR: TdUT//Vnm3IDVX0MWRJfzVmJ6py1eLaceDB0wai+3EcsqhhmSNMkPTGqosoAZ5ZCc4jFSJ2P7P
- 34xpxF3HU4BA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="189777774"
-X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
-   d="scan'208";a="189777774"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 17:49:55 -0700
-IronPort-SDR: 60jXO64lxDn7VIBF/qfylhXz8WH/K7mlbbTxVFyGN7lyi1Yqkaf9F1WHbpF7vuW1uRfCEQ5ypc
- CQqAMsfhxg4g==
-X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
-   d="scan'208";a="414725099"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 17:49:54 -0700
-Date:   Mon, 22 Mar 2021 17:49:48 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: ext2_set_link()->ext2_put_page() question
-Message-ID: <20210323004948.GR3014244@iweiny-DESK2.sc.intel.com>
+        id S232009AbhCWSdC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 23 Mar 2021 14:33:02 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:53204 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232025AbhCWScd (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 23 Mar 2021 14:32:33 -0400
+Received: from localhost.localdomain (unknown [IPv6:2401:4900:5170:240f:f606:c194:2a1c:c147])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: shreeya)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 59CC01F44A65;
+        Tue, 23 Mar 2021 18:32:26 +0000 (GMT)
+From:   Shreeya Patel <shreeya.patel@collabora.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
+        chao@kernel.org, krisman@collabora.com, ebiggers@google.com,
+        drosen@google.com, ebiggers@kernel.org, yuchao0@huawei.com
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
+        andre.almeida@collabora.com
+Subject: [PATCH v3 0/4] Make UTF-8 encoding loadable
+Date:   Wed, 24 Mar 2021 00:01:56 +0530
+Message-Id: <20210323183201.812944-1-shreeya.patel@collabora.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Description: iff --git a/fs/ext2/dir.c b/fs/ext2/dir.ciff --git a/fs/ext2/dir.c b/fs/ext2/dir.c
-Content-Disposition: inline
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Jan,
+utf8data.h_shipped has a large database table which is an auto-generated
+decodification trie for the unicode normalization functions and it is not
+necessary to carry this large table in the kernel.
+Goal is to make UTF-8 encoding loadable by converting it into a module
+and adding a layer between the filesystems and the utf8 module which will
+load the module whenever any filesystem that needs unicode is mounted.
 
-Why does ext2_set_link() need to call ext2_put_page()?
+1st patch in the series resolves the warning reported by kernel test robot
+and 2nd patch fixes the incorrect use of utf8_unload() in ext4 and
+f2fs filesystems.
 
-I don't see any reason that we could not match up the ext2_put_page() calls
-with the ext2_find_entry().
+Unicode is the subsystem and utf8 is a charachter encoding for the
+subsystem, hence 3rd and 4th patches in the series are renaming functions
+and file name to unicode for better understanding the difference between
+UTF-8 module and unicode layer.
 
-Similarly am I missing something by moving the ext2_put_page() out of
-ext2_delete_entry()?
+Last patch in the series adds the layer and utf8 module and also uses
+static_call() function introducted for preventing speculative execution
+attacks.
 
-See below patch.
+---
+Changes in v3
+  - Add a patch which checks if utf8 is loaded before calling utf8_unload()
+    in ext4 and f2fs filesystems
+  - Return error if strscpy() returns value < 0
+  - Correct the conditions to prevent NULL pointer dereference while
+    accessing functions via utf8_ops variable.
+  - Add spinlock to avoid race conditions.
+  - Use static_call() for preventing speculative execution attacks.
 
-I'm in the process of changing the kmap() calls in ext2_[get|put]_page() into
-kmap_local_page() and I noticed this imbalance.  It does not really save me
-anything because I need to pass the kaddr into these calls but IMO it makes the
-code a bit easier to follow.
+Changes in v2
+  - Remove the duplicate file from the last patch.
+  - Make the wrapper functions inline.
+  - Remove msleep and use try_module_get() and module_put()
+    for ensuring that module is loaded correctly and also
+    doesn't get unloaded while in use.
+  - Resolve the warning reported by kernel test robot.
+  - Resolve all the checkpatch.pl warnings.
 
-If you agree I will get a patch together to submit with the kmap_local_page()
-patch.
+Shreeya Patel (4):
+  fs: unicode: Use strscpy() instead of strncpy()
+  fs: Check if utf8 encoding is loaded before calling utf8_unload()
+  fs: unicode: Rename function names from utf8 to unicode
+  fs: unicode: Rename utf8-core file to unicode-core
 
-Thanks,
-Ira
+ fs/ext4/hash.c                             |  2 +-
+ fs/ext4/namei.c                            | 12 ++---
+ fs/ext4/super.c                            |  8 +--
+ fs/f2fs/dir.c                              | 12 ++---
+ fs/f2fs/super.c                            | 11 ++--
+ fs/libfs.c                                 |  6 +--
+ fs/unicode/Makefile                        |  2 +-
+ fs/unicode/{utf8-core.c => unicode-core.c} | 62 +++++++++++-----------
+ fs/unicode/utf8-selftest.c                 |  8 +--
+ include/linux/unicode.h                    | 32 +++++------
+ 10 files changed, 81 insertions(+), 74 deletions(-)
+ rename fs/unicode/{utf8-core.c => unicode-core.c} (72%)
 
-
-17:29:44 > git di
-diff --git a/fs/ext2/dir.c b/fs/ext2/dir.c
-index 14aa45316ad2..bd572cead638 100644
---- a/fs/ext2/dir.c
-+++ b/fs/ext2/dir.c
-@@ -449,7 +449,6 @@ void ext2_set_link(struct inode *dir, struct ext2_dir_entry_2 *de,
-        de->inode = cpu_to_le32(inode->i_ino);
-        ext2_set_de_type(de, inode);
-        err = ext2_commit_chunk(page, pos, len);
--       ext2_put_page(page);
-        if (update_times)
-                dir->i_mtime = dir->i_ctime = current_time(dir);
-        EXT2_I(dir)->i_flags &= ~EXT2_BTREE_FL;
-@@ -594,7 +593,6 @@ int ext2_delete_entry (struct ext2_dir_entry_2 * dir, struct page * page )
-        EXT2_I(inode)->i_flags &= ~EXT2_BTREE_FL;
-        mark_inode_dirty(inode);
- out:
--       ext2_put_page(page);
-        return err;
- }
- 
-diff --git a/fs/ext2/namei.c b/fs/ext2/namei.c
-index 3367384d344d..a841b00c6828 100644
---- a/fs/ext2/namei.c
-+++ b/fs/ext2/namei.c
-@@ -371,6 +371,7 @@ static int ext2_rename (struct user_namespace * mnt_userns,
-                        goto out_dir;
-                }
-                ext2_set_link(new_dir, new_de, new_page, old_inode, 1);
-+               ext2_put_page(new_page);
-                new_inode->i_ctime = current_time(new_inode);
-                if (dir_de)
-                        drop_nlink(new_inode);
-@@ -391,12 +392,13 @@ static int ext2_rename (struct user_namespace * mnt_userns,
-        mark_inode_dirty(old_inode);
- 
-        ext2_delete_entry (old_de, old_page);
-+       ext2_put_page(old_page);
- 
-        if (dir_de) {
-                if (old_dir != new_dir)
-                        ext2_set_link(old_inode, dir_de, dir_page, new_dir, 0);
--               else
--                       ext2_put_page(dir_page);
-+
-+               ext2_put_page(dir_page);
-                inode_dec_link_count(old_dir);
-        }
-        return 0;
-
-17:35:41 > git di
-diff --git a/fs/ext2/dir.c b/fs/ext2/dir.c
-index 14aa45316ad2..bd572cead638 100644
---- a/fs/ext2/dir.c
-+++ b/fs/ext2/dir.c
-@@ -449,7 +449,6 @@ void ext2_set_link(struct inode *dir, struct ext2_dir_entry_2 *de,
-        de->inode = cpu_to_le32(inode->i_ino);
-        ext2_set_de_type(de, inode);
-        err = ext2_commit_chunk(page, pos, len);
--       ext2_put_page(page);
-        if (update_times)
-                dir->i_mtime = dir->i_ctime = current_time(dir);
-        EXT2_I(dir)->i_flags &= ~EXT2_BTREE_FL;
-@@ -594,7 +593,6 @@ int ext2_delete_entry (struct ext2_dir_entry_2 * dir, struct page * page )
-        EXT2_I(inode)->i_flags &= ~EXT2_BTREE_FL;
-        mark_inode_dirty(inode);
- out:
--       ext2_put_page(page);
-        return err;
- }
- 
-diff --git a/fs/ext2/namei.c b/fs/ext2/namei.c
-index 3367384d344d..7af9ab3f975e 100644
---- a/fs/ext2/namei.c
-+++ b/fs/ext2/namei.c
-@@ -294,6 +294,7 @@ static int ext2_unlink(struct inode * dir, struct dentry *dentry)
-        }
- 
-        err = ext2_delete_entry (de, page);
-+       ext2_put_page(page);
-        if (err)
-                goto out;
- 
-@@ -371,6 +372,7 @@ static int ext2_rename (struct user_namespace * mnt_userns,
-                        goto out_dir;
-                }
-                ext2_set_link(new_dir, new_de, new_page, old_inode, 1);
-+               ext2_put_page(new_page);
-                new_inode->i_ctime = current_time(new_inode);
-                if (dir_de)
-                        drop_nlink(new_inode);
-@@ -391,12 +393,13 @@ static int ext2_rename (struct user_namespace * mnt_userns,
-        mark_inode_dirty(old_inode);
- 
-        ext2_delete_entry (old_de, old_page);
-+       ext2_put_page(old_page);
- 
-        if (dir_de) {
-                if (old_dir != new_dir)
-                        ext2_set_link(old_inode, dir_de, dir_page, new_dir, 0);
--               else
--                       ext2_put_page(dir_page);
-+
-+               ext2_put_page(dir_page);
-                inode_dec_link_count(old_dir);
-        }
-        return 0;
+-- 
+2.30.1
 
