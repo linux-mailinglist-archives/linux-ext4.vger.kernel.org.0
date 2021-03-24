@@ -2,57 +2,58 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4E5534852F
+	by mail.lfdr.de (Postfix) with ESMTP id 5928D34852E
 	for <lists+linux-ext4@lfdr.de>; Thu, 25 Mar 2021 00:20:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239033AbhCXXTh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 24 Mar 2021 19:19:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52330 "EHLO
+        id S239035AbhCXXTi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 24 Mar 2021 19:19:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239023AbhCXXTe (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 24 Mar 2021 19:19:34 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE1CDC06174A
-        for <linux-ext4@vger.kernel.org>; Wed, 24 Mar 2021 16:19:33 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id v2so15863486pgk.11
-        for <linux-ext4@vger.kernel.org>; Wed, 24 Mar 2021 16:19:33 -0700 (PDT)
+        with ESMTP id S239024AbhCXXTf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 24 Mar 2021 19:19:35 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07A9AC06174A
+        for <linux-ext4@vger.kernel.org>; Wed, 24 Mar 2021 16:19:35 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id j25so81517pfe.2
+        for <linux-ext4@vger.kernel.org>; Wed, 24 Mar 2021 16:19:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=IVNBv7IUj3D+f0SQ4ke1UYWivy34rQQaV2QBFPUrTMk=;
-        b=JvF6skb+eBmVWBP6asEvE2lMecX/ahscHj1MWmGmc7pEht5Ip+CXTC4XBSwVSTEWgg
-         /J/1ZatVgv4BTzM+fmloiVXR8MoVV5kkGwR8wX4i3JG8J0WlvRYx0RmejOQt80a97UaS
-         PjLpWFVVGcpQpSKJAUZZMlRe9FxYX62beanDcJQG3/COVp/AnXx4XNEuKJYFH1Yf5CfU
-         ZZz15Q2DKc7siEdRlyEKvBi3bTNUTmim7b7l1pyhcVHdQc4pVfAnV2zNIAwDk/0V2Y3w
-         msEii0j3s5/0MV+XLs3ilIya0bPSjafPPvkqj/i9cUcuDfEgyKKHQF8HwCTMLvlx5fLW
-         R+dQ==
+        bh=EyxJFOqGwfGROM8HjRaNzseLsY7Vte1P7CSB5h97cNI=;
+        b=Sv4fXq9234yrlxQrC0LrsYLxR7+srAYLAMoCABhBpbv3dDdZhamIapld4gLSr/bwEx
+         VFRDeBTA4Gaxq15aGZtt5Mrw8G2lJAxaGVdCcFm+kh7/0RapEuPc13/A0kQ61Zfp2S4B
+         PS8tfFj6ObkigMCbUhs08/YtqfZItKWnYBwqijEWB1+VZEs2sZpKBTiR2aYwnajAlcQA
+         H7xIMB0RlhgQtdQ24C2+uUwnZ/xSlLfbkY7wKq51DQq2l1YMmO3vYxK7EE/HEtoypr0o
+         6Pbkkz5A7sZQqEMNX3kIyiInFH0EBIDEjs3Aeo0WtuuZTu494oGxlNh8e+wGjdyTZtsU
+         JFhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=IVNBv7IUj3D+f0SQ4ke1UYWivy34rQQaV2QBFPUrTMk=;
-        b=K39zmxA//9QacyWf404et01xONj8auSQd5RwzbF6NKozYFud3vkld/h2hdLzpGyT84
-         UyYcP2FPeKqwwEjfC+HVbPpI+397LI62IFNGTCwV65e00Yy8BopohlE72mUAwzuT6e3a
-         flCAFFDEtvHo2fGMpdruUEVi/GRcoHvwfu7up08A09a9LMyEzWZg2gjMtZ1p7HdQVXBk
-         l0vCz7a7WlETwElW/2vRgpZHFF1H/NVPbF29+8b/IrSXqkAhC/MWstpPAVCxmwYRbh4R
-         eUmeqMQKWiY0VUf+2hHm9D/E9iFH3NFotZv0t2XbMlsRiR4eEPIWKn4vusGanmOyR5wE
-         4U0A==
-X-Gm-Message-State: AOAM531e/rXrx9RX3zjgAg7Ya3VMcI2DJjZHyelV1RRbhzhcF6ZMlzzq
-        zBGwVwpnhkLH+JG4HAOEJC72gRdFYjE=
-X-Google-Smtp-Source: ABdhPJzZi66xJe2GnBiCRvwrJWVyBkeaVMUnG3SzIwBrWg8O1j5rAXBimvMhr50CMS240lk85AXKmw==
-X-Received: by 2002:a17:902:d202:b029:e4:55cd:dde8 with SMTP id t2-20020a170902d202b02900e455cddde8mr5834807ply.51.1616627973094;
-        Wed, 24 Mar 2021 16:19:33 -0700 (PDT)
+        bh=EyxJFOqGwfGROM8HjRaNzseLsY7Vte1P7CSB5h97cNI=;
+        b=j8hlVZORgZ74yescczw/BC9h8eRWTrH+CfnlUy33PQwh8mZJ98wvGTlHezZfF1efm6
+         /x8G8bA2WgR3kI+e5/OxKOaM3NErqq8W7FSh+GFkwfCPvbdheG4+pGM9TeWy7nRPtTQd
+         jE92EvlwKgptFrYL1ohsiSs6jGn3DwMsVOTJI9jWiBo8m+v7qCjuW2ci3QDniqVrsge1
+         w0jybeFg1I829nr9bfrQDYyDYvEVDTf6c54ebQTi+J6pc8gu5Nh8XcPKzOkbZ8asbxWr
+         UcESoz16l8DbccrNx49xi7W8bFZ38QkhsnOj5wkG2djViw/MQPsDx5ROkGwdQz31ZNnP
+         wEZA==
+X-Gm-Message-State: AOAM53072jiR0JyIc3LeuH7saRkoNF740ooQc4iIUOqrgP4BnVwXVtUN
+        JBUFMzUe2+plKqdnUZBdHl/yAsbo8qw=
+X-Google-Smtp-Source: ABdhPJwaXKndITssINa0Zhmlycs+MOCcko1I4wyyLhQGX4uT/II/WNzhxzrUtAkYEOx+IUoyEjWUhw==
+X-Received: by 2002:a17:903:230d:b029:e7:1052:a94d with SMTP id d13-20020a170903230db02900e71052a94dmr5034579plh.0.1616627974103;
+        Wed, 24 Mar 2021 16:19:34 -0700 (PDT)
 Received: from harshads-520.kir.corp.google.com ([2620:15c:17:10:f8fe:8e5d:4c9f:edfd])
-        by smtp.googlemail.com with ESMTPSA id z3sm3629928pff.40.2021.03.24.16.19.32
+        by smtp.googlemail.com with ESMTPSA id z3sm3629928pff.40.2021.03.24.16.19.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 16:19:32 -0700 (PDT)
+        Wed, 24 Mar 2021 16:19:33 -0700 (PDT)
 From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 To:     linux-ext4@vger.kernel.org
-Cc:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Subject: [PATCH v5 2/6] ext4: add ability to return parsed options from parse_options
-Date:   Wed, 24 Mar 2021 16:19:12 -0700
-Message-Id: <20210324231916.2515824-3-harshadshirwadkar@gmail.com>
+Cc:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+        Andreas Dilger <adilger@dilger.ca>
+Subject: [PATCH v5 3/6] ext4: add mballoc stats proc file
+Date:   Wed, 24 Mar 2021 16:19:13 -0700
+Message-Id: <20210324231916.2515824-4-harshadshirwadkar@gmail.com>
 X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
 In-Reply-To: <20210324231916.2515824-1-harshadshirwadkar@gmail.com>
 References: <20210324231916.2515824-1-harshadshirwadkar@gmail.com>
@@ -62,192 +63,221 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Before this patch, the function parse_options() was returning
-journal_devnum and journal_ioprio variables to the caller. This patch
-generalizes that interface to allow parse_options to return any parsed
-options to return back to the caller. In this patch series, it gets
-used to capture the value of "mb_optimize_scan=%u" mount option.
+Add new stats for measuring the performance of mballoc. This patch is
+forked from Artem Blagodarenko's work that can be found here:
+
+https://github.com/lustre/lustre-release/blob/master/ldiskfs/kernel_patches/patches/rhel8/ext4-simple-blockalloc.patch
+
+This patch reorganizes the stats by cr level. This is how the output
+looks like:
+
+mballoc:
+	reqs: 0
+	success: 0
+	groups_scanned: 0
+	cr0_stats:
+		hits: 0
+		groups_considered: 0
+		useless_loops: 0
+		bad_suggestions: 0
+	cr1_stats:
+		hits: 0
+		groups_considered: 0
+		useless_loops: 0
+		bad_suggestions: 0
+	cr2_stats:
+		hits: 0
+		groups_considered: 0
+		useless_loops: 0
+	cr3_stats:
+		hits: 0
+		groups_considered: 0
+		useless_loops: 0
+	extents_scanned: 0
+		goal_hits: 0
+		2^n_hits: 0
+		breaks: 0
+		lost: 0
+	buddies_generated: 0/40
+	buddies_time_used: 0
+	preallocated: 0
+	discarded: 0
 
 Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 ---
- fs/ext4/super.c | 51 +++++++++++++++++++++++++++++--------------------
- 1 file changed, 30 insertions(+), 21 deletions(-)
+ fs/ext4/ext4.h    |  5 ++++
+ fs/ext4/mballoc.c | 75 +++++++++++++++++++++++++++++++++++++++++++++--
+ fs/ext4/sysfs.c   |  2 ++
+ 3 files changed, 80 insertions(+), 2 deletions(-)
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 071d131fadd8..3a2cd9fb7e73 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -2089,9 +2089,14 @@ static int ext4_set_test_dummy_encryption(struct super_block *sb,
- 	return 1;
- }
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index cb0724b87d54..85eeeba3bca3 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -1549,9 +1549,13 @@ struct ext4_sb_info {
+ 	atomic_t s_bal_success;	/* we found long enough chunks */
+ 	atomic_t s_bal_allocated;	/* in blocks */
+ 	atomic_t s_bal_ex_scanned;	/* total extents scanned */
++	atomic_t s_bal_groups_scanned;	/* number of groups scanned */
+ 	atomic_t s_bal_goals;	/* goal hits */
+ 	atomic_t s_bal_breaks;	/* too long searches */
+ 	atomic_t s_bal_2orders;	/* 2^order hits */
++	atomic64_t s_bal_cX_groups_considered[4];
++	atomic64_t s_bal_cX_hits[4];
++	atomic64_t s_bal_cX_failed[4];		/* cX loop didn't find blocks */
+ 	atomic_t s_mb_buddies_generated;	/* number of buddies generated */
+ 	atomic64_t s_mb_generation_time;
+ 	atomic_t s_mb_lost_chunks;
+@@ -2808,6 +2812,7 @@ int __init ext4_fc_init_dentry_cache(void);
+ extern const struct seq_operations ext4_mb_seq_groups_ops;
+ extern long ext4_mb_stats;
+ extern long ext4_mb_max_to_scan;
++extern int ext4_seq_mb_stats_show(struct seq_file *seq, void *offset);
+ extern int ext4_mb_init(struct super_block *);
+ extern int ext4_mb_release(struct super_block *);
+ extern ext4_fsblk_t ext4_mb_new_blocks(handle_t *,
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 07b78a3cc421..a4b71c9c1e66 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -2146,6 +2146,8 @@ static int ext4_mb_good_group_nolock(struct ext4_allocation_context *ac,
+ 	ext4_grpblk_t free;
+ 	int ret = 0;
  
-+struct ext4_parsed_options {
-+	unsigned long journal_devnum;
-+	unsigned int journal_ioprio;
-+};
++	if (sbi->s_mb_stats)
++		atomic64_inc(&sbi->s_bal_cX_groups_considered[ac->ac_criteria]);
+ 	if (should_lock)
+ 		ext4_lock_group(sb, group);
+ 	free = grp->bb_free;
+@@ -2420,6 +2422,9 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
+ 			if (ac->ac_status != AC_STATUS_CONTINUE)
+ 				break;
+ 		}
++		/* Processed all groups and haven't found blocks */
++		if (sbi->s_mb_stats && i == ngroups)
++			atomic64_inc(&sbi->s_bal_cX_failed[cr]);
+ 	}
+ 
+ 	if (ac->ac_b_ex.fe_len > 0 && ac->ac_status != AC_STATUS_FOUND &&
+@@ -2449,6 +2454,9 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
+ 			goto repeat;
+ 		}
+ 	}
 +
- static int handle_mount_opt(struct super_block *sb, char *opt, int token,
--			    substring_t *args, unsigned long *journal_devnum,
--			    unsigned int *journal_ioprio, int is_remount)
-+			    substring_t *args, struct ext4_parsed_options *parsed_opts,
-+			    int is_remount)
++	if (sbi->s_mb_stats && ac->ac_status == AC_STATUS_FOUND)
++		atomic64_inc(&sbi->s_bal_cX_hits[ac->ac_criteria]);
+ out:
+ 	if (!err && ac->ac_status != AC_STATUS_FOUND && first_err)
+ 		err = first_err;
+@@ -2548,6 +2556,67 @@ const struct seq_operations ext4_mb_seq_groups_ops = {
+ 	.show   = ext4_mb_seq_groups_show,
+ };
+ 
++int ext4_seq_mb_stats_show(struct seq_file *seq, void *offset)
++{
++	struct super_block *sb = (struct super_block *)seq->private;
++	struct ext4_sb_info *sbi = EXT4_SB(sb);
++
++	seq_puts(seq, "mballoc:\n");
++	if (!sbi->s_mb_stats) {
++		seq_puts(seq, "\tmb stats collection turned off.\n");
++		seq_puts(seq, "\tTo enable, please write \"1\" to sysfs file mb_stats.\n");
++		return 0;
++	}
++	seq_printf(seq, "\treqs: %u\n", atomic_read(&sbi->s_bal_reqs));
++	seq_printf(seq, "\tsuccess: %u\n", atomic_read(&sbi->s_bal_success));
++
++	seq_printf(seq, "\tgroups_scanned: %u\n",  atomic_read(&sbi->s_bal_groups_scanned));
++
++	seq_puts(seq, "\tcr0_stats:\n");
++	seq_printf(seq, "\t\thits: %llu\n", atomic64_read(&sbi->s_bal_cX_hits[0]));
++	seq_printf(seq, "\t\tgroups_considered: %llu\n",
++		   atomic64_read(&sbi->s_bal_cX_groups_considered[0]));
++	seq_printf(seq, "\t\tuseless_loops: %llu\n",
++		   atomic64_read(&sbi->s_bal_cX_failed[0]));
++
++	seq_puts(seq, "\tcr1_stats:\n");
++	seq_printf(seq, "\t\thits: %llu\n", atomic64_read(&sbi->s_bal_cX_hits[1]));
++	seq_printf(seq, "\t\tgroups_considered: %llu\n",
++		   atomic64_read(&sbi->s_bal_cX_groups_considered[1]));
++	seq_printf(seq, "\t\tuseless_loops: %llu\n",
++		   atomic64_read(&sbi->s_bal_cX_failed[1]));
++
++	seq_puts(seq, "\tcr2_stats:\n");
++	seq_printf(seq, "\t\thits: %llu\n", atomic64_read(&sbi->s_bal_cX_hits[2]));
++	seq_printf(seq, "\t\tgroups_considered: %llu\n",
++		   atomic64_read(&sbi->s_bal_cX_groups_considered[2]));
++	seq_printf(seq, "\t\tuseless_loops: %llu\n",
++		   atomic64_read(&sbi->s_bal_cX_failed[2]));
++
++	seq_puts(seq, "\tcr3_stats:\n");
++	seq_printf(seq, "\t\thits: %llu\n", atomic64_read(&sbi->s_bal_cX_hits[3]));
++	seq_printf(seq, "\t\tgroups_considered: %llu\n",
++		   atomic64_read(&sbi->s_bal_cX_groups_considered[3]));
++	seq_printf(seq, "\t\tuseless_loops: %llu\n",
++		   atomic64_read(&sbi->s_bal_cX_failed[3]));
++	seq_printf(seq, "\textents_scanned: %u\n", atomic_read(&sbi->s_bal_ex_scanned));
++	seq_printf(seq, "\t\tgoal_hits: %u\n", atomic_read(&sbi->s_bal_goals));
++	seq_printf(seq, "\t\t2^n_hits: %u\n", atomic_read(&sbi->s_bal_2orders));
++	seq_printf(seq, "\t\tbreaks: %u\n", atomic_read(&sbi->s_bal_breaks));
++	seq_printf(seq, "\t\tlost: %u\n", atomic_read(&sbi->s_mb_lost_chunks));
++
++	seq_printf(seq, "\tbuddies_generated: %u/%u\n",
++		   atomic_read(&sbi->s_mb_buddies_generated),
++		   ext4_get_groups_count(sb));
++	seq_printf(seq, "\tbuddies_time_used: %llu\n",
++		   atomic64_read(&sbi->s_mb_generation_time));
++	seq_printf(seq, "\tpreallocated: %u\n",
++		   atomic_read(&sbi->s_mb_preallocated));
++	seq_printf(seq, "\tdiscarded: %u\n",
++		   atomic_read(&sbi->s_mb_discarded));
++	return 0;
++}
++
+ static struct kmem_cache *get_groupinfo_cache(int blocksize_bits)
  {
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 	const struct mount_opts *m;
-@@ -2248,7 +2253,7 @@ static int handle_mount_opt(struct super_block *sb, char *opt, int token,
- 				 "Cannot specify journal on remount");
- 			return -1;
- 		}
--		*journal_devnum = arg;
-+		parsed_opts->journal_devnum = arg;
- 	} else if (token == Opt_journal_path) {
- 		char *journal_path;
- 		struct inode *journal_inode;
-@@ -2284,7 +2289,7 @@ static int handle_mount_opt(struct super_block *sb, char *opt, int token,
- 			return -1;
- 		}
- 
--		*journal_devnum = new_encode_dev(journal_inode->i_rdev);
-+		parsed_opts->journal_devnum = new_encode_dev(journal_inode->i_rdev);
- 		path_put(&path);
- 		kfree(journal_path);
- 	} else if (token == Opt_journal_ioprio) {
-@@ -2293,7 +2298,7 @@ static int handle_mount_opt(struct super_block *sb, char *opt, int token,
- 				 " (must be 0-7)");
- 			return -1;
- 		}
--		*journal_ioprio =
-+		parsed_opts->journal_ioprio =
- 			IOPRIO_PRIO_VALUE(IOPRIO_CLASS_BE, arg);
- 	} else if (token == Opt_test_dummy_encryption) {
- 		return ext4_set_test_dummy_encryption(sb, opt, &args[0],
-@@ -2410,8 +2415,7 @@ static int handle_mount_opt(struct super_block *sb, char *opt, int token,
- }
- 
- static int parse_options(char *options, struct super_block *sb,
--			 unsigned long *journal_devnum,
--			 unsigned int *journal_ioprio,
-+			 struct ext4_parsed_options *ret_opts,
- 			 int is_remount)
+ 	int cache_index = blocksize_bits - EXT4_MIN_BLOCK_LOG_SIZE;
+@@ -2968,9 +3037,10 @@ int ext4_mb_release(struct super_block *sb)
+ 				atomic_read(&sbi->s_bal_reqs),
+ 				atomic_read(&sbi->s_bal_success));
+ 		ext4_msg(sb, KERN_INFO,
+-		      "mballoc: %u extents scanned, %u goal hits, "
++		      "mballoc: %u extents scanned, %u groups scanned, %u goal hits, "
+ 				"%u 2^N hits, %u breaks, %u lost",
+ 				atomic_read(&sbi->s_bal_ex_scanned),
++				atomic_read(&sbi->s_bal_groups_scanned),
+ 				atomic_read(&sbi->s_bal_goals),
+ 				atomic_read(&sbi->s_bal_2orders),
+ 				atomic_read(&sbi->s_bal_breaks),
+@@ -3573,12 +3643,13 @@ static void ext4_mb_collect_stats(struct ext4_allocation_context *ac)
  {
- 	struct ext4_sb_info __maybe_unused *sbi = EXT4_SB(sb);
-@@ -2431,8 +2435,8 @@ static int parse_options(char *options, struct super_block *sb,
- 		 */
- 		args[0].to = args[0].from = NULL;
- 		token = match_token(p, tokens, args);
--		if (handle_mount_opt(sb, p, token, args, journal_devnum,
--				     journal_ioprio, is_remount) < 0)
-+		if (handle_mount_opt(sb, p, token, args, ret_opts,
-+				     is_remount) < 0)
- 			return 0;
+ 	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
+ 
+-	if (sbi->s_mb_stats && ac->ac_g_ex.fe_len > 1) {
++	if (sbi->s_mb_stats && ac->ac_g_ex.fe_len >= 1) {
+ 		atomic_inc(&sbi->s_bal_reqs);
+ 		atomic_add(ac->ac_b_ex.fe_len, &sbi->s_bal_allocated);
+ 		if (ac->ac_b_ex.fe_len >= ac->ac_o_ex.fe_len)
+ 			atomic_inc(&sbi->s_bal_success);
+ 		atomic_add(ac->ac_found, &sbi->s_bal_ex_scanned);
++		atomic_add(ac->ac_groups_scanned, &sbi->s_bal_groups_scanned);
+ 		if (ac->ac_g_ex.fe_start == ac->ac_b_ex.fe_start &&
+ 				ac->ac_g_ex.fe_group == ac->ac_b_ex.fe_group)
+ 			atomic_inc(&sbi->s_bal_goals);
+diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
+index 075aa3a19ff5..59ca9d73b42f 100644
+--- a/fs/ext4/sysfs.c
++++ b/fs/ext4/sysfs.c
+@@ -521,6 +521,8 @@ int ext4_register_sysfs(struct super_block *sb)
+ 					ext4_fc_info_show, sb);
+ 		proc_create_seq_data("mb_groups", S_IRUGO, sbi->s_proc,
+ 				&ext4_mb_seq_groups_ops, sb);
++		proc_create_single_data("mb_stats", 0444, sbi->s_proc,
++				ext4_seq_mb_stats_show, sb);
  	}
- #ifdef CONFIG_QUOTA
-@@ -4014,7 +4018,6 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 	ext4_fsblk_t sb_block = get_sb_block(&data);
- 	ext4_fsblk_t logical_sb_block;
- 	unsigned long offset = 0;
--	unsigned long journal_devnum = 0;
- 	unsigned long def_mount_opts;
- 	struct inode *root;
- 	const char *descr;
-@@ -4025,8 +4028,12 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 	int needs_recovery, has_huge_files;
- 	__u64 blocks_count;
- 	int err = 0;
--	unsigned int journal_ioprio = DEFAULT_JOURNAL_IOPRIO;
- 	ext4_group_t first_not_zeroed;
-+	struct ext4_parsed_options parsed_opts;
-+
-+	/* Set defaults for the variables that will be set during parsing */
-+	parsed_opts.journal_ioprio = DEFAULT_JOURNAL_IOPRIO;
-+	parsed_opts.journal_devnum = 0;
- 
- 	if ((data && !orig_data) || !sbi)
- 		goto out_free_base;
-@@ -4272,8 +4279,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 					      GFP_KERNEL);
- 		if (!s_mount_opts)
- 			goto failed_mount;
--		if (!parse_options(s_mount_opts, sb, &journal_devnum,
--				   &journal_ioprio, 0)) {
-+		if (!parse_options(s_mount_opts, sb, &parsed_opts, 0)) {
- 			ext4_msg(sb, KERN_WARNING,
- 				 "failed to parse options in superblock: %s",
- 				 s_mount_opts);
-@@ -4281,8 +4287,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 		kfree(s_mount_opts);
- 	}
- 	sbi->s_def_mount_opt = sbi->s_mount_opt;
--	if (!parse_options((char *) data, sb, &journal_devnum,
--			   &journal_ioprio, 0))
-+	if (!parse_options((char *) data, sb, &parsed_opts, 0))
- 		goto failed_mount;
- 
- #ifdef CONFIG_UNICODE
-@@ -4773,7 +4778,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 	 * root first: it may be modified in the journal!
- 	 */
- 	if (!test_opt(sb, NOLOAD) && ext4_has_feature_journal(sb)) {
--		err = ext4_load_journal(sb, es, journal_devnum);
-+		err = ext4_load_journal(sb, es, parsed_opts.journal_devnum);
- 		if (err)
- 			goto failed_mount3a;
- 	} else if (test_opt(sb, NOLOAD) && !sb_rdonly(sb) &&
-@@ -4873,7 +4878,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 		goto failed_mount_wq;
- 	}
- 
--	set_task_ioprio(sbi->s_journal->j_task, journal_ioprio);
-+	set_task_ioprio(sbi->s_journal->j_task, parsed_opts.journal_ioprio);
- 
- 	sbi->s_journal->j_submit_inode_data_buffers =
- 		ext4_journal_submit_inode_data_buffers;
-@@ -5808,13 +5813,16 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
- 	struct ext4_mount_options old_opts;
- 	int enable_quota = 0;
- 	ext4_group_t g;
--	unsigned int journal_ioprio = DEFAULT_JOURNAL_IOPRIO;
- 	int err = 0;
- #ifdef CONFIG_QUOTA
- 	int i, j;
- 	char *to_free[EXT4_MAXQUOTAS];
- #endif
- 	char *orig_data = kstrdup(data, GFP_KERNEL);
-+	struct ext4_parsed_options parsed_opts;
-+
-+	parsed_opts.journal_ioprio = DEFAULT_JOURNAL_IOPRIO;
-+	parsed_opts.journal_devnum = 0;
- 
- 	if (data && !orig_data)
- 		return -ENOMEM;
-@@ -5845,7 +5853,8 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
- 			old_opts.s_qf_names[i] = NULL;
- #endif
- 	if (sbi->s_journal && sbi->s_journal->j_task->io_context)
--		journal_ioprio = sbi->s_journal->j_task->io_context->ioprio;
-+		parsed_opts.journal_ioprio =
-+			sbi->s_journal->j_task->io_context->ioprio;
- 
- 	/*
- 	 * Some options can be enabled by ext4 and/or by VFS mount flag
-@@ -5855,7 +5864,7 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
- 	vfs_flags = SB_LAZYTIME | SB_I_VERSION;
- 	sb->s_flags = (sb->s_flags & ~vfs_flags) | (*flags & vfs_flags);
- 
--	if (!parse_options(data, sb, NULL, &journal_ioprio, 1)) {
-+	if (!parse_options(data, sb, &parsed_opts, 1)) {
- 		err = -EINVAL;
- 		goto restore_opts;
- 	}
-@@ -5905,7 +5914,7 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
- 
- 	if (sbi->s_journal) {
- 		ext4_init_journal_params(sb, sbi->s_journal);
--		set_task_ioprio(sbi->s_journal->j_task, journal_ioprio);
-+		set_task_ioprio(sbi->s_journal->j_task, parsed_opts.journal_ioprio);
- 	}
- 
- 	/* Flush outstanding errors before changing fs state */
+ 	return 0;
+ }
 -- 
 2.31.0.291.g576ba9dcdaf-goog
 
