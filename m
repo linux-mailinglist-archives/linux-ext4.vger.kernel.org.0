@@ -2,145 +2,160 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02FE4346C24
-	for <lists+linux-ext4@lfdr.de>; Tue, 23 Mar 2021 23:19:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D89DC34852C
+	for <lists+linux-ext4@lfdr.de>; Thu, 25 Mar 2021 00:20:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234007AbhCWWTZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 23 Mar 2021 18:19:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37968 "EHLO
+        id S239030AbhCXXTh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 24 Mar 2021 19:19:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233930AbhCWWSa (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 23 Mar 2021 18:18:30 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E020C061574;
-        Tue, 23 Mar 2021 15:18:20 -0700 (PDT)
-Received: from [IPv6:2401:4900:5170:240f:f606:c194:2a1c:c147] (unknown [IPv6:2401:4900:5170:240f:f606:c194:2a1c:c147])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: shreeya)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 2208F1F454D0;
-        Tue, 23 Mar 2021 22:18:14 +0000 (GMT)
-Subject: Re: [PATCH v3 5/5] fs: unicode: Add utf8 module and a unicode layer
-To:     Eric Biggers <ebiggers@kernel.org>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
-        chao@kernel.org, drosen@google.com, yuchao0@huawei.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
-        andre.almeida@collabora.com
-References: <20210323183201.812944-1-shreeya.patel@collabora.com>
- <20210323183201.812944-6-shreeya.patel@collabora.com>
- <87eeg5d4xb.fsf@collabora.com> <YFpPxCQiMLqctIuS@gmail.com>
-From:   Shreeya Patel <shreeya.patel@collabora.com>
-Message-ID: <dd7dae42-6024-8868-3e3e-f6d672274682@collabora.com>
-Date:   Wed, 24 Mar 2021 03:48:10 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        with ESMTP id S239021AbhCXXTc (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 24 Mar 2021 19:19:32 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84880C06174A
+        for <linux-ext4@vger.kernel.org>; Wed, 24 Mar 2021 16:19:32 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id v3so15883209pgq.2
+        for <linux-ext4@vger.kernel.org>; Wed, 24 Mar 2021 16:19:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vkm1ZZWSFge6gUAX9K10ocTM/2eOaD9XzyqGZlSvrds=;
+        b=VNtyl7jjdQrRQI6c/hGTrZxpnleV0DwiJUCjmsuZBtu83Xtbw9ZdKtKdD+qiZGFfb7
+         ArCrXsfDxut34+Zgsc1QRhY/VA7egd8uEqNB8G6UCvUCKnZli7zf9NBkONKP81U0O31f
+         ZoiwAd8ZqYoWBc491Bh80/Wsd6lMlrp9lygFBKpJ1vmiSU917dsuOBOLzAFLLBeltMSL
+         6AHvHDYAIScK0dgeZncWbuA4PeJuua6kNok0nhnoLXCieUaRctD/pVudTdA+IZSbMHq5
+         ARLX1HCa8kTHwtDt4Px6MV9klzIxTTj/N+DCz0L9IFNgnCi21KCEaRj98v9vwHNrN0On
+         AZuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vkm1ZZWSFge6gUAX9K10ocTM/2eOaD9XzyqGZlSvrds=;
+        b=Q8brmBL0fzBH09GWVcK9mIua4YsyB919zTAfENflGTE7ZxNM4+0MW5bRivB/HRd97I
+         r6+AZ2H7K3LpP4Fcr8qVfwioq5ebplWPV7tm6xslbURwA9BAxXH2UTf/5wJ66es5IUAu
+         B95maTHPtUCaO7Qqf88y44YkXBlPdpvpl+ZIGvXu8poy66Y8jc3Me/QvYVCV3ll/55e7
+         ClwK/lb+WH65uU/mM6uKN1C8D7qu+KDoevOBkI41C7oTlbd5wYytfLRD7ZpvLiEBzznx
+         eiTuoDnCMBKI6gMu5URm+uPucXFAd2I2kxp1qHY+aRccZh63GzcJu79yn2K0G45FAOtw
+         2B+Q==
+X-Gm-Message-State: AOAM530zIO2T49ZA6cnZ9QKydmVniuf8SgoZPKuHUv+G1W/9lWcx59TR
+        f4TXO/H/8pr4M9Zj6YPpkVapAT1fxNw=
+X-Google-Smtp-Source: ABdhPJyXEIsgLUPuOw7WnfQnHzxBnJ0Zbzy/D28TW0uexIxpdrQHHGQIaDEyngIC7hT3bPsaBVpepQ==
+X-Received: by 2002:a63:f914:: with SMTP id h20mr5057518pgi.114.1616627971326;
+        Wed, 24 Mar 2021 16:19:31 -0700 (PDT)
+Received: from harshads-520.kir.corp.google.com ([2620:15c:17:10:f8fe:8e5d:4c9f:edfd])
+        by smtp.googlemail.com with ESMTPSA id z3sm3629928pff.40.2021.03.24.16.19.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 16:19:30 -0700 (PDT)
+From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Subject: Block allocator improvements
+Date:   Wed, 24 Mar 2021 16:19:10 -0700
+Message-Id: <20210324231916.2515824-1-harshadshirwadkar@gmail.com>
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
 MIME-Version: 1.0
-In-Reply-To: <YFpPxCQiMLqctIuS@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+This patch series improves cr 0 and cr 1 passes of the allocator
+signficantly. Currently, at cr 0 and 1, we perform linear lookups to
+find the matching groups. That's very inefficient for large file
+systems where there are millions of block groups. At cr 0, we only
+care about the groups that have the largest free order >= the
+request's order and at cr 1 we only care about groups where average
+fragment size > the request size. so, this patchset introduces new
+data structures that allow us to perform cr 0 lookup in constant time
+and cr 1 lookup in log (number of groups) time instead of linear.
 
-On 24/03/21 1:59 am, Eric Biggers wrote:
-> On Tue, Mar 23, 2021 at 03:51:44PM -0400, Gabriel Krisman Bertazi wrote:
->>> -int unicode_validate(const struct unicode_map *um, const struct qstr *str)
->>> -{
->>> -	const struct utf8data *data = utf8nfdi(um->version);
->>> -
->>> -	if (utf8nlen(data, str->name, str->len) < 0)
->>> -		return -1;
->>> -	return 0;
->>> -}
->>> +struct unicode_ops *utf8_ops;
->>> +EXPORT_SYMBOL(utf8_ops);
->>> +
->>> +int _utf8_validate(const struct unicode_map *um, const struct qstr *str)
->>> +{
->>> +	return 0;
->>> +}
->>> -EXPORT_SYMBOL(unicode_validate);
->> I think that any calls to the default static calls should return errors
->> instead of succeeding without doing anything.
->>
->> In fact, are the default calls really necessary?  If someone gets here,
->> there is a bug elsewhere, so WARN_ON and maybe -EIO.
->>
->> int unicode_validate_default_static_call(...)
->> {
->>     WARN_ON(1);
->>     return -EIO;
->> }
->>
->> Or just have a NULL default, as I mentioned below, if that is possible.
->>
-> [...]
->>> +DEFINE_STATIC_CALL(utf8_validate, _utf8_validate);
->>> +DEFINE_STATIC_CALL(utf8_strncmp, _utf8_strncmp);
->>> +DEFINE_STATIC_CALL(utf8_strncasecmp, _utf8_strncasecmp);
->>> +DEFINE_STATIC_CALL(utf8_strncasecmp_folded, _utf8_strncasecmp_folded);
->>> +DEFINE_STATIC_CALL(utf8_normalize, _utf8_normalize);
->>> +DEFINE_STATIC_CALL(utf8_casefold, _utf8_casefold);
->>> +DEFINE_STATIC_CALL(utf8_casefold_hash, _utf8_casefold_hash);
->>> +DEFINE_STATIC_CALL(utf8_load, _utf8_load);
->>> +DEFINE_STATIC_CALL_NULL(utf8_unload, _utf8_unload);
->>> +EXPORT_STATIC_CALL(utf8_strncmp);
->>> +EXPORT_STATIC_CALL(utf8_strncasecmp);
->>> +EXPORT_STATIC_CALL(utf8_strncasecmp_folded);
->> I'm having a hard time understanding why some use
->> DEFINE_STATIC_CALL_NULL, while other use DEFINE_STATIC_CALL.  This new
->> static call API is new to me :).  None of this can be called if the
->> module is not loaded anyway, so perhaps the default function can just be
->> NULL, per the documentation of include/linux/static_call.h?
->>
->> Anyway, Aren't utf8_{validate,casefold,normalize} missing the
->> equivalent EXPORT_STATIC_CALL?
->>
-> The static_call API is fairly new to me too.  But the intent of this patch seems
-> to be that none of the utf8 functions are called without the utf8 module loaded.
-> If they are called, it's a kernel bug.  So there are two options for what to do
-> if it happens anyway:
->
->    1. call a "null" static call, which does nothing
->
-> *or*
->
->    2. call a default function which does WARN_ON_ONCE() and returns an error if
->       possible.
->
-> (or 3. don't use static calls and instead dereference a NULL utf8_ops like
-> previous versions of this patch did.)
->
-> It shouldn't really matter which of these approaches you take, but please be
-> consistent and use the same one everywhere.
->
->> + void unicode_unregister(void)
->> + {
->> +         spin_lock(&utf8ops_lock);
->> +         utf8_ops = NULL;
->> +         spin_unlock(&utf8ops_lock);
->> + }
->> + EXPORT_SYMBOL(unicode_unregister);
-> This should restore the static calls to their default values (either NULL or the
-> default functions, depending on what you decide).
->
-> Also, it's weird to still have the utf8_ops structure when using static calls.
-> It seems it should be one way or the other: static calls *or* utf8_ops.
->
-> The static calls could be exported, and the module could be responsible for
-> updating them.  That would eliminate the need for utf8_ops.
+For cr 0, we add a list for each order and all the groups are enqueued
+to the appropriate list based on the largest free order in its buddy
+bitmap. This allows us to lookup a match at cr 0 in constant time.
 
+For cr 1, we add a new rb tree of groups sorted by largest fragment
+size. This allows us to lookup a match for cr 1 in log (num groups)
+time.
 
-Hmmm yes, I think we are just using utf8_ops for getting the owner details
-which we can now remove and instead pass it as an argument while 
-registering the module.
-Will make this change in v4. Thanks
+These optimizations can be enabled by passing "mb_optimize_scan" mount
+option.
 
+These changes may result in allocations to be spread across the block
+device. While that would not matter some block devices (such as flash)
+it may be a cause of concern for other block devices that benefit from
+storing related content togetther such as disk. However, it can be
+argued that in high fragmentation scenrio, especially for large disks,
+it's still worth optimizing the scanning since in such cases, we get
+cpu bound on group scanning instead of getting IO bound. Perhaps, in
+future, we could dynamically turn this new optimization on based on
+fragmentation levels for such devices.
 
->
-> - Eric
+Verified that there are no regressions in smoke tests (-g quick -c 4k).
+
+Also, to demonstrate the effectiveness for the patch series, following
+experiment was performed:
+
+Created a highly fragmented disk of size 65TB. The disk had no
+contiguous 2M regions. Following command was run consecutively for 3
+times:
+
+time dd if=/dev/urandom of=file bs=2M count=10
+
+Here are the results with and without cr 0/1 optimizations:
+
+|---------+------------------------------+---------------------------|
+|         | Without CR 0/1 Optimizations | With CR 0/1 Optimizations |
+|---------+------------------------------+---------------------------|
+| 1st run | 5m1.871s                     | 2m47.642s                 |
+| 2nd run | 2m28.390s                    | 0m0.611s                  |
+| 3rd run | 2m26.530s                    | 0m1.255s                  |
+|---------+------------------------------+---------------------------|
+
+The patch [3/6] "ext4: add mballoc stats proc file" is a modified
+version of the patch originally written by Artem Blagodarenko
+(artem.blagodarenko@gmail.com). With that patch, I ran following
+command with and without optimizations.
+
+dd if=/dev/zero of=/mnt/file bs=2M count=2 conv=fsync
+
+Without optimizations:
+
+useless_c0_loops: 3
+useless_c1_loops: 39
+useless_c2_loops: 0
+useless_c3_loops: 0
+
+With optimizations:
+
+useless_c0_loops: 0
+useless_c1_loops: 0
+useless_c2_loops: 0
+useless_c3_loops: 0
+
+This shows that CR0 and CR1 optimizations get rid of useless CR0 and
+CR1 loops altogether thereby significantly reducing the number of
+groups that get considered.
+
+Changes from V4:
+----------------
+- Only minor fixes, no significant changes
+
+Harshad Shirwadkar (6):
+  ext4: drop s_mb_bal_lock and convert protected fields to atomic
+  ext4: add ability to return parsed options from parse_options
+  ext4: add mballoc stats proc file
+  ext4: add MB_NUM_ORDERS macro
+  ext4: improve cr 0 / cr 1 group scanning
+  ext4: add proc files to monitor new structures
+
+ fs/ext4/ext4.h    |  30 ++-
+ fs/ext4/mballoc.c | 572 +++++++++++++++++++++++++++++++++++++++++++---
+ fs/ext4/mballoc.h |  22 +-
+ fs/ext4/super.c   |  79 +++++--
+ fs/ext4/sysfs.c   |   6 +
+ 5 files changed, 652 insertions(+), 57 deletions(-)
+
+-- 
+2.31.0.291.g576ba9dcdaf-goog
+
