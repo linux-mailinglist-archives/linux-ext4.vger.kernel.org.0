@@ -2,35 +2,34 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D4ED348EF1
-	for <lists+linux-ext4@lfdr.de>; Thu, 25 Mar 2021 12:26:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D571348F33
+	for <lists+linux-ext4@lfdr.de>; Thu, 25 Mar 2021 12:27:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230206AbhCYLZc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 25 Mar 2021 07:25:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33568 "EHLO mail.kernel.org"
+        id S230517AbhCYL0V (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 25 Mar 2021 07:26:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229716AbhCYLZH (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 25 Mar 2021 07:25:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5242D61A17;
-        Thu, 25 Mar 2021 11:25:06 +0000 (UTC)
+        id S230358AbhCYLZx (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 25 Mar 2021 07:25:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2282461A32;
+        Thu, 25 Mar 2021 11:25:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616671507;
-        bh=iBd8lv3XWAnh+G1+FV3Mpd4a8xPiapG6OA7D9kyr+IA=;
+        s=k20201202; t=1616671552;
+        bh=x1dLd35kS/fsJEktN17mPa9CELWLfzMplx6mvWu1YUk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FOErQptZBOsUM2m7MKg3+bBpOGehvKQMn6+K92tCwrmj+iSyBcWTBE1q2WMNV5pCM
-         xwzU3QZR4v3eK6EpnmT8Q4oEaHt1Udqse0a7yGRjLlrn9MQn0joSCLWSJ4ReCMTMCE
-         u70pqtPqAggzBnzeh1F/mVv+ZG9D2E7hLPGkfvVdb8bPkFFlE1pNHp39jD0WT4objH
-         GhCDCMAAQN+L6WQ+bWYyqkjtSlbh7BNu4IyHxY1988UcCOAq8nK8FE/WfSXxq2hvVK
-         HqL4t5gjF3XXh9bBGzgmp0hnwz0Q3V3BF90wAHBIY0UKfl5DvUxDDcBVpJhLwtoq6k
-         zYOSb7u5MwiNg==
+        b=UGh5InIpNclj9MzT6HFHK2r7kpFMdY44zvm9xp6XMJevjumGgotseFrHxCmyXXV6p
+         FegOfbKUWS21O+hCcpEkbkf4oUpOS1dNUaaq69+BUbE8PcpeZg6101i6oI418rN8H/
+         uMYH6bN9lJwelUNRDMJWtRl2FE8xv6AYxAm9HOdOhM/rHwpipg06rhK/b3YTLmk5+e
+         n/rS01zs3AhTnUP74yoHI4EfE7Pad54v9qyIv9oBPJ/J7SCX+sqK8gSawMpKRwOanE
+         0RSDYfKI8+6FhFWMRhZomxp39vjLbd2FHfwEL8IZuV+rDVIxIEytt5nNwNsrjNkgq1
+         FQ3YQDwTMr8yA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zhaolong Zhang <zhangzl2013@126.com>,
-        Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
-        linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.11 05/44] ext4: fix bh ref count on error paths
-Date:   Thu, 25 Mar 2021 07:24:20 -0400
-Message-Id: <20210325112459.1926846-5-sashal@kernel.org>
+Cc:     "zhangyi (F)" <yi.zhang@huawei.com>, Theodore Ts'o <tytso@mit.edu>,
+        Sasha Levin <sashal@kernel.org>, linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.11 41/44] ext4: do not iput inode under running transaction in ext4_rename()
+Date:   Thu, 25 Mar 2021 07:24:56 -0400
+Message-Id: <20210325112459.1926846-41-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210325112459.1926846-1-sashal@kernel.org>
 References: <20210325112459.1926846-1-sashal@kernel.org>
@@ -42,41 +41,88 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Zhaolong Zhang <zhangzl2013@126.com>
+From: "zhangyi (F)" <yi.zhang@huawei.com>
 
-[ Upstream commit c915fb80eaa6194fa9bd0a4487705cd5b0dda2f1 ]
+[ Upstream commit 5dccdc5a1916d4266edd251f20bbbb113a5c495f ]
 
-__ext4_journalled_writepage should drop bhs' ref count on error paths
+In ext4_rename(), when RENAME_WHITEOUT failed to add new entry into
+directory, it ends up dropping new created whiteout inode under the
+running transaction. After commit <9b88f9fb0d2> ("ext4: Do not iput inode
+under running transaction"), we follow the assumptions that evict() does
+not get called from a transaction context but in ext4_rename() it breaks
+this suggestion. Although it's not a real problem, better to obey it, so
+this patch add inode to orphan list and stop transaction before final
+iput().
 
-Signed-off-by: Zhaolong Zhang <zhangzl2013@126.com>
-Link: https://lore.kernel.org/r/1614678151-70481-1-git-send-email-zhangzl2013@126.com
+Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
+Link: https://lore.kernel.org/r/20210303131703.330415-2-yi.zhang@huawei.com
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/inode.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ fs/ext4/namei.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index c173c8405856..ffbd459e2b37 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -1937,13 +1937,13 @@ static int __ext4_journalled_writepage(struct page *page,
- 	if (!ret)
- 		ret = err;
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index df0368d578b1..6d954d681502 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -3760,14 +3760,14 @@ static int ext4_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 	 */
+ 	retval = -ENOENT;
+ 	if (!old.bh || le32_to_cpu(old.de->inode) != old.inode->i_ino)
+-		goto end_rename;
++		goto release_bh;
  
--	if (!ext4_has_inline_data(inode))
--		ext4_walk_page_buffers(NULL, page_bufs, 0, len,
--				       NULL, bput_one);
- 	ext4_set_inode_state(inode, EXT4_STATE_JDATA);
- out:
- 	unlock_page(page);
- out_no_pagelock:
-+	if (!inline_data && page_bufs)
-+		ext4_walk_page_buffers(NULL, page_bufs, 0, len,
-+				       NULL, bput_one);
- 	brelse(inode_bh);
- 	return ret;
+ 	new.bh = ext4_find_entry(new.dir, &new.dentry->d_name,
+ 				 &new.de, &new.inlined);
+ 	if (IS_ERR(new.bh)) {
+ 		retval = PTR_ERR(new.bh);
+ 		new.bh = NULL;
+-		goto end_rename;
++		goto release_bh;
+ 	}
+ 	if (new.bh) {
+ 		if (!new.inode) {
+@@ -3784,15 +3784,13 @@ static int ext4_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 		handle = ext4_journal_start(old.dir, EXT4_HT_DIR, credits);
+ 		if (IS_ERR(handle)) {
+ 			retval = PTR_ERR(handle);
+-			handle = NULL;
+-			goto end_rename;
++			goto release_bh;
+ 		}
+ 	} else {
+ 		whiteout = ext4_whiteout_for_rename(&old, credits, &handle);
+ 		if (IS_ERR(whiteout)) {
+ 			retval = PTR_ERR(whiteout);
+-			whiteout = NULL;
+-			goto end_rename;
++			goto release_bh;
+ 		}
+ 	}
+ 
+@@ -3926,16 +3924,18 @@ static int ext4_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 			ext4_setent(handle, &old,
+ 				old.inode->i_ino, old_file_type);
+ 			drop_nlink(whiteout);
++			ext4_orphan_add(handle, whiteout);
+ 		}
+ 		unlock_new_inode(whiteout);
++		ext4_journal_stop(handle);
+ 		iput(whiteout);
+-
++	} else {
++		ext4_journal_stop(handle);
+ 	}
++release_bh:
+ 	brelse(old.dir_bh);
+ 	brelse(old.bh);
+ 	brelse(new.bh);
+-	if (handle)
+-		ext4_journal_stop(handle);
+ 	return retval;
  }
+ 
 -- 
 2.30.1
 
