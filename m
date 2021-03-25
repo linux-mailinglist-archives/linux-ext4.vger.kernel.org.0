@@ -2,107 +2,58 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54B6F349415
-	for <lists+linux-ext4@lfdr.de>; Thu, 25 Mar 2021 15:31:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0E01349445
+	for <lists+linux-ext4@lfdr.de>; Thu, 25 Mar 2021 15:38:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231344AbhCYOat (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 25 Mar 2021 10:30:49 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42524 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231330AbhCYOaW (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 25 Mar 2021 10:30:22 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E6237AD80;
-        Thu, 25 Mar 2021 14:30:20 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id AB62F1E4415; Thu, 25 Mar 2021 15:30:20 +0100 (CET)
-Date:   Thu, 25 Mar 2021 15:30:20 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>,
-        linux-ext4@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.11 03/44] ext4: add reclaim checks to xattr code
-Message-ID: <20210325143020.GC13673@quack2.suse.cz>
-References: <20210325112459.1926846-1-sashal@kernel.org>
- <20210325112459.1926846-3-sashal@kernel.org>
+        id S230436AbhCYOiQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 25 Mar 2021 10:38:16 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:50876 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230241AbhCYOh5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 25 Mar 2021 10:37:57 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 12PEbrBM028826
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Mar 2021 10:37:54 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id A8A8915C39CC; Thu, 25 Mar 2021 10:37:53 -0400 (EDT)
+Date:   Thu, 25 Mar 2021 10:37:53 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Eric Whitney <enwlinux@gmail.com>
+Cc:     linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v2] ext4: delete some unused tracepoint definitions
+Message-ID: <YFygQUcMLjPnzrbD@mit.edu>
+References: <20210216191634.20957-1-enwlinux@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210325112459.1926846-3-sashal@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210216191634.20957-1-enwlinux@gmail.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Sasha, just be aware that this commit was added to help tracking down a
-particular syzbot report. As such there's no point in carrying it in
--stable but there's no big harm either... Just one patch more.
+On Tue, Feb 16, 2021 at 02:16:34PM -0500, Eric Whitney wrote:
+> A number of tracepoint instances have been removed from ext4 by past
+> patches but the definitions of those tracepoints have not.
+> 
+> All instances of ext4_ext_in_cache and ext4_ext_put_in_cache were
+> removed by "ext4: remove single extent cache" (69eb33dc24dc).
+> ext4_get_reserved_cluster_alloc was removed by
+> "ext4: reduce reserved cluster count by number of allocated clusters"
+> (b6bf9171ef5c).
+> ext4_find_delalloc_range was removed by
+> "ext4: reimplement ext4_find_delay_alloc_range on extent status tree"
+> (7d1b1fbc95eb).
+> 
+> v2:  After a full review, delete two more tracepoint definitions.
+> All instances of ext4_direct_IO_enter and ext4_direct_IO_exit were
+> removed by "ext4: introduce direct I/O write using iomap infrastructure"
+> (378f32bab371).
+> 
+> Signed-off-by: Eric Whitney <enwlinux@gmail.com>
 
-								Honza
+Thanks, applied.
 
-On Thu 25-03-21 07:24:18, Sasha Levin wrote:
-> From: Jan Kara <jack@suse.cz>
-> 
-> [ Upstream commit 163f0ec1df33cf468509ff38cbcbb5eb0d7fac60 ]
-> 
-> Syzbot is reporting that ext4 can enter fs reclaim from kvmalloc() while
-> the transaction is started like:
-> 
->   fs_reclaim_acquire+0x117/0x150 mm/page_alloc.c:4340
->   might_alloc include/linux/sched/mm.h:193 [inline]
->   slab_pre_alloc_hook mm/slab.h:493 [inline]
->   slab_alloc_node mm/slub.c:2817 [inline]
->   __kmalloc_node+0x5f/0x430 mm/slub.c:4015
->   kmalloc_node include/linux/slab.h:575 [inline]
->   kvmalloc_node+0x61/0xf0 mm/util.c:587
->   kvmalloc include/linux/mm.h:781 [inline]
->   ext4_xattr_inode_cache_find fs/ext4/xattr.c:1465 [inline]
->   ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1508 [inline]
->   ext4_xattr_set_entry+0x1ce6/0x3780 fs/ext4/xattr.c:1649
->   ext4_xattr_ibody_set+0x78/0x2b0 fs/ext4/xattr.c:2224
->   ext4_xattr_set_handle+0x8f4/0x13e0 fs/ext4/xattr.c:2380
->   ext4_xattr_set+0x13a/0x340 fs/ext4/xattr.c:2493
-> 
-> This should be impossible since transaction start sets PF_MEMALLOC_NOFS.
-> Add some assertions to the code to catch if something isn't working as
-> expected early.
-> 
-> Link: https://lore.kernel.org/linux-ext4/000000000000563a0205bafb7970@google.com/
-> Signed-off-by: Jan Kara <jack@suse.cz>
-> Link: https://lore.kernel.org/r/20210222171626.21884-1-jack@suse.cz
-> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  fs/ext4/xattr.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-> index 372208500f4e..083c95126781 100644
-> --- a/fs/ext4/xattr.c
-> +++ b/fs/ext4/xattr.c
-> @@ -1462,6 +1462,9 @@ ext4_xattr_inode_cache_find(struct inode *inode, const void *value,
->  	if (!ce)
->  		return NULL;
->  
-> +	WARN_ON_ONCE(ext4_handle_valid(journal_current_handle()) &&
-> +		     !(current->flags & PF_MEMALLOC_NOFS));
-> +
->  	ea_data = kvmalloc(value_len, GFP_KERNEL);
->  	if (!ea_data) {
->  		mb_cache_entry_put(ea_inode_cache, ce);
-> @@ -2327,6 +2330,7 @@ ext4_xattr_set_handle(handle_t *handle, struct inode *inode, int name_index,
->  			error = -ENOSPC;
->  			goto cleanup;
->  		}
-> +		WARN_ON_ONCE(!(current->flags & PF_MEMALLOC_NOFS));
->  	}
->  
->  	error = ext4_reserve_inode_write(handle, inode, &is.iloc);
-> -- 
-> 2.30.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+					- Ted
