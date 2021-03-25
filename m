@@ -2,58 +2,65 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0E01349445
-	for <lists+linux-ext4@lfdr.de>; Thu, 25 Mar 2021 15:38:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B80813494B3
+	for <lists+linux-ext4@lfdr.de>; Thu, 25 Mar 2021 15:55:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230436AbhCYOiQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 25 Mar 2021 10:38:16 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:50876 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230241AbhCYOh5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 25 Mar 2021 10:37:57 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 12PEbrBM028826
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Mar 2021 10:37:54 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id A8A8915C39CC; Thu, 25 Mar 2021 10:37:53 -0400 (EDT)
-Date:   Thu, 25 Mar 2021 10:37:53 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Eric Whitney <enwlinux@gmail.com>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v2] ext4: delete some unused tracepoint definitions
-Message-ID: <YFygQUcMLjPnzrbD@mit.edu>
-References: <20210216191634.20957-1-enwlinux@gmail.com>
+        id S230213AbhCYOzW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 25 Mar 2021 10:55:22 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57818 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231384AbhCYOy7 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 25 Mar 2021 10:54:59 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3E495AA55;
+        Thu, 25 Mar 2021 14:54:58 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 02C6E1E4415; Thu, 25 Mar 2021 15:54:57 +0100 (CET)
+Date:   Thu, 25 Mar 2021 15:54:57 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: ext2_set_link()->ext2_put_page() question
+Message-ID: <20210325145457.GE13673@quack2.suse.cz>
+References: <20210323004948.GR3014244@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210216191634.20957-1-enwlinux@gmail.com>
+In-Reply-To: <20210323004948.GR3014244@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 02:16:34PM -0500, Eric Whitney wrote:
-> A number of tracepoint instances have been removed from ext4 by past
-> patches but the definitions of those tracepoints have not.
+On Mon 22-03-21 17:49:48, Ira Weiny wrote:
+> Jan,
 > 
-> All instances of ext4_ext_in_cache and ext4_ext_put_in_cache were
-> removed by "ext4: remove single extent cache" (69eb33dc24dc).
-> ext4_get_reserved_cluster_alloc was removed by
-> "ext4: reduce reserved cluster count by number of allocated clusters"
-> (b6bf9171ef5c).
-> ext4_find_delalloc_range was removed by
-> "ext4: reimplement ext4_find_delay_alloc_range on extent status tree"
-> (7d1b1fbc95eb).
+> Why does ext2_set_link() need to call ext2_put_page()?
 > 
-> v2:  After a full review, delete two more tracepoint definitions.
-> All instances of ext4_direct_IO_enter and ext4_direct_IO_exit were
-> removed by "ext4: introduce direct I/O write using iomap infrastructure"
-> (378f32bab371).
+> I don't see any reason that we could not match up the ext2_put_page() calls
+> with the ext2_find_entry().
 > 
-> Signed-off-by: Eric Whitney <enwlinux@gmail.com>
+> Similarly am I missing something by moving the ext2_put_page() out of
+> ext2_delete_entry()?
+> 
+> See below patch.
 
-Thanks, applied.
+I agree that your patch improves readability. But please fixup comments
+about releasing a page as well. Thanks!
 
-					- Ted
+> I'm in the process of changing the kmap() calls in ext2_[get|put]_page() into
+> kmap_local_page() and I noticed this imbalance.  It does not really save me
+> anything because I need to pass the kaddr into these calls but IMO it makes the
+> code a bit easier to follow.
+> 
+> If you agree I will get a patch together to submit with the kmap_local_page()
+> patch.
+
+OK :).
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
