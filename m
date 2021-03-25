@@ -2,88 +2,98 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C07DB349A4B
-	for <lists+linux-ext4@lfdr.de>; Thu, 25 Mar 2021 20:32:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC390349A8F
+	for <lists+linux-ext4@lfdr.de>; Thu, 25 Mar 2021 20:41:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230064AbhCYTcI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 25 Mar 2021 15:32:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhCYTbr (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 25 Mar 2021 15:31:47 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D45AC06174A;
-        Thu, 25 Mar 2021 12:31:47 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id 0A0F11F46850
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Shreeya Patel <shreeya.patel@collabora.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, jaegeuk@kernel.org, chao@kernel.org,
-        drosen@google.com, yuchao0@huawei.com, linux-ext4@vger.kernel.org,
+        id S230258AbhCYTkp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 25 Mar 2021 15:40:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55404 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230393AbhCYTkT (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 25 Mar 2021 15:40:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D84361A33;
+        Thu, 25 Mar 2021 19:40:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616701218;
+        bh=t73TCDPbW8CCPOT1gnPyZLIMzYIWH/PeC5jyFO3S+hU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PIo7ZcQ+itFZRv3GceyXjflqxbkDu13DtfYPAWifjUac73uuPiFjWbj9C9nr0ZcUN
+         xWAznZsIAk/FOT5bePJvRU1zYETQu+HdvYuGBO3U8Y6vi5XE8q5DDzJ+avczZeM6+2
+         g0mxoBg8wEg7tiev7kuEm2nJ30wUR05wxTUCCacXpn2IB5gE0J9LsqzHSyv8Eli/U4
+         Sf34dqc2TWQDlcvF0Frfs7aynPXOc8LA9tq90P+TuRYE0KvE3hGRi7bIZT2ZYvIFhH
+         K91heJwiLnEj7isnTgbBg/cR8Pwfc8eSG+A6yf8KVr6qKn+Ysvfy29RZbyvQggBblR
+         bS2uTt4RC1YlA==
+Date:   Thu, 25 Mar 2021 12:40:17 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Shreeya Patel <shreeya.patel@collabora.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
+        chao@kernel.org, krisman@collabora.com, drosen@google.com,
+        yuchao0@huawei.com, linux-ext4@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         linux-f2fs-devel@lists.sourceforge.net,
         linux-fsdevel@vger.kernel.org, kernel@collabora.com,
         andre.almeida@collabora.com
-Subject: Re: [PATCH v4 2/5] fs: Check if utf8 encoding is loaded before
- calling utf8_unload()
-Organization: Collabora
+Subject: Re: [PATCH v4 5/5] fs: unicode: Add utf8 module and a unicode layer
+Message-ID: <YFznIVf/F68oEuC6@sol.localdomain>
 References: <20210325000811.1379641-1-shreeya.patel@collabora.com>
-        <20210325000811.1379641-3-shreeya.patel@collabora.com>
-        <YFziza/VMyzEs4s1@sol.localdomain>
-Date:   Thu, 25 Mar 2021 15:31:42 -0400
-In-Reply-To: <YFziza/VMyzEs4s1@sol.localdomain> (Eric Biggers's message of
-        "Thu, 25 Mar 2021 12:21:49 -0700")
-Message-ID: <878s6bt4gx.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+ <20210325000811.1379641-6-shreeya.patel@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210325000811.1379641-6-shreeya.patel@collabora.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Eric Biggers <ebiggers@kernel.org> writes:
+On Thu, Mar 25, 2021 at 05:38:11AM +0530, Shreeya Patel wrote:
+> Also, indirect calls using function pointers are easily exploitable by
+> speculative execution attacks, hence use static_call() in unicode.h and
+> unicode-core.c files inorder to prevent these attacks by making direct
+> calls and also to improve the performance of function pointers.
 
-> On Thu, Mar 25, 2021 at 05:38:08AM +0530, Shreeya Patel wrote:
->> utf8_unload is being called if CONFIG_UNICODE is enabled.
->> The ifdef block doesn't check if utf8 encoding has been loaded
->> or not before calling the utf8_unload() function.
->> This is not the expected behavior since it would sometimes lead
->> to unloading utf8 even before loading it.
->> Hence, add a condition which will check if sb->encoding is NOT NULL
->> before calling the utf8_unload().
->> 
->> Reviewed-by: Gabriel Krisman Bertazi <krisman@collabora.com>
->> Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
->> ---
->>  fs/ext4/super.c | 6 ++++--
->>  fs/f2fs/super.c | 9 ++++++---
->>  2 files changed, 10 insertions(+), 5 deletions(-)
->> 
->> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
->> index ad34a37278cd..e438d14f9a87 100644
->> --- a/fs/ext4/super.c
->> +++ b/fs/ext4/super.c
->> @@ -1259,7 +1259,8 @@ static void ext4_put_super(struct super_block *sb)
->>  	fs_put_dax(sbi->s_daxdev);
->>  	fscrypt_free_dummy_policy(&sbi->s_dummy_enc_policy);
->>  #ifdef CONFIG_UNICODE
->> -	utf8_unload(sb->s_encoding);
->> +	if (sb->s_encoding)
->> +		utf8_unload(sb->s_encoding);
->>  #endif
->>  	kfree(sbi);
->>  }
->
->
-> What's the benefit of this change?  utf8_unload is a no-op when passed a NULL
-> pointer; why not keep it that way?
+I don't think you need to worry about avoiding indirect calls to prevent
+speculative execution attacks.  That's what the mitigations like Retpoline are
+for.  Instead my concern was just that indirect calls are *slow*, especially
+when those mitigations are enabled.  Some of the casefolding operations are
+called a lot (e.g., repeatedly during path resolution), and it would be
+desirable to avoid adding more overhead there.
 
-For the record, it no longer is a no-op after patch 5 of this series.
-Honestly, I prefer making it explicitly at the caller that we are not
-entering the function, like the patch does, instead of returning from it
-immediately.  Makes it more readable, IMO.
+> diff --git a/fs/unicode/Kconfig b/fs/unicode/Kconfig
+> index 2c27b9a5cd6c..2961b0206b4d 100644
+> --- a/fs/unicode/Kconfig
+> +++ b/fs/unicode/Kconfig
+> @@ -8,7 +8,16 @@ config UNICODE
+>  	  Say Y here to enable UTF-8 NFD normalization and NFD+CF casefolding
+>  	  support.
+>  
+> +# UTF-8 encoding can be compiled as a module using UNICODE_UTF8 option.
+> +# Having UTF-8 encoding as a module will avoid carrying large
+> +# database table present in utf8data.h_shipped into the kernel
+> +# by being able to load it only when it is required by the filesystem.
+> +config UNICODE_UTF8
+> +	tristate "UTF-8 module"
+> +	depends on UNICODE
+> +	default m
+> +
 
--- 
-Gabriel Krisman Bertazi
+The help for UNICODE still says that it enables UTF-8 support.  But now there is
+a separate option that people will need to remember to enable.
+
+Please document each of these options properly.
+
+Perhaps EXT4_FS and F2FS_FS just should select UNICODE_UTF8 if UNICODE, so that
+UNICODE_UTF8 doesn't have to be a user-selectable symbol?
+
+> +DEFINE_STATIC_CALL(validate, unicode_validate_static_call);
+> +EXPORT_STATIC_CALL(validate);
+
+Global symbols can't have generic names like "validate".  Please add an
+appropriate prefix like "unicode_".
+
+Also, the thing called "unicode_validate_static_call" isn't actually a static
+call as the name suggests, but rather the default function used by the static
+call.  It should be called something like unicode_validate_default.
+
+Likewise for all the others.
+
+- Eric
