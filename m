@@ -2,89 +2,98 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F0ED34A31E
-	for <lists+linux-ext4@lfdr.de>; Fri, 26 Mar 2021 09:19:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9F0634A75D
+	for <lists+linux-ext4@lfdr.de>; Fri, 26 Mar 2021 13:34:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230166AbhCZITZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 26 Mar 2021 04:19:25 -0400
-Received: from mx1.hrz.uni-dortmund.de ([129.217.128.51]:37351 "EHLO
-        unimail.uni-dortmund.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbhCZIS7 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 26 Mar 2021 04:18:59 -0400
-Received: from [192.168.111.103] (p4fd97b97.dip0.t-ipconnect.de [79.217.123.151])
-        (authenticated bits=0)
-        by unimail.uni-dortmund.de (8.16.1/8.16.1) with ESMTPSA id 12Q8IknN008587
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT);
-        Fri, 26 Mar 2021 09:18:46 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tu-dortmund.de;
-        s=unimail; t=1616746726;
-        bh=ben2mc9PqCco6wmBW93BX/pWuiCf7vcnCghf41yvMuE=;
-        h=To:Cc:References:From:Subject:Date:In-Reply-To;
-        b=cVOdF1SxmarPMH195YKtL8CsuGpvsEG+imVHH9HlrEDGP6YRyfebyZYUvGVNIPgfE
-         6TEEbrE4wv27+TXz4qChBpB6gFsjOfjN4TDMGUpfTKNw3zy72ngHYfgCHkNCEkgFZI
-         24TkH3eE0P7pxvnCJUnGwPdm9GMOfuhKEgFKkggg=
-To:     Jan Kara <jack@suse.cz>
-Cc:     Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
-        "Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.com>,
+        id S229915AbhCZMdu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 26 Mar 2021 08:33:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229758AbhCZMdn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 26 Mar 2021 08:33:43 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1093EC0613AA;
+        Fri, 26 Mar 2021 05:33:43 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id g20so4997778qkk.1;
+        Fri, 26 Mar 2021 05:33:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=y1HoQOlFK45LqbwKA8xSwNvct1ROnntMbS0R2nBbCrg=;
+        b=r6YNSVFZ+slcBEEFimAknB2fFFEaK2on9WC/6sgUBUYNj5AlB1rPIn6WzKOfN5NWU0
+         tMXYI9cx5Qq8iq6atwCVpw1vixIlEVWMpR4385j2O2qtpsNBgaKeKNULQVQIULxeRRaB
+         UsG4iKBLn5Ut/dVNeE/0NByToS+QZosFLFE65z8fHjOxdPF64xTjxdj3xHtLTOW3KSBg
+         UsVHuwbwiXhFK3l2ax+vXpGc4spbWHy9DxBRB7ZZgHL6ILc8Yy/Y9XJUX6oq4exclIY6
+         5MZDh2A/qQTn/JPYUowi+zMNI2m9/+tbkuHkqUB/EmD7CyI/wrFDE2UK3gNpiR11HriT
+         gBXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=y1HoQOlFK45LqbwKA8xSwNvct1ROnntMbS0R2nBbCrg=;
+        b=eaFZvy1R6EiKfIAQtkHPLCURWDLUXYVbcQxT7Oog7rS+CkJLZOWBu3SMNAfaxNjt51
+         zcc80bxyMxa/DsYwKJGLDdFuSVC/zW9D5tAwX1/9JhmLQNpPIcn5ROYUoMDeWjtvfgpC
+         FCa3GMsBKZmFvs75SpUE4qZjDl7eH0Bwl2+MhwZb9fiSCVWrvqFN8KmJyA5wZ2JAuIkB
+         6UsNvDmjdnpR+Cm7KrJSzsEc3R8HtCKRl89B1wsZI0mVwy0XjYyVkmMGBtdkOHxd5OnQ
+         rsZHIkNXMEMGcNotesg9ZY7cX6uZvJFo8OST9qF77TzTvYcf1QoC3rKNA0eXWisFFHOY
+         ybmg==
+X-Gm-Message-State: AOAM532v1KImjW3EWu1KV3exk+w2keBaMkISIRmg3kIqXyKNtpSDm6C9
+        ogb4LKkcXEMFp+YAhUB0KukWO9I9BUnPtK0B
+X-Google-Smtp-Source: ABdhPJxbf9sZfuhxrD4KBekAIQNRIUoq80wrpk08MW76UBLX9CBZ8xGKEc3ZPKSoDmtWYfRtSQ+BWw==
+X-Received: by 2002:a37:7b41:: with SMTP id w62mr12619818qkc.256.1616762022344;
+        Fri, 26 Mar 2021 05:33:42 -0700 (PDT)
+Received: from localhost.localdomain ([37.19.198.107])
+        by smtp.gmail.com with ESMTPSA id h11sm5543681qtp.24.2021.03.26.05.33.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Mar 2021 05:33:41 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca,
         linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210210095740.54881-1-alexander.lochmann@tu-dortmund.de>
- <20210210095740.54881-2-alexander.lochmann@tu-dortmund.de>
- <20210211093027.GI19070@quack2.suse.cz>
-From:   Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
-Subject: Re: [PATCH 1/2] Updated locking documentation for transaction_t
-Message-ID: <ec682a4c-f4f7-35fe-dc35-6c0b53d6ecda@tu-dortmund.de>
-Date:   Fri, 26 Mar 2021 09:18:45 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] ext4/migrate.c: Mundane typo fixes
+Date:   Fri, 26 Mar 2021 18:01:29 +0530
+Message-Id: <20210326123129.30089-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20210211093027.GI19070@quack2.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 11.02.21 10:30, Jan Kara wrote:
->> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
->> index 99d3cd051ac3..18f77d9b1745 100644
->> --- a/include/linux/jbd2.h
->> +++ b/include/linux/jbd2.h
->> @@ -594,18 +594,18 @@ struct transaction_s
->>  	 */
->>  	unsigned long		t_log_start;
->>  
->> -	/* Number of buffers on the t_buffers list [j_list_lock] */
->> +	/* Number of buffers on the t_buffers list [j_list_lock, no lock for quick racy checks] */
->>  	int			t_nr_buffers;
-> 
-> So this case is actually somewhat different now that I audited the uses.
-> There are two types of users - commit code (fs/jbd2/commit.c) and others.
-> Other users properly use j_list_lock to access t_nr_buffers. Commit code
-> does not use any locks because committing transaction is fully in
-> ownership of the jbd2 thread and all other users need to check & wait for
-> commit to be finished before doing anything with the transaction's buffers.
 
-I'm still trying understand how thinks work:
-Accesses to transaction_t might occur from different contexts. Thus,
-locks are necessary. If it comes to the commit phase, every other
-context has to wait until jbd2 thread has done its work. Therefore, jbd2
-thread does not need any locks to access a transaction_t (or just parts
-of it?) during commit phase.
-Is that correct?
+s/convinience/convenience/
+s/accumalate/accumulate/  .......two different places.
 
-If so: I was thinking whether it make sense to ignore all memory
-accesses to a transaction_t (or parts of it) that happen in the commit
-phase. They deliberately ignore the locking policy, and would confuse
-our approach.
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ fs/ext4/migrate.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Is the commit phase performed by jbd2_journal_commit_transaction()?
-We would add this function to our blacklist for transaction_t.
+diff --git a/fs/ext4/migrate.c b/fs/ext4/migrate.c
+index c5e3fc998211..7e0b4f81c6c0 100644
+--- a/fs/ext4/migrate.c
++++ b/fs/ext4/migrate.c
+@@ -32,7 +32,7 @@ static int finish_range(handle_t *handle, struct inode *inode,
+ 	newext.ee_block = cpu_to_le32(lb->first_block);
+ 	newext.ee_len   = cpu_to_le16(lb->last_block - lb->first_block + 1);
+ 	ext4_ext_store_pblock(&newext, lb->first_pblock);
+-	/* Locking only for convinience since we are operating on temp inode */
++	/* Locking only for convenience since we are operating on temp inode */
+ 	down_write(&EXT4_I(inode)->i_data_sem);
+ 	path = ext4_find_extent(inode, lb->first_block, NULL, 0);
+ 	if (IS_ERR(path)) {
+@@ -43,8 +43,8 @@ static int finish_range(handle_t *handle, struct inode *inode,
 
-- Alex
--- 
-Technische Universität Dortmund
-Alexander Lochmann                PGP key: 0xBC3EF6FD
-Otto-Hahn-Str. 16                 phone:  +49.231.7556141
-D-44227 Dortmund                  fax:    +49.231.7556116
-http://ess.cs.tu-dortmund.de/Staff/al
+ 	/*
+ 	 * Calculate the credit needed to inserting this extent
+-	 * Since we are doing this in loop we may accumalate extra
+-	 * credit. But below we try to not accumalate too much
++	 * Since we are doing this in loop we may accumulate extra
++	 * credit. But below we try to not accumulate too much
+ 	 * of them by restarting the journal.
+ 	 */
+ 	needed = ext4_ext_calc_credits_for_single_extent(inode,
+--
+2.26.2
+
