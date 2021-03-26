@@ -2,98 +2,69 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9F0634A75D
-	for <lists+linux-ext4@lfdr.de>; Fri, 26 Mar 2021 13:34:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C62134ACA6
+	for <lists+linux-ext4@lfdr.de>; Fri, 26 Mar 2021 17:38:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229915AbhCZMdu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 26 Mar 2021 08:33:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229758AbhCZMdn (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 26 Mar 2021 08:33:43 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1093EC0613AA;
-        Fri, 26 Mar 2021 05:33:43 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id g20so4997778qkk.1;
-        Fri, 26 Mar 2021 05:33:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=y1HoQOlFK45LqbwKA8xSwNvct1ROnntMbS0R2nBbCrg=;
-        b=r6YNSVFZ+slcBEEFimAknB2fFFEaK2on9WC/6sgUBUYNj5AlB1rPIn6WzKOfN5NWU0
-         tMXYI9cx5Qq8iq6atwCVpw1vixIlEVWMpR4385j2O2qtpsNBgaKeKNULQVQIULxeRRaB
-         UsG4iKBLn5Ut/dVNeE/0NByToS+QZosFLFE65z8fHjOxdPF64xTjxdj3xHtLTOW3KSBg
-         UsVHuwbwiXhFK3l2ax+vXpGc4spbWHy9DxBRB7ZZgHL6ILc8Yy/Y9XJUX6oq4exclIY6
-         5MZDh2A/qQTn/JPYUowi+zMNI2m9/+tbkuHkqUB/EmD7CyI/wrFDE2UK3gNpiR11HriT
-         gBXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=y1HoQOlFK45LqbwKA8xSwNvct1ROnntMbS0R2nBbCrg=;
-        b=eaFZvy1R6EiKfIAQtkHPLCURWDLUXYVbcQxT7Oog7rS+CkJLZOWBu3SMNAfaxNjt51
-         zcc80bxyMxa/DsYwKJGLDdFuSVC/zW9D5tAwX1/9JhmLQNpPIcn5ROYUoMDeWjtvfgpC
-         FCa3GMsBKZmFvs75SpUE4qZjDl7eH0Bwl2+MhwZb9fiSCVWrvqFN8KmJyA5wZ2JAuIkB
-         6UsNvDmjdnpR+Cm7KrJSzsEc3R8HtCKRl89B1wsZI0mVwy0XjYyVkmMGBtdkOHxd5OnQ
-         rsZHIkNXMEMGcNotesg9ZY7cX6uZvJFo8OST9qF77TzTvYcf1QoC3rKNA0eXWisFFHOY
-         ybmg==
-X-Gm-Message-State: AOAM532v1KImjW3EWu1KV3exk+w2keBaMkISIRmg3kIqXyKNtpSDm6C9
-        ogb4LKkcXEMFp+YAhUB0KukWO9I9BUnPtK0B
-X-Google-Smtp-Source: ABdhPJxbf9sZfuhxrD4KBekAIQNRIUoq80wrpk08MW76UBLX9CBZ8xGKEc3ZPKSoDmtWYfRtSQ+BWw==
-X-Received: by 2002:a37:7b41:: with SMTP id w62mr12619818qkc.256.1616762022344;
-        Fri, 26 Mar 2021 05:33:42 -0700 (PDT)
-Received: from localhost.localdomain ([37.19.198.107])
-        by smtp.gmail.com with ESMTPSA id h11sm5543681qtp.24.2021.03.26.05.33.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 05:33:41 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] ext4/migrate.c: Mundane typo fixes
-Date:   Fri, 26 Mar 2021 18:01:29 +0530
-Message-Id: <20210326123129.30089-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S230230AbhCZQiL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 26 Mar 2021 12:38:11 -0400
+Received: from mx1.hrz.uni-dortmund.de ([129.217.128.51]:58375 "EHLO
+        unimail.uni-dortmund.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230070AbhCZQho (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 26 Mar 2021 12:37:44 -0400
+Received: from [192.168.111.102] (p4fd97b97.dip0.t-ipconnect.de [79.217.123.151])
+        (authenticated bits=0)
+        by unimail.uni-dortmund.de (8.16.1/8.16.1) with ESMTPSA id 12QGbYPE001987
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT);
+        Fri, 26 Mar 2021 17:37:35 +0100 (CET)
+Subject: Re: [RFC] inode.i_opflags - Usage of two different locking schemes
+To:     Jan Kara <jack@suse.cz>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>,
+        Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
+        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <f63dd495-defb-adc4-aa91-6aacd7f441c7@tu-dortmund.de>
+ <a4709bc4-ee62-2cdc-0628-32e8fa73e8f9@tu-dortmund.de>
+ <YEJLuP6+Zy8/dq+D@mit.edu>
+ <667b3ec3-a522-05a9-31e8-87d8bfaa7adb@tu-dortmund.de>
+ <YEJWiXaZ+9H+2nBx@mit.edu>
+ <0f387f5b-a516-af45-856d-f38d1adfadf5@tu-dortmund.de>
+ <20210316171429.GA22701@quack2.suse.cz>
+From:   Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
+Message-ID: <0e308673-a350-98af-b0a7-cde63abd4579@tu-dortmund.de>
+Date:   Fri, 26 Mar 2021 17:37:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
+In-Reply-To: <20210316171429.GA22701@quack2.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 
-s/convinience/convenience/
-s/accumalate/accumulate/  .......two different places.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- fs/ext4/migrate.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+On 16.03.21 18:14, Jan Kara wrote:
+> 
+> So i_lock is supposed to protect i_opflags for writing AFAICT. For reading
+> we don't seem to bother in some cases and I agree that is potentially
+> problematic. It is *mostly* OK because we initialize i_opflags when loading
+> inode into memory / adding it to dcache. But sometimes we also update them
+> while the inode is alive. Now this is fine for the particular flag we
+> update but in theory, if the compiler wants to screw us and stores
+> temporarily some nonsensical value in i_opflags we'd have a problem. This
+> is mostly a theoretical issue but eventually we probably want to fix this.
+> 
+> 								Honza
+> 
+Thx for the detailed explanation. :-)
 
-diff --git a/fs/ext4/migrate.c b/fs/ext4/migrate.c
-index c5e3fc998211..7e0b4f81c6c0 100644
---- a/fs/ext4/migrate.c
-+++ b/fs/ext4/migrate.c
-@@ -32,7 +32,7 @@ static int finish_range(handle_t *handle, struct inode *inode,
- 	newext.ee_block = cpu_to_le32(lb->first_block);
- 	newext.ee_len   = cpu_to_le16(lb->last_block - lb->first_block + 1);
- 	ext4_ext_store_pblock(&newext, lb->first_pblock);
--	/* Locking only for convinience since we are operating on temp inode */
-+	/* Locking only for convenience since we are operating on temp inode */
- 	down_write(&EXT4_I(inode)->i_data_sem);
- 	path = ext4_find_extent(inode, lb->first_block, NULL, 0);
- 	if (IS_ERR(path)) {
-@@ -43,8 +43,8 @@ static int finish_range(handle_t *handle, struct inode *inode,
+- Alex
 
- 	/*
- 	 * Calculate the credit needed to inserting this extent
--	 * Since we are doing this in loop we may accumalate extra
--	 * credit. But below we try to not accumalate too much
-+	 * Since we are doing this in loop we may accumulate extra
-+	 * credit. But below we try to not accumulate too much
- 	 * of them by restarting the journal.
- 	 */
- 	needed = ext4_ext_calc_credits_for_single_extent(inode,
---
-2.26.2
-
+-- 
+Technische Universität Dortmund
+Alexander Lochmann                PGP key: 0xBC3EF6FD
+Otto-Hahn-Str. 16                 phone:  +49.231.7556141
+D-44227 Dortmund                  fax:    +49.231.7556116
+http://ess.cs.tu-dortmund.de/Staff/al
