@@ -2,123 +2,152 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C5C6349B8B
-	for <lists+linux-ext4@lfdr.de>; Thu, 25 Mar 2021 22:27:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEB19349D42
+	for <lists+linux-ext4@lfdr.de>; Fri, 26 Mar 2021 01:06:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230440AbhCYV03 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 25 Mar 2021 17:26:29 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:54726 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230340AbhCYV0K (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 25 Mar 2021 17:26:10 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: shreeya)
-        with ESMTPSA id F018A1F46934
-Subject: Re: [PATCH v4 5/5] fs: unicode: Add utf8 module and a unicode layer
-From:   Shreeya Patel <shreeya.patel@collabora.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
-        chao@kernel.org, krisman@collabora.com, drosen@google.com,
-        yuchao0@huawei.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
-        andre.almeida@collabora.com
-References: <20210325000811.1379641-1-shreeya.patel@collabora.com>
- <20210325000811.1379641-6-shreeya.patel@collabora.com>
- <YFznIVf/F68oEuC6@sol.localdomain>
- <2db48ab8-1297-e044-dcec-6c8b8875fdb0@collabora.com>
-Message-ID: <cb4e2292-51dc-70af-1b5f-b8312f94d82f@collabora.com>
-Date:   Fri, 26 Mar 2021 02:56:01 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S229868AbhCZAGG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 25 Mar 2021 20:06:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60468 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230115AbhCZAFh (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 25 Mar 2021 20:05:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B3D8C619F8;
+        Fri, 26 Mar 2021 00:05:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616717136;
+        bh=QKX6D1rP7KdDL6NWeCJIYk/jnqb0OgVTY2O2AurvNws=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SWWjsRC7hWIRshPNzC2jtBtioHHNihJf9iJuqtu6nNlSZlIBpD4ks7zZ/qN5pWM0z
+         pCp6eN2jO5VYGfFbYiICXTbigSYVMU9yeY9qCM1QlT+8l1nrlPJOr0Mry4jXaCCQTK
+         w5aLxA2t9/RJ0pzSikGQnirq9w8pH5HYDW9XnUsk/Bb2wc/gmVK7PweY0anf98wdB9
+         Re1SquY/Q+vLgQf9da3WDOKuTwMpU0yJ7CSTfxY31ik7auoUXuvDwGU184rAmE668j
+         hL7FWkpEeocapn/HlKfjsHp/wlXvMnOYQ5WogggwA62kZlANuwjpDOW9oL+6AAdzzj
+         R8GI/oBxRaKlw==
+Date:   Thu, 25 Mar 2021 17:05:36 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Leah Rumancik <leah.rumancik@gmail.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu
+Subject: Re: [PATCH 1/2] ext4: wipe filename upon file deletion
+Message-ID: <20210326000536.GA22091@magnolia>
+References: <20210325181220.1118705-1-leah.rumancik@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <2db48ab8-1297-e044-dcec-6c8b8875fdb0@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210325181220.1118705-1-leah.rumancik@gmail.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Thu, Mar 25, 2021 at 06:12:19PM +0000, Leah Rumancik wrote:
+> Zero out filename field when file is deleted. Also, add mount option
+> nowipe_filename to disable this filename wipeout if desired.
+> 
+> Signed-off-by: Leah Rumancik <leah.rumancik@gmail.com>
 
-On 26/03/21 1:56 am, Shreeya Patel wrote:
->
-> On 26/03/21 1:10 am, Eric Biggers wrote:
->> On Thu, Mar 25, 2021 at 05:38:11AM +0530, Shreeya Patel wrote:
->>> Also, indirect calls using function pointers are easily exploitable by
->>> speculative execution attacks, hence use static_call() in unicode.h and
->>> unicode-core.c files inorder to prevent these attacks by making direct
->>> calls and also to improve the performance of function pointers.
->> I don't think you need to worry about avoiding indirect calls to prevent
->> speculative execution attacks.  That's what the mitigations like 
->> Retpoline are
->> for.  Instead my concern was just that indirect calls are *slow*, 
->> especially
->> when those mitigations are enabled.  Some of the casefolding 
->> operations are
->> called a lot (e.g., repeatedly during path resolution), and it would be
->> desirable to avoid adding more overhead there.
->>
->>> diff --git a/fs/unicode/Kconfig b/fs/unicode/Kconfig
->>> index 2c27b9a5cd6c..2961b0206b4d 100644
->>> --- a/fs/unicode/Kconfig
->>> +++ b/fs/unicode/Kconfig
->>> @@ -8,7 +8,16 @@ config UNICODE
->>>         Say Y here to enable UTF-8 NFD normalization and NFD+CF 
->>> casefolding
->>>         support.
->>>   +# UTF-8 encoding can be compiled as a module using UNICODE_UTF8 
->>> option.
->>> +# Having UTF-8 encoding as a module will avoid carrying large
->>> +# database table present in utf8data.h_shipped into the kernel
->>> +# by being able to load it only when it is required by the filesystem.
->>> +config UNICODE_UTF8
->>> +    tristate "UTF-8 module"
->>> +    depends on UNICODE
->>> +    default m
->>> +
->> The help for UNICODE still says that it enables UTF-8 support. But 
->> now there is
->> a separate option that people will need to remember to enable.
->>
->> Please document each of these options properly.
->>
->> Perhaps EXT4_FS and F2FS_FS just should select UNICODE_UTF8 if 
->> UNICODE, so that
->> UNICODE_UTF8 doesn't have to be a user-selectable symbol?
->
->
-> It is not a user-selectable symbol. It depends on UNICODE and if 
-> someone enables it,
-> by default UNICODE_UTF8 will be enabled as a module.
->
->
+I'm totally cribbing off of the previous decade's dirname wipe patch[1].
 
-Sorry, I think I misunderstood when you said EXT4_FS and F2FS_FS should 
-select
-UNICODE_UTF8 if UNICODE is enabled. I now get it that you don't want 
-them to be deselectable.
-I'll make this change. Thanks
+[1] https://lore.kernel.org/linux-ext4/1309468923-5677-1-git-send-email-achender@linux.vnet.ibm.com/T/#ma0442145ca50bb6e62f8e3502d607c758dd24418
 
+> ---
+>  fs/ext4/ext4.h  |  1 +
+>  fs/ext4/namei.c |  4 ++++
+>  fs/ext4/super.c | 11 ++++++++++-
+>  3 files changed, 15 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 826a56e3bbd2..8011418176bc 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -1247,6 +1247,7 @@ struct ext4_inode_info {
+>  #define EXT4_MOUNT2_JOURNAL_FAST_COMMIT	0x00000010 /* Journal fast commit */
+>  #define EXT4_MOUNT2_DAX_NEVER		0x00000020 /* Do not allow Direct Access */
+>  #define EXT4_MOUNT2_DAX_INODE		0x00000040 /* For printing options only */
+> +#define EXT4_MOUNT2_WIPE_FILENAME       0x00000080 /* Wipe filename on del entry */
+>  
+>  
+>  #define clear_opt(sb, opt)		EXT4_SB(sb)->s_mount_opt &= \
+> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+> index 883e2a7cd4ab..ae6ecabd4d97 100644
+> --- a/fs/ext4/namei.c
+> +++ b/fs/ext4/namei.c
+> @@ -2492,6 +2492,10 @@ int ext4_generic_delete_entry(struct inode *dir,
+>  			else
+>  				de->inode = 0;
+>  			inode_inc_iversion(dir);
+> +
+> +			if (test_opt2(dir->i_sb, WIPE_FILENAME))
+> +				memset(de_del->name, 0, de_del->name_len);
 
->>> +DEFINE_STATIC_CALL(validate, unicode_validate_static_call);
->>> +EXPORT_STATIC_CALL(validate);
->> Global symbols can't have generic names like "validate".  Please add an
->> appropriate prefix like "unicode_".
->>
->> Also, the thing called "unicode_validate_static_call" isn't actually 
->> a static
->> call as the name suggests, but rather the default function used by 
->> the static
->> call.  It should be called something like unicode_validate_default.
->>
->> Likewise for all the others.
->
->
-> Thanks for your reviews, I'll make the change suggested by you in v5.
->
->
->>
->> - Eric
->>
+You probably ought to erase the file type information too.
+
+> +
+>  			return 0;
+>  		}
+>  		i += ext4_rec_len_from_disk(de->rec_len, blocksize);
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index b9693680463a..5e8737b3f171 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -1688,7 +1688,7 @@ enum {
+>  	Opt_dioread_nolock, Opt_dioread_lock,
+>  	Opt_discard, Opt_nodiscard, Opt_init_itable, Opt_noinit_itable,
+>  	Opt_max_dir_size_kb, Opt_nojournal_checksum, Opt_nombcache,
+> -	Opt_prefetch_block_bitmaps,
+> +	Opt_prefetch_block_bitmaps, Opt_nowipe_filename,
+>  #ifdef CONFIG_EXT4_DEBUG
+>  	Opt_fc_debug_max_replay, Opt_fc_debug_force
+>  #endif
+> @@ -1787,6 +1787,7 @@ static const match_table_t tokens = {
+>  	{Opt_test_dummy_encryption, "test_dummy_encryption"},
+>  	{Opt_inlinecrypt, "inlinecrypt"},
+>  	{Opt_nombcache, "nombcache"},
+> +	{Opt_nowipe_filename, "nowipe_filename"},
+>  	{Opt_nombcache, "no_mbcache"},	/* for backward compatibility */
+>  	{Opt_prefetch_block_bitmaps, "prefetch_block_bitmaps"},
+>  	{Opt_removed, "check=none"},	/* mount option from ext2/3 */
+> @@ -2007,6 +2008,8 @@ static const struct mount_opts {
+>  	{Opt_max_dir_size_kb, 0, MOPT_GTE0},
+>  	{Opt_test_dummy_encryption, 0, MOPT_STRING},
+>  	{Opt_nombcache, EXT4_MOUNT_NO_MBCACHE, MOPT_SET},
+> +	{Opt_nowipe_filename, EXT4_MOUNT2_WIPE_FILENAME, MOPT_CLEAR | MOPT_2 |
+> +		MOPT_EXT4_ONLY},
+>  	{Opt_prefetch_block_bitmaps, EXT4_MOUNT_PREFETCH_BLOCK_BITMAPS,
+>  	 MOPT_SET},
+>  #ifdef CONFIG_EXT4_DEBUG
+> @@ -2621,6 +2624,10 @@ static int _ext4_show_options(struct seq_file *seq, struct super_block *sb,
+>  	} else if (test_opt2(sb, DAX_INODE)) {
+>  		SEQ_OPTS_PUTS("dax=inode");
+>  	}
+> +
+> +	if (!test_opt2(sb, WIPE_FILENAME))
+> +		SEQ_OPTS_PUTS("nowipe_filename");
+
+Interesting how this time around it's a mount option...
+
+At the risk of dredging up bad old memories, any chance you'd want to
+select this if the file being unlinked has EXT4_SECRM_FL set?
+
+Also, uh, I guess this is a change in default behavior?  Now you have to
+opt-out of wiping filenames?  I suppose it's not a big deal
+performance-wise since we're logging and writing buffers to disk anyway,
+but I bet there's at last a few people who have recovered accidental
+deltree invocations this way...
+
+--D
+
+> +
+>  	ext4_show_quota_options(seq, sb);
+>  	return 0;
+>  }
+> @@ -4161,6 +4168,8 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+>  	if (def_mount_opts & EXT4_DEFM_DISCARD)
+>  		set_opt(sb, DISCARD);
+>  
+> +	set_opt2(sb, WIPE_FILENAME);
+> +
+>  	sbi->s_resuid = make_kuid(&init_user_ns, le16_to_cpu(es->s_def_resuid));
+>  	sbi->s_resgid = make_kgid(&init_user_ns, le16_to_cpu(es->s_def_resgid));
+>  	sbi->s_commit_interval = JBD2_DEFAULT_MAX_COMMIT_AGE * HZ;
+> -- 
+> 2.31.0.291.g576ba9dcdaf-goog
+> 
