@@ -2,59 +2,59 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 121EB34B638
-	for <lists+linux-ext4@lfdr.de>; Sat, 27 Mar 2021 11:33:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B7A134B63A
+	for <lists+linux-ext4@lfdr.de>; Sat, 27 Mar 2021 11:33:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231368AbhC0KdL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 27 Mar 2021 06:33:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55282 "EHLO
+        id S231685AbhC0KdP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 27 Mar 2021 06:33:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230415AbhC0KdL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 27 Mar 2021 06:33:11 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F242FC0613B1;
-        Sat, 27 Mar 2021 03:33:10 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id y2so6009877qtw.13;
-        Sat, 27 Mar 2021 03:33:10 -0700 (PDT)
+        with ESMTP id S231686AbhC0KdO (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 27 Mar 2021 06:33:14 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F812C0613B1;
+        Sat, 27 Mar 2021 03:33:14 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id q3so7824091qkq.12;
+        Sat, 27 Mar 2021 03:33:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=8050P/+NMRsStepvjm7LOtGR7Xxv9ZU7XHSFS13QaVs=;
-        b=iwqWeSAkmd/6wG5GmUqvXdjyCS7evR5E0n8KfwyErUro3TZ78UTsY4nHwuaWAW1W7k
-         CsdtBMbh5rv5P9iW7Wfm7AeSJNQwphxazy2mwtfupNO104y2bOMsk9Z/FFqTVVugQ+8Y
-         RgmAKHdwTcKYuKwJmy87e65CGFLdiGKVck2YFiz6G78HIHu9bd32/im2ESnfITQTDXcs
-         2iAn04ivDy2O+83C9UE+WI/6aM/wQL5I67nOmLCG21YnT/MplbhApemlV9asmiWQ+8xD
-         +pEWlBxhHAFqRHITFTb7rC0bbare0ixzGy/vowMYML2Cz/5l8joT1lCtpMhWUCHiqJWg
-         +FbA==
+        bh=8x3S30nwWm4eBT9fgz39qxkWNuyfoei+JU+2PzvBLRw=;
+        b=GxH+mo8r00QPN0Bet/CqkBvJQrUjRF5+EZEpOHRW0WSKKIFQpgVN6E3VIPL3vVZRy/
+         BjmJlkiOp/a0CBzHTErVbaF9sCkz/MgMdSBQsAUHiCm59QJiLr4iT4P5QneX3n0Zx0rW
+         XBMft+mt2Huu7IGi7TOJvN83U8OchTpffur2k5D92JRbfgJu3VwR+AQQj1xU3R6cFKCJ
+         2GtX822DJhalzd3kT5/phRk4psvsXBZBkBa1zJgOJVfj8goFTBJe13ma40ttGp0M7yYQ
+         VMdMSYs2a5aOqJUrlcJTh6Zl8PtQsZpQYebP82qS5WoMh8ix+/IottfyfdrFR1CopCIU
+         r67w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=8050P/+NMRsStepvjm7LOtGR7Xxv9ZU7XHSFS13QaVs=;
-        b=pBFleOyQmhTacsWIwuwz+U6CRwFbrt28aR5y72RUATNdc05Tf9SO+1A+rg14saY2AP
-         kHedTU4kK/NN+wDi04xWiMTXtV2cXpiEsg0rrJUXa2rGrss3pKpz4766MUxj/iJxo2Y7
-         s3daXzQ2VP1CiqiEe+N4owKDwUbnLnxwN/RhN44B/uBpdVeyhBqe7zNrQrjFk+CC4WKk
-         jGdKC65j7+xR5TMKQmjIl/BMASXbCZLFgRExNuP52zTqyzVRCc2x8gVwzRvpn9zZW/uq
-         EedPkNP7UO7eTLHe4BkGdia7r0N9v6uZad5u/UFOgSxhA4WQ/nCCGY4TOzW4ghTMmjLp
-         ky8Q==
-X-Gm-Message-State: AOAM5330P+yCxhKpYU5kRH5De3I/+lvYbz5wLFkfNyu4ov9Dkt7cOAQ/
-        Hb2ics82YodxRnI3RiGWhIQ=
-X-Google-Smtp-Source: ABdhPJw8ACT1kPEyPdkwhhTI4efKINQu4Qnc//ttbfE0BhSw5PgrVu8354RzZ+j+E84xILVa10RFJg==
-X-Received: by 2002:ac8:7768:: with SMTP id h8mr15523667qtu.185.1616841190315;
-        Sat, 27 Mar 2021 03:33:10 -0700 (PDT)
+        bh=8x3S30nwWm4eBT9fgz39qxkWNuyfoei+JU+2PzvBLRw=;
+        b=KOvI6Afug1ZEq16Wox3jxNjUS/v84sDUBQ/TON+BHhbg08N0f/osWXdIqBzo57+D1d
+         vBdgxC9Euu6rsTZ1zLSuAaxC9A/hKA03mxRBP2XuLJ4DZAxkAOZJsFb0dX8TOx15EO9N
+         ZlgNOWNUiP+9SxU/22K6zYquX9nvomasbRyKhP9RPClD+e4lUIfUxK9B6EHeKRqsTJ+i
+         sKpagrFk+Y1gqHq80tusFNWGxTDdoGpxL+mmbENFYAeVDiVp+zucHBicZ5uZQi1Z8ChE
+         ArX+fwhRIEP/deEp6cTK1B7FbP5JnhxJ3IYteRe5lddMA51ysKsBKmjqnJ86LOaDO2EO
+         602Q==
+X-Gm-Message-State: AOAM530e/67d5rVg153hLNaq0qBf95yTBeu+LaTKl2gszqpOKd8vWpCN
+        U/QeVu+/NSdtCfXqZE9QwS0=
+X-Google-Smtp-Source: ABdhPJyV/9yH/QOXCpPfkshaEQOSd/zNmRk+9r6z3bknXO+KM5LhlCY0Y1s47zgxrafeeU/9XuC23Q==
+X-Received: by 2002:a05:620a:525:: with SMTP id h5mr17300396qkh.100.1616841193912;
+        Sat, 27 Mar 2021 03:33:13 -0700 (PDT)
 Received: from localhost.localdomain ([37.19.198.35])
-        by smtp.gmail.com with ESMTPSA id a14sm7292364qtw.80.2021.03.27.03.33.06
+        by smtp.gmail.com with ESMTPSA id a14sm7292364qtw.80.2021.03.27.03.33.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Mar 2021 03:33:09 -0700 (PDT)
+        Sat, 27 Mar 2021 03:33:13 -0700 (PDT)
 From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
 To:     tytso@mit.edu, adilger.kernel@dilger.ca
 Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
         linux-ext4@vger.kernel.org, rdunlap@infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 7/8] EXT4: fast_commit.c: A mere typo fix
-Date:   Sat, 27 Mar 2021 16:00:11 +0530
-Message-Id: <c5f9131c6234524a2779ef91623d618e720579eb.1616840203.git.unixbhaskar@gmail.com>
+Subject: [PATCH 8/8] EXT4: mballoc.h: Single typo fix
+Date:   Sat, 27 Mar 2021 16:00:12 +0530
+Message-Id: <7878db9d72c1b66f68f9d3b12a82afd7c8c47577.1616840203.git.unixbhaskar@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1616840203.git.unixbhaskar@gmail.com>
 References: <cover.1616840203.git.unixbhaskar@gmail.com>
@@ -64,26 +64,26 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-s/ineligiblity/ineligibility/
+s/parition/partition/
 
 Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 ---
- fs/ext4/fast_commit.c | 2 +-
+ fs/ext4/mballoc.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index 7541d0b5d706..8691634044e3 100644
---- a/fs/ext4/fast_commit.c
-+++ b/fs/ext4/fast_commit.c
-@@ -66,7 +66,7 @@
-  * Fast Commit Ineligibility
-  * -------------------------
-  * Not all operations are supported by fast commits today (e.g extended
-- * attributes). Fast commit ineligiblity is marked by calling one of the
-+ * attributes). Fast commit ineligibility is marked by calling one of the
-  * two following functions:
-  *
-  * - ext4_fc_mark_ineligible(): This makes next fast commit operation to fall
+diff --git a/fs/ext4/mballoc.h b/fs/ext4/mballoc.h
+index e75b4749aa1c..7be6288e48ec 100644
+--- a/fs/ext4/mballoc.h
++++ b/fs/ext4/mballoc.h
+@@ -59,7 +59,7 @@
+  * by the stream allocator, which purpose is to pack requests
+  * as close each to other as possible to produce smooth I/O traffic
+  * We use locality group prealloc space for stream request.
+- * We can tune the same via /proc/fs/ext4/<parition>/stream_req
++ * We can tune the same via /proc/fs/ext4/<partition>/stream_req
+  */
+ #define MB_DEFAULT_STREAM_THRESHOLD	16	/* 64K */
+
 --
 2.26.2
 
