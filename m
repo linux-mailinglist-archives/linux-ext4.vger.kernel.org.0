@@ -2,876 +2,391 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7639F34D982
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Mar 2021 23:21:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02D0134D9EA
+	for <lists+linux-ext4@lfdr.de>; Tue, 30 Mar 2021 00:11:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231372AbhC2VUZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 29 Mar 2021 17:20:25 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:54788 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230161AbhC2VUX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 29 Mar 2021 17:20:23 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id AED141F458BB
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     Shreeya Patel <shreeya.patel@collabora.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
-        chao@kernel.org, ebiggers@google.com, drosen@google.com,
-        ebiggers@kernel.org, yuchao0@huawei.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
-        andre.almeida@collabora.com
-Subject: Re: [PATCH v5 4/4] fs: unicode: Add utf8 module and a unicode layer
-Organization: Collabora
-References: <20210329204240.359184-1-shreeya.patel@collabora.com>
-        <20210329204240.359184-5-shreeya.patel@collabora.com>
-Date:   Mon, 29 Mar 2021 17:20:18 -0400
-In-Reply-To: <20210329204240.359184-5-shreeya.patel@collabora.com> (Shreeya
-        Patel's message of "Tue, 30 Mar 2021 02:12:40 +0530")
-Message-ID: <87o8f1r71p.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S231349AbhC2WKy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 29 Mar 2021 18:10:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231325AbhC2WKr (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 29 Mar 2021 18:10:47 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59DF0C061762
+        for <linux-ext4@vger.kernel.org>; Mon, 29 Mar 2021 15:10:47 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id l4so21746870ejc.10
+        for <linux-ext4@vger.kernel.org>; Mon, 29 Mar 2021 15:10:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=x83IzrbwALScws8gBXYNymaCson9qFuhcYHC994GY84=;
+        b=Gn6Tft03WHIiZrajE0B1ckqHZbWLZFlbo0auRCiTP+AyVnhkAahiSXXzb00Rj2F1Ui
+         vdEyaGU5aaIdIOmZWByDN2NG+occLBaVA24CWL1aZ+MOKJ5EKPjbuYMVnwyiVhrZy0k3
+         xoSCgCAFUGruhUVVzG6JYND4KANyecB0GsnVqw1FlL38CWGLiS+mUVtnn0QUSGn4Gv8W
+         W8DSUiwm8f9SRmpjIlBi4Ke8NwPGec8P8xgUh8SkW2W8tePnuD14VUcP6624XwhStlkp
+         1NnGpGN5Jhn+5S1If4y++as+DlySs66lyIbHLur2J0RVM1bcIgXeF3dTUlv3drIonq0N
+         6N5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x83IzrbwALScws8gBXYNymaCson9qFuhcYHC994GY84=;
+        b=aeW7JHc4B/hKuCUsjM7cIVw5UxU8C9798xyD3aUcJkceffp/+o7Ro6kyp1az3o0IrU
+         E6jxvGtgXv0Z8CzPBdkN8jYw1yaVVazcXYpucJp/uYjCoV4sSo9q+ejoAQxPxdkJ7ox4
+         /nC/F/O1/5dWrVWY7cdIE+rXSo4xH5GoF2sn0mB1Wh47Qx41i2eIoklJ/mDSYwXjQJso
+         Nef8opwXovK/PaPF9PjPeJ8U3ZbLogNPzu0VgwK0+IHqNeAOYPuFgUw8lghLIcOQO3Tr
+         jv6UfCoE36sLdFSX37n5paWYZ+BEfrrROgPhO3ajCYXo5Kljq+wM9laDG57G+lAxJs46
+         c5pQ==
+X-Gm-Message-State: AOAM533/BJ4HLehpDIXfyqbbfQa1XB7cjyE9PvvIFHcwTZ/AuzGq+3qG
+        am6fR9AHuXwVi+t7SvlAkGUiDyKit9AdFYu+6kJuRExpMaI=
+X-Google-Smtp-Source: ABdhPJwGU3Xfl1XpWIIBS5XQ9w5XMg4hNqCb6RoOlhNNHQML+lySnV8HIRfQ56/7AvxVGGnir022DSeZBfMclFfWXew=
+X-Received: by 2002:a17:906:cd05:: with SMTP id oz5mr31059044ejb.345.1617055846003;
+ Mon, 29 Mar 2021 15:10:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210325181220.1118705-1-leah.rumancik@gmail.com>
+ <20210325181220.1118705-2-leah.rumancik@gmail.com> <20210326012146.GB22091@magnolia>
+ <YGHtC4vEWcRervi1@google.com>
+In-Reply-To: <YGHtC4vEWcRervi1@google.com>
+From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
+Date:   Mon, 29 Mar 2021 15:10:34 -0700
+Message-ID: <CAD+ocbx-DZprEvzSQ2+rVFz6CPJy0iYbG60SGZHpi+ZX8ecqhg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] ext4: add ioctl EXT4_FLUSH_JOURNAL
+To:     Leah Rumancik <leah.rumancik@gmail.com>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Shreeya Patel <shreeya.patel@collabora.com> writes:
-
-> utf8data.h_shipped has a large database table which is an auto-generated
-> decodification trie for the unicode normalization functions.
-> It is not necessary to load this large table in the kernel if no
-> filesystem is using it, hence make UTF-8 encoding loadable by converting
-> it into a module.
-> Modify the file called unicode-core which will act as a layer for
-> unicode subsystem. It will load the UTF-8 module and access it's functions
-> whenever any filesystem that needs unicode is mounted.
-> Also, indirect calls using function pointers are slow, use static calls to
-> avoid overhead caused in case of repeated indirect calls. Static calls
-> improves the performance by directly calling the functions as opposed to
-> indirect calls.
+On Mon, Mar 29, 2021 at 8:09 AM Leah Rumancik <leah.rumancik@gmail.com> wrote:
 >
-> Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
-> ---
-> Changes in v5
->   - Rename global variables and default static call functions for better
->     understanding
->   - Make only config UNICODE_UTF8 visible and config UNICODE to be always
->     enabled provided UNICODE_UTF8 is enabled.  
->   - Improve the documentation for Kconfig
->   - Improve the commit message.
->  
-> Changes in v4
->   - Return error from the static calls instead of doing nothing and
->     succeeding even without loading the module.
->   - Remove the complete usage of utf8_ops and use static calls at all
->     places.
->   - Restore the static calls to default values when module is unloaded.
->   - Decrement the reference of module after calling the unload function.
->   - Remove spinlock as there will be no race conditions after removing
->     utf8_ops.
+> On Thu, Mar 25, 2021 at 06:21:46PM -0700, Darrick J. Wong wrote:
+> > On Thu, Mar 25, 2021 at 06:12:20PM +0000, Leah Rumancik wrote:
+> > > ioctl EXT4_FLUSH_JOURNAL flushes the journal log with the option to
+> > > discard journal log blocks. With the filename wipeout patch, if the discard
+> > > mount option is set, Ext4 guarantees that all data will be discarded on
+> > > deletion. This ioctl allows for periodically discarding journal contents
+> > > too.
+> >
+> > Hrm.  What is the use case here?   I guess the goal is to sanitize the
+> > ondisk log contents (even as wiping deleted filenames becomes default)
+> > every now and then?  Why do we want cleaning up the log to be an
+> > explicitly separate step that userspace has to invoke?
+> >
+> > (As opposed, say, to discarding the log automatically after every
+> > journal checkpoint if a journal/mount option is set?)
 >
-> Changes in v3
->   - Add a patch which checks if utf8 is loaded before calling utf8_unload()
->     in ext4 and f2fs filesystems
->   - Return error if strscpy() returns value < 0
->   - Correct the conditions to prevent NULL pointer dereference while
->     accessing functions via utf8_ops variable.
->   - Add spinlock to avoid race conditions.
->   - Use static_call() for preventing speculative execution attacks.
+> The goal here is to be able to ensure everything is sanitized at a
+> particular point in time. If done automatically through the checkpoint,
+> there is no guarantee as to how often / when the sanitizing is
+> performed.
+To elaborate more on that, this allows userspace to control the
+frequency of journal discards and this is useful if the userspace
+application is trying to put a bound on content erasing time. With
+Leah's earlier patch in the series, Ext4 when mounted with the
+"discard" mount option would ensure that whenever a file is deleted,
+it disappears completely from the fliesystem controlled LBAs of the
+underlying block device, but no such guarantee is provided for the
+potential remains of the file in the journal. With this
+user-controlled discard frequency of the journal, userspace can ensure
+that the contents of a deleted file disappear entirely within X hours
+by calling this ioctl once every X hours. This allows us to greatly
+simplify journal discards - that's because now we don't have to track
+the journal blocks belonging to a particular file.
+
+Also, sending discards to the entire journal with every commit /
+checkpoint may have some performance issues. So, if we want this to be
+automated, one option would be to invoke this after every N commits
+performed by the journal thread and make N configurable as a mount
+time parameter. But, it's just simpler to call this ioctl from the
+application and let it worry about the frequency, and perhaps these
+applications would anyway be calling fstrim periodically to ensure
+such guarantees. If they are doing that, this would just add another
+step in their periodic discard routine.
+
+- Harshad
+
+
+
+
+
+
+
+- Harshad
 >
-> Changes in v2
->   - Remove the duplicate file from the last patch.
->   - Make the wrapper functions inline.
->   - Remove msleep and use try_module_get() and module_put()
->     for ensuring that module is loaded correctly and also
->     doesn't get unloaded while in use.
->   - Resolve the warning reported by kernel test robot.
->   - Resolve all the checkpatch.pl warnings.
+> >
+> > > Also, add journal discard (if discard supported) during journal load
+> > > after recovery. This provides a potential solution to
+> > > https://lore.kernel.org/linux-ext4/YDZoaacIYStFQT8g@mit.edu/ for
+> > > disks that support discard. After a successful journal recovery, e2fsck can
+> > > call this ioctl to discard the journal as well.
+> > >
+> > > Signed-off-by: Leah Rumancik <leah.rumancik@gmail.com>
+> > > ---
+> > >  fs/ext4/ext4.h       |   1 +
+> > >  fs/ext4/ioctl.c      |  28 +++++++++++
+> > >  fs/jbd2/journal.c    | 116 +++++++++++++++++++++++++++++++++++++++++--
+> > >  include/linux/jbd2.h |   1 +
+> > >  4 files changed, 143 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> > > index 8011418176bc..92c039ebcba7 100644
+> > > --- a/fs/ext4/ext4.h
+> > > +++ b/fs/ext4/ext4.h
+> > > @@ -724,6 +724,7 @@ enum {
+> > >  #define EXT4_IOC_CLEAR_ES_CACHE            _IO('f', 40)
+> > >  #define EXT4_IOC_GETSTATE          _IOW('f', 41, __u32)
+> > >  #define EXT4_IOC_GET_ES_CACHE              _IOWR('f', 42, struct fiemap)
+> > > +#define EXT4_FLUSH_JOURNAL         _IOW('f', 43, int)
+> > >
+> > >  #define EXT4_IOC_SHUTDOWN _IOR ('X', 125, __u32)
+> > >
+> > > diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
+> > > index a2cf35066f46..1d3636c1de3b 100644
+> > > --- a/fs/ext4/ioctl.c
+> > > +++ b/fs/ext4/ioctl.c
+> > > @@ -1318,6 +1318,33 @@ static long __ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+> > >                     return -EOPNOTSUPP;
+> > >             return fsverity_ioctl_read_metadata(filp,
+> > >                                                 (const void __user *)arg);
+> > > +   case EXT4_FLUSH_JOURNAL:
+> > > +   {
+> > > +           int discard = 0, err = 0;
+> > > +
+> > > +           /* file argument is not the mount point */
+> > > +           if (file_dentry(filp) != sb->s_root)
+> > > +                   return -EINVAL;
+> > > +
+> > > +           /* filesystem is not backed by block device */
+> > > +           if (sb->s_bdev == NULL)
+> > > +                   return -EINVAL;
+> > > +
+> > > +           if (copy_from_user(&discard, (int __user *)arg, sizeof(int)))
+> > > +                   return -EFAULT;
+> > > +
+> > > +           if (EXT4_SB(sb)->s_journal) {
+> > > +                   jbd2_journal_lock_updates(EXT4_SB(sb)->s_journal);
+> > > +
+> > > +                   if (discard)
+> > > +                           err = jbd2_journal_flush_and_discard(EXT4_SB(sb)->s_journal);
+> > > +                   else
+> > > +                           err = jbd2_journal_flush(EXT4_SB(sb)->s_journal);
+> >
+> > Why not pass this as a flag?
+> >
+> > --D
+> >
 >
+> Yes sure, that would make it simpler. I will update it.
 >
->  fs/unicode/Kconfig        |  17 ++-
->  fs/unicode/Makefile       |   5 +-
->  fs/unicode/unicode-core.c | 241 +++++++----------------------------
->  fs/unicode/unicode-utf8.c | 256 ++++++++++++++++++++++++++++++++++++++
->  include/linux/unicode.h   | 123 +++++++++++++++---
->  5 files changed, 426 insertions(+), 216 deletions(-)
->  create mode 100644 fs/unicode/unicode-utf8.c
+> > > +
+> > > +                   jbd2_journal_unlock_updates(EXT4_SB(sb)->s_journal);
+> > > +           }
+> > > +           return err;
+> > > +   }
+> > >
+> > >     default:
+> > >             return -ENOTTY;
+> > > @@ -1407,6 +1434,7 @@ long ext4_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+> > >     case EXT4_IOC_GET_ES_CACHE:
+> > >     case FS_IOC_FSGETXATTR:
+> > >     case FS_IOC_FSSETXATTR:
+> > > +   case EXT4_FLUSH_JOURNAL:
+> > >             break;
+> > >     default:
+> > >             return -ENOIOCTLCMD;
+> > > diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+> > > index 2dc944442802..9718512e7178 100644
+> > > --- a/fs/jbd2/journal.c
+> > > +++ b/fs/jbd2/journal.c
+> > > @@ -67,6 +67,7 @@ EXPORT_SYMBOL(jbd2_journal_set_triggers);
+> > >  EXPORT_SYMBOL(jbd2_journal_dirty_metadata);
+> > >  EXPORT_SYMBOL(jbd2_journal_forget);
+> > >  EXPORT_SYMBOL(jbd2_journal_flush);
+> > > +EXPORT_SYMBOL(jbd2_journal_flush_and_discard);
+> > >  EXPORT_SYMBOL(jbd2_journal_revoke);
+> > >
+> > >  EXPORT_SYMBOL(jbd2_journal_init_dev);
+> > > @@ -1686,6 +1687,90 @@ static void jbd2_mark_journal_empty(journal_t *journal, int write_op)
+> > >     write_unlock(&journal->j_state_lock);
+> > >  }
+> > >
+> > > +/* discard journal blocks excluding journal superblock */
+> > > +static int __jbd2_journal_issue_discard(journal_t *journal)
+> > > +{
+> > > +   int err = 0;
+> > > +   unsigned long block, log_offset;
+> > > +   unsigned long long phys_block, block_start, block_stop;
+> > > +   loff_t byte_start, byte_stop, byte_count;
+> > > +   struct request_queue *q = bdev_get_queue(journal->j_dev);
+> > > +
+> > > +   if (!q)
+> > > +           return -ENXIO;
+> > > +
+> > > +   if (!blk_queue_discard(q))
+> > > +           return -EOPNOTSUPP;
+> > > +
+> > > +   /* lookup block mapping and issue discard for each contiguous region */
+> > > +   log_offset = be32_to_cpu(journal->j_superblock->s_first);
+> > > +
+> > > +   err = jbd2_journal_bmap(journal, log_offset, &block_start);
+> > > +   if (err) {
+> > > +           printk(KERN_ERR "JBD2: bad block at offset %lu", log_offset);
+> > > +           return err;
+> > > +   }
+> > > +
+> > > +   /*
+> > > +    * use block_start - 1 to meet check for contiguous with previous region:
+> > > +    * phys_block == block_stop + 1
+> > > +    */
+> > > +   block_stop = block_start - 1;
+> > > +
+> > > +   for (block = log_offset; block < journal->j_total_len; block++) {
+> > > +           err = jbd2_journal_bmap(journal, block, &phys_block);
+> > > +           if (err) {
+> > > +                   printk(KERN_ERR "JBD2: bad block at offset %lu", block);
+> > > +                   return err;
+> > > +           }
+> > > +
+> > > +           /*
+> > > +            * if block is last block, update stopping point
+> > > +            * if not last block and
+> > > +            * block is contiguous with previous block, continue
+> > > +            */
+> > > +           if (block == journal->j_total_len - 1)
+> > > +                   block_stop = phys_block;
+> > > +           else if (phys_block == block_stop + 1) {
+> > > +                   block_stop++;
+> > > +                   continue;
+> > > +           }
+> > > +
+> > > +           /*
+> > > +            * if not contiguous with prior physical block or this is last
+> > > +            * block of journal, take care of the region
+> > > +            */
+> > > +           byte_start = block_start * journal->j_blocksize;
+> > > +           byte_stop = block_stop * journal->j_blocksize;
+> > > +           byte_count = (block_stop - block_start + 1) *
+> > > +                   journal->j_blocksize;
+> > > +
+> > > +           truncate_inode_pages_range(journal->j_dev->bd_inode->i_mapping,
+> > > +                   byte_start, byte_stop);
+> > > +
+> > > +           /*
+> > > +            * use blkdev_issue_discard instead of sb_issue_discard
+> > > +            * because superblock not yet populated when this is
+> > > +            * called during journal_load during mount process
+> > > +            */
+> > > +           err = blkdev_issue_discard(journal->j_dev,
+> > > +                   byte_start >> SECTOR_SHIFT,
+> > > +                   byte_count >> SECTOR_SHIFT,
+> > > +                   GFP_NOFS, 0);
+> > > +
+> > > +           if (unlikely(err != 0)) {
+> > > +                   printk(KERN_ERR "JBD2: unable to discard "
+> > > +                           "journal at physical blocks %llu - %llu",
+> > > +                           block_start, block_stop);
+> > > +                   return err;
+> > > +           }
+> > > +
+> > > +           block_start = phys_block;
+> > > +           block_stop = phys_block;
+> > > +   }
+> > > +
+> > > +   return blkdev_issue_flush(journal->j_dev);
+> > > +}
+> > >
+> > >  /**
+> > >   * jbd2_journal_update_sb_errno() - Update error in the journal.
+> > > @@ -1892,6 +1977,7 @@ int jbd2_journal_load(journal_t *journal)
+> > >  {
+> > >     int err;
+> > >     journal_superblock_t *sb;
+> > > +   struct request_queue *q = bdev_get_queue(journal->j_dev);
+> > >
+> > >     err = load_superblock(journal);
+> > >     if (err)
+> > > @@ -1936,6 +2022,12 @@ int jbd2_journal_load(journal_t *journal)
+> > >      */
+> > >     journal->j_flags &= ~JBD2_ABORT;
+> > >
+> > > +   /* if journal device supports discard, discard journal blocks */
+> > > +   if (q && blk_queue_discard(q)) {
+> > > +           if (__jbd2_journal_issue_discard(journal))
+> > > +                   printk(KERN_ERR "JBD2: failed to discard journal when loading");
+> > > +   }
+> > > +
+> > >     /* OK, we've finished with the dynamic journal bits:
+> > >      * reinitialise the dynamic contents of the superblock in memory
+> > >      * and reset them on disk. */
+> > > @@ -2244,15 +2336,18 @@ void jbd2_journal_clear_features(journal_t *journal, unsigned long compat,
+> > >  EXPORT_SYMBOL(jbd2_journal_clear_features);
+> > >
+> > >  /**
+> > > - * jbd2_journal_flush() - Flush journal
+> > > + * __jbd2_journal_flush() - Flush journal
+> > >   * @journal: Journal to act on.
+> > > + * @discard: flag (see below)
+> > >   *
+> > >   * Flush all data for a given journal to disk and empty the journal.
+> > >   * Filesystems can use this when remounting readonly to ensure that
+> > >   * recovery does not need to happen on remount.
+> > > + *
+> > > + * If 'discard' is false, the journal is simply flushed. If discard is true,
+> > > + * the journal is also discarded.
+> > >   */
+> > > -
+> > > -int jbd2_journal_flush(journal_t *journal)
+> > > +static int __jbd2_journal_flush(journal_t *journal, bool discard)
+> > >  {
+> > >     int err = 0;
+> > >     transaction_t *transaction = NULL;
+> > > @@ -2306,6 +2401,10 @@ int jbd2_journal_flush(journal_t *journal)
+> > >      * commits of data to the journal will restore the current
+> > >      * s_start value. */
+> > >     jbd2_mark_journal_empty(journal, REQ_SYNC | REQ_FUA);
+> > > +
+> > > +   if (discard)
+> > > +           err = __jbd2_journal_issue_discard(journal);
+> > > +
+> > >     mutex_unlock(&journal->j_checkpoint_mutex);
+> > >     write_lock(&journal->j_state_lock);
+> > >     J_ASSERT(!journal->j_running_transaction);
+> > > @@ -2318,6 +2417,17 @@ int jbd2_journal_flush(journal_t *journal)
+> > >     return err;
+> > >  }
+> > >
+> > > +int jbd2_journal_flush(journal_t *journal)
+> > > +{
+> > > +   return __jbd2_journal_flush(journal, false /* don't discard */);
+> > > +}
+> > > +
+> > > +/* flush journal and discard journal log */
+> > > +int jbd2_journal_flush_and_discard(journal_t *journal)
+> > > +{
+> > > +   return __jbd2_journal_flush(journal, true /* also discard */);
+> > > +}
+> > > +
+> > >  /**
+> > >   * jbd2_journal_wipe() - Wipe journal contents
+> > >   * @journal: Journal to act on.
+> > > diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+> > > index 99d3cd051ac3..9bed34e9a273 100644
+> > > --- a/include/linux/jbd2.h
+> > > +++ b/include/linux/jbd2.h
+> > > @@ -1492,6 +1492,7 @@ extern int     jbd2_journal_invalidatepage(journal_t *,
+> > >  extern int  jbd2_journal_try_to_free_buffers(journal_t *journal, struct page *page);
+> > >  extern int  jbd2_journal_stop(handle_t *);
+> > >  extern int  jbd2_journal_flush (journal_t *);
+> > > +extern int  jbd2_journal_flush_and_discard(journal_t *journal);
+> > >  extern void         jbd2_journal_lock_updates (journal_t *);
+> > >  extern void         jbd2_journal_unlock_updates (journal_t *);
+> > >
+> > > --
+> > > 2.31.0.291.g576ba9dcdaf-goog
+> > >
 >
-> diff --git a/fs/unicode/Kconfig b/fs/unicode/Kconfig
-> index 2c27b9a5cd6c..ad4b837f2eb2 100644
-> --- a/fs/unicode/Kconfig
-> +++ b/fs/unicode/Kconfig
-> @@ -2,13 +2,26 @@
->  #
->  # UTF-8 normalization
->  #
-> +# CONFIG_UNICODE will be automatically enabled if CONFIG_UNICODE_UTF8
-> +# is enabled. This config option adds the unicode subsystem layer which loads
-> +# the UTF-8 module whenever any filesystem needs it.
->  config UNICODE
-> -	bool "UTF-8 normalization and casefolding support"
-> +	bool
-> +
-> +# utf8data.h_shipped has a large database table which is an auto-generated
-> +# decodification trie for the unicode normalization functions and it is not
-> +# necessary to carry this large table in the kernel.
-> +# Enabling UNICODE_UTF8 option will allow UTF-8 encoding to be built as a
-> +# module and this module will be loaded by the unicode subsystem layer only
-> +# when any filesystem needs it.
-> +config UNICODE_UTF8
-> +	tristate "UTF-8 module"
->  	help
->  	  Say Y here to enable UTF-8 NFD normalization and NFD+CF casefolding
->  	  support.
-> +	select UNICODE
->  
->  config UNICODE_NORMALIZATION_SELFTEST
->  	tristate "Test UTF-8 normalization support"
-> -	depends on UNICODE
-> +	depends on UNICODE_UTF8
->  	default n
-> diff --git a/fs/unicode/Makefile b/fs/unicode/Makefile
-> index fbf9a629ed0d..49d50083e6ee 100644
-> --- a/fs/unicode/Makefile
-> +++ b/fs/unicode/Makefile
-> @@ -1,11 +1,14 @@
->  # SPDX-License-Identifier: GPL-2.0
->  
->  obj-$(CONFIG_UNICODE) += unicode.o
-> +obj-$(CONFIG_UNICODE_UTF8) += utf8.o
->  obj-$(CONFIG_UNICODE_NORMALIZATION_SELFTEST) += utf8-selftest.o
->  
-> -unicode-y := utf8-norm.o unicode-core.o
-> +unicode-y := unicode-core.o
-> +utf8-y := unicode-utf8.o utf8-norm.o
->  
->  $(obj)/utf8-norm.o: $(obj)/utf8data.h
-> +$(obj)/unicode-utf8.o: $(obj)/utf8-norm.o
->  
->  # In the normal build, the checked-in utf8data.h is just shipped.
->  #
-> diff --git a/fs/unicode/unicode-core.c b/fs/unicode/unicode-core.c
-> index 730dbaedf593..07d42f471e42 100644
-> --- a/fs/unicode/unicode-core.c
-> +++ b/fs/unicode/unicode-core.c
-> @@ -1,237 +1,80 @@
->  /* SPDX-License-Identifier: GPL-2.0 */
->  #include <linux/module.h>
->  #include <linux/kernel.h>
-> -#include <linux/string.h>
->  #include <linux/slab.h>
-> -#include <linux/parser.h>
->  #include <linux/errno.h>
->  #include <linux/unicode.h>
-> -#include <linux/stringhash.h>
->  
-> -#include "utf8n.h"
-> +static struct module *utf8mod;
->  
-> -int unicode_validate(const struct unicode_map *um, const struct qstr *str)
-> -{
-> -	const struct utf8data *data = utf8nfdi(um->version);
-> +DEFINE_STATIC_CALL(_unicode_validate, unicode_validate_default);
-> +EXPORT_STATIC_CALL(_unicode_validate);
->  
-> -	if (utf8nlen(data, str->name, str->len) < 0)
-> -		return -1;
-> -	return 0;
-> -}
-> -EXPORT_SYMBOL(unicode_validate);
-> +DEFINE_STATIC_CALL(_unicode_strncmp, unicode_strncmp_default);
-> +EXPORT_STATIC_CALL(_unicode_strncmp);
->  
-> -int unicode_strncmp(const struct unicode_map *um,
-> -		    const struct qstr *s1, const struct qstr *s2)
-> -{
-> -	const struct utf8data *data = utf8nfdi(um->version);
-> -	struct utf8cursor cur1, cur2;
-> -	int c1, c2;
-> +DEFINE_STATIC_CALL(_unicode_strncasecmp, unicode_strncasecmp_default);
-> +EXPORT_STATIC_CALL(_unicode_strncasecmp);
-
-Why are these here if the _default functions are defined in the header
-file?  I think the definitions could be in this file. No?
-
-> -	if (utf8ncursor(&cur1, data, s1->name, s1->len) < 0)
-> -		return -EINVAL;
-> +DEFINE_STATIC_CALL(_unicode_strncasecmp_folded, unicode_strncasecmp_folded_default);
-> +EXPORT_STATIC_CALL(_unicode_strncasecmp_folded);
->  
-> -	if (utf8ncursor(&cur2, data, s2->name, s2->len) < 0)
-> -		return -EINVAL;
-> +DEFINE_STATIC_CALL(_unicode_normalize, unicode_normalize_default);
-> +EXPORT_STATIC_CALL(_unicode_normalize);
->  
-> -	do {
-> -		c1 = utf8byte(&cur1);
-> -		c2 = utf8byte(&cur2);
-> +DEFINE_STATIC_CALL(_unicode_casefold, unicode_casefold_default);
-> +EXPORT_STATIC_CALL(_unicode_casefold);
->  
-> -		if (c1 < 0 || c2 < 0)
-> -			return -EINVAL;
-> -		if (c1 != c2)
-> -			return 1;
-> -	} while (c1);
-> +DEFINE_STATIC_CALL(_unicode_casefold_hash, unicode_casefold_hash_default);
-> +EXPORT_STATIC_CALL(_unicode_casefold_hash);
->  
-> -	return 0;
-> -}
-> -EXPORT_SYMBOL(unicode_strncmp);
-> +DEFINE_STATIC_CALL(_unicode_load, unicode_load_default);
-> +EXPORT_STATIC_CALL(_unicode_load);
->  
-> -int unicode_strncasecmp(const struct unicode_map *um,
-> -			const struct qstr *s1, const struct qstr *s2)
-> +static int unicode_load_module(void)
->  {
-> -	const struct utf8data *data = utf8nfdicf(um->version);
-> -	struct utf8cursor cur1, cur2;
-> -	int c1, c2;
-> -
-> -	if (utf8ncursor(&cur1, data, s1->name, s1->len) < 0)
-> -		return -EINVAL;
-> -
-> -	if (utf8ncursor(&cur2, data, s2->name, s2->len) < 0)
-> -		return -EINVAL;
-> -
-> -	do {
-> -		c1 = utf8byte(&cur1);
-> -		c2 = utf8byte(&cur2);
-> -
-> -		if (c1 < 0 || c2 < 0)
-> -			return -EINVAL;
-> -		if (c1 != c2)
-> -			return 1;
-> -	} while (c1);
-> -
-> -	return 0;
-> -}
-> -EXPORT_SYMBOL(unicode_strncasecmp);
-> -
-> -/* String cf is expected to be a valid UTF-8 casefolded
-> - * string.
-> - */
-> -int unicode_strncasecmp_folded(const struct unicode_map *um,
-> -			       const struct qstr *cf,
-> -			       const struct qstr *s1)
-> -{
-> -	const struct utf8data *data = utf8nfdicf(um->version);
-> -	struct utf8cursor cur1;
-> -	int c1, c2;
-> -	int i = 0;
-> -
-> -	if (utf8ncursor(&cur1, data, s1->name, s1->len) < 0)
-> -		return -EINVAL;
-> -
-> -	do {
-> -		c1 = utf8byte(&cur1);
-> -		c2 = cf->name[i++];
-> -		if (c1 < 0)
-> -			return -EINVAL;
-> -		if (c1 != c2)
-> -			return 1;
-> -	} while (c1);
-> -
-> -	return 0;
-> -}
-> -EXPORT_SYMBOL(unicode_strncasecmp_folded);
-> -
-> -int unicode_casefold(const struct unicode_map *um, const struct qstr *str,
-> -		     unsigned char *dest, size_t dlen)
-> -{
-> -	const struct utf8data *data = utf8nfdicf(um->version);
-> -	struct utf8cursor cur;
-> -	size_t nlen = 0;
-> -
-> -	if (utf8ncursor(&cur, data, str->name, str->len) < 0)
-> -		return -EINVAL;
-> -
-> -	for (nlen = 0; nlen < dlen; nlen++) {
-> -		int c = utf8byte(&cur);
-> -
-> -		dest[nlen] = c;
-> -		if (!c)
-> -			return nlen;
-> -		if (c == -1)
-> -			break;
-> -	}
-> -	return -EINVAL;
-> -}
-> -EXPORT_SYMBOL(unicode_casefold);
-> +	int ret = request_module("utf8");
->  
-> -int unicode_casefold_hash(const struct unicode_map *um, const void *salt,
-> -			  struct qstr *str)
-> -{
-> -	const struct utf8data *data = utf8nfdicf(um->version);
-> -	struct utf8cursor cur;
-> -	int c;
-> -	unsigned long hash = init_name_hash(salt);
-> -
-> -	if (utf8ncursor(&cur, data, str->name, str->len) < 0)
-> -		return -EINVAL;
-> -
-> -	while ((c = utf8byte(&cur))) {
-> -		if (c < 0)
-> -			return -EINVAL;
-> -		hash = partial_name_hash((unsigned char)c, hash);
-> +	if (ret) {
-> +		pr_err("Failed to load UTF-8 module\n");
-> +		return ret;
->  	}
-> -	str->hash = end_name_hash(hash);
->  	return 0;
->  }
-> -EXPORT_SYMBOL(unicode_casefold_hash);
->  
-> -int unicode_normalize(const struct unicode_map *um, const struct qstr *str,
-> -		      unsigned char *dest, size_t dlen)
-> +struct unicode_map *unicode_load(const char *version)
->  {
-> -	const struct utf8data *data = utf8nfdi(um->version);
-> -	struct utf8cursor cur;
-> -	ssize_t nlen = 0;
-> -
-> -	if (utf8ncursor(&cur, data, str->name, str->len) < 0)
-> -		return -EINVAL;
-> +	int ret = unicode_load_module();
-
-Splitting this in two functions sound unnecessary, since the other
-function just calls request_module.  By the way, is there any protection
-against calling request_module if the module is already loaded?  Surely
-that's not necessary, perhaps try_then_request_module(utf8mod, "utf8")?
-
-> -	for (nlen = 0; nlen < dlen; nlen++) {
-> -		int c = utf8byte(&cur);
-> +	if (ret)
-> +		return ERR_PTR(ret);
->  
-> -		dest[nlen] = c;
-> -		if (!c)
-> -			return nlen;
-> -		if (c == -1)
-> -			break;
-> -	}
-> -	return -EINVAL;
-> +	if (!try_module_get(utf8mod))
-
-Can't module_unregister be called in between the register_module and
-here, and then you have a bogus utf8mod pointer? true, try_module_get
-checks for NULL, but if you are unlucky module_is_live will it breaks.
-I still think utf8mod needs to be protected while you don't have a
-reference to the module.
-
-> +		return ERR_PTR(-ENODEV);
-> +	else
-> +		return static_call(_unicode_load)(version);
->  }
-> -EXPORT_SYMBOL(unicode_normalize);
-> +EXPORT_SYMBOL(unicode_load);
->  
-> -static int unicode_parse_version(const char *version, unsigned int *maj,
-> -				 unsigned int *min, unsigned int *rev)
-> +void unicode_unload(struct unicode_map *um)
->  {
-> -	substring_t args[3];
-> -	char version_string[12];
-> -	static const struct match_token token[] = {
-> -		{1, "%d.%d.%d"},
-> -		{0, NULL}
-> -	};
-> -	int ret = strscpy(version_string, version, sizeof(version_string));
-> -
-> -	if (ret < 0)
-> -		return ret;
-> -
-> -	if (match_token(version_string, token, args) != 1)
-> -		return -EINVAL;
-> -
-> -	if (match_int(&args[0], maj) || match_int(&args[1], min) ||
-> -	    match_int(&args[2], rev))
-> -		return -EINVAL;
-> +	kfree(um);
->  
-> -	return 0;
-> +	if (utf8mod)
-> +		module_put(utf8mod);
->  }
-> +EXPORT_SYMBOL(unicode_unload);
->  
-> -struct unicode_map *unicode_load(const char *version)
-> +void unicode_register(struct module *owner)
->  {
-> -	struct unicode_map *um = NULL;
-> -	int unicode_version;
-> -
-> -	if (version) {
-> -		unsigned int maj, min, rev;
-> -
-> -		if (unicode_parse_version(version, &maj, &min, &rev) < 0)
-> -			return ERR_PTR(-EINVAL);
-> -
-> -		if (!utf8version_is_supported(maj, min, rev))
-> -			return ERR_PTR(-EINVAL);
-> -
-> -		unicode_version = UNICODE_AGE(maj, min, rev);
-> -	} else {
-> -		unicode_version = utf8version_latest();
-> -		printk(KERN_WARNING"UTF-8 version not specified. "
-> -		       "Assuming latest supported version (%d.%d.%d).",
-> -		       (unicode_version >> 16) & 0xff,
-> -		       (unicode_version >> 8) & 0xff,
-> -		       (unicode_version & 0xff));
-> -	}
-> -
-> -	um = kzalloc(sizeof(struct unicode_map), GFP_KERNEL);
-> -	if (!um)
-> -		return ERR_PTR(-ENOMEM);
-> -
-> -	um->charset = "UTF-8";
-> -	um->version = unicode_version;
-> -
-> -	return um;
-> +	utf8mod = owner;
->  }
-> -EXPORT_SYMBOL(unicode_load);
-> +EXPORT_SYMBOL(unicode_register);
->  
-> -void unicode_unload(struct unicode_map *um)
-> +void unicode_unregister(void)
->  {
-> -	kfree(um);
-> +	utf8mod = NULL;
->  }
-> -EXPORT_SYMBOL(unicode_unload);
-> +EXPORT_SYMBOL(unicode_unregister);
->  
->  MODULE_LICENSE("GPL v2");
-> diff --git a/fs/unicode/unicode-utf8.c b/fs/unicode/unicode-utf8.c
-> new file mode 100644
-> index 000000000000..9c6b58239067
-> --- /dev/null
-> +++ b/fs/unicode/unicode-utf8.c
-> @@ -0,0 +1,256 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <linux/module.h>
-> +#include <linux/kernel.h>
-> +#include <linux/string.h>
-> +#include <linux/slab.h>
-> +#include <linux/parser.h>
-> +#include <linux/errno.h>
-> +#include <linux/unicode.h>
-> +#include <linux/stringhash.h>
-> +#include <linux/static_call.h>
-> +
-> +#include "utf8n.h"
-> +
-> +static int utf8_validate(const struct unicode_map *um, const struct qstr *str)
-> +{
-> +	const struct utf8data *data = utf8nfdi(um->version);
-> +
-> +	if (utf8nlen(data, str->name, str->len) < 0)
-> +		return -1;
-> +	return 0;
-> +}
-> +
-> +static int utf8_strncmp(const struct unicode_map *um,
-> +			const struct qstr *s1, const struct qstr *s2)
-> +{
-> +	const struct utf8data *data = utf8nfdi(um->version);
-> +	struct utf8cursor cur1, cur2;
-> +	int c1, c2;
-> +
-> +	if (utf8ncursor(&cur1, data, s1->name, s1->len) < 0)
-> +		return -EINVAL;
-> +
-> +	if (utf8ncursor(&cur2, data, s2->name, s2->len) < 0)
-> +		return -EINVAL;
-> +
-> +	do {
-> +		c1 = utf8byte(&cur1);
-> +		c2 = utf8byte(&cur2);
-> +
-> +		if (c1 < 0 || c2 < 0)
-> +			return -EINVAL;
-> +		if (c1 != c2)
-> +			return 1;
-> +	} while (c1);
-> +
-> +	return 0;
-> +}
-> +
-> +static int utf8_strncasecmp(const struct unicode_map *um,
-> +			    const struct qstr *s1, const struct qstr *s2)
-> +{
-> +	const struct utf8data *data = utf8nfdicf(um->version);
-> +	struct utf8cursor cur1, cur2;
-> +	int c1, c2;
-> +
-> +	if (utf8ncursor(&cur1, data, s1->name, s1->len) < 0)
-> +		return -EINVAL;
-> +
-> +	if (utf8ncursor(&cur2, data, s2->name, s2->len) < 0)
-> +		return -EINVAL;
-> +
-> +	do {
-> +		c1 = utf8byte(&cur1);
-> +		c2 = utf8byte(&cur2);
-> +
-> +		if (c1 < 0 || c2 < 0)
-> +			return -EINVAL;
-> +		if (c1 != c2)
-> +			return 1;
-> +	} while (c1);
-> +
-> +	return 0;
-> +}
-> +
-> +/* String cf is expected to be a valid UTF-8 casefolded
-> + * string.
-> + */
-> +static int utf8_strncasecmp_folded(const struct unicode_map *um,
-> +				   const struct qstr *cf,
-> +				   const struct qstr *s1)
-> +{
-> +	const struct utf8data *data = utf8nfdicf(um->version);
-> +	struct utf8cursor cur1;
-> +	int c1, c2;
-> +	int i = 0;
-> +
-> +	if (utf8ncursor(&cur1, data, s1->name, s1->len) < 0)
-> +		return -EINVAL;
-> +
-> +	do {
-> +		c1 = utf8byte(&cur1);
-> +		c2 = cf->name[i++];
-> +		if (c1 < 0)
-> +			return -EINVAL;
-> +		if (c1 != c2)
-> +			return 1;
-> +	} while (c1);
-> +
-> +	return 0;
-> +}
-> +
-> +static int utf8_casefold(const struct unicode_map *um, const struct qstr *str,
-> +			 unsigned char *dest, size_t dlen)
-> +{
-> +	const struct utf8data *data = utf8nfdicf(um->version);
-> +	struct utf8cursor cur;
-> +	size_t nlen = 0;
-> +
-> +	if (utf8ncursor(&cur, data, str->name, str->len) < 0)
-> +		return -EINVAL;
-> +
-> +	for (nlen = 0; nlen < dlen; nlen++) {
-> +		int c = utf8byte(&cur);
-> +
-> +		dest[nlen] = c;
-> +		if (!c)
-> +			return nlen;
-> +		if (c == -1)
-> +			break;
-> +	}
-> +	return -EINVAL;
-> +}
-> +
-> +static int utf8_casefold_hash(const struct unicode_map *um, const void *salt,
-> +			      struct qstr *str)
-> +{
-> +	const struct utf8data *data = utf8nfdicf(um->version);
-> +	struct utf8cursor cur;
-> +	int c;
-> +	unsigned long hash = init_name_hash(salt);
-> +
-> +	if (utf8ncursor(&cur, data, str->name, str->len) < 0)
-> +		return -EINVAL;
-> +
-> +	while ((c = utf8byte(&cur))) {
-> +		if (c < 0)
-> +			return -EINVAL;
-> +		hash = partial_name_hash((unsigned char)c, hash);
-> +	}
-> +	str->hash = end_name_hash(hash);
-> +	return 0;
-> +}
-> +
-> +static int utf8_normalize(const struct unicode_map *um, const struct qstr *str,
-> +			  unsigned char *dest, size_t dlen)
-> +{
-> +	const struct utf8data *data = utf8nfdi(um->version);
-> +	struct utf8cursor cur;
-> +	ssize_t nlen = 0;
-> +
-> +	if (utf8ncursor(&cur, data, str->name, str->len) < 0)
-> +		return -EINVAL;
-> +
-> +	for (nlen = 0; nlen < dlen; nlen++) {
-> +		int c = utf8byte(&cur);
-> +
-> +		dest[nlen] = c;
-> +		if (!c)
-> +			return nlen;
-> +		if (c == -1)
-> +			break;
-> +	}
-> +	return -EINVAL;
-> +}
-> +
-> +static int utf8_parse_version(const char *version, unsigned int *maj,
-> +			      unsigned int *min, unsigned int *rev)
-> +{
-> +	substring_t args[3];
-> +	char version_string[12];
-> +	static const struct match_token token[] = {
-> +		{1, "%d.%d.%d"},
-> +		{0, NULL}
-> +	};
-> +
-> +	int ret = strscpy(version_string, version, sizeof(version_string));
-> +
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	if (match_token(version_string, token, args) != 1)
-> +		return -EINVAL;
-> +
-> +	if (match_int(&args[0], maj) || match_int(&args[1], min) ||
-> +	    match_int(&args[2], rev))
-> +		return -EINVAL;
-> +
-> +	return 0;
-> +}
-> +
-> +static struct unicode_map *utf8_load(const char *version)
-> +{
-> +	struct unicode_map *um = NULL;
-> +	int unicode_version;
-> +
-> +	if (version) {
-> +		unsigned int maj, min, rev;
-> +
-> +		if (utf8_parse_version(version, &maj, &min, &rev) < 0)
-> +			return ERR_PTR(-EINVAL);
-> +
-> +		if (!utf8version_is_supported(maj, min, rev))
-> +			return ERR_PTR(-EINVAL);
-> +
-> +		unicode_version = UNICODE_AGE(maj, min, rev);
-> +	} else {
-> +		unicode_version = utf8version_latest();
-> +		pr_warn("UTF-8 version not specified. Assuming latest supported version (%d.%d.%d).",
-> +			(unicode_version >> 16) & 0xff,
-> +			(unicode_version >> 8) & 0xff,
-> +			(unicode_version & 0xfe));
-> +	}
-> +
-> +	um = kzalloc(sizeof(*um), GFP_KERNEL);
-> +	if (!um)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	um->charset = "UTF-8";
-> +	um->version = unicode_version;
-> +
-> +	return um;
-> +}
-> +
-> +static int __init utf8_init(void)
-> +{
-> +	static_call_update(_unicode_validate, utf8_validate);
-> +	static_call_update(_unicode_strncmp, utf8_strncmp);
-> +	static_call_update(_unicode_strncasecmp, utf8_strncasecmp);
-> +	static_call_update(_unicode_strncasecmp_folded, utf8_strncasecmp_folded);
-> +	static_call_update(_unicode_normalize, utf8_normalize);
-> +	static_call_update(_unicode_casefold, utf8_casefold);
-> +	static_call_update(_unicode_casefold_hash, utf8_casefold_hash);
-> +	static_call_update(_unicode_load, utf8_load);
-> +
-> +	unicode_register(THIS_MODULE);
-> +	return 0;
-> +}
-> +
-> +static void __exit utf8_exit(void)
-> +{
-> +	static_call_update(_unicode_validate, unicode_validate_default);
-> +	static_call_update(_unicode_strncmp, unicode_strncmp_default);
-> +	static_call_update(_unicode_strncasecmp, unicode_strncasecmp_default);
-> +	static_call_update(_unicode_strncasecmp_folded, unicode_strncasecmp_folded_default);
-> +	static_call_update(_unicode_normalize, unicode_normalize_default);
-> +	static_call_update(_unicode_casefold, unicode_casefold_default);
-> +	static_call_update(_unicode_casefold_hash, unicode_casefold_hash_default);
-> +	static_call_update(_unicode_load, unicode_load_default);
-> +
-> +	unicode_unregister();
-> +}
-> +
-> +module_init(utf8_init);
-> +module_exit(utf8_exit);
-> +
-> +MODULE_LICENSE("GPL v2");
-> diff --git a/include/linux/unicode.h b/include/linux/unicode.h
-> index de23f9ee720b..18a1d3db9de5 100644
-> --- a/include/linux/unicode.h
-> +++ b/include/linux/unicode.h
-> @@ -4,33 +4,128 @@
->  
->  #include <linux/init.h>
->  #include <linux/dcache.h>
-> +#include <linux/static_call.h>
-> +
->  
->  struct unicode_map {
->  	const char *charset;
->  	int version;
->  };
->  
-> -int unicode_validate(const struct unicode_map *um, const struct qstr *str);
-> +static int unicode_warn_on(void)
-> +{
-> +	WARN_ON(1);
-> +	return -EIO;
-> +}
-
-Creating this extra function adds the same number of lines than if you
-write `WARN_ON(1); return -EIO;` in each of the few handlers below, but
-the later would be more clear, and you already do it for
-unicode_load_default anyway. :)
-> +
-> +static int unicode_validate_default(const struct unicode_map *um,
-> +				    const struct qstr *str)
-> +{
-> +	return unicode_warn_on();
-> +}
-> +
-> +static int unicode_strncmp_default(const struct unicode_map *um,
-> +				   const struct qstr *s1,
-> +				   const struct qstr *s2)
-> +{
-> +	return unicode_warn_on();
-> +}
-> +
-> +static int unicode_strncasecmp_default(const struct unicode_map *um,
-> +				       const struct qstr *s1,
-> +				       const struct qstr *s2)
-> +{
-> +	return unicode_warn_on();
-> +}
-> +
-> +static int unicode_strncasecmp_folded_default(const struct unicode_map *um,
-> +					      const struct qstr *cf,
-> +					      const struct qstr *s1)
-> +{
-> +	return unicode_warn_on();
-> +}
-> +
-> +static int unicode_normalize_default(const struct unicode_map *um,
-> +				     const struct qstr *str,
-> +				     unsigned char *dest, size_t dlen)
-> +{
-> +	return unicode_warn_on();
-> +}
-> +
-> +static int unicode_casefold_default(const struct unicode_map *um,
-> +				    const struct qstr *str,
-> +				    unsigned char *dest, size_t dlen)
-> +{
-> +	return unicode_warn_on();
-> +}
->  
-> -int unicode_strncmp(const struct unicode_map *um,
-> -		    const struct qstr *s1, const struct qstr *s2);
-> +static int unicode_casefold_hash_default(const struct unicode_map *um,
-> +					 const void *salt, struct qstr *str)
-> +{
-> +	return unicode_warn_on();
-> +}
-
-Again, why isn't this in a .c ?  Does it need to be here?
-
->  
-> -int unicode_strncasecmp(const struct unicode_map *um,
-> -			const struct qstr *s1, const struct qstr *s2);
-> -int unicode_strncasecmp_folded(const struct unicode_map *um,
-> -			       const struct qstr *cf,
-> -			       const struct qstr *s1);
-> +static struct unicode_map *unicode_load_default(const char *version)
-> +{
-> +	unicode_warn_on();
-> +	return ERR_PTR(-EIO);
-> +}
->  
-> -int unicode_normalize(const struct unicode_map *um, const struct qstr *str,
-> -		      unsigned char *dest, size_t dlen);
-> +DECLARE_STATIC_CALL(_unicode_validate, unicode_validate_default);
-> +DECLARE_STATIC_CALL(_unicode_strncmp, unicode_strncmp_default);
-> +DECLARE_STATIC_CALL(_unicode_strncasecmp, unicode_strncasecmp_default);
-> +DECLARE_STATIC_CALL(_unicode_strncasecmp_folded, unicode_strncasecmp_folded_default);
-> +DECLARE_STATIC_CALL(_unicode_normalize, unicode_normalize_default);
-> +DECLARE_STATIC_CALL(_unicode_casefold, unicode_casefold_default);
-> +DECLARE_STATIC_CALL(_unicode_casefold_hash, unicode_casefold_hash_default);
-> +DECLARE_STATIC_CALL(_unicode_load, unicode_load_default);
-
-nit: I hate this functions starting with a single  _ .  they are not common in the
-rest of the kernel either.
-
-> -int unicode_casefold(const struct unicode_map *um, const struct qstr *str,
-> -		     unsigned char *dest, size_t dlen);
-> +static inline int unicode_validate(const struct unicode_map *um, const struct qstr *str)
-> +{
-> +	return static_call(_unicode_validate)(um, str);
-> +}
->  
-> -int unicode_casefold_hash(const struct unicode_map *um, const void *salt,
-> -			  struct qstr *str);
-> +static inline int unicode_strncmp(const struct unicode_map *um,
-> +				  const struct qstr *s1, const struct qstr *s2)
-> +{
-> +	return static_call(_unicode_strncmp)(um, s1, s2);
-> +}
-> +
-> +static inline int unicode_strncasecmp(const struct unicode_map *um,
-> +				      const struct qstr *s1, const struct qstr *s2)
-> +{
-> +	return static_call(_unicode_strncasecmp)(um, s1, s2);
-> +}
-> +
-> +static inline int unicode_strncasecmp_folded(const struct unicode_map *um,
-> +					     const struct qstr *cf,
-> +					     const struct qstr *s1)
-> +{
-> +	return static_call(_unicode_strncasecmp_folded)(um, cf, s1);
-> +}
-> +
-> +static inline int unicode_normalize(const struct unicode_map *um, const struct qstr *str,
-> +				    unsigned char *dest, size_t dlen)
-> +{
-> +	return static_call(_unicode_normalize)(um, str, dest, dlen);
-> +}
-> +
-> +static inline int unicode_casefold(const struct unicode_map *um, const struct qstr *str,
-> +				   unsigned char *dest, size_t dlen)
-> +{
-> +	return static_call(_unicode_casefold)(um, str, dest, dlen);
-> +}
-> +
-> +static inline int unicode_casefold_hash(const struct unicode_map *um, const void *salt,
-> +					struct qstr *str)
-> +{
-> +	return static_call(_unicode_casefold_hash)(um, salt, str);
-> +}
->  
->  struct unicode_map *unicode_load(const char *version);
->  void unicode_unload(struct unicode_map *um);
->  
-> +void unicode_register(struct module *owner);
-> +void unicode_unregister(void);
-> +
->  #endif /* _LINUX_UNICODE_H */
-
--- 
-Gabriel Krisman Bertazi
+> Thanks for the comments :)
