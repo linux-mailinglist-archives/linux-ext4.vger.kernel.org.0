@@ -2,100 +2,86 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C35E034CCE9
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Mar 2021 11:21:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8062F34CDCB
+	for <lists+linux-ext4@lfdr.de>; Mon, 29 Mar 2021 12:15:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231379AbhC2JVQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 29 Mar 2021 05:21:16 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:15381 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231297AbhC2JUr (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 29 Mar 2021 05:20:47 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F86TN53CJzlVjw;
-        Mon, 29 Mar 2021 17:19:04 +0800 (CST)
-Received: from [10.174.176.202] (10.174.176.202) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 29 Mar 2021 17:20:35 +0800
-Subject: Re: [BUG && Question] question of SB_ACTIVE flag in
- ext4_orphan_cleanup()
-To:     Jan Kara <jack@suse.cz>
-CC:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        yangerkun <yangerkun@huawei.com>, <linfeilong@huawei.com>
-References: <8a6864dd-7e6c-5268-2b5b-1010f99d2a1b@huawei.com>
- <20210322172551.GJ31783@quack2.suse.cz>
-From:   Zhang Yi <yi.zhang@huawei.com>
-Message-ID: <b1a05885-1d7b-b9d1-80da-785633cbfc6a@huawei.com>
-Date:   Mon, 29 Mar 2021 17:20:35 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S231755AbhC2KOy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 29 Mar 2021 06:14:54 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59204 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232172AbhC2KOa (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 29 Mar 2021 06:14:30 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6B271B3DF;
+        Mon, 29 Mar 2021 10:14:29 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 0EFC01E4353; Mon, 29 Mar 2021 12:14:29 +0200 (CEST)
+Date:   Mon, 29 Mar 2021 12:14:29 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
+Cc:     Jan Kara <jack@suse.cz>,
+        Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
+        Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] Updated locking documentation for transaction_t
+Message-ID: <20210329101429.GA4283@quack2.suse.cz>
+References: <20210210095740.54881-1-alexander.lochmann@tu-dortmund.de>
+ <20210210095740.54881-2-alexander.lochmann@tu-dortmund.de>
+ <20210211093027.GI19070@quack2.suse.cz>
+ <ec682a4c-f4f7-35fe-dc35-6c0b53d6ecda@tu-dortmund.de>
 MIME-Version: 1.0
-In-Reply-To: <20210322172551.GJ31783@quack2.suse.cz>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.202]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ec682a4c-f4f7-35fe-dc35-6c0b53d6ecda@tu-dortmund.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2021/3/23 1:25, Jan Kara wrote:
-> Hi!
+On Fri 26-03-21 09:18:45, Alexander Lochmann wrote:
+> On 11.02.21 10:30, Jan Kara wrote:
+> >> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+> >> index 99d3cd051ac3..18f77d9b1745 100644
+> >> --- a/include/linux/jbd2.h
+> >> +++ b/include/linux/jbd2.h
+> >> @@ -594,18 +594,18 @@ struct transaction_s
+> >>  	 */
+> >>  	unsigned long		t_log_start;
+> >>  
+> >> -	/* Number of buffers on the t_buffers list [j_list_lock] */
+> >> +	/* Number of buffers on the t_buffers list [j_list_lock, no lock for quick racy checks] */
+> >>  	int			t_nr_buffers;
+> > 
+> > So this case is actually somewhat different now that I audited the uses.
+> > There are two types of users - commit code (fs/jbd2/commit.c) and others.
+> > Other users properly use j_list_lock to access t_nr_buffers. Commit code
+> > does not use any locks because committing transaction is fully in
+> > ownership of the jbd2 thread and all other users need to check & wait for
+> > commit to be finished before doing anything with the transaction's buffers.
 > 
-> On Mon 22-03-21 23:24:23, Zhang Yi wrote:
->> We find a use after free problem when CONFIG_QUOTA is enabled, the detail of
->> this problem is below.
->>
->> mount_bdev()
->> 	ext4_fill_super()
->> 		sb->s_root = d_make_root(root);
->> 		ext4_orphan_cleanup()
->> 			sb->s_flags |= SB_ACTIVE; <--- 1. mark sb active
->> 			ext4_orphan_get()
->> 			ext4_truncate()
->> 				ext4_block_truncate_page()
->> 					mark_buffer_dirty <--- 2. dirty inode
->> 			iput()
->> 				iput_final  <--- 3. put into lru list
->> 		ext4_mark_recovery_complete  <--- 4. failed and return error
->> 		sb->s_root = NULL;
->> 	deactivate_locked_super()
->> 		kill_block_super()
->> 			generic_shutdown_super()
->> 				<--- 5. did not evict_inodes
->> 		put_super()
->> 			__put_super()
->> 				<--- 6. put super block
->>
->> Because of the truncated inodes was dirty and will write them back later, it
->> will trigger use after free problem. Now the question is why we need to set
->> SB_ACTIVE bit when enable CONFIG_QUOTA below?
->>
->>   #ifdef CONFIG_QUOTA
->>           /* Needed for iput() to work correctly and not trash data */
->>           sb->s_flags |= SB_ACTIVE;
->>
->> This code was merged long long ago in v2.6.6, IIUC, it may not affect
->> the quota statistics it we evict inode directly in the last iput.
->> In order to slove this UAF problem, I'm not sure is there any side effect
->> if we just remove this code, or remove SB_ACTIVE and call evict_inodes()
->> in the error path of ext4_fill_super().
->>
->> Could you give some suggestions?
-> 
-> That's a very good question. I do remember that I've added this code back
-> then because otherwise orphan cleanup was loosing updates to quota files.
-> But you're right that now I don't see how that could be happening and it
-> would be nice if we could get rid of this hack (and even better if it also
-> fixes the problem you've found). I guess I'll just try and test this change
-> with various quota configurations to see whether something still breaks or
-> not. Thanks report!
-> 
+> I'm still trying understand how thinks work:
+> Accesses to transaction_t might occur from different contexts. Thus,
+> locks are necessary. If it comes to the commit phase, every other
+> context has to wait until jbd2 thread has done its work. Therefore, jbd2
+> thread does not need any locks to access a transaction_t (or just parts
+> of it?) during commit phase.
+> Is that correct?
 
-Thanks for taking time to look at this, is this change OK under your various
-quota test cases?
+Yes, that is correct.
 
-Thanks,
-Yi.
+> If so: I was thinking whether it make sense to ignore all memory
+> accesses to a transaction_t (or parts of it) that happen in the commit
+> phase. They deliberately ignore the locking policy, and would confuse
+> our approach.
+> 
+> Is the commit phase performed by jbd2_journal_commit_transaction()?
+> We would add this function to our blacklist for transaction_t.
+
+Yes, commit phase is implemented by jbd2_journal_commit_transaction() and
+the functions it calls.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
