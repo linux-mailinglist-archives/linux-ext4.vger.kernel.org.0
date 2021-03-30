@@ -2,98 +2,82 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3BBA34E0D9
-	for <lists+linux-ext4@lfdr.de>; Tue, 30 Mar 2021 07:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7562834E4C0
+	for <lists+linux-ext4@lfdr.de>; Tue, 30 Mar 2021 11:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230500AbhC3FsP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 30 Mar 2021 01:48:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40044 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229667AbhC3Fry (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 30 Mar 2021 01:47:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3348A60C3E;
-        Tue, 30 Mar 2021 05:47:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617083274;
-        bh=sLNj16jz+MQWRyeegTuCAOgGNtHJE4k6qlmBk/8uBWI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D5D0VXYmafeEBMtG4ve4wxOPt1WgZvZxYhS5O2cOf3CDcG5u8Mhb4E0WwnxKqerBi
-         0maG55PE9DYmIqSZnROblCGPgINK+wAy4saOuDtDFYPeNYucHsnzUBblvdVMUYa0V7
-         WgI08qZovt3PTgc30I9paP4w65zc62b75G9GZ3++Cm/HsHYbesw9TUIUSrBWq3GnXz
-         xoAneUB4YUsjj6/sDklBkYhXUaWtU+mt/hvkcsYVgWPU58VqPPhPpNB5XFJ+UvHxWx
-         tqR88XVAfDb9fT9RTNeEdkJX9qknZGctXrGhnF2fmt8QuLFCgpVnjj+v2Ou5ghI8hg
-         CQZA8PJ5oNpYQ==
-Date:   Mon, 29 Mar 2021 22:47:52 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     Shreeya Patel <shreeya.patel@collabora.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, jaegeuk@kernel.org, chao@kernel.org,
-        drosen@google.com, yuchao0@huawei.com, linux-ext4@vger.kernel.org,
+        id S229693AbhC3JuN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 30 Mar 2021 05:50:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231549AbhC3Jts (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 30 Mar 2021 05:49:48 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0CCCC061574;
+        Tue, 30 Mar 2021 02:49:48 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: shreeya)
+        with ESMTPSA id B13D91F452F3
+Subject: Re: [PATCH v5 2/4] fs: unicode: Rename function names from utf8 to
+ unicode
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
+        chao@kernel.org, krisman@collabora.com, drosen@google.com,
+        yuchao0@huawei.com, linux-ext4@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         linux-f2fs-devel@lists.sourceforge.net,
         linux-fsdevel@vger.kernel.org, kernel@collabora.com,
         andre.almeida@collabora.com
-Subject: Re: [PATCH v5 4/4] fs: unicode: Add utf8 module and a unicode layer
-Message-ID: <YGK7iNRXcMr/ahsL@sol.localdomain>
 References: <20210329204240.359184-1-shreeya.patel@collabora.com>
- <20210329204240.359184-5-shreeya.patel@collabora.com>
- <YGKGhxaozX3ND6iB@gmail.com>
- <87v999pequ.fsf@collabora.com>
+ <20210329204240.359184-3-shreeya.patel@collabora.com>
+ <YGKEitULkZmMwk3f@gmail.com>
+From:   Shreeya Patel <shreeya.patel@collabora.com>
+Message-ID: <b5e09aaf-ed9a-c363-d188-96ca5bb4932c@collabora.com>
+Date:   Tue, 30 Mar 2021 15:19:37 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87v999pequ.fsf@collabora.com>
+In-Reply-To: <YGKEitULkZmMwk3f@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 10:16:57PM -0400, Gabriel Krisman Bertazi wrote:
-> Eric Biggers <ebiggers@kernel.org> writes:
-> 
-> > On Tue, Mar 30, 2021 at 02:12:40AM +0530, Shreeya Patel wrote:
-> >> diff --git a/fs/unicode/Kconfig b/fs/unicode/Kconfig
-> >> index 2c27b9a5cd6c..ad4b837f2eb2 100644
-> >> --- a/fs/unicode/Kconfig
-> >> +++ b/fs/unicode/Kconfig
-> >> @@ -2,13 +2,26 @@
-> >>  #
-> >>  # UTF-8 normalization
-> >>  #
-> >> +# CONFIG_UNICODE will be automatically enabled if CONFIG_UNICODE_UTF8
-> >> +# is enabled. This config option adds the unicode subsystem layer which loads
-> >> +# the UTF-8 module whenever any filesystem needs it.
-> >>  config UNICODE
-> >> -	bool "UTF-8 normalization and casefolding support"
-> >> +	bool
-> >> +
-> >> +# utf8data.h_shipped has a large database table which is an auto-generated
-> >> +# decodification trie for the unicode normalization functions and it is not
-> >> +# necessary to carry this large table in the kernel.
-> >> +# Enabling UNICODE_UTF8 option will allow UTF-8 encoding to be built as a
-> >> +# module and this module will be loaded by the unicode subsystem layer only
-> >> +# when any filesystem needs it.
-> >> +config UNICODE_UTF8
-> >> +	tristate "UTF-8 module"
-> >>  	help
-> >>  	  Say Y here to enable UTF-8 NFD normalization and NFD+CF casefolding
-> >>  	  support.
-> >> +	select UNICODE
-> >
-> > This seems problematic; it allows users to set CONFIG_EXT4_FS=y (or
-> > CONFIG_F2FS_FS=y) but then CONFIG_UNICODE_UTF8=m.  Then the filesystem won't
-> > work if the modules are located on the filesystem itself.
-> 
-> Hi Eric,
-> 
-> Isn't this a user problem?  If the modules required to boot are on the
-> filesystem itself, you are in trouble.  But, if that is the case, your
-> rootfs is case-insensitive and you gotta have utf8 as built-in or have
-> it in an early userspace.
-> 
 
-We could make it the user's problem, but that seems rather unfriendly.
-Especially because the utf8 module would be needed if the filesystem has the
-casefold feature at all, regardless of whether any casefolded directories are
-needed at boot time or not.  (Unless there is a plan to change that?)
+On 30/03/21 7:23 am, Eric Biggers wrote:
+> On Tue, Mar 30, 2021 at 02:12:38AM +0530, Shreeya Patel wrote:
+>> utf8data.h_shipped has a large database table which is an auto-generated
+>> decodification trie for the unicode normalization functions and it is not
+>> necessary to carry this large table in the kernel.
+>> Goal is to make UTF-8 encoding loadable by converting it into a module
+>> and adding a unicode subsystem layer between the filesystems and the
+>> utf8 module.
+>> This layer will load the module whenever any filesystem that
+>> needs unicode is mounted.
+>> utf8-core will be converted into this layer file in the future patches,
+>> hence rename the function names from utf8 to unicode which will denote the
+>> functions as the unicode subsystem layer functions and this will also be
+>> the first step towards the transformation of utf8-core file into the
+>> unicode subsystem layer file.
+>>
+>> Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
+>> ---
+>> Changes in v5
+>>    - Improve the commit message.
+> This didn't really answer my questions about the reason for this renaming.
+> Aren't the functions like unicode_casefold() still tied to UTF-8 (as opposed to
+> e.g. supporting both UTF-8 and UTF-16)?  Is that something you're trying to
+> change?
 
-- Eric
+
+Currently, layer's functions are still tied to UTF-8 encoding only. But 
+in future if we will have UTF-16 support then layer file would have to 
+be changed accordingly to support both.
+Unicode subsystem layer is a generic layer which connects the 
+filesystems and UTF8 module ( and/or UTF16 in future )
+
+
+>
+> - Eric
+>
