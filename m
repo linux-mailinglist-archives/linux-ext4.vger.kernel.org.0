@@ -2,87 +2,93 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B5FA34EBEE
-	for <lists+linux-ext4@lfdr.de>; Tue, 30 Mar 2021 17:16:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A327C34ED10
+	for <lists+linux-ext4@lfdr.de>; Tue, 30 Mar 2021 18:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231875AbhC3PQI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 30 Mar 2021 11:16:08 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42512 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232366AbhC3PPf (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 30 Mar 2021 11:15:35 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 16EE9AC1A;
-        Tue, 30 Mar 2021 15:15:34 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 3A5361E4353; Tue, 30 Mar 2021 17:15:33 +0200 (CEST)
-Date:   Tue, 30 Mar 2021 17:15:33 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
-        Mauricio Faria de Oliveira <mfo@canonical.com>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "zhangyi (F)" <yi.zhang@huawei.com>,
-        Alexander Lochmann <alexander.lochmann@tu-dortmund.de>,
-        Hui Su <sh_def@163.com>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] jbd2: avoid -Wempty-body warnings
-Message-ID: <20210330151533.GA10067@quack2.suse.cz>
-References: <20210322102152.95684-1-arnd@kernel.org>
+        id S232190AbhC3QCV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 30 Mar 2021 12:02:21 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:55237 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231794AbhC3QBs (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 30 Mar 2021 12:01:48 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 12UG0nHa013090
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 30 Mar 2021 12:00:49 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 32C5415C39CD; Tue, 30 Mar 2021 12:00:49 -0400 (EDT)
+Date:   Tue, 30 Mar 2021 12:00:49 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Shreeya Patel <shreeya.patel@collabora.com>,
+        adilger.kernel@dilger.ca, jaegeuk@kernel.org, chao@kernel.org,
+        drosen@google.com, yuchao0@huawei.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
+        andre.almeida@collabora.com
+Subject: Re: [PATCH v5 4/4] fs: unicode: Add utf8 module and a unicode layer
+Message-ID: <YGNLMRmr+tQb8WQ3@mit.edu>
+References: <20210329204240.359184-1-shreeya.patel@collabora.com>
+ <20210329204240.359184-5-shreeya.patel@collabora.com>
+ <YGKGhxaozX3ND6iB@gmail.com>
+ <87v999pequ.fsf@collabora.com>
+ <YGK7iNRXcMr/ahsL@sol.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210322102152.95684-1-arnd@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YGK7iNRXcMr/ahsL@sol.localdomain>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 22-03-21 11:21:38, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Mon, Mar 29, 2021 at 10:47:52PM -0700, Eric Biggers wrote:
+> > Isn't this a user problem?  If the modules required to boot are on the
+> > filesystem itself, you are in trouble.  But, if that is the case, your
+> > rootfs is case-insensitive and you gotta have utf8 as built-in or have
+> > it in an early userspace.
 > 
-> Building with 'make W=1' shows a harmless -Wempty-body warning:
-> 
-> fs/jbd2/recovery.c: In function 'fc_do_one_pass':
-> fs/jbd2/recovery.c:267:75: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
->   267 |                 jbd_debug(3, "Fast commit replay failed, err = %d\n", err);
->       |                                                                           ^
-> 
-> Change the empty dprintk() macros to no_printk(), which avoids this
-> warning and adds format string checking.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> We could make it the user's problem, but that seems rather unfriendly.
+> Especially because the utf8 module would be needed if the filesystem has the
+> casefold feature at all, regardless of whether any casefolded directories are
+> needed at boot time or not.  (Unless there is a plan to change that?)
 
-Sure. Feel free to add:
+I guess I'm not that worried, since the vast majority of desktop
+distribution are using initial ramdisks these days.  And if someone
+did build a monolithic kernel that couldn't mount the root file
+system, they would figure that out pretty quickly.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+The biggest problem they would have with trying to enable encryption
+or casefolding on the root file system is that if they are using Grub,
+older versions of Grub would see an unknown incompat feature, and
+immediately have heartburn, and refuse to touch whatever file system
+/boot is located on.  If the distribution has /boot as a stand-alone
+partition, that won't be a problem, but if you have a single file
+system which includes the location of kernels and initrds' are
+located, the moment you try set the encryption or casefold on the file
+system, you're immediately hosed --- and if you do this on a laptop
+while you are on an airplane, without thinking things through, and
+without access to a rescue USB thumb drive, life can
+get... interesting.  (Why, yes, I'm speaking from direct experience;
+why do you ask?  :-)
 
-								Honza
+So in comparison to making such a mistake, building a kernel that was
+missing casefold, and needing to fall back to an older kernel is not
+really that bad of a user experience.  You just have to fall back the
+distro kernel, which most kernel developers who are dogfooding
+bleeding kernels are probably smart enough keep one around.
 
-> ---
->  include/linux/jbd2.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-> index 99d3cd051ac3..232e6285536a 100644
-> --- a/include/linux/jbd2.h
-> +++ b/include/linux/jbd2.h
-> @@ -61,7 +61,7 @@ void __jbd2_debug(int level, const char *file, const char *func,
->  #define jbd_debug(n, fmt, a...) \
->  	__jbd2_debug((n), __FILE__, __func__, __LINE__, (fmt), ##a)
->  #else
-> -#define jbd_debug(n, fmt, a...)    /**/
-> +#define jbd_debug(n, fmt, a...)  no_printk(fmt, ##a)
->  #endif
->  
->  extern void *jbd2_alloc(size_t size, gfp_t flags);
-> -- 
-> 2.29.2
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+We *could* teach ext4 to support mounting file systems that have
+casefold, without having the unicode module loaded, which would make
+things a bit better, but I'm not sure it's worth the effort.  We could
+even make the argument that letting the system boot, and then having
+access to some directories return ENOTSUPP would actually be a more
+confusing user experience than a simple hard failure when we try
+mounting the file system.
+
+Cheers,
+
+					- Ted
