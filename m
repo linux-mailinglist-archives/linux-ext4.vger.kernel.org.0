@@ -2,126 +2,105 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8799634E7FE
-	for <lists+linux-ext4@lfdr.de>; Tue, 30 Mar 2021 14:55:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0585334EB71
+	for <lists+linux-ext4@lfdr.de>; Tue, 30 Mar 2021 17:03:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232063AbhC3Mya (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 30 Mar 2021 08:54:30 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:41120 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231910AbhC3MyK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 30 Mar 2021 08:54:10 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: tonyk)
-        with ESMTPSA id 8DE8A1F44E69
-Subject: Re: [PATCH 1/3] fs/dcache: Add d_clear_dir_neg_dentries()
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        kernel@collabora.com, Daniel Rosenberg <drosen@google.com>,
-        linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        krisman@collabora.com
-References: <20210328144356.12866-1-andrealmeid@collabora.com>
- <20210328144356.12866-2-andrealmeid@collabora.com>
- <YGKDfo1vZfFXwG/v@gmail.com>
-From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
-Message-ID: <8ea3ba8e-2699-8786-5ca3-33ee3c70961b@collabora.com>
-Date:   Tue, 30 Mar 2021 09:54:01 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S230243AbhC3PCo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 30 Mar 2021 11:02:44 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57786 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231874AbhC3PCb (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 30 Mar 2021 11:02:31 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7591EB30E;
+        Tue, 30 Mar 2021 15:02:30 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id D3EF21E4353; Tue, 30 Mar 2021 17:02:29 +0200 (CEST)
+Date:   Tue, 30 Mar 2021 17:02:29 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Zhang Yi <yi.zhang@huawei.com>
+Cc:     Jan Kara <jack@suse.cz>, "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        yangerkun <yangerkun@huawei.com>, linfeilong@huawei.com
+Subject: Re: [BUG && Question] question of SB_ACTIVE flag in
+ ext4_orphan_cleanup()
+Message-ID: <20210330150229.GC30749@quack2.suse.cz>
+References: <8a6864dd-7e6c-5268-2b5b-1010f99d2a1b@huawei.com>
+ <20210322172551.GJ31783@quack2.suse.cz>
+ <b1a05885-1d7b-b9d1-80da-785633cbfc6a@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <YGKDfo1vZfFXwG/v@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b1a05885-1d7b-b9d1-80da-785633cbfc6a@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Eric,
-
-Às 22:48 de 29/03/21, Eric Biggers escreveu:
-> On Sun, Mar 28, 2021 at 11:43:54AM -0300, André Almeida wrote:
->> For directories with negative dentries that are becoming case-insensitive
->> dirs, we need to remove all those negative dentries, otherwise they will
->> become dangling dentries. During the creation of a new file, if a d_hash
->> collision happens and the names match in a case-insensitive way, the name
->> of the file will be the name defined at the negative dentry, that may be
->> different from the specified by the user. To prevent this from
->> happening, we need to remove all dentries in a directory. Given that the
->> directory must be empty before we call this function we are sure that
->> all dentries there will be negative.
->>
->> Create a function to remove all negative dentries from a directory, to
->> be used as explained above by filesystems that support case-insensitive
->> lookups.
->>
->> Signed-off-by: André Almeida <andrealmeid@collabora.com>
->> ---
->>   fs/dcache.c            | 27 +++++++++++++++++++++++++++
->>   include/linux/dcache.h |  1 +
->>   2 files changed, 28 insertions(+)
->>
->> diff --git a/fs/dcache.c b/fs/dcache.c
->> index 7d24ff7eb206..fafb3016d6fd 100644
->> --- a/fs/dcache.c
->> +++ b/fs/dcache.c
->> @@ -1723,6 +1723,33 @@ void d_invalidate(struct dentry *dentry)
->>   }
->>   EXPORT_SYMBOL(d_invalidate);
->>   
->> +/**
->> + * d_clear_dir_neg_dentries - Remove negative dentries in an inode
->> + * @dir: Directory to clear negative dentries
->> + *
->> + * For directories with negative dentries that are becoming case-insensitive
->> + * dirs, we need to remove all those negative dentries, otherwise they will
->> + * become dangling dentries. During the creation of a new file, if a d_hash
->> + * collision happens and the names match in a case-insensitive, the name of
->> + * the file will be the name defined at the negative dentry, that can be
->> + * different from the specified by the user. To prevent this from happening, we
->> + * need to remove all dentries in a directory. Given that the directory must be
->> + * empty before we call this function we are sure that all dentries there will
->> + * be negative.
->> + */
->> +void d_clear_dir_neg_dentries(struct inode *dir)
->> +{
->> +	struct dentry *alias, *dentry;
->> +
->> +	hlist_for_each_entry(alias, &dir->i_dentry, d_u.d_alias) {
->> +		list_for_each_entry(dentry, &alias->d_subdirs, d_child) {
->> +			d_drop(dentry);
->> +			dput(dentry);
->> +		}
->> +	}
->> +}
->> +EXPORT_SYMBOL(d_clear_dir_neg_dentries);
+On Mon 29-03-21 17:20:35, Zhang Yi wrote:
+> On 2021/3/23 1:25, Jan Kara wrote:
+> > Hi!
+> > 
+> > On Mon 22-03-21 23:24:23, Zhang Yi wrote:
+> >> We find a use after free problem when CONFIG_QUOTA is enabled, the detail of
+> >> this problem is below.
+> >>
+> >> mount_bdev()
+> >> 	ext4_fill_super()
+> >> 		sb->s_root = d_make_root(root);
+> >> 		ext4_orphan_cleanup()
+> >> 			sb->s_flags |= SB_ACTIVE; <--- 1. mark sb active
+> >> 			ext4_orphan_get()
+> >> 			ext4_truncate()
+> >> 				ext4_block_truncate_page()
+> >> 					mark_buffer_dirty <--- 2. dirty inode
+> >> 			iput()
+> >> 				iput_final  <--- 3. put into lru list
+> >> 		ext4_mark_recovery_complete  <--- 4. failed and return error
+> >> 		sb->s_root = NULL;
+> >> 	deactivate_locked_super()
+> >> 		kill_block_super()
+> >> 			generic_shutdown_super()
+> >> 				<--- 5. did not evict_inodes
+> >> 		put_super()
+> >> 			__put_super()
+> >> 				<--- 6. put super block
+> >>
+> >> Because of the truncated inodes was dirty and will write them back later, it
+> >> will trigger use after free problem. Now the question is why we need to set
+> >> SB_ACTIVE bit when enable CONFIG_QUOTA below?
+> >>
+> >>   #ifdef CONFIG_QUOTA
+> >>           /* Needed for iput() to work correctly and not trash data */
+> >>           sb->s_flags |= SB_ACTIVE;
+> >>
+> >> This code was merged long long ago in v2.6.6, IIUC, it may not affect
+> >> the quota statistics it we evict inode directly in the last iput.
+> >> In order to slove this UAF problem, I'm not sure is there any side effect
+> >> if we just remove this code, or remove SB_ACTIVE and call evict_inodes()
+> >> in the error path of ext4_fill_super().
+> >>
+> >> Could you give some suggestions?
+> > 
+> > That's a very good question. I do remember that I've added this code back
+> > then because otherwise orphan cleanup was loosing updates to quota files.
+> > But you're right that now I don't see how that could be happening and it
+> > would be nice if we could get rid of this hack (and even better if it also
+> > fixes the problem you've found). I guess I'll just try and test this change
+> > with various quota configurations to see whether something still breaks or
+> > not. Thanks report!
+> > 
 > 
-> As Al already pointed out, this doesn't work as intended, for a number of
-> different reasons.
-> 
-> Did you consider just using shrink_dcache_parent()?  That already does what you
-> are trying to do here, I think.
+> Thanks for taking time to look at this, is this change OK under your various
+> quota test cases?
 
-When I wrote this patch, I didn't know it, but after Al Viro comments I 
-get back to the code and found it, and it seems do do what I intend 
-indeed, and my test is happy as well.
+Yes, I did tests both with journalled quotas and with ext4 quota feature
+and the quota accounting was correct after orphan recovery. So just
+removing the SB_ACTIVE setting is fine AFAICT. Will you send a patch or
+should I do it?
 
-> 
-> The harder part (which I don't think you've considered) is how to ensure that
-> all negative dentries really get invalidated even if there are lookups of them
-> happening concurrently.  Concurrent lookups can take temporary references to the
-> negative dentries, preventing them from being invalidated.
-> 
-
-I didn't consider that, thanks for the feedback. So this means that 
-those lookups will increase the refcount of the dentry, and it will only 
-get really invalidated when refcount reaches 0? Or do would I need to 
-call d_invalidate() again, until I succeed?
-
-> - Eric
-> 
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
