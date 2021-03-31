@@ -2,53 +2,111 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB3434F2E7
-	for <lists+linux-ext4@lfdr.de>; Tue, 30 Mar 2021 23:15:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F87334F738
+	for <lists+linux-ext4@lfdr.de>; Wed, 31 Mar 2021 05:12:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232628AbhC3VPU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 30 Mar 2021 17:15:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37738 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232057AbhC3VOu (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 30 Mar 2021 17:14:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D6AF619C7;
-        Tue, 30 Mar 2021 21:14:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617138888;
-        bh=taXsV73nHzdZSMOwWqsMrMRCclI86eUiaKIQFYpaPQU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=A1MJSQrBictwYg85BvOUWG7y9k3F+gaM/rQOQrrp0mJAlWgVpnTZOL2n5d1zB8Ruj
-         syZzzOk7loPsQwB3YR3jdWTRHwBjSOA1BmWqFzQw99m2osMEvRn2MNjveKS4nfY149
-         en1EFQQmYHGOjiAuCacVKI/qCLAEgTgJieueUXMH/zuopXbGAAsYAEKsFdfv9DOi9R
-         D/BZYJNf9B7rCyS/Aun+CLM5dwLwMQq92OlfrD4uG1Wb2R3L2By//an+fsUA4Hr1i2
-         zelrqGfKQ00fx3fSmS6XOVsu52pPlZfCZK03Tupb/3nc61pBmzUHT8n/euB3eaaFfY
-         FE3srXV77AxxQ==
-Date:   Tue, 30 Mar 2021 17:14:47 -0400
-From:   Sasha Levin <sashal@kernel.org>
+        id S233288AbhCaDLe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 30 Mar 2021 23:11:34 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14969 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232874AbhCaDLW (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 30 Mar 2021 23:11:22 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F9B9m14MFzyNMg;
+        Wed, 31 Mar 2021 11:09:16 +0800 (CST)
+Received: from [10.174.176.202] (10.174.176.202) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 31 Mar 2021 11:11:11 +0800
+Subject: Re: [BUG && Question] question of SB_ACTIVE flag in
+ ext4_orphan_cleanup()
 To:     Jan Kara <jack@suse.cz>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.11 03/44] ext4: add reclaim checks to xattr code
-Message-ID: <YGOUxw/YnRMqvlz1@sashalap>
-References: <20210325112459.1926846-1-sashal@kernel.org>
- <20210325112459.1926846-3-sashal@kernel.org>
- <20210325143020.GC13673@quack2.suse.cz>
+CC:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        yangerkun <yangerkun@huawei.com>, <linfeilong@huawei.com>
+References: <8a6864dd-7e6c-5268-2b5b-1010f99d2a1b@huawei.com>
+ <20210322172551.GJ31783@quack2.suse.cz>
+ <b1a05885-1d7b-b9d1-80da-785633cbfc6a@huawei.com>
+ <20210330150229.GC30749@quack2.suse.cz>
+From:   Zhang Yi <yi.zhang@huawei.com>
+Message-ID: <99cce8ca-e4a0-7301-840f-2ace67c551f3@huawei.com>
+Date:   Wed, 31 Mar 2021 11:11:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210325143020.GC13673@quack2.suse.cz>
+In-Reply-To: <20210330150229.GC30749@quack2.suse.cz>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.202]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 03:30:20PM +0100, Jan Kara wrote:
->Sasha, just be aware that this commit was added to help tracking down a
->particular syzbot report. As such there's no point in carrying it in
->-stable but there's no big harm either... Just one patch more.
+On 2021/3/30 23:02, Jan Kara wrote:
+> On Mon 29-03-21 17:20:35, Zhang Yi wrote:
+>> On 2021/3/23 1:25, Jan Kara wrote:
+>>> Hi!
+>>>
+>>> On Mon 22-03-21 23:24:23, Zhang Yi wrote:
+>>>> We find a use after free problem when CONFIG_QUOTA is enabled, the detail of
+>>>> this problem is below.
+>>>>
+>>>> mount_bdev()
+>>>> 	ext4_fill_super()
+>>>> 		sb->s_root = d_make_root(root);
+>>>> 		ext4_orphan_cleanup()
+>>>> 			sb->s_flags |= SB_ACTIVE; <--- 1. mark sb active
+>>>> 			ext4_orphan_get()
+>>>> 			ext4_truncate()
+>>>> 				ext4_block_truncate_page()
+>>>> 					mark_buffer_dirty <--- 2. dirty inode
+>>>> 			iput()
+>>>> 				iput_final  <--- 3. put into lru list
+>>>> 		ext4_mark_recovery_complete  <--- 4. failed and return error
+>>>> 		sb->s_root = NULL;
+>>>> 	deactivate_locked_super()
+>>>> 		kill_block_super()
+>>>> 			generic_shutdown_super()
+>>>> 				<--- 5. did not evict_inodes
+>>>> 		put_super()
+>>>> 			__put_super()
+>>>> 				<--- 6. put super block
+>>>>
+>>>> Because of the truncated inodes was dirty and will write them back later, it
+>>>> will trigger use after free problem. Now the question is why we need to set
+>>>> SB_ACTIVE bit when enable CONFIG_QUOTA below?
+>>>>
+>>>>   #ifdef CONFIG_QUOTA
+>>>>           /* Needed for iput() to work correctly and not trash data */
+>>>>           sb->s_flags |= SB_ACTIVE;
+>>>>
+>>>> This code was merged long long ago in v2.6.6, IIUC, it may not affect
+>>>> the quota statistics it we evict inode directly in the last iput.
+>>>> In order to slove this UAF problem, I'm not sure is there any side effect
+>>>> if we just remove this code, or remove SB_ACTIVE and call evict_inodes()
+>>>> in the error path of ext4_fill_super().
+>>>>
+>>>> Could you give some suggestions?
+>>>
+>>> That's a very good question. I do remember that I've added this code back
+>>> then because otherwise orphan cleanup was loosing updates to quota files.
+>>> But you're right that now I don't see how that could be happening and it
+>>> would be nice if we could get rid of this hack (and even better if it also
+>>> fixes the problem you've found). I guess I'll just try and test this change
+>>> with various quota configurations to see whether something still breaks or
+>>> not. Thanks report!
+>>>
+>>
+>> Thanks for taking time to look at this, is this change OK under your various
+>> quota test cases?
+> 
+> Yes, I did tests both with journalled quotas and with ext4 quota feature
+> and the quota accounting was correct after orphan recovery. So just
+> removing the SB_ACTIVE setting is fine AFAICT. Will you send a patch or
+> should I do it?
+> 
 
-Yup, I'd rather keep it to see if we get reports of this in stable
-kernels. Better a (harmless) warning than a silent corruption.
+Thanks for testing this change, I will send a patch.
 
--- 
-Thanks,
-Sasha
+Yi.
