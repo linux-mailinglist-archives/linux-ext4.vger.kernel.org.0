@@ -2,38 +2,35 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F87334F738
-	for <lists+linux-ext4@lfdr.de>; Wed, 31 Mar 2021 05:12:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA68834F740
+	for <lists+linux-ext4@lfdr.de>; Wed, 31 Mar 2021 05:13:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233288AbhCaDLe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 30 Mar 2021 23:11:34 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14969 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232874AbhCaDLW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 30 Mar 2021 23:11:22 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F9B9m14MFzyNMg;
-        Wed, 31 Mar 2021 11:09:16 +0800 (CST)
+        id S233306AbhCaDNQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 30 Mar 2021 23:13:16 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:14649 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233072AbhCaDNG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 30 Mar 2021 23:13:06 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F9BC46NcGzmc1x;
+        Wed, 31 Mar 2021 11:10:24 +0800 (CST)
 Received: from [10.174.176.202] (10.174.176.202) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 31 Mar 2021 11:11:11 +0800
-Subject: Re: [BUG && Question] question of SB_ACTIVE flag in
- ext4_orphan_cleanup()
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 31 Mar 2021 11:12:59 +0800
+Subject: Re: [PATCH] ext4: fix check to prevent false positive report of
+ incorrect used inodes
 To:     Jan Kara <jack@suse.cz>
-CC:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        yangerkun <yangerkun@huawei.com>, <linfeilong@huawei.com>
-References: <8a6864dd-7e6c-5268-2b5b-1010f99d2a1b@huawei.com>
- <20210322172551.GJ31783@quack2.suse.cz>
- <b1a05885-1d7b-b9d1-80da-785633cbfc6a@huawei.com>
- <20210330150229.GC30749@quack2.suse.cz>
+CC:     <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
+        <adilger.kernel@dilger.ca>
+References: <20210329061955.2437573-1-yi.zhang@huawei.com>
+ <20210329142631.GC4283@quack2.suse.cz>
 From:   Zhang Yi <yi.zhang@huawei.com>
-Message-ID: <99cce8ca-e4a0-7301-840f-2ace67c551f3@huawei.com>
-Date:   Wed, 31 Mar 2021 11:11:10 +0800
+Message-ID: <5d6e4215-4d42-6621-1004-517caf3d3ebf@huawei.com>
+Date:   Wed, 31 Mar 2021 11:12:58 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.3.1
 MIME-Version: 1.0
-In-Reply-To: <20210330150229.GC30749@quack2.suse.cz>
+In-Reply-To: <20210329142631.GC4283@quack2.suse.cz>
 Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -43,70 +40,76 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2021/3/30 23:02, Jan Kara wrote:
-> On Mon 29-03-21 17:20:35, Zhang Yi wrote:
->> On 2021/3/23 1:25, Jan Kara wrote:
->>> Hi!
->>>
->>> On Mon 22-03-21 23:24:23, Zhang Yi wrote:
->>>> We find a use after free problem when CONFIG_QUOTA is enabled, the detail of
->>>> this problem is below.
->>>>
->>>> mount_bdev()
->>>> 	ext4_fill_super()
->>>> 		sb->s_root = d_make_root(root);
->>>> 		ext4_orphan_cleanup()
->>>> 			sb->s_flags |= SB_ACTIVE; <--- 1. mark sb active
->>>> 			ext4_orphan_get()
->>>> 			ext4_truncate()
->>>> 				ext4_block_truncate_page()
->>>> 					mark_buffer_dirty <--- 2. dirty inode
->>>> 			iput()
->>>> 				iput_final  <--- 3. put into lru list
->>>> 		ext4_mark_recovery_complete  <--- 4. failed and return error
->>>> 		sb->s_root = NULL;
->>>> 	deactivate_locked_super()
->>>> 		kill_block_super()
->>>> 			generic_shutdown_super()
->>>> 				<--- 5. did not evict_inodes
->>>> 		put_super()
->>>> 			__put_super()
->>>> 				<--- 6. put super block
->>>>
->>>> Because of the truncated inodes was dirty and will write them back later, it
->>>> will trigger use after free problem. Now the question is why we need to set
->>>> SB_ACTIVE bit when enable CONFIG_QUOTA below?
->>>>
->>>>   #ifdef CONFIG_QUOTA
->>>>           /* Needed for iput() to work correctly and not trash data */
->>>>           sb->s_flags |= SB_ACTIVE;
->>>>
->>>> This code was merged long long ago in v2.6.6, IIUC, it may not affect
->>>> the quota statistics it we evict inode directly in the last iput.
->>>> In order to slove this UAF problem, I'm not sure is there any side effect
->>>> if we just remove this code, or remove SB_ACTIVE and call evict_inodes()
->>>> in the error path of ext4_fill_super().
->>>>
->>>> Could you give some suggestions?
->>>
->>> That's a very good question. I do remember that I've added this code back
->>> then because otherwise orphan cleanup was loosing updates to quota files.
->>> But you're right that now I don't see how that could be happening and it
->>> would be nice if we could get rid of this hack (and even better if it also
->>> fixes the problem you've found). I guess I'll just try and test this change
->>> with various quota configurations to see whether something still breaks or
->>> not. Thanks report!
->>>
+On 2021/3/29 22:26, Jan Kara wrote:
+> On Mon 29-03-21 14:19:55, Zhang Yi wrote:
+>> Commit <50122847007> ("ext4: fix check to prevent initializing reserved
+>> inodes") check the block group zero and prevent initializing reserved
+>> inodes. But in some special cases, the reserved inode may not all belong
+>> to the group zero, it may exist into the second group if we format
+>> filesystem below.
 >>
->> Thanks for taking time to look at this, is this change OK under your various
->> quota test cases?
+>>   mkfs.ext4 -b 4096 -g 8192 -N 1024 -I 4096 /dev/sda
+>>
+>> So, it will end up triggering a false positive report of a corrupted
+>> file system. This patch fix it by avoid check reserved inodes if no free
+>> inode blocks will be zeroed.
+>>
+>> Fixes: 50122847007 ("ext4: fix check to prevent initializing reserved inodes")
+>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 > 
-> Yes, I did tests both with journalled quotas and with ext4 quota feature
-> and the quota accounting was correct after orphan recovery. So just
-> removing the SB_ACTIVE setting is fine AFAICT. Will you send a patch or
-> should I do it?
+> Thanks! The patch looks correct but maybe the code can be made more
+> comprehensible like I suggest below?
 > 
+>> @@ -1543,22 +1544,25 @@ int ext4_init_inode_table(struct super_block *sb, ext4_group_t group,
+>>  	 * used inodes so we need to skip blocks with used inodes in
+>>  	 * inode table.
+>>  	 */
+>> -	if (!(gdp->bg_flags & cpu_to_le16(EXT4_BG_INODE_UNINIT)))
+>> -		used_blks = DIV_ROUND_UP((EXT4_INODES_PER_GROUP(sb) -
+>> -			    ext4_itable_unused_count(sb, gdp)),
+>> -			    sbi->s_inodes_per_block);
+>> -
+>> -	if ((used_blks < 0) || (used_blks > sbi->s_itb_per_group) ||
+>> -	    ((group == 0) && ((EXT4_INODES_PER_GROUP(sb) -
+>> -			       ext4_itable_unused_count(sb, gdp)) <
+>> -			      EXT4_FIRST_INO(sb)))) {
+>> -		ext4_error(sb, "Something is wrong with group %u: "
+>> -			   "used itable blocks: %d; "
+>> -			   "itable unused count: %u",
+>> -			   group, used_blks,
+>> -			   ext4_itable_unused_count(sb, gdp));
+>> -		ret = 1;
+>> -		goto err_out;
+>> +	if (!(gdp->bg_flags & cpu_to_le16(EXT4_BG_INODE_UNINIT))) {
+>> +		used_inos = EXT4_INODES_PER_GROUP(sb) -
+>> +			    ext4_itable_unused_count(sb, gdp);
+>> +		used_blks = DIV_ROUND_UP(used_inos, sbi->s_inodes_per_block);
+>> +
+>> +		if (used_blks >= 0 && used_blks <= sbi->s_itb_per_group)
+>> +			used_inos += group * EXT4_INODES_PER_GROUP(sb);
+> 
+> Maybe if would be more comprehensible like:
+> 
+> 		/* Bogus inode unused count? */
+> 		if (used_blks < 0 || used_blks > sbi->s_itb_per_group) {
+> 			ext4_error(...);
+> 			ret = 1;
+> 			goto err_out;
+> 		}
+> 
+> 		used_inos += EXT4_INODES_PER_GROUP(sb);
+> 		/*
+> 		 * Are there some uninitialized inodes in the inode table
+> 		 * before the first normal inode?
+> 		 */
+> 		if (used_blks != sbi->s_itb_per_group &&
+> 		    used_inos < EXT4_FIRST_INO(sb)) {
+> 			ext4_error(...);
+> 			ret = 1;
+> 			goto err_out;
+> 		}
 
-Thanks for testing this change, I will send a patch.
+Yes, it looks more comprehensible, I will send v2 as you suggested.
 
+Thanks,
 Yi.
