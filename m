@@ -2,59 +2,57 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8AFC351857
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 Apr 2021 19:48:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB2CF35184E
+	for <lists+linux-ext4@lfdr.de>; Thu,  1 Apr 2021 19:48:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234676AbhDARpo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 1 Apr 2021 13:45:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57128 "EHLO
+        id S234569AbhDARpj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 1 Apr 2021 13:45:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234592AbhDARiP (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 1 Apr 2021 13:38:15 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8837DC0319CF
-        for <linux-ext4@vger.kernel.org>; Thu,  1 Apr 2021 10:21:45 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id il9-20020a17090b1649b0290114bcb0d6c2so3454422pjb.0
-        for <linux-ext4@vger.kernel.org>; Thu, 01 Apr 2021 10:21:45 -0700 (PDT)
+        with ESMTP id S234476AbhDARhu (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 1 Apr 2021 13:37:50 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F10C0319D2
+        for <linux-ext4@vger.kernel.org>; Thu,  1 Apr 2021 10:21:46 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id f17so1377994plr.0
+        for <linux-ext4@vger.kernel.org>; Thu, 01 Apr 2021 10:21:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=9VJEdpvnYm1xf11CPx6XTw/UhbVWV6pFupr1hw4M5OI=;
-        b=kb2ujxhQHHiVQ7u7IWb8VHPQyHl+BxGWl34bQQkmpsUmaYN0EEXVV/RC4oTF7NJwsx
-         7hcFNlcqzObyiixcPh2V6T12gzrJeEcdRLY9dkgY+TYUjZZxOesDv+dKVKdAZSuaVJ8p
-         EUgX5oArXqJPSola5eg7L6S3HMGxCL8Gp7WlR1GybWnMS2XDM3cLy1J0NztAZ9w/qICE
-         FtJrC4nYFSldkEog30SHYljv35EBL6dVUum8vVrUdiPWySkcmPCAsRhKDhK/lANSrF9R
-         0uuWkAW14Kj5Mt25nrR9ViIdaTCgiu0562G88n1teoTUrN5cYKrqYSiOpgD+uoP5y+KY
-         bm5A==
+        bh=StY1yBZ9pifiKioURulkv2F1ZBbKhi9Sg1t+jALxITk=;
+        b=N6NCbpcfMReEHSI0g2KAy2MhlXyNbP7P3eXR8xBAmE8x7QNwWNwNPO1yGVtCLyUg9T
+         YYvPZBgtpx1NzUaKaiGlnqqDbSOy+gqnjXHvxKZc9LvUrR+ddyyn+rxO8TLpxbZs9Wqz
+         MpjRVG8awFSOTVig8b5ikdiVvEXHlWtcF/E5wptGNYsdjTp/huAFKYavx0qudfmxOP2Q
+         Shs3yOCuBB8sLgTII6gf0fQfsQCDFjY7fyOlN27oKHIu8Yyv09aQyO5WfGaatg4Q60Rg
+         aE9n8ABx78bGlQtd7ZfLNoDK/idELelNYYYwbGQ1JQxc6b0CElbWarXo8KUIjvxzdkO1
+         O7aQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=9VJEdpvnYm1xf11CPx6XTw/UhbVWV6pFupr1hw4M5OI=;
-        b=m1iRTYWGybyLKsxFcOakgtk1eIZi+cqkBLlMqbCw9gpXPZiE+Tmidj8YWFgbxGZb5N
-         etmN3KUg4p5VfZygabtcJzBdI1J2gIBiziMFk4mCXJZFfE+Ofo8U4LpJdx8kzKN9fuAO
-         XcMbBN4vVimKoGIAsmtrS69CUuSI6XvRtFmzSo/ukV1/KAk+b39Mi5X8LrRJ6w0TXqXN
-         o/GZoqlE5AAxzOa2zt+lKodJeer0YX2xFMcshH+3C+SmqJgAHJWdK5MlqavnAx0QV2Ww
-         oPnI2w5dkrTtc/PR01OrzCRszZU029Ba4SVfQ3YadXqVepY65/pzlcEuOedJnSNDwfPo
-         89og==
-X-Gm-Message-State: AOAM533SeG+3PavJ5YX1yF34VITUDlmjEY3W0Jw60FaFSVAF7vpcB9vR
-        r7t+z0jJC3RRM0/4IYe2tnn7IedNsqs=
-X-Google-Smtp-Source: ABdhPJycB0m+qW/yYKhKp5ON/VB/0yjYKyNrV8Jow2w9+FJr4XGj8J/5lRdUu90P+fMIiICq44SYbQ==
-X-Received: by 2002:a17:90a:281:: with SMTP id w1mr9340618pja.201.1617297704615;
-        Thu, 01 Apr 2021 10:21:44 -0700 (PDT)
+        bh=StY1yBZ9pifiKioURulkv2F1ZBbKhi9Sg1t+jALxITk=;
+        b=UoDAFxoi8GdreJctokNlegmLtUDeWIcA+jeCFgmGaJQ0/bZZ8Mh4q1iDa6bNVZR/bW
+         C9NuVna8IYHZBHVvUEAfmOXXdx3/fbvsc6hqkUD9QHwRtbbm/M5sXpVpVMx6xSld1fSy
+         C7rQyg0u+E6+z/dfmyAI/K0tMDrs1gadX/M18/2Yd+sooScWKH46bj1uwjZ39NgLnWQH
+         Qy3GUZE1oJndnxPUHIvhm92bNUnSvDu5ute1j9RyTylqCmDIzm0WxbQCUAP/QGcVEE0D
+         rexbsg25Joc/Ficj8SAAOdE3nU52+3ROECZKcJtvbE1RY4E4psvAwttMwT29THof6z+Y
+         zEbQ==
+X-Gm-Message-State: AOAM531zmuTDCAfJcFH2zZn0Ubx0SOVPpQ3GnPp2J3bIa0l1ikHHvwuc
+        sUNiqr7iYH2UbCitoBntSYix+L6RrgU=
+X-Google-Smtp-Source: ABdhPJzuGlEjZ2rj/xrm8q43Xya9EhzqoXvokw64h2JD+gbJa2aRDM7IFxclNvUVXYKXYArroUY4mg==
+X-Received: by 2002:a17:90b:e18:: with SMTP id ge24mr9997260pjb.199.1617297706009;
+        Thu, 01 Apr 2021 10:21:46 -0700 (PDT)
 Received: from harshads-520.kir.corp.google.com ([2620:15c:17:10:455f:9418:5b00:693])
-        by smtp.googlemail.com with ESMTPSA id w26sm5751766pfn.33.2021.04.01.10.21.43
+        by smtp.googlemail.com with ESMTPSA id w26sm5751766pfn.33.2021.04.01.10.21.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 10:21:44 -0700 (PDT)
+        Thu, 01 Apr 2021 10:21:45 -0700 (PDT)
 From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 To:     linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu, Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Ritesh Harjani <ritesh.list@gmail.com>
-Subject: [PATCH v6 6/7] ext4: add proc files to monitor new structures
-Date:   Thu,  1 Apr 2021 10:21:28 -0700
-Message-Id: <20210401172129.189766-7-harshadshirwadkar@gmail.com>
+Cc:     tytso@mit.edu, Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Subject: [PATCH v6 7/7] ext4: make prefetch_block_bitmaps default
+Date:   Thu,  1 Apr 2021 10:21:29 -0700
+Message-Id: <20210401172129.189766-8-harshadshirwadkar@gmail.com>
 X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
 In-Reply-To: <20210401172129.189766-1-harshadshirwadkar@gmail.com>
 References: <20210401172129.189766-1-harshadshirwadkar@gmail.com>
@@ -64,162 +62,87 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This patch adds a new file "mb_structs_summary" which allows us to see
-the summary of the new allocator structures added in this
-series. Here's the sample output of file:
-
-optimize_scan: 1
-max_free_order_lists:
-        list_order_0_groups: 0
-        list_order_1_groups: 0
-        list_order_2_groups: 0
-        list_order_3_groups: 0
-        list_order_4_groups: 0
-        list_order_5_groups: 0
-        list_order_6_groups: 0
-        list_order_7_groups: 0
-        list_order_8_groups: 0
-        list_order_9_groups: 0
-        list_order_10_groups: 0
-        list_order_11_groups: 0
-        list_order_12_groups: 0
-        list_order_13_groups: 40
-fragment_size_tree:
-        tree_min: 16384
-        tree_max: 32768
-        tree_nodes: 40
+Block bitmap prefetching is needed for these allocator optimization
+data structures to get populated and provide better group scanning
+order. So, turn it on bu default. prefetch_block_bitmaps mount option
+is now marked as removed and a new option no_prefetch_block_bitmaps is
+added to disable block bitmap prefetching.
 
 Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
-Reviewed-by: Ritesh Harjani <ritesh.list@gmail.com>
 ---
- fs/ext4/ext4.h    |  1 +
- fs/ext4/mballoc.c | 86 +++++++++++++++++++++++++++++++++++++++++++++++
- fs/ext4/sysfs.c   |  2 ++
- 3 files changed, 89 insertions(+)
+ fs/ext4/ext4.h  |  2 +-
+ fs/ext4/super.c | 15 ++++++++-------
+ 2 files changed, 9 insertions(+), 8 deletions(-)
 
 diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 1029716928c2..9a5afe9d2310 100644
+index 9a5afe9d2310..20c757f711e7 100644
 --- a/fs/ext4/ext4.h
 +++ b/fs/ext4/ext4.h
-@@ -2824,6 +2824,7 @@ int __init ext4_fc_init_dentry_cache(void);
+@@ -1227,7 +1227,7 @@ struct ext4_inode_info {
+ #define EXT4_MOUNT_JOURNAL_CHECKSUM	0x800000 /* Journal checksums */
+ #define EXT4_MOUNT_JOURNAL_ASYNC_COMMIT	0x1000000 /* Journal Async Commit */
+ #define EXT4_MOUNT_WARN_ON_ERROR	0x2000000 /* Trigger WARN_ON on error */
+-#define EXT4_MOUNT_PREFETCH_BLOCK_BITMAPS 0x4000000
++#define EXT4_MOUNT_NO_PREFETCH_BLOCK_BITMAPS 0x4000000
+ #define EXT4_MOUNT_DELALLOC		0x8000000 /* Delalloc support */
+ #define EXT4_MOUNT_DATA_ERR_ABORT	0x10000000 /* Abort on file data write */
+ #define EXT4_MOUNT_BLOCK_VALIDITY	0x20000000 /* Block validity checking */
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 6116640081c0..cec0fb07916b 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -1687,7 +1687,7 @@ enum {
+ 	Opt_dioread_nolock, Opt_dioread_lock,
+ 	Opt_discard, Opt_nodiscard, Opt_init_itable, Opt_noinit_itable,
+ 	Opt_max_dir_size_kb, Opt_nojournal_checksum, Opt_nombcache,
+-	Opt_prefetch_block_bitmaps, Opt_mb_optimize_scan,
++	Opt_no_prefetch_block_bitmaps, Opt_mb_optimize_scan,
+ #ifdef CONFIG_EXT4_DEBUG
+ 	Opt_fc_debug_max_replay, Opt_fc_debug_force
+ #endif
+@@ -1787,7 +1787,8 @@ static const match_table_t tokens = {
+ 	{Opt_inlinecrypt, "inlinecrypt"},
+ 	{Opt_nombcache, "nombcache"},
+ 	{Opt_nombcache, "no_mbcache"},	/* for backward compatibility */
+-	{Opt_prefetch_block_bitmaps, "prefetch_block_bitmaps"},
++	{Opt_removed, "prefetch_block_bitmaps"},
++	{Opt_no_prefetch_block_bitmaps, "no_prefetch_block_bitmaps"},
+ 	{Opt_mb_optimize_scan, "mb_optimize_scan=%d"},
+ 	{Opt_removed, "check=none"},	/* mount option from ext2/3 */
+ 	{Opt_removed, "nocheck"},	/* mount option from ext2/3 */
+@@ -2009,7 +2010,7 @@ static const struct mount_opts {
+ 	{Opt_max_dir_size_kb, 0, MOPT_GTE0},
+ 	{Opt_test_dummy_encryption, 0, MOPT_STRING},
+ 	{Opt_nombcache, EXT4_MOUNT_NO_MBCACHE, MOPT_SET},
+-	{Opt_prefetch_block_bitmaps, EXT4_MOUNT_PREFETCH_BLOCK_BITMAPS,
++	{Opt_no_prefetch_block_bitmaps, EXT4_MOUNT_NO_PREFETCH_BLOCK_BITMAPS,
+ 	 MOPT_SET},
+ 	{Opt_mb_optimize_scan, EXT4_MOUNT2_MB_OPTIMIZE_SCAN, MOPT_GTE0},
+ #ifdef CONFIG_EXT4_DEBUG
+@@ -3706,11 +3707,11 @@ static struct ext4_li_request *ext4_li_request_new(struct super_block *sb,
  
- /* mballoc.c */
- extern const struct seq_operations ext4_mb_seq_groups_ops;
-+extern const struct seq_operations ext4_mb_seq_structs_summary_ops;
- extern long ext4_mb_stats;
- extern long ext4_mb_max_to_scan;
- extern int ext4_seq_mb_stats_show(struct seq_file *seq, void *offset);
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index bb4da7c4d113..e6441f1d94c7 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -2963,6 +2963,92 @@ int ext4_seq_mb_stats_show(struct seq_file *seq, void *offset)
- 	return 0;
- }
- 
-+static void *ext4_mb_seq_structs_summary_start(struct seq_file *seq, loff_t *pos)
-+{
-+	struct super_block *sb = PDE_DATA(file_inode(seq->file));
-+	unsigned long position;
-+
-+	read_lock(&EXT4_SB(sb)->s_mb_rb_lock);
-+
-+	if (*pos < 0 || *pos >= MB_NUM_ORDERS(sb) + 1)
-+		return NULL;
-+	position = *pos + 1;
-+	return (void *) ((unsigned long) position);
-+}
-+
-+static void *ext4_mb_seq_structs_summary_next(struct seq_file *seq, void *v, loff_t *pos)
-+{
-+	struct super_block *sb = PDE_DATA(file_inode(seq->file));
-+	unsigned long position;
-+
-+	++*pos;
-+	if (*pos < 0 || *pos >= MB_NUM_ORDERS(sb) + 1)
-+		return NULL;
-+	position = *pos + 1;
-+	return (void *) ((unsigned long) position);
-+}
-+
-+static int ext4_mb_seq_structs_summary_show(struct seq_file *seq, void *v)
-+{
-+	struct super_block *sb = PDE_DATA(file_inode(seq->file));
-+	struct ext4_sb_info *sbi = EXT4_SB(sb);
-+	unsigned long position = ((unsigned long) v);
-+	struct ext4_group_info *grp;
-+	struct rb_node *n;
-+	unsigned int count, min, max;
-+
-+	position--;
-+	if (position >= MB_NUM_ORDERS(sb)) {
-+		seq_puts(seq, "fragment_size_tree:\n");
-+		n = rb_first(&sbi->s_mb_avg_fragment_size_root);
-+		if (!n) {
-+			seq_puts(seq, "\ttree_min: 0\n\ttree_max: 0\n\ttree_nodes: 0\n");
-+			return 0;
-+		}
-+		grp = rb_entry(n, struct ext4_group_info, bb_avg_fragment_size_rb);
-+		min = grp->bb_fragments ? grp->bb_free / grp->bb_fragments : 0;
-+		count = 1;
-+		while (rb_next(n)) {
-+			count++;
-+			n = rb_next(n);
-+		}
-+		grp = rb_entry(n, struct ext4_group_info, bb_avg_fragment_size_rb);
-+		max = grp->bb_fragments ? grp->bb_free / grp->bb_fragments : 0;
-+
-+		seq_printf(seq, "\ttree_min: %u\n\ttree_max: %u\n\ttree_nodes: %u\n",
-+			   min, max, count);
-+		return 0;
-+	}
-+
-+	if (position == 0) {
-+		seq_printf(seq, "optimize_scan: %d\n",
-+			   test_opt2(sb, MB_OPTIMIZE_SCAN) ? 1 : 0);
-+		seq_puts(seq, "max_free_order_lists:\n");
-+	}
-+	count = 0;
-+	list_for_each_entry(grp, &sbi->s_mb_largest_free_orders[position],
-+			    bb_largest_free_order_node)
-+		count++;
-+	seq_printf(seq, "\tlist_order_%u_groups: %u\n",
-+		   (unsigned int)position, count);
-+
-+	return 0;
-+}
-+
-+static void ext4_mb_seq_structs_summary_stop(struct seq_file *seq, void *v)
-+{
-+	struct super_block *sb = PDE_DATA(file_inode(seq->file));
-+
-+	read_unlock(&EXT4_SB(sb)->s_mb_rb_lock);
-+}
-+
-+const struct seq_operations ext4_mb_seq_structs_summary_ops = {
-+	.start  = ext4_mb_seq_structs_summary_start,
-+	.next   = ext4_mb_seq_structs_summary_next,
-+	.stop   = ext4_mb_seq_structs_summary_stop,
-+	.show   = ext4_mb_seq_structs_summary_show,
-+};
-+
- static struct kmem_cache *get_groupinfo_cache(int blocksize_bits)
- {
- 	int cache_index = blocksize_bits - EXT4_MIN_BLOCK_LOG_SIZE;
-diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
-index 67e2f70cb84f..eddbefe94e49 100644
---- a/fs/ext4/sysfs.c
-+++ b/fs/ext4/sysfs.c
-@@ -525,6 +525,8 @@ int ext4_register_sysfs(struct super_block *sb)
- 				&ext4_mb_seq_groups_ops, sb);
- 		proc_create_single_data("mb_stats", 0444, sbi->s_proc,
- 				ext4_seq_mb_stats_show, sb);
-+		proc_create_seq_data("mb_structs_summary", 0444, sbi->s_proc,
-+				&ext4_mb_seq_structs_summary_ops, sb);
+ 	elr->lr_super = sb;
+ 	elr->lr_first_not_zeroed = start;
+-	if (test_opt(sb, PREFETCH_BLOCK_BITMAPS))
+-		elr->lr_mode = EXT4_LI_MODE_PREFETCH_BBITMAP;
+-	else {
++	if (test_opt(sb, NO_PREFETCH_BLOCK_BITMAPS)) {
+ 		elr->lr_mode = EXT4_LI_MODE_ITABLE;
+ 		elr->lr_next_group = start;
++	} else {
++		elr->lr_mode = EXT4_LI_MODE_PREFETCH_BBITMAP;
  	}
- 	return 0;
- }
+ 
+ 	/*
+@@ -3741,7 +3742,7 @@ int ext4_register_li_request(struct super_block *sb,
+ 		goto out;
+ 	}
+ 
+-	if (!test_opt(sb, PREFETCH_BLOCK_BITMAPS) &&
++	if (test_opt(sb, NO_PREFETCH_BLOCK_BITMAPS) &&
+ 	    (first_not_zeroed == ngroups || sb_rdonly(sb) ||
+ 	     !test_opt(sb, INIT_INODE_TABLE)))
+ 		goto out;
 -- 
 2.31.0.291.g576ba9dcdaf-goog
 
