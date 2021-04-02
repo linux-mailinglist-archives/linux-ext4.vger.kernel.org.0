@@ -2,79 +2,115 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F2A43525BA
-	for <lists+linux-ext4@lfdr.de>; Fri,  2 Apr 2021 05:41:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC7B235265F
+	for <lists+linux-ext4@lfdr.de>; Fri,  2 Apr 2021 07:07:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233975AbhDBDlx convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Thu, 1 Apr 2021 23:41:53 -0400
-Received: from mail-m17639.qiye.163.com ([59.111.176.39]:47168 "EHLO
-        mail-m17639.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233701AbhDBDlx (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 1 Apr 2021 23:41:53 -0400
-X-Greylist: delayed 553 seconds by postgrey-1.27 at vger.kernel.org; Thu, 01 Apr 2021 23:41:53 EDT
-Received: from SZ11126892 (unknown [58.251.74.232])
-        by mail-m17639.qiye.163.com (Hmail) with ESMTPA id 7AB49380365;
-        Fri,  2 Apr 2021 11:32:37 +0800 (CST)
-From:   <changfengnan@vivo.com>
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>
-References: <20210329035800.648-1-changfengnan@vivo.com>
-In-Reply-To: <20210329035800.648-1-changfengnan@vivo.com>
-Subject: =?gb2312?B?tPC4tDogW1BBVENIXSBleHQ0OiBmaXggZXJyb3IgY29kZSBpbiBleHQ0X2M=?=
-        =?gb2312?B?b21taXRfc3VwZXI=?=
-Date:   Fri, 2 Apr 2021 11:32:35 +0800
-Message-ID: <000801d72770$d3f4b890$7bde29b0$@vivo.com>
+        id S229684AbhDBFHL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 2 Apr 2021 01:07:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229522AbhDBFHK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 2 Apr 2021 01:07:10 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA1A4C0613E6
+        for <linux-ext4@vger.kernel.org>; Thu,  1 Apr 2021 22:07:08 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id y3so158515pgi.0
+        for <linux-ext4@vger.kernel.org>; Thu, 01 Apr 2021 22:07:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ygzimTgFOeq3o3xHdu79pKaSSOIN+dC8HLkgcHUA3ME=;
+        b=VUXdDB0Byaielwa/Ve63o8+++8I2z2qM1z2ThQLfS0/sKIrnp1tzh9+KZz1eknVawU
+         ZL6UGWzuFYza26ZnNiB4IWwnYc0yvWspCZ2EpCLd+Glla/CxdI9FgFCa5i/VB7Q87qof
+         r2So9ljkzTY3KNTRFkX6G0aMOMs4qQ9i6tWQSoV+YLfLJJStGx26/nxJq69ng8dhh/vP
+         a33oteVBU6t+5D5b+wvNDLDXCQO9a+DCnWMt7/OXe/ceFrsU9rhf+RFjtvGJ9h0n54Rh
+         lEX6I/bXnKibqz5YMlqrUX/Oc6g0ivi/bZyFaEtZ9U6Zqe0GskDH3eh2qD7NIjwLqkoS
+         qcSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ygzimTgFOeq3o3xHdu79pKaSSOIN+dC8HLkgcHUA3ME=;
+        b=NBjSoZxCtIg7BqrPZipmIVjUmJZiicQwxLJjimaNAR4EYEEqDHOAZ96FwTX0w3bwce
+         f8T934CxwXjjeD1nJBX+BwdIkhnvPGaRWCcjdPCjHAlj7L77mVgtSEelYPZ+tnQjUO2Q
+         mk+I92iAfc6q/BwewAvE049FmaO6zWPQRpNyCkG48tQPJqT/Wfd9H+yDW99iNnF0gNoN
+         LCW8QUrJ/85f7jx7u4vFwvN73Eii2LbokoRaGz1DrTv3FCIqHYSDFFkqKOGleUPEoI/9
+         hnXSpkU5mZ6PLFCmshdGPsq4CSJaeVcmSuGaJ3/dSsq6Z9241hM5r0a65nyPKqoi8xCL
+         OVYQ==
+X-Gm-Message-State: AOAM532352n1unZmTjvzXiz5/Lr+ddmJcsZQBjjeUKJy6MvRfsHa0Dbe
+        Iqx1ZSvbOopuSPcnYRBLQxs=
+X-Google-Smtp-Source: ABdhPJxfx6TzmzBd5VtEcvyDnJS7yxOIgwQy5mqPorSX6mL7VJrNP2yRt08q4RoMn8F28ptPOuYuIA==
+X-Received: by 2002:a63:7a07:: with SMTP id v7mr10382144pgc.26.1617340026757;
+        Thu, 01 Apr 2021 22:07:06 -0700 (PDT)
+Received: from localhost ([122.182.250.63])
+        by smtp.gmail.com with ESMTPSA id v18sm7061360pfn.117.2021.04.01.22.07.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Apr 2021 22:07:06 -0700 (PDT)
+Date:   Fri, 2 Apr 2021 10:37:04 +0530
+From:   Ritesh Harjani <ritesh.list@gmail.com>
+To:     Eric Whitney <enwlinux@gmail.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu, willy@infradead.org,
+        Ritesh Harjani <ritesh.list@gmail.com>
+Subject: Re: generic/418 regression seen on 5.12-rc3
+Message-ID: <20210402050704.js3xab67u7avlwbs@riteshh-domain>
+References: <20210318181613.GA13891@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="gb2312"
-Content-Transfer-Encoding: 8BIT
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQKGikBhgiQAULD/1R54Z6dLmieg46lBzKFQ
-Content-Language: zh-cn
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZHR9DQ0JCSB0eTR8eVkpNSkxISE9ITkxNQkhVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NFE6Cxw*Qz8NPCorPSkYGig5
-        OEkaCRNVSlVKTUpMSEhPSE5MQk9NVTMWGhIXVRgTGhUcHR4VHBUaFTsNEg0UVRgUFkVZV1kSC1lB
-        WU5DVUlOSlVMT1VJSElZV1kIAVlBSUlOSzcG
-X-HM-Tid: 0a7890a3ce66d994kuws7ab49380365
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210318181613.GA13891@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Is there any problem with this patch? I did not see a reply, please let me
-know if there is a problem. Thanks
+On 21/03/18 02:16PM, Eric Whitney wrote:
+> As mentioned in today's ext4 concall, I've seen generic/418 fail from time to
+> time when run on 5.12-rc3 and 5.12-rc1 kernels.  This first occurred when
+> running the 1k test case using kvm-xfstests.  I was then able to bisect the
+> failure to a patch landed in the -rc1 merge window:
+>
+> (bd8a1f3655a7) mm/filemap: support readpage splitting a page
+>
+> Typical test output resulting from a failure looks like:
+>
+>      QA output created by 418
+>     +cmpbuf: offset 0: Expected: 0x1, got 0x0
+>     +[6:0] FAIL - comparison failed, offset 3072
+>     +diotest -w -b 512 -n 8 -i 4 failed at loop 0
+>      Silence is golden
+>     ...
+>
+> I've also been able to reproduce the failure on -rc3 in the 4k test case as
+> well.  The failure frequency there was 10 out of 100 runs.  It was anywhere
+> from 2 to 8 failures out of 100 runs in the 1k case.
 
------邮件原件-----
-发件人: Fengnan Chang <changfengnan@vivo.com> 
-发送时间: 2021年3月29日 11:58
-收件人: tytso@mit.edu; adilger.kernel@dilger.ca; linux-ext4@vger.kernel.org
-抄送: Fengnan Chang <changfengnan@vivo.com>
-主题: [PATCH] ext4: fix error code in ext4_commit_super
+Ok, I kept the test running for overnight on PPC64, since as you mentioned
+the reproducibility rate is less.
 
-We should set the error code when ext4_commit_super check argument failed.
+./check -I 1000 tests/generic/418  // this stops the test as soon as we hit it.
 
-Signed-off-by: Fengnan Chang <changfengnan@vivo.com>
----
- fs/ext4/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I could hit the test on 8th iteration of the test.
+Note this is 4k blocksize on 64K pagesize.
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c index
-03373471131c..5440b8ff86a8 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -5501,7 +5501,7 @@ static int ext4_commit_super(struct super_block *sb,
-int sync)
- 	int error = 0;
+<logs>
+======
+SECTION       -- ext4_4k
+FSTYP         -- ext4
+PLATFORM      -- Linux/ppc64le qemu 5.12.0-rc2-00313-gae9fda3a723 #66 SMP Sun Mar 14 23:05:24 CDT 2021
+MKFS_OPTIONS  -- -F -b4096 -I 256 -O 64bit /dev/loop3
+MOUNT_OPTIONS -- -o block_validity /dev/loop3 /mnt1/scratch
 
- 	if (!sbh || block_device_ejected(sb))
--		return error;
-+		return -EINVAL;
+generic/418 320s ... - output mismatch (see /home/qemu/work-tools/xfstests/results//ext4_4k/generic/418.out.bad)
+    --- tests/generic/418.out   2020-08-04 09:59:08.658307281 +0000
+    +++ /home/qemu/work-tools/xfstests/results//ext4_4k/generic/418.out.bad     2021-04-01 18:27:47.498465793 +0000
+    @@ -1,2 +1,5 @@
+     QA output created by 418
+    +cmpbuf: offset 0: Expected: 0x1, got 0x0
+    +[1:0] FAIL - comparison failed, offset 32768
+    +diotest -w -b 32768 -n 3 -i 1 failed at loop 6
+     Silence is golden
+Ran: generic/418
+Failures: generic/418
+Failed 1 of 1 tests
 
- 	/*
- 	 * If the file system is mounted read-only, don't update the
---
-2.29.0
-
-
-
+-ritesh
