@@ -2,166 +2,186 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52784352662
-	for <lists+linux-ext4@lfdr.de>; Fri,  2 Apr 2021 07:16:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8A79352725
+	for <lists+linux-ext4@lfdr.de>; Fri,  2 Apr 2021 09:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229599AbhDBFQj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 2 Apr 2021 01:16:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39588 "EHLO
+        id S234357AbhDBH6f (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 2 Apr 2021 03:58:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbhDBFQj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 2 Apr 2021 01:16:39 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98843C0613E6
-        for <linux-ext4@vger.kernel.org>; Thu,  1 Apr 2021 22:16:38 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id ay2so2061412plb.3
-        for <linux-ext4@vger.kernel.org>; Thu, 01 Apr 2021 22:16:38 -0700 (PDT)
+        with ESMTP id S233521AbhDBH6e (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 2 Apr 2021 03:58:34 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2DB2C0613E6
+        for <linux-ext4@vger.kernel.org>; Fri,  2 Apr 2021 00:58:33 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id v8so2189482plz.10
+        for <linux-ext4@vger.kernel.org>; Fri, 02 Apr 2021 00:58:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=Zqq6h4N3vOHLSUEEkis52ryeBpZkCqcmSP1wyixJ+po=;
-        b=0YeF61iiZdgMU9gOdGLeZmWKC0MqU2t5oT+TB7hPM5MLVt0DWD9f9PIX0pQa3SxkBK
-         hPikozEB0DnBrAC1kRCSXE1b0N0+t+eSn9vU2vdNW3S3LDGpWHEurCMizFN38e0qe+oi
-         J64heJlnH0nVdUZKorkPkQidCb+mFiIN+qHVdK6u7XDbx9BL+gMRDhyn18w7ebsG0yJl
-         ateL+E1uRMGAtFfDbh5hcinVHvKqXzDBKeAIV8ynW2WiYaygKuwAaFPzPkwXCOTYhwIO
-         9pOv/LPHrqH7CXsRcyRZxhfz86nh063v89s4cGi/erh6FylhZEQww31xIrfKsLjZV7zo
-         WAMg==
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=gpCMzVdWbrHuasE6eRXY7/GQNXSossxKf/i91VgAGG0=;
+        b=ZPmhidweTgdFClEGVrlQzth8MmfgDmY+lWEgEkeBpWR2N25iDzNn13Q7BNjjbiTAbZ
+         6UeZ+CPHx38xcIQKy7W5MMHUtV3JqltFDo+tFt8rEKXlbLQEGqIWIkVhuE8CPQMFUm83
+         5At/vJTOFTrvzbIOgGy2WT3U/p/PmC1rfas0xRl5wN/4nzpt3w6xMgO8nTdN757lvZLa
+         SzrZt2FnwN0ry/jM25Mi2LZFWO9fZhD+CPr11ftHMrlBqA1mgZunwW+5a+yj3Jz4Unib
+         5ndPvGDEO9xk6aXTmozFxx/GjXJOwggYN0TtOInZevKrz+Wa1WOjwfkUAho5m7Qx8dZB
+         hgAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=Zqq6h4N3vOHLSUEEkis52ryeBpZkCqcmSP1wyixJ+po=;
-        b=Iito9/CedJa2rntawBdIU3TBr8000liUvPRZ1qCfdN/uJV090e91kHYJF8i3sZ5Nz/
-         +qlPo7eZ8ax88P5ET9nFX/0SXsJRHLFbpQxbQ0PVCotnxPim3U3h3v7EZX6dhImEzau4
-         Lj3ihdvOPbhpvgu/vVHMJ4l18hzdUwSBySerceDZd2RVf5s/eG7CQZ31VB32JB4UP5QT
-         N9C+XueQf4cYnnQU2uPzAKqyWowERo47+5nPELkousZ2w+GjlN+AMneFAsubIE2NNu4l
-         rsXOBBQgU5CFMtARt8VEfu4DSE7Zo4gVeRqWGOYBVRG4rR0oYJHEnJcsGCHFpBn8Vq0l
-         myYA==
-X-Gm-Message-State: AOAM530LhdWaeuWxnkJiUsua1YdFX1W07NlBpsOysCslFpZZ15Ial6aG
-        LTNNpD2Heee5p9c0jYB1K9JHXQ==
-X-Google-Smtp-Source: ABdhPJzSSJYmzepIN8Badq2clDYFpyFtzsVDuTYQSy1jKJSI8ZyioBpGLweJjqHU6UTwmMVmL9eHpw==
-X-Received: by 2002:a17:90a:b007:: with SMTP id x7mr11715351pjq.27.1617340597945;
-        Thu, 01 Apr 2021 22:16:37 -0700 (PDT)
-Received: from [192.168.10.175] (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id 138sm6899695pfv.192.2021.04.01.22.16.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Apr 2021 22:16:37 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=gpCMzVdWbrHuasE6eRXY7/GQNXSossxKf/i91VgAGG0=;
+        b=hoD9QfNr9Tz8XUajhNsdsDeasQwdLM96poYx8fd8/YyrjxRmFuziqN9NQ4thtfyL7y
+         x4BBFTicDiBNaBzH5o06Ozo1kci6DvGJG2GzPXzLMG3QgjMIsLTfM3YbWBV6N2P0HHaY
+         DXvwaXlk0elORhYE9sLc+N9RhukgLOG96yKC3cLo5r0/tZTM6ciM3uVRHa9vzwYaQ4un
+         clyAUDCOxrIsqd90U/99cPrzh/UVEUpz7IfAcZiDNA7s582Jv0QtqEyx66i6nVag5914
+         sdL1yJduSc0FGo0/gMVsBFvpqt+wJGZXihKQaY7N6oSmkJk4kR1s3CLznAdevNwHxERB
+         pTWw==
+X-Gm-Message-State: AOAM530j0kKbsbeAbAVWL6a3zRnQ+WreJ3GkUUt6BpaXF6Me/o6xktmi
+        loa+1peJprUdtRsdoSab2PKw+P/ZNQrnD0pj
+X-Google-Smtp-Source: ABdhPJyDTDx75F7nhurrUixrWzPV91rzxpt0mtkW+2UhRODJ9lTTQtg2YH0Wyp3+uIqb4SVh+V+gjw==
+X-Received: by 2002:a17:90b:1490:: with SMTP id js16mr12343839pjb.131.1617350313426;
+        Fri, 02 Apr 2021 00:58:33 -0700 (PDT)
+Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id w7sm2760095pff.208.2021.04.02.00.58.32
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 02 Apr 2021 00:58:32 -0700 (PDT)
 From:   Andreas Dilger <adilger@dilger.ca>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v6 7/7] ext4: make prefetch_block_bitmaps default
-Date:   Thu, 1 Apr 2021 23:16:35 -0600
-Message-Id: <5815C46F-D210-4545-9610-136F68E93B66@dilger.ca>
-References: <20210401172129.189766-8-harshadshirwadkar@gmail.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu
-In-Reply-To: <20210401172129.189766-8-harshadshirwadkar@gmail.com>
-To:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-X-Mailer: iPhone Mail (18D52)
+Message-Id: <C68A6772-93DE-49E4-8C33-0AF480B4DC3F@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_A73C6F95-DB40-4964-B1F2-A7E2D3067B9E";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH] ext4: fix error code in ext4_commit_super
+Date:   Fri, 2 Apr 2021 01:58:29 -0600
+In-Reply-To: <000801d72770$d3f4b890$7bde29b0$@vivo.com>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+To:     changfengnan@vivo.com
+References: <20210329035800.648-1-changfengnan@vivo.com>
+ <000801d72770$d3f4b890$7bde29b0$@vivo.com>
+X-Mailer: Apple Mail (2.3273)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Apr 1, 2021, at 11:45, Harshad Shirwadkar <harshadshirwadkar@gmail.com> w=
-rote:
+
+--Apple-Mail=_A73C6F95-DB40-4964-B1F2-A7E2D3067B9E
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=utf-8
+
+On Apr 1, 2021, at 9:32 PM, <changfengnan@vivo.com> =
+<changfengnan@vivo.com> wrote:
 >=20
-> =EF=BB=BFBlock bitmap prefetching is needed for these allocator optimizati=
-on
-> data structures to get populated and provide better group scanning
-> order. So, turn it on bu default. prefetch_block_bitmaps mount option
-> is now marked as removed and a new option no_prefetch_block_bitmaps is
-> added to disable block bitmap prefetching.
+> Is there any problem with this patch? I did not see a reply, please =
+let me
+> know if there is a problem. Thanks
 
-This makes it more difficult to change between an old kernel and a new one
-using this option. It would be better to keep prefetch_block_bitmaps to turn=
+It's only been a few days since the patch was first posted, so nobody =
+has
+had a chance to review it yet.  The patch looks "obviously correct" at
+first glance, but often changing code is not as obvious as first =
+expected.
+Also, is "-EINVAL" the best code here?  For "block_device_ejected()" it
+might be more clear to return "-ENODEV" so that it prints "No such =
+device"
+instead of "Invalid argument" in userspace.
 
-the option on (not harmful if it is already on), and no_* turn it off.=20
+> =E5=8F=91=E4=BB=B6=E4=BA=BA: Fengnan Chang <changfengnan@vivo.com>
+> =E5=8F=91=E9=80=81=E6=97=B6=E9=97=B4: 2021=E5=B9=B43=E6=9C=8829=E6=97=A5=
+ 11:58
+> =E6=94=B6=E4=BB=B6=E4=BA=BA: tytso@mit.edu; adilger.kernel@dilger.ca; =
+linux-ext4@vger.kernel.org
+>=20
+> We should set the error code when ext4_commit_super check argument =
+failed.
+
+It would be useful if this also described how this problem was hit, or
+what caused this issue to be seen/fixed.  "Found while reviewing code"
+is OK, if that is the case, or "crashed during mount when ejecting a
+floppy disk", or whatever.  That makes it more clear how important the
+bug fix is to be landed and backported.
+
+It would also be useful to include a "Fixes:" label to show which patch
+caused the problem, and help decide which stable kernels need this =
+patch.
+=46rom running "git blame fs/ext4/super.c" appears that commit =
+2d01ddc86606
+("ext4: save error info to sb through journal if available") introduced
+the problem, but it seems like that patch only copied it from older =
+code.
+However, further digging shows commit c4be0c1dc4cdc ("filesystem freeze:
+add error handling of write_super_lockfs/unlockfs") added this =
+particular
+code (error =3D 0; return error).  Before that time, no error was =
+returned
+from this function at all, so the commit message should include:
+
+Fixes: c4be0c1dc4cdc ("filesystem freeze: add error handling of =
+write_super_lockfs/unlockfs")
 
 Cheers, Andreas
 
-> Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+> Signed-off-by: Fengnan Chang <changfengnan@vivo.com>
 > ---
-> fs/ext4/ext4.h  |  2 +-
-> fs/ext4/super.c | 15 ++++++++-------
-> 2 files changed, 9 insertions(+), 8 deletions(-)
+> fs/ext4/super.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
 >=20
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 9a5afe9d2310..20c757f711e7 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -1227,7 +1227,7 @@ struct ext4_inode_info {
-> #define EXT4_MOUNT_JOURNAL_CHECKSUM    0x800000 /* Journal checksums */
-> #define EXT4_MOUNT_JOURNAL_ASYNC_COMMIT    0x1000000 /* Journal Async Comm=
-it */
-> #define EXT4_MOUNT_WARN_ON_ERROR    0x2000000 /* Trigger WARN_ON on error *=
-/
-> -#define EXT4_MOUNT_PREFETCH_BLOCK_BITMAPS 0x4000000
-> +#define EXT4_MOUNT_NO_PREFETCH_BLOCK_BITMAPS 0x4000000
-> #define EXT4_MOUNT_DELALLOC        0x8000000 /* Delalloc support */
-> #define EXT4_MOUNT_DATA_ERR_ABORT    0x10000000 /* Abort on file data writ=
-e */
-> #define EXT4_MOUNT_BLOCK_VALIDITY    0x20000000 /* Block validity checking=
- */
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 6116640081c0..cec0fb07916b 100644
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c index
+> 03373471131c..5440b8ff86a8 100644
 > --- a/fs/ext4/super.c
 > +++ b/fs/ext4/super.c
-> @@ -1687,7 +1687,7 @@ enum {
->    Opt_dioread_nolock, Opt_dioread_lock,
->    Opt_discard, Opt_nodiscard, Opt_init_itable, Opt_noinit_itable,
->    Opt_max_dir_size_kb, Opt_nojournal_checksum, Opt_nombcache,
-> -    Opt_prefetch_block_bitmaps, Opt_mb_optimize_scan,
-> +    Opt_no_prefetch_block_bitmaps, Opt_mb_optimize_scan,
-> #ifdef CONFIG_EXT4_DEBUG
->    Opt_fc_debug_max_replay, Opt_fc_debug_force
-> #endif
-> @@ -1787,7 +1787,8 @@ static const match_table_t tokens =3D {
->    {Opt_inlinecrypt, "inlinecrypt"},
->    {Opt_nombcache, "nombcache"},
->    {Opt_nombcache, "no_mbcache"},    /* for backward compatibility */
-> -    {Opt_prefetch_block_bitmaps, "prefetch_block_bitmaps"},
-> +    {Opt_removed, "prefetch_block_bitmaps"},
-> +    {Opt_no_prefetch_block_bitmaps, "no_prefetch_block_bitmaps"},
->    {Opt_mb_optimize_scan, "mb_optimize_scan=3D%d"},
->    {Opt_removed, "check=3Dnone"},    /* mount option from ext2/3 */
->    {Opt_removed, "nocheck"},    /* mount option from ext2/3 */
-> @@ -2009,7 +2010,7 @@ static const struct mount_opts {
->    {Opt_max_dir_size_kb, 0, MOPT_GTE0},
->    {Opt_test_dummy_encryption, 0, MOPT_STRING},
->    {Opt_nombcache, EXT4_MOUNT_NO_MBCACHE, MOPT_SET},
-> -    {Opt_prefetch_block_bitmaps, EXT4_MOUNT_PREFETCH_BLOCK_BITMAPS,
-> +    {Opt_no_prefetch_block_bitmaps, EXT4_MOUNT_NO_PREFETCH_BLOCK_BITMAPS,=
+> @@ -5501,7 +5501,7 @@ static int ext4_commit_super(struct super_block =
+*sb,
+> int sync)
+> 	int error =3D 0;
+>=20
+> 	if (!sbh || block_device_ejected(sb))
+> -		return error;
+> +		return -EINVAL;
+>=20
+> 	/*
+> 	 * If the file system is mounted read-only, don't update the
+> --
+> 2.29.0
+>=20
+>=20
+>=20
 
->     MOPT_SET},
->    {Opt_mb_optimize_scan, EXT4_MOUNT2_MB_OPTIMIZE_SCAN, MOPT_GTE0},
-> #ifdef CONFIG_EXT4_DEBUG
-> @@ -3706,11 +3707,11 @@ static struct ext4_li_request *ext4_li_request_new=
-(struct super_block *sb,
->=20
->    elr->lr_super =3D sb;
->    elr->lr_first_not_zeroed =3D start;
-> -    if (test_opt(sb, PREFETCH_BLOCK_BITMAPS))
-> -        elr->lr_mode =3D EXT4_LI_MODE_PREFETCH_BBITMAP;
-> -    else {
-> +    if (test_opt(sb, NO_PREFETCH_BLOCK_BITMAPS)) {
->        elr->lr_mode =3D EXT4_LI_MODE_ITABLE;
->        elr->lr_next_group =3D start;
-> +    } else {
-> +        elr->lr_mode =3D EXT4_LI_MODE_PREFETCH_BBITMAP;
->    }
->=20
->    /*
-> @@ -3741,7 +3742,7 @@ int ext4_register_li_request(struct super_block *sb,=
 
->        goto out;
->    }
->=20
-> -    if (!test_opt(sb, PREFETCH_BLOCK_BITMAPS) &&
-> +    if (test_opt(sb, NO_PREFETCH_BLOCK_BITMAPS) &&
->        (first_not_zeroed =3D=3D ngroups || sb_rdonly(sb) ||
->         !test_opt(sb, INIT_INODE_TABLE)))
->        goto out;
-> --=20
-> 2.31.0.291.g576ba9dcdaf-goog
->=20
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_A73C6F95-DB40-4964-B1F2-A7E2D3067B9E
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmBmzqYACgkQcqXauRfM
+H+B3MRAAmeCTB5/V2hxFbg4+Idq7wokrp1EQQcCPAyO98d81lS6tK06cz1cteAAL
+vF22qfIH/SfHcCmUO9BhB0EHDesWfSCREzxA4FpLijJAY43G2RXuDXMGWsELJAxQ
+Pi9tAO/+veZzy/zbLPH9oFE95RR4CEQV8qpS9hgjt8qYKe/1zRHnrZXpreaDhdfx
+wvbGEG3nxolgJSLl7EIMiX7mK+zrbIjRWXw8GGS1t/sXuNevWmHhkpGwedHnl/Um
+xftDU9k9e1lTu+4P04aZDWYCZzqfgfKq2zJCRqVXAo8Paj5hmGBZ6dahEBvNJOCq
+DASxgaXIf3Q8pJHGsg6sfoV2AUPMKXeFakUYW5AZRS1axFKDiab9T8KpfeGnxvv5
+jjSi2GRLXj5XXMdMDI0xTD25qHE7jBgLAqrGIfKgkequT/JSWON06OVflGd+2I1J
+8L0mYSxHljVsuzfiza2EQxCZKj2Qh6uOQ5UHb8yRpgVCKojicFQRX6il7P/8/Bv3
+3f8o25i9AcDXx8TdkDVWfamQUzh3Ox2mUFQpRnXHPfeKbi5vjeEPLyU3iQ1ydG8d
+HUuNNvaiWwnIzmktg++Hzetbaadj1UVJsbG9Y9WGpaGezCjPYvcD1FXSAkIepAtn
+QUSJv0boAcQGd/CEvxvSRjPz/yWNCum/qx/XoASlxcNaQ9uis9o=
+=fr+K
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_A73C6F95-DB40-4964-B1F2-A7E2D3067B9E--
