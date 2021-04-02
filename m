@@ -2,177 +2,151 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE951352125
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 Apr 2021 22:54:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E11E3524F5
+	for <lists+linux-ext4@lfdr.de>; Fri,  2 Apr 2021 03:12:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234369AbhDAUyK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 1 Apr 2021 16:54:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38020 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233885AbhDAUx3 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 1 Apr 2021 16:53:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 272BB6100C;
-        Thu,  1 Apr 2021 20:53:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617310409;
-        bh=IeGFO7wQN74UxS4HFnyBTT77n4Wa4GfPsbfpJB6Qlnw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NyAgAAhaziRAU8zj1EByvNvVzNYpGkxmEryvVDgLck0vq0MCStLK31Om2yrVXTvgE
-         u+Rcydyi7/3x/AKzZ7mYa+xV9A3ipvVDPxOwAEVYM4nFw71uT7Wsk7W12WBJ5Op7G7
-         P5lEhp/MR5vN89OsR9PdNpLZIoqVakzUvmxtUSuAcqNmWzwIfwoCsx2p8tk80NJ5Ed
-         5HdFHQlHtnlax50ii+08WTeWmhnA7fu9YvM9xVYwv/l7+rhdWvybOsQ9i4iIhYRfC7
-         Z6h7cwPG4yfggyxw6mrQpjkIXnERttU2dM6TiBLRx5bdrZsY0bPjFGAz6ZUA2g5Ebr
-         GMHxNfjLkpAXA==
-Date:   Thu, 1 Apr 2021 13:53:27 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Shreeya Patel <shreeya.patel@collabora.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
-        chao@kernel.org, krisman@collabora.com, drosen@google.com,
-        yuchao0@huawei.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
-        andre.almeida@collabora.com
-Subject: Re: [PATCH v6 4/4] fs: unicode: Add utf8 module and a unicode layer
-Message-ID: <YGYyxzLu2gmO5CCk@gmail.com>
-References: <20210331210751.281645-1-shreeya.patel@collabora.com>
- <20210331210751.281645-5-shreeya.patel@collabora.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210331210751.281645-5-shreeya.patel@collabora.com>
+        id S233849AbhDBBMP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 1 Apr 2021 21:12:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231168AbhDBBMO (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 1 Apr 2021 21:12:14 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC6D6C061788
+        for <linux-ext4@vger.kernel.org>; Thu,  1 Apr 2021 18:12:13 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id q10so2685406pgj.2
+        for <linux-ext4@vger.kernel.org>; Thu, 01 Apr 2021 18:12:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=7qaItdfmipkA2sqFGSwihfvOcV2MVwdU2LaM4bGHONQ=;
+        b=SaBFw+TzoUyT8e6RdfMcPoQIByS5v6bwetcBiR2/k9Y2O8sK33Fojt4CXHPTpYVXJX
+         9XstkkLIX3V4pdCpD3mMO5JwH/ntxGzxpyaPq5VO2F3QXtO9979kpMAjwK1Iz4LsaaF3
+         lmAKvlDXNxTjg2Cjmxdy6nVZILje8gK2T1s0uqPeYa3uZlMIe98+hK6yTiPampDmczxX
+         0xfrJqOFiUCoTRe8j0nJCnQjuSEk+JyKRKZQm7Np5IsS+8/uEW7lwNeTW3Ng3HUFxxF0
+         pI+jvJJLE4KWAk8L0PLlqM6s/PrTgKyHIVHcydqRqNlF1BAtLsQzL+YkwjrB/BulPKjl
+         0BdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=7qaItdfmipkA2sqFGSwihfvOcV2MVwdU2LaM4bGHONQ=;
+        b=mEouVU1S1MBVBGGbx2dcVm8POjbkdfG1IvEOKNUH8BCOCirFlY8f1v1tCZkKa+iyQc
+         hY4FP4OI97fOXIFOyoXo/NQBjL9HkId7dMhfiFzVhl8NDDeFMIO1jNTmTk/JP5qF9YU/
+         yzKWbPZyZFxI8h6T04ZB+xpJRdQnOGJUjmNtVA/WGv1Ef+dooy1kjQ2E9tpRAoH6agU3
+         JXO894qLjnZSvyRT9zku/zDsYdPC1Vfi7IrrVK46EtpCOuKOkM3AAZrvLEobWAnFA74A
+         zyM37BVDWWAoE4R5KMo+UNZDB2yI0jQl4+QHelppAMeCIi2fc3O4AwhZ07wrsyFl1fQf
+         1s9A==
+X-Gm-Message-State: AOAM530n3YrLeo+4ynbQGjXkrMZ48Xqy6AAHFfDewMiK0VC/AhaJpOcZ
+        k8qu2jyijaDtQhzbFQJbHio7Xg==
+X-Google-Smtp-Source: ABdhPJy0gyhxOR32KiJiPLaHalUVmQRyYSs7jo3+qmTMB3RM9HKkoqLDPVlDQ1dCv8DClxarnhHzwQ==
+X-Received: by 2002:a63:6482:: with SMTP id y124mr10034862pgb.60.1617325933241;
+        Thu, 01 Apr 2021 18:12:13 -0700 (PDT)
+Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id e3sm6489581pfm.43.2021.04.01.18.12.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 01 Apr 2021 18:12:12 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <7103B623-9FD2-4BD2-8A44-8DBE38DFE291@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_4B471937-B0F3-40E7-8F95-16FF8433D279";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH] ext4: Fix ext4_error_err save negative errno into
+ superblock
+Date:   Thu, 1 Apr 2021 19:11:57 -0600
+In-Reply-To: <20210401072234.3338057-1-yebin10@huawei.com>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Liu Zhi Qiang <liuzhiqiang26@huawei.com>
+To:     Ye Bin <yebin10@huawei.com>
+References: <20210401072234.3338057-1-yebin10@huawei.com>
+X-Mailer: Apple Mail (2.3273)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 02:37:51AM +0530, Shreeya Patel wrote:
-> +# utf8data.h_shipped has a large database table which is an auto-generated
-> +# decodification trie for the unicode normalization functions and it is not
-> +# necessary to carry this large table in the kernel.
-> +# Enabling UNICODE_UTF8 option will allow UTF-8 encoding to be built as a
-> +# module and this module will be loaded by the unicode subsystem layer only
-> +# when any filesystem needs it.
-> +config UNICODE_UTF8
-> +	tristate "UTF-8 module"
->  	help
->  	  Say Y here to enable UTF-8 NFD normalization and NFD+CF casefolding
->  	  support.
 
-Please update this help text to properly describe this option, especially the
-consequences of setting it to 'm'.
+--Apple-Mail=_4B471937-B0F3-40E7-8F95-16FF8433D279
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset=us-ascii
 
-> +	select UNICODE
+On Apr 1, 2021, at 1:22 AM, Ye Bin <yebin10@huawei.com> wrote:
+> 
+> As read_mmp_block return 1 when failed, so just pass retval to
+> save_error_info.
 
-'select' should go before 'help'.
+Thank you for submitting this patch, but it should not be accepted.
 
->  struct unicode_map *unicode_load(const char *version)
->  {
-> +	try_then_request_module(utf8mod, "utf8");
-> +	if (!utf8mod) {
-> +		pr_err("Failed to load UTF-8 module\n");
-> +		return ERR_PTR(-ENODEV);
->  	}
->  
-> +	spin_lock(&utf8mod_lock);
-> +	if (!utf8mod || !try_module_get(utf8mod)) {
-> +		spin_unlock(&utf8mod_lock);
-> +		return ERR_PTR(-ENODEV);
-> +	}
-> +	spin_unlock(&utf8mod_lock);
-> +	return static_call(unicode_load_static_call)(version);
->  }
->  EXPORT_SYMBOL(unicode_load);
->  
->  void unicode_unload(struct unicode_map *um)
->  {
->  	kfree(um);
-> +
-> +	spin_lock(&utf8mod_lock);
-> +	if (utf8mod)
-> +		module_put(utf8mod);
-> +	spin_unlock(&utf8mod_lock);
-> +
->  }
->  EXPORT_SYMBOL(unicode_unload);
->  
-> +void unicode_register(struct module *owner)
-> +{
-> +	utf8mod = owner;
-> +}
-> +EXPORT_SYMBOL(unicode_register);
-> +
-> +void unicode_unregister(void)
-> +{
-> +	spin_lock(&utf8mod_lock);
-> +	utf8mod = NULL;
-> +	spin_unlock(&utf8mod_lock);
-> +}
-> +EXPORT_SYMBOL(unicode_unregister);
+The commit message is confusing, since the code being changed relates
+to retval from write_mmp_block().  That currently returns 1, but
+only until your next patch is applied.
+
+I think it is better to fix write_mmp_block() as in your next patch
+to return a negative value to be more consistent with other code.
+
+Cheers, Andreas
+
+> Fixes: 54d3adbc29f0 ("ext4: save all error info in save_error_info() and
+> drop ext4_set_errno()")
+> Reported-by: Liu Zhi Qiang <liuzhiqiang26@huawei.com>
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
+> ---
+> fs/ext4/mmp.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
+> index 795c3ff2907c..bb8353e25841 100644
+> --- a/fs/ext4/mmp.c
+> +++ b/fs/ext4/mmp.c
+> @@ -171,7 +171,7 @@ static int kmmpd(void *data)
+> 		 */
+> 		if (retval) {
+> 			if ((failed_writes % 60) == 0) {
+> -				ext4_error_err(sb, -retval,
+> +				ext4_error_err(sb, retval,
+> 					       "Error writing to MMP block");
+> 			}
+> 			failed_writes++;
+> --
+> 2.25.4
+> 
 
 
-This all looks very broken.  First, when !CONFIG_MODULES, utf8mod will always be
-NULL so unicode_load() will always fail.
+Cheers, Andreas
 
-Also, if the unicode_load_static_call() fails, a reference to the utf8mod will
-be leaked.
 
-Also, unicode_unload() can put a reference to the utf8mod that was never
-acquired.
 
-Also there is a data race on utf8mod because the accesses to it aren't properly
-synchronized.
 
-Please consider something like the following, which I think would address all
-these bugs:
 
-static bool utf8mod_get(void)
-{
-	bool ret;
 
-	spin_lock(&utf8mod_lock);
-	ret = utf8mod_loaded && try_module_get(utf8mod);
-	spin_unlock(&utf8mod_lock);
-	return ret;
-}
+--Apple-Mail=_4B471937-B0F3-40E7-8F95-16FF8433D279
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
 
-struct unicode_map *unicode_load(const char *version)
-{
-	struct unicode_map *um;
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
 
-	if (!try_then_request_module(utf8mod_get(), "utf8")) {
-		pr_err("Failed to load UTF-8 module\n");
-		return ERR_PTR(-ENODEV);
-	}
-	um = static_call(unicode_load_static_call)(version);
-	if (IS_ERR(um))
-		module_put(utf8mod);
-	return um;
-}
-EXPORT_SYMBOL(unicode_load);
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmBmb10ACgkQcqXauRfM
+H+DN0w/+NNJTjEwtEZ2M4JU4O/swJYTPZRF8xJcn4A6siay+ty2jxadixjbCK8l4
+7u7+7w9E+Ie6aPaq4b9QWwPkCE0gfR6BXVMQBV7bB+XNVnjOJzLlvVGSoaTH6FGa
+f+JGSFDblAAK/uJLZu53mnwRioqmq/WP9xU26FplLbhAJ8QtyfLgN83/6zxnPjvI
+MDQT6BhzdNHHCKOW/BgKKgo6GGJLL8gnFqjizoyd2kmrmtIjKDCWvNAdlN0PRnX7
+6C/dVI0S6yQYiu8yCi+lQ2MCOB2TaZPIYCAM24KSRm8v4xyVLKFYThp+g0ZN6lUW
+uFAyT9F/i/gRpzO2Va11hJy1RNDdsc/KFtQ0mUu2X3zGi9VZOc/MyUUUG10u+xYj
+lo/VQWNI30p2Vki5o7a0wgHehvixwvsFiX+cwTl63NI9sJCY2AQbos7uM00wpH0k
+ndHGX6ITDXfUiHoYqdFTqNhtZBsS3xK1CaFB0GjG/fD15kXF6cYqn08i7h3tcDT2
++P593M+jit1IvMTebzAtvHmBIhj+i4p1HggJjijsXaJN7VI8yjjuJh/Yyb9nMkZS
+SSnHANSRyGBHlddX8tzwCTafAx6v5/O6Q01Q+jIeiy91jrSNJBlit4tgrJuufZiW
+ANy4l4phLr48/bucl+o030FqlzA61dhIabElNGZodoOPI6URYno=
+=fqAO
+-----END PGP SIGNATURE-----
 
-void unicode_unload(struct unicode_map *um)
-{
-	if (um) {
-		kfree(um);
-		module_put(utf8mod);
-	}
-}
-EXPORT_SYMBOL(unicode_unload);
-
-void unicode_register(struct module *owner)
-{
-	spin_lock(&utf8mod_lock);
-	utf8mod = owner; /* note: will be NULL if !CONFIG_MODULES */
-	utf8mod_loaded = true;
-	spin_unlock(&utf8mod_lock);
-}
-EXPORT_SYMBOL(unicode_register);
-
-void unicode_unregister(void)
-{
-	spin_lock(&utf8mod_lock);
-	utf8mod = NULL;
-	utf8mod_loaded = false;
-	spin_unlock(&utf8mod_lock);
-}
-EXPORT_SYMBOL(unicode_unregister);
+--Apple-Mail=_4B471937-B0F3-40E7-8F95-16FF8433D279--
