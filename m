@@ -2,74 +2,60 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4AFE35590B
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 Apr 2021 18:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C716355980
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 Apr 2021 18:45:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234913AbhDFQSO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 6 Apr 2021 12:18:14 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44598 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234032AbhDFQSN (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 6 Apr 2021 12:18:13 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2E370B21D;
-        Tue,  6 Apr 2021 16:18:05 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id EFED81F2C52; Tue,  6 Apr 2021 18:18:04 +0200 (CEST)
-From:   Jan Kara <jack@suse.cz>
-To:     Ted Tso <tytso@mit.edu>
-Cc:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>,
-        Hao Sun <sunhao.th@gmail.com>
-Subject: [PATCH 2/2] ext4: Annotate data race in jbd2_journal_dirty_metadata()
-Date:   Tue,  6 Apr 2021 18:18:00 +0200
-Message-Id: <20210406161804.20150-2-jack@suse.cz>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210406161605.2504-1-jack@suse.cz>
-References: <20210406161605.2504-1-jack@suse.cz>
+        id S233197AbhDFQp6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 6 Apr 2021 12:45:58 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:34016 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232310AbhDFQp6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 6 Apr 2021 12:45:58 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 136GjSce029433
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 6 Apr 2021 12:45:29 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 3057815C3B0C; Tue,  6 Apr 2021 12:45:28 -0400 (EDT)
+Date:   Tue, 6 Apr 2021 12:45:28 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-fsdevel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 0/3 RFC] fs: Hole punch vs page cache filling races
+Message-ID: <YGyQKEamNgszxE+d@mit.edu>
+References: <20210120160611.26853-1-jack@suse.cz>
+ <YGdxtbun4bT/Mko4@mit.edu>
+ <20210406121702.GB19407@quack2.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210406121702.GB19407@quack2.suse.cz>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Assertion checks in jbd2_journal_dirty_metadata() are known to be racy
-but we don't want to be grabbing locks just for them.  We thus recheck
-them under b_state_lock only if it looks like they would fail. Annotate
-the checks with data_race().
+On Tue, Apr 06, 2021 at 02:17:02PM +0200, Jan Kara wrote:
+> 
+> Note that I did post v2 here:
+> 
+> https://lore.kernel.org/linux-fsdevel/20210208163918.7871-1-jack@suse.cz/
+> 
+> It didn't get much comments though. I guess I'll rebase the series, include
+> the explanations I've added in my reply to Dave and resend.
 
-Reported-by: Hao Sun <sunhao.th@gmail.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/jbd2/transaction.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Hmm, I wonder if it somehow got hit by the vger.kernel.org
+instabilities a while back?  As near as I can tell your v2 patches
+never were received by:
 
-diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-index 398d1d9209e2..e8fc45fd751f 100644
---- a/fs/jbd2/transaction.c
-+++ b/fs/jbd2/transaction.c
-@@ -1479,8 +1479,8 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
- 	 * crucial to catch bugs so let's do a reliable check until the
- 	 * lockless handling is fully proven.
- 	 */
--	if (jh->b_transaction != transaction &&
--	    jh->b_next_transaction != transaction) {
-+	if (data_race(jh->b_transaction != transaction &&
-+	    jh->b_next_transaction != transaction)) {
- 		spin_lock(&jh->b_state_lock);
- 		J_ASSERT_JH(jh, jh->b_transaction == transaction ||
- 				jh->b_next_transaction == transaction);
-@@ -1488,8 +1488,8 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
- 	}
- 	if (jh->b_modified == 1) {
- 		/* If it's in our transaction it must be in BJ_Metadata list. */
--		if (jh->b_transaction == transaction &&
--		    jh->b_jlist != BJ_Metadata) {
-+		if (data_race(jh->b_transaction == transaction &&
-+		    jh->b_jlist != BJ_Metadata)) {
- 			spin_lock(&jh->b_state_lock);
- 			if (jh->b_transaction == transaction &&
- 			    jh->b_jlist != BJ_Metadata)
--- 
-2.26.2
+	http://patchwork.ozlabs.org/project/linux-ext4/
 
+(There are no ext4 patches on patchwork.ozlabs.org on February 8th,
+although I do see patches hitting patchwork on February 7th and 9th.)
+
+Resending sounds like a plan.  :-)
+
+	      	  	  	  	       - Ted
