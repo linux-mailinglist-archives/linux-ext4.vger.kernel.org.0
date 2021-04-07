@@ -2,94 +2,88 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CE4635709B
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Apr 2021 17:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0800035709C
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 Apr 2021 17:42:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232537AbhDGPmR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 7 Apr 2021 11:42:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35982 "EHLO
+        id S230342AbhDGPmV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 7 Apr 2021 11:42:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230342AbhDGPmR (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Apr 2021 11:42:17 -0400
-Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 905FCC061756
-        for <linux-ext4@vger.kernel.org>; Wed,  7 Apr 2021 08:42:07 -0700 (PDT)
-Received: by mail-vs1-xe34.google.com with SMTP id q4so4571669vsm.0
-        for <linux-ext4@vger.kernel.org>; Wed, 07 Apr 2021 08:42:07 -0700 (PDT)
+        with ESMTP id S233167AbhDGPmU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Apr 2021 11:42:20 -0400
+Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF7CFC061756
+        for <linux-ext4@vger.kernel.org>; Wed,  7 Apr 2021 08:42:09 -0700 (PDT)
+Received: by mail-ua1-x935.google.com with SMTP id h34so5859768uah.5
+        for <linux-ext4@vger.kernel.org>; Wed, 07 Apr 2021 08:42:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IAbQDTHRgSYMJJwwizM1ILsUjR36IU2VlRVsaAfRbYg=;
-        b=iJuOutD4XmO7UDrOB/bx4GfzDyUpD15qXJxNq3GLR/FwAks5tb7x1yupJhmuYNZW0V
-         H3sCuDaMIcN71YThbnlUqtxBC/qHMBuXj1wzrQRpHuOkJ8PfKyMCBdwmmM0CgSEDI8Cs
-         iWypmCbVurPtdnnUpU+ejZWa3H8ugYr7VeCQmIIv4bs76KJyEfOyN5dMPZhTgwKriTKN
-         cj44aalVzRetUKwBRrKuAOSSZ17zUikhxapWx1Q6dtst7OcerCq5nQShoJrb21ncarDx
-         VUOE9XKASKJwWkbO2EsOUAbeJK4Vm9bD/F4JvMqUcg9tZ5Nqjmpyv7YIbRpuVFRyFklW
-         PdyA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=yqteTSf6p6nxzxiSU2r+6vOVftJyvMAoVhFVE+RjAhE=;
+        b=KFFCm7rGDfV7cRYPmIQRhtr+NlW+TcMxcj3GVrHoBr7JQhobCSYK50Z1sv/Ow6PhY0
+         85Ye7k1XNFQ7MtZ+gmnoFiIEZDFU+uU4lj+oUR/OHxa1UL+bcJDrFDKsP/gv2WFC0PJ+
+         ahUaIrzf8ImPTDRhslvKBXpgOjsDYsRkJHSmiHyvaMxIIRIN+ExOvw/2KJnEiTkxjEDn
+         z7taIoOS6ITL0YY9rfhVOeiELkDVVg/KNBZdjRF10OF1x3Kh4KaIqsdgyIQ2sVTEW+S/
+         MSN4qUdcWJzQCogZ0u0EPGU4lZOtByfZzDZYKVIXkg/J8sp0Lrc9nVYR83QwGLLdCqgt
+         n09A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IAbQDTHRgSYMJJwwizM1ILsUjR36IU2VlRVsaAfRbYg=;
-        b=H4ZwqLQ8R6104cnpygfUrnjFLd+FZ6MSC0zyKQsHf6gi6NJTXq+lCVk0HlJ+Ww6nph
-         lohCWtYJzQZD57JxRF9i+2dITphF0TlEV1yCRdIPqBqmuGkZAxZZcIcTW10JJXoLqV77
-         jMKLR7p5/jKA+cH176v93L3bVN7P5I0NLjsqHZcbxeDWR6+lA3p+pvHaXPn3wo3LX/mh
-         0wVhz+CYvRApj07NKyUpHW768uCA/RMXlVJtQNQMi3rjtW5EBOSBNpDEQNbUzE6FA4ch
-         b//1quvJri3fErVqaySJ8BLkv7y4wHKlOYDi9xfO/FnYbfCg9wM9kXU32Q5Zf0U+Koz2
-         nn2w==
-X-Gm-Message-State: AOAM532fME7lBgVUyYb7882ukXNNlcTX3p0aCaeSpsATPr+eXJl6rR3a
-        ULQRfhlFHMOPFnA8mdNaSaJfLnPvFgw=
-X-Google-Smtp-Source: ABdhPJy38N7SDr1ReZu21vHboaZEHoiRELiDKW2LVCgoifkfleMT2rdEK3QzDmEfaU9EMf6wMuAiIQ==
-X-Received: by 2002:a67:d59c:: with SMTP id m28mr2516926vsj.1.1617810126541;
-        Wed, 07 Apr 2021 08:42:06 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=yqteTSf6p6nxzxiSU2r+6vOVftJyvMAoVhFVE+RjAhE=;
+        b=EFevbF8kuui3AMU+zqHRxRBwqFAuEZ+0sFxqyDu4BwCvj7Obp0YTSLFXpT3lJgKg+M
+         0UoIq80kmLfmFnexWO+DyFvEVQ+4pF/jCb2sFUTOxWqJEr+qGnTcJRF5NG5hn3oju92k
+         F5YqeKh8KSSJAR5Uwa/FlHUiqpjGleaYC+bWrbTHaS2a0UoTFW9WMwVF/Ac81bgJ/+qW
+         forDA4bl+aO/6aElF8OFFV3lZlvu2X7S4tEM83L3Apzej2e3Pnw1J4FnHOAA5wR2PFkV
+         i0km+/WOrw1W9bdVDfxNUGEa9teezshifnbImIqY0AUa3pv6vDd8SJnstu5m5qr34kAD
+         pMCw==
+X-Gm-Message-State: AOAM533wE3HMH5TS3SDD4Dw43qVRw/ExyhhWW6tCxEqh97A5OwRdFk24
+        iR1sWCnv9FlhMAhmDs8mM+kpSceUzQ0=
+X-Google-Smtp-Source: ABdhPJx4vViKWLQGlzdeQkjekwMy06sKCzon5UYhrVuX7s+C1asP2hV3wUk6SABIsq0EMHxcrnZ5fw==
+X-Received: by 2002:ab0:6f98:: with SMTP id f24mr2609687uav.101.1617810128894;
+        Wed, 07 Apr 2021 08:42:08 -0700 (PDT)
 Received: from leah-cloudtop2.c.googlers.com.com (162.116.74.34.bc.googleusercontent.com. [34.74.116.162])
-        by smtp.googlemail.com with ESMTPSA id 81sm1172630uaq.3.2021.04.07.08.42.05
+        by smtp.googlemail.com with ESMTPSA id 81sm1172630uaq.3.2021.04.07.08.42.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 08:42:06 -0700 (PDT)
+        Wed, 07 Apr 2021 08:42:08 -0700 (PDT)
 From:   Leah Rumancik <leah.rumancik@gmail.com>
 To:     linux-ext4@vger.kernel.org
 Cc:     Leah Rumancik <leah.rumancik@gmail.com>
-Subject: [PATCH v2 0/2] Filename wipeout patch series updates
-Date:   Wed,  7 Apr 2021 15:42:00 +0000
-Message-Id: <20210407154202.1527941-1-leah.rumancik@gmail.com>
+Subject: [PATCH v2 1/2] ext4: wipe filename upon file deletion
+Date:   Wed,  7 Apr 2021 15:42:01 +0000
+Message-Id: <20210407154202.1527941-2-leah.rumancik@gmail.com>
 X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
+In-Reply-To: <20210407154202.1527941-1-leah.rumancik@gmail.com>
+References: <20210407154202.1527941-1-leah.rumancik@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-[1/2] ext4: wipe filename upon file deletion:
-- removed mount option for filename wipe, now filename wipe is
-default behavior
-- added wiping of file type at time of filename wipe
+Zero out filename and file type fields when file is deleted.
 
-[2/2] ext4: add ioctl FS_IOC_CHKPT_JRNL:
-- moved ioctl definition to include/uapi/linux/fs.h
-- renamed ioctl FS_IOC_CHKPT_JRNL
-- updated to require admin privileges to call ioctl
-- updated ioctl to take _u64
-- updated jbd2_journal_flush to take flags argument to allow
-for discard flag
-(kernel: JBD2_FLAG_DO_DISCARD / userspace: CHKPT_JRNL_DO_DISCARD)
+Signed-off-by: Leah Rumancik <leah.rumancik@gmail.com>
+---
+ fs/ext4/namei.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Leah Rumancik (2):
-  ext4: wipe filename upon file deletion
-  ext4: add ioctl FS_IOC_CHKPT_JRNL
-
- fs/ext4/ext4.h          |   1 +
- fs/ext4/inode.c         |   4 +-
- fs/ext4/ioctl.c         |  34 ++++++++++++--
- fs/ext4/namei.c         |   4 ++
- fs/ext4/super.c         |   6 +--
- fs/jbd2/journal.c       | 100 +++++++++++++++++++++++++++++++++++++++-
- fs/ocfs2/alloc.c        |   2 +-
- fs/ocfs2/journal.c      |   8 ++--
- include/linux/jbd2.h    |   5 +-
- include/uapi/linux/fs.h |   4 ++
- 10 files changed, 152 insertions(+), 16 deletions(-)
-
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index 883e2a7cd4ab..0147c86de99e 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -2492,6 +2492,10 @@ int ext4_generic_delete_entry(struct inode *dir,
+ 			else
+ 				de->inode = 0;
+ 			inode_inc_iversion(dir);
++
++			memset(de_del->name, 0, de_del->name_len);
++			memset(&de_del->file_type, 0, sizeof(__u8));
++
+ 			return 0;
+ 		}
+ 		i += ext4_rec_len_from_disk(de->rec_len, blocksize);
 -- 
 2.31.0.208.g409f899ff0-goog
 
