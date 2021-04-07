@@ -2,155 +2,205 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17FDC3560DD
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Apr 2021 03:43:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5997E3564B2
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 Apr 2021 09:01:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347753AbhDGBmN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 6 Apr 2021 21:42:13 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:15500 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235801AbhDGBmM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 6 Apr 2021 21:42:12 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FFRsM0kPgzyNMr;
-        Wed,  7 Apr 2021 09:39:51 +0800 (CST)
-Received: from [10.174.176.255] (10.174.176.255) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 7 Apr 2021 09:41:57 +0800
-Subject: Re: [PATCH] ext4: Fix bug on in ext4_es_cache_extent as
- ext4_split_extent_at failed
-To:     Theodore Ts'o <tytso@mit.edu>
-References: <20210325022925.1769056-1-yebin10@huawei.com>
- <YGvWwx/+HMdWMJwT@mit.edu>
-CC:     <adilger.kernel@dilger.ca>, <linux-ext4@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-From:   yebin <yebin10@huawei.com>
-Message-ID: <606D0DE5.8070002@huawei.com>
-Date:   Wed, 7 Apr 2021 09:41:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.1.0
+        id S1346041AbhDGHCA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 7 Apr 2021 03:02:00 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:38742 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243825AbhDGHB7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Apr 2021 03:01:59 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R381e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=wenyang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UUmC.cX_1617778902;
+Received: from localhost(mailfrom:wenyang@linux.alibaba.com fp:SMTPD_---0UUmC.cX_1617778902)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 07 Apr 2021 15:01:48 +0800
+From:   Wen Yang <wenyang@linux.alibaba.com>
+To:     tytso@mit.edu, Andreas Dilger <adilger.kernel@dilger.ca>
+Cc:     Wen Yang <simon.wy@alibaba-inc.com>,
+        Wen Yang <wenyang@linux.alibaba.com>,
+        Baoyou Xie <baoyou.xie@alibaba-inc.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ext4: add a configurable parameter to prevent endless loop in ext4_mb_discard_group_preallocations
+Date:   Wed,  7 Apr 2021 15:01:41 +0800
+Message-Id: <20210407070141.49253-1-wenyang@linux.alibaba.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-In-Reply-To: <YGvWwx/+HMdWMJwT@mit.edu>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.255]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+From: Wen Yang <simon.wy@alibaba-inc.com>
 
+The kworker has occupied 100% of the CPU for several days:
+PID USER  PR  NI VIRT RES SHR S  %CPU  %MEM TIME+  COMMAND
+68086 root 20 0  0    0   0   R  100.0 0.0  9718:18 kworker/u64:11
 
-On 2021/4/6 11:34, Theodore Ts'o wrote:
-> On Thu, Mar 25, 2021 at 10:29:25AM +0800, Ye Bin wrote:
->> We got follow bug_on:
->> [130747.323114] kernel BUG at fs/ext4/extents_status.c:762!
->> [130747.323117] Internal error: Oops - BUG: 0 [#1] SMP
->> ......
->> [130747.334329] Call trace:
->> [130747.334553]  ext4_es_cache_extent+0x150/0x168 [ext4]
->> [130747.334975]  ext4_cache_extents+0x64/0xe8 [ext4]
->> [130747.335368]  ext4_find_extent+0x300/0x330 [ext4]
->> [130747.335759]  ext4_ext_map_blocks+0x74/0x1178 [ext4]
->> [130747.336179]  ext4_map_blocks+0x2f4/0x5f0 [ext4]
->> [130747.336567]  ext4_mpage_readpages+0x4a8/0x7a8 [ext4]
->> [130747.336995]  ext4_readpage+0x54/0x100 [ext4]
->> [130747.337359]  generic_file_buffered_read+0x410/0xae8
->> [130747.337767]  generic_file_read_iter+0x114/0x190
->> [130747.338152]  ext4_file_read_iter+0x5c/0x140 [ext4]
->> [130747.338556]  __vfs_read+0x11c/0x188
->> [130747.338851]  vfs_read+0x94/0x150
->> [130747.339110]  ksys_read+0x74/0xf0
->>
->> If call ext4_ext_insert_extent failed but new extent already inserted, we just
->> update "ex->ee_len = orig_ex.ee_len", this will lead to extent overlap, then
->> cause bug on when cache extent.
-> How did this happen in the first place?  It sounds like if the extent
-> was already inserted, that would be casue there was an on-disk file
-> system corruption, no?
->
-> In that case, shouldn't we call ext4_error() to declare the file
-> system has an inconsistency, so it can be fixed by fsck?
-We inject IO fault when runing  fsstress,  JBD detect IO error then 
-trigger JBD abort. At the same time,
-if ext4_ext_insert_extent already insert new exntent then call 
-ext4_ext_dirty to dirty metadata , but
-JBD already aborted ,  ext4_ext_dirty will return error.
-In ext4_ext_dirty function call  ext4_ext_check_inode check extent if 
-ok, if not, trigger BUG_ON and
-also print extent detail information. I caught follow call trace and 
-extent information:
-=================================================================================
-[ 7597.436071] inode 1808 ext4_ext_check_inode
-[ 7597.436074] inode[1808]: [4] lblk=76 len=5 orig_len=32773 prev=0
-[ 7597.436077] inode[1808]: [3] lblk=81 len=25 orig_len=25 prev=81
-[ 7597.436080] inode[1808]: [2] lblk=106 len=130 orig_len=32898 prev=106
-[ 7597.436084] inode[1808]: [1] lblk=228 len=8 orig_len=32776 prev=236
-[ 7597.436181] ------------[ cut here ]------------
-[ 7597.436183] kernel BUG at fs/ext4/extents.c:221!
-[ 7597.436216] invalid opcode: 0000 [#1] SMP KASAN
-[ 7597.436219] Buffer I/O error on dev sda, logical block 131072, lost 
-sync page write
-[ 7597.436224] CPU: 7 PID: 5157 Comm: kworker/u16:1 Not tainted 
-4.19.95-00020-gb095ded9163d-dirty #186
-[ 7597.436230] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), 
-BIOS ?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 
-04/01/2014
-[ 7597.436242] Workqueue: writeback wb_workfn (flush-8:16)
-[ 7597.436248] RIP: 0010:__ext4_ext_dirty.cold+0x2ee/0x308
-[ 7597.436251] Code: ff 48 89 df e8 c7 e1 d0 ff e9 48 ff ff ff 48 c7 c7 
-80 d1 f7 ae e8 87 45 84 ff 48 83 05 ee 3b ca 07 01 48 83 05 c6 3c ca 07 
-01 <0f> 04
-[ 7597.436253] RSP: 0018:ffff88838bcaf050 EFLAGS: 00010202
-[ 7597.436256] RAX: 0000000000000000 RBX: ffff888364b67783 RCX: 
+And the stack obtained through sysrq is as follows:
+[20613144.850426] task: ffff8800b5e08000 task.stack: ffffc9001342c000
+[20613144.850427] RIP: 0010:[<ffffffffa0240743>] ^Ac
+[<ffffffffa0240743>] ext4_mb_discard_group_preallocations+0x1b3/0x480
+[ext4]
+[20613144.850428] RSP: 0018:ffffc9001342f740  EFLAGS: 00000246
+[20613144.850428] RAX: 0000000000000000 RBX: ffff8813bb5f72f0 RCX:
 0000000000000000
-[ 7597.436258] RDX: 0000000000000001 RSI: 0000000000000008 RDI: 
-ffffed1071795dfd
-[ 7597.436259] RBP: 000000000000003b R08: 0000000000000000 R09: 
-0000000000000001
-[ 7597.436261] R10: ffffed10744fbd6e R11: ffff8883a27deb77 R12: 
-dffffc0000000000
-[ 7597.436262] R13: dffffc0000000000 R14: ffff888364b673f0 R15: 
-ffff888364b6730c
-[ 7597.436264] FS:  0000000000000000(0000) GS:ffff8883a27c0000(0000) 
+[20613144.850429] RDX: 0000000000000001 RSI: ffff880268291d78 RDI:
+ffff880268291d98
+[20613144.850430] RBP: ffffc9001342f7e8 R08: 00493b8bc070da84 R09:
+0000000000000000
+[20613144.850430] R10: 0000000000001800 R11: ffff880155e7c380 R12:
+ffff880268291d98
+[20613144.850431] R13: ffff8813bb5f72e0 R14: ffff880268291d78 R15:
+ffff880268291d68
+[20613144.850432] FS:  0000000000000000(0000) GS:ffff881fbf080000(0000)
 knlGS:0000000000000000
-[ 7597.436266] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 7597.436267] CR2: 00007fca7a249000 CR3: 000000039ce75000 CR4: 
-00000000000006e0
-[ 7597.436270] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 
+[20613144.850432] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[20613144.850433] CR2: 000000c000823010 CR3: 0000000001c08000 CR4:
+00000000003606f0
+[20613144.850434] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
 0000000000000000
-[ 7597.436271] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 
+[20613144.850434] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
 0000000000000400
-[ 7597.436275] JBD2: Error -5 detected when updating journal superblock 
-for sda-8.
-[ 7597.436277] Call Trace:
-[ 7597.436294]  ext4_split_extent_at+0x785/0xc80
-[ 7597.466767]  ext4_split_extent.isra.0+0x2af/0x550
-[ 7597.472503]  ext4_ext_convert_to_initialized+0x4b4/0x2510
-[ 7597.536999]  ext4_ext_map_blocks+0x37ef/0x50c0
-[ 7597.542467]  ext4_map_blocks+0x685/0x1910
-[ 7597.544107]  ext4_writepages+0x1809/0x32f0
-[ 7597.547546]  do_writepages+0x7f/0x1b0
-[ 7597.548619]  __writeback_single_inode+0xc6/0xc40
-[ 7597.549203]  writeback_sb_inodes+0x49f/0xd60
-[ 7597.550748]  wb_writeback+0x252/0x9d0
-[ 7597.552335]  wb_workfn+0x309/0xe60
-[ 7597.557029]  process_one_work+0x70b/0x1610
-[ 7597.557566]  worker_thread+0x5a9/0x1060
-[ 7597.559091]  kthread+0x35e/0x430
-[ 7597.560601]  ret_from_fork+0x1f/0x30
-=================================================================================
-Obviously, the follow extent is  overlap:
-[ 7597.436080] inode[1808]: [2] lblk=106 len=130 orig_len=32898 prev=106
-[ 7597.436084] inode[1808]: [1] lblk=228 len=8 orig_len=32776 prev=236
+[20613144.850435] Stack:
+[20613144.850435]  ffff881942d6a6e8^Ac ffff8813bb5f72d0^Ac 00000001a02427cf^Ac 0000000000000140^Ac
+[20613144.850436]  ffff880f80618000^Ac 0000000000000000^Ac ffffc9001342f770^Ac ffffc9001342f770^Ac
+[20613144.850437]  ffffea0056360dc0^Ac ffff88158d837000^Ac ffffea0045155f80^Ac ffff88114557e000^Ac
+[20613144.850438] Call Trace:
+[20613144.850439]  [<ffffffffa0244209>] ext4_mb_new_blocks+0x429/0x550 [ext4]
+[20613144.850439]  [<ffffffffa02389ae>] ext4_ext_map_blocks+0xb5e/0xf30 [ext4]
+[20613144.850440]  [<ffffffff811c0001>] ? numa_zonelist_order_handler+0xa1/0x1c0
+[20613144.850441]  [<ffffffffa0204b52>] ext4_map_blocks+0x172/0x620 [ext4]
+[20613144.850441]  [<ffffffffa020835d>] ? ext4_writepages+0x4cd/0xf00 [ext4]
+[20613144.850442]  [<ffffffffa0208675>] ext4_writepages+0x7e5/0xf00 [ext4]
+[20613144.850442]  [<ffffffff811c1410>] ? wb_position_ratio+0x1f0/0x1f0
+[20613144.850443]  [<ffffffff811c487e>] do_writepages+0x1e/0x30
+[20613144.850444]  [<ffffffff81280265>] __writeback_single_inode+0x45/0x320
+[20613144.850444]  [<ffffffff81280ab2>] writeback_sb_inodes+0x272/0x600
+[20613144.850445]  [<ffffffff81280ed2>] __writeback_inodes_wb+0x92/0xc0
+[20613144.850445]  [<ffffffff81281238>] wb_writeback+0x268/0x300
+[20613144.850446]  [<ffffffff812819f4>] wb_workfn+0xb4/0x380
+[20613144.850447]  [<ffffffff810a5dc9>] process_one_work+0x189/0x420
+[20613144.850447]  [<ffffffff810a60ae>] worker_thread+0x4e/0x4b0
+[20613144.850448]  [<ffffffff810a6060>] ? process_one_work+0x420/0x420
+[20613144.850448]  [<ffffffff810ac696>] kthread+0xe6/0x100
+[20613144.850449]  [<ffffffff810ac5b0>] ? kthread_park+0x60/0x60
+[20613144.850450]  [<ffffffff81741dd9>] ret_from_fork+0x39/0x50
 
-I think this wouldn't  cause file system inconsistency, as error data 
-will not be stored  in disk.
+The cpu resources of the cloud server are precious, and the server
+cannot be restarted after running for a long time, so a configuration
+parameter is added to prevent this endless loop.
 
->
->> If call ext4_ext_insert_extent failed don't update ex->ee_len with old value.
->> Maybe there will lead to block leak, but it can be fixed by fsck later.
->    	      	   	   	       - Ted
-> .
->
+Signed-off-by: Wen Yang <wenyang@linux.alibaba.com>
+Cc: "Theodore Ts'o" <tytso@mit.edu>
+Cc: Andreas Dilger <adilger.kernel@dilger.ca>
+Cc: Baoyou Xie <baoyou.xie@alibaba-inc.com>
+Cc: linux-ext4@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+---
+ fs/ext4/ext4.h    |  1 +
+ fs/ext4/mballoc.c | 19 +++++++++++++++----
+ fs/ext4/mballoc.h |  2 ++
+ fs/ext4/sysfs.c   |  2 ++
+ 4 files changed, 20 insertions(+), 4 deletions(-)
+
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 2866d24..c238fec 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -1543,6 +1543,7 @@ struct ext4_sb_info {
+ 	unsigned long s_mb_last_start;
+ 	unsigned int s_mb_prefetch;
+ 	unsigned int s_mb_prefetch_limit;
++	unsigned long s_mb_max_retries_per_group;
+ 
+ 	/* stats for buddy allocator */
+ 	atomic_t s_bal_reqs;	/* number of reqs with len > 1 */
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 99bf091..c126b15 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -2853,6 +2853,8 @@ int ext4_mb_init(struct super_block *sb)
+ 	sbi->s_mb_stream_request = MB_DEFAULT_STREAM_THRESHOLD;
+ 	sbi->s_mb_order2_reqs = MB_DEFAULT_ORDER2_REQS;
+ 	sbi->s_mb_max_inode_prealloc = MB_DEFAULT_MAX_INODE_PREALLOC;
++	sbi->s_mb_max_retries_per_group = MB_DISCARD_RETRIES_FOREVER; 
++
+ 	/*
+ 	 * The default group preallocation is 512, which for 4k block
+ 	 * sizes translates to 2 megabytes.  However for bigalloc file
+@@ -4206,6 +4208,7 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
+ 					ext4_group_t group, int needed)
+ {
+ 	struct ext4_group_info *grp = ext4_get_group_info(sb, group);
++	struct ext4_sb_info *sbi = EXT4_SB(sb);
+ 	struct buffer_head *bitmap_bh = NULL;
+ 	struct ext4_prealloc_space *pa, *tmp;
+ 	struct list_head list;
+@@ -4213,6 +4216,7 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
+ 	int err;
+ 	int busy = 0;
+ 	int free, free_total = 0;
++	int discard_retries = 0;
+ 
+ 	mb_debug(sb, "discard preallocation for group %u\n", group);
+ 	if (list_empty(&grp->bb_prealloc_list))
+@@ -4291,11 +4295,18 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
+ 
+ 	/* if we still need more blocks and some PAs were used, try again */
+ 	if (free_total < needed && busy) {
+-		ext4_unlock_group(sb, group);
+-		cond_resched();
+-		busy = 0;
+-		goto repeat;
++		++discard_retries;
++		if (sbi && sbi->s_mb_max_retries_per_group < discard_retries) {
++			ext4_warning(sb, "The retry count has exceeded the limit: %lu",
++					sbi->s_mb_max_retries_per_group);
++		} else  {
++			ext4_unlock_group(sb, group);
++			cond_resched();
++			busy = 0;
++			goto repeat;
++		}
+ 	}
++
+ 	ext4_unlock_group(sb, group);
+ 	ext4_mb_unload_buddy(&e4b);
+ 	put_bh(bitmap_bh);
+diff --git a/fs/ext4/mballoc.h b/fs/ext4/mballoc.h
+index e75b474..fa5b5a3 100644
+--- a/fs/ext4/mballoc.h
++++ b/fs/ext4/mballoc.h
+@@ -78,6 +78,8 @@
+  */
+ #define MB_DEFAULT_MAX_INODE_PREALLOC	512
+ 
++#define MB_DISCARD_RETRIES_FOREVER	(-1UL)
++
+ struct ext4_free_data {
+ 	/* this links the free block information from sb_info */
+ 	struct list_head		efd_list;
+diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
+index 075aa3a..3549520 100644
+--- a/fs/ext4/sysfs.c
++++ b/fs/ext4/sysfs.c
+@@ -213,6 +213,7 @@ static ssize_t journal_task_show(struct ext4_sb_info *sbi, char *buf)
+ EXT4_RW_ATTR_SBI_UI(mb_stream_req, s_mb_stream_request);
+ EXT4_RW_ATTR_SBI_UI(mb_group_prealloc, s_mb_group_prealloc);
+ EXT4_RW_ATTR_SBI_UI(mb_max_inode_prealloc, s_mb_max_inode_prealloc);
++EXT4_RW_ATTR_SBI_UL(mb_max_retries_per_group, s_mb_max_retries_per_group);
+ EXT4_RW_ATTR_SBI_UI(extent_max_zeroout_kb, s_extent_max_zeroout_kb);
+ EXT4_ATTR(trigger_fs_error, 0200, trigger_test_error);
+ EXT4_RW_ATTR_SBI_UI(err_ratelimit_interval_ms, s_err_ratelimit_state.interval);
+@@ -260,6 +261,7 @@ static ssize_t journal_task_show(struct ext4_sb_info *sbi, char *buf)
+ 	ATTR_LIST(mb_stream_req),
+ 	ATTR_LIST(mb_group_prealloc),
+ 	ATTR_LIST(mb_max_inode_prealloc),
++	ATTR_LIST(mb_max_retries_per_group),
+ 	ATTR_LIST(max_writeback_mb_bump),
+ 	ATTR_LIST(extent_max_zeroout_kb),
+ 	ATTR_LIST(trigger_fs_error),
+-- 
+1.8.3.1
 
