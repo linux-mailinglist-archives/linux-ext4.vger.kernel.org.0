@@ -2,100 +2,115 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B598A357AE7
-	for <lists+linux-ext4@lfdr.de>; Thu,  8 Apr 2021 05:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB7D1357B73
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 Apr 2021 06:43:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229661AbhDHDs4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 7 Apr 2021 23:48:56 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:37871 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229506AbhDHDsz (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Apr 2021 23:48:55 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1383me61021585
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 7 Apr 2021 23:48:41 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 5021C15C3B0C; Wed,  7 Apr 2021 23:48:40 -0400 (EDT)
-Date:   Wed, 7 Apr 2021 23:48:40 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Eric Biggers <ebiggers@kernel.org>
+        id S229689AbhDHEnm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 8 Apr 2021 00:43:42 -0400
+Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:54679 "EHLO
+        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229512AbhDHEnl (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Apr 2021 00:43:41 -0400
+Received: from dread.disaster.area (pa49-181-239-12.pa.nsw.optusnet.com.au [49.181.239.12])
+        by mail106.syd.optusnet.com.au (Postfix) with ESMTPS id A24865EC999;
+        Thu,  8 Apr 2021 14:43:27 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1lUMVr-00FQkU-2P; Thu, 08 Apr 2021 14:43:27 +1000
+Date:   Thu, 8 Apr 2021 14:43:27 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     "Darrick J. Wong" <djwong@kernel.org>
 Cc:     Leah Rumancik <leah.rumancik@gmail.com>, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] ext4: wipe filename upon file deletion
-Message-ID: <YG59GE+8bhtVLOQr@mit.edu>
+Subject: Re: [PATCH v2 2/2] ext4: add ioctl FS_IOC_CHKPT_JRNL
+Message-ID: <20210408044327.GJ1990290@dread.disaster.area>
 References: <20210407154202.1527941-1-leah.rumancik@gmail.com>
- <20210407154202.1527941-2-leah.rumancik@gmail.com>
- <YG4lG2B9Wf4t6IfA@gmail.com>
+ <20210407154202.1527941-3-leah.rumancik@gmail.com>
+ <20210407183547.GG22091@magnolia>
+ <20210407211500.GG1990290@dread.disaster.area>
+ <20210408012651.GH22091@magnolia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YG4lG2B9Wf4t6IfA@gmail.com>
+In-Reply-To: <20210408012651.GH22091@magnolia>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=Tu+Yewfh c=1 sm=1 tr=0 cx=a_idp_f
+        a=gO82wUwQTSpaJfP49aMSow==:117 a=gO82wUwQTSpaJfP49aMSow==:17
+        a=kj9zAlcOel0A:10 a=3YhXtTcJ-WEA:10 a=7-415B0cAAAA:8
+        a=jUQIXtlEuOsnFmh6BwwA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 02:33:15PM -0700, Eric Biggers wrote:
-> On Wed, Apr 07, 2021 at 03:42:01PM +0000, Leah Rumancik wrote:
-> > Zero out filename and file type fields when file is deleted.
+On Wed, Apr 07, 2021 at 06:26:51PM -0700, Darrick J. Wong wrote:
+> On Thu, Apr 08, 2021 at 07:15:00AM +1000, Dave Chinner wrote:
+> > On Wed, Apr 07, 2021 at 11:35:47AM -0700, Darrick J. Wong wrote:
+> > > On Wed, Apr 07, 2021 at 03:42:02PM +0000, Leah Rumancik wrote:
+> > > > ioctl FS_IOC_CHKPT_JRNL checkpoints and flushes the journal. With the
+> > > > CHKPT_JRNL_DISCARD flag set, the journal blocks are also discarded.
+> > > > With the filename wipeout patch, Ext4 guarantees that all data will be
+> > > > discarded on deletion. This ioctl allows for periodically discarding
+> > > > journal contents too.
+> > > 
+> > > This needs a documentation update to cover what this new userspace ABI
+> > > does, and probably linux-api and linux-fsdevel should be cc'd.
+> > 
+> > You need to describe the semantics that you are exporting to
+> > userspace. Exactly what does a "journal checkpoint" mean from the
+> > point of view of user visible metadata and data integrity?
 > 
-> Why?
-
-Eric is right that we need to have a better explanation in the commit
-description.
-
-In answer to Eric's question, the problem that is trying to be solved
-here is that if a customer happens to be storing PII in filenames
-(e-mail addresses, SSN's, etc.) that they might want to have a
-guarantee that if a file is deleted, the filename and the file's
-contents can be considered as *gone* after some wipeout time period
-has elapsed.  So the use case is every N hours, some system daemon
-will execute FITRIM and FS_IOC_CHKPT_JRNL with the CHKPT_JRNL_DISCARD
-flag set, in order to meet this particular guarantee.
-
-Yes, we can't guarantee that discard will always zap all unused data
-blocks in the general case and SSD's may very well have copies made as
-a side effect of their GC operations, yadda, yadda.  Fortunately, for
-this particular use case, the primary concern is for cloud customers
-running services on Google Cloud's Persistent Disks.
-
-> Also what about when a dir_entry is moved?  Wouldn't you want to make sure that
-> any copies don't get left around?
-
-Yes, we need to also make sure that after we do a hash tree leaf node
-split in fs/ext4/namei.c:do_split(), that the empty space is also
-zero'ed out.
-
-> > @@ -2492,6 +2492,10 @@ int ext4_generic_delete_entry(struct inode *dir,
-> >  			else
-> >  				de->inode = 0;
-> >  			inode_inc_iversion(dir);
-> > +
-> > +			memset(de_del->name, 0, de_del->name_len);
-> > +			memset(&de_del->file_type, 0, sizeof(__u8));
+> To be clear, my interests are /not/ the same as Leah's here -- I want to
+> use this "checkpoint" call to provide a way for grub to know that it
+> will be able to find boot files without needing to recover the log.
 > 
-> The second line could be written as simply 'de_del->file_type = 0'.
+> For the grub use case, the user-visible behaviors that are required are:
 > 
-> Also why zero these two fields in particular and not the whole dir_entry?
+>  1. All dirty file data in memory are flushed;
+>  2. All committed metadata updates are forced to the ondisk log;
+>  3. All log contents have been written into the filesystem.
+> 
+> (Note confusing terminology here: in my head, #2 means checkpointing the
+> ondisk log, whereas #3 means checkpointing the filesystem itself; and
+> "FS_IOC_CHECKPOINT" means checkpointing the whole filesystem, not just
+> the log.)
 
-Agreed, it would be a good diea to clear everything up to rec_len:
+So, yeah, you just renamed the ioctl because you are clearly not just
+talking about a journal checkpoint. A journal checkpoint is what
+XFS does when it pushes the CIL to disk (i.e. #2). Quiescing the log
+is what we call #3 - basically bringing it to an empty, idle state.
 
-	memset(de_del->name, 0, de_del->rec_len - 12);
+Which makes me even more concerned about defining the behaviour and
+semantics needed before we even talk about the API that would be
+used.
 
-and we should probably zero out de_del->name_len as well.  Better to
-not leave anything behind.
+> > All of these methods imply a journal checkpoint of some kind is done
+> > in ext4, so why do we need a specific ioctl to do this?
+> 
+> For XFS, we don't have any kind of system call that will checkpoint the
+> fs without the unwanted behaviors of FIFREEZE and FITHAW.  AFAICT
+> there's no explicit way to force a fs checkpoint in ext4 aside from
+> contorted insanity with data=journal files and bmap().  Weird things
+> like NOVA would have to figure out a way to checkpoint the whole fs
+> (flush all the journals?).
 
-						- Ted
+So, yeah, you're not talking about a journal checkpoint. You're
+describing a completely different set of requirements.... :/
 
-P.S.  By the way, this is a guarantee that we're going to eventually
-want to care about for XFS as well, since as of COS-85
-(Container-Optimized OS), XFS is supported in Preview Mode.  This
-means that eventually we're going to want submit patches so as to be
-able to support the CHKPT_JRNL_DISCARD flag for FS_IOC_CHKPT_JRNL in
-XFS as well.
+> btrfs can probably get away with flushing the disk cache since it has
+> COW btrees for metadata (fsync log notwithstanding); and I'd imagine
+> stupid things like FAT would just return EOPNOTSUPP.
+> 
+> To solve my stupid grub problem, this could easily be:
+> 
+> 	ret = syncfs2(fd, SYNCFS_CHECKPOINT_FS);
 
-P.P.S.  We'll also want to have a mount option which supresses file
-names (for example, from ext4_error() messages) from showing up in
-kernel logs, to ease potential privacy concerns with respect to serial
-console and kernel logs.  But that's for another patch set....
+Sure, but is that the same thing that Leah needs? Checkpoints don't
+imply discards (let alone journal discards) in any way, and adding
+(optional) discard support for random parts of filesysetms to
+syncfs() semantics doesn't seem like a very good fit...
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
