@@ -2,170 +2,159 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFE0F358D45
-	for <lists+linux-ext4@lfdr.de>; Thu,  8 Apr 2021 21:10:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E432F358D76
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 Apr 2021 21:25:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232990AbhDHTKd convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Thu, 8 Apr 2021 15:10:33 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:50728 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232969AbhDHTKd (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Apr 2021 15:10:33 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id 4F58F1F46053
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     Shreeya Patel <shreeya.patel@collabora.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
-        chao@kernel.org, ebiggers@google.com, drosen@google.com,
-        ebiggers@kernel.org, yuchao0@huawei.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
-        andre.almeida@collabora.com
-Subject: Re: [PATCH v7 4/4] fs: unicode: Add utf8 module and a unicode layer
-Organization: Collabora
-References: <20210407144845.53266-1-shreeya.patel@collabora.com>
-        <20210407144845.53266-5-shreeya.patel@collabora.com>
-Date:   Thu, 08 Apr 2021 15:10:16 -0400
-In-Reply-To: <20210407144845.53266-5-shreeya.patel@collabora.com> (Shreeya
-        Patel's message of "Wed, 7 Apr 2021 20:18:45 +0530")
-Message-ID: <875z0wvbhj.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S232750AbhDHTZu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 8 Apr 2021 15:25:50 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:48232 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231940AbhDHTZt (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Apr 2021 15:25:49 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 138JPU1Y005174
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 8 Apr 2021 15:25:31 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 3C81315C3B12; Thu,  8 Apr 2021 15:25:30 -0400 (EDT)
+Date:   Thu, 8 Apr 2021 15:25:30 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        Leah Rumancik <leah.rumancik@gmail.com>,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] ext4: wipe filename upon file deletion
+Message-ID: <YG9YqkHfslwAdh2/@mit.edu>
+References: <20210407154202.1527941-1-leah.rumancik@gmail.com>
+ <20210407154202.1527941-2-leah.rumancik@gmail.com>
+ <YG4lG2B9Wf4t6IfA@gmail.com>
+ <YG59GE+8bhtVLOQr@mit.edu>
+ <20210408052155.GK1990290@dread.disaster.area>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210408052155.GK1990290@dread.disaster.area>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Shreeya Patel <shreeya.patel@collabora.com> writes:
+On Thu, Apr 08, 2021 at 03:21:55PM +1000, Dave Chinner wrote:
+> "if"
+> 
+> Is this purely a hypothetical "if", or is it "we have a customer
+> that actaully does this"? Because if this is just hypothetical, then
+> future customers should already be advised and know not to store PII
+> information in clear text *anywhere* in their systems.
 
-> utf8data.h_shipped has a large database table which is an auto-generated
-> decodification trie for the unicode normalization functions.
-> It is not necessary to load this large table in the kernel if no
-> filesystem is using it, hence make UTF-8 encoding loadable by converting
-> it into a module.
->
-> Modify the file called unicode-core which will act as a layer for
-> unicode subsystem. It will load the UTF-8 module and access it's functions
-> whenever any filesystem that needs unicode is mounted.
-> Currently, only UTF-8 encoding is supported but if any other encodings
-> are supported in future then the layer file would be responsible for
-> loading the desired encoding module.
->
-> Also, indirect calls using function pointers are slow, use static calls to
-> avoid overhead caused in case of repeated indirect calls. Static calls
-> improves the performance by directly calling the functions as opposed to
-> indirect calls.
->
-> Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
-> ---
-> Changes in v7
->   - Update the help text in Kconfig
->   - Handle the unicode_load_static_call function failure by decrementing
->     the reference.
->   - Correct the code for handling built-in utf8 option as well.
->   - Correct the synchronization for accessing utf8mod.
->   - Make changes to unicode_unload() for handling the situation where
->     utf8mod != NULL and um == NULL.
->
-> Changes in v6
->   - Add spinlock to protect utf8mod and avoid NULL pointer
->     dereference.
->   - Change the static call function names for being consistent with
->     kernel coding style.
->   - Merge the unicode_load_module function with unicode_load as it is
->     not really needed to have a separate function.
->   - Use try_then_module_get instead of module_get to avoid loading the
->     module even when it is already loaded.
->   - Improve the commit message.
->
-> Changes in v5
->   - Rename global variables and default static call functions for better
->     understanding
->   - Make only config UNICODE_UTF8 visible and config UNICODE to be always
->     enabled provided UNICODE_UTF8 is enabled.  
->   - Improve the documentation for Kconfig
->   - Improve the commit message.
->  
-> Changes in v4
->   - Return error from the static calls instead of doing nothing and
->     succeeding even without loading the module.
->   - Remove the complete usage of utf8_ops and use static calls at all
->     places.
->   - Restore the static calls to default values when module is unloaded.
->   - Decrement the reference of module after calling the unload function.
->   - Remove spinlock as there will be no race conditions after removing
->     utf8_ops.
->
-> Changes in v3
->   - Add a patch which checks if utf8 is loaded before calling utf8_unload()
->     in ext4 and f2fs filesystems
->   - Return error if strscpy() returns value < 0
->   - Correct the conditions to prevent NULL pointer dereference while
->     accessing functions via utf8_ops variable.
->   - Add spinlock to avoid race conditions.
->   - Use static_call() for preventing speculative execution attacks.
->
-> Changes in v2
->   - Remove the duplicate file from the last patch.
->   - Make the wrapper functions inline.
->   - Remove msleep and use try_module_get() and module_put()
->     for ensuring that module is loaded correctly and also
->     doesn't get unloaded while in use.
->   - Resolve the warning reported by kernel test robot.
->   - Resolve all the checkpatch.pl warnings.
->
->  fs/unicode/Kconfig        |  26 +++-
->  fs/unicode/Makefile       |   5 +-
->  fs/unicode/unicode-core.c | 297 ++++++++++++++------------------------
->  fs/unicode/unicode-utf8.c | 264 +++++++++++++++++++++++++++++++++
->  include/linux/unicode.h   |  96 ++++++++++--
->  5 files changed, 483 insertions(+), 205 deletions(-)
->  create mode 100644 fs/unicode/unicode-utf8.c
->
-> diff --git a/fs/unicode/Kconfig b/fs/unicode/Kconfig
-> index 2c27b9a5cd6c..0c69800a2a37 100644
-> --- a/fs/unicode/Kconfig
-> +++ b/fs/unicode/Kconfig
-> @@ -2,13 +2,31 @@
->  #
->  # UTF-8 normalization
->  #
-> +# CONFIG_UNICODE will be automatically enabled if CONFIG_UNICODE_UTF8
-> +# is enabled. This config option adds the unicode subsystem layer which loads
-> +# the UTF-8 module whenever any filesystem needs it.
->  config UNICODE
-> -	bool "UTF-8 normalization and casefolding support"
-> +	bool
-> +
-> +config UNICODE_UTF8
-> +	tristate "UTF-8 module"
+Customers might not even know if they are doing this.  The concern
+they have is that when they are doing "lift and shift", and moving
+their workloads from their private data center to the cloud, they
+would have no idea what might be lurking in their legacy workloads.
 
-"UTF-8 module" is the text that will appear in menuconfig and other
-configuration utilities.  This string not very helpful to describe what
-this code is about or why it is different from NLS_utf8.  People come to
-this option looking for the case-insensitive feature in ext4, so I'd
-prefer to keep the mention to 'casefolding'. or even improve the
-original a bit to say:
+Heck, in a previous job, I visited a major customer who had lost their
+sources to a critical bit of their software and they were changing
+pathnames by running a hex editor on the binary.  Enterprise customers
+do the darnedest things... (OTOH, they pay $$$ to our companies :-)
 
-tristate: "UTF-8 support for native Case-Insensitive filesystems"
+In the ideal world, sure, all or most of them would agree that they
+*shouldn't* be storing any kind of PII at rest unencrypted, but they
+can't be sure, and so from the perspective of keeping their audit and
+I/T compliance committees happy, this requirement is desirable from a
+"belt and suspenders" perspective.
 
-Other than these and what Eric mentioned, the code looks good to me.  I
-gave this series a try and it seems to work fine.
+> This seems like a better fit for FITRIM than anything else.
+> 
+> Ooohh. We sure do suck at APIs, don't we? FITRIM has no flags field,
+> so we can't extend that.
 
-It does raise a new warning, though
+I don't have any serious objections to defining FITRIM2; OTOH, for
+Darrick's use case of wanting to make XFS work reliably with the GRUB
+bootloader (which doesn't replay file system journals) and a certain
+Enterprise Linux distribution (cough, cough) can't be bothered to do a
+clean shutdown at the end of doing an install, using a hypothetical
+FITRIM2 seems... wierd, whereas it might be cleaner to define
+semantics in terms of FS_IOC_CHKPT_JRNL.  But I don't have a dog in
+that particular fight, since I'm not responsible of maintaining either
+XFS or RHEL.  :-)
 
-/home/krisman/src/linux/fs/unicode/unicode-core.c: In function ‘unicode_load’:
-/home/krisman/src/linux/include/linux/kmod.h:28:8: warning: the omitted middle operand in ‘?:’ will always be ‘true’, suggest explicit middle operand [-Wparentheses]
-   28 |  ((x) ?: (__request_module(true, mod), (x)))
-      |        ^
-/home/krisman/src/linux/fs/unicode/unicode-core.c:123:7: note: in expansion of macro ‘try_then_request_module’
-  123 |  if (!try_then_request_module(utf8mod_get(), "utf8")) {
+Yet another possible solution might be to define a new system call,
+syncfs2(), which takes a flag option.  That might be a bit more
+heavyweight, and we would still have to figure out how to define what
+a "journal checkpoint means" from the standpoint of an API definition.
+It would presumably be something like "allows a non-kernel
+implementation accessing the file system (e.g., from bootloaders like
+grub) to be able to access files on the file sytstem as easily as
+unmounting the file system", or perhaps defining it in terms of doing
+a FIFREEZE/FITHAW, without having to actually freeze the file system.
 
-But in this specific case, i think gcc is just being silly. What would
-be the right way to avoid it?
+> Oh, that won't be fun. XFS places a whiteout over the dirent to
+> indicate that it has been freed, and it does not actually log
+> anything other than the 4 byte whiteout at the start of the dirent
+> and the 2 byte XFS_DIR2_DATA_FREE_TAG tag at the end of the dirent.
+> So zeroing dirents is going to require changing the size and shape
+> of dirent logging during unlinks...
 
--- 
-Gabriel Krisman Bertazi
+So I'm not an expert on XFS, but XFS does logical logging, so what is
+in the log is "we're going to white out this dirent", right?  So
+couldn't the replay code be taught to look at the dirent's reclen, and
+zero out the full directory entry at journal replay time?  If the
+directory entry has already been reused, that's a case which the XFS
+replay code has to handle already.  Or is there something subtle which
+makes this hard to do.
+
+> This will have to be done correclty for all the node merge, split
+> and compaction cases, too, not just the "remove name" code.
+
+Agreed this is going to be a lot more complicated for XFS.
+
+> > P.P.S.  We'll also want to have a mount option which supresses file
+> > names (for example, from ext4_error() messages) from showing up in
+> > kernel logs, to ease potential privacy concerns with respect to serial
+> > console and kernel logs.  But that's for another patch set....
+> 
+> This sounds more and more like "Don't encode PII in clear text
+> anywhere" is a best practice that should be enforced with a big
+> hammer. Filenames get everywhere and there's no easy way to prevent
+> that because path lookups can be done by anyone in the kernel. This
+> so much sounds like you're starting a game of whack-a-mole that can
+> never be won.
+> 
+> From a security perspective, this is just bad design. Storing PII in
+> clear text filenames pretty much guarantees that the PII will leak
+> because it can't be scrubbed/contained within application controlled
+> boundaries. Trying to contain the spread of filenames within random
+> kernel subsystems sounds like a fool's errand to me, especially
+> given how few kernel developers will even know that filenames are
+> considered sensitive information from a security perspective...
+
+The problem is that the company that the Cloud SRE's work for is
+different from the enterprise customer owning the VM.  If a customer
+stores PII in a filename, and the Cloud SRE places the log in some
+place where it could leak out, Google gets blamed, not the enterprise
+customer.
+
+So the Cloud SRE's *have* to treat the logs as if they might contain
+sensitive information, which means it can't be made available in bug
+trackers without a manual (human-drive) scrubbing to make sure the log
+doesn't have anything that might appear to contain PII.
+
+By the way, MySQL puts table names into file names, and even though
+table names normally aren't PII, it's still considered "customer
+data", and we need to treat any kind of customer data super-carefully.
+
+> Fundamentally, applications should *never* place PII in clear text
+> in potentially leaky environments.  The environment for storing PII
+> should be designed to be secure and free of data leaks from the
+> ground up. And ext4 has already got this with fscrypt support.....
+
+Cloud disks (no matter which cloud vendor) do tend to be encrypted at
+rest, and in the case of Google, we even give customers the option to
+Bring Your Own Key, which means when the VM isn't running, no one at
+Google has access to the encryption key.  But that doesn't change the
+fact that if we need to debug a system, the logs might contain file
+names, and file names might be customer-owned data.  Using encryption
+at rest doesn't solve that problem.
+
+					- Ted
