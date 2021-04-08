@@ -2,237 +2,172 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B982E358FAA
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 Apr 2021 00:11:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FA2F35909C
+	for <lists+linux-ext4@lfdr.de>; Fri,  9 Apr 2021 01:49:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232795AbhDHWLz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 8 Apr 2021 18:11:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232788AbhDHWLw (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Apr 2021 18:11:52 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0768CC061761
-        for <linux-ext4@vger.kernel.org>; Thu,  8 Apr 2021 15:11:40 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id a12so2867934pfc.7
-        for <linux-ext4@vger.kernel.org>; Thu, 08 Apr 2021 15:11:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=C80Mo1mdqkfUGzCOjeM9jPvl7FbavRoAbteSG3nDKMU=;
-        b=rS/7l9KUqbfhS64Mq/5Qz9Jhdr8BRjcDNm+1amDclct1i2KnmhNjXcUh8aN7mX3u8M
-         wjfDVLZQqCuiCNFc5c0Slf7gUKqlgjMtaQU3Zc0spp+8aA32iBOdj/OV+4FQACsikJMZ
-         mUHw0I00Nd/k1Lqjq3q9aMcyAqqKI4ZiDzC5+oOMB4dldqPf5Y3o6B67YN730ibF5acE
-         jQDA4JoXl3Wrh9hr7OHCEPasvgjIzS8B3A/p4BJ4co47vaLcZsNq5Mwr/bQn4Dspy3o9
-         tQ2za3fY6QjFRWrwq5KXcPQ33yJ5CvelYARobVFQHZdU7Izyu6wpWi2rJyohVr1ASYrB
-         sttg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=C80Mo1mdqkfUGzCOjeM9jPvl7FbavRoAbteSG3nDKMU=;
-        b=dY+yGjcjjdIybwkSaXten/OAZW23GRDCS2DLkVJMnxWOQdw9lpNzp12fhsXgKEEn3b
-         wfR/3327jhcC+hb6RmtLU679kWydb9CtNlzbT3FS+D1VV/+fuOD5Am/SsaZ+l2346VYv
-         pAmUB0DXRKQ3iVQDrkHEJScLUA30TX4n2hxJDAx5SS+tlCZmBDscb30jIVHWQE138vjq
-         iXvvfqm+RzbisXvGbO2NN2DQGjIIQPilP0cbof4yUE5S2Y7jAl0Up2fgYYtCE0UXaQUO
-         NGG/kNqOEq2fNYM0t2wuorJKLwgbbRgtGA5rgIsgMk/bZvYDpYAEIyteldMi/QYmQ3Mf
-         eHqQ==
-X-Gm-Message-State: AOAM532oadV3RnOQ2lHWYtm/Dlq+EYDEx0VwlRDNTcdfxRGYyf6Huno2
-        P9qvdnpbA5CH7IzZqniNy3kGXg==
-X-Google-Smtp-Source: ABdhPJwAa3SieigGGLEnrtdfc36+sjUyYL+38gcWbf35dtujOWs9Zg3K7/9GvsbAxjWqreysl0P0hQ==
-X-Received: by 2002:a63:da0a:: with SMTP id c10mr10029888pgh.255.1617919899485;
-        Thu, 08 Apr 2021 15:11:39 -0700 (PDT)
-Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id w17sm368136pfu.29.2021.04.08.15.11.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 08 Apr 2021 15:11:38 -0700 (PDT)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <F46B045A-D207-409A-ACD0-956851B46D6D@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_1B86BAB9-1EB2-4BD6-AD04-3C4C7927E3D8";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH] ext4: add a configurable parameter to prevent endless
- loop in ext4_mb_discard_group_p
-Date:   Thu, 8 Apr 2021 16:11:35 -0600
-In-Reply-To: <f16d7afa-3799-f523-3c19-9ceb9427ff6e@linux.alibaba.com>
-Cc:     riteshh@linux.ibm.com, tytso@mit.edu, linux-ext4@vger.kernel.org,
-        jack@suse.cz, linux-kernel@vger.kernel.org,
-        baoyou.xie@alibaba-inc.com
-To:     Wen Yang <wenyang@linux.alibaba.com>
-References: <f16d7afa-3799-f523-3c19-9ceb9427ff6e@linux.alibaba.com>
-X-Mailer: Apple Mail (2.3273)
+        id S232793AbhDHXtX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 8 Apr 2021 19:49:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33970 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232426AbhDHXtX (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 8 Apr 2021 19:49:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 226FB610F8;
+        Thu,  8 Apr 2021 23:49:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617925751;
+        bh=v2gneGpqlXr5igRRyItDUvevsFRmwjUjT95uB3YufvU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IM/nysNCKThO4Je5LgjQWGAmtlk5AGZv0z8wXkfQSQ2ApeNcrzNWKKqXdHPdrKsVC
+         WF6zlYYmxoUUS+3VxVVWm1/3GWNm7leHZz1KiZWkyorhPsVy/OZrxBpRc/ypxZjCin
+         DE7LTD8hJs+etVg/xHsov5K5uMeBTbcqsUiQDdb7F6dJPxPjREQTzYdTzcIoD7pd/V
+         6irt769CI6mUnhYu/x5HbtvzJml9VcykZwzy3ohUK0oC60OEshDsfTrDDyyXdJeTN6
+         yfyx68AiSQ/FM2xhmJooMDi/AYRWFbhJ2a6VshXWmzNrKkzqiksZqtEalVa6RoaEur
+         BMhj2lDkcVl2w==
+Date:   Thu, 8 Apr 2021 16:49:09 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Leah Rumancik <leah.rumancik@gmail.com>, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] ext4: add ioctl FS_IOC_CHKPT_JRNL
+Message-ID: <20210408234909.GI22091@magnolia>
+References: <20210407154202.1527941-1-leah.rumancik@gmail.com>
+ <20210407154202.1527941-3-leah.rumancik@gmail.com>
+ <20210407183547.GG22091@magnolia>
+ <20210407211500.GG1990290@dread.disaster.area>
+ <20210408012651.GH22091@magnolia>
+ <20210408044327.GJ1990290@dread.disaster.area>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210408044327.GJ1990290@dread.disaster.area>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Thu, Apr 08, 2021 at 02:43:27PM +1000, Dave Chinner wrote:
+> On Wed, Apr 07, 2021 at 06:26:51PM -0700, Darrick J. Wong wrote:
+> > On Thu, Apr 08, 2021 at 07:15:00AM +1000, Dave Chinner wrote:
+> > > On Wed, Apr 07, 2021 at 11:35:47AM -0700, Darrick J. Wong wrote:
+> > > > On Wed, Apr 07, 2021 at 03:42:02PM +0000, Leah Rumancik wrote:
+> > > > > ioctl FS_IOC_CHKPT_JRNL checkpoints and flushes the journal. With the
+> > > > > CHKPT_JRNL_DISCARD flag set, the journal blocks are also discarded.
+> > > > > With the filename wipeout patch, Ext4 guarantees that all data will be
+> > > > > discarded on deletion. This ioctl allows for periodically discarding
+> > > > > journal contents too.
+> > > > 
+> > > > This needs a documentation update to cover what this new userspace ABI
+> > > > does, and probably linux-api and linux-fsdevel should be cc'd.
+> > > 
+> > > You need to describe the semantics that you are exporting to
+> > > userspace. Exactly what does a "journal checkpoint" mean from the
+> > > point of view of user visible metadata and data integrity?
+> > 
+> > To be clear, my interests are /not/ the same as Leah's here -- I want to
+> > use this "checkpoint" call to provide a way for grub to know that it
+> > will be able to find boot files without needing to recover the log.
+> > 
+> > For the grub use case, the user-visible behaviors that are required are:
+> > 
+> >  1. All dirty file data in memory are flushed;
+> >  2. All committed metadata updates are forced to the ondisk log;
+> >  3. All log contents have been written into the filesystem.
+> > 
+> > (Note confusing terminology here: in my head, #2 means checkpointing the
+> > ondisk log, whereas #3 means checkpointing the filesystem itself; and
+> > "FS_IOC_CHECKPOINT" means checkpointing the whole filesystem, not just
+> > the log.)
+> 
+> So, yeah, you just renamed the ioctl because you are clearly not just
+> talking about a journal checkpoint. A journal checkpoint is what
+> XFS does when it pushes the CIL to disk (i.e. #2). Quiescing the log
+> is what we call #3 - basically bringing it to an empty, idle state.
+> 
+> Which makes me even more concerned about defining the behaviour and
+> semantics needed before we even talk about the API that would be
+> used.
 
---Apple-Mail=_1B86BAB9-1EB2-4BD6-AD04-3C4C7927E3D8
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+Ok, let's draft a manpage.  Here's my mockup of a manpage for the ioctl,
+though again, I don't have a strong preference between this and a
+syncfs2 call.
 
-On Apr 8, 2021, at 12:50 PM, Wen Yang <wenyang@linux.alibaba.com> wrote:
->=20
-> Hi Ritesh and Andreas,
->=20
-> Thank you for your reply. Since there is still a faulty machine, we =
-have analyzed it again and found it is indeed a very special case:
->=20
->=20
-> crash> struct ext4_group_info ffff8813bb5f72d0
-> struct ext4_group_info {
->  bb_state =3D 0,
->  bb_free_root =3D {
->    rb_node =3D 0x0
->  },
->  bb_first_free =3D 1681,
->  bb_free =3D 0,
->  bb_fragments =3D 0,
->  bb_largest_free_order =3D -1,
->  bb_prealloc_list =3D {
->    next =3D 0xffff880268291d78,
->    prev =3D 0xffff880268291d78     ---> *** The list is empty
->  },
->  alloc_sem =3D {
->    count =3D {
->      counter =3D 0
->    },
->    wait_list =3D {
->      next =3D 0xffff8813bb5f7308,
->      prev =3D 0xffff8813bb5f7308
->    },
->    wait_lock =3D {
->      raw_lock =3D {
->        {
->          val =3D {
->            counter =3D 0
->          },
->          {
->            locked =3D 0 '\000',
->            pending =3D 0 '\000'
->          },
->          {
->            locked_pending =3D 0,
->            tail =3D 0
->          }
->        }
->      }
->    },
->    osq =3D {
->      tail =3D {
->        counter =3D 0
->      }
->    },
->    owner =3D 0x0
->  },
->  bb_counters =3D 0xffff8813bb5f7328
-> }
-> crash>
->=20
->=20
-> crash> list 0xffff880268291d78  -l ext4_prealloc_space.pa_group_list =
--s ext4_prealloc_space.pa_count
-> ffff880268291d78
->  pa_count =3D {
->    counter =3D 1      ---> ****pa->pa_count
->  }
-> ffff8813bb5f72f0
->  pa_count =3D {
->    counter =3D -30701
->  }
->=20
->=20
-> crash> struct -xo  ext4_prealloc_space
-> struct ext4_prealloc_space {
->   [0x0] struct list_head pa_inode_list;
->  [0x10] struct list_head pa_group_list;
->         union {
->             struct list_head pa_tmp_list;
->             struct callback_head pa_rcu;
->  [0x20] } u;
->  [0x30] spinlock_t pa_lock;
->  [0x34] atomic_t pa_count;
->  [0x38] unsigned int pa_deleted;
->  [0x40] ext4_fsblk_t pa_pstart;
->  [0x48] ext4_lblk_t pa_lstart;
->  [0x4c] ext4_grpblk_t pa_len;
->  [0x50] ext4_grpblk_t pa_free;
->  [0x54] unsigned short pa_type;
->  [0x58] spinlock_t *pa_obj_lock;
->  [0x60] struct inode *pa_inode;
-> }
-> SIZE: 0x68
->=20
->=20
-> Before "goto repeat", it is necessary to check whether =
-grp->bb_prealloc_list is empty.  This patch may fix it.
-> Please kindly give us your comments and suggestions.
-> Thanks.
+NAME
 
-This patch definitely looks more reasonable than the previous one, but
-I don't think it is correct?
+    ioctl_fs_ioc_checkpoint - Commit all filesystem changes to disk
 
-It isn't clear how the system could get into this state, or stay there.
+SYNOPSYS
 
-If bb_prealloc_list is empty, then "busy" should be 0, since busy =3D 1
-is only set inside "list_for_each_entry_safe(bb_prealloc_list)", and
-that implies the list is *not* empty?  The ext4_lock_group() is held
-over this code, so the list should not be changing in this case, and
-even if the list changed, it _should_ only affect the loop one time.
+    int ioctl(int fd, FS_IOC_CHECKPOINT, __u64 *flags);
 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 99bf091..8082e2d 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -4290,7 +4290,7 @@ static void ext4_mb_new_preallocation(struct =
-ext4_allocation_context *ac)
->        free_total +=3D free;
->=20
->        /* if we still need more blocks and some PAs were used, try =
-again */
-> -       if (free_total < needed && busy) {
-> +       if (free_total < needed && busy && =
-!list_empty(&grp->bb_prealloc_list)) {
->                ext4_unlock_group(sb, group);
->                cond_resched();
->                busy =3D 0;
->                goto repeat;
+DESCRIPTION
 
-Minor suggestion - moving "busy =3D 0" right after "repeat:" and =
-removing
-the "int busy =3D 0" initializer would make this code a bit more clear.
+Ensure that all previous changes to the filesystem backing the given
+file descriptor are persisted to disk in the same form that they would
+be if the filesystem were to be unmounted cleanly.  Changes made during
+or after this call are not required to be persisted.
 
-Cheers, Andreas
+The motivation of this ioctl are twofold -- first, to provide a way for
+application software to prepare a mounted filesystem for future
+read-only access by primordial external applications (e.g. bootloaders)
+that do not know about crash recovery.  The second motivation is to
+provide a way to clean out ephemeral areas of the filesystem involved in
+crash recovery for security cleaning purposes.
 
+FLAGS
 
+The flags argument should point to a __u64 containing any combination of
+the following flags:
 
+    FS_IOC_CHECKPOINT_DISCARD_STAGING
+	Issue a discard command to erase all areas of the filesystem
+	that are involved in staging and committing updates.
 
---Apple-Mail=_1B86BAB9-1EB2-4BD6-AD04-3C4C7927E3D8
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
+ERRORS
 
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
+Error codes can be one of, but are not limited to, the following:
 
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmBvf5cACgkQcqXauRfM
-H+CJaRAAsJW5zFKob3DjTlJ4M08Edj43NqNjQANTCX2ftnwWuPYLKyssYkM98pSJ
-yMWR+Hy34sOUBnB5gk2TCAsyQm0QE5yz/7AY/yA0ddctd01Q07X1/qmzL+p7O/sQ
-TO0dUl4ogApeOnJ+bYi1HkqX7akYaX4AnQ609t5NzmjsHobMdptBk2GTB3M9NKex
-Lpho0po1tPful85luF9wg2JFVNduFrYngktU4UL24KSzavwb7C02+eXXh716UGCZ
-7oqtBaknmMO7lJWwmYJH+/XAVoU6+jPtYdV/YvEDcSUStx1MpA1TNS9jQ4c6tskc
-n+uiiG7kjE8OIdL6Rt7uLcxY9jVYNPCAsTFU5hg/CeYS5X6PoKDHSea9tabOxvJV
-ssbz1nKXSVhSF5eceMvsygewQHzpKiHwnAdWN/Pj8i6K3WjwUHlWNOcnS8roQo53
-UDpn3ZJ3xLuB1afxZCCYZVqOYKY5nC4dm63dGnKilpFeBD7zN4YaYUg0nrKZzlQS
-C8njKgq6iZhHb8e1mYWSdx/SoCn0kndENDS0UkWGySGiaepzIEWNfNJQfD7XQpXV
-s7/rluDQMVLBJjQd5soLy16lgDNxfhae0HMq6mvN/Tqp4RrGQ3GAwD+su0lqoH92
-nTA/IXlTaKvm4r30KSWS4FHj0nMZMND62oknIvywHdpsph7AIoY=
-=eiw9
------END PGP SIGNATURE-----
+	EFSCORRUPTED	Filesystem corruption was detected.
+	EINVAL		One of the arguments is not valid.
+	ENOMEM		Not enough memory.
+	ENOSPC		Not enough space.
+	<etc>
 
---Apple-Mail=_1B86BAB9-1EB2-4BD6-AD04-3C4C7927E3D8--
+> 
+> > > All of these methods imply a journal checkpoint of some kind is done
+> > > in ext4, so why do we need a specific ioctl to do this?
+> > 
+> > For XFS, we don't have any kind of system call that will checkpoint the
+> > fs without the unwanted behaviors of FIFREEZE and FITHAW.  AFAICT
+> > there's no explicit way to force a fs checkpoint in ext4 aside from
+> > contorted insanity with data=journal files and bmap().  Weird things
+> > like NOVA would have to figure out a way to checkpoint the whole fs
+> > (flush all the journals?).
+> 
+> So, yeah, you're not talking about a journal checkpoint. You're
+> describing a completely different set of requirements.... :/
+
+Yes, I'm talking about making sure that we've written changes back into
+the whole fs, not just the journal.
+
+> > btrfs can probably get away with flushing the disk cache since it has
+> > COW btrees for metadata (fsync log notwithstanding); and I'd imagine
+> > stupid things like FAT would just return EOPNOTSUPP.
+> > 
+> > To solve my stupid grub problem, this could easily be:
+> > 
+> > 	ret = syncfs2(fd, SYNCFS_CHECKPOINT_FS);
+> 
+> Sure, but is that the same thing that Leah needs? Checkpoints don't
+> imply discards (let alone journal discards) in any way, and adding
+> (optional) discard support for random parts of filesysetms to
+> syncfs() semantics doesn't seem like a very good fit...
+
+Yes.  I think Leah and Ted are more inclined to go with an ioctl
+since this is something that's peculiar to journalled filesystems.
+
+--D
+
+> Cheers,
+> 
+> Dave.
+> -- 
+> Dave Chinner
+> david@fromorbit.com
