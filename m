@@ -2,28 +2,28 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F40953581B8
-	for <lists+linux-ext4@lfdr.de>; Thu,  8 Apr 2021 13:28:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E46F3581BA
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 Apr 2021 13:28:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230434AbhDHL2U (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 8 Apr 2021 07:28:20 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:16835 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbhDHL2T (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Apr 2021 07:28:19 -0400
+        id S230467AbhDHL2Y (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 8 Apr 2021 07:28:24 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:15973 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230503AbhDHL2Y (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Apr 2021 07:28:24 -0400
 Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FGJq63ZjRz7txS;
-        Thu,  8 Apr 2021 19:25:54 +0800 (CST)
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FGJqD16lWzyNc1;
+        Thu,  8 Apr 2021 19:26:00 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by DGGEMS403-HUB.china.huawei.com
  (10.3.19.203) with Microsoft SMTP Server id 14.3.498.0; Thu, 8 Apr 2021
- 19:28:00 +0800
+ 19:28:01 +0800
 From:   Zhang Yi <yi.zhang@huawei.com>
 To:     <linux-ext4@vger.kernel.org>
 CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
         <yi.zhang@huawei.com>, <yukuai3@huawei.com>
-Subject: [PATCH 2/3] jbd2: do not free buffers in jbd2_journal_try_to_free_buffers()
-Date:   Thu, 8 Apr 2021 19:36:17 +0800
-Message-ID: <20210408113618.1033785-3-yi.zhang@huawei.com>
+Subject: [PATCH 3/3] ext4: add rcu to prevent use after free when umount filesystem
+Date:   Thu, 8 Apr 2021 19:36:18 +0800
+Message-ID: <20210408113618.1033785-4-yi.zhang@huawei.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <20210408113618.1033785-1-yi.zhang@huawei.com>
 References: <20210408113618.1033785-1-yi.zhang@huawei.com>
@@ -36,117 +36,197 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This patch move try_to_free_buffers() out from
-jbd2_journal_try_to_free_buffers() to the caller function, it just check
-the buffers are JBD2 journal busy or not, and the caller should invoke
-try_to_free_buffers() if it want to release page.
+There is a race between bdev_try_to_free_page() and
+jbd2_journal_destroy() that could end up triggering a use after free
+issue about journal.
+
+drop cache                           umount filesystem
+bdev_try_to_free_page()
+ get journal
+ jbd2_journal_try_to_free_buffers()  ext4_put_super()
+                                      kfree(journal)
+   access journal <-- lead to UAF
+
+The above race also could happens between the bdev_try_to_free_page()
+and the error path of ext4_fill_super(). This patch avoid this race by
+add rcu protection around accessing sbi->s_journal in
+bdev_try_to_free_page() and destroy the journal after an rcu grace
+period.
 
 Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 ---
- fs/ext4/inode.c       |  6 ++++--
- fs/ext4/super.c       |  8 +++++---
- fs/jbd2/transaction.c | 18 ++++++++----------
- 3 files changed, 17 insertions(+), 15 deletions(-)
+ fs/ext4/super.c      | 33 ++++++++++++++++++++++++---------
+ fs/jbd2/journal.c    | 30 +++++++++++++++++++++++++++---
+ include/linux/jbd2.h | 11 ++++++++++-
+ 3 files changed, 61 insertions(+), 13 deletions(-)
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 0948a43f1b3d..3211af9c969f 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -3301,6 +3301,7 @@ static void ext4_journalled_invalidatepage(struct page *page,
- static int ext4_releasepage(struct page *page, gfp_t wait)
- {
- 	journal_t *journal = EXT4_JOURNAL(page->mapping->host);
-+	int ret = 0;
- 
- 	trace_ext4_releasepage(page);
- 
-@@ -3308,9 +3309,10 @@ static int ext4_releasepage(struct page *page, gfp_t wait)
- 	if (PageChecked(page))
- 		return 0;
- 	if (journal)
--		return jbd2_journal_try_to_free_buffers(journal, page);
--	else
-+		ret = jbd2_journal_try_to_free_buffers(journal, page);
-+	if (!ret)
- 		return try_to_free_buffers(page);
-+	return 0;
- }
- 
- static bool ext4_inode_datasync_dirty(struct inode *inode)
 diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 2a33c53b57d8..02ba47a5bc70 100644
+index 02ba47a5bc70..6bbaadc5357b 100644
 --- a/fs/ext4/super.c
 +++ b/fs/ext4/super.c
-@@ -1450,14 +1450,16 @@ static int bdev_try_to_free_page(struct super_block *sb, struct page *page,
+@@ -1150,6 +1150,21 @@ static inline void ext4_quota_off_umount(struct super_block *sb)
+ }
+ #endif
+ 
++static int ext4_journal_release(struct ext4_sb_info *sbi)
++{
++	journal_t *journal = sbi->s_journal;
++	int ret;
++
++	ret = jbd2_journal_release(journal);
++	sbi->s_journal = NULL;
++	/*
++	 * Call rcu to prevent racing with bdev_try_to_free_page()
++	 * accessing the journal at the same time.
++	 */
++	call_rcu(&journal->j_rcu, jbd2_journal_release_rcu);
++	return ret;
++}
++
+ static void ext4_put_super(struct super_block *sb)
+ {
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
+@@ -1174,11 +1189,9 @@ static void ext4_put_super(struct super_block *sb)
+ 
+ 	if (sbi->s_journal) {
+ 		aborted = is_journal_aborted(sbi->s_journal);
+-		err = jbd2_journal_destroy(sbi->s_journal);
+-		sbi->s_journal = NULL;
+-		if ((err < 0) && !aborted) {
++		err = ext4_journal_release(sbi);
++		if ((err < 0) && !aborted)
+ 			ext4_abort(sb, -err, "Couldn't clean up the journal");
+-		}
+ 	}
+ 
+ 	ext4_es_unregister_shrinker(sbi);
+@@ -1449,14 +1462,18 @@ static int ext4_nfs_commit_metadata(struct inode *inode)
+ static int bdev_try_to_free_page(struct super_block *sb, struct page *page,
  				 gfp_t wait)
  {
- 	journal_t *journal = EXT4_SB(sb)->s_journal;
-+	int ret = 0;
+-	journal_t *journal = EXT4_SB(sb)->s_journal;
++	journal_t *journal;
+ 	int ret = 0;
  
  	WARN_ON(PageChecked(page));
  	if (!page_has_buffers(page))
  		return 0;
++
++	rcu_read_lock();
++	journal = READ_ONCE(EXT4_SB(sb)->s_journal);
  	if (journal)
--		return jbd2_journal_try_to_free_buffers(journal, page);
--
--	return try_to_free_buffers(page);
-+		ret = jbd2_journal_try_to_free_buffers(journal, page);
-+	if (!ret)
-+		return try_to_free_buffers(page);
-+	return 0;
+ 		ret = jbd2_journal_try_to_free_buffers(journal, page);
++	rcu_read_unlock();
+ 	if (!ret)
+ 		return try_to_free_buffers(page);
+ 	return 0;
+@@ -5146,10 +5163,8 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+ 	ext4_xattr_destroy_cache(sbi->s_ea_block_cache);
+ 	sbi->s_ea_block_cache = NULL;
+ 
+-	if (sbi->s_journal) {
+-		jbd2_journal_destroy(sbi->s_journal);
+-		sbi->s_journal = NULL;
+-	}
++	if (sbi->s_journal)
++		ext4_journal_release(sbi);
+ failed_mount3a:
+ 	ext4_es_unregister_shrinker(sbi);
+ failed_mount3:
+diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+index 2dc944442802..071caaaa9de1 100644
+--- a/fs/jbd2/journal.c
++++ b/fs/jbd2/journal.c
+@@ -76,6 +76,8 @@ EXPORT_SYMBOL(jbd2_journal_check_available_features);
+ EXPORT_SYMBOL(jbd2_journal_set_features);
+ EXPORT_SYMBOL(jbd2_journal_load);
+ EXPORT_SYMBOL(jbd2_journal_destroy);
++EXPORT_SYMBOL(jbd2_journal_release);
++EXPORT_SYMBOL(jbd2_journal_release_rcu);
+ EXPORT_SYMBOL(jbd2_journal_abort);
+ EXPORT_SYMBOL(jbd2_journal_errno);
+ EXPORT_SYMBOL(jbd2_journal_ack_err);
+@@ -1951,14 +1953,14 @@ int jbd2_journal_load(journal_t *journal)
  }
  
- #ifdef CONFIG_FS_ENCRYPTION
-diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-index b935b20cbae4..e4acc84a95fa 100644
---- a/fs/jbd2/transaction.c
-+++ b/fs/jbd2/transaction.c
-@@ -2089,10 +2089,9 @@ __journal_try_to_free_buffer(journal_t *journal, struct buffer_head *bh)
-  * if they are fully written out ordered data, move them onto BUF_CLEAN
-  * so try_to_free_buffers() can reap them.
+ /**
+- * jbd2_journal_destroy() - Release a journal_t structure.
++ * jbd2_journal_release() - Release a journal_t structure.
+  * @journal: Journal to act on.
   *
-- * This function returns non-zero if we wish try_to_free_buffers()
-- * to be called. We do this if the page is releasable by try_to_free_buffers().
-- * We also do it if the page has locked or dirty buffers and the caller wants
-- * us to perform sync or async writeout.
-+ * This function returns zero if all the buffers on this page are
-+ * journal cleaned and the caller should invoke try_to_free_buffers() and
-+ * could release page if the page is releasable by try_to_free_buffers().
-  *
-  * This complicates JBD locking somewhat.  We aren't protected by the
-  * BKL here.  We wish to remove the buffer from its committing or
-@@ -2112,7 +2111,7 @@ __journal_try_to_free_buffer(journal_t *journal, struct buffer_head *bh)
-  * cannot happen because we never reallocate freed data as metadata
-  * while the data is part of a transaction.  Yes?
-  *
-- * Return 0 on failure, 1 on success
-+ * Return 0 on success, -EBUSY if any buffer is still journal busy.
+  * Release a journal_t structure once it is no longer in use by the
+  * journaled object.
+  * Return <0 if we couldn't clean up the journal.
   */
- int jbd2_journal_try_to_free_buffers(journal_t *journal, struct page *page)
+-int jbd2_journal_destroy(journal_t *journal)
++int jbd2_journal_release(journal_t *journal)
  {
-@@ -2142,8 +2141,10 @@ int jbd2_journal_try_to_free_buffers(journal_t *journal, struct page *page)
- 		__journal_try_to_free_buffer(journal, bh);
- 		spin_unlock(&jh->b_state_lock);
- 		jbd2_journal_put_journal_head(jh);
--		if (buffer_jbd(bh))
--			goto busy;
-+		if (buffer_jbd(bh)) {
-+			ret = -EBUSY;
-+			break;
-+		}
+ 	int err = 0;
  
- 		/*
- 		 * If we free a metadata buffer which has been failed to
-@@ -2158,9 +2159,6 @@ int jbd2_journal_try_to_free_buffers(journal_t *journal, struct page *page)
- 		}
- 	} while ((bh = bh->b_this_page) != head);
+@@ -2021,11 +2023,33 @@ int jbd2_journal_destroy(journal_t *journal)
+ 		crypto_free_shash(journal->j_chksum_driver);
+ 	kfree(journal->j_fc_wbuf);
+ 	kfree(journal->j_wbuf);
+-	kfree(journal);
  
--	ret = try_to_free_buffers(page);
--
--busy:
- 	if (has_write_io_error)
- 		jbd2_journal_abort(journal, -EIO);
+ 	return err;
+ }
  
++/**
++ * jbd2_journal_release_rcu() - Free a journal_t structure.
++ * @rcu: rcu list node relate to the journal want to free.
++ *
++ * Freeing a journal_t structure after a rcu grace period.
++ */
++void jbd2_journal_release_rcu(struct rcu_head *rcu)
++{
++	kfree(container_of(rcu, journal_t, j_rcu));
++}
++
++/**
++ * jbd2_journal_destroy() - Release and free a journal_t structure.
++ * @journal: Journal to act on.
++ *
++ * Release and free a journal_t structure once it is no longer in use
++ * by the journaled object.
++ */
++void jbd2_journal_destroy(journal_t *journal)
++{
++	jbd2_journal_release(journal);
++	kfree(journal);
++}
+ 
+ /**
+  * jbd2_journal_check_used_features() - Check if features specified are used.
+diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+index 99d3cd051ac3..39a8d04596a2 100644
+--- a/include/linux/jbd2.h
++++ b/include/linux/jbd2.h
+@@ -1238,6 +1238,13 @@ struct journal_s
+ 	 */
+ 	__u32 j_csum_seed;
+ 
++	/**
++	 * @j_rcu:
++	 *
++	 * Prevent racing between accessing and destroy at the same time.
++	 */
++	struct rcu_head j_rcu;
++
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
+ 	/**
+ 	 * @j_trans_commit_map:
+@@ -1509,7 +1516,9 @@ extern int	   jbd2_journal_set_features
+ extern void	   jbd2_journal_clear_features
+ 		   (journal_t *, unsigned long, unsigned long, unsigned long);
+ extern int	   jbd2_journal_load       (journal_t *journal);
+-extern int	   jbd2_journal_destroy    (journal_t *);
++extern void	   jbd2_journal_destroy    (journal_t *);
++extern int	   jbd2_journal_release    (journal_t *);
++extern void	   jbd2_journal_release_rcu     (struct rcu_head *rcu);
+ extern int	   jbd2_journal_recover    (journal_t *journal);
+ extern int	   jbd2_journal_wipe       (journal_t *, int);
+ extern int	   jbd2_journal_skip_recovery	(journal_t *);
 -- 
 2.25.4
 
