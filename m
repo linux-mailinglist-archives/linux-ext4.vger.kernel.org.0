@@ -2,89 +2,84 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A06635A816
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 Apr 2021 22:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E794935A858
+	for <lists+linux-ext4@lfdr.de>; Fri,  9 Apr 2021 23:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234160AbhDIUpI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 9 Apr 2021 16:45:08 -0400
-Received: from mout.kundenserver.de ([217.72.192.75]:42301 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234364AbhDIUpH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 9 Apr 2021 16:45:07 -0400
-Received: from mail-ot1-f53.google.com ([209.85.210.53]) by
- mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MGQzj-1lLHMv16PV-00GmKb for <linux-ext4@vger.kernel.org>; Fri, 09 Apr
- 2021 22:44:52 +0200
-Received: by mail-ot1-f53.google.com with SMTP id v24-20020a9d69d80000b02901b9aec33371so6960066oto.2
-        for <linux-ext4@vger.kernel.org>; Fri, 09 Apr 2021 13:44:52 -0700 (PDT)
-X-Gm-Message-State: AOAM5339L3yXVVQsJ1Olh62GmBvmHbVuNdXV2FxkL+2peJSC1qizvGnz
-        k9lKoGfO/XtUkZT4y8NBjpBp6vdpxcMiovRQ0yI=
-X-Google-Smtp-Source: ABdhPJxU+rBi0mGEwUX9aAHSirkrZuwzwNeHi4q+xFtv2b8iubqzn/uo2welcN6tkvABpPLb3rn5L1OVea6z3JrE5wo=
-X-Received: by 2002:a9d:758b:: with SMTP id s11mr13660259otk.305.1618001091031;
- Fri, 09 Apr 2021 13:44:51 -0700 (PDT)
+        id S234618AbhDIV3S (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 9 Apr 2021 17:29:18 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:47402 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234333AbhDIV3R (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 9 Apr 2021 17:29:17 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 139LSsO7004914
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 9 Apr 2021 17:28:55 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 787AA15C3B12; Fri,  9 Apr 2021 17:28:54 -0400 (EDT)
+Date:   Fri, 9 Apr 2021 17:28:54 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Ye Bin <yebin10@huawei.com>
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC] ext4: Fix fs can't panic when abort by user
+Message-ID: <YHDHFv99m3A6jQjP@mit.edu>
+References: <20210401081903.3421208-1-yebin10@huawei.com>
 MIME-Version: 1.0
-References: <202104100225.GIF5USvR-lkp@intel.com>
-In-Reply-To: <202104100225.GIF5USvR-lkp@intel.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 9 Apr 2021 22:44:35 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0noWaAQV=cqXhLuEXC_zr35Bb45PiLhgE3bXqFnNtyQA@mail.gmail.com>
-Message-ID: <CAK8P3a0noWaAQV=cqXhLuEXC_zr35Bb45PiLhgE3bXqFnNtyQA@mail.gmail.com>
-Subject: Re: [ext4:dev 9/17] fs/ext4/fast_commit.c:1738:5: warning: format
- specifies type 'int' but the argument has type 'unsigned long'
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:GmHmDOWADxWL5ogzC0hlkWC/a55s2VURWjUFQUXbclFCFUjJ8go
- E/lZ9hV5Yxumfvk3cnQiwfbefAmUQdwARs5rUoxsOilOjG1RsOaI+z3P2reHTsSe4KKcxEb
- /vempkI8kb85soMy0vdJxWxbT9Et5bl5a/XqwgLrhO9/BcscP8uI+hBHxD0B6SlgWf2swg9
- 5MOmlIE/Fz9EsLO51IlkA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:mG1wwEU8ph4=:Nm3XdgEJIFU8Eskom6HZHb
- iN+IRAaCOAzBk7ft5X1xw8Aj2+LrVGmHsumZIIFdYabCgvB4+f+BWV9SBWHbEx8o+YHtYYwz1
- DnmumpfelxBAjnMQbw5uQTmyCj42u9agfkjCWpx+uOIFxDI9decd93RhW2ks9q+Q6nba2kEVV
- 6lJUm4e/EDXKW6kaqAKRFFbQZTcmpwhJipwN6cvhVcp6hC/dtUv4ly7ouryxh5xScrHekcshC
- 6eU+0oablPqgqSC4AE1OuKyFLrfwFmD0/inq8eCvTQGVQvFWvaL1IQULRczR9lohAX2sfmXXS
- 9vfaBIQfnrDYsX1j49yX2EGFWs41SoeLYKo9LMYYJUmSC2ki7Dla3Pm1mqdE8ZLavqS+VrYF8
- pLFhnURvHeA2VUeMbuj2/BD2ujroGKuVXySf53zPI4fsZgP6/kYdf1nVwk82xsTeLmzyWCSvA
- 9YAtMWNFTdWo1EWOCJprz/QU6g9LPqdQC6bAdnriTlv0IoXt5JzgLqsNiQHG6U4inBrkvrgeS
- 9Cel4d39cgzKUDye3u5rqulMoQ49MB1Rsv3TgpnkQbzNyjbz64WYRIae/ZUEBnepf4xt0e7n4
- c3tTgeVJB4R4SYFk0Y1jURNNdwPv99gdta
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210401081903.3421208-1-yebin10@huawei.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Apr 9, 2021 at 8:59 PM kernel test robot <lkp@intel.com> wrote:
+On Thu, Apr 01, 2021 at 04:19:03PM +0800, Ye Bin wrote:
+> Test steps:
+> 1. mount /dev/sda -o errors=panic test
+> 2. mount /dev/sda -o remount,ro test
+> 3. mount /dev/sda -o remount,abort test
+> 
+> Before 014c9caa29d3 not been merged there will trigger panic. But
+> 014c9caa29d3 change this behavior.
 
->
-> All warnings (new ones prefixed by >>):
->
-> >> fs/ext4/fast_commit.c:1738:5: warning: format specifies type 'int' but the argument has type 'unsigned long' [-Wformat]
->                                    map.m_flags & EXT4_MAP_UNWRITTEN,
->                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    include/linux/jbd2.h:64:51: note: expanded from macro 'jbd_debug'
->    #define jbd_debug(n, fmt, a...)  no_printk(fmt, ##a)
->                                               ~~~    ^
->    include/linux/printk.h:140:17: note: expanded from macro 'no_printk'
->                    printk(fmt, ##__VA_ARGS__);             \
->                           ~~~    ^~~~~~~~~~~
->    1 warning generated.
-> --
-> >> fs/jbd2/recovery.c:256:54: warning: more '%' conversions than data arguments [-Wformat-insufficient-args]
->                    jbd_debug(3, "Processing fast commit blk with seq %d");
->                                                                      ~^
->    include/linux/jbd2.h:64:44: note: expanded from macro 'jbd_debug'
->    #define jbd_debug(n, fmt, a...)  no_printk(fmt, ##a)
->                                               ^~~
->    include/linux/printk.h:140:10: note: expanded from macro 'no_printk'
->                    printk(fmt, ##__VA_ARGS__);             \
->                           ^~~
->    1 warning generated.
->
+This makes sense, but I'll note this behavior has changed over time.
 
-I sent a patch now. For some reason I ended up testing with -Wempty-body enabled
-but all -Wformat warnings disabled when I tested this before sending.
+root@kvm-xfstests:~# mount -o errors=panic /dev/vdc /vdc
+[   20.252713] EXT4-fs (vdc): mounted filesystem with ordered data mode. Opts: errors=panic
+root@kvm-xfstests:~# mount -o remount,ro /dev/vdc
+[   24.832448] EXT4-fs (vdc): re-mounted. Opts: (null)
+root@kvm-xfstests:~# mount -o remount,abort /dev/vdc
+[   30.833543] EXT4-fs error (device vdc): ext4_remount:5340: Abort forced by user
+mount: /vdc: cannot remount /dev/vdc read-write, is write-protected.
+root@kvm-xfstests:~# mount -o remount,abort,ro /dev/vdc
+[   34.545549] EXT4-fs error (device vdc): ext4_remount:5340: Abort forced by user
+[   34.555475] EXT4-fs (vdc): re-mounted. Opts: abort
+root@kvm-xfstests:~# uname -a
+Linux kvm-xfstests 4.19.163-xfstests #1 SMP Sat Dec 19 23:55:11 EST 2020 x86_64 GNU/Linux
+root@kvm-xfstests:~#
 
-        Arnd
+The same is true for the 5.4 kernel.
+
+I do agree that it *should* force a panic, and the fact that
+superblock is read-only shouldn't make a difference as to how
+errors=panic is handled.
+
+So I think the patch is correct, but I'll note that it also changes
+this case:
+
+1)  mount -o /dev/sda -o ro,errors=panic test
+2)  echo test > /sys/fs/ext4/sda/trigger_fs_error
+
+With this patch, this will also now panic, whereas before, an
+ext4_error() would not trigger a panic.  I think that's better because
+it makes things more consistent --- but it is a change in behavior
+which could potentially surprise some people.  But since they can
+easily get the previous behavior with an explicit "mount -o
+ro,errors=continue", I think that's acceptable.
+
+I'll apply the patch with a modified commit description to warn of
+this particular change in behavior.
+
+						- Ted
