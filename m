@@ -2,112 +2,89 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC1835A7AA
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 Apr 2021 22:12:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A06635A816
+	for <lists+linux-ext4@lfdr.de>; Fri,  9 Apr 2021 22:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234180AbhDIUMb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 9 Apr 2021 16:12:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44616 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234159AbhDIUMa (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 9 Apr 2021 16:12:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 697C461074;
-        Fri,  9 Apr 2021 20:12:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617999137;
-        bh=uJzvepm4V1IVNAEurrXgGeXB/XY0OoXDzNCdgtMXhsw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=NmyOqkXH7C3a6k6hWjCTHR8omXfwLnmZJnOT+p/cGHc5mm6y9qo5n/68g0o+Oqoy7
-         d2vgHts1gijz+TahCgZDOoEpobhGQmAzwEKaemFO3gi8pT02Sbltz8D/Kw+MlYRm9U
-         Tto7QJR30NwlXkf6ghzGdZaJ4J7n0jIdIyh6GgyFRTEb08bC+neOPEBsCAIoWbAsc1
-         yRQQlLGt3qrcUfWfD5zVXoB8rr+wkFnQlDRQ1VidZxyoEHM1MkygmO+IY5HYsxhWuW
-         EneAR3L/VLPmy9mLMeqJU4u0I87iJWEN/kP8LS9cJ+oTfcbFa7ZgvGmNK7W0P6ZANX
-         Tys7X4/3RkCqw==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.com>, Arnd Bergmann <arnd@arndb.de>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Cc:     kernel test robot <lkp@intel.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        Yi Li <yili@winhong.com>, Jens Axboe <axboe@kernel.dk>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        changfengnan <fengnanchang@foxmail.com>,
-        Shijie Luo <luoshijie1@huawei.com>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ext4: fix debug format string warning
-Date:   Fri,  9 Apr 2021 22:12:05 +0200
-Message-Id: <20210409201211.1866633-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S234160AbhDIUpI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 9 Apr 2021 16:45:08 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:42301 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234364AbhDIUpH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 9 Apr 2021 16:45:07 -0400
+Received: from mail-ot1-f53.google.com ([209.85.210.53]) by
+ mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MGQzj-1lLHMv16PV-00GmKb for <linux-ext4@vger.kernel.org>; Fri, 09 Apr
+ 2021 22:44:52 +0200
+Received: by mail-ot1-f53.google.com with SMTP id v24-20020a9d69d80000b02901b9aec33371so6960066oto.2
+        for <linux-ext4@vger.kernel.org>; Fri, 09 Apr 2021 13:44:52 -0700 (PDT)
+X-Gm-Message-State: AOAM5339L3yXVVQsJ1Olh62GmBvmHbVuNdXV2FxkL+2peJSC1qizvGnz
+        k9lKoGfO/XtUkZT4y8NBjpBp6vdpxcMiovRQ0yI=
+X-Google-Smtp-Source: ABdhPJxU+rBi0mGEwUX9aAHSirkrZuwzwNeHi4q+xFtv2b8iubqzn/uo2welcN6tkvABpPLb3rn5L1OVea6z3JrE5wo=
+X-Received: by 2002:a9d:758b:: with SMTP id s11mr13660259otk.305.1618001091031;
+ Fri, 09 Apr 2021 13:44:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <202104100225.GIF5USvR-lkp@intel.com>
+In-Reply-To: <202104100225.GIF5USvR-lkp@intel.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 9 Apr 2021 22:44:35 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0noWaAQV=cqXhLuEXC_zr35Bb45PiLhgE3bXqFnNtyQA@mail.gmail.com>
+Message-ID: <CAK8P3a0noWaAQV=cqXhLuEXC_zr35Bb45PiLhgE3bXqFnNtyQA@mail.gmail.com>
+Subject: Re: [ext4:dev 9/17] fs/ext4/fast_commit.c:1738:5: warning: format
+ specifies type 'int' but the argument has type 'unsigned long'
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        "Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:GmHmDOWADxWL5ogzC0hlkWC/a55s2VURWjUFQUXbclFCFUjJ8go
+ E/lZ9hV5Yxumfvk3cnQiwfbefAmUQdwARs5rUoxsOilOjG1RsOaI+z3P2reHTsSe4KKcxEb
+ /vempkI8kb85soMy0vdJxWxbT9Et5bl5a/XqwgLrhO9/BcscP8uI+hBHxD0B6SlgWf2swg9
+ 5MOmlIE/Fz9EsLO51IlkA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:mG1wwEU8ph4=:Nm3XdgEJIFU8Eskom6HZHb
+ iN+IRAaCOAzBk7ft5X1xw8Aj2+LrVGmHsumZIIFdYabCgvB4+f+BWV9SBWHbEx8o+YHtYYwz1
+ DnmumpfelxBAjnMQbw5uQTmyCj42u9agfkjCWpx+uOIFxDI9decd93RhW2ks9q+Q6nba2kEVV
+ 6lJUm4e/EDXKW6kaqAKRFFbQZTcmpwhJipwN6cvhVcp6hC/dtUv4ly7ouryxh5xScrHekcshC
+ 6eU+0oablPqgqSC4AE1OuKyFLrfwFmD0/inq8eCvTQGVQvFWvaL1IQULRczR9lohAX2sfmXXS
+ 9vfaBIQfnrDYsX1j49yX2EGFWs41SoeLYKo9LMYYJUmSC2ki7Dla3Pm1mqdE8ZLavqS+VrYF8
+ pLFhnURvHeA2VUeMbuj2/BD2ujroGKuVXySf53zPI4fsZgP6/kYdf1nVwk82xsTeLmzyWCSvA
+ 9YAtMWNFTdWo1EWOCJprz/QU6g9LPqdQC6bAdnriTlv0IoXt5JzgLqsNiQHG6U4inBrkvrgeS
+ 9Cel4d39cgzKUDye3u5rqulMoQ49MB1Rsv3TgpnkQbzNyjbz64WYRIae/ZUEBnepf4xt0e7n4
+ c3tTgeVJB4R4SYFk0Y1jURNNdwPv99gdta
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Fri, Apr 9, 2021 at 8:59 PM kernel test robot <lkp@intel.com> wrote:
 
-Using no_printk() for jbd_debug() revealed two warnings:
+>
+> All warnings (new ones prefixed by >>):
+>
+> >> fs/ext4/fast_commit.c:1738:5: warning: format specifies type 'int' but the argument has type 'unsigned long' [-Wformat]
+>                                    map.m_flags & EXT4_MAP_UNWRITTEN,
+>                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    include/linux/jbd2.h:64:51: note: expanded from macro 'jbd_debug'
+>    #define jbd_debug(n, fmt, a...)  no_printk(fmt, ##a)
+>                                               ~~~    ^
+>    include/linux/printk.h:140:17: note: expanded from macro 'no_printk'
+>                    printk(fmt, ##__VA_ARGS__);             \
+>                           ~~~    ^~~~~~~~~~~
+>    1 warning generated.
+> --
+> >> fs/jbd2/recovery.c:256:54: warning: more '%' conversions than data arguments [-Wformat-insufficient-args]
+>                    jbd_debug(3, "Processing fast commit blk with seq %d");
+>                                                                      ~^
+>    include/linux/jbd2.h:64:44: note: expanded from macro 'jbd_debug'
+>    #define jbd_debug(n, fmt, a...)  no_printk(fmt, ##a)
+>                                               ^~~
+>    include/linux/printk.h:140:10: note: expanded from macro 'no_printk'
+>                    printk(fmt, ##__VA_ARGS__);             \
+>                           ^~~
+>    1 warning generated.
+>
 
-fs/jbd2/recovery.c: In function 'fc_do_one_pass':
-fs/jbd2/recovery.c:256:30: error: format '%d' expects a matching 'int' argument [-Werror=format=]
-  256 |                 jbd_debug(3, "Processing fast commit blk with seq %d");
-      |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-fs/ext4/fast_commit.c: In function 'ext4_fc_replay_add_range':
-fs/ext4/fast_commit.c:1732:30: error: format '%d' expects argument of type 'int', but argument 2 has type 'long unsigned int' [-Werror=format=]
- 1732 |                 jbd_debug(1, "Converting from %d to %d %lld",
+I sent a patch now. For some reason I ended up testing with -Wempty-body enabled
+but all -Wformat warnings disabled when I tested this before sending.
 
-The first one was added incorrectly, and was also missing a few newlines
-in debug output, and the second one happened when the type of an
-argument changed.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: d556435156b7 ("jbd2: avoid -Wempty-body warnings")
-Fixes: 6db074618969 ("ext4: use BIT() macro for BH_** state bits")
-Fixes: 5b849b5f96b4 ("jbd2: fast commit recovery path")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- fs/ext4/fast_commit.c | 2 +-
- fs/jbd2/recovery.c    | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index 6c4f19b0a556..feec2f3f13e9 100644
---- a/fs/ext4/fast_commit.c
-+++ b/fs/ext4/fast_commit.c
-@@ -1729,7 +1729,7 @@ static int ext4_fc_replay_add_range(struct super_block *sb,
- 		}
- 
- 		/* Range is mapped and needs a state change */
--		jbd_debug(1, "Converting from %d to %d %lld",
-+		jbd_debug(1, "Converting from %ld to %d %lld",
- 				map.m_flags & EXT4_MAP_UNWRITTEN,
- 			ext4_ext_is_unwritten(ex), map.m_pblk);
- 		ret = ext4_ext_replay_update_ex(inode, cur, map.m_len,
-diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
-index 69f18fe20923..60601c5779f1 100644
---- a/fs/jbd2/recovery.c
-+++ b/fs/jbd2/recovery.c
-@@ -245,15 +245,15 @@ static int fc_do_one_pass(journal_t *journal,
- 		return 0;
- 
- 	while (next_fc_block <= journal->j_fc_last) {
--		jbd_debug(3, "Fast commit replay: next block %ld",
-+		jbd_debug(3, "Fast commit replay: next block %ld\n",
- 			  next_fc_block);
- 		err = jread(&bh, journal, next_fc_block);
- 		if (err) {
--			jbd_debug(3, "Fast commit replay: read error");
-+			jbd_debug(3, "Fast commit replay: read error\n");
- 			break;
- 		}
- 
--		jbd_debug(3, "Processing fast commit blk with seq %d");
-+		jbd_debug(3, "Processing fast commit blk with seq\n");
- 		err = journal->j_fc_replay_callback(journal, bh, pass,
- 					next_fc_block - journal->j_fc_first,
- 					expected_commit_id);
--- 
-2.29.2
-
+        Arnd
