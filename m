@@ -2,123 +2,97 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2100235919F
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 Apr 2021 03:47:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46679359235
+	for <lists+linux-ext4@lfdr.de>; Fri,  9 Apr 2021 04:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232996AbhDIBsH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 8 Apr 2021 21:48:07 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:49416 "EHLO
+        id S232692AbhDICv3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 8 Apr 2021 22:51:29 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:57647 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232426AbhDIBsG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Apr 2021 21:48:06 -0400
+        with ESMTP id S232616AbhDICv2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Apr 2021 22:51:28 -0400
 Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1391lj2Y011058
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1392p9M5030936
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 8 Apr 2021 21:47:45 -0400
+        Thu, 8 Apr 2021 22:51:09 -0400
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 375E115C3B12; Thu,  8 Apr 2021 21:47:45 -0400 (EDT)
-Date:   Thu, 8 Apr 2021 21:47:45 -0400
+        id 4A06215C3B12; Thu,  8 Apr 2021 22:51:09 -0400 (EDT)
+Date:   Thu, 8 Apr 2021 22:51:09 -0400
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     yebin <yebin10@huawei.com>
-Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4: Fix bug on in ext4_es_cache_extent as
- ext4_split_extent_at failed
-Message-ID: <YG+yQfmMMKw3dKl0@mit.edu>
-References: <20210325022925.1769056-1-yebin10@huawei.com>
- <YGvWwx/+HMdWMJwT@mit.edu>
- <606D0DE5.8070002@huawei.com>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Leah Rumancik <leah.rumancik@gmail.com>,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] ext4: wipe filename upon file deletion
+Message-ID: <YG/BHfB3arzT4x6W@mit.edu>
+References: <20210407154202.1527941-1-leah.rumancik@gmail.com>
+ <20210407154202.1527941-2-leah.rumancik@gmail.com>
+ <YG4lG2B9Wf4t6IfA@gmail.com>
+ <YG59GE+8bhtVLOQr@mit.edu>
+ <20210408052155.GK1990290@dread.disaster.area>
+ <YG9YqkHfslwAdh2/@mit.edu>
+ <20210409000207.GJ22091@magnolia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <606D0DE5.8070002@huawei.com>
+In-Reply-To: <20210409000207.GJ22091@magnolia>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 09:41:57AM +0800, yebin wrote:
-> > > If call ext4_ext_insert_extent failed but new extent already inserted, we just
-> > > update "ex->ee_len = orig_ex.ee_len", this will lead to extent overlap, then
-> > > cause bug on when cache extent.
-> > How did this happen in the first place?  It sounds like if the extent
-> > was already inserted, that would be casue there was an on-disk file
-> > system corruption, no?
+On Thu, Apr 08, 2021 at 05:02:07PM -0700, Darrick J. Wong wrote:
+> > In the ideal world, sure, all or most of them would agree that they
+> > *shouldn't* be storing any kind of PII at rest unencrypted, but they
+> > can't be sure, and so from the perspective of keeping their audit and
+> > I/T compliance committees happy, this requirement is desirable from a
+> > "belt and suspenders" perspective.
 > > 
-> > In that case, shouldn't we call ext4_error() to declare the file
-> > system has an inconsistency, so it can be fixed by fsck?
-> We inject IO fault when runing  fsstress,  JBD detect IO error then trigger
-> JBD abort.  At the same time,
-> if ext4_ext_insert_extent already insert new exntent then call
-> ext4_ext_dirty to dirty metadata , but
-> JBD already aborted ,  ext4_ext_dirty will return error.
-> In ext4_ext_dirty function call  ext4_ext_check_inode check extent if ok, if
-> not, trigger BUG_ON and
-> also print extent detail information.
+> > > This seems like a better fit for FITRIM than anything else.
+> > > 
+> > > Ooohh. We sure do suck at APIs, don't we? FITRIM has no flags field,
+> > > so we can't extend that.
+> > 
+> > I don't have any serious objections to defining FITRIM2; OTOH, for
+> 
+> Er, are we talking about the directory name wiping, or the journal
+> discarding?
 
-In this particular case, skipping the "ex->ee_len = orig_ex.ee_len"
-may avoid the BUG_ON.  But it's not clear that this is always the
-right thing to do.  The fundamental question is what should we do we
-run into an error while we are in the middle of making changes to
-on-disk and in-memory data structures?
+Sorry, I was talking about journal wiping.  The conflation is because
+the reason why we want to wipe the journal is because of the directory
+names in the journal, so the two are very much connected for our use
+case, but yes, directory names in directories is very from directory
+names in the journal.
 
-In the ideal world, we should undo the changes that we were in the
-middle of making before we return an error.  That way, the semantics
-are very clear; on success, the function has made the requested change
-to the file system.  If the function returns an error, then no changes
-should be made.
+We don't actually need any kind of interface for wiping names in
+directories, since it doesn't cost us anything to unconditionally wipe
+the directory entries as opposed to just setting the inode number to
+zero.
 
-That was the reasoning behind resetting ex->ee_len to orig_ex.ee_len
-in the fix_extent_len inside ext4_split_extent_at().  Unofrtunately,
-ext4_ext_insert_extent() does *not* always follow this convention, and
-that's because it would be extremely difficult for it to do so --- the
-mutations that it makes can be quite complex, including potentially
-increasing the height of the extent tree.
+> I didn't think it was any more difficult than changing xfs_removename to
+> zero out the name and ftype fields at the same time it adds the whiteout
+> to the dirent.  But TBH I haven't thought through this too deeply.
+> 
+> I /do/ think that if you ever want to add "secure" deletion to XFS, I'd
+> want to do it by implementing FS_SECRM_FL for XFS, and not by adding
+> more mount options.
 
-However, I don't think your fix is by any means the ideal one, because
-the much more common way that ext4_ext_insert_extent() is when it
-needs to insert a new leaf node, or need to increase the height of the
-extent tree --- and in it returns an ENOSPC failure.  In that case, it
-won't have made any changes changes in the extent tree, and so having
-ext4_split_extent_at() undo the change to ex->ee_len is the right
-thing to do.
+The original meaning of FS_SECRM_FL was that the data blocks would be
+zero'ed --- when the inode was deleted.  We don't intend to have a
+mount option for ext4 for zero'ing the directory entry, since it
+really doesn't cost us anything to memset the directory entry to zero
+at unlink time.  I guess for a DAX file system, zero'ing the directory
+entry might cost a an extra cache line write, but for block-oriented
+devices, for us it's essentially cost-free --- so why add an extra
+mount option, and instead just zero the directory entry of everything
+other than rec_len?
 
-Having blocks get leaked when there is an ENOSPC failure, requiring
-fsck to be run --- and without giving the user any warning that this
-has happened is *not* a good way to fail.  So I don't think the
-proposed patch is the right way to go.
+> Question -- does e2image have the ability to obscure names like
+> xfs_metadump will do if you don't pass it "-o" ?
 
-A better way to go would be to teach ext4_ext_insert_extent() so if
-there is a late failure, that it unwinds the leaf node back to its
-original state (at least from a semantic value).  Since the extent
-leaf node could have been split, and/or adjacent extent entries may
-have been merged, what it would need to do is to remember the starting
-block number and length, and make whatever changes are necessaries to
-the extent entries in that leaf node corresponding to that starting
-block number and length.
-
-If you don't want to do that, then a "do no harm" fix would be
-something like this:
-
-	...
-	} else if (err == -EROFS) {
-		return err;
-	} else if (err)
-		goto fix_extent_len;
-
-So in the journal abort case, when err is set to EROFS, we don't try
-to reset the length, since in theory the file system is read-only
-already anyway.  However, in the ENOSPC case, we won't end up silently
-leaking blocks that will be lost until the user somehow decides to run
-fsck.
-
-There are still times when this doesn't get things completely right
-(e.g., what if we get a late ENOMEM error versus an early ENOMEM
-failure), where the only real fix is to make ext4_ext_insert_extent()
-obey the convention that if it returns an error, it must not result in
-any user-visible state change.
-
-Cheers,
+Yes, e2image has had the -s option to scramble file names since
+E2fsprogs 1.36 (February, 2005).
 
 						- Ted
