@@ -2,97 +2,112 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46679359235
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 Apr 2021 04:51:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3516B3592FD
+	for <lists+linux-ext4@lfdr.de>; Fri,  9 Apr 2021 05:22:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232692AbhDICv3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 8 Apr 2021 22:51:29 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:57647 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232616AbhDICv2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Apr 2021 22:51:28 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1392p9M5030936
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 8 Apr 2021 22:51:09 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 4A06215C3B12; Thu,  8 Apr 2021 22:51:09 -0400 (EDT)
-Date:   Thu, 8 Apr 2021 22:51:09 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Leah Rumancik <leah.rumancik@gmail.com>,
-        linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] ext4: wipe filename upon file deletion
-Message-ID: <YG/BHfB3arzT4x6W@mit.edu>
-References: <20210407154202.1527941-1-leah.rumancik@gmail.com>
- <20210407154202.1527941-2-leah.rumancik@gmail.com>
- <YG4lG2B9Wf4t6IfA@gmail.com>
- <YG59GE+8bhtVLOQr@mit.edu>
- <20210408052155.GK1990290@dread.disaster.area>
- <YG9YqkHfslwAdh2/@mit.edu>
- <20210409000207.GJ22091@magnolia>
+        id S232918AbhDIDW4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 8 Apr 2021 23:22:56 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:16105 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232662AbhDIDWy (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Apr 2021 23:22:54 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FGk0W00hTz1BGRq
+        for <linux-ext4@vger.kernel.org>; Fri,  9 Apr 2021 11:20:26 +0800 (CST)
+Received: from huawei.com (10.175.101.6) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.498.0; Fri, 9 Apr 2021
+ 11:22:29 +0800
+From:   Jack Qiu <jack.qiu@huawei.com>
+To:     <linux-ext4@vger.kernel.org>
+CC:     <jack.qiu@huawei.com>
+Subject: [PATCH -next] ext4: fix trailing whitespace
+Date:   Fri, 9 Apr 2021 12:20:35 +0800
+Message-ID: <20210409042035.15516-1-jack.qiu@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210409000207.GJ22091@magnolia>
+Content-Type: text/plain
+X-Originating-IP: [10.175.101.6]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 05:02:07PM -0700, Darrick J. Wong wrote:
-> > In the ideal world, sure, all or most of them would agree that they
-> > *shouldn't* be storing any kind of PII at rest unencrypted, but they
-> > can't be sure, and so from the perspective of keeping their audit and
-> > I/T compliance committees happy, this requirement is desirable from a
-> > "belt and suspenders" perspective.
-> > 
-> > > This seems like a better fit for FITRIM than anything else.
-> > > 
-> > > Ooohh. We sure do suck at APIs, don't we? FITRIM has no flags field,
-> > > so we can't extend that.
-> > 
-> > I don't have any serious objections to defining FITRIM2; OTOH, for
-> 
-> Er, are we talking about the directory name wiping, or the journal
-> discarding?
+Made suggested modifications from checkpatch in reference to ERROR:
+ trailing whitespace
 
-Sorry, I was talking about journal wiping.  The conflation is because
-the reason why we want to wipe the journal is because of the directory
-names in the journal, so the two are very much connected for our use
-case, but yes, directory names in directories is very from directory
-names in the journal.
+Signed-off-by: Jack Qiu <jack.qiu@huawei.com>
+---
+ fs/ext4/balloc.c  | 2 +-
+ fs/ext4/mballoc.c | 2 +-
+ fs/ext4/namei.c   | 6 +++---
+ fs/ext4/super.c   | 2 +-
+ 4 files changed, 6 insertions(+), 6 deletions(-)
 
-We don't actually need any kind of interface for wiping names in
-directories, since it doesn't cost us anything to unconditionally wipe
-the directory entries as opposed to just setting the inode number to
-zero.
+diff --git a/fs/ext4/balloc.c b/fs/ext4/balloc.c
+index 74a5172c2d83..9dc6e74b265c 100644
+--- a/fs/ext4/balloc.c
++++ b/fs/ext4/balloc.c
+@@ -239,7 +239,7 @@ unsigned ext4_free_clusters_after_init(struct super_block *sb,
+ 				       ext4_group_t block_group,
+ 				       struct ext4_group_desc *gdp)
+ {
+-	return num_clusters_in_group(sb, block_group) -
++	return num_clusters_in_group(sb, block_group) -
+ 		ext4_num_overhead_clusters(sb, block_group, gdp);
+ }
 
-> I didn't think it was any more difficult than changing xfs_removename to
-> zero out the name and ftype fields at the same time it adds the whiteout
-> to the dirent.  But TBH I haven't thought through this too deeply.
-> 
-> I /do/ think that if you ever want to add "secure" deletion to XFS, I'd
-> want to do it by implementing FS_SECRM_FL for XFS, and not by adding
-> more mount options.
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index a02fadf4fc84..1e39ff5cdde2 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -2590,7 +2590,7 @@ int ext4_mb_alloc_groupinfo(struct super_block *sb, ext4_group_t ngroups)
+ 	sbi->s_group_info_size = size / sizeof(*sbi->s_group_info);
+ 	if (old_groupinfo)
+ 		ext4_kvfree_array_rcu(old_groupinfo);
+-	ext4_debug("allocated s_groupinfo array for %d meta_bg's\n",
++	ext4_debug("allocated s_groupinfo array for %d meta_bg's\n",
+ 		   sbi->s_group_info_size);
+ 	return 0;
+ }
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index 883e2a7cd4ab..996b89b406c5 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -2139,10 +2139,10 @@ static int make_indexed_dir(handle_t *handle, struct ext4_filename *fname,
 
-The original meaning of FS_SECRM_FL was that the data blocks would be
-zero'ed --- when the inode was deleted.  We don't intend to have a
-mount option for ext4 for zero'ing the directory entry, since it
-really doesn't cost us anything to memset the directory entry to zero
-at unlink time.  I guess for a DAX file system, zero'ing the directory
-entry might cost a an extra cache line write, but for block-oriented
-devices, for us it's essentially cost-free --- so why add an extra
-mount option, and instead just zero the directory entry of everything
-other than rec_len?
+ 	retval = ext4_handle_dirty_dx_node(handle, dir, frame->bh);
+ 	if (retval)
+-		goto out_frames;	
++		goto out_frames;
+ 	retval = ext4_handle_dirty_dirblock(handle, dir, bh2);
+ 	if (retval)
+-		goto out_frames;	
++		goto out_frames;
 
-> Question -- does e2image have the ability to obscure names like
-> xfs_metadump will do if you don't pass it "-o" ?
+ 	de = do_split(handle,dir, &bh2, frame, &fname->hinfo);
+ 	if (IS_ERR(de)) {
+@@ -3372,7 +3372,7 @@ static int ext4_symlink(struct user_namespace *mnt_userns, struct inode *dir,
+ 		 * for transaction commit if we are running out of space
+ 		 * and thus we deadlock. So we have to stop transaction now
+ 		 * and restart it when symlink contents is written.
+-		 *
++		 *
+ 		 * To keep fs consistent in case of crash, we have to put inode
+ 		 * to orphan list in the mean time.
+ 		 */
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index b9693680463a..675f5de6ac06 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -4996,7 +4996,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+ 			ext4_journal_commit_callback;
 
-Yes, e2image has had the -s option to scramble file names since
-E2fsprogs 1.36 (February, 2005).
+ 	block = ext4_count_free_clusters(sb);
+-	ext4_free_blocks_count_set(sbi->s_es,
++	ext4_free_blocks_count_set(sbi->s_es,
+ 				   EXT4_C2B(sbi, block));
+ 	err = percpu_counter_init(&sbi->s_freeclusters_counter, block,
+ 				  GFP_KERNEL);
+--
+2.17.1
 
-						- Ted
