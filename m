@@ -2,172 +2,225 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FA2F35909C
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 Apr 2021 01:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8D153590BE
+	for <lists+linux-ext4@lfdr.de>; Fri,  9 Apr 2021 02:02:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232793AbhDHXtX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 8 Apr 2021 19:49:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33970 "EHLO mail.kernel.org"
+        id S232793AbhDIACV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 8 Apr 2021 20:02:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232426AbhDHXtX (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 8 Apr 2021 19:49:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 226FB610F8;
-        Thu,  8 Apr 2021 23:49:10 +0000 (UTC)
+        id S232426AbhDIACU (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 8 Apr 2021 20:02:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 419EA61057;
+        Fri,  9 Apr 2021 00:02:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617925751;
-        bh=v2gneGpqlXr5igRRyItDUvevsFRmwjUjT95uB3YufvU=;
+        s=k20201202; t=1617926528;
+        bh=5WIA4v1gB399gPR21X3OBsrmUglb7E1AedbGIAnd4/M=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IM/nysNCKThO4Je5LgjQWGAmtlk5AGZv0z8wXkfQSQ2ApeNcrzNWKKqXdHPdrKsVC
-         WF6zlYYmxoUUS+3VxVVWm1/3GWNm7leHZz1KiZWkyorhPsVy/OZrxBpRc/ypxZjCin
-         DE7LTD8hJs+etVg/xHsov5K5uMeBTbcqsUiQDdb7F6dJPxPjREQTzYdTzcIoD7pd/V
-         6irt769CI6mUnhYu/x5HbtvzJml9VcykZwzy3ohUK0oC60OEshDsfTrDDyyXdJeTN6
-         yfyx68AiSQ/FM2xhmJooMDi/AYRWFbhJ2a6VshXWmzNrKkzqiksZqtEalVa6RoaEur
-         BMhj2lDkcVl2w==
-Date:   Thu, 8 Apr 2021 16:49:09 -0700
+        b=jgkB3sMM7U61nuo9hD+R3cHpyzylPIYnv7q12l1w51HjpJlauKSD3oJSaI0ZM2nps
+         M8YwTa6GxMurCBBbHTd2gBrUjiSK49y+ILkTRFqEQ8/d9mqmIK58kbJJZd6OrZ9DWX
+         maW8ZkjrUIRMQIibe4UOP4o3tqV4/mHrVxWzqoEIVGkKiKquL03ICQXs5/SoCulqO3
+         GM/mHyGHrl5TuYSt/BaMRh1QjLNo2NLR37aAjVPHr/erJI21rzssveA8vycrfvbm1o
+         XVDJSDudtY7CC02Xr9QWCnO9BacdrRkpjfHv301TVW0rh4vVp9dVerLiyEbEMaadL6
+         LOj802ahRRiQQ==
+Date:   Thu, 8 Apr 2021 17:02:07 -0700
 From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Leah Rumancik <leah.rumancik@gmail.com>, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] ext4: add ioctl FS_IOC_CHKPT_JRNL
-Message-ID: <20210408234909.GI22091@magnolia>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Leah Rumancik <leah.rumancik@gmail.com>,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] ext4: wipe filename upon file deletion
+Message-ID: <20210409000207.GJ22091@magnolia>
 References: <20210407154202.1527941-1-leah.rumancik@gmail.com>
- <20210407154202.1527941-3-leah.rumancik@gmail.com>
- <20210407183547.GG22091@magnolia>
- <20210407211500.GG1990290@dread.disaster.area>
- <20210408012651.GH22091@magnolia>
- <20210408044327.GJ1990290@dread.disaster.area>
+ <20210407154202.1527941-2-leah.rumancik@gmail.com>
+ <YG4lG2B9Wf4t6IfA@gmail.com>
+ <YG59GE+8bhtVLOQr@mit.edu>
+ <20210408052155.GK1990290@dread.disaster.area>
+ <YG9YqkHfslwAdh2/@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210408044327.GJ1990290@dread.disaster.area>
+In-Reply-To: <YG9YqkHfslwAdh2/@mit.edu>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 02:43:27PM +1000, Dave Chinner wrote:
-> On Wed, Apr 07, 2021 at 06:26:51PM -0700, Darrick J. Wong wrote:
-> > On Thu, Apr 08, 2021 at 07:15:00AM +1000, Dave Chinner wrote:
-> > > On Wed, Apr 07, 2021 at 11:35:47AM -0700, Darrick J. Wong wrote:
-> > > > On Wed, Apr 07, 2021 at 03:42:02PM +0000, Leah Rumancik wrote:
-> > > > > ioctl FS_IOC_CHKPT_JRNL checkpoints and flushes the journal. With the
-> > > > > CHKPT_JRNL_DISCARD flag set, the journal blocks are also discarded.
-> > > > > With the filename wipeout patch, Ext4 guarantees that all data will be
-> > > > > discarded on deletion. This ioctl allows for periodically discarding
-> > > > > journal contents too.
-> > > > 
-> > > > This needs a documentation update to cover what this new userspace ABI
-> > > > does, and probably linux-api and linux-fsdevel should be cc'd.
-> > > 
-> > > You need to describe the semantics that you are exporting to
-> > > userspace. Exactly what does a "journal checkpoint" mean from the
-> > > point of view of user visible metadata and data integrity?
+On Thu, Apr 08, 2021 at 03:25:30PM -0400, Theodore Ts'o wrote:
+> On Thu, Apr 08, 2021 at 03:21:55PM +1000, Dave Chinner wrote:
+> > "if"
 > > 
-> > To be clear, my interests are /not/ the same as Leah's here -- I want to
-> > use this "checkpoint" call to provide a way for grub to know that it
-> > will be able to find boot files without needing to recover the log.
-> > 
-> > For the grub use case, the user-visible behaviors that are required are:
-> > 
-> >  1. All dirty file data in memory are flushed;
-> >  2. All committed metadata updates are forced to the ondisk log;
-> >  3. All log contents have been written into the filesystem.
-> > 
-> > (Note confusing terminology here: in my head, #2 means checkpointing the
-> > ondisk log, whereas #3 means checkpointing the filesystem itself; and
-> > "FS_IOC_CHECKPOINT" means checkpointing the whole filesystem, not just
-> > the log.)
+> > Is this purely a hypothetical "if", or is it "we have a customer
+> > that actaully does this"? Because if this is just hypothetical, then
+> > future customers should already be advised and know not to store PII
+> > information in clear text *anywhere* in their systems.
 > 
-> So, yeah, you just renamed the ioctl because you are clearly not just
-> talking about a journal checkpoint. A journal checkpoint is what
-> XFS does when it pushes the CIL to disk (i.e. #2). Quiescing the log
-> is what we call #3 - basically bringing it to an empty, idle state.
+> Customers might not even know if they are doing this.  The concern
+> they have is that when they are doing "lift and shift", and moving
+> their workloads from their private data center to the cloud, they
+> would have no idea what might be lurking in their legacy workloads.
+
+Customers don't know and don't care so long as they can get away with
+it.  Two seconds after we grant them write access to the filesystem,
+they've written your covid19 vaccination card selfie^W^W^Wcredit card
+number to permanent storage.
+
+(Err I mean, they care after the breach goes public and gaslighting the
+victims^Wcustomers results in lawsuits that stick, so I guess maybe we
+should do the world a solid and try to prevent that...)
+
+> Heck, in a previous job, I visited a major customer who had lost their
+> sources to a critical bit of their software and they were changing
+> pathnames by running a hex editor on the binary.  Enterprise customers
+> do the darnedest things... (OTOH, they pay $$$ to our companies :-)
+
+Heh.  I never thought of myself as an enterprise customer.  Editing
+binaries is fun.
+
+> In the ideal world, sure, all or most of them would agree that they
+> *shouldn't* be storing any kind of PII at rest unencrypted, but they
+> can't be sure, and so from the perspective of keeping their audit and
+> I/T compliance committees happy, this requirement is desirable from a
+> "belt and suspenders" perspective.
 > 
-> Which makes me even more concerned about defining the behaviour and
-> semantics needed before we even talk about the API that would be
-> used.
-
-Ok, let's draft a manpage.  Here's my mockup of a manpage for the ioctl,
-though again, I don't have a strong preference between this and a
-syncfs2 call.
-
-NAME
-
-    ioctl_fs_ioc_checkpoint - Commit all filesystem changes to disk
-
-SYNOPSYS
-
-    int ioctl(int fd, FS_IOC_CHECKPOINT, __u64 *flags);
-
-DESCRIPTION
-
-Ensure that all previous changes to the filesystem backing the given
-file descriptor are persisted to disk in the same form that they would
-be if the filesystem were to be unmounted cleanly.  Changes made during
-or after this call are not required to be persisted.
-
-The motivation of this ioctl are twofold -- first, to provide a way for
-application software to prepare a mounted filesystem for future
-read-only access by primordial external applications (e.g. bootloaders)
-that do not know about crash recovery.  The second motivation is to
-provide a way to clean out ephemeral areas of the filesystem involved in
-crash recovery for security cleaning purposes.
-
-FLAGS
-
-The flags argument should point to a __u64 containing any combination of
-the following flags:
-
-    FS_IOC_CHECKPOINT_DISCARD_STAGING
-	Issue a discard command to erase all areas of the filesystem
-	that are involved in staging and committing updates.
-
-ERRORS
-
-Error codes can be one of, but are not limited to, the following:
-
-	EFSCORRUPTED	Filesystem corruption was detected.
-	EINVAL		One of the arguments is not valid.
-	ENOMEM		Not enough memory.
-	ENOSPC		Not enough space.
-	<etc>
-
-> 
-> > > All of these methods imply a journal checkpoint of some kind is done
-> > > in ext4, so why do we need a specific ioctl to do this?
+> > This seems like a better fit for FITRIM than anything else.
 > > 
-> > For XFS, we don't have any kind of system call that will checkpoint the
-> > fs without the unwanted behaviors of FIFREEZE and FITHAW.  AFAICT
-> > there's no explicit way to force a fs checkpoint in ext4 aside from
-> > contorted insanity with data=journal files and bmap().  Weird things
-> > like NOVA would have to figure out a way to checkpoint the whole fs
-> > (flush all the journals?).
+> > Ooohh. We sure do suck at APIs, don't we? FITRIM has no flags field,
+> > so we can't extend that.
 > 
-> So, yeah, you're not talking about a journal checkpoint. You're
-> describing a completely different set of requirements.... :/
+> I don't have any serious objections to defining FITRIM2; OTOH, for
 
-Yes, I'm talking about making sure that we've written changes back into
-the whole fs, not just the journal.
+Er, are we talking about the directory name wiping, or the journal
+discarding?
 
-> > btrfs can probably get away with flushing the disk cache since it has
-> > COW btrees for metadata (fsync log notwithstanding); and I'd imagine
-> > stupid things like FAT would just return EOPNOTSUPP.
-> > 
-> > To solve my stupid grub problem, this could easily be:
-> > 
-> > 	ret = syncfs2(fd, SYNCFS_CHECKPOINT_FS);
+FITRIM is a horrible interface for directory name wiping.  I'm assuming
+you're talking about the journal discard patch, but it's a little
+strange that these are all replies to the patch adding directory name
+wipes.
+
+> Darrick's use case of wanting to make XFS work reliably with the GRUB
+> bootloader (which doesn't replay file system journals) and a certain
+> Enterprise Linux distribution (cough, cough) can't be bothered to do a
+
+To be fair, the certain Enterprise Linux distro actually does
+/sbin/reboot properly like you'd expect; it's the clod users that (heh,
+I'll leave the typo in) who expect that they can save time by making
+their systems unrebootable.
+
+> clean shutdown at the end of doing an install, using a hypothetical
+> FITRIM2 seems... wierd, whereas it might be cleaner to define
+> semantics in terms of FS_IOC_CHKPT_JRNL.  But I don't have a dog in
+> that particular fight, since I'm not responsible of maintaining either
+> XFS or RHEL.  :-)
+
+
+
+> Yet another possible solution might be to define a new system call,
+> syncfs2(), which takes a flag option.  That might be a bit more
+> heavyweight, and we would still have to figure out how to define what
+> a "journal checkpoint means" from the standpoint of an API definition.
+> It would presumably be something like "allows a non-kernel
+> implementation accessing the file system (e.g., from bootloaders like
+> grub) to be able to access files on the file sytstem as easily as
+> unmounting the file system", or perhaps defining it in terms of doing
+> a FIFREEZE/FITHAW, without having to actually freeze the file system.
+
+Let's move this part of the discussion over to the other patch, please.
+
+> > Oh, that won't be fun. XFS places a whiteout over the dirent to
+> > indicate that it has been freed, and it does not actually log
+> > anything other than the 4 byte whiteout at the start of the dirent
+> > and the 2 byte XFS_DIR2_DATA_FREE_TAG tag at the end of the dirent.
+> > So zeroing dirents is going to require changing the size and shape
+> > of dirent logging during unlinks...
 > 
-> Sure, but is that the same thing that Leah needs? Checkpoints don't
-> imply discards (let alone journal discards) in any way, and adding
-> (optional) discard support for random parts of filesysetms to
-> syncfs() semantics doesn't seem like a very good fit...
+> So I'm not an expert on XFS, but XFS does logical logging, so what is
+> in the log is "we're going to white out this dirent", right?  So
+> couldn't the replay code be taught to look at the dirent's reclen, and
+> zero out the full directory entry at journal replay time?  If the
+> directory entry has already been reused, that's a case which the XFS
+> replay code has to handle already.  Or is there something subtle which
+> makes this hard to do.
+> 
+> > This will have to be done correclty for all the node merge, split
+> > and compaction cases, too, not just the "remove name" code.
+> 
+> Agreed this is going to be a lot more complicated for XFS.
 
-Yes.  I think Leah and Ted are more inclined to go with an ioctl
-since this is something that's peculiar to journalled filesystems.
+I didn't think it was any more difficult than changing xfs_removename to
+zero out the name and ftype fields at the same time it adds the whiteout
+to the dirent.  But TBH I haven't thought through this too deeply.
+
+I /do/ think that if you ever want to add "secure" deletion to XFS, I'd
+want to do it by implementing FS_SECRM_FL for XFS, and not by adding
+more mount options.
+
+> > > P.P.S.  We'll also want to have a mount option which supresses file
+> > > names (for example, from ext4_error() messages) from showing up in
+> > > kernel logs, to ease potential privacy concerns with respect to serial
+> > > console and kernel logs.  But that's for another patch set....
+> > 
+> > This sounds more and more like "Don't encode PII in clear text
+> > anywhere" is a best practice that should be enforced with a big
+> > hammer.
+
+How?  Encrypting the entire block device?  Implementing fscrypt for all
+filesystems?  Sending Daves to companies everywhere to heckle them for
+their poor sekuritee practices? ;)
+
+> > Filenames get everywhere and there's no easy way to prevent
+> > that because path lookups can be done by anyone in the kernel. This
+> > so much sounds like you're starting a game of whack-a-mole that can
+> > never be won.
+> > 
+> > From a security perspective, this is just bad design. Storing PII in
+> > clear text filenames pretty much guarantees that the PII will leak
+> > because it can't be scrubbed/contained within application controlled
+> > boundaries. Trying to contain the spread of filenames within random
+> > kernel subsystems sounds like a fool's errand to me, especially
+> > given how few kernel developers will even know that filenames are
+> > considered sensitive information from a security perspective...
+> 
+> The problem is that the company that the Cloud SRE's work for is
+> different from the enterprise customer owning the VM.  If a customer
+> stores PII in a filename, and the Cloud SRE places the log in some
+> place where it could leak out, Google gets blamed, not the enterprise
+> customer.
+> 
+> So the Cloud SRE's *have* to treat the logs as if they might contain
+> sensitive information, which means it can't be made available in bug
+> trackers without a manual (human-drive) scrubbing to make sure the log
+> doesn't have anything that might appear to contain PII.
+
+Question -- does e2image have the ability to obscure names like
+xfs_metadump will do if you don't pass it "-o" ?
+
+> By the way, MySQL puts table names into file names, and even though
+> table names normally aren't PII, it's still considered "customer
+> data", and we need to treat any kind of customer data super-carefully.
+
+<shrug> I don't have any objection to logging the directory inode number
+and the offset of the dirent.  Replacing "Error in path /AUTOEXEC.BAT"
+with "Error in directory 0x1515 offset 23568" solves the PII-in-logfiles
+problem, right?  And still leaves us enough of a breadcrumb that we can
+figure out where fstests went wrong.
+
+> > Fundamentally, applications should *never* place PII in clear text
+> > in potentially leaky environments.  The environment for storing PII
+> > should be designed to be secure and free of data leaks from the
+> > ground up. And ext4 has already got this with fscrypt support.....
+> 
+> Cloud disks (no matter which cloud vendor) do tend to be encrypted at
+> rest, and in the case of Google, we even give customers the option to
+> Bring Your Own Key, which means when the VM isn't running, no one at
+> Google has access to the encryption key.  But that doesn't change the
+> fact that if we need to debug a system, the logs might contain file
+> names, and file names might be customer-owned data.  Using encryption
+> at rest doesn't solve that problem.
+
+<nod>
 
 --D
 
-> Cheers,
 > 
-> Dave.
-> -- 
-> Dave Chinner
-> david@fromorbit.com
+> 					- Ted
