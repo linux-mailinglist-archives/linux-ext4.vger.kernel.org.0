@@ -2,77 +2,87 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8C5035C52A
-	for <lists+linux-ext4@lfdr.de>; Mon, 12 Apr 2021 13:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0DB835C533
+	for <lists+linux-ext4@lfdr.de>; Mon, 12 Apr 2021 13:32:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240433AbhDLLbM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 12 Apr 2021 07:31:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240413AbhDLLbL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 12 Apr 2021 07:31:11 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C456C06138C;
-        Mon, 12 Apr 2021 04:30:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=kWQ0c8ucYe9UV0ATqeFAnzRMY2iAE51PlhKV5u1lmgA=; b=cUlG6NlYie3LJa9ROPnR/w8KN2
-        JCdeSfOVfIeml1p84gNnsCv7tp+9EaP/qi6AjJ9B9nZGmaLGGKWPjHTdIvaWcevxZqaAkVyH2zIYp
-        YpK1Vp4IdlP++IDrzLyQJenh0Z9PQiQc5EmbthkHVGgJYwguPfIaBbOh+NnGPEke9NwJew87h0P4l
-        V7bgqTmOzaNfOfdXMhCBPWNLGUefhossu8yUlPa9K5YVUlircfzjRegGT3hQYhaUB86Eo/A+q8Lh9
-        FyKa4e0if+oxWZxVJ/gYi8OJ+vHclbw/A6CDRpuHpMycMwJB4pNR6QVEd0Gvi7jbQGTdY01NUVmYY
-        Rk6/snpw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lVumD-004Fyn-9X; Mon, 12 Apr 2021 11:30:49 +0000
-Date:   Mon, 12 Apr 2021 12:30:45 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        Eric Whitney <enwlinux@gmail.com>,
-        linux-fsdevel@vger.kernel.org,
-        "Darrick J . Wong" <djwong@kernel.org>
-Subject: Re: [PATCH 3/3] ext4: Fix overflow in ext4_iomap_alloc()
-Message-ID: <20210412113045.GI2531743@casper.infradead.org>
-References: <20210412102333.2676-1-jack@suse.cz>
- <20210412102333.2676-4-jack@suse.cz>
+        id S240350AbhDLLcS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 12 Apr 2021 07:32:18 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49214 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237792AbhDLLcR (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 12 Apr 2021 07:32:17 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1022BAE20;
+        Mon, 12 Apr 2021 11:31:59 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id C89371F2B62; Mon, 12 Apr 2021 13:31:58 +0200 (CEST)
+Date:   Mon, 12 Apr 2021 13:31:58 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Hao Sun <sunhao.th@gmail.com>
+Cc:     Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org,
+        jack@suse.com, linux-ext4@vger.kernel.org, tytso@mit.edu
+Subject: Re: More KCSAN data-race Reports
+Message-ID: <20210412113158.GA4679@quack2.suse.cz>
+References: <CACkBjsYrsp5LekZciBjSbnJLHvBwQF3YM5TiKEMPeUX-D_DaSA@mail.gmail.com>
+ <20210412090212.GA31090@quack2.suse.cz>
+ <CACkBjsYuWeJNYTGUhBVszgiUVOrMdEZ=qcmDtEk97BEtm4ggSA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210412102333.2676-4-jack@suse.cz>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACkBjsYuWeJNYTGUhBVszgiUVOrMdEZ=qcmDtEk97BEtm4ggSA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 12:23:33PM +0200, Jan Kara wrote:
-> A code in iomap alloc may overblock block number when converting it to
+On Mon 12-04-21 18:42:58, Hao Sun wrote:
+> Jan Kara <jack@suse.cz> 于2021年4月12日周一 下午5:02写道：
+> >
+> > Hello,
+> >
+> > On Sun 11-04-21 11:42:05, Hao Sun wrote:
+> > > Since the last KCSAN report[1], I found two more KCSAN reports that
+> > > Syzbot had not reported.
+> > > Not sure if they are valid bugs, I hope the stack information in
+> > > reports can help you locate the problem.
+> > > Kernel config can be found in the attachment.
+> >
+> > Do we have symbolic decoding of the traces below? Because involved
+> > functions are really big so it's difficult to guess what KCSAN is
+> > complaining about... At least I wasn't able to guess it after looking into
+> > the stacktraces for a while.
+> >
+> Sorry, the log processing module of Fuzzer still has some logic bugs,
+> only some of the symbolized reports are stored in the disk.
+> Interestingly, however, the read-write end that causes data racing in
+> both reports are in the same location (fs/jbd2/commit.c:443), and this
+> information should help locate the problem.
+> 
+> Partial symbolized report 1:
+> ==================================================================
+> BUG: KCSAN: data-race in ext4_mark_iloc_dirty / jbd2_journal_commit_transaction
+> read-write to 0xffff88804451d800 of 8 bytes by task 4821 on cpu 1:
+>  jbd2_journal_commit_transaction+0x222/0x3200 fs/jbd2/commit.c:443
+>  kjournald2+0x253/0x470 fs/jbd2/journal.c:213
+>  kthread+0x1f0/0x220 kernel/kthread.c:292
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
 
-"overflow"?
+OK, that is:
+	journal->j_flags |= JBD2_FULL_COMMIT_ONGOING;
 
-> byte offset. Luckily this is mostly harmless as we will just use more
-> expensive method of writing using unwritten extents even though we are
-> writing beyond i_size.
-> 
-> Fixes: 378f32bab371 ("ext4: introduce direct I/O write using iomap infrastructure")
-> Signed-off-by: Jan Kara <jack@suse.cz>
-> ---
->  fs/ext4/inode.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 0948a43f1b3d..7cebbb2d2e34 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -3420,7 +3420,7 @@ static int ext4_iomap_alloc(struct inode *inode, struct ext4_map_blocks *map,
->  	 * i_disksize out to i_size. This could be beyond where direct I/O is
->  	 * happening and thus expose allocated blocks to direct I/O reads.
->  	 */
-> -	else if ((map->m_lblk * (1 << blkbits)) >= i_size_read(inode))
-> +	else if (((loff_t)map->m_lblk << blkbits) >= i_size_read(inode))
->  		m_flags = EXT4_GET_BLOCKS_CREATE;
->  	else if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
->  		m_flags = EXT4_GET_BLOCKS_IO_CREATE_EXT;
-> -- 
-> 2.26.2
-> 
+So likely this is a complaint about j_flags update vs j_flags check race
+(we check for JBD2_ABORT flag) all around the code.
+
+So again this is harmless unless the compiler plays some devilish tricks
+and doesn't store bogus intermediate values in j_flags during RMW
+operations. Not sure how to deal with this one. Just putting data_race()
+here doesn't seem right - if the compiler does something unexpected, we are
+indeed in trouble. Maybe using bitops for j_flags would be beneficial for
+other reasons as well as silencing KCSAN. But it needs more thought.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
