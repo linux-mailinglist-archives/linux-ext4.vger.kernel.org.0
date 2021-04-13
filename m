@@ -2,67 +2,64 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2667E35E131
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Apr 2021 16:17:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7EB135E897
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Apr 2021 23:53:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230102AbhDMORc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 13 Apr 2021 10:17:32 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35586 "EHLO mx2.suse.de"
+        id S1348552AbhDMVxi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 13 Apr 2021 17:53:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48696 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229590AbhDMORc (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 13 Apr 2021 10:17:32 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 73746B178;
-        Tue, 13 Apr 2021 14:17:11 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 06D941E37A2; Tue, 13 Apr 2021 16:17:11 +0200 (CEST)
-Date:   Tue, 13 Apr 2021 16:17:11 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        Ted Tso <tytso@mit.edu>, Amir Goldstein <amir73il@gmail.com>,
-        Dave Chinner <david@fromorbit.com>
-Subject: Re: [PATCH 0/7 RFC v3] fs: Hole punch vs page cache filling races
-Message-ID: <20210413141710.GE15752@quack2.suse.cz>
-References: <20210413105205.3093-1-jack@suse.cz>
- <20210413130950.GD1366579@infradead.org>
+        id S231513AbhDMVxe (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 13 Apr 2021 17:53:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA27461222;
+        Tue, 13 Apr 2021 21:53:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618350793;
+        bh=yB0HkGpIKD/9kn1kseH50pxnyI/f5O1CKVyt7TEmSAc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=d7a+lg+k4xu9bJl+9yt0s63822oO8+mkPVvPtg7nq1TWnqFhaJYbnsr6lLc3tc5Bv
+         1d+s+6T9ep9Q6VKeFDz2drjLMOA6ugigyF1L+BFzJWQuA+367/aAcM+tcfHLffkCZJ
+         DtWDjGc/OTAixszj/a5PUqZxL9hihyKech3htnyjpb7pglpjwYTGrtu29FbZ2ok8c3
+         pu+78Dt8gf5HKa0oP4Eu3f47fpPymMnTWiLprbXsS2lJ8VEC5aavIUZcUxnNqSCNdj
+         4S1RdEDhlJq9eEGpvT8dyi7wguATRQd9TtXPrbHoAJwT0Y65mv/9iu7jpTgsvaZ/OH
+         w7IFrRiTJPTpw==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Daniel Rosenberg <drosen@google.com>, linux-ext4@vger.kernel.org
+Subject: [xfstests-bld PATCH] test-appliance: un-exclude encrypt+casefold test
+Date:   Tue, 13 Apr 2021 14:53:00 -0700
+Message-Id: <20210413215300.10700-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210413130950.GD1366579@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 13-04-21 14:09:50, Christoph Hellwig wrote:
-> > Also when writing the documentation I came across one question: Do we mandate
-> > i_mapping_sem for truncate + hole punch for all filesystems or just for
-> > filesystems that support hole punching (or other complex fallocate operations)?
-> > I wrote the documentation so that we require every filesystem to use
-> > i_mapping_sem. This makes locking rules simpler, we can also add asserts when
-> > all filesystems are converted. The downside is that simple filesystems now pay
-> > the overhead of the locking unnecessary for them. The overhead is small
-> > (uncontended rwsem acquisition for truncate) so I don't think we care and the
-> > simplicity is worth it but I wanted to spell this out.
-> 
-> I think all makes for much better to understand and document rules,
-> so I'd shoot for that eventually.
+From: Eric Biggers <ebiggers@google.com>
 
-OK.
+This is needed to test the encryption and casefolding features in
+combination.
 
-> Btw, what about locking for DAX faults?  XFS seems to take
-> the mmap sem for those as well currently.
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ .../test-appliance/files/root/fs/ext4/cfg/encrypt.exclude      | 3 ---
+ 1 file changed, 3 deletions(-)
 
-Yes, I've mechanically converted all those uses to i_mapping_sem for XFS,
-ext4, and ext2 as well. Longer term we may be able to move some locking
-into generic DAX code now that the lock is in struct inode. But I want to
-leave that for later since DAX locking is different enough that it needs
-some careful thinking and justification...
-
-								Honza
+diff --git a/kvm-xfstests/test-appliance/files/root/fs/ext4/cfg/encrypt.exclude b/kvm-xfstests/test-appliance/files/root/fs/ext4/cfg/encrypt.exclude
+index b7f6ea3..20abf5e 100644
+--- a/kvm-xfstests/test-appliance/files/root/fs/ext4/cfg/encrypt.exclude
++++ b/kvm-xfstests/test-appliance/files/root/fs/ext4/cfg/encrypt.exclude
+@@ -30,9 +30,6 @@ generic/587
+ generic/600
+ generic/601
+ 
+-# encryption doesn't play well with casefold (at least not yet)
+-generic/556
+-
+ # generic/204 tests ENOSPC handling; it doesn't correctly
+ # anticipate the external extended attribute required when
+ # using a 1k block size
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.31.1
+
