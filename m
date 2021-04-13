@@ -2,67 +2,79 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA56035D5D2
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Apr 2021 05:24:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3935735D5EF
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Apr 2021 05:32:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238029AbhDMDT4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 12 Apr 2021 23:19:56 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:16579 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237789AbhDMDT4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 12 Apr 2021 23:19:56 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FK9l43DmPz18Hqb;
-        Tue, 13 Apr 2021 11:17:20 +0800 (CST)
-Received: from [10.174.177.93] (10.174.177.93) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 13 Apr 2021 11:19:30 +0800
-From:   Haotian Li <lihaotian9@huawei.com>
-Subject: [PATCH] e2fsck: try write_primary_superblock() again when it failed
+        id S245617AbhDMDb5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 12 Apr 2021 23:31:57 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:45503 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S241613AbhDMDb5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 12 Apr 2021 23:31:57 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 13D3VX6q000587
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 12 Apr 2021 23:31:33 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 2EB1715C3B1E; Mon, 12 Apr 2021 23:31:33 -0400 (EDT)
+From:   "Theodore Ts'o" <tytso@mit.edu>
 To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-CC:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        "liuzhiqiang (I)" <liuzhiqiang26@huawei.com>,
-        linfeilong <linfeilong@huawei.com>
-Message-ID: <7486f08c-7f14-9fac-fdb2-0fe78a799d90@huawei.com>
-Date:   Tue, 13 Apr 2021 11:19:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.1.0
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, stable@kernel.org
+Subject: [PATCH] ext4: allow the dax flag to be set and cleared on inline directories
+Date:   Mon, 12 Apr 2021 23:31:24 -0400
+Message-Id: <20210413033124.2256508-1-tytso@mit.edu>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.93]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Function write_primary_superblock() has two ways to flush
-superblock, byte-by-byte as default. It may use
-io_channel_write_byte() many times. If some errors occur
-during these funcs, the superblock may become inconsistent
-and produce checksum error.
+This is needed to allow generic/620 to pass for file systems with the
+inline data_feature enabled, and it allows the use of file systems
+where the directories use inline_data, while the files are accessed
+via DAX.
 
-Try write_primary_superblock() with whole-block way again
-when it failed on byte-by-byte way.
+Cc: stable@kernel.org
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 ---
- lib/ext2fs/closefs.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ fs/ext4/ialloc.c | 3 ++-
+ fs/ext4/ioctl.c  | 6 ++++++
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/lib/ext2fs/closefs.c b/lib/ext2fs/closefs.c
-index 69cbdd8c..1fc27fb5 100644
---- a/lib/ext2fs/closefs.c
-+++ b/lib/ext2fs/closefs.c
-@@ -223,10 +223,8 @@ static errcode_t write_primary_superblock(ext2_filsys fs,
- 		retval = io_channel_write_byte(fs->io,
- 			       SUPERBLOCK_OFFSET + (2 * write_idx), size,
- 					       new_super + write_idx);
--		if (retval == EXT2_ET_UNIMPLEMENTED)
--			goto fallback;
- 		if (retval)
--			return retval;
-+			goto fallback;
- 	}
- 	memcpy(fs->orig_super, super, SUPERBLOCK_SIZE);
- 	return 0;
+diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
+index 5f0c7fe32672..71d321b3b984 100644
+--- a/fs/ext4/ialloc.c
++++ b/fs/ext4/ialloc.c
+@@ -1292,7 +1292,8 @@ struct inode *__ext4_new_inode(struct user_namespace *mnt_userns,
+ 
+ 	ei->i_extra_isize = sbi->s_want_extra_isize;
+ 	ei->i_inline_off = 0;
+-	if (ext4_has_feature_inline_data(sb))
++	if (ext4_has_feature_inline_data(sb) &&
++	    (!(ei->i_flags & EXT4_DAX_FL) || S_ISDIR(mode)))
+ 		ext4_set_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
+ 	ret = inode;
+ 	err = dquot_alloc_inode(inode);
+diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
+index a2cf35066f46..0796bfa72829 100644
+--- a/fs/ext4/ioctl.c
++++ b/fs/ext4/ioctl.c
+@@ -315,6 +315,12 @@ static void ext4_dax_dontcache(struct inode *inode, unsigned int flags)
+ static bool dax_compatible(struct inode *inode, unsigned int oldflags,
+ 			   unsigned int flags)
+ {
++	/* Allow the DAX flag to be changed on inline directories */
++	if (S_ISDIR(inode->i_mode)) {
++		flags &= ~EXT4_INLINE_DATA_FL;
++		oldflags &= ~EXT4_INLINE_DATA_FL;
++	}
++
+ 	if (flags & EXT4_DAX_FL) {
+ 		if ((oldflags & EXT4_DAX_MUT_EXCL) ||
+ 		     ext4_test_inode_state(inode,
 -- 
-2.23.0
+2.31.0
+
