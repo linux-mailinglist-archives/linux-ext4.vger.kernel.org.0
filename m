@@ -2,62 +2,102 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6036F35DFC6
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Apr 2021 15:10:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA30C35DFCB
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Apr 2021 15:11:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235076AbhDMNKa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 13 Apr 2021 09:10:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41686 "EHLO
+        id S238896AbhDMNMG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 13 Apr 2021 09:12:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231594AbhDMNK2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 13 Apr 2021 09:10:28 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE25C061756;
-        Tue, 13 Apr 2021 06:10:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=vBa5I9cnF6gq99nwmVfNLF184LBtNaf0t/nHm2F1SjU=; b=PJNh4509S/UB/1YM3kxTa7Z8Vu
-        slvZd7GxxNVfAt2IsAcpbueGzJxG8oWB0L6NOslHl1pyA0/NOMbcQj8ACitj9VV8WZz9b+hNaS7Wy
-        ftKsPyRCeqC8nKu0rLxr0dYFUQSgD6OSOoF4GkYhAy9LEmZ3/YJ9SNL56ZpG9ndU3Y2ok2wcOu60C
-        m0kk8q0pSfdc1QiRP6cm23bHtLYX9e8MIeoqu0GnoXgzvUzaK6Y9v+wc8d+OlTk0X/wlko71dwOkK
-        fS/DO+Aiq7gMCk0HVJpF3P1Qm0lDFNJh2YNesSkzt/Wv2vEIjaMVuiWxyK1s61/w6NBAqU6g9+dQK
-        utIXcUHw==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lWIne-005leB-9K; Tue, 13 Apr 2021 13:09:53 +0000
-Date:   Tue, 13 Apr 2021 14:09:50 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, Ted Tso <tytso@mit.edu>,
-        Christoph Hellwig <hch@infradead.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Dave Chinner <david@fromorbit.com>
-Subject: Re: [PATCH 0/7 RFC v3] fs: Hole punch vs page cache filling races
-Message-ID: <20210413130950.GD1366579@infradead.org>
-References: <20210413105205.3093-1-jack@suse.cz>
+        with ESMTP id S231486AbhDMNMG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 13 Apr 2021 09:12:06 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD855C061574;
+        Tue, 13 Apr 2021 06:11:44 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id l14so16384104ljb.1;
+        Tue, 13 Apr 2021 06:11:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=QdLdl7ZYVcXzeYaosVMxtDawv9mtCEbRVs/6OC9JF9o=;
+        b=CT0d7ft2eGC496UOqY7CPcm/vmeacczS8kxYMJupYLVqzF5Luq7SXqOCLpEuTKmOxN
+         5Fk1G14n4rLcTt3un6okLXTUpQD3o8eBq613SLQ7heYQmcrYsg4NuKfNTPEcCnBQeO78
+         spsQ/GSiAZFtO5OwxUoJGdWzSres2mZMMSgyblCWt4g2JOStBk80hQ6rHXeJpp8h7mEV
+         BnzO8dFbzxclTyaMKr7jxP5K92E+SZcAyoU0FceBXtGx1IP6yp0Jr1DvRjMY5czhBiFX
+         /47pNOfhYRjaHoSz5ykS3t2MUr2RJrBvqHVXz6hp4fPwBoYBfGtUUMg0uCX6a5UWP1Kw
+         bdrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=QdLdl7ZYVcXzeYaosVMxtDawv9mtCEbRVs/6OC9JF9o=;
+        b=Wvsp+SOTdwmToC3bm8SdpWgY8xRBB0b96TDFg4jyGc+x8SfR8VvQquQcVGIM6vkmz4
+         vpe78z3dLeOM776HXDMIV9aVmNJ3ZDKxcNz3D0AqitlZ5vGUPd/TL7snsur7jB0fLnmb
+         af0alny6Y2f6Sphde+23yEFVKJGnzc8J4bsGU6n3qCW368uQtwljVQJ2CiZ1GacXsBjc
+         JUUn3hOa6HpiG+QjlHa905MDSSsaiCrTSxJkgHRAr8RAp7eqmTMZOm2LDlGJQjy5H+QJ
+         K/FJGegSPEi6e9W2lAc9B2YnUBci18iOq4lR6Y25Bi8augZWnugG1FliHobWsUbZi8LO
+         5GPg==
+X-Gm-Message-State: AOAM532d8u66ZDcJO94t5qCfeSGNtBGlX6LQ4JBMxU86nSOxq6fdjRWr
+        8rb7gCHcMTvvX2o8KncfiVvYljhi5+8lAg==
+X-Google-Smtp-Source: ABdhPJzzEAnNBu3PaFSv/V5rMsWkYmo2d4Mf6z3k/+v/uK+a8Iym35+wofwnC1KxXTZNa8IEUmZo1Q==
+X-Received: by 2002:a2e:b555:: with SMTP id a21mr21162925ljn.69.1618319503380;
+        Tue, 13 Apr 2021 06:11:43 -0700 (PDT)
+Received: from [192.168.1.11] ([94.103.229.90])
+        by smtp.gmail.com with ESMTPSA id k2sm3344307lfg.107.2021.04.13.06.11.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Apr 2021 06:11:42 -0700 (PDT)
+Message-ID: <d37a412f244eaa0f1352b394fdf933ce75d9968c.camel@gmail.com>
+Subject: memory leak in ext4_multi_mount_protect
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org,
+        kernel list <linux-kernel@vger.kernel.org>
+Date:   Tue, 13 Apr 2021 16:11:41 +0300
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210413105205.3093-1-jack@suse.cz>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-> Also when writing the documentation I came across one question: Do we mandate
-> i_mapping_sem for truncate + hole punch for all filesystems or just for
-> filesystems that support hole punching (or other complex fallocate operations)?
-> I wrote the documentation so that we require every filesystem to use
-> i_mapping_sem. This makes locking rules simpler, we can also add asserts when
-> all filesystems are converted. The downside is that simple filesystems now pay
-> the overhead of the locking unnecessary for them. The overhead is small
-> (uncontended rwsem acquisition for truncate) so I don't think we care and the
-> simplicity is worth it but I wanted to spell this out.
+Hi!
 
-I think all makes for much better to understand and document rules,
-so I'd shoot for that eventually.
+I've done debugging on this issue
+https://syzkaller.appspot.com/bug?id=420258a304e5d92cfef6b0097f87b42506e1db08
+and I want to ask you about 
+proper way of fixing it. The problem was in case sbi->s_mmp_tsk hasn’t
+started at the time of kthread_stop() call. In that case allocated data
+won't be freed.
 
-Btw, what about locking for DAX faults?  XFS seems to take
-the mmap sem for those as well currently.
+I wrote fix patch, but I am confused about it, because I didn't find
+any kernel code like this. I don't think, that adding new members to
+struct super_block is good idea, that's why I came to that decision: 
+
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index b9693680463a..9c33e97bd5c5 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -5156,8 +5156,10 @@ static int ext4_fill_super(struct super_block
+*sb, void *data, int silent)
+ failed_mount3:
+ 	flush_work(&sbi->s_error_work);
+ 	del_timer_sync(&sbi->s_err_report);
+-	if (sbi->s_mmp_tsk)
+-		kthread_stop(sbi->s_mmp_tsk);
++	if (sbi->s_mmp_tsk) {
++		if (kthread_stop(sbi->s_mmp_tsk) == -EINTR)
++			kfree(kthread_data(sbi->s_mmp_tsk));
++	}
+ failed_mount2:
+ 	rcu_read_lock();
+ 	group_desc = rcu_dereference(sbi->s_group_desc);
+
+
+I look forward to hearing your perspective on this patch :)
+
+With regards,
+Pavel Skripkin
+
+
