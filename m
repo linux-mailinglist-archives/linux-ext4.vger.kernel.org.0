@@ -2,81 +2,85 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FEBE35F613
-	for <lists+linux-ext4@lfdr.de>; Wed, 14 Apr 2021 16:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D2D35F8A7
+	for <lists+linux-ext4@lfdr.de>; Wed, 14 Apr 2021 18:08:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349460AbhDNOVE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 14 Apr 2021 10:21:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60656 "EHLO mail.kernel.org"
+        id S1352593AbhDNQHH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 14 Apr 2021 12:07:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33894 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348303AbhDNOVA (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 14 Apr 2021 10:21:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2632861019;
-        Wed, 14 Apr 2021 14:20:37 +0000 (UTC)
+        id S1352587AbhDNQHF (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 14 Apr 2021 12:07:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CBF9F6112F;
+        Wed, 14 Apr 2021 16:06:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618410038;
-        bh=DykQO4BQxTHccj2c0RU/3WhmZd1h8XFYW7G9mDIAu20=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PSuRbnLqSceeRXtJOmVbK2ImrfOgaaxVevo2l0FliVCtz6IapYN6ta3q8ZDOxTOyf
-         9PIh4JXcGsdm3oUf474ro0pblftH6gjuJ/70YDYDFYQJDbFzyXiuVd9mRbyCMGOgmH
-         W1Ssg8FbNI9Ym7O4ohirhw+9mVR24wEb6/gxCBFENBF0ivN7OHSIe5ohF7HvBz12at
-         ThwiA9XHnPqXvtRSSC0NzL3LZ8I/BHrmxQ3NaY9oPLFMjiAzEVjmXKqiwUN6h0mxL4
-         yJsnj4ZhMGGXIkmgdrFy0jJPJlSR+bSdf9RRa302+2rabt7hxc5S8hOnvT+H5HDwFq
-         3hq79rq5V6MYw==
-Date:   Wed, 14 Apr 2021 15:20:16 +0100
+        s=k20201202; t=1618416404;
+        bh=bHtZ7nxyQFALxJLyz2Lob7sOa/P681tKImWQcIl3QOI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=exhKN5iKCIbTb9Bz0ntxlYbGh82AmLE3VIk7MkKG/0ReewpRpjQNk927DZ+KkUdOx
+         99KzTCZ89edxXMJwbnGVwAaQJz4uTEhZjYVbXc0fvlotIfY5gHchyKXpQAZGPpAEme
+         Bw5MQthZG+GnxZZl46y5b95bVy4e2IUNDHw714D05OJsEwHPDUItw04NsQD8efrxe4
+         6/EIfvk4kUGsiw4cCkvmoqzF74RR3oEPzDfk5igIbmdfvCMiYikiGA2EmX6ZB7cNHl
+         YzEfFsYlhvpheouEq3korpISK/F0sWOxyi3v0t/tQnZGp7S4riYU97DJpzVjiD2WVu
+         FqRgX0LuKDT9Q==
 From:   Mark Brown <broonie@kernel.org>
-To:     Nico Pache <npache@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, brendanhiggins@google.com,
-        gregkh@linuxfoundation.org, linux-ext4@vger.kernel.org,
-        netdev@vger.kernel.org, rafael@kernel.org,
-        linux-m68k@lists.linux-m68k.org, geert@linux-m68k.org,
-        tytso@mit.edu, mathew.j.martineau@linux.intel.com,
-        davem@davemloft.net, davidgow@google.com,
-        skhan@linuxfoundation.org, mptcp@lists.linux.dev
-Subject: Re: [PATCH v2 1/6] kunit: ASoC: topology: adhear to KUNIT formatting
- standard
-Message-ID: <20210414142016.GE4535@sirena.org.uk>
+To:     Nico Pache <npache@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     Mark Brown <broonie@kernel.org>, brendanhiggins@google.com,
+        netdev@vger.kernel.org, davidgow@google.com, rafael@kernel.org,
+        mptcp@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        geert@linux-m68k.org, tytso@mit.edu, skhan@linuxfoundation.org,
+        davem@davemloft.net, gregkh@linuxfoundation.org,
+        linux-ext4@vger.kernel.org, mathew.j.martineau@linux.intel.com
+Subject: Re: (subset) [PATCH v2 0/6] kunit: Fix formatting of KUNIT tests to meet the standard
+Date:   Wed, 14 Apr 2021 17:06:19 +0100
+Message-Id: <161841601730.20953.13768721892830917031.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <cover.1618388989.git.npache@redhat.com>
 References: <cover.1618388989.git.npache@redhat.com>
- <dcf79e592f9a7e14483dde32ac561f6af2632e50.1618388989.git.npache@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="imjhCm/Pyz7Rq5F2"
-Content-Disposition: inline
-In-Reply-To: <dcf79e592f9a7e14483dde32ac561f6af2632e50.1618388989.git.npache@redhat.com>
-X-Cookie: George Orwell was an optimist.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Wed, 14 Apr 2021 04:58:03 -0400, Nico Pache wrote:
+> There are few instances of KUNIT tests that are not properly defined.
+> This commit focuses on correcting these issues to match the standard
+> defined in the Documentation.
+> 
+> Issues Fixed:
+>  - tests should end in KUNIT_TEST, some fixes have been applied to
+>    correct issues were KUNIT_TESTS is used or KUNIT is not mentioned.
+>  - Tests should default to KUNIT_ALL_TESTS
+>  - Tests configs tristate should have if !KUNIT_ALL_TESTS
+> 
+> [...]
 
---imjhCm/Pyz7Rq5F2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Applied to
 
-On Wed, Apr 14, 2021 at 04:58:04AM -0400, Nico Pache wrote:
-> Drop 'S' from end of SND_SOC_TOPOLOGY_KUNIT_TESTS inorder to adhear to
->  the KUNIT *_KUNIT_TEST config name format.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Please submit patches using subject lines reflecting the style for the
-subsystem, this makes it easier for people to identify relevant patches.
-Look at what existing commits in the area you're changing are doing and
-make sure your subject lines visually resemble what they're doing.
-There's no need to resubmit to fix this alone.
+Thanks!
 
---imjhCm/Pyz7Rq5F2
-Content-Type: application/pgp-signature; name="signature.asc"
+[1/6] kunit: ASoC: topology: adhear to KUNIT formatting standard
+      commit: b5fb388da472a69858355560d803602e0ace1006
 
------BEGIN PGP SIGNATURE-----
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmB2+h8ACgkQJNaLcl1U
-h9C5ygf/f+BNG8PCz0e3sGq/F/lIAmu23fPiN7lzXIQ/7/mdT3MwGiTHu9temsXL
-0d99SUvGT3MUczcKW+6Vj6faDQZGBXKBsKMW7rOq5h7Ns2tvw5MyvWwSYhHLj/Zt
-Ojkg3tN7GXemTVGC+TZyHVqWgh2q2wWvqJHeNzKY/9WPDcQo5BqoHlvO0xm9iF+L
-w3XI2y5+R6HulHM9PNNH18x3QiPWrjIjDAn2INWfPuPsAwu9+GpPf16ZK6CusCmZ
-ugX0b36XCpwrS2aNmb6SrjAA7GiQGnNXTZZ290lLhaN+ams3aM2pCePDkPjQU5EI
-ASor0godC7IdsihlvPd4BHIRP07Sdw==
-=U3R8
------END PGP SIGNATURE-----
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---imjhCm/Pyz7Rq5F2--
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
