@@ -2,99 +2,145 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36C7135FCD8
-	for <lists+linux-ext4@lfdr.de>; Wed, 14 Apr 2021 22:47:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75A2435FD7B
+	for <lists+linux-ext4@lfdr.de>; Wed, 14 Apr 2021 23:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347039AbhDNUrv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 14 Apr 2021 16:47:51 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:40567 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231415AbhDNUru (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 14 Apr 2021 16:47:50 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 13EKlADN000584
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 14 Apr 2021 16:47:11 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 6AEE915C3B35; Wed, 14 Apr 2021 16:47:10 -0400 (EDT)
-Date:   Wed, 14 Apr 2021 16:47:10 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Eryu Guan <guan@eryu.me>, Christian Brauner <brauner@kernel.org>,
-        fstests@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        linux-ext4@vger.kernel.org, "Darrick J . Wong" <djwong@kernel.org>,
-        David Howells <dhowells@redhat.com>,
+        id S230121AbhDNV6G (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 14 Apr 2021 17:58:06 -0400
+Received: from mail107.syd.optusnet.com.au ([211.29.132.53]:59054 "EHLO
+        mail107.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230018AbhDNV6G (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 14 Apr 2021 17:58:06 -0400
+Received: from dread.disaster.area (pa49-181-239-12.pa.nsw.optusnet.com.au [49.181.239.12])
+        by mail107.syd.optusnet.com.au (Postfix) with ESMTPS id 6F85C1140474;
+        Thu, 15 Apr 2021 07:57:41 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1lWnVz-008Dty-Ua; Thu, 15 Apr 2021 07:57:39 +1000
+Date:   Thu, 15 Apr 2021 07:57:39 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, Ted Tso <tytso@mit.edu>,
+        Christoph Hellwig <hch@infradead.org>,
         Amir Goldstein <amir73il@gmail.com>
-Subject: [PATCH -RFC] ext4: add feature file to advertise that ext4 supports
- idmapped mounts
-Message-ID: <YHdUzqZ7PZtb64zf@mit.edu>
-References: <20210328223400.1800301-1-brauner@kernel.org>
- <20210328223400.1800301-3-brauner@kernel.org>
- <YHMH/JRmzg3ETcED@desktop>
- <20210411151249.6y34x7yatqtpcvi6@wittgenstein>
- <20210411151857.wd6gd46u53vlh2xv@wittgenstein>
- <YHMUAL/oD4fB3+R7@desktop>
- <20210411153223.vhcegiklrwoczy55@wittgenstein>
- <YHOW7DN51YuYgLPM@mit.edu>
- <20210412115426.a4bzsx4cp7jhx2ou@wittgenstein>
- <YHTMkBcVTFAGqyks@mit.edu>
+Subject: Re: [PATCH 2/7] mm: Protect operations adding pages to page cache
+ with i_mapping_lock
+Message-ID: <20210414215739.GH63242@dread.disaster.area>
+References: <20210413105205.3093-1-jack@suse.cz>
+ <20210413112859.32249-2-jack@suse.cz>
+ <20210414000113.GG63242@dread.disaster.area>
+ <20210414122319.GD31323@quack2.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YHTMkBcVTFAGqyks@mit.edu>
+In-Reply-To: <20210414122319.GD31323@quack2.suse.cz>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=Tu+Yewfh c=1 sm=1 tr=0 cx=a_idp_f
+        a=gO82wUwQTSpaJfP49aMSow==:117 a=gO82wUwQTSpaJfP49aMSow==:17
+        a=kj9zAlcOel0A:10 a=3YhXtTcJ-WEA:10 a=7-415B0cAAAA:8
+        a=okFlZK5Gy1F5i8BF3G8A:9 a=FPZG3ZJ8YKhqHbYJ:21 a=YwUA21l3Sj-Qg0rY:21
+        a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 06:41:20PM -0400, Theodore Ts'o wrote:
-> In the ideal world, if the kernel wasn't compiled with the necessary
-> CONFIG options enabled, it's desirable of the test can detect that
-> fact and skip running the test instead failing and forcing the person
-> running the test to try to figure out whether this is a legitmate file
-> system bug or a just a test setup bug.
+On Wed, Apr 14, 2021 at 02:23:19PM +0200, Jan Kara wrote:
+> On Wed 14-04-21 10:01:13, Dave Chinner wrote:
+> > On Tue, Apr 13, 2021 at 01:28:46PM +0200, Jan Kara wrote:
+> > > index c5b0457415be..ac5bb50b3a4c 100644
+> > > --- a/mm/readahead.c
+> > > +++ b/mm/readahead.c
+> > > @@ -192,6 +192,7 @@ void page_cache_ra_unbounded(struct readahead_control *ractl,
+> > >  	 */
+> > >  	unsigned int nofs = memalloc_nofs_save();
+> > >  
+> > > +	down_read(&mapping->host->i_mapping_sem);
+> > >  	/*
+> > >  	 * Preallocate as many pages as we will need.
+> > >  	 */
+> > 
+> > I can't say I'm a great fan of having the mapping reach back up to
+> > the host to lock the host. THis seems the wrong way around to me
+> > given that most of the locking in the IO path is in "host locks
+> > mapping" and "mapping locks internal mapping structures" order...
+> > 
+> > I also come back to the naming confusion here, in that when we look
+> > at this in long hand from the inode perspective, this chain actually
+> > looks like:
+> > 
+> > 	lock(inode->i_mapping->inode->i_mapping_sem)
+> > 
+> > i.e. the mapping is reaching back up outside it's scope to lock
+> > itself against other inode->i_mapping operations. Smells of layering
+> > violations to me.
+> > 
+> > So, next question: should this truncate semanphore actually be part
+> > of the address space, not the inode? This patch is actually moving
+> > the page fault serialisation from the inode into the address space
+> > operations when page faults and page cache operations are done, so
+> > maybe the lock should also make that move? That would help clear up
+> > the naming problem, because now we can name it based around what it
+> > serialises in the address space, not the address space as a whole...
+> 
+> I think that moving the lock to address_space makes some sence although the
+> lock actually protects consistency of inode->i_mapping->i_pages with
+> whatever the filesystem has in its file_offset->disk_block mapping
+> structures (which are generally associated with the inode).
 
-So it would make it easier for me to manage running xfstests on ext4
-if I had added something like this to ext4 and sent it to Linus before
-v5.12 is released.  What do folks think?
+Well, I look at is as a mechanism that the filesystem uses to ensure
+coherency of the page cache accesses w.r.t. physical layout changes.
+The layout is a property of the inode, but changes to the physical
+layout of the inode are serialised by other inode based mechanisms.
+THe page cache isn't part of the inode - it's part of the address
+space - but coherency with the inode is required. Hence inode
+operations need to be able to ensure coherency of the address space
+content and accesses w.r.t. physical layout changes of the inode,
+but the address space really knows nothing about the physical layout
+of the inode or how it gets changed...
 
-							- Ted
+Hence it's valid for the inode operations to lock the address space
+to ensure coherency of the page cache when making physical layout
+changes, but locking the address space, by itself, is not sufficient
+to safely serialise against physical changes to the inode layout.
 
+> So it is not
+> only about inode->i_mapping contents but I agree that struct address_space
+> is probably a bit more logical place than struct inode.
 
-commit 20619aefe69d39e76083d8f8598653c2dca9b47e
-Author: Theodore Ts'o <tytso@mit.edu>
-Date:   Wed Apr 14 16:42:47 2021 -0400
+Yup. Remember that the XFS_MMAPLOCK arose at the inode level because
+that was the only way the filesystem could acheive the necessary
+serialisation of page cache accesses whilst doing physical layout
+changes. So the lock became an "inode property" because of
+implementation constraints, not because it was the best way to
+implement the necessary coherency hooks.
 
-    ext4: add feature file to advertise that ext4 supports idmapped mounts
-    
-    This makes it easier for automated test suites to know whether it know
-    whether we should test the functionality of the new idmapped mounts
-    feature introduced in v5.12-rc1.
-    
-    Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+> Regarding the name: How about i_pages_rwsem? The lock is protecting
+> invalidation of mapping->i_pages and needs to be held until insertion of
+> pages into i_pages is safe again...
 
-diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
-index a3d08276d441..101bf700c16b 100644
---- a/fs/ext4/sysfs.c
-+++ b/fs/ext4/sysfs.c
-@@ -313,6 +313,9 @@ EXT4_ATTR_FEATURE(verity);
- #endif
- EXT4_ATTR_FEATURE(metadata_csum_seed);
- EXT4_ATTR_FEATURE(fast_commit);
-+#ifdef CONFIG_USER_NS
-+EXT4_ATTR_FEATURE(idmapped_mount);
-+#endif
- 
- static struct attribute *ext4_feat_attrs[] = {
- 	ATTR_LIST(lazy_itable_init),
-@@ -330,6 +333,9 @@ static struct attribute *ext4_feat_attrs[] = {
- #endif
- 	ATTR_LIST(metadata_csum_seed),
- 	ATTR_LIST(fast_commit),
-+#ifdef CONFIG_USER_NS
-+	ATTR_LIST(idmapped_mount),
-+#endif
- 	NULL,
- };
- ATTRIBUTE_GROUPS(ext4_feat);
+I don't actually have a good name for this right now. :(
+
+The i_pages structure has it's own internal locking, so
+i_pages_rwsem implies things that aren't necessarily true, and
+taking a read lock for insertion for something that is named like a
+structure protection lock creates cognitive dissonance...
+
+I keep wanting to say "lock for invalidation" and "lock to exclude
+invalidation" because those are the two actions that we need for
+coherency of operations. But they are way too verbose for an actual
+API...
+
+So I want to call this an "invalidation lock" of some kind (no need
+to encode the type in the name!), but haven't worked out a good
+shorthand for "address space invalidation coherency mechanism"...
+
+Naming is hard. :/
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
