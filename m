@@ -2,145 +2,91 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75A2435FD7B
-	for <lists+linux-ext4@lfdr.de>; Wed, 14 Apr 2021 23:57:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02F3735FDC1
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 Apr 2021 00:25:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230121AbhDNV6G (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 14 Apr 2021 17:58:06 -0400
-Received: from mail107.syd.optusnet.com.au ([211.29.132.53]:59054 "EHLO
-        mail107.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230018AbhDNV6G (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 14 Apr 2021 17:58:06 -0400
-Received: from dread.disaster.area (pa49-181-239-12.pa.nsw.optusnet.com.au [49.181.239.12])
-        by mail107.syd.optusnet.com.au (Postfix) with ESMTPS id 6F85C1140474;
-        Thu, 15 Apr 2021 07:57:41 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1lWnVz-008Dty-Ua; Thu, 15 Apr 2021 07:57:39 +1000
-Date:   Thu, 15 Apr 2021 07:57:39 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, Ted Tso <tytso@mit.edu>,
-        Christoph Hellwig <hch@infradead.org>,
+        id S232415AbhDNW0M (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 14 Apr 2021 18:26:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231207AbhDNW0L (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 14 Apr 2021 18:26:11 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4DEEC061574;
+        Wed, 14 Apr 2021 15:25:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=YiOL9jltx8hWLyf7dWkxtJsgoWejWnWYchqK0vvrqoA=; b=niVPtyphxeL57ZxgfJ39HRyuGs
+        XYPIvhHywyY4rAtyEoilkvq7Pd+GLrL4IW4dnRBGc2kXYze+UIO4qbzdzjCotxaNVzDFBIvZT0mNR
+        pHNtYlwFzzj9ZDwKsVTj+Mpcr1YFyNJLPkzCTvFF67KAAY/Ko4XwbzKIz6IB7H/w+ruCnj/iOWjd0
+        cDi5t3yf1R6NuHJBD7ikRSh03hwO37o8io4IX2z0uVics/W2Q6qkohvSKqDnpl0eCJfmveRhWNA8s
+        biN+Lg5I+jLkq7WOtCHYTNhf6pP9zjZUDnWGpJrXpvOUWBniEcwEj+SFB33qHfTnXXSWiK9nwgdnF
+        QugXG4pw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lWnwx-007i93-2r; Wed, 14 Apr 2021 22:25:37 +0000
+Date:   Wed, 14 Apr 2021 23:25:31 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        Ted Tso <tytso@mit.edu>, Christoph Hellwig <hch@infradead.org>,
         Amir Goldstein <amir73il@gmail.com>
 Subject: Re: [PATCH 2/7] mm: Protect operations adding pages to page cache
  with i_mapping_lock
-Message-ID: <20210414215739.GH63242@dread.disaster.area>
+Message-ID: <20210414222531.GZ2531743@casper.infradead.org>
 References: <20210413105205.3093-1-jack@suse.cz>
  <20210413112859.32249-2-jack@suse.cz>
  <20210414000113.GG63242@dread.disaster.area>
- <20210414122319.GD31323@quack2.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210414122319.GD31323@quack2.suse.cz>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=Tu+Yewfh c=1 sm=1 tr=0 cx=a_idp_f
-        a=gO82wUwQTSpaJfP49aMSow==:117 a=gO82wUwQTSpaJfP49aMSow==:17
-        a=kj9zAlcOel0A:10 a=3YhXtTcJ-WEA:10 a=7-415B0cAAAA:8
-        a=okFlZK5Gy1F5i8BF3G8A:9 a=FPZG3ZJ8YKhqHbYJ:21 a=YwUA21l3Sj-Qg0rY:21
-        a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <20210414000113.GG63242@dread.disaster.area>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 02:23:19PM +0200, Jan Kara wrote:
-> On Wed 14-04-21 10:01:13, Dave Chinner wrote:
-> > On Tue, Apr 13, 2021 at 01:28:46PM +0200, Jan Kara wrote:
-> > > index c5b0457415be..ac5bb50b3a4c 100644
-> > > --- a/mm/readahead.c
-> > > +++ b/mm/readahead.c
-> > > @@ -192,6 +192,7 @@ void page_cache_ra_unbounded(struct readahead_control *ractl,
-> > >  	 */
-> > >  	unsigned int nofs = memalloc_nofs_save();
-> > >  
-> > > +	down_read(&mapping->host->i_mapping_sem);
-> > >  	/*
-> > >  	 * Preallocate as many pages as we will need.
-> > >  	 */
-> > 
-> > I can't say I'm a great fan of having the mapping reach back up to
-> > the host to lock the host. THis seems the wrong way around to me
-> > given that most of the locking in the IO path is in "host locks
-> > mapping" and "mapping locks internal mapping structures" order...
-> > 
-> > I also come back to the naming confusion here, in that when we look
-> > at this in long hand from the inode perspective, this chain actually
-> > looks like:
-> > 
-> > 	lock(inode->i_mapping->inode->i_mapping_sem)
-> > 
-> > i.e. the mapping is reaching back up outside it's scope to lock
-> > itself against other inode->i_mapping operations. Smells of layering
-> > violations to me.
-> > 
-> > So, next question: should this truncate semanphore actually be part
-> > of the address space, not the inode? This patch is actually moving
-> > the page fault serialisation from the inode into the address space
-> > operations when page faults and page cache operations are done, so
-> > maybe the lock should also make that move? That would help clear up
-> > the naming problem, because now we can name it based around what it
-> > serialises in the address space, not the address space as a whole...
+On Wed, Apr 14, 2021 at 10:01:13AM +1000, Dave Chinner wrote:
+> > +	if (iocb->ki_flags & IOCB_NOWAIT) {
+> > +		if (!down_read_trylock(&mapping->host->i_mapping_sem))
+> > +			return -EAGAIN;
+> > +	} else {
+> > +		down_read(&mapping->host->i_mapping_sem);
+> > +	}
 > 
-> I think that moving the lock to address_space makes some sence although the
-> lock actually protects consistency of inode->i_mapping->i_pages with
-> whatever the filesystem has in its file_offset->disk_block mapping
-> structures (which are generally associated with the inode).
+> We really need a lock primitive for this. The number of times this
+> exact lock pattern is being replicated all through the IO path is
+> getting out of hand.
+> 
+> static inline bool
+> down_read_try_or_lock(struct rwsem *sem, bool try)
+> {
+> 	if (try) {
+> 		if (!down_read_trylock(sem))
+> 			return false;
+> 	} else {
+> 		down_read(&mapping->host->i_mapping_sem);
+> 	}
+> 	return true;
+> }
+> 
+> and the callers become:
+> 
+> 	if (!down_read_try_or_lock(sem, (iocb->ki_flags & IOCB_NOWAIT)))
+> 		return -EAGAIN;
 
-Well, I look at is as a mechanism that the filesystem uses to ensure
-coherency of the page cache accesses w.r.t. physical layout changes.
-The layout is a property of the inode, but changes to the physical
-layout of the inode are serialised by other inode based mechanisms.
-THe page cache isn't part of the inode - it's part of the address
-space - but coherency with the inode is required. Hence inode
-operations need to be able to ensure coherency of the address space
-content and accesses w.r.t. physical layout changes of the inode,
-but the address space really knows nothing about the physical layout
-of the inode or how it gets changed...
+I think that should be written:
 
-Hence it's valid for the inode operations to lock the address space
-to ensure coherency of the page cache when making physical layout
-changes, but locking the address space, by itself, is not sufficient
-to safely serialise against physical changes to the inode layout.
+	if (!iocb_read_lock(iocb, &rwsem))
+		return -EAGAIN;
 
-> So it is not
-> only about inode->i_mapping contents but I agree that struct address_space
-> is probably a bit more logical place than struct inode.
+and implemented as:
 
-Yup. Remember that the XFS_MMAPLOCK arose at the inode level because
-that was the only way the filesystem could acheive the necessary
-serialisation of page cache accesses whilst doing physical layout
-changes. So the lock became an "inode property" because of
-implementation constraints, not because it was the best way to
-implement the necessary coherency hooks.
+static inline int iocb_read_lock(struct kiocb *iocb, struct rwsem *sem)
+{
+	if (iocb->ki_flags & IOCB_NOWAIT)
+		return down_read_trylock(sem) ? 0 : -EAGAIN;
+	return down_read_killable(sem);
+}
 
-> Regarding the name: How about i_pages_rwsem? The lock is protecting
-> invalidation of mapping->i_pages and needs to be held until insertion of
-> pages into i_pages is safe again...
-
-I don't actually have a good name for this right now. :(
-
-The i_pages structure has it's own internal locking, so
-i_pages_rwsem implies things that aren't necessarily true, and
-taking a read lock for insertion for something that is named like a
-structure protection lock creates cognitive dissonance...
-
-I keep wanting to say "lock for invalidation" and "lock to exclude
-invalidation" because those are the two actions that we need for
-coherency of operations. But they are way too verbose for an actual
-API...
-
-So I want to call this an "invalidation lock" of some kind (no need
-to encode the type in the name!), but haven't worked out a good
-shorthand for "address space invalidation coherency mechanism"...
-
-Naming is hard. :/
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
