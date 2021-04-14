@@ -2,353 +2,152 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB23035F120
-	for <lists+linux-ext4@lfdr.de>; Wed, 14 Apr 2021 11:59:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF67A35F304
+	for <lists+linux-ext4@lfdr.de>; Wed, 14 Apr 2021 13:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240066AbhDNKAI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 14 Apr 2021 06:00:08 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41572 "EHLO mx2.suse.de"
+        id S233692AbhDNL4i (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 14 Apr 2021 07:56:38 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44752 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230480AbhDNKAH (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 14 Apr 2021 06:00:07 -0400
+        id S233708AbhDNL4g (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 14 Apr 2021 07:56:36 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A7E29AED7;
-        Wed, 14 Apr 2021 09:59:45 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 605D1AF5A;
+        Wed, 14 Apr 2021 11:56:14 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 7EFBD1F2B5F; Wed, 14 Apr 2021 11:59:45 +0200 (CEST)
+        id 271051F2B5F; Wed, 14 Apr 2021 13:56:14 +0200 (CEST)
+Date:   Wed, 14 Apr 2021 13:56:14 +0200
 From:   Jan Kara <jack@suse.cz>
-To:     Ted Tso <tytso@mit.edu>
-Cc:     <linux-ext4@vger.kernel.org>, Eric Whitney <enwlinux@gmail.com>,
-        Jan Kara <jack@suse.cz>, stable@vger.kernel.org
-Subject: [PATCH] ext4: Fix occasional generic/418 failure
-Date:   Wed, 14 Apr 2021 11:59:35 +0200
-Message-Id: <20210414095935.30521-1-jack@suse.cz>
-X-Mailer: git-send-email 2.26.2
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Jan Kara <jack@suse.cz>, Ted Tso <tytso@mit.edu>,
+        linux-ext4@vger.kernel.org, Eric Whitney <enwlinux@gmail.com>,
+        linux-fsdevel@vger.kernel.org,
+        "Darrick J . Wong" <djwong@kernel.org>
+Subject: Re: [PATCH 2/3] ext4: Fix occasional generic/418 failure
+Message-ID: <20210414115614.GB31323@quack2.suse.cz>
+References: <20210412102333.2676-1-jack@suse.cz>
+ <20210412102333.2676-3-jack@suse.cz>
+ <20210412215024.GP1990290@dread.disaster.area>
+ <20210413091122.GA15752@quack2.suse.cz>
+ <20210413224531.GE63242@dread.disaster.area>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210413224531.GE63242@dread.disaster.area>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Eric has noticed that after pagecache read rework, generic/418 is
-occasionally failing for ext4 when blocksize < pagesize. In fact, the
-pagecache rework just made hard to hit race in ext4 more likely. The
-problem is that since ext4 conversion of direct IO writes to iomap
-framework (commit 378f32bab371), we update inode size after direct IO
-write only after invalidating page cache. Thus if buffered read sneaks
-at unfortunate moment like:
+On Wed 14-04-21 08:45:31, Dave Chinner wrote:
+> On Tue, Apr 13, 2021 at 11:11:22AM +0200, Jan Kara wrote:
+> > On Tue 13-04-21 07:50:24, Dave Chinner wrote:
+> > > On Mon, Apr 12, 2021 at 12:23:32PM +0200, Jan Kara wrote:
+> > > > Eric has noticed that after pagecache read rework, generic/418 is
+> > > > occasionally failing for ext4 when blocksize < pagesize. In fact, the
+> > > > pagecache rework just made hard to hit race in ext4 more likely. The
+> > > > problem is that since ext4 conversion of direct IO writes to iomap
+> > > > framework (commit 378f32bab371), we update inode size after direct IO
+> > > > write only after invalidating page cache. Thus if buffered read sneaks
+> > > > at unfortunate moment like:
+> > > > 
+> > > > CPU1 - write at offset 1k                       CPU2 - read from offset 0
+> > > > iomap_dio_rw(..., IOMAP_DIO_FORCE_WAIT);
+> > > >                                                 ext4_readpage();
+> > > > ext4_handle_inode_extension()
+> > > > 
+> > > > the read will zero out tail of the page as it still sees smaller inode
+> > > > size and thus page cache becomes inconsistent with on-disk contents with
+> > > > all the consequences.
+> > > > 
+> > > > Fix the problem by moving inode size update into end_io handler which
+> > > > gets called before the page cache is invalidated.
+> > > 
+> > > Confused.
+> > > 
+> > > This moves all the inode extension stuff into the completion
+> > > handler, when all that really needs to be done is extending
+> > > inode->i_size to tell the world there is data up to where the
+> > > IO completed. Actually removing the inode from the orphan list
+> > > does not need to be done in the IO completion callback, because...
+> > > 
+> > > >  	if (ilock_shared)
+> > > >  		iomap_ops = &ext4_iomap_overwrite_ops;
+> > > > -	ret = iomap_dio_rw(iocb, from, iomap_ops, &ext4_dio_write_ops,
+> > > > -			   (unaligned_io || extend) ? IOMAP_DIO_FORCE_WAIT : 0);
+> > > > -	if (ret == -ENOTBLK)
+> > > > -		ret = 0;
+> > > > -
+> > > >  	if (extend)
+> > > > -		ret = ext4_handle_inode_extension(inode, offset, ret, count);
+> > > > +		dio_ops = &ext4_dio_extending_write_ops;
+> > > >  
+> > > > +	ret = iomap_dio_rw(iocb, from, iomap_ops, dio_ops,
+> > > > +			   (extend || unaligned_io) ? IOMAP_DIO_FORCE_WAIT : 0);
+> > >                             ^^^^^^                    ^^^^^^^^^^^^^^^^^^^ 
+> > > 
+> > > .... if we are doing an extending write, we force DIO to complete
+> > > before returning. Hence even AIO will block here on an extending
+> > > write, and hence we can -always- do the correct post-IO completion
+> > > orphan list cleanup here because we know a) the original IO size and
+> > > b) the amount of data that was actually written.
+> > > 
+> > > Hence all that remains is closing the buffered read vs invalidation
+> > > race. All this requires is for the dio write completion to behave
+> > > like XFS where it just does the inode->i_size update for extending
+> > > writes. THis means the size is updated before the invalidation, and
+> > > hence any read that occurs after the invalidation but before the
+> > > post-eof blocks have been removed will see the correct size and read
+> > > the tail page(s) correctly. This closes the race window, and the
+> > > caller can still handle the post-eof block cleanup as it does now.
+> > > 
+> > > Hence I don't see any need for changing the iomap infrastructure to
+> > > solve this problem. This seems like the obvious solution to me, so
+> > > what am I missing?
+> > 
+> > All that you write above is correct. The missing piece is: If everything
+> > succeeded and all the cleanup we need is removing inode from the orphan
+> > list (common case), we want to piggyback that orphan list removal into the
+> > same transaction handle as the update of the inode size. This is just a
+> > performance thing, you are absolutely right we could also do the orphan
+> > cleanup unconditionally in ext4_dio_write_iter() and thus avoid any changes
+> > to the iomap framework.
+> 
+> Doesn't ext4, like XFS, keep two copies of the inode size? One for
+> the on-disk size and one for the in-memory size?
+> 
+> /me looks...
+> 
+> Yeah, there's ei->i_disksize that reflects the on-disk size.
+> 
+> And I note that the first thing that ext4_handle_inode_extension()
+> is already checking that the write is extending past the current
+> on-disk inode size before running the extension transaction.
 
-CPU1 - write at offset 1k                       CPU2 - read from offset 0
-iomap_dio_rw(..., IOMAP_DIO_FORCE_WAIT);
-                                                ext4_readpage();
-ext4_handle_inode_extension()
+Yes.
 
-the read will zero out tail of the page as it still sees smaller inode
-size and thus page cache becomes inconsistent with on-disk contents with
-all the consequences.
+> The page cache only cares about the inode->i_size value, not the
+> ei->i_disksize value, so you can update them independently and still
+> have things work correctly. That's what XFS does in
+> xfs_dio_write_end_io - it updates the in-memory inode->i_size, then
+> runs a transaction to atomically update the inode on-disk inode
+> size. Updating the VFS inode size first protects against buffered
+> read races while updating the on-disk size...
+> 
+> So for ext4, the two separate size updates don't need to be done at
+> the same time - you have all the state you need in the ext4 dio
+> write path to extend the on-disk file size on successful extending
+> write, and it is not dependent in any way on the current in-memory
+> VFS inode size that you'd update in the ->end_io callback....
 
-Fix the problem by moving inode size update into end_io handler which
-gets called before the page cache is invalidated.
+Right, that's a nice trick that will allow us to keep the original
+performance (I've verified that indeed splitting inode size and orphan
+updates into separate transactions costs us ~10% of performance when
+appending 512-byte chunks) without touching generic dio code. Thanks for
+the idea!
 
-Reported-by: Eric Whitney <enwlinux@gmail.com>
-Fixes: 378f32bab371 ("ext4: introduce direct I/O write using iomap infrastructure")
-CC: stable@vger.kernel.org
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/file.c | 194 +++++++++++++++++++++++++------------------------
- 1 file changed, 98 insertions(+), 96 deletions(-)
-
-Eric, can you please try whether this patch fixes the failures you are
-occasionally seeing?
-
-diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-index 194f5d00fa32..2b84fb48bde6 100644
---- a/fs/ext4/file.c
-+++ b/fs/ext4/file.c
-@@ -280,13 +280,66 @@ static ssize_t ext4_buffered_write_iter(struct kiocb *iocb,
- 	return ret;
- }
- 
--static ssize_t ext4_handle_inode_extension(struct inode *inode, loff_t offset,
--					   ssize_t written, size_t count)
-+static int ext4_prepare_dio_extend(struct inode *inode)
-+{
-+	handle_t *handle;
-+	int ret;
-+
-+	handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
-+	if (IS_ERR(handle))
-+		return PTR_ERR(handle);
-+
-+	ext4_fc_start_update(inode);
-+	ret = ext4_orphan_add(handle, inode);
-+	ext4_fc_stop_update(inode);
-+	if (ret) {
-+		ext4_journal_stop(handle);
-+		return ret;
-+	}
-+	ext4_journal_stop(handle);
-+	return 0;
-+}
-+
-+static void ext4_cleanup_dio_extend(struct inode *inode, loff_t offset,
-+				    ssize_t written, size_t count)
- {
- 	handle_t *handle;
--	bool truncate = false;
- 	u8 blkbits = inode->i_blkbits;
- 	ext4_lblk_t written_blk, end_blk;
-+
-+	/* Error? Nothing was written... */
-+	if (written < 0)
-+		written = 0;
-+
-+	written_blk = ALIGN(offset + written, 1 << blkbits);
-+	end_blk = ALIGN(offset + count, 1 << blkbits);
-+	if (written_blk < end_blk && ext4_can_truncate(inode)) {
-+		ext4_truncate_failed_write(inode);
-+		/*
-+		 * If the truncate operation failed early, then the inode may
-+		 * still be on the orphan list. In that case, we need to try
-+		 * remove the inode from the in-memory linked list.
-+		 */
-+		if (inode->i_nlink)
-+			ext4_orphan_del(NULL, inode);
-+		return;
-+	}
-+
-+	if (!list_empty(&EXT4_I(inode)->i_orphan) && inode->i_nlink) {
-+		handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
-+		if (IS_ERR(handle)) {
-+			ext4_orphan_del(NULL, inode);
-+			return;
-+		}
-+		ext4_orphan_del(handle, inode);
-+		ext4_journal_stop(handle);
-+	}
-+}
-+
-+static int ext4_handle_inode_extension(struct inode *inode, loff_t offset,
-+				       ssize_t written)
-+{
-+	handle_t *handle;
- 	int ret;
- 
- 	/*
-@@ -298,74 +351,23 @@ static ssize_t ext4_handle_inode_extension(struct inode *inode, loff_t offset,
- 	 * as much as we intended.
- 	 */
- 	WARN_ON_ONCE(i_size_read(inode) < EXT4_I(inode)->i_disksize);
--	if (offset + count <= EXT4_I(inode)->i_disksize) {
--		/*
--		 * We need to ensure that the inode is removed from the orphan
--		 * list if it has been added prematurely, due to writeback of
--		 * delalloc blocks.
--		 */
--		if (!list_empty(&EXT4_I(inode)->i_orphan) && inode->i_nlink) {
--			handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
--
--			if (IS_ERR(handle)) {
--				ext4_orphan_del(NULL, inode);
--				return PTR_ERR(handle);
--			}
--
--			ext4_orphan_del(handle, inode);
--			ext4_journal_stop(handle);
--		}
--
--		return written;
--	}
--
--	if (written < 0)
--		goto truncate;
-+	if (offset + written <= EXT4_I(inode)->i_disksize)
-+		return 0;
- 
- 	handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
--	if (IS_ERR(handle)) {
--		written = PTR_ERR(handle);
--		goto truncate;
--	}
-+	if (IS_ERR(handle))
-+		return PTR_ERR(handle);
- 
- 	if (ext4_update_inode_size(inode, offset + written)) {
- 		ret = ext4_mark_inode_dirty(handle, inode);
- 		if (unlikely(ret)) {
--			written = ret;
- 			ext4_journal_stop(handle);
--			goto truncate;
-+			return ret;
- 		}
- 	}
--
--	/*
--	 * We may need to truncate allocated but not written blocks beyond EOF.
--	 */
--	written_blk = ALIGN(offset + written, 1 << blkbits);
--	end_blk = ALIGN(offset + count, 1 << blkbits);
--	if (written_blk < end_blk && ext4_can_truncate(inode))
--		truncate = true;
--
--	/*
--	 * Remove the inode from the orphan list if it has been extended and
--	 * everything went OK.
--	 */
--	if (!truncate && inode->i_nlink)
--		ext4_orphan_del(handle, inode);
- 	ext4_journal_stop(handle);
- 
--	if (truncate) {
--truncate:
--		ext4_truncate_failed_write(inode);
--		/*
--		 * If the truncate operation failed early, then the inode may
--		 * still be on the orphan list. In that case, we need to try
--		 * remove the inode from the in-memory linked list.
--		 */
--		if (inode->i_nlink)
--			ext4_orphan_del(NULL, inode);
--	}
--
--	return written;
-+	return 0;
- }
- 
- static int ext4_dio_write_end_io(struct kiocb *iocb, ssize_t size,
-@@ -380,14 +382,29 @@ static int ext4_dio_write_end_io(struct kiocb *iocb, ssize_t size,
- 	if (size && flags & IOMAP_DIO_UNWRITTEN)
- 		return ext4_convert_unwritten_extents(NULL, inode,
- 						      offset, size);
--
- 	return 0;
- }
- 
-+static int ext4_dio_extending_write_end_io(struct kiocb *iocb, ssize_t size,
-+					   int error, unsigned int flags)
-+{
-+	struct inode *inode = file_inode(iocb->ki_filp);
-+	int ret;
-+
-+	ret = ext4_dio_write_end_io(iocb, size, error, flags);
-+	if (ret < 0)
-+		return ret;
-+	return ext4_handle_inode_extension(inode, iocb->ki_pos, size);
-+}
-+
- static const struct iomap_dio_ops ext4_dio_write_ops = {
- 	.end_io = ext4_dio_write_end_io,
- };
- 
-+static const struct iomap_dio_ops ext4_dio_extending_write_ops = {
-+	.end_io = ext4_dio_extending_write_end_io,
-+};
-+
- /*
-  * The intention here is to start with shared lock acquired then see if any
-  * condition requires an exclusive inode lock. If yes, then we restart the
-@@ -454,11 +471,11 @@ static ssize_t ext4_dio_write_checks(struct kiocb *iocb, struct iov_iter *from,
- static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
- {
- 	ssize_t ret;
--	handle_t *handle;
- 	struct inode *inode = file_inode(iocb->ki_filp);
- 	loff_t offset = iocb->ki_pos;
- 	size_t count = iov_iter_count(from);
- 	const struct iomap_ops *iomap_ops = &ext4_iomap_ops;
-+	const struct iomap_dio_ops *dio_ops = &ext4_dio_write_ops;
- 	bool extend = false, unaligned_io = false;
- 	bool ilock_shared = true;
- 
-@@ -529,33 +546,21 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 		inode_dio_wait(inode);
- 
- 	if (extend) {
--		handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
--		if (IS_ERR(handle)) {
--			ret = PTR_ERR(handle);
--			goto out;
--		}
--
--		ext4_fc_start_update(inode);
--		ret = ext4_orphan_add(handle, inode);
--		ext4_fc_stop_update(inode);
--		if (ret) {
--			ext4_journal_stop(handle);
-+		ret = ext4_prepare_dio_extend(inode);
-+		if (ret)
- 			goto out;
--		}
--
--		ext4_journal_stop(handle);
-+		dio_ops = &ext4_dio_extending_write_ops;
- 	}
- 
- 	if (ilock_shared)
- 		iomap_ops = &ext4_iomap_overwrite_ops;
--	ret = iomap_dio_rw(iocb, from, iomap_ops, &ext4_dio_write_ops,
--			   (unaligned_io || extend) ? IOMAP_DIO_FORCE_WAIT : 0);
-+
-+	ret = iomap_dio_rw(iocb, from, iomap_ops, dio_ops,
-+			   (extend || unaligned_io) ? IOMAP_DIO_FORCE_WAIT : 0);
- 	if (ret == -ENOTBLK)
- 		ret = 0;
--
- 	if (extend)
--		ret = ext4_handle_inode_extension(inode, offset, ret, count);
--
-+		ext4_cleanup_dio_extend(inode, offset, ret, count);
- out:
- 	if (ilock_shared)
- 		inode_unlock_shared(inode);
-@@ -598,7 +603,6 @@ ext4_dax_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 	ssize_t ret;
- 	size_t count;
- 	loff_t offset;
--	handle_t *handle;
- 	bool extend = false;
- 	struct inode *inode = file_inode(iocb->ki_filp);
- 
-@@ -617,26 +621,24 @@ ext4_dax_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 	count = iov_iter_count(from);
- 
- 	if (offset + count > EXT4_I(inode)->i_disksize) {
--		handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
--		if (IS_ERR(handle)) {
--			ret = PTR_ERR(handle);
--			goto out;
--		}
--
--		ret = ext4_orphan_add(handle, inode);
--		if (ret) {
--			ext4_journal_stop(handle);
-+		ret = ext4_prepare_dio_extend(inode);
-+		if (ret < 0)
- 			goto out;
--		}
--
- 		extend = true;
--		ext4_journal_stop(handle);
- 	}
- 
- 	ret = dax_iomap_rw(iocb, from, &ext4_iomap_ops);
- 
--	if (extend)
--		ret = ext4_handle_inode_extension(inode, offset, ret, count);
-+	if (extend) {
-+		if (ret > 0) {
-+			int ret2;
-+
-+			ret2 = ext4_handle_inode_extension(inode, offset, ret);
-+			if (ret2 < 0)
-+				ret = ret2;
-+		}
-+		ext4_cleanup_dio_extend(inode, offset, ret, count);
-+	}
- out:
- 	inode_unlock(inode);
- 	if (ret > 0)
+								Honza
 -- 
-2.26.2
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
