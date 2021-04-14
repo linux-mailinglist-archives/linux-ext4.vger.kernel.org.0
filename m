@@ -2,149 +2,81 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91BBC35F501
-	for <lists+linux-ext4@lfdr.de>; Wed, 14 Apr 2021 15:39:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FEBE35F613
+	for <lists+linux-ext4@lfdr.de>; Wed, 14 Apr 2021 16:22:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351437AbhDNNkF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 14 Apr 2021 09:40:05 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:16914 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351417AbhDNNkD (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 14 Apr 2021 09:40:03 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FL3SV03CtzjZRZ;
-        Wed, 14 Apr 2021 21:37:46 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Wed, 14 Apr 2021
- 21:39:30 +0800
-From:   Zhang Yi <yi.zhang@huawei.com>
-To:     <linux-ext4@vger.kernel.org>
-CC:     <linux-fsdevel@vger.kernel.org>, <tytso@mit.edu>,
-        <adilger.kernel@dilger.ca>, <jack@suse.cz>, <yi.zhang@huawei.com>,
-        <yukuai3@huawei.com>
-Subject: [RFC PATCH v2 7/7] ext4: fix race between blkdev_releasepage() and ext4_put_super()
-Date:   Wed, 14 Apr 2021 21:47:37 +0800
-Message-ID: <20210414134737.2366971-8-yi.zhang@huawei.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20210414134737.2366971-1-yi.zhang@huawei.com>
-References: <20210414134737.2366971-1-yi.zhang@huawei.com>
+        id S1349460AbhDNOVE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 14 Apr 2021 10:21:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60656 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1348303AbhDNOVA (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 14 Apr 2021 10:21:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2632861019;
+        Wed, 14 Apr 2021 14:20:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618410038;
+        bh=DykQO4BQxTHccj2c0RU/3WhmZd1h8XFYW7G9mDIAu20=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PSuRbnLqSceeRXtJOmVbK2ImrfOgaaxVevo2l0FliVCtz6IapYN6ta3q8ZDOxTOyf
+         9PIh4JXcGsdm3oUf474ro0pblftH6gjuJ/70YDYDFYQJDbFzyXiuVd9mRbyCMGOgmH
+         W1Ssg8FbNI9Ym7O4ohirhw+9mVR24wEb6/gxCBFENBF0ivN7OHSIe5ohF7HvBz12at
+         ThwiA9XHnPqXvtRSSC0NzL3LZ8I/BHrmxQ3NaY9oPLFMjiAzEVjmXKqiwUN6h0mxL4
+         yJsnj4ZhMGGXIkmgdrFy0jJPJlSR+bSdf9RRa302+2rabt7hxc5S8hOnvT+H5HDwFq
+         3hq79rq5V6MYw==
+Date:   Wed, 14 Apr 2021 15:20:16 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Nico Pache <npache@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, brendanhiggins@google.com,
+        gregkh@linuxfoundation.org, linux-ext4@vger.kernel.org,
+        netdev@vger.kernel.org, rafael@kernel.org,
+        linux-m68k@lists.linux-m68k.org, geert@linux-m68k.org,
+        tytso@mit.edu, mathew.j.martineau@linux.intel.com,
+        davem@davemloft.net, davidgow@google.com,
+        skhan@linuxfoundation.org, mptcp@lists.linux.dev
+Subject: Re: [PATCH v2 1/6] kunit: ASoC: topology: adhear to KUNIT formatting
+ standard
+Message-ID: <20210414142016.GE4535@sirena.org.uk>
+References: <cover.1618388989.git.npache@redhat.com>
+ <dcf79e592f9a7e14483dde32ac561f6af2632e50.1618388989.git.npache@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="imjhCm/Pyz7Rq5F2"
+Content-Disposition: inline
+In-Reply-To: <dcf79e592f9a7e14483dde32ac561f6af2632e50.1618388989.git.npache@redhat.com>
+X-Cookie: George Orwell was an optimist.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-There still exist a use after free issue when accessing the journal
-structure and ext4_sb_info structure on freeing bdev buffers in
-bdev_try_to_free_page(). The problem is bdev_try_to_free_page() could be
-raced by ext4_put_super(), it dose freeing sb->s_fs_info and
-sbi->s_journal while release page progress are still accessing them.
-So it could end up trigger use-after-free or NULL pointer dereference.
 
-drop cache                           umount filesystem
-blkdev_releasepage()
- get sb
- bdev_try_to_free_page()             ext4_put_super()
-                                      kfree(journal)
-  if access EXT4_SB(sb)->s_journal  <-- leader to use after free
-                                      sb->s_fs_info = NULL;
-                                      kfree(sbi)
-  if access EXT4_SB(sb)->s_journal  <-- trigger NULL pointer dereference
+--imjhCm/Pyz7Rq5F2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The above race could also happens on the error path of
-ext4_fill_super(). Now the bdev_try_to_free_page() is under RCU
-protection, this patch fix this race by use sb->s_usage_counter to
-make bdev_try_to_free_page() safe against concurrent kill_block_super().
+On Wed, Apr 14, 2021 at 04:58:04AM -0400, Nico Pache wrote:
+> Drop 'S' from end of SND_SOC_TOPOLOGY_KUNIT_TESTS inorder to adhear to
+>  the KUNIT *_KUNIT_TEST config name format.
 
-Fixes: c39a7f84d784 ("ext4: provide function to release metadata pages under memory pressure")
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
----
- fs/ext4/super.c | 29 +++++++++++++++++++++++++----
- 1 file changed, 25 insertions(+), 4 deletions(-)
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 55c7a0d8d77d..14eedd8e5bd3 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1172,6 +1172,12 @@ static void ext4_put_super(struct super_block *sb)
- 	 */
- 	ext4_unregister_sysfs(sb);
- 
-+	/*
-+	 * Prevent racing with bdev_try_to_free_page() access the sbi and
-+	 * journal concurrently.
-+	 */
-+	sb_usage_counter_wait(sb);
-+
- 	if (sbi->s_journal) {
- 		aborted = is_journal_aborted(sbi->s_journal);
- 		err = jbd2_journal_destroy(sbi->s_journal);
-@@ -1248,6 +1254,7 @@ static void ext4_put_super(struct super_block *sb)
- 		kthread_stop(sbi->s_mmp_tsk);
- 	brelse(sbi->s_sbh);
- 	sb->s_fs_info = NULL;
-+	percpu_ref_exit(&sb->s_usage_counter);
- 	/*
- 	 * Now that we are completely done shutting down the
- 	 * superblock, we need to actually destroy the kobject.
-@@ -1450,15 +1457,22 @@ static int ext4_nfs_commit_metadata(struct inode *inode)
- static int bdev_try_to_free_page(struct super_block *sb, struct page *page,
- 				 gfp_t wait)
- {
--	journal_t *journal = EXT4_SB(sb)->s_journal;
-+	int ret = 0;
- 
- 	WARN_ON(PageChecked(page));
- 	if (!page_has_buffers(page))
- 		return 0;
--	if (journal)
--		return jbd2_journal_try_to_free_buffers(journal, page);
- 
--	return 0;
-+	/* Racing with umount filesystem concurrently? */
-+	if (percpu_ref_tryget_live(&sb->s_usage_counter)) {
-+		journal_t *journal = EXT4_SB(sb)->s_journal;
-+
-+		if (journal)
-+			ret = jbd2_journal_try_to_free_buffers(journal, page);
-+		percpu_ref_put(&sb->s_usage_counter);
-+	}
-+
-+	return ret;
- }
- 
- #ifdef CONFIG_FS_ENCRYPTION
-@@ -4709,6 +4723,9 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 	spin_lock_init(&sbi->s_error_lock);
- 	INIT_WORK(&sbi->s_error_work, flush_stashed_error_work);
- 
-+	if (sb_usage_counter_init(sb))
-+		goto failed_mount2a;
-+
- 	/* Register extent status tree shrinker */
- 	if (ext4_es_register_shrinker(sbi))
- 		goto failed_mount3;
-@@ -5148,6 +5165,8 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 	ext4_xattr_destroy_cache(sbi->s_ea_block_cache);
- 	sbi->s_ea_block_cache = NULL;
- 
-+	sb->s_bdev->bd_super = NULL;
-+	sb_usage_counter_wait(sb);
- 	if (sbi->s_journal) {
- 		jbd2_journal_destroy(sbi->s_journal);
- 		sbi->s_journal = NULL;
-@@ -5155,6 +5174,8 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- failed_mount3a:
- 	ext4_es_unregister_shrinker(sbi);
- failed_mount3:
-+	percpu_ref_exit(&sb->s_usage_counter);
-+failed_mount2a:
- 	flush_work(&sbi->s_error_work);
- 	del_timer_sync(&sbi->s_err_report);
- 	if (sbi->s_mmp_tsk)
--- 
-2.25.4
+--imjhCm/Pyz7Rq5F2
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmB2+h8ACgkQJNaLcl1U
+h9C5ygf/f+BNG8PCz0e3sGq/F/lIAmu23fPiN7lzXIQ/7/mdT3MwGiTHu9temsXL
+0d99SUvGT3MUczcKW+6Vj6faDQZGBXKBsKMW7rOq5h7Ns2tvw5MyvWwSYhHLj/Zt
+Ojkg3tN7GXemTVGC+TZyHVqWgh2q2wWvqJHeNzKY/9WPDcQo5BqoHlvO0xm9iF+L
+w3XI2y5+R6HulHM9PNNH18x3QiPWrjIjDAn2INWfPuPsAwu9+GpPf16ZK6CusCmZ
+ugX0b36XCpwrS2aNmb6SrjAA7GiQGnNXTZZ290lLhaN+ams3aM2pCePDkPjQU5EI
+ASor0godC7IdsihlvPd4BHIRP07Sdw==
+=U3R8
+-----END PGP SIGNATURE-----
+
+--imjhCm/Pyz7Rq5F2--
