@@ -2,69 +2,46 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 082D836133E
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 Apr 2021 21:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76CE2361471
+	for <lists+linux-ext4@lfdr.de>; Fri, 16 Apr 2021 00:01:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235205AbhDOT7S (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 15 Apr 2021 15:59:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235142AbhDOT7R (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Apr 2021 15:59:17 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0629DC061574;
-        Thu, 15 Apr 2021 12:58:54 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id x27so12359494qvd.2;
-        Thu, 15 Apr 2021 12:58:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=awd1ERb/pc00DKswh6Utn9qSQ60M4TGoVLVADWukN/g=;
-        b=FJ7GPf6VVf6evCpoJQqwk0xsizsVxZoo6SXBcFPMGQdAFIwuGVyHRKw61m03BKODMw
-         sxAhrnoQR8Li4AfWZzi+aWZyof3nE8xIx7egtpHW6bUrpoKf2uujv//fW9SOlpc7KR7c
-         kLg/J7BKlvfZ+3Buqdbxm3tf1YhKjBPDsSg3ZfxCxRJUsq3Pwa6nTdJaPRL2EjgzSVZi
-         bYRE/OP4gEEViYg2Tx6OWuAZ89muXOPuCNhNIkNlg/3ftZg888/tmDWug7VDjbV5TkKY
-         rJhtaLXDzWou+CzvZzpjFLdh86VkYcn7Ov5lenVk8zOvZQi5vICiUbAq3YIsIiKhXVLa
-         n2Ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=awd1ERb/pc00DKswh6Utn9qSQ60M4TGoVLVADWukN/g=;
-        b=lh0Ly/l5l8OuXmPFIg4jwbKueZR7CWFKKmRgxBEOOGMnsm8Z1CQ4owCld1109K47eh
-         FFI9gpmA+oARtlz7sM9zBYFFKt4Dr/wdi+jPzzhl2dbwB4zju285cwJ1Cxz7kp+qaQ9/
-         TqKAO8GAsckqHAOsjfOoBHwSmAZse6hPkezbH7uLBrHaKUoQ5PuDARh72p9XiZ+meMCf
-         NbRNaWcphATj4DtifG/UqTJvkfnt9cMFEg5+UdrSwEazD6SVTBigPch9rud/EpvsGnrc
-         uUU1G51ixYchcypuTbI80L+kf/EGYptX0y8Y2KoBxKRaigiqgh0JSo+tM3sdnJLxyIbS
-         ICQQ==
-X-Gm-Message-State: AOAM530NYMIyenzoA9eea52QGoe39bmaITHYEzDcW7GMRYp0qsMoFvLl
-        YeouwHLa7SPoe2dmm7871dw=
-X-Google-Smtp-Source: ABdhPJy/1urDbWA6vw4XCwkn+o9ASpUjMQOTB6CpD7EB2Vl2ABulU88ZWPnriwrVS7tB4FT3IF4IEw==
-X-Received: by 2002:a05:6214:165:: with SMTP id y5mr4876742qvs.59.1618516733305;
-        Thu, 15 Apr 2021 12:58:53 -0700 (PDT)
-Received: from localhost.localdomain (c-73-60-226-25.hsd1.nh.comcast.net. [73.60.226.25])
-        by smtp.gmail.com with ESMTPSA id q15sm2364377qtx.47.2021.04.15.12.58.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 12:58:52 -0700 (PDT)
-Date:   Thu, 15 Apr 2021 15:58:50 -0400
-From:   Eric Whitney <enwlinux@gmail.com>
+        id S234941AbhDOWBy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 15 Apr 2021 18:01:54 -0400
+Received: from mail108.syd.optusnet.com.au ([211.29.132.59]:37477 "EHLO
+        mail108.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234777AbhDOWBx (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 15 Apr 2021 18:01:53 -0400
+Received: from dread.disaster.area (pa49-181-239-12.pa.nsw.optusnet.com.au [49.181.239.12])
+        by mail108.syd.optusnet.com.au (Postfix) with ESMTPS id 376301AEBCB;
+        Fri, 16 Apr 2021 08:01:24 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1lXA37-009m6A-H1; Fri, 16 Apr 2021 08:01:21 +1000
+Date:   Fri, 16 Apr 2021 08:01:21 +1000
+From:   Dave Chinner <david@fromorbit.com>
 To:     Jan Kara <jack@suse.cz>
 Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
         Eric Whitney <enwlinux@gmail.com>, stable@vger.kernel.org
 Subject: Re: [PATCH v3] ext4: Fix occasional generic/418 failure
-Message-ID: <20210415195850.GA16226@localhost.localdomain>
+Message-ID: <20210415220121.GX1990290@dread.disaster.area>
 References: <20210415155417.4734-1-jack@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20210415155417.4734-1-jack@suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0 cx=a_idp_f
+        a=gO82wUwQTSpaJfP49aMSow==:117 a=gO82wUwQTSpaJfP49aMSow==:17
+        a=kj9zAlcOel0A:10 a=3YhXtTcJ-WEA:10 a=pGLkceISAAAA:8 a=VwQbUJbxAAAA:8
+        a=20KFwNOVAAAA:8 a=7-415B0cAAAA:8 a=BVGimuPS_KFzXVpvEk4A:9
+        a=CjuIK1q_8ugA:10 a=HUqATDVKn4QA:10 a=AjGcO6oz07-iQ99wixmX:22
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-* Jan Kara <jack@suse.cz>:
+On Thu, Apr 15, 2021 at 05:54:17PM +0200, Jan Kara wrote:
 > Eric has noticed that after pagecache read rework, generic/418 is
 > occasionally failing for ext4 when blocksize < pagesize. In fact, the
 > pagecache rework just made hard to hit race in ext4 more likely. The
@@ -134,16 +111,14 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 >  
 >  	return 0;
 >  }
-> -- 
-> 2.26.2
-> 
 
+Thanks for updating the comment, Jan!
 
-With additional data, the generic/068 failure I saw on the data=journal test
-configuration when testing the v2 version of this patch doesn't appear to be
-a regression.  100 runs of 068 on a v2 patched -rc7 kernel failed five times,
-and it failed three times on an unpatched -rc7 kernel.  So, that failure is
-most likely a latent problem unrelated to this patch.
+Acked-by: Dave Chinner <dchinner@redhat.com>
 
-Thanks,
-Eric
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
