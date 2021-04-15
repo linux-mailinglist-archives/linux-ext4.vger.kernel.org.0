@@ -2,78 +2,104 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1706360D4F
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 Apr 2021 17:01:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6916360F7C
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 Apr 2021 17:54:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234329AbhDOPBa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 15 Apr 2021 11:01:30 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:53899 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S234884AbhDOPAG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Apr 2021 11:00:06 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 13FExS1V031149
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 15 Apr 2021 10:59:29 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 547EE15C3B35; Thu, 15 Apr 2021 10:59:28 -0400 (EDT)
-Date:   Thu, 15 Apr 2021 10:59:28 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Eryu Guan <guan@eryu.me>,
-        Christian Brauner <brauner@kernel.org>,
-        fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        Amir Goldstein <amir73il@gmail.com>
-Subject: Re: [PATCH -RFC] ext4: add feature file to advertise that ext4
- supports idmapped mounts
-Message-ID: <YHhU0MGFgiXMRrBn@mit.edu>
-References: <20210411151249.6y34x7yatqtpcvi6@wittgenstein>
- <20210411151857.wd6gd46u53vlh2xv@wittgenstein>
- <YHMUAL/oD4fB3+R7@desktop>
- <20210411153223.vhcegiklrwoczy55@wittgenstein>
- <YHOW7DN51YuYgLPM@mit.edu>
- <20210412115426.a4bzsx4cp7jhx2ou@wittgenstein>
- <YHTMkBcVTFAGqyks@mit.edu>
- <YHdUzqZ7PZtb64zf@mit.edu>
- <20210415055408.GA8947@lst.de>
- <20210415074921.cf5uv4xehlctvtvv@wittgenstein>
+        id S233673AbhDOPyp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 15 Apr 2021 11:54:45 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49622 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231726AbhDOPyp (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 15 Apr 2021 11:54:45 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E6F47B2DD;
+        Thu, 15 Apr 2021 15:54:20 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id A527B1F2B65; Thu, 15 Apr 2021 17:54:20 +0200 (CEST)
+From:   Jan Kara <jack@suse.cz>
+To:     Ted Tso <tytso@mit.edu>
+Cc:     <linux-ext4@vger.kernel.org>, Eric Whitney <enwlinux@gmail.com>,
+        Jan Kara <jack@suse.cz>, stable@vger.kernel.org
+Subject: [PATCH v3] ext4: Fix occasional generic/418 failure
+Date:   Thu, 15 Apr 2021 17:54:17 +0200
+Message-Id: <20210415155417.4734-1-jack@suse.cz>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210415074921.cf5uv4xehlctvtvv@wittgenstein>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 09:49:21AM +0200, Christian Brauner wrote:
-> Harsh words. :)
-> Christoph's right though I think for the xfstests we don't need it and
-> we're covered with what we have in the version I sent out last Sunday.
+Eric has noticed that after pagecache read rework, generic/418 is
+occasionally failing for ext4 when blocksize < pagesize. In fact, the
+pagecache rework just made hard to hit race in ext4 more likely. The
+problem is that since ext4 conversion of direct IO writes to iomap
+framework (commit 378f32bab371), we update inode size after direct IO
+write only after invalidating page cache. Thus if buffered read sneaks
+at unfortunate moment like:
 
-Sorry, I had missed your v13 patch set and that it had included tests
-for the existence of idmapped.  I had sent out the RFC patch because I
-was under the impression that we hadn't made forward progress on
-testing for the support idmapped mounts.
+CPU1 - write at offset 1k                       CPU2 - read from offset 0
+iomap_dio_rw(..., IOMAP_DIO_FORCE_WAIT);
+                                                ext4_readpage();
+ext4_handle_inode_extension()
 
-If we have a way of doing this, and you're comfortable that it is
-reliable (e.g., that a bug might cause the test to be skipped because
-it thinks the file system doesn't support idmapped mount, when really
-it was caused by a regression), and I'm happy to just rely on the
-method you've used in the v13 fstests patch set.
+the read will zero out tail of the page as it still sees smaller inode
+size and thus page cache becomes inconsistent with on-disk contents with
+all the consequences.
 
-That being said, I still think it would be helpful to have a
-VFS-standard way for userspace to be able to test for the presence of
-a particular kernel feature/capability without having to do a test
-mount, possibly requiring setting up a test user_ns, etc., etc.  But
-that isn't as urgent as making sure we can easily the feature without
-needing manual customization of the test suite as file systems add
-support for the feature, or as the feature gets backported to
-enterprise distro kernels.
+Fix the problem by moving inode size update into end_io handler which
+gets called before the page cache is invalidated.
 
-Cheers,
+Reported-and-tested-by: Eric Whitney <enwlinux@gmail.com>
+Fixes: 378f32bab371 ("ext4: introduce direct I/O write using iomap infrastructure")
+CC: stable@vger.kernel.org
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ fs/ext4/file.c | 25 +++++++++++++++++++++----
+ 1 file changed, 21 insertions(+), 4 deletions(-)
 
-					- Ted
+diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+index 194f5d00fa32..7924634ab0bf 100644
+--- a/fs/ext4/file.c
++++ b/fs/ext4/file.c
+@@ -371,15 +371,32 @@ static ssize_t ext4_handle_inode_extension(struct inode *inode, loff_t offset,
+ static int ext4_dio_write_end_io(struct kiocb *iocb, ssize_t size,
+ 				 int error, unsigned int flags)
+ {
+-	loff_t offset = iocb->ki_pos;
++	loff_t pos = iocb->ki_pos;
+ 	struct inode *inode = file_inode(iocb->ki_filp);
+ 
+ 	if (error)
+ 		return error;
+ 
+-	if (size && flags & IOMAP_DIO_UNWRITTEN)
+-		return ext4_convert_unwritten_extents(NULL, inode,
+-						      offset, size);
++	if (size && flags & IOMAP_DIO_UNWRITTEN) {
++		error = ext4_convert_unwritten_extents(NULL, inode, pos, size);
++		if (error < 0)
++			return error;
++	}
++	/*
++	 * If we are extending the file, we have to update i_size here before
++	 * page cache gets invalidated in iomap_dio_rw(). Otherwise racing
++	 * buffered reads could zero out too much from page cache pages. Update
++	 * of on-disk size will happen later in ext4_dio_write_iter() where
++	 * we have enough information to also perform orphan list handling etc.
++	 * Note that we perform all extending writes synchronously under
++	 * i_rwsem held exclusively so i_size update is safe here in that case.
++	 * If the write was not extending, we cannot see pos > i_size here
++	 * because operations reducing i_size like truncate wait for all
++	 * outstanding DIO before updating i_size.
++	 */
++	pos += size;
++	if (pos > i_size_read(inode))
++		i_size_write(inode, pos);
+ 
+ 	return 0;
+ }
+-- 
+2.26.2
+
