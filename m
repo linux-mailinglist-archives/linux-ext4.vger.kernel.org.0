@@ -2,57 +2,78 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39EF7360CDF
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 Apr 2021 16:55:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1706360D4F
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 Apr 2021 17:01:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234241AbhDOOzN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 15 Apr 2021 10:55:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234290AbhDOOx7 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Apr 2021 10:53:59 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85925C06134D;
-        Thu, 15 Apr 2021 07:53:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=C3gAoqVJbNHaFnVpwiCtlJm6hLmAHtP5KFU8HTA8ghw=; b=iGHVKQkMSm0+27XKnHvlajsJCv
-        4kR0v8sl5YK50iM2k3eZUSfbThB7vL3XjfdE6fQ4eMSfSMS52q4eVr5Gr8Sb/kwFT2jJNbHKmECRw
-        CCJEgp5Y0XiWPpIJiPDakzGWLfXO7tckZcBgy256Te8tHLdaoODdKQOHMDxMTJipVsUB+q4FlSmGC
-        a1bVml7oIJ2sGyjHyoC4hC4qAZbwTkNzcn1VgswgXUDWl6zuUZGDhO6o1PI/xe+iEOqx07XkNhTiq
-        MXCcTwnwPXUxSktS25GWcknDlCl2XdinvaMQCoaMN2/jBtZM8LFSAkhVzl5l+TeW4x9UnvGSoSluN
-        m3VoPtng==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lX3MB-008hIz-HL; Thu, 15 Apr 2021 14:52:44 +0000
-Date:   Thu, 15 Apr 2021 15:52:35 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Zhang Yi <yi.zhang@huawei.com>
-Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
-        yukuai3@huawei.com
-Subject: Re: [RFC PATCH v2 7/7] ext4: fix race between blkdev_releasepage()
- and ext4_put_super()
-Message-ID: <20210415145235.GD2069063@infradead.org>
-References: <20210414134737.2366971-1-yi.zhang@huawei.com>
- <20210414134737.2366971-8-yi.zhang@huawei.com>
+        id S234329AbhDOPBa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 15 Apr 2021 11:01:30 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:53899 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234884AbhDOPAG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Apr 2021 11:00:06 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 13FExS1V031149
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 15 Apr 2021 10:59:29 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 547EE15C3B35; Thu, 15 Apr 2021 10:59:28 -0400 (EDT)
+Date:   Thu, 15 Apr 2021 10:59:28 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Eryu Guan <guan@eryu.me>,
+        Christian Brauner <brauner@kernel.org>,
+        fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        Amir Goldstein <amir73il@gmail.com>
+Subject: Re: [PATCH -RFC] ext4: add feature file to advertise that ext4
+ supports idmapped mounts
+Message-ID: <YHhU0MGFgiXMRrBn@mit.edu>
+References: <20210411151249.6y34x7yatqtpcvi6@wittgenstein>
+ <20210411151857.wd6gd46u53vlh2xv@wittgenstein>
+ <YHMUAL/oD4fB3+R7@desktop>
+ <20210411153223.vhcegiklrwoczy55@wittgenstein>
+ <YHOW7DN51YuYgLPM@mit.edu>
+ <20210412115426.a4bzsx4cp7jhx2ou@wittgenstein>
+ <YHTMkBcVTFAGqyks@mit.edu>
+ <YHdUzqZ7PZtb64zf@mit.edu>
+ <20210415055408.GA8947@lst.de>
+ <20210415074921.cf5uv4xehlctvtvv@wittgenstein>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210414134737.2366971-8-yi.zhang@huawei.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20210415074921.cf5uv4xehlctvtvv@wittgenstein>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 09:47:37PM +0800, Zhang Yi wrote:
-> There still exist a use after free issue when accessing the journal
-> structure and ext4_sb_info structure on freeing bdev buffers in
-> bdev_try_to_free_page(). The problem is bdev_try_to_free_page() could be
-> raced by ext4_put_super(), it dose freeing sb->s_fs_info and
-> sbi->s_journal while release page progress are still accessing them.
-> So it could end up trigger use-after-free or NULL pointer dereference.
+On Thu, Apr 15, 2021 at 09:49:21AM +0200, Christian Brauner wrote:
+> Harsh words. :)
+> Christoph's right though I think for the xfstests we don't need it and
+> we're covered with what we have in the version I sent out last Sunday.
 
-I think the right fix is to not even call into ->bdev_try_to_free_page
-unless the superblock is active.
+Sorry, I had missed your v13 patch set and that it had included tests
+for the existence of idmapped.  I had sent out the RFC patch because I
+was under the impression that we hadn't made forward progress on
+testing for the support idmapped mounts.
+
+If we have a way of doing this, and you're comfortable that it is
+reliable (e.g., that a bug might cause the test to be skipped because
+it thinks the file system doesn't support idmapped mount, when really
+it was caused by a regression), and I'm happy to just rely on the
+method you've used in the v13 fstests patch set.
+
+That being said, I still think it would be helpful to have a
+VFS-standard way for userspace to be able to test for the presence of
+a particular kernel feature/capability without having to do a test
+mount, possibly requiring setting up a test user_ns, etc., etc.  But
+that isn't as urgent as making sure we can easily the feature without
+needing manual customization of the test suite as file systems add
+support for the feature, or as the feature gets backported to
+enterprise distro kernels.
+
+Cheers,
+
+					- Ted
