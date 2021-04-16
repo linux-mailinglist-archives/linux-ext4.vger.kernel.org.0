@@ -2,70 +2,78 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D90B136170F
-	for <lists+linux-ext4@lfdr.de>; Fri, 16 Apr 2021 03:10:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41B90361AFD
+	for <lists+linux-ext4@lfdr.de>; Fri, 16 Apr 2021 10:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237597AbhDPBK5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 15 Apr 2021 21:10:57 -0400
-Received: from mbox.abcom.al ([217.73.143.249]:51200 "EHLO mbox.abcom.al"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235109AbhDPBK4 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 15 Apr 2021 21:10:56 -0400
-X-Greylist: delayed 21887 seconds by postgrey-1.27 at vger.kernel.org; Thu, 15 Apr 2021 21:10:56 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by mbox.abcom.al (Postfix) with ESMTP id 3C8676D673D;
-        Fri, 16 Apr 2021 03:09:15 +0200 (CEST)
-Received: from mbox.abcom.al ([127.0.0.1])
-        by localhost (mbox.abcom.al [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id Ce7khPWB4WyY; Fri, 16 Apr 2021 03:09:15 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by mbox.abcom.al (Postfix) with ESMTP id E184B5BB469;
-        Fri, 16 Apr 2021 03:09:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mbox.abcom.al E184B5BB469
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=abcom.al;
-        s=0F3BA0EE-D5D4-11E8-9596-F9115129F2F4; t=1618535355;
-        bh=VCOKpjxaLoatOvx+LSaT3i7u3saMYZrSANTtqEwi9j4=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=ncHvAgac2m88aJNBU84CloHPepPPz4Bp5er4wRRRXaW2+Nd8swsOLYuTaz4ZHP74d
-         E483/H2rRAMyPQuZyXKC22gukIcqZ/BJ2tcsrLlcNYeUU5DQ9mvv/bHQTzQ3JlC52+
-         Yuf1Pg0e1AHVt698G/oVbYTlFfydkZDQq5lO3p3JHoz3plcdL6EF5Iv+eJ0W0Kpe7S
-         3MXF+QHZ8pgrL7qQrsOTpQLiYn1kBJsTRKndSmdrqsgXHw3u7RZKRAt5DdlqOfVhTK
-         4oRvLW1WmzsBcDt/wCy3DgCvS2Vc/kecKq/YUF11+4nomi/7sgxjDhiI4kO5Nq590p
-         6aTBcrRJ6C7DA==
-X-Virus-Scanned: amavisd-new at mbox.abcom.al
-Received: from mbox.abcom.al ([127.0.0.1])
-        by localhost (mbox.abcom.al [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id LC-HBtPFOSoE; Fri, 16 Apr 2021 03:09:14 +0200 (CEST)
-Received: from [10.41.71.107] (unknown [105.4.2.96])
-        by mbox.abcom.al (Postfix) with ESMTPSA id C63AF6BFCC2;
-        Fri, 16 Apr 2021 03:09:07 +0200 (CEST)
-Content-Type: text/plain; charset="utf-8"
+        id S238757AbhDPIBK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 16 Apr 2021 04:01:10 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:16596 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237986AbhDPIBJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 16 Apr 2021 04:01:09 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FM7r060msz17QdP;
+        Fri, 16 Apr 2021 15:58:24 +0800 (CST)
+Received: from [10.174.176.202] (10.174.176.202) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 16 Apr 2021 16:00:35 +0800
+Subject: Re: [RFC PATCH v2 6/7] fs: introduce a usage count into the
+ superblock
+To:     Christoph Hellwig <hch@infradead.org>
+CC:     <linux-ext4@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+        <yukuai3@huawei.com>
+References: <20210414134737.2366971-1-yi.zhang@huawei.com>
+ <20210414134737.2366971-7-yi.zhang@huawei.com>
+ <20210415144056.GA2069063@infradead.org>
+From:   Zhang Yi <yi.zhang@huawei.com>
+Message-ID: <a35319b2-8d5d-2a32-9284-d1828ec4d9df@huawei.com>
+Date:   Fri, 16 Apr 2021 16:00:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Spende
-To:     Recipients <mtodo@abcom.al>
-From:   "William Kruger" <mtodo@abcom.al>
-Date:   Thu, 15 Apr 2021 18:08:53 -0700
-Reply-To: robadamengineeringltd@gmail.com
-Message-Id: <20210416010907.C63AF6BFCC2@mbox.abcom.al>
+In-Reply-To: <20210415144056.GA2069063@infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.202]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hallo Liebes, ich bin William Kruger aus Lantana im Palm Beach County, USA.=
- Ich habe einen $ 168 Millionen Jackpot gewonnen, der einer der gr=C3=B6=C3=
-=9Ften Lotterie-Jackpots ist. Im Namen meiner Familie und aus gutem Willen =
-spenden wir Ihnen und Ihrer Familie einen Betrag von (=E2=82=AC 850,000.00 =
-EUR). Ich versuche, die gemeinn=C3=BCtzigen Waisenh=C3=A4user zu erreichen =
-und zur Armutsbek=C3=A4mpfung beizutragen und eine angemessene Gesundheitsv=
-ersorgung f=C3=BCr Einzelpersonen zu gew=C3=A4hrleisten, insbesondere w=C3=
-=A4hrend dieser Welt Pandemic Covid 19. Ich m=C3=B6chte auch, dass Sie eine=
-n Teil dieser Spende in die =C3=B6ffentliche Infrastruktur investieren, um =
-Arbeitslosen in Ihrem Land Arbeitspl=C3=A4tze zu bieten . Ich habe dich gew=
-=C3=A4hlt, weil ich an dich glaube. Ich brauche Ihre uneingeschr=C3=A4nkte =
-Mitarbeit in Bezug auf diese Spende. Hier ist Ihr ausgew=C3=A4hlter Geheimc=
-ode: [W5900Q2172021] und bitte teilen Sie den Code niemandem mit, wenn Sie =
-interessiert und bereit sind, mit mir zu arbeiten. Bitte kontaktieren Sie m=
-ich mit Ihrem Spenden- / Geheimcode [W5900Q2172021] und Ihren vollst=C3=A4n=
-digen Namen hier bei meiner privaten E-Mail: krugerwilliamhome@gmail.com
+Hi, Christoph
+
+On 2021/4/15 22:40, Christoph Hellwig wrote:
+> On Wed, Apr 14, 2021 at 09:47:36PM +0800, Zhang Yi wrote:
+>> Commit <87d8fe1ee6b8> ("add releasepage hooks to block devices which can
+>> be used by file systems") introduce a hook that used by ext4 filesystem
+>> to release journal buffers, but it doesn't add corresponding concurrency
+>> protection that ->bdev_try_to_free_page() could be raced by umount
+>> filesystem concurrently. This patch add a usage count on superblock that
+>> filesystem can use it to prevent above race and make invoke
+>> ->bdev_try_to_free_page() safe.
+> 
+> We already have two refcounts in the superblock: s_active which counts
+> the active refernce, and s_count which prevents the data structures
+> from beeing freed.  I don't think we need yet another one.
+> .
+> 
+
+Thanks you for your response. I checked the s_count and s_active refcounts,
+but it seems that we could not use these two refcounts directly.
+
+For the s_active. If we get s_active refcount in blkdev_releasepage(), we may
+put the final refcount when doing umount concurrently and have to do resource
+recycling, but we got page locked here and lead to deadlock. Maybe we could do
+async resource recycling through kworker, but I think it's not a good way.
+
+For the s_count, it is operated under the global sb_lock now, so get this
+refcount will serialize page release and affect performance. Besides, It's
+semantics are different from the 'usage count' by private fileststem, and we
+have to cooperate with sb->s_umount mutex lock to close the above race.
+
+So I introduce another refcount. Am I missing something or any suggestions?
+
+Thanks,
+Yi.
