@@ -2,123 +2,70 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76CE2361471
-	for <lists+linux-ext4@lfdr.de>; Fri, 16 Apr 2021 00:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D90B136170F
+	for <lists+linux-ext4@lfdr.de>; Fri, 16 Apr 2021 03:10:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234941AbhDOWBy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 15 Apr 2021 18:01:54 -0400
-Received: from mail108.syd.optusnet.com.au ([211.29.132.59]:37477 "EHLO
-        mail108.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234777AbhDOWBx (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 15 Apr 2021 18:01:53 -0400
-Received: from dread.disaster.area (pa49-181-239-12.pa.nsw.optusnet.com.au [49.181.239.12])
-        by mail108.syd.optusnet.com.au (Postfix) with ESMTPS id 376301AEBCB;
-        Fri, 16 Apr 2021 08:01:24 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1lXA37-009m6A-H1; Fri, 16 Apr 2021 08:01:21 +1000
-Date:   Fri, 16 Apr 2021 08:01:21 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        Eric Whitney <enwlinux@gmail.com>, stable@vger.kernel.org
-Subject: Re: [PATCH v3] ext4: Fix occasional generic/418 failure
-Message-ID: <20210415220121.GX1990290@dread.disaster.area>
-References: <20210415155417.4734-1-jack@suse.cz>
+        id S237597AbhDPBK5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 15 Apr 2021 21:10:57 -0400
+Received: from mbox.abcom.al ([217.73.143.249]:51200 "EHLO mbox.abcom.al"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235109AbhDPBK4 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 15 Apr 2021 21:10:56 -0400
+X-Greylist: delayed 21887 seconds by postgrey-1.27 at vger.kernel.org; Thu, 15 Apr 2021 21:10:56 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by mbox.abcom.al (Postfix) with ESMTP id 3C8676D673D;
+        Fri, 16 Apr 2021 03:09:15 +0200 (CEST)
+Received: from mbox.abcom.al ([127.0.0.1])
+        by localhost (mbox.abcom.al [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id Ce7khPWB4WyY; Fri, 16 Apr 2021 03:09:15 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by mbox.abcom.al (Postfix) with ESMTP id E184B5BB469;
+        Fri, 16 Apr 2021 03:09:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mbox.abcom.al E184B5BB469
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=abcom.al;
+        s=0F3BA0EE-D5D4-11E8-9596-F9115129F2F4; t=1618535355;
+        bh=VCOKpjxaLoatOvx+LSaT3i7u3saMYZrSANTtqEwi9j4=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=ncHvAgac2m88aJNBU84CloHPepPPz4Bp5er4wRRRXaW2+Nd8swsOLYuTaz4ZHP74d
+         E483/H2rRAMyPQuZyXKC22gukIcqZ/BJ2tcsrLlcNYeUU5DQ9mvv/bHQTzQ3JlC52+
+         Yuf1Pg0e1AHVt698G/oVbYTlFfydkZDQq5lO3p3JHoz3plcdL6EF5Iv+eJ0W0Kpe7S
+         3MXF+QHZ8pgrL7qQrsOTpQLiYn1kBJsTRKndSmdrqsgXHw3u7RZKRAt5DdlqOfVhTK
+         4oRvLW1WmzsBcDt/wCy3DgCvS2Vc/kecKq/YUF11+4nomi/7sgxjDhiI4kO5Nq590p
+         6aTBcrRJ6C7DA==
+X-Virus-Scanned: amavisd-new at mbox.abcom.al
+Received: from mbox.abcom.al ([127.0.0.1])
+        by localhost (mbox.abcom.al [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id LC-HBtPFOSoE; Fri, 16 Apr 2021 03:09:14 +0200 (CEST)
+Received: from [10.41.71.107] (unknown [105.4.2.96])
+        by mbox.abcom.al (Postfix) with ESMTPSA id C63AF6BFCC2;
+        Fri, 16 Apr 2021 03:09:07 +0200 (CEST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210415155417.4734-1-jack@suse.cz>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0 cx=a_idp_f
-        a=gO82wUwQTSpaJfP49aMSow==:117 a=gO82wUwQTSpaJfP49aMSow==:17
-        a=kj9zAlcOel0A:10 a=3YhXtTcJ-WEA:10 a=pGLkceISAAAA:8 a=VwQbUJbxAAAA:8
-        a=20KFwNOVAAAA:8 a=7-415B0cAAAA:8 a=BVGimuPS_KFzXVpvEk4A:9
-        a=CjuIK1q_8ugA:10 a=HUqATDVKn4QA:10 a=AjGcO6oz07-iQ99wixmX:22
-        a=biEYGPWJfzWAr4FL6Ov7:22
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Spende
+To:     Recipients <mtodo@abcom.al>
+From:   "William Kruger" <mtodo@abcom.al>
+Date:   Thu, 15 Apr 2021 18:08:53 -0700
+Reply-To: robadamengineeringltd@gmail.com
+Message-Id: <20210416010907.C63AF6BFCC2@mbox.abcom.al>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 05:54:17PM +0200, Jan Kara wrote:
-> Eric has noticed that after pagecache read rework, generic/418 is
-> occasionally failing for ext4 when blocksize < pagesize. In fact, the
-> pagecache rework just made hard to hit race in ext4 more likely. The
-> problem is that since ext4 conversion of direct IO writes to iomap
-> framework (commit 378f32bab371), we update inode size after direct IO
-> write only after invalidating page cache. Thus if buffered read sneaks
-> at unfortunate moment like:
-> 
-> CPU1 - write at offset 1k                       CPU2 - read from offset 0
-> iomap_dio_rw(..., IOMAP_DIO_FORCE_WAIT);
->                                                 ext4_readpage();
-> ext4_handle_inode_extension()
-> 
-> the read will zero out tail of the page as it still sees smaller inode
-> size and thus page cache becomes inconsistent with on-disk contents with
-> all the consequences.
-> 
-> Fix the problem by moving inode size update into end_io handler which
-> gets called before the page cache is invalidated.
-> 
-> Reported-and-tested-by: Eric Whitney <enwlinux@gmail.com>
-> Fixes: 378f32bab371 ("ext4: introduce direct I/O write using iomap infrastructure")
-> CC: stable@vger.kernel.org
-> Signed-off-by: Jan Kara <jack@suse.cz>
-> ---
->  fs/ext4/file.c | 25 +++++++++++++++++++++----
->  1 file changed, 21 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-> index 194f5d00fa32..7924634ab0bf 100644
-> --- a/fs/ext4/file.c
-> +++ b/fs/ext4/file.c
-> @@ -371,15 +371,32 @@ static ssize_t ext4_handle_inode_extension(struct inode *inode, loff_t offset,
->  static int ext4_dio_write_end_io(struct kiocb *iocb, ssize_t size,
->  				 int error, unsigned int flags)
->  {
-> -	loff_t offset = iocb->ki_pos;
-> +	loff_t pos = iocb->ki_pos;
->  	struct inode *inode = file_inode(iocb->ki_filp);
->  
->  	if (error)
->  		return error;
->  
-> -	if (size && flags & IOMAP_DIO_UNWRITTEN)
-> -		return ext4_convert_unwritten_extents(NULL, inode,
-> -						      offset, size);
-> +	if (size && flags & IOMAP_DIO_UNWRITTEN) {
-> +		error = ext4_convert_unwritten_extents(NULL, inode, pos, size);
-> +		if (error < 0)
-> +			return error;
-> +	}
-> +	/*
-> +	 * If we are extending the file, we have to update i_size here before
-> +	 * page cache gets invalidated in iomap_dio_rw(). Otherwise racing
-> +	 * buffered reads could zero out too much from page cache pages. Update
-> +	 * of on-disk size will happen later in ext4_dio_write_iter() where
-> +	 * we have enough information to also perform orphan list handling etc.
-> +	 * Note that we perform all extending writes synchronously under
-> +	 * i_rwsem held exclusively so i_size update is safe here in that case.
-> +	 * If the write was not extending, we cannot see pos > i_size here
-> +	 * because operations reducing i_size like truncate wait for all
-> +	 * outstanding DIO before updating i_size.
-> +	 */
-> +	pos += size;
-> +	if (pos > i_size_read(inode))
-> +		i_size_write(inode, pos);
->  
->  	return 0;
->  }
-
-Thanks for updating the comment, Jan!
-
-Acked-by: Dave Chinner <dchinner@redhat.com>
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Hallo Liebes, ich bin William Kruger aus Lantana im Palm Beach County, USA.=
+ Ich habe einen $ 168 Millionen Jackpot gewonnen, der einer der gr=C3=B6=C3=
+=9Ften Lotterie-Jackpots ist. Im Namen meiner Familie und aus gutem Willen =
+spenden wir Ihnen und Ihrer Familie einen Betrag von (=E2=82=AC 850,000.00 =
+EUR). Ich versuche, die gemeinn=C3=BCtzigen Waisenh=C3=A4user zu erreichen =
+und zur Armutsbek=C3=A4mpfung beizutragen und eine angemessene Gesundheitsv=
+ersorgung f=C3=BCr Einzelpersonen zu gew=C3=A4hrleisten, insbesondere w=C3=
+=A4hrend dieser Welt Pandemic Covid 19. Ich m=C3=B6chte auch, dass Sie eine=
+n Teil dieser Spende in die =C3=B6ffentliche Infrastruktur investieren, um =
+Arbeitslosen in Ihrem Land Arbeitspl=C3=A4tze zu bieten . Ich habe dich gew=
+=C3=A4hlt, weil ich an dich glaube. Ich brauche Ihre uneingeschr=C3=A4nkte =
+Mitarbeit in Bezug auf diese Spende. Hier ist Ihr ausgew=C3=A4hlter Geheimc=
+ode: [W5900Q2172021] und bitte teilen Sie den Code niemandem mit, wenn Sie =
+interessiert und bereit sind, mit mir zu arbeiten. Bitte kontaktieren Sie m=
+ich mit Ihrem Spenden- / Geheimcode [W5900Q2172021] und Ihren vollst=C3=A4n=
+digen Namen hier bei meiner privaten E-Mail: krugerwilliamhome@gmail.com
