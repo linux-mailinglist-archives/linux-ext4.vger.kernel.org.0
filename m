@@ -2,81 +2,69 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8892361AFF
-	for <lists+linux-ext4@lfdr.de>; Fri, 16 Apr 2021 10:01:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E1F9362368
+	for <lists+linux-ext4@lfdr.de>; Fri, 16 Apr 2021 17:04:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239806AbhDPIBW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 16 Apr 2021 04:01:22 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:16468 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237986AbhDPIBV (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 16 Apr 2021 04:01:21 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FM7rF5mHJzwS9k;
-        Fri, 16 Apr 2021 15:58:37 +0800 (CST)
-Received: from [10.174.176.202] (10.174.176.202) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 16 Apr 2021 16:00:48 +0800
-Subject: Re: [RFC PATCH v2 7/7] ext4: fix race between blkdev_releasepage()
- and ext4_put_super()
-To:     Christoph Hellwig <hch@infradead.org>
-CC:     <linux-ext4@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-        <yukuai3@huawei.com>
-References: <20210414134737.2366971-1-yi.zhang@huawei.com>
- <20210414134737.2366971-8-yi.zhang@huawei.com>
- <20210415145235.GD2069063@infradead.org>
-From:   Zhang Yi <yi.zhang@huawei.com>
-Message-ID: <ca810e21-5f92-ee6c-a046-255c70c6bf78@huawei.com>
-Date:   Fri, 16 Apr 2021 16:00:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
-MIME-Version: 1.0
-In-Reply-To: <20210415145235.GD2069063@infradead.org>
+        id S245624AbhDPPCx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 16 Apr 2021 11:02:53 -0400
+Received: from mbox.abcom.al ([217.73.143.249]:47162 "EHLO mbox.abcom.al"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245561AbhDPPCn (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 16 Apr 2021 11:02:43 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mbox.abcom.al (Postfix) with ESMTP id 742455D63097;
+        Fri, 16 Apr 2021 16:47:59 +0200 (CEST)
+Received: from mbox.abcom.al ([127.0.0.1])
+        by localhost (mbox.abcom.al [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id HSt049NcHpO3; Fri, 16 Apr 2021 16:47:57 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by mbox.abcom.al (Postfix) with ESMTP id A3BCA5D63094;
+        Fri, 16 Apr 2021 16:47:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mbox.abcom.al A3BCA5D63094
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=abcom.al;
+        s=0F3BA0EE-D5D4-11E8-9596-F9115129F2F4; t=1618584477;
+        bh=VCOKpjxaLoatOvx+LSaT3i7u3saMYZrSANTtqEwi9j4=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=mA1eUJgfTQswffimGihf+56J/eRtaAWRGZ0bL3JhWHhIk8BTSrNdnasywpHT9lGvp
+         +xu6ysIRpc8T3/u+y4FlQJyA8qJV2MSTD1l/0UkSMaBmZm1Mh4WN1lpCn1vKwarxy8
+         pgRxpYCWwQlJ0Y+I8AStVeHKwyM+hkLLjT04C88JR+AFpB78bUebn32+EK/nbqur5i
+         /Hiat7wjQLMdwPWY1s4ex6c9rD7OtHogQMZRY4YAn4ZXHqxClGFLFksP0A/9Els7Mf
+         62ht7PyaxYGj4XoUvxRDDKmbiE/HK20oPM07fwc4OJIhiu9TmZlIz5prRq8IFpStqV
+         QafzGLpl9PAgA==
+X-Virus-Scanned: amavisd-new at mbox.abcom.al
+Received: from mbox.abcom.al ([127.0.0.1])
+        by localhost (mbox.abcom.al [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id mq3anoDmc1-f; Fri, 16 Apr 2021 16:47:57 +0200 (CEST)
+Received: from [10.41.190.186] (unknown [105.4.1.205])
+        by mbox.abcom.al (Postfix) with ESMTPSA id 6B35A5ABBD93;
+        Fri, 16 Apr 2021 16:47:49 +0200 (CEST)
 Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.202]
-X-CFilter-Loop: Reflected
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Spende
+To:     Recipients <mtodo@abcom.al>
+From:   "William Kruger" <mtodo@abcom.al>
+Date:   Fri, 16 Apr 2021 07:47:36 -0700
+Reply-To: robadamengineeringltd@gmail.com
+Message-Id: <20210416144749.6B35A5ABBD93@mbox.abcom.al>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi, Christoph
-
-On 2021/4/15 22:52, Christoph Hellwig wrote:
-> On Wed, Apr 14, 2021 at 09:47:37PM +0800, Zhang Yi wrote:
->> There still exist a use after free issue when accessing the journal
->> structure and ext4_sb_info structure on freeing bdev buffers in
->> bdev_try_to_free_page(). The problem is bdev_try_to_free_page() could be
->> raced by ext4_put_super(), it dose freeing sb->s_fs_info and
->> sbi->s_journal while release page progress are still accessing them.
->> So it could end up trigger use-after-free or NULL pointer dereference.
-> 
-> I think the right fix is to not even call into ->bdev_try_to_free_page
-> unless the superblock is active.
-> .
-> 
-Thanks for your suggestions.
-
-Now, we use already use "if (bdev->bd_super)" to prevent call into
-->bdev_try_to_free_page unless the super is alive, and the problem is
-bd_super becomes NULL concurrently after this check. So, IIUC, I think it's
-the same to switch to check the superblock is active or not. The acvive
-flag also could becomes inactive (raced by umount) after we call into
-bdev_try_to_free_page().
-
-In order to close this race, One solution is introduce a lock to synchronize
-the active state between kill_block_super() and blkdev_releasepage(), but
-the releasing page process have to try to acquire this lock in
-blkdev_releasepage() for each page, and the umount process still need to wait
-until the page release if some one invoke into ->bdev_try_to_free_page().
-I think this solution may affect performace and is not a good way.
-Think about it in depth, use percpu refcount seems have the smallest
-performance effect on blkdev_releasepage().
-
-If you don't like the refcount, maybe we could add synchronize_rcu_expedited()
-in ext4_put_super(), it also could prevent this race. Any suggestions?
-
-Thanks,
-Yi.
+Hallo Liebes, ich bin William Kruger aus Lantana im Palm Beach County, USA.=
+ Ich habe einen $ 168 Millionen Jackpot gewonnen, der einer der gr=C3=B6=C3=
+=9Ften Lotterie-Jackpots ist. Im Namen meiner Familie und aus gutem Willen =
+spenden wir Ihnen und Ihrer Familie einen Betrag von (=E2=82=AC 850,000.00 =
+EUR). Ich versuche, die gemeinn=C3=BCtzigen Waisenh=C3=A4user zu erreichen =
+und zur Armutsbek=C3=A4mpfung beizutragen und eine angemessene Gesundheitsv=
+ersorgung f=C3=BCr Einzelpersonen zu gew=C3=A4hrleisten, insbesondere w=C3=
+=A4hrend dieser Welt Pandemic Covid 19. Ich m=C3=B6chte auch, dass Sie eine=
+n Teil dieser Spende in die =C3=B6ffentliche Infrastruktur investieren, um =
+Arbeitslosen in Ihrem Land Arbeitspl=C3=A4tze zu bieten . Ich habe dich gew=
+=C3=A4hlt, weil ich an dich glaube. Ich brauche Ihre uneingeschr=C3=A4nkte =
+Mitarbeit in Bezug auf diese Spende. Hier ist Ihr ausgew=C3=A4hlter Geheimc=
+ode: [W5900Q2172021] und bitte teilen Sie den Code niemandem mit, wenn Sie =
+interessiert und bereit sind, mit mir zu arbeiten. Bitte kontaktieren Sie m=
+ich mit Ihrem Spenden- / Geheimcode [W5900Q2172021] und Ihren vollst=C3=A4n=
+digen Namen hier bei meiner privaten E-Mail: krugerwilliamhome@gmail.com
