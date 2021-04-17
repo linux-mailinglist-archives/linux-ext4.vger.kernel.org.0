@@ -2,69 +2,88 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E1F9362368
-	for <lists+linux-ext4@lfdr.de>; Fri, 16 Apr 2021 17:04:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 076A6362DAC
+	for <lists+linux-ext4@lfdr.de>; Sat, 17 Apr 2021 06:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245624AbhDPPCx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 16 Apr 2021 11:02:53 -0400
-Received: from mbox.abcom.al ([217.73.143.249]:47162 "EHLO mbox.abcom.al"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245561AbhDPPCn (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 16 Apr 2021 11:02:43 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mbox.abcom.al (Postfix) with ESMTP id 742455D63097;
-        Fri, 16 Apr 2021 16:47:59 +0200 (CEST)
-Received: from mbox.abcom.al ([127.0.0.1])
-        by localhost (mbox.abcom.al [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id HSt049NcHpO3; Fri, 16 Apr 2021 16:47:57 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by mbox.abcom.al (Postfix) with ESMTP id A3BCA5D63094;
-        Fri, 16 Apr 2021 16:47:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mbox.abcom.al A3BCA5D63094
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=abcom.al;
-        s=0F3BA0EE-D5D4-11E8-9596-F9115129F2F4; t=1618584477;
-        bh=VCOKpjxaLoatOvx+LSaT3i7u3saMYZrSANTtqEwi9j4=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=mA1eUJgfTQswffimGihf+56J/eRtaAWRGZ0bL3JhWHhIk8BTSrNdnasywpHT9lGvp
-         +xu6ysIRpc8T3/u+y4FlQJyA8qJV2MSTD1l/0UkSMaBmZm1Mh4WN1lpCn1vKwarxy8
-         pgRxpYCWwQlJ0Y+I8AStVeHKwyM+hkLLjT04C88JR+AFpB78bUebn32+EK/nbqur5i
-         /Hiat7wjQLMdwPWY1s4ex6c9rD7OtHogQMZRY4YAn4ZXHqxClGFLFksP0A/9Els7Mf
-         62ht7PyaxYGj4XoUvxRDDKmbiE/HK20oPM07fwc4OJIhiu9TmZlIz5prRq8IFpStqV
-         QafzGLpl9PAgA==
-X-Virus-Scanned: amavisd-new at mbox.abcom.al
-Received: from mbox.abcom.al ([127.0.0.1])
-        by localhost (mbox.abcom.al [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id mq3anoDmc1-f; Fri, 16 Apr 2021 16:47:57 +0200 (CEST)
-Received: from [10.41.190.186] (unknown [105.4.1.205])
-        by mbox.abcom.al (Postfix) with ESMTPSA id 6B35A5ABBD93;
-        Fri, 16 Apr 2021 16:47:49 +0200 (CEST)
-Content-Type: text/plain; charset="utf-8"
+        id S229716AbhDQEYn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 17 Apr 2021 00:24:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229465AbhDQEYm (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 17 Apr 2021 00:24:42 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8193C061756
+        for <linux-ext4@vger.kernel.org>; Fri, 16 Apr 2021 21:24:16 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id i10so11990560lfe.11
+        for <linux-ext4@vger.kernel.org>; Fri, 16 Apr 2021 21:24:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dC0Ua26Rxhnd0n6CHTRnAJbktP1VUUbdUEYM+ldETTs=;
+        b=oLz758tToKci7zsi0yL0Scc7eybfO9b01MpTabJVy82AvrHxAm2Q8Bl580gyU51ORl
+         5O+hqfRQo/6iYzb6O/esTi7MhnB6inJ0UZ/cuMm5NCWSGF2LNtJrP8UzjS/jpcV3dYad
+         niAlpUWRvdSPNLTDAVSOb0zS9baNZ+yioNktaRnNcad2e6nypv+8Y4eSUqBy996u3E+p
+         dzuLhBxP2Nin+DHWvtnMYL4gfn2ujPEJkjlcfStQ5exWrdbLtmwnLwNSGW87LDnt9nVW
+         0diE7nHwTIYX3X25SJy70YHdEdFqr+IDG6Fbh5R/Y3Fd7APM7uiRGoj+GA3ywBCA3jQF
+         xLQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dC0Ua26Rxhnd0n6CHTRnAJbktP1VUUbdUEYM+ldETTs=;
+        b=j6vXQIqKaUAofQl0L+IttvIZvZj+MxtYzchF+ssjEzRdgxpt/soqhJU70FEPPdKclm
+         UJWglMg8zWODAvccPj79u43pmjhrMbT+xQvNIpS2UlSLqL0Cat7ztK3hXvu6hWqR5Htg
+         AKr6bsFO9RZ7CI6umSUxCHTs/Kc8FS3D77WYGS0lZ5eZ+uQvJqevYfribhCPG2pZOpxt
+         Ky5GG19katrtNSU06KtQVIuIvZ+/6uN9yvz0x6m3DLIyjK8KJb0Y28qMWwgRKY3Pl3wt
+         mDVsKgSx5MAxEwM/jjg7LnbEAEmBk/EhX+8H5G2Ky8jhepwWycI/JkdQrS0y9CJrQQzo
+         IwOg==
+X-Gm-Message-State: AOAM5329DmG4FzwkEN53Ef2JwDHxD5DqfvC+nJi7+WIqwJfFmBReJIwT
+        YtzAzji4cax92g/udTeFf8a9acfMD6NQCfcU3lPFgA==
+X-Google-Smtp-Source: ABdhPJzmV9SsVkwYJidvbnM4iWS8L0mm8LtiTIuV/aB/PYpvnOKcYLGWvpGibFQPijvf3rE6GcpLQP9erwMtTMvFSCo=
+X-Received: by 2002:a05:6512:138e:: with SMTP id p14mr3589595lfa.47.1618633455136;
+ Fri, 16 Apr 2021 21:24:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Spende
-To:     Recipients <mtodo@abcom.al>
-From:   "William Kruger" <mtodo@abcom.al>
-Date:   Fri, 16 Apr 2021 07:47:36 -0700
-Reply-To: robadamengineeringltd@gmail.com
-Message-Id: <20210416144749.6B35A5ABBD93@mbox.abcom.al>
+References: <cover.1618388989.git.npache@redhat.com> <0fa191715b236766ad13c5f786d8daf92a9a0cf2.1618388989.git.npache@redhat.com>
+ <e26fbcc8-ba3e-573a-523d-9c5d5f84bc46@tessares.net> <CABVgOSm9Lfcu--iiFo=PNLCWCj4vkxqAqO0aZT9B2r3Kw5Fhaw@mail.gmail.com>
+ <b57a1cc8-4921-6ed5-adb8-0510d1918d28@tessares.net>
+In-Reply-To: <b57a1cc8-4921-6ed5-adb8-0510d1918d28@tessares.net>
+From:   David Gow <davidgow@google.com>
+Date:   Sat, 17 Apr 2021 12:24:03 +0800
+Message-ID: <CABVgOS=QDATYk3nn1jLHhVRh7rXoTp1+jQhUE5pZq8P9M0VpUA@mail.gmail.com>
+Subject: Re: [PATCH v2 5/6] kunit: mptcp: adhear to KUNIT formatting standard
+To:     Matthieu Baerts <matthieu.baerts@tessares.net>
+Cc:     Nico Pache <npache@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-ext4@vger.kernel.org, Networking <netdev@vger.kernel.org>,
+        rafael@kernel.org, linux-m68k@lists.linux-m68k.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        mathew.j.martineau@linux.intel.com, davem@davemloft.net,
+        Mark Brown <broonie@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>, mptcp@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hallo Liebes, ich bin William Kruger aus Lantana im Palm Beach County, USA.=
- Ich habe einen $ 168 Millionen Jackpot gewonnen, der einer der gr=C3=B6=C3=
-=9Ften Lotterie-Jackpots ist. Im Namen meiner Familie und aus gutem Willen =
-spenden wir Ihnen und Ihrer Familie einen Betrag von (=E2=82=AC 850,000.00 =
-EUR). Ich versuche, die gemeinn=C3=BCtzigen Waisenh=C3=A4user zu erreichen =
-und zur Armutsbek=C3=A4mpfung beizutragen und eine angemessene Gesundheitsv=
-ersorgung f=C3=BCr Einzelpersonen zu gew=C3=A4hrleisten, insbesondere w=C3=
-=A4hrend dieser Welt Pandemic Covid 19. Ich m=C3=B6chte auch, dass Sie eine=
-n Teil dieser Spende in die =C3=B6ffentliche Infrastruktur investieren, um =
-Arbeitslosen in Ihrem Land Arbeitspl=C3=A4tze zu bieten . Ich habe dich gew=
-=C3=A4hlt, weil ich an dich glaube. Ich brauche Ihre uneingeschr=C3=A4nkte =
-Mitarbeit in Bezug auf diese Spende. Hier ist Ihr ausgew=C3=A4hlter Geheimc=
-ode: [W5900Q2172021] und bitte teilen Sie den Code niemandem mit, wenn Sie =
-interessiert und bereit sind, mit mir zu arbeiten. Bitte kontaktieren Sie m=
-ich mit Ihrem Spenden- / Geheimcode [W5900Q2172021] und Ihren vollst=C3=A4n=
-digen Namen hier bei meiner privaten E-Mail: krugerwilliamhome@gmail.com
+Hi Matt,
+
+> Like patch 1/6, I can apply it in MPTCP tree and send it later to
+> net-next with other patches.
+> Except if you guys prefer to apply it in KUnit tree and send it to
+> linux-next?
+
+Given 1/6 is going to net-next, it makes sense to send this out that
+way too, then, IMHO.
+The only slight concern I have is that the m68k test config patch in
+the series will get split from the others, but that should resolve
+itself when they pick up the last patch.
+
+At the very least, this shouldn't cause any conflicts with anything
+we're doing in the KUnit tree.
+
+Cheers,
+-- David
