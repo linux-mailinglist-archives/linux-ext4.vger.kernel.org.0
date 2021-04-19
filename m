@@ -2,90 +2,89 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F94336482A
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 Apr 2021 18:25:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 721DB364DDE
+	for <lists+linux-ext4@lfdr.de>; Tue, 20 Apr 2021 00:53:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238511AbhDSQZf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 19 Apr 2021 12:25:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42890 "EHLO mx2.suse.de"
+        id S229723AbhDSWyY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 19 Apr 2021 18:54:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233989AbhDSQZf (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 19 Apr 2021 12:25:35 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 61751AFF8;
-        Mon, 19 Apr 2021 16:25:04 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 274FB1F2B68; Mon, 19 Apr 2021 18:25:04 +0200 (CEST)
-Date:   Mon, 19 Apr 2021 18:25:04 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        Ted Tso <tytso@mit.edu>, Christoph Hellwig <hch@infradead.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Dave Chinner <david@fromorbit.com>
-Subject: Re: [PATCH 0/7 RFC v3] fs: Hole punch vs page cache filling races
-Message-ID: <20210419162504.GI8706@quack2.suse.cz>
-References: <20210413105205.3093-1-jack@suse.cz>
- <20210419152008.GD2531743@casper.infradead.org>
+        id S229681AbhDSWyY (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 19 Apr 2021 18:54:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D58B60FF1;
+        Mon, 19 Apr 2021 22:53:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618872834;
+        bh=vmca3TN6y61NV3O1qxeh+me1eGIPDrZgpmPtfmFcpjI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DhQY2ji42qmejsWXGF3GxQEZqDO3iTOZwUkWOHtDtjGa7tGac6UG/J+MUj4zlTexM
+         ixwDjqJ7sT3bdG8BKRQzKM4OqzuolLEWelwGwwpX5xOHqK5J/dF/xQZsJgCzxlLiNQ
+         QdgRoSsMq4lAcL82NJ5G/exCFrS7T/JlGZre8jMAXKtRf/6/3AYZuBsDbNkAkCRBVP
+         nxmLouZak7WLe/4gq4oOfM1FXn5SFUGd6+LXAamRNO5Xu882lw0/9KS34xiC7hrU1h
+         xojQtuHMgDZxqyn2bcYPOXWmLAbcTrS1efgWR9kevdXFuq2UCokf9Fmv+JkRSstxHx
+         0XA2bZjT2W3wg==
+Date:   Mon, 19 Apr 2021 15:53:52 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Leah Rumancik <leah.rumancik@gmail.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu
+Subject: Re: [PATCH v3] ext4: wipe filename upon file deletion
+Message-ID: <YH4KAHWphO+0xubA@gmail.com>
+References: <20210419162100.1284475-1-leah.rumancik@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210419152008.GD2531743@casper.infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210419162100.1284475-1-leah.rumancik@gmail.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 19-04-21 16:20:08, Matthew Wilcox wrote:
-> On Tue, Apr 13, 2021 at 01:28:44PM +0200, Jan Kara wrote:
-> > Also when writing the documentation I came across one question: Do we mandate
-> > i_mapping_sem for truncate + hole punch for all filesystems or just for
-> > filesystems that support hole punching (or other complex fallocate operations)?
-> > I wrote the documentation so that we require every filesystem to use
-> > i_mapping_sem. This makes locking rules simpler, we can also add asserts when
-> > all filesystems are converted. The downside is that simple filesystems now pay
-> > the overhead of the locking unnecessary for them. The overhead is small
-> > (uncontended rwsem acquisition for truncate) so I don't think we care and the
-> > simplicity is worth it but I wanted to spell this out.
-> 
-> What do we actually get in return for supporting these complex fallocate
-> operations?  Someone added them for a reason, but does that reason
-> actually benefit me?  Other than running xfstests, how many times has
-> holepunch been called on your laptop in the last week?  I don't want to
-> incur even one extra instruction per I/O operation to support something
-> that happens twice a week; that's a bad tradeoff.
+On Mon, Apr 19, 2021 at 04:21:00PM +0000, Leah Rumancik wrote:
+> Upon file deletion, zero out all fields in ext4_dir_entry2 besides inode
+> and rec_len. In case sensitive data is stored in filenames, this ensures
+> no potentially sensitive data is left in the directory entry upon deletion.
+> Also, wipe these fields upon moving a directory entry during the conversion
+> to an htree and when splitting htree nodes.
 
-I agree hole punch is relatively rare compared to normal operations but
-when it is used, it is used rather frequently - e.g. by VMs to manage their
-filesystem images. So if we regress holepunch either by not freeing blocks
-or by slowing it down significantly, I'm pretty sure some people will
-complain. That being said I fully understand your reluctance to add lock to
-the read path but note that it is taken only when we need to fill data from
-the storage and it should be taken once per readahead request so I actually
-doubt the extra acquisition will be visible in the profiles. But I can
-profile it to be sure.
+This should include more explanation about why this is useful, and what its
+limitations are (e.g. how do the properties of the storage device affect whether
+the filename is *really* deleted)...
 
-> Can we implement holepunch as a NOP?  Or return -ENOTTY?  Those both
-> seem like better solutions than adding an extra rwsem to every inode.
+> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+> index 883e2a7cd4ab..df7809a4821f 100644
+> --- a/fs/ext4/namei.c
+> +++ b/fs/ext4/namei.c
+> @@ -1778,6 +1778,11 @@ dx_move_dirents(char *from, char *to, struct dx_map_entry *map, int count,
+>  		((struct ext4_dir_entry_2 *) to)->rec_len =
+>  				ext4_rec_len_to_disk(rec_len, blocksize);
+>  		de->inode = 0;
+> +
+> +		/* wipe name_len through and name field */
+> +		memset(&de->name_len, 0, ext4_rec_len_from_disk(de->rec_len,
+> +						blocksize) - 6);
+> +
 
-We already have that rwsem there today for most major filesystems. This
-work just lifts it from fs-private inode area into the VFS inode. So in
-terms of memory usage we are not loosing that much.
+The comment is confusing.  IMO it would make more sense to mention what is *not*
+being zeroed:
 
-> Failing that, is there a bigger hammer we can use on the holepunch side
-> (eg preventing all concurrent accesses while the holepunch is happening)
-> to reduce the overhead on the read side?
+	/* wipe the dir_entry excluding the rec_len field */
+	de->inode = 0;
+	memset(&de->name_len, 0, ext4_rec_len_from_disk(de->rec_len,
+						blocksize) - 6);
 
-I'm open to other solutions but frankly this was the best I could come up
-with. Holepunch already uses a pretty much big hammer approach - take all
-the locks there are on the inode in exclusive mode, block DIO, unmap
-everything and then do its dirty deeds... I don't think we want hole punch
-to block anything on fs-wide basis (that's a DoS recipe) and besides that
-I don't see how the hammer could be bigger ;).
+> @@ -2492,6 +2498,11 @@ int ext4_generic_delete_entry(struct inode *dir,
+>  			else
+>  				de->inode = 0;
+>  			inode_inc_iversion(dir);
+> +
+> +			/* wipe name_len through name field */
+> +			memset(&de->name_len, 0,
+> +				ext4_rec_len_from_disk(de->rec_len, blocksize) - 6);
+> +
+>  			return 0;
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+And maybe here too, although here why is the condition for setting the inode to
+0 not the same as the condition for zeroing the other fields?
+
+Also, maybe use offsetof(struct ext4_dir_entry_2, name_len) instead of '6'...
+
+- Eric
