@@ -2,87 +2,69 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E855363CD9
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 Apr 2021 09:40:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFEC43646FB
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 Apr 2021 17:21:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237993AbhDSHk6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 19 Apr 2021 03:40:58 -0400
-Received: from mail-ua1-f46.google.com ([209.85.222.46]:40623 "EHLO
-        mail-ua1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231663AbhDSHk6 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 19 Apr 2021 03:40:58 -0400
-Received: by mail-ua1-f46.google.com with SMTP id 33so10637237uaa.7;
-        Mon, 19 Apr 2021 00:40:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2VIr1L+x0KMjslWLfGf5hIF0vYoVyKryX0VbeLPhjXY=;
-        b=LKALPdAQ9SPBJ025H5EYgB2JJmsvxOTF+kHXsHTU34o7eF0cbupVAKx0Pl2Y4ZGxNL
-         DbXozQWlITmwPtqxhmbLU/JdK0k30IPYkrvHx9VLvdHT2h1RspTycjEkBxxGbOsqZuaU
-         NShSEMFidZtLsAHt+55Cn8TGumibx/o2plGAGEMLA0TOouBH20rxKo2WNbNPrk1pDnWU
-         SyecHBqysIu4a9BgeBRxyz1+Wig0maX/QGZoaCPR+nLQPzE2FT2+cJ9FNZ3wVcTvmClM
-         5iXX/Nomp9F0c4ubk10keKK1t5EOah9l69616iJC0/CM8gvpHruTSq8I6ZKwtfjbsgj3
-         3v3A==
-X-Gm-Message-State: AOAM532V+YX/XKccR5yt9//t1CXUJJftMpEgv8PjmxwtAkLiUpglVBE+
-        WMbA3haOmQpPm2XNW1J/ZcMHcd4ccJ4fvGw9+sQ=
-X-Google-Smtp-Source: ABdhPJwwXmXRA54KsUIVTR+3h20psdWGNGLb0sv7M0Wa6xBFjtt5vw5IgsA9I8yZw3/8pDlvTRTO5cNvRqQf/YEF4l8=
-X-Received: by 2002:a9f:3852:: with SMTP id q18mr5818471uad.58.1618818028444;
- Mon, 19 Apr 2021 00:40:28 -0700 (PDT)
+        id S240190AbhDSPVr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 19 Apr 2021 11:21:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238029AbhDSPVr (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 19 Apr 2021 11:21:47 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5267DC06174A;
+        Mon, 19 Apr 2021 08:21:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=X/GRhw4CJTboxdqe5axLP+hiUSjTXSY9XFf13RBgI1c=; b=jTiqjKQvURfm4KhuPQGjL69O4F
+        NJwPCf/+LB2cjDZinfwnIlZ8an9knhV43FzvAEadv1+Bq686DmWWqmZWZGg96OAxi4vzAtP99WUxw
+        pOnaxzU2SKXwy9Fz8sctkp0Nxjp/wv/jIi+YS8JKD9RQwVXQ1HgMGU47D6AhRBCbf+4yeTzLUnzDE
+        aZ2bfXYJBgVD++8tbgtDMVZWOOXN7rbzMJItFWJpysDqPbUCzWQhv5Z2w17xvhmnQ7mUMynILGUEj
+        nbcADoYrSRlq9O2qk6htPZRWodpvEUbXh2uKxhGrh2uduG0HWPjAAdycNHFWCzpk2HtqNqM8imyT3
+        DsuosKJw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lYVh2-00Dvcw-In; Mon, 19 Apr 2021 15:20:16 +0000
+Date:   Mon, 19 Apr 2021 16:20:08 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, Ted Tso <tytso@mit.edu>,
+        Christoph Hellwig <hch@infradead.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Dave Chinner <david@fromorbit.com>
+Subject: Re: [PATCH 0/7 RFC v3] fs: Hole punch vs page cache filling races
+Message-ID: <20210419152008.GD2531743@casper.infradead.org>
+References: <20210413105205.3093-1-jack@suse.cz>
 MIME-Version: 1.0
-References: <cover.1618388989.git.npache@redhat.com> <0fa191715b236766ad13c5f786d8daf92a9a0cf2.1618388989.git.npache@redhat.com>
- <e26fbcc8-ba3e-573a-523d-9c5d5f84bc46@tessares.net> <CABVgOSm9Lfcu--iiFo=PNLCWCj4vkxqAqO0aZT9B2r3Kw5Fhaw@mail.gmail.com>
- <b57a1cc8-4921-6ed5-adb8-0510d1918d28@tessares.net> <CABVgOS=QDATYk3nn1jLHhVRh7rXoTp1+jQhUE5pZq8P9M0VpUA@mail.gmail.com>
-In-Reply-To: <CABVgOS=QDATYk3nn1jLHhVRh7rXoTp1+jQhUE5pZq8P9M0VpUA@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 19 Apr 2021 09:40:17 +0200
-Message-ID: <CAMuHMdWfYHjNOmPSEbPOJeqniQoCG=8PD8KA8xDWXo3WggdQ_w@mail.gmail.com>
-Subject: Re: [PATCH v2 5/6] kunit: mptcp: adhear to KUNIT formatting standard
-To:     David Gow <davidgow@google.com>
-Cc:     Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Nico Pache <npache@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Mark Brown <broonie@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>, mptcp@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210413105205.3093-1-jack@suse.cz>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi David,
+On Tue, Apr 13, 2021 at 01:28:44PM +0200, Jan Kara wrote:
+> Also when writing the documentation I came across one question: Do we mandate
+> i_mapping_sem for truncate + hole punch for all filesystems or just for
+> filesystems that support hole punching (or other complex fallocate operations)?
+> I wrote the documentation so that we require every filesystem to use
+> i_mapping_sem. This makes locking rules simpler, we can also add asserts when
+> all filesystems are converted. The downside is that simple filesystems now pay
+> the overhead of the locking unnecessary for them. The overhead is small
+> (uncontended rwsem acquisition for truncate) so I don't think we care and the
+> simplicity is worth it but I wanted to spell this out.
 
-On Sat, Apr 17, 2021 at 6:24 AM David Gow <davidgow@google.com> wrote:
-> > Like patch 1/6, I can apply it in MPTCP tree and send it later to
-> > net-next with other patches.
-> > Except if you guys prefer to apply it in KUnit tree and send it to
-> > linux-next?
->
-> Given 1/6 is going to net-next, it makes sense to send this out that
-> way too, then, IMHO.
-> The only slight concern I have is that the m68k test config patch in
-> the series will get split from the others, but that should resolve
-> itself when they pick up the last patch.
+What do we actually get in return for supporting these complex fallocate
+operations?  Someone added them for a reason, but does that reason
+actually benefit me?  Other than running xfstests, how many times has
+holepunch been called on your laptop in the last week?  I don't want to
+incur even one extra instruction per I/O operation to support something
+that happens twice a week; that's a bad tradeoff.
 
-I can apply the m68k test config patch when all other parts have
-entered mainline.  Note that I would have made the same changes
-myself anyway, on -rc1 defconfig refresh.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Can we implement holepunch as a NOP?  Or return -ENOTTY?  Those both
+seem like better solutions than adding an extra rwsem to every inode.
+Failing that, is there a bigger hammer we can use on the holepunch side
+(eg preventing all concurrent accesses while the holepunch is happening)
+to reduce the overhead on the read side?
