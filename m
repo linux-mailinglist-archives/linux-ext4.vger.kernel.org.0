@@ -2,201 +2,180 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96AB5366E2C
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 Apr 2021 16:26:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BDF9366E8C
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 Apr 2021 16:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243434AbhDUO1a (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 21 Apr 2021 10:27:30 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37616 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235374AbhDUO13 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 21 Apr 2021 10:27:29 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BCFC1B4D5;
-        Wed, 21 Apr 2021 14:26:55 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 63CBA1F2B69; Wed, 21 Apr 2021 16:26:55 +0200 (CEST)
-Date:   Wed, 21 Apr 2021 16:26:55 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     yebin <yebin10@huawei.com>
-Cc:     Jan Kara <jack@suse.cz>, tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v2] ext4: Fix bug on in ext4_es_cache_extent as
- ext4_split_extent_at failed
-Message-ID: <20210421142655.GW8706@quack2.suse.cz>
-References: <20210420142518.1573012-1-yebin10@huawei.com>
- <20210421092156.GL8706@quack2.suse.cz>
- <60801CD3.60000@huawei.com>
+        id S243714AbhDUOzj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 21 Apr 2021 10:55:39 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:55989 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236708AbhDUOzi (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 21 Apr 2021 10:55:38 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=wenyang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UWJtKHM_1619016901;
+Received: from IT-C02W23QPG8WN.local(mailfrom:wenyang@linux.alibaba.com fp:SMTPD_---0UWJtKHM_1619016901)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 21 Apr 2021 22:55:02 +0800
+Subject: Re: [PATCH] fs/ext4: prevent the CPU from being 100% occupied in
+ ext4_mb_discard_group_preallocations
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        Baoyou Xie <baoyou.xie@alibaba-inc.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210418102834.29589-1-wenyang@linux.alibaba.com>
+ <YHxY6e9l3T4rsCos@mit.edu>
+From:   Wen Yang <wenyang@linux.alibaba.com>
+Message-ID: <296029e3-79c3-f603-7c3b-3429aac0e0c3@linux.alibaba.com>
+Date:   Wed, 21 Apr 2021 22:55:00 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.1.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <60801CD3.60000@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YHxY6e9l3T4rsCos@mit.edu>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 21-04-21 20:38:43, yebin wrote:
-> On 2021/4/21 17:21, Jan Kara wrote:
-> > On Tue 20-04-21 22:25:18, Ye Bin wrote:
-> > > We got follow bug_on when run fsstress with injecting IO fault:
-> > > [130747.323114] kernel BUG at fs/ext4/extents_status.c:762!
-> > > [130747.323117] Internal error: Oops - BUG: 0 [#1] SMP
-> > Which BUG_ON is that please? I don't see any relevant one near that line in
-> > current upstream kernel...
-> ext4_es_cache_extent:
-> ......
->           if (!len)
->                   return;
+
+
+ÔÚ 2021/4/19 ÉÏÎç12:06, Theodore Ts'o Ð´µÀ:
+> On Sun, Apr 18, 2021 at 06:28:34PM +0800, Wen Yang wrote:
+>> The kworker has occupied 100% of the CPU for several days:
+>> PID USER  PR  NI VIRT RES SHR S  %CPU  %MEM TIME+  COMMAND
+>> 68086 root 20 0  0    0   0   R  100.0 0.0  9718:18 kworker/u64:11
+>>
+>> ....
+>>
+>> The thread that references this pa has been waiting for IO to return:
+>> PID: 15140  TASK: ffff88004d6dc300  CPU: 16  COMMAND: "kworker/u64:1"
+>> [ffffc900273e7518] __schedule at ffffffff8173ca3b
+>> [ffffc900273e75a0] schedule at ffffffff8173cfb6
+>> [ffffc900273e75b8] io_schedule at ffffffff810bb75a
+>> [ffffc900273e75e0] bit_wait_io at ffffffff8173d8d1
+>> [ffffc900273e75f8] __wait_on_bit_lock at ffffffff8173d4e9
+>> [ffffc900273e7638] out_of_line_wait_on_bit_lock at ffffffff8173d742
+>> [ffffc900273e76b0] __lock_buffer at ffffffff81288c32
+>> [ffffc900273e76c8] do_get_write_access at ffffffffa00dd177 [jbd2]
+>> [ffffc900273e7728] jbd2_journal_get_write_access at ffffffffa00dd3a3 [jbd2]
+>> [ffffc900273e7750] __ext4_journal_get_write_access at ffffffffa023b37b [ext4]
+>> [ffffc900273e7788] ext4_mb_mark_diskspace_used at ffffffffa0242a0b [ext4]
+>> [ffffc900273e77f0] ext4_mb_new_blocks at ffffffffa0244100 [ext4]
+>> [ffffc900273e7860] ext4_ext_map_blocks at ffffffffa02389ae [ext4]
+>> [ffffc900273e7950] ext4_map_blocks at ffffffffa0204b52 [ext4]
+>> [ffffc900273e79d0] ext4_writepages at ffffffffa0208675 [ext4]
+>> [ffffc900273e7b30] do_writepages at ffffffff811c487e
+>> [ffffc900273e7b40] __writeback_single_inode at ffffffff81280265
+>> [ffffc900273e7b90] writeback_sb_inodes at ffffffff81280ab2
+>> [ffffc900273e7c90] __writeback_inodes_wb at ffffffff81280ed2
+>> [ffffc900273e7cd8] wb_writeback at ffffffff81281238
+>> [ffffc900273e7d80] wb_workfn at ffffffff812819f4
+>> [ffffc900273e7e18] process_one_work at ffffffff810a5dc9
+>> [ffffc900273e7e60] worker_thread at ffffffff810a60ae
+>> [ffffc900273e7ec0] kthread at ffffffff810ac696
+>> [ffffc900273e7f50] ret_from_fork at ffffffff81741dd9
+>>
+>> On the bare metal server, we will use multiple hard disks, the Linux
+>> kernel will run on the system disk, and business programs will run on
+>> several hard disks virtualized by the BM hypervisor. The reason why IO
+>> has not returned here is that the process handling IO in the BM hypervisor
+>> has failed.
 > 
->          BUG_ON(end < lblk);    --> BUG_ON at here.
-> ......
-
-OK, thanks. But this means 'end' has actually overflown... Not that two
-extents overlap.
-
-> > > ......
-> > > [130747.334329] Call trace:
-> > > [130747.334553]  ext4_es_cache_extent+0x150/0x168 [ext4]
-> > > [130747.334975]  ext4_cache_extents+0x64/0xe8 [ext4]
-> > > [130747.335368]  ext4_find_extent+0x300/0x330 [ext4]
-> > > [130747.335759]  ext4_ext_map_blocks+0x74/0x1178 [ext4]
-> > > [130747.336179]  ext4_map_blocks+0x2f4/0x5f0 [ext4]
-> > > [130747.336567]  ext4_mpage_readpages+0x4a8/0x7a8 [ext4]
-> > > [130747.336995]  ext4_readpage+0x54/0x100 [ext4]
-> > > [130747.337359]  generic_file_buffered_read+0x410/0xae8
-> > > [130747.337767]  generic_file_read_iter+0x114/0x190
-> > > [130747.338152]  ext4_file_read_iter+0x5c/0x140 [ext4]
-> > > [130747.338556]  __vfs_read+0x11c/0x188
-> > > [130747.338851]  vfs_read+0x94/0x150
-> > > [130747.339110]  ksys_read+0x74/0xf0
-> > > 
-> > > If call ext4_ext_insert_extent failed but new extent already inserted, we just
-> > > update "ex->ee_len = orig_ex.ee_len", this will lead to extent overlap, then
-> > > cause bug on when cache extent.
-> > > If call ext4_ext_insert_extent failed don't update ex->ee_len with old value.
-> > > Maybe there will lead to block leak, but it can be fixed by fsck later.
-> > Thanks for the analysis and the patch but the fact is that the extent tree
-> > is going to be corrupted one way or the other. And I think other disk
-> > corruptions can lead to similar problematic extent layout anyway. So I
-> > rather think we need to make the code more robust to not take the kernel
-> > down when seeing corrupted extent tree - and we've done work to make code
-> > more robust in this sence in the past. Can you reproduce the issue with the
-> > current upstream kernel? If yes, we are probably still missing extent tree
-> > consistency checks on some path and we need to add them...
-> > 
-> > 								Honza
-> I will try to reproduce this issue with the current upstream kernel.
-> Actually, the  reason of this
-> issue is obvious, as i reproduced this issue with kernel-4.19.95 and got
-> follow information:
-> We inject IO fault when runing  fsstress,  JBD detect IO error then trigger
-> JBD abort. At the same time,
-> if ext4_ext_insert_extent already insert new extent then call ext4_ext_dirty
-> to dirty metadata , but
-> JBD already aborted ,  ext4_ext_dirty will return error.
-
-OK, upto this point things are as I've expected.
-
-> In ext4_ext_dirty function call  ext4_ext_check_inode check extent if ok, if
-> not, trigger BUG_ON and
-> also print extent detail information. I caught follow call trace and extent
-> information:
-
-But where does ext4_ext_dirty() call ext4_ext_check_inode()? I don't see it
-neither in the current upstream nor in 4.19.y stable tree.
-
-								Honza
-
-> =================================================================================
+> So if the I/O not returning for every days, such that this thread had
+> been hanging for that long, it also follows that since it was calling
+> do_get_write_access(), that a handle was open.  And if a handle is
+> open, then the current jbd2 transaction would never close --- which
+> means none of the file system operations executed over the past few
+> days would never commit, and would be undone on the next reboot.
+> Furthermore, sooner or later the journal would run out of space, at
+> which point the *entire* system would be locked up waiting for the
+> transaction to close.
 > 
-> [ 7597.436071] inode 1808 ext4_ext_check_inode
-> [ 7597.436074] inode[1808]: [4] lblk=76 len=5 orig_len=32773 prev=0
-> [ 7597.436077] inode[1808]: [3] lblk=81 len=25 orig_len=25 prev=81
-> [ 7597.436080] inode[1808]: [2] lblk=106 len=130 orig_len=32898 prev=106
-> [ 7597.436084] inode[1808]: [1] lblk=228 len=8 orig_len=32776 prev=236
-> [ 7597.436181] ------------[ cut here ]------------
-> [ 7597.436183] kernel BUG at fs/ext4/extents.c:221!
-> [ 7597.436216] invalid opcode: 0000 [#1] SMP KASAN
-> [ 7597.436219] Buffer I/O error on dev sda, logical block 131072, lost sync
-> page write
-> [ 7597.436224] CPU: 7 PID: 5157 Comm: kworker/u16:1 Not tainted
-> 4.19.95-00020-gb095ded9163d-dirty #186
-> [ 7597.436230] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-> ?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 04/01/2014
-> [ 7597.436242] Workqueue: writeback wb_workfn (flush-8:16)
-> [ 7597.436248] RIP: 0010:__ext4_ext_dirty.cold+0x2ee/0x308
-> [ 7597.436251] Code: ff 48 89 df e8 c7 e1 d0 ff e9 48 ff ff ff 48 c7 c7 80
-> d1 f7 ae e8 87 45 84 ff 48 83 05 ee 3b ca 07 01 48 83 05 c6 3c ca 07 01 <0f>
-> 04
-> [ 7597.436253] RSP: 0018:ffff88838bcaf050 EFLAGS: 00010202
-> [ 7597.436256] RAX: 0000000000000000 RBX: ffff888364b67783 RCX:
-> 0000000000000000
-> [ 7597.436258] RDX: 0000000000000001 RSI: 0000000000000008 RDI:
-> ffffed1071795dfd
-> [ 7597.436259] RBP: 000000000000003b R08: 0000000000000000 R09:
-> 0000000000000001
-> [ 7597.436261] R10: ffffed10744fbd6e R11: ffff8883a27deb77 R12:
-> dffffc0000000000
-> [ 7597.436262] R13: dffffc0000000000 R14: ffff888364b673f0 R15:
-> ffff888364b6730c
-> [ 7597.436264] FS:  0000000000000000(0000) GS:ffff8883a27c0000(0000)
-> knlGS:0000000000000000
-> [ 7597.436266] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 7597.436267] CR2: 00007fca7a249000 CR3: 000000039ce75000 CR4:
-> 00000000000006e0
-> [ 7597.436270] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
-> 0000000000000000
-> [ 7597.436271] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
-> 0000000000000400
-> [ 7597.436275] JBD2: Error -5 detected when updating journal superblock for
-> sda-8.
-> [ 7597.436277] Call Trace:
-> [ 7597.436294]  ext4_split_extent_at+0x785/0xc80
-> [ 7597.466767]  ext4_split_extent.isra.0+0x2af/0x550
-> [ 7597.472503]  ext4_ext_convert_to_initialized+0x4b4/0x2510
-> [ 7597.536999]  ext4_ext_map_blocks+0x37ef/0x50c0
-> [ 7597.542467]  ext4_map_blocks+0x685/0x1910
-> [ 7597.544107]  ext4_writepages+0x1809/0x32f0
-> [ 7597.547546]  do_writepages+0x7f/0x1b0
-> [ 7597.548619]  __writeback_single_inode+0xc6/0xc40
-> [ 7597.549203]  writeback_sb_inodes+0x49f/0xd60
-> [ 7597.550748]  wb_writeback+0x252/0x9d0
-> [ 7597.552335]  wb_workfn+0x309/0xe60
-> [ 7597.557029]  process_one_work+0x70b/0x1610
-> [ 7597.557566]  worker_thread+0x5a9/0x1060
-> [ 7597.559091]  kthread+0x35e/0x430
-> [ 7597.560601]  ret_from_fork+0x1f/0x30
-> =================================================================================
+> I'm guessing that if the server hadn't come to a full livelock
+> earlier, it's because there aren't that many metadata operations that
+> are happening in the server's stable state operation.  But in any
+> case, this particular server was/is(?) doomed, and all of the patches
+> that you proposed are not going to help in the long run.  The correct
+> fix is to fix the hypervisor, which is the root cause of the problem.
 > 
-> Obviously, the follow extent is  overlap:
-> [ 7597.436080] inode[1808]: [2] lblk=106 len=130 orig_len=32898 prev=106
-> [ 7597.436084] inode[1808]: [1] lblk=228 len=8 orig_len=32776 prev=236
-> > > Signed-off-by: Ye Bin <yebin10@huawei.com>
-> > > ---
-> > >   fs/ext4/extents.c | 5 ++++-
-> > >   1 file changed, 4 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> > > index 77c84d6f1af6..6161db9c17c9 100644
-> > > --- a/fs/ext4/extents.c
-> > > +++ b/fs/ext4/extents.c
-> > > @@ -3245,8 +3245,11 @@ static int ext4_split_extent_at(handle_t *handle,
-> > >   		err = ext4_zeroout_es(inode, &zero_ex);
-> > >   		goto out;
-> > > -	} else if (err)
-> > > +	} else if (err == -EROFS) {
-> > > +		return err;
-> > > +	} else {
-> > >   		goto fix_extent_len;
-> > > +	}
-> > >   out:
-> > >   	ext4_ext_show_leaf(inode, path);
-> > > -- 
-> > > 2.25.4
-> > > 
+
+Yes, in the end, the whole system was affected, as follows
+
+crash> ps | grep UN
+     281      2  16  ffff881fb011c300  UN   0.0       0      0  [kswapd_0]
+     398    358   9  ffff880084094300  UN   0.0   30892   2592 
+systemd-journal
+     ......
+    2093    358  28  ffff880012d2c300  UN   0.0  241676  15108  syslog-ng
+    2119    358   0  ffff88005a252180  UN   0.0  124340   3148  crond
+......
+
+
+PID: 281    TASK: ffff881fb011c300  CPU: 16  COMMAND: "kswapd_0"
+  #0 [ffffc9000d7af7e0] __schedule at ffffffff8173ca3b
+  #1 [ffffc9000d7af868] schedule at ffffffff8173cfb6
+  #2 [ffffc9000d7af880] wait_transaction_locked at ffffffffa00db08a [jbd2]
+  #3 [ffffc9000d7af8d8] add_transaction_credits at ffffffffa00db2c0 [jbd2]
+  #4 [ffffc9000d7af938] start_this_handle at ffffffffa00db64f [jbd2]
+  #5 [ffffc9000d7af9c8] jbd2__journal_start at ffffffffa00dbe3e [jbd2]
+  #6 [ffffc9000d7afa18] __ext4_journal_start_sb at ffffffffa023b0dd [ext4]
+  #7 [ffffc9000d7afa58] ext4_release_dquot at ffffffffa02202f2 [ext4]
+  #8 [ffffc9000d7afa78] dqput at ffffffff812b9bef
+  #9 [ffffc9000d7afaa0] __dquot_drop at ffffffff812b9eaf
+#10 [ffffc9000d7afad8] dquot_drop at ffffffff812b9f22
+#11 [ffffc9000d7afaf0] ext4_clear_inode at ffffffffa02291f2 [ext4]
+#12 [ffffc9000d7afb08] ext4_evict_inode at ffffffffa020a939 [ext4]
+#13 [ffffc9000d7afb28] evict at ffffffff8126d05a
+#14 [ffffc9000d7afb50] dispose_list at ffffffff8126d16b
+#15 [ffffc9000d7afb78] prune_icache_sb at ffffffff8126e2ba
+#16 [ffffc9000d7afbb0] super_cache_scan at ffffffff8125320e
+#17 [ffffc9000d7afc08] shrink_slab at ffffffff811cab55
+#18 [ffffc9000d7afce8] shrink_node at ffffffff811d000e
+#19 [ffffc9000d7afd88] balance_pgdat at ffffffff811d0f42
+#20 [ffffc9000d7afe58] kswapd at ffffffff811d14f1
+#21 [ffffc9000d7afec0] kthread at ffffffff810ac696
+#22 [ffffc9000d7aff50] ret_from_fork at ffffffff81741dd9
+
+
+> I could imagine some kind of retry counter, where we start sleeping
+> after some number of retries, and give up after some larger number of
+> retries (at which point the allocation would fail with ENOSPC).  We'd
+> need to do some testing against our current tests which test how we
+> handle running close to ENOSPC, and I'm not at all convinced it's
+> worth the effort in the end.  We're trying to (slightly) improve the
+> case where (a) the file system is running close to full, (b) the
+> hypervisor is critically flawed and is the real problem, and (c) the
+> VM is eventually doomed to fail anyway due to a transaction never
+> closing due to an I/O never getting acknowledged for days(!).
 > 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+
+Great. If you have any progress, we'll be happy to test it in our 
+production environment. We are also looking forward to working together 
+to optimize it.
+
+> If you really want to fix things in the guest OS, I perhaps the
+> virtio_scsi driver (or whatever I/O driver you are using), should
+> notice when an I/O request hasn't gotten acknowledged after minutes or
+> hours, and do something such as force a SCSI reset (which will result
+> in the file system needing to be unmounted and recovered, but due to
+> the hypervisor bug, that was an inevitable end result anyway).
+> 
+
+Yes, but unfortunately, it may not be finished in a short time.
+
+We may refer to the documentation of the qemo community as follows:
+
+https://wiki.qemu.org/ToDo/Block
+
+Add a cancel command to the virtio-blk device so that running requests 
+can be aborted. This requires changing the VIRTIO spec, extending QEMU's 
+device emulation, and implementing blk_mq_ops->timeout() in Linux 
+virtio_blk.ko. This task depends on first implementing real request 
+cancellation in QEMU.
+
+
+--
+Best wishes,
+Wen
+
