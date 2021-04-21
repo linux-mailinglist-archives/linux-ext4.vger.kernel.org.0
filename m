@@ -2,102 +2,98 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EF07366F89
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 Apr 2021 17:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B66583670C1
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 Apr 2021 18:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235674AbhDUP4R (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 21 Apr 2021 11:56:17 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:10242 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235610AbhDUP4R (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 21 Apr 2021 11:56:17 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R581e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=wenyang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UWK2NsT_1619020519;
-Received: from localhost(mailfrom:wenyang@linux.alibaba.com fp:SMTPD_---0UWK2NsT_1619020519)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 21 Apr 2021 23:55:30 +0800
-From:   Wen Yang <wenyang@linux.alibaba.com>
-To:     tytso@mit.edu, Andreas Dilger <adilger.kernel@dilger.ca>
-Cc:     Wen Yang <wenyang@linux.alibaba.com>,
-        Baoyou Xie <baoyou.xie@alibaba-inc.com>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] fs/ext4: remove redundant initialization of variable busy
-Date:   Wed, 21 Apr 2021 23:54:55 +0800
-Message-Id: <20210421155455.51725-1-wenyang@linux.alibaba.com>
-X-Mailer: git-send-email 2.23.0
+        id S241139AbhDUQ6y (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 21 Apr 2021 12:58:54 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:36342 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S238561AbhDUQ6y (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 21 Apr 2021 12:58:54 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 13LGvd3R003456
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Apr 2021 12:57:40 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id CBF4815C3B0D; Wed, 21 Apr 2021 12:57:39 -0400 (EDT)
+Date:   Wed, 21 Apr 2021 12:57:39 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Zhang Yi <yi.zhang@huawei.com>, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, adilger.kernel@dilger.ca,
+        yukuai3@huawei.com
+Subject: Re: [RFC PATCH v2 7/7] ext4: fix race between blkdev_releasepage()
+ and ext4_put_super()
+Message-ID: <YIBZgx4cm0j7OObj@mit.edu>
+References: <20210414134737.2366971-1-yi.zhang@huawei.com>
+ <20210414134737.2366971-8-yi.zhang@huawei.com>
+ <20210415145235.GD2069063@infradead.org>
+ <ca810e21-5f92-ee6c-a046-255c70c6bf78@huawei.com>
+ <20210420130841.GA3618564@infradead.org>
+ <20210421134634.GT8706@quack2.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210421134634.GT8706@quack2.suse.cz>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The variable status is being initialized with a value that is never
-read and it is being updated later with a new value. The initialization
-is redundant and could be removed. Also put the variable declarations
-into reverse christmas tree order. Finally, we add the log printing and
-ext4_mb_show_pa() for troubleshooting, they are enabled only when
-CONFIG_EXT4_DEBUG is set.
+On Wed, Apr 21, 2021 at 03:46:34PM +0200, Jan Kara wrote:
+> 
+> Indeed, after 12 years in kernel .bdev_try_to_free_page is implemented only
+> by ext4. So maybe it is not that important? I agree with Zhang and
+> Christoph that getting the lifetime rules sorted out will be hairy and it
+> is questionable, whether it is worth the additional pages we can reclaim.
+> Ted, do you remember what was the original motivation for this?
 
-Signed-off-by: Wen Yang <wenyang@linux.alibaba.com>
-Cc: "Theodore Ts'o" <tytso@mit.edu>
-Cc: Andreas Dilger <adilger.kernel@dilger.ca>
-Cc: Baoyou Xie <baoyou.xie@alibaba-inc.com>
-Cc: linux-ext4@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
----
- fs/ext4/mballoc.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+The comment in fs/ext4/super.c is I thought a pretty good explanation:
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index a02fadf..1402b14 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -351,6 +351,8 @@ static void ext4_mb_generate_from_freelist(struct super_block *sb, void *bitmap,
- 						ext4_group_t group);
- static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac);
- 
-+static inline void ext4_mb_show_pa(struct super_block *sb);
-+
- /*
-  * The algorithm using this percpu seq counter goes below:
-  * 1. We sample the percpu discard_pa_seq counter before trying for block
-@@ -4217,9 +4219,9 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
- 	struct ext4_prealloc_space *pa, *tmp;
- 	struct list_head list;
- 	struct ext4_buddy e4b;
-+	int free_total = 0;
-+	int busy, free;
- 	int err;
--	int busy = 0;
--	int free, free_total = 0;
- 
- 	mb_debug(sb, "discard preallocation for group %u\n", group);
- 	if (list_empty(&grp->bb_prealloc_list))
-@@ -4247,6 +4249,7 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
- 
- 	INIT_LIST_HEAD(&list);
- repeat:
-+	busy = 0;
- 	free = 0;
- 	ext4_lock_group(sb, group);
- 	list_for_each_entry_safe(pa, tmp,
-@@ -4255,6 +4258,8 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
- 		if (atomic_read(&pa->pa_count)) {
- 			spin_unlock(&pa->pa_lock);
- 			busy = 1;
-+			mb_debug(sb, "used pa while discarding for group %u\n", group);
-+			ext4_mb_show_pa(sb);
- 			continue;
- 		}
- 		if (pa->pa_deleted) {
-@@ -4300,7 +4305,6 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
- 	if (free_total < needed && busy) {
- 		ext4_unlock_group(sb, group);
- 		cond_resched();
--		busy = 0;
- 		goto repeat;
- 	}
- 	ext4_unlock_group(sb, group);
--- 
-1.8.3.1
+/*
+ * Try to release metadata pages (indirect blocks, directories) which are
+ * mapped via the block device.  Since these pages could have journal heads
+ * which would prevent try_to_free_buffers() from freeing them, we must use
+ * jbd2 layer's try_to_free_buffers() function to release them.
+ */
 
+When we modify a metadata block, we attach a journal_head (jh)
+structure to the buffer_head, and bump the ref count to prevent the
+buffer from being freed.  Before the transaction is committed, the
+buffer is marked jbddirty, but the dirty bit is not set until the
+transaction commit.
+
+At that back, writeback happens entirely at the discretion of the
+buffer cache.  The jbd layer doesn't get notification when the I/O is
+completed, nor when there is an I/O error.  (There was an attempt to
+add a callback but that was NACK'ed because of a complaint that it was
+jbd specific.)
+
+So we don't actually know when it's safe to detach the jh from the
+buffer_head and can drop the refcount so that the buffer_head can be
+freed.  When the space in the journal starts getting low, we'll look
+at at the jh's attached to completed transactions, and see how many of
+them have clean bh's, and at that point, we can release the buffer
+heads.
+
+The other time when we'll attempt to detach jh's from clean buffers is
+via bdev_try_to_free_buffers().  So if we drop the
+bdev_try_to_free_page hook, then when we are under memory pressure,
+there could be potentially a large percentage of the buffer cache
+which can't be freed, and so the OOM-killer might trigger more often.
+
+Now, if we could get a callback on I/O completion on a per-bh basis,
+then we could detach the jh when the buffer is clean --- and as a
+bonus, we'd get a notification when there was an I/O error writing
+back a metadata block, which would be even better.
+
+So how about an even swap?  If we can get a buffer I/O completion
+callback, we can drop bdev_to_free_swap hook.....
+
+	     	      			- Ted
+
+	  
+						
