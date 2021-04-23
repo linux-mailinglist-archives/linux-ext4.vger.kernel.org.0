@@ -2,50 +2,68 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD35C368866
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 Apr 2021 23:03:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 476B5368AFC
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 Apr 2021 04:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239451AbhDVVEG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 22 Apr 2021 17:04:06 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:54147 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S239483AbhDVVEG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 22 Apr 2021 17:04:06 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 13ML3RKB011390
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Apr 2021 17:03:27 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id EF48815C3B0D; Thu, 22 Apr 2021 17:03:26 -0400 (EDT)
-Date:   Thu, 22 Apr 2021 17:03:26 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Leah Rumancik <leah.rumancik@gmail.com>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v4] ext4: wipe ext4_dir_entry2 upon file deletion
-Message-ID: <YIHknqxngB1sUdie@mit.edu>
-References: <20210422180834.2242353-1-leah.rumancik@gmail.com>
+        id S236688AbhDWCS5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 22 Apr 2021 22:18:57 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:17028 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236041AbhDWCS4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 22 Apr 2021 22:18:56 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FRHtr4FhkzPtX3;
+        Fri, 23 Apr 2021 10:15:16 +0800 (CST)
+Received: from [127.0.0.1] (10.174.176.216) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.498.0; Fri, 23 Apr 2021
+ 10:18:10 +0800
+Subject: Re: [PATCH] e2fsprogs: Try again to solve unreliable io case
+To:     Theodore Ts'o <tytso@mit.edu>, Haotian Li <lihaotian9@huawei.com>
+CC:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        "harshad shirwadkar," <harshadshirwadkar@gmail.com>,
+        linfeilong <linfeilong@huawei.com>
+References: <d4fd737d-4280-1aee-32ae-36b303e6644d@huawei.com>
+ <YH7/D1h5r9WB1TNq@mit.edu>
+From:   Zhiqiang Liu <liuzhiqiang26@huawei.com>
+Message-ID: <c1eb6441-9081-530c-63d8-1987048b2011@huawei.com>
+Date:   Fri, 23 Apr 2021 10:18:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210422180834.2242353-1-leah.rumancik@gmail.com>
+In-Reply-To: <YH7/D1h5r9WB1TNq@mit.edu>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.216]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 06:08:34PM +0000, Leah Rumancik wrote:
-> Upon file deletion, zero out all fields in ext4_dir_entry2 besides rec_len.
-> In case sensitive data is stored in filenames, this ensures no potentially
-> sensitive data is left in the directory entry upon deletion. Also, wipe
-> these fields upon moving a directory entry during the conversion to an
-> htree and when splitting htree nodes.
+On 2021/4/21 0:19, Theodore Ts'o wrote:
+> On Tue, Apr 20, 2021 at 03:18:05PM +0800, Haotian Li wrote:
+>> If some I/O error occured during e2fsck, for example the
+>> fibre channel connections are flasky, the e2fsck may exit.
+>> Try again in these I/O error cases may help e2fsck
+>> successfully execute and fix the disk correctly.
 > 
-> The data wiped may still exist in the journal, but there are future
-> commits planned to address this.
+> Why not fix this by retrying in the device driver instead?  If the
+> Fibre Channel is that flaky, then it's going to be a problem when the
+> file system is mounted, so it would seem to me that fixing this in the
+> kernel makes a lot more sense.
 > 
-> Signed-off-by: Leah Rumancik <leah.rumancik@gmail.com>
+>     	   	       	    - Ted
+>
+Thanks for your reply.
+Actually, we have met the problem in ipsan situation.
+When exec 'fsck -a <remote-device>', short-term fluctuations or
+abnormalities may occur on the network. Despite the driver has
+do the best effort, some IO errors may occur. So add retrying in
+e2fsprogs can further improve the reliability of the repair
+process.
 
-Applied, thanks.
+Regards
+Zhiqiang Liu
+> .
+> 
 
-					- Ted
