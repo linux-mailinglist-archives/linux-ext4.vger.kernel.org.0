@@ -2,200 +2,238 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5E41368D31
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 Apr 2021 08:27:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C696368D41
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 Apr 2021 08:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240787AbhDWG1y (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 23 Apr 2021 02:27:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48954 "EHLO
+        id S230141AbhDWGnm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 23 Apr 2021 02:43:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240594AbhDWG1r (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Apr 2021 02:27:47 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79F77C061756
-        for <linux-ext4@vger.kernel.org>; Thu, 22 Apr 2021 23:27:09 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id h36so21688685lfv.7
-        for <linux-ext4@vger.kernel.org>; Thu, 22 Apr 2021 23:27:09 -0700 (PDT)
+        with ESMTP id S229519AbhDWGnl (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Apr 2021 02:43:41 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E52C061574
+        for <linux-ext4@vger.kernel.org>; Thu, 22 Apr 2021 23:43:05 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id k4-20020a7bc4040000b02901331d89fb83so598049wmi.5
+        for <linux-ext4@vger.kernel.org>; Thu, 22 Apr 2021 23:43:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aiCoSAQRuKfEYdJ0Kk0Mu5Od1N/BvZa8/reyYJRSm1s=;
-        b=J1tQzyNOvtdfT+gK+Bk5ZEKN93NB/RlJ+BMQ8b4LEGhz6kSF6OtKTmP6hpidDWmigf
-         pqRtV1OIhFbVNRnGHzev2m+ZTZltKjLlYwkV1WHu41xqAH4OzNx45URlQJ8s7/3jlbfV
-         X3EoQ2MeCMDawRCD0x5zt+dG09znqfulJTlbLt5nhAruCEZUYs8R1yR3KfhKkCxEvIhH
-         E3yKVM1mktwI1rA5ajkpk6k8fWGoSL4KLLzV5Q25cGWE5Nd5OsIeLFl0go0iS4fTci5h
-         IKVsu0ijsEnaAq21vmaIkIjQHuDywjIOdGepzsTNfrhLGZRXe490IBFJvqxrd5m5ABkL
-         leTw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :content-transfer-encoding;
+        bh=eDApwGshrgqG+un0f6M7bP2KZvESFd+AG8x7kRxWYxw=;
+        b=GAveitL2JCk8pp9h9qeYqsOE6m2RWjp9fBBZCgxjyxtjLjvie6hAxxtVbdfd/7Qp2W
+         DoLzDfkcl+EBaoKZH0rOrNRP03LG3bF7AvrC8EKfJulZDq4xtrib+CPz5QmVIdI+JxOs
+         BJmW0e7Q4jW5+D5suA41bqLCnbUcVGpJ/5Nm05+0hH4Eqc59V6KtoK9jn7MS9VF9gv+l
+         HRCbmsRgsvF+OAi6F6SIenVJeibA202Pma2uf2iwbull9BXJsKAHgFvvVkFDRHMSvEcG
+         nzVCClIyJeRWAhdGu6kDGEJew9/GDLmy5FBlrhlKVsnusSBi1nNHfgqDFqBA3OGvXKn1
+         e11w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aiCoSAQRuKfEYdJ0Kk0Mu5Od1N/BvZa8/reyYJRSm1s=;
-        b=KJFLKbFVoPggt/VqObENkuPZ1QWfC45Dme8Cpubt8uI8sAUvJEwEeNgekx2W3D8w1L
-         j5jWTCCDI7q27EcYyuIGZuwF6GLpbxR2XtFK1rGhr6TqsBkY2Q3N5Cz8HC2mtoGyUdaV
-         M5dxD8PHm9+7jX8bxXf24VhnJI6Sj9x4MQVT9r73MygZKMFO2riUjKv2x9Rm0IM2BwgN
-         gA8AcJpGpr8p6VkNa3fvhbpcsQgOimata7Mvsfa0c7Pys4q44Xc0OloxY6S/tgY7ifD+
-         YxcbJAn++O2K7XJE6cq4upPz7PxeXNQmKMDpx89hKxZpvBqOEKP6+CQwW3JqKyhmmRQ9
-         h6ag==
-X-Gm-Message-State: AOAM532hGU/0L6+9zp27MdIQ5x++RVUjyDyY7rfYdQqC2nB8fwkTcY5H
-        Dk47ahfJAbP+XaGdPpShr2k/f9NAcZwvckp+Umn5lA==
-X-Google-Smtp-Source: ABdhPJxwVNFz3aKPzwkMWWBUlqtIdr0gCVWb25meiGsqk5X/pr6U5Kjm8pNj2Whr4PHav4ogcf3/EODMFeeeiu7k4ZA=
-X-Received: by 2002:a05:6512:138e:: with SMTP id p14mr1534510lfa.47.1619159227671;
- Thu, 22 Apr 2021 23:27:07 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:content-transfer-encoding;
+        bh=eDApwGshrgqG+un0f6M7bP2KZvESFd+AG8x7kRxWYxw=;
+        b=YsxnP7D8M15VRC+Rbi1tmBSzx5X/4kSIsluPyQD5UAzhXdS+HxO5vaT4KDGimWB0Mx
+         t0CfKBNIZJ1vzRRJvsm/vVsLTO1cX8M/wlhAzrw9M/HJZfD0pVDXS3GFn1jVeVCz1Ulb
+         tNwCCOfiXR27UVTROtiHTEeEG/R0btK47H2+kT+BdF3QUV+PEZhF73BxTQLD8YScvPXt
+         qvyWCCc5taHmr9DCtzRXeMAh6A9PnFUGUqvvk04xprTOy6vxvdg4Lea4qlmRPX1Nagrz
+         J4qcC3RtVZqKNHnTTEQ5vbszJ7rJs06evSzdUpyzfKWhA/fCCNx8jcbexdZfxEBtVVXh
+         X0JA==
+X-Gm-Message-State: AOAM531iGF34U7iOlNPQaOY9DsMR7gsZqZSsoIZ5u8chSy40Cn5mFm9z
+        sTwmCKmmWxUWb5Z4NoVrmh3a5qBjLIp39A==
+X-Google-Smtp-Source: ABdhPJzK1OuTQlrX8OtNDRv5NsUQe7zlUPfDjewXCZzG8R9y0aB3Kujnos2qXeeSC4YWm6BUlqbAIQ==
+X-Received: by 2002:a1c:7e45:: with SMTP id z66mr2483187wmc.126.1619160183366;
+        Thu, 22 Apr 2021 23:43:03 -0700 (PDT)
+Received: from gmail.com ([77.126.186.5])
+        by smtp.gmail.com with ESMTPSA id g5sm7704675wrq.30.2021.04.22.23.43.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Apr 2021 23:43:02 -0700 (PDT)
+Date:   Fri, 23 Apr 2021 09:42:55 +0300
+From:   Dan Aloni <alonid@gmail.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     jforbes@fedoraproject.org, Jan Kara <jack@suse.cz>
+Subject: BUG at fs/ext4/inode.c:2200 (mpage_process_page_bufs)
+Message-ID: <20210423064255.r32fgqipb52k5tpg@gmail.com>
 MIME-Version: 1.0
-References: <cover.1618388989.git.npache@redhat.com> <YHyK+5xJEMcDDhVy@mit.edu>
- <dbe6abeb-0082-e309-1208-9c43c6f127ae@redhat.com>
-In-Reply-To: <dbe6abeb-0082-e309-1208-9c43c6f127ae@redhat.com>
-From:   David Gow <davidgow@google.com>
-Date:   Fri, 23 Apr 2021 14:26:55 +0800
-Message-ID: <CABVgOSmW=HPhpY05PJ2aj7q6G42YK1LfvifQY5EtheFE+of2RQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/6] kunit: Fix formatting of KUNIT tests to meet the standard
-To:     Nico Pache <npache@redhat.com>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-ext4@vger.kernel.org, Networking <netdev@vger.kernel.org>,
-        rafael@kernel.org, linux-m68k@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        mathew.j.martineau@linux.intel.com, davem@davemloft.net,
-        Mark Brown <broonie@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>, mptcp@lists.linux.dev
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000a0b97d05c09de288"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
---000000000000a0b97d05c09de288
-Content-Type: text/plain; charset="UTF-8"
+Hi,
 
-On Fri, Apr 23, 2021 at 4:39 AM Nico Pache <npache@redhat.com> wrote:
->
-> On 4/18/21 3:39 PM, Theodore Ts'o wrote:
->
-> > On Wed, Apr 14, 2021 at 04:58:03AM -0400, Nico Pache wrote:
-> >> There are few instances of KUNIT tests that are not properly defined.
-> >> This commit focuses on correcting these issues to match the standard
-> >> defined in the Documentation.
-> > The word "standard" seems to be over-stating things.  The
-> > documentation currently states, "they _usually_ have config options
-> > ending in ``_KUNIT_TEST'' (emphasis mine).  I can imagine that there
-> > might be some useful things we can do from a tooling perspective if we
-> > do standardize things, but if you really want to make it a "standard",
-> > we should first update the manpage to say so,
->
-> KUNIT Maintainers, should we go ahead and make this the "standard"?
->
-> As Ted has stated...  consistency with 'grep' is my desired outcome.
->
+The following [2] has occurred just upon boot to Fedora's 5.11.15 kernel [1=
+].
+No pertinent patches around MM or FS subsystems as far as I see.
 
-The intention here is for this to be a "standard", with the caveat
-that there may be reasons for not following said standard, though they
-should be rare and may result in incompatibility with some tooling.
-This is broadly laid out in the opening of the
-Development/dev-tools/style.rst document, albeit still referring to
-"guidelines" rather than a "standard". The rest of the document does,
-as Ted pointed out, become more descriptive than prescriptive in some
-sections (like the Kconfig entry one): assuming no-one is particularly
-unhappy with that being tightened up, I've no problem with rewording
-it.
+[1] https://src.fedoraproject.org/rpms/kernel/tree/a6ae349436c5bc66640eb6ae=
+ed211c5068dc71f4
 
-That being said, when it comes to tooling, the Kconfig name does seem
-like it's less important than it could've been: the existence of a
-KUNIT_ALL_TESTS option, as well as support for having
-per-directory/per-subsystem .kunitconfig files should hopefully mean
-there's no need for tools to search for entries ending in _KUNIT_TEST.
-(I do agree that it makes using 'grep' more convenient, though.)
+[2]
+[   29.120268] ------------[ cut here ]------------
+[   29.120294] kernel BUG at fs/ext4/inode.c:2200!
+[   29.120306] invalid opcode: 0000 [#1] SMP NOPTI
+[   29.120314] CPU: 19 PID: 382 Comm: kworker/u256:1 Tainted: G        W   =
+      5.11.15-100.fc32.x86_64 #1
+[   29.120321] Hardware name: System manufacturer System Product Name/PRIME=
+ TRX40-PRO, BIOS 1201 08/04/2020
+[   29.120328] Workqueue: writeback wb_workfn (flush-253:1)
+[   29.120338] RIP: 0010:mpage_process_page_bufs+0xb9/0x120
+[   29.120346] Code: 00 00 89 45 38 48 8b 52 08 83 c3 01 48 39 f2 75 9f 8b =
+45 34 85 c0 74 5f b8 01 00 00 00 44 39 e3 72 ae 80 4d 60 02 31 c0 eb a6 <0f=
+> 0b 3d ff 07 00 00 77 9b 8b 4d 30 01 c1 39 cb 75 92 48 8b 0a 8b
+[   29.120355] RSP: 0018:ffffb379c9a23970 EFLAGS: 00010202
+[   29.120361] RAX: ddb800010099b804 RBX: 0000000000013543 RCX: 00000000000=
+0000c
+[   29.120367] RDX: ffff902be16d1e38 RSI: ffff902be16d1e38 RDI: 000000005e2=
+a3e3f
+[   29.120373] RBP: ffffb379c9a23b00 R08: 0000000000000000 R09: 00000000000=
+00000
+[   29.120378] R10: 0000000000000002 R11: 0000000000000238 R12: 00000000000=
+5e2a4
+[   29.120384] R13: ffff902a7ff1c818 R14: ffffb379c9a23b00 R15: ffffed63483=
+b7100
+[   29.120390] FS:  0000000000000000(0000) GS:ffff90683d4c0000(0000) knlGS:=
+0000000000000000
+[   29.120396] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   29.120402] CR2: 000055fa49f54b50 CR3: 0000000de0a10000 CR4: 00000000003=
+50ee0
+[   29.120408] Call Trace:
+[   29.120414]  mpage_prepare_extent_to_map+0x1b1/0x260
+[   29.120421]  ext4_writepages+0x314/0xfa0
+[   29.120428]  do_writepages+0x28/0xa0
+[   29.120434]  __writeback_single_inode+0x39/0x2a0
+[   29.120440]  writeback_sb_inodes+0x1d8/0x440
+[   29.120447]  wb_writeback+0xab/0x270
+[   29.120453]  wb_workfn+0xc5/0x4b0
+[   29.120459]  ? __switch_to+0x114/0x450
+[   29.120466]  process_one_work+0x1ec/0x380
+[   29.120472]  worker_thread+0x53/0x3e0
+[   29.120478]  ? process_one_work+0x380/0x380
+[   29.120483]  kthread+0x11b/0x140
+[   29.120489]  ? __kthread_bind_mask+0x60/0x60
+[   29.120496]  ret_from_fork+0x1f/0x30
+[   29.120503] Modules linked in: overlay xt_CHECKSUM xt_MASQUERADE xt_conn=
+track ipt_REJECT nouveau nf_nat_tftp nf_conntrack_tftp drm_ttm_helper ttm d=
+rm_kms_helper cec tun netconsole nft_objref nf_conntrack_netbios_ns nf_conn=
+track_broadcast nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib nft_reject_i=
+net nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct nft_chain_nat nf_tables=
+ ebtable_nat ebtable_broute ip6table_nat ip6table_mangle ip6table_raw ip6ta=
+ble_security iptable_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 =
+iptable_mangle bridge stp llc iptable_raw iptable_security ip_set nfnetlink=
+ ebtable_filter ebtables ip6table_filter ip6_tables iptable_filter ppdev pa=
+rport_pc parport vmw_vsock_vmci_transport vsock vmw_vmci cmac bnep vfat fat=
+ rpcrdma rdma_ucm ib_srpt ib_isert iscsi_target_mod target_core_mod ib_iser=
+ libiscsi scsi_transport_iscsi ib_umad rdma_cm ib_ipoib iw_cm ucsi_ccg type=
+c_ucsi ib_cm intel_rapl_msr typec snd_hda_codec_hdmi snd_hda_intel snd_inte=
+l_dspcfg soundwire_intel
+[   29.120542]  intel_rapl_common soundwire_generic_allocation snd_soc_core=
+ snd_compress edac_mce_amd snd_pcm_dmaengine amd_energy uvcvideo soundwire_=
+cadence kvm_amd videobuf2_vmalloc snd_hda_codec btusb btrtl videobuf2_memop=
+s kvm snd_usb_audio snd_hda_core btbcm videobuf2_v4l2 snd_usbmidi_lib btint=
+el mlx5_ib ac97_bus irqbypass videobuf2_common snd_hwdep eeepc_wmi snd_seq =
+bluetooth snd_rawmidi asus_wmi videodev ib_uverbs rapl snd_seq_device spars=
+e_keymap video pcspkr wmi_bmof joydev ib_core ecdh_generic snd_pcm mc rfkil=
+l ecc snd_timer sp5100_tco snd soundcore i2c_nvidia_gpu i2c_piix4 k10temp a=
+cpi_cpufreq binfmt_misc nfsd auth_rpcgss nfs_acl lockd grace drm sunrpc nfs=
+_ssc ip_tables hid_logitech_hidpp hid_logitech_dj igb dca mlx5_core i2c_alg=
+o_bit crct10dif_pclmul crc32_pclmul crc32c_intel mlxfw ghash_clmulni_intel =
+pci_hyperv_intf ccp mxm_wmi wmi pinctrl_amd fuse
+[   29.120633] ---[ end trace de9b9adeaba2eda5 ]---
+[   29.120638] RIP: 0010:mpage_process_page_bufs+0xb9/0x120
+[   29.120644] Code: 00 00 89 45 38 48 8b 52 08 83 c3 01 48 39 f2 75 9f 8b =
+45 34 85 c0 74 5f b8 01 00 00 00 44 39 e3 72 ae 80 4d 60 02 31 c0 eb a6 <0f=
+> 0b 3d ff 07 00 00 77 9b 8b 4d 30 01 c1 39 cb 75 92 48 8b 0a 8b
+[   29.120653] RSP: 0018:ffffb379c9a23970 EFLAGS: 00010202
+[   29.120658] RAX: ddb800010099b804 RBX: 0000000000013543 RCX: 00000000000=
+0000c
+[   29.120664] RDX: ffff902be16d1e38 RSI: ffff902be16d1e38 RDI: 000000005e2=
+a3e3f
+[   29.120669] RBP: ffffb379c9a23b00 R08: 0000000000000000 R09: 00000000000=
+00000
+[   29.120674] R10: 0000000000000002 R11: 0000000000000238 R12: 00000000000=
+5e2a4
+[   29.120679] R13: ffff902a7ff1c818 R14: ffffb379c9a23b00 R15: ffffed63483=
+b7100
+[   29.120685] FS:  0000000000000000(0000) GS:ffff90683d4c0000(0000) knlGS:=
+0000000000000000
+[   29.120690] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   29.120701] CR2: 000055fa49f54b50 CR3: 0000000de0a10000 CR4: 00000000003=
+50ee0
+[   29.120708] ------------[ cut here ]------------
+[   29.120713] WARNING: CPU: 19 PID: 382 at kernel/exit.c:739 do_exit+0x37/=
+0xac0
+[   29.120721] Modules linked in: overlay xt_CHECKSUM xt_MASQUERADE xt_conn=
+track ipt_REJECT nouveau nf_nat_tftp nf_conntrack_tftp drm_ttm_helper ttm d=
+rm_kms_helper cec tun netconsole nft_objref nf_conntrack_netbios_ns nf_conn=
+track_broadcast nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib nft_reject_i=
+net nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct nft_chain_nat nf_tables=
+ ebtable_nat ebtable_broute ip6table_nat ip6table_mangle ip6table_raw ip6ta=
+ble_security iptable_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 =
+iptable_mangle bridge stp llc iptable_raw iptable_security ip_set nfnetlink=
+ ebtable_filter ebtables ip6table_filter ip6_tables iptable_filter ppdev pa=
+rport_pc parport vmw_vsock_vmci_transport vsock vmw_vmci cmac bnep vfat fat=
+ rpcrdma rdma_ucm ib_srpt ib_isert iscsi_target_mod target_core_mod ib_iser=
+ libiscsi scsi_transport_iscsi ib_umad rdma_cm ib_ipoib iw_cm ucsi_ccg type=
+c_ucsi ib_cm intel_rapl_msr typec snd_hda_codec_hdmi snd_hda_intel snd_inte=
+l_dspcfg soundwire_intel
+[   29.120744]  intel_rapl_common soundwire_generic_allocation snd_soc_core=
+ snd_compress edac_mce_amd snd_pcm_dmaengine amd_energy uvcvideo soundwire_=
+cadence kvm_amd videobuf2_vmalloc snd_hda_codec btusb btrtl videobuf2_memop=
+s kvm snd_usb_audio snd_hda_core btbcm videobuf2_v4l2 snd_usbmidi_lib btint=
+el mlx5_ib ac97_bus irqbypass videobuf2_common snd_hwdep eeepc_wmi snd_seq =
+bluetooth snd_rawmidi asus_wmi videodev ib_uverbs rapl snd_seq_device spars=
+e_keymap video pcspkr wmi_bmof joydev ib_core ecdh_generic snd_pcm mc rfkil=
+l ecc snd_timer sp5100_tco snd soundcore i2c_nvidia_gpu i2c_piix4 k10temp a=
+cpi_cpufreq binfmt_misc nfsd auth_rpcgss nfs_acl lockd grace drm sunrpc nfs=
+_ssc ip_tables hid_logitech_hidpp hid_logitech_dj igb dca mlx5_core i2c_alg=
+o_bit crct10dif_pclmul crc32_pclmul crc32c_intel mlxfw ghash_clmulni_intel =
+pci_hyperv_intf ccp mxm_wmi wmi pinctrl_amd fuse
+[   29.122420] CPU: 19 PID: 382 Comm: kworker/u256:1 Tainted: G      D W   =
+      5.11.15-100.fc32.x86_64 #1
+[   29.123239] Hardware name: System manufacturer System Product Name/PRIME=
+ TRX40-PRO, BIOS 1201 08/04/2020
+[   29.124071] Workqueue: writeback wb_workfn (flush-253:1)
+[   29.124903] RIP: 0010:do_exit+0x37/0xac0
+[   29.125722] Code: 55 48 89 fd 53 65 48 8b 1c 25 c0 7b 01 00 48 83 ec 38 =
+48 8b 83 70 0c 00 00 48 85 c0 74 0e 48 8b 10 48 39 d0 0f 84 72 04 00 00 <0f=
+> 0b 65 8b 0d d0 85 f3 68 89 c8 25 00 ff ff 00 89 44 24 0c 0f 85
+[   29.126593] RSP: 0018:ffffb379c9a23ee8 EFLAGS: 00010212
+[   29.127518] RAX: ffffb379c9a23d80 RBX: ffff902a042a2780 RCX: ffff90683d4=
+d8ac8
+[   29.128435] RDX: ffff902a0e6c9048 RSI: 0000000000000027 RDI: 00000000000=
+0000b
+[   29.129354] RBP: 000000000000000b R08: 0000000000000000 R09: ffffb379c9a=
+235b8
+[   29.130272] R10: ffffb379c9a235b0 R11: ffff90683cffffe8 R12: 00000000000=
+0000b
+[   29.131193] R13: 0000000000000000 R14: ffff902a042a2780 R15: 00000000000=
+00006
+[   29.132117] FS:  0000000000000000(0000) GS:ffff90683d4c0000(0000) knlGS:=
+0000000000000000
+[   29.133031] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   29.133960] CR2: 000055fa49f54b50 CR3: 0000000de0a10000 CR4: 00000000003=
+50ee0
+[   29.134891] Call Trace:
+[   29.135820]  ? kthread+0x11b/0x140
+[   29.136753]  rewind_stack_do_exit+0x17/0x20
+[   29.137681] RIP: 0000:0x0
+[   29.138616] Code: Unable to access opcode bytes at RIP 0xffffffffffffffd=
+6.
+[   29.139550] RSP: 0000:0000000000000000 EFLAGS: 00000000 ORIG_RAX: 000000=
+0000000000
+[   29.140478] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00000000000=
+00000
+[   29.141407] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000000=
+00000
+[   29.142334] RBP: 0000000000000000 R08: 0000000000000000 R09: 00000000000=
+00000
+[   29.143259] R10: 0000000000000000 R11: 0000000000000000 R12: 00000000000=
+00000
+[   29.144177] R13: 0000000000000000 R14: 0000000000000000 R15: 00000000000=
+00000
+[   29.145097] ---[ end trace de9b9adeaba2eda6 ]---
 
-> > and explain why (e.g.,
-> > so that we can easily extract out all of the kunit test modules, and
-> > perhaps paint a vision of what tools might be able to do with such a
-> > standard).
-> >
-> > Alternatively, the word "standard" could perhaps be changed to
-> > "convention", which I think more accurately defines how things work at
-> > the moment.
-
-Cheers,
--- David
-
---000000000000a0b97d05c09de288
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIIPnAYJKoZIhvcNAQcCoIIPjTCCD4kCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-ggz2MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
-dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
-6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
-c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
-I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
-AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
-CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
-AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
-MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
-My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
-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
-ILbFHw0h01NI0v+AeczGMEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
-dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwgZoGCCsGAQUF
-BwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9nc2F0
-bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNv
-bS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouseLHIb
-0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vY2Ev
-Z3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQCNr3LBERPjVctGdVEb
-/hN6/N6F2eUWxZLSUbuV7fOle0OvI8xz2AUBrOYQLp94ox9LqmsATKPsBl2uiktsvfs/AXNMcmOz
-qsWHzfqp4XlvNgQsC/UyUMWxZoEyTDfTSat09yQjkFJ7viwzrqqscmTx5oTZz8TPRt0mbxwx3qry
-wDzYxadSUQXNpNnfi0FBDYUUfuCLFWPsPsAXmgh483u0RbNik9OY/ozNq1Gvg/U0jQOlJf2IiKbE
-kUL5Vq8gDDu6bETx5bHmRmSjHhwo7eVbxywczpzdFsU3dauZ3BzqhLy2pRGGzZybSH/3mf7o9y15
-gmRHE7WzPLrsULHG/TM8MYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xv
-YmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAyMDIw
-AhABm/kO+4pd09krN7Fjk8ypMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCCh7i1G
-xEa2Zy4mEF14lMt4G1bH/lllueUJtLj1vySixjAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwG
-CSqGSIb3DQEJBTEPFw0yMTA0MjMwNjI3MDhaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUDBAEq
-MAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsGCSqG
-SIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAjnHCdN9RnYjqXdO7bXdKmary
-TYS/w5AwbUbQ5IYadX5M4PTbGNa3bxfHfrz3NrUWF0bmJecomzt5SJe3NmDVzkntxuLGzZyUv2F4
-vk2p8uY0TMZad94dMfI+L3LsWngr7WNPqjDg/DXt+1dRhWbgVZSHnLMSOveUUCWV8ej/yaoSeRMQ
-YqxCK5e3VquVBt10CL/0cgXsj0AkhmddkHqkUyLQKioDONQWHfVSAeIyenaOU8TLhRDFfct1JL0I
-lfEWQWgYDhgY7tc3G0E0h9J2OBwUCmsuW3+czPgLLST8nvxkeyJKRykuAXcfEoBFGr233twR4UMQ
-aSowOoDaOEf06A==
---000000000000a0b97d05c09de288--
+--=20
+Dan Aloni
