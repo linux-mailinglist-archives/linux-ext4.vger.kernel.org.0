@@ -2,82 +2,160 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1CF33699B6
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 Apr 2021 20:31:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99E36369B93
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 Apr 2021 22:51:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243466AbhDWScF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 23 Apr 2021 14:32:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39842 "EHLO
+        id S232686AbhDWUwb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 23 Apr 2021 16:52:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbhDWScE (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Apr 2021 14:32:04 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3610EC061574;
-        Fri, 23 Apr 2021 11:31:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=19MC/ECN3OWEttJSfNKYhsEBI3DWNTT+3puFZa754BA=; b=q2fnOVoW6AVeExxSOF8pr+ERGP
-        yfxbQCEhL3SoJ9S4pecr6zRB0GmmsCxrZukyAdiAMif6SHNvdOE1E7U120Ij1sP+Z3+wdrWsoURWi
-        PmYCkHgT1eriQFe7P0ERXjHBCO+9JlTYV8aQVmtgIJjR8lvgL3cyavi3FEjHoHFTxc21WAQ4f2Zz+
-        sV1Z4B6IbOjs6KU46Pmsh7fntCFyTamR96j2R8oTTo7FP6sAhPbe7AQKxieTOEdSvtIYQdjJzcTxN
-        +xIAsRybN9Pq4T5YBkQNFpvPqSZSTBjscy226S2phOUwKGDjVYieWIwk09t7BsYB4/T18YLR5tOTh
-        NjjW6VQg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1la0Zc-002EBZ-Af; Fri, 23 Apr 2021 18:30:48 +0000
-Date:   Fri, 23 Apr 2021 19:30:40 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Dave Chinner <david@fromorbit.com>, Ted Tso <tytso@mit.edu>,
-        ceph-devel@vger.kernel.org, Chao Yu <yuchao0@huawei.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Johannes Thumshirn <jth@kernel.org>,
-        linux-cifs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
-        linux-xfs@vger.kernel.org, Miklos Szeredi <miklos@szeredi.hu>,
-        Steve French <sfrench@samba.org>
-Subject: Re: [PATCH 02/12] mm: Protect operations adding pages to page cache
- with invalidate_lock
-Message-ID: <20210423183040.GD235567@casper.infradead.org>
-References: <20210423171010.12-1-jack@suse.cz>
- <20210423173018.23133-2-jack@suse.cz>
+        with ESMTP id S229691AbhDWUw3 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Apr 2021 16:52:29 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D9A0C061574;
+        Fri, 23 Apr 2021 13:51:52 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: shreeya)
+        with ESMTPSA id B36B91F41B0E
+From:   Shreeya Patel <shreeya.patel@collabora.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
+        chao@kernel.org, krisman@collabora.com, ebiggers@google.com,
+        drosen@google.com, ebiggers@kernel.org, yuchao0@huawei.com
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
+        andre.almeida@collabora.com
+Subject: [PATCH v8 0/4] Make UTF-8 encoding loadable
+Date:   Sat, 24 Apr 2021 02:21:32 +0530
+Message-Id: <20210423205136.1015456-1-shreeya.patel@collabora.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210423173018.23133-2-jack@suse.cz>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 07:29:31PM +0200, Jan Kara wrote:
-> Currently, serializing operations such as page fault, read, or readahead
-> against hole punching is rather difficult. The basic race scheme is
-> like:
-> 
-> fallocate(FALLOC_FL_PUNCH_HOLE)			read / fault / ..
->   truncate_inode_pages_range()
-> 						  <create pages in page
-> 						   cache here>
->   <update fs block mapping and free blocks>
-> 
-> Now the problem is in this way read / page fault / readahead can
-> instantiate pages in page cache with potentially stale data (if blocks
-> get quickly reused). Avoiding this race is not simple - page locks do
-> not work because we want to make sure there are *no* pages in given
-> range.
+utf8data.h_shipped has a large database table which is an auto-generated
+decodification trie for the unicode normalization functions and it is not
+necessary to carry this large table in the kernel unless it is required by
+the filesystem during boot time.
 
-One of the things I've had in mind for a while is moving the DAX locked
-entry concept into the page cache proper.  It would avoid creating the
-new semaphore, at the cost of taking the i_pages lock twice (once to
-insert the entries that cover the range, and once to delete the entries).
+Goal is to make UTF-8 encoding loadable by converting it into a module
+and adding a unicode subsystem layer between the filesystems and the
+utf8 module.
+This layer will then load the module whenever any filesystem that
+needs unicode is mounted or utf8 can also be built into the kernel incase
+it is required by the filesystem during boot time.
 
-It'd have pretty much the same effect, though -- read/fault/... would
-block until the entry was deleted from the page cache.
+Currently, only UTF-8 encoding is supported but if any other encodings
+are supported in future then the layer file would be responsible for
+loading the desired encoding module.
+
+1st patch in the series resolves the warning reported by kernel test
+robot by using strscpy instead of strncpy.
+
+Unicode is the subsystem and utf8 is a charachter encoding for the
+subsystem, hence 2nd and 3rd patches in the series are renaming functions
+and file name to unicode for better understanding the difference between
+UTF-8 module and unicode layer.
+
+Last patch in the series adds the layer and utf8 module and also uses
+static calls which gives performance benefit when compared to indirect
+calls using function pointers.
+
+---
+Changes in v8
+  - Improve the commit message of patch 1 to decribe about how
+    overly-long strings should be handled.
+  - Improve the commit messages in patches 2/3/4 to better understand
+    the use of built-in option.
+  - Improve the help text in Kconfig for avoiding contradictory
+    statements.
+  - Make spinlock definition static.
+  - Use int instead of bool to avoid gcc warning.
+  - Add a comment for decribing why we are using
+    try_then_request_module() instead of request_module()
+
+Changes in v7
+  - Update the help text in Kconfig
+  - Handle the unicode_load_static_call function failure by decrementing
+    the reference.
+  - Correct the code for handling built-in utf8 option as well.
+  - Correct the synchronization for accessing utf8mod.
+  - Make changes to unicode_unload() for handling the situation where
+    utf8mod != NULL and um == NULL.
+
+Changes in v6
+  - Add spinlock to protect utf8mod and avoid NULL pointer
+    dereference.
+  - Change the static call function names for being consistent with
+    kernel coding style.
+  - Merge the unicode_load_module function with unicode_load as it is
+    not really needed to have a separate function.
+  - Use try_then_module_get instead of module_get to avoid loading the
+    module even when it is already loaded.
+  - Improve the commit message.
+
+Changes in v5
+  - Remove patch which adds NULL check in ext4/super.c and f2fs/super.c
+    before calling unicode_unload().
+  - Rename global variables and default static call functions for better
+    understanding
+  - Make only config UNICODE_UTF8 visible and config UNICODE to be always
+    enabled provided UNICODE_UTF8 is enabled.  
+  - Improve the documentation for Kconfig
+  - Improve the commit message.
+ 
+Changes in v4
+  - Return error from the static calls instead of doing nothing and
+    succeeding even without loading the module.
+  - Remove the complete usage of utf8_ops and use static calls at all
+    places.
+  - Restore the static calls to default values when module is unloaded.
+  - Decrement the reference of module after calling the unload function.
+  - Remove spinlock as there will be no race conditions after removing
+    utf8_ops.
+
+Changes in v3
+  - Add a patch which checks if utf8 is loaded before calling utf8_unload()
+    in ext4 and f2fs filesystems
+  - Return error if strscpy() returns value < 0
+  - Correct the conditions to prevent NULL pointer dereference while
+    accessing functions via utf8_ops variable.
+  - Add spinlock to avoid race conditions.
+  - Use static_call() for preventing speculative execution attacks.
+
+Changes in v2
+  - Remove the duplicate file from the last patch.
+  - Make the wrapper functions inline.
+  - Remove msleep and use try_module_get() and module_put()
+    for ensuring that module is loaded correctly and also
+    doesn't get unloaded while in use.
+  - Resolve the warning reported by kernel test robot.
+  - Resolve all the checkpatch.pl warnings.
+
+Shreeya Patel (4):
+  fs: unicode: Use strscpy() instead of strncpy()
+  fs: unicode: Rename function names from utf8 to unicode
+  fs: unicode: Rename utf8-core file to unicode-core
+  fs: unicode: Add utf8 module and a unicode layer
+
+ fs/ext4/hash.c                             |   2 +-
+ fs/ext4/namei.c                            |  12 +-
+ fs/ext4/super.c                            |   6 +-
+ fs/f2fs/dir.c                              |  12 +-
+ fs/f2fs/super.c                            |   6 +-
+ fs/libfs.c                                 |   6 +-
+ fs/unicode/Kconfig                         |  26 ++-
+ fs/unicode/Makefile                        |   5 +-
+ fs/unicode/unicode-core.c                  | 175 +++++++++++++++++++++
+ fs/unicode/{utf8-core.c => unicode-utf8.c} |  98 +++++++-----
+ fs/unicode/utf8-selftest.c                 |   8 +-
+ include/linux/unicode.h                    | 100 ++++++++++--
+ 12 files changed, 374 insertions(+), 82 deletions(-)
+ create mode 100644 fs/unicode/unicode-core.c
+ rename fs/unicode/{utf8-core.c => unicode-utf8.c} (57%)
+
+-- 
+2.30.2
+
