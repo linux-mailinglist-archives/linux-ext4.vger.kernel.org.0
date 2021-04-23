@@ -2,90 +2,70 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D0533694D6
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 Apr 2021 16:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 123033694EF
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 Apr 2021 16:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236659AbhDWOgz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 23 Apr 2021 10:36:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229871AbhDWOgw (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Apr 2021 10:36:52 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2537BC061574
-        for <linux-ext4@vger.kernel.org>; Fri, 23 Apr 2021 07:36:16 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id s16so43848992iog.9
-        for <linux-ext4@vger.kernel.org>; Fri, 23 Apr 2021 07:36:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=IXDpvkcejUXCXpaRmuHXYGVe9zxFDhtuQyaieXwMWQg=;
-        b=Bfg4Cniqwnzld+WTSK//o0K7hYBXROK6rxdgTmkHervt+xZIymSmR0j1Av2/sw+1le
-         vLFwR2ulloNI/B3Qq+IRa7Tm1zNSsuIzs2HR/deXiRIpVPmPscgCTJ7RsFBALJtzsZEZ
-         /04KtNz1ZhZw3fKc7caV5g0bcWkA/o0QkW86wqbhXjAr40SrmfXZbPekQMoM6+WAxsYt
-         UblczlVn/pKsMj9JC1fXgtI7Nx1bMEfEXDWI0hhdtEMnBVH83NXArWCGn5rNNwD/pxYL
-         3jkgG4BjGUdCYRxFvhTlH7d/UjcqLnAdnJIgZ7sdllcIpr3vqmmsXE6PFJEGYTMtPqPt
-         Gm/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=IXDpvkcejUXCXpaRmuHXYGVe9zxFDhtuQyaieXwMWQg=;
-        b=XQMlecte/TAWxI0bS614oy7rbd+4pS3sIlKZS/BTUdbCNaN4znTFQOiAj41o9hmMQp
-         46CuHLMFT8Gdl8TGnMKGGjA1oAVQYqxZunARKyFqw92hcTETSJq8SneH5hxM8D0pSs2M
-         s5XuKpyFxKH8TKhgrFN0tYW5GfUBdFtH+sQBhMyC7dvFXZsL29YB4lv/8+zr/r5SKeW2
-         PDi+Q7xx5zIqnL9RYXC1ApoHPknNLJOwOpo9J9vdHiUXLH5w/mXsgfxky28q6iroxjcq
-         4pvMOKyI4/x/kit/5T+clZ26dSeLlsES5HYRg3mUuJ+nnSAT72uUIqMFRi/8nG8F7ty0
-         m/8Q==
-X-Gm-Message-State: AOAM532O+w3dhjIMmy7waJNCsPHNlp3ia5KN5bSdBGbKSj0spttTo9hj
-        12ZR0Ilxapf6TFdeLzdjiJ2IBtolb2r3iw==
-X-Google-Smtp-Source: ABdhPJySr5fc2VRZCT/G/1/OROugWU+4bOpEVbWgGkBZ7wTdtAe11INkHhumjN7K+T89x5eXVYU/Bw==
-X-Received: by 2002:a05:6638:329e:: with SMTP id f30mr3941339jav.121.1619188575527;
-        Fri, 23 Apr 2021 07:36:15 -0700 (PDT)
-Received: from CO82.us.cray.com ([136.162.34.1])
-        by smtp.gmail.com with ESMTPSA id u6sm2695577ill.78.2021.04.23.07.36.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Apr 2021 07:36:15 -0700 (PDT)
-From:   Artem Blagodarenko <artem.blagodarenko@gmail.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     adilger.kernel@dilger.ca,
-        Artem Blagodarenko <artem.blagodarenko@gmail.com>,
-        Alexey Lyashkov <c17817@cray.com>,
-        Artem Blagodarenko <c17828@cray.com>
-Subject: [PATCH] e2image: fix overflow in l2 table processing
-Date:   Thu, 22 Apr 2021 01:24:48 -0400
-Message-Id: <20210422052448.29802-1-artem.blagodarenko@gmail.com>
-X-Mailer: git-send-email 2.18.4
+        id S242623AbhDWOmC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 23 Apr 2021 10:42:02 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:40274 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230416AbhDWOmB (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Apr 2021 10:42:01 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 13NEeckv032357
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 23 Apr 2021 10:40:39 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 8FF8315C3B0D; Fri, 23 Apr 2021 10:40:38 -0400 (EDT)
+Date:   Fri, 23 Apr 2021 10:40:38 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Zhang Yi <yi.zhang@huawei.com>, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, adilger.kernel@dilger.ca,
+        yukuai3@huawei.com
+Subject: Re: [RFC PATCH v2 7/7] ext4: fix race between blkdev_releasepage()
+ and ext4_put_super()
+Message-ID: <YILcZpQh8T//6HLb@mit.edu>
+References: <20210414134737.2366971-1-yi.zhang@huawei.com>
+ <20210414134737.2366971-8-yi.zhang@huawei.com>
+ <20210415145235.GD2069063@infradead.org>
+ <ca810e21-5f92-ee6c-a046-255c70c6bf78@huawei.com>
+ <20210420130841.GA3618564@infradead.org>
+ <20210421134634.GT8706@quack2.suse.cz>
+ <YIBZgx4cm0j7OObj@mit.edu>
+ <20210422090410.GA26221@quack2.suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210422090410.GA26221@quack2.suse.cz>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-For a large partition during e2image capture process
-it is possible to overflow offset at multiply operation.
-This leads to the situation when data is written to the
-position at the start of the image instead of the image end.
+On Thu, Apr 22, 2021 at 11:04:11AM +0200, Jan Kara wrote:
+> Yes, I understand that. What I was more asking about is: Does it really
+> matter we leave those buffer heads and journal heads unreclaimed. I
+> understand it could be triggering premature OOM in theory but is it a
+> problem in practice? Was there some observed practical case for which this
+> was added or was it just added due to the theoretical concern?
 
-Let's use the right cast to avoid integer overflow.
+I was doing some research, and found the mail thread which inspired
+bdev_try_to_free_page():
 
-Signed-off-by: Alexey Lyashkov <c17817@cray.com>
-Signed-off-by: Artem Blagodarenko <c17828@cray.com>
-HPE-bug-id: LUS-9368
----
- lib/ext2fs/qcow2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+https://lore.kernel.org/linux-ext4/20081202200647.72cc5807.toshi.okajima@jp.fujitsu.com/
 
-diff --git a/lib/ext2fs/qcow2.c b/lib/ext2fs/qcow2.c
-index ee701f7a..20824170 100644
---- a/lib/ext2fs/qcow2.c
-+++ b/lib/ext2fs/qcow2.c
-@@ -238,7 +238,7 @@ int qcow2_write_raw_image(int qcow2_fd, int raw_fd,
- 			if (offset == 0)
- 				continue;
- 
--			off_out = (l1_index * img.l2_size) +
-+			off_out = ((__u64)l1_index * img.l2_size) +
- 				  l2_index;
- 			off_out <<= img.cluster_bits;
- 			ret = qcow2_copy_data(qcow2_fd, raw_fd, offset,
--- 
-2.18.4
+From what I can tell Toshi Okajima did have a test workload which
+would trigger blkdev_releasepage().  He didn't specify it in the mail
+thread as near as I can tell, but he did use it to test the page.
+Thinking about it, it shouldn't be hard to trigger it via something like:
 
+   find /mnt -print0 | xargs -0 touch
+
+in a memory contrained box with a large file system attached (a
+bookshelf NAS scenario).  Under the right circumstances, I'm pretty
+sure a premature OOM could be demonstrated.
+
+					- Ted
