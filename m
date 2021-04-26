@@ -2,161 +2,177 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81FD236B614
-	for <lists+linux-ext4@lfdr.de>; Mon, 26 Apr 2021 17:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AA6436B927
+	for <lists+linux-ext4@lfdr.de>; Mon, 26 Apr 2021 20:42:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234164AbhDZPrY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 26 Apr 2021 11:47:24 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38026 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234090AbhDZPrX (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 26 Apr 2021 11:47:23 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 55725ABB1;
-        Mon, 26 Apr 2021 15:46:40 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id C7AF41E0CB7; Mon, 26 Apr 2021 17:46:39 +0200 (CEST)
-Date:   Mon, 26 Apr 2021 17:46:39 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Amir Goldstein <amir73il@gmail.com>, Ted Tso <tytso@mit.edu>,
-        ceph-devel@vger.kernel.org, Chao Yu <yuchao0@huawei.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Johannes Thumshirn <jth@kernel.org>,
-        linux-cifs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
-        linux-xfs@vger.kernel.org, Miklos Szeredi <miklos@szeredi.hu>,
-        Steve French <sfrench@samba.org>
-Subject: Re: [PATCH 02/12] mm: Protect operations adding pages to page cache
- with invalidate_lock
-Message-ID: <20210426154639.GB23895@quack2.suse.cz>
-References: <20210423171010.12-1-jack@suse.cz>
- <20210423173018.23133-2-jack@suse.cz>
- <20210423230449.GC1990290@dread.disaster.area>
+        id S239319AbhDZSnL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 26 Apr 2021 14:43:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237161AbhDZSnF (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 26 Apr 2021 14:43:05 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2018C061574;
+        Mon, 26 Apr 2021 11:42:22 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id B0C611F41E07
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     amir73il@gmail.com, tytso@mit.edu, djwong@kernel.org
+Cc:     david@fromorbit.com, jack@suse.com, dhowells@redhat.com,
+        khazhy@google.com, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel@collabora.com
+Subject: [PATCH RFC 00/15] File system wide monitoring
+Date:   Mon, 26 Apr 2021 14:41:46 -0400
+Message-Id: <20210426184201.4177978-1-krisman@collabora.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210423230449.GC1990290@dread.disaster.area>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat 24-04-21 09:04:49, Dave Chinner wrote:
-> On Fri, Apr 23, 2021 at 07:29:31PM +0200, Jan Kara wrote:
-> > Currently, serializing operations such as page fault, read, or readahead
-> > against hole punching is rather difficult. The basic race scheme is
-> > like:
-> > 
-> > fallocate(FALLOC_FL_PUNCH_HOLE)			read / fault / ..
-> >   truncate_inode_pages_range()
-> > 						  <create pages in page
-> > 						   cache here>
-> >   <update fs block mapping and free blocks>
-> > 
-> > Now the problem is in this way read / page fault / readahead can
-> > instantiate pages in page cache with potentially stale data (if blocks
-> > get quickly reused). Avoiding this race is not simple - page locks do
-> > not work because we want to make sure there are *no* pages in given
-> > range. inode->i_rwsem does not work because page fault happens under
-> > mmap_sem which ranks below inode->i_rwsem. Also using it for reads makes
-> > the performance for mixed read-write workloads suffer.
-> > 
-> > So create a new rw_semaphore in the address_space - invalidate_lock -
-> > that protects adding of pages to page cache for page faults / reads /
-> > readahead.
-> .....
-> > diff --git a/fs/inode.c b/fs/inode.c
-> > index a047ab306f9a..43596dd8b61e 100644
-> > --- a/fs/inode.c
-> > +++ b/fs/inode.c
-> > @@ -191,6 +191,9 @@ int inode_init_always(struct super_block *sb, struct inode *inode)
-> >  	mapping_set_gfp_mask(mapping, GFP_HIGHUSER_MOVABLE);
-> >  	mapping->private_data = NULL;
-> >  	mapping->writeback_index = 0;
-> > +	init_rwsem(&mapping->invalidate_lock);
-> > +	lockdep_set_class(&mapping->invalidate_lock,
-> > +			  &sb->s_type->invalidate_lock_key);
-> >  	inode->i_private = NULL;
-> >  	inode->i_mapping = mapping;
-> >  	INIT_HLIST_HEAD(&inode->i_dentry);	/* buggered by rcu freeing */
-> 
-> Oh, lockdep. That might be a problem here.
-> 
-> The XFS_MMAPLOCK has non-trivial lockdep annotations so that it is
-> tracked as nesting properly against the IOLOCK and the ILOCK. When
-> you end up using xfs_ilock(XFS_MMAPLOCK..) to lock this, XFS will
-> add subclass annotations to the lock and they are going to be
-> different to the locking that the VFS does.
-> 
-> We'll see this from xfs_lock_two_inodes() (e.g. in
-> xfs_swap_extents()) and xfs_ilock2_io_mmap() during reflink
-> oper.....
+Hi,
 
-Thanks for the pointer. I was kind of wondering what lockdep nesting games
-XFS plays but then forgot to look into details. Anyway, I've preserved the
-nesting annotations in XFS and fstests run on XFS passed without lockdep
-complaining so there isn't at least an obvious breakage. Also as far as I'm
-checking the code XFS usage in and lock nesting of MMAPLOCK should be
-compatible with the nesting VFS enforces (also see below)...
- 
-> Oooooh. The page cache copy done when breaking a shared extent needs
-> to lock out page faults on both the source and destination, but it
-> still needs to be able to populate the page cache of both the source
-> and destination file.....
-> 
-> .... and vfs_dedupe_file_range_compare() has to be able to read
-> pages from both the source and destination file to determine that
-> the contents are identical and that's done while we hold the
-> XFS_MMAPLOCK exclusively so the compare is atomic w.r.t. all other
-> user data modification operations being run....
+In an attempt to consolidate some of the feedback from the previous
+proposals, I wrote a new attempt to solve the file system error reporting
+problem.  Before I spend more time polishing it, I'd like to hear your
+feedback if I'm going in the wrong direction, in particular with the
+modifications to fsnotify.
 
-So I started wondering why fstests passed when reading this :) The reason
-is that vfs_dedupe_get_page() does not use standard page cache filling path
-(neither readahead API nor filemap_read()), instead it uses
-read_mapping_page() and so gets into page cache filling path below the
-level at which we get invalidate_lock and thus everything works as it
-should. So read_mapping_page() is similar to places like e.g.
-block_truncate_page() or block_write_begin() which may end up filling in
-page cache contents but they rely on upper layers to already hold
-appropriate locks. I'll add a comment to read_mapping_page() about this.
-Once all filesystems are converted to use invalidate_lock, I also want to
-add WARN_ON_ONCE() to various places verifying that invalidate_lock is held
-as it should...
- 
-> I now have many doubts that this "serialise page faults by locking
-> out page cache instantiation" method actually works as a generic
-> mechanism. It's not just page cache invalidation that relies on
-> being able to lock out page faults: copy-on-write and deduplication
-> both require the ability to populate the page cache with source data
-> while page faults are locked out so the data can be compared/copied
-> atomically with the extent level manipulations and so user data
-> modifications cannot occur until the physical extent manipulation
-> operation has completed.
+This RFC follows up on my previous proposals which attempted to leverage
+watch_queue[1] and fsnotify[2] to provide a mechanism for file systems
+to push error notifications to user space.  This proposal starts by, as
+suggested by Darrick, limiting the scope of what I'm trying to do to an
+interface for administrators to monitor the health of a file system,
+instead of a generic inteface for file errors.  Therefore, this doesn't
+solve the problem of writeback errors or the need to watch a specific
+subsystem.
 
-Hum, that is a good point. So there are actually two different things you
-want to block at different places:
+* Format
 
-1) You really want to block page cache instantiation for operations such as
-hole punch as that operation mutates data and thus contents would become
-stale.
+The feature is implemented on top of fanotify, as a new type of fanotify
+mark, FAN_ERROR, which a file system monitoring tool can register to
+receive notifications.  A notification is split in three parts, and only
+the first is guaranteed to exist for any given error event:
 
-2) You want to block page cache *modification* for operations such as
-dedupe while keeping page cache in place. This is somewhat different
-requirement but invalidate_lock can, in principle, cover it as well.
-Basically we just need to keep invalidate_lock usage in .page_mkwrite
-helpers. The question remains whether invalidate_lock is still a good name
-with this usage in mind and I probably need to update a documentation to
-reflect this usage.
+ - FS generic data: A file system agnostic structure that has a generic
+ error code and identifies the filesystem.  Basically, it let's
+ userspace know something happen on a monitored filesystem.
 
-								Honza
+ - FS location data: Identifies where in the code the problem
+ happened. (This is important for the use case of analysing frequent
+ error points that we discussed earlier).
+
+ - FS specific data: A detailed error report in a filesystem specific
+ format that details what the error is.  Ideally, a capable monitoring
+ tool can use the information here for error recovery.  For instance,
+ xfs can put the xfs_scrub structures here, ext4 can send its error
+ reports, etc.  An example of usage is done in the ext4 patch of this
+ series.
+
+More details on the information in each record can be found on the
+documentation introduced in patch 15.
+
+* Using fanotify
+
+Using fanotify for this kind of thing is slightly tricky because we want
+to guarantee delivery in some complicated conditions, for instance, the
+file system might want to send an error while holding several locks.
+
+Instead of working around file system constraints at the file system
+level, this proposal tries to make the FAN_ERROR submission safe in
+those contexts.  This is done with a new mode in fsnotify that
+preallocates the memory at group creation to be used for the
+notification submission.
+
+This new mode in fsnotify introduces a ring buffer to queue
+notifications, which eliminates the allocation path in fsnotify.  From
+what I saw, the allocation is the only problem in fsnotify for
+filesystems to submit errors in constrained situations.
+
+* Visibility
+
+Since the usecase is limited to a tool for whole file system monitoring,
+errors are associated with the superblock and visible filesystem-wide.
+It is assumed and required that userspace has CAP_SYS_ADMIN.
+
+* Testing
+
+This was tested with corrupted ext4 images in a few scenarios, which
+caused errors to be triggered and monitored with the sample tool
+provided in the next to final patch.
+
+* patches
+
+Patches 1-4 massage fanotify attempt to refactor fanotify a bit for
+the patches to come.  Patch 5 introduce the ring buffer interface to
+fsnotify, while patch 6 enable this support in fanotify.  Patch 7, 8 wire
+the FS_ERROR event type, which will be used by filesystems.  In
+sequennce, patches 9-12 implement the FAN_ERROR record types and create
+the new event.  Patch 13 is an ext4 example implementation supporting
+this feature.  Finally, patches 14 and 15 document and provide examples
+of a userspace tool that uses this feature.
+
+I also pushed the full series to:
+
+  https://gitlab.collabora.com/krisman/linux -b fanotify-notifications
+
+[1] https://lwn.net/Articles/839310/
+[2] https://www.spinics.net/lists/linux-fsdevel/msg187075.html
+
+Gabriel Krisman Bertazi (15):
+  fanotify: Fold event size calculation to its own function
+  fanotify: Split fsid check from other fid mode checks
+  fsnotify: Wire flags field on group allocation
+  fsnotify: Wire up group information on event initialization
+  fsnotify: Support event submission through ring buffer
+  fanotify: Support submission through ring buffer
+  fsnotify: Support FS_ERROR event type
+  fsnotify: Introduce helpers to send error_events
+  fanotify: Introduce generic error record
+  fanotify: Introduce code location record
+  fanotify: Introduce filesystem specific data record
+  fanotify: Introduce the FAN_ERROR mark
+  ext4: Send notifications on error
+  samples: Add fs error monitoring example
+  Documentation: Document the FAN_ERROR framework
+
+ .../admin-guide/filesystem-monitoring.rst     | 103 ++++++
+ Documentation/admin-guide/index.rst           |   1 +
+ fs/ext4/super.c                               |  60 +++-
+ fs/notify/Makefile                            |   2 +-
+ fs/notify/dnotify/dnotify.c                   |   2 +-
+ fs/notify/fanotify/fanotify.c                 | 127 +++++--
+ fs/notify/fanotify/fanotify.h                 |  35 +-
+ fs/notify/fanotify/fanotify_user.c            | 319 ++++++++++++++----
+ fs/notify/fsnotify.c                          |   2 +-
+ fs/notify/group.c                             |  25 +-
+ fs/notify/inotify/inotify_fsnotify.c          |   2 +-
+ fs/notify/inotify/inotify_user.c              |   4 +-
+ fs/notify/notification.c                      |  10 +
+ fs/notify/ring.c                              | 199 +++++++++++
+ include/linux/fanotify.h                      |  12 +-
+ include/linux/fsnotify.h                      |  15 +
+ include/linux/fsnotify_backend.h              |  63 +++-
+ include/uapi/linux/ext4-notify.h              |  17 +
+ include/uapi/linux/fanotify.h                 |  26 ++
+ kernel/audit_fsnotify.c                       |   2 +-
+ kernel/audit_tree.c                           |   2 +-
+ kernel/audit_watch.c                          |   2 +-
+ samples/Kconfig                               |   7 +
+ samples/Makefile                              |   1 +
+ samples/fanotify/Makefile                     |   3 +
+ samples/fanotify/fs-monitor.c                 | 135 ++++++++
+ 26 files changed, 1034 insertions(+), 142 deletions(-)
+ create mode 100644 Documentation/admin-guide/filesystem-monitoring.rst
+ create mode 100644 fs/notify/ring.c
+ create mode 100644 include/uapi/linux/ext4-notify.h
+ create mode 100644 samples/fanotify/Makefile
+ create mode 100644 samples/fanotify/fs-monitor.c
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.31.0
+
