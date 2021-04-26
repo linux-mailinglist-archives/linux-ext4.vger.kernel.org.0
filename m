@@ -2,137 +2,101 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3ACF36ABBA
-	for <lists+linux-ext4@lfdr.de>; Mon, 26 Apr 2021 07:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1354E36AC0F
+	for <lists+linux-ext4@lfdr.de>; Mon, 26 Apr 2021 08:15:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231575AbhDZFGj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 26 Apr 2021 01:06:39 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:32200 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229469AbhDZFGi (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 26 Apr 2021 01:06:38 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13Q52WWq077692;
-        Mon, 26 Apr 2021 01:05:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=WLH5V13t+J++eN7nmEl8ThQX2/hBAhMy5xmoM6LjjbQ=;
- b=VDKbXMZyNUaikE3uPh6LJK+Vdl3AQ8Eq2Q1n6k7eHQotY9ZqiYmltMnXstCJ13ua2EwS
- /bGYEYexmh/bglR4AdjTiCroDuZlJf4LavmkTsOzo+HADiTGnyzJGyOHMRI2FJleJ/OW
- dwEMCEx0auvs4Ad2+DXVl00acafJK6vfZp39FeVgYP8tUlNL4trLIlL4i81FQr866UfW
- Jk7swIikIEwMLOXI7USq+I9rmPZK68/M8qrcmiBTDNtOHLhdKGIR5pjUa/iqbOsJ6yWx
- cQb4QUc4xH7lK/mjwHLTl9M1rlBwkkhBKir3yMkEcnhpYeSrpmFaPCHN1wCnIukqO31a 8A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 385mc5judk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 26 Apr 2021 01:05:55 -0400
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13Q53arc086065;
-        Mon, 26 Apr 2021 01:05:55 -0400
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 385mc5jud2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 26 Apr 2021 01:05:54 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13Q53Lb3008874;
-        Mon, 26 Apr 2021 05:05:52 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma01fra.de.ibm.com with ESMTP id 384ay80akr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 26 Apr 2021 05:05:52 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13Q55Q3Y32047368
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 26 Apr 2021 05:05:26 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2EA725204F;
-        Mon, 26 Apr 2021 05:05:50 +0000 (GMT)
-Received: from localhost (unknown [9.85.71.45])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id CDCBF52051;
-        Mon, 26 Apr 2021 05:05:46 +0000 (GMT)
-Date:   Mon, 26 Apr 2021 10:35:45 +0530
-From:   riteshh <riteshh@linux.ibm.com>
-To:     Joseph Qi <joseph.qi@linux.alibaba.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
+        id S231843AbhDZGQb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 26 Apr 2021 02:16:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229510AbhDZGQb (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 26 Apr 2021 02:16:31 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DE46C061574
+        for <linux-ext4@vger.kernel.org>; Sun, 25 Apr 2021 23:15:48 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id h11so7218989pfn.0
+        for <linux-ext4@vger.kernel.org>; Sun, 25 Apr 2021 23:15:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xBi8rWFCOuAu/mw5XW+KDcCvWed0QIWq8cUNK1fsQYQ=;
+        b=pBtnqD2IxbM75q6awAod8WQt6BLVb/tQDGLPkaqrMA6atzOWAQN08w0/9gIlUb38Ys
+         FQYjhnKDUav/oCW4ipOOcWeEGTYdwxFuOqzhRv7K0N1jZhvYcJJY2o08sxYAPATVVE6w
+         /2W4UyGGvdKoX3gzamnu6fLGoKkLqjNA97xXgs+UebPvNNezkGNpjwunjxgL8LO+ctFE
+         y/DJk0Hytk7WlFsiLQogDvav8li+2dnKT6RmygVdIiPUbVLvYCRD1RcZyA6MP2CBGoMI
+         okKNwZVbI7dvCWRFtmjdQQ0pHO7ZIL5TLU5Tkua/ZFAmzjD4Ob2R16jglmsUkgcq2nPA
+         PiHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xBi8rWFCOuAu/mw5XW+KDcCvWed0QIWq8cUNK1fsQYQ=;
+        b=T42Yd/su2a+aokg0yKUhu3OF4348BWUp5mXcDqcpMdtqwFYRpfKIp0OUtek/UxQ+g4
+         T5RRp+Y9RbXx/t2CO1gkUnEeO2sIeQm876A8ak2nQOiwTtJvxOTIIWfwxgnYFzAgOPl0
+         Pn06/h99hwUE1/6UHR7pid3y12xlnOO8vS75x+SzOyQ5tRIK6B7WELPcZxbOPqgnssOc
+         fa5kKcwAE578617RVawDmQptcbiMazEy8e0Uy6lxbky628qOb2BF7KfikonjdUSdQpMA
+         VPx03NybmotU1C7g9jRVcSFYNzxE4gmKLrxugFhQxAfgyB5AdYhnbYhmqLkNV4oxfRzp
+         6Ivw==
+X-Gm-Message-State: AOAM533tMpjcUvrB2pOTR8hftn7fx0EoyvmJ39oV0vZrMpdwiAhWYu08
+        AJFvZxFp4oH1IpzKXkM1lgaOvqKlYDQ=
+X-Google-Smtp-Source: ABdhPJxWRiyK6UdldpjNChMAkjhmJSHgvdjC13tj1Fz3kNd06vPBDi1R6NsROejivfJDugQtZWbsow==
+X-Received: by 2002:a63:531b:: with SMTP id h27mr15434207pgb.395.1619417747823;
+        Sun, 25 Apr 2021 23:15:47 -0700 (PDT)
+Received: from B-D1K7ML85-0059.local ([47.89.83.93])
+        by smtp.gmail.com with ESMTPSA id e13sm9980505pfi.199.2021.04.25.23.15.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 25 Apr 2021 23:15:47 -0700 (PDT)
 Subject: Re: [PATCH] ext4: remove redundant check buffer_uptodate()
-Message-ID: <20210426050545.m3fbtlwdf32lgqvu@riteshh-domain>
+To:     riteshh <riteshh@linux.ibm.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
 References: <1619407399-72280-1-git-send-email-joseph.qi@linux.alibaba.com>
+ <20210426050545.m3fbtlwdf32lgqvu@riteshh-domain>
+From:   Joseph Qi <jiangqi903@gmail.com>
+Message-ID: <4314943d-b39b-3f00-2b60-41756e6675f3@gmail.com>
+Date:   Mon, 26 Apr 2021 14:15:44 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1619407399-72280-1-git-send-email-joseph.qi@linux.alibaba.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: m6KK_TwKnhgczkZ_jZjjQWdDrzk0OGTW
-X-Proofpoint-GUID: wqJlAY8RZraWxOqVgvhEHQQal-ljq2oe
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-25_11:2021-04-23,2021-04-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 mlxlogscore=999 phishscore=0 adultscore=0
- priorityscore=1501 bulkscore=0 clxscore=1015 malwarescore=0
- impostorscore=0 mlxscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104060000 definitions=main-2104260035
+In-Reply-To: <20210426050545.m3fbtlwdf32lgqvu@riteshh-domain>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 21/04/26 11:23AM, Joseph Qi wrote:
-> Now set_buffer_uptodate() will test first and then set, so we don't have
-> to check buffer_uptodate() first, remove it to simplify code.
 
-Maybe we can change below function as well then.
-No need to check same thing twice since set_buffer_uptodate() is already doing
-the check.
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index b258e8279266..856bd9981409 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -3749,7 +3749,7 @@ static inline int ext4_buffer_uptodate(struct buffer_head *bh)
-         * have to read the block because we may read the old data
-         * successfully.
-         */
--       if (!buffer_uptodate(bh) && buffer_write_io_error(bh))
-+       if (buffer_write_io_error(bh))
-                set_buffer_uptodate(bh);
-        return buffer_uptodate(bh);
- }
 
-With that pls feel free to add:
-Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
+On 4/26/21 1:05 PM, riteshh wrote:
+> On 21/04/26 11:23AM, Joseph Qi wrote:
+>> Now set_buffer_uptodate() will test first and then set, so we don't have
+>> to check buffer_uptodate() first, remove it to simplify code.
+> 
+> Maybe we can change below function as well then.
+> No need to check same thing twice since set_buffer_uptodate() is already doing
+> the check.
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index b258e8279266..856bd9981409 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -3749,7 +3749,7 @@ static inline int ext4_buffer_uptodate(struct buffer_head *bh)
+>          * have to read the block because we may read the old data
+>          * successfully.
+>          */
+> -       if (!buffer_uptodate(bh) && buffer_write_io_error(bh))
+> +       if (buffer_write_io_error(bh))
+>                 set_buffer_uptodate(bh);
+>         return buffer_uptodate(bh);
+>  }
+> 
+> With that pls feel free to add:
+> Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> 
 
->
-> Signed-off-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-> ---
->  fs/ext4/inode.c | 9 +++------
->  1 file changed, 3 insertions(+), 6 deletions(-)
->
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 0948a43..9e02538 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -1065,10 +1065,8 @@ static int ext4_block_write_begin(struct page *page, loff_t pos, unsigned len,
->  	    block++, block_start = block_end, bh = bh->b_this_page) {
->  		block_end = block_start + blocksize;
->  		if (block_end <= from || block_start >= to) {
-> -			if (PageUptodate(page)) {
-> -				if (!buffer_uptodate(bh))
-> -					set_buffer_uptodate(bh);
-> -			}
-> +			if (PageUptodate(page))
-> +				set_buffer_uptodate(bh);
->  			continue;
->  		}
->  		if (buffer_new(bh))
-> @@ -1092,8 +1090,7 @@ static int ext4_block_write_begin(struct page *page, loff_t pos, unsigned len,
->  			}
->  		}
->  		if (PageUptodate(page)) {
-> -			if (!buffer_uptodate(bh))
-> -				set_buffer_uptodate(bh);
-> +			set_buffer_uptodate(bh);
->  			continue;
->  		}
->  		if (!buffer_uptodate(bh) && !buffer_delay(bh) &&
-> --
-> 1.8.3.1
->
+Sure, will send v2 with above addressed.
+
+Thanks,
+Joseph
