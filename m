@@ -2,54 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E16236BEB4
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Apr 2021 07:04:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D21AD36BEFD
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Apr 2021 07:39:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229801AbhD0FEv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 27 Apr 2021 01:04:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42644 "EHLO
+        id S229902AbhD0Fkf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 27 Apr 2021 01:40:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229755AbhD0FEu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Apr 2021 01:04:50 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 105A3C06175F;
-        Mon, 26 Apr 2021 22:04:08 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id e186so5370337iof.7;
-        Mon, 26 Apr 2021 22:04:08 -0700 (PDT)
+        with ESMTP id S229536AbhD0Fkc (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Apr 2021 01:40:32 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D88CC061574;
+        Mon, 26 Apr 2021 22:39:49 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id r5so8429861ilb.2;
+        Mon, 26 Apr 2021 22:39:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=kVBTKgwVPMCu3qySU0w50mv3CZTJa6GH+1DgmX3JJ3Y=;
-        b=RAqLZPCPQdSiP0Yt00GykPqWT7lfjS7aFf4xCszy5HEaVsXr8pYyKzqz8QwDD+haj4
-         XrH7RlXN48pHquYyaRMY7qZCB2urh3V3HdiVVOAq+HcJYtbTzZueOa9BUe3yAdSey7XE
-         cC4y5GdFh/KQXecSQRPk01s/rmIS/INMfV7HbcduFp1/TS3K4n7DKwPTdqOXxbFNm4hS
-         5PeeHNcg2fmrW/1FrzP2rtazpf7I20acWkxmKBBdFy0XvASbPHCCxTHpRUghWirYksQT
-         rpiOFkIbxSSZaSatZOYjqsX3+N3hAa5aLQMoyQnBbrzqAO2tBVpQYlZ9NLaW/9RvN9xO
-         xxSg==
+        bh=HR6fdrvmxf/u/fSe+9RKbOvxnOH1tRmTt4LGT8UPlO0=;
+        b=o6fpFBybMXiIxoVdJntZNWjCf9+bQ/zkoDdF8tbeAGbrQIBOA2laXnv40YOydfkXwh
+         JoglC2N3PEec6Mkxb1IpVQBSHGUmYkx04e2+QLyisVMn1fuXOlzJtO/8i2NLbo31jJNX
+         QUW2Ww0uI6WyyIZ6oGiv6GUGh221EzQvOzGXEuU9KXZ2xzSWQnH0iUbnu3fSsdsyCfx5
+         Tq5falxVrQW2qBiHLH3THyEnKDpF2Qwxw9Qdz/2QfdqlG63ihxgPdOAb+aMyv0EiTtPT
+         yavOiMpy2zfDxRtyL/VHmMqxcHaOzMQLBnsEHAEpWIqt4Jvc9OybwmwU7uLxWbxE1peS
+         W4Ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=kVBTKgwVPMCu3qySU0w50mv3CZTJa6GH+1DgmX3JJ3Y=;
-        b=pJXWzn/c3PZ7bPbTmr/pRxcPLWaKGOxqROM00d91G7dES1wdavWS/9Yt76xEnZJV2V
-         JorSSJI52R9/9bGtlZWhcwU4QKOOdlipRhuiqcudWBQpbvNYzhJjcUTrw7WCoTapFj9w
-         6+YtGM4wH0K+qcAZnvINfMEOQMOsPDNwBIJW6QG3bI70KR6HQA1ICeSgMSTq8y6JfJN/
-         KPKsJugwhUJ+WmXzZq2T+5AuRQSD4tm1uZSBQ+LqFZTOU3d9ZWsgeNTcLcXFTWuQoaNU
-         4o3DBWG66FYidVun5Ri5rXW8JYkoknDgCcO+7I01EHmpUQ1+9N/7L3pTFY1tsTPJ1sHo
-         qCUg==
-X-Gm-Message-State: AOAM532Jj9k0Jn1Y67I7F0LqbCFS56tHsADpgYl+8qvf2ScWAj7caDm0
-        vY+eNRtd09SoCK1SoLGVylo8r3i9gn21IslJt8Y=
-X-Google-Smtp-Source: ABdhPJxXkKmZ5B0/KF/FKdP6GWi6hCyVwhUZ8Wqyo9Pcq7HhHamd26KzHdKpbXI8DWvRDmRm/RUJxfwO4/j1QXQMgmY=
-X-Received: by 2002:a05:6602:58d:: with SMTP id v13mr17005697iox.64.1619499847554;
- Mon, 26 Apr 2021 22:04:07 -0700 (PDT)
+        bh=HR6fdrvmxf/u/fSe+9RKbOvxnOH1tRmTt4LGT8UPlO0=;
+        b=OuO/jmuvzpmC3G15FkPHytwRdRAKANgJO8gtAMHocHJNMnPpE8bJ10amK3+Fb86k9k
+         muzpcB4pRrQl//J/jkbIlc5C03/lJKzZXRXL4fNWNnlOlcmwhlMWPy/6L357n2LeCc+g
+         uHKG5jmoi3kDte8AyLjaUukhF9WOU7kyQ9eSTk09CucvmNU5nteIQhfI/ldjNgbys/ER
+         kCjT0CkMBX+iu80fJYpO1uvK8QVrz0o7DSGkf10GFdBCts040JJcYz1ixPpKiMuPKcqU
+         UWJcP5tNIRPXJ8CWQDsNL27Bremremg2du4ZlnIhMG8qn3DLpWoqcM/DST4kTB28hw0S
+         S5Dw==
+X-Gm-Message-State: AOAM530QTUGnoHo2bt7sYSrBBtmfbmRmHJ2XNn1yrPxhSOP5n9D/UI+n
+        auI1yFrYr/UGjSjOHl86on2D5ivVAG+kE193Z+E=
+X-Google-Smtp-Source: ABdhPJwE49Bi0Y5QTmSKGBhSAa7+rSNK7m+159b0CBbSEAhbJQYhcP/BpmY8IDQCysF0VjiINb3vMUhm5lSMxXwGa9w=
+X-Received: by 2002:a92:b74a:: with SMTP id c10mr16716218ilm.72.1619501989018;
+ Mon, 26 Apr 2021 22:39:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210426184201.4177978-1-krisman@collabora.com> <20210426184201.4177978-4-krisman@collabora.com>
-In-Reply-To: <20210426184201.4177978-4-krisman@collabora.com>
+References: <20210426184201.4177978-1-krisman@collabora.com> <20210426184201.4177978-6-krisman@collabora.com>
+In-Reply-To: <20210426184201.4177978-6-krisman@collabora.com>
 From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Tue, 27 Apr 2021 08:03:56 +0300
-Message-ID: <CAOQ4uxjUp_GecrV5VdBArN07PWQBUguQvwyL6K7NuXK=8yFMAw@mail.gmail.com>
-Subject: Re: [PATCH RFC 03/15] fsnotify: Wire flags field on group allocation
+Date:   Tue, 27 Apr 2021 08:39:37 +0300
+Message-ID: <CAOQ4uxhxao_R-xuKHt4_bC+ADd9DkEFJgiHH=vwQxdOJXCpTAg@mail.gmail.com>
+Subject: Re: [PATCH RFC 05/15] fsnotify: Support event submission through ring buffer
 To:     Gabriel Krisman Bertazi <krisman@collabora.com>
 Cc:     Theodore Tso <tytso@mit.edu>,
         "Darrick J. Wong" <djwong@kernel.org>,
@@ -66,110 +66,329 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 On Mon, Apr 26, 2021 at 9:42 PM Gabriel Krisman Bertazi
 <krisman@collabora.com> wrote:
 >
-> Introduce a flags field in fsnotify_group to track the mode of
-> submission this group has.
+> In order to support file system health/error reporting over fanotify,
+> fsnotify needs to expose a submission path that doesn't allow sleeping.
+> The only problem I identified with the current submission path is the
+> need to dynamically allocate memory for the event queue.
+>
+> This patch avoids the problem by introducing a new mode in fsnotify,
+> where a ring buffer is used to submit events for a group.  Each group
+> has its own ring buffer, and error notifications are submitted
+> exclusively through it.
 >
 > Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 > ---
->  fs/notify/dnotify/dnotify.c        |  2 +-
->  fs/notify/fanotify/fanotify_user.c |  4 ++--
->  fs/notify/group.c                  | 13 ++++++++-----
->  fs/notify/inotify/inotify_user.c   |  2 +-
->  include/linux/fsnotify_backend.h   |  7 +++++--
->  kernel/audit_fsnotify.c            |  2 +-
->  kernel/audit_tree.c                |  2 +-
->  kernel/audit_watch.c               |  2 +-
->  8 files changed, 20 insertions(+), 14 deletions(-)
+>  fs/notify/Makefile               |   2 +-
+>  fs/notify/group.c                |  12 +-
+>  fs/notify/notification.c         |  10 ++
+>  fs/notify/ring.c                 | 199 +++++++++++++++++++++++++++++++
+>  include/linux/fsnotify_backend.h |  37 +++++-
+>  5 files changed, 255 insertions(+), 5 deletions(-)
+>  create mode 100644 fs/notify/ring.c
 >
-> diff --git a/fs/notify/dnotify/dnotify.c b/fs/notify/dnotify/dnotify.c
-> index e85e13c50d6d..37960c8750e4 100644
-> --- a/fs/notify/dnotify/dnotify.c
-> +++ b/fs/notify/dnotify/dnotify.c
-> @@ -383,7 +383,7 @@ static int __init dnotify_init(void)
->                                           SLAB_PANIC|SLAB_ACCOUNT);
->         dnotify_mark_cache = KMEM_CACHE(dnotify_mark, SLAB_PANIC|SLAB_ACCOUNT);
+> diff --git a/fs/notify/Makefile b/fs/notify/Makefile
+> index 63a4b8828df4..61dae1e90f2d 100644
+> --- a/fs/notify/Makefile
+> +++ b/fs/notify/Makefile
+> @@ -1,6 +1,6 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  obj-$(CONFIG_FSNOTIFY)         += fsnotify.o notification.o group.o mark.o \
+> -                                  fdinfo.o
+> +                                  fdinfo.o ring.o
 >
-> -       dnotify_group = fsnotify_alloc_group(&dnotify_fsnotify_ops);
-> +       dnotify_group = fsnotify_alloc_group(&dnotify_fsnotify_ops, 0);
->         if (IS_ERR(dnotify_group))
->                 panic("unable to allocate fsnotify group for dnotify\n");
->         return 0;
-> diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
-> index e0d113e3b65c..f50c4ab721e3 100644
-> --- a/fs/notify/fanotify/fanotify_user.c
-> +++ b/fs/notify/fanotify/fanotify_user.c
-> @@ -929,7 +929,7 @@ static struct fsnotify_event *fanotify_alloc_overflow_event(void)
->  SYSCALL_DEFINE2(fanotify_init, unsigned int, flags, unsigned int, event_f_flags)
->  {
->         struct fsnotify_group *group;
-> -       int f_flags, fd;
-> +       int f_flags, fd, fsn_flags = 0;
->         struct user_struct *user;
->         unsigned int fid_mode = flags & FANOTIFY_FID_BITS;
->         unsigned int class = flags & FANOTIFY_CLASS_BITS;
-> @@ -982,7 +982,7 @@ SYSCALL_DEFINE2(fanotify_init, unsigned int, flags, unsigned int, event_f_flags)
->                 f_flags |= O_NONBLOCK;
->
->         /* fsnotify_alloc_group takes a ref.  Dropped in fanotify_release */
-> -       group = fsnotify_alloc_user_group(&fanotify_fsnotify_ops);
-> +       group = fsnotify_alloc_user_group(&fanotify_fsnotify_ops, fsn_flags);
->         if (IS_ERR(group)) {
->                 free_uid(user);
->                 return PTR_ERR(group);
+>  obj-y                  += dnotify/
+>  obj-y                  += inotify/
 > diff --git a/fs/notify/group.c b/fs/notify/group.c
-> index ffd723ffe46d..08acb1afc0c2 100644
+> index 08acb1afc0c2..b99b3de36696 100644
 > --- a/fs/notify/group.c
 > +++ b/fs/notify/group.c
-> @@ -112,7 +112,7 @@ void fsnotify_put_group(struct fsnotify_group *group)
->  EXPORT_SYMBOL_GPL(fsnotify_put_group);
+> @@ -81,7 +81,10 @@ void fsnotify_destroy_group(struct fsnotify_group *group)
+>          * notification against this group. So clearing the notification queue
+>          * of all events is reliable now.
+>          */
+> -       fsnotify_flush_notify(group);
+> +       if (group->flags & FSN_SUBMISSION_RING_BUFFER)
+> +               fsnotify_free_ring_buffer(group);
+> +       else
+> +               fsnotify_flush_notify(group);
 >
->  static struct fsnotify_group *__fsnotify_alloc_group(
-> -                               const struct fsnotify_ops *ops, gfp_t gfp)
-> +       const struct fsnotify_ops *ops, unsigned int flags, gfp_t gfp)
->  {
->         struct fsnotify_group *group;
->
-> @@ -134,6 +134,7 @@ static struct fsnotify_group *__fsnotify_alloc_group(
->         INIT_LIST_HEAD(&group->marks_list);
->
+>         /*
+>          * Destroy overflow event (we cannot use fsnotify_destroy_event() as
+> @@ -136,6 +139,13 @@ static struct fsnotify_group *__fsnotify_alloc_group(
 >         group->ops = ops;
-> +       group->flags = flags;
+>         group->flags = flags;
 >
+> +       if (group->flags & FSN_SUBMISSION_RING_BUFFER) {
+> +               if (fsnotify_create_ring_buffer(group)) {
+> +                       kfree(group);
+> +                       return ERR_PTR(-ENOMEM);
+> +               }
+> +       }
+> +
 >         return group;
 >  }
-> @@ -141,18 +142,20 @@ static struct fsnotify_group *__fsnotify_alloc_group(
->  /*
->   * Create a new fsnotify_group and hold a reference for the group returned.
->   */
-> -struct fsnotify_group *fsnotify_alloc_group(const struct fsnotify_ops *ops)
-> +struct fsnotify_group *fsnotify_alloc_group(const struct fsnotify_ops *ops,
-> +                                           unsigned int flags)
->  {
-> -       return __fsnotify_alloc_group(ops, GFP_KERNEL);
-> +       return __fsnotify_alloc_group(ops, flags, GFP_KERNEL);
->  }
->  EXPORT_SYMBOL_GPL(fsnotify_alloc_group);
 >
->  /*
->   * Create a new fsnotify_group and hold a reference for the group returned.
->   */
-> -struct fsnotify_group *fsnotify_alloc_user_group(const struct fsnotify_ops *ops)
-> +struct fsnotify_group *fsnotify_alloc_user_group(const struct fsnotify_ops *ops,
-> +                                                unsigned int flags)
+> diff --git a/fs/notify/notification.c b/fs/notify/notification.c
+> index 75d79d6d3ef0..32f97e7b7a80 100644
+> --- a/fs/notify/notification.c
+> +++ b/fs/notify/notification.c
+> @@ -51,6 +51,10 @@ EXPORT_SYMBOL_GPL(fsnotify_get_cookie);
+>  bool fsnotify_notify_queue_is_empty(struct fsnotify_group *group)
 >  {
-> -       return __fsnotify_alloc_group(ops, GFP_KERNEL_ACCOUNT);
-> +       return __fsnotify_alloc_group(ops, flags, GFP_KERNEL_ACCOUNT);
+>         assert_spin_locked(&group->notification_lock);
+> +
+> +       if (group->flags & FSN_SUBMISSION_RING_BUFFER)
+> +               return fsnotify_ring_notify_queue_is_empty(group);
+> +
+>         return list_empty(&group->notification_list) ? true : false;
 >  }
->  EXPORT_SYMBOL_GPL(fsnotify_alloc_user_group);
 >
+> @@ -132,6 +136,9 @@ void fsnotify_remove_queued_event(struct fsnotify_group *group,
+>                                   struct fsnotify_event *event)
+>  {
+>         assert_spin_locked(&group->notification_lock);
+> +
+> +       if (group->flags & FSN_SUBMISSION_RING_BUFFER)
+> +               return;
+>         /*
+>          * We need to init list head for the case of overflow event so that
+>          * check in fsnotify_add_event() works
+> @@ -166,6 +173,9 @@ struct fsnotify_event *fsnotify_peek_first_event(struct fsnotify_group *group)
+>  {
+>         assert_spin_locked(&group->notification_lock);
+>
+> +       if (group->flags & FSN_SUBMISSION_RING_BUFFER)
+> +               return fsnotify_ring_peek_first_event(group);
+> +
+>         return list_first_entry(&group->notification_list,
+>                                 struct fsnotify_event, list);
+>  }
+> diff --git a/fs/notify/ring.c b/fs/notify/ring.c
+> new file mode 100644
+> index 000000000000..75e8af1f8d80
+> --- /dev/null
+> +++ b/fs/notify/ring.c
+> @@ -0,0 +1,199 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <linux/types.h>
+> +#include <linux/fsnotify.h>
+> +#include <linux/memcontrol.h>
+> +
+> +#define INVALID_RING_SLOT -1
+> +
+> +#define FSNOTIFY_RING_PAGES 16
+> +
+> +#define NEXT_SLOT(cur, len, ring_size) ((cur + len) & (ring_size-1))
+> +#define NEXT_PAGE(cur, ring_size) (round_up(cur, PAGE_SIZE) & (ring_size-1))
+> +
+> +bool fsnotify_ring_notify_queue_is_empty(struct fsnotify_group *group)
+> +{
+> +       assert_spin_locked(&group->notification_lock);
+> +
+> +       if (group->ring_buffer.tail == group->ring_buffer.head)
+> +               return true;
+> +       return false;
+> +}
+> +
+> +struct fsnotify_event *fsnotify_ring_peek_first_event(struct fsnotify_group *group)
+> +{
+> +       u64 ring_size = group->ring_buffer.nr_pages << PAGE_SHIFT;
+> +       struct fsnotify_event *fsn;
+> +       char *kaddr;
+> +       u64 tail;
+> +
+> +       assert_spin_locked(&group->notification_lock);
+> +
+> +again:
+> +       tail = group->ring_buffer.tail;
+> +
+> +       if ((PAGE_SIZE - (tail & (PAGE_SIZE-1))) < sizeof(struct fsnotify_event)) {
+> +               group->ring_buffer.tail = NEXT_PAGE(tail, ring_size);
+> +               goto again;
+> +       }
+> +
+> +       kaddr = kmap_atomic(group->ring_buffer.pages[tail / PAGE_SIZE]);
+> +       if (!kaddr)
+> +               return NULL;
+> +       fsn = (struct fsnotify_event *) (kaddr + (tail & (PAGE_SIZE-1)));
+> +
+> +       if (fsn->slot_len == INVALID_RING_SLOT) {
+> +               group->ring_buffer.tail = NEXT_PAGE(tail, ring_size);
+> +               kunmap_atomic(kaddr);
+> +               goto again;
+> +       }
+> +
+> +       /* will be unmapped when entry is consumed. */
+> +       return fsn;
+> +}
+> +
+> +void fsnotify_ring_buffer_consume_event(struct fsnotify_group *group,
+> +                                       struct fsnotify_event *event)
+> +{
+> +       u64 ring_size = group->ring_buffer.nr_pages << PAGE_SHIFT;
+> +       u64 new_tail = NEXT_SLOT(group->ring_buffer.tail, event->slot_len, ring_size);
+> +
+> +       kunmap_atomic(event);
+> +
+> +       pr_debug("%s: group=%p tail=%llx->%llx ring_size=%llu\n", __func__,
+> +                group, group->ring_buffer.tail, new_tail, ring_size);
+> +
+> +       WRITE_ONCE(group->ring_buffer.tail, new_tail);
+> +}
+> +
+> +struct fsnotify_event *fsnotify_ring_alloc_event_slot(struct fsnotify_group *group,
+> +                                                     size_t size)
+> +       __acquires(&group->notification_lock)
+> +{
+> +       struct fsnotify_event *fsn;
+> +       u64 head, tail;
+> +       u64 ring_size = group->ring_buffer.nr_pages << PAGE_SHIFT;
+> +       u64 new_head;
+> +       void *kaddr;
+> +
+> +       if (WARN_ON(!(group->flags & FSN_SUBMISSION_RING_BUFFER) || size > PAGE_SIZE))
+> +               return ERR_PTR(-EINVAL);
+> +
+> +       pr_debug("%s: start group=%p ring_size=%llu, requested=%lu\n", __func__, group,
+> +                ring_size, size);
+> +
+> +       spin_lock(&group->notification_lock);
+> +again:
+> +       head = group->ring_buffer.head;
+> +       tail = group->ring_buffer.tail;
+> +       new_head = NEXT_SLOT(head, size, ring_size);
+> +
+> +       /* head would catch up to tail, corrupting an entry. */
+> +       if ((head < tail && new_head > tail) || (head > new_head && new_head > tail)) {
+> +               fsn = ERR_PTR(-ENOMEM);
+> +               goto err;
+> +       }
+> +
+> +       /*
+> +        * Not event a skip message fits in the page. We can detect the
+> +        * lack of space. Move on to the next page.
+> +        */
+> +       if ((PAGE_SIZE - (head & (PAGE_SIZE-1))) < sizeof(struct fsnotify_event)) {
+> +               /* Start again on next page */
+> +               group->ring_buffer.head = NEXT_PAGE(head, ring_size);
+> +               goto again;
+> +       }
+> +
+> +       kaddr = kmap_atomic(group->ring_buffer.pages[head / PAGE_SIZE]);
+> +       if (!kaddr) {
+> +               fsn = ERR_PTR(-EFAULT);
+> +               goto err;
+> +       }
+> +
+> +       fsn = (struct fsnotify_event *) (kaddr + (head & (PAGE_SIZE-1)));
+> +
+> +       if ((head >> PAGE_SHIFT) != (new_head >> PAGE_SHIFT)) {
+> +               /*
+> +                * No room in the current page.  Add a fake entry
+> +                * consuming the end the page to avoid splitting event
+> +                * structure.
+> +                */
+> +               fsn->slot_len = INVALID_RING_SLOT;
+> +               kunmap_atomic(kaddr);
+> +               /* Start again on the next page */
+> +               group->ring_buffer.head = NEXT_PAGE(head, ring_size);
+> +
+> +               goto again;
+> +       }
+> +       fsn->slot_len = size;
+> +
+> +       return fsn;
+> +
+> +err:
+> +       spin_unlock(&group->notification_lock);
+> +       return fsn;
+> +}
+> +
+> +void fsnotify_ring_commit_slot(struct fsnotify_group *group, struct fsnotify_event *fsn)
+> +       __releases(&group->notification_lock)
+> +{
+> +       u64 ring_size = group->ring_buffer.nr_pages << PAGE_SHIFT;
+> +       u64 head = group->ring_buffer.head;
+> +       u64 new_head = NEXT_SLOT(head, fsn->slot_len, ring_size);
+> +
+> +       pr_debug("%s: group=%p head=%llx->%llx ring_size=%llu\n", __func__,
+> +                group, head, new_head, ring_size);
+> +
+> +       kunmap_atomic(fsn);
+> +       group->ring_buffer.head = new_head;
+> +
+> +       spin_unlock(&group->notification_lock);
+> +
+> +       wake_up(&group->notification_waitq);
+> +       kill_fasync(&group->fsn_fa, SIGIO, POLL_IN);
+> +
+> +}
+> +
+> +void fsnotify_free_ring_buffer(struct fsnotify_group *group)
+> +{
+> +       int i;
+> +
+> +       for (i = 0; i < group->ring_buffer.nr_pages; i++)
+> +               __free_page(group->ring_buffer.pages[i]);
+> +       kfree(group->ring_buffer.pages);
+> +       group->ring_buffer.nr_pages = 0;
+> +}
+> +
+> +int fsnotify_create_ring_buffer(struct fsnotify_group *group)
+> +{
+> +       int nr_pages = FSNOTIFY_RING_PAGES;
+> +       int i;
+> +
+> +       pr_debug("%s: group=%p pages=%d\n", __func__, group, nr_pages);
+> +
+> +       group->ring_buffer.pages = kmalloc_array(nr_pages, sizeof(struct pages *),
+> +                                                GFP_KERNEL);
+> +       if (!group->ring_buffer.pages)
+> +               return -ENOMEM;
+> +
+> +       group->ring_buffer.head = 0;
+> +       group->ring_buffer.tail = 0;
+> +
+> +       for (i = 0; i < nr_pages; i++) {
+> +               group->ring_buffer.pages[i] = alloc_pages(GFP_KERNEL, 1);
+> +               if (!group->ring_buffer.pages)
+> +                       goto err_dealloc;
+> +       }
+> +
+> +       group->ring_buffer.nr_pages = nr_pages;
+> +
+> +       return 0;
+> +
+> +err_dealloc:
+> +       for (--i; i >= 0; i--)
+> +               __free_page(group->ring_buffer.pages[i]);
+> +       kfree(group->ring_buffer.pages);
+> +       group->ring_buffer.nr_pages = 0;
+> +       return -ENOMEM;
+> +}
+> +
+> +
 
-*IF* we go this way, note that fsnotify_alloc_group() doesn't need
-flags argument.
-None of the callers of fsnotify_alloc_group() ever use the
-notification list, so it
-would be better to pass flag FSN_NOTIFICATION_LIST from the backends that
-do use it (fanotify and inotify) for the sake of symmetry with FSN_RING_BUFFER
-and no need to change other callers.
+Nothing in this file is fsnotify specific.
+Is there no kernel lib implementation for this already?
+If there isn't (I'd be very surprised) please put this in lib/ and post it
+for wider review including self tests.
+
+> diff --git a/include/linux/fsnotify_backend.h b/include/linux/fsnotify_backend.h
+> index 190c6a402e98..a1a4dd69e5ed 100644
+> --- a/include/linux/fsnotify_backend.h
+> +++ b/include/linux/fsnotify_backend.h
+> @@ -74,6 +74,8 @@
+>  #define ALL_FSNOTIFY_PERM_EVENTS (FS_OPEN_PERM | FS_ACCESS_PERM | \
+>                                   FS_OPEN_EXEC_PERM)
+>
+> +#define FSN_SUBMISSION_RING_BUFFER     0x00000080
+
+FSNOTIFY_GROUP_FLAG_RING_BUFFER please (or FSN_GROUP_ if you must)
+and please define this above struct fsnotify_group, even right above the flags
+field like FSNOTIFY_CONN_FLAG_HAS_FSID
+
+*IF* we go this way :)
 
 Thanks,
 Amir.
