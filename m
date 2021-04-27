@@ -2,54 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4767236C00C
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Apr 2021 09:25:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F26F36C122
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Apr 2021 10:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231148AbhD0H0J (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 27 Apr 2021 03:26:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45438 "EHLO
+        id S234877AbhD0Ij7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 27 Apr 2021 04:39:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229989AbhD0H0I (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Apr 2021 03:26:08 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7D9EC061574;
-        Tue, 27 Apr 2021 00:25:25 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id i22so6025993ila.11;
-        Tue, 27 Apr 2021 00:25:25 -0700 (PDT)
+        with ESMTP id S231148AbhD0Ij6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Apr 2021 04:39:58 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AC62C061574;
+        Tue, 27 Apr 2021 01:39:14 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id g125so4536546iof.3;
+        Tue, 27 Apr 2021 01:39:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=KypSn7jaMxDXK61CADYpVAu4LrUoQUvUtgwxvJUGc8E=;
-        b=mIcjCJP4y7s1LeBXLcEG7c5ic6PwxjZqF3vgsUtXRBK0hBERDM7m/jzysVmfYuENXB
-         qiilfQKdrDiL/gGxX3wVOsCTj6gZB+o2cezpK6Oe4pjShs+86mK/5+8Q2pYOEEmAAVrs
-         8FCuj6WQvGRTUWqdnVYNNo5F3PjypCUTTeyxvnWZnzA09wm+SLjoSM7TxYtR/GWwiCUv
-         OWTZmh5Tg6UJaWMyUODBfwMZdC9RD2Kcn/ycaaqe02G4/g92Ki8/zandnvRJd7Mprrkv
-         2K0B90uXW/s8c9QRlRd/Skz0RiLvu6AbQxPBjETT91r+EQU54O+9NPOQx195k3ZoKYdj
-         /a6g==
+        bh=Wl9KaP9Euc+PMibq3F14vkXfHRg6Jg2IyRSH6anShfw=;
+        b=qIRme1Tm5Iq7C+h6pMw1gTDTpnxlvRTl7f53UPYVj1Vsv6tSPr5X7Ji2C32KyhK1V6
+         4qFb3dFM6hjl9yC1tITtvdGewFm2hi5cfLyK46hv1Dc+pL4KnRZt7Jsshg26sBNmyOY6
+         3cQIFTgMMe2wHNwhM9M4nX2AayZXs7YRK1VRLLjDoPQCoaH/2atUzlP9r3CsB/DrRR86
+         OSDbOFILNoqTZuk8XJVWlX3VaRL+reTyI5SYYcrB6Z8DTDStu0Q36dq8jRYIYNGvjzdc
+         kleO1JIqPrg6w8JoKQyylyvaQ4SOlRAClmyynyHrmQegTUAiQQk59BQLbdazggR7WK6G
+         q59A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=KypSn7jaMxDXK61CADYpVAu4LrUoQUvUtgwxvJUGc8E=;
-        b=BtiUPImJlyo+kciWZXoHEMQMDHAiIHDhXH7QKfjFlWRUk3CyIAhYxll6x5mX8ccmUm
-         chY3iOtkImYImml++MFmlmytvKYXROKlnyofc0mBZtsz7PyY4WR6OrfaSCATtnGZAoUn
-         7wJ7z+kiNFPkoh6iP7P53vDL3C+F7yuiUmlp8JHCfYoQQ1o7ktdJu3YcpCEVW88Hp3Mi
-         MhvdFe/hXDaAd6DHDlZmOWJqrcDWEFYjatNRBNj3pYA6ME9yLE8+FpmNOoNxxu8hFSrX
-         csclJC7/jaU/HHNZmQ11uDnMZVTEKoZyQqJigYXgnGXs42NEnElAF7v67QYH4/2bvxuT
-         H8IQ==
-X-Gm-Message-State: AOAM532Ih/PleF66hAlstId9N3M1REahF3BdRMl+yCGx/8RSTzUjoxLj
-        4k4I9yckS62IUgIVilu8FJNwmbYuSYYkkAVxXm8=
-X-Google-Smtp-Source: ABdhPJwELAdZyyNdQuQuB5kn7Eb80yLU3viH2nIiz0gKrHzo9IqRdvzSHlmGw1pmWH14fVKC7/0/0jRcxcZb+isWRrE=
-X-Received: by 2002:a92:d352:: with SMTP id a18mr5103971ilh.9.1619508325161;
- Tue, 27 Apr 2021 00:25:25 -0700 (PDT)
+        bh=Wl9KaP9Euc+PMibq3F14vkXfHRg6Jg2IyRSH6anShfw=;
+        b=rFbT12SyxEo7A/yCMoVgVPNerWOS9ZpMMEbiL4ly9aBeTzvvBKWkfQpOmjMUTclQ4m
+         ZnWc0Lo6zXERqCUIDPeELkVcIpzz+ypZnE6+eaZQopbHQfNd0jAHT88Kr9Ngv0zm9OkB
+         r/Wsa10lje2xNn+483y3VbBGsLfLQaOP4bk4283dqyamQxEIKVACZUdBj1UnwPOgZCXC
+         pVaWT0Smo6xJPYQ7JVfs4oQaiYGVq1VIOpxa9JtMgmxWlmDkWzOn70Z/+uESALlOBi53
+         Y83L1qK1ISXFm343fzcJ1koue1uoI7jm58fcrNOU6TMFkIlnlALlCwc09JcwnViUoj6E
+         pqlw==
+X-Gm-Message-State: AOAM533j5PgZxHe4rVTJQqNQ5hJnmqgp7vbu5Afq2lorDFpBKaUDMtBh
+        b+iSyhnLVia0yAwARpbGNpvotkaKIJQ6u8lijfA=
+X-Google-Smtp-Source: ABdhPJyvxUhkcMwFIcsofEldbp9u8JnbLfercFV7BBPTkFw2oarVWSL+lXLjZBJ/ztbnPfp7EbTKj6st1F+OHSCGWQo=
+X-Received: by 2002:a6b:f00f:: with SMTP id w15mr17973273ioc.72.1619512753506;
+ Tue, 27 Apr 2021 01:39:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210426184201.4177978-1-krisman@collabora.com> <20210426184201.4177978-13-krisman@collabora.com>
-In-Reply-To: <20210426184201.4177978-13-krisman@collabora.com>
+References: <20210426184201.4177978-1-krisman@collabora.com> <20210426184201.4177978-8-krisman@collabora.com>
+In-Reply-To: <20210426184201.4177978-8-krisman@collabora.com>
 From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Tue, 27 Apr 2021 10:25:14 +0300
-Message-ID: <CAOQ4uxhhyZhEwg6aiNVYc4Nbxg4PBhTtcgYE0Vqm8iONXDqg=Q@mail.gmail.com>
-Subject: Re: [PATCH RFC 12/15] fanotify: Introduce the FAN_ERROR mark
+Date:   Tue, 27 Apr 2021 11:39:02 +0300
+Message-ID: <CAOQ4uxgfjfa+j00rO8S9MnCUMUjPbOQx3OVsXLZw_VSAgB7Ckw@mail.gmail.com>
+Subject: Re: [PATCH RFC 07/15] fsnotify: Support FS_ERROR event type
 To:     Gabriel Krisman Bertazi <krisman@collabora.com>
 Cc:     Theodore Tso <tytso@mit.edu>,
         "Darrick J. Wong" <djwong@kernel.org>,
@@ -63,43 +63,92 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 9:43 PM Gabriel Krisman Bertazi
+On Mon, Apr 26, 2021 at 9:42 PM Gabriel Krisman Bertazi
 <krisman@collabora.com> wrote:
 >
-> The FAN_ERROR mark is used by filesystem wide monitoring tools to
-> receive notifications of type FS_ERROR_EVENT, emited by filesystems when
-> a problem is detected.  The error notification includes a generic error
-> descriptor, an optional location record and a filesystem specific blob.
+> Expose a new type of fsnotify event for filesystems to report errors for
+> userspace monitoring tools.  fanotify will send this type of
+> notification for FAN_ERROR marks.
 >
 > Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 > ---
->  fs/notify/fanotify/fanotify.c      | 48 +++++++++++++++++++----
->  fs/notify/fanotify/fanotify.h      |  8 ++++
->  fs/notify/fanotify/fanotify_user.c | 63 ++++++++++++++++++++++++++++++
->  include/linux/fanotify.h           |  9 ++++-
->  include/uapi/linux/fanotify.h      |  2 +
->  5 files changed, 120 insertions(+), 10 deletions(-)
+>  fs/notify/fsnotify.c             |  2 +-
+>  include/linux/fsnotify_backend.h | 16 ++++++++++++++++
+>  2 files changed, 17 insertions(+), 1 deletion(-)
 >
-> diff --git a/fs/notify/fanotify/fanotify.c b/fs/notify/fanotify/fanotify.c
-> index 98591a8155a7..6bae23d42e5e 100644
-> --- a/fs/notify/fanotify/fanotify.c
-> +++ b/fs/notify/fanotify/fanotify.c
-> @@ -240,12 +240,14 @@ static u32 fanotify_group_event_mask(struct fsnotify_group *group,
->                  __func__, iter_info->report_mask, event_mask, data, data_type);
+> diff --git a/fs/notify/fsnotify.c b/fs/notify/fsnotify.c
+> index 30d422b8c0fc..9fff35e67b37 100644
+> --- a/fs/notify/fsnotify.c
+> +++ b/fs/notify/fsnotify.c
+> @@ -558,7 +558,7 @@ static __init int fsnotify_init(void)
+>  {
+>         int ret;
 >
->         if (!fid_mode) {
-> -               /* Do we have path to open a file descriptor? */
-> -               if (!path)
-> -                       return 0;
-> -               /* Path type events are only relevant for files and dirs */
-> -               if (!d_is_reg(path->dentry) && !d_can_lookup(path->dentry))
-> -                       return 0;
-> +               if (!fanotify_is_error_event(event_mask)) {
+> -       BUILD_BUG_ON(HWEIGHT32(ALL_FSNOTIFY_BITS) != 25);
+> +       BUILD_BUG_ON(HWEIGHT32(ALL_FSNOTIFY_BITS) != 26);
+>
+>         ret = init_srcu_struct(&fsnotify_mark_srcu);
+>         if (ret)
+> diff --git a/include/linux/fsnotify_backend.h b/include/linux/fsnotify_backend.h
+> index a1a4dd69e5ed..f850bfbe30d4 100644
+> --- a/include/linux/fsnotify_backend.h
+> +++ b/include/linux/fsnotify_backend.h
+> @@ -48,6 +48,8 @@
+>  #define FS_ACCESS_PERM         0x00020000      /* access event in a permissions hook */
+>  #define FS_OPEN_EXEC_PERM      0x00040000      /* open/exec event in a permission hook */
+>
+> +#define FS_ERROR               0x00100000      /* Used for filesystem error reporting */
+> +
 
-This open coded nested condition is not nice.
-If we get as far as this, I will explain what needs to be done.
-Need helpers fanotify_is_reporting_fd(), fanotify_is_reporting_fid() and
-fanotify_is_reporting_dir_fid().
+Why skip 0x00080000?
+
+Anyway, event bits are starting to run out so I would prefer that you overload
+an existing bit used only by inotify/dnotify.
+
+FS_IN_IGNORED is completely internal to inotify and there is no need to
+set it in i_fsnotify_mask at all, so if we remove the bit from the output of
+inotify_arg_to_mask() no functionality will change and we will be able to
+overload the event bit for FS_ERROR (see patch below).
+
+I also kind of like that FS_ERROR is adjacent to FS_UMOUNT and
+FS_Q_OVERFLOW :-)
+
+Other FS_IN/FS_DN bits may also be reclaimed but it takes a bit more work
+I have patches for those.
 
 Thanks,
 Amir.
+
+diff --git a/fs/notify/inotify/inotify_user.c b/fs/notify/inotify/inotify_user.c
+index 98f61b31745a..351517bae716 100644
+--- a/fs/notify/inotify/inotify_user.c
++++ b/fs/notify/inotify/inotify_user.c
+@@ -89,10 +89,10 @@ static inline __u32 inotify_arg_to_mask(struct
+inode *inode, u32 arg)
+        __u32 mask;
+
+        /*
+-        * Everything should accept their own ignored and should receive events
+-        * when the inode is unmounted.  All directories care about children.
++        * Everything should receive events when the inode is unmounted.
++        * All directories care about children.
+         */
+-       mask = (FS_IN_IGNORED | FS_UNMOUNT);
++       mask = FS_UNMOUNT;
+        if (S_ISDIR(inode->i_mode))
+                mask |= FS_EVENT_ON_CHILD;
+
+diff --git a/include/linux/fsnotify_backend.h b/include/linux/fsnotify_backend.h
+index 1ce66748a2d2..ecbafb3f36d7 100644
+--- a/include/linux/fsnotify_backend.h
++++ b/include/linux/fsnotify_backend.h
+@@ -42,6 +42,11 @@
+
+ #define FS_UNMOUNT             0x00002000      /* inode on umount fs */
+ #define FS_Q_OVERFLOW          0x00004000      /* Event queued overflowed */
++#define FS_ERROR               0x00008000      /* Filesystem error report */
++/*
++ * FS_IN_IGNORED overloads FS_ERROR.  It is only used internally by inotify
++ * which does not support FS_ERROR.
++ */
+ #define FS_IN_IGNORED          0x00008000      /* last inotify event here */
