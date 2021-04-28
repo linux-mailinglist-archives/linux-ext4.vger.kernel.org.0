@@ -2,184 +2,116 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AF1C36C8D8
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Apr 2021 17:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E29836D42A
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Apr 2021 10:44:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237411AbhD0Pp0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 27 Apr 2021 11:45:26 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:60842 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234932AbhD0PpZ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Apr 2021 11:45:25 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id EDA2D1F426A1
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Theodore Tso <tytso@mit.edu>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.com>,
-        David Howells <dhowells@redhat.com>,
-        Khazhismel Kumykov <khazhy@google.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Ext4 <linux-ext4@vger.kernel.org>, kernel@collabora.com
-Subject: Re: [PATCH RFC 00/15] File system wide monitoring
-Organization: Collabora
-References: <20210426184201.4177978-1-krisman@collabora.com>
-        <CAOQ4uxi3yigb2gUjXHJQOVbPHR3RFDeyKc5i0X-k8CSLwurejg@mail.gmail.com>
-Date:   Tue, 27 Apr 2021 11:44:37 -0400
-In-Reply-To: <CAOQ4uxi3yigb2gUjXHJQOVbPHR3RFDeyKc5i0X-k8CSLwurejg@mail.gmail.com>
-        (Amir Goldstein's message of "Tue, 27 Apr 2021 07:11:49 +0300")
-Message-ID: <875z0791ga.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S237848AbhD1Io5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 28 Apr 2021 04:44:57 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:17404 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229643AbhD1Io5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 28 Apr 2021 04:44:57 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FVXDx45ggzlZFH;
+        Wed, 28 Apr 2021 16:42:09 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.498.0; Wed, 28 Apr 2021
+ 16:44:01 +0800
+From:   Ye Bin <yebin10@huawei.com>
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Ye Bin <yebin10@huawei.com>
+Subject: [PATCH v3] ext4: Fix bug on in ext4_es_cache_extent as ext4_split_extent_at failed
+Date:   Wed, 28 Apr 2021 16:51:58 +0800
+Message-ID: <20210428085158.3728201-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Amir Goldstein <amir73il@gmail.com> writes:
+We got follow bug_on when run fsstress with injecting IO fault:
+[130747.323114] kernel BUG at fs/ext4/extents_status.c:762!
+[130747.323117] Internal error: Oops - BUG: 0 [#1] SMP
+......
+[130747.334329] Call trace:
+[130747.334553]  ext4_es_cache_extent+0x150/0x168 [ext4]
+[130747.334975]  ext4_cache_extents+0x64/0xe8 [ext4]
+[130747.335368]  ext4_find_extent+0x300/0x330 [ext4]
+[130747.335759]  ext4_ext_map_blocks+0x74/0x1178 [ext4]
+[130747.336179]  ext4_map_blocks+0x2f4/0x5f0 [ext4]
+[130747.336567]  ext4_mpage_readpages+0x4a8/0x7a8 [ext4]
+[130747.336995]  ext4_readpage+0x54/0x100 [ext4]
+[130747.337359]  generic_file_buffered_read+0x410/0xae8
+[130747.337767]  generic_file_read_iter+0x114/0x190
+[130747.338152]  ext4_file_read_iter+0x5c/0x140 [ext4]
+[130747.338556]  __vfs_read+0x11c/0x188
+[130747.338851]  vfs_read+0x94/0x150
+[130747.339110]  ksys_read+0x74/0xf0
 
-> On Mon, Apr 26, 2021 at 9:42 PM Gabriel Krisman Bertazi
-> <krisman@collabora.com> wrote:
->>
->> Hi,
->>
->> In an attempt to consolidate some of the feedback from the previous
->> proposals, I wrote a new attempt to solve the file system error reporting
->> problem.  Before I spend more time polishing it, I'd like to hear your
->> feedback if I'm going in the wrong direction, in particular with the
->> modifications to fsnotify.
->>
->
-> IMO you are going in the right direction, but you have gone a bit too far ;-)
->
-> My understanding of the requirements and my interpretation of the feedback
-> from filesystem maintainers is that the missing piece in the ecosystem is a
-> user notification that "something went wrong". The "what went wrong" part
-> is something that users and admins have long been able to gather from the
-> kernel log and from filesystem tools (e.g. last error recorded).
->
-> I do not see the need to duplicate existing functionality in fsmonitor.
-> Don't get me wrong, I understand why it would have been nice for fsmonitor
-> to be able to get all the errors nicely without looking anywhere else, but I
-> don't think it justifies the extra complexity.
+If call ext4_ext_insert_extent failed but new extent already inserted, we just
+update "ex->ee_len = orig_ex.ee_len", this will lead to extent overlap, then
+cause bug on when cache extent.
+If call ext4_ext_insert_extent failed don't update ex->ee_len with old value.
+Maybe there will lead to block leak, but it can be fixed by fsck later.
 
-Hi Amir,
+After we fixed above issue with v2 patch, but we got the same issue.
+ext4_split_extent_at:
+{
+        ......
+        err = ext4_ext_insert_extent(handle, inode, ppath, &newex, flags);
+        if (err == -ENOSPC && (EXT4_EXT_MAY_ZEROOUT & split_flag)) {
+            ......
+            ext4_ext_try_to_merge(handle, inode, path, ex); ->step(1)
+            err = ext4_ext_dirty(handle, inode, path + path->p_depth); ->step(2)
+            if (err)
+                goto fix_extent_len;
+        ......
+        }
+        ......
+fix_extent_len:
+        ex->ee_len = orig_ex.ee_len; ->step(3)
+        ......
+}
+If step(1) have been merged, but step(2) dirty extent failed, then go to
+fix_extent_len label to fix ex->ee_len with orig_ex.ee_len. But "ex" may not be
+old one, will cause overwritten. Then will trigger the same issue as previous.
+If step(2) failed, just return error, don't fix ex->ee_len with old value.
 
-Thanks for the detailed review.
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+---
+ fs/ext4/extents.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
-The reasons for the location record and the ring buffer is the use case
-from Google to do analysis on a series of errors.  I understand this is
-important to them, which is why I expanded a bit on the 'what went
-wrong' and multiple errors.  In addition, The file system specific blob
-attempts to assist online recovery tools with more information, but it
-might make sense to do it in the future, when it is needed.
-
->> This RFC follows up on my previous proposals which attempted to leverage
->> watch_queue[1] and fsnotify[2] to provide a mechanism for file systems
->> to push error notifications to user space.  This proposal starts by, as
->> suggested by Darrick, limiting the scope of what I'm trying to do to an
->> interface for administrators to monitor the health of a file system,
->> instead of a generic inteface for file errors.  Therefore, this doesn't
->> solve the problem of writeback errors or the need to watch a specific
->> subsystem.
->>
->> * Format
->>
->> The feature is implemented on top of fanotify, as a new type of fanotify
->> mark, FAN_ERROR, which a file system monitoring tool can register to
->
-> You have a terminology mistake throughout your series.
-> FAN_ERROR is not a type of a mark, it is a type of an event.
-> A mark describes the watched object (i.e. a filesystem, mount, inode).
-
-Right.  I understand the mistake and will fix it around the series.
->
->> receive notifications.  A notification is split in three parts, and only
->> the first is guaranteed to exist for any given error event:
->>
->>  - FS generic data: A file system agnostic structure that has a generic
->>  error code and identifies the filesystem.  Basically, it let's
->>  userspace know something happen on a monitored filesystem.
->
-> I think an error seq counter per fs would be a nice addition to generic data.
-> It does not need to be persistent (it could be if filesystem supports it).
-
-Makes sense to me.
-
->>
->>  - FS location data: Identifies where in the code the problem
->>  happened. (This is important for the use case of analysing frequent
->>  error points that we discussed earlier).
->>
->>  - FS specific data: A detailed error report in a filesystem specific
->>  format that details what the error is.  Ideally, a capable monitoring
->>  tool can use the information here for error recovery.  For instance,
->>  xfs can put the xfs_scrub structures here, ext4 can send its error
->>  reports, etc.  An example of usage is done in the ext4 patch of this
->>  series.
->>
->> More details on the information in each record can be found on the
->> documentation introduced in patch 15.
->>
->> * Using fanotify
->>
->> Using fanotify for this kind of thing is slightly tricky because we want
->> to guarantee delivery in some complicated conditions, for instance, the
->> file system might want to send an error while holding several locks.
->>
->> Instead of working around file system constraints at the file system
->> level, this proposal tries to make the FAN_ERROR submission safe in
->> those contexts.  This is done with a new mode in fsnotify that
->> preallocates the memory at group creation to be used for the
->> notification submission.
->>
->> This new mode in fsnotify introduces a ring buffer to queue
->> notifications, which eliminates the allocation path in fsnotify.  From
->> what I saw, the allocation is the only problem in fsnotify for
->> filesystems to submit errors in constrained situations.
->>
->
-> The ring buffer functionality for fsnotify is interesting and it may be
-> useful on its own, but IMO, its too big of a hammer for the problem
-> at hand.
->
-> The question that you should be asking yourself is what is the
-> expected behavior in case of a flood of filesystem corruption errors.
-> I think it has already been expressed by filesystem maintainers on
-> one your previous postings, that a flood of filesystem corruption
-> errors is often noise and the only interesting information is the
-> first error.
-
-My idea was be to provide an ioctl for the user to resize the ring
-buffer when needed, to make the flood manageable. But I understand your
-main point about the ring buffer.  i'm not sure saving only the first
-notification solves Google's use case of error monitoring and analysis,
-though.  Khazhy, Ted, can you weight in?
-
-> For this reason, I think that FS_ERROR could be implemented
-> by attaching an fsnotify_error_info object to an fsnotify_sb_mark:
->
-> struct fsnotify_sb_mark {
->         struct fsnotify_mark fsn_mark;
->         struct fsnotify_error_info info;
-> }
->
-> Similar to fd sampled errseq, there can be only one error report
-> per sb-group pair (i.e. fsnotify_sb_mark) and the memory needed to store
-> the error report can be allocated at the time of setting the filesystem mark.
->
-> With this, you will not need the added complexity of the ring buffer
-> and you will not need to limit FAN_ERROR reporting to a group that
-> is only listening for FAN_ERROR, which is an unneeded limitation IMO.
-
-The limitation exists because I was concerned about not breaking the
-semantics of FAN_ACCESS and others, with regards to merged
-notifications.  I believe there should be no other reason why
-notifications of FAN_CLASS_NOTIF can't be sent to the ring buffer too.
-That limitation could be lifted for everything but permission events, I
-think.
-
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index 77c84d6f1af6..d4aa24a09d8b 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -3238,15 +3238,12 @@ static int ext4_split_extent_at(handle_t *handle,
+ 		ex->ee_len = cpu_to_le16(ee_len);
+ 		ext4_ext_try_to_merge(handle, inode, path, ex);
+ 		err = ext4_ext_dirty(handle, inode, path + path->p_depth);
+-		if (err)
+-			goto fix_extent_len;
+-
+-		/* update extent status tree */
+-		err = ext4_zeroout_es(inode, &zero_ex);
+-
+-		goto out;
+-	} else if (err)
++		if (!err)
++		        /* update extent status tree */
++		        err = ext4_zeroout_es(inode, &zero_ex);
++	} else if (err && err != -EROFS) {
+ 		goto fix_extent_len;
++	}
+ 
+ out:
+ 	ext4_ext_show_leaf(inode, path);
 -- 
-Gabriel Krisman Bertazi
+2.25.4
+
