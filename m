@@ -2,126 +2,178 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AAB836F0EA
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 Apr 2021 22:21:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 308DD36F141
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Apr 2021 22:47:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236773AbhD2UKu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 29 Apr 2021 16:10:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59330 "EHLO
+        id S236734AbhD2Us1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 29 Apr 2021 16:48:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234006AbhD2UKt (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 29 Apr 2021 16:10:49 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE547C06138B;
-        Thu, 29 Apr 2021 13:10:00 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id x2so792505lff.10;
-        Thu, 29 Apr 2021 13:10:00 -0700 (PDT)
+        with ESMTP id S235536AbhD2Us1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 29 Apr 2021 16:48:27 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72D4EC06138B
+        for <linux-ext4@vger.kernel.org>; Thu, 29 Apr 2021 13:47:40 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id s22so26889512pgk.6
+        for <linux-ext4@vger.kernel.org>; Thu, 29 Apr 2021 13:47:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=qVxRIljlMWj/xaAgQFr2JbubgIjJiWSc0KSUhA2z/UA=;
-        b=kWWBpjASwhbzasukQ6Trnitmid+QJ+rW2vQ8FiUZMnmf2AjLMAAyXw+n3RxmbGPOcd
-         JKMOoGcxglMZ/niMgUMjYanAeKwzKF3pkgGPxDbSN9WtUgMvWAWzwPn11uLqZ1C/XTbV
-         NiW1yWr7bjQ7GKFYXkE3Xt8jmQiD59GVvR5iMoPS6GczTE1dRfTZkvTp/MgbIo0rnEB4
-         7r3AbTSIs1FJiIa4VuGpvFTXM7LsB8fSetiFXE61y/ypG19w5uR70MAQEVlrxUGdfVob
-         2/pKbVV6pUKgCWHmeCWb0/fv/M72MohQa934Q1JHME+J6sCv8CGmqbfc4DCKg2EcrlSQ
-         nrYQ==
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=DVvwpJGTx/3cDaj9oq7PFXlJfh36MugTc8ZMsgJLdDU=;
+        b=U7bNFtWGxNfnIO28C6TuZ0KnCLADwhxdcJbsg7qhOA0kA+7eNGo0Szjcj3A7wzlORD
+         VJhj1A0xrz+RzC1VQfJpQ28Gvb2ub4THJlCO/J6p39blpbJevcrhbswLUUX2e6b6zO03
+         VF5buGT8q2PDbxvp5q5BGXKC3i+c8fT8IDY8wkFls36oRkp4fZaEs7Bg6OdmHbXL/MJm
+         ysx0j1lUo8BwOYy+T8ThUwPk5wAUA6I3t9cjp9rv1TtKFtF4XU3AkVItVeYLe3Skrve6
+         iYapYSPZvnggnGElqGnbEuDJzUnGGTROlKd8ftO1kCIayzj6E8btBeqhIyt9nGx2ocMr
+         nMjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=qVxRIljlMWj/xaAgQFr2JbubgIjJiWSc0KSUhA2z/UA=;
-        b=BFkbC11W9ueLM78G6mu4BmCcxFYeq/4NjR5cof5wPE1dNTI9Aw38l5BDpi/nIPGTqL
-         10KDFckaSN2hytF8w+ASQbOTaFKiI+GOaH4E+6u/Bn6E64v/DZt50KV3/nIjivPa7xlC
-         fXVkDDTRZfnCQH79MupqaRrCie/kN9flJR89M5OKGTklft2/px8VzTmduJ5Hwgjuaiii
-         Kogvbt7wp1LLUgm1PFMQrayamSpHe7K69YflEDr1dkVoA6ReLcsVl5om3O9TDg1ODo0t
-         vT9oHPdgbaEaKBX0HKlJ/OWaxDjNRFbhTQDOA934duRUjxaYfrSgx5TSQXvUOpHxwWpA
-         uF2A==
-X-Gm-Message-State: AOAM532boRqhtim8nG7REVmOmoZEMg8KlFpgw2JZa4g1oidvpN5KYmvn
-        plEsjYJae4KkzOJidilj+04=
-X-Google-Smtp-Source: ABdhPJzNquVt0QBgGnf9i8u/yXkXvH6j8PoBe0EQei3rCagyJJ4+mT6EFtpQIrBB60QXUPTyBR76VA==
-X-Received: by 2002:a05:6512:15d:: with SMTP id m29mr841726lfo.515.1619726999262;
-        Thu, 29 Apr 2021 13:09:59 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.226.84])
-        by smtp.gmail.com with ESMTPSA id f23sm79067lfh.10.2021.04.29.13.09.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 13:09:58 -0700 (PDT)
-Date:   Thu, 29 Apr 2021 23:09:56 +0300
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     Vegard Nossum <vegard.nossum@oracle.com>,
-        akpm@linux-foundation.org, peterz@infradead.org, axboe@kernel.dk,
-        pmladek@suse.com, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
-Subject: Re: [PATCH] ext4: fix memory leak in ext4_fill_super
-Message-ID: <20210429230956.6ad23897@gmail.com>
-In-Reply-To: <YIrnPXJo/n68NrQs@mit.edu>
-References: <20210428172828.12589-1-paskripkin@gmail.com>
-        <3c3877a4-fef2-9e24-f99f-2ecc46deb7e4@oracle.com>
-        <20210429143354.418248a7@gmail.com>
-        <YIrnPXJo/n68NrQs@mit.edu>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=DVvwpJGTx/3cDaj9oq7PFXlJfh36MugTc8ZMsgJLdDU=;
+        b=je+zHVY+YYL1Q3oaKmZLrn2bbd/B27Qv+nYLE2Jn+ngVMI8MQ5/anXtgah7vjYKYaZ
+         3Gm6wukUD4Z3Ju1JVFIazy/SUIyXsgQatP6n9T8YGOY3Lg+DBs7xAMdMFqF5iPszuO0q
+         bMVX4r1T8FDwmeF9kZxh4KgWfF2G9k6PfokFKicR2SQn+13lF4BKAYYVoYdy0lvyyDDg
+         lWOkI79SR0WggWoPmDHDH23tcXF79ouXirIFOxOdIIiSdW/hta3iCxTZyuswQHSnO+x4
+         bg3ott5gD12NvDH6ExwzL4nQiMD41e1q01VIoGa9XtWsW6x6tZhqY6vU4CUVrK+LlHlV
+         hy3g==
+X-Gm-Message-State: AOAM532tdMirmItOK7iX0gcFUm7HByAPiqH5QSSKmm/tdq7n5BWVqmMF
+        YrpCxGC7gt5XN0FgggJYJtZyT6qY/WWYXX46
+X-Google-Smtp-Source: ABdhPJxdAAJkWBE6kdZdfUqeXNYWfzpKBlVYd+JfsQsieAOX80ck5zDC/l1EMhJs4k5EuOh7YBNlng==
+X-Received: by 2002:a63:b04:: with SMTP id 4mr1444362pgl.291.1619729259844;
+        Thu, 29 Apr 2021 13:47:39 -0700 (PDT)
+Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id h6sm3371551pfb.157.2021.04.29.13.47.38
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 29 Apr 2021 13:47:39 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <A0C999DB-A6D5-4C95-A5B8-92E7002395A7@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_081B02CA-CF63-4E53-9C27-1E112BD24159";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: e4defrag seems too optimistic
+Date:   Thu, 29 Apr 2021 14:47:36 -0600
+In-Reply-To: <YIpFK3or2Creo1qg@vapier>
+Cc:     linux-ext4@vger.kernel.org
+To:     Mike Frysinger <vapier@gentoo.org>
+References: <YIpFK3or2Creo1qg@vapier>
+X-Mailer: Apple Mail (2.3273)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, 29 Apr 2021 13:05:01 -0400
-"Theodore Ts'o" <tytso@mit.edu> wrote:
 
-> On Thu, Apr 29, 2021 at 02:33:54PM +0300, Pavel Skripkin wrote:
-> > 
-> > There is a chance, that kthread_stop() call will happen before
-> > threadfn call. It means, that kthread_stop() return value must be
-> > checked everywhere, isn't it? Otherwise, there are a lot of
-> > potential memory leaks, because some developers rely on the fact,
-> > that data allocated for the thread will be freed _inside_ thread
-> > function.
-> 
-> That's not the only potential way that we could leak memory.  Earlier
-> in kthread(), if this memory allocation fails,
-> 
-> 	self = kzalloc(sizeof(*self), GFP_KERNEL);
-> 
-> we will exit with -ENOMEM.  So at the very least all callers of
-> kthread_stop() also need to check for -ENOMEM as well as -EINTR ---
-> or, be somehow sure that the thread function was successfully called
-> and started.  In this particular case, the ext4 mount code had just
-> started the kmmpd thread, and then detected that something else had
-> gone wrong, and failed the mount before the kmmpd thread ever had a
-> chance to run.
+--Apple-Mail=_081B02CA-CF63-4E53-9C27-1E112BD24159
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-There is a small problem about -ENOMEM:
+On Apr 28, 2021, at 11:33 PM, Mike Frysinger <vapier@gentoo.org> wrote:
+>=20
+> i started running e4defrag out of curiosity on some large files that =
+i'm
+> archiving long term.  its results seem exceedingly optimistic and i =
+have
+> a hard time agreeing with it.  am i pessimistic ?
+>=20
+> for example, i have a ~4GB archive:
+> $ e4defrag -c ./foo.tar.xz
+> <File>                                         now/best       size/ext
+> ./foo.tar.xz
+>                                             39442/2             93 KB
+>=20
+> Total/best extents				39442/2
+> Average size per extent			93 KB
+> Fragmentation score				34
+> [0-30 no problem: 31-55 a little bit fragmented: 56- needs defrag]
+> This file (./foo.tar.xz) does not need defragmentation.
+> Done.
+>=20
+> i have a real hard time seeing this file as barely "a little bit =
+fragmented".
+> shouldn't the fragmentation score be higher ?
 
-static int kmmpd(void *data)
-{
-...
-			retval = read_mmp_block(sb, &bh_check, mmp_block);
-			if (retval) {
-				ext4_error_err(sb, -retval,
-					       "error reading MMP data: %d",
-					       retval);
-				goto exit_thread;
-			}
-...
+I would tend to agree.  A 4GB file with 39k 100KB extents is not great.
+On an HDD with 125 IOPS (not counting track buffers and such) this would
+take about 300s to read at a whopping 13MB/s.  On flash, small writes do
+lead to increased wear, but the seeks are free and you may not care.
 
-exit_thread:
-	EXT4_SB(sb)->s_mmp_tsk = NULL;
-	kfree(data);
-	brelse(bh);
-	return retval;
-}
+IMHO, anything below 1MB/extent is sub-optimal in terms of IO =
+performance,
+and a sign of filesystem fragmentation (or a very poor IO pattern), =
+since
+mballoc should try to do allocation in 8MB chunks for large writes.
 
-read_mmp_block can return -ENOMEM. In this case double free will happen.
-I believe, we can change `return retval;` to `return 0;`, because
-kthread return value isn't checked anywhere.
+In many respects, if the extents are large enough, the "cost" of a seek
+hidden by the device bandwidth (e.g. 250 MB/s / 125 seeks/sec =3D 2MB =
+for
+a good HDD today, scale linearly for RAID-5/6), so any extent larger =
+than
+this is not limited by seeks. Should 1024 x 4MB extents in a 4GB file be
+considered fragmented or not?  Definitely 108KB/extent should be.
 
-What do You think about it? 
+However, the "ideal =3D 2" case is bogus, since extents are max size =
+128MB,
+so you would need at least 32 for a perfect 4GB file.  In that respect,
+e4defrag is at best a "working prototype" but I don't think many people
+use it, and has not gotten many improvements since it was first landed.
+If you have a better idea for a "fragmentation score" I would be open
+to looking at it, doubly so if it comes in the form of a patch.
+
+You could check the actual file layout using "fallocate -v" before/after
+running e4defrag to see how the allocation was changed.  This would tell
+you if it is actually helping or not.  I've thought for a while that it
+would be useful to add the same "fragmentation score" to filefrag, but
+that would be contingent on the score actually making sense.
+
+You can also use "e2freefrag" to check the filesystem as a whole to see
+whether the free space is badly fragmented (i.e. most free chunks < =
+8MB).
+In that case, running e4defrag _may_ help you, but it is not "smart" =
+like
+the old DOS defrag utilities, since it just rewrites each file =
+separately
+instead of having a "plan" for how to defrag the whole filesystem.
+
+> as a measure of "how fragmented is it really", if i copy the file and =
+then
+> delete the original, there's a noticeable delay before `rm` finishes.
+
+Yes, that would be totally clear if you ran filefrag on the file first.
+
+Cheers, Andreas
 
 
-With regards,
-Pavel Skripkin
+
+
+
+
+--Apple-Mail=_081B02CA-CF63-4E53-9C27-1E112BD24159
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmCLG2kACgkQcqXauRfM
+H+DYahAAtYliCbrm7xQGyBDRKOnnvJY/4guIHa2IyzU8dETuGXtnaj8gHuBN9Ven
+WDQXyAeCGlj29onP89bY4ujvpPtFMboLcjeImm31TgV4oZJvzyeE0mjoHrO1SQPw
+bGgVbPIQJPbps1uMHTiWVWpFdih7us+lJFwL248N5SbHoiL+zYE3/rgyWUQ1FR/L
+Kv4UMKAW00mZjeHqpwNbhWt6hfnyl2q+0dOInKhvWYsRHK5Ccc9mqhq8jGZhvsKq
+hrs4AeV4VQH8xD45nxFaS3OS0XS6wPrVg5D/HEgB8kjqsvVbZK3kBfk0c0IRa4Qb
+6Wr50lbupJQ3bSHI4Ah5ouSQ7twQpbao5uEF+hdoWY9gUVFTHIOEZt9TZVNEUchY
+9wO2VfM+EPYiLVV4/RH1NF4jLDzpaB5Isd8dCXv1t1EIdzH1tG4Ernjj3veeaBE6
+b7IdQX7Q7Bad+eKIWz8zdwc3X2dvNbrcx1ENLT6eCYgPX7I5RC5e3NEuXRqlyIAk
+aeX43jBVt+lgVsgE+g3dS6jHme4n9tNRbPOHPH7ZPulQqge1QBFgxdpT9i8mFAZO
+8WXlq31zYBUEyuOwfoqTPva9EF+AHxzIjrBnd6yVGnRCifkRaUPCgymDSYI6/5ib
+p8TBXi4v1WTW4zc+KBcqcIz00ZoKVUtqHLzeLYaFGfYlB+IBSCo=
+=LyN4
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_081B02CA-CF63-4E53-9C27-1E112BD24159--
