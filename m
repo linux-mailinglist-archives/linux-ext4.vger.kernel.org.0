@@ -2,52 +2,52 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17B8836F072
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 Apr 2021 21:25:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AAB836F0EA
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Apr 2021 22:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231920AbhD2TYv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 29 Apr 2021 15:24:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48492 "EHLO
+        id S236773AbhD2UKu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 29 Apr 2021 16:10:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234450AbhD2TVU (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 29 Apr 2021 15:21:20 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C479C06138B;
-        Thu, 29 Apr 2021 12:20:33 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id p12so875132ljg.1;
-        Thu, 29 Apr 2021 12:20:32 -0700 (PDT)
+        with ESMTP id S234006AbhD2UKt (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 29 Apr 2021 16:10:49 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE547C06138B;
+        Thu, 29 Apr 2021 13:10:00 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id x2so792505lff.10;
+        Thu, 29 Apr 2021 13:10:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=g8d4Y+3fQnVXcrWsarbuVfuo1sLNCCMSP2te5/Kx4NI=;
-        b=XpqcPXbEJI5DMvLw09LOKf2n2k+1/27+46TZ0HM6lgNhYHw3HCncidDOTfUMSEO8Jd
-         9mAbUO/9zQYxYLyWBRfYRXVpOf81MWQT3yI4jBdv0sFJ6qg47ZaZ+3ht88QwBPdvIutX
-         Gw+Wq1pYEixuCvWZXrqCNwwrfRcvitcD+6MoFc7M9nE7jEO00E+BSik8lyktPs3+qZfS
-         H+xxGc6r/Rmb9g+nPv3rUN0gcRH2kA82n0ridnM+vJioh/2GJxF7aYs4ws0Hb2WVrb+z
-         ZPpc/hw384UvKEvFju3yIVpITbnHiC2UCGStnXYiicsOKb9y2r2E6FUC0vK0AuLAf7HH
-         yFAA==
+        bh=qVxRIljlMWj/xaAgQFr2JbubgIjJiWSc0KSUhA2z/UA=;
+        b=kWWBpjASwhbzasukQ6Trnitmid+QJ+rW2vQ8FiUZMnmf2AjLMAAyXw+n3RxmbGPOcd
+         JKMOoGcxglMZ/niMgUMjYanAeKwzKF3pkgGPxDbSN9WtUgMvWAWzwPn11uLqZ1C/XTbV
+         NiW1yWr7bjQ7GKFYXkE3Xt8jmQiD59GVvR5iMoPS6GczTE1dRfTZkvTp/MgbIo0rnEB4
+         7r3AbTSIs1FJiIa4VuGpvFTXM7LsB8fSetiFXE61y/ypG19w5uR70MAQEVlrxUGdfVob
+         2/pKbVV6pUKgCWHmeCWb0/fv/M72MohQa934Q1JHME+J6sCv8CGmqbfc4DCKg2EcrlSQ
+         nrYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=g8d4Y+3fQnVXcrWsarbuVfuo1sLNCCMSP2te5/Kx4NI=;
-        b=cnjbhh23xLSUKzVj/VMf5XRD+vEKzOoVaoqIjT/dzrhBHB1G6dJvFYRXBm3mKk0ebs
-         h10W+EfFcahGQT5csLRKnSH1idp/g0yvYI/qu3gH1ZzgAaAH4ovBEVNmFHdumhnTUuny
-         xUimPLn54QatIEje7/0znGVNGthibvZx6tegxJozP0y+fbMycpILdo2MuNDHtSiIkZVK
-         r1+s7LktRalgyxWo8tLxrWGzpd877Ic8WS5lDtQRONDPwMs9XCaRXFda2u6lcOmojK3h
-         ShsYzzuFzpIOCZt0l5qkgzGz+WC7cD4SUoFO2cpg7izcR3WO1V4vSUI4jJEOrQ7hEZKv
-         7fnA==
-X-Gm-Message-State: AOAM533Y6906uncizR/CQ/SQvgMn5xx+Sr371MaqshyHlk0tgKPMVNUr
-        6285OCqn3JC91H5EgasjRls=
-X-Google-Smtp-Source: ABdhPJzNMSO4Jy694qhCMtqQC5FrV35QXxVEEzdV87vmhE/8zAlZOiz0gL/Zl82BUIQ7YvQ9s+urHw==
-X-Received: by 2002:a2e:808d:: with SMTP id i13mr921622ljg.366.1619724031505;
-        Thu, 29 Apr 2021 12:20:31 -0700 (PDT)
+        bh=qVxRIljlMWj/xaAgQFr2JbubgIjJiWSc0KSUhA2z/UA=;
+        b=BFkbC11W9ueLM78G6mu4BmCcxFYeq/4NjR5cof5wPE1dNTI9Aw38l5BDpi/nIPGTqL
+         10KDFckaSN2hytF8w+ASQbOTaFKiI+GOaH4E+6u/Bn6E64v/DZt50KV3/nIjivPa7xlC
+         fXVkDDTRZfnCQH79MupqaRrCie/kN9flJR89M5OKGTklft2/px8VzTmduJ5Hwgjuaiii
+         Kogvbt7wp1LLUgm1PFMQrayamSpHe7K69YflEDr1dkVoA6ReLcsVl5om3O9TDg1ODo0t
+         vT9oHPdgbaEaKBX0HKlJ/OWaxDjNRFbhTQDOA934duRUjxaYfrSgx5TSQXvUOpHxwWpA
+         uF2A==
+X-Gm-Message-State: AOAM532boRqhtim8nG7REVmOmoZEMg8KlFpgw2JZa4g1oidvpN5KYmvn
+        plEsjYJae4KkzOJidilj+04=
+X-Google-Smtp-Source: ABdhPJzNquVt0QBgGnf9i8u/yXkXvH6j8PoBe0EQei3rCagyJJ4+mT6EFtpQIrBB60QXUPTyBR76VA==
+X-Received: by 2002:a05:6512:15d:: with SMTP id m29mr841726lfo.515.1619726999262;
+        Thu, 29 Apr 2021 13:09:59 -0700 (PDT)
 Received: from localhost.localdomain ([94.103.226.84])
-        by smtp.gmail.com with ESMTPSA id i12sm43798lfb.256.2021.04.29.12.20.30
+        by smtp.gmail.com with ESMTPSA id f23sm79067lfh.10.2021.04.29.13.09.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 12:20:31 -0700 (PDT)
-Date:   Thu, 29 Apr 2021 22:20:23 +0300
+        Thu, 29 Apr 2021 13:09:58 -0700 (PDT)
+Date:   Thu, 29 Apr 2021 23:09:56 +0300
 From:   Pavel Skripkin <paskripkin@gmail.com>
 To:     "Theodore Ts'o" <tytso@mit.edu>
 Cc:     Vegard Nossum <vegard.nossum@oracle.com>,
@@ -56,7 +56,7 @@ Cc:     Vegard Nossum <vegard.nossum@oracle.com>,
         linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
         syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
 Subject: Re: [PATCH] ext4: fix memory leak in ext4_fill_super
-Message-ID: <20210429222023.43db6fb1@gmail.com>
+Message-ID: <20210429230956.6ad23897@gmail.com>
 In-Reply-To: <YIrnPXJo/n68NrQs@mit.edu>
 References: <20210428172828.12589-1-paskripkin@gmail.com>
         <3c3877a4-fef2-9e24-f99f-2ecc46deb7e4@oracle.com>
@@ -70,10 +70,9 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi! Thanks for your reply.
-
 On Thu, 29 Apr 2021 13:05:01 -0400
 "Theodore Ts'o" <tytso@mit.edu> wrote:
+
 > On Thu, Apr 29, 2021 at 02:33:54PM +0300, Pavel Skripkin wrote:
 > > 
 > > There is a chance, that kthread_stop() call will happen before
@@ -95,42 +94,33 @@ On Thu, 29 Apr 2021 13:05:01 -0400
 > started the kmmpd thread, and then detected that something else had
 > gone wrong, and failed the mount before the kmmpd thread ever had a
 > chance to run.
-> 
-> I think if we want to fix this more generally across the whole kernel,
-> we would need to have a variant of kthread_run which supplies two
-> functions --- one which is the thread function, and the other which is
-> a cleanup function.  The cleanup function could just be kfree, but
-> there will be other cases where the cleanup function will need to do
-> other work before freeing the data structure (e.g., brelse((struct
-> mmpd_data *)data->bh)).
 
-I skimmed through kernel code and I didn't find any code
-examples, except ext4, where kthread is freeing something. Maybe, this
-API isn't required, but, as Vegard said, comment over
-kthread_stop() should be changed, because it's confusing.
+There is a small problem about -ENOMEM:
 
-I have already added kthread.c developers (I hope, I chose
-the right emails) to CC. Maybe, they will think about this API. 
+static int kmmpd(void *data)
+{
+...
+			retval = read_mmp_block(sb, &bh_check, mmp_block);
+			if (retval) {
+				ext4_error_err(sb, -retval,
+					       "error reading MMP data: %d",
+					       retval);
+				goto exit_thread;
+			}
+...
 
-> 
-> Is it worth it to provide such a cleanup function, which if present
-> would be called any time the thread exits or is killed?  I dunno.
-> It's probably simpler to just strongly recommend that the cleanup work
-> should never be done in the thread function, but after kthread_stop()
-> is called, whether it returns an error or not.  That's probably the
-> right fix for ext4, I think.
-> 
-> (Although note that kthread_stop(sbi->s_mmp_task) is called in
-> multiple places in fs/ext4/super.c, not just in the single location
-> which this patch touches.)
-> 
+exit_thread:
+	EXT4_SB(sb)->s_mmp_tsk = NULL;
+	kfree(data);
+	brelse(bh);
+	return retval;
+}
 
-Good point, I'll add this and -ENOMEM checks and will send v2.
+read_mmp_block can return -ENOMEM. In this case double free will happen.
+I believe, we can change `return retval;` to `return 0;`, because
+kthread return value isn't checked anywhere.
 
-Thanks!
-
-> 						- Ted
-
+What do You think about it? 
 
 
 With regards,
