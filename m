@@ -2,59 +2,61 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A11A36E959
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 Apr 2021 13:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 012CA36E9A5
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Apr 2021 13:34:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234016AbhD2LJD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 29 Apr 2021 07:09:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52348 "EHLO
+        id S234672AbhD2Leq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 29 Apr 2021 07:34:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231904AbhD2LJD (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 29 Apr 2021 07:09:03 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0ADAC06138B;
-        Thu, 29 Apr 2021 04:08:14 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id u25so37630127ljg.7;
-        Thu, 29 Apr 2021 04:08:14 -0700 (PDT)
+        with ESMTP id S231921AbhD2Lep (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 29 Apr 2021 07:34:45 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0207FC06138B;
+        Thu, 29 Apr 2021 04:33:59 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id j10so11115367lfb.12;
+        Thu, 29 Apr 2021 04:33:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Yygg84Sqz7tFZ7poeLqPsydlYQ9P2Ikd5S+jATfOK8k=;
-        b=kzL6VRRuThAkLZrXOJp03XQzoLfbrqzhOI7k8SNoZpa8Yenh5Bp1ZDCcC6zJLrhaL9
-         IGCPMOShrm7Eo01oNiSn5WT38kKGRfiiw0lUHOeKHoXQPUU2Yhxn6p2sp4K1nrwsvTMQ
-         E9rXRl5SWqa+u+YTvw5czuo86+IFHfEf0LbtSiFx2CEGAj/M5i0thUp9flRN2nket5mN
-         nUmLNUjSq0V+etp2d+TNTWYSmZ1q1ATQ0BTCv0KBFV9KoQiIU/enQ1WSP6nDGNPkYyru
-         mJMeIdcCsfQQSx1f98Q0XnwOlzb47nNjsTTpIQQ0+2aQNwlCvGwbNLdRWZX+SDqUyqX+
-         ygnw==
+        bh=pRbuoEIim8wsF2C8VdzLs/YLM/1AITJTydfJ7MQBhhM=;
+        b=ogDtxXWDerzgMms96J516/1092QTu+vbUPMbohoBszxQJ6Ux3wSkwodVyccD7yu/aw
+         P9GVfMuEnPJS7WvQ+4AlfPyBLzun3JogjtQ4Kkb44RwQFvjefPHMApucSULbYD7G5tGb
+         /e1RTI3o89oLU3BE3OEGE6o2pBts63GFo9Yukk/KUalCaVg5yeoY0D6aZgTybDSVcQBD
+         GZJ7yz7KshRQTAhcGE2OUHnIxTBvWEwfngpDNPsPS/ZCy2Hxr/bR5pxn2FEQt98xDs0+
+         g668wocdERHPqniLTrSTJv9Ot8ktvQXGTw6SG43TrEAM4HhjBjhWfxjCm97eTXrIaopD
+         yG+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Yygg84Sqz7tFZ7poeLqPsydlYQ9P2Ikd5S+jATfOK8k=;
-        b=QEyS6+vVE3MYupbruasPkOwJNejgSp+Sjja3yH/RbM/plh+jERQGZeCRrpuRgHFbXR
-         qCGVUuB33GDoIhve2GEl5AnUMoI1a9YXOJ04QD/XXZgjgLQp07RukZfZwnJypXEI7gEI
-         lTsnSGSuQqagiOjVS7W4FMGNThnlSWkCNj69/G3AhMRJiOuKHKJJmppBaOvyXi00iyax
-         nfLzBtnoYWJZDZNRsQHCOT3VOFK4PJL2iXC6nMLeNjrnLVSJD+lt7bDiF0gJjGZOeaZY
-         G8Z0ZbLj/HbVOXyyF+v5HWJhaktT4qxKsp98XA22u3u1k07n0EeqBtIu1VgsBcHcIyzx
-         FtTQ==
-X-Gm-Message-State: AOAM53253KUiGodimGdPJLH/UDbC4xauLBSC8KkE4Ktzy0DvVj8WP1LH
-        tv+M8+vtXGx2SoyU8Sx/Pg1WqeWUcoD2ow==
-X-Google-Smtp-Source: ABdhPJzjFgLoBsK/gRGo5Vf23f7Sfd+HJimzCoNx6n7Q+H+MHYsMcPAxhbjUjTZHr+/j55NdaOuIgg==
-X-Received: by 2002:a2e:a552:: with SMTP id e18mr24074014ljn.383.1619694491955;
-        Thu, 29 Apr 2021 04:08:11 -0700 (PDT)
+        bh=pRbuoEIim8wsF2C8VdzLs/YLM/1AITJTydfJ7MQBhhM=;
+        b=Su3SnWLWdfaOPpNbFj5nZW9gdzt9RWiVBngNd3+TMLVOrLa9lr3vJuysnYqVLiZLeu
+         cQ46EDcxC1kzctsaCEt6Zs9kY51foxJciLVOziYbzwKVR1OBU4oYEDUjWdEuTiI0180q
+         pRZDzsicl1gFN0xAxmSpK1DyGWUamPQn0fVaA1bfkQvT9nGgj4PRrUz9CXKCxY64ZMIh
+         iM5lgCwgzzJEB4sfmz7Hdu2h8fX6tdMCUQdvVSQya6FlhImn10OUnNK8PdC8jXFLn6k6
+         6NN8w031+PXOaUiqioOGyOw7JBhAqr3ENWms1ar/E8pVxCRTh6kywxeUvZSgQ47l/yO8
+         d4+Q==
+X-Gm-Message-State: AOAM530JGrzjX7XIX5bdA9kbS9hJTKm7ZQwd2FXArPFhp2REXV4wZ37b
+        xIQrLZXRlFN95hAU3mtxnjaLztFJHUFV51+q
+X-Google-Smtp-Source: ABdhPJzSiF9h9nx6Q9ZGVGhdfChxe1/b3PVD/6xVTkd2Ui8nLkL41A2/T8ooeXfhhJkeZvUB1rNeUQ==
+X-Received: by 2002:a05:6512:3ca9:: with SMTP id h41mr25760102lfv.145.1619696037463;
+        Thu, 29 Apr 2021 04:33:57 -0700 (PDT)
 Received: from localhost.localdomain ([94.103.226.84])
-        by smtp.gmail.com with ESMTPSA id z22sm496575lfu.200.2021.04.29.04.08.11
+        by smtp.gmail.com with ESMTPSA id h22sm496950lfu.91.2021.04.29.04.33.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 04:08:11 -0700 (PDT)
-Date:   Thu, 29 Apr 2021 14:08:09 +0300
+        Thu, 29 Apr 2021 04:33:57 -0700 (PDT)
+Date:   Thu, 29 Apr 2021 14:33:54 +0300
 From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     Vegard Nossum <vegard.nossum@oracle.com>
+To:     Vegard Nossum <vegard.nossum@oracle.com>,
+        akpm@linux-foundation.org, peterz@infradead.org, axboe@kernel.dk,
+        pmladek@suse.com
 Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
         linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
         syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
 Subject: Re: [PATCH] ext4: fix memory leak in ext4_fill_super
-Message-ID: <20210429140809.5929edd0@gmail.com>
+Message-ID: <20210429143354.418248a7@gmail.com>
 In-Reply-To: <3c3877a4-fef2-9e24-f99f-2ecc46deb7e4@oracle.com>
 References: <20210428172828.12589-1-paskripkin@gmail.com>
         <3c3877a4-fef2-9e24-f99f-2ecc46deb7e4@oracle.com>
@@ -124,6 +126,10 @@ Vegard Nossum <vegard.nossum@oracle.com> wrote:
 > have to audit every single kthread_stop() in the kernel which does
 > not check for -EINTR.
 > 
+> 
+> Vegard
+
+I am sorry for my complitely broken mail client :(
 
 Me and Vegard found the root case of this bug:
 
@@ -140,11 +146,13 @@ static int kthread(void *_create)
 	do_exit(ret);
 }
 
-There is a change, that kthread_stop() call will happen before this
-. It means, that all kthread_stop() return value must be checked
-everywhere
+There is a chance, that kthread_stop() call will happen before
+threadfn call. It means, that kthread_stop() return value must be checked everywhere,
+isn't it? Otherwise, there are a lot of potential memory leaks,
+because some developers rely on the fact, that data allocated for the thread will
+be freed _inside_ thread function.
 
-Vegard wrote code snippet, which reproduces this behavior:
+Vegard wrote the code snippet, which reproduces this behavior:
 
 #include <linux/printk.h>
 #include <linux/proc_fs.h>
@@ -174,10 +182,8 @@ static void __init init_test(void)
 
 late_initcall(init_test);
 
-
-> 
-> Vegard
-
+So, is this behavior is expected or not? Should maintainers rewrite
+code, which doesn't check kthread_stop() return value?
 
 
 With regards,
