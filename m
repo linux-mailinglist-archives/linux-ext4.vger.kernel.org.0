@@ -2,130 +2,255 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72BFA372377
-	for <lists+linux-ext4@lfdr.de>; Tue,  4 May 2021 01:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC23E3724A8
+	for <lists+linux-ext4@lfdr.de>; Tue,  4 May 2021 05:10:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229918AbhECXQH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 3 May 2021 19:16:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229899AbhECXQG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 3 May 2021 19:16:06 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E58DC061574
-        for <linux-ext4@vger.kernel.org>; Mon,  3 May 2021 16:15:12 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id d14so8288866edc.12
-        for <linux-ext4@vger.kernel.org>; Mon, 03 May 2021 16:15:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=F3dcs0o0ml4UaR9eTP5ZePBkm/FD4w4aK0nQ1lXlCrg=;
-        b=Q5Sq4CTz3yWwuJBPGEGzSYJAl4hj88eRB2la37uDOSKmJfbv9V0difxHB1Euqnb+GE
-         DLORJZYVqmIZL5f6as2NUebznIXg11Z+E/9kaFnlUipxF8PGIMdD1Sznp50b95b//omM
-         2/qq3jQt2u0UfFw5RYoEx6SEaa7BpvOnayL12LUas23jHNhs+y6mx9C5qhv2fTQx1rSq
-         t/OCDmGXzjfmyvw2knJRPjZjARQc+vXGnqMtb5J3JMZcpCgXydbEJ/qNwq5X8eTjHOmD
-         EXyJrp20CDqcpcYiFOMab9OE0vnHPbWmo3bdD7zflU76XDydayeP2/7bliBCgfY7FaM4
-         B9gQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=F3dcs0o0ml4UaR9eTP5ZePBkm/FD4w4aK0nQ1lXlCrg=;
-        b=WPCJWC+dgNVbBKwVPZBlesAW/D5Zh/vXXBxVX4+ZTA6rFiumD+ioCB/lZ+Yx54tM0j
-         UYtJAHv1kuo1X4gkboAUC7j4OFVg09mJJk6nwgLxDX0OIo00zhTDQXgb1f7xZe1CelSd
-         1l8vC78RrDsLNbsgfTNlawaRHYGTVOMRm46DBfDgP4uj0L6bUqpJOhKYxDDoN8wy3p5H
-         HTuLZ9e38INmYdpmixeYmymMVeJuELDBPHRaBwjVbL0XwEULZuXtmotmxHItDCsf5fEm
-         eJU2CgJsN5GJ594JhRcYb8HpJ1n/cVFaUT9O0EXuM/UhtrcH88y3ZQFBHvKfx2pxTAgW
-         sd4A==
-X-Gm-Message-State: AOAM5308AnoDIRJxU7iTJyWpq1CkUxSlqBW+9CU2ieL/TDtEEyq/qzNg
-        E6W6/0aaFhL+iCoxcuViP0BsAAWfjA3i5ucI7AI=
-X-Google-Smtp-Source: ABdhPJxJioqR0QUQz0+2J1Nvbkb3htAqMxHXU7aM3rGP9H3H4zFZ79A2Vzlu4HIPGks+E8D4Kx/ioxDuoHWndlpXP+M=
-X-Received: by 2002:aa7:cd8b:: with SMTP id x11mr23153207edv.87.1620083710993;
- Mon, 03 May 2021 16:15:10 -0700 (PDT)
+        id S229738AbhEDDL2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 3 May 2021 23:11:28 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:52424 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229687AbhEDDL1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 3 May 2021 23:11:27 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1443AT4p024598
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 3 May 2021 23:10:30 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 701E115C39C6; Mon,  3 May 2021 23:10:29 -0400 (EDT)
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
+Cc:     harshads@google.com, "Theodore Ts'o" <tytso@mit.edu>
+Subject: [PATCH] e2fsck: fix portability problems caused by unaligned accesses
+Date:   Mon,  3 May 2021 23:10:24 -0400
+Message-Id: <20210504031024.3888676-1-tytso@mit.edu>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-References: <6cceb9a75c54bef8fa9696c1b08c8df5ff6169e2.1619692410.git.riteshh@linux.ibm.com>
-In-Reply-To: <6cceb9a75c54bef8fa9696c1b08c8df5ff6169e2.1619692410.git.riteshh@linux.ibm.com>
-From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
-Date:   Mon, 3 May 2021 16:14:59 -0700
-Message-ID: <CAD+ocbzDRw7vvyVGt5KGYjoL3GTyiaJJoTF0BPTXfySke4t3aQ@mail.gmail.com>
-Subject: Re: [PATCH] ext4: Fix accessing uninit percpu counter variable with fast_commit
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Thanks, this looks good to me!
+The on-disk format for the ext4 journal can have unaigned 32-bit
+integers.  This can happen when replaying a journal using a obsolete
+checksum format (which was never popularly used, since the v3 format
+replaced v2 while the metadata checksum feature was being stablized),
+and in the fast commit feature (which landed in the 5.10 kernel,
+although it is not enabled by default).
 
-Reviewed-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+This commit fixes the following regression tests on some platforms
+(such as running 32-bit arm architectures on a 64-bit arm kernel):
+j_recover_csum2_32bit, j_recover_csum2_64bit, j_recover_fast_commit.
 
-On Thu, Apr 29, 2021 at 3:43 AM Ritesh Harjani <riteshh@linux.ibm.com> wrote:
->
-> When running generic/527 with fast_commit configuration, below issue is
-> seen on Power.
-> With fast_commit, during ext4_fc_replay() (which can be called from
-> ext4_fill_super()), if inode eviction happens then it can access an
-> uninitialized percpu counter variable.
->
-> This patch adds the check b4 accessing the counters in ext4_free_inode() path.
->
-> [  321.165371] run fstests generic/527 at 2021-04-29 08:38:43
-> [  323.027786] EXT4-fs (dm-0): mounted filesystem with ordered data mode. Opts: block_validity. Quota mode: none.
-> [  323.618772] BUG: Unable to handle kernel data access on read at 0x1fbd80000
-> [  323.619767] Faulting instruction address: 0xc000000000bae78c
-> cpu 0x1: Vector: 300 (Data Access) at [c000000010706ef0]
->     pc: c000000000bae78c: percpu_counter_add_batch+0x3c/0x100
->     lr: c0000000006d0bb0: ext4_free_inode+0x780/0xb90
->     pid   = 5593, comm = mount
->         ext4_free_inode+0x780/0xb90
->         ext4_evict_inode+0xa8c/0xc60
->         evict+0xfc/0x1e0
->         ext4_fc_replay+0xc50/0x20f0
->         do_one_pass+0xfe0/0x1350
->         jbd2_journal_recover+0x184/0x2e0
->         jbd2_journal_load+0x1c0/0x4a0
->         ext4_fill_super+0x2458/0x4200
->         mount_bdev+0x1dc/0x290
->         ext4_mount+0x28/0x40
->         legacy_get_tree+0x4c/0xa0
->         vfs_get_tree+0x4c/0x120
->         path_mount+0xcf8/0xd70
->         do_mount+0x80/0xd0
->         sys_mount+0x3fc/0x490
->         system_call_exception+0x384/0x3d0
->         system_call_common+0xec/0x278
->
-> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
-> ---
->  fs/ext4/ialloc.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
-> index 755a68bb7e22..e4a92642e487 100644
-> --- a/fs/ext4/ialloc.c
-> +++ b/fs/ext4/ialloc.c
-> @@ -322,14 +322,16 @@ void ext4_free_inode(handle_t *handle, struct inode *inode)
->         if (is_directory) {
->                 count = ext4_used_dirs_count(sb, gdp) - 1;
->                 ext4_used_dirs_set(sb, gdp, count);
-> -               percpu_counter_dec(&sbi->s_dirs_counter);
-> +               if (percpu_counter_initialized(&sbi->s_dirs_counter))
-> +                       percpu_counter_dec(&sbi->s_dirs_counter);
->         }
->         ext4_inode_bitmap_csum_set(sb, block_group, gdp, bitmap_bh,
->                                    EXT4_INODES_PER_GROUP(sb) / 8);
->         ext4_group_desc_csum_set(sb, block_group, gdp);
->         ext4_unlock_group(sb, block_group);
->
-> -       percpu_counter_inc(&sbi->s_freeinodes_counter);
-> +       if (percpu_counter_initialized(&sbi->s_freeinodes_counter))
-> +               percpu_counter_inc(&sbi->s_freeinodes_counter);
->         if (sbi->s_log_groups_per_flex) {
->                 struct flex_groups *fg;
->
-> --
-> 2.30.2
->
+https://github.com/tytso/e2fsprogs/issues/65
+
+Addresses-Debian-Bug: #987641
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ e2fsck/journal.c                   | 41 ++++++++++++++++++++---------
+ e2fsck/recovery.c                  | 42 +++++++++++++++++++++++++-----
+ tests/j_recover_fast_commit/script |  1 -
+ 3 files changed, 65 insertions(+), 19 deletions(-)
+
+diff --git a/e2fsck/journal.c b/e2fsck/journal.c
+index a425bbd1..2231b811 100644
+--- a/e2fsck/journal.c
++++ b/e2fsck/journal.c
+@@ -278,6 +278,23 @@ static int process_journal_block(ext2_filsys fs,
+ 	return 0;
+ }
+ 
++/*
++ * This function works on unaligned 32-bit pointers, which is needed
++ * since fast_commit's on-disk format does not guarantee that pointers
++ * are 32-bit aligned.
++ */
++static __u32 get_le32(__le32 *p)
++{
++	unsigned char *cp = (unsigned char *) p;
++	__u32 ret;
++
++	ret = (__u32) *cp++;
++	ret = ret | ((__u32) *cp++ << 8);
++	ret = ret | ((__u32) *cp++ << 16);
++	ret = ret | ((__u32) *cp++ << 24);
++	return ret;
++}
++
+ static int ext4_fc_replay_scan(journal_t *j, struct buffer_head *bh,
+ 				int off, tid_t expected_tid)
+ {
+@@ -344,10 +361,10 @@ static int ext4_fc_replay_scan(journal_t *j, struct buffer_head *bh,
+ 						offsetof(struct ext4_fc_tail,
+ 						fc_crc));
+ 			jbd_debug(1, "tail tid %d, expected %d\n",
+-					le32_to_cpu(tail->fc_tid),
++					get_le32(&tail->fc_tid),
+ 					expected_tid);
+-			if (le32_to_cpu(tail->fc_tid) == expected_tid &&
+-				le32_to_cpu(tail->fc_crc) == state->fc_crc) {
++			if (get_le32(&tail->fc_tid) == expected_tid &&
++				get_le32(&tail->fc_crc) == state->fc_crc) {
+ 				state->fc_replay_num_tags = state->fc_cur_tag;
+ 			} else {
+ 				ret = state->fc_replay_num_tags ?
+@@ -357,12 +374,12 @@ static int ext4_fc_replay_scan(journal_t *j, struct buffer_head *bh,
+ 			break;
+ 		case EXT4_FC_TAG_HEAD:
+ 			head = (struct ext4_fc_head *)ext4_fc_tag_val(tl);
+-			if (le32_to_cpu(head->fc_features) &
++			if (get_le32(&head->fc_features) &
+ 				~EXT4_FC_SUPPORTED_FEATURES) {
+ 				ret = -EOPNOTSUPP;
+ 				break;
+ 			}
+-			if (le32_to_cpu(head->fc_tid) != expected_tid) {
++			if (get_le32(&head->fc_tid) != expected_tid) {
+ 				ret = -EINVAL;
+ 				break;
+ 			}
+@@ -620,8 +637,8 @@ static inline void tl_to_darg(struct dentry_info_args *darg,
+ 
+ 	fcd = (struct ext4_fc_dentry_info *)ext4_fc_tag_val(tl);
+ 
+-	darg->parent_ino = le32_to_cpu(fcd->fc_parent_ino);
+-	darg->ino = le32_to_cpu(fcd->fc_ino);
++	darg->parent_ino = get_le32(&fcd->fc_parent_ino);
++	darg->ino = get_le32(&fcd->fc_ino);
+ 	darg->dname = (char *) fcd->fc_dname;
+ 	darg->dname_len = ext4_fc_tag_len(tl) -
+ 			sizeof(struct ext4_fc_dentry_info);
+@@ -735,7 +752,7 @@ static int ext4_fc_handle_inode(e2fsck_t ctx, struct ext4_fc_tl *tl)
+ 	blk64_t blks;
+ 
+ 	fc_inode_val = (struct ext4_fc_inode *)ext4_fc_tag_val(tl);
+-	ino = le32_to_cpu(fc_inode_val->fc_ino);
++	ino = get_le32(&fc_inode_val->fc_ino);
+ 
+ 	if (EXT2_INODE_SIZE(ctx->fs->super) > EXT2_GOOD_OLD_INODE_SIZE)
+ 		inode_len += ext2fs_le16_to_cpu(
+@@ -797,7 +814,7 @@ static int ext4_fc_handle_add_extent(e2fsck_t ctx, struct ext4_fc_tl *tl)
+ 	int ret = 0, ino;
+ 
+ 	add_range = (struct ext4_fc_add_range *)ext4_fc_tag_val(tl);
+-	ino = le32_to_cpu(add_range->fc_ino);
++	ino = get_le32(&add_range->fc_ino);
+ 	ext4_fc_flush_extents(ctx, ino);
+ 
+ 	ret = ext4_fc_read_extents(ctx, ino);
+@@ -823,12 +840,12 @@ static int ext4_fc_handle_del_range(e2fsck_t ctx, struct ext4_fc_tl *tl)
+ 	int ret, ino;
+ 
+ 	del_range = (struct ext4_fc_del_range *)ext4_fc_tag_val(tl);
+-	ino = le32_to_cpu(del_range->fc_ino);
++	ino = get_le32(&del_range->fc_ino);
+ 	ext4_fc_flush_extents(ctx, ino);
+ 
+ 	memset(&extent, 0, sizeof(extent));
+-	extent.e_lblk = ext2fs_le32_to_cpu(del_range->fc_lblk);
+-	extent.e_len = ext2fs_le32_to_cpu(del_range->fc_len);
++	extent.e_lblk = get_le32(&del_range->fc_lblk);
++	extent.e_len = get_le32(&del_range->fc_len);
+ 	ret = ext4_fc_read_extents(ctx, ino);
+ 	if (ret)
+ 		return ret;
+diff --git a/e2fsck/recovery.c b/e2fsck/recovery.c
+index dc0694fc..920c3dab 100644
+--- a/e2fsck/recovery.c
++++ b/e2fsck/recovery.c
+@@ -121,6 +121,36 @@ failed:
+ #endif /* __KERNEL__ */
+ 
+ 
++/*
++ * This function works on unaligned 32-bit pointers, which is needed for
++ * an obsolete jbd2 checksum variant.
++ */
++static inline __u32 get_be32(__be32 *p)
++{
++	unsigned char *cp = (unsigned char *) p;
++	__u32 ret;
++
++	ret = *cp++;
++	ret = (ret << 8) + *cp++;
++	ret = (ret << 8) + *cp++;
++	ret = (ret << 8) + *cp++;
++	return ret;
++}
++
++/*
++ * This function works on unaligned 16-bit pointers, which is needed for
++ * an obsolete jbd2 checksum variant.
++ */
++static inline __u16 get_be16(__be16 *p)
++{
++	unsigned char *cp = (unsigned char *) p;
++	__u16 ret;
++
++	ret = *cp++;
++	ret = (ret << 8) + *cp++;
++	return ret;
++}
++
+ /*
+  * Read a block from the journal
+  */
+@@ -210,10 +240,10 @@ static int count_tags(journal_t *journal, struct buffer_head *bh)
+ 
+ 		nr++;
+ 		tagp += tag_bytes;
+-		if (!(tag->t_flags & cpu_to_be16(JBD2_FLAG_SAME_UUID)))
++		if (!(get_be16(&tag->t_flags) & JBD2_FLAG_SAME_UUID))
+ 			tagp += 16;
+ 
+-		if (tag->t_flags & cpu_to_be16(JBD2_FLAG_LAST_TAG))
++		if (get_be16(&tag->t_flags) & JBD2_FLAG_LAST_TAG)
+ 			break;
+ 	}
+ 
+@@ -377,9 +407,9 @@ int jbd2_journal_skip_recovery(journal_t *journal)
+ static inline unsigned long long read_tag_block(journal_t *journal,
+ 						journal_block_tag_t *tag)
+ {
+-	unsigned long long block = be32_to_cpu(tag->t_blocknr);
++	unsigned long long block = get_be32(&tag->t_blocknr);
+ 	if (jbd2_has_feature_64bit(journal))
+-		block |= (u64)be32_to_cpu(tag->t_blocknr_high) << 32;
++		block |= (u64)get_be32(&tag->t_blocknr_high) << 32;
+ 	return block;
+ }
+ 
+@@ -450,7 +480,7 @@ static int jbd2_block_tag_csum_verify(journal_t *j, journal_block_tag_t *tag,
+ 	if (jbd2_has_feature_csum3(j))
+ 		return tag3->t_checksum == cpu_to_be32(csum32);
+ 	else
+-		return tag->t_checksum == cpu_to_be16(csum32);
++		return get_be16(&tag->t_checksum) == csum32;
+ }
+ 
+ static int do_one_pass(journal_t *journal,
+@@ -615,7 +645,7 @@ static int do_one_pass(journal_t *journal,
+ 				unsigned long io_block;
+ 
+ 				tag = (journal_block_tag_t *) tagp;
+-				flags = be16_to_cpu(tag->t_flags);
++				flags = get_be16(&tag->t_flags);
+ 
+ 				io_block = next_log_block++;
+ 				wrap(journal, next_log_block);
+diff --git a/tests/j_recover_fast_commit/script b/tests/j_recover_fast_commit/script
+index 22ef6325..05c40cc5 100755
+--- a/tests/j_recover_fast_commit/script
++++ b/tests/j_recover_fast_commit/script
+@@ -10,7 +10,6 @@ gunzip < $IMAGE > $TMPFILE
+ EXP=$test_dir/expect
+ OUT=$test_name.log
+ 
+-cp $TMPFILE /tmp/debugthis
+ $FSCK $FSCK_OPT -E journal_only -N test_filesys $TMPFILE 2>/dev/null | head -n 1000 | tail -n +2 > $OUT
+ echo "Exit status is $?" >> $OUT
+ 
+-- 
+2.31.0
+
