@@ -2,232 +2,318 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34DFF374A3D
-	for <lists+linux-ext4@lfdr.de>; Wed,  5 May 2021 23:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00934374AFA
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 May 2021 00:08:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230072AbhEEViQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 5 May 2021 17:38:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34306 "EHLO mail.kernel.org"
+        id S231374AbhEEWJn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 5 May 2021 18:09:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49668 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230044AbhEEViP (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 5 May 2021 17:38:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 58A1D613D6;
-        Wed,  5 May 2021 21:37:18 +0000 (UTC)
+        id S229691AbhEEWJm (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 5 May 2021 18:09:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DEC3613D6;
+        Wed,  5 May 2021 22:08:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620250638;
-        bh=UFVGXQWoeW+oPptYoYBIcdhR1IXyQr7vI/5qxMSeIew=;
+        s=k20201202; t=1620252525;
+        bh=gwC/0O0NFuZM0tPVtM1TSGbjNdcPpnxW+77dnTa1me4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=g45vDLXZtkh5rdusOFA+czBVgE2I1d1g0Nv9qlx1iF+QUm5s5WPTKtcknnx2FB7OV
-         ipGxwNaV9hCC7lqAN6QSPtT+M0B2gRZSC7LMigi8Zs1nthuBfYxR8sg0Lkn/pOTR80
-         Q4JOIefaUlWT3ZLlUmKIrT1LqCMJlLZIxJopmGLEZ+N0S7SEfXxJUovJy6us6AWDLn
-         aMSo3QcsZ9HKr9JNicEJuru4aKUhOYXLk8PnS+d0fxAGypcjHhX1yvYxe3c42Xp6uZ
-         v1G1QRNxbAmbLSEwERmccsOluiLUpCCUsYW3Ysa+PGvwbpirmxOHZh9CsufS3eWEGL
-         CF92shrJeDt2Q==
-Date:   Wed, 5 May 2021 14:37:17 -0700
+        b=IcxAkD0etnmSxfkja1BEzavHUa5LJYfEhYALQhk9UZN7imlJhlu3/lYGCs3vlexbj
+         VYZcAzJm0Z6ZrFU0neygU5XDvXbPsi1tkRWbK+TZft0D/biK2xMBnC/UOfvXbBfWE5
+         iUzPElDTZFQ0lpjCHzK/8l9xQJ4moq8VXE6KFfbnLQzpHpNuA7Uf8YOuAYOU4u6ypm
+         90X5JISEXLrqR+uEnUbhJ8Yyz7VzOcYtsW47SXJXu/10szlvHGwtdRjri1A2VjtMCn
+         Voc3QcAV0SwSbRrBnA8UKTogv2PH7LeWC0YKvaKLjE7efEbxbqJuc8zfJ+dMqdcwcI
+         U9WGTveRCITYQ==
+Date:   Wed, 5 May 2021 15:08:44 -0700
 From:   "Darrick J. Wong" <djwong@kernel.org>
 To:     Leah Rumancik <leah.rumancik@gmail.com>
 Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu
-Subject: Re: [PATCH v3 1/3] ext4: add flags argument to jbd2_journal_flush
-Message-ID: <20210505213717.GC8532@magnolia>
+Subject: Re: [PATCH v3 2/3] ext4: add ioctl EXT4_IOC_CHECKPOINT
+Message-ID: <20210505220844.GD8532@magnolia>
 References: <20210504163550.1486337-1-leah.rumancik@gmail.com>
+ <20210504163550.1486337-2-leah.rumancik@gmail.com>
+ <20210505212711.GA8532@magnolia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210504163550.1486337-1-leah.rumancik@gmail.com>
+In-Reply-To: <20210505212711.GA8532@magnolia>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, May 04, 2021 at 04:35:48PM +0000, Leah Rumancik wrote:
-> This patch will allow the following commit to pass a discard flag,
-> enabling discarding the journal blocks while flushing the journal.
+On Wed, May 05, 2021 at 02:27:11PM -0700, Darrick J. Wong wrote:
+> On Tue, May 04, 2021 at 04:35:49PM +0000, Leah Rumancik wrote:
+> > ioctl EXT4_IOC_CHECKPOINT checkpoints and flushes the journal. This
+> > includes forcing all the transactions to the log, checkpointing the
+> > transactions, and flushing the log to disk. This ioctl takes u64 "flags"
+> > as an argument. With the EXT4_IOC_CHECKPOINT_FLAG_DISCARD flag set, the
+> > journal blocks are also discarded.
+> > 
+> > Systems that wish to achieve content deletion SLO can set up a daemon
+> > that calls this ioctl at a regular interval such that it matches with the
+> > SLO requirement. Thus, with this patch, the ext4_dir_entry2 wipeout
+> > patch[1], and the Ext4 "-o discard" mount option set, Ext4 can now
+> > guarantee that all data will be erased
 > 
-> Signed-off-by: Leah Rumancik <leah.rumancik@gmail.com>
-> ---
->  fs/ext4/inode.c      | 4 ++--
->  fs/ext4/ioctl.c      | 6 +++---
->  fs/ext4/super.c      | 6 +++---
->  fs/jbd2/journal.c    | 3 +--
->  fs/ocfs2/alloc.c     | 2 +-
->  fs/ocfs2/journal.c   | 8 ++++----
->  include/linux/jbd2.h | 2 +-
->  7 files changed, 15 insertions(+), 16 deletions(-)
+> Er... what specifically does "data" mean?  File data, or just the dirent
+> blocks?
 > 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 0948a43f1b3d..d308c57559e3 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -3225,7 +3225,7 @@ static sector_t ext4_bmap(struct address_space *mapping, sector_t block)
->  		ext4_clear_inode_state(inode, EXT4_STATE_JDATA);
->  		journal = EXT4_JOURNAL(inode);
->  		jbd2_journal_lock_updates(journal);
-> -		err = jbd2_journal_flush(journal);
-> +		err = jbd2_journal_flush(journal, false);
->  		jbd2_journal_unlock_updates(journal);
->  
->  		if (err)
-> @@ -6007,7 +6007,7 @@ int ext4_change_inode_journal_flag(struct inode *inode, int val)
->  	if (val)
->  		ext4_set_inode_flag(inode, EXT4_INODE_JOURNAL_DATA);
->  	else {
-> -		err = jbd2_journal_flush(journal);
-> +		err = jbd2_journal_flush(journal, false);
->  		if (err < 0) {
->  			jbd2_journal_unlock_updates(journal);
->  			percpu_up_write(&sbi->s_writepages_rwsem);
-> diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-> index e9b0a1fa2ba8..ef809feb7e77 100644
-> --- a/fs/ext4/ioctl.c
-> +++ b/fs/ext4/ioctl.c
-> @@ -701,7 +701,7 @@ static long ext4_ioctl_group_add(struct file *file,
->  	err = ext4_group_add(sb, input);
->  	if (EXT4_SB(sb)->s_journal) {
->  		jbd2_journal_lock_updates(EXT4_SB(sb)->s_journal);
-> -		err2 = jbd2_journal_flush(EXT4_SB(sb)->s_journal);
-> +		err2 = jbd2_journal_flush(EXT4_SB(sb)->s_journal, false);
->  		jbd2_journal_unlock_updates(EXT4_SB(sb)->s_journal);
->  	}
->  	if (err == 0)
-> @@ -879,7 +879,7 @@ static long __ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
->  		err = ext4_group_extend(sb, EXT4_SB(sb)->s_es, n_blocks_count);
->  		if (EXT4_SB(sb)->s_journal) {
->  			jbd2_journal_lock_updates(EXT4_SB(sb)->s_journal);
-> -			err2 = jbd2_journal_flush(EXT4_SB(sb)->s_journal);
-> +			err2 = jbd2_journal_flush(EXT4_SB(sb)->s_journal, false);
->  			jbd2_journal_unlock_updates(EXT4_SB(sb)->s_journal);
->  		}
->  		if (err == 0)
-> @@ -1022,7 +1022,7 @@ static long __ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
->  		if (EXT4_SB(sb)->s_journal) {
->  			ext4_fc_mark_ineligible(sb, EXT4_FC_REASON_RESIZE);
->  			jbd2_journal_lock_updates(EXT4_SB(sb)->s_journal);
-> -			err2 = jbd2_journal_flush(EXT4_SB(sb)->s_journal);
-> +			err2 = jbd2_journal_flush(EXT4_SB(sb)->s_journal, false);
->  			jbd2_journal_unlock_updates(EXT4_SB(sb)->s_journal);
->  		}
->  		if (err == 0)
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 3868377dec2d..449ed222cdf8 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -5613,7 +5613,7 @@ static int ext4_mark_recovery_complete(struct super_block *sb,
->  		return 0;
->  	}
->  	jbd2_journal_lock_updates(journal);
-> -	err = jbd2_journal_flush(journal);
-> +	err = jbd2_journal_flush(journal, false);
->  	if (err < 0)
->  		goto out;
->  
-> @@ -5755,7 +5755,7 @@ static int ext4_freeze(struct super_block *sb)
->  		 * Don't clear the needs_recovery flag if we failed to
->  		 * flush the journal.
->  		 */
-> -		error = jbd2_journal_flush(journal);
-> +		error = jbd2_journal_flush(journal, false);
->  		if (error < 0)
->  			goto out;
->  
-> @@ -6346,7 +6346,7 @@ static int ext4_quota_on(struct super_block *sb, int type, int format_id,
->  		 * otherwise be livelocked...
->  		 */
->  		jbd2_journal_lock_updates(EXT4_SB(sb)->s_journal);
-> -		err = jbd2_journal_flush(EXT4_SB(sb)->s_journal);
-> +		err = jbd2_journal_flush(EXT4_SB(sb)->s_journal, false);
->  		jbd2_journal_unlock_updates(EXT4_SB(sb)->s_journal);
->  		if (err)
->  			return err;
-> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-> index 2dc944442802..4b7953934c82 100644
-> --- a/fs/jbd2/journal.c
-> +++ b/fs/jbd2/journal.c
-> @@ -2251,8 +2251,7 @@ EXPORT_SYMBOL(jbd2_journal_clear_features);
->   * Filesystems can use this when remounting readonly to ensure that
->   * recovery does not need to happen on remount.
->   */
-> -
-> -int jbd2_journal_flush(journal_t *journal)
-> +int jbd2_journal_flush(journal_t *journal, bool discard)
->  {
->  	int err = 0;
->  	transaction_t *transaction = NULL;
-
-The division of code between patches 1 and 2 is a bit ... unusual?
-
-I would have had patch 1 actually wire up this parameter, and put the
-userspace ioctl additions in patch 2.
-
-At any rate, I defer to Ted; if he told you to do it this way, then it's
-fine with me, no need to churn your series for the same end-result.
-
---D
-
-> diff --git a/fs/ocfs2/alloc.c b/fs/ocfs2/alloc.c
-> index 78710788c237..5ff2c42cb46c 100644
-> --- a/fs/ocfs2/alloc.c
-> +++ b/fs/ocfs2/alloc.c
-> @@ -6020,7 +6020,7 @@ int __ocfs2_flush_truncate_log(struct ocfs2_super *osb)
->  	 * Then truncate log will be replayed resulting in cluster double free.
->  	 */
->  	jbd2_journal_lock_updates(journal->j_journal);
-> -	status = jbd2_journal_flush(journal->j_journal);
-> +	status = jbd2_journal_flush(journal->j_journal, false);
->  	jbd2_journal_unlock_updates(journal->j_journal);
->  	if (status < 0) {
->  		mlog_errno(status);
-> diff --git a/fs/ocfs2/journal.c b/fs/ocfs2/journal.c
-> index db52e843002a..1c356b29c66d 100644
-> --- a/fs/ocfs2/journal.c
-> +++ b/fs/ocfs2/journal.c
-> @@ -310,7 +310,7 @@ static int ocfs2_commit_cache(struct ocfs2_super *osb)
->  	}
->  
->  	jbd2_journal_lock_updates(journal->j_journal);
-> -	status = jbd2_journal_flush(journal->j_journal);
-> +	status = jbd2_journal_flush(journal->j_journal, false);
->  	jbd2_journal_unlock_updates(journal->j_journal);
->  	if (status < 0) {
->  		up_write(&journal->j_trans_barrier);
-> @@ -1002,7 +1002,7 @@ void ocfs2_journal_shutdown(struct ocfs2_super *osb)
->  
->  	if (ocfs2_mount_local(osb)) {
->  		jbd2_journal_lock_updates(journal->j_journal);
-> -		status = jbd2_journal_flush(journal->j_journal);
-> +		status = jbd2_journal_flush(journal->j_journal, false);
->  		jbd2_journal_unlock_updates(journal->j_journal);
->  		if (status < 0)
->  			mlog_errno(status);
-> @@ -1072,7 +1072,7 @@ int ocfs2_journal_load(struct ocfs2_journal *journal, int local, int replayed)
->  
->  	if (replayed) {
->  		jbd2_journal_lock_updates(journal->j_journal);
-> -		status = jbd2_journal_flush(journal->j_journal);
-> +		status = jbd2_journal_flush(journal->j_journal, false);
->  		jbd2_journal_unlock_updates(journal->j_journal);
->  		if (status < 0)
->  			mlog_errno(status);
-> @@ -1668,7 +1668,7 @@ static int ocfs2_replay_journal(struct ocfs2_super *osb,
->  
->  	/* wipe the journal */
->  	jbd2_journal_lock_updates(journal);
-> -	status = jbd2_journal_flush(journal);
-> +	status = jbd2_journal_flush(journal, false);
->  	jbd2_journal_unlock_updates(journal);
->  	if (status < 0)
->  		mlog_errno(status);
-> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-> index 99d3cd051ac3..5e4349b76997 100644
-> --- a/include/linux/jbd2.h
-> +++ b/include/linux/jbd2.h
-> @@ -1491,7 +1491,7 @@ extern int	 jbd2_journal_invalidatepage(journal_t *,
->  				struct page *, unsigned int, unsigned int);
->  extern int	 jbd2_journal_try_to_free_buffers(journal_t *journal, struct page *page);
->  extern int	 jbd2_journal_stop(handle_t *);
-> -extern int	 jbd2_journal_flush (journal_t *);
-> +extern int	 jbd2_journal_flush(journal_t *journal, bool discard);
->  extern void	 jbd2_journal_lock_updates (journal_t *);
->  extern void	 jbd2_journal_unlock_updates (journal_t *);
->  
-> -- 
-> 2.31.1.527.g47e6f16901-goog
+> I think this is only true if discard_zeroes_data == 1, right?  The last
+> I looked, ext4 was calling REQ_OP_DISCARD, not REQ_OP_WRITE_ZEROES.
 > 
+> Also, there are some SSDs that "implement" discard as nop, which means
+> that the old contents can still be read by re-reading the LBAs.  What
+> about those?
+> 
+> (Also wondering if this is where FS_SECRM_FL files should get their
+> freed file blocks erased with REQ_OP_SECURE_ERASE...)
+> 
+> Like Dave says, the commit message needs to be a lot more precise about
+> what data are being targeted, and what the user can expect afterwards.
+> 
+> Something like (setting aside my questions about discard for a moment):
+> 
+> "...and with the ext4 '-o discard' mount option set, ext4 can now
+> guarantee that all file contents, file metadata, and directory names
+> will not be accessible through the filesystem or raw block device reads
+> after a file deletion."
+> 
+> > and discarded on deletion.  Note
+> > that this ioctl won't write zeros if the device doesn't support discards.
+> 
+> AFAICT the patch doesn't call blkdev_issue_zeroout, so this statement is
+> always true.
+> 
+> > The __jbd2_journal_issue_discard function could also be used to discard the
+> > journal (if discard is supported) during journal load after recovery. This
+> > would provide a potential solution to a journal replay bug reported earlier
+> > this year[2] for block devices that support discard. After a successful
+> > journal recovery, e2fsck can call this ioctl to discard the journal as
+> > well.
+> > 
+> > [1] https://lore.kernel.org/linux-ext4/YIHknqxngB1sUdie@mit.edu/
+> > [2] https://lore.kernel.org/linux-ext4/YDZoaacIYStFQT8g@mit.edu/
+> > 
+> > Signed-off-by: Leah Rumancik <leah.rumancik@gmail.com>
+> > ---
+> >  fs/ext4/ext4.h    |  4 +++
+> >  fs/ext4/ioctl.c   | 38 +++++++++++++++++++++++
+> >  fs/jbd2/journal.c | 79 +++++++++++++++++++++++++++++++++++++++++++++++
+> >  3 files changed, 121 insertions(+)
+> > 
+> > diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> > index 18f021c988a1..2fe8565706fc 100644
+> > --- a/fs/ext4/ext4.h
+> > +++ b/fs/ext4/ext4.h
+> > @@ -715,6 +715,7 @@ enum {
+> >  #define EXT4_IOC_CLEAR_ES_CACHE		_IO('f', 40)
+> >  #define EXT4_IOC_GETSTATE		_IOW('f', 41, __u32)
+> >  #define EXT4_IOC_GET_ES_CACHE		_IOWR('f', 42, struct fiemap)
+> > +#define EXT4_IOC_CHECKPOINT		_IOW('f', 43, __u64)
+> >  
+> >  #define EXT4_IOC_SHUTDOWN _IOR ('X', 125, __u32)
+> >  
+> > @@ -736,6 +737,9 @@ enum {
+> >  #define EXT4_STATE_FLAG_NEWENTRY	0x00000004
+> >  #define EXT4_STATE_FLAG_DA_ALLOC_CLOSE	0x00000008
+> >  
+> > +/* flag to enable discarding journal blocks through ioctl EXT4_IOC_CHECKPOINT */
+> > +#define EXT4_IOC_CHECKPOINT_FLAG_DISCARD	1
+> > +
+> >  #if defined(__KERNEL__) && defined(CONFIG_COMPAT)
+> >  /*
+> >   * ioctl commands in 32 bit emulation
+> > diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
+> > index ef809feb7e77..839ffd067357 100644
+> > --- a/fs/ext4/ioctl.c
+> > +++ b/fs/ext4/ioctl.c
+> > @@ -794,6 +794,40 @@ static int ext4_ioctl_get_es_cache(struct file *filp, unsigned long arg)
+> >  	return error;
+> >  }
+> >  
+> > +static int ext4_ioctl_checkpoint(struct file *filp, unsigned long arg)
+> > +{
+> > +	int err = 0;
+> > +	unsigned long long flags = 0;
+> > +	struct super_block *sb = file_inode(filp)->i_sb;
+> > +
+> > +	if (!capable(CAP_SYS_ADMIN))
+> > +		return -EPERM;
+> > +
+> > +	/* file argument is not the mount point */
+> > +	if (file_dentry(filp) != sb->s_root)
+> > +		return -EINVAL;
+> > +
+> > +	/* filesystem is not backed by block device */
+> > +	if (sb->s_bdev == NULL)
+> > +		return -EINVAL;
+> > +
+> > +	if (copy_from_user(&flags, (__u64 __user *)arg,
+> > +				sizeof(__u64)))
+> > +		return -EFAULT;
+> > +
+> > +	/* flags can only be 0 or EXT4_IOC_CHECKPOINT_FLAG_DISCARD */
+> > +	if (flags & ~EXT4_IOC_CHECKPOINT_FLAG_DISCARD)
+> > +		return -EINVAL;
+> > +
+> > +	if (EXT4_SB(sb)->s_journal) {
+> > +		jbd2_journal_lock_updates(EXT4_SB(sb)->s_journal);
+> > +		err = jbd2_journal_flush(EXT4_SB(sb)->s_journal,
+
+Huh.  So we don't flush the filesystem at all, just the journal?  I
+don't see anything in the documentation saying that syncfs() is a
+prerequisite.
+
+> > +			flags & EXT4_IOC_CHECKPOINT_FLAG_DISCARD);
+> > +		jbd2_journal_unlock_updates(EXT4_SB(sb)->s_journal);
+> > +	}
+> > +	return err;
+> > +}
+> > +
+> >  static long __ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+> >  {
+> >  	struct inode *inode = file_inode(filp);
+> > @@ -1205,6 +1239,9 @@ static long __ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+> >  		return fsverity_ioctl_read_metadata(filp,
+> >  						    (const void __user *)arg);
+> >  
+> > +	case EXT4_IOC_CHECKPOINT:
+> > +		return ext4_ioctl_checkpoint(filp, arg);
+> > +
+> >  	default:
+> >  		return -ENOTTY;
+> >  	}
+> > @@ -1285,6 +1322,7 @@ long ext4_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+> >  	case EXT4_IOC_CLEAR_ES_CACHE:
+> >  	case EXT4_IOC_GETSTATE:
+> >  	case EXT4_IOC_GET_ES_CACHE:
+> > +	case EXT4_IOC_CHECKPOINT:
+> >  		break;
+> >  	default:
+> >  		return -ENOIOCTLCMD;
+> > diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+> > index 4b7953934c82..ce33e4817aab 100644
+> > --- a/fs/jbd2/journal.c
+> > +++ b/fs/jbd2/journal.c
+> > @@ -1686,6 +1686,80 @@ static void jbd2_mark_journal_empty(journal_t *journal, int write_op)
+> >  	write_unlock(&journal->j_state_lock);
+> >  }
+> >  
+> > +/* discard journal blocks excluding journal superblock */
+> > +static int __jbd2_journal_issue_discard(journal_t *journal)
+> > +{
+> > +	int err = 0;
+> > +	unsigned long block, log_offset; /* logical */
+> > +	unsigned long long phys_block, block_start, block_stop; /* physical */
+> > +	loff_t byte_start, byte_stop, byte_count;
+> > +	struct request_queue *q = bdev_get_queue(journal->j_dev);
+> > +
+> > +	if (!q)
+> > +		return -ENXIO;
+> > +
+> > +	if (!blk_queue_discard(q))
+> > +		return -EOPNOTSUPP;
+> > +
+> > +	/* lookup block mapping and issue discard for each contiguous region */
+> > +	log_offset = be32_to_cpu(journal->j_superblock->s_first);
+> > +
+> > +	err = jbd2_journal_bmap(journal, log_offset, &block_start);
+> > +	if (err) {
+> > +		printk(KERN_ERR "JBD2: bad block at offset %lu", log_offset);
+> > +		return err;
+> > +	}
+> > +
+> > +	/*
+> > +	 * use block_start - 1 to meet check for contiguous with previous region:
+> > +	 * phys_block == block_stop + 1
+> > +	 */
+> > +	block_stop = block_start - 1;
+> > +
+> > +	for (block = log_offset; block < journal->j_total_len; block++) {
+> > +		err = jbd2_journal_bmap(journal, block, &phys_block);
+> > +		if (err) {
+> > +			printk(KERN_ERR "JBD2: bad block at offset %lu", block);
+> > +			return err;
+> > +		}
+> > +
+> > +		if (block == journal->j_total_len - 1)
+> > +			block_stop = phys_block;
+> > +		else if (phys_block == block_stop + 1) {
+> > +			block_stop++;
+> > +			continue;
+> > +		}
+> > +
+> > +		/*
+> > +		 * not contiguous with prior physical block or this is last
+> > +		 * block of journal, take care of the region
+> > +		 */
+> > +		byte_start = block_start * journal->j_blocksize;
+> > +		byte_stop = block_stop * journal->j_blocksize;
+> > +		byte_count = (block_stop - block_start + 1) *
+> > +			journal->j_blocksize;
+> > +
+> > +		truncate_inode_pages_range(journal->j_dev->bd_inode->i_mapping,
+> > +			byte_start, byte_stop);
+> > +
+> > +		err = blkdev_issue_discard(journal->j_dev,
+> > +			byte_start >> SECTOR_SHIFT,
+> > +			byte_count >> SECTOR_SHIFT,
+> > +			GFP_NOFS, 0);
+> 
+> Dumb style nit: I think kernel style rules say to indent second lines
+> more than one tab.
+> 
+> (Dumb in the sense of "ha look at the xfs code!" :P)
+
+I had a second thought -- this is issuing one discard per journal block.
+Discards are expensive (especially on SATA SSDs where you have to
+suspend all other commands while they run) and especially here since
+we're running them serially.
+
+One place where jbd2 shows its age is that it relies on bmap() to figure
+out where the journal blocks are on disk.  For regular operation this
+isnn't a big deal since jbd2 only writes data one fs block at a time,
+but for a bulk operation like this, I suspect it's going to be very
+advantageous to be able to discard/zero entire extents at once.
+
+(No need to cram all that into this patch; that's something for a patch
+4.)
+
+> > +
+> > +		if (unlikely(err != 0)) {
+> > +			printk(KERN_ERR "JBD2: unable to discard "
+> > +				"journal at physical blocks %llu - %llu",
+> > +				block_start, block_stop);
+> > +			return err;
+> > +		}
+> > +
+> > +		block_start = phys_block;
+> > +		block_stop = phys_block;
+> > +	}
+> > +
+> > +	return blkdev_issue_flush(journal->j_dev);
+> > +}
+> >  
+> >  /**
+> >   * jbd2_journal_update_sb_errno() - Update error in the journal.
+> > @@ -2246,6 +2320,7 @@ EXPORT_SYMBOL(jbd2_journal_clear_features);
+> >  /**
+> >   * jbd2_journal_flush() - Flush journal
+> >   * @journal: Journal to act on.
+> > + * @discard: discard the journal blocks
+> >   *
+> >   * Flush all data for a given journal to disk and empty the journal.
+> >   * Filesystems can use this when remounting readonly to ensure that
+> > @@ -2305,6 +2380,10 @@ int jbd2_journal_flush(journal_t *journal, bool discard)
+> >  	 * commits of data to the journal will restore the current
+> >  	 * s_start value. */
+> >  	jbd2_mark_journal_empty(journal, REQ_SYNC | REQ_FUA);
+> > +
+> > +	if (discard)
+> > +		err = __jbd2_journal_issue_discard(journal);
+> > +
+> >  	mutex_unlock(&journal->j_checkpoint_mutex);
+> >  	write_lock(&journal->j_state_lock);
+> >  	J_ASSERT(!journal->j_running_transaction);
+> > -- 
+> > 2.31.1.527.g47e6f16901-goog
+> > 
