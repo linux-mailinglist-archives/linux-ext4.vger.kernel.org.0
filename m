@@ -2,379 +2,362 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54567375A11
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 May 2021 20:18:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B1A0375A30
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 May 2021 20:30:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231370AbhEFSTk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 6 May 2021 14:19:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230138AbhEFSTj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 May 2021 14:19:39 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 905D9C061574
-        for <linux-ext4@vger.kernel.org>; Thu,  6 May 2021 11:18:39 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id l129so5869766qke.8
-        for <linux-ext4@vger.kernel.org>; Thu, 06 May 2021 11:18:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mNJXHCy7xMizQaOw1O8oCJCUTVwucMyuw4PHVQTv6Qw=;
-        b=oXy6WoVVWx6LBhnmCI4ahwYFR8iJfVyTuSbBGfSBRnl2C3Sp7ldTqxDJd6AyYw9O0C
-         dxBxrqLPMXpWqovAq/OISjJmrBLJgG9ZlFoVksaSVyUnnU1kFYWfHKTedFyNcneNBNbX
-         nOu2JpOs4s/5Bs2hKe7ZqaC6bu25+09fBTudqD14pAKnaEV1+f8uRjfv2gZMq57eHlRR
-         tVaXTKjmhN1FF8QUDiCqIoN438YFmgaTuHbBUPiPRTQ3zJEL+Q4uqSXKIIrmjvTMCjyR
-         K9GQSI/Qme7dgREHRrlZzgzijjgwi+ZXu0lbCF55gj5IBIU/SkBAF8udiV5iLwSafTHH
-         nqQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mNJXHCy7xMizQaOw1O8oCJCUTVwucMyuw4PHVQTv6Qw=;
-        b=JDTuJX/w8ZhzSjRo0hPviZ3mpAoAyz+c1D7dV3ZWDy4jvQ4AFBwgDLncA8byoU/l9S
-         /IqbmIjw61y7eBK0NJ+47/Y7CZ9SF4orbF4RXVP1IlbW22Q3zKsKxvAqQOWGEmdDL0n0
-         WJ4VRoNqcvcyBOfwnGMuXsxTAzb75YI1vJFgOjsE/jQaTQqTfb8KZUjRoZ6jMmlS3GUi
-         7KnVeNIAeDJymEbkK1PNCrUYjPMJ9SyXzmeasVWhj+tfBJVZiOWtOqdRP2r2UMGOJihn
-         /dJohZiy/L8nCPmWYX6TuCNdMJ5kskKh9D/FTy8nNdS01Dn1Lksx23LzbaJmLZRYB54W
-         msAw==
-X-Gm-Message-State: AOAM533krTGRAdI2bbR/WYLV6+NM6JwVi3enqvp22Ko/ywkrrpRWGqtv
-        NjYCKa/EaARChgekSL5C0dA=
-X-Google-Smtp-Source: ABdhPJxq9utmQ7M1Q2f34POecxJCEzAncqkQu0jYjchM8UifmSv01Yk5A31NsApwVR5DgYYQjGsvtQ==
-X-Received: by 2002:a05:620a:12b0:: with SMTP id x16mr5147735qki.451.1620325118467;
-        Thu, 06 May 2021 11:18:38 -0700 (PDT)
-Received: from google.com ([2601:4c3:201:ed00:a367:86cc:9325:d516])
-        by smtp.gmail.com with ESMTPSA id o125sm2496492qkf.87.2021.05.06.11.18.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 May 2021 11:18:38 -0700 (PDT)
-Date:   Thu, 6 May 2021 14:18:36 -0400
-From:   Leah Rumancik <leah.rumancik@gmail.com>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu
-Subject: Re: [PATCH v3 2/3] ext4: add ioctl EXT4_IOC_CHECKPOINT
-Message-ID: <YJQy/DfuCFyZdwe7@google.com>
-References: <20210504163550.1486337-1-leah.rumancik@gmail.com>
- <20210504163550.1486337-2-leah.rumancik@gmail.com>
- <20210505212711.GA8532@magnolia>
- <20210505220844.GD8532@magnolia>
- <20210506155853.GF8532@magnolia>
+        id S234136AbhEFSb4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 6 May 2021 14:31:56 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:51833 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231839AbhEFSbz (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 May 2021 14:31:55 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 146IUn8E017139
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 6 May 2021 14:30:50 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 9EE1B15C39BD; Thu,  6 May 2021 14:30:49 -0400 (EDT)
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
+Cc:     harshads@google.com, adilger@dilger.ca, ebiggers@kernel.org,
+        harshadshirwadkar@gmail.com, "Theodore Ts'o" <tytso@mit.edu>
+Subject: [PATCH -v2] e2fsck: fix portability problems caused by unaligned accesses
+Date:   Thu,  6 May 2021 14:30:17 -0400
+Message-Id: <20210506183017.208802-1-tytso@mit.edu>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <20210504031024.3888676-1-tytso@mit.edu>
+References: <20210504031024.3888676-1-tytso@mit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210506155853.GF8532@magnolia>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, May 06, 2021 at 08:58:53AM -0700, Darrick J. Wong wrote:
-> On Wed, May 05, 2021 at 03:08:44PM -0700, Darrick J. Wong wrote:
-> > On Wed, May 05, 2021 at 02:27:11PM -0700, Darrick J. Wong wrote:
-> > > On Tue, May 04, 2021 at 04:35:49PM +0000, Leah Rumancik wrote:
-> > > > ioctl EXT4_IOC_CHECKPOINT checkpoints and flushes the journal. This
-> > > > includes forcing all the transactions to the log, checkpointing the
-> > > > transactions, and flushing the log to disk. This ioctl takes u64 "flags"
-> > > > as an argument. With the EXT4_IOC_CHECKPOINT_FLAG_DISCARD flag set, the
-> > > > journal blocks are also discarded.
-> > > > 
-> > > > Systems that wish to achieve content deletion SLO can set up a daemon
-> > > > that calls this ioctl at a regular interval such that it matches with the
-> > > > SLO requirement. Thus, with this patch, the ext4_dir_entry2 wipeout
-> > > > patch[1], and the Ext4 "-o discard" mount option set, Ext4 can now
-> > > > guarantee that all data will be erased
-> > > 
-> > > Er... what specifically does "data" mean?  File data, or just the dirent
-> > > blocks?
-> > > 
-> > > I think this is only true if discard_zeroes_data == 1, right?  The last
-> > > I looked, ext4 was calling REQ_OP_DISCARD, not REQ_OP_WRITE_ZEROES.
-> > > 
-> > > Also, there are some SSDs that "implement" discard as nop, which means
-> > > that the old contents can still be read by re-reading the LBAs.  What
-> > > about those?
-> > > 
-> > > (Also wondering if this is where FS_SECRM_FL files should get their
-> > > freed file blocks erased with REQ_OP_SECURE_ERASE...)
-> > > 
-> > > Like Dave says, the commit message needs to be a lot more precise about
-> > > what data are being targeted, and what the user can expect afterwards.
-> > > 
-> > > Something like (setting aside my questions about discard for a moment):
-> > > 
-> > > "...and with the ext4 '-o discard' mount option set, ext4 can now
-> > > guarantee that all file contents, file metadata, and directory names
-> > > will not be accessible through the filesystem or raw block device reads
-> > > after a file deletion."
-> > > 
-> > > > and discarded on deletion.  Note
-> > > > that this ioctl won't write zeros if the device doesn't support discards.
-> > > 
-> > > AFAICT the patch doesn't call blkdev_issue_zeroout, so this statement is
-> > > always true.
-> > > 
-> > > > The __jbd2_journal_issue_discard function could also be used to discard the
-> > > > journal (if discard is supported) during journal load after recovery. This
-> > > > would provide a potential solution to a journal replay bug reported earlier
-> > > > this year[2] for block devices that support discard. After a successful
-> > > > journal recovery, e2fsck can call this ioctl to discard the journal as
-> > > > well.
-> > > > 
-> > > > [1] https://lore.kernel.org/linux-ext4/YIHknqxngB1sUdie@mit.edu/
-> > > > [2] https://lore.kernel.org/linux-ext4/YDZoaacIYStFQT8g@mit.edu/
-> > > > 
-> > > > Signed-off-by: Leah Rumancik <leah.rumancik@gmail.com>
-> > > > ---
-> > > >  fs/ext4/ext4.h    |  4 +++
-> > > >  fs/ext4/ioctl.c   | 38 +++++++++++++++++++++++
-> > > >  fs/jbd2/journal.c | 79 +++++++++++++++++++++++++++++++++++++++++++++++
-> > > >  3 files changed, 121 insertions(+)
-> > > > 
-> > > > diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> > > > index 18f021c988a1..2fe8565706fc 100644
-> > > > --- a/fs/ext4/ext4.h
-> > > > +++ b/fs/ext4/ext4.h
-> > > > @@ -715,6 +715,7 @@ enum {
-> > > >  #define EXT4_IOC_CLEAR_ES_CACHE		_IO('f', 40)
-> > > >  #define EXT4_IOC_GETSTATE		_IOW('f', 41, __u32)
-> > > >  #define EXT4_IOC_GET_ES_CACHE		_IOWR('f', 42, struct fiemap)
-> > > > +#define EXT4_IOC_CHECKPOINT		_IOW('f', 43, __u64)
-> > > >  
-> > > >  #define EXT4_IOC_SHUTDOWN _IOR ('X', 125, __u32)
-> > > >  
-> > > > @@ -736,6 +737,9 @@ enum {
-> > > >  #define EXT4_STATE_FLAG_NEWENTRY	0x00000004
-> > > >  #define EXT4_STATE_FLAG_DA_ALLOC_CLOSE	0x00000008
-> > > >  
-> > > > +/* flag to enable discarding journal blocks through ioctl EXT4_IOC_CHECKPOINT */
-> > > > +#define EXT4_IOC_CHECKPOINT_FLAG_DISCARD	1
-> 
-> Reiterating what I said on the ext4 concall this morning for benefit of
-> everyone else following along at home:
-> 
-> You could add a second flag (EXT4_IOC_CHECKPOINT_DRY_RUN) to the ioctl
-> that returns zero to userspace before making any state changes.  Then
-> all the fstests cases that exercise this feature (and the dirent name
-> zering patch that just went upstream) could call the ioctl in dry run
-> mode to detect kernels that support the zeroing feature, rather than
-> burning more memory on another feature support file in sysfs.
+The on-disk format for the ext4 journal can have unaigned 32-bit
+integers.  This can happen when replaying a journal using a obsolete
+checksum format (which was never popularly used, since the v3 format
+replaced v2 while the metadata checksum feature was being stablized),
+and in the fast commit feature (which landed in the 5.10 kernel,
+although it is not enabled by default).
 
-What about adding a second flag EXT4_IOC_CHECKPOINT_ZEROOUT which can
-be used to call blkdev_issue_zeroout as an alternative to
-blkdev_issue_discard? This could be used for testing and where this
-wipeout functionality is desired but discard is not supported / discard
-is a noop.
+This commit fixes the following regression tests on some platforms
+(such as running 32-bit arm architectures on a 64-bit arm kernel):
+j_recover_csum2_32bit, j_recover_csum2_64bit, j_recover_fast_commit.
 
-> 
-> --D
-> 
-> > > > +
-> > > >  #if defined(__KERNEL__) && defined(CONFIG_COMPAT)
-> > > >  /*
-> > > >   * ioctl commands in 32 bit emulation
-> > > > diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-> > > > index ef809feb7e77..839ffd067357 100644
-> > > > --- a/fs/ext4/ioctl.c
-> > > > +++ b/fs/ext4/ioctl.c
-> > > > @@ -794,6 +794,40 @@ static int ext4_ioctl_get_es_cache(struct file *filp, unsigned long arg)
-> > > >  	return error;
-> > > >  }
-> > > >  
-> > > > +static int ext4_ioctl_checkpoint(struct file *filp, unsigned long arg)
-> > > > +{
-> > > > +	int err = 0;
-> > > > +	unsigned long long flags = 0;
-> > > > +	struct super_block *sb = file_inode(filp)->i_sb;
-> > > > +
-> > > > +	if (!capable(CAP_SYS_ADMIN))
-> > > > +		return -EPERM;
-> > > > +
-> > > > +	/* file argument is not the mount point */
-> > > > +	if (file_dentry(filp) != sb->s_root)
-> > > > +		return -EINVAL;
-> > > > +
-> > > > +	/* filesystem is not backed by block device */
-> > > > +	if (sb->s_bdev == NULL)
-> > > > +		return -EINVAL;
-> > > > +
-> > > > +	if (copy_from_user(&flags, (__u64 __user *)arg,
-> > > > +				sizeof(__u64)))
-> > > > +		return -EFAULT;
-> > > > +
-> > > > +	/* flags can only be 0 or EXT4_IOC_CHECKPOINT_FLAG_DISCARD */
-> > > > +	if (flags & ~EXT4_IOC_CHECKPOINT_FLAG_DISCARD)
-> > > > +		return -EINVAL;
-> > > > +
-> > > > +	if (EXT4_SB(sb)->s_journal) {
-> > > > +		jbd2_journal_lock_updates(EXT4_SB(sb)->s_journal);
-> > > > +		err = jbd2_journal_flush(EXT4_SB(sb)->s_journal,
-> > 
-> > Huh.  So we don't flush the filesystem at all, just the journal?  I
-> > don't see anything in the documentation saying that syncfs() is a
-> > prerequisite.
+https://github.com/tytso/e2fsprogs/issues/65
 
-This is just for the journal, good point, I'll update the documentation.
+Addresses-Debian-Bug: #987641
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
 
-> > 
-> > > > +			flags & EXT4_IOC_CHECKPOINT_FLAG_DISCARD);
-> > > > +		jbd2_journal_unlock_updates(EXT4_SB(sb)->s_journal);
-> > > > +	}
-> > > > +	return err;
-> > > > +}
-> > > > +
-> > > >  static long __ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
-> > > >  {
-> > > >  	struct inode *inode = file_inode(filp);
-> > > > @@ -1205,6 +1239,9 @@ static long __ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
-> > > >  		return fsverity_ioctl_read_metadata(filp,
-> > > >  						    (const void __user *)arg);
-> > > >  
-> > > > +	case EXT4_IOC_CHECKPOINT:
-> > > > +		return ext4_ioctl_checkpoint(filp, arg);
-> > > > +
-> > > >  	default:
-> > > >  		return -ENOTTY;
-> > > >  	}
-> > > > @@ -1285,6 +1322,7 @@ long ext4_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
-> > > >  	case EXT4_IOC_CLEAR_ES_CACHE:
-> > > >  	case EXT4_IOC_GETSTATE:
-> > > >  	case EXT4_IOC_GET_ES_CACHE:
-> > > > +	case EXT4_IOC_CHECKPOINT:
-> > > >  		break;
-> > > >  	default:
-> > > >  		return -ENOIOCTLCMD;
-> > > > diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-> > > > index 4b7953934c82..ce33e4817aab 100644
-> > > > --- a/fs/jbd2/journal.c
-> > > > +++ b/fs/jbd2/journal.c
-> > > > @@ -1686,6 +1686,80 @@ static void jbd2_mark_journal_empty(journal_t *journal, int write_op)
-> > > >  	write_unlock(&journal->j_state_lock);
-> > > >  }
-> > > >  
-> > > > +/* discard journal blocks excluding journal superblock */
-> > > > +static int __jbd2_journal_issue_discard(journal_t *journal)
-> > > > +{
-> > > > +	int err = 0;
-> > > > +	unsigned long block, log_offset; /* logical */
-> > > > +	unsigned long long phys_block, block_start, block_stop; /* physical */
-> > > > +	loff_t byte_start, byte_stop, byte_count;
-> > > > +	struct request_queue *q = bdev_get_queue(journal->j_dev);
-> > > > +
-> > > > +	if (!q)
-> > > > +		return -ENXIO;
-> > > > +
-> > > > +	if (!blk_queue_discard(q))
-> > > > +		return -EOPNOTSUPP;
-> > > > +
-> > > > +	/* lookup block mapping and issue discard for each contiguous region */
-> > > > +	log_offset = be32_to_cpu(journal->j_superblock->s_first);
-> > > > +
-> > > > +	err = jbd2_journal_bmap(journal, log_offset, &block_start);
-> > > > +	if (err) {
-> > > > +		printk(KERN_ERR "JBD2: bad block at offset %lu", log_offset);
-> > > > +		return err;
-> > > > +	}
-> > > > +
-> > > > +	/*
-> > > > +	 * use block_start - 1 to meet check for contiguous with previous region:
-> > > > +	 * phys_block == block_stop + 1
-> > > > +	 */
-> > > > +	block_stop = block_start - 1;
-> > > > +
-> > > > +	for (block = log_offset; block < journal->j_total_len; block++) {
-> > > > +		err = jbd2_journal_bmap(journal, block, &phys_block);
-> > > > +		if (err) {
-> > > > +			printk(KERN_ERR "JBD2: bad block at offset %lu", block);
-> > > > +			return err;
-> > > > +		}
-> > > > +
-> > > > +		if (block == journal->j_total_len - 1)
-> > > > +			block_stop = phys_block;
-> > > > +		else if (phys_block == block_stop + 1) {
-> > > > +			block_stop++;
-> > > > +			continue;
-> > > > +		}
-> > > > +
-> > > > +		/*
-> > > > +		 * not contiguous with prior physical block or this is last
-> > > > +		 * block of journal, take care of the region
-> > > > +		 */
-> > > > +		byte_start = block_start * journal->j_blocksize;
-> > > > +		byte_stop = block_stop * journal->j_blocksize;
-> > > > +		byte_count = (block_stop - block_start + 1) *
-> > > > +			journal->j_blocksize;
-> > > > +
-> > > > +		truncate_inode_pages_range(journal->j_dev->bd_inode->i_mapping,
-> > > > +			byte_start, byte_stop);
-> > > > +
-> > > > +		err = blkdev_issue_discard(journal->j_dev,
-> > > > +			byte_start >> SECTOR_SHIFT,
-> > > > +			byte_count >> SECTOR_SHIFT,
-> > > > +			GFP_NOFS, 0);
-> > > 
-> > > Dumb style nit: I think kernel style rules say to indent second lines
-> > > more than one tab.
-> > > 
-> > > (Dumb in the sense of "ha look at the xfs code!" :P)
-> > 
+Changes from v1:
+  - Copy the structures to assure alignment instead of using a
+    byte-by-byte access because taking a pointer of a structure
+    member since that could trigger UBSAN complaints.
 
-Sure, will fix :)
+ e2fsck/journal.c                   | 83 ++++++++++++++++--------------
+ e2fsck/recovery.c                  | 22 ++++----
+ tests/j_recover_fast_commit/script |  1 -
+ 3 files changed, 56 insertions(+), 50 deletions(-)
 
-> > I had a second thought -- this is issuing one discard per journal block.
-> > Discards are expensive (especially on SATA SSDs where you have to
-> > suspend all other commands while they run) and especially here since
-> > we're running them serially.
-> > 
-> > One place where jbd2 shows its age is that it relies on bmap() to figure
-> > out where the journal blocks are on disk.  For regular operation this
-> > isnn't a big deal since jbd2 only writes data one fs block at a time,
-> > but for a bulk operation like this, I suspect it's going to be very
-> > advantageous to be able to discard/zero entire extents at once.
-> > 
-> > (No need to cram all that into this patch; that's something for a patch
-> > 4.)
+diff --git a/e2fsck/journal.c b/e2fsck/journal.c
+index a425bbd1..bd0e4f31 100644
+--- a/e2fsck/journal.c
++++ b/e2fsck/journal.c
+@@ -286,9 +286,9 @@ static int ext4_fc_replay_scan(journal_t *j, struct buffer_head *bh,
+ 	int ret = JBD2_FC_REPLAY_CONTINUE;
+ 	struct ext4_fc_add_range *ext;
+ 	struct ext4_fc_tl *tl;
+-	struct ext4_fc_tail *tail;
++	struct ext4_fc_tail tail;
+ 	__u8 *start, *end;
+-	struct ext4_fc_head *head;
++	struct ext4_fc_head head;
+ 	struct ext2fs_extent ext2fs_ex = {0};
+ 
+ 	state = &ctx->fc_replay_state;
+@@ -338,16 +338,15 @@ static int ext4_fc_replay_scan(journal_t *j, struct buffer_head *bh,
+ 			break;
+ 		case EXT4_FC_TAG_TAIL:
+ 			state->fc_cur_tag++;
+-			tail = (struct ext4_fc_tail *)ext4_fc_tag_val(tl);
++			memcpy(&tail, ext4_fc_tag_val(tl), sizeof(tail));
+ 			state->fc_crc = jbd2_chksum(j, state->fc_crc, tl,
+ 						sizeof(*tl) +
+ 						offsetof(struct ext4_fc_tail,
+ 						fc_crc));
+ 			jbd_debug(1, "tail tid %d, expected %d\n",
+-					le32_to_cpu(tail->fc_tid),
+-					expected_tid);
+-			if (le32_to_cpu(tail->fc_tid) == expected_tid &&
+-				le32_to_cpu(tail->fc_crc) == state->fc_crc) {
++				  le32_to_cpu(tail.fc_tid), expected_tid);
++			if (le32_to_cpu(tail.fc_tid) == expected_tid &&
++			    le32_to_cpu(tail.fc_crc) == state->fc_crc) {
+ 				state->fc_replay_num_tags = state->fc_cur_tag;
+ 			} else {
+ 				ret = state->fc_replay_num_tags ?
+@@ -356,13 +355,13 @@ static int ext4_fc_replay_scan(journal_t *j, struct buffer_head *bh,
+ 			state->fc_crc = 0;
+ 			break;
+ 		case EXT4_FC_TAG_HEAD:
+-			head = (struct ext4_fc_head *)ext4_fc_tag_val(tl);
+-			if (le32_to_cpu(head->fc_features) &
+-				~EXT4_FC_SUPPORTED_FEATURES) {
++			memcpy(&head, ext4_fc_tag_val(tl), sizeof(head));
++			if (le32_to_cpu(head.fc_features) &
++			    ~EXT4_FC_SUPPORTED_FEATURES) {
+ 				ret = -EOPNOTSUPP;
+ 				break;
+ 			}
+-			if (le32_to_cpu(head->fc_tid) != expected_tid) {
++			if (le32_to_cpu(head.fc_tid) != expected_tid) {
+ 				ret = -EINVAL;
+ 				break;
+ 			}
+@@ -612,27 +611,31 @@ struct dentry_info_args {
+ 	char *dname;
+ };
+ 
+-static inline void tl_to_darg(struct dentry_info_args *darg,
++static inline int tl_to_darg(struct dentry_info_args *darg,
+ 				struct  ext4_fc_tl *tl)
+ {
+-	struct ext4_fc_dentry_info *fcd;
++	struct ext4_fc_dentry_info fcd;
+ 	int tag = le16_to_cpu(tl->fc_tag);
+ 
+-	fcd = (struct ext4_fc_dentry_info *)ext4_fc_tag_val(tl);
++	memcpy(&fcd, ext4_fc_tag_val(tl), sizeof(fcd));
+ 
+-	darg->parent_ino = le32_to_cpu(fcd->fc_parent_ino);
+-	darg->ino = le32_to_cpu(fcd->fc_ino);
+-	darg->dname = (char *) fcd->fc_dname;
++	darg->parent_ino = le32_to_cpu(fcd.fc_parent_ino);
++	darg->ino = le32_to_cpu(fcd.fc_ino);
+ 	darg->dname_len = ext4_fc_tag_len(tl) -
+ 			sizeof(struct ext4_fc_dentry_info);
+ 	darg->dname = malloc(darg->dname_len + 1);
+-	memcpy(darg->dname, fcd->fc_dname, darg->dname_len);
++	if (!darg->dname)
++		return -ENOMEM;
++	memcpy(darg->dname,
++	       ext4_fc_tag_val(tl) + sizeof(struct ext4_fc_dentry_info),
++	       darg->dname_len);
+ 	darg->dname[darg->dname_len] = 0;
+ 	jbd_debug(1, "%s: %s, ino %d, parent %d\n",
+ 		tag == EXT4_FC_TAG_CREAT ? "create" :
+ 		(tag == EXT4_FC_TAG_LINK ? "link" :
+ 		(tag == EXT4_FC_TAG_UNLINK ? "unlink" : "error")),
+ 		darg->dname, darg->ino, darg->parent_ino);
++	return 0;
+ }
+ 
+ static int ext4_fc_handle_unlink(e2fsck_t ctx, struct ext4_fc_tl *tl)
+@@ -642,7 +645,9 @@ static int ext4_fc_handle_unlink(e2fsck_t ctx, struct ext4_fc_tl *tl)
+ 	ext2_filsys fs = ctx->fs;
+ 	int ret;
+ 
+-	tl_to_darg(&darg, tl);
++	ret = tl_to_darg(&darg, tl);
++	if (ret)
++		return ret;
+ 	ext4_fc_flush_extents(ctx, darg.ino);
+ 	ret = errcode_to_errno(
+ 		       ext2fs_unlink(ctx->fs, darg.parent_ino,
+@@ -659,7 +664,9 @@ static int ext4_fc_handle_link_and_create(e2fsck_t ctx, struct ext4_fc_tl *tl)
+ 	struct ext2_inode_large inode_large;
+ 	int ret, filetype, mode;
+ 
+-	tl_to_darg(&darg, tl);
++	ret = tl_to_darg(&darg, tl);
++	if (ret)
++		return ret;
+ 	ext4_fc_flush_extents(ctx, 0);
+ 	ret = errcode_to_errno(ext2fs_read_inode(fs, darg.ino,
+ 						 (struct ext2_inode *)&inode_large));
+@@ -730,17 +737,18 @@ static int ext4_fc_handle_inode(e2fsck_t ctx, struct ext4_fc_tl *tl)
+ 	struct e2fsck_fc_replay_state *state = &ctx->fc_replay_state;
+ 	int ino, inode_len = EXT2_GOOD_OLD_INODE_SIZE;
+ 	struct ext2_inode_large *inode = NULL, *fc_inode = NULL;
+-	struct ext4_fc_inode *fc_inode_val;
++	__le32 fc_ino;
++	__u8 *fc_raw_inode;
+ 	errcode_t err;
+ 	blk64_t blks;
+ 
+-	fc_inode_val = (struct ext4_fc_inode *)ext4_fc_tag_val(tl);
+-	ino = le32_to_cpu(fc_inode_val->fc_ino);
++	memcpy(&fc_ino, ext4_fc_tag_val(tl), sizeof(fc_ino));
++	fc_raw_inode = ext4_fc_tag_val(tl) + sizeof(fc_ino);
++	ino = le32_to_cpu(fc_ino);
+ 
+ 	if (EXT2_INODE_SIZE(ctx->fs->super) > EXT2_GOOD_OLD_INODE_SIZE)
+ 		inode_len += ext2fs_le16_to_cpu(
+-			((struct ext2_inode_large *)fc_inode_val->fc_raw_inode)
+-				->i_extra_isize);
++			((struct ext2_inode_large *)fc_raw_inode)->i_extra_isize);
+ 	err = ext2fs_get_mem(inode_len, &inode);
+ 	if (err)
+ 		goto out;
+@@ -755,10 +763,10 @@ static int ext4_fc_handle_inode(e2fsck_t ctx, struct ext4_fc_tl *tl)
+ 		goto out;
+ #ifdef WORDS_BIGENDIAN
+ 	ext2fs_swap_inode_full(ctx->fs, fc_inode,
+-			       (struct ext2_inode_large *)fc_inode_val->fc_raw_inode,
++			       (struct ext2_inode_large *)fc_raw_inode,
+ 			       0, sizeof(*inode));
+ #else
+-	memcpy(fc_inode, fc_inode_val->fc_raw_inode, inode_len);
++	memcpy(fc_inode, fc_raw_inode, inode_len);
+ #endif
+ 	memcpy(inode, fc_inode, offsetof(struct ext2_inode_large, i_block));
+ 	memcpy(&inode->i_generation, &fc_inode->i_generation,
+@@ -792,12 +800,11 @@ out:
+ static int ext4_fc_handle_add_extent(e2fsck_t ctx, struct ext4_fc_tl *tl)
+ {
+ 	struct ext2fs_extent extent;
+-	struct ext4_fc_add_range *add_range;
+-	struct ext4_fc_del_range *del_range;
++	struct ext4_fc_add_range add_range;
+ 	int ret = 0, ino;
+ 
+-	add_range = (struct ext4_fc_add_range *)ext4_fc_tag_val(tl);
+-	ino = le32_to_cpu(add_range->fc_ino);
++	memcpy(&add_range, ext4_fc_tag_val(tl), sizeof(add_range));
++	ino = le32_to_cpu(add_range.fc_ino);
+ 	ext4_fc_flush_extents(ctx, ino);
+ 
+ 	ret = ext4_fc_read_extents(ctx, ino);
+@@ -805,8 +812,8 @@ static int ext4_fc_handle_add_extent(e2fsck_t ctx, struct ext4_fc_tl *tl)
+ 		return ret;
+ 	memset(&extent, 0, sizeof(extent));
+ 	ret = errcode_to_errno(ext2fs_decode_extent(
+-			&extent, (void *)(add_range->fc_ex),
+-			sizeof(add_range->fc_ex)));
++			&extent, (void *)add_range.fc_ex,
++			sizeof(add_range.fc_ex)));
+ 	if (ret)
+ 		return ret;
+ 	return ext4_add_extent_to_list(ctx,
+@@ -819,16 +826,16 @@ static int ext4_fc_handle_add_extent(e2fsck_t ctx, struct ext4_fc_tl *tl)
+ static int ext4_fc_handle_del_range(e2fsck_t ctx, struct ext4_fc_tl *tl)
+ {
+ 	struct ext2fs_extent extent;
+-	struct ext4_fc_del_range *del_range;
++	struct ext4_fc_del_range del_range;
+ 	int ret, ino;
+ 
+-	del_range = (struct ext4_fc_del_range *)ext4_fc_tag_val(tl);
+-	ino = le32_to_cpu(del_range->fc_ino);
++	memcpy(&del_range, ext4_fc_tag_val(tl), sizeof(del_range));
++	ino = le32_to_cpu(del_range.fc_ino);
+ 	ext4_fc_flush_extents(ctx, ino);
+ 
+ 	memset(&extent, 0, sizeof(extent));
+-	extent.e_lblk = ext2fs_le32_to_cpu(del_range->fc_lblk);
+-	extent.e_len = ext2fs_le32_to_cpu(del_range->fc_len);
++	extent.e_lblk = le32_to_cpu(del_range.fc_lblk);
++	extent.e_len = le32_to_cpu(del_range.fc_len);
+ 	ret = ext4_fc_read_extents(ctx, ino);
+ 	if (ret)
+ 		return ret;
+diff --git a/e2fsck/recovery.c b/e2fsck/recovery.c
+index dc0694fc..02694d2c 100644
+--- a/e2fsck/recovery.c
++++ b/e2fsck/recovery.c
+@@ -196,7 +196,7 @@ static int jbd2_descriptor_block_csum_verify(journal_t *j, void *buf)
+ static int count_tags(journal_t *journal, struct buffer_head *bh)
+ {
+ 	char *			tagp;
+-	journal_block_tag_t *	tag;
++	journal_block_tag_t	tag;
+ 	int			nr = 0, size = journal->j_blocksize;
+ 	int			tag_bytes = journal_tag_bytes(journal);
+ 
+@@ -206,14 +206,14 @@ static int count_tags(journal_t *journal, struct buffer_head *bh)
+ 	tagp = &bh->b_data[sizeof(journal_header_t)];
+ 
+ 	while ((tagp - bh->b_data + tag_bytes) <= size) {
+-		tag = (journal_block_tag_t *) tagp;
++		memcpy(&tag, tagp, sizeof(tag));
+ 
+ 		nr++;
+ 		tagp += tag_bytes;
+-		if (!(tag->t_flags & cpu_to_be16(JBD2_FLAG_SAME_UUID)))
++		if (!(tag.t_flags & cpu_to_be16(JBD2_FLAG_SAME_UUID)))
+ 			tagp += 16;
+ 
+-		if (tag->t_flags & cpu_to_be16(JBD2_FLAG_LAST_TAG))
++		if (tag.t_flags & cpu_to_be16(JBD2_FLAG_LAST_TAG))
+ 			break;
+ 	}
+ 
+@@ -434,9 +434,9 @@ static int jbd2_commit_block_csum_verify(journal_t *j, void *buf)
+ }
+ 
+ static int jbd2_block_tag_csum_verify(journal_t *j, journal_block_tag_t *tag,
++				      journal_block_tag3_t *tag3,
+ 				      void *buf, __u32 sequence)
+ {
+-	journal_block_tag3_t *tag3 = (journal_block_tag3_t *)tag;
+ 	__u32 csum32;
+ 	__be32 seq;
+ 
+@@ -497,7 +497,7 @@ static int do_one_pass(journal_t *journal,
+ 	while (1) {
+ 		int			flags;
+ 		char *			tagp;
+-		journal_block_tag_t *	tag;
++		journal_block_tag_t	tag;
+ 		struct buffer_head *	obh;
+ 		struct buffer_head *	nbh;
+ 
+@@ -614,8 +614,8 @@ static int do_one_pass(journal_t *journal,
+ 			       <= journal->j_blocksize - descr_csum_size) {
+ 				unsigned long io_block;
+ 
+-				tag = (journal_block_tag_t *) tagp;
+-				flags = be16_to_cpu(tag->t_flags);
++				memcpy(&tag, tagp, sizeof(tag));
++				flags = be16_to_cpu(tag.t_flags);
+ 
+ 				io_block = next_log_block++;
+ 				wrap(journal, next_log_block);
+@@ -633,7 +633,7 @@ static int do_one_pass(journal_t *journal,
+ 
+ 					J_ASSERT(obh != NULL);
+ 					blocknr = read_tag_block(journal,
+-								 tag);
++								 &tag);
+ 
+ 					/* If the block has been
+ 					 * revoked, then we're all done
+@@ -648,8 +648,8 @@ static int do_one_pass(journal_t *journal,
+ 
+ 					/* Look for block corruption */
+ 					if (!jbd2_block_tag_csum_verify(
+-						journal, tag, obh->b_data,
+-						be32_to_cpu(tmp->h_sequence))) {
++			journal, &tag, (journal_block_tag3_t *)tagp,
++			obh->b_data, be32_to_cpu(tmp->h_sequence))) {
+ 						brelse(obh);
+ 						success = -EFSBADCRC;
+ 						printk(KERN_ERR "JBD2: Invalid "
+diff --git a/tests/j_recover_fast_commit/script b/tests/j_recover_fast_commit/script
+index 22ef6325..05c40cc5 100755
+--- a/tests/j_recover_fast_commit/script
++++ b/tests/j_recover_fast_commit/script
+@@ -10,7 +10,6 @@ gunzip < $IMAGE > $TMPFILE
+ EXP=$test_dir/expect
+ OUT=$test_name.log
+ 
+-cp $TMPFILE /tmp/debugthis
+ $FSCK $FSCK_OPT -E journal_only -N test_filesys $TMPFILE 2>/dev/null | head -n 1000 | tail -n +2 > $OUT
+ echo "Exit status is $?" >> $OUT
+ 
+-- 
+2.31.0
 
-So, originally, I was calling blkdev_issue_disard once per block but it
-ended up taking foooorrrrever. Hence, this block_start/block_stop stuff
-to batch together contiguous physical blocks into a single call to
-blkdev_issue_discard. It really would be nice to have a bulk bmap()
-function though.
-
-> > 
-> > > > +
-> > > > +		if (unlikely(err != 0)) {
-> > > > +			printk(KERN_ERR "JBD2: unable to discard "
-> > > > +				"journal at physical blocks %llu - %llu",
-> > > > +				block_start, block_stop);
-> > > > +			return err;
-> > > > +		}
-> > > > +
-> > > > +		block_start = phys_block;
-> > > > +		block_stop = phys_block;
-> > > > +	}
-> > > > +
-> > > > +	return blkdev_issue_flush(journal->j_dev);
-> > > > +}
-> > > >  
-> > > >  /**
-> > > >   * jbd2_journal_update_sb_errno() - Update error in the journal.
-> > > > @@ -2246,6 +2320,7 @@ EXPORT_SYMBOL(jbd2_journal_clear_features);
-> > > >  /**
-> > > >   * jbd2_journal_flush() - Flush journal
-> > > >   * @journal: Journal to act on.
-> > > > + * @discard: discard the journal blocks
-> > > >   *
-> > > >   * Flush all data for a given journal to disk and empty the journal.
-> > > >   * Filesystems can use this when remounting readonly to ensure that
-> > > > @@ -2305,6 +2380,10 @@ int jbd2_journal_flush(journal_t *journal, bool discard)
-> > > >  	 * commits of data to the journal will restore the current
-> > > >  	 * s_start value. */
-> > > >  	jbd2_mark_journal_empty(journal, REQ_SYNC | REQ_FUA);
-> > > > +
-> > > > +	if (discard)
-> > > > +		err = __jbd2_journal_issue_discard(journal);
-> > > > +
-> > > >  	mutex_unlock(&journal->j_checkpoint_mutex);
-> > > >  	write_lock(&journal->j_state_lock);
-> > > >  	J_ASSERT(!journal->j_running_transaction);
-> > > > -- 
-> > > > 2.31.1.527.g47e6f16901-goog
-> > > > 
