@@ -2,170 +2,267 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04C2C375559
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 May 2021 16:03:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34AD3375575
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 May 2021 16:15:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234356AbhEFOEF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 6 May 2021 10:04:05 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:17136 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233982AbhEFOEE (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 May 2021 10:04:04 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FbZvl24N7zqSgq;
-        Thu,  6 May 2021 21:59:47 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.498.0; Thu, 6 May 2021
- 22:02:56 +0800
-From:   Ye Bin <yebin10@huawei.com>
-To:     <tytso@mit.edu>, <jack@suse.cz>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Ye Bin <yebin10@huawei.com>
-Subject: [PATCH v4] ext4: Fix bug on in ext4_es_cache_extent as ext4_split_extent_at failed
-Date:   Thu, 6 May 2021 22:10:42 +0800
-Message-ID: <20210506141042.3298679-1-yebin10@huawei.com>
-X-Mailer: git-send-email 2.25.4
+        id S234540AbhEFOQx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 6 May 2021 10:16:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234357AbhEFOQw (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 May 2021 10:16:52 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B633C061574
+        for <linux-ext4@vger.kernel.org>; Thu,  6 May 2021 07:15:54 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id o27so5002073qkj.9
+        for <linux-ext4@vger.kernel.org>; Thu, 06 May 2021 07:15:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=d9V7UoNeJmkr0DkA51CcwHSZWLCT+LfLjwpOXO7jVV8=;
+        b=ATy03JguVzgXVPQUNZvXhFkA9b8FeOCuj4G20B9npUQL8sAUks5bG+Tr6Od6q2WGd6
+         sBMdfLJQPyxlWXv1aWXHX4PFp+slESTz36dujVTT6V6UH2P/KoafV29m/ePU3ghb14Mj
+         anO5rqt80ywcGzWaN/mwPV+ICaaJXgV6YXrcClRbJCTvzjrZhPqIH1YCLMpe3Y/MWXMa
+         X/Pe5EpNDwJRGmBGn6QnVtS2MJPXzRtGTKkWnfJyhSgElqV7QTAJnturWd8DSQU+CrJh
+         KoGMpuACyAAh1WYQ0HAF8oazU6o+/EC2Zhw7hZBcVjUh69+isBRVVjpcNqOIA/IG6T98
+         wdjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=d9V7UoNeJmkr0DkA51CcwHSZWLCT+LfLjwpOXO7jVV8=;
+        b=I+U9mdZeNR7tQSWeibpgRPb/FGUzfqv759gVRPGb1LupDw6U0QA2EF72lWG2akj4vY
+         yndH+NgqFz8V57scV2C5ilwTcfnQ6iXApTKD9vIMrtoWza1yiH7AAq4+zuqeuvdjONNR
+         2tWHdF1NeCUuIARkW18R7wxs5CqVEtF3uZGnc5sZxlmI3ftGt0BrDHMF9l4qyPn0cXzF
+         v40P7Ixaw65fo6Q7JHk0IYQIYLrnQUursUCcMghSaEEHQZbLof6bvjeP4uvmff63FGdu
+         md7J4dAy0ij63vs0NDW850yG2B4RSaG72LnTDHHAVU/C/yPa085y/LmIiAj+vCT22mKF
+         JPAg==
+X-Gm-Message-State: AOAM532HwRMx8Laq/JE9aeY/PLk+XttGAEUKWsBQsuTzqwkdrRO4Xrp+
+        tHcfuYwLblw5MfV4drUqmDM=
+X-Google-Smtp-Source: ABdhPJy9atJXivTZpkcftkR2gW2aEzsGkQFrfvKEyTJehfrtE9708NUrY+V22oF60bzkDBqepWJDtA==
+X-Received: by 2002:a37:7b41:: with SMTP id w62mr4179803qkc.256.1620310553386;
+        Thu, 06 May 2021 07:15:53 -0700 (PDT)
+Received: from google.com ([2601:4c3:201:ed00:1ee1:2ff9:ee25:64a6])
+        by smtp.gmail.com with ESMTPSA id x18sm1893460qkx.118.2021.05.06.07.15.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 May 2021 07:15:52 -0700 (PDT)
+Date:   Thu, 6 May 2021 10:15:51 -0400
+From:   Leah Rumancik <leah.rumancik@gmail.com>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu
+Subject: Re: [PATCH v3 1/3] ext4: add flags argument to jbd2_journal_flush
+Message-ID: <YJP6F2gSju92kMaU@google.com>
+References: <20210504163550.1486337-1-leah.rumancik@gmail.com>
+ <20210505213717.GC8532@magnolia>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210505213717.GC8532@magnolia>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-We got follow bug_on when run fsstress with injecting IO fault:
-[130747.323114] kernel BUG at fs/ext4/extents_status.c:762!
-[130747.323117] Internal error: Oops - BUG: 0 [#1] SMP
-......
-[130747.334329] Call trace:
-[130747.334553]  ext4_es_cache_extent+0x150/0x168 [ext4]
-[130747.334975]  ext4_cache_extents+0x64/0xe8 [ext4]
-[130747.335368]  ext4_find_extent+0x300/0x330 [ext4]
-[130747.335759]  ext4_ext_map_blocks+0x74/0x1178 [ext4]
-[130747.336179]  ext4_map_blocks+0x2f4/0x5f0 [ext4]
-[130747.336567]  ext4_mpage_readpages+0x4a8/0x7a8 [ext4]
-[130747.336995]  ext4_readpage+0x54/0x100 [ext4]
-[130747.337359]  generic_file_buffered_read+0x410/0xae8
-[130747.337767]  generic_file_read_iter+0x114/0x190
-[130747.338152]  ext4_file_read_iter+0x5c/0x140 [ext4]
-[130747.338556]  __vfs_read+0x11c/0x188
-[130747.338851]  vfs_read+0x94/0x150
-[130747.339110]  ksys_read+0x74/0xf0
+On Wed, May 05, 2021 at 02:37:17PM -0700, Darrick J. Wong wrote:
+> On Tue, May 04, 2021 at 04:35:48PM +0000, Leah Rumancik wrote:
+> > This patch will allow the following commit to pass a discard flag,
+> > enabling discarding the journal blocks while flushing the journal.
+> > 
+> > Signed-off-by: Leah Rumancik <leah.rumancik@gmail.com>
+> > ---
+> >  fs/ext4/inode.c      | 4 ++--
+> >  fs/ext4/ioctl.c      | 6 +++---
+> >  fs/ext4/super.c      | 6 +++---
+> >  fs/jbd2/journal.c    | 3 +--
+> >  fs/ocfs2/alloc.c     | 2 +-
+> >  fs/ocfs2/journal.c   | 8 ++++----
+> >  include/linux/jbd2.h | 2 +-
+> >  7 files changed, 15 insertions(+), 16 deletions(-)
+> > 
+> > diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> > index 0948a43f1b3d..d308c57559e3 100644
+> > --- a/fs/ext4/inode.c
+> > +++ b/fs/ext4/inode.c
+> > @@ -3225,7 +3225,7 @@ static sector_t ext4_bmap(struct address_space *mapping, sector_t block)
+> >  		ext4_clear_inode_state(inode, EXT4_STATE_JDATA);
+> >  		journal = EXT4_JOURNAL(inode);
+> >  		jbd2_journal_lock_updates(journal);
+> > -		err = jbd2_journal_flush(journal);
+> > +		err = jbd2_journal_flush(journal, false);
+> >  		jbd2_journal_unlock_updates(journal);
+> >  
+> >  		if (err)
+> > @@ -6007,7 +6007,7 @@ int ext4_change_inode_journal_flag(struct inode *inode, int val)
+> >  	if (val)
+> >  		ext4_set_inode_flag(inode, EXT4_INODE_JOURNAL_DATA);
+> >  	else {
+> > -		err = jbd2_journal_flush(journal);
+> > +		err = jbd2_journal_flush(journal, false);
+> >  		if (err < 0) {
+> >  			jbd2_journal_unlock_updates(journal);
+> >  			percpu_up_write(&sbi->s_writepages_rwsem);
+> > diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
+> > index e9b0a1fa2ba8..ef809feb7e77 100644
+> > --- a/fs/ext4/ioctl.c
+> > +++ b/fs/ext4/ioctl.c
+> > @@ -701,7 +701,7 @@ static long ext4_ioctl_group_add(struct file *file,
+> >  	err = ext4_group_add(sb, input);
+> >  	if (EXT4_SB(sb)->s_journal) {
+> >  		jbd2_journal_lock_updates(EXT4_SB(sb)->s_journal);
+> > -		err2 = jbd2_journal_flush(EXT4_SB(sb)->s_journal);
+> > +		err2 = jbd2_journal_flush(EXT4_SB(sb)->s_journal, false);
+> >  		jbd2_journal_unlock_updates(EXT4_SB(sb)->s_journal);
+> >  	}
+> >  	if (err == 0)
+> > @@ -879,7 +879,7 @@ static long __ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+> >  		err = ext4_group_extend(sb, EXT4_SB(sb)->s_es, n_blocks_count);
+> >  		if (EXT4_SB(sb)->s_journal) {
+> >  			jbd2_journal_lock_updates(EXT4_SB(sb)->s_journal);
+> > -			err2 = jbd2_journal_flush(EXT4_SB(sb)->s_journal);
+> > +			err2 = jbd2_journal_flush(EXT4_SB(sb)->s_journal, false);
+> >  			jbd2_journal_unlock_updates(EXT4_SB(sb)->s_journal);
+> >  		}
+> >  		if (err == 0)
+> > @@ -1022,7 +1022,7 @@ static long __ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+> >  		if (EXT4_SB(sb)->s_journal) {
+> >  			ext4_fc_mark_ineligible(sb, EXT4_FC_REASON_RESIZE);
+> >  			jbd2_journal_lock_updates(EXT4_SB(sb)->s_journal);
+> > -			err2 = jbd2_journal_flush(EXT4_SB(sb)->s_journal);
+> > +			err2 = jbd2_journal_flush(EXT4_SB(sb)->s_journal, false);
+> >  			jbd2_journal_unlock_updates(EXT4_SB(sb)->s_journal);
+> >  		}
+> >  		if (err == 0)
+> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> > index 3868377dec2d..449ed222cdf8 100644
+> > --- a/fs/ext4/super.c
+> > +++ b/fs/ext4/super.c
+> > @@ -5613,7 +5613,7 @@ static int ext4_mark_recovery_complete(struct super_block *sb,
+> >  		return 0;
+> >  	}
+> >  	jbd2_journal_lock_updates(journal);
+> > -	err = jbd2_journal_flush(journal);
+> > +	err = jbd2_journal_flush(journal, false);
+> >  	if (err < 0)
+> >  		goto out;
+> >  
+> > @@ -5755,7 +5755,7 @@ static int ext4_freeze(struct super_block *sb)
+> >  		 * Don't clear the needs_recovery flag if we failed to
+> >  		 * flush the journal.
+> >  		 */
+> > -		error = jbd2_journal_flush(journal);
+> > +		error = jbd2_journal_flush(journal, false);
+> >  		if (error < 0)
+> >  			goto out;
+> >  
+> > @@ -6346,7 +6346,7 @@ static int ext4_quota_on(struct super_block *sb, int type, int format_id,
+> >  		 * otherwise be livelocked...
+> >  		 */
+> >  		jbd2_journal_lock_updates(EXT4_SB(sb)->s_journal);
+> > -		err = jbd2_journal_flush(EXT4_SB(sb)->s_journal);
+> > +		err = jbd2_journal_flush(EXT4_SB(sb)->s_journal, false);
+> >  		jbd2_journal_unlock_updates(EXT4_SB(sb)->s_journal);
+> >  		if (err)
+> >  			return err;
+> > diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+> > index 2dc944442802..4b7953934c82 100644
+> > --- a/fs/jbd2/journal.c
+> > +++ b/fs/jbd2/journal.c
+> > @@ -2251,8 +2251,7 @@ EXPORT_SYMBOL(jbd2_journal_clear_features);
+> >   * Filesystems can use this when remounting readonly to ensure that
+> >   * recovery does not need to happen on remount.
+> >   */
+> > -
+> > -int jbd2_journal_flush(journal_t *journal)
+> > +int jbd2_journal_flush(journal_t *journal, bool discard)
+> >  {
+> >  	int err = 0;
+> >  	transaction_t *transaction = NULL;
+> 
+> The division of code between patches 1 and 2 is a bit ... unusual?
+> 
+> I would have had patch 1 actually wire up this parameter, and put the
+> userspace ioctl additions in patch 2.
+> 
+> At any rate, I defer to Ted; if he told you to do it this way, then it's
+> fine with me, no need to churn your series for the same end-result.
+> 
+> --D
 
-If call ext4_ext_insert_extent failed but new extent already inserted, we just
-update "ex->ee_len = orig_ex.ee_len", this will lead to extent overlap, then
-cause bug on when cache extent.
-If call ext4_ext_insert_extent failed don't update ex->ee_len with old value.
-Maybe there will lead to block leak, but it can be fixed by fsck later.
+I knew they needed to be split but wasn't sure how. Felt weird to
+include the __jbd2_issue_discard function when no one is using it, but I
+do agree it is even weirder to have a parameter that isn't attached to
+anything. I'm reworking the patches anyways so I'll reorganize this,
+thanks!
 
-After we fixed above issue with v2 patch, but we got the same issue.
-ext4_split_extent_at:
-{
-        ......
-        err = ext4_ext_insert_extent(handle, inode, ppath, &newex, flags);
-        if (err == -ENOSPC && (EXT4_EXT_MAY_ZEROOUT & split_flag)) {
-            ......
-            ext4_ext_try_to_merge(handle, inode, path, ex); ->step(1)
-            err = ext4_ext_dirty(handle, inode, path + path->p_depth); ->step(2)
-            if (err)
-                goto fix_extent_len;
-        ......
-        }
-        ......
-fix_extent_len:
-        ex->ee_len = orig_ex.ee_len; ->step(3)
-        ......
-}
-If step(1) have been merged, but step(2) dirty extent failed, then go to
-fix_extent_len label to fix ex->ee_len with orig_ex.ee_len. But "ex" may not be
-old one, will cause overwritten. Then will trigger the same issue as previous.
-If step(2) failed, just return error, don't fix ex->ee_len with old value.
+-Leah
 
-This patch's modification is according to Jan Kara's suggestion in V3 patch:
-("https://patchwork.ozlabs.org/project/linux-ext4/patch/20210428085158.3728201-1-yebin10@huawei.com/")
-"I see. Now I understand your patch. Honestly, seeing how fragile is trying
-to fix extent tree after split has failed in the middle, I would probably
-go even further and make sure we fix the tree properly in case of ENOSPC
-and EDQUOT (those are easily user triggerable).  Anything else indicates a
-HW problem or fs corruption so I'd rather leave the extent tree as is and
-don't try to fix it (which also means we will not create overlapping
-extents)."
-
-Signed-off-by: Ye Bin <yebin10@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/extents.c | 43 +++++++++++++++++++++++--------------------
- 1 file changed, 23 insertions(+), 20 deletions(-)
-
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index 77c84d6f1af6..cbf37b2cf871 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -3206,7 +3206,10 @@ static int ext4_split_extent_at(handle_t *handle,
- 		ext4_ext_mark_unwritten(ex2);
- 
- 	err = ext4_ext_insert_extent(handle, inode, ppath, &newex, flags);
--	if (err == -ENOSPC && (EXT4_EXT_MAY_ZEROOUT & split_flag)) {
-+	if (err != -ENOSPC && err != -EDQUOT)
-+		goto out;
-+
-+	if (EXT4_EXT_MAY_ZEROOUT & split_flag) {
- 		if (split_flag & (EXT4_EXT_DATA_VALID1|EXT4_EXT_DATA_VALID2)) {
- 			if (split_flag & EXT4_EXT_DATA_VALID1) {
- 				err = ext4_ext_zeroout(inode, ex2);
-@@ -3232,25 +3235,22 @@ static int ext4_split_extent_at(handle_t *handle,
- 					      ext4_ext_pblock(&orig_ex));
- 		}
- 
--		if (err)
--			goto fix_extent_len;
--		/* update the extent length and mark as initialized */
--		ex->ee_len = cpu_to_le16(ee_len);
--		ext4_ext_try_to_merge(handle, inode, path, ex);
--		err = ext4_ext_dirty(handle, inode, path + path->p_depth);
--		if (err)
--			goto fix_extent_len;
--
--		/* update extent status tree */
--		err = ext4_zeroout_es(inode, &zero_ex);
--
--		goto out;
--	} else if (err)
--		goto fix_extent_len;
--
--out:
--	ext4_ext_show_leaf(inode, path);
--	return err;
-+		if (!err) {
-+			/* update the extent length and mark as initialized */
-+			ex->ee_len = cpu_to_le16(ee_len);
-+			ext4_ext_try_to_merge(handle, inode, path, ex);
-+			err = ext4_ext_dirty(handle, inode, path + path->p_depth);
-+			if (!err)
-+				/* update extent status tree */
-+				err = ext4_zeroout_es(inode, &zero_ex);
-+			/* If we failed at this point, we don't know in which
-+			 * state the extent tree exactly is so don't try to fix
-+			 * length of the original extent as it may do even more
-+			 * damage.
-+			 */
-+			goto out;
-+		}
-+	}
- 
- fix_extent_len:
- 	ex->ee_len = orig_ex.ee_len;
-@@ -3260,6 +3260,9 @@ static int ext4_split_extent_at(handle_t *handle,
- 	 */
- 	ext4_ext_dirty(handle, inode, path + path->p_depth);
- 	return err;
-+out:
-+	ext4_ext_show_leaf(inode, path);
-+	return err;
- }
- 
- /*
--- 
-2.25.4
-
+> 
+> > diff --git a/fs/ocfs2/alloc.c b/fs/ocfs2/alloc.c
+> > index 78710788c237..5ff2c42cb46c 100644
+> > --- a/fs/ocfs2/alloc.c
+> > +++ b/fs/ocfs2/alloc.c
+> > @@ -6020,7 +6020,7 @@ int __ocfs2_flush_truncate_log(struct ocfs2_super *osb)
+> >  	 * Then truncate log will be replayed resulting in cluster double free.
+> >  	 */
+> >  	jbd2_journal_lock_updates(journal->j_journal);
+> > -	status = jbd2_journal_flush(journal->j_journal);
+> > +	status = jbd2_journal_flush(journal->j_journal, false);
+> >  	jbd2_journal_unlock_updates(journal->j_journal);
+> >  	if (status < 0) {
+> >  		mlog_errno(status);
+> > diff --git a/fs/ocfs2/journal.c b/fs/ocfs2/journal.c
+> > index db52e843002a..1c356b29c66d 100644
+> > --- a/fs/ocfs2/journal.c
+> > +++ b/fs/ocfs2/journal.c
+> > @@ -310,7 +310,7 @@ static int ocfs2_commit_cache(struct ocfs2_super *osb)
+> >  	}
+> >  
+> >  	jbd2_journal_lock_updates(journal->j_journal);
+> > -	status = jbd2_journal_flush(journal->j_journal);
+> > +	status = jbd2_journal_flush(journal->j_journal, false);
+> >  	jbd2_journal_unlock_updates(journal->j_journal);
+> >  	if (status < 0) {
+> >  		up_write(&journal->j_trans_barrier);
+> > @@ -1002,7 +1002,7 @@ void ocfs2_journal_shutdown(struct ocfs2_super *osb)
+> >  
+> >  	if (ocfs2_mount_local(osb)) {
+> >  		jbd2_journal_lock_updates(journal->j_journal);
+> > -		status = jbd2_journal_flush(journal->j_journal);
+> > +		status = jbd2_journal_flush(journal->j_journal, false);
+> >  		jbd2_journal_unlock_updates(journal->j_journal);
+> >  		if (status < 0)
+> >  			mlog_errno(status);
+> > @@ -1072,7 +1072,7 @@ int ocfs2_journal_load(struct ocfs2_journal *journal, int local, int replayed)
+> >  
+> >  	if (replayed) {
+> >  		jbd2_journal_lock_updates(journal->j_journal);
+> > -		status = jbd2_journal_flush(journal->j_journal);
+> > +		status = jbd2_journal_flush(journal->j_journal, false);
+> >  		jbd2_journal_unlock_updates(journal->j_journal);
+> >  		if (status < 0)
+> >  			mlog_errno(status);
+> > @@ -1668,7 +1668,7 @@ static int ocfs2_replay_journal(struct ocfs2_super *osb,
+> >  
+> >  	/* wipe the journal */
+> >  	jbd2_journal_lock_updates(journal);
+> > -	status = jbd2_journal_flush(journal);
+> > +	status = jbd2_journal_flush(journal, false);
+> >  	jbd2_journal_unlock_updates(journal);
+> >  	if (status < 0)
+> >  		mlog_errno(status);
+> > diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+> > index 99d3cd051ac3..5e4349b76997 100644
+> > --- a/include/linux/jbd2.h
+> > +++ b/include/linux/jbd2.h
+> > @@ -1491,7 +1491,7 @@ extern int	 jbd2_journal_invalidatepage(journal_t *,
+> >  				struct page *, unsigned int, unsigned int);
+> >  extern int	 jbd2_journal_try_to_free_buffers(journal_t *journal, struct page *page);
+> >  extern int	 jbd2_journal_stop(handle_t *);
+> > -extern int	 jbd2_journal_flush (journal_t *);
+> > +extern int	 jbd2_journal_flush(journal_t *journal, bool discard);
+> >  extern void	 jbd2_journal_lock_updates (journal_t *);
+> >  extern void	 jbd2_journal_unlock_updates (journal_t *);
+> >  
+> > -- 
+> > 2.31.1.527.g47e6f16901-goog
+> > 
