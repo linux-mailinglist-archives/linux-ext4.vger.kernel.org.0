@@ -2,62 +2,82 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD97A376205
-	for <lists+linux-ext4@lfdr.de>; Fri,  7 May 2021 10:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A79EB376859
+	for <lists+linux-ext4@lfdr.de>; Fri,  7 May 2021 17:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236266AbhEGIc4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 7 May 2021 04:32:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234210AbhEGIcy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 7 May 2021 04:32:54 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7933C061574
-        for <linux-ext4@vger.kernel.org>; Fri,  7 May 2021 01:31:52 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2so11678601lft.4
-        for <linux-ext4@vger.kernel.org>; Fri, 07 May 2021 01:31:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=RHjrrIULgPfq//o8ovAMIRZil/g1FopGBi7Xhdr9HaE=;
-        b=VB06onuTaOdYZoRWarHTLWwDNZePGl6qb2oolCZRSM+26YRRw/o/DHIkmGhtAsxAwM
-         RyDvkGZO/5BC4kLKRANDm/yDzgoHGTumUvxXKpnde62/RtS1lucUl+YFEMipJ1nbTu+3
-         aIoiTTQPuZKuMk9DYRh6A5zuT49lUf28yAFiTyH+YrpAisvlVu+025Q+HnzrTDKl89Qm
-         1M3Qz3Ow4D4ohIDuQxvsuLpmXCS5O+9XTwjqAUDOWfDXqmwEcl6IvMbwzbCtPtCIBn0J
-         EyFp8bHZF4ty/FxBgvL5qzMxIWXDeJelGMyWYxZRs++M137tkM5iIFvLyH3IA3QWHNqH
-         jFag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=RHjrrIULgPfq//o8ovAMIRZil/g1FopGBi7Xhdr9HaE=;
-        b=jbC/Y4N3ThN1Sjtxi1iBSCTS10emwFCeC75sWOJ9TIFSP7KvZMB1zRwXpj7jvfc+Ay
-         BqgGCHTuk4qrybmYgNzsSHjkqXEgiIuNnPOHdiDW/S0xZtrNLKgOgQ+0X9d82vOr5ieU
-         i4IHYu/8Ba/xZVaJ9jGCjidECqKFMcPqA2HTbBXSd1s/cUvzfLLsQN8Cp3P9HnDX8d8Z
-         fCggMrC6i7tupBDqkqL0UGaU+nxTC7BJ0vEVNA2Ay5gz2oe5xKhIAJALIimgiMP280jv
-         Rxi1m1f10E8y7SRCWKwFaN0qNRcpFCaS2RT+ucB6wSfTc8QiT3sgr6BMhCRLNr9OxkPQ
-         jt7g==
-X-Gm-Message-State: AOAM53098H6upwDMg3EJrM1WsD3qSwg2mNlpSbmuj5mNNp/mGUhCnFFi
-        NO6b5keLzZpqmRa5M+PdGWO/UIQwekVfox/Z98U=
-X-Google-Smtp-Source: ABdhPJxdfSsZjH5L5cIXGY5e5HDWoeZz1BYa1Ar6NuW+ef4DTj2wmygODb/NUeP7q1RAwB2Bti2D/gfFxYjo0BxuyQ8=
-X-Received: by 2002:a05:6512:234c:: with SMTP id p12mr5789605lfu.6.1620376311366;
- Fri, 07 May 2021 01:31:51 -0700 (PDT)
+        id S233975AbhEGP5b (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 7 May 2021 11:57:31 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:47803 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231130AbhEGP53 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 7 May 2021 11:57:29 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 147FuMnA007370
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 7 May 2021 11:56:23 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 342B215C39BD; Fri,  7 May 2021 11:56:22 -0400 (EDT)
+Date:   Fri, 7 May 2021 11:56:22 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     harshad shirwadkar <harshadshirwadkar@gmail.com>,
+        Andreas Dilger <adilger@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Harshad Shirwadkar <harshads@google.com>
+Subject: Re: [PATCH] e2fsck: fix portability problems caused by unaligned
+ accesses
+Message-ID: <YJVjJoI8sX531AL2@mit.edu>
+References: <YJFQ20rLK16rise2@mit.edu>
+ <YJF6W7WHZBcVZexU@gmail.com>
+ <CAD+ocby+01k9kx3-gEY_z+Ub9GFxi=AwxRS4Ax5-HUFDrVkT0w@mail.gmail.com>
+ <YJGdDHLcYuRajhsb@gmail.com>
+ <YJGmTNIHixCLiKok@mit.edu>
+ <CAD+ocbwS9h4knUbhiXFUicvi-PwKSnPdF7hrZUhbg1MkzbDmrw@mail.gmail.com>
+ <YJGyTjYKcEkx+fQq@gmail.com>
+ <YJG4SrJ/ZEjv3Ha0@mit.edu>
+ <YJG9CjVXKkha57RU@gmail.com>
+ <YJTh9T3sgdFFE7fM@sol.localdomain>
 MIME-Version: 1.0
-Received: by 2002:ab3:5b07:0:0:0:0:0 with HTTP; Fri, 7 May 2021 01:31:50 -0700 (PDT)
-Reply-To: 2millioneneurospende@gmail.com
-From:   Cristy Davis Spende <oraedecure@gmail.com>
-Date:   Fri, 7 May 2021 11:31:50 +0300
-Message-ID: <CAGDcwS-2fJPe9XB2-06F5fU-57UwnPs=XDN+xtn++wX-TZpm6w@mail.gmail.com>
-Subject: 2 Millionen Euro Spende
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJTh9T3sgdFFE7fM@sol.localdomain>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
---=20
-Sie haben eine Spende von 2 Millionen Euro von Cristy Davis. Bitte
-kontaktieren Sie 2millioneneurospende@gmail.com f=C3=BCr weitere
-Informationen
+On Thu, May 06, 2021 at 11:45:09PM -0700, Eric Biggers wrote:
+> Just to be clear (looking at the latest patches on the list which are copying
+> whole structs), by "the memcpy() approach does get optimized properly", I meant
+> that it gets optimized properly in implementations of get_unaligned_le16(),
+> get_unaligned_le32(), put_unaligned_le32(), etc., where a single word (or less
+> than a word) is loaded or stored.  I don't know how reliably the compilers will
+> optimize out the copy if you memcpy() a whole struct instead of a single word.
+> 
+> Even if they don't optimize it out, I don't expect that it would be a
+> performance problem in this context, so it's probably still fine to solve the
+> problem.  But I just wanted to clarify what I meant here.
+
+For the most recent patch that sent out, we really needed to copy out
+the whole structure since we're then passing it to ext2fs library
+functions.  I agree that it's not likely going to be a performance
+problem, and at this point, I'm more concerned about code clarity and
+correctness.
+
+Especially since apparently the problems which Harshad's change and my
+most recent commit addressed were not picked up by UBSAN (either using
+gcc or clang), --- and IMHO they really should have.  So we can't
+count on UBSAN to find all possible alignment problems.
+
+Lesson learned, before I do future releases, I should do a build and
+"make check" on a armhf chroot running on a arm-64 machine, as well as
+on a sparc64 machine, since these seem to be the most sensitive to
+alignment issues.  And if I miss anything, fortunately Debian's
+autobuilders on a large cross-section of architectures will catch them
+since we run the regression test suite as part of the package build.
+
+					- Ted
+
+P.S.  Harshad, could you prepare patches to kernel files in ext4 and
+jbd2 to make similar alignment portability fixes?   Thanks!!
