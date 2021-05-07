@@ -2,105 +2,81 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACBFC376897
-	for <lists+linux-ext4@lfdr.de>; Fri,  7 May 2021 18:23:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C29B6376C99
+	for <lists+linux-ext4@lfdr.de>; Sat,  8 May 2021 00:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236734AbhEGQYK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 7 May 2021 12:24:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236633AbhEGQYF (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 7 May 2021 12:24:05 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B4FC061574
-        for <linux-ext4@vger.kernel.org>; Fri,  7 May 2021 09:23:04 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id s20so8971611ejr.9
-        for <linux-ext4@vger.kernel.org>; Fri, 07 May 2021 09:23:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AZG5LIGbxrcaihi/vkw91BcWm3f5d8BtDxqprZlEad8=;
-        b=mkQ1VjFzpPCAsd69nbfzo/3UY5/OOvHv+NcxtkbJ6YQ+XC2tWJjU1/oVk7fdIv6Rz5
-         7RoHuvDTqtkY2UPf65IP+C1eX8FnA1Vos75HgPgj7TvEcBJrL5qJiW+YwysMBdDhjBxV
-         cpfBkUIVhjMYX+EjGdrkGJZviOqunU3U+k73jhcnObUBrphuKB7NCTk9gcGdVAQcX3A5
-         VhPxjU/vDkOPVZVczvmSW4EzW62t3hs8xo8mhYC3yqTzace/PTzEbFspXkJCI9W43VTE
-         nmjRaap6X+L7S96452Hx/2KQ4ynezBg/V1AwPfmbjfeMtwCSJl68IlS4GlaWMebmZVFD
-         UNnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AZG5LIGbxrcaihi/vkw91BcWm3f5d8BtDxqprZlEad8=;
-        b=GMkI4oHF1rQPn+wNx2yvdGJUtnivEduiXD8FiE+iX1/+/5MDUXIOGAbXAc3Oo7ghWD
-         bc9plf4fcB+o0pCBQoYzFWFggeDPmWN7v+SJI6h45yrQW6Jhrs1XsDWe4argtcGRQmx3
-         7rwuoIObY+NkZq4fhJQDLINm/evG1iHQ5rxI8PhAKLx3KkN/e2RAroZizZUyahGn4EUk
-         29UqM0WNScUy1zzIeECo1RvdigfrtiKE74kX7nMHfJxvqWGnPopV2XADHVdvBNRa4V/b
-         ag9K0b4grbJfiATXwPJuPusExD9GJW/XtJ8BC6RegmxZnvzWZ2ayBpXajGyqExa5YS9H
-         BGtg==
-X-Gm-Message-State: AOAM5313bfsdRAMDzt/kQSSK2jZntHzwKhQO5IU60O/YX2gI55naynSD
-        2SNjIL/Acntl92aiOkNzLKv2KJT3JV223Z4JdD0=
-X-Google-Smtp-Source: ABdhPJzYCS74/4ehKRzb8RNChjVxjqzwH9JiMDqFHjq5G3/KX+ZUM4jeTjp4eAglz8Q2cjcEUlksUcewox4gqj5c6ZA=
-X-Received: by 2002:a17:906:5584:: with SMTP id y4mr10847425ejp.120.1620404583062;
- Fri, 07 May 2021 09:23:03 -0700 (PDT)
+        id S230076AbhEGWZu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 7 May 2021 18:25:50 -0400
+Received: from bosmailout03.eigbox.net ([66.96.186.3]:45669 "EHLO
+        bosmailout03.eigbox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229470AbhEGWZo (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 7 May 2021 18:25:44 -0400
+X-Greylist: delayed 1816 seconds by postgrey-1.27 at vger.kernel.org; Fri, 07 May 2021 18:25:34 EDT
+Received: from bosmailscan08.eigbox.net ([10.20.15.8])
+        by bosmailout03.eigbox.net with esmtp (Exim)
+        id 1lf8QM-0003Fa-7M; Fri, 07 May 2021 17:54:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=godsofu4.com; s=dkim; h=Sender:Content-Transfer-Encoding:Content-Type:
+        Message-ID:Reply-To:Subject:To:From:Date:MIME-Version:Cc:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=aM9bUFGSTpfnep8zAVAJMnojqhcwpuHDFPgQnPqW4M4=; b=I+6Bb1DJY/YYTRas0wZTN+AC1D
+        vtIg40M7SDAM/b29+/wY3GjGjzug9/OzX2aPoevJgNlEKSTs0SrEPfP3WhSQM0PCLHlkQfkyX8QT9
+        UZ7TTwAz03WtyNGtE+DdqqC0pYUcPkHvqE4MDSKlo5Vm1z1vJqGpkJRtWe2MFWIr6++JBuHOfV7Fd
+        34Die1lJ1lpPfDh70Zq++IiTaMjdlcGGo7pbn4hVn1WweIC9h772TR5+6npXCISSeeyCgPsBbikdE
+        ZWIrJkpukBwvBgblKKCxDugovauKoCEDbS56mNadJP+sg7ztteNlHrnEQFJYYsCNrcdD1v8ilxnSi
+        f8nqykSw==;
+Received: from [10.115.3.32] (helo=bosimpout12)
+        by bosmailscan08.eigbox.net with esmtp (Exim)
+        id 1lf8QK-0002fP-Rn; Fri, 07 May 2021 17:54:16 -0400
+Received: from boswebmail06.eigbox.net ([10.20.16.6])
+        by bosimpout12 with 
+        id 1xuC2500D07qujN01xuFUj; Fri, 07 May 2021 17:54:16 -0400
+X-EN-SP-DIR: OUT
+X-EN-SP-SQ: 1
+Received: from [127.0.0.1] (helo=homestead)
+        by boswebmail06.eigbox.net with esmtp (Exim)
+        id 1lf8PX-0006IT-Ae; Fri, 07 May 2021 17:53:27 -0400
+Received: from [197.239.81.229]
+ by emailmg.homestead.com
+ with HTTP (HTTP/1.1 POST); Fri, 07 May 2021 17:53:27 -0400
 MIME-Version: 1.0
-References: <YJFQ20rLK16rise2@mit.edu> <YJF6W7WHZBcVZexU@gmail.com>
- <CAD+ocby+01k9kx3-gEY_z+Ub9GFxi=AwxRS4Ax5-HUFDrVkT0w@mail.gmail.com>
- <YJGdDHLcYuRajhsb@gmail.com> <YJGmTNIHixCLiKok@mit.edu> <CAD+ocbwS9h4knUbhiXFUicvi-PwKSnPdF7hrZUhbg1MkzbDmrw@mail.gmail.com>
- <YJGyTjYKcEkx+fQq@gmail.com> <YJG4SrJ/ZEjv3Ha0@mit.edu> <YJG9CjVXKkha57RU@gmail.com>
- <YJTh9T3sgdFFE7fM@sol.localdomain> <YJVjJoI8sX531AL2@mit.edu>
-In-Reply-To: <YJVjJoI8sX531AL2@mit.edu>
-From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
-Date:   Fri, 7 May 2021 09:22:51 -0700
-Message-ID: <CAD+ocbxtTP2Ow4JjXb5P9kZfrdbnQ27AWLFpwmR5RKLvJpnt+A@mail.gmail.com>
-Subject: Re: [PATCH] e2fsck: fix portability problems caused by unaligned accesses
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Harshad Shirwadkar <harshads@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Date:   Fri, 07 May 2021 21:53:27 +0000
+From:   Mrs Suzara Maling Wan <fast65@godsofu4.com>
+To:     undisclosed-recipients:;
+Subject: URGENT REPLY NEEDED
+Reply-To: suzara2017malingwan@gmail.com
+Mail-Reply-To: suzara2017malingwan@gmail.com
+Message-ID: <4c6a48748f6731dac9b66cce1916443b@godsofu4.com>
+X-Sender: fast65@godsofu4.com
+User-Agent: Roundcube Webmail/1.3.14
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-EN-AuthUser: fast65@godsofu4.com
+Sender:  Mrs Suzara Maling Wan <fast65@godsofu4.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, May 7, 2021 at 8:56 AM Theodore Ts'o <tytso@mit.edu> wrote:
->
-> On Thu, May 06, 2021 at 11:45:09PM -0700, Eric Biggers wrote:
-> > Just to be clear (looking at the latest patches on the list which are copying
-> > whole structs), by "the memcpy() approach does get optimized properly", I meant
-> > that it gets optimized properly in implementations of get_unaligned_le16(),
-> > get_unaligned_le32(), put_unaligned_le32(), etc., where a single word (or less
-> > than a word) is loaded or stored.  I don't know how reliably the compilers will
-> > optimize out the copy if you memcpy() a whole struct instead of a single word.
-> >
-> > Even if they don't optimize it out, I don't expect that it would be a
-> > performance problem in this context, so it's probably still fine to solve the
-> > problem.  But I just wanted to clarify what I meant here.
->
-> For the most recent patch that sent out, we really needed to copy out
-> the whole structure since we're then passing it to ext2fs library
-> functions.  I agree that it's not likely going to be a performance
-> problem, and at this point, I'm more concerned about code clarity and
-> correctness.
->
-> Especially since apparently the problems which Harshad's change and my
-> most recent commit addressed were not picked up by UBSAN (either using
-> gcc or clang), --- and IMHO they really should have.  So we can't
-> count on UBSAN to find all possible alignment problems.
->
-> Lesson learned, before I do future releases, I should do a build and
-> "make check" on a armhf chroot running on a arm-64 machine, as well as
-> on a sparc64 machine, since these seem to be the most sensitive to
-> alignment issues.  And if I miss anything, fortunately Debian's
-> autobuilders on a large cross-section of architectures will catch them
-> since we run the regression test suite as part of the package build.
->
->                                         - Ted
->
-> P.S.  Harshad, could you prepare patches to kernel files in ext4 and
-> jbd2 to make similar alignment portability fixes?   Thanks!!
 
-Sure, I'll take care of that, thanks!
 
-- Harshad
+My names are Mrs Suzara Maling Wan, I am a Nationality of the Republic
+of the Philippine presently base in West Africa B/F, dealing with
+exportation of Gold, I was diagnose of blood Causal decease, and my
+doctor have announce to me that I have few days to leave due to the
+condition of my sickness.
+
+I have a desire to build an orphanage home in your country of which i
+cannot execute the project myself due to my present health condition,
+I am willing to hand over the project under your care for you to help
+me fulfill my dreams and desire of building an orphanage home in your
+country.
+
+Reply in you are will to help so that I can direct you to my bank for
+the urgent transfer of the fund/money require for the project to your
+account as I have already made the fund/money available.
+
+With kind regards
+Mrs Suzara Maling Wan
