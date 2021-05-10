@@ -2,38 +2,36 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9F02377AA4
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 May 2021 05:36:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 018F7377AD1
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 May 2021 05:50:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230151AbhEJDhM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 9 May 2021 23:37:12 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:2608 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230127AbhEJDhM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 9 May 2021 23:37:12 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Fdmqm1cWpzlcrQ;
-        Mon, 10 May 2021 11:33:56 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.249) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.498.0; Mon, 10 May 2021
- 11:36:00 +0800
-Subject: Re: [PATCH] e2fsprogs: Try again to solve unreliable io case
-From:   Zhiqiang Liu <liuzhiqiang26@huawei.com>
-To:     Theodore Ts'o <tytso@mit.edu>
-CC:     Haotian Li <lihaotian9@huawei.com>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        "harshad shirwadkar," <harshadshirwadkar@gmail.com>,
+        id S230083AbhEJDvz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 9 May 2021 23:51:55 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2668 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230029AbhEJDvz (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 9 May 2021 23:51:55 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fdn8C5g9Zz1BHrv;
+        Mon, 10 May 2021 11:48:11 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.249) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.498.0; Mon, 10 May 2021
+ 11:50:40 +0800
+Subject: Re: [PATCH] e2fsck: try write_primary_superblock() again when it
+ failed
+To:     Haotian Li <lihaotian9@huawei.com>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+CC:     "Theodore Y. Ts'o" <tytso@mit.edu>,
         linfeilong <linfeilong@huawei.com>
-References: <d4fd737d-4280-1aee-32ae-36b303e6644d@huawei.com>
- <YH7/D1h5r9WB1TNq@mit.edu> <c1eb6441-9081-530c-63d8-1987048b2011@huawei.com>
- <YILrxJoOA1reNhMq@mit.edu> <6bc8c1c2-9fff-bef9-c6f3-b2256a4888e1@huawei.com>
-Message-ID: <cf1aae86-4192-3554-cf6f-21b21ee9f953@huawei.com>
-Date:   Mon, 10 May 2021 11:35:59 +0800
+References: <7486f08c-7f14-9fac-fdb2-0fe78a799d90@huawei.com>
+From:   Zhiqiang Liu <liuzhiqiang26@huawei.com>
+Message-ID: <8e16a65d-bca2-c95a-aac5-0ba5411695ed@huawei.com>
+Date:   Mon, 10 May 2021 11:50:39 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <6bc8c1c2-9fff-bef9-c6f3-b2256a4888e1@huawei.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <7486f08c-7f14-9fac-fdb2-0fe78a799d90@huawei.com>
+Content-Type: text/plain; charset="gbk"
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
 X-Originating-IP: [10.174.177.249]
@@ -42,40 +40,35 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-friendly ping ...
+friendly ping...
 
-On 2021/4/24 12:46, Zhiqiang Liu wrote:
+On 2021/4/13 11:19, Haotian Li wrote:
+> Function write_primary_superblock() has two ways to flush
+> superblock, byte-by-byte as default. It may use
+> io_channel_write_byte() many times. If some errors occur
+> during these funcs, the superblock may become inconsistent
+> and produce checksum error.
 >
-> On 2021/4/23 23:46, Theodore Ts'o wrote:
->> On Fri, Apr 23, 2021 at 10:18:09AM +0800, Zhiqiang Liu wrote:
->>> Thanks for your reply.
->>> Actually, we have met the problem in ipsan situation.
->>> When exec 'fsck -a <remote-device>', short-term fluctuations or
->>> abnormalities may occur on the network. Despite the driver has
->>> do the best effort, some IO errors may occur. So add retrying in
->>> e2fsprogs can further improve the reliability of the repair
->>> process.
->> But why doesn't this happen when the file system is mounted, and why
->> is that acceptable?   And why not change the driver to do more retries?
->>
->>    		      	      	  - Ted
->>
-> Actually, this may happen when the filesystem is mounted. The difference
-> is that the mounted filesystem can ensure the consistency with journal.
+> Try write_primary_superblock() with whole-block way again
+> when it failed on byte-by-byte way.
+> ---
+>  lib/ext2fs/closefs.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
 >
-> For example, if the IO error occurs when calling io_channel_write_byte()
-> to update superblock, the checksum may be not written to the disk successfully.
-> Then the checksum error will occur, and the filesystem cannot be
-> repaired with 'fsck -y|a|f'.
->
-> This situation has a very low probability. For improving the reliability of
-> the repair process, the retries in e2fsprogs may be necessary.
->
-> Regards
-> Zhiqiang Liu.
->
->> .
->>
->
-> .
+> diff --git a/lib/ext2fs/closefs.c b/lib/ext2fs/closefs.c
+> index 69cbdd8c..1fc27fb5 100644
+> --- a/lib/ext2fs/closefs.c
+> +++ b/lib/ext2fs/closefs.c
+> @@ -223,10 +223,8 @@ static errcode_t write_primary_superblock(ext2_filsys fs,
+>  		retval = io_channel_write_byte(fs->io,
+>  			       SUPERBLOCK_OFFSET + (2 * write_idx), size,
+>  					       new_super + write_idx);
+> -		if (retval == EXT2_ET_UNIMPLEMENTED)
+> -			goto fallback;
+>  		if (retval)
+> -			return retval;
+> +			goto fallback;
+>  	}
+>  	memcpy(fs->orig_super, super, SUPERBLOCK_SIZE);
+>  	return 0;
 
