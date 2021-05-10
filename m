@@ -2,421 +2,211 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 031E8378245
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 May 2021 12:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B01413789B1
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 May 2021 13:52:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232198AbhEJKdn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 10 May 2021 06:33:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40406 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231216AbhEJKbk (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 10 May 2021 06:31:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B3CBF6162A;
-        Mon, 10 May 2021 10:27:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620642444;
-        bh=z7JSlEgory1thI0OdgTtvt1rFZpyAysnsodFMyxfc20=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q0tjwWmpuE9/1VMx72sh+mHFrMtV5i8RPQfFlXLaafrnB4yFSQXnTeAYoRRrPXLbw
-         5Ey6Y1cxKinb4gztXldN9g/spX/lMg4UbnATBsUQqaGallEmWb/VY20DHziZhWv2jr
-         rfPHeINVmiqVCcYem0B+/mT8JGPtYj+X6Sw9k8yAlV+o3d53YWakZ0VqxLoSkZFQca
-         NiQWsgxT56yB4cqo43LH1G3qh40w4LqddN/vjYRqAzYiWUgXKb3Wd1s719qAafeFsv
-         QbrUuQz9JFD3yvnm3ingOYYpeZrZNDUkt+pNdkFJKm5aiQ6Yw3t63Tjj4FuvppsEx1
-         0xoQNE8eqsPxA==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1lg38D-000UQ8-M5; Mon, 10 May 2021 12:27:21 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 28/53] docs: filesystems: ext4: avoid using UTF-8 chars
-Date:   Mon, 10 May 2021 12:26:40 +0200
-Message-Id: <9d8a6fdf5aec2dfa3e5ff459319c77698815f3d7.1620641727.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        id S234265AbhEJLbD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 10 May 2021 07:31:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235745AbhEJLF7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 10 May 2021 07:05:59 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFBCBC061239;
+        Mon, 10 May 2021 03:54:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Mime-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=UHpuNbQx3huyy+qSYMXBVB29n3wsJKoJ0KKAXsrG1rY=; b=WsJOelUdN0UYaNzIsYeGaSFcN5
+        HsxNoiVtMYBHu3OYe/dsLseOvDnHd2IQ/cKnGULEhQF8EynAiBEhJVc8eUNTPcxQ6Vd9MWhvuEWpT
+        bdH7Ha3VUTSL6cvpcA3Inm7qxfKulXvvR9MaO1BdFa4mFDvAHxAc3nXDG5leir92aDB48NrBvgc6x
+        472ImiZRwA9BkqBninKRrMW5G6E07wQm3pSc/FfcQy+61QOZ8QWg2dYSEz6ibJ3u9JNFp9RUOHM0J
+        zIjV3/r6zfkINZ0HrhtFn+gg9nc/C0rmnAETJzNXwqoAvHCfNgevDtujuHFb2rkRz8ELnwg8CdNDS
+        wBPLauqg==;
+Received: from dyn-234.woodhou.se ([90.155.92.234])
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lg3Y2-00E0oX-Qu; Mon, 10 May 2021 10:54:03 +0000
+Message-ID: <2ae366fdff4bd5910a2270823e8da70521c859af.camel@infradead.org>
+Subject: Re: [PATCH 00/53] Get rid of UTF-8 chars that can be mapped as ASCII
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        alsa-devel@alsa-project.org, coresight@lists.linaro.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        intel-wired-lan@lists.osuosl.org, keyrings@vger.kernel.org,
+        kvm@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-fpga@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-sgx@vger.kernel.org, linux-usb@vger.kernel.org,
+        mjpeg-users@lists.sourceforge.net, netdev@vger.kernel.org,
+        rcu@vger.kernel.org, x86@kernel.org
+Date:   Mon, 10 May 2021 11:54:02 +0100
 In-Reply-To: <cover.1620641727.git.mchehab+huawei@kernel.org>
 References: <cover.1620641727.git.mchehab+huawei@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+Content-Type: multipart/signed; micalg="sha-256";
+        protocol="application/x-pkcs7-signature";
+        boundary="=-ob5s4dkk/IPkbSg8129x"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by desiato.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-While UTF-8 characters can be used at the Linux documentation,
-the best is to use them only when ASCII doesn't offer a good replacement.
-So, replace the occurences of the following UTF-8 characters:
 
-	- U+201c ('“'): LEFT DOUBLE QUOTATION MARK
-	- U+201d ('”'): RIGHT DOUBLE QUOTATION MARK
-	- U+2217 ('∗'): ASTERISK OPERATOR
+--=-ob5s4dkk/IPkbSg8129x
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- Documentation/filesystems/ext4/attributes.rst | 20 +++++++++----------
- Documentation/filesystems/ext4/bigalloc.rst   |  6 +++---
- Documentation/filesystems/ext4/blockgroup.rst |  8 ++++----
- Documentation/filesystems/ext4/blocks.rst     |  2 +-
- Documentation/filesystems/ext4/directory.rst  | 16 +++++++--------
- Documentation/filesystems/ext4/eainode.rst    |  2 +-
- Documentation/filesystems/ext4/inlinedata.rst |  6 +++---
- Documentation/filesystems/ext4/inodes.rst     |  6 +++---
- Documentation/filesystems/ext4/journal.rst    |  8 ++++----
- Documentation/filesystems/ext4/mmp.rst        |  2 +-
- .../filesystems/ext4/special_inodes.rst       |  4 ++--
- Documentation/filesystems/ext4/super.rst      | 10 +++++-----
- 12 files changed, 45 insertions(+), 45 deletions(-)
+On Mon, 2021-05-10 at 12:26 +0200, Mauro Carvalho Chehab wrote:
+> There are several UTF-8 characters at the Kernel's documentation.
+>=20
+> Several of them were due to the process of converting files from
+> DocBook, LaTeX, HTML and Markdown. They were probably introduced
+> by the conversion tools used on that time.
+>=20
+> Other UTF-8 characters were added along the time, but they're easily
+> replaceable by ASCII chars.
+>=20
+> As Linux developers are all around the globe, and not everybody has UTF-8
+> as their default charset, better to use UTF-8 only on cases where it is r=
+eally
+> needed.
 
-diff --git a/Documentation/filesystems/ext4/attributes.rst b/Documentation/filesystems/ext4/attributes.rst
-index 54386a010a8d..39e695678c01 100644
---- a/Documentation/filesystems/ext4/attributes.rst
-+++ b/Documentation/filesystems/ext4/attributes.rst
-@@ -8,7 +8,7 @@ block on the disk and referenced from inodes via ``inode.i_file_acl*``.
- The first use of extended attributes seems to have been for storing file
- ACLs and other security data (selinux). With the ``user_xattr`` mount
- option it is possible for users to store extended attributes so long as
--all attribute names begin with “user”; this restriction seems to have
-+all attribute names begin with "user"; this restriction seems to have
- disappeared as of Linux 3.0.
- 
- There are two places where extended attributes can be found. The first
-@@ -165,22 +165,22 @@ the key name. Here is a map of name index values to key prefixes:
-    * - 0
-      - (no prefix)
-    * - 1
--     - “user.”
-+     - "user."
-    * - 2
--     - “system.posix\_acl\_access”
-+     - "system.posix\_acl\_access"
-    * - 3
--     - “system.posix\_acl\_default”
-+     - "system.posix\_acl\_default"
-    * - 4
--     - “trusted.”
-+     - "trusted."
-    * - 6
--     - “security.”
-+     - "security."
-    * - 7
--     - “system.” (inline\_data only?)
-+     - "system." (inline\_data only?)
-    * - 8
--     - “system.richacl” (SuSE kernels only?)
-+     - "system.richacl" (SuSE kernels only?)
- 
--For example, if the attribute key is “user.fubar”, the attribute name
--index is set to 1 and the “fubar” name is recorded on disk.
-+For example, if the attribute key is "user.fubar", the attribute name
-+index is set to 1 and the "fubar" name is recorded on disk.
- 
- POSIX ACLs
- ~~~~~~~~~~
-diff --git a/Documentation/filesystems/ext4/bigalloc.rst b/Documentation/filesystems/ext4/bigalloc.rst
-index 72075aa608e4..897e1b284c97 100644
---- a/Documentation/filesystems/ext4/bigalloc.rst
-+++ b/Documentation/filesystems/ext4/bigalloc.rst
-@@ -27,8 +27,8 @@ stored in the s\_log\_cluster\_size field in the superblock); from then
- on, the block bitmaps track clusters, not individual blocks. This means
- that block groups can be several gigabytes in size (instead of just
- 128MiB); however, the minimum allocation unit becomes a cluster, not a
--block, even for directories. TaoBao had a patchset to extend the “use
--units of clusters instead of blocks” to the extent tree, though it is
-+block, even for directories. TaoBao had a patchset to extend the "use
-+units of clusters instead of blocks" to the extent tree, though it is
- not clear where those patches went-- they eventually morphed into
--“extent tree v2” but that code has not landed as of May 2015.
-+"extent tree v2" but that code has not landed as of May 2015.
- 
-diff --git a/Documentation/filesystems/ext4/blockgroup.rst b/Documentation/filesystems/ext4/blockgroup.rst
-index 3da156633339..99aa1f330bd1 100644
---- a/Documentation/filesystems/ext4/blockgroup.rst
-+++ b/Documentation/filesystems/ext4/blockgroup.rst
-@@ -41,8 +41,8 @@ across the disk in case the beginning of the disk gets trashed, though
- not all block groups necessarily host a redundant copy (see following
- paragraph for more details). If the group does not have a redundant
- copy, the block group begins with the data block bitmap. Note also that
--when the filesystem is freshly formatted, mkfs will allocate “reserve
--GDT block” space after the block group descriptors and before the start
-+when the filesystem is freshly formatted, mkfs will allocate "reserve
-+GDT block" space after the block group descriptors and before the start
- of the block bitmaps to allow for future expansion of the filesystem. By
- default, a filesystem is allowed to increase in size by a factor of
- 1024x over the original filesystem size.
-@@ -84,7 +84,7 @@ Without the option META\_BG, for safety concerns, all block group
- descriptors copies are kept in the first block group. Given the default
- 128MiB(2^27 bytes) block group size and 64-byte group descriptors, ext4
- can have at most 2^27/64 = 2^21 block groups. This limits the entire
--filesystem size to 2^21 ∗ 2^27 = 2^48bytes or 256TiB.
-+filesystem size to 2^21 * 2^27 = 2^48bytes or 256TiB.
- 
- The solution to this problem is to use the metablock group feature
- (META\_BG), which is already in ext3 for all 2.6 releases. With the
-@@ -131,5 +131,5 @@ rely on the kernel to initialize the inode tables in the background.
- 
- By not writing zeroes to the bitmaps and inode table, mkfs time is
- reduced considerably. Note the feature flag is RO\_COMPAT\_GDT\_CSUM,
--but the dumpe2fs output prints this as “uninit\_bg”. They are the same
-+but the dumpe2fs output prints this as "uninit\_bg". They are the same
- thing.
-diff --git a/Documentation/filesystems/ext4/blocks.rst b/Documentation/filesystems/ext4/blocks.rst
-index bd722ecd92d6..ca16435d469e 100644
---- a/Documentation/filesystems/ext4/blocks.rst
-+++ b/Documentation/filesystems/ext4/blocks.rst
-@@ -3,7 +3,7 @@
- Blocks
- ------
- 
--ext4 allocates storage space in units of “blocks”. A block is a group of
-+ext4 allocates storage space in units of "blocks". A block is a group of
- sectors between 1KiB and 64KiB, and the number of sectors must be an
- integral power of 2. Blocks are in turn grouped into larger units called
- block groups. Block size is specified at mkfs time and typically is
-diff --git a/Documentation/filesystems/ext4/directory.rst b/Documentation/filesystems/ext4/directory.rst
-index 55f618b37144..317e672cd457 100644
---- a/Documentation/filesystems/ext4/directory.rst
-+++ b/Documentation/filesystems/ext4/directory.rst
-@@ -15,8 +15,8 @@ is desired.
- Linear (Classic) Directories
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 
--By default, each directory lists its entries in an “almost-linear”
--array. I write “almost” because it's not a linear array in the memory
-+By default, each directory lists its entries in an "almost-linear"
-+array. I write "almost" because it's not a linear array in the memory
- sense because directory entries are not split across filesystem blocks.
- Therefore, it is more accurate to say that a directory is a series of
- data blocks and that each block contains a linear array of directory
-@@ -26,7 +26,7 @@ takes it all the way to the end of the block. The end of the entire
- directory is of course signified by reaching the end of the file. Unused
- directory entries are signified by inode = 0. By default the filesystem
- uses ``struct ext4_dir_entry_2`` for directory entries unless the
--“filetype” feature flag is not set, in which case it uses
-+"filetype" feature flag is not set, in which case it uses
- ``struct ext4_dir_entry``.
- 
- The original directory entry format is ``struct ext4_dir_entry``, which
-@@ -197,7 +197,7 @@ balanced tree keyed off a hash of the directory entry name. If the
- EXT4\_INDEX\_FL (0x1000) flag is set in the inode, this directory uses a
- hashed btree (htree) to organize and find directory entries. For
- backwards read-only compatibility with ext2, this tree is actually
--hidden inside the directory file, masquerading as “empty” directory data
-+hidden inside the directory file, masquerading as "empty" directory data
- blocks! It was stated previously that the end of the linear directory
- entry table was signified with an entry pointing to inode 0; this is
- (ab)used to fool the old linear-scan algorithm into thinking that the
-@@ -263,7 +263,7 @@ of a data block:
-    * - 0x8
-      - char
-      - dot.name[4]
--     - “.\\0\\0\\0”
-+     - ".\\0\\0\\0"
-    * - 0xC
-      - \_\_le32
-      - dotdot.inode
-@@ -284,7 +284,7 @@ of a data block:
-    * - 0x14
-      - char
-      - dotdot\_name[4]
--     - “..\\0\\0”
-+     - "..\\0\\0"
-    * - 0x18
-      - \_\_le32
-      - struct dx\_root\_info.reserved\_zero
-@@ -372,11 +372,11 @@ also the full length of a data block:
-    * - 0x6
-      - u8
-      - name\_len
--     - Zero. There is no name for this “unused” directory entry.
-+     - Zero. There is no name for this "unused" directory entry.
-    * - 0x7
-      - u8
-      - file\_type
--     - Zero. There is no file type for this “unused” directory entry.
-+     - Zero. There is no file type for this "unused" directory entry.
-    * - 0x8
-      - \_\_le16
-      - limit
-diff --git a/Documentation/filesystems/ext4/eainode.rst b/Documentation/filesystems/ext4/eainode.rst
-index ecc0d01a0a72..71e64aadaa89 100644
---- a/Documentation/filesystems/ext4/eainode.rst
-+++ b/Documentation/filesystems/ext4/eainode.rst
-@@ -6,7 +6,7 @@ Large Extended Attribute Values
- To enable ext4 to store extended attribute values that do not fit in the
- inode or in the single extended attribute block attached to an inode,
- the EA\_INODE feature allows us to store the value in the data blocks of
--a regular file inode. This “EA inode” is linked only from the extended
-+a regular file inode. This "EA inode" is linked only from the extended
- attribute name index and must not appear in a directory entry. The
- inode's i\_atime field is used to store a checksum of the xattr value;
- and i\_ctime/i\_version store a 64-bit reference count, which enables
-diff --git a/Documentation/filesystems/ext4/inlinedata.rst b/Documentation/filesystems/ext4/inlinedata.rst
-index d1075178ce0b..8efa8a1cf273 100644
---- a/Documentation/filesystems/ext4/inlinedata.rst
-+++ b/Documentation/filesystems/ext4/inlinedata.rst
-@@ -9,7 +9,7 @@ data is so tiny that it readily fits inside the inode, which
- file is smaller than 60 bytes, then the data are stored inline in
- ``inode.i_block``. If the rest of the file would fit inside the extended
- attribute space, then it might be found as an extended attribute
--“system.data” within the inode body (“ibody EA”). This of course
-+"system.data" within the inode body ("ibody EA"). This of course
- constrains the amount of extended attributes one can attach to an inode.
- If the data size increases beyond i\_block + ibody EA, a regular block
- is allocated and the contents moved to that block.
-@@ -20,14 +20,14 @@ inline data, one ought to be able to store 160 bytes of data in a
- that, the limit was 156 bytes due to inefficient use of inode space.
- 
- The inline data feature requires the presence of an extended attribute
--for “system.data”, even if the attribute value is zero length.
-+for "system.data", even if the attribute value is zero length.
- 
- Inline Directories
- ~~~~~~~~~~~~~~~~~~
- 
- The first four bytes of i\_block are the inode number of the parent
- directory. Following that is a 56-byte space for an array of directory
--entries; see ``struct ext4_dir_entry``. If there is a “system.data”
-+entries; see ``struct ext4_dir_entry``. If there is a "system.data"
- attribute in the inode body, the EA value is an array of
- ``struct ext4_dir_entry`` as well. Note that for inline directories, the
- i\_block and EA space are treated as separate dirent blocks; directory
-diff --git a/Documentation/filesystems/ext4/inodes.rst b/Documentation/filesystems/ext4/inodes.rst
-index a65baffb4ebf..cd3bbc3c1e33 100644
---- a/Documentation/filesystems/ext4/inodes.rst
-+++ b/Documentation/filesystems/ext4/inodes.rst
-@@ -90,7 +90,7 @@ The inode table entry is laid out in ``struct ext4_inode``.
-    * - 0x1C
-      - \_\_le32
-      - i\_blocks\_lo
--     - Lower 32-bits of “block” count. If the huge\_file feature flag is not
-+     - Lower 32-bits of "block" count. If the huge\_file feature flag is not
-        set on the filesystem, the file consumes ``i_blocks_lo`` 512-byte blocks
-        on disk. If huge\_file is set and EXT4\_HUGE\_FILE\_FL is NOT set in
-        ``inode.i_flags``, then the file consumes ``i_blocks_lo + (i_blocks_hi
-@@ -109,7 +109,7 @@ The inode table entry is laid out in ``struct ext4_inode``.
-    * - 0x28
-      - 60 bytes
-      - i\_block[EXT4\_N\_BLOCKS=15]
--     - Block map or extent tree. See the section “The Contents of inode.i\_block”.
-+     - Block map or extent tree. See the section "The Contents of inode.i\_block".
-    * - 0x64
-      - \_\_le32
-      - i\_generation
-@@ -507,7 +507,7 @@ orphaned inode, or zero if there are no more orphans.
- If the inode structure size ``sb->s_inode_size`` is larger than 128
- bytes and the ``i_inode_extra`` field is large enough to encompass the
- respective ``i_[cma]time_extra`` field, the ctime, atime, and mtime
--inode fields are widened to 64 bits. Within this “extra” 32-bit field,
-+inode fields are widened to 64 bits. Within this "extra" 32-bit field,
- the lower two bits are used to extend the 32-bit seconds field to be 34
- bit wide; the upper 30 bits are used to provide nanosecond timestamp
- accuracy. Therefore, timestamps should not overflow until May 2446.
-diff --git a/Documentation/filesystems/ext4/journal.rst b/Documentation/filesystems/ext4/journal.rst
-index cdbfec473167..9e12d5366ad6 100644
---- a/Documentation/filesystems/ext4/journal.rst
-+++ b/Documentation/filesystems/ext4/journal.rst
-@@ -6,7 +6,7 @@ Journal (jbd2)
- Introduced in ext3, the ext4 filesystem employs a journal to protect the
- filesystem against corruption in the case of a system crash. A small
- continuous region of disk (default 128MiB) is reserved inside the
--filesystem as a place to land “important” data writes on-disk as quickly
-+filesystem as a place to land "important" data writes on-disk as quickly
- as possible. Once the important data transaction is fully written to the
- disk and flushed from the disk write cache, a record of the data being
- committed is also written to the journal. At some later point in time,
-@@ -507,7 +507,7 @@ Data Block
- In general, the data blocks being written to disk through the journal
- are written verbatim into the journal file after the descriptor block.
- However, if the first four bytes of the block match the jbd2 magic
--number then those four bytes are replaced with zeroes and the “escaped”
-+number then those four bytes are replaced with zeroes and the "escaped"
- flag is set in the descriptor block tag.
- 
- Revocation Block
-@@ -520,8 +520,8 @@ block is freed and re-allocated as a file data block; in this case, a
- journal replay after the file block was written to disk will cause
- corruption.
- 
--**NOTE**: This mechanism is NOT used to express “this journal block is
--superseded by this other journal block”, as the author (djwong)
-+**NOTE**: This mechanism is NOT used to express "this journal block is
-+superseded by this other journal block", as the author (djwong)
- mistakenly thought. Any block being added to a transaction will cause
- the removal of all existing revocation records for that block.
- 
-diff --git a/Documentation/filesystems/ext4/mmp.rst b/Documentation/filesystems/ext4/mmp.rst
-index 25660981d93c..20631883a32b 100644
---- a/Documentation/filesystems/ext4/mmp.rst
-+++ b/Documentation/filesystems/ext4/mmp.rst
-@@ -42,7 +42,7 @@ The MMP structure (``struct mmp_struct``) is as follows:
-    * - 0x0
-      - \_\_le32
-      - mmp\_magic
--     - Magic number for MMP, 0x004D4D50 (“MMP”).
-+     - Magic number for MMP, 0x004D4D50 ("MMP").
-    * - 0x4
-      - \_\_le32
-      - mmp\_seq
-diff --git a/Documentation/filesystems/ext4/special_inodes.rst b/Documentation/filesystems/ext4/special_inodes.rst
-index 9061aabba827..407537be8fe5 100644
---- a/Documentation/filesystems/ext4/special_inodes.rst
-+++ b/Documentation/filesystems/ext4/special_inodes.rst
-@@ -26,11 +26,11 @@ ext4 reserves some inode for special features, as follows:
-    * - 6
-      - Undelete directory.
-    * - 7
--     - Reserved group descriptors inode. (“resize inode”)
-+     - Reserved group descriptors inode. ("resize inode")
-    * - 8
-      - Journal inode.
-    * - 9
--     - The “exclude” inode, for snapshots(?)
-+     - The "exclude" inode, for snapshots(?)
-    * - 10
-      - Replica inode, used for some non-upstream feature?
-    * - 11
-diff --git a/Documentation/filesystems/ext4/super.rst b/Documentation/filesystems/ext4/super.rst
-index 2eb1ab20498d..8c52ccc6dd04 100644
---- a/Documentation/filesystems/ext4/super.rst
-+++ b/Documentation/filesystems/ext4/super.rst
-@@ -572,7 +572,7 @@ following:
-    * - 0x1
-      - Directory preallocation (COMPAT\_DIR\_PREALLOC).
-    * - 0x2
--     - “imagic inodes”. Not clear from the code what this does
-+     - "imagic inodes". Not clear from the code what this does
-        (COMPAT\_IMAGIC\_INODES).
-    * - 0x4
-      - Has a journal (COMPAT\_HAS\_JOURNAL).
-@@ -584,12 +584,12 @@ following:
-    * - 0x20
-      - Has directory indices (COMPAT\_DIR\_INDEX).
-    * - 0x40
--     - “Lazy BG”. Not in Linux kernel, seems to have been for uninitialized
-+     - "Lazy BG". Not in Linux kernel, seems to have been for uninitialized
-        block groups? (COMPAT\_LAZY\_BG)
-    * - 0x80
--     - “Exclude inode”. Not used. (COMPAT\_EXCLUDE\_INODE).
-+     - "Exclude inode". Not used. (COMPAT\_EXCLUDE\_INODE).
-    * - 0x100
--     - “Exclude bitmap”. Seems to be used to indicate the presence of
-+     - "Exclude bitmap". Seems to be used to indicate the presence of
-        snapshot-related exclude bitmaps? Not defined in kernel or used in
-        e2fsprogs (COMPAT\_EXCLUDE\_BITMAP).
-    * - 0x200
-@@ -695,7 +695,7 @@ the following:
-    * - 0x100
-      - `Quota <Quota>`__ (RO\_COMPAT\_QUOTA).
-    * - 0x200
--     - This filesystem supports “bigalloc”, which means that file extents are
-+     - This filesystem supports "bigalloc", which means that file extents are
-        tracked in units of clusters (of blocks) instead of blocks
-        (RO\_COMPAT\_BIGALLOC).
-    * - 0x400
--- 
-2.30.2
+No, that is absolutely the wrong approach.
+
+If someone has a local setup which makes bogus assumptions about text
+encodings, that is their own mistake.
+
+We don't do them any favours by trying to *hide* it in the common case
+so that they don't notice it for longer.
+
+There really isn't much excuse for such brokenness, this far into the
+21st century.
+
+Even *before* UTF-8 came along in the final decade of the last
+millennium, it was important to know which character set a given piece
+of text was encoded in.
+
+In fact it was even *more* important back then, we couldn't just assume
+UTF-8 everywhere like we can in modern times.
+
+Git can already do things like CRLF conversion on checking files out to
+match local conventions; if you want to teach it to do character set
+conversions too then I suppose that might be useful to a few developers
+who've fallen through a time warp and still need it. But nobody's ever
+bothered before because it just isn't necessary these days.
+
+Please *don't* attempt to address this anachronistic and esoteric
+"requirement" by dragging the kernel source back in time by three
+decades.
+
+
+
+--=-ob5s4dkk/IPkbSg8129x
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCECow
+ggUcMIIEBKADAgECAhEA4rtJSHkq7AnpxKUY8ZlYZjANBgkqhkiG9w0BAQsFADCBlzELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
+A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
+bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTkwMTAyMDAwMDAwWhcNMjIwMTAxMjM1
+OTU5WjAkMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZyYWRlYWQub3JnMIIBIjANBgkqhkiG9w0B
+AQEFAAOCAQ8AMIIBCgKCAQEAsv3wObLTCbUA7GJqKj9vHGf+Fa+tpkO+ZRVve9EpNsMsfXhvFpb8
+RgL8vD+L133wK6csYoDU7zKiAo92FMUWaY1Hy6HqvVr9oevfTV3xhB5rQO1RHJoAfkvhy+wpjo7Q
+cXuzkOpibq2YurVStHAiGqAOMGMXhcVGqPuGhcVcVzVUjsvEzAV9Po9K2rpZ52FE4rDkpDK1pBK+
+uOAyOkgIg/cD8Kugav5tyapydeWMZRJQH1vMQ6OVT24CyAn2yXm2NgTQMS1mpzStP2ioPtTnszIQ
+Ih7ASVzhV6csHb8Yrkx8mgllOyrt9Y2kWRRJFm/FPRNEurOeNV6lnYAXOymVJwIDAQABo4IB0zCC
+Ac8wHwYDVR0jBBgwFoAUgq9sjPjF/pZhfOgfPStxSF7Ei8AwHQYDVR0OBBYEFLfuNf820LvaT4AK
+xrGK3EKx1DE7MA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUF
+BwMEBggrBgEFBQcDAjBGBgNVHSAEPzA9MDsGDCsGAQQBsjEBAgEDBTArMCkGCCsGAQUFBwIBFh1o
+dHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzBaBgNVHR8EUzBRME+gTaBLhklodHRwOi8vY3Js
+LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWls
+Q0EuY3JsMIGLBggrBgEFBQcBAQR/MH0wVQYIKwYBBQUHMAKGSWh0dHA6Ly9jcnQuY29tb2RvY2Eu
+Y29tL0NPTU9ET1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcnQwJAYI
+KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNkd213MkBpbmZy
+YWRlYWQub3JnMA0GCSqGSIb3DQEBCwUAA4IBAQALbSykFusvvVkSIWttcEeifOGGKs7Wx2f5f45b
+nv2ghcxK5URjUvCnJhg+soxOMoQLG6+nbhzzb2rLTdRVGbvjZH0fOOzq0LShq0EXsqnJbbuwJhK+
+PnBtqX5O23PMHutP1l88AtVN+Rb72oSvnD+dK6708JqqUx2MAFLMevrhJRXLjKb2Mm+/8XBpEw+B
+7DisN4TMlLB/d55WnT9UPNHmQ+3KFL7QrTO8hYExkU849g58Dn3Nw3oCbMUgny81ocrLlB2Z5fFG
+Qu1AdNiBA+kg/UxzyJZpFbKfCITd5yX49bOriL692aMVDyqUvh8fP+T99PqorH4cIJP6OxSTdxKM
+MIIFHDCCBASgAwIBAgIRAOK7SUh5KuwJ6cSlGPGZWGYwDQYJKoZIhvcNAQELBQAwgZcxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTE5MDEwMjAwMDAwMFoXDTIyMDEwMTIz
+NTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcN
+AQEBBQADggEPADCCAQoCggEBALL98Dmy0wm1AOxiaio/bxxn/hWvraZDvmUVb3vRKTbDLH14bxaW
+/EYC/Lw/i9d98CunLGKA1O8yogKPdhTFFmmNR8uh6r1a/aHr301d8YQea0DtURyaAH5L4cvsKY6O
+0HF7s5DqYm6tmLq1UrRwIhqgDjBjF4XFRqj7hoXFXFc1VI7LxMwFfT6PStq6WedhROKw5KQytaQS
+vrjgMjpICIP3A/CroGr+bcmqcnXljGUSUB9bzEOjlU9uAsgJ9sl5tjYE0DEtZqc0rT9oqD7U57My
+ECIewElc4VenLB2/GK5MfJoJZTsq7fWNpFkUSRZvxT0TRLqznjVepZ2AFzsplScCAwEAAaOCAdMw
+ggHPMB8GA1UdIwQYMBaAFIKvbIz4xf6WYXzoHz0rcUhexIvAMB0GA1UdDgQWBBS37jX/NtC72k+A
+CsaxitxCsdQxOzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAdBgNVHSUEFjAUBggrBgEF
+BQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAwUwKzApBggrBgEFBQcCARYd
+aHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwWgYDVR0fBFMwUTBPoE2gS4ZJaHR0cDovL2Ny
+bC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFp
+bENBLmNybDCBiwYIKwYBBQUHAQEEfzB9MFUGCCsGAQUFBzAChklodHRwOi8vY3J0LmNvbW9kb2Nh
+LmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3J0MCQG
+CCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAC20spBbrL71ZEiFrbXBHonzhhirO1sdn+X+O
+W579oIXMSuVEY1LwpyYYPrKMTjKECxuvp24c829qy03UVRm742R9Hzjs6tC0oatBF7KpyW27sCYS
+vj5wbal+TttzzB7rT9ZfPALVTfkW+9qEr5w/nSuu9PCaqlMdjABSzHr64SUVy4ym9jJvv/FwaRMP
+gew4rDeEzJSwf3eeVp0/VDzR5kPtyhS+0K0zvIWBMZFPOPYOfA59zcN6AmzFIJ8vNaHKy5QdmeXx
+RkLtQHTYgQPpIP1Mc8iWaRWynwiE3ecl+PWzq4i+vdmjFQ8qlL4fHz/k/fT6qKx+HCCT+jsUk3cS
+jDCCBeYwggPOoAMCAQICEGqb4Tg7/ytrnwHV2binUlYwDQYJKoZIhvcNAQEMBQAwgYUxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMSswKQYDVQQDEyJDT01PRE8gUlNBIENlcnRpZmljYXRp
+b24gQXV0aG9yaXR5MB4XDTEzMDExMDAwMDAwMFoXDTI4MDEwOTIzNTk1OVowgZcxCzAJBgNVBAYT
+AkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNV
+BAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAvrOeV6wodnVAFsc4A5jTxhh2IVDzJXkLTLWg0X06WD6cpzEup/Y0dtmEatrQPTRI5Or1u6zf
++bGBSyD9aH95dDSmeny1nxdlYCeXIoymMv6pQHJGNcIDpFDIMypVpVSRsivlJTRENf+RKwrB6vcf
+WlP8dSsE3Rfywq09N0ZfxcBa39V0wsGtkGWC+eQKiz4pBZYKjrc5NOpG9qrxpZxyb4o4yNNwTqza
+aPpGRqXB7IMjtf7tTmU2jqPMLxFNe1VXj9XB1rHvbRikw8lBoNoSWY66nJN/VCJv5ym6Q0mdCbDK
+CMPybTjoNCQuelc0IAaO4nLUXk0BOSxSxt8kCvsUtQIDAQABo4IBPDCCATgwHwYDVR0jBBgwFoAU
+u69+Aj36pvE8hI6t7jiY7NkyMtQwHQYDVR0OBBYEFIKvbIz4xf6WYXzoHz0rcUhexIvAMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMBEGA1UdIAQKMAgwBgYEVR0gADBMBgNVHR8E
+RTBDMEGgP6A9hjtodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDZXJ0aWZpY2F0aW9u
+QXV0aG9yaXR5LmNybDBxBggrBgEFBQcBAQRlMGMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9jcnQuY29t
+b2RvY2EuY29tL0NPTU9ET1JTQUFkZFRydXN0Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2Nz
+cC5jb21vZG9jYS5jb20wDQYJKoZIhvcNAQEMBQADggIBAHhcsoEoNE887l9Wzp+XVuyPomsX9vP2
+SQgG1NgvNc3fQP7TcePo7EIMERoh42awGGsma65u/ITse2hKZHzT0CBxhuhb6txM1n/y78e/4ZOs
+0j8CGpfb+SJA3GaBQ+394k+z3ZByWPQedXLL1OdK8aRINTsjk/H5Ns77zwbjOKkDamxlpZ4TKSDM
+KVmU/PUWNMKSTvtlenlxBhh7ETrN543j/Q6qqgCWgWuMAXijnRglp9fyadqGOncjZjaaSOGTTFB+
+E2pvOUtY+hPebuPtTbq7vODqzCM6ryEhNhzf+enm0zlpXK7q332nXttNtjv7VFNYG+I31gnMrwfH
+M5tdhYF/8v5UY5g2xANPECTQdu9vWPoqNSGDt87b3gXb1AiGGaI06vzgkejL580ul+9hz9D0S0U4
+jkhJiA7EuTecP/CFtR72uYRBcunwwH3fciPjviDDAI9SnC/2aPY8ydehzuZutLbZdRJ5PDEJM/1t
+yZR2niOYihZ+FCbtf3D9mB12D4ln9icgc7CwaxpNSCPt8i/GqK2HsOgkL3VYnwtx7cJUmpvVdZ4o
+gnzgXtgtdk3ShrtOS1iAN2ZBXFiRmjVzmehoMof06r1xub+85hFQzVxZx5/bRaTKTlL8YXLI8nAb
+R9HWdFqzcOoB/hxfEyIQpx9/s81rgzdEZOofSlZHynoSMYIDyjCCA8YCAQEwga0wgZcxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA4rtJSHkq7AnpxKUY8ZlYZjANBglghkgB
+ZQMEAgEFAKCCAe0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjEw
+NTEwMTA1NDAyWjAvBgkqhkiG9w0BCQQxIgQgL3/7pAsd0OmIKpx3YJrV4o45y9CkDZx92/HDF48d
+q9Iwgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
+TWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQx
+PTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1h
+aWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMIHABgsqhkiG9w0BCRACCzGBsKCBrTCBlzELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
+A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
+bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMA0GCSqGSIb3
+DQEBAQUABIIBAHzwJmgq+6gvW3P1J5Cy/JCDc1dstwjZx2gvKNH1HiimqZWGRLY/pd2wxAq6SB7n
+RGYW9bZTWa8rgCUd0onKtdhe7HlmvcREhYLnRiMKuhI7S7LzhYps7xb6NllDTQijUkxBxSTwjfRo
+poKQCuX9FQFHeN1cTX4OoNRwqYouDk8T8au7ZBiBli4EixkcXl4FSo8CMbcQfMMKGnM21r/WvXGM
+zzK2L3HYc5jW1Rrnc3CNwR+yYDBrDtAf0949+PCdJX9hPM1KTsXIWvARcTlqfOCMKfBC513+Lrlc
+GtdMvUCdHQCeyphzgU/V9VIVUqv+1o5QGDdyEmSU3aPR4SQ8ThMAAAAAAAA=
+
+
+--=-ob5s4dkk/IPkbSg8129x--
 
