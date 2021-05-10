@@ -2,73 +2,92 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 018F7377AD1
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 May 2021 05:50:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6718E378128
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 May 2021 12:21:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbhEJDvz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 9 May 2021 23:51:55 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:2668 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230029AbhEJDvz (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 9 May 2021 23:51:55 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fdn8C5g9Zz1BHrv;
-        Mon, 10 May 2021 11:48:11 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.249) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.498.0; Mon, 10 May 2021
- 11:50:40 +0800
-Subject: Re: [PATCH] e2fsck: try write_primary_superblock() again when it
- failed
-To:     Haotian Li <lihaotian9@huawei.com>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>
-CC:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        linfeilong <linfeilong@huawei.com>
-References: <7486f08c-7f14-9fac-fdb2-0fe78a799d90@huawei.com>
-From:   Zhiqiang Liu <liuzhiqiang26@huawei.com>
-Message-ID: <8e16a65d-bca2-c95a-aac5-0ba5411695ed@huawei.com>
-Date:   Mon, 10 May 2021 11:50:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S230437AbhEJKWs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 10 May 2021 06:22:48 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36814 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230093AbhEJKWs (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 10 May 2021 06:22:48 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2653FADDB;
+        Mon, 10 May 2021 10:21:43 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 900A31F2C5C; Mon, 10 May 2021 12:21:42 +0200 (CEST)
+Date:   Mon, 10 May 2021 12:21:42 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Zhang Yi <yi.zhang@huawei.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jack@suse.cz, yukuai3@huawei.com
+Subject: Re: [PATCH] ext4: cleanup in-core orphan list if ext4_truncate()
+ failed to get a transaction handle
+Message-ID: <20210510102142.GD11100@quack2.suse.cz>
+References: <20210507071904.160808-1-yi.zhang@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <7486f08c-7f14-9fac-fdb2-0fe78a799d90@huawei.com>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.177.249]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210507071904.160808-1-yi.zhang@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-friendly ping...
+On Fri 07-05-21 15:19:04, Zhang Yi wrote:
+> In ext4_orphan_cleanup(), if ext4_truncate() failed to get a transaction
+> handle, it didn't remove the inode from the in-core orphan list, which
+> may probably trigger below error dump in ext4_destroy_inode() during the
+> final iput() and could lead to memory corruption on the later orphan
+> list changes.
+> 
+>  EXT4-fs (sda): Inode 6291467 (00000000b8247c67): orphan list check failed!
+>  00000000b8247c67: 0001f30a 00000004 00000000 00000023  ............#...
+>  00000000e24cde71: 00000006 014082a3 00000000 00000000  ......@.........
+>  0000000072c6a5ee: 00000000 00000000 00000000 00000000  ................
+>  ...
+> 
+> This patch fix this by cleanup in-core orphan list manually if
+> ext4_truncate() return error.
+> 
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 
-On 2021/4/13 11:19, Haotian Li wrote:
-> Function write_primary_superblock() has two ways to flush
-> superblock, byte-by-byte as default. It may use
-> io_channel_write_byte() many times. If some errors occur
-> during these funcs, the superblock may become inconsistent
-> and produce checksum error.
->
-> Try write_primary_superblock() with whole-block way again
-> when it failed on byte-by-byte way.
+Thanks! The patch looks good to me. Feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+
 > ---
->  lib/ext2fs/closefs.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
->
-> diff --git a/lib/ext2fs/closefs.c b/lib/ext2fs/closefs.c
-> index 69cbdd8c..1fc27fb5 100644
-> --- a/lib/ext2fs/closefs.c
-> +++ b/lib/ext2fs/closefs.c
-> @@ -223,10 +223,8 @@ static errcode_t write_primary_superblock(ext2_filsys fs,
->  		retval = io_channel_write_byte(fs->io,
->  			       SUPERBLOCK_OFFSET + (2 * write_idx), size,
->  					       new_super + write_idx);
-> -		if (retval == EXT2_ET_UNIMPLEMENTED)
-> -			goto fallback;
->  		if (retval)
-> -			return retval;
-> +			goto fallback;
->  	}
->  	memcpy(fs->orig_super, super, SUPERBLOCK_SIZE);
->  	return 0;
-
+>  fs/ext4/super.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 7dc94f3e18e6..12850d72e9a4 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -3101,8 +3101,15 @@ static void ext4_orphan_cleanup(struct super_block *sb,
+>  			inode_lock(inode);
+>  			truncate_inode_pages(inode->i_mapping, inode->i_size);
+>  			ret = ext4_truncate(inode);
+> -			if (ret)
+> +			if (ret) {
+> +				/*
+> +				 * We need to clean up the in-core orphan list
+> +				 * manually if ext4_truncate() failed to get a
+> +				 * transaction handle.
+> +				 */
+> +				ext4_orphan_del(NULL, inode);
+>  				ext4_std_error(inode->i_sb, ret);
+> +			}
+>  			inode_unlock(inode);
+>  			nr_truncates++;
+>  		} else {
+> -- 
+> 2.25.4
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
