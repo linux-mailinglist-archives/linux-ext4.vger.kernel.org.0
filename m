@@ -2,33 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A55B379108
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 May 2021 16:39:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1BEC379240
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 May 2021 17:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234092AbhEJOkb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 10 May 2021 10:40:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37048 "EHLO
+        id S241675AbhEJPQb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 10 May 2021 11:16:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235503AbhEJOhY (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 10 May 2021 10:37:24 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D84CC08E8A9;
-        Mon, 10 May 2021 07:00:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=i6vAxLOytNOYwyM1NYfARO0i+7jkuFK7y9pYt7pXuwE=; b=djb3CWn/LU378IzapvABLkn8Gd
-        Mp82QkScestEUeQW2L+zqtEN7XvYp31eFRebvjBEITr//+6YOo6+SYheq9BxF7YMTeqbS+RN1ORYU
-        WcTwnub1JAhAEwo1EbdH4ZtDbzKRVhVt7KKBx8eH43WzT6ZsZkO7OQPiITlB671P2UStmst5kwHpO
-        oLDGkct+Pf7s4vCchonkHPjgJ2dHAgGdY9eEvhnNfgt0nMzg4EJ/N8O7mpCEUjiq1yDlLopkoOUQy
-        tCb7mahOMAZ84vugzBeIjfIYkNlViOtJdTlUAmJVQy5eePLrQct4R8yXLPW7Hy+DjovMg5jAZGdoa
-        yuW/o03A==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lg6RA-006DIB-7H; Mon, 10 May 2021 13:59:19 +0000
-Date:   Mon, 10 May 2021 14:59:08 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Edward Cree <ecree.xilinx@gmail.com>
+        with ESMTP id S240361AbhEJPOf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 10 May 2021 11:14:35 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B71FCC056756;
+        Mon, 10 May 2021 07:33:50 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id t18so16891382wry.1;
+        Mon, 10 May 2021 07:33:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=iXsxoOt9fS3DXvxCyyFOaJfbPkU6WlTqA1MG4BgEpJA=;
+        b=jIc4OS4UG1e9Htue39hs2SdJXCmPLn+MTostxG/pw06sXYt4cF0beJY8cOPd4XkNvN
+         wMkWqq4rS4nqVWqmlHYwknDCThc4F5oj3a10x6AGXMwZ0Kkxjgx6mU53ky5S6gct5IOF
+         gb8YE/CdqFeQhJSfkuXg75IoXDsEW/QKbfnCDm8DSyF/6zHxA2in236S9Jv233h02Cag
+         nY/zUkluYzDhxrfM75C6Qnf/beBRBG9DBN2uslTW/jB8AmOrnU4strwuRTlIYCmTiED9
+         Adakd2gy/AYmhY6PfiGery2Nb+BVYLJb2xN6RqR96XQSpLkoAkrrTIc1zJH3tzspThUx
+         eDlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iXsxoOt9fS3DXvxCyyFOaJfbPkU6WlTqA1MG4BgEpJA=;
+        b=mtcfeMsx7dMqYNepetHcvVEp2glMa9yIlLyEQ8rzKenwJZWsHQ0xYa4FlfmN2J8LUY
+         bPfOWxNXZyLuUbv6mxcQzDooN2CybZw4KKRpvAa/DrNtG9dFdBPkqfMLVMWB9yeSeuhw
+         KifzQf56nF3lwZi75f/YZ9fJAMLNWYeuMRIm/mSQXcM0o6HLRxrVNe3PcWPOde4Ouehf
+         HQo08nNDf9XEIEtKPrSCYDyPT+1asNxWQJ15AiWCwdz6YBacVGiCzslr6WMf0PAAJhWe
+         NOEZZaMTk+c6yb5EuDFdDdRkIJXz5xQH1O3KiVzaCllG860vf8paCuiuRV8XjsFmGVtg
+         sxhw==
+X-Gm-Message-State: AOAM532ZdhgvQU2/PzbBMlyPonGNmCSVV+wEv5FYNx421ebedZz5AXty
+        8pgEwWSVt3X7TC9UFQeGUWQ=
+X-Google-Smtp-Source: ABdhPJze1q8t3iuv5DjzOv0RveTjqSpEwnprh+IG3St78u9eWCZrU93KSEZYLbobgkyZLBZ/m0bYBQ==
+X-Received: by 2002:adf:e98c:: with SMTP id h12mr30469476wrm.314.1620657229579;
+        Mon, 10 May 2021 07:33:49 -0700 (PDT)
+Received: from [192.168.1.122] (cpc159425-cmbg20-2-0-cust403.5-4.cable.virginm.net. [86.7.189.148])
+        by smtp.gmail.com with ESMTPSA id h9sm20117820wmb.35.2021.05.10.07.33.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 10 May 2021 07:33:48 -0700 (PDT)
+Subject: Re: [PATCH 00/53] Get rid of UTF-8 chars that can be mapped as ASCII
+To:     Matthew Wilcox <willy@infradead.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         David Woodhouse <dwmw2@infradead.org>,
         Linux Doc Mailing List <linux-doc@vger.kernel.org>,
@@ -47,48 +68,51 @@ Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-sgx@vger.kernel.org, linux-usb@vger.kernel.org,
         mjpeg-users@lists.sourceforge.net, netdev@vger.kernel.org,
         rcu@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH 00/53] Get rid of UTF-8 chars that can be mapped as ASCII
-Message-ID: <YJk8LMFViV7Z3Uu7@casper.infradead.org>
 References: <cover.1620641727.git.mchehab+huawei@kernel.org>
  <2ae366fdff4bd5910a2270823e8da70521c859af.camel@infradead.org>
  <20210510135518.305cc03d@coco.lan>
  <df6b4567-030c-a480-c5a6-fe579830e8c0@gmail.com>
+ <YJk8LMFViV7Z3Uu7@casper.infradead.org>
+From:   Edward Cree <ecree.xilinx@gmail.com>
+Message-ID: <ed65025c-1087-9672-7451-6d28e7ab8f92@gmail.com>
+Date:   Mon, 10 May 2021 15:33:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
+In-Reply-To: <YJk8LMFViV7Z3Uu7@casper.infradead.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <df6b4567-030c-a480-c5a6-fe579830e8c0@gmail.com>
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, May 10, 2021 at 02:16:16PM +0100, Edward Cree wrote:
-> On 10/05/2021 12:55, Mauro Carvalho Chehab wrote:
-> > The main point on this series is to replace just the occurrences
-> > where ASCII represents the symbol equally well
-> 
-> > 	- U+2014 ('—'): EM DASH
-> Em dash is not the same thing as hyphen-minus, and the latter does not
->  serve 'equally well'.  People use em dashes because — even in
->  monospace fonts — they make text easier to read and comprehend, when
->  used correctly.
-> I accept that some of the other distinctions — like en dashes — are
->  needlessly pedantic (though I don't doubt there is someone out there
->  who will gladly defend them with the same fervour with which I argue
->  for the em dash) and I wouldn't take the trouble to use them myself;
->  but I think there is a reasonable assumption that when someone goes
->  to the effort of using a Unicode punctuation mark that is semantic
->  (rather than merely typographical), they probably had a reason for
->  doing so.
+On 10/05/2021 14:59, Matthew Wilcox wrote:
+> Most of these
+> UTF-8 characters come from latex conversions and really aren't
+> necessary (and are being used incorrectly).
+I fully agree with fixing those.
+The cover-letter, however, gave the impression that that was not the
+ main purpose of this series; just, perhaps, a happy side-effect.
 
-I think you're overestimating the amount of care and typographical
-knowledge that your average kernel developer has.  Most of these
-UTF-8 characters come from latex conversions and really aren't
-necessary (and are being used incorrectly).
+> You seem quite knowedgeable about the various differences.  Perhaps
+> you'd be willing to write a document for Documentation/doc-guide/
+> that provides guidance for when to use which kinds of horizontal
+> line?I have Opinions about the proper usage of punctuation, but I also know
+ that other people have differing opinions.  For instance, I place
+ spaces around an em dash, which is nonstandard according to most
+ style guides.  Really this is an individual enough thing that I'm not
+ sure we could have a "kernel style guide" that would be more useful
+ than general-purpose guidance like the page you linked.
+Moreover, such a guide could make non-native speakers needlessly self-
+ conscious about their writing and discourage them from contributing
+ documentation at all.  I'm not advocating here for trying to push
+ kernel developers towards an eats-shoots-and-leaves level of
+ linguistic pedantry; rather, I merely think that existing correct
+ usages should be left intact (and therefore, excising incorrect usage
+ should only be attempted by someone with both the expertise and time
+ to check each case).
 
-You seem quite knowedgeable about the various differences.  Perhaps
-you'd be willing to write a document for Documentation/doc-guide/
-that provides guidance for when to use which kinds of horizontal
-line?  https://www.punctuationmatters.com/hyphen-dash-n-dash-and-m-dash/
-talks about it in the context of publications, but I think we need
-something more suited to our needs for kernel documentation.
+But if you really want such a doc I wouldn't mind contributing to it.
+
+-ed
