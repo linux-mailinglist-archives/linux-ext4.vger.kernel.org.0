@@ -2,40 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E583E379B22
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 May 2021 02:20:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB877379EA1
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 May 2021 06:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230185AbhEKAVK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 10 May 2021 20:21:10 -0400
-Received: from [125.7.54.12] ([125.7.54.12]:55919 "EHLO
-        snhve01-ext-001.mktdns.com" rhost-flags-FAIL-FAIL-OK-OK)
-        by vger.kernel.org with ESMTP id S230070AbhEKAVK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 10 May 2021 20:21:10 -0400
-X-MSFBL: o1J+ULudNOa8z+YZRFaCiaCcSKBYz8qUlS96uVMcw2w=|eyJ1IjoiJXZjdHhfbWV
-        zc3tta3RvTWFpbGluZ0lEfSIsImIiOiJzbmh2ZTAxLW10YTAxLTEyNS03LTU0LTE
-        yIiwiZyI6ImJnLXNuaHZlMDFkLTAxIiwiciI6ImxpbnV4LWV4dDRAdmdlci5rZXJ
-        uZWwub3JnIn0=
-Reply-To: <avislmarie@yahoo.com>
-Message-ID: <56.9B.20919.8ADC9906@snhve01-mta01.marketo.org>
-From:   "COMPANY" <marieaviss@gmail.com>
-Subject: Re: Business inquiries 05:11:2021
-Date:   Mon, 10 May 2021 17:19:37 -0700
+        id S229948AbhEKEh3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 11 May 2021 00:37:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229548AbhEKEh2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 May 2021 00:37:28 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9780C061574;
+        Mon, 10 May 2021 21:36:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=+LTUHNeE94R2O+bXANYuERUrQYGZz1p62AmaYL7iaa0=; b=PpezK03OB1C8eJRbNdZYTJmHU2
+        YxbOUgtOt0V/rQha8ZqXlibpnp+YftcHnNgOLUQLAlOi3VeRiXaY0063okKKZvwXPwyJNguaaK1rZ
+        UdSK5B7Kzbl/ITLs7uwYebhy0zBDHIOzE3Fo5BeNq5LwjuMAhZ7b1TT8NzW5xoViWmxIS7QOVoXT5
+        jtWz0+pf6tJJaV4mRLIKZt/09eoLkay840VzOzmzr+B/H6LGqW+isqgpLa+yI3BxFnbAFW/UjgOVh
+        G/uOcpTscOBvaeezfId6QazbqH51Ap/i1ATpWCMA/xK68Fzs3VZ9MLDAMxSngDC8VnnABhoNRnJSe
+        UbtwTE2g==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lgK7b-006uVb-KJ; Tue, 11 May 2021 04:35:54 +0000
+Date:   Tue, 11 May 2021 05:35:51 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Shreeya Patel <shreeya.patel@collabora.com>
+Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Christoph Hellwig <hch@infradead.org>,
+        adilger.kernel@dilger.ca, jaegeuk@kernel.org, chao@kernel.org,
+        ebiggers@google.com, drosen@google.com, ebiggers@kernel.org,
+        yuchao0@huawei.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
+        andre.almeida@collabora.com
+Subject: Re: [PATCH v8 4/4] fs: unicode: Add utf8 module and a unicode layer
+Message-ID: <YJoJp1FnHxyQc9/2@infradead.org>
+References: <20210423205136.1015456-1-shreeya.patel@collabora.com>
+ <20210423205136.1015456-5-shreeya.patel@collabora.com>
+ <20210427062907.GA1564326@infradead.org>
+ <61d85255-d23e-7016-7fb5-7ab0a6b4b39f@collabora.com>
+ <YIgkvjdrJPjeoJH7@mit.edu>
+ <87bl9z937q.fsf@collabora.com>
+ <YIlta1Saw7dEBpfs@mit.edu>
+ <87mtti6xtf.fsf@collabora.com>
+ <7caab939-2800-0cc2-7b65-345af3fce73d@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7caab939-2800-0cc2-7b65-345af3fce73d@collabora.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello
-How are you doing today?
-I am willing to initiate a business relationship with you.
-Yours sincerely
-MA/PM
+On Tue, May 11, 2021 at 02:17:00AM +0530, Shreeya Patel wrote:
+> Theodore / Christoph, since we haven't come up with any final decision with
+> this discussion, how do you think we should proceed on this?
+
+I think loading it as a firmware-like table is much preferable to
+a module with all the static call magic papering over that it really is
+just one specific table.
