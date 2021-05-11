@@ -2,55 +2,56 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 325D7379ECA
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 May 2021 06:45:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 234E6379F39
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 May 2021 07:36:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229948AbhEKEqc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 11 May 2021 00:46:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58354 "EHLO
+        id S230265AbhEKFhI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 11 May 2021 01:37:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhEKEqb (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 May 2021 00:46:31 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7274C061574
-        for <linux-ext4@vger.kernel.org>; Mon, 10 May 2021 21:45:25 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id a22so17078683qkl.10
-        for <linux-ext4@vger.kernel.org>; Mon, 10 May 2021 21:45:25 -0700 (PDT)
+        with ESMTP id S229885AbhEKFhH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 May 2021 01:37:07 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF9C6C06175F
+        for <linux-ext4@vger.kernel.org>; Mon, 10 May 2021 22:36:00 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id f8so9636570qth.6
+        for <linux-ext4@vger.kernel.org>; Mon, 10 May 2021 22:36:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=eC6TABn1JhzBbs5nurKm+ZEX5PiCGZ1lfJ7yIRC1fAc=;
-        b=irJ3bNbfzMQTtyzRJzCJcax2FKCVp74YEe6bn/EY1+wYRBmeKSpStWtUUs76Z9Gyxa
-         W01K0RSitZlTNRw9JXlc0UzXFf/Y/w0p7C5jI+/Av+gij7kb7CQH+8QMnb5mbwEo5aXX
-         Jj9qGRW+5UAV73Hz3zz/0+ZKdhHdryFpQsvisoJO0XltVY7mo+b3cMC4YR+1Vyqwug4r
-         Pf3T1iCgylG+8w+wGlRKDW2lSBF//lYQWVmxqaleEzAQx7X/nz8/8aP7R0wp7FDTtZtn
-         4d10X8O7WdYLu5VZr5DlE43JsfB16Vh3TLu+EgqpAYnEECLulf0H7N6YcIg5k6NWLNHu
-         STrw==
+        bh=KHcwI/UqVLWOnQVXqyCpg94GINhlFNsywd9HJ84O9Gs=;
+        b=OL3NnLL9fmr9EkyQChT32JPI2B7JOaC2v0k5hJp4Zo6/pgT3uFS+QICFMC4d61yxy9
+         r0VzPe3A5tOmIbJlVEQ+dfxAtM2MFR+IgH9V2B8kj0dqnS8cS5TZQlaEkKAu0Ul5tLF7
+         4WBZk5pjYo6J4PvgJVLAF9q57rLCQw0kVoOftOJCUVhqr5xDvrD1qBGmWvrXsDcHexO5
+         7iV31ObZlPyDK0CNQgML+DyGXxSo0qJcuu3hcTL/E6grs43ESDeIegLlT2xybZbYAWdo
+         H8TEy4hf3OoBrXdzsTCrMSjtchZ/Q5V1C3QXTuU1B9NaCTZwKfimjbgfDwo3G444gCZP
+         B0Pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=eC6TABn1JhzBbs5nurKm+ZEX5PiCGZ1lfJ7yIRC1fAc=;
-        b=CAim3q2nJbtW2EuNPsR3XRriTCGhoAgb9vKfmJYvkfZB37yZJ0xC8Qisq3qmHxOb92
-         0t9kQ2NOgpy+/pZwauY3u5HqH3hlYa5GaQyCx7gTOGMnT3yZkjXkTiD/Lqr0P2OfoiD6
-         GUEAmlSZgOyCddRq2cVguOjiGPknNViwQqEMQ7WF9cgJ0kr0TSMDi7Ox1tgBUE8L3K+3
-         suzy/1b7+bdfkRNeXAIdYxaPhPfOwuVpgbw4yD3MPbhX7MHkVxsZw3J714EW+DNZ5nhb
-         zz0mii56oMnMZxhloCd6KjVt9gwZHBdfW7YcbDK5JYxp++0qwUhUN+yw5bgv8SP5F5Jx
-         cyEA==
-X-Gm-Message-State: AOAM530OOaE1kxe3OOBpjr2aJJ+poj5a059TDjSNvHbppafmCYSQjBpO
-        DpPFZS9+FKKtSHGZikYlDQ0Lgf06XozMrSVyfSUozpWknLQ=
-X-Google-Smtp-Source: ABdhPJyLITHKYiw4rxzBMxeptKoXWX7A6mTb18ICmcf/bdM6881VE3eaR/YkzAep2HdyyPn3jMU9dHkXUudOLc2dbRU=
-X-Received: by 2002:ae9:e884:: with SMTP id a126mr26128487qkg.421.1620708324609;
- Mon, 10 May 2021 21:45:24 -0700 (PDT)
+        bh=KHcwI/UqVLWOnQVXqyCpg94GINhlFNsywd9HJ84O9Gs=;
+        b=V+SLdn7trAApXxEvFYr0TCHDlssCV3ZHAu2b6FCeyw5MQko/v7wGWZ2KlBJBFWV1oh
+         er1MkoOIiYclwyXMUiUMBv3nVJa9IQYtr1AIyei6EaNwKff8/BCQMDK5j7C0pERfUSSA
+         B6MDQ4rfy9wnY+12OfvjRGD7wl5gEX3gPRsS1uoQIhyWy4HRex+EVsUO2sFK6JadSvwt
+         zOPWgqcJhGNZvIEcxaC03T0lK2YiPdqo/kKDPTmKwojRNt2F1gwFvJGzsq8uo/DPUhok
+         6Y4PgjnsLl/trjnBivmYFbFWXbOMoYOsGKvYMF6u0KpqI4bUXLHyGWdrYOqjbIlh3OVB
+         nunw==
+X-Gm-Message-State: AOAM531gQ/KQKkg35KsgwS7p/b+Y9nXzBm2YqyQYKOnf5h4A3X0EIT9C
+        GIOKGDvm/VndojG1IDfBwt6QOdRwKaGsJotxosOTOA==
+X-Google-Smtp-Source: ABdhPJy4FklGPZa1yhD9A5mY947hdq1Mdf74s853ARUP2DnDbSqBxoa7aJMiKYrVKJEOE7gK8TarKnHc873MLk8jqWA=
+X-Received: by 2002:aed:2167:: with SMTP id 94mr26322781qtc.378.1620711359716;
+ Mon, 10 May 2021 22:35:59 -0700 (PDT)
 MIME-Version: 1.0
 References: <20210426184201.4177978-1-krisman@collabora.com>
- <CAOQ4uxi3yigb2gUjXHJQOVbPHR3RFDeyKc5i0X-k8CSLwurejg@mail.gmail.com> <875z0791ga.fsf@collabora.com>
-In-Reply-To: <875z0791ga.fsf@collabora.com>
+ <20210426184201.4177978-11-krisman@collabora.com> <CAOQ4uxh_AQCj2XJgVzFp862xhr70FAS6n3QjeeQSd_bizw3Ssw@mail.gmail.com>
+ <87lf9153yy.fsf@collabora.com>
+In-Reply-To: <87lf9153yy.fsf@collabora.com>
 From:   Khazhy Kumykov <khazhy@google.com>
-Date:   Mon, 10 May 2021 21:45:13 -0700
-Message-ID: <CACGdZYJi=mG4=ADpHsHzAUBwCX6UfdtNvDSZNfV0PNL_MgCi7Q@mail.gmail.com>
-Subject: Re: [PATCH RFC 00/15] File system wide monitoring
+Date:   Mon, 10 May 2021 22:35:48 -0700
+Message-ID: <CACGdZYKVKvFycypunLcgJOZzT+_iR4VPotycMEXi=sg7kgckUQ@mail.gmail.com>
+Subject: Re: [PATCH RFC 10/15] fanotify: Introduce code location record
 To:     Gabriel Krisman Bertazi <krisman@collabora.com>
 Cc:     Amir Goldstein <amir73il@gmail.com>, Theodore Tso <tytso@mit.edu>,
         "Darrick J. Wong" <djwong@kernel.org>,
@@ -59,173 +60,59 @@ Cc:     Amir Goldstein <amir73il@gmail.com>, Theodore Tso <tytso@mit.edu>,
         linux-fsdevel <linux-fsdevel@vger.kernel.org>,
         Ext4 <linux-ext4@vger.kernel.org>, kernel@collabora.com
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000001da2a05c20690a3"
+        boundary="000000000000e86c5905c20744c9"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
---00000000000001da2a05c20690a3
+--000000000000e86c5905c20744c9
 Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Apr 27, 2021 at 8:44 AM Gabriel Krisman Bertazi
+On Thu, Apr 29, 2021 at 11:40 AM Gabriel Krisman Bertazi
 <krisman@collabora.com> wrote:
 >
 > Amir Goldstein <amir73il@gmail.com> writes:
 >
-> > On Mon, Apr 26, 2021 at 9:42 PM Gabriel Krisman Bertazi
+> > On Mon, Apr 26, 2021 at 9:43 PM Gabriel Krisman Bertazi
 > > <krisman@collabora.com> wrote:
 > >>
-> >> Hi,
-> >>
-> >> In an attempt to consolidate some of the feedback from the previous
-> >> proposals, I wrote a new attempt to solve the file system error reporting
-> >> problem.  Before I spend more time polishing it, I'd like to hear your
-> >> feedback if I'm going in the wrong direction, in particular with the
-> >> modifications to fsnotify.
+> >> This patch introduces an optional info record that describes the
+> >> source (as in the region of the source-code where an event was
+> >> initiated).  This record is not produced for other type of existing
+> >> notification, but it is optionally enabled for FAN_ERROR notifications.
 > >>
 > >
-> > IMO you are going in the right direction, but you have gone a bit too far ;-)
+> > I find this functionality controversial, because think that the fs provided
+> > s_last_error*, s_first_error* is more reliable and more powerful than this
+> > functionality.
 > >
-> > My understanding of the requirements and my interpretation of the feedback
-> > from filesystem maintainers is that the missing piece in the ecosystem is a
-> > user notification that "something went wrong". The "what went wrong" part
-> > is something that users and admins have long been able to gather from the
-> > kernel log and from filesystem tools (e.g. last error recorded).
-> >
-> > I do not see the need to duplicate existing functionality in fsmonitor.
-> > Don't get me wrong, I understand why it would have been nice for fsmonitor
-> > to be able to get all the errors nicely without looking anywhere else, but I
-> > don't think it justifies the extra complexity.
+> > Let's leave it for a future extending proposal, should fanotify event reporting
+> > proposal pass muster, shall we?
+> > Or do you think that without this optional extension fanotify event reporting
+> > will not be valuable enough?
 >
-> Hi Amir,
->
-> Thanks for the detailed review.
->
-> The reasons for the location record and the ring buffer is the use case
-> from Google to do analysis on a series of errors.  I understand this is
-> important to them, which is why I expanded a bit on the 'what went
-> wrong' and multiple errors.  In addition, The file system specific blob
-> attempts to assist online recovery tools with more information, but it
-> might make sense to do it in the future, when it is needed.
->
-> >> This RFC follows up on my previous proposals which attempted to leverage
-> >> watch_queue[1] and fsnotify[2] to provide a mechanism for file systems
-> >> to push error notifications to user space.  This proposal starts by, as
-> >> suggested by Darrick, limiting the scope of what I'm trying to do to an
-> >> interface for administrators to monitor the health of a file system,
-> >> instead of a generic inteface for file errors.  Therefore, this doesn't
-> >> solve the problem of writeback errors or the need to watch a specific
-> >> subsystem.
-> >>
-> >> * Format
-> >>
-> >> The feature is implemented on top of fanotify, as a new type of fanotify
-> >> mark, FAN_ERROR, which a file system monitoring tool can register to
-> >
-> > You have a terminology mistake throughout your series.
-> > FAN_ERROR is not a type of a mark, it is a type of an event.
-> > A mark describes the watched object (i.e. a filesystem, mount, inode).
->
-> Right.  I understand the mistake and will fix it around the series.
-> >
-> >> receive notifications.  A notification is split in three parts, and only
-> >> the first is guaranteed to exist for any given error event:
-> >>
-> >>  - FS generic data: A file system agnostic structure that has a generic
-> >>  error code and identifies the filesystem.  Basically, it let's
-> >>  userspace know something happen on a monitored filesystem.
-> >
-> > I think an error seq counter per fs would be a nice addition to generic data.
-> > It does not need to be persistent (it could be if filesystem supports it).
->
-> Makes sense to me.
->
-> >>
-> >>  - FS location data: Identifies where in the code the problem
-> >>  happened. (This is important for the use case of analysing frequent
-> >>  error points that we discussed earlier).
-> >>
-> >>  - FS specific data: A detailed error report in a filesystem specific
-> >>  format that details what the error is.  Ideally, a capable monitoring
-> >>  tool can use the information here for error recovery.  For instance,
-> >>  xfs can put the xfs_scrub structures here, ext4 can send its error
-> >>  reports, etc.  An example of usage is done in the ext4 patch of this
-> >>  series.
-> >>
-> >> More details on the information in each record can be found on the
-> >> documentation introduced in patch 15.
-> >>
-> >> * Using fanotify
-> >>
-> >> Using fanotify for this kind of thing is slightly tricky because we want
-> >> to guarantee delivery in some complicated conditions, for instance, the
-> >> file system might want to send an error while holding several locks.
-> >>
-> >> Instead of working around file system constraints at the file system
-> >> level, this proposal tries to make the FAN_ERROR submission safe in
-> >> those contexts.  This is done with a new mode in fsnotify that
-> >> preallocates the memory at group creation to be used for the
-> >> notification submission.
-> >>
-> >> This new mode in fsnotify introduces a ring buffer to queue
-> >> notifications, which eliminates the allocation path in fsnotify.  From
-> >> what I saw, the allocation is the only problem in fsnotify for
-> >> filesystems to submit errors in constrained situations.
-> >>
-> >
-> > The ring buffer functionality for fsnotify is interesting and it may be
-> > useful on its own, but IMO, its too big of a hammer for the problem
-> > at hand.
-> >
-> > The question that you should be asking yourself is what is the
-> > expected behavior in case of a flood of filesystem corruption errors.
-> > I think it has already been expressed by filesystem maintainers on
-> > one your previous postings, that a flood of filesystem corruption
-> > errors is often noise and the only interesting information is the
-> > first error.
->
-> My idea was be to provide an ioctl for the user to resize the ring
-> buffer when needed, to make the flood manageable. But I understand your
-> main point about the ring buffer.  i'm not sure saving only the first
-> notification solves Google's use case of error monitoring and analysis,
-> though.  Khazhy, Ted, can you weight in?
+> I think it is valuable enough without this bit, at least on a first
+> moment.  I understand it would be useful for ext4 to analyse information
+> through this interface, but the main priority is to have a way to push
+> out the information that an error occured, as you mentioned.
 
-I think this is a good point to bring up - a flood of errors shouldn't
-drown out other filesystems, and from the perspective of error
-reporting, it's better to drop all but one notification from one FS
-than to drop the only notification from another. In the cases I can
-think of, the first error is probably enough and does simplify things
-quite a bit. There is the option of setting up a ring buffer per fs,
-which does seem excessive in light of the previous statement.
+Ack, if it's deemed cleaner we could look at sysfs on notification,
+but having the information in the same event provides some convenience
+factor, and avoids racing in the event that we're looking at an error
+after the first one.
 
 >
-> > For this reason, I think that FS_ERROR could be implemented
-> > by attaching an fsnotify_error_info object to an fsnotify_sb_mark:
+> Also, this might be more powerful if we stick to the ring buffer instead
+> of single stlot, as it would allow more data to be collected than just
+> first/last.
 > >
-> > struct fsnotify_sb_mark {
-> >         struct fsnotify_mark fsn_mark;
-> >         struct fsnotify_error_info info;
-> > }
-> >
-> > Similar to fd sampled errseq, there can be only one error report
-> > per sb-group pair (i.e. fsnotify_sb_mark) and the memory needed to store
-> > the error report can be allocated at the time of setting the filesystem mark.
-> >
-> > With this, you will not need the added complexity of the ring buffer
-> > and you will not need to limit FAN_ERROR reporting to a group that
-> > is only listening for FAN_ERROR, which is an unneeded limitation IMO.
->
-> The limitation exists because I was concerned about not breaking the
-> semantics of FAN_ACCESS and others, with regards to merged
-> notifications.  I believe there should be no other reason why
-> notifications of FAN_CLASS_NOTIF can't be sent to the ring buffer too.
-> That limitation could be lifted for everything but permission events, I
-> think.
+> > Thanks,
+> > Amir.
 >
 > --
 > Gabriel Krisman Bertazi
 
---00000000000001da2a05c20690a3
+--000000000000e86c5905c20744c9
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -292,14 +179,14 @@ iqPea7dSkHy8G0Vjeo4vj+RQBse+NKpyEzJilDUVpd5x307jeFjYBp2fLWt0UAZ8P2nUeSPjC2fF
 kGXeiYWeVPpQCSzowcRluUVFrKApZDZpm3Ly7a5pMVFQ23m2Waaup/DHnJkgxlRQRbcxDhqLKrJj
 tATPzBYapBLXne4xggJqMIICZgIBATBoMFQxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxT
 aWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFzIFIzIFNNSU1FIENBIDIwMjACEAH+
-DkXtUaeOlUVJH2IZ1xgwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIOEhOTOx9TyX
-8i5gSTN6k7ewAxiX1qUC+kulBYFnjD/4MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIxMDUxMTA0NDUyNVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+DkXtUaeOlUVJH2IZ1xgwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIF6wURYNhSSv
+9htzo7Rrdmo4ViGBjbM/bf7sAe3eAn17MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIxMDUxMTA1MzYwMFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCaap1pGo1EuHCLmdSP0lVu01glIFsJ
-6tRX99aujJTD/oLLPP4E6rlq9HQbWP2+/TSV/euStndm/tzRH04x4m55ovXonKAN5izvq5DgVKjQ
-W4KpMFvrf2RfaHN2+XUKv3NmFYB+Mo5pUcKsiAwS6mnrz43dJzGOcKgsvPH54WaxpgOJoyRiOXWT
-4l0MmBKkiWFyfcGJ/k4ULF/La8FlCeqO3dfBOcHbifQ7Lkd6e3vmDaRhaznWlpD9Jmp9YxTa/CeP
-i6N2kkNmYsp8TivOkqDwryDg6X/bKpRippYMjmYNfzAjbl7iLQkPiFS7ddCbI+4+AWY+5iKr3aUZ
-SAP2BZtu
---00000000000001da2a05c20690a3--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCRnyBwtRs+WV9/tGrIu4qWKuToTDg7
+tHxVxPcxP39av8/uGUqI3dzEcGYMrvbfP8ewo4Ef+UvPhtw/iKTAUZ5a+i4TVYY3ng91T6hQrdFb
+tu5qg3fsmlmVCrhRqxoK7uCAgczKX1xv0RuG0ktMUAm5NBx25mstNp1Ntj08b2fR+6LECrqkKd21
+0bIoCGSEsCygGj6MXY70UY5uCu53ZFEsdE99I+RcFKsSql7hQZJmc/6ub/aoFX09A3jL3bdmjqaK
+kbh4csNQqRznw9tvSrztG1jmanWWLqHA/kKzTI27IaRBpJoJDHou2sK6ScJz42i/Xn3ikFwp+Hlb
+xHMk7V/m
+--000000000000e86c5905c20744c9--
