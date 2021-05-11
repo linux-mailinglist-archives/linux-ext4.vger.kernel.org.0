@@ -2,191 +2,180 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 234E6379F39
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 May 2021 07:36:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A33E037A2CC
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 May 2021 11:00:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230265AbhEKFhI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 11 May 2021 01:37:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229885AbhEKFhH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 May 2021 01:37:07 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF9C6C06175F
-        for <linux-ext4@vger.kernel.org>; Mon, 10 May 2021 22:36:00 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id f8so9636570qth.6
-        for <linux-ext4@vger.kernel.org>; Mon, 10 May 2021 22:36:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KHcwI/UqVLWOnQVXqyCpg94GINhlFNsywd9HJ84O9Gs=;
-        b=OL3NnLL9fmr9EkyQChT32JPI2B7JOaC2v0k5hJp4Zo6/pgT3uFS+QICFMC4d61yxy9
-         r0VzPe3A5tOmIbJlVEQ+dfxAtM2MFR+IgH9V2B8kj0dqnS8cS5TZQlaEkKAu0Ul5tLF7
-         4WBZk5pjYo6J4PvgJVLAF9q57rLCQw0kVoOftOJCUVhqr5xDvrD1qBGmWvrXsDcHexO5
-         7iV31ObZlPyDK0CNQgML+DyGXxSo0qJcuu3hcTL/E6grs43ESDeIegLlT2xybZbYAWdo
-         H8TEy4hf3OoBrXdzsTCrMSjtchZ/Q5V1C3QXTuU1B9NaCTZwKfimjbgfDwo3G444gCZP
-         B0Pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KHcwI/UqVLWOnQVXqyCpg94GINhlFNsywd9HJ84O9Gs=;
-        b=V+SLdn7trAApXxEvFYr0TCHDlssCV3ZHAu2b6FCeyw5MQko/v7wGWZ2KlBJBFWV1oh
-         er1MkoOIiYclwyXMUiUMBv3nVJa9IQYtr1AIyei6EaNwKff8/BCQMDK5j7C0pERfUSSA
-         B6MDQ4rfy9wnY+12OfvjRGD7wl5gEX3gPRsS1uoQIhyWy4HRex+EVsUO2sFK6JadSvwt
-         zOPWgqcJhGNZvIEcxaC03T0lK2YiPdqo/kKDPTmKwojRNt2F1gwFvJGzsq8uo/DPUhok
-         6Y4PgjnsLl/trjnBivmYFbFWXbOMoYOsGKvYMF6u0KpqI4bUXLHyGWdrYOqjbIlh3OVB
-         nunw==
-X-Gm-Message-State: AOAM531gQ/KQKkg35KsgwS7p/b+Y9nXzBm2YqyQYKOnf5h4A3X0EIT9C
-        GIOKGDvm/VndojG1IDfBwt6QOdRwKaGsJotxosOTOA==
-X-Google-Smtp-Source: ABdhPJy4FklGPZa1yhD9A5mY947hdq1Mdf74s853ARUP2DnDbSqBxoa7aJMiKYrVKJEOE7gK8TarKnHc873MLk8jqWA=
-X-Received: by 2002:aed:2167:: with SMTP id 94mr26322781qtc.378.1620711359716;
- Mon, 10 May 2021 22:35:59 -0700 (PDT)
+        id S231179AbhEKJBW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 11 May 2021 05:01:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57216 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230439AbhEKJBU (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 11 May 2021 05:01:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E709E611F1;
+        Tue, 11 May 2021 09:00:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620723613;
+        bh=ETvFtPpZWz6DN3iWb3G2WAPhojmYo6ps7EuchaChQ+E=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=PLGy/1LSbmraLJz9I+ZFpgkDxkCfvpVNiHxpQ06jZIl8i8GhyxDYM7Gy1/DkHiCt5
+         klo7h/HCiZCdE58jLyhFWvaAVP5oc9x+G/BoSRcOX7C3Tl/sTRBZmSPn8j1vcyPJNt
+         mRJS0yxqm/yCxF+CPVj6SxA/ae6jVWIEkJrXhN8oiyzJkjvRZFRVAZch9kSHP1iP93
+         oW7IG29Utyoqz+QwiX4h4Rg5Qegv470eEj7pH0f2MN9paDsUyx4y03dGzSMfb4uf2a
+         FDLqKCDGwM78HAqr/sdfeYExPB7ah8JOeYwd9qD22mRbJt8d7NaYnvORLTCVIJ25K4
+         6sDaroZmf8XGQ==
+Date:   Tue, 11 May 2021 11:00:02 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Edward Cree <ecree.xilinx@gmail.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        alsa-devel@alsa-project.org, coresight@lists.linaro.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        intel-wired-lan@lists.osuosl.org, keyrings@vger.kernel.org,
+        kvm@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-fpga@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-sgx@vger.kernel.org, linux-usb@vger.kernel.org,
+        mjpeg-users@lists.sourceforge.net, netdev@vger.kernel.org,
+        rcu@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH 00/53] Get rid of UTF-8 chars that can be mapped as
+ ASCII
+Message-ID: <20210511110002.2f187f01@coco.lan>
+In-Reply-To: <ed65025c-1087-9672-7451-6d28e7ab8f92@gmail.com>
+References: <cover.1620641727.git.mchehab+huawei@kernel.org>
+        <2ae366fdff4bd5910a2270823e8da70521c859af.camel@infradead.org>
+        <20210510135518.305cc03d@coco.lan>
+        <df6b4567-030c-a480-c5a6-fe579830e8c0@gmail.com>
+        <YJk8LMFViV7Z3Uu7@casper.infradead.org>
+        <ed65025c-1087-9672-7451-6d28e7ab8f92@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20210426184201.4177978-1-krisman@collabora.com>
- <20210426184201.4177978-11-krisman@collabora.com> <CAOQ4uxh_AQCj2XJgVzFp862xhr70FAS6n3QjeeQSd_bizw3Ssw@mail.gmail.com>
- <87lf9153yy.fsf@collabora.com>
-In-Reply-To: <87lf9153yy.fsf@collabora.com>
-From:   Khazhy Kumykov <khazhy@google.com>
-Date:   Mon, 10 May 2021 22:35:48 -0700
-Message-ID: <CACGdZYKVKvFycypunLcgJOZzT+_iR4VPotycMEXi=sg7kgckUQ@mail.gmail.com>
-Subject: Re: [PATCH RFC 10/15] fanotify: Introduce code location record
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     Amir Goldstein <amir73il@gmail.com>, Theodore Tso <tytso@mit.edu>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.com>,
-        David Howells <dhowells@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Ext4 <linux-ext4@vger.kernel.org>, kernel@collabora.com
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000e86c5905c20744c9"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
---000000000000e86c5905c20744c9
-Content-Type: text/plain; charset="UTF-8"
+Em Mon, 10 May 2021 15:33:47 +0100
+Edward Cree <ecree.xilinx@gmail.com> escreveu:
 
-On Thu, Apr 29, 2021 at 11:40 AM Gabriel Krisman Bertazi
-<krisman@collabora.com> wrote:
->
-> Amir Goldstein <amir73il@gmail.com> writes:
->
-> > On Mon, Apr 26, 2021 at 9:43 PM Gabriel Krisman Bertazi
-> > <krisman@collabora.com> wrote:
-> >>
-> >> This patch introduces an optional info record that describes the
-> >> source (as in the region of the source-code where an event was
-> >> initiated).  This record is not produced for other type of existing
-> >> notification, but it is optionally enabled for FAN_ERROR notifications.
-> >>
-> >
-> > I find this functionality controversial, because think that the fs provided
-> > s_last_error*, s_first_error* is more reliable and more powerful than this
-> > functionality.
-> >
-> > Let's leave it for a future extending proposal, should fanotify event reporting
-> > proposal pass muster, shall we?
-> > Or do you think that without this optional extension fanotify event reporting
-> > will not be valuable enough?
->
-> I think it is valuable enough without this bit, at least on a first
-> moment.  I understand it would be useful for ext4 to analyse information
-> through this interface, but the main priority is to have a way to push
-> out the information that an error occured, as you mentioned.
+> On 10/05/2021 14:59, Matthew Wilcox wrote:
+> > Most of these
+> > UTF-8 characters come from latex conversions and really aren't
+> > necessary (and are being used incorrectly). =20
+> I fully agree with fixing those.
+> The cover-letter, however, gave the impression that that was not the
+>  main purpose of this series; just, perhaps, a happy side-effect.
 
-Ack, if it's deemed cleaner we could look at sysfs on notification,
-but having the information in the same event provides some convenience
-factor, and avoids racing in the event that we're looking at an error
-after the first one.
+Sorry for the mess. The main reason why I wrote this series is because
+there are lots of UTF-8 left-over chars from the ReST conversion.
+See:
+  - https://lore.kernel.org/linux-doc/20210507100435.3095f924@coco.lan/
 
->
-> Also, this might be more powerful if we stick to the ring buffer instead
-> of single stlot, as it would allow more data to be collected than just
-> first/last.
-> >
-> > Thanks,
-> > Amir.
->
-> --
-> Gabriel Krisman Bertazi
+A large set of the UTF-8 letf-over chars were due to my conversion work,
+so I feel personally responsible to fix those ;-)
 
---000000000000e86c5905c20744c9
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+Yet, this series has two positive side effects:
 
-MIIPmAYJKoZIhvcNAQcCoIIPiTCCD4UCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-ggzyMIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
-dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
-6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
-c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
-I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
-AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
-CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
-AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
-MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
-My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
-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
-MEvaI7F4ZN2DM20wTAYDVR0gBEUwQzBBBgkrBgEEAaAyASgwNDAyBggrBgEFBQcCARYmaHR0cHM6
-Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADCBmgYIKwYBBQUHAQEE
-gY0wgYowPgYIKwYBBQUHMAGGMmh0dHA6Ly9vY3NwLmdsb2JhbHNpZ24uY29tL2NhL2dzYXRsYXNy
-M3NtaW1lY2EyMDIwMEgGCCsGAQUFBzAChjxodHRwOi8vc2VjdXJlLmdsb2JhbHNpZ24uY29tL2Nh
-Y2VydC9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcnQwHwYDVR0jBBgwFoAUfMwKaNei6x4schvRzV2V
-b4378mMwRgYDVR0fBD8wPTA7oDmgN4Y1aHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9jYS9nc2F0
-bGFzcjNzbWltZWNhMjAyMC5jcmwwDQYJKoZIhvcNAQELBQADggEBAIKZMQsUIWBTlSa6tHLU5L8W
-YVOXfTkEXU6aeq8JjYjcj1fQD+1K0EQhvwz6SB5I0NhqfMLyQBUZHJXChsLGygbCqXbmBF143+sK
-xsY5En+KQ03HHHn8pmLHFMAgvO2f8cJyJD3cBi8nMNRia/ZMy2jayQPOiiK34RpcoyXr80KWUZQh
-iqPea7dSkHy8G0Vjeo4vj+RQBse+NKpyEzJilDUVpd5x307jeFjYBp2fLWt0UAZ8P2nUeSPjC2fF
-kGXeiYWeVPpQCSzowcRluUVFrKApZDZpm3Ly7a5pMVFQ23m2Waaup/DHnJkgxlRQRbcxDhqLKrJj
-tATPzBYapBLXne4xggJqMIICZgIBATBoMFQxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxT
-aWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFzIFIzIFNNSU1FIENBIDIwMjACEAH+
-DkXtUaeOlUVJH2IZ1xgwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIF6wURYNhSSv
-9htzo7Rrdmo4ViGBjbM/bf7sAe3eAn17MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIxMDUxMTA1MzYwMFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
-YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCRnyBwtRs+WV9/tGrIu4qWKuToTDg7
-tHxVxPcxP39av8/uGUqI3dzEcGYMrvbfP8ewo4Ef+UvPhtw/iKTAUZ5a+i4TVYY3ng91T6hQrdFb
-tu5qg3fsmlmVCrhRqxoK7uCAgczKX1xv0RuG0ktMUAm5NBx25mstNp1Ntj08b2fR+6LECrqkKd21
-0bIoCGSEsCygGj6MXY70UY5uCu53ZFEsdE99I+RcFKsSql7hQZJmc/6ub/aoFX09A3jL3bdmjqaK
-kbh4csNQqRznw9tvSrztG1jmanWWLqHA/kKzTI27IaRBpJoJDHou2sK6ScJz42i/Xn3ikFwp+Hlb
-xHMk7V/m
---000000000000e86c5905c20744c9--
+ - it helps people needing to touch the documents using non-utf8 locales[1];
+ - it makes easier to grep for a text;
+
+[1] There are still some widely used distros nowadays (LTS ones?) that
+    don't set UTF-8 as default. Last time I installed a Debian machine
+    I had to explicitly set UTF-8 charset after install as the default
+    were using ASCII encoding (can't remember if it was Debian 10 or an
+    older version).
+
+Unintentionally, I ended by giving emphasis to the non-utf8 instead of
+giving emphasis to the conversion left-overs.
+
+FYI, this patch series originated from a discussion at linux-doc,
+reporting that Sphinx breaks when LANG is not set to utf-8[2]. That's
+why I probably ended giving the wrong emphasis at the cover letter.
+
+[2] See https://lore.kernel.org/linux-doc/20210506103913.GE6564@kitsune.sus=
+e.cz/
+    for the original report. I strongly suspect that the VM set by Michal=20
+    to build the docs was using a distro that doesn't set UTF-8 as default.
+
+    PS.:=20
+      I intend to prepare afterwards a separate fix to avoid Sphinx
+      logger to crash during Kernel doc builds when the locale charset
+      is not UTF-8, but I'm not too fluent in python. So, I need some
+      time to check if are there a way to just avoid python log crashes
+      without touching Sphinx code and without needing to trick it to=20
+      think that the machine's locale is UTF-8.
+
+See: while there was just a single document originally stored at the
+Kernel tree as a LaTeX document during the time we did the conversion
+(cdrom-standard.tex), there are several other documents stored as=20
+text that seemed to be generated by some tool like LaTeX, whose the
+original version were not preserved.=20
+
+Also, there were other documents using different markdown dialects=20
+that were converted via pandoc (and/or other similar tools). That's=20
+not to mention the ones that were converted from DocBook. Such
+tools tend to use some logic to use "neat" versions of some ASCII
+characters, like what this tool does:
+
+	https://daringfireball.net/projects/smartypants/
+
+(Sphinx itself seemed to use this tool on its early versions)
+
+All tool-converted documents can carry UTF-8 on unexpected places. See,
+on this series, a large amount of patches deal with U+A0 (NO-BREAK SPACE)
+chars. I can't see why someone writing a plain text document (or a ReST
+one) would type a NO-BREAK SPACE instead of a normal white space.
+
+The same applies, up to some sort, to curly commas: usually people just=20
+write ASCII "commas" on their documents, and use some tool like LaTeX
+or a text editor like libreoffice in order to convert them into
+ =E2=80=9Cutf-8 curly commas=E2=80=9D[3].
+
+[3] Sphinx will do such things at the produced output, doing something=20
+    similar to what smartypants does, nowadays using this:
+
+	https://docutils.sourceforge.io/docs/user/smartquotes.html
+
+    E. g.:
+      - Straight quotes (" and ') turned into "curly" quote characters;
+      - dashes (-- and ---) turned into en- and em-dash entities;
+      - three consecutive dots (... or . . .) turned into an ellipsis char.
+
+> > You seem quite knowedgeable about the various differences.  Perhaps
+> > you'd be willing to write a document for Documentation/doc-guide/
+> > that provides guidance for when to use which kinds of horizontal
+> > line?
+> I have Opinions about the proper usage of punctuation, but I also know =20
+>  that other people have differing opinions.  For instance, I place
+>  spaces around an em dash, which is nonstandard according to most
+>  style guides.  Really this is an individual enough thing that I'm not
+>  sure we could have a "kernel style guide" that would be more useful
+>  than general-purpose guidance like the page you linked.
+
+> Moreover, such a guide could make non-native speakers needlessly self-
+>  conscious about their writing and discourage them from contributing
+>  documentation at all.
+
+I don't think so. In a matter of fact, as a non-native speaker, I guess
+this can actually help people willing to write documents.
+
+>  I'm not advocating here for trying to push
+>  kernel developers towards an eats-shoots-and-leaves level of
+>  linguistic pedantry; rather, I merely think that existing correct
+>  usages should be left intact (and therefore, excising incorrect usage
+>  should only be attempted by someone with both the expertise and time
+>  to check each case).
+>=20
+> But if you really want such a doc I wouldn't mind contributing to it.
+
+IMO, a document like that can be helpful. I can help reviewing it.
+
+Thanks,
+Mauro
