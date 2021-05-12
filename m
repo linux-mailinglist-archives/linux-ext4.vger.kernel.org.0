@@ -2,66 +2,79 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18BB637BFA6
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 May 2021 16:16:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EF6137BFCD
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 May 2021 16:21:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231588AbhELORD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 12 May 2021 10:17:03 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:41050 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231630AbhELOQh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 12 May 2021 10:16:37 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 14CEEiap031112
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 12 May 2021 10:14:45 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 448C815C39C2; Wed, 12 May 2021 10:14:44 -0400 (EDT)
-Date:   Wed, 12 May 2021 10:14:44 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Mali DP Maintainers <malidp@foss.arm.com>,
-        alsa-devel@alsa-project.org, coresight@lists.linaro.org,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        intel-wired-lan@lists.osuosl.org, keyrings@vger.kernel.org,
-        kvm@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-hwmon@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-sgx@vger.kernel.org, linux-usb@vger.kernel.org,
-        mjpeg-users@lists.sourceforge.net, netdev@vger.kernel.org,
-        rcu@vger.kernel.org
-Subject: Re: [PATCH v2 00/40] Use ASCII subset instead of UTF-8 alternate
- symbols
-Message-ID: <YJvi1L2ss5Tfi+My@mit.edu>
-References: <cover.1620823573.git.mchehab+huawei@kernel.org>
+        id S230442AbhELOWs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 12 May 2021 10:22:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230284AbhELOWs (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 12 May 2021 10:22:48 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49064C061574;
+        Wed, 12 May 2021 07:21:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=eOaFDmaOsRB5SZmY7GZQyJP9EcneAu4wq/VqoZMJKA0=; b=D/FBYaSYWv6OzEkl4olo0BI6C6
+        6lwhaao1EEhwuC156MsK3O83RGoowreU8YQfQB3NMNjdeqNmm5y7zT1ognf2xw2tI+5pQvseSWoTe
+        jKliduCU0fYTsRdguXHmSopDmUb4S9WFch0Bdz8N0ws+hdznCsYBY4CQulUwmCi/PszXrTlqmY9qd
+        7k/qshhU7B+zlB5i0nHn6R28xKI1JV12MkWNr55RMoRVAK3D/eYP/s31H+VF4jzQ05gupekLTW5Ko
+        cnXx9fDn8iqGiGckS69vPlSDt6KEM8tPqYc7fF4hwIOF84lMoLJ3N+/YU7f15TMU6uaPJ3XyWf6Ip
+        /tBDqokQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lgpjA-008M00-96; Wed, 12 May 2021 14:21:01 +0000
+Date:   Wed, 12 May 2021 15:20:44 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-fsdevel@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>,
+        Dave Chinner <david@fromorbit.com>, ceph-devel@vger.kernel.org,
+        Chao Yu <yuchao0@huawei.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Johannes Thumshirn <jth@kernel.org>,
+        linux-cifs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
+        linux-xfs@vger.kernel.org, Miklos Szeredi <miklos@szeredi.hu>,
+        Steve French <sfrench@samba.org>, Ted Tso <tytso@mit.edu>
+Subject: Re: [PATCH 03/11] mm: Protect operations adding pages to page cache
+ with invalidate_lock
+Message-ID: <YJvkPEAdVhM9JsbN@casper.infradead.org>
+References: <20210512101639.22278-1-jack@suse.cz>
+ <20210512134631.4053-3-jack@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1620823573.git.mchehab+huawei@kernel.org>
+In-Reply-To: <20210512134631.4053-3-jack@suse.cz>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, May 12, 2021 at 02:50:04PM +0200, Mauro Carvalho Chehab wrote:
-> v2:
-> - removed EM/EN DASH conversion from this patchset;
+On Wed, May 12, 2021 at 03:46:11PM +0200, Jan Kara wrote:
 
-Are you still thinking about doing the
+> diff --git a/mm/truncate.c b/mm/truncate.c
+> index 57a618c4a0d6..93bde2741e0e 100644
+> --- a/mm/truncate.c
+> +++ b/mm/truncate.c
+> @@ -415,7 +415,7 @@ EXPORT_SYMBOL(truncate_inode_pages_range);
+>   * @mapping: mapping to truncate
+>   * @lstart: offset from which to truncate
+>   *
+> - * Called under (and serialised by) inode->i_rwsem.
+> + * Called under (and serialised by) inode->i_rwsem and inode->i_mapping_rwsem.
 
-EN DASH --> "--"
-EM DASH --> "---"
+mapping->invalidate_lock, surely?  And could we ask lockdep to assert
+this for us instead of just a comment?
 
-conversion?  That's not going to change what the documentation will
-look like in the HTML and PDF output forms, and I think it would make
-life easier for people are reading and editing the Documentation/*
-files in text form.
-
-				- Ted
+>   *
+>   * Note: When this function returns, there can be a page in the process of
+>   * deletion (inside __delete_from_page_cache()) in the specified range.  Thus
+> -- 
+> 2.26.2
+> 
+> 
