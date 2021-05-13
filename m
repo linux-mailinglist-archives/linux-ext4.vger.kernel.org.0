@@ -2,33 +2,57 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47E5A37FEC5
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 May 2021 22:18:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 143E737FF0D
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 May 2021 22:27:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232535AbhEMUTZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 13 May 2021 16:19:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43914 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232513AbhEMUTY (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 13 May 2021 16:19:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E433E613CB;
-        Thu, 13 May 2021 20:18:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620937094;
-        bh=W9MrwOqUNvsM8PkLUhR26DHv1FlZ5/cUY1DXnkIrsK8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GQH884ivptZyg9EEY6uVSuJ7Lj2ZiJA4R4KjZMrhvZ/0ZoSI5ze+S/xMhOhH/T+5B
-         Ogww+S8VPebf7JYkUBuG5ZQ+wpor/EMZhxWWl2c4Duob9h8sIrMfOHOdEMuKijzX4j
-         b+MYwdwZnTZaPiNEEgFxuVcA4qipmngxqwT6W5JwFWyNlD9WIjem34/O3SpqRIS0Tz
-         EzGzVOK5DSLsYhIlf/1dU6CFH3i+OcL9FDEN7q32GQKoFZh/Ja+myq3HXhMU5tIPAg
-         S48LKu8a45syeRpp4/8w4pMQoanR1UWww7A00wl4Ya5j781fgoocFxiqldJNT/Ctaz
-         5vT6usriB9SBQ==
-Date:   Thu, 13 May 2021 13:18:12 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
+        id S232860AbhEMU2h (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 13 May 2021 16:28:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232845AbhEMU2g (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 13 May 2021 16:28:36 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F3C8C061574
+        for <linux-ext4@vger.kernel.org>; Thu, 13 May 2021 13:27:26 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id 76so26783490qkn.13
+        for <linux-ext4@vger.kernel.org>; Thu, 13 May 2021 13:27:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/S8+aAfgl/yImqy9yxRRCpay02xe0BIIIa9gQvM5ZVw=;
+        b=VJa2VjcwBmSQ4HllLNKZdWjtyBHsgn0ChHYPycOf6JBHtk/gm6sFW2jW7agbEy0/yM
+         UhKB89e1JV1DhdoMkau+2BqU8LCn96jflA/lLSpzVOm9NTzuO4DGQOzP4kUor3r9Rja7
+         4xHKcRPwAHNowRMu4V0EWnpyi8/4MXrhnb+1Lsay+nckJJraRhyskQ6EqQ/elvkHawAy
+         qxuSyqI5h+r6JiObB4yvhOYUXAG3H9fcMDIFs1shv03+xXF3vgKU/GdKNEuxyAXIW7pg
+         dwitHZj+3L08z6GUWukrsIpwCf6Bev0nKosj7vRPZi5v7vAdocJCPa+pXOQafa6ha/fk
+         cUXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/S8+aAfgl/yImqy9yxRRCpay02xe0BIIIa9gQvM5ZVw=;
+        b=C4N7+Xq031VdcfLSuMgZrTni/7kmbvEYj0I/xu3qNjesHsf3rfxsetb+e2Ht7SD+Bf
+         O01obfi5zwiFyahrJmWrMdbykmfH8Ax1dyq9b6af8tUCSjqCq3Mw7k2Gg9hFfopUXyB3
+         J0yWylsyQM6Eo7Ww+aQMC9hLjpt7uvaxLRiv/02o2Blr0MkXI5zklMyIs6Ya2HRiKKQN
+         nfQcxeq7zXKjrwduJENk1ReRT8skQlsrYrlNLZ1AjmaK9Ne80xWkNcfqN+N4JA4nPv2x
+         FocBDFfCVYMYHMm75PAVoek14EGKAyqPHOXx/6VG352EPlBFzt8buE3FgXZUfJNHf104
+         n+0w==
+X-Gm-Message-State: AOAM532mJZp1rfd09h9NM43nx8V9AI6Hxngljfvawti1285CjDR2idA6
+        5tPVChwbfouSFVJbqwf7lNLfbdRGOm9yyA==
+X-Google-Smtp-Source: ABdhPJxeboZoTBfVE4omeZrl0K5ehpF4C9oKkMQBXu2m9OoROqTF025EXgL/JGTDYzYZeja+lCSoqw==
+X-Received: by 2002:a37:5ca:: with SMTP id 193mr39739856qkf.356.1620937645325;
+        Thu, 13 May 2021 13:27:25 -0700 (PDT)
+Received: from google.com ([2601:4c3:201:ed00:8626:664b:8242:8ae7])
+        by smtp.gmail.com with ESMTPSA id s5sm3297865qkg.88.2021.05.13.13.27.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 May 2021 13:27:25 -0700 (PDT)
+Date:   Thu, 13 May 2021 16:27:23 -0400
+From:   Leah Rumancik <leah.rumancik@gmail.com>
 To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Leah Rumancik <leah.rumancik@gmail.com>, linux-ext4@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org
 Subject: Re: [PATCH v4 1/3] ext4: add discard/zeroout flags to journal flush
-Message-ID: <20210513201812.GA9617@magnolia>
+Message-ID: <YJ2Lq4rTCv7RciL1@google.com>
 References: <20210511180428.3358267-1-leah.rumancik@gmail.com>
  <YJ1rVr7Sf7Az+MQm@mit.edu>
 MIME-Version: 1.0
@@ -67,10 +91,16 @@ On Thu, May 13, 2021 at 02:09:26PM -0400, Theodore Ts'o wrote:
 > I'd suggest explicit ly using __u32 in ioctl interface.  (__u32 is
 > fine; it's the use of the base int type which can get us into trouble,
 > since int can be either 32 or 64 bits depending on the architecture).
+> 
 
-FWIW I had been advocating for u64 for the ioctl interface since that's
-the hardest part to change; once we've gotten that into the kernel and
-remapped the ioctl flags to jbd2 flags, you can do whatever you want.
+Just to make sure I understand correctly, the explicit __u32 is critical
+due to the size being read in by the ioctl, specifically through
+copy_from_user? When do you switch from __u32 to unsigned long? I don't
+see the __* types being carried throughout.
+
+(Also, just got Darrick's reply about the 32 vs. 64. Yes, originally
+went with 64 because there was an argument for it. I believe the 32
+is likely sufficient, but I don't feel that strongly about this matter)
 
 > Secondly, I'd suggest using a different set of flags for
 > jbd2_journal_flush(), which is an internal kernel interface, and the
@@ -107,11 +137,19 @@ remapped the ioctl flags to jbd2 flags, you can do whatever you want.
 > #define JBD2_JOURNAL_FLUSH_ZEROOUT	0x0002
 > #define JBD2_JOURNAL_FLUSH_VALID	0x0003
 > 
+
+Why call them JBD2_JOURNAL_FLUSH* instead of JBD2_JOURNAL_ERASE* since
+they get passed directly through to the erase function? I feel like it
+would be weird if someone wanted to use the erase function directly but
+had to use JBD2_JOURNAL_FLUSH* flags.
+
 >      if ((flags & ~JBD2_JOURNAL_FLUSH_VALID) ||
 >          ((flags & JBD2_JOURNAL_FLUSH_DISCARD) &&
 > 	  (flags & JBD2_JOURNAL_FLUSH_ZEROOUT)))
 > 	return -EINVAL;
 > 
+Ah, great. Thanks!
+
 > > +
 > > +	err = jbd2_journal_bmap(journal, log_offset, &block_start);
 > > +	if (err) {
@@ -121,14 +159,7 @@ remapped the ioctl flags to jbd2 flags, you can do whatever you want.
 > 
 > We could get rid of this, and instead make sure block_start is initialized
 > to ~((unsigned long long) 0).  Then in the loop we can do...
-
-Also FWIW I can't find the fiemap code that let you do fiemap from
-within the kernel, so I guess we only talked about it on fsdevel and
-none of it ever got merged.  So I guess looping is what we'll have to do
-for now...
-
---D
-
+> 
 > > +
 > > +	/*
 > > +	 * use block_start - 1 to meet check for contiguous with previous region:
@@ -195,7 +226,15 @@ for now...
 > 
 > 		block_start = ~((unsigned long long) 0);
 > 
+
+I'll play around with this and see if I can get it to work. Seems like
+it might simplify the code a bit.
+
 > ... and then let block_start and block_stop be initialized in a single
 > place.  Do you agree?  Does this make sense to you?
 > 
 > 	       	       	    	      	    - Ted
+
+
+Thanks!
+Leah
