@@ -2,114 +2,200 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EF3C37FE57
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 May 2021 21:39:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47E5A37FEC5
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 May 2021 22:18:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231939AbhEMTkx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 13 May 2021 15:40:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbhEMTkw (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 13 May 2021 15:40:52 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3085C061574;
-        Thu, 13 May 2021 12:39:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=O8VUCTzxVSvxa3wVLPh12tovGUEtpcQQ1uxw15XLCZg=; b=S6oimQ+wSggkHbM04qw7qRcCif
-        KxJ6s1XOGzoOpDq2Ik3+iRiwQfDzyBbe0DuWvzC9OR6jXy0kTrw+5iOA+LaoPKGquDRsAkhwtB1fn
-        RAzftQHw1WIHsSHGyasEKCqK6uNc5md/QTdqO/gAX92LY/xjc3aThySb167Hsk1QbFODw0SI99hZD
-        FJ7grq8hsbbFuQNaq3roe74z070sMG/wQF5s2VcKbYsspDgU3/f5jnSJCnX9ybUtPMZoBzeRLnZAR
-        rt44B26yeOFUgC3PP1bOEdl/6GZRpu188I1tXE0mY9mkIB2XhLxPk/VtnEIL19/rPQgwFkGk1TQkJ
-        GlbkDIiw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lhHAV-009iZc-F6; Thu, 13 May 2021 19:39:06 +0000
-Date:   Thu, 13 May 2021 20:38:47 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Dave Chinner <david@fromorbit.com>, ceph-devel@vger.kernel.org,
-        Chao Yu <yuchao0@huawei.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Johannes Thumshirn <jth@kernel.org>,
-        linux-cifs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
-        linux-xfs@vger.kernel.org, Miklos Szeredi <miklos@szeredi.hu>,
-        Steve French <sfrench@samba.org>, Ted Tso <tytso@mit.edu>
-Subject: Re: [PATCH 03/11] mm: Protect operations adding pages to page cache
- with invalidate_lock
-Message-ID: <YJ2AR0IURFzz+52G@casper.infradead.org>
-References: <20210512101639.22278-1-jack@suse.cz>
- <20210512134631.4053-3-jack@suse.cz>
- <YJvo1bGG1tG+gtgC@casper.infradead.org>
- <20210513190114.GJ2734@quack2.suse.cz>
+        id S232535AbhEMUTZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 13 May 2021 16:19:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43914 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232513AbhEMUTY (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 13 May 2021 16:19:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E433E613CB;
+        Thu, 13 May 2021 20:18:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620937094;
+        bh=W9MrwOqUNvsM8PkLUhR26DHv1FlZ5/cUY1DXnkIrsK8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GQH884ivptZyg9EEY6uVSuJ7Lj2ZiJA4R4KjZMrhvZ/0ZoSI5ze+S/xMhOhH/T+5B
+         Ogww+S8VPebf7JYkUBuG5ZQ+wpor/EMZhxWWl2c4Duob9h8sIrMfOHOdEMuKijzX4j
+         b+MYwdwZnTZaPiNEEgFxuVcA4qipmngxqwT6W5JwFWyNlD9WIjem34/O3SpqRIS0Tz
+         EzGzVOK5DSLsYhIlf/1dU6CFH3i+OcL9FDEN7q32GQKoFZh/Ja+myq3HXhMU5tIPAg
+         S48LKu8a45syeRpp4/8w4pMQoanR1UWww7A00wl4Ya5j781fgoocFxiqldJNT/Ctaz
+         5vT6usriB9SBQ==
+Date:   Thu, 13 May 2021 13:18:12 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Leah Rumancik <leah.rumancik@gmail.com>, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v4 1/3] ext4: add discard/zeroout flags to journal flush
+Message-ID: <20210513201812.GA9617@magnolia>
+References: <20210511180428.3358267-1-leah.rumancik@gmail.com>
+ <YJ1rVr7Sf7Az+MQm@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210513190114.GJ2734@quack2.suse.cz>
+In-Reply-To: <YJ1rVr7Sf7Az+MQm@mit.edu>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, May 13, 2021 at 09:01:14PM +0200, Jan Kara wrote:
-> On Wed 12-05-21 15:40:21, Matthew Wilcox wrote:
-> > Remind me (or, rather, add to the documentation) why we have to hold the
-> > invalidate_lock during the call to readpage / readahead, and we don't just
-> > hold it around the call to add_to_page_cache / add_to_page_cache_locked
-> > / add_to_page_cache_lru ?  I appreciate that ->readpages is still going
-> > to suck, but we're down to just three implementations of ->readpages now
-> > (9p, cifs & nfs).
+On Thu, May 13, 2021 at 02:09:26PM -0400, Theodore Ts'o wrote:
+> On Tue, May 11, 2021 at 06:04:26PM +0000, Leah Rumancik wrote:
+> > @@ -3223,7 +3223,7 @@ static sector_t ext4_bmap(struct address_space *mapping, sector_t block)
+> >  		ext4_clear_inode_state(inode, EXT4_STATE_JDATA);
+> >  		journal = EXT4_JOURNAL(inode);
+> >  		jbd2_journal_lock_updates(journal);
+> > -		err = jbd2_journal_flush(journal);
+> > +		err = jbd2_journal_flush(journal, 0);
 > 
-> There's a comment in filemap_create_page() trying to explain this. We need
-> to protect against cases like: Filesystem with 1k blocksize, file F has
-> page at index 0 with uptodate buffer at 0-1k, rest not uptodate. All blocks
-> underlying page are allocated. Now let read at offset 1k race with hole
-> punch at offset 1k, length 1k.
+> In the ocfs2 changes, I noticed you are using "false", instead of 0,
+> in the second argument to jbd2_journal_flush.
 > 
-> read()					hole punch
-> ...
->   filemap_read()
->     filemap_get_pages()
->       - page found in the page cache but !Uptodate
->       filemap_update_page()
-> 					  locks everything
-> 					  truncate_inode_pages_range()
-> 					    lock_page(page)
-> 					    do_invalidatepage()
-> 					    unlock_page(page)
->         locks page
->           filemap_read_page()
-
-Ah, this is the partial_start case, which means that page->mapping
-is still valid.  But that means that do_invalidatepage() was called
-with (offset 1024, length 1024), immediately after we called
-zero_user_segment().  So isn't this a bug in the fs do_invalidatepage()?
-The range from 1k-2k _is_ uptodate.  It's been zeroed in memory,
-and if we were to run after the "free block" below, we'd get that
-memory zeroed again.
-
->             ->readpage()
->               block underlying offset 1k
-> 	      still allocated -> map buffer
-> 					  free block under offset 1k
-> 	      submit IO -> corrupted data
+> When I looked more closely, the function signature of
+> jbd2_journal_flush is also using an unsigned long long for flags,
+> which struck me as strange:
 > 
-> If you think I should expand it to explain more details, please tell.
-> Or maybe I can put more detailed discussion like above into the changelog?
-
-> > Why not:
-> > 
-> > 	__init_rwsem(&mapping->invalidate_lock, "mapping.invalidate_lock",
-> > 			&sb->s_type->invalidate_lock_key);
+> > +extern int	 jbd2_journal_flush(journal_t *journal, unsigned long long flags);
 > 
-> I replicated what we do for i_rwsem but you're right, this is better.
-> Updated.
+> I then noticed that later in the patch series, the ioctl argument is
+> taking an unsigned long long and we're passing that straight through
+> to jbd2_journal_flush().
+> 
+> First of all, unsigned long long is not very efficient on many
+> platforms (especially 32-bit platforms), but also on platforms where
+> int is 32 bits.  If we don't expect us to need more than 32 flag bits,
+> I'd suggest explicit ly using __u32 in ioctl interface.  (__u32 is
+> fine; it's the use of the base int type which can get us into trouble,
+> since int can be either 32 or 64 bits depending on the architecture).
 
-Hmm, there's a few places we should use __init_rwsem() ... something
-for my "when bored" pile of work.
+FWIW I had been advocating for u64 for the ioctl interface since that's
+the hardest part to change; once we've gotten that into the kernel and
+remapped the ioctl flags to jbd2 flags, you can do whatever you want.
+
+> Secondly, I'd suggest using a different set of flags for
+> jbd2_journal_flush(), which is an internal kernel interface, and the
+> EXT4_IOC_CHECKPOINT interface.  We might in the future want to add
+> some internal flags to jbd2_journal_flush that we do *not* want to
+> expose via EXT4_IOC_CHECKPOINT, and so it's best that we keep those
+> two interfaces separate.
+> 
+> > diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+> > index 2dc944442802..f86929dbca3c 100644
+> > --- a/fs/jbd2/journal.c
+> > +++ b/fs/jbd2/journal.c
+> > @@ -1686,6 +1686,106 @@ static void jbd2_mark_journal_empty(journal_t *journal, int write_op)
+> >  	write_unlock(&journal->j_state_lock);
+> >  }
+> >  
+> > +#define JBD2_ERASE_FLAG_DISCARD	1
+> > +#define JBD2_ERASE_FLAG_ZEROOUT	2
+> 
+> I'd suggest defining these in include/linux/jbd2.h, and giving them
+> names like: JBD2_JOURNAL_FLUSH_DISCARD and JBD2_JOURNAL_FLUSH_ERASE...
+> (and making the flags parameter an unsigned int).
+> 
+> > +	/* flags must be set to either discard or zeroout */
+> > +	if ((flags & JBD2_ERASE_FLAG_DISCARD & JBD2_ERASE_FLAG_ZEROOUT) || !flags)
+> > +		return -EINVAL;
+> 
+> The expression (flags & JBD2_ERASE_FLAG_DISCARD & JBD2_ERASE_FLAG_ZEROOUT)
+> is always going to evaluate to zero, since (1 & 2) is 0.
+> 
+> What you probably want is something like:
+> 
+> #define JBD2_JOURNAL_FLUSH_DISCARD	0x0001
+> #define JBD2_JOURNAL_FLUSH_ZEROOUT	0x0002
+> #define JBD2_JOURNAL_FLUSH_VALID	0x0003
+> 
+>      if ((flags & ~JBD2_JOURNAL_FLUSH_VALID) ||
+>          ((flags & JBD2_JOURNAL_FLUSH_DISCARD) &&
+> 	  (flags & JBD2_JOURNAL_FLUSH_ZEROOUT)))
+> 	return -EINVAL;
+> 
+> > +
+> > +	err = jbd2_journal_bmap(journal, log_offset, &block_start);
+> > +	if (err) {
+> > +		printk(KERN_ERR "JBD2: bad block at offset %lu", log_offset);
+> > +		return err;
+> > +	}
+> 
+> We could get rid of this, and instead make sure block_start is initialized
+> to ~((unsigned long long) 0).  Then in the loop we can do...
+
+Also FWIW I can't find the fiemap code that let you do fiemap from
+within the kernel, so I guess we only talked about it on fsdevel and
+none of it ever got merged.  So I guess looping is what we'll have to do
+for now...
+
+--D
+
+> > +
+> > +	/*
+> > +	 * use block_start - 1 to meet check for contiguous with previous region:
+> > +	 * phys_block == block_stop + 1
+> > +	 */
+> > +	block_stop = block_start - 1;
+> > +
+> > +	for (block = log_offset; block < journal->j_total_len; block++) {
+> > +		err = jbd2_journal_bmap(journal, block, &phys_block);
+> > +		if (err) {
+> > +			printk(KERN_ERR "JBD2: bad block at offset %lu", block);
+> > +			return err;
+> > +		}
+> 
+> 		if (block_start == ~((unsigned long long) 0)) {
+> 			block_start = phys_block;
+> 			block_Stop = block_start - 1;
+> 		}
+> 
+> > +
+> > +		if (block == journal->j_total_len - 1) {
+> > +			block_stop = phys_block;
+> > +		} else if (phys_block == block_stop + 1) {
+> > +			block_stop++;
+> > +			continue;
+> > +		}
+> > +
+> > +		/*
+> > +		 * not contiguous with prior physical block or this is last
+> > +		 * block of journal, take care of the region
+> > +		 */
+> > +		byte_start = block_start * journal->j_blocksize;
+> > +		byte_stop = block_stop * journal->j_blocksize;
+> > +		byte_count = (block_stop - block_start + 1) *
+> > +				journal->j_blocksize;
+> > +
+> > +		truncate_inode_pages_range(journal->j_dev->bd_inode->i_mapping,
+> > +				byte_start, byte_stop);
+> > +
+> > +		if (flags & JBD2_ERASE_FLAG_DISCARD) {
+> > +			err = blkdev_issue_discard(journal->j_dev,
+> > +					byte_start >> SECTOR_SHIFT,
+> > +					byte_count >> SECTOR_SHIFT,
+> > +					GFP_NOFS, 0);
+> > +		} else if (flags & JBD2_ERASE_FLAG_ZEROOUT) {
+> > +			err = blkdev_issue_zeroout(journal->j_dev,
+> > +					byte_start >> SECTOR_SHIFT,
+> > +					byte_count >> SECTOR_SHIFT,
+> > +					GFP_NOFS, 0);
+> > +		}
+> > +
+> > +		if (unlikely(err != 0)) {
+> > +			printk(KERN_ERR "JBD2: (error %d) unable to wipe journal at physical blocks %llu - %llu",
+> > +					err, block_start, block_stop);
+> > +			return err;
+> > +		}
+> > +
+> > +		block_start = phys_block;
+> > +		block_stop = phys_block;
+> 
+> Is this right?  When we initialized the loop, above, block_stop was
+> set to block_start-1 (where block_start == phys_block).  So I think it
+> might be more correct to replace the above two lines with:
+> 
+> 		block_start = ~((unsigned long long) 0);
+> 
+> ... and then let block_start and block_stop be initialized in a single
+> place.  Do you agree?  Does this make sense to you?
+> 
+> 	       	       	    	      	    - Ted
