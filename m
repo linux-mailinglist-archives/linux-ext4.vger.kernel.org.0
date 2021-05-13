@@ -2,268 +2,242 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D709037F06A
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 May 2021 02:36:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FEE437F52A
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 May 2021 12:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233539AbhEMAh6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 12 May 2021 20:37:58 -0400
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:38052 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245420AbhEMAfq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 12 May 2021 20:35:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1620866078; x=1652402078;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=jAe1MbaRE1Nw7wagUrN3RWiGqwec2wwHJxFy/ctdU9o=;
-  b=Az56mtMtO6x5s5XQEkVliD+3YTci5/RCRZUlERk0HKVHs3nYbjwrhHBD
-   EHv/mBBzk5Zad3hGs+XLHXMfXog5eVK/pUD12xVPuuMAJSmw4mZhkO4ue
-   4u/4cvxUUNGMC2d2b6KRYpGreWeOur/VFj8v/UPepa8u1cl8OX7TQ6ZbE
-   dUEfDcrpUN+nNbCHoy7wHBcbnXp0orEFGmWBp3v7qyLegvj/acaULrxLo
-   RTG2WDgr6k0L7GYJDU0cf8UgqsVP7cnK966+aCQz1mRE3Bx+JIaTG6qwJ
-   Ada+D6kujWJVt+hty6XQmEQJRTP1agrPuCB3jcTHm5FhXjz5QcRatfjQY
-   w==;
-IronPort-SDR: yO/o7iCgxwsHqdEJqwojD4psSV6AxyaqP1Kkh1O0/YrxuS/pk7OCeAZ2dTG4y4TmzvJ66F6AeB
- 0cTydn7YjOKA8i3fBPsypCd2ojHg1/c1INjnd5m9lAumzRiCFUxhpzKmp9Nce6ZfAh11o2tUxp
- TtvdcidZpZaXeqsPhTJhTVCRdIiZnC1R8RHXVtSvVuWAgi8gKfTjDAaJvokC7EaeuJcolM2QOA
- Rr/wnAywcg+IfPi/oUYnWalC31wEhOFjizYP2H4pRRxHpigDBsIu883zSylGfZBkIYCecX4F4B
- v8k=
-X-IronPort-AV: E=Sophos;i="5.82,295,1613404800"; 
-   d="scan'208";a="168538232"
-Received: from mail-bn8nam08lp2046.outbound.protection.outlook.com (HELO NAM04-BN8-obe.outbound.protection.outlook.com) ([104.47.74.46])
-  by ob1.hgst.iphmx.com with ESMTP; 13 May 2021 08:34:35 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kecoKkiV8yVM1KXMG62Hsw0SFeJQeK1ht+fNKFxw7939eUod7/E7IEk8FYcHtgS1jjUsWp4j68YB0AQuS2TYhm0sp/DhxM2brzv319WI5XMW5rXERVHAh/1xpwTfXegAWlkPniW9H7jZpRqAscsun5O12yphcJvUTiOYtvy6lZ3fBiHhWtAkIbofdbk4Hgu8f5lnr6f+ByAYRf5eY5BXhhu5mQQIDkEMYIQDvHAhf6RSEAbdv3u2+tEjYIehkdrwlw5f2fiiuw6i11c5Du0lh/LHS9NUuqpymFR7RK3u5ZkG51SwFBLZzJHNSBH4jlelazDhAC8P2w9pMrnHHWFaPA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=anHHAbPrbiGRmJszWJ2DjbgMiQlyg1MODOcEQtk2Hfk=;
- b=N1HrgtD4JUi0foWGSOtccDONIeZkp513On3RSCqrfYkyO81gzMO1Y6f8VNxA8nP1QLQlFNqNq20y+Sh5ZPto7/Dx8ZqP4y5Lcv6VKKvwF518ZfThur1/m1RUsDe/zyUmi8mdCqCA516/rm7JZf9MZx+H+r/BTy1shOfSYCo4zA7JVdldQviQUztCJIiCLlhBGJ4NH7GoMpX9PowYSJseeH68vlbGH2hlIyVcW9yg2MAO/act7rmkhhL1lm+MbNgeBYM8n1rjY6jmaWXplvPjViKkp3Bq9/c3Wy18TgCy6GrhHzQW4NNMbjrZ8lCW8ezGk7R9voc9RWCZDzOpDOseSg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=anHHAbPrbiGRmJszWJ2DjbgMiQlyg1MODOcEQtk2Hfk=;
- b=nfGDeSuQ1qCGvbl/xJtkKZNwL3smXh1Y7E5nLFgtNxySKM4foy7HB7SxTTyIWCOZIyFmSo/N7LtSTLFpcq5V2bDSntbUBgWIYwfGfOaZ7X5m6agzTMbyWTPm63ScMs/13ex3cd5+8HyFMtRERV+Hqd/dntyMCR5rjAqc0/VWA6U=
-Received: from DM6PR04MB7081.namprd04.prod.outlook.com (2603:10b6:5:244::21)
- by DM5PR04MB0813.namprd04.prod.outlook.com (2603:10b6:3:f9::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.26; Thu, 13 May
- 2021 00:34:33 +0000
-Received: from DM6PR04MB7081.namprd04.prod.outlook.com
- ([fe80::64f9:51d2:1e04:f806]) by DM6PR04MB7081.namprd04.prod.outlook.com
- ([fe80::64f9:51d2:1e04:f806%9]) with mapi id 15.20.4129.026; Thu, 13 May 2021
- 00:34:33 +0000
-From:   Damien Le Moal <Damien.LeMoal@wdc.com>
-To:     Jan Kara <jack@suse.cz>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-CC:     "hch@infradead.org" <hch@infradead.org>,
-        Dave Chinner <david@fromorbit.com>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
-        Chao Yu <yuchao0@huawei.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Johannes Thumshirn <jth@kernel.org>,
-        "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-f2fs-devel@lists.sourceforge.net" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Steve French <sfrench@samba.org>, Ted Tso <tytso@mit.edu>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH 07/11] zonefs: Convert to using invalidate_lock
-Thread-Topic: [PATCH 07/11] zonefs: Convert to using invalidate_lock
-Thread-Index: AQHXRzU+qXklL5tXkka8lKRMD3f5wg==
-Date:   Thu, 13 May 2021 00:34:33 +0000
-Message-ID: <DM6PR04MB70813581E891647A893FE741E7519@DM6PR04MB7081.namprd04.prod.outlook.com>
-References: <20210512101639.22278-1-jack@suse.cz>
- <20210512134631.4053-7-jack@suse.cz>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.cz; dkim=none (message not signed)
- header.d=none;suse.cz; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2400:2411:43c0:6000:dbc:763e:6fbc:5b5c]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4f8a851b-a28b-477d-0fa4-08d915a6e13a
-x-ms-traffictypediagnostic: DM5PR04MB0813:
-x-ld-processed: b61c8803-16f3-4c35-9b17-6f65f441df86,ExtAddr
-x-microsoft-antispam-prvs: <DM5PR04MB08134D0F0545A4ECD3D5B6ADE7519@DM5PR04MB0813.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:632;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: gyfTusqq1svA5stoPogo4LcwpoIP60ewdwTnQQmIAZwWcACtXomhgyMk34XxNym0/DLnnMPnTxhZB7QV1R5Jjy5zhKFhggw0ZeXiOyUYwi8lyQUHnfTRVU1TCboGTZTNY464jpYnMIwNATPLlZutIGk3k6MiF97jZ2VqwCJy7gn3AJHPvnRGEj+O1paj4yRuqF+pJBm9A8yIlupoFnNd6WmI3qbImASX3BLNSsr0uUeuG+J4OuoNggVJcvL47rfqXnN0/ojOrgU70N7I8r9RJKQb/ERkC4EW1yhbCkRJrSyqcXPLpZ47ELV6ZqHLFyCFQREliuDx7gLAP/nTQlk44EfWEzqf4CH7PE+lEMMGpRFd521h3Cx4/yVBSFHfhL1vDwLvfqUdCXAHs0iiq9gIXWbyPoLrvL35n0gAWKWN5Ex/W2GRws1szHVYeyDCugLSfsqxGNLvJLDIPgahw+Z2YmKz8lCkNwkk35Y7QBVXx9QlxyyclZSErrBf2tM6jXbjqXI4O3hoHUcsc4w022UfuWOHKYNJzZzT6iWVgnvqY7NlMvHXDb9FtsAqr5gucAzbiMKR8JyxLdSzgnD8BXSM/cIBmunESPdltVkQe4i5RGY=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB7081.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(136003)(39860400002)(396003)(346002)(64756008)(66476007)(6506007)(91956017)(186003)(7696005)(52536014)(5660300002)(66556008)(54906003)(86362001)(110136005)(66446008)(316002)(76116006)(66946007)(71200400001)(478600001)(122000001)(38100700002)(2906002)(53546011)(9686003)(55016002)(33656002)(83380400001)(4326008)(8676002)(8936002)(7416002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?xVvSD4j7elIy6AE6R7OrcMscjfG8m+h/9thVsuQSeQ3JIYi79tjqJF/GHmAM?=
- =?us-ascii?Q?YifAUYHcK1LaH7H+Im+DudduLroyhkhcFoAiaGQnFRSOLROa/PicDM3kWJXr?=
- =?us-ascii?Q?B/hOH9QrNcWWGSefqabSb8m3nNCXn7s+M5VtpsDAoB3GHPNPD4a9YXS26qEv?=
- =?us-ascii?Q?jZyCBrj5E97uOCnUJfib4JgZeMDYNBRvOe5eOvB/YaP5I9410RHazrgaohTw?=
- =?us-ascii?Q?7tKsxlL8royHcvB0JJH7wME7V2TcubRnIewX1Ftgn/DazX3fdccyJTaABdWG?=
- =?us-ascii?Q?eNU6vXm4rGCvFgj/LUEcInivtBJ7TPo2pJV3c9kFYIT7FnYKKtHYrb2OSwet?=
- =?us-ascii?Q?RTwTGYeoXYTqNk+jnFTN4wLUjGvzmiNPUWV8l43ocOT4bhlOdAIJU6ZMengl?=
- =?us-ascii?Q?ao7xklc6wZ0hX+xgFBj0BCj+vVK2LKElrqAhMIMazXBpytNvx4/1vlcF0OXB?=
- =?us-ascii?Q?o7WsSIPd6kMgyj5baw2hd3C09Y41q2tOina/9jKjpQ/sPt5OpaotQrYL774b?=
- =?us-ascii?Q?OWs18ecfj2r23pDOKKCOH3n22Ey9abDPxnpPX2O1eO3NKnvcbsfQFc3Q6DT7?=
- =?us-ascii?Q?GCaD1EFZIWiOeu6LZ4Mw9JvYq7GIEMlaNLoQxxyMFVLC49PGTKBytxppuCC3?=
- =?us-ascii?Q?RCO1fPt4YdthYuW3MyEoMSTAbBNnA+iVWzBuwtkISupqU+6y9f439AAK/0dT?=
- =?us-ascii?Q?CVHvmsWp2hVrzuHyM3Rs5p86AvkwTltoyc/QFI7tiwaI+N9wuRwzX1+7CmQq?=
- =?us-ascii?Q?UnB8v7eK+YxiSve2BiaQFaJU5ElvmR+6u6axedq0dv5IsRupOjssku7dC2vB?=
- =?us-ascii?Q?32mbMEXDG6ysYGrP+JZkdHm8+WeNrQ/Q1dcllEey4tpSE/hk0MdNiyURkWW4?=
- =?us-ascii?Q?BzhVhFrxo89J8ZiSvc9N61yWmjKEtLPbe+BROGTowOtPVwhiFad41X7ojZU1?=
- =?us-ascii?Q?N1QkEL8MuC4zmhLaVB+I8os0SPlPwVxslDBu91W5CArLRFdzQoOlHPVxnbZP?=
- =?us-ascii?Q?GQYhU/WMa/kb3EY7KFQNtihF509FDP8Se5YhCOH3jFZhCBbkFz3YfM7jOj5L?=
- =?us-ascii?Q?xXyiKmBRtBPNRvW/3M9I/47ny+8T3eV5/o3fxXzV1Pj8ZdEDQRepNk97wL7b?=
- =?us-ascii?Q?GwTPS9Ueq1+L7vn2BTRd6tYB3YQVqwX/1qSgxNgcN014TEUY2DEI1w0ZkFFB?=
- =?us-ascii?Q?yqM9XZf5hsoA7ojVoM++16aCf1JVk3+X9q2Ww+UD1BHMPCk+hwEa3mIrVnrK?=
- =?us-ascii?Q?QhhzPtP3gn9yiSNR8IuZXAq2zxSPu6rBHlEHLQyDi7lGzH+opR4S0skKwG71?=
- =?us-ascii?Q?TNf5v93/48V3pN7FHDWpZMpuWFmsFC5Vddx6RiV6Si7DFcOQbDWMFf1xPvUX?=
- =?us-ascii?Q?qVbi6+L4XvHI/1rfKeBsH3bIXAZvyklmaR/i+Mlkiy08uc0apA=3D=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S232426AbhEMKBt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 13 May 2021 06:01:49 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:26872 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232377AbhEMKBr (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 13 May 2021 06:01:47 -0400
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210513100036epoutp047d10f07c5d20d1d723bf925eeef48be4~_l-6_ycxR3066530665epoutp049
+        for <linux-ext4@vger.kernel.org>; Thu, 13 May 2021 10:00:36 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210513100036epoutp047d10f07c5d20d1d723bf925eeef48be4~_l-6_ycxR3066530665epoutp049
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1620900036;
+        bh=Br2S5X1A3eYkSt6sVY9ESm35W/Sdx9AnQBvvS1O7OOM=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=tzwfth3DujOdfD+2en8SiEdCnojJKnq5DVrIAHe8QLT420knCdb0b/t3nFnC8LKn4
+         zQIG5Z39gjXoUvQhJ6Wrbk1wl+w1htHzyIjurGN06cS5RJsqpXtmnxjB96RZADQDeK
+         6GYfPF1pY4GjQxpwX73dk6iaVBL654zOoVpKLM50=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
+        20210513100035epcas1p4ed4d387b03b4a842ee4dc632eca2f2ba~_l-6f8fPN2326223262epcas1p4I;
+        Thu, 13 May 2021 10:00:35 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.161]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4FgnGV54gPz4x9QD; Thu, 13 May
+        2021 10:00:34 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        04.2C.09578.2C8FC906; Thu, 13 May 2021 19:00:34 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20210513100034epcas1p4b23892cd77bde73c777eea6dc51c16a4~_l-46m7KD2326223262epcas1p4D;
+        Thu, 13 May 2021 10:00:34 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210513100034epsmtrp14ca69c66797fa911302550f7051b0cf8~_l-44-Fm32978629786epsmtrp1P;
+        Thu, 13 May 2021 10:00:34 +0000 (GMT)
+X-AuditID: b6c32a35-58cdfa800000256a-14-609cf8c20f50
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        6A.13.08163.1C8FC906; Thu, 13 May 2021 19:00:33 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.99.105]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210513100033epsmtip1a821dbd3078b7503fe8e1e6cb900172b~_l-4ojBIa0851508515epsmtip1n;
+        Thu, 13 May 2021 10:00:33 +0000 (GMT)
+From:   Changheun Lee <nanich.lee@samsung.com>
+To:     alex_y_xu@yahoo.ca
+Cc:     axboe@kernel.dk, bgoncalv@redhat.com, bvanassche@acm.org,
+        dm-crypt@saout.de, hch@lst.de, jaegeuk@kernel.org,
+        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        ming.lei@redhat.com, yi.zhang@redhat.com
+Subject: Re: regression: data corruption with ext4 on LUKS on nvme with
+ torvalds master
+Date:   Thu, 13 May 2021 18:42:22 +0900
+Message-Id: <20210513094222.17635-1-nanich.lee@samsung.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB7081.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4f8a851b-a28b-477d-0fa4-08d915a6e13a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 May 2021 00:34:33.6063
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ltRJzvAvGXVvXjosAbmERv3AR4aVfhIA0oPp1ciTNez8X2y2+9Tx03D3+9r1TbAqKhL6mr0XkfkNfnRS9mme4A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR04MB0813
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrPJsWRmVeSWpSXmKPExsWy7bCmge6hH3MSDD48U7ZYd2cNu8Xqu/1s
+        Frsuzme0mPbhJ7PF7eZfbBYrVx9lsniyfhazxd5b2hYz591hs7i8aw6bxfxlT9ktDk1uZrK4
+        fm4amwOvx+Ur3h6Xz5Z6bFrVyeaxeUm9x+6bDWwe7/ddZfM4s+c4k8fnTXIehw4tYw7gjMqx
+        yUhNTEktUkjNS85PycxLt1XyDo53jjc1MzDUNbS0MFdSyEvMTbVVcvEJ0HXLzAE6WkmhLDGn
+        FCgUkFhcrKRvZ1OUX1qSqpCRX1xiq5RakJJTYGhQoFecmFtcmpeul5yfa2VoYGBkClSZkJPx
+        pvMYc0GHRkXvr0NMDYzTFboYOTkkBEwk+s8eYeli5OIQEtjBKHHnyElmCOcTo8ThZS1sEM5n
+        Romuvw3sMC3nGt9DtexilFh/bik7XNXVsxsYQarYBHQk+t7eYgOxRQTEJH7O/wnWwSwwg0ni
+        xZOTQAkODmGBSIn5rQIgNSwCqhLPFp9jBQnzClhLTL0aCbFMXuLP/R5mEJtXQFDi5MwnLCA2
+        M1C8eetsZoiamRwSTw/qQ9guEk8//GeDsIUlXh3fAnW0lMTL/jawOyUEuhklmtvmM0I4Exgl
+        ljxfxgRRZSzx6fNnRpAjmAU0JdbvghqqKLHz91xGiMV8Eu++9oDdKSHAK9HRJgRRoiJxpuU+
+        M8yu52t3Qk30kDj2cwuYLSQQK7Fs907WCYzys5C8MwvJO7MQFi9gZF7FKJZaUJybnlpsWGCI
+        HKubGMEpV8t0B+PEtx/0DjEycTAeYpTgYFYS4RVLmp0gxJuSWFmVWpQfX1Sak1p8iNEUGL4T
+        maVEk/OBST+vJN7Q1MjY2NjCxMzczNRYSZw33bk6QUggPbEkNTs1tSC1CKaPiYNTqoHpeI/G
+        n1drnXy/ZOvU91QcMHF+Mi0k4PrNRzxli9K/NGak3cx7KKGZVdhxRMld9IfWmdqjHdzqnRn3
+        5/7J2fjfW0b1z90b1ZuT96TcX7zJzeia8T07j9NzDsXo3PtRv+z2OqaQWX6vFkYUpn+ccjDL
+        XvmH+fRsoV9LSqsyf6iW5ab6nzjcaZHY5Tp73aTU2gpW5o6wza9nPcn58IpHl3nlUolrPZr/
+        S95uPMxg6Z7M6l3zTF+pb8OxhW/FW4rr7nj2+tV66R5fPPPip/7rUS3uB95+n+cvPbO4xXtz
+        8JKjrBnFBv+snbWWP9i4Md7l5c1zz6b21l41f+S9SzCoQiH98BvhLoV1qa7pIVE6ZqpKLMUZ
+        iYZazEXFiQB0K1/XQgQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrFLMWRmVeSWpSXmKPExsWy7bCSnO7BH3MSDA5tMbVYd2cNu8Xqu/1s
+        Frsuzme0mPbhJ7PF7eZfbBYrVx9lsniyfhazxd5b2hYz591hs7i8aw6bxfxlT9ktDk1uZrK4
+        fm4amwOvx+Ur3h6Xz5Z6bFrVyeaxeUm9x+6bDWwe7/ddZfM4s+c4k8fnTXIehw4tYw7gjOKy
+        SUnNySxLLdK3S+DKeNN5jLmgQ6Oi99chpgbG6QpdjJwcEgImEuca37OA2EICOxgldjaaQ8Sl
+        JI6feMvaxcgBZAtLHD5c3MXIBVTykVHi3967TCA1bAI6En1vb7GB2CICYhI/5/9kASliFljG
+        JPHmH4jDwSEsEC7RdN0JpIZFQFXi2eJzYDN5Bawlpl6NhFglL/Hnfg8ziM0rIChxcuYTsHOY
+        geLNW2czT2Dkm4UkNQtJagEj0ypGydSC4tz03GLDAqO81HK94sTc4tK8dL3k/NxNjODg19La
+        wbhn1Qe9Q4xMHIyHGCU4mJVEeMWSZicI8aYkVlalFuXHF5XmpBYfYpTmYFES573QdTJeSCA9
+        sSQ1OzW1ILUIJsvEwSnVwKR0kvF/0iH7A/671wppPfXNmi5a1pVw7F5AzJUSiWl7w1e8Cir0
+        +l3O8bXjsoHTaaVPJh8WuKvLvD6tNMPx01Y9zbN7Oi14Zh2af9Al5WbDpBzuGx9YZyz7ET/L
+        12Z30Y4pblK1j9wFmhLub2NQ/9F/+9dels6NoYsbbq1ef/xV74KnhtPi3CoUL0RccGULLOBi
+        /xBx5mPq9YwFG4tCb3Re2iE/+znvsncTz+fdvvAj/t7hPrlz3TIfuhYdbv+3SuGC/6GFCyxq
+        6nev59m67dWxF5d32T/PWhnke19D+yLDcYbUCxtjSpcWGRve0LLbYrBVLqv04oJsnkTRvvfh
+        DgvlWzTj5gUeDp++SzLrjuRfJZbijERDLeai4kQAfwrD6+0CAAA=
+X-CMS-MailID: 20210513100034epcas1p4b23892cd77bde73c777eea6dc51c16a4
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210513100034epcas1p4b23892cd77bde73c777eea6dc51c16a4
+References: <CGME20210513100034epcas1p4b23892cd77bde73c777eea6dc51c16a4@epcas1p4.samsung.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2021/05/12 22:46, Jan Kara wrote:=0A=
-> Use invalidate_lock instead of zonefs' private i_mmap_sem. The intended=
-=0A=
-> purpose is exactly the same.=0A=
-> =0A=
-> CC: Damien Le Moal <damien.lemoal@wdc.com>=0A=
-> CC: Johannes Thumshirn <jth@kernel.org>=0A=
-> CC: <linux-fsdevel@vger.kernel.org>=0A=
-> Signed-off-by: Jan Kara <jack@suse.cz>=0A=
-> ---=0A=
->  fs/zonefs/super.c  | 23 +++++------------------=0A=
->  fs/zonefs/zonefs.h |  7 +++----=0A=
->  2 files changed, 8 insertions(+), 22 deletions(-)=0A=
-> =0A=
-> diff --git a/fs/zonefs/super.c b/fs/zonefs/super.c=0A=
-> index cd145d318b17..da2e95d98677 100644=0A=
-> --- a/fs/zonefs/super.c=0A=
-> +++ b/fs/zonefs/super.c=0A=
-> @@ -462,7 +462,7 @@ static int zonefs_file_truncate(struct inode *inode, =
-loff_t isize)=0A=
->  	inode_dio_wait(inode);=0A=
->  =0A=
->  	/* Serialize against page faults */=0A=
-> -	down_write(&zi->i_mmap_sem);=0A=
-> +	down_write(&inode->i_mapping->invalidate_lock);=0A=
->  =0A=
->  	/* Serialize against zonefs_iomap_begin() */=0A=
->  	mutex_lock(&zi->i_truncate_mutex);=0A=
-> @@ -500,7 +500,7 @@ static int zonefs_file_truncate(struct inode *inode, =
-loff_t isize)=0A=
->  =0A=
->  unlock:=0A=
->  	mutex_unlock(&zi->i_truncate_mutex);=0A=
-> -	up_write(&zi->i_mmap_sem);=0A=
-> +	up_write(&inode->i_mapping->invalidate_lock);=0A=
->  =0A=
->  	return ret;=0A=
->  }=0A=
-> @@ -575,18 +575,6 @@ static int zonefs_file_fsync(struct file *file, loff=
-_t start, loff_t end,=0A=
->  	return ret;=0A=
->  }=0A=
->  =0A=
-> -static vm_fault_t zonefs_filemap_fault(struct vm_fault *vmf)=0A=
-> -{=0A=
-> -	struct zonefs_inode_info *zi =3D ZONEFS_I(file_inode(vmf->vma->vm_file)=
-);=0A=
-> -	vm_fault_t ret;=0A=
-> -=0A=
-> -	down_read(&zi->i_mmap_sem);=0A=
-> -	ret =3D filemap_fault(vmf);=0A=
-> -	up_read(&zi->i_mmap_sem);=0A=
-> -=0A=
-> -	return ret;=0A=
-> -}=0A=
-> -=0A=
->  static vm_fault_t zonefs_filemap_page_mkwrite(struct vm_fault *vmf)=0A=
->  {=0A=
->  	struct inode *inode =3D file_inode(vmf->vma->vm_file);=0A=
-> @@ -607,16 +595,16 @@ static vm_fault_t zonefs_filemap_page_mkwrite(struc=
-t vm_fault *vmf)=0A=
->  	file_update_time(vmf->vma->vm_file);=0A=
->  =0A=
->  	/* Serialize against truncates */=0A=
-> -	down_read(&zi->i_mmap_sem);=0A=
-> +	down_read(&inode->i_mapping->invalidate_lock);=0A=
->  	ret =3D iomap_page_mkwrite(vmf, &zonefs_iomap_ops);=0A=
-> -	up_read(&zi->i_mmap_sem);=0A=
-> +	up_read(&inode->i_mapping->invalidate_lock);=0A=
->  =0A=
->  	sb_end_pagefault(inode->i_sb);=0A=
->  	return ret;=0A=
->  }=0A=
->  =0A=
->  static const struct vm_operations_struct zonefs_file_vm_ops =3D {=0A=
-> -	.fault		=3D zonefs_filemap_fault,=0A=
-> +	.fault		=3D filemap_fault,=0A=
->  	.map_pages	=3D filemap_map_pages,=0A=
->  	.page_mkwrite	=3D zonefs_filemap_page_mkwrite,=0A=
->  };=0A=
-> @@ -1158,7 +1146,6 @@ static struct inode *zonefs_alloc_inode(struct supe=
-r_block *sb)=0A=
->  =0A=
->  	inode_init_once(&zi->i_vnode);=0A=
->  	mutex_init(&zi->i_truncate_mutex);=0A=
-> -	init_rwsem(&zi->i_mmap_sem);=0A=
->  	zi->i_wr_refcnt =3D 0;=0A=
->  =0A=
->  	return &zi->i_vnode;=0A=
-> diff --git a/fs/zonefs/zonefs.h b/fs/zonefs/zonefs.h=0A=
-> index 51141907097c..7b147907c328 100644=0A=
-> --- a/fs/zonefs/zonefs.h=0A=
-> +++ b/fs/zonefs/zonefs.h=0A=
-> @@ -70,12 +70,11 @@ struct zonefs_inode_info {=0A=
->  	 * and changes to the inode private data, and in particular changes to=
-=0A=
->  	 * a sequential file size on completion of direct IO writes.=0A=
->  	 * Serialization of mmap read IOs with truncate and syscall IO=0A=
-> -	 * operations is done with i_mmap_sem in addition to i_truncate_mutex.=
-=0A=
-> -	 * Only zonefs_seq_file_truncate() takes both lock (i_mmap_sem first,=
-=0A=
-> -	 * i_truncate_mutex second).=0A=
-> +	 * operations is done with invalidate_lock in addition to=0A=
-> +	 * i_truncate_mutex.  Only zonefs_seq_file_truncate() takes both lock=
-=0A=
-> +	 * (invalidate_lock first, i_truncate_mutex second).=0A=
->  	 */=0A=
->  	struct mutex		i_truncate_mutex;=0A=
-> -	struct rw_semaphore	i_mmap_sem;=0A=
->  =0A=
->  	/* guarded by i_truncate_mutex */=0A=
->  	unsigned int		i_wr_refcnt;=0A=
-> =0A=
-=0A=
-Looks OK to me for zonefs. This is a nice cleanup.=0A=
-=0A=
-Acked-by: Damien Le Moal <damien.lemoal@wdc.com>=0A=
-=0A=
--- =0A=
-Damien Le Moal=0A=
-Western Digital Research=0A=
+> Excerpts from Jens Axboe's message of May 8, 2021 11:51 pm:
+> > On 5/8/21 8:29 PM, Alex Xu (Hello71) wrote:
+> >> Excerpts from Alex Xu (Hello71)'s message of May 8, 2021 1:54 pm:
+> >>> Hi all,
+> >>>
+> >>> Using torvalds master, I recently encountered data corruption on my ext4 
+> >>> volume on LUKS on NVMe. Specifically, during heavy writes, the system 
+> >>> partially hangs; SysRq-W shows that processes are blocked in the kernel 
+> >>> on I/O. After forcibly rebooting, chunks of files are replaced with 
+> >>> other, unrelated data. I'm not sure exactly what the data is; some of it 
+> >>> is unknown binary data, but in at least one case, a list of file paths 
+> >>> was inserted into a file, indicating that the data is misdirected after 
+> >>> encryption.
+> >>>
+> >>> This issue appears to affect files receiving writes in the temporal 
+> >>> vicinity of the hang, but affects both new and old data: for example, my 
+> >>> shell history file was corrupted up to many months before.
+> >>>
+> >>> The drive reports no SMART issues.
+> >>>
+> >>> I believe this is a regression in the kernel related to something merged 
+> >>> in the last few days, as it consistently occurs with my most recent 
+> >>> kernel versions, but disappears when reverting to an older kernel.
+> >>>
+> >>> I haven't investigated further, such as by bisecting. I hope this is 
+> >>> sufficient information to give someone a lead on the issue, and if it is 
+> >>> a bug, nail it down before anybody else loses data.
+> >>>
+> >>> Regards,
+> >>> Alex.
+> >>>
+> >> 
+> >> I found the following test to reproduce a hang, which I guess may be the 
+> >> cause:
+> >> 
+> >> host$ cd /tmp
+> >> host$ truncate -s 10G drive
+> >> host$ qemu-system-x86_64 -drive format=raw,file=drive,if=none,id=drive -device nvme,drive=drive,serial=1 [... more VM setup options]
+> >> guest$ cryptsetup luksFormat /dev/nvme0n1
+> >> [accept warning, use any password]
+> >> guest$ cryptsetup open /dev/nvme0n1
+> >> [enter password]
+> >> guest$ mkfs.ext4 /dev/mapper/test
+> >> [normal output...]
+> >> Creating journal (16384 blocks): [hangs forever]
+> >> 
+> >> I bisected this issue to:
+> >> 
+> >> cd2c7545ae1beac3b6aae033c7f31193b3255946 is the first bad commit
+> >> commit cd2c7545ae1beac3b6aae033c7f31193b3255946
+> >> Author: Changheun Lee <nanich.lee@samsung.com>
+> >> Date:   Mon May 3 18:52:03 2021 +0900
+> >> 
+> >>     bio: limit bio max size
+> >> 
+> >> I didn't try reverting this commit or further reducing the test case. 
+> >> Let me know if you need my kernel config or other information.
+> > 
+> > If you have time, please do test with that reverted. I'd be anxious to
+> > get this revert queued up for 5.13-rc1.
+> > 
+> > -- 
+> > Jens Axboe
+> > 
+> > 
+> 
+> I tested reverting it on top of b741596468b010af2846b75f5e75a842ce344a6e 
+> ("Merge tag 'riscv-for-linus-5.13-mw1' of 
+> git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux"), causing it 
+> to no longer hang. I didn't check if this fixes the data corruption, but 
+> I assume so.
+> 
+> I also tested a 1 GB image (works either way), and a virtio-blk 
+> interface (works either way)
+> 
+> The Show Blocked State from the VM (without revert):
+> 
+> sysrq: Show Blocked State
+> task:kworker/u2:0    state:D stack:    0 pid:    7 ppid:     2 flags:0x00004000
+> Workqueue: kcryptd/252:0 kcryptd_crypt
+> Call Trace:
+> __schedule+0x1a2/0x4f0
+> schedule+0x63/0xe0
+> schedule_timeout+0x6a/0xd0
+> ? lock_timer_base+0x80/0x80
+> io_schedule_timeout+0x4c/0x70
+> mempool_alloc+0xfc/0x130
+> ? __wake_up_common_lock+0x90/0x90
+> kcryptd_crypt+0x291/0x4e0
+> process_one_work+0x1b1/0x300
+> worker_thread+0x48/0x3d0
+> ? process_one_work+0x300/0x300
+> kthread+0x129/0x150
+> ? __kthread_create_worker+0x100/0x100
+> ret_from_fork+0x22/0x30
+> task:mkfs.ext4       state:D stack:    0 pid:  979 ppid:   964 flags:0x00004000
+> Call Trace:
+> __schedule+0x1a2/0x4f0
+> ? __schedule+0x1aa/0x4f0
+> schedule+0x63/0xe0
+> schedule_timeout+0x99/0xd0
+> io_schedule_timeout+0x4c/0x70
+> wait_for_completion_io+0x74/0xc0
+> submit_bio_wait+0x46/0x60
+> blkdev_issue_zeroout+0x118/0x1f0
+> blkdev_fallocate+0x125/0x180
+> vfs_fallocate+0x126/0x2e0
+> __x64_sys_fallocate+0x37/0x60
+> do_syscall_64+0x61/0x80
+> ? do_syscall_64+0x6e/0x80
+> entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> Regards,
+> Alex.
+> 
+
+First of all, thank you very much for report a bug. And sorry about your
+data lose.
+
+Problem might be casued by exhausting of memory. And memory exhausting
+would be caused by setting of small bio_max_size. Actually it was not
+reproduced in my VM environment at first. But, I reproduced same problem
+when bio_max_size is set with 8KB forced. Too many bio allocation would
+be occurred by setting of 8KB bio_max_size.
+
+So I prepare v10 patch to fix this bug. It will prevent that bio_max_size
+is set with small size. bio_max_size will be set with 1MB as a minimum.
+This size is same with legacy bio size before applying of "multipage bvec".
+
+It will be very helpful to me If you test with v10 patch. :)
+
+Thanks,
+Changheun Lee.
