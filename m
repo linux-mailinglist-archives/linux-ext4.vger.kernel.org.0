@@ -2,159 +2,155 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6DE9380E03
-	for <lists+linux-ext4@lfdr.de>; Fri, 14 May 2021 18:17:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63292380E10
+	for <lists+linux-ext4@lfdr.de>; Fri, 14 May 2021 18:19:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233418AbhENQSn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 14 May 2021 12:18:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59168 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230018AbhENQSm (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 14 May 2021 12:18:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE7AB61353;
-        Fri, 14 May 2021 16:17:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621009050;
-        bh=GXTUTxfJmauY3sVW+kCaMHHzIKcRfXTYy0mfZ1awngE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oQ8dmtH4NA+L/+ELxpN7WUZ32+IKoVGAxNNf5Zt7Ofagh6dHPT0TaJ3/dhZ3udTSa
-         Ss/wqVUPPW5cMdEz+C4hQyJma01zgrZ+tDmQID9Jlsk64sp+15NKZU73+6fKkEkcgC
-         XvuSXtxBxWWmdn2PJR00Oj+G52+jT4a3Jwm4qyrvnnPwZZO7YBFRkMz9ZmsrxPdu5J
-         q4F0/QUco4Auws1Zlcox6az1nWwemazilV0J6CiqvqlCi9dMrZ8vCEq6MMIs3fgL5x
-         qVlNE4QqliLqOm7IvgNPw45DD+Jz/B6XeS0w8qkfaKzFc0Gwo3UyBFqq+MTiQmsck/
-         qFCq5EMv5glNw==
-Date:   Fri, 14 May 2021 09:17:30 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        ceph-devel@vger.kernel.org, Chao Yu <yuchao0@huawei.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Johannes Thumshirn <jth@kernel.org>,
-        linux-cifs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
-        linux-xfs@vger.kernel.org, Miklos Szeredi <miklos@szeredi.hu>,
-        Steve French <sfrench@samba.org>, Ted Tso <tytso@mit.edu>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH 03/11] mm: Protect operations adding pages to page cache
- with invalidate_lock
-Message-ID: <20210514161730.GL9675@magnolia>
-References: <20210512101639.22278-1-jack@suse.cz>
- <20210512134631.4053-3-jack@suse.cz>
- <20210512152345.GE8606@magnolia>
- <20210513174459.GH2734@quack2.suse.cz>
- <20210513185252.GB9675@magnolia>
- <20210513231945.GD2893@dread.disaster.area>
+        id S233099AbhENQU6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 14 May 2021 12:20:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232048AbhENQU6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 14 May 2021 12:20:58 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 520DBC061574
+        for <linux-ext4@vger.kernel.org>; Fri, 14 May 2021 09:19:46 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id 76so29198694qkn.13
+        for <linux-ext4@vger.kernel.org>; Fri, 14 May 2021 09:19:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wYRsRR0wHJ1X/+cx8GBGw0BY216vlgIyfjpfE+AP+w8=;
+        b=jK/VKuyfomuJF8DY/xVryTIITBw7y0a7J+kDlN2VpL/cXX4szYj7k2CDhC/1DkG2b+
+         EqX3nzYDJ4c/Y21D/rqU91Y209IW3pwchzeyaQHSObEPIBj/rKTCFu/5Ycxi54mtHxQK
+         G/7Wytl+Bano8gW5wZjcqGsqFzNB3ATa0Lv08b6ocaeD3Tc21ORwsJgkOHiDmNI6iv5t
+         bzu4ANErF1bEoaeXlEH70R7oCh/6FVyFOrZ8Wm8vrWbbeVW/ViMn/3dmvWC6IttlNMQm
+         j04BWwh9wz6A5CfJUrsmYpgBX9ZWIDohc7dwNRvErbeREGPcxM3gTIN1Sjy1t8/xLznn
+         HIbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wYRsRR0wHJ1X/+cx8GBGw0BY216vlgIyfjpfE+AP+w8=;
+        b=X5cHFViWIWdu+phDm7SLNr4EPWpfYqkubz+rDNdNhei+ZbFgAbbpxiD7Mdl01qJdcU
+         U9ytxycwvVMT/GEkVzBFDSYUfx52cvgHKjbw+8Ae/H79pFWbVRPc0rLoRv1rsF2beZy/
+         mLq8Lw1JZTakzm2km7RU+OuoB6O2qEDJkaUG3+ppgYYI6gwgJz3ucdjCOzHmQUKzMokd
+         gh/N6lUsPgjntPqYWOP/nAxHlop4i44WDXJvma7gjgGTAh8CT1z4FlImW5+5OgO85S5m
+         /b2CFKLdd07Z13+ibZu3mdKxODesIDoOoF0idxtaAWqdRqFTGjXsiogFv7noirjI7E+M
+         uWzw==
+X-Gm-Message-State: AOAM530THLIySkBRNGY7qyGJ43+yjbrj7SpVGB9x11IWL1am1w5sg49o
+        TO5Mrpr5mXwOFsIodJDCbDgJQdRqFDa0Sw==
+X-Google-Smtp-Source: ABdhPJwQR7vS34xfCA6lkkRZB8CojhJv8D4nfncK04uDGO0+qv8H3cLXalbUcjh59Wiodh+w0p7EKg==
+X-Received: by 2002:a37:b4e:: with SMTP id 75mr45432187qkl.281.1621009185402;
+        Fri, 14 May 2021 09:19:45 -0700 (PDT)
+Received: from google.com ([2601:4c3:201:ed00:8626:664b:8242:8ae7])
+        by smtp.gmail.com with ESMTPSA id j9sm5283397qtl.15.2021.05.14.09.19.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 May 2021 09:19:45 -0700 (PDT)
+Date:   Fri, 14 May 2021 12:19:43 -0400
+From:   Leah Rumancik <leah.rumancik@gmail.com>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v4 1/3] ext4: add discard/zeroout flags to journal flush
+Message-ID: <YJ6jH3jVkYS5sBW5@google.com>
+References: <20210511180428.3358267-1-leah.rumancik@gmail.com>
+ <YJ1rVr7Sf7Az+MQm@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210513231945.GD2893@dread.disaster.area>
+In-Reply-To: <YJ1rVr7Sf7Az+MQm@mit.edu>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, May 14, 2021 at 09:19:45AM +1000, Dave Chinner wrote:
-> On Thu, May 13, 2021 at 11:52:52AM -0700, Darrick J. Wong wrote:
-> > On Thu, May 13, 2021 at 07:44:59PM +0200, Jan Kara wrote:
-> > > On Wed 12-05-21 08:23:45, Darrick J. Wong wrote:
-> > > > On Wed, May 12, 2021 at 03:46:11PM +0200, Jan Kara wrote:
-> > > > > +->fallocate implementation must be really careful to maintain page cache
-> > > > > +consistency when punching holes or performing other operations that invalidate
-> > > > > +page cache contents. Usually the filesystem needs to call
-> > > > > +truncate_inode_pages_range() to invalidate relevant range of the page cache.
-> > > > > +However the filesystem usually also needs to update its internal (and on disk)
-> > > > > +view of file offset -> disk block mapping. Until this update is finished, the
-> > > > > +filesystem needs to block page faults and reads from reloading now-stale page
-> > > > > +cache contents from the disk. VFS provides mapping->invalidate_lock for this
-> > > > > +and acquires it in shared mode in paths loading pages from disk
-> > > > > +(filemap_fault(), filemap_read(), readahead paths). The filesystem is
-> > > > > +responsible for taking this lock in its fallocate implementation and generally
-> > > > > +whenever the page cache contents needs to be invalidated because a block is
-> > > > > +moving from under a page.
-> > > > > +
-> > > > > +->copy_file_range and ->remap_file_range implementations need to serialize
-> > > > > +against modifications of file data while the operation is running. For blocking
-> > > > > +changes through write(2) and similar operations inode->i_rwsem can be used. For
-> > > > > +blocking changes through memory mapping, the filesystem can use
-> > > > > +mapping->invalidate_lock provided it also acquires it in its ->page_mkwrite
-> > > > > +implementation.
-> > > > 
-> > > > Question: What is the locking order when acquiring the invalidate_lock
-> > > > of two different files?  Is it the same as i_rwsem (increasing order of
-> > > > the struct inode pointer) or is it the same as the XFS MMAPLOCK that is
-> > > > being hoisted here (increasing order of i_ino)?
-> > > > 
-> > > > The reason I ask is that remap_file_range has to do that, but I don't
-> > > > see any conversions for the xfs_lock_two_inodes(..., MMAPLOCK_EXCL)
-> > > > calls in xfs_ilock2_io_mmap in this series.
-> > > 
-> > > Good question. Technically, I don't think there's real need to establish a
-> > > single ordering because locks among different filesystems are never going
-> > > to be acquired together (effectively each lock type is local per sb and we
-> > > are free to define an ordering for each lock type differently). But to
-> > > maintain some sanity I guess having the same locking order for doublelock
-> > > of i_rwsem and invalidate_lock makes sense. Is there a reason why XFS uses
-> > > by-ino ordering? So that we don't have to consider two different orders in
-> > > xfs_lock_two_inodes()...
-> > 
-> > I imagine Dave will chime in on this, but I suspect the reason is
-> > hysterical raisins^Wreasons.
+On Thu, May 13, 2021 at 02:09:26PM -0400, Theodore Ts'o wrote:
+> > +
+> > +	err = jbd2_journal_bmap(journal, log_offset, &block_start);
+> > +	if (err) {
+> > +		printk(KERN_ERR "JBD2: bad block at offset %lu", log_offset);
+> > +		return err;
+> > +	}
 > 
-> It's the locking rules that XFS has used pretty much forever.
-> Locking by inode number always guarantees the same locking order of
-> two inodes in the same filesystem, regardless of the specific
-> in-memory instances of the two inodes.
+> We could get rid of this, and instead make sure block_start is initialized
+> to ~((unsigned long long) 0).  Then in the loop we can do...
 > 
-> e.g. if we lock based on the inode structure address, in one
-> instancex, we could get A -> B, then B gets recycled and
-> reallocated, then we get B -> A as the locking order for the same
-> two inodes.
+> > +
+> > +	/*
+> > +	 * use block_start - 1 to meet check for contiguous with previous region:
+> > +	 * phys_block == block_stop + 1
+> > +	 */
+> > +	block_stop = block_start - 1;
+> > +
+> > +	for (block = log_offset; block < journal->j_total_len; block++) {
+> > +		err = jbd2_journal_bmap(journal, block, &phys_block);
+> > +		if (err) {
+> > +			printk(KERN_ERR "JBD2: bad block at offset %lu", block);
+> > +			return err;
+> > +		}
 > 
-> That, IMNSHO, is utterly crazy because with non-deterministic inode
-> lock ordered like this you can't make consistent locking rules for
-> locking the physical inode cluster buffers underlying the inodes in
-> the situation where they also need to be locked.
-
-<nod> That's protected by the ILOCK, correct?
-
-> We've been down this path before more than a decade ago when the
-> powers that be decreed that inode locking order is to be "by
-> structure address" rather than inode number, because "inode number
-> is not unique across multiple superblocks".
+> 		if (block_start == ~((unsigned long long) 0)) {
+> 			block_start = phys_block;
+> 			block_Stop = block_start - 1;
+> 		}
 > 
-> I'm not sure that there is anywhere that locks multiple inodes
-> across different superblocks, but here we are again....
-
-Hm.  Are there situations where one would want to lock multiple
-/mappings/ across different superblocks?  The remapping code doesn't
-allow cross-super operations, so ... pipes and splice, maybe?  I don't
-remember that code well enough to say for sure.
-
-I've been operating under the assumption that as long as one takes all
-the same class of lock at the same time (e.g. all the IOLOCKs, then all
-the MMAPLOCKs, then all the ILOCKs, like reflink does) that the
-incongruency in locking order rules within a class shouldn't be a
-problem.
-
-> > It might simply be time to convert all
-> > three XFS inode locks to use the same ordering rules.
+> > +
+> > +		if (block == journal->j_total_len - 1) {
+> > +			block_stop = phys_block;
+> > +		} else if (phys_block == block_stop + 1) {
+> > +			block_stop++;
+> > +			continue;
+> > +		}
+> > +
+> > +		/*
+> > +		 * not contiguous with prior physical block or this is last
+> > +		 * block of journal, take care of the region
+> > +		 */
+> > +		byte_start = block_start * journal->j_blocksize;
+> > +		byte_stop = block_stop * journal->j_blocksize;
+> > +		byte_count = (block_stop - block_start + 1) *
+> > +				journal->j_blocksize;
+> > +
+> > +		truncate_inode_pages_range(journal->j_dev->bd_inode->i_mapping,
+> > +				byte_start, byte_stop);
+> > +
+> > +		if (flags & JBD2_ERASE_FLAG_DISCARD) {
+> > +			err = blkdev_issue_discard(journal->j_dev,
+> > +					byte_start >> SECTOR_SHIFT,
+> > +					byte_count >> SECTOR_SHIFT,
+> > +					GFP_NOFS, 0);
+> > +		} else if (flags & JBD2_ERASE_FLAG_ZEROOUT) {
+> > +			err = blkdev_issue_zeroout(journal->j_dev,
+> > +					byte_start >> SECTOR_SHIFT,
+> > +					byte_count >> SECTOR_SHIFT,
+> > +					GFP_NOFS, 0);
+> > +		}
+> > +
+> > +		if (unlikely(err != 0)) {
+> > +			printk(KERN_ERR "JBD2: (error %d) unable to wipe journal at physical blocks %llu - %llu",
+> > +					err, block_start, block_stop);
+> > +			return err;
+> > +		}
+> > +
+> > +		block_start = phys_block;
+> > +		block_stop = phys_block;
 > 
-> Careful, there lie dragons along that path because of things like
-> how the inode cluster buffer operations work - they all assume
-> ascending inode number traversal within and across inode cluster
-> buffers and hence we do have locking order constraints based on
-> inode number...
-
-Fair enough, I'll leave the ILOCK alone. :)
-
---D
-
-> Cheers,
+> Is this right?  When we initialized the loop, above, block_stop was
+> set to block_start-1 (where block_start == phys_block).  So I think it
+> might be more correct to replace the above two lines with:
 > 
-> Dave.
-> -- 
-> Dave Chinner
-> david@fromorbit.com
+> 		block_start = ~((unsigned long long) 0);
+> 
+> ... and then let block_start and block_stop be initialized in a single
+> place.  Do you agree?  Does this make sense to you?
+
+I just tried this and it actually wouldn't work with this setup because
+phys_block would be set after the new call to bmap instead of keeping the value
+from the end of the prior loop. However, I have reworked the code using the
+general idea of the block_start reset you proposed and I will submit this in
+the next version.
+
+Thanks,
+Leah
+
+> 
+> 	       	       	    	      	    - Ted
