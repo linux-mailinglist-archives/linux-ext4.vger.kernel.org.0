@@ -2,64 +2,43 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCE76381DEE
-	for <lists+linux-ext4@lfdr.de>; Sun, 16 May 2021 12:18:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED5EC381DE5
+	for <lists+linux-ext4@lfdr.de>; Sun, 16 May 2021 12:18:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232067AbhEPKT7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 16 May 2021 06:19:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37682 "EHLO mail.kernel.org"
+        id S231694AbhEPKTz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 16 May 2021 06:19:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231386AbhEPKTx (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Sun, 16 May 2021 06:19:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 768AD611CA;
+        id S231127AbhEPKTw (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sun, 16 May 2021 06:19:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FC51611BF;
         Sun, 16 May 2021 10:18:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1621160317;
-        bh=uz12JEUkFl1zk0MKhwqoy7Swq0yIqwlg559U5vqLb64=;
-        h=From:To:Cc:Subject:Date:From;
-        b=NZoYuL4T8pZP0XVsuqpo1xaXga3djUflecwXx5LGut8qbhlW3Y9NzBmiQJpti66iQ
-         XEctA9a/tkYn6eIfMFOD23iU2NVyAWENwzAu5GTKImts+lpuYv0eNqgw/CUZ2ZkWss
-         fllyfJ2EOkHcmxftZ1iXvAx83SROwJwSmenZXooYhJTuiuJxIyQ+zDnL2KcckWJO3l
-         HXjHP9OcKsGcnNSkEPNKSqumMlW9xOUSyWQbW7rfHCgaVLEVCKAvIaHdwvFlEJ1a7n
-         T0Jc41mYwmUESpLNWcMxWdQoD+Yw7News+EAAT/i+fb8vmW0PjoNLGp13h2ptdOtyU
-         rkJ7P+/53g9gg==
+        bh=s1c6FRQrk3Zywp//EKJchxvYSWvmD48lKnYMpgt+0B0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=YJuSbr6FqahOnloOnH81PnVaoACs4c5ebe7j4HP5O4hgbj6F6Ibjy47zA+Dc15s1Y
+         /2cQWVVTM7cAF1U1flKBR0yavDmV3e3kqJT+jMVxf3qolteplAZW3EnwgCZp4/HWKq
+         pcW53gBM9VeuFHi3Xq+4rNxYOKJGSfswu2puWcw9kZVN6b25/RV29rThG/Ts1ucBqf
+         KAA6AbVN+CUE+Oq1auf7rUJRAx3wBVRNs2bJ68Vh/X8Jn7ceoVVssXLdNhVGaPwJve
+         Jz8V5B5Ie9/dtgE7JB4/xoI5HWituvALF7zgaGigNwLqWqdRpfkgFqHjWlGFwWnv9N
+         veuOHEu2zLNkQ==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1liDr1-003o89-5Z; Sun, 16 May 2021 12:18:35 +0200
+        id 1liDr1-003o8m-I3; Sun, 16 May 2021 12:18:35 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        "David S. Miller" <davem@davemloft.net>,
+        "Jonathan Corbet" <corbet@lwn.net>,
         "Theodore Ts'o" <tytso@mit.edu>,
-        Alan Stern <stern@rowland.harvard.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Jean Delvare <jdelvare@suse.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Thorsten Leemhuis <linux@leemhuis.info>,
-        alsa-devel@alsa-project.org, coresight@lists.linaro.org,
-        intel-wired-lan@lists.osuosl.org, kvm@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-ext4@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-usb@vger.kernel.org, mjpeg-users@lists.sourceforge.net,
-        netdev@vger.kernel.org, rcu@vger.kernel.org
-Subject: [PATCH v3 00/16] Replace some bad characters on documents
-Date:   Sun, 16 May 2021 12:18:17 +0200
-Message-Id: <cover.1621159997.git.mchehab+huawei@kernel.org>
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 10/16] docs: filesystems: ext4: blockgroup.rst: replace some characters
+Date:   Sun, 16 May 2021 12:18:27 +0200
+Message-Id: <5457dec1f5acbd168e7eead268541cadb2d8018c.1621159997.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <cover.1621159997.git.mchehab+huawei@kernel.org>
+References: <cover.1621159997.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -68,72 +47,34 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The conversion tools used during DocBook/LaTeX/html/Markdown->ReST 
+The conversion tools used during DocBook/LaTeX/html/Markdown->ReST
 conversion and some cut-and-pasted text contain some characters that
-aren't easily reachable on standard keyboards and/or could cause 
+aren't easily reachable on standard keyboards and/or could cause
 troubles when parsed by the documentation build system.
 
 Replace the occurences of the following characters:
 
-            - U+00a0 (' '): NO-BREAK SPACE
-            - U+00ad ('­'): SOFT HYPHEN
-            - U+2010 ('‐'): HYPHEN
-            - U+2217 ('∗'): ASTERISK OPERATOR
-            - U+feff ('﻿'): BOM
+	- U+2217 ('∗'): ASTERISK OPERATOR
+	  use ASCII asterisk instead of the ASTERISK OPERATOR
 
-I'll submit in separate another series to address other character occurrences.
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ Documentation/filesystems/ext4/blockgroup.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-v3:
-  - removed curly commas and changed the patch descriptions.
-v2:
-  - removed EM/EN dashes and changed the patch descriptions.
-
-
-Mauro Carvalho Chehab (16):
-  docs: hwmon: ir36021.rst: replace some characters
-  docs: admin-guide: reporting-issues.rst: replace some characters
-  docs: trace: coresight: coresight-etm4x-reference.rst: replace some
-    characters
-  docs: driver-api: ioctl.rst: replace some characters
-  docs: driver-api: media: drivers: zoran.rst: replace some characters
-  docs: usb: replace some characters
-  docs: userspace-api: media: v4l: dev-decoder.rst: replace some
-    characters
-  docs: userspace-api: media: dvb: intro.rst: replace some characters
-  docs: vm: zswap.rst: replace some characters
-  docs: filesystems: ext4: blockgroup.rst: replace some characters
-  docs: networking: device_drivers: replace some characters
-  docs: PCI: acpi-info.rst: replace some characters
-  docs: sound: kernel-api: writing-an-alsa-driver.rst: replace some
-    characters
-  docs: firmware-guide: acpi: dsd: graph.rst: replace some characters
-  docs: virt: kvm: api.rst: replace some characters
-  docs: RCU: replace some characters
-
- Documentation/PCI/acpi-info.rst               | 18 ++---
- .../Data-Structures/Data-Structures.rst       | 46 ++++++------
- .../Expedited-Grace-Periods.rst               | 36 +++++-----
- .../Tree-RCU-Memory-Ordering.rst              |  2 +-
- .../RCU/Design/Requirements/Requirements.rst  | 70 +++++++++----------
- .../admin-guide/reporting-issues.rst          |  2 +-
- Documentation/driver-api/ioctl.rst            |  8 +--
- .../driver-api/media/drivers/zoran.rst        |  2 +-
- Documentation/filesystems/ext4/blockgroup.rst |  2 +-
- .../firmware-guide/acpi/dsd/graph.rst         |  2 +-
- Documentation/hwmon/ir36021.rst               |  2 +-
- .../device_drivers/ethernet/intel/i40e.rst    |  6 +-
- .../device_drivers/ethernet/intel/iavf.rst    |  2 +-
- .../kernel-api/writing-an-alsa-driver.rst     |  2 +-
- .../coresight/coresight-etm4x-reference.rst   |  2 +-
- Documentation/usb/ehci.rst                    |  2 +-
- Documentation/usb/gadget_printer.rst          |  2 +-
- .../userspace-api/media/dvb/intro.rst         |  4 +-
- .../userspace-api/media/v4l/dev-decoder.rst   |  2 +-
- Documentation/virt/kvm/api.rst                | 28 ++++----
- Documentation/vm/zswap.rst                    |  4 +-
- 21 files changed, 122 insertions(+), 122 deletions(-)
-
+diff --git a/Documentation/filesystems/ext4/blockgroup.rst b/Documentation/filesystems/ext4/blockgroup.rst
+index 3da156633339..d5d652addce5 100644
+--- a/Documentation/filesystems/ext4/blockgroup.rst
++++ b/Documentation/filesystems/ext4/blockgroup.rst
+@@ -84,7 +84,7 @@ Without the option META\_BG, for safety concerns, all block group
+ descriptors copies are kept in the first block group. Given the default
+ 128MiB(2^27 bytes) block group size and 64-byte group descriptors, ext4
+ can have at most 2^27/64 = 2^21 block groups. This limits the entire
+-filesystem size to 2^21 ∗ 2^27 = 2^48bytes or 256TiB.
++filesystem size to 2^21 * 2^27 = 2^48bytes or 256TiB.
+ 
+ The solution to this problem is to use the metablock group feature
+ (META\_BG), which is already in ext3 for all 2.6 releases. With the
 -- 
 2.31.1
-
 
