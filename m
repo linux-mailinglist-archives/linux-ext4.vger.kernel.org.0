@@ -2,99 +2,104 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14744382ACB
-	for <lists+linux-ext4@lfdr.de>; Mon, 17 May 2021 13:21:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C57B5382AEA
+	for <lists+linux-ext4@lfdr.de>; Mon, 17 May 2021 13:25:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236665AbhEQLWe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 17 May 2021 07:22:34 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42102 "EHLO mx2.suse.de"
+        id S236731AbhEQL0Q (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 17 May 2021 07:26:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236528AbhEQLWd (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 17 May 2021 07:22:33 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D7294AED7;
-        Mon, 17 May 2021 11:21:15 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 56F6D1F2CA4; Mon, 17 May 2021 13:21:15 +0200 (CEST)
-Date:   Mon, 17 May 2021 13:21:15 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.cz>,
-        linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        ceph-devel@vger.kernel.org, Chao Yu <yuchao0@huawei.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Johannes Thumshirn <jth@kernel.org>,
-        linux-cifs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
-        linux-xfs@vger.kernel.org, Miklos Szeredi <miklos@szeredi.hu>,
-        Steve French <sfrench@samba.org>, Ted Tso <tytso@mit.edu>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH 03/11] mm: Protect operations adding pages to page cache
- with invalidate_lock
-Message-ID: <20210517112115.GC31755@quack2.suse.cz>
-References: <20210512101639.22278-1-jack@suse.cz>
- <20210512134631.4053-3-jack@suse.cz>
- <20210512152345.GE8606@magnolia>
- <20210513174459.GH2734@quack2.suse.cz>
- <20210513185252.GB9675@magnolia>
- <20210513231945.GD2893@dread.disaster.area>
- <20210514161730.GL9675@magnolia>
+        id S236707AbhEQL0N (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 17 May 2021 07:26:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8DE86100C;
+        Mon, 17 May 2021 11:24:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621250697;
+        bh=IqUZ0sNLzRXtoD/YFOpvkpCv7NFriIwqrV0nk+tQFjA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=SjZiucxTGgskw3bZqxU8hkRIDqvLkRPDUPXGysGlCLAY4qMHHwLFDNWf7GzwMPeSy
+         k6gBtne3rZl4OWw9EJiAKpC90ICt4wmL+dOW1/wtHGSzFBwlIEB7lPhufz0SGrH9U0
+         8BeoyWN0zwaq92smlvSCsJzkysY0ZKum/rQEXJAZuksdPKz9UCm2b6rTTMrYAXAHuw
+         m5K5R4IDiLhuXBms1/YwUa6BMqBAHs9uv2Ndu7DwgV1+6w7DgEDLXe2pUPRnLtE+Wd
+         GExQHVUHQydYOYDz+zZFmQU4ywGdNTNfxU1WppJsq+V8siRV5m9U5SOv7k7mbiC129
+         mEKSngo0SzESg==
+Date:   Mon, 17 May 2021 13:24:46 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     David Woodhouse <dwmw2@infradead.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Corentin Labbe <clabbe@baylibre.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Jean Delvare <jdelvare@suse.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Thorsten Leemhuis <linux@leemhuis.info>,
+        alsa-devel@alsa-project.org, coresight@lists.linaro.org,
+        intel-wired-lan@lists.osuosl.org, kvm@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-ext4@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-usb@vger.kernel.org, mjpeg-users@lists.sourceforge.net,
+        netdev@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [PATCH v3 00/16] Replace some bad characters on documents
+Message-ID: <20210517132446.7edba98f@coco.lan>
+In-Reply-To: <30cd6dd9d1049d56b629c92a5f385b84c026b445.camel@infradead.org>
+References: <cover.1621159997.git.mchehab+huawei@kernel.org>
+        <30cd6dd9d1049d56b629c92a5f385b84c026b445.camel@infradead.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210514161730.GL9675@magnolia>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri 14-05-21 09:17:30, Darrick J. Wong wrote:
-> On Fri, May 14, 2021 at 09:19:45AM +1000, Dave Chinner wrote:
-> > We've been down this path before more than a decade ago when the
-> > powers that be decreed that inode locking order is to be "by
-> > structure address" rather than inode number, because "inode number
-> > is not unique across multiple superblocks".
-> > 
-> > I'm not sure that there is anywhere that locks multiple inodes
-> > across different superblocks, but here we are again....
-> 
-> Hm.  Are there situations where one would want to lock multiple
-> /mappings/ across different superblocks?  The remapping code doesn't
-> allow cross-super operations, so ... pipes and splice, maybe?  I don't
-> remember that code well enough to say for sure.
+Em Mon, 17 May 2021 11:48:04 +0100
+David Woodhouse <dwmw2@infradead.org> escreveu:
 
-Splice and friends work one file at a time. I.e., first they fill a pipe
-from the file with ->read_iter, then they flush the pipe to the target file
-with ->write_iter. So file locking doesn't get coupled there.
+> On Sun, 2021-05-16 at 12:18 +0200, Mauro Carvalho Chehab wrote:
+> > The conversion tools used during DocBook/LaTeX/html/Markdown->ReST=20
+> > conversion and some cut-and-pasted text contain some characters that
+> > aren't easily reachable on standard keyboards and/or could cause=20
+> > troubles when parsed by the documentation build system. =20
+>=20
+> Better.
+>=20
+> But you still don't say *why* it matters whether given characters are
+> trivial to reach with standard keyboard layouts, or specify *what*
+> 'troubles' the offending characters cause.
 
-> I've been operating under the assumption that as long as one takes all
-> the same class of lock at the same time (e.g. all the IOLOCKs, then all
-> the MMAPLOCKs, then all the ILOCKs, like reflink does) that the
-> incongruency in locking order rules within a class shouldn't be a
-> problem.
+See the patches in the series. The reason for each particular case
+is there on each patch, like on this one:
 
-That's my understanding as well.
+	[PATCH v3 13/16] docs: sound: kernel-api: writing-an-alsa-driver.rst: repl=
+ace some characters
 
-> > > It might simply be time to convert all
-> > > three XFS inode locks to use the same ordering rules.
-> > 
-> > Careful, there lie dragons along that path because of things like
-> > how the inode cluster buffer operations work - they all assume
-> > ascending inode number traversal within and across inode cluster
-> > buffers and hence we do have locking order constraints based on
-> > inode number...
-> 
-> Fair enough, I'll leave the ILOCK alone. :)
+	The conversion tools used during DocBook/LaTeX/html/Markdown->ReST
+	conversion and some cut-and-pasted text contain some characters that
+	aren't easily reachable on standard keyboards and/or could cause
+	troubles when parsed by the documentation build system.
+	=20
+	Replace the occurences of the following characters:
+=09
+		- U+00a0 ('=C2=A0'): NO-BREAK SPACE
+		  as it can cause lines being truncated on PDF output
 
-OK, so should I change the order for invalidate_lock or shall we just leave
-that alone as it is not a practical problem AFAICT.
+	Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+
+Thanks,
+Mauro
