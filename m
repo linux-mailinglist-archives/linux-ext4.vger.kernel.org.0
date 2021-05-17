@@ -2,228 +2,79 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15E5E382DA2
-	for <lists+linux-ext4@lfdr.de>; Mon, 17 May 2021 15:40:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE50F3834B4
+	for <lists+linux-ext4@lfdr.de>; Mon, 17 May 2021 17:12:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237432AbhEQNl5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 17 May 2021 09:41:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237414AbhEQNl4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 May 2021 09:41:56 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05B61C061573;
-        Mon, 17 May 2021 06:40:39 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id j10so8828344lfb.12;
-        Mon, 17 May 2021 06:40:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=uwmsFmAlOo76er6Ji5UTRtBzo940BiJI4cuJFCDeXfU=;
-        b=UbVcU25g+r45EQTwnm5XC1IOOnRNwgWrtDyxScOR/YTVoFKqzGlP4B1BOwrph9s3j0
-         wCamxC//WsFQ6rS/eOHdKdkoehjoCvPCGuhzp7YR311zH5Jpe+QUZhmHsZ+sI0eyKz3E
-         39Gc+YlVZCGtGnfkUbwP4EzVSjxny52IRi/pjVXPLsAdcl5R1zD2aIZfOYHRllPGVG1x
-         8sCO9BTybuIFShckdHjyLXzCGDs/jfsm7zMUGeEBhAZghwrbI4dWlNmbc/4XbM2zz5qC
-         8Cqd6Bde0S1c3aP9Jn01B1i4bfoUPM/jTrBo95gmh9E2hOuQwllvwrZ/H5L8POG1PAo4
-         zp8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=uwmsFmAlOo76er6Ji5UTRtBzo940BiJI4cuJFCDeXfU=;
-        b=oJlIqDGmSQokT+9C63HVy4LW/Hvrj1I3B3cbj7EkNfkLcqoziOwva180kqzujUn1uh
-         4Bhmsc0f+EbLr08L5f50+nVXa+DS7fcCJsFhtQ2FVGf/FT8fBPpyJpZI08WwzRaM7eKH
-         HTb6AHry63atpce8jGaotLKKovcXwqCyfhTEZ0dCgb2wL3W5LWnphm8JlPwTvDBJMb4P
-         VPJaYuLGCMnU733HrqQTEbSlGF56QEZd6WIjhsE40ZHIO3B48Yf0K0vzk6aaFn0Wb4WT
-         /4GWbQw8wo39318dtC169foSlBFlmv3OVamKuQIMznK+WO4B1nPcdC3GjmUgfJbMusaQ
-         pfqQ==
-X-Gm-Message-State: AOAM530rrPcZI90hYhiPEDh5XjE7+u7R1V1GmgtQ9CVxfCJRpr0QgRly
-        SItu5laLoLt5C9Cf7OBtkA8=
-X-Google-Smtp-Source: ABdhPJzTPGDuXem4nPuheC3gCCJ7o7R2hUL5WcXmbbZB/BMgNw7/iq3HGgGkVdvgElCr2q/6mB1vGg==
-X-Received: by 2002:a19:7012:: with SMTP id h18mr2838021lfc.432.1621258837508;
-        Mon, 17 May 2021 06:40:37 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.227.227])
-        by smtp.gmail.com with ESMTPSA id r1sm2899113ljj.21.2021.05.17.06.40.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 06:40:37 -0700 (PDT)
-Date:   Mon, 17 May 2021 16:40:34 +0300
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2] ext4: fix memory leak in ext4_fill_super
-Message-ID: <20210517164034.1e7d712b@gmail.com>
-In-Reply-To: <20210430185046.15742-1-paskripkin@gmail.com>
-References: <YIt9IFY4Xsf5K+eZ@mit.edu>
-        <20210430185046.15742-1-paskripkin@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
+        id S242641AbhEQPLU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 17 May 2021 11:11:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33618 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242987AbhEQPI2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 17 May 2021 11:08:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621264031;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=I5rAv94XxstBbe41BltHMXkjh+gEB3rfy3QPuNUieqo=;
+        b=F1t8fETiFEM/n2WnF1zm3pU+khKpCFuBokIAg9b/FGlRXcxKhnEkiETGfo67Y+K7ZEPn60
+        WPZ2l1+1YGZkSgoEPaHwmbn6EcETcyhHWkiCw31FYAvYqfUlouHCcHeB9RAkfXcTd7Vqb6
+        7KMcQCN5dvtJrHC3qVKBCyZ6VxBo1nY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-5-tj8WPEpmMVO6J5tMs2USrQ-1; Mon, 17 May 2021 11:07:08 -0400
+X-MC-Unique: tj8WPEpmMVO6J5tMs2USrQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3DA96107ACCD;
+        Mon, 17 May 2021 15:07:05 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-217.rdu2.redhat.com [10.10.112.217])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E90135D6D7;
+        Mon, 17 May 2021 15:06:59 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J. Wong" <djwong@kernel.org>, Chris Mason <clm@fb.com>
+cc:     dhowells@redhat.com, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-cachefs@redhat.com, linux-fsdevel@vger.kernel.org
+Subject: How capacious and well-indexed are ext4, xfs and btrfs directories?
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <206077.1621264018.1@warthog.procyon.org.uk>
+Date:   Mon, 17 May 2021 16:06:58 +0100
+Message-ID: <206078.1621264018@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi!
+Hi,
 
-Is all ok with this one, or I should send v3? :)
+With filesystems like ext4, xfs and btrfs, what are the limits on directory
+capacity, and how well are they indexed?
 
-With regards,
-Pavel Skripkin
+The reason I ask is that inside of cachefiles, I insert fanout directories
+inside index directories to divide up the space for ext2 to cope with the
+limits on directory sizes and that it did linear searches (IIRC).
 
-On Fri, 30 Apr 2021 21:50:46 +0300
-Pavel Skripkin <paskripkin@gmail.com> wrote:
-> static int kthread(void *_create) will return -ENOMEM
-> or -EINTR in case of internal failure or
-> kthread_stop() call happens before threadfn call.
-> 
-> To prevent fancy error checking and make code
-> more straightforward we moved all cleanup code out
-> of kmmpd threadfn.
-> 
-> Also, dropped struct mmpd_data at all. Now struct super_block
-> is a threadfn data and struct buffer_head embedded into
-> struct ext4_sb_info.
-> 
-> Reported-by: syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
-> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-> ---
->  fs/ext4/ext4.h  |  4 ++++
->  fs/ext4/mmp.c   | 28 +++++++++++++---------------
->  fs/ext4/super.c | 10 ++++------
->  3 files changed, 21 insertions(+), 21 deletions(-)
-> 
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 826a56e3bbd2..62210cbea84b 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -1490,6 +1490,7 @@ struct ext4_sb_info {
->  	struct kobject s_kobj;
->  	struct completion s_kobj_unregister;
->  	struct super_block *s_sb;
-> +	struct buffer_head *s_mmp_bh;
->  
->  	/* Journaling */
->  	struct journal_s *s_journal;
-> @@ -3663,6 +3664,9 @@ extern struct ext4_io_end_vec
-> *ext4_last_io_end_vec(ext4_io_end_t *io_end); /* mmp.c */
->  extern int ext4_multi_mount_protect(struct super_block *,
-> ext4_fsblk_t); 
-> +/* mmp.c */
-> +extern void ext4_stop_mmpd(struct ext4_sb_info *sbi);
-> +
->  /* verity.c */
->  extern const struct fsverity_operations ext4_verityops;
->  
-> diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
-> index 795c3ff2907c..623bad399612 100644
-> --- a/fs/ext4/mmp.c
-> +++ b/fs/ext4/mmp.c
-> @@ -127,9 +127,9 @@ void __dump_mmp_msg(struct super_block *sb,
-> struct mmp_struct *mmp, */
->  static int kmmpd(void *data)
->  {
-> -	struct super_block *sb = ((struct mmpd_data *) data)->sb;
-> -	struct buffer_head *bh = ((struct mmpd_data *) data)->bh;
-> +	struct super_block *sb = (struct super_block *) data;
->  	struct ext4_super_block *es = EXT4_SB(sb)->s_es;
-> +	struct buffer_head *bh = EXT4_SB(sb)->s_mmp_bh;
->  	struct mmp_struct *mmp;
->  	ext4_fsblk_t mmp_block;
->  	u32 seq = 0;
-> @@ -245,12 +245,18 @@ static int kmmpd(void *data)
->  	retval = write_mmp_block(sb, bh);
->  
->  exit_thread:
-> -	EXT4_SB(sb)->s_mmp_tsk = NULL;
-> -	kfree(data);
-> -	brelse(bh);
->  	return retval;
->  }
->  
-> +void ext4_stop_mmpd(struct ext4_sb_info *sbi)
-> +{
-> +	if (sbi->s_mmp_tsk) {
-> +		kthread_stop(sbi->s_mmp_tsk);
-> +		brelse(sbi->s_mmp_bh);
-> +		sbi->s_mmp_tsk = NULL;
-> +	}
-> +}
-> +
->  /*
->   * Get a random new sequence number but make sure it is not greater
-> than
->   * EXT4_MMP_SEQ_MAX.
-> @@ -275,7 +281,6 @@ int ext4_multi_mount_protect(struct super_block
-> *sb, struct ext4_super_block *es = EXT4_SB(sb)->s_es;
->  	struct buffer_head *bh = NULL;
->  	struct mmp_struct *mmp = NULL;
-> -	struct mmpd_data *mmpd_data;
->  	u32 seq;
->  	unsigned int mmp_check_interval =
-> le16_to_cpu(es->s_mmp_update_interval); unsigned int wait_time = 0;
-> @@ -364,24 +369,17 @@ int ext4_multi_mount_protect(struct super_block
-> *sb, goto failed;
->  	}
->  
-> -	mmpd_data = kmalloc(sizeof(*mmpd_data), GFP_KERNEL);
-> -	if (!mmpd_data) {
-> -		ext4_warning(sb, "not enough memory for mmpd_data");
-> -		goto failed;
-> -	}
-> -	mmpd_data->sb = sb;
-> -	mmpd_data->bh = bh;
-> +	EXT4_SB(sb)->s_mmp_bh = bh;
->  
->  	/*
->  	 * Start a kernel thread to update the MMP block
-> periodically. */
-> -	EXT4_SB(sb)->s_mmp_tsk = kthread_run(kmmpd, mmpd_data,
-> "kmmpd-%.*s",
-> +	EXT4_SB(sb)->s_mmp_tsk = kthread_run(kmmpd, sb, "kmmpd-%.*s",
->  					     (int)sizeof(mmp->mmp_bdevname),
->  					     bdevname(bh->b_bdev,
->  						      mmp->mmp_bdevname));
->  	if (IS_ERR(EXT4_SB(sb)->s_mmp_tsk)) {
->  		EXT4_SB(sb)->s_mmp_tsk = NULL;
-> -		kfree(mmpd_data);
->  		ext4_warning(sb, "Unable to create kmmpd thread for
-> %s.", sb->s_id);
->  		goto failed;
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index b9693680463a..539f89c5431f 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -1244,8 +1244,8 @@ static void ext4_put_super(struct super_block
-> *sb) ext4_xattr_destroy_cache(sbi->s_ea_block_cache);
->  	sbi->s_ea_block_cache = NULL;
->  
-> -	if (sbi->s_mmp_tsk)
-> -		kthread_stop(sbi->s_mmp_tsk);
-> +	ext4_stop_mmpd(sbi);
-> +
->  	brelse(sbi->s_sbh);
->  	sb->s_fs_info = NULL;
->  	/*
-> @@ -5156,8 +5156,7 @@ static int ext4_fill_super(struct super_block
-> *sb, void *data, int silent) failed_mount3:
->  	flush_work(&sbi->s_error_work);
->  	del_timer_sync(&sbi->s_err_report);
-> -	if (sbi->s_mmp_tsk)
-> -		kthread_stop(sbi->s_mmp_tsk);
-> +	ext4_stop_mmpd(sbi);
->  failed_mount2:
->  	rcu_read_lock();
->  	group_desc = rcu_dereference(sbi->s_group_desc);
-> @@ -5952,8 +5951,7 @@ static int ext4_remount(struct super_block *sb,
-> int *flags, char *data) */
->  				ext4_mark_recovery_complete(sb, es);
->  			}
-> -			if (sbi->s_mmp_tsk)
-> -				kthread_stop(sbi->s_mmp_tsk);
-> +			ext4_stop_mmpd(sbi);
->  		} else {
->  			/* Make sure we can mount this feature set
-> readwrite */ if (ext4_has_feature_readonly(sb) ||
+For some applications, I need to be able to cache over 1M entries (render
+farm) and even a kernel tree has over 100k.
+
+What I'd like to do is remove the fanout directories, so that for each logical
+"volume"[*] I have a single directory with all the files in it.  But that
+means sticking massive amounts of entries into a single directory and hoping
+it (a) isn't too slow and (b) doesn't hit the capacity limit.
+
+David
+
+[*] What that means is netfs-dependent.  For AFS it would be a single volume
+within a cell; for NFS, it would be a particular FSID on a server, for
+example.  Kind of corresponds to a thing that gets its own superblock on the
+client.
 
