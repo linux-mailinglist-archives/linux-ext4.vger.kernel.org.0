@@ -2,74 +2,120 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64587386BB3
-	for <lists+linux-ext4@lfdr.de>; Mon, 17 May 2021 22:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA69A386DA0
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 May 2021 01:22:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244292AbhEQUxd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 17 May 2021 16:53:33 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:60428 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S237148AbhEQUxd (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 May 2021 16:53:33 -0400
-Received: from callcc.thunk.org (96-72-102-169-static.hfc.comcastbusiness.net [96.72.102.169] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 14HKqATe012357
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 17 May 2021 16:52:12 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 650BB420119; Mon, 17 May 2021 16:52:10 -0400 (EDT)
-Date:   Mon, 17 May 2021 16:52:10 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Wang Jianchao <jianchao.wan9@gmail.com>
-Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4: get discard out of jbd2 commit kthread
-Message-ID: <YKLXev4cjeRuGRqd@mit.edu>
-References: <53146e54-af36-0c32-cad8-433460461237@gmail.com>
+        id S242693AbhEQXX7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 17 May 2021 19:23:59 -0400
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:39953 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231318AbhEQXX7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 17 May 2021 19:23:59 -0400
+Received: from dread.disaster.area (pa49-195-118-180.pa.nsw.optusnet.com.au [49.195.118.180])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 2AE1E86326F;
+        Tue, 18 May 2021 09:22:38 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1limZJ-002Bw0-76; Tue, 18 May 2021 09:22:37 +1000
+Date:   Tue, 18 May 2021 09:22:37 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J. Wong" <djwong@kernel.org>, Chris Mason <clm@fb.com>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-cachefs@redhat.com,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: How capacious and well-indexed are ext4, xfs and btrfs
+ directories?
+Message-ID: <20210517232237.GE2893@dread.disaster.area>
+References: <206078.1621264018@warthog.procyon.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <53146e54-af36-0c32-cad8-433460461237@gmail.com>
+In-Reply-To: <206078.1621264018@warthog.procyon.org.uk>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0
+        a=xcwBwyABtj18PbVNKPPJDQ==:117 a=xcwBwyABtj18PbVNKPPJDQ==:17
+        a=kj9zAlcOel0A:10 a=5FLXtPjwQuUA:10 a=7-415B0cAAAA:8
+        a=C_5rSjyteTE79hNBMgUA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, May 17, 2021 at 11:57:09AM +0800, Wang Jianchao wrote:
-> Right now, discard is issued and waited to be completed in jbd2
-> commit kthread context after the logs are committed. When large
-> amount of files are deleted and discard is flooding, jbd2 commit
-> kthread can be blocked for long time. Then all of the metadata
-> operations can be blocked to wait the log space.
+On Mon, May 17, 2021 at 04:06:58PM +0100, David Howells wrote:
+> Hi,
 > 
-> One case is the page fault path with read mm->mmap_sem held, which
-> wants to update the file time but has to wait for the log space.
-> When other threads in the task wants to do mmap, then write mmap_sem
-> is blocked. Finally all of the following read mmap_sem requirements
-> are blocked, even the ps command which need to read the /proc/pid/
-> -cmdline. Our monitor service which needs to read /proc/pid/cmdline
-> used to be blocked for 5 mins.
+> With filesystems like ext4, xfs and btrfs, what are the limits on directory
+> capacity, and how well are they indexed?
 > 
-> This patch moves the discard out of jbd2 kthread context and do it
-> in kworker. And drain the kwork when cannot get space in mb buddy.
-> This is done out of jbd2 handle and won't block the commit process.
-> After that, we could use blk-wbt or other method to throttle the
-> discard and needn't to worry it block the jbd2 commit kthread any
-> more.
+> The reason I ask is that inside of cachefiles, I insert fanout directories
+> inside index directories to divide up the space for ext2 to cope with the
+> limits on directory sizes and that it did linear searches (IIRC).
 
-Wouldn't be much simpler to do something like this?
+Don't do that for XFS. XFS directories have internal hashed btree
+indexes that are far more space efficient than using fanout in
+userspace. i.e. The XFS hash index uses 8 bytes per dirent, and so
+in a 4kB directory block size structure can index about 500 entries
+per block. And being O(log N) for lookup, insert and remove, the
+fan-out within the directory hash per IO operation is an aorder of
+magnitude higher than using directories in userspace....
 
-		if (discard_bio) {
--			submit_bio_wait(discard_bio);
--			bio_put(discard_bio);
-+			submit_bio(discard_bio);
-		}
+The capacity limit for XFS is 32GB of dirent data, which generally
+equates to somewhere around 300-500 million dirents depending on
+filename size. The hash index is separate from this limit (has it's
+own 32GB address segment, as does the internal freespace map for the
+directory....
 
+The other directory design characterisitic of XFs directories is
+that readdir is always a sequential read through the dirent data
+with built in readahead. It does not need to look up the hash index
+to determine where to read the next dirents from - that's a straight
+"file offset to physical location" lookup in the extent btree, which
+is always cached in memory. So that's generally not a limiting
+factor, either.
 
-We're throwing away the return value from submit_bio_wait(), so
-there's no real need to wait for I/O to complete so we can fetch the
-I/O status.
+> For some applications, I need to be able to cache over 1M entries (render
+> farm) and even a kernel tree has over 100k.
 
-That way we don't need to move all of this to a kworker context.
+Not a problem for XFS with a single directory, but could definitely
+be a problem for others especially as the directory grows and
+shrinks. Last I measured, ext4 directory perf drops off at about
+80-90k entries using 40 byte file names, but you can get an idea of
+XFS directory scalability with large entry counts in commit
+756c6f0f7efe ("xfs: reverse search directory freespace indexes").
+I'll reproduce the table using a 4kB directory block size here:
 
-     	    	       	       	   - Ted
+     File count	      create time(sec) / rate (files/s)
+      10k			  0.41 / 24.3k
+      20k			  0.75 / 26.7k
+     100k			  3.27 / 30.6k
+     200k			  6.71 / 29.8k
+       1M			 37.67 / 26.5k
+       2M			 79.55 / 25.2k
+      10M			552.89 / 18.1k
+
+So that's single threaded file create, which shows the rough limits
+of insert into the large directory. There really isn't a major
+drop-off in performance until there are several million entries in
+the directory. Remove is roughly the same speed for the same dirent
+count.
+
+> What I'd like to do is remove the fanout directories, so that for each logical
+> "volume"[*] I have a single directory with all the files in it.  But that
+> means sticking massive amounts of entries into a single directory and hoping
+> it (a) isn't too slow and (b) doesn't hit the capacity limit.
+
+Note that if you use a single directory, you are effectively single
+threading modifications to your file index. You still need to use
+fanout directories if you want concurrency during modification for
+the cachefiles index, but that's a different design criteria
+compared to directory capacity and modification/lookup scalability.
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
