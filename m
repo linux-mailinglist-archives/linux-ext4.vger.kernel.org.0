@@ -2,79 +2,304 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE50F3834B4
-	for <lists+linux-ext4@lfdr.de>; Mon, 17 May 2021 17:12:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4691E38397D
+	for <lists+linux-ext4@lfdr.de>; Mon, 17 May 2021 18:20:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242641AbhEQPLU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 17 May 2021 11:11:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33618 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242987AbhEQPI2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 17 May 2021 11:08:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621264031;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=I5rAv94XxstBbe41BltHMXkjh+gEB3rfy3QPuNUieqo=;
-        b=F1t8fETiFEM/n2WnF1zm3pU+khKpCFuBokIAg9b/FGlRXcxKhnEkiETGfo67Y+K7ZEPn60
-        WPZ2l1+1YGZkSgoEPaHwmbn6EcETcyhHWkiCw31FYAvYqfUlouHCcHeB9RAkfXcTd7Vqb6
-        7KMcQCN5dvtJrHC3qVKBCyZ6VxBo1nY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-5-tj8WPEpmMVO6J5tMs2USrQ-1; Mon, 17 May 2021 11:07:08 -0400
-X-MC-Unique: tj8WPEpmMVO6J5tMs2USrQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3DA96107ACCD;
-        Mon, 17 May 2021 15:07:05 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-217.rdu2.redhat.com [10.10.112.217])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E90135D6D7;
-        Mon, 17 May 2021 15:06:59 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J. Wong" <djwong@kernel.org>, Chris Mason <clm@fb.com>
-cc:     dhowells@redhat.com, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-cachefs@redhat.com, linux-fsdevel@vger.kernel.org
-Subject: How capacious and well-indexed are ext4, xfs and btrfs directories?
+        id S244176AbhEQQRd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 17 May 2021 12:17:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347260AbhEQQP2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 May 2021 12:15:28 -0400
+Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DCA2C061573;
+        Mon, 17 May 2021 07:48:52 -0700 (PDT)
+Received: by mail-ua1-x931.google.com with SMTP id x9so2175238uao.3;
+        Mon, 17 May 2021 07:48:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DYKyZb27DBhk0jO7559bW7i4LLQKV2PlnEGsAAl2AiU=;
+        b=n9TbFSCeqwobyVH+KCISryh57SZBSx3E52wKd5mx9b8ssxYbUZwJo6UrAtI3lXgizf
+         2PEVnPvqFiY+gP+9GvvD1us3pP2N35lhW5DQgyk+5nXUe8tLlqxOLAQQq6BhMUWF3DFK
+         2CAnDzX4dkS2SZNFU5jFFXV6wTTJSpr+unekOa2Y6lyMULNNQpaBj9bXT7DMJN1mDf7j
+         6pkYsoZQjtpqqaj4Q8sly1Cueyrc2OkFVdDXed4N47LtiKirw/4ecJaS4xOZ+0FvQu2h
+         83VwgNgmYpYA+JLo9+TIhEEjscI/BX1fwHiaWz1EOzwqg10UovrQRXUeTKNYS0LBD4jD
+         DJLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DYKyZb27DBhk0jO7559bW7i4LLQKV2PlnEGsAAl2AiU=;
+        b=GnbOV4ZkuiIt4aw9xxm+AvMkppNzzQttffhDfamtOjnatFjjK5uJ6qD4aD7f9fGl2x
+         QSABwO2yCfqElsryFQYFyGP0Kpeo+CMDXFw7QEzVNkpkVRxBfoG/1jsolx2wpxNxVbCD
+         YvI1sVFGID6kgs+6jH2H/sefnVh0eydxXVhD9sVA2A+VeQSH2U+0DzngnTxYVq4VzKM/
+         LPr/Tbn5zZeRm+UiiTiB6uvbWLOB+EuHN7FjW4thWQurtHSnVBsDIz3MkmYg7W4B4dSa
+         vqOT70OC5d3BXg4qBMswG+LGwcYD5q8jX3ucrZ9e73i/wWA4J0wGf0FUFdGAZ3Dc9EC0
+         vE+w==
+X-Gm-Message-State: AOAM532nC3LPTKyciFjhe/tYi0iX9p3Tr65XyA9/IROtT6Fpsj+3++p1
+        VcZMSmO9T85g7qhkueljNE6Nu7xo9wn1ew==
+X-Google-Smtp-Source: ABdhPJyVMtLnQoqd8zrZ2ZI8M7GpPszEH/hktc0ql7XC38HLflMP6WVzuBfe2SYPYGjGIkQVU2i4bw==
+X-Received: by 2002:a9f:2183:: with SMTP id 3mr21095uac.0.1621262931177;
+        Mon, 17 May 2021 07:48:51 -0700 (PDT)
+Received: from leah-cloudtop2.c.googlers.com.com (241.36.196.104.bc.googleusercontent.com. [104.196.36.241])
+        by smtp.googlemail.com with ESMTPSA id x18sm2613486uao.19.2021.05.17.07.48.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 07:48:50 -0700 (PDT)
+From:   Leah Rumancik <leah.rumancik@gmail.com>
+To:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org
+Cc:     Leah Rumancik <lrumancik@google.com>,
+        Leah Rumancik <leah.rumancik@gmail.com>
+Subject: [PATCH v2] ext4/309: add test for ext4_dir_entry2 wipe
+Date:   Mon, 17 May 2021 14:48:49 +0000
+Message-Id: <20210517144849.867688-1-leah.rumancik@gmail.com>
+X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <206077.1621264018.1@warthog.procyon.org.uk>
-Date:   Mon, 17 May 2021 16:06:58 +0100
-Message-ID: <206078.1621264018@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi,
+From: Leah Rumancik <lrumancik@google.com>
 
-With filesystems like ext4, xfs and btrfs, what are the limits on directory
-capacity, and how well are they indexed?
+Check wiping of dir entry data upon removing a file, converting to an
+htree, and splitting htree nodes.
 
-The reason I ask is that inside of cachefiles, I insert fanout directories
-inside index directories to divide up the space for ext2 to cope with the
-limits on directory sizes and that it did linear searches (IIRC).
+Tests commit 6c0912739699d8e4b6a87086401bf3ad3c59502d ("ext4: wipe
+ext4_dir_entry2 upon file deletion").
 
-For some applications, I need to be able to cache over 1M entries (render
-farm) and even a kernel tree has over 100k.
+Signed-off-by: Leah Rumancik <leah.rumancik@gmail.com>
 
-What I'd like to do is remove the fanout directories, so that for each logical
-"volume"[*] I have a single directory with all the files in it.  But that
-means sticking massive amounts of entries into a single directory and hoping
-it (a) isn't too slow and (b) doesn't hit the capacity limit.
+Changes in v2:
+- fix formatting
+- use _get_block_size instead of manually finding blocksize
+- change scratch_dir to testdir to avoid confusion
+---
+ tests/ext4/309     | 191 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/ext4/309.out |   5 ++
+ tests/ext4/group   |   1 +
+ 3 files changed, 197 insertions(+)
+ create mode 100755 tests/ext4/309
+ create mode 100644 tests/ext4/309.out
 
-David
-
-[*] What that means is netfs-dependent.  For AFS it would be a single volume
-within a cell; for NFS, it would be a particular FSID on a server, for
-example.  Kind of corresponds to a thing that gets its own superblock on the
-client.
+diff --git a/tests/ext4/309 b/tests/ext4/309
+new file mode 100755
+index 00000000..a4f74e7f
+--- /dev/null
++++ b/tests/ext4/309
+@@ -0,0 +1,191 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2021 Google, Inc. All Rights Reserved.
++#
++# FS QA Test No. 309
++#
++# Test wiping of ext4_dir_entry2 data upon file removal, conversion
++# to htree, and splitting of htree nodes
++#
++seq=`basename $0`
++seqres=$RESULT_DIR/$seq
++echo "QA output created by $seq"
++
++status=1       # failure is the default!
++
++# get standard environment, filters and checks
++. ./common/rc
++. ./common/filter
++
++# remove previous $seqres.full before test
++rm -f $seqres.full
++
++# real QA test starts here
++_supported_fs ext4
++
++_require_scratch
++_require_command "$DEBUGFS_PROG" debugfs
++
++testdir="${SCRATCH_MNT}/testdir"
++
++# get block number filename's dir ent
++# argument 1: filename
++get_block() {
++	echo $($DEBUGFS_PROG $SCRATCH_DEV -R "dirsearch /testdir $1" 2>> $seqres.full | grep -o -m 1 "phys [0-9]\+" | cut -c 6-)
++}
++
++# get offset of filename's dirent within the block
++# argument 1: filename
++get_offset() {
++	echo $($DEBUGFS_PROG $SCRATCH_DEV -R "dirsearch /testdir $1" 2>> $seqres.full | grep -o -m 1 "offset [0-9]\+" | cut -c 8-)
++}
++
++# get record length of dir ent at specified block and offset
++# argument 1: block
++# argument 2: offset
++get_reclen() {
++	echo $(od $SCRATCH_DEV --skip-bytes=$(($1 * $blocksize + $2 + 4)) --read-bytes=2  -d -An  --endian=little | tr -d ' \t\n\r')
++}
++
++# reads portion of dirent that should be zero'd out (starting at offset of name_len = 6)
++# and trims 0s and whitespace
++# argument 1: block num containing dir ent
++# argument 2: offset of dir ent within block
++# argument 3: rec len of dir ent
++read_dir_ent() {
++	echo $(od $SCRATCH_DEV --skip-bytes=$(($1 * $blocksize + $2 + 6)) --read-bytes=$(($3 - 6)) -d -An -v | sed -e 's/[0 \t\n\r]//g')
++}
++
++# forces node split on test directory
++# can be used to convert to htree and to split node on existing htree
++# looks for jump in directory size as indicator of node split
++induce_node_split() {
++	_scratch_mount >> $seqres.full 2>&1
++	dir_size="$(stat --printf="%s" $testdir)"
++	while [[ "$(stat --printf="%s" $testdir)" == "$dir_size" ]]; do
++		file_num=$(($file_num + 1))
++		touch $testdir/test"$(printf "%04d" $file_num)"
++	done
++	_scratch_unmount >> $seqres.full 2>&1
++}
++
++#
++# TEST 1: dir entry fields wiped upon file removal
++#
++
++test_file1="test0001"
++test_file2="test0002"
++test_file3="test0003"
++
++_scratch_mkfs_sized $((128 * 1024 * 1024)) >> $seqres.full 2>&1
++
++# create scratch dir for testing
++# create some files with no name a substr of another name so we can grep later
++_scratch_mount >> $seqres.full 2>&1
++blocksize="$(_get_block_size $SCRATCH_MNT)"
++mkdir $testdir
++file_num=1
++for file_num in {1..10}; do
++	touch $testdir/test"$(printf "%04d" $file_num)"
++done
++_scratch_unmount >> $seqres.full 2>&1
++
++# get block, offset, and rec_len of two test files
++block1=$(get_block $test_file1)
++offset1=$(get_offset $test_file1)
++rec_len1=$(get_reclen $block1 $offset1)
++
++block2=$(get_block $test_file2)
++offset2=$(get_offset $test_file2)
++rec_len2=$(get_reclen $block2 $offset2)
++
++_scratch_mount >> $seqres.full 2>&1
++rm $testdir/$test_file1
++_scratch_unmount >> $seqres.full 2>&1
++
++# read name_len field to end of dir entry
++check1=$(read_dir_ent $block1 $offset1 $rec_len1)
++check2=$(read_dir_ent $block2 $offset2 $rec_len2)
++
++# if check is empty, bytes read was all 0's, file data wiped
++# at this point, check1 should be empty, but check 2 should not be
++if [ -z "$check1" ] && [ ! -z "$check2" ]; then
++	echo "Test 1 part 1 passed."
++else
++	_fail "ERROR (test 1 part 1): metadata not wiped upon removing test file 1"
++fi
++
++_scratch_mount >> $seqres.full 2>&1
++rm $testdir/$test_file2
++_scratch_unmount >> $seqres.full 2>&1
++
++check2=$(read_dir_ent $block2 $offset2 $rec_len2)
++
++# at this point, both should be wiped
++[ -z "$check2" ] && echo "Test 1 part 2 passed." || _fail "ERROR (test 1 part 2): metadata not wiped upon removing test file 2"
++
++#
++# TEST 2: old dir entry fields wiped when directory converted to htree
++#
++
++# get original location
++block1=$(get_block $test_file3)
++offset1=$(get_offset $test_file3)
++rec_len1=$(get_reclen $block1 $offset1)
++
++# sanity check, ensures not an htree yet
++check_htree=$($DEBUGFS_PROG $SCRATCH_DEV -R "htree_dump /testdir" 2>&1)
++if [[ "$check_htree" != *"htree_dump: Not a hash-indexed directory"* ]]; then
++	_fail "ERROR (test 2): already an htree"
++fi
++
++# force conversion to htree
++induce_node_split
++
++# ensure it is now an htree
++check_htree=$($DEBUGFS_PROG $SCRATCH_DEV -R "htree_dump /testdir" 2>&1)
++if [[ "$check_htree" == *"htree_dump: Not a hash-indexed directory"* ]]; then
++	_fail "ERROR (test 2): directory was not converted to an htree after creation of many files"
++fi
++
++# check that old data was wiped
++# (this location is not immediately reused by ext4)
++check1=$(read_dir_ent $block1 $offset1 $rec_len1)
++
++# at this point, check1 should be empty meaning data was wiped
++[ -z "$check1" ] &&  echo "Test 2 passed." || _fail "ERROR (test 2): file metadata not wiped during conversion to htree"
++
++#
++# TEST 3: old dir entries wiped when moved to another block during split_node
++#
++
++# force splitting of a node
++induce_node_split
++# use debugfs to get names of two files from block 3
++hdump=$($DEBUGFS_PROG $SCRATCH_DEV -R "htree_dump /testdir" 2>> $seqres.full)
++
++# get line number of "Reading directory block 3"
++block3_line=$(echo "$hdump" | awk '/Reading directory block 3/{ print NR; exit }')
++
++[ -z "$block3_line" ] && echo "ERROR (test 3): could not find block number 3 after node split"
++
++test_file1=$(echo "$hdump" | sed -n "$(($block3_line + 1))"p | cut -d ' ' -f4)
++test_file2=$(echo "$hdump" | sed -n "$(($block3_line + 2))"p | cut -d ' ' -f4)
++
++# check these filenames don't exist in block 1 or 2
++# get block numbers of first two blocks
++block1=$(echo "$hdump" | grep -o -m 1 "Reading directory block 1, phys [0-9]\+" | cut -c 33-)
++block2=$(echo "$hdump" | grep -o -m 1 "Reading directory block 2, phys [0-9]\+" | cut -c 33-)
++
++# search all of both these blocks for these file names
++check1=$(od $SCRATCH_DEV --skip-bytes=$(($block1 * $blocksize)) --read-bytes=$blocksize -c -An -v | tr -d '\\ \t\n\r\v' | grep -e $test_file1 -e $test_file2)
++check2=$(od $SCRATCH_DEV --skip-bytes=$(($block2 * $blocksize)) --read-bytes=$blocksize -c -An -v | tr -d '\\ \t\n\r\v' | grep -e $test_file1 -e $test_file2)
++
++if [ -z "$check1" ] && [ -z "$check2" ]; then
++	echo "Test 3 passed."
++else
++	_fail "ERROR (test 3): file name not wiped during node split"
++fi
++
++status=0
++exit
+diff --git a/tests/ext4/309.out b/tests/ext4/309.out
+new file mode 100644
+index 00000000..e5febaac
+--- /dev/null
++++ b/tests/ext4/309.out
+@@ -0,0 +1,5 @@
++QA output created by 309
++Test 1 part 1 passed.
++Test 1 part 2 passed.
++Test 2 passed.
++Test 3 passed.
+diff --git a/tests/ext4/group b/tests/ext4/group
+index ceda2ba6..e7ad3c24 100644
+--- a/tests/ext4/group
++++ b/tests/ext4/group
+@@ -59,3 +59,4 @@
+ 306 auto rw resize quick
+ 307 auto ioctl rw defrag
+ 308 auto ioctl rw prealloc quick defrag
++309 auto quick dir
+-- 
+2.31.1.751.gd2f1c929bd-goog
 
