@@ -2,86 +2,73 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8B3C38734A
-	for <lists+linux-ext4@lfdr.de>; Tue, 18 May 2021 09:25:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 162CA387BCB
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 May 2021 16:58:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347228AbhERHZ6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 18 May 2021 03:25:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23931 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347237AbhERHZs (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 18 May 2021 03:25:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621322670;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+q3ue0u3mbf3SfQ1ffYfx+/ezLG+XqLYumob4lCWjRE=;
-        b=d5iuHsyKFcanPt2vKq/VlTIn6MwppsTDDa4tI6Ox/ro/3bPw8E3yn+CAIOFFtADstPZctu
-        eKS8713/+4ZraVZd5uBp4GfMs0380QQODSOCNR3D1evOG6ESbmIeqJm3MuF371nBplZc+M
-        09yrnAnjwQ3YaR42YAyef3Z1GY8cSvw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-172-5mGOzpbxNGqXJc1lPnz6qg-1; Tue, 18 May 2021 03:24:27 -0400
-X-MC-Unique: 5mGOzpbxNGqXJc1lPnz6qg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BDA68107ACC7;
-        Tue, 18 May 2021 07:24:25 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-217.rdu2.redhat.com [10.10.112.217])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3548B59463;
-        Tue, 18 May 2021 07:24:20 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210517232237.GE2893@dread.disaster.area>
-References: <20210517232237.GE2893@dread.disaster.area> <206078.1621264018@warthog.procyon.org.uk>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     dhowells@redhat.com, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J. Wong" <djwong@kernel.org>, Chris Mason <clm@fb.com>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-cachefs@redhat.com,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: How capacious and well-indexed are ext4, xfs and btrfs directories?
+        id S244591AbhERO7Q (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 18 May 2021 10:59:16 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:46697 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1344163AbhERO7K (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 May 2021 10:59:10 -0400
+Received: from callcc.thunk.org (c-73-8-226-230.hsd1.il.comcast.net [73.8.226.230])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 14IEvinR005090
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 May 2021 10:57:46 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 2C8E6420119; Tue, 18 May 2021 10:57:44 -0400 (EDT)
+Date:   Tue, 18 May 2021 10:57:44 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Wang Jianchao <jianchao.wan9@gmail.com>
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ext4: get discard out of jbd2 commit kthread
+Message-ID: <YKPV6FZWfoUD3bgL@mit.edu>
+References: <53146e54-af36-0c32-cad8-433460461237@gmail.com>
+ <YKLXev4cjeRuGRqd@mit.edu>
+ <c7c00420-ed5c-0f5d-23c1-1c64b1800778@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <272938.1621322659.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Tue, 18 May 2021 08:24:19 +0100
-Message-ID: <272939.1621322659@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c7c00420-ed5c-0f5d-23c1-1c64b1800778@gmail.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Dave Chinner <david@fromorbit.com> wrote:
+On Tue, May 18, 2021 at 09:19:13AM +0800, Wang Jianchao wrote:
+> > That way we don't need to move all of this to a kworker context.
+> 
+> The submit_bio also needs to be out of jbd2 commit kthread as it may be
+> blocked due to blk-wbt or no enough request tag. ;)
 
-> > What I'd like to do is remove the fanout directories, so that for each=
- logical
-> > "volume"[*] I have a single directory with all the files in it.  But t=
-hat
-> > means sticking massive amounts of entries into a single directory and =
-hoping
-> > it (a) isn't too slow and (b) doesn't hit the capacity limit.
-> =
+Actually, there's a bigger deal that I hadn't realized, about why we
+is why are currently using submit_bio_wait().  We *must* wait until
+discard has completed before we call ext4_free_data_in_buddy(), which
+is what allows those blocks to be reused by the block allocator.
 
-> Note that if you use a single directory, you are effectively single
-> threading modifications to your file index. You still need to use
-> fanout directories if you want concurrency during modification for
-> the cachefiles index, but that's a different design criteria
-> compared to directory capacity and modification/lookup scalability.
+If the discard happens after we reallocate the block, there is a good
+chance that we will end up corrupting a data or metadata block,
+leading to user data loss.
 
-I knew there was something I was overlooking.  This might be a more import=
-ant
-criterion.  I should try benchmarking this, see what difference it makes
-eliminating the extra lookup step (which is probably cheap) versus the
-concurrency.
+There's another corollary to this; if you use blk-wbt, and you are
+doing lots of deletes, and we move this all to a writeback thread,
+this *significantly* increases the chance that the user will see
+ENOSPC errors in the case where they are with a very full (close to
+100% used) file system.
 
-David
+I'd argue that this is a *really* good reason why using mount -o
+discard is Just A Bad Idea if you are running with blk-wbt.  If
+discards are slow, using fstrim is a much better choice.  It's also
+the case that for most SSD's and workloads, doing frequent discards
+doesn't actually help that much.  The write endurance of the device is
+not compromised that much if you only run fs-trim and discard unused
+blocks once a day, or even once a week --- I only recommend use of
+mount -o discard in cases where the discard operation is effectively
+free.  (e.g., in cases where the FTL is implemented on the Host OS, or
+you are running with super-fast flash which is PCIe or NVMe attached.)
 
+Cheers,
+
+					- Ted
