@@ -2,256 +2,130 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C36D3883E4
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 May 2021 02:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB63D38846A
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 May 2021 03:29:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244387AbhESAqC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 18 May 2021 20:46:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60788 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239167AbhESAqC (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 18 May 2021 20:46:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 4D2F46135D
-        for <linux-ext4@vger.kernel.org>; Wed, 19 May 2021 00:44:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621385083;
-        bh=CAxkZsyn+PWnqO+Fm1lNTJEIMmjeB8E9iQr00J5Wt1A=;
-        h=From:To:Subject:Date:From;
-        b=Si2DYBbdPE1yxLQoRhasaIsMSxs+QkojHxNcUMt9cdmVi/9nqU+OKmzozWzpwK9dq
-         uFJwIXM2lV7zVbboF+fOt6oZaEAjrPZfDiu2arE4Lxp04TCtjvR31Dx3b0IR8eghYq
-         QoQZJKusVOf4BLgaCLLnEQYTTTOOymOW1zINrnMmMJcz09moL6tESwB8cQ6z9Jyj3t
-         H4Jhex8JSZhSTCQjBNdKwlUObpu/kmWZTEHLWj/E1pOxTdyHaLT0wMOIM5m4easNnx
-         oWYVcrV9SYnC26gZT/QJQnEgNwU2nsDCncOchbsBMIKsXDQY2MWTy31NwvQ94AS/a3
-         x6rLZz/76mCGg==
-Received: by pdx-korg-bugzilla-2.web.codeaurora.org (Postfix, from userid 48)
-        id 3E2C661249; Wed, 19 May 2021 00:44:43 +0000 (UTC)
-From:   bugzilla-daemon@bugzilla.kernel.org
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 213137] New: NVMe device file system corruption immediately
- after mkfs
-Date:   Wed, 19 May 2021 00:44:42 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: new
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: btmckee9@gmail.com
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: bug_id short_desc product version
- cf_kernel_version rep_platform op_sys cf_tree bug_status bug_severity
- priority component assigned_to reporter cf_regression
-Message-ID: <bug-213137-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        id S232784AbhESBae (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 18 May 2021 21:30:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231689AbhESBae (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 May 2021 21:30:34 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C580C06175F;
+        Tue, 18 May 2021 18:29:15 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id t11so6506106pjm.0;
+        Tue, 18 May 2021 18:29:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=VhtGsRQc+R6QdXUUosI8SyxA+4ob1+wx8JCGQB2aGos=;
+        b=ePVH2Y9lhx8keq05JyRcVnQiJ5/gCyhzA0oOtmSk9HelPosG8YbTaA5ZFIcuimZVI5
+         km9ct2j/Pxmvf6j85CjNGWJ6yx/ZVmZbv6FDNXfQePzxoXzM7cv1KtaCj9ilR6kvXj/M
+         kGnPnQwMmAVLfLalYfGnQ/tReLMIdbN4AvC3ljF8WR2Fi09WrwMR9AucTa1Whk6rzbGp
+         ONyee7EkgN+k5zIEeqS/4nZl1KJ5OzdHyaiJpyuZAgcd06Vfn/KoZTR+1hiWquoSTb4t
+         XVtS5bM+4jzbmXcAEQ2nsF9WC7zG9B/zcmK3kNYCuVaAWqKq/6FeqVLRlGVxZ8fThXSV
+         Cdvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VhtGsRQc+R6QdXUUosI8SyxA+4ob1+wx8JCGQB2aGos=;
+        b=j+s6qmVjNt8N1Tkl0iaSLV+cSpWG64CsH1JPFVSAFX9guTxj/27PsWEz7ITpc1YjK2
+         mIR0ydq5K6VKkHIyk5i/TOP5JoGFu0c/IGvgQUH1Wi27vzQ3sAUxbJDcKbM4X8OIBNgr
+         ZMsH0tMXV5+tnpAM62ETD3I2nnpoHDzVw+AOZiUumKd4Mi+cV5eSQg+hL1ooltMThXls
+         trkQXF8oH5R8xf/gXVkOjwY1B56p6QT1dcsmiNeWeSPW8L3VW/pM3j5DOh264UZ2O/hW
+         dNeccSb4wfEXymkW5gxsjBZ4hwNw8NkERto+gWlXw/TmbUY0DL0ZDas9W8SNb96a8CeC
+         wIrA==
+X-Gm-Message-State: AOAM533cpwvCKyKZz/GBtQa9mVvXIHajhjVkadl0xKxSOOyR5ljf8x53
+        R5nZIDlj7qpoa++MeeeNudpCogWqd1CELA==
+X-Google-Smtp-Source: ABdhPJzuGgnZo4UuzRhIECEwsmc+lXFofPjkB3LTrhrSQIILdP9TbmpsjUhs6nZL4cW6DnPToNJf7A==
+X-Received: by 2002:a17:902:d305:b029:f0:d3db:26db with SMTP id b5-20020a170902d305b02900f0d3db26dbmr7808100plc.36.1621387754639;
+        Tue, 18 May 2021 18:29:14 -0700 (PDT)
+Received: from jianchwadeMacBook-Pro.local ([122.10.101.135])
+        by smtp.gmail.com with ESMTPSA id c16sm5908231pfd.206.2021.05.18.18.29.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 May 2021 18:29:14 -0700 (PDT)
+Subject: Re: [PATCH] ext4: get discard out of jbd2 commit kthread
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <53146e54-af36-0c32-cad8-433460461237@gmail.com>
+ <YKLXev4cjeRuGRqd@mit.edu> <c7c00420-ed5c-0f5d-23c1-1c64b1800778@gmail.com>
+ <YKPV6FZWfoUD3bgL@mit.edu>
+From:   Wang Jianchao <jianchao.wan9@gmail.com>
+Message-ID: <1d43599f-fed1-b37e-a411-2b0f31583991@gmail.com>
+Date:   Wed, 19 May 2021 09:27:56 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.1
 MIME-Version: 1.0
+In-Reply-To: <YKPV6FZWfoUD3bgL@mit.edu>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D213137
-
-            Bug ID: 213137
-           Summary: NVMe device file system corruption immediately after
-                    mkfs
-           Product: File System
-           Version: 2.5
-    Kernel Version: 5.11.21
-          Hardware: ARM
-                OS: Linux
-              Tree: Mainline
-            Status: NEW
-          Severity: normal
-          Priority: P1
-         Component: ext4
-          Assignee: fs_ext4@kernel-bugs.osdl.org
-          Reporter: btmckee9@gmail.com
-        Regression: No
-
-When upgrading from 5.11.0 to 5.12.X or 5.11.21 there was an issue that cro=
-pped
-up with an ext4 partition on an NVMe drive. The drive crashed with an error=
- on
-a boot up with the later kernels. I have subsequently gone back to 5.11 on =
-the
-ARMv7 and it works fine.
-
-For the following keep in mind that nvme0n1p1 is the correct partition.
-
-The following is the kernel panic I received from 5.11.21:
-
-[    2.764492] EXT4-fs error (device nvme0n1p1): ext4_get_journal_inode:522=
-7:
-inode #8: comm swapper/0: iget: checksum invalid
-[    2.774712]  mmcblk0: p1 p2 p3
-[    2.775694] EXT4-fs (nvme0n1p1): no journal found
-[    2.791532] exFAT-fs (nvme0n1p1): invalid boot record signature
-[    2.797446] exFAT-fs (nvme0n1p1): failed to read boot sector
-[    2.803118] exFAT-fs (nvme0n1p1): failed to recognize exfat type
-[    2.809739] List of all partitions:
-[    2.813229] 0100            8192 ram0=20
-[    2.813238]  (driver?)
-[    2.819324] 0101            8192 ram1=20
-[    2.819332]  (driver?)
-[    2.825465] 103:00000  244198584 nvme0n1=20
-[    2.825475]  (driver?)
-[    2.831830]   103:00001  244194304 nvme0n1p1
-41a7d0bc-dd30-544f-8854-7939357a793d
-[    2.831840]=20
-[    2.840788] b300         7847936 mmcblk0=20
-[    2.840797]  driver: mmcblk
-[    2.847572]   b301         1024000 mmcblk0p1 a2b2f070-01
-[    2.847581]=20
-[    2.854374]   b302         1843200 mmcblk0p2 a2b2f070-02
-[    2.854382]=20
-[    2.861169]   b303           10240 mmcblk0p3 a2b2f070-03
-[    2.861177]=20
-[    2.867950] No filesystem could mount root, tried:=20
-[    2.867955]  ext3
-[    2.872821]  ext4
-[    2.874740]  ext2
-[    2.876658]  vfat
-[    2.878576]  exfat
-[    2.880504]  ntfs
-[    2.882510]=20
-[    2.885912] Kernel panic - not syncing: VFS: Unable to mount root fs on
-unknown-block(259,1)
 
 
+On 2021/5/18 10:57 PM, Theodore Y. Ts'o wrote:
+> On Tue, May 18, 2021 at 09:19:13AM +0800, Wang Jianchao wrote:
+>>> That way we don't need to move all of this to a kworker context.
+>>
+>> The submit_bio also needs to be out of jbd2 commit kthread as it may be
+>> blocked due to blk-wbt or no enough request tag. ;)
+> 
+> Actually, there's a bigger deal that I hadn't realized, about why we
+> is why are currently using submit_bio_wait().  We *must* wait until
+> discard has completed before we call ext4_free_data_in_buddy(), which
+> is what allows those blocks to be reused by the block allocator.
+> 
+> If the discard happens after we reallocate the block, there is a good
+> chance that we will end up corrupting a data or metadata block,
+> leading to user data loss.
 
-After booting mmc, I ran e2fsck:
+Yes
 
-threads /mnt # e2fsck /dev/sdb=20=20
-e2fsck 1.46.2 (28-Feb-2021)=20
-ext2fs_open2: Bad magic number in super-block=20
-e2fsck: Superblock invalid, trying backup blocks...=20
-e2fsck: Bad magic number in super-block while trying to open /dev/sdb=20
-The superblock could not be read or does not describe a valid ext2/ext3/ext=
-4=20
-filesystem. If the device is valid and it really contains an ext2/ext3/ext4=
-=20
-filesystem (and not swap or ufs or something else), then the superblock=20
-is corrupt, and you might try running e2fsck with an alternate superblock:=
-=20
-   e2fsck -b 8193 <device>=20
- or=20
-   e2fsck -b 32768 <device>=20
-/dev/sdb contains `DOS/MBR boot sector; partition 1 : ID=3D0x83, start-CHS
-(0x0,32,33), end-CHS (0x199,250,33), startsector 2048, 500101120 sectors,
-extended=20
-partition table (last)' data
+> 
+> There's another corollary to this; if you use blk-wbt, and you are
+> doing lots of deletes, and we move this all to a writeback thread,
+> this *significantly* increases the chance that the user will see
+> ENOSPC errors in the case where they are with a very full (close to
+> 100% used) file system.
 
-I was not able to repair this at all. I even blanked the partition table and
-created a new partition and as soon as it was made, it failed mount and then
-fsck. I tried ext4 and ext2:
+We would flush the kwork that's doing discard in this patch.
+That's done in ext4_should_retry_alloc()
 
-root@cyclone5:/mnt# mount /dev/nvme0n1p1 /mnt/gentoo
-[  811.671376] EXT4-fs error (device nvme0n1p1): ext4_get_journal_inode:522=
-7:
-inode #8: comm mount: iget: bad extra_isize 51821 (inode size 256)
-[  811.684101] EXT4-fs (nvme0n1p1): no journal found
-mount: /mnt/gentoo: wrong fs type, bad option, bad superblock on
-/dev/nvme0n1p1, missing codepage or helper program, or other error.
-root@cyclone5:/mnt# fsck.ext4 /dev/nvme0n1p1
-e2fsck 1.45.3 (14-Jul-2019)
-/dev/nvme0n1p1 contains a file system with errors, check forced.
-Pass 1: Checking inodes, blocks, and sizes
-Pass 2: Checking directory structure
-Pass 3: Checking directory connectivity
-Pass 4: Checking reference counts
-Pass 5: Checking group summary information
-/dev/nvme0n1p1: 11/15630336 files (0.0% non-contiguous), 1258688/62514766
-blocks
-root@cyclone5:/mnt# fsck.ext4 /dev/nvme0n1p1
-e2fsck 1.45.3 (14-Jul-2019)
-/dev/nvme0n1p1: clean, 11/15630336 files, 1258688/62514766 blocks
-root@cyclone5:/mnt# mount /dev/nvme0n1p1 /mnt/gentoo
-[  868.054311] EXT4-fs error (device nvme0n1p1): ext4_get_journal_inode:522=
-7:
-inode #8: comm mount: iget: bad extra_isize 51821 (inode size 256)
-[  868.067073] EXT4-fs (nvme0n1p1): no journal found
-mount: /mnt/gentoo: wrong fs type, bad option, bad superblock on
-/dev/nvme0n1p1, missing codepage or helper program, or other error.
-root@cyclone5:/mnt# fsck.ext4 /dev/nvme0n1p1=20=20=20=20=20=20=20=20
-e2fsck 1.45.3 (14-Jul-2019)
-/dev/nvme0n1p1 contains a file system with errors, check forced.
-Pass 1: Checking inodes, blocks, and sizes
-Pass 2: Checking directory structure
-Pass 3: Checking directory connectivity
-Pass 4: Checking reference counts
-Pass 5: Checking group summary information
-/dev/nvme0n1p1: 11/15630336 files (0.0% non-contiguous), 1258688/62514766
-blocks
-root@cyclone5:/mnt# fsck.ext4 /dev/nvme0n1p1
-e2fsck 1.45.3 (14-Jul-2019)
-/dev/nvme0n1p1: clean, 11/15630336 files, 1258688/62514766 blocks
-root@cyclone5:/mnt# mkfs.ext2 /dev/nvme0n1p1=20
-mke2fs 1.45.3 (14-Jul-2019)
-/dev/nvme0n1p1 contains a ext4 file system
-        created on Tue May 18 23:21:23 2021
-Proceed anyway? (y,N) y
-Discarding device blocks: done=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20
-Creating filesystem with 62514766 4k blocks and 15630336 inodes
-Filesystem UUID: 0e5ae116-2982-4ad5-b178-2099b6bda7f2
-Superblock backups stored on blocks:=20
-        32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654=
-208,=20
-        4096000, 7962624, 11239424, 20480000, 23887872
+> 
+> I'd argue that this is a *really* good reason why using mount -o
+> discard is Just A Bad Idea if you are running with blk-wbt.  If
+> discards are slow, using fstrim is a much better choice.  It's also
+> the case that for most SSD's and workloads, doing frequent discards
+> doesn't actually help that much.  The write endurance of the device is
+> not compromised that much if you only run fs-trim and discard unused
+> blocks once a day, or even once a week --- I only recommend use of
+> mount -o discard in cases where the discard operation is effectively
+> free.  (e.g., in cases where the FTL is implemented on the Host OS, or
+> you are running with super-fast flash which is PCIe or NVMe attached.)
 
-Allocating group tables: done=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20
-Writing inode tables: done=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20
-Writing superblocks and filesystem accounting information: done=20=20=20=20=
-=20
+We're running ext4 with discard on a nbd device whose backend is storage
+cluster. The discard can help to free the unused space to storage pool.
 
-root@cyclone5:/mnt# mount /dev/nvme0n1p1 /mnt/gentoo
-[  926.309614] EXT2-fs (nvme0n1p1): error: can't find an ext2 filesystem on=
- dev
-nvme0n1p1.
-mount: /mnt/gentoo: wrong fs type, bad option, bad superblock on
-/dev/nvme0n1p1, missing codepage or helper program, or other error.
-root@cyclone5:/mnt# fsck.ext2 /dev/nvme0n1p1=20=20=20=20=20=20=20=20=20
-e2fsck 1.45.3 (14-Jul-2019)
-/dev/nvme0n1p1: clean, 11/15630336 files, 996093/62514766 blocks
-root@cyclone5:/mnt# uname -a
-Linux cyclone5 5.11.21-wtec #1 SMP Mon May 17 16:36:49 PDT 2021 armv7l
-GNU/Linux
-root@cyclone5:/mnt# halt
+And sometimes application delete a lot of data and discard is flooding. 
+Then we see the jbd2 commit kthread is blocked for a long time. Even
+move the discard out of jbd2, we still see the write IO of jbd2 log
+could be blocked. blk-wbt could help to relieve this. Finally the delay
+is shift to allocation path. But this is better than blocking the page
+fault path which holds the read mm->mmap_sem.
 
-I'm having a similar problem (but maybe not related) with a jmicron USB to =
-PCIe
-controller on my x86-64 laptop. It seems to have the same problem creating
-usable partitions on the NVMe. I have not verified that I can get it to work
-with an older kernel. I'll have to hand install and build it as I have alre=
-ady
-removed the old version of the kernel from my Gentoo install.
+Best regards
+Jianchao
 
-I have many x86-64 machines running 5.12.4 with ext4 partitions on nvme and=
- I'm
-a little nervous and thinking I might want to go back for a while.
-
-Perhaps someone broke backward compatibility on the filesystem driver?
-
-I have to dig into this because I can't ship embedded hardware with nvme is=
-sues
-and I don't like limiting myself to old kernels, so I thought I'd come here=
- and
-ask for advice. Keep in mind I'm a hardware engineer, so be nice and I'll l=
-et
-you borrow my soldering iron from time to time.
-
---=20
-You may reply to this email to add a comment.
-
-You are receiving this mail because:
-You are watching the assignee of the bug.=
+> 
+> Cheers,
+> 
+> 					- Ted
+> 
