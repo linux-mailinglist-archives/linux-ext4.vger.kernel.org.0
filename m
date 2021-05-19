@@ -2,154 +2,331 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C1C7389015
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 May 2021 16:13:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12BD73891D7
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 May 2021 16:47:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347142AbhESOOw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 19 May 2021 10:14:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37456 "EHLO
+        id S1354635AbhESOtR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 19 May 2021 10:49:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347100AbhESOOu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 19 May 2021 10:14:50 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BD6DC061761
-        for <linux-ext4@vger.kernel.org>; Wed, 19 May 2021 07:13:29 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id u4-20020a05600c00c4b02901774b80945cso3531322wmm.3
-        for <linux-ext4@vger.kernel.org>; Wed, 19 May 2021 07:13:29 -0700 (PDT)
+        with ESMTP id S239447AbhESOtR (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 19 May 2021 10:49:17 -0400
+Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80FB6C06175F;
+        Wed, 19 May 2021 07:47:57 -0700 (PDT)
+Received: by mail-vs1-xe2c.google.com with SMTP id f11so6880114vst.0;
+        Wed, 19 May 2021 07:47:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=scylladb-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=F1uHj1sY3bif8fDQ1vUSxLLQOsCnGsqmIKuxItWP5SE=;
-        b=SDA0dOzGVO+57kjNrjJvQNP1xKWe1BPMgFM9LOB60TBGNsZruo26eZNVXQqHe09Wyh
-         t3YEDBwQS7nNB1xn9iJx8liHXnOFRK2JiAxiWSDZmd0y2ICBe0XzbJMM27m7C4SUQ3mu
-         vTwkFi8o8/S48uFCjBnplHtzTETQR9EHC8t3XNRux0bH+1PsALWdCxh/yfztwXYCDoKj
-         4vfbQDwTnryp2WQTliveGOceQ94Hg4RgVC2Z5C9umWFF3RgOi+xYwuw2KRaukYTlDn8q
-         5EcLldNa9cFNt2eOyYdEbGWwfhZhm6l/gvIk70K66a+C3/1G3PH9v28xbGCgNBSLKwPX
-         ISNQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=x7EP6TkfqjqIosv16psoy1Lkvx43k0vacOuCj8yOwd8=;
+        b=NS040TLmzVTyo/GdVgO6ujmedBNTHgdzFYSEQhdrfPAzZ3YYm/AvZSY9fLO1iHEVVo
+         C2lVdiRvLPV2tQyGJUuCcPWxStihRMN8J0+1qQlB0SPOkvQ6o/Roqj7SqNxuw76cWT9p
+         2qzzl0wnTACRqQ8qF+GyMeSlNBfDqxArECgUTJbc+GX5ShZ4YTVlyozNYR8nNCRKsOmX
+         BZOva/s3AsXkoqG1ZyFHRoSphr1UdU4EVj0cOXPC02VExPcR0Z3BpWxMED5tXSa1+oxI
+         VdFbxISTiBOuB/3wrYobOyPZ4xeibDDCq9jocxNwc2fu3thyukQhYwvg2LY9dGm9ILRq
+         IeDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-transfer-encoding:content-language;
-        bh=F1uHj1sY3bif8fDQ1vUSxLLQOsCnGsqmIKuxItWP5SE=;
-        b=r9LeT8Wf7xnxifpGzm1cB6hK2mQeKymRJOm3SSeDt8ILX45cMmCjKP/dln1mbosN9U
-         FgpN9lUPKVNnqbpjVci7sEDJJ/MG7fHXjqMsJ9YMQHxG9MLRRwapZdO8T3Xz6K8mrMP2
-         bjMwoHWUU4l9j9zh/RpWqG6/9vea4M+ddg2+Ix184vhfCa65XmZM5KaU0zd93Fmn6G6t
-         aXfNQmcmQf4zqy9n0ddg5wWk4b980Zptu7Oc559TgAo0+wg+dZOktrCA+wtjn+iWCQ6H
-         GCmnLSoO6bBpFDXLz652gvjCCI1QJlcN9hptGnpB474ySxekiLTcfp/iw1cJejgYMf7B
-         2qQw==
-X-Gm-Message-State: AOAM53288YmwW8Wt14CXzOvvsd08TGor4vvwJI4b39wsu7frPr9lWiOk
-        I3fHrfrel0VJrkwykZzP7L89Ww==
-X-Google-Smtp-Source: ABdhPJxk+UI+VUW6asY9NMngA528APjLs2XsUer7iCT6Z9lvFyaeGL+Kw3GXszS2nh/Snl9Wx61CBA==
-X-Received: by 2002:a05:600c:19cc:: with SMTP id u12mr7608624wmq.178.1621433607809;
-        Wed, 19 May 2021 07:13:27 -0700 (PDT)
-Received: from avi.scylladb.com (system.cloudius-systems.com. [199.203.229.89])
-        by smtp.gmail.com with ESMTPSA id h9sm20842196wmb.35.2021.05.19.07.13.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 May 2021 07:13:27 -0700 (PDT)
-Subject: Re: How capacious and well-indexed are ext4, xfs and btrfs
- directories?
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     David Howells <dhowells@redhat.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J. Wong" <djwong@kernel.org>, Chris Mason <clm@fb.com>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-cachefs@redhat.com,
-        linux-fsdevel@vger.kernel.org
-References: <206078.1621264018@warthog.procyon.org.uk>
- <20210517232237.GE2893@dread.disaster.area>
- <ad2e8757-41ce-41e3-a22e-0cf9e356e656@scylladb.com>
- <20210519125743.GP2893@dread.disaster.area>
-From:   Avi Kivity <avi@scylladb.com>
-Organization: ScyllaDB
-Message-ID: <c5d83b86-321e-349b-303c-b6027bcd9ae1@scylladb.com>
-Date:   Wed, 19 May 2021 17:13:25 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=x7EP6TkfqjqIosv16psoy1Lkvx43k0vacOuCj8yOwd8=;
+        b=LyzEGTu8nhu8dyzs+q21Xr1nMsjCnUJLi25IZxMme869CQZrvNGWgIu1mBTk6yCPXV
+         uYAoZusM0gQL8j27vAroXjCGqNPsZPtg9Z/+QJIvHCa0+FbTV77sHFR1pfbUbLXRPLXP
+         d9NAJf1jlzMQhKb2vfuIiSKbzEi0nO03KokYLLXQkGbhwp79UlUmhI1GdmaBbyj048gJ
+         7p45tHGEbM8Jf76UkGJZwKhL7Ndyv6cqpFRDUH5m7Lsm2VQu3Zmw0a8PsCaq6qPsXcld
+         GHcbZNpLwCogTFT7PkE3Xxsj/yM5no7NZwBCu4tSKyNOMj1+1kC+hhiucOwzCgviV1lU
+         zBgQ==
+X-Gm-Message-State: AOAM530JAW6C1dW+pwv+sQKQSMHfwLG4h46DknpLUDMAMOf/h7FWwmWv
+        EF86LH6iGdYYDXhZzMP0dj1QVI2MHg/V+Q==
+X-Google-Smtp-Source: ABdhPJxsqFDsQ6QO2rln1zNqUpSivVRdCDxx0FMq0QuLoBIz6QFUMUMe/+B/QTbGK7N6DJxkgBRllQ==
+X-Received: by 2002:a05:6102:21c8:: with SMTP id r8mr15215244vsg.59.1621435675995;
+        Wed, 19 May 2021 07:47:55 -0700 (PDT)
+Received: from leah-cloudtop2.c.googlers.com.com (241.36.196.104.bc.googleusercontent.com. [104.196.36.241])
+        by smtp.googlemail.com with ESMTPSA id m23sm2651952uap.18.2021.05.19.07.47.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 07:47:55 -0700 (PDT)
+From:   Leah Rumancik <leah.rumancik@gmail.com>
+To:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org
+Cc:     Leah Rumancik <leah.rumancik@gmail.com>
+Subject: [PATCH] ext4/310: test journal checkpoint ioctl
+Date:   Wed, 19 May 2021 14:47:51 +0000
+Message-Id: <20210519144751.466933-1-leah.rumancik@gmail.com>
+X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
 MIME-Version: 1.0
-In-Reply-To: <20210519125743.GP2893@dread.disaster.area>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Test journal checkpointing and journal erasing via
+EXT4_IOC_CHECKPOINT with flag EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT set.
 
-On 19/05/2021 15.57, Dave Chinner wrote:
-> On Wed, May 19, 2021 at 11:00:03AM +0300, Avi Kivity wrote:
->> On 18/05/2021 02.22, Dave Chinner wrote:
->>>> What I'd like to do is remove the fanout directories, so that for each logical
->>>> "volume"[*] I have a single directory with all the files in it.  But that
->>>> means sticking massive amounts of entries into a single directory and hoping
->>>> it (a) isn't too slow and (b) doesn't hit the capacity limit.
->>> Note that if you use a single directory, you are effectively single
->>> threading modifications to your file index. You still need to use
->>> fanout directories if you want concurrency during modification for
->>> the cachefiles index, but that's a different design criteria
->>> compared to directory capacity and modification/lookup scalability.
->> Something that hit us with single-large-directory and XFS is that
->> XFS will allocate all files in a directory using the same
->> allocation group.  If your entire filesystem is just for that one
->> directory, then that allocation group will be contended.
-> There is more than one concurrency problem that can arise from using
-> single large directories. Allocation policy is just another aspect
-> of the concurrency picture.
->
-> Indeed, you can avoid this specific problem simply by using the
-> inode32 allocator - this policy round-robins files across allocation
-> groups instead of trying to keep files physically local to their
-> parent directory. Hence if you just want one big directory with lots
-> of files that index lots of data, using the inode32 allocator will
-> allow the files in the filesytsem to allocate/free space at maximum
-> concurrency at all times...
+Signed-off-by: Leah Rumancik <leah.rumancik@gmail.com>
+---
+ src/Makefile             |   3 +-
+ src/checkpoint_journal.c |  95 ++++++++++++++++++++++++++++++++
+ tests/ext4/310           | 114 +++++++++++++++++++++++++++++++++++++++
+ tests/ext4/310.out       |   2 +
+ tests/ext4/group         |   1 +
+ 5 files changed, 214 insertions(+), 1 deletion(-)
+ create mode 100644 src/checkpoint_journal.c
+ create mode 100644 tests/ext4/310
+ create mode 100644 tests/ext4/310.out
 
-
-Perhaps a directory attribute can be useful in case the filesystem is 
-created independently of the application (say by the OS installer).
-
-
->
->> We saw spurious ENOSPC when that happened, though that
->> may have related to bad O_DIRECT management by us.
-> You should not see spurious ENOSPC at all.
->
-> The only time I've recall this sort of thing occurring is when large
-> extent size hints are abused by applying them to every single file
-> and allocation regardless of whether they are needed, whilst
-> simultaneously mixing long term and short term data in the same
-> physical locality.
-
-
-Yes, you remember well.
-
-
->   Over time the repeated removal and reallocation
-> of short term data amongst long term data fragments the crap out of
-> free space until there are no large contiguous free spaces left to
-> allocate contiguous extents from.
->
->> We ended up creating files in a temporary directory and moving them to the
->> main directory, since for us the directory layout was mandated by
->> compatibility concerns.
-> inode32 would have done effectively the same thing but without
-> needing to change the application....
-
-
-It would not have helped the installed base.
-
-
->> We are now happy with XFS large-directory management, but are nowhere close
->> to a million files.
-> I think you are conflating directory scalability with problems
-> arising from file allocation policies not being ideal for your data
-> set organisation, layout and longevity characteristics.
-
-
-Probably, but these problems can happen to others using large 
-directories. The XFS list can be very helpful in resolving them, but 
-better to be warned ahead.
-
+diff --git a/src/Makefile b/src/Makefile
+index cc0b9579..e0e7006b 100644
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -17,7 +17,8 @@ TARGETS = dirstress fill fill2 getpagesize holes lstat64 \
+ 	t_mmap_cow_race t_mmap_fallocate fsync-err t_mmap_write_ro \
+ 	t_ext4_dax_journal_corruption t_ext4_dax_inline_corruption \
+ 	t_ofd_locks t_mmap_collision mmap-write-concurrent \
+-	t_get_file_time t_create_short_dirs t_create_long_dirs t_enospc
++	t_get_file_time t_create_short_dirs t_create_long_dirs t_enospc \
++	checkpoint_journal
+ 
+ LINUX_TARGETS = xfsctl bstat t_mtab getdevicesize preallo_rw_pattern_reader \
+ 	preallo_rw_pattern_writer ftrunc trunc fs_perms testx looptest \
+diff --git a/src/checkpoint_journal.c b/src/checkpoint_journal.c
+new file mode 100644
+index 00000000..0347e0c0
+--- /dev/null
++++ b/src/checkpoint_journal.c
+@@ -0,0 +1,95 @@
++#include <sys/ioctl.h>
++#include <fcntl.h>
++#include <stdlib.h>
++#include <stdio.h>
++#include <unistd.h>
++#include <errno.h>
++#include <string.h>
++#include <linux/fs.h>
++#include <getopt.h>
++
++/*
++ * checkpoint_journal.c
++ *
++ * Flush journal log and checkpoint journal for ext4 file system and
++ * optionally, issue discard or zeroout for the journal log blocks.
++ *
++ * Arguments:
++ * 1) mount point for device
++ * 2) flags (optional)
++ *	set --erase=discard to enable discarding journal blocks
++ *	set --erase=zeroout to enable zero-filling journal blocks
++ *	set --dry-run flag to only perform input checking
++ */
++
++#if defined(__linux__) && !defined(EXT4_IOC_CHECKPOINT)
++#define EXT4_IOC_CHECKPOINT	_IOW('f', 43, __u32)
++#endif
++
++
++#if defined(__linux__) && !defined(EXT4_IOC_CHECKPOINT_FLAG_DISCARD)
++#define EXT4_IOC_CHECKPOINT_FLAG_DISCARD		1
++#define EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT		2
++#define EXT4_IOC_CHECKPOINT_FLAG_DRY_RUN		4
++#endif
++
++
++int main(int argc, char** argv) {
++	int fd, c, ret = 0, option_index = 0;
++	char* rpath;
++	unsigned int flags = 0;
++
++	static struct option long_options[] =
++	{
++		{"dry-run", no_argument, 0, 'd'},
++		{"erase", required_argument, 0, 'e'},
++		{0, 0, 0, 0}
++	};
++
++	/* get optional flags */
++	while ((c = getopt_long(argc, argv, "de:", long_options,
++				&option_index)) != -1) {
++		switch (c) {
++		case 'd':
++			flags |= EXT4_IOC_CHECKPOINT_FLAG_DRY_RUN;
++			break;
++		case 'e':
++			if (strcmp(optarg, "discard") == 0) {
++				flags |= EXT4_IOC_CHECKPOINT_FLAG_DISCARD;
++			} else if (strcmp(optarg, "zeroout") == 0) {
++				flags |= EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT;
++			} else {
++				fprintf(stderr, "Error: invalid erase option\n");
++				return 1;
++			}
++			break;
++		default:
++			return 1;
++		}
++	}
++
++	if (optind != argc - 1) {
++		fprintf(stderr, "Error: invalid number of arguments\n");
++		return 1;
++	}
++
++	/* get fd to file system */
++	rpath = realpath(argv[optind], NULL);
++	fd = open(rpath, O_RDONLY);
++	free(rpath);
++
++	if (fd == -1) {
++		fprintf(stderr, "Error: unable to open device %s: %s\n",
++			argv[optind], strerror(errno));
++		return 1;
++	}
++
++	ret = ioctl(fd, EXT4_IOC_CHECKPOINT, &flags);
++
++	if (ret)
++		fprintf(stderr, "checkpoint ioctl returned error: %s\n", strerror(errno));
++
++	close(fd);
++	return ret;
++}
++
+diff --git a/tests/ext4/310 b/tests/ext4/310
+new file mode 100644
+index 00000000..3693cb29
+--- /dev/null
++++ b/tests/ext4/310
+@@ -0,0 +1,114 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2021 Google, Inc. All Rights Reserved.
++#
++# FS QA Test No. 310
++#
++# Test checkpoint and zeroout of journal via ioctl EXT4_IOC_CHECKPOINT
++#
++
++seq=`basename $0`
++seqres=$RESULT_DIR/$seq
++echo "QA output created by $seq"
++
++status=1       # failure is the default!
++
++# get standard environment, filters and checks
++. ./common/rc
++. ./common/filter
++
++# remove previous $seqres.full before test
++rm -f $seqres.full
++
++# real QA test starts here
++_supported_fs ext4
++
++_require_scratch
++_require_command "$DEBUGFS_PROG" debugfs
++
++checkpoint_journal=$here/src/checkpoint_journal
++_require_test_program "checkpoint_journal"
++
++# convert output from stat<journal_inode> to list of block numbers
++get_journal_extents() {
++	inode_info=$($DEBUGFS_PROG $SCRATCH_DEV -R "stat <8>" 2>> $seqres.full)
++	echo -e "\nJournal info:" >> $seqres.full
++	echo "$inode_info" >> $seqres.full
++
++	extents_line=$(echo "$inode_info" | awk '/EXTENTS:/{ print NR; exit }')
++	get_extents=$(echo "$inode_info" | sed -n "$(($extents_line + 1))"p)
++
++	# get just the physical block numbers
++	get_extents=$(echo "$get_extents" |  perl -pe 's|\(.*?\):||g' | sed -e 's/, /\n/g' | perl -pe 's|(\d+)-(\d+)|\1 \2|g')
++
++	echo "$get_extents"
++}
++
++
++# checks all extents are zero'd out except for the superblock
++# arg 1: extents (output of get_journal_extents())
++check_extents() {
++	echo -e "\nChecking extents:" >> $seqres.full
++	echo "$1" >> $seqres.full
++
++	super_block="true"
++	echo "$1" | while IFS= read line; do
++		start_block=$(echo $line | cut -f1 -d' ')
++		end_block=$(echo $line | cut -f2 -d' ' -s)
++
++		# if first block of journal, shouldn't be wiped
++		if [ "$super_block" == "true" ]; then
++			super_block="false"
++
++			#if super block only block in this extent, skip extent
++			if [ -z "$end_block" ]; then
++				continue;
++			fi
++			start_block=$(($start_block + 1))
++		fi
++
++		if [ ! -z "$end_block" ]; then
++			blocks=$(($end_block - $start_block + 1))
++		else
++			blocks=1
++		fi
++
++		check=$(od $SCRATCH_DEV --skip-bytes=$(($start_block * $blocksize)) --read-bytes=$(($blocks * $blocksize)) -An -v | sed -e 's/[0 \t\n\r]//g')
++
++		[ ! -z "$check" ] && echo "error" && break
++	done
++}
++
++testdir="${SCRATCH_MNT}/testdir"
++
++_scratch_mkfs_sized $((64 * 1024 * 1024)) >> $seqres.full 2>&1
++_scratch_mount >> $seqres.full 2>&1
++blocksize=$(_get_block_size $SCRATCH_MNT)
++mkdir $testdir
++
++# check if ioctl present, skip test if not present
++$checkpoint_journal $SCRATCH_MNT --dry-run || _notrun "journal checkpoint ioctl not present on device"
++
++# create some files to add some entries to journal
++for i in {1..100}; do
++	touch $testdir/$i
++done
++
++# make sure these files get to the journal
++sync --file-system $testdir/1
++
++# call ioctl to checkpoint and zero-fill journal blocks
++$checkpoint_journal $SCRATCH_MNT --erase=zeroout || _fail "ioctl returned error"
++
++extents=$(get_journal_extents)
++
++# check journal blocks zeroed out
++ret=$(check_extents "$extents")
++[ "$ret" = "error" ] && _fail "Journal was not zero-filled"
++
++_scratch_unmount >> $seqres.full 2>&1
++
++echo "Done."
++
++status=0
++exit
+diff --git a/tests/ext4/310.out b/tests/ext4/310.out
+new file mode 100644
+index 00000000..e52f7345
+--- /dev/null
++++ b/tests/ext4/310.out
+@@ -0,0 +1,2 @@
++QA output created by 310
++Done.
+diff --git a/tests/ext4/group b/tests/ext4/group
+index e7ad3c24..622590a9 100644
+--- a/tests/ext4/group
++++ b/tests/ext4/group
+@@ -60,3 +60,4 @@
+ 307 auto ioctl rw defrag
+ 308 auto ioctl rw prealloc quick defrag
+ 309 auto quick dir
++310 auto ioctl quick
+-- 
+2.31.1.751.gd2f1c929bd-goog
 
