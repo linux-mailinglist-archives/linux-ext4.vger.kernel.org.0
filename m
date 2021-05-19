@@ -2,107 +2,153 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AC233888DF
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 May 2021 10:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83706388C2E
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 May 2021 12:57:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242185AbhESIBb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 19 May 2021 04:01:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236042AbhESIB0 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 19 May 2021 04:01:26 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12258C061763
-        for <linux-ext4@vger.kernel.org>; Wed, 19 May 2021 01:00:07 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 62so5710414wmb.3
-        for <linux-ext4@vger.kernel.org>; Wed, 19 May 2021 01:00:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=scylladb-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=LQxYHlpQlKzbVy7Qs+DZ8b8cOO6vCYLqnE0OUJbqO1U=;
-        b=yzeGv/BUCDTAG4K7Xj6Q59o2Grqt+YdTNA3vK535i9ipWxVppRJnFemU2Dy1tO6K8/
-         +HzTFy63yLu1tcxorUcLVHwGNLbfEk+H82EDibPbw2XUkGIey3u+oUT409bXFJKuwvbk
-         O2e/ucFwvQ2xRlQGpfPBvt4MgXNf7jEbXb1UffNizZv32Al361n1MNn1O1aXWmD7dDKA
-         G95DPJNuV0cfJpW74NSPaXL7Venkqtp+Fr1GP9dDxe9ka+eQ1srRkcZ0R4tpUM0DQZ6o
-         MnfsUDwsZEe7JMRl1Tp8GcAwU5U/tZo49sbARRHga2J5DrMRY9ir/iURjcDMnZrw88hV
-         GX8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-transfer-encoding:content-language;
-        bh=LQxYHlpQlKzbVy7Qs+DZ8b8cOO6vCYLqnE0OUJbqO1U=;
-        b=JQAbhJ55qybuQDHdxFQOykiPJjHbCUmlfmVfFFqjS2f1pKKyI8H8bx0a88ulYxqimb
-         tr7VojU1qUWQtYh24iHnmsGsbc8p6WqU6NIka/6h8Xo6jE4TDhjw4Esf/oivxxEmieJk
-         4QWoK13oyiMJqe51ZM11ieLvU22zQY/v2m107OliJIfiOzQ7LXn9OpTlp7SBKmLbx+S/
-         +QgFhvepYLGElILDJKss3k7S2dNwN62n4vxh3uHZl6u+25Sk15fumdhTqaTs59lEDc4Z
-         ldZcGhTyRpSXWmmqBdpyUGjDVeUCbdTI0sJ9lDC5A2VV6Bp0zJF8W/k/Nt4L+jiYSero
-         l9Uw==
-X-Gm-Message-State: AOAM533Dnn7T93uaCz4S0igtKRJb1p+1x3cDiXGCB2e7mkfH1rXA43yi
-        Xh6MM4xl7wQC8yrPTQmfSVaVsA==
-X-Google-Smtp-Source: ABdhPJxnRUZ2yc4qyUeE2swRcrRWqusKm5GVl93f2H70honYjIvEhAbIfNuoGyJsqfwYmYwZjdX5vw==
-X-Received: by 2002:a1c:df04:: with SMTP id w4mr9976713wmg.158.1621411205505;
-        Wed, 19 May 2021 01:00:05 -0700 (PDT)
-Received: from avi.scylladb.com (system.cloudius-systems.com. [199.203.229.89])
-        by smtp.gmail.com with ESMTPSA id m9sm4485432wmq.40.2021.05.19.01.00.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 May 2021 01:00:05 -0700 (PDT)
-Subject: Re: How capacious and well-indexed are ext4, xfs and btrfs
- directories?
-To:     Dave Chinner <david@fromorbit.com>,
-        David Howells <dhowells@redhat.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J. Wong" <djwong@kernel.org>, Chris Mason <clm@fb.com>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-cachefs@redhat.com,
-        linux-fsdevel@vger.kernel.org
-References: <206078.1621264018@warthog.procyon.org.uk>
- <20210517232237.GE2893@dread.disaster.area>
-From:   Avi Kivity <avi@scylladb.com>
-Organization: ScyllaDB
-Message-ID: <ad2e8757-41ce-41e3-a22e-0cf9e356e656@scylladb.com>
-Date:   Wed, 19 May 2021 11:00:03 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S240780AbhESK6h (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 19 May 2021 06:58:37 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60810 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229720AbhESK6g (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 19 May 2021 06:58:36 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B6396AC4B;
+        Wed, 19 May 2021 10:57:15 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 086AA1F2C9C; Wed, 19 May 2021 12:57:14 +0200 (CEST)
+Date:   Wed, 19 May 2021 12:57:14 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        linux-fsdevel@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>,
+        ceph-devel@vger.kernel.org, Chao Yu <yuchao0@huawei.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Johannes Thumshirn <jth@kernel.org>,
+        linux-cifs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
+        linux-xfs@vger.kernel.org, Miklos Szeredi <miklos@szeredi.hu>,
+        Steve French <sfrench@samba.org>, Ted Tso <tytso@mit.edu>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH 03/11] mm: Protect operations adding pages to page cache
+ with invalidate_lock
+Message-ID: <20210519105713.GA26250@quack2.suse.cz>
+References: <20210512101639.22278-1-jack@suse.cz>
+ <20210512134631.4053-3-jack@suse.cz>
+ <20210512152345.GE8606@magnolia>
+ <20210513174459.GH2734@quack2.suse.cz>
+ <20210513185252.GB9675@magnolia>
+ <20210513231945.GD2893@dread.disaster.area>
+ <20210514161730.GL9675@magnolia>
+ <20210518223637.GJ2893@dread.disaster.area>
 MIME-Version: 1.0
-In-Reply-To: <20210517232237.GE2893@dread.disaster.area>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210518223637.GJ2893@dread.disaster.area>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Wed 19-05-21 08:36:37, Dave Chinner wrote:
+> On Fri, May 14, 2021 at 09:17:30AM -0700, Darrick J. Wong wrote:
+> > On Fri, May 14, 2021 at 09:19:45AM +1000, Dave Chinner wrote:
+> > > On Thu, May 13, 2021 at 11:52:52AM -0700, Darrick J. Wong wrote:
+> > > > On Thu, May 13, 2021 at 07:44:59PM +0200, Jan Kara wrote:
+> > > > > On Wed 12-05-21 08:23:45, Darrick J. Wong wrote:
+> > > > > > On Wed, May 12, 2021 at 03:46:11PM +0200, Jan Kara wrote:
+> > > > > > > +->fallocate implementation must be really careful to maintain page cache
+> > > > > > > +consistency when punching holes or performing other operations that invalidate
+> > > > > > > +page cache contents. Usually the filesystem needs to call
+> > > > > > > +truncate_inode_pages_range() to invalidate relevant range of the page cache.
+> > > > > > > +However the filesystem usually also needs to update its internal (and on disk)
+> > > > > > > +view of file offset -> disk block mapping. Until this update is finished, the
+> > > > > > > +filesystem needs to block page faults and reads from reloading now-stale page
+> > > > > > > +cache contents from the disk. VFS provides mapping->invalidate_lock for this
+> > > > > > > +and acquires it in shared mode in paths loading pages from disk
+> > > > > > > +(filemap_fault(), filemap_read(), readahead paths). The filesystem is
+> > > > > > > +responsible for taking this lock in its fallocate implementation and generally
+> > > > > > > +whenever the page cache contents needs to be invalidated because a block is
+> > > > > > > +moving from under a page.
+> > > > > > > +
+> > > > > > > +->copy_file_range and ->remap_file_range implementations need to serialize
+> > > > > > > +against modifications of file data while the operation is running. For blocking
+> > > > > > > +changes through write(2) and similar operations inode->i_rwsem can be used. For
+> > > > > > > +blocking changes through memory mapping, the filesystem can use
+> > > > > > > +mapping->invalidate_lock provided it also acquires it in its ->page_mkwrite
+> > > > > > > +implementation.
+> > > > > > 
+> > > > > > Question: What is the locking order when acquiring the invalidate_lock
+> > > > > > of two different files?  Is it the same as i_rwsem (increasing order of
+> > > > > > the struct inode pointer) or is it the same as the XFS MMAPLOCK that is
+> > > > > > being hoisted here (increasing order of i_ino)?
+> > > > > > 
+> > > > > > The reason I ask is that remap_file_range has to do that, but I don't
+> > > > > > see any conversions for the xfs_lock_two_inodes(..., MMAPLOCK_EXCL)
+> > > > > > calls in xfs_ilock2_io_mmap in this series.
+> > > > > 
+> > > > > Good question. Technically, I don't think there's real need to establish a
+> > > > > single ordering because locks among different filesystems are never going
+> > > > > to be acquired together (effectively each lock type is local per sb and we
+> > > > > are free to define an ordering for each lock type differently). But to
+> > > > > maintain some sanity I guess having the same locking order for doublelock
+> > > > > of i_rwsem and invalidate_lock makes sense. Is there a reason why XFS uses
+> > > > > by-ino ordering? So that we don't have to consider two different orders in
+> > > > > xfs_lock_two_inodes()...
+> > > > 
+> > > > I imagine Dave will chime in on this, but I suspect the reason is
+> > > > hysterical raisins^Wreasons.
+> > > 
+> > > It's the locking rules that XFS has used pretty much forever.
+> > > Locking by inode number always guarantees the same locking order of
+> > > two inodes in the same filesystem, regardless of the specific
+> > > in-memory instances of the two inodes.
+> > > 
+> > > e.g. if we lock based on the inode structure address, in one
+> > > instancex, we could get A -> B, then B gets recycled and
+> > > reallocated, then we get B -> A as the locking order for the same
+> > > two inodes.
+> > > 
+> > > That, IMNSHO, is utterly crazy because with non-deterministic inode
+> > > lock ordered like this you can't make consistent locking rules for
+> > > locking the physical inode cluster buffers underlying the inodes in
+> > > the situation where they also need to be locked.
+> > 
+> > <nod> That's protected by the ILOCK, correct?
+> > 
+> > > We've been down this path before more than a decade ago when the
+> > > powers that be decreed that inode locking order is to be "by
+> > > structure address" rather than inode number, because "inode number
+> > > is not unique across multiple superblocks".
+> > > 
+> > > I'm not sure that there is anywhere that locks multiple inodes
+> > > across different superblocks, but here we are again....
+> > 
+> > Hm.  Are there situations where one would want to lock multiple
+> > /mappings/ across different superblocks?  The remapping code doesn't
+> > allow cross-super operations, so ... pipes and splice, maybe?  I don't
+> > remember that code well enough to say for sure.
+> 
+> Hmmmm. Doing read IO into a buffer that is mmap()d from another
+> file, and we take a page fault on it inside the read IO path? We're
+> copying from a page in one mapping and taking a fault in another
+> mapping and hence taking the invalidate_lock to populate the page
+> cache for the second mapping...
+> 
+> I haven't looked closely enough at where the invalidate_lock is held
+> in the read path to determine if this is an issue, but if it is then
+> it is also a potential deadlock scenario...
 
-On 18/05/2021 02.22, Dave Chinner wrote:
->
->> What I'd like to do is remove the fanout directories, so that for each logical
->> "volume"[*] I have a single directory with all the files in it.  But that
->> means sticking massive amounts of entries into a single directory and hoping
->> it (a) isn't too slow and (b) doesn't hit the capacity limit.
-> Note that if you use a single directory, you are effectively single
-> threading modifications to your file index. You still need to use
-> fanout directories if you want concurrency during modification for
-> the cachefiles index, but that's a different design criteria
-> compared to directory capacity and modification/lookup scalability.
+I was careful enough to avoid this problem - we first bring pages into
+pages cache (under invalidate_lock), then drop invalidate lock, just
+keep page refs, and copy page cache content into the buffer (which may grab
+invalidate_lock from another mapping as you say).
 
-
-Something that hit us with single-large-directory and XFS is that XFS 
-will allocate all files in a directory using the same allocation group. 
-If your entire filesystem is just for that one directory, then that 
-allocation group will be contended. We saw spurious ENOSPC when that 
-happened, though that may have related to bad O_DIRECT management by us.
-
-
-We ended up creating files in a temporary directory and moving them to 
-the main directory, since for us the directory layout was mandated by 
-compatibility concerns.
-
-
-We are now happy with XFS large-directory management, but are nowhere 
-close to a million files.
-
-
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
