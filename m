@@ -2,152 +2,256 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D7623882CA
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 May 2021 00:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C36D3883E4
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 May 2021 02:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352769AbhERWiD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 18 May 2021 18:38:03 -0400
-Received: from mail110.syd.optusnet.com.au ([211.29.132.97]:51453 "EHLO
-        mail110.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230251AbhERWiC (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 18 May 2021 18:38:02 -0400
-Received: from dread.disaster.area (pa49-195-118-180.pa.nsw.optusnet.com.au [49.195.118.180])
-        by mail110.syd.optusnet.com.au (Postfix) with ESMTPS id 363BA108858;
-        Wed, 19 May 2021 08:36:38 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1lj8KL-002Ymb-Nc; Wed, 19 May 2021 08:36:37 +1000
-Date:   Wed, 19 May 2021 08:36:37 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        ceph-devel@vger.kernel.org, Chao Yu <yuchao0@huawei.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Johannes Thumshirn <jth@kernel.org>,
-        linux-cifs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
-        linux-xfs@vger.kernel.org, Miklos Szeredi <miklos@szeredi.hu>,
-        Steve French <sfrench@samba.org>, Ted Tso <tytso@mit.edu>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH 03/11] mm: Protect operations adding pages to page cache
- with invalidate_lock
-Message-ID: <20210518223637.GJ2893@dread.disaster.area>
-References: <20210512101639.22278-1-jack@suse.cz>
- <20210512134631.4053-3-jack@suse.cz>
- <20210512152345.GE8606@magnolia>
- <20210513174459.GH2734@quack2.suse.cz>
- <20210513185252.GB9675@magnolia>
- <20210513231945.GD2893@dread.disaster.area>
- <20210514161730.GL9675@magnolia>
+        id S244387AbhESAqC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 18 May 2021 20:46:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60788 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239167AbhESAqC (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 18 May 2021 20:46:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 4D2F46135D
+        for <linux-ext4@vger.kernel.org>; Wed, 19 May 2021 00:44:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621385083;
+        bh=CAxkZsyn+PWnqO+Fm1lNTJEIMmjeB8E9iQr00J5Wt1A=;
+        h=From:To:Subject:Date:From;
+        b=Si2DYBbdPE1yxLQoRhasaIsMSxs+QkojHxNcUMt9cdmVi/9nqU+OKmzozWzpwK9dq
+         uFJwIXM2lV7zVbboF+fOt6oZaEAjrPZfDiu2arE4Lxp04TCtjvR31Dx3b0IR8eghYq
+         QoQZJKusVOf4BLgaCLLnEQYTTTOOymOW1zINrnMmMJcz09moL6tESwB8cQ6z9Jyj3t
+         H4Jhex8JSZhSTCQjBNdKwlUObpu/kmWZTEHLWj/E1pOxTdyHaLT0wMOIM5m4easNnx
+         oWYVcrV9SYnC26gZT/QJQnEgNwU2nsDCncOchbsBMIKsXDQY2MWTy31NwvQ94AS/a3
+         x6rLZz/76mCGg==
+Received: by pdx-korg-bugzilla-2.web.codeaurora.org (Postfix, from userid 48)
+        id 3E2C661249; Wed, 19 May 2021 00:44:43 +0000 (UTC)
+From:   bugzilla-daemon@bugzilla.kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 213137] New: NVMe device file system corruption immediately
+ after mkfs
+Date:   Wed, 19 May 2021 00:44:42 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: new
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: btmckee9@gmail.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: bug_id short_desc product version
+ cf_kernel_version rep_platform op_sys cf_tree bug_status bug_severity
+ priority component assigned_to reporter cf_regression
+Message-ID: <bug-213137-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210514161730.GL9675@magnolia>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0
-        a=xcwBwyABtj18PbVNKPPJDQ==:117 a=xcwBwyABtj18PbVNKPPJDQ==:17
-        a=kj9zAlcOel0A:10 a=5FLXtPjwQuUA:10 a=7-415B0cAAAA:8
-        a=cLZU_rh0lbdFaG61GT8A:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, May 14, 2021 at 09:17:30AM -0700, Darrick J. Wong wrote:
-> On Fri, May 14, 2021 at 09:19:45AM +1000, Dave Chinner wrote:
-> > On Thu, May 13, 2021 at 11:52:52AM -0700, Darrick J. Wong wrote:
-> > > On Thu, May 13, 2021 at 07:44:59PM +0200, Jan Kara wrote:
-> > > > On Wed 12-05-21 08:23:45, Darrick J. Wong wrote:
-> > > > > On Wed, May 12, 2021 at 03:46:11PM +0200, Jan Kara wrote:
-> > > > > > +->fallocate implementation must be really careful to maintain page cache
-> > > > > > +consistency when punching holes or performing other operations that invalidate
-> > > > > > +page cache contents. Usually the filesystem needs to call
-> > > > > > +truncate_inode_pages_range() to invalidate relevant range of the page cache.
-> > > > > > +However the filesystem usually also needs to update its internal (and on disk)
-> > > > > > +view of file offset -> disk block mapping. Until this update is finished, the
-> > > > > > +filesystem needs to block page faults and reads from reloading now-stale page
-> > > > > > +cache contents from the disk. VFS provides mapping->invalidate_lock for this
-> > > > > > +and acquires it in shared mode in paths loading pages from disk
-> > > > > > +(filemap_fault(), filemap_read(), readahead paths). The filesystem is
-> > > > > > +responsible for taking this lock in its fallocate implementation and generally
-> > > > > > +whenever the page cache contents needs to be invalidated because a block is
-> > > > > > +moving from under a page.
-> > > > > > +
-> > > > > > +->copy_file_range and ->remap_file_range implementations need to serialize
-> > > > > > +against modifications of file data while the operation is running. For blocking
-> > > > > > +changes through write(2) and similar operations inode->i_rwsem can be used. For
-> > > > > > +blocking changes through memory mapping, the filesystem can use
-> > > > > > +mapping->invalidate_lock provided it also acquires it in its ->page_mkwrite
-> > > > > > +implementation.
-> > > > > 
-> > > > > Question: What is the locking order when acquiring the invalidate_lock
-> > > > > of two different files?  Is it the same as i_rwsem (increasing order of
-> > > > > the struct inode pointer) or is it the same as the XFS MMAPLOCK that is
-> > > > > being hoisted here (increasing order of i_ino)?
-> > > > > 
-> > > > > The reason I ask is that remap_file_range has to do that, but I don't
-> > > > > see any conversions for the xfs_lock_two_inodes(..., MMAPLOCK_EXCL)
-> > > > > calls in xfs_ilock2_io_mmap in this series.
-> > > > 
-> > > > Good question. Technically, I don't think there's real need to establish a
-> > > > single ordering because locks among different filesystems are never going
-> > > > to be acquired together (effectively each lock type is local per sb and we
-> > > > are free to define an ordering for each lock type differently). But to
-> > > > maintain some sanity I guess having the same locking order for doublelock
-> > > > of i_rwsem and invalidate_lock makes sense. Is there a reason why XFS uses
-> > > > by-ino ordering? So that we don't have to consider two different orders in
-> > > > xfs_lock_two_inodes()...
-> > > 
-> > > I imagine Dave will chime in on this, but I suspect the reason is
-> > > hysterical raisins^Wreasons.
-> > 
-> > It's the locking rules that XFS has used pretty much forever.
-> > Locking by inode number always guarantees the same locking order of
-> > two inodes in the same filesystem, regardless of the specific
-> > in-memory instances of the two inodes.
-> > 
-> > e.g. if we lock based on the inode structure address, in one
-> > instancex, we could get A -> B, then B gets recycled and
-> > reallocated, then we get B -> A as the locking order for the same
-> > two inodes.
-> > 
-> > That, IMNSHO, is utterly crazy because with non-deterministic inode
-> > lock ordered like this you can't make consistent locking rules for
-> > locking the physical inode cluster buffers underlying the inodes in
-> > the situation where they also need to be locked.
-> 
-> <nod> That's protected by the ILOCK, correct?
-> 
-> > We've been down this path before more than a decade ago when the
-> > powers that be decreed that inode locking order is to be "by
-> > structure address" rather than inode number, because "inode number
-> > is not unique across multiple superblocks".
-> > 
-> > I'm not sure that there is anywhere that locks multiple inodes
-> > across different superblocks, but here we are again....
-> 
-> Hm.  Are there situations where one would want to lock multiple
-> /mappings/ across different superblocks?  The remapping code doesn't
-> allow cross-super operations, so ... pipes and splice, maybe?  I don't
-> remember that code well enough to say for sure.
+https://bugzilla.kernel.org/show_bug.cgi?id=3D213137
 
-Hmmmm. Doing read IO into a buffer that is mmap()d from another
-file, and we take a page fault on it inside the read IO path? We're
-copying from a page in one mapping and taking a fault in another
-mapping and hence taking the invalidate_lock to populate the page
-cache for the second mapping...
+            Bug ID: 213137
+           Summary: NVMe device file system corruption immediately after
+                    mkfs
+           Product: File System
+           Version: 2.5
+    Kernel Version: 5.11.21
+          Hardware: ARM
+                OS: Linux
+              Tree: Mainline
+            Status: NEW
+          Severity: normal
+          Priority: P1
+         Component: ext4
+          Assignee: fs_ext4@kernel-bugs.osdl.org
+          Reporter: btmckee9@gmail.com
+        Regression: No
 
-I haven't looked closely enough at where the invalidate_lock is held
-in the read path to determine if this is an issue, but if it is then
-it is also a potential deadlock scenario...
+When upgrading from 5.11.0 to 5.12.X or 5.11.21 there was an issue that cro=
+pped
+up with an ext4 partition on an NVMe drive. The drive crashed with an error=
+ on
+a boot up with the later kernels. I have subsequently gone back to 5.11 on =
+the
+ARMv7 and it works fine.
 
-Cheers,
+For the following keep in mind that nvme0n1p1 is the correct partition.
 
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+The following is the kernel panic I received from 5.11.21:
+
+[    2.764492] EXT4-fs error (device nvme0n1p1): ext4_get_journal_inode:522=
+7:
+inode #8: comm swapper/0: iget: checksum invalid
+[    2.774712]  mmcblk0: p1 p2 p3
+[    2.775694] EXT4-fs (nvme0n1p1): no journal found
+[    2.791532] exFAT-fs (nvme0n1p1): invalid boot record signature
+[    2.797446] exFAT-fs (nvme0n1p1): failed to read boot sector
+[    2.803118] exFAT-fs (nvme0n1p1): failed to recognize exfat type
+[    2.809739] List of all partitions:
+[    2.813229] 0100            8192 ram0=20
+[    2.813238]  (driver?)
+[    2.819324] 0101            8192 ram1=20
+[    2.819332]  (driver?)
+[    2.825465] 103:00000  244198584 nvme0n1=20
+[    2.825475]  (driver?)
+[    2.831830]   103:00001  244194304 nvme0n1p1
+41a7d0bc-dd30-544f-8854-7939357a793d
+[    2.831840]=20
+[    2.840788] b300         7847936 mmcblk0=20
+[    2.840797]  driver: mmcblk
+[    2.847572]   b301         1024000 mmcblk0p1 a2b2f070-01
+[    2.847581]=20
+[    2.854374]   b302         1843200 mmcblk0p2 a2b2f070-02
+[    2.854382]=20
+[    2.861169]   b303           10240 mmcblk0p3 a2b2f070-03
+[    2.861177]=20
+[    2.867950] No filesystem could mount root, tried:=20
+[    2.867955]  ext3
+[    2.872821]  ext4
+[    2.874740]  ext2
+[    2.876658]  vfat
+[    2.878576]  exfat
+[    2.880504]  ntfs
+[    2.882510]=20
+[    2.885912] Kernel panic - not syncing: VFS: Unable to mount root fs on
+unknown-block(259,1)
+
+
+
+After booting mmc, I ran e2fsck:
+
+threads /mnt # e2fsck /dev/sdb=20=20
+e2fsck 1.46.2 (28-Feb-2021)=20
+ext2fs_open2: Bad magic number in super-block=20
+e2fsck: Superblock invalid, trying backup blocks...=20
+e2fsck: Bad magic number in super-block while trying to open /dev/sdb=20
+The superblock could not be read or does not describe a valid ext2/ext3/ext=
+4=20
+filesystem. If the device is valid and it really contains an ext2/ext3/ext4=
+=20
+filesystem (and not swap or ufs or something else), then the superblock=20
+is corrupt, and you might try running e2fsck with an alternate superblock:=
+=20
+   e2fsck -b 8193 <device>=20
+ or=20
+   e2fsck -b 32768 <device>=20
+/dev/sdb contains `DOS/MBR boot sector; partition 1 : ID=3D0x83, start-CHS
+(0x0,32,33), end-CHS (0x199,250,33), startsector 2048, 500101120 sectors,
+extended=20
+partition table (last)' data
+
+I was not able to repair this at all. I even blanked the partition table and
+created a new partition and as soon as it was made, it failed mount and then
+fsck. I tried ext4 and ext2:
+
+root@cyclone5:/mnt# mount /dev/nvme0n1p1 /mnt/gentoo
+[  811.671376] EXT4-fs error (device nvme0n1p1): ext4_get_journal_inode:522=
+7:
+inode #8: comm mount: iget: bad extra_isize 51821 (inode size 256)
+[  811.684101] EXT4-fs (nvme0n1p1): no journal found
+mount: /mnt/gentoo: wrong fs type, bad option, bad superblock on
+/dev/nvme0n1p1, missing codepage or helper program, or other error.
+root@cyclone5:/mnt# fsck.ext4 /dev/nvme0n1p1
+e2fsck 1.45.3 (14-Jul-2019)
+/dev/nvme0n1p1 contains a file system with errors, check forced.
+Pass 1: Checking inodes, blocks, and sizes
+Pass 2: Checking directory structure
+Pass 3: Checking directory connectivity
+Pass 4: Checking reference counts
+Pass 5: Checking group summary information
+/dev/nvme0n1p1: 11/15630336 files (0.0% non-contiguous), 1258688/62514766
+blocks
+root@cyclone5:/mnt# fsck.ext4 /dev/nvme0n1p1
+e2fsck 1.45.3 (14-Jul-2019)
+/dev/nvme0n1p1: clean, 11/15630336 files, 1258688/62514766 blocks
+root@cyclone5:/mnt# mount /dev/nvme0n1p1 /mnt/gentoo
+[  868.054311] EXT4-fs error (device nvme0n1p1): ext4_get_journal_inode:522=
+7:
+inode #8: comm mount: iget: bad extra_isize 51821 (inode size 256)
+[  868.067073] EXT4-fs (nvme0n1p1): no journal found
+mount: /mnt/gentoo: wrong fs type, bad option, bad superblock on
+/dev/nvme0n1p1, missing codepage or helper program, or other error.
+root@cyclone5:/mnt# fsck.ext4 /dev/nvme0n1p1=20=20=20=20=20=20=20=20
+e2fsck 1.45.3 (14-Jul-2019)
+/dev/nvme0n1p1 contains a file system with errors, check forced.
+Pass 1: Checking inodes, blocks, and sizes
+Pass 2: Checking directory structure
+Pass 3: Checking directory connectivity
+Pass 4: Checking reference counts
+Pass 5: Checking group summary information
+/dev/nvme0n1p1: 11/15630336 files (0.0% non-contiguous), 1258688/62514766
+blocks
+root@cyclone5:/mnt# fsck.ext4 /dev/nvme0n1p1
+e2fsck 1.45.3 (14-Jul-2019)
+/dev/nvme0n1p1: clean, 11/15630336 files, 1258688/62514766 blocks
+root@cyclone5:/mnt# mkfs.ext2 /dev/nvme0n1p1=20
+mke2fs 1.45.3 (14-Jul-2019)
+/dev/nvme0n1p1 contains a ext4 file system
+        created on Tue May 18 23:21:23 2021
+Proceed anyway? (y,N) y
+Discarding device blocks: done=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20
+Creating filesystem with 62514766 4k blocks and 15630336 inodes
+Filesystem UUID: 0e5ae116-2982-4ad5-b178-2099b6bda7f2
+Superblock backups stored on blocks:=20
+        32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654=
+208,=20
+        4096000, 7962624, 11239424, 20480000, 23887872
+
+Allocating group tables: done=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20
+Writing inode tables: done=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20
+Writing superblocks and filesystem accounting information: done=20=20=20=20=
+=20
+
+root@cyclone5:/mnt# mount /dev/nvme0n1p1 /mnt/gentoo
+[  926.309614] EXT2-fs (nvme0n1p1): error: can't find an ext2 filesystem on=
+ dev
+nvme0n1p1.
+mount: /mnt/gentoo: wrong fs type, bad option, bad superblock on
+/dev/nvme0n1p1, missing codepage or helper program, or other error.
+root@cyclone5:/mnt# fsck.ext2 /dev/nvme0n1p1=20=20=20=20=20=20=20=20=20
+e2fsck 1.45.3 (14-Jul-2019)
+/dev/nvme0n1p1: clean, 11/15630336 files, 996093/62514766 blocks
+root@cyclone5:/mnt# uname -a
+Linux cyclone5 5.11.21-wtec #1 SMP Mon May 17 16:36:49 PDT 2021 armv7l
+GNU/Linux
+root@cyclone5:/mnt# halt
+
+I'm having a similar problem (but maybe not related) with a jmicron USB to =
+PCIe
+controller on my x86-64 laptop. It seems to have the same problem creating
+usable partitions on the NVMe. I have not verified that I can get it to work
+with an older kernel. I'll have to hand install and build it as I have alre=
+ady
+removed the old version of the kernel from my Gentoo install.
+
+I have many x86-64 machines running 5.12.4 with ext4 partitions on nvme and=
+ I'm
+a little nervous and thinking I might want to go back for a while.
+
+Perhaps someone broke backward compatibility on the filesystem driver?
+
+I have to dig into this because I can't ship embedded hardware with nvme is=
+sues
+and I don't like limiting myself to old kernels, so I thought I'd come here=
+ and
+ask for advice. Keep in mind I'm a hardware engineer, so be nice and I'll l=
+et
+you borrow my soldering iron from time to time.
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
