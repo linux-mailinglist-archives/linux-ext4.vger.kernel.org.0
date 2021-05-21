@@ -2,44 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38A4638BD08
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 May 2021 05:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1AAD38BD80
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 May 2021 06:43:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237109AbhEUDx7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 20 May 2021 23:53:59 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:57233 "EHLO
+        id S239175AbhEUEpL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 21 May 2021 00:45:11 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:40988 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233879AbhEUDx6 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 May 2021 23:53:58 -0400
+        with ESMTP id S239172AbhEUEpL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 May 2021 00:45:11 -0400
 Received: from callcc.thunk.org (c-73-8-226-230.hsd1.il.comcast.net [73.8.226.230])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 14L3qVqZ024245
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 14L4hh8u023398
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 20 May 2021 23:52:32 -0400
+        Fri, 21 May 2021 00:43:45 -0400
 Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 40EE1420119; Thu, 20 May 2021 23:52:31 -0400 (EDT)
-Date:   Thu, 20 May 2021 23:52:31 -0400
+        id 18B91420119; Fri, 21 May 2021 00:43:43 -0400 (EDT)
+Date:   Fri, 21 May 2021 00:43:42 -0400
 From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Phillip Potter <phil@philpotter.co.uk>
-Cc:     Andreas Dilger <adilger@dilger.ca>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs: ext4: mballoc: amend goto to cleanup groupinfo
- memory correctly
-Message-ID: <YKcuf0eYcMIELjEj@mit.edu>
-References: <YI0czH0auvWlU8bA@equinox>
- <6E6AEEB4-1FBA-40F1-8328-8E304E68A7C6@dilger.ca>
- <YI6DqtMHj9dx26Kw@equinox>
+To:     Alexey Makhalov <amakhalov@vmware.com>
+Cc:     linux-ext4@vger.kernel.org, stable@vger.kernel.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>
+Subject: Re: [PATCH] ext4: fix memory leak in ext4_fill_super
+Message-ID: <YKc6fidMj95TZp2w@mit.edu>
+References: <20210428221928.38960-1-amakhalov@vmware.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YI6DqtMHj9dx26Kw@equinox>
+In-Reply-To: <20210428221928.38960-1-amakhalov@vmware.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Thanks, applied, with a cleaned up commit description.
+On Wed, Apr 28, 2021 at 10:19:28PM +0000, Alexey Makhalov wrote:
+> I've recently discovered that doing infinite loop of
+>   systemctl start <ext4_on_lvm>.mount, and
+>   systemctl stop <ext4_on_lvm>.mount
+> linearly increases percpu allocator memory consumption.
+> In several hours, it might lead to system instability by
+> consuming most of the memory.
+> 
+> Bug is not reproducible when the ext4 filesystem is on
+> physical partition, but it is persistent when ext4 is on
+> logical volume.
 
-Cheers,
+Why is this the case?  It sounds like we're looking a buffer for each
+mount where the block size is not 1k.  It shouldn't matter whether it
+is a physical partition or not.
 
-					- Ted
+				- Ted
