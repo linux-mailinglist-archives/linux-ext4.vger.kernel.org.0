@@ -2,54 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDC6C38C32C
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 May 2021 11:32:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFD7538C3B1
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 May 2021 11:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235170AbhEUJd7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 21 May 2021 05:33:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59190 "EHLO
+        id S230406AbhEUJqF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 21 May 2021 05:46:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232758AbhEUJd6 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 May 2021 05:33:58 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDE9BC061574;
-        Fri, 21 May 2021 02:32:33 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id a8so11383054ioa.12;
-        Fri, 21 May 2021 02:32:33 -0700 (PDT)
+        with ESMTP id S230154AbhEUJqE (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 May 2021 05:46:04 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD65BC061574;
+        Fri, 21 May 2021 02:44:40 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id z24so19526453ioi.3;
+        Fri, 21 May 2021 02:44:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=F7LkhPpEORqK/nnRA8Qix7JZmmdruW/Bq5UIaWgpnIs=;
-        b=vAECmQkceUjYnJoPXBXnAWbWwhJUqMABVVFatFF4f4mU+rLF+td6UrL098kuLjToSm
-         XvQ2ObZl2ckM3ZNetI+357BsZO7npFJ05fMTQ134VlH0CbDizcHIKcVKnTMLX1fHApsB
-         roVVIU76/ECBnXRFe/IPr8osYbiZOc7eat0KgYcYLQB2J/S84uiMTWCoMBNAA3/CiTgH
-         rcNrS9BLTRvsb+cbjXaGId9Hx3h1QRS2qpZADoEf5s2FtXEjilyDpF+TXTQvlwX77YSM
-         i712aiD0AKz7l02ic7aoqwI4KGNZPMgVeo28SsdnNvK+y94xOK43ARbQSsR2QOzTGT0F
-         QUzg==
+        bh=buVeB8WnFW23aOCded2ctcfxRFpFitusLk1LSIom5Wc=;
+        b=H4t/wza1JohzT+GyvbVlQW/F8/7ZgpenD/ltDTmZOq/iWk6DWhqlEzDtj/kba/QHES
+         6DMsBv6ajB8dQbMLf1w2qH+RQas6yEFin9tGJivo13lNQPuWy5N5Dq5BZGCBeold+5zY
+         1hYois3SWQGg3uBNrjIWLCiopvyaTjzLtwRPFxt1CBs+ZgFyoNAFzvWrFlhfmeC9fnXH
+         H7fJNnP37orU4o3wkkQGDhEeY0yIzb2Bf7C65NXubCgp69ChiEgRktkt0wTabaMUMwZU
+         UArovEWH5o63Tib6csCsZrtT52DWw1/R3RQs8ChJJLQ0QrdGOVAdwdBdAp5/gwERNXOw
+         D4Tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=F7LkhPpEORqK/nnRA8Qix7JZmmdruW/Bq5UIaWgpnIs=;
-        b=MvwG6JAsxso+NQVITYOZW3KRXKpVu8ICVKiUcvMLrssXagoTqdNfh6vYlssF4qsfwe
-         nF6bUq5iVH/cV+lPKrcP4Yo11R/IrSU+vAKvPds7ZBkYGnCkgjAaj2CR94U/mQ+WIwkw
-         FdGlgAf/MjnF1xvs3nDOMUP0AA/wLHhyayGZNUi0BuliyucY6yw9/crZnR9Ft1lKvMaC
-         8EXSZWP/ioYaVB8NvTABnHoZYjwbpgTROvLJB/4T+Iqt1Hg2GN0eu3LOoAxYCd3HOUgM
-         dHX19MtMUrnmZ214SxPtMGnCHqf8R10XAWIg4jNM5aeOJh9ZSNx9B7bg/wur0qKQGlPn
-         VHUw==
-X-Gm-Message-State: AOAM531xnIPiKruY36MjV2U5ODUiVz7qBXZRejQWiHbrQuMpdObt3YF7
-        cDwXr2jfugH3CU2pWvtSgq2nvlmNak/I/XkK3Dg=
-X-Google-Smtp-Source: ABdhPJyyuH0dGzJzjXOJzGf54P6Ie0Jo+R4PtQ2hv3GfnMS061EvMT1QS0VSMQ5pibySTQucV4b5xZoyD8TSlipAePo=
-X-Received: by 2002:a6b:3119:: with SMTP id j25mr9502151ioa.64.1621589553300;
- Fri, 21 May 2021 02:32:33 -0700 (PDT)
+        bh=buVeB8WnFW23aOCded2ctcfxRFpFitusLk1LSIom5Wc=;
+        b=fAd8U4AUo5ZcF1z5ZiEdo9EPxuofis7L+H8EgI7EZJd0P9YTxnjSQ9aK4f0S4ctuv2
+         isaKHrE8wI09WTCq+yWkZdqOhB9+6UE4XJfAaz0aEo5hwYLabDdwJKXRpzOxr7PWapJo
+         A6Dtv82S4HNsSDDj5fQPcDmV473T6WFod2TJJMvtiya4X8noBnElLO47nbg8EuYPxMHv
+         EZv/Oa6u4RvkoPTKpgKVxjRsmENUynwsshJwYGbSykA/65rlWrhetlk9QhkkMostAfej
+         kO+NiVS/60Rl70BPNRFfE9DFCdPxsGKPa2cmMWo3yOrriRXDX1dFYTH0hJ9vvLu37eSN
+         f0/Q==
+X-Gm-Message-State: AOAM53268Q0KunDUvkZ7TaL++adAydpKJHhFMQ+xlG+Z6HoU/8QkzUJ7
+        lgjQ8Hf2/bdXtRI/qeeG0gEns3FgVea6ujCt+i0=
+X-Google-Smtp-Source: ABdhPJwE0nH9O/hZURX0Yy9y6OuQGShSniuB3VZdam0CslV7if6EpOW4NoBW7ivUmNDJ2Fa239bOWV5/ogeGvEVXVvQ=
+X-Received: by 2002:a5d:814d:: with SMTP id f13mr10157873ioo.203.1621590280276;
+ Fri, 21 May 2021 02:44:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210521024134.1032503-1-krisman@collabora.com> <20210521024134.1032503-8-krisman@collabora.com>
-In-Reply-To: <20210521024134.1032503-8-krisman@collabora.com>
+References: <20210521024134.1032503-1-krisman@collabora.com> <20210521024134.1032503-10-krisman@collabora.com>
+In-Reply-To: <20210521024134.1032503-10-krisman@collabora.com>
 From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Fri, 21 May 2021 12:32:22 +0300
-Message-ID: <CAOQ4uxi+xE7Obh8k=hpcf4eJcPrY2DKw1x-2+xe+ta7rvm5zZQ@mail.gmail.com>
-Subject: Re: [PATCH 07/11] fsnotify: Introduce helpers to send error_events
+Date:   Fri, 21 May 2021 12:44:29 +0300
+Message-ID: <CAOQ4uxj+J7bA-7MKvv30jPAOGqjX7fpcKxC3RudXmTG2y+vxXw@mail.gmail.com>
+Subject: Re: [PATCH 09/11] ext4: Send notifications on error
 To:     Gabriel Krisman Bertazi <krisman@collabora.com>
 Cc:     kernel@collabora.com, "Darrick J . Wong" <djwong@kernel.org>,
         "Theodore Ts'o" <tytso@mit.edu>,
@@ -66,62 +66,75 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 On Fri, May 21, 2021 at 5:42 AM Gabriel Krisman Bertazi
 <krisman@collabora.com> wrote:
 >
-
-Some maintainers are very strict about empty commit description...
-
+> Send a FS_ERROR message via fsnotify to a userspace monitoring tool
+> whenever a ext4 error condition is triggered.  This follows the existing
+> error conditions in ext4, so it is hooked to the ext4_error* functions.
+>
+> It also follows the current dmesg reporting in the format.  The
+> filesystem message is composed mostly by the string that would be
+> otherwise printed in dmesg.
+>
+> A new ext4 specific record format is exposed in the uapi, such that a
+> monitoring tool knows what to expect when listening errors of an ext4
+> filesystem.
+>
 > Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
->
+
+Looks fine.
+
+Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+
 > ---
-> Changes since v2:
->   - Use the inode argument (Amir)
-> ---
->  include/linux/fsnotify.h | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
+>  fs/ext4/super.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 >
-> diff --git a/include/linux/fsnotify.h b/include/linux/fsnotify.h
-> index f8acddcf54fb..458e4feb5fe1 100644
-> --- a/include/linux/fsnotify.h
-> +++ b/include/linux/fsnotify.h
-> @@ -317,4 +317,17 @@ static inline void fsnotify_change(struct dentry *dentry, unsigned int ia_valid)
->                 fsnotify_dentry(dentry, mask);
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 7dc94f3e18e6..a8c0ac2c3e4c 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -46,6 +46,7 @@
+>  #include <linux/part_stat.h>
+>  #include <linux/kthread.h>
+>  #include <linux/freezer.h>
+> +#include <linux/fsnotify.h>
+>
+>  #include "ext4.h"
+>  #include "ext4_extents.h"      /* Needed for trace points definition */
+> @@ -752,6 +753,8 @@ void __ext4_error(struct super_block *sb, const char *function,
+>                        sb->s_id, function, line, current->comm, &vaf);
+>                 va_end(args);
+>         }
+> +       fsnotify_error_event(sb, NULL, error);
+> +
+>         ext4_handle_error(sb, force_ro, error, 0, block, function, line);
 >  }
 >
-> +static inline void fsnotify_error_event(struct super_block *sb, struct inode *inode,
-> +                                       int error)
-
-The _event in the helper name is inconsistent with the rest of the helpers.
-I would go with fsnotify_sb_error(), especially if you agree with me about
-allowing FAN_ERROR only on sb marks.
-I would also consider FAN_FS_ERROR (?) to reduce ambiguity in the future
-with FAN_WB_ERROR.
-
-> +{
-> +       if (sb->s_fsnotify_marks) {
-> +               struct fs_error_report report = {
-> +                       .error = error,
-> +                       .inode = inode,
-> +               };
-> +               fsnotify(FS_ERROR, &report, FSNOTIFY_EVENT_ERROR, NULL, NULL,
-> +                        sb->s_root->d_inode, 0);
-
-This is a bit hacky.
-It *may* be acceptable if we allow FAN_ERROR only for sb marks, but if we
-allow to set them on inode marks, this is wrong, because it will only report
-events for all inodes only to an inode mark that was set on the root inode.
-
-If you want a clean solution:
-1) Take this cleanup patch from [1]
-    "fsnotify: pass arguments of fsnotify() in struct fsnotify_event_info"
-2) Add sb field to fsnotify_event_info
-3) In fsnotify() do not assume that inode is non-NULL:
--       struct super_block *sb;
-+       struct inode *inode = event_info->inode;
-+       struct super_block *sb = event_info->sb ?: inode->i_sb;
-
-There are too many args to fsnotify() already, so the cleanup patch
-is due anyway.
-
-Thanks,
-Amir.
-
-[1] https://github.com/amir73il/linux/commits/fanotify_idmapped
+> @@ -782,6 +785,8 @@ void __ext4_error_inode(struct inode *inode, const char *function,
+>                                current->comm, &vaf);
+>                 va_end(args);
+>         }
+> +       fsnotify_error_event(inode->i_sb, inode, error);
+> +
+>         ext4_handle_error(inode->i_sb, false, error, inode->i_ino, block,
+>                           function, line);
+>  }
+> @@ -820,6 +825,8 @@ void __ext4_error_file(struct file *file, const char *function,
+>                                current->comm, path, &vaf);
+>                 va_end(args);
+>         }
+> +       fsnotify_error_event(inode->i_sb, inode, EFSCORRUPTED);
+> +
+>         ext4_handle_error(inode->i_sb, false, EFSCORRUPTED, inode->i_ino, block,
+>                           function, line);
+>  }
+> @@ -887,6 +894,7 @@ void __ext4_std_error(struct super_block *sb, const char *function,
+>                 printk(KERN_CRIT "EXT4-fs error (device %s) in %s:%d: %s\n",
+>                        sb->s_id, function, line, errstr);
+>         }
+> +       fsnotify_error_event(sb, sb->s_root->d_inode, errno);
+>
+>         ext4_handle_error(sb, false, -errno, 0, 0, function, line);
+>  }
+> --
+> 2.31.0
+>
