@@ -2,144 +2,184 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E83B838CAA8
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 May 2021 18:12:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8654138D17C
+	for <lists+linux-ext4@lfdr.de>; Sat, 22 May 2021 00:28:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237282AbhEUQNg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 21 May 2021 12:13:36 -0400
-Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:6839 "EHLO
-        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236522AbhEUQNf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 21 May 2021 12:13:35 -0400
-Received: from sc9-mailhost1.vmware.com (10.113.161.71) by
- EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
- 15.0.1156.6; Fri, 21 May 2021 09:12:06 -0700
-Received: from smtpclient.apple (unknown [10.200.196.160])
-        by sc9-mailhost1.vmware.com (Postfix) with ESMTP id 2F13F20446;
-        Fri, 21 May 2021 09:12:12 -0700 (PDT)
-From:   Alexey Makhalov <amakhalov@vmware.com>
-Message-ID: <D3ECB26C-F77D-43CB-AE6F-F6919ED6CCB9@vmware.com>
-Content-Type: multipart/signed;
-        boundary="Apple-Mail=_8E632069-FAA9-4C7C-A864-41C39A5A7FD3";
-        protocol="application/pgp-signature"; micalg=pgp-sha256
-MIME-Version: 1.0 (Mac OS X Mail 14.0 \(3654.80.0.2.43\))
-Subject: Re: [PATCH] ext4: fix memory leak in ext4_fill_super
-Date:   Fri, 21 May 2021 09:12:09 -0700
-In-Reply-To: <YKfDrcEfu7Gp0dGi@mit.edu>
-CC:     <linux-ext4@vger.kernel.org>, <stable@vger.kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-References: <20210428221928.38960-1-amakhalov@vmware.com>
- <YKc6fidMj95TZp2w@mit.edu> <459B4724-842E-4B47-B2E7-D29805431E69@vmware.com>
- <YKfDrcEfu7Gp0dGi@mit.edu>
-X-Mailer: Apple Mail (2.3654.80.0.2.43)
-Received-SPF: None (EX13-EDG-OU-001.vmware.com: amakhalov@vmware.com does not
- designate permitted sender hosts)
+        id S229986AbhEUWaA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 21 May 2021 18:30:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56390 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229526AbhEUWaA (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 21 May 2021 18:30:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 92AAC61176;
+        Fri, 21 May 2021 22:28:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621636116;
+        bh=VUdBfGxFYo+S3qttMHWfMxhCSVNMRVH7saVfarsg1vA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Mh9rSZb5f8D1Jci4xNsWkaX6Hw39gWjMkfDVHqFpPGJDviKH/4lsqtsUhA6MJrxMD
+         8DKa+YuZk7s5KRKlE/6XP1X3bFGoxCBfkul1vJRWAdoTpUCYv/HWGz3/qVn10cELI4
+         /Xbu6SIF9CTg1PzRBG666+enKfPd/m+OOqdicemjgLKY5VQEe96kiXxPpamc5bb0+t
+         lV0s8AvZDBFkz+2xE+JtB/VkTsa2J5gw/K1I5IKXAL23sn5tgCpQQfrTgd23BLf1X3
+         HcCfJZQBzt9C00mR3i+YZ2XPYsRSIgG8zwNS1898WY5FRsrZLZdpd7e5NGvioq4V/N
+         DOZNgqCB3E1Qw==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     stable@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org, Yunlei He <heyunlei@hihonor.com>,
+        Theodore Ts'o <tytso@mit.edu>
+Subject: [PATCH 5.4] ext4: fix error handling in ext4_end_enable_verity()
+Date:   Fri, 21 May 2021 15:27:25 -0700
+Message-Id: <20210521222725.812825-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
---Apple-Mail=_8E632069-FAA9-4C7C-A864-41C39A5A7FD3
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=utf-8
+From: Eric Biggers <ebiggers@google.com>
 
-Sounds good! Thanks for the guidance and v3) =E2=80=94Alexey
+commit f053cf7aa66cd9d592b0fc967f4d887c2abff1b7 upstream.
+[Please apply to 5.4-stable.]
 
-> On May 21, 2021, at 7:29 AM, Theodore Y. Ts'o <tytso@mit.edu> wrote:
->=20
-> On Fri, May 21, 2021 at 12:43:46AM -0700, Alexey Makhalov wrote:
->> Hi Ted,
->>=20
->> Good point! This paragraph can be just dropped as the next one
->> describes the issue with superblock re-read. Will send v2 shortly.
->=20
-> Thanks; for what it's worth, I'm going to be editing the commit
-> description anyway; it's really helpful during the patch review to
-> understand how you found the problem, and how to reproduce it.
-> However, the commit description when it lands upstream will include a
-> link to this mail thread on lore.kernel.org, and so including a long
-> stack trace isn't really necessary.
->=20
-> I'm going to cut it down to something like this:
->=20
-> ------------------------------
-> ext4: fix memory leak in ext4_fill_super
->=20
-> Buffer head references must be released before calling kill_bdev();
-> otherwise the buffer head (and its page referenced by b_data) will not
-> be freed by kill_bdev, and subsequently that bh will be leaked.
->=20
-> If blocksizes differ, sb_set_blocksize() will kill current buffers and
-> page cache by using kill_bdev(). And then super block will be reread
-> again but using correct blocksize this time. sb_set_blocksize() didn't
-> fully free superblock page and buffer head, and being busy, they were
-> not freed and instead leaked.
->=20
-> This can easily be reproduced by calling an infinite loop of:
->=20
->  systemctl start <ext4_on_lvm>.mount, and
->  systemctl stop <ext4_on_lvm>.mount
->=20
-> ... since systemd creates a cgroup for each slice which it mounts, and
-> the bh leak get amplified by a dying memory cgroup that also never
-> gets freed, and memory consumption is much more easily noticed.
->=20
-> Signed-off-by: Alexey Makhalov <amakhalov@vmware.com>
-> Cc: stable@vger.kernel.org
-> Link: =
-https://nam04.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Flore.k=
-ernel.org%2Fr%2F459B4724-842E-4B47-B2E7-D29805431E69%40vmware.com&amp;data=
-=3D04%7C01%7Camakhalov%40vmware.com%7Ce5ae2270f1134d9a3cce08d91c64cb26%7Cb=
-39138ca3cee4b4aa4d6cd83d9dd62f0%7C0%7C1%7C637572041508854286%7CUnknown%7CT=
-WFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0=
-%3D%7C3000&amp;sdata=3D%2Fa%2FqTcBfL1tYkIq0byM46DXmpxTFOraAly2Ib9sbghE%3D&=
-amp;reserved=3D0
-> Fixes: ce40733ce93d ("ext4: Check for return value from =
-sb_set_blocksize")
-> Fixes: ac27a0ec112a ("ext4: initial copy of files from ext3")
-> Signed-off-by: "Theodore Ts'o" <tytso@mit.edu>
-> Cc: Andreas Dilger <adilger.kernel@dilger.ca>
-> ------------------------------
->=20
-> The commit description above is 18 lines (exclusive of trailers and
-> headers) versus 71 lines, and is much more to the point for someone
-> who might be doing code archeology via "git log".
->=20
-> When submitting this as a patch, you can either use a separate cover
-> letter (git format-patch --cover-letter) or including the explanation
-> after the --- in the diff, so that it disappears before the commit is
-> added via "git am".  But it's not that hard for me to rework a commit
-> description, so I'll take care of it for this patch; no need to send a
-> V3.
->=20
-> Cheers,
->=20
-> 					- Ted
+ext4 didn't properly clean up if verity failed to be enabled on a file:
 
+- It left verity metadata (pages past EOF) in the page cache, which
+  would be exposed to userspace if the file was later extended.
 
---Apple-Mail=_8E632069-FAA9-4C7C-A864-41C39A5A7FD3
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename="signature.asc"
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Message signed with OpenPGP
+- It didn't truncate the verity metadata at all (either from cache or
+  from disk) if an error occurred while setting the verity bit.
 
------BEGIN PGP SIGNATURE-----
+Fix these bugs by adding a call to truncate_inode_pages() and ensuring
+that we truncate the verity metadata (both from cache and from disk) in
+all error paths.  Also rework the code to cleanly separate the success
+path from the error paths, which makes it much easier to understand.
 
-iQIzBAEBCAAdFiEEQe6bu7hIFElmsM7CGW4w8WwwaSUFAmCn29kACgkQGW4w8Www
-aSWibA//RbCDAXmr84gyrkKt0PeNjoJkyzvO9efyIt3y1x4j56JvpPSzc+Di7kyb
-e2NTJrLr0biHJdkvBuLJIrAp5nmesf0JBCiQe2zM3LfmRY3GDjj3ZcHkSaBjK+Lo
-rZJuiRbZ+NBhP1A2X5RbXNwr8YHl4lkEqE1yqxXvKUMDj2ZjOcg6OWNDtp1P5z9e
-VGdF7JCqTMsXlDUQQsTzGT60qvWvt4UCGZIAEt0J1cbB7fg3qFqLxLPgGijq44Vf
-VJwibbtWQivCZ4LIW3i6UF5MAZiHbavlcUVzRvROmRQysBOTLXr47Oov2VZuXAOb
-rJIG+mEaTK5awT71yIWstLAlZhk6nZT2kgTCEVRfUQEg/p0Ysklm6t9MXmyyYpqL
-ErNBu6PX5yGTTmsqw/wcuGIVbgv5TZ4dyTVVJJH3Qyxo/7CBEIygja4xmlyVP72D
-EPHBzSrMRZnMzoHl5mDGzGuthFN/aZFtN4gJSqHKGUZEby8huAO+kwKcrkaxbMZZ
-TNKkGIdEZrtmDRnQLS3cipl3bmVx6xEP6X0X3rIruLrwV5/6WN44upmh3YOBe83C
-kJYuS/Q7bYrEff0mOfQcPbItzSARv7do5xl39szjPkf8I/M3ZDhqUK0SklXOdpWV
-1aYPXD/Cm+Yo2rgkmeDP4FoiqJj9sRvFoHu/ANCtMouSQhme1lc=
-=bZBa
------END PGP SIGNATURE-----
+Reported-by: Yunlei He <heyunlei@hihonor.com>
+Fixes: c93d8f885809 ("ext4: add basic fs-verity support")
+Cc: stable@vger.kernel.org # v5.4+
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+Link: https://lore.kernel.org/r/20210302200420.137977-2-ebiggers@kernel.org
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ fs/ext4/verity.c | 89 ++++++++++++++++++++++++++++++------------------
+ 1 file changed, 55 insertions(+), 34 deletions(-)
 
---Apple-Mail=_8E632069-FAA9-4C7C-A864-41C39A5A7FD3--
+diff --git a/fs/ext4/verity.c b/fs/ext4/verity.c
+index d0d8a9795dd6..6a30e54c1128 100644
+--- a/fs/ext4/verity.c
++++ b/fs/ext4/verity.c
+@@ -198,55 +198,76 @@ static int ext4_end_enable_verity(struct file *filp, const void *desc,
+ 	struct inode *inode = file_inode(filp);
+ 	const int credits = 2; /* superblock and inode for ext4_orphan_del() */
+ 	handle_t *handle;
++	struct ext4_iloc iloc;
+ 	int err = 0;
+-	int err2;
+ 
+-	if (desc != NULL) {
+-		/* Succeeded; write the verity descriptor. */
+-		err = ext4_write_verity_descriptor(inode, desc, desc_size,
+-						   merkle_tree_size);
+-
+-		/* Write all pages before clearing VERITY_IN_PROGRESS. */
+-		if (!err)
+-			err = filemap_write_and_wait(inode->i_mapping);
+-	}
++	/*
++	 * If an error already occurred (which fs/verity/ signals by passing
++	 * desc == NULL), then only clean-up is needed.
++	 */
++	if (desc == NULL)
++		goto cleanup;
+ 
+-	/* If we failed, truncate anything we wrote past i_size. */
+-	if (desc == NULL || err)
+-		ext4_truncate(inode);
++	/* Append the verity descriptor. */
++	err = ext4_write_verity_descriptor(inode, desc, desc_size,
++					   merkle_tree_size);
++	if (err)
++		goto cleanup;
+ 
+ 	/*
+-	 * We must always clean up by clearing EXT4_STATE_VERITY_IN_PROGRESS and
+-	 * deleting the inode from the orphan list, even if something failed.
+-	 * If everything succeeded, we'll also set the verity bit in the same
+-	 * transaction.
++	 * Write all pages (both data and verity metadata).  Note that this must
++	 * happen before clearing EXT4_STATE_VERITY_IN_PROGRESS; otherwise pages
++	 * beyond i_size won't be written properly.  For crash consistency, this
++	 * also must happen before the verity inode flag gets persisted.
+ 	 */
++	err = filemap_write_and_wait(inode->i_mapping);
++	if (err)
++		goto cleanup;
+ 
+-	ext4_clear_inode_state(inode, EXT4_STATE_VERITY_IN_PROGRESS);
++	/*
++	 * Finally, set the verity inode flag and remove the inode from the
++	 * orphan list (in a single transaction).
++	 */
+ 
+ 	handle = ext4_journal_start(inode, EXT4_HT_INODE, credits);
+ 	if (IS_ERR(handle)) {
+-		ext4_orphan_del(NULL, inode);
+-		return PTR_ERR(handle);
++		err = PTR_ERR(handle);
++		goto cleanup;
+ 	}
+ 
+-	err2 = ext4_orphan_del(handle, inode);
+-	if (err2)
+-		goto out_stop;
++	err = ext4_orphan_del(handle, inode);
++	if (err)
++		goto stop_and_cleanup;
+ 
+-	if (desc != NULL && !err) {
+-		struct ext4_iloc iloc;
++	err = ext4_reserve_inode_write(handle, inode, &iloc);
++	if (err)
++		goto stop_and_cleanup;
+ 
+-		err = ext4_reserve_inode_write(handle, inode, &iloc);
+-		if (err)
+-			goto out_stop;
+-		ext4_set_inode_flag(inode, EXT4_INODE_VERITY);
+-		ext4_set_inode_flags(inode);
+-		err = ext4_mark_iloc_dirty(handle, inode, &iloc);
+-	}
+-out_stop:
++	ext4_set_inode_flag(inode, EXT4_INODE_VERITY);
++	ext4_set_inode_flags(inode);
++	err = ext4_mark_iloc_dirty(handle, inode, &iloc);
++	if (err)
++		goto stop_and_cleanup;
++
++	ext4_journal_stop(handle);
++
++	ext4_clear_inode_state(inode, EXT4_STATE_VERITY_IN_PROGRESS);
++	return 0;
++
++stop_and_cleanup:
+ 	ext4_journal_stop(handle);
+-	return err ?: err2;
++cleanup:
++	/*
++	 * Verity failed to be enabled, so clean up by truncating any verity
++	 * metadata that was written beyond i_size (both from cache and from
++	 * disk), removing the inode from the orphan list (if it wasn't done
++	 * already), and clearing EXT4_STATE_VERITY_IN_PROGRESS.
++	 */
++	truncate_inode_pages(inode->i_mapping, inode->i_size);
++	ext4_truncate(inode);
++	ext4_orphan_del(NULL, inode);
++	ext4_clear_inode_state(inode, EXT4_STATE_VERITY_IN_PROGRESS);
++	return err;
+ }
+ 
+ static int ext4_get_verity_descriptor_location(struct inode *inode,
+-- 
+2.31.1.818.g46aad6cb9e-goog
+
