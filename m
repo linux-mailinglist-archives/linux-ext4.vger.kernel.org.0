@@ -2,150 +2,153 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D57BF38C11D
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 May 2021 09:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CC2138C1D6
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 May 2021 10:31:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234846AbhEUH5N (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 21 May 2021 03:57:13 -0400
-Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:20199 "EHLO
-        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231301AbhEUH5N (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 21 May 2021 03:57:13 -0400
-Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
- EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
- 15.0.1156.6; Fri, 21 May 2021 00:55:46 -0700
-Received: from localhost.localdomain (unknown [10.118.101.147])
-        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id E58882042B;
-        Fri, 21 May 2021 00:55:49 -0700 (PDT)
-From:   Alexey Makhalov <amakhalov@vmware.com>
-To:     "Theodore Y . Ts'o" <tytso@mit.edu>
-CC:     <linux-ext4@vger.kernel.org>, <stable@vger.kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Alexey Makhalov <amakhalov@vmware.com>
-Subject: [PATCH v2] ext4: fix memory leak in ext4_fill_super
-Date:   Fri, 21 May 2021 07:55:33 +0000
-Message-ID: <20210521075533.95732-1-amakhalov@vmware.com>
-X-Mailer: git-send-email 2.14.2
-In-Reply-To: <459B4724-842E-4B47-B2E7-D29805431E69@vmware.com>
-References: <459B4724-842E-4B47-B2E7-D29805431E69@vmware.com>
+        id S231889AbhEUIcu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 21 May 2021 04:32:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230480AbhEUIct (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 May 2021 04:32:49 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1FA8C061574;
+        Fri, 21 May 2021 01:31:26 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id l15so12394894iln.8;
+        Fri, 21 May 2021 01:31:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fD9naAkCO+UNu0R3N+jM35YfoYNYpu0KqAg9BLMmvKk=;
+        b=fq9WeXgEFKy8hMmc48lx06StsL6dK/9jTywTBBfxipX1KnaP2QezFCtpNAFlnadYD0
+         xl1X70mRKWRYerFlTvJDzNzhrtTO5cQqkmmeJYgFuYV+Gd2rrQTw1fIxth2bbCliOXNE
+         a3Dhq9DpWwqvqbvHkQqsH3H8a2f8hEWo2AUxJBcStUQP2dW4hgp+/FwAGtlW1VaN0GSF
+         1iEFtufDFiJcS+coi9P2PxoMXbapf61dzDlkAXOhxEjnVHxyMa60Jg+qh/c+UUhfM2P1
+         ppjJvtk1azW99JyH522e93HyDccuhXPweAS3gf4fzUgGksjYWKMzkq8Ts3UNosIyrDFF
+         lcPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fD9naAkCO+UNu0R3N+jM35YfoYNYpu0KqAg9BLMmvKk=;
+        b=frpRChaezLe3fRuewpJnv/4wdagbX9oUhvw8D/ywM3kErWQcw0SratGm4SNIQ3s/Nk
+         GfAost8UMWdYWm70kGGNbA85Jpfwo5KQ2TqBehwNY3CdQFdAZHXgR4b9VsV6/4xdRIXZ
+         HHaju42TLd6QIlcb/queZti7d5rzzfjQVl6Qu0Phgw0JlW73u99fbB+U3w3VxCucMPKn
+         kZk7CLdiSjSLT39jMO3kw31Gku92btMuX5C+JSSdrzO4V4wwCtENfy35Q2B4EL1vbxu4
+         +o7hge5cWyQXGeMxzo9rGBpZvLbtd95Q4dq5/G9vZamhgw1mUgfNpEIaCeP4tXBDqzy1
+         STNw==
+X-Gm-Message-State: AOAM532t12SM3HiLiOZ/E8IWPPYhnNyOse14cFLRI4oiKsM57+kuRRKQ
+        SRwNbuTaqoigEBXVkyalGHuFIpbOREp5v+Vic38=
+X-Google-Smtp-Source: ABdhPJzNgYFwclIHnCNKcRKMeZoZEgqly+y1H3n9eaINffPodzy6KQWzRZPqcw0lCocmWVKSRBjSGn4LpPf0pOcFHp0=
+X-Received: by 2002:a92:4446:: with SMTP id a6mr11074188ilm.9.1621585886178;
+ Fri, 21 May 2021 01:31:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-Received-SPF: None (EX13-EDG-OU-002.vmware.com: amakhalov@vmware.com does not
- designate permitted sender hosts)
+References: <20210521024134.1032503-1-krisman@collabora.com>
+In-Reply-To: <20210521024134.1032503-1-krisman@collabora.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Fri, 21 May 2021 11:31:15 +0300
+Message-ID: <CAOQ4uxjzoRLPK0w=wxpObu5Bg3aV=0+BDEFwhMx5uN5Zx9J5nQ@mail.gmail.com>
+Subject: Re: [PATCH 00/11] File system wide monitoring
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     kernel@collabora.com, "Darrick J . Wong" <djwong@kernel.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.com>,
+        David Howells <dhowells@redhat.com>,
+        Khazhismel Kumykov <khazhy@google.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Ext4 <linux-ext4@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-I've recently discovered that doing infinite loop of
-  systemctl start <ext4_on_lvm>.mount, and
-  systemctl stop <ext4_on_lvm>.mount
-linearly increases percpu allocator memory consumption.
-In several hours, it might lead to system instability by
-consuming most of the memory.
+On Fri, May 21, 2021 at 5:42 AM Gabriel Krisman Bertazi
+<krisman@collabora.com> wrote:
+>
+> Hi,
+>
+> This series follow up on my previous proposal [1] to support file system
+> wide monitoring.  As suggested by Amir, this proposal drops the ring
+> buffer in favor of a single slot associated with each mark.  This
+> simplifies a bit the implementation, as you can see in the code.
+>
+> As a reminder, This proposal is limited to an interface for
+> administrators to monitor the health of a file system, instead of a
+> generic inteface for file errors.  Therefore, this doesn't solve the
+> problem of writeback errors or the need to watch a specific subtree.
+>
+> In comparison to the previous RFC, this implementation also drops the
+> per-fs data and location, and leave those as future extensions.
+>
+> * Implementation
+>
+> The feature is implemented on top of fanotify, as a new type of fanotify
+> mark, FAN_ERROR, which a file system monitoring tool can register to
+> receive error notifications.  When an error occurs a new notification is
+> generated, in addition followed by this info field:
+>
+>  - FS generic data: A file system agnostic structure that has a generic
+>  error code and identifies the filesystem.  Basically, it let's
+>  userspace know something happened on a monitored filesystem.  Since
+>  only the first error is recorded since the last read, this also
+>  includes a counter of errors that happened since the last read.
+>
+> * Testing
+>
+> This was tested by watching notifications flowing from an intentionally
+> corrupted filesystem in different places.  In addition, other events
+> were watched in an attempt to detect regressions.
+>
+> Is there a specific testsuite for fanotify I should be running?
 
-During debugging it was found that most of active percpu
-allocations are from /system.slice/<ext4_on_lvm>.mount
-memory cgroups (created by systemd for each mount). All
-of these cgroups are in dying state with refcount equal
-to 2. And most interesting that each mount/umount itera-
-tion creates exactly one dying memory cgroup.
+LTP is where we maintain the fsnotify regression test.
+The inotify* and fanotify* tests specifically.
 
-Tracking down the remaining refcounts showed that it was
-charged from ext4_fill_super(). And the page is always
-0 index in the page cache mapping.
+>
+> * Patches
+>
+> This patchset is divided as follows: Patch 1 through 5 are refactoring
+> to fsnotify/fanotify in preparation for FS_ERROR/FAN_ERROR; patch 6 and
+> 7 implement the FS_ERROR API for filesystems to report error; patch 8
+> add support for FAN_ERROR in fanotify; Patch 9 is an example
+> implementation for ext4; patch 10 and 11 provide a sample userspace code
+> and documentation.
+>
+> I also pushed the full series to:
+>
+>   https://gitlab.collabora.com/krisman/linux -b fanotify-notifications-single-slot
 
-The issue was hidden behind initial super block read using
-logical blocksize from bdev and adjusting blocksize later
-after reading actual block size from superblock.
-If blocksizes differ, sb_set_blocksize() will kill current
-buffers and page cache by using kill_bdev(). And then super
-block will be reread again but using correct blocksize this
-time. sb_set_blocksize() didn't fully free superblock page
-and buffers as buffer pointed by bh variable remained busy.
-So buffer and its page remains in the memory (leak). Super
-block reread logic does not happen when ext4 filesystem is
-on physical partition as blocksize is correct for initial
-superblock read.
+All in all the series looks good, give or take some implementation
+details.
 
-brelse(bh), where bh is a buffer head of superblock page,
-must be called and bh references must be released before
-kill_bdev(). kill_bdev() subfunctions (see callstack below)
-won't be able to free not released buffer (even if it's
-clean) and superblock page won't be freed as well.
+One general comment about UAPI (CC linux-api) -
+I think Darrick has proposed to report ino/gen instead of only ino.
+I personally think it would be a shame not to reuse the already existing
+FAN_EVENT_INFO_TYPE_FID record format, but I can understand why
+you did not want to go there:
+1. Not all error reports carry inode information
+2. Not all filesystems support file handles
+3. Any other reason that I missed?
 
-callstack:
-kill_bdev()
-->truncate_inode_pages()
-  ->truncate_inode_pages_range()
-    ->truncate_cleanup_page()
-      ->do_invalidatepage
-        ->block_invalidatepage()
-	  ->try_to_release_page() == fail to release
-	    ->try_to_free_buffers() == fail to free
-	      ->drop_buffers()
-	        ->buffer_busy() == yes
+My proposal is that in cases where group was initialized with
+FAN_REPORT_FID (implies fs supports file handles) AND error report
+does carry inode information, record fanotify_info in fanotify_error_event
+and report FAN_EVENT_INFO_TYPE_FID record in addition to
+FAN_EVENT_INFO_TYPE_ERROR record to user.
 
-Incorrect order of brelse() and kill_bdev() in ext4_fill_super()
-was introduced by commit ce40733ce93d ("ext4: Check for return
-value from sb_set_blocksize") 13 years ago! Thanks to memory
-hungry percpu, it was easy to detect this issue now.
+I am not insisting on this change, but I think it won't add much complexity
+to your implementation and it will allow more flexibility to the API going
+forward.
 
-Fix this by moving the brelse() before sb_set_blocksize() and
-add a comment about the dependency.
+However, for the time being, if you want to avoid the UAPI discussion,
+I don't mind if you disallow FAN_ERROR mark for group with
+FAN_REPORT_FID.
 
-In addition, fix similar issue under failed_mount: label (in
-the same function) about incorrect order of ext4_blkdev_remove()
-vs brelse() introduced by commit ac27a0ec112a ("ext4: initial
-copy of files from ext3")
+In most likelihood, the tool monitoring filesystem for errors will not care
+about other events, so it shouldn't care about FAN_REPORT_FID anyway.
+I'd like to hear what other think about this point as well.
 
-Signed-off-by: Alexey Makhalov <amakhalov@vmware.com>
-Cc: stable@vger.kernel.org
-Fixes: ce40733ce93d ("ext4: Check for return value from sb_set_blocksize")
-Fixes: ac27a0ec112a ("ext4: initial copy of files from ext3")
-Cc: "Theodore Ts'o" <tytso@mit.edu>
-Cc: Andreas Dilger <adilger.kernel@dilger.ca>
----
- fs/ext4/super.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index b9693680463a..6c8f68309834 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -4451,14 +4451,20 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 	}
- 
- 	if (sb->s_blocksize != blocksize) {
-+		/*
-+		 * bh must be released before kill_bdev(), otherwise
-+		 * it won't be freed and its page also. kill_bdev()
-+		 * is called by sb_set_blocksize().
-+		 */
-+		brelse(bh);
- 		/* Validate the filesystem blocksize */
- 		if (!sb_set_blocksize(sb, blocksize)) {
- 			ext4_msg(sb, KERN_ERR, "bad block size %d",
- 					blocksize);
-+			bh = NULL;
- 			goto failed_mount;
- 		}
- 
--		brelse(bh);
- 		logical_sb_block = sb_block * EXT4_MIN_BLOCK_SIZE;
- 		offset = do_div(logical_sb_block, blocksize);
- 		bh = ext4_sb_bread_unmovable(sb, logical_sb_block);
-@@ -5178,8 +5184,9 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 		kfree(get_qf_name(sb, sbi, i));
- #endif
- 	fscrypt_free_dummy_policy(&sbi->s_dummy_enc_policy);
--	ext4_blkdev_remove(sbi);
-+	/* ext4_blkdev_remove() calls kill_bdev(), release bh before it. */
- 	brelse(bh);
-+	ext4_blkdev_remove(sbi);
- out_fail:
- 	sb->s_fs_info = NULL;
- 	kfree(sbi->s_blockgroup_lock);
--- 
-2.14.2
-
+Thanks,
+Amir.
