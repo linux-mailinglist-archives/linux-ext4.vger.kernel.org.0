@@ -2,81 +2,98 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D3F938C0C3
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 May 2021 09:31:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4213338C0DE
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 May 2021 09:43:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236039AbhEUHco (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 21 May 2021 03:32:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235958AbhEUHco (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 May 2021 03:32:44 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EBEBC061763
-        for <linux-ext4@vger.kernel.org>; Fri, 21 May 2021 00:31:21 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id n17-20020a7bc5d10000b0290169edfadac9so6811620wmk.1
-        for <linux-ext4@vger.kernel.org>; Fri, 21 May 2021 00:31:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JX2NF0LoCNh+yd7JhxwHGPcUa2KSL8nXMCjUnyA43EQ=;
-        b=HLSqPrUlVKEbMq4gNhA24tgksB7ufT4UkPI7YqExauQ/ge+h9EONOPdRmxRGyHW0wR
-         rgcrc9o5Kzqg0FyZ9STQ+xakYdpAfWJRsos/PqFlZE1OPFLfNXSKSqZa4KsH4elN0yz5
-         MkSk0ylgFE9Xh4Kfq2XNX5XJR+K81B+gEOm7AAiOUpCIo90jEEzS1ZtIo5RblXaKJmHT
-         7cY996tQ5m9ZfDNjR1g213CLKVicglwB62OG6MFOCbkgT4dBdcXUrySWxffTGUfIjfx3
-         6PqIW76fod2eibxzX5GbqW7c9Uv99BhEL238WZZ9lx1u/5zMtE9s1V0lgr6L0gaI86Un
-         U8hQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JX2NF0LoCNh+yd7JhxwHGPcUa2KSL8nXMCjUnyA43EQ=;
-        b=d06qmE4U8UjyEm4KS8qrGLHsA0ps3k9jeQMaQeabhuO0xDElWh1DkQneFlncctlcVm
-         mi4o/5L2UfuovZy0Vxz10bDSul/h+iJO0sgbLcpVG3CyNmJlDenW7Y35K7LK3YPU4qmH
-         yttZS+oPh3+SYqgXMDNNapyI3gvZvhtr+9nQfMySZ3tQ5giwR2YZF4bgqH/oEs49ZO7u
-         4kbC15nusZ+HaQqhQ3g+hmv5tJL+1R15pkK00BYwCvvxVQyI2QfBiiEyiqkjR0wdP+0H
-         SX8KlxtSTOJvUVcbDhIIeeM8iWeKP3yBhz41qtk5UPJ6sl7bVwEbBCYzq7vvHQ9aWVtX
-         pbqg==
-X-Gm-Message-State: AOAM532KHqellUKwBIAN0bdYgvSiJxiRqx0uxaAsn5HiInLRbJJGAOyZ
-        Nu7/Mdebzu2tpi6T3pnM3QI+NA==
-X-Google-Smtp-Source: ABdhPJyfiRwa7S9seGTK9XjC59dTlYZZjltqdtfRBktLHCxvxavP7B8Kq4aIvTPb1KcTdyMwAP8UYg==
-X-Received: by 2002:a7b:cd01:: with SMTP id f1mr7712226wmj.177.1621582280129;
-        Fri, 21 May 2021 00:31:20 -0700 (PDT)
-Received: from equinox (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
-        by smtp.gmail.com with ESMTPSA id n15sm1048718wrr.20.2021.05.21.00.31.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 00:31:19 -0700 (PDT)
-Date:   Fri, 21 May 2021 08:31:17 +0100
-From:   Phillip Potter <phil@philpotter.co.uk>
+        id S235551AbhEUHpP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 21 May 2021 03:45:15 -0400
+Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:43175 "EHLO
+        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232255AbhEUHpO (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 21 May 2021 03:45:14 -0400
+Received: from sc9-mailhost2.vmware.com (10.113.161.72) by
+ EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
+ 15.0.1156.6; Fri, 21 May 2021 00:43:45 -0700
+Received: from smtpclient.apple (unknown [10.200.196.160])
+        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id 5915D204C7;
+        Fri, 21 May 2021 00:43:50 -0700 (PDT)
+From:   Alexey Makhalov <amakhalov@vmware.com>
+Message-ID: <459B4724-842E-4B47-B2E7-D29805431E69@vmware.com>
+Content-Type: multipart/signed;
+        boundary="Apple-Mail=_B8B8270D-7D38-4ABC-96B6-1332ACFCDE75";
+        protocol="application/pgp-signature"; micalg=pgp-sha256
+MIME-Version: 1.0 (Mac OS X Mail 14.0 \(3654.80.0.2.43\))
+Subject: Re: [PATCH] ext4: fix memory leak in ext4_fill_super
+Date:   Fri, 21 May 2021 00:43:46 -0700
+In-Reply-To: <YKc6fidMj95TZp2w@mit.edu>
+CC:     <linux-ext4@vger.kernel.org>, <stable@vger.kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>
 To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Andreas Dilger <adilger@dilger.ca>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs: ext4: mballoc: amend goto to cleanup groupinfo
- memory correctly
-Message-ID: <YKdhxcVbevRJHb1q@equinox>
-References: <YI0czH0auvWlU8bA@equinox>
- <6E6AEEB4-1FBA-40F1-8328-8E304E68A7C6@dilger.ca>
- <YI6DqtMHj9dx26Kw@equinox>
- <YKcuf0eYcMIELjEj@mit.edu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKcuf0eYcMIELjEj@mit.edu>
+References: <20210428221928.38960-1-amakhalov@vmware.com>
+ <YKc6fidMj95TZp2w@mit.edu>
+X-Mailer: Apple Mail (2.3654.80.0.2.43)
+Received-SPF: None (EX13-EDG-OU-001.vmware.com: amakhalov@vmware.com does not
+ designate permitted sender hosts)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, May 20, 2021 at 11:52:31PM -0400, Theodore Y. Ts'o wrote:
-> Thanks, applied, with a cleaned up commit description.
-> 
-> Cheers,
-> 
-> 					- Ted
+--Apple-Mail=_B8B8270D-7D38-4ABC-96B6-1332ACFCDE75
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=utf-8
 
-Dear Ted,
+Hi Ted,
 
-Thank you for applying the patch, appreciate it.
+Good point! This paragraph can be just dropped as the next one
+describes the issue with superblock re-read. Will send v2 shortly.
 
-Regards,
-Phil
+Thanks,
+=E2=80=94Alexey
+
+> On May 20, 2021, at 9:43 PM, Theodore Y. Ts'o <tytso@mit.edu> wrote:
+>=20
+> On Wed, Apr 28, 2021 at 10:19:28PM +0000, Alexey Makhalov wrote:
+>> I've recently discovered that doing infinite loop of
+>>  systemctl start <ext4_on_lvm>.mount, and
+>>  systemctl stop <ext4_on_lvm>.mount
+>> linearly increases percpu allocator memory consumption.
+>> In several hours, it might lead to system instability by
+>> consuming most of the memory.
+>>=20
+>> Bug is not reproducible when the ext4 filesystem is on
+>> physical partition, but it is persistent when ext4 is on
+>> logical volume.
+>=20
+> Why is this the case?  It sounds like we're looking a buffer for each
+> mount where the block size is not 1k.  It shouldn't matter whether it
+> is a physical partition or not.
+>=20
+> 				- Ted
+
+
+--Apple-Mail=_B8B8270D-7D38-4ABC-96B6-1332ACFCDE75
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="signature.asc"
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEQe6bu7hIFElmsM7CGW4w8WwwaSUFAmCnZLMACgkQGW4w8Www
+aSWuuQ//YDhZN9HmbzxFs42QbryuoIiEAh62NvTjUhAdhPijNJWuXc0rlyT6HdEh
+i1sOOyDYEGcjJokGjOWkQ2kW+yI2uVoohyqKrCXfo9Q0r9nbXIA7O+IKOLk0nRa1
+an8gAjeWi6DJJie7jTKDMySG3x7P4j28S4P06kRJmNJEZaw/zaTI1jJyp0x98ifz
+m1LdgMiKJB+Z4CTnBE/B2RiAIH3CRVPBdL1DJL/LU7q/m0Y6/7LHGa8iQTvEkhdo
+hoIYYzGp8w9uIr+HNRR+FrvVV5sUsusbxI0GmOTR2S6njayyExO6BRsJ29yBJ8Qn
+P5/NggB6KtYGhpnK9KemoxNmAaJQ0vQTtzed0U0vdqRJscV2wk8fwYBOsZyZsvWZ
+OLIDr2WTl2p9mAoU8vOgnizDlbksVOZAuhq1WtcE951dqNDQ+i9UD4KYPr8oEcFN
+B8wQa9qeHltkHjU/OzarXy+qUR8yH1Apbp4TWuUdiZccFDgZGzgxHwM1agpTLX9S
+9VWQ0Gsl/tR1VI2oxUV32QvFLDvih6B/AvcOZnzsgQXRp8LnKhP1v77HxSPyzw7V
+bluA8b4Gv4/LT0qN9Hbjh2Uu7ULuHAUvWlPhYtX/vTEIpEJjXo3vycNl31+Xbi+X
+IZwhZzOB0yK771VHIlo4M/wVSYnQcruP2XqeH8nduIzJUoU6LD8=
+=RB1O
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_B8B8270D-7D38-4ABC-96B6-1332ACFCDE75--
