@@ -2,54 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1839E38C29A
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 May 2021 11:06:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB42E38C2A5
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 May 2021 11:07:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235376AbhEUJH4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 21 May 2021 05:07:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53296 "EHLO
+        id S235535AbhEUJJE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 21 May 2021 05:09:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234628AbhEUJHy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 May 2021 05:07:54 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 347D2C061574;
-        Fri, 21 May 2021 02:06:31 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id c4so272073iln.7;
-        Fri, 21 May 2021 02:06:31 -0700 (PDT)
+        with ESMTP id S235439AbhEUJJD (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 May 2021 05:09:03 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2681CC061574;
+        Fri, 21 May 2021 02:07:41 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id b25so1106980iot.5;
+        Fri, 21 May 2021 02:07:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=qOSLP82Ez+kx0oIloOtL79Asfs1CDEhRsGH99eTYvPw=;
-        b=nm5r1mtytT5B5L8p0bJPZN8aIqCjc0Gk3jUqLorWnFV2tx2ZnsxuqVaEU/m/Rt/C67
-         Poe5FkAri0W6HbQimZk2QSPxmAim1WHZPOzNyqeTuWSYh0IM4h4hZ//vSpez7MOlnjS3
-         VNsY2nQdZZLQvVQjaP3PlpuonMFdNuogODbSnb9umS9vvcD+PgDCbkizjFYfYGtXAXGL
-         w/KyTOCtiEU1X7Py9i4Bnzr45IZZhAiHRJVWU5e1btGtQTfCCPfXj2/tKdVK4cO6cDIL
-         +gMxyiqPdtGjIqaXtB72f0v+wXeoAjb0KLnHQXj4G6wnw1vYjW4ws6iynSmLArTNOEwZ
-         JcIA==
+        bh=F68djwrrrlB+TcldXidy5MN/3R9n2lZHelR2pEFMlHU=;
+        b=S6xbS/yQBhxwHdRnjhwMLqSX1iGJDDuoKPl9IOnk5+aYo3PrzVbSoFiTyJziNTCDD3
+         Hxl3ZkX/PvlYAv6kPyNqlBYLdgvoEmtI9qv4y469KhJ3ATQxnrLRpsjOoTRAhW64fpVU
+         opMM8IquJZHsamIjbO56bBibM5K/jcvrF55l1A6EykFFGoWzrtxBgKp7r+YDU6DmQRTf
+         lYsBCUVT5lqMCF2Y61k6EBITfF3JjrTh1dLGChE+xefeMRoTFDP3IxP4wCcmQ8uwhYIS
+         MEgXSjs6xsJdtmiM1bcxyOKj8t0wHGd1ruUg7hPby/laEXwhC4lFF+wKeavnW1XpK/BC
+         02lQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qOSLP82Ez+kx0oIloOtL79Asfs1CDEhRsGH99eTYvPw=;
-        b=G5+sAdTh9PXXA1b5PMn3FoSTnoVf/tUgcIoINGkxupNJ18Tkacw/6D/SM4hZmRI4Ba
-         NGPSGwX9bo5NSZzGur22EdwxagviIbJuYng5W2jatifDIFLy9lg+67Xqt/7yqCnMB9cU
-         G5dNlDhg5cbGwEocXjlQVrXrfU8FpLBBY9/QItO46Efwi289PtbgXkHSuovBBMhaIWUI
-         nmnnjDwf0kDsNHqatxhVbYAoUutZQbXOLG53G1R8lQV5C8dzCB/AaYgeyx1fXVdRmSka
-         VXK8yBrESOBG4pf0tSClgVE7Iwxx+IKlHC1dtZylsiI0fjkEnGBE6caSe5ox4Ln6Stjd
-         +wyA==
-X-Gm-Message-State: AOAM530a1dd87D9SnxODJCs5L/jBhy1X2wP+v07IkBxfhrqcb54AsLuT
-        zk1QnceUG56e3G9lwR3V8/hIs8Suk6JwUbCQNSA=
-X-Google-Smtp-Source: ABdhPJw7YVkipLITeiej1vE7i3KuxNmwloLTOlMAuSvONol9bRFQjr6vVbl/J/WLLQ/KlJJIbLVt6spNDJUrU+i6Nkk=
-X-Received: by 2002:a92:cc43:: with SMTP id t3mr11753988ilq.250.1621587989830;
- Fri, 21 May 2021 02:06:29 -0700 (PDT)
+        bh=F68djwrrrlB+TcldXidy5MN/3R9n2lZHelR2pEFMlHU=;
+        b=EWjswr1MJJ45vWOXuwUMl9pjILOdMKAeV7PVBzo8HglWRcTQM5laxvyzNf/tM/3/e8
+         C75K9d+N/cOX6F2i/xJ9w3MVLkfQHaPXBBtisqezERvqu2pQx5eCp3PN5FtXwPwu9+3G
+         cY6z5dAdhIl4qS1QPvSGx6btz3u5FXcUdOcL5LsXfhDrIwAWQvp2GNdIMwBlc9H+sLTi
+         vTvYAR+sJapmkn0nT9pw0jyTGSvEF/yv4WQfqxzSeH3Osk5w5ACJ95CP69whwmwmoOYo
+         v/mrGQueuimZxUIRXKc6zWJyd7aH1dO8kID38ZJ+2E2Iw51WqrxYTmV8VbVU5KoHpvFW
+         mUUw==
+X-Gm-Message-State: AOAM532qna3blmPjzKrFhlKEYJesODEo9nT0EseermnhCBpyeNGVoQB3
+        +KfQC2az1uwe9Ryf9Eb4l4urmS+NAF5U1FLI4pUXjP0M6Z0=
+X-Google-Smtp-Source: ABdhPJwN46O66COep21kHFjg/O7u1o0s8ggjlT1za2ZnAGm3M6lvrJDPH6PziiQQSDz167s5uxV3YxFE9kjAJAS2v00=
+X-Received: by 2002:a6b:3119:: with SMTP id j25mr9404514ioa.64.1621588060516;
+ Fri, 21 May 2021 02:07:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210521024134.1032503-1-krisman@collabora.com> <20210521024134.1032503-5-krisman@collabora.com>
-In-Reply-To: <20210521024134.1032503-5-krisman@collabora.com>
+References: <20210521024134.1032503-1-krisman@collabora.com> <20210521024134.1032503-6-krisman@collabora.com>
+In-Reply-To: <20210521024134.1032503-6-krisman@collabora.com>
 From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Fri, 21 May 2021 12:06:18 +0300
-Message-ID: <CAOQ4uxj4bREBYPZTBTgZ5LiSx+SosrUS8W-G_ea634M1nXs=wQ@mail.gmail.com>
-Subject: Re: [PATCH 04/11] fanotify: Expose fanotify_mark
+Date:   Fri, 21 May 2021 12:07:29 +0300
+Message-ID: <CAOQ4uxi2G-RT1aLU337zDjWZxpi7aP-x-OTTL=5vGuf1H9DXjA@mail.gmail.com>
+Subject: Re: [PATCH 05/11] inotify: Don't force FS_IN_IGNORED
 To:     Gabriel Krisman Bertazi <krisman@collabora.com>
 Cc:     kernel@collabora.com, "Darrick J . Wong" <djwong@kernel.org>,
         "Theodore Ts'o" <tytso@mit.edu>,
@@ -66,133 +66,42 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 On Fri, May 21, 2021 at 5:42 AM Gabriel Krisman Bertazi
 <krisman@collabora.com> wrote:
 >
-> FAN_ERROR will require an error structure to be stored per mark.
-> Therefore, wrap fsnotify_mark in a fanotify specific structure in
-> preparation for that.
+> According to Amir:
 >
+> "FS_IN_IGNORED is completely internal to inotify and there is no need
+> to set it in i_fsnotify_mask at all, so if we remove the bit from the
+> output of inotify_arg_to_mask() no functionality will change and we will
+> be able to overload the event bit for FS_ERROR."
+>
+> This is done in preparation to overload FS_ERROR with the notification
+> mechanism in fanotify.
+>
+> Suggested-by: Amir Goldstein <amir73il@gmail.com>
 > Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+
+Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+
 > ---
->  fs/notify/fanotify/fanotify.c      |  4 +++-
->  fs/notify/fanotify/fanotify.h      | 10 ++++++++++
->  fs/notify/fanotify/fanotify_user.c | 14 +++++++-------
->  3 files changed, 20 insertions(+), 8 deletions(-)
+>  fs/notify/inotify/inotify_user.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 >
-> diff --git a/fs/notify/fanotify/fanotify.c b/fs/notify/fanotify/fanotify.c
-> index 711b36a9483e..34e2ee759b39 100644
-> --- a/fs/notify/fanotify/fanotify.c
-> +++ b/fs/notify/fanotify/fanotify.c
-> @@ -869,7 +869,9 @@ static void fanotify_freeing_mark(struct fsnotify_mark *mark,
->
->  static void fanotify_free_mark(struct fsnotify_mark *fsn_mark)
->  {
-> -       kmem_cache_free(fanotify_mark_cache, fsn_mark);
-> +       struct fanotify_mark *mark = FANOTIFY_MARK(fsn_mark);
-> +
-> +       kmem_cache_free(fanotify_mark_cache, mark);
->  }
->
->  const struct fsnotify_ops fanotify_fsnotify_ops = {
-> diff --git a/fs/notify/fanotify/fanotify.h b/fs/notify/fanotify/fanotify.h
-> index 4a5e555dc3d2..a399c5e2615d 100644
-> --- a/fs/notify/fanotify/fanotify.h
-> +++ b/fs/notify/fanotify/fanotify.h
-> @@ -129,6 +129,16 @@ static inline void fanotify_info_copy_name(struct fanotify_info *info,
->                name->name);
->  }
->
-> +struct fanotify_mark {
-> +       struct fsnotify_mark fsn_mark;
-> +       struct fanotify_error_event *error_event;
-
-I don't think fanotify_error_event is defined at this point in the series.
-You can add this field later in the series.
-
-> +};
-> +
-> +static inline struct fanotify_mark *FANOTIFY_MARK(struct fsnotify_mark *mark)
-> +{
-> +       return container_of(mark, struct fanotify_mark, fsn_mark);
-> +}
-> +
->  /*
->   * Common structure for fanotify events. Concrete structs are allocated in
->   * fanotify_handle_event() and freed when the information is retrieved by
-> diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
-> index 9cc6c8808ed5..00210535a78e 100644
-> --- a/fs/notify/fanotify/fanotify_user.c
-> +++ b/fs/notify/fanotify/fanotify_user.c
-> @@ -914,7 +914,7 @@ static struct fsnotify_mark *fanotify_add_new_mark(struct fsnotify_group *group,
->                                                    __kernel_fsid_t *fsid)
->  {
->         struct ucounts *ucounts = group->fanotify_data.ucounts;
-> -       struct fsnotify_mark *mark;
-> +       struct fanotify_mark *mark;
->         int ret;
+> diff --git a/fs/notify/inotify/inotify_user.c b/fs/notify/inotify/inotify_user.c
+> index 98f61b31745a..4d17be6dd58d 100644
+> --- a/fs/notify/inotify/inotify_user.c
+> +++ b/fs/notify/inotify/inotify_user.c
+> @@ -89,10 +89,10 @@ static inline __u32 inotify_arg_to_mask(struct inode *inode, u32 arg)
+>         __u32 mask;
 >
 >         /*
-> @@ -926,20 +926,20 @@ static struct fsnotify_mark *fanotify_add_new_mark(struct fsnotify_group *group,
->             !inc_ucount(ucounts->ns, ucounts->uid, UCOUNT_FANOTIFY_MARKS))
->                 return ERR_PTR(-ENOSPC);
->
-> -       mark = kmem_cache_alloc(fanotify_mark_cache, GFP_KERNEL);
-> +       mark = kmem_cache_zalloc(fanotify_mark_cache, GFP_KERNEL);
->         if (!mark) {
->                 ret = -ENOMEM;
->                 goto out_dec_ucounts;
->         }
->
-> -       fsnotify_init_mark(mark, group);
-> -       ret = fsnotify_add_mark_locked(mark, connp, type, 0, fsid);
-> +       fsnotify_init_mark(&mark->fsn_mark, group);
-> +       ret = fsnotify_add_mark_locked(&mark->fsn_mark, connp, type, 0, fsid);
->         if (ret) {
-> -               fsnotify_put_mark(mark);
-> +               fsnotify_put_mark(&mark->fsn_mark);
->                 goto out_dec_ucounts;
->         }
->
-> -       return mark;
-> +       return &mark->fsn_mark;
->
->  out_dec_ucounts:
->         if (!FAN_GROUP_FLAG(group, FAN_UNLIMITED_MARKS))
-> @@ -1477,7 +1477,7 @@ static int __init fanotify_user_setup(void)
->         BUILD_BUG_ON(HWEIGHT32(FANOTIFY_INIT_FLAGS) != 10);
->         BUILD_BUG_ON(HWEIGHT32(FANOTIFY_MARK_FLAGS) != 9);
->
-> -       fanotify_mark_cache = KMEM_CACHE(fsnotify_mark,
-> +       fanotify_mark_cache = KMEM_CACHE(fanotify_mark,
->                                          SLAB_PANIC|SLAB_ACCOUNT);
+> -        * Everything should accept their own ignored and should receive events
+> -        * when the inode is unmounted.  All directories care about children.
+> +        * Everything should receive events when the inode is unmounted.
+> +        * All directories care about children.
+>          */
+> -       mask = (FS_IN_IGNORED | FS_UNMOUNT);
+> +       mask = (FS_UNMOUNT);
 
-Thinking out loud:
+Nit: can remove ()
 
-Do we want to increase the size of all fanotify marks or just the size of
-sb marks?
-
-In this WIP branch [1], I took the latter approach.
-
-The greater question is, do we want/need to allow setting FAN_ERROR
-on inode marks mask at all?
-
-My feeling is that we should not allow that at this time, because the
-use case of watching for critical errors on a specific inode is a
-non-requirement IMO.
-
-OTOH, if we treat this change as a stepping stone towards adding
-writeback error events in the future then we should also think about
-whether watching specific files for writeback error in a sensible use case
-I don't think that it is, because when application can always keep an open
-fd for file of interest and fysnc on any reported writeback error on the
-filesystem, as those events are supposed to be rare.
-
-Another point to consider - in future revisions of [1] fanotify sb marks
-may grow more fields (e.g. subtree_root, userns), so while adding a single
-pointer field to all fanotify inode marks may not be the end of the world,
-going forward, we will need to have a separate kmem_cache for sb marks
-anyway, so maybe better to split it now already.
-
-Thoughts?
-
+Thanks,
 Amir.
-
-[1] https://github.com/amir73il/linux/commits/fanotify_idmapped
