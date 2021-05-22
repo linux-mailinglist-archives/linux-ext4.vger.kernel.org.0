@@ -2,184 +2,121 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8654138D17C
-	for <lists+linux-ext4@lfdr.de>; Sat, 22 May 2021 00:28:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31F0438D29E
+	for <lists+linux-ext4@lfdr.de>; Sat, 22 May 2021 02:41:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbhEUWaA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 21 May 2021 18:30:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56390 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229526AbhEUWaA (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 21 May 2021 18:30:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 92AAC61176;
-        Fri, 21 May 2021 22:28:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621636116;
-        bh=VUdBfGxFYo+S3qttMHWfMxhCSVNMRVH7saVfarsg1vA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Mh9rSZb5f8D1Jci4xNsWkaX6Hw39gWjMkfDVHqFpPGJDviKH/4lsqtsUhA6MJrxMD
-         8DKa+YuZk7s5KRKlE/6XP1X3bFGoxCBfkul1vJRWAdoTpUCYv/HWGz3/qVn10cELI4
-         /Xbu6SIF9CTg1PzRBG666+enKfPd/m+OOqdicemjgLKY5VQEe96kiXxPpamc5bb0+t
-         lV0s8AvZDBFkz+2xE+JtB/VkTsa2J5gw/K1I5IKXAL23sn5tgCpQQfrTgd23BLf1X3
-         HcCfJZQBzt9C00mR3i+YZ2XPYsRSIgG8zwNS1898WY5FRsrZLZdpd7e5NGvioq4V/N
-         DOZNgqCB3E1Qw==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     stable@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, Yunlei He <heyunlei@hihonor.com>,
-        Theodore Ts'o <tytso@mit.edu>
-Subject: [PATCH 5.4] ext4: fix error handling in ext4_end_enable_verity()
-Date:   Fri, 21 May 2021 15:27:25 -0700
-Message-Id: <20210521222725.812825-1-ebiggers@kernel.org>
+        id S230268AbhEVAnE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 21 May 2021 20:43:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230293AbhEVAnD (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 May 2021 20:43:03 -0400
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8190C061574
+        for <linux-ext4@vger.kernel.org>; Fri, 21 May 2021 17:41:37 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id a23-20020a17090acb97b029015f81926637so1242491pju.1
+        for <linux-ext4@vger.kernel.org>; Fri, 21 May 2021 17:41:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=ozC5usJqVL5eCwVY7kOtsxenQ+7Cwr3eUkEjwwPVo1c=;
+        b=lKd/YLfRlAqmAomXF4Ctcz2jryVPoSa9W12eBj/HYPTnS61IzqgQssSl0S+WU4AhCH
+         e1v0scqSad4KFzN09V3MMswCVhLamfcC8HrJsopsWLujE28emOtDVqtRQ1dgvrMbCZVP
+         oBKLawc1WGYGVMKAa89bOB07LFFqO0O7I7gP1gjzANqbVKaT8cU4T2uj1mIrirx5u2Sk
+         Vc/lNFr9COTtFVYq1hWqCx1VF5lLlf303q717Q5qm5GAF0Y/KsB4g2g6UC3pYJp8mt0r
+         TCVCUUgg4VFkXYYq4yOY/lywEy+KbJ5kyhC2HmhI9AJbwCpZ22PtX8IsBD6++zBrYTPX
+         Gx1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=ozC5usJqVL5eCwVY7kOtsxenQ+7Cwr3eUkEjwwPVo1c=;
+        b=qwFbTMcpoN6KriLG/6dyF18aLWVNpIrkfIejm1xNHukYK5QNj8tEdnmMt5P4UMMfGs
+         deM6FTyKAK91Qhh2WiH6mEfjMfan7P3/rpvosq47pyj8NNPfnEez3VvduOzq2WuUUtWW
+         xDRbv96bOMW1IPBlah98h5qRIcX2vZSEjstZ/JszwIqTLygHHvfhG4Gk4oJhNqNHHa71
+         VSrrYPHBPULPhgCm6b2YdRWgg078RzdZnE1mbDNv50Z4Qbj4AThzDoOJDy7JCQeyQEXs
+         j9nqv67YKH2HBmulclU3yZddswaql/5D65nrixdT1zF4KerBsaOlTriO0uefe6fIunNn
+         mGEg==
+X-Gm-Message-State: AOAM530+7uHZixuQqhMFxVJmOF1EcrhF+6w7QvpTCGCM/sNoRcKDdmHt
+        9L0mGfusf3cowijkmr6dwBUVXfLvARQ=
+X-Google-Smtp-Source: ABdhPJzt80Ve0mGo9634BvBPrzyJI6mYke2STWtWfN2NkfJ5wbsvcmDfeuVGh7hFxJ4VsSvSSPx87+HNBcg=
+X-Received: from drosen.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:4e6f])
+ (user=drosen job=sendgmr) by 2002:a63:7e13:: with SMTP id z19mr1429012pgc.184.1621644097067;
+ Fri, 21 May 2021 17:41:37 -0700 (PDT)
+Date:   Sat, 22 May 2021 00:41:32 +0000
+Message-Id: <20210522004132.2142563-1-drosen@google.com>
+Mime-Version: 1.0
 X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: [PATCH] ext4: Fix no-key deletion for encrypt+casefold
+From:   Daniel Rosenberg <drosen@google.com>
+To:     "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com, Daniel Rosenberg <drosen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+commit 471fbbea7ff7 ("ext4: handle casefolding with encryption") is
+missing a few checks for the encryption key which are needed to
+support deleting enrypted casefolded files when the key is not
+present.
 
-commit f053cf7aa66cd9d592b0fc967f4d887c2abff1b7 upstream.
-[Please apply to 5.4-stable.]
+Note from ebiggers:
+(These checks for the encryption key are still racy since they happen
+too late, but apparently they worked well enough...)
 
-ext4 didn't properly clean up if verity failed to be enabled on a file:
+This bug made it impossible to delete encrypted+casefolded directories
+without the encryption key, due to errors like:
 
-- It left verity metadata (pages past EOF) in the page cache, which
-  would be exposed to userspace if the file was later extended.
+    W         : EXT4-fs warning (device vdc): __ext4fs_dirhash:270: inode #49202: comm Binder:378_4: Siphash requires key
 
-- It didn't truncate the verity metadata at all (either from cache or
-  from disk) if an error occurred while setting the verity bit.
+Repro steps in kvm-xfstests test appliance:
+      mkfs.ext4 -F -E encoding=utf8 -O encrypt /dev/vdc
+      mount /vdc
+      mkdir /vdc/dir
+      chattr +F /vdc/dir
+      keyid=$(head -c 64 /dev/zero | xfs_io -c add_enckey /vdc | awk '{print $NF}')
+      xfs_io -c "set_encpolicy $keyid" /vdc/dir
+      for i in `seq 1 100`; do
+          mkdir /vdc/dir/$i
+      done
+      xfs_io -c "rm_enckey $keyid" /vdc
+      rm -rf /vdc/dir # fails with the bug
 
-Fix these bugs by adding a call to truncate_inode_pages() and ensuring
-that we truncate the verity metadata (both from cache and from disk) in
-all error paths.  Also rework the code to cleanly separate the success
-path from the error paths, which makes it much easier to understand.
-
-Reported-by: Yunlei He <heyunlei@hihonor.com>
-Fixes: c93d8f885809 ("ext4: add basic fs-verity support")
-Cc: stable@vger.kernel.org # v5.4+
-Signed-off-by: Eric Biggers <ebiggers@google.com>
-Link: https://lore.kernel.org/r/20210302200420.137977-2-ebiggers@kernel.org
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Fixes: 471fbbea7ff7 ("ext4: handle casefolding with encryption")
+Signed-off-by: Daniel Rosenberg <drosen@google.com>
 ---
- fs/ext4/verity.c | 89 ++++++++++++++++++++++++++++++------------------
- 1 file changed, 55 insertions(+), 34 deletions(-)
+ fs/ext4/namei.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/fs/ext4/verity.c b/fs/ext4/verity.c
-index d0d8a9795dd6..6a30e54c1128 100644
---- a/fs/ext4/verity.c
-+++ b/fs/ext4/verity.c
-@@ -198,55 +198,76 @@ static int ext4_end_enable_verity(struct file *filp, const void *desc,
- 	struct inode *inode = file_inode(filp);
- 	const int credits = 2; /* superblock and inode for ext4_orphan_del() */
- 	handle_t *handle;
-+	struct ext4_iloc iloc;
- 	int err = 0;
--	int err2;
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index afb9d05a99ba..a4af26d4459a 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -1376,7 +1376,8 @@ int ext4_fname_setup_ci_filename(struct inode *dir, const struct qstr *iname,
+ 	struct dx_hash_info *hinfo = &name->hinfo;
+ 	int len;
  
--	if (desc != NULL) {
--		/* Succeeded; write the verity descriptor. */
--		err = ext4_write_verity_descriptor(inode, desc, desc_size,
--						   merkle_tree_size);
--
--		/* Write all pages before clearing VERITY_IN_PROGRESS. */
--		if (!err)
--			err = filemap_write_and_wait(inode->i_mapping);
--	}
-+	/*
-+	 * If an error already occurred (which fs/verity/ signals by passing
-+	 * desc == NULL), then only clean-up is needed.
-+	 */
-+	if (desc == NULL)
-+		goto cleanup;
- 
--	/* If we failed, truncate anything we wrote past i_size. */
--	if (desc == NULL || err)
--		ext4_truncate(inode);
-+	/* Append the verity descriptor. */
-+	err = ext4_write_verity_descriptor(inode, desc, desc_size,
-+					   merkle_tree_size);
-+	if (err)
-+		goto cleanup;
- 
- 	/*
--	 * We must always clean up by clearing EXT4_STATE_VERITY_IN_PROGRESS and
--	 * deleting the inode from the orphan list, even if something failed.
--	 * If everything succeeded, we'll also set the verity bit in the same
--	 * transaction.
-+	 * Write all pages (both data and verity metadata).  Note that this must
-+	 * happen before clearing EXT4_STATE_VERITY_IN_PROGRESS; otherwise pages
-+	 * beyond i_size won't be written properly.  For crash consistency, this
-+	 * also must happen before the verity inode flag gets persisted.
- 	 */
-+	err = filemap_write_and_wait(inode->i_mapping);
-+	if (err)
-+		goto cleanup;
- 
--	ext4_clear_inode_state(inode, EXT4_STATE_VERITY_IN_PROGRESS);
-+	/*
-+	 * Finally, set the verity inode flag and remove the inode from the
-+	 * orphan list (in a single transaction).
-+	 */
- 
- 	handle = ext4_journal_start(inode, EXT4_HT_INODE, credits);
- 	if (IS_ERR(handle)) {
--		ext4_orphan_del(NULL, inode);
--		return PTR_ERR(handle);
-+		err = PTR_ERR(handle);
-+		goto cleanup;
+-	if (!IS_CASEFOLDED(dir) || !dir->i_sb->s_encoding) {
++	if (!IS_CASEFOLDED(dir) || !dir->i_sb->s_encoding ||
++	    (IS_ENCRYPTED(dir) && !fscrypt_has_encryption_key(dir))) {
+ 		cf_name->name = NULL;
+ 		return 0;
  	}
+@@ -1427,7 +1428,8 @@ static bool ext4_match(struct inode *parent,
+ #endif
  
--	err2 = ext4_orphan_del(handle, inode);
--	if (err2)
--		goto out_stop;
-+	err = ext4_orphan_del(handle, inode);
-+	if (err)
-+		goto stop_and_cleanup;
- 
--	if (desc != NULL && !err) {
--		struct ext4_iloc iloc;
-+	err = ext4_reserve_inode_write(handle, inode, &iloc);
-+	if (err)
-+		goto stop_and_cleanup;
- 
--		err = ext4_reserve_inode_write(handle, inode, &iloc);
--		if (err)
--			goto out_stop;
--		ext4_set_inode_flag(inode, EXT4_INODE_VERITY);
--		ext4_set_inode_flags(inode);
--		err = ext4_mark_iloc_dirty(handle, inode, &iloc);
--	}
--out_stop:
-+	ext4_set_inode_flag(inode, EXT4_INODE_VERITY);
-+	ext4_set_inode_flags(inode);
-+	err = ext4_mark_iloc_dirty(handle, inode, &iloc);
-+	if (err)
-+		goto stop_and_cleanup;
-+
-+	ext4_journal_stop(handle);
-+
-+	ext4_clear_inode_state(inode, EXT4_STATE_VERITY_IN_PROGRESS);
-+	return 0;
-+
-+stop_and_cleanup:
- 	ext4_journal_stop(handle);
--	return err ?: err2;
-+cleanup:
-+	/*
-+	 * Verity failed to be enabled, so clean up by truncating any verity
-+	 * metadata that was written beyond i_size (both from cache and from
-+	 * disk), removing the inode from the orphan list (if it wasn't done
-+	 * already), and clearing EXT4_STATE_VERITY_IN_PROGRESS.
-+	 */
-+	truncate_inode_pages(inode->i_mapping, inode->i_size);
-+	ext4_truncate(inode);
-+	ext4_orphan_del(NULL, inode);
-+	ext4_clear_inode_state(inode, EXT4_STATE_VERITY_IN_PROGRESS);
-+	return err;
- }
- 
- static int ext4_get_verity_descriptor_location(struct inode *inode,
+ #ifdef CONFIG_UNICODE
+-	if (parent->i_sb->s_encoding && IS_CASEFOLDED(parent)) {
++	if (parent->i_sb->s_encoding && IS_CASEFOLDED(parent) &&
++	    (!IS_ENCRYPTED(parent) || fscrypt_has_encryption_key(parent))) {
+ 		if (fname->cf_name.name) {
+ 			struct qstr cf = {.name = fname->cf_name.name,
+ 					  .len = fname->cf_name.len};
 -- 
 2.31.1.818.g46aad6cb9e-goog
 
