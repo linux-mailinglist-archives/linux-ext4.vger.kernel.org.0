@@ -2,90 +2,84 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2723F38E38F
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 May 2021 11:54:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 333A638E53B
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 May 2021 13:18:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232445AbhEXJzk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 24 May 2021 05:55:40 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37488 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232313AbhEXJzk (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 24 May 2021 05:55:40 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1621850052; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Nd9KlTubE21KSPSGULr1+2oPHWFu3hMy3W9SEQvRuGE=;
-        b=WVJ9B5+Th5T147R0t0PBGe70XdJWFxN4kGznQWqT3YhFTqW9y6++XcECGxlOOqhGeiXAGO
-        +kjyoJbY/w/yG32npSmzHeaAd4a2mq7V5jugqDyKJRG1limZ69Yvm5xV2fOETMgAW8NR5W
-        KbLWFrau2Tvewhf885PApaHm9L69sCM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1621850052;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Nd9KlTubE21KSPSGULr1+2oPHWFu3hMy3W9SEQvRuGE=;
-        b=Cz1RQijWEgfNbk2ygJnMeK1jGhZ9xisV8RsuwkzahJ7mypXWhf/EGPu56zGQJ0sfUgR5du
-        51BlyHKdFQFGtwAg==
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E65B2ABB1;
-        Mon, 24 May 2021 09:54:11 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 7701A1F2CA2; Mon, 24 May 2021 11:54:11 +0200 (CEST)
-Date:   Mon, 24 May 2021 11:54:11 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Zhang Yi <yi.zhang@huawei.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, jack@suse.cz, yukuai3@huawei.com
-Subject: Re: [PATCH 2/2] ext4: correct the cache_nr in tracepoint
- ext4_es_shrink_exit
-Message-ID: <20210524095411.GH32705@quack2.suse.cz>
-References: <20210522103045.690103-1-yi.zhang@huawei.com>
- <20210522103045.690103-3-yi.zhang@huawei.com>
+        id S232547AbhEXLUT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 24 May 2021 07:20:19 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:3977 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232516AbhEXLUS (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 24 May 2021 07:20:18 -0400
+Received: from dggems702-chm.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FpZR15MgtzmZy2
+        for <linux-ext4@vger.kernel.org>; Mon, 24 May 2021 19:16:29 +0800 (CST)
+Received: from dggpemm500014.china.huawei.com (7.185.36.153) by
+ dggems702-chm.china.huawei.com (10.3.19.179) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 24 May 2021 19:18:49 +0800
+Received: from [10.174.179.184] (10.174.179.184) by
+ dggpemm500014.china.huawei.com (7.185.36.153) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 24 May 2021 19:18:48 +0800
+From:   Wu Guanghao <wuguanghao3@huawei.com>
+Subject: [PATCH 00/12] e2fsprogs: some bugfixs and some code cleanups
+To:     <linux-ext4@vger.kernel.org>
+CC:     <liuzhiqiang26@huawei.com>, <linfeilong@huawei.com>
+Message-ID: <266bc52e-e279-ce84-0e1f-1405b9bc6174@huawei.com>
+Date:   Mon, 24 May 2021 19:18:48 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210522103045.690103-3-yi.zhang@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.184]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500014.china.huawei.com (7.185.36.153)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat 22-05-21 18:30:45, Zhang Yi wrote:
-> The cache_cnt parameter of tracepoint ext4_es_shrink_exit means the
-> remaining cache count after shrink, but now it is the cache count before
-> shrink, fix it by read sbi->s_extent_cache_cnt again.
-> 
-> Fixes: 1ab6c4997e04 ("fs: convert fs shrinkers to new scan/count API")
-> Cc: stable@vger.kernel.org # 3.12+
-> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+When we learn the e2fsprogs source code, we
+find some bugs and try to fix them. At the same time,
+static scanning tools were used to analyze the code,
+and several possible problems were found.
 
-Yeah, probably it is better this way. Feel free to add:
+Zhiqiang Liu (6):
+  misc: fix potential segmentation fault problem in scandir()
+  lib/ss/error.c: check return value malloc in ss_name()
+  hashmap: change return value type of ext2fs_hashmap_add()
+  misc/lsattr: check whether path is NULL in lsattr_dir_proc()
+  ext2ed: fix potential NULL pointer dereference in dupstr()
+  argv_parse: check return value of malloc in argv_pars
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Wu Guanghao (6):
+  profile_create_node: set magic before strdup(name) to fix memory leak
+  tdb_transaction_recover: fix memory leak
+  zap_sector: fix memory leak
+  ss_add_info_dir: fix memory leak and check whether NULL pointer
+  ss_create_invocation: fix memory leak and check whether NULL pointer
+  append_pathname: append_pathname: check the value returned by realloc
+    to avoid segfault
 
-								Honza
+ contrib/android/base_fs.c | 12 +++++++++---
+ contrib/fsstress.c        | 10 ++++++++--
+ ext2ed/main.c             |  2 ++
+ lib/ext2fs/fileio.c       | 11 +++++++++--
+ lib/ext2fs/hashmap.c      | 12 ++++++++++--
+ lib/ext2fs/hashmap.h      |  4 ++--
+ lib/ext2fs/tdb.c          |  1 +
+ lib/ss/error.c            |  2 ++
+ lib/ss/help.c             |  5 +++++
+ lib/ss/invocation.c       | 38 ++++++++++++++++++++++++++++++++------
+ lib/support/argv_parse.c  |  2 ++
+ lib/support/profile.c     |  3 ++-
+ misc/create_inode.c       |  3 +++
+ misc/lsattr.c             |  6 ++++++
+ misc/mke2fs.c             |  1 +
+ 15 files changed, 94 insertions(+), 18 deletions(-)
 
-> ---
->  fs/ext4/extents_status.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
-> index db3cd70a72e4..9a3a8996aacf 100644
-> --- a/fs/ext4/extents_status.c
-> +++ b/fs/ext4/extents_status.c
-> @@ -1576,6 +1576,7 @@ static unsigned long ext4_es_scan(struct shrinker *shrink,
->  
->  	nr_shrunk = __es_shrink(sbi, nr_to_scan, NULL);
->  
-> +	ret = percpu_counter_read_positive(&sbi->s_es_stats.es_stats_shk_cnt);
->  	trace_ext4_es_shrink_scan_exit(sbi->s_sb, nr_shrunk, ret);
->  	return nr_shrunk;
->  }
-> -- 
-> 2.25.4
-> 
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.19.1
+
