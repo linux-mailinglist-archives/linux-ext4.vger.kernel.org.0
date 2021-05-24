@@ -2,331 +2,222 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EE1B38DB61
-	for <lists+linux-ext4@lfdr.de>; Sun, 23 May 2021 16:11:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F98238DF89
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 May 2021 05:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231789AbhEWONT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 23 May 2021 10:13:19 -0400
-Received: from out20-39.mail.aliyun.com ([115.124.20.39]:51236 "EHLO
-        out20-39.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231758AbhEWONS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 23 May 2021 10:13:18 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436283|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0512656-0.00285802-0.945876;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047211;MF=guan@eryu.me;NM=1;PH=DS;RN=3;RT=3;SR=0;TI=SMTPD_---.KHazXdk_1621779109;
-Received: from localhost(mailfrom:guan@eryu.me fp:SMTPD_---.KHazXdk_1621779109)
-          by smtp.aliyun-inc.com(10.147.41.231);
-          Sun, 23 May 2021 22:11:49 +0800
-Date:   Sun, 23 May 2021 22:11:49 +0800
-From:   Eryu Guan <guan@eryu.me>
-To:     Leah Rumancik <leah.rumancik@gmail.com>
-Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] ext4/310: test journal checkpoint ioctl
-Message-ID: <YKpipecQz4vSDDtP@desktop>
-References: <20210519144751.466933-1-leah.rumancik@gmail.com>
+        id S232114AbhEXDIS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 23 May 2021 23:08:18 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:50387 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231833AbhEXDIR (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Sun, 23 May 2021 23:08:17 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.nyi.internal (Postfix) with ESMTP id E17D058036E;
+        Sun, 23 May 2021 23:06:49 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Sun, 23 May 2021 23:06:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
+        message-id:subject:from:to:cc:date:in-reply-to:references
+        :content-type:mime-version:content-transfer-encoding; s=fm3; bh=
+        PK1RHw7stc9h+bEFnJlkiXycIdaNiJrK8YUalaIR2VQ=; b=nnPTdkl2MXb7i9zB
+        dPKgBHSx7XI+zq4XncBC51PSE8IMPMHXtbO3Uht+Yjt5E19oTsPvQYohM+H2bJiz
+        yQTOLCcuiicsNNtEQc6xchys4gibv8NXBYwyaswUlKrK68Jbdgkw4I8RtHyCbri2
+        E8YRbhbY2HOWPvlf4y08C6Zes1hcADhxn1rDK/ReyKekQ3JO06WCpcSacLcXKkFn
+        hBtoE1Z+Pucd8AUeNf5htsbNECV/AgvJunMUeMFRDlNhF26SOuOxl7nGL3Dlx6tl
+        pVNQWmXGnN9CGAv0JR/eGT8BzR3yn6Bj2i/F1gTQAxgkCbKBicRAF0BjJCSPoeAU
+        xa0nGg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; bh=PK1RHw7stc9h+bEFnJlkiXycIdaNiJrK8YUalaIR2
+        VQ=; b=jxIDeufuVBPvcmTdNXNCycd/Iz1mcLajYJ19X6hYJYp7QeuZ5YbWknwbi
+        XbBNxId4Reag9yU/WLzXVadg5S7X7NNLwbY7kKL9mzjCWyFjH6vSZiT3PY+7WZjz
+        NhJlkOMGuSTFxgI1N/VOacObNkAP4KqePj7LoJ/YQuu41trms2eW7t9XowJpsbwT
+        4EFu/91xN/y41b7NWctgB1TxfQ+slxfh13Aq8yJB2xzoxW2s3vrXfRW9I26Fb1xn
+        ma29FkeU48jAf5GC/mCb6fcfQhaXOfcXhn0OmQQCsJMKLDzbn1UZ5crb0U5wz1y8
+        6+FBQiJqL+1k196mMJvmBEB0SftOQ==
+X-ME-Sender: <xms:SRirYJY40etF-rombMVQsr4ZMrEigRvUIkN_QEIAliTBc20hahyMxg>
+    <xme:SRirYAb4Kedw4oc2E5aBqrAVjEafCRY0XzosVaMMeK_Xsbfd7Pz3nx2kka08yuzkF
+    ZGzV5fTL5Ud>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejkedgfeeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkffuhffvffgjfhgtfggggfesthekredttderjeenucfhrhhomhepkfgrnhcu
+    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
+    ekudejffegveeufeeigeekvdeggeegkeeuvedtiefffffgvdekgedvgffhveelvdenucff
+    ohhmrghinheptgholhhlrggsohhrrgdrtghomhdplhifnhdrnhgvthenucfkphepuddtie
+    drieelrddvheehrdeggeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgr
+    ihhlfhhrohhmpehrrghvvghnsehthhgvmhgrfidrnhgvth
+X-ME-Proxy: <xmx:SRirYL9WnPI-ODhSpsD_VAjLe44XzIF3dG1jN2YnotjgvCEZhVRayw>
+    <xmx:SRirYHr1d6FdDNp86tz67j5L2-WaRgPRFZUUe-M8Fg0L0agrdjDMuQ>
+    <xmx:SRirYErlWtshje17N2VS9dFASP09Cb8-AkE2psMhIN4xRkjH1u0AJg>
+    <xmx:SRirYMKPuZr5DkSAWM5hP2-drTAhsA89ENSrd5XZ5xlaHJ0NNMhD5Q>
+Received: from mickey.long.domain.name.themaw.net (106-69-255-44.dyn.iinet.net.au [106.69.255.44])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Sun, 23 May 2021 23:06:45 -0400 (EDT)
+Message-ID: <cc89bd8edb24a9a5d8e632937010480111294484.camel@themaw.net>
+Subject: Re: [PATCH 00/11] File system wide monitoring
+From:   Ian Kent <raven@themaw.net>
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>, amir73il@gmail.com
+Cc:     kernel@collabora.com, "Darrick J . Wong" <djwong@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Dave Chinner <david@fromorbit.com>, jack@suse.com,
+        dhowells@redhat.com, khazhy@google.com,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
+Date:   Mon, 24 May 2021 11:06:40 +0800
+In-Reply-To: <20210521024134.1032503-1-krisman@collabora.com>
+References: <20210521024134.1032503-1-krisman@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210519144751.466933-1-leah.rumancik@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, May 19, 2021 at 02:47:51PM +0000, Leah Rumancik wrote:
-> Test journal checkpointing and journal erasing via
-> EXT4_IOC_CHECKPOINT with flag EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT set.
-
-It seems that this ioctl is not upstreamed yet, it'd be better to
-mention the titles of related patches, so people could know which kernel
-patches are required to pass this test, and know the backgrounds by
-reading the kernel thread.
-
+On Thu, 2021-05-20 at 22:41 -0400, Gabriel Krisman Bertazi wrote:
+> Hi,
 > 
-> Signed-off-by: Leah Rumancik <leah.rumancik@gmail.com>
-> ---
->  src/Makefile             |   3 +-
->  src/checkpoint_journal.c |  95 ++++++++++++++++++++++++++++++++
->  tests/ext4/310           | 114 +++++++++++++++++++++++++++++++++++++++
->  tests/ext4/310.out       |   2 +
->  tests/ext4/group         |   1 +
->  5 files changed, 214 insertions(+), 1 deletion(-)
->  create mode 100644 src/checkpoint_journal.c
->  create mode 100644 tests/ext4/310
+> This series follow up on my previous proposal [1] to support file
+> system
+> wide monitoring.  As suggested by Amir, this proposal drops the ring
+> buffer in favor of a single slot associated with each mark.  This
+> simplifies a bit the implementation, as you can see in the code.
 
-New test file is in 0755 mode.
+I get the need for simplification but I'm wondering where this
+will end up.
 
->  create mode 100644 tests/ext4/310.out
+I also know kernel space to user space error communication has
+been a concern for quite a while now.
+
+And, from that, there are a couple of things that occur to me.
+
+One is that the standard errno is often not sufficient to give
+sufficiently accurate error reports.
+
+It seems to me that, in the long run, there needs to be a way
+for sub-systems to register errors that they will use to report
+events (with associated text description) so they can be more
+informative. That's probably not as simple as it sounds due to
+things like error number clashes, etc. OTOH that mechanism could
+be used to avoid using text strings in notifications provided
+provided there was a matching user space library, thereby reducing
+the size of the event report.
+
+Another aspect, also related to the limitations of error reporting
+in general, is the way the information could be used. Again, not a
+simple thing to do or grok, but would probably require some way of
+grouping errors that are related in a stack like manner for user
+space inference engines to analyse. Yes, this is very much out of
+scope but is a big picture long term usefulness type of notion.
+
+And I don't know how error storms occurring as a side effect of
+some fairly serious problem could be handled ... 
+
+So not really related to the current implementation but a comment
+to try and get peoples thoughts about where this is heading in
+the long run.
+
+Ian
 > 
-> diff --git a/src/Makefile b/src/Makefile
-> index cc0b9579..e0e7006b 100644
-> --- a/src/Makefile
-> +++ b/src/Makefile
-> @@ -17,7 +17,8 @@ TARGETS = dirstress fill fill2 getpagesize holes lstat64 \
->  	t_mmap_cow_race t_mmap_fallocate fsync-err t_mmap_write_ro \
->  	t_ext4_dax_journal_corruption t_ext4_dax_inline_corruption \
->  	t_ofd_locks t_mmap_collision mmap-write-concurrent \
-> -	t_get_file_time t_create_short_dirs t_create_long_dirs t_enospc
-> +	t_get_file_time t_create_short_dirs t_create_long_dirs t_enospc \
-> +	checkpoint_journal
+> As a reminder, This proposal is limited to an interface for
+> administrators to monitor the health of a file system, instead of a
+> generic inteface for file errors.  Therefore, this doesn't solve the
+> problem of writeback errors or the need to watch a specific subtree.
+> 
+> In comparison to the previous RFC, this implementation also drops the
+> per-fs data and location, and leave those as future extensions.
+> 
+> * Implementation
+> 
+> The feature is implemented on top of fanotify, as a new type of
+> fanotify
+> mark, FAN_ERROR, which a file system monitoring tool can register to
+> receive error notifications.  When an error occurs a new notification
+> is
+> generated, in addition followed by this info field:
+> 
+>  - FS generic data: A file system agnostic structure that has a
+> generic
+>  error code and identifies the filesystem.  Basically, it let's
+>  userspace know something happened on a monitored filesystem.  Since
+>  only the first error is recorded since the last read, this also
+>  includes a counter of errors that happened since the last read.
+> 
+> * Testing
+> 
+> This was tested by watching notifications flowing from an
+> intentionally
+> corrupted filesystem in different places.  In addition, other events
+> were watched in an attempt to detect regressions.
+> 
+> Is there a specific testsuite for fanotify I should be running?
+> 
+> * Patches
+> 
+> This patchset is divided as follows: Patch 1 through 5 are
+> refactoring
+> to fsnotify/fanotify in preparation for FS_ERROR/FAN_ERROR; patch 6
+> and
+> 7 implement the FS_ERROR API for filesystems to report error; patch 8
+> add support for FAN_ERROR in fanotify; Patch 9 is an example
+> implementation for ext4; patch 10 and 11 provide a sample userspace
+> code
+> and documentation.
+> 
+> I also pushed the full series to:
+> 
+>   https://gitlab.collabora.com/krisman/linux -b fanotify-
+> notifications-single-slot
+> 
+> [1] https://lwn.net/Articles/854545/
+> 
+> Cc: Darrick J. Wong <djwong@kernel.org>
+> Cc: Theodore Ts'o <tytso@mit.edu>
+> Cc: Dave Chinner <david@fromorbit.com>
+> Cc: jack@suse.com
+> To: amir73il@gmail.com
+> Cc: dhowells@redhat.com
+> Cc: khazhy@google.com
+> Cc: linux-fsdevel@vger.kernel.org
+> Cc: linux-ext4@vger.kernel.org
+> 
+> Gabriel Krisman Bertazi (11):
+>   fanotify: Fold event size calculation to its own function
+>   fanotify: Split fsid check from other fid mode checks
+>   fanotify: Simplify directory sanity check in DFID_NAME mode
+>   fanotify: Expose fanotify_mark
+>   inotify: Don't force FS_IN_IGNORED
+>   fsnotify: Support FS_ERROR event type
+>   fsnotify: Introduce helpers to send error_events
+>   fanotify: Introduce FAN_ERROR event
+>   ext4: Send notifications on error
+>   samples: Add fs error monitoring example
+>   Documentation: Document the FAN_ERROR event
+> 
+>  .../admin-guide/filesystem-monitoring.rst     |  52 +++++
+>  Documentation/admin-guide/index.rst           |   1 +
+>  fs/ext4/super.c                               |   8 +
+>  fs/notify/fanotify/fanotify.c                 |  80 ++++++-
+>  fs/notify/fanotify/fanotify.h                 |  38 +++-
+>  fs/notify/fanotify/fanotify_user.c            | 213 ++++++++++++++--
+> --
+>  fs/notify/inotify/inotify_user.c              |   6 +-
+>  include/linux/fanotify.h                      |   6 +-
+>  include/linux/fsnotify.h                      |  13 ++
+>  include/linux/fsnotify_backend.h              |  15 +-
+>  include/uapi/linux/fanotify.h                 |  10 +
+>  samples/Kconfig                               |   8 +
+>  samples/Makefile                              |   1 +
+>  samples/fanotify/Makefile                     |   3 +
+>  samples/fanotify/fs-monitor.c                 |  91 ++++++++
+>  15 files changed, 485 insertions(+), 60 deletions(-)
+>  create mode 100644 Documentation/admin-guide/filesystem-
+> monitoring.rst
+>  create mode 100644 samples/fanotify/Makefile
+>  create mode 100644 samples/fanotify/fs-monitor.c
+> 
 
-Missing an entry in .gitignore
 
->  
->  LINUX_TARGETS = xfsctl bstat t_mtab getdevicesize preallo_rw_pattern_reader \
->  	preallo_rw_pattern_writer ftrunc trunc fs_perms testx looptest \
-> diff --git a/src/checkpoint_journal.c b/src/checkpoint_journal.c
-> new file mode 100644
-> index 00000000..0347e0c0
-> --- /dev/null
-> +++ b/src/checkpoint_journal.c
-> @@ -0,0 +1,95 @@
-> +#include <sys/ioctl.h>
-> +#include <fcntl.h>
-> +#include <stdlib.h>
-> +#include <stdio.h>
-> +#include <unistd.h>
-> +#include <errno.h>
-> +#include <string.h>
-> +#include <linux/fs.h>
-> +#include <getopt.h>
-> +
-> +/*
-> + * checkpoint_journal.c
-> + *
-> + * Flush journal log and checkpoint journal for ext4 file system and
-> + * optionally, issue discard or zeroout for the journal log blocks.
-> + *
-> + * Arguments:
-> + * 1) mount point for device
-> + * 2) flags (optional)
-> + *	set --erase=discard to enable discarding journal blocks
-> + *	set --erase=zeroout to enable zero-filling journal blocks
-> + *	set --dry-run flag to only perform input checking
-> + */
-> +
-> +#if defined(__linux__) && !defined(EXT4_IOC_CHECKPOINT)
-> +#define EXT4_IOC_CHECKPOINT	_IOW('f', 43, __u32)
-> +#endif
-> +
-> +
-> +#if defined(__linux__) && !defined(EXT4_IOC_CHECKPOINT_FLAG_DISCARD)
-> +#define EXT4_IOC_CHECKPOINT_FLAG_DISCARD		1
-> +#define EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT		2
-> +#define EXT4_IOC_CHECKPOINT_FLAG_DRY_RUN		4
-> +#endif
-> +
-> +
-> +int main(int argc, char** argv) {
-> +	int fd, c, ret = 0, option_index = 0;
-> +	char* rpath;
-> +	unsigned int flags = 0;
-> +
-> +	static struct option long_options[] =
-> +	{
-> +		{"dry-run", no_argument, 0, 'd'},
-> +		{"erase", required_argument, 0, 'e'},
-> +		{0, 0, 0, 0}
-> +	};
-> +
-> +	/* get optional flags */
-> +	while ((c = getopt_long(argc, argv, "de:", long_options,
-> +				&option_index)) != -1) {
-> +		switch (c) {
-> +		case 'd':
-> +			flags |= EXT4_IOC_CHECKPOINT_FLAG_DRY_RUN;
-> +			break;
-> +		case 'e':
-> +			if (strcmp(optarg, "discard") == 0) {
-> +				flags |= EXT4_IOC_CHECKPOINT_FLAG_DISCARD;
-> +			} else if (strcmp(optarg, "zeroout") == 0) {
-> +				flags |= EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT;
-> +			} else {
-> +				fprintf(stderr, "Error: invalid erase option\n");
-> +				return 1;
-> +			}
-> +			break;
-> +		default:
-> +			return 1;
-> +		}
-> +	}
-> +
-> +	if (optind != argc - 1) {
-> +		fprintf(stderr, "Error: invalid number of arguments\n");
-> +		return 1;
-> +	}
-> +
-> +	/* get fd to file system */
-> +	rpath = realpath(argv[optind], NULL);
-> +	fd = open(rpath, O_RDONLY);
-> +	free(rpath);
-> +
-> +	if (fd == -1) {
-> +		fprintf(stderr, "Error: unable to open device %s: %s\n",
-> +			argv[optind], strerror(errno));
-> +		return 1;
-> +	}
-> +
-> +	ret = ioctl(fd, EXT4_IOC_CHECKPOINT, &flags);
-> +
-> +	if (ret)
-> +		fprintf(stderr, "checkpoint ioctl returned error: %s\n", strerror(errno));
-> +
-> +	close(fd);
-> +	return ret;
-> +}
-> +
-> diff --git a/tests/ext4/310 b/tests/ext4/310
-> new file mode 100644
-> index 00000000..3693cb29
-> --- /dev/null
-> +++ b/tests/ext4/310
-> @@ -0,0 +1,114 @@
-> +#!/bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2021 Google, Inc. All Rights Reserved.
-> +#
-> +# FS QA Test No. 310
-> +#
-> +# Test checkpoint and zeroout of journal via ioctl EXT4_IOC_CHECKPOINT
-> +#
-> +
-> +seq=`basename $0`
-> +seqres=$RESULT_DIR/$seq
-> +echo "QA output created by $seq"
-> +
-> +status=1       # failure is the default!
-> +
-> +# get standard environment, filters and checks
-> +. ./common/rc
-> +. ./common/filter
-> +
-> +# remove previous $seqres.full before test
-> +rm -f $seqres.full
-> +
-> +# real QA test starts here
-> +_supported_fs ext4
-> +
-> +_require_scratch
-> +_require_command "$DEBUGFS_PROG" debugfs
-> +
-> +checkpoint_journal=$here/src/checkpoint_journal
-> +_require_test_program "checkpoint_journal"
-> +
-> +# convert output from stat<journal_inode> to list of block numbers
-> +get_journal_extents() {
-> +	inode_info=$($DEBUGFS_PROG $SCRATCH_DEV -R "stat <8>" 2>> $seqres.full)
-> +	echo -e "\nJournal info:" >> $seqres.full
-> +	echo "$inode_info" >> $seqres.full
-> +
-> +	extents_line=$(echo "$inode_info" | awk '/EXTENTS:/{ print NR; exit }')
-> +	get_extents=$(echo "$inode_info" | sed -n "$(($extents_line + 1))"p)
-> +
-> +	# get just the physical block numbers
-> +	get_extents=$(echo "$get_extents" |  perl -pe 's|\(.*?\):||g' | sed -e 's/, /\n/g' | perl -pe 's|(\d+)-(\d+)|\1 \2|g')
-> +
-> +	echo "$get_extents"
-> +}
-> +
-> +
-> +# checks all extents are zero'd out except for the superblock
-> +# arg 1: extents (output of get_journal_extents())
-> +check_extents() {
-> +	echo -e "\nChecking extents:" >> $seqres.full
-> +	echo "$1" >> $seqres.full
-> +
-> +	super_block="true"
-> +	echo "$1" | while IFS= read line; do
-> +		start_block=$(echo $line | cut -f1 -d' ')
-> +		end_block=$(echo $line | cut -f2 -d' ' -s)
-> +
-> +		# if first block of journal, shouldn't be wiped
-> +		if [ "$super_block" == "true" ]; then
-> +			super_block="false"
-> +
-> +			#if super block only block in this extent, skip extent
-> +			if [ -z "$end_block" ]; then
-> +				continue;
-> +			fi
-> +			start_block=$(($start_block + 1))
-> +		fi
-> +
-> +		if [ ! -z "$end_block" ]; then
-> +			blocks=$(($end_block - $start_block + 1))
-> +		else
-> +			blocks=1
-> +		fi
-> +
-> +		check=$(od $SCRATCH_DEV --skip-bytes=$(($start_block * $blocksize)) --read-bytes=$(($blocks * $blocksize)) -An -v | sed -e 's/[0 \t\n\r]//g')
-> +
-> +		[ ! -z "$check" ] && echo "error" && break
-> +	done
-> +}
-> +
-> +testdir="${SCRATCH_MNT}/testdir"
-> +
-> +_scratch_mkfs_sized $((64 * 1024 * 1024)) >> $seqres.full 2>&1
-
-This test requires ext4 is created with a journal, so we need
-
-_require_metadata_journaling $SCRATCH_DEV
-
-here after creating filesystem on $SCRATCH_DEV
-
-> +_scratch_mount >> $seqres.full 2>&1
-> +blocksize=$(_get_block_size $SCRATCH_MNT)
-> +mkdir $testdir
-> +
-> +# check if ioctl present, skip test if not present
-> +$checkpoint_journal $SCRATCH_MNT --dry-run || _notrun "journal checkpoint ioctl not present on device"
-> +
-> +# create some files to add some entries to journal
-> +for i in {1..100}; do
-> +	touch $testdir/$i
-
-	echo > $testdir/$i
-
-might be faster.
-
-> +done
-> +
-> +# make sure these files get to the journal
-> +sync --file-system $testdir/1
-> +
-> +# call ioctl to checkpoint and zero-fill journal blocks
-> +$checkpoint_journal $SCRATCH_MNT --erase=zeroout || _fail "ioctl returned error"
-> +
-> +extents=$(get_journal_extents)
-> +
-> +# check journal blocks zeroed out
-> +ret=$(check_extents "$extents")
-> +[ "$ret" = "error" ] && _fail "Journal was not zero-filled"
-> +
-> +_scratch_unmount >> $seqres.full 2>&1
-> +
-> +echo "Done."
-
-fstests use "Silence is golden" :)
-
-Thanks,
-Eryu
-
-> +
-> +status=0
-> +exit
-> diff --git a/tests/ext4/310.out b/tests/ext4/310.out
-> new file mode 100644
-> index 00000000..e52f7345
-> --- /dev/null
-> +++ b/tests/ext4/310.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 310
-> +Done.
-> diff --git a/tests/ext4/group b/tests/ext4/group
-> index e7ad3c24..622590a9 100644
-> --- a/tests/ext4/group
-> +++ b/tests/ext4/group
-> @@ -60,3 +60,4 @@
->  307 auto ioctl rw defrag
->  308 auto ioctl rw prealloc quick defrag
->  309 auto quick dir
-> +310 auto ioctl quick
-> -- 
-> 2.31.1.751.gd2f1c929bd-goog
