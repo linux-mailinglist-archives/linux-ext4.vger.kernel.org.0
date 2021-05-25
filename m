@@ -2,108 +2,81 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63EE53902ED
-	for <lists+linux-ext4@lfdr.de>; Tue, 25 May 2021 15:51:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B72A3907AE
+	for <lists+linux-ext4@lfdr.de>; Tue, 25 May 2021 19:29:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233578AbhEYNwu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 25 May 2021 09:52:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42784 "EHLO mx2.suse.de"
+        id S232660AbhEYRa5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 25 May 2021 13:30:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233438AbhEYNwj (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 25 May 2021 09:52:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1621950662; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jZlfk4vwF2p32yW05HQcA1IZqYim5+F109uIplXVw+8=;
-        b=DRHNjtVyi2P6ez+bSS1jJfysTJfmXmuAc7XaBIitSzh1v+NvVKFi/bS6NgZ9EQnzxGxZLQ
-        RQYD2oowFxeZBnkgdxqt5tTtXVYuiKBPC0w8egFh1kAA8P1jUsRdS9alqol2+nMZqEXqey
-        Kl+tANswz9b7fD0NioVdMnX5SE2EAf4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1621950662;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jZlfk4vwF2p32yW05HQcA1IZqYim5+F109uIplXVw+8=;
-        b=9rURY4pla4pmyo+OPI1H2/hqtWG7wnDmBHyn2VRduoODR8GrNGuKuKRNMWAy3XEbVdDMtd
-        l2WgpuM9iITZKtAA==
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 47E04AF27;
-        Tue, 25 May 2021 13:51:02 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 45E1F1F2CBE; Tue, 25 May 2021 15:51:00 +0200 (CEST)
-From:   Jan Kara <jack@suse.cz>
-To:     <linux-fsdevel@vger.kernel.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Dave Chinner <david@fromorbit.com>, ceph-devel@vger.kernel.org,
-        Chao Yu <yuchao0@huawei.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Johannes Thumshirn <jth@kernel.org>,
-        linux-cifs@vger.kernel.org, <linux-ext4@vger.kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net, <linux-mm@kvack.org>,
-        <linux-xfs@vger.kernel.org>, Miklos Szeredi <miklos@szeredi.hu>,
-        Steve French <sfrench@samba.org>, Ted Tso <tytso@mit.edu>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>
-Subject: [PATCH 13/13] cifs: Fix race between hole punch and page fault
-Date:   Tue, 25 May 2021 15:50:50 +0200
-Message-Id: <20210525135100.11221-13-jack@suse.cz>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210525125652.20457-1-jack@suse.cz>
-References: <20210525125652.20457-1-jack@suse.cz>
+        id S232246AbhEYRa5 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 25 May 2021 13:30:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 18B1E61404;
+        Tue, 25 May 2021 17:29:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621963767;
+        bh=F8vf1n1Dtzgp3rnX9vk5TZwA3ysgxGjZZo3YJRJTqZI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Oh2Ojt7F5onIP/3sUR2rPQ7sKlePzY1Skcm6Yd46chWDvuuKEWj01TFYsfJpKL6wm
+         EZL36hw3h0CXYdDs0+1z3RItguYYAVYZlJdi5tpEF4r0mUThdtb3HuAbkVcTew72Go
+         zi86sXOU7/T9WdOSstRNnjhdAF/MOPaQhEZjD3toOgN1PyDK7GZM8xDa/+BiNMGVdL
+         r90BdNGsPf9yk+F7wpMIZdpcj30gftyOOBokV7Dl5AdAJ84HU6XA8ooO+CtCAzZv+D
+         3WBENHjO2uvZC9uXiLMCzXqAdogq0Oe3ouohYNn7eMbLB5t9e+qtTgdr5uTJu4dtKM
+         dXmvbLKwfr2bg==
+Date:   Tue, 25 May 2021 10:29:25 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Daniel Rosenberg <drosen@google.com>
+Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH] ext4: Fix no-key deletion for encrypt+casefold
+Message-ID: <YK0z9US1ek615F8Z@sol.localdomain>
+References: <20210522004132.2142563-1-drosen@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210522004132.2142563-1-drosen@google.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Cifs has a following race between hole punching and page fault:
+On Sat, May 22, 2021 at 12:41:32AM +0000, Daniel Rosenberg wrote:
+> commit 471fbbea7ff7 ("ext4: handle casefolding with encryption") is
+> missing a few checks for the encryption key which are needed to
+> support deleting enrypted casefolded files when the key is not
+> present.
+> 
+> Note from ebiggers:
+> (These checks for the encryption key are still racy since they happen
+> too late, but apparently they worked well enough...)
+> 
+> This bug made it impossible to delete encrypted+casefolded directories
+> without the encryption key, due to errors like:
+> 
+>     W         : EXT4-fs warning (device vdc): __ext4fs_dirhash:270: inode #49202: comm Binder:378_4: Siphash requires key
+> 
+> Repro steps in kvm-xfstests test appliance:
+>       mkfs.ext4 -F -E encoding=utf8 -O encrypt /dev/vdc
+>       mount /vdc
+>       mkdir /vdc/dir
+>       chattr +F /vdc/dir
+>       keyid=$(head -c 64 /dev/zero | xfs_io -c add_enckey /vdc | awk '{print $NF}')
+>       xfs_io -c "set_encpolicy $keyid" /vdc/dir
+>       for i in `seq 1 100`; do
+>           mkdir /vdc/dir/$i
+>       done
+>       xfs_io -c "rm_enckey $keyid" /vdc
+>       rm -rf /vdc/dir # fails with the bug
 
-CPU1                                            CPU2
-smb3_fallocate()
-  smb3_punch_hole()
-    truncate_pagecache_range()
-                                                filemap_fault()
-                                                  - loads old data into the
-                                                    page cache
-    SMB2_ioctl(..., FSCTL_SET_ZERO_DATA, ...)
+Looks fine, but can you please turn this reproducer into an xfstest?
 
-And now we have stale data in the page cache. Fix the problem by locking
-out faults (as well as reads) using mapping->invalidate_lock while hole
-punch is running.
+I'm also wondering if you've done any investigation into fixing ext4 to handle
+filenames properly like f2fs does, so that the above-mentioned race condition is
+eliminated.  In particular, we should decide whether the user-supplied filename
+is a no-key name, and whether it needs casefolding or not, just once -- rather
+than separately for each directory entry compared in ext4_match().
 
-CC: Steve French <sfrench@samba.org>
-CC: linux-cifs@vger.kernel.org
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/cifs/smb2ops.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/fs/cifs/smb2ops.c b/fs/cifs/smb2ops.c
-index dd0eb665b680..b0a0f8b34add 100644
---- a/fs/cifs/smb2ops.c
-+++ b/fs/cifs/smb2ops.c
-@@ -3579,6 +3579,7 @@ static long smb3_punch_hole(struct file *file, struct cifs_tcon *tcon,
- 		return rc;
- 	}
- 
-+	down_write(&inode->i_mapping->invalidate_lock);
- 	/*
- 	 * We implement the punch hole through ioctl, so we need remove the page
- 	 * caches first, otherwise the data may be inconsistent with the server.
-@@ -3596,6 +3597,7 @@ static long smb3_punch_hole(struct file *file, struct cifs_tcon *tcon,
- 			sizeof(struct file_zero_data_information),
- 			CIFSMaxBufSize, NULL, NULL);
- 	free_xid(xid);
-+	up_write(&inode->i_mapping->invalidate_lock);
- 	return rc;
- }
- 
--- 
-2.26.2
-
+- Eric
