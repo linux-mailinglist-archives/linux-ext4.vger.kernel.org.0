@@ -2,97 +2,114 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92CCA390895
-	for <lists+linux-ext4@lfdr.de>; Tue, 25 May 2021 20:10:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63B4F390A9E
+	for <lists+linux-ext4@lfdr.de>; Tue, 25 May 2021 22:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231548AbhEYSLh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 25 May 2021 14:11:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229681AbhEYSLf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 25 May 2021 14:11:35 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 308F8C061574
-        for <linux-ext4@vger.kernel.org>; Tue, 25 May 2021 11:10:05 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id kr9so9260178pjb.5
-        for <linux-ext4@vger.kernel.org>; Tue, 25 May 2021 11:10:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=WoDug4+CXTtAZ7sweqscjf9FzzuoYDrpzUh3duNxd0M=;
-        b=Oi4ypauTpMTlbTHsjemSt/xTEJ/+9zAG69V7Bhfz4Ayw6ClXRcKNt44XVMLGCbhqsX
-         XbEbUlylWlOhH8C0b40HQ5uKQmrzfduQmKMgiYMHbzM504zzscb2JaCHcyTBnyU3etmn
-         iK2tkyAGMRu6Ux85N9WS/eFtPulNm/AU3nSXJb1E594u4tROoPYT1oRbC1doBf4ZsY0Z
-         Esp0o73MzIi9i5OY8+7UeNmm1mu0SrW4gyq9NOR09EUQHs/T3ZhxKLmLXCw91X/jZ/W4
-         GoDWITmSMH8TEfYoZWp6aOJ6hKSuUwJDSSRal+LvcixOXl22h4cDq9MTV1HBuyEnw10V
-         4/Ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=WoDug4+CXTtAZ7sweqscjf9FzzuoYDrpzUh3duNxd0M=;
-        b=eD8FhTDpE3tNL6GjO/2G+wENu/1E2aWYBbLqkNfqkCw14yWEWbiE19esxl6xWc6uh5
-         xVsIBP2ogROfmZexpLpZDnxWTVQPBP5kny7l8/ZU39sh/udJT9aKQdQBXhj1969pffcs
-         wOXK/RsVVt9Cqo/KzSGkBdwNKK5xaQG2G6glEO5s3zbkzkwmwSiorqULkcOYwuv6XJWJ
-         p7uMLaoutADWoe+5s6uVFrYsT3iBDzIpwH1emMZ0sPMXPByWgsXgcK4ZWfG7AJpkXiR8
-         x49P5Ya3IwKV3bOr2v1N6X5KV84G2Wf0AKE3Nu9FXIEJRsb2WYaN3fXdxfqkZ2tEfmfg
-         btFA==
-X-Gm-Message-State: AOAM532qBmTkDNHG3/ZRvrmY+G1uCrq8hBNXcRoPP/0p2qtgJOY69L+M
-        T4wcWjIccrZcsIyP/c733FL+4Q==
-X-Google-Smtp-Source: ABdhPJwZUZIrJ4p4qUHQ1CeHU6I/SbwijQWPeFZemxrafZqwOWR1QtCnvwxuT4le2otbNgRg2XMojw==
-X-Received: by 2002:a17:90a:8a07:: with SMTP id w7mr31786769pjn.192.1621966204387;
-        Tue, 25 May 2021 11:10:04 -0700 (PDT)
-Received: from google.com (139.60.82.34.bc.googleusercontent.com. [34.82.60.139])
-        by smtp.gmail.com with ESMTPSA id n30sm15154975pgd.8.2021.05.25.11.10.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 11:10:04 -0700 (PDT)
-Date:   Tue, 25 May 2021 18:10:00 +0000
-From:   Satya Tangirala <satyat@google.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
+        id S233362AbhEYUoo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 25 May 2021 16:44:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35618 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231182AbhEYUoo (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 25 May 2021 16:44:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A400061409;
+        Tue, 25 May 2021 20:43:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621975393;
+        bh=D9/lkDf7/4G2MsG+84gaDXO7v7xhTSSqmHMTWi1xl5w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gWt3V53WTHyJPdEqHJaiSjzFKDoxv0siITj6vkwlqJXoCFCv3a3exQZokq6Tonv30
+         gMlbZf5iUa/Tplf7dwGeETBsjwgLMAEfIxdlTKGU+qc54RBD6xX/YQQvQ5ekFgP4qd
+         2+r05F69dPROmTIFIVRPzEBOiSjcvk4cl99FWfRWeS/2hUrt1iSElUvXsOhXbbeYrI
+         3Jy9OORfYg3TKBLlS3Bi54A4zCiGK6t5PZVWbNrjze/xPOo+5rBtv4rgxsNNeh02E1
+         Whjvii7J/mMCnawZPlrhtapQheVSwKVYf3ytpEB2b4316qWTYa5vsbWoW7/muPlCfX
+         GhrzuzD+2ASMw==
+Date:   Tue, 25 May 2021 13:43:13 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-fsdevel@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>,
+        Dave Chinner <david@fromorbit.com>, ceph-devel@vger.kernel.org,
+        Chao Yu <yuchao0@huawei.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>, Chao Yu <chao@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-fscrypt@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v8 0/8] add support for direct I/O with fscrypt using
- blk-crypto
-Message-ID: <YK09eG0xm9dphL/1@google.com>
-References: <20210121230336.1373726-1-satyat@google.com>
- <CAF2Aj3jbEnnG1-bHARSt6xF12VKttg7Bt52gV=bEQUkaspDC9w@mail.gmail.com>
+        Jeff Layton <jlayton@kernel.org>,
+        Johannes Thumshirn <jth@kernel.org>,
+        linux-cifs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
+        linux-xfs@vger.kernel.org, Miklos Szeredi <miklos@szeredi.hu>,
+        Steve French <sfrench@samba.org>, Ted Tso <tytso@mit.edu>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH 02/13] documentation: Sync file_operations members with
+ reality
+Message-ID: <20210525204313.GL202121@locust>
+References: <20210525125652.20457-1-jack@suse.cz>
+ <20210525135100.11221-2-jack@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAF2Aj3jbEnnG1-bHARSt6xF12VKttg7Bt52gV=bEQUkaspDC9w@mail.gmail.com>
+In-Reply-To: <20210525135100.11221-2-jack@suse.cz>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, May 25, 2021 at 01:57:28PM +0100, Lee Jones wrote:
-> On Thu, 21 Jan 2021 at 23:06, Satya Tangirala <satyat@google.com> wrote:
+On Tue, May 25, 2021 at 03:50:39PM +0200, Jan Kara wrote:
+> Sync listing of struct file_operations members with the real one in
+> fs.h.
 > 
-> > This patch series adds support for direct I/O with fscrypt using
-> > blk-crypto.
-> >
+> Signed-off-by: Jan Kara <jack@suse.cz>
+> ---
+>  Documentation/filesystems/locking.rst | 15 +++++++++------
+>  1 file changed, 9 insertions(+), 6 deletions(-)
 > 
-> Is there an update on this set please?
-> 
-> I can't seem to find any reviews or follow-up since v8 was posted back in
-> January.
-> 
-This patchset relies on the block layer fixes patchset here
-https://lore.kernel.org/linux-block/20210325212609.492188-1-satyat@google.com/
-That said, I haven't been able to actively work on both the patchsets
-for a while, but I'll send out updates for both patchsets over the
-next week or so.
+> diff --git a/Documentation/filesystems/locking.rst b/Documentation/filesystems/locking.rst
+> index 1e894480115b..4ed2b22bd0a8 100644
+> --- a/Documentation/filesystems/locking.rst
+> +++ b/Documentation/filesystems/locking.rst
+> @@ -506,6 +506,7 @@ prototypes::
+>  	ssize_t (*write) (struct file *, const char __user *, size_t, loff_t *);
+>  	ssize_t (*read_iter) (struct kiocb *, struct iov_iter *);
+>  	ssize_t (*write_iter) (struct kiocb *, struct iov_iter *);
+> +	int (*iopoll) (struct kiocb *kiocb, bool spin);
+>  	int (*iterate) (struct file *, struct dir_context *);
+>  	int (*iterate_shared) (struct file *, struct dir_context *);
+>  	__poll_t (*poll) (struct file *, struct poll_table_struct *);
+> @@ -518,12 +519,6 @@ prototypes::
+>  	int (*fsync) (struct file *, loff_t start, loff_t end, int datasync);
+>  	int (*fasync) (int, struct file *, int);
+>  	int (*lock) (struct file *, int, struct file_lock *);
+> -	ssize_t (*readv) (struct file *, const struct iovec *, unsigned long,
+> -			loff_t *);
+> -	ssize_t (*writev) (struct file *, const struct iovec *, unsigned long,
+> -			loff_t *);
+> -	ssize_t (*sendfile) (struct file *, loff_t *, size_t, read_actor_t,
+> -			void __user *);
+>  	ssize_t (*sendpage) (struct file *, struct page *, int, size_t,
+>  			loff_t *, int);
+>  	unsigned long (*get_unmapped_area)(struct file *, unsigned long,
+> @@ -536,6 +531,14 @@ prototypes::
+>  			size_t, unsigned int);
+>  	int (*setlease)(struct file *, long, struct file_lock **, void **);
+>  	long (*fallocate)(struct file *, int, loff_t, loff_t);
+> +	void (*show_fdinfo)(struct seq_file *m, struct file *f);
+> +	unsigned (*mmap_capabilities)(struct file *);
+> +	ssize_t (*copy_file_range)(struct file *, loff_t, struct file *,
+> +			loff_t, size_t, unsigned int);
+> +	loff_t (*remap_file_range)(struct file *file_in, loff_t pos_in,
+> +			struct file *file_out, loff_t pos_out,
+> +			loff_t len, unsigned int remap_flags);
+
+Acked-by: Darrick J. Wong <djwong@kernel.org>
+
+The remap_file_range part looks correct to me.  At a glance the others
+seem fine too, but I'm not as familiar with them...
+
+--D
+
+> +	int (*fadvise)(struct file *, loff_t, loff_t, int);
+>  
+>  locking rules:
+>  	All may block.
 > -- 
-> Lee Jones [李琼斯]
-> Linaro Services Senior Technical Lead
-> Linaro.org │ Open source software for ARM SoCs
-> Follow Linaro: Facebook | Twitter | Blog
+> 2.26.2
+> 
