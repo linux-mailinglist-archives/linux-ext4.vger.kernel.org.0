@@ -2,65 +2,62 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E634391283
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 May 2021 10:42:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECEC6391285
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 May 2021 10:43:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232240AbhEZIo2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 26 May 2021 04:44:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38392 "EHLO
+        id S232824AbhEZIoi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 26 May 2021 04:44:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231519AbhEZIo1 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 May 2021 04:44:27 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1328FC061574;
-        Wed, 26 May 2021 01:42:57 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id a7so267653plh.3;
-        Wed, 26 May 2021 01:42:57 -0700 (PDT)
+        with ESMTP id S231519AbhEZIog (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 May 2021 04:44:36 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15E77C061574;
+        Wed, 26 May 2021 01:43:05 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id t21so270725plo.2;
+        Wed, 26 May 2021 01:43:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:subject:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=5RwlVOYSug509Gc2kX91BzKkmEP4KOrbTpcGxbCLpLE=;
-        b=tEOtbEnzP+JICK+N7zH7511zB6UwkgugYwApCq3TelLIE9hrcmF6aomjk6+/u6XkrG
-         6Jp5uuOhHvrqlBhcPHAMJEv1OdVXxv1A9GjcDOKHtQHZ1BN1nRD8qNGFWNrfcrV6hwF5
-         7f6hn0iqPycFewZR6tw7py+RMSoOe6QipJkDo4EoEDSQn/phPbAaCinGvPm/MhQEMxQl
-         YnEfM7Uz5M/hzUb4yDVuEuKNibNVxr8lRf3zOt21NHwgTIgmFr4OAdqPkm3WKZeXTpuO
-         z36eHVqF5RoYfb4Q9b+Z7rkv4yClYO2UZjkUacQKv9FF8a9osbx4wW0X4iUnnfs8BmiK
-         1jwg==
+        h=from:subject:to:cc:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=bat8mnp8um60U9aMrOHnIWqznun1A+ow7zsGP3ztSDk=;
+        b=Z2SJHq7Ty2i1/sKBiWlyO2nuYrwsgMLBjCAQ6aHAlX1wHr75ltYHA42JvbNZKqoJJ1
+         ko3UugjHQrwYoDG6KI7vKUCsWLZ/WiSad6cfw17OMHAVgv/y1jhH0A104SpXFUmNTVhH
+         pU87c3z/Wi6UVrquUWm2Rhb97k5TvJt3In//xYpNkh/W9lFynYO7HFhkvoh+kvfd2jKL
+         gtUjvrPT2s4LQJDK+64ED1sNfiXn3/2jnr+rZZpjnNtgWMjJozf/tx3XSk2FPiHRvBsZ
+         l6XWBNktiV2PdDwBMx9afSIUQ82gK/9hMCKttUCHa0r1cU1ZCfKrmkrcXUaAngalkUYE
+         SgPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5RwlVOYSug509Gc2kX91BzKkmEP4KOrbTpcGxbCLpLE=;
-        b=noH06DKTmqPnD6zVzub/rI0Env4Pa6N6A/7qrwTY2cteVc0JPjjPjT7pSBeoTdZsmZ
-         mUyCSdz1fP2U+wK1cyejz5D/sA7jtoNXHPKY8vcSG7GMg2vDhdtRrphPALS41B/qcQRs
-         DB2BVkc2V8sFLvpqu9l1KSfYz9Q2P6r/YtLs4+4vR1XaCZOjY+RzflzlgdAJ+2x6NE90
-         0/S9szoeu//ijLCAi+fg3s+pVm+CDXERzCykFVogRqj8BcpH5FBm5dqVh5qo9zbioBjZ
-         bsbG+QLWBXDf3MqJn0lNiKdowA9AoDItl1v6jhMkUqF5nzkjTuDCsg3H78GeBwizEBEK
-         id0w==
-X-Gm-Message-State: AOAM530wYu2qj3N4btm+ckcfZrybaJL42RWx98rWmBlt8noB5BZnaqnX
-        ZVhCdqV9wae9C+fZuJl1c1etYWExmi8=
-X-Google-Smtp-Source: ABdhPJxB2a1HvSyJn5znRWmhf5aOLrDu2VRWB2cRMzAOUPnfGYbLAAx4+qdpPffKLbJ0HAh0k/bE9w==
-X-Received: by 2002:a17:90b:81:: with SMTP id bb1mr34570730pjb.167.1622018576567;
-        Wed, 26 May 2021 01:42:56 -0700 (PDT)
-Received: from jianchwadeMacBook-Pro.local ([154.48.252.66])
-        by smtp.gmail.com with ESMTPSA id x184sm16801191pgb.36.2021.05.26.01.42.54
+        h=x-gm-message-state:from:subject:to:cc:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=bat8mnp8um60U9aMrOHnIWqznun1A+ow7zsGP3ztSDk=;
+        b=CWZfREIBeeKqPkNg9fl2IPI2CZ7bFqgqy3MC/0X6/W58Wh0cKGp01MiD1IU4oC37C9
+         m6wVgrrP2gQzwwbVCHZUOv3vzHmLPbBZnjOYqwEq1+uGepfRfRswVhvrJTJITIX3hE6B
+         KKccsnp7LLBD3OQ2Qdx6CISVvic3B22Vn0DdMFdb28iTwn8GIAytNi/dKHwy+HJxBzBx
+         nqnm5Hw7PrE3hKtQZFticTyONLqsk1QDHeKtfECiOQ1O8cmRR0dvatWtFLdeu/6c9Bys
+         9RXUqeU/YD9bvA6YKesMjJJ3QzxLKQCA5D4W0qchyimnE8UiIftBFvO/6PzwACt6xKFj
+         U41g==
+X-Gm-Message-State: AOAM530O/Wy44LrhIfmoDmxKD/w5lcCboK0s4P+G2EPQqRqNAOXm8Xov
+        ggw5HosJw0rDOIs4OVl+MlE=
+X-Google-Smtp-Source: ABdhPJw5oJjvwVuH9+xJ4IKOX6ssjnQH5r/GYwMnsYmSVWNN5bL62xTjkFMFGfSdYU94a1seE/p14w==
+X-Received: by 2002:a17:90a:8809:: with SMTP id s9mr2778415pjn.189.1622018584675;
+        Wed, 26 May 2021 01:43:04 -0700 (PDT)
+Received: from jianchwadeMacBook-Pro.local ([103.112.79.203])
+        by smtp.gmail.com with ESMTPSA id 125sm15085375pfg.52.2021.05.26.01.43.02
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 May 2021 01:42:56 -0700 (PDT)
+        Wed, 26 May 2021 01:43:04 -0700 (PDT)
 From:   Wang Jianchao <jianchao.wan9@gmail.com>
-Subject: [PATCH V2 1/7] ext4: remove the 'group' parameter of ext4_trim_extent
+Subject: [PATCH V2 0/7] ext4: get discard out of jbd2 commit kthread
 To:     Theodore Ts'o <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>
 Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
         lishujin@kuaishou.com
-References: <164ffa3b-c4d5-6967-feba-b972995a6dfb@gmail.com>
-Message-ID: <61eceb4c-6e5f-34d0-9317-a833d7c63b6f@gmail.com>
-Date:   Wed, 26 May 2021 16:42:53 +0800
+Message-ID: <4d9d3aef-8e27-3e1c-0c0e-d19a87b251d4@gmail.com>
+Date:   Wed, 26 May 2021 16:43:01 +0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <164ffa3b-c4d5-6967-feba-b972995a6dfb@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -68,50 +65,51 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Get rid of the 'group' parameter of ext4_trim_extent as we can get
-it from the 'e4b'.
+Hi
 
-Signed-off-by: Wang Jianchao <wangjianchao@kuaishou.com>
----
- fs/ext4/mballoc.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+This is the version 2 patch set that attempts to get discard out of the jbd2
+commit kthread. When the user delete a lot data and cause discard flooding,
+the jbd2 commit kthread can be blocked for very long time and then all of
+the metadata operations are blocked due to no journal space.
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index a02fadf..d81f1fd22 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -5650,19 +5650,19 @@ int ext4_group_add_blocks(handle_t *handle, struct super_block *sb,
-  * @sb:		super block for the file system
-  * @start:	starting block of the free extent in the alloc. group
-  * @count:	number of blocks to TRIM
-- * @group:	alloc. group we are working with
-  * @e4b:	ext4 buddy for the group
-  *
-  * Trim "count" blocks starting at "start" in the "group". To assure that no
-  * one will allocate those blocks, mark it as used in buddy bitmap. This must
-  * be called with under the group lock.
-  */
--static int ext4_trim_extent(struct super_block *sb, int start, int count,
--			     ext4_group_t group, struct ext4_buddy *e4b)
-+static int ext4_trim_extent(struct super_block *sb,
-+		int start, int count, struct ext4_buddy *e4b)
- __releases(bitlock)
- __acquires(bitlock)
- {
- 	struct ext4_free_extent ex;
-+	ext4_group_t group = e4b->bd_group;
- 	int ret = 0;
- 
- 	trace_ext4_trim_extent(sb, group, start, count);
-@@ -5738,8 +5738,7 @@ static int ext4_trim_extent(struct super_block *sb, int start, int count,
- 		next = mb_find_next_bit(bitmap, max + 1, start);
- 
- 		if ((next - start) >= minblocks) {
--			ret = ext4_trim_extent(sb, start,
--					       next - start, group, &e4b);
-+			ret = ext4_trim_extent(sb, start, next - start, &e4b);
- 			if (ret && ret != -EOPNOTSUPP)
- 				break;
- 			ret = 0;
--- 
-1.8.3.1
+This version patch is based on Ted's suggestion that free the blocks after
+commit immediately and then use a background kworker to do the discard with
+the fstrim fashion. The discard maybe slower than before but it doesn't matter
+as the blocks has been freed back to mb allocator and nothing would be blocked.
+
+There are 7 patches,
+
+Patch 1 ~ 4, there are no functional changes in them, but just some preparation
+for following patches
+
+Patch 5 does the buddy cache get only after insert ext4_free_data successfully
+
+Patch 6 get rid of the s_freed_data_list which carries ext4_free_data and iterate
+free data rbtree to get ext4_free_data. This is also a preparation.
+
+Patch 7 introduces a async kworker to do discard which implements the core idea
+of this patch set.
+
+
+Any comments are welcome ;)
+
+Chagnes from V1:
+ - free blocks back to mb allocator immediately after commit and do discard
+   in fstrim fashion.
+
+Wang Jianchao (7):
+ext4: remove the 'group' parameter of ext4_trim_extent
+ext4: add new helper interface ext4_try_to_trim_range()
+ext4: add new helper interface ext4_insert_free_data
+ext4: remove the repeated comment of ext4_trim_all_free
+ext4: get buddy cache after insert successfully
+ext4: use bb_free_root to get the free data entry
+ext4: get discard out of jbd2 commit kthread context
+
+
+ fs/ext4/balloc.c  |   2 +-
+ fs/ext4/ext4.h    |   6 +-
+ fs/ext4/mballoc.c | 434 ++++++++++++++++++++++++++++++++++++++++++++------------------------------------
+ fs/ext4/mballoc.h |   3 -
+ 4 files changed, 241 insertions(+), 204 deletions(-)
+
