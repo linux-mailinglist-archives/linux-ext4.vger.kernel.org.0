@@ -2,44 +2,43 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D72083914BA
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 May 2021 12:18:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DEF73914C9
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 May 2021 12:21:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233911AbhEZKUO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 26 May 2021 06:20:14 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58510 "EHLO mx2.suse.de"
+        id S233907AbhEZKWg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 26 May 2021 06:22:36 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34770 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233875AbhEZKUN (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 26 May 2021 06:20:13 -0400
+        id S233730AbhEZKWf (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 26 May 2021 06:22:35 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1622024321; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1622024462; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Zy950XykkrJ6BQwKrm2bOZ69SbTGj6TawhTTxHONnfc=;
-        b=wkbwouza/uoHMYVNU2DGIsOW7TInyVbvT0rZ7N1OWO6Rh+djnaSCfcAyeF6DN/8dJ1wL64
-        rHi+2qgfiyBeulHqBiX0hnyvOgf4l2CuTdZW8kUS6fzCEFHDQuky3UGZGOSXymBaLH4KHR
-        Lm88zZdt8iZCUNRO0yBGBjg/FShyHHI=
+        bh=KNXtYbX9PoD7HWobCfGe506uRcOdWxiA8Gr7nrDFogA=;
+        b=2urB98NmE/jP6mSICb3YhJoU3CNmVA3jsTPkDf7uho1D8U4aLvX/lEIJbpI3lzu6DI90cx
+        2tW3Ki9mRLc2S7rBmkdiGaAABLeduUVN5U6+vxKaHtuTRR9ubsJronVXiVU/Mr1KlGAcCl
+        37efE24YmVwNASTk4LKCY08gWwFykkk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1622024321;
+        s=susede2_ed25519; t=1622024462;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Zy950XykkrJ6BQwKrm2bOZ69SbTGj6TawhTTxHONnfc=;
-        b=9hNfRZyzRnis/OPuk5nHQikSuG7UpjGYzqxh8Fx9LtXgJhKisRFsTmBBlUbXWJw3rWKKnj
-        KP4FtPqoswh/zIAA==
+        bh=KNXtYbX9PoD7HWobCfGe506uRcOdWxiA8Gr7nrDFogA=;
+        b=7FeQ1oYTjy3dESOA3v95EZt/vKI8f9cxYKZTi5iS4eZ6729GTgdeaYfZCfXLAK5U9i4RIo
+        5mD2xUxmmobGLpAg==
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DD935B23D;
-        Wed, 26 May 2021 10:18:40 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 57F18B25F;
+        Wed, 26 May 2021 10:21:01 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 643461F2CAC; Wed, 26 May 2021 12:18:40 +0200 (CEST)
-Date:   Wed, 26 May 2021 12:18:40 +0200
+        id DE7451F2CAC; Wed, 26 May 2021 12:20:59 +0200 (CEST)
+Date:   Wed, 26 May 2021 12:20:59 +0200
 From:   Jan Kara <jack@suse.cz>
-To:     "Darrick J. Wong" <djwong@kernel.org>
+To:     Dave Chinner <david@fromorbit.com>
 Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
         Christoph Hellwig <hch@infradead.org>,
-        Dave Chinner <david@fromorbit.com>, ceph-devel@vger.kernel.org,
-        Chao Yu <yuchao0@huawei.com>,
+        ceph-devel@vger.kernel.org, Chao Yu <yuchao0@huawei.com>,
         Damien Le Moal <damien.lemoal@wdc.com>,
         "Darrick J. Wong" <darrick.wong@oracle.com>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
@@ -52,20 +51,20 @@ Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
         Matthew Wilcox <willy@infradead.org>,
         Christoph Hellwig <hch@lst.de>
 Subject: Re: [PATCH 07/13] xfs: Convert to use invalidate_lock
-Message-ID: <20210526101840.GC30369@quack2.suse.cz>
+Message-ID: <20210526102059.GD30369@quack2.suse.cz>
 References: <20210525125652.20457-1-jack@suse.cz>
  <20210525135100.11221-7-jack@suse.cz>
- <20210525213729.GC202144@locust>
+ <20210525214041.GJ664593@dread.disaster.area>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210525213729.GC202144@locust>
+In-Reply-To: <20210525214041.GJ664593@dread.disaster.area>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 25-05-21 14:37:29, Darrick J. Wong wrote:
+On Wed 26-05-21 07:40:41, Dave Chinner wrote:
 > On Tue, May 25, 2021 at 03:50:44PM +0200, Jan Kara wrote:
 > > Use invalidate_lock instead of XFS internal i_mmap_lock. The intended
 > > purpose of invalidate_lock is exactly the same. Note that the locking in
@@ -75,10 +74,78 @@ On Tue 25-05-21 14:37:29, Darrick J. Wong wrote:
 > > Reviewed-by: Christoph Hellwig <hch@lst.de>
 > > CC: <linux-xfs@vger.kernel.org>
 > > CC: "Darrick J. Wong" <darrick.wong@oracle.com>
+> > Signed-off-by: Jan Kara <jack@suse.cz>
+> > ---
+> >  fs/xfs/xfs_file.c  | 12 ++++++-----
+> >  fs/xfs/xfs_inode.c | 52 ++++++++++++++++++++++++++--------------------
+> >  fs/xfs/xfs_inode.h |  1 -
+> >  fs/xfs/xfs_super.c |  2 --
+> >  4 files changed, 36 insertions(+), 31 deletions(-)
+> > 
+> > diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
+> > index 396ef36dcd0a..dc9cb5c20549 100644
+> > --- a/fs/xfs/xfs_file.c
+> > +++ b/fs/xfs/xfs_file.c
+> > @@ -1282,7 +1282,7 @@ xfs_file_llseek(
+> >   *
+> >   * mmap_lock (MM)
+> >   *   sb_start_pagefault(vfs, freeze)
+> > - *     i_mmaplock (XFS - truncate serialisation)
+> > + *     invalidate_lock (vfs/XFS_MMAPLOCK - truncate serialisation)
+> >   *       page_lock (MM)
+> >   *         i_lock (XFS - extent map serialisation)
+> >   */
+> > @@ -1303,24 +1303,26 @@ __xfs_filemap_fault(
+> >  		file_update_time(vmf->vma->vm_file);
+> >  	}
+> >  
+> > -	xfs_ilock(XFS_I(inode), XFS_MMAPLOCK_SHARED);
+> >  	if (IS_DAX(inode)) {
+> >  		pfn_t pfn;
+> >  
+> > +		xfs_ilock(XFS_I(inode), XFS_MMAPLOCK_SHARED);
+> >  		ret = dax_iomap_fault(vmf, pe_size, &pfn, NULL,
+> >  				(write_fault && !vmf->cow_page) ?
+> >  				 &xfs_direct_write_iomap_ops :
+> >  				 &xfs_read_iomap_ops);
+> >  		if (ret & VM_FAULT_NEEDDSYNC)
+> >  			ret = dax_finish_sync_fault(vmf, pe_size, pfn);
+> > +		xfs_iunlock(XFS_I(inode), XFS_MMAPLOCK_SHARED);
+> >  	} else {
+> > -		if (write_fault)
+> > +		if (write_fault) {
+> > +			xfs_ilock(XFS_I(inode), XFS_MMAPLOCK_SHARED);
+> >  			ret = iomap_page_mkwrite(vmf,
+> >  					&xfs_buffered_write_iomap_ops);
+> > -		else
+> > +			xfs_iunlock(XFS_I(inode), XFS_MMAPLOCK_SHARED);
+> > +		} else
+> >  			ret = filemap_fault(vmf);
+> >  	}
+> > -	xfs_iunlock(XFS_I(inode), XFS_MMAPLOCK_SHARED);
 > 
-> It's djwong@kernel.org now.
+> This seems kinda messy. filemap_fault() basically takes the
+> invalidate lock around the entire operation, it runs, so maybe it
+> would be cleaner to implement it as:
+> 
+> filemap_fault_locked(vmf)
+> {
+> 	/* does the filemap fault work */
+> }
+> 
+> filemap_fault(vmf)
+> {
+> 	filemap_invalidate_down_read(...)
+> 	ret = filemap_fault_locked(vmf)
+> 	filemap_invalidate_up_read(...)
+> 	return ret;
+> }
+> 
+> And that means XFS could just call filemap_fault_locked() and not 
+> have to do all this messy locking just to avoid holding the lock
+> that filemap_fault has now internalised.
 
-OK, updated.
+Sure, I can do that.
 
 > > @@ -355,8 +358,11 @@ xfs_isilocked(
 > >  
@@ -91,21 +158,19 @@ OK, updated.
 > > +					&VFS_I(ip)->i_mapping->invalidate_lock,
 > > +					0);
 > > +		return rwsem_is_locked(&VFS_I(ip)->i_mapping->invalidate_lock);
+> >  	}
 > 
-> This doesn't look right...
+> <sigh>
 > 
-> If lockdep is disabled, we always return true for
-> xfs_isilocked(ip, XFS_MMAPLOCK_EXCL) even if nobody holds the lock?
+> And so here we are again, losing more of our read vs write debug
+> checks on debug kernels when lockdep is not enabled....
 > 
-> Granted, you probably just copy-pasted from the IOLOCK_SHARED clause
-> beneath it.  Er... oh right, preichl was messing with all that...
-> 
-> https://lore.kernel.org/linux-xfs/20201016021005.548850-2-preichl@redhat.com/
+> Can we please add rwsem_is_locked_read() and rwsem_is_locked_write()
+> wrappers that just look at the rwsem counter value to determine how
+> the lock is held? Then the mrlock_t can go away entirely....
 
-Indeed copy-paste programming ;) It certainly makes the assertions happy
-but useless. Should I pull the patch you reference into the series? It
-seems to have been uncontroversial and reviewed. Or will you pull the
-series to xfs tree so I can just rebase on top?
+Apparently someone already did that for XFS as Darrick pointed out. So we
+just have to sort out how to merge it.
 
 								Honza
 -- 
