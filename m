@@ -2,116 +2,83 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2736391C10
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 May 2021 17:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0813839234C
+	for <lists+linux-ext4@lfdr.de>; Thu, 27 May 2021 01:37:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235356AbhEZPeY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 26 May 2021 11:34:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59076 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234615AbhEZPeY (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 26 May 2021 11:34:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E70560FEB;
-        Wed, 26 May 2021 15:32:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622043172;
-        bh=V5vCXBefwn7ATI2q09Zc6Pyr3lgUwNBruf3selAP4x4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jbwHAkWFow3o+pBkhghb3kHEKwUgkNydGv3mNOmncX52Qoz1jR2s3vJbxA6JPcd88
-         tab4+/Gep3cvFcm3cZMlAQxOOmHOWF86MNOlkpXVV0n2emp7yBv++bsf9Zail+czZ/
-         4AwrVtxdw45GdYyGip8v1vFDbPEI1l6/GKxPDVKUAz97lejoC/GIypyNOFV2/7orn9
-         AwoGrXmEstbTzqHVdZQadJZX+Kld/lh1w/YQ+Oi1d9U5EtitGuZAvULQN/GbfIBQkf
-         Lsq/rxD2moQfCmv6WNsXnHOKeGsJ5R+L0/D6492eq6NGD7sDKAYmg4SAWgQZh3H+UD
-         3oYe04vxFLyHQ==
-Date:   Wed, 26 May 2021 08:32:51 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Dave Chinner <david@fromorbit.com>, ceph-devel@vger.kernel.org,
-        Chao Yu <yuchao0@huawei.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Johannes Thumshirn <jth@kernel.org>,
-        linux-cifs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
-        linux-xfs@vger.kernel.org, Miklos Szeredi <miklos@szeredi.hu>,
-        Steve French <sfrench@samba.org>, Ted Tso <tytso@mit.edu>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 07/13] xfs: Convert to use invalidate_lock
-Message-ID: <20210526153251.GZ202121@locust>
-References: <20210525125652.20457-1-jack@suse.cz>
- <20210525135100.11221-7-jack@suse.cz>
- <20210525213729.GC202144@locust>
- <20210526101840.GC30369@quack2.suse.cz>
+        id S234911AbhEZXiz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 26 May 2021 19:38:55 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:40050 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233517AbhEZXiy (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 May 2021 19:38:54 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 6C0EE1F434FC
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     kernel@collabora.com, "Darrick J . Wong" <djwong@kernel.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.com>,
+        David Howells <dhowells@redhat.com>,
+        Khazhismel Kumykov <khazhy@google.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Ext4 <linux-ext4@vger.kernel.org>
+Subject: Re: [PATCH 10/11] samples: Add fs error monitoring example
+Organization: Collabora
+References: <20210521024134.1032503-1-krisman@collabora.com>
+        <20210521024134.1032503-11-krisman@collabora.com>
+        <CAOQ4uxjk9K-yOyn4EAPjP_WK5UaCbcOGX4joH3futSCVTXZ76g@mail.gmail.com>
+Date:   Wed, 26 May 2021 19:37:17 -0400
+In-Reply-To: <CAOQ4uxjk9K-yOyn4EAPjP_WK5UaCbcOGX4joH3futSCVTXZ76g@mail.gmail.com>
+        (Amir Goldstein's message of "Fri, 21 May 2021 12:48:18 +0300")
+Message-ID: <87tumpjccy.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210526101840.GC30369@quack2.suse.cz>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, May 26, 2021 at 12:18:40PM +0200, Jan Kara wrote:
-> On Tue 25-05-21 14:37:29, Darrick J. Wong wrote:
-> > On Tue, May 25, 2021 at 03:50:44PM +0200, Jan Kara wrote:
-> > > Use invalidate_lock instead of XFS internal i_mmap_lock. The intended
-> > > purpose of invalidate_lock is exactly the same. Note that the locking in
-> > > __xfs_filemap_fault() slightly changes as filemap_fault() already takes
-> > > invalidate_lock.
-> > > 
-> > > Reviewed-by: Christoph Hellwig <hch@lst.de>
-> > > CC: <linux-xfs@vger.kernel.org>
-> > > CC: "Darrick J. Wong" <darrick.wong@oracle.com>
-> > 
-> > It's djwong@kernel.org now.
-> 
-> OK, updated.
-> 
-> > > @@ -355,8 +358,11 @@ xfs_isilocked(
-> > >  
-> > >  	if (lock_flags & (XFS_MMAPLOCK_EXCL|XFS_MMAPLOCK_SHARED)) {
-> > >  		if (!(lock_flags & XFS_MMAPLOCK_SHARED))
-> > > -			return !!ip->i_mmaplock.mr_writer;
-> > > -		return rwsem_is_locked(&ip->i_mmaplock.mr_lock);
-> > > +			return !debug_locks ||
-> > > +				lockdep_is_held_type(
-> > > +					&VFS_I(ip)->i_mapping->invalidate_lock,
-> > > +					0);
-> > > +		return rwsem_is_locked(&VFS_I(ip)->i_mapping->invalidate_lock);
-> > 
-> > This doesn't look right...
-> > 
-> > If lockdep is disabled, we always return true for
-> > xfs_isilocked(ip, XFS_MMAPLOCK_EXCL) even if nobody holds the lock?
-> > 
-> > Granted, you probably just copy-pasted from the IOLOCK_SHARED clause
-> > beneath it.  Er... oh right, preichl was messing with all that...
-> > 
-> > https://lore.kernel.org/linux-xfs/20201016021005.548850-2-preichl@redhat.com/
-> 
-> Indeed copy-paste programming ;) It certainly makes the assertions happy
-> but useless. Should I pull the patch you reference into the series? It
-> seems to have been uncontroversial and reviewed. Or will you pull the
-> series to xfs tree so I can just rebase on top?
+Amir Goldstein <amir73il@gmail.com> writes:
 
-The full conversion series introduced assertion failures because lockdep
-can't handle some of the ILOCK usage patterns, specifically the fact
-that a thread sometimes takes the ILOCK but then hands the inode to a
-workqueue to avoid overflowing the first thread's stack.  That's why it
-never got merged into the xfs tree.
+>> +                       printf("unexpected FAN MARK: %llx\n", metadata->mask);
+>> +                       continue;
+>> +               } else if (metadata->fd != FAN_NOFD) {
+>> +                       printf("Unexpected fd (!= FAN_NOFD)\n");
+>> +                       continue;
+>> +               }
+>> +
+>> +               printf("FAN_ERROR found len=%d\n", metadata->event_len);
+>> +
+>> +               error = (struct fanotify_event_info_error *) (metadata+1);
+>> +               if (error->hdr.info_type == FAN_EVENT_INFO_TYPE_ERROR) {
+>
+> You meant != FAN_EVENT_INFO_TYPE_ERROR ?
 
-However, that kind of switcheroo isn't done with the
-MMAPLOCK/invalidate_lock, so you could simply pull the patch I linked
-above into your series.
+Ugh. the FAN_EVENT_INFO_TYPE_ERROR definition on this file was not updated,
+preventing me from catching this. nice catch.
+>
+>> +                       printf("unknown record: %d\n", error->hdr.info_type);
+>> +                       continue;
+>> +               }
+>> +
+>> +               printf("  Generic Error Record: len=%d\n", error->hdr.len);
+>> +               printf("      fsid: %llx\n", error->fsid);
+>> +               printf("      error: %d\n", error->error);
+>> +               printf("      inode: %lu\n", error->inode);
+>> +               printf("      error_count: %d\n", error->error_count);
+>> +       }
+>> +}
+>> +
+>> +int main(int argc, char **argv)
+>> +{
+>> +       int fd;
+>> +       char buffer[BUFSIZ];
+>
+> BUFSIZ not defined?
 
---D
+that's from stdio.h.
 
-> 
-> 								Honza
-> -- 
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+
+-- 
+Gabriel Krisman Bertazi
