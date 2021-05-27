@@ -2,18 +2,18 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CF3939300C
-	for <lists+linux-ext4@lfdr.de>; Thu, 27 May 2021 15:47:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7D0639300F
+	for <lists+linux-ext4@lfdr.de>; Thu, 27 May 2021 15:47:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236612AbhE0Nsz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 27 May 2021 09:48:55 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:5116 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236595AbhE0Nsx (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 27 May 2021 09:48:53 -0400
+        id S236619AbhE0NtA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 27 May 2021 09:49:00 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:2319 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236602AbhE0Nsy (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 27 May 2021 09:48:54 -0400
 Received: from dggeme752-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FrTZZ0jPLzYnFc;
-        Thu, 27 May 2021 21:44:38 +0800 (CST)
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FrTXM1qyVz1BFMy;
+        Thu, 27 May 2021 21:42:43 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by dggeme752-chm.china.huawei.com
  (10.3.19.98) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 27
@@ -22,9 +22,9 @@ From:   Zhang Yi <yi.zhang@huawei.com>
 To:     <linux-ext4@vger.kernel.org>
 CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
         <yi.zhang@huawei.com>, <yukuai3@huawei.com>
-Subject: [RFC PATCH v3 2/8] jbd2: ensure abort the journal if detect IO error when writing original buffer back
-Date:   Thu, 27 May 2021 21:56:35 +0800
-Message-ID: <20210527135641.420514-3-yi.zhang@huawei.com>
+Subject: [RFC PATCH v3 3/8] jbd2: don't abort the journal when freeing buffers
+Date:   Thu, 27 May 2021 21:56:36 +0800
+Message-ID: <20210527135641.420514-4-yi.zhang@huawei.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <20210527135641.420514-1-yi.zhang@huawei.com>
 References: <20210527135641.420514-1-yi.zhang@huawei.com>
@@ -39,124 +39,57 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Although we merged c044f3d8360 ("jbd2: abort journal if free a async
-write error metadata buffer"), there is a race between
-jbd2_journal_try_to_free_buffers() and jbd2_journal_destroy(), so the
-jbd2_log_do_checkpoint() may still fail to detect the buffer write
-io error flag which may lead to filesystem inconsistency.
-
-jbd2_journal_try_to_free_buffers()     ext4_put_super()
-                                        jbd2_journal_destroy()
-  __jbd2_journal_remove_checkpoint()
-  detect buffer write error              jbd2_log_do_checkpoint()
-                                         jbd2_cleanup_journal_tail()
-                                           <--- lead to inconsistency
-  jbd2_journal_abort()
-
-Fix this issue by introducing a new atomic flag which only have one
-JBD2_CHECKPOINT_IO_ERROR bit now, and set it in
-__jbd2_journal_remove_checkpoint() when freeing a checkpoint buffer
-which has write_io_error flag. Then jbd2_journal_destroy() will detect
-this mark and abort the journal to prevent updating log tail.
+Now that we can be sure the journal is aborted once a buffer has failed
+to be written back to disk, we can remove the journal abort logic in
+jbd2_journal_try_to_free_buffers() which was introduced in
+commit c044f3d8360d ("jbd2: abort journal if free a async write error
+metadata buffer"), because it may cost and propably is not safe.
 
 Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
 ---
- fs/jbd2/checkpoint.c | 12 ++++++++++++
- fs/jbd2/journal.c    | 14 ++++++++++++++
- include/linux/jbd2.h | 11 +++++++++++
- 3 files changed, 37 insertions(+)
+ fs/jbd2/transaction.c | 17 -----------------
+ 1 file changed, 17 deletions(-)
 
-diff --git a/fs/jbd2/checkpoint.c b/fs/jbd2/checkpoint.c
-index bf5511d19ac5..2cbac0e3cff3 100644
---- a/fs/jbd2/checkpoint.c
-+++ b/fs/jbd2/checkpoint.c
-@@ -564,6 +564,7 @@ int __jbd2_journal_remove_checkpoint(struct journal_head *jh)
- 	struct transaction_chp_stats_s *stats;
- 	transaction_t *transaction;
- 	journal_t *journal;
-+	struct buffer_head *bh = jh2bh(jh);
+diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
+index e8fc45fd751f..8804e126805f 100644
+--- a/fs/jbd2/transaction.c
++++ b/fs/jbd2/transaction.c
+@@ -2123,7 +2123,6 @@ int jbd2_journal_try_to_free_buffers(journal_t *journal, struct page *page)
+ {
+ 	struct buffer_head *head;
+ 	struct buffer_head *bh;
+-	bool has_write_io_error = false;
+ 	int ret = 0;
  
- 	JBUFFER_TRACE(jh, "entry");
+ 	J_ASSERT(PageLocked(page));
+@@ -2148,26 +2147,10 @@ int jbd2_journal_try_to_free_buffers(journal_t *journal, struct page *page)
+ 		jbd2_journal_put_journal_head(jh);
+ 		if (buffer_jbd(bh))
+ 			goto busy;
+-
+-		/*
+-		 * If we free a metadata buffer which has been failed to
+-		 * write out, the jbd2 checkpoint procedure will not detect
+-		 * this failure and may lead to filesystem inconsistency
+-		 * after cleanup journal tail.
+-		 */
+-		if (buffer_write_io_error(bh)) {
+-			pr_err("JBD2: Error while async write back metadata bh %llu.",
+-			       (unsigned long long)bh->b_blocknr);
+-			has_write_io_error = true;
+-		}
+ 	} while ((bh = bh->b_this_page) != head);
  
-@@ -575,6 +576,17 @@ int __jbd2_journal_remove_checkpoint(struct journal_head *jh)
- 	journal = transaction->t_journal;
+ 	ret = try_to_free_buffers(page);
+-
+ busy:
+-	if (has_write_io_error)
+-		jbd2_journal_abort(journal, -EIO);
+-
+ 	return ret;
+ }
  
- 	JBUFFER_TRACE(jh, "removing from transaction");
-+
-+	/*
-+	 * If we have failed to write the buffer out to disk, the filesystem
-+	 * may become inconsistent. We cannot abort the journal here since
-+	 * we hold j_list_lock and we have to careful about races with
-+	 * jbd2_journal_destroy(). So mark the writeback IO error in the
-+	 * journal here and we abort the journal later from a better context.
-+	 */
-+	if (buffer_write_io_error(bh))
-+		set_bit(JBD2_CHECKPOINT_IO_ERROR, &journal->j_atomic_flags);
-+
- 	__buffer_unlink(jh);
- 	jh->b_cp_transaction = NULL;
- 	jbd2_journal_put_journal_head(jh);
-diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index 2dc944442802..90146755941f 100644
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -1618,6 +1618,10 @@ int jbd2_journal_update_sb_log_tail(journal_t *journal, tid_t tail_tid,
- 
- 	if (is_journal_aborted(journal))
- 		return -EIO;
-+	if (test_bit(JBD2_CHECKPOINT_IO_ERROR, &journal->j_atomic_flags)) {
-+		jbd2_journal_abort(journal, -EIO);
-+		return -EIO;
-+	}
- 
- 	BUG_ON(!mutex_is_locked(&journal->j_checkpoint_mutex));
- 	jbd_debug(1, "JBD2: updating superblock (start %lu, seq %u)\n",
-@@ -1995,6 +1999,16 @@ int jbd2_journal_destroy(journal_t *journal)
- 	J_ASSERT(journal->j_checkpoint_transactions == NULL);
- 	spin_unlock(&journal->j_list_lock);
- 
-+	/*
-+	 * OK, all checkpoint transactions have been checked, now check the
-+	 * write out io error flag and abort the journal if some buffer failed
-+	 * to write back to the original location, otherwise the filesystem
-+	 * may become inconsistent.
-+	 */
-+	if (!is_journal_aborted(journal) &&
-+	    test_bit(JBD2_CHECKPOINT_IO_ERROR, &journal->j_atomic_flags))
-+		jbd2_journal_abort(journal, -EIO);
-+
- 	if (journal->j_sb_buffer) {
- 		if (!is_journal_aborted(journal)) {
- 			mutex_lock_io(&journal->j_checkpoint_mutex);
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index db0e1920cb12..f9b5e657b8f3 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -779,6 +779,11 @@ struct journal_s
- 	 */
- 	unsigned long		j_flags;
- 
-+	/**
-+	 * @j_atomic_flags: Atomic journaling state flags.
-+	 */
-+	unsigned long		j_atomic_flags;
-+
- 	/**
- 	 * @j_errno:
- 	 *
-@@ -1371,6 +1376,12 @@ JBD2_FEATURE_INCOMPAT_FUNCS(fast_commit,	FAST_COMMIT)
- #define JBD2_FAST_COMMIT_ONGOING	0x100	/* Fast commit is ongoing */
- #define JBD2_FULL_COMMIT_ONGOING	0x200	/* Full commit is ongoing */
- 
-+/*
-+ * Journal atomic flag definitions
-+ */
-+#define JBD2_CHECKPOINT_IO_ERROR	0x001	/* Detect io error while writing
-+						 * buffer back to disk */
-+
- /*
-  * Function declarations for the journaling transaction and buffer
-  * management
 -- 
 2.25.4
 
