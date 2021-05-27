@@ -2,34 +2,32 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6D15393976
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 May 2021 01:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE033939CF
+	for <lists+linux-ext4@lfdr.de>; Fri, 28 May 2021 01:57:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236160AbhE0Xyv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 27 May 2021 19:54:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43950 "EHLO mail.kernel.org"
+        id S236705AbhE0X6f (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 27 May 2021 19:58:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45584 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233938AbhE0Xyv (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 27 May 2021 19:54:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C18A61178;
-        Thu, 27 May 2021 23:53:17 +0000 (UTC)
+        id S235114AbhE0X6L (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 27 May 2021 19:58:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A770861006
+        for <linux-ext4@vger.kernel.org>; Thu, 27 May 2021 23:56:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622159597;
-        bh=unu2CwRiIklLEI2TXoBveyWjP3PNdHwKr8/qOcOwHz0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=hkto4pcLDdjg2amAWXxT+C//4V+e6tlGib27nP72HTOxXnR12jea3mWhtLFQ4dm0E
-         7gwn3yhQgn+Q9mY4pgnnWtM19dxKvdC+D3JFlgXKY/zQbcHieUH1I/os3kiQaWnWa8
-         7StchJcisGJpEhNQxJQIlaL4KJC1m3VRSS7Ju1ZaDoe77Col5CYNf88ewi/OFQ5RKw
-         7Yt6KfSlRbCNsUcDqAKmbR4xtASP6DXqsDDkYHSQCDHe3Giqjl6WSFc6N/76VUO+uy
-         lYdSz5Vj1wzt8WHYuF05AytMP14o1V84uCWmMHAo1pYLmHfHcHGtrLFxeYcYzlanQI
-         EH1Gc8b/jdHLw==
+        s=k20201202; t=1622159797;
+        bh=iUvu7i3aYS+lmwXOQCxlGXl7RxMidmO54Xkvicclc+c=;
+        h=From:To:Subject:Date:From;
+        b=WqZYR7uls1EmAAWtHTMmwzNu3rJue1ZFozD1srz59m6rc4lZTafV6YLAycFzZVN/d
+         2vR92NUuGFbogiSI49hzCNgofKvoeRKToosRuiN2jHoUAJ70U5cK26B0hyYaAS/Cwd
+         SGVMZXsW05CuqXOvmjaeCWU9jM6fjfBVeJoPLCZ4ZC6GM/laxCz4h0nymTQz2cOmqt
+         gZtcNtiXrSh/4hb/28QnQQXCnaynA5WpfYc25+3L7EXxtIYNThvM8Bbs8JOGujxOhj
+         qkODeccHLXcOT4JFLi98RKF2on+s2mGd3/qQn8RXrWgUWCpWymi4bJ6PXPjwNaBNf+
+         0ShJQAGD+/cRg==
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, stable@vger.kernel.org
-Subject: [PATCH] fscrypt: don't ignore minor_hash when hash is 0
-Date:   Thu, 27 May 2021 16:52:36 -0700
-Message-Id: <20210527235236.2376556-1-ebiggers@kernel.org>
+To:     linux-ext4@vger.kernel.org
+Subject: [PATCH] ext4: fix comment for s_hash_unsigned
+Date:   Thu, 27 May 2021 16:55:57 -0700
+Message-Id: <20210527235557.2377525-1-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -39,56 +37,27 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-When initializing a no-key name, fscrypt_fname_disk_to_usr() sets the
-minor_hash to 0 if the (major) hash is 0.
+Fix the comment for s_hash_unsigned to not be the opposite of what it
+actually is.
 
-This doesn't make sense because 0 is a valid hash code, so we shouldn't
-ignore the filesystem-provided minor_hash in that case.  Fix this by
-removing the special case for 'hash == 0'.
-
-This is an old bug that appears to have originated when the encryption
-code in ext4 and f2fs was moved into fs/crypto/.  The original ext4 and
-f2fs code passed the hash by pointer instead of by value.  So
-'if (hash)' actually made sense then, as it was checking whether a
-pointer was NULL.  But now the hashes are passed by value, and
-filesystems just pass 0 for any hashes they don't have.  There is no
-need to handle this any differently from the hashes actually being 0.
-
-It is difficult to reproduce this bug, as it only made a difference in
-the case where a filename's 32-bit major hash happened to be 0.
-However, it probably had the largest chance of causing problems on
-ubifs, since ubifs uses minor_hash to do lookups of no-key names, in
-addition to using it as a readdir cookie.  ext4 only uses minor_hash as
-a readdir cookie, and f2fs doesn't use minor_hash at all.
-
-Fixes: 0b81d0779072 ("fs crypto: move per-file encryption from f2fs tree to fs/crypto")
-Cc: <stable@vger.kernel.org> # v4.6+
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/crypto/fname.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ fs/ext4/ext4.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
-index 6ca7d16593ff..d00455440d08 100644
---- a/fs/crypto/fname.c
-+++ b/fs/crypto/fname.c
-@@ -344,13 +344,9 @@ int fscrypt_fname_disk_to_usr(const struct inode *inode,
- 		     offsetof(struct fscrypt_nokey_name, sha256));
- 	BUILD_BUG_ON(BASE64_CHARS(FSCRYPT_NOKEY_NAME_MAX) > NAME_MAX);
- 
--	if (hash) {
--		nokey_name.dirhash[0] = hash;
--		nokey_name.dirhash[1] = minor_hash;
--	} else {
--		nokey_name.dirhash[0] = 0;
--		nokey_name.dirhash[1] = 0;
--	}
-+	nokey_name.dirhash[0] = hash;
-+	nokey_name.dirhash[1] = minor_hash;
-+
- 	if (iname->len <= sizeof(nokey_name.bytes)) {
- 		memcpy(nokey_name.bytes, iname->name, iname->len);
- 		size = offsetof(struct fscrypt_nokey_name, bytes[iname->len]);
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 37002663d521..54ba34b30044 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -1477,7 +1477,7 @@ struct ext4_sb_info {
+ 	unsigned int s_inode_goal;
+ 	u32 s_hash_seed[4];
+ 	int s_def_hash_version;
+-	int s_hash_unsigned;	/* 3 if hash should be signed, 0 if not */
++	int s_hash_unsigned;	/* 3 if hash should be unsigned, 0 if not */
+ 	struct percpu_counter s_freeclusters_counter;
+ 	struct percpu_counter s_freeinodes_counter;
+ 	struct percpu_counter s_dirs_counter;
 
 base-commit: c4681547bcce777daf576925a966ffa824edd09d
 -- 
