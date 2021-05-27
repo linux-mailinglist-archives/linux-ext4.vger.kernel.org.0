@@ -2,154 +2,173 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CC7A393632
-	for <lists+linux-ext4@lfdr.de>; Thu, 27 May 2021 21:24:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 028B23936A0
+	for <lists+linux-ext4@lfdr.de>; Thu, 27 May 2021 21:48:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232943AbhE0TZ5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 27 May 2021 15:25:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59212 "EHLO
+        id S235288AbhE0Ttk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 27 May 2021 15:49:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229764AbhE0TZ4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 27 May 2021 15:25:56 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E681FC061574
-        for <linux-ext4@vger.kernel.org>; Thu, 27 May 2021 12:24:22 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id 82so1801714qki.8
-        for <linux-ext4@vger.kernel.org>; Thu, 27 May 2021 12:24:22 -0700 (PDT)
+        with ESMTP id S235283AbhE0Ttg (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 27 May 2021 15:49:36 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 068D8C061760
+        for <linux-ext4@vger.kernel.org>; Thu, 27 May 2021 12:48:02 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d16so1376456pfn.12
+        for <linux-ext4@vger.kernel.org>; Thu, 27 May 2021 12:48:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=fXirvRF06P7Wgl0SBQNh+LUwZLlKfYncDMKoCadyeek=;
-        b=Jo+5pafVTWUI0ZBhb1hRuAtLwwpe0n3CsQWfT1VD7beRlvtVlVuLfqt07IiozMXhJs
-         m3avrEY9HpadlRS+LaVRb2eMSGabfDJhSgF3bOaMN/z8MAz6XUUhJG7F9nuSvc6PxM4x
-         Xe9xsdBwXzMejkzwZGo3Mc7F3krH+l/Mt1ivkMMEClthCTsntWCRJbE8lOIfXAZ8mQvf
-         mIFtqOmrJI8musFV6Ljm98p3TavxEckzMlI9QXfVdcht+k9tN8LSBsZt2rS30zE21/Vk
-         2GmebaUCa62q/LtozFvnr8/tYyWdcV+FGxfCgoq9GxCRiz6Lon9U5bGQtvNqzRLBPJIq
-         2Uew==
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=kuxMhIAnnWS+xhIDY8/Wo8MykHEq6iJW3UMaeh7ZK7U=;
+        b=nSRIvoY7lG1cQdvGcqoRcKIsPLZ/lmsyHJptUDK+fVpQONEWA6u6nWQqX09OblW5DT
+         zY0CKq3FRFRJuH9s12hJ7/iL3T6JONnuQWR7+SgHwrkN/NhYUG/i28/XqKK13pgpoFqC
+         XbEDe+/EUaC41FeTkKz/qwFQDsdiYSIRqHk1aLaIU61AWWV72+yyqgdqmfNwKKTuQb+M
+         BVTCBylEx3lyJFblDSPgmW+SaDX/HYnyFjToF7ABCqnip4kGystVP2wYED17n3j4QE1t
+         kIZMgvgr+kp6M2iSOZi4/5yDL533TWHQKOzjXwQUTbgor+IwNkcEGOMHUp0Pk1AHvTro
+         1MYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=fXirvRF06P7Wgl0SBQNh+LUwZLlKfYncDMKoCadyeek=;
-        b=ZOZe/USbGzCUMSBuACj6uAVWyr8flYhOy5UKRCPor2MKNsOVJdb1ZiKaE0f13X5pyA
-         8qldtN/K2eihPzMeHhwMZlig+NFkLLSkFSDGma7cMYrKu95/N+UAUOjC3ow8Sg/tVzFL
-         QidMRaFy/5hNVpLk/wVyzngSJ07QKsMHRGh0ZSZM6IhUoMcQcDfKx7H6G3UOrLwy3HOe
-         eXO/zsWeQM9rVDoeq/rg9smwS9aR2GC7GEwacrekxxC796GLcdJvuRK4TbqfVVHFPm6L
-         GHe57E8J8CG5WsOAqChgVtbSoPGpPBJl7j+v8iemyy9SUzKWmxmAmkvY04jX5BuvW5Oh
-         o4EA==
-X-Gm-Message-State: AOAM532vR2cWdqXeJJ2uXxrN68KGuiT07faCVI2QcpEBBx91c168q/an
-        qh5jdL73G2GjfZk9CKYRdJ5gbVdZ0Yo=
-X-Google-Smtp-Source: ABdhPJwLYnPfqu31SN3fSiS2bSEl7D9Wc6VB1LOXUm5Yt6BoBHKTRHnmvFTXFWO7dmcIRBHeDpo8eQ==
-X-Received: by 2002:a05:620a:2296:: with SMTP id o22mr56580qkh.408.1622143460870;
-        Thu, 27 May 2021 12:24:20 -0700 (PDT)
-Received: from localhost.localdomain (c-73-60-226-25.hsd1.nh.comcast.net. [73.60.226.25])
-        by smtp.gmail.com with ESMTPSA id c20sm1966574qtm.52.2021.05.27.12.24.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 12:24:20 -0700 (PDT)
-Date:   Thu, 27 May 2021 15:24:18 -0400
-From:   Eric Whitney <enwlinux@gmail.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu
-Subject: generic/475 failure/BUG on 5.13-rc3 running adv test case
-Message-ID: <20210527192418.GA2633@localhost.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=kuxMhIAnnWS+xhIDY8/Wo8MykHEq6iJW3UMaeh7ZK7U=;
+        b=OgMUVvMXhbvIjkNHupCHy2PMYB8Q1LwUXBTpnMkufSVUW9BhOkpH+2CPKX7CNIruyp
+         gcMEX3khJM4LFnqOu20nw6Ueb3CKl2NW3giQoTRTFvxHZ/Mxcn8iDFZkALBSq6orLB6V
+         hDO6k2z4je5AkZk8JF2F++Z0u1AvMnaP2nfa8xMmY5Tyti6KKOCgf9dUhNbTQxro9Ts5
+         azq1DVYeQCpmdXUsdMkWBu1NMbw+VtczG9Yy2n9zjddf84f0G2GVqVdqsleFveKcmZOC
+         TjqBfVgcfDI4kWUXQJmBOl9XhWDWLmZiwD/kpTUIgiwhEK+B+TqiGFAwjJ28Lr7C88Ih
+         oq7w==
+X-Gm-Message-State: AOAM531v+mmFc5MMtRg6hpDFNMqGziPGmmunD+QlUTd1+XP9XL8WefT+
+        6TNIgK1Spt+6smPI3EmTID98yQ==
+X-Google-Smtp-Source: ABdhPJyvW92LZaYFBCZWvHpS+AW5yXFjTx7TFZi+bvoPYNvlSz1hECSMZqyFBqzZx6cb/i4gRaoP1g==
+X-Received: by 2002:aa7:800a:0:b029:250:c8c5:64b3 with SMTP id j10-20020aa7800a0000b0290250c8c564b3mr62298pfi.23.1622144881429;
+        Thu, 27 May 2021 12:48:01 -0700 (PDT)
+Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id i13sm2545570pgg.30.2021.05.27.12.47.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 27 May 2021 12:48:00 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <C666AA9C-9CC9-4E3E-B161-C82C7B739E7F@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_396E1356-CA76-4644-BCA7-C3802BBC147A";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH V2 1/7] ext4: remove the 'group' parameter of
+ ext4_trim_extent
+Date:   Thu, 27 May 2021 13:47:56 -0600
+In-Reply-To: <61eceb4c-6e5f-34d0-9317-a833d7c63b6f@gmail.com>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        lishujin@kuaishou.com
+To:     Wang Jianchao <jianchao.wan9@gmail.com>
+References: <164ffa3b-c4d5-6967-feba-b972995a6dfb@gmail.com>
+ <61eceb4c-6e5f-34d0-9317-a833d7c63b6f@gmail.com>
+X-Mailer: Apple Mail (2.3273)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-As mentioned in today's concall I've seen generic/475 fail when a BUG was
-triggered in ext4_write_inline_data() while running the adv test case on
-a 5.13-rc3 kernel using kvm-xfstests.  This is not a regression in 5.13.
-I had a similar failure in 5.11-rc2, but did not recognize it as a panic
-at the time.
 
-More commonly, generic/475 can also fail with a report of an inconsistent file
-system and without a panic when run in the adv test case.  The failure
-frequency in that case is around 10%, while the frequency for the panic is
-5% or less.
-
-I've included the tail end of the log output for a test failure including
-the panic below.
-
-Eric
+--Apple-Mail=_396E1356-CA76-4644-BCA7-C3802BBC147A
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
 
-[ 1278.314136] EXT4-fs (dm-0): I/O error while writing superblock
-[ 1278.317088] Buffer I/O error on device dm-0, logical block 1282347
-[ 1278.317103] Buffer I/O error on device dm-0, logical block 1282348
-[ 1278.317112] Buffer I/O error on device dm-0, logical block 1282349
-[ 1278.347706] EXT4-fs error (device dm-0): ext4_journal_check_start:83: comm kworker/u4:3: Detected aborted journal
-[ 1278.360776] EXT4-fs error (device dm-0): ext4_journal_check_start:83: comm fsstress: Detected aborted journal
-[ 1278.370282] EXT4-fs error (device dm-0) in ext4_cross_rename:4241: Journal has aborted
-[ 1278.378709] EXT4-fs error (device dm-0): ext4_journal_check_start:83: comm fsstress: Detected aborted journal
-[ 1278.396981] EXT4-fs (dm-0): I/O error while writing superblock
-[ 1278.397037] EXT4-fs (dm-0): previous I/O error to superblock detected
-[ 1278.400830] EXT4-fs (dm-0): I/O error while writing superblock
-[ 1278.408834] EXT4-fs (dm-0): Remounting filesystem read-only
-[ 1278.413307] EXT4-fs (dm-0): I/O error while writing superblock
-[ 1278.413631] EXT4-fs (dm-0): I/O error while writing superblock
-[ 1278.418293] EXT4-fs error (device dm-0): ext4_check_bdev_write_error:216: comm fsstress: Error while async write back metadata
-[ 1278.422415] EXT4-fs (dm-0): ext4_writepages: jbd2_start: 2048 pages, ino 6750; err -30
-[ 1278.432080] ------------[ cut here ]------------
-[ 1278.441356] kernel BUG at fs/ext4/inline.c:221!
-[ 1278.444944] invalid opcode: 0000 [#1] SMP
-[ 1278.448312] CPU: 1 PID: 29573 Comm: fsstress Not tainted 5.13.0-rc3 #1
-[ 1278.453230] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
-[ 1278.458065] RIP: 0010:ext4_write_inline_data+0xe4/0xf0
-[ 1278.462708] Code: 02 48 44 89 e2 48 01 df 5b 5d 4c 01 ef 41 5c 41 5d 41 5e 41 5f e9 fc 71 62 00 41 be 3c 00 00 00 45 8d 64 18 c4 41 29 de eb 93 <0f> 0b 0f 0b c3 0f 1f 80 00 00 00 00 0f 0b 66 66 2e 0f 1f 84 00 00
-[ 1278.487953] RSP: 0018:ffffc90006097c80 EFLAGS: 00010246
-[ 1278.492630] RAX: 0000000000000000 RBX: 0000000000000080 RCX: 0000000000000000
-[ 1278.498757] RDX: ffff88800477a980 RSI: ffffc90006097d30 RDI: ffff8880053673b8
-[ 1278.502877] RBP: ffff8880053673b8 R08: 0000000000000080 R09: 0000000000000001
-[ 1278.507664] R10: 0000000000000001 R11: 0000000000009923 R12: 0000000000000080
-[ 1278.512372] R13: 0000000000000080 R14: ffff8880053673b8 R15: 00000000ffffffe2
-[ 1278.516188] FS:  00007f67de588740(0000) GS:ffff88807dd00000(0000) knlGS:0000000000000000
-[ 1278.521909] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 1278.531919] CR2: 00007fc369d9d000 CR3: 0000000009452006 CR4: 0000000000370ee0
-[ 1278.542735] Call Trace:
-[ 1278.545379]  ext4_convert_inline_data_nolock+0x14d/0x470
-[ 1278.549916]  ext4_try_add_inline_entry+0x18a/0x280
-[ 1278.553248]  ext4_add_entry+0xd6/0x4c0
-[ 1278.555691]  ext4_add_nondir+0x2b/0xc0
-[ 1278.558644]  ext4_symlink+0x363/0x3d0
-[ 1278.561931]  vfs_symlink+0x113/0x1b0
-[ 1278.564528]  do_symlinkat+0xe9/0x100
-[ 1278.566882]  do_syscall_64+0x3c/0x80
-[ 1278.569255]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[ 1278.572835] RIP: 0033:0x7f67de676f07
-[ 1278.575582] Code: f0 ff ff 73 01 c3 48 8b 0d 86 ef 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 b8 58 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 59 ef 0c 00 f7 d8 64 89 01 48
-[ 1278.587693] RSP: 002b:00007ffe259c92a8 EFLAGS: 00000206 ORIG_RAX: 0000000000000058
-[ 1278.593152] RAX: ffffffffffffffda RBX: 0000000000000bbc RCX: 00007f67de676f07
-[ 1278.597826] RDX: 0000000000000064 RSI: 0000558fe5501530 RDI: 0000558fe5581380
-[ 1278.601987] RBP: 0000558fe5581380 R08: 0000000000000000 R09: 0000558fe5581f40
-[ 1278.606045] R10: 0000558fe5500010 R11: 0000000000000206 R12: 0000558fe5501530
-[ 1278.610155] R13: 00007ffe259c9410 R14: 0000558fe5581380 R15: 0000558fe4102430
-[ 1278.614037] Modules linked in:
-[ 1278.615599] ---[ end trace 800a8a9ba6a92f53 ]---
-[ 1278.618318] RIP: 0010:ext4_write_inline_data+0xe4/0xf0
-[ 1278.622018] Code: 02 48 44 89 e2 48 01 df 5b 5d 4c 01 ef 41 5c 41 5d 41 5e 41 5f e9 fc 71 62 00 41 be 3c 00 00 00 45 8d 64 18 c4 41 29 de eb 93 <0f> 0b 0f 0b c3 0f 1f 80 00 00 00 00 0f 0b 66 66 2e 0f 1f 84 00 00
-[ 1278.635759] RSP: 0018:ffffc90006097c80 EFLAGS: 00010246
-[ 1278.640398] RAX: 0000000000000000 RBX: 0000000000000080 RCX: 0000000000000000
-[ 1278.652894] RDX: ffff88800477a980 RSI: ffffc90006097d30 RDI: ffff8880053673b8
-[ 1278.663327] RBP: ffff8880053673b8 R08: 0000000000000080 R09: 0000000000000001
-[ 1278.670265] R10: 0000000000000001 R11: 0000000000009923 R12: 0000000000000080
-[ 1278.676285] R13: 0000000000000080 R14: ffff8880053673b8 R15: 00000000ffffffe2
-[ 1278.681777] FS:  00007f67de588740(0000) GS:ffff88807dd00000(0000) knlGS:0000000000000000
-[ 1278.687522] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 1278.690965] CR2: 00007fc369d9d000 CR3: 0000000009452006 CR4: 0000000000370ee0
-[ 1278.695776] EXT4-fs (dm-0): I/O error while writing superblock
-[failed, exit status 1] [16:55:27]- output mismatch (see /results/ext4/results-adv/generic/475.out.bad)
-    --- tests/generic/475.out	2021-04-13 03:49:18.000000000 +0000
-    +++ /results/ext4/results-adv/generic/475.out.bad	2021-05-27 16:55:27.152702989 +0000
-    @@ -1,2 +1,6 @@
-     QA output created by 475
-     Silence is golden.
-    +umount: /vdc: target is busy.
-    +unmount failed
-    +(see /results/ext4/results-adv/generic/475.full for details)
-    +umount: /vdc: target is busy.
+> On May 26, 2021, at 2:42 AM, Wang Jianchao <jianchao.wan9@gmail.com> =
+wrote:
+>=20
+> Get rid of the 'group' parameter of ext4_trim_extent as we can get
+> it from the 'e4b'.
+>=20
+> Signed-off-by: Wang Jianchao <wangjianchao@kuaishou.com>
 
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+
+> ---
+> fs/ext4/mballoc.c | 9 ++++-----
+> 1 file changed, 4 insertions(+), 5 deletions(-)
+>=20
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index a02fadf..d81f1fd22 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -5650,19 +5650,19 @@ int ext4_group_add_blocks(handle_t *handle, =
+struct super_block *sb,
+>  * @sb:		super block for the file system
+>  * @start:	starting block of the free extent in the alloc. group
+>  * @count:	number of blocks to TRIM
+> - * @group:	alloc. group we are working with
+>  * @e4b:	ext4 buddy for the group
+>  *
+>  * Trim "count" blocks starting at "start" in the "group". To assure =
+that no
+>  * one will allocate those blocks, mark it as used in buddy bitmap. =
+This must
+>  * be called with under the group lock.
+>  */
+> -static int ext4_trim_extent(struct super_block *sb, int start, int =
+count,
+> -			     ext4_group_t group, struct ext4_buddy *e4b)
+> +static int ext4_trim_extent(struct super_block *sb,
+> +		int start, int count, struct ext4_buddy *e4b)
+> __releases(bitlock)
+> __acquires(bitlock)
+> {
+> 	struct ext4_free_extent ex;
+> +	ext4_group_t group =3D e4b->bd_group;
+> 	int ret =3D 0;
+>=20
+> 	trace_ext4_trim_extent(sb, group, start, count);
+> @@ -5738,8 +5738,7 @@ static int ext4_trim_extent(struct super_block =
+*sb, int start, int count,
+> 		next =3D mb_find_next_bit(bitmap, max + 1, start);
+>=20
+> 		if ((next - start) >=3D minblocks) {
+> -			ret =3D ext4_trim_extent(sb, start,
+> -					       next - start, group, =
+&e4b);
+> +			ret =3D ext4_trim_extent(sb, start, next - =
+start, &e4b);
+> 			if (ret && ret !=3D -EOPNOTSUPP)
+> 				break;
+> 			ret =3D 0;
+> --
+> 1.8.3.1
+
+
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_396E1356-CA76-4644-BCA7-C3802BBC147A
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmCv92wACgkQcqXauRfM
+H+CzwxAAj0DnT91f2yhsPGX4qrxRdauP6pmSe5jSLeOurnHi0fYxMiJ431hQSuyL
+KLWaD5x1b2YNUbciBLlsk4qUqX0GMCs9ossJ12I68YWfGr161ZI3xuk6lHipf0nU
+jM0p6SKCh8/aS4BhUa611bW68vP+DIg6Qpl0GnUQvn9QWbb6RM6sQaKe4WARISXU
+MRrsm62FDrSwiboAHNBgkKuELrAIdES1/h9D+SHn7ko4itXaAW3B3uYc2VP/N9ya
+psrFaKhm4BI/wRLc3cbPhaIuoxDU4glep/TZYLemVTjwmQ25wUATfqLNxi5SgSq8
+xzvtsOrlX+tYmyqjmRkCamhhdJs0N2h2Pkrngoy1wGHbEaqFy5d3YtZzrKMyof+H
+jDgMJWiM87fNCYQZ/6vXhrFNUkyatvvGg1d9wcJtY2VcBiJO0mGQf6tWjOhf0597
+bkrzGgqbg+MHbW1PwBbhOY0jFAAUuiLrLrejVlMJhTvo3T5rzEV9jNoRU2s9n6hL
+kutxNZtPlYPXHapOk5OeN92TtCbyJecJ2Ul9JF7+9WmZjvABYWZnTzWG9g6aBOoW
+1ZF+Qfk8Of4bK8oHmRjW9mPQre/Z7uGHzM0MBBLnUUqIn9FugEiJQOIfqr7np1De
+qEwrKamQ5LpY+PAZfR/WXtqJH0SN2dbp3trkMt++jaCTKsZ54KM=
+=ij5x
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_396E1356-CA76-4644-BCA7-C3802BBC147A--
