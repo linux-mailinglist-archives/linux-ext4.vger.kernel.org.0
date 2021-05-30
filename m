@@ -2,53 +2,91 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADDF539538E
-	for <lists+linux-ext4@lfdr.de>; Mon, 31 May 2021 03:04:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8560C395145
+	for <lists+linux-ext4@lfdr.de>; Sun, 30 May 2021 16:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229952AbhEaBF7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Sun, 30 May 2021 21:05:59 -0400
-Received: from 177-131-1-103.netfacil.center ([177.131.1.103]:52446 "EHLO
-        mail.netfacil.net.br" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
-        with ESMTP id S229887AbhEaBF5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 30 May 2021 21:05:57 -0400
-X-Greylist: delayed 46151 seconds by postgrey-1.27 at vger.kernel.org; Sun, 30 May 2021 21:05:57 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by mail.netfacil.net.br (Postfix) with ESMTP id 3B9ADA7C822;
-        Sun, 30 May 2021 01:38:56 -0300 (-03)
-Received: from mail.netfacil.net.br ([127.0.0.1])
-        by localhost (mail.netfacil.net.br [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id qxH2PFRfaxpt; Sun, 30 May 2021 01:38:55 -0300 (-03)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.netfacil.net.br (Postfix) with ESMTP id 9EFB3A76699;
-        Sat, 29 May 2021 11:14:21 -0300 (-03)
-X-Virus-Scanned: amavisd-new at mail.netfacil.net.br
-Received: from mail.netfacil.net.br ([127.0.0.1])
-        by localhost (mail.netfacil.net.br [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id W0FCZDtz7beH; Sat, 29 May 2021 11:14:21 -0300 (-03)
-Received: from [192.168.0.108] (unknown [93.182.109.79])
-        by mail.netfacil.net.br (Postfix) with ESMTPSA id 18F89A7569C;
-        Sat, 29 May 2021 11:01:50 -0300 (-03)
-Content-Type: text/plain; charset="iso-8859-1"
+        id S229671AbhE3OWi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 30 May 2021 10:22:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229500AbhE3OWi (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 30 May 2021 10:22:38 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00269C061574
+        for <linux-ext4@vger.kernel.org>; Sun, 30 May 2021 07:20:59 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id b9so12512680ejc.13
+        for <linux-ext4@vger.kernel.org>; Sun, 30 May 2021 07:20:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=DdHInFa66V3Wy3Vg9xusxyAkm3LkcQGinNchIVa5evA=;
+        b=D+mxa9JP6OI3l8hOcLZiYolozQZZ0gHFvgVbZkjKKJ16+tnB0UrStROpyHC7Q0bjxn
+         4SfQ+xT/fIEri9CUkGQziBGQtit3b1ZKung8Jjr38Avuex5jLGzAkLVGnurSX8LxqSm/
+         pHwIqvv/oBJn8oPN01sxHxqlaPKWzaE+R5eYRjVhbsScqGwPHH+Ou1meBoW6KZ4wUYmC
+         GffnjY3rcWy8fGZWtO1jc8R0fIqYwdH74Q8HlWdX97Na+zM84hxSEwD1cO0eS3eORLs9
+         EUN0eXcw5SC7VfcsP9OJ1ixJWBZpWV6CT/HY4Z9TdGaxvX1+RJCkvjnjp92Ar3DaaN+w
+         hNug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=DdHInFa66V3Wy3Vg9xusxyAkm3LkcQGinNchIVa5evA=;
+        b=AKZlaq9GHWUOAr1ATfSLP9i/pHODg7yDEsHEa3TfSne2yUB1keBRg8u2cK2V0kBtV3
+         GdAqGYN+kWRteCbfX3SewSx/E7+2RqRdQHd674BRBCPOL7PO6mYvUD8PkJhE1rrcaXYW
+         cHh/pwAzxQUUfIoP5M/QZbfeOudU08wmatUNaTi1rjvAN4hdLoyjEk9ueNfFkq8kxeJV
+         9AXfnB4ckOcWwJGxZvzjOgudHcdEHlIXh9rT+ybdt24eG7zTGfE2bmnrXO/Vowy0FtnC
+         NckgRz/nvWRv1XYjQatDp8m4PEyQGvHO5WiQnVxMbnzptSfpOC9Vk6VeJ6gxZg++4Xog
+         mBNw==
+X-Gm-Message-State: AOAM5302NmBiwdRaUGuMuLhRLWALRVtkqe5xkVtXQuRx5WopkDMeYCaq
+        Pkbsh9aJB6znJ+0fHSS5SFrz7WoBhYRLBXNgCv8=
+X-Google-Smtp-Source: ABdhPJx4BQHrZ0Q2JysOg56BnwQ+TfYGra+f0HRqcA57PHeU5mVjh8pQGZX7uTswCNwZ/13NeTrJJYbxRcluyZjKuMY=
+X-Received: by 2002:a17:906:c0c6:: with SMTP id bn6mr17666209ejb.436.1622384458490;
+ Sun, 30 May 2021 07:20:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: re
-To:     Recipients <yane.ntos@netfacil.net.br>
-From:   "DONATION FOR YOU" <yane.ntos@netfacil.net.br>
-Date:   Sat, 29 May 2021 17:01:43 +0300
-Reply-To: francoispinault03@outlook.com
-X-Antivirus: Avast (VPS 210529-0, 05/29/2021), Outbound message
-X-Antivirus-Status: Clean
-Message-Id: <20210529140152.18F89A7569C@mail.netfacil.net.br>
+From:   tianyu zhou <tyjoe.linux@gmail.com>
+Date:   Sun, 30 May 2021 22:20:48 +0800
+Message-ID: <CAM6ytZooJ9jJp4rZn4HRjh7RANrB981xVkyOTYWZPadQBa68nQ@mail.gmail.com>
+Subject: Check for CAP_SYS_ADMIN before thaw/freeze block device
+To:     "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-3,5 Millionen US-Dollar wurden Ihnen von François Pinault aufgrund der Covid-19-Pandemie gespendet
+Hi, from commit "fs: Allow CAP_SYS_ADMIN in s_user_ns to freeze and
+thaw filesystems" (SHA: f3f1a18330ac1b717cd7a32adff38d965f365aa2), I
+learned that "The user in control of a super block should be allowed
+to freeze and thaw it".
 
-WhatsApp: +447452035105
+However, unlike ioctl_fsthaw and ioctl_fsfreeze which use ns_capable
+to check CAP_SYS_ADMIN in super block's user ns, function thaw_bdev
+and freeze_bdev in fs/block_dev.c also do the same thaw/freeze
+operation to super block, with no check for CAP_SYS_ADMIN.
 
--- 
-This email has been checked for viruses by Avast antivirus software.
-https://www.avast.com/antivirus
+I searched these two functions' callers, and found there are check for
+CAP_SYS_ADMIN before the callers call them, however, the check is
+using capable which is inconsistent with the the commit I mentioned
+earlier.
 
+Here is an example:
+-----------------------------
+// fs/ext4/ioctl.c
+static int ext4_shutdown(struct super_block *sb, unsigned long arg)
+{
+    ...
+    if (!capable(CAP_SYS_ADMIN))
+        return -EPERM;
+    ...
+    switch (flags) {
+        case EXT4_GOING_FLAGS_DEFAULT:
+            freeze_bdev(sb->s_bdev);
+-----------------------------
+
+So it is possible to change this kind of CAP_SYS_ADMIN check from
+capable() to ns_capable() to keep consistency with the former commit?
+
+Thanks!
+
+Best regards,
+Tianyu
