@@ -2,370 +2,344 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85FDC397B92
-	for <lists+linux-ext4@lfdr.de>; Tue,  1 Jun 2021 23:09:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8314E397D07
+	for <lists+linux-ext4@lfdr.de>; Wed,  2 Jun 2021 01:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234782AbhFAVLI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 1 Jun 2021 17:11:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60348 "EHLO
+        id S235163AbhFAX3d (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 1 Jun 2021 19:29:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234513AbhFAVLG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 1 Jun 2021 17:11:06 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1764AC061574;
-        Tue,  1 Jun 2021 14:09:24 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id v14so401750pgi.6;
-        Tue, 01 Jun 2021 14:09:24 -0700 (PDT)
+        with ESMTP id S235137AbhFAX3c (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 1 Jun 2021 19:29:32 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04273C061574
+        for <linux-ext4@vger.kernel.org>; Tue,  1 Jun 2021 16:27:50 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id l10-20020a17090a150ab0290162974722f2so630612pja.2
+        for <linux-ext4@vger.kernel.org>; Tue, 01 Jun 2021 16:27:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sAu6B5zF65+NpRGYcpqCVOE8ShyTpY5yADU4NigDlmI=;
-        b=YILquaVOv9tWvKCzsMWiG5b1QkR84yq+vdDn/E302KO1JCZ5x4c9gBrqOsen43Bt8n
-         4ie8xHq4BVgfPnWcXZ2neFxBxaCeec2M4jd8MIkmh7LMaSdEjThowsrd/4jQGZQMPg6K
-         VBVIDOX1mPAVvq6NcKfYHGEI2TMJjIXCCttMByvtuaJwNqz/OQPj/P7915RUupedp4ZK
-         1a7GAj8XEMKnDMnnAMjDmTGcNEJTbV56ezfahc+xKW2oeT2QNmB6xq2E2Pl5FUYEAqvY
-         clmk8LrllD9UblPmXB52fmRReIid7Ew7j4byYkmXAaoJMzdbs8QtCn+7DAnDaQY7SJsE
-         RUIQ==
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=Rtlc7ygUploG8FbVXseqxMbLmq9hsvVjj3liIx3W3bQ=;
+        b=OTI4F1/YNPkHEIadqFije0G74Seob/UY9PptGffruwqdobBIWk1T2C4Aoo7ZEztXHA
+         vz3qnO0PaHQmXJRAUUU1RwmnLdxGeYvLf+7ghdVvDDwAcrtvndhbv15DYPnEdEnp5xu5
+         0NLqBGwnBBmYlWuFbOZGQsNL4XCfA3z2f0gz8tCFJAglLWNDOJoGyczglGERzxV+UOOv
+         7y/j+XHJLsMRA8E127Vb5eEQLNYOhpW0V2Tc1r+Ag0BADLgU57ERtlBRZNfEb2wk7O1X
+         t3zaa+C5d21UeI79BHt6r8HcGDZ6IyV6j47oLfKspJNb6pbbYEmlHtDd6QfO0tQA+hrW
+         qHfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sAu6B5zF65+NpRGYcpqCVOE8ShyTpY5yADU4NigDlmI=;
-        b=EtL0KghldTu/d5qst0k4w1buDjaBvuT9YRCbI38k4lbxwounL5N2nOvYFMzqu39C5D
-         00EyDLTJJN9ZtgWylRgz9oXcs19Snkvs2Pdcg2FRQ+JjBa7HmtLaL9ejxKuuIdwwENXf
-         w+CHP8tpyfDQEZ34dpff7exhAwAYS2c50ct2WIDwQQVNJYTA8aNDII2Bl/scpU0qQYdC
-         vdt2LblcW5JpdptF7Gy16X+TDpCrzbeiEz/bFWIWEHhLjH4mDO5KkUNkSbFXvltn98jx
-         7cUshjyLDBdA4rbTR3M8uXFGp4TpvdxHAW9y+WfNNVaAjrRA546cjtYJHhnkd9bpP1cf
-         jCvg==
-X-Gm-Message-State: AOAM533sKg8U8l26cXc88QkigoxY+G8SlL0YJq06IOZbn8XVoC5hCwS7
-        EkmMlFUqERLqSvRhGhv209ynMtRplvZqgA==
-X-Google-Smtp-Source: ABdhPJyPSFFty/zLiXtqqVvhiXIc4Cs3CGtKxbHk+Ao/zH3548C7XUG14O8+WpEwzX+FTwwwTACiig==
-X-Received: by 2002:a63:f40d:: with SMTP id g13mr30795317pgi.290.1622581763400;
-        Tue, 01 Jun 2021 14:09:23 -0700 (PDT)
-Received: from google.com ([2601:647:4701:18d0:568:55fd:9ef:aebb])
-        by smtp.gmail.com with ESMTPSA id n9sm14114167pfd.4.2021.06.01.14.09.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 14:09:22 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 14:09:20 -0700
-From:   Leah Rumancik <leah.rumancik@gmail.com>
-To:     Eryu Guan <guan@eryu.me>
-Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] ext4/310: test journal checkpoint ioctl
-Message-ID: <YLaiAN+vKrt9ZUsp@google.com>
-References: <20210519144751.466933-1-leah.rumancik@gmail.com>
- <YKpipecQz4vSDDtP@desktop>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKpipecQz4vSDDtP@desktop>
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=Rtlc7ygUploG8FbVXseqxMbLmq9hsvVjj3liIx3W3bQ=;
+        b=JHt2NsqsixHZ0zLakVymNr+ireIuIPDxIm+S7solKBEMjZT5WmrCoNDinw2dhljGwM
+         SJ6oB0a2t4T+JJHnMOxx1yHxwU5hVQHoXJwgI9Al0dL2GBIx5DzYpBdFOFGq78PUkszt
+         gPXs7WgZud7MO17OHrBF1WFGcPw/QSgkDIrAQ8kn4mM1jhIUYDW2vK9XRD6JD6faOUFa
+         RxK81FxbhC5Lut+xXWvPZ+2a7g+mx8AMpvZuzcnY+998JenT60zBBIHkjsXzbJlEXfDM
+         XUvCUt++f3WWCS/qAaVMwNa2OJZgQ+VneNO68qYQEAwzHS2RHfFZpuvi9D7YcD//FHBO
+         BNmQ==
+X-Gm-Message-State: AOAM5338BN+Ru2QpBPVizJy0vAmxmzSsGoozHu7yUgB1AH2uXH/IVSTu
+        gC8G6Pvb04GzyvOaegbhXxbmrA==
+X-Google-Smtp-Source: ABdhPJyp9dukigVciiPWdFTq1Xbb4DOlzzTmeh+tnTGdxdUx+Ah41JxNmTLulof6gDHiVRP851w3Xw==
+X-Received: by 2002:a17:90a:ae15:: with SMTP id t21mr2340121pjq.55.1622590069418;
+        Tue, 01 Jun 2021 16:27:49 -0700 (PDT)
+Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id v2sm13800165pfm.134.2021.06.01.16.27.48
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 01 Jun 2021 16:27:48 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <A963F3A9-2106-4919-AE7C-8700F60A17EF@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_CE141ECF-E551-473C-BBA3-4B33595D1C31";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH] e2fsck: replay all commits except broken ones
+Date:   Tue, 1 Jun 2021 17:27:47 -0600
+In-Reply-To: <20210527085707.91688-1-artem.blagodarenko@gmail.com>
+Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>
+To:     Artem Blagodarenko <artem.blagodarenko@gmail.com>
+References: <20210527085707.91688-1-artem.blagodarenko@gmail.com>
+X-Mailer: Apple Mail (2.3273)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sun, May 23, 2021 at 10:11:49PM +0800, Eryu Guan wrote:
-> On Wed, May 19, 2021 at 02:47:51PM +0000, Leah Rumancik wrote:
-> > Test journal checkpointing and journal erasing via
-> > EXT4_IOC_CHECKPOINT with flag EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT set.
-> 
-> It seems that this ioctl is not upstreamed yet, it'd be better to
-> mention the titles of related patches, so people could know which kernel
-> patches are required to pass this test, and know the backgrounds by
-> reading the kernel thread.
-> 
-> > 
-> > Signed-off-by: Leah Rumancik <leah.rumancik@gmail.com>
-> > ---
-> >  src/Makefile             |   3 +-
-> >  src/checkpoint_journal.c |  95 ++++++++++++++++++++++++++++++++
-> >  tests/ext4/310           | 114 +++++++++++++++++++++++++++++++++++++++
-> >  tests/ext4/310.out       |   2 +
-> >  tests/ext4/group         |   1 +
-> >  5 files changed, 214 insertions(+), 1 deletion(-)
-> >  create mode 100644 src/checkpoint_journal.c
-> >  create mode 100644 tests/ext4/310
-> 
-> New test file is in 0755 mode.
-> 
-> >  create mode 100644 tests/ext4/310.out
-> > 
-> > diff --git a/src/Makefile b/src/Makefile
-> > index cc0b9579..e0e7006b 100644
-> > --- a/src/Makefile
-> > +++ b/src/Makefile
-> > @@ -17,7 +17,8 @@ TARGETS = dirstress fill fill2 getpagesize holes lstat64 \
-> >  	t_mmap_cow_race t_mmap_fallocate fsync-err t_mmap_write_ro \
-> >  	t_ext4_dax_journal_corruption t_ext4_dax_inline_corruption \
-> >  	t_ofd_locks t_mmap_collision mmap-write-concurrent \
-> > -	t_get_file_time t_create_short_dirs t_create_long_dirs t_enospc
-> > +	t_get_file_time t_create_short_dirs t_create_long_dirs t_enospc \
-> > +	checkpoint_journal
-> 
-> Missing an entry in .gitignore
-> 
-> >  
-> >  LINUX_TARGETS = xfsctl bstat t_mtab getdevicesize preallo_rw_pattern_reader \
-> >  	preallo_rw_pattern_writer ftrunc trunc fs_perms testx looptest \
-> > diff --git a/src/checkpoint_journal.c b/src/checkpoint_journal.c
-> > new file mode 100644
-> > index 00000000..0347e0c0
-> > --- /dev/null
-> > +++ b/src/checkpoint_journal.c
-> > @@ -0,0 +1,95 @@
-> > +#include <sys/ioctl.h>
-> > +#include <fcntl.h>
-> > +#include <stdlib.h>
-> > +#include <stdio.h>
-> > +#include <unistd.h>
-> > +#include <errno.h>
-> > +#include <string.h>
-> > +#include <linux/fs.h>
-> > +#include <getopt.h>
-> > +
-> > +/*
-> > + * checkpoint_journal.c
-> > + *
-> > + * Flush journal log and checkpoint journal for ext4 file system and
-> > + * optionally, issue discard or zeroout for the journal log blocks.
-> > + *
-> > + * Arguments:
-> > + * 1) mount point for device
-> > + * 2) flags (optional)
-> > + *	set --erase=discard to enable discarding journal blocks
-> > + *	set --erase=zeroout to enable zero-filling journal blocks
-> > + *	set --dry-run flag to only perform input checking
-> > + */
-> > +
-> > +#if defined(__linux__) && !defined(EXT4_IOC_CHECKPOINT)
-> > +#define EXT4_IOC_CHECKPOINT	_IOW('f', 43, __u32)
-> > +#endif
-> > +
-> > +
-> > +#if defined(__linux__) && !defined(EXT4_IOC_CHECKPOINT_FLAG_DISCARD)
-> > +#define EXT4_IOC_CHECKPOINT_FLAG_DISCARD		1
-> > +#define EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT		2
-> > +#define EXT4_IOC_CHECKPOINT_FLAG_DRY_RUN		4
-> > +#endif
-> > +
-> > +
-> > +int main(int argc, char** argv) {
-> > +	int fd, c, ret = 0, option_index = 0;
-> > +	char* rpath;
-> > +	unsigned int flags = 0;
-> > +
-> > +	static struct option long_options[] =
-> > +	{
-> > +		{"dry-run", no_argument, 0, 'd'},
-> > +		{"erase", required_argument, 0, 'e'},
-> > +		{0, 0, 0, 0}
-> > +	};
-> > +
-> > +	/* get optional flags */
-> > +	while ((c = getopt_long(argc, argv, "de:", long_options,
-> > +				&option_index)) != -1) {
-> > +		switch (c) {
-> > +		case 'd':
-> > +			flags |= EXT4_IOC_CHECKPOINT_FLAG_DRY_RUN;
-> > +			break;
-> > +		case 'e':
-> > +			if (strcmp(optarg, "discard") == 0) {
-> > +				flags |= EXT4_IOC_CHECKPOINT_FLAG_DISCARD;
-> > +			} else if (strcmp(optarg, "zeroout") == 0) {
-> > +				flags |= EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT;
-> > +			} else {
-> > +				fprintf(stderr, "Error: invalid erase option\n");
-> > +				return 1;
-> > +			}
-> > +			break;
-> > +		default:
-> > +			return 1;
-> > +		}
-> > +	}
-> > +
-> > +	if (optind != argc - 1) {
-> > +		fprintf(stderr, "Error: invalid number of arguments\n");
-> > +		return 1;
-> > +	}
-> > +
-> > +	/* get fd to file system */
-> > +	rpath = realpath(argv[optind], NULL);
-> > +	fd = open(rpath, O_RDONLY);
-> > +	free(rpath);
-> > +
-> > +	if (fd == -1) {
-> > +		fprintf(stderr, "Error: unable to open device %s: %s\n",
-> > +			argv[optind], strerror(errno));
-> > +		return 1;
-> > +	}
-> > +
-> > +	ret = ioctl(fd, EXT4_IOC_CHECKPOINT, &flags);
-> > +
-> > +	if (ret)
-> > +		fprintf(stderr, "checkpoint ioctl returned error: %s\n", strerror(errno));
-> > +
-> > +	close(fd);
-> > +	return ret;
-> > +}
-> > +
-> > diff --git a/tests/ext4/310 b/tests/ext4/310
-> > new file mode 100644
-> > index 00000000..3693cb29
-> > --- /dev/null
-> > +++ b/tests/ext4/310
-> > @@ -0,0 +1,114 @@
-> > +#!/bin/bash
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +# Copyright (c) 2021 Google, Inc. All Rights Reserved.
-> > +#
-> > +# FS QA Test No. 310
-> > +#
-> > +# Test checkpoint and zeroout of journal via ioctl EXT4_IOC_CHECKPOINT
-> > +#
-> > +
-> > +seq=`basename $0`
-> > +seqres=$RESULT_DIR/$seq
-> > +echo "QA output created by $seq"
-> > +
-> > +status=1       # failure is the default!
-> > +
-> > +# get standard environment, filters and checks
-> > +. ./common/rc
-> > +. ./common/filter
-> > +
-> > +# remove previous $seqres.full before test
-> > +rm -f $seqres.full
-> > +
-> > +# real QA test starts here
-> > +_supported_fs ext4
-> > +
-> > +_require_scratch
-> > +_require_command "$DEBUGFS_PROG" debugfs
-> > +
-> > +checkpoint_journal=$here/src/checkpoint_journal
-> > +_require_test_program "checkpoint_journal"
-> > +
-> > +# convert output from stat<journal_inode> to list of block numbers
-> > +get_journal_extents() {
-> > +	inode_info=$($DEBUGFS_PROG $SCRATCH_DEV -R "stat <8>" 2>> $seqres.full)
-> > +	echo -e "\nJournal info:" >> $seqres.full
-> > +	echo "$inode_info" >> $seqres.full
-> > +
-> > +	extents_line=$(echo "$inode_info" | awk '/EXTENTS:/{ print NR; exit }')
-> > +	get_extents=$(echo "$inode_info" | sed -n "$(($extents_line + 1))"p)
-> > +
-> > +	# get just the physical block numbers
-> > +	get_extents=$(echo "$get_extents" |  perl -pe 's|\(.*?\):||g' | sed -e 's/, /\n/g' | perl -pe 's|(\d+)-(\d+)|\1 \2|g')
-> > +
-> > +	echo "$get_extents"
-> > +}
-> > +
-> > +
-> > +# checks all extents are zero'd out except for the superblock
-> > +# arg 1: extents (output of get_journal_extents())
-> > +check_extents() {
-> > +	echo -e "\nChecking extents:" >> $seqres.full
-> > +	echo "$1" >> $seqres.full
-> > +
-> > +	super_block="true"
-> > +	echo "$1" | while IFS= read line; do
-> > +		start_block=$(echo $line | cut -f1 -d' ')
-> > +		end_block=$(echo $line | cut -f2 -d' ' -s)
-> > +
-> > +		# if first block of journal, shouldn't be wiped
-> > +		if [ "$super_block" == "true" ]; then
-> > +			super_block="false"
-> > +
-> > +			#if super block only block in this extent, skip extent
-> > +			if [ -z "$end_block" ]; then
-> > +				continue;
-> > +			fi
-> > +			start_block=$(($start_block + 1))
-> > +		fi
-> > +
-> > +		if [ ! -z "$end_block" ]; then
-> > +			blocks=$(($end_block - $start_block + 1))
-> > +		else
-> > +			blocks=1
-> > +		fi
-> > +
-> > +		check=$(od $SCRATCH_DEV --skip-bytes=$(($start_block * $blocksize)) --read-bytes=$(($blocks * $blocksize)) -An -v | sed -e 's/[0 \t\n\r]//g')
-> > +
-> > +		[ ! -z "$check" ] && echo "error" && break
-> > +	done
-> > +}
-> > +
-> > +testdir="${SCRATCH_MNT}/testdir"
-> > +
-> > +_scratch_mkfs_sized $((64 * 1024 * 1024)) >> $seqres.full 2>&1
-> 
-> This test requires ext4 is created with a journal, so we need
-> 
-> _require_metadata_journaling $SCRATCH_DEV
-> 
-> here after creating filesystem on $SCRATCH_DEV
-> 
-> > +_scratch_mount >> $seqres.full 2>&1
-> > +blocksize=$(_get_block_size $SCRATCH_MNT)
-> > +mkdir $testdir
-> > +
-> > +# check if ioctl present, skip test if not present
-> > +$checkpoint_journal $SCRATCH_MNT --dry-run || _notrun "journal checkpoint ioctl not present on device"
-> > +
-> > +# create some files to add some entries to journal
-> > +for i in {1..100}; do
-> > +	touch $testdir/$i
-> 
-> 	echo > $testdir/$i
-> 
-> might be faster.
-> 
-> > +done
-> > +
-> > +# make sure these files get to the journal
-> > +sync --file-system $testdir/1
-> > +
-> > +# call ioctl to checkpoint and zero-fill journal blocks
-> > +$checkpoint_journal $SCRATCH_MNT --erase=zeroout || _fail "ioctl returned error"
-> > +
-> > +extents=$(get_journal_extents)
-> > +
-> > +# check journal blocks zeroed out
-> > +ret=$(check_extents "$extents")
-> > +[ "$ret" = "error" ] && _fail "Journal was not zero-filled"
-> > +
-> > +_scratch_unmount >> $seqres.full 2>&1
-> > +
-> > +echo "Done."
-> 
-> fstests use "Silence is golden" :)
-> 
-> Thanks,
-> Eryu
 
-Thanks for the suggestions. I'll send out an updated version with all
-the changes.
--Leah
+--Apple-Mail=_CE141ECF-E551-473C-BBA3-4B33595D1C31
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-> 
-> > +
-> > +status=0
-> > +exit
-> > diff --git a/tests/ext4/310.out b/tests/ext4/310.out
-> > new file mode 100644
-> > index 00000000..e52f7345
-> > --- /dev/null
-> > +++ b/tests/ext4/310.out
-> > @@ -0,0 +1,2 @@
-> > +QA output created by 310
-> > +Done.
-> > diff --git a/tests/ext4/group b/tests/ext4/group
-> > index e7ad3c24..622590a9 100644
-> > --- a/tests/ext4/group
-> > +++ b/tests/ext4/group
-> > @@ -60,3 +60,4 @@
-> >  307 auto ioctl rw defrag
-> >  308 auto ioctl rw prealloc quick defrag
-> >  309 auto quick dir
-> > +310 auto ioctl quick
-> > -- 
-> > 2.31.1.751.gd2f1c929bd-goog
+On May 27, 2021, at 2:57 AM, Artem Blagodarenko =
+<artem.blagodarenko@gmail.com> wrote:
+>=20
+> E2fsck interrupts journal replay if a broken transaction is found.
+> Journal is replayed partly. Some useful transactions are not replayed.
+>=20
+> Let's change this behavior and process all transactions except broken =
+ones
+> if "-E repair_journal" option is set.
+
+In the past we discussed using the per-block checksums in the journal
+(which I think are now widely available, maybe only with metacsum?)
+to detect which blocks in the journal are corrupted, and only skip
+replay of those blocks.  If the same block is overwritten in a later
+journal replay phase (e.g. common case for bitmaps, group descriptors,
+busy inodes, etc), then no extra action is needed by e2fsck (in theory,
+though we may still want to run an e2fsck to find *other* corruption).
+
+The kernel could probably do the same, to avoid aborting a mount due to
+small journal corruption.  If the corrupted blocks are bitmaps, then the
+filesystem could maybe still continue to mount, with those groups marked
+EXT4_GROUP_INFO_BBITMAP_CORRUPT or EXT4_GROUP_INFO_IBITMAP_CORRUPT so
+they are skipped during allocation, and only mark the filesystem in =
+error.
+If there are other blocks corrupted, the mount should probably still =
+fail.
+
+Cheers, Andreas
+
+>=20
+> HPE-bug-id: LUS-9452
+> ---
+> e2fsck/e2fsck.h         |  1 +
+> e2fsck/journal.c        |  3 +++
+> e2fsck/recovery.c       | 41 +++++++++++++++++++++++++++++++----------
+> e2fsck/unix.c           |  3 +++
+> lib/e2p/feature.c       |  2 ++
+> lib/ext2fs/kernel-jbd.h |  5 ++++-
+> misc/ext4.5.in          |  4 ++++
+> 7 files changed, 48 insertions(+), 11 deletions(-)
+>=20
+> diff --git a/e2fsck/e2fsck.h b/e2fsck/e2fsck.h
+> index 15d043ee..7dccc8e4 100644
+> --- a/e2fsck/e2fsck.h
+> +++ b/e2fsck/e2fsck.h
+> @@ -179,6 +179,7 @@ struct resource_track {
+> #define E2F_OPT_UNSHARE_BLOCKS  0x40000
+> #define E2F_OPT_CLEAR_UNINIT	0x80000 /* Hack to clear the uninit bit =
+*/
+> #define E2F_OPT_CHECK_ENCODING  0x100000 /* Force verification of =
+encoded filenames */
+> +#define E2F_OPT_REPAIR_JOURNAL	0x200000 /* Apply all possible =
+from journal */
+>=20
+> /*
+>  * E2fsck flags
+> diff --git a/e2fsck/journal.c b/e2fsck/journal.c
+> index a425bbd1..9b84c477 100644
+> --- a/e2fsck/journal.c
+> +++ b/e2fsck/journal.c
+> @@ -1620,6 +1620,9 @@ static errcode_t recover_ext3_journal(e2fsck_t =
+ctx)
+> 	if (retval)
+> 		return retval;
+>=20
+> +	if (ctx->options & E2F_OPT_REPAIR_JOURNAL)
+> +		jbd2_set_feature_repair(journal);
+> +
+> 	retval =3D e2fsck_journal_load(journal);
+> 	if (retval)
+> 		goto errout;
+> diff --git a/e2fsck/recovery.c b/e2fsck/recovery.c
+> index dc0694fc..5aa3e529 100644
+> --- a/e2fsck/recovery.c
+> +++ b/e2fsck/recovery.c
+> @@ -33,6 +33,7 @@ struct recovery_info
+> 	int		nr_replays;
+> 	int		nr_revokes;
+> 	int		nr_revoke_hits;
+> +	int             nr_skipped;
+> };
+>=20
+> static int do_one_pass(journal_t *journal,
+> @@ -313,8 +314,9 @@ int jbd2_journal_recover(journal_t *journal)
+> 	jbd_debug(1, "JBD2: recovery, exit status %d, "
+> 		  "recovered transactions %u to %u\n",
+> 		  err, info.start_transaction, info.end_transaction);
+> -	jbd_debug(1, "JBD2: Replayed %d and revoked %d/%d blocks\n",
+> -		  info.nr_replays, info.nr_revoke_hits, =
+info.nr_revokes);
+> +	jbd_debug(1, "JBD2: Replayed %d, skipped %d, and revoked %d/%d =
+blocks\n",
+> +		  info.nr_replays, info.nr_skipped, info.nr_revoke_hits,
+> +		  info.nr_revokes);
+>=20
+> 	/* Restart the log at the next transaction ID, thus invalidating
+> 	 * any existing commit records in the log. */
+> @@ -787,16 +789,35 @@ static int do_one_pass(journal_t *journal,
+> 				}
+>=20
+> 				/* Neither checksum match nor unused? */
+> -				if (!((crc32_sum =3D=3D found_chksum &&
+> -				       cbh->h_chksum_type =3D=3D
+> -						JBD2_CRC32_CHKSUM &&
+> -				       cbh->h_chksum_size =3D=3D
+> -						JBD2_CRC32_CHKSUM_SIZE) =
+||
+> -				      (cbh->h_chksum_type =3D=3D 0 &&
+> -				       cbh->h_chksum_size =3D=3D 0 &&
+> -				       found_chksum =3D=3D 0)))
+> +				if (cbh->h_chksum_type =3D=3D 0 &&
+> +				    cbh->h_chksum_size =3D=3D 0 &&
+> +				    found_chksum =3D=3D 0)
+> 					goto chksum_error;
+>=20
+> +				if (!(crc32_sum =3D found_chksum &&
+> +				    cbh->h_chksum_type =3D=3D =
+JBD2_CRC32_CHKSUM &&
+> +				    cbh->h_chksum_size =3D=3D
+> +						JBD2_CRC32_CHKSUM_SIZE)) =
+{
+> +					if =
+(jbd2_has_feature_repair(journal)) {
+> +						/*
+> +						 * Commit with wrong =
+checksum.
+> +						 * Let's skip it. There =
+are
+> +						 * some corect commits =
+after.
+> +						*/
+> +						++info->nr_skipped;
+> +						jbd_debug(1, "JBD2: "
+> +							  =
+"crc32_sum(0x%x)i !=3D"
+> +							  " =
+found_chksum(0x%x)"
+> +							  ". =
+Skipped.\n",
+> +							  crc32_sum,
+> +							  found_chksum);
+> +						brelse(bh);
+> +						next_commit_ID++;
+> +					} else {
+> +						goto chksum_error;
+> +					}
+> +				}
+> +
+> 				crc32_sum =3D ~0;
+> 			}
+> 			if (pass =3D=3D PASS_SCAN &&
+> diff --git a/e2fsck/unix.c b/e2fsck/unix.c
+> index c5f9e441..fc7649fc 100644
+> --- a/e2fsck/unix.c
+> +++ b/e2fsck/unix.c
+> @@ -763,6 +763,9 @@ static void parse_extended_opts(e2fsck_t ctx, =
+const char *opts)
+> 			ctx->options |=3D E2F_OPT_CLEAR_UNINIT;
+> 			continue;
+> #endif
+> +		} else if (strcmp(token, "repair_journal") =3D=3D 0) {
+> +			ctx->options |=3D E2F_OPT_REPAIR_JOURNAL;
+> +			continue;
+> 		} else {
+> 			fprintf(stderr, _("Unknown extended option: =
+%s\n"),
+> 				token);
+> diff --git a/lib/e2p/feature.c b/lib/e2p/feature.c
+> index 22910602..6cd11384 100644
+> --- a/lib/e2p/feature.c
+> +++ b/lib/e2p/feature.c
+> @@ -134,6 +134,8 @@ static struct feature jrnl_feature_list[] =3D {
+>                        "journal_checksum_v2" },
+>        {       E2P_FEATURE_INCOMPAT, JBD2_FEATURE_INCOMPAT_CSUM_V3,
+>                        "journal_checksum_v3" },
+> +       {       E2P_FEATURE_INCOMPAT, JBD2_FEATURE_INCOMPAT_REPAIR,
+> +			"journal_repair" },
+>        {       0, 0, 0 },
+> };
+>=20
+> diff --git a/lib/ext2fs/kernel-jbd.h b/lib/ext2fs/kernel-jbd.h
+> index 2978ccb6..4a2cef20 100644
+> --- a/lib/ext2fs/kernel-jbd.h
+> +++ b/lib/ext2fs/kernel-jbd.h
+> @@ -265,6 +265,7 @@ typedef struct journal_superblock_s
+> #define JBD2_FEATURE_INCOMPAT_CSUM_V2		0x00000008
+> #define JBD2_FEATURE_INCOMPAT_CSUM_V3		0x00000010
+> #define JBD2_FEATURE_INCOMPAT_FAST_COMMIT	0x00000020
+> +#define JBD2_FEATURE_INCOMPAT_REPAIR		0x00000040
+>=20
+> /* Features known to this kernel version: */
+> #define JBD2_KNOWN_COMPAT_FEATURES	0
+> @@ -274,7 +275,8 @@ typedef struct journal_superblock_s
+> 					 JBD2_FEATURE_INCOMPAT_64BIT|\
+> 					 JBD2_FEATURE_INCOMPAT_CSUM_V2|	=
+\
+> 					 JBD2_FEATURE_INCOMPAT_CSUM_V3 | =
+\
+> -					 =
+JBD2_FEATURE_INCOMPAT_FAST_COMMIT)
+> +					 =
+JBD2_FEATURE_INCOMPAT_FAST_COMMIT | \
+> +					 JBD2_FEATURE_INCOMPAT_REPAIR)
+>=20
+> #ifdef NO_INLINE_FUNCS
+> extern size_t journal_tag_bytes(journal_t *journal);
+> @@ -392,6 +394,7 @@ JBD2_FEATURE_INCOMPAT_FUNCS(async_commit,	=
+ASYNC_COMMIT)
+> JBD2_FEATURE_INCOMPAT_FUNCS(csum2,		CSUM_V2)
+> JBD2_FEATURE_INCOMPAT_FUNCS(csum3,		CSUM_V3)
+> JBD2_FEATURE_INCOMPAT_FUNCS(fast_commit,	FAST_COMMIT)
+> +JBD2_FEATURE_INCOMPAT_FUNCS(repair,		REPAIR)
+>=20
+> #if (defined(E2FSCK_INCLUDE_INLINE_FUNCS) || =
+!defined(NO_INLINE_FUNCS))
+> /*
+> diff --git a/misc/ext4.5.in b/misc/ext4.5.in
+> index 90bc4f88..95266864 100644
+> --- a/misc/ext4.5.in
+> +++ b/misc/ext4.5.in
+> @@ -574,6 +574,10 @@ Commit block can be written to disk without =
+waiting for descriptor blocks. If
+> enabled older kernels cannot mount the device.
+> This will enable 'journal_checksum' internally.
+> .TP
+> +.B journal_repair
+> +If journal is broken, apply all valid transactions and pass
+> +all broken ones(with invalid crc).
+> +.TP
+> .BR barrier=3D0 " / " barrier=3D1 " / " barrier " / " nobarrier
+> These mount options have the same effect as in ext3.  The mount =
+options
+> "barrier" and "nobarrier" are added for consistency with other ext4 =
+mount
+> --
+> 2.18.4
+>=20
+
+
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_CE141ECF-E551-473C-BBA3-4B33595D1C31
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmC2wnMACgkQcqXauRfM
+H+DdjA//ZQnMOboladM2iTpo3uYDtP9ms5tTGWxVP/pmwTtTlxBcsRhbuKZZgttj
+mJEwOKPgkRusOQ+usH+ppLMZNKF6I1sdNLmbb60I7rkMlsgEh7a0mc+MIvnXxPdL
+eNaHmF2WbGnSD+9wFHx7l/WjKXMGvNy3JQZrxmJ2kWdF+FyOxPxbqKPRRpZ3wWAC
+0ttEn5p9qgl5XWTTsYUjA/sFArNjKAlasLXIrVCvpRdkdKKWdIcHG4ycuh5XqEvZ
+xyLFmWjNyg1UTFdOtEdlhu9ZAiQVO6z83kd68hswEu8S5vlcDp20E5GJxa83YnwK
+Po6s43BlI2aaaxkIf/3DQU8haKuWmwNGB63QhsOecbiRyIpJoXnI1beA0qElwOL2
+X6jM0hhqBg7erHxmQU+Tb5igxKWaIJq9DLasU2Wp50F9Ylp2pym8yYvaYUuo2DhY
+QP0uP5XdcCTR09FmH9ED2dVOz0m3OpK7/OnqL5qQzTUN9oX3E4Arp5+cuzXQ77lm
+HfEQsmwMr4x9SY8AfqcXCUwjpTdgNOJ9NW2QNvzQS/ruIfpxEkT2b5aGOBtVu8C2
+ysnkQNmYHF20KbrZxmBsBO9VbFHWitver7nojnvOxC+jUlE7/i5qW1/j6peomGOp
+qpj5AkU1etBGFr2kx+5FsQWSfPV8JMXYF5z0RYd0RR6xTIa1Bvk=
+=Tixw
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_CE141ECF-E551-473C-BBA3-4B33595D1C31--
