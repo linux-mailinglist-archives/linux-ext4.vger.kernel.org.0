@@ -2,316 +2,370 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A44A396A20
-	for <lists+linux-ext4@lfdr.de>; Tue,  1 Jun 2021 01:39:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85FDC397B92
+	for <lists+linux-ext4@lfdr.de>; Tue,  1 Jun 2021 23:09:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232356AbhEaXlX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 31 May 2021 19:41:23 -0400
-Received: from smtp-out-so.shaw.ca ([64.59.136.138]:59600 "EHLO
-        smtp-out-so.shaw.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232349AbhEaXlW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 31 May 2021 19:41:22 -0400
-X-Greylist: delayed 488 seconds by postgrey-1.27 at vger.kernel.org; Mon, 31 May 2021 19:41:22 EDT
-Received: from webber.adilger.int ([70.77.221.9])
-        by shaw.ca with ESMTP
-        id nrNblI2mO7YjPnrNcl30TL; Mon, 31 May 2021 17:31:33 -0600
-X-Authority-Analysis: v=2.4 cv=fPVaYbWe c=1 sm=1 tr=0 ts=60b571d5
- a=2Y6h5+ypAxmHcsumz2f7Og==:117 a=2Y6h5+ypAxmHcsumz2f7Og==:17 a=ySfo2T4IAAAA:8
- a=MvuuwTCpAAAA:8 a=ULax61NCMTu6Xf7DQNcA:9 a=ZUkhVnNHqyo2at-WnAgH:22
- a=dVHiktpip_riXrfdqayU:22
-From:   Andreas Dilger <adilger@whamcloud.com>
-To:     tytso@mit.edu
-Cc:     linux-ext4@vger.kernel.org, Andreas Dilger <adilger@whamcloud.com>,
-        Artem Blagodarenko <artem.blagodarenko@hpe.com>
-Subject: [PATCH] e2fsck: fix ".." more gracefully if possible
-Date:   Mon, 31 May 2021 17:31:23 -0600
-Message-Id: <20210531233123.16095-1-adilger@whamcloud.com>
-X-Mailer: git-send-email 2.25.1
+        id S234782AbhFAVLI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 1 Jun 2021 17:11:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234513AbhFAVLG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 1 Jun 2021 17:11:06 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1764AC061574;
+        Tue,  1 Jun 2021 14:09:24 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id v14so401750pgi.6;
+        Tue, 01 Jun 2021 14:09:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=sAu6B5zF65+NpRGYcpqCVOE8ShyTpY5yADU4NigDlmI=;
+        b=YILquaVOv9tWvKCzsMWiG5b1QkR84yq+vdDn/E302KO1JCZ5x4c9gBrqOsen43Bt8n
+         4ie8xHq4BVgfPnWcXZ2neFxBxaCeec2M4jd8MIkmh7LMaSdEjThowsrd/4jQGZQMPg6K
+         VBVIDOX1mPAVvq6NcKfYHGEI2TMJjIXCCttMByvtuaJwNqz/OQPj/P7915RUupedp4ZK
+         1a7GAj8XEMKnDMnnAMjDmTGcNEJTbV56ezfahc+xKW2oeT2QNmB6xq2E2Pl5FUYEAqvY
+         clmk8LrllD9UblPmXB52fmRReIid7Ew7j4byYkmXAaoJMzdbs8QtCn+7DAnDaQY7SJsE
+         RUIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sAu6B5zF65+NpRGYcpqCVOE8ShyTpY5yADU4NigDlmI=;
+        b=EtL0KghldTu/d5qst0k4w1buDjaBvuT9YRCbI38k4lbxwounL5N2nOvYFMzqu39C5D
+         00EyDLTJJN9ZtgWylRgz9oXcs19Snkvs2Pdcg2FRQ+JjBa7HmtLaL9ejxKuuIdwwENXf
+         w+CHP8tpyfDQEZ34dpff7exhAwAYS2c50ct2WIDwQQVNJYTA8aNDII2Bl/scpU0qQYdC
+         vdt2LblcW5JpdptF7Gy16X+TDpCrzbeiEz/bFWIWEHhLjH4mDO5KkUNkSbFXvltn98jx
+         7cUshjyLDBdA4rbTR3M8uXFGp4TpvdxHAW9y+WfNNVaAjrRA546cjtYJHhnkd9bpP1cf
+         jCvg==
+X-Gm-Message-State: AOAM533sKg8U8l26cXc88QkigoxY+G8SlL0YJq06IOZbn8XVoC5hCwS7
+        EkmMlFUqERLqSvRhGhv209ynMtRplvZqgA==
+X-Google-Smtp-Source: ABdhPJyPSFFty/zLiXtqqVvhiXIc4Cs3CGtKxbHk+Ao/zH3548C7XUG14O8+WpEwzX+FTwwwTACiig==
+X-Received: by 2002:a63:f40d:: with SMTP id g13mr30795317pgi.290.1622581763400;
+        Tue, 01 Jun 2021 14:09:23 -0700 (PDT)
+Received: from google.com ([2601:647:4701:18d0:568:55fd:9ef:aebb])
+        by smtp.gmail.com with ESMTPSA id n9sm14114167pfd.4.2021.06.01.14.09.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 14:09:22 -0700 (PDT)
+Date:   Tue, 1 Jun 2021 14:09:20 -0700
+From:   Leah Rumancik <leah.rumancik@gmail.com>
+To:     Eryu Guan <guan@eryu.me>
+Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] ext4/310: test journal checkpoint ioctl
+Message-ID: <YLaiAN+vKrt9ZUsp@google.com>
+References: <20210519144751.466933-1-leah.rumancik@gmail.com>
+ <YKpipecQz4vSDDtP@desktop>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfCFFTf2EqlDqG+hSennCzZXjIeuxHN7Y44JzjyzFooOZfkikOIQKtbe8iFmu/2rJbiawaSzL3J8HGb3JNVqIpAI96gq+8NvIYZ17D2RuyI0xZjkv3Epz
- Sw389UBf+6yCnry1/GOen5c6f3iWH+2uM1Bwd5E6ZuetaLfxQnBUTlaGBzBU2htA1udRIo6hEXjeeXZhVEJ+KWUkGCyq8QdF/HOWKGzGwwi/8CQJqpotSeGP
- Vt37muLlwXeJCzqTJyAFO/2MGPHRQsdSidDb7rBVqArrgsu/2gd0aF5bcijmvioF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YKpipecQz4vSDDtP@desktop>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-If the "." entry is corrupted, it will be reset in check_dot().
-It is possible that the ".." entry can be recovered from the
-directory block instead of also resetting it immediately.  If
-it appears that there is a valid ".." entry in the block, allow
-that to be used, and let check_dotdot() verify the dirent itself.
+On Sun, May 23, 2021 at 10:11:49PM +0800, Eryu Guan wrote:
+> On Wed, May 19, 2021 at 02:47:51PM +0000, Leah Rumancik wrote:
+> > Test journal checkpointing and journal erasing via
+> > EXT4_IOC_CHECKPOINT with flag EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT set.
+> 
+> It seems that this ioctl is not upstreamed yet, it'd be better to
+> mention the titles of related patches, so people could know which kernel
+> patches are required to pass this test, and know the backgrounds by
+> reading the kernel thread.
+> 
+> > 
+> > Signed-off-by: Leah Rumancik <leah.rumancik@gmail.com>
+> > ---
+> >  src/Makefile             |   3 +-
+> >  src/checkpoint_journal.c |  95 ++++++++++++++++++++++++++++++++
+> >  tests/ext4/310           | 114 +++++++++++++++++++++++++++++++++++++++
+> >  tests/ext4/310.out       |   2 +
+> >  tests/ext4/group         |   1 +
+> >  5 files changed, 214 insertions(+), 1 deletion(-)
+> >  create mode 100644 src/checkpoint_journal.c
+> >  create mode 100644 tests/ext4/310
+> 
+> New test file is in 0755 mode.
+> 
+> >  create mode 100644 tests/ext4/310.out
+> > 
+> > diff --git a/src/Makefile b/src/Makefile
+> > index cc0b9579..e0e7006b 100644
+> > --- a/src/Makefile
+> > +++ b/src/Makefile
+> > @@ -17,7 +17,8 @@ TARGETS = dirstress fill fill2 getpagesize holes lstat64 \
+> >  	t_mmap_cow_race t_mmap_fallocate fsync-err t_mmap_write_ro \
+> >  	t_ext4_dax_journal_corruption t_ext4_dax_inline_corruption \
+> >  	t_ofd_locks t_mmap_collision mmap-write-concurrent \
+> > -	t_get_file_time t_create_short_dirs t_create_long_dirs t_enospc
+> > +	t_get_file_time t_create_short_dirs t_create_long_dirs t_enospc \
+> > +	checkpoint_journal
+> 
+> Missing an entry in .gitignore
+> 
+> >  
+> >  LINUX_TARGETS = xfsctl bstat t_mtab getdevicesize preallo_rw_pattern_reader \
+> >  	preallo_rw_pattern_writer ftrunc trunc fs_perms testx looptest \
+> > diff --git a/src/checkpoint_journal.c b/src/checkpoint_journal.c
+> > new file mode 100644
+> > index 00000000..0347e0c0
+> > --- /dev/null
+> > +++ b/src/checkpoint_journal.c
+> > @@ -0,0 +1,95 @@
+> > +#include <sys/ioctl.h>
+> > +#include <fcntl.h>
+> > +#include <stdlib.h>
+> > +#include <stdio.h>
+> > +#include <unistd.h>
+> > +#include <errno.h>
+> > +#include <string.h>
+> > +#include <linux/fs.h>
+> > +#include <getopt.h>
+> > +
+> > +/*
+> > + * checkpoint_journal.c
+> > + *
+> > + * Flush journal log and checkpoint journal for ext4 file system and
+> > + * optionally, issue discard or zeroout for the journal log blocks.
+> > + *
+> > + * Arguments:
+> > + * 1) mount point for device
+> > + * 2) flags (optional)
+> > + *	set --erase=discard to enable discarding journal blocks
+> > + *	set --erase=zeroout to enable zero-filling journal blocks
+> > + *	set --dry-run flag to only perform input checking
+> > + */
+> > +
+> > +#if defined(__linux__) && !defined(EXT4_IOC_CHECKPOINT)
+> > +#define EXT4_IOC_CHECKPOINT	_IOW('f', 43, __u32)
+> > +#endif
+> > +
+> > +
+> > +#if defined(__linux__) && !defined(EXT4_IOC_CHECKPOINT_FLAG_DISCARD)
+> > +#define EXT4_IOC_CHECKPOINT_FLAG_DISCARD		1
+> > +#define EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT		2
+> > +#define EXT4_IOC_CHECKPOINT_FLAG_DRY_RUN		4
+> > +#endif
+> > +
+> > +
+> > +int main(int argc, char** argv) {
+> > +	int fd, c, ret = 0, option_index = 0;
+> > +	char* rpath;
+> > +	unsigned int flags = 0;
+> > +
+> > +	static struct option long_options[] =
+> > +	{
+> > +		{"dry-run", no_argument, 0, 'd'},
+> > +		{"erase", required_argument, 0, 'e'},
+> > +		{0, 0, 0, 0}
+> > +	};
+> > +
+> > +	/* get optional flags */
+> > +	while ((c = getopt_long(argc, argv, "de:", long_options,
+> > +				&option_index)) != -1) {
+> > +		switch (c) {
+> > +		case 'd':
+> > +			flags |= EXT4_IOC_CHECKPOINT_FLAG_DRY_RUN;
+> > +			break;
+> > +		case 'e':
+> > +			if (strcmp(optarg, "discard") == 0) {
+> > +				flags |= EXT4_IOC_CHECKPOINT_FLAG_DISCARD;
+> > +			} else if (strcmp(optarg, "zeroout") == 0) {
+> > +				flags |= EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT;
+> > +			} else {
+> > +				fprintf(stderr, "Error: invalid erase option\n");
+> > +				return 1;
+> > +			}
+> > +			break;
+> > +		default:
+> > +			return 1;
+> > +		}
+> > +	}
+> > +
+> > +	if (optind != argc - 1) {
+> > +		fprintf(stderr, "Error: invalid number of arguments\n");
+> > +		return 1;
+> > +	}
+> > +
+> > +	/* get fd to file system */
+> > +	rpath = realpath(argv[optind], NULL);
+> > +	fd = open(rpath, O_RDONLY);
+> > +	free(rpath);
+> > +
+> > +	if (fd == -1) {
+> > +		fprintf(stderr, "Error: unable to open device %s: %s\n",
+> > +			argv[optind], strerror(errno));
+> > +		return 1;
+> > +	}
+> > +
+> > +	ret = ioctl(fd, EXT4_IOC_CHECKPOINT, &flags);
+> > +
+> > +	if (ret)
+> > +		fprintf(stderr, "checkpoint ioctl returned error: %s\n", strerror(errno));
+> > +
+> > +	close(fd);
+> > +	return ret;
+> > +}
+> > +
+> > diff --git a/tests/ext4/310 b/tests/ext4/310
+> > new file mode 100644
+> > index 00000000..3693cb29
+> > --- /dev/null
+> > +++ b/tests/ext4/310
+> > @@ -0,0 +1,114 @@
+> > +#!/bin/bash
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +# Copyright (c) 2021 Google, Inc. All Rights Reserved.
+> > +#
+> > +# FS QA Test No. 310
+> > +#
+> > +# Test checkpoint and zeroout of journal via ioctl EXT4_IOC_CHECKPOINT
+> > +#
+> > +
+> > +seq=`basename $0`
+> > +seqres=$RESULT_DIR/$seq
+> > +echo "QA output created by $seq"
+> > +
+> > +status=1       # failure is the default!
+> > +
+> > +# get standard environment, filters and checks
+> > +. ./common/rc
+> > +. ./common/filter
+> > +
+> > +# remove previous $seqres.full before test
+> > +rm -f $seqres.full
+> > +
+> > +# real QA test starts here
+> > +_supported_fs ext4
+> > +
+> > +_require_scratch
+> > +_require_command "$DEBUGFS_PROG" debugfs
+> > +
+> > +checkpoint_journal=$here/src/checkpoint_journal
+> > +_require_test_program "checkpoint_journal"
+> > +
+> > +# convert output from stat<journal_inode> to list of block numbers
+> > +get_journal_extents() {
+> > +	inode_info=$($DEBUGFS_PROG $SCRATCH_DEV -R "stat <8>" 2>> $seqres.full)
+> > +	echo -e "\nJournal info:" >> $seqres.full
+> > +	echo "$inode_info" >> $seqres.full
+> > +
+> > +	extents_line=$(echo "$inode_info" | awk '/EXTENTS:/{ print NR; exit }')
+> > +	get_extents=$(echo "$inode_info" | sed -n "$(($extents_line + 1))"p)
+> > +
+> > +	# get just the physical block numbers
+> > +	get_extents=$(echo "$get_extents" |  perl -pe 's|\(.*?\):||g' | sed -e 's/, /\n/g' | perl -pe 's|(\d+)-(\d+)|\1 \2|g')
+> > +
+> > +	echo "$get_extents"
+> > +}
+> > +
+> > +
+> > +# checks all extents are zero'd out except for the superblock
+> > +# arg 1: extents (output of get_journal_extents())
+> > +check_extents() {
+> > +	echo -e "\nChecking extents:" >> $seqres.full
+> > +	echo "$1" >> $seqres.full
+> > +
+> > +	super_block="true"
+> > +	echo "$1" | while IFS= read line; do
+> > +		start_block=$(echo $line | cut -f1 -d' ')
+> > +		end_block=$(echo $line | cut -f2 -d' ' -s)
+> > +
+> > +		# if first block of journal, shouldn't be wiped
+> > +		if [ "$super_block" == "true" ]; then
+> > +			super_block="false"
+> > +
+> > +			#if super block only block in this extent, skip extent
+> > +			if [ -z "$end_block" ]; then
+> > +				continue;
+> > +			fi
+> > +			start_block=$(($start_block + 1))
+> > +		fi
+> > +
+> > +		if [ ! -z "$end_block" ]; then
+> > +			blocks=$(($end_block - $start_block + 1))
+> > +		else
+> > +			blocks=1
+> > +		fi
+> > +
+> > +		check=$(od $SCRATCH_DEV --skip-bytes=$(($start_block * $blocksize)) --read-bytes=$(($blocks * $blocksize)) -An -v | sed -e 's/[0 \t\n\r]//g')
+> > +
+> > +		[ ! -z "$check" ] && echo "error" && break
+> > +	done
+> > +}
+> > +
+> > +testdir="${SCRATCH_MNT}/testdir"
+> > +
+> > +_scratch_mkfs_sized $((64 * 1024 * 1024)) >> $seqres.full 2>&1
+> 
+> This test requires ext4 is created with a journal, so we need
+> 
+> _require_metadata_journaling $SCRATCH_DEV
+> 
+> here after creating filesystem on $SCRATCH_DEV
+> 
+> > +_scratch_mount >> $seqres.full 2>&1
+> > +blocksize=$(_get_block_size $SCRATCH_MNT)
+> > +mkdir $testdir
+> > +
+> > +# check if ioctl present, skip test if not present
+> > +$checkpoint_journal $SCRATCH_MNT --dry-run || _notrun "journal checkpoint ioctl not present on device"
+> > +
+> > +# create some files to add some entries to journal
+> > +for i in {1..100}; do
+> > +	touch $testdir/$i
+> 
+> 	echo > $testdir/$i
+> 
+> might be faster.
+> 
+> > +done
+> > +
+> > +# make sure these files get to the journal
+> > +sync --file-system $testdir/1
+> > +
+> > +# call ioctl to checkpoint and zero-fill journal blocks
+> > +$checkpoint_journal $SCRATCH_MNT --erase=zeroout || _fail "ioctl returned error"
+> > +
+> > +extents=$(get_journal_extents)
+> > +
+> > +# check journal blocks zeroed out
+> > +ret=$(check_extents "$extents")
+> > +[ "$ret" = "error" ] && _fail "Journal was not zero-filled"
+> > +
+> > +_scratch_unmount >> $seqres.full 2>&1
+> > +
+> > +echo "Done."
+> 
+> fstests use "Silence is golden" :)
+> 
+> Thanks,
+> Eryu
 
-When resetting the "." and ".." entries, use EXT2_FT_DIR as the
-file type instead of EXT2_FT_UNKNOWN for the very common case of
-filesystems with the "filetype" feature, to avoid later problems
-that can be easily avoided.  This can't always be done, even if
-filesystems without "filetype" are totally obsolete, because many
-old test images do not have this feature enabled.
+Thanks for the suggestions. I'll send out an updated version with all
+the changes.
+-Leah
 
-Fixup affected tests using the new "repair-test" script that
-updates the expect.[12] files from $test.[12].log for the given
-tests and re-runs the test to ensure it now passes.
-
-Signed-off-by: Andreas dilger <adilger@whamcloud.com>
-Reviewed-by: Artem Blagodarenko <artem.blagodarenko@hpe.com>
-Lustre-bug-Id: https://jira.whamcloud.com/browse/LU-14710
-Change-Id: Ia5e579bcf31a9d9ee260d5640de6dbdb60514823
-Reviewed-on: https://review.whamcloud.com/43858
----
- e2fsck/pass2.c                        |  28 ++++++++++++++++++--------
- tests/f_baddotdir/expect.1            |   9 ++++++---
- tests/f_baddotdir/expect.2            |   2 +-
- tests/f_baddotdir/image.gz            | Bin 564 -> 592 bytes
- tests/f_dir_bad_csum/expect.1         |   2 --
- tests/f_rebuild_csum_rootdir/expect.1 |   2 --
- tests/f_resize_inode_meta_bg/expect.1 |   4 ----
- tests/f_uninit_dir/expect.1           |   2 --
- tests/scripts/repair-test             |   9 +++++++++
- 9 files changed, 36 insertions(+), 22 deletions(-)
- create mode 100755 tests/scripts/repair-test
-
-diff --git a/e2fsck/pass2.c b/e2fsck/pass2.c
-index e504b30a..94f92c8b 100644
---- a/e2fsck/pass2.c
-+++ b/e2fsck/pass2.c
-@@ -405,6 +405,7 @@ static int check_dot(e2fsck_t ctx,
- 	int		status = 0;
- 	int		created = 0;
- 	problem_t	problem = 0;
-+	int		ftype = EXT2_FT_DIR;
- 
- 	if (!dirent->inode)
- 		problem = PR_2_MISSING_DOT;
-@@ -416,12 +417,14 @@ static int check_dot(e2fsck_t ctx,
- 
- 	(void) ext2fs_get_rec_len(ctx->fs, dirent, &rec_len);
- 	if (problem) {
-+		if (!ext2fs_has_feature_filetype(ctx->fs->super))
-+			ftype = EXT2_FT_UNKNOWN;
- 		if (fix_problem(ctx, problem, pctx)) {
- 			if (rec_len < 12)
- 				rec_len = dirent->rec_len = 12;
- 			dirent->inode = ino;
- 			ext2fs_dirent_set_name_len(dirent, 1);
--			ext2fs_dirent_set_file_type(dirent, EXT2_FT_UNKNOWN);
-+			ext2fs_dirent_set_file_type(dirent, ftype);
- 			dirent->name[0] = '.';
- 			dirent->name[1] = '\0';
- 			status = 1;
-@@ -442,12 +445,18 @@ static int check_dot(e2fsck_t ctx,
- 				nextdir = (struct ext2_dir_entry *)
- 					((char *) dirent + 12);
- 				dirent->rec_len = 12;
--				(void) ext2fs_set_rec_len(ctx->fs, new_len,
--							  nextdir);
--				nextdir->inode = 0;
--				ext2fs_dirent_set_name_len(nextdir, 0);
--				ext2fs_dirent_set_file_type(nextdir,
--							    EXT2_FT_UNKNOWN);
-+				/* if the next entry looks like "..", leave it
-+				 * and let check_dotdot() verify the dirent,
-+				 * otherwise zap the following entry. */
-+				if (strncmp(nextdir->name, "..", 3) != 0) {
-+					(void)ext2fs_set_rec_len(ctx->fs,
-+								 new_len,
-+								 nextdir);
-+					nextdir->inode = 0;
-+					ext2fs_dirent_set_name_len(nextdir, 0);
-+					ext2fs_dirent_set_file_type(nextdir,
-+								    ftype);
-+				}
- 				status = 1;
- 			}
- 		}
-@@ -466,6 +475,7 @@ static int check_dotdot(e2fsck_t ctx,
- {
- 	problem_t	problem = 0;
- 	unsigned int	rec_len;
-+	int		ftype = EXT2_FT_DIR;
- 
- 	if (!dirent->inode)
- 		problem = PR_2_MISSING_DOT_DOT;
-@@ -478,6 +488,8 @@ static int check_dotdot(e2fsck_t ctx,
- 
- 	(void) ext2fs_get_rec_len(ctx->fs, dirent, &rec_len);
- 	if (problem) {
-+		if (!ext2fs_has_feature_filetype(ctx->fs->super))
-+			ftype = EXT2_FT_UNKNOWN;
- 		if (fix_problem(ctx, problem, pctx)) {
- 			if (rec_len < 12)
- 				dirent->rec_len = 12;
-@@ -488,7 +500,7 @@ static int check_dotdot(e2fsck_t ctx,
- 			 */
- 			dirent->inode = EXT2_ROOT_INO;
- 			ext2fs_dirent_set_name_len(dirent, 2);
--			ext2fs_dirent_set_file_type(dirent, EXT2_FT_UNKNOWN);
-+			ext2fs_dirent_set_file_type(dirent, ftype);
- 			dirent->name[0] = '.';
- 			dirent->name[1] = '.';
- 			dirent->name[2] = '\0';
-diff --git a/tests/f_baddotdir/expect.1 b/tests/f_baddotdir/expect.1
-index e24aa94f..a7ca4e49 100644
---- a/tests/f_baddotdir/expect.1
-+++ b/tests/f_baddotdir/expect.1
-@@ -29,6 +29,9 @@ Fix? yes
- Missing '..' in directory inode 16.
- Fix? yes
- 
-+Directory entry for '.' in ... (19) is big.
-+Split? yes
-+
- Pass 3: Checking directory connectivity
- '..' in /a (12) is <The NULL inode> (0), should be / (2).
- Fix? yes
-@@ -47,13 +50,13 @@ Fix? yes
- 
- Pass 4: Checking reference counts
- Pass 5: Checking group summary information
--Free blocks count wrong for group #0 (70, counted=71).
-+Free blocks count wrong for group #0 (69, counted=70).
- Fix? yes
- 
--Free blocks count wrong (70, counted=71).
-+Free blocks count wrong (69, counted=70).
- Fix? yes
- 
- 
- test_filesys: ***** FILE SYSTEM WAS MODIFIED *****
--test_filesys: 18/32 files (0.0% non-contiguous), 29/100 blocks
-+test_filesys: 19/32 files (0.0% non-contiguous), 30/100 blocks
- Exit status is 1
-diff --git a/tests/f_baddotdir/expect.2 b/tests/f_baddotdir/expect.2
-index 8b3523cb..0838aa33 100644
---- a/tests/f_baddotdir/expect.2
-+++ b/tests/f_baddotdir/expect.2
-@@ -3,5 +3,5 @@ Pass 2: Checking directory structure
- Pass 3: Checking directory connectivity
- Pass 4: Checking reference counts
- Pass 5: Checking group summary information
--test_filesys: 18/32 files (0.0% non-contiguous), 29/100 blocks
-+test_filesys: 19/32 files (0.0% non-contiguous), 30/100 blocks
- Exit status is 0
-diff --git a/tests/f_baddotdir/image.gz b/tests/f_baddotdir/image.gz
-index 8ed90c5d6aaf0da309d34b91e615eac7682f585c..71df18f2198afd056e79e6b35b27400e334a80ba 100644
-GIT binary patch
-delta 540
-zcmV+%0^|L(1keP3ABzYGCMU390t0DnVP|Ck?c6<UQ&AWP@ROuP+L+e9sPzpyb%})F
-z=HTEUxOXsPTVov*3%-Eu2XOMk6x{tBegbh37YDa^PI6DV)Vl~?rM<r&Jnb1S{K<jm
-z=E)(sAplLa8EYJCKGwrny;!Z&7i`Y{C3m)tcS2YX+uvJ%)9ao;?hoxEoK2lrb0_`Z
-z3yZb{8e=k<+|KKt6QEfx1bYC@l;8W)=lERza{l=C;M4u|0p$1m#n3KYw_sEQ{`&nV
-z{ux%?f7)TAbX__Z>BhQPoRKcYT8?!o)=I3^SZg7jjD~RePxIsb?|sb8mGjH@zbkdV
-z{+RzU=H{w@%D-B3{^yvRt15q^=KS8MKg?B?f34>HdoedxRsM~d^B=wXayM5#87${t
-zuQ`7^=H{w;{WojQU)Va{$yJqq%dHZCbEG|;X<K1%vTldLU^eTn$Eo+l!Rt5u{e!nJ
-z$FtctUAtS%z-hf#%))8?q?n1*dR)xLY5laAk<)sAznGIhbXwt=?T7!Wd#e9`bY}ez
-zG{l@O0R0c>e?b2O`XA8$fc^*cKcN2s{SWAW;H=2s|4)4XADSco{$~{Y{s)?7sp9>A
-zG_o(y1k0uV@9KYOl>A(d!Cv|KAG_1%*?sNIhj)iZM~Aiv&M)Wx&`7JL`F|xi|AQu3
-eo4)@8d;S-b@c}oI0uBtodGQPRlUDlxkO2VVPAWM7
-
-delta 510
-zcmV<a0RjHd1hfQyABzYGmU8AY0t0DnVP|Ck?c6_Z6G0RQ;ITI;f{BAefbgeCZ^^RK
-zQBcqz`bgk5!K48ZDS$+B0M5WY=s5=`h|(Y$3OX}m??kJx4N?|i_WPt?GQ~<y9_fwW
-zu55<@wAD_`G-fsCNlZVcbNPau#lPg)@!4(&TVd~eXMWv(tLMY9U4-RS#H?KOe?P3*
-z5@?OtY_^ftKW9L@6u}-qJLUKObRVDdH|LLUkH0)hHz2>)UklyJb?!@mt3Q9@pK;y!
-z(+%5|>#oK0Vy?%mm(NMljnj>oLCj{%&5)jqhH&do>&Nr&W2~E#>sQae+fBaySpRdZ
-zn^RZ+PQ&$ozs9;bb@jI!uD?DRj&thj-)*@5!&o<`uKxXo>pwj{+s(;O2CMb&HC%r$
-z*3GGV{SO>f0B~ix^O?32Mi=XD7>yRQ?pB<7Umv}FH#|Ig|7N<Febcr3<qVwG2jwiB
-z)-TGLIIXAUY@F6F%NhAo(FupP9R3--Oa1?&SoA+-&=M=Q0Q5hg{{j6E=zl=}1NtA(
-z|A77n^gp2gfn||D|DX8$KeR{w{?8=%{tvWGzvlgaGO;hv1{;<B@9BSNl|k<RgX-^p
-z?9YGC?z~tHA5KnBPizzXzdZkkR@$u0|AXN9ACmzBLk|D|0Kl^P1-d^m3ILD+0M^YA
-A(*OVf
-
-diff --git a/tests/f_dir_bad_csum/expect.1 b/tests/f_dir_bad_csum/expect.1
-index 2c684fe6..ae4b410e 100644
---- a/tests/f_dir_bad_csum/expect.1
-+++ b/tests/f_dir_bad_csum/expect.1
-@@ -24,11 +24,9 @@ Salvage? yes
- Missing '.' in directory inode 17.
- Fix? yes
- 
--Setting filetype for entry '.' in ??? (17) to 2.
- Missing '..' in directory inode 17.
- Fix? yes
- 
--Setting filetype for entry '..' in ??? (17) to 2.
- Entry 'file' in ??? (18) has invalid inode #: 4294967295.
- Clear? yes
- 
-diff --git a/tests/f_rebuild_csum_rootdir/expect.1 b/tests/f_rebuild_csum_rootdir/expect.1
-index bab07e05..91e6027d 100644
---- a/tests/f_rebuild_csum_rootdir/expect.1
-+++ b/tests/f_rebuild_csum_rootdir/expect.1
-@@ -6,11 +6,9 @@ Salvage? yes
- Missing '.' in directory inode 2.
- Fix? yes
- 
--Setting filetype for entry '.' in ??? (2) to 2.
- Missing '..' in directory inode 2.
- Fix? yes
- 
--Setting filetype for entry '..' in ??? (2) to 2.
- Pass 3: Checking directory connectivity
- '..' in / (2) is <The NULL inode> (0), should be / (2).
- Fix? yes
-diff --git a/tests/f_resize_inode_meta_bg/expect.1 b/tests/f_resize_inode_meta_bg/expect.1
-index c733c18d..769f71ae 100644
---- a/tests/f_resize_inode_meta_bg/expect.1
-+++ b/tests/f_resize_inode_meta_bg/expect.1
-@@ -8,11 +8,9 @@ Pass 2: Checking directory structure
- First entry '' (inode=348) in directory inode 2 (???) should be '.'
- Fix? yes
- 
--Setting filetype for entry '.' in ??? (2) to 2.
- Missing '..' in directory inode 2.
- Fix? yes
- 
--Setting filetype for entry '..' in ??? (2) to 2.
- Directory inode 2, block #0, offset 860: directory corrupted
- Salvage? yes
- 
-@@ -25,11 +23,9 @@ Salvage? yes
- Missing '.' in directory inode 11.
- Fix? yes
- 
--Setting filetype for entry '.' in ??? (11) to 2.
- Missing '..' in directory inode 11.
- Fix? yes
- 
--Setting filetype for entry '..' in ??? (11) to 2.
- Directory inode 11, block #1, offset 0: directory corrupted
- Salvage? yes
- 
-diff --git a/tests/f_uninit_dir/expect.1 b/tests/f_uninit_dir/expect.1
-index f0065f15..31870bda 100644
---- a/tests/f_uninit_dir/expect.1
-+++ b/tests/f_uninit_dir/expect.1
-@@ -10,11 +10,9 @@ Salvage? yes
- Missing '.' in directory inode 14.
- Fix? yes
- 
--Setting filetype for entry '.' in ??? (14) to 2.
- Missing '..' in directory inode 14.
- Fix? yes
- 
--Setting filetype for entry '..' in ??? (14) to 2.
- Pass 3: Checking directory connectivity
- '..' in /abc (14) is <The NULL inode> (0), should be / (2).
- Fix? yes
-diff --git a/tests/scripts/repair-test b/tests/scripts/repair-test
-new file mode 100755
-index 00000000..c164e6e5
---- /dev/null
-+++ b/tests/scripts/repair-test
-@@ -0,0 +1,9 @@
-+#!/bin/sh
-+for T in "$*"; do
-+	[ -f "$T.failed" -a -d "$T" ] ||
-+		{ echo "usage: $0 <test_to_repair>"; exit 1; }
-+
-+	cp $T.1.log $T/expect.1
-+	cp $T.2.log $T/expect.2
-+	./test_one $T
-+done
--- 
-2.25.1
-
+> 
+> > +
+> > +status=0
+> > +exit
+> > diff --git a/tests/ext4/310.out b/tests/ext4/310.out
+> > new file mode 100644
+> > index 00000000..e52f7345
+> > --- /dev/null
+> > +++ b/tests/ext4/310.out
+> > @@ -0,0 +1,2 @@
+> > +QA output created by 310
+> > +Done.
+> > diff --git a/tests/ext4/group b/tests/ext4/group
+> > index e7ad3c24..622590a9 100644
+> > --- a/tests/ext4/group
+> > +++ b/tests/ext4/group
+> > @@ -60,3 +60,4 @@
+> >  307 auto ioctl rw defrag
+> >  308 auto ioctl rw prealloc quick defrag
+> >  309 auto quick dir
+> > +310 auto ioctl quick
+> > -- 
+> > 2.31.1.751.gd2f1c929bd-goog
