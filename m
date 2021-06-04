@@ -2,323 +2,316 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE1D139AF2D
-	for <lists+linux-ext4@lfdr.de>; Fri,  4 Jun 2021 02:44:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5AD039AF71
+	for <lists+linux-ext4@lfdr.de>; Fri,  4 Jun 2021 03:17:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229702AbhFDAqY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 3 Jun 2021 20:46:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33476 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229576AbhFDAqX (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 3 Jun 2021 20:46:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F7FB613F3;
-        Fri,  4 Jun 2021 00:44:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622767478;
-        bh=dYa9FFKNOgx3ndrBQ2bHZdjb7Z3Rm8ytM9ORnAyuVfc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JUGhoqXxH4xRFPmxCBzQ6JaK8N2kV5mZPIPXqIKv1BRKKSGAOc8RkqWBWn3PWOQTp
-         32S6OVE6Cfe6Q8TceVJeeNq9c1HI1IXjkqS898HWiFYmV9SpVZkAcrY3vnbO7wOURb
-         8KgnXPGZpuJwhyuO213xA+/jU5dDUKx0f8ztQZ33FztQNm1D+SY+0Y0/p6y/MO3NsQ
-         bfdubZo66nKrlTlg5H+MRrnRAJMnEwk/BBbAilCZ3gg/tsDBdNSpi1deDrboFy5CNF
-         ppVf9/SRxXxA899xWrIe5u+NOqooycpvphaMLvc7DqO/3sT4vyZ499F1TCE9Z/1D5I
-         O0lOgtq6mSOTw==
-Date:   Thu, 3 Jun 2021 17:44:37 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
+        id S229906AbhFDBTm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 3 Jun 2021 21:19:42 -0400
+Received: from esa17.fujitsucc.c3s2.iphmx.com ([216.71.158.34]:46879 "EHLO
+        esa17.fujitsucc.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229576AbhFDBTl (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Jun 2021 21:19:41 -0400
+X-Greylist: delayed 428 seconds by postgrey-1.27 at vger.kernel.org; Thu, 03 Jun 2021 21:19:40 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
+  t=1622769476; x=1654305476;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=YejqC0stAIKuN9p/uYyW9Vr1or7hn7I3aTIIlxVJjsw=;
+  b=j/Wky8BHsl5al8dIpvpzU3q65hsRJo9HgXWv5IYnf7uSbSNfY8VNB+6V
+   ZKWl3PE5hMPlmb3by8i3clRqrVgdUOdf8tEqZJ3DXF8/aX8st3+AzlK1j
+   Y5cgySl1H5EyfjH6kMxZBpPOpw4Zz6SFbg8xL2SUMkpuJkEbhtg45hSvp
+   5ZHtr6UZu+mNvxAlKqmaw4Inn79mGhPYkUBsvLAWzpoZfoj5KZvixipoQ
+   pfZ6YAqUJwuZfc4XlPZiKfoW+Q2gypYdFUxcvSTMx5p3ITwPz5jjb6ffR
+   RhX6jwz0Lqe0KD6CHtBtGjrtFyndWEH7gh6e4nG3pmEb+6Ly+W1AGeoY5
+   Q==;
+IronPort-SDR: Kmcuf0UhFfV2kPJQjxepD3Q2pJL1rGuMYI/4RopGcMlXNGAAP9Q+a1plJXDB8+QSxsTEffGzFg
+ pWdAKed0mGn+ErNZe0gzjphO0x6yPKWeI5aqJ51j8+0HLlx9+8TNYyxvofJxIFxf2B1R3RGw0H
+ yzc6twyT9kWo3t9V9DK9SD9GGoz/wdvNY1UlRpepE7/mlgqIhcQBwMrdee55EZVrY8Tq7QY6DE
+ VzTgIV1DRbiA2wecZWcMt6m1/9h5op9v/dXyfpG0DVp6xC5qSa8tVBpvgdFJ7kfXxAKNuZ+XVc
+ s1s=
+X-IronPort-AV: E=McAfee;i="6200,9189,10004"; a="32351693"
+X-IronPort-AV: E=Sophos;i="5.83,246,1616425200"; 
+   d="scan'208";a="32351693"
+Received: from mail-sg2apc01lp2055.outbound.protection.outlook.com (HELO APC01-SG2-obe.outbound.protection.outlook.com) ([104.47.125.55])
+  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2021 10:10:45 +0900
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NEdxWja4nWoPWnYJ4cXwqEMTJy7prEGz8xCo3iqmjfeajNLBlQcbCpmliL7ihqDJAXwAc8QOeGh4XNdKSt9uz80EdqCujgMp5L5BvCMfp7ApEkVKtoHWiS7pUyUs9iVqQ03/KjO9JoFFBmsxCozQpgl8U2ZB95YA7bi6lY0aaD+SmE28r7iQTlNYm3wN8zuX92pFrZzy0Fjvpu7Agy7k7ebKMHThf/m4fW4VuR5Be7OQc2WP3BPqkpExBHQApKcmbMLuBkey85vGcQcYRrPkjTOQyyAI+e08Kqoog+nxBGZlNZwc4/A19udI+xWULiNl6D7BwlWBUDW91wjDzr+DxA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YejqC0stAIKuN9p/uYyW9Vr1or7hn7I3aTIIlxVJjsw=;
+ b=XAFSWM3rQ1XtO1hjLFv/YfyeV/iwJuwm5dm+wcznPNveSuf/ziE016DcCgNc9/r7ANoT3THvs/jkKWRpuiZbmLzBbZ9Gt5Ve0zozk0LmwaxXDXEtvtBhXY35hQYATs6RyCvPirY5ONDyJr6KZXSrSlxVDrYQ2bNXI6kdXVhbQn96xiMDFKtiYhhskfEfwRkntRZjcFygHw7Ygb7837EmKiYyI2jIhWz6jZ5wTSAzs1QVUns91SjneKtRnkfI7AjI/WQR+Q3cVyqqt/fMXN9NwKy9jBEIXTrHj9DlnzMKTKHUC3l+MVNBU120VLcAhuV7/01vkduDC28ZLpyQK6QF8g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YejqC0stAIKuN9p/uYyW9Vr1or7hn7I3aTIIlxVJjsw=;
+ b=mEQr7B+FSSfx6mSwlB6o9c3bhN9HXwWj9X8aEYMAq65dEJzTuPwVyeA5kXwKY4F9c9wTGwPsvsAymdmvZfICiLa4xFdXQ4ljPCr2/kjK6dujVHdjD6p/ke8n/kJJzuOyVEopkK8ULUFX6gqfR0s7XnIwQnAskWOnMxgDY7mYSDI=
+Received: from TYCPR01MB6544.jpnprd01.prod.outlook.com (2603:1096:400:98::6)
+ by TY2PR01MB4138.jpnprd01.prod.outlook.com (2603:1096:404:d0::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.22; Fri, 4 Jun
+ 2021 01:10:41 +0000
+Received: from TYCPR01MB6544.jpnprd01.prod.outlook.com
+ ([fe80::31b3:92cf:6a2b:3531]) by TYCPR01MB6544.jpnprd01.prod.outlook.com
+ ([fe80::31b3:92cf:6a2b:3531%6]) with mapi id 15.20.4195.022; Fri, 4 Jun 2021
+ 01:10:41 +0000
+From:   "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
 To:     Leah Rumancik <leah.rumancik@gmail.com>
-Cc:     linux-ext4@vger.kernel.org, fstests@vger.kernel.org,
+CC:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "fstests@vger.kernel.org" <fstests@vger.kernel.org>,
         Leah Rumancik <lrumancik@google.com>
 Subject: Re: [PATCH v3] ext4/309: add test for ext4_dir_entry2 wipe
-Message-ID: <20210604004437.GB26324@locust>
+Thread-Topic: [PATCH v3] ext4/309: add test for ext4_dir_entry2 wipe
+Thread-Index: AQHXWNaOwKSE6TFsR0q83EX/SORxx6sDC1+A
+Date:   Fri, 4 Jun 2021 01:10:41 +0000
+Message-ID: <60B97DB7.6010903@fujitsu.com>
 References: <20210604001341.2700927-1-leah.rumancik@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 In-Reply-To: <20210604001341.2700927-1-leah.rumancik@gmail.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=fujitsu.com;
+x-originating-ip: [223.111.68.150]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 52e3b469-8805-4464-72e6-08d926f59270
+x-ms-traffictypediagnostic: TY2PR01MB4138:
+x-microsoft-antispam-prvs: <TY2PR01MB41388FD831F33433B35E22D8FD3B9@TY2PR01MB4138.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6108;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: POYw1a1eRBXRktdvr50wT1akRBJ4lSAXJyT/7oOTPrQ+I6V/f6YXorgt/inXutyrU68EBRhJ58tSANbzAkXH2JILagpwDUzEiG0I5Ln1T5ZNy3lWvUJ01e3JxxN6MeDPiY3LZC/YAOgzxTtoC55uFaoM9YwLLHdFrT1dFTyMvCM3iheUqYhfZ8FSDNKnaRLcKozQRkixXFFVcBn1CLRWBNKu6fsfGj+rf/M/jmmt5B+gFHNwTIyAeSF5eUC4ybw3smpvSo0tsNCVET0AxkhtYbhNFer9E3gRp8rRcxo2UwIG4qU4QRcrQAYcAZ8uB2gXCiLbiZx30d8yOo7kuj2l1Ya4Y7G0+mfZ+2oIj4JYKRAeDawUTXmoGTuHnaNckokTX2IoOoe2EvLECqSqRJkQfSsGIw46k4tLukQeD5Flc4L/rE5rCyHsMfvQPifKbNTGuBkDbbflIgDsMADTIlM5+GYb+7In4cQ1C5ebSXiocqOvcPxd/KCGuBPhZyoKN0Z24wU8ipgVNL4sGb2f5HxapGHX5psOTtUpuhuPvQgNFo5WlQFTqcSIPt5ocBD7Jhg1Z6Abk/lxUtNqYwZzrnO4TBgq4MEMWLqq32M3YPL5s8o=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCPR01MB6544.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(136003)(366004)(396003)(376002)(186003)(6486002)(2616005)(6512007)(6916009)(316002)(66476007)(66446008)(36756003)(76116006)(66946007)(4326008)(85182001)(6506007)(38100700002)(64756008)(33656002)(87266011)(86362001)(5660300002)(122000001)(83380400001)(478600001)(71200400001)(8676002)(8936002)(91956017)(54906003)(2906002)(26005)(66556008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?gb2312?B?VW9iRzdvdSsyRFhqSlBtUXg4bGRxTHlSZlJ4U2xPS2NoZWs0bVBMNk5YQ3RK?=
+ =?gb2312?B?dnFlSVBXZ1gxWnRaNGpqK3NFbE4rVlIyYUpZZ2JjdmpQZ3lRODNGakRUYTZR?=
+ =?gb2312?B?K3ZtTXp3NElQZmxZeUdOZkNrZE5kTG8xaXpOektDSEJ2dkVjdzhkam16VjJH?=
+ =?gb2312?B?YXpaekRQREsrbVZjRzZQMWZmVnJDSVk3SlIwRUNzZWVCbkdLQkU3SGduSjVJ?=
+ =?gb2312?B?VDhicWpBTjRrZ0NPZUF3ODNtNWc3WWRESVErTDdMSmRQdzFWM0JNYzZBbnJD?=
+ =?gb2312?B?dlFrRmxkYnppdytteExKOTI2QUJ4Tjh5VEJkWGlGTTVUYlVVaU9ObUR0dkM4?=
+ =?gb2312?B?RXhPNFVhSW5SUE1kUlpBb29KUE9pOVZmbG1rclo1dkJIcTRJSG5lVkZxbDVD?=
+ =?gb2312?B?TGlOaFRxRncvNWFmbXVySTl6Y3Q4aGhWekwvMHJ3dFJJSTZvSkhkZ085M1ky?=
+ =?gb2312?B?T2MwR1d3UFlLOElnSStraGZ3Y0pHTVVha3BxUmttdFlkakhPZ2IvdmxQSWVR?=
+ =?gb2312?B?M1RlUVZlWmFlTzlFRHlFajA4cU5FZTRMVzBTY0NsbXZ0QlJmSUlzNzg2d3Y3?=
+ =?gb2312?B?S0M4OGh6SGFhTkdRQnRDYk9oUXJOelFFYW53bmEwTWxyWUp4Q1AxRWkwQjJs?=
+ =?gb2312?B?bWM4cXgrYVp5a2xyNDFXcCtFbmtBSTZNSmpSS3NWZzVNclAyQ1RwQTFWck54?=
+ =?gb2312?B?TXlFN2NPLzVZc3dQMThQQk04VlVFUTgxTVBLZUtUaUlhM2dUMlBURkJ1RFRV?=
+ =?gb2312?B?M01IQkZjWllWdzR1a1d6MVpNOGN5eEdGcDhnQ1ZtemtWRnRzODJpdmQ4TEFG?=
+ =?gb2312?B?TmNDQUszWmpHYU4xdC9QM2JPUEVYaW5WaFl4U002QStmMWc2MURqelB5RDBh?=
+ =?gb2312?B?YVlzQ0t2Y1N1N0NmSFk5bm4zNXR3a25FRGkwTk8zVkJNNGpsdHB5bjAreVdB?=
+ =?gb2312?B?U0JYdmdSdWEyOGk5YWNnR0I2YmRHTEZWRnpoVHJHOGp1MGpDSDZQR29vR1Zl?=
+ =?gb2312?B?VEVlSVp0YVBsVWlBMXE3c2ZmUFUvOEVwM090WkJ3TElTcTQxWGs3aDRpb2ZQ?=
+ =?gb2312?B?R2pGZWxrRmFqTDI4VFQxQmt3YXpZY1lqY0dnaDdNRFN6OE8xQUJ4TlJFdWxw?=
+ =?gb2312?B?OEhoNy9objVCMmlSczA1S3dZWEUxYVRDR3hqeEtkcDgrcnlZQm5RbURteFZk?=
+ =?gb2312?B?eE1CQnN6SGs4eFhqZFFjd3dkNWNYcEJLY1MvZkw3d2NLN0didmR2RURLRUdj?=
+ =?gb2312?B?YmFHQUtrRUJUWmRRRnVuMGxZZ1Z0eUxKdUIyU0NmbVFMcDEyU1JvcUg2THlm?=
+ =?gb2312?B?aTJNYUwwdjlFcDdVanBYYitSMmlKT1BRUWxyV2Q0NzRxY0x5T0xSYVIxMEh6?=
+ =?gb2312?B?OXRLV1J0d0ZKUVpmeEJmUE85VzNrRk9lVFpreVExZDFzRkk0c3pPR1F5TE9L?=
+ =?gb2312?B?YTlIYWZYU3cwd2Rab29KSmpZVFVZb3h3Vmxhd1ZiTXZONXc0MklwaGtJUndQ?=
+ =?gb2312?B?V1RLWEc0aGhWeWErRmk5QWt2UXNxc1Nvc2N3Ry8zR3A0SVJ1MzVyYi9YU0xw?=
+ =?gb2312?B?QjRTaWJjRElBZERtYnRYSHdYVWZOZDg2YVFzeHNqQ1RRN3dzeVZ0OGNoR25n?=
+ =?gb2312?B?YzIreVNYKzhVUmk5SzRxNi9nTXlzSmxHMVJlUVZwb2FUWUJPb3Q0UU1jeW55?=
+ =?gb2312?B?R2YwbDFoNHAwQ1g3anNhV2RpWmp2L3BWQTZMSyt5dzBhTE4wQjVNQUUxQTNo?=
+ =?gb2312?B?VnFleTRSbElvM1BHeUhnT2dKOXhGc0M5ekxkanpOcGZmaFE0dS9KdDZvUmNn?=
+ =?gb2312?B?SGVBRlJidlJuZHU1UmE1Zz09?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="gb2312"
+Content-ID: <6BBD9BD8216E874BB63FE13F51E8714F@jpnprd01.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB6544.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 52e3b469-8805-4464-72e6-08d926f59270
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jun 2021 01:10:41.4714
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: TC/4p+YTCEm0/yCT0/RNUzLSUBZESGehIk6okjqHwJQucTafbGHQorcALoUcqguqb3R6XR/6icJlScbVhhordOntgAV6KoLuZWoBO3XsydM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR01MB4138
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 12:13:41AM +0000, Leah Rumancik wrote:
-> From: Leah Rumancik <lrumancik@google.com>
-> 
-> Check wiping of dir entry data upon removing a file, converting to an
-> htree, and splitting htree nodes.
-> 
-> Tests commit 6c0912739699d8e4b6a87086401bf3ad3c59502d ("ext4: wipe
-> ext4_dir_entry2 upon file deletion").
-> 
-> Signed-off-by: Leah Rumancik <leah.rumancik@gmail.com>
-> 
-> Changes in v2:
-> - fix formatting
-> - use _get_block_size instead of manually finding blocksize
-> - change scratch_dir to testdir to avoid confusion
-> 
-> Changes in v3:
-> - add _require_od_endian_flag function
-> - skip test 309 if od does not support endian flag
-> ---
->  common/rc          |   9 +++
->  tests/ext4/309     | 192 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/ext4/309.out |   5 ++
->  tests/ext4/group   |   1 +
->  4 files changed, 207 insertions(+)
->  create mode 100755 tests/ext4/309
->  create mode 100644 tests/ext4/309.out
-> 
-> diff --git a/common/rc b/common/rc
-> index 2cf550ec..8b8807d5 100644
-> --- a/common/rc
-> +++ b/common/rc
-> @@ -4513,6 +4513,15 @@ _getcap()
->  	return ${PIPESTATUS[0]}
->  }
->  
-> +#od only supports --endian flag in versions 8.23 and later
-> +_require_od_endian_flag()
-> +{
-> +	version="$(od --version | grep -m 1 -o -E '[0-9.]+')"
-> +	[[ "${version%%.*}" -lt "8" ]] || \
-> +		[[ "${version%%.*}" -eq "8" && "${version##*.}" -lt "23" ]] && \
-> +		_notrun "od does not support endian flag"
-
-Please don't do version checks to determine functionality -- linux
-distributors are free to patch in whatever new functionality they please
-without bumping version numbers <cough>RHELkernel<cough>.
-
-od --endian=little < /dev/null > /dev/null 2>&1 || \
-	_notrun "od does not support endian argument"
-
-(At a glance the rest of the logic in the test looks good enough to
-handle regular directories, though I'm no longer well-versed in the
-weird directory variants <cough>luster<cough>.)
-
---D
-
-> +}
-> +
->  init_rc
->  
->  ################################################################################
-> diff --git a/tests/ext4/309 b/tests/ext4/309
-> new file mode 100755
-> index 00000000..e0497e1a
-> --- /dev/null
-> +++ b/tests/ext4/309
-> @@ -0,0 +1,192 @@
-> +#!/bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2021 Google, Inc. All Rights Reserved.
-> +#
-> +# FS QA Test No. 309
-> +#
-> +# Test wiping of ext4_dir_entry2 data upon file removal, conversion
-> +# to htree, and splitting of htree nodes
-> +#
-> +seq=`basename $0`
-> +seqres=$RESULT_DIR/$seq
-> +echo "QA output created by $seq"
-> +
-> +status=1       # failure is the default!
-> +
-> +# get standard environment, filters and checks
-> +. ./common/rc
-> +. ./common/filter
-> +
-> +# remove previous $seqres.full before test
-> +rm -f $seqres.full
-> +
-> +# real QA test starts here
-> +_supported_fs ext4
-> +
-> +_require_scratch
-> +_require_command "$DEBUGFS_PROG" debugfs
-> +_require_od_endian_flag
-> +
-> +testdir="${SCRATCH_MNT}/testdir"
-> +
-> +# get block number filename's dir ent
-> +# argument 1: filename
-> +get_block() {
-> +	echo $($DEBUGFS_PROG $SCRATCH_DEV -R "dirsearch /testdir $1" 2>> $seqres.full | grep -o -m 1 "phys [0-9]\+" | cut -c 6-)
-> +}
-> +
-> +# get offset of filename's dirent within the block
-> +# argument 1: filename
-> +get_offset() {
-> +	echo $($DEBUGFS_PROG $SCRATCH_DEV -R "dirsearch /testdir $1" 2>> $seqres.full | grep -o -m 1 "offset [0-9]\+" | cut -c 8-)
-> +}
-> +
-> +# get record length of dir ent at specified block and offset
-> +# argument 1: block
-> +# argument 2: offset
-> +get_reclen() {
-> +	echo $(od $SCRATCH_DEV --skip-bytes=$(($1 * $blocksize + $2 + 4)) --read-bytes=2  -d -An  --endian=little | tr -d ' \t\n\r')
-> +}
-> +
-> +# reads portion of dirent that should be zero'd out (starting at offset of name_len = 6)
-> +# and trims 0s and whitespace
-> +# argument 1: block num containing dir ent
-> +# argument 2: offset of dir ent within block
-> +# argument 3: rec len of dir ent
-> +read_dir_ent() {
-> +	echo $(od $SCRATCH_DEV --skip-bytes=$(($1 * $blocksize + $2 + 6)) --read-bytes=$(($3 - 6)) -d -An -v | sed -e 's/[0 \t\n\r]//g')
-> +}
-> +
-> +# forces node split on test directory
-> +# can be used to convert to htree and to split node on existing htree
-> +# looks for jump in directory size as indicator of node split
-> +induce_node_split() {
-> +	_scratch_mount >> $seqres.full 2>&1
-> +	dir_size="$(stat --printf="%s" $testdir)"
-> +	while [[ "$(stat --printf="%s" $testdir)" == "$dir_size" ]]; do
-> +		file_num=$(($file_num + 1))
-> +		touch $testdir/test"$(printf "%04d" $file_num)"
-> +	done
-> +	_scratch_unmount >> $seqres.full 2>&1
-> +}
-> +
-> +#
-> +# TEST 1: dir entry fields wiped upon file removal
-> +#
-> +
-> +test_file1="test0001"
-> +test_file2="test0002"
-> +test_file3="test0003"
-> +
-> +_scratch_mkfs_sized $((128 * 1024 * 1024)) >> $seqres.full 2>&1
-> +
-> +# create scratch dir for testing
-> +# create some files with no name a substr of another name so we can grep later
-> +_scratch_mount >> $seqres.full 2>&1
-> +blocksize="$(_get_block_size $SCRATCH_MNT)"
-> +mkdir $testdir
-> +file_num=1
-> +for file_num in {1..10}; do
-> +	touch $testdir/test"$(printf "%04d" $file_num)"
-> +done
-> +_scratch_unmount >> $seqres.full 2>&1
-> +
-> +# get block, offset, and rec_len of two test files
-> +block1=$(get_block $test_file1)
-> +offset1=$(get_offset $test_file1)
-> +rec_len1=$(get_reclen $block1 $offset1)
-> +
-> +block2=$(get_block $test_file2)
-> +offset2=$(get_offset $test_file2)
-> +rec_len2=$(get_reclen $block2 $offset2)
-> +
-> +_scratch_mount >> $seqres.full 2>&1
-> +rm $testdir/$test_file1
-> +_scratch_unmount >> $seqres.full 2>&1
-> +
-> +# read name_len field to end of dir entry
-> +check1=$(read_dir_ent $block1 $offset1 $rec_len1)
-> +check2=$(read_dir_ent $block2 $offset2 $rec_len2)
-> +
-> +# if check is empty, bytes read was all 0's, file data wiped
-> +# at this point, check1 should be empty, but check 2 should not be
-> +if [ -z "$check1" ] && [ ! -z "$check2" ]; then
-> +	echo "Test 1 part 1 passed."
-> +else
-> +	_fail "ERROR (test 1 part 1): metadata not wiped upon removing test file 1"
-> +fi
-> +
-> +_scratch_mount >> $seqres.full 2>&1
-> +rm $testdir/$test_file2
-> +_scratch_unmount >> $seqres.full 2>&1
-> +
-> +check2=$(read_dir_ent $block2 $offset2 $rec_len2)
-> +
-> +# at this point, both should be wiped
-> +[ -z "$check2" ] && echo "Test 1 part 2 passed." || _fail "ERROR (test 1 part 2): metadata not wiped upon removing test file 2"
-> +
-> +#
-> +# TEST 2: old dir entry fields wiped when directory converted to htree
-> +#
-> +
-> +# get original location
-> +block1=$(get_block $test_file3)
-> +offset1=$(get_offset $test_file3)
-> +rec_len1=$(get_reclen $block1 $offset1)
-> +
-> +# sanity check, ensures not an htree yet
-> +check_htree=$($DEBUGFS_PROG $SCRATCH_DEV -R "htree_dump /testdir" 2>&1)
-> +if [[ "$check_htree" != *"htree_dump: Not a hash-indexed directory"* ]]; then
-> +	_fail "ERROR (test 2): already an htree"
-> +fi
-> +
-> +# force conversion to htree
-> +induce_node_split
-> +
-> +# ensure it is now an htree
-> +check_htree=$($DEBUGFS_PROG $SCRATCH_DEV -R "htree_dump /testdir" 2>&1)
-> +if [[ "$check_htree" == *"htree_dump: Not a hash-indexed directory"* ]]; then
-> +	_fail "ERROR (test 2): directory was not converted to an htree after creation of many files"
-> +fi
-> +
-> +# check that old data was wiped
-> +# (this location is not immediately reused by ext4)
-> +check1=$(read_dir_ent $block1 $offset1 $rec_len1)
-> +
-> +# at this point, check1 should be empty meaning data was wiped
-> +[ -z "$check1" ] &&  echo "Test 2 passed." || _fail "ERROR (test 2): file metadata not wiped during conversion to htree"
-> +
-> +#
-> +# TEST 3: old dir entries wiped when moved to another block during split_node
-> +#
-> +
-> +# force splitting of a node
-> +induce_node_split
-> +# use debugfs to get names of two files from block 3
-> +hdump=$($DEBUGFS_PROG $SCRATCH_DEV -R "htree_dump /testdir" 2>> $seqres.full)
-> +
-> +# get line number of "Reading directory block 3"
-> +block3_line=$(echo "$hdump" | awk '/Reading directory block 3/{ print NR; exit }')
-> +
-> +[ -z "$block3_line" ] && echo "ERROR (test 3): could not find block number 3 after node split"
-> +
-> +test_file1=$(echo "$hdump" | sed -n "$(($block3_line + 1))"p | cut -d ' ' -f4)
-> +test_file2=$(echo "$hdump" | sed -n "$(($block3_line + 2))"p | cut -d ' ' -f4)
-> +
-> +# check these filenames don't exist in block 1 or 2
-> +# get block numbers of first two blocks
-> +block1=$(echo "$hdump" | grep -o -m 1 "Reading directory block 1, phys [0-9]\+" | cut -c 33-)
-> +block2=$(echo "$hdump" | grep -o -m 1 "Reading directory block 2, phys [0-9]\+" | cut -c 33-)
-> +
-> +# search all of both these blocks for these file names
-> +check1=$(od $SCRATCH_DEV --skip-bytes=$(($block1 * $blocksize)) --read-bytes=$blocksize -c -An -v | tr -d '\\ \t\n\r\v' | grep -e $test_file1 -e $test_file2)
-> +check2=$(od $SCRATCH_DEV --skip-bytes=$(($block2 * $blocksize)) --read-bytes=$blocksize -c -An -v | tr -d '\\ \t\n\r\v' | grep -e $test_file1 -e $test_file2)
-> +
-> +if [ -z "$check1" ] && [ -z "$check2" ]; then
-> +	echo "Test 3 passed."
-> +else
-> +	_fail "ERROR (test 3): file name not wiped during node split"
-> +fi
-> +
-> +status=0
-> +exit
-> diff --git a/tests/ext4/309.out b/tests/ext4/309.out
-> new file mode 100644
-> index 00000000..e5febaac
-> --- /dev/null
-> +++ b/tests/ext4/309.out
-> @@ -0,0 +1,5 @@
-> +QA output created by 309
-> +Test 1 part 1 passed.
-> +Test 1 part 2 passed.
-> +Test 2 passed.
-> +Test 3 passed.
-> diff --git a/tests/ext4/group b/tests/ext4/group
-> index ceda2ba6..e7ad3c24 100644
-> --- a/tests/ext4/group
-> +++ b/tests/ext4/group
-> @@ -59,3 +59,4 @@
->  306 auto rw resize quick
->  307 auto ioctl rw defrag
->  308 auto ioctl rw prealloc quick defrag
-> +309 auto quick dir
-> -- 
-> 2.32.0.rc1.229.g3e70b5a671-goog
-> 
+b24gMjAyMS82LzQgODoxMywgTGVhaCBSdW1hbmNpayB3cm90ZToNCj4gRnJvbTogTGVhaCBSdW1h
+bmNpazxscnVtYW5jaWtAZ29vZ2xlLmNvbT4NCj4gDQo+IENoZWNrIHdpcGluZyBvZiBkaXIgZW50
+cnkgZGF0YSB1cG9uIHJlbW92aW5nIGEgZmlsZSwgY29udmVydGluZyB0byBhbg0KPiBodHJlZSwg
+YW5kIHNwbGl0dGluZyBodHJlZSBub2Rlcy4NCj4gDQo+IFRlc3RzIGNvbW1pdCA2YzA5MTI3Mzk2
+OTlkOGU0YjZhODcwODY0MDFiZjNhZDNjNTk1MDJkICgiZXh0NDogd2lwZQ0KPiBleHQ0X2Rpcl9l
+bnRyeTIgdXBvbiBmaWxlIGRlbGV0aW9uIikuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBMZWFoIFJ1
+bWFuY2lrPGxlYWgucnVtYW5jaWtAZ21haWwuY29tPg0KPiANCj4gQ2hhbmdlcyBpbiB2MjoNCj4g
+LSBmaXggZm9ybWF0dGluZw0KPiAtIHVzZSBfZ2V0X2Jsb2NrX3NpemUgaW5zdGVhZCBvZiBtYW51
+YWxseSBmaW5kaW5nIGJsb2Nrc2l6ZQ0KPiAtIGNoYW5nZSBzY3JhdGNoX2RpciB0byB0ZXN0ZGly
+IHRvIGF2b2lkIGNvbmZ1c2lvbg0KPiANCj4gQ2hhbmdlcyBpbiB2MzoNCj4gLSBhZGQgX3JlcXVp
+cmVfb2RfZW5kaWFuX2ZsYWcgZnVuY3Rpb24NCj4gLSBza2lwIHRlc3QgMzA5IGlmIG9kIGRvZXMg
+bm90IHN1cHBvcnQgZW5kaWFuIGZsYWcNCklmIG1hY2hpbmUgaXMgbGl0dGxlLWVuZGlhbiwgd2Ug
+ZG9uJ3QgbmVlZCB0aGlzIGZsYWcuDQpJZiBtYWNoaW5lIGlzIGJpZy1lbmRpYW4sIHdlIGp1c3Qg
+Y29udmVydCB0aGUgZGF0ZSBpbnRvIGxpdHRsZS1lbmRpYW4NCmZvcm1hdC4NCkkgcmVtZW1iZXIg
+d2UgaGF2ZSBmdW5jdGlvbiB0byBkZXRlY3Qgd2hldGhlciBpdCBpcyBiaWcvbGl0dGUgaW4NCmNv
+bW1vbi9lbmNycHR5IF9udW1fdG9faGV4KCkgZnVuY3Rpb24uDQoNCmxvY2FsIGJpZ19lbmRpYW49
+JChlY2hvIC1uZSAnXHgxMScgfCBvZCAtdHgyIHwgaGVhZCAtMSB8IFwNCiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIGN1dCAtZjIgLWQnICcgfCBjdXQgLWMxKQ0KDQpJZiBJIGFtIHdyb25nLCBw
+bGVhc2UgY29ycmVjdCBtZS4NCg0KPiAtLS0NCj4gICBjb21tb24vcmMgICAgICAgICAgfCAgIDkg
+KysrDQo+ICAgdGVzdHMvZXh0NC8zMDkgICAgIHwgMTkyICsrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKw0KPiAgIHRlc3RzL2V4dDQvMzA5Lm91dCB8ICAgNSArKw0K
+PiAgIHRlc3RzL2V4dDQvZ3JvdXAgICB8ICAgMSArDQo+ICAgNCBmaWxlcyBjaGFuZ2VkLCAyMDcg
+aW5zZXJ0aW9ucygrKQ0KPiAgIGNyZWF0ZSBtb2RlIDEwMDc1NSB0ZXN0cy9leHQ0LzMwOQ0KPiAg
+IGNyZWF0ZSBtb2RlIDEwMDY0NCB0ZXN0cy9leHQ0LzMwOS5vdXQNClRoaXMgY2FzZSBoYXMgYmVl
+biBtZXJnZWQgc2luY2UgeGZzdGVzdHMgY29tbWl0IDQ2NmRkYmZkICgiZXh0NDogYWRkDQp0ZXN0
+IGZvciBleHQ0X2Rpcl9lbnRyeTIgd2lwZSIpLiBTbyB5b3UgbmVlZCB0byByZWJhc2UuDQo+IA0K
+PiBkaWZmIC0tZ2l0IGEvY29tbW9uL3JjIGIvY29tbW9uL3JjDQo+IGluZGV4IDJjZjU1MGVjLi44
+Yjg4MDdkNSAxMDA2NDQNCj4gLS0tIGEvY29tbW9uL3JjDQo+ICsrKyBiL2NvbW1vbi9yYw0KPiBA
+QCAtNDUxMyw2ICs0NTEzLDE1IEBAIF9nZXRjYXAoKQ0KPiAgIAlyZXR1cm4gJHtQSVBFU1RBVFVT
+WzBdfQ0KPiAgIH0NCj4gDQo+ICsjb2Qgb25seSBzdXBwb3J0cyAtLWVuZGlhbiBmbGFnIGluIHZl
+cnNpb25zIDguMjMgYW5kIGxhdGVyDQo+ICtfcmVxdWlyZV9vZF9lbmRpYW5fZmxhZygpDQo+ICt7
+DQo+ICsJdmVyc2lvbj0iJChvZCAtLXZlcnNpb24gfCBncmVwIC1tIDEgLW8gLUUgJ1swLTkuXSsn
+KSINCj4gKwlbWyAiJHt2ZXJzaW9uJSUuKn0iIC1sdCAiOCIgXV0gfHwgXA0KPiArCQlbWyAiJHt2
+ZXJzaW9uJSUuKn0iIC1lcSAiOCImJiAgIiR7dmVyc2lvbiMjKi59IiAtbHQgIjIzIiBdXSYmICBc
+DQo+ICsJCV9ub3RydW4gIm9kIGRvZXMgbm90IHN1cHBvcnQgZW5kaWFuIGZsYWciDQo+ICt9DQo+
+ICsNCj4gICBpbml0X3JjDQo+IA0KPiAgICMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjDQo+IGRpZmYg
+LS1naXQgYS90ZXN0cy9leHQ0LzMwOSBiL3Rlc3RzL2V4dDQvMzA5DQo+IG5ldyBmaWxlIG1vZGUg
+MTAwNzU1DQo+IGluZGV4IDAwMDAwMDAwLi5lMDQ5N2UxYQ0KPiAtLS0gL2Rldi9udWxsDQo+ICsr
+KyBiL3Rlc3RzL2V4dDQvMzA5DQo+IEBAIC0wLDAgKzEsMTkyIEBADQo+ICsjIS9iaW4vYmFzaA0K
+PiArIyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMA0KPiArIyBDb3B5cmlnaHQgKGMp
+IDIwMjEgR29vZ2xlLCBJbmMuIEFsbCBSaWdodHMgUmVzZXJ2ZWQuDQo+ICsjDQo+ICsjIEZTIFFB
+IFRlc3QgTm8uIDMwOQ0KPiArIw0KPiArIyBUZXN0IHdpcGluZyBvZiBleHQ0X2Rpcl9lbnRyeTIg
+ZGF0YSB1cG9uIGZpbGUgcmVtb3ZhbCwgY29udmVyc2lvbg0KPiArIyB0byBodHJlZSwgYW5kIHNw
+bGl0dGluZyBvZiBodHJlZSBub2Rlcw0KPiArIw0KPiArc2VxPWBiYXNlbmFtZSAkMGANCj4gK3Nl
+cXJlcz0kUkVTVUxUX0RJUi8kc2VxDQo+ICtlY2hvICJRQSBvdXRwdXQgY3JlYXRlZCBieSAkc2Vx
+Ig0KPiArDQo+ICtzdGF0dXM9MSAgICAgICAjIGZhaWx1cmUgaXMgdGhlIGRlZmF1bHQhDQo+ICsN
+Cj4gKyMgZ2V0IHN0YW5kYXJkIGVudmlyb25tZW50LCBmaWx0ZXJzIGFuZCBjaGVja3MNCj4gKy4g
+Li9jb21tb24vcmMNCj4gKy4gLi9jb21tb24vZmlsdGVyDQo+ICsNCj4gKyMgcmVtb3ZlIHByZXZp
+b3VzICRzZXFyZXMuZnVsbCBiZWZvcmUgdGVzdA0KPiArcm0gLWYgJHNlcXJlcy5mdWxsDQo+ICsN
+Cj4gKyMgcmVhbCBRQSB0ZXN0IHN0YXJ0cyBoZXJlDQo+ICtfc3VwcG9ydGVkX2ZzIGV4dDQNCj4g
+Kw0KPiArX3JlcXVpcmVfc2NyYXRjaA0KPiArX3JlcXVpcmVfY29tbWFuZCAiJERFQlVHRlNfUFJP
+RyIgZGVidWdmcw0KPiArX3JlcXVpcmVfb2RfZW5kaWFuX2ZsYWcNCj4gKw0KPiArdGVzdGRpcj0i
+JHtTQ1JBVENIX01OVH0vdGVzdGRpciINCj4gKw0KPiArIyBnZXQgYmxvY2sgbnVtYmVyIGZpbGVu
+YW1lJ3MgZGlyIGVudA0KPiArIyBhcmd1bWVudCAxOiBmaWxlbmFtZQ0KPiArZ2V0X2Jsb2NrKCkg
+ew0KPiArCWVjaG8gJCgkREVCVUdGU19QUk9HICRTQ1JBVENIX0RFViAtUiAiZGlyc2VhcmNoIC90
+ZXN0ZGlyICQxIiAyPj4gICRzZXFyZXMuZnVsbCB8IGdyZXAgLW8gLW0gMSAicGh5cyBbMC05XVwr
+IiB8IGN1dCAtYyA2LSkNCj4gK30NCj4gKw0KPiArIyBnZXQgb2Zmc2V0IG9mIGZpbGVuYW1lJ3Mg
+ZGlyZW50IHdpdGhpbiB0aGUgYmxvY2sNCj4gKyMgYXJndW1lbnQgMTogZmlsZW5hbWUNCj4gK2dl
+dF9vZmZzZXQoKSB7DQo+ICsJZWNobyAkKCRERUJVR0ZTX1BST0cgJFNDUkFUQ0hfREVWIC1SICJk
+aXJzZWFyY2ggL3Rlc3RkaXIgJDEiIDI+PiAgJHNlcXJlcy5mdWxsIHwgZ3JlcCAtbyAtbSAxICJv
+ZmZzZXQgWzAtOV1cKyIgfCBjdXQgLWMgOC0pDQo+ICt9DQo+ICsNCj4gKyMgZ2V0IHJlY29yZCBs
+ZW5ndGggb2YgZGlyIGVudCBhdCBzcGVjaWZpZWQgYmxvY2sgYW5kIG9mZnNldA0KPiArIyBhcmd1
+bWVudCAxOiBibG9jaw0KPiArIyBhcmd1bWVudCAyOiBvZmZzZXQNCj4gK2dldF9yZWNsZW4oKSB7
+DQo+ICsJZWNobyAkKG9kICRTQ1JBVENIX0RFViAtLXNraXAtYnl0ZXM9JCgoJDEgKiAkYmxvY2tz
+aXplICsgJDIgKyA0KSkgLS1yZWFkLWJ5dGVzPTIgIC1kIC1BbiAgLS1lbmRpYW49bGl0dGxlIHwg
+dHIgLWQgJyBcdFxuXHInKQ0KPiArfQ0KPiArDQo+ICsjIHJlYWRzIHBvcnRpb24gb2YgZGlyZW50
+IHRoYXQgc2hvdWxkIGJlIHplcm8nZCBvdXQgKHN0YXJ0aW5nIGF0IG9mZnNldCBvZiBuYW1lX2xl
+biA9IDYpDQo+ICsjIGFuZCB0cmltcyAwcyBhbmQgd2hpdGVzcGFjZQ0KPiArIyBhcmd1bWVudCAx
+OiBibG9jayBudW0gY29udGFpbmluZyBkaXIgZW50DQo+ICsjIGFyZ3VtZW50IDI6IG9mZnNldCBv
+ZiBkaXIgZW50IHdpdGhpbiBibG9jaw0KPiArIyBhcmd1bWVudCAzOiByZWMgbGVuIG9mIGRpciBl
+bnQNCj4gK3JlYWRfZGlyX2VudCgpIHsNCj4gKwllY2hvICQob2QgJFNDUkFUQ0hfREVWIC0tc2tp
+cC1ieXRlcz0kKCgkMSAqICRibG9ja3NpemUgKyAkMiArIDYpKSAtLXJlYWQtYnl0ZXM9JCgoJDMg
+LSA2KSkgLWQgLUFuIC12IHwgc2VkIC1lICdzL1swIFx0XG5ccl0vL2cnKQ0KPiArfQ0KPiArDQo+
+ICsjIGZvcmNlcyBub2RlIHNwbGl0IG9uIHRlc3QgZGlyZWN0b3J5DQo+ICsjIGNhbiBiZSB1c2Vk
+IHRvIGNvbnZlcnQgdG8gaHRyZWUgYW5kIHRvIHNwbGl0IG5vZGUgb24gZXhpc3RpbmcgaHRyZWUN
+Cj4gKyMgbG9va3MgZm9yIGp1bXAgaW4gZGlyZWN0b3J5IHNpemUgYXMgaW5kaWNhdG9yIG9mIG5v
+ZGUgc3BsaXQNCj4gK2luZHVjZV9ub2RlX3NwbGl0KCkgew0KPiArCV9zY3JhdGNoX21vdW50Pj4g
+ICRzZXFyZXMuZnVsbCAyPiYxDQo+ICsJZGlyX3NpemU9IiQoc3RhdCAtLXByaW50Zj0iJXMiICR0
+ZXN0ZGlyKSINCj4gKwl3aGlsZSBbWyAiJChzdGF0IC0tcHJpbnRmPSIlcyIgJHRlc3RkaXIpIiA9
+PSAiJGRpcl9zaXplIiBdXTsgZG8NCj4gKwkJZmlsZV9udW09JCgoJGZpbGVfbnVtICsgMSkpDQo+
+ICsJCXRvdWNoICR0ZXN0ZGlyL3Rlc3QiJChwcmludGYgIiUwNGQiICRmaWxlX251bSkiDQo+ICsJ
+ZG9uZQ0KPiArCV9zY3JhdGNoX3VubW91bnQ+PiAgJHNlcXJlcy5mdWxsIDI+JjENCj4gK30NCj4g
+Kw0KPiArIw0KPiArIyBURVNUIDE6IGRpciBlbnRyeSBmaWVsZHMgd2lwZWQgdXBvbiBmaWxlIHJl
+bW92YWwNCj4gKyMNCj4gKw0KPiArdGVzdF9maWxlMT0idGVzdDAwMDEiDQo+ICt0ZXN0X2ZpbGUy
+PSJ0ZXN0MDAwMiINCj4gK3Rlc3RfZmlsZTM9InRlc3QwMDAzIg0KPiArDQo+ICtfc2NyYXRjaF9t
+a2ZzX3NpemVkICQoKDEyOCAqIDEwMjQgKiAxMDI0KSk+PiAgJHNlcXJlcy5mdWxsIDI+JjENCj4g
+Kw0KPiArIyBjcmVhdGUgc2NyYXRjaCBkaXIgZm9yIHRlc3RpbmcNCj4gKyMgY3JlYXRlIHNvbWUg
+ZmlsZXMgd2l0aCBubyBuYW1lIGEgc3Vic3RyIG9mIGFub3RoZXIgbmFtZSBzbyB3ZSBjYW4gZ3Jl
+cCBsYXRlcg0KPiArX3NjcmF0Y2hfbW91bnQ+PiAgJHNlcXJlcy5mdWxsIDI+JjENCj4gK2Jsb2Nr
+c2l6ZT0iJChfZ2V0X2Jsb2NrX3NpemUgJFNDUkFUQ0hfTU5UKSINCj4gK21rZGlyICR0ZXN0ZGly
+DQo+ICtmaWxlX251bT0xDQo+ICtmb3IgZmlsZV9udW0gaW4gezEuLjEwfTsgZG8NCj4gKwl0b3Vj
+aCAkdGVzdGRpci90ZXN0IiQocHJpbnRmICIlMDRkIiAkZmlsZV9udW0pIg0KPiArZG9uZQ0KPiAr
+X3NjcmF0Y2hfdW5tb3VudD4+ICAkc2VxcmVzLmZ1bGwgMj4mMQ0KPiArDQo+ICsjIGdldCBibG9j
+aywgb2Zmc2V0LCBhbmQgcmVjX2xlbiBvZiB0d28gdGVzdCBmaWxlcw0KPiArYmxvY2sxPSQoZ2V0
+X2Jsb2NrICR0ZXN0X2ZpbGUxKQ0KPiArb2Zmc2V0MT0kKGdldF9vZmZzZXQgJHRlc3RfZmlsZTEp
+DQo+ICtyZWNfbGVuMT0kKGdldF9yZWNsZW4gJGJsb2NrMSAkb2Zmc2V0MSkNCj4gKw0KPiArYmxv
+Y2syPSQoZ2V0X2Jsb2NrICR0ZXN0X2ZpbGUyKQ0KPiArb2Zmc2V0Mj0kKGdldF9vZmZzZXQgJHRl
+c3RfZmlsZTIpDQo+ICtyZWNfbGVuMj0kKGdldF9yZWNsZW4gJGJsb2NrMiAkb2Zmc2V0MikNCj4g
+Kw0KPiArX3NjcmF0Y2hfbW91bnQ+PiAgJHNlcXJlcy5mdWxsIDI+JjENCj4gK3JtICR0ZXN0ZGly
+LyR0ZXN0X2ZpbGUxDQo+ICtfc2NyYXRjaF91bm1vdW50Pj4gICRzZXFyZXMuZnVsbCAyPiYxDQo+
+ICsNCj4gKyMgcmVhZCBuYW1lX2xlbiBmaWVsZCB0byBlbmQgb2YgZGlyIGVudHJ5DQo+ICtjaGVj
+azE9JChyZWFkX2Rpcl9lbnQgJGJsb2NrMSAkb2Zmc2V0MSAkcmVjX2xlbjEpDQo+ICtjaGVjazI9
+JChyZWFkX2Rpcl9lbnQgJGJsb2NrMiAkb2Zmc2V0MiAkcmVjX2xlbjIpDQo+ICsNCj4gKyMgaWYg
+Y2hlY2sgaXMgZW1wdHksIGJ5dGVzIHJlYWQgd2FzIGFsbCAwJ3MsIGZpbGUgZGF0YSB3aXBlZA0K
+PiArIyBhdCB0aGlzIHBvaW50LCBjaGVjazEgc2hvdWxkIGJlIGVtcHR5LCBidXQgY2hlY2sgMiBz
+aG91bGQgbm90IGJlDQo+ICtpZiBbIC16ICIkY2hlY2sxIiBdJiYgIFsgISAteiAiJGNoZWNrMiIg
+XTsgdGhlbg0KPiArCWVjaG8gIlRlc3QgMSBwYXJ0IDEgcGFzc2VkLiINCj4gK2Vsc2UNCj4gKwlf
+ZmFpbCAiRVJST1IgKHRlc3QgMSBwYXJ0IDEpOiBtZXRhZGF0YSBub3Qgd2lwZWQgdXBvbiByZW1v
+dmluZyB0ZXN0IGZpbGUgMSINCj4gK2ZpDQo+ICsNCj4gK19zY3JhdGNoX21vdW50Pj4gICRzZXFy
+ZXMuZnVsbCAyPiYxDQo+ICtybSAkdGVzdGRpci8kdGVzdF9maWxlMg0KPiArX3NjcmF0Y2hfdW5t
+b3VudD4+ICAkc2VxcmVzLmZ1bGwgMj4mMQ0KPiArDQo+ICtjaGVjazI9JChyZWFkX2Rpcl9lbnQg
+JGJsb2NrMiAkb2Zmc2V0MiAkcmVjX2xlbjIpDQo+ICsNCj4gKyMgYXQgdGhpcyBwb2ludCwgYm90
+aCBzaG91bGQgYmUgd2lwZWQNCj4gK1sgLXogIiRjaGVjazIiIF0mJiAgZWNobyAiVGVzdCAxIHBh
+cnQgMiBwYXNzZWQuIiB8fCBfZmFpbCAiRVJST1IgKHRlc3QgMSBwYXJ0IDIpOiBtZXRhZGF0YSBu
+b3Qgd2lwZWQgdXBvbiByZW1vdmluZyB0ZXN0IGZpbGUgMiINCj4gKw0KPiArIw0KPiArIyBURVNU
+IDI6IG9sZCBkaXIgZW50cnkgZmllbGRzIHdpcGVkIHdoZW4gZGlyZWN0b3J5IGNvbnZlcnRlZCB0
+byBodHJlZQ0KPiArIw0KPiArDQo+ICsjIGdldCBvcmlnaW5hbCBsb2NhdGlvbg0KPiArYmxvY2sx
+PSQoZ2V0X2Jsb2NrICR0ZXN0X2ZpbGUzKQ0KPiArb2Zmc2V0MT0kKGdldF9vZmZzZXQgJHRlc3Rf
+ZmlsZTMpDQo+ICtyZWNfbGVuMT0kKGdldF9yZWNsZW4gJGJsb2NrMSAkb2Zmc2V0MSkNCj4gKw0K
+PiArIyBzYW5pdHkgY2hlY2ssIGVuc3VyZXMgbm90IGFuIGh0cmVlIHlldA0KPiArY2hlY2tfaHRy
+ZWU9JCgkREVCVUdGU19QUk9HICRTQ1JBVENIX0RFViAtUiAiaHRyZWVfZHVtcCAvdGVzdGRpciIg
+Mj4mMSkNCj4gK2lmIFtbICIkY2hlY2tfaHRyZWUiICE9ICoiaHRyZWVfZHVtcDogTm90IGEgaGFz
+aC1pbmRleGVkIGRpcmVjdG9yeSIqIF1dOyB0aGVuDQo+ICsJX2ZhaWwgIkVSUk9SICh0ZXN0IDIp
+OiBhbHJlYWR5IGFuIGh0cmVlIg0KPiArZmkNCj4gKw0KPiArIyBmb3JjZSBjb252ZXJzaW9uIHRv
+IGh0cmVlDQo+ICtpbmR1Y2Vfbm9kZV9zcGxpdA0KPiArDQo+ICsjIGVuc3VyZSBpdCBpcyBub3cg
+YW4gaHRyZWUNCj4gK2NoZWNrX2h0cmVlPSQoJERFQlVHRlNfUFJPRyAkU0NSQVRDSF9ERVYgLVIg
+Imh0cmVlX2R1bXAgL3Rlc3RkaXIiIDI+JjEpDQo+ICtpZiBbWyAiJGNoZWNrX2h0cmVlIiA9PSAq
+Imh0cmVlX2R1bXA6IE5vdCBhIGhhc2gtaW5kZXhlZCBkaXJlY3RvcnkiKiBdXTsgdGhlbg0KPiAr
+CV9mYWlsICJFUlJPUiAodGVzdCAyKTogZGlyZWN0b3J5IHdhcyBub3QgY29udmVydGVkIHRvIGFu
+IGh0cmVlIGFmdGVyIGNyZWF0aW9uIG9mIG1hbnkgZmlsZXMiDQo+ICtmaQ0KPiArDQo+ICsjIGNo
+ZWNrIHRoYXQgb2xkIGRhdGEgd2FzIHdpcGVkDQo+ICsjICh0aGlzIGxvY2F0aW9uIGlzIG5vdCBp
+bW1lZGlhdGVseSByZXVzZWQgYnkgZXh0NCkNCj4gK2NoZWNrMT0kKHJlYWRfZGlyX2VudCAkYmxv
+Y2sxICRvZmZzZXQxICRyZWNfbGVuMSkNCj4gKw0KPiArIyBhdCB0aGlzIHBvaW50LCBjaGVjazEg
+c2hvdWxkIGJlIGVtcHR5IG1lYW5pbmcgZGF0YSB3YXMgd2lwZWQNCj4gK1sgLXogIiRjaGVjazEi
+IF0mJiAgIGVjaG8gIlRlc3QgMiBwYXNzZWQuIiB8fCBfZmFpbCAiRVJST1IgKHRlc3QgMik6IGZp
+bGUgbWV0YWRhdGEgbm90IHdpcGVkIGR1cmluZyBjb252ZXJzaW9uIHRvIGh0cmVlIg0KPiArDQo+
+ICsjDQo+ICsjIFRFU1QgMzogb2xkIGRpciBlbnRyaWVzIHdpcGVkIHdoZW4gbW92ZWQgdG8gYW5v
+dGhlciBibG9jayBkdXJpbmcgc3BsaXRfbm9kZQ0KPiArIw0KPiArDQo+ICsjIGZvcmNlIHNwbGl0
+dGluZyBvZiBhIG5vZGUNCj4gK2luZHVjZV9ub2RlX3NwbGl0DQo+ICsjIHVzZSBkZWJ1Z2ZzIHRv
+IGdldCBuYW1lcyBvZiB0d28gZmlsZXMgZnJvbSBibG9jayAzDQo+ICtoZHVtcD0kKCRERUJVR0ZT
+X1BST0cgJFNDUkFUQ0hfREVWIC1SICJodHJlZV9kdW1wIC90ZXN0ZGlyIiAyPj4gICRzZXFyZXMu
+ZnVsbCkNCj4gKw0KPiArIyBnZXQgbGluZSBudW1iZXIgb2YgIlJlYWRpbmcgZGlyZWN0b3J5IGJs
+b2NrIDMiDQo+ICtibG9jazNfbGluZT0kKGVjaG8gIiRoZHVtcCIgfCBhd2sgJy9SZWFkaW5nIGRp
+cmVjdG9yeSBibG9jayAzL3sgcHJpbnQgTlI7IGV4aXQgfScpDQo+ICsNCj4gK1sgLXogIiRibG9j
+azNfbGluZSIgXSYmICBlY2hvICJFUlJPUiAodGVzdCAzKTogY291bGQgbm90IGZpbmQgYmxvY2sg
+bnVtYmVyIDMgYWZ0ZXIgbm9kZSBzcGxpdCINCj4gKw0KPiArdGVzdF9maWxlMT0kKGVjaG8gIiRo
+ZHVtcCIgfCBzZWQgLW4gIiQoKCRibG9jazNfbGluZSArIDEpKSJwIHwgY3V0IC1kICcgJyAtZjQp
+DQo+ICt0ZXN0X2ZpbGUyPSQoZWNobyAiJGhkdW1wIiB8IHNlZCAtbiAiJCgoJGJsb2NrM19saW5l
+ICsgMikpInAgfCBjdXQgLWQgJyAnIC1mNCkNCj4gKw0KPiArIyBjaGVjayB0aGVzZSBmaWxlbmFt
+ZXMgZG9uJ3QgZXhpc3QgaW4gYmxvY2sgMSBvciAyDQo+ICsjIGdldCBibG9jayBudW1iZXJzIG9m
+IGZpcnN0IHR3byBibG9ja3MNCj4gK2Jsb2NrMT0kKGVjaG8gIiRoZHVtcCIgfCBncmVwIC1vIC1t
+IDEgIlJlYWRpbmcgZGlyZWN0b3J5IGJsb2NrIDEsIHBoeXMgWzAtOV1cKyIgfCBjdXQgLWMgMzMt
+KQ0KPiArYmxvY2syPSQoZWNobyAiJGhkdW1wIiB8IGdyZXAgLW8gLW0gMSAiUmVhZGluZyBkaXJl
+Y3RvcnkgYmxvY2sgMiwgcGh5cyBbMC05XVwrIiB8IGN1dCAtYyAzMy0pDQo+ICsNCj4gKyMgc2Vh
+cmNoIGFsbCBvZiBib3RoIHRoZXNlIGJsb2NrcyBmb3IgdGhlc2UgZmlsZSBuYW1lcw0KPiArY2hl
+Y2sxPSQob2QgJFNDUkFUQ0hfREVWIC0tc2tpcC1ieXRlcz0kKCgkYmxvY2sxICogJGJsb2Nrc2l6
+ZSkpIC0tcmVhZC1ieXRlcz0kYmxvY2tzaXplIC1jIC1BbiAtdiB8IHRyIC1kICdcXCBcdFxuXHJc
+dicgfCBncmVwIC1lICR0ZXN0X2ZpbGUxIC1lICR0ZXN0X2ZpbGUyKQ0KPiArY2hlY2syPSQob2Qg
+JFNDUkFUQ0hfREVWIC0tc2tpcC1ieXRlcz0kKCgkYmxvY2syICogJGJsb2Nrc2l6ZSkpIC0tcmVh
+ZC1ieXRlcz0kYmxvY2tzaXplIC1jIC1BbiAtdiB8IHRyIC1kICdcXCBcdFxuXHJcdicgfCBncmVw
+IC1lICR0ZXN0X2ZpbGUxIC1lICR0ZXN0X2ZpbGUyKQ0KPiArDQo+ICtpZiBbIC16ICIkY2hlY2sx
+IiBdJiYgIFsgLXogIiRjaGVjazIiIF07IHRoZW4NCj4gKwllY2hvICJUZXN0IDMgcGFzc2VkLiIN
+Cj4gK2Vsc2UNCj4gKwlfZmFpbCAiRVJST1IgKHRlc3QgMyk6IGZpbGUgbmFtZSBub3Qgd2lwZWQg
+ZHVyaW5nIG5vZGUgc3BsaXQiDQo+ICtmaQ0KPiArDQo+ICtzdGF0dXM9MA0KPiArZXhpdA0KPiBk
+aWZmIC0tZ2l0IGEvdGVzdHMvZXh0NC8zMDkub3V0IGIvdGVzdHMvZXh0NC8zMDkub3V0DQo+IG5l
+dyBmaWxlIG1vZGUgMTAwNjQ0DQo+IGluZGV4IDAwMDAwMDAwLi5lNWZlYmFhYw0KPiAtLS0gL2Rl
+di9udWxsDQo+ICsrKyBiL3Rlc3RzL2V4dDQvMzA5Lm91dA0KPiBAQCAtMCwwICsxLDUgQEANCj4g
+K1FBIG91dHB1dCBjcmVhdGVkIGJ5IDMwOQ0KPiArVGVzdCAxIHBhcnQgMSBwYXNzZWQuDQo+ICtU
+ZXN0IDEgcGFydCAyIHBhc3NlZC4NCj4gK1Rlc3QgMiBwYXNzZWQuDQo+ICtUZXN0IDMgcGFzc2Vk
+Lg0KPiBkaWZmIC0tZ2l0IGEvdGVzdHMvZXh0NC9ncm91cCBiL3Rlc3RzL2V4dDQvZ3JvdXANCj4g
+aW5kZXggY2VkYTJiYTYuLmU3YWQzYzI0IDEwMDY0NA0KPiAtLS0gYS90ZXN0cy9leHQ0L2dyb3Vw
+DQo+ICsrKyBiL3Rlc3RzL2V4dDQvZ3JvdXANCj4gQEAgLTU5LDMgKzU5LDQgQEANCj4gICAzMDYg
+YXV0byBydyByZXNpemUgcXVpY2sNCj4gICAzMDcgYXV0byBpb2N0bCBydyBkZWZyYWcNCj4gICAz
+MDggYXV0byBpb2N0bCBydyBwcmVhbGxvYyBxdWljayBkZWZyYWcNCj4gKzMwOSBhdXRvIHF1aWNr
+IGRpcg0K
