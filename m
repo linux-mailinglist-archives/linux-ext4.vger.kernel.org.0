@@ -2,137 +2,215 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 839AA39C6AB
-	for <lists+linux-ext4@lfdr.de>; Sat,  5 Jun 2021 09:51:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AB7E39C845
+	for <lists+linux-ext4@lfdr.de>; Sat,  5 Jun 2021 14:53:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230036AbhFEHxP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 5 Jun 2021 03:53:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46184 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230026AbhFEHxN (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Sat, 5 Jun 2021 03:53:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6659261042;
-        Sat,  5 Jun 2021 07:51:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622879486;
-        bh=oU7rLWlDtRnK5OqhhwuLiZAyphz7z0h1gnj2095cQ6I=;
-        h=From:To:Cc:Subject:Date:From;
-        b=mxwCu6VYqyEjqlKtghQAP7PY6VGEj1y1vow00zcCuVswe9XHCAT1vSXlSfqG5Pf9j
-         q4+Eq+S7y/6Mo+hGQGPm8yB6eGJms+1wBM3XrAPbrVm6vIt0ChyGFubUig2hkJ7BCu
-         GAjOh1kDH36YqLxqYiydv4EuSjqivVWgqiSUoZyatLA9toVGzX2CsTORZfIfU1ysRQ
-         WCIGZemvg3C+qhFlVvdoJJtQuLUiNebiDqiSmb1LbrwCeXHBnby99/y5D2HNR5m+Yj
-         vz1FklyBBFCFwcqLGlnrdgsqgH9raF95XqmkuI+UpGGo8qCMswub/ls32E75CR1dfp
-         M2LxfUXgsR1gw==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        Daniel Rosenberg <drosen@google.com>, stable@vger.kernel.org
-Subject: [PATCH v2] fscrypt: fix derivation of SipHash keys on big endian CPUs
-Date:   Sat,  5 Jun 2021 00:50:33 -0700
-Message-Id: <20210605075033.54424-1-ebiggers@kernel.org>
+        id S230039AbhFEMzX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 5 Jun 2021 08:55:23 -0400
+Received: from mail-lf1-f47.google.com ([209.85.167.47]:42687 "EHLO
+        mail-lf1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229957AbhFEMzW (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 5 Jun 2021 08:55:22 -0400
+Received: by mail-lf1-f47.google.com with SMTP id a2so18196994lfc.9;
+        Sat, 05 Jun 2021 05:53:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=PDooDxlV/Vf4bcgK0N9C28zeqWwrdgcP194Ocfzp/4E=;
+        b=hGxQYEYzp3IWIARiog2+J9pRLKXz7HF7SWAjdAIYWNo9FVZGBDoqLLmpX8kXNu9pWJ
+         bzAIGvgNIChVJOd6+voVG+2nWPE/0RxwxAfdD4bzzLGaCYhNt89zqeYGQp6L03pV4laF
+         CwlsGIayWbaEKtNfsTpHZ0J4kd9aIUQgxr5Wqp37W03ESwwtou9SFILNAznp1BTul9hP
+         vwbsj2j0vOV8EVH4q7ZHUk1YvVKn1VsKYHM/26qwpu4SomMfHOgH4gM1KQ5NQIgqNQ0n
+         i9K97RkKHK1p2yuZNgDgfkhPe3FDBT9cLYPQ96mDagWT00Yk+qRe12SGVG7FOtga6fVb
+         6AKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=PDooDxlV/Vf4bcgK0N9C28zeqWwrdgcP194Ocfzp/4E=;
+        b=rNHjhvL/1HTZR9sEM1QILZVSEUrCQhE/4Gj3DAknqencWUPyM9lZUE0hIs3c7EZE/I
+         VBLVn1wpWGUaiDLEbk629cJP68TM1zOMbf3j4NbS5gmSEO3X++X6uAWYB9/lY1hdnumO
+         FThgH9nPl1cZsyRqj2vZQXLp52YLZKjPal0xr2Om5Y65Vbm9+84Swg9dZkOyM3QO1hO6
+         e3WJu3aCnSjxGqBxo376KDcdvFFPwc2lAQ2xcrkUmBqxHxWX8RG26nvH8PKdihy12Q1/
+         0LTqOVkkoWepW0RVRF0VY5xe04ql91X3Qs3ZoSX0A3iLfqvDOhs1+iHApAtwkHt/EUU2
+         8EgQ==
+X-Gm-Message-State: AOAM530p9U2aWiumf8cIcyXtDmn5Lwbl/0SCrqwaNk6XJmZ2ZZ66SOI1
+        Bxockw5NbilEi25kbZ/utrM=
+X-Google-Smtp-Source: ABdhPJwFQrIWUO9Z6+ef2E9eq+B6MuhHuWoyVbSO093RFNI/L8c70o+mnG6yS3OIiBs6fAlJo/5Cdg==
+X-Received: by 2002:a05:6512:318d:: with SMTP id i13mr4145240lfe.407.1622897540359;
+        Sat, 05 Jun 2021 05:52:20 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.224.40])
+        by smtp.gmail.com with ESMTPSA id bu21sm79340lfb.180.2021.06.05.05.52.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 05 Jun 2021 05:52:19 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
+Subject: [RESEND PATCH v2] ext4: fix memory leak in ext4_fill_super
+Date:   Sat,  5 Jun 2021 15:52:10 +0300
+Message-Id: <20210605125210.10356-1-paskripkin@gmail.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210517213427.3ac17247@gmail.com>
+References: <20210517213427.3ac17247@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+static int kthread(void *_create) will return -ENOMEM
+or -EINTR in case of internal failure or
+kthread_stop() call happens before threadfn call.
 
-Typically, the cryptographic APIs that fscrypt uses take keys as byte
-arrays, which avoids endianness issues.  However, siphash_key_t is an
-exception.  It is defined as 'u64 key[2];', i.e. the 128-bit key is
-expected to be given directly as two 64-bit words in CPU endianness.
+To prevent fancy error checking and make code
+more straightforward we moved all cleanup code out
+of kmmpd threadfn.
 
-fscrypt_derive_dirhash_key() and fscrypt_setup_iv_ino_lblk_32_key()
-forgot to take this into account.  Therefore, the SipHash keys used to
-index encrypted+casefolded directories differ on big endian vs. little
-endian platforms, as do the SipHash keys used to hash inode numbers for
-IV_INO_LBLK_32-encrypted directories.  This makes such directories
-non-portable between these platforms.
+Also, dropped struct mmpd_data at all. Now struct super_block
+is a threadfn data and struct buffer_head embedded into
+struct ext4_sb_info.
 
-Fix this by always using the little endian order.  This is a breaking
-change for big endian platforms, but this should be fine in practice
-since these features (encrypt+casefold support, and the IV_INO_LBLK_32
-flag) aren't known to actually be used on any big endian platforms yet.
-
-Fixes: aa408f835d02 ("fscrypt: derive dirhash key for casefolded directories")
-Fixes: e3b1078bedd3 ("fscrypt: add support for IV_INO_LBLK_32 policies")
-Cc: <stable@vger.kernel.org> # v5.6+
-Signed-off-by: Eric Biggers <ebiggers@google.com>
+Reported-by: syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 ---
+ fs/ext4/ext4.h  |  4 ++++
+ fs/ext4/mmp.c   | 28 +++++++++++++---------------
+ fs/ext4/super.c | 10 ++++------
+ 3 files changed, 21 insertions(+), 21 deletions(-)
 
-v2: Fixed fscrypt_setup_iv_ino_lblk_32_key() too, not just
-    fscrypt_derive_dirhash_key().
-
- fs/crypto/keysetup.c | 40 ++++++++++++++++++++++++++++++++--------
- 1 file changed, 32 insertions(+), 8 deletions(-)
-
-diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index 261293fb70974..bca9c6658a7c5 100644
---- a/fs/crypto/keysetup.c
-+++ b/fs/crypto/keysetup.c
-@@ -210,15 +210,40 @@ static int setup_per_mode_enc_key(struct fscrypt_info *ci,
- 	return err;
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 826a56e3bbd2..62210cbea84b 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -1490,6 +1490,7 @@ struct ext4_sb_info {
+ 	struct kobject s_kobj;
+ 	struct completion s_kobj_unregister;
+ 	struct super_block *s_sb;
++	struct buffer_head *s_mmp_bh;
+ 
+ 	/* Journaling */
+ 	struct journal_s *s_journal;
+@@ -3663,6 +3664,9 @@ extern struct ext4_io_end_vec *ext4_last_io_end_vec(ext4_io_end_t *io_end);
+ /* mmp.c */
+ extern int ext4_multi_mount_protect(struct super_block *, ext4_fsblk_t);
+ 
++/* mmp.c */
++extern void ext4_stop_mmpd(struct ext4_sb_info *sbi);
++
+ /* verity.c */
+ extern const struct fsverity_operations ext4_verityops;
+ 
+diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
+index 795c3ff2907c..623bad399612 100644
+--- a/fs/ext4/mmp.c
++++ b/fs/ext4/mmp.c
+@@ -127,9 +127,9 @@ void __dump_mmp_msg(struct super_block *sb, struct mmp_struct *mmp,
+  */
+ static int kmmpd(void *data)
+ {
+-	struct super_block *sb = ((struct mmpd_data *) data)->sb;
+-	struct buffer_head *bh = ((struct mmpd_data *) data)->bh;
++	struct super_block *sb = (struct super_block *) data;
+ 	struct ext4_super_block *es = EXT4_SB(sb)->s_es;
++	struct buffer_head *bh = EXT4_SB(sb)->s_mmp_bh;
+ 	struct mmp_struct *mmp;
+ 	ext4_fsblk_t mmp_block;
+ 	u32 seq = 0;
+@@ -245,12 +245,18 @@ static int kmmpd(void *data)
+ 	retval = write_mmp_block(sb, bh);
+ 
+ exit_thread:
+-	EXT4_SB(sb)->s_mmp_tsk = NULL;
+-	kfree(data);
+-	brelse(bh);
+ 	return retval;
  }
  
-+/*
-+ * Derive a SipHash key from the given fscrypt master key and the given
-+ * application-specific information string.
-+ *
-+ * Note that the KDF produces a byte array, but the SipHash APIs expect the key
-+ * as a pair of 64-bit words.  Therefore, on big endian CPUs we have to do an
-+ * endianness swap in order to get the same results as on little endian CPUs.
-+ */
-+static int fscrypt_derive_siphash_key(const struct fscrypt_master_key *mk,
-+				      u8 context, const u8 *info,
-+				      unsigned int infolen, siphash_key_t *key)
++void ext4_stop_mmpd(struct ext4_sb_info *sbi)
 +{
-+	int err;
-+
-+	err = fscrypt_hkdf_expand(&mk->mk_secret.hkdf, context, info, infolen,
-+				  (u8 *)key, sizeof(*key));
-+	if (err)
-+		return err;
-+
-+	BUILD_BUG_ON(sizeof(*key) != 16);
-+	BUILD_BUG_ON(ARRAY_SIZE(key->key) != 2);
-+	le64_to_cpus(&key->key[0]);
-+	le64_to_cpus(&key->key[1]);
-+	return 0;
++	if (sbi->s_mmp_tsk) {
++		kthread_stop(sbi->s_mmp_tsk);
++		brelse(sbi->s_mmp_bh);
++		sbi->s_mmp_tsk = NULL;
++	}
 +}
 +
- int fscrypt_derive_dirhash_key(struct fscrypt_info *ci,
- 			       const struct fscrypt_master_key *mk)
- {
- 	int err;
+ /*
+  * Get a random new sequence number but make sure it is not greater than
+  * EXT4_MMP_SEQ_MAX.
+@@ -275,7 +281,6 @@ int ext4_multi_mount_protect(struct super_block *sb,
+ 	struct ext4_super_block *es = EXT4_SB(sb)->s_es;
+ 	struct buffer_head *bh = NULL;
+ 	struct mmp_struct *mmp = NULL;
+-	struct mmpd_data *mmpd_data;
+ 	u32 seq;
+ 	unsigned int mmp_check_interval = le16_to_cpu(es->s_mmp_update_interval);
+ 	unsigned int wait_time = 0;
+@@ -364,24 +369,17 @@ int ext4_multi_mount_protect(struct super_block *sb,
+ 		goto failed;
+ 	}
  
--	err = fscrypt_hkdf_expand(&mk->mk_secret.hkdf, HKDF_CONTEXT_DIRHASH_KEY,
--				  ci->ci_nonce, FSCRYPT_FILE_NONCE_SIZE,
--				  (u8 *)&ci->ci_dirhash_key,
--				  sizeof(ci->ci_dirhash_key));
-+	err = fscrypt_derive_siphash_key(mk, HKDF_CONTEXT_DIRHASH_KEY,
-+					 ci->ci_nonce, FSCRYPT_FILE_NONCE_SIZE,
-+					 &ci->ci_dirhash_key);
- 	if (err)
- 		return err;
- 	ci->ci_dirhash_key_initialized = true;
-@@ -253,10 +278,9 @@ static int fscrypt_setup_iv_ino_lblk_32_key(struct fscrypt_info *ci,
- 		if (mk->mk_ino_hash_key_initialized)
- 			goto unlock;
+-	mmpd_data = kmalloc(sizeof(*mmpd_data), GFP_KERNEL);
+-	if (!mmpd_data) {
+-		ext4_warning(sb, "not enough memory for mmpd_data");
+-		goto failed;
+-	}
+-	mmpd_data->sb = sb;
+-	mmpd_data->bh = bh;
++	EXT4_SB(sb)->s_mmp_bh = bh;
  
--		err = fscrypt_hkdf_expand(&mk->mk_secret.hkdf,
--					  HKDF_CONTEXT_INODE_HASH_KEY, NULL, 0,
--					  (u8 *)&mk->mk_ino_hash_key,
--					  sizeof(mk->mk_ino_hash_key));
-+		err = fscrypt_derive_siphash_key(mk,
-+						 HKDF_CONTEXT_INODE_HASH_KEY,
-+						 NULL, 0, &mk->mk_ino_hash_key);
- 		if (err)
- 			goto unlock;
- 		/* pairs with smp_load_acquire() above */
-
-base-commit: 77f30bfcfcf484da7208affd6a9e63406420bf91
+ 	/*
+ 	 * Start a kernel thread to update the MMP block periodically.
+ 	 */
+-	EXT4_SB(sb)->s_mmp_tsk = kthread_run(kmmpd, mmpd_data, "kmmpd-%.*s",
++	EXT4_SB(sb)->s_mmp_tsk = kthread_run(kmmpd, sb, "kmmpd-%.*s",
+ 					     (int)sizeof(mmp->mmp_bdevname),
+ 					     bdevname(bh->b_bdev,
+ 						      mmp->mmp_bdevname));
+ 	if (IS_ERR(EXT4_SB(sb)->s_mmp_tsk)) {
+ 		EXT4_SB(sb)->s_mmp_tsk = NULL;
+-		kfree(mmpd_data);
+ 		ext4_warning(sb, "Unable to create kmmpd thread for %s.",
+ 			     sb->s_id);
+ 		goto failed;
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index b9693680463a..539f89c5431f 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -1244,8 +1244,8 @@ static void ext4_put_super(struct super_block *sb)
+ 	ext4_xattr_destroy_cache(sbi->s_ea_block_cache);
+ 	sbi->s_ea_block_cache = NULL;
+ 
+-	if (sbi->s_mmp_tsk)
+-		kthread_stop(sbi->s_mmp_tsk);
++	ext4_stop_mmpd(sbi);
++
+ 	brelse(sbi->s_sbh);
+ 	sb->s_fs_info = NULL;
+ 	/*
+@@ -5156,8 +5156,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+ failed_mount3:
+ 	flush_work(&sbi->s_error_work);
+ 	del_timer_sync(&sbi->s_err_report);
+-	if (sbi->s_mmp_tsk)
+-		kthread_stop(sbi->s_mmp_tsk);
++	ext4_stop_mmpd(sbi);
+ failed_mount2:
+ 	rcu_read_lock();
+ 	group_desc = rcu_dereference(sbi->s_group_desc);
+@@ -5952,8 +5951,7 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
+ 				 */
+ 				ext4_mark_recovery_complete(sb, es);
+ 			}
+-			if (sbi->s_mmp_tsk)
+-				kthread_stop(sbi->s_mmp_tsk);
++			ext4_stop_mmpd(sbi);
+ 		} else {
+ 			/* Make sure we can mount this feature set readwrite */
+ 			if (ext4_has_feature_readonly(sb) ||
 -- 
 2.31.1
 
