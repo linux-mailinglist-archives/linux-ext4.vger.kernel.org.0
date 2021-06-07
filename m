@@ -2,123 +2,122 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5846F39D937
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Jun 2021 12:00:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C22739D992
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Jun 2021 12:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230226AbhFGKCU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 7 Jun 2021 06:02:20 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:55916 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230217AbhFGKCU (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Jun 2021 06:02:20 -0400
-Received: from relay2.suse.de (unknown [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 5BB8121A6C;
-        Mon,  7 Jun 2021 10:00:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623060028; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GFjiMXVAWRqijm4ryAAi/AxWgTd6JPrh4QAApGk5EJ8=;
-        b=Hl0YGueKVNdMk6VZYwfA0+cy3x8GAfZZ4ovNWpuXN1AOBR9piJjHWud5ynyGsKGEnGXXC5
-        jL05huKwufBNpmGj5qaGUiXprkf+kyd63ponwczA4jpkFk01Rgp/QP6doikqy6mP1aDzQQ
-        6SXNBUvhKFp1NST+GBh01fT3+wdWyBU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623060028;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GFjiMXVAWRqijm4ryAAi/AxWgTd6JPrh4QAApGk5EJ8=;
-        b=cunPtc+elufhsl8ONQYKZN1i5WR3wseVl0DmQRba8IH+/feaWQKwp8mwBNXha9S7y+Mkqs
-        pMdxcjXFGNvzgsAw==
-Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id 4CC67A3B81;
-        Mon,  7 Jun 2021 10:00:28 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 1CC131F2CA8; Mon,  7 Jun 2021 12:00:28 +0200 (CEST)
-Date:   Mon, 7 Jun 2021 12:00:28 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH] ext4: Fix loff_t overflow in ext4_max_bitmap_size()
-Message-ID: <20210607100028.GE30275@quack2.suse.cz>
-References: <594f409e2c543e90fd836b78188dfa5c575065ba.1622867594.git.riteshh@linux.ibm.com>
+        id S230372AbhFGK0g (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 7 Jun 2021 06:26:36 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:21976 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230127AbhFGK0f (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Jun 2021 06:26:35 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 157AHeil005413;
+        Mon, 7 Jun 2021 10:24:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=u12TmV5uGv81rRznZbzspuuXXc/5c57q0zq4nsWum48=;
+ b=jgmKAik5hDJlP2wURcTO9vY7Mr29tTALlGRSSJjnmn9DnbeZssy+SefZdShzJqXr2Vwh
+ tH+b9LwlagI0q87FxZHDzp2iE1Esqs9aIKKV7TSvsCdtg730ekW/2HW1q+BbvRXGuqIy
+ DjINKygDnBWVxuRHu6y1GpwI3XS239qX6kC65eVj5pnupyGTSGFTjwowo3qzO0nVUb80
+ 5rN+I5IFznTGyaAKzi3AzTLB4cjGT0klP96sFwnKKFDM7DlfeijPQERjlGCuNSW2rs1t
+ ehsgo3WR5sVZXY9+CqCdOBsePYvSrBWj3FC8sVoosmfwjT5UXCDCvgCyVdA45lmKShje Hg== 
+Received: from oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 391g4g814k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 07 Jun 2021 10:24:40 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 157AOdFi053883;
+        Mon, 7 Jun 2021 10:24:39 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 3906spaj0j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 07 Jun 2021 10:24:39 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 157AOdb2053829;
+        Mon, 7 Jun 2021 10:24:39 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 3906spahyb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 07 Jun 2021 10:24:39 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 157AOcef011743;
+        Mon, 7 Jun 2021 10:24:38 GMT
+Received: from kadam (/41.212.42.34)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 07 Jun 2021 03:24:37 -0700
+Date:   Mon, 7 Jun 2021 13:24:31 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     kbuild@lists.01.org, Leah Rumancik <leah.rumancik@gmail.com>
+Cc:     lkp@intel.com, kbuild-all@lists.01.org, linux-ext4@vger.kernel.org,
+        "Theodore Ts'o" <tytso@mit.edu>
+Subject: [ext4:dev 40/42] fs/jbd2/journal.c:1718 __jbd2_journal_erase() warn:
+ maybe use && instead of &
+Message-ID: <202106070427.SYkrGwCC-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <594f409e2c543e90fd836b78188dfa5c575065ba.1622867594.git.riteshh@linux.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-GUID: EP2rIBNpkt1goxg59Sxo5ineu-QRNQY9
+X-Proofpoint-ORIG-GUID: EP2rIBNpkt1goxg59Sxo5ineu-QRNQY9
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat 05-06-21 10:39:32, Ritesh Harjani wrote:
-> We should use unsigned long long rather than loff_t to avoid
-> overflow in ext4_max_bitmap_size() for comparison before returning.
-> w/o this patch sbi->s_bitmap_maxbytes was becoming a negative
-> value due to overflow of upper_limit (with has_huge_files as true)
-> 
-> Below is a quick test to trigger it on a 64KB pagesize system.
-> 
-> sudo mkfs.ext4 -b 65536 -O ^has_extents,^64bit /dev/loop2
-> sudo mount /dev/loop2 /mnt
-> sudo echo "hello" > /mnt/hello 	-> This will error out with
-> 				"echo: write error: File too large"
-> 
-> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+head:   a492dedb708d287aac857c6799f6f364f3d914b3
+commit: 84ed553af7e5c8f3f3de0160ba7eaabcab8b9f7b [40/42] ext4: add discard/zeroout flags to journal flush
+config: arm-randconfig-m031-20210604 (attached as .config)
+compiler: arm-linux-gnueabi-gcc (GCC) 9.3.0
 
-OK, this works (although it's really tight ;). Won't it be somewhat safer
-if we compared upper_limit and res before shifting both by blocksize_bits
-to the left? Basically we need to shift only for comparison with
-MAX_LFS_FILESIZE which is in bytes... But either way feel free to add:
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+smatch warnings:
+fs/jbd2/journal.c:1718 __jbd2_journal_erase() warn: maybe use && instead of &
 
-								Honza
+vim +1718 fs/jbd2/journal.c
 
-> ---
->  fs/ext4/super.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 7dc94f3e18e6..bedb66386966 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -3189,17 +3189,17 @@ static loff_t ext4_max_size(int blkbits, int has_huge_files)
->   */
->  static loff_t ext4_max_bitmap_size(int bits, int has_huge_files)
->  {
-> -	loff_t res = EXT4_NDIR_BLOCKS;
-> +	unsigned long long upper_limit, res = EXT4_NDIR_BLOCKS;
->  	int meta_blocks;
-> -	loff_t upper_limit;
-> -	/* This is calculated to be the largest file size for a dense, block
-> +
-> +	/*
-> +	 * This is calculated to be the largest file size for a dense, block
->  	 * mapped file such that the file's total number of 512-byte sectors,
->  	 * including data and all indirect blocks, does not exceed (2^48 - 1).
->  	 *
->  	 * __u32 i_blocks_lo and _u16 i_blocks_high represent the total
->  	 * number of 512-byte sectors of the file.
->  	 */
-> -
->  	if (!has_huge_files) {
->  		/*
->  		 * !has_huge_files or implies that the inode i_block field
-> @@ -3242,7 +3242,7 @@ static loff_t ext4_max_bitmap_size(int bits, int has_huge_files)
->  	if (res > MAX_LFS_FILESIZE)
->  		res = MAX_LFS_FILESIZE;
->  
-> -	return res;
-> +	return (loff_t)res;
->  }
->  
->  static ext4_fsblk_t descriptor_loc(struct super_block *sb,
-> -- 
-> 2.31.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+84ed553af7e5c8 Leah Rumancik 2021-05-18  1701  static int __jbd2_journal_erase(journal_t *journal, unsigned int flags)
+84ed553af7e5c8 Leah Rumancik 2021-05-18  1702  {
+84ed553af7e5c8 Leah Rumancik 2021-05-18  1703  	int err = 0;
+84ed553af7e5c8 Leah Rumancik 2021-05-18  1704  	unsigned long block, log_offset; /* logical */
+84ed553af7e5c8 Leah Rumancik 2021-05-18  1705  	unsigned long long phys_block, block_start, block_stop; /* physical */
+84ed553af7e5c8 Leah Rumancik 2021-05-18  1706  	loff_t byte_start, byte_stop, byte_count;
+84ed553af7e5c8 Leah Rumancik 2021-05-18  1707  	struct request_queue *q = bdev_get_queue(journal->j_dev);
+84ed553af7e5c8 Leah Rumancik 2021-05-18  1708  
+84ed553af7e5c8 Leah Rumancik 2021-05-18  1709  	/* flags must be set to either discard or zeroout */
+84ed553af7e5c8 Leah Rumancik 2021-05-18  1710  	if ((flags & ~JBD2_JOURNAL_FLUSH_VALID) || !flags ||
+84ed553af7e5c8 Leah Rumancik 2021-05-18  1711  			((flags & JBD2_JOURNAL_FLUSH_DISCARD) &&
+84ed553af7e5c8 Leah Rumancik 2021-05-18  1712  			(flags & JBD2_JOURNAL_FLUSH_ZEROOUT)))
+84ed553af7e5c8 Leah Rumancik 2021-05-18  1713  		return -EINVAL;
+84ed553af7e5c8 Leah Rumancik 2021-05-18  1714  
+84ed553af7e5c8 Leah Rumancik 2021-05-18  1715  	if (!q)
+84ed553af7e5c8 Leah Rumancik 2021-05-18  1716  		return -ENXIO;
+84ed553af7e5c8 Leah Rumancik 2021-05-18  1717  
+84ed553af7e5c8 Leah Rumancik 2021-05-18 @1718  	if (JBD2_JOURNAL_FLUSH_DISCARD & !blk_queue_discard(q))
+
+JBD2_JOURNAL_FLUSH_DISCARD is 1 so this works, but probably && was
+intended.
+
+Using && should be a little bit faster.  blk_queue_discard() is just a
+wrapper around test_bit() so it doesn't have side effects.
+
+84ed553af7e5c8 Leah Rumancik 2021-05-18  1719  		return -EOPNOTSUPP;
+84ed553af7e5c8 Leah Rumancik 2021-05-18  1720  
+84ed553af7e5c8 Leah Rumancik 2021-05-18  1721  	/*
+84ed553af7e5c8 Leah Rumancik 2021-05-18  1722  	 * lookup block mapping and issue discard/zeroout for each
+84ed553af7e5c8 Leah Rumancik 2021-05-18  1723  	 * contiguous region
+84ed553af7e5c8 Leah Rumancik 2021-05-18  1724  	 */
+84ed553af7e5c8 Leah Rumancik 2021-05-18  1725  	log_offset = be32_to_cpu(journal->j_superblock->s_first);
+84ed553af7e5c8 Leah Rumancik 2021-05-18  1726  	block_start =  ~0ULL;
+84ed553af7e5c8 Leah Rumancik 2021-05-18  1727  	for (block = log_offset; block < journal->j_total_len; block++) {
+84ed553af7e5c8 Leah Rumancik 2021-05-18  1728  		err = jbd2_journal_bmap(journal, block, &phys_block);
+84ed553af7e5c8 Leah Rumancik 2021-05-18  1729  		if (err) {
+84ed553af7e5c8 Leah Rumancik 2021-05-18  1730  			pr_err("JBD2: bad block at offset %lu", block);
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
