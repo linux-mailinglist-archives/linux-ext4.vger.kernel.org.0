@@ -2,85 +2,141 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42B7439E118
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Jun 2021 17:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E9B439E11C
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Jun 2021 17:46:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230256AbhFGPrk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 7 Jun 2021 11:47:40 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:38952 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230239AbhFGPrj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Jun 2021 11:47:39 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id CDBAF21A8A;
-        Mon,  7 Jun 2021 15:45:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623080747; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kTZ19QygUjzcyRhJnuoAa19uWrcYYUjZeVEx+bz1/SA=;
-        b=M41HLKMhZmTqquZ7q4wn2MDBGke0OQIHmHdHY30x+SXuozn1BKXJC0LDja9nVTKyq3LiSp
-        tiOmspPITRn1GEKX8ItNamsqVVA8caiILrtREy8TNB2lC9fgTEyFOCuyLzk8SIHZ5Rzgid
-        /+Knc4cDcXTWluTEZvwiNurMSuNMKO4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623080747;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kTZ19QygUjzcyRhJnuoAa19uWrcYYUjZeVEx+bz1/SA=;
-        b=C+lwuUenKm0nBvEpxaLzqwQaADRSH3byvsEBpLGkMVMUCEgFxAHuWEqHfbtFhbnfDV8Mid
-        BLG15jIoqXdiUAAQ==
-Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id 4B319A3B85;
-        Mon,  7 Jun 2021 15:45:47 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 0FD561F2CA8; Mon,  7 Jun 2021 17:45:47 +0200 (CEST)
-Date:   Mon, 7 Jun 2021 17:45:47 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Zhang Yi <yi.zhang@huawei.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, jack@suse.cz, yukuai3@huawei.com
-Subject: Re: [RFC PATCH v3 5/8] jbd2,ext4: add a shrinker to release
- checkpointed buffers
-Message-ID: <20210607154547.GA29326@quack2.suse.cz>
-References: <20210527135641.420514-1-yi.zhang@huawei.com>
- <20210527135641.420514-6-yi.zhang@huawei.com>
+        id S231171AbhFGPsP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 7 Jun 2021 11:48:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54574 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230197AbhFGPsN (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 7 Jun 2021 11:48:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E89D61029;
+        Mon,  7 Jun 2021 15:46:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623080782;
+        bh=HI9sxdPlDL3aHynFPkgW9uXuKBCOLyWBD+N0DWRCj2I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lPwVfoMqlw+XEIfsv+kdzxNX8xhODaFTCI4bqlXwN7KkZp+iaz+EJ62t14aAWNsuC
+         vYA6nfBE6J13L0Y3/m4VoZi6SGzXvq7pOudicJvOJc1r+9qWFHy3KDad8J21rx9pvs
+         /DgvsxbS20QsQ8REiqdx02ut3lpWU6VU9Fj1C1hCIzpqS3Zgh1ch6yXKeTecb+6PW7
+         CZNPV5q9NoHPdExrubdgnHKB7S3FQeSG0n8CfKQY5LMmbaxl5QuAaNYJAqB81RjwHZ
+         ha1gKbkyjFs1r2Rjg2Lwz1V186iMcCy5tD24waMQJcvIAce13cWPSYGxHRSgFM44aC
+         z5U0s0L18zPxg==
+Date:   Mon, 7 Jun 2021 08:46:22 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-fsdevel@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>,
+        Dave Chinner <david@fromorbit.com>, ceph-devel@vger.kernel.org,
+        Chao Yu <yuchao0@huawei.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Johannes Thumshirn <jth@kernel.org>,
+        linux-cifs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
+        linux-xfs@vger.kernel.org, Miklos Szeredi <miklos@szeredi.hu>,
+        Steve French <sfrench@samba.org>, Ted Tso <tytso@mit.edu>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH 04/14] mm: Add functions to lock invalidate_lock for two
+ mappings
+Message-ID: <20210607154622.GG2945738@locust>
+References: <20210607144631.8717-1-jack@suse.cz>
+ <20210607145236.31852-4-jack@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210527135641.420514-6-yi.zhang@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210607145236.31852-4-jack@suse.cz>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 27-05-21 21:56:38, Zhang Yi wrote:
-> Current metadata buffer release logic in bdev_try_to_free_page() have
-> a lot of use-after-free issues when umount filesystem concurrently, and
-> it is difficult to fix directly because ext4 is the only user of
-> s_op->bdev_try_to_free_page callback and we may have to add more special
-> refcount or lock that is only used by ext4 into the common vfs layer,
-> which is unacceptable.
+On Mon, Jun 07, 2021 at 04:52:14PM +0200, Jan Kara wrote:
+> Some operations such as reflinking blocks among files will need to lock
+> invalidate_lock for two mappings. Add helper functions to do that.
 > 
-> One better solution is remove the bdev_try_to_free_page callback, but
-> the real problem is we cannot easily release journal_head on the
-> checkpointed buffer, so try_to_free_buffers() cannot release buffers and
-> page under memory pressure, which is more likely to trigger
-> out-of-memory. So we cannot remove the callback directly before we find
-> another way to release journal_head.
+> Signed-off-by: Jan Kara <jack@suse.cz>
+
+Straightforward lift from xfs, though now with vfs lock ordering
+rules...
+
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+
+--D
+
+> ---
+>  include/linux/fs.h |  6 ++++++
+>  mm/filemap.c       | 38 ++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 44 insertions(+)
 > 
-> This patch introduce a shrinker to free journal_head on the checkpointed
-> transaction. After the journal_head got freed, try_to_free_buffers()
-> could free buffer properly.
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index d8afbc9661d7..ddc11bafc183 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -849,6 +849,12 @@ static inline void filemap_invalidate_unlock_shared(
+>  void lock_two_nondirectories(struct inode *, struct inode*);
+>  void unlock_two_nondirectories(struct inode *, struct inode*);
+>  
+> +void filemap_invalidate_lock_two(struct address_space *mapping1,
+> +				 struct address_space *mapping2);
+> +void filemap_invalidate_unlock_two(struct address_space *mapping1,
+> +				   struct address_space *mapping2);
+> +
+> +
+>  /*
+>   * NOTE: in a 32bit arch with a preemptable kernel and
+>   * an UP compile the i_size_read/write must be atomic
+> diff --git a/mm/filemap.c b/mm/filemap.c
+> index c8e7e451d81e..b8e9bccecd9f 100644
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+> @@ -1009,6 +1009,44 @@ struct page *__page_cache_alloc(gfp_t gfp)
+>  EXPORT_SYMBOL(__page_cache_alloc);
+>  #endif
+>  
+> +/*
+> + * filemap_invalidate_lock_two - lock invalidate_lock for two mappings
+> + *
+> + * Lock exclusively invalidate_lock of any passed mapping that is not NULL.
+> + *
+> + * @mapping1: the first mapping to lock
+> + * @mapping2: the second mapping to lock
+> + */
+> +void filemap_invalidate_lock_two(struct address_space *mapping1,
+> +				 struct address_space *mapping2)
+> +{
+> +	if (mapping1 > mapping2)
+> +		swap(mapping1, mapping2);
+> +	if (mapping1)
+> +		down_write(&mapping1->invalidate_lock);
+> +	if (mapping2 && mapping1 != mapping2)
+> +		down_write_nested(&mapping2->invalidate_lock, 1);
+> +}
+> +EXPORT_SYMBOL(filemap_invalidate_lock_two);
+> +
+> +/*
+> + * filemap_invalidate_unlock_two - unlock invalidate_lock for two mappings
+> + *
+> + * Unlock exclusive invalidate_lock of any passed mapping that is not NULL.
+> + *
+> + * @mapping1: the first mapping to unlock
+> + * @mapping2: the second mapping to unlock
+> + */
+> +void filemap_invalidate_unlock_two(struct address_space *mapping1,
+> +				   struct address_space *mapping2)
+> +{
+> +	if (mapping1)
+> +		up_write(&mapping1->invalidate_lock);
+> +	if (mapping2 && mapping1 != mapping2)
+> +		up_write(&mapping2->invalidate_lock);
+> +}
+> +EXPORT_SYMBOL(filemap_invalidate_unlock_two);
+> +
+>  /*
+>   * In order to wait for pages to become available there must be
+>   * waitqueues associated with pages. By using a hash table of
+> -- 
+> 2.26.2
 > 
-> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-> Suggested-by: Jan Kara <jack@suse.cz>
-
-Looks good. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
