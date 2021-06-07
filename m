@@ -2,168 +2,123 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EA8339D332
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Jun 2021 04:57:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5846F39D937
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Jun 2021 12:00:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230177AbhFGC7L (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 6 Jun 2021 22:59:11 -0400
-Received: from mga01.intel.com ([192.55.52.88]:64296 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230147AbhFGC7L (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Sun, 6 Jun 2021 22:59:11 -0400
-IronPort-SDR: aVcTHpN86kE+05qxlRmL4/3soKgvI2gSb2BG+5Dv/lZMBZsuTwQDt7adwtkertsz4VGmynpRJF
- ULWRi4hTm5vA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10007"; a="225885003"
-X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
-   d="scan'208";a="225885003"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jun 2021 19:57:19 -0700
-IronPort-SDR: REw7+WUe+zI7z6QnSVAh8gJfrcN2KtO+T0EZ0f8e/zYhBZ8qIjvrOo7Sv7lolB3+EGBzEzLlpH
- TS/dMa50gtPg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
-   d="scan'208";a="484611854"
-Received: from lkp-server02.sh.intel.com (HELO 1ec8406c5392) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 06 Jun 2021 19:57:18 -0700
-Received: from kbuild by 1ec8406c5392 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lq5S1-00089q-SP; Mon, 07 Jun 2021 02:57:17 +0000
-Date:   Mon, 07 Jun 2021 10:56:18 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-Subject: [ext4:dev] BUILD SUCCESS WITH WARNING
- a492dedb708d287aac857c6799f6f364f3d914b3
-Message-ID: <60bd8ad2.86bZkVn/YyzrrEb9%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S230226AbhFGKCU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 7 Jun 2021 06:02:20 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:55916 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230217AbhFGKCU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Jun 2021 06:02:20 -0400
+Received: from relay2.suse.de (unknown [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 5BB8121A6C;
+        Mon,  7 Jun 2021 10:00:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623060028; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GFjiMXVAWRqijm4ryAAi/AxWgTd6JPrh4QAApGk5EJ8=;
+        b=Hl0YGueKVNdMk6VZYwfA0+cy3x8GAfZZ4ovNWpuXN1AOBR9piJjHWud5ynyGsKGEnGXXC5
+        jL05huKwufBNpmGj5qaGUiXprkf+kyd63ponwczA4jpkFk01Rgp/QP6doikqy6mP1aDzQQ
+        6SXNBUvhKFp1NST+GBh01fT3+wdWyBU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623060028;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GFjiMXVAWRqijm4ryAAi/AxWgTd6JPrh4QAApGk5EJ8=;
+        b=cunPtc+elufhsl8ONQYKZN1i5WR3wseVl0DmQRba8IH+/feaWQKwp8mwBNXha9S7y+Mkqs
+        pMdxcjXFGNvzgsAw==
+Received: from quack2.suse.cz (unknown [10.100.200.198])
+        by relay2.suse.de (Postfix) with ESMTP id 4CC67A3B81;
+        Mon,  7 Jun 2021 10:00:28 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 1CC131F2CA8; Mon,  7 Jun 2021 12:00:28 +0200 (CEST)
+Date:   Mon, 7 Jun 2021 12:00:28 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH] ext4: Fix loff_t overflow in ext4_max_bitmap_size()
+Message-ID: <20210607100028.GE30275@quack2.suse.cz>
+References: <594f409e2c543e90fd836b78188dfa5c575065ba.1622867594.git.riteshh@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <594f409e2c543e90fd836b78188dfa5c575065ba.1622867594.git.riteshh@linux.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
-branch HEAD: a492dedb708d287aac857c6799f6f364f3d914b3  ext4: update journal documentation
+On Sat 05-06-21 10:39:32, Ritesh Harjani wrote:
+> We should use unsigned long long rather than loff_t to avoid
+> overflow in ext4_max_bitmap_size() for comparison before returning.
+> w/o this patch sbi->s_bitmap_maxbytes was becoming a negative
+> value due to overflow of upper_limit (with has_huge_files as true)
+> 
+> Below is a quick test to trigger it on a 64KB pagesize system.
+> 
+> sudo mkfs.ext4 -b 65536 -O ^has_extents,^64bit /dev/loop2
+> sudo mount /dev/loop2 /mnt
+> sudo echo "hello" > /mnt/hello 	-> This will error out with
+> 				"echo: write error: File too large"
+> 
+> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
 
-possible Warning in current branch:
+OK, this works (although it's really tight ;). Won't it be somewhat safer
+if we compared upper_limit and res before shifting both by blocksize_bits
+to the left? Basically we need to shift only for comparison with
+MAX_LFS_FILESIZE which is in bytes... But either way feel free to add:
 
-fs/jbd2/journal.c:1718 __jbd2_journal_erase() warn: maybe use && instead of &
-fs/jbd2/journal.c:1718:40: sparse: sparse: dubious: x & !y
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-Warning ids grouped by kconfigs:
+								Honza
 
-gcc_recent_errors
-|-- arm-randconfig-m031-20210604
-|   `-- fs-jbd2-journal.c-__jbd2_journal_erase()-warn:maybe-use-instead-of
-`-- sh-randconfig-s031-20210606
-    `-- fs-jbd2-journal.c:sparse:sparse:dubious:x-y
-
-elapsed time: 724m
-
-configs tested: 96
-configs skipped: 2
-
-gcc tested configs:
-arm64                            allyesconfig
-arm                                 defconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sh                            shmin_defconfig
-h8300                    h8300h-sim_defconfig
-arc                          axs101_defconfig
-arc                                 defconfig
-powerpc                    klondike_defconfig
-sh                          r7785rp_defconfig
-powerpc                     sbc8548_defconfig
-powerpc                     tqm8548_defconfig
-powerpc                   lite5200b_defconfig
-powerpc                     taishan_defconfig
-um                               alldefconfig
-um                                  defconfig
-powerpc                 mpc8315_rdb_defconfig
-sh                           se7721_defconfig
-ia64                        generic_defconfig
-arc                        nsim_700_defconfig
-arm                     am200epdkit_defconfig
-openrisc                    or1ksim_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a002-20210606
-x86_64               randconfig-a004-20210606
-x86_64               randconfig-a003-20210606
-x86_64               randconfig-a006-20210606
-x86_64               randconfig-a005-20210606
-x86_64               randconfig-a001-20210606
-i386                 randconfig-a003-20210606
-i386                 randconfig-a006-20210606
-i386                 randconfig-a004-20210606
-i386                 randconfig-a001-20210606
-i386                 randconfig-a005-20210606
-i386                 randconfig-a002-20210606
-i386                 randconfig-a015-20210606
-i386                 randconfig-a013-20210606
-i386                 randconfig-a016-20210606
-i386                 randconfig-a011-20210606
-i386                 randconfig-a014-20210606
-i386                 randconfig-a012-20210606
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                            kunit_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-b001-20210606
-x86_64               randconfig-a015-20210606
-x86_64               randconfig-a011-20210606
-x86_64               randconfig-a014-20210606
-x86_64               randconfig-a012-20210606
-x86_64               randconfig-a016-20210606
-x86_64               randconfig-a013-20210606
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> ---
+>  fs/ext4/super.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 7dc94f3e18e6..bedb66386966 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -3189,17 +3189,17 @@ static loff_t ext4_max_size(int blkbits, int has_huge_files)
+>   */
+>  static loff_t ext4_max_bitmap_size(int bits, int has_huge_files)
+>  {
+> -	loff_t res = EXT4_NDIR_BLOCKS;
+> +	unsigned long long upper_limit, res = EXT4_NDIR_BLOCKS;
+>  	int meta_blocks;
+> -	loff_t upper_limit;
+> -	/* This is calculated to be the largest file size for a dense, block
+> +
+> +	/*
+> +	 * This is calculated to be the largest file size for a dense, block
+>  	 * mapped file such that the file's total number of 512-byte sectors,
+>  	 * including data and all indirect blocks, does not exceed (2^48 - 1).
+>  	 *
+>  	 * __u32 i_blocks_lo and _u16 i_blocks_high represent the total
+>  	 * number of 512-byte sectors of the file.
+>  	 */
+> -
+>  	if (!has_huge_files) {
+>  		/*
+>  		 * !has_huge_files or implies that the inode i_block field
+> @@ -3242,7 +3242,7 @@ static loff_t ext4_max_bitmap_size(int bits, int has_huge_files)
+>  	if (res > MAX_LFS_FILESIZE)
+>  		res = MAX_LFS_FILESIZE;
+>  
+> -	return res;
+> +	return (loff_t)res;
+>  }
+>  
+>  static ext4_fsblk_t descriptor_loc(struct super_block *sb,
+> -- 
+> 2.31.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
