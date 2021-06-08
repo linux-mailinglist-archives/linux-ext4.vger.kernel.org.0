@@ -2,40 +2,40 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B97139F644
-	for <lists+linux-ext4@lfdr.de>; Tue,  8 Jun 2021 14:19:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1634F39F673
+	for <lists+linux-ext4@lfdr.de>; Tue,  8 Jun 2021 14:23:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232492AbhFHMVK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 8 Jun 2021 08:21:10 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:40962 "EHLO
+        id S232507AbhFHMZf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 8 Jun 2021 08:25:35 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:41262 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232131AbhFHMVJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 8 Jun 2021 08:21:09 -0400
+        with ESMTP id S232204AbhFHMZf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 8 Jun 2021 08:25:35 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 8DB101FD46;
-        Tue,  8 Jun 2021 12:19:15 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 068C71FD4B;
+        Tue,  8 Jun 2021 12:23:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623154755; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1623155021; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=gX+FqIGbLzH7Df0aDpilgfPqa5jp+2x0O0Dq2GScA/w=;
-        b=KmRVHQ5+eR/D68RNgyB5xqEUQDaqcQqU3/DEnGMciUAKR23nxPjvOV8jc9mUj+j4mpbKkR
-        Lv+ZgNiPi3HkId2Fw9ZdzoixgegRoPUsKgKc6PqFoywzWqoPqQ05G/Vtr2p/bP/v7A9DUJ
-        iAW7WgczZtH9yytwp+giynzFLBLau4U=
+        bh=9bGY+Cp/pA/h7guRE2vnnzMhgDr7PUBan0gj2Iw/ofI=;
+        b=u+SJezkNd+Hoy4TfHmq/mbbx5D8h6raNCIe+MwxggDuvtCqz7pVcD7eM1nbJHaQgq+I3my
+        3i7vDVPXx6oHV/Keus/sL+hjeAgtO00KSyTNORn8Zw+1sEM7AY7JmeY5qIvsBhEF5NtDj8
+        Srd1wuy2dHheynxeRqlgPZLBXH5MniY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623154755;
+        s=susede2_ed25519; t=1623155021;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=gX+FqIGbLzH7Df0aDpilgfPqa5jp+2x0O0Dq2GScA/w=;
-        b=j7Q267F20vgcAERTkfcT3mAjx5Fvz3Q43MRpV441Cp/5gRV1if/+naEY6l28Qaymueg/Ex
-        tPMoFbA1xdeL5vDA==
+        bh=9bGY+Cp/pA/h7guRE2vnnzMhgDr7PUBan0gj2Iw/ofI=;
+        b=NgBZQfRqJnI6VvgsU0Gc4V+xB5uFCK0ttkDE0YMGzDaZvCRCGQg4CZC2NzMIJNyad41SHa
+        +dBP2rSIDB0nPdAw==
 Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id 4ABA8A3B84;
-        Tue,  8 Jun 2021 12:19:15 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id E3E48A3B81;
+        Tue,  8 Jun 2021 12:23:40 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 2C36B1F2C94; Tue,  8 Jun 2021 14:19:15 +0200 (CEST)
-Date:   Tue, 8 Jun 2021 14:19:15 +0200
+        id CFD9C1F2C94; Tue,  8 Jun 2021 14:23:40 +0200 (CEST)
+Date:   Tue, 8 Jun 2021 14:23:40 +0200
 From:   Jan Kara <jack@suse.cz>
 To:     "Darrick J. Wong" <djwong@kernel.org>
 Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
@@ -51,91 +51,86 @@ Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
         linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
         linux-xfs@vger.kernel.org, Miklos Szeredi <miklos@szeredi.hu>,
         Steve French <sfrench@samba.org>, Ted Tso <tytso@mit.edu>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH 03/14] mm: Protect operations adding pages to page cache
- with invalidate_lock
-Message-ID: <20210608121915.GG5562@quack2.suse.cz>
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 08/14] xfs: Convert to use invalidate_lock
+Message-ID: <20210608122340.GH5562@quack2.suse.cz>
 References: <20210607144631.8717-1-jack@suse.cz>
- <20210607145236.31852-3-jack@suse.cz>
- <20210607160922.GA2945763@locust>
+ <20210607145236.31852-8-jack@suse.cz>
+ <20210607155633.GI2945738@locust>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210607160922.GA2945763@locust>
+In-Reply-To: <20210607155633.GI2945738@locust>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 07-06-21 09:09:22, Darrick J. Wong wrote:
-> On Mon, Jun 07, 2021 at 04:52:13PM +0200, Jan Kara wrote:
-> > Currently, serializing operations such as page fault, read, or readahead
-> > against hole punching is rather difficult. The basic race scheme is
-> > like:
+On Mon 07-06-21 08:56:33, Darrick J. Wong wrote:
+> On Mon, Jun 07, 2021 at 04:52:18PM +0200, Jan Kara wrote:
+> > Use invalidate_lock instead of XFS internal i_mmap_lock. The intended
+> > purpose of invalidate_lock is exactly the same. Note that the locking in
+> > __xfs_filemap_fault() slightly changes as filemap_fault() already takes
+> > invalidate_lock.
 > > 
-> > fallocate(FALLOC_FL_PUNCH_HOLE)			read / fault / ..
-> >   truncate_inode_pages_range()
-> > 						  <create pages in page
-> > 						   cache here>
-> >   <update fs block mapping and free blocks>
-> > 
-> > Now the problem is in this way read / page fault / readahead can
-> > instantiate pages in page cache with potentially stale data (if blocks
-> > get quickly reused). Avoiding this race is not simple - page locks do
-> > not work because we want to make sure there are *no* pages in given
-> > range. inode->i_rwsem does not work because page fault happens under
-> > mmap_sem which ranks below inode->i_rwsem. Also using it for reads makes
-> > the performance for mixed read-write workloads suffer.
-> > 
-> > So create a new rw_semaphore in the address_space - invalidate_lock -
-> > that protects adding of pages to page cache for page faults / reads /
-> > readahead.
-> > 
+> > Reviewed-by: Christoph Hellwig <hch@lst.de>
+> > CC: <linux-xfs@vger.kernel.org>
+> > CC: "Darrick J. Wong" <djwong@kernel.org>
 > > Signed-off-by: Jan Kara <jack@suse.cz>
-...
-> > +->fallocate implementation must be really careful to maintain page cache
-> > +consistency when punching holes or performing other operations that invalidate
-> > +page cache contents. Usually the filesystem needs to call
-> > +truncate_inode_pages_range() to invalidate relevant range of the page cache.
-> > +However the filesystem usually also needs to update its internal (and on disk)
-> > +view of file offset -> disk block mapping. Until this update is finished, the
-> > +filesystem needs to block page faults and reads from reloading now-stale page
-> > +cache contents from the disk. VFS provides mapping->invalidate_lock for this
-> > +and acquires it in shared mode in paths loading pages from disk
-> > +(filemap_fault(), filemap_read(), readahead paths). The filesystem is
-> > +responsible for taking this lock in its fallocate implementation and generally
-> > +whenever the page cache contents needs to be invalidated because a block is
-> > +moving from under a page.
+> > ---
+> >  fs/xfs/xfs_file.c  | 13 +++++++-----
+> >  fs/xfs/xfs_inode.c | 50 ++++++++++++++++++++++++----------------------
+> >  fs/xfs/xfs_inode.h |  1 -
+> >  fs/xfs/xfs_super.c |  2 --
+> >  4 files changed, 34 insertions(+), 32 deletions(-)
+> > 
+> > diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
+> > index 396ef36dcd0a..7cb7703c2209 100644
+> > --- a/fs/xfs/xfs_file.c
+> > +++ b/fs/xfs/xfs_file.c
+> > @@ -1282,7 +1282,7 @@ xfs_file_llseek(
+> >   *
+> >   * mmap_lock (MM)
+> >   *   sb_start_pagefault(vfs, freeze)
+> > - *     i_mmaplock (XFS - truncate serialisation)
+> > + *     invalidate_lock (vfs/XFS_MMAPLOCK - truncate serialisation)
+> >   *       page_lock (MM)
+> >   *         i_lock (XFS - extent map serialisation)
+> >   */
+> > @@ -1303,24 +1303,27 @@ __xfs_filemap_fault(
+> >  		file_update_time(vmf->vma->vm_file);
+> >  	}
+> >  
+> > -	xfs_ilock(XFS_I(inode), XFS_MMAPLOCK_SHARED);
+> >  	if (IS_DAX(inode)) {
+> >  		pfn_t pfn;
+> >  
+> > +		xfs_ilock(XFS_I(inode), XFS_MMAPLOCK_SHARED);
+> >  		ret = dax_iomap_fault(vmf, pe_size, &pfn, NULL,
+> >  				(write_fault && !vmf->cow_page) ?
+> >  				 &xfs_direct_write_iomap_ops :
+> >  				 &xfs_read_iomap_ops);
+> >  		if (ret & VM_FAULT_NEEDDSYNC)
+> >  			ret = dax_finish_sync_fault(vmf, pe_size, pfn);
+> > +		xfs_iunlock(XFS_I(inode), XFS_MMAPLOCK_SHARED);
 > 
-> Having a page cache invalidation lock isn't optional anymore, so I think
-> these last two sentences could be condensed:
-> 
-> "...from reloading now-stale page cache contents from disk.  Since VFS
-> acquires mapping->invalidate_lock in shared mode when loading pages from
-> disk (filemap_fault(), filemap_read(), readahead), the fallocate
-> implementation must take the invalidate_lock to prevent reloading."
-> 
-> > +
-> > +->copy_file_range and ->remap_file_range implementations need to serialize
-> > +against modifications of file data while the operation is running. For
-> > +blocking changes through write(2) and similar operations inode->i_rwsem can be
-> > +used. For blocking changes through memory mapping, the filesystem can use
-> > +mapping->invalidate_lock provided it also acquires it in its ->page_mkwrite
-> > +implementation.
-> 
-> Following the same line of reasoning, if taking the invalidate_lock is
-> no longer optional, then the conditional language in this last sentence
-> is incorrect.  How about:
-> 
-> "To block changes to file contents via a memory mapping during the
-> operation, the filesystem must take mapping->invalidate_lock to
-> coordinate with ->page_mkwrite."
-> 
-> The code changes look fine to me, though I'm no mm expert. ;)
+> I've been wondering if iomap_page_mkwrite and dax_iomap_fault should be
+> taking these locks?  I guess that would violate the premise that iomap
+> requires that callers arrange for concurrency control (i.e. iomap
+> doesn't take locks).
 
-OK, I've updated the documentation as you suggested. Thanks for review.
+Well, iomap does take page locks but I agree that generally it stays away
+from high-level locks. So keeping invalidate_lock out of it makes more
+sense to me as well.
 
-									Honza
+> Code changes look fine, though.
+> 
+> Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+
+Thanks!
+
+								Honza
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
