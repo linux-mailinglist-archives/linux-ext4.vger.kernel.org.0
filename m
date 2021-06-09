@@ -2,100 +2,104 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DA1A3A0A2E
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Jun 2021 04:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EA453A0A63
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Jun 2021 05:01:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235746AbhFICsI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 8 Jun 2021 22:48:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231668AbhFICsI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 8 Jun 2021 22:48:08 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96E0CC061574;
-        Tue,  8 Jun 2021 19:46:02 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id z3so23694074oib.5;
-        Tue, 08 Jun 2021 19:46:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=szkL7ncrfM2hy/BvMWM0s5Huh4IFZhuvbwx23L8o1dE=;
-        b=kRNocKu1gPoPbfo4iolUj+fUN0EREEirmiGidoFnX3OlcUGENGem6uJtuermuHDLWl
-         6NTwsp+KT6DHNDCsSdJIcjSB2O3cYDLvKnx7AjE8sFF4f1TPUY83x51r4OB1Iv+CelCy
-         REVQJkeVw8tUSiE2z/fkU4vtmyD/SdARACmZusH5g6vo3dKMJE9v7ybhtX1wBtzkXzlI
-         ChJVBvgn3wklKGiXtJglbRGRQ48pfXa6RDTfcqZetBdcx2dXTrFfnvJqssiamvm+Da55
-         R0dgapnLGDX/4EoCRPOZ5CcVkixn0ZJbf8wKGM+o0TrgUfzpX/WgytOvdxlIqmnNqqr5
-         9ZKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=szkL7ncrfM2hy/BvMWM0s5Huh4IFZhuvbwx23L8o1dE=;
-        b=Mll6tG4RtOKl0865dgXcdeYgLp91tRG03Mh8frO3EtRyrAPquelGU2vymYI1h/rtRj
-         qdSmWpk6lxv5TJ/cmOVJ4f0DRw8FHOUFkgvVXAdEaATIX0Giaj7U8HezhBFHXxUySD9Y
-         4xhZldMmC4r9ecmXl9SJW/Oax5fYEaJ1tauPia6mDH4JmJmyVOiqAKGaQfvEcjtIwj/R
-         INVJ+peN/gktNslb/PO+kGfZAzVXKIwr/WwamfLc4Ih7pxKhF1VrNN2J11/Ps/Woz+vP
-         WP2HRx4elzfop/DPqz63oJl6tXPLrpFZWorxFwfKknPieZSP8OS4dD3jGBEQV7mIzcC7
-         KKEQ==
-X-Gm-Message-State: AOAM530KQv31+tg2D2Y1CvWwHPhzyrMnVEvUVINcm1DlreHTBXvt/yeD
-        k0nVqVGKG6SP3bLbsF99eogivJckPiCrGQ==
-X-Google-Smtp-Source: ABdhPJwZLlD+UF6khW8UPly7po2FnFZ1ZDLO7TRTFA1MvABfjVFHSawElsb+ga6K3tgio2dxAtVyTg==
-X-Received: by 2002:a05:6808:14d0:: with SMTP id f16mr4819978oiw.156.1623206759340;
-        Tue, 08 Jun 2021 19:45:59 -0700 (PDT)
-Received: from fractal ([2600:1700:1151:2380:53e3:3a03:bcf3:da13])
-        by smtp.gmail.com with ESMTPSA id d136sm444959oib.4.2021.06.08.19.45.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 19:45:58 -0700 (PDT)
-Date:   Tue, 8 Jun 2021 19:45:56 -0700
-From:   Satya Tangirala <satyaprateek2357@gmail.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Satya Tangirala <satyat@google.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>, Chao Yu <chao@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-fscrypt@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v8 0/8] add support for direct I/O with fscrypt using
- blk-crypto
-Message-ID: <20210609024556.GA11153@fractal>
-References: <20210121230336.1373726-1-satyat@google.com>
- <CAF2Aj3jbEnnG1-bHARSt6xF12VKttg7Bt52gV=bEQUkaspDC9w@mail.gmail.com>
- <YK09eG0xm9dphL/1@google.com>
- <20210526080224.GI4005783@dell>
+        id S233059AbhFIDCy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 8 Jun 2021 23:02:54 -0400
+Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:38158 "EHLO
+        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232894AbhFIDCy (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 8 Jun 2021 23:02:54 -0400
+Received: from dread.disaster.area (pa49-179-138-183.pa.nsw.optusnet.com.au [49.179.138.183])
+        by mail106.syd.optusnet.com.au (Postfix) with ESMTPS id 5DEDD80B3AA;
+        Wed,  9 Jun 2021 13:00:41 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1lqoSN-00AcSM-UP; Wed, 09 Jun 2021 13:00:39 +1000
+Date:   Wed, 9 Jun 2021 13:00:39 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Zhang Yi <yi.zhang@huawei.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jack@suse.cz, yukuai3@huawei.com
+Subject: Re: [RFC PATCH v3 5/8] jbd2,ext4: add a shrinker to release
+ checkpointed buffers
+Message-ID: <20210609030039.GB2419729@dread.disaster.area>
+References: <20210527135641.420514-1-yi.zhang@huawei.com>
+ <20210527135641.420514-6-yi.zhang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210526080224.GI4005783@dell>
+In-Reply-To: <20210527135641.420514-6-yi.zhang@huawei.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0
+        a=MnllW2CieawZLw/OcHE/Ng==:117 a=MnllW2CieawZLw/OcHE/Ng==:17
+        a=kj9zAlcOel0A:10 a=r6YtysWOX24A:10 a=7-415B0cAAAA:8
+        a=W6Ry0vDpiFjloNHkwdsA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, May 26, 2021 at 09:02:24AM +0100, Lee Jones wrote:
-> On Tue, 25 May 2021, Satya Tangirala wrote:
-> 65;6200;1c
-> > On Tue, May 25, 2021 at 01:57:28PM +0100, Lee Jones wrote:
-> > > On Thu, 21 Jan 2021 at 23:06, Satya Tangirala <satyat@google.com> wrote:
-> > > 
-> > > > This patch series adds support for direct I/O with fscrypt using
-> > > > blk-crypto.
-> > > >
-> > > 
-> > > Is there an update on this set please?
-> > > 
-> > > I can't seem to find any reviews or follow-up since v8 was posted back in
-> > > January.
-> > > 
-> > This patchset relies on the block layer fixes patchset here
-> > https://lore.kernel.org/linux-block/20210325212609.492188-1-satyat@google.com/
-> > That said, I haven't been able to actively work on both the patchsets
-> > for a while, but I'll send out updates for both patchsets over the
-> > next week or so.
-> 
-> Thanks Satya, I'd appreciate that.
-FYI I sent out an updated patch series last week at
-https://lore.kernel.org/linux-fscrypt/20210604210908.2105870-1-satyat@google.com/
+On Thu, May 27, 2021 at 09:56:38PM +0800, Zhang Yi wrote:
+> +/**
+> + * jbd2_journal_shrink_scan()
+> + *
+> + * Scan the checkpointed buffer on the checkpoint list and release the
+> + * journal_head.
+> + */
+> +unsigned long jbd2_journal_shrink_scan(struct shrinker *shrink,
+> +				       struct shrink_control *sc)
+> +{
+> +	journal_t *journal = container_of(shrink, journal_t, j_shrinker);
+> +	unsigned long nr_to_scan = sc->nr_to_scan;
+> +	unsigned long nr_shrunk;
+> +	unsigned long count;
+> +
+> +	count = percpu_counter_sum_positive(&journal->j_jh_shrink_count);
+> +	trace_jbd2_shrink_scan_enter(journal, sc->nr_to_scan, count);
+> +
+> +	nr_shrunk = jbd2_journal_shrink_checkpoint_list(journal, &nr_to_scan);
+> +
+> +	count = percpu_counter_sum_positive(&journal->j_jh_shrink_count);
+> +	trace_jbd2_shrink_scan_exit(journal, nr_to_scan, nr_shrunk, count);
+> +
+> +	return nr_shrunk;
+> +}
+> +
+> +/**
+> + * jbd2_journal_shrink_scan()
+> + *
+> + * Count the number of checkpoint buffers on the checkpoint list.
+> + */
+> +unsigned long jbd2_journal_shrink_count(struct shrinker *shrink,
+> +					struct shrink_control *sc)
+> +{
+> +	journal_t *journal = container_of(shrink, journal_t, j_shrinker);
+> +	unsigned long count;
+> +
+> +	count = percpu_counter_sum_positive(&journal->j_jh_shrink_count);
+> +	trace_jbd2_shrink_count(journal, sc->nr_to_scan, count);
+> +
+> +	return count;
+> +}
+
+NACK.
+
+You should not be putting an expensive percpu counter sum in a
+shrinker object count routine. These gets called a *lot* under
+memory pressure, and summing over hundreds/thousands of CPUs on
+every direct reclaim instance over every mounted filesystem
+instance that uses jbd2 is really, really going to hurt system
+performance under memory pressure.
+
+And, quite frankly, summing twice in the scan routine just to trace
+the result with no other purpose is unnecessary and excessive CPU
+overhead for a shrinker.
+
+Just use percpu_counter_read() in all cases here - it is more than
+accurate enough for the purposes of both tracing and memory reclaim.
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
