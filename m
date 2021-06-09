@@ -2,66 +2,102 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FAAC3A0E02
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Jun 2021 09:46:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA7323A0F15
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Jun 2021 10:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236211AbhFIHsi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 9 Jun 2021 03:48:38 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:5304 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235781AbhFIHse (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 9 Jun 2021 03:48:34 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G0Jvt22XCz1BKQQ;
-        Wed,  9 Jun 2021 15:41:46 +0800 (CST)
-Received: from dggema766-chm.china.huawei.com (10.1.198.208) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 9 Jun 2021 15:46:37 +0800
-Received: from localhost.localdomain (10.175.127.227) by
- dggema766-chm.china.huawei.com (10.1.198.208) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 9 Jun 2021 15:46:37 +0800
-From:   yangerkun <yangerkun@huawei.com>
-To:     <tytso@mit.edu>, <jack@suse.com>
-CC:     <linux-ext4@vger.kernel.org>, <yangerkun@huawei.com>,
-        <yukuai3@huawei.com>
-Subject: [PATCH] ext4: no need to verify new add extent block
-Date:   Wed, 9 Jun 2021 15:55:45 +0800
-Message-ID: <20210609075545.1442160-1-yangerkun@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        id S233622AbhFII60 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 9 Jun 2021 04:58:26 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:47984 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231485AbhFII60 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 9 Jun 2021 04:58:26 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 068D71FD3C;
+        Wed,  9 Jun 2021 08:56:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623228991; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=glnzZfjZDM+qODk3DeZv6aAijLgp6fs8K4SCiJbJQC0=;
+        b=hPVrS+cZhlwFV8nf8J6b9/URpXLxA8H6LeMfRsEfpNtGBmx5mxB4s+thCHWzEKWnB2gPa9
+        jyFJC1HdprVJoiGfYTjAkgEaZB9sO3poiLs5T3A0Wz2B3rzeMtaodMSZRzhJqurICD3pmm
+        zXHOkWpsLs4FgqqMCSWXRqV5JzJsytg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623228991;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=glnzZfjZDM+qODk3DeZv6aAijLgp6fs8K4SCiJbJQC0=;
+        b=0JfbSdYG2mQ0/HSdjAvquXtI+kJLcQsIfko0zttZClELeQz/1t6fwGpIgo7K69igRdxz4C
+        4jGXW1ikZKMjAUAQ==
+Received: from quack2.suse.cz (unknown [10.100.200.198])
+        by relay2.suse.de (Postfix) with ESMTP id BA99CA3B89;
+        Wed,  9 Jun 2021 08:56:30 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 9180A1F2C98; Wed,  9 Jun 2021 10:56:30 +0200 (CEST)
+Date:   Wed, 9 Jun 2021 10:56:30 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     yangerkun <yangerkun@huawei.com>
+Cc:     tytso@mit.edu, jack@suse.com, harshadshirwadkar@gmail.com,
+        linux-ext4@vger.kernel.org, yukuai3@huawei.com
+Subject: Re: [PATCH] jbd2: clean up misleading comments for
+ jbd2_fc_release_bufs
+Message-ID: <20210609085630.GJ5562@quack2.suse.cz>
+References: <20210608141236.459441-1-yangerkun@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggema766-chm.china.huawei.com (10.1.198.208)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210608141236.459441-1-yangerkun@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-ext4_ext_grow_indepth will add a new extent block which has init the
-expected content. We can mark this buffer as verified so to stop a
-useless check in __read_extent_tree_block.
+On Tue 08-06-21 22:12:36, yangerkun wrote:
+> This comments was for jbd2_fc_wait_bufs, not for jbd2_fc_release_bufs.
+> Remove this misleading comments.
+> 
+> Signed-off-by: yangerkun <yangerkun@huawei.com>
 
-Signed-off-by: yangerkun <yangerkun@huawei.com>
----
- fs/ext4/extents.c | 1 +
- 1 file changed, 1 insertion(+)
+Good point! Feel free to add:
 
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index cbf37b2cf871..6ca5be8a8fc2 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -1306,6 +1306,7 @@ static int ext4_ext_grow_indepth(handle_t *handle, struct inode *inode,
- 	neh->eh_magic = EXT4_EXT_MAGIC;
- 	ext4_extent_block_csum_set(inode, neh);
- 	set_buffer_uptodate(bh);
-+	set_buffer_verified(bh);
- 	unlock_buffer(bh);
- 
- 	err = ext4_handle_dirty_metadata(handle, inode, bh);
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+>  fs/jbd2/journal.c | 8 --------
+>  1 file changed, 8 deletions(-)
+> 
+> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+> index 2dc944442802..ea46e5ad6b59 100644
+> --- a/fs/jbd2/journal.c
+> +++ b/fs/jbd2/journal.c
+> @@ -934,10 +934,6 @@ int jbd2_fc_wait_bufs(journal_t *journal, int num_blks)
+>  }
+>  EXPORT_SYMBOL(jbd2_fc_wait_bufs);
+>  
+> -/*
+> - * Wait on fast commit buffers that were allocated by jbd2_fc_get_buf
+> - * for completion.
+> - */
+>  int jbd2_fc_release_bufs(journal_t *journal)
+>  {
+>  	struct buffer_head *bh;
+> @@ -945,10 +941,6 @@ int jbd2_fc_release_bufs(journal_t *journal)
+>  
+>  	j_fc_off = journal->j_fc_off;
+>  
+> -	/*
+> -	 * Wait in reverse order to minimize chances of us being woken up before
+> -	 * all IOs have completed
+> -	 */
+>  	for (i = j_fc_off - 1; i >= 0; i--) {
+>  		bh = journal->j_fc_wbuf[i];
+>  		if (!bh)
+> -- 
+> 2.31.1
+> 
 -- 
-2.31.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
