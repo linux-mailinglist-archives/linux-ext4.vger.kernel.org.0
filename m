@@ -2,104 +2,75 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EA453A0A63
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Jun 2021 05:01:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C06BF3A0B46
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Jun 2021 06:28:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233059AbhFIDCy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 8 Jun 2021 23:02:54 -0400
-Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:38158 "EHLO
-        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232894AbhFIDCy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 8 Jun 2021 23:02:54 -0400
-Received: from dread.disaster.area (pa49-179-138-183.pa.nsw.optusnet.com.au [49.179.138.183])
-        by mail106.syd.optusnet.com.au (Postfix) with ESMTPS id 5DEDD80B3AA;
-        Wed,  9 Jun 2021 13:00:41 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1lqoSN-00AcSM-UP; Wed, 09 Jun 2021 13:00:39 +1000
-Date:   Wed, 9 Jun 2021 13:00:39 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Zhang Yi <yi.zhang@huawei.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, jack@suse.cz, yukuai3@huawei.com
-Subject: Re: [RFC PATCH v3 5/8] jbd2,ext4: add a shrinker to release
- checkpointed buffers
-Message-ID: <20210609030039.GB2419729@dread.disaster.area>
-References: <20210527135641.420514-1-yi.zhang@huawei.com>
- <20210527135641.420514-6-yi.zhang@huawei.com>
+        id S231487AbhFIEaX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 9 Jun 2021 00:30:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229638AbhFIEaW (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 9 Jun 2021 00:30:22 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06FA0C061574
+        for <linux-ext4@vger.kernel.org>; Tue,  8 Jun 2021 21:28:16 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id e3so5440685qte.0
+        for <linux-ext4@vger.kernel.org>; Tue, 08 Jun 2021 21:28:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=9ZgW8dZ6FXXvv84TLYg07rIZPJraWR15qLQm3qwk2Pg=;
+        b=f7kWJLYm5DDYYYWUw2kNWhfERwdHnhHRnfwcVLx1al0YonpSwZrPNlQEiUxlANsLae
+         XQmylkC/zX0le/d6BV+SzuMrAB3Z/vEtOlQh1rNt8wyWHWgjA3dZJSpUqMyQP23kJE3p
+         YoIFRdW+QTdHBtCDZf1GmKPt9qx1I6WCBjeDh+4PlKFQrEROP0yeqm7esC1dRomK56e6
+         AI2nCgqOnN0apdPOVXHNY5C6ophvV8OY54XdBB0Oe3VvyMGnn/guz7fLJaCLfoB2wMd6
+         Sq3u5XhHyCGVgkzRpXwfQrsBU+bcpwNLomYG+v1pKduRy6ZoGx8C4b593JaLZcUJt6EW
+         vlJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=9ZgW8dZ6FXXvv84TLYg07rIZPJraWR15qLQm3qwk2Pg=;
+        b=eXC6WOG3gI6PtK3gRj3YeEsrSPunVwI06c2bmAt4I+jJ/UD7EbiP3e48Z9lxRkdwxO
+         ktI3kpHW96jJHVuB1IXMDenKstOJYZh5FyHQ5gU9cKWbADnwhIyp4eEAEoJC/+RwChxx
+         UfZhEXVz4ezHIuyLcdX47cT/EEDpUIXtKwYWRlRhpDzBxSuoljYzOyX3iWmLCPD9HHVB
+         FvcQmgFhWIkMon4vQ/Kvd0NkQBYxWWRu29sAEAOnA9edvvZqXpwBIlGBB9HurKhHekjd
+         uUM587gpGl/NhjzeZ/6Y8vEtSDueVO+l7WOt7Bcy29XfzmcudXoSPkYlY3D2MlaUaORc
+         rvbA==
+X-Gm-Message-State: AOAM532QVnGzLnqW1hOqDI6jCnjBdDWqGVJRT2QZM4KU3dTjvgna1b8u
+        L9hElGQNbdC8h13FRXuk0ABFF3Sq8U7jH/JJZIQ=
+X-Google-Smtp-Source: ABdhPJyxTuYaSVBSjUmJLrDOL3LvxnujAY526JjoNN1ircHEXj2Lo/iOCKorJSW1s2atVmfF9NrX5N8uuZpVP+alM/Y=
+X-Received: by 2002:ac8:41d3:: with SMTP id o19mr22603188qtm.90.1623212895253;
+ Tue, 08 Jun 2021 21:28:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210527135641.420514-6-yi.zhang@huawei.com>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0
-        a=MnllW2CieawZLw/OcHE/Ng==:117 a=MnllW2CieawZLw/OcHE/Ng==:17
-        a=kj9zAlcOel0A:10 a=r6YtysWOX24A:10 a=7-415B0cAAAA:8
-        a=W6Ry0vDpiFjloNHkwdsA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+Received: by 2002:a05:6214:892:0:0:0:0 with HTTP; Tue, 8 Jun 2021 21:28:14
+ -0700 (PDT)
+Reply-To: jospradillo@gmail.com
+From:   "BANKIA BANK Foreign Payment Dept.," <jospradillo@gmail.com>
+Date:   Wed, 9 Jun 2021 05:28:14 +0100
+Message-ID: <CANgr38HP7BYumORe11U6XHqsTiEoACmWoDiGtL_CZhM-LCeb5Q@mail.gmail.com>
+Subject: Confirmation of your Payment.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, May 27, 2021 at 09:56:38PM +0800, Zhang Yi wrote:
-> +/**
-> + * jbd2_journal_shrink_scan()
-> + *
-> + * Scan the checkpointed buffer on the checkpoint list and release the
-> + * journal_head.
-> + */
-> +unsigned long jbd2_journal_shrink_scan(struct shrinker *shrink,
-> +				       struct shrink_control *sc)
-> +{
-> +	journal_t *journal = container_of(shrink, journal_t, j_shrinker);
-> +	unsigned long nr_to_scan = sc->nr_to_scan;
-> +	unsigned long nr_shrunk;
-> +	unsigned long count;
-> +
-> +	count = percpu_counter_sum_positive(&journal->j_jh_shrink_count);
-> +	trace_jbd2_shrink_scan_enter(journal, sc->nr_to_scan, count);
-> +
-> +	nr_shrunk = jbd2_journal_shrink_checkpoint_list(journal, &nr_to_scan);
-> +
-> +	count = percpu_counter_sum_positive(&journal->j_jh_shrink_count);
-> +	trace_jbd2_shrink_scan_exit(journal, nr_to_scan, nr_shrunk, count);
-> +
-> +	return nr_shrunk;
-> +}
-> +
-> +/**
-> + * jbd2_journal_shrink_scan()
-> + *
-> + * Count the number of checkpoint buffers on the checkpoint list.
-> + */
-> +unsigned long jbd2_journal_shrink_count(struct shrinker *shrink,
-> +					struct shrink_control *sc)
-> +{
-> +	journal_t *journal = container_of(shrink, journal_t, j_shrinker);
-> +	unsigned long count;
-> +
-> +	count = percpu_counter_sum_positive(&journal->j_jh_shrink_count);
-> +	trace_jbd2_shrink_count(journal, sc->nr_to_scan, count);
-> +
-> +	return count;
-> +}
-
-NACK.
-
-You should not be putting an expensive percpu counter sum in a
-shrinker object count routine. These gets called a *lot* under
-memory pressure, and summing over hundreds/thousands of CPUs on
-every direct reclaim instance over every mounted filesystem
-instance that uses jbd2 is really, really going to hurt system
-performance under memory pressure.
-
-And, quite frankly, summing twice in the scan routine just to trace
-the result with no other purpose is unnecessary and excessive CPU
-overhead for a shrinker.
-
-Just use percpu_counter_read() in all cases here - it is more than
-accurate enough for the purposes of both tracing and memory reclaim.
-
--Dave.
 -- 
-Dave Chinner
-david@fromorbit.com
+Dear Sir,
+
+Kindly confirm if you have received the sum of $21,500,000.00 as
+instructed by the African Union, Corresponding Banks, America, Europe,
+and Asia in your bank.
+
+If not kindly contact under signed immediately.
+
+Your urgent attention is highly needed.
+
+Regards,
+
+JOSE PRADILLO
+Foreign Payment Dept.,
+Bankia Bank
+Avenida Catillana No 70, 28024 Madrid
+Email: jospradillo@gmail.com
