@@ -2,100 +2,81 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA0A63A2A06
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Jun 2021 13:16:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA7153A2BD4
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Jun 2021 14:43:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230265AbhFJLR6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 10 Jun 2021 07:17:58 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3831 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230212AbhFJLRv (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Jun 2021 07:17:51 -0400
-Received: from dggeme752-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G11Vr4g0DzWsdF;
-        Thu, 10 Jun 2021 19:11:00 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggeme752-chm.china.huawei.com
- (10.3.19.98) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 10
- Jun 2021 19:15:53 +0800
-From:   Zhang Yi <yi.zhang@huawei.com>
-To:     <linux-ext4@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <jack@suse.cz>, <tytso@mit.edu>
-CC:     <adilger.kernel@dilger.ca>, <david@fromorbit.com>,
-        <hch@infradead.org>, <yi.zhang@huawei.com>
-Subject: [RFC PATCH v4 8/8] fs: remove bdev_try_to_free_page callback
-Date:   Thu, 10 Jun 2021 19:24:40 +0800
-Message-ID: <20210610112440.3438139-9-yi.zhang@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210610112440.3438139-1-yi.zhang@huawei.com>
-References: <20210610112440.3438139-1-yi.zhang@huawei.com>
+        id S230311AbhFJMp2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 10 Jun 2021 08:45:28 -0400
+Received: from mail-ua1-f48.google.com ([209.85.222.48]:44738 "EHLO
+        mail-ua1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230001AbhFJMp1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Jun 2021 08:45:27 -0400
+Received: by mail-ua1-f48.google.com with SMTP id 68so1214033uao.11
+        for <linux-ext4@vger.kernel.org>; Thu, 10 Jun 2021 05:43:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ERGvPKyejnfegUXiUI5TBALLR98HuWU+7/Q+tACPbYI=;
+        b=bWmonaOQtQnoMrqggNjQmbBLp/OFsefkhaXRpT3N30oDxasxyxX5+zHqOhyxg8TwQ1
+         9WhDWldZuNugQzNq9CRVa79/7odXcgVZfZJpa4jozV3UwwVJh+rViZAq1j+cqvO83+lk
+         Ul0lp34cK0STCoHisDcJwkiJqPEl1W1Jca9Ac=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ERGvPKyejnfegUXiUI5TBALLR98HuWU+7/Q+tACPbYI=;
+        b=FXQtSW60oY+rMeq9xu8X5X8hJxT7GkUENJybYYOZqjjCxeNA4/5DrXL+uNgtozM9Ae
+         ITnujoqgjIxxsGRakSVIdDB63Gu+tFiysUpbKUPrpp8/vO+jkPClC9yQHzBUXAJi800d
+         LoPcvm3/ckwfovtVQyWRaaJzebJviTYAsUVqFjF/OW5tNUy8x+zE4t9iOubcp+rtIFNu
+         iVPkyuluqrKdkzugC5lqrcCQ/Cw8OgXUnbVW9BJLigwR9TlK4YoI9m7b/SzmEl53oXnc
+         YPsWn2RRmhTxt8c4IAje2mN5IqCQukiWuVcSrl4rTCh0WCJjr5XvhhamRSs/DN4FDCv0
+         fYYQ==
+X-Gm-Message-State: AOAM532m4zF4A53HrpJhH7thNwf0A7c/B0N8yxLc8u0oa0QsvEZKjgvz
+        yKsFZtE119VLUNZH23ls0cfNNSCfPQcCX2B/XxGCfKXTOLngCQ==
+X-Google-Smtp-Source: ABdhPJzSnBnKZyOmEQg1Mlk1J3k9vxKYbX0hKrYXjQBdDrHZwFo89gBvp5Cl9ryn+jRW8T0jKkHsp9O4DmV9/7gYf0I=
+X-Received: by 2002:ab0:2690:: with SMTP id t16mr4105093uao.9.1623328942641;
+ Thu, 10 Jun 2021 05:42:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggeme752-chm.china.huawei.com (10.3.19.98)
-X-CFilter-Loop: Reflected
+References: <20210607144631.8717-1-jack@suse.cz> <20210607145236.31852-12-jack@suse.cz>
+In-Reply-To: <20210607145236.31852-12-jack@suse.cz>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Thu, 10 Jun 2021 14:42:12 +0200
+Message-ID: <CAJfpegtLD6SzSOh0phgNcdU_Xp+pzUCQWZ+CB8HjKFV5nS3SCA@mail.gmail.com>
+Subject: Re: [PATCH 12/14] fuse: Convert to using invalidate_lock
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-fsdevel@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>,
+        Dave Chinner <david@fromorbit.com>, ceph-devel@vger.kernel.org,
+        Chao Yu <yuchao0@huawei.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Johannes Thumshirn <jth@kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        Ext4 <linux-ext4@vger.kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mm <linux-mm@kvack.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        Steve French <sfrench@samba.org>, Ted Tso <tytso@mit.edu>,
+        Matthew Wilcox <willy@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-After remove the unique user of sop->bdev_try_to_free_page() callback,
-we could remove the callback and the corresponding blkdev_releasepage()
-at all.
+On Mon, 7 Jun 2021 at 16:52, Jan Kara <jack@suse.cz> wrote:
+>
+> Use invalidate_lock instead of fuse's private i_mmap_sem. The intended
+> purpose is exactly the same. By this conversion we fix a long standing
+> race between hole punching and read(2) / readahead(2) paths that can
+> lead to stale page cache contents.
+>
+> CC: Miklos Szeredi <miklos@szeredi.hu>
+> Signed-off-by: Jan Kara <jack@suse.cz>
 
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
----
- fs/block_dev.c     | 15 ---------------
- include/linux/fs.h |  1 -
- 2 files changed, 16 deletions(-)
+Reviewed-by: Miklos Szeredi <mszeredi@redhat.com>
 
-diff --git a/fs/block_dev.c b/fs/block_dev.c
-index 6cc4d4cfe0c2..e215da6d49b4 100644
---- a/fs/block_dev.c
-+++ b/fs/block_dev.c
-@@ -1733,20 +1733,6 @@ ssize_t blkdev_read_iter(struct kiocb *iocb, struct iov_iter *to)
- }
- EXPORT_SYMBOL_GPL(blkdev_read_iter);
- 
--/*
-- * Try to release a page associated with block device when the system
-- * is under memory pressure.
-- */
--static int blkdev_releasepage(struct page *page, gfp_t wait)
--{
--	struct super_block *super = BDEV_I(page->mapping->host)->bdev.bd_super;
--
--	if (super && super->s_op->bdev_try_to_free_page)
--		return super->s_op->bdev_try_to_free_page(super, page, wait);
--
--	return try_to_free_buffers(page);
--}
--
- static int blkdev_writepages(struct address_space *mapping,
- 			     struct writeback_control *wbc)
- {
-@@ -1760,7 +1746,6 @@ static const struct address_space_operations def_blk_aops = {
- 	.write_begin	= blkdev_write_begin,
- 	.write_end	= blkdev_write_end,
- 	.writepages	= blkdev_writepages,
--	.releasepage	= blkdev_releasepage,
- 	.direct_IO	= blkdev_direct_IO,
- 	.migratepage	= buffer_migrate_page_norefs,
- 	.is_dirty_writeback = buffer_check_dirty_writeback,
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index c3c88fdb9b2a..c3277b445f96 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -2171,7 +2171,6 @@ struct super_operations {
- 	ssize_t (*quota_write)(struct super_block *, int, const char *, size_t, loff_t);
- 	struct dquot **(*get_dquots)(struct inode *);
- #endif
--	int (*bdev_try_to_free_page)(struct super_block*, struct page*, gfp_t);
- 	long (*nr_cached_objects)(struct super_block *,
- 				  struct shrink_control *);
- 	long (*free_cached_objects)(struct super_block *,
--- 
-2.31.1
-
+Thanks,
+Miklos
