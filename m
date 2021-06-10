@@ -2,41 +2,43 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E83053A27C6
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Jun 2021 11:07:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF2E73A2982
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Jun 2021 12:40:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230216AbhFJJJG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 10 Jun 2021 05:09:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37092 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230215AbhFJJJD (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 10 Jun 2021 05:09:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623316026;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        id S230026AbhFJKmr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 10 Jun 2021 06:42:47 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:55992 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229770AbhFJKmq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Jun 2021 06:42:46 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id BB0721FD47;
+        Thu, 10 Jun 2021 10:40:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623321648; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=361/Mv7Fre9yzH+UkaH8Am6n4w1iJ449u+nGkGfSsgU=;
-        b=Qp8jrJM7UOkeF+RIUG2HEyNjLcfSemPNZcrXOxRP24MW8nOWnFt5bx1ZFyv4uWW4oGukLp
-        BePP5U//wshkgc9QL8dlJfu3g0XVG5jkj0ooD3sJsve1axTMVLirbSR0W6/oXEaXqz9yHt
-        Zt0YZdsSvSsGAsZ446atOMNhUy/8FGM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-581-5j4c0fCIN22TQ8P_CUs7aw-1; Thu, 10 Jun 2021 05:07:03 -0400
-X-MC-Unique: 5j4c0fCIN22TQ8P_CUs7aw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BFD06185060A;
-        Thu, 10 Jun 2021 09:06:59 +0000 (UTC)
-Received: from T590 (ovpn-13-145.pek2.redhat.com [10.72.13.145])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0092660917;
-        Thu, 10 Jun 2021 09:06:46 +0000 (UTC)
-Date:   Thu, 10 Jun 2021 17:06:41 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-fsdevel@vger.kernel.org,
+        bh=e69p7cSpTPxrgycR/WxxaL+1l2Iy0njG9LV0PDer+c4=;
+        b=WNzicnn9I9Uzi3rhrzU3g34rvVnvDxp/dzgOfJ8QelNeJaO+n3iduUNFK/9KFkm8z8EeQW
+        NL1SjEN/b720E7re5xPsC8EubYb6b5KZXIu9/vLgcdL89PUhpyLXDk4QFY4xIwUI5aT9rc
+        RHr+TtYt2pnBErVijdh7TG9nIRAFQQs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623321648;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=e69p7cSpTPxrgycR/WxxaL+1l2Iy0njG9LV0PDer+c4=;
+        b=ldzR16nIFLY7YSLUeT9j/700yV/caPCby06yFrv/SQbZy/V+JI6iP9FH6mfkFJSIwBuRfv
+        KhEDZH21lxejVFDA==
+Received: from quack2.suse.cz (unknown [10.100.200.198])
+        by relay2.suse.de (Postfix) with ESMTP id 24988A3B8B;
+        Thu, 10 Jun 2021 10:40:48 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id E025A1F2CAB; Thu, 10 Jun 2021 12:40:47 +0200 (CEST)
+Date:   Thu, 10 Jun 2021 12:40:47 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
         Christoph Hellwig <hch@infradead.org>,
         Dave Chinner <david@fromorbit.com>, ceph-devel@vger.kernel.org,
         Chao Yu <yuchao0@huawei.com>,
@@ -52,54 +54,62 @@ Cc:     linux-fsdevel@vger.kernel.org,
         Matthew Wilcox <willy@infradead.org>,
         Christoph Hellwig <hch@lst.de>, Hugh Dickins <hughd@google.com>
 Subject: Re: [PATCH 01/14] mm: Fix comments mentioning i_mutex
-Message-ID: <YMHWIcbnLPW5AfiC@T590>
+Message-ID: <20210610104047.GA23539@quack2.suse.cz>
 References: <20210607144631.8717-1-jack@suse.cz>
  <20210607145236.31852-1-jack@suse.cz>
+ <YMHWIcbnLPW5AfiC@T590>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210607145236.31852-1-jack@suse.cz>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <YMHWIcbnLPW5AfiC@T590>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 04:52:11PM +0200, Jan Kara wrote:
-> inode->i_mutex has been replaced with inode->i_rwsem long ago. Fix
-> comments still mentioning i_mutex.
+On Thu 10-06-21 17:06:41, Ming Lei wrote:
+> On Mon, Jun 07, 2021 at 04:52:11PM +0200, Jan Kara wrote:
+> > inode->i_mutex has been replaced with inode->i_rwsem long ago. Fix
+> > comments still mentioning i_mutex.
+> > 
+> > Reviewed-by: Christoph Hellwig <hch@lst.de>
+> > Acked-by: Hugh Dickins <hughd@google.com>
+> > Signed-off-by: Jan Kara <jack@suse.cz>
+> > ---
 > 
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Acked-by: Hugh Dickins <hughd@google.com>
-> Signed-off-by: Jan Kara <jack@suse.cz>
-> ---
+> ...
+> 
+> > diff --git a/mm/rmap.c b/mm/rmap.c
+> > index 693a610e181d..a35cbbbded0d 100644
+> > --- a/mm/rmap.c
+> > +++ b/mm/rmap.c
+> > @@ -20,9 +20,9 @@
+> >  /*
+> >   * Lock ordering in mm:
+> >   *
+> > - * inode->i_mutex	(while writing or truncating, not reading or faulting)
+> > + * inode->i_rwsem	(while writing or truncating, not reading or faulting)
+> >   *   mm->mmap_lock
+> > - *     page->flags PG_locked (lock_page)   * (see huegtlbfs below)
+> > + *     page->flags PG_locked (lock_page)   * (see hugetlbfs below)
+> >   *       hugetlbfs_i_mmap_rwsem_key (in huge_pmd_share)
+> >   *         mapping->i_mmap_rwsem
+> >   *           hugetlb_fault_mutex (hugetlbfs specific page fault mutex)
+> > @@ -41,7 +41,7 @@
+> >   *                             in arch-dependent flush_dcache_mmap_lock,
+> >   *                             within bdi.wb->list_lock in __sync_single_inode)
+> >   *
+> > - * anon_vma->rwsem,mapping->i_mutex      (memory_failure, collect_procs_anon)
+> > + * anon_vma->rwsem,mapping->i_mmap_rwsem   (memory_failure, collect_procs_anon)
+> 
+> This one looks a typo.
 
-...
+Actually it isn't a typo. Memory failure path doesn't touch inode->i_rwsem
+at all. It uses mapping->i_mmap_rwsem in collect_procs_file(). So perhaps
+the functions listed there should be updated to (collect_procs_anon(),
+collect_procs_file()) but the lock name change is IMO correct.
 
-> diff --git a/mm/rmap.c b/mm/rmap.c
-> index 693a610e181d..a35cbbbded0d 100644
-> --- a/mm/rmap.c
-> +++ b/mm/rmap.c
-> @@ -20,9 +20,9 @@
->  /*
->   * Lock ordering in mm:
->   *
-> - * inode->i_mutex	(while writing or truncating, not reading or faulting)
-> + * inode->i_rwsem	(while writing or truncating, not reading or faulting)
->   *   mm->mmap_lock
-> - *     page->flags PG_locked (lock_page)   * (see huegtlbfs below)
-> + *     page->flags PG_locked (lock_page)   * (see hugetlbfs below)
->   *       hugetlbfs_i_mmap_rwsem_key (in huge_pmd_share)
->   *         mapping->i_mmap_rwsem
->   *           hugetlb_fault_mutex (hugetlbfs specific page fault mutex)
-> @@ -41,7 +41,7 @@
->   *                             in arch-dependent flush_dcache_mmap_lock,
->   *                             within bdi.wb->list_lock in __sync_single_inode)
->   *
-> - * anon_vma->rwsem,mapping->i_mutex      (memory_failure, collect_procs_anon)
-> + * anon_vma->rwsem,mapping->i_mmap_rwsem   (memory_failure, collect_procs_anon)
-
-This one looks a typo.
-
+								Honza
 -- 
-Ming
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
