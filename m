@@ -2,114 +2,105 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF2E73A2982
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Jun 2021 12:40:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F853A29F3
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Jun 2021 13:15:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230026AbhFJKmr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 10 Jun 2021 06:42:47 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:55992 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbhFJKmq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Jun 2021 06:42:46 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id BB0721FD47;
-        Thu, 10 Jun 2021 10:40:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623321648; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=e69p7cSpTPxrgycR/WxxaL+1l2Iy0njG9LV0PDer+c4=;
-        b=WNzicnn9I9Uzi3rhrzU3g34rvVnvDxp/dzgOfJ8QelNeJaO+n3iduUNFK/9KFkm8z8EeQW
-        NL1SjEN/b720E7re5xPsC8EubYb6b5KZXIu9/vLgcdL89PUhpyLXDk4QFY4xIwUI5aT9rc
-        RHr+TtYt2pnBErVijdh7TG9nIRAFQQs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623321648;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=e69p7cSpTPxrgycR/WxxaL+1l2Iy0njG9LV0PDer+c4=;
-        b=ldzR16nIFLY7YSLUeT9j/700yV/caPCby06yFrv/SQbZy/V+JI6iP9FH6mfkFJSIwBuRfv
-        KhEDZH21lxejVFDA==
-Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id 24988A3B8B;
-        Thu, 10 Jun 2021 10:40:48 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id E025A1F2CAB; Thu, 10 Jun 2021 12:40:47 +0200 (CEST)
-Date:   Thu, 10 Jun 2021 12:40:47 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Dave Chinner <david@fromorbit.com>, ceph-devel@vger.kernel.org,
-        Chao Yu <yuchao0@huawei.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Johannes Thumshirn <jth@kernel.org>,
-        linux-cifs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
-        linux-xfs@vger.kernel.org, Miklos Szeredi <miklos@szeredi.hu>,
-        Steve French <sfrench@samba.org>, Ted Tso <tytso@mit.edu>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@lst.de>, Hugh Dickins <hughd@google.com>
-Subject: Re: [PATCH 01/14] mm: Fix comments mentioning i_mutex
-Message-ID: <20210610104047.GA23539@quack2.suse.cz>
-References: <20210607144631.8717-1-jack@suse.cz>
- <20210607145236.31852-1-jack@suse.cz>
- <YMHWIcbnLPW5AfiC@T590>
+        id S230184AbhFJLRs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 10 Jun 2021 07:17:48 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:9066 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229961AbhFJLRs (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Jun 2021 07:17:48 -0400
+Received: from dggeme752-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G11Y750PlzYsRj;
+        Thu, 10 Jun 2021 19:12:59 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggeme752-chm.china.huawei.com
+ (10.3.19.98) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 10
+ Jun 2021 19:15:50 +0800
+From:   Zhang Yi <yi.zhang@huawei.com>
+To:     <linux-ext4@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <jack@suse.cz>, <tytso@mit.edu>
+CC:     <adilger.kernel@dilger.ca>, <david@fromorbit.com>,
+        <hch@infradead.org>, <yi.zhang@huawei.com>
+Subject: [RFC PATCH v4 0/8] ext4, jbd2: fix 3 issues about bdev_try_to_free_page()
+Date:   Thu, 10 Jun 2021 19:24:32 +0800
+Message-ID: <20210610112440.3438139-1-yi.zhang@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YMHWIcbnLPW5AfiC@T590>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggeme752-chm.china.huawei.com (10.3.19.98)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 10-06-21 17:06:41, Ming Lei wrote:
-> On Mon, Jun 07, 2021 at 04:52:11PM +0200, Jan Kara wrote:
-> > inode->i_mutex has been replaced with inode->i_rwsem long ago. Fix
-> > comments still mentioning i_mutex.
-> > 
-> > Reviewed-by: Christoph Hellwig <hch@lst.de>
-> > Acked-by: Hugh Dickins <hughd@google.com>
-> > Signed-off-by: Jan Kara <jack@suse.cz>
-> > ---
-> 
-> ...
-> 
-> > diff --git a/mm/rmap.c b/mm/rmap.c
-> > index 693a610e181d..a35cbbbded0d 100644
-> > --- a/mm/rmap.c
-> > +++ b/mm/rmap.c
-> > @@ -20,9 +20,9 @@
-> >  /*
-> >   * Lock ordering in mm:
-> >   *
-> > - * inode->i_mutex	(while writing or truncating, not reading or faulting)
-> > + * inode->i_rwsem	(while writing or truncating, not reading or faulting)
-> >   *   mm->mmap_lock
-> > - *     page->flags PG_locked (lock_page)   * (see huegtlbfs below)
-> > + *     page->flags PG_locked (lock_page)   * (see hugetlbfs below)
-> >   *       hugetlbfs_i_mmap_rwsem_key (in huge_pmd_share)
-> >   *         mapping->i_mmap_rwsem
-> >   *           hugetlb_fault_mutex (hugetlbfs specific page fault mutex)
-> > @@ -41,7 +41,7 @@
-> >   *                             in arch-dependent flush_dcache_mmap_lock,
-> >   *                             within bdi.wb->list_lock in __sync_single_inode)
-> >   *
-> > - * anon_vma->rwsem,mapping->i_mutex      (memory_failure, collect_procs_anon)
-> > + * anon_vma->rwsem,mapping->i_mmap_rwsem   (memory_failure, collect_procs_anon)
-> 
-> This one looks a typo.
+This patchset fix a potential filesystem inconsistency problem and two
+use-after-free problems about bdev_try_to_free_page().
 
-Actually it isn't a typo. Memory failure path doesn't touch inode->i_rwsem
-at all. It uses mapping->i_mmap_rwsem in collect_procs_file(). So perhaps
-the functions listed there should be updated to (collect_procs_anon(),
-collect_procs_file()) but the lock name change is IMO correct.
+Patch 1-4: Fix a potential filesystem inconsistency problem caused by
+           freeing buffers and doing umount concurrently, and also do
+           some cleanup.
+Patch 5-8: Add a shrinker to release journal_head of checkpoint buffers
+           and remove the buggy bdev_try_to_free_page() at all.
 
-								Honza
+Changes since v3:
+ - Patch 2: Fix one spelling mistake.
+ - Patch 3: Drop unnecessary 'result' check codes.
+ - Patch 5, declare static for jbd2_journal_shrink_[scan|count](),
+   and use percpu_counter_read_positive() to calculate the number of
+   shrinkable journal heads.
+ - Add 'Reviewed-by' tag from Jan besides the fifth patch.
+
+
+Hi Jan,
+ 
+I modify the fifth patch as Dave suggested, please give a look at this
+patch again.
+
+Thanks,
+Yi.
+
+------------------
+
+Changes since v2:
+ - Fix some comments and spelling mistakes on patch 2 and 3.
+ - Give up the solution of add refcount on super_block and fix the
+   use-after-free issue in bdev_try_to_free_page(), switch to introduce
+   a shrinker to free checkpoint buffers' journal_head and remove the
+   whole callback at all.
+
+Changes since v1:
+ - Do not use j_checkpoint_mutex to fix the filesystem inconsistency
+   problem, introduce a new mark instead.
+ - Fix superblock use-after-free issue in blkdev_releasepage().
+ - Avoid race between bdev_try_to_free_page() and ext4_put_super().
+
+
+Zhang Yi (8):
+  jbd2: remove the out label in __jbd2_journal_remove_checkpoint()
+  jbd2: ensure abort the journal if detect IO error when writing
+    original buffer back
+  jbd2: don't abort the journal when freeing buffers
+  jbd2: remove redundant buffer io error checks
+  jbd2,ext4: add a shrinker to release checkpointed buffers
+  jbd2: simplify journal_clean_one_cp_list()
+  ext4: remove bdev_try_to_free_page() callback
+  fs: remove bdev_try_to_free_page callback
+
+ fs/block_dev.c              |  15 ---
+ fs/ext4/super.c             |  29 ++---
+ fs/jbd2/checkpoint.c        | 206 +++++++++++++++++++++++++++++-------
+ fs/jbd2/journal.c           | 101 ++++++++++++++++++
+ fs/jbd2/transaction.c       |  17 ---
+ include/linux/fs.h          |   1 -
+ include/linux/jbd2.h        |  37 +++++++
+ include/trace/events/jbd2.h | 101 ++++++++++++++++++
+ 8 files changed, 414 insertions(+), 93 deletions(-)
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.31.1
+
