@@ -2,98 +2,101 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D89F3A5D2F
-	for <lists+linux-ext4@lfdr.de>; Mon, 14 Jun 2021 08:28:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 428ED3A67CC
+	for <lists+linux-ext4@lfdr.de>; Mon, 14 Jun 2021 15:27:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232519AbhFNGaz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 14 Jun 2021 02:30:55 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:17954 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232516AbhFNGaw (ORCPT
+        id S233102AbhFNN3g (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 14 Jun 2021 09:29:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22901 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232917AbhFNN3g (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 14 Jun 2021 02:30:52 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15E63YB0179176;
-        Mon, 14 Jun 2021 02:28:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=x6NbGgHgj1ossGyOem7RBPDReF0JPijJ2u+vwpE04U8=;
- b=O7RRK2dxh7JA3+gPYOYFKp6zAUfPVVixGnwMS96iV6Dc3OyjzEMI37zH3WAefGhhXW56
- s8+ev43hthWJNTRazFDjQOlJGRzC+ok7Y/h8hJ9Qw7zw7Htmg7qrfWKMLnwhCTJpnsm0
- K9xewsLlWBJ1wGDuZgGiEOCWiR4bOsaGm3OhhTG72Lz8hfc3VKwXbt8OgG4nNotB2Ac4
- IaekDZSOlZeqXwaOcRElxdBijdJ536G92KraUI3VC03WInXAuxOfz3SBlehxmHpFqE+H
- zBH7KuYlyVbZe7vsEbA1fKf3HiSAbCq1irtjKAbyy5OY4Ep/ZL7IBUhQNDeXtRJpJElw pg== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 395yxg2gfm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Jun 2021 02:28:49 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15E6OGlZ019526;
-        Mon, 14 Jun 2021 06:28:48 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03ams.nl.ibm.com with ESMTP id 394mj8rr66-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Jun 2021 06:28:47 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15E6SjJD33489218
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Jun 2021 06:28:45 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2A05042047;
-        Mon, 14 Jun 2021 06:28:45 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CBD2A4203F;
-        Mon, 14 Jun 2021 06:28:44 +0000 (GMT)
-Received: from localhost (unknown [9.85.68.28])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 14 Jun 2021 06:28:44 +0000 (GMT)
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-To:     fstests@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, Ritesh Harjani <riteshh@linux.ibm.com>
-Subject: [PATCH 9/9] common/attr: Reduce MAX_ATTRS to leave some overhead for 64K blocksize
-Date:   Mon, 14 Jun 2021 11:58:13 +0530
-Message-Id: <f23e6788b958849ec9c1fb7fed0081e58c02a13a.1623651783.git.riteshh@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1623651783.git.riteshh@linux.ibm.com>
-References: <cover.1623651783.git.riteshh@linux.ibm.com>
+        Mon, 14 Jun 2021 09:29:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623677253;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=0kZK6J8loNWaBSkeCyU38O0W++cR9DAB8ViyuZedSPk=;
+        b=NjbLH+pyouepy3fXQ/X+KgeRAV9tDrsy4VySIKWAik7odqhGLWSufNj1IXbVQYOCPJ4HXo
+        341BHzqbV4Ltc8HUd9vUG+ifnkTh4xugnQFbzRttJNhk9FFceWPIuyTAYj4dIEw+kVuEKY
+        Uplal3zzTGc4WDZClTIAwX3lfuCsarE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-510-0TgldoiaO22oVptBuAwbLg-1; Mon, 14 Jun 2021 09:27:32 -0400
+X-MC-Unique: 0TgldoiaO22oVptBuAwbLg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2CB6E185061A
+        for <linux-ext4@vger.kernel.org>; Mon, 14 Jun 2021 13:27:31 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.40.192.159])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 56F805D9CA;
+        Mon, 14 Jun 2021 13:27:27 +0000 (UTC)
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     Dusty Mabe <dustymabe@redhat.com>
+Subject: [PATCH] e2fsck: fix last mount/write time when e2fsck is forced
+Date:   Mon, 14 Jun 2021 15:27:25 +0200
+Message-Id: <20210614132725.10339-1-lczerner@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 2lmcz6TvJeQX6-bz6pl5rn7s_Ab7uN8T
-X-Proofpoint-GUID: 2lmcz6TvJeQX6-bz6pl5rn7s_Ab7uN8T
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-13_11:2021-06-11,2021-06-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- lowpriorityscore=0 malwarescore=0 adultscore=0 suspectscore=0 bulkscore=0
- phishscore=0 spamscore=0 priorityscore=1501 impostorscore=0 mlxscore=0
- mlxlogscore=817 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106140045
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Test generic/020 fails for ext4 with 64K blocksize. So increase some overhead
-value to reduce the MAX_ATTRS so that it can accomodate for 64K blocksize.
+With commit c52d930f e2fsck is no longer able to fix bad last
+mount/write time by default because it is conditioned on s_checkinterval
+not being zero, which it is by default.
 
-Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+One place where it matters is when other e2fsprogs tools require to run
+full file system check before a certain operation. If the last mount
+time is for any reason in future, it will not allow it to run even if
+full e2fsck is ran.
+
+Fix it by checking the last mount/write time when the e2fsck is forced,
+except for the case where we know the system clock is broken.
+
+Fixes: c52d930f ("e2fsck: don't check for future superblock times if checkinterval == 0")
+Reported-by: Dusty Mabe <dustymabe@redhat.com>
+Signed-off-by: Lukas Czerner <lczerner@redhat.com>
 ---
- common/attr | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ e2fsck/super.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/common/attr b/common/attr
-index d3902346..e8661d80 100644
---- a/common/attr
-+++ b/common/attr
-@@ -260,7 +260,7 @@ xfs|udf|pvfs2|9p|ceph|nfs)
- 	# Assume max ~1 block of attrs
- 	BLOCK_SIZE=`_get_block_size $TEST_DIR`
- 	# user.attribute_XXX="value.XXX" is about 32 bytes; leave some overhead
--	let MAX_ATTRS=$BLOCK_SIZE/40
-+	let MAX_ATTRS=$BLOCK_SIZE/48
- esac
- 
- export MAX_ATTRS
+diff --git a/e2fsck/super.c b/e2fsck/super.c
+index e1c3f935..d8c1dcec 100644
+--- a/e2fsck/super.c
++++ b/e2fsck/super.c
+@@ -1038,9 +1038,10 @@ void check_super_block(e2fsck_t ctx)
+ 	 * Check to see if the superblock last mount time or last
+ 	 * write time is in the future.
+ 	 */
+-	if (!broken_system_clock && fs->super->s_checkinterval &&
+-	    !(ctx->flags & E2F_FLAG_TIME_INSANE) &&
+-	    fs->super->s_mtime > (__u32) ctx->now) {
++	if ((!broken_system_clock && ctx->options & E2F_OPT_FORCE) ||
++	    (!broken_system_clock && fs->super->s_checkinterval &&
++	     !(ctx->flags & E2F_FLAG_TIME_INSANE) &&
++	     fs->super->s_mtime > (__u32) ctx->now)) {
+ 		pctx.num = fs->super->s_mtime;
+ 		problem = PR_0_FUTURE_SB_LAST_MOUNT;
+ 		if (fs->super->s_mtime <= (__u32) ctx->now + ctx->time_fudge)
+@@ -1050,9 +1051,10 @@ void check_super_block(e2fsck_t ctx)
+ 			fs->flags |= EXT2_FLAG_DIRTY;
+ 		}
+ 	}
+-	if (!broken_system_clock && fs->super->s_checkinterval &&
+-	    !(ctx->flags & E2F_FLAG_TIME_INSANE) &&
+-	    fs->super->s_wtime > (__u32) ctx->now) {
++	if ((!broken_system_clock && ctx->options & E2F_OPT_FORCE) ||
++	    (!broken_system_clock && fs->super->s_checkinterval &&
++	     !(ctx->flags & E2F_FLAG_TIME_INSANE) &&
++	     fs->super->s_wtime > (__u32) ctx->now)) {
+ 		pctx.num = fs->super->s_wtime;
+ 		problem = PR_0_FUTURE_SB_LAST_WRITE;
+ 		if (fs->super->s_wtime <= (__u32) ctx->now + ctx->time_fudge)
 -- 
-2.31.1
+2.26.3
 
