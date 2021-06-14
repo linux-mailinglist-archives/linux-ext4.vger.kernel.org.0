@@ -2,107 +2,159 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D5F53A5D2D
-	for <lists+linux-ext4@lfdr.de>; Mon, 14 Jun 2021 08:28:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1492E3A5D2E
+	for <lists+linux-ext4@lfdr.de>; Mon, 14 Jun 2021 08:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232418AbhFNGax (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 14 Jun 2021 02:30:53 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:53620 "EHLO
+        id S232520AbhFNGay (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 14 Jun 2021 02:30:54 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:57900 "EHLO
         mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232507AbhFNGau (ORCPT
+        by vger.kernel.org with ESMTP id S232512AbhFNGav (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 14 Jun 2021 02:30:50 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15E63dSW179896;
-        Mon, 14 Jun 2021 02:28:48 -0400
+        Mon, 14 Jun 2021 02:30:51 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15E63gPL016034;
+        Mon, 14 Jun 2021 02:28:49 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pp1;
- bh=5/mmIfCHKIhqHpwRnwC1RxXpjFm1VabJGKfr8jJjc70=;
- b=TRildPWw/kQFQ4SB1Xjx5Q/Oa2H1ibx5V16MKeBMjuyR9Tv0qoZMwOclbBjS2kymcG1F
- 5kmY3eragFTOtwDQcdxlbJbDX/CNyhEl86BYfPrZ3nIEcLAPPIjzIVZhA5ZFUHwi3tJW
- IsWxzelvQguKzHR0AFdsU4jDs85LZjDtoITZlXsD5FJCzRQ2pY3ykmzoAUCRsr+XZLRx
- Wuo1sZsDtelU9op3YpPkfUj0ttJehizRdWp0Wbc5F8eFciLZQTcQbxjs3ma/rx+Hw7Ku
- DxkVCN+Izhxw3OtJfjdopftDq4QySzhqaphRFCqO9nvmKE8YHW6C16EeEZdverHR4Pdr fg== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3960u49g83-1
+ bh=kBthOWjidHOlZ+s5KNIFqHVBRElK/KDOD1tuQr6UhuM=;
+ b=O2pYW/4SEx4ScKI+Aa0ytksUWwsEsD/iBTFkZFrYWuT9QL5Kzo/QyChwZ/tjoOTuMuy6
+ A2iebkQaH9NrfJaOowcCtb7dXnbeo6fbT6QGKEatDyrqT8ZhWQ2aO1ZFkRMaf9YFh6FF
+ AbStMg2EXTcLAchEN2IMuJjJAuE6R/zoeC5XD8vYBLbxcu0QR1ZOO3zeRzJmn3HbxoNI
+ V/s2sRiLywVYKT9X4r49zxfI36EP1sKCxXvZUdze1TsYnWYOsXiK4uK3XO7IG3AgvrwN
+ go91uJ5/1qMJUXJVTvjTpeHhG0RifBmpclxZLvbZDEWQbwK15uyT6lXjQJyKlwRy1pzo iw== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 395xnqmaxu-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Jun 2021 02:28:48 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15E6NSdk002913;
+        Mon, 14 Jun 2021 02:28:49 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15E6P12A032677;
         Mon, 14 Jun 2021 06:28:46 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma06ams.nl.ibm.com with ESMTP id 394m6hrrbs-1
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 394mj8rr5n-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Jun 2021 06:28:45 +0000
+        Mon, 14 Jun 2021 06:28:46 +0000
 Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15E6Sg4S33358214
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15E6Rg2V37159312
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Jun 2021 06:28:42 GMT
+        Mon, 14 Jun 2021 06:27:42 GMT
 Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 905754204F;
-        Mon, 14 Jun 2021 06:28:42 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id E04124203F;
+        Mon, 14 Jun 2021 06:28:43 +0000 (GMT)
 Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 36A7C42045;
-        Mon, 14 Jun 2021 06:28:42 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 87B6142045;
+        Mon, 14 Jun 2021 06:28:43 +0000 (GMT)
 Received: from localhost (unknown [9.85.68.28])
         by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 14 Jun 2021 06:28:42 +0000 (GMT)
+        Mon, 14 Jun 2021 06:28:43 +0000 (GMT)
 From:   Ritesh Harjani <riteshh@linux.ibm.com>
 To:     fstests@vger.kernel.org
 Cc:     linux-ext4@vger.kernel.org, Ritesh Harjani <riteshh@linux.ibm.com>
-Subject: [PATCH 7/9] generic/620: Remove -b blocksize option for ext4
-Date:   Mon, 14 Jun 2021 11:58:11 +0530
-Message-Id: <8b3d5afe83ee6d1d35f57914a9b0cfa4b5bb4361.1623651783.git.riteshh@linux.ibm.com>
+Subject: [PATCH 8/9] common/attr: Cleanup end of line whitespaces issues
+Date:   Mon, 14 Jun 2021 11:58:12 +0530
+Message-Id: <9c2d87969d29f34e0939fa3a524886e343fb96bb.1623651783.git.riteshh@linux.ibm.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1623651783.git.riteshh@linux.ibm.com>
 References: <cover.1623651783.git.riteshh@linux.ibm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: H7EVy-kYL7M_jlXeQcKYEClM_3R1uey_
-X-Proofpoint-ORIG-GUID: H7EVy-kYL7M_jlXeQcKYEClM_3R1uey_
+X-Proofpoint-ORIG-GUID: a6AhQAk1CrkxdlMJKJI1NFyM-4AP5Vng
+X-Proofpoint-GUID: a6AhQAk1CrkxdlMJKJI1NFyM-4AP5Vng
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
  definitions=2021-06-13_11:2021-06-11,2021-06-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
- impostorscore=0 lowpriorityscore=0 adultscore=0 clxscore=1015
- suspectscore=0 bulkscore=0 phishscore=0 priorityscore=1501 malwarescore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ mlxlogscore=999 lowpriorityscore=0 bulkscore=0 adultscore=0
+ impostorscore=0 clxscore=1015 priorityscore=1501 phishscore=0 spamscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2104190000 definitions=main-2106140045
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-ext4 with 64k blocksize fails with below error for this given test which
-requires dmhugedisk. Also since dax is not supported for this test, so
-make sure to remove -b option, if set by config file for ext4 FSTYP for
-the test to then use 4K blocksize by default.
-
-mkfs.ext4: Input/output error while writing out and closing file system
+This patch clears the end of line whitespace issues in this file.
+Mostly since many kernel developers also keep this editor config to clear
+any end of line whitespaces on file save.
 
 Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
 ---
- tests/generic/620 | 7 +++++++
- 1 file changed, 7 insertions(+)
+ common/attr | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/tests/generic/620 b/tests/generic/620
-index 60559441..3ccda5e4 100755
---- a/tests/generic/620
-+++ b/tests/generic/620
-@@ -50,6 +50,13 @@ _require_dmhugedisk
- sectors=$((2*1024*1024*1024*17))
- chunk_size=128
+diff --git a/common/attr b/common/attr
+index 42ceab92..d3902346 100644
+--- a/common/attr
++++ b/common/attr
+@@ -59,10 +59,10 @@ _acl_setup_ids()
+         j=1
+         for(i=1; i<1000000 && j<=3;i++){
+           if (! (i in ids)) {
+-	     printf "acl%d=%d;", j, i;		 
++	     printf "acl%d=%d;", j, i;
+ 	     j++
+           }
+-        }	
++        }
+       }'`
+ }
  
-+# ext4 with 64k blocksize fails to mkfs with below error.
-+# So remove -b option, if set by config file.
-+# mkfs.ext4: Input/output error while writing out and closing file system
-+if [[ $FSTYP = "ext4" ]]; then
-+	MKFS_OPTIONS=$(echo $MKFS_OPTIONS | sed -rn 's/(.*)(-b ?+[0-9]+)(.*)/\1 \3/p')
-+fi
+@@ -101,7 +101,7 @@ _getfacl_filter_id()
+ _acl_ls()
+ {
+     _ls_l -n $* | awk '{ print $1, $3, $4, $NF }' | _acl_filter_id
+-} 
++}
+ 
+ # create an ACL with n ACEs in it
+ #
+@@ -128,7 +128,7 @@ _filter_aces()
+ 	BEGIN {
+ 	    FS=":"
+ 	    while ( getline <tmpfile > 0 ) {
+-		idlist[$1] = $3 
++		idlist[$1] = $3
+ 	    }
+ 	}
+ 	/^user/ { if ($2 in idlist) sub($2, idlist[$2]); print; next}
+@@ -180,17 +180,17 @@ _require_attrs()
+ {
+ 	local args
+ 	local nsp
+-	
 +
- _dmhugedisk_init $sectors $chunk_size
- _mkfs_dev $DMHUGEDISK_DEV
- _mount $DMHUGEDISK_DEV $SCRATCH_MNT || _fail "mount failed for $DMHUGEDISK_DEV $SCRATCH_MNT"
+ 	if [ $# -eq 0 ]; then
+ 		args="user"
+ 	else
+ 	  	args="$*"
+ 	fi
+-	
++
+ 	[ -n "$ATTR_PROG" ] || _notrun "attr command not found"
+ 	[ -n "$GETFATTR_PROG" ] || _notrun "getfattr command not found"
+ 	[ -n "$SETFATTR_PROG" ] || _notrun "setfattr command not found"
+-	
++
+ 	for nsp in $args; do
+ 		#
+ 		# Test if chacl is able to write an attribute on the target
+@@ -204,14 +204,14 @@ _require_attrs()
+ 		touch $TEST_DIR/syscalltest
+ 		$SETFATTR_PROG -n "$nsp.xfstests" -v "attr" $TEST_DIR/syscalltest > $TEST_DIR/syscalltest.out 2>&1
+ 		cat $TEST_DIR/syscalltest.out >> $seqres.full
+-		
++
+ 		if grep -q 'Function not implemented' $TEST_DIR/syscalltest.out; then
+ 			_notrun "kernel does not support attrs"
+ 		fi
+ 		if grep -q 'Operation not supported' $TEST_DIR/syscalltest.out; then
+ 			_notrun "attr namespace $nsp not supported by this filesystem type: $FSTYP"
+ 		fi
+-		
++
+ 		rm -f $TEST_DIR/syscalltest.out
+ 	done
+ }
 -- 
 2.31.1
 
