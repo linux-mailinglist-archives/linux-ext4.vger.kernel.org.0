@@ -2,84 +2,89 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2146E3A6C3C
-	for <lists+linux-ext4@lfdr.de>; Mon, 14 Jun 2021 18:43:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C793A7152
+	for <lists+linux-ext4@lfdr.de>; Mon, 14 Jun 2021 23:28:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235517AbhFNQn3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 14 Jun 2021 12:43:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45164 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235538AbhFNQnA (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 14 Jun 2021 12:43:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 06CD161078;
-        Mon, 14 Jun 2021 16:40:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623688857;
-        bh=+zFjYf1H+0XwZaDz4ckQ0PILBfQwwW7rEibV77nNug8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UepY0NsRt0ovL+8Px+H2/QJd8fNLoqrjyL6QGBEzRyLS2Y5X2e/tDrsU3GRaG4yLT
-         UIrHzsx5+uh3H/HgIe0HS++UwAdnmBSMJEZwblW6EUOSPytVMVBfTfeyuMSN/q+HvC
-         fjuf7d7oCMNQmYKRUwadOb5W7qlx0JUTF+lEDa1GdIa+DRL+GiKVtsIUfsCDw0amCm
-         ygDbpP6LHZjwCVdSJZkDBdJxIALQf7V5IIBS6GHIMyZSPR/RGN21VfmYpAnHy0gcIL
-         fDV7iHMNVNCTA6aRSUOgonFb1OHSut8qpQn6/OfPa23Am3fBrdgGVblW8K5T+fFj9a
-         O5MG7QAAi90Ig==
-Date:   Mon, 14 Jun 2021 09:40:56 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 2/9] ext4/027: Correct the right code of block and inode
- bitmap
-Message-ID: <20210614164056.GA2945720@locust>
-References: <cover.1623651783.git.riteshh@linux.ibm.com>
- <cf9babe1f24507d31886d806053dd1b93f2d144b.1623651783.git.riteshh@linux.ibm.com>
+        id S235000AbhFNVag (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 14 Jun 2021 17:30:36 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:57132 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234143AbhFNVag (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 14 Jun 2021 17:30:36 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id C2E8A21976;
+        Mon, 14 Jun 2021 21:28:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623706111; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=yPDTs8si2zBRBtH4NG+TBMCnu8ZHdeJcL1egyvuT8bw=;
+        b=WK9D1NLkIstUlwcE9V1tTG2cQ49MFlvCcNB8tpgg5QEXIVd+LT/Pmt2oZrkkEQE2sVyM33
+        eY+xNR8iGnxhFWb9qPQFj5Li2f560MOWKvse5P993kKUfsApInFjzdY9TTVVkqYNksHOiE
+        V5sz7gvGfRgJGEKxQzA8EnlUcdXH568=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623706111;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=yPDTs8si2zBRBtH4NG+TBMCnu8ZHdeJcL1egyvuT8bw=;
+        b=L0ApJGZtxlKthKahNoPaZ32fjfQH+IBNJDA3kYef1TrLypxuuPyWWPGCdPSKszbDJ7E96z
+        nOBU0SQn6D+h8aBg==
+Received: from quack2.suse.cz (unknown [10.100.200.198])
+        by relay2.suse.de (Postfix) with ESMTP id B7E55A3B9C;
+        Mon, 14 Jun 2021 21:28:31 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 4DAB31F2C5F; Mon, 14 Jun 2021 23:28:31 +0200 (CEST)
+From:   Jan Kara <jack@suse.cz>
+To:     Ted Tso <tytso@mit.edu>
+Cc:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>
+Subject: [PATCH] tune2fs: Update overhead when toggling journal feature
+Date:   Mon, 14 Jun 2021 23:28:30 +0200
+Message-Id: <20210614212830.20207-1-jack@suse.cz>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cf9babe1f24507d31886d806053dd1b93f2d144b.1623651783.git.riteshh@linux.ibm.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 11:58:06AM +0530, Ritesh Harjani wrote:
-> Observed occasional failure of this test sometimes say with 64k config
-> and small device size. Reason is we were grepping for wrong values for
-> inode and block bitmap.
-> 
-> Correct those values according to [1] to fix this test.
-> 
-> [1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/ext4/fsmap.h#n53
-> 
-> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
-> ---
->  tests/ext4/027 | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tests/ext4/027 b/tests/ext4/027
-> index 97c14cf5..83d5a413 100755
-> --- a/tests/ext4/027
-> +++ b/tests/ext4/027
-> @@ -45,11 +45,11 @@ x=$(grep -c 'static fs metadata' $TEST_DIR/fsmap)
->  test $x -gt 0 || echo "No fs metadata?"
->  
->  echo "Check block bitmap" | tee -a $seqres.full
-> -x=$(grep -c 'special 102:1' $TEST_DIR/fsmap)
-> +x=$(grep -c 'special 102:3' $TEST_DIR/fsmap)
->  test $x -gt 0 || echo "No block bitmaps?"
->  
->  echo "Check inode bitmap" | tee -a $seqres.full
-> -x=$(grep -c 'special 102:2' $TEST_DIR/fsmap)
-> +x=$(grep -c 'special 102:4' $TEST_DIR/fsmap)
+When adding or removing journal from a filesystem, we also need to add /
+remove journal blocks from overhead stored in the superblock.  Otherwise
+total number of blocks in the filesystem as reported by statfs(2) need
+not match reality and could lead to odd results like negative number of
+used blocks reported by df(1).
 
-Maaaaybe I should have added textual descriptions for the ext4 getfsmap
-owners.  Sorry... :(
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ misc/tune2fs.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+diff --git a/misc/tune2fs.c b/misc/tune2fs.c
+index 4d4cf5a13384..2f6858abda32 100644
+--- a/misc/tune2fs.c
++++ b/misc/tune2fs.c
+@@ -396,6 +396,8 @@ static errcode_t remove_journal_inode(ext2_filsys fs)
+ 				_("while clearing journal inode"));
+ 			return retval;
+ 		}
++		fs->super->s_overhead_clusters -=
++			EXT2FS_NUM_B2C(fs, EXT2_I_SIZE(&inode) / fs->blocksize);
+ 		memset(&inode, 0, sizeof(inode));
+ 		ext2fs_mark_bb_dirty(fs);
+ 		fs->flags &= ~EXT2_FLAG_SUPER_ONLY;
+@@ -1663,8 +1665,12 @@ static int add_journal(ext2_filsys fs)
+ 			com_err(program_name, retval, "%s",
+ 				_("\n\twhile trying to create journal file"));
+ 			return retval;
+-		} else
+-			fputs(_("done\n"), stdout);
++		}
++		fs->super->s_overhead_clusters += EXT2FS_NUM_B2C(fs,
++			jparams.num_journal_blocks + jparams.num_fc_blocks);
++		ext2fs_mark_super_dirty(fs);
++		fputs(_("done\n"), stdout);
++
+ 		/*
+ 		 * If the filesystem wasn't mounted, we need to force
+ 		 * the block group descriptors out.
+-- 
+2.26.2
 
---D
-
->  test $x -gt 0 || echo "No inode bitmaps?"
->  
->  echo "Check inodes" | tee -a $seqres.full
-> -- 
-> 2.31.1
-> 
