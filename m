@@ -2,132 +2,164 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6A053A79A3
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Jun 2021 10:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EE493A7A05
+	for <lists+linux-ext4@lfdr.de>; Tue, 15 Jun 2021 11:18:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231310AbhFOI6p (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 15 Jun 2021 04:58:45 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:7270 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231267AbhFOI6o (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Jun 2021 04:58:44 -0400
-Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G429l16Fyz1BMJ8;
-        Tue, 15 Jun 2021 16:51:39 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggeme754-chm.china.huawei.com
- (10.3.19.100) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 15
- Jun 2021 16:56:38 +0800
-From:   Ye Bin <yebin10@huawei.com>
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <jack@suse.cz>
-CC:     Ye Bin <yebin10@huawei.com>
-Subject: [PATCH RFC v2] ext4:fix warning in mark_buffer_dirty as IO error when mount with errors=continue
-Date:   Tue, 15 Jun 2021 17:05:37 +0800
-Message-ID: <20210615090537.3423231-1-yebin10@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        id S231297AbhFOJUY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 15 Jun 2021 05:20:24 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:54410 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231217AbhFOJUU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Jun 2021 05:20:20 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 0B0F4219C1;
+        Tue, 15 Jun 2021 09:18:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623748695; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=Ve/8VdV5ATCd8gDlWB7j+8DY7mnfOpAFlUgroZwDEto=;
+        b=pEvfs+MIdWGiL+79/LBEcUwyB/vGR9T8fYilFMpzFILeKheCjSOdm7S5Ui148U1KoQoQSy
+        3T/4yyzdeFSRyZPYoqzzSdelLmgiENiW8IdiyNqDxWQrPyvdeYH/zxgq65AnECabWZEs0m
+        Af2AoV2NiFrKRGYikCTbpuHeUChdhCo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623748695;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=Ve/8VdV5ATCd8gDlWB7j+8DY7mnfOpAFlUgroZwDEto=;
+        b=ZMzjwv+y2ToAmcAxn3/BkX9H6OfYOU63RLwcSgZ661rESH7ekChXILZ5Zb+pJ62mhbgRpM
+        PY0tCz+eWLSO9rAg==
+Received: from quack2.suse.cz (unknown [10.100.200.198])
+        by relay2.suse.de (Postfix) with ESMTP id 58572A3B8A;
+        Tue, 15 Jun 2021 09:18:14 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 20C051F2C88; Tue, 15 Jun 2021 11:18:14 +0200 (CEST)
+From:   Jan Kara <jack@suse.cz>
+To:     <linux-fsdevel@vger.kernel.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Dave Chinner <david@fromorbit.com>, ceph-devel@vger.kernel.org,
+        Chao Yu <yuchao0@huawei.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Johannes Thumshirn <jth@kernel.org>,
+        linux-cifs@vger.kernel.org, <linux-ext4@vger.kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net, <linux-mm@kvack.org>,
+        <linux-xfs@vger.kernel.org>, Miklos Szeredi <miklos@szeredi.hu>,
+        Steve French <sfrench@samba.org>, Ted Tso <tytso@mit.edu>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>
+Subject: [PATCH 0/14 v8] fs: Hole punch vs page cache filling races
+Date:   Tue, 15 Jun 2021 11:17:50 +0200
+Message-Id: <20210615090844.6045-1-jack@suse.cz>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggeme754-chm.china.huawei.com (10.3.19.100)
-X-CFilter-Loop: Reflected
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4970; h=from:subject:message-id; bh=/sZ++c9xXAJeTuglXbv8ruz7LbfqLjU56wvnbCZ/6L0=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBgyHAdwkkXwSe7Dkt5sFq/HRSB1n3MRmc0+2hDWMSQ DQ6tVSOJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCYMhwHQAKCRCcnaoHP2RA2cgjB/ 92jqyXQZM9KaCgyXyl8ApDRJrJsxEZuAA1O2qua0wRVhnMBEiAhpMUKJG7cboL5Nvr1cNenxVTalp3 /dq1p168pS/8bkPlnsaldwKfpCAZq5fC8QdNz+/u5oK9U+i32NVPHfSZd3cQDPDdzLEovoPq4jaU9r 0ilefBWCXh5B317cK5JYIrG1okBRWTncncXjrIqYCqoK+EMpnPQrP7FiQIvc8HbrRPY/eI9BqGh4DF JjIIOvf58NezRRf3o8yXPHcrOCwdA6GZB5D5aFM+z2LttELmYw5W4WCMbwcDzhnSqMJTkJHOezSm70 mE7r1Fq3rNj/RFLT+IXZh+mdYlIgsY
+X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-We test with following step:
-1. dmsetup  create dust1 --table  '0 2097152 dust /dev/sdc 0 4096'
-2. mount  /dev/mapper/dust1  /home/test
-3. dmsetup message dust1 0 addbadblock 0 10
-4. cd /home/test
-5. echo "XXXXXXX" > t
-6. wait a moment we got following warning:
-[   80.654487] end_buffer_async_write: bh=0xffff88842f18bdd0
-[   80.656134] Buffer I/O error on dev dm-0, logical block 0, lost async page write
-[   85.774450] EXT4-fs error (device dm-0): ext4_check_bdev_write_error:193: comm kworker/u16:8: Error while async write back metadata
-[   91.415513] mark_buffer_dirty: bh=0xffff88842f18bdd0
-[   91.417038] ------------[ cut here ]------------
-[   91.418450] WARNING: CPU: 1 PID: 1944 at fs/buffer.c:1092 mark_buffer_dirty.cold+0x1c/0x5e
+Hello,
 
-[   91.440322] Call Trace:
-[   91.440652]  __jbd2_journal_temp_unlink_buffer+0x135/0x220
-[   91.441354]  __jbd2_journal_unfile_buffer+0x24/0x90
-[   91.441981]  __jbd2_journal_refile_buffer+0x134/0x1d0
-[   91.442628]  jbd2_journal_commit_transaction+0x249a/0x3240
-[   91.443336]  ? put_prev_entity+0x2a/0x200
-[   91.443856]  ? kjournald2+0x12e/0x510
-[   91.444324]  kjournald2+0x12e/0x510
-[   91.444773]  ? woken_wake_function+0x30/0x30
-[   91.445326]  kthread+0x150/0x1b0
-[   91.445739]  ? commit_timeout+0x20/0x20
-[   91.446258]  ? kthread_flush_worker+0xb0/0xb0
-[   91.446818]  ret_from_fork+0x1f/0x30
-[   91.447293] ---[ end trace 66f0b6bf3d1abade ]---
+here is another version of my patches to address races between hole punching
+and page cache filling functions for ext4 and other filesystems. The only
+significant change since last time is simplification in xfs_isilocked()
+suggested by Dave Chinner. So that needs final review and I'd also like to
+have another pair of eyes on the mm changes in patch 3/14. Otherwise I think
+the series is ready - Darrick agreed to take it through his tree.
 
-If super block write back with IO error, then will call clear_buffer_uptodate
-clear uptodate flag. But there is no chance to set buffer uptodate again.
-So call set_buffer_uptodate before call jbd2_journal_dirty_metadata to make sure
-that buffer is uptodate when buffer is jbddirty.
+Out of all filesystem supporting hole punching, only GFS2 and OCFS2 remain
+unresolved. GFS2 people are working on their own solution (cluster locking is
+involved), OCFS2 has even bigger issues (maintainers informed, looking into
+it).
 
-Signed-off-by: Ye Bin <yebin10@huawei.com>
+Once this series lands, I'd like to actually make sure all calls to
+truncate_inode_pages() happen under mapping->invalidate_lock, add the assert
+and then we can also get rid of i_size checks in some places (truncate can
+use the same serialization scheme as hole punch). But that step is mostly
+a cleanup so I'd like to get these functional fixes in first.
+
+Note that the first patch of the series is already in mm tree but I'm
+submitting it here so that the series applies to Linus' tree cleanly.
+
+Changes since v7:
+* Rebased on top of 5.13-rc6
+* Added some reviewed-by tags
+* Simplified xfs_isilocked() changes as Dave Chinner suggested
+* Minor documentation formulation improvements
+
+Changes since v6:
+* Added some reviewed-by tags
+* Added wrapper for taking invalidate_lock similar to inode_lock
+* Renamed wrappers for taking invalidate_lock for two inodes
+* Added xfs patch to make xfs_isilocked() work better even without lockdep
+* Some minor documentation fixes
+
+Changes since v5:
+* Added some reviewed-by tags
+* Added functions for locking two mappings and using them from XFS where needed
+* Some minor code style & comment fixes
+
+Changes since v4:
+* Rebased onto 5.13-rc1
+* Removed shmfs conversion patches
+* Fixed up zonefs changelog
+* Fixed up XFS comments
+* Added patch fixing up definition of file_operations in Documentation/vfs/
+* Updated documentation and comments to explain invalidate_lock is used also
+  to prevent changes through memory mappings to existing pages for some VFS
+  operations.
+
+Changes since v3:
+* Renamed and moved lock to struct address_space
+* Added conversions of tmpfs, ceph, cifs, fuse, f2fs
+* Fixed error handling path in filemap_read()
+* Removed .page_mkwrite() cleanup from the series for now
+
+Changes since v2:
+* Added documentation and comments regarding lock ordering and how the lock is
+  supposed to be used
+* Added conversions of ext2, xfs, zonefs
+* Added patch removing i_mapping_sem protection from .page_mkwrite handlers
+
+Changes since v1:
+* Moved to using inode->i_mapping_sem instead of aops handler to acquire
+  appropriate lock
+
 ---
- fs/ext4/ext4_jbd2.c |  2 +-
- fs/ext4/super.c     | 12 ++++++++++--
- 2 files changed, 11 insertions(+), 3 deletions(-)
+Motivation:
 
-diff --git a/fs/ext4/ext4_jbd2.c b/fs/ext4/ext4_jbd2.c
-index be799040a415..b96ecba91899 100644
---- a/fs/ext4/ext4_jbd2.c
-+++ b/fs/ext4/ext4_jbd2.c
-@@ -327,6 +327,7 @@ int __ext4_handle_dirty_metadata(const char *where, unsigned int line,
- 
- 	set_buffer_meta(bh);
- 	set_buffer_prio(bh);
-+	set_buffer_uptodate(bh);
- 	if (ext4_handle_valid(handle)) {
- 		err = jbd2_journal_dirty_metadata(handle, bh);
- 		/* Errors can only happen due to aborted journal or a nasty bug */
-@@ -355,7 +356,6 @@ int __ext4_handle_dirty_metadata(const char *where, unsigned int line,
- 					 err);
- 		}
- 	} else {
--		set_buffer_uptodate(bh);
- 		if (inode)
- 			mark_buffer_dirty_inode(bh, inode);
- 		else
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index d29f6aa7d96e..67a92c11a45c 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -705,15 +705,23 @@ static void flush_stashed_error_work(struct work_struct *work)
- 	 * ext4 error handling code during handling of previous errors.
- 	 */
- 	if (!sb_rdonly(sbi->s_sb) && journal) {
-+		struct buffer_head *sbh = sbi->s_sbh;
- 		handle = jbd2_journal_start(journal, 1);
- 		if (IS_ERR(handle))
- 			goto write_directly;
--		if (jbd2_journal_get_write_access(handle, sbi->s_sbh)) {
-+		if (jbd2_journal_get_write_access(handle, sbh)) {
- 			jbd2_journal_stop(handle);
- 			goto write_directly;
- 		}
- 		ext4_update_super(sbi->s_sb);
--		if (jbd2_journal_dirty_metadata(handle, sbi->s_sbh)) {
-+		if (buffer_write_io_error(sbh) || !buffer_uptodate(sbh)) {
-+			ext4_msg(sbi->s_sb, KERN_ERR, "previous I/O error to "
-+				 "superblock detected");
-+			clear_buffer_write_io_error(sbh);
-+			set_buffer_uptodate(sbh);
-+		}
-+
-+		if (jbd2_journal_dirty_metadata(handle, sbh)) {
- 			jbd2_journal_stop(handle);
- 			goto write_directly;
- 		}
--- 
-2.31.1
+Amir has reported [1] a that ext4 has a potential issues when reads can race
+with hole punching possibly exposing stale data from freed blocks or even
+corrupting filesystem when stale mapping data gets used for writeout. The
+problem is that during hole punching, new page cache pages can get instantiated
+and block mapping from the looked up in a punched range after
+truncate_inode_pages() has run but before the filesystem removes blocks from
+the file. In principle any filesystem implementing hole punching thus needs to
+implement a mechanism to block instantiating page cache pages during hole
+punching to avoid this race. This is further complicated by the fact that there
+are multiple places that can instantiate pages in page cache.  We can have
+regular read(2) or page fault doing this but fadvise(2) or madvise(2) can also
+result in reading in page cache pages through force_page_cache_readahead().
 
+There are couple of ways how to fix this. First way (currently implemented by
+XFS) is to protect read(2) and *advise(2) calls with i_rwsem so that they are
+serialized with hole punching. This is easy to do but as a result all reads
+would then be serialized with writes and thus mixed read-write workloads suffer
+heavily on ext4. Thus this series introduces inode->i_mapping_sem and uses it
+when creating new pages in the page cache and looking up their corresponding
+block mapping. We also replace EXT4_I(inode)->i_mmap_sem with this new rwsem
+which provides necessary serialization with hole punching for ext4.
+
+								Honza
+
+[1] https://lore.kernel.org/linux-fsdevel/CAOQ4uxjQNmxqmtA_VbYW0Su9rKRk2zobJmahcyeaEVOFKVQ5dw@mail.gmail.com/
+
+Previous versions:
+Link: https://lore.kernel.org/linux-fsdevel/20210208163918.7871-1-jack@suse.cz/
+Link: https://lore.kernel.org/r/20210413105205.3093-1-jack@suse.cz
+Link: https://lore.kernel.org/r/20210423171010.12-1-jack@suse.cz
+Link: https://lore.kernel.org/r/20210512101639.22278-1-jack@suse.cz
+Link: https://lore.kernel.org/r/20210525125652.20457-1-jack@suse.cz
+Link: https://lore.kernel.org/r/20210607144631.8717-1-jack@suse.cz
