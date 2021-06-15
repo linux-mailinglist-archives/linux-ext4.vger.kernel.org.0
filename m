@@ -2,112 +2,80 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDBC63A7A2A
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Jun 2021 11:18:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4FB13A7D1E
+	for <lists+linux-ext4@lfdr.de>; Tue, 15 Jun 2021 13:27:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231467AbhFOJUg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 15 Jun 2021 05:20:36 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:54754 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231362AbhFOJUX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Jun 2021 05:20:23 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 4DD37219DB;
-        Tue, 15 Jun 2021 09:18:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623748695; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2y4ATobPVnEcMEJhABd7mhzgYGQRV2///C8khknCrDI=;
-        b=jkrSgf91dMSZKGLpwFnVzcX+RniA5lrBYoOpTKdscfVANjpzuygwReWX45ijFTqHWI/oP5
-        6SIc40rlo9wSEueoc+eqxwrP39o9wT6pJo8bu1eWvP00C5ncP2WlrT27Hw1Zb0tWoxQpYR
-        LvbV9V92glyJeD13FUgXPPVcUCYib8A=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623748695;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2y4ATobPVnEcMEJhABd7mhzgYGQRV2///C8khknCrDI=;
-        b=8JAptZxj9cSPv7QkSZ+GkFGANKcsiSwNgVsiI14DugpGsIS+68yIl+moQjnMjZBiYkk9h+
-        Z1VMWYbCuGHWBYAw==
-Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id 36F8FA3BA4;
-        Tue, 15 Jun 2021 09:18:15 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 5BFB01F2CC7; Tue, 15 Jun 2021 11:18:14 +0200 (CEST)
-From:   Jan Kara <jack@suse.cz>
-To:     <linux-fsdevel@vger.kernel.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Dave Chinner <david@fromorbit.com>, ceph-devel@vger.kernel.org,
-        Chao Yu <yuchao0@huawei.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Johannes Thumshirn <jth@kernel.org>,
-        linux-cifs@vger.kernel.org, <linux-ext4@vger.kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net, <linux-mm@kvack.org>,
-        <linux-xfs@vger.kernel.org>, Miklos Szeredi <miklos@szeredi.hu>,
-        Steve French <sfrench@samba.org>, Ted Tso <tytso@mit.edu>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>
-Subject: [PATCH 14/14] cifs: Fix race between hole punch and page fault
-Date:   Tue, 15 Jun 2021 11:18:04 +0200
-Message-Id: <20210615091814.28626-14-jack@suse.cz>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210615090844.6045-1-jack@suse.cz>
-References: <20210615090844.6045-1-jack@suse.cz>
+        id S230040AbhFOL3d (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 15 Jun 2021 07:29:33 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:4915 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229951AbhFOL3d (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Jun 2021 07:29:33 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G45Yv0LnTz705r;
+        Tue, 15 Jun 2021 19:24:19 +0800 (CST)
+Received: from dggema765-chm.china.huawei.com (10.1.198.207) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 15 Jun 2021 19:27:27 +0800
+Received: from [127.0.0.1] (10.174.177.249) by dggema765-chm.china.huawei.com
+ (10.1.198.207) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 15
+ Jun 2021 19:27:27 +0800
+Subject: Re: [PATCH V2 00/12] e2fsprogs: some bugfixs and some code cleanups
+To:     Theodore Ts'o <tytso@mit.edu>, Wu Guanghao <wuguanghao3@huawei.com>
+CC:     <linux-ext4@vger.kernel.org>,
+        =?UTF-8?B?0JHQu9Cw0LPQvtC00LDRgNC10L3QutC+INCQ0YDRgtGR0Lw=?= 
+        <artem.blagodarenko@gmail.com>, <linfeilong@huawei.com>
+References: <00ad4a90-8a40-24c1-98d9-eb5f0da42436@huawei.com>
+ <YLRl/tFB4rakYJ7q@mit.edu>
+From:   Zhiqiang Liu <liuzhiqiang26@huawei.com>
+Message-ID: <c10ba297-c98c-5d9b-b022-5614a6986589@huawei.com>
+Date:   Tue, 15 Jun 2021 19:27:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1533; h=from:subject; bh=ZCABbWCWKurwj2pIQo6pZPjhdXQ595KGSFP8UTIZMfk=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBgyHBM5bKiu8eYGM3Nz8nWQKIiVrKQrT6ftatfT6be 2XeiCXeJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCYMhwTAAKCRCcnaoHP2RA2di6B/ 45mhRVQnW7UEq8suFiCGDgISonzDUeQNVWEgcLjdXBZEIDbjCB7lYGsbJf/2IQcCDyAp1zJtKbAA97 LKvEdr6VjgcXgV5+oiI4V26Eg4SeicN83dDn0lmsYHvEt32v8FDDtMnb3ANMlKSUEqBQNhPBKvF0Hu 7oan61Xlt9SjuKtR2DNIo6BnoW+d3ctXdP54jBT2o81yaKbIQNLQF1CkZsz+XDP8ihnmg7st97ymKU TPRJSfingbG2ZM2Sp63ozFihnFywZI3GwOjoVYCxmX8taZ69x0x3a1KarULQ8O4uuVOhr+9KDsEgoq Py6BTeucaRFVJYzpQRsDWUnDh/IZou
-X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
+In-Reply-To: <YLRl/tFB4rakYJ7q@mit.edu>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.174.177.249]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggema765-chm.china.huawei.com (10.1.198.207)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Cifs has a following race between hole punching and page fault:
+friendly ping...
 
-CPU1                                            CPU2
-smb3_fallocate()
-  smb3_punch_hole()
-    truncate_pagecache_range()
-                                                filemap_fault()
-                                                  - loads old data into the
-                                                    page cache
-    SMB2_ioctl(..., FSCTL_SET_ZERO_DATA, ...)
+What is the current status of the patch set？
 
-And now we have stale data in the page cache. Fix the problem by locking
-out faults (as well as reads) using mapping->invalidate_lock while hole
-punch is running.
 
-CC: Steve French <sfrench@samba.org>
-CC: linux-cifs@vger.kernel.org
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/cifs/smb2ops.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/fs/cifs/smb2ops.c b/fs/cifs/smb2ops.c
-index 21ef51d338e0..07c9ec047020 100644
---- a/fs/cifs/smb2ops.c
-+++ b/fs/cifs/smb2ops.c
-@@ -3581,6 +3581,7 @@ static long smb3_punch_hole(struct file *file, struct cifs_tcon *tcon,
- 		return rc;
- 	}
- 
-+	filemap_invalidate_lock(inode->i_mapping);
- 	/*
- 	 * We implement the punch hole through ioctl, so we need remove the page
- 	 * caches first, otherwise the data may be inconsistent with the server.
-@@ -3598,6 +3599,7 @@ static long smb3_punch_hole(struct file *file, struct cifs_tcon *tcon,
- 			sizeof(struct file_zero_data_information),
- 			CIFSMaxBufSize, NULL, NULL);
- 	free_xid(xid);
-+	filemap_invalidate_unlock(inode->i_mapping);
- 	return rc;
- }
- 
--- 
-2.26.2
+On 2021/5/31 12:28, Theodore Ts'o wrote:
+> On Mon, May 31, 2021 at 09:23:49AM +0800, Wu Guanghao wrote:
+>> V1 -> V2:
+>>
+>> [PATCH V2 03/12] zap_sector: fix memory leak
+>> 	free and return operators placed in {} block
+>>
+>> [PATCH V2 04/12] ss_add_info_dir: fix memory leak and check whether,NULL pointer
+>> 	modified "=" to "=="
+>>
+>> [PATCH V2 06/12] append_pathname: check the value returned by realloc to avoid segfault
+>> [PATCH V2 07/12] argv_parse: check return value of malloc in argv_parse()
+>> 	Fix typos
+>>
+>> [PATCH V2 10/12] hashmap: change return value type of, ext2fs_hashmap_add()
+>> 	remove "new_block = NULL;"
+> Did you only send the patches that you changed, and didn't resend the
+> patches that didn't change between V1 and V2?
+>
+> It's actually better if you resend the whole series in the future.
+>
+> Thanks,
+>
+> 					- Ted
+>
+> .
 
