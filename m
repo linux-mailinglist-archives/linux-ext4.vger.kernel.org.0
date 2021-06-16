@@ -2,70 +2,94 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4135A3A914D
-	for <lists+linux-ext4@lfdr.de>; Wed, 16 Jun 2021 07:39:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17C283A9342
+	for <lists+linux-ext4@lfdr.de>; Wed, 16 Jun 2021 08:55:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230225AbhFPFly (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 16 Jun 2021 01:41:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbhFPFlx (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Jun 2021 01:41:53 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14835C061574;
-        Tue, 15 Jun 2021 22:39:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Xk06EVl9lp5HJyBNJxkI+EUAZw3CkFLgV9O5fKQUSsQ=; b=e49zW+xtSoJvTBSrAZ30aMVlIu
-        2W2x8ol+U4HkkO8pZe/UMYZBMSzfxACSfluW8kQonKmK/JH64nS/ZFnbeC5TSQqlOfrdw7sG7kX7Y
-        OX7KDbfl0HM48rIFpWqJjq/W1Ua/Q6lLO8vK06Kef/WdJYe1PbvsAXAYTHDH9tKpyxpEnXLj4r+II
-        7Wvlsa8BClOU5KzSSKK0IRGsabUWpkYqV5dHb0dq2NzxFTzzA2hZ+QuO75LJ/Ut4+LaJIhwAyGgvX
-        EqNEBvW7ei1f2e1V3mfaVq3MYOk3keHYVR2I+cnKOjJkWJNmG6CvUbvDkGTL4VdLMYmTQjvkYfDWg
-        r6KiHf5w==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ltOGf-007e5R-SF; Wed, 16 Jun 2021 05:39:18 +0000
-Date:   Wed, 16 Jun 2021 06:39:13 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Dave Chinner <david@fromorbit.com>, ceph-devel@vger.kernel.org,
-        Chao Yu <yuchao0@huawei.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Johannes Thumshirn <jth@kernel.org>,
-        linux-cifs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
-        linux-xfs@vger.kernel.org, Miklos Szeredi <miklos@szeredi.hu>,
-        Steve French <sfrench@samba.org>, Ted Tso <tytso@mit.edu>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH 10/14] zonefs: Convert to using invalidate_lock
-Message-ID: <YMmOgeU7Ionnk0/D@infradead.org>
-References: <20210615090844.6045-1-jack@suse.cz>
- <20210615091814.28626-10-jack@suse.cz>
+        id S231791AbhFPG5Y (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 16 Jun 2021 02:57:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34578 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231168AbhFPG5X (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 16 Jun 2021 02:57:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E86AE613B9;
+        Wed, 16 Jun 2021 06:55:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623826518;
+        bh=JNLoEzRSUmckl8eLY94oHxsjeBDCiLlJ5aZAc+3RHhw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=bIRjmcsZh0nDrGHZVv9Hdcp/Q7V4uZte3M33hb9qtbnnI2Do02YGKEM+D6wRBXJX8
+         fXP7U8eEtlIoGGBRfcltvRJKfVLv6QfEzHWXg0RqgPTC/cqVmoVPlD3eInloJymMLC
+         YFImERmycprD4hLIQfwK4FMud3KE6g98aGIK3QdPZWSv6z/ri/7N3dR5lTH3MJ8aUe
+         Bp3u9e2L/j8FbtxvpC2tQVJI5GuWTuVepuuIxKMIBQ2anYz1TSwnwP/6dC4Hclk/V0
+         JEx814LnbdMa7n/p9vSS8FAmzoK9B1aSqdGnO1eWFyBdMyWaXbzC4IY2JvfPF0KgqH
+         Uy3+bF3abccxA==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1ltPSG-004lCD-7Q; Wed, 16 Jun 2021 08:55:16 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jakub Kicinski <kuba@kernel.org>, Leo Yan <leo.yan@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Thorsten Leemhuis <linux@leemhuis.info>,
+        coresight@lists.linaro.org, intel-wired-lan@lists.osuosl.org,
+        linux-arm-kernel@lists.infradead.org, linux-ext4@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH 0/8] Replace some bad characters on documents
+Date:   Wed, 16 Jun 2021 08:55:06 +0200
+Message-Id: <cover.1623826294.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210615091814.28626-10-jack@suse.cz>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 11:18:00AM +0200, Jan Kara wrote:
-> Use invalidate_lock instead of zonefs' private i_mmap_sem. The intended
-> purpose is exactly the same.
-> 
-> CC: Damien Le Moal <damien.lemoal@wdc.com>
-> CC: Johannes Thumshirn <jth@kernel.org>
-> CC: <linux-fsdevel@vger.kernel.org>
-> Acked-by: Damien Le Moal <damien.lemoal@wdc.com>
-> Signed-off-by: Jan Kara <jack@suse.cz>
+Hi Jon,
 
-Looks good,
+This series contain the remaining 8 patches I submitted at v3 that
+weren't merged yet at -next.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+This series is rebased on the top of your docs-next branch.
+
+No changes here, except by some Reviewed/ack lines, and at the
+name of the final patch (per PCI maintainer's request).
+
+Mauro Carvalho Chehab (8):
+  docs: admin-guide: reporting-issues.rst: replace some characters
+  docs: trace: coresight: coresight-etm4x-reference.rst: replace some
+    characters
+  docs: driver-api: ioctl.rst: replace some characters
+  docs: usb: replace some characters
+  docs: vm: zswap.rst: replace some characters
+  docs: filesystems: ext4: blockgroup.rst: replace some characters
+  docs: networking: device_drivers: replace some characters
+  docs: PCI: Replace non-breaking spaces to avoid PDF issues
+
+ Documentation/PCI/acpi-info.rst                | 18 +++++++++---------
+ Documentation/admin-guide/reporting-issues.rst |  2 +-
+ Documentation/driver-api/ioctl.rst             |  8 ++++----
+ Documentation/filesystems/ext4/blockgroup.rst  |  2 +-
+ .../device_drivers/ethernet/intel/i40e.rst     |  6 +++---
+ .../device_drivers/ethernet/intel/iavf.rst     |  2 +-
+ .../coresight/coresight-etm4x-reference.rst    |  2 +-
+ Documentation/usb/ehci.rst                     |  2 +-
+ Documentation/usb/gadget_printer.rst           |  2 +-
+ Documentation/vm/zswap.rst                     |  4 ++--
+ 10 files changed, 24 insertions(+), 24 deletions(-)
+
+-- 
+2.31.1
+
+
