@@ -2,106 +2,106 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F7C93AA092
-	for <lists+linux-ext4@lfdr.de>; Wed, 16 Jun 2021 17:58:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE8F23AA129
+	for <lists+linux-ext4@lfdr.de>; Wed, 16 Jun 2021 18:23:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235042AbhFPP7y (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 16 Jun 2021 11:59:54 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:46732 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234698AbhFPP7X (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Jun 2021 11:59:23 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 4D62F21A32;
-        Wed, 16 Jun 2021 15:57:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623859034; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MzEXeyUJtYhb/jhKtsstzQNYPYyugeSQ7deyI5/x/eg=;
-        b=QluPc+xaSD6lMsYHFrTXOo9S19BGMh1dPOZCU9V9lAjMlVkbzEPC76NIYkzAlyHL6z0G2X
-        6V1D7RAO4dKfvHWXp9WKGolBz/Xim2qqndj/0aTBqw4NNJ/W710NpTjVSzVtUU+bCo6ztK
-        HR1Cd37auJvcp2UU0GST9EsPQ8ys2k8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623859034;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MzEXeyUJtYhb/jhKtsstzQNYPYyugeSQ7deyI5/x/eg=;
-        b=jHTUUdWi2cy0yZq6g8W0CohAQJWdKoqUkM3WbwT5QWy5M/vj4YqpLcOCdoKxgHFiAm+6jn
-        h8dOe0bJlFuiCtAw==
-Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id 638F1A3BAE;
-        Wed, 16 Jun 2021 15:57:13 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 4FE0F1F2C68; Wed, 16 Jun 2021 17:57:12 +0200 (CEST)
-Date:   Wed, 16 Jun 2021 17:57:12 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>,
-        linux-fsdevel@vger.kernel.org, Dave Chinner <david@fromorbit.com>,
-        ceph-devel@vger.kernel.org, Chao Yu <yuchao0@huawei.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Johannes Thumshirn <jth@kernel.org>,
-        linux-cifs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
-        linux-xfs@vger.kernel.org, Miklos Szeredi <miklos@szeredi.hu>,
-        Steve French <sfrench@samba.org>, Ted Tso <tytso@mit.edu>,
-        Matthew Wilcox <willy@infradead.org>,
-        Pavel Reichl <preichl@redhat.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Eric Sandeen <sandeen@redhat.com>
-Subject: Re: [PATCH 07/14] xfs: Refactor xfs_isilocked()
-Message-ID: <20210616155712.GC28250@quack2.suse.cz>
-References: <20210615090844.6045-1-jack@suse.cz>
- <20210615091814.28626-7-jack@suse.cz>
- <YMmOCK4wHc9lerEc@infradead.org>
- <20210616085304.GA28250@quack2.suse.cz>
- <20210616154705.GE158209@locust>
+        id S235224AbhFPQZH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 16 Jun 2021 12:25:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234823AbhFPQYi (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Jun 2021 12:24:38 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F231C061574;
+        Wed, 16 Jun 2021 09:22:18 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id h4so5256778lfu.8;
+        Wed, 16 Jun 2021 09:22:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=NBQH65s6dXuvuY4ggi3ViJ5kPDHnKKmF/5YkqcMeyHA=;
+        b=agK9vagT+8LIrZL92Cdy9ak31mdXjgDzQWfdH6nKNgeaecP9h2ba72ZSbqN0b0trRl
+         BfXFR93UeiF1MaJ6RxADum8kmZKM+nfWi3RV4JpAUIL5MzzgTBlTB+BgxY1S427KJuhp
+         eibyUfhLeeBRLvz30SWdh1vxihyvH7XKApa02zDeZlN0F+V8/QfjmA60umL0IPfunjzK
+         iVKtl3EDf+hdgWS83CLBmqJ4Lb6Y1Ix39P2027CA3MVirxfnD1dvATA0ECCbv5Grg1pB
+         VY6QroV6mglHPwaI6acRgU4jVhj2M03LPal1aztYif1swc1XKoDsRENUVYk5ZrYuPKJ7
+         ZO4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=NBQH65s6dXuvuY4ggi3ViJ5kPDHnKKmF/5YkqcMeyHA=;
+        b=kbJcBWfEiiNUpcTxjhOpzJ6wlANguI88lruI7CEnLBzR2tbI6FdE1kkGIvgqMxBGxu
+         BREezfLTtRFWhmIJaxbqbixU3Qq/jk985xeYfIVbkxdI3M7aSLvFqWwaVcePMv1ihyvr
+         K4SjlVlCjft08O0peB0+aD4q4OY+ubv3pA4E2KVpFydHZdrpuS+Q+OTQqXqSSYc4GyKn
+         Y+pBRs/Oy/RN1KbWdozkjAPVfY+DJPkFLEq5qt4mC0KYnVVNAdRaJid3nkxTbZo4ItAr
+         HpeXeFa7EB/ZKOtA/JlnBINmyJJu7mUSHXqZgJWNlr7kKPRmSAcCeruJ6aGes99L60Oo
+         n/xQ==
+X-Gm-Message-State: AOAM530eFtI77VzfSbrApK8b12c2HTOHNWKf5wA+PL2FBEbsI2JM5Cf2
+        6W/8qMW4yt+54NBdKC0tgV8=
+X-Google-Smtp-Source: ABdhPJzZa5VoN+rWMnY/cl8INjSUP8iA/+pzdISzgajrwHeqHIHWjGqL/CC9jzQPPyRP6/Sq+9kwIA==
+X-Received: by 2002:a19:7d04:: with SMTP id y4mr341091lfc.201.1623860536422;
+        Wed, 16 Jun 2021 09:22:16 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.229.24])
+        by smtp.gmail.com with ESMTPSA id v18sm333032ljg.114.2021.06.16.09.22.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 09:22:16 -0700 (PDT)
+Date:   Wed, 16 Jun 2021 19:22:13 +0300
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     syzbot <syzbot+c9ff4822a62eee994ea3@syzkaller.appspotmail.com>
+Cc:     adilger.kernel@dilger.ca, clang-built-linux@googlegroups.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        nathan@kernel.org, ndesaulniers@google.com,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Subject: Re: [syzbot] INFO: task hung in ext4_fill_super
+Message-ID: <20210616192213.1d75d8e2@gmail.com>
+In-Reply-To: <0000000000004c80e405c4df1a2d@google.com>
+References: <0000000000004c80e405c4df1a2d@google.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210616154705.GE158209@locust>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 16-06-21 08:47:05, Darrick J. Wong wrote:
-> On Wed, Jun 16, 2021 at 10:53:04AM +0200, Jan Kara wrote:
-> > On Wed 16-06-21 06:37:12, Christoph Hellwig wrote:
-> > > On Tue, Jun 15, 2021 at 11:17:57AM +0200, Jan Kara wrote:
-> > > > From: Pavel Reichl <preichl@redhat.com>
-> > > > 
-> > > > Refactor xfs_isilocked() to use newly introduced __xfs_rwsem_islocked().
-> > > > __xfs_rwsem_islocked() is a helper function which encapsulates checking
-> > > > state of rw_semaphores hold by inode.
-> > > 
-> > > __xfs_rwsem_islocked doesn't seem to actually existing in any tree I
-> > > checked yet?
-> > 
-> > __xfs_rwsem_islocked is introduced by this patch so I'm not sure what are
-> > you asking about... :)
-> 
-> The sentence structure implies that __xfs_rwsem_islocked was previously
-> introduced.  You might change the commit message to read:
-> 
-> "Introduce a new __xfs_rwsem_islocked predicate to encapsulate checking
-> the state of a rw_semaphore, then refactor xfs_isilocked to use it."
-> 
-> Since it's not quite a straight copy-paste of the old code.
+On Wed, 16 Jun 2021 02:56:21 -0700
+syzbot <syzbot+c9ff4822a62eee994ea3@syzkaller.appspotmail.com> wrote:
 
-Ah, ok. Sure, I can rephrase the changelog (or we can just update it on
-commit if that's the only problem with this series...). Oh, now I've
-remembered I've promised you a branch to pull :) Here it is with this
-change and Christoph's Reviewed-by tags:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    f21b807c Merge tag 'drm-fixes-2021-06-11' of
+> git://anongit.. git tree:       upstream
+> console output:
+> https://syzkaller.appspot.com/x/log.txt?x=165fca57d00000 kernel
+> config:  https://syzkaller.appspot.com/x/.config?x=30f476588412c065
+> dashboard link:
+> https://syzkaller.appspot.com/bug?extid=c9ff4822a62eee994ea3 syz
+> repro:
+> https://syzkaller.appspot.com/x/repro.syz?x=17d19ce0300000 C
+> reproducer:   https://syzkaller.appspot.com/x/repro.c?x=108d7988300000
+> 
+> Bisection is inconclusive: the issue happens on the oldest tested
+> release.
+> 
+> bisection log:
+> https://syzkaller.appspot.com/x/bisect.txt?x=1646b8d0300000 final
+> oops:     https://syzkaller.appspot.com/x/report.txt?x=1546b8d0300000
+> console output:
+> https://syzkaller.appspot.com/x/log.txt?x=1146b8d0300000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the
+> commit: Reported-by:
+> syzbot+c9ff4822a62eee994ea3@syzkaller.appspotmail.com
+> 
 
-git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git hole_punch_fixes
+Just want to try this ;)
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+#syz test https://linux.googlesource.com/linux/kernel/git/torvalds/linux refs/changes/76/10176/6
+
+
+With regards,
+Pavel Skripkin
