@@ -2,54 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DDD43A9628
-	for <lists+linux-ext4@lfdr.de>; Wed, 16 Jun 2021 11:29:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44E1D3A9668
+	for <lists+linux-ext4@lfdr.de>; Wed, 16 Jun 2021 11:38:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232270AbhFPJcD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 16 Jun 2021 05:32:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41588 "EHLO
+        id S231856AbhFPJk4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 16 Jun 2021 05:40:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231336AbhFPJcC (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Jun 2021 05:32:02 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D845C061574;
-        Wed, 16 Jun 2021 02:29:56 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id i17so1738675ilj.11;
-        Wed, 16 Jun 2021 02:29:56 -0700 (PDT)
+        with ESMTP id S231491AbhFPJk4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Jun 2021 05:40:56 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6132EC061574;
+        Wed, 16 Jun 2021 02:38:49 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id s26so2308458ioe.9;
+        Wed, 16 Jun 2021 02:38:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=I2QyrZ5u9nirgNRl+yX3M8mJOnXZQHhwgkJca21/81I=;
-        b=GHYm6GxRdEg+YoZWPkMFFfHUfPA8V/M3t+7djJnxneGLywcYEaCXKmwaeF55CiNTm9
-         zETDvrqULt4ouLGUC8HNHvmZ6/eo0JWWt18crEoE6jtuF3f13kpU+omeFL0b6FmWMRR3
-         UDXaR8cNaRgiWAEayJST+stErbVd35hVtMhkUwqNHIaf1qGYHoiTQXNXHNRybB/QojGf
-         S5mYikAHKRLPAQ0vdM1zGxHlvfvxvy3sUO13+155cFWqok8Ab36lFd2Gg9q21x6Th/mw
-         hy2tvmuADY1Rk+Qj7cgECyeKDdaVdV1i+uu28ebSt10K+3mTIYlmalc/WHIfZSWleaUx
-         wF8g==
+        bh=2/MvKY4Cc8ZvNy+Agqhh0BnZkqflTNCcNSEyPszszWE=;
+        b=BCxLH9VjmgtjKc9Vp38RV3uJWTkhfVk9L2cN0xGy3I6OnvNbdC18ZPDp7mIb9LDnqG
+         rqG3L30hKMGkLFsgz1ohSkD1GdOnTD39CfqYIEFITXc+7fydUFXw+cRR3eCFsQTMN6lr
+         65qAHMy6EWY5LmaZ9W2Rfbwh5MOwEFW3Y9ZCO8WqqD04RwdC3TtfJJz9EyetqzGHRS6t
+         raL0hZGHTVeE4XUelrG2Trp6XONROtpUQeRMngULXJtpA5FBVNGbZc0hXufWPItapiDk
+         2b0/iFxQljwKmJBVws+7R5rBNecAnR4n9wNrYz5bSggL/tpCNyKE7VLLqkahDENqtG++
+         U8Uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=I2QyrZ5u9nirgNRl+yX3M8mJOnXZQHhwgkJca21/81I=;
-        b=V2P3tvT6LZbL/l4NtgrhpzbBh8nHkP41dJUK2dxkfTbvLfyJSWBzoY3tlyDihmEYWT
-         Em3eqr+5Ye8+GxYdnO4mzrIxJJOcA2eSyNVYah6P4aDEosiNCa2Pnx5/NzwAj0jV5LE3
-         JJS4BySOjWRmsFYhKZiz4yu71KcM4wzXoqu0YtI0pyMaIeNzJ8EGT09pbBvOhPcqnqVi
-         qYUJdtLnXEcXbSa1cfCm+PeXQSzKVrAqysSA24byy/nC5/RwtCCnuuTZ8e+OV/xMTOeN
-         D9oS/SMkVl0WFAn2btXZbK1frbey+gyaCAW+kbjziyVSZumZ6uJz08hoevMzcuOydkHW
-         ySXw==
-X-Gm-Message-State: AOAM533JsY2GUEDkE//HzEFl6WJJ6SMC21x1B7tW89LKzgUw3VCmdW1Y
-        xWf/JmbXuED9i/UnfDiZX3ag+jXK7psIeWkUlpW8lu5Rv5s=
-X-Google-Smtp-Source: ABdhPJygjWBaouZKWKd9k77NdbKLoAQB8r0y+T6vqUdDyqPyDhI8dbLB8RCCh29diNk/74B1oLB8WVeiPQuaT39xr4g=
-X-Received: by 2002:a92:4446:: with SMTP id a6mr3111923ilm.9.1623835795692;
- Wed, 16 Jun 2021 02:29:55 -0700 (PDT)
+        bh=2/MvKY4Cc8ZvNy+Agqhh0BnZkqflTNCcNSEyPszszWE=;
+        b=lgBz+ShUUrSLOONxuVSJtCOs17GM+ZQOmUVJ8587Yvbn2GqJVMXA+yEqcsSfPQwugw
+         5YRYqcl55aoYlyg1osbJ8ulv3ZDFLeBJfl4nqEBWtoTe4D2xFrxWUE+05B2BIeFic0Rp
+         OXQZBcWvfB6Y5lzadgOpXScmSoSOLfo1tbikvsBUCJ8opNw1h7eNwaQ+2rkRs2mFf0vU
+         mjjyQlS+8jXLxCPwa8eIs0y1ogBXIIw2U/oL1tGSoY69sBbKZKN+axOMv4o3beqwhygh
+         nyiWT8hI6T9gq4IKr5xj5UpXYKMx/PrrG3Dwjw17Nw6uuIFWa6FvvbC7mBKWwk5Ji4L9
+         mZbg==
+X-Gm-Message-State: AOAM531MZw5k48R91pCrFSrLXLSMrNZwUClClc2TgsoawoOxpUsiyEtM
+        w3yAxkiX0Ia6FIHD2PuOgvy0oMzXCXfljv4q7pc=
+X-Google-Smtp-Source: ABdhPJycEXv3DexAYGjm/B4EuogiJJk7dUEA52DCI6ai2NnexGrddRUZgRoaZlaDzKRBeb5JR9kFZPZqrDdyFG1WjfA=
+X-Received: by 2002:a05:6602:2d83:: with SMTP id k3mr3009500iow.5.1623836328913;
+ Wed, 16 Jun 2021 02:38:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210615235556.970928-1-krisman@collabora.com> <20210615235556.970928-10-krisman@collabora.com>
-In-Reply-To: <20210615235556.970928-10-krisman@collabora.com>
+References: <20210615235556.970928-1-krisman@collabora.com> <20210615235556.970928-11-krisman@collabora.com>
+In-Reply-To: <20210615235556.970928-11-krisman@collabora.com>
 From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Wed, 16 Jun 2021 12:29:44 +0300
-Message-ID: <CAOQ4uxjNLR9ohUoF+P=bO0ZxA1qSGfpLJePXVuDcowapwOLoLQ@mail.gmail.com>
-Subject: Re: [PATCH v2 09/14] fsnotify: Support FS_ERROR event type
+Date:   Wed, 16 Jun 2021 12:38:38 +0300
+Message-ID: <CAOQ4uxj0K_q5Oaaou73Saan4cuF8jqBu1XmRYGYc+mCKs_Ewkg@mail.gmail.com>
+Subject: Re: [PATCH v2 10/14] fsnotify: Introduce helpers to send error_events
 To:     Gabriel Krisman Bertazi <krisman@collabora.com>
 Cc:     kernel@collabora.com, "Darrick J. Wong" <djwong@kernel.org>,
         Theodore Tso <tytso@mit.edu>,
@@ -66,75 +66,63 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 On Wed, Jun 16, 2021 at 2:56 AM Gabriel Krisman Bertazi
 <krisman@collabora.com> wrote:
 >
-> Expose a new type of fsnotify event for filesystems to report errors for
-> userspace monitoring tools.  fanotify will send this type of
-> notification for FAN_ERROR events.
-
-FAN_FS_ERROR... it's all over the place ;-)
-
-Otherwise
-Reviewed-by: Amir Goldstein <amir73il@gmail.com>
-
+> Introduce helpers for filesystems interested in reporting FS_ERROR
+> events.
 >
 > Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 >
 > ---
 > Changes since v1:
->   - Overload FS_ERROR with FS_IN_IGNORED
->   - IMplement support for this type on fsnotify_data_inode
+>   - Use the inode argument (Amir)
+>   - Protect s_fsnotify_marks with ifdef guard
 > ---
->  include/linux/fsnotify_backend.h | 17 ++++++++++++++++-
->  1 file changed, 16 insertions(+), 1 deletion(-)
+>  fs/notify/fsnotify.c             |  2 +-
+>  include/linux/fsnotify.h         | 20 ++++++++++++++++++++
+>  include/linux/fsnotify_backend.h |  1 +
+>  3 files changed, 22 insertions(+), 1 deletion(-)
 >
-> diff --git a/include/linux/fsnotify_backend.h b/include/linux/fsnotify_backend.h
-> index 8222fe12a6c9..ea5f5c7cc381 100644
-> --- a/include/linux/fsnotify_backend.h
-> +++ b/include/linux/fsnotify_backend.h
-> @@ -42,6 +42,12 @@
->
->  #define FS_UNMOUNT             0x00002000      /* inode on umount fs */
->  #define FS_Q_OVERFLOW          0x00004000      /* Event queued overflowed */
-> +#define FS_ERROR               0x00008000      /* Filesystem Error (fanotify) */
-> +
-> +/*
-> + * FS_IN_IGNORED overloads FS_ERROR.  It is only used internally by inotify
-> + * which does not support FS_ERROR.
-> + */
->  #define FS_IN_IGNORED          0x00008000      /* last inotify event here */
->
->  #define FS_OPEN_PERM           0x00010000      /* open event in an permission hook */
-> @@ -95,7 +101,8 @@
->  #define ALL_FSNOTIFY_EVENTS (ALL_FSNOTIFY_DIRENT_EVENTS | \
->                              FS_EVENTS_POSS_ON_CHILD | \
->                              FS_DELETE_SELF | FS_MOVE_SELF | FS_DN_RENAME | \
-> -                            FS_UNMOUNT | FS_Q_OVERFLOW | FS_IN_IGNORED)
-> +                            FS_UNMOUNT | FS_Q_OVERFLOW | FS_IN_IGNORED | \
-> +                            FS_ERROR)
->
->  /* Extra flags that may be reported with event or control handling of events */
->  #define ALL_FSNOTIFY_FLAGS  (FS_EXCL_UNLINK | FS_ISDIR | FS_IN_ONESHOT | \
-> @@ -263,6 +270,12 @@ enum fsnotify_data_type {
->         FSNOTIFY_EVENT_NONE,
->         FSNOTIFY_EVENT_PATH,
->         FSNOTIFY_EVENT_INODE,
-> +       FSNOTIFY_EVENT_ERROR,
-> +};
-> +
-> +struct fs_error_report {
-> +       int error;
-> +       struct inode *inode;
->  };
->
->  static inline struct inode *fsnotify_data_inode(const void *data, int data_type)
-> @@ -272,6 +285,8 @@ static inline struct inode *fsnotify_data_inode(const void *data, int data_type)
->                 return (struct inode *)data;
->         case FSNOTIFY_EVENT_PATH:
->                 return d_inode(((const struct path *)data)->dentry);
-> +       case FSNOTIFY_EVENT_ERROR:
-> +               return ((struct fs_error_report *)data)->inode;
->         default:
->                 return NULL;
+> diff --git a/fs/notify/fsnotify.c b/fs/notify/fsnotify.c
+> index 36205a769dde..ac05eb3fb368 100644
+> --- a/fs/notify/fsnotify.c
+> +++ b/fs/notify/fsnotify.c
+> @@ -491,7 +491,7 @@ int __fsnotify(__u32 mask, const struct fsnotify_event_info *event_info)
+>                  */
+>                 parent = event_info->dir;
 >         }
-> --
-> 2.31.0
+> -       sb = inode->i_sb;
+> +       sb = event_info->sb ?: inode->i_sb;
 >
+>         /*
+>          * Optimization: srcu_read_lock() has a memory barrier which can
+> diff --git a/include/linux/fsnotify.h b/include/linux/fsnotify.h
+> index 8c2c681b4495..c0dbc5a65381 100644
+> --- a/include/linux/fsnotify.h
+> +++ b/include/linux/fsnotify.h
+> @@ -326,4 +326,24 @@ static inline void fsnotify_change(struct dentry *dentry, unsigned int ia_valid)
+>                 fsnotify_dentry(dentry, mask);
+>  }
+>
+> +static inline int fsnotify_sb_error(struct super_block *sb, struct inode *inode,
+> +                                       int error)
+> +{
+> +#ifdef CONFIG_FSNOTIFY
+> +       if (sb->s_fsnotify_marks) {
+
+__fsnotify() has this optimization very early
+so you do not need it here and you do not need the ifdef.
+performance of fsnotify_sb_error() is utterly not important.
+
+> +               struct fs_error_report report = {
+> +                       .error = error,
+> +                       .inode = inode,
+> +               };
+> +
+> +               return __fsnotify(FS_ERROR, &(struct fsnotify_event_info) {
+> +                               .data = &report,
+> +                               .data_type = FSNOTIFY_EVENT_ERROR,
+> +                               .inode = NULL, .cookie = 0, .sb = sb
+
+No need to set members to 0/NULL with this type of initializer.
+
+Thanks,
+Amir.
