@@ -2,115 +2,88 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D9A23A94BD
-	for <lists+linux-ext4@lfdr.de>; Wed, 16 Jun 2021 10:07:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8589B3A9565
+	for <lists+linux-ext4@lfdr.de>; Wed, 16 Jun 2021 10:53:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231921AbhFPIJg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 16 Jun 2021 04:09:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231376AbhFPIJg (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Jun 2021 04:09:36 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86D93C061574;
-        Wed, 16 Jun 2021 01:07:30 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id s19so2104930ioc.3;
-        Wed, 16 Jun 2021 01:07:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Aawz4KrDSfE1sRyy91mWXvyNZiPbdTlPW10y2Ia3xNQ=;
-        b=VlcerfMUG8fopKETs+lN3ycmkaxddG1zEhvjwIabwPv9dW/kniNkTXDGrPEbmZdjH9
-         KrhSjvtzZjpxmYcbGfslLvtWQao2xVb2x6RUfUoH9YxvWtYOBuCHlwozHKSIGk/FGphK
-         emvzT/FKjmJRVEouqjxePNl4VQdMTAQL8mDN4YNub3bWNZGk4P/boKr/VC5D9ii6HhxR
-         0iCVjm9jWXa4b2QbscRRt+TZ0Sy7gHn9Gh6MRG9rW6kKcwuEn3bHi72HhkzI8X+N7ydZ
-         8JJcTlwIYMgAPktJ6ua/5DSXth2V86R4ejh5bjYnPqbHbARfElzt6u6vgekCVrQcL79c
-         TvzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Aawz4KrDSfE1sRyy91mWXvyNZiPbdTlPW10y2Ia3xNQ=;
-        b=HGgFXnbVkeE0CvpKhNaX1dtoHBqu9fnoL3COKZ7QzqFDD2zeUa7caeXm/CsLoOSIWw
-         9j+YrciXwy2CTCkmgrycIemOgjHJLKH15q2nzhzK0ETV1Gs4VRhFbPvn/2rs2wuwzETm
-         BsaVHXnRuC1lxPpvdYjWwePtiw56o42zE/248Ftw6JGoKVQm9KenEl54K7VhNMGgorA8
-         OBkE0Krrb0MVPYRy32gRWUcyd0eS5V+ONmAMYUJdTPZwlAAA8Mo/4/m/1hRzekvtBPpP
-         FubJxVWP8DzytJGUmDpoy9QqEcWgAdF/820NHa7bxqyviiuaKOrCYLKT8y1MmDzdmXeR
-         CnXg==
-X-Gm-Message-State: AOAM532ZWRSQ2LDQFCgii0LaVZui4tbzwTJhXl97MhE0P5V3yYorgxwD
-        O02eGjn8JlrncyPi6NaeI5OK9P8tazQdMJUt0wM=
-X-Google-Smtp-Source: ABdhPJzSe2CX8Hrsvr+74sSts1snGMzU2QP7xaexcj1OH5uH7u81JygJ8sTxa+dsBnvF6o/kaInP41UeW8gioR9T5o4=
-X-Received: by 2002:a5d:8b03:: with SMTP id k3mr2601886ion.203.1623830848997;
- Wed, 16 Jun 2021 01:07:28 -0700 (PDT)
+        id S232155AbhFPIzS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 16 Jun 2021 04:55:18 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:51338 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231335AbhFPIzO (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Jun 2021 04:55:14 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 3785121A24;
+        Wed, 16 Jun 2021 08:53:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623833587; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oxGdDHsozXNdxVBcMTnfRLsug90r69T25ARBDtbntyA=;
+        b=LsIoyQo3y3jZK6iYT6qpOHtEBnsukk3Vi+/RWO+92uZkR0q03c6TBQ0B5CU8KM+QrgFTs3
+        E8iil+lsQ0ADkqJyjlPsKpGDzT7V3B1ZwTbzwok6Utjw25vol8hEatNgGKqz0HDDDpVozi
+        RBw73kTkulONM8nvb2UKyszzcHS4CwU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623833587;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oxGdDHsozXNdxVBcMTnfRLsug90r69T25ARBDtbntyA=;
+        b=Cd/rE56FeKGW7aufMXqVHJ9XF4xj24JOWYzVHMVZjsuoQRzk9nxMDxtS1jr5muCo1d29ir
+        FblE0OV602i/3qDw==
+Received: from quack2.suse.cz (unknown [10.100.200.198])
+        by relay2.suse.de (Postfix) with ESMTP id 687ABA3B9B;
+        Wed, 16 Jun 2021 08:53:06 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id D7E651F2C88; Wed, 16 Jun 2021 10:53:04 +0200 (CEST)
+Date:   Wed, 16 Jun 2021 10:53:04 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
+        Dave Chinner <david@fromorbit.com>, ceph-devel@vger.kernel.org,
+        Chao Yu <yuchao0@huawei.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Johannes Thumshirn <jth@kernel.org>,
+        linux-cifs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
+        linux-xfs@vger.kernel.org, Miklos Szeredi <miklos@szeredi.hu>,
+        Steve French <sfrench@samba.org>, Ted Tso <tytso@mit.edu>,
+        Matthew Wilcox <willy@infradead.org>,
+        Pavel Reichl <preichl@redhat.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        Eric Sandeen <sandeen@redhat.com>
+Subject: Re: [PATCH 07/14] xfs: Refactor xfs_isilocked()
+Message-ID: <20210616085304.GA28250@quack2.suse.cz>
+References: <20210615090844.6045-1-jack@suse.cz>
+ <20210615091814.28626-7-jack@suse.cz>
+ <YMmOCK4wHc9lerEc@infradead.org>
 MIME-Version: 1.0
-References: <20210615235556.970928-1-krisman@collabora.com> <20210615235556.970928-4-krisman@collabora.com>
-In-Reply-To: <20210615235556.970928-4-krisman@collabora.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Wed, 16 Jun 2021 11:07:18 +0300
-Message-ID: <CAOQ4uxhNku-QG8ubKqrTUNFy=FbpwJabFznKOD7tkuxMqxkj9g@mail.gmail.com>
-Subject: Re: [PATCH v2 03/14] fanotify: Split fsid check from other fid mode checks
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     kernel@collabora.com, "Darrick J. Wong" <djwong@kernel.org>,
-        Theodore Tso <tytso@mit.edu>,
-        Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.com>,
-        David Howells <dhowells@redhat.com>,
-        Khazhismel Kumykov <khazhy@google.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Ext4 <linux-ext4@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YMmOCK4wHc9lerEc@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 2:56 AM Gabriel Krisman Bertazi
-<krisman@collabora.com> wrote:
->
-> FAN_ERROR will require fsid, but not necessarily require the filesystem
+On Wed 16-06-21 06:37:12, Christoph Hellwig wrote:
+> On Tue, Jun 15, 2021 at 11:17:57AM +0200, Jan Kara wrote:
+> > From: Pavel Reichl <preichl@redhat.com>
+> > 
+> > Refactor xfs_isilocked() to use newly introduced __xfs_rwsem_islocked().
+> > __xfs_rwsem_islocked() is a helper function which encapsulates checking
+> > state of rw_semaphores hold by inode.
+> 
+> __xfs_rwsem_islocked doesn't seem to actually existing in any tree I
+> checked yet?
 
-FAN_FS_ERROR
+__xfs_rwsem_islocked is introduced by this patch so I'm not sure what are
+you asking about... :)
 
-> to expose a file handle.  Split those checks into different functions, so
-> they can be used separately when setting up an event.
->
-> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
->
-> ---
-> Changes since v1:
->   (Amir)
->   - Sort hunks to simplify diff.
-> Changes since RFC:
->   (Amir)
->   - Rename fanotify_check_path_fsid -> fanotify_test_fsid.
->   - Use dentry directly instead of path.
-> ---
->  fs/notify/fanotify/fanotify_user.c | 27 ++++++++++++++++++---------
->  1 file changed, 18 insertions(+), 9 deletions(-)
->
-> diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
-> index 0da4e5dcab0f..af518790a80f 100644
-> --- a/fs/notify/fanotify/fanotify_user.c
-> +++ b/fs/notify/fanotify/fanotify_user.c
-> @@ -1192,16 +1192,15 @@ SYSCALL_DEFINE2(fanotify_init, unsigned int, flags, unsigned int, event_f_flags)
->         return fd;
->  }
->
-> -/* Check if filesystem can encode a unique fid */
-> -static int fanotify_test_fid(struct path *path, __kernel_fsid_t *fsid)
-> +static int fanotify_test_fsid(struct dentry *dentry, __kernel_fsid_t *fsid)
->  {
->         __kernel_fsid_t root_fsid;
->         int err;
->
->         /*
-> -        * Make sure path is not in filesystem with zero fsid (e.g. tmpfs).
-> +        * Make sure dentry is not of a filesystem with zero fsid (e.g. tmpfs).
+								Honza
 
-Sorry.... I forgot to update this comment
-59cda49ecf6c ("shmem: allow reporting fanotify events with file
-handles on tmpfs")
-Not your fault, but best we fix the comment if we change it to be correct.
-It can be changed to (e.g. fuse)
-
-Thanks,
-Amir.
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
