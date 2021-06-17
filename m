@@ -2,145 +2,219 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA5493AB746
-	for <lists+linux-ext4@lfdr.de>; Thu, 17 Jun 2021 17:18:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D733D3AB7FE
+	for <lists+linux-ext4@lfdr.de>; Thu, 17 Jun 2021 17:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233234AbhFQPUr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 17 Jun 2021 11:20:47 -0400
-Received: from mail-dm6nam10on2064.outbound.protection.outlook.com ([40.107.93.64]:31616
+        id S233518AbhFQP6R (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 17 Jun 2021 11:58:17 -0400
+Received: from mail-dm6nam10on2077.outbound.protection.outlook.com ([40.107.93.77]:18369
         "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233247AbhFQPUq (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 17 Jun 2021 11:20:46 -0400
+        id S231755AbhFQP6P (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 17 Jun 2021 11:58:15 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Su5TomvLxZ1fLt3A8OEwwaWMJJSMx3V3isNQJOtCk7a0CYu9yzZFDTGjjnjgff8yhbOmMPhCr4hCc+1wbbJRr9B5loZxhXUTcU0IUiQiJDMMlu7Gn9ukDMOjMbFwOr4KTB9cIXqtwK5ZBmGViLApZEC8gD7vgYCogRwrRUcvbBgcx7VlL6xs+PfHTJyH6mBhcrjxsjcZVcZStHshLB0pxamIJOInP/sRt5jrXW5KF/Se4uXB+TOhZ2KW1EmFd3IzJPhVc/THfkaSWgferFyerQMtt3Vaj5HZfEyorWapruGmk2bUKjs6UAxoE6clRkyM5M2oDjooOLE/jLpKBLXe+w==
+ b=a41bWvB7ykb76vSZbesuckFxfDOurgd8SjiAPZMQZMWaykCGriycta7iAH5UEGYeZ72I7tK0pScBe2BdB0A9xI/JRVnQpRZDTJdOw3lChTfMbnB0lCshac6vpVT1TXmKffy7ti0Orm7uqWqX4ynwjEPgV/R2TevVsKMzFDl9tpkDGHx6g5Fvwo3gRTqSfaJGuOJfPRBAyfHnDKaFJYIJNOzoejCOEC2ln2fTRa8Z4Yj0R2uerpYep8F523IMWVzugOsDWGCgwOrtelXIDyWvWBzHQ08DQC8Ja/o22Qi11HxiWsRvnFR4CxcK88CJ7LvzSEcJ+eo+KHpCx1T/QzHLnA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fto7oGTXuEchER0GieOzKEfkpiqMw64yv0w2SD6NgAs=;
- b=lGp6Xo2+rlxjzhL2DQOxUhcYiSnr7iFnekeiPDJ0jjz8a+fam4zSOhtEP0mLfmJmaLNPJMv7YTypQBigejbm3SjU/9ph7q1ODFETa98Ch+oGuE4ALPd+hP69TREtFCM8fzy7kdydtzELc3TYzGM15z00W6REzSDPXa8UKOnYePeml6U10UQxG6/ak+SHlmOkyCJL5peU3SZwNRAhHb9H0Z7g/fh0CyTdkhoT9/Lk6t1+VshW0OQ8JuM5mUSpyZwIDNN8zznkj4IFSJuuOrnvfUnQZyjaCW26BptmmwuT7xhXjOnr4DB1bWT1wjn3I/0D90YEQC3BalCbE3iTm2PmbQ==
+ bh=cOkTr4Kl6SlhwHgAG8nAuma6ebCpCn/ek+GIvZ0HRYY=;
+ b=bE01sbJ4gniNxpzRVcyWaEuhhqG3NpbvQhaoBLOfG9HaghKNM3Dlk8q7x84OHr51hfC5oatV5HYur3x4GUcFc4C++ZONp6LOI6h6ZcwYQarxxmSrlYE1FMKndwPEXtK4QyOZ+niQy51fpoBgiHIT2XyHUPiy6JPxDCWdKQFmNsci5DOQ5WzKgC7drQDQqm+FJJ+f2Kjlg17JCcUEVzx4P/fDU8MpzYfkIbqqWVmGq/MEow1DC3fxbmqcZ9gsqyKi+AGH58DA6uFc4b1KrH5+vZfqXFsZ+e9XFlA821hr+1sJD6Sau2MbDoGp0DK0trf9mh6HA3J3zStY2pufjygQyg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
  header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fto7oGTXuEchER0GieOzKEfkpiqMw64yv0w2SD6NgAs=;
- b=44IyS0h62j/MsTf/k2bizWLW6/XW6Z+BO5f/xxU5m4yH6BGWlHXgA3hVLMSH5Iwn/22BSHRp5K7z+upKLMFELpgZOd2VuQlwFNSuDiJY+qRn6JjDcrqSuMElzZcJvTBC7d7t0mo7du0MwfQOUmAvGEOGjbZo2yybQzG9Gj0GoU0=
-Authentication-Results: linux-foundation.org; dkim=none (message not signed)
- header.d=none;linux-foundation.org; dmarc=none action=none
- header.from=amd.com;
+ bh=cOkTr4Kl6SlhwHgAG8nAuma6ebCpCn/ek+GIvZ0HRYY=;
+ b=fyP5pku8kk1z+tdVW4G73mqdc1YWrexBUCCOTUknh1QqVPF+6KLoWpMzlXpcXOj1I2LtmdyWIus/8ZSWy/NlKnAfK7QPuI2EccXiY/Ar7vspbHtjJ4bqEC4jzypU3kIzCfPCOoK2CLpoPqEEUuxYBoFd+S+1HzOZ5TyqU2GV048=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
 Received: from DM6PR12MB4419.namprd12.prod.outlook.com (2603:10b6:5:2aa::20)
- by DM6PR12MB4419.namprd12.prod.outlook.com (2603:10b6:5:2aa::20) with
+ by DM6PR12MB2634.namprd12.prod.outlook.com (2603:10b6:5:49::27) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.18; Thu, 17 Jun
- 2021 15:18:38 +0000
+ 2021 15:56:06 +0000
 Received: from DM6PR12MB4419.namprd12.prod.outlook.com
  ([fe80::b972:f4d6:9db3:5761]) by DM6PR12MB4419.namprd12.prod.outlook.com
  ([fe80::b972:f4d6:9db3:5761%2]) with mapi id 15.20.4242.021; Thu, 17 Jun 2021
- 15:18:38 +0000
-From:   Alex Sierra <alex.sierra@amd.com>
+ 15:56:06 +0000
+Subject: Re: [PATCH v3 0/8] Support DEVICE_GENERIC memory in migrate_vma_*
 To:     akpm@linux-foundation.org, Felix.Kuehling@amd.com,
         linux-mm@kvack.org, rcampbell@nvidia.com,
         linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
 Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        hch@lst.de, jgg@nvidia.com, jglisse@redhat.com,
-        Alex Sierra <alex.sierra@amd.com>
-Subject: [PATCH v3 8/8] mm: call pgmap->ops->page_free for DEVICE_GENERIC pages
-Date:   Thu, 17 Jun 2021 10:17:05 -0500
-Message-Id: <20210617151705.15367-9-alex.sierra@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210617151705.15367-1-alex.sierra@amd.com>
+        hch@lst.de, jgg@nvidia.com, jglisse@redhat.com
 References: <20210617151705.15367-1-alex.sierra@amd.com>
-Content-Type: text/plain
-X-Originating-IP: [165.204.78.1]
-X-ClientProxiedBy: SN4PR0501CA0088.namprd05.prod.outlook.com
- (2603:10b6:803:22::26) To DM6PR12MB4419.namprd12.prod.outlook.com
+From:   "Sierra Guiza, Alejandro (Alex)" <alex.sierra@amd.com>
+Message-ID: <6c49988d-e158-8297-d7e4-97db279458cd@amd.com>
+Date:   Thu, 17 Jun 2021 10:56:03 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
+In-Reply-To: <20210617151705.15367-1-alex.sierra@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [165.204.77.11]
+X-ClientProxiedBy: SA9PR13CA0137.namprd13.prod.outlook.com
+ (2603:10b6:806:27::22) To DM6PR12MB4419.namprd12.prod.outlook.com
  (2603:10b6:5:2aa::20)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from alex-MS-7B09.amd.com (165.204.78.1) by SN4PR0501CA0088.namprd05.prod.outlook.com (2603:10b6:803:22::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.9 via Frontend Transport; Thu, 17 Jun 2021 15:18:36 +0000
+Received: from [172.31.9.47] (165.204.77.11) by SA9PR13CA0137.namprd13.prod.outlook.com (2603:10b6:806:27::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.7 via Frontend Transport; Thu, 17 Jun 2021 15:56:04 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9c3e5518-b32c-4da1-8587-08d931a32e68
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4419:
+X-MS-Office365-Filtering-Correlation-Id: c76a64f6-9a2f-4744-2bf1-08d931a86a65
+X-MS-TrafficTypeDiagnostic: DM6PR12MB2634:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB441912594A20546B6CF3D787FD0E9@DM6PR12MB4419.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:418;
+X-Microsoft-Antispam-PRVS: <DM6PR12MB26343EF635AA4FC342CB2629FD0E9@DM6PR12MB2634.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: prbdEARtjiVwmpoU2ubspx8qA1E4h+bBUheQ66S0xDTjsQeXg5IGKoC3W97gZyYtlQ+LDvuVRaavXsVHxx5gEUKtl6d5IDlWHXsuqrcUXPNVZQPmzpinQdLdqTUY3u3WTK//aVrJ1pFyrFvLu3QNt6kmJ1tJNvDl0iImuN+E603YAgfgYEhS12Hm5eDNlCmSWBrl1gayDlUbYmXanLYdiobg/QwWSPKgyrlKXr/d7zxJ18RDhJz2kejcRr3K4IGhVnvifS4NpyecyNFbXGFskruWnproGBCeh9qGvdXVWn6AOkNR+ZnvGW3SN3oQ9WmyelRyy8CDJ0rR5IHabCr3/QdE7Lpk0KvogMjxyfPdHm+Pr3EP2G081ST9SIRjqH9mCX9ANH6JJVu+5MYbJpqW9fLU6bcI93PYYnkUJKNgrozDRalfB7VsebD+4cgstrNRxa3g195+enCN8yuGWPdO6O/UZwHOSfnwGmvNU8ex8tWpUo8XY2zLe4vofJwAlBDW8RqinlHzP5oCl2851itSRUZslFbWvZzEP2d5dun3FeQPUKP+tvMpvtJS5ArV+Y2mCfWCJ8E1PqDyl+7LVztoHksgqonTlRE2rg18Wvm5O/f5WjEdgVvvDHKPgsCrH0nv1JlggOamd9MCOZ1R6BlmsJ2a6dzLmCZHXYcpt20QhgFPl5yeogjUpL7YhZBT97F5
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB4419.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(136003)(376002)(346002)(396003)(8936002)(6486002)(36756003)(4744005)(478600001)(66476007)(1076003)(7416002)(4326008)(2616005)(956004)(2906002)(6666004)(44832011)(38350700002)(83380400001)(316002)(38100700002)(26005)(8676002)(5660300002)(16526019)(186003)(86362001)(66946007)(66556008)(52116002)(7696005)(41533002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 1YtlQwm5GIPu5iOKxQ2Ka8N4YrDr21f9BrPkAPLmIQeGPa6pwQq3ochPeOJFuMfvXuRUBIvz7a9mzrw9v6mqr/E71ph3InOWNneaN09pqxhqE7pBKXRg2fVH0ESKS7jdo3/M3lqtmu9djb1OujFmiUYnBhvSfx16WtQs0h5HK5eBW0SVbjXrsqxVnUldfzZpfAoIIJXF2hPdwQXJYwUC01ggJAWlgsOlFkB72iEI8dSU9CmmWmuEhluGuvPwp2C1TgC1gRLadu7WbG/zXrqkE04z0sWk5qyng9cjsFz9h3OGtUMLNxwCoij5FDCsWDt78g+SgDId5HjtNnFymraoBmGVJr6GAg7AlwVrIP1ZeqD7/j9+5CVYeUu3hB35fVCzd4eRurBMarEyf9tnKdUYjRVcnFb/r0txAN0BBEqYPnt4mp6E6ln6pd5jJkNehP2Ri10aTlOQ/H3yEhbTrZEDIjZxA1MUgF50aN7VX7EcI8Utxk5/9XaYsRAblNmVoAa055lNmOU3HLxX6tvIF6RNClbszkMJ7231KKeLor8rXxLB/QT9MfKZygGj3GBPOlSLPZ9df+IWnvOwt/kFfTuIJZckBPL3ypJQeRgT4ZTF+/4ADaAnnoRA056sx7vLypn/vNBqwdl7uHRDJnBfPksgru3lkT8yZtqCf+97GlTjN1GtPXi4WJ9LNULS8uKxkPYsEOzxnqANYHw9lZNeb6vUclDvn09Ox5oH6JR19Jk9+rbxtJOQ1sAdqFzm7zCqUqp8ZajqwV8fHwUX/9KTMZSAAltfQkYu3zF07XV4RkHveoVHEs63+KKT3caN0S9US527pF7jW7wsI3pI0b5YEF1a4UJo/zRNLKvAteq4txw2kC2uVY0HHPOphC5FJZVv4gGx/8/uY/T2gH0rXfCwyDRziA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB4419.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(346002)(376002)(366004)(396003)(316002)(16576012)(53546011)(26005)(478600001)(16526019)(8936002)(6486002)(186003)(38100700002)(2616005)(956004)(36756003)(31696002)(8676002)(31686004)(52116002)(4326008)(7416002)(966005)(66476007)(86362001)(66556008)(2906002)(66946007)(5660300002)(83380400001)(38350700002)(41533002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?AEnLH+l5spL7tf/v6XRUU1tH8GsTIZl5pgLfUQvW/NYQ0vVBAr4BvBUUtiPT?=
- =?us-ascii?Q?pTxR9HU/savzt+OKVsbMpfGEExyGeq9RI+Tvg6vqypAfcwYku3/mWuNbpX5n?=
- =?us-ascii?Q?TcBSoNepMzJc3p//fNXWF4jAdtnVrlkJcGGOwwrMtWIp6ey+l+7IaGJJR9mu?=
- =?us-ascii?Q?OOeElLQtoLVP3AStoFs3nzKvM0EG4TLgMQBp2Uagwef0pO4BgS0owulkRnlj?=
- =?us-ascii?Q?lrlwPFpHmILxXC9uzAiHuYFk57q/7eZoQsZrtObflamWrTDQIbYJfbb5HxEJ?=
- =?us-ascii?Q?IrtgQxXUSvOZm5IljhI7HQ2rjkmAeIGlAHQBy/akQCdi8gsNof0fMoELR34m?=
- =?us-ascii?Q?WNz1gy1wR3LG4ZNRemwqVC+I79GRYHgtrdoVRvOEhzs3TVYTohrwwRxmunAP?=
- =?us-ascii?Q?hgLt73g5NJB1me2ZM8adc/LfbIvYf/DuWSEQmOmUqbFopi0W1/irOiyLYf/3?=
- =?us-ascii?Q?rqXHn1DGWwc7j6fN894H76nmWCvYB0l5Xuu8YR40Srhlr/PbAryBB6RCS3Fn?=
- =?us-ascii?Q?+HZO0+ZlRZZ82DKLUNnji89zApK+3QSLgmvf5dhn6V8JrqKhXt1zjFtk+P5M?=
- =?us-ascii?Q?k5B159MevTVhLGKuh5ql5ZYC64jUQuiqpqRwnqak9WSsBK4IIZXgeGxpKPMS?=
- =?us-ascii?Q?JhTLjudwYP3eU72DaeRrHkdG1cIMtta0op9Welay1orzLU7BRGVDAukvLoUv?=
- =?us-ascii?Q?+b48T1NnsVQ3YOMWx21siKoaoV4UhJvbyWYL5HdH0rLR7QgGYPcuezJC+8Zb?=
- =?us-ascii?Q?UqURMq2J9x2zDqd7z8gecwCaJcDZCRbEETAIQVKLfPr/xVT4YycoP8atLGTk?=
- =?us-ascii?Q?HlvZMRBLMG1Rp3P4wZJnvjJXiRQXQIUZjT/Xr3g1T9EiDK8HF5NCJ4nmP5bT?=
- =?us-ascii?Q?nGyDdtm4hLGnRfcw9NRWdfhiWEk4mQ3oN4Uu4ZJHNXufpagMKGDHu9Pt3L94?=
- =?us-ascii?Q?UiE0y1wkHNhNZAKJHwt975UfV0uusoMMFlLBMn8Ym+fAK9ckvd2dPJMh0BuV?=
- =?us-ascii?Q?nLeSecG9NZCBELr6OrQ720a5QGSmlExLORXc700h0IIdaJj7DdYHzqfb0ZTx?=
- =?us-ascii?Q?wsLUs4lZRkqroi9YJ2TuZkeiZZq2MJtL1rNdC43p6s3LA5OL+eM3ZGrAq1hx?=
- =?us-ascii?Q?UewsO1msibmFBQOYUdaS9xVfl0qRz3cVqQpqsrCDNwYxbKNd8YjPbcr8zme4?=
- =?us-ascii?Q?c9DaolVUyHMGDD1DAM+rcwRwEteM+KcV2TFaVBkS1tO/K6T45KbMf/FLsuUu?=
- =?us-ascii?Q?2pRITin6TMZrGo46MvDTOIBvtF+XfiA9W22OfnTCXRMoMDhfYHTwx+n150Nf?=
- =?us-ascii?Q?BZF0ZGqWDnUlUZI5Owl+dJVK?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?d0htRUFJaFAydTFxQzZQYnFBYjNFSHl4b1dYTmwxaFUrejdYL0lnRjRJdmwx?=
+ =?utf-8?B?aFk1cjlkRXFYVDdlQkVxeEYwWldnU1VhdW1yZ2E0VVMrWEJ6ZXBaUXJ6eFd3?=
+ =?utf-8?B?OFBkaFRJQ2JZS21xTlNFb2k1K3poaXA0Z244ZkpqSXhjS00wMFhMZ3J5SFhW?=
+ =?utf-8?B?bEZnbUVtNXlFa1BqeHUzYUdUb2dIbXpLTGZFTnlMNUM1UG5nZ0NXbThBdGtK?=
+ =?utf-8?B?SWZtT1lZUUhiOWUyRjlodkZHczZ3VStyd2kxcTlza0R4VDhsNHVtVUFlODY2?=
+ =?utf-8?B?ZUo5M0lrQUxnZlVDY09RMFJleG1MR3hVWlhpdVprWnFHVG5mRnJyR2w1eVB2?=
+ =?utf-8?B?M2NXZ2NJZHhOR25PYndiSkJCWm01bytlTUc4eDZjTzFvQk9HOVBmZktJWklL?=
+ =?utf-8?B?VW1TQ285Nk84ejdiT0ZXL0pMMXVMejhCblo4Qzl5a3lsRFludmRxd2VPcjlX?=
+ =?utf-8?B?VDRnUmdNcEUzaW5GTFJFZHo1b2htUzFBakIvZ1dtcVFMcXovREZCa1JyRXYw?=
+ =?utf-8?B?dDFCMXJ2S2xoNkVEY29aWkhxcno1T1lzMmlYSXd3dDEyTkQwVFlReWsxTi9F?=
+ =?utf-8?B?YkoyR2hhNjVteHhPcHRudVRZZ2NVbU5jam1mbFFrTHFTVkhyaVFuTGI3VVAv?=
+ =?utf-8?B?YmdKQU1RMVNNSWNwRlpQOUR1RnRpUlo2RTYrVURIaXBseHg1b3B2a1NadEda?=
+ =?utf-8?B?cGFtMFMwSm54a05xdFk0dU1QT2Fka1gyQUhtdXRTZUM5VVpWa3FYRDRnNkM3?=
+ =?utf-8?B?ZDBNMThvRkhxaE1xay9jdjNGZHNrbklNOUxEY1AvZGZWWU1YOWxrNjNSMjlo?=
+ =?utf-8?B?MitZdnk0ZzR0bk1zWHZQVml5bXpQNTNqMWl1TDE0MlFKeUR3a3JQWUdUdmlL?=
+ =?utf-8?B?cXJSeFBOZkJXWGtSdTBzM0h5TDJyajFTUnlZd0JyUm1xbTlwZnVBZVQ2YTRL?=
+ =?utf-8?B?T09jalZBTU9HWFpLY2JpUy9WT1EzNm5PeFYyUm4xSEcyR1BrYWltWTFXTXlJ?=
+ =?utf-8?B?TmRVc3luem41Z1ozNm54ODREUWZpRUU5OHEybzRkKzZzc2FlT1NqRFIreGI3?=
+ =?utf-8?B?T1c4eGQwN0pieitEMi9hcU1kcWV1SVRsR051NkhUbEYxbFFtSndMaWMrb211?=
+ =?utf-8?B?bVEyOGJ2amFwMENMZE5SNTBiMzlRZ09zNUlxU0l3UDR0STlGaVh4UFUwd3hu?=
+ =?utf-8?B?SlZsUlBTVzhISkowMTJqQ2hUSGZBb2VObllFbXFXVTN2YUs0U0hIVVgrblZ4?=
+ =?utf-8?B?SmEySXp1dVNQN2FCaGtMaHBFMGpRMFZuakJBTkZRWUZvbHJhbVZ2b2RCU0w4?=
+ =?utf-8?B?OGNEV0cyaW1FWTl4QVh2ZjJUSWE5d3NLUXJBWVlxaDQ0TllYbmRJb1VQU0NM?=
+ =?utf-8?B?MnE4emYvbUlxUkVTVEFETzF1eG9nT3YwVkhMYURCR2kwelNwSkZlSGFJUysy?=
+ =?utf-8?B?U05NeFNVaU51eGNKcngwOGtHTXpVR01LdW5oVFdPeXd1NEtpS2ZZRUR0cE9N?=
+ =?utf-8?B?WGdDOW9TdldRTjNvV0NEL0MxQ3c3VlhabW1IcUplTjVBenR3M0F4YTVYUncr?=
+ =?utf-8?B?Rkw2eWdMVmNKQTdzdk1kRU5STW9ORzRQSXBHajcxOVpuZlk4dTFyV2R0Z2tK?=
+ =?utf-8?B?ckZMS0puK1R4cEY0cm9qaDRiejFvaTFtNk9jZXUvMjd2T1JKWll1SHVveGtq?=
+ =?utf-8?B?aWVSVVBBTytzUGRsNWtGQ2tJYU5pZFhhc0tRUlZFZjF6bVU4aXdjRmFEMzlp?=
+ =?utf-8?Q?6OjPKUwPwbFoKQwA26nyRhorc7ZxbNyXtwTZ7V7?=
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9c3e5518-b32c-4da1-8587-08d931a32e68
+X-MS-Exchange-CrossTenant-Network-Message-Id: c76a64f6-9a2f-4744-2bf1-08d931a86a65
 X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB4419.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jun 2021 15:18:38.1361
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jun 2021 15:56:06.0590
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9XEHR6JOUXkYDVCoTv94a7lxLWnsQfXyFrojKHWuYblJ+gCMpVURrYWdox/aiC+OgeGyhWWDGqqLATCMR1hhSg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4419
+X-MS-Exchange-CrossTenant-UserPrincipalName: zoZB1F6PdJV0UzeW62w+AlpJvgrcIh10jskmZuZFu1INvAn8SdHLcpvNCMXJvxl1NlHIG99th9CE3vmYVH6a8w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2634
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Add MEMORY_DEVICE_GENERIC case to free_zone_device_page
-callback.
-Device generic type memory case is now able to free its
-pages properly.
 
-Signed-off-by: Alex Sierra <alex.sierra@amd.com>
----
- mm/memremap.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+On 6/17/2021 10:16 AM, Alex Sierra wrote:
+> v1:
+> AMD is building a system architecture for the Frontier supercomputer with a
+> coherent interconnect between CPUs and GPUs. This hardware architecture allows
+> the CPUs to coherently access GPU device memory. We have hardware in our labs
+> and we are working with our partner HPE on the BIOS, firmware and software
+> for delivery to the DOE.
+>
+> The system BIOS advertises the GPU device memory (aka VRAM) as SPM
+> (special purpose memory) in the UEFI system address map. The amdgpu driver looks
+> it up with lookup_resource and registers it with devmap as MEMORY_DEVICE_GENERIC
+> using devm_memremap_pages.
+>
+> Now we're trying to migrate data to and from that memory using the migrate_vma_*
+> helpers so we can support page-based migration in our unified memory allocations,
+> while also supporting CPU access to those pages.
+>
+> This patch series makes a few changes to make MEMORY_DEVICE_GENERIC pages behave
+> correctly in the migrate_vma_* helpers. We are looking for feedback about this
+> approach. If we're close, what's needed to make our patches acceptable upstream?
+> If we're not close, any suggestions how else to achieve what we are trying to do
+> (i.e. page migration and coherent CPU access to VRAM)?
+>
+> This work is based on HMM and our SVM memory manager that was recently upstreamed
+> to Dave Airlie's drm-next branch
+> https://lore.kernel.org/dri-devel/20210527205606.2660-6-Felix.Kuehling@amd.com/T/#r996356015e295780eb50453e7dbd5d0d68b47cbc
+Corrected link:
 
-diff --git a/mm/memremap.c b/mm/memremap.c
-index 614b3d600e95..6c884e2542a9 100644
---- a/mm/memremap.c
-+++ b/mm/memremap.c
-@@ -438,7 +438,7 @@ struct dev_pagemap *get_dev_pagemap(unsigned long pfn,
- EXPORT_SYMBOL_GPL(get_dev_pagemap);
- 
- #ifdef CONFIG_DEV_PAGEMAP_OPS
--static void free_device_private_page(struct page *page)
-+static void free_device_page(struct page *page)
- {
- 
- 	__ClearPageWaiters(page);
-@@ -477,7 +477,8 @@ void free_zone_device_page(struct page *page)
- 		wake_up_var(&page->_refcount);
- 		return;
- 	case MEMORY_DEVICE_PRIVATE:
--		free_device_private_page(page);
-+	case MEMORY_DEVICE_GENERIC:
-+		free_device_page(page);
- 		return;
- 	default:
- 		return;
--- 
-2.17.1
+https://cgit.freedesktop.org/drm/drm/log/?h=drm-next
 
+Regards,
+Alex Sierra
+
+> On top of that we did some rework of our VRAM management for migrations to remove
+> some incorrect assumptions, allow partially successful migrations and GPU memory
+> mappings that mix pages in VRAM and system memory.
+> https://patchwork.kernel.org/project/dri-devel/list/?series=489811
+
+Corrected link:
+
+https://lore.kernel.org/dri-devel/20210527205606.2660-6-Felix.Kuehling@amd.com/T/#r996356015e295780eb50453e7dbd5d0d68b47cbc
+
+Regards,
+Alex Sierra
+
+>
+> v2:
+> This patch series version has merged "[RFC PATCH v3 0/2]
+> mm: remove extra ZONE_DEVICE struct page refcount" patch series made by
+> Ralph Campbell. It also applies at the top of these series, our changes
+> to support device generic type in migration_vma helpers.
+> This has been tested in systems with device memory that has coherent
+> access by CPU.
+>
+> Also addresses the following feedback made in v1:
+> - Isolate in one patch kernel/resource.c modification, based
+> on Christoph's feedback.
+> - Add helpers check for generic and private type to avoid
+> duplicated long lines.
+>
+> v3:
+> - Include cover letter from v1
+> - Rename dax_layout_is_idle_page func to dax_page_unused in patch
+> ext4/xfs: add page refcount helper
+>
+> Patches 1-2 Rebased Ralph Campbell's ZONE_DEVICE page refcounting patches
+> Patches 4-5 are for context to show how we are looking up the SPM
+> memory and registering it with devmap.
+> Patches 3,6-8 are the changes we are trying to upstream or rework to
+> make them acceptable upstream.
+>
+> Alex Sierra (6):
+>    kernel: resource: lookup_resource as exported symbol
+>    drm/amdkfd: add SPM support for SVM
+>    drm/amdkfd: generic type as sys mem on migration to ram
+>    include/linux/mm.h: helpers to check zone device generic type
+>    mm: add generic type support to migrate_vma helpers
+>    mm: call pgmap->ops->page_free for DEVICE_GENERIC pages
+>
+> Ralph Campbell (2):
+>    ext4/xfs: add page refcount helper
+>    mm: remove extra ZONE_DEVICE struct page refcount
+>
+>   arch/powerpc/kvm/book3s_hv_uvmem.c       |  2 +-
+>   drivers/gpu/drm/amd/amdkfd/kfd_migrate.c | 15 ++++--
+>   drivers/gpu/drm/nouveau/nouveau_dmem.c   |  2 +-
+>   fs/dax.c                                 |  8 +--
+>   fs/ext4/inode.c                          |  5 +-
+>   fs/xfs/xfs_file.c                        |  4 +-
+>   include/linux/dax.h                      | 10 ++++
+>   include/linux/memremap.h                 |  7 +--
+>   include/linux/mm.h                       | 52 +++---------------
+>   kernel/resource.c                        |  2 +-
+>   lib/test_hmm.c                           |  2 +-
+>   mm/internal.h                            |  8 +++
+>   mm/memremap.c                            | 69 +++++++-----------------
+>   mm/migrate.c                             | 13 ++---
+>   mm/page_alloc.c                          |  3 ++
+>   mm/swap.c                                | 45 ++--------------
+>   16 files changed, 83 insertions(+), 164 deletions(-)
+>
