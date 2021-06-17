@@ -2,59 +2,58 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD3C93AB46A
-	for <lists+linux-ext4@lfdr.de>; Thu, 17 Jun 2021 15:14:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 664773AB67A
+	for <lists+linux-ext4@lfdr.de>; Thu, 17 Jun 2021 16:50:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231607AbhFQNQN convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Thu, 17 Jun 2021 09:16:13 -0400
-Received: from 6-200-5-45.rpnnetprovedor.com.br ([45.5.200.6]:35845 "EHLO
-        srv01.rpnnetprovedor.com.br" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231466AbhFQNQN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 17 Jun 2021 09:16:13 -0400
-Received: from [84.38.130.143] (helo=IP-130-143.dataclub.eu)
-        by srv01.rpnnetprovedor.com.br with esmtpa (Exim 4.92.2)
-        (envelope-from <robertnellsona@citromail.hu>)
-        id 1ltkuE-0000yu-5z
-        for linux-ext4@vger.kernel.org; Thu, 17 Jun 2021 02:49:34 -0300
-Content-Type: text/plain; charset="iso-8859-1"
+        id S231674AbhFQOw0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 17 Jun 2021 10:52:26 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:48344 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231303AbhFQOw0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Jun 2021 10:52:26 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 15HEo3d3005520
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Jun 2021 10:50:03 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id DB47C15C3CB8; Thu, 17 Jun 2021 10:50:02 -0400 (EDT)
+Date:   Thu, 17 Jun 2021 10:50:02 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Zhang Yi <yi.zhang@huawei.com>
+Cc:     linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca, jack@suse.cz,
+        yukuai3@huawei.com
+Subject: Re: [PATCH] ext4: cleanup in-core orphan list if ext4_truncate()
+ failed to get a transaction handle
+Message-ID: <YMthGuTCuRlZ/zL0@mit.edu>
+References: <20210507071904.160808-1-yi.zhang@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: CAN YOU INVEST WITH ME?...6
-To:     linux-ext4@vger.kernel.org
-From:   "Mr.  Robert" <robertnellsona@citromail.hu>
-Date:   Thu, 17 Jun 2021 08:49:26 +0300
-Reply-To: robertnellsona@citromail.hu
-Message-Id: <E1ltkuE-0000yu-5z@srv01.rpnnetprovedor.com.br>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210507071904.160808-1-yi.zhang@huawei.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Fri, May 07, 2021 at 03:19:04PM +0800, Zhang Yi wrote:
+> In ext4_orphan_cleanup(), if ext4_truncate() failed to get a transaction
+> handle, it didn't remove the inode from the in-core orphan list, which
+> may probably trigger below error dump in ext4_destroy_inode() during the
+> final iput() and could lead to memory corruption on the later orphan
+> list changes.
+> 
+>  EXT4-fs (sda): Inode 6291467 (00000000b8247c67): orphan list check failed!
+>  00000000b8247c67: 0001f30a 00000004 00000000 00000023  ............#...
+>  00000000e24cde71: 00000006 014082a3 00000000 00000000  ......@.........
+>  0000000072c6a5ee: 00000000 00000000 00000000 00000000  ................
+>  ...
+> 
+> This patch fix this by cleanup in-core orphan list manually if
+> ext4_truncate() return error.
+> 
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 
-ATTENTION; linux-ext4@vger.kernel.org,
+Applied, thanks.
 
-IMPORTANT INVESTMENT INFORMATION
-
-We have a good investment program going on now.
-We have $95m USD for Investment in your Country.
-We use this opportunity to invest you to join the investment program and you will never regret it.
-Please kindly invest with us and you will be receiving monthly income/return/profit every month.
-We can also give you Loan, 
-
-We have: 
-
-1. Short Term Loan, 
-
-2. Medium Term Loan 
-
-3. and Long Term Loan, 
-
-There is no need of collateral security. We will use our company to sign agreement and guarantee on your behalf and our Lawyer will sign on your behalf.
-
-Reply for more detail.
-
-Thank you Sir.
-
-Robert Nellson.
-INVESTMENT MANAGER.
+					- Ted
