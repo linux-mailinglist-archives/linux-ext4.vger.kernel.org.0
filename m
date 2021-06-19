@@ -2,154 +2,177 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FACF3AD684
-	for <lists+linux-ext4@lfdr.de>; Sat, 19 Jun 2021 03:41:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92AEA3ADAD1
+	for <lists+linux-ext4@lfdr.de>; Sat, 19 Jun 2021 18:14:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234846AbhFSBoD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 18 Jun 2021 21:44:03 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:38900 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232384AbhFSBoC (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 18 Jun 2021 21:44:02 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15J1XEB0039648;
-        Fri, 18 Jun 2021 21:41:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=vDwbDF1gxL2wZRifoyg61ZjuE7oE7hQFGjo1VRZVgbU=;
- b=S2mRq/lrYZ5Pvo6u/DNCgrl6fLS+FnWyD8I7avZEnuIIFLcChhbc3SCU9s9hIu64GU3S
- mn3NlKR9+Ooeq57xAXJq1jE+5MHuLXXk+u8PpKl6150HngAQGCSS6K8rKjD3TJ7h1tcd
- Q2LSbHKsQbHoCqi4BR2FeCfFiXK8D/4J2LbX9UbjmNg0LRrYaI7YTDWC4M92pONhKVax
- EmxcP8O5jRj+Vf8S/TBQRmyZUsvHvMwEMAAQwJAPGuPfcskiWdNDSEBMwOc+HQY7jhRa
- HiiQEcCKa7dvj5J7IGmT92FkdrnCr06A2r8AMgCPmaPFV+Dhj/89F8owp2ZrXoQxnx6e 9g== 
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39969w8vtj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Jun 2021 21:41:49 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15J1ZdQp028816;
-        Sat, 19 Jun 2021 01:41:47 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma04fra.de.ibm.com with ESMTP id 394mj8sy56-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 19 Jun 2021 01:41:47 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15J1eZBa32833976
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 19 Jun 2021 01:40:35 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2A6975204E;
-        Sat, 19 Jun 2021 01:41:45 +0000 (GMT)
-Received: from localhost (unknown [9.199.33.55])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id CB84C52050;
-        Sat, 19 Jun 2021 01:41:44 +0000 (GMT)
-Date:   Sat, 19 Jun 2021 07:11:44 +0530
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
-Subject: Re: [PATCH] ext4: Fix loff_t overflow in ext4_max_bitmap_size()
-Message-ID: <20210619014144.regpoiyqlost22ua@riteshh-domain>
-References: <594f409e2c543e90fd836b78188dfa5c575065ba.1622867594.git.riteshh@linux.ibm.com>
- <20210607100028.GE30275@quack2.suse.cz>
+        id S234704AbhFSQQg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 19 Jun 2021 12:16:36 -0400
+Received: from mail-dm6nam11on2059.outbound.protection.outlook.com ([40.107.223.59]:41185
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232640AbhFSQQf (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sat, 19 Jun 2021 12:16:35 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NVF3boRUHPGJz/Re/TBcx+XrczeQAlaaAnYqRXmajyH6HQA7Nw2TBpNkqgco53hB8RBBW8XiLW0JO+lwa43f52DelNRJXUzgJjcGMset0S1bcHQPEnLJalwyh70o3IGS+TJSBnAiwLDONKQnu0WCkT7RK6TVmD0LLd7CdRZMDXg5GUa8qmYs+iRqIJ6cibD+Z/RmPcznwk+TkihNFC81z9S6QljcCaqsAI1ljNCHRcD/Pk8Ch2gDpwH0uu2QwiNXIaGqXAD3oA5zGU9ilHXntv0Jm91hx5DZId3xszwG7F2WtMY3CN7IvQ2qQB+sJ8O2wAsHG66eEaNv20F0w7KnbQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=S1rnC2kOjdNy5wDyvoRwIoOxTHeBALQ8jntlpMIeuZg=;
+ b=meL5qxnMJsFXPCguwLYUQxEU4sQBg4kwy1tl8NAiu4XDh8tiXGL2V3U4faZfuJSMdpuO0m37C8vJ2WN2dRCir+1+QBGis5+67A8zPVeC34R0oDEc4qhi2FvH4Y0zCnxWSlNKNua91/QpmkDXSfgRddeNLnCv4gGT7nIz1JUlGIjOEojIybumDiX+swPipESnFghw8iPmTDnJPBkcXfuBN5/xhINohqXFUfu9J7PW0qXQC2YMd6rYaBb0nAOGwrgKApY2Pxryhcc5EHJsBbtp8iqGpAuh1ysGecxlaLGy61apPPoaqgP+d6ezvGiD4SE6qNCP92r33ufdsOuJ5GHbhw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=S1rnC2kOjdNy5wDyvoRwIoOxTHeBALQ8jntlpMIeuZg=;
+ b=X4ZbBYAgeg3TS/YA5v37zzLkmOrJldpKdJeeQmPBGjwEM5Jxh+bqiQz7iGmeLY0TaVt2kHBUKCmadztW2J2opRzkmkdEDbKtKwGlzRdpC4LnGvdMTPp9TtkXtOGtkeXWZsEKjMHprb8Y085vVkWYmrbOYYyojQXqp5RKA9vj/14=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
+Received: from SA0PR12MB4430.namprd12.prod.outlook.com (2603:10b6:806:70::20)
+ by SN1PR12MB2415.namprd12.prod.outlook.com (2603:10b6:802:26::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.15; Sat, 19 Jun
+ 2021 16:14:22 +0000
+Received: from SA0PR12MB4430.namprd12.prod.outlook.com
+ ([fe80::5ce6:fed4:e00f:27e4]) by SA0PR12MB4430.namprd12.prod.outlook.com
+ ([fe80::5ce6:fed4:e00f:27e4%6]) with mapi id 15.20.4242.023; Sat, 19 Jun 2021
+ 16:14:22 +0000
+Subject: Re: [PATCH v3 1/8] ext4/xfs: add page refcount helper
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     akpm@linux-foundation.org, Felix.Kuehling@amd.com,
+        linux-mm@kvack.org, rcampbell@nvidia.com,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        hch@lst.de, jgg@nvidia.com, jglisse@redhat.com
+References: <20210617151705.15367-1-alex.sierra@amd.com>
+ <20210617151705.15367-2-alex.sierra@amd.com>
+ <20210617235226.GI664593@dread.disaster.area>
+From:   "Sierra Guiza, Alejandro (Alex)" <alex.sierra@amd.com>
+Message-ID: <12d08476-6f2c-e411-2999-f0d4a8ad887a@amd.com>
+Date:   Sat, 19 Jun 2021 11:14:20 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <20210617235226.GI664593@dread.disaster.area>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [165.204.77.11]
+X-ClientProxiedBy: SA0PR11CA0047.namprd11.prod.outlook.com
+ (2603:10b6:806:d0::22) To SA0PR12MB4430.namprd12.prod.outlook.com
+ (2603:10b6:806:70::20)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210607100028.GE30275@quack2.suse.cz>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: IdRLCB35R2vAAMWly0SNf5AiWzYRB8G3
-X-Proofpoint-ORIG-GUID: IdRLCB35R2vAAMWly0SNf5AiWzYRB8G3
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-18_13:2021-06-18,2021-06-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- suspectscore=0 lowpriorityscore=0 priorityscore=1501 spamscore=0
- bulkscore=0 malwarescore=0 mlxscore=0 mlxlogscore=999 adultscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106190005
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [172.31.9.47] (165.204.77.11) by SA0PR11CA0047.namprd11.prod.outlook.com (2603:10b6:806:d0::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.21 via Frontend Transport; Sat, 19 Jun 2021 16:14:21 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: bf7df0e5-d919-4c27-83ea-08d9333d4ccb
+X-MS-TrafficTypeDiagnostic: SN1PR12MB2415:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN1PR12MB241566743BA030561EDF41DCFD0C9@SN1PR12MB2415.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: MkcEGTnOgRIwEk9eMoAPmSQrHB5xvF6jgtTXqfLo2BGWAJiUNJ7DgqfDGH4JtRvyZQCDWr0sG+THDq3PvAGtANTwWX0HGjkD8jjtM00diYJnvXRIZkAuzSETdGLfn/ujmUmz2fP4e9I9o2xdWQ7J2K5kNtNwpKJalFmbmd5T5hpSKtshpnauXAbaCFAz7xgVrDwLKayT+ZU6gXjpQ1A7K/K8uI6H0gXOCXaESAwVh/yX1fKR3D9C1MCaTZbQ1hGY96j5W1GaocMb3GxA9CK4nvPI33mVLGO8PDY2U70aN2pa9u396oajIuVyoVruuXhFaanqxq7FAoB197PkAhSbdya7F61ofwRkgks/7SJ2/XbpDUXOiSgM/WThGI79ErzU58DdisDSfCqiac/Z2t3xsy2oxb91CTPkvdRzJTbXWhFhiKQqMva2mFAgrRM0lqhqISC0CTc7GS4UxNNZTIHkDk3AJVzj8yul67r5wtuBrtncNQu5Z6ZAnWns9UTjS2bElGqFB1lXwlurWYmYJQUgAzTsOXLMn0/Y3hn9T8Y+mJFhSVbBoy+h7wL66cLPMfdOGjieikV52CcnVYVyzGwnOj6h9+OGlsejfrORyo534dzmq5qJQikLJght1BWdpizPk0Qd9VocQVOPWpWIeeTM1xOn1gsFLPhurAOLLTd2s/PGmLH94Pp28MK5Ljyq5S9dqqC3CjDue9/tacASLpzDZA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA0PR12MB4430.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(136003)(39860400002)(346002)(376002)(16526019)(38100700002)(66476007)(83380400001)(186003)(36756003)(38350700002)(8936002)(5660300002)(86362001)(66946007)(478600001)(52116002)(31686004)(956004)(4326008)(53546011)(2616005)(26005)(6916009)(8676002)(316002)(16576012)(2906002)(31696002)(66556008)(7416002)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OVNuZ3BvUWJKMi9YNGJsNzlxNnhDUHJTMFF0MTlBNkV1ck9XMjB4NFRpWjhV?=
+ =?utf-8?B?WUpucDA4eG9DeTVKcmdEQWwwT1JGeXNVZ2IyTW5ibmJrbVhlZDFkYXdCZm5D?=
+ =?utf-8?B?dERDRVQ2WTB0YXVINlZnTzRPTXB2VEZFN3pMVUhMZ2RpdE50bHluMzVCbVdT?=
+ =?utf-8?B?WjNUQU1ma09sM1FmY2tnakdWa3JlZ2ZuOWJsK244bzZvWWlpaldVeHoxeFoy?=
+ =?utf-8?B?MTlUeHcvaEpWSnRFLytNdTJWTzZ4ZUtOc0Z2ZGFhK3Vpakp6RFlRMFg1VXg2?=
+ =?utf-8?B?MEdTUWdWdm1RS3FkNUYvRnJuWFhrRG5sbUUwREhScmNzTmpsS2RlRUxTNFN6?=
+ =?utf-8?B?bElYM1ptUkFvZzZibVM5Um9teWJ6dEZCc0k3KzRhMlBzczQvdUtEOVR3MUVt?=
+ =?utf-8?B?emM0dVIzdlNzRHNBeXQyRDlRczcwR2xOc3lPNjl6SXV4QnE1U3NDWHQwalNT?=
+ =?utf-8?B?RHRDdzM2a3N1bWtaNFhxZzFKZUpHVjdIRG1YQUNma1A2ZnlwZFY3VXpOdnda?=
+ =?utf-8?B?OW14WVNNZkVWeDZVdmFuajVwcEdram9UMXpnVnkwclF0MXZEcHY0bFo4YWVQ?=
+ =?utf-8?B?MG1VTC8zT29iZ2MyOGhIVDZEdXVyMVB5SDJBcmxXblhzb2JIZTJtWUxjZW5R?=
+ =?utf-8?B?SVZYWk8zZ2loNStUa0FlLzNYaEhFdngvSXJIeWRnZzhqMlUzTFJSK0ZydXFu?=
+ =?utf-8?B?cU4yeUJDcjJsQldmN0RlMzFicmpXelFaR0JWRmxBbUlMQy9Jb0Zzcjlrd2xk?=
+ =?utf-8?B?VVAwUUNJZitpeDVTVG4rd25OQUZuL1RHRnFxS3NLd1BEYjF5NTZLYkdsV2V3?=
+ =?utf-8?B?UjBtU0MzQzlDbGdod21YYlUwekZyNjFzK3pFcEkydU4xV0RIYzAwK1F3ZnV5?=
+ =?utf-8?B?MzNrajNQdE5XM0t4czFzanNBc21BVUlwOGdsTEVNVmJ4ZFcvcFFxUVNLWi8r?=
+ =?utf-8?B?VVVDZTgwWjNzRDNlbm1nOEN2YUg0WUF0Qm5qMWZDY3JyazVGODlkREs2eXdF?=
+ =?utf-8?B?VGp6Skc5TWZDWkRFYlpaT09EbWR4T3I5NFVNUndqN3B2VkdqVVJ6aGhzK0Nx?=
+ =?utf-8?B?SjZLZ0dDNWZlZTdTT25SYnVyL3dGQzFEN0dKKzNtMjNDNEtSYi82M3l6S3lj?=
+ =?utf-8?B?ZFBZb3djUk9EOUExRjZHdFBRWFZBWHJEYXZoblhJNjlpQ0hrNmNPdkRiRkh4?=
+ =?utf-8?B?SHc0ajlPRGtiZDhzWWJmZXlGczF2MlM3TkpQZU5HaXBRSkErWFYwMzVYbS9t?=
+ =?utf-8?B?WGtZZUlqVDl6TFNVRHY5a0FoUDNOZTNJenFQMWdGcUNvTVhVRFpSWkszenZo?=
+ =?utf-8?B?cXptOTV6OEgvUDJaVDFRc2ZPVVJyVXFVdWZQMGxCaTNGYm9vbFI5b3M4R2RF?=
+ =?utf-8?B?YWt3OGtqOXZDejNOMWFEbTJROWZsZkNLTUJzZVRPRUJYcnpvVXNzQjE1Y3JO?=
+ =?utf-8?B?cnNoNDMrSXk4YzRyWDRlMHFlVXBOaWkwWFk0djh4ZGpPQ0kxbXlINk9zd0Zj?=
+ =?utf-8?B?aUJScldjSUdXY3NKYkdpbzJTU3pXM3I3VFBpV1hYdnFrK2xuSG1jYmJmb25z?=
+ =?utf-8?B?YXZBNjl0S1NKNVBRVHJvU0lHS0V4clVmNGt6bEl5bmFaTlhEVE9wMEg1bVZF?=
+ =?utf-8?B?ZWdHWEsrTWlBSnMyUFFVYWhKbXlDZk9wMXVjR3JtUDU1VkJnM0NqSnNZZkNW?=
+ =?utf-8?B?UVluV2p0NFQ3dnNsOGNtQm5uMWFwZTZERE9OYzlBcEo4eW5SMFRiZ2NmS3h6?=
+ =?utf-8?Q?9ZtuNjhl7z9erJOPBpfe9bN5sc4DcnlKIa48bVj?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bf7df0e5-d919-4c27-83ea-08d9333d4ccb
+X-MS-Exchange-CrossTenant-AuthSource: SA0PR12MB4430.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jun 2021 16:14:22.7100
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1mAGd+CUOxi03UOZSdHcPiwYEq1a9mfKqHB9CzFFDx0I6sb0nXAlS0YWf6EPRJS51JxGQBWYk2OiIf6i2K/Z0Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2415
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 21/06/07 12:00PM, Jan Kara wrote:
-> On Sat 05-06-21 10:39:32, Ritesh Harjani wrote:
-> > We should use unsigned long long rather than loff_t to avoid
-> > overflow in ext4_max_bitmap_size() for comparison before returning.
-> > w/o this patch sbi->s_bitmap_maxbytes was becoming a negative
-> > value due to overflow of upper_limit (with has_huge_files as true)
-> >
-> > Below is a quick test to trigger it on a 64KB pagesize system.
-> >
-> > sudo mkfs.ext4 -b 65536 -O ^has_extents,^64bit /dev/loop2
-> > sudo mount /dev/loop2 /mnt
-> > sudo echo "hello" > /mnt/hello 	-> This will error out with
-> > 				"echo: write error: File too large"
-> >
-> > Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
->
-> OK, this works (although it's really tight ;). Won't it be somewhat safer
-> if we compared upper_limit and res before shifting both by blocksize_bits
-> to the left? Basically we need to shift only for comparison with
-> MAX_LFS_FILESIZE which is in bytes... But either way feel free to add:
 
-Yes, at 1st I did think that, but since for comparing "res" against
-MAX_LFS_FILESIZE we will be anyway doing the bit shifting and since this logic
-too was (just) fitting into the limits so I thought of keeping it the same.
-But, if absolutely required, I can make those changes.
+On 6/17/2021 6:52 PM, Dave Chinner wrote:
+> On Thu, Jun 17, 2021 at 10:16:58AM -0500, Alex Sierra wrote:
+>> From: Ralph Campbell <rcampbell@nvidia.com>
+>>
+>> There are several places where ZONE_DEVICE struct pages assume a reference
+>> count == 1 means the page is idle and free. Instead of open coding this,
+>> add a helper function to hide this detail.
+>>
+>> v2:
+>> [AS]: rename dax_layout_is_idle_page func to dax_page_unused
+> Did you even compile test this?
+Thanks for catching this Dave, my mistake, I was building without 
+CONFIG_FS_DAX, as I was using DEVICE_GENERIC only.
+I'll send the corrected patch in replay.
+
+Regards,
+
+Alex Sierra
 
 >
-> Reviewed-by: Jan Kara <jack@suse.cz>
-
-
-Thanks for the review :)
-
--ritesh
-
+>> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
+>> Signed-off-by: Alex Sierra <alex.sierra@amd.com>
+>> ---
+>>   fs/dax.c            |  4 ++--
+>>   fs/ext4/inode.c     |  5 +----
+>>   fs/xfs/xfs_file.c   |  4 +---
+>>   include/linux/dax.h | 10 ++++++++++
+>>   4 files changed, 14 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/fs/dax.c b/fs/dax.c
+>> index 26d5dcd2d69e..321f4ddc6643 100644
+>> --- a/fs/dax.c
+>> +++ b/fs/dax.c
+>> @@ -358,7 +358,7 @@ static void dax_disassociate_entry(void *entry, struct address_space *mapping,
+>>   	for_each_mapped_pfn(entry, pfn) {
+>>   		struct page *page = pfn_to_page(pfn);
+>>   
+>> -		WARN_ON_ONCE(trunc && page_ref_count(page) > 1);
+>> +		WARN_ON_ONCE(trunc && !dax_layout_is_idle_page(page));
+> Because you still use dax_layout_is_idle_page() here, not
+> dax_page_unused()...
 >
-> 								Honza
+>>   		WARN_ON_ONCE(page->mapping && page->mapping != mapping);
+>>   		page->mapping = NULL;
+>>   		page->index = 0;
+>> @@ -372,7 +372,7 @@ static struct page *dax_busy_page(void *entry)
+>>   	for_each_mapped_pfn(entry, pfn) {
+>>   		struct page *page = pfn_to_page(pfn);
+>>   
+>> -		if (page_ref_count(page) > 1)
+>> +		if (!dax_layout_is_idle_page(page))
+> Here too.
 >
-> > ---
-> >  fs/ext4/super.c | 10 +++++-----
-> >  1 file changed, 5 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> > index 7dc94f3e18e6..bedb66386966 100644
-> > --- a/fs/ext4/super.c
-> > +++ b/fs/ext4/super.c
-> > @@ -3189,17 +3189,17 @@ static loff_t ext4_max_size(int blkbits, int has_huge_files)
-> >   */
-> >  static loff_t ext4_max_bitmap_size(int bits, int has_huge_files)
-> >  {
-> > -	loff_t res = EXT4_NDIR_BLOCKS;
-> > +	unsigned long long upper_limit, res = EXT4_NDIR_BLOCKS;
-> >  	int meta_blocks;
-> > -	loff_t upper_limit;
-> > -	/* This is calculated to be the largest file size for a dense, block
-> > +
-> > +	/*
-> > +	 * This is calculated to be the largest file size for a dense, block
-> >  	 * mapped file such that the file's total number of 512-byte sectors,
-> >  	 * including data and all indirect blocks, does not exceed (2^48 - 1).
-> >  	 *
-> >  	 * __u32 i_blocks_lo and _u16 i_blocks_high represent the total
-> >  	 * number of 512-byte sectors of the file.
-> >  	 */
-> > -
-> >  	if (!has_huge_files) {
-> >  		/*
-> >  		 * !has_huge_files or implies that the inode i_block field
-> > @@ -3242,7 +3242,7 @@ static loff_t ext4_max_bitmap_size(int bits, int has_huge_files)
-> >  	if (res > MAX_LFS_FILESIZE)
-> >  		res = MAX_LFS_FILESIZE;
-> >
-> > -	return res;
-> > +	return (loff_t)res;
-> >  }
-> >
-> >  static ext4_fsblk_t descriptor_loc(struct super_block *sb,
-> > --
-> > 2.31.1
-> >
-> --
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+> Cheers,
+>
+> Dave.
