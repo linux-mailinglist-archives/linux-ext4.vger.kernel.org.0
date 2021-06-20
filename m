@@ -2,103 +2,70 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16B233ADE9B
-	for <lists+linux-ext4@lfdr.de>; Sun, 20 Jun 2021 15:32:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09A6B3ADEFA
+	for <lists+linux-ext4@lfdr.de>; Sun, 20 Jun 2021 16:15:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229806AbhFTNeq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 20 Jun 2021 09:34:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229815AbhFTNeh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 20 Jun 2021 09:34:37 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D2B4C061768
-        for <linux-ext4@vger.kernel.org>; Sun, 20 Jun 2021 06:32:23 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id y21so1239694plb.4
-        for <linux-ext4@vger.kernel.org>; Sun, 20 Jun 2021 06:32:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=D7l/Y2nU4ivOXB3kYNarWKNDy1SUWuawPt7q4q/Bhv4=;
-        b=uI1HWktzNInUfptyhQFOCbHHsuWvfBePpTiQHONWTknKmYIIUTT/ScT2sm1pOtQghT
-         w4l7bggcvaIzRVYhJEw54i/j5C7uIjPI+rfKYj9eLBMMnUvVanHWJD5X8UwiF2eAuA3/
-         e7PIhGGhjecJswE1As0nWUL/TgoPBhYR8WAQ7oBplZUX7d0Wepvtu1ONc4udpFogWhnD
-         wfj5M1ULsJD5vk1emm3Wq8VNf8cpaJUJ+x7F8A8GyxSaKLBaPRKzZKjV9q/K4ntDcKgg
-         Y77ITXRVMOooid3W4tLnX41RorPGOLZ8bjpANE36HhxEjObG5cj4VLtNebY4L3rZku0x
-         CmtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=D7l/Y2nU4ivOXB3kYNarWKNDy1SUWuawPt7q4q/Bhv4=;
-        b=kzKFI2S+PoN04Ewspq1CvS5FWEVRXgmGZbmkt5dvBVW9u80dL3WoEUw3fM11kexL7p
-         j3hdX/XOz7RH/UAMqvO4qZSFdu8BgOi7jqj3I7eyj3BTHXTwU/RB7asud75bbayTt3Kf
-         8jyU1du37rercrLI6nsSfkqenoJA/xnjv1YUVEPpOo2VAEgDw+5rgJ+VN/x49K5g+ETg
-         24TiN+INSavoDl6mcpeLozWnjCdvXCGVmQ0Tx3S825L8kOygPJGAbiEM1mCKtveaqPGE
-         vW82fhrD+siwt6G7YUDzSmOSo9z3OBtW2mmjGGf83HL8s6kvptvatvwOibqLNmMKgWAA
-         YXcw==
-X-Gm-Message-State: AOAM532/do9xnRq4lde+IgBX7KwNYiCqPr238wiGxrhUcwYiEXA5BMp0
-        JAx/vqKEf+5Lo3v1d2K6SBHi+wUf6fbZV5PsSBs=
-X-Google-Smtp-Source: ABdhPJyYTDfw4WVraS3KISSU5caoRyl92iwUfjQnfIf+bxuqEIclu8S5RViUF+VzGyie0yN6ygWa0XSQXBXCovJskeo=
-X-Received: by 2002:a17:90a:3c8d:: with SMTP id g13mr14988365pjc.229.1624195942801;
- Sun, 20 Jun 2021 06:32:22 -0700 (PDT)
+        id S229624AbhFTORV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 20 Jun 2021 10:17:21 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:44873 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229593AbhFTORU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 20 Jun 2021 10:17:20 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 15KEEsxi001510
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 20 Jun 2021 10:14:55 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 4EFFB15C3C9F; Sun, 20 Jun 2021 10:14:54 -0400 (EDT)
+Date:   Sun, 20 Jun 2021 10:14:54 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Alex Sierra <alex.sierra@amd.com>
+Cc:     akpm@linux-foundation.org, Felix.Kuehling@amd.com,
+        linux-mm@kvack.org, rcampbell@nvidia.com,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        hch@lst.de, jgg@nvidia.com, jglisse@redhat.com
+Subject: Re: [PATCH v3 0/8] Support DEVICE_GENERIC memory in migrate_vma_*
+Message-ID: <YM9NXrGlhdp0qb7S@mit.edu>
+References: <20210617151705.15367-1-alex.sierra@amd.com>
 MIME-Version: 1.0
-Received: by 2002:a17:90b:38c4:0:0:0:0 with HTTP; Sun, 20 Jun 2021 06:32:22
- -0700 (PDT)
-Reply-To: sarahkoffi389@yahoo.co.jp
-From:   Sarah Koffi <william.p15179@gmail.com>
-Date:   Sun, 20 Jun 2021 15:32:22 +0200
-Message-ID: <CAGDeiXEqqpFdLqbGJcZw6bD1HkUarPFWxx6wXc9qQzJYnE16zA@mail.gmail.com>
-Subject: Greetings From Mrs. Sarah Koffi
-To:     sarahkoffi389@yahoo.co.jp
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210617151705.15367-1-alex.sierra@amd.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Greetings From Mrs. Sarah Koffi
+On Thu, Jun 17, 2021 at 10:16:57AM -0500, Alex Sierra wrote:
+> v1:
+> AMD is building a system architecture for the Frontier supercomputer with a
+> coherent interconnect between CPUs and GPUs. This hardware architecture allows
+> the CPUs to coherently access GPU device memory. We have hardware in our labs
+> and we are working with our partner HPE on the BIOS, firmware and software
+> for delivery to the DOE.
+> 
+> The system BIOS advertises the GPU device memory (aka VRAM) as SPM
+> (special purpose memory) in the UEFI system address map. The amdgpu driver looks
+> it up with lookup_resource and registers it with devmap as MEMORY_DEVICE_GENERIC
+> using devm_memremap_pages.
+> 
+> Now we're trying to migrate data to and from that memory using the migrate_vma_*
+> helpers so we can support page-based migration in our unified memory allocations,
+> while also supporting CPU access to those pages.
+> 
+> This patch series makes a few changes to make MEMORY_DEVICE_GENERIC pages behave
+> correctly in the migrate_vma_* helpers. We are looking for feedback about this
+> approach. If we're close, what's needed to make our patches acceptable upstream?
+> If we're not close, any suggestions how else to achieve what we are trying to do
+> (i.e. page migration and coherent CPU access to VRAM)?
 
-I'm contacting you based on your good profiles I read and for a good
-reasons, I am in search of a property to buy in your country as I
-intended to come over to your
-country for investment, Though I have not meet with you before but I
-believe that one has to risk confiding in someone to succeed sometimes
-in life.
+Is there a way we can test the codepaths touched by this patchset?  It
+doesn't have to be via a complete qemu simulation of the GPU device
+memory, but some way of creating MEMORY_DEVICE_GENERIC subject to
+migrate_vma_* helpers so we can test for regressions moving forward.
 
-My name is Mrs. Sarah Koffi. My late husband deals on Crude Oil with
-Federal Government of Sudan and he has a personal Oil firm in Bentiu
-Oil zone town and Upper
-Nile city. What I have experience physically, I don't wish to
-experience it again in my life due to the recent civil Ethnic war
-cause by our President Mr. Salva Kiir
-and the rebel leader Mr Riek Machar, I have been Under United Nation
-refuge camp in chad to save my life and that of my little daughter.
+Thanks,
 
-Though, I do not know how you will feel to my proposal, but the truth
-is that I sneaked into Chad our neighboring country where I am living
-now as a refugee.
-I escaped with my little daughter when the rebels bust into our house
-and killed my husband as one of the big oil dealers in the country,
-ever since then, I have being on the run.
-
-I left my country and move to Chad our neighboring country with the
-little ceasefire we had, due to the face to face peace meeting accord
-coordinated by the US Secretary of State, Mr John Kerry and United
-Nations in Ethiopia (Addis Ababa) between our President Mr Salva Kiir
-and the rebel leader Mr Riek Machar to stop this war.
-
-I want to solicit for your partnership with trust to invest the $8
-million dollars deposited by my late husband in Bank because my life
-is no longer safe in our country, since the rebels are looking for the
-families of all the oil business men in the country to kill, saying
-that they are they one that is milking the country dry.
-
-I will offer you 20% of the total fund for your help while I will
-partner with you for the investment in your country.
-If I get your reply.
-
-I will wait to hear from you so as to give you details.With love from
-
- i need you to contact me here sarahkoffi389@yahoo.co.jp
-
-Mrs. Sarah Koffi
+					- Ted
