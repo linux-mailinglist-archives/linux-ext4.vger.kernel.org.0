@@ -2,127 +2,103 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 484693B00ED
-	for <lists+linux-ext4@lfdr.de>; Tue, 22 Jun 2021 12:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCE2B3B08A2
+	for <lists+linux-ext4@lfdr.de>; Tue, 22 Jun 2021 17:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229803AbhFVKHU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 22 Jun 2021 06:07:20 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:40790 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbhFVKHT (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 22 Jun 2021 06:07:19 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 3EDF41FD45;
-        Tue, 22 Jun 2021 10:05:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1624356302; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=J3kbE7iH7QbzIIxkb82odwgZdE+ENBNes3YiuYmeOBM=;
-        b=dbZaYxuILiRaFr5eNjCKVx6KLWyV30rDu5zcZWDodg8k7DNY7SWjEZsUjnr5AvUkLeoYiS
-        IHYg6a4F9HqAuNfp8iPFhDinfZYOmytz1WvpkmY7MT9VelJIw7Ly1l+rRfeoLeqtKNjjwd
-        fwFvvGTBEW6Ey6AH3SgXEnY/VY7pGY8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1624356302;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=J3kbE7iH7QbzIIxkb82odwgZdE+ENBNes3YiuYmeOBM=;
-        b=dJM0H9PJ8/7nbIk7JI1om+3Wij9R9egMfTmQEuWbdz7G7HypNCeGEN3y6FauKdmkzHQoxG
-        XKOS4oqruWUet4Bg==
-Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id 308DEA3B8D;
-        Tue, 22 Jun 2021 10:05:02 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 0FC951E1515; Tue, 22 Jun 2021 12:05:02 +0200 (CEST)
-Date:   Tue, 22 Jun 2021 12:05:02 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-mm@kvack.org,
-        ceph-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: [GIT PULL] fs: Hole punch fixes
-Message-ID: <20210622100502.GE14261@quack2.suse.cz>
+        id S232161AbhFVPXD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 22 Jun 2021 11:23:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60055 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232143AbhFVPXC (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 22 Jun 2021 11:23:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624375246;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=d4qG1BgL83jc2NobbBwa+FD372Pv9PnyTc1bHAkSk00=;
+        b=TjTxmHDVwzk7RIfacZ7ckcXGivFZbToCxyD74hqPqQHtLvO4kt03CbUmKwJWUbeqr8puyG
+        I6TKm5Nh1MsW3sUu5ARNRhLMAOp5fU6qPzlldiOfNFm/uI5NoXYNRgs/h3Tf3OjodfLVAH
+        BkTIFe2Uu5jEWKMZ3ICKrnVdvUg4X7I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-148-_VBSvZdPObOO47vKxdHgvA-1; Tue, 22 Jun 2021 11:20:45 -0400
+X-MC-Unique: _VBSvZdPObOO47vKxdHgvA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7718591271;
+        Tue, 22 Jun 2021 15:20:43 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 64F19100F49F;
+        Tue, 22 Jun 2021 15:20:41 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+To:     torvalds@linux-foundation.org
+cc:     dhowells@redhat.com, Ted Ts'o <tytso@mit.edu>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>, willy@infradead.org,
+        viro@zeniv.linux.org.uk, linux-mm@kvack.org,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Do we need to unrevert "fs: do not prefault sys_write() user buffer pages"?
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3221174.1624375240.1@warthog.procyon.org.uk>
+Date:   Tue, 22 Jun 2021 16:20:40 +0100
+Message-ID: <3221175.1624375240@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-  Hello Darrick,
+Hi Linus,
 
-  here is a prepared pull request with the hole punch fixes:
+I've been looking at generic_perform_write() with an eye to adapting a version
+for network filesystems in general.  I'm wondering if it's actually safe or
+whether it needs 00a3d660cbac05af34cca149cb80fb611e916935 reverting, which is
+itself a revert of 998ef75ddb5709bbea0bf1506cd2717348a3c647.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git hole_punch_fixes_for_5.14-rc1
+Anyway, I was looking at this bit:
 
-Top of the tree is a68454854cd9. The full shortlog is:
+	bytes = min_t(unsigned long, PAGE_SIZE - offset,
+					iov_iter_count(i));
+	...
+	if (unlikely(iov_iter_fault_in_readable(i, bytes))) {
+		status = -EFAULT;
+		break;
+	}
 
-Jan Kara (13):
-      mm: Fix comments mentioning i_mutex
-      documentation: Sync file_operations members with reality
-      mm: Protect operations adding pages to page cache with invalidate_lock
-      mm: Add functions to lock invalidate_lock for two mappings
-      ext4: Convert to use mapping->invalidate_lock
-      ext2: Convert to using invalidate_lock
-      xfs: Convert to use invalidate_lock
-      xfs: Convert double locking of MMAPLOCK to use VFS helpers
-      zonefs: Convert to using invalidate_lock
-      f2fs: Convert to using invalidate_lock
-      fuse: Convert to using invalidate_lock
-      ceph: Fix race between hole punch and page fault
-      cifs: Fix race between hole punch and page fault
+	if (fatal_signal_pending(current)) {
+		status = -EINTR;
+		break;
+	}
 
-Pavel Reichl (1):
-      xfs: Refactor xfs_isilocked()
+	status = a_ops->write_begin(file, mapping, pos, bytes, flags,
+					&page, &fsdata);
+	if (unlikely(status < 0))
+		break;
 
-The diffstat is
+	if (mapping_writably_mapped(mapping))
+		flush_dcache_page(page);
 
- Documentation/filesystems/locking.rst |  77 +++++++++++++++-------
- fs/ceph/addr.c                        |   9 ++-
- fs/ceph/file.c                        |   2 +
- fs/cifs/smb2ops.c                     |   2 +
- fs/ext2/ext2.h                        |  11 ----
- fs/ext2/file.c                        |   7 +-
- fs/ext2/inode.c                       |  12 ++--
- fs/ext2/super.c                       |   3 -
- fs/ext4/ext4.h                        |  10 ---
- fs/ext4/extents.c                     |  25 +++----
- fs/ext4/file.c                        |  13 ++--
- fs/ext4/inode.c                       |  47 +++++--------
- fs/ext4/ioctl.c                       |   4 +-
- fs/ext4/super.c                       |  13 ++--
- fs/ext4/truncate.h                    |   8 ++-
- fs/f2fs/data.c                        |   4 +-
- fs/f2fs/f2fs.h                        |   1 -
- fs/f2fs/file.c                        |  62 +++++++++--------
- fs/f2fs/super.c                       |   1 -
- fs/fuse/dax.c                         |  50 +++++++-------
- fs/fuse/dir.c                         |  11 ++--
- fs/fuse/file.c                        |  10 +--
- fs/fuse/fuse_i.h                      |   7 --
- fs/fuse/inode.c                       |   1 -
- fs/inode.c                            |   2 +
- fs/xfs/xfs_bmap_util.c                |  15 +++--
- fs/xfs/xfs_file.c                     |  13 ++--
- fs/xfs/xfs_inode.c                    | 121 ++++++++++++++++++----------------
- fs/xfs/xfs_inode.h                    |   3 +-
- fs/xfs/xfs_super.c                    |   2 -
- fs/zonefs/super.c                     |  23 ++-----
- fs/zonefs/zonefs.h                    |   7 +-
- include/linux/fs.h                    |  39 +++++++++++
- mm/filemap.c                          | 113 ++++++++++++++++++++++++++-----
- mm/madvise.c                          |   2 +-
- mm/memory-failure.c                   |   2 +-
- mm/readahead.c                        |   2 +
- mm/rmap.c                             |  41 ++++++------
- mm/shmem.c                            |  20 +++---
- mm/truncate.c                         |   9 +--
- 40 files changed, 453 insertions(+), 351 deletions(-)
+	copied = iov_iter_copy_from_user_atomic(page, i, offset, bytes);
 
-							Thanks
-								Honza
 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+and wondering if the iov_iter_fault_in_readable() is actually effective.  Yes,
+it can make sure that the page we're intending to modify is dragged into the
+pagecache and marked uptodate so that it can be read from, but is it possible
+for the page to then get reclaimed before we get to
+iov_iter_copy_from_user_atomic()?  a_ops->write_begin() could potentially take
+a long time, say if it has to go and get a lock/lease from a server.
+
+Also, I've been thinking about Willy's folio/THP stuff that allows bunches of
+pages to be glued together into single objects for efficiency.  This is
+problematic with the above code because the faultahead is limited to a maximum
+of PAGE_SIZE, but we might be wanting to modify a larger object than that.
+
+David
+
