@@ -2,32 +2,24 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E9153B0FD6
-	for <lists+linux-ext4@lfdr.de>; Wed, 23 Jun 2021 00:05:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2C933B0FFE
+	for <lists+linux-ext4@lfdr.de>; Wed, 23 Jun 2021 00:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbhFVWH0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 22 Jun 2021 18:07:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229612AbhFVWHY (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 22 Jun 2021 18:07:24 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39AABC061574;
-        Tue, 22 Jun 2021 15:05:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=2m7GLG5w20KHHhlTaOprqLvS/Hx9yXDVOmadVvXFND8=; b=u3lQwtebrfuytes2L8nzZ8N6YB
-        aJhsNvMMqMSpPGNJH8kmiR7ZH5GZ8SaF6yU7/DOCPamQgOmhypPXOtCUwm2z1Uuq6NQAJOrjXIRU9
-        n/ezdix3gyl8PG/XzrrMkgvYY6M/RFMFSGzbaMi06n0HKx4MbgT6PLCgR0eTxZgD19e3PU7iZkul2
-        y4z1w0+QVKMDlEUubiBrPxYl21fwfxo+q5NE67cHub2Jm1uTmGVXZfWHsHzz8kFgw6LdE3F6YDdAe
-        mOmOdSvwj8/y4BLxz3wuRRtYpq7Pw3J2c2GCZZGWaWpZ0fTG17fhLLlpwU1wnkA84w5mZPT9JKDZf
-        IAbFQkXA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lvoVD-00EnTi-HC; Tue, 22 Jun 2021 22:04:25 +0000
-Date:   Tue, 22 Jun 2021 23:04:15 +0100
-From:   Matthew Wilcox <willy@infradead.org>
+        id S230103AbhFVWXG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 22 Jun 2021 18:23:06 -0400
+Received: from mail108.syd.optusnet.com.au ([211.29.132.59]:55046 "EHLO
+        mail108.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229718AbhFVWXF (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 22 Jun 2021 18:23:05 -0400
+Received: from dread.disaster.area (pa49-179-138-183.pa.nsw.optusnet.com.au [49.179.138.183])
+        by mail108.syd.optusnet.com.au (Postfix) with ESMTPS id 7E20B1B3100;
+        Wed, 23 Jun 2021 08:20:45 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1lvolA-00FrD1-A6; Wed, 23 Jun 2021 08:20:44 +1000
+Date:   Wed, 23 Jun 2021 08:20:44 +1000
+From:   Dave Chinner <david@fromorbit.com>
 To:     David Laight <David.Laight@aculab.com>
 Cc:     'David Howells' <dhowells@redhat.com>,
         Al Viro <viro@zeniv.linux.org.uk>,
@@ -35,13 +27,14 @@ Cc:     'David Howells' <dhowells@redhat.com>,
         Ted Ts'o <tytso@mit.edu>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         Andrew Morton <akpm@linux-foundation.org>,
+        "willy@infradead.org" <willy@infradead.org>,
         "linux-mm@kvack.org" <linux-mm@kvack.org>,
         "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
         "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Subject: Re: Do we need to unrevert "fs: do not prefault sys_write() user
  buffer pages"?
-Message-ID: <YNJeX3rWAIIh5H8H@casper.infradead.org>
+Message-ID: <20210622222044.GI2419729@dread.disaster.area>
 References: <YNIBb5WPrk8nnKKn@zeniv-ca.linux.org.uk>
  <3221175.1624375240@warthog.procyon.org.uk>
  <3225322.1624379221@warthog.procyon.org.uk>
@@ -50,6 +43,13 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <7a6d8c55749d46d09f6f6e27a99fde36@AcuMS.aculab.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=Tu+Yewfh c=1 sm=1 tr=0
+        a=MnllW2CieawZLw/OcHE/Ng==:117 a=MnllW2CieawZLw/OcHE/Ng==:17
+        a=v-Dl0aO_AE6Q_TjM:21 a=kj9zAlcOel0A:10 a=r6YtysWOX24A:10 a=drOt6m5kAAAA:8
+        a=7-415B0cAAAA:8 a=LpHeB8C7BEPH7Pa3heMA:9 a=CjuIK1q_8ugA:10
+        a=vIikcsq8ZuViU5wKlUpU:22 a=RMMjzBEyIzXRtoq5n5K6:22
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
@@ -101,20 +101,16 @@ On Tue, Jun 22, 2021 at 09:55:09PM +0000, David Laight wrote:
 > 	 * Hopefully there are enough memory pages available to
 > 	 * stop this looping forever.
 > 	 */
-> 
-> It is perfectly possible for another application thread to
-> invalidate one of the buffer fragments after iov_iter_fault_in_readable()
-> return success - so it will then fail on the second pass.
-> 
-> The maximum number of pages required is twice the maximum number
-> of iov fragments.
-> If the system is crawling along with no available memory pages
-> the same physical page could get used for two user pages.
 
-I would suggest reading the function before you suggest modifications
-to it.
+What about the other 4 or 5 copies of this loop in the kernel?
 
-                offset = (pos & (PAGE_SIZE - 1));
-                bytes = min_t(unsigned long, PAGE_SIZE - offset,
-                                                iov_iter_count(i));
+This is a pattern, not a one off implementation. Comments describing
+how the pattern works belong in the API documentation, not on a
+single implemenation of the pattern...
 
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
