@@ -2,93 +2,78 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAB2B3B0A4F
-	for <lists+linux-ext4@lfdr.de>; Tue, 22 Jun 2021 18:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 582003B0B63
+	for <lists+linux-ext4@lfdr.de>; Tue, 22 Jun 2021 19:26:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230330AbhFVQ3Y (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 22 Jun 2021 12:29:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26691 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230062AbhFVQ3X (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 22 Jun 2021 12:29:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624379227;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Hrhx/d0n+ruCXAaNUiGvt1DI7m7Wkz8aq+QQEOhzPsQ=;
-        b=Jf+RslQb48Q4li6ifQKXXbXGnxXSH6KW9cJKc29cNji/Mmcshezea4PlTrlH7zwqkGVIZQ
-        O+jkBc0hcftvARrOaveGlr/ztCpKLLkLESWg+mhyfaP+Hdx/L72e2qDWz9nSbK8mp5Be+x
-        m9pklfPjo/iHtpjAIKr5si2oMPaM004=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-362-qOaYXXfCMN2sdaBNmGU9jw-1; Tue, 22 Jun 2021 12:27:06 -0400
-X-MC-Unique: qOaYXXfCMN2sdaBNmGU9jw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 494929F92E;
-        Tue, 22 Jun 2021 16:27:04 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0BFBA100760F;
-        Tue, 22 Jun 2021 16:27:01 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <YNIBb5WPrk8nnKKn@zeniv-ca.linux.org.uk>
-References: <YNIBb5WPrk8nnKKn@zeniv-ca.linux.org.uk> <3221175.1624375240@warthog.procyon.org.uk>
+        id S232051AbhFVR2r (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 22 Jun 2021 13:28:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231579AbhFVR2q (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 22 Jun 2021 13:28:46 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58E98C061574;
+        Tue, 22 Jun 2021 10:26:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=mOJMY6UOYq7EaC2SDC9v+zeUo0FEEd2ZM34anZJPrG8=; b=RDSUY3nJuJPGNXnzMGU4Nm5OFG
+        knOmUgsCxWwKh/8EEHQUy9vtATVzVa8ve5UAvHrphjagiV5sMXQBT4oiOpM56T/AXJAqcpSJwD5A/
+        TaSvPzxDSTgo2NBa69kr1+HwavpGgZan5lVpRGf2qGKgLXfHgKq1d7I2IF1Na7rdx8tmP+lloSlRw
+        ZumFsdUMykOmBOGfn0HqHv968m2YdfHs11FnwSsPriLaEBFmXg4B6I6KDyaYxrfl7V5IY3outGNQx
+        WvWuOuZermop/gA5DF6UoLvqJXJ+efg0szmPWASoPPyX3nHPhyYdKQLnV+DvqhGYli8bhEQQGWXTq
+        S6KI9I5Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lvk9t-00EY8S-Ia; Tue, 22 Jun 2021 17:26:00 +0000
+Date:   Tue, 22 Jun 2021 18:25:57 +0100
+From:   Matthew Wilcox <willy@infradead.org>
 To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     dhowells@redhat.com, torvalds@linux-foundation.org,
+Cc:     David Howells <dhowells@redhat.com>, torvalds@linux-foundation.org,
         Ted Ts'o <tytso@mit.edu>,
         Dave Hansen <dave.hansen@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>, willy@infradead.org,
-        linux-mm@kvack.org, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Do we need to unrevert "fs: do not prefault sys_write() user buffer pages"?
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Do we need to unrevert "fs: do not prefault sys_write() user
+ buffer pages"?
+Message-ID: <YNIdJaKrNj5GoT7w@casper.infradead.org>
+References: <3221175.1624375240@warthog.procyon.org.uk>
+ <YNIBb5WPrk8nnKKn@zeniv-ca.linux.org.uk>
+ <YNIDdgn0m8d2a0P3@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3225321.1624379221.1@warthog.procyon.org.uk>
-Date:   Tue, 22 Jun 2021 17:27:01 +0100
-Message-ID: <3225322.1624379221@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNIDdgn0m8d2a0P3@zeniv-ca.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Al Viro <viro@zeniv.linux.org.uk> wrote:
-
-> On Tue, Jun 22, 2021 at 04:20:40PM +0100, David Howells wrote:
+On Tue, Jun 22, 2021 at 03:36:22PM +0000, Al Viro wrote:
+> On Tue, Jun 22, 2021 at 03:27:43PM +0000, Al Viro wrote:
+> > On Tue, Jun 22, 2021 at 04:20:40PM +0100, David Howells wrote:
+> > 
+> > > and wondering if the iov_iter_fault_in_readable() is actually effective.  Yes,
+> > > it can make sure that the page we're intending to modify is dragged into the
+> > > pagecache and marked uptodate so that it can be read from, but is it possible
+> > > for the page to then get reclaimed before we get to
+> > > iov_iter_copy_from_user_atomic()?  a_ops->write_begin() could potentially take
+> > > a long time, say if it has to go and get a lock/lease from a server.
+> > 
+> > Yes, it is.  So what?  We'll just retry.  You *can't* take faults while holding
+> > some pages locked; not without shitloads of deadlocks.
 > 
-> > and wondering if the iov_iter_fault_in_readable() is actually effective.
-> > Yes, it can make sure that the page we're intending to modify is dragged
-> > into the pagecache and marked uptodate so that it can be read from, but is
-> > it possible for the page to then get reclaimed before we get to
-> > iov_iter_copy_from_user_atomic()?  a_ops->write_begin() could potentially
-> > take a long time, say if it has to go and get a lock/lease from a server.
-> 
-> Yes, it is.  So what?  We'll just retry.  You *can't* take faults while
-> holding some pages locked; not without shitloads of deadlocks.
+> Note that the revert you propose is going to do fault-in anyway; we really can't
+> avoid it.  The only thing it does is optimistically trying without that the
+> first time around, which is going to be an overall loss exactly in "slow
+> write_begin" case.  If source pages are absent, you'll get copyin fail;
+> iov_iter_copy_from_user_atomic() (or its replacement) is disabling pagefaults
+> itself.
 
-In that case, can we amend the comment immediately above
-iov_iter_fault_in_readable()?
-
-	/*
-	 * Bring in the user page that we will copy from _first_.
-	 * Otherwise there's a nasty deadlock on copying from the
-	 * same page as we're writing to, without it being marked
-	 * up-to-date.
-	 *
-	 * Not only is this an optimisation, but it is also required
-	 * to check that the address is actually valid, when atomic
-	 * usercopies are used, below.
-	 */
-	if (unlikely(iov_iter_fault_in_readable(i, bytes))) {
-
-The first part suggests this is for deadlock avoidance.  If that's not true,
-then this should perhaps be changed.
-
-David
-
+Let's not overstate the case.  I think for the vast majority of write()
+calls, the data being written has recently been accessed.  So this
+userspace access is unnecessary.  From the commentary around commits
+00a3d660cbac and 998ef75ddb57, it seems that Dave had a CPU which was
+particularly inefficient at accessing userspace.  I assume Intel have
+fixed that by now and the extra load is in the noise.  But maybe enough
+CPU errata have accumulated that it's slow again?
