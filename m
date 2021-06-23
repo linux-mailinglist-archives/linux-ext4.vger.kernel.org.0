@@ -2,57 +2,66 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F1EE3B1ADF
-	for <lists+linux-ext4@lfdr.de>; Wed, 23 Jun 2021 15:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E23F03B1DF1
+	for <lists+linux-ext4@lfdr.de>; Wed, 23 Jun 2021 17:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230380AbhFWNQH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 23 Jun 2021 09:16:07 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:52954 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230206AbhFWNQH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 23 Jun 2021 09:16:07 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 15NDDg0Y022614
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 23 Jun 2021 09:13:43 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 4420315C3CD6; Wed, 23 Jun 2021 09:13:42 -0400 (EDT)
-Date:   Wed, 23 Jun 2021 09:13:42 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Wang Jianchao <jianchao.wan9@gmail.com>
-Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lishujin@kuaishou.com
-Subject: Re: [PATCH V2 1/7] ext4: remove the 'group' parameter of
- ext4_trim_extent
-Message-ID: <YNMzhm2gIM2oQfjs@mit.edu>
-References: <164ffa3b-c4d5-6967-feba-b972995a6dfb@gmail.com>
- <61eceb4c-6e5f-34d0-9317-a833d7c63b6f@gmail.com>
+        id S231474AbhFWP4d convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Wed, 23 Jun 2021 11:56:33 -0400
+Received: from [183.90.58.236] ([183.90.58.236]:51604 "EHLO ns1.zackeruz.tk"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231446AbhFWP4b (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 23 Jun 2021 11:56:31 -0400
+Received: from johnlewis.com (unknown [192.168.20.1])
+        by ns1.zackeruz.tk (Postfix) with ESMTPSA id D1229846323
+        for <linux-ext4@vger.kernel.org>; Wed, 23 Jun 2021 23:54:11 +0800 (+08)
+Reply-To: robert_turner@johnlewis-trading.com,
+          pippawicks.sales@johnlewis-trading.com
+From:   John Lewis & Partnersip <robert.turner107@johnlewis.com>
+To:     linux-ext4@vger.kernel.org
+Subject: 6/23/2021 Product Inquiry 
+Date:   23 Jun 2021 15:54:11 +0000
+Message-ID: <20210623094114.CCDF7806D1F7FED3@johnlewis.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <61eceb4c-6e5f-34d0-9317-a833d7c63b6f@gmail.com>
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Jianchao, 
+Dear linux-ext4
 
-FYI, this patch series has confliects with these patches, which landed
-in 5.13-rc1:
+The famous brand John Lewis Partnership, is UK's largest multi-
+channel retailer with over 126 shops and multiple expansion in 
+Africa furnished by European/Asian/American products. We are 
+sourcing new products to attract new customers and also retain 
+our existing ones, create new partnerships with companies dealing 
+with different kinds of goods globally.
 
-196e402adf2e - ext4: improve cr 0 / cr 1 group scanning
-4b68f6df1059 - ext4: add MB_NUM_ORDERS macro
-a6c75eaf1103 - ext4: add mballoc stats proc file
-67d251860461 - ext4: drop s_mb_bal_lock and convert protected fields to atomic
+Your company's products are of interest to our market as we have 
+an amazing market for your products.
 
-The conflicts were relatively minor, but the obvious fix-ups resulted
-in a large number of crashes caused by various stress tests, such as
-generic/068 and generic/204.  I'm currently investigating to see what
-I might have messed up when I tried applying these patches, as well as
-running your patch set applied against 5.12 to make sure the problems
-weren't introduced by the patch set itself.
+Provide us your current catalog through email to review more. We 
+hope to be able to order with you and start a long-term friendly,
+respectable and solid business partnership. Please we would 
+appreciate it if you could send us your stock availability via 
+email if any.
 
-					- Ted
+Our payment terms are 15 days net in Europe, 30 days Net in UK 
+and 30 days net in Asia/USA as we operate with over 5297 
+suppliers around the globe for the past 50 years now. For 
+immediate response Send your reply to robert_turner@johnlewis-
+trading.com for us to be able to 
+treat with care and urgency.
+
+
+Best Regards
+
+Rob Turner
+Head Of Procurement Operations
+John Lewis & Partners.
+robert_turner@johnlewis-trading.com
+Tel: +44-7451-274090
+WhatsApp: +447497483925
+www.johnlewis.com
+REGISTERED OFFICE: 171 VICTORIA STREET, LONDON SW1E 5NN 
