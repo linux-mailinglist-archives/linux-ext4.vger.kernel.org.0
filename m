@@ -2,63 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63E013B6B5F
-	for <lists+linux-ext4@lfdr.de>; Tue, 29 Jun 2021 01:36:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E6AB3B7287
+	for <lists+linux-ext4@lfdr.de>; Tue, 29 Jun 2021 14:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234079AbhF1XjI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 28 Jun 2021 19:39:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47502 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233870AbhF1XjD (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 28 Jun 2021 19:39:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id F262861CF4;
-        Mon, 28 Jun 2021 23:36:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624923392;
-        bh=olgmlCCEXgbIRO4D3Jq6NI3qVCMsbVCY+zrABexZDW0=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=DSx6uHbVVu0v8Mm36qD/eblip+oQCi5TStiOlwzscjITCTLxQBsXvqFaDHoc7xp63
-         gdoD2ZTxjZ+Tp1M0Qe9PV54QiG5RwI06q+Ss2lbTbqml3G3nsiz4eLGsZsr/YTiZ6+
-         /b3ktFaVxv3z8FB47+4lG628xYjyO8KRNUWPvg+5OkEDopeDpQ7OZSIRQnB80mwePh
-         wTsOa97jcrAN9CoJFOk0YymeAmqUv2ehZa0Z/ReFK2Di8F8hU5/ew5HZerRkBnJc/D
-         vlcDIBXjmOzv7NfBBYldnBf6fofDIgPNSSla/+TUnFGvp/MS+QQFNpUX0KwZwCk5Fb
-         2FZss+xtrJTjg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id EA83D60A3A;
-        Mon, 28 Jun 2021 23:36:31 +0000 (UTC)
-Subject: Re: [GIT PULL] fscrypt updates for 5.14
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YNn/TL5lW44yAx3o@sol.localdomain>
-References: <YNn/TL5lW44yAx3o@sol.localdomain>
-X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YNn/TL5lW44yAx3o@sol.localdomain>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
-X-PR-Tracked-Commit-Id: 2fc2b430f559fdf32d5d1dd5ceaa40e12fb77bdf
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: a58e203530ebdf6e5413bebc7f976d756188a4b5
-Message-Id: <162492339195.13806.1637347361707615822.pr-tracker-bot@kernel.org>
-Date:   Mon, 28 Jun 2021 23:36:31 +0000
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
+        id S234156AbhF2My5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Tue, 29 Jun 2021 08:54:57 -0400
+Received: from [218.75.92.58] ([218.75.92.58]:65268 "EHLO WIN-VTPUBHNS72V"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234166AbhF2Mya (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 29 Jun 2021 08:54:30 -0400
+Received: from [192.168.43.47] (Unknown [197.210.84.10])
+        by WIN-VTPUBHNS72V with ESMTPA
+        ; Thu, 24 Jun 2021 20:46:42 +0800
+Message-ID: <CA12BFE1-4A40-4982-B6A9-94D737E262C2@WIN-VTPUBHNS72V>
+Content-Type: text/plain; charset="iso-8859-1"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: URGENT ATTENTION
+To:     Recipients <wjjt@wjjt.cn>
+From:   "Andres Auchincloss" <wjjt@wjjt.cn>
+Date:   Thu, 24 Jun 2021 14:46:17 +0200
+Reply-To: andresauchincloss926@gmail.com
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The pull request you sent on Mon, 28 Jun 2021 09:56:44 -0700:
+Hi,
 
-> https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
+I will like to use this opportunity to wish you a productive time in 2021 and also confide in you to finalize this transaction of mutual benefits. It may seem strange to you, but it is real. This is a transaction that has no risk at all, due process shall be followed and it shall be carried out under the ambit of the financial laws. Being the Chief Financial Officer, BP Plc. I want to trust and put in your care Eighteen Million British Pounds Sterling, The funds were acquired from an over-invoiced payment from a past contract executed in one of my departments.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/a58e203530ebdf6e5413bebc7f976d756188a4b5
+I can't successfully achieve this transaction without presenting you as foreign contractor who will provide a bank account to receive the funds.
 
-Thank you!
+Documentation for the claim of the funds will be legally processed and documented, so I will need your full cooperation on this matter for our mutual benefits. We will discuss details if you are interested to work with me to secure this funds. I will appreciate your prompt response in every bit of our communication. Stay Blessed and Stay Safe.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+
+
+Best Regards
+
+
+
+
+Tel: +1 (587) 770-0485
+Andres .B. Auchincloss
+Chief financial officerBP Petroleum p.l.c.
+
+
+
+
+                                  Copyright ©? 1996-2021
+
