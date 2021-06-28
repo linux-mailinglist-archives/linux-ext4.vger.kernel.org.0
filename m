@@ -2,90 +2,75 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06B873B5E23
-	for <lists+linux-ext4@lfdr.de>; Mon, 28 Jun 2021 14:38:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 747E33B668C
+	for <lists+linux-ext4@lfdr.de>; Mon, 28 Jun 2021 18:17:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232763AbhF1Mki (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 28 Jun 2021 08:40:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232502AbhF1Mki (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Jun 2021 08:40:38 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 978A9C061574;
-        Mon, 28 Jun 2021 05:38:11 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id v12so8851117plo.10;
-        Mon, 28 Jun 2021 05:38:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WT6v9uHvNGHnkrWHqw+IXv7PjvRxi0xOsDaWugRiQFY=;
-        b=QBNZk2FzsKVZFkEr2ZWCddj45xygaewHlKrtuogtrs9agXtqPkt9I87Pg8ePtRsK86
-         4KEp6j8xcsOlWbj+fRie+VbcwEsfUlSm8Vsgl2GVEpbNYZ3XrfE8Q6a0TGPq5Yp6wmqt
-         sp8FLOKmtRdqhCAdsdoRPhOzrf8mdLp3v+AG//g5HC9SKt6/KQQtnw9OCXOna1cHHdfm
-         wahn2cLq5XCPwGdTgPwa5L/lzgSbnJq7Fs2dZUKPgxuN6DhvqHaWDS6t2UMfwFVkxEDy
-         o31Lfac7whjlPs3ig1RDDBaBtd2O36KPpwfRPRrFIuS+enwfsX8ut6XBEwlQi1x3ZgMI
-         XYkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WT6v9uHvNGHnkrWHqw+IXv7PjvRxi0xOsDaWugRiQFY=;
-        b=JMN4iFmCiB03MDfpjaIBklF44yuws6qIpmFgVTY/ukJfYA0B6wZemWg7D464/31s9H
-         89eNE6JYPlGM1oQmFejW+tanQV+XWcLrwTSZKMRP5NzrtKZD18k/Im9Jvem2lcvZetxl
-         1e94xnTNeMe4HXfZQ/ZgjdTBBfH+CUVR44siwi4ceSIHFzj1ppl4UtwMLot9W3dIgGjR
-         5mUGwNyiqw610jfOPXX2XXdpbFdwvl93IUOXhD1fbi9umwGWkyG4LcTLEYYk0rQ4t3ey
-         6QD0oXn+cG2c2En2flB+lJ2NC0uIbhPRfmP6cWmAUPgrx9JGVNp4k6+HPvTYf+GY4f39
-         Re9w==
-X-Gm-Message-State: AOAM530iI/+4S2nVZwpEdSijqEDptSVAKAMtSk0ik5MwA08KTuYKrSbz
-        X0xZoRjPBFsq5DouxbYmkGVF6axrB8/4mFFU
-X-Google-Smtp-Source: ABdhPJzdkVuvbX+deaYXYvXccVsMs9GcFLfmgAKhU2DOdgfJq1F9YYoem/FHmnOSftHIvwN94oL18A==
-X-Received: by 2002:a17:90a:fd11:: with SMTP id cv17mr5786896pjb.8.1624883890837;
-        Mon, 28 Jun 2021 05:38:10 -0700 (PDT)
-Received: from localhost.localdomain ([36.62.198.29])
-        by smtp.gmail.com with ESMTPSA id gl17sm2822835pjb.13.2021.06.28.05.38.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jun 2021 05:38:10 -0700 (PDT)
-From:   Wang Shilong <wangshilong1991@gmail.com>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, wangshilong1991@gmail.com
-Subject: [PATCH v2] fs: forbid invalid project ID
-Date:   Mon, 28 Jun 2021 08:38:01 -0400
-Message-Id: <20210628123801.3511-1-wangshilong1991@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        id S233030AbhF1QTe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 28 Jun 2021 12:19:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40710 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233108AbhF1QTc (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 28 Jun 2021 12:19:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id E8D3A61C65
+        for <linux-ext4@vger.kernel.org>; Mon, 28 Jun 2021 16:17:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624897026;
+        bh=iknkyqR+UZ+V6MO3uQdN+ethKZca5NfQuUw8LuzzB00=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=nGh+ZU+xHjbcb0rlRK2+IZHLlVLNrPzsCn1g6OnsDXk3val1NJt6fCjIdsN3oqpZ4
+         izUsYEIfVrpn44FsD+XPWULkX2oZjXfosSKEgzInfATMejmDcwfStBiSheRPmO1sjw
+         pS2qeUnMpyS6LUNPG+UoaLY54+lWSY1rJCb0rLgmegsXWDp2xSU2aMiNgSkqzrYiyL
+         QhrddEzgupKR2CunGJsKsDtcKsg81ZzVqDHaflBrrrX4hFy9q/jyFY1b0CHjDRG4Vp
+         dSGKZaWXmEp2Y6InM8XigmFr8XDWcuaOY9w6IvblYHdmCd41D87BJDFVYrGJen+hRo
+         bNNj22BAUdreA==
+Received: by pdx-korg-bugzilla-2.web.codeaurora.org (Postfix, from userid 48)
+        id DF5FC61247; Mon, 28 Jun 2021 16:17:06 +0000 (UTC)
+From:   bugzilla-daemon@bugzilla.kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 211951] WARNING: CPU: 1 PID: 304 at fs/ext4/xattr.c:1643
+ ext4_xattr_set_entry+0x30e2/0x3830
+Date:   Mon, 28 Jun 2021 16:17:06 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: ammar@ammaraskar.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: cc
+Message-ID: <bug-211951-13602-bUkqNG9ig1@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-211951-13602@https.bugzilla.kernel.org/>
+References: <bug-211951-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-fileattr_set_prepare() should check if project ID
-is valid, otherwise dqget() will return NULL for
-such project ID quota.
+https://bugzilla.kernel.org/show_bug.cgi?id=3D211951
 
-Signed-off-by: Wang Shilong <wshilong@ddn.com>
----
-v1->v2: try to fix in the VFS
----
- fs/ioctl.c | 3 +++
- 1 file changed, 3 insertions(+)
+Ammar Askar (ammar@ammaraskar.com) changed:
 
-diff --git a/fs/ioctl.c b/fs/ioctl.c
-index 1e2204fa9963..5db5b218637b 100644
---- a/fs/ioctl.c
-+++ b/fs/ioctl.c
-@@ -845,6 +845,9 @@ static int fileattr_set_prepare(struct inode *inode,
- 	if (fa->fsx_cowextsize == 0)
- 		fa->fsx_xflags &= ~FS_XFLAG_COWEXTSIZE;
- 
-+	if (!projid_valid(KPROJIDT_INIT(fa->fsx_projid)))
-+		return -EINVAL;
-+
- 	return 0;
- }
- 
--- 
-2.27.0
+           What    |Removed                     |Added
+----------------------------------------------------------------------------
+                 CC|                            |ammar@ammaraskar.com
 
+--- Comment #1 from Ammar Askar (ammar@ammaraskar.com) ---
+Note: Can't recreate this on 5.12 but it does seem to occur on both 5.11 and
+5.10
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
