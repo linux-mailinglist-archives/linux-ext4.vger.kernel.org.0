@@ -2,70 +2,78 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7D9C3B671E
-	for <lists+linux-ext4@lfdr.de>; Mon, 28 Jun 2021 18:56:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A97E13B6AFC
+	for <lists+linux-ext4@lfdr.de>; Tue, 29 Jun 2021 00:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232010AbhF1Q7Q (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 28 Jun 2021 12:59:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55966 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231848AbhF1Q7L (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 28 Jun 2021 12:59:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DB87B61988;
-        Mon, 28 Jun 2021 16:56:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624899406;
-        bh=JEH9YvkX1tuS2gUabFZ9JaX5r+EudDtnu4dkjX3MpYc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=vNj8RwCa5/BCXX2jdMugsk8BK+T6K04e/v9FzgdrgzJaJ9GUpOdsfeYfV0SOb63iX
-         KL7IPMD4GPZmublCVb4UFA6hyl43mf6EeUErmU0R5DSBZP8BpQQ3r/bi8FSTh4e2gi
-         NczpLPJDkY4I7g5pwR5imkna4VDn+nml2cM8AI54Eaw7VJd9H1CzYcZtqiaY8yuuv4
-         9YSKJ1bXlhjcDEYskWqkVZVg3TCMvoZ2G7Yk1FXZEZsYG9/wJi1HK81jf3n6hopI8B
-         h1HzZaMto30+F+Mb6UVEy/e+wEUaIXQHnMrDpal9oWPMhdeUAJdxfKafRcZMG20Dq6
-         zNbaGKfd6Ai1Q==
-Date:   Mon, 28 Jun 2021 09:56:44 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [GIT PULL] fscrypt updates for 5.14
-Message-ID: <YNn/TL5lW44yAx3o@sol.localdomain>
+        id S235434AbhF1Wge (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 28 Jun 2021 18:36:34 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:54729 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233442AbhF1Wgd (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 28 Jun 2021 18:36:33 -0400
+Received: from dread.disaster.area (pa49-179-138-183.pa.nsw.optusnet.com.au [49.179.138.183])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 74A7F1044A55;
+        Tue, 29 Jun 2021 08:34:04 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1lxzpL-000XQU-FI; Tue, 29 Jun 2021 08:34:03 +1000
+Date:   Tue, 29 Jun 2021 08:34:03 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Wang Shilong <wangshilong1991@gmail.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [PATCH v2] fs: forbid invalid project ID
+Message-ID: <20210628223403.GE664593@dread.disaster.area>
+References: <20210628123801.3511-1-wangshilong1991@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210628123801.3511-1-wangshilong1991@gmail.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0
+        a=MnllW2CieawZLw/OcHE/Ng==:117 a=MnllW2CieawZLw/OcHE/Ng==:17
+        a=kj9zAlcOel0A:10 a=r6YtysWOX24A:10 a=lB0dNpNiAAAA:8 a=7-415B0cAAAA:8
+        a=7euumQaoeVMSjSfkz0cA:9 a=CjuIK1q_8ugA:10 a=c-ZiYqmG3AbHTdtsH08C:22
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The following changes since commit c4681547bcce777daf576925a966ffa824edd09d:
+On Mon, Jun 28, 2021 at 08:38:01AM -0400, Wang Shilong wrote:
+> fileattr_set_prepare() should check if project ID
+> is valid, otherwise dqget() will return NULL for
+> such project ID quota.
+> 
+> Signed-off-by: Wang Shilong <wshilong@ddn.com>
+> ---
+> v1->v2: try to fix in the VFS
+> ---
+>  fs/ioctl.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/fs/ioctl.c b/fs/ioctl.c
+> index 1e2204fa9963..5db5b218637b 100644
+> --- a/fs/ioctl.c
+> +++ b/fs/ioctl.c
+> @@ -845,6 +845,9 @@ static int fileattr_set_prepare(struct inode *inode,
+>  	if (fa->fsx_cowextsize == 0)
+>  		fa->fsx_xflags &= ~FS_XFLAG_COWEXTSIZE;
+>  
+> +	if (!projid_valid(KPROJIDT_INIT(fa->fsx_projid)))
+> +		return -EINVAL;
 
-  Linux 5.13-rc3 (2021-05-23 11:42:48 -1000)
+This needs to go further up in this function in the section where
+project IDs passed into this function are validated. Projids are
+only allowed to be changed when current_user_ns() == &init_user_ns,
+so this needs to be associated with that verification context.
 
-are available in the Git repository at:
+This check should also use make_kprojid(), please, not open code
+KPROJIDT_INIT.
 
-  https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
+Cheers,
 
-for you to fetch changes up to 2fc2b430f559fdf32d5d1dd5ceaa40e12fb77bdf:
-
-  fscrypt: fix derivation of SipHash keys on big endian CPUs (2021-06-05 00:52:52 -0700)
-
-----------------------------------------------------------------
-
-A couple bug fixes for fs/crypto/:
-
-- Fix handling of major dirhash values that happen to be 0.
-
-- Fix cases where keys were derived differently on big endian systems
-  than on little endian systems (affecting some newer features only).
-
-----------------------------------------------------------------
-Eric Biggers (2):
-      fscrypt: don't ignore minor_hash when hash is 0
-      fscrypt: fix derivation of SipHash keys on big endian CPUs
-
- fs/crypto/fname.c    | 10 +++-------
- fs/crypto/keysetup.c | 40 ++++++++++++++++++++++++++++++++--------
- 2 files changed, 35 insertions(+), 15 deletions(-)
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
