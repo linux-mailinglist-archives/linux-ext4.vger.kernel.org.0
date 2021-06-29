@@ -2,53 +2,52 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E6AB3B7287
-	for <lists+linux-ext4@lfdr.de>; Tue, 29 Jun 2021 14:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EC113B7449
+	for <lists+linux-ext4@lfdr.de>; Tue, 29 Jun 2021 16:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234156AbhF2My5 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Tue, 29 Jun 2021 08:54:57 -0400
-Received: from [218.75.92.58] ([218.75.92.58]:65268 "EHLO WIN-VTPUBHNS72V"
-        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234166AbhF2Mya (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 29 Jun 2021 08:54:30 -0400
-Received: from [192.168.43.47] (Unknown [197.210.84.10])
-        by WIN-VTPUBHNS72V with ESMTPA
-        ; Thu, 24 Jun 2021 20:46:42 +0800
-Message-ID: <CA12BFE1-4A40-4982-B6A9-94D737E262C2@WIN-VTPUBHNS72V>
-Content-Type: text/plain; charset="iso-8859-1"
+        id S234345AbhF2O35 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 29 Jun 2021 10:29:57 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:9298 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234018AbhF2O3x (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 29 Jun 2021 10:29:53 -0400
+Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GDmrX47Kpz1BT6b;
+        Tue, 29 Jun 2021 22:22:04 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggeme754-chm.china.huawei.com
+ (10.3.19.100) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 29
+ Jun 2021 22:27:22 +0800
+From:   Ye Bin <yebin10@huawei.com>
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <jack@suse.cz>
+CC:     Ye Bin <yebin10@huawei.com>
+Subject: [PATCH 0/2] Fix use-after-free about sbi->s_mmp_tsk
+Date:   Tue, 29 Jun 2021 22:36:01 +0800
+Message-ID: <20210629143603.2166962-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: URGENT ATTENTION
-To:     Recipients <wjjt@wjjt.cn>
-From:   "Andres Auchincloss" <wjjt@wjjt.cn>
-Date:   Thu, 24 Jun 2021 14:46:17 +0200
-Reply-To: andresauchincloss926@gmail.com
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggeme754-chm.china.huawei.com (10.3.19.100)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi,
+Ye Bin (2):
+  ext4: Fix use-after-free about sbi->s_mmp_tsk
+  ext4: Fix potential uas-after-free about sbi->s_mmp_tsk when kmmpd
+    kthread exit before set sbi->s_mmp_tsk
 
-I will like to use this opportunity to wish you a productive time in 2021 and also confide in you to finalize this transaction of mutual benefits. It may seem strange to you, but it is real. This is a transaction that has no risk at all, due process shall be followed and it shall be carried out under the ambit of the financial laws. Being the Chief Financial Officer, BP Plc. I want to trust and put in your care Eighteen Million British Pounds Sterling, The funds were acquired from an over-invoiced payment from a past contract executed in one of my departments.
+ fs/ext4/ext4.h  |  1 +
+ fs/ext4/mmp.c   | 34 ++++++++++++++++++++++++++++------
+ fs/ext4/super.c |  1 +
+ 3 files changed, 30 insertions(+), 6 deletions(-)
 
-I can't successfully achieve this transaction without presenting you as foreign contractor who will provide a bank account to receive the funds.
-
-Documentation for the claim of the funds will be legally processed and documented, so I will need your full cooperation on this matter for our mutual benefits. We will discuss details if you are interested to work with me to secure this funds. I will appreciate your prompt response in every bit of our communication. Stay Blessed and Stay Safe.
-
-
-
-Best Regards
-
-
-
-
-Tel: +1 (587) 770-0485
-Andres .B. Auchincloss
-Chief financial officerBP Petroleum p.l.c.
-
-
-
-
-                                  Copyright ©? 1996-2021
+-- 
+2.31.1
 
