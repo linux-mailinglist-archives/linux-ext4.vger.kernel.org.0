@@ -2,100 +2,100 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 668E43B8138
-	for <lists+linux-ext4@lfdr.de>; Wed, 30 Jun 2021 13:21:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 555F03B826F
+	for <lists+linux-ext4@lfdr.de>; Wed, 30 Jun 2021 14:51:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234292AbhF3LYY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 30 Jun 2021 07:24:24 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:34662 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233706AbhF3LYX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 30 Jun 2021 07:24:23 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 47BB51FE6F;
-        Wed, 30 Jun 2021 11:21:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1625052114; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CXEAk0/YVoDTZj0zNXyG5NFhb3NO4Aa1DyfJDSHF32g=;
-        b=TNJJqDhpKGop/7ub1h6hjG0lYLEF0p0Nnbl166gPaNtCMULoXtoUdLV9eWg4OwPCfWaWlr
-        yw98OkrbI2ZNyKZ9MhdRJ30bzdr8/gIi2sCHSSpk6fsy7yfTU1yb4pKjnJIbfCB5qh3dtg
-        b4RpeUl0GHlQhVv0sh5ESCAg9Ftsyo4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1625052114;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CXEAk0/YVoDTZj0zNXyG5NFhb3NO4Aa1DyfJDSHF32g=;
-        b=mYp76Bkioc4E/dBmb8Zx6V+9hofU6h0x74gRRzZf/aYPdXiX1e7Z+AVP4GVgY5t3QO2TMS
-        kQqmXgnmvOGIWcAg==
-Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id 0842EA3B85;
-        Wed, 30 Jun 2021 11:21:53 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id CB57A1F2CC3; Wed, 30 Jun 2021 13:21:53 +0200 (CEST)
-Date:   Wed, 30 Jun 2021 13:21:53 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Zhang Yi <yi.zhang@huawei.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, jack@suse.cz, yukuai3@huawei.com
-Subject: Re: [PATCH] jbd2: fix jbd2_journal_[un]register_shrinker undefined
- error
-Message-ID: <20210630112153.GA27701@quack2.suse.cz>
-References: <20210630083638.140218-1-yi.zhang@huawei.com>
+        id S234623AbhF3Mxy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 30 Jun 2021 08:53:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234481AbhF3Mxx (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 30 Jun 2021 08:53:53 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96E0AC061756;
+        Wed, 30 Jun 2021 05:51:23 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id g22so3014999iom.1;
+        Wed, 30 Jun 2021 05:51:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2Z1Sr0ZZ3Eaq33xdrYwzRNUibLuxnwUA0miK9swTaYI=;
+        b=cJwlQR0PDO16mUnge992zKP+NwR6BBGtWFmFC9sJW7wkgtUHU9isQIg74HVWOqx2FA
+         1+oO596YYhUJRvGn/tvHFEah1egYALLUM6emh91+SiBZL4fk7JB1mmxCQ5WO4Or4posA
+         gYuFpmZkm5kzlswRgM5CxOxVAXWXAWYHgXsrjQhzu60Ixp/NAbO0dLma9NXcjWjIZKmc
+         7l6CI12Y7yMA4igg/XxP6wqAxSVHsdAc7OQ58TxNF4UHA7JA5X61pYDUUJ2JDN+DCoYw
+         yc9ofwvKGsN0LuKrbdrw4F1mdw5X+qor/GhoxLk5ZN5gMt1HiI/2JIsyooMJTBmVRGvY
+         QxsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2Z1Sr0ZZ3Eaq33xdrYwzRNUibLuxnwUA0miK9swTaYI=;
+        b=T/AiKUUT2fUfyKF/KoAX8J5TUlEX+RYiILJWHcIDx1JDCjr2W67BDt6zTWWHkrl0A4
+         sCtslvXn5xqt9182/l+LMkQmT7k9dwPopHD1yisE/u4Vn5SB7SW9mH7FpvQoIfKLHTOw
+         9lgLp/bCj/uVIKB49WrO9zy+RB2ajOP+ad7SE2mfKbXzSJAfxBsXpMyb7t/wdsq1178H
+         zWIqo3wj2DC4VuSphRGWtztmAPkN6O/NiujN/Z4twxH0HwxAjCj+eJDXaFyRmbUv/GfT
+         vpP55h7vvbduJ+vuvREY2TBgC4sBZuj7kKRTnPYA25pakhc93yMbaFbFYnGUlWnuN/xR
+         PUwA==
+X-Gm-Message-State: AOAM532JSYoG9TYdXaRpUQozrk6JBVTKedPypiWAihV2aavmZ++icFz7
+        4ha5otzbrUvpvADPSDm8HSWrKnzyLtxJnH5/950=
+X-Google-Smtp-Source: ABdhPJzVZkc+LfDp6m557XKzYHLSlNrC3wMCjCrF2Kio441WtDXxumEaJN/tR6q0H0NUP/LaWjOguV37sQwlQ0T1XiM=
+X-Received: by 2002:a02:9109:: with SMTP id a9mr8752667jag.93.1625057483032;
+ Wed, 30 Jun 2021 05:51:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210630083638.140218-1-yi.zhang@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210629191035.681913-8-krisman@collabora.com>
+ <202106300707.Xg0LaEwy-lkp@intel.com> <CAOQ4uxgRbpzo-AvvBxLQ5ARdFuX53RG+JpPOG8CDoEM2MdsWQQ@mail.gmail.com>
+ <20210630084555.GH1983@kadam> <CAOQ4uxiCYBL2-FVMbn2RWcQnueueVoAd5sBtte+twLoU9eyFgA@mail.gmail.com>
+ <20210630104904.GS2040@kadam>
+In-Reply-To: <20210630104904.GS2040@kadam>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Wed, 30 Jun 2021 15:51:11 +0300
+Message-ID: <CAOQ4uxg063mwwdLnM7vooJSB38HvPF5jkSck6MunEL+K4oHArA@mail.gmail.com>
+Subject: Re: [PATCH v3 07/15] fsnotify: pass arguments of fsnotify() in struct fsnotify_event_info
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     kbuild@lists.01.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kbuild test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Theodore Tso <tytso@mit.edu>,
+        Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.com>,
+        David Howells <dhowells@redhat.com>,
+        Khazhismel Kumykov <khazhy@google.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Ext4 <linux-ext4@vger.kernel.org>, kernel@collabora.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 30-06-21 16:36:38, Zhang Yi wrote:
-> Export jbd2_journal_unregister_shrinker() and
-> jbd2_journal_register_shrinker() to fix below error:
-> 
->  ERROR: modpost: "jbd2_journal_unregister_shrinker" undefined!
->  ERROR: modpost: "jbd2_journal_register_shrinker" undefined!
-> 
-> Fixes: 4ba3fcdde7e3 ("jbd2,ext4: add a shrinker to release checkpointed buffers")
-> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+On Wed, Jun 30, 2021 at 1:49 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+>
+> I think my bug report was not clear...  :/  The code looks like this:
+>
+>         sb = inode->i_sb;
+>
+>         if (inode) ...
+>
+> The NULL check cannot be false because if "inode" is NULL we would have
+> already crashed when we dereference it on the line before.
+>
+> In this case, based on last years discussion, the "inode" pointer can't
+> be NULL.  The debate is only whether the unnecessary NULL checks help
+> readability or hurt readability.
+>
 
-Yeah, I didn't notice this either. The fix looks good. You can add:
+Right. Sorry, I forgot.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Anyway, patch 11/15 of the same series changes this code to:
 
-								Honza
+ sb = event_info->sb ?: inode->i_sb;
 
-> ---
->  fs/jbd2/journal.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-> index 7c52feb6f753..152880c298ca 100644
-> --- a/fs/jbd2/journal.c
-> +++ b/fs/jbd2/journal.c
-> @@ -2122,6 +2122,7 @@ int jbd2_journal_register_shrinker(journal_t *journal)
->  
->  	return 0;
->  }
-> +EXPORT_SYMBOL(jbd2_journal_register_shrinker);
->  
->  /**
->   * jbd2_journal_unregister_shrinker()
-> @@ -2134,6 +2135,7 @@ void jbd2_journal_unregister_shrinker(journal_t *journal)
->  	percpu_counter_destroy(&journal->j_jh_shrink_count);
->  	unregister_shrinker(&journal->j_shrinker);
->  }
-> +EXPORT_SYMBOL(jbd2_journal_unregister_shrinker);
->  
->  /**
->   * jbd2_journal_destroy() - Release a journal_t structure.
-> -- 
-> 2.31.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+So inode can and will be NULL coming from the caller of
+fsnotify_sb_error(sb, NULL).
+
+I think that should make smach happy?
+You can try to run it after patch 11/15 of this series.
+
+Thanks,
+Amir.
