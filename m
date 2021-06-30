@@ -2,267 +2,222 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 369273B836D
-	for <lists+linux-ext4@lfdr.de>; Wed, 30 Jun 2021 15:46:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BFA43B84A5
+	for <lists+linux-ext4@lfdr.de>; Wed, 30 Jun 2021 16:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234961AbhF3NtW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 30 Jun 2021 09:49:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47423 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234877AbhF3NtV (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 30 Jun 2021 09:49:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625060812;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JdGTR+O2z4+aEqMiqnp7ojJegc31cT+QFRVOOJo4xoI=;
-        b=My/ujL4BIc9qMIKE/Il511c13CFSDZrtnr0GmH6gKW9aaqWHAz568eO1L2TpIOJ/vH9GF7
-        ap8SJE8NFAWkEBPilhECHLZEANV6qSDfn9dJ8UjcF39ocNWghCVoyShovXGO2/0WjLBBVg
-        inKlffIVtGMVaFqyZ22+IOxu7vO98cM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-8-_tLhQ-T9N2iLPKp7WXibDA-1; Wed, 30 Jun 2021 09:46:41 -0400
-X-MC-Unique: _tLhQ-T9N2iLPKp7WXibDA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 74A3B1812640;
-        Wed, 30 Jun 2021 13:46:40 +0000 (UTC)
-Received: from work (unknown [10.40.193.220])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6697C5DA2D;
-        Wed, 30 Jun 2021 13:46:39 +0000 (UTC)
-Date:   Wed, 30 Jun 2021 15:46:35 +0200
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 4/4] ext4: Improve scalability of ext4 orphan file
- handling
-Message-ID: <20210630134635.fcdlsase45iotavs@work>
-References: <20210616105655.5129-1-jack@suse.cz>
- <20210616105655.5129-5-jack@suse.cz>
+        id S235377AbhF3OH2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 30 Jun 2021 10:07:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235360AbhF3OGz (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 30 Jun 2021 10:06:55 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEF75C061756;
+        Wed, 30 Jun 2021 07:03:43 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id g22so3306103iom.1;
+        Wed, 30 Jun 2021 07:03:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=T1sDjepqwZeytLmMtGCTuJy6Jtc+y1+1PWUTIxVsl9Y=;
+        b=htmM3iEc+d0attZcRRyhGOAg4iudkhagyFv/GlBd9I5jyP/pKYvoJvi4iyM8kosto0
+         2i5jdrF5hAQgedgCCRJrK+c6QpBZZXrqKxzAgD8qITrq2s1tUqDVnyf0l8NXxKGr331y
+         AlbunkpqoyMVsAYUrUoUaQ+PRbNgim/y32+pCB9TnhthNt+pe9HY9nMStB1U7cE1ze4f
+         G6FZ33FNyB96wARbe3uNh+btnstop1BCV1at63zoBNqYTan/i4rGhdGytZoElkbxURQd
+         ZAGwAtX96pIQdH8Hc1XS3PCwCHwH3S3mdzRUsjJUV4BJUbmn2nRy1ZwEDoPv0g3N6PVw
+         rkCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=T1sDjepqwZeytLmMtGCTuJy6Jtc+y1+1PWUTIxVsl9Y=;
+        b=LxIm7DLMw/OSb7jGBPwbfZHiq/BDei8vQk1gUXPJCMObSu93DD4xg8O9QSe0ISYoZf
+         FBTBcBx3vzU+hbGyYNqf3OM3/rV2vrdHNLM9JHzIl/PB4LmBI97F9la9d30/Sw81SRhE
+         l9apysCu4NHLHdOKPVCM/IcXOekw9WknF4RoN82N8J7uqRFpdQd6Y0MnBA3EgAHlNMqK
+         CpS3Hj3lQFadJO3P7Vp8VTGMQIOpprRp3PfziL4J5xRAdlXRBi64zkfBQd8tyIy64rFh
+         pSexQx38mjNzH1l7CnFK7TG9yBTPDBcg0hkvvIfTUMte0LVp6AAG8odlNbqatLJBULrN
+         n6fg==
+X-Gm-Message-State: AOAM532mJRezpLqsHzfzlsWTvQ+mXMDDDw7BrCvLvYvAC6AmRcNFqY+A
+        zCbB9vT1gK7vFKIWQEayGCLFdW6Ig3vWoxCbrks=
+X-Google-Smtp-Source: ABdhPJwc+j1ElyNc78+imOHyXcL80IItdbVsZx4y01OLMkUG/EyJV45beSnR+qcT+io1TN2/nBuDxB+JOcyY0Lf7nvI=
+X-Received: by 2002:a6b:3119:: with SMTP id j25mr7709676ioa.64.1625061823300;
+ Wed, 30 Jun 2021 07:03:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210616105655.5129-5-jack@suse.cz>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20210629191035.681913-1-krisman@collabora.com> <20210629191035.681913-13-krisman@collabora.com>
+In-Reply-To: <20210629191035.681913-13-krisman@collabora.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Wed, 30 Jun 2021 17:03:32 +0300
+Message-ID: <CAOQ4uxiQc+g5dRzTOVzesZTffVkX7o-bedd_MB9SmG4Unex6wg@mail.gmail.com>
+Subject: Re: [PATCH v3 12/15] fanotify: Introduce FAN_FS_ERROR event
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        Theodore Tso <tytso@mit.edu>,
+        Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.com>,
+        David Howells <dhowells@redhat.com>,
+        Khazhismel Kumykov <khazhy@google.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Ext4 <linux-ext4@vger.kernel.org>, kernel@collabora.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 12:56:55PM +0200, Jan Kara wrote:
-> Even though the length of the critical section when adding / removing
-> orphaned inodes was significantly reduced by using orphan file, the
-> contention of lock protecting orphan file still appears high in profiles
-> for truncate / unlink intensive workloads with high number of threads.
-> 
-> This patch makes handling of orphan file completely lockless. Also to
-> reduce conflicts between CPUs different CPUs start searching for empty
-> slot in orphan file in different blocks.
-> 
-> Performance comparison of locked orphan file handling, lockless orphan
-> file handling, and completely disabled orphan inode handling
-> from 80 CPU Xeon Server with 526 GB of RAM, filesystem located on
-> SAS SSD disk, average of 5 runs:
-> 
-> stress-orphan (microbenchmark truncating files byte-by-byte from N
-> processes in parallel)
-> 
-> Threads Time            Time            Time
->         Orphan locked   Orphan lockless No orphan
->   1       0.945600       0.939400        0.891200
->   2       1.331800       1.246600        1.174400
->   4       1.995000       1.780600        1.713200
->   8       6.424200       4.900000        4.106000
->  16      14.937600       8.516400        8.138000
->  32      33.038200      24.565600       24.002200
->  64      60.823600      39.844600       38.440200
-> 128     122.941400      70.950400       69.315000
-> 
-> So we can see that with lockless orphan file handling, addition /
-> deletion of orphaned inodes got almost completely out of picture even
-> for a microbenchmark stressing it.
-> 
-> For reaim creat_clo workload on ramdisk there are also noticeable gains
-> (average of 5 runs):
-> 
-> Clients         Vanilla (ops/s)        Patched (ops/s)
-> creat_clo-1     14705.88 (   0.00%)    14354.07 *  -2.39%*
-> creat_clo-3     27108.43 (   0.00%)    28301.89 (   4.40%)
-> creat_clo-5     37406.48 (   0.00%)    45180.73 *  20.78%*
-> creat_clo-7     41338.58 (   0.00%)    54687.50 *  32.29%*
-> creat_clo-9     45226.13 (   0.00%)    62937.07 *  39.16%*
-> creat_clo-11    44000.00 (   0.00%)    65088.76 *  47.93%*
-> creat_clo-13    36516.85 (   0.00%)    68661.97 *  88.03%*
-> creat_clo-15    30864.20 (   0.00%)    69551.78 * 125.35%*
-> creat_clo-17    27478.45 (   0.00%)    67729.08 * 146.48%*
-> creat_clo-19    25000.00 (   0.00%)    61621.62 * 146.49%*
-> creat_clo-21    18772.35 (   0.00%)    63829.79 * 240.02%*
-> creat_clo-23    16698.94 (   0.00%)    61938.96 * 270.92%*
-> creat_clo-25    14973.05 (   0.00%)    56947.61 * 280.33%*
-> creat_clo-27    16436.69 (   0.00%)    65008.03 * 295.51%*
-> creat_clo-29    13949.01 (   0.00%)    69047.62 * 395.00%*
-> creat_clo-31    14283.52 (   0.00%)    67982.45 * 375.95%*
-> 
-> Signed-off-by: Jan Kara <jack@suse.cz>
+On Tue, Jun 29, 2021 at 10:13 PM Gabriel Krisman Bertazi
+<krisman@collabora.com> wrote:
+>
+> The FAN_FS_ERROR event is a new inode event used by filesystem wide
+> monitoring tools to receive notifications of type FS_ERROR_EVENT,
+> emitted directly by filesystems when a problem is detected.  The error
+> notification includes a generic error descriptor and a FID identifying
+> the file affected.
+>
+> FID is sent for every FAN_FS_ERROR. Errors not linked to a regular inode
+> are reported against the root inode.
+>
+> An error reporting structure is attached per-mark, and only a single
+> error can be stored at a time.  This is ok, since once an error occurs,
+> it is common for a stream of related errors to be reported.  We only log
+> accumulate the total of errors occurred since the last notification.
+>
+> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+>
 > ---
->  fs/ext4/ext4.h   |  3 +--
->  fs/ext4/orphan.c | 55 +++++++++++++++++++++++++++---------------------
->  2 files changed, 32 insertions(+), 26 deletions(-)
-> 
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 83298c0b6dae..d08927e19b76 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -1480,7 +1480,7 @@ static inline int ext4_inodes_per_orphan_block(struct super_block *sb)
->  }
->  
->  struct ext4_orphan_block {
-> -	int ob_free_entries;	/* Number of free orphan entries in block */
-> +	atomic_t ob_free_entries;	/* Number of free orphan entries in block */
->  	struct buffer_head *ob_bh;	/* Buffer for orphan block */
->  };
->  
-> @@ -1488,7 +1488,6 @@ struct ext4_orphan_block {
->   * Info about orphan file.
->   */
->  struct ext4_orphan_info {
-> -	spinlock_t of_lock;
->  	int of_blocks;			/* Number of orphan blocks in a file */
->  	__u32 of_csum_seed;		/* Checksum seed for orphan file */
->  	struct ext4_orphan_block *of_binfo;	/* Array with info about orphan
-> diff --git a/fs/ext4/orphan.c b/fs/ext4/orphan.c
-> index ac22667b7fd5..010222cde4f7 100644
-> --- a/fs/ext4/orphan.c
-> +++ b/fs/ext4/orphan.c
-> @@ -10,16 +10,30 @@
->  
->  static int ext4_orphan_file_add(handle_t *handle, struct inode *inode)
->  {
-> -	int i, j;
-> +	int i, j, start;
->  	struct ext4_orphan_info *oi = &EXT4_SB(inode->i_sb)->s_orphan_info;
->  	int ret = 0;
-> +	bool found = false;
->  	__le32 *bdata;
->  	int inodes_per_ob = ext4_inodes_per_orphan_block(inode->i_sb);
->  
-> -	spin_lock(&oi->of_lock);
-> -	for (i = 0; i < oi->of_blocks && !oi->of_binfo[i].ob_free_entries; i++);
-> -	if (i == oi->of_blocks) {
-> -		spin_unlock(&oi->of_lock);
-> +	/*
-> +	 * Find block with free orphan entry. Use CPU number for a naive hash
-> +	 * for a search start in the orphan file
-> +	 */
-> +	start = raw_smp_processor_id()*13 % oi->of_blocks;
-> +	i = start;
-> +	do {
-> +		if (atomic_dec_if_positive(&oi->of_binfo[i].ob_free_entries)
-> +		    >= 0) {
-> +			found = true;
-> +			break;
-> +		}
-> +		if (++i >= oi->of_blocks)
-> +			i = 0;
-> +	} while (i != start);
+> Changes since v2:
+>   - Support and equire FID mode (amir)
+>   - Goto error path instead of early return (amir)
+>   - Simplify get_one_event (me)
+
+About that...
+
+>   - Base merging on error_count
+>   - drop fanotify_queue_error_event
+
+[...]
+
+> +static int fanotify_merge_error_event(struct fsnotify_group *group,
+> +                                     struct fsnotify_event *event)
+> +{
+> +       struct fanotify_event *fae = FANOTIFY_E(event);
 > +
-> +	if (!found) {
->  		/*
->  		 * For now we don't grow or shrink orphan file. We just use
->  		 * whatever was allocated at mke2fs time. The additional
-> @@ -28,28 +42,24 @@ static int ext4_orphan_file_add(handle_t *handle, struct inode *inode)
->  		 */
->  		return -ENOSPC;
->  	}
-> -	oi->of_binfo[i].ob_free_entries--;
-> -	spin_unlock(&oi->of_lock);
->  
-> -	/*
-> -	 * Get access to orphan block. We have dropped of_lock but since we
-> -	 * have decremented number of free entries we are guaranteed free entry
-> -	 * in our block.
-> -	 */
->  	ret = ext4_journal_get_write_access(handle, inode->i_sb,
->  				oi->of_binfo[i].ob_bh, EXT4_JTR_ORPHAN_FILE);
->  	if (ret)
->  		return ret;
->  
->  	bdata = (__le32 *)(oi->of_binfo[i].ob_bh->b_data);
-> -	spin_lock(&oi->of_lock);
->  	/* Find empty slot in a block */
-> -	for (j = 0; j < inodes_per_ob && bdata[j]; j++);
-> -	BUG_ON(j == inodes_per_ob);
-> -	bdata[j] = cpu_to_le32(inode->i_ino);
-> +	j = 0;
-> +	do {
-> +		while (bdata[j]) {
-> +			if (++j >= inodes_per_ob)
-> +				j = 0;
-> +		}
-> +	} while (cmpxchg(&bdata[j], 0, cpu_to_le32(inode->i_ino)) != 0);
+> +       /*
+> +        * When err_count > 0, the reporting slot is full.  Just account
+> +        * the additional error and abort the insertion.
+> +        */
+> +       if (atomic_fetch_inc(&FANOTIFY_EE(fae)->err_count) != 0)
+> +               return 1;
 
-In case there is any sort of corruption on disk or in memory we can
-potentially get stuck here forever right ? Not sure if that matters
-all that much.
-
-Other than that it looks good and negates some of my comments on the
-previous patch, sorry about that ;)
-
-You can add
-
-Reviewed-by: Lukas Czerner <lczerner@redhat.com>
-
+It feels a bit unsafe to bump err_count to 1 in merge() and set the error
+info in insert(). feels like looking for trouble.
+Maybe atomic_inc_not_zero() would have been better,
+but since I am going to argue against modifying err_count outside
+the notification_lock, it does not need to be atomic at all.
 
 > +
->  	EXT4_I(inode)->i_orphan_idx = i * inodes_per_ob + j;
->  	ext4_set_inode_state(inode, EXT4_STATE_ORPHAN_FILE);
-> -	spin_unlock(&oi->of_lock);
->  
->  	return ext4_handle_dirty_metadata(handle, NULL, oi->of_binfo[i].ob_bh);
->  }
-> @@ -178,10 +188,8 @@ static int ext4_orphan_file_del(handle_t *handle, struct inode *inode)
->  		goto out;
->  
->  	bdata = (__le32 *)(oi->of_binfo[blk].ob_bh->b_data);
-> -	spin_lock(&oi->of_lock);
->  	bdata[off] = 0;
-> -	oi->of_binfo[blk].ob_free_entries++;
-> -	spin_unlock(&oi->of_lock);
-> +	atomic_inc(&oi->of_binfo[blk].ob_free_entries);
->  	ret = ext4_handle_dirty_metadata(handle, NULL, oi->of_binfo[blk].ob_bh);
->  out:
->  	ext4_clear_inode_state(inode, EXT4_STATE_ORPHAN_FILE);
-> @@ -534,8 +542,6 @@ int ext4_init_orphan_info(struct super_block *sb)
->  	struct ext4_orphan_block_tail *ot;
->  	ino_t orphan_ino = le32_to_cpu(EXT4_SB(sb)->s_es->s_orphan_file_inum);
->  
-> -	spin_lock_init(&oi->of_lock);
-> -
->  	if (!ext4_has_feature_orphan_file(sb))
->  		return 0;
->  
-> @@ -579,7 +585,7 @@ int ext4_init_orphan_info(struct super_block *sb)
->  		for (j = 0; j < inodes_per_ob; j++)
->  			if (bdata[j] == 0)
->  				free++;
-> -		oi->of_binfo[i].ob_free_entries = free;
-> +		atomic_set(&oi->of_binfo[i].ob_free_entries, free);
->  	}
->  	iput(inode);
->  	return 0;
-> @@ -601,7 +607,8 @@ int ext4_orphan_file_empty(struct super_block *sb)
->  	if (!ext4_has_feature_orphan_file(sb))
->  		return 1;
->  	for (i = 0; i < oi->of_blocks; i++)
-> -		if (oi->of_binfo[i].ob_free_entries != inodes_per_ob)
-> +		if (atomic_read(&oi->of_binfo[i].ob_free_entries) !=
-> +		    inodes_per_ob)
->  			return 0;
->  	return 1;
->  }
-> -- 
-> 2.26.2
-> 
+> +       return 0;
+> +}
+> +
+> +static void fanotify_insert_error_event(struct fsnotify_group *group,
+> +                                       struct fsnotify_event *event,
+> +                                       const void *data)
+> +{
+> +       const struct fsnotify_event_info *ei =
+> +               (struct fsnotify_event_info *) data;
+> +       struct fanotify_event *fae = FANOTIFY_E(event);
+> +       const struct fs_error_report *report;
+> +       struct fanotify_error_event *fee;
+> +       struct inode *inode;
+> +       int fh_len;
+> +
+> +       /* This might be an unexpected type of event (i.e. overflow). */
+> +       if (!fanotify_is_error_event(fae->mask))
+> +               return;
+> +
+> +       report = (struct fs_error_report *) ei->data;
+> +       inode = report->inode ?: ei->sb->s_root->d_inode;
 
+As I commented on the cover letter, I think it would be better to
+encode a NULL-FID in case of NULL inode, e.g.:
+
+static int fanotify_encode_null_fh(struct fanotify_fh *fh)
+{
+        fh->type = FILEID_ROOT;
+        fh->len = 8;
+        fh->flags = 0;
+        memset(fh->buf, 0, 8);
+}
+
+But that API may be controversial, so wait for other voices
+before changing that.
+
+> +
+> +       fee = FANOTIFY_EE(fae);
+> +       fee->fae.type = FANOTIFY_EVENT_TYPE_FS_ERROR;
+> +       fee->error = report->error;
+> +       fee->fsid = fee->mark->connector->fsid;
+> +
+> +       fsnotify_get_mark(fee->mark);
+> +
+> +       /*
+> +        * Error reporting needs to happen in atomic context.  If this
+> +        * inode's file handler is more than we initially predicted,
+> +        * there is nothing better we can do than report the error with
+> +        * a bad FH.
+> +        */
+> +       fh_len = fanotify_encode_fh_len(inode);
+> +       if (WARN_ON(fh_len > fee->max_fh_len))
+> +               return;
+> +
+> +       fanotify_encode_fh(&fee->object_fh, inode, fh_len, NULL, 0);
+> +}
+> +
+
+[...]
+
+> +static size_t copy_error_info_to_user(struct fanotify_event *event,
+> +                                     char __user *buf, int count)
+> +{
+> +       struct fanotify_event_info_error info;
+> +       struct fanotify_error_event *fee = FANOTIFY_EE(event);
+> +
+> +       info.hdr.info_type = FAN_EVENT_INFO_TYPE_ERROR;
+> +       info.hdr.pad = 0;
+> +       info.hdr.len = sizeof(struct fanotify_event_info_error);
+> +
+> +       if (WARN_ON(count < info.hdr.len))
+> +               return -EFAULT;
+> +
+> +       info.error = fee->error;
+> +
+> +       /* This effectively releases the event for logging another error */
+> +       info.error_count = atomic_xchg(&fee->err_count, 0);
+> +
+
+it's  a shame because the code is really simpler, but
+I am afraid it may not be correct, even without mentioning breaking
+the queue abstraction.
+
+While the read/insert of err_count is "atomic", read of FID is done
+after this point, not to mention that read of fee->error could be reordered
+without barriers. FID and error could be set by insert event after reading
+fee->err_count.
+
+You can either go back to copying the error report to stack on dequeue
+(though it was a bit ugly) under the group notification_lock
+or you can allocate a new initialized error event on dequeue and
+exchange it with the mark's event, without having to change the
+calling semantics of get_one_event(), e.g.:
+
+        fsnotify_remove_first_event(group);
+        if (fanotify_is_perm_event(event->mask))
+                FANOTIFY_PERM(event)->state = FAN_EVENT_REPORTED;
+        if (fanotify_is_hashed_event(event->mask))
+                fanotify_unhash_event(group, event);
++        if (fanotify_is_error_event(event->mask))
++                event = fanotify_recreate_fs_error_event(event);
+
+If allocation fails, this helper returns ERR_PTR(-EINVAL)
+and resets the info and err_count of the event in the mark.
+
+Thanks,
+Amir.
