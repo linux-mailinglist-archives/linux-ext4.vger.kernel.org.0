@@ -2,108 +2,114 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BFFE3B8012
-	for <lists+linux-ext4@lfdr.de>; Wed, 30 Jun 2021 11:34:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C37F43B8052
+	for <lists+linux-ext4@lfdr.de>; Wed, 30 Jun 2021 11:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233964AbhF3JhC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 30 Jun 2021 05:37:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45092 "EHLO
+        id S234121AbhF3Jtk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 30 Jun 2021 05:49:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233886AbhF3Jg6 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 30 Jun 2021 05:36:58 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A55A2C061756;
-        Wed, 30 Jun 2021 02:34:28 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id f21so2301890ioh.13;
-        Wed, 30 Jun 2021 02:34:28 -0700 (PDT)
+        with ESMTP id S234116AbhF3Jti (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 30 Jun 2021 05:49:38 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11CE3C061787
+        for <linux-ext4@vger.kernel.org>; Wed, 30 Jun 2021 02:47:10 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id m9-20020a05600c3b09b02901f246b43bbeso1071274wms.3
+        for <linux-ext4@vger.kernel.org>; Wed, 30 Jun 2021 02:47:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tbma0IJD+W2GwKxTN2jr2ssQsNr4w3hkXF2HeDy7Ch0=;
-        b=Eev9Vk3ok2rMrCD4OA/XMa+ZEiDr0z3kH1prjkqMpYpiEH0z9USywJRR6pELoQW6XD
-         uHuUKzOAWoCWIvJyjqtpOT4KWDzYaXhlRpRjr1E+j+IRl4zycqrPxSLcJ+M5duJun7Eo
-         pQkW58MrgYRV3iK/dDjHP98PkJrulUGt3+lCEMDhpRfZFQVeQ2ksyPXWEn1oX4FhLuec
-         lmkTwWeWqg3KYFeaqL7jyz+cmo5Vc23b4FHwikQG+tLfmoSdO3T5v8SVqLJ5gEeGgJdq
-         1SPhImcjfy5k3ygj50QSqN/yLp3XvoU23L9PG3JfWF+SqzopyL1spsXiCrFKOTD+Tpkr
-         k1Fw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Z6oz2a6snhnXVo8MXg6uFjLMjRtla/ZcY7D6SjSAauA=;
+        b=zLTi5aCbnypPB5E3aUA0ZTW2QZ9ElWO1rUMChAnrYkbnv5R1HppvSR83sz83GmhmUA
+         UMxwvrtyn70Zd9AoLodBjAgPxIMvZ1UB4cERbwNt9h4ezFzozjlRXTJceovl8itCNtkO
+         ZHpCXotz6yp1b1LU/oBZfpMMbHJ9z37zfQLOhI93YEXu77Z1hvbdB1hXccB0ErO3BuRM
+         2v2H3xdjL56voJXkKEkXOJouofN6tE6pWAPsziIGqT+x1uxsqXS8aHT7JlV4vp9xlNdX
+         RRmNLJxKm6216ZAGJ10+La1loxmhKlUG8r/gC+MQIkg6soAQE9aR2vguk2YO28brVd4+
+         UeDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tbma0IJD+W2GwKxTN2jr2ssQsNr4w3hkXF2HeDy7Ch0=;
-        b=iVmvmhgF7iBRRptxg7FaubzMfGIbgg1Oa5E342fyDYvOHx4p2/R3cCgMxdQoNXo+bW
-         BP+G4NntXnKB1LxaRR4xP0ZxqaXN8Nve5f4OxdZpu5N6v+o3D3eJkcmTe5GIPC4BMlJo
-         MFkSK3N7X0PPF+5+O6CorWpBdPGYGBy7/zWfwcWG/SPn2P5PQHwIHQitSlOie9Pg0PsE
-         nD5rO0Kkso92PNWOe4SxB53xBlsZLgIKpNU8HAhaUI+7rd45L4xhAbccrgIFt5/eItMp
-         R7qQO+9sn84HxncAVYzisU+F43sgUMJmUImUKyW9IkEU0ohP0z5H8UojTmqmD9LO+2Ie
-         FwKQ==
-X-Gm-Message-State: AOAM532sN8BrfGktR2qDRenuFgLPekkE1kKZZr0iUpQDmdXSmZD5iYuU
-        9lCHIfcTxwgNgIIImTazivh7Yl9fz6W8AhQDlOQ=
-X-Google-Smtp-Source: ABdhPJylb5ertAVh1IBSRAbDpMG6eVkE569m9q2JOO5bE/i+kqCG2wCsWjV+SkFBea7Ah4K6f9NcaCWZOlQa+289Yno=
-X-Received: by 2002:a02:908a:: with SMTP id x10mr7951849jaf.30.1625045668217;
- Wed, 30 Jun 2021 02:34:28 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Z6oz2a6snhnXVo8MXg6uFjLMjRtla/ZcY7D6SjSAauA=;
+        b=n2DNWDnW6pK/KjZlq4BpKwTbe+IW0MTZHaHr3+GUxPvexR6N3Te4GHLO3Kq2Ki4Skf
+         O8UJ8R/UQo7YSBxayrfCtHtR4pEQNGb1olOPGlYGSWdrBJgf5J2choJ8q8//J/MUfIde
+         vQV2FihzNJQGo5mKeDj9jBB/wCFCve9y4l8M8/1ARCa0B9GEPXuAU+sHrceK2wxkjFMm
+         ZeKkHybm1GoiAms0uc2jK2eu3BGZ4ohkfcwkXYAPdgXfySDEDCnqm/Z2qFt7eeWjHFix
+         ERf90XkC6BEq0c/m3RJVKFHkWy5M2e48NSAjO9UV4eMSNiPOJsdOQNgKQ0Cb21wIrTF5
+         a2vA==
+X-Gm-Message-State: AOAM533xuUY1Gk2eGyRCQRxQ5Ndo+GxCTnHKGAjK8TY8egH6IoS4+lp8
+        TxiyaK7J4KWxhUH2LiY6C3wlWQ==
+X-Google-Smtp-Source: ABdhPJysgaWNsxoQ1Ekn5yIfyUpjV6tLOTWrZta/4RIlCjFmHAXWqbWe870FTEuNbqmWvtd9IqJeZQ==
+X-Received: by 2002:a1c:7f4a:: with SMTP id a71mr3558850wmd.33.1625046428092;
+        Wed, 30 Jun 2021 02:47:08 -0700 (PDT)
+Received: from dell ([95.144.13.171])
+        by smtp.gmail.com with ESMTPSA id p7sm8990839wrr.68.2021.06.30.02.47.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Jun 2021 02:47:07 -0700 (PDT)
+Date:   Wed, 30 Jun 2021 10:47:05 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Satya Tangirala <satyaprateek2357@gmail.com>
+Cc:     Satya Tangirala <satyat@google.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>, Chao Yu <chao@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-fscrypt@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v8 0/8] add support for direct I/O with fscrypt using
+ blk-crypto
+Message-ID: <YNw9me1Fd6Siy18A@dell>
+References: <20210121230336.1373726-1-satyat@google.com>
+ <CAF2Aj3jbEnnG1-bHARSt6xF12VKttg7Bt52gV=bEQUkaspDC9w@mail.gmail.com>
+ <YK09eG0xm9dphL/1@google.com>
+ <20210526080224.GI4005783@dell>
+ <20210609024556.GA11153@fractal>
 MIME-Version: 1.0
-References: <20210629191035.681913-8-krisman@collabora.com>
- <202106300707.Xg0LaEwy-lkp@intel.com> <CAOQ4uxgRbpzo-AvvBxLQ5ARdFuX53RG+JpPOG8CDoEM2MdsWQQ@mail.gmail.com>
- <20210630084555.GH1983@kadam> <CAOQ4uxiCYBL2-FVMbn2RWcQnueueVoAd5sBtte+twLoU9eyFgA@mail.gmail.com>
-In-Reply-To: <CAOQ4uxiCYBL2-FVMbn2RWcQnueueVoAd5sBtte+twLoU9eyFgA@mail.gmail.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Wed, 30 Jun 2021 12:34:17 +0300
-Message-ID: <CAOQ4uxgc8dDtJ1f0YSk0fDmdnuU3-kp8cONfuZ5P+7fzvBtZzA@mail.gmail.com>
-Subject: Re: [PATCH v3 07/15] fsnotify: pass arguments of fsnotify() in struct fsnotify_event_info
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     kbuild@lists.01.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kbuild test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Theodore Tso <tytso@mit.edu>,
-        Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.com>,
-        David Howells <dhowells@redhat.com>,
-        Khazhismel Kumykov <khazhy@google.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Ext4 <linux-ext4@vger.kernel.org>, kernel@collabora.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210609024556.GA11153@fractal>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 12:32 PM Amir Goldstein <amir73il@gmail.com> wrote:
->
-> On Wed, Jun 30, 2021 at 11:46 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
-> >
-> > On Wed, Jun 30, 2021 at 11:35:32AM +0300, Amir Goldstein wrote:
-> > >
-> > > Do you have feeling of dejavu? ;-)
-> > > https://lore.kernel.org/linux-fsdevel/20200730192537.GB13525@quack2.suse.cz/
-> >
-> > That was a year ago.  I have trouble remembering emails I sent
-> > yesterday.
-> >
-> > >
-> > > We've been through this.
-> > > Maybe you silenced the smach warning on fsnotify() and the rename to
-> > > __fsnotifty()
-> > > caused this warning to refloat?
-> >
-> > Yes.  Renaming the function will make it show up as a new warning.  Also
-> > this is an email from the kbuild-bot and last years email was from me,
-> > so it's a different tool and a different record of sent messages.
-> >
-> > (IMO, you should really just remove the bogus NULL checks because
-> > everyone looking at the warning will think the code is buggy).
-> >
->
-> I think the warning is really incorrect.
-> Why does it presume that event_info->dir is non-NULL?
-> Did smach check all the callers to fsnotify() or something?
-> What about future callers that will pass NULL, just like this one:
->
-> https://lore.kernel.org/linux-fsdevel/20210629191035.681913-12-krisman@collabora.com/
->
+On Tue, 08 Jun 2021, Satya Tangirala wrote:
 
-FWIW, the caller of this new helper passes NULL as inode:
-https://lore.kernel.org/linux-fsdevel/20210629191035.681913-14-krisman@collabora.com/
+> On Wed, May 26, 2021 at 09:02:24AM +0100, Lee Jones wrote:
+> > On Tue, 25 May 2021, Satya Tangirala wrote:
+> > 65;6200;1c
+> > > On Tue, May 25, 2021 at 01:57:28PM +0100, Lee Jones wrote:
+> > > > On Thu, 21 Jan 2021 at 23:06, Satya Tangirala <satyat@google.com> wrote:
+> > > > 
+> > > > > This patch series adds support for direct I/O with fscrypt using
+> > > > > blk-crypto.
+> > > > >
+> > > > 
+> > > > Is there an update on this set please?
+> > > > 
+> > > > I can't seem to find any reviews or follow-up since v8 was posted back in
+> > > > January.
+> > > > 
+> > > This patchset relies on the block layer fixes patchset here
+> > > https://lore.kernel.org/linux-block/20210325212609.492188-1-satyat@google.com/
+> > > That said, I haven't been able to actively work on both the patchsets
+> > > for a while, but I'll send out updates for both patchsets over the
+> > > next week or so.
+> > 
+> > Thanks Satya, I'd appreciate that.
+> FYI I sent out an updated patch series last week at
+> https://lore.kernel.org/linux-fscrypt/20210604210908.2105870-1-satyat@google.com/
 
-Thanks,
-Amir.
+If you end up [RESEND]ing this or submitting another version, would
+you mind adding me on Cc please?
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
