@@ -2,71 +2,73 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E2B13B7EEA
-	for <lists+linux-ext4@lfdr.de>; Wed, 30 Jun 2021 10:27:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A22483B7EFC
+	for <lists+linux-ext4@lfdr.de>; Wed, 30 Jun 2021 10:28:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233488AbhF3IaI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 30 Jun 2021 04:30:08 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:6025 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233467AbhF3IaH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 30 Jun 2021 04:30:07 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GFDpw0vh5zXmKT
-        for <linux-ext4@vger.kernel.org>; Wed, 30 Jun 2021 16:22:16 +0800 (CST)
-Received: from dggpemm500014.china.huawei.com (7.185.36.153) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 30 Jun 2021 16:27:35 +0800
-Received: from huawei.com (10.175.104.170) by dggpemm500014.china.huawei.com
- (7.185.36.153) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 30 Jun
- 2021 16:27:35 +0800
-From:   wuguanghao <wuguanghao3@huawei.com>
-To:     <linux-ext4@vger.kernel.org>, <artem.blagodarenko@gmail.com>
-CC:     <liuzhiqiang26@huawei.com>, <linfeilong@huawei.com>,
-        <wuguanghao3@huawei.com>
-Subject: [PATCH v2 12/12] ext2ed: fix potential NULL pointer dereference in dupstr()
-Date:   Wed, 30 Jun 2021 16:27:24 +0800
-Message-ID: <20210630082724.50838-13-wuguanghao3@huawei.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210630082724.50838-2-wuguanghao3@huawei.com>
-References: <20210630082724.50838-2-wuguanghao3@huawei.com>
+        id S233668AbhF3Iab (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 30 Jun 2021 04:30:31 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:9435 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233686AbhF3Iaa (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 30 Jun 2021 04:30:30 -0400
+Received: from dggeme752-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GFDsx6GRyzZns0;
+        Wed, 30 Jun 2021 16:24:53 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggeme752-chm.china.huawei.com
+ (10.3.19.98) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 30
+ Jun 2021 16:27:59 +0800
+From:   Zhang Yi <yi.zhang@huawei.com>
+To:     <linux-ext4@vger.kernel.org>
+CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+        <yi.zhang@huawei.com>, <yukuai3@huawei.com>
+Subject: [PATCH] jbd2: fix jbd2_journal_[un]register_shrinker undefined error
+Date:   Wed, 30 Jun 2021 16:36:38 +0800
+Message-ID: <20210630083638.140218-1-yi.zhang@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.170]
+X-Originating-IP: [10.175.127.227]
 X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500014.china.huawei.com (7.185.36.153)
+ dggeme752-chm.china.huawei.com (10.3.19.98)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+Export jbd2_journal_unregister_shrinker() and
+jbd2_journal_register_shrinker() to fix below error:
 
-In dupstr(), we should check return value of malloc().
+ ERROR: modpost: "jbd2_journal_unregister_shrinker" undefined!
+ ERROR: modpost: "jbd2_journal_register_shrinker" undefined!
 
-Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
-Signed-off-by: Wu Guanghao <wuguanghao3@huawei.com>
-Reviewed-by: Wu Bo <wubo40@huawei.com>
+Fixes: 4ba3fcdde7e3 ("jbd2,ext4: add a shrinker to release checkpointed buffers")
+Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 ---
- ext2ed/main.c | 2 ++
+ fs/jbd2/journal.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/ext2ed/main.c b/ext2ed/main.c
-index f7e7d7df..9d33a8e1 100644
---- a/ext2ed/main.c
-+++ b/ext2ed/main.c
-@@ -524,6 +524,8 @@ char *dupstr (char *src)
- 	char *ptr;
+diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+index 7c52feb6f753..152880c298ca 100644
+--- a/fs/jbd2/journal.c
++++ b/fs/jbd2/journal.c
+@@ -2122,6 +2122,7 @@ int jbd2_journal_register_shrinker(journal_t *journal)
  
- 	ptr=(char *) malloc (strlen (src)+1);
-+	if (!ptr)
-+		return NULL;
- 	strcpy (ptr,src);
- 	return (ptr);
+ 	return 0;
  }
++EXPORT_SYMBOL(jbd2_journal_register_shrinker);
+ 
+ /**
+  * jbd2_journal_unregister_shrinker()
+@@ -2134,6 +2135,7 @@ void jbd2_journal_unregister_shrinker(journal_t *journal)
+ 	percpu_counter_destroy(&journal->j_jh_shrink_count);
+ 	unregister_shrinker(&journal->j_shrinker);
+ }
++EXPORT_SYMBOL(jbd2_journal_unregister_shrinker);
+ 
+ /**
+  * jbd2_journal_destroy() - Release a journal_t structure.
 -- 
-2.19.1
+2.31.1
 
