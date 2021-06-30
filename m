@@ -2,54 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F0693B7C86
-	for <lists+linux-ext4@lfdr.de>; Wed, 30 Jun 2021 06:19:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEC993B7CDA
+	for <lists+linux-ext4@lfdr.de>; Wed, 30 Jun 2021 07:10:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233336AbhF3EVo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 30 Jun 2021 00:21:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59852 "EHLO
+        id S233464AbhF3FNV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 30 Jun 2021 01:13:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230200AbhF3EVk (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 30 Jun 2021 00:21:40 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9019FC061760;
-        Tue, 29 Jun 2021 21:19:11 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id i189so1532628ioa.8;
-        Tue, 29 Jun 2021 21:19:11 -0700 (PDT)
+        with ESMTP id S231562AbhF3FNU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 30 Jun 2021 01:13:20 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 837C3C061766;
+        Tue, 29 Jun 2021 22:10:51 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id a6so1733810ioe.0;
+        Tue, 29 Jun 2021 22:10:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=rx8A797G1YBpPMe7byH4D0TVQJIokYuVRNbWX9cvnco=;
-        b=Z8y5OGy7Er5yazYRAliRflePcje/Er1l8rzJ7wHxJSJg6XoRi1D9KyPUr7vDiWwDil
-         bJSZsXGPPHMAzyzVtmArvvLmbP2rC8a968DCpqLgH9H1Zh1/O1uZq3j+M//lZVZd1Hs1
-         MjC4WYD7ZcDVpWc5jD5qZ/anJpXgnAyit7gAISLXm/5asxDX7CNYRaZZxwd3wCWih7H0
-         h/dVIUBkK654QsVriKYgpp8IzVRuOUqpQlYeQnfm175qqSd1jfktR5tnDxa0z2Iy/S5D
-         /MtlPqZdyl5L/qheW4MnNHUdmgQQTaT7EWgd+ffk2kgjNi2RhKb/ViGMfImhZEz2ajMZ
-         tJ1A==
+        bh=7TwOTgfXi+shXUX1bdywFyVD0OPq8JVzqjg9/kRcoj8=;
+        b=s02tSWDMYLUO/yPq6RDasC0+nvQ/FcjglFNR2jzgrSho317n/QGXVpDxg6Q6VLYQhn
+         k1sfTuZ7nV5ocdy/RIL2XH5sn1MCNscUL8hPo+UKonuLcH6xGP879s5/sTpchoPYkbcp
+         4oZD9H0Au+SOBUsqGN9/3ZV5mJ0kSwbiaotmrYsOwUeHd2NT8ZXvKbN8ZzbpQeYXAuwQ
+         pN2HBBWBwkbXBtJ97BSuxSNDvZuiIA7xIJnprdV8dgJ92f7pgYUln2hcSH1evb2CTkQX
+         tNW+dILeZnDZBfZt7C8Z6iu9gFZ/n4iYgGZvQUZbtbHVkirZBc0uX+xXUNWt/oTP4wWV
+         JocQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=rx8A797G1YBpPMe7byH4D0TVQJIokYuVRNbWX9cvnco=;
-        b=otRPFrZTbzbOY0BGEmLroMh+Qgs86YOIoZlBbejre1bimRZ4yEhN3qC+GDig8/pyhV
-         YPZYto+GiNMswK/xzhy2IrFJWi3Al8fhNOlIi1W1tJUon7+MtXUlCojS662MHT1u4BWR
-         nVKebHFs/ZJhMdeh/pPAwb2dcnOIyIC9vBgt8guunYnHC288H0dM1fqK5ZQOs/NRLniQ
-         ecYCXzzdg7LyD2AknPWSkOuFVcCiVg+8t1cWkrECrjDO8tX13lgiF80SVxclYBaQt01L
-         jTEU4zFDag+0E0x5ct9eMUjv6bPYUHYhJtb7/sK1/XtfyjqSba+3geU4GZPBaqPUNv/z
-         wPEg==
-X-Gm-Message-State: AOAM533wDEZHcJCwB0CuaKA6pF7lnQVZx3kYzHXU54UdMHPrqpaztSC2
-        kzdeM8Nh5PnLO+NvtixzAUxuTdINwu4SnqHMAD8=
-X-Google-Smtp-Source: ABdhPJyYVFgpyttLNp4z81d1/u3emYEyD+aMYZgk2hYw5mpMcie1UMJdLqyJfGHehrwLLUDhJjz3gaNlOijoiy2e4h0=
-X-Received: by 2002:a05:6602:146:: with SMTP id v6mr6472057iot.5.1625026750922;
- Tue, 29 Jun 2021 21:19:10 -0700 (PDT)
+        bh=7TwOTgfXi+shXUX1bdywFyVD0OPq8JVzqjg9/kRcoj8=;
+        b=lmBM+bjKubRtQT8/HQAt6fy+s6V7JAZhqmEoxn7YzxNOOpT8oNj8yVbdkTxlGPi3mp
+         uOST8GapMMGRfR8SYPj1IkSNXpYvf/i24GNwCQ4uSafTmVoKT44lTTydEd9cyDeb11pc
+         vji5+yTwPsddBriuZSnK60RB84UBsXmJT9zyA66NHkInz3a4Gc5dss0tXWpzlQrrL9AG
+         z1t7L2Z47D6NzBV35ixpy8Gacg3lGL7mz/1e06w5lAUsvVIw58LpfNnwVy9Sa4MbfcOc
+         jXdVC2pzmxDTuBSy+OCV58/pQpoYCOZj8omhYIJHIsHzsVgLMqDRtNVRWooQt6VljQEj
+         U6cg==
+X-Gm-Message-State: AOAM531yzVjmG549kMiz4iAR0R1HwYoQT3O52/xbA3Y9M+EbdkiOWqZ1
+        y3SGCs2yLX+OcGd6P5eRjlXfe9JTSQpIABL5+6k=
+X-Google-Smtp-Source: ABdhPJznP3KVEFn5wIPYGZmIbPCiEpltZKJL2MEuIsziN6LREOeG9QCw9NTsxtqPEuoi4Xdlj0RIvvqKpBQHrL2NrC0=
+X-Received: by 2002:a5d:8b03:: with SMTP id k3mr6439392ion.203.1625029850864;
+ Tue, 29 Jun 2021 22:10:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210629191035.681913-1-krisman@collabora.com> <20210629191035.681913-16-krisman@collabora.com>
-In-Reply-To: <20210629191035.681913-16-krisman@collabora.com>
+References: <20210629191035.681913-1-krisman@collabora.com>
+In-Reply-To: <20210629191035.681913-1-krisman@collabora.com>
 From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Wed, 30 Jun 2021 07:18:59 +0300
-Message-ID: <CAOQ4uxiOJDQc3nw8sxXD9yO8MSTgMbsqhCP9Xc-x8wnn2mJ0=Q@mail.gmail.com>
-Subject: Re: [PATCH v3 15/15] docs: Document the FAN_FS_ERROR event
+Date:   Wed, 30 Jun 2021 08:10:39 +0300
+Message-ID: <CAOQ4uxgigXTtGgEC3yzt3f4HDHUiYqL7vk73v6E5LGx0OoFWHg@mail.gmail.com>
+Subject: Re: [PATCH v3 00/15] File system wide monitoring
 To:     Gabriel Krisman Bertazi <krisman@collabora.com>
 Cc:     "Darrick J. Wong" <djwong@kernel.org>,
         Theodore Tso <tytso@mit.edu>,
@@ -58,56 +58,84 @@ Cc:     "Darrick J. Wong" <djwong@kernel.org>,
         Khazhismel Kumykov <khazhy@google.com>,
         linux-fsdevel <linux-fsdevel@vger.kernel.org>,
         Ext4 <linux-ext4@vger.kernel.org>, kernel@collabora.com,
-        Matthew Bobrowski <repnop@google.com>
+        Linux API <linux-api@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 10:13 PM Gabriel Krisman Bertazi
++CC linux-api
+
+On Tue, Jun 29, 2021 at 10:10 PM Gabriel Krisman Bertazi
 <krisman@collabora.com> wrote:
 >
-> Document the FAN_FS_ERROR event for user administrators and user space
-> developers.
+> Hi,
 >
-> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+> This is the third version of the FAN_FS_ERROR patches.  The main change
+> in this version is the inode information being reported through an FID
+> record, which means it requires the group to be created with
+> FAN_REPORT_FID.  It indeed simplifies a lot the FAN_FS_ERROR patch
+> itself.
+
+I am glad that you took this path.
+Uniformity across the UAPI is important.
+
 >
-> ---
-> Changes since v1:
->   - Drop references to location record
->   - Explain that the inode field is optional
->   - Explain we are reporting only the first error
-> ---
->  .../admin-guide/filesystem-monitoring.rst     | 70 +++++++++++++++++++
->  Documentation/admin-guide/index.rst           |  1 +
->  2 files changed, 71 insertions(+)
->  create mode 100644 Documentation/admin-guide/filesystem-monitoring.rst
+> This change raises the question of how we report non-inode errors.  On
+> one hand, we could omit the FID report, but then fsid would also be
+> ommited.  I chose to report these kind of errors against the root
+> inode.
 >
-> diff --git a/Documentation/admin-guide/filesystem-monitoring.rst b/Documentation/admin-guide/filesystem-monitoring.rst
-> new file mode 100644
-> index 000000000000..c0ab1ad268b8
-> --- /dev/null
-> +++ b/Documentation/admin-guide/filesystem-monitoring.rst
-> @@ -0,0 +1,70 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +====================================
-> +File system Monitoring with fanotify
-> +====================================
 
-It is great that you are adding an admin-guide book and it is surely
-not your fault that there is no existing admin-guide for fanotify to add to.
-However, the name of the book as well as this title are more generic than
-what you describe.
+There are other option to consider.
 
-You see, watching all the deleted files in a filesystem or all modified files
-in a mount may also be considered as "filesystem monitoring" by some.
+To avoid special casing error events in fanotify event read code,
+it would is convenient to use a non-zero length FID, but you can
+use a 8 bytes zero buffer as NULL-FID
 
-So my only request is that you keep the book name and title as is,
-but place your content under a chapter about "filesystem error monitoring".
+If I am not mistaken, that amounts to 64 bytes of event_len
+including the event_metadata and both records which is pretty
+nicely aligned.
 
-This way, other people can later fill the gaps.
-(CC Matthew Borowski who indicated his interest in doing so)
+All 3 handle_type options below are valid options:
+1. handle_type FILEID_ROOT
+2. handle_type FILEID_INVALID
+3. handle_type FILEID_INO32_GEN (i.e. ino=0;gen=0)
+
+The advantage of option #3 is that the monitoring program
+does not need to special case the NULL_FID case when
+parsing the FID to informative user message.
+
+> The other changes in this iteration were made to attend to Amir
+> feedback.  Thank you again for your very detailed input.  It is really
+> appreciated.
+>
+> This was tested with LTP for regressions, and also using the sample on
+> the last patch, with a corrupted image.  I can publish the bad image
+> upon request.
+
+Just to set expectations, we now have an official standard for fanotify [1]
+where we require an LTP test and man page update patch before merge
+of UAPI changes.
+
+That should not stop us from continuing the review process - it's just
+a heads up, but I think that we are down to implementation details in
+the review anyway and that the UAPI (give or take root inode) is
+pretty much clear at this point, so spreading the review of UAPI to
+wider audience is not a bad idea.
+
+w.r.t man page update, I know you have created the admin-guide book,
+but it's not the same. For linux-api reviewers, reviewing the changed to
+fanotify man pages is good way to make sure we did not miss any corners.
+
+w.r.t LTP test, I don't think that using a corrupt image will be a good way
+for an LTP test. LTP tests can prepare and mount an ext4 loop image.
+Does ext4 have some debugging method to inject an error?
+Because that would be the best way IMO.
+If it doesn't, you can implement this in ext4 and use it in the test if that
+debug file exists - skip the test otherwise - it's common practice.
 
 Thanks,
 Amir.
+
+[1] https://lore.kernel.org/linux-fsdevel/YMKv1U7tNPK955ho@google.com/
