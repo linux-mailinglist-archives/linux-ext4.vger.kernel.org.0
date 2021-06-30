@@ -2,115 +2,100 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 967503B80F6
-	for <lists+linux-ext4@lfdr.de>; Wed, 30 Jun 2021 12:49:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 668E43B8138
+	for <lists+linux-ext4@lfdr.de>; Wed, 30 Jun 2021 13:21:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234144AbhF3KwD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 30 Jun 2021 06:52:03 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:13006 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229882AbhF3KwD (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 30 Jun 2021 06:52:03 -0400
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15UAfXfd015075;
-        Wed, 30 Jun 2021 10:49:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=FxOE4NuQ35+xxqSaXweYOLfnzgA3aF0LuzxJYhCNSso=;
- b=HLh2ag2vzSmPWspgoK3yO/X9DaG6syFmljjB68+EcK1q/o0dd0pdEcsxHpSGyIHPadB0
- 5MgXX3WzwUThrFK/ZX9vd9gyYyKanySv4zpkhlKS+R4RsP5PsfucSvJjafyPvrbesa15
- q0Z/N0Y79hhOlOOBb69mMfq+M+Rp6jVMuWLL74GuEHfEYKo191NYZtR8XdV/7/na62wr
- ZdRd5I81yCPh8o62qSnh6YjBpSW6e3cu7QUz1kwr1MgTDOHQ522DQ8STcMnhKM/XwtgF
- nbOGKYfv6sHfG/t5TGw1OxuK/0wxWJE9g0GGSkUuZnGUiBC55MVxLYBW8FlcmZwZKMAN /A== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39gha48pvs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 30 Jun 2021 10:49:19 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15UAju0p089676;
-        Wed, 30 Jun 2021 10:49:18 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 39dv27q99u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 30 Jun 2021 10:49:18 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 15UAnHPk098035;
-        Wed, 30 Jun 2021 10:49:17 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 39dv27q998-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 30 Jun 2021 10:49:17 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by aserv0121.oracle.com (8.14.4/8.14.4) with ESMTP id 15UAnFf1016531;
-        Wed, 30 Jun 2021 10:49:15 GMT
-Received: from kadam (/102.222.70.252)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 30 Jun 2021 10:49:14 +0000
-Date:   Wed, 30 Jun 2021 13:49:04 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     kbuild@lists.01.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kbuild test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Theodore Tso <tytso@mit.edu>,
-        Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.com>,
-        David Howells <dhowells@redhat.com>,
-        Khazhismel Kumykov <khazhy@google.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Ext4 <linux-ext4@vger.kernel.org>, kernel@collabora.com
-Subject: Re: [PATCH v3 07/15] fsnotify: pass arguments of fsnotify() in
- struct fsnotify_event_info
-Message-ID: <20210630104904.GS2040@kadam>
-References: <20210629191035.681913-8-krisman@collabora.com>
- <202106300707.Xg0LaEwy-lkp@intel.com>
- <CAOQ4uxgRbpzo-AvvBxLQ5ARdFuX53RG+JpPOG8CDoEM2MdsWQQ@mail.gmail.com>
- <20210630084555.GH1983@kadam>
- <CAOQ4uxiCYBL2-FVMbn2RWcQnueueVoAd5sBtte+twLoU9eyFgA@mail.gmail.com>
+        id S234292AbhF3LYY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 30 Jun 2021 07:24:24 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:34662 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233706AbhF3LYX (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 30 Jun 2021 07:24:23 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 47BB51FE6F;
+        Wed, 30 Jun 2021 11:21:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1625052114; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CXEAk0/YVoDTZj0zNXyG5NFhb3NO4Aa1DyfJDSHF32g=;
+        b=TNJJqDhpKGop/7ub1h6hjG0lYLEF0p0Nnbl166gPaNtCMULoXtoUdLV9eWg4OwPCfWaWlr
+        yw98OkrbI2ZNyKZ9MhdRJ30bzdr8/gIi2sCHSSpk6fsy7yfTU1yb4pKjnJIbfCB5qh3dtg
+        b4RpeUl0GHlQhVv0sh5ESCAg9Ftsyo4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1625052114;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CXEAk0/YVoDTZj0zNXyG5NFhb3NO4Aa1DyfJDSHF32g=;
+        b=mYp76Bkioc4E/dBmb8Zx6V+9hofU6h0x74gRRzZf/aYPdXiX1e7Z+AVP4GVgY5t3QO2TMS
+        kQqmXgnmvOGIWcAg==
+Received: from quack2.suse.cz (unknown [10.100.224.230])
+        by relay2.suse.de (Postfix) with ESMTP id 0842EA3B85;
+        Wed, 30 Jun 2021 11:21:53 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id CB57A1F2CC3; Wed, 30 Jun 2021 13:21:53 +0200 (CEST)
+Date:   Wed, 30 Jun 2021 13:21:53 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Zhang Yi <yi.zhang@huawei.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jack@suse.cz, yukuai3@huawei.com
+Subject: Re: [PATCH] jbd2: fix jbd2_journal_[un]register_shrinker undefined
+ error
+Message-ID: <20210630112153.GA27701@quack2.suse.cz>
+References: <20210630083638.140218-1-yi.zhang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAOQ4uxiCYBL2-FVMbn2RWcQnueueVoAd5sBtte+twLoU9eyFgA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-ORIG-GUID: zTbxK_I6Xemz85vnsMQm6VSaTEbL8JMY
-X-Proofpoint-GUID: zTbxK_I6Xemz85vnsMQm6VSaTEbL8JMY
+In-Reply-To: <20210630083638.140218-1-yi.zhang@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-I think my bug report was not clear...  :/  The code looks like this:
+On Wed 30-06-21 16:36:38, Zhang Yi wrote:
+> Export jbd2_journal_unregister_shrinker() and
+> jbd2_journal_register_shrinker() to fix below error:
+> 
+>  ERROR: modpost: "jbd2_journal_unregister_shrinker" undefined!
+>  ERROR: modpost: "jbd2_journal_register_shrinker" undefined!
+> 
+> Fixes: 4ba3fcdde7e3 ("jbd2,ext4: add a shrinker to release checkpointed buffers")
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 
-	sb = inode->i_sb;
+Yeah, I didn't notice this either. The fix looks good. You can add:
 
-	if (inode) ...
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-The NULL check cannot be false because if "inode" is NULL we would have
-already crashed when we dereference it on the line before.
+								Honza
 
-In this case, based on last years discussion, the "inode" pointer can't
-be NULL.  The debate is only whether the unnecessary NULL checks help
-readability or hurt readability.
-
-> Why does it presume that event_info->dir is non-NULL?
-
-That was my commentary, just from reading the code.  Smatch says that
-"event->dir" is unknown.
-
-> Did smach check all the callers to fsnotify() or something?
-
-The kbuild-bot doesn't build the cross function database but if you did
-use the cross function database then, yes, it does track all the
-callers.  There are two pointers that we care about, the "inode" and
-the parent inode (dir).  Smatch can figure out when "inode" is NULL vs
-non-NULL but where it gets stuck is on the some of the parent inodes
-like this call from fsnotify_dirent():
-
-	fsnotify_name(dir, mask, d_inode(dentry), &dentry->d_name, 0);
-                                 ^^^^^^^^^^^^^^^
-
-Smatch doesn't know that d_inode() is always non-NULL at this point.
-
-regards,
-dan carpenter
+> ---
+>  fs/jbd2/journal.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+> index 7c52feb6f753..152880c298ca 100644
+> --- a/fs/jbd2/journal.c
+> +++ b/fs/jbd2/journal.c
+> @@ -2122,6 +2122,7 @@ int jbd2_journal_register_shrinker(journal_t *journal)
+>  
+>  	return 0;
+>  }
+> +EXPORT_SYMBOL(jbd2_journal_register_shrinker);
+>  
+>  /**
+>   * jbd2_journal_unregister_shrinker()
+> @@ -2134,6 +2135,7 @@ void jbd2_journal_unregister_shrinker(journal_t *journal)
+>  	percpu_counter_destroy(&journal->j_jh_shrink_count);
+>  	unregister_shrinker(&journal->j_shrinker);
+>  }
+> +EXPORT_SYMBOL(jbd2_journal_unregister_shrinker);
+>  
+>  /**
+>   * jbd2_journal_destroy() - Release a journal_t structure.
+> -- 
+> 2.31.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
