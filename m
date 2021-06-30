@@ -2,54 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 189B03B7C52
-	for <lists+linux-ext4@lfdr.de>; Wed, 30 Jun 2021 05:59:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F0693B7C86
+	for <lists+linux-ext4@lfdr.de>; Wed, 30 Jun 2021 06:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229446AbhF3EBq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 30 Jun 2021 00:01:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55494 "EHLO
+        id S233336AbhF3EVo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 30 Jun 2021 00:21:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbhF3EBq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 30 Jun 2021 00:01:46 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02A46C061766;
-        Tue, 29 Jun 2021 20:58:57 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id h3so1520143ilc.9;
-        Tue, 29 Jun 2021 20:58:56 -0700 (PDT)
+        with ESMTP id S230200AbhF3EVk (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 30 Jun 2021 00:21:40 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9019FC061760;
+        Tue, 29 Jun 2021 21:19:11 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id i189so1532628ioa.8;
+        Tue, 29 Jun 2021 21:19:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=th6quUd6v7Hy/uJAwOnXdzKJEOL7XC5IXy2fKLMMsQs=;
-        b=dc9MBvMbnXQzuFWx6AEdAIWUxb0E6cSDOP8h2JKOcogu2ANQJCxu43Uhh5LVgxJxN8
-         EoSqXhEZ3rCnudG8yfSU1ENe9UrBw8xGuBgsRgGEADd6yZvW8Ctitscx4pHT3e/mfIYJ
-         TUwx15roycQC4XPdDK52cY/3HQpUgn9cQxFfJwLy2SCU8dKLbkrMm4rPfxuNr0Cl/t5C
-         ekGKPXjUTOpwAQ5v/RMhG/M5dPLsuqtH9BEgAXPk1oMkGgC5V44icrzCNnfuqNywxOGG
-         yL5CfvA1QiBYdHwbVRe9H86WOrzv47xmJ/vwyJHRnfZf1Fx6/rK8geLpxqFPvA/5DEg8
-         Earg==
+        bh=rx8A797G1YBpPMe7byH4D0TVQJIokYuVRNbWX9cvnco=;
+        b=Z8y5OGy7Er5yazYRAliRflePcje/Er1l8rzJ7wHxJSJg6XoRi1D9KyPUr7vDiWwDil
+         bJSZsXGPPHMAzyzVtmArvvLmbP2rC8a968DCpqLgH9H1Zh1/O1uZq3j+M//lZVZd1Hs1
+         MjC4WYD7ZcDVpWc5jD5qZ/anJpXgnAyit7gAISLXm/5asxDX7CNYRaZZxwd3wCWih7H0
+         h/dVIUBkK654QsVriKYgpp8IzVRuOUqpQlYeQnfm175qqSd1jfktR5tnDxa0z2Iy/S5D
+         /MtlPqZdyl5L/qheW4MnNHUdmgQQTaT7EWgd+ffk2kgjNi2RhKb/ViGMfImhZEz2ajMZ
+         tJ1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=th6quUd6v7Hy/uJAwOnXdzKJEOL7XC5IXy2fKLMMsQs=;
-        b=WqHsMViB850h7kcdKhZSQ/xUT76RiJpAk6IlXvmKyzemy9xigRKTl6ulCFuB7qmnRD
-         5IcET/s8EzRgR4dP32akabYnIlUCRjoeNYS2kt1ZF3B07QjdT3Arh8FMsbKro4eY7ztT
-         6bu3haxOLcpR9etcUAsIfxRHH+Nxl65yA2DLXkzlrcr5h0LJJqqJ4DZkyc/o2R4ijyAT
-         qvF5+KaxkeWo9qqr3HiDAsjeXVRm0SwjGFkB815+X5Xt9Vq76Wg32uobtNOH+QOwTh4I
-         JBFS478tdo8oNg8a89nl5UWNss/cuyfwbB7s0Jfs+U0sSP6KxfPABuGgFpBSP49otCGI
-         as0w==
-X-Gm-Message-State: AOAM5337epPzmxYSACdK1/sZFrt0HAm6E/rHdjp2hZybSq+RpfbtAFxi
-        9scbe23ErbR8U3MWQ/k4J6W8jATIhXAMQy7lMEg=
-X-Google-Smtp-Source: ABdhPJwNR7pALV+ElVafhtBlomdmHNvyS5tpGerzA5pMtyhAULugqw+kzdKfCmlDbyCsA2H2w9o6RGj3zVNDdbovr7I=
-X-Received: by 2002:a92:dd05:: with SMTP id n5mr13903099ilm.72.1625025536411;
- Tue, 29 Jun 2021 20:58:56 -0700 (PDT)
+        bh=rx8A797G1YBpPMe7byH4D0TVQJIokYuVRNbWX9cvnco=;
+        b=otRPFrZTbzbOY0BGEmLroMh+Qgs86YOIoZlBbejre1bimRZ4yEhN3qC+GDig8/pyhV
+         YPZYto+GiNMswK/xzhy2IrFJWi3Al8fhNOlIi1W1tJUon7+MtXUlCojS662MHT1u4BWR
+         nVKebHFs/ZJhMdeh/pPAwb2dcnOIyIC9vBgt8guunYnHC288H0dM1fqK5ZQOs/NRLniQ
+         ecYCXzzdg7LyD2AknPWSkOuFVcCiVg+8t1cWkrECrjDO8tX13lgiF80SVxclYBaQt01L
+         jTEU4zFDag+0E0x5ct9eMUjv6bPYUHYhJtb7/sK1/XtfyjqSba+3geU4GZPBaqPUNv/z
+         wPEg==
+X-Gm-Message-State: AOAM533wDEZHcJCwB0CuaKA6pF7lnQVZx3kYzHXU54UdMHPrqpaztSC2
+        kzdeM8Nh5PnLO+NvtixzAUxuTdINwu4SnqHMAD8=
+X-Google-Smtp-Source: ABdhPJyYVFgpyttLNp4z81d1/u3emYEyD+aMYZgk2hYw5mpMcie1UMJdLqyJfGHehrwLLUDhJjz3gaNlOijoiy2e4h0=
+X-Received: by 2002:a05:6602:146:: with SMTP id v6mr6472057iot.5.1625026750922;
+ Tue, 29 Jun 2021 21:19:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210629191035.681913-1-krisman@collabora.com> <20210629191035.681913-15-krisman@collabora.com>
-In-Reply-To: <20210629191035.681913-15-krisman@collabora.com>
+References: <20210629191035.681913-1-krisman@collabora.com> <20210629191035.681913-16-krisman@collabora.com>
+In-Reply-To: <20210629191035.681913-16-krisman@collabora.com>
 From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Wed, 30 Jun 2021 06:58:45 +0300
-Message-ID: <CAOQ4uxieFwrz-C9GbbxCnOFazkTY=F7N253GDuv6eyjYg0n+jQ@mail.gmail.com>
-Subject: Re: [PATCH v3 14/15] samples: Add fs error monitoring example
+Date:   Wed, 30 Jun 2021 07:18:59 +0300
+Message-ID: <CAOQ4uxiOJDQc3nw8sxXD9yO8MSTgMbsqhCP9Xc-x8wnn2mJ0=Q@mail.gmail.com>
+Subject: Re: [PATCH v3 15/15] docs: Document the FAN_FS_ERROR event
 To:     Gabriel Krisman Bertazi <krisman@collabora.com>
 Cc:     "Darrick J. Wong" <djwong@kernel.org>,
         Theodore Tso <tytso@mit.edu>,
@@ -57,7 +57,8 @@ Cc:     "Darrick J. Wong" <djwong@kernel.org>,
         David Howells <dhowells@redhat.com>,
         Khazhismel Kumykov <khazhy@google.com>,
         linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Ext4 <linux-ext4@vger.kernel.org>, kernel@collabora.com
+        Ext4 <linux-ext4@vger.kernel.org>, kernel@collabora.com,
+        Matthew Bobrowski <repnop@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
@@ -66,230 +67,47 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 On Tue, Jun 29, 2021 at 10:13 PM Gabriel Krisman Bertazi
 <krisman@collabora.com> wrote:
 >
-> Introduce an example of a FAN_FS_ERROR fanotify user to track filesystem
-> errors.
+> Document the FAN_FS_ERROR event for user administrators and user space
+> developers.
 >
 > Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 >
 > ---
 > Changes since v1:
->   - minor fixes
+>   - Drop references to location record
+>   - Explain that the inode field is optional
+>   - Explain we are reporting only the first error
 > ---
->  samples/Kconfig               |   9 +++
->  samples/Makefile              |   1 +
->  samples/fanotify/Makefile     |   3 +
->  samples/fanotify/fs-monitor.c | 134 ++++++++++++++++++++++++++++++++++
->  4 files changed, 147 insertions(+)
->  create mode 100644 samples/fanotify/Makefile
->  create mode 100644 samples/fanotify/fs-monitor.c
+>  .../admin-guide/filesystem-monitoring.rst     | 70 +++++++++++++++++++
+>  Documentation/admin-guide/index.rst           |  1 +
+>  2 files changed, 71 insertions(+)
+>  create mode 100644 Documentation/admin-guide/filesystem-monitoring.rst
 >
-> diff --git a/samples/Kconfig b/samples/Kconfig
-> index b5a1a7aa7e23..f2f9c939035f 100644
-> --- a/samples/Kconfig
-> +++ b/samples/Kconfig
-> @@ -120,6 +120,15 @@ config SAMPLE_CONNECTOR
->           with it.
->           See also Documentation/driver-api/connector.rst
->
-> +config SAMPLE_FANOTIFY_ERROR
-> +       bool "Build fanotify error monitoring sample"
-> +       depends on FANOTIFY
-> +       help
-> +         When enabled, this builds an example code that uses the
-> +         FAN_FS_ERROR fanotify mechanism to monitor filesystem
-> +         errors.
-> +         See also Documentation/admin-guide/filesystem-monitoring.rst.
-> +
->  config SAMPLE_HIDRAW
->         bool "hidraw sample"
->         depends on CC_CAN_LINK && HEADERS_INSTALL
-> diff --git a/samples/Makefile b/samples/Makefile
-> index 087e0988ccc5..931a81847c48 100644
-> --- a/samples/Makefile
-> +++ b/samples/Makefile
-> @@ -5,6 +5,7 @@ subdir-$(CONFIG_SAMPLE_AUXDISPLAY)      += auxdisplay
->  subdir-$(CONFIG_SAMPLE_ANDROID_BINDERFS) += binderfs
->  obj-$(CONFIG_SAMPLE_CONFIGFS)          += configfs/
->  obj-$(CONFIG_SAMPLE_CONNECTOR)         += connector/
-> +obj-$(CONFIG_SAMPLE_FANOTIFY_ERROR)    += fanotify/
->  subdir-$(CONFIG_SAMPLE_HIDRAW)         += hidraw
->  obj-$(CONFIG_SAMPLE_HW_BREAKPOINT)     += hw_breakpoint/
->  obj-$(CONFIG_SAMPLE_KDB)               += kdb/
-> diff --git a/samples/fanotify/Makefile b/samples/fanotify/Makefile
+> diff --git a/Documentation/admin-guide/filesystem-monitoring.rst b/Documentation/admin-guide/filesystem-monitoring.rst
 > new file mode 100644
-> index 000000000000..b3d5cc826e6f
+> index 000000000000..c0ab1ad268b8
 > --- /dev/null
-> +++ b/samples/fanotify/Makefile
-> @@ -0,0 +1,3 @@
-> +userprogs-always-y += fs-monitor
+> +++ b/Documentation/admin-guide/filesystem-monitoring.rst
+> @@ -0,0 +1,70 @@
+> +.. SPDX-License-Identifier: GPL-2.0
 > +
-> +userccflags += -I usr/include
-> diff --git a/samples/fanotify/fs-monitor.c b/samples/fanotify/fs-monitor.c
-> new file mode 100644
-> index 000000000000..f949ea00271d
-> --- /dev/null
-> +++ b/samples/fanotify/fs-monitor.c
-> @@ -0,0 +1,134 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright 2021, Collabora Ltd.
-> + */
-> +
-> +#define _GNU_SOURCE
-> +#include <errno.h>
+> +====================================
+> +File system Monitoring with fanotify
+> +====================================
 
-Kernel test robot reported some problem with this include
+It is great that you are adding an admin-guide book and it is surely
+not your fault that there is no existing admin-guide for fanotify to add to.
+However, the name of the book as well as this title are more generic than
+what you describe.
 
-> +#include <err.h>
-> +#include <stdlib.h>
-> +#include <stdio.h>
-> +#include <fcntl.h>
-> +#include <sys/fanotify.h>
-> +#include <sys/types.h>
-> +#include <unistd.h>
-> +#include <sys/stat.h>
-> +#include <sys/types.h>
-> +
-> +#ifndef FAN_FS_ERROR
-> +#define FAN_FS_ERROR           0x00008000
-> +#define FAN_EVENT_INFO_TYPE_ERROR      4
-> +
-> +int mount_fd;
-> +
-> +struct fanotify_event_info_error {
-> +       struct fanotify_event_info_header hdr;
-> +       __s32 error;
-> +       __u32 error_count;
-> +};
-> +#endif
-> +
-> +static void handle_notifications(char *buffer, int len)
-> +{
-> +       struct fanotify_event_metadata *metadata;
-> +       struct fanotify_event_info_error *error;
-> +       struct fanotify_event_info_fid *fid;
-> +       struct file_handle *file_handle;
-> +       int bad_file;
-> +       int ret;
-> +       struct stat stat;
-> +       char *next;
-> +
-> +       for (metadata = (struct fanotify_event_metadata *) buffer;
-> +            FAN_EVENT_OK(metadata, len);
-> +            metadata = FAN_EVENT_NEXT(metadata, len)) {
-> +               next = (char *)metadata + metadata->event_len;
-> +               if (metadata->mask != FAN_FS_ERROR) {
-> +                       printf("unexpected FAN MARK: %llx\n", metadata->mask);
-> +                       goto next_event;
-> +               } else if (metadata->fd != FAN_NOFD) {
-> +                       printf("Unexpected fd (!= FAN_NOFD)\n");
-> +                       goto next_event;
-> +               }
-> +
-> +               printf("FAN_FS_ERROR found len=%d\n", metadata->event_len);
-> +
-> +               error = (struct fanotify_event_info_error *) (metadata+1);
-> +               if (error->hdr.info_type != FAN_EVENT_INFO_TYPE_ERROR) {
-> +                       printf("unknown record: %d (Expecting TYPE_ERROR)\n",
-> +                              error->hdr.info_type);
-> +                       goto next_event;
-> +               }
-> +
-> +               printf("\tGeneric Error Record: len=%d\n", error->hdr.len);
-> +               printf("\terror: %d\n", error->error);
-> +               printf("\terror_count: %d\n", error->error_count);
-> +
-> +               fid = (struct fanotify_event_info_fid *) (error + 1);
-> +
-> +               if ((char *) fid >= next) {
-> +                       printf("Event doesn't have FID\n");
-> +                       goto next_event;
-> +               }
-> +               printf("FID record found\n");
-> +
-> +               if (fid->hdr.info_type != FAN_EVENT_INFO_TYPE_FID) {
-> +                       printf("unknown record: %d (Expecting TYPE_FID)\n",
-> +                              fid->hdr.info_type);
-> +                       goto next_event;
-> +               }
-> +               printf("\tfsid: %x%x\n", fid->fsid.val[0], fid->fsid.val[1]);
-> +
-> +
-> +               file_handle = (struct file_handle *) &fid->handle;
-> +               bad_file = open_by_handle_at(mount_fd, file_handle,  O_PATH);
+You see, watching all the deleted files in a filesystem or all modified files
+in a mount may also be considered as "filesystem monitoring" by some.
 
-I would not recommend in this practice at all  and in a sample program
-in particular.
+So my only request is that you keep the book name and title as is,
+but place your content under a chapter about "filesystem error monitoring".
 
-While FID is mean to to be used as input for open_by_handle_at()
-with "regular" events, with error events FID may belong to a corrupt
-inode that cannot be opened, a filesystem that is already shutdown
-due to error or point to irrelevant root inode.
-
-I suggest that you stick to printing the FID value.
-
-A filesystem monitoring tool will typically know which filesystem it is
-watching and it will be easy for it to parse the inode and generation
-out of the FID.
-
-In fact, if the handle_type is the generic type FILEID_INO32_GEN
-and handle_bytes is 8, it is safe for this sample fs-monitor to parse the
-FID as <32bit ino; 32bit gen> and print those parsed values
-worst case the values will be wrong.
+This way, other people can later fill the gaps.
+(CC Matthew Borowski who indicated his interest in doing so)
 
 Thanks,
 Amir.
-
-> +               if (bad_file < 0) {
-> +                       printf("open_by_handle_at %d\n", errno);
-> +                       goto next_event;
-> +               }
-> +
-> +               ret = fstat(bad_file, &stat);
-> +               if (ret < 0)
-> +                       printf("fstat %d\n", errno);
-> +
-> +               printf("\tinode=%ld\n", stat.st_ino);
-> +
-> +next_event:
-> +               printf("---\n\n");
-> +       }
-> +}
-> +
-> +int main(int argc, char **argv)
-> +{
-> +       int fd;
-> +       char buffer[BUFSIZ];
-> +
-> +       if (argc < 2) {
-> +               printf("Missing path argument\n");
-> +               return 1;
-> +       }
-> +
-> +       mount_fd = open(argv[1], O_RDONLY);
-> +       if (mount_fd < 0)
-> +               errx(1, "mount_fd");
-> +
-> +       fd = fanotify_init(FAN_CLASS_NOTIF|FAN_REPORT_FID, O_RDONLY);
-> +       if (fd < 0)
-> +               errx(1, "fanotify_init");
-> +
-> +       if (fanotify_mark(fd, FAN_MARK_ADD|FAN_MARK_FILESYSTEM,
-> +                         FAN_FS_ERROR, AT_FDCWD, argv[1])) {
-> +               errx(1, "fanotify_mark");
-> +       }
-> +
-> +       while (1) {
-> +               int n = read(fd, buffer, BUFSIZ);
-> +
-> +               if (n < 0)
-> +                       errx(1, "read");
-> +
-> +               handle_notifications(buffer, n);
-> +       }
-> +
-> +       return 0;
-> +}
-> --
-> 2.32.0
->
