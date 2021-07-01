@@ -2,68 +2,102 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0701F3B93A2
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 Jul 2021 16:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 085A03B940E
+	for <lists+linux-ext4@lfdr.de>; Thu,  1 Jul 2021 17:37:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233239AbhGAPCO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 1 Jul 2021 11:02:14 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:57061 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233009AbhGAPCN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 1 Jul 2021 11:02:13 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 161ExTM8001736
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 1 Jul 2021 10:59:30 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id CD4D415C3CE1; Thu,  1 Jul 2021 10:59:29 -0400 (EDT)
-Date:   Thu, 1 Jul 2021 10:59:29 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Ye Bin <yebin10@huawei.com>
-Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jack@suse.cz
-Subject: Re: [PATCH RFC v2] ext4:fix warning in mark_buffer_dirty as IO error
- when mount with errors=continue
-Message-ID: <YN3YURikQ5SdEFLs@mit.edu>
-References: <20210615090537.3423231-1-yebin10@huawei.com>
+        id S233444AbhGAPkR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 1 Jul 2021 11:40:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233064AbhGAPkQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 1 Jul 2021 11:40:16 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14259C061762;
+        Thu,  1 Jul 2021 08:37:46 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id o33-20020a05600c5121b02901e360c98c08so7106813wms.5;
+        Thu, 01 Jul 2021 08:37:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4AawkGCXS8076zqa2ceQS9Q+T6ktDkZLlSiDG0RFEDc=;
+        b=MJKdeO/ZRwo92yK/m4HDNEVwfcJnNgUjgPXa0GIXoXtxhcFf2eduSinBeG2lfRf7N8
+         arfHhzmKJc6OjgZ3u80Wnav/tMMO/PvDQ64/1bltYZ4fbwjhOruxijD9bekyyEMA5k2+
+         VHEDfg3BaTZO7tHm6DhTfiALkkBlE7c1wphVoiYiNW/EtgTYQjOBynRZRb3eygsNhTYz
+         /fzYMkpljjvNMTswP5ouLQ4uY6vi1GEuPlUHb8mIRzwqEYvfGm160rmdE/pBHP5fTeG+
+         FO+LVWd6kmajhXkRpUmPxx+F4Ff7lAoKkynlmf7lVimZAJtUlm06XjxAXqsieNzldK9C
+         hn0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4AawkGCXS8076zqa2ceQS9Q+T6ktDkZLlSiDG0RFEDc=;
+        b=NEPyQj12qRdnvQBhqfJFaGXzjUl1yLc/90KdBWik6o+ToTsNsLw/4Iwuzl5azSjlb1
+         QP4PN3vZ1L48Ic4jRJlZPzauYyaZ4hJ/1SZaX35cWohrfxd3RjNT1WeyEqSxB8WLjavk
+         2f5+x07Hd6clUb3cUCvzH9O04IE95RLXTBNTrUqagyj63LsZxExBAer9IkOkifBazjXa
+         ZaI2ZCrua0AHq2bZvmCasEAJa88WfsXn8xXNN4vbE8G7a9uwxRauRxm2ziQ+jdbMr7jt
+         AdewF5OoO+PGRlDpHPnl/Ut5RGpthH9FP/HC2MXv6+yjsInd8paDch6crDm+ru5A6kqN
+         Kf3A==
+X-Gm-Message-State: AOAM531Fy445228CEZfCDf/Qdpt6PnhTzBh+u4wLyGKN6/J8/mOcoQlp
+        2CefJ+YPznC5/jDFDD/HgRhbbkW1EuNayec/y4oS/i9lcG0w6iz7
+X-Google-Smtp-Source: ABdhPJw83WgbDLafRLinqmNHcEfgEMwgPJTNgx2lfoPjuMO6IZwQYVdVB2s5O0sbbb4w6nVh2gP6BADr/5Fvpd4lOgU=
+X-Received: by 2002:a05:600c:21c8:: with SMTP id x8mr11345208wmj.167.1625153864584;
+ Thu, 01 Jul 2021 08:37:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210615090537.3423231-1-yebin10@huawei.com>
+References: <20210628123801.3511-1-wangshilong1991@gmail.com> <20210628223403.GE664593@dread.disaster.area>
+In-Reply-To: <20210628223403.GE664593@dread.disaster.area>
+From:   Wang Shilong <wangshilong1991@gmail.com>
+Date:   Thu, 1 Jul 2021 23:37:33 +0800
+Message-ID: <CAP9B-QnCjz4UTALx0W4QA=7qTcEHTVOVid+kJW8Te-dgJoobHg@mail.gmail.com>
+Subject: Re: [PATCH v2] fs: forbid invalid project ID
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Thanks, applied.  I reworded the commit description a bit, putting the
-explanation first, and cleaning up the text a bit to make it more
-readable:
+On Tue, Jun 29, 2021 at 6:34 AM Dave Chinner <david@fromorbit.com> wrote:
+>
+> On Mon, Jun 28, 2021 at 08:38:01AM -0400, Wang Shilong wrote:
+> > fileattr_set_prepare() should check if project ID
+> > is valid, otherwise dqget() will return NULL for
+> > such project ID quota.
+> >
+> > Signed-off-by: Wang Shilong <wshilong@ddn.com>
+> > ---
+> > v1->v2: try to fix in the VFS
+> > ---
+> >  fs/ioctl.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >
+> > diff --git a/fs/ioctl.c b/fs/ioctl.c
+> > index 1e2204fa9963..5db5b218637b 100644
+> > --- a/fs/ioctl.c
+> > +++ b/fs/ioctl.c
+> > @@ -845,6 +845,9 @@ static int fileattr_set_prepare(struct inode *inode,
+> >       if (fa->fsx_cowextsize == 0)
+> >               fa->fsx_xflags &= ~FS_XFLAG_COWEXTSIZE;
+> >
+> > +     if (!projid_valid(KPROJIDT_INIT(fa->fsx_projid)))
+> > +             return -EINVAL;
+>
+> This needs to go further up in this function in the section where
+> project IDs passed into this function are validated. Projids are
+> only allowed to be changed when current_user_ns() == &init_user_ns,
+> so this needs to be associated with that verification context.
+>
+> This check should also use make_kprojid(), please, not open code
+> KPROJIDT_INIT.
 
-commit 558d6450c7755aa005d89021204b6cdcae5e848f
-Author: Ye Bin <yebin10@huawei.com>
-Date:   Tue Jun 15 17:05:37 2021 +0800
+You are right, let me send a V3
 
-    ext4: fix WARN_ON_ONCE(!buffer_uptodate) after an error writing the superblock
-    
-    If a writeback of the superblock fails with an I/O error, the buffer
-    is marked not uptodate.  However, this can cause a WARN_ON to trigger
-    when we attempt to write superblock a second time.  (Which might
-    succeed this time, for cerrtain types of block devices such as iSCSI
-    devices over a flaky network.)
-    
-    Try to detect this case in flush_stashed_error_work(), and also change
-    __ext4_handle_dirty_metadata() so we always set the uptodate flag, not
-    just in the nojournal case.
-    
-    Before this commit, this problem can be repliciated via:
-    
-    1. dmsetup  create dust1 --table  '0 2097152 dust /dev/sdc 0 4096'
-    2. mount  /dev/mapper/dust1  /home/test
-    3. dmsetup message dust1 0 addbadblock 0 10
-    4. cd /home/test
-    5. echo "XXXXXXX" > t
-    
-    After a few seconds, we got following warning:
-
-    ... <rest of commit description was unchanged, and omitted here>
+>
+> Cheers,
+>
+> Dave.
+> --
+> Dave Chinner
+> david@fromorbit.com
