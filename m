@@ -2,136 +2,50 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 833033B8DCB
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 Jul 2021 08:37:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 688453B9383
+	for <lists+linux-ext4@lfdr.de>; Thu,  1 Jul 2021 16:41:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234306AbhGAGkJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 1 Jul 2021 02:40:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233294AbhGAGkJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 1 Jul 2021 02:40:09 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24BBBC061756;
-        Wed, 30 Jun 2021 23:37:38 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id v3so6204836ioq.9;
-        Wed, 30 Jun 2021 23:37:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=X3BOvpSFJuWPMMlKwpXq/9OQlZ1wmuvt8Dv+rwudvr4=;
-        b=nMdjG/iCZeYAL97LQzmcYlULHTFWRe5Zx/oeJgtSWzvFz7eGfhibK+65/Y8P6Plp/M
-         HfcF5/ET0r8eWJ7kT/zUrhA731G/az1ItckWNF4Fm25vMwebsfsqJxcBW+UakZykN3j7
-         Sgo3OYYaHM/rrZueJf3cV30aw9VCO31HgQKAsMzNZ22RBUDtwoMW2IKAuQtKIpoLDUTj
-         Y9fqmQHRl+bAIV2xVEuAdYCYKuFFv7gymW7Qfv3oSMeRcHpGVFUGCMuUGSs7x5TFG3zS
-         d/WCKOhv2CyFgeT4VyOu4KE4keSq2pC58nRlK96WMGOfRSZbaUq/f9WDZTD8hR2G3/W4
-         SlaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=X3BOvpSFJuWPMMlKwpXq/9OQlZ1wmuvt8Dv+rwudvr4=;
-        b=lcc3lSoFxqwHSFhRKodJv9WzgMqJl69vjCHWZ0ZS1q2IuSVrxDvFhQfC8QNCclsRhC
-         b9HcDzGpodIrrf4FmfCcXAa9tItnKOn1PYtXtwMQ2aukpcnCxIpFCJDrZgl7ofD5zKvv
-         zZlb8Gk8hMGhq1/lNu/ThSFwN3DY2vl2zq8ERVKghytv4FgrlG3ERrC16V0HjzYFOl7V
-         cNEKDRtCXDXNlAygRpx7TsE4N4nWtNte+CKBCgZCLKtplBdL44HI6i0KqlEUCFNm3fNy
-         DBOXRRpNGUecl1iAfxR6arX5SZGOvaM4AXEfPt7Xk2PsBLtffHebrixb6JulNfYQDV83
-         /3mQ==
-X-Gm-Message-State: AOAM531T406oFZM6NsQQrRtnEWOi+FBdgKCqInyp4yO1pxI7VCZ9NaXd
-        WNmEeGSFks5VCzRVh5418wy6zHb3+BS/MEGNKPoX8CUtC68=
-X-Google-Smtp-Source: ABdhPJy8xjBXxLjA9k0bdyXJHM22ZDqwIMMeWlAU53EmAX8kqwxELWBTvATPFoweKSLNb7rVZWiMRw6szGvuYgkvk8o=
-X-Received: by 2002:a02:8790:: with SMTP id t16mr12276381jai.81.1625121457510;
- Wed, 30 Jun 2021 23:37:37 -0700 (PDT)
+        id S232413AbhGAOoU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 1 Jul 2021 10:44:20 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:53919 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232363AbhGAOoT (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 1 Jul 2021 10:44:19 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 161Efi7i026069
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 1 Jul 2021 10:41:44 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id D564C15C3CE1; Thu,  1 Jul 2021 10:41:43 -0400 (EDT)
+Date:   Thu, 1 Jul 2021 10:41:43 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Josh Triplett <josh@joshtriplett.org>
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>
+Subject: Re: [PATCH 1/2] fs: ext4: Consolidate checks for resize of bigalloc
+ into ext4_resize_begin
+Message-ID: <YN3UJ5Pmq3tz9xOv@mit.edu>
+References: <bee03303d999225ecb3bfa5be8576b2f4c6edbe6.1623093259.git.josh@joshtriplett.org>
+ <YNSVUy/DTWdhzuci@mit.edu>
+ <YN0QxMh7ymC8obre@mit.edu>
+ <YN0lzsMfCWli9Qp+@localhost>
 MIME-Version: 1.0
-References: <20210629191035.681913-1-krisman@collabora.com>
- <20210629191035.681913-13-krisman@collabora.com> <CAOQ4uxiUYAwj561=ap_Hq6AwRdAdZFY1yQ99Y9_ahsd82-qFug@mail.gmail.com>
- <87v95vgsey.fsf@collabora.com>
-In-Reply-To: <87v95vgsey.fsf@collabora.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Thu, 1 Jul 2021 09:37:26 +0300
-Message-ID: <CAOQ4uxjPHQdsPcKY-WL-WE7tWGzaTmF3gzDEhCEPxW2-U3zjcg@mail.gmail.com>
-Subject: Re: [PATCH v3 12/15] fanotify: Introduce FAN_FS_ERROR event
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        Theodore Tso <tytso@mit.edu>,
-        Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.com>,
-        David Howells <dhowells@redhat.com>,
-        Khazhismel Kumykov <khazhy@google.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Ext4 <linux-ext4@vger.kernel.org>, kernel@collabora.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YN0lzsMfCWli9Qp+@localhost>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 8:43 PM Gabriel Krisman Bertazi
-<krisman@collabora.com> wrote:
->
-> Amir Goldstein <amir73il@gmail.com> writes:
->
-> >> +       fee->fsid = fee->mark->connector->fsid;
-> >> +
-> >> +       fsnotify_get_mark(fee->mark);
-> >> +
-> >> +       /*
-> >> +        * Error reporting needs to happen in atomic context.  If this
-> >> +        * inode's file handler is more than we initially predicted,
-> >> +        * there is nothing better we can do than report the error with
-> >> +        * a bad FH.
-> >> +        */
-> >> +       fh_len = fanotify_encode_fh_len(inode);
-> >> +       if (WARN_ON(fh_len > fee->max_fh_len))
-> >
-> > WARN_ON() is not acceptable for things that can logically happen
-> > if you think this is important you could use pr_warn_ratelimited()
-> > like we do in fanotify_encode_fh(),
-> > but since fs-monitor will observe the lack of FID anyway, I think
-> > there is little point in reporting this to kmsg.
->
-> Hi Amir,
->
-> Thanks for all the review so far.
->
-> Consider that fh_len > max_fh_len can happen only if the filesystem
-> requires a longer handler for the failed inode than it requires for the
-> root inode.  Looking at the FH types, I don't think this would be
-> possible to happen currently, but this WARN_ON is trying to catch future
-> problems.
->
+On Wed, Jun 30, 2021 at 07:17:50PM -0700, Josh Triplett wrote:
+> Sorry to have missed the third case here, and no problems with the
+> revert. I'm hoping that the second patch can be kept as-is, assuming
+> there's no support for resizing sparse_super2 by any code path?
 
-Don't get confused by FH types. A filesystem is not obliged to
-return a uniform and single handle_type nor uniform handle_size.
-Overlayfs FH size depends on the FH size of the fs in the layer
-the file is on, which may be different for different files.
+No worries, I missed it too in my review.  Yes, I only reverted the
+first patch, and kept the second one.  There was a minor conflict in
+the revert, but it was easily fixed up.
 
-> Notice this would not be a fs-monitor misuse of the uAPI,  but an actual
-> kernel bug. The FH size we predicted when allocating the static error
-> slot is not large enough for at least one FH of this filesystem.  So I
-> think a WARN_ON or a pr_warn is desired.  I will change it to a
-> pr_warn_ratelimited as you suggested.
->
-
-It would be a very minor kernel bug.
-It would mean that there is a filesystem that matters in practice
-for error reporting with different sizes of FH which you did not
-take into account.
-
-There is also a solution, but I think it is an overkill -
-If you follow my suggestion to recreate the mark error event
-on dequeue, you can update max_fh_len and re-created the
-next event with larger buffer size.
-
-In that case, admin will only see a few  pr_warn_ratelimited()
-messages until fs-monitors reads the overflowed error event.
-
-Also, I think it would be wise to use the NULL-FID convention
-with different handle_types to report the different cases of:
-- Failed encode (FILEID_INVALID)
-- No inode (FILEID_ROOT)
-
-Also, better use FANOTIFY_INLINE_FH_LEN as mimimum
-for error event buffer size.
-
-Thanks,
-Amir.
+    	    	       	      	    - Ted
