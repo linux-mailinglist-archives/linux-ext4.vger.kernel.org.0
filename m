@@ -2,143 +2,106 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 173903B89E1
-	for <lists+linux-ext4@lfdr.de>; Wed, 30 Jun 2021 22:49:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B698C3B8B2F
+	for <lists+linux-ext4@lfdr.de>; Thu,  1 Jul 2021 02:24:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233893AbhF3UwA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 30 Jun 2021 16:52:00 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:42983 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229700AbhF3Uv7 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 30 Jun 2021 16:51:59 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 15UKnRJf032142
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Jun 2021 16:49:27 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 2E04D15C3C8E; Wed, 30 Jun 2021 16:49:27 -0400 (EDT)
-Date:   Wed, 30 Jun 2021 16:49:27 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: [GIT PULL] ext4 updates for v5.14
-Message-ID: <YNzY12HgR4UViC4/@mit.edu>
+        id S237828AbhGAA0e (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 30 Jun 2021 20:26:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54422 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236734AbhGAA0d (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 30 Jun 2021 20:26:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 44DE761452
+        for <linux-ext4@vger.kernel.org>; Thu,  1 Jul 2021 00:24:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625099044;
+        bh=qGjmhDctBZGIFbOtIEBW2NamNRcEt+/mXssFSFIWmeE=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=nEhXQRLqSiDTpxH/Ues/+nhQb8AsYiV3Ry1Fobn3WzZjQQrRyRsRQmt5KQ426Kzoe
+         fR8AhbMlBDd8t5JqGajnHRkMhqD03k9BmglACviiXkMOsWx4g1AbRBkgvasyaaWfQL
+         2evlTzxQjDeQVDfu8895wqLrp1iCI7FUqNhfEAP3STh6zx9H/G7r2GG4qcsjQkjxuE
+         sZBob/4a0gtgZW220DWwC2wBHXJgvl+BYIngDlPYUckkcCsyVHXpdBckg0Lih5WBll
+         iBG9PKmY13UGpPoNKFtKfMgVhjUe5widQgmrUj5nStGzYHHcxsQVpdZsBfQ58k0kBf
+         q1HdSeBrb8fzA==
+Received: by pdx-korg-bugzilla-2.web.codeaurora.org (Postfix, from userid 48)
+        id 41004612AD; Thu,  1 Jul 2021 00:24:04 +0000 (UTC)
+From:   bugzilla-daemon@bugzilla.kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 213627] Fail to read block descriptors data of ext4 filesystem
+Date:   Thu, 01 Jul 2021 00:24:04 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: high
+X-Bugzilla-Who: tytso@mit.edu
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: cc
+Message-ID: <bug-213627-13602-6yfWtwuOft@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-213627-13602@https.bugzilla.kernel.org/>
+References: <bug-213627-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The following changes since commit 614124bea77e452aa6df7a8714e8bc820b489922:
+https://bugzilla.kernel.org/show_bug.cgi?id=3D213627
 
-  Linux 5.13-rc5 (2021-06-06 15:47:27 -0700)
+Theodore Tso (tytso@mit.edu) changed:
 
-are available in the Git repository at:
+           What    |Removed                     |Added
+----------------------------------------------------------------------------
+                 CC|                            |tytso@mit.edu
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus
+--- Comment #2 from Theodore Tso (tytso@mit.edu) ---
+I'm guessing that it's your snapshot driver which is buggy.   Certainly, if=
+ you
+take a snapshot using LVM, things work fine.  e.g.:
 
-for you to fetch changes up to 16aa4c9a1fbe763c147a964cdc1f5be8ed98ed13:
+# mke2fs -t ext4 /dev/cwcc-wg/scratch
+# mount -t ext4 /dev/cwcc-wg/scratch /mnt
+# cp -r /etc /mnt
+# lvcreate --snapshot -n snap -L 5G cwcc-wg/scratch
+# e2fsck -fn /dev/cwcc-wg/snap
 
-  jbd2: export jbd2_journal_[un]register_shrinker() (2021-06-30 11:05:00 -0400)
+You can see everything that has changed via a command such as "git log
+v5.0..v5.3 block fs/ext4".    In terms of what might be a relevant change,
+without understanding how your snapshot driver works, your guess is probably
+going to be better than mine --- since you have access to your snapshot dri=
+ver
+and know how it works.
 
-----------------------------------------------------------------
-In addition to bug fixes and cleanups, there are two new features for
-ext4 in 5.14:
- - Allow applications to poll on changes to /sys/fs/ext4/*/errors_count
- - Add the ioctl EXT4_IOC_CHECKPOINT which allows the journal to be
-   checkpointed, truncated and discarded or zero'ed.
+When you say that your driver "bypasses read/write calls to system block
+driver", I'm not 100% sure how it works, but at a guess, some things I'd lo=
+ok
+at are: (a) ext4 uses the buffer cache to read/write metadata blocks.   May=
+be
+your driver isn't properly intercepting buffer cache reads/writes?    (b) E=
+xt4
+at mount time reads the superblock via the buffer cache with the block size=
+ set
+to 1k; and then after it determines the block size of the file system (say,
+4k), it switches the block size of the buffer cache to the block size of the
+file system.    Ext[234] has been doing this for decades, but depending on =
+how
+your snapshot driver is working, perhaps there is some change in the how the
+buffer cache works which is confusing your driver.
 
-----------------------------------------------------------------
-Anirudh Rayabharam (1):
-      ext4: fix kernel infoleak via ext4_extent_header
+Sorry I can't help more.
 
-Eric Biggers (1):
-      ext4: fix comment for s_hash_unsigned
+--=20
+You may reply to this email to add a comment.
 
-Jan Kara (1):
-      ext4: fix overflow in ext4_iomap_alloc()
-
-Jiapeng Chong (1):
-      ext4: remove redundant assignment to error
-
-Jonathan Davies (1):
-      ext4: notify sysfs on errors_count value change
-
-Joseph Qi (1):
-      ext4: remove redundant check buffer_uptodate()
-
-Josh Triplett (2):
-      ext4: consolidate checks for resize of bigalloc into ext4_resize_begin
-      ext4: add check to prevent attempting to resize an fs with sparse_super2
-
-Leah Rumancik (3):
-      ext4: add discard/zeroout flags to journal flush
-      ext4: add ioctl EXT4_IOC_CHECKPOINT
-      ext4: update journal documentation
-
-Pan Dong (1):
-      ext4: fix avefreec in find_group_orlov
-
-Pavel Skripkin (1):
-      ext4: fix memory leak in ext4_fill_super
-
-Ritesh Harjani (2):
-      ext4: fsmap: fix the block/inode bitmap comment
-      ext4: remove duplicate definition of ext4_xattr_ibody_inline_set()
-
-Tian Tao (1):
-      ext4: remove set but rewrite variables
-
-Yang Yingliang (1):
-      ext4: return error code when ext4_fill_flex_info() fails
-
-Zhang Yi (12):
-      ext4: cleanup in-core orphan list if ext4_truncate() failed to get a transaction handle
-      ext4: remove check for zero nr_to_scan in ext4_es_scan()
-      ext4: correct the cache_nr in tracepoint ext4_es_shrink_exit
-      jbd2: remove the out label in __jbd2_journal_remove_checkpoint()
-      jbd2: ensure abort the journal if detect IO error when writing original buffer back
-      jbd2: don't abort the journal when freeing buffers
-      jbd2: remove redundant buffer io error checks
-      jbd2,ext4: add a shrinker to release checkpointed buffers
-      jbd2: simplify journal_clean_one_cp_list()
-      ext4: remove bdev_try_to_free_page() callback
-      fs: remove bdev_try_to_free_page callback
-      jbd2: export jbd2_journal_[un]register_shrinker()
-
-chenyichong (1):
-      ext4: use local variable ei instead of EXT4_I() macro
-
-yangerkun (2):
-      jbd2: clean up misleading comments for jbd2_fc_release_bufs
-      ext4: no need to verify new add extent block
-
- Documentation/filesystems/ext4/journal.rst |  39 +++++--
- fs/block_dev.c                             |  15 ---
- fs/ext4/ext4.h                             |  18 ++-
- fs/ext4/extents.c                          |   4 +
- fs/ext4/extents_status.c                   |   4 +-
- fs/ext4/fsmap.h                            |   4 +-
- fs/ext4/ialloc.c                           |  11 +-
- fs/ext4/inline.c                           |  11 +-
- fs/ext4/inode.c                            |   8 +-
- fs/ext4/ioctl.c                            |  80 +++++++++----
- fs/ext4/mmp.c                              |  28 +++--
- fs/ext4/namei.c                            |   2 +-
- fs/ext4/resize.c                           |   9 ++
- fs/ext4/super.c                            |  57 +++++----
- fs/ext4/sysfs.c                            |   5 +
- fs/ext4/xattr.c                            |  26 +----
- fs/ext4/xattr.h                            |   6 +-
- fs/jbd2/checkpoint.c                       | 206 ++++++++++++++++++++++++++-------
- fs/jbd2/journal.c                          | 230 +++++++++++++++++++++++++++++++++++--
- fs/jbd2/transaction.c                      |  17 ---
- fs/ocfs2/alloc.c                           |   2 +-
- fs/ocfs2/journal.c                         |   8 +-
- include/linux/fs.h                         |   1 -
- include/linux/jbd2.h                       |  43 ++++++-
- include/trace/events/jbd2.h                | 101 ++++++++++++++++
- 25 files changed, 720 insertions(+), 215 deletions(-)
+You are receiving this mail because:
+You are watching the assignee of the bug.=
