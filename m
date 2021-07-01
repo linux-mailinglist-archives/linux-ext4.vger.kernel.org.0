@@ -2,196 +2,136 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B9673B8C9C
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 Jul 2021 05:25:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 833033B8DCB
+	for <lists+linux-ext4@lfdr.de>; Thu,  1 Jul 2021 08:37:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232797AbhGAD1y (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 30 Jun 2021 23:27:54 -0400
-Received: from mga17.intel.com ([192.55.52.151]:2067 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230052AbhGAD1x (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 30 Jun 2021 23:27:53 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10031"; a="188844534"
-X-IronPort-AV: E=Sophos;i="5.83,313,1616482800"; 
-   d="scan'208";a="188844534"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 20:25:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,313,1616482800"; 
-   d="scan'208";a="457488174"
-Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 30 Jun 2021 20:25:18 -0700
-Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lynKH-000AG7-OJ; Thu, 01 Jul 2021 03:25:17 +0000
-Date:   Thu, 01 Jul 2021 11:24:40 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-Subject: [ext4:dev] BUILD SUCCESS 16aa4c9a1fbe763c147a964cdc1f5be8ed98ed13
-Message-ID: <60dd3578.pQifDWloDkHyvvhs%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S234306AbhGAGkJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 1 Jul 2021 02:40:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233294AbhGAGkJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 1 Jul 2021 02:40:09 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24BBBC061756;
+        Wed, 30 Jun 2021 23:37:38 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id v3so6204836ioq.9;
+        Wed, 30 Jun 2021 23:37:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=X3BOvpSFJuWPMMlKwpXq/9OQlZ1wmuvt8Dv+rwudvr4=;
+        b=nMdjG/iCZeYAL97LQzmcYlULHTFWRe5Zx/oeJgtSWzvFz7eGfhibK+65/Y8P6Plp/M
+         HfcF5/ET0r8eWJ7kT/zUrhA731G/az1ItckWNF4Fm25vMwebsfsqJxcBW+UakZykN3j7
+         Sgo3OYYaHM/rrZueJf3cV30aw9VCO31HgQKAsMzNZ22RBUDtwoMW2IKAuQtKIpoLDUTj
+         Y9fqmQHRl+bAIV2xVEuAdYCYKuFFv7gymW7Qfv3oSMeRcHpGVFUGCMuUGSs7x5TFG3zS
+         d/WCKOhv2CyFgeT4VyOu4KE4keSq2pC58nRlK96WMGOfRSZbaUq/f9WDZTD8hR2G3/W4
+         SlaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=X3BOvpSFJuWPMMlKwpXq/9OQlZ1wmuvt8Dv+rwudvr4=;
+        b=lcc3lSoFxqwHSFhRKodJv9WzgMqJl69vjCHWZ0ZS1q2IuSVrxDvFhQfC8QNCclsRhC
+         b9HcDzGpodIrrf4FmfCcXAa9tItnKOn1PYtXtwMQ2aukpcnCxIpFCJDrZgl7ofD5zKvv
+         zZlb8Gk8hMGhq1/lNu/ThSFwN3DY2vl2zq8ERVKghytv4FgrlG3ERrC16V0HjzYFOl7V
+         cNEKDRtCXDXNlAygRpx7TsE4N4nWtNte+CKBCgZCLKtplBdL44HI6i0KqlEUCFNm3fNy
+         DBOXRRpNGUecl1iAfxR6arX5SZGOvaM4AXEfPt7Xk2PsBLtffHebrixb6JulNfYQDV83
+         /3mQ==
+X-Gm-Message-State: AOAM531T406oFZM6NsQQrRtnEWOi+FBdgKCqInyp4yO1pxI7VCZ9NaXd
+        WNmEeGSFks5VCzRVh5418wy6zHb3+BS/MEGNKPoX8CUtC68=
+X-Google-Smtp-Source: ABdhPJy8xjBXxLjA9k0bdyXJHM22ZDqwIMMeWlAU53EmAX8kqwxELWBTvATPFoweKSLNb7rVZWiMRw6szGvuYgkvk8o=
+X-Received: by 2002:a02:8790:: with SMTP id t16mr12276381jai.81.1625121457510;
+ Wed, 30 Jun 2021 23:37:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20210629191035.681913-1-krisman@collabora.com>
+ <20210629191035.681913-13-krisman@collabora.com> <CAOQ4uxiUYAwj561=ap_Hq6AwRdAdZFY1yQ99Y9_ahsd82-qFug@mail.gmail.com>
+ <87v95vgsey.fsf@collabora.com>
+In-Reply-To: <87v95vgsey.fsf@collabora.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Thu, 1 Jul 2021 09:37:26 +0300
+Message-ID: <CAOQ4uxjPHQdsPcKY-WL-WE7tWGzaTmF3gzDEhCEPxW2-U3zjcg@mail.gmail.com>
+Subject: Re: [PATCH v3 12/15] fanotify: Introduce FAN_FS_ERROR event
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        Theodore Tso <tytso@mit.edu>,
+        Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.com>,
+        David Howells <dhowells@redhat.com>,
+        Khazhismel Kumykov <khazhy@google.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Ext4 <linux-ext4@vger.kernel.org>, kernel@collabora.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
-branch HEAD: 16aa4c9a1fbe763c147a964cdc1f5be8ed98ed13  jbd2: export jbd2_journal_[un]register_shrinker()
+On Wed, Jun 30, 2021 at 8:43 PM Gabriel Krisman Bertazi
+<krisman@collabora.com> wrote:
+>
+> Amir Goldstein <amir73il@gmail.com> writes:
+>
+> >> +       fee->fsid = fee->mark->connector->fsid;
+> >> +
+> >> +       fsnotify_get_mark(fee->mark);
+> >> +
+> >> +       /*
+> >> +        * Error reporting needs to happen in atomic context.  If this
+> >> +        * inode's file handler is more than we initially predicted,
+> >> +        * there is nothing better we can do than report the error with
+> >> +        * a bad FH.
+> >> +        */
+> >> +       fh_len = fanotify_encode_fh_len(inode);
+> >> +       if (WARN_ON(fh_len > fee->max_fh_len))
+> >
+> > WARN_ON() is not acceptable for things that can logically happen
+> > if you think this is important you could use pr_warn_ratelimited()
+> > like we do in fanotify_encode_fh(),
+> > but since fs-monitor will observe the lack of FID anyway, I think
+> > there is little point in reporting this to kmsg.
+>
+> Hi Amir,
+>
+> Thanks for all the review so far.
+>
+> Consider that fh_len > max_fh_len can happen only if the filesystem
+> requires a longer handler for the failed inode than it requires for the
+> root inode.  Looking at the FH types, I don't think this would be
+> possible to happen currently, but this WARN_ON is trying to catch future
+> problems.
+>
 
-elapsed time: 729m
+Don't get confused by FH types. A filesystem is not obliged to
+return a uniform and single handle_type nor uniform handle_size.
+Overlayfs FH size depends on the FH size of the fs in the layer
+the file is on, which may be different for different files.
 
-configs tested: 139
-configs skipped: 4
+> Notice this would not be a fs-monitor misuse of the uAPI,  but an actual
+> kernel bug. The FH size we predicted when allocating the static error
+> slot is not large enough for at least one FH of this filesystem.  So I
+> think a WARN_ON or a pr_warn is desired.  I will change it to a
+> pr_warn_ratelimited as you suggested.
+>
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+It would be a very minor kernel bug.
+It would mean that there is a filesystem that matters in practice
+for error reporting with different sizes of FH which you did not
+take into account.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                    vt8500_v6_v7_defconfig
-powerpc                  mpc866_ads_defconfig
-powerpc                     tqm8548_defconfig
-sh                           se7619_defconfig
-arm                       aspeed_g4_defconfig
-sh                           se7724_defconfig
-arm                         s5pv210_defconfig
-m68k                        m5272c3_defconfig
-ia64                             alldefconfig
-sh                           se7722_defconfig
-powerpc                 xes_mpc85xx_defconfig
-powerpc                      mgcoge_defconfig
-powerpc                     asp8347_defconfig
-arm                         nhk8815_defconfig
-m68k                        m5307c3_defconfig
-sh                          sdk7786_defconfig
-ia64                         bigsur_defconfig
-sh                        dreamcast_defconfig
-sh                        edosk7705_defconfig
-arm                            zeus_defconfig
-powerpc                       maple_defconfig
-powerpc                 mpc834x_mds_defconfig
-arm                          collie_defconfig
-sh                           se7721_defconfig
-arm                          gemini_defconfig
-openrisc                            defconfig
-mips                        maltaup_defconfig
-sh                             shx3_defconfig
-s390                                defconfig
-mips                           xway_defconfig
-powerpc                     sbc8548_defconfig
-arc                          axs103_defconfig
-sh                          rsk7203_defconfig
-mips                        qi_lb60_defconfig
-powerpc                        warp_defconfig
-arm                           h5000_defconfig
-mips                   sb1250_swarm_defconfig
-s390                             allyesconfig
-powerpc                     pseries_defconfig
-mips                       bmips_be_defconfig
-powerpc                   currituck_defconfig
-mips                          ath25_defconfig
-arm                             pxa_defconfig
-sh                           se7206_defconfig
-mips                         mpc30x_defconfig
-sh                   rts7751r2dplus_defconfig
-arc                     nsimosci_hs_defconfig
-powerpc                      obs600_defconfig
-m68k                        mvme147_defconfig
-mips                       lemote2f_defconfig
-powerpc                 canyonlands_defconfig
-sh                        sh7785lcr_defconfig
-sh                      rts7751r2d1_defconfig
-powerpc                 mpc8313_rdb_defconfig
-powerpc                       eiger_defconfig
-powerpc                     ksi8560_defconfig
-sh                         ecovec24_defconfig
-powerpc                  mpc885_ads_defconfig
-powerpc                      tqm8xx_defconfig
-nios2                            alldefconfig
-mips                     loongson1c_defconfig
-sh                           se7343_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a002-20210630
-x86_64               randconfig-a001-20210630
-x86_64               randconfig-a004-20210630
-x86_64               randconfig-a005-20210630
-x86_64               randconfig-a006-20210630
-x86_64               randconfig-a003-20210630
-i386                 randconfig-a004-20210630
-i386                 randconfig-a001-20210630
-i386                 randconfig-a003-20210630
-i386                 randconfig-a002-20210630
-i386                 randconfig-a005-20210630
-i386                 randconfig-a006-20210630
-i386                 randconfig-a014-20210630
-i386                 randconfig-a011-20210630
-i386                 randconfig-a016-20210630
-i386                 randconfig-a012-20210630
-i386                 randconfig-a013-20210630
-i386                 randconfig-a015-20210630
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                            kunit_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+There is also a solution, but I think it is an overkill -
+If you follow my suggestion to recreate the mark error event
+on dequeue, you can update max_fh_len and re-created the
+next event with larger buffer size.
 
-clang tested configs:
-x86_64               randconfig-b001-20210630
-x86_64               randconfig-a012-20210630
-x86_64               randconfig-a015-20210630
-x86_64               randconfig-a016-20210630
-x86_64               randconfig-a013-20210630
-x86_64               randconfig-a011-20210630
-x86_64               randconfig-a014-20210630
+In that case, admin will only see a few  pr_warn_ratelimited()
+messages until fs-monitors reads the overflowed error event.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Also, I think it would be wise to use the NULL-FID convention
+with different handle_types to report the different cases of:
+- Failed encode (FILEID_INVALID)
+- No inode (FILEID_ROOT)
+
+Also, better use FANOTIFY_INLINE_FH_LEN as mimimum
+for error event buffer size.
+
+Thanks,
+Amir.
