@@ -2,142 +2,196 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E6E63B9E66
-	for <lists+linux-ext4@lfdr.de>; Fri,  2 Jul 2021 11:39:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 374F03B9E94
+	for <lists+linux-ext4@lfdr.de>; Fri,  2 Jul 2021 11:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231502AbhGBJkz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 2 Jul 2021 05:40:55 -0400
-Received: from out0.migadu.com ([94.23.1.103]:27231 "EHLO out0.migadu.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231422AbhGBJku (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 2 Jul 2021 05:40:50 -0400
-Subject: Re: [powerpc][5.13.0-next-20210701] Kernel crash while running
- ltp(chdir01) tests
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1625218696;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UWJ+pqDT0mb1en6A52Tk3LmCoscuU9h3+MdS6wNnXpo=;
-        b=S7UNFDqRBtCV1Vxrghz/uh4InvwBHSoL4HrpnjdG/E0/OWehVxGnuShbynzAYCW8UshBo+
-        oAgJ97xfFZqaHUcHDLxz2NNb41KNgT9t/mpQTmksr0/BXG0qrgJnSaBLRTiMy1awaFMM1K
-        7vTS7yhxz0Kct+8REfCeEIMsNp3693A=
-To:     Sachin Sant <sachinp@linux.vnet.ibm.com>,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Cc:     linuxppc-dev@lists.ozlabs.org, yi.zhang@huawei.com, jack@suse.cz
-References: <26ACA75D-E13D-405B-9BFC-691B5FB64243@linux.vnet.ibm.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Guoqing Jiang <guoqing.jiang@linux.dev>
-Message-ID: <bf1c5b38-92f1-65db-e210-a97a199718ba@linux.dev>
-Date:   Fri, 2 Jul 2021 17:38:10 +0800
+        id S231302AbhGBKAR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 2 Jul 2021 06:00:17 -0400
+Received: from mail-bn7nam10on2068.outbound.protection.outlook.com ([40.107.92.68]:38881
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231422AbhGBKAP (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 2 Jul 2021 06:00:15 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ncBAYpY3no1NOjZ7JTrcxz8lG3VBnmfHAxJxhFFBk6HciQoVsYUPERbnQpWuF/XtQZwBGF75W30Ue4erI2WW1An4Qjk3NIoXGE6vmvkGNIeGGosT4qlcq90dp/GRNF3YIxnLGX+phjSi1EBTN2e+kL2hPKy3Ujmg2TC0u4PVoLlBuawDIpDktPsvAxgk8PRA/SgUQcPYzPaw8dXgUvB2VgodRqz41jjeVjif+rp5hl7u8TBG4lwmX8y6aI6DU0L3B/5cpyX7R0ISfpvQRT8tuUEpK95xPPTsVsv4+m19WYzXei3xUvy88bvYxe3hjqnT/hiRWAuWJGtDplY7Q8l2ZA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pG2tFIMmsNNVnVuHS71YoFyiAdvB8pwnEhUm434J+Ic=;
+ b=BoBuy+tdlvmg7ee1YBtC3pq/Z/39Xp4K0yBN/sygazQF4mgAVZTmKOBUD34InSaO8tY7sx7erSND+r3uZ9CYnPCsmR+ofvneaCTtHly095jjWpHDHYP+lbVItaCbj3jbxqHLqsRuaw3KKkgBFtwuJVE1S5MLcl/oRAwm5TT9X0leZVzeWom9m9IS7ddU35B29NkkiCXwX4IYJEe1clQLt7WZaoLSVtz8k1ymDKfl52P5V5cZ5eUb0sdWuGTRi08Z0PmSGBU04iTYANy/W1W9+9RBr4xMAodLiTDONw4Dx33ULCjDrut7+ov0t9cVo03CPKx7a2fA+1zYnqVm1jeCqw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pG2tFIMmsNNVnVuHS71YoFyiAdvB8pwnEhUm434J+Ic=;
+ b=q7ullNZLNtf8ulUxMls/KgUMMCXqjkQJjxYlEqJV5zC1A65pWB9TTkCIZ6EFXLQKCav9H6uTgUmMe+fOPJGml8MLb3hqZnnjipc8WeW5gaJY3yIGbJS+EGchOnpzCFg9xH1CHPtxaQzcmMx0p7aAQgCiYsTT4iL7PnxNfcy0T8rW4dbbZxnSWwaNYHbhtusmzNFbXuHE/zwZMVtHEf7ub1+UHB1j1R0ALUhn7uV9nxxRgC2olE6fKBikrz/zeeCZohXLQQoc51D+1BE2fA1Ne/PGr0sYNpzbaQhnKxsOCpVP/JkxKXs6dR+Zqmh1iurydR6V7Mb6fD4B9gfv0Y6fyQ==
+Received: from MW4PR03CA0097.namprd03.prod.outlook.com (2603:10b6:303:b7::12)
+ by BN8PR12MB3393.namprd12.prod.outlook.com (2603:10b6:408:46::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.20; Fri, 2 Jul
+ 2021 09:57:41 +0000
+Received: from CO1NAM11FT068.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:b7:cafe::8c) by MW4PR03CA0097.outlook.office365.com
+ (2603:10b6:303:b7::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.23 via Frontend
+ Transport; Fri, 2 Jul 2021 09:57:41 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ CO1NAM11FT068.mail.protection.outlook.com (10.13.175.142) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4287.22 via Frontend Transport; Fri, 2 Jul 2021 09:57:41 +0000
+Received: from [10.26.49.10] (172.20.187.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 2 Jul
+ 2021 09:57:39 +0000
+Subject: Re: [GIT PULL] ext4 updates for v5.14
+To:     Theodore Ts'o <tytso@mit.edu>, Zhang Yi <yi.zhang@huawei.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <YNzY12HgR4UViC4/@mit.edu>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <87ade24e-08f2-5fb1-7616-e6032af399a3@nvidia.com>
+Date:   Fri, 2 Jul 2021 10:57:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <26ACA75D-E13D-405B-9BFC-691B5FB64243@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YNzY12HgR4UViC4/@mit.edu>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: guoqing.jiang@linux.dev
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.187.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c1f342b7-fb84-4bd5-f7ce-08d93d3fd518
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3393:
+X-Microsoft-Antispam-PRVS: <BN8PR12MB33937C1B844D896C4F227C98D91F9@BN8PR12MB3393.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1122;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ap2kaSuS4idnSkPk5DTqoK+/aHcfLC4SKod/xw98YjvgyZV/1uO7le+tVlx+fzaGxb5aZX4Fku17E+tZyVIvNFQG9SBdmE8w54ajVIYZtl1plI1guxo85vvJjtBZbt2cS5xOBusorptotUJTyaio+aiQ12ysyKWaHsxYBhV1srfKtYfv7d+gBwUsxLOWQR1TJiLcIzq1ZiUo1YvNiVPsUGaqTZKk0f1H5BjoFPAnQ2MvaGSG+Bzq+wto8P+DqphxED25N8Lbzu8Uu4TxXwAVgcVz9x+D6BX6Vx8FmYH8qZLHOiD959BL8/SRPyeHIi9INpELKdMiAB0iutiTSxx+NyMwXPUeYZVgNdRPRkjU4kVlt5DewSthb2HNzk4+UkZ9035ANYxKj/igmOrkdF7bo/tH5GWTTAfZAJ9cE0fVTyJfaXe4GI2AU3udAhdbvTJaSP9MZoek3TLlWp9eD1ZoQ6EDN3UAPrNc7yPVGgugz+d2+H4213QZlo0nhdrZn8WYuGSAEEY/86sVjkpuV3OBanaA3sCl8cW0Vt2PPgVm4ntBchZkYo3X4BRX4wJ1Nt/HoeIMFKD+q0MyNj22UxrE7LIyeWblBdmjw2N3yq7Jwj/NVe+Gg7qWmfnUJvytXIquqLutDuhv4MHMjDJ9D28oPgzYhuY5+NT01z2QQu+J+AxI2oJ0YDHyY1ZWy/sweeckMuTw5mGyEVb4aUSP6jt/TDY7797HtMrYdrsyFCq/cnECHOZ7P03FPC2aTbHaf6YfkZ2DZIs+hCqCm1QtiGUaYw==
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(396003)(376002)(346002)(136003)(46966006)(36840700001)(16526019)(186003)(86362001)(83380400001)(36756003)(7636003)(5660300002)(110136005)(82740400003)(26005)(356005)(31686004)(336012)(53546011)(2616005)(8676002)(426003)(31696002)(82310400003)(16576012)(36860700001)(70206006)(70586007)(47076005)(4326008)(15650500001)(316002)(478600001)(54906003)(45080400002)(8936002)(36906005)(2906002)(43740500002)(357404004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jul 2021 09:57:41.5903
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: c1f342b7-fb84-4bd5-f7ce-08d93d3fd518
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT068.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB3393
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Hi Ted, Zhang,
+
+On 30/06/2021 21:49, Theodore Ts'o wrote:
+> The following changes since commit 614124bea77e452aa6df7a8714e8bc820b489922:
+> 
+>   Linux 5.13-rc5 (2021-06-06 15:47:27 -0700)
+> 
+> are available in the Git repository at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus
+> 
+> for you to fetch changes up to 16aa4c9a1fbe763c147a964cdc1f5be8ed98ed13:
+> 
+>   jbd2: export jbd2_journal_[un]register_shrinker() (2021-06-30 11:05:00 -0400)
+> 
+> ----------------------------------------------------------------
+> In addition to bug fixes and cleanups, there are two new features for
+> ext4 in 5.14:
+>  - Allow applications to poll on changes to /sys/fs/ext4/*/errors_count
+>  - Add the ioctl EXT4_IOC_CHECKPOINT which allows the journal to be
+>    checkpointed, truncated and discarded or zero'ed.
+> 
+> ----------------------------------------------------------------
+
+...
+
+> Zhang Yi (12):
+>       ext4: cleanup in-core orphan list if ext4_truncate() failed to get a transaction handle
+>       ext4: remove check for zero nr_to_scan in ext4_es_scan()
+>       ext4: correct the cache_nr in tracepoint ext4_es_shrink_exit
+>       jbd2: remove the out label in __jbd2_journal_remove_checkpoint()
+>       jbd2: ensure abort the journal if detect IO error when writing original buffer back
+>       jbd2: don't abort the journal when freeing buffers
+>       jbd2: remove redundant buffer io error checks
+>       jbd2,ext4: add a shrinker to release checkpointed buffers
 
 
-On 7/2/21 4:51 PM, Sachin Sant wrote:
-> While running LTP tests (chdir01) against 5.13.0-next20210701 booted on a Power server,
-> following crash is encountered.
->
-> [ 3051.182992] ext2 filesystem being mounted at /var/tmp/avocado_oau90dri/ltp-W0cFB5HtCy/lKhal5/mntpoint supports timestamps until 2038 (0x7fffffff)
-> [ 3051.621341] EXT4-fs (loop0): mounting ext3 file system using the ext4 subsystem
-> [ 3051.624645] EXT4-fs (loop0): mounted filesystem with ordered data mode. Opts: (null). Quota mode: none.
-> [ 3051.624682] ext3 filesystem being mounted at /var/tmp/avocado_oau90dri/ltp-W0cFB5HtCy/lKhal5/mntpoint supports timestamps until 2038 (0x7fffffff)
-> [ 3051.629026] Kernel attempted to read user page (13fda70000) - exploit attempt? (uid: 0)
-> [ 3051.629074] BUG: Unable to handle kernel data access on read at 0x13fda70000
-> [ 3051.629103] Faulting instruction address: 0xc0000000006fa5cc
-> [ 3051.629118] Oops: Kernel access of bad area, sig: 11 [#1]
-> [ 3051.629130] LE PAGE_SIZE=64K MMU=Radix SMP NR_CPUS=2048 NUMA pSeries
-> [ 3051.629148] Modules linked in: vfat fat btrfs blake2b_generic xor zstd_compress raid6_pq xfs loop sctp ip6_udp_tunnel udp_tunnel libcrc32c rpadlpar_io rpaphp dm_mod bonding rfkill sunrpc pseries_rng xts vmx_crypto uio_pdrv_genirq uio sch_fq_codel ip_tables ext4 mbcache jbd2 sd_mod t10_pi sg ibmvscsi ibmveth scsi_transport_srp fuse [last unloaded: test_cpuidle_latency]
-> [ 3051.629270] CPU: 10 PID: 274044 Comm: chdir01 Tainted: G        W  OE     5.13.0-next-20210701 #1
-> [ 3051.629289] NIP:  c0000000006fa5cc LR: c008000006949bc4 CTR: c0000000006fa5a0
-> [ 3051.629300] REGS: c000000f74de3660 TRAP: 0300   Tainted: G        W  OE      (5.13.0-next-20210701)
-> [ 3051.629314] MSR:  800000000280b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>  CR: 24000288  XER: 20040000
-> [ 3051.629342] CFAR: c008000006957564 DAR: 00000013fda70000 DSISR: 40000000 IRQMASK: 0
-> [ 3051.629342] GPR00: c008000006949bc4 c000000f74de3900 c0000000029bc800 c000000f88f0ab80
-> [ 3051.629342] GPR04: ffffffffffffffff 0000000000000020 0000000024000282 0000000000000000
-> [ 3051.629342] GPR08: c00000110628c828 0000000000000000 00000013fda70000 c008000006957550
-> [ 3051.629342] GPR12: c0000000006fa5a0 c0000013ffffbe80 0000000000000000 0000000000000000
-> [ 3051.629342] GPR16: 0000000000000000 0000000000000000 00000000100555f8 0000000010050d40
-> [ 3051.629342] GPR20: 0000000000000000 0000000010026188 0000000010026160 c000000f88f0ac08
-> [ 3051.629342] GPR24: 0000000000000000 c000000f88f0a920 0000000000000000 0000000000000002
-> [ 3051.629342] GPR28: c000000f88f0ac50 c000000f88f0a800 c000000fc5577d00 c000000f88f0ab80
-> [ 3051.629468] NIP [c0000000006fa5cc] percpu_counter_add_batch+0x2c/0xf0
-> [ 3051.629493] LR [c008000006949bc4] __jbd2_journal_remove_checkpoint+0x9c/0x280 [jbd2]
-> [ 3051.629526] Call Trace:
-> [ 3051.629532] [c000000f74de3900] [c000000f88f0a84c] 0xc000000f88f0a84c (unreliable)
-> [ 3051.629547] [c000000f74de3940] [c008000006949bc4] __jbd2_journal_remove_checkpoint+0x9c/0x280 [jbd2]
-> [ 3051.629577] [c000000f74de3980] [c008000006949eb4] jbd2_log_do_checkpoint+0x10c/0x630 [jbd2]
-> [ 3051.629605] [c000000f74de3a40] [c0080000069547dc] jbd2_journal_destroy+0x1b4/0x4e0 [jbd2]
-> [ 3051.629636] [c000000f74de3ad0] [c00800000735d72c] ext4_put_super+0xb4/0x560 [ext4]
-> [ 3051.629703] [c000000f74de3b60] [c000000000484d64] generic_shutdown_super+0xc4/0x1d0
-> [ 3051.629720] [c000000f74de3bd0] [c000000000484f48] kill_block_super+0x38/0x90
-> [ 3051.629736] [c000000f74de3c00] [c000000000485120] deactivate_locked_super+0x80/0x100
-> [ 3051.629752] [c000000f74de3c30] [c0000000004bec1c] cleanup_mnt+0x10c/0x1d0
-> [ 3051.629767] [c000000f74de3c80] [c000000000188b08] task_work_run+0xf8/0x170
-> [ 3051.629783] [c000000f74de3cd0] [c000000000021a24] do_notify_resume+0x434/0x480
-> [ 3051.629800] [c000000f74de3d80] [c000000000032910] interrupt_exit_user_prepare_main+0x1a0/0x260
-> [ 3051.629816] [c000000f74de3de0] [c000000000032d08] syscall_exit_prepare+0x68/0x150
-> [ 3051.629830] [c000000f74de3e10] [c00000000000c770] system_call_common+0x100/0x258
-> [ 3051.629846] --- interrupt: c00 at 0x7fffa2b92ffc
-> [ 3051.629855] NIP:  00007fffa2b92ffc LR: 00007fffa2b92fcc CTR: 0000000000000000
-> [ 3051.629867] REGS: c000000f74de3e80 TRAP: 0c00   Tainted: G        W  OE      (5.13.0-next-20210701)
-> [ 3051.629880] MSR:  800000000280f033 <SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 24000474  XER: 00000000
-> [ 3051.629908] IRQMASK: 0
-> [ 3051.629908] GPR00: 0000000000000034 00007fffc0242e20 00007fffa2c77100 0000000000000000
-> [ 3051.629908] GPR04: 0000000000000000 0000000000000078 0000000000000000 0000000000000020
-> [ 3051.629908] GPR08: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-> [ 3051.629908] GPR12: 0000000000000000 00007fffa2d1a310 0000000000000000 0000000000000000
-> [ 3051.629908] GPR16: 0000000000000000 0000000000000000 00000000100555f8 0000000010050d40
-> [ 3051.629908] GPR20: 0000000000000000 0000000010026188 0000000010026160 00000000100288f0
-> [ 3051.629908] GPR24: 00007fffa2d13320 00000000000186a0 0000000010025dd8 0000000010055688
-> [ 3051.629908] GPR28: 0000000010024bb8 0000000000000001 0000000000000001 0000000000000000
-> [ 3051.630022] NIP [00007fffa2b92ffc] 0x7fffa2b92ffc
-> [ 3051.630032] LR [00007fffa2b92fcc] 0x7fffa2b92fcc
-> [ 3051.630041] --- interrupt: c00
-> [ 3051.630048] Instruction dump:
-> [ 3051.630057] 60000000 3c4c022c 38422260 7c0802a6 fbe1fff8 fba1ffe8 7c7f1b78 fbc1fff0
-> [ 3051.630078] f8010010 f821ffc1 e94d0030 e9230020 <7fca4aaa> 7fbe2214 7fa9fe76 7d2aea78
-> [ 3051.630102] ---[ end trace 83afe3a19212c333 ]---
-> [ 3051.633656]
-> [ 3052.633681] Kernel panic - not syncing: Fatal exception
->
-> 5.13.0-next-20210630 was good. Bisect points to following patch:
->
-> commit 4ba3fcdde7e3
->           jbd2,ext4: add a shrinker to release checkpointed buffers
->
-> Reverting this patch allows the test to run successfully.
+I have noticed that with next-20210701 that one of our eMMC tests
+started failing on all our ARM and ARM64 platforms and bisect is
+pointing to commit 4ba3fcdde7e3 ("jbd2,ext4: add a shrinker to
+release checkpointed buffers"). Today I am seeing the same failure
+on the mainline.
 
-I guess the problem is j_jh_shrink_count was destroyed in ext4_put_super 
-_>  jbd2_journal_unregister_shrinker
-which is before the path ext4_put_super -> jbd2_journal_destroy -> 
-jbd2_log_do_checkpoint to call
-percpu_counter_dec(&journal->j_jh_shrink_count).
+Looking at the kernel logs I see the following crash ...
 
-And since jbd2_journal_unregister_shrinker is already called inside 
-jbd2_journal_destroy, does it make sense
-to do this?
+[   74.430365] Unable to handle kernel paging request at virtual address ffff8001e353a000
+[   74.438304] Mem abort info:
+[   74.441110]   ESR = 0x96000005
+[   74.444226]   EC = 0x25: DABT (current EL), IL = 32 bits
+[   74.449548]   SET = 0, FnV = 0
+[   74.452595]   EA = 0, S1PTW = 0
+[   74.455740]   FSC = 0x05: level 1 translation fault
+[   74.460620] Data abort info:
+[   74.463504]   ISV = 0, ISS = 0x00000005
+[   74.467343]   CM = 0, WnR = 0
+[   74.470314] swapper pgtable: 4k pages, 48-bit VAs, pgdp=0000000081adc000
+[   74.477013] [ffff8001e353a000] pgd=10000002771ff803, p4d=10000002771ff803, pud=0000000000000000
+[   74.485718] Internal error: Oops: 96000005 [#1] PREEMPT SMP
+[   74.491284] Modules linked in: tegra_drm snd_soc_tegra186_dspk cec snd_soc_tegra210_dmic snd_soc_tegra210_admaif snd_soc_tegra_pcm snd_soc_tegra210_i2s drm_kms_helper drm snd_soc_tegra210_ahub tegra210_adma crct10dif_ce snd_hda_codec_hdmi snd_soc_tegra_audio_graph_card snd_soc_audio_graph_card snd_hda_tegra snd_soc_simple_card_utils snd_hda_codec at24 tegra_bpmp_thermal snd_hda_core tegra_aconnect tegra_xudc ina3221 host1x ip_tables x_tables ipv6
+[   74.530804] CPU: 0 PID: 936 Comm: umount Tainted: G S                5.13.0-next-20210701-gfb0ca446157a #1
+[   74.540446] Hardware name: NVIDIA Jetson TX2 Developer Kit (DT)
+[   74.546354] pstate: a0000005 (NzCv daif -PAN -UAO -TCO BTYPE=--)
+[   74.552354] pc : percpu_counter_add_batch+0x30/0x118
+[   74.557317] lr : __jbd2_journal_remove_checkpoint+0x70/0x170
+[   74.562972] sp : ffff800013923b90
+[   74.566278] x29: ffff800013923b90 x28: ffff000080ba8d80 x27: 0000000000000000
+[   74.573408] x26: 0000000000000001 x25: 0000000000000006 x24: ffff000080ba8d80
+[   74.580536] x23: ffff00008965a450 x22: ffff800011ce9000 x21: ffff00008965a380
+[   74.587665] x20: ffffffffffffffff x19: ffff00008a9d8000 x18: 0000000000000011
+[   74.594792] x17: 0000000000000000 x16: 0000000000000000 x15: 000000000000038d
+[   74.601921] x14: 0000000000000000 x13: 0000000000000000 x12: 0000000000000000
+[   74.609048] x11: 0000000000000001 x10: 0000000000000960 x9 : ffff800013923b90
+[   74.616175] x8 : ffff000080ba9740 x7 : 0000000000000400 x6 : ffff00008965a0b0
+[   74.623304] x5 : ffff00008965a0b0 x4 : ffff8001e353a000 x3 : ffff000080ba8d80
+[   74.630430] x2 : 0000000000000020 x1 : 0000000000000000 x0 : ffff00008965a380
+[   74.637558] Call trace:
+[   74.640000]  percpu_counter_add_batch+0x30/0x118
+[   74.644610]  __jbd2_journal_remove_checkpoint+0x70/0x170
+[   74.649914]  jbd2_log_do_checkpoint+0xa8/0x398
+[   74.654351]  jbd2_journal_destroy+0x100/0x2a8
+[   74.658703]  ext4_put_super+0x7c/0x388
+[   74.662449]  generic_shutdown_super+0x70/0xf8
+[   74.666802]  kill_block_super+0x1c/0x60
+[   74.670633]  deactivate_locked_super+0x6c/0x98
+[   74.675071]  deactivate_super+0x84/0x90
+[   74.678901]  cleanup_mnt+0x8c/0x110
+[   74.682385]  __cleanup_mnt+0x10/0x18
+[   74.685953]  task_work_run+0x78/0x150
+[   74.689612]  do_notify_resume+0x31c/0x498
+[   74.693618]  work_pending+0xc/0x328
+[   74.697103] Code: 11000484 b9000864 d538d084 f9401001 (b8a46833) 
+[   74.703186] ---[ end trace e18485293afc06e4 ]---
 
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1176,7 +1176,6 @@ static void ext4_put_super(struct super_block *sb)
-         ext4_unregister_sysfs(sb);
 
-         if (sbi->s_journal) {
--               jbd2_journal_unregister_shrinker(sbi->s_journal);
-                 aborted = is_journal_aborted(sbi->s_journal);
-                 err = jbd2_journal_destroy(sbi->s_journal);
-                 sbi->s_journal = NULL;
+Is this causing problems for anyone else?
 
-Thanks,
-Guoqing
+Thanks
+Jon
+
+-- 
+nvpublic
