@@ -2,182 +2,95 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62ED23BA5E9
-	for <lists+linux-ext4@lfdr.de>; Sat,  3 Jul 2021 00:12:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 781B13BA60A
+	for <lists+linux-ext4@lfdr.de>; Sat,  3 Jul 2021 00:45:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230372AbhGBWOo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 2 Jul 2021 18:14:44 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:41050 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230141AbhGBWOo (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 2 Jul 2021 18:14:44 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 162MBiGh015008
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 2 Jul 2021 18:11:45 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id B3FE515C3CE6; Fri,  2 Jul 2021 18:11:44 -0400 (EDT)
-Date:   Fri, 2 Jul 2021 18:11:44 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Zhang Yi <yi.zhang@huawei.com>
-Cc:     Jan Kara <jack@suse.cz>, linuxppc-dev@lists.ozlabs.org,
-        Guoqing Jiang <guoqing.jiang@linux.dev>,
-        Sachin Sant <sachinp@linux.vnet.ibm.com>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: Re: [powerpc][5.13.0-next-20210701] Kernel crash while running
- ltp(chdir01) tests
-Message-ID: <YN+PIKV010a+j88S@mit.edu>
-References: <26ACA75D-E13D-405B-9BFC-691B5FB64243@linux.vnet.ibm.com>
- <bf1c5b38-92f1-65db-e210-a97a199718ba@linux.dev>
- <4cc87ab3-aaa6-ed87-b690-5e5b99de8380@huawei.com>
- <03f734bd-f36e-f55b-0448-485b8a0d5b75@huawei.com>
- <YN86yl5kgVaRixxQ@mit.edu>
+        id S230124AbhGBWsZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 2 Jul 2021 18:48:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230020AbhGBWsY (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 2 Jul 2021 18:48:24 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F1C1C061762
+        for <linux-ext4@vger.kernel.org>; Fri,  2 Jul 2021 15:45:50 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id w15so11199678pgk.13
+        for <linux-ext4@vger.kernel.org>; Fri, 02 Jul 2021 15:45:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DHGJzaO2okYK4q0pTyQH6k3SJA9HXiRQm8Gztd2X1pQ=;
+        b=T38grMs1AxOiINcstgg1ZMFrGyhr++JErmZenVtokcx+D9DFnTqCfqCaltFGrEvjqh
+         1/vjDa5uQUF12yJ9PuA9fxR00Gsv3keEZflC6w4iciVEFdrnkSTzbMCxoHSJlWUvEso7
+         e/wr89t4O99hAXRBJPymVZuRgA8fVlzdGMaPlDFEjNwzXfGMycVKxzHJpYxUAFLktk86
+         +axQB57dSVaSJTl3vNg/1qhtRXgwYOdblpejsANoZAAyxz3Qrh4KlKyLZVfkS7J6Atca
+         0FFfxBK+IRYoBWZJp+TlexWj03ALRImUMFLFehaqUfEQvruH/WG1KGcQMl/bN3fEt7wl
+         RCng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DHGJzaO2okYK4q0pTyQH6k3SJA9HXiRQm8Gztd2X1pQ=;
+        b=LJ6rZuJET539GaAE9c71rMepEfEyMcvQzesgz6qL/G0mFT4H0pkrDmNzv0Kv5ZPnVE
+         wwwawjnQcvHTVoZ4tPpWW6Zy3mZz7l2gx6oH09X5NNzyJefLJMQZM5ER1kWtyBkMGR0R
+         ymkqp8CC6nVbvEYZs1oP3caifM35/xjbQiACRvew70WwIY+tSupfuAoWGiNgGMeBAq3w
+         AO/+7NaEsyFPhjCOKy6bbP+2tZwHIldMsZLiWFOB4IWlnsEk3nPM/3zN/iRipyYT6qPn
+         O4HtdlswYZbWX/JWE222DXrOavYAFpdhMg1GQHyp3x+I5VZLFzbC8rZixISyITFmnIdm
+         hKsQ==
+X-Gm-Message-State: AOAM530JHYRFq1ybnmH5UoZmBt5ENo/J6CCX1riFeGEPWtQGWWlwVV0O
+        yjIIVmw8WHzc/oBbVR/U5Aw=
+X-Google-Smtp-Source: ABdhPJwuxSX0J2+pcbjjAyx88c9N5vVcYmNrB+Q2zmEcEQ9LGrGDXvp8Jjwqa/8YmQrfLyedRRHmvw==
+X-Received: by 2002:a62:b616:0:b029:303:aa7b:b2e0 with SMTP id j22-20020a62b6160000b0290303aa7bb2e0mr1948209pff.21.1625265949647;
+        Fri, 02 Jul 2021 15:45:49 -0700 (PDT)
+Received: from google.com ([2601:647:4701:18d0:6f31:f492:36f:743b])
+        by smtp.gmail.com with ESMTPSA id u36sm4510640pfg.216.2021.07.02.15.45.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Jul 2021 15:45:49 -0700 (PDT)
+Date:   Fri, 2 Jul 2021 15:45:46 -0700
+From:   Leah Rumancik <leah.rumancik@gmail.com>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>
+Subject: Re: [PATCH] ext4: fix flags validity checking for EXT4_IOC_CHECKPOINT
+Message-ID: <YN+XGsHSnu+SerWU@google.com>
+References: <20210702173425.1276158-1-tytso@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YN86yl5kgVaRixxQ@mit.edu>
+In-Reply-To: <20210702173425.1276158-1-tytso@mit.edu>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Jul 02, 2021 at 12:11:54PM -0400, Theodore Ts'o wrote:
-> So it probably makes more sense to keep jbd2_journal_unregister_shrinker()
-> in jbd2_destroy_journal(), since arguably the fact that we are using a
-> shrinker is an internal implementation detail, and the users of jbd2
-> ideally shouldn't need to be expected to know they have unregister
-> jbd2's shirnkers.
+On Fri, Jul 02, 2021 at 01:34:25PM -0400, Theodore Ts'o wrote:
+> Use the correct bitmask when checking for any not-yet-supported flags.
 > 
-> Similarly, perhaps we should be moving jbd2_journal_register_shirnker()
-> into jbd2_journal_init_common().  We can un-export the register and
-> unshrink register functions, and declare them as static functions internal
-> to fs/jbd2/journal.c.
+> Fixes: 351a0a3fbc35 ("ext4: add ioctl EXT4_IOC_CHECKPOINT")
+> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+> Cc: Leah Rumancik <leah.rumancik@gmail.com>
+> ---
+>  fs/ext4/ioctl.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> What do you think?
+> diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
+> index 5730aeca563c..6eed6170aded 100644
+> --- a/fs/ext4/ioctl.c
+> +++ b/fs/ext4/ioctl.c
+> @@ -823,7 +823,7 @@ static int ext4_ioctl_checkpoint(struct file *filp, unsigned long arg)
+>  	if (!EXT4_SB(sb)->s_journal)
+>  		return -ENODEV;
+>  
+> -	if (flags & ~JBD2_JOURNAL_FLUSH_VALID)
+> +	if (flags & ~EXT4_IOC_CHECKPOINT_FLAG_VALID)
+>  		return -EINVAL;
+>  
+>  	q = bdev_get_queue(EXT4_SB(sb)->s_journal->j_dev);
+> -- 
+> 2.31.0
+> 
 
-Like this...
+Thanks for the fix.
 
-commit 8f9e16badb8fda3391e03146a47c93e76680efaf
-Author: Theodore Ts'o <tytso@mit.edu>
-Date:   Fri Jul 2 18:05:03 2021 -0400
+Reviewed-by: Leah Rumancik <leah.rumancik@gmail.com>
 
-    ext4: fix doubled call to jbd2_journal_unregister_shrinker()
-    
-    On Power and ARM platforms this was causing kernel crash when
-    unmounting the file system, due to a percpu_counter getting destroyed
-    twice.
-    
-    Fix this by cleaning how the jbd2 shrinker is initialized and
-    uninitiazed by making it solely the responsibility of
-    fs/jbd2/journal.c.
-    
-    Fixes: 4ba3fcdde7e3 ("jbd2,ext4: add a shrinker to release checkpointed buffers")
-    Reported-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
-    Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index b8ff0399e171..dfa09a277b56 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1184,7 +1184,6 @@ static void ext4_put_super(struct super_block *sb)
- 	ext4_unregister_sysfs(sb);
- 
- 	if (sbi->s_journal) {
--		jbd2_journal_unregister_shrinker(sbi->s_journal);
- 		aborted = is_journal_aborted(sbi->s_journal);
- 		err = jbd2_journal_destroy(sbi->s_journal);
- 		sbi->s_journal = NULL;
-@@ -5176,7 +5175,6 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 	sbi->s_ea_block_cache = NULL;
- 
- 	if (sbi->s_journal) {
--		jbd2_journal_unregister_shrinker(sbi->s_journal);
- 		jbd2_journal_destroy(sbi->s_journal);
- 		sbi->s_journal = NULL;
- 	}
-@@ -5502,12 +5500,6 @@ static int ext4_load_journal(struct super_block *sb,
- 		ext4_commit_super(sb);
- 	}
- 
--	err = jbd2_journal_register_shrinker(journal);
--	if (err) {
--		EXT4_SB(sb)->s_journal = NULL;
--		goto err_out;
--	}
--
- 	return 0;
- 
- err_out:
-diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index 152880c298ca..2595703aca51 100644
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -99,6 +99,8 @@ EXPORT_SYMBOL(jbd2_journal_begin_ordered_truncate);
- EXPORT_SYMBOL(jbd2_inode_cache);
- 
- static int jbd2_journal_create_slab(size_t slab_size);
-+static int jbd2_journal_register_shrinker(journal_t *journal);
-+static void jbd2_journal_unregister_shrinker(journal_t *journal);
- 
- #ifdef CONFIG_JBD2_DEBUG
- void __jbd2_debug(int level, const char *file, const char *func,
-@@ -2043,7 +2045,8 @@ int jbd2_journal_load(journal_t *journal)
- 		goto recovery_error;
- 
- 	journal->j_flags |= JBD2_LOADED;
--	return 0;
-+
-+	return jbd2_journal_register_shrinker(journal);
- 
- recovery_error:
- 	printk(KERN_WARNING "JBD2: recovery failed\n");
-@@ -2099,7 +2102,7 @@ static unsigned long jbd2_journal_shrink_count(struct shrinker *shrink,
-  * Init a percpu counter to record the checkpointed buffers on the checkpoint
-  * list and register a shrinker to release their journal_head.
-  */
--int jbd2_journal_register_shrinker(journal_t *journal)
-+static int jbd2_journal_register_shrinker(journal_t *journal)
- {
- 	int err;
- 
-@@ -2122,7 +2125,6 @@ int jbd2_journal_register_shrinker(journal_t *journal)
- 
- 	return 0;
- }
--EXPORT_SYMBOL(jbd2_journal_register_shrinker);
- 
- /**
-  * jbd2_journal_unregister_shrinker()
-@@ -2130,12 +2132,13 @@ EXPORT_SYMBOL(jbd2_journal_register_shrinker);
-  *
-  * Unregister the checkpointed buffer shrinker and destroy the percpu counter.
-  */
--void jbd2_journal_unregister_shrinker(journal_t *journal)
-+static void jbd2_journal_unregister_shrinker(journal_t *journal)
- {
--	percpu_counter_destroy(&journal->j_jh_shrink_count);
--	unregister_shrinker(&journal->j_shrinker);
-+	if (journal->j_shrinker.flags & SHRINKER_REGISTERED) {
-+		percpu_counter_destroy(&journal->j_jh_shrink_count);
-+		unregister_shrinker(&journal->j_shrinker);
-+	}
- }
--EXPORT_SYMBOL(jbd2_journal_unregister_shrinker);
- 
- /**
-  * jbd2_journal_destroy() - Release a journal_t structure.
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index 6cc035321562..632afbe4b18f 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -1556,8 +1556,6 @@ extern int	   jbd2_journal_set_features
- 		   (journal_t *, unsigned long, unsigned long, unsigned long);
- extern void	   jbd2_journal_clear_features
- 		   (journal_t *, unsigned long, unsigned long, unsigned long);
--extern int	   jbd2_journal_register_shrinker(journal_t *journal);
--extern void	   jbd2_journal_unregister_shrinker(journal_t *journal);
- extern int	   jbd2_journal_load       (journal_t *journal);
- extern int	   jbd2_journal_destroy    (journal_t *);
- extern int	   jbd2_journal_recover    (journal_t *journal);
+-Leah
