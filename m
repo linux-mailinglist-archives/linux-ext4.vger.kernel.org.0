@@ -2,95 +2,104 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 781B13BA60A
-	for <lists+linux-ext4@lfdr.de>; Sat,  3 Jul 2021 00:45:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBFD33BA6D7
+	for <lists+linux-ext4@lfdr.de>; Sat,  3 Jul 2021 05:05:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230124AbhGBWsZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 2 Jul 2021 18:48:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230020AbhGBWsY (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 2 Jul 2021 18:48:24 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F1C1C061762
-        for <linux-ext4@vger.kernel.org>; Fri,  2 Jul 2021 15:45:50 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id w15so11199678pgk.13
-        for <linux-ext4@vger.kernel.org>; Fri, 02 Jul 2021 15:45:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DHGJzaO2okYK4q0pTyQH6k3SJA9HXiRQm8Gztd2X1pQ=;
-        b=T38grMs1AxOiINcstgg1ZMFrGyhr++JErmZenVtokcx+D9DFnTqCfqCaltFGrEvjqh
-         1/vjDa5uQUF12yJ9PuA9fxR00Gsv3keEZflC6w4iciVEFdrnkSTzbMCxoHSJlWUvEso7
-         e/wr89t4O99hAXRBJPymVZuRgA8fVlzdGMaPlDFEjNwzXfGMycVKxzHJpYxUAFLktk86
-         +axQB57dSVaSJTl3vNg/1qhtRXgwYOdblpejsANoZAAyxz3Qrh4KlKyLZVfkS7J6Atca
-         0FFfxBK+IRYoBWZJp+TlexWj03ALRImUMFLFehaqUfEQvruH/WG1KGcQMl/bN3fEt7wl
-         RCng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DHGJzaO2okYK4q0pTyQH6k3SJA9HXiRQm8Gztd2X1pQ=;
-        b=LJ6rZuJET539GaAE9c71rMepEfEyMcvQzesgz6qL/G0mFT4H0pkrDmNzv0Kv5ZPnVE
-         wwwawjnQcvHTVoZ4tPpWW6Zy3mZz7l2gx6oH09X5NNzyJefLJMQZM5ER1kWtyBkMGR0R
-         ymkqp8CC6nVbvEYZs1oP3caifM35/xjbQiACRvew70WwIY+tSupfuAoWGiNgGMeBAq3w
-         AO/+7NaEsyFPhjCOKy6bbP+2tZwHIldMsZLiWFOB4IWlnsEk3nPM/3zN/iRipyYT6qPn
-         O4HtdlswYZbWX/JWE222DXrOavYAFpdhMg1GQHyp3x+I5VZLFzbC8rZixISyITFmnIdm
-         hKsQ==
-X-Gm-Message-State: AOAM530JHYRFq1ybnmH5UoZmBt5ENo/J6CCX1riFeGEPWtQGWWlwVV0O
-        yjIIVmw8WHzc/oBbVR/U5Aw=
-X-Google-Smtp-Source: ABdhPJwuxSX0J2+pcbjjAyx88c9N5vVcYmNrB+Q2zmEcEQ9LGrGDXvp8Jjwqa/8YmQrfLyedRRHmvw==
-X-Received: by 2002:a62:b616:0:b029:303:aa7b:b2e0 with SMTP id j22-20020a62b6160000b0290303aa7bb2e0mr1948209pff.21.1625265949647;
-        Fri, 02 Jul 2021 15:45:49 -0700 (PDT)
-Received: from google.com ([2601:647:4701:18d0:6f31:f492:36f:743b])
-        by smtp.gmail.com with ESMTPSA id u36sm4510640pfg.216.2021.07.02.15.45.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Jul 2021 15:45:49 -0700 (PDT)
-Date:   Fri, 2 Jul 2021 15:45:46 -0700
-From:   Leah Rumancik <leah.rumancik@gmail.com>
+        id S230180AbhGCDHn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 2 Jul 2021 23:07:43 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:10241 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230051AbhGCDHm (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 2 Jul 2021 23:07:42 -0400
+Received: from dggeme752-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GGxWP1Z0qz1BSYn;
+        Sat,  3 Jul 2021 10:59:45 +0800 (CST)
+Received: from [10.174.178.134] (10.174.178.134) by
+ dggeme752-chm.china.huawei.com (10.3.19.98) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Sat, 3 Jul 2021 11:05:07 +0800
+Subject: Re: [powerpc][5.13.0-next-20210701] Kernel crash while running
+ ltp(chdir01) tests
 To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH] ext4: fix flags validity checking for EXT4_IOC_CHECKPOINT
-Message-ID: <YN+XGsHSnu+SerWU@google.com>
-References: <20210702173425.1276158-1-tytso@mit.edu>
+CC:     Jan Kara <jack@suse.cz>, <linuxppc-dev@lists.ozlabs.org>,
+        Guoqing Jiang <guoqing.jiang@linux.dev>,
+        Sachin Sant <sachinp@linux.vnet.ibm.com>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+References: <26ACA75D-E13D-405B-9BFC-691B5FB64243@linux.vnet.ibm.com>
+ <bf1c5b38-92f1-65db-e210-a97a199718ba@linux.dev>
+ <4cc87ab3-aaa6-ed87-b690-5e5b99de8380@huawei.com>
+ <03f734bd-f36e-f55b-0448-485b8a0d5b75@huawei.com> <YN86yl5kgVaRixxQ@mit.edu>
+From:   Zhang Yi <yi.zhang@huawei.com>
+Message-ID: <36778615-86fd-9a19-9bc9-f93a6f2d5817@huawei.com>
+Date:   Sat, 3 Jul 2021 11:05:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210702173425.1276158-1-tytso@mit.edu>
+In-Reply-To: <YN86yl5kgVaRixxQ@mit.edu>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.134]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggeme752-chm.china.huawei.com (10.3.19.98)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Jul 02, 2021 at 01:34:25PM -0400, Theodore Ts'o wrote:
-> Use the correct bitmask when checking for any not-yet-supported flags.
+On 2021/7/3 0:11, Theodore Ts'o wrote:
+> On Fri, Jul 02, 2021 at 09:52:13PM +0800, Zhang Yi wrote:
+>>
+>> Sorry about not catching this problem, this fix is not format corrected,
+>> if you think this fix is OK, I can send a patch after test.
 > 
-> Fixes: 351a0a3fbc35 ("ext4: add ioctl EXT4_IOC_CHECKPOINT")
-> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-> Cc: Leah Rumancik <leah.rumancik@gmail.com>
-> ---
->  fs/ext4/ioctl.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> The issue I see with your approach, which removes the
+> jbd2_journal_unregister_shrinker() call from jbd2_destsroy_journal(),
+> is that means that *all* callers of jbd2_destroy_journal now have to
+> be responsible for calling jbd2_journal_unregister_shrinker() --- and
+> there a number of call sites to jbd2_journal_unregister_shrinker():
 > 
-> diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-> index 5730aeca563c..6eed6170aded 100644
-> --- a/fs/ext4/ioctl.c
-> +++ b/fs/ext4/ioctl.c
-> @@ -823,7 +823,7 @@ static int ext4_ioctl_checkpoint(struct file *filp, unsigned long arg)
->  	if (!EXT4_SB(sb)->s_journal)
->  		return -ENODEV;
->  
-> -	if (flags & ~JBD2_JOURNAL_FLUSH_VALID)
-> +	if (flags & ~EXT4_IOC_CHECKPOINT_FLAG_VALID)
->  		return -EINVAL;
->  
->  	q = bdev_get_queue(EXT4_SB(sb)->s_journal->j_dev);
-> -- 
-> 2.31.0
+> fs/ext4/super.c:		err = jbd2_journal_destroy(sbi->s_journal);
+> fs/ext4/super.c:		jbd2_journal_destroy(sbi->s_journal);
+> fs/ext4/super.c:	jbd2_journal_destroy(journal);
+> fs/ext4/super.c:		jbd2_journal_destroy(journal);
+> fs/ext4/super.c:	jbd2_journal_destroy(journal);
+> fs/ocfs2/journal.c:	if (!jbd2_journal_destroy(journal->j_journal) && !status) {
+> fs/ocfs2/journal.c:		jbd2_journal_destroy(journal);
+> fs/ocfs2/journal.c:	jbd2_journal_destroy(journal);
 > 
 
-Thanks for the fix.
+Originally, I want to add this shrinker as a optional feature for jbd2 because
+only ext4 use it now and I'm not sure does ocfs2 needs this feature. So I export
+jbd2_journal_[un]register_shrinker(), ext4 could invoke them individually.
 
-Reviewed-by: Leah Rumancik <leah.rumancik@gmail.com>
+If with my fix, there is no responsible for calling
+jbd2_journal_unregister_shrinker() before every jbd2_journal_destroy(). There
+are only two places that need to do this, one is the error path after
+ext4_load_journal() because we have already register the shrinker, other one
+is in ext4_put_super() before the final release of the journal.
+jbd2_journal_unregister_shrinker() and jbd2_journal_destroy() do not have
+the strong dependence.
 
--Leah
+And one more thing we to could do is rename the 'j_jh_shrink_count' to something
+like 'j_checkpoint_jh_count' because we always init it no matter we register the
+shrinker or not later.
+
+> So it probably makes more sense to keep jbd2_journal_unregister_shrinker()
+> in jbd2_destroy_journal(), since arguably the fact that we are using a
+> shrinker is an internal implementation detail, and the users of jbd2
+> ideally shouldn't need to be expected to know they have unregister
+> jbd2's shirnkers.
+> 
+> Similarly, perhaps we should be moving jbd2_journal_register_shirnker()
+> into jbd2_journal_init_common().  We can un-export the register and
+> unshrink register functions, and declare them as static functions internal
+> to fs/jbd2/journal.c.
+> 
+
+Yeah, it's make sense and It's sound good to me if the shrinker doesn't have
+side effects on osfs2.
+
+Thanks,
+Yi.
