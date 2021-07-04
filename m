@@ -2,138 +2,353 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FAAA3BAAD4
-	for <lists+linux-ext4@lfdr.de>; Sun,  4 Jul 2021 03:35:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B963BAD53
+	for <lists+linux-ext4@lfdr.de>; Sun,  4 Jul 2021 16:04:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229907AbhGDBhr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 3 Jul 2021 21:37:47 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:14463 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbhGDBhq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 3 Jul 2021 21:37:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1625362512; x=1656898512;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=d12ngtaNL85OjZKjEac9shxBSZoy7AyPEUt7niWW5MI=;
-  b=FKva5AIhuWcYtn4ekyiB+Chv6Os6HpJsx+vqjGnGjcC2Y3dyC4ki9S/S
-   vWrXcNcg1r737SIZO31IurrNVlGjXEBkQG5hnkvIBPTLH4UjIfgfDKKKv
-   AfloShb0EMDH2NJ356CUrWlf3iPe/oSGy8UK9i2awh8/IBV9uNf6pj+sn
-   s=;
-X-IronPort-AV: E=Sophos;i="5.83,323,1616457600"; 
-   d="scan'208";a="118498715"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1e-303d0b0e.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-4101.iad4.amazon.com with ESMTP; 04 Jul 2021 01:35:11 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1e-303d0b0e.us-east-1.amazon.com (Postfix) with ESMTPS id 8D303A2555;
-        Sun,  4 Jul 2021 01:35:10 +0000 (UTC)
-Received: from EX13D19UWC004.ant.amazon.com (10.43.162.56) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Sun, 4 Jul 2021 01:35:09 +0000
-Received: from EX13D19UWC001.ant.amazon.com (10.43.162.64) by
- EX13D19UWC004.ant.amazon.com (10.43.162.56) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Sun, 4 Jul 2021 01:35:09 +0000
-Received: from EX13D19UWC001.ant.amazon.com ([10.43.162.64]) by
- EX13D19UWC001.ant.amazon.com ([10.43.162.64]) with mapi id 15.00.1497.018;
- Sun, 4 Jul 2021 01:35:09 +0000
-From:   "Erdogan, Tahsin" <trdgn@amazon.com>
-To:     Theodore Ts'o <tytso@mit.edu>
-CC:     Jan Kara <jack@suse.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 4.19] ext4: eliminate bogus error in
- ext4_data_block_valid_rcu()
-Thread-Topic: [PATCH 4.19] ext4: eliminate bogus error in
- ext4_data_block_valid_rcu()
-Thread-Index: AQHXcHTT8UN1zsnza0mnnGKkuTe2tA==
-Date:   Sun, 4 Jul 2021 01:35:09 +0000
-Message-ID: <1625362509314.54473@amazon.com>
-References: <20210703230555.4093-1-trdgn@amazon.com>,<YOEHmjjY9facxtIY@mit.edu>
-In-Reply-To: <YOEHmjjY9facxtIY@mit.edu>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.43.160.66]
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        id S229570AbhGDOHa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 4 Jul 2021 10:07:30 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:32884 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229492AbhGDOHa (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 4 Jul 2021 10:07:30 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 164E4L5N015602
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 4 Jul 2021 10:04:22 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id C388115C3C96; Sun,  4 Jul 2021 10:04:21 -0400 (EDT)
+Date:   Sun, 4 Jul 2021 10:04:21 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Zhang Yi <yi.zhang@huawei.com>
+Cc:     Jan Kara <jack@suse.cz>, linuxppc-dev@lists.ozlabs.org,
+        Guoqing Jiang <guoqing.jiang@linux.dev>,
+        Sachin Sant <sachinp@linux.vnet.ibm.com>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: Re: [powerpc][5.13.0-next-20210701] Kernel crash while running
+ ltp(chdir01) tests
+Message-ID: <YOG/5ZY1AL05jumi@mit.edu>
+References: <26ACA75D-E13D-405B-9BFC-691B5FB64243@linux.vnet.ibm.com>
+ <bf1c5b38-92f1-65db-e210-a97a199718ba@linux.dev>
+ <4cc87ab3-aaa6-ed87-b690-5e5b99de8380@huawei.com>
+ <03f734bd-f36e-f55b-0448-485b8a0d5b75@huawei.com>
+ <YN86yl5kgVaRixxQ@mit.edu>
+ <36778615-86fd-9a19-9bc9-f93a6f2d5817@huawei.com>
+ <YN/a70ucYXu0DqGf@mit.edu>
+ <66fb56cd-f1ff-c592-0202-0691372e32f5@huawei.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <66fb56cd-f1ff-c592-0202-0691372e32f5@huawei.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-> If I understand the commit description, this patch is only intended=0A=
-> for the 4.19 stable kernel.  If this is the case, I'd suggest using=0A=
-> the Subject prefix [PATCH 4.19] for future patches.  This is more=0A=
-=0A=
-Hi Ted, yes this is only intended for 4.19. Thanks for the tip on subject l=
-ine,=0A=
-I will keep that in mind in the future.=0A=
-=0A=
-> if you could indicate whether a similar fix is needed for 4.14, and=0A=
-> other older LTS kernels, or whether the only stable backport which had=0A=
-> this bug was 4.19.=0A=
-=0A=
-I have checked 4.4, 4.9, 4.14, 5.8. They all look fine. I believe this prob=
-lem=0A=
-only affects 4.19.=0A=
-=0A=
-> P.S.  Great to see you've landed at Amazon!  It's been a while; if I=0A=
-> have a chance to make it out to Seattle, one of these days, it would=0A=
-> be great to catch up.=0A=
-=0A=
-Absolutely, drop me a note next time you are around Seattle.=0A=
-=0A=
-thanks=0A=
-tahsin=0A=
-=0A=
-________________________________________=0A=
-From: Theodore Ts'o <tytso@mit.edu>=0A=
-Sent: Saturday, July 3, 2021 5:58 PM=0A=
-To: Erdogan, Tahsin=0A=
-Cc: Jan Kara; Greg Kroah-Hartman; stable@vger.kernel.org; Andreas Dilger; l=
-inux-ext4@vger.kernel.org; linux-kernel@vger.kernel.org=0A=
-Subject: RE: [EXTERNAL] [PATCH] ext4: eliminate bogus error in ext4_data_bl=
-ock_valid_rcu()=0A=
-=0A=
-CAUTION: This email originated from outside of the organization. Do not cli=
-ck links or open attachments unless you can confirm the sender and know the=
- content is safe.=0A=
-=0A=
-=0A=
-=0A=
-On Sat, Jul 03, 2021 at 04:05:55PM -0700, Tahsin Erdogan wrote:=0A=
-> Mainline commit ce9f24cccdc0 ("ext4: check journal inode extents more car=
-efully")=0A=
-> enabled validity checks for journal inode's data blocks. This change got=
-=0A=
-> ported to stable branches, but the backport for 4.19 has a bug where it w=
-ill=0A=
-> flag an error even when system block entry's inode number matches journal=
-=0A=
-> inode.=0A=
-=0A=
-Tahsin,=0A=
-=0A=
-If I understand the commit description, this patch is only intended=0A=
-for the 4.19 stable kernel.  If this is the case, I'd suggest using=0A=
-the Subject prefix [PATCH 4.19] for future patches.  This is more=0A=
-likely to be clearer (via a quick glance at the Subject line) for=0A=
-subsystem maintainers, as well as for stable kernel maintainers, that=0A=
-this is meant for the stable kernel.  It would perhaps also be useful=0A=
-if you could indicate whether a similar fix is needed for 4.14, and=0A=
-other older LTS kernels, or whether the only stable backport which had=0A=
-this bug was 4.19.=0A=
-=0A=
-Cheers,=0A=
-=0A=
-                                        - Ted=0A=
-=0A=
-P.S.  Great to see you've landed at Amazon!  It's been a while; if I=0A=
-have a chance to make it out to Seattle, one of these days, it would=0A=
-be great to catch up.=0A=
+On Sat, Jul 03, 2021 at 12:55:09PM +0800, Zhang Yi wrote:
+> Yeah, it sounds good to me. Do you want me to send the fix patch, or you
+> modify your commit 8f9e16badb8fd in another email directly?
+
+I've gone ahead and made the changes; what do you think?
+
+I like how it also removes 40 lines of code.  :-)
+
+     	  	    	     	      	   - Ted
+
+From ef3130d1b0b8ca769252d6a722a2e59a00141383 Mon Sep 17 00:00:00 2001
+From: Theodore Ts'o <tytso@mit.edu>
+Date: Fri, 2 Jul 2021 18:05:03 -0400
+Subject: [PATCH] ext4: inline jbd2_journal_[un]register_shrinker()
+
+The function jbd2_journal_unregister_shrinker() was getting called
+twice when the file system was getting unmounted.  On Power and ARM
+platforms this was causing kernel crash when unmounting the file
+system, when a percpu_counter was destroyed twice.
+
+Fix this by removing jbd2_journal_[un]register_shrinker() functions,
+and inlining the shrinker setup and teardown into
+journal_init_common() and jbd2_journal_destroy().  This means that
+ext4 and ocfs2 now no longer need to know about registering and
+unregistering jbd2's shrinker.
+
+Also, while we're at it, rename the percpu counter from
+j_jh_shrink_count to j_checkpoint_jh_count, since this makes it
+clearer what this counter is intended to track.
+
+Fixes: 4ba3fcdde7e3 ("jbd2,ext4: add a shrinker to release checkpointed buffers")
+Reported-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
+Reported-by: Jon Hunter <jonathanh@nvidia.com>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ fs/ext4/super.c      |   8 ---
+ fs/jbd2/checkpoint.c |   4 +-
+ fs/jbd2/journal.c    | 148 +++++++++++++++++--------------------------
+ include/linux/jbd2.h |   6 +-
+ 4 files changed, 63 insertions(+), 103 deletions(-)
+
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index b8ff0399e171..dfa09a277b56 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -1184,7 +1184,6 @@ static void ext4_put_super(struct super_block *sb)
+ 	ext4_unregister_sysfs(sb);
+ 
+ 	if (sbi->s_journal) {
+-		jbd2_journal_unregister_shrinker(sbi->s_journal);
+ 		aborted = is_journal_aborted(sbi->s_journal);
+ 		err = jbd2_journal_destroy(sbi->s_journal);
+ 		sbi->s_journal = NULL;
+@@ -5176,7 +5175,6 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+ 	sbi->s_ea_block_cache = NULL;
+ 
+ 	if (sbi->s_journal) {
+-		jbd2_journal_unregister_shrinker(sbi->s_journal);
+ 		jbd2_journal_destroy(sbi->s_journal);
+ 		sbi->s_journal = NULL;
+ 	}
+@@ -5502,12 +5500,6 @@ static int ext4_load_journal(struct super_block *sb,
+ 		ext4_commit_super(sb);
+ 	}
+ 
+-	err = jbd2_journal_register_shrinker(journal);
+-	if (err) {
+-		EXT4_SB(sb)->s_journal = NULL;
+-		goto err_out;
+-	}
+-
+ 	return 0;
+ 
+ err_out:
+diff --git a/fs/jbd2/checkpoint.c b/fs/jbd2/checkpoint.c
+index 51d1eb2ffeb9..746132998c57 100644
+--- a/fs/jbd2/checkpoint.c
++++ b/fs/jbd2/checkpoint.c
+@@ -701,7 +701,7 @@ int __jbd2_journal_remove_checkpoint(struct journal_head *jh)
+ 
+ 	__buffer_unlink(jh);
+ 	jh->b_cp_transaction = NULL;
+-	percpu_counter_dec(&journal->j_jh_shrink_count);
++	percpu_counter_dec(&journal->j_checkpoint_jh_count);
+ 	jbd2_journal_put_journal_head(jh);
+ 
+ 	/* Is this transaction empty? */
+@@ -764,7 +764,7 @@ void __jbd2_journal_insert_checkpoint(struct journal_head *jh,
+ 		jh->b_cpnext->b_cpprev = jh;
+ 	}
+ 	transaction->t_checkpoint_list = jh;
+-	percpu_counter_inc(&transaction->t_journal->j_jh_shrink_count);
++	percpu_counter_inc(&transaction->t_journal->j_checkpoint_jh_count);
+ }
+ 
+ /*
+diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+index 152880c298ca..8a9c94dd3599 100644
+--- a/fs/jbd2/journal.c
++++ b/fs/jbd2/journal.c
+@@ -1283,6 +1283,48 @@ static int jbd2_min_tag_size(void)
+ 	return sizeof(journal_block_tag_t) - 4;
+ }
+ 
++/**
++ * jbd2_journal_shrink_scan()
++ *
++ * Scan the checkpointed buffer on the checkpoint list and release the
++ * journal_head.
++ */
++static unsigned long jbd2_journal_shrink_scan(struct shrinker *shrink,
++					      struct shrink_control *sc)
++{
++	journal_t *journal = container_of(shrink, journal_t, j_shrinker);
++	unsigned long nr_to_scan = sc->nr_to_scan;
++	unsigned long nr_shrunk;
++	unsigned long count;
++
++	count = percpu_counter_read_positive(&journal->j_checkpoint_jh_count);
++	trace_jbd2_shrink_scan_enter(journal, sc->nr_to_scan, count);
++
++	nr_shrunk = jbd2_journal_shrink_checkpoint_list(journal, &nr_to_scan);
++
++	count = percpu_counter_read_positive(&journal->j_checkpoint_jh_count);
++	trace_jbd2_shrink_scan_exit(journal, nr_to_scan, nr_shrunk, count);
++
++	return nr_shrunk;
++}
++
++/**
++ * jbd2_journal_shrink_count()
++ *
++ * Count the number of checkpoint buffers on the checkpoint list.
++ */
++static unsigned long jbd2_journal_shrink_count(struct shrinker *shrink,
++					       struct shrink_control *sc)
++{
++	journal_t *journal = container_of(shrink, journal_t, j_shrinker);
++	unsigned long count;
++
++	count = percpu_counter_read_positive(&journal->j_checkpoint_jh_count);
++	trace_jbd2_shrink_count(journal, sc->nr_to_scan, count);
++
++	return count;
++}
++
+ /*
+  * Management for journal control blocks: functions to create and
+  * destroy journal_t structures, and to initialise and read existing
+@@ -1361,6 +1403,19 @@ static journal_t *journal_init_common(struct block_device *bdev,
+ 	journal->j_sb_buffer = bh;
+ 	journal->j_superblock = (journal_superblock_t *)bh->b_data;
+ 
++	journal->j_shrink_transaction = NULL;
++	journal->j_shrinker.scan_objects = jbd2_journal_shrink_scan;
++	journal->j_shrinker.count_objects = jbd2_journal_shrink_count;
++	journal->j_shrinker.seeks = DEFAULT_SEEKS;
++	journal->j_shrinker.batch = journal->j_max_transaction_buffers;
++
++	if (percpu_counter_init(&journal->j_checkpoint_jh_count, 0, GFP_KERNEL))
++		goto err_cleanup;
++
++	if (register_shrinker(&journal->j_shrinker)) {
++		percpu_counter_destroy(&journal->j_checkpoint_jh_count);
++		goto err_cleanup;
++	}
+ 	return journal;
+ 
+ err_cleanup:
+@@ -2050,93 +2105,6 @@ int jbd2_journal_load(journal_t *journal)
+ 	return -EIO;
+ }
+ 
+-/**
+- * jbd2_journal_shrink_scan()
+- *
+- * Scan the checkpointed buffer on the checkpoint list and release the
+- * journal_head.
+- */
+-static unsigned long jbd2_journal_shrink_scan(struct shrinker *shrink,
+-					      struct shrink_control *sc)
+-{
+-	journal_t *journal = container_of(shrink, journal_t, j_shrinker);
+-	unsigned long nr_to_scan = sc->nr_to_scan;
+-	unsigned long nr_shrunk;
+-	unsigned long count;
+-
+-	count = percpu_counter_read_positive(&journal->j_jh_shrink_count);
+-	trace_jbd2_shrink_scan_enter(journal, sc->nr_to_scan, count);
+-
+-	nr_shrunk = jbd2_journal_shrink_checkpoint_list(journal, &nr_to_scan);
+-
+-	count = percpu_counter_read_positive(&journal->j_jh_shrink_count);
+-	trace_jbd2_shrink_scan_exit(journal, nr_to_scan, nr_shrunk, count);
+-
+-	return nr_shrunk;
+-}
+-
+-/**
+- * jbd2_journal_shrink_count()
+- *
+- * Count the number of checkpoint buffers on the checkpoint list.
+- */
+-static unsigned long jbd2_journal_shrink_count(struct shrinker *shrink,
+-					       struct shrink_control *sc)
+-{
+-	journal_t *journal = container_of(shrink, journal_t, j_shrinker);
+-	unsigned long count;
+-
+-	count = percpu_counter_read_positive(&journal->j_jh_shrink_count);
+-	trace_jbd2_shrink_count(journal, sc->nr_to_scan, count);
+-
+-	return count;
+-}
+-
+-/**
+- * jbd2_journal_register_shrinker()
+- * @journal: Journal to act on.
+- *
+- * Init a percpu counter to record the checkpointed buffers on the checkpoint
+- * list and register a shrinker to release their journal_head.
+- */
+-int jbd2_journal_register_shrinker(journal_t *journal)
+-{
+-	int err;
+-
+-	journal->j_shrink_transaction = NULL;
+-
+-	err = percpu_counter_init(&journal->j_jh_shrink_count, 0, GFP_KERNEL);
+-	if (err)
+-		return err;
+-
+-	journal->j_shrinker.scan_objects = jbd2_journal_shrink_scan;
+-	journal->j_shrinker.count_objects = jbd2_journal_shrink_count;
+-	journal->j_shrinker.seeks = DEFAULT_SEEKS;
+-	journal->j_shrinker.batch = journal->j_max_transaction_buffers;
+-
+-	err = register_shrinker(&journal->j_shrinker);
+-	if (err) {
+-		percpu_counter_destroy(&journal->j_jh_shrink_count);
+-		return err;
+-	}
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL(jbd2_journal_register_shrinker);
+-
+-/**
+- * jbd2_journal_unregister_shrinker()
+- * @journal: Journal to act on.
+- *
+- * Unregister the checkpointed buffer shrinker and destroy the percpu counter.
+- */
+-void jbd2_journal_unregister_shrinker(journal_t *journal)
+-{
+-	percpu_counter_destroy(&journal->j_jh_shrink_count);
+-	unregister_shrinker(&journal->j_shrinker);
+-}
+-EXPORT_SYMBOL(jbd2_journal_unregister_shrinker);
+-
+ /**
+  * jbd2_journal_destroy() - Release a journal_t structure.
+  * @journal: Journal to act on.
+@@ -2209,8 +2177,10 @@ int jbd2_journal_destroy(journal_t *journal)
+ 		brelse(journal->j_sb_buffer);
+ 	}
+ 
+-	jbd2_journal_unregister_shrinker(journal);
+-
++	if (journal->j_shrinker.flags & SHRINKER_REGISTERED) {
++		percpu_counter_destroy(&journal->j_checkpoint_jh_count);
++		unregister_shrinker(&journal->j_shrinker);
++	}
+ 	if (journal->j_proc_entry)
+ 		jbd2_stats_proc_exit(journal);
+ 	iput(journal->j_inode);
+diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+index 6cc035321562..fd933c45281a 100644
+--- a/include/linux/jbd2.h
++++ b/include/linux/jbd2.h
+@@ -918,11 +918,11 @@ struct journal_s
+ 	struct shrinker		j_shrinker;
+ 
+ 	/**
+-	 * @j_jh_shrink_count:
++	 * @j_checkpoint_jh_count:
+ 	 *
+ 	 * Number of journal buffers on the checkpoint list. [j_list_lock]
+ 	 */
+-	struct percpu_counter	j_jh_shrink_count;
++	struct percpu_counter	j_checkpoint_jh_count;
+ 
+ 	/**
+ 	 * @j_shrink_transaction:
+@@ -1556,8 +1556,6 @@ extern int	   jbd2_journal_set_features
+ 		   (journal_t *, unsigned long, unsigned long, unsigned long);
+ extern void	   jbd2_journal_clear_features
+ 		   (journal_t *, unsigned long, unsigned long, unsigned long);
+-extern int	   jbd2_journal_register_shrinker(journal_t *journal);
+-extern void	   jbd2_journal_unregister_shrinker(journal_t *journal);
+ extern int	   jbd2_journal_load       (journal_t *journal);
+ extern int	   jbd2_journal_destroy    (journal_t *);
+ extern int	   jbd2_journal_recover    (journal_t *journal);
+-- 
+2.31.0
+
