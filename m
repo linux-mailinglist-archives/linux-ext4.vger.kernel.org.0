@@ -2,208 +2,136 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 806523BBC07
-	for <lists+linux-ext4@lfdr.de>; Mon,  5 Jul 2021 13:15:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82B063BBC2F
+	for <lists+linux-ext4@lfdr.de>; Mon,  5 Jul 2021 13:27:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230274AbhGELS0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 5 Jul 2021 07:18:26 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:33032 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230093AbhGELS0 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 5 Jul 2021 07:18:26 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 6A6051FE65;
-        Mon,  5 Jul 2021 11:15:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1625483748; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sfatcCCgs2VzKb85jnyGEQBbLmIfD7PreoAG1YlqNFk=;
-        b=PQVzYEp+afL1R2rEBmC6vacczbFpu0v1ftG1mZjKjm7QZc4UmytR6L9GBcJ7IDY4AJhPje
-        gX2PtNcaisid5WSKglm5+b5K7ezcCURWRNvJ6XijdZb1K/hYTF5RSX5NSOenimpcsvWJKw
-        zBNnurX83mGUSRhg7TCclyHhPlLqX38=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1625483748;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sfatcCCgs2VzKb85jnyGEQBbLmIfD7PreoAG1YlqNFk=;
-        b=+Hco9BasUJWicWcLSmzR+NYSaV1ZugbrYz+X8WdRuZW87cwnVKVD9dZTou0fYqEyRuDe/F
-        up1HoAxd3tY4V8CA==
-Received: from quack2.suse.cz (unknown [10.163.43.118])
-        by relay2.suse.de (Postfix) with ESMTP id 53F9CA3B8C;
-        Mon,  5 Jul 2021 11:15:48 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 2A2341E1139; Mon,  5 Jul 2021 13:15:48 +0200 (CEST)
-Date:   Mon, 5 Jul 2021 13:15:48 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Ye Bin <yebin10@huawei.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jack@suse.cz
-Subject: Re: [PATCH 1/2] ext4: Fix use-after-free about sbi->s_mmp_tsk
-Message-ID: <20210705111548.GD15373@quack2.suse.cz>
-References: <20210629143603.2166962-1-yebin10@huawei.com>
- <20210629143603.2166962-2-yebin10@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210629143603.2166962-2-yebin10@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S231126AbhGELa1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 5 Jul 2021 07:30:27 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:43874 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230459AbhGELa0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 5 Jul 2021 07:30:26 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 165B4Nvs083690;
+        Mon, 5 Jul 2021 07:27:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to; s=pp1;
+ bh=iozgYz3WDzDVrFAs/2BY4dE1AB02jqYMzRcCZKwkBvU=;
+ b=B5k2BjWUOD+d3arlmW8C1qT5g+VvoAJSfJebll0IwS0dusJSUtAfo9TjivCVN5tMcWY5
+ lh0pcDSXBXjRVTr14a55uTeakRnQEnIzcng89eT4pfb0n3AbLFJ48icZF3cf62+EDq+r
+ om5iQbX5oErCX9m4qJQCtGsoK4DjRXw7z1meIYvoiobYlBHPaUYjxKbazYMetD54hBfZ
+ LDY3NtrEP+Lh6ajdjhcjH7zidmPGb6E8i5J7CBRl9b07ZKY7iLfhZ/gd2Xq7We1BcPFI
+ BIh3UZmi3HMTBSWrSn0Qjl09YmxEzm36jm52Knx5/BR6vaGzA8cgkrT2IbeAtdqHCJYz qg== 
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39ky9d35ht-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 05 Jul 2021 07:27:33 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 165BO4hV022245;
+        Mon, 5 Jul 2021 11:27:31 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma05fra.de.ibm.com with ESMTP id 39jfh8gdh0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 05 Jul 2021 11:27:31 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 165BRTdg30277962
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 5 Jul 2021 11:27:29 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E5DB542045;
+        Mon,  5 Jul 2021 11:27:28 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B6D054204D;
+        Mon,  5 Jul 2021 11:27:27 +0000 (GMT)
+Received: from smtpclient.apple (unknown [9.85.74.100])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  5 Jul 2021 11:27:27 +0000 (GMT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
+Subject: Re: [powerpc][5.13.0-next-20210701] Kernel crash while running
+ ltp(chdir01) tests
+From:   Sachin Sant <sachinp@linux.vnet.ibm.com>
+In-Reply-To: <YOG/5ZY1AL05jumi@mit.edu>
+Date:   Mon, 5 Jul 2021 16:57:26 +0530
+Cc:     Zhang Yi <yi.zhang@huawei.com>, Jan Kara <jack@suse.cz>,
+        linuxppc-dev@lists.ozlabs.org,
+        Guoqing Jiang <guoqing.jiang@linux.dev>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <42CECCCE-A338-408A-B392-F4E25E629D2A@linux.vnet.ibm.com>
+References: <26ACA75D-E13D-405B-9BFC-691B5FB64243@linux.vnet.ibm.com>
+ <bf1c5b38-92f1-65db-e210-a97a199718ba@linux.dev>
+ <4cc87ab3-aaa6-ed87-b690-5e5b99de8380@huawei.com>
+ <03f734bd-f36e-f55b-0448-485b8a0d5b75@huawei.com> <YN86yl5kgVaRixxQ@mit.edu>
+ <36778615-86fd-9a19-9bc9-f93a6f2d5817@huawei.com> <YN/a70ucYXu0DqGf@mit.edu>
+ <66fb56cd-f1ff-c592-0202-0691372e32f5@huawei.com> <YOG/5ZY1AL05jumi@mit.edu>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+X-Mailer: Apple Mail (2.3654.100.0.2.22)
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Bf6gHb7P31BL35PpU7G_EfT05lKk5aY7
+X-Proofpoint-ORIG-GUID: Bf6gHb7P31BL35PpU7G_EfT05lKk5aY7
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-05_05:2021-07-02,2021-07-05 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1011
+ spamscore=0 mlxlogscore=999 adultscore=0 priorityscore=1501 bulkscore=0
+ suspectscore=0 malwarescore=0 impostorscore=0 lowpriorityscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107050059
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 29-06-21 22:36:02, Ye Bin wrote:
-> After merge 618f003199c6("ext4: fix memory leak in ext4_fill_super") commit,
-> we add delay in ext4_remount after "sb->s_flags |= SB_RDONLY", then
-> remount filesystem with read-only kasan report following warning:
-> [  888.695326] ==================================================================
-> [  888.696566] BUG: KASAN: use-after-free in kthread_stop+0x4c/0x2f0
-> [  888.697599] Write of size 4 at addr ffff8883849e0020 by task mount/2013
-> [  888.698707]
-> [  888.698982] CPU: 4 PID: 2013 Comm: mount Not tainted 4.19.95-00013-ga369a6189bbf-dirty #413
-> [  888.700376] Hardware name: QEMU Standard PC
-> [  888.702587] Call Trace:
-> [  888.703017]  dump_stack+0x108/0x15f
-> [  888.703615]  print_address_description+0xa5/0x372
-> [  888.704420]  kasan_report.cold+0x236/0x2a8
-> [  888.705761]  check_memory_region+0x240/0x270
-> [  888.706486]  kasan_check_write+0x20/0x30
-> [  888.707156]  kthread_stop+0x4c/0x2f0
-> [  888.707776]  ext4_stop_mmpd+0x32/0x90
-> [  888.708262]  ext4_remount.cold+0xf6/0x116
-> [  888.712671]  do_remount_sb+0xff/0x460
-> [  888.714007]  do_mount+0xce3/0x1be0
-> [  888.717749]  ksys_mount+0xb2/0x150
-> [  888.718163]  __x64_sys_mount+0x6a/0x80
-> [  888.718607]  do_syscall_64+0xd9/0x1f0
-> [  888.719047]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
-> As kmmpd will exit if filesystem is read-only. Then sbi->s_mmp_tsk become wild
-> ptr, lead to use-after-free. As kmmpd will exit by others(call ktread_stop)
-> or by itself. After 618f003199c6 commit we can trigger this issue very easy.
-> Before this commit also exist this issue.
-> If kmmpd exit by itself, after merge 618f003199c6 commit there will trigger UAF
-> when umount filesystem.
-> To fix this issue, introduce sbi->s_mmp_lock to protect sbi->s_mmp_tsk. If kmmpd
-> exit by itself, we set sbi->s_mmp_tsk with NULL, and release mmp buffer_head.
-> 
-> Fixes: 618f003199c6 ("ext4: fix memory leak in ext4_fill_super")
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
+
+
+> On 04-Jul-2021, at 7:34 PM, Theodore Ts'o <tytso@mit.edu> wrote:
+>=20
+> On Sat, Jul 03, 2021 at 12:55:09PM +0800, Zhang Yi wrote:
+>> Yeah, it sounds good to me. Do you want me to send the fix patch, or =
+you
+>> modify your commit 8f9e16badb8fd in another email directly?
+>=20
+> I've gone ahead and made the changes; what do you think?
+>=20
+> I like how it also removes 40 lines of code.  :-)
+>=20
+>     	  	    	     	      	   - Ted
+>=20
+> =46rom ef3130d1b0b8ca769252d6a722a2e59a00141383 Mon Sep 17 00:00:00 =
+2001
+> From: Theodore Ts'o <tytso@mit.edu>
+> Date: Fri, 2 Jul 2021 18:05:03 -0400
+> Subject: [PATCH] ext4: inline jbd2_journal_[un]register_shrinker()
+>=20
+> The function jbd2_journal_unregister_shrinker() was getting called
+> twice when the file system was getting unmounted.  On Power and ARM
+> platforms this was causing kernel crash when unmounting the file
+> system, when a percpu_counter was destroyed twice.
+>=20
+> Fix this by removing jbd2_journal_[un]register_shrinker() functions,
+> and inlining the shrinker setup and teardown into
+> journal_init_common() and jbd2_journal_destroy().  This means that
+> ext4 and ocfs2 now no longer need to know about registering and
+> unregistering jbd2's shrinker.
+>=20
+> Also, while we're at it, rename the percpu counter from
+> j_jh_shrink_count to j_checkpoint_jh_count, since this makes it
+> clearer what this counter is intended to track.
+>=20
+> Fixes: 4ba3fcdde7e3 ("jbd2,ext4: add a shrinker to release =
+checkpointed buffers")
+> Reported-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
+> Reported-by: Jon Hunter <jonathanh@nvidia.com>
+> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 > ---
->  fs/ext4/ext4.h  |  1 +
->  fs/ext4/mmp.c   | 24 ++++++++++++++++++++++--
->  fs/ext4/super.c |  1 +
->  3 files changed, 24 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 8d3446746718..a479da37fed4 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -1489,6 +1489,7 @@ struct ext4_sb_info {
->  	struct completion s_kobj_unregister;
->  	struct super_block *s_sb;
->  	struct buffer_head *s_mmp_bh;
-> +	struct mutex s_mmp_lock;
->  
->  	/* Journaling */
->  	struct journal_s *s_journal;
-> diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
-> index 6cb598b549ca..fc18a8c205c7 100644
-> --- a/fs/ext4/mmp.c
-> +++ b/fs/ext4/mmp.c
-> @@ -128,8 +128,9 @@ void __dump_mmp_msg(struct super_block *sb, struct mmp_struct *mmp,
->  static int kmmpd(void *data)
->  {
->  	struct super_block *sb = (struct super_block *) data;
-> -	struct ext4_super_block *es = EXT4_SB(sb)->s_es;
-> -	struct buffer_head *bh = EXT4_SB(sb)->s_mmp_bh;
-> +	struct ext4_sb_info *sbi = EXT4_SB(sb);
-> +	struct ext4_super_block *es = sbi->s_es;
-> +	struct buffer_head *bh = sbi->s_mmp_bh;
->  	struct mmp_struct *mmp;
->  	ext4_fsblk_t mmp_block;
->  	u32 seq = 0;
-> @@ -245,16 +246,35 @@ static int kmmpd(void *data)
->  	retval = write_mmp_block(sb, bh);
->  
->  exit_thread:
-> +	/*
-> +	 * Maybe s_mmp_tsk kthread is stoped by others or by itself. If exit
-> +	 * by itself then sbi->s_mmp_tsk will be wild ptr, so there is need
-> +	 * set sbi->s_mmp_tsk with NULL, and also release mmp buffer_head.
-> +	 */
-> +	while (!kthread_should_stop()) {
-> +		if (!mutex_trylock(&sbi->s_mmp_lock))
-> +			continue;
-> +
-> +		if (sbi->s_mmp_tsk) {
-> +			sbi->s_mmp_tsk = NULL;
-> +			brelse(bh);
-> +		}
-> +		mutex_unlock(&sbi->s_mmp_lock);
-> +		break;
-> +	}
-> +
->  	return retval;
->  }
 
-Honestly, this is just ugly. I think it would be saner if ext4_stop_mmpd()
-did:
+This patch fixes the reported problem. Test ran to completion
+without any crash.
 
-void ext4_stop_mmpd(struct ext4_sb_info *sbi)
-{
-	struct task_struct *tsk;
+Tested-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
 
-	mutex_lock(&sbi->s_mmp_lock);
-	tsk = sbi->s_mmp_tsk;
-	if (tsk) {
-		sbi->s_mmp_tsk = NULL;
-		get_task_struct(tsk);
-	}
-     	mutex_unlock(&sbi->s_mmp_lock);
-	if (tsk) {
-		kthread_stop(tsk);
-		put_task_struct(k);
-	}
-}
+-Sachin
 
-And you leave freeing of 'bh' to exit path from kmmpd() which can also use
-normal locking scheme for zeroing s_mmp_tsk now.
 
-That being said for this scheme spinlock is enough, you don't need a mutex
-for s_mmp_lock.
-
-								Honza
-
->  void ext4_stop_mmpd(struct ext4_sb_info *sbi)
->  {
-> +	mutex_lock(&sbi->s_mmp_lock);
->  	if (sbi->s_mmp_tsk) {
->  		kthread_stop(sbi->s_mmp_tsk);
->  		brelse(sbi->s_mmp_bh);
->  		sbi->s_mmp_tsk = NULL;
->  	}
-> +	mutex_unlock(&sbi->s_mmp_lock);
->  }
->  
->  /*
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index c3942804b57f..5bc3230553fb 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -4786,6 +4786,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
->  	needs_recovery = (es->s_last_orphan != 0 ||
->  			  ext4_has_feature_journal_needs_recovery(sb));
->  
-> +	mutex_init(&sbi->s_mmp_lock);
->  	if (ext4_has_feature_mmp(sb) && !sb_rdonly(sb))
->  		if (ext4_multi_mount_protect(sb, le64_to_cpu(es->s_mmp_block)))
->  			goto failed_mount3a;
-> -- 
-> 2.31.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
