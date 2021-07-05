@@ -2,127 +2,167 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C1173BB51D
-	for <lists+linux-ext4@lfdr.de>; Mon,  5 Jul 2021 04:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B05CC3BB64E
+	for <lists+linux-ext4@lfdr.de>; Mon,  5 Jul 2021 06:25:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229733AbhGECUJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 4 Jul 2021 22:20:09 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:9348 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbhGECUI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 4 Jul 2021 22:20:08 -0400
-Received: from dggeme752-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GJ8Nm0Fdkz75XX;
-        Mon,  5 Jul 2021 10:13:12 +0800 (CST)
-Received: from [10.174.178.134] (10.174.178.134) by
- dggeme752-chm.china.huawei.com (10.3.19.98) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 5 Jul 2021 10:17:30 +0800
-Subject: Re: [powerpc][5.13.0-next-20210701] Kernel crash while running
- ltp(chdir01) tests
-To:     Theodore Ts'o <tytso@mit.edu>
-CC:     Jan Kara <jack@suse.cz>, <linuxppc-dev@lists.ozlabs.org>,
-        Guoqing Jiang <guoqing.jiang@linux.dev>,
-        Sachin Sant <sachinp@linux.vnet.ibm.com>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-References: <26ACA75D-E13D-405B-9BFC-691B5FB64243@linux.vnet.ibm.com>
- <bf1c5b38-92f1-65db-e210-a97a199718ba@linux.dev>
- <4cc87ab3-aaa6-ed87-b690-5e5b99de8380@huawei.com>
- <03f734bd-f36e-f55b-0448-485b8a0d5b75@huawei.com> <YN86yl5kgVaRixxQ@mit.edu>
- <36778615-86fd-9a19-9bc9-f93a6f2d5817@huawei.com> <YN/a70ucYXu0DqGf@mit.edu>
- <66fb56cd-f1ff-c592-0202-0691372e32f5@huawei.com> <YOG/5ZY1AL05jumi@mit.edu>
-From:   Zhang Yi <yi.zhang@huawei.com>
-Message-ID: <3acc3ee6-3a3d-3b26-7580-b20955270913@huawei.com>
-Date:   Mon, 5 Jul 2021 10:17:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S229599AbhGEE2E (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 5 Jul 2021 00:28:04 -0400
+Received: from mga01.intel.com ([192.55.52.88]:64971 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229447AbhGEE2E (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 5 Jul 2021 00:28:04 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10035"; a="230632860"
+X-IronPort-AV: E=Sophos;i="5.83,325,1616482800"; 
+   d="scan'208";a="230632860"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jul 2021 21:25:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,325,1616482800"; 
+   d="scan'208";a="485202872"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 04 Jul 2021 21:25:24 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1m0GAd-000CH7-LW; Mon, 05 Jul 2021 04:25:23 +0000
+Date:   Mon, 05 Jul 2021 12:25:15 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+Subject: [ext4:dev] BUILD SUCCESS ef3130d1b0b8ca769252d6a722a2e59a00141383
+Message-ID: <60e289ab.hImfoHzquqpMz6ez%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <YOG/5ZY1AL05jumi@mit.edu>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.134]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggeme752-chm.china.huawei.com (10.3.19.98)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2021/7/4 22:04, Theodore Ts'o wrote:
-> On Sat, Jul 03, 2021 at 12:55:09PM +0800, Zhang Yi wrote:
->> Yeah, it sounds good to me. Do you want me to send the fix patch, or you
->> modify your commit 8f9e16badb8fd in another email directly?
-> 
-> I've gone ahead and made the changes; what do you think?
-> 
-> I like how it also removes 40 lines of code.  :-)
-> 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+branch HEAD: ef3130d1b0b8ca769252d6a722a2e59a00141383  ext4: inline jbd2_journal_[un]register_shrinker()
 
-Thanks for the fix, this patch looks good to me besides one error
-handling below.
+elapsed time: 721m
 
-> 
->>From ef3130d1b0b8ca769252d6a722a2e59a00141383 Mon Sep 17 00:00:00 2001
-> From: Theodore Ts'o <tytso@mit.edu>
-> Date: Fri, 2 Jul 2021 18:05:03 -0400
-> Subject: [PATCH] ext4: inline jbd2_journal_[un]register_shrinker()
-> 
-> The function jbd2_journal_unregister_shrinker() was getting called
-> twice when the file system was getting unmounted.  On Power and ARM
-> platforms this was causing kernel crash when unmounting the file
-> system, when a percpu_counter was destroyed twice.
-> 
-> Fix this by removing jbd2_journal_[un]register_shrinker() functions,
-> and inlining the shrinker setup and teardown into
-> journal_init_common() and jbd2_journal_destroy().  This means that
-> ext4 and ocfs2 now no longer need to know about registering and
-> unregistering jbd2's shrinker.
-> 
-> Also, while we're at it, rename the percpu counter from
-> j_jh_shrink_count to j_checkpoint_jh_count, since this makes it
-> clearer what this counter is intended to track.
-> 
-> Fixes: 4ba3fcdde7e3 ("jbd2,ext4: add a shrinker to release checkpointed buffers")
-> Reported-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
-> Reported-by: Jon Hunter <jonathanh@nvidia.com>
-> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-> ---
->  fs/ext4/super.c      |   8 ---
->  fs/jbd2/checkpoint.c |   4 +-
->  fs/jbd2/journal.c    | 148 +++++++++++++++++--------------------------
->  include/linux/jbd2.h |   6 +-
->  4 files changed, 63 insertions(+), 103 deletions(-)
-> 
-[..]
-> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-> index 152880c298ca..8a9c94dd3599 100644
-> --- a/fs/jbd2/journal.c
-> +++ b/fs/jbd2/journal.c
-[..]
->  /*
->   * Management for journal control blocks: functions to create and
->   * destroy journal_t structures, and to initialise and read existing
-> @@ -1361,6 +1403,19 @@ static journal_t *journal_init_common(struct block_device *bdev,
->  	journal->j_sb_buffer = bh;
->  	journal->j_superblock = (journal_superblock_t *)bh->b_data;
->  
-> +	journal->j_shrink_transaction = NULL;
-> +	journal->j_shrinker.scan_objects = jbd2_journal_shrink_scan;
-> +	journal->j_shrinker.count_objects = jbd2_journal_shrink_count;
-> +	journal->j_shrinker.seeks = DEFAULT_SEEKS;
-> +	journal->j_shrinker.batch = journal->j_max_transaction_buffers;
-> +
-> +	if (percpu_counter_init(&journal->j_checkpoint_jh_count, 0, GFP_KERNEL))
-> +		goto err_cleanup;
-> +
-> +	if (register_shrinker(&journal->j_shrinker)) {
-> +		percpu_counter_destroy(&journal->j_checkpoint_jh_count);
-> +		goto err_cleanup;
-> +	}
+configs tested: 110
+configs skipped: 3
 
-Need to release j_sb_buffer in above two error path.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Thanks,
-Yi.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                          sdk7786_defconfig
+powerpc                       holly_defconfig
+m68k                       bvme6000_defconfig
+powerpc                     mpc83xx_defconfig
+arm                          pxa168_defconfig
+powerpc                     akebono_defconfig
+powerpc                      bamboo_defconfig
+x86_64                              defconfig
+arm                        cerfcube_defconfig
+mips                       bmips_be_defconfig
+arm                        oxnas_v6_defconfig
+sh                         apsh4a3a_defconfig
+arm                        mvebu_v5_defconfig
+riscv                               defconfig
+sh                           se7750_defconfig
+powerpc                      makalu_defconfig
+arm                       aspeed_g4_defconfig
+powerpc                          g5_defconfig
+mips                        maltaup_defconfig
+arm                        multi_v5_defconfig
+mips                       lemote2f_defconfig
+arm                         orion5x_defconfig
+arm                            zeus_defconfig
+powerpc                     tqm8541_defconfig
+sh                           se7206_defconfig
+xtensa                    smp_lx200_defconfig
+sparc                       sparc64_defconfig
+xtensa                         virt_defconfig
+nds32                             allnoconfig
+mips                        qi_lb60_defconfig
+csky                             alldefconfig
+arm                         s5pv210_defconfig
+arm                           tegra_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20210705
+i386                 randconfig-a006-20210705
+i386                 randconfig-a001-20210705
+i386                 randconfig-a003-20210705
+i386                 randconfig-a005-20210705
+i386                 randconfig-a002-20210705
+x86_64               randconfig-a015-20210704
+x86_64               randconfig-a014-20210704
+x86_64               randconfig-a012-20210704
+x86_64               randconfig-a011-20210704
+x86_64               randconfig-a016-20210704
+x86_64               randconfig-a013-20210704
+i386                 randconfig-a015-20210704
+i386                 randconfig-a016-20210704
+i386                 randconfig-a012-20210704
+i386                 randconfig-a011-20210704
+i386                 randconfig-a014-20210704
+i386                 randconfig-a013-20210704
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                            kunit_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-b001-20210704
+x86_64               randconfig-b001-20210705
+x86_64               randconfig-a004-20210704
+x86_64               randconfig-a002-20210704
+x86_64               randconfig-a005-20210704
+x86_64               randconfig-a006-20210704
+x86_64               randconfig-a003-20210704
+x86_64               randconfig-a001-20210704
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
