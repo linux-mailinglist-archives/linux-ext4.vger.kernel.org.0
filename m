@@ -2,103 +2,61 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47B2F3BB760
-	for <lists+linux-ext4@lfdr.de>; Mon,  5 Jul 2021 08:58:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 334273BB77F
+	for <lists+linux-ext4@lfdr.de>; Mon,  5 Jul 2021 09:06:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229898AbhGEHBb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 5 Jul 2021 03:01:31 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:46312 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229823AbhGEHBb (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 5 Jul 2021 03:01:31 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0Uejs0rR_1625468331;
-Received: from admindeMacBook-Pro-2.local(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0Uejs0rR_1625468331)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 05 Jul 2021 14:58:52 +0800
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Reply-To: 20200427173354.GM6740@magnolia
-From:   JeffleXu <jefflexu@linux.alibaba.com>
-Subject: Re: [RFC,2/2] xfstests: common/rc: add cluster size support for ext4
-Message-ID: <0939cdf0-895c-7287-569a-2a9b4269b1ca@linux.alibaba.com>
-Date:   Mon, 5 Jul 2021 14:58:51 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        id S229919AbhGEHJV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 5 Jul 2021 03:09:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57264 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229823AbhGEHJV (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 5 Jul 2021 03:09:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A6ADF6120D;
+        Mon,  5 Jul 2021 07:06:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1625468804;
+        bh=0mTBY+GxNPufILh55Iqid4OsMiQ+SkX0qtAvyziOChc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QSJNGJvivVsxUUHbUV3oJGEZPniKSEVQORqJYhUTmVL49VPMu+VZ+lzitEhVB8J7J
+         y/LwmR1Rzap8M/98ugtTdO3g7imv1rnKv0xrVT4Vn5FVAETOsRuMfDh9e0C5+uSZYv
+         qiHDX5XpWCxZOQj+LYJ0NdZvWeXBZVZRcqPU6cOk=
+Date:   Mon, 5 Jul 2021 09:06:41 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Erdogan, Tahsin" <trdgn@amazon.com>
+Cc:     Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4.19] ext4: eliminate bogus error in
+ ext4_data_block_valid_rcu()
+Message-ID: <YOKvgbouUTXxmMIl@kroah.com>
+References: <20210703230555.4093-1-trdgn@amazon.com>
+ <YOEHmjjY9facxtIY@mit.edu>
+ <1625362509314.54473@amazon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1625362509314.54473@amazon.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-
-Sorry for digging this really old post [1]. The overall background is
-that, @offset and @len need to be aligned with cluster size when doing
-fallocate(), or several xfstests cases calling fsx will fail if the
-tested filesystem enabling 'bigalloc' feature.
-
-On April 27, 2020, 5:33 p.m. UTC Darrick J. Wong wrote:
-
-> On Fri, Apr 24, 2020 at 05:33:50PM +0800, Jeffle Xu wrote:
->> Inserting and collapsing range on ext4 with 'bigalloc' feature will
->> fail due to the offset and size should be alligned with the cluster
->> size.
->> 
->> The previous patch has add support for cluster size in fsx. Detect and
->> pass the cluster size parameter to fsx if the underlying filesystem
->> is ext4 with bigalloc.
->> 
->> Signed-off-by: Jeffle Xu <jefflexu@linux.alibaba.com>
->> ---
->>  common/rc | 9 +++++++++
->>  1 file changed, 9 insertions(+)
->> 
->> diff --git a/common/rc b/common/rc
->> index 2000bd9..71dde5f 100644
->> --- a/common/rc
->> +++ b/common/rc
->> @@ -3908,6 +3908,15 @@ run_fsx()
->>  {
->>  	echo fsx $@
->>  	local args=`echo $@ | sed -e "s/ BSIZE / $bsize /g" -e "s/ PSIZE / $psize /g"`
->> +
->> +	if [ "$FSTYP" == "ext4" ]; then
->> +		local cluster_size=$(tune2fs -l $TEST_DEV | grep 'Cluster size' | awk '{print $3}')
->> +		if [ -n $cluster_size ]; then
->> +			echo "cluster size: $cluster_size"
->> +			args="$args -u $cluster_size"
->> +		fi
->> +	fi
+On Sun, Jul 04, 2021 at 01:35:09AM +0000, Erdogan, Tahsin wrote:
+> > If I understand the commit description, this patch is only intended
+> > for the 4.19 stable kernel.  If this is the case, I'd suggest using
+> > the Subject prefix [PATCH 4.19] for future patches.  This is more
 > 
-> Computing the file allocation block size ought to be a separate helper.
+> Hi Ted, yes this is only intended for 4.19. Thanks for the tip on subject line,
+> I will keep that in mind in the future.
 > 
-> I wonder if there's a standard way to report cluster sizes, seeing as
-> fat, ext4, ocfs2, and xfs can all have minimum space allocation units
-> that are larger than the base fs block size.
+> > if you could indicate whether a similar fix is needed for 4.14, and
+> > other older LTS kernels, or whether the only stable backport which had
+> > this bug was 4.19.
+> 
+> I have checked 4.4, 4.9, 4.14, 5.8. They all look fine. I believe this problem
+> only affects 4.19.
 
-In fact only for insert_range and collapse range of ext4 and xfs (in
-realtime mode), @offset and @len need to be aligned with cluster size.
+THanks, now queued up.
 
-Though fat and ocfs2 also support cluster size, ocfs2 only supports
-preallocate and punch_hole, and fat only supports preallocate, in which
-case @offset and @len needn't be aligned with cluster size.
-
-
-So we need to align @offset and @len with cluster size only for ext4 and
-xfs (in realtime mode) at a minimum cost, to fix this issue. But the
-question is, there's no standard programming interface exporting cluster
-size. For both ext4 and xfs, it's stored as a binary data in disk
-version superblock, e.g., tune2fs could detect the cluster size of ext4.
-
-
-Any idea on how to query the cluster size?
-
-
-[1]
-https://patchwork.kernel.org/project/fstests/cover/1587720830-11955-1-git-send-email-jefflexu@linux.alibaba.com/
-
--- 
-Thanks,
-Jeffle
+greg k-h
