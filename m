@@ -2,128 +2,216 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C3453BDCD7
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 Jul 2021 20:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C553B3BDD5F
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 Jul 2021 20:41:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231243AbhGFSRc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 6 Jul 2021 14:17:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37742 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229954AbhGFSRc (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 6 Jul 2021 14:17:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2590961C20;
-        Tue,  6 Jul 2021 18:14:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625595293;
-        bh=UZMM8Y8Z6fhjs4wjGHdR3p/4ajEpQpEWWwEDHVieS90=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hpjdxhsot0KEDIHWVOqJZfWNu0uLjrmHWDWKY9gCvvZzY1ItivT3bP8Z5g+RgGoa2
-         tll5HwtxvxTycXhqUE/7f6/9gEuwh4M1Wtt/0mnSRVNh1Mlr2Ugw4GHW1Kiyv8azlh
-         tcHjZ7ZKjPyST29JhsRlTyhqRBsqgQda4LjYzuRgPmq9tYTtk4XJ2AEyomZ4oHIMN9
-         1v5wiIkFlxPorP3V7uzIVkYwBttPJwf0WerB1LrXw4PUOS247Tvj0cQ4Nw+xV94ZsH
-         O9qnwCGxjT5CRemIHE0M3lZ0+btSeHmR2dtJ2PCLT30g6BhvwseaKE6r/0eB8JcnnY
-         cq1axKw82nOWA==
-Date:   Tue, 6 Jul 2021 11:14:52 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     jefflexu@linux.alibaba.com
-Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
-        fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Subject: Re: [RFC,2/2] xfstests: common/rc: add cluster size support for ext4
-Message-ID: <20210706181452.GB11571@locust>
-References: <0939cdf0-895c-7287-569a-2a9b4269b1ca@linux.alibaba.com>
+        id S231345AbhGFSmA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 6 Jul 2021 14:42:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231208AbhGFSmA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 6 Jul 2021 14:42:00 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F1FCC061574;
+        Tue,  6 Jul 2021 11:39:20 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id a8so125278wrp.5;
+        Tue, 06 Jul 2021 11:39:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JZygdRG5lOGdhKqDY3RES1mhFCEqtnLdVPOLrQOh1yM=;
+        b=K/Bulb5ONddpCHRZK/W+o3DGCXImq6RDtFgL81OwT1TCdKPWTvHMOC4F8XSIrVVAfb
+         k+11Hv0IhTdB+kUitTafNUxbZ+9EuQBa0h+soR+Z97JIQcht5NTjGVPUrmW+6rqU0f0O
+         JrKT5nFwfkN2HQHryd+Qw4J2PFDXma2CSLdv1ITjeJYToHoUsZYG9b42glFqL1ONBme7
+         KUemwBWAp5tL5T7YeX0XIKIe5J8fl9WwssOmOCWwJ+y5uofMz1zRvQySt8wHCa1mVqnC
+         IKFIyEzMzrv9Fbp79uq9fIE2JIUiTpP/K8WCYu0EH8cT9EVSCkJm+gGMYJY8JTJ4X2FA
+         1vLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JZygdRG5lOGdhKqDY3RES1mhFCEqtnLdVPOLrQOh1yM=;
+        b=A54AUwqxT3zOsGVs7VN722lM541cm4rTvbLydi5E0sl3NYdZvB1g5ZkTn85n6pI+jm
+         sCPI6vR7+u/TBI1lF1t7lBijbUpg3FwoEpevFFgmrlxbpF8emVeaqHM6xhsVp901KPDt
+         WR9G8Y2QW5VCqOVqPzVzY4bupA0ByLGBM250O6Rca9cyEfCjKRKvf8F9rVgpnr3dE2tE
+         wubny025tYUDS8WqMr6guiQJsXPGs6ZYXbf5330DbR0Mn5Vxf4qY6I81F5TMPx6TaXJq
+         5hyEAhTngWHQYfwtzmzkKH8GgXVajp3Kc4ocwS4lq/HyNQIJtl9WzuGhB+pk4n+EC5OZ
+         XGQA==
+X-Gm-Message-State: AOAM533Lai+nLJTKg6NMPsZgsg6hOVuq115OE1t40i3rHScmtzgRD4gN
+        5POi1TCVTVJsu1hVA9gZDXk=
+X-Google-Smtp-Source: ABdhPJyuIH0ftt1lsdtv23hX+S3CXtgmR9VbgexxAFyxYVK3mVU67OibVgQQ4QhUNsRGKdWWlHMr1w==
+X-Received: by 2002:a5d:6484:: with SMTP id o4mr12077046wri.89.1625596758738;
+        Tue, 06 Jul 2021 11:39:18 -0700 (PDT)
+Received: from uhost.fritz.box (p508df717.dip0.t-ipconnect.de. [80.141.247.23])
+        by smtp.gmail.com with ESMTPSA id w8sm17423543wre.70.2021.07.06.11.39.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Jul 2021 11:39:18 -0700 (PDT)
+From:   Jan Gruber <j4n6ru@gmail.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     trivial@kernel.org, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jan Gruber <j4n6ru@gmail.com>
+Subject: [PATCH] ext4: Fix comments and spaces to follow coding style
+Date:   Tue,  6 Jul 2021 20:39:00 +0200
+Message-Id: <20210706183900.310975-1-j4n6ru@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0939cdf0-895c-7287-569a-2a9b4269b1ca@linux.alibaba.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jul 05, 2021 at 02:58:51PM +0800, JeffleXu wrote:
-> 
-> Sorry for digging this really old post [1]. The overall background is
-> that, @offset and @len need to be aligned with cluster size when doing
-> fallocate(), or several xfstests cases calling fsx will fail if the
-> tested filesystem enabling 'bigalloc' feature.
-> 
-> On April 27, 2020, 5:33 p.m. UTC Darrick J. Wong wrote:
-> 
-> > On Fri, Apr 24, 2020 at 05:33:50PM +0800, Jeffle Xu wrote:
-> >> Inserting and collapsing range on ext4 with 'bigalloc' feature will
-> >> fail due to the offset and size should be alligned with the cluster
-> >> size.
-> >> 
-> >> The previous patch has add support for cluster size in fsx. Detect and
-> >> pass the cluster size parameter to fsx if the underlying filesystem
-> >> is ext4 with bigalloc.
-> >> 
-> >> Signed-off-by: Jeffle Xu <jefflexu@linux.alibaba.com>
-> >> ---
-> >>  common/rc | 9 +++++++++
-> >>  1 file changed, 9 insertions(+)
-> >> 
-> >> diff --git a/common/rc b/common/rc
-> >> index 2000bd9..71dde5f 100644
-> >> --- a/common/rc
-> >> +++ b/common/rc
-> >> @@ -3908,6 +3908,15 @@ run_fsx()
-> >>  {
-> >>  	echo fsx $@
-> >>  	local args=`echo $@ | sed -e "s/ BSIZE / $bsize /g" -e "s/ PSIZE / $psize /g"`
-> >> +
-> >> +	if [ "$FSTYP" == "ext4" ]; then
-> >> +		local cluster_size=$(tune2fs -l $TEST_DEV | grep 'Cluster size' | awk '{print $3}')
-> >> +		if [ -n $cluster_size ]; then
-> >> +			echo "cluster size: $cluster_size"
-> >> +			args="$args -u $cluster_size"
-> >> +		fi
-> >> +	fi
-> > 
-> > Computing the file allocation block size ought to be a separate helper.
-> > 
-> > I wonder if there's a standard way to report cluster sizes, seeing as
-> > fat, ext4, ocfs2, and xfs can all have minimum space allocation units
-> > that are larger than the base fs block size.
-> 
-> In fact only for insert_range and collapse range of ext4 and xfs (in
-> realtime mode), @offset and @len need to be aligned with cluster size.
-> 
-> Though fat and ocfs2 also support cluster size, ocfs2 only supports
-> preallocate and punch_hole, and fat only supports preallocate, in which
-> case @offset and @len needn't be aligned with cluster size.
-> 
-> 
-> So we need to align @offset and @len with cluster size only for ext4 and
-> xfs (in realtime mode) at a minimum cost, to fix this issue. But the
-> question is, there's no standard programming interface exporting cluster
-> size. For both ext4 and xfs, it's stored as a binary data in disk
-> version superblock, e.g., tune2fs could detect the cluster size of ext4.
-> 
-> 
-> Any idea on how to query the cluster size?
+This commit addresses two whitespace issues as well as
+instances of the following coding style issue regarding
+block comments, which were identified by checkpatch.pl:
 
-xfs and ocfs2 return the rt extent size in stat.st_blksize.
+"WARNING: Block comments use a trailing */ on a separate line"
 
-In fstestsland you could use _get_file_block_size to figure out the
-allocation unit.
+The changes aim at making the code more pleasant to read
+and to eliminate warnings
 
-Alternately, I've been testing a more permanent fix for the blocksize
-issues[1]; perhaps that will fix the problem?
+Signed-off-by: Jan Gruber <j4n6ru@gmail.com>
+---
+ fs/ext4/super.c | 55 ++++++++++++++++++++++++++++++++-----------------
+ 1 file changed, 36 insertions(+), 19 deletions(-)
 
-(Note that the series is at the end of my dev tree, so it's likely to
-have apply errors for the tests that exist in djwong-dev but aren't
-upstream.)
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 9b2e8fc86346..5250c7debbad 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -514,7 +514,7 @@ static int ext4_journalled_submit_inode_data_buffers(struct jbd2_inode *jinode)
+ 		.nr_to_write = LONG_MAX,
+ 		.range_start = jinode->i_dirty_start,
+ 		.range_end = jinode->i_dirty_end,
+-        };
++	};
+ 
+ 	return write_cache_pages(mapping, &wbc,
+ 				 ext4_journalled_writepage_callback,
+@@ -850,9 +850,11 @@ const char *ext4_decode_error(struct super_block *sb, int errno,
+ 			errstr = "Readonly filesystem";
+ 		break;
+ 	default:
+-		/* If the caller passed in an extra buffer for unknown
++		/*
++		 * If the caller passed in an extra buffer for unknown
+ 		 * errors, textualise them now.  Else we just return
+-		 * NULL. */
++		 * NULL.
++		 */
+ 		if (nbuf) {
+ 			/* Check for truncated error codes... */
+ 			if (snprintf(nbuf, 16, "error %d", -errno) >= 0)
+@@ -864,8 +866,10 @@ const char *ext4_decode_error(struct super_block *sb, int errno,
+ 	return errstr;
+ }
+ 
+-/* __ext4_std_error decodes expected errors from journaling functions
+- * automatically and invokes the appropriate error response.  */
++/*
++ * __ext4_std_error decodes expected errors from journaling functions
++ * automatically and invokes the appropriate error response.
++ */
+ 
+ void __ext4_std_error(struct super_block *sb, const char *function,
+ 		      unsigned int line, int errno)
+@@ -876,9 +880,11 @@ void __ext4_std_error(struct super_block *sb, const char *function,
+ 	if (unlikely(ext4_forced_shutdown(EXT4_SB(sb))))
+ 		return;
+ 
+-	/* Special case: if the error is EROFS, and we're not already
++	/*
++	 * Special case: if the error is EROFS, and we're not already
+ 	 * inside a transaction, then there's really no point in logging
+-	 * an error. */
++	 * an error.
++	 */
+ 	if (errno == -EROFS && journal_current_handle() == NULL && sb_rdonly(sb))
+ 		return;
+ 
+@@ -1219,10 +1225,12 @@ static void ext4_put_super(struct super_block *sb)
+ 		kfree(get_qf_name(sb, sbi, i));
+ #endif
+ 
+-	/* Debugging code just in case the in-memory inode orphan list
++	/*
++	 * Debugging code just in case the in-memory inode orphan list
+ 	 * isn't empty.  The on-disk one can be non-empty if we've
+ 	 * detected an error and taken the fs readonly, but the
+-	 * in-memory list had better be clean by this point. */
++	 * in-memory list had better be clean by this point.
++	 */
+ 	if (!list_empty(&sbi->s_orphan))
+ 		dump_orphan_list(sb, sbi);
+ 	ASSERT(list_empty(&sbi->s_orphan));
+@@ -4311,7 +4319,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+ 				 encoding_flags);
+ 			goto failed_mount;
+ 		}
+-		ext4_msg(sb, KERN_INFO,"Using encoding defined by superblock: "
++		ext4_msg(sb, KERN_INFO, "Using encoding defined by superblock: "
+ 			 "%s-%s with flags 0x%hx", encoding_info->name,
+ 			 encoding_info->version?:"\b", encoding_flags);
+ 
+@@ -4839,11 +4847,14 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+ 		goto failed_mount_wq;
+ 	}
+ 
+-	/* We have now updated the journal if required, so we can
+-	 * validate the data journaling mode. */
++	/*
++	 * We have now updated the journal if required, so we can
++	 * validate the data journaling mode.
++	 */
+ 	switch (test_opt(sb, DATA_FLAGS)) {
+ 	case 0:
+-		/* No mode set, assume a default based on the journal
++		/*
++		 * No mode set, assume a default based on the journal
+ 		 * capabilities: ORDERED_DATA if the journal can
+ 		 * cope, else JOURNAL_DATA
+ 		 */
+@@ -6485,8 +6496,10 @@ static int ext4_quota_off(struct super_block *sb, int type)
+ 	handle_t *handle;
+ 	int err;
+ 
+-	/* Force all delayed allocation blocks to be allocated.
+-	 * Caller already holds s_umount sem */
++	/*
++	 * Force all delayed allocation blocks to be allocated.
++	 * Caller already holds s_umount sem
++	 */
+ 	if (test_opt(sb, DELALLOC))
+ 		sync_filesystem(sb);
+ 
+@@ -6523,10 +6536,12 @@ static int ext4_quota_off(struct super_block *sb, int type)
+ 	return dquot_quota_off(sb, type);
+ }
+ 
+-/* Read data from quotafile - avoid pagecache and such because we cannot afford
++/*
++ * Read data from quotafile - avoid pagecache and such because we cannot afford
+  * acquiring the locks... As quota files are never truncated and quota code
+  * itself serializes the operations (and no one else should touch the files)
+- * we don't have to be afraid of races */
++ * we don't have to be afraid of races
++ */
+ static ssize_t ext4_quota_read(struct super_block *sb, int type, char *data,
+ 			       size_t len, loff_t off)
+ {
+@@ -6562,8 +6577,10 @@ static ssize_t ext4_quota_read(struct super_block *sb, int type, char *data,
+ 	return len;
+ }
+ 
+-/* Write to quotafile (we know the transaction is already started and has
+- * enough credits) */
++/*
++ * Write to quotafile, we know, that the transaction was already started
++ * and has enough credits.
++ */
+ static ssize_t ext4_quota_write(struct super_block *sb, int type,
+ 				const char *data, size_t len, loff_t off)
+ {
+-- 
+2.25.1
 
---D
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfstests-dev.git/log/?h=check-blocksize-congruency
-
-> 
-> 
-> [1]
-> https://patchwork.kernel.org/project/fstests/cover/1587720830-11955-1-git-send-email-jefflexu@linux.alibaba.com/
-> 
-> -- 
-> Thanks,
-> Jeffle
