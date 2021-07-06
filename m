@@ -2,163 +2,128 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EC253BDC01
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 Jul 2021 19:13:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C3453BDCD7
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 Jul 2021 20:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230302AbhGFRPG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 6 Jul 2021 13:15:06 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:52906 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230178AbhGFRPF (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 6 Jul 2021 13:15:05 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 166HCAfJ027697
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 6 Jul 2021 13:12:11 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 6100115C3CC6; Tue,  6 Jul 2021 13:12:10 -0400 (EDT)
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-Cc:     Jan Kara <jack@suse.cz>, Ye Bin <yebin10@huawei.com>,
-        "Theodore Ts'o" <tytso@mit.edu>
-Subject: [PATCH -v3] ext4: fix possible UAF when remounting r/o a mmp-protected file system
-Date:   Tue,  6 Jul 2021 13:12:08 -0400
-Message-Id: <20210706171208.3540887-1-tytso@mit.edu>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <YOR+5AY2owcnhrgy@mit.edu>
-References: <YOR+5AY2owcnhrgy@mit.edu>
+        id S231243AbhGFSRc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 6 Jul 2021 14:17:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37742 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229954AbhGFSRc (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 6 Jul 2021 14:17:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2590961C20;
+        Tue,  6 Jul 2021 18:14:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625595293;
+        bh=UZMM8Y8Z6fhjs4wjGHdR3p/4ajEpQpEWWwEDHVieS90=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hpjdxhsot0KEDIHWVOqJZfWNu0uLjrmHWDWKY9gCvvZzY1ItivT3bP8Z5g+RgGoa2
+         tll5HwtxvxTycXhqUE/7f6/9gEuwh4M1Wtt/0mnSRVNh1Mlr2Ugw4GHW1Kiyv8azlh
+         tcHjZ7ZKjPyST29JhsRlTyhqRBsqgQda4LjYzuRgPmq9tYTtk4XJ2AEyomZ4oHIMN9
+         1v5wiIkFlxPorP3V7uzIVkYwBttPJwf0WerB1LrXw4PUOS247Tvj0cQ4Nw+xV94ZsH
+         O9qnwCGxjT5CRemIHE0M3lZ0+btSeHmR2dtJ2PCLT30g6BhvwseaKE6r/0eB8JcnnY
+         cq1axKw82nOWA==
+Date:   Tue, 6 Jul 2021 11:14:52 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     jefflexu@linux.alibaba.com
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org
+Subject: Re: [RFC,2/2] xfstests: common/rc: add cluster size support for ext4
+Message-ID: <20210706181452.GB11571@locust>
+References: <0939cdf0-895c-7287-569a-2a9b4269b1ca@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0939cdf0-895c-7287-569a-2a9b4269b1ca@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-After commit 618f003199c6 ("ext4: fix memory leak in
-ext4_fill_super"), after the file system is remounted read-only, there
-is a race where the kmmpd thread can exit, causing sbi->s_mmp_tsk to
-point at freed memory, which the call to ext4_stop_mmpd() can trip
-over.
+On Mon, Jul 05, 2021 at 02:58:51PM +0800, JeffleXu wrote:
+> 
+> Sorry for digging this really old post [1]. The overall background is
+> that, @offset and @len need to be aligned with cluster size when doing
+> fallocate(), or several xfstests cases calling fsx will fail if the
+> tested filesystem enabling 'bigalloc' feature.
+> 
+> On April 27, 2020, 5:33 p.m. UTC Darrick J. Wong wrote:
+> 
+> > On Fri, Apr 24, 2020 at 05:33:50PM +0800, Jeffle Xu wrote:
+> >> Inserting and collapsing range on ext4 with 'bigalloc' feature will
+> >> fail due to the offset and size should be alligned with the cluster
+> >> size.
+> >> 
+> >> The previous patch has add support for cluster size in fsx. Detect and
+> >> pass the cluster size parameter to fsx if the underlying filesystem
+> >> is ext4 with bigalloc.
+> >> 
+> >> Signed-off-by: Jeffle Xu <jefflexu@linux.alibaba.com>
+> >> ---
+> >>  common/rc | 9 +++++++++
+> >>  1 file changed, 9 insertions(+)
+> >> 
+> >> diff --git a/common/rc b/common/rc
+> >> index 2000bd9..71dde5f 100644
+> >> --- a/common/rc
+> >> +++ b/common/rc
+> >> @@ -3908,6 +3908,15 @@ run_fsx()
+> >>  {
+> >>  	echo fsx $@
+> >>  	local args=`echo $@ | sed -e "s/ BSIZE / $bsize /g" -e "s/ PSIZE / $psize /g"`
+> >> +
+> >> +	if [ "$FSTYP" == "ext4" ]; then
+> >> +		local cluster_size=$(tune2fs -l $TEST_DEV | grep 'Cluster size' | awk '{print $3}')
+> >> +		if [ -n $cluster_size ]; then
+> >> +			echo "cluster size: $cluster_size"
+> >> +			args="$args -u $cluster_size"
+> >> +		fi
+> >> +	fi
+> > 
+> > Computing the file allocation block size ought to be a separate helper.
+> > 
+> > I wonder if there's a standard way to report cluster sizes, seeing as
+> > fat, ext4, ocfs2, and xfs can all have minimum space allocation units
+> > that are larger than the base fs block size.
+> 
+> In fact only for insert_range and collapse range of ext4 and xfs (in
+> realtime mode), @offset and @len need to be aligned with cluster size.
+> 
+> Though fat and ocfs2 also support cluster size, ocfs2 only supports
+> preallocate and punch_hole, and fat only supports preallocate, in which
+> case @offset and @len needn't be aligned with cluster size.
+> 
+> 
+> So we need to align @offset and @len with cluster size only for ext4 and
+> xfs (in realtime mode) at a minimum cost, to fix this issue. But the
+> question is, there's no standard programming interface exporting cluster
+> size. For both ext4 and xfs, it's stored as a binary data in disk
+> version superblock, e.g., tune2fs could detect the cluster size of ext4.
+> 
+> 
+> Any idea on how to query the cluster size?
 
-Fix this by only allowing kmmpd() to exit when it is stopped via
-ext4_stop_mmpd().
+xfs and ocfs2 return the rt extent size in stat.st_blksize.
 
-Link: https://lore.kernel.org/r/YONtEGojq7LcXnuC@mit.edu
-Reported-by: Ye Bin <yebin10@huawei.com>
-Bug-Report-Link: <20210629143603.2166962-1-yebin10@huawei.com>
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
----
- fs/ext4/mmp.c   | 31 ++++++++++++++-----------------
- fs/ext4/super.c |  6 +++++-
- 2 files changed, 19 insertions(+), 18 deletions(-)
+In fstestsland you could use _get_file_block_size to figure out the
+allocation unit.
 
-diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
-index 6cb598b549ca..16d69c0ff46a 100644
---- a/fs/ext4/mmp.c
-+++ b/fs/ext4/mmp.c
-@@ -156,7 +156,12 @@ static int kmmpd(void *data)
- 	memcpy(mmp->mmp_nodename, init_utsname()->nodename,
- 	       sizeof(mmp->mmp_nodename));
- 
--	while (!kthread_should_stop()) {
-+	while (!kthread_should_stop() && !sb_rdonly(sb)) {
-+		if (!ext4_has_feature_mmp(sb)) {
-+			ext4_warning(sb, "kmmpd being stopped since MMP feature"
-+				     " has been disabled.");
-+			goto wait_to_exit;
-+		}
- 		if (++seq > EXT4_MMP_SEQ_MAX)
- 			seq = 1;
- 
-@@ -177,16 +182,6 @@ static int kmmpd(void *data)
- 			failed_writes++;
- 		}
- 
--		if (!(le32_to_cpu(es->s_feature_incompat) &
--		    EXT4_FEATURE_INCOMPAT_MMP)) {
--			ext4_warning(sb, "kmmpd being stopped since MMP feature"
--				     " has been disabled.");
--			goto exit_thread;
--		}
--
--		if (sb_rdonly(sb))
--			break;
--
- 		diff = jiffies - last_update_time;
- 		if (diff < mmp_update_interval * HZ)
- 			schedule_timeout_interruptible(mmp_update_interval *
-@@ -207,7 +202,7 @@ static int kmmpd(void *data)
- 				ext4_error_err(sb, -retval,
- 					       "error reading MMP data: %d",
- 					       retval);
--				goto exit_thread;
-+				goto wait_to_exit;
- 			}
- 
- 			mmp_check = (struct mmp_struct *)(bh_check->b_data);
-@@ -221,7 +216,7 @@ static int kmmpd(void *data)
- 				ext4_error_err(sb, EBUSY, "abort");
- 				put_bh(bh_check);
- 				retval = -EBUSY;
--				goto exit_thread;
-+				goto wait_to_exit;
- 			}
- 			put_bh(bh_check);
- 		}
-@@ -242,9 +237,13 @@ static int kmmpd(void *data)
- 	mmp->mmp_seq = cpu_to_le32(EXT4_MMP_SEQ_CLEAN);
- 	mmp->mmp_time = cpu_to_le64(ktime_get_real_seconds());
- 
--	retval = write_mmp_block(sb, bh);
-+	return write_mmp_block(sb, bh);
- 
--exit_thread:
-+wait_to_exit:
-+	set_current_state(TASK_INTERRUPTIBLE);
-+	while (!kthread_should_stop())
-+		schedule();
-+	set_current_state(TASK_RUNNING);
- 	return retval;
- }
- 
-@@ -391,5 +390,3 @@ int ext4_multi_mount_protect(struct super_block *sb,
- 	brelse(bh);
- 	return 1;
- }
--
--
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index cdbe71d935e8..b8ff0399e171 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -5993,7 +5993,6 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
- 				 */
- 				ext4_mark_recovery_complete(sb, es);
- 			}
--			ext4_stop_mmpd(sbi);
- 		} else {
- 			/* Make sure we can mount this feature set readwrite */
- 			if (ext4_has_feature_readonly(sb) ||
-@@ -6107,6 +6106,9 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
- 	if (!test_opt(sb, BLOCK_VALIDITY) && sbi->s_system_blks)
- 		ext4_release_system_zone(sb);
- 
-+	if (!ext4_has_feature_mmp(sb) || sb_rdonly(sb))
-+		ext4_stop_mmpd(sbi);
-+
- 	/*
- 	 * Some options can be enabled by ext4 and/or by VFS mount flag
- 	 * either way we need to make sure it matches in both *flags and
-@@ -6140,6 +6142,8 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
- 	for (i = 0; i < EXT4_MAXQUOTAS; i++)
- 		kfree(to_free[i]);
- #endif
-+	if (!ext4_has_feature_mmp(sb) || sb_rdonly(sb))
-+		ext4_stop_mmpd(sbi);
- 	kfree(orig_data);
- 	return err;
- }
--- 
-2.31.0
+Alternately, I've been testing a more permanent fix for the blocksize
+issues[1]; perhaps that will fix the problem?
 
+(Note that the series is at the end of my dev tree, so it's likely to
+have apply errors for the tests that exist in djwong-dev but aren't
+upstream.)
+
+--D
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfstests-dev.git/log/?h=check-blocksize-congruency
+
+> 
+> 
+> [1]
+> https://patchwork.kernel.org/project/fstests/cover/1587720830-11955-1-git-send-email-jefflexu@linux.alibaba.com/
+> 
+> -- 
+> Thanks,
+> Jeffle
