@@ -2,162 +2,47 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B89703BE03C
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Jul 2021 02:24:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 768CD3BE0DF
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 Jul 2021 04:28:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbhGGA10 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 6 Jul 2021 20:27:26 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:57437 "EHLO
+        id S229919AbhGGCbX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 6 Jul 2021 22:31:23 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:44056 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229834AbhGGA10 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 6 Jul 2021 20:27:26 -0400
+        with ESMTP id S229894AbhGGCbX (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 6 Jul 2021 22:31:23 -0400
 Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1670OZUb019148
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1672Scb3024433
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 6 Jul 2021 20:24:36 -0400
+        Tue, 6 Jul 2021 22:28:39 -0400
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 9A6EB15C3CC6; Tue,  6 Jul 2021 20:24:35 -0400 (EDT)
+        id A451315C3CC6; Tue,  6 Jul 2021 22:28:38 -0400 (EDT)
+Date:   Tue, 6 Jul 2021 22:28:38 -0400
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-Cc:     Jan Kara <jack@suse.cz>, Ye Bin <yebin10@huawei.com>,
-        "Theodore Ts'o" <tytso@mit.edu>
-Subject: [PATCH -v4] ext4: fix possible UAF when remounting r/o a mmp-protected file system
-Date:   Tue,  6 Jul 2021 20:24:33 -0400
-Message-Id: <20210707002433.3719773-1-tytso@mit.edu>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210706194910.GC17149@quack2.suse.cz>
-References: <20210706194910.GC17149@quack2.suse.cz>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] tune2fs: Update overhead when toggling journal feature
+Message-ID: <YOURVgGENH0O+avb@mit.edu>
+References: <20210614212830.20207-1-jack@suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210614212830.20207-1-jack@suse.cz>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-After commit 618f003199c6 ("ext4: fix memory leak in
-ext4_fill_super"), after the file system is remounted read-only, there
-is a race where the kmmpd thread can exit, causing sbi->s_mmp_tsk to
-point at freed memory, which the call to ext4_stop_mmpd() can trip
-over.
+On Mon, Jun 14, 2021 at 11:28:30PM +0200, Jan Kara wrote:
+> When adding or removing journal from a filesystem, we also need to add /
+> remove journal blocks from overhead stored in the superblock.  Otherwise
+> total number of blocks in the filesystem as reported by statfs(2) need
+> not match reality and could lead to odd results like negative number of
+> used blocks reported by df(1).
+> 
+> Signed-off-by: Jan Kara <jack@suse.cz>
 
-Fix this by only allowing kmmpd() to exit when it is stopped via
-ext4_stop_mmpd().
+Applied thanks.
 
-Link: https://lore.kernel.org/r/YONtEGojq7LcXnuC@mit.edu
-Reported-by: Ye Bin <yebin10@huawei.com>
-Bug-Report-Link: <20210629143603.2166962-1-yebin10@huawei.com>
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
----
- fs/ext4/mmp.c   | 31 +++++++++++++++----------------
- fs/ext4/super.c |  6 +++++-
- 2 files changed, 20 insertions(+), 17 deletions(-)
-
-diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
-index 6cb598b549ca..bc364c119af6 100644
---- a/fs/ext4/mmp.c
-+++ b/fs/ext4/mmp.c
-@@ -156,7 +156,12 @@ static int kmmpd(void *data)
- 	memcpy(mmp->mmp_nodename, init_utsname()->nodename,
- 	       sizeof(mmp->mmp_nodename));
- 
--	while (!kthread_should_stop()) {
-+	while (!kthread_should_stop() && !sb_rdonly(sb)) {
-+		if (!ext4_has_feature_mmp(sb)) {
-+			ext4_warning(sb, "kmmpd being stopped since MMP feature"
-+				     " has been disabled.");
-+			goto wait_to_exit;
-+		}
- 		if (++seq > EXT4_MMP_SEQ_MAX)
- 			seq = 1;
- 
-@@ -177,16 +182,6 @@ static int kmmpd(void *data)
- 			failed_writes++;
- 		}
- 
--		if (!(le32_to_cpu(es->s_feature_incompat) &
--		    EXT4_FEATURE_INCOMPAT_MMP)) {
--			ext4_warning(sb, "kmmpd being stopped since MMP feature"
--				     " has been disabled.");
--			goto exit_thread;
--		}
--
--		if (sb_rdonly(sb))
--			break;
--
- 		diff = jiffies - last_update_time;
- 		if (diff < mmp_update_interval * HZ)
- 			schedule_timeout_interruptible(mmp_update_interval *
-@@ -207,7 +202,7 @@ static int kmmpd(void *data)
- 				ext4_error_err(sb, -retval,
- 					       "error reading MMP data: %d",
- 					       retval);
--				goto exit_thread;
-+				goto wait_to_exit;
- 			}
- 
- 			mmp_check = (struct mmp_struct *)(bh_check->b_data);
-@@ -221,7 +216,7 @@ static int kmmpd(void *data)
- 				ext4_error_err(sb, EBUSY, "abort");
- 				put_bh(bh_check);
- 				retval = -EBUSY;
--				goto exit_thread;
-+				goto wait_to_exit;
- 			}
- 			put_bh(bh_check);
- 		}
-@@ -244,7 +239,13 @@ static int kmmpd(void *data)
- 
- 	retval = write_mmp_block(sb, bh);
- 
--exit_thread:
-+wait_to_exit:
-+	while (!kthread_should_stop()) {
-+		set_current_state(TASK_INTERRUPTIBLE);
-+		if (!kthread_should_stop())
-+			schedule();
-+	}
-+	set_current_state(TASK_RUNNING);
- 	return retval;
- }
- 
-@@ -391,5 +392,3 @@ int ext4_multi_mount_protect(struct super_block *sb,
- 	brelse(bh);
- 	return 1;
- }
--
--
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index cdbe71d935e8..b8ff0399e171 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -5993,7 +5993,6 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
- 				 */
- 				ext4_mark_recovery_complete(sb, es);
- 			}
--			ext4_stop_mmpd(sbi);
- 		} else {
- 			/* Make sure we can mount this feature set readwrite */
- 			if (ext4_has_feature_readonly(sb) ||
-@@ -6107,6 +6106,9 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
- 	if (!test_opt(sb, BLOCK_VALIDITY) && sbi->s_system_blks)
- 		ext4_release_system_zone(sb);
- 
-+	if (!ext4_has_feature_mmp(sb) || sb_rdonly(sb))
-+		ext4_stop_mmpd(sbi);
-+
- 	/*
- 	 * Some options can be enabled by ext4 and/or by VFS mount flag
- 	 * either way we need to make sure it matches in both *flags and
-@@ -6140,6 +6142,8 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
- 	for (i = 0; i < EXT4_MAXQUOTAS; i++)
- 		kfree(to_free[i]);
- #endif
-+	if (!ext4_has_feature_mmp(sb) || sb_rdonly(sb))
-+		ext4_stop_mmpd(sbi);
- 	kfree(orig_data);
- 	return err;
- }
--- 
-2.31.0
-
+					- Ted
