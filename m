@@ -2,140 +2,162 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2FC63BDFE4
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Jul 2021 01:52:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B89703BE03C
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 Jul 2021 02:24:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230015AbhGFXzE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 6 Jul 2021 19:55:04 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:53576 "EHLO
+        id S229876AbhGGA10 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 6 Jul 2021 20:27:26 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:57437 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229986AbhGFXzE (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 6 Jul 2021 19:55:04 -0400
+        with ESMTP id S229834AbhGGA10 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 6 Jul 2021 20:27:26 -0400
 Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 166NqLNq009283
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1670OZUb019148
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 6 Jul 2021 19:52:21 -0400
+        Tue, 6 Jul 2021 20:24:36 -0400
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 13BFF15C3CC6; Tue,  6 Jul 2021 19:52:21 -0400 (EDT)
-Date:   Tue, 6 Jul 2021 19:52:20 -0400
+        id 9A6EB15C3CC6; Tue,  6 Jul 2021 20:24:35 -0400 (EDT)
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Lukas Czerner <lczerner@redhat.com>
-Cc:     linux-ext4@vger.kernel.org, Dusty Mabe <dustymabe@redhat.com>
-Subject: Re: [PATCH] e2fsck: fix last mount/write time when e2fsck is forced
-Message-ID: <YOTstDfNtRKs3bGK@mit.edu>
-References: <20210614132725.10339-1-lczerner@redhat.com>
- <YOS7qJ2P2lIwjazY@mit.edu>
+To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
+Cc:     Jan Kara <jack@suse.cz>, Ye Bin <yebin10@huawei.com>,
+        "Theodore Ts'o" <tytso@mit.edu>
+Subject: [PATCH -v4] ext4: fix possible UAF when remounting r/o a mmp-protected file system
+Date:   Tue,  6 Jul 2021 20:24:33 -0400
+Message-Id: <20210707002433.3719773-1-tytso@mit.edu>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <20210706194910.GC17149@quack2.suse.cz>
+References: <20210706194910.GC17149@quack2.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YOS7qJ2P2lIwjazY@mit.edu>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 04:23:04PM -0400, Theodore Ts'o wrote:
-> On Mon, Jun 14, 2021 at 03:27:25PM +0200, Lukas Czerner wrote:
-> > With commit c52d930f e2fsck is no longer able to fix bad last
-> > mount/write time by default because it is conditioned on s_checkinterval
-> > not being zero, which it is by default.
-> > 
-> > One place where it matters is when other e2fsprogs tools require to run
-> > full file system check before a certain operation. If the last mount
-> > time is for any reason in future, it will not allow it to run even if
-> > full e2fsck is ran.
-> > 
-> > Fix it by checking the last mount/write time when the e2fsck is forced,
-> > except for the case where we know the system clock is broken.
-> > 
-> > Fixes: c52d930f ("e2fsck: don't check for future superblock times if checkinterval == 0")
-> > Reported-by: Dusty Mabe <dustymabe@redhat.com>
-> > Signed-off-by: Lukas Czerner <lczerner@redhat.com>
-> 
-> Applied, thanks.
+After commit 618f003199c6 ("ext4: fix memory leak in
+ext4_fill_super"), after the file system is remounted read-only, there
+is a race where the kmmpd thread can exit, causing sbi->s_mmp_tsk to
+point at freed memory, which the call to ext4_stop_mmpd() can trip
+over.
 
-It turns out this patch was buggy, and this became clear once the
-regression tests were run and a large number of tests (299 out of 372)
-broke.
+Fix this by only allowing kmmpd() to exit when it is stopped via
+ext4_stop_mmpd().
 
-The problem is that last part of the condition... e.g.:
-
-	(fs->super->s_[mw]time > (__u32) ctx->now)
-
-is the test to see if the last mount/write time is in the future.  The
-original patch would force the "fix" unconditionally which would cause
-these messages to be printed whenever a file system check was forced:
-
-+Superblock last mount time is in the future.
-+       (by less than a day, probably due to the hardware clock being incorrectly set)
-+Superblock last write time is in the future.
-+       (by less than a day, probably due to the hardware clock being incorrectly set)
-
-I've attached the corrected patch below.
-
-					- Ted
-
-From 2c69c94217b6db083d601d4fd62d6ab6c1628fee Mon Sep 17 00:00:00 2001
-From: Lukas Czerner <lczerner@redhat.com>
-Date: Mon, 14 Jun 2021 15:27:25 +0200
-Subject: [PATCH] e2fsck: fix last mount/write time when e2fsck is forced
-
-With commit c52d930f e2fsck is no longer able to fix bad last
-mount/write time by default because it is conditioned on s_checkinterval
-not being zero, which it is by default.
-
-One place where it matters is when other e2fsprogs tools require to run
-full file system check before a certain operation. If the last mount
-time is for any reason in future, it will not allow it to run even if
-full e2fsck is ran.
-
-Fix it by checking the last mount/write time when the e2fsck is forced,
-except for the case where we know the system clock is broken.
-
-[ Reworked the conditionals so error messages claiming that the last
-  write/mount time were corrupted wouldn't be always printed when the
-  e2fsck was run with the -f option, thus causing 299 out of 372
-  regression tests to fail.  -- TYT ]
-
-Fixes: c52d930f ("e2fsck: don't check for future superblock times if checkinterval == 0")
-Reported-by: Dusty Mabe <dustymabe@redhat.com>
-Signed-off-by: Lukas Czerner <lczerner@redhat.com>
+Link: https://lore.kernel.org/r/YONtEGojq7LcXnuC@mit.edu
+Reported-by: Ye Bin <yebin10@huawei.com>
+Bug-Report-Link: <20210629143603.2166962-1-yebin10@huawei.com>
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 ---
- e2fsck/super.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ fs/ext4/mmp.c   | 31 +++++++++++++++----------------
+ fs/ext4/super.c |  6 +++++-
+ 2 files changed, 20 insertions(+), 17 deletions(-)
 
-diff --git a/e2fsck/super.c b/e2fsck/super.c
-index e1c3f935..31e2ffb2 100644
---- a/e2fsck/super.c
-+++ b/e2fsck/super.c
-@@ -1038,9 +1038,9 @@ void check_super_block(e2fsck_t ctx)
- 	 * Check to see if the superblock last mount time or last
- 	 * write time is in the future.
- 	 */
--	if (!broken_system_clock && fs->super->s_checkinterval &&
--	    !(ctx->flags & E2F_FLAG_TIME_INSANE) &&
--	    fs->super->s_mtime > (__u32) ctx->now) {
-+	if (((ctx->options & E2F_OPT_FORCE) || fs->super->s_checkinterval) &&
-+	    !broken_system_clock && !(ctx->flags & E2F_FLAG_TIME_INSANE) &&
-+	    (fs->super->s_mtime > (__u32) ctx->now)) {
- 		pctx.num = fs->super->s_mtime;
- 		problem = PR_0_FUTURE_SB_LAST_MOUNT;
- 		if (fs->super->s_mtime <= (__u32) ctx->now + ctx->time_fudge)
-@@ -1050,9 +1050,9 @@ void check_super_block(e2fsck_t ctx)
- 			fs->flags |= EXT2_FLAG_DIRTY;
+diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
+index 6cb598b549ca..bc364c119af6 100644
+--- a/fs/ext4/mmp.c
++++ b/fs/ext4/mmp.c
+@@ -156,7 +156,12 @@ static int kmmpd(void *data)
+ 	memcpy(mmp->mmp_nodename, init_utsname()->nodename,
+ 	       sizeof(mmp->mmp_nodename));
+ 
+-	while (!kthread_should_stop()) {
++	while (!kthread_should_stop() && !sb_rdonly(sb)) {
++		if (!ext4_has_feature_mmp(sb)) {
++			ext4_warning(sb, "kmmpd being stopped since MMP feature"
++				     " has been disabled.");
++			goto wait_to_exit;
++		}
+ 		if (++seq > EXT4_MMP_SEQ_MAX)
+ 			seq = 1;
+ 
+@@ -177,16 +182,6 @@ static int kmmpd(void *data)
+ 			failed_writes++;
  		}
- 	}
--	if (!broken_system_clock && fs->super->s_checkinterval &&
--	    !(ctx->flags & E2F_FLAG_TIME_INSANE) &&
--	    fs->super->s_wtime > (__u32) ctx->now) {
-+	if (((ctx->options & E2F_OPT_FORCE) || fs->super->s_checkinterval) &&
-+	    !broken_system_clock && !(ctx->flags & E2F_FLAG_TIME_INSANE) &&
-+	    (fs->super->s_wtime > (__u32) ctx->now)) {
- 		pctx.num = fs->super->s_wtime;
- 		problem = PR_0_FUTURE_SB_LAST_WRITE;
- 		if (fs->super->s_wtime <= (__u32) ctx->now + ctx->time_fudge)
+ 
+-		if (!(le32_to_cpu(es->s_feature_incompat) &
+-		    EXT4_FEATURE_INCOMPAT_MMP)) {
+-			ext4_warning(sb, "kmmpd being stopped since MMP feature"
+-				     " has been disabled.");
+-			goto exit_thread;
+-		}
+-
+-		if (sb_rdonly(sb))
+-			break;
+-
+ 		diff = jiffies - last_update_time;
+ 		if (diff < mmp_update_interval * HZ)
+ 			schedule_timeout_interruptible(mmp_update_interval *
+@@ -207,7 +202,7 @@ static int kmmpd(void *data)
+ 				ext4_error_err(sb, -retval,
+ 					       "error reading MMP data: %d",
+ 					       retval);
+-				goto exit_thread;
++				goto wait_to_exit;
+ 			}
+ 
+ 			mmp_check = (struct mmp_struct *)(bh_check->b_data);
+@@ -221,7 +216,7 @@ static int kmmpd(void *data)
+ 				ext4_error_err(sb, EBUSY, "abort");
+ 				put_bh(bh_check);
+ 				retval = -EBUSY;
+-				goto exit_thread;
++				goto wait_to_exit;
+ 			}
+ 			put_bh(bh_check);
+ 		}
+@@ -244,7 +239,13 @@ static int kmmpd(void *data)
+ 
+ 	retval = write_mmp_block(sb, bh);
+ 
+-exit_thread:
++wait_to_exit:
++	while (!kthread_should_stop()) {
++		set_current_state(TASK_INTERRUPTIBLE);
++		if (!kthread_should_stop())
++			schedule();
++	}
++	set_current_state(TASK_RUNNING);
+ 	return retval;
+ }
+ 
+@@ -391,5 +392,3 @@ int ext4_multi_mount_protect(struct super_block *sb,
+ 	brelse(bh);
+ 	return 1;
+ }
+-
+-
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index cdbe71d935e8..b8ff0399e171 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -5993,7 +5993,6 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
+ 				 */
+ 				ext4_mark_recovery_complete(sb, es);
+ 			}
+-			ext4_stop_mmpd(sbi);
+ 		} else {
+ 			/* Make sure we can mount this feature set readwrite */
+ 			if (ext4_has_feature_readonly(sb) ||
+@@ -6107,6 +6106,9 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
+ 	if (!test_opt(sb, BLOCK_VALIDITY) && sbi->s_system_blks)
+ 		ext4_release_system_zone(sb);
+ 
++	if (!ext4_has_feature_mmp(sb) || sb_rdonly(sb))
++		ext4_stop_mmpd(sbi);
++
+ 	/*
+ 	 * Some options can be enabled by ext4 and/or by VFS mount flag
+ 	 * either way we need to make sure it matches in both *flags and
+@@ -6140,6 +6142,8 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
+ 	for (i = 0; i < EXT4_MAXQUOTAS; i++)
+ 		kfree(to_free[i]);
+ #endif
++	if (!ext4_has_feature_mmp(sb) || sb_rdonly(sb))
++		ext4_stop_mmpd(sbi);
+ 	kfree(orig_data);
+ 	return err;
+ }
 -- 
 2.31.0
 
