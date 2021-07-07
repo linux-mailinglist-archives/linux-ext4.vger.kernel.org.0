@@ -2,265 +2,192 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 079923BE4D4
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Jul 2021 10:57:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFBFA3BE5A4
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 Jul 2021 11:30:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231259AbhGGI7o (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 7 Jul 2021 04:59:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231216AbhGGI7n (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Jul 2021 04:59:43 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDCB7C061574;
-        Wed,  7 Jul 2021 01:57:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=MWrityohNuEWkJE2rGPEDtPEPbcWb3iMvUvhJ/UoPDM=; b=Svm8P0TWiGRuGyDIL1qa99qXCj
-        gVcHUNRLON+iHulZ0p/rd1ca/w1dTJ+8quUR/8TLYeGG2jl3y0nBgeJQfBxbpUJ23rra8koK/yC1u
-        ne9D1qGbp2/OzC9cmh9nA+A00/Ru1+ttdSGAQd54RjeYMf/JmujWVTFQI7W2IN/yqNjAuhp8AAEji
-        CyVsDlAVEEoVtPgo6YNf+bL7ecPda1Ml/Noc+83fvC3Q49TQP5D0DsQxvBbC6xxw6HpC1VR/auYf2
-        E7KC9Fesz9VmplPIgF9IcbGPv9NKEq7KAhfxHteOIAPOnwiBDF0OOY/YOKNiLfn/s/CaCZNQf55FK
-        ivUyVpQQ==;
-Received: from p4fdb05cb.dip0.t-ipconnect.de ([79.219.5.203] helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m13MO-00CEHi-Kb; Wed, 07 Jul 2021 08:56:51 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     tytso@mit.edu, leah.rumancik@gmail.com
-Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-nvme@lists.infradead.org
-Subject: [PATCH] ext4: fix EXT4_IOC_CHECKPOINT
-Date:   Wed,  7 Jul 2021 10:56:44 +0200
-Message-Id: <20210707085644.3041867-1-hch@lst.de>
-X-Mailer: git-send-email 2.30.2
+        id S231144AbhGGJdK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 7 Jul 2021 05:33:10 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:58806 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230429AbhGGJdJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Jul 2021 05:33:09 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 00AE022411;
+        Wed,  7 Jul 2021 09:30:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1625650229; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FTDmAl/R8gXdsWrN6qD3tyMGGkTXVmJbjjKspZNUZ3g=;
+        b=P47rK1RpsEw1D1+sP0JjKAQeupsmDrDEt0arNhrbCaN9fCDlvyOCzeKwfjJ3Ywp+e8LqPf
+        EAqaQ0CUkAnhKFUq+S1wJMVOLVat7AJ/Z8i2lo5IxuQS5mtpx0DEi8NtWdxQFmE+OpZHTq
+        0wsiAQFXw3qqAS9JEEovbO4ddgbeO1M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1625650229;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FTDmAl/R8gXdsWrN6qD3tyMGGkTXVmJbjjKspZNUZ3g=;
+        b=H+F1awVGGEwpNS6ZL5igW/jMG0PmeDtwxdhYObKY1XA2iJLptJtqy+zxFwapDMIQNIqJQf
+        kYQZx6FTi/Rk58Dw==
+Received: from quack2.suse.cz (unknown [10.163.43.118])
+        by relay2.suse.de (Postfix) with ESMTP id E55D5A3B9E;
+        Wed,  7 Jul 2021 09:30:28 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id B829B1F2CD7; Wed,  7 Jul 2021 11:30:28 +0200 (CEST)
+Date:   Wed, 7 Jul 2021 11:30:28 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, Ye Bin <yebin10@huawei.com>
+Subject: Re: [PATCH -v4] ext4: fix possible UAF when remounting r/o a
+ mmp-protected file system
+Message-ID: <20210707093028.GA5335@quack2.suse.cz>
+References: <20210706194910.GC17149@quack2.suse.cz>
+ <20210707002433.3719773-1-tytso@mit.edu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210707002433.3719773-1-tytso@mit.edu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Issuing a discard for any kind of "contention deletion SLO" is highly
-dangerous as discard as defined by Linux (as well the underlying NVMe,
-SCSI, ATA, eMMC and virtio primitivies) are defined to not guarantee
-erasing of data but just allow optional and nondeterministic reclamation
-of space.  Instead issuing write zeroes is the only think to perform
-such an operation.  Remove the highly dangerous and misleading discard
-mode for EXT4_IOC_CHECKPOINT and only support the write zeroes based
-on, and clean up the resulting mess including the dry run mode.
+On Tue 06-07-21 20:24:33, Theodore Ts'o wrote:
+> After commit 618f003199c6 ("ext4: fix memory leak in
+> ext4_fill_super"), after the file system is remounted read-only, there
+> is a race where the kmmpd thread can exit, causing sbi->s_mmp_tsk to
+> point at freed memory, which the call to ext4_stop_mmpd() can trip
+> over.
+> 
+> Fix this by only allowing kmmpd() to exit when it is stopped via
+> ext4_stop_mmpd().
+> 
+> Link: https://lore.kernel.org/r/YONtEGojq7LcXnuC@mit.edu
+> Reported-by: Ye Bin <yebin10@huawei.com>
+> Bug-Report-Link: <20210629143603.2166962-1-yebin10@huawei.com>
+> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 
-This is an ABI change and must go into Linus' tree before 5.14 is
-released or the offending commits need to be reverted.
+Looks good. Feel free to add:
 
-Fixes: 351a0a3fbc35 ("ext4: add ioctl EXT4_IOC_CHECKPOINT")
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- Documentation/filesystems/ext4/journal.rst | 17 +++-----
- fs/ext4/ext4.h                             |  7 +---
- fs/ext4/ioctl.c                            | 26 ++----------
- fs/jbd2/journal.c                          | 47 +++++-----------------
- include/linux/jbd2.h                       |  6 +--
- 5 files changed, 22 insertions(+), 81 deletions(-)
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-diff --git a/Documentation/filesystems/ext4/journal.rst b/Documentation/filesystems/ext4/journal.rst
-index 5fad38860f17..d18b18f9e053 100644
---- a/Documentation/filesystems/ext4/journal.rst
-+++ b/Documentation/filesystems/ext4/journal.rst
-@@ -742,15 +742,8 @@ the filesystem including journal recovery, filesystem resizing, and freeing of
- the journal_t structure.
- 
- A journal checkpoint can be triggered from userspace via the ioctl
--EXT4_IOC_CHECKPOINT. This ioctl takes a single, u64 argument for flags.
--Currently, three flags are supported. First, EXT4_IOC_CHECKPOINT_FLAG_DRY_RUN
--can be used to verify input to the ioctl. It returns error if there is any
--invalid input, otherwise it returns success without performing
--any checkpointing. This can be used to check whether the ioctl exists on a
--system and to verify there are no issues with arguments or flags. The
--other two flags are EXT4_IOC_CHECKPOINT_FLAG_DISCARD and
--EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT. These flags cause the journal blocks to be
--discarded or zero-filled, respectively, after the journal checkpoint is
--complete. EXT4_IOC_CHECKPOINT_FLAG_DISCARD and EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT
--cannot both be set. The ioctl may be useful when snapshotting a system or for
--complying with content deletion SLOs.
-+EXT4_IOC_CHECKPOINT. This ioctl takes a u64 argument for flags.
-+The only supported flags is EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT. This flag cause
-+the journal blocks to be zero-filled after the journal checkpoint is complete.
-+The ioctl may be useful when snapshotting a system or for complying with
-+content deletion SLOs.
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 3c51e243450d..c2650b31bed2 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -743,12 +743,7 @@ enum {
- #define EXT4_STATE_FLAG_DA_ALLOC_CLOSE	0x00000008
- 
- /* flags for ioctl EXT4_IOC_CHECKPOINT */
--#define EXT4_IOC_CHECKPOINT_FLAG_DISCARD	0x1
--#define EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT	0x2
--#define EXT4_IOC_CHECKPOINT_FLAG_DRY_RUN	0x4
--#define EXT4_IOC_CHECKPOINT_FLAG_VALID		(EXT4_IOC_CHECKPOINT_FLAG_DISCARD | \
--						EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT | \
--						EXT4_IOC_CHECKPOINT_FLAG_DRY_RUN)
-+#define EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT	0x1
- 
- #if defined(__KERNEL__) && defined(CONFIG_COMPAT)
- /*
-diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-index e27f34bceb8d..981670303733 100644
---- a/fs/ext4/ioctl.c
-+++ b/fs/ext4/ioctl.c
-@@ -798,42 +798,24 @@ static int ext4_ioctl_checkpoint(struct file *filp, unsigned long arg)
- 	__u32 flags = 0;
- 	unsigned int flush_flags = 0;
- 	struct super_block *sb = file_inode(filp)->i_sb;
--	struct request_queue *q;
- 
--	if (copy_from_user(&flags, (__u32 __user *)arg,
--				sizeof(__u32)))
-+	if (copy_from_user(&flags, (__u32 __user *)arg, sizeof(__u32)))
- 		return -EFAULT;
- 
- 	if (!capable(CAP_SYS_ADMIN))
- 		return -EPERM;
- 
- 	/* check for invalid bits set */
--	if ((flags & ~EXT4_IOC_CHECKPOINT_FLAG_VALID) ||
--				((flags & JBD2_JOURNAL_FLUSH_DISCARD) &&
--				(flags & JBD2_JOURNAL_FLUSH_ZEROOUT)))
-+	if (flags & ~EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT)
- 		return -EINVAL;
- 
- 	if (!EXT4_SB(sb)->s_journal)
- 		return -ENODEV;
- 
--	if (flags & ~JBD2_JOURNAL_FLUSH_VALID)
--		return -EINVAL;
--
--	q = bdev_get_queue(EXT4_SB(sb)->s_journal->j_dev);
--	if (!q)
--		return -ENXIO;
--	if ((flags & JBD2_JOURNAL_FLUSH_DISCARD) && !blk_queue_discard(q))
--		return -EOPNOTSUPP;
--
--	if (flags & EXT4_IOC_CHECKPOINT_FLAG_DRY_RUN)
--		return 0;
--
--	if (flags & EXT4_IOC_CHECKPOINT_FLAG_DISCARD)
--		flush_flags |= JBD2_JOURNAL_FLUSH_DISCARD;
--
- 	if (flags & EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT) {
- 		flush_flags |= JBD2_JOURNAL_FLUSH_ZEROOUT;
--		pr_info_ratelimited("warning: checkpointing journal with EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT can be slow");
-+		if (!bdev_write_zeroes_sectors(EXT4_SB(sb)->s_journal->j_dev))
-+			pr_info_ratelimited("warning: checkpointing journal with EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT can be slow");
- 	}
- 
- 	jbd2_journal_lock_updates(EXT4_SB(sb)->s_journal);
-diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index 152880c298ca..3256d8528c43 100644
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -1685,34 +1685,16 @@ static void jbd2_mark_journal_empty(journal_t *journal, int write_op)
- /**
-  * __jbd2_journal_erase() - Discard or zeroout journal blocks (excluding superblock)
-  * @journal: The journal to erase.
-- * @flags: A discard/zeroout request is sent for each physically contigous
-- *	region of the journal. Either JBD2_JOURNAL_FLUSH_DISCARD or
-- *	JBD2_JOURNAL_FLUSH_ZEROOUT must be set to determine which operation
-- *	to perform.
-- *
-- * Note: JBD2_JOURNAL_FLUSH_ZEROOUT attempts to use hardware offload. Zeroes
-- * will be explicitly written if no hardware offload is available, see
-- * blkdev_issue_zeroout for more details.
-+ *
-+ * Note: Attempts to use hardware offload. Zeroes will be explicitly written if
-+ * no hardware offload is available, see blkdev_issue_zeroout for more details.
-  */
--static int __jbd2_journal_erase(journal_t *journal, unsigned int flags)
-+static int __jbd2_journal_erase(journal_t *journal)
- {
- 	int err = 0;
- 	unsigned long block, log_offset; /* logical */
- 	unsigned long long phys_block, block_start, block_stop; /* physical */
- 	loff_t byte_start, byte_stop, byte_count;
--	struct request_queue *q = bdev_get_queue(journal->j_dev);
--
--	/* flags must be set to either discard or zeroout */
--	if ((flags & ~JBD2_JOURNAL_FLUSH_VALID) || !flags ||
--			((flags & JBD2_JOURNAL_FLUSH_DISCARD) &&
--			(flags & JBD2_JOURNAL_FLUSH_ZEROOUT)))
--		return -EINVAL;
--
--	if (!q)
--		return -ENXIO;
--
--	if ((flags & JBD2_JOURNAL_FLUSH_DISCARD) && !blk_queue_discard(q))
--		return -EOPNOTSUPP;
- 
- 	/*
- 	 * lookup block mapping and issue discard/zeroout for each
-@@ -1762,18 +1744,10 @@ static int __jbd2_journal_erase(journal_t *journal, unsigned int flags)
- 		truncate_inode_pages_range(journal->j_dev->bd_inode->i_mapping,
- 				byte_start, byte_stop);
- 
--		if (flags & JBD2_JOURNAL_FLUSH_DISCARD) {
--			err = blkdev_issue_discard(journal->j_dev,
--					byte_start >> SECTOR_SHIFT,
--					byte_count >> SECTOR_SHIFT,
--					GFP_NOFS, 0);
--		} else if (flags & JBD2_JOURNAL_FLUSH_ZEROOUT) {
--			err = blkdev_issue_zeroout(journal->j_dev,
--					byte_start >> SECTOR_SHIFT,
--					byte_count >> SECTOR_SHIFT,
--					GFP_NOFS, 0);
--		}
--
-+		err = blkdev_issue_zeroout(journal->j_dev,
-+				byte_start >> SECTOR_SHIFT,
-+				byte_count >> SECTOR_SHIFT,
-+				GFP_NOFS, 0);
- 		if (unlikely(err != 0)) {
- 			pr_err("JBD2: (error %d) unable to wipe journal at physical blocks %llu - %llu",
- 					err, block_start, block_stop);
-@@ -2453,7 +2427,6 @@ EXPORT_SYMBOL(jbd2_journal_clear_features);
-  * can be issued on the journal blocks after flushing.
-  *
-  * flags:
-- *	JBD2_JOURNAL_FLUSH_DISCARD: issues discards for the journal blocks
-  *	JBD2_JOURNAL_FLUSH_ZEROOUT: issues zeroouts for the journal blocks
-  */
- int jbd2_journal_flush(journal_t *journal, unsigned int flags)
-@@ -2511,8 +2484,8 @@ int jbd2_journal_flush(journal_t *journal, unsigned int flags)
- 	 * s_start value. */
- 	jbd2_mark_journal_empty(journal, REQ_SYNC | REQ_FUA);
- 
--	if (flags)
--		err = __jbd2_journal_erase(journal, flags);
-+	if (flags & JBD2_JOURNAL_FLUSH_ZEROOUT)
-+		err = __jbd2_journal_erase(journal);
- 
- 	mutex_unlock(&journal->j_checkpoint_mutex);
- 	write_lock(&journal->j_state_lock);
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index 6cc035321562..ad7f2defbc8f 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -1398,10 +1398,8 @@ JBD2_FEATURE_INCOMPAT_FUNCS(fast_commit,	FAST_COMMIT)
- 						 * mode */
- #define JBD2_FAST_COMMIT_ONGOING	0x100	/* Fast commit is ongoing */
- #define JBD2_FULL_COMMIT_ONGOING	0x200	/* Full commit is ongoing */
--#define JBD2_JOURNAL_FLUSH_DISCARD	0x0001
--#define JBD2_JOURNAL_FLUSH_ZEROOUT	0x0002
--#define JBD2_JOURNAL_FLUSH_VALID	(JBD2_JOURNAL_FLUSH_DISCARD | \
--					JBD2_JOURNAL_FLUSH_ZEROOUT)
-+
-+#define JBD2_JOURNAL_FLUSH_ZEROOUT	0x0001	/* Zero log on flush */
- 
- /*
-  * Journal atomic flag definitions
+								Honza
+
+> ---
+>  fs/ext4/mmp.c   | 31 +++++++++++++++----------------
+>  fs/ext4/super.c |  6 +++++-
+>  2 files changed, 20 insertions(+), 17 deletions(-)
+> 
+> diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
+> index 6cb598b549ca..bc364c119af6 100644
+> --- a/fs/ext4/mmp.c
+> +++ b/fs/ext4/mmp.c
+> @@ -156,7 +156,12 @@ static int kmmpd(void *data)
+>  	memcpy(mmp->mmp_nodename, init_utsname()->nodename,
+>  	       sizeof(mmp->mmp_nodename));
+>  
+> -	while (!kthread_should_stop()) {
+> +	while (!kthread_should_stop() && !sb_rdonly(sb)) {
+> +		if (!ext4_has_feature_mmp(sb)) {
+> +			ext4_warning(sb, "kmmpd being stopped since MMP feature"
+> +				     " has been disabled.");
+> +			goto wait_to_exit;
+> +		}
+>  		if (++seq > EXT4_MMP_SEQ_MAX)
+>  			seq = 1;
+>  
+> @@ -177,16 +182,6 @@ static int kmmpd(void *data)
+>  			failed_writes++;
+>  		}
+>  
+> -		if (!(le32_to_cpu(es->s_feature_incompat) &
+> -		    EXT4_FEATURE_INCOMPAT_MMP)) {
+> -			ext4_warning(sb, "kmmpd being stopped since MMP feature"
+> -				     " has been disabled.");
+> -			goto exit_thread;
+> -		}
+> -
+> -		if (sb_rdonly(sb))
+> -			break;
+> -
+>  		diff = jiffies - last_update_time;
+>  		if (diff < mmp_update_interval * HZ)
+>  			schedule_timeout_interruptible(mmp_update_interval *
+> @@ -207,7 +202,7 @@ static int kmmpd(void *data)
+>  				ext4_error_err(sb, -retval,
+>  					       "error reading MMP data: %d",
+>  					       retval);
+> -				goto exit_thread;
+> +				goto wait_to_exit;
+>  			}
+>  
+>  			mmp_check = (struct mmp_struct *)(bh_check->b_data);
+> @@ -221,7 +216,7 @@ static int kmmpd(void *data)
+>  				ext4_error_err(sb, EBUSY, "abort");
+>  				put_bh(bh_check);
+>  				retval = -EBUSY;
+> -				goto exit_thread;
+> +				goto wait_to_exit;
+>  			}
+>  			put_bh(bh_check);
+>  		}
+> @@ -244,7 +239,13 @@ static int kmmpd(void *data)
+>  
+>  	retval = write_mmp_block(sb, bh);
+>  
+> -exit_thread:
+> +wait_to_exit:
+> +	while (!kthread_should_stop()) {
+> +		set_current_state(TASK_INTERRUPTIBLE);
+> +		if (!kthread_should_stop())
+> +			schedule();
+> +	}
+> +	set_current_state(TASK_RUNNING);
+>  	return retval;
+>  }
+>  
+> @@ -391,5 +392,3 @@ int ext4_multi_mount_protect(struct super_block *sb,
+>  	brelse(bh);
+>  	return 1;
+>  }
+> -
+> -
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index cdbe71d935e8..b8ff0399e171 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -5993,7 +5993,6 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
+>  				 */
+>  				ext4_mark_recovery_complete(sb, es);
+>  			}
+> -			ext4_stop_mmpd(sbi);
+>  		} else {
+>  			/* Make sure we can mount this feature set readwrite */
+>  			if (ext4_has_feature_readonly(sb) ||
+> @@ -6107,6 +6106,9 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
+>  	if (!test_opt(sb, BLOCK_VALIDITY) && sbi->s_system_blks)
+>  		ext4_release_system_zone(sb);
+>  
+> +	if (!ext4_has_feature_mmp(sb) || sb_rdonly(sb))
+> +		ext4_stop_mmpd(sbi);
+> +
+>  	/*
+>  	 * Some options can be enabled by ext4 and/or by VFS mount flag
+>  	 * either way we need to make sure it matches in both *flags and
+> @@ -6140,6 +6142,8 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
+>  	for (i = 0; i < EXT4_MAXQUOTAS; i++)
+>  		kfree(to_free[i]);
+>  #endif
+> +	if (!ext4_has_feature_mmp(sb) || sb_rdonly(sb))
+> +		ext4_stop_mmpd(sbi);
+>  	kfree(orig_data);
+>  	return err;
+>  }
+> -- 
+> 2.31.0
+> 
 -- 
-2.30.2
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
