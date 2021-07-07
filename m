@@ -2,166 +2,265 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E89B43BE4B7
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Jul 2021 10:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 079923BE4D4
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 Jul 2021 10:57:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231195AbhGGIx7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 7 Jul 2021 04:53:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46485 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231185AbhGGIx7 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Jul 2021 04:53:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625647879;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=aMFtDanoPxhkbNjaRefzC60eneF0bzMBqD5ZhIuYm0g=;
-        b=WMradx9/rcfbt3of4MQM/WcSrC1njh1dEx+F7UkJb/e9naMI0PClKqcDrLzMbm12NskeZ9
-        jQCYv46H7ppOK6J5ACloZpPjljsXul8d1fnzJK5A4Gp+KnCZn4f91Krn9QUyCeJ8BLjRMp
-        SJu+rNMMWvxOXA0yI74w3+IPtVqvZ8A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-596--YbjbC1QOJqrrEkW5rzPFQ-1; Wed, 07 Jul 2021 04:51:17 -0400
-X-MC-Unique: -YbjbC1QOJqrrEkW5rzPFQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 055B318BFE6C;
-        Wed,  7 Jul 2021 08:51:17 +0000 (UTC)
-Received: from work (unknown [10.40.193.137])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D326560C05;
-        Wed,  7 Jul 2021 08:51:12 +0000 (UTC)
-Date:   Wed, 7 Jul 2021 10:51:09 +0200
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org, Dusty Mabe <dustymabe@redhat.com>
-Subject: Re: [PATCH] e2fsck: fix last mount/write time when e2fsck is forced
-Message-ID: <20210707085109.j5akliabeq23eair@work>
-References: <20210614132725.10339-1-lczerner@redhat.com>
- <YOS7qJ2P2lIwjazY@mit.edu>
- <YOTstDfNtRKs3bGK@mit.edu>
+        id S231259AbhGGI7o (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 7 Jul 2021 04:59:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231216AbhGGI7n (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Jul 2021 04:59:43 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDCB7C061574;
+        Wed,  7 Jul 2021 01:57:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=MWrityohNuEWkJE2rGPEDtPEPbcWb3iMvUvhJ/UoPDM=; b=Svm8P0TWiGRuGyDIL1qa99qXCj
+        gVcHUNRLON+iHulZ0p/rd1ca/w1dTJ+8quUR/8TLYeGG2jl3y0nBgeJQfBxbpUJ23rra8koK/yC1u
+        ne9D1qGbp2/OzC9cmh9nA+A00/Ru1+ttdSGAQd54RjeYMf/JmujWVTFQI7W2IN/yqNjAuhp8AAEji
+        CyVsDlAVEEoVtPgo6YNf+bL7ecPda1Ml/Noc+83fvC3Q49TQP5D0DsQxvBbC6xxw6HpC1VR/auYf2
+        E7KC9Fesz9VmplPIgF9IcbGPv9NKEq7KAhfxHteOIAPOnwiBDF0OOY/YOKNiLfn/s/CaCZNQf55FK
+        ivUyVpQQ==;
+Received: from p4fdb05cb.dip0.t-ipconnect.de ([79.219.5.203] helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m13MO-00CEHi-Kb; Wed, 07 Jul 2021 08:56:51 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     tytso@mit.edu, leah.rumancik@gmail.com
+Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-nvme@lists.infradead.org
+Subject: [PATCH] ext4: fix EXT4_IOC_CHECKPOINT
+Date:   Wed,  7 Jul 2021 10:56:44 +0200
+Message-Id: <20210707085644.3041867-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YOTstDfNtRKs3bGK@mit.edu>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 07:52:20PM -0400, Theodore Ts'o wrote:
-> On Tue, Jul 06, 2021 at 04:23:04PM -0400, Theodore Ts'o wrote:
-> > On Mon, Jun 14, 2021 at 03:27:25PM +0200, Lukas Czerner wrote:
-> > > With commit c52d930f e2fsck is no longer able to fix bad last
-> > > mount/write time by default because it is conditioned on s_checkinterval
-> > > not being zero, which it is by default.
-> > > 
-> > > One place where it matters is when other e2fsprogs tools require to run
-> > > full file system check before a certain operation. If the last mount
-> > > time is for any reason in future, it will not allow it to run even if
-> > > full e2fsck is ran.
-> > > 
-> > > Fix it by checking the last mount/write time when the e2fsck is forced,
-> > > except for the case where we know the system clock is broken.
-> > > 
-> > > Fixes: c52d930f ("e2fsck: don't check for future superblock times if checkinterval == 0")
-> > > Reported-by: Dusty Mabe <dustymabe@redhat.com>
-> > > Signed-off-by: Lukas Czerner <lczerner@redhat.com>
-> > 
-> > Applied, thanks.
-> 
-> It turns out this patch was buggy, and this became clear once the
-> regression tests were run and a large number of tests (299 out of 372)
-> broke.
-> 
-> The problem is that last part of the condition... e.g.:
-> 
-> 	(fs->super->s_[mw]time > (__u32) ctx->now)
-> 
-> is the test to see if the last mount/write time is in the future.  The
-> original patch would force the "fix" unconditionally which would cause
-> these messages to be printed whenever a file system check was forced:
-> 
-> +Superblock last mount time is in the future.
-> +       (by less than a day, probably due to the hardware clock being incorrectly set)
-> +Superblock last write time is in the future.
-> +       (by less than a day, probably due to the hardware clock being incorrectly set)
-> 
-> I've attached the corrected patch below.
+Issuing a discard for any kind of "contention deletion SLO" is highly
+dangerous as discard as defined by Linux (as well the underlying NVMe,
+SCSI, ATA, eMMC and virtio primitivies) are defined to not guarantee
+erasing of data but just allow optional and nondeterministic reclamation
+of space.  Instead issuing write zeroes is the only think to perform
+such an operation.  Remove the highly dangerous and misleading discard
+mode for EXT4_IOC_CHECKPOINT and only support the write zeroes based
+on, and clean up the resulting mess including the dry run mode.
 
-Oops sorry about that. My custom test with date changes must have bitten
-here and I ran the 'make check' with outdated binaries, my bad.
+This is an ABI change and must go into Linus' tree before 5.14 is
+released or the offending commits need to be reverted.
 
-The reworked version looks and works fine.
+Fixes: 351a0a3fbc35 ("ext4: add ioctl EXT4_IOC_CHECKPOINT")
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ Documentation/filesystems/ext4/journal.rst | 17 +++-----
+ fs/ext4/ext4.h                             |  7 +---
+ fs/ext4/ioctl.c                            | 26 ++----------
+ fs/jbd2/journal.c                          | 47 +++++-----------------
+ include/linux/jbd2.h                       |  6 +--
+ 5 files changed, 22 insertions(+), 81 deletions(-)
 
-Thanks!
--Lukas
-
-> 
-> 					- Ted
-> 
-> From 2c69c94217b6db083d601d4fd62d6ab6c1628fee Mon Sep 17 00:00:00 2001
-> From: Lukas Czerner <lczerner@redhat.com>
-> Date: Mon, 14 Jun 2021 15:27:25 +0200
-> Subject: [PATCH] e2fsck: fix last mount/write time when e2fsck is forced
-> 
-> With commit c52d930f e2fsck is no longer able to fix bad last
-> mount/write time by default because it is conditioned on s_checkinterval
-> not being zero, which it is by default.
-> 
-> One place where it matters is when other e2fsprogs tools require to run
-> full file system check before a certain operation. If the last mount
-> time is for any reason in future, it will not allow it to run even if
-> full e2fsck is ran.
-> 
-> Fix it by checking the last mount/write time when the e2fsck is forced,
-> except for the case where we know the system clock is broken.
-> 
-> [ Reworked the conditionals so error messages claiming that the last
->   write/mount time were corrupted wouldn't be always printed when the
->   e2fsck was run with the -f option, thus causing 299 out of 372
->   regression tests to fail.  -- TYT ]
-> 
-> Fixes: c52d930f ("e2fsck: don't check for future superblock times if checkinterval == 0")
-> Reported-by: Dusty Mabe <dustymabe@redhat.com>
-> Signed-off-by: Lukas Czerner <lczerner@redhat.com>
-> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-> ---
->  e2fsck/super.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/e2fsck/super.c b/e2fsck/super.c
-> index e1c3f935..31e2ffb2 100644
-> --- a/e2fsck/super.c
-> +++ b/e2fsck/super.c
-> @@ -1038,9 +1038,9 @@ void check_super_block(e2fsck_t ctx)
->  	 * Check to see if the superblock last mount time or last
->  	 * write time is in the future.
->  	 */
-> -	if (!broken_system_clock && fs->super->s_checkinterval &&
-> -	    !(ctx->flags & E2F_FLAG_TIME_INSANE) &&
-> -	    fs->super->s_mtime > (__u32) ctx->now) {
-> +	if (((ctx->options & E2F_OPT_FORCE) || fs->super->s_checkinterval) &&
-> +	    !broken_system_clock && !(ctx->flags & E2F_FLAG_TIME_INSANE) &&
-> +	    (fs->super->s_mtime > (__u32) ctx->now)) {
->  		pctx.num = fs->super->s_mtime;
->  		problem = PR_0_FUTURE_SB_LAST_MOUNT;
->  		if (fs->super->s_mtime <= (__u32) ctx->now + ctx->time_fudge)
-> @@ -1050,9 +1050,9 @@ void check_super_block(e2fsck_t ctx)
->  			fs->flags |= EXT2_FLAG_DIRTY;
->  		}
->  	}
-> -	if (!broken_system_clock && fs->super->s_checkinterval &&
-> -	    !(ctx->flags & E2F_FLAG_TIME_INSANE) &&
-> -	    fs->super->s_wtime > (__u32) ctx->now) {
-> +	if (((ctx->options & E2F_OPT_FORCE) || fs->super->s_checkinterval) &&
-> +	    !broken_system_clock && !(ctx->flags & E2F_FLAG_TIME_INSANE) &&
-> +	    (fs->super->s_wtime > (__u32) ctx->now)) {
->  		pctx.num = fs->super->s_wtime;
->  		problem = PR_0_FUTURE_SB_LAST_WRITE;
->  		if (fs->super->s_wtime <= (__u32) ctx->now + ctx->time_fudge)
-> -- 
-> 2.31.0
-> 
+diff --git a/Documentation/filesystems/ext4/journal.rst b/Documentation/filesystems/ext4/journal.rst
+index 5fad38860f17..d18b18f9e053 100644
+--- a/Documentation/filesystems/ext4/journal.rst
++++ b/Documentation/filesystems/ext4/journal.rst
+@@ -742,15 +742,8 @@ the filesystem including journal recovery, filesystem resizing, and freeing of
+ the journal_t structure.
+ 
+ A journal checkpoint can be triggered from userspace via the ioctl
+-EXT4_IOC_CHECKPOINT. This ioctl takes a single, u64 argument for flags.
+-Currently, three flags are supported. First, EXT4_IOC_CHECKPOINT_FLAG_DRY_RUN
+-can be used to verify input to the ioctl. It returns error if there is any
+-invalid input, otherwise it returns success without performing
+-any checkpointing. This can be used to check whether the ioctl exists on a
+-system and to verify there are no issues with arguments or flags. The
+-other two flags are EXT4_IOC_CHECKPOINT_FLAG_DISCARD and
+-EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT. These flags cause the journal blocks to be
+-discarded or zero-filled, respectively, after the journal checkpoint is
+-complete. EXT4_IOC_CHECKPOINT_FLAG_DISCARD and EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT
+-cannot both be set. The ioctl may be useful when snapshotting a system or for
+-complying with content deletion SLOs.
++EXT4_IOC_CHECKPOINT. This ioctl takes a u64 argument for flags.
++The only supported flags is EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT. This flag cause
++the journal blocks to be zero-filled after the journal checkpoint is complete.
++The ioctl may be useful when snapshotting a system or for complying with
++content deletion SLOs.
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 3c51e243450d..c2650b31bed2 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -743,12 +743,7 @@ enum {
+ #define EXT4_STATE_FLAG_DA_ALLOC_CLOSE	0x00000008
+ 
+ /* flags for ioctl EXT4_IOC_CHECKPOINT */
+-#define EXT4_IOC_CHECKPOINT_FLAG_DISCARD	0x1
+-#define EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT	0x2
+-#define EXT4_IOC_CHECKPOINT_FLAG_DRY_RUN	0x4
+-#define EXT4_IOC_CHECKPOINT_FLAG_VALID		(EXT4_IOC_CHECKPOINT_FLAG_DISCARD | \
+-						EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT | \
+-						EXT4_IOC_CHECKPOINT_FLAG_DRY_RUN)
++#define EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT	0x1
+ 
+ #if defined(__KERNEL__) && defined(CONFIG_COMPAT)
+ /*
+diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
+index e27f34bceb8d..981670303733 100644
+--- a/fs/ext4/ioctl.c
++++ b/fs/ext4/ioctl.c
+@@ -798,42 +798,24 @@ static int ext4_ioctl_checkpoint(struct file *filp, unsigned long arg)
+ 	__u32 flags = 0;
+ 	unsigned int flush_flags = 0;
+ 	struct super_block *sb = file_inode(filp)->i_sb;
+-	struct request_queue *q;
+ 
+-	if (copy_from_user(&flags, (__u32 __user *)arg,
+-				sizeof(__u32)))
++	if (copy_from_user(&flags, (__u32 __user *)arg, sizeof(__u32)))
+ 		return -EFAULT;
+ 
+ 	if (!capable(CAP_SYS_ADMIN))
+ 		return -EPERM;
+ 
+ 	/* check for invalid bits set */
+-	if ((flags & ~EXT4_IOC_CHECKPOINT_FLAG_VALID) ||
+-				((flags & JBD2_JOURNAL_FLUSH_DISCARD) &&
+-				(flags & JBD2_JOURNAL_FLUSH_ZEROOUT)))
++	if (flags & ~EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT)
+ 		return -EINVAL;
+ 
+ 	if (!EXT4_SB(sb)->s_journal)
+ 		return -ENODEV;
+ 
+-	if (flags & ~JBD2_JOURNAL_FLUSH_VALID)
+-		return -EINVAL;
+-
+-	q = bdev_get_queue(EXT4_SB(sb)->s_journal->j_dev);
+-	if (!q)
+-		return -ENXIO;
+-	if ((flags & JBD2_JOURNAL_FLUSH_DISCARD) && !blk_queue_discard(q))
+-		return -EOPNOTSUPP;
+-
+-	if (flags & EXT4_IOC_CHECKPOINT_FLAG_DRY_RUN)
+-		return 0;
+-
+-	if (flags & EXT4_IOC_CHECKPOINT_FLAG_DISCARD)
+-		flush_flags |= JBD2_JOURNAL_FLUSH_DISCARD;
+-
+ 	if (flags & EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT) {
+ 		flush_flags |= JBD2_JOURNAL_FLUSH_ZEROOUT;
+-		pr_info_ratelimited("warning: checkpointing journal with EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT can be slow");
++		if (!bdev_write_zeroes_sectors(EXT4_SB(sb)->s_journal->j_dev))
++			pr_info_ratelimited("warning: checkpointing journal with EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT can be slow");
+ 	}
+ 
+ 	jbd2_journal_lock_updates(EXT4_SB(sb)->s_journal);
+diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+index 152880c298ca..3256d8528c43 100644
+--- a/fs/jbd2/journal.c
++++ b/fs/jbd2/journal.c
+@@ -1685,34 +1685,16 @@ static void jbd2_mark_journal_empty(journal_t *journal, int write_op)
+ /**
+  * __jbd2_journal_erase() - Discard or zeroout journal blocks (excluding superblock)
+  * @journal: The journal to erase.
+- * @flags: A discard/zeroout request is sent for each physically contigous
+- *	region of the journal. Either JBD2_JOURNAL_FLUSH_DISCARD or
+- *	JBD2_JOURNAL_FLUSH_ZEROOUT must be set to determine which operation
+- *	to perform.
+- *
+- * Note: JBD2_JOURNAL_FLUSH_ZEROOUT attempts to use hardware offload. Zeroes
+- * will be explicitly written if no hardware offload is available, see
+- * blkdev_issue_zeroout for more details.
++ *
++ * Note: Attempts to use hardware offload. Zeroes will be explicitly written if
++ * no hardware offload is available, see blkdev_issue_zeroout for more details.
+  */
+-static int __jbd2_journal_erase(journal_t *journal, unsigned int flags)
++static int __jbd2_journal_erase(journal_t *journal)
+ {
+ 	int err = 0;
+ 	unsigned long block, log_offset; /* logical */
+ 	unsigned long long phys_block, block_start, block_stop; /* physical */
+ 	loff_t byte_start, byte_stop, byte_count;
+-	struct request_queue *q = bdev_get_queue(journal->j_dev);
+-
+-	/* flags must be set to either discard or zeroout */
+-	if ((flags & ~JBD2_JOURNAL_FLUSH_VALID) || !flags ||
+-			((flags & JBD2_JOURNAL_FLUSH_DISCARD) &&
+-			(flags & JBD2_JOURNAL_FLUSH_ZEROOUT)))
+-		return -EINVAL;
+-
+-	if (!q)
+-		return -ENXIO;
+-
+-	if ((flags & JBD2_JOURNAL_FLUSH_DISCARD) && !blk_queue_discard(q))
+-		return -EOPNOTSUPP;
+ 
+ 	/*
+ 	 * lookup block mapping and issue discard/zeroout for each
+@@ -1762,18 +1744,10 @@ static int __jbd2_journal_erase(journal_t *journal, unsigned int flags)
+ 		truncate_inode_pages_range(journal->j_dev->bd_inode->i_mapping,
+ 				byte_start, byte_stop);
+ 
+-		if (flags & JBD2_JOURNAL_FLUSH_DISCARD) {
+-			err = blkdev_issue_discard(journal->j_dev,
+-					byte_start >> SECTOR_SHIFT,
+-					byte_count >> SECTOR_SHIFT,
+-					GFP_NOFS, 0);
+-		} else if (flags & JBD2_JOURNAL_FLUSH_ZEROOUT) {
+-			err = blkdev_issue_zeroout(journal->j_dev,
+-					byte_start >> SECTOR_SHIFT,
+-					byte_count >> SECTOR_SHIFT,
+-					GFP_NOFS, 0);
+-		}
+-
++		err = blkdev_issue_zeroout(journal->j_dev,
++				byte_start >> SECTOR_SHIFT,
++				byte_count >> SECTOR_SHIFT,
++				GFP_NOFS, 0);
+ 		if (unlikely(err != 0)) {
+ 			pr_err("JBD2: (error %d) unable to wipe journal at physical blocks %llu - %llu",
+ 					err, block_start, block_stop);
+@@ -2453,7 +2427,6 @@ EXPORT_SYMBOL(jbd2_journal_clear_features);
+  * can be issued on the journal blocks after flushing.
+  *
+  * flags:
+- *	JBD2_JOURNAL_FLUSH_DISCARD: issues discards for the journal blocks
+  *	JBD2_JOURNAL_FLUSH_ZEROOUT: issues zeroouts for the journal blocks
+  */
+ int jbd2_journal_flush(journal_t *journal, unsigned int flags)
+@@ -2511,8 +2484,8 @@ int jbd2_journal_flush(journal_t *journal, unsigned int flags)
+ 	 * s_start value. */
+ 	jbd2_mark_journal_empty(journal, REQ_SYNC | REQ_FUA);
+ 
+-	if (flags)
+-		err = __jbd2_journal_erase(journal, flags);
++	if (flags & JBD2_JOURNAL_FLUSH_ZEROOUT)
++		err = __jbd2_journal_erase(journal);
+ 
+ 	mutex_unlock(&journal->j_checkpoint_mutex);
+ 	write_lock(&journal->j_state_lock);
+diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+index 6cc035321562..ad7f2defbc8f 100644
+--- a/include/linux/jbd2.h
++++ b/include/linux/jbd2.h
+@@ -1398,10 +1398,8 @@ JBD2_FEATURE_INCOMPAT_FUNCS(fast_commit,	FAST_COMMIT)
+ 						 * mode */
+ #define JBD2_FAST_COMMIT_ONGOING	0x100	/* Fast commit is ongoing */
+ #define JBD2_FULL_COMMIT_ONGOING	0x200	/* Full commit is ongoing */
+-#define JBD2_JOURNAL_FLUSH_DISCARD	0x0001
+-#define JBD2_JOURNAL_FLUSH_ZEROOUT	0x0002
+-#define JBD2_JOURNAL_FLUSH_VALID	(JBD2_JOURNAL_FLUSH_DISCARD | \
+-					JBD2_JOURNAL_FLUSH_ZEROOUT)
++
++#define JBD2_JOURNAL_FLUSH_ZEROOUT	0x0001	/* Zero log on flush */
+ 
+ /*
+  * Journal atomic flag definitions
+-- 
+2.30.2
 
