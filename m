@@ -2,173 +2,181 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80E763BEA20
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Jul 2021 16:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1043E3BEC8B
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 Jul 2021 18:49:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232116AbhGGO7X (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 7 Jul 2021 10:59:23 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:46787 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232132AbhGGO7K (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Jul 2021 10:59:10 -0400
-Received: by mail-io1-f70.google.com with SMTP id a24-20020a5d95580000b029044cbcdddd23so1820152ios.13
-        for <linux-ext4@vger.kernel.org>; Wed, 07 Jul 2021 07:56:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Pf6VZ22fSZR5ROkaZ00fSm1pK8614Mu21PT8tzHS51c=;
-        b=EZrh9/bxUIGH2nPifcVRnRKbKRWDxl8do1d2d5XE45ly6br6YV8qP7Coe1OzyXk4lG
-         EMPWKwd8gz5P4SmTrSMUsmA6eKAwPGgAGGpGNCG3vu2R2DeffIaWFicVKV1LU6WR5qOK
-         JQROUkZXmnX4W2AmRWGGujWks2HCsh/wYKJiFdk5b13VgB0wfJp6Z1ZWVyJk5OGNDLxo
-         YmpzLoM1746DrW5B0cuGdxT9WHY+YuYS0fdXiTUJSk+vV6wJ5yuSZ4AIOCTxxasj5yQN
-         HqpS76w/EJGPsTcOpWK5fP8lbPDJ/sp3s6iYPOSeeZcUu5uom7ZEi/X2YsoQ4D0ikWIP
-         kP7g==
-X-Gm-Message-State: AOAM531SjoI15zTxY852QOHVASUjasQTwfCMKnm3WUL2wophTsiUIA46
-        qOPVGmoxTRqbvYMclnPQcOvNRDvJZRXNm/C2h3U7lbyodpGd
-X-Google-Smtp-Source: ABdhPJwTevBzQct6vPdTFoJasDvrx+dANqbV6mTP6CDcfkapYC3Jgi/V2uh5snABDApVmOAA3qTzKl84WyFTHDG72V1O3q9gCiiG
+        id S230334AbhGGQvr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 7 Jul 2021 12:51:47 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:57192 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229975AbhGGQvq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Jul 2021 12:51:46 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id B501D21FFB;
+        Wed,  7 Jul 2021 16:49:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1625676545; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=g082thRo0IHf7U/SrcUrCy2tOvASAkwb5QE3w7R990w=;
+        b=LjzXmBBqr4kOV8uXDe173kn4+RHFasWU/Gf9iewJ4AROkgCV9H72dX0tTokVWiHcGomPuY
+        uA8YR+Mq+Zp/Ku5WSCm1scJrpNFJJkH4bxaLc6JsNIVes+7LXo472Im5Lw7S32vQ6EspDJ
+        rFge6ygcW+Sl35MQxG24Zn1BWod8iZI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1625676545;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=g082thRo0IHf7U/SrcUrCy2tOvASAkwb5QE3w7R990w=;
+        b=pBQJWoV5t0Dok8/NCIG6gUFY8wNAYnymWMLTIrQyWlHad5j6joddifSf83JlienEtwFVU6
+        bt2hcGzh4EuXEYAA==
+Received: from quack2.suse.cz (unknown [10.163.43.118])
+        by relay2.suse.de (Postfix) with ESMTP id 98032A3B98;
+        Wed,  7 Jul 2021 16:49:05 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 494BE1F2CD7; Wed,  7 Jul 2021 18:49:05 +0200 (CEST)
+Date:   Wed, 7 Jul 2021 18:49:05 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Zhang Yi <yi.zhang@huawei.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jack@suse.cz, yukuai3@huawei.com
+Subject: Re: [RFC PATCH 3/4] ext4: factor out write end code of inline file
+Message-ID: <20210707164905.GA18396@quack2.suse.cz>
+References: <20210706024210.746788-1-yi.zhang@huawei.com>
+ <20210706024210.746788-4-yi.zhang@huawei.com>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:c707:: with SMTP id x7mr19924666iof.160.1625669602195;
- Wed, 07 Jul 2021 07:53:22 -0700 (PDT)
-Date:   Wed, 07 Jul 2021 07:53:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000029401005c689b36c@google.com>
-Subject: [syzbot] memory leak in ext4_mb_new_blocks
-From:   syzbot <syzbot+d00808b55445133eca1e@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210706024210.746788-4-yi.zhang@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+On Tue 06-07-21 10:42:09, Zhang Yi wrote:
+> Now that the inline_data file write end procedure are falled into the
+> common write end functions, it is not clear. Factor them out and do
+> some cleanup. This patch also drop ext4_da_write_inline_data_end()
+> and switch to use ext4_write_inline_data_end() instead because we also
+> need to do the same error processing if we failed to write data into
+> inline entry.
+> 
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 
-syzbot found the following issue on:
+Looks good. Just two nits below.
+ 
+> diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
+> index 28b666f25ac2..8fbf8ec05bd5 100644
+> --- a/fs/ext4/inline.c
+> +++ b/fs/ext4/inline.c
+> @@ -729,34 +729,80 @@ int ext4_try_to_write_inline_data(struct address_space *mapping,
+>  int ext4_write_inline_data_end(struct inode *inode, loff_t pos, unsigned len,
+>  			       unsigned copied, struct page *page)
+>  {
+> -	int ret, no_expand;
+> +	handle_t *handle = ext4_journal_current_handle();
+> +	int i_size_changed = 0;
+> +	int no_expand;
+>  	void *kaddr;
+>  	struct ext4_iloc iloc;
+> +	int ret, ret2;
+>  
+>  	if (unlikely(copied < len) && !PageUptodate(page))
+> -		return 0;
+> +		copied = 0;
+>  
+> -	ret = ext4_get_inode_loc(inode, &iloc);
+> -	if (ret) {
+> -		ext4_std_error(inode->i_sb, ret);
+> -		return ret;
+> -	}
+> +	if (likely(copied)) {
+> +		ret = ext4_get_inode_loc(inode, &iloc);
+> +		if (ret) {
+> +			unlock_page(page);
+> +			put_page(page);
+> +			ext4_std_error(inode->i_sb, ret);
+> +			goto out;
+> +		}
+> +		ext4_write_lock_xattr(inode, &no_expand);
+> +		BUG_ON(!ext4_has_inline_data(inode));
+>  
+> -	ext4_write_lock_xattr(inode, &no_expand);
+> -	BUG_ON(!ext4_has_inline_data(inode));
+> +		kaddr = kmap_atomic(page);
+> +		ext4_write_inline_data(inode, &iloc, kaddr, pos, copied);
+> +		kunmap_atomic(kaddr);
+> +		SetPageUptodate(page);
+> +		/* clear page dirty so that writepages wouldn't work for us. */
+> +		ClearPageDirty(page);
+>  
+> -	kaddr = kmap_atomic(page);
+> -	ext4_write_inline_data(inode, &iloc, kaddr, pos, copied);
+> -	kunmap_atomic(kaddr);
+> -	SetPageUptodate(page);
+> -	/* clear page dirty so that writepages wouldn't work for us. */
+> -	ClearPageDirty(page);
+> +		ext4_write_unlock_xattr(inode, &no_expand);
+> +		brelse(iloc.bh);
+> +	}
+>  
+> -	ext4_write_unlock_xattr(inode, &no_expand);
+> -	brelse(iloc.bh);
+> -	mark_inode_dirty(inode);
+> +	/*
+> +	 * It's important to update i_size while still holding page lock:
+> +	 * page writeout could otherwise come in and zero beyond i_size.
+> +	 */
+> +	i_size_changed = ext4_update_inode_size(inode, pos + copied);
+> +	if (ext4_should_journal_data(inode)) {
+> +		ext4_set_inode_state(inode, EXT4_STATE_JDATA);
+> +		EXT4_I(inode)->i_datasync_tid = handle->h_transaction->t_tid;
+> +	}
 
-HEAD commit:    3dbdb38e Merge branch 'for-5.14' of git://git.kernel.org/p..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11f472e4300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=55ac6a927d7e3fe9
-dashboard link: https://syzkaller.appspot.com/bug?extid=d00808b55445133eca1e
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1258bdfc300000
+I think this hunk should also go into the "if (copied)" block. There's no
+point in changing i_size or i_disksize when nothing was written.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d00808b55445133eca1e@syzkaller.appspotmail.com
+> +	unlock_page(page);
+> +	put_page(page);
+>  
+> -	return copied;
+> +	/*
+> +	 * Don't mark the inode dirty under page lock. First, it unnecessarily
+> +	 * makes the holding time of page lock longer. Second, it forces lock
+> +	 * ordering of page lock and transaction start for journaling
+> +	 * filesystems.
+> +	 */
+> +	if (likely(copied) || i_size_changed)
+> +		mark_inode_dirty(inode);
 
-BUG: memory leak
-unreferenced object 0xffff888113d82958 (size 104):
-  comm "kworker/u4:0", pid 8, jiffies 4294943328 (age 340.640s)
-  hex dump (first 32 bytes):
-    c0 33 c0 13 81 88 ff ff 22 01 00 00 00 00 ad de  .3......".......
-    00 01 00 00 00 00 ad de 22 01 00 00 00 00 ad de  ........".......
-  backtrace:
-    [<ffffffff8176822b>] kmem_cache_zalloc include/linux/slab.h:711 [inline]
-    [<ffffffff8176822b>] ext4_mb_pa_alloc fs/ext4/mballoc.c:4974 [inline]
-    [<ffffffff8176822b>] ext4_mb_new_blocks+0xd5b/0x18b0 fs/ext4/mballoc.c:5509
-    [<ffffffff817238ed>] ext4_ext_map_blocks+0xdfd/0x28f0 fs/ext4/extents.c:4245
-    [<ffffffff81746633>] ext4_map_blocks+0x333/0xb10 fs/ext4/inode.c:638
-    [<ffffffff8174d632>] mpage_map_one_extent fs/ext4/inode.c:2395 [inline]
-    [<ffffffff8174d632>] mpage_map_and_submit_extent fs/ext4/inode.c:2448 [inline]
-    [<ffffffff8174d632>] ext4_writepages+0xc82/0x19c0 fs/ext4/inode.c:2800
-    [<ffffffff81451c5a>] do_writepages+0x4a/0x120 mm/page-writeback.c:2355
-    [<ffffffff815bd0be>] __writeback_single_inode+0x6e/0x520 fs/fs-writeback.c:1610
-    [<ffffffff815bdc34>] writeback_sb_inodes+0x2d4/0x710 fs/fs-writeback.c:1875
-    [<ffffffff815be0cb>] __writeback_inodes_wb+0x5b/0x150 fs/fs-writeback.c:1944
-    [<ffffffff815be5f3>] wb_writeback+0x433/0x4a0 fs/fs-writeback.c:2050
-    [<ffffffff815c007a>] wb_check_old_data_flush fs/fs-writeback.c:2152 [inline]
-    [<ffffffff815c007a>] wb_do_writeback fs/fs-writeback.c:2205 [inline]
-    [<ffffffff815c007a>] wb_workfn+0x3fa/0x760 fs/fs-writeback.c:2234
-    [<ffffffff812627d9>] process_one_work+0x2c9/0x610 kernel/workqueue.c:2276
-    [<ffffffff812630c9>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2422
-    [<ffffffff8126c528>] kthread+0x188/0x1d0 kernel/kthread.c:319
-    [<ffffffff810022cf>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+And then it is obvious here that (copied == 0) => !i_size_changed so we can
+just remove the i_size_changed term from the condition.
 
-BUG: memory leak
-unreferenced object 0xffff888113d82a28 (size 104):
-  comm "kworker/u4:0", pid 8, jiffies 4294943328 (age 340.640s)
-  hex dump (first 32 bytes):
-    d8 08 c1 13 81 88 ff ff 22 01 00 00 00 00 ad de  ........".......
-    00 01 00 00 00 00 ad de 22 01 00 00 00 00 ad de  ........".......
-  backtrace:
-    [<ffffffff8176822b>] kmem_cache_zalloc include/linux/slab.h:711 [inline]
-    [<ffffffff8176822b>] ext4_mb_pa_alloc fs/ext4/mballoc.c:4974 [inline]
-    [<ffffffff8176822b>] ext4_mb_new_blocks+0xd5b/0x18b0 fs/ext4/mballoc.c:5509
-    [<ffffffff817238ed>] ext4_ext_map_blocks+0xdfd/0x28f0 fs/ext4/extents.c:4245
-    [<ffffffff81746633>] ext4_map_blocks+0x333/0xb10 fs/ext4/inode.c:638
-    [<ffffffff8174d632>] mpage_map_one_extent fs/ext4/inode.c:2395 [inline]
-    [<ffffffff8174d632>] mpage_map_and_submit_extent fs/ext4/inode.c:2448 [inline]
-    [<ffffffff8174d632>] ext4_writepages+0xc82/0x19c0 fs/ext4/inode.c:2800
-    [<ffffffff81451c5a>] do_writepages+0x4a/0x120 mm/page-writeback.c:2355
-    [<ffffffff815bd0be>] __writeback_single_inode+0x6e/0x520 fs/fs-writeback.c:1610
-    [<ffffffff815bdc34>] writeback_sb_inodes+0x2d4/0x710 fs/fs-writeback.c:1875
-    [<ffffffff815be0cb>] __writeback_inodes_wb+0x5b/0x150 fs/fs-writeback.c:1944
-    [<ffffffff815be5f3>] wb_writeback+0x433/0x4a0 fs/fs-writeback.c:2050
-    [<ffffffff815c007a>] wb_check_old_data_flush fs/fs-writeback.c:2152 [inline]
-    [<ffffffff815c007a>] wb_do_writeback fs/fs-writeback.c:2205 [inline]
-    [<ffffffff815c007a>] wb_workfn+0x3fa/0x760 fs/fs-writeback.c:2234
-    [<ffffffff812627d9>] process_one_work+0x2c9/0x610 kernel/workqueue.c:2276
-    [<ffffffff812630c9>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2422
-    [<ffffffff8126c528>] kthread+0x188/0x1d0 kernel/kthread.c:319
-    [<ffffffff810022cf>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+> +out:
+> +	/*
+> +	 * If we have allocated more blocks and copied less. We will have
+> +	 * blocks allocated outside inode->i_size, so truncate them.
+> +	 */
+> +	if (pos + len > inode->i_size && ext4_can_truncate(inode))
+> +		ext4_orphan_add(handle, inode);
+> +
+> +	ret2 = ext4_journal_stop(handle);
+> +	if (!ret)
+> +		ret = ret2;
+> +	if (pos + len > inode->i_size) {
+> +		ext4_truncate_failed_write(inode);
+> +		/*
+> +		 * If truncate failed early the inode might still be
+> +		 * on the orphan list; we need to make sure the inode
+> +		 * is removed from the orphan list in that case.
+> +		 */
+> +		if (inode->i_nlink)
+> +			ext4_orphan_del(NULL, inode);
+> +	}
+> +	return ret ? ret : copied;
+>  }
 
-BUG: memory leak
-unreferenced object 0xffff888113d82a90 (size 104):
-  comm "kworker/u4:0", pid 8, jiffies 4294943328 (age 340.640s)
-  hex dump (first 32 bytes):
-    b0 1d c1 13 81 88 ff ff 22 01 00 00 00 00 ad de  ........".......
-    00 01 00 00 00 00 ad de 22 01 00 00 00 00 ad de  ........".......
-  backtrace:
-    [<ffffffff8176822b>] kmem_cache_zalloc include/linux/slab.h:711 [inline]
-    [<ffffffff8176822b>] ext4_mb_pa_alloc fs/ext4/mballoc.c:4974 [inline]
-    [<ffffffff8176822b>] ext4_mb_new_blocks+0xd5b/0x18b0 fs/ext4/mballoc.c:5509
-    [<ffffffff817238ed>] ext4_ext_map_blocks+0xdfd/0x28f0 fs/ext4/extents.c:4245
-    [<ffffffff81746633>] ext4_map_blocks+0x333/0xb10 fs/ext4/inode.c:638
-    [<ffffffff8174d632>] mpage_map_one_extent fs/ext4/inode.c:2395 [inline]
-    [<ffffffff8174d632>] mpage_map_and_submit_extent fs/ext4/inode.c:2448 [inline]
-    [<ffffffff8174d632>] ext4_writepages+0xc82/0x19c0 fs/ext4/inode.c:2800
-    [<ffffffff81451c5a>] do_writepages+0x4a/0x120 mm/page-writeback.c:2355
-    [<ffffffff815bd0be>] __writeback_single_inode+0x6e/0x520 fs/fs-writeback.c:1610
-    [<ffffffff815bdc34>] writeback_sb_inodes+0x2d4/0x710 fs/fs-writeback.c:1875
-    [<ffffffff815be0cb>] __writeback_inodes_wb+0x5b/0x150 fs/fs-writeback.c:1944
-    [<ffffffff815be5f3>] wb_writeback+0x433/0x4a0 fs/fs-writeback.c:2050
-    [<ffffffff815c007a>] wb_check_old_data_flush fs/fs-writeback.c:2152 [inline]
-    [<ffffffff815c007a>] wb_do_writeback fs/fs-writeback.c:2205 [inline]
-    [<ffffffff815c007a>] wb_workfn+0x3fa/0x760 fs/fs-writeback.c:2234
-    [<ffffffff812627d9>] process_one_work+0x2c9/0x610 kernel/workqueue.c:2276
-    [<ffffffff812630c9>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2422
-    [<ffffffff8126c528>] kthread+0x188/0x1d0 kernel/kthread.c:319
-    [<ffffffff810022cf>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-BUG: memory leak
-unreferenced object 0xffff888123294558 (size 1176):
-  comm "syz-executor.1", pid 8467, jiffies 4294969731 (age 76.670s)
-  hex dump (first 32 bytes):
-    0a f3 00 00 04 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff81794e19>] ext4_alloc_inode+0x19/0x1a0 fs/ext4/super.c:1281
-    [<ffffffff81598827>] alloc_inode+0x27/0x100 fs/inode.c:233
-    [<ffffffff81598923>] new_inode_pseudo fs/inode.c:934 [inline]
-    [<ffffffff81598923>] new_inode+0x23/0x100 fs/inode.c:963
-    [<ffffffff81735ce7>] __ext4_new_inode+0x127/0x26d0 fs/ext4/ialloc.c:958
-    [<ffffffff8177c2bf>] ext4_mkdir+0x1ef/0x550 fs/ext4/namei.c:2921
-    [<ffffffff8157b7a8>] vfs_mkdir+0x258/0x330 fs/namei.c:3813
-    [<ffffffff81582155>] do_mkdirat+0x1a5/0x1f0 fs/namei.c:3838
-    [<ffffffff8439b235>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff8439b235>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-[  401.478399][    C
-
-
+								Honza
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
