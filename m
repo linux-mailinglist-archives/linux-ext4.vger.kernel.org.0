@@ -2,116 +2,166 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C985E3BE2F6
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Jul 2021 08:19:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E89B43BE4B7
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 Jul 2021 10:51:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230280AbhGGGVj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 7 Jul 2021 02:21:39 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:6761 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230263AbhGGGVi (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Jul 2021 02:21:38 -0400
-Received: from dggeme752-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GKTd45b9rzXqKS;
-        Wed,  7 Jul 2021 14:13:28 +0800 (CST)
-Received: from [10.174.178.134] (10.174.178.134) by
- dggeme752-chm.china.huawei.com (10.3.19.98) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 7 Jul 2021 14:18:57 +0800
-Subject: Re: [RFC PATCH 1/4] ext4: check and update i_disksize properly
-To:     Jan Kara <jack@suse.cz>
-CC:     <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
-        <adilger.kernel@dilger.ca>, <yukuai3@huawei.com>
-References: <20210706024210.746788-1-yi.zhang@huawei.com>
- <20210706024210.746788-2-yi.zhang@huawei.com>
- <20210706121123.GB7922@quack2.suse.cz>
- <32946f62-631e-d752-9fcf-e89b568e2e7f@huawei.com>
- <20210706152633.GB17149@quack2.suse.cz>
-From:   Zhang Yi <yi.zhang@huawei.com>
-Message-ID: <8c7597d1-7983-c024-d7c1-88b741afc2ad@huawei.com>
-Date:   Wed, 7 Jul 2021 14:18:56 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S231195AbhGGIx7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 7 Jul 2021 04:53:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46485 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231185AbhGGIx7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Jul 2021 04:53:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625647879;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aMFtDanoPxhkbNjaRefzC60eneF0bzMBqD5ZhIuYm0g=;
+        b=WMradx9/rcfbt3of4MQM/WcSrC1njh1dEx+F7UkJb/e9naMI0PClKqcDrLzMbm12NskeZ9
+        jQCYv46H7ppOK6J5ACloZpPjljsXul8d1fnzJK5A4Gp+KnCZn4f91Krn9QUyCeJ8BLjRMp
+        SJu+rNMMWvxOXA0yI74w3+IPtVqvZ8A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-596--YbjbC1QOJqrrEkW5rzPFQ-1; Wed, 07 Jul 2021 04:51:17 -0400
+X-MC-Unique: -YbjbC1QOJqrrEkW5rzPFQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 055B318BFE6C;
+        Wed,  7 Jul 2021 08:51:17 +0000 (UTC)
+Received: from work (unknown [10.40.193.137])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D326560C05;
+        Wed,  7 Jul 2021 08:51:12 +0000 (UTC)
+Date:   Wed, 7 Jul 2021 10:51:09 +0200
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org, Dusty Mabe <dustymabe@redhat.com>
+Subject: Re: [PATCH] e2fsck: fix last mount/write time when e2fsck is forced
+Message-ID: <20210707085109.j5akliabeq23eair@work>
+References: <20210614132725.10339-1-lczerner@redhat.com>
+ <YOS7qJ2P2lIwjazY@mit.edu>
+ <YOTstDfNtRKs3bGK@mit.edu>
 MIME-Version: 1.0
-In-Reply-To: <20210706152633.GB17149@quack2.suse.cz>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.134]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggeme752-chm.china.huawei.com (10.3.19.98)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YOTstDfNtRKs3bGK@mit.edu>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2021/7/6 23:26, Jan Kara wrote:
-> On Tue 06-07-21 22:40:46, Zhang Yi wrote:
->> On 2021/7/6 20:11, Jan Kara wrote:
->>> On Tue 06-07-21 10:42:07, Zhang Yi wrote:
->>>> After commit 3da40c7b0898 ("ext4: only call ext4_truncate when size <=
->>>> isize"), i_disksize could always be updated to i_size in ext4_setattr(),
->>>> and it seems that there is no other way that could appear
->>>> i_disksize < i_size besides the delalloc write. In the case of delay
->>>
->>> Well, there are also direct IO writes which have temporarily i_disksize <
->>> i_size but when you hold i_rwsem, you're right that delalloc is the only
->>> reason why you can see i_disksize < i_size AFAIK.
->>>
->>>> alloc write, ext4_writepages() could update i_disksize for the new delay
->>>> allocated blocks properly. So we could switch to check i_size instead
->>>> of i_disksize in ext4_da_write_end() when write to the end of the file.
->>>
->>> I agree that since ext4_da_should_update_i_disksize() needs to return true
->>> for us to touch i_disksize, writeback has to have already allocated block
->>> underlying the end of write (new_i_size position) and thus we are
->>> guaranteed that writeback will also soon update i_disksize after the
->>> new_i_size position. So I agree that your switch to testing i_size instead
->>> of i_disksize should not have any bad effect... Thinking about this some
->>> more why do we need i_disksize update in ext4_da_write_end() at all? The
->>> page will be dirtied and when writeback will happen we will update
->>> i_disksize to i_size. Updating i_disksize earlier brings no benefit - the user
->>> will see zeros instead of valid data if we crash before the writeback
->>> happened. Am I missing something guys?
->>>
->>
->> Hi, Jan.
->>
->> Do you remember the patch and question I asked 2 years ago[1][2]? The
->> case of new_i_size > i_size && ext4_da_should_update_i_disksize() here
->> means partial block append write,
+On Tue, Jul 06, 2021 at 07:52:20PM -0400, Theodore Ts'o wrote:
+> On Tue, Jul 06, 2021 at 04:23:04PM -0400, Theodore Ts'o wrote:
+> > On Mon, Jun 14, 2021 at 03:27:25PM +0200, Lukas Czerner wrote:
+> > > With commit c52d930f e2fsck is no longer able to fix bad last
+> > > mount/write time by default because it is conditioned on s_checkinterval
+> > > not being zero, which it is by default.
+> > > 
+> > > One place where it matters is when other e2fsprogs tools require to run
+> > > full file system check before a certain operation. If the last mount
+> > > time is for any reason in future, it will not allow it to run even if
+> > > full e2fsck is ran.
+> > > 
+> > > Fix it by checking the last mount/write time when the e2fsck is forced,
+> > > except for the case where we know the system clock is broken.
+> > > 
+> > > Fixes: c52d930f ("e2fsck: don't check for future superblock times if checkinterval == 0")
+> > > Reported-by: Dusty Mabe <dustymabe@redhat.com>
+> > > Signed-off-by: Lukas Czerner <lczerner@redhat.com>
+> > 
+> > Applied, thanks.
 > 
-> Agreed.
+> It turns out this patch was buggy, and this became clear once the
+> regression tests were run and a large number of tests (299 out of 372)
+> broke.
 > 
->> ext4_writepages() does not update i_disksize for this case now.
+> The problem is that last part of the condition... e.g.:
 > 
-> Doesn't it? Hmm, so mpage_map_and_submit_extent() certainly does make sure
-> we update i_size properly. But you are actually correct that
-> ext4_writepage() does not update i_disksize and neither does
-> mpage_prepare_extent_to_map() which can also writeback fully mapped pages.
-> Changing mpage_prepare_extent_to_map() to handle i_disksize update would be
-> trivial but dealing with ext4_writepage() would be difficult. So yes, let's
-> keep the i_disksize update in ext4_da_write_end() for now. But please add a
-> comment there explaining the situation. Like:
+> 	(fs->super->s_[mw]time > (__u32) ctx->now)
 > 
-> 	/*
-> 	 * Since we are holding inode lock, we are sure i_disksize <=
-> 	 * i_size. We also know that if i_disksize < i_size, there are
-> 	 * delalloc writes pending in the range upto i_size. If the end of
-> 	 * the current write is <= i_size, there's no need to touch
-> 	 * i_disksize since writeback will push i_disksize upto i_size
-> 	 * eventually. If the end of the current write is > i_size and
-> 	 * inside an allocated block (ext4_da_should_update_i_disksize()
-> 	 * check), we need to update i_disksize here as neither
-> 	 * ext4_writepage() nor certain ext4_writepages() paths not
-> 	 * allocating blocks update i_disksize.
-> 	 *
-> 	 * Note that we defer inode dirtying to generic_write_end() /
-> 	 * ext4_da_write_inline_data_end().
-> 	 */
+> is the test to see if the last mount/write time is in the future.  The
+> original patch would force the "fix" unconditionally which would cause
+> these messages to be printed whenever a file system check was forced:
+> 
+> +Superblock last mount time is in the future.
+> +       (by less than a day, probably due to the hardware clock being incorrectly set)
+> +Superblock last write time is in the future.
+> +       (by less than a day, probably due to the hardware clock being incorrectly set)
+> 
+> I've attached the corrected patch below.
+
+Oops sorry about that. My custom test with date changes must have bitten
+here and I ran the 'make check' with outdated binaries, my bad.
+
+The reworked version looks and works fine.
+
+Thanks!
+-Lukas
+
+> 
+> 					- Ted
+> 
+> From 2c69c94217b6db083d601d4fd62d6ab6c1628fee Mon Sep 17 00:00:00 2001
+> From: Lukas Czerner <lczerner@redhat.com>
+> Date: Mon, 14 Jun 2021 15:27:25 +0200
+> Subject: [PATCH] e2fsck: fix last mount/write time when e2fsck is forced
+> 
+> With commit c52d930f e2fsck is no longer able to fix bad last
+> mount/write time by default because it is conditioned on s_checkinterval
+> not being zero, which it is by default.
+> 
+> One place where it matters is when other e2fsprogs tools require to run
+> full file system check before a certain operation. If the last mount
+> time is for any reason in future, it will not allow it to run even if
+> full e2fsck is ran.
+> 
+> Fix it by checking the last mount/write time when the e2fsck is forced,
+> except for the case where we know the system clock is broken.
+> 
+> [ Reworked the conditionals so error messages claiming that the last
+>   write/mount time were corrupted wouldn't be always printed when the
+>   e2fsck was run with the -f option, thus causing 299 out of 372
+>   regression tests to fail.  -- TYT ]
+> 
+> Fixes: c52d930f ("e2fsck: don't check for future superblock times if checkinterval == 0")
+> Reported-by: Dusty Mabe <dustymabe@redhat.com>
+> Signed-off-by: Lukas Czerner <lczerner@redhat.com>
+> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+> ---
+>  e2fsck/super.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/e2fsck/super.c b/e2fsck/super.c
+> index e1c3f935..31e2ffb2 100644
+> --- a/e2fsck/super.c
+> +++ b/e2fsck/super.c
+> @@ -1038,9 +1038,9 @@ void check_super_block(e2fsck_t ctx)
+>  	 * Check to see if the superblock last mount time or last
+>  	 * write time is in the future.
+>  	 */
+> -	if (!broken_system_clock && fs->super->s_checkinterval &&
+> -	    !(ctx->flags & E2F_FLAG_TIME_INSANE) &&
+> -	    fs->super->s_mtime > (__u32) ctx->now) {
+> +	if (((ctx->options & E2F_OPT_FORCE) || fs->super->s_checkinterval) &&
+> +	    !broken_system_clock && !(ctx->flags & E2F_FLAG_TIME_INSANE) &&
+> +	    (fs->super->s_mtime > (__u32) ctx->now)) {
+>  		pctx.num = fs->super->s_mtime;
+>  		problem = PR_0_FUTURE_SB_LAST_MOUNT;
+>  		if (fs->super->s_mtime <= (__u32) ctx->now + ctx->time_fudge)
+> @@ -1050,9 +1050,9 @@ void check_super_block(e2fsck_t ctx)
+>  			fs->flags |= EXT2_FLAG_DIRTY;
+>  		}
+>  	}
+> -	if (!broken_system_clock && fs->super->s_checkinterval &&
+> -	    !(ctx->flags & E2F_FLAG_TIME_INSANE) &&
+> -	    fs->super->s_wtime > (__u32) ctx->now) {
+> +	if (((ctx->options & E2F_OPT_FORCE) || fs->super->s_checkinterval) &&
+> +	    !broken_system_clock && !(ctx->flags & E2F_FLAG_TIME_INSANE) &&
+> +	    (fs->super->s_wtime > (__u32) ctx->now)) {
+>  		pctx.num = fs->super->s_wtime;
+>  		problem = PR_0_FUTURE_SB_LAST_WRITE;
+>  		if (fs->super->s_wtime <= (__u32) ctx->now + ctx->time_fudge)
+> -- 
+> 2.31.0
 > 
 
-Yeah, it makes things clear, I will add this comments in the next iteration.
-
-Thanks,
-Yi.
