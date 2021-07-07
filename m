@@ -2,85 +2,111 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E93193BEF9A
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Jul 2021 20:43:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94BE83BF02B
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 Jul 2021 21:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231614AbhGGSpJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 7 Jul 2021 14:45:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231482AbhGGSpJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Jul 2021 14:45:09 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF12DC061574
-        for <linux-ext4@vger.kernel.org>; Wed,  7 Jul 2021 11:42:28 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id ga42so4865766ejc.6
-        for <linux-ext4@vger.kernel.org>; Wed, 07 Jul 2021 11:42:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=famzah-net.20150623.gappssmtp.com; s=20150623;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=Ev4xLSy5HqW3W1Px7/oMFO+6V02IJLBRYDeDv5aAbpY=;
-        b=Luz25RWXmjWPH9pu6L6FihGJbijG+aU0t78SN8YLyy4rBolPKXm97pNP4Ma20TbWdN
-         0gL9uz81Y2gXCayqVhejyG7d9udFHRmXU4QlsUNxUuzUK3iv7TJe50hGZYT/qwD2BF6W
-         AehQtcWtSQFUyU2J2zuAIOw0djFwH5Cs+9VD4aUHvWJlcxrarTKGfGxXf+zKJwWFiT+e
-         1ovluYr0Euh2KMp3UyOMQgcWL5i/ZYt97BOkCHeD4FntnqX0EBXsTi8c5DOBpGAGbOVq
-         U6IYeWOWPbpHccX9QpQg1xrsiIyxNMptVNVXsbWbusEMB1OjSxOX4iuOPiXgvmRhNy8H
-         9lQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
-         :mime-version:content-transfer-encoding:content-language;
-        bh=Ev4xLSy5HqW3W1Px7/oMFO+6V02IJLBRYDeDv5aAbpY=;
-        b=KkYKbfXuV9e1/eXNkNTy5/YJrnm/xEovvHasdTHGGCqHybW0d3McdsfhLbKeAi2UNn
-         HxdNVoXD9W2QK+FR2d89+B0+62fvWCxIP+i2/lG9nYgROshFftHsGORHsTP9qkAEhRPF
-         A6oEc0IdBX3ou1wpgW+01kQVbBZOCKUbfi5F+ALEKNJ9rb6SwMoAghnMg1JFZomeO7Ia
-         Wh0XZkePv6L9H+2UgvGEmeAWIy/GC+KzBeHFBx8zfCzBk7w1MpYk69QXRw1reIb/1oe8
-         Nz2SyiJ653h58tiakLCXgf4iqLIH/h64KxCiVNo+pwSDlc7flpj2ENl6gkiQIjvlNkW5
-         UdYg==
-X-Gm-Message-State: AOAM533bs4As2r1n47a4Jr/HSocczW7rFc89rJyt6yqZelaacH2BeIzo
-        exU5glFbNLF7JEZ6cGK0UqGfni8rP50kpA==
-X-Google-Smtp-Source: ABdhPJyHcvRilpxYpPJl6OaeI+Bzq5U6dh8lRIs9KZ2MSXYi3+UTpb6AqmLZGbYKpn3qCdMUOp62WQ==
-X-Received: by 2002:a17:906:d8cf:: with SMTP id re15mr25995743ejb.410.1625683347277;
-        Wed, 07 Jul 2021 11:42:27 -0700 (PDT)
-Received: from [213.145.98.224] (224.98.145.213.in-addr.arpa. [213.145.98.224])
-        by smtp.googlemail.com with ESMTPSA id x16sm4717882ejj.74.2021.07.07.11.42.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Jul 2021 11:42:27 -0700 (PDT)
-To:     linux-ext4@vger.kernel.org
-From:   Ivan Zahariev <famzah@famzah.net>
-Subject: jbd2: fix deadlock while checkpoint thread waits commit thread to
- finish (backport to 4.14)
-Message-ID: <3221ced0-e8f3-53da-3474-28367272f35d@famzah.net>
-Date:   Wed, 7 Jul 2021 21:42:25 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231359AbhGGTXr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 7 Jul 2021 15:23:47 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:46484 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231236AbhGGTXq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Jul 2021 15:23:46 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id E5DE3200ED;
+        Wed,  7 Jul 2021 19:21:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1625685664; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LE2jZkHx/bJbCE8AVNQqBwLgs4Dbdn7m6hJiD+GTDTk=;
+        b=wd5Ep5AUwicc6N3k7bk0efVOEibq1LgMuWxX5Cq18kUJC0NGvh7daZQaQfyNKm8F+HqIaw
+        22aRcui1AYlkMGSyHQ8A29BAjQMXdLZUZaAUHfCNaFw/IS8UXKKVMumBW0fdL5La/8vJ+/
+        ngeMhYgzTjYnK2CXA9nNx7uc++7vkG0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1625685664;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LE2jZkHx/bJbCE8AVNQqBwLgs4Dbdn7m6hJiD+GTDTk=;
+        b=uS0jfXnIow+iDj7CFc7POxp61djeonWSmX5gm0h6N24iZW3YzlrgcgLawr8Gx8MwkJHzDU
+        5KhT/9j4kw+Q/qCg==
+Received: from quack2.suse.cz (unknown [10.163.43.118])
+        by relay2.suse.de (Postfix) with ESMTP id C5D30A3BB4;
+        Wed,  7 Jul 2021 19:21:04 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 9493D1F2CD7; Wed,  7 Jul 2021 21:21:04 +0200 (CEST)
+Date:   Wed, 7 Jul 2021 21:21:04 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     amir73il@gmail.com, djwong@kernel.org, tytso@mit.edu,
+        david@fromorbit.com, jack@suse.com, dhowells@redhat.com,
+        khazhy@google.com, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, kernel@collabora.com
+Subject: Re: [PATCH v3 01/15] fsnotify: Don't insert unmergeable events in
+ hashtable
+Message-ID: <20210707192103.GC18396@quack2.suse.cz>
+References: <20210629191035.681913-1-krisman@collabora.com>
+ <20210629191035.681913-2-krisman@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210629191035.681913-2-krisman@collabora.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+On Tue 29-06-21 15:10:21, Gabriel Krisman Bertazi wrote:
+> Some events, like the overflow event, are not mergeable, so they are not
+> hashed.  But, when failing inside fsnotify_add_event for lack of space,
+> fsnotify_add_event() still calls the insert hook, which adds the
+> overflow event to the merge list.  Add a check to prevent any kind of
+> unmergeable event to be inserted in the hashtable.
+> 
+> Fixes: 94e00d28a680 ("fsnotify: use hash table for faster events merge")
+> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 
-We're running Linux kernel 4.14.x and our systems occasionally suffer a 
-bug which is already fixed: 
-https://github.com/torvalds/linux/commit/53cf978457325d8fb2cdecd7981b31a8229e446e
+Looks good. Feel free to add:
 
-This bugfix hasn't been ported to Linux kernels 4.14 or 4.19. The patch 
-applies cleanly. The two files "fs/jbd2/checkpoint.c" and 
-"fs/jbd2/journal.c" seem pretty identical in the affected sections 
-compared to kernel 5.4 where we have this bugfix already applied.
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-Is it on purpose that this bugfix hasn't been ported to 4.14? Is it safe 
-that we backport it manually in our kernel 4.14 builds? Or is the "ext4" 
-system in 4.14 and 5.4 fundamentally different and this would lead to 
-data loss or other problems?
+								Honza
 
-Thank you.
-
-Best regards.
---Ivan
-
+> 
+> ---
+> Changes since v2:
+>   - Do check for hashed events inside the insert hook (Amir)
+> ---
+>  fs/notify/fanotify/fanotify.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/notify/fanotify/fanotify.c b/fs/notify/fanotify/fanotify.c
+> index 057abd2cf887..310246f8d3f1 100644
+> --- a/fs/notify/fanotify/fanotify.c
+> +++ b/fs/notify/fanotify/fanotify.c
+> @@ -702,6 +702,9 @@ static void fanotify_insert_event(struct fsnotify_group *group,
+>  
+>  	assert_spin_locked(&group->notification_lock);
+>  
+> +	if (!fanotify_is_hashed_event(event->mask))
+> +		return;
+> +
+>  	pr_debug("%s: group=%p event=%p bucket=%u\n", __func__,
+>  		 group, event, bucket);
+>  
+> @@ -779,8 +782,7 @@ static int fanotify_handle_event(struct fsnotify_group *group, u32 mask,
+>  
+>  	fsn_event = &event->fse;
+>  	ret = fsnotify_add_event(group, fsn_event, fanotify_merge,
+> -				 fanotify_is_hashed_event(mask) ?
+> -				 fanotify_insert_event : NULL);
+> +				 fanotify_insert_event);
+>  	if (ret) {
+>  		/* Permission events shouldn't be merged */
+>  		BUG_ON(ret == 1 && mask & FANOTIFY_PERM_EVENTS);
+> -- 
+> 2.32.0
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
