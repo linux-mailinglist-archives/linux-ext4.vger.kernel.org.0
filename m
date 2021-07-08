@@ -2,137 +2,126 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF423BF56C
-	for <lists+linux-ext4@lfdr.de>; Thu,  8 Jul 2021 08:16:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0110D3BF58B
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 Jul 2021 08:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229862AbhGHGTX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 8 Jul 2021 02:19:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbhGHGTW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Jul 2021 02:19:22 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4021DC061574;
-        Wed,  7 Jul 2021 23:16:40 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id v3so6823082ioq.9;
-        Wed, 07 Jul 2021 23:16:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2kh71cbRAp+0W+wcIHglMYX7muuD/4uXgU3T8q2huOo=;
-        b=qjrU7U/XkGlafZ3ggVEa+alvFUQ+yKBNrAyhkL0km2/XPXOINzULejfPRcguPJ57uu
-         pNGAX5nBr9zL0JYoR+rQujG/cZvOUOqLrRRd6Re++xDc4/yDo4+0zeDih0qQNZdMhDmc
-         E1P97yGDoAG+3qoYbb6xgY6PDY/Zm6u1O+O7zWX8bSOaWS2uZpj6Mvm2qGLq7T2f0Nah
-         2QYqu7BkWeq7D9QjUlkMlEsdgaMP3vj3zQYhjBdu9yy5hsq26QdS39wpm/RL6J1I/78J
-         knWVx/lns6JUCkkUTeu56W9mUEtlf0b9blXPubS9jb9ANQguQQ9/6paxuzLZiqAqwwC7
-         kADQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2kh71cbRAp+0W+wcIHglMYX7muuD/4uXgU3T8q2huOo=;
-        b=DP+GsBD4oDRp9D9vq+21jRIHelkrhHg9Ha/O1fMAgmT9qXcyf5jMq/MnobU3R1TZk7
-         k2JKrHveeBnbDG5W8LNZMAGDkuYiL+ZxXiJ6Y/4c9STyaqe7KhYWLjdtGPxDUKXjUlgZ
-         02p3gvZPCo9nFK8ZrGGK1PIubvj9//jP688Zvx/dcb3PgWcwbp+nCALrekRQYNPgF+j3
-         Yj/q8r5frZSimWP+IxP8IIOzaPVkwsCLA4Og5+w1d1IX//itsXg3w7zLnFwuzbt/Kdag
-         ikkJW4pdwgRqN4omm8/4/OrEKysS48p2sT7bySJgMu1o4MhQ6B8FZvoI7pSe5kA9I8Yo
-         A4Yw==
-X-Gm-Message-State: AOAM530iptbQLUf9I7hlvn0JlVjQyl6zRnpFwp247Is7lII0dmMtV/fa
-        0vRzynp511nUNQHba4Q1v6FdI2oFd8xzHxL0KN4=
-X-Google-Smtp-Source: ABdhPJxfpX+pT9kO46jEyI2pxmB9fVKY4SoBQHFTm46UDBJln0nYPxXnEGdw6bXjQTjpRQMnnfl4G5bWaLoGZZJsROY=
-X-Received: by 2002:a02:a60a:: with SMTP id c10mr18436682jam.81.1625724998224;
- Wed, 07 Jul 2021 23:16:38 -0700 (PDT)
+        id S229806AbhGHG1d (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 8 Jul 2021 02:27:33 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:11356 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229742AbhGHG1d (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Jul 2021 02:27:33 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1686Ivrq108660;
+        Thu, 8 Jul 2021 02:24:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=e+dWm4Wk2XbuKXB792X95kY0g+zLKwKACIvnGTaAgaM=;
+ b=Y4HnFV3V4ZuNHQW4rn3nm8FTIzJii0+TujF/VLs1FsFkeN3pB8432KkyCqxYy6cEdmT7
+ Cq17WfLavKnf8+XsohYMN+B9O4TT+GhrXX9AyCsRCy6gms625WYT5zhfn+oc96y9MThM
+ 5rI7YAsfwwQk+vXftZ1QhL4UCcw+D+SwKRlKWtYbcKeXnq7muk3bpxxKqAvW2OmF76jV
+ 5Rar2YTvlIsBfx/XyqTaFeILApP+mhCr2mqEeGoGyyBYNI0y+ypj1XySgMsBKqURl89p
+ hJf+AtxInzlduVdgB2aXeWSKXkkjCeWG0JU6RqDb+qYPRAJDVEb0i+OEF3Kd4V3HI/o8 HQ== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39mc16r11y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 08 Jul 2021 02:24:50 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1686Eq3V025058;
+        Thu, 8 Jul 2021 06:24:48 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04ams.nl.ibm.com with ESMTP id 39jfh8t1wh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 08 Jul 2021 06:24:48 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1686OklE31719918
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 8 Jul 2021 06:24:46 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5764911C069;
+        Thu,  8 Jul 2021 06:24:46 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 03FF611C052;
+        Thu,  8 Jul 2021 06:24:46 +0000 (GMT)
+Received: from localhost (unknown [9.77.197.191])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  8 Jul 2021 06:24:45 +0000 (GMT)
+Date:   Thu, 8 Jul 2021 11:54:45 +0530
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 1/9] ext4/003: Fix this test on 64K platform for dax
+ config
+Message-ID: <20210708062445.xnoij6ya7huedqcv@riteshh-domain>
+References: <cover.1623651783.git.riteshh@linux.ibm.com>
+ <fda7d76b27234a46c3e7165fbdfc4154708c227d.1623651783.git.riteshh@linux.ibm.com>
+ <YNybadzpnZZdwtzR@mit.edu>
 MIME-Version: 1.0
-References: <20210629191035.681913-1-krisman@collabora.com>
- <20210629191035.681913-5-krisman@collabora.com> <20210707201310.GG18396@quack2.suse.cz>
-In-Reply-To: <20210707201310.GG18396@quack2.suse.cz>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Thu, 8 Jul 2021 09:16:26 +0300
-Message-ID: <CAOQ4uxh0Rr9P3q3e8exzcMrdKTnx-LsdaWNmHvYTghUth5nnjg@mail.gmail.com>
-Subject: Re: [PATCH v3 04/15] fanotify: Split superblock marks out to a new cache
-To:     Jan Kara <jack@suse.cz>
-Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Theodore Tso <tytso@mit.edu>,
-        Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.com>,
-        David Howells <dhowells@redhat.com>,
-        Khazhismel Kumykov <khazhy@google.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Ext4 <linux-ext4@vger.kernel.org>, kernel@collabora.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNybadzpnZZdwtzR@mit.edu>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: TseHRBqcgk5u01S-BrbKlYCdLF9vxhgK
+X-Proofpoint-GUID: TseHRBqcgk5u01S-BrbKlYCdLF9vxhgK
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-08_03:2021-07-06,2021-07-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 lowpriorityscore=0 adultscore=0 malwarescore=0 mlxlogscore=999
+ phishscore=0 impostorscore=0 mlxscore=0 spamscore=0 clxscore=1015
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107080033
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jul 7, 2021 at 11:13 PM Jan Kara <jack@suse.cz> wrote:
->
-> On Tue 29-06-21 15:10:24, Gabriel Krisman Bertazi wrote:
-> > FAN_ERROR will require an error structure to be stored per mark.  But,
-> > since FAN_ERROR doesn't apply to inode/mount marks, it should suffice to
-> > only expose this information for superblock marks. Therefore, wrap this
-> > kind of marks into a container and plumb it for the future.
+On 21/06/30 12:27PM, Theodore Ts'o wrote:
+> On Mon, Jun 14, 2021 at 11:58:05AM +0530, Ritesh Harjani wrote:
+> > mkfs.ext4 by default uses 4K blocksize which doesn't mount when testing
+> > with dax config and the test fails. This patch fixes it.
 > >
-> > Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+> > Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> > ---
+> >  tests/ext4/003 | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tests/ext4/003 b/tests/ext4/003
+> > index 00ea9150..1ddb3063 100755
+> > --- a/tests/ext4/003
+> > +++ b/tests/ext4/003
+> > @@ -31,7 +31,8 @@ _require_scratch_ext4_feature "bigalloc"
+> >
+> >  rm -f $seqres.full
+> >
+> > -$MKFS_EXT4_PROG -F -O bigalloc -C 65536  -g 256 $SCRATCH_DEV 512m \
+> > +BLOCK_SIZE=$(get_page_size)
+> > +$MKFS_EXT4_PROG -F -b $BLOCK_SIZE -O bigalloc -C 65536  -g 256 $SCRATCH_DEV 512m \
+> >  	>> $seqres.full 2>&1
+> >  _scratch_mount
 >
-> ...
->
-> > -static void fanotify_free_mark(struct fsnotify_mark *fsn_mark)
-> > +static void fanotify_free_mark(struct fsnotify_mark *mark)
-> >  {
-> > -     kmem_cache_free(fanotify_mark_cache, fsn_mark);
-> > +     if (mark->flags & FSNOTIFY_MARK_FLAG_SB) {
-> > +             struct fanotify_sb_mark *fa_mark = FANOTIFY_SB_MARK(mark);
-> > +
-> > +             kmem_cache_free(fanotify_sb_mark_cache, fa_mark);
-> > +     } else {
-> > +             kmem_cache_free(fanotify_mark_cache, mark);
-> > +     }
-> >  }
->
-> Frankly, I find using mark->flags for fanotify internal distinction of mark
-> type somewhat ugly. Even more so because fsnotify_put_mark() could infer
-> the mark type information from mark->conn->type and pass it to the freeing
-> function. But the passing would be somewhat non-trivial so probably we can
-> leave that for some other day. But the fact that FSNOTIFY_MARK_FLAG_SB is
-> set inside fsnotify-backend specific code is a landmine waiting just for
-> another backend to start supporting sb marks, not set
-> FSNOTIFY_MARK_FLAG_SB, and some generic code depend on checking
-> FSNOTIFY_MARK_FLAG_SB instead of mark->conn->type.
->
-> So I see two sensible solutions:
->
-> a) Just admit this is fanotify private flag, carve out some flags from
-> mark->flags as backend private and have FANOTIFY_MARK_FLAG_SB in that space
-> (e.g. look how include/linux/buffer_head.h has flags upto BH_PrivateStart,
-> then e.g. include/linux/jbd2.h starts its flags from BH_PrivateStart
-> further).
->
-> b) Make a rule that mark connector type is also stored in mark->flags. We
-> have plenty of space there so why not. Then fsnotify_add_mark_locked() has
-> to store type into the flags.
->
-> Pick your poison :)
+> Thanks for the patch!
 
-I find option a) more flexible for future expansion.
-This way fanotify could potentially allocate "normal" sb marks
-(e.g. if not FAN_REPORT_FID) and "private" sb marks otherwise
-(not that I recommend it - this was just an example)
+Thanks for the review, sorry about the delay (- Last week was short a week for
+me).
 
-Also, it is far less fsnotify code changes:
+>
+> If the block size is 64k, then the cluster_size == block_size at which
+> point ext4/003 won't be able to test for the regression its designed
+> to test.  So we probably need to scale the cluster size and file
+> system size relative to the block size.
 
- #define FSNOTIFY_MARK_FLAG_ATTACHED            0x04
-+/* Backend private flags */
-+#define FSNOTIFY_MARK_FLAG_PRIVATE(x)   (0x100 + (x))
+Yes, thanks for catching it. I think if make below change, i.e. scale cluster
+size, we should be good. Since this will make blocks_per_group = 4096 and
+clusters_per_group = 256. This is the condition, which I guess the original
+kernel patch fixed it for. So, we need not increase the filesystem size.
 
-[...]
+$MKFS_EXT4_PROG -F -b $BLOCK_SIZE -O bigalloc -C $((BLOCK_SIZE * 16))  -g 256 $SCRATCH_DEV 512m \
 
-+#define FANOTIFY_MARK_FLAG_SB FSNOTIFY_MARK_FLAG_PRIVATE(0x01)
-+
-+struct fanotify_sb_mark {
-+       struct fsnotify_mark fsn_mark;
-+};
-+
+-ritesh
 
-Thanks,
-Amir.
+
+
+
+
+
+>
+> 					- Ted
