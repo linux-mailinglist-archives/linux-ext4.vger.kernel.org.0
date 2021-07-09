@@ -2,230 +2,150 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4062E3C1CEA
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 Jul 2021 03:01:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3A133C1EC7
+	for <lists+linux-ext4@lfdr.de>; Fri,  9 Jul 2021 07:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230103AbhGIBDn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 8 Jul 2021 21:03:43 -0400
-Received: from mga05.intel.com ([192.55.52.43]:45787 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229843AbhGIBDn (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 8 Jul 2021 21:03:43 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10039"; a="295262884"
-X-IronPort-AV: E=Sophos;i="5.84,225,1620716400"; 
-   d="scan'208";a="295262884"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 18:01:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,225,1620716400"; 
-   d="scan'208";a="424177909"
-Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 08 Jul 2021 18:00:59 -0700
-Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1m1et0-000EaN-N0; Fri, 09 Jul 2021 01:00:58 +0000
-Date:   Fri, 09 Jul 2021 09:00:01 +0800
-From:   kernel test robot <lkp@intel.com>
+        id S229707AbhGIFPU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 9 Jul 2021 01:15:20 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:13282 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229576AbhGIFPU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 9 Jul 2021 01:15:20 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16954RP7181324;
+        Fri, 9 Jul 2021 01:12:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=Aa7UK6yxudfGII3bO8cUNwCvKD8TuC1HhJPVEWA8/LI=;
+ b=MjT0+RSgqbLq2j8KpLsR0E01oCUaMBtEDyxTOxuf8y1CGFWidkblekjQAsrh6MRwGxmW
+ dS/PLTVCudA1LpKifF0ft9GmwevL6KAZxhI3dX2tTYXcMTXfnTA9CT2BF/DifFdqU5Sb
+ Ro50ZcRt58er+NiO1Tt+hD/ioA7b1L3SQYjOjmbDRd78zgecuNbnKdr740WXjL9DqpXG
+ RqJL2yIGJySDWYTnBNCyHfrQaUa/Jacbg7JrwH5A2FmdHIzMacFBw+natHGiIFJUAdRS
+ TcpwaMo3p2GL5ovEGGeQUOQNGGh3olf8ek/+diLHliLmGnQagqjI1nCrepefQe9d8/FA Cg== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39nwfcryc3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 09 Jul 2021 01:12:34 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16959v74018845;
+        Fri, 9 Jul 2021 05:12:33 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03ams.nl.ibm.com with ESMTP id 39jfh8tg0q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 09 Jul 2021 05:12:33 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1695CUoF35193204
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 9 Jul 2021 05:12:30 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8A87A4204D;
+        Fri,  9 Jul 2021 05:12:30 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 41A5A4203F;
+        Fri,  9 Jul 2021 05:12:30 +0000 (GMT)
+Received: from localhost (unknown [9.77.197.191])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri,  9 Jul 2021 05:12:30 +0000 (GMT)
+Date:   Fri, 9 Jul 2021 10:42:29 +0530
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
 To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-Subject: [ext4:dev] BUILD SUCCESS 0705e8d1e2207ceeb83dc6e1751b6b82718b353a
-Message-ID: <60e79f91.pZDTsFcCGd/3Bp7k%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+Cc:     "Darrick J. Wong" <djwong@kernel.org>, fstests@vger.kernel.org,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 9/9] common/attr: Reduce MAX_ATTRS to leave some overhead
+ for 64K blocksize
+Message-ID: <20210709051229.psxw6fh4aaecuy6r@riteshh-domain>
+References: <cover.1623651783.git.riteshh@linux.ibm.com>
+ <f23e6788b958849ec9c1fb7fed0081e58c02a13a.1623651783.git.riteshh@linux.ibm.com>
+ <20210630155150.GC13743@locust>
+ <YNzD90/uocoRveYq@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <YNzD90/uocoRveYq@mit.edu>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: DZGzBAj7-ZSK5V7iKzf-SpQddVADdGzb
+X-Proofpoint-ORIG-GUID: DZGzBAj7-ZSK5V7iKzf-SpQddVADdGzb
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-09_01:2021-07-09,2021-07-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
+ lowpriorityscore=0 bulkscore=0 clxscore=1015 phishscore=0 suspectscore=0
+ spamscore=0 malwarescore=0 priorityscore=1501 mlxlogscore=999 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2107090024
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
-branch HEAD: 0705e8d1e2207ceeb83dc6e1751b6b82718b353a  ext4: inline jbd2_journal_[un]register_shrinker()
+On 21/06/30 03:20PM, Theodore Ts'o wrote:
+> On Wed, Jun 30, 2021 at 08:51:50AM -0700, Darrick J. Wong wrote:
+> > On Mon, Jun 14, 2021 at 11:58:13AM +0530, Ritesh Harjani wrote:
+> > > Test generic/020 fails for ext4 with 64K blocksize. So increase some overhead
+> > > value to reduce the MAX_ATTRS so that it can accomodate for 64K blocksize.
+> > >
+> > > Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> > > ---
+> > >  common/attr | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/common/attr b/common/attr
+> > > index d3902346..e8661d80 100644
+> > > --- a/common/attr
+> > > +++ b/common/attr
+> > > @@ -260,7 +260,7 @@ xfs|udf|pvfs2|9p|ceph|nfs)
+> > >  	# Assume max ~1 block of attrs
+> > >  	BLOCK_SIZE=`_get_block_size $TEST_DIR`
+> > >  	# user.attribute_XXX="value.XXX" is about 32 bytes; leave some overhead
+> > > -	let MAX_ATTRS=$BLOCK_SIZE/40
+> > > +	let MAX_ATTRS=$BLOCK_SIZE/48
+> >
+> > 50% is quite a lot of overhead; maybe we should special-case this?
+>
+> The problem is that 32 bytes is an underestimate when i > 99 for
+> user.attribute_$i=value_$i.  And with a 4k blocksize, MAX_ATTRS =
+> 4096 / 40 = 102.
+>
+> The exact calculation for ext4 is:
+>
+> fixed_block_overhead = 32
+> fixed_entry_overhead = 16
+> max_attr = (block_size - fixed_block_overhead) /
+> 	(fixed_entry_overhead + round_up(len(attr_name), 4) +
+> 	 round_up(len(value), 4))
+>
+> For 4k blocksizes, most of the attributes have an attr_name of
+> "attribute_NN" which is 8, and "value_NN" which is 12.
+>
+> But for larger block sizes, we start having extended attributes of the
+> form "attribute_NNN" or "attribute_NNNN", and "value_NNN" and
+> "value_NNNN", which causes the round(len(..), 4) to jump up by 4
+> bytes.  So round_up(len(attr_name, 4)) becomes 12 instead of 8, and
+> round_up(len(value, 4)) becomes 16 instead of 12.  So:
+>
+> 	max_attrs = (block_size - 32) / (16 + 12 + 16)
+> or
+> 	max_attrs = (block_size - 32) / 44
+>
+> instead of:
+>
+> 	max_attrs = (block_size - 32) / (16 + 8 + 12)
+> or
+> 	max_attrs = (block_size - 32) / 36
 
-elapsed time: 721m
+Thanks for the indepth details. Yes, in my testing as well it was coming to be
+around ~44%. But to be safe I chose 50%.
+I verified from the code as well. We do have 32 bytes of overhead per block for
+the the header. And per entry overhead of 16 bytes. The rounding happens for
+both name (EXT4_XATTR_LEN) and value (EXT4_XATTR_SIZE) of attr.
 
-configs tested: 173
-configs skipped: 3
+Perhaps, it will be helpful if we update above info in ext4 documentation as
+well. In that the rounding off is only mentioned for value and not for name
+length.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+>
+> So special casing things for block sizes > 4k may very well make
+> sense.  Perhaps it's even worth it to put in an ext[234] specific,
+> exalc calculation for MAX_ATTRS in common/attr.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                      malta_kvm_defconfig
-m68k                       bvme6000_defconfig
-arm                         palmz72_defconfig
-mips                          rb532_defconfig
-sh                           se7721_defconfig
-sh                 kfr2r09-romimage_defconfig
-x86_64                              defconfig
-ia64                            zx1_defconfig
-m68k                          multi_defconfig
-arm                            mps2_defconfig
-powerpc                 mpc8315_rdb_defconfig
-powerpc                      chrp32_defconfig
-powerpc                   bluestone_defconfig
-powerpc                 mpc832x_rdb_defconfig
-powerpc                     ep8248e_defconfig
-arm                        oxnas_v6_defconfig
-mips                         tb0219_defconfig
-powerpc                    amigaone_defconfig
-x86_64                           alldefconfig
-m68k                       m5275evb_defconfig
-arm                             ezx_defconfig
-nds32                             allnoconfig
-arm                         axm55xx_defconfig
-arm                        clps711x_defconfig
-sparc                       sparc64_defconfig
-mips                        vocore2_defconfig
-powerpc                         ps3_defconfig
-powerpc                    sam440ep_defconfig
-arm                           corgi_defconfig
-arm                  colibri_pxa270_defconfig
-mips                         cobalt_defconfig
-mips                     loongson2k_defconfig
-sh                           se7724_defconfig
-arc                        nsim_700_defconfig
-arm                         vf610m4_defconfig
-arm                          imote2_defconfig
-s390                             allmodconfig
-arm                       aspeed_g4_defconfig
-arm                            pleb_defconfig
-xtensa                       common_defconfig
-sh                           se7619_defconfig
-mips                          rm200_defconfig
-powerpc                      arches_defconfig
-mips                        jmr3927_defconfig
-arm                      footbridge_defconfig
-powerpc                 canyonlands_defconfig
-sh                               alldefconfig
-mips                    maltaup_xpa_defconfig
-mips                  cavium_octeon_defconfig
-arm                     eseries_pxa_defconfig
-powerpc                      pasemi_defconfig
-arm                             mxs_defconfig
-sh                           se7712_defconfig
-sh                        edosk7705_defconfig
-sparc64                          alldefconfig
-sh                        sh7757lcr_defconfig
-powerpc                          allyesconfig
-sh                   secureedge5410_defconfig
-powerpc                     tqm8560_defconfig
-arm                       aspeed_g5_defconfig
-sh                               allmodconfig
-mips                       rbtx49xx_defconfig
-powerpc                     tqm8548_defconfig
-arm                         cm_x300_defconfig
-m68k                         apollo_defconfig
-m68k                         amcore_defconfig
-sh                        dreamcast_defconfig
-sh                            migor_defconfig
-arm                           h3600_defconfig
-arm                           u8500_defconfig
-arm                        mvebu_v7_defconfig
-sh                            hp6xx_defconfig
-powerpc                     akebono_defconfig
-arm                       cns3420vb_defconfig
-m68k                           sun3_defconfig
-arm                           sunxi_defconfig
-arm                         shannon_defconfig
-powerpc                    gamecube_defconfig
-mips                       bmips_be_defconfig
-arm                        multi_v7_defconfig
-m68k                             alldefconfig
-arm                         at91_dt_defconfig
-arm                            lart_defconfig
-sh                   sh7770_generic_defconfig
-powerpc                  mpc885_ads_defconfig
-arm                     davinci_all_defconfig
-riscv                    nommu_k210_defconfig
-mips                     loongson1c_defconfig
-mips                            gpr_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20210707
-x86_64               randconfig-a002-20210707
-x86_64               randconfig-a005-20210707
-x86_64               randconfig-a006-20210707
-x86_64               randconfig-a003-20210707
-x86_64               randconfig-a001-20210707
-i386                 randconfig-a004-20210707
-i386                 randconfig-a006-20210707
-i386                 randconfig-a001-20210707
-i386                 randconfig-a003-20210707
-i386                 randconfig-a005-20210707
-i386                 randconfig-a002-20210707
-i386                 randconfig-a006-20210708
-i386                 randconfig-a004-20210708
-i386                 randconfig-a001-20210708
-i386                 randconfig-a003-20210708
-i386                 randconfig-a005-20210708
-i386                 randconfig-a002-20210708
-i386                 randconfig-a015-20210707
-i386                 randconfig-a016-20210707
-i386                 randconfig-a012-20210707
-i386                 randconfig-a011-20210707
-i386                 randconfig-a014-20210707
-i386                 randconfig-a013-20210707
-i386                 randconfig-a015-20210708
-i386                 randconfig-a016-20210708
-i386                 randconfig-a011-20210708
-i386                 randconfig-a012-20210708
-i386                 randconfig-a013-20210708
-i386                 randconfig-a014-20210708
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+yes, will make these changes for ext[234] specific in common/attr.
 
-clang tested configs:
-x86_64               randconfig-b001-20210707
-x86_64               randconfig-a015-20210707
-x86_64               randconfig-a014-20210707
-x86_64               randconfig-a012-20210707
-x86_64               randconfig-a011-20210707
-x86_64               randconfig-a016-20210707
-x86_64               randconfig-a013-20210707
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-ritesh
