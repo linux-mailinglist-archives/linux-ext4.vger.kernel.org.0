@@ -2,104 +2,149 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AE583C34DF
-	for <lists+linux-ext4@lfdr.de>; Sat, 10 Jul 2021 16:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0AD23C37DB
+	for <lists+linux-ext4@lfdr.de>; Sun, 11 Jul 2021 01:50:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231806AbhGJOm6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 10 Jul 2021 10:42:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbhGJOm5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 10 Jul 2021 10:42:57 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8278AC0613DD;
-        Sat, 10 Jul 2021 07:40:12 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d12so11627482pfj.2;
-        Sat, 10 Jul 2021 07:40:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+yimJR30/m003w+X6EtV4f+C8eFTWX5UIfbOmwRmtQs=;
-        b=PxAEsun23B3n5dHrbV5KgjU5Fhef1rxdLf16NZHBKGQmPot9TNxOWeR/nL79VFkgbt
-         ZtddKv54iqib5p+KkB/l11LbmrwwDmR+Hxm3V32BlpnS+V85gcPib8M/yxYGBwE6sFR0
-         wmgcos1NZjbIM+yagFzoE+SZ3BLBtVLGmyEeJGpdOC6T4AELNpnETF9kWeE/A/VB9k5D
-         C1lEQg3p1kuAWLZ36UfOdjM/+7iQZzhAvmCguDbUOTLoafUeaITb865if/bVBCjtaFHe
-         /0SS31+pyk+w94eda9BTwkap4w0GkIJjXp6IUAM8L0dbdP/5QKCxNq9iBec5S3KLy8T8
-         Zhug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+yimJR30/m003w+X6EtV4f+C8eFTWX5UIfbOmwRmtQs=;
-        b=qpgtyz78nHY61rySV2+b1o7NiLQrDxEIhbrn4ipWasnV1qHhcu6i3EQpaKPlWhjIIn
-         PDPxZNesWOYUOLR+7Jc0vg8uFovOygMDMsTElqxf3RRAmBCBGjz01izZIJR1X43kXZKM
-         Y+xIrBnI+PPEDKbFQaXd8zmuOgpSZ/CXAZvjtKxxCzXBAl2C+M9v/xHviCeBBoWeuqcb
-         UtUu1W4oHI4rDp1M65odOU8xA1enFJAzl+61cv+a30gvj3znz+LTPKCg1PgbEwaUr1Vv
-         tjwRQbJdb3Q8Om8FHmhDx8CcA/zqIQBBysSt753F0OULNZTSSE5E4ycY1U5qIAkprZSR
-         NiKg==
-X-Gm-Message-State: AOAM530eImyH1udTgMK64eQQHqWG6VgTbO7/XkpVYmMQ/v4HUGp1/czY
-        dGvy2aFw+L7IS6ZglGcwtttYAVzif2vcwn8v
-X-Google-Smtp-Source: ABdhPJwWoLk6xMEbLIO8DZJApSRhwgvnHfI8HTsI8CKg34R4XD36Y42oIQFO7/h6kQjmLV2d6lq9Pg==
-X-Received: by 2002:a05:6a00:a8a:b029:30c:a10b:3e3f with SMTP id b10-20020a056a000a8ab029030ca10b3e3fmr43492003pfl.40.1625928011764;
-        Sat, 10 Jul 2021 07:40:11 -0700 (PDT)
-Received: from localhost.localdomain ([114.99.217.112])
-        by smtp.gmail.com with ESMTPSA id v25sm10860513pga.35.2021.07.10.07.40.07
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 10 Jul 2021 07:40:11 -0700 (PDT)
-From:   Wang Shilong <wangshilong1991@gmail.com>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Wang Shilong <wshilong@ddn.com>
-Subject: [PATCH v4] fs: forbid invalid project ID
-Date:   Sat, 10 Jul 2021 22:39:59 +0800
-Message-Id: <20210710143959.58077-1-wangshilong1991@gmail.com>
-X-Mailer: git-send-email 2.30.1 (Apple Git-130)
+        id S232964AbhGJXxM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 10 Jul 2021 19:53:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39158 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231966AbhGJXwy (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sat, 10 Jul 2021 19:52:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C3DE613B6;
+        Sat, 10 Jul 2021 23:50:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625961008;
+        bh=+d+NrJHSUO1Jp+cYzRpOOmeIY7BOrMO7ae8ByJmcd2M=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=L9NWbJSqqZbWAtNd/Hl6+BnGol43x7m7oBnHx0Te+vYYl0HN8gVPtPfHVRaALwRgv
+         j8nuU+yOZ7I8Owb6FrNTzs5kHh2uqg7C8r2jqqjTVZEd5u4YILR/eB6MT0QkSp3Bdg
+         Ea6zeOkMtz7jgikMFwgHHf70GEHQWAenq7irsqPbY4Jl4QPYg41pzs8+ecdvk1lof2
+         qoWlpotGF0BfRYBLegteVV5WRZb7i97O7TQ+ARCPbRVegrGcORSfv8FdRx5l97DCI1
+         CYUJ2JdZ1yFXZmnMWVwTK2Z9wQULkVFgNqX97UT6O1vhmU8GRSO+QhXFEr6KVw9LsO
+         LDRFiJ3fpvnWQ==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Ye Bin <yebin10@huawei.com>, Theodore Ts'o <tytso@mit.edu>,
+        Sasha Levin <sashal@kernel.org>, linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.12 38/43] ext4: fix WARN_ON_ONCE(!buffer_uptodate) after an error writing the superblock
+Date:   Sat, 10 Jul 2021 19:49:10 -0400
+Message-Id: <20210710234915.3220342-38-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210710234915.3220342-1-sashal@kernel.org>
+References: <20210710234915.3220342-1-sashal@kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Wang Shilong <wshilong@ddn.com>
+From: Ye Bin <yebin10@huawei.com>
 
-fileattr_set_prepare() should check if project ID
-is valid, otherwise dqget() will return NULL for
-such project ID quota.
+[ Upstream commit 558d6450c7755aa005d89021204b6cdcae5e848f ]
 
-Signed-off-by: Wang Shilong <wshilong@ddn.com>
+If a writeback of the superblock fails with an I/O error, the buffer
+is marked not uptodate.  However, this can cause a WARN_ON to trigger
+when we attempt to write superblock a second time.  (Which might
+succeed this time, for cerrtain types of block devices such as iSCSI
+devices over a flaky network.)
+
+Try to detect this case in flush_stashed_error_work(), and also change
+__ext4_handle_dirty_metadata() so we always set the uptodate flag, not
+just in the nojournal case.
+
+Before this commit, this problem can be repliciated via:
+
+1. dmsetup  create dust1 --table  '0 2097152 dust /dev/sdc 0 4096'
+2. mount  /dev/mapper/dust1  /home/test
+3. dmsetup message dust1 0 addbadblock 0 10
+4. cd /home/test
+5. echo "XXXXXXX" > t
+
+After a few seconds, we got following warning:
+
+[   80.654487] end_buffer_async_write: bh=0xffff88842f18bdd0
+[   80.656134] Buffer I/O error on dev dm-0, logical block 0, lost async page write
+[   85.774450] EXT4-fs error (device dm-0): ext4_check_bdev_write_error:193: comm kworker/u16:8: Error while async write back metadata
+[   91.415513] mark_buffer_dirty: bh=0xffff88842f18bdd0
+[   91.417038] ------------[ cut here ]------------
+[   91.418450] WARNING: CPU: 1 PID: 1944 at fs/buffer.c:1092 mark_buffer_dirty.cold+0x1c/0x5e
+[   91.440322] Call Trace:
+[   91.440652]  __jbd2_journal_temp_unlink_buffer+0x135/0x220
+[   91.441354]  __jbd2_journal_unfile_buffer+0x24/0x90
+[   91.441981]  __jbd2_journal_refile_buffer+0x134/0x1d0
+[   91.442628]  jbd2_journal_commit_transaction+0x249a/0x3240
+[   91.443336]  ? put_prev_entity+0x2a/0x200
+[   91.443856]  ? kjournald2+0x12e/0x510
+[   91.444324]  kjournald2+0x12e/0x510
+[   91.444773]  ? woken_wake_function+0x30/0x30
+[   91.445326]  kthread+0x150/0x1b0
+[   91.445739]  ? commit_timeout+0x20/0x20
+[   91.446258]  ? kthread_flush_worker+0xb0/0xb0
+[   91.446818]  ret_from_fork+0x1f/0x30
+[   91.447293] ---[ end trace 66f0b6bf3d1abade ]---
+
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+Link: https://lore.kernel.org/r/20210615090537.3423231-1-yebin10@huawei.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
-v3->v3:
-only check project Id if caller is allowed
-to change and being changed.
+ fs/ext4/ext4_jbd2.c |  2 +-
+ fs/ext4/super.c     | 12 ++++++++++--
+ 2 files changed, 11 insertions(+), 3 deletions(-)
 
-v2->v3: move check before @fsx_projid is accessed
-and use make_kprojid() helper.
-
-v1->v2: try to fix in the VFS
- fs/ioctl.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/fs/ioctl.c b/fs/ioctl.c
-index 1e2204fa9963..d4fabb5421cd 100644
---- a/fs/ioctl.c
-+++ b/fs/ioctl.c
-@@ -817,6 +817,14 @@ static int fileattr_set_prepare(struct inode *inode,
- 		if ((old_ma->fsx_xflags ^ fa->fsx_xflags) &
- 				FS_XFLAG_PROJINHERIT)
- 			return -EINVAL;
-+	} else {
-+		/*
-+		 * Caller is allowed to change the project ID. If it is being
-+		 * changed, make sure that the new value is valid.
-+		 */
-+		if (old_ma->fsx_projid != fa->fsx_projid &&
-+		    !projid_valid(make_kprojid(&init_user_ns, fa->fsx_projid)))
-+			return -EINVAL;
- 	}
+diff --git a/fs/ext4/ext4_jbd2.c b/fs/ext4/ext4_jbd2.c
+index be799040a415..b96ecba91899 100644
+--- a/fs/ext4/ext4_jbd2.c
++++ b/fs/ext4/ext4_jbd2.c
+@@ -327,6 +327,7 @@ int __ext4_handle_dirty_metadata(const char *where, unsigned int line,
  
- 	/* Check extent size hints. */
+ 	set_buffer_meta(bh);
+ 	set_buffer_prio(bh);
++	set_buffer_uptodate(bh);
+ 	if (ext4_handle_valid(handle)) {
+ 		err = jbd2_journal_dirty_metadata(handle, bh);
+ 		/* Errors can only happen due to aborted journal or a nasty bug */
+@@ -355,7 +356,6 @@ int __ext4_handle_dirty_metadata(const char *where, unsigned int line,
+ 					 err);
+ 		}
+ 	} else {
+-		set_buffer_uptodate(bh);
+ 		if (inode)
+ 			mark_buffer_dirty_inode(bh, inode);
+ 		else
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 0e3a847b5d27..67fb3cb34c6f 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -705,15 +705,23 @@ static void flush_stashed_error_work(struct work_struct *work)
+ 	 * ext4 error handling code during handling of previous errors.
+ 	 */
+ 	if (!sb_rdonly(sbi->s_sb) && journal) {
++		struct buffer_head *sbh = sbi->s_sbh;
+ 		handle = jbd2_journal_start(journal, 1);
+ 		if (IS_ERR(handle))
+ 			goto write_directly;
+-		if (jbd2_journal_get_write_access(handle, sbi->s_sbh)) {
++		if (jbd2_journal_get_write_access(handle, sbh)) {
+ 			jbd2_journal_stop(handle);
+ 			goto write_directly;
+ 		}
+ 		ext4_update_super(sbi->s_sb);
+-		if (jbd2_journal_dirty_metadata(handle, sbi->s_sbh)) {
++		if (buffer_write_io_error(sbh) || !buffer_uptodate(sbh)) {
++			ext4_msg(sbi->s_sb, KERN_ERR, "previous I/O error to "
++				 "superblock detected");
++			clear_buffer_write_io_error(sbh);
++			set_buffer_uptodate(sbh);
++		}
++
++		if (jbd2_journal_dirty_metadata(handle, sbh)) {
+ 			jbd2_journal_stop(handle);
+ 			goto write_directly;
+ 		}
 -- 
-2.27.0
+2.30.2
 
