@@ -2,132 +2,135 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1342A3C2A83
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 Jul 2021 22:45:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D93053C33AD
+	for <lists+linux-ext4@lfdr.de>; Sat, 10 Jul 2021 10:13:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230378AbhGIUsI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 9 Jul 2021 16:48:08 -0400
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:18634 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbhGIUsH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 9 Jul 2021 16:48:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1625863524; x=1657399524;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=5jYxzqwh/afUexbLAmNKPVpRdm0/qxTd9IFC6sVflLk=;
-  b=qjLm37CGL3N0/zraoeRKbwgJLnZRGiMlU7qG3R1xx1vpNkGktGb7hc9w
-   /GI8QCs1WD+pqQ53Q6sPp37zMgh6sk7PhZv1Yrm5GWFeoWrJsDasH9zxP
-   Fj82wW34d9wIrtckid26twPHGSIFZQntI2F/5mqIRdqUJD8ctC07r1/Lu
-   Q=;
-X-IronPort-AV: E=Sophos;i="5.84,227,1620691200"; 
-   d="scan'208";a="135471522"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-2c-76e0922c.us-west-2.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-33001.sea14.amazon.com with ESMTP; 09 Jul 2021 20:45:24 +0000
-Received: from EX13MTAUWA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2c-76e0922c.us-west-2.amazon.com (Postfix) with ESMTPS id 8305AE255D;
-        Fri,  9 Jul 2021 20:45:22 +0000 (UTC)
-Received: from EX13D01UWA002.ant.amazon.com (10.43.160.74) by
- EX13MTAUWA001.ant.amazon.com (10.43.160.118) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Fri, 9 Jul 2021 20:45:22 +0000
-Received: from localhost (10.43.160.41) by EX13d01UWA002.ant.amazon.com
- (10.43.160.74) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 9 Jul
- 2021 20:45:21 +0000
-Date:   Fri, 9 Jul 2021 13:45:21 -0700
-From:   Samuel Mendoza-Jonas <samjonas@amazon.com>
-To:     Changheun Lee <nanich.lee@samsung.com>
-CC:     <alex_y_xu@yahoo.ca>, <gmazyland@gmail.com>, <bvanassche@acm.org>,
-        <tytso@mit.edu>, <axboe@kernel.dk>, <bgoncalv@redhat.com>,
-        <dm-crypt@saout.de>, <hch@lst.de>, <jaegeuk@kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-nvme@lists.infradead.org>,
-        <ming.lei@redhat.com>, <yi.zhang@redhat.com>, <dm-devel@redhat.com>
-Subject: Re: regression: data corruption with ext4 on LUKS on nvme with
- torvalds master
-Message-ID: <20210709204521.y3mg7wpejqctpkmi@u87e72aa3c6c25c.ant.amazon.com>
-References: <alpine.LRH.2.02.2105140544010.22439@file01.intranet.prod.int.rdu2.redhat.com>
- <CGME20210514104426epcas1p3ee2f22f8e18c961118795c356e6a14ae@epcas1p3.samsung.com>
- <20210514102614.3804-1-nanich.lee@samsung.com>
+        id S230095AbhGJIQV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 10 Jul 2021 04:16:21 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:10348 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230009AbhGJIQV (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 10 Jul 2021 04:16:21 -0400
+Received: from dggeme752-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GMN355pQyz77tg;
+        Sat, 10 Jul 2021 16:09:05 +0800 (CST)
+Received: from [10.174.178.134] (10.174.178.134) by
+ dggeme752-chm.china.huawei.com (10.3.19.98) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Sat, 10 Jul 2021 16:13:29 +0800
+Subject: Re: [RFC PATCH 3/4] ext4: factor out write end code of inline file
+To:     Jan Kara <jack@suse.cz>
+CC:     <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
+        <adilger.kernel@dilger.ca>, <yukuai3@huawei.com>
+References: <20210706024210.746788-1-yi.zhang@huawei.com>
+ <20210706024210.746788-4-yi.zhang@huawei.com>
+ <20210707164905.GA18396@quack2.suse.cz>
+From:   Zhang Yi <yi.zhang@huawei.com>
+Message-ID: <842562dd-6c20-721e-f106-52ba23315aa3@huawei.com>
+Date:   Sat, 10 Jul 2021 16:13:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210514102614.3804-1-nanich.lee@samsung.com>
-User-Agent: NeoMutt/20171215
-X-Originating-IP: [10.43.160.41]
-X-ClientProxiedBy: EX13D43UWC004.ant.amazon.com (10.43.162.42) To
- EX13d01UWA002.ant.amazon.com (10.43.160.74)
+In-Reply-To: <20210707164905.GA18396@quack2.suse.cz>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.134]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggeme752-chm.china.huawei.com (10.3.19.98)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, May 14, 2021 at 07:26:14PM +0900, Changheun Lee wrote:
-> > On 5/13/21 7:15 AM, Theodore Ts'o wrote:
-> > > On Thu, May 13, 2021 at 06:42:22PM +0900, Changheun Lee wrote:
-> > >>
-> > >> Problem might be casued by exhausting of memory. And memory exhausting
-> > >> would be caused by setting of small bio_max_size. Actually it was not
-> > >> reproduced in my VM environment at first. But, I reproduced same problem
-> > >> when bio_max_size is set with 8KB forced. Too many bio allocation would
-> > >> be occurred by setting of 8KB bio_max_size.
-> > > 
-> > > Hmm... I'm not sure how to align your diagnosis with the symptoms in
-> > > the bug report.  If we were limited by memory, that should slow down
-> > > the I/O, but we should still be making forward progress, no?  And a
-> > > forced reboot should not result in data corruption, unless maybe there
-> > 
-> > If you use data=writeback, data writes and journal writes are not 
-> > synchronized. So, it may be possible that a journal write made it through, 
-> > a data write didn't - the end result would be a file containing random 
-> > contents that was on the disk.
-> > 
-> > Changheun - do you use data=writeback? Did the corruption happen only in 
-> > newly created files? Or did it corrupt existing files?
+On 2021/7/8 0:49, Jan Kara wrote:
+> On Tue 06-07-21 10:42:09, Zhang Yi wrote:
+>> Now that the inline_data file write end procedure are falled into the
+>> common write end functions, it is not clear. Factor them out and do
+>> some cleanup. This patch also drop ext4_da_write_inline_data_end()
+>> and switch to use ext4_write_inline_data_end() instead because we also
+>> need to do the same error processing if we failed to write data into
+>> inline entry.
+>>
+>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 > 
-> Actually I didn't reproduced data corruption. I only reproduced hang during
-> making ext4 filesystem. Alex, could you check it?
+> Looks good. Just two nits below.
+>  
+>> diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
+>> index 28b666f25ac2..8fbf8ec05bd5 100644
+>> --- a/fs/ext4/inline.c
+>> +++ b/fs/ext4/inline.c
+>> @@ -729,34 +729,80 @@ int ext4_try_to_write_inline_data(struct address_space *mapping,
+>>  int ext4_write_inline_data_end(struct inode *inode, loff_t pos, unsigned len,
+>>  			       unsigned copied, struct page *page)
+>>  {
+>> -	int ret, no_expand;
+>> +	handle_t *handle = ext4_journal_current_handle();
+>> +	int i_size_changed = 0;
+>> +	int no_expand;
+>>  	void *kaddr;
+>>  	struct ext4_iloc iloc;
+>> +	int ret, ret2;
+>>  
+>>  	if (unlikely(copied < len) && !PageUptodate(page))
+>> -		return 0;
+>> +		copied = 0;
+>>  
+>> -	ret = ext4_get_inode_loc(inode, &iloc);
+>> -	if (ret) {
+>> -		ext4_std_error(inode->i_sb, ret);
+>> -		return ret;
+>> -	}
+>> +	if (likely(copied)) {
+>> +		ret = ext4_get_inode_loc(inode, &iloc);
+>> +		if (ret) {
+>> +			unlock_page(page);
+>> +			put_page(page);
+>> +			ext4_std_error(inode->i_sb, ret);
+>> +			goto out;
+>> +		}
+>> +		ext4_write_lock_xattr(inode, &no_expand);
+>> +		BUG_ON(!ext4_has_inline_data(inode));
+>>  
+>> -	ext4_write_lock_xattr(inode, &no_expand);
+>> -	BUG_ON(!ext4_has_inline_data(inode));
+>> +		kaddr = kmap_atomic(page);
+>> +		ext4_write_inline_data(inode, &iloc, kaddr, pos, copied);
+>> +		kunmap_atomic(kaddr);
+>> +		SetPageUptodate(page);
+>> +		/* clear page dirty so that writepages wouldn't work for us. */
+>> +		ClearPageDirty(page);
+>>  
+>> -	kaddr = kmap_atomic(page);
+>> -	ext4_write_inline_data(inode, &iloc, kaddr, pos, copied);
+>> -	kunmap_atomic(kaddr);
+>> -	SetPageUptodate(page);
+>> -	/* clear page dirty so that writepages wouldn't work for us. */
+>> -	ClearPageDirty(page);
+>> +		ext4_write_unlock_xattr(inode, &no_expand);
+>> +		brelse(iloc.bh);
+>> +	}
+>>  
+>> -	ext4_write_unlock_xattr(inode, &no_expand);
+>> -	brelse(iloc.bh);
+>> -	mark_inode_dirty(inode);
+>> +	/*
+>> +	 * It's important to update i_size while still holding page lock:
+>> +	 * page writeout could otherwise come in and zero beyond i_size.
+>> +	 */
+>> +	i_size_changed = ext4_update_inode_size(inode, pos + copied);
+>> +	if (ext4_should_journal_data(inode)) {
+>> +		ext4_set_inode_state(inode, EXT4_STATE_JDATA);
+>> +		EXT4_I(inode)->i_datasync_tid = handle->h_transaction->t_tid;
+>> +	}
 > 
-> > 
-> > > was a missing check for a failed memory allocation, causing data to be
-> > > written to the wrong location, a missing error check leading to the
-> > > block or file system layer not noticing that a write had failed
-> > > (although again, memory exhaustion should not lead to failed writes;
-> > > it might slow us down, sure, but if writes are being failed, something
-> > > is Badly Going Wrong --- things like writes to the swap device or
-> > > writes by the page cleaner must succeed, or else Things Would Go Bad
-> > > In A Hurry).
-> > 
-> > Mikulas
+> I think this hunk should also go into the "if (copied)" block. There's no
+> point in changing i_size or i_disksize when nothing was written.
+> 
 
-I've recently been debugging an issue that isn't this exact issue
-(it occurs in 5.10), but looks somewhat similar.
-On a host that
-- Is running a kernel 5.4 >= x >= 5.10.47 at least
-- Using an EXT4 + LUKS partition
-- Running Elasticsearch stress tests
+Yeah, I will put ext4_update_inode_size() into the "if (copied)" block.
+Thinking about it again, IIUC, the hunk in "if (ext4_should_journal_data(inode))"
+also seems useless for inline inode, and could be dropped.
 
-We see that the index files used by the Elasticsearch process become
-corrupt after some time, and in each case I've seen so far the content
-of the file looks like the EXT4 extent header. 
-	#define EXT4_EXT_MAGIC          cpu_to_le16(0xf30a)
-
-For example:
-$ hexdump -C /hdd1/nodes/0/indices/c6eSGDlCRjaWeIBwdeo9DQ/0/index/_23c.si
-00000000  0a f3 04 00 54 01 00 00  00 00 00 00 00 00 00 00  |....T...........|
-00000010  00 38 00 00 00 60 46 05  00 38 00 00 00 88 00 00  |.8...`F..8......|
-00000020  00 98 46 05 00 40 00 00  00 88 00 00 00 a0 46 05  |..F..@........F.|
-00000030  00 48 00 00 00 88 00 00  00 a8 46 05 00 48 00 00  |.H........F..H..|
-00000040  00 88 00 00 00 a8 46 05  00 48 00 00 00 88 00 00  |......F..H......|
-00000050  00 a8 46 05 00 48 00 00  00 88 00 00 00 a8 46 05  |..F..H........F.|
-00000060  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
-*
-000001a0  00 00                                             |..|
-000001a2
-
-
-I'm working on tracing exactly when this happens, but I'd be interested
-to hear if that sounds familar or might have a similar underlying cause
-beyond the commit that was reverted above.
-
-Cheers,
-Sam Mendoza-Jonas
+Thanks,
+Yi.
