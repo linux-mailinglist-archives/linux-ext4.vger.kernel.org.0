@@ -2,135 +2,104 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D93053C33AD
-	for <lists+linux-ext4@lfdr.de>; Sat, 10 Jul 2021 10:13:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE583C34DF
+	for <lists+linux-ext4@lfdr.de>; Sat, 10 Jul 2021 16:40:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230095AbhGJIQV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 10 Jul 2021 04:16:21 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:10348 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230009AbhGJIQV (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 10 Jul 2021 04:16:21 -0400
-Received: from dggeme752-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GMN355pQyz77tg;
-        Sat, 10 Jul 2021 16:09:05 +0800 (CST)
-Received: from [10.174.178.134] (10.174.178.134) by
- dggeme752-chm.china.huawei.com (10.3.19.98) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Sat, 10 Jul 2021 16:13:29 +0800
-Subject: Re: [RFC PATCH 3/4] ext4: factor out write end code of inline file
-To:     Jan Kara <jack@suse.cz>
-CC:     <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
-        <adilger.kernel@dilger.ca>, <yukuai3@huawei.com>
-References: <20210706024210.746788-1-yi.zhang@huawei.com>
- <20210706024210.746788-4-yi.zhang@huawei.com>
- <20210707164905.GA18396@quack2.suse.cz>
-From:   Zhang Yi <yi.zhang@huawei.com>
-Message-ID: <842562dd-6c20-721e-f106-52ba23315aa3@huawei.com>
-Date:   Sat, 10 Jul 2021 16:13:29 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S231806AbhGJOm6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 10 Jul 2021 10:42:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229633AbhGJOm5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 10 Jul 2021 10:42:57 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8278AC0613DD;
+        Sat, 10 Jul 2021 07:40:12 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d12so11627482pfj.2;
+        Sat, 10 Jul 2021 07:40:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+yimJR30/m003w+X6EtV4f+C8eFTWX5UIfbOmwRmtQs=;
+        b=PxAEsun23B3n5dHrbV5KgjU5Fhef1rxdLf16NZHBKGQmPot9TNxOWeR/nL79VFkgbt
+         ZtddKv54iqib5p+KkB/l11LbmrwwDmR+Hxm3V32BlpnS+V85gcPib8M/yxYGBwE6sFR0
+         wmgcos1NZjbIM+yagFzoE+SZ3BLBtVLGmyEeJGpdOC6T4AELNpnETF9kWeE/A/VB9k5D
+         C1lEQg3p1kuAWLZ36UfOdjM/+7iQZzhAvmCguDbUOTLoafUeaITb865if/bVBCjtaFHe
+         /0SS31+pyk+w94eda9BTwkap4w0GkIJjXp6IUAM8L0dbdP/5QKCxNq9iBec5S3KLy8T8
+         Zhug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+yimJR30/m003w+X6EtV4f+C8eFTWX5UIfbOmwRmtQs=;
+        b=qpgtyz78nHY61rySV2+b1o7NiLQrDxEIhbrn4ipWasnV1qHhcu6i3EQpaKPlWhjIIn
+         PDPxZNesWOYUOLR+7Jc0vg8uFovOygMDMsTElqxf3RRAmBCBGjz01izZIJR1X43kXZKM
+         Y+xIrBnI+PPEDKbFQaXd8zmuOgpSZ/CXAZvjtKxxCzXBAl2C+M9v/xHviCeBBoWeuqcb
+         UtUu1W4oHI4rDp1M65odOU8xA1enFJAzl+61cv+a30gvj3znz+LTPKCg1PgbEwaUr1Vv
+         tjwRQbJdb3Q8Om8FHmhDx8CcA/zqIQBBysSt753F0OULNZTSSE5E4ycY1U5qIAkprZSR
+         NiKg==
+X-Gm-Message-State: AOAM530eImyH1udTgMK64eQQHqWG6VgTbO7/XkpVYmMQ/v4HUGp1/czY
+        dGvy2aFw+L7IS6ZglGcwtttYAVzif2vcwn8v
+X-Google-Smtp-Source: ABdhPJwWoLk6xMEbLIO8DZJApSRhwgvnHfI8HTsI8CKg34R4XD36Y42oIQFO7/h6kQjmLV2d6lq9Pg==
+X-Received: by 2002:a05:6a00:a8a:b029:30c:a10b:3e3f with SMTP id b10-20020a056a000a8ab029030ca10b3e3fmr43492003pfl.40.1625928011764;
+        Sat, 10 Jul 2021 07:40:11 -0700 (PDT)
+Received: from localhost.localdomain ([114.99.217.112])
+        by smtp.gmail.com with ESMTPSA id v25sm10860513pga.35.2021.07.10.07.40.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 10 Jul 2021 07:40:11 -0700 (PDT)
+From:   Wang Shilong <wangshilong1991@gmail.com>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Wang Shilong <wshilong@ddn.com>
+Subject: [PATCH v4] fs: forbid invalid project ID
+Date:   Sat, 10 Jul 2021 22:39:59 +0800
+Message-Id: <20210710143959.58077-1-wangshilong1991@gmail.com>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 MIME-Version: 1.0
-In-Reply-To: <20210707164905.GA18396@quack2.suse.cz>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.134]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggeme752-chm.china.huawei.com (10.3.19.98)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2021/7/8 0:49, Jan Kara wrote:
-> On Tue 06-07-21 10:42:09, Zhang Yi wrote:
->> Now that the inline_data file write end procedure are falled into the
->> common write end functions, it is not clear. Factor them out and do
->> some cleanup. This patch also drop ext4_da_write_inline_data_end()
->> and switch to use ext4_write_inline_data_end() instead because we also
->> need to do the same error processing if we failed to write data into
->> inline entry.
->>
->> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-> 
-> Looks good. Just two nits below.
->  
->> diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
->> index 28b666f25ac2..8fbf8ec05bd5 100644
->> --- a/fs/ext4/inline.c
->> +++ b/fs/ext4/inline.c
->> @@ -729,34 +729,80 @@ int ext4_try_to_write_inline_data(struct address_space *mapping,
->>  int ext4_write_inline_data_end(struct inode *inode, loff_t pos, unsigned len,
->>  			       unsigned copied, struct page *page)
->>  {
->> -	int ret, no_expand;
->> +	handle_t *handle = ext4_journal_current_handle();
->> +	int i_size_changed = 0;
->> +	int no_expand;
->>  	void *kaddr;
->>  	struct ext4_iloc iloc;
->> +	int ret, ret2;
->>  
->>  	if (unlikely(copied < len) && !PageUptodate(page))
->> -		return 0;
->> +		copied = 0;
->>  
->> -	ret = ext4_get_inode_loc(inode, &iloc);
->> -	if (ret) {
->> -		ext4_std_error(inode->i_sb, ret);
->> -		return ret;
->> -	}
->> +	if (likely(copied)) {
->> +		ret = ext4_get_inode_loc(inode, &iloc);
->> +		if (ret) {
->> +			unlock_page(page);
->> +			put_page(page);
->> +			ext4_std_error(inode->i_sb, ret);
->> +			goto out;
->> +		}
->> +		ext4_write_lock_xattr(inode, &no_expand);
->> +		BUG_ON(!ext4_has_inline_data(inode));
->>  
->> -	ext4_write_lock_xattr(inode, &no_expand);
->> -	BUG_ON(!ext4_has_inline_data(inode));
->> +		kaddr = kmap_atomic(page);
->> +		ext4_write_inline_data(inode, &iloc, kaddr, pos, copied);
->> +		kunmap_atomic(kaddr);
->> +		SetPageUptodate(page);
->> +		/* clear page dirty so that writepages wouldn't work for us. */
->> +		ClearPageDirty(page);
->>  
->> -	kaddr = kmap_atomic(page);
->> -	ext4_write_inline_data(inode, &iloc, kaddr, pos, copied);
->> -	kunmap_atomic(kaddr);
->> -	SetPageUptodate(page);
->> -	/* clear page dirty so that writepages wouldn't work for us. */
->> -	ClearPageDirty(page);
->> +		ext4_write_unlock_xattr(inode, &no_expand);
->> +		brelse(iloc.bh);
->> +	}
->>  
->> -	ext4_write_unlock_xattr(inode, &no_expand);
->> -	brelse(iloc.bh);
->> -	mark_inode_dirty(inode);
->> +	/*
->> +	 * It's important to update i_size while still holding page lock:
->> +	 * page writeout could otherwise come in and zero beyond i_size.
->> +	 */
->> +	i_size_changed = ext4_update_inode_size(inode, pos + copied);
->> +	if (ext4_should_journal_data(inode)) {
->> +		ext4_set_inode_state(inode, EXT4_STATE_JDATA);
->> +		EXT4_I(inode)->i_datasync_tid = handle->h_transaction->t_tid;
->> +	}
-> 
-> I think this hunk should also go into the "if (copied)" block. There's no
-> point in changing i_size or i_disksize when nothing was written.
-> 
+From: Wang Shilong <wshilong@ddn.com>
 
-Yeah, I will put ext4_update_inode_size() into the "if (copied)" block.
-Thinking about it again, IIUC, the hunk in "if (ext4_should_journal_data(inode))"
-also seems useless for inline inode, and could be dropped.
+fileattr_set_prepare() should check if project ID
+is valid, otherwise dqget() will return NULL for
+such project ID quota.
 
-Thanks,
-Yi.
+Signed-off-by: Wang Shilong <wshilong@ddn.com>
+---
+v3->v3:
+only check project Id if caller is allowed
+to change and being changed.
+
+v2->v3: move check before @fsx_projid is accessed
+and use make_kprojid() helper.
+
+v1->v2: try to fix in the VFS
+ fs/ioctl.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/fs/ioctl.c b/fs/ioctl.c
+index 1e2204fa9963..d4fabb5421cd 100644
+--- a/fs/ioctl.c
++++ b/fs/ioctl.c
+@@ -817,6 +817,14 @@ static int fileattr_set_prepare(struct inode *inode,
+ 		if ((old_ma->fsx_xflags ^ fa->fsx_xflags) &
+ 				FS_XFLAG_PROJINHERIT)
+ 			return -EINVAL;
++	} else {
++		/*
++		 * Caller is allowed to change the project ID. If it is being
++		 * changed, make sure that the new value is valid.
++		 */
++		if (old_ma->fsx_projid != fa->fsx_projid &&
++		    !projid_valid(make_kprojid(&init_user_ns, fa->fsx_projid)))
++			return -EINVAL;
+ 	}
+ 
+ 	/* Check extent size hints. */
+-- 
+2.27.0
+
