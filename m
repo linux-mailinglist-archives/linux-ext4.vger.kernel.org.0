@@ -2,233 +2,118 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 383413C4345
-	for <lists+linux-ext4@lfdr.de>; Mon, 12 Jul 2021 06:44:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 547D53C59D3
+	for <lists+linux-ext4@lfdr.de>; Mon, 12 Jul 2021 13:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229996AbhGLErD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 12 Jul 2021 00:47:03 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:39861 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbhGLErD (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 12 Jul 2021 00:47:03 -0400
-Received: by mail-il1-f199.google.com with SMTP id g14-20020a926b0e0000b02901bb2deb9d71so11152499ilc.6
-        for <linux-ext4@vger.kernel.org>; Sun, 11 Jul 2021 21:44:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=escPaiYQMKQoo4fDKLaDrY4/ndjEorVwOX4C4DbfMdM=;
-        b=ELIA0Z3x8CsyjzM6x2Wmk6Fl4gNDuNhyQEROMFty6zrMmy0tCzlnddB0FPpxSxPYa4
-         p7shoU2DRoNefJSQS6wPjTPbtX5J3LzIWzsfkIUhEVCRCcDPOPfXdL8zIObA2BpLIV1L
-         aopromMFieGoNsV3NwECcYhwT74UFYRTlTpG9dFizuk8WljQIwlcy2XButT84P5aSdov
-         0DsW3FnURfzTPg1AqBvlEZc88FRchCUQUk3CVvb8cSLCxxnogZzrpSDrgtv8vvGVXr0D
-         BouVnn0j8gFm8fPPUZoGZmMqqpPEscxd20GrHsmvVnq1wdFCJywrFhY08dGBgyaishJO
-         DDyQ==
-X-Gm-Message-State: AOAM532oYZ2VEvFuXcMyoSc8h4M5T0awg4cREmMZoHNZoOFBXQvkUiig
-        j/vE547udqO6NxpOJ1vD6gWOTl1X1xL9VOdNcp1I5MJsa21y
-X-Google-Smtp-Source: ABdhPJz96PjZLikPBG31OEuF0Quze9PPeFlrMd5iEgQnpQf6GCLbDyb8bCBNqaRQKLqHkOQEr4YE6RPVu3nMLeZZpSgFnWf138DF
+        id S1350982AbhGLJJH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 12 Jul 2021 05:09:07 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:56014 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1379744AbhGLJHs (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 12 Jul 2021 05:07:48 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 4A0C81FF64;
+        Mon, 12 Jul 2021 09:04:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1626080699; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XTzSB4J3/KV9nyIyfWQISjsIgq8wiabBhC/21wJ8J7s=;
+        b=r9+JNf86vghp3AmGz2Y+BgUigg7+6NU9fboAOWM+kFnkcwwy+VGSapzT8B5cLPClYhVts+
+        0JSgNO39hiPSvKHHP2nG4pcRIoFO26FyA255ZHVKejlvLK4DcAa2ROMujTBPsV1LyQoMgN
+        DNb8zud25yPdyiFQjZBIT3uVac0LbGw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1626080699;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XTzSB4J3/KV9nyIyfWQISjsIgq8wiabBhC/21wJ8J7s=;
+        b=GreD0oYsAv9e4RdhYQOn62ltTqwvcLI0bB22U43iqF4Gh5w14UKwzuXG+2SS2txezGKRRy
+        VJgCpMpGJ4VrMzAg==
+Received: from quack2.suse.cz (unknown [10.100.224.230])
+        by relay2.suse.de (Postfix) with ESMTP id 3B2C3A3C0D;
+        Mon, 12 Jul 2021 09:04:59 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 0A12D1E62D6; Mon, 12 Jul 2021 11:04:59 +0200 (CEST)
+Date:   Mon, 12 Jul 2021 11:04:59 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ivan Zahariev <famzah@famzah.net>
+Cc:     Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org
+Subject: Re: jbd2: fix deadlock while checkpoint thread waits commit thread
+ to finish (backport to 4.14)
+Message-ID: <20210712090459.GA27936@quack2.suse.cz>
+References: <3221ced0-e8f3-53da-3474-28367272f35d@famzah.net>
+ <YOY+SXgPShxGzyJO@mit.edu>
+ <44dd99fc-11ce-6a73-20bd-6ee645c5dd5e@famzah.net>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:3291:: with SMTP id f17mr11170365jav.143.1626065055617;
- Sun, 11 Jul 2021 21:44:15 -0700 (PDT)
-Date:   Sun, 11 Jul 2021 21:44:15 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000005966505c6e5c637@google.com>
-Subject: [syzbot] KASAN: use-after-free Write in ext4_stop_mmpd
-From:   syzbot <syzbot+2ab2ee3b98cc853e6ee2@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <44dd99fc-11ce-6a73-20bd-6ee645c5dd5e@famzah.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+On Thu 08-07-21 06:45:35, Ivan Zahariev wrote:
+> Out of thousand machines, one would trigger the problem about every 1 to 10
+> days. Some machines trigger the problem much often than others. So I can say
+> that we have a way to verify quickly if applying the patch will fix this for
+> us.
+> 
+> The most important question is: Is it safe to apply the patch on production
+> machines with kernel 4.14?
+> 
+> We can't risk data loss. And I lack the expertise to asses what risks this
+> small patch brings.
 
-syzbot found the following issue on:
+The fix should work correctly even for older kernels. I'm not aware of any
+changes in this area in the past that could conflict...
 
-HEAD commit:    3dbdb38e Merge branch 'for-5.14' of git://git.kernel.org/p..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=156a39c2300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a1fcf15a09815757
-dashboard link: https://syzkaller.appspot.com/bug?extid=2ab2ee3b98cc853e6ee2
+								Honza
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2ab2ee3b98cc853e6ee2@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: use-after-free in instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
-BUG: KASAN: use-after-free in atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:111 [inline]
-BUG: KASAN: use-after-free in __refcount_add include/linux/refcount.h:193 [inline]
-BUG: KASAN: use-after-free in __refcount_inc include/linux/refcount.h:250 [inline]
-BUG: KASAN: use-after-free in refcount_inc include/linux/refcount.h:267 [inline]
-BUG: KASAN: use-after-free in get_task_struct include/linux/sched/task.h:104 [inline]
-BUG: KASAN: use-after-free in kthread_stop+0x90/0x720 kernel/kthread.c:643
-Write of size 4 at addr ffff88801bf51c68 by task syz-executor.4/8462
-
-CPU: 1 PID: 8462 Comm: syz-executor.4 Tainted: G        W         5.13.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:96
- print_address_description.constprop.0.cold+0x6c/0x309 mm/kasan/report.c:233
- __kasan_report mm/kasan/report.c:419 [inline]
- kasan_report.cold+0x83/0xdf mm/kasan/report.c:436
- check_region_inline mm/kasan/generic.c:183 [inline]
- kasan_check_range+0x13d/0x180 mm/kasan/generic.c:189
- instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
- atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:111 [inline]
- __refcount_add include/linux/refcount.h:193 [inline]
- __refcount_inc include/linux/refcount.h:250 [inline]
- refcount_inc include/linux/refcount.h:267 [inline]
- get_task_struct include/linux/sched/task.h:104 [inline]
- kthread_stop+0x90/0x720 kernel/kthread.c:643
- ext4_stop_mmpd+0x47/0xd0 fs/ext4/mmp.c:254
- ext4_put_super+0x918/0x10b0 fs/ext4/super.c:1251
- generic_shutdown_super+0x14c/0x370 fs/super.c:465
- kill_block_super+0x97/0xf0 fs/super.c:1395
- deactivate_locked_super+0x94/0x160 fs/super.c:335
- deactivate_super+0xad/0xd0 fs/super.c:366
- cleanup_mnt+0x3a2/0x540 fs/namespace.c:1136
- task_work_run+0xdd/0x1a0 kernel/task_work.c:164
- tracehook_notify_resume include/linux/tracehook.h:189 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
- exit_to_user_mode_prepare+0x27e/0x290 kernel/entry/common.c:209
- __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
- do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x467a37
-Code: ff d0 48 89 c7 b8 3c 00 00 00 0f 05 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 b8 a6 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffff6ba5618 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000467a37
-RDX: 00007ffff6ba56ec RSI: 0000000000000002 RDI: 00007ffff6ba56e0
-RBP: 00007ffff6ba56e0 R08: 00000000ffffffff R09: 00007ffff6ba54b0
-R10: 0000000002bd48e3 R11: 0000000000000246 R12: 00000000004bee70
-R13: 00007ffff6ba67b0 R14: 0000000002bd4810 R15: 00007ffff6ba67f0
-
-Allocated by task 2:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:434 [inline]
- __kasan_slab_alloc+0x84/0xa0 mm/kasan/common.c:467
- kasan_slab_alloc include/linux/kasan.h:253 [inline]
- slab_post_alloc_hook mm/slab.h:512 [inline]
- slab_alloc_node mm/slub.c:2970 [inline]
- kmem_cache_alloc_node+0x266/0x3e0 mm/slub.c:3006
- alloc_task_struct_node kernel/fork.c:171 [inline]
- dup_task_struct kernel/fork.c:871 [inline]
- copy_process+0x5c8/0x74c0 kernel/fork.c:1952
- kernel_clone+0xe7/0xab0 kernel/fork.c:2509
- kernel_thread+0xb5/0xf0 kernel/fork.c:2561
- create_kthread kernel/kthread.c:342 [inline]
- kthreadd+0x4ea/0x750 kernel/kthread.c:685
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-Freed by task 19:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
- kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:360
- ____kasan_slab_free mm/kasan/common.c:366 [inline]
- ____kasan_slab_free mm/kasan/common.c:328 [inline]
- __kasan_slab_free+0xfb/0x130 mm/kasan/common.c:374
- kasan_slab_free include/linux/kasan.h:229 [inline]
- slab_free_hook mm/slub.c:1639 [inline]
- slab_free_freelist_hook+0xdf/0x240 mm/slub.c:1664
- slab_free mm/slub.c:3224 [inline]
- kmem_cache_free+0x8e/0x5a0 mm/slub.c:3240
- __put_task_struct+0x26f/0x400 kernel/fork.c:748
- put_task_struct include/linux/sched/task.h:113 [inline]
- delayed_put_task_struct+0x1f6/0x340 kernel/exit.c:173
- rcu_do_batch kernel/rcu/tree.c:2558 [inline]
- rcu_core+0x7ab/0x1380 kernel/rcu/tree.c:2793
- __do_softirq+0x29b/0x9bd kernel/softirq.c:558
-
-Last potentially related work creation:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:348
- __call_rcu kernel/rcu/tree.c:3038 [inline]
- call_rcu+0xb1/0x750 kernel/rcu/tree.c:3113
- put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:179
- context_switch kernel/sched/core.c:4686 [inline]
- __schedule+0x93c/0x2710 kernel/sched/core.c:5940
- schedule+0xd3/0x270 kernel/sched/core.c:6019
- freezable_schedule include/linux/freezer.h:172 [inline]
- do_nanosleep+0x24e/0x690 kernel/time/hrtimer.c:1896
- hrtimer_nanosleep+0x1f9/0x4a0 kernel/time/hrtimer.c:1949
- common_nsleep+0xa2/0xc0 kernel/time/posix-timers.c:1227
- __do_sys_clock_nanosleep kernel/time/posix-timers.c:1267 [inline]
- __se_sys_clock_nanosleep kernel/time/posix-timers.c:1245 [inline]
- __x64_sys_clock_nanosleep+0x2f4/0x430 kernel/time/posix-timers.c:1245
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Second to last potentially related work creation:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:348
- __call_rcu kernel/rcu/tree.c:3038 [inline]
- call_rcu+0xb1/0x750 kernel/rcu/tree.c:3113
- put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:179
- context_switch kernel/sched/core.c:4686 [inline]
- __schedule+0x93c/0x2710 kernel/sched/core.c:5940
- schedule+0xd3/0x270 kernel/sched/core.c:6019
- exit_to_user_mode_loop kernel/entry/common.c:163 [inline]
- exit_to_user_mode_prepare+0x14a/0x290 kernel/entry/common.c:209
- irqentry_exit_to_user_mode+0x5/0x40 kernel/entry/common.c:315
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
-
-The buggy address belongs to the object at ffff88801bf51c40
- which belongs to the cache task_struct of size 6976
-The buggy address is located 40 bytes inside of
- 6976-byte region [ffff88801bf51c40, ffff88801bf53780)
-The buggy address belongs to the page:
-page:ffffea00006fd400 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1bf50
-head:ffffea00006fd400 order:3 compound_mapcount:0 compound_pincount:0
-flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
-raw: 00fff00000010200 0000000000000000 0000000100000001 ffff888140006280
-raw: 0000000000000000 0000000000040004 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 2, ts 6232954027, free_ts 0
- prep_new_page mm/page_alloc.c:2445 [inline]
- get_page_from_freelist+0xa72/0x2f80 mm/page_alloc.c:4178
- __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5386
- alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
- alloc_slab_page mm/slub.c:1702 [inline]
- allocate_slab+0x32b/0x4c0 mm/slub.c:1842
- new_slab mm/slub.c:1905 [inline]
- new_slab_objects mm/slub.c:2651 [inline]
- ___slab_alloc+0x4ba/0x820 mm/slub.c:2814
- __slab_alloc.constprop.0+0xa7/0xf0 mm/slub.c:2854
- slab_alloc_node mm/slub.c:2936 [inline]
- kmem_cache_alloc_node+0x12c/0x3e0 mm/slub.c:3006
- alloc_task_struct_node kernel/fork.c:171 [inline]
- dup_task_struct kernel/fork.c:871 [inline]
- copy_process+0x5c8/0x74c0 kernel/fork.c:1952
- kernel_clone+0xe7/0xab0 kernel/fork.c:2509
- kernel_thread+0xb5/0xf0 kernel/fork.c:2561
- create_kthread kernel/kthread.c:342 [inline]
- kthreadd+0x4ea/0x750 kernel/kthread.c:685
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-page_owner free stack trace missing
-
-Memory state around the buggy address:
- ffff88801bf51b00: 00 00 00 00 00 00 00 00 fc fc fc fc fc fc fc fc
- ffff88801bf51b80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff88801bf51c00: fc fc fc fc fc fc fc fc fa fb fb fb fb fb fb fb
-                                                          ^
- ffff88801bf51c80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88801bf51d00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> On 8.7.2021 г. 2:52, Theodore Ts'o wrote:
+> > On Wed, Jul 07, 2021 at 09:42:25PM +0300, Ivan Zahariev wrote:
+> > > Hello,
+> > > 
+> > > We're running Linux kernel 4.14.x and our systems occasionally suffer a bug
+> > > which is already fixed: https://github.com/torvalds/linux/commit/53cf978457325d8fb2cdecd7981b31a8229e446e
+> > > 
+> > > This bugfix hasn't been ported to Linux kernels 4.14 or 4.19. The patch
+> > > applies cleanly. The two files "fs/jbd2/checkpoint.c" and
+> > > "fs/jbd2/journal.c" seem pretty identical in the affected sections compared
+> > > to kernel 5.4 where we have this bugfix already applied.
+> > > 
+> > > Is it on purpose that this bugfix hasn't been ported to 4.14? Is it safe
+> > > that we backport it manually in our kernel 4.14 builds? Or is the "ext4"
+> > > system in 4.14 and 5.4 fundamentally different and this would lead to data
+> > > loss or other problems?
+> > The commit was over two years ago, so my memory is not going to be
+> > perfect.  However, Jan had made a comment suggesting the approach in
+> > this commit because it should be easier to backport into older stble
+> > kernels[1].
+> > 
+> >     "Since proper locking change is going to be a bit more involved, can you
+> >      perhaps fix this deadlock by just dropping j_checkpoint_mutex in
+> >      log_do_checkpoint() when we are going to wait for transaction commit. I've
+> >      checked and that should be fine and that is going to be much easier change
+> >      to backport into stable kernels..."
+> > 
+> > [1] https://marc.info/?l=linux-ext4&m=154212553014669&w=2
+> > 
+> > So I suspect it was just that I failed to remember to add a "Cc:
+> > stable@kernel.org" and so it was never automatically backported into
+> > 4.14 or 4.19.
+> > 
+> > Do you have a reliable reproduction which is triggering the deadlock
+> > on your kernels?  If so, have you tried applying the patch and does it
+> > make the problem go away for you?
+> > 
+> > Cheers,
+> > 
+> > 						- Ted
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
