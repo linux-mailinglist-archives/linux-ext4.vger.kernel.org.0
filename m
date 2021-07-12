@@ -2,108 +2,166 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AAEA3C5F8F
-	for <lists+linux-ext4@lfdr.de>; Mon, 12 Jul 2021 17:43:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0E603C610E
+	for <lists+linux-ext4@lfdr.de>; Mon, 12 Jul 2021 18:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235611AbhGLPqS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 12 Jul 2021 11:46:18 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:52508 "EHLO
+        id S235119AbhGLQ7L (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 12 Jul 2021 12:59:11 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:34506 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235529AbhGLPqM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 12 Jul 2021 11:46:12 -0400
+        with ESMTP id S234300AbhGLQ7B (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 12 Jul 2021 12:59:01 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id C41952217B;
-        Mon, 12 Jul 2021 15:43:21 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id EDC4B21A75;
+        Mon, 12 Jul 2021 16:56:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1626104601; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0Pb/2tVFedocS+FH0D59jy+87lCOXbgCfd1rnKsgzts=;
-        b=TMxqhXyKSPbagfmJgYkUpwptHnPzR/u5PLOT/oUxGZYqf37DOvNv7WhIuxQulf0kh6fWRf
-        8noPpFuW9rwAjQ2/8nEcSvDpQIgzfY6z35z+0V5oLNXWIQc7+dcmTaX2CXr/N0JPbvxy7A
-        oNcr+EmKPIh5+SLLlsQm0dkeyhHWfZw=
+        t=1626108969; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=Xtj0uq/0myKG76i6UCshFGN5FKtbSNJBLWeNEEm5CDI=;
+        b=GjS2IA9SK053DbdzylFNJsY7fStUV8dPVrF7oJWUSr8JYDCbZlHxpna4rF2eACH5+nWrEm
+        wSuLJyVJuTpd9sBxg2lNss9r0EgUDL3428YTNt1iOE8N64TqocZi75BYQtR7BSBBDv87IP
+        6A3ucYc8Cwm6EnGmqbye6sawTQJ8DYc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1626104601;
+        s=susede2_ed25519; t=1626108969;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0Pb/2tVFedocS+FH0D59jy+87lCOXbgCfd1rnKsgzts=;
-        b=gNVkfX6oTpzv6tzseWwco1pVpet3u0fFcz4ZeE2rrg3Zq9JZGEKNlH4GaBxoJ3NQPBYi1q
-        zMrPgG9aZ9NJR8CQ==
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=Xtj0uq/0myKG76i6UCshFGN5FKtbSNJBLWeNEEm5CDI=;
+        b=5B9eLyhHO+vIbAPuMzJzAB22YkY7v4aEjUn2B2hK46Mclu+15Esnocf6c7/z0YSWpqPuIH
+        hiBGFLy6GTEH/JCw==
 Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id B9BF6A3BA9;
-        Mon, 12 Jul 2021 15:43:21 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id D6C50A3B85;
+        Mon, 12 Jul 2021 16:56:09 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id A75F61F2CDA; Mon, 12 Jul 2021 17:43:21 +0200 (CEST)
+        id B39BB1F2C73; Mon, 12 Jul 2021 18:56:09 +0200 (CEST)
 From:   Jan Kara <jack@suse.cz>
-To:     Ted Tso <tytso@mit.edu>
-Cc:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>
-Subject: [PATCH 9/9] dumpe2fs, debugfs, e2image: Add support for orphan file
-Date:   Mon, 12 Jul 2021 17:43:15 +0200
-Message-Id: <20210712154315.9606-10-jack@suse.cz>
+To:     <linux-fsdevel@vger.kernel.org>
+Cc:     <linux-ext4@vger.kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Ted Tso <tytso@mit.edu>,
+        Dave Chinner <david@fromorbit.com>,
+        Matthew Wilcox <willy@infradead.org>, <linux-mm@kvack.org>,
+        <linux-xfs@vger.kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, Jan Kara <jack@suse.cz>
+Subject: [PATCH 0/14 v9] fs: Hole punch vs page cache filling races
+Date:   Mon, 12 Jul 2021 18:55:51 +0200
+Message-Id: <20210712163901.29514-1-jack@suse.cz>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210712154315.9606-1-jack@suse.cz>
-References: <20210712154315.9606-1-jack@suse.cz>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1975; h=from:subject; bh=RzuIGldTN8nLq9cBr1Yqtza/iJXdDm2r9DOlDNcAbvw=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBg7GMSrjQBiO0CpeSH9iy+i5EDrNt3QcmPzdjFpyZ/ OIp1cRGJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCYOxjEgAKCRCcnaoHP2RA2frgCA C4DtCoJzEIgq5yAq/4DPIvZ5CGBhzaEsy0dPUa5xjSDDTbNBWc/RGQHFMb0kQ4zTW6v62EiqdJLP4s Bs+anlTRc0Awl6k2fX1rzgfcmFstt3UKZ8CuAq/AJFvLK1+H7GB6arNwu16oFQXT3hHI2rgCHDXqcH pOstuMDjZT3lBr+0RG09RqXlo/NQ2vYxeVxvExZE+c/w+U+47cQ8nT/VkRAb2R/XlXEyp/8OQWnLj1 ZwyIeV8hJSuy+XrpF2QZvLoA0QhxJYzu3owIP0bFs4xPGWWkM6sW8tEyOVHAEm97ISPL6WAYucfOpq UhvMfNdocN0JJNumciZQOCklAxh8hx
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5196; h=from:subject:message-id; bh=XiQmf05nBMDvngHxQWByxd1f92aY+kMKTDoJHofitYs=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBg7HQTZMMdC5sufdgGKIffBj9wwKgqdITv590HLevy Z7sIsGmJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCYOx0EwAKCRCcnaoHP2RA2aMTB/ 0YTOgw9rZ2dhbmzLjJSc3gKbebvfbU4BCC8HS49Oq6gau26jy4GOmldKR1QLjxYomEwmOSt/EYaDBK uAq/t3ZD4sNEeDSGYAj3dFIWPNtJFLkZ/X091EDAH3DTYOWxDbRSuxtdXOQQ8PSvW1aLbLb5bhCvKr 3o4gkK+g5pCZLQ3a9+DPQ0iNXTJx5bMZT390m6HWyhHGqdoSHS30+vws5GZ8eeGPa4TaveOO0F9/tr h5Dc3/AlGTVWvmF7qUWqh9NKEFnXVCALnQVHVkGLNaAxdPdrtgS4dpt6gZq33krhLnlp/Jvyap4I9R W65IC1Z2kJ/oS+DkSpZ1co4C46fEfQ
 X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Print inode number of orphan file in outputs, dump e2image file to
-filesystem image.
+Hello,
 
-Signed-off-by: Jan Kara <jack@suse.cz>
+here is another version of my patches to address races between hole punching
+and page cache filling functions for ext4 and other filesystems. The only
+significant change since last time is the change in patch 3/14 requested by
+Linus that we don't acquire invalidate_lock when the page is already in the
+page cache and uptodate. Darrick, Christoph, can you please review that change?
+
+Out of all filesystem supporting hole punching, only GFS2 and OCFS2 remain
+unresolved. GFS2 people are working on their own solution (cluster locking is
+involved), OCFS2 has even bigger issues (maintainers informed, looking into
+it).
+
+Once this series lands, I'd like to actually make sure all calls to
+truncate_inode_pages() happen under mapping->invalidate_lock, add the assert
+and then we can also get rid of i_size checks in some places (truncate can
+use the same serialization scheme as hole punch). But that step is mostly
+a cleanup so I'd like to get these functional fixes in first.
+
+The series can be also pulled from:
+git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git hole_punch_fixes
+
+Changes since v8:
+* Rebased on top of 5.14-rc1
+* Fixed up conflict in f2fs
+* Modified filemap_fault() to acquire invalidate lock only when creating page
+  in the page cache or loading it from the disk
+* Added some reviewed-by's
+
+Changes since v7:
+* Rebased on top of 5.13-rc6
+* Added some reviewed-by tags
+* Simplified xfs_isilocked() changes as Dave Chinner suggested
+* Minor documentation formulation improvements
+
+Changes since v6:
+* Added some reviewed-by tags
+* Added wrapper for taking invalidate_lock similar to inode_lock
+* Renamed wrappers for taking invalidate_lock for two inodes
+* Added xfs patch to make xfs_isilocked() work better even without lockdep
+* Some minor documentation fixes
+
+Changes since v5:
+* Added some reviewed-by tags
+* Added functions for locking two mappings and using them from XFS where needed
+* Some minor code style & comment fixes
+
+Changes since v4:
+* Rebased onto 5.13-rc1
+* Removed shmfs conversion patches
+* Fixed up zonefs changelog
+* Fixed up XFS comments
+* Added patch fixing up definition of file_operations in Documentation/vfs/
+* Updated documentation and comments to explain invalidate_lock is used also
+  to prevent changes through memory mappings to existing pages for some VFS
+  operations.
+
+Changes since v3:
+* Renamed and moved lock to struct address_space
+* Added conversions of tmpfs, ceph, cifs, fuse, f2fs
+* Fixed error handling path in filemap_read()
+* Removed .page_mkwrite() cleanup from the series for now
+
+Changes since v2:
+* Added documentation and comments regarding lock ordering and how the lock is
+  supposed to be used
+* Added conversions of ext2, xfs, zonefs
+* Added patch removing i_mapping_sem protection from .page_mkwrite handlers
+
+Changes since v1:
+* Moved to using inode->i_mapping_sem instead of aops handler to acquire
+  appropriate lock
+
 ---
- debugfs/set_fields.c | 1 +
- lib/e2p/ls.c         | 3 +++
- misc/e2image.c       | 3 ++-
- 3 files changed, 6 insertions(+), 1 deletion(-)
+Motivation:
 
-diff --git a/debugfs/set_fields.c b/debugfs/set_fields.c
-index b00157940774..f916deab8cea 100644
---- a/debugfs/set_fields.c
-+++ b/debugfs/set_fields.c
-@@ -183,6 +183,7 @@ static struct field_set_info super_fields[] = {
- 	{ "lpf_ino", &set_sb.s_lpf_ino, NULL, 4, parse_uint },
- 	{ "checksum_seed", &set_sb.s_checksum_seed, NULL, 4, parse_uint },
- 	{ "encoding", &set_sb.s_encoding, NULL, 2, parse_encoding },
-+	{ "orphan_file_inum", &set_sb.s_orphan_file_inum, NULL, 4, parse_uint },
- 	{ 0, 0, 0, 0 }
- };
- 
-diff --git a/lib/e2p/ls.c b/lib/e2p/ls.c
-index 176bee0fd19f..1762bc44cac4 100644
---- a/lib/e2p/ls.c
-+++ b/lib/e2p/ls.c
-@@ -482,6 +482,9 @@ void list_super2(struct ext2_super_block * sb, FILE *f)
- 	if (ext2fs_has_feature_casefold(sb))
- 		fprintf(f, "Character encoding:       %s\n",
- 			e2p_encoding2str(sb->s_encoding));
-+	if (ext2fs_has_feature_orphan_file(sb))
-+		fprintf(f, "Orphan file inode:        %u\n",
-+			sb->s_orphan_file_inum);
- }
- 
- void list_super (struct ext2_super_block * s)
-diff --git a/misc/e2image.c b/misc/e2image.c
-index ac00827e4628..a9c64506d7cc 100644
---- a/misc/e2image.c
-+++ b/misc/e2image.c
-@@ -1369,7 +1369,8 @@ static void write_raw_image_file(ext2_filsys fs, int fd, int type, int flags,
- 		    ino == fs->super->s_journal_inum ||
- 		    ino == quota_type2inum(USRQUOTA, fs->super) ||
- 		    ino == quota_type2inum(GRPQUOTA, fs->super) ||
--		    ino == quota_type2inum(PRJQUOTA, fs->super)) {
-+		    ino == quota_type2inum(PRJQUOTA, fs->super) ||
-+		    ino == fs->super->s_orphan_file_inum) {
- 			retval = ext2fs_block_iterate3(fs, ino,
- 					BLOCK_FLAG_READ_ONLY, block_buf,
- 					process_dir_block, &pb);
--- 
-2.26.2
+Amir has reported [1] a that ext4 has a potential issues when reads can race
+with hole punching possibly exposing stale data from freed blocks or even
+corrupting filesystem when stale mapping data gets used for writeout. The
+problem is that during hole punching, new page cache pages can get instantiated
+and block mapping from the looked up in a punched range after
+truncate_inode_pages() has run but before the filesystem removes blocks from
+the file. In principle any filesystem implementing hole punching thus needs to
+implement a mechanism to block instantiating page cache pages during hole
+punching to avoid this race. This is further complicated by the fact that there
+are multiple places that can instantiate pages in page cache.  We can have
+regular read(2) or page fault doing this but fadvise(2) or madvise(2) can also
+result in reading in page cache pages through force_page_cache_readahead().
 
+There are couple of ways how to fix this. First way (currently implemented by
+XFS) is to protect read(2) and *advise(2) calls with i_rwsem so that they are
+serialized with hole punching. This is easy to do but as a result all reads
+would then be serialized with writes and thus mixed read-write workloads suffer
+heavily on ext4. Thus this series introduces inode->i_mapping_sem and uses it
+when creating new pages in the page cache and looking up their corresponding
+block mapping. We also replace EXT4_I(inode)->i_mmap_sem with this new rwsem
+which provides necessary serialization with hole punching for ext4.
+
+								Honza
+
+[1] https://lore.kernel.org/linux-fsdevel/CAOQ4uxjQNmxqmtA_VbYW0Su9rKRk2zobJmahcyeaEVOFKVQ5dw@mail.gmail.com/
+
+Previous versions:
+Link: https://lore.kernel.org/linux-fsdevel/20210208163918.7871-1-jack@suse.cz/
+Link: https://lore.kernel.org/r/20210413105205.3093-1-jack@suse.cz
+Link: https://lore.kernel.org/r/20210423171010.12-1-jack@suse.cz
+Link: https://lore.kernel.org/r/20210512101639.22278-1-jack@suse.cz
+Link: https://lore.kernel.org/r/20210525125652.20457-1-jack@suse.cz
+Link: https://lore.kernel.org/r/20210607144631.8717-1-jack@suse.cz
+Link: http://lore.kernel.org/r/20210615090844.6045-1-jack@suse.cz # v8
