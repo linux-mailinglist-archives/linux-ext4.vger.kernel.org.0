@@ -2,816 +2,223 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ABEF3C5F6C
-	for <lists+linux-ext4@lfdr.de>; Mon, 12 Jul 2021 17:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B96D13C5F6A
+	for <lists+linux-ext4@lfdr.de>; Mon, 12 Jul 2021 17:40:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233166AbhGLPnD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 12 Jul 2021 11:43:03 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:42450 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234033AbhGLPnB (ORCPT
+        id S235428AbhGLPnC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 12 Jul 2021 11:43:02 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:51662 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232887AbhGLPnB (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Mon, 12 Jul 2021 11:43:01 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 2D0AA1FFBD;
+        by smtp-out1.suse.de (Postfix) with ESMTP id 2398821CF7;
         Mon, 12 Jul 2021 15:40:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
         t=1626104412; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lPm922hX7vcNR0Alq2Gada3EzO/MGP2JvYgqrUdhcfU=;
-        b=zr2LLQoCQN1FxtycVi8CoAdYJaU36XnYauIw7/4EXaEUnOznJ92MOgvR2hURqDnioquAMY
-        2YRhy74+W0InH4/vu5vMsFBAaB3on199CbrQ6oD8z1pNVqCIdu0a/IbqFTI0eTNw5TwBP9
-        beiPbEQSMbMi6BYIeYur2MQPcjAd40Y=
+        bh=OCuY8IIGEgmsIlvIUcwQvjAk1tlFbXDf67KqJWY5dmI=;
+        b=02bVV1/GhYeM5cwd4gifisJb+BCZc/CNg9eB050N/vyP2a35onO9VmbZlr7S0YwzVltgcs
+        WR4I3T6Y2opKN/r8u/0oBa9sK13TrIzjbOrS3ctwBLNvehCBwuTECCg4CoX9ouHEofDMf3
+        PFvz1PyCl/4COCWC/cqtO9GTYY+dnWs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1626104412;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lPm922hX7vcNR0Alq2Gada3EzO/MGP2JvYgqrUdhcfU=;
-        b=hVRf5jtzju0WAbNCTQR03Qz67XoprtQD5bVFty+hILYcrJ5CHfo09Iuqx4TFKF+Jx1DsO5
-        3CqcSZ5OLhS2SKCw==
+        bh=OCuY8IIGEgmsIlvIUcwQvjAk1tlFbXDf67KqJWY5dmI=;
+        b=A0QZDDU3e9DtIGDewQ4t1uDTKMstAGt+9aBEtlPO7DZdNYF7ldAmf/YO3mohHgHFeWfE19
+        Ql0JZJqPTvjE/qBw==
 Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id 1903FA3B8D;
+        by relay2.suse.de (Postfix) with ESMTP id 16255A3B8B;
         Mon, 12 Jul 2021 15:40:12 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 023E01F2CCB; Mon, 12 Jul 2021 17:40:12 +0200 (CEST)
+        id 062F81F2CD2; Mon, 12 Jul 2021 17:40:12 +0200 (CEST)
 From:   Jan Kara <jack@suse.cz>
 To:     Ted Tso <tytso@mit.edu>
 Cc:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>
-Subject: [PATCH 3/5] ext4: Speedup ext4 orphan inode handling
-Date:   Mon, 12 Jul 2021 17:40:07 +0200
-Message-Id: <20210712154009.9290-4-jack@suse.cz>
+Subject: [PATCH 4/5] ext4: Orphan file documentation
+Date:   Mon, 12 Jul 2021 17:40:08 +0200
+Message-Id: <20210712154009.9290-5-jack@suse.cz>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210712154009.9290-1-jack@suse.cz>
 References: <20210712154009.9290-1-jack@suse.cz>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=26843; h=from:subject; bh=Sn8FVo0Yk9ZxEFMhJj1NHvoWRY+KkCWgR5Tp+As/1Hk=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBg7GJX3WrycPzXwcOyKmcei04tVPbFQTV+dCX7PbdT osSgMemJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCYOxiVwAKCRCcnaoHP2RA2XgNB/ 9yZwaCFjRMuvxz6oEaldHJZwVVv8ip8Z3hFMjuA3kRhFbcQorceIv1JCSBp7sIxO2hVq0kkKp87Bjs upjorhvQVHI0F0VQp20hy5MGRgT9lEpJ18LNhpdYCDBpMaKlhgcy8/zliypIzuEg1wCUHn9a1uWwXS 1Juw5MFhs0gIx7Kwf080A/TkIlKYCHUXmPqiDvp3+u/BEqkLRat/62uWCHkfbLPcqXTJq9hit5T3us GsjD3e9/SbGVNJe83Ti0fyH9LLvd7Af5VcQQhwczNpEnN4AM6QYN4Iz+gdn7ZL1lymNB/AQcro6vty yYlLBq9OrwVEyAhGnKrfipCbp/FHBA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=7555; h=from:subject; bh=tEfn01YgtgmBcMsgExnmyocr2y8lcypnTh31AbKIiZE=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBg7GJY8sLvyfwnrm4WYpgYZcEh3UOtbN3TjvC7qh0A Defxm8OJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCYOxiWAAKCRCcnaoHP2RA2Wy3B/ 4iwd9Wpq8spuwYvyUGvwNTfbyuxoaLcV/UZtVSCFKxJELYDWjAx7lm7pF5PEApqQqVgl8FchbYVzJA ej7/c/RAtnDDcfOSNmWjMVCgMwb+4xeR9p0w3YopRFn7S7oNWktzJ73Xb6+4ITRRS8u0XtsIvs+dJt oqTc/K08n6SWYSJQ749/fAmZ1QB9bB02lvIlz00G9ztivh+4KIf8mEWioYp1TVJXwPTMTdyjueEeUo uXt2rEfC+wWs26qjnuqg7RYIpqk5AY5DWJUPCGEsw4j1JKuNnpEKRSevVw83Z9+j8IvTRoeuSqN4z+ isr1OaGej1gn6oz3QXYSZemnDIjRk0
 X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Ext4 orphan inode handling is a bottleneck for workloads which heavily
-truncate / unlink small files since it contends on the global
-s_orphan_mutex lock (and generally it's difficult to improve scalability
-of the ondisk linked list of orphaned inodes).
-
-This patch implements new way of handling orphan inodes. Instead of
-linking orphaned inode into a linked list, we store it's inode number in
-a new special file which we call "orphan file". Only if there's no more
-space in the orphan file (too many inodes are currently orphaned) we
-fall back to using old style linked list. Currently we protect
-operations in the orphan file with a spinlock for simplicity but even in
-this setting we can substantially reduce the length of the critical
-section and thus speedup some workloads. In the next patch we improve
-this by making orphan handling lockless.
-
-Note that the change is backwards compatible when the filesystem is
-clean - the existence of the orphan file is a compat feature, we set
-another ro-compat feature indicating orphan file needs scanning for
-orphaned inodes when mounting filesystem read-write. This ro-compat
-feature gets cleared on unmount / remount read-only.
-
-Some performance data from 80 CPU Xeon Server with 512 GB of RAM,
-filesystem located on SSD, average of 5 runs:
-
-stress-orphan (microbenchmark truncating files byte-by-byte from N
-processes in parallel)
-
-Threads Time            Time
-        Vanilla         Patched
-  1       1.057200        0.945600
-  2       1.680400        1.331800
-  4       2.547000        1.995000
-  8       7.049400        6.424200
- 16      14.827800       14.937600
- 32      40.948200       33.038200
- 64      87.787400       60.823600
-128     206.504000      122.941400
-
-So we can see significant wins all over the board.
+Add documentation about the orphan file feature.
 
 Signed-off-by: Jan Kara <jack@suse.cz>
 ---
- fs/ext4/ext4.h   |  70 +++++++++-
- fs/ext4/orphan.c | 326 ++++++++++++++++++++++++++++++++++++++++++-----
- fs/ext4/super.c  |  34 ++++-
- 3 files changed, 386 insertions(+), 44 deletions(-)
+ Documentation/filesystems/ext4/globals.rst    |  1 +
+ Documentation/filesystems/ext4/inodes.rst     | 10 ++--
+ Documentation/filesystems/ext4/orphan.rst     | 52 +++++++++++++++++++
+ .../filesystems/ext4/special_inodes.rst       | 17 ++++++
+ Documentation/filesystems/ext4/super.rst      | 15 +++++-
+ 5 files changed, 88 insertions(+), 7 deletions(-)
+ create mode 100644 Documentation/filesystems/ext4/orphan.rst
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 33508487516f..83298c0b6dae 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -1025,7 +1025,14 @@ struct ext4_inode_info {
- 	 */
- 	struct rw_semaphore xattr_sem;
+diff --git a/Documentation/filesystems/ext4/globals.rst b/Documentation/filesystems/ext4/globals.rst
+index 368bf7662b96..b17418974fd3 100644
+--- a/Documentation/filesystems/ext4/globals.rst
++++ b/Documentation/filesystems/ext4/globals.rst
+@@ -11,3 +11,4 @@ have static metadata at fixed locations.
+ .. include:: bitmaps.rst
+ .. include:: mmp.rst
+ .. include:: journal.rst
++.. include:: orphan.rst
+diff --git a/Documentation/filesystems/ext4/inodes.rst b/Documentation/filesystems/ext4/inodes.rst
+index a65baffb4ebf..6c5ce666e63f 100644
+--- a/Documentation/filesystems/ext4/inodes.rst
++++ b/Documentation/filesystems/ext4/inodes.rst
+@@ -498,11 +498,11 @@ structure -- inode change time (ctime), access time (atime), data
+ modification time (mtime), and deletion time (dtime). The four fields
+ are 32-bit signed integers that represent seconds since the Unix epoch
+ (1970-01-01 00:00:00 GMT), which means that the fields will overflow in
+-January 2038. For inodes that are not linked from any directory but are
+-still open (orphan inodes), the dtime field is overloaded for use with
+-the orphan list. The superblock field ``s_last_orphan`` points to the
+-first inode in the orphan list; dtime is then the number of the next
+-orphaned inode, or zero if there are no more orphans.
++January 2038. If the filesystem does not have orphan_file feature, inodes
++that are not linked from any directory but are still open (orphan inodes) have
++the dtime field overloaded for use with the orphan list. The superblock field
++``s_last_orphan`` points to the first inode in the orphan list; dtime is then
++the number of the next orphaned inode, or zero if there are no more orphans.
  
--	struct list_head i_orphan;	/* unlinked but open inodes */
-+	/*
-+	 * Inodes with EXT4_STATE_ORPHAN_FILE use i_orphan_idx. Otherwise
-+	 * i_orphan is used.
-+	 */
-+	union {
-+		struct list_head i_orphan;	/* unlinked but open inodes */
-+		unsigned int i_orphan_idx;	/* Index in orphan file */
-+	};
- 
- 	/* Fast commit related info */
- 
-@@ -1419,7 +1426,8 @@ struct ext4_super_block {
- 	__u8    s_last_error_errcode;
- 	__le16  s_encoding;		/* Filename charset encoding */
- 	__le16  s_encoding_flags;	/* Filename charset encoding flags */
--	__le32	s_reserved[95];		/* Padding to the end of the block */
-+	__le32  s_orphan_file_inum;	/* Inode for tracking orphan inodes */
-+	__le32	s_reserved[94];		/* Padding to the end of the block */
- 	__le32	s_checksum;		/* crc32c(superblock) */
- };
- 
-@@ -1440,6 +1448,7 @@ struct ext4_super_block {
- 
- /* Types of ext4 journal triggers */
- enum ext4_journal_trigger_type {
-+	EXT4_JTR_ORPHAN_FILE,
- 	EXT4_JTR_NONE	/* This must be the last entry for indexing to work! */
- };
- 
-@@ -1456,6 +1465,36 @@ static inline struct ext4_journal_trigger *EXT4_TRIGGER(
- 	return container_of(trigger, struct ext4_journal_trigger, tr_triggers);
- }
- 
-+#define EXT4_ORPHAN_BLOCK_MAGIC 0x0b10ca04
+ If the inode structure size ``sb->s_inode_size`` is larger than 128
+ bytes and the ``i_inode_extra`` field is large enough to encompass the
+diff --git a/Documentation/filesystems/ext4/orphan.rst b/Documentation/filesystems/ext4/orphan.rst
+new file mode 100644
+index 000000000000..bb19ecd1b626
+--- /dev/null
++++ b/Documentation/filesystems/ext4/orphan.rst
+@@ -0,0 +1,52 @@
++.. SPDX-License-Identifier: GPL-2.0
 +
-+/* Structure at the tail of orphan block */
-+struct ext4_orphan_block_tail {
-+	__le32 ob_magic;
-+	__le32 ob_checksum;
-+};
++Orphan file
++-----------
 +
-+static inline int ext4_inodes_per_orphan_block(struct super_block *sb)
-+{
-+	return (sb->s_blocksize - sizeof(struct ext4_orphan_block_tail)) /
-+			sizeof(u32);
-+}
++In unix there can inodes that are unlinked from directory hierarchy but that
++are still alive because they are open. In case of crash the filesystem has to
++clean up these inodes as otherwise they (and the blocks referenced from them)
++would leak. Similarly if we truncate or extend the file, we need not be able
++to perform the operation in a single journalling transaction. In such case we
++track the inode as orphan so that in case of crash extra blocks allocated to
++the file get truncated.
 +
-+struct ext4_orphan_block {
-+	int ob_free_entries;	/* Number of free orphan entries in block */
-+	struct buffer_head *ob_bh;	/* Buffer for orphan block */
-+};
++Traditionally ext4 tracks orphan inodes in a form of single linked list where
++superblock contains the inode number of the last orphan inode (s\_last\_orphan
++field) and then each inode contains inode number of the previously orphaned
++inode (we overload i\_dtime inode field for this). However this filesystem
++global single linked list is a scalability bottleneck for workloads that result
++in heavy creation of orphan inodes. When orphan file feature
++(COMPAT\_ORPHAN\_FILE) is enabled, the filesystem has a special inode
++(referenced from the superblock through s\_orphan_file_inum) with several
++blocks. Each of these blocks has a structure:
 +
-+/*
-+ * Info about orphan file.
-+ */
-+struct ext4_orphan_info {
-+	spinlock_t of_lock;
-+	int of_blocks;			/* Number of orphan blocks in a file */
-+	__u32 of_csum_seed;		/* Checksum seed for orphan file */
-+	struct ext4_orphan_block *of_binfo;	/* Array with info about orphan
-+						 * file blocks */
-+};
++.. list-table::
++   :widths: 8 8 24 40
++   :header-rows: 1
 +
- /*
-  * fourth extended-fs super-block data in memory
-  */
-@@ -1509,9 +1548,11 @@ struct ext4_sb_info {
++   * - Offset
++     - Type
++     - Name
++     - Description
++   * - 0x0
++     - Array of \_\_le32 entries
++     - Orphan inode entries
++     - Each \_\_le32 entry is either empty (0) or it contains inode number of
++       an orphan inode.
++   * - blocksize - 8
++     - \_\_le32
++     - ob\_magic
++     - Magic value stored in orphan block tail (0x0b10ca04)
++   * - blocksize - 4
++     - \_\_le32
++     - ob\_checksum
++     - Checksum of the orphan block.
++
++When a filesystem with orphan file feature is writeably mounted, we set
++RO\_COMPAT\_ORPHAN\_PRESENT feature in the superblock to indicate there may
++be valid orphan entries. In case we see this feature when mounting the
++filesystem, we read the whole orphan file and process all orphan inodes found
++there as usual. When cleanly unmounting the filesystem we remove the
++RO\_COMPAT\_ORPHAN\_PRESENT feature to avoid unnecessary scanning of the orphan
++file and also make the filesystem fully compatible with older kernels.
+diff --git a/Documentation/filesystems/ext4/special_inodes.rst b/Documentation/filesystems/ext4/special_inodes.rst
+index 9061aabba827..94f304e3a0a7 100644
+--- a/Documentation/filesystems/ext4/special_inodes.rst
++++ b/Documentation/filesystems/ext4/special_inodes.rst
+@@ -36,3 +36,20 @@ ext4 reserves some inode for special features, as follows:
+    * - 11
+      - Traditional first non-reserved inode. Usually this is the lost+found directory. See s\_first\_ino in the superblock.
  
- 	/* Journaling */
- 	struct journal_s *s_journal;
--	struct list_head s_orphan;
--	struct mutex s_orphan_lock;
- 	unsigned long s_ext4_flags;		/* Ext4 superblock flags */
-+	struct mutex s_orphan_lock;	/* Protects on disk list changes */
-+	struct list_head s_orphan;	/* List of orphaned inodes in on disk
-+					   list */
-+	struct ext4_orphan_info s_orphan_info;
- 	unsigned long s_commit_interval;
- 	u32 s_max_batch_time;
- 	u32 s_min_batch_time;
-@@ -1846,6 +1887,7 @@ enum {
- 	EXT4_STATE_LUSTRE_EA_INODE,	/* Lustre-style ea_inode */
- 	EXT4_STATE_VERITY_IN_PROGRESS,	/* building fs-verity Merkle tree */
- 	EXT4_STATE_FC_COMMITTING,	/* Fast commit ongoing */
-+	EXT4_STATE_ORPHAN_FILE,		/* Inode orphaned in orphan file */
- };
- 
- #define EXT4_INODE_BIT_FNS(name, field, offset)				\
-@@ -1947,6 +1989,7 @@ static inline bool ext4_verity_in_progress(struct inode *inode)
-  */
- #define EXT4_FEATURE_COMPAT_FAST_COMMIT		0x0400
- #define EXT4_FEATURE_COMPAT_STABLE_INODES	0x0800
-+#define EXT4_FEATURE_COMPAT_ORPHAN_FILE		0x1000	/* Orphan file exists */
- 
- #define EXT4_FEATURE_RO_COMPAT_SPARSE_SUPER	0x0001
- #define EXT4_FEATURE_RO_COMPAT_LARGE_FILE	0x0002
-@@ -1955,6 +1998,8 @@ static inline bool ext4_verity_in_progress(struct inode *inode)
- #define EXT4_FEATURE_RO_COMPAT_GDT_CSUM		0x0010
- #define EXT4_FEATURE_RO_COMPAT_DIR_NLINK	0x0020
- #define EXT4_FEATURE_RO_COMPAT_EXTRA_ISIZE	0x0040
-+#define EXT4_FEATURE_RO_COMPAT_ORPHAN_PRESENT	0x0080 /* Orphan file may be
-+							  non-empty */
- #define EXT4_FEATURE_RO_COMPAT_QUOTA		0x0100
- #define EXT4_FEATURE_RO_COMPAT_BIGALLOC		0x0200
- /*
-@@ -1964,6 +2009,7 @@ static inline bool ext4_verity_in_progress(struct inode *inode)
-  * GDT_CSUM bits are mutually exclusive.
-  */
- #define EXT4_FEATURE_RO_COMPAT_METADATA_CSUM	0x0400
-+/* 0x0800 Reserved for EXT4_FEATURE_RO_COMPAT_REPLICA */
- #define EXT4_FEATURE_RO_COMPAT_READONLY		0x1000
- #define EXT4_FEATURE_RO_COMPAT_PROJECT		0x2000
- #define EXT4_FEATURE_RO_COMPAT_VERITY		0x8000
-@@ -2050,6 +2096,7 @@ EXT4_FEATURE_COMPAT_FUNCS(dir_index,		DIR_INDEX)
- EXT4_FEATURE_COMPAT_FUNCS(sparse_super2,	SPARSE_SUPER2)
- EXT4_FEATURE_COMPAT_FUNCS(fast_commit,		FAST_COMMIT)
- EXT4_FEATURE_COMPAT_FUNCS(stable_inodes,	STABLE_INODES)
-+EXT4_FEATURE_COMPAT_FUNCS(orphan_file,		ORPHAN_FILE)
- 
- EXT4_FEATURE_RO_COMPAT_FUNCS(sparse_super,	SPARSE_SUPER)
- EXT4_FEATURE_RO_COMPAT_FUNCS(large_file,	LARGE_FILE)
-@@ -2064,6 +2111,7 @@ EXT4_FEATURE_RO_COMPAT_FUNCS(metadata_csum,	METADATA_CSUM)
- EXT4_FEATURE_RO_COMPAT_FUNCS(readonly,		READONLY)
- EXT4_FEATURE_RO_COMPAT_FUNCS(project,		PROJECT)
- EXT4_FEATURE_RO_COMPAT_FUNCS(verity,		VERITY)
-+EXT4_FEATURE_RO_COMPAT_FUNCS(orphan_present,	ORPHAN_PRESENT)
- 
- EXT4_FEATURE_INCOMPAT_FUNCS(compression,	COMPRESSION)
- EXT4_FEATURE_INCOMPAT_FUNCS(filetype,		FILETYPE)
-@@ -2097,7 +2145,8 @@ EXT4_FEATURE_INCOMPAT_FUNCS(casefold,		CASEFOLD)
- 					 EXT4_FEATURE_RO_COMPAT_LARGE_FILE| \
- 					 EXT4_FEATURE_RO_COMPAT_BTREE_DIR)
- 
--#define EXT4_FEATURE_COMPAT_SUPP	EXT4_FEATURE_COMPAT_EXT_ATTR
-+#define EXT4_FEATURE_COMPAT_SUPP	(EXT4_FEATURE_COMPAT_EXT_ATTR| \
-+					 EXT4_FEATURE_COMPAT_ORPHAN_FILE)
- #define EXT4_FEATURE_INCOMPAT_SUPP	(EXT4_FEATURE_INCOMPAT_FILETYPE| \
- 					 EXT4_FEATURE_INCOMPAT_RECOVER| \
- 					 EXT4_FEATURE_INCOMPAT_META_BG| \
-@@ -2122,7 +2171,8 @@ EXT4_FEATURE_INCOMPAT_FUNCS(casefold,		CASEFOLD)
- 					 EXT4_FEATURE_RO_COMPAT_METADATA_CSUM|\
- 					 EXT4_FEATURE_RO_COMPAT_QUOTA |\
- 					 EXT4_FEATURE_RO_COMPAT_PROJECT |\
--					 EXT4_FEATURE_RO_COMPAT_VERITY)
-+					 EXT4_FEATURE_RO_COMPAT_VERITY |\
-+					 EXT4_FEATURE_RO_COMPAT_ORPHAN_PRESENT)
- 
- #define EXTN_FEATURE_FUNCS(ver) \
- static inline bool ext4_has_unknown_ext##ver##_compat_features(struct super_block *sb) \
-@@ -2172,7 +2222,6 @@ static inline int ext4_forced_shutdown(struct ext4_sb_info *sbi)
- 	return test_bit(EXT4_FLAGS_SHUTDOWN, &sbi->s_ext4_flags);
- }
- 
--
- /*
-  * Default values for user and/or group using reserved blocks
-  */
-@@ -3751,6 +3800,13 @@ extern int ext4_orphan_add(handle_t *, struct inode *);
- extern int ext4_orphan_del(handle_t *, struct inode *);
- extern void ext4_orphan_cleanup(struct super_block *sb,
- 				struct ext4_super_block *es);
-+extern void ext4_release_orphan_info(struct super_block *sb);
-+extern int ext4_init_orphan_info(struct super_block *sb);
-+extern int ext4_orphan_file_empty(struct super_block *sb);
-+extern void ext4_orphan_file_block_trigger(
-+				struct jbd2_buffer_trigger_type *triggers,
-+				struct buffer_head *bh,
-+				void *data, size_t size);
- 
- /*
-  * Add new method to test whether block and inode bitmaps are properly
-diff --git a/fs/ext4/orphan.c b/fs/ext4/orphan.c
-index edfae0b1dfc9..95c2fa0e4e3e 100644
---- a/fs/ext4/orphan.c
-+++ b/fs/ext4/orphan.c
-@@ -8,6 +8,52 @@
- #include "ext4.h"
- #include "ext4_jbd2.h"
- 
-+static int ext4_orphan_file_add(handle_t *handle, struct inode *inode)
-+{
-+	int i, j;
-+	struct ext4_orphan_info *oi = &EXT4_SB(inode->i_sb)->s_orphan_info;
-+	int ret = 0;
-+	__le32 *bdata;
-+	int inodes_per_ob = ext4_inodes_per_orphan_block(inode->i_sb);
++Note that there are also some inodes allocated from non-reserved inode numbers
++for other filesystem features which are not referenced from standard directory
++hierarchy. These are generally reference from the superblock. They are:
 +
-+	spin_lock(&oi->of_lock);
-+	for (i = 0; i < oi->of_blocks && !oi->of_binfo[i].ob_free_entries; i++);
-+	if (i == oi->of_blocks) {
-+		spin_unlock(&oi->of_lock);
-+		/*
-+		 * For now we don't grow or shrink orphan file. We just use
-+		 * whatever was allocated at mke2fs time. The additional
-+		 * credits we would have to reserve for each orphan inode
-+		 * operation just don't seem worth it.
-+		 */
-+		return -ENOSPC;
-+	}
-+	oi->of_binfo[i].ob_free_entries--;
-+	spin_unlock(&oi->of_lock);
++.. list-table::
++   :widths: 20 50
++   :header-rows: 1
 +
-+	/*
-+	 * Get access to orphan block. We have dropped of_lock but since we
-+	 * have decremented number of free entries we are guaranteed free entry
-+	 * in our block.
-+	 */
-+	ret = ext4_journal_get_write_access(handle, inode->i_sb,
-+				oi->of_binfo[i].ob_bh, EXT4_JTR_ORPHAN_FILE);
-+	if (ret)
-+		return ret;
++   * - Superblock field
++     - Description
 +
-+	bdata = (__le32 *)(oi->of_binfo[i].ob_bh->b_data);
-+	spin_lock(&oi->of_lock);
-+	/* Find empty slot in a block */
-+	for (j = 0; j < inodes_per_ob && bdata[j]; j++);
-+	BUG_ON(j == inodes_per_ob);
-+	bdata[j] = cpu_to_le32(inode->i_ino);
-+	EXT4_I(inode)->i_orphan_idx = i * inodes_per_ob + j;
-+	ext4_set_inode_state(inode, EXT4_STATE_ORPHAN_FILE);
-+	spin_unlock(&oi->of_lock);
-+
-+	return ext4_handle_dirty_metadata(handle, NULL, oi->of_binfo[i].ob_bh);
-+}
-+
- /*
-  * ext4_orphan_add() links an unlinked or truncated inode into a list of
-  * such inodes, starting at the superblock, in case we crash before the
-@@ -34,10 +80,10 @@ int ext4_orphan_add(handle_t *handle, struct inode *inode)
- 	WARN_ON_ONCE(!(inode->i_state & (I_NEW | I_FREEING)) &&
- 		     !inode_is_locked(inode));
- 	/*
--	 * Exit early if inode already is on orphan list. This is a big speedup
--	 * since we don't have to contend on the global s_orphan_lock.
-+	 * Inode orphaned in orphan file or in orphan list?
- 	 */
--	if (!list_empty(&EXT4_I(inode)->i_orphan))
-+	if (ext4_test_inode_state(inode, EXT4_STATE_ORPHAN_FILE) ||
-+	    !list_empty(&EXT4_I(inode)->i_orphan))
- 		return 0;
++   * - s\_lpf\_ino
++     - Inode number of lost+found directory.
++   * - s\_prj\_quota\_inum
++     - Inode number of quota file tracking project quotas
++   * - s\_orphan\_file\_inum
++     - Inode number of file tracking orphan inodes.
+diff --git a/Documentation/filesystems/ext4/super.rst b/Documentation/filesystems/ext4/super.rst
+index 2eb1ab20498d..f1d4907104f5 100644
+--- a/Documentation/filesystems/ext4/super.rst
++++ b/Documentation/filesystems/ext4/super.rst
+@@ -479,7 +479,11 @@ The ext4 superblock is laid out as follows in
+      - Filename charset encoding flags.
+    * - 0x280
+      - \_\_le32
+-     - s\_reserved[95]
++     - s\_orphan\_file\_inum
++     - Orphan file inode number.
++   * - 0x284
++     - \_\_le32
++     - s\_reserved[94]
+      - Padding to the end of the block.
+    * - 0x3FC
+      - \_\_le32
+@@ -603,6 +607,11 @@ following:
+        the journal, JBD2 incompat feature
+        (JBD2\_FEATURE\_INCOMPAT\_FAST\_COMMIT) gets
+        set (COMPAT\_FAST\_COMMIT).
++   * - 0x1000
++     - Orphan file allocated. This is the special file for more efficient
++       tracking of unlinked but still open inodes. When there may be any
++       entries in the file, we additionally set proper rocompat feature
++       (RO\_COMPAT\_ORPHAN\_PRESENT).
  
- 	/*
-@@ -49,6 +95,16 @@ int ext4_orphan_add(handle_t *handle, struct inode *inode)
- 	ASSERT((S_ISREG(inode->i_mode) || S_ISDIR(inode->i_mode) ||
- 		  S_ISLNK(inode->i_mode)) || inode->i_nlink == 0);
+ .. _super_incompat:
  
-+	if (sbi->s_orphan_info.of_blocks) {
-+		err = ext4_orphan_file_add(handle, inode);
-+		/*
-+		 * Fallback to normal orphan list of orphan file is
-+		 * out of space
-+		 */
-+		if (err != -ENOSPC)
-+			return err;
-+	}
-+
- 	BUFFER_TRACE(sbi->s_sbh, "get_write_access");
- 	err = ext4_journal_get_write_access(handle, sb, sbi->s_sbh,
- 					    EXT4_JTR_NONE);
-@@ -103,6 +159,39 @@ int ext4_orphan_add(handle_t *handle, struct inode *inode)
- 	return err;
- }
- 
-+static int ext4_orphan_file_del(handle_t *handle, struct inode *inode)
-+{
-+	struct ext4_orphan_info *oi = &EXT4_SB(inode->i_sb)->s_orphan_info;
-+	__le32 *bdata;
-+	int blk, off;
-+	int inodes_per_ob = ext4_inodes_per_orphan_block(inode->i_sb);
-+	int ret = 0;
-+
-+	if (!handle)
-+		goto out;
-+	blk = EXT4_I(inode)->i_orphan_idx / inodes_per_ob;
-+	off = EXT4_I(inode)->i_orphan_idx % inodes_per_ob;
-+	if (WARN_ON_ONCE(blk >= oi->of_blocks))
-+		goto out;
-+
-+	ret = ext4_journal_get_write_access(handle, inode->i_sb,
-+				oi->of_binfo[blk].ob_bh, EXT4_JTR_ORPHAN_FILE);
-+	if (ret)
-+		goto out;
-+
-+	bdata = (__le32 *)(oi->of_binfo[blk].ob_bh->b_data);
-+	spin_lock(&oi->of_lock);
-+	bdata[off] = 0;
-+	oi->of_binfo[blk].ob_free_entries++;
-+	spin_unlock(&oi->of_lock);
-+	ret = ext4_handle_dirty_metadata(handle, NULL, oi->of_binfo[blk].ob_bh);
-+out:
-+	ext4_clear_inode_state(inode, EXT4_STATE_ORPHAN_FILE);
-+	INIT_LIST_HEAD(&EXT4_I(inode)->i_orphan);
-+
-+	return ret;
-+}
-+
- /*
-  * ext4_orphan_del() removes an unlinked or truncated inode from the list
-  * of such inodes stored on disk, because it is finally being cleaned up.
-@@ -121,6 +210,9 @@ int ext4_orphan_del(handle_t *handle, struct inode *inode)
- 
- 	WARN_ON_ONCE(!(inode->i_state & (I_NEW | I_FREEING)) &&
- 		     !inode_is_locked(inode));
-+	if (ext4_test_inode_state(inode, EXT4_STATE_ORPHAN_FILE))
-+		return ext4_orphan_file_del(handle, inode);
-+
- 	/* Do this quick check before taking global s_orphan_lock. */
- 	if (list_empty(&ei->i_orphan))
- 		return 0;
-@@ -200,6 +292,39 @@ static int ext4_quota_on_mount(struct super_block *sb, int type)
- }
- #endif
- 
-+static void ext4_process_orphan(struct inode *inode,
-+				int *nr_truncates, int *nr_orphans)
-+{
-+	struct super_block *sb = inode->i_sb;
-+	int ret;
-+
-+	dquot_initialize(inode);
-+	if (inode->i_nlink) {
-+		if (test_opt(sb, DEBUG))
-+			ext4_msg(sb, KERN_DEBUG,
-+				"%s: truncating inode %lu to %lld bytes",
-+				__func__, inode->i_ino, inode->i_size);
-+		jbd_debug(2, "truncating inode %lu to %lld bytes\n",
-+			  inode->i_ino, inode->i_size);
-+		inode_lock(inode);
-+		truncate_inode_pages(inode->i_mapping, inode->i_size);
-+		ret = ext4_truncate(inode);
-+		if (ret)
-+			ext4_std_error(inode->i_sb, ret);
-+		inode_unlock(inode);
-+		(*nr_truncates)++;
-+	} else {
-+		if (test_opt(sb, DEBUG))
-+			ext4_msg(sb, KERN_DEBUG,
-+				"%s: deleting unreferenced inode %lu",
-+				__func__, inode->i_ino);
-+		jbd_debug(2, "deleting unreferenced inode %lu\n",
-+			  inode->i_ino);
-+		(*nr_orphans)++;
-+	}
-+	iput(inode);  /* The delete magic happens here! */
-+}
-+
- /* ext4_orphan_cleanup() walks a singly-linked list of inodes (starting at
-  * the superblock) which were deleted from all directories, but held open by
-  * a process at the time of a crash.  We walk the list and try to delete these
-@@ -220,12 +345,17 @@ static int ext4_quota_on_mount(struct super_block *sb, int type)
- void ext4_orphan_cleanup(struct super_block *sb, struct ext4_super_block *es)
- {
- 	unsigned int s_flags = sb->s_flags;
--	int ret, nr_orphans = 0, nr_truncates = 0;
-+	int nr_orphans = 0, nr_truncates = 0;
-+	struct inode *inode;
-+	int i, j;
- #ifdef CONFIG_QUOTA
- 	int quota_update = 0;
--	int i;
- #endif
--	if (!es->s_last_orphan) {
-+	__le32 *bdata;
-+	struct ext4_orphan_info *oi = &EXT4_SB(sb)->s_orphan_info;
-+	int inodes_per_ob = ext4_inodes_per_orphan_block(sb);
-+
-+	if (!es->s_last_orphan && !oi->of_blocks) {
- 		jbd_debug(4, "no orphan inodes to clean up\n");
- 		return;
- 	}
-@@ -289,8 +419,6 @@ void ext4_orphan_cleanup(struct super_block *sb, struct ext4_super_block *es)
- #endif
- 
- 	while (es->s_last_orphan) {
--		struct inode *inode;
--
- 		/*
- 		 * We may have encountered an error during cleanup; if
- 		 * so, skip the rest.
-@@ -308,31 +436,21 @@ void ext4_orphan_cleanup(struct super_block *sb, struct ext4_super_block *es)
- 		}
- 
- 		list_add(&EXT4_I(inode)->i_orphan, &EXT4_SB(sb)->s_orphan);
--		dquot_initialize(inode);
--		if (inode->i_nlink) {
--			if (test_opt(sb, DEBUG))
--				ext4_msg(sb, KERN_DEBUG,
--					"%s: truncating inode %lu to %lld bytes",
--					__func__, inode->i_ino, inode->i_size);
--			jbd_debug(2, "truncating inode %lu to %lld bytes\n",
--				  inode->i_ino, inode->i_size);
--			inode_lock(inode);
--			truncate_inode_pages(inode->i_mapping, inode->i_size);
--			ret = ext4_truncate(inode);
--			if (ret)
--				ext4_std_error(inode->i_sb, ret);
--			inode_unlock(inode);
--			nr_truncates++;
--		} else {
--			if (test_opt(sb, DEBUG))
--				ext4_msg(sb, KERN_DEBUG,
--					"%s: deleting unreferenced inode %lu",
--					__func__, inode->i_ino);
--			jbd_debug(2, "deleting unreferenced inode %lu\n",
--				  inode->i_ino);
--			nr_orphans++;
-+		ext4_process_orphan(inode, &nr_truncates, &nr_orphans);
-+	}
-+
-+	for (i = 0; i < oi->of_blocks; i++) {
-+		bdata = (__le32 *)(oi->of_binfo[i].ob_bh->b_data);
-+		for (j = 0; j < inodes_per_ob; j++) {
-+			if (!bdata[j])
-+				continue;
-+			inode = ext4_orphan_get(sb, le32_to_cpu(bdata[j]));
-+			if (IS_ERR(inode))
-+				continue;
-+			ext4_set_inode_state(inode, EXT4_STATE_ORPHAN_FILE);
-+			EXT4_I(inode)->i_orphan_idx = i * inodes_per_ob + j;
-+			ext4_process_orphan(inode, &nr_truncates, &nr_orphans);
- 		}
--		iput(inode);  /* The delete magic happens here! */
- 	}
- 
- #define PLURAL(x) (x), ((x) == 1) ? "" : "s"
-@@ -354,3 +472,147 @@ void ext4_orphan_cleanup(struct super_block *sb, struct ext4_super_block *es)
- #endif
- 	sb->s_flags = s_flags; /* Restore SB_RDONLY status */
- }
-+
-+void ext4_release_orphan_info(struct super_block *sb)
-+{
-+	int i;
-+	struct ext4_orphan_info *oi = &EXT4_SB(sb)->s_orphan_info;
-+
-+	if (!oi->of_blocks)
-+		return;
-+	for (i = 0; i < oi->of_blocks; i++)
-+		brelse(oi->of_binfo[i].ob_bh);
-+	kfree(oi->of_binfo);
-+}
-+
-+static struct ext4_orphan_block_tail *ext4_orphan_block_tail(
-+						struct super_block *sb,
-+						struct buffer_head *bh)
-+{
-+	return (struct ext4_orphan_block_tail *)(bh->b_data + sb->s_blocksize -
-+				sizeof(struct ext4_orphan_block_tail));
-+}
-+
-+static int ext4_orphan_file_block_csum_verify(struct super_block *sb,
-+					      struct buffer_head *bh)
-+{
-+	__u32 calculated;
-+	int inodes_per_ob = ext4_inodes_per_orphan_block(sb);
-+	struct ext4_orphan_info *oi = &EXT4_SB(sb)->s_orphan_info;
-+	struct ext4_orphan_block_tail *ot;
-+	__le64 dsk_block_nr = cpu_to_le64(bh->b_blocknr);
-+
-+	if (!ext4_has_metadata_csum(sb))
-+		return 1;
-+
-+	ot = ext4_orphan_block_tail(sb, bh);
-+	calculated = ext4_chksum(EXT4_SB(sb), oi->of_csum_seed,
-+				 (__u8 *)&dsk_block_nr, sizeof(dsk_block_nr));
-+	calculated = ext4_chksum(EXT4_SB(sb), calculated, (__u8 *)bh->b_data,
-+				 inodes_per_ob * sizeof(__u32));
-+	return le32_to_cpu(ot->ob_checksum) == calculated;
-+}
-+
-+/* This gets called only when checksumming is enabled */
-+void ext4_orphan_file_block_trigger(struct jbd2_buffer_trigger_type *triggers,
-+				    struct buffer_head *bh,
-+				    void *data, size_t size)
-+{
-+	struct super_block *sb = EXT4_TRIGGER(triggers)->sb;
-+	__u32 csum;
-+	int inodes_per_ob = ext4_inodes_per_orphan_block(sb);
-+	struct ext4_orphan_info *oi = &EXT4_SB(sb)->s_orphan_info;
-+	struct ext4_orphan_block_tail *ot;
-+	__le64 dsk_block_nr = cpu_to_le64(bh->b_blocknr);
-+
-+	csum = ext4_chksum(EXT4_SB(sb), oi->of_csum_seed,
-+			   (__u8 *)&dsk_block_nr, sizeof(dsk_block_nr));
-+	csum = ext4_chksum(EXT4_SB(sb), csum, (__u8 *)data,
-+			   inodes_per_ob * sizeof(__u32));
-+	ot = ext4_orphan_block_tail(sb, bh);
-+	ot->ob_checksum = cpu_to_le32(csum);
-+}
-+
-+int ext4_init_orphan_info(struct super_block *sb)
-+{
-+	struct ext4_orphan_info *oi = &EXT4_SB(sb)->s_orphan_info;
-+	struct inode *inode;
-+	int i, j;
-+	int ret;
-+	int free;
-+	__le32 *bdata;
-+	int inodes_per_ob = ext4_inodes_per_orphan_block(sb);
-+	struct ext4_orphan_block_tail *ot;
-+	ino_t orphan_ino = le32_to_cpu(EXT4_SB(sb)->s_es->s_orphan_file_inum);
-+
-+	spin_lock_init(&oi->of_lock);
-+
-+	if (!ext4_has_feature_orphan_file(sb))
-+		return 0;
-+
-+	inode = ext4_iget(sb, orphan_ino, EXT4_IGET_NORMAL);
-+	if (IS_ERR(inode)) {
-+		ext4_msg(sb, KERN_ERR, "get orphan inode failed");
-+		return PTR_ERR(inode);
-+	}
-+	oi->of_blocks = inode->i_size >> sb->s_blocksize_bits;
-+	oi->of_csum_seed = EXT4_I(inode)->i_csum_seed;
-+	oi->of_binfo = kmalloc(oi->of_blocks*sizeof(struct ext4_orphan_block),
-+			       GFP_KERNEL);
-+	if (!oi->of_binfo) {
-+		ret = -ENOMEM;
-+		goto out_put;
-+	}
-+	for (i = 0; i < oi->of_blocks; i++) {
-+		oi->of_binfo[i].ob_bh = ext4_bread(NULL, inode, i, 0);
-+		if (IS_ERR(oi->of_binfo[i].ob_bh)) {
-+			ret = PTR_ERR(oi->of_binfo[i].ob_bh);
-+			goto out_free;
-+		}
-+		if (!oi->of_binfo[i].ob_bh) {
-+			ret = -EIO;
-+			goto out_free;
-+		}
-+		ot = ext4_orphan_block_tail(sb, oi->of_binfo[i].ob_bh);
-+		if (le32_to_cpu(ot->ob_magic) != EXT4_ORPHAN_BLOCK_MAGIC) {
-+			ext4_error(sb, "orphan file block %d: bad magic", i);
-+			ret = -EIO;
-+			goto out_free;
-+		}
-+		if (!ext4_orphan_file_block_csum_verify(sb,
-+						oi->of_binfo[i].ob_bh)) {
-+			ext4_error(sb, "orphan file block %d: bad checksum", i);
-+			ret = -EIO;
-+			goto out_free;
-+		}
-+		bdata = (__le32 *)(oi->of_binfo[i].ob_bh->b_data);
-+		free = 0;
-+		for (j = 0; j < inodes_per_ob; j++)
-+			if (bdata[j] == 0)
-+				free++;
-+		oi->of_binfo[i].ob_free_entries = free;
-+	}
-+	iput(inode);
-+	return 0;
-+out_free:
-+	for (i--; i >= 0; i--)
-+		brelse(oi->of_binfo[i].ob_bh);
-+	kfree(oi->of_binfo);
-+out_put:
-+	iput(inode);
-+	return ret;
-+}
-+
-+int ext4_orphan_file_empty(struct super_block *sb)
-+{
-+	struct ext4_orphan_info *oi = &EXT4_SB(sb)->s_orphan_info;
-+	int i;
-+	int inodes_per_ob = ext4_inodes_per_orphan_block(sb);
-+
-+	if (!ext4_has_feature_orphan_file(sb))
-+		return 1;
-+	for (i = 0; i < oi->of_blocks; i++)
-+		if (oi->of_binfo[i].ob_free_entries != inodes_per_ob)
-+			return 0;
-+	return 1;
-+}
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 6e43c8546dc5..06f63b0cd988 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1164,6 +1164,7 @@ static void ext4_put_super(struct super_block *sb)
- 
- 	flush_work(&sbi->s_error_work);
- 	destroy_workqueue(sbi->rsv_conversion_wq);
-+	ext4_release_orphan_info(sb);
- 
- 	/*
- 	 * Unregister sysfs before destroying jbd2 journal.
-@@ -1189,6 +1190,7 @@ static void ext4_put_super(struct super_block *sb)
- 
- 	if (!sb_rdonly(sb) && !aborted) {
- 		ext4_clear_feature_journal_needs_recovery(sb);
-+		ext4_clear_feature_orphan_present(sb);
- 		es->s_state = cpu_to_le16(sbi->s_mount_state);
- 	}
- 	if (!sb_rdonly(sb))
-@@ -2695,8 +2697,11 @@ static int ext4_setup_super(struct super_block *sb, struct ext4_super_block *es,
- 		es->s_max_mnt_count = cpu_to_le16(EXT4_DFL_MAX_MNT_COUNT);
- 	le16_add_cpu(&es->s_mnt_count, 1);
- 	ext4_update_tstamp(es, s_mtime);
--	if (sbi->s_journal)
-+	if (sbi->s_journal) {
- 		ext4_set_feature_journal_needs_recovery(sb);
-+		if (ext4_has_feature_orphan_file(sb))
-+			ext4_set_feature_orphan_present(sb);
-+	}
- 
- 	err = ext4_commit_super(sb);
- done:
-@@ -3971,6 +3976,8 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 		silent = 1;
- 		goto cantfind_ext4;
- 	}
-+	ext4_setup_csum_trigger(sb, EXT4_JTR_ORPHAN_FILE,
-+				ext4_orphan_file_block_trigger);
- 
- 	/* Load the checksum driver */
- 	sbi->s_chksum_driver = crypto_alloc_shash("crc32c", 0, 0);
-@@ -4635,6 +4642,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 	sb->s_root = NULL;
- 
- 	needs_recovery = (es->s_last_orphan != 0 ||
-+			  ext4_has_feature_orphan_present(sb) ||
- 			  ext4_has_feature_journal_needs_recovery(sb));
- 
- 	if (ext4_has_feature_mmp(sb) && !sb_rdonly(sb))
-@@ -4924,12 +4932,15 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 	if (err)
- 		goto failed_mount7;
- 
-+	err = ext4_init_orphan_info(sb);
-+	if (err)
-+		goto failed_mount8;
- #ifdef CONFIG_QUOTA
- 	/* Enable quota usage during mount. */
- 	if (ext4_has_feature_quota(sb) && !sb_rdonly(sb)) {
- 		err = ext4_enable_quotas(sb);
- 		if (err)
--			goto failed_mount8;
-+			goto failed_mount9;
- 	}
- #endif  /* CONFIG_QUOTA */
- 
-@@ -4948,7 +4959,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 		ext4_msg(sb, KERN_INFO, "recovery complete");
- 		err = ext4_mark_recovery_complete(sb, es);
- 		if (err)
--			goto failed_mount8;
-+			goto failed_mount9;
- 	}
- 	if (EXT4_SB(sb)->s_journal) {
- 		if (test_opt(sb, DATA_FLAGS) == EXT4_MOUNT_JOURNAL_DATA)
-@@ -4994,6 +5005,8 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 		ext4_msg(sb, KERN_ERR, "VFS: Can't find ext4 filesystem");
- 	goto failed_mount;
- 
-+failed_mount9:
-+	ext4_release_orphan_info(sb);
- failed_mount8:
- 	ext4_unregister_sysfs(sb);
- 	kobject_put(&sbi->s_kobj);
-@@ -5505,8 +5518,15 @@ static int ext4_mark_recovery_complete(struct super_block *sb,
- 	if (err < 0)
- 		goto out;
- 
--	if (ext4_has_feature_journal_needs_recovery(sb) && sb_rdonly(sb)) {
-+	if (sb_rdonly(sb) && (ext4_has_feature_journal_needs_recovery(sb) ||
-+	    ext4_has_feature_orphan_present(sb))) {
-+		if (!ext4_orphan_file_empty(sb)) {
-+			ext4_error(sb, "Orphan file not empty on read-only fs.");
-+			err = -EFSCORRUPTED;
-+			goto out;
-+		}
- 		ext4_clear_feature_journal_needs_recovery(sb);
-+		ext4_clear_feature_orphan_present(sb);
- 		ext4_commit_super(sb);
- 	}
- out:
-@@ -5649,6 +5669,8 @@ static int ext4_freeze(struct super_block *sb)
- 
- 		/* Journal blocked and flushed, clear needs_recovery flag. */
- 		ext4_clear_feature_journal_needs_recovery(sb);
-+		if (ext4_orphan_file_empty(sb))
-+			ext4_clear_feature_orphan_present(sb);
- 	}
- 
- 	error = ext4_commit_super(sb);
-@@ -5671,6 +5693,8 @@ static int ext4_unfreeze(struct super_block *sb)
- 	if (EXT4_SB(sb)->s_journal) {
- 		/* Reset the needs_recovery flag before the fs is unlocked. */
- 		ext4_set_feature_journal_needs_recovery(sb);
-+		if (ext4_has_feature_orphan_file(sb))
-+			ext4_set_feature_orphan_present(sb);
- 	}
- 
- 	ext4_commit_super(sb);
-@@ -5876,7 +5900,7 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
- 			 * around from a previously readonly bdev mount,
- 			 * require a full umount/remount for now.
- 			 */
--			if (es->s_last_orphan) {
-+			if (es->s_last_orphan || !ext4_orphan_file_empty(sb)) {
- 				ext4_msg(sb, KERN_WARNING, "Couldn't "
- 				       "remount RDWR because of unprocessed "
- 				       "orphan inode list.  Please "
+@@ -691,7 +700,9 @@ the following:
+      - Indicates that large inodes exist on this filesystem
+        (RO\_COMPAT\_EXTRA\_ISIZE).
+    * - 0x80
+-     - This filesystem has a snapshot (RO\_COMPAT\_HAS\_SNAPSHOT).
++     - Indicates orphan file may have valid orphan entries and thus we need
++       to clean them up when mounting the filesystem
++       (RO\_COMPAT\_ORPHAN\_PRESENT).
+    * - 0x100
+      - `Quota <Quota>`__ (RO\_COMPAT\_QUOTA).
+    * - 0x200
 -- 
 2.26.2
 
