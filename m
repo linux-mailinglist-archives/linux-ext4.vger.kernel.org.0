@@ -2,205 +2,106 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FDCD3C6F2D
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Jul 2021 13:11:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C83063C6FDC
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Jul 2021 13:39:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235709AbhGMLOb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 13 Jul 2021 07:14:31 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:35626 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235390AbhGMLOa (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 13 Jul 2021 07:14:30 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 661E4200A3;
-        Tue, 13 Jul 2021 11:11:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1626174699; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fyfxSkHG6hwIFaTZZwzH64axAQ9uhCZWiMEIgFfPd5w=;
-        b=SvCFB6+vDIf8Ufi+U+qCl/kMdXbumeGBaEqoXR+GZBRxhR4IDKqpE2c0zcGl+N6cCDC8KF
-        gaoB2/+tuPOuB8ZdBQipnidL3m7Mjc9y7S9C1no9auhbaKrKdlQwuGXrskdgVasTkAXr73
-        p1Bfi16wJBCyfh0qV9V2mtnDcHciz5o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1626174699;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fyfxSkHG6hwIFaTZZwzH64axAQ9uhCZWiMEIgFfPd5w=;
-        b=/S4tY5hsn1E8XhBz1UlPg/4OtMs32QpnHfCCGCeNU93DxE2frczkRaUERn0Wm77094ed5w
-        9YjLrvb5LCzD1LBQ==
-Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id 39890A3B85;
-        Tue, 13 Jul 2021 11:11:39 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 159D21E0BBC; Tue, 13 Jul 2021 13:11:39 +0200 (CEST)
-Date:   Tue, 13 Jul 2021 13:11:39 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
-        Ted Tso <tytso@mit.edu>, Dave Chinner <david@fromorbit.com>,
-        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
-        linux-xfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 03/14] mm: Protect operations adding pages to page cache
- with invalidate_lock
-Message-ID: <20210713111139.GG12142@quack2.suse.cz>
-References: <20210712163901.29514-1-jack@suse.cz>
- <20210712165609.13215-3-jack@suse.cz>
- <20210713012514.GB22402@magnolia>
+        id S236002AbhGMLmM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 13 Jul 2021 07:42:12 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:45917 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S235967AbhGMLmL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 13 Jul 2021 07:42:11 -0400
+Received: from callcc.thunk.org (50-204-178-178-static.hfc.comcastbusiness.net [50.204.178.178])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 16DBdGoY009254
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Jul 2021 07:39:17 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 98D2A4202F5; Tue, 13 Jul 2021 07:39:16 -0400 (EDT)
+Date:   Tue, 13 Jul 2021 07:39:16 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Shyam Prasad N <nspmangalore@gmail.com>
+Cc:     David Howells <dhowells@redhat.com>,
+        Steve French <smfrench@gmail.com>, linux-ext4@vger.kernel.org
+Subject: Re: Regarding ext4 extent allocation strategy
+Message-ID: <YO17ZNOcq+9PajfQ@mit.edu>
+References: <CANT5p=o3i4kWQuMFF5zKQp04JnWEQnYuo+cvyH8asGMvTVBBkw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210713012514.GB22402@magnolia>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CANT5p=o3i4kWQuMFF5zKQp04JnWEQnYuo+cvyH8asGMvTVBBkw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 12-07-21 18:25:14, Darrick J. Wong wrote:
-> On Mon, Jul 12, 2021 at 06:55:54PM +0200, Jan Kara wrote:
-> > @@ -2967,6 +2992,7 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
-> >  	pgoff_t max_off;
-> >  	struct page *page;
-> >  	vm_fault_t ret = 0;
-> > +	bool mapping_locked = false;
-> >  
-> >  	max_off = DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE);
-> >  	if (unlikely(offset >= max_off))
-> > @@ -2988,15 +3014,30 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
-> >  		count_memcg_event_mm(vmf->vma->vm_mm, PGMAJFAULT);
-> >  		ret = VM_FAULT_MAJOR;
-> >  		fpin = do_sync_mmap_readahead(vmf);
-> > +	}
-> > +
-> > +	if (!page) {
+On Tue, Jul 13, 2021 at 12:22:14PM +0530, Shyam Prasad N wrote:
 > 
-> Is it still necessary to re-evaluate !page here?
-
-No, you are right it is not necessary. I'll remove it.
-
-> >  retry_find:
-> > +		/*
-> > +		 * See comment in filemap_create_page() why we need
-> > +		 * invalidate_lock
-> > +		 */
-> > +		if (!mapping_locked) {
-> > +			filemap_invalidate_lock_shared(mapping);
-> > +			mapping_locked = true;
-> > +		}
-> >  		page = pagecache_get_page(mapping, offset,
-> >  					  FGP_CREAT|FGP_FOR_MMAP,
-> >  					  vmf->gfp_mask);
-> >  		if (!page) {
-> >  			if (fpin)
-> >  				goto out_retry;
-> > +			filemap_invalidate_unlock_shared(mapping);
-> >  			return VM_FAULT_OOM;
-> >  		}
-> > +	} else if (unlikely(!PageUptodate(page))) {
-> > +		filemap_invalidate_lock_shared(mapping);
-> > +		mapping_locked = true;
-> >  	}
-> >  
-> >  	if (!lock_page_maybe_drop_mmap(vmf, page, &fpin))
-> > @@ -3014,8 +3055,20 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
-> >  	 * We have a locked page in the page cache, now we need to check
-> >  	 * that it's up-to-date. If not, it is going to be due to an error.
-> >  	 */
-> > -	if (unlikely(!PageUptodate(page)))
-> > +	if (unlikely(!PageUptodate(page))) {
-> > +		/*
-> > +		 * The page was in cache and uptodate and now it is not.
-> > +		 * Strange but possible since we didn't hold the page lock all
-> > +		 * the time. Let's drop everything get the invalidate lock and
-> > +		 * try again.
-> > +		 */
-> > +		if (!mapping_locked) {
-> > +			unlock_page(page);
-> > +			put_page(page);
-> > +			goto retry_find;
-> > +		}
-> >  		goto page_not_uptodate;
-> > +	}
-> >  
-> >  	/*
-> >  	 * We've made it this far and we had to drop our mmap_lock, now is the
-> > @@ -3026,6 +3079,8 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
-> >  		unlock_page(page);
-> >  		goto out_retry;
-> >  	}
-> > +	if (mapping_locked)
-> > +		filemap_invalidate_unlock_shared(mapping);
-> >  
-> >  	/*
-> >  	 * Found the page and have a reference on it.
-> > @@ -3056,6 +3111,7 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
-> >  
-> >  	if (!error || error == AOP_TRUNCATED_PAGE)
-> >  		goto retry_find;
-> > +	filemap_invalidate_unlock_shared(mapping);
+> Our team in Microsoft, which works on the Linux SMB3 client kernel
+> filesystem has recently been exploring the use of fscache on top of
+> ext4 for caching the network filesystem data for some customer
+> workloads.
 > 
-> Hm.  I /think/ it's the case that mapping_locked==true always holds here
-> because the new "The page was in cache and uptodate and now it is not."
-> block above will take the invalidate_lock and retry pagecache_get_page,
-> right?
-
-Yes. page_not_uptodate block can only be entered with mapping_locked ==
-true - the only place that can enter this block is:
-
-        if (unlikely(!PageUptodate(page))) {
-                /*
-                 * The page was in cache and uptodate and now it is not.
-                 * Strange but possible since we didn't hold the page lock all
-                 * the time. Let's drop everything get the invalidate lock and
-                 * try again.
-                 */
-                if (!mapping_locked) {
-                        unlock_page(page);
-                        put_page(page);
-                        goto retry_find;
-                }
-                goto page_not_uptodate;
-        }
-
-> >  
-> >  	return VM_FAULT_SIGBUS;
-> >  
-> > @@ -3067,6 +3123,8 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
-> >  	 */
-> >  	if (page)
-> >  		put_page(page);
-> > +	if (mapping_locked)
-> > +		filemap_invalidate_unlock_shared(mapping);
+> However, the maintainer of fscache (David Howells) recently warned us
+> that a few other extent based filesystem developers pointed out a
+> theoretical bug in the current implementation of fscache/cachefiles.
+> It currently does not maintain a separate metadata for the cached data
+> it holds, but instead uses the sparseness of the underlying filesystem
+> to track the ranges of the data that is being cached.
+> The bug that has been pointed out with this is that the underlying
+> filesystems could bridge holes between data ranges with zeroes or
+> punch hole in data ranges that contain zeroes. (@David please add if I
+> missed something).
 > 
-> Hm.  I think this looks ok, even though this patch now contains the
-> subtlety that we've both hoisted the xfs mmaplock to page cache /and/
-> reduced the scope of the invalidate_lock.
-> 
-> As for fancy things like remap_range, I think they're still safe with
-> this latest iteration because those functions grab the invalidate_lock
-> in exclusive mode and invalidate the mappings before proceeding, which
-> means that other programs will never find the lockless path (i.e. page
-> locked, uptodate, and attached to the mapping) and will instead block on
-> the invalidate lock until the remap operation completes.   Is that
-> right?
+> David has already begun working on the fix to this by maintaining the
+> metadata of the cached ranges in fscache itself.
+> However, since it could take some time for this fix to be approved and
+> then backported by various distros, I'd like to understand if there is
+> a potential problem in using fscache on top of ext4 without the fix.
+> If ext4 doesn't do any such optimizations on the data ranges, or has a
+> way to disable such optimizations, I think we'll be okay to use the
+> older versions of fscache even without the fix mentioned above.
 
-Correct. For operations such as hole punch or destination of remap_range,
-we lock invalidate_lock exclusively and invalidate pagecache in the
-involved range. No new pages can be created in that range until you drop
-invalidate_lock (places creating pages without holding i_rwsem are read,
-readahead, fault and all those take invalidate_lock when they should create
-the page).
+Yes, the tuning knob you are looking for is:
 
-There's also the case someone pointed out that *source* of remap_range
-needs to be protected (but only from modifications through mmap). This is
-achieved by having invalidate_lock taken in .page_mkwrite handlers and
-thus not impacted by these changes to filemap_fault().
+What:		/sys/fs/ext4/<disk>/extent_max_zeroout_kb
+Date:		August 2012
+Contact:	"Theodore Ts'o" <tytso@mit.edu>
+Description:
+		The maximum number of kilobytes which will be zeroed
+		out in preference to creating a new uninitialized
+		extent when manipulating an inode's extent tree.  Note
+		that using a larger value will increase the
+		variability of time necessary to complete a random
+		write operation (since a 4k random write might turn
+		into a much larger write due to the zeroout
+		operation).
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+(From Documentation/ABI/testing/sysfs-fs-ext4)
+
+The basic idea here is that with a random workload, with HDD's, the
+cost of writing a 16k random write is not much more than the time to
+write a 4k random write; that is, the cost of HDD seeks dominates.
+There is also a cost in having a many additional entries in the extent
+tree.  So if we have a fallocated region, e.g:
+
+    +-------------+---+---+---+----------+---+---+---------+
+... + Uninit (U)  | W | U | W |   Uninit | W | U | Written | ...
+    +-------------+---+---+---+----------+---+---+---------+
+
+It's more efficient to have the extent tree look like this
+
+    +-------------+-----------+----------+---+---+---------+
+... + Uninit (U)  |  Written  |   Uninit | W | U | Written | ...
+    +-------------+-----------+----------+---+---+---------+
+
+And just simply write zeros to the first "U" in the above figure.
+
+The default value of extent_max_zeroout_kb is 32k.  This optimization
+can be disabled by setting extent_max_zeroout_kb to 0.  The downside
+of this is a potential degredation of a random write workload (using
+for example the fio benchmark program) on that file system.
+
+Cheers,
+
+						- Ted
