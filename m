@@ -2,102 +2,86 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB4A53C6A6C
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Jul 2021 08:25:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54ACF3C6ACA
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Jul 2021 08:52:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233741AbhGMG2h (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 13 Jul 2021 02:28:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46252 "EHLO
+        id S233957AbhGMGzQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 13 Jul 2021 02:55:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231261AbhGMG2g (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 13 Jul 2021 02:28:36 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFFFEC0613DD;
-        Mon, 12 Jul 2021 23:25:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=5NJ/GobYssN7on3zOlsbOWTmiBv2EzLNZy86W7YdGXg=; b=fbsmLbOQszWOm3dv8Pr5kj2E7C
-        2oH8QijCtEXZ3EozE81NW39ttgW8OJljVf+LGGn1grSH4J/TUVDG0j2e/NTp+MRk4wJ9nnd3+guTz
-        +uiAyPZWdlJAz/ObZcfnq4duRgc9SCYl6elA/kg4FjqqjxRWiSyctVBKCNGsl9KYTYO892oJYWZI5
-        TrvEbdC7HmPZPoevV1PUKcLJ6czjAami4Jbi7sr+F0PnKOI41Qf+ldIkfRpOlaioGlDjqxR3FtMJ3
-        yq3YPlebvzDtb55VjfVt14OhvN5M9EDIMhIcPqpI3SwMoNGZzFinwEFn0SbUkZR/uo311WDKHFLwQ
-        3JuzSKBg==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m3Bqr-000oBA-3D; Tue, 13 Jul 2021 06:25:10 +0000
-Date:   Tue, 13 Jul 2021 07:25:05 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, Ted Tso <tytso@mit.edu>,
-        Dave Chinner <david@fromorbit.com>,
-        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
-        linux-xfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 03/14] mm: Protect operations adding pages to page cache
- with invalidate_lock
-Message-ID: <YO0xwY+q7d8rQE3f@infradead.org>
-References: <20210712163901.29514-1-jack@suse.cz>
- <20210712165609.13215-3-jack@suse.cz>
+        with ESMTP id S232908AbhGMGzP (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 13 Jul 2021 02:55:15 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9E3BC0613DD
+        for <linux-ext4@vger.kernel.org>; Mon, 12 Jul 2021 23:52:25 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id g19so33133804ybe.11
+        for <linux-ext4@vger.kernel.org>; Mon, 12 Jul 2021 23:52:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=p9jmLvhXyVcm9YMFLcoGeCzARhjBsMZGpuKosF1x3QY=;
+        b=nrHkbJZjsF0KYd5HGKg4+ahnLQH+tn1E9EexFt9FpUjPvY7BfU/h4u5axqFxEPB8Nu
+         h2F+LpK7uFCgQ/PXLF8yvyFwKilHAkFzJimvhqp5rSJx8eg5UrAtYq9HgCUh4PvWot0T
+         InbCEaINHQVAHm2ZkXdI8h4I96Wn95Sle0LL5JL+b5QjCro6DMQRilzWt/Iyuc8sp+Ri
+         urRx97Usl2tEn8ORVN91FUiE+MDS+veBLYVxBkEGROaIc70p2YiWRB2XVqUznt54+g2w
+         R/QRtgxROzlK+IW8oayUv4UCEzWXLZm8zWF0KuXeLVCdYv+KF67QHYRYKdlF6EdKDkmR
+         aKgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=p9jmLvhXyVcm9YMFLcoGeCzARhjBsMZGpuKosF1x3QY=;
+        b=pDXx/CvqklWdDfavj2bj5b5itAH346Xzxl/fh+tbO52l+v4l04hTzm0+KlVRyDOeMu
+         7lR6nBtLJJI2HNrexygSP/qSn7GCxDZzynugkbXb8wkrtc9Amli8bApfWJafX6tzozth
+         9edhS9+kqG3Geh0g0DO3WJwPcNlSBLjEqPyp9IBtU28wAckun3gb4bn8SMVlb+HmmNij
+         Fn4WIYKQnL0xPRRppIXUF9euF0TBHidUSq2+sbvBh+9ZZwEOlPtmnfTPVO1ig7fBWMVR
+         /nYj6nH7vqvQtYegzLCFNbA0U1YWTPKA2NV/d1+5iAYwawunF6VGvfx76Awai7hhVUzX
+         ShSA==
+X-Gm-Message-State: AOAM531kGzwDPKMOIc+n/TSSKsY5vPmZkGTzQegPTk9mssvRvDWDhlnj
+        AadPRscZ5IGoBgoKNMSSENnUwNTPTnWZ+fq8bD0=
+X-Google-Smtp-Source: ABdhPJy8RBTTzKbwqwrUkwZnWZxggqYo/CrpwXyUQJQ3VZJlGVE1ouICA9eNzoKa9wgYsAix1oq3h3rZIUM92/T91/I=
+X-Received: by 2002:a25:ba87:: with SMTP id s7mr3636097ybg.97.1626159144926;
+ Mon, 12 Jul 2021 23:52:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210712165609.13215-3-jack@suse.cz>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+From:   Shyam Prasad N <nspmangalore@gmail.com>
+Date:   Tue, 13 Jul 2021 12:22:14 +0530
+Message-ID: <CANT5p=o3i4kWQuMFF5zKQp04JnWEQnYuo+cvyH8asGMvTVBBkw@mail.gmail.com>
+Subject: Regarding ext4 extent allocation strategy
+To:     tytso@mit.edu, David Howells <dhowells@redhat.com>,
+        Steve French <smfrench@gmail.com>, linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Still looks good.  That being said the additional conditional locking in
-filemap_fault makes it fall over the readbility cliff for me.  Something
-like this on top of your series would help:
+Hi,
 
-diff --git a/mm/filemap.c b/mm/filemap.c
-index fd3f94d36c49..0fad08331cf4 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -3040,21 +3040,23 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
- 	 * Do we have something in the page cache already?
- 	 */
- 	page = find_get_page(mapping, offset);
--	if (likely(page) && !(vmf->flags & FAULT_FLAG_TRIED)) {
-+	if (likely(page)) {
- 		/*
--		 * We found the page, so try async readahead before
--		 * waiting for the lock.
-+		 * We found the page, so try async readahead before waiting for
-+		 * the lock.
- 		 */
--		fpin = do_async_mmap_readahead(vmf, page);
--	} else if (!page) {
-+		if (!(vmf->flags & FAULT_FLAG_TRIED))
-+			fpin = do_async_mmap_readahead(vmf, page);
-+		if (unlikely(!PageUptodate(page))) {
-+			filemap_invalidate_lock_shared(mapping);
-+			mapping_locked = true;
-+		}
-+	} else {
- 		/* No page in the page cache at all */
- 		count_vm_event(PGMAJFAULT);
- 		count_memcg_event_mm(vmf->vma->vm_mm, PGMAJFAULT);
- 		ret = VM_FAULT_MAJOR;
- 		fpin = do_sync_mmap_readahead(vmf);
--	}
--
--	if (!page) {
- retry_find:
- 		/*
- 		 * See comment in filemap_create_page() why we need
-@@ -3073,9 +3075,6 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
- 			filemap_invalidate_unlock_shared(mapping);
- 			return VM_FAULT_OOM;
- 		}
--	} else if (unlikely(!PageUptodate(page))) {
--		filemap_invalidate_lock_shared(mapping);
--		mapping_locked = true;
- 	}
- 
- 	if (!lock_page_maybe_drop_mmap(vmf, page, &fpin))
+Our team in Microsoft, which works on the Linux SMB3 client kernel
+filesystem has recently been exploring the use of fscache on top of
+ext4 for caching the network filesystem data for some customer
+workloads.
+
+However, the maintainer of fscache (David Howells) recently warned us
+that a few other extent based filesystem developers pointed out a
+theoretical bug in the current implementation of fscache/cachefiles.
+It currently does not maintain a separate metadata for the cached data
+it holds, but instead uses the sparseness of the underlying filesystem
+to track the ranges of the data that is being cached.
+The bug that has been pointed out with this is that the underlying
+filesystems could bridge holes between data ranges with zeroes or
+punch hole in data ranges that contain zeroes. (@David please add if I
+missed something).
+
+David has already begun working on the fix to this by maintaining the
+metadata of the cached ranges in fscache itself.
+However, since it could take some time for this fix to be approved and
+then backported by various distros, I'd like to understand if there is
+a potential problem in using fscache on top of ext4 without the fix.
+If ext4 doesn't do any such optimizations on the data ranges, or has a
+way to disable such optimizations, I think we'll be okay to use the
+older versions of fscache even without the fix mentioned above.
+
+Opinions?
+
+-- 
+Regards,
+Shyam
