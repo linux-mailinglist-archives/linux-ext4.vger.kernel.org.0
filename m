@@ -2,106 +2,120 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C83063C6FDC
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Jul 2021 13:39:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26B1E3C707B
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Jul 2021 14:36:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236002AbhGMLmM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 13 Jul 2021 07:42:12 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:45917 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S235967AbhGMLmL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 13 Jul 2021 07:42:11 -0400
-Received: from callcc.thunk.org (50-204-178-178-static.hfc.comcastbusiness.net [50.204.178.178])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 16DBdGoY009254
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 13 Jul 2021 07:39:17 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 98D2A4202F5; Tue, 13 Jul 2021 07:39:16 -0400 (EDT)
-Date:   Tue, 13 Jul 2021 07:39:16 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Shyam Prasad N <nspmangalore@gmail.com>
-Cc:     David Howells <dhowells@redhat.com>,
-        Steve French <smfrench@gmail.com>, linux-ext4@vger.kernel.org
-Subject: Re: Regarding ext4 extent allocation strategy
-Message-ID: <YO17ZNOcq+9PajfQ@mit.edu>
-References: <CANT5p=o3i4kWQuMFF5zKQp04JnWEQnYuo+cvyH8asGMvTVBBkw@mail.gmail.com>
+        id S236422AbhGMMik (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 13 Jul 2021 08:38:40 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:33706 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236137AbhGMMij (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 13 Jul 2021 08:38:39 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 83C3D22075;
+        Tue, 13 Jul 2021 12:35:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1626179748; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nlezZmaJGKsn3wThAAqUns1S5039quPyWkLk1BLMszA=;
+        b=L0Ik4SGLKPMprCMpIDZu5I9SJkk6iVnXbqXSILIKOJ1tUsAz+3nm9Fiv2/sQhIhFL9aOmi
+        Xdd54ETzCRoMIv/6ptRzy+K8vp6P0oCs0DxP7fFszUwp7i+yxHOadd6Ea9UosE6mdaj5+9
+        3H6ZtOh5KYeEBpKjmeYcIikKLdDRKL4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1626179748;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nlezZmaJGKsn3wThAAqUns1S5039quPyWkLk1BLMszA=;
+        b=k26gwy3dwwIlQyBP4N54gjqPfnfyayfHxU0JZPsEVY6lWzaQ34iMd6jTvkatBxRCs6Y6HK
+        8UfNH2RVTEz7qqDg==
+Received: from quack2.suse.cz (unknown [10.100.224.230])
+        by relay2.suse.de (Postfix) with ESMTP id 6FB26A3BBB;
+        Tue, 13 Jul 2021 12:35:48 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 4DCC31E0BBC; Tue, 13 Jul 2021 14:35:48 +0200 (CEST)
+Date:   Tue, 13 Jul 2021 14:35:48 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, "Darrick J. Wong" <djwong@kernel.org>,
+        Ted Tso <tytso@mit.edu>, Dave Chinner <david@fromorbit.com>,
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+        linux-xfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 03/14] mm: Protect operations adding pages to page cache
+ with invalidate_lock
+Message-ID: <20210713123548.GA24271@quack2.suse.cz>
+References: <20210712163901.29514-1-jack@suse.cz>
+ <20210712165609.13215-3-jack@suse.cz>
+ <YO0xwY+q7d8rQE3f@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANT5p=o3i4kWQuMFF5zKQp04JnWEQnYuo+cvyH8asGMvTVBBkw@mail.gmail.com>
+In-Reply-To: <YO0xwY+q7d8rQE3f@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 12:22:14PM +0530, Shyam Prasad N wrote:
+On Tue 13-07-21 07:25:05, Christoph Hellwig wrote:
+> Still looks good.  That being said the additional conditional locking in
+> filemap_fault makes it fall over the readbility cliff for me.  Something
+> like this on top of your series would help:
+
+Yeah, that's better. Applied, thanks. 
+
+								Honza
+
 > 
-> Our team in Microsoft, which works on the Linux SMB3 client kernel
-> filesystem has recently been exploring the use of fscache on top of
-> ext4 for caching the network filesystem data for some customer
-> workloads.
-> 
-> However, the maintainer of fscache (David Howells) recently warned us
-> that a few other extent based filesystem developers pointed out a
-> theoretical bug in the current implementation of fscache/cachefiles.
-> It currently does not maintain a separate metadata for the cached data
-> it holds, but instead uses the sparseness of the underlying filesystem
-> to track the ranges of the data that is being cached.
-> The bug that has been pointed out with this is that the underlying
-> filesystems could bridge holes between data ranges with zeroes or
-> punch hole in data ranges that contain zeroes. (@David please add if I
-> missed something).
-> 
-> David has already begun working on the fix to this by maintaining the
-> metadata of the cached ranges in fscache itself.
-> However, since it could take some time for this fix to be approved and
-> then backported by various distros, I'd like to understand if there is
-> a potential problem in using fscache on top of ext4 without the fix.
-> If ext4 doesn't do any such optimizations on the data ranges, or has a
-> way to disable such optimizations, I think we'll be okay to use the
-> older versions of fscache even without the fix mentioned above.
-
-Yes, the tuning knob you are looking for is:
-
-What:		/sys/fs/ext4/<disk>/extent_max_zeroout_kb
-Date:		August 2012
-Contact:	"Theodore Ts'o" <tytso@mit.edu>
-Description:
-		The maximum number of kilobytes which will be zeroed
-		out in preference to creating a new uninitialized
-		extent when manipulating an inode's extent tree.  Note
-		that using a larger value will increase the
-		variability of time necessary to complete a random
-		write operation (since a 4k random write might turn
-		into a much larger write due to the zeroout
-		operation).
-
-(From Documentation/ABI/testing/sysfs-fs-ext4)
-
-The basic idea here is that with a random workload, with HDD's, the
-cost of writing a 16k random write is not much more than the time to
-write a 4k random write; that is, the cost of HDD seeks dominates.
-There is also a cost in having a many additional entries in the extent
-tree.  So if we have a fallocated region, e.g:
-
-    +-------------+---+---+---+----------+---+---+---------+
-... + Uninit (U)  | W | U | W |   Uninit | W | U | Written | ...
-    +-------------+---+---+---+----------+---+---+---------+
-
-It's more efficient to have the extent tree look like this
-
-    +-------------+-----------+----------+---+---+---------+
-... + Uninit (U)  |  Written  |   Uninit | W | U | Written | ...
-    +-------------+-----------+----------+---+---+---------+
-
-And just simply write zeros to the first "U" in the above figure.
-
-The default value of extent_max_zeroout_kb is 32k.  This optimization
-can be disabled by setting extent_max_zeroout_kb to 0.  The downside
-of this is a potential degredation of a random write workload (using
-for example the fio benchmark program) on that file system.
-
-Cheers,
-
-						- Ted
+> diff --git a/mm/filemap.c b/mm/filemap.c
+> index fd3f94d36c49..0fad08331cf4 100644
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+> @@ -3040,21 +3040,23 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
+>  	 * Do we have something in the page cache already?
+>  	 */
+>  	page = find_get_page(mapping, offset);
+> -	if (likely(page) && !(vmf->flags & FAULT_FLAG_TRIED)) {
+> +	if (likely(page)) {
+>  		/*
+> -		 * We found the page, so try async readahead before
+> -		 * waiting for the lock.
+> +		 * We found the page, so try async readahead before waiting for
+> +		 * the lock.
+>  		 */
+> -		fpin = do_async_mmap_readahead(vmf, page);
+> -	} else if (!page) {
+> +		if (!(vmf->flags & FAULT_FLAG_TRIED))
+> +			fpin = do_async_mmap_readahead(vmf, page);
+> +		if (unlikely(!PageUptodate(page))) {
+> +			filemap_invalidate_lock_shared(mapping);
+> +			mapping_locked = true;
+> +		}
+> +	} else {
+>  		/* No page in the page cache at all */
+>  		count_vm_event(PGMAJFAULT);
+>  		count_memcg_event_mm(vmf->vma->vm_mm, PGMAJFAULT);
+>  		ret = VM_FAULT_MAJOR;
+>  		fpin = do_sync_mmap_readahead(vmf);
+> -	}
+> -
+> -	if (!page) {
+>  retry_find:
+>  		/*
+>  		 * See comment in filemap_create_page() why we need
+> @@ -3073,9 +3075,6 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
+>  			filemap_invalidate_unlock_shared(mapping);
+>  			return VM_FAULT_OOM;
+>  		}
+> -	} else if (unlikely(!PageUptodate(page))) {
+> -		filemap_invalidate_lock_shared(mapping);
+> -		mapping_locked = true;
+>  	}
+>  
+>  	if (!lock_page_maybe_drop_mmap(vmf, page, &fpin))
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
