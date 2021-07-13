@@ -2,127 +2,157 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA9BF3C7486
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Jul 2021 18:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9032F3C759D
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Jul 2021 19:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229585AbhGMQdK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 13 Jul 2021 12:33:10 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:59242 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbhGMQdK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 13 Jul 2021 12:33:10 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 39D9D201FF;
-        Tue, 13 Jul 2021 16:30:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1626193819; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=p6CpxQyjv18y0aMeeHfjIcHfYe2zm0CP5+MKiPGR1ng=;
-        b=wX1VV577ZLYQD2efMQXEmbJ/BNa2ozrjiGJ4pPtsK04CaGkxS6Z9XVP9rgDvIGelw52h7n
-        foPSlrJunDg5ZlLu53DdDLMI0XYpWY4e/ZBQ/6VSIDRvL5jAsGrHW4JsQPtR0crrgC+8jk
-        md/uD4kjkB/RYnM7rkoKjeicL2T7AtI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1626193819;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=p6CpxQyjv18y0aMeeHfjIcHfYe2zm0CP5+MKiPGR1ng=;
-        b=vAEM9QWqJb882v9E2c4B5/l68KPApW+7biFz+T7ZHIQvEcLPConPabgR1CHu4/NXfv91y+
-        BA9AXJVaE6SHdcBA==
-Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id 209D2A3B84;
-        Tue, 13 Jul 2021 16:30:19 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id F02E71E0BBE; Tue, 13 Jul 2021 18:30:18 +0200 (CEST)
-Date:   Tue, 13 Jul 2021 18:30:18 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Javier Pello <javier.pello@urjc.es>
-Cc:     Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ira Weiny <ira.weiny@intel.com>
-Subject: Re: [PATCH 1/1] fs/ext2: Avoid page_address on pages returned by
- ext2_get_page
-Message-ID: <20210713163018.GF24271@quack2.suse.cz>
-References: <20210713165821.8a268e2c1db4fd5cf452acd2@urjc.es>
- <20210713165918.10da0318af5b9b73e599a517@urjc.es>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210713165918.10da0318af5b9b73e599a517@urjc.es>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S229978AbhGMRVj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 13 Jul 2021 13:21:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229478AbhGMRVi (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 13 Jul 2021 13:21:38 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF3EEC0613DD
+        for <linux-ext4@vger.kernel.org>; Tue, 13 Jul 2021 10:18:47 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id p4-20020a17090a9304b029016f3020d867so2549729pjo.3
+        for <linux-ext4@vger.kernel.org>; Tue, 13 Jul 2021 10:18:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=KmC9PqGKr2ILpbVQwV9g2D6L3OtYrbn8qOnUplZx+iI=;
+        b=njNA0I+6hz9Jfn4Njkxrc7DMg7EOtHvBkOByo6Hzsc/Z80XxlQnso8vAuNJ62cKoUf
+         Aci0lxEMSHBDebLw+3dhkbHEuai798pjsRMiU+c6WeqY2sM9l+gOrGzKw/KQPCILACFc
+         H8m6GVahUKIYz7LQZhITjX7WfbHTp1NGH8GVSwhvGi+6nv+aBEGKjiRqs16vMmpzEqRb
+         nldsSwyhXMVbIEy0F8Q2W89QSQLbQUI647eSp4qUiVWkGTJXWgS86BXQJulwjmFbGWdi
+         dwE/vqIe/2u/NrbYw1G/g8uRL97X+lbMxtIvfVKyPK8dl2WHVmn7zOVD0Mx6JjfMTmT+
+         wPNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=KmC9PqGKr2ILpbVQwV9g2D6L3OtYrbn8qOnUplZx+iI=;
+        b=JJ7W4g/UldxHlVo1O7qhMqYYDRwjdTaklWEhzsvq/STNSFWX5OIZ07EYAYKLRjE6T+
+         lYykdy2x7Mmukxs1gC/ueHHqlW2J2mZ/7yRUn/yLce2E6Dvk3KoDjM0o8Fa+4g7UxtLR
+         /wdv+TXeyogqrtbKEog9Hfl4EzRZT8BiSQAXf3A8zOOHCDxbqU76rfXpU3s+aS+x4KLF
+         HLxv3uJVNPM8hY6mx3CJaYBHgr/VmfczzgFKj3Se3v/+ppWzak5U07eaXqywEvygmeA/
+         t10khD95iVznb/HGdGeKvRw/mb3N9cmZLvA497mWq7UDvUkD9Cvl4wYdep1GLhLE8G1x
+         fcIQ==
+X-Gm-Message-State: AOAM533zG8GJtJEu44c/+QO8+PR2Y4gH5XoWkUWnltE7+ZoAaVWaPIRI
+        aGlNQH+yHl8clzCyzw4sLXQffg==
+X-Google-Smtp-Source: ABdhPJzd0wJV/9j7yMcch7NlugW+6N+rCME1YUBxhvoZ01nsstAJVXqNTfhO4oIK1aNIgcUVaw9FDA==
+X-Received: by 2002:a17:90a:688f:: with SMTP id a15mr5367425pjd.84.1626196727189;
+        Tue, 13 Jul 2021 10:18:47 -0700 (PDT)
+Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id t5sm23656606pgb.58.2021.07.13.10.18.45
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 13 Jul 2021 10:18:46 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <F9C8FA1E-89ED-4FC5-B343-465459EBD3A0@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_F61A0383-2348-46C0-B7AD-5E1448A97355";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH v4] fs: forbid invalid project ID
+Date:   Tue, 13 Jul 2021 11:19:11 -0600
+In-Reply-To: <20210710143959.58077-1-wangshilong1991@gmail.com>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        xfs <linux-xfs@vger.kernel.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Wang Shilong <wshilong@ddn.com>
+To:     Wang Shilong <wangshilong1991@gmail.com>
+References: <20210710143959.58077-1-wangshilong1991@gmail.com>
+X-Mailer: Apple Mail (2.3273)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 13-07-21 16:59:18, Javier Pello wrote:
-> From: Javier Pello <javier.pello@urjc.es>
+
+--Apple-Mail=_F61A0383-2348-46C0-B7AD-5E1448A97355
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset=us-ascii
+
+On Jul 10, 2021, at 8:39 AM, Wang Shilong <wangshilong1991@gmail.com> wrote:
 > 
-> Commit 782b76d7abdf02b12c46ed6f1e9bf715569027f7 ("fs/ext2: Replace
-> kmap() with kmap_local_page()") replaced the kmap/kunmap calls in
-> ext2_get_page/ext2_put_page with kmap_local_page/kunmap_local for
-> efficiency reasons. As a necessary side change, the commit also
-> made ext2_get_page (and ext2_find_entry and ext2_dotdot) return
-> the mapping address along with the page itself, as it is required
-> for kunmap_local, and converted uses of page_address on such pages
-> to use the newly returned address instead. However, uses of
-> page_address on such pages were missed in ext2_check_page and
-> ext2_delete_entry, which triggers oopses if kmap_local_page happens
-> to return an address from high memory. Fix this now by converting
-> the remaining uses of page_address to use the right address, as
-> returned by kmap_local_page.
+> From: Wang Shilong <wshilong@ddn.com>
+> 
+> fileattr_set_prepare() should check if project ID
+> is valid, otherwise dqget() will return NULL for
+> such project ID quota.
+> 
+> Signed-off-by: Wang Shilong <wshilong@ddn.com>
 
-Good catch. Thanks for the patch. Ira, can you please check the patch as
-well?
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 
-I have just a few nits below:
+> ---
+> v3->v3:
+> only check project Id if caller is allowed
+> to change and being changed.
+> 
+> v2->v3: move check before @fsx_projid is accessed
+> and use make_kprojid() helper.
+> 
+> v1->v2: try to fix in the VFS
+> fs/ioctl.c | 8 ++++++++
+> 1 file changed, 8 insertions(+)
+> 
+> diff --git a/fs/ioctl.c b/fs/ioctl.c
+> index 1e2204fa9963..d4fabb5421cd 100644
+> --- a/fs/ioctl.c
+> +++ b/fs/ioctl.c
+> @@ -817,6 +817,14 @@ static int fileattr_set_prepare(struct inode *inode,
+> 		if ((old_ma->fsx_xflags ^ fa->fsx_xflags) &
+> 				FS_XFLAG_PROJINHERIT)
+> 			return -EINVAL;
+> +	} else {
+> +		/*
+> +		 * Caller is allowed to change the project ID. If it is being
+> +		 * changed, make sure that the new value is valid.
+> +		 */
+> +		if (old_ma->fsx_projid != fa->fsx_projid &&
+> +		    !projid_valid(make_kprojid(&init_user_ns, fa->fsx_projid)))
+> +			return -EINVAL;
+> 	}
+> 
+> 	/* Check extent size hints. */
+> --
+> 2.27.0
+> 
 
-> Signed-off-by: Javier Pello <javier.pello@urjc.es>
-> Fixes: 782b76d7abdf fs/ext2: Replace kmap() with kmap_local_page()
 
-Please wrap subject in Fixes tag into ("...").
+Cheers, Andreas
 
-> @@ -584,16 +584,16 @@ int ext2_add_link (struct dentry *dentry, struct inode *inode)
->   * ext2_delete_entry deletes a directory entry by merging it with the
->   * previous entry. Page is up-to-date.
->   */
-> -int ext2_delete_entry (struct ext2_dir_entry_2 * dir, struct page * page )
-> +int ext2_delete_entry (struct ext2_dir_entry_2 *dir, struct page *page,
-> +			void *kaddr)
 
-Why not have 'kaddr' as char *. We type it to char * basically everywhere
-anyway.
 
->  {
->  	struct inode *inode = page->mapping->host;
-> -	char *kaddr = page_address(page);
-> -	unsigned from = ((char*)dir - kaddr) & ~(ext2_chunk_size(inode)-1);
-> -	unsigned to = ((char *)dir - kaddr) +
-> -				ext2_rec_len_from_disk(dir->rec_len);
-> +	unsigned int delta = (char *)dir - (char *)kaddr;
 
-Maybe I'd call this 'offset' rather than 'delta'. Also if kaddr will stay
-char *, you maybe just don't need to touch this...
 
-> +	unsigned int from = delta & ~(ext2_chunk_size(inode)-1);
-> +	unsigned int to = delta + ext2_rec_len_from_disk(dir->rec_len);
->  	loff_t pos;
->  	ext2_dirent * pde = NULL;
-> -	ext2_dirent * de = (ext2_dirent *) (kaddr + from);
-> +	ext2_dirent *de = (ext2_dirent *) ((char *)kaddr + from);
->  	int err;
->  
->  	while ((char*)de < (char*)dir) {
-> @@ -607,7 +607,7 @@ int ext2_delete_entry (struct ext2_dir_entry_2 * dir, struct page * page )
->  		de = ext2_next_entry(de);
->  	}
->  	if (pde)
-> -		from = (char*)pde - (char*)page_address(page);
-> +		from = (char *)pde - (char *)kaddr;
->  	pos = page_offset(page) + from;
->  	lock_page(page);
->  	err = ext2_prepare_chunk(page, pos, to - from);
 
-									Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+--Apple-Mail=_F61A0383-2348-46C0-B7AD-5E1448A97355
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmDtyxAACgkQcqXauRfM
+H+CTzg/+JZyNRieQ1mPAKlUt+HGoz9ZeEvCD+OuorOAxhYFmVoyOVKKpeXzkBDbr
+cTt3eplnVEgwp5qLxX9CHoetTTEiZMv3r6HOG9qv2yYImkYP8vg0FxfvdGVI6uzL
+sYin7lxfjCySdra6CQQ1NWKRVMzDUfQShxf6vAWnK1ltWs9tfBTxri0cuVMawC2T
+y0dzyuGqmu+ALrqgl2bKw+vFR/igLBNKzUrpCF5KwV+VdFGrqgoL7VKbJwToZ8T5
+AxPNUblB98CitSKOoIUL/cygq5IOo6IAAoUtJku18bmhzSwUxb19A/jPpsk35xy5
+XC3dpEadhw0XA8+JefthWWucW7nGcOwUevFB2zHafSyFIdR+JpssFa+1sMHwek8X
+7CYCZiEbj4bv/qmCIKd2W61veKacnD1i2ZLzyTrHbyA0CjmlYolstl3SQS3jLoKC
+RQdkOW5uRU1WpEbT/OMnXnhMKg4oyZFReBMAsL8sSBOYitOHAkTTgxlXj3tLqyKl
+kc6Lmy1cY6y9jrRfiFDcn+648exNDrP/WhzhEQt8RYDns3Sww3hapcye/vC8ksrv
+7I4+pux8Mu1NYrJJ9XOZ5FLDaypGlTA3Uds+HzE5RGXe3wHF19Wb7KlAnoHMOeG2
+A+ArrSOlbMhbPVx+P+5TPyIf4FYbZ691eyzNGde7yPRqT/e1qSc=
+=aEGA
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_F61A0383-2348-46C0-B7AD-5E1448A97355--
