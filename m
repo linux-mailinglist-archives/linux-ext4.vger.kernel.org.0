@@ -2,41 +2,40 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD5B3C7D41
-	for <lists+linux-ext4@lfdr.de>; Wed, 14 Jul 2021 06:16:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 238B33C7DCB
+	for <lists+linux-ext4@lfdr.de>; Wed, 14 Jul 2021 07:04:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229940AbhGNETd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 14 Jul 2021 00:19:33 -0400
-Received: from mail108.syd.optusnet.com.au ([211.29.132.59]:47526 "EHLO
-        mail108.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229518AbhGNETc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 14 Jul 2021 00:19:32 -0400
-Received: from dread.disaster.area (pa49-181-34-10.pa.nsw.optusnet.com.au [49.181.34.10])
-        by mail108.syd.optusnet.com.au (Postfix) with ESMTPS id 8FB031B0FF6;
-        Wed, 14 Jul 2021 14:16:38 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1m3WK5-006JHL-OG; Wed, 14 Jul 2021 14:16:37 +1000
-Date:   Wed, 14 Jul 2021 14:16:37 +1000
-From:   Dave Chinner <david@fromorbit.com>
+        id S237875AbhGNFH2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 14 Jul 2021 01:07:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39830 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229451AbhGNFH2 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 14 Jul 2021 01:07:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 016B960FD8;
+        Wed, 14 Jul 2021 05:04:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626239077;
+        bh=Jc1sNtDQLolCUqZGQica4040YhI273wmJsvNWUazVMU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UWnd/YzekvcZgciRPDO2VDGc5jefYAa1w8p3Vjj4SV7C/lPk0nz0bWt6/xjz0r+LN
+         /vsMehsZND0VXQBUpUt+yqOmVnh0nJnnv+5jeOHtFoErWyN5uO26GhuWQGXnZYFNtx
+         rZxXFverfex9HCcHFguzDqBLrC7mc41WwHaKY51njN+ELp1nH80BNjSPGnY7xW1Wh8
+         WXJ/XCZ0IShzVBu2YPhe/z0Ytdvm3PViCRMF7DWftS9pUMgBxyyzamzDc1wq5GelGt
+         I8To5FlidFdvSjJH5ie48P6mPDmR8ggS4bVkzvnSXWnzw4y1TT5TD1a3/A5cRrodnt
+         8Gl0faYQvuXbQ==
+Date:   Tue, 13 Jul 2021 22:04:36 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
 To:     Wang Shilong <wangshilong1991@gmail.com>
 Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
         linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
         Wang Shilong <wshilong@ddn.com>
 Subject: Re: [PATCH v4] fs: forbid invalid project ID
-Message-ID: <20210714041637.GW664593@dread.disaster.area>
+Message-ID: <20210714050436.GH22402@magnolia>
 References: <20210710143959.58077-1-wangshilong1991@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20210710143959.58077-1-wangshilong1991@gmail.com>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0
-        a=hdaoRb6WoHYrV466vVKEyw==:117 a=hdaoRb6WoHYrV466vVKEyw==:17
-        a=kj9zAlcOel0A:10 a=e_q4qTt1xDgA:10 a=lB0dNpNiAAAA:8 a=20KFwNOVAAAA:8
-        a=7-415B0cAAAA:8 a=tKE4i-voY_5ZeL1wqn4A:9 a=CjuIK1q_8ugA:10
-        a=c-ZiYqmG3AbHTdtsH08C:22 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
@@ -77,14 +76,19 @@ On Sat, Jul 10, 2021 at 10:39:59PM +0800, Wang Shilong wrote:
 > +		if (old_ma->fsx_projid != fa->fsx_projid &&
 > +		    !projid_valid(make_kprojid(&init_user_ns, fa->fsx_projid)))
 > +			return -EINVAL;
+
+Hmm, for XFS this is sort of a userspace-breaking change in the sense
+that (technically) we've never rejected -1 before.  xfs_quota won't have
+anything to do with that, and (assuming I read the helper/macro
+gooeyness correctly) the vfs quota code won't either, so
+
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+
+--D
+
 >  	}
 >  
 >  	/* Check extent size hints. */
-
-Looks good. Thanks!
-
-Reviewed-by: Dave Chinner <dchinner@redhat.com>
-
--- 
-Dave Chinner
-david@fromorbit.com
+> -- 
+> 2.27.0
+> 
