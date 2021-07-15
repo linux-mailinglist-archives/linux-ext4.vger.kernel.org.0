@@ -2,108 +2,144 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02B793C9FC7
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 Jul 2021 15:40:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 147E93CA225
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 Jul 2021 18:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237962AbhGONnk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 15 Jul 2021 09:43:40 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:59720 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237209AbhGONn2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Jul 2021 09:43:28 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 8C5E920303;
-        Thu, 15 Jul 2021 13:40:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1626356433; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aHhQqe8KTjBCv9r4mi6xe2At5YRjoevCFxA6zjCOvEc=;
-        b=RuJfucQ18UcdWSlSoKBS0R02LQqU1/2ikN5fVOsUopTm5nVBDrhxzwoexmEPqEfDpiFR/f
-        h+qcLI/KXCIM5K9dG6BkjTUF9Jd4Z85o20OQyK28wK2Z/X0BOJ8jCdlBKz20WHBt1bCCVb
-        moM3VmI061wTH+Chtl1RODrrlZNEyR0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1626356433;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aHhQqe8KTjBCv9r4mi6xe2At5YRjoevCFxA6zjCOvEc=;
-        b=okfc6hssx0z1h1XKdCgUrgiqbuGqpuR+6jkXPziR0sbZUxXCsDdVf5LpJxwHEQW8SJ8h69
-        h5gs7zxRdmnrUeCg==
-Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id 75781A3B9B;
-        Thu, 15 Jul 2021 13:40:33 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 34DDA1E110A; Thu, 15 Jul 2021 15:40:33 +0200 (CEST)
-From:   Jan Kara <jack@suse.cz>
-To:     <linux-fsdevel@vger.kernel.org>
-Cc:     <linux-ext4@vger.kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, Ted Tso <tytso@mit.edu>,
-        Dave Chinner <david@fromorbit.com>,
-        Matthew Wilcox <willy@infradead.org>, <linux-mm@kvack.org>,
-        <linux-xfs@vger.kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Steve French <sfrench@samba.org>
-Subject: [PATCH 14/14] cifs: Fix race between hole punch and page fault
-Date:   Thu, 15 Jul 2021 15:40:24 +0200
-Message-Id: <20210715134032.24868-14-jack@suse.cz>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210715133202.5975-1-jack@suse.cz>
-References: <20210715133202.5975-1-jack@suse.cz>
+        id S230508AbhGOQVV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 15 Jul 2021 12:21:21 -0400
+Received: from mail-eopbgr70044.outbound.protection.outlook.com ([40.107.7.44]:26293
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230496AbhGOQVT (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 15 Jul 2021 12:21:19 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JC+ECfrQmT6+bdUW50jhrhUP2cIURIJTLywhi8iFMFrsB1hW3TU6wyY0UDYR0spPCkuKD7O3UHClJpOgz3qBf45x4UzBPcZbNDoc38qQwVPESlVXzoSGyxXXgQBC5BDJ5nl5UKRzZaVvQlBTDZ4Rd7hkV6Hy8hhzPse2mv/u76CPMJ3wl63LSuLRPAzrf/dMpejae/pTU3C8lpOgnYwIskDXk52HYIm2NOBBjXQgG4M9i2FzT1fT2r+0JiSA72s9X4PIw7p/QsxLXsWHuKxjD6C5LkxF8DEmxEZhbrUhv1Y9tV6O4yrIIHZ24+hvVUxX+ZCZpl+GTs0uN7WFAieN6Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lZ+cvs3E2P9oEGcGSEijOz7A5LNG6R/si89Nr5nr8H8=;
+ b=C5XYNfIt8UEkpgCxUIZ2BJ/oseKDC4YN0sfTexjO2NLZOS7cOQcU4LeKx8yGk5gummW7HipfXoKwSMHmLdRF8ILi0k5M5y5b/S52JUdNsq70+2rex8RP5qtCtTuUDUghaGrY/IBlW9uIx52W3JFg7aLzKAmLxI1SiXOk47BCyYXKuPdZH62hzdVOyWGDQ6cSLLjtThkiaPNQzN+dqigguGNdA+NXihOMBCit0/hvilIH082QMgYZozK/oG+yIuv1spTXbD2E7IsrClOvHztoa2V3Dhm31hKOzQkELK3ByxHD6YCRrgDRfFYDU7LdXBvmPbcdrjIFIpS7/f6LS6qfpA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=urjc.es; dmarc=pass action=none header.from=urjc.es; dkim=pass
+ header.d=urjc.es; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=urjc.onmicrosoft.com;
+ s=selector2-urjc-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lZ+cvs3E2P9oEGcGSEijOz7A5LNG6R/si89Nr5nr8H8=;
+ b=o25NEPPFSQ2tdrNuhZZ3VmD42Wn9ABPNQhieID3f2xoCHqsYWZCV2XNmcVs8Gl5y/9B0EsZLOET0QS4HdQM7ke6NjktzcTa3PFlUIhn73lPwP0NKJymYp++JK79U+BOM41yc3zkTEhTANHj9d0v3a4aYrA0IV+Uyho/PULFCKuc=
+Authentication-Results: suse.cz; dkim=none (message not signed)
+ header.d=none;suse.cz; dmarc=none action=none header.from=urjc.es;
+Received: from DB7PR02MB4663.eurprd02.prod.outlook.com (20.177.193.15) by
+ DB7PR02MB3948.eurprd02.prod.outlook.com (20.176.238.139) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4308.24; Thu, 15 Jul 2021 16:18:24 +0000
+Received: from DB7PR02MB4663.eurprd02.prod.outlook.com
+ ([fe80::1048:a385:a5d8:1f0e]) by DB7PR02MB4663.eurprd02.prod.outlook.com
+ ([fe80::1048:a385:a5d8:1f0e%7]) with mapi id 15.20.4331.024; Thu, 15 Jul 2021
+ 16:18:23 +0000
+Date:   Thu, 15 Jul 2021 18:18:21 +0200
+From:   Javier Pello <javier.pello@urjc.es>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] fs/ext2: Avoid page_address on pages returned by
+ ext2_get_page
+Message-Id: <20210715181821.3fb4d5d3c5d26049c29f0607@urjc.es>
+In-Reply-To: <20210715121730.GA31920@quack2.suse.cz>
+References: <20210713165821.8a268e2c1db4fd5cf452acd2@urjc.es>
+        <20210713165918.10da0318af5b9b73e599a517@urjc.es>
+        <20210713163018.GF24271@quack2.suse.cz>
+        <20210713193319.a223cd12e3fb8687f0cae0e8@urjc.es>
+        <20210714090013.GA9457@quack2.suse.cz>
+        <20210714185448.8707ac239e9f12b3a7f5b9f9@urjc.es>
+        <20210714170746.GL3169279@iweiny-DESK2.sc.intel.com>
+        <20210715121730.GA31920@quack2.suse.cz>
+Organization: Universidad Rey Juan Carlos
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-unknown-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MR2P264CA0120.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:500:33::36) To DB7PR02MB4663.eurprd02.prod.outlook.com
+ (2603:10a6:10:5c::15)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1533; h=from:subject; bh=1e9BARQoajJDSgUdYORenFPF3ecMZ7Jduf79ehs8h7w=; b=owGbwMvMwME4Z+4qdvsUh5uMp9WSGBI+WB1n1Ns3Y96Kydy5/1TSyzp5XkorV0pMDjoluy51bumy pHq5TkZjFgZGDgZZMUWW1ZEXta/NM+raGqohAzOIlQlkCgMXpwBMZOcODoZWJVaREsa87UFlLCyKym 6Jz7/Om7Llk3eCg4bKo9Mz5yQv57j/oybvSLtrzHthh0TB2CtnGXOMp2jfvbtdVV/OezJjU7votVnG llXaMuz16cwaKVErlmcwc4VzuIdkbl1902Oq6ZOkT8+s+dUE8pe2Nt9tuBa4U21Oycx5efGnpy855L RFINhWyEgzMmXDxUCTm0cq2aS+nGqerlR/7EpmjLGTVcWK6GtLV8TYd8XMF9/G6rZlz8qXj1k/yy04 L/70Rm151ZWv8u8jkhOtnzn1qzf+lBRWTmXmyBF9tOJVo+OL20Kxc9zFGqZFbTe1Tpx7f6aT79Rz5+ KYW3iC+t5EbhGRPfjkj5xdzfJSAA==
-X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mo-dep2-d036-01.escet.urjc.es (212.128.1.36) by MR2P264CA0120.FRAP264.PROD.OUTLOOK.COM (2603:10a6:500:33::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend Transport; Thu, 15 Jul 2021 16:18:23 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 772b95f2-426f-4c90-5abc-08d947ac2b3c
+X-MS-TrafficTypeDiagnostic: DB7PR02MB3948:
+X-Microsoft-Antispam-PRVS: <DB7PR02MB3948E4EE4570FC6C0D16C3AF9B129@DB7PR02MB3948.eurprd02.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: htKPgaBypefsmZjjenIbnaMHPndGPW0I4/jgyH2nD4605sUjlsJgFUSXT3f5Sf2R+0EcVt4o1QqT4lEKXtOm8bhEj0UV1biRJ7o6pfH6FEGbimPG7fReAosJuSM9EgHogrM1L9scDp1KRZdrmSx6CWtvedeHziq3YMLWBhHdNeA9R7dMDm8UCWB0YF0wiNbcsNBe/q3g93wegSPgGPdyIpbQwgfRC1yVyk20CbDO9t8sT03zTmfznqwCRS1Se0yzybQ6tps6wH2/yFdG31gVfbS9rkX6hLWDTkeZoHx/yLmVCF+4OwysRNjyo+5yh0iVbYblW2CkqAZCAiiudVmg08pAHKMEDBgKf32V56dCPtUYSZxHx69NcfDITt5YF+l+LNO6ox1Or94sHtXVzQr+p3TYXioqoUuwgU8sDJgyxVUVte6LUwTbjfEJoHe0BdP8kZC2CRnp/pJQcal7o/KXu4ATzYvMDPtkDXSemIuJeuqL+1RthD0xBzoYuQ/j+LzU+FhtIfifckKKnkVoMBnEKhM8J8WohnthiLgjEJQh+O3yM87Nrm/HK0Og9czrkL8Pq9Mg3zRAVN2dDsOlxAJD9fVLYUUy66M7rJKVBfilOHTsBNd2OCNPmgr8+UlMShIWwKMxVKVRzg7oL2gOyYtY0ZyXlOC7HZGNpr/g4c0AecH9nfoXre7wo7+itgtWvc9ax7q3s9QXSG09hwSZjV1hcg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR02MB4663.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(396003)(376002)(39840400004)(366004)(66556008)(83380400001)(86362001)(36916002)(6486002)(52116002)(316002)(26005)(66946007)(38350700002)(38100700002)(7696005)(54906003)(66476007)(786003)(186003)(8936002)(2906002)(1076003)(36756003)(4326008)(478600001)(6916009)(44832011)(2616005)(8676002)(956004)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ZOTF8tSldxk06/iCyUy/Cp79mQZtYzBrrAK8xeI6twAk9y2WPVB1bZSwBtQS?=
+ =?us-ascii?Q?fLlShtQ9yb+zbM+EY3tYo9Dp84aNCMxsz8yZnQPgOlbuJNBtMXSmWszEFHpN?=
+ =?us-ascii?Q?9C7UKJqj6RumgAgq7za9zO30ggGxUhtKcKDHh5X3PzLJShp3unfjvDwD6J1b?=
+ =?us-ascii?Q?mWAeif57WX5JCRuhqZNDCmhUpPAyIjPLoU/y2XJxQNEvY5t8WFRb8WP7eCmv?=
+ =?us-ascii?Q?ONLs0anEChH24QktyH/m5UtftOVoRW4EXnL65Tk4AoIMJb/3hQarHEjKZjSO?=
+ =?us-ascii?Q?rPT+pGheClp11vCj19oAI5zTFr98Jvr8ugZe4dAYhh7UCaNlmTjcmVC1x/3B?=
+ =?us-ascii?Q?k5TnW89nzJzo5GOUR8fl/zxprR2QCebjuAVCwzbD66Ywmf8BMYaqh71mzC1K?=
+ =?us-ascii?Q?xk9/8kF/Y2HTfX9M0Awh126bMMX3KJpBpBXDVf+fonvl63Ztl3xIYyzVnmkj?=
+ =?us-ascii?Q?XC36goiLEet3pOjSKSuJoTSHqOnNqPDFBobpOL+f2VsKtby64wIahX2Aam4D?=
+ =?us-ascii?Q?xVI1Xy+j6ENkZjWFtZg9yj0Cum2KZZXCWThaJTHtxtpaNQ/rXNtPFnwggCAf?=
+ =?us-ascii?Q?uVMnlIj1lOri6aAdjDPgt2MMOY/+thqJu5zEjsCRLCTaJhVl3sEHApppsAc2?=
+ =?us-ascii?Q?JQ6zeVqmDfZ6FJrrtB6MfoaozFd86YU9KL+ZFaYkgU11zTN0Sod3Z4aMAveV?=
+ =?us-ascii?Q?NkgpqCC1IzXqkX4VW4e5pKrsANKVmxtJBT3VpWKrGq1GbBTpaMtvgTuYk9gp?=
+ =?us-ascii?Q?GIyIcUG/Bpc7PZ36SQBLklM3zGYpuOI2si5/ZJXzECc+xz+5uwVgLGhbZdot?=
+ =?us-ascii?Q?7pCujUbAi+6FPGnngFyddrOOIjDDK8DMQwR167Y81zXjk3Dg9qtAH5iTJ6w6?=
+ =?us-ascii?Q?M2wiHbSlXP/vKqpCSKkAmfwIoNdvZE9ytNTTo8NwXMHi89k8my31hAu/nqFB?=
+ =?us-ascii?Q?sBxJFfikaySwN5AKRDsdBVPUpiWOPP2ZSGAS6YO0Scxxo2gU3NcNXibA2xkQ?=
+ =?us-ascii?Q?81oS4ryTU+Aeuy6KGKKWO7OIqlCGttjkjCma93qDeAXjCpDxs0pcSfjdUzoB?=
+ =?us-ascii?Q?Y4BrshGcY+mr4iDMyrABR7pkoN/2BW0uzX9z3RX2bdNdgwPjTP0hLGCXxEl5?=
+ =?us-ascii?Q?rPx9gjVkNKqBeqCU34o7UzExadbBtIcTl/Am90u6hVcpOZwvFvpDFkRibW0P?=
+ =?us-ascii?Q?xjZBeWP9WVq5ztzDXLEQ1CJCBQcHdZhJpmSHMS3A3QA6bsp1xopteEjMh773?=
+ =?us-ascii?Q?LhxbSZIIRln4UohkiedSo+mzxKoxQ8xelGvW/L3VPNMPUpbllmqxwLOZXwY/?=
+ =?us-ascii?Q?uJv13QN4sW+NPh/ax2UPtAt9?=
+X-OriginatorOrg: urjc.es
+X-MS-Exchange-CrossTenant-Network-Message-Id: 772b95f2-426f-4c90-5abc-08d947ac2b3c
+X-MS-Exchange-CrossTenant-AuthSource: DB7PR02MB4663.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2021 16:18:23.7886
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5f84c4ea-370d-4b9e-830c-756f8bf1b51f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ZWDSOSmJ+0eWDq0m3U07F/b1Fj4Ry8M3UNPCeNCothdLvTcuRtKy3PHSTvYZ/5aarF6FskAbgd1ZV18189sNig==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR02MB3948
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Cifs has a following race between hole punching and page fault:
+On Thu, 15 Jul 2021 14:17:30 +0200, Jan Kara wrote:
+> On Wed 14-07-21 10:07:46, Ira Weiny wrote:
+> > On Wed, Jul 14, 2021 at 06:54:48PM +0200, Javier Pello wrote:
+> > > From: Javier Pello <javier.pello@urjc.es>
+> > > 
+> > > Commit 782b76d7abdf02b12c46ed6f1e9bf715569027f7 ("fs/ext2: Replace
+> > > kmap() with kmap_local_page()") replaced the kmap/kunmap calls in
+> > > ext2_get_page/ext2_put_page with kmap_local_page/kunmap_local for
+> > > efficiency reasons. As a necessary side change, the commit also
+> > > made ext2_get_page (and ext2_find_entry and ext2_dotdot) return
+> > > the mapping address along with the page itself, as it is required
+> > > for kunmap_local, and converted uses of page_address on such pages
+> > > to use the newly returned address instead. However, uses of
+> > > page_address on such pages were missed in ext2_check_page and
+> > > ext2_delete_entry, which triggers oopses if kmap_local_page happens
+> > > to return an address from high memory. Fix this now by converting
+> > > the remaining uses of page_address to use the right address, as
+> > > returned by kmap_local_page.
+> > 
+> > Again thanks for catching this!
+> > 
+> > Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+> 
+> Thanks for the patch and the review. I'de added the patch to my tree.
+> 
+> 								Honza
 
-CPU1                                            CPU2
-smb3_fallocate()
-  smb3_punch_hole()
-    truncate_pagecache_range()
-                                                filemap_fault()
-                                                  - loads old data into the
-                                                    page cache
-    SMB2_ioctl(..., FSCTL_SET_ZERO_DATA, ...)
+Thank you both for dealing with this issue so quickly.
 
-And now we have stale data in the page cache. Fix the problem by locking
-out faults (as well as reads) using mapping->invalidate_lock while hole
-punch is running.
-
-CC: Steve French <sfrench@samba.org>
-CC: linux-cifs@vger.kernel.org
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/cifs/smb2ops.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/fs/cifs/smb2ops.c b/fs/cifs/smb2ops.c
-index e4c8f603dd58..458c546ce8cd 100644
---- a/fs/cifs/smb2ops.c
-+++ b/fs/cifs/smb2ops.c
-@@ -3588,6 +3588,7 @@ static long smb3_punch_hole(struct file *file, struct cifs_tcon *tcon,
- 		return rc;
- 	}
- 
-+	filemap_invalidate_lock(inode->i_mapping);
- 	/*
- 	 * We implement the punch hole through ioctl, so we need remove the page
- 	 * caches first, otherwise the data may be inconsistent with the server.
-@@ -3605,6 +3606,7 @@ static long smb3_punch_hole(struct file *file, struct cifs_tcon *tcon,
- 			sizeof(struct file_zero_data_information),
- 			CIFSMaxBufSize, NULL, NULL);
- 	free_xid(xid);
-+	filemap_invalidate_unlock(inode->i_mapping);
- 	return rc;
- }
- 
--- 
-2.26.2
-
+Javier
