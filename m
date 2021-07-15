@@ -2,201 +2,93 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DAE13C95B6
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 Jul 2021 03:46:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C7103C9663
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 Jul 2021 05:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231845AbhGOBte (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 14 Jul 2021 21:49:34 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:11307 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231742AbhGOBtb (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 14 Jul 2021 21:49:31 -0400
-Received: from dggeme752-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GQHDJ2yv1z7tZv;
-        Thu, 15 Jul 2021 09:42:08 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggeme752-chm.china.huawei.com
- (10.3.19.98) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 15
- Jul 2021 09:46:37 +0800
-From:   Zhang Yi <yi.zhang@huawei.com>
-To:     <linux-ext4@vger.kernel.org>
-CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-        <yi.zhang@huawei.com>, <yukuai3@huawei.com>
-Subject: [PATCH v2 4/4] ext4: drop unnecessary journal handle in delalloc write
-Date:   Thu, 15 Jul 2021 09:54:52 +0800
-Message-ID: <20210715015452.2542505-5-yi.zhang@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210715015452.2542505-1-yi.zhang@huawei.com>
-References: <20210715015452.2542505-1-yi.zhang@huawei.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggeme752-chm.china.huawei.com (10.3.19.98)
-X-CFilter-Loop: Reflected
+        id S234361AbhGODTe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 14 Jul 2021 23:19:34 -0400
+Received: from foss.arm.com ([217.140.110.172]:46092 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234354AbhGODTa (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 14 Jul 2021 23:19:30 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B96EB11D4;
+        Wed, 14 Jul 2021 20:16:37 -0700 (PDT)
+Received: from entos-ampere-02.shanghai.arm.com (entos-ampere-02.shanghai.arm.com [10.169.214.103])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 26D283F7D8;
+        Wed, 14 Jul 2021 20:16:34 -0700 (PDT)
+From:   Jia He <justin.he@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>, nd@arm.com,
+        Jia He <justin.he@arm.com>, "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org
+Subject: [PATCH RFC 13/13] ext4: simplify the printing with '%pD' specifier
+Date:   Thu, 15 Jul 2021 11:15:33 +0800
+Message-Id: <20210715031533.9553-14-justin.he@arm.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210715031533.9553-1-justin.he@arm.com>
+References: <20210715031533.9553-1-justin.he@arm.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-After we factor out the inline data write procedure from
-ext4_da_write_end(), we don't need to start journal handle for the cases
-of both buffer overwrite and append-write. If we need to update
-i_disksize, mark_inode_dirty() do start handle and update inode buffer.
-So we could just remove all the journal handle codes in the delalloc
-write procedure.
+After the behavior of '%pD' is changed to print the full path of file,
+the log printing can be simplified.
 
-After this patch, we could get a lot of performance improvement. Below
-is the Unixbench comparison data test on my machine with 'Intel Xeon
-Gold 5120' CPU and nvme SSD backend.
+The error case is well handled in d_path_unsafe(), the error string
+would be copied in '%pD' buffer, no need to additionally handle IS_ERR().
 
-Test cmd:
-
-  ./Run -c 56 -i 3 fstime fsbuffer fsdisk
-
-Before this patch:
-
-  System Benchmarks Partial Index           BASELINE       RESULT   INDEX
-  File Copy 1024 bufsize 2000 maxblocks       3960.0     422965.0   1068.1
-  File Copy 256 bufsize 500 maxblocks         1655.0     105077.0   634.9
-  File Copy 4096 bufsize 8000 maxblocks       5800.0    1429092.0   2464.0
-                                                                    ======
-  System Benchmarks Index Score (Partial Only)                      1186.6
-
-After this patch:
-
-  System Benchmarks Partial Index           BASELINE       RESULT   INDEX
-  File Copy 1024 bufsize 2000 maxblocks       3960.0     732716.0   1850.3
-  File Copy 256 bufsize 500 maxblocks         1655.0     184940.0   1117.5
-  File Copy 4096 bufsize 8000 maxblocks       5800.0    2427152.0   4184.7
-                                                                    ======
-  System Benchmarks Index Score (Partial Only)                      2053.0
-
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
+Cc: "Theodore Ts'o" <tytso@mit.edu>
+Cc: Andreas Dilger <adilger.kernel@dilger.ca>
+Cc: linux-ext4@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Jia He <justin.he@arm.com>
 ---
- fs/ext4/inode.c | 60 +++++--------------------------------------------
- 1 file changed, 5 insertions(+), 55 deletions(-)
+ fs/ext4/super.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 9324353fdb7b..b265bed07b67 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -2910,19 +2910,6 @@ static int ext4_nonda_switch(struct super_block *sb)
- 	return 0;
- }
- 
--/* We always reserve for an inode update; the superblock could be there too */
--static int ext4_da_write_credits(struct inode *inode, loff_t pos, unsigned len)
--{
--	if (likely(ext4_has_feature_large_file(inode->i_sb)))
--		return 1;
--
--	if (pos + len <= 0x7fffffffULL)
--		return 1;
--
--	/* We might need to update the superblock to set LARGE_FILE */
--	return 2;
--}
--
- static int ext4_da_write_begin(struct file *file, struct address_space *mapping,
- 			       loff_t pos, unsigned len, unsigned flags,
- 			       struct page **pagep, void **fsdata)
-@@ -2931,7 +2918,6 @@ static int ext4_da_write_begin(struct file *file, struct address_space *mapping,
- 	struct page *page;
- 	pgoff_t index;
- 	struct inode *inode = mapping->host;
--	handle_t *handle;
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index dfa09a277b56..89ad5a334b80 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -803,31 +803,27 @@ void __ext4_error_file(struct file *file, const char *function,
+ 	va_list args;
+ 	struct va_format vaf;
+ 	struct inode *inode = file_inode(file);
+-	char pathname[80], *path;
  
  	if (unlikely(ext4_forced_shutdown(EXT4_SB(inode->i_sb))))
- 		return -EIO;
-@@ -2957,41 +2943,11 @@ static int ext4_da_write_begin(struct file *file, struct address_space *mapping,
- 			return 0;
+ 		return;
+ 
+ 	trace_ext4_error(inode->i_sb, function, line);
+ 	if (ext4_error_ratelimit(inode->i_sb)) {
+-		path = file_path(file, pathname, sizeof(pathname));
+-		if (IS_ERR(path))
+-			path = "(unknown)";
+ 		va_start(args, fmt);
+ 		vaf.fmt = fmt;
+ 		vaf.va = &args;
+ 		if (block)
+ 			printk(KERN_CRIT
+ 			       "EXT4-fs error (device %s): %s:%d: inode #%lu: "
+-			       "block %llu: comm %s: path %s: %pV\n",
++			       "block %llu: comm %s: path %pD: %pV\n",
+ 			       inode->i_sb->s_id, function, line, inode->i_ino,
+-			       block, current->comm, path, &vaf);
++			       block, current->comm, file, &vaf);
+ 		else
+ 			printk(KERN_CRIT
+ 			       "EXT4-fs error (device %s): %s:%d: inode #%lu: "
+-			       "comm %s: path %s: %pV\n",
++			       "comm %s: path %pD: %pV\n",
+ 			       inode->i_sb->s_id, function, line, inode->i_ino,
+-			       current->comm, path, &vaf);
++			       current->comm, file, &vaf);
+ 		va_end(args);
  	}
- 
--	/*
--	 * grab_cache_page_write_begin() can take a long time if the
--	 * system is thrashing due to memory pressure, or if the page
--	 * is being written back.  So grab it first before we start
--	 * the transaction handle.  This also allows us to allocate
--	 * the page (if needed) without using GFP_NOFS.
--	 */
--retry_grab:
-+retry:
- 	page = grab_cache_page_write_begin(mapping, index, flags);
- 	if (!page)
- 		return -ENOMEM;
--	unlock_page(page);
--
--	/*
--	 * With delayed allocation, we don't log the i_disksize update
--	 * if there is delayed block allocation. But we still need
--	 * to journalling the i_disksize update if writes to the end
--	 * of file which has an already mapped buffer.
--	 */
--retry_journal:
--	handle = ext4_journal_start(inode, EXT4_HT_WRITE_PAGE,
--				ext4_da_write_credits(inode, pos, len));
--	if (IS_ERR(handle)) {
--		put_page(page);
--		return PTR_ERR(handle);
--	}
- 
--	lock_page(page);
--	if (page->mapping != mapping) {
--		/* The page got truncated from under us */
--		unlock_page(page);
--		put_page(page);
--		ext4_journal_stop(handle);
--		goto retry_grab;
--	}
- 	/* In case writeback began while the page was unlocked */
- 	wait_for_stable_page(page);
- 
-@@ -3003,20 +2959,18 @@ static int ext4_da_write_begin(struct file *file, struct address_space *mapping,
- #endif
- 	if (ret < 0) {
- 		unlock_page(page);
--		ext4_journal_stop(handle);
-+		put_page(page);
- 		/*
- 		 * block_write_begin may have instantiated a few blocks
- 		 * outside i_size.  Trim these off again. Don't need
--		 * i_size_read because we hold i_mutex.
-+		 * i_size_read because we hold inode lock.
- 		 */
- 		if (pos + len > inode->i_size)
- 			ext4_truncate_failed_write(inode);
- 
- 		if (ret == -ENOSPC &&
- 		    ext4_should_retry_alloc(inode->i_sb, &retries))
--			goto retry_journal;
--
--		put_page(page);
-+			goto retry;
- 		return ret;
- 	}
- 
-@@ -3053,8 +3007,6 @@ static int ext4_da_write_end(struct file *file,
- 			     struct page *page, void *fsdata)
- {
- 	struct inode *inode = mapping->host;
--	int ret;
--	handle_t *handle = ext4_journal_current_handle();
- 	loff_t new_i_size;
- 	unsigned long start, end;
- 	int write_mode = (int)(unsigned long)fsdata;
-@@ -3093,9 +3045,7 @@ static int ext4_da_write_end(struct file *file,
- 	    ext4_da_should_update_i_disksize(page, end))
- 		ext4_update_i_disksize(inode, new_i_size);
- 
--	copied = generic_write_end(file, mapping, pos, len, copied, page, fsdata);
--	ret = ext4_journal_stop(handle);
--	return ret ? ret : copied;
-+	return generic_write_end(file, mapping, pos, len, copied, page, fsdata);
- }
- 
- /*
+ 	ext4_handle_error(inode->i_sb, false, EFSCORRUPTED, inode->i_ino, block,
 -- 
-2.31.1
+2.17.1
 
