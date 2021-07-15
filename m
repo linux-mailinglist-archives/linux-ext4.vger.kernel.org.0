@@ -2,94 +2,100 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AB583C8A43
-	for <lists+linux-ext4@lfdr.de>; Wed, 14 Jul 2021 19:56:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59A6C3C95B3
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 Jul 2021 03:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237892AbhGNR7F (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 14 Jul 2021 13:59:05 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:37695 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229701AbhGNR7B (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 14 Jul 2021 13:59:01 -0400
-Received: from callcc.thunk.org (96-65-121-81-static.hfc.comcastbusiness.net [96.65.121.81])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 16EHu2bs002918
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 14 Jul 2021 13:56:03 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 2D3B44202F5; Wed, 14 Jul 2021 13:56:02 -0400 (EDT)
-Date:   Wed, 14 Jul 2021 13:56:02 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Peter Geis <pgwipeout@gmail.com>
-Cc:     Jan Kara <jack@suse.cz>, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: ext4_xattr_ibody_find:2180: inode #2669312: comm
- systemd-journal: corrupted in-inode xattr
-Message-ID: <YO8lMpNOUsLjBqIG@mit.edu>
-References: <CAMdYzYqvT+X9C_YZ+DtspgHLSeb=RVHLeS2-0pEHeotyvb+iXQ@mail.gmail.com>
- <20210713154310.GE24271@quack2.suse.cz>
- <CAMdYzYroicgDkWuiQ7Xaw_5aYD9mLkrz8qvE9WwS6mPw9uWe8g@mail.gmail.com>
+        id S231736AbhGOBta (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 14 Jul 2021 21:49:30 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:11277 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230087AbhGOBt3 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 14 Jul 2021 21:49:29 -0400
+Received: from dggeme752-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GQHBx41LZz1CJmT;
+        Thu, 15 Jul 2021 09:40:57 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggeme752-chm.china.huawei.com
+ (10.3.19.98) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 15
+ Jul 2021 09:46:35 +0800
+From:   Zhang Yi <yi.zhang@huawei.com>
+To:     <linux-ext4@vger.kernel.org>
+CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+        <yi.zhang@huawei.com>, <yukuai3@huawei.com>
+Subject: [PATCH v2 0/4] ext4: improve delalloc buffer write performance
+Date:   Thu, 15 Jul 2021 09:54:48 +0800
+Message-ID: <20210715015452.2542505-1-yi.zhang@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMdYzYroicgDkWuiQ7Xaw_5aYD9mLkrz8qvE9WwS6mPw9uWe8g@mail.gmail.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggeme752-chm.china.huawei.com (10.3.19.98)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 04:52:11PM -0400, Peter Geis wrote:
-> > This seems to have fallen through the cracks. Have you managed to fix your
-> > filesystem? If not, please obtain filesystem image using e2image (it will
-> > contain only fs metadata, not any data), compress it and put it somewhere for
-> > download so that we can better diagnose the issue. Thanks!
-> 
-> Unfortunately no I don't have the file system anymore.
-> I put about two weeks into trying to fix it, but in the end I had to
-> nuke it from orbit.
+Changes since v1:
 
-Sorry we didn't get back to you right away.  As Jan said, if this
-happens again, it would be really helpful to use e2image.  There is a
-discussion about this in the e2fsck man page, in the "REPORTING BUGS"
-section.
+ - Patch 1: add comments to explain why and how to update i_disksize in
+            ext4_da_write_end().
+ - Patch 3: update i_disksize only if copied is not zero and drop
+            i_size_changed parameter, also drop unused EXT4_STATE_JDATA
+            and i_datasync_tid update code hook.
 
-In this specific case where there was an inode with a corrupted
-extended attribute stored in the inode, you can use debugfs to print
-out the inode data structure:
+Thanks,
+Yi.
 
-debugfs:  inode_dump testfile
-0000  a481 0000 0000 0000 cf23 ef60 d523 ef60  .........#.`.#.`
-0020  cf23 ef60 0000 0000 0000 0100 0000 0000  .#.`............
-0040  0000 0800 0100 0000 0af3 0000 0400 0000  ................
-0060  0000 0000 0000 0000 0000 0000 0000 0000  ................
-*
-0140  0000 0000 6867 c27f 0000 0000 0000 0000  ....hg..........
-0160  0000 0000 0000 0000 0000 0000 9fbc 0000  ................
-0200  2000 e8f9 34cc 39ec fcaf ee61 fcaf ee61   ...4.9....a...a
-0220  cf23 ef60 fcaf ee61 0000 0000 0000 0000  .#.`...a........
-0240  0000 02ea 0401 5400 0000 0000 0600 0000  ......T.........
-0260  0000 0000 7465 7374 0000 0000 0000 0000  ....test........
-0300  0000 0000 0000 0000 0000 0000 0000 0000  ................
-*
-0360  0000 0000 0000 0000 7473 7476 616c 0000  ........tstval..
+--------
 
-debugfs:  inode_dump -x testfile
-magic = ea020000, length = 96, value_start =4 
+Original description:
 
-offset = 4 (0004), name_len = 4, name_index = 1
-value_offset = 84 (0130), value_inum = 0, value_size = 6
-name = test
-value = tstval
+This patchset address to improve buffer write performance with delalloc.
+The first patch reduce the unnecessary update i_disksize, the second two
+patch refactor the inline data write procedure and also do some small
+fix, the last patch do improve by remove all unnecessary journal handle
+in the delalloc write procedure.
 
-last entry found at offset 24 (0030)
+After this patch set, we could get a lot of performance improvement.
+Below is the Unixbench comparison data test on my machine with 'Intel
+Xeon Gold 5120' CPU and nvme SSD backend.
 
-(And if you don't have the pathname to the file, you can also specify
-the inode using the inode number in angle brackers, e.g., "inode_dump <12>")
+Test cmd:
 
-Hopefully this won't happen to you again, but if it does, please do
-let us know.
+  ./Run -c 56 -i 3 fstime fsbuffer fsdisk
 
-Cheers,
+Before this patch set:
 
-						- Ted
+  System Benchmarks Partial Index           BASELINE       RESULT   INDEX
+  File Copy 1024 bufsize 2000 maxblocks       3960.0     422965.0   1068.1
+  File Copy 256 bufsize 500 maxblocks         1655.0     105077.0   634.9
+  File Copy 4096 bufsize 8000 maxblocks       5800.0    1429092.0   2464.0
+                                                                    ========
+  System Benchmarks Index Score (Partial Only)                      1186.6
+
+After this patch set:
+
+  System Benchmarks Partial Index           BASELINE       RESULT   INDEX
+  File Copy 1024 bufsize 2000 maxblocks       3960.0     732716.0   1850.3
+  File Copy 256 bufsize 500 maxblocks         1655.0     184940.0   1117.5
+  File Copy 4096 bufsize 8000 maxblocks       5800.0    2427152.0   4184.7
+                                                                    ========
+  System Benchmarks Index Score (Partial Only)                      2053.0
+
+
+Zhang Yi (4):
+  ext4: check and update i_disksize properly
+  ext4: correct the error path of ext4_write_inline_data_end()
+  ext4: factor out write end code of inline file
+  ext4: drop unnecessary journal handle in delalloc write
+
+ fs/ext4/ext4.h   |   3 -
+ fs/ext4/inline.c | 120 ++++++++++++++++++-------------------
+ fs/ext4/inode.c  | 150 ++++++++++++-----------------------------------
+ 3 files changed, 99 insertions(+), 174 deletions(-)
+
+-- 
+2.31.1
+
