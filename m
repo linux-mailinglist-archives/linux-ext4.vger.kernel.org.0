@@ -2,76 +2,60 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C40623CBA7A
-	for <lists+linux-ext4@lfdr.de>; Fri, 16 Jul 2021 18:20:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8BA83CBAAB
+	for <lists+linux-ext4@lfdr.de>; Fri, 16 Jul 2021 18:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229574AbhGPQXQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 16 Jul 2021 12:23:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40920 "EHLO mail.kernel.org"
+        id S230242AbhGPQqN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 16 Jul 2021 12:46:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47086 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229498AbhGPQXP (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 16 Jul 2021 12:23:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D8C7B61374;
-        Fri, 16 Jul 2021 16:20:18 +0000 (UTC)
+        id S229498AbhGPQqI (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 16 Jul 2021 12:46:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 35961613D0;
+        Fri, 16 Jul 2021 16:43:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626452418;
-        bh=Zwqt1cSzJoWIBhvTU1eTmw8u+q+e0QVoxw05sJjMweM=;
+        s=k20201202; t=1626453793;
+        bh=4cf1AnF6M65jEKCZ4DUvlF+jXCvIQBpF34YgrerdDE0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZvwNnisSJVvVeA3Wqh1gfKo4TFcHs3CG0DHzaUz2EmCzvRL75fYdQXJFKNGPv+nzb
-         7NTJinuaoMSFIN+41ui0WXxnyxdRo7rtpwONqVpdgd2SRc06TjVxJ8sMWK7Vw3+Hlu
-         ujJqOhuvh6Clih3IDBqMftAQXQvarsesgSwSleYLgGCZOBug+jb+qacsjSuKJxJ1v8
-         UcQyBwh2vzDNEdpVaXHyibfobUV3y5NegfrRJbM0CxTA67/pZS66EPCRlO3bLs6c5z
-         CKc/MxEW5RYHKTeiAsUn3Cao3g4eSF3BgCiEtUk9k+QNPNQq1GKDBDW/1OTbxJTgah
-         /uNqs+i9Muo3g==
-Date:   Fri, 16 Jul 2021 09:20:17 -0700
+        b=ER33OScu5jXxJL4bBbchkSb43icKDsitlTLzz/ULEuCKhDyvzfruACZnB7KEth/Ea
+         CrHL2LSiOdJ48FNoGdUcRJPztvvlN2R9q/wJJKcgnB4F1BFPAddcRBz30NPyaVNVA/
+         c13g+u1kfK1sYm4jZTlXTgZiWA4uk6IRkbh//2Bk3gR4M1niUW7g70cN+zj01sKUw5
+         w11NLDR1ohyuzzNvoiRCItpM7Kwmua6Mzwh8IqK6FDO3uAqgbL4KU/TlVuM6lEEHgQ
+         owdro4sa6g8ZVQZprvohZ8U0qKtbPZRfpQ+EtiAyzSrv0hMzf/nWGpv1wM1Qur2p+u
+         KJcRDYSgBrojg==
+Date:   Fri, 16 Jul 2021 09:43:11 -0700
 From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Jeffle Xu <jefflexu@linux.alibaba.com>
-Cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] vfs: only allow SETFLAGS to set DAX flag on files and
- dirs
-Message-ID: <20210716162017.GA22346@magnolia>
-References: <20210716061951.81529-1-jefflexu@linux.alibaba.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, Ted Tso <tytso@mit.edu>,
+        Dave Chinner <david@fromorbit.com>,
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+        linux-xfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org
+Subject: Re: [PATCH 0/14 v10] fs: Hole punch vs page cache filling races
+Message-ID: <20210716164311.GA22357@magnolia>
+References: <20210715133202.5975-1-jack@suse.cz>
+ <YPEg63TU0pPzK5xB@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210716061951.81529-1-jefflexu@linux.alibaba.com>
+In-Reply-To: <YPEg63TU0pPzK5xB@infradead.org>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 02:19:51PM +0800, Jeffle Xu wrote:
-> This is similar to commit dbc77f31e58b ("vfs: only allow FSSETXATTR to
-> set DAX flag on files and dirs").
+On Fri, Jul 16, 2021 at 07:02:19AM +0100, Christoph Hellwig wrote:
+> On Thu, Jul 15, 2021 at 03:40:10PM +0200, Jan Kara wrote:
+> > Hello,
+> > 
+> > here is another version of my patches to address races between hole punching
+> > and page cache filling functions for ext4 and other filesystems. The only
+> > change since the last time is a small cleanup applied to changes of
+> > filemap_fault() in patch 3/14 based on Christoph's & Darrick's feedback (thanks
+> > guys!).  Darrick, Christoph, is the patch fine now?
 > 
-> Though the underlying filesystems may have filtered invalid flags, e.g.,
-> ext4_mask_flags() called in ext4_fileattr_set(), also check it in VFS
-> layer.
-> 
-> Signed-off-by: Jeffle Xu <jefflexu@linux.alibaba.com>
-> ---
->  fs/ioctl.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/ioctl.c b/fs/ioctl.c
-> index 1e2204fa9963..1fe73e148e2d 100644
-> --- a/fs/ioctl.c
-> +++ b/fs/ioctl.c
-> @@ -835,7 +835,7 @@ static int fileattr_set_prepare(struct inode *inode,
->  	 * It is only valid to set the DAX flag on regular files and
->  	 * directories on filesystems.
->  	 */
-> -	if ((fa->fsx_xflags & FS_XFLAG_DAX) &&
-> +	if ((fa->fsx_xflags & FS_XFLAG_DAX || fa->flags & FS_DAX_FL) &&
+> Looks fine to me.
 
-I thought we always had to surround flag tests with separate
-parentheses...?
+Me too.
 
 --D
-
->  	    !(S_ISREG(inode->i_mode) || S_ISDIR(inode->i_mode)))
->  		return -EINVAL;
->  
-> -- 
-> 2.27.0
-> 
