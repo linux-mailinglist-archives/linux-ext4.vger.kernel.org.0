@@ -2,174 +2,201 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98FE63CC5C6
-	for <lists+linux-ext4@lfdr.de>; Sat, 17 Jul 2021 21:22:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 621463CC5FB
+	for <lists+linux-ext4@lfdr.de>; Sat, 17 Jul 2021 21:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235435AbhGQTZO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 17 Jul 2021 15:25:14 -0400
-Received: from mail-bn1nam07on2056.outbound.protection.outlook.com ([40.107.212.56]:65311
-        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
+        id S235379AbhGQT5Y (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 17 Jul 2021 15:57:24 -0400
+Received: from mail-dm6nam11on2078.outbound.protection.outlook.com ([40.107.223.78]:14752
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235213AbhGQTZH (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Sat, 17 Jul 2021 15:25:07 -0400
+        id S235133AbhGQT5Y (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sat, 17 Jul 2021 15:57:24 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=juNKgQtDu/BcrcrQXDbxz80QAr+4n8QsSIJY7X/CJTmUwEYD9eXCR5xdaVYhcTDV+0woBW6UEYPsaHH8yf+oKKKSryzSoegMXjEmbQXNqOu+P5XCAM/EUcbR8eG7pRgzyjmAWP9/cF4XsY7HHeqFEP+DtQX0t+Det3zrc+ijVhpZJGzVyUor0Ux3J1Ikb+DehtTZE87JVHndSnKC969HBNoyxlmk9m6Svcl6TPH01LkNSE+Wu1mZFqELFrQqMGecSDWmQAgzcmTcc1cCdAF9SAKf56TI6S6A7i33vp9CFPGYZJcdFTlvrlYtmmVeLMVXBzpLWvpNgAX4ClczxuHSmA==
+ b=HbrR4fruOy4X/FDhIKQENGvnRdXvVoPqY1HMBdH2RYCTbNTOQ8OeZ8aqJ0cnwfAJcaCtacZ/PEknUWrZeUjdKvO3gcRW/oOiirya49knyRZQDcFc5bpkqK9dZWTQVyE1TtU7ie79wXfANZM/fTP2CmSmd9npUp/a04SEH6NV0cXDpgvcDSDd8Tsyereq/Kis8iBCw1sNqFCyvh3MfdPAwq6uTZBTyI0SsyRKCoRbVqLjkyOvMWMbl+ZtpvvMOydCV7jrbmxWOmTAxrlTHpHSSW28xFEUBiavKTWNpa6pRmKZWMQDBHIVvCKgNO/RPejNia3uPsCDDuJf1ji5xURfEA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=707xnJfuFhrp+6dAh962xzl7si469vWZYp4BZWlrkTo=;
- b=SpbX9KQugp7MCAHGlIIvTWxF2LmYG+BKB7o5yjylqAlilXEHyxdid17LkU8DqOBOeOBYs8RcSawH9nF1aij/xPETVdoTRcF3tVUaxmSslv5hWEDFTADuWmMebE7JZ3T+4rxRwMpgv8ay9DZu9WBdxHZFUC9s5cL6xP4LSzhcQEtWG+fOwSJyx7uH5XxTsP8x/8uTuOd1UMe2yC5jTvH8B7CQKmA7WgZeYBDw3zyy6zh/RvJ3JzwFBiO8gSvnJBWpBj4vDxblVNrwoCoVfKbIgmtCxrgh51MfotQeRwPleMGSZhtPc7f/AUnqYQyCjge7JGsLQiXg1cRmckrHT2n1JQ==
+ bh=8RB1vNKylzS+mtDGYh+fu9xIpasBlRWYcYOjK4+HlF8=;
+ b=ZaFfFk7psUb7BwcXrXJJKF5ARGlE4XA72fLjXC9DHpJz6t4C5tS3Ennre5hk6szgj9bP/A1sliMg3sJAcu+VYd+2Hg2ay/AnRfKmClfLSiBG/vAP4JUPPZhZCJ9T+joIIThp2oRSB3cZwIK3jDUyiknZ+r/LvtGXhlUNJbUKp0zYLp15tb6XA1zEeZqSB3KHNTbroVVNSzVL8/4y+hGwCWuvGFRH92khjVoebQAY3rLjA2ABZdNASUBo89Ov3v05P7LGVMHco9Foa4xO78nqNkDPo5MvAo61CTEx2/dZseyl2W+iG4ZqlDT4NrphmlM3AVCON68MOZQXQftVzUEW+w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
  header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=707xnJfuFhrp+6dAh962xzl7si469vWZYp4BZWlrkTo=;
- b=5tMeas0m3k0B/QBW7vt2hfKwrtxcRCehJFUY6NuF6W9nKDGhWRuPHmu/2koaHAYnSXdgoxfa2mfcxtp2bSQexvPwz2+M90I6GODuHFPIIhj/0ljV4SkOmffCdGOHmen4JMp8J+HWG1F0v1Y9o/x/ieusoSRMQagl0K3zE96+IaY=
-Authentication-Results: linux-foundation.org; dkim=none (message not signed)
- header.d=none;linux-foundation.org; dmarc=none action=none
- header.from=amd.com;
-Received: from SA0PR12MB4430.namprd12.prod.outlook.com (2603:10b6:806:70::20)
- by SN6PR12MB4670.namprd12.prod.outlook.com (2603:10b6:805:11::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.22; Sat, 17 Jul
- 2021 19:21:58 +0000
+ bh=8RB1vNKylzS+mtDGYh+fu9xIpasBlRWYcYOjK4+HlF8=;
+ b=ceFI7tFafgeoLA4qb3BsPBT6C7N/eatBog3Wq2AZKy8tvvchcWhMlgmrUjXZJkoBM2JahjuHOjETcqiNpUOMPyldXskaooVLMpH+RWDme9bUFZ3rlSeb+GDjXz4ncKQZBoL32lc3y1EgfTOJn9SD2Oge55Xcm4iLnzi/EuYgbXw=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
+Received: from SA0PR12MB4430.namprd12.prod.outlook.com (20.181.44.20) by
+ SA0PR12MB4446.namprd12.prod.outlook.com (20.181.44.82) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4331.23; Sat, 17 Jul 2021 19:54:21 +0000
 Received: from SA0PR12MB4430.namprd12.prod.outlook.com
  ([fe80::d0d3:a97e:6b7f:ab39]) by SA0PR12MB4430.namprd12.prod.outlook.com
  ([fe80::d0d3:a97e:6b7f:ab39%7]) with mapi id 15.20.4331.029; Sat, 17 Jul 2021
- 19:21:58 +0000
-From:   Alex Sierra <alex.sierra@amd.com>
-To:     akpm@linux-foundation.org, Felix.Kuehling@amd.com,
-        linux-mm@kvack.org, rcampbell@nvidia.com,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        hch@lst.de, jgg@nvidia.com, jglisse@redhat.com
-Subject: [PATCH v4 13/13] tools: update test_hmm script to support SP config
-Date:   Sat, 17 Jul 2021 14:21:35 -0500
-Message-Id: <20210717192135.9030-14-alex.sierra@amd.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210717192135.9030-1-alex.sierra@amd.com>
-References: <20210717192135.9030-1-alex.sierra@amd.com>
+ 19:54:21 +0000
+Subject: Re: [PATCH v3 0/8] Support DEVICE_GENERIC memory in migrate_vma_*
+To:     Felix Kuehling <felix.kuehling@amd.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        rcampbell@nvidia.com, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, hch@lst.de, jgg@nvidia.com,
+        jglisse@redhat.com
+References: <20210617151705.15367-1-alex.sierra@amd.com>
+ <YM9NXrGlhdp0qb7S@mit.edu> <905418d1-9099-0ea8-a6e6-84cc8ef3d0b0@amd.com>
+ <YPGgvNxfOCx/Sp0g@mit.edu> <e9cc27d6-b0f2-8379-c276-0bbdae3ce4d7@amd.com>
+From:   "Sierra Guiza, Alejandro (Alex)" <alex.sierra@amd.com>
+Message-ID: <601418f5-c526-08e9-b071-4533a32ce25d@amd.com>
+Date:   Sat, 17 Jul 2021 14:54:06 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+In-Reply-To: <e9cc27d6-b0f2-8379-c276-0bbdae3ce4d7@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SN4PR0201CA0067.namprd02.prod.outlook.com
- (2603:10b6:803:20::29) To SA0PR12MB4430.namprd12.prod.outlook.com
+Content-Language: en-US
+X-ClientProxiedBy: SN6PR05CA0030.namprd05.prod.outlook.com
+ (2603:10b6:805:de::43) To SA0PR12MB4430.namprd12.prod.outlook.com
  (2603:10b6:806:70::20)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from alex-MS-7B09.amd.com (165.204.78.1) by SN4PR0201CA0067.namprd02.prod.outlook.com (2603:10b6:803:20::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.22 via Frontend Transport; Sat, 17 Jul 2021 19:21:54 +0000
+Received: from [172.31.9.47] (165.204.77.11) by SN6PR05CA0030.namprd05.prod.outlook.com (2603:10b6:805:de::43) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.8 via Frontend Transport; Sat, 17 Jul 2021 19:54:20 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 81c63fea-588e-4ab3-b0bd-08d949582332
-X-MS-TrafficTypeDiagnostic: SN6PR12MB4670:
+X-MS-Office365-Filtering-Correlation-Id: 190f1b0f-1a23-430b-48b2-08d9495cab82
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4446:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN6PR12MB46705EE64FF76F3A9664E574FD109@SN6PR12MB4670.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
+X-Microsoft-Antispam-PRVS: <SA0PR12MB44461F1B899EB45D1B05F70DFD109@SA0PR12MB4446.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lzRubaDRxtU8ctmhTypHDJF4J8NyuAATR7qvuK0City4kggLrmijU+jXXFb8pruCvobYJs+LG8cHsfC+k7x0nxJwusDiDTi28laWlpyvpgCK6FFg3JIS5EoqTGZxlZns0o35XxI5DHXkW4DH13PpCK/4tgfkwG6xC4pFuYE6FTyo8gMTITYlarhmdLV8xyn5QL8Dk9L6/WTDlVuZtDmFWSvD2A5Hw05YRf5woAo8/gjD4ahYEtBQla4lSdpFogXOAIVbWkPUvDWIRJ48O/lkBvlNRK/KJ+GQMxlxnhLkTa3x2WvOODkWjpErwYgMq+HqY2zD/Fkg2GFB/ikeq+k96osNXwFw/aihWaDxK9TMXUxBAkQSCo+a9Xa4yJ4SMTOxp3Sbdr9J2/DPE34pmjCzDPU9GBFW0wOxeRkI9k0YctURHcCnSyk80pF8agZhw3I7WFh9QlXJGerxSfFrvfXBJMLUDTRLBRydEBW7oLOH/cfMcVzq0Yzc/r+Xnclht1UkXq8AVpWouHryUT8vT0aieO1QhjzJK5Qa41E3pQsHCnBjzRkJTsaiHqdDNZweG1ZTdMaH8GMJwE8ueetV2KeXK/C1gQgjB+HrnINu+h/gvhVUNWomeRZf8JdGIhtQ2i0v0bnlMdlKc2utvQ13zxEVkPUTcmKnmZAZzw266+SII1Y9HAVE0wPODNVqBiKvnQLMWuKC9sA+9cLohsUkWRDnbQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA0PR12MB4430.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(52116002)(2616005)(26005)(5660300002)(2906002)(7696005)(7416002)(1076003)(4326008)(6486002)(6666004)(186003)(8676002)(956004)(66946007)(86362001)(316002)(36756003)(44832011)(8936002)(38350700002)(38100700002)(66476007)(83380400001)(508600001)(66556008);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: pLdy0XyE4pjHkSinQs605y0idpwi4EPt53M8cLtIiJIWj//ZHRGXjjHPaE/YxlT5a53/b9gcnwrji1pyXsVrmhKk/cKZkSFqPgyswW9Y+GURCvoqdir7B2Fa67DkJBgD5g+3Qdyo5VkkP0jGSGyXLtitBlltqNVAC6jY1ISAECNlHkbFc4i2QZwZKUIz3dxdlpYYF0lw9GHT/tbyI5pfUK4RkK04M2XIkCM3D7wcEIg44qAGRi/R1fQLjguopIUjCsI44UbjKqrn8QLqja8ej+YnhLKRgorF4ooItiJZJVYZKp3txEgouIxF9MFdyyXya1oGYt1QBJOuo6diRdXV0WtqWp+fKLEPKR1kkfubQsU36UT6PMwZ7qD3qtbyTqfJLwY0mS2eZprgcXVB03U5G4q8WBO20K1Bj+ADaN3NLTb+10Ep5H6sZl0g8khHo65hiqY5muWJoTWPOIxLkQ4mUd2JNEomHIJ6gU5owHGtiJ3/9eX/+AXimt3+xhAFO5APc/nzrYomW9YS8RgfZ+0vgYZIQMIFTVTQiPFFNdrFMl+x4nuR6vL7Pe1GkkcNEsFlFt+PeRpaSoqU3PTQ7ZFbyiwJ3YQPXOOPMn0OPpdIoOemMnYYj89vc27/ott2OWqglHd0wwaTonNWde8W86Iu4zg4ONT0xcJXr50PtsvYIja285QumbEUWjaj/9bgP8YI/thpBxzrS6xZgvpHENQQE3/35J8nFRIl0n4pgo716J0L2j65WI1Y36jEMpu9PjJzN5qjTugvayrQL1o19j/mKl5hEpLm6EgGykC8FwOdv+zqadzR30zgUKiKsL1z8xTgKWyNHpZz46JJCGumc49eEf5WlPpUMHIFl/0oYceiAN0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA0PR12MB4430.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(376002)(136003)(346002)(366004)(38350700002)(38100700002)(53546011)(110136005)(7416002)(2906002)(52116002)(83380400001)(186003)(6666004)(6486002)(26005)(2616005)(966005)(956004)(31696002)(36756003)(5660300002)(86362001)(16576012)(66946007)(66556008)(66476007)(316002)(31686004)(8936002)(478600001)(8676002)(4326008)(41533002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?zGmR3L6TrWoP2ei+sSFhjnxheJtnwQwLYJ3LHQcYVY6k4jSY40FYQCt/hPSq?=
- =?us-ascii?Q?KybdOrSjPIPe63mTRjCx6/lNOeNXOmR4GkMGZeQfy/CxSEJIYBbXcvP0pRAE?=
- =?us-ascii?Q?Ve6kHXF0Fe5cUQ+1YK9qkA2hmvVADiartdDB/yVKD2AE+W5UjloyiWVC/boa?=
- =?us-ascii?Q?gZqnVqakduuGb2tTS1Q1/iOrKCaoXgdXBku8t4T8oUVVf6ZU8y2JmWdGWG9e?=
- =?us-ascii?Q?6N0Q7vea6LhiTnzd2pLL88PkzoAHqSxXElKn9pN5/xn4mcrWf6pdR09kCj6g?=
- =?us-ascii?Q?QhpeAFxpPAxiII+vEOOWwy3qjCpRB/kBpfO24hzJa6BuETuaKWXf7yIXmR2U?=
- =?us-ascii?Q?oklt1bcAQVtdQYr9sicSVAAkzUh5uUN/V+6+OGMgCsENzcSqTqlEm+pUkaWw?=
- =?us-ascii?Q?QAOBKxHeUuxga5V6qUFka4d80YDrUkWFsmqxHmhj6BkWJ7mEnAmGXy/e2wed?=
- =?us-ascii?Q?Xv9PWW/fGm5dF50N4XaVtdX9+FIUu36CsiNzLdSkinHTJkKbpoHwr0ESqHS4?=
- =?us-ascii?Q?cnDN0c60AzgGMTpJtjsAB5065caIqK8sqOCZDQ2kmDXf4ErA0PB1oR8vWtnP?=
- =?us-ascii?Q?J3mH4XD+09YnNP4rpiI4oie6xvq93CDfPxVJPsf7E3eR+1gLWwcWkAVSn+DF?=
- =?us-ascii?Q?DQ+2RppFvGttuM4wSzoMMXaBvRvIlgWWRcWNhJ66qWfKlocrq1IeRRLvh5HE?=
- =?us-ascii?Q?ht69w+gvUMXohFnkPTkzzb/I6Fn9MCSuJhLIh3eFbndWgP3qeart/wU6mxb3?=
- =?us-ascii?Q?4HIaP6C17me2nEXQHdAjcU4Gjoz+5MvFPVE93QnHaeTlFkZCok3Ce6hrRb6a?=
- =?us-ascii?Q?xr+wgnIhZlpDTeWsjR9938SAGtd6aJCCClBZa/Xnm7xP9yNOg2jbbMpkpg1J?=
- =?us-ascii?Q?f5X6rt8m1gAimxCHBAwkDyKPN3UA1qGM1bzMc+lwk1aNcrS/0jNvABQpzkU+?=
- =?us-ascii?Q?g+sabWkGGMNlEtT5SJ7pzJcLjbpEqfoBW/Q5IXbBvais/SjKL4pPD+Mpbilz?=
- =?us-ascii?Q?c5XFm9GOHb4GTYtudUXody6ozYUH10LH4AVe54p+Oo80Hr6fcwVhp51An074?=
- =?us-ascii?Q?ImSIydcNVlw5+qomgtEGnV3rBgwywpUh7DbTkcARuGOwzNVRqz0cX+OyWlLO?=
- =?us-ascii?Q?z9Xdcb2FC59sXtljISnC+Zg5fcgZb5HLj4kzkhqAk6dk1zBS1poGEhvqhQ9G?=
- =?us-ascii?Q?FaBOLQfeAKkLsRK9znqikjJ3cy0X74J6jTVJ/P222+gFJl4IZ1XujXdAGoZs?=
- =?us-ascii?Q?dY7PqROzwvX6A3o3C7gdFH/axUQPlXhhKfCFenzzXg/OtsDLQARjIBpYpqDR?=
- =?us-ascii?Q?O1AlpCzc/MhpHrjv9UxTDslW?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZDR1TDFLNkdxSVh2TDBCK3R5NWRNWW4xbjFXZ0J1SGtwL0VOdStBMXhhb09w?=
+ =?utf-8?B?RUMrTHpONC93enlzMkh1QWZGb1F0aGVSTE1zait0SmxYK0F6eDBMeG1WZ28r?=
+ =?utf-8?B?WlU3YWk0OFlhRVpWcHBWZ2tmbGpYOUtqSEVxRGNPN0w3clVTWXZHZ0hzTkQ4?=
+ =?utf-8?B?WE4yK1I0WWdXUGU4cmFSZkpPUEZFSmltRFFFN1loRlFLWlBBeDRyb296alIv?=
+ =?utf-8?B?NnN6emhpemxONWFub0NycE81VFg4bndxN1Y0WVROT2NEaHNnRVROdHpOckg1?=
+ =?utf-8?B?V0c3WEJtcGtoNitXd0d0VENFOEdyMnRkTlI3Znc5VWlacHNzTXE3SzF5L01a?=
+ =?utf-8?B?M1JlWEJFUGdpMGVUck4zSEgwMTFlSTNpZXdrTFpyM1JabUVoWkRodkdmMEtZ?=
+ =?utf-8?B?UlZ1Skp4Ry83VngwUlVQamZZYnhKdzhXSWhINXFRVEtzYTBrOFlMd0FkNm5t?=
+ =?utf-8?B?TDRySmljV1I5WXh5MzdpMGhlTStKNk1mV3E0a0tRMjNFaUdQczFYaVBSN2NI?=
+ =?utf-8?B?cndFM1A0NWUyYUpiZHhFeU1PcVM3UEw0UHQvNjBUOWJEVUpTN3dYNnhQay9N?=
+ =?utf-8?B?VGtpMXJFaE5Vci9RbU0yNWtJQmJwejRNanFsNWthRlVZQjVGVGFxY0owbUhQ?=
+ =?utf-8?B?MThLcDlhZUEvSDhwSzBKM3cyeHBrcHI3MjE1MjBhdnV4OVlDenlWVFJTMDRD?=
+ =?utf-8?B?VUZHL1hyUExWZURhYlFVUk83RVlhZ29sVzVKZjhhRUwwUXl6bHg4bWt1VU8z?=
+ =?utf-8?B?UmM3NUtMQUlqcDF3ZUlNWlUybStiMVl5c2ZNc2hMeWp5eGw5SlgyWnBMWllC?=
+ =?utf-8?B?bFAyNitWN0tGbFpRcGdtU3RJOExEMHlycGh4STFVOHptM0NndzlyQkRYaFlQ?=
+ =?utf-8?B?Z29YVkhPUlJIQm5kNVBTQ0xBaWtNT3ZxVSsyU0RoMTdiL21LMkRDOW54akdo?=
+ =?utf-8?B?OWhWUlBWbkYxdkxjSHk0NlAyMVFJd3hTMlU0ZW5NMWd4Y3ppSEdoTGFEK0Jo?=
+ =?utf-8?B?aXJTeDJvUzk5LzdxUksySGI2Q3c1UDk4bHVaQmErZVNxd3JvUHFRMFVST21l?=
+ =?utf-8?B?K0RXK0RuSS9EV05RQVhOb3NGbTB0ck5jSnE0c1hnUlV4aGFGRTV4WmxXcW5K?=
+ =?utf-8?B?clEwZi9aR2tENFV4OVNqQ3Q4WVNXOGFWRmRZRTVjOWo3WEp5UDJlbXJkYXJX?=
+ =?utf-8?B?RDNPa1ltenpZV2FRbmpPVWpGcnhJV0FUT3V5dGlibUVaWEtoS2lZemNVSTNy?=
+ =?utf-8?B?L04zRjB4Nk9DcEZBY0R4R214ZkI1K3g4cUp3Zk50dlNHUW9ML05iMmlLMENE?=
+ =?utf-8?B?N3JYOWhhUmR6WEdERVdZckFneE0zdlJ2ZEt3MUtoQVZFL09QSjFZM3RPN0Jk?=
+ =?utf-8?B?ZmxYd01mcGR6MVNURXB3a2lucmJrclF3RjhDeVIrN1oyYnVtRFlDQkVIaExZ?=
+ =?utf-8?B?VVlCWXNubE83TGVLaFk0aktHOCtQaFM2bkxFM2FUcjlKQVFNYmRsTFhBTUFo?=
+ =?utf-8?B?ZlVVdTZNMzFqZU9Ya0w0VTh6T1UxVDVON29US0lxZHpWQk5HNDk4ZExHWEtK?=
+ =?utf-8?B?S25OMzFQd3F0ZEZiN2NnZjN4ZndPSkVxcWhVOUUvd2NyRkFFS21LZk5XK1NL?=
+ =?utf-8?B?QWg0ZDc3Q1Faa25yc2ZMWlBkL05Cbk9mWG9NczBCYkpHYVpBRWxBeXp4YmhC?=
+ =?utf-8?B?bnRUbDlZSmtGaCtoNlRTTjM5ZDRldjNubVQ2UFpsREUvVVBIZGlZb010U0Fh?=
+ =?utf-8?Q?2eJf6J4Lfe15rkyFp/8eGGTmAK6iOEUZB4XtdiD?=
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 81c63fea-588e-4ab3-b0bd-08d949582332
+X-MS-Exchange-CrossTenant-Network-Message-Id: 190f1b0f-1a23-430b-48b2-08d9495cab82
 X-MS-Exchange-CrossTenant-AuthSource: SA0PR12MB4430.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jul 2021 19:21:54.7344
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jul 2021 19:54:21.5903
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: d3d89DOdyUPpMJllcwFW2JAt/V9fPPbJbxKdMdVXmblKTsSTgXZvQ8PmjL41SL4Jg/mjJlJofz2GX2TXJ8+Vag==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB4670
+X-MS-Exchange-CrossTenant-UserPrincipalName: 72VxJbcyvqC9DWQNTwAK4OYOYSuvrtnohC/gn3vUnRMxB7HSj7TP4OxVFBKIfq5cJOEzZnsT1wRuEnpaI/na8Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4446
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Add two more parameters to set spm_addr_dev0 & spm_addr_dev1
-addresses. These two parameters configure the start SP
-addresses for each device in test_hmm driver.
-Consequently, this configures zone device type as generic.
 
-Signed-off-by: Alex Sierra <alex.sierra@amd.com>
----
- tools/testing/selftests/vm/test_hmm.sh | 20 +++++++++++++++++---
- 1 file changed, 17 insertions(+), 3 deletions(-)
+On 7/16/2021 5:14 PM, Felix Kuehling wrote:
+> Am 2021-07-16 um 11:07 a.m. schrieb Theodore Y. Ts'o:
+>> On Wed, Jun 23, 2021 at 05:49:55PM -0400, Felix Kuehling wrote:
+>>> I can think of two ways to test the changes for MEMORY_DEVICE_GENERIC in
+>>> this patch series in a way that is reproducible without special hardware and
+>>> firmware:
+>>>
+>>> For the reference counting changes we could use the dax driver with hmem and
+>>> use efi_fake_mem on the kernel command line to create some DEVICE_GENERIC
+>>> pages. I'm open to suggestions for good user mode tests to exercise dax
+>>> functionality on this type of memory.
+>> Sorry for the thread necromancy, but now that the merge window is
+>> past....
+> No worries. Alejandro should have a new version of this series in a few
+> days, with updates to hmm_test and some fixes.
 
-diff --git a/tools/testing/selftests/vm/test_hmm.sh b/tools/testing/selftests/vm/test_hmm.sh
-index 0647b525a625..3eeabe94399f 100755
---- a/tools/testing/selftests/vm/test_hmm.sh
-+++ b/tools/testing/selftests/vm/test_hmm.sh
-@@ -40,7 +40,18 @@ check_test_requirements()
- 
- load_driver()
- {
--	modprobe $DRIVER > /dev/null 2>&1
-+	if [ $# -eq 0 ]; then
-+		modprobe $DRIVER > /dev/null 2>&1
-+	else
-+		if [ $# -eq 2 ]; then
-+			modprobe $DRIVER spm_addr_dev0=$1 spm_addr_dev1=$2
-+				> /dev/null 2>&1
-+		else
-+			echo "Missing module parameters. Make sure pass"\
-+			"spm_addr_dev0 and spm_addr_dev1"
-+			usage
-+		fi
-+	fi
- 	if [ $? == 0 ]; then
- 		major=$(awk "\$2==\"HMM_DMIRROR\" {print \$1}" /proc/devices)
- 		mknod /dev/hmm_dmirror0 c $major 0
-@@ -58,7 +69,7 @@ run_smoke()
- {
- 	echo "Running smoke test. Note, this test provides basic coverage."
- 
--	load_driver
-+	load_driver $1 $2
- 	$(dirname "${BASH_SOURCE[0]}")/hmm-tests
- 	unload_driver
- }
-@@ -75,6 +86,9 @@ usage()
- 	echo "# Smoke testing"
- 	echo "./${TEST_NAME}.sh smoke"
- 	echo
-+	echo "# Smoke testing with SPM enabled"
-+	echo "./${TEST_NAME}.sh smoke <spm_addr_dev0> <spm_addr_dev1>"
-+	echo
- 	exit 0
- }
- 
-@@ -84,7 +98,7 @@ function run_test()
- 		usage
- 	else
- 		if [ "$1" = "smoke" ]; then
--			run_smoke
-+			run_smoke $2 $3
- 		else
- 			usage
- 		fi
--- 
-2.32.0
+V4 patch series have been sent for review.
+https://marc.info/?l=dri-devel&m=162654971618911&w=2
 
+Regards,
+Alex Sierra
+
+>
+>
+>> Today I test ext4's dax support, without having any $$$ DAX hardware,
+>> by using the kernel command line "memmap=4G!9G:memmap=9G!14G" which
+>> reserves memory so that creates two pmem device and then I run
+>> xfstests with DAX enabled using qemu or using a Google Compute Engine
+>> VM, using TEST_DEV=/dev/pmem0 and SCRATCH_DEV=/dev/pmem1.
+>>
+>> If you can give me a recipe for what kernel configs I should enable,
+>> and what magic kernel command line arguments to use, then I'd be able
+>> to test your patch set with ext4.
+> That would be great!
+>
+> Regarding kernel config options, it should be the same as what you're
+> using for DAX testing today. We're not changing or adding any Kconfig
+> options. But let me take a stab:
+>
+> ZONE_DEVICE
+> HMM_MIRROR
+> MMU_NOTIFIER
+> DEVICE_PRIVATE (maybe not needed for your test)
+> FS_DAX
+>
+> I'm not sure what you're looking for in terms of kernel command line,
+> other than the memmap options you already found. There are some more
+> options to run hmm_test with fake SPM (DEVICE_GENERIC) memory, but we're
+> already running that ourselves. That will also be in the next revision
+> of this patch series.
+
+In order to run hmm test with generic device type enabled, set the 
+following:
+
+kernel config:
+EFI_FAKE_MEMMAP
+RUNTIME_TESTING_MENU
+TEST_HMM=m
+
+Kernel parameters to fake SP memory. The addresses set here are based on 
+my system's usable memory enumerated by BIOS-e820 at boot. The test 
+requires two SP devices of at least 256MB.
+efi_fake_mem=1G@0x100000000:0x40000,1G@0x140000000:0x40000
+
+To run the hmm_test in generic device type pass the SP addresses to the 
+sh script.
+sudo ./test_hmm.sh smoke 0x100000000 0x140000000
+
+>
+> If you can run your xfstests with DAX on top of this patch series, that
+> would be very helpful. That's to make sure the ZONE_DEVICE page refcount
+> changes don't break DAX.
+>
+> Regards,
+>    Felix
+>
+>
+>> Cheers,
+>>
+>> 						- Ted
