@@ -2,86 +2,79 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CBB03CD6A8
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 Jul 2021 16:37:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E4DA3CE9E2
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 Jul 2021 19:54:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231618AbhGSN4X (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 19 Jul 2021 09:56:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240733AbhGSN4V (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 19 Jul 2021 09:56:21 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDEB1C061574;
-        Mon, 19 Jul 2021 07:04:01 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id 3583E1F42C2A
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     amir73il@gmail.com, kbuild-all@lists.01.org, djwong@kernel.org,
-        tytso@mit.edu, david@fromorbit.com, jack@suse.com,
-        dhowells@redhat.com, khazhy@google.com,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v3 14/15] samples: Add fs error monitoring example
-Organization: Collabora
-References: <20210629191035.681913-15-krisman@collabora.com>
-        <202106301048.BainWUsk-lkp@intel.com>
-Date:   Mon, 19 Jul 2021 10:36:54 -0400
-In-Reply-To: <202106301048.BainWUsk-lkp@intel.com> (kernel test robot's
-        message of "Wed, 30 Jun 2021 10:42:56 +0800")
-Message-ID: <87mtqicqux.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S1350674AbhGSRDV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 19 Jul 2021 13:03:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53128 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1348868AbhGSRC6 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 19 Jul 2021 13:02:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A43A76113A;
+        Mon, 19 Jul 2021 17:43:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626716611;
+        bh=PXhcDlaLx61W4Eutz/rw2y6GFxByoNy/6Lmnqi+79LI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YoGO71o0VRNV8HAHxizjq5I0p+6P8g3XAilO/8xyJFEyM9hvVNeqO88oPVEQ3ZwmV
+         bwQo3srHxYilVTe6K0wC8KbLkSjwtrr/DCQ6V6XZgaLYiFevuqiwFVrn1F3k3frhPb
+         bOxaHC98TwpbQ1UjQk2oHgUND6EavtaYZwOsHL3lC4kc7VxPnvZI2VXiWZHDPUfHUZ
+         hniyTmsfa/QHsekLdiOsr+9dPT0FgCIGupzSnEFPwgwS3tB8ATjFEUHCJSzpl/7jMw
+         Z1TBs+s51khL1jAthagNY80uHDSFh8WozHOFvoZqw6Vm+Qd6NcKv4dL/NkEZ5SopSd
+         lqdwfGvxMXfCQ==
+Date:   Mon, 19 Jul 2021 10:43:31 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Jeffle Xu <jefflexu@linux.alibaba.com>
+Cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v2] vfs: only allow SETFLAGS to set DAX flag on files and
+ dirs
+Message-ID: <20210719174331.GH22357@magnolia>
+References: <20210719023834.104053-1-jefflexu@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210719023834.104053-1-jefflexu@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-kernel test robot <lkp@intel.com> writes:
+On Mon, Jul 19, 2021 at 10:38:34AM +0800, Jeffle Xu wrote:
+> This is similar to commit dbc77f31e58b ("vfs: only allow FSSETXATTR to
+> set DAX flag on files and dirs").
+> 
+> Though the underlying filesystems may have filtered invalid flags, e.g.,
+> ext4_mask_flags() called in ext4_fileattr_set(), also check it in VFS
+> layer.
+> 
+> Signed-off-by: Jeffle Xu <jefflexu@linux.alibaba.com>
+> ---
+> changes since v1:
+> - add separate parentheses surrounding flag tests
+> ---
+>  fs/ioctl.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/ioctl.c b/fs/ioctl.c
+> index 1e2204fa9963..90cfaa4db03a 100644
+> --- a/fs/ioctl.c
+> +++ b/fs/ioctl.c
+> @@ -835,7 +835,7 @@ static int fileattr_set_prepare(struct inode *inode,
+>  	 * It is only valid to set the DAX flag on regular files and
+>  	 * directories on filesystems.
+>  	 */
+> -	if ((fa->fsx_xflags & FS_XFLAG_DAX) &&
+> +	if (((fa->fsx_xflags & FS_XFLAG_DAX) || (fa->flags & FS_DAX_FL)) &&
 
-> Hi Gabriel,
->
-> I love your patch! Yet something to improve:
->
-> [auto build test ERROR on ext3/fsnotify]
-> [also build test ERROR on ext4/dev linus/master v5.13 next-20210629]
-> [cannot apply to tytso-fscrypt/master]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
->
-> url:    https://github.com/0day-ci/linux/commits/Gabriel-Krisman-Bertazi/File-system-wide-monitoring/20210630-031347
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git fsnotify
-> config: arm64-allyesconfig (attached as .config)
-> compiler: aarch64-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://github.com/0day-ci/linux/commit/746524d8db08a041fed90e41b15c8e8ca69cb22d
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Gabriel-Krisman-Bertazi/File-system-wide-monitoring/20210630-031347
->         git checkout 746524d8db08a041fed90e41b15c8e8ca69cb22d
->         # save the attached .config to linux build tree
->         mkdir build_dir
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross O=build_dir ARCH=arm64 SHELL=/bin/bash samples/
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
->>> samples/fanotify/fs-monitor.c:7:10: fatal error: errno.h: No such file or directory
->        7 | #include <errno.h>
->          |          ^~~~~~~~~
->    compilation terminated.
+Isn't fileattr_fill_flags supposed to fill out fa->fsx_xflags from
+fa->flags for a SETFLAGS call?
 
-Hi Dan,
+--D
 
-I'm not sure what's the proper fix here.  Looks like 0day is not using
-cross system libraries when building this user space code.  Should I do
-something special to silent it?
-
--- 
-Gabriel Krisman Bertazi
+>  	    !(S_ISREG(inode->i_mode) || S_ISDIR(inode->i_mode)))
+>  		return -EINVAL;
+>  
+> -- 
+> 2.27.0
+> 
