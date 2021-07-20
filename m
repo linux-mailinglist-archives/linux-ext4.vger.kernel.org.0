@@ -2,86 +2,57 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A27073CF558
-	for <lists+linux-ext4@lfdr.de>; Tue, 20 Jul 2021 09:33:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 348CA3CFABC
+	for <lists+linux-ext4@lfdr.de>; Tue, 20 Jul 2021 15:36:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235219AbhGTGwq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 20 Jul 2021 02:52:46 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:56039 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229916AbhGTGwn (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 20 Jul 2021 02:52:43 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UgP8xJL_1626766400;
-Received: from admindeMacBook-Pro-2.local(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0UgP8xJL_1626766400)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 20 Jul 2021 15:33:20 +0800
-Subject: Re: [PATCH v2] vfs: only allow SETFLAGS to set DAX flag on files and
- dirs
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org
-References: <20210719023834.104053-1-jefflexu@linux.alibaba.com>
- <20210719174331.GH22357@magnolia>
-From:   JeffleXu <jefflexu@linux.alibaba.com>
-Message-ID: <729b4efa-8903-c5ec-4e29-7f4e0d02ce2a@linux.alibaba.com>
-Date:   Tue, 20 Jul 2021 15:33:20 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        id S238381AbhGTMzf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 20 Jul 2021 08:55:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238585AbhGTMxm (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 20 Jul 2021 08:53:42 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D81EC061766;
+        Tue, 20 Jul 2021 06:34:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=/YSXDjhGODR214XoG8Dqm+Gle88zt3vzZxqK1pkRIcg=; b=Vr67rb3umPYmY6fb0PW7/1h7vl
+        /Wfa1z7/ClLU6vBrIaeO4SfL7fkMpEQ7FQPHLjOOzyEIoiSV65cepasWUPVmheXVxUkj9STXKSkJG
+        JbPL+IlctHkBdrIoqoWoeMtOmVLtfWbgh/63Yf78sru8rPcz3Cc93jwxtA75V+SfT7XbYbNOK0EMY
+        xH4uSqXF4oQVaEtPW9auIOiukZybBJOFCFQUD+rQvXMp/faJB4AvsGYuEwBrkDw7majQqa4N6wKvX
+        jMoYSc/0gnPs343vBUV1Ewi6v0TWxXUSyhYPwp6Z96ufp++BO0xX8fKbY2bvdQ3kOusnQGsXpapaa
+        ykooqfjA==;
+Received: from [2001:4bb8:193:7660:5612:5e3c:ba3d:2b3c] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m5psV-0089E9-3x; Tue, 20 Jul 2021 13:33:48 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jan Kara <jack@suse.com>,
+        Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
+Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: remove generic_block_fiemap
+Date:   Tue, 20 Jul 2021 15:33:37 +0200
+Message-Id: <20210720133341.405438-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210719174331.GH22357@magnolia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Hi all,
 
+this series removes the get_block-based generic_block_fiemap helper
+by switching the last two users to use the iomap version instead.
 
-On 7/20/21 1:43 AM, Darrick J. Wong wrote:
-> On Mon, Jul 19, 2021 at 10:38:34AM +0800, Jeffle Xu wrote:
->> This is similar to commit dbc77f31e58b ("vfs: only allow FSSETXATTR to
->> set DAX flag on files and dirs").
->>
->> Though the underlying filesystems may have filtered invalid flags, e.g.,
->> ext4_mask_flags() called in ext4_fileattr_set(), also check it in VFS
->> layer.
->>
->> Signed-off-by: Jeffle Xu <jefflexu@linux.alibaba.com>
->> ---
->> changes since v1:
->> - add separate parentheses surrounding flag tests
->> ---
->>  fs/ioctl.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/fs/ioctl.c b/fs/ioctl.c
->> index 1e2204fa9963..90cfaa4db03a 100644
->> --- a/fs/ioctl.c
->> +++ b/fs/ioctl.c
->> @@ -835,7 +835,7 @@ static int fileattr_set_prepare(struct inode *inode,
->>  	 * It is only valid to set the DAX flag on regular files and
->>  	 * directories on filesystems.
->>  	 */
->> -	if ((fa->fsx_xflags & FS_XFLAG_DAX) &&
->> +	if (((fa->fsx_xflags & FS_XFLAG_DAX) || (fa->flags & FS_DAX_FL)) &&
-> 
-> Isn't fileattr_fill_flags supposed to fill out fa->fsx_xflags from
-> fa->flags for a SETFLAGS call?
+The ext2 version has been tested using xfstests, but the hpfs one
+is only compile tested due to the lack of easy to run tests.
 
-Yes, but fa->fsx_xflags inherited from fa->flags (at least in ext4 it
-is) is the original flags/xflags of the file before SETFLAG/FSSETXATTR.
-Here we want to check *new* flags/xflags.
-
-> 
->>  	    !(S_ISREG(inode->i_mode) || S_ISDIR(inode->i_mode)))
->>  		return -EINVAL;
->>  
->> -- 
->> 2.27.0
->>
-
--- 
-Thanks,
-Jeffle
+diffstat:
+ fs/ext2/inode.c        |   15 +--
+ fs/hpfs/file.c         |   51 ++++++++++++
+ fs/ioctl.c             |  203 -------------------------------------------------
+ include/linux/fiemap.h |    4 
+ 4 files changed, 58 insertions(+), 215 deletions(-)
