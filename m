@@ -2,82 +2,66 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A0D03D261F
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 Jul 2021 16:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A2163D2641
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 Jul 2021 16:53:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232450AbhGVOIL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 22 Jul 2021 10:08:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50722 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232328AbhGVOIK (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 22 Jul 2021 10:08:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F21360FEE;
-        Thu, 22 Jul 2021 14:48:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626965325;
-        bh=kjIiN475TqYty0z7PIG+/pMDUBt+OSnFGGmVVgMKoNs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tc+SdqxggbbqbTwN0onZFGwh5ZmEywzzNR89LpVLby39UCAWx4h4yqlPURhVbOncf
-         KO6YdbeB4zmYYs42oENDY/fKUz+QoAIV4OnlbOnGxvVvgR2wJ6x43sdIHiIF9dLVfG
-         g7ILJbQio/iTJkibMqB7mJ0xtUe17Fva3M2NRpP5Tdgn73LqOJgshreiHi490eXmP0
-         50PjB4kG+vNuP/UHXTJSqknemuwEn8dw7XKd8S10eR1NRH+Oqy1g0k9EMo+iZXzKea
-         1TuenfuARM8NDdS38D33/4/2W8QGWzkHysasB3zq2IeE6c311F0/CwDQLQKIPRPh0w
-         Khg5eR81VTn5Q==
-Date:   Thu, 22 Jul 2021 07:48:43 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Satya Tangirala <satyat@google.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-fscrypt@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v9 0/9] add support for direct I/O with fscrypt using
- blk-crypto
-Message-ID: <YPmFSw4JbWnIozSZ@gmail.com>
-References: <20210604210908.2105870-1-satyat@google.com>
- <CAF2Aj3h-Gt3bOxH4wXB7aeQ3jVzR3TEqd3uLsh4T9Q=e6W6iqQ@mail.gmail.com>
+        id S232530AbhGVOL5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 22 Jul 2021 10:11:57 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:36147 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232520AbhGVOLy (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 22 Jul 2021 10:11:54 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 16MEqNwP014107
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 22 Jul 2021 10:52:24 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 85DA415C37C0; Thu, 22 Jul 2021 10:52:23 -0400 (EDT)
+Date:   Thu, 22 Jul 2021 10:52:23 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 1/5] ext4: Support for checksumming from journal triggers
+Message-ID: <YPmGJ12J7nRt5zQU@mit.edu>
+References: <20210712154009.9290-1-jack@suse.cz>
+ <20210712154009.9290-2-jack@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAF2Aj3h-Gt3bOxH4wXB7aeQ3jVzR3TEqd3uLsh4T9Q=e6W6iqQ@mail.gmail.com>
+In-Reply-To: <20210712154009.9290-2-jack@suse.cz>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Lee,
-
-On Thu, Jul 22, 2021 at 12:23:47PM +0100, Lee Jones wrote:
+On Mon, Jul 12, 2021 at 05:40:05PM +0200, Jan Kara wrote:
+> JBD2 layer support triggers which are called when journaling layer moves
+> buffer to a certain state. We can use the frozen trigger, which gets
+> called when buffer data is frozen and about to be written out to the
+> journal, to compute block checksums for some buffer types (similarly as
+> does ocfs2). This avoids unnecessary repeated recomputation of the
+> checksum (at the cost of larger window where memory corruption won't be
+> caught by checksumming) and is even necessary when there are
+> unsynchronized updaters of the checksummed data.
 > 
-> No review after 7 weeks on the list.
+> So add argument to ext4_journal_get_write_access() and
+> ext4_journal_get_create_access() which describes buffer type so that
+> triggers can be set accordingly. This patch is mostly only a change of
+> prototype of the above mentioned functions and a few small helpers. Real
+> checksumming will come later.
 > 
-> Is there anything Satya can do to help expedite this please?
-> 
+> Signed-off-by: Jan Kara <jack@suse.cz>
 
-This series is basically ready, but I can't apply it because it depends on the
-other patch series
-"[PATCH v4 0/9] ensure bios aren't split in middle of crypto data unit"
-(https://lkml.kernel.org/linux-block/20210707052943.3960-1-satyaprateek2357@gmail.com/T/#u).
-I will be re-reviewing that other patch series soon, but it primary needs review
-by the people who work more regularly with the block layer, and it will have to
-go in through the block tree (I can't apply it to the fscrypt tree).
+Looks good.  I would have preferred mention of the change to
+ext4_walk_page_buffers in the commit description, but I guess this was
+considered one of the "few small helpers".  :-)
 
-The original version of this series didn't require so many block layer changes,
-but it would have only allowed direct I/O with user buffer pointers aligned to
-the filesystem block size, which was too controversial with other filesystem
-developers; see the long discussion at
-https://lkml.kernel.org/linux-fscrypt/20200720233739.824943-1-satyat@google.com/T/#u.
+The WARN_ON_ONCE change in jbd2_journal_set_triggers is a somewhat
+tangentially-related unrelated change, but I think I understand why it
+was made.
 
-In addition, it was requested that we not add features to the "legacy" direct
-I/O implementation (fs/direct-io.c), so I have a patch series in progress
-"[PATCH 0/9] f2fs: use iomap for direct I/O"
-(https://lkml.kernel.org/linux-f2fs-devel/20210716143919.44373-1-ebiggers@kernel.org/T/#u)
-which will change f2fs to use iomap.
+Reviewed-by: Theodore Ts'o <tytso@mit.edu>
 
-Also please understand that Satya has left Google, so any further work from him
-on this is happening on a personal capacity in his free time.
-
-- Eric
+						- Ted
+						
