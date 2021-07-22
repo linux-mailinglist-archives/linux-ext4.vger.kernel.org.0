@@ -2,113 +2,123 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 338D33D22D2
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 Jul 2021 13:35:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3534C3D2347
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 Jul 2021 14:23:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231599AbhGVKzM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 22 Jul 2021 06:55:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231566AbhGVKzM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 22 Jul 2021 06:55:12 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 704C6C061575
-        for <linux-ext4@vger.kernel.org>; Thu, 22 Jul 2021 04:35:47 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id n1so5552281wri.10
-        for <linux-ext4@vger.kernel.org>; Thu, 22 Jul 2021 04:35:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=qlzkM3F5fvit9VhnlC77Sop/s7euLd9Um8Su21feghE=;
-        b=U0vbvrxL0htJ+vraY35fcWe6WD1WXfJ7atdJ0FdoTh6FGRbVyu0IXKroO1gNEW8UfL
-         3RYvuAhFYISejYoe9aOImfwyp9uGMS5vp9vO7VzbGa1BJBssHBVeGM3NiS5LTgNjTi8c
-         Kw1kJUXL3NVhilHPDbIquwt0e3vjkpRZqpv+naxKV/S9s9IeBsSZ8InxIBpr1NgLIM6n
-         Av9dCoM06ACNzh4/JfyNLXEswn/DIrSsmAaAXpKzHKLxUEali6bZtt9DvAaK0Vs4Ewre
-         1AiK2R5p5L+mC2KgAEtwwmcwrVjAXu5TCbbHqB25j2jyHErf+NPMz/X5pqqzQPJjO/+S
-         B0XQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=qlzkM3F5fvit9VhnlC77Sop/s7euLd9Um8Su21feghE=;
-        b=LKE1c5KgJCdBFUjRqxTC71Wii9PLnOXSGvAknBH15S9CeY3iJ1apzf8eIHCpni+gAN
-         nX1Fbg5irjyY8xzZnoA93E1Fqd1LTKy49IPczFbNuqMKQZRcpnEM/NKMFitQFPalUCbE
-         yzhLUkspynPy1xbggsrWloauLmsbgjUTmVG1Tk2IzsJFvquPFR5m/o4K5RgowYTa/OKz
-         IwLvF2RcHUgAu59M+VtqmFS9rpA9AgCiU5pjOuUIgEJ169uWH64svZ5OQKoIuh6lIcs7
-         2iJAJyeN9nv2XWmhM9zCYJj/XyvALWX9pAhKkFDe8Jk8s/ICrMvYZwVp12aSm7RGtc5Y
-         aGEg==
-X-Gm-Message-State: AOAM532q39OlIKRPqZ5tJVHq6+eZpurH/hNMa/O80Vt3Fc6XnJ313age
-        eYkaNYlKrvKZUy4pMzqdg8RvRw==
-X-Google-Smtp-Source: ABdhPJwNQdVmn8wmJMdhELUyS6EUU70oGebBvmvEO/uGWjWpu+I+sCJNxBYjaJWZOlMmi+o7MnqDEQ==
-X-Received: by 2002:a05:6000:231:: with SMTP id l17mr49006652wrz.40.1626953745983;
-        Thu, 22 Jul 2021 04:35:45 -0700 (PDT)
-Received: from google.com ([31.124.24.141])
-        by smtp.gmail.com with ESMTPSA id j4sm15884491wrt.24.2021.07.22.04.35.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 04:35:45 -0700 (PDT)
-Date:   Thu, 22 Jul 2021 12:35:43 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Remy Card <card@masi.ibp.fr>,
-        "David S. Miller" <davem@caip.rutgers.edu>,
-        linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 1/1] fs: ext4: namei: trivial: Fix a couple of small
- whitespace issues
-Message-ID: <YPlYD1BXyjIgh++K@google.com>
-References: <20210520125558.3476318-1-lee.jones@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S231789AbhGVLnR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 22 Jul 2021 07:43:17 -0400
+Received: from mail-co1nam11on2071.outbound.protection.outlook.com ([40.107.220.71]:21693
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231738AbhGVLnQ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 22 Jul 2021 07:43:16 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mJ5dWGy4FbDJAKN5gyHsx4h2D0rrVHfbUlpbbjhl82SczwZ7mK47EcQSkZ91IPwHjU/AB67Ff6AWuEai4KvkL+Eb3qNR+SKHLsrIq2PwtpjXj6FDwtdMXUAvUYBXeXxO3cQBrzlHsNGkLkfGO9NJq8DQnFEfqwnFbaPOpoULUh4AzVdAcrffzS8hZDHBWeaA7y1wd5YlBr0ukGJGaMqO079IflNEiBj264o+9NHSlgy7upOV+xjJSY+azndcfDyePQggbdbcLGxKXZkPM0FbQOtgb+ZsTB3VlxQ51NPfsOplPn7wzy26v80hAk73b0qgWSCag9q5fX6Sl79X9j6S4A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tLakAfoZN582Um+x1ADB0s4C4IFGXPwPnDury2nEzAk=;
+ b=McBuZUQ4NUYmGMrBect19oL8SrAbgY8ud5Ty1JZwDF3DriPTTrWaThLv/dPshj8CJWjrq4jd8P2lZ2ftRLuYku2QZovn8cWOv99qzlnqsNg0nXbjQnheB8xbquCoA7LyjMAe8PbT1qCwvToZlBynfydAHGtkqc0y5ty/yk9z7wKSblKRz7Z8BvMRp22x4lpCI8IIEm/UgzTDOj3gsPSNICutdGPDDHPw2KtLg+SDczm++JfSENAhZkWn900TkyemzYz/G3ftVInly3vhNBoCyQdomUoAQ8dvJDOvyJo6FHzKnwBfI/swhKB6VgPYcmsFDi0srIYKC4QRDKPzbyMUTA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tLakAfoZN582Um+x1ADB0s4C4IFGXPwPnDury2nEzAk=;
+ b=TWXSjx5Xtnh6SyqFgCBfUaz5R/OfzeMQRlj8xmitgLzlzKhiQOhPrWWkw2+seO9Tpvu9GnswfMR6RaeZZy5TRuClU84p2ISyKXKablkKUB4RWapB9wKyeQs3QyMsG64nc7WpMmyjCDkBgwzssQS+Y+z5whEPe8LVz5w3tjAJwAftxNb7PJyJZ9BpRcwzndIwtbChxlRAEuzYbosogRr1SaJit686js3dXYIEVd0GtPWLczdBl8vixUG7UN5Ch/S/KCGczsIwH8844HTGjQeZj1OhEJ9w7wc+Cv7JmhynJYrclvbWXIozxNE83p6lMLWFe5Mo1G6GyNFSij5FqyjXGA==
+Authentication-Results: amd.com; dkim=none (message not signed)
+ header.d=none;amd.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5221.namprd12.prod.outlook.com (2603:10b6:208:30b::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.26; Thu, 22 Jul
+ 2021 12:23:49 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::d017:af2f:7049:5482]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::d017:af2f:7049:5482%4]) with mapi id 15.20.4352.026; Thu, 22 Jul 2021
+ 12:23:49 +0000
+Date:   Thu, 22 Jul 2021 09:23:48 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Alex Sierra <alex.sierra@amd.com>
+Cc:     akpm@linux-foundation.org, Felix.Kuehling@amd.com,
+        linux-mm@kvack.org, rcampbell@nvidia.com,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        hch@lst.de, jglisse@redhat.com
+Subject: Re: [PATCH v4 10/13] lib: test_hmm add module param for zone device
+ type
+Message-ID: <20210722122348.GG1117491@nvidia.com>
+References: <20210717192135.9030-1-alex.sierra@amd.com>
+ <20210717192135.9030-11-alex.sierra@amd.com>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210520125558.3476318-1-lee.jones@linaro.org>
+In-Reply-To: <20210717192135.9030-11-alex.sierra@amd.com>
+X-ClientProxiedBy: BLAPR03CA0146.namprd03.prod.outlook.com
+ (2603:10b6:208:32e::31) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.113.129) by BLAPR03CA0146.namprd03.prod.outlook.com (2603:10b6:208:32e::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.24 via Frontend Transport; Thu, 22 Jul 2021 12:23:49 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1m6Xjw-00640D-1g; Thu, 22 Jul 2021 09:23:48 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f4293262-8a16-49cc-2f83-08d94d0b8f50
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5221:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB522184BD90E471A59E8118FBC2E49@BL1PR12MB5221.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /EkGDFyHc4Zfm4q7XkPCizWxxTgopd+4MqRzka2TDeY3JXLJ/+RUWrXWLZMgbG/5DsWbHf4WxSd4hNk+6HsMkYxjYXIiYCQ0gg4HxMG2S0Gj5+bs/jdhLu/N9n+rouvJX85/Ox7dz3VbHfE5fFfTCy+VSXPlo4brnzCcccQLPpDXumdYmQMzXS8PZzmlKFtEImbh3oVe5srH9SmRNteNdcow0QCIGFE2505v6aJGcKvVrCqDNgH3i8YHjYL9RmsMEZ3smEP07OvqVTAx2/6TRXm58jH/0EA3xO1V9K5qjsr7a/RwVHGeyvp+DLqDFLLqOBVWFVonZo42T46+HDCjGJbM0ohy7sTnM0AetwsmP9zDoXPyYJTMde1pXPJRzBKgUwuZEqNAHbzaMi9s0Qtcag/XgSx6U2gM0sqEDcsaM22rYp+JPbwfjbG1cTn0cKrag1ffwN8nTzbtoPkqa4RdOZDSnUmXh0RWp5g8If533bWqZvUUXFRkl8z9A3zeUOcY08cOq0W7oQlFKfRW9o4tN4NbGFm12XXC4Sk3Mq4QcQXVqGL0AaGO03X7dJm/N3SaHAlZpM+GykxzuwoMXBrNxKU834TPlh8wfKyHzCu39Bogk9Z4PNvTFqdx5oqYWuhIzUNu8rRZs3LpVSyFijX9Xw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(508600001)(8676002)(83380400001)(316002)(66946007)(86362001)(7416002)(66476007)(5660300002)(66556008)(4326008)(1076003)(4744005)(2906002)(186003)(9786002)(8936002)(33656002)(9746002)(2616005)(26005)(426003)(36756003)(6916009)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?DszwdCXRlvTS6LGf8078Isg2cavORjrZfSjlKwoIh2f/6PkrxCa016pcPYRx?=
+ =?us-ascii?Q?P+PGoaSTC5wIjF2q9j5UVMjCOI5YfRv2a0puZ2WTOn0WkQnQ8C2+jM9JPFWz?=
+ =?us-ascii?Q?tKJ+aopic+9QeFfBDGB7lvQlZRRM/hnhhF0o9269QIKsr8hYzvIG1zKtY2ce?=
+ =?us-ascii?Q?k34Tzhmi/5hBhkadLcVEEF6RqwTtj/Z7OPmGxxUlV+sLnWz8KBNDytZ6atFr?=
+ =?us-ascii?Q?wZT23DsuJhZEXVXfW+FY+SYnG6tTy60napg9dOz32SqwkWzc628hAdrKpcSh?=
+ =?us-ascii?Q?m4bGAMcgzfUjZQ1ve2dRKtyM/q9ypMOTUa8pFhI7bmqWppMEBQCkFYwNSY+4?=
+ =?us-ascii?Q?8aoCV9/BHsRW1OcpJ0GHtJq8VWc5/f0rKMN5SUvYkvnAljBaaj11OTXw9DhK?=
+ =?us-ascii?Q?tBRRkx+DR1F5cJFZnAxzRlJFw+CfRoQWAmdGOZHxlICxuhYreqQc9OO24AY+?=
+ =?us-ascii?Q?SVH2oAY3Pq5lW1kCD/uhSwy4WXKzUs+nDlRgSgoWzbKe8zPf4pMU5ARfdgpQ?=
+ =?us-ascii?Q?XqO6e+mzvIJtDm3/5wz5KRKLtexFZpxVoAgad6WhQSnAm0w9cMXpF9MrmbgN?=
+ =?us-ascii?Q?QgW7cxuVhx5DUuL3Y5IpN6s/kG/c4SR/b42kKMnPkkaTUHhyyccWaO6cjFjb?=
+ =?us-ascii?Q?t4rWCfd921jTaBzblB/JTN72g6ufUObrJYqajV/szQAcy5h046ylMX5lcA+H?=
+ =?us-ascii?Q?q/o4orow8O95sfyvcC1/QSywWJeEgyT4xq6DZb0WlfDgj1S4xPCBEt6llzpU?=
+ =?us-ascii?Q?AIUieEFT4mHI1Vtlryj9JT+fRbUYfe6f+Vqh1QksAQPRXavCoo2iFHdRoQ2F?=
+ =?us-ascii?Q?n4G/RytES9XvIoKFY+gGa/TMqrn91nG3lz1TuG/nlel7tgR9MuvyfXnnSGhD?=
+ =?us-ascii?Q?FPyWUO8uIL7oeXfDRX2MdZu30zRnK2n4PseLOD7PNft3SFbxYeDdhALoK5Yz?=
+ =?us-ascii?Q?fW3wwhZYcqrMvPAr98pWVwM+s7f1eZdpPM71yAg87ao/2JF/uso4El5/XLuG?=
+ =?us-ascii?Q?bi9Ch1FRGM7U/8l/jw9IVRJ9iBwihZbOQGDSVhibOXfCev3hgZxPTIdYRPTM?=
+ =?us-ascii?Q?i60cpqeSqcOzfsbpow4AW8afAt1RVLCyuVsL7+BDYOtJTaUuplm8n/jf2r4C?=
+ =?us-ascii?Q?ZwpEoZGVyS3HqGxjdtFNF7qSkeaZnxulf/9Nn+3i1ptme2ylLiek9iXge44L?=
+ =?us-ascii?Q?DJNretc4a9yEuj1bRcXrEw6aEJe3oBOVydi0TteShKbV4laxf69b60KEYGD2?=
+ =?us-ascii?Q?gMSUHhp/Desixk3JqhaEoW7bZpsTcRtK/7FftZlhnMPHi3S8DfXDCv1WSDbk?=
+ =?us-ascii?Q?7vflVPXXv3vXd4M3VOjLB/cf?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f4293262-8a16-49cc-2f83-08d94d0b8f50
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jul 2021 12:23:49.5395
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xuEWV+dw/8MftmOWv5ynvaCHjvKfc75IWj0XQ0MJfFKLavrGC2IaItRbllB5s8Qu
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5221
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, 20 May 2021, Lee Jones wrote:
+On Sat, Jul 17, 2021 at 02:21:32PM -0500, Alex Sierra wrote:
+> In order to configure device generic in test_hmm, two
+> module parameters should be passed, which correspon to the
+> SP start address of each device (2) spm_addr_dev0 &
+> spm_addr_dev1. If no parameters are passed, private device
+> type is configured.
 
-> Cc: "Theodore Ts'o" <tytso@mit.edu>
-> Cc: Andreas Dilger <adilger.kernel@dilger.ca>
-> Cc: Remy Card <card@masi.ibp.fr>
-> Cc: "David S. Miller" <davem@caip.rutgers.edu>
-> Cc: linux-ext4@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  fs/ext4/namei.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+I don't think tests should need configuration like this, is it really
+necessary? How can people with normal HW run this test?
 
-Any news on this please?
-
-Would you like me to submit a [RESEND]?
-
-> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-> index afb9d05a99bae..7e780cf311c5a 100644
-> --- a/fs/ext4/namei.c
-> +++ b/fs/ext4/namei.c
-> @@ -1899,7 +1899,7 @@ static struct ext4_dir_entry_2 *dx_pack_dirents(struct inode *dir, char *base,
->   * Returns pointer to de in block into which the new entry will be inserted.
->   */
->  static struct ext4_dir_entry_2 *do_split(handle_t *handle, struct inode *dir,
-> -			struct buffer_head **bh,struct dx_frame *frame,
-> +			struct buffer_head **bh, struct dx_frame *frame,
->  			struct dx_hash_info *hinfo)
->  {
->  	unsigned blocksize = dir->i_sb->s_blocksize;
-> @@ -2246,7 +2246,7 @@ static int make_indexed_dir(handle_t *handle, struct ext4_filename *fname,
->  	if (retval)
->  		goto out_frames;
->  
-> -	de = do_split(handle,dir, &bh2, frame, &fname->hinfo);
-> +	de = do_split(handle, dir, &bh2, frame, &fname->hinfo);
->  	if (IS_ERR(de)) {
->  		retval = PTR_ERR(de);
->  		goto out_frames;
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Jason
