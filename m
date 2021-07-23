@@ -2,79 +2,143 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B75703D3C72
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 Jul 2021 17:30:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D7A83D4095
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 Jul 2021 21:12:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235581AbhGWOuO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 23 Jul 2021 10:50:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235553AbhGWOtv (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Jul 2021 10:49:51 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4E67C061796
-        for <linux-ext4@vger.kernel.org>; Fri, 23 Jul 2021 08:30:16 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id f18so2676302lfu.10
-        for <linux-ext4@vger.kernel.org>; Fri, 23 Jul 2021 08:30:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:from:subject:message-id:disposition-notification-to:date
-         :mime-version:content-language:content-transfer-encoding;
-        bh=f1HXgkNudjR8TWcttz5Zgp5fCvdMS58yvnzoYpcs8FU=;
-        b=aCSa91TgW+jvp0ThzbasLvoKINB9hfXwNcQiAn4ofPNcFX5NVCN54CH2Q0CZZ13C9I
-         jr1ypi1QwOE8iAGRvQZeEntbekurjoqf52hfDXRhUroL0LHS99jJorMnXR3flP2iehb+
-         YlMdzTRhgAvi3zMczIDoI9FhlUS4PI36yXj5UVHmVcTQ8AwWGyLticECTnA8DTytF4qZ
-         XqLKraQfFK0utvENMnIfabkfg8uQ2wBQ+tZsQ3i5sfq1w94YNYWur+PzGoPwOmMw+gpl
-         Mmnj8PAxi7yUjpyx19UxBJdpl7aLLpGM9sfRmfyKFqBOSQO4uXC7rMk17FiR4jOu+zPx
-         E0sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:from:subject:message-id
-         :disposition-notification-to:date:mime-version:content-language
-         :content-transfer-encoding;
-        bh=f1HXgkNudjR8TWcttz5Zgp5fCvdMS58yvnzoYpcs8FU=;
-        b=Uv5V2KU2pENeeeS21r9BC7mQbrxDt3k+r4IpotB9zQ5Lc4lNURC0VPxr2exd4uIHn6
-         aN0Wq1fbS5xExKABEHlkW7VkiOqwDRrnwXce7sos5oMD+/Hy0oLTzHUYnGqbE5h3fAtY
-         jB1NQ2M4lte6EyztbHSe75vQIYjacdZ9pnec0+2nk7BCmHd8kc923rYAGD0icamFDz4g
-         B9TCp3l9e4aTwlwxGKbhn1TLJzSZqpHyFXp0ZRP4UYC+BI9cjY75feLn1egYwdiH/kQt
-         vG1qsrhegDSi1x633Hu3K861iSTvLXwhRNGdZgX/lc9kxHAjaKmbBVQdpKQGC7m7DXki
-         CPcw==
-X-Gm-Message-State: AOAM530c5ao0gwvG7HYyN1LryUHd1M0ev8HOXpRLPVNcA7x/A9P3wf6n
-        h+wLzsH2oNXk2vahDsYSbmpoX+Lkhz7bqw==
-X-Google-Smtp-Source: ABdhPJwAedOO7hply2aKHxM+McICBikFjBooZ9NCAu6wUPx48Z/XFFvlKXh6cBd+y+JTbSwrALUGJg==
-X-Received: by 2002:ac2:5337:: with SMTP id f23mr3308762lfh.289.1627054215187;
-        Fri, 23 Jul 2021 08:30:15 -0700 (PDT)
-Received: from localhost (public-gprs549192.centertel.pl. [37.225.8.137])
-        by smtp.gmail.com with ESMTPSA id j16sm1875595lfh.258.2021.07.23.08.30.14
-        for <linux-ext4@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Jul 2021 08:30:14 -0700 (PDT)
-To:     linux-ext4@vger.kernel.org
-From:   Mikhail Morfikov <mmorfikov@gmail.com>
-Subject: Is it safe to use the bigalloc feature in the case of ext4
- filesystem?
-Message-ID: <0dc45cbd-b3b0-97ab-66a9-f68331cb483e@gmail.com>
-Date:   Fri, 23 Jul 2021 17:30:13 +0200
+        id S230521AbhGWSbK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 23 Jul 2021 14:31:10 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:36705 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229761AbhGWSbJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Jul 2021 14:31:09 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 16NJBXlc008045
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 23 Jul 2021 15:11:34 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 577A715C37C0; Fri, 23 Jul 2021 15:11:33 -0400 (EDT)
+Date:   Fri, 23 Jul 2021 15:11:33 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     yangerkun <yangerkun@huawei.com>
+Cc:     jack@suse.cz, linux-ext4@vger.kernel.org, yukuai3@huawei.com
+Subject: Re: [PATCH] ext4: flush s_error_work before journal destroy in
+ ext4_fill_super
+Message-ID: <YPsUZX+PF5HASRkK@mit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <eb962c26-b013-957b-7931-feda7f8bf5b5@huawei.com>
+ <c0c8619d-3d9b-a184-3cd1-0cd88447fdcd@huawei.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-In the man ext4(5) we can read the following:
+On Fri, Jul 23, 2021 at 09:11:08PM +0800, yangerkun wrote:
+> 
+> For example, before wo goto failed_mount_wq, we may meet some error and will
+> goto ext4_handle_error which can call
+> schedule_work(&EXT4_SB(sb)->s_error_work). So the work may start concurrent
+> with ext4_fill_super goto failed_mount_wq. There does not have any lock to
+> protect the concurrent read and modifies for sbi->s_journal.
 
-    Warning: The bigalloc feature is still under development, 
-    and may not be fully supported with your kernel or may 
-    have various bugs. Please see the web page 
-    http://ext4.wiki.kernel.org/index.php/Bigalloc for details. 
-    May clash with delayed allocation (see nodelalloc mount 
-    option).
+Yes, and I'm asking *how* is this actually happening in practice?
+I've been going through the code paths and I don't see any place where
+ext4_error*() would be called.  That's why I wanted to see your test
+case which was reproducing it.  (Not just where you added the msleep,
+but how the error was getting triggered in the first place.)
 
-According to the link above, the info is dated back to 2013, 
-which is a little bit ancient.
 
-What's the current status of the feature? Is it safe to use 
-bigalloc on several TiB hard disks where only big files will be 
-stored?
+On Fri, Jul 23, 2021 at 09:25:12PM +0800, yangerkun wrote:
+> 
+> > Can you share with me your test case?  Your patch will result in the
+> > shrinker potentially not getting released in some error paths (which
+> > will cause other kernel panics), and in any case, once the journal is
+> 
+> The only logic we have changed is that we move the flush_work before we call
+> jbd2_journal_destory. I have not seen the problem you describe... Can you
+> help to explain more...
+
+Sorry, I was mistaken.  I thought you were moving the
+ext4_es_unregister_shrinker() and flush_work() before the label for
+failed_mount_wq; that was a misreading of your patch.
+
+The other way we could fix this might be something like this:
+
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index dfa09a277b56..d663d11fa0de 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -693,7 +693,7 @@ static void flush_stashed_error_work(struct work_struct *work)
+ {
+ 	struct ext4_sb_info *sbi = container_of(work, struct ext4_sb_info,
+ 						s_error_work);
+-	journal_t *journal = sbi->s_journal;
++	journal_t *journal = READ_ONCE(sbi->s_journal);
+ 	handle_t *handle;
+ 
+ 	/*
+@@ -1184,9 +1184,11 @@ static void ext4_put_super(struct super_block *sb)
+ 	ext4_unregister_sysfs(sb);
+ 
+ 	if (sbi->s_journal) {
+-		aborted = is_journal_aborted(sbi->s_journal);
+-		err = jbd2_journal_destroy(sbi->s_journal);
+-		sbi->s_journal = NULL;
++		journal_t *journal = sbi->s_journal;
++
++		WRITE_ONCE(sbi->s_journal, NULL);
++		aborted = is_journal_aborted(journal);
++		err = jbd2_journal_destroy(journal);
+ 		if ((err < 0) && !aborted) {
+ 			ext4_abort(sb, -err, "Couldn't clean up the journal");
+ 		}
+@@ -5175,8 +5177,10 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+ 	sbi->s_ea_block_cache = NULL;
+ 
+ 	if (sbi->s_journal) {
+-		jbd2_journal_destroy(sbi->s_journal);
+-		sbi->s_journal = NULL;
++		journal_t *journal = sbi->s_journal;
++
++		WRITE_ONCE(sbi->s_journal, NULL);
++		jbd2_journal_destroy(journal);
+ 	}
+ failed_mount3a:
+ 	ext4_es_unregister_shrinker(sbi);
+@@ -5487,7 +5491,7 @@ static int ext4_load_journal(struct super_block *sb,
+ 	EXT4_SB(sb)->s_journal = journal;
+ 	err = ext4_clear_journal_err(sb, es);
+ 	if (err) {
+-		EXT4_SB(sb)->s_journal = NULL;
++		WRITE_ONCE(EXT4_SB(sb)->s_journal, NULL);
+ 		jbd2_journal_destroy(journal);
+ 		return err;
+ 	}
+
+... and here's another possible fix:
+
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index dfa09a277b56..e9e122e52ce8 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -704,7 +704,8 @@ static void flush_stashed_error_work(struct work_struct *work)
+ 	 * We use directly jbd2 functions here to avoid recursing back into
+ 	 * ext4 error handling code during handling of previous errors.
+ 	 */
+-	if (!sb_rdonly(sbi->s_sb) && journal) {
++	if (!sb_rdonly(sbi->s_sb) && journal &&
++	    !(journal->j_flags & JBD2_UNMOUNT)) {
+ 		struct buffer_head *sbh = sbi->s_sbh;
+ 		handle = jbd2_journal_start(journal, 1);
+ 		if (IS_ERR(handle))
+
+
+
+But I would be interested in understanding how we could be triggering
+this problem in the first place before deciding what's the best fix.
+
+Cheers,
+
+					- Ted
