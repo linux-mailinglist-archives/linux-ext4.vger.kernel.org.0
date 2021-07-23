@@ -2,117 +2,59 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2E3B3D3158
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 Jul 2021 03:35:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 099F13D342A
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 Jul 2021 07:41:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233115AbhGWAzY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 22 Jul 2021 20:55:24 -0400
-Received: from mga02.intel.com ([134.134.136.20]:55328 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232892AbhGWAzX (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 22 Jul 2021 20:55:23 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10053"; a="198987750"
-X-IronPort-AV: E=Sophos;i="5.84,262,1620716400"; 
-   d="scan'208";a="198987750"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2021 18:35:54 -0700
-X-IronPort-AV: E=Sophos;i="5.84,262,1620716400"; 
-   d="scan'208";a="433364508"
-Received: from rongch2-mobl.ccr.corp.intel.com (HELO [10.249.174.9]) ([10.249.174.9])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2021 18:35:51 -0700
-Subject: Re: [PATCH v3 14/15] samples: Add fs error monitoring example
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        kernel test robot <lkp@intel.com>, amir73il@gmail.com,
-        kbuild-all@lists.01.org, djwong@kernel.org, tytso@mit.edu,
-        david@fromorbit.com, jack@suse.com, dhowells@redhat.com,
-        khazhy@google.com, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org
-References: <20210629191035.681913-15-krisman@collabora.com>
- <202106301048.BainWUsk-lkp@intel.com> <87mtqicqux.fsf@collabora.com>
- <20210720194955.GH25548@kadam>
- <4313fff4-343a-2937-3a97-c5da860827b1@intel.com>
- <874kcmb9zs.fsf@collabora.com>
-From:   "Chen, Rong A" <rong.a.chen@intel.com>
-Message-ID: <31d5c954-0188-e91f-4444-faeb6dc1339a@intel.com>
-Date:   Fri, 23 Jul 2021 09:35:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
+        id S233733AbhGWFAi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 23 Jul 2021 01:00:38 -0400
+Received: from [123.182.59.96] ([123.182.59.96]:54870 "EHLO 1mdnx.top"
+        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
+        id S230101AbhGWFAg (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 23 Jul 2021 01:00:36 -0400
+X-Greylist: delayed 1224 seconds by postgrey-1.27 at vger.kernel.org; Fri, 23 Jul 2021 01:00:34 EDT
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; s=1mdnx; d=1mdnx.top;
+ h=Message-ID:From:To:Subject:Date:MIME-Version:Content-Type:Content-Transfer-Encoding; i=etc-malsei@1mdnx.top;
+ bh=8LzLe1CzDVIoD0h0cWkbDfAlMiY=;
+ b=Len1pBviWRVKM3or+SnIw54M6txQOqlsZzPM+/s/SVjC/EI4rQWAbWdVdCywi1x3TexPmd+4YHHE
+   CpzluAsTOmO41DIm8OwejgaFx+7Kyo6/uwSfUmophr3yd/skGTkoQBRbSEG2Nht8j8qQfOnBjPF6
+   xMywYUaObvPL4JfBahg=
+DomainKey-Signature: a=rsa-sha1; c=nofws; q=dns; s=1mdnx; d=1mdnx.top;
+ b=GodyQJlwN4R3RfBH9wyuflSUZ21OCPflq6xkRiwOamjRR2O1pktzUCItQ7kxpXZvq+xxo7mniCDd
+   C61gWkvQY3M7ZAhezWMdiUI7HsgV6z8MItf49kZodmv7XbEuNOdUs0KKOg4n/A242PS9wnCkHHvz
+   cylUv8RVQgT2RAG1et0=;
+Message-ID: <91B67D1E9EF48B3424A82109766B1962@ywo>
+From:   =?utf-8?B?RVRD6YCa55+l?= <etc-malsei@1mdnx.top>
+To:     <linux-ext4@vger.kernel.org>
+Subject: =?utf-8?B?5oOF5aCx44KS55+l44KJ44Gb44KL?=
+Date:   Fri, 23 Jul 2021 13:20:11 +0800
 MIME-Version: 1.0
-In-Reply-To: <874kcmb9zs.fsf@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: base64
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2900.5512
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2900.5512
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+RVRD44K144O844OT44K544KS44GU5Yip55So44Gu44GK5a6i5qeYOg0KDQoNCkVUQ+OCteODvOOD
+k+OCueOBr+eEoeWKueOBq+OBquOCiuOBvuOBl+OBn+OAgg0K5byV44GN57aa44GN44K144O844OT
+44K544KS44GU5Yip55So44GE44Gf44Gg44GN44Gf44GE5aC05ZCI44Gv44CB5LiL6KiY44Oq44Oz
+44Kv44KI44KK6Kmz57Sw44KS44GU56K66KqN44GP44Gg44GV44GE44CCDQoNCg0K5LiL6KiY44Gu
+5o6l57aa44GL44KJ5YGc5q2i5Y6f5Zug44KS56K66KqN44GX44Gm44GP44Gg44GV44GEDQpodHRw
+czovL2V0Yy1tZWhhaS1qcC5yYWRpby5hbQ0KDQoo55u05o6l44Ki44Kv44K744K544Gn44GN44Gq
+44GE5aC05ZCI44Gv44CB5omL5YuV44Gn44OW44Op44Km44K244Gr44Kz44OU44O844GX44Gm6ZaL
+44GE44Gm44GP44Gg44GV44GEKQ0KDQoNCg0K4oC744GT44Gu44Oh44O844Or44Gv6YCB5L+h5bCC
+55So44Gn44GZ44CCDQrjgIDjgZPjga7jgqLjg4njg6zjgrnjgavpgIHkv6HjgYTjgZ/jgaDjgYTj
+gabjgoLov5Tkv6HjgYTjgZ/jgZfjgYvjga3jgb7jgZnjga7jgafjgIHjgYLjgonjgYvjgZjjgoHj
+gZTkuobmib/poZjjgYTjgb7jgZnjgIINCuKAu+OBquOBiuOAgeOBlOS4jeaYjuOBqueCueOBq+OB
+pOOBjeOBvuOBl+OBpuOBr+OAgeOBiuaJi+aVsOOBp+OBmeOBjOOAgQ0Kw4tUQ+OCteODvOODk+OC
+ueS6i+WLmeWxgOOBq+OBiuWVj+OBhOWQiOOCj+OBm+OBj+OBoOOBleOBhOOAgg0KDQoNCg0K4pag
+RVRD5Yip55So54Wn5Lya44K144O844OT44K55LqL5YuZ5bGADQrlubTkuK3nhKHkvJHjgIA5OjAw
+772eMTg6MDANCuODiuODk+ODgOOCpOODpOODq+OAgDA1NzAtMDEwMTM5DQrvvIjjg4rjg5Pjg4Dj
+gqTjg6Tjg6vjgYzjgZTliKnnlKjjgYTjgZ/jgaDjgZHjgarjgYTjgYrlrqLjgZXjgb7jgIAwNDUt
+NzQ0LTEzNzLvvIkNCg==
 
 
-On 7/23/2021 12:15 AM, Gabriel Krisman Bertazi wrote:
-> "Chen, Rong A" <rong.a.chen@intel.com> writes:
-> 
->> Hi Gabriel,
->>
->> On 7/21/2021 3:49 AM, Dan Carpenter wrote:
->>> On Mon, Jul 19, 2021 at 10:36:54AM -0400, Gabriel Krisman Bertazi
->>> wrote:
->>>> kernel test robot <lkp@intel.com> writes:
->>>>
->>>>> Hi Gabriel,
->>>>>
->>>>> I love your patch! Yet something to improve:
->>>>>
->>>>> [auto build test ERROR on ext3/fsnotify]
->>>>> [also build test ERROR on ext4/dev linus/master v5.13 next-20210629]
->>>>> [cannot apply to tytso-fscrypt/master]
->>>>> [If your patch is applied to the wrong git tree, kindly drop us a note.
->>>>> And when submitting patch, we suggest to use '--base' as documented in
->>>>> https://git-scm.com/docs/git-format-patch ]
->>>>>
->>>>> url:    https://github.com/0day-ci/linux/commits/Gabriel-Krisman-Bertazi/File-system-wide-monitoring/20210630-031347
->>>>> base:   https://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git  fsnotify
->>>>> config: arm64-allyesconfig (attached as .config)
->>>>> compiler: aarch64-linux-gcc (GCC) 9.3.0
->>>>> reproduce (this is a W=1 build):
->>>>>           wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross  -O ~/bin/make.cross
->>>>>           chmod +x ~/bin/make.cross
->>>>>           # https://github.com/0day-ci/linux/commit/746524d8db08a041fed90e41b15c8e8ca69cb22d
->>>>>           git remote add linux-review https://github.com/0day-ci/linux
->>>>>           git fetch --no-tags linux-review Gabriel-Krisman-Bertazi/File-system-wide-monitoring/20210630-031347
->>>>>           git checkout 746524d8db08a041fed90e41b15c8e8ca69cb22d
->>>>>           # save the attached .config to linux build tree
->>>>>           mkdir build_dir
->>>>>           COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross O=build_dir ARCH=arm64 SHELL=/bin/bash samples/
->>>>>
->>>>> If you fix the issue, kindly add following tag as appropriate
->>>>> Reported-by: kernel test robot <lkp@intel.com>
->>>>>
->>>>> All errors (new ones prefixed by >>):
->>>>>
->>>>>>> samples/fanotify/fs-monitor.c:7:10: fatal error: errno.h: No such file or directory
->>>>>          7 | #include <errno.h>
->>>>>            |          ^~~~~~~~~
->>>>>      compilation terminated.
->>>>
->>>> Hi Dan,
->>>>
->>>> I'm not sure what's the proper fix here.  Looks like 0day is not using
->>>> cross system libraries when building this user space code.  Should I do
->>>> something special to silent it?
->>
->> It seems need extra libraries for arm64, we'll disable CONFIG_SAMPLES to
->> avoid reporting this error.
-> 
-> There are kernel space code in samples/ that still benefit from the test
-> robot. See ftrace/ftrace-direct-too.c for one instance.
-> 
-> Perhaps it can be disabled just for userprogs-* Makefile entries in
-> samples/ ?
-> 
-
-we'll still test samples on arch x86_64, is there a simple way to 
-disable userprogs-* cases? we don't want to edit kernel code.
-
-Best Regards,
-Rong Chen
