@@ -2,83 +2,117 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9390A3D2FA9
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 Jul 2021 00:17:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2E3B3D3158
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 Jul 2021 03:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232242AbhGVVgw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 22 Jul 2021 17:36:52 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:39787 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232024AbhGVVgv (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 22 Jul 2021 17:36:51 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 16MMHGMV021590
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Jul 2021 18:17:16 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 3A54115C37C0; Thu, 22 Jul 2021 18:17:16 -0400 (EDT)
-Date:   Thu, 22 Jul 2021 18:17:16 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Remy Card <card@masi.ibp.fr>,
-        "David S. Miller" <davem@caip.rutgers.edu>,
+        id S233115AbhGWAzY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 22 Jul 2021 20:55:24 -0400
+Received: from mga02.intel.com ([134.134.136.20]:55328 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232892AbhGWAzX (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 22 Jul 2021 20:55:23 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10053"; a="198987750"
+X-IronPort-AV: E=Sophos;i="5.84,262,1620716400"; 
+   d="scan'208";a="198987750"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2021 18:35:54 -0700
+X-IronPort-AV: E=Sophos;i="5.84,262,1620716400"; 
+   d="scan'208";a="433364508"
+Received: from rongch2-mobl.ccr.corp.intel.com (HELO [10.249.174.9]) ([10.249.174.9])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2021 18:35:51 -0700
+Subject: Re: [PATCH v3 14/15] samples: Add fs error monitoring example
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        kernel test robot <lkp@intel.com>, amir73il@gmail.com,
+        kbuild-all@lists.01.org, djwong@kernel.org, tytso@mit.edu,
+        david@fromorbit.com, jack@suse.com, dhowells@redhat.com,
+        khazhy@google.com, linux-fsdevel@vger.kernel.org,
         linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 1/1] fs: ext4: namei: trivial: Fix a couple of small
- whitespace issues
-Message-ID: <YPnubECqbX47V3TK@mit.edu>
-References: <20210520125558.3476318-1-lee.jones@linaro.org>
- <YPlYD1BXyjIgh++K@google.com>
+References: <20210629191035.681913-15-krisman@collabora.com>
+ <202106301048.BainWUsk-lkp@intel.com> <87mtqicqux.fsf@collabora.com>
+ <20210720194955.GH25548@kadam>
+ <4313fff4-343a-2937-3a97-c5da860827b1@intel.com>
+ <874kcmb9zs.fsf@collabora.com>
+From:   "Chen, Rong A" <rong.a.chen@intel.com>
+Message-ID: <31d5c954-0188-e91f-4444-faeb6dc1339a@intel.com>
+Date:   Fri, 23 Jul 2021 09:35:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPlYD1BXyjIgh++K@google.com>
+In-Reply-To: <874kcmb9zs.fsf@collabora.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 12:35:43PM +0100, Lee Jones wrote:
-> On Thu, 20 May 2021, Lee Jones wrote:
+
+
+On 7/23/2021 12:15 AM, Gabriel Krisman Bertazi wrote:
+> "Chen, Rong A" <rong.a.chen@intel.com> writes:
 > 
-> > Cc: "Theodore Ts'o" <tytso@mit.edu>
-> > Cc: Andreas Dilger <adilger.kernel@dilger.ca>
-> > Cc: Remy Card <card@masi.ibp.fr>
-> > Cc: "David S. Miller" <davem@caip.rutgers.edu>
-> > Cc: linux-ext4@vger.kernel.org
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> >  fs/ext4/namei.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
+>> Hi Gabriel,
+>>
+>> On 7/21/2021 3:49 AM, Dan Carpenter wrote:
+>>> On Mon, Jul 19, 2021 at 10:36:54AM -0400, Gabriel Krisman Bertazi
+>>> wrote:
+>>>> kernel test robot <lkp@intel.com> writes:
+>>>>
+>>>>> Hi Gabriel,
+>>>>>
+>>>>> I love your patch! Yet something to improve:
+>>>>>
+>>>>> [auto build test ERROR on ext3/fsnotify]
+>>>>> [also build test ERROR on ext4/dev linus/master v5.13 next-20210629]
+>>>>> [cannot apply to tytso-fscrypt/master]
+>>>>> [If your patch is applied to the wrong git tree, kindly drop us a note.
+>>>>> And when submitting patch, we suggest to use '--base' as documented in
+>>>>> https://git-scm.com/docs/git-format-patch ]
+>>>>>
+>>>>> url:    https://github.com/0day-ci/linux/commits/Gabriel-Krisman-Bertazi/File-system-wide-monitoring/20210630-031347
+>>>>> base:   https://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git  fsnotify
+>>>>> config: arm64-allyesconfig (attached as .config)
+>>>>> compiler: aarch64-linux-gcc (GCC) 9.3.0
+>>>>> reproduce (this is a W=1 build):
+>>>>>           wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross  -O ~/bin/make.cross
+>>>>>           chmod +x ~/bin/make.cross
+>>>>>           # https://github.com/0day-ci/linux/commit/746524d8db08a041fed90e41b15c8e8ca69cb22d
+>>>>>           git remote add linux-review https://github.com/0day-ci/linux
+>>>>>           git fetch --no-tags linux-review Gabriel-Krisman-Bertazi/File-system-wide-monitoring/20210630-031347
+>>>>>           git checkout 746524d8db08a041fed90e41b15c8e8ca69cb22d
+>>>>>           # save the attached .config to linux build tree
+>>>>>           mkdir build_dir
+>>>>>           COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross O=build_dir ARCH=arm64 SHELL=/bin/bash samples/
+>>>>>
+>>>>> If you fix the issue, kindly add following tag as appropriate
+>>>>> Reported-by: kernel test robot <lkp@intel.com>
+>>>>>
+>>>>> All errors (new ones prefixed by >>):
+>>>>>
+>>>>>>> samples/fanotify/fs-monitor.c:7:10: fatal error: errno.h: No such file or directory
+>>>>>          7 | #include <errno.h>
+>>>>>            |          ^~~~~~~~~
+>>>>>      compilation terminated.
+>>>>
+>>>> Hi Dan,
+>>>>
+>>>> I'm not sure what's the proper fix here.  Looks like 0day is not using
+>>>> cross system libraries when building this user space code.  Should I do
+>>>> something special to silent it?
+>>
+>> It seems need extra libraries for arm64, we'll disable CONFIG_SAMPLES to
+>> avoid reporting this error.
 > 
-> Any news on this please?
+> There are kernel space code in samples/ that still benefit from the test
+> robot. See ftrace/ftrace-direct-too.c for one instance.
 > 
-> Would you like me to submit a [RESEND]?
+> Perhaps it can be disabled just for userprogs-* Makefile entries in
+> samples/ ?
+> 
 
-Please don't send "checkpatch.pl --file" patches for the ext4 file
-system; if you must, please focus on files in the drivers directory,
-where they are more welcome.  If developers are making changes to a
-file, fixing some checkpatch.pl whines is fine, but white-sapace only
-changes just obfuscates "git blame" code archology, and so the costs
-far outwieghs the costs.  "Fix" is also not the right verb to use.
-For more information please see [1].
+we'll still test samples on arch x86_64, is there a simple way to 
+disable userprogs-* cases? we don't want to edit kernel code.
 
-[1] https://gist.github.com/17twenty/8154928
-
-If you are looking for subtantive ways of contributing to the ext4
-file system, feel free to look at various syzbot warnings[2] and try
-to figure out what is going on there.
-
-[2] https://syzkaller.appspot.com/upstream
-
-(In some cases, the syzbot complaint has already been fixed, and it's
-just a matter of letting syzbot knoww that it has since been fixed by
-a particular commit.  See [3] for more details.)
-
-[3] https://github.com/google/syzkaller/blob/master/docs/syzbot.md
-
-Cheers,
-
-						- Ted
+Best Regards,
+Rong Chen
