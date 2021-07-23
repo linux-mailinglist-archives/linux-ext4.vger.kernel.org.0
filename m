@@ -2,98 +2,79 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E6853D3B08
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 Jul 2021 15:25:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B75703D3C72
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 Jul 2021 17:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234988AbhGWMol (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 23 Jul 2021 08:44:41 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:12246 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233230AbhGWMol (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Jul 2021 08:44:41 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GWVK74zd0z1CL8L;
-        Fri, 23 Jul 2021 21:19:23 +0800 (CST)
-Received: from dggema766-chm.china.huawei.com (10.1.198.208) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 23 Jul 2021 21:25:13 +0800
-Received: from [10.174.177.210] (10.174.177.210) by
- dggema766-chm.china.huawei.com (10.1.198.208) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 23 Jul 2021 21:25:12 +0800
-Subject: Re: [PATCH] ext4: flush s_error_work before journal destroy in
- ext4_fill_super
-To:     Theodore Ts'o <tytso@mit.edu>
-CC:     <jack@suse.cz>, <linux-ext4@vger.kernel.org>, <yukuai3@huawei.com>
-References: <20210720062409.960734-1-yangerkun@huawei.com>
- <YPqx2hPUuTkJo/sj@mit.edu>
-From:   yangerkun <yangerkun@huawei.com>
-Message-ID: <eb962c26-b013-957b-7931-feda7f8bf5b5@huawei.com>
-Date:   Fri, 23 Jul 2021 21:25:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S235581AbhGWOuO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 23 Jul 2021 10:50:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235553AbhGWOtv (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Jul 2021 10:49:51 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4E67C061796
+        for <linux-ext4@vger.kernel.org>; Fri, 23 Jul 2021 08:30:16 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id f18so2676302lfu.10
+        for <linux-ext4@vger.kernel.org>; Fri, 23 Jul 2021 08:30:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:from:subject:message-id:disposition-notification-to:date
+         :mime-version:content-language:content-transfer-encoding;
+        bh=f1HXgkNudjR8TWcttz5Zgp5fCvdMS58yvnzoYpcs8FU=;
+        b=aCSa91TgW+jvp0ThzbasLvoKINB9hfXwNcQiAn4ofPNcFX5NVCN54CH2Q0CZZ13C9I
+         jr1ypi1QwOE8iAGRvQZeEntbekurjoqf52hfDXRhUroL0LHS99jJorMnXR3flP2iehb+
+         YlMdzTRhgAvi3zMczIDoI9FhlUS4PI36yXj5UVHmVcTQ8AwWGyLticECTnA8DTytF4qZ
+         XqLKraQfFK0utvENMnIfabkfg8uQ2wBQ+tZsQ3i5sfq1w94YNYWur+PzGoPwOmMw+gpl
+         Mmnj8PAxi7yUjpyx19UxBJdpl7aLLpGM9sfRmfyKFqBOSQO4uXC7rMk17FiR4jOu+zPx
+         E0sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:from:subject:message-id
+         :disposition-notification-to:date:mime-version:content-language
+         :content-transfer-encoding;
+        bh=f1HXgkNudjR8TWcttz5Zgp5fCvdMS58yvnzoYpcs8FU=;
+        b=Uv5V2KU2pENeeeS21r9BC7mQbrxDt3k+r4IpotB9zQ5Lc4lNURC0VPxr2exd4uIHn6
+         aN0Wq1fbS5xExKABEHlkW7VkiOqwDRrnwXce7sos5oMD+/Hy0oLTzHUYnGqbE5h3fAtY
+         jB1NQ2M4lte6EyztbHSe75vQIYjacdZ9pnec0+2nk7BCmHd8kc923rYAGD0icamFDz4g
+         B9TCp3l9e4aTwlwxGKbhn1TLJzSZqpHyFXp0ZRP4UYC+BI9cjY75feLn1egYwdiH/kQt
+         vG1qsrhegDSi1x633Hu3K861iSTvLXwhRNGdZgX/lc9kxHAjaKmbBVQdpKQGC7m7DXki
+         CPcw==
+X-Gm-Message-State: AOAM530c5ao0gwvG7HYyN1LryUHd1M0ev8HOXpRLPVNcA7x/A9P3wf6n
+        h+wLzsH2oNXk2vahDsYSbmpoX+Lkhz7bqw==
+X-Google-Smtp-Source: ABdhPJwAedOO7hply2aKHxM+McICBikFjBooZ9NCAu6wUPx48Z/XFFvlKXh6cBd+y+JTbSwrALUGJg==
+X-Received: by 2002:ac2:5337:: with SMTP id f23mr3308762lfh.289.1627054215187;
+        Fri, 23 Jul 2021 08:30:15 -0700 (PDT)
+Received: from localhost (public-gprs549192.centertel.pl. [37.225.8.137])
+        by smtp.gmail.com with ESMTPSA id j16sm1875595lfh.258.2021.07.23.08.30.14
+        for <linux-ext4@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Jul 2021 08:30:14 -0700 (PDT)
+To:     linux-ext4@vger.kernel.org
+From:   Mikhail Morfikov <mmorfikov@gmail.com>
+Subject: Is it safe to use the bigalloc feature in the case of ext4
+ filesystem?
+Message-ID: <0dc45cbd-b3b0-97ab-66a9-f68331cb483e@gmail.com>
+Date:   Fri, 23 Jul 2021 17:30:13 +0200
 MIME-Version: 1.0
-In-Reply-To: <YPqx2hPUuTkJo/sj@mit.edu>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.210]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggema766-chm.china.huawei.com (10.1.198.208)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+In the man ext4(5) we can read the following:
 
+    Warning: The bigalloc feature is still under development, 
+    and may not be fully supported with your kernel or may 
+    have various bugs. Please see the web page 
+    http://ext4.wiki.kernel.org/index.php/Bigalloc for details. 
+    May clash with delayed allocation (see nodelalloc mount 
+    option).
 
-在 2021/7/23 20:11, Theodore Ts'o 写道:
-> On Tue, Jul 20, 2021 at 02:24:09PM +0800, yangerkun wrote:
->> 'commit c92dc856848f ("ext4: defer saving error info from atomic
->> context")' and '2d01ddc86606 ("ext4: save error info to sb through journal
->> if available")' add s_error_work to fix checksum error problem. But the
->> error path in ext4_fill_super can lead the follow BUG_ON.
-> 
-> Can you share with me your test case?  Your patch will result in the
-> shrinker potentially not getting released in some error paths (which
-> will cause other kernel panics), and in any case, once the journal is
+According to the link above, the info is dated back to 2013, 
+which is a little bit ancient.
 
-Hi Ted,
-
-The only logic we have changed is that we move the flush_work before we 
-call jbd2_journal_destory. I have not seen the problem you describe... 
-Can you help to explain more...
-
-Thanks,
-Kun.
-
-> destroyed here:
-> 
->> @@ -5173,15 +5173,15 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
->>   
->>   	ext4_xattr_destroy_cache(sbi->s_ea_block_cache);
->>   	sbi->s_ea_block_cache = NULL;
->> +failed_mount3a:
->> +	ext4_es_unregister_shrinker(sbi);
->> +failed_mount3:
->> +	flush_work(&sbi->s_error_work);
->>   
->>   	if (sbi->s_journal) {
->>   		jbd2_journal_destroy(sbi->s_journal);
->>   		sbi->s_journal = NULL;
->>   	}
->> -failed_mount3a:
->> -	ext4_es_unregister_shrinker(sbi);
->> -failed_mount3:
->> -	flush_work(&sbi->s_error_work);
-> 
-> sbi->s_journal is set to NULL, which means that in
-> flush_stashed_error_work(), journal will be NULL, which means we won't
-> call start_this_handle and so this change will not make a difference
-> given the kernel stack trace in the commit description.
-> 
-> Thanks,
-> 
-> 						- Ted
-> .
-> 
+What's the current status of the feature? Is it safe to use 
+bigalloc on several TiB hard disks where only big files will be 
+stored?
