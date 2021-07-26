@@ -2,125 +2,195 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6669F3D538E
-	for <lists+linux-ext4@lfdr.de>; Mon, 26 Jul 2021 09:06:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1E9A3D53A7
+	for <lists+linux-ext4@lfdr.de>; Mon, 26 Jul 2021 09:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232012AbhGZGZT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 26 Jul 2021 02:25:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231895AbhGZGZS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 26 Jul 2021 02:25:18 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11CAEC061757;
-        Mon, 26 Jul 2021 00:05:48 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id k4-20020a17090a5144b02901731c776526so18356328pjm.4;
-        Mon, 26 Jul 2021 00:05:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=FfJvyftSw8I9bvycaoSgqvRdK17Vot8rl+gl1vH68gE=;
-        b=jpJwmFQCd566vpEbfTNRHFbGKs60vnCoZ/F8VJ0GMl9ZZ8M96F891vYNww0FkPTVUh
-         yDwTFGtUR6Ejp0feGCmbxwrQVcePLG+AuRE/pYHmVQ7NcHvk589WHrQNmR4UOOiNoYrZ
-         k+ySbVpkK/rrvit/0GfpYlQKcs+D/9r47C9NmdV6cNetxr1P1SE2zcJXcEaGC8mZmxsu
-         5vCNPGSh1NeqXEBpPgtPHvd5a+1AsGiFkd9e2eie4ffk/v1WUe+YyCEgSJnb6/OLWFAZ
-         4TRhtXadX8h53ae5wS9ZLBpTY3gPq0rtiv+xuz3AKkwSl5Kwq6xppd3GZD7HZSq4kMrV
-         YbiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FfJvyftSw8I9bvycaoSgqvRdK17Vot8rl+gl1vH68gE=;
-        b=X/fIydds64abhykZ7Xj0GOYuXC2U0GIimubsrDsGnBCaFQFnw8Vro+CB3zhr+QRxkL
-         SyAGPQ3EmujaHaJCma6vdLWc5YavzxFCssvgy0wgBfvU4/G7pIBz2oFxB9LbusVVj0Lp
-         O+CCLBpMAba5L8DPc1G7qCjvPw3EOV4fHzCOKi+Ynk5RLNgSI9kF27Nhl4KmuqwA9BgD
-         VIkw5Z0kVtBN+CXfPmDe3DMupE2BL0r4k8dMATb/9vr9omMYkcNyeZ97Gzk4G5JQTVoZ
-         IIy/pmDl1LHzjdR5IdhrZPrWdQiEKJvelKriagJTYYsorj9CNjclJaSKPUqwDDDeIbj7
-         H3gg==
-X-Gm-Message-State: AOAM533aESdzEeYmZagIthb8U4MxQEzIe7rfh5TJ6veLgP+kuGoz9T87
-        H6JOYxe8kTCIotXQK+dujEMLqLGlsF/mnw==
-X-Google-Smtp-Source: ABdhPJztI0qApV0cz6QRYMk88fwO0nzkihx3dX3V+oo5XvBmlvmTjTLJLjq55QeMfjR/yDCU6SmHsA==
-X-Received: by 2002:a63:fb16:: with SMTP id o22mr9091557pgh.309.1627283147616;
-        Mon, 26 Jul 2021 00:05:47 -0700 (PDT)
-Received: from jianchwadeMacBook-Pro.local ([154.223.168.30])
-        by smtp.gmail.com with ESMTPSA id c24sm41829730pfn.86.2021.07.26.00.05.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Jul 2021 00:05:47 -0700 (PDT)
-Subject: Re: [PATCH V3 5/5] ext4: make fallocate retry when err is ENOSPC
-To:     Guoqing Jiang <guoqing.jiang@linux.dev>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca
-References: <20210724074124.25731-1-jianchao.wan9@gmail.com>
- <20210724074124.25731-6-jianchao.wan9@gmail.com>
- <0ac551b1-6295-9117-757d-12bee70de588@linux.dev>
-From:   Wang Jianchao <jianchao.wan9@gmail.com>
-Message-ID: <2888807f-2822-a73d-4c01-f073f8fffae2@gmail.com>
-Date:   Mon, 26 Jul 2021 15:05:41 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+        id S232038AbhGZGdI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 26 Jul 2021 02:33:08 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:7060 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231948AbhGZGdH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 26 Jul 2021 02:33:07 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GY9ws6ZXNzYg5H;
+        Mon, 26 Jul 2021 15:07:41 +0800 (CST)
+Received: from dggema766-chm.china.huawei.com (10.1.198.208) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 26 Jul 2021 15:13:35 +0800
+Received: from [10.174.177.210] (10.174.177.210) by
+ dggema766-chm.china.huawei.com (10.1.198.208) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 26 Jul 2021 15:13:34 +0800
+Subject: Re: [PATCH] ext4: flush s_error_work before journal destroy in
+ ext4_fill_super
+To:     Theodore Ts'o <tytso@mit.edu>
+CC:     <jack@suse.cz>, <linux-ext4@vger.kernel.org>, <yukuai3@huawei.com>
+References: <YPsUZX+PF5HASRkK@mit.edu>
+From:   yangerkun <yangerkun@huawei.com>
+Message-ID: <b83ee217-3dbb-62b8-237f-db8ca663fef5@huawei.com>
+Date:   Mon, 26 Jul 2021 15:13:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <0ac551b1-6295-9117-757d-12bee70de588@linux.dev>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <YPsUZX+PF5HASRkK@mit.edu>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.210]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggema766-chm.china.huawei.com (10.1.198.208)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 
 
-On 2021/7/26 11:40 AM, Guoqing Jiang wrote:
-> Hi,
-> 
-> On 7/24/21 3:41 PM, Wang Jianchao wrote:
->> From: Wang Jianchao <wangjianchao@kuaishou.com>
+在 2021/7/24 3:11, Theodore Ts'o 写道:
+> On Fri, Jul 23, 2021 at 09:11:08PM +0800, yangerkun wrote:
 >>
->> The blocks may be waiting for journal commit to be freed back to
->> mb buddy. Let fallocate wait and retry in that case.
->>
->> Signed-off-by: Wang Jianchao <wangjianchao@kuaishou.com>
->> ---
->>   fs/ext4/extents.c | 6 +++++-
->>   1 file changed, 5 insertions(+), 1 deletion(-)
->>
->> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
->> index 92ad64b89d9b..ad0b874d3448 100644
->> --- a/fs/ext4/extents.c
->> +++ b/fs/ext4/extents.c
->> @@ -4635,7 +4635,7 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
->>       struct inode *inode = file_inode(file);
->>       loff_t new_size = 0;
->>       unsigned int max_blocks;
->> -    int ret = 0;
->> +    int ret = 0, retries = 0;
->>       int flags;
->>       ext4_lblk_t lblk;
->>       unsigned int blkbits = inode->i_blkbits;
->> @@ -4656,6 +4656,7 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
->>                FALLOC_FL_INSERT_RANGE))
->>           return -EOPNOTSUPP;
->>   +retry:
->>       ext4_fc_start_update(inode);
->>         if (mode & FALLOC_FL_PUNCH_HOLE) {
->> @@ -4722,6 +4723,9 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
->>       trace_ext4_fallocate_exit(inode, offset, max_blocks, ret);
->>   exit:
->>       ext4_fc_stop_update(inode);
->> +    if (ret == -ENOSPC && ext4_should_retry_alloc(inode->i_sb, &retries))
->> +        goto retry;
->> +
+>> For example, before wo goto failed_mount_wq, we may meet some error and will
+>> goto ext4_handle_error which can call
+>> schedule_work(&EXT4_SB(sb)->s_error_work). So the work may start concurrent
+>> with ext4_fill_super goto failed_mount_wq. There does not have any lock to
+>> protect the concurrent read and modifies for sbi->s_journal.
 > 
-> Not sure if it is necessary since ext4_alloc_file_blocks already retries allocate.
+> Yes, and I'm asking *how* is this actually happening in practice?
+> I've been going through the code paths and I don't see any place where
+> ext4_error*() would be called.  That's why I wanted to see your test
+> case which was reproducing it.  (Not just where you added the msleep,
+> but how the error was getting triggered in the first place.)
 
-Yes, this patch should be get rid of.
-But it is indeed helpful to fix the xfstest generic/371 which does concurrently write/rm
-and fallocate/rm. I'll figure out some other way to improve that
+Hi Ted,
 
-Thanks
-Jianchao
+
+The problem only happened once early with parallel ltp testcase(but we
+cannot reproduce it again with same case...). And dmesg with latter:
+
+
+[32031.739678] EXT4-fs error (device loop66): ext4_fill_super:4672: comm 
+chdir01: inode #2: comm chdir01: iget: illegal inode #
+[32031.740193] EXT4-fs (loop66): get root inode failed
+[32031.740484] EXT4-fs (loop66): mount failed
+[32031.758811] EXT4-fs error (device loop66): ext4_map_blocks:595: inode 
+#8: block 532: comm chdir01: lblock 1 mapped to illegal pblock 532 
+(length 1)
+[32031.759293] jbd2_journal_bmap: journal block not found at offset 1 on 
+loop66-8
+[32031.759805] ------------[ cut here ]------------
+[32031.759807] kernel BUG at fs/jbd2/transaction.c:373!
+
+
+ext4_fill_super
+     ext4_load_journal
+         EXT4_SB(sb)->s_journal = journal
+     root = ext4_iget(sb, EXT4_ROOT_INO, EXT4_IGET_SPECIAL)
+     // will failed and goto failed_mount4
+         __ext4_iget
+            __ext4_error
+                ext4_handle_error
+                   schedule_work(&EXT4_SB(sb)->s_error_work)
+
+
+And this trigger the concurrent read and modifies for sbi->s_journal...
+
+Thanks,
+Kun.
+
 
 > 
-> Thanks,
-> Guoqing
+> 
+> On Fri, Jul 23, 2021 at 09:25:12PM +0800, yangerkun wrote:
+>>
+>>> Can you share with me your test case?  Your patch will result in the
+>>> shrinker potentially not getting released in some error paths (which
+>>> will cause other kernel panics), and in any case, once the journal is
+>>
+>> The only logic we have changed is that we move the flush_work before we call
+>> jbd2_journal_destory. I have not seen the problem you describe... Can you
+>> help to explain more...
+> 
+> Sorry, I was mistaken.  I thought you were moving the
+> ext4_es_unregister_shrinker() and flush_work() before the label for
+> failed_mount_wq; that was a misreading of your patch.
+> 
+> The other way we could fix this might be something like this:
+> 
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index dfa09a277b56..d663d11fa0de 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -693,7 +693,7 @@ static void flush_stashed_error_work(struct work_struct *work)
+>   {
+>   	struct ext4_sb_info *sbi = container_of(work, struct ext4_sb_info,
+>   						s_error_work);
+> -	journal_t *journal = sbi->s_journal;
+> +	journal_t *journal = READ_ONCE(sbi->s_journal);
+>   	handle_t *handle;
+>   
+>   	/*
+> @@ -1184,9 +1184,11 @@ static void ext4_put_super(struct super_block *sb)
+>   	ext4_unregister_sysfs(sb);
+>   
+>   	if (sbi->s_journal) {
+> -		aborted = is_journal_aborted(sbi->s_journal);
+> -		err = jbd2_journal_destroy(sbi->s_journal);
+> -		sbi->s_journal = NULL;
+> +		journal_t *journal = sbi->s_journal;
+> +
+> +		WRITE_ONCE(sbi->s_journal, NULL);
+> +		aborted = is_journal_aborted(journal);
+> +		err = jbd2_journal_destroy(journal);
+>   		if ((err < 0) && !aborted) {
+>   			ext4_abort(sb, -err, "Couldn't clean up the journal");
+>   		}
+> @@ -5175,8 +5177,10 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+>   	sbi->s_ea_block_cache = NULL;
+>   
+>   	if (sbi->s_journal) {
+> -		jbd2_journal_destroy(sbi->s_journal);
+> -		sbi->s_journal = NULL;
+> +		journal_t *journal = sbi->s_journal;
+> +
+> +		WRITE_ONCE(sbi->s_journal, NULL);
+> +		jbd2_journal_destroy(journal);
+>   	}
+>   failed_mount3a:
+>   	ext4_es_unregister_shrinker(sbi);
+> @@ -5487,7 +5491,7 @@ static int ext4_load_journal(struct super_block *sb,
+>   	EXT4_SB(sb)->s_journal = journal;
+>   	err = ext4_clear_journal_err(sb, es);
+>   	if (err) {
+> -		EXT4_SB(sb)->s_journal = NULL;
+> +		WRITE_ONCE(EXT4_SB(sb)->s_journal, NULL);
+>   		jbd2_journal_destroy(journal);
+>   		return err;
+>   	}
+> 
+> ... and here's another possible fix:
+> 
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index dfa09a277b56..e9e122e52ce8 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -704,7 +704,8 @@ static void flush_stashed_error_work(struct work_struct *work)
+>   	 * We use directly jbd2 functions here to avoid recursing back into
+>   	 * ext4 error handling code during handling of previous errors.
+>   	 */
+> -	if (!sb_rdonly(sbi->s_sb) && journal) {
+> +	if (!sb_rdonly(sbi->s_sb) && journal &&
+> +	    !(journal->j_flags & JBD2_UNMOUNT)) {
+>   		struct buffer_head *sbh = sbi->s_sbh;
+>   		handle = jbd2_journal_start(journal, 1);
+>   		if (IS_ERR(handle))
+> 
+> 
+> 
+> But I would be interested in understanding how we could be triggering
+> this problem in the first place before deciding what's the best fix.
+> 
+> Cheers,
+> 
+> 					- Ted
+> .
+> 
