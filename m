@@ -2,58 +2,74 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4212D3D5198
-	for <lists+linux-ext4@lfdr.de>; Mon, 26 Jul 2021 05:42:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5FEA3D51F8
+	for <lists+linux-ext4@lfdr.de>; Mon, 26 Jul 2021 05:58:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231497AbhGZDCN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 25 Jul 2021 23:02:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230321AbhGZDCM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 25 Jul 2021 23:02:12 -0400
-Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC5D0C061757;
-        Sun, 25 Jul 2021 20:42:41 -0700 (PDT)
-Subject: Re: [PATCH V3 1/5] ext4: remove the 'group' parameter of
- ext4_trim_extent
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1627270960;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oIKUOM1qFVtj2putWoUkmBP9qdwIlEl4y16S5EkJxhM=;
-        b=jRbVPuzYsiHmKdgcx+SmQXSdLTB0AJM0432WkBZuCyyo75MkmDmt3MgObdowgvcQvp/sYq
-        aJNxwFVsDCDzDuLVP8LPNvT3lJEy/p/fMosxLoUQFqZW8jj/kcUa4lUXq2dMKMPtNvs5o4
-        1X0TiTP8xqu9jNStUpqhCCE829IGTIg=
-To:     Wang Jianchao <jianchao.wan9@gmail.com>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca
-References: <20210724074124.25731-1-jianchao.wan9@gmail.com>
- <20210724074124.25731-2-jianchao.wan9@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Guoqing Jiang <guoqing.jiang@linux.dev>
-Message-ID: <68e1530d-46c5-7879-0191-b62356759d3a@linux.dev>
-Date:   Mon, 26 Jul 2021 11:42:33 +0800
+        id S231543AbhGZDSH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 25 Jul 2021 23:18:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53008 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230321AbhGZDSG (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sun, 25 Jul 2021 23:18:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FA6960EB2;
+        Mon, 26 Jul 2021 03:58:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627271915;
+        bh=WPLxji5Fu3Q2Q6hrxcLMN8a8q3esfgs4pl4CERub5YQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qgmYCrRdhNjrVPAoHCovW00SjzclRfqwwr+TF3YR2+VJF1OfgIcpNJhkK4eByklBX
+         1XsJZZP4DbXkPdxsLdLYxA0F0+DFSdkn+q82TKancpVQOq8njTx5CMjF365UH0jLct
+         +XR0U8gxeOY8AKCfFMl8mQ4vk8iUZzr5EkvUdRyExEMjbU5Ihr5JHoZbSbzkOIcn1x
+         KnYkutj0MPTAemKe1UU4n1kFuON6bpcSgNOo/rQL9qTHaQ9hC4omSBP1szv45dUwzW
+         D9kauqkb7x7Q6cQlBmkD77q96XTWfchBYyNXTSZkExEq3gQ9n9Bt7ND2MMha2wKIni
+         Y6XgTywBxx92g==
+Date:   Sun, 25 Jul 2021 20:58:34 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 0/5] fscrypt: report correct st_size for encrypted
+ symlinks
+Message-ID: <YP4y6izInCXVJMup@sol.localdomain>
+References: <20210702065350.209646-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210724074124.25731-2-jianchao.wan9@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: guoqing.jiang@linux.dev
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210702065350.209646-1-ebiggers@kernel.org>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Thu, Jul 01, 2021 at 11:53:45PM -0700, Eric Biggers wrote:
+> This series makes the stat() family of syscalls start reporting the
+> correct size for encrypted symlinks.
+> 
+> See patch 1 for a detailed explanation of the problem and solution.
+> 
+> Patch 1 adds a helper function that computes the correct size for an
+> encrypted symlink.  Patches 2-4 make the filesystems with fscrypt
+> support use it, and patch 5 updates the documentation.
+> 
+> This series applies to mainline commit 3dbdb38e2869.
+> 
+> Eric Biggers (5):
+>   fscrypt: add fscrypt_symlink_getattr() for computing st_size
+>   ext4: report correct st_size for encrypted symlinks
+>   f2fs: report correct st_size for encrypted symlinks
+>   ubifs: report correct st_size for encrypted symlinks
+>   fscrypt: remove mention of symlink st_size quirk from documentation
+> 
+>  Documentation/filesystems/fscrypt.rst |  5 ---
+>  fs/crypto/hooks.c                     | 44 +++++++++++++++++++++++++++
+>  fs/ext4/symlink.c                     | 12 +++++++-
+>  fs/f2fs/namei.c                       | 12 +++++++-
+>  fs/ubifs/file.c                       | 13 +++++++-
+>  include/linux/fscrypt.h               |  7 +++++
+>  6 files changed, 85 insertions(+), 8 deletions(-)
+> 
+> 
+> base-commit: 3dbdb38e286903ec220aaf1fb29a8d94297da246
 
-On 7/24/21 3:41 PM, Wang Jianchao wrote:
-> -static int ext4_trim_extent(struct super_block *sb, int start, int count,
-> -			     ext4_group_t group, struct ext4_buddy *e4b)
-> +static int ext4_trim_extent(struct super_block *sb,
-> +		int start, int count, struct ext4_buddy *e4b)
+All applied to fscrypt.git#master for 5.15.
 
-Nit, seems only need to change the second line.
-
-Thanks,
-Guoqing
+- Eric
