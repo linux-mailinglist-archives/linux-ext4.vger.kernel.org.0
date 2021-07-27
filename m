@@ -2,74 +2,64 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0BA73D7E46
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Jul 2021 21:07:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B65FF3D8242
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jul 2021 00:06:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230153AbhG0THM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 27 Jul 2021 15:07:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbhG0THM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Jul 2021 15:07:12 -0400
-Received: from hoggar.fisica.ufpr.br (hoggar.fisica.ufpr.br [IPv6:2801:82:80ff:7fff::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F678C061757
-        for <linux-ext4@vger.kernel.org>; Tue, 27 Jul 2021 12:07:11 -0700 (PDT)
-Received: by hoggar.fisica.ufpr.br (Postfix, from userid 577)
-        id 4253436303CA; Tue, 27 Jul 2021 16:07:06 -0300 (-03)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=fisica.ufpr.br;
-        s=201705; t=1627412826;
-        bh=8Fh8Q9/DE0Yym9+K9UblkLey6erZgu3lDIsq65qNdxQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I9RzmSUMYve09Lf8gm9Otg2ovuW812BbiJg6Gsg76p59dAEtnU3N7+F4nJN/TN0K5
-         hxCu5tP8T/v1rw2+BHFQz/vel145HmQj10r47a3T3inxNoWFLTFI31aaQED/XcQ2ie
-         Adg4TUz7GWWlQa2/iOSF9xmR1Y+61E0A+QR06aAqOyRr/SF4Ye9RyJu2Zq4dLgZCbp
-         Sr7kMebG1ykVrwQT7QHZefqHdPdEoCDBFX0QRbOgber0UtOfblViyma9+R+d/W3N6k
-         SLY0EnhZnRQNq+M6UC3hXWoEFrcFs/l1BgAkV6mrjM7plN+74/2YUZRhw4Qj7UMUxL
-         1iPuIN9CC8ovQ==
-Date:   Tue, 27 Jul 2021 16:07:06 -0300
-From:   Carlos Carvalho <carlos@fisica.ufpr.br>
+        id S232088AbhG0WGx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 27 Jul 2021 18:06:53 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:50537 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231599AbhG0WGw (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Jul 2021 18:06:52 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 16RM6VD2022989
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 27 Jul 2021 18:06:31 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id D848915C3DBC; Tue, 27 Jul 2021 18:06:30 -0400 (EDT)
+Date:   Tue, 27 Jul 2021 18:06:30 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
 To:     Andreas Dilger <adilger@dilger.ca>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: bug with large_dir in 5.12.17
-Message-ID: <YQBZWuAN+u+Lfhfo@fisica.ufpr.br>
-References: <YPl/boTCfc3rlJLU@fisica.ufpr.br>
- <0FA2DF8F-8F8D-4A54-B21E-73B318C73F4C@dilger.ca>
+Cc:     Mike Fleetwood <mike.fleetwood@googlemail.com>,
+        Reindl Harald <h.reindl@thelounge.net>,
+        linux-ext4@vger.kernel.org, "Darrick J. Wong" <djwong@kernel.org>
+Subject: Re: Is labelling a mounted ext2/3/4 file system safe and supported?
+Message-ID: <YQCDZgZMf1Qfsvah@mit.edu>
+References: <CAMU1PDgJAadK21H_-u3vg0NujKRzBegH0SHL2+54+23ZppFDgQ@mail.gmail.com>
+ <8A4E4147-0D89-4B2B-A118-F5EDABF9ABD5@dilger.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0FA2DF8F-8F8D-4A54-B21E-73B318C73F4C@dilger.ca>
+In-Reply-To: <8A4E4147-0D89-4B2B-A118-F5EDABF9ABD5@dilger.ca>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Andreas Dilger (adilger@dilger.ca) wrote on Tue, Jul 27, 2021 at 03:22:10AM -03:
-> On Jul 22, 2021, at 8:23 AM, Carlos Carvalho <carlos@fisica.ufpr.br> wrote:
-> > 
-> > There is a bug when enabling large_dir in 5.12.17. I got this during a backup:
-> > 
-> > index full, reach max htree level :2
-> > Large directory feature is not enabled on this filesystem
-> > 
-> > So I unmounted, ran tune2fs -O large_dir /dev/device and mounted again. However
-> > this error appeared:
-> > 
-> > dx_probe:864: inode #576594294: block 144245: comm rsync: directory leaf block found instead of index block
-> > 
-> > I unmounted, ran fsck and it "salvaged" a bunch of directories. However at the
-> > next backup run the same errors appeared again.
-> > 
-> > This is with vanilla 5.2.17.
+On Tue, Jul 27, 2021 at 01:49:39AM -0600, Andreas Dilger wrote:
+> > Looking at the e2label source code, it just reads the superblock,
+> > updates the label and writes the super block.  How is that safe and
+> > persistent when presumably the linux kernel has an in-memory copy of the
+> > superblock will be written at unmount and presumable sync.
 > 
-> Hi Carlos,
-> are you able to reproduce this error on a new directory that did not hit
-> the 2-level htree limit before enabling large_dir, or did you only see this
-> with directories that hit the 2-level htree limit before the update?
+> Currently, the in-memory superblock references the device buffer cache,
+> which is the same cache that is accessed when reading the block
+> device from userspace, so they are always consistent.
+> 
+> There has been some discussion about adding ioctl() calls to update
+> the filesystem label, UUID, and other fields from userspace in a safer way,
+> but nothing has been implemented in that direction yet (possibly Darrick
+> had some RFC patches, but they are not landed yet).
 
-I removed all directories where the error happens (several hours...) and ran
-the backup again, after fsck, and the error was the same, so it also happens in
-new ones.
+As Andreas has stated, e2fsprogs programs such as e2label and tune2fs
+use buffered I/O to read and write the superblock, which accesses the
+buffer cache, which is where the kernel's copy superblock used by the
+file system code is located.  It's not perfect; for example an updated
+label written by e2label might get lost when it is overwritten by a
+journal replay after a system crash.  But for the most part, it does
+work.
 
-> Did you test on any newer kernels than 5.2.17?
+Cheers,
 
-Not yet. The machine is running 5.13.5 now but this particular backup hasn't
-run yet. I'm doing fsck now (takes 4h30) and will launch it again.
+						- Ted
