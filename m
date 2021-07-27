@@ -2,82 +2,99 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E5503D706F
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Jul 2021 09:33:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 475AE3D7098
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Jul 2021 09:50:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235740AbhG0HdG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 27 Jul 2021 03:33:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37620 "EHLO
+        id S235824AbhG0Htp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 27 Jul 2021 03:49:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235675AbhG0HdG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Jul 2021 03:33:06 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA6D3C061757
-        for <linux-ext4@vger.kernel.org>; Tue, 27 Jul 2021 00:33:05 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id mz5-20020a17090b3785b0290176ecf64922so2885328pjb.3
-        for <linux-ext4@vger.kernel.org>; Tue, 27 Jul 2021 00:33:05 -0700 (PDT)
+        with ESMTP id S235621AbhG0Htm (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Jul 2021 03:49:42 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D95A0C061757
+        for <linux-ext4@vger.kernel.org>; Tue, 27 Jul 2021 00:49:41 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id f13so4344885plj.2
+        for <linux-ext4@vger.kernel.org>; Tue, 27 Jul 2021 00:49:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MJ441JBu88Gh6BlC4YFSIsYeViFCgMPHq7UZlhYffEc=;
-        b=U0FrzDh3U7zSwkZlQUp3g7eqCL2QlQ9wH5G7GuUefXeSSG6UEpGC8pebJM4Z3pzZ2z
-         YY9JT3Xcl+buZaD67NwBJaFlGqA7h1XEdeI9I6QcTA8zmEjoCwINc1o9DdkyUJRmgeNf
-         wiy7iwCgRNlAH40W9uH8MUf8uMhaHE+DCMYB+Vzo7ZM3mpRgo/K0224vhwvBOlzSMoaw
-         t8xIsNxD62uCvviV+vZFshwPG+RDGZb7XU7axMyc2C5AmxNm3vsI05FtkpTJcM9slTS3
-         1Dn23DsEQxyE5X3QZZIWcRSCDZ3Xh8oIEfj5k+vzIEGdYVttpgOuwYvhO0JEkaPPZkXH
-         dQ7w==
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=+3JvafhZCH8TZWKomg0uqXG1bvgEevjb8wKhko5EO6k=;
+        b=YOSsePFDyTkD14nCNTvcxdTt7J9lGhGaKW1dK6/1FGm/BqY7O5+kVWCEdhr8G8MWwj
+         ExbbyO68yhY+CfB7xqZzU+QUY8Nijg2uHp4NiMUdtnoGd3X6Kc0CwB8H+AqitWVxy47E
+         NZxGZZ82reHW27HzcRineQGRdYJB2Rt4D5o47ij5pXTO/mJbuwxfxMkn0EG6c673/zKr
+         VWcaO7ZGKrNk7bR90jAqoBniEnTbA2Z3sPEN6W1qm7RtYi/J5DE3k7BWJhFLQwLdCv8Q
+         AdOjHeT+UM/3RCxA69rMTpZnhObSROO35XT7atsC+IERfdFhFT9Vu7MRmGXr1fkRLjtj
+         kciA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MJ441JBu88Gh6BlC4YFSIsYeViFCgMPHq7UZlhYffEc=;
-        b=GjiyoFgKczaNayMNA8+tp68+k6PuzgK0bpzdfwXiJ9l550XB/EaMaVBmbD5PIlQGdH
-         dTwm6tymGANV/1xq9KZkEizfP2VUY36y7FIsn1yMj/im+jvCz0cltkFs54zMGz4MIuTQ
-         iaGgRL4eQSFJQJxiYtQ2TQ4wMpyB1/DcX1aF15V0jsMY4NhQFMkAZLCa+f5fjs+uOFvn
-         66yzeKVvMxbLXKisqtxplwivRiMEI5gBOI3QbPMzF/eJFLI4REZldKLPtGSjJ0uKp0zJ
-         9BkLxmWAw/0B28IVXNEP1fxSiyunUy+nhPT7GubP6WR6VAbKgYLHkwSywM7PPAvz5VhD
-         HGjw==
-X-Gm-Message-State: AOAM532UpQzkqb5g/hePRClffSJgqaGn/MmEYFl+gGnvdrcBoZp3+yFK
-        NMhhxle84JmkCB5qiHDwWVcY4iN2dMzsHYCDJH+j6dCDpj5kpg==
-X-Google-Smtp-Source: ABdhPJxJsamhAs91N8cqu449wJoh6XSD/71d+byuejnnx68Fzg8ND2VWHnXCcGsZB14DMxtR+I5YQe7iQrG+Phbnvlg=
-X-Received: by 2002:a05:6a00:189d:b029:338:c077:ba11 with SMTP id
- x29-20020a056a00189db0290338c077ba11mr22264449pfh.21.1627371185160; Tue, 27
- Jul 2021 00:33:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAMU1PDgNvW_3Jr91iii-Nh=DCuRytVG8ka3-J+a43gKwigx8Yg@mail.gmail.com>
- <34ca4e40-2026-d48d-7181-fbea6ba4f140@thelounge.net>
-In-Reply-To: <34ca4e40-2026-d48d-7181-fbea6ba4f140@thelounge.net>
-From:   Mike Fleetwood <mike.fleetwood@googlemail.com>
-Date:   Tue, 27 Jul 2021 08:32:53 +0100
-Message-ID: <CAMU1PDgJAadK21H_-u3vg0NujKRzBegH0SHL2+54+23ZppFDgQ@mail.gmail.com>
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=+3JvafhZCH8TZWKomg0uqXG1bvgEevjb8wKhko5EO6k=;
+        b=r99tY4D5m+aVkADSGkU625HFUfQsg5Ghv8mRH6O0u3DWyD3e4f03htu1k+fTrNjwEx
+         FVLc6TNhhwpgnOoT6m74zI2qwy/YJ6ODyQW1wU9+WwiNs1CqeFQbOXyLHul18fS3rYQm
+         c/zeHUZwIS/x5mTOYxb3Q4gD24HHiif+361a7yyfJqhLi3i16eJeBbBcwWgzToB+JP/C
+         RJ8LIC8CA4wK0PR7J7bO0tpC30s7WfNJ57/d7GaXkUDYc+qvYpWCToLvO4ZXSXZkXCjD
+         FqDtUmAxQPO2x1vYTLQuZCbROa4OzH1LzHBFuutFolK4Xf2TPSO18NOd3G4fG/vy7YhS
+         k8Kw==
+X-Gm-Message-State: AOAM530pXRGl8LpT1qyjOyAGrXkNjaecqrTXaNO3w95xs6Up3GTJNhbr
+        4B2/C2UizgzJHtQNRr3C0k5LPA==
+X-Google-Smtp-Source: ABdhPJxDtK25lY/wFMtkxxCXECGcRVcnDaQOWbf7HsbPs+M2PCjiMyziRKjX9DH9kVyhgYE3eSw2cw==
+X-Received: by 2002:a17:902:7b83:b029:12c:2758:1d2d with SMTP id w3-20020a1709027b83b029012c27581d2dmr7111400pll.80.1627372181324;
+        Tue, 27 Jul 2021 00:49:41 -0700 (PDT)
+Received: from [192.168.10.175] (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id s36sm2457488pfw.131.2021.07.27.00.49.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Jul 2021 00:49:40 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Andreas Dilger <adilger@dilger.ca>
+Mime-Version: 1.0 (1.0)
 Subject: Re: Is labelling a mounted ext2/3/4 file system safe and supported?
-To:     Reindl Harald <h.reindl@thelounge.net>
-Cc:     linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Date:   Tue, 27 Jul 2021 01:49:39 -0600
+Message-Id: <8A4E4147-0D89-4B2B-A118-F5EDABF9ABD5@dilger.ca>
+References: <CAMU1PDgJAadK21H_-u3vg0NujKRzBegH0SHL2+54+23ZppFDgQ@mail.gmail.com>
+Cc:     Reindl Harald <h.reindl@thelounge.net>, linux-ext4@vger.kernel.org,
+        "Darrick J. Wong" <djwong@kernel.org>
+In-Reply-To: <CAMU1PDgJAadK21H_-u3vg0NujKRzBegH0SHL2+54+23ZppFDgQ@mail.gmail.com>
+To:     Mike Fleetwood <mike.fleetwood@googlemail.com>
+X-Mailer: iPhone Mail (18D70)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, 26 Jul 2021 at 21:50, Reindl Harald <h.reindl@thelounge.net> wrote:
-> Am 26.07.21 um 20:45 schrieb Mike Fleetwood:
-> > Hi,
-> >
-> > Using e2label to set a new label for a mounted ext4 seems to work, but
-> > is it a safe and supported thing to do?
->
-> it is
+On Jul 27, 2021, at 01:33, Mike Fleetwood <mike.fleetwood@googlemail.com> wr=
+ote:
+>=20
+> =EF=BB=BFOn Mon, 26 Jul 2021 at 21:50, Reindl Harald <h.reindl@thelounge.n=
+et> wrote:
+>>> Am 26.07.21 um 20:45 schrieb Mike Fleetwood:
+>>> Hi,
+>>>=20
+>>> Using e2label to set a new label for a mounted ext4 seems to work, but
+>>> is it a safe and supported thing to do?
+>>=20
+>> it is
+>=20
+> Is there some documentation which states it's safe to write to the label
+> while mounted?
+>=20
+> I ask because 1) I am looking at adding such support into GParted and
+> 2) I don't understand how it can be safe.
+>=20
+> Looking at the e2label source code, it just reads the superblock,
+> updates the label and writes the super block.  How is that safe and
+> persistent when presumably the linux kernel has an in-memory copy of the
+> superblock will be written at unmount and presumable sync.
 
-Is there some documentation which states it's safe to write to the label
-while mounted?
+Currently, the in-memory superblock references the device buffer cache,
+which is the same cache that is accessed when reading the block
+device from userspace, so they are always consistent.
 
-I ask because 1) I am looking at adding such support into GParted and
-2) I don't understand how it can be safe.
+There has been some discussion about adding ioctl() calls to update
+the filesystem label, UUID, and other fields from userspace in a safer way,
+but nothing has been implemented in that direction yet (possibly Darrick
+had some RFC patches, but they are not landed yet).
 
-Looking at the e2label source code, it just reads the superblock,
-updates the label and writes the super block.  How is that safe and
-persistent when presumably the linux kernel has an in-memory copy of the
-superblock will be written at unmount and presumable sync.
-
-Thanks,
-Mike
+Cheers, Andreas=
