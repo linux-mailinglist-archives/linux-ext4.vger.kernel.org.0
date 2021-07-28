@@ -2,125 +2,136 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8275E3D8613
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jul 2021 05:23:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CE653D8AB9
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jul 2021 11:36:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234161AbhG1DXw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 27 Jul 2021 23:23:52 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:52143 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233481AbhG1DXv (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Jul 2021 23:23:51 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 16S3NlJi021060
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Jul 2021 23:23:48 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 55A7515C3DBC; Tue, 27 Jul 2021 23:23:47 -0400 (EDT)
-Date:   Tue, 27 Jul 2021 23:23:47 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     linux-ext4@vger.kernel.org
-Subject: [ANNOUNCE] e2fsprogs v1.46.3
-Message-ID: <YQDNw26sFwyNofVY@mit.edu>
+        id S235384AbhG1Jgd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 28 Jul 2021 05:36:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231322AbhG1Jgd (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 28 Jul 2021 05:36:33 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BBC0C061757
+        for <linux-ext4@vger.kernel.org>; Wed, 28 Jul 2021 02:36:30 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id a7so2273151ljq.11
+        for <linux-ext4@vger.kernel.org>; Wed, 28 Jul 2021 02:36:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:subject:message-id
+         :disposition-notification-to:date:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=vqCntjOhCHApISDlfHYSFD/FKvR6l6WrFt2FAwG4q7w=;
+        b=aJfgXHFD069iDPKn0ndvYacnyVc0WEEFF6PeNiMsoZL/89etz5w+w++MdcR6V8wT3J
+         HBZHam7OcryJnlca241oFfavpodqkprCVMhjQbWmOuxIDDx0CR8W4O6jwYbqXbQTQ/kN
+         GBXK236QMiO/Jk+3lDdurJPCcE2my++kHfFMqOXY7rbGdoCbiXTGR7lqLYm2QSP+L/Ch
+         vsLKTFu+lSvorgxqtSoj1kQpJ4ig8IVFG0wfvpqvi5eFy1kPt+uXrZMTZJs8wo7noT8b
+         KOtjYEBQYdbGCokchU4WlLF0DOjIr0Zy51i8vKSTDrsxfECdkmdDbu6ocZSnikO79DW7
+         whpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id
+         :disposition-notification-to:date:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=vqCntjOhCHApISDlfHYSFD/FKvR6l6WrFt2FAwG4q7w=;
+        b=GIhd7bb5vKzCgvkL+h7H1378hsg402Y8WjM4rVEWkeWnL8BIwnmyY1y2JdZljeF8fP
+         gMrWLYGRgXQNmAzx80sdufitR5ApaJlSYi/4qlJ4JNj5EK6nsYKyCnHGvJ/ftJLCEO00
+         0B9ye+ncUY9gvTAnqdi/OCTyUw4Vf211qHO1gvodqZalI4+sGl+v3AezPKJxl+J9vMr8
+         liZ8RyVCCTEEK3TsLYWp2sU7B+ZbU0uyCnNrEqFh2q1ZbNM2GwOMIlrc+9eK+gd/DvLI
+         IiUo+DCDye2dMyJ1E0VpZPSuJJDp1++K7PihUbSnLEWUEbqu1w7YMPy7rvLPpLfNAgdy
+         WL5g==
+X-Gm-Message-State: AOAM530IQc3nkQ+jg5KWqDSSjOmuhbL8V0JDKfJJWjntpCME/lEInlke
+        w1KCgp+4/ZHzhJ2dx3W/q/V3sbl39091Fg==
+X-Google-Smtp-Source: ABdhPJznxunagXzx90hSSONsx5uS7wF2m1PHplRdCKQDtd+Jh5s8p30uscYhgT+c4PXdSJKUgbUvxg==
+X-Received: by 2002:a05:651c:329:: with SMTP id b9mr18461821ljp.116.1627464989026;
+        Wed, 28 Jul 2021 02:36:29 -0700 (PDT)
+Received: from localhost (public-gprs557148.centertel.pl. [37.225.39.157])
+        by smtp.gmail.com with ESMTPSA id g36sm595874lfv.90.2021.07.28.02.36.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Jul 2021 02:36:28 -0700 (PDT)
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+References: <0dc45cbd-b3b0-97ab-66a9-f68331cb483e@gmail.com>
+ <YQCQODCGtJRTKwS9@mit.edu>
+From:   Mikhail Morfikov <mmorfikov@gmail.com>
+Subject: Re: Is it safe to use the bigalloc feature in the case of ext4
+ filesystem?
+Message-ID: <ba95a978-18af-794a-4c9d-a8406ade31ae@gmail.com>
+Date:   Wed, 28 Jul 2021 11:36:27 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <YQCQODCGtJRTKwS9@mit.edu>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-I've released e2fsprogs 1.46.3 in all of the usual places; it's tagged
-in the git trees on git.kernel.org, github, and sourceforge, and
-available for download at:
+Thanks for the answer.
 
-http://www.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v1.46.3
+I have one question. Basically there's the /etc/mke2fs.conf file and 
+I've created the following stanza in it:
 
-and
+bigdata = {
+                errors = remount-ro
+                features = has_journal,extent,huge_file,flex_bg,metadata_csum,64bit,dir_nlink,extra_isize,bigalloc,^uninit_bg,sparse_super2
+                inode_size = 256
+                inode_ratio = 4194304
+                cluster_size = 4M
+                reserved_ratio = 0
+                lazy_itable_init = 0
+                lazy_journal_init = 0
+        }
 
-http://prdownloads.sourceforge.net/e2fsprogs/e2fsprogs-1.46.3.tar.gz
+It looks like the cluster_size parameter is ignored in such case (I've 
+tried both 4M and 4194304 values), and the filesystem was created with 
+64K cluster size (via mkfs -t bigdata -L bigdata /dev/sdb1 ), which is 
+the default when the bigalloc feature is set. 
 
-The release notes for 1.46.3 can be found below.
+So it looks like the cluster_size doesn't do anything when set in 
+/etc/mke2fs.conf . When I used the -C 4M flag (i.e. 
+mkfs -t bigdata -L bigdata -C 4M /dev/sdb1), the cluster size was set to 
+4M as it should.
 
-Cheers,
+Is something wrong with the cluster_size parameter set in the 
+/etc/mke2fs.conf file?
 
-                                        - Ted
-
-E2fsprogs 1.46.3 (July 27, 2021)
-================================
-
-Updates/Fixes since v1.46.2:
-
-UI and Features
----------------
-
-Teach the filefrag program the -V option, which will print the version
-of the tool, or if -V option is specified twice, will print the list of
-supported FIEMAP flags.
-
-
-Fixes
------
-
-Fix bug in resize2fs where growing a file system with MMP enabled and
-there aren't any (or sufficient) reserved block group descriptors,
-resize2fs could potentially overwrite the MMP block, leading to file
-system corruption.  (Addresses Debian Bug: #984472)
-
-Fix fast_commit portability problems on sparc64 and arm64 architectures
-(the latter when running e2fsprogs compiled for arm32).   (Addresses
-Debian Bug: #987641)
-
-Fix missing mutex unlock in an error path in the Unix I/O manager.
-
-Fix Direct I/O support in the Unix I/O manager (this was a regression
-that was introduced in v1.46.2).
-
-Fix mke2fs to avoid discarding blocks beyond the end of the file system
-to be created when creating a file system which is smaller than 16MB and
-the file system size was explicitly specified and smaller than the size
-of the block device.  (Addresses Debian Bug: #989630)
-
-Teach mke2fs to avoid giving a spurious warning about a pre-existing
-partition table and it is creating a file system at a non-zero offset
-(so the partition table wouldn't be overwritten in any case).
-(Addresses Debian Bug: #989612)
-
-Fix e2image -Q to prevent a multiplcation overflow could corrupt the
-generated QCOW2 output file for very large file systems.
-
-When e2fsck repairs '.' and '..' entries in corrupted directories, set
-the file type in the directory entry to be EXT2_FT_DIR and do not leave
-the file type as EXT2_FT_UNKNOWN.
-
-Fix e2fsck so that the if the s_interval is zero, and the last mount or
-write time is in the future, it will fix invalid last mount/write
-timestamps in the superblock.  (This was a regression introduced in
-v1.45.5.)
-
-Fix potential memory leaks and seg faults when memory allocations fail.
-
-Fix lsattr and chattr to avoid opening or calling EXT2_IOC_[GS]ETFLAGS
-on devices, since this can cause some devices to react badly as a
-result.  (Thix fixes a regression introduced in v1.46.2 and addresses
-Debian Bug: #986332)
-
-Updated and clarified the e2image and filefrag man pages.
+----
+# mkfs -V
+mkfs from util-linux 2.36.1
 
 
-Performance, Internal Implementation, Development Support etc.
---------------------------------------------------------------
 
-Avoid forking an unnecessary thread in ext2fs_rw_bitmaps().
 
-Avoid unnecessary stat(2) calls on mountpoints when checking if a file
-system is mounted.
-
-Add more modern support for Windows I/O.
-
-Fix various compiler and valgrind warnings.
-
-Synchronized changes from Android's AOSP e2fsprogs tree.
-
-Update Dutch, Malay, and Serbian translations.
+On 28/07/2021 01.01, Theodore Ts'o wrote:
+> On Fri, Jul 23, 2021 at 05:30:13PM +0200, Mikhail Morfikov wrote:
+>> In the man ext4(5) we can read the following:
+>>
+>>     Warning: The bigalloc feature is still under development, 
+>>     and may not be fully supported with your kernel or may 
+>>     have various bugs. Please see the web page 
+>>     http://ext4.wiki.kernel.org/index.php/Bigalloc for details. 
+>>     May clash with delayed allocation (see nodelalloc mount 
+>>     option).
+>>
+>> According to the link above, the info is dated back to 2013, 
+>> which is a little bit ancient.
+>>
+>> What's the current status of the feature? Is it safe to use 
+>> bigalloc on several TiB hard disks where only big files will be 
+>> stored?
+> 
+> Yes; the places where bigalloc is perhaps not as well tested is
+> support FALLOC_FL_COLLAPSE_RANGE, FALLOC_FL_INSERT_RANGE, and
+> FALLOC_FL_PUNCH_HOLE.  Bigalloc is also not very efficient for large
+> directories (where we allocate a full cluster for each directory
+> block).  Older kernels did not handle ENOSPC errors when delayed
+> allocation was enabled, but that has since been fixed, and bigalloc is
+> passing file system regression tests, so it should safe to use as
+> you've described.
+> 
+> Cheers,
+> 
+> 					- Ted
+> 					
+> 
