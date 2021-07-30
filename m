@@ -2,648 +2,543 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34F053DB10A
-	for <lists+linux-ext4@lfdr.de>; Fri, 30 Jul 2021 04:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59D733DB8CB
+	for <lists+linux-ext4@lfdr.de>; Fri, 30 Jul 2021 14:45:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234758AbhG3CNX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 29 Jul 2021 22:13:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230133AbhG3CNX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 29 Jul 2021 22:13:23 -0400
-Received: from hoggar.fisica.ufpr.br (hoggar.fisica.ufpr.br [IPv6:2801:82:80ff:7fff::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43487C061765
-        for <linux-ext4@vger.kernel.org>; Thu, 29 Jul 2021 19:13:18 -0700 (PDT)
-Received: by hoggar.fisica.ufpr.br (Postfix, from userid 577)
-        id BF6C03630229; Thu, 29 Jul 2021 23:13:11 -0300 (-03)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=fisica.ufpr.br;
-        s=201705; t=1627611191;
-        bh=H9aNUMa2G39HqjMG+NPfEiuR1dx8CIKJxTMg+k52xX4=;
-        h=Date:From:To:Subject:From;
-        b=WBMrCN55P6BrZo3uUwxGtzHire7fFq1z0fYIVImkFu4uwqbo911Y0P454qRsNdGpC
-         E1YMQ2CpVjA3iu/97lm1C1Uz26uKvI8mCi+GAe7LIGC/5ErNcpxK5rqIFAOLgmf8GT
-         NdtyyC7yPUJQ+rvYFyl/kPb1LJQC8M+eKncelMO/1f/FugwatJI3bSKtK0Zqp8JwNx
-         y6XVxWxNUcL2CBjdFnPQIo1o+wEp7SRcc7VQeQWTV7kLlm/HFPqDg68rL/YE370etH
-         7arWK0eCRivQh0h+YYQ3qNhlEoAkxa5oow51QfrQdFbdwtxvxqC00fYq9QyEt/KsqH
-         7iH4preaEEjhQ==
-Date:   Thu, 29 Jul 2021 23:13:11 -0300
-From:   Carlos Carvalho <carlos@fisica.ufpr.br>
-To:     linux-ext4@vger.kernel.org
-Subject: bug with large_dir in 5.12.17: patch from Denis
-Message-ID: <YQNgN8Rh/MR58ZUz@fisica.ufpr.br>
+        id S238844AbhG3MpF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 30 Jul 2021 08:45:05 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:49954 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238852AbhG3Moq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 30 Jul 2021 08:44:46 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: shreeya)
+        with ESMTPSA id E2D9D1F43BF9
+From:   Shreeya Patel <shreeya.patel@collabora.com>
+To:     krisman@collabora.com, tytso@mit.edu, adilger.kernel@dilger.ca,
+        jaegeuk@kernel.org, chao@kernel.org, ebiggers@google.com,
+        drosen@google.com, ebiggers@kernel.org, yuchao0@huawei.com
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
+        andre.almeida@collabora.com,
+        Shreeya Patel <shreeya.patel@collabora.com>
+Subject: [PATCH] fs: unicode: Add utf8-data module
+Date:   Fri, 30 Jul 2021 18:13:33 +0530
+Message-Id: <20210730124333.6744-1-shreeya.patel@collabora.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Denis sent me his patch. He says his emails don't appear in the mailing list,
-so I'm trying.
+utf8data.h_shipped has a large database table which is an auto-generated
+decodification trie for the unicode normalization functions.
+We can avoid carrying this large table in the kernel unless it is required
+by the filesystem during boot process.
 
-I don't know anything about this issue so I don't know if his fix is correct
-but I'd be glad if it is.
+Hence, add utf8-data module which will be loaded only when UTF-8 encoding
+support is needed by the filesystem, provided it is selected as M.
+utf8-data will provide access to the data tables present in utf8data.h.
 
------ Forwarded message from Denis <denis@voxelsoft.com> -----
+Also, add support for enabling utf8-data as a built-in option so that
+filesystems that require UTF-8 encoding during boot process can access
+the data tables without any failure.
 
-Return-Path: <SRS0=FdEW=MW=voxelsoft.com=denis@fisica.ufpr.br>
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	hoggar.fisica.ufpr.br
-X-Spam-Level: 
-X-Spam-Status: No, score=0.0 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS autolearn=no autolearn_force=no
-	version=3.4.6
-X-Spam-Report: 
-	* -1.0 BAYES_00 BODY: Bayes spam probability is 0 to 1%
-	*      [score: 0.0000]
-	*  1.0 HEADER_FROM_DIFFERENT_DOMAINS From and EnvelopeFrom 2nd level
-	*      mail domains are different
-X-Original-To: carlos@fisica.ufpr.br
-Delivered-To: carlos@fisica.ufpr.br
-Received: from mail.voxelsoft.com (voxelsoft.com [64.62.190.251])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	key-exchange X25519 server-signature ECDSA (P-384) server-digest
-	SHA384)
-	(No client certificate requested)
-	by hoggar.fisica.ufpr.br (Postfix) with ESMTPS id E7CA8362FFC0
-	for <carlos@fisica.ufpr.br>; Thu, 29 Jul 2021 22:20:06 -0300 (-03)
-Received: by mail.voxelsoft.com (Postfix, from userid 65534)
-	id 6E85E1B35F; Thu, 29 Jul 2021 21:20:02 -0400 (EDT)
-Received: from system-name-here.lan (unknown [87.74.207.173])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	key-exchange ECDHE (P-256) server-signature RSA-PSS (1024 bits))
-	(No client certificate requested)
-	by mail.voxelsoft.com (Postfix) with ESMTPS id DAF0A1B30F
-	for <carlos@fisica.ufpr.br>; Thu, 29 Jul 2021 21:20:00 -0400 (EDT)
-Message-ID: <7d06358243c19dfe46e1d433a73cf3732672f021.camel@voxelsoft.com>
-Subject: Fwd: Re: bug with large_dir in 5.12.17
-From: Denis <denis@voxelsoft.com>
-To: carlos@fisica.ufpr.br
-Date: Fri, 30 Jul 2021 02:19:59 +0100
-References: <7f781a3cd7114db0842dc3f291cd3f6cd826917f.camel@voxelsoft.com>
-Content-Type: multipart/mixed; boundary="=-3LjA7skNvjayJnHkW34c"
-User-Agent: Evolution 3.40.0-1
-MIME-Version: 1.0
-X-Bogosity: Unsure, tests=bogofilter, spamicity=0.500000, version=1.2.5
-Status: RO
-X-Status: A
-Content-Length: 24607
-Lines: 593
-
-FYI
-
-Message-ID: <7f781a3cd7114db0842dc3f291cd3f6cd826917f.camel@voxelsoft.com>
-Subject: Re: bug with large_dir in 5.12.17
-From: Denis <denis@voxelsoft.com>
-To: Благодаренко Артём <artem.blagodarenko@gmail.com>
-Cc: tytso@mit.edu
-Date: Fri, 30 Jul 2021 02:15:12 +0100
-In-Reply-To: <5FE9762B-6C6B-4A44-AC99-22192B76C060@gmail.com>
-References: <YPl/boTCfc3rlJLU@fisica.ufpr.br>
-  <5FE9762B-6C6B-4A44-AC99-22192B76C060@gmail.com>
-Content-Type: multipart/mixed; boundary="=-MidjK6mTbr04vKC9iZEJ"
-User-Agent: Evolution 3.40.0-1 
-MIME-Version: 1.0
-
-Hello,
-
-I have sent the fix to Ted and Linus.
-
-My emails to the list have been silently dropped and postmaster does
-not respond.
-
-See attached trails and link:
-http://voxelsoft.com/2021/ext4_large_dir_corruption.html
-
-Best,
-Denis
-
-On Thu, 2021-07-29 at 22:23 +0300, Благодаренко Артём wrote:
-> Hello,
-> 
-> It looks like the fix b5776e7524afbd4569978ff790864755c438bba7 "ext4:
-> fix potential htree index checksum corruption” introduced this
-> regression.
-> I reverted it and my test from previous message passed the dangerous
-> level of 1570000 names count.
-> Now test is still in progress. 2520000 names are already created.
-> 
-> I am searching the way to fix this.
-> 
-> Best regards,
-> Artem Blagodarenko.
-> 
-> > On 22 Jul 2021, at 17:23, Carlos Carvalho <carlos@fisica.ufpr.br>
-> > wrote:
-> > 
-> > There is a bug when enabling large_dir in 5.12.17. I got this during
-> > a backup:
-> > 
-> > index full, reach max htree level :2
-> > Large directory feature is not enabled on this filesystem
-> > 
-> > So I unmounted, ran tune2fs -O large_dir /dev/device and mounted
-> > again. However
-> > this error appeared:
-> > 
-> > dx_probe:864: inode #576594294: block 144245: comm rsync: directory
-> > leaf block found instead of index block
-> > 
-> > I unmounted, ran fsck and it "salvaged" a bunch of directories.
-> > However at the
-> > next backup run the same errors appeared again.
-> > 
-> > This is with vanilla 5.2.17.
-> 
-
-
-Message-ID: <be3cb0e7566b2893bc311963a502853383899746.camel@voxelsoft.com>
-Subject: Fwd: [PATCH RESEND] ext4: fix directory index node split corruption
-From: Denis <denis@voxelsoft.com>
-To: tytso@mit.edu
-Date: Tue, 29 Jun 2021 20:32:01 +0100
-References: <3112115f7c7b009755ce331631bd5ebf24bc6767.camel@voxelsoft.com>
-Content-Type: multipart/mixed; boundary="=-2iokyD4xn0CorAJWsx+Y"
-User-Agent: Evolution 3.40.0-1 
-MIME-Version: 1.0
-X-Evolution-Identity: 1345390455.26215.0@denis-pc
-X-Evolution-Fcc: folder://1305396255.3768.0%40denis-pc/INBOX/Sent
-X-Evolution-Transport: 1345390455.26215.1@denis-pc
-X-Evolution-Source-Folder: folder://1305396255.3768.0%40denis-pc/INBOX/Sent
-X-Evolution-Source-Message: 1213
-X-Evolution-Source-Flags: FORWARDED 
-X-Evolution-Source: 
-
-My emails to linux-ext4@vger.kernel.org seem to be received by vger but
-end up in /dev/null, can't see it in the archive, and I haven't heard
-from postmaster. Don't know if there's some approval or queueing
-process that I'm supposed to jump through. Feel free to copy my
-original email to the list on my behalf.
-
-Denis
-
-Message-ID: <3112115f7c7b009755ce331631bd5ebf24bc6767.camel@voxelsoft.com>
-Subject: [PATCH RESEND] ext4: fix directory index node split corruption
-From: Denis Lukianov <denis@voxelsoft.com>
-To: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Date: Tue, 29 Jun 2021 17:00:20 +0100
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0-1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-
-Following commit b5776e7, a trivial sequential write of empty files to
-an empty ext4 file system (with large_dir enabled) fails after just
-over 26 million files. Depending on luck, file creation will give error
-EEXIST or EUCLEAN.
-
-Commit b5776e7 fixed the no-restart condition so that
-ext4_handle_dirty_dx_node is always called, but it also broke the
-restart condition. This is because when restart=1, the original
-implementation correctly skipped do_split() but b5776e7 clobbered the
-"if(restart)goto journal_error;" logic.
-
-This complementary change protects do_split() from restart condition,
-making it safe from both current and future ordering of goto statements
-in earlier sections of the code.
-
-Tested on 5.11.20 with handy testing script:
-
-#!/bin/python
-i = 0
-while i <= 32000000:
-    print (i)
-    with open('tmpmnt/%d' % i, 'wb') as fout:
-        i += 1
-
-Google-Bug-Id: 176345532
-Fixes: b5776e7 ("ext4: fix potential htree index checksum corruption")
-Signed-off-by: Denis Lukianov <denis@voxelsoft.com>
-
+Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
 ---
- fs/ext4/namei.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ fs/unicode/Kconfig         | 23 ++++++++++--
+ fs/unicode/Makefile        |  3 +-
+ fs/unicode/utf8-core.c     | 50 +++++++++++++++++++++++++--
+ fs/unicode/utf8-data.c     | 42 ++++++++++++++++++++++
+ fs/unicode/utf8-norm.c     | 71 +++++++++++++++++++++++---------------
+ fs/unicode/utf8-selftest.c | 25 ++++++--------
+ fs/unicode/utf8n.h         | 32 +++++++++++++++++
+ 7 files changed, 198 insertions(+), 48 deletions(-)
+ create mode 100644 fs/unicode/utf8-data.c
 
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 9cc9e6c1d582..5052d1a6f6d8 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -2428,13 +2428,15 @@ static int ext4_dx_add_entry(handle_t *handle,
-struct ext4_filename *fname,
-                        goto journal_error;
-                }
-        }
--       de = do_split(handle, dir, &bh, frame, &fname->hinfo);
--       if (IS_ERR(de)) {
--               err = PTR_ERR(de);
-+       if (!restart) {
-+               de = do_split(handle, dir, &bh, frame, &fname->hinfo);
-+               if (IS_ERR(de)) {
-+                       err = PTR_ERR(de);
-+                       goto cleanup;
-+               }
-+               err = add_dirent_to_buf(handle, fname, dir, inode, de,
-bh);
-                goto cleanup;
-        }
--       err = add_dirent_to_buf(handle, fname, dir, inode, de, bh);
--       goto cleanup;
- 
- journal_error:
-        ext4_std_error(dir->i_sb, err); /* this is a no-op if err == 0
-*/
-
-
-
-Message-ID: <18781b816c37b55f191dfc9c866b88ff875b3667.camel@voxelsoft.com>
-Subject: [PATCH] ext4: fix directory index node split corruption
-From: Denis <denis@voxelsoft.com>
-To: tytso@mit.edu
-Cc: linux-ext4@vger.kernel.org, artem.blagodarenko@gmail.com
-Date: Sat, 26 Jun 2021 18:50:36 +0100
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0-1 
-MIME-Version: 1.0
-X-Evolution-Identity: 1345390455.26215.0@denis-pc
-X-Evolution-Fcc: folder://1305396255.3768.0%40denis-pc/INBOX/Sent
-X-Evolution-Transport: 1345390455.26215.1@denis-pc
-X-Evolution-Source: 
-Content-Transfer-Encoding: base64
-
-Following commit b5776e7, a trivial sequential write of empty files to
-an empty ext4 file system (with large_dir enabled) fails after just
-over 26 million files. Depending on luck, file creation will give error
-EEXIST or EUCLEAN.
-
-Commit b5776e7 fixed the no-restart condition so that
-ext4_handle_dirty_dx_node is always called, but it also broke the
-restart condition. This is because when restart=1, the original
-implementation correctly skipped do_split() but b5776e7 clobbered the
-"if(restart)goto journal_error;" logic.
-
-This complementary change protects do_split() from restart condition,
-making it safe from both current and future ordering of goto statements
-in earlier sections of the code.
-
-Tested on 5.11.20 with handy testing script:
-
-#!/bin/python
-i = 0
-while i <= 32000000:
-    print (i)
-    with open('tmpmnt/%d' % i, 'wb') as fout:
-        i += 1
-
-Google-Bug-Id: 176345532
-Fixes: b5776e7 ("ext4: fix potential htree index checksum corruption")
-Fixes: e08ac99 ("ext4: add largedir feature")
-
----
- fs/ext4/namei.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
-
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 9cc9e6c1d582..5052d1a6f6d8 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -2428,13 +2428,15 @@ static int ext4_dx_add_entry(handle_t *handle,
-struct ext4_filename *fname,
- 			goto journal_error;
- 		}
- 	}
--	de = do_split(handle, dir, &bh, frame, &fname->hinfo);
--	if (IS_ERR(de)) {
--		err = PTR_ERR(de);
-+	if (!restart) {
-+		de = do_split(handle, dir, &bh, frame, &fname->hinfo);
-+		if (IS_ERR(de)) {
-+			err = PTR_ERR(de);
-+			goto cleanup;
-+		}
-+		err = add_dirent_to_buf(handle, fname, dir, inode, de,
-bh);
- 		goto cleanup;
- 	}
--	err = add_dirent_to_buf(handle, fname, dir, inode, de, bh);
--	goto cleanup;
+diff --git a/fs/unicode/Kconfig b/fs/unicode/Kconfig
+index 2c27b9a5cd6c..80341fae5e63 100644
+--- a/fs/unicode/Kconfig
++++ b/fs/unicode/Kconfig
+@@ -2,13 +2,30 @@
+ #
+ # UTF-8 normalization
+ #
++# This config option will be automatically selected when UNICODE_UTF8_DATA
++# is enabled. UNICODE config will provide all the UTF-8 core and normalization
++# functions which will use UTF-8 data tables.
+ config UNICODE
+ 	bool "UTF-8 normalization and casefolding support"
++
++config UNICODE_UTF8_DATA
++	tristate "UTF-8 support for native Case-Insensitive filesystems"
++	select UNICODE
+ 	help
+-	  Say Y here to enable UTF-8 NFD normalization and NFD+CF casefolding
+-	  support.
++	  Say M here to enable UTF-8 NFD normalization and NFD+CF casefolding
++	  support as a loadable module or say Y for building it into the kernel.
++	  It is currently supported by EXT4 and F2FS filesystems.
++
++	  utf8data.h_shipped has a large database table which is an
++	  auto-generated decodification trie for the unicode normalization
++	  functions. Enabling UNICODE_UTF8_DATA as M will allow you to avoid
++	  carrying this large table into the kernel and module will only be
++	  loaded with the data tables whenever required by any filesystem.
++	  If your filesystem requires to have the utf8-data during boot time
++	  then you should have it built into the kernel by saying Y here to
++	  avoid any boot failure.
  
- journal_error:
- 	ext4_std_error(dir->i_sb, err); /* this is a no-op if err == 0
-*/
-
-
-Message-ID: <ad76727349f389fbcef84b4308cbf5bd4f6b39a7.camel@voxelsoft.com>
-Subject: Fwd: [PATCH] ext4: fix directory index node split corruption
-From: Denis <denis@voxelsoft.com>
-To: postmaster@vger.kernel.org
-Date: Mon, 28 Jun 2021 18:46:39 +0100
-References: <18781b816c37b55f191dfc9c866b88ff875b3667.camel@voxelsoft.com>
-Content-Type: multipart/mixed; boundary="=-rLPjsVEGrL0guC3uY+d1"
-User-Agent: Evolution 3.40.0-1 
-MIME-Version: 1.0
-X-Evolution-Identity: 1345390455.26215.0@denis-pc
-X-Evolution-Fcc: folder://1305396255.3768.0%40denis-pc/INBOX/Sent
-X-Evolution-Transport: 1345390455.26215.1@denis-pc
-X-Evolution-Source-Folder: folder://1305396255.3768.0%40denis-pc/INBOX/Sent
-X-Evolution-Source-Message: 1208
-X-Evolution-Source-Flags: FORWARDED 
-X-Evolution-Source: 
-
-Hello postmaster,
-
-Please could you let me know if my only message to
-linux-ext4@vger.kernel.org (atached) was lost, or is being held in some
-sort of queue. Am I correct to expect it to appear in
-https://www.spinics.net/lists/linux-ext4/maillist.html ?
-
-Thanks,
-Denis
-
-
-Message-ID: <18781b816c37b55f191dfc9c866b88ff875b3667.camel@voxelsoft.com>
-Subject: [PATCH] ext4: fix directory index node split corruption
-From: Denis <denis@voxelsoft.com>
-To: tytso@mit.edu
-Cc: linux-ext4@vger.kernel.org, artem.blagodarenko@gmail.com
-Date: Sat, 26 Jun 2021 18:50:36 +0100
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0-1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-
-Following commit b5776e7, a trivial sequential write of empty files to
-an empty ext4 file system (with large_dir enabled) fails after just
-over 26 million files. Depending on luck, file creation will give error
-EEXIST or EUCLEAN.
-
-Commit b5776e7 fixed the no-restart condition so that
-ext4_handle_dirty_dx_node is always called, but it also broke the
-restart condition. This is because when restart=1, the original
-implementation correctly skipped do_split() but b5776e7 clobbered the
-"if(restart)goto journal_error;" logic.
-
-This complementary change protects do_split() from restart condition,
-making it safe from both current and future ordering of goto statements
-in earlier sections of the code.
-
-Tested on 5.11.20 with handy testing script:
-
-#!/bin/python
-i = 0
-while i <= 32000000:
-    print (i)
-    with open('tmpmnt/%d' % i, 'wb') as fout:
-        i += 1
-
-Google-Bug-Id: 176345532
-Fixes: b5776e7 ("ext4: fix potential htree index checksum corruption")
-Fixes: e08ac99 ("ext4: add largedir feature")
-
----
- fs/ext4/namei.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
-
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 9cc9e6c1d582..5052d1a6f6d8 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -2428,13 +2428,15 @@ static int ext4_dx_add_entry(handle_t *handle,
-struct ext4_filename *fname,
- 			goto journal_error;
- 		}
- 	}
--	de = do_split(handle, dir, &bh, frame, &fname->hinfo);
--	if (IS_ERR(de)) {
--		err = PTR_ERR(de);
-+	if (!restart) {
-+		de = do_split(handle, dir, &bh, frame, &fname->hinfo);
-+		if (IS_ERR(de)) {
-+			err = PTR_ERR(de);
-+			goto cleanup;
-+		}
-+		err = add_dirent_to_buf(handle, fname, dir, inode, de,
-bh);
- 		goto cleanup;
- 	}
--	err = add_dirent_to_buf(handle, fname, dir, inode, de, bh);
--	goto cleanup;
+ config UNICODE_NORMALIZATION_SELFTEST
+ 	tristate "Test UTF-8 normalization support"
+-	depends on UNICODE
++	depends on UNICODE_UTF8_DATA
+ 	default n
+diff --git a/fs/unicode/Makefile b/fs/unicode/Makefile
+index b88aecc86550..fc28a6e2c56f 100644
+--- a/fs/unicode/Makefile
++++ b/fs/unicode/Makefile
+@@ -2,10 +2,11 @@
  
- journal_error:
- 	ext4_std_error(dir->i_sb, err); /* this is a no-op if err == 0
-*/
-
-
-Message-ID: <f0aa507ef8f90555124dfc8fcbaed4a7beafa3f9.camel@voxelsoft.com>
-Subject: Fwd: [PATCH] ext4: fix directory index node split corruption
-From: Denis <denis@voxelsoft.com>
-To: torvalds@linux-foundation.org
-Date: Sat, 26 Jun 2021 22:18:01 +0100
-References: <18781b816c37b55f191dfc9c866b88ff875b3667.camel@voxelsoft.com>
-Content-Type: multipart/mixed; boundary="=-jewEOkSP4iNK6NZ69SnQ"
-User-Agent: Evolution 3.40.0-1 
-MIME-Version: 1.0
-X-Evolution-Identity: 1345390455.26215.0@denis-pc
-X-Evolution-Fcc: folder://1305396255.3768.0%40denis-pc/INBOX/Sent
-X-Evolution-Transport: 1345390455.26215.1@denis-pc
-X-Evolution-Source-Folder: folder://1305396255.3768.0%40denis-pc/INBOX/Sent
-X-Evolution-Source-Message: 1208
-X-Evolution-Source-Flags: FORWARDED 
-X-Evolution-Source: 
-
-Hi Linus,
-
-Please be aware that there is a corruption issue in ext4 when large_dir
-is enabled since v5.11.3 (b5776e7).
-
-Bug will only manifest when directory indices grow htree levels, it
-takes filing up a directory with tens of millions files to trigger. Why
-was this not found earlier? As a guess, it is masked because most
-large_dir users fall into following camps:
-1) running pre-v5.11.3
-2) already grew their large directories pre-v5.11, then upgraded
-3) not growing large directories at all
-
-For details see attached patch and linky for my analysis and testing
-shortcuts.
-http://voxelsoft.com/2021/ext4_large_dir_corruption.html
-
-Thanks for your time,
-Denis
-
-
-Message-ID: <18781b816c37b55f191dfc9c866b88ff875b3667.camel@voxelsoft.com>
-Subject: [PATCH] ext4: fix directory index node split corruption
-From: Denis <denis@voxelsoft.com>
-To: tytso@mit.edu
-Cc: linux-ext4@vger.kernel.org, artem.blagodarenko@gmail.com
-Date: Sat, 26 Jun 2021 18:50:36 +0100
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0-1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-
-Following commit b5776e7, a trivial sequential write of empty files to
-an empty ext4 file system (with large_dir enabled) fails after just
-over 26 million files. Depending on luck, file creation will give error
-EEXIST or EUCLEAN.
-
-Commit b5776e7 fixed the no-restart condition so that
-ext4_handle_dirty_dx_node is always called, but it also broke the
-restart condition. This is because when restart=1, the original
-implementation correctly skipped do_split() but b5776e7 clobbered the
-"if(restart)goto journal_error;" logic.
-
-This complementary change protects do_split() from restart condition,
-making it safe from both current and future ordering of goto statements
-in earlier sections of the code.
-
-Tested on 5.11.20 with handy testing script:
-
-#!/bin/python
-i = 0
-while i <= 32000000:
-    print (i)
-    with open('tmpmnt/%d' % i, 'wb') as fout:
-        i += 1
-
-Google-Bug-Id: 176345532
-Fixes: b5776e7 ("ext4: fix potential htree index checksum corruption")
-Fixes: e08ac99 ("ext4: add largedir feature")
-
----
- fs/ext4/namei.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
-
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 9cc9e6c1d582..5052d1a6f6d8 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -2428,13 +2428,15 @@ static int ext4_dx_add_entry(handle_t *handle,
-struct ext4_filename *fname,
- 			goto journal_error;
- 		}
- 	}
--	de = do_split(handle, dir, &bh, frame, &fname->hinfo);
--	if (IS_ERR(de)) {
--		err = PTR_ERR(de);
-+	if (!restart) {
-+		de = do_split(handle, dir, &bh, frame, &fname->hinfo);
-+		if (IS_ERR(de)) {
-+			err = PTR_ERR(de);
-+			goto cleanup;
-+		}
-+		err = add_dirent_to_buf(handle, fname, dir, inode, de,
-bh);
- 		goto cleanup;
- 	}
--	err = add_dirent_to_buf(handle, fname, dir, inode, de, bh);
--	goto cleanup;
+ obj-$(CONFIG_UNICODE) += unicode.o
+ obj-$(CONFIG_UNICODE_NORMALIZATION_SELFTEST) += utf8-selftest.o
++obj-$(CONFIG_UNICODE_UTF8_DATA) += utf8-data.o
  
- journal_error:
- 	ext4_std_error(dir->i_sb, err); /* this is a no-op if err == 0
-*/
+ unicode-y := utf8-norm.o utf8-core.o
+ 
+-$(obj)/utf8-norm.o: $(obj)/utf8data.h
++$(obj)/utf8-data.o: $(obj)/utf8data.h
+ 
+ # In the normal build, the checked-in utf8data.h is just shipped.
+ #
+diff --git a/fs/unicode/utf8-core.c b/fs/unicode/utf8-core.c
+index dc25823bfed9..3d32c9e5c581 100644
+--- a/fs/unicode/utf8-core.c
++++ b/fs/unicode/utf8-core.c
+@@ -192,7 +192,7 @@ static int utf8_parse_version(const char *version, unsigned int *maj,
+ 	return 0;
+ }
+ 
+-struct unicode_map *utf8_load(const char *version)
++static struct unicode_map *utf8_load_core(const char *version)
+ {
+ 	struct unicode_map *um = NULL;
+ 	int unicode_version;
+@@ -225,11 +225,57 @@ struct unicode_map *utf8_load(const char *version)
+ 
+ 	return um;
+ }
++
++static void utf8_unload_core(struct unicode_map *um)
++{
++	kfree(um);
++}
++
++static int utf8mod_get(void)
++{
++	int ret;
++
++	spin_lock(&utf8_lock);
++	ret = utf8data_loaded && try_module_get(utf8_ops->owner);
++	spin_unlock(&utf8_lock);
++	return ret;
++}
++
++struct unicode_map *utf8_load(const char *version)
++{
++	struct unicode_map *um;
++
++	/*
++	 * try_then_request_module() is used here instead of using
++	 * request_module() because of the following problems that
++	 * could occur with the usage of request_module().
++	 * 1) Multiple calls in parallel to utf8_load() would fail if
++	 * kmod_concurrent_max == 0
++	 * 2) There would be unnecessary memory allocation and userspace
++	 * invocation in call_modprobe() that would always happen even if
++	 * the module is already loaded.
++	 * Hence, using try_then_request_module() would first check if the
++	 * module is already loaded, if not then it calls the request_module()
++	 * and finally would aquire the reference of the loaded module.
++	 */
++	if (!try_then_request_module(utf8mod_get(), "utf8-data")) {
++		pr_err("Failed to load UTF-8 module\n");
++		return ERR_PTR(-ENODEV);
++	}
++	um = utf8_load_core(version);
++	if (IS_ERR(um))
++		module_put(utf8_ops->owner);
++
++	return um;
++}
+ EXPORT_SYMBOL(utf8_load);
+ 
+ void utf8_unload(struct unicode_map *um)
+ {
+-	kfree(um);
++	if (um) {
++		utf8_unload_core(um);
++		module_put(utf8_ops->owner);
++	}
+ }
+ EXPORT_SYMBOL(utf8_unload);
+ 
+diff --git a/fs/unicode/utf8-data.c b/fs/unicode/utf8-data.c
+new file mode 100644
+index 000000000000..c798962d362d
+--- /dev/null
++++ b/fs/unicode/utf8-data.c
+@@ -0,0 +1,42 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include "utf8n.h"
++
++#define __INCLUDED_FROM_UTF8NORM_C__
++#include "utf8data.h"
++#undef __INCLUDED_FROM_UTF8NORM_C__
++
++struct utf8_data ops = {
++	.owner = THIS_MODULE,
++
++	.utf8vers = utf8vers,
++
++	.utf8agetab = utf8agetab,
++	.utf8agetab_size = ARRAY_SIZE(utf8agetab),
++
++	.utf8nfdicfdata = utf8nfdicfdata,
++	.utf8nfdicfdata_size = ARRAY_SIZE(utf8nfdicfdata),
++
++	.utf8nfdidata = utf8nfdidata,
++	.utf8nfdidata_size = ARRAY_SIZE(utf8nfdidata),
++
++	.utf8data = utf8data,
++	.utf8data_size = ARRAY_SIZE(utf8data),
++};
++
++static int __init utf8_init(void)
++{
++	unicode_register(&ops);
++	return 0;
++}
++
++static void __exit utf8_exit(void)
++{
++	unicode_unregister();
++}
++
++module_init(utf8_init);
++module_exit(utf8_exit);
++
++MODULE_LICENSE("GPL v2");
+diff --git a/fs/unicode/utf8-norm.c b/fs/unicode/utf8-norm.c
+index 1d2d2e5b906a..f3d6bbe0fe4c 100644
+--- a/fs/unicode/utf8-norm.c
++++ b/fs/unicode/utf8-norm.c
+@@ -6,22 +6,19 @@
+ 
+ #include "utf8n.h"
+ 
+-struct utf8data {
+-	unsigned int maxage;
+-	unsigned int offset;
+-};
++/* Spinlock for protecting utf8data_loaded and utf8_ops */
++DEFINE_SPINLOCK(utf8_lock);
+ 
+-#define __INCLUDED_FROM_UTF8NORM_C__
+-#include "utf8data.h"
+-#undef __INCLUDED_FROM_UTF8NORM_C__
++struct utf8_data *utf8_ops;
++bool utf8data_loaded;
+ 
+ int utf8version_is_supported(u8 maj, u8 min, u8 rev)
+ {
+-	int i = ARRAY_SIZE(utf8agetab) - 1;
++	int i = utf8_ops->utf8agetab_size - 1;
+ 	unsigned int sb_utf8version = UNICODE_AGE(maj, min, rev);
+ 
+-	while (i >= 0 && utf8agetab[i] != 0) {
+-		if (sb_utf8version == utf8agetab[i])
++	while (i >= 0 && utf8_ops->utf8agetab[i] != 0) {
++		if (sb_utf8version == utf8_ops->utf8agetab[i])
+ 			return 1;
+ 		i--;
+ 	}
+@@ -31,7 +28,7 @@ EXPORT_SYMBOL(utf8version_is_supported);
+ 
+ int utf8version_latest(void)
+ {
+-	return utf8vers;
++	return utf8_ops->utf8vers;
+ }
+ EXPORT_SYMBOL(utf8version_latest);
+ 
+@@ -168,7 +165,7 @@ typedef const unsigned char utf8trie_t;
+  * underlying datatype: unsigned char.
+  *
+  * leaf[0]: The unicode version, stored as a generation number that is
+- *          an index into utf8agetab[].  With this we can filter code
++ *          an index into utf8_ops->utf8agetab[].  With this we can filter code
+  *          points based on the unicode version in which they were
+  *          defined.  The CCC of a non-defined code point is 0.
+  * leaf[1]: Canonical Combining Class. During normalization, we need
+@@ -330,7 +327,7 @@ static utf8leaf_t *utf8nlookup(const struct utf8data *data,
+ 	if (len == 0)
+ 		return NULL;
+ 
+-	trie = utf8data + data->offset;
++	trie = utf8_ops->utf8data + data->offset;
+ 	node = 1;
+ 	while (node) {
+ 		offlen = (*trie & OFFLEN) >> OFFLEN_SHIFT;
+@@ -418,7 +415,7 @@ int utf8agemax(const struct utf8data *data, const char *s)
+ 		if (!leaf)
+ 			return -1;
+ 
+-		leaf_age = utf8agetab[LEAF_GEN(leaf)];
++		leaf_age = utf8_ops->utf8agetab[LEAF_GEN(leaf)];
+ 		if (leaf_age <= data->maxage && leaf_age > age)
+ 			age = leaf_age;
+ 		s += utf8clen(s);
+@@ -446,7 +443,7 @@ int utf8agemin(const struct utf8data *data, const char *s)
+ 		leaf = utf8lookup(data, hangul, s);
+ 		if (!leaf)
+ 			return -1;
+-		leaf_age = utf8agetab[LEAF_GEN(leaf)];
++		leaf_age = utf8_ops->utf8agetab[LEAF_GEN(leaf)];
+ 		if (leaf_age <= data->maxage && leaf_age < age)
+ 			age = leaf_age;
+ 		s += utf8clen(s);
+@@ -473,7 +470,7 @@ int utf8nagemax(const struct utf8data *data, const char *s, size_t len)
+ 		leaf = utf8nlookup(data, hangul, s, len);
+ 		if (!leaf)
+ 			return -1;
+-		leaf_age = utf8agetab[LEAF_GEN(leaf)];
++		leaf_age = utf8_ops->utf8agetab[LEAF_GEN(leaf)];
+ 		if (leaf_age <= data->maxage && leaf_age > age)
+ 			age = leaf_age;
+ 		len -= utf8clen(s);
+@@ -501,7 +498,7 @@ int utf8nagemin(const struct utf8data *data, const char *s, size_t len)
+ 		leaf = utf8nlookup(data, hangul, s, len);
+ 		if (!leaf)
+ 			return -1;
+-		leaf_age = utf8agetab[LEAF_GEN(leaf)];
++		leaf_age = utf8_ops->utf8agetab[LEAF_GEN(leaf)];
+ 		if (leaf_age <= data->maxage && leaf_age < age)
+ 			age = leaf_age;
+ 		len -= utf8clen(s);
+@@ -529,7 +526,7 @@ ssize_t utf8len(const struct utf8data *data, const char *s)
+ 		leaf = utf8lookup(data, hangul, s);
+ 		if (!leaf)
+ 			return -1;
+-		if (utf8agetab[LEAF_GEN(leaf)] > data->maxage)
++		if (utf8_ops->utf8agetab[LEAF_GEN(leaf)] > data->maxage)
+ 			ret += utf8clen(s);
+ 		else if (LEAF_CCC(leaf) == DECOMPOSE)
+ 			ret += strlen(LEAF_STR(leaf));
+@@ -557,7 +554,7 @@ ssize_t utf8nlen(const struct utf8data *data, const char *s, size_t len)
+ 		leaf = utf8nlookup(data, hangul, s, len);
+ 		if (!leaf)
+ 			return -1;
+-		if (utf8agetab[LEAF_GEN(leaf)] > data->maxage)
++		if (utf8_ops->utf8agetab[LEAF_GEN(leaf)] > data->maxage)
+ 			ret += utf8clen(s);
+ 		else if (LEAF_CCC(leaf) == DECOMPOSE)
+ 			ret += strlen(LEAF_STR(leaf));
+@@ -690,7 +687,7 @@ int utf8byte(struct utf8cursor *u8c)
+ 
+ 		ccc = LEAF_CCC(leaf);
+ 		/* Characters that are too new have CCC 0. */
+-		if (utf8agetab[LEAF_GEN(leaf)] > u8c->data->maxage) {
++		if (utf8_ops->utf8agetab[LEAF_GEN(leaf)] > u8c->data->maxage) {
+ 			ccc = STOPPER;
+ 		} else if (ccc == DECOMPOSE) {
+ 			u8c->len -= utf8clen(u8c->s);
+@@ -769,24 +766,42 @@ EXPORT_SYMBOL(utf8byte);
+ 
+ const struct utf8data *utf8nfdi(unsigned int maxage)
+ {
+-	int i = ARRAY_SIZE(utf8nfdidata) - 1;
++	int i = utf8_ops->utf8nfdidata_size - 1;
+ 
+-	while (maxage < utf8nfdidata[i].maxage)
++	while (maxage < utf8_ops->utf8nfdidata[i].maxage)
+ 		i--;
+-	if (maxage > utf8nfdidata[i].maxage)
++	if (maxage > utf8_ops->utf8nfdidata[i].maxage)
+ 		return NULL;
+-	return &utf8nfdidata[i];
++	return &utf8_ops->utf8nfdidata[i];
+ }
+ EXPORT_SYMBOL(utf8nfdi);
+ 
+ const struct utf8data *utf8nfdicf(unsigned int maxage)
+ {
+-	int i = ARRAY_SIZE(utf8nfdicfdata) - 1;
++	int i = utf8_ops->utf8nfdicfdata_size - 1;
+ 
+-	while (maxage < utf8nfdicfdata[i].maxage)
++	while (maxage < utf8_ops->utf8nfdicfdata[i].maxage)
+ 		i--;
+-	if (maxage > utf8nfdicfdata[i].maxage)
++	if (maxage > utf8_ops->utf8nfdicfdata[i].maxage)
+ 		return NULL;
+-	return &utf8nfdicfdata[i];
++	return &utf8_ops->utf8nfdicfdata[i];
+ }
+ EXPORT_SYMBOL(utf8nfdicf);
++
++void unicode_register(struct utf8_data *ops)
++{
++	spin_lock(&utf8_lock);
++	utf8_ops = ops;
++	utf8data_loaded = true;
++	spin_unlock(&utf8_lock);
++}
++EXPORT_SYMBOL(unicode_register);
++
++void unicode_unregister(void)
++{
++	spin_lock(&utf8_lock);
++	utf8_ops = NULL;
++	utf8data_loaded = false;
++	spin_unlock(&utf8_lock);
++}
++EXPORT_SYMBOL(unicode_unregister);
+diff --git a/fs/unicode/utf8-selftest.c b/fs/unicode/utf8-selftest.c
+index 6fe8af7edccb..d8069f4ad452 100644
+--- a/fs/unicode/utf8-selftest.c
++++ b/fs/unicode/utf8-selftest.c
+@@ -16,6 +16,7 @@
+ 
+ unsigned int failed_tests;
+ unsigned int total_tests;
++struct unicode_map *table;
+ 
+ /* Tests will be based on this version. */
+ #define latest_maj 12
+@@ -232,16 +233,9 @@ static void check_utf8_nfdicf(void)
+ 	}
+ }
+ 
+-static void check_utf8_comparisons(void)
++static void check_utf8_comparisons(struct unicode_map *table)
+ {
+ 	int i;
+-	struct unicode_map *table = utf8_load("12.1.0");
+-
+-	if (IS_ERR(table)) {
+-		pr_err("%s: Unable to load utf8 %d.%d.%d. Skipping.\n",
+-		       __func__, latest_maj, latest_min, latest_rev);
+-		return;
+-	}
+ 
+ 	for (i = 0; i < ARRAY_SIZE(nfdi_test_data); i++) {
+ 		const struct qstr s1 = {.name = nfdi_test_data[i].str,
+@@ -262,8 +256,6 @@ static void check_utf8_comparisons(void)
+ 		test_f(!utf8_strncasecmp(table, &s1, &s2),
+ 		       "%s %s comparison mismatch\n", s1.name, s2.name);
+ 	}
+-
+-	utf8_unload(table);
+ }
+ 
+ static void check_supported_versions(void)
+@@ -274,9 +266,6 @@ static void check_supported_versions(void)
+ 	/* Unicode 9.0.0 should be supported. */
+ 	test(utf8version_is_supported(9, 0, 0));
+ 
+-	/* Unicode 1x.0.0 (the latest version) should be supported. */
+-	test(utf8version_is_supported(latest_maj, latest_min, latest_rev));
+-
+ 	/* Next versions don't exist. */
+ 	test(!utf8version_is_supported(13, 0, 0));
+ 	test(!utf8version_is_supported(0, 0, 0));
+@@ -288,10 +277,17 @@ static int __init init_test_ucd(void)
+ 	failed_tests = 0;
+ 	total_tests = 0;
+ 
++	table = utf8_load("12.1.0");
++	if (IS_ERR(table)) {
++		pr_err("%s: Unable to load utf8 %d.%d.%d. Could not run the tests\n",
++		       __func__, latest_maj, latest_min, latest_rev);
++		return -EINVAL;
++	}
++
+ 	check_supported_versions();
+ 	check_utf8_nfdi();
+ 	check_utf8_nfdicf();
+-	check_utf8_comparisons();
++	check_utf8_comparisons(table);
+ 
+ 	if (!failed_tests)
+ 		pr_info("All %u tests passed\n", total_tests);
+@@ -303,6 +299,7 @@ static int __init init_test_ucd(void)
+ 
+ static void __exit exit_test_ucd(void)
+ {
++	utf8_unload(table);
+ }
+ 
+ module_init(init_test_ucd);
+diff --git a/fs/unicode/utf8n.h b/fs/unicode/utf8n.h
+index 0acd530c2c79..6843229bcb2b 100644
+--- a/fs/unicode/utf8n.h
++++ b/fs/unicode/utf8n.h
+@@ -11,6 +11,7 @@
+ #include <linux/export.h>
+ #include <linux/string.h>
+ #include <linux/module.h>
++#include <linux/spinlock.h>
+ 
+ /* Encoding a unicode version number as a single unsigned int. */
+ #define UNICODE_MAJ_SHIFT		(16)
+@@ -21,6 +22,11 @@
+ 	 ((unsigned int)(MIN) << UNICODE_MIN_SHIFT) |	\
+ 	 ((unsigned int)(REV)))
+ 
++extern spinlock_t utf8_lock;
++
++extern struct utf8_data *utf8_ops;
++extern bool utf8data_loaded;
++
+ /* Highest unicode version supported by the data tables. */
+ extern int utf8version_is_supported(u8 maj, u8 min, u8 rev);
+ extern int utf8version_latest(void);
+@@ -105,4 +111,30 @@ extern int utf8ncursor(struct utf8cursor *u8c, const struct utf8data *data,
+  */
+ extern int utf8byte(struct utf8cursor *u8c);
+ 
++struct utf8data {
++	unsigned int maxage;
++	unsigned int offset;
++};
++
++struct utf8_data {
++	struct module *owner;
++
++	const unsigned int utf8vers;
++
++	const unsigned int *utf8agetab;
++	int utf8agetab_size;
++
++	const struct utf8data *utf8nfdicfdata;
++	int utf8nfdicfdata_size;
++
++	const struct utf8data *utf8nfdidata;
++	int utf8nfdidata_size;
++
++	const unsigned char *utf8data;
++	int utf8data_size;
++};
++
++void unicode_register(struct utf8_data *ops);
++void unicode_unregister(void);
++
+ #endif /* UTF8NORM_H */
+-- 
+2.30.2
 
-
-Message-ID: <be3cb0e7566b2893bc311963a502853383899746.camel@voxelsoft.com>
-Subject: Fwd: [PATCH RESEND] ext4: fix directory index node split corruption
-From: Denis <denis@voxelsoft.com>
-To: tytso@mit.edu
-Date: Tue, 29 Jun 2021 20:32:01 +0100
-References: <3112115f7c7b009755ce331631bd5ebf24bc6767.camel@voxelsoft.com>
-Content-Type: multipart/mixed; boundary="=-2iokyD4xn0CorAJWsx+Y"
-User-Agent: Evolution 3.40.0-1 
-MIME-Version: 1.0
-X-Evolution-Identity: 1345390455.26215.0@denis-pc
-X-Evolution-Fcc: folder://1305396255.3768.0%40denis-pc/INBOX/Sent
-X-Evolution-Transport: 1345390455.26215.1@denis-pc
-X-Evolution-Source-Folder: folder://1305396255.3768.0%40denis-pc/INBOX/Sent
-X-Evolution-Source-Message: 1213
-X-Evolution-Source-Flags: FORWARDED 
-X-Evolution-Source: 
-
-My emails to linux-ext4@vger.kernel.org seem to be received by vger but
-end up in /dev/null, can't see it in the archive, and I haven't heard
-from postmaster. Don't know if there's some approval or queueing
-process that I'm supposed to jump through. Feel free to copy my
-original email to the list on my behalf.
-
-Denis
-
-Message-ID: <3112115f7c7b009755ce331631bd5ebf24bc6767.camel@voxelsoft.com>
-Subject: [PATCH RESEND] ext4: fix directory index node split corruption
-From: Denis Lukianov <denis@voxelsoft.com>
-To: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Date: Tue, 29 Jun 2021 17:00:20 +0100
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0-1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-
-Following commit b5776e7, a trivial sequential write of empty files to
-an empty ext4 file system (with large_dir enabled) fails after just
-over 26 million files. Depending on luck, file creation will give error
-EEXIST or EUCLEAN.
-
-Commit b5776e7 fixed the no-restart condition so that
-ext4_handle_dirty_dx_node is always called, but it also broke the
-restart condition. This is because when restart=1, the original
-implementation correctly skipped do_split() but b5776e7 clobbered the
-"if(restart)goto journal_error;" logic.
-
-This complementary change protects do_split() from restart condition,
-making it safe from both current and future ordering of goto statements
-in earlier sections of the code.
-
-Tested on 5.11.20 with handy testing script:
-
-#!/bin/python
-i = 0
-while i <= 32000000:
-    print (i)
-    with open('tmpmnt/%d' % i, 'wb') as fout:
-        i += 1
-
-Google-Bug-Id: 176345532
-Fixes: b5776e7 ("ext4: fix potential htree index checksum corruption")
-Signed-off-by: Denis Lukianov <denis@voxelsoft.com>
-
----
- fs/ext4/namei.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
-
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 9cc9e6c1d582..5052d1a6f6d8 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -2428,13 +2428,15 @@ static int ext4_dx_add_entry(handle_t *handle,
-struct ext4_filename *fname,
-                        goto journal_error;
-                }
-        }
--       de = do_split(handle, dir, &bh, frame, &fname->hinfo);
--       if (IS_ERR(de)) {
--               err = PTR_ERR(de);
-+       if (!restart) {
-+               de = do_split(handle, dir, &bh, frame, &fname->hinfo);
-+               if (IS_ERR(de)) {
-+                       err = PTR_ERR(de);
-+                       goto cleanup;
-+               }
-+               err = add_dirent_to_buf(handle, fname, dir, inode, de,
-bh);
-                goto cleanup;
-        }
--       err = add_dirent_to_buf(handle, fname, dir, inode, de, bh);
--       goto cleanup;
- 
- journal_error:
-        ext4_std_error(dir->i_sb, err); /* this is a no-op if err == 0
-*/
-
-
-
-
-
-
------ End forwarded message -----
