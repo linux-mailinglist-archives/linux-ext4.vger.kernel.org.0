@@ -2,76 +2,74 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5039D3DCC97
-	for <lists+linux-ext4@lfdr.de>; Sun,  1 Aug 2021 18:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 936473DCF43
+	for <lists+linux-ext4@lfdr.de>; Mon,  2 Aug 2021 06:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231766AbhHAQFh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 1 Aug 2021 12:05:37 -0400
-Received: from out20-110.mail.aliyun.com ([115.124.20.110]:55235 "EHLO
-        out20-110.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230010AbhHAQFg (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 1 Aug 2021 12:05:36 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1035937|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.131609-0.0098807-0.858511;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047213;MF=guan@eryu.me;NM=1;PH=DS;RN=5;RT=5;SR=0;TI=SMTPD_---.Ktt72EQ_1627833926;
-Received: from localhost(mailfrom:guan@eryu.me fp:SMTPD_---.Ktt72EQ_1627833926)
-          by smtp.aliyun-inc.com(10.147.44.129);
-          Mon, 02 Aug 2021 00:05:27 +0800
-Date:   Mon, 2 Aug 2021 00:05:26 +0800
-From:   Eryu Guan <guan@eryu.me>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Theodore Ts'o <tytso@mit.edu>,
-        "Darrick J . Wong" <djwong@kernel.org>
-Subject: Re: [PATCHv2 0/9] xfstests: 64K blocksize related fixes
-Message-ID: <YQbGRrgd9d5y91WO@desktop>
-References: <cover.1626844259.git.riteshh@linux.ibm.com>
+        id S231206AbhHBEYN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 2 Aug 2021 00:24:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229628AbhHBEYM (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 2 Aug 2021 00:24:12 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 733D7C061798
+        for <linux-ext4@vger.kernel.org>; Sun,  1 Aug 2021 21:23:58 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id ec13so22149615edb.0
+        for <linux-ext4@vger.kernel.org>; Sun, 01 Aug 2021 21:23:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=JbMtpdZj7sghISs4e5T5yryQDvERMuYalazmdQP0RcA=;
+        b=czeOQMYeZau4ejaBbgDdCuklRCyHoHRlo6xUfJcAj3bciaGtFBitiUib5a5MwOumE9
+         w7/Jn7bBNsLcP1+CHZ7cIXH8h+QOe2ioJtROZD2bqhS/lqEvaNcrldVE+LZBhK9CNKw9
+         GasUZeZx/Kcocc9jX4O3VqyeOrpbJXFle0t9OXPFTLvjA0ffc0WpqgkYu8CQSXrFRLzD
+         Yc8UR7mKpLCqpwn4ZFojN5x09EwrnOTDpyVyuL9REZStwkguR4uL/4srDE+vjWW4JCu8
+         Sy5z9ei3l3c7g9TC5s6E8Wj1tuL0hGAP5lkkVvlHQCNnMoccEAC8Z+koQ2tbRnEruEUY
+         O8Aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=JbMtpdZj7sghISs4e5T5yryQDvERMuYalazmdQP0RcA=;
+        b=S2a1CDkjd1p5UxCK0M9XdUrpzfEz4TSILJfFhptbwZTpZYO52s7CDBsbo2qTaIeImW
+         8GyOXIzVgj4Y4IZPYdSP726e3wSE9SERAeC8Jmaod5D666gocSXuV9AgTeCfxIE/X12E
+         Di857WkdJ4P/jlzublmXnfp2H4c0iynm0nUM7LJW9FGQIenDI2JlRKlAQG8PpWsCnQQm
+         3XcFDSNGI8aCu6OJR/n5aUeVe2N4OODzVo/1XUK8LCoSL2fj7QmuDyXtLSI7+uaPR7MU
+         x/WERcQyJtC+qHTnFw+C9DJTzUBIvdAh7QvBvSMoeyy5Wan6TkoxPxiOUmckMGh6s3XM
+         DWhQ==
+X-Gm-Message-State: AOAM531SeWIMCg+uMqKA2Lm7YbcU5yBAy016hLSQmFscoRofccZFkTjT
+        oZ4qHy6Fmq3HCmrXMDOU4mSlWjzWNA3YuK/pMKY=
+X-Google-Smtp-Source: ABdhPJxItSnYdNOJr/eCcDJG9Ed81FEJCtux30e3VMRN30hf/TzQyuXNRWDf+H2IgaMscJY+xnmH/x8e0HLuRnwx6WI=
+X-Received: by 2002:a50:d70a:: with SMTP id t10mr16749153edi.253.1627878237019;
+ Sun, 01 Aug 2021 21:23:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1626844259.git.riteshh@linux.ibm.com>
+Received: by 2002:a17:907:d0b:0:0:0:0 with HTTP; Sun, 1 Aug 2021 21:23:56
+ -0700 (PDT)
+Reply-To: ablahikazabl67@gmail.com
+From:   Abdoulahi Kazim <drwilliamcuthbert@gmail.com>
+Date:   Mon, 2 Aug 2021 05:23:56 +0100
+Message-ID: <CAKwBCXvLzgfEHCKMKUxki4k1yYap9oH1ox=muoK9koBZXish5g@mail.gmail.com>
+Subject: More Authentic Information
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 10:57:53AM +0530, Ritesh Harjani wrote:
-> Hello,
-> 
-> Below are the list of fixes mostly centered around 64K blocksize
-> and with ext4 filesystem. Tested this with both 64K & 4K blocksize on Power
-> with (ext4/ext3/ext2/xfs/btrfs).
-> 
-> v1 -> v2
-> 1. Address comments from Ted and Darrick mentioned at [1]
+-- 
+Dear Partner,
 
-Thanks for the fixes! I've applied patch 1-4 and patch 8-9. Patch 5-7
-may need more discusstions.
+I am soliciting your partnership to relocate $12.5 Million to your
+country for investment on my behalf and you will be entitled to 30% of
+the sum once the transaction is successful made.
 
-Thanks,
-Eryu
+Please indicate your genuine interest if you are capable so that i
+will send you the authentic details and documents of the transaction
+in awareness with some of my fellow Directors in the bank.
 
-> 
-> [1]: https://patchwork.kernel.org/cover/12318137
-> 
-> Ritesh Harjani (9):
->   ext4/003: Fix this test on 64K platform for dax config
->   ext4/027: Correct the right code of block and inode bitmap
->   ext4/306: Add -b blocksize parameter too to avoid failure with DAX config
->   ext4/022: exclude this test for dax config on 64KB pagesize platform
->   generic/031: Fix the test case for 64k blocksize config
->   common/rc: Add _mkfs_dev_blocksized functionality
->   generic/620: Use _mkfs_dev_blocksized to use 4k bs
->   common/attr: Cleanup end of line whitespaces issues
->   common/attr: Reduce MAX_ATTRS to leave some overhead for 64K blocksize
-> 
->  common/attr           | 57 ++++++++++++++++++++++++++++++++++++-------
->  common/rc             | 47 +++++++++++++++++++++++++++++++++++
->  tests/ext4/003        |  3 ++-
->  tests/ext4/022        |  7 ++++--
->  tests/ext4/027        |  4 +--
->  tests/ext4/306        |  5 +++-
->  tests/generic/031     | 14 +++++++----
->  tests/generic/031.out | 16 ++++++------
->  tests/generic/620     |  4 ++-
->  9 files changed, 128 insertions(+), 29 deletions(-)
-> 
-> --
-> 2.31.1
+If you are interested, here is my private Email address:
+(ablahikazabl67@gmail.com)
+For more authentic and legit information.
+
+
+Regards :  Abdoulahi Kazim
