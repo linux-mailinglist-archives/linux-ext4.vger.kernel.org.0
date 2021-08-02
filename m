@@ -2,62 +2,74 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 034C03DDDFD
-	for <lists+linux-ext4@lfdr.de>; Mon,  2 Aug 2021 18:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 756103DE1CC
+	for <lists+linux-ext4@lfdr.de>; Mon,  2 Aug 2021 23:46:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230139AbhHBQw1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 2 Aug 2021 12:52:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56990 "EHLO
+        id S231397AbhHBVrI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 2 Aug 2021 17:47:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229945AbhHBQw1 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 2 Aug 2021 12:52:27 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 762AFC06175F
-        for <linux-ext4@vger.kernel.org>; Mon,  2 Aug 2021 09:52:17 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id y34so34881407lfa.8
-        for <linux-ext4@vger.kernel.org>; Mon, 02 Aug 2021 09:52:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-        b=IJ28+rK9CXy74t9PYra9/nF/GakZDV4ZOl7bejGECk8WvUmdOf9Zwspgrvxg99uDea
-         pnBvsMKXjbEviraNg0JOOQbPjvCWdfKP0/y3zeyFEHTzOsM2YyoJy9+AMBM12me3p4Zg
-         r/Wbk65r6eYV91MDnLtd8Fa8zU9XiIJDQD7wQOGuPot+dIRf5uwM1RoZzhxte4ua+bfE
-         9I4PKP72ZH/Me2ty3o2M9QNGnUXPE39DR6DNbmLDQu71TFNCIhtU+l9dNVA09pmQc+Jh
-         jZwvzUlPlmFGEbvTbTFzZEgGDcSBM6Ay8zH7jXh8nyjIGvXrwrKt5XQv6HSlGeiht7gb
-         +cUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-        b=qSnz2GmIVpyA5Koy/Pe2mj29n7xVmi7MQQL8mEU7xMxH1HEN3BDv1IpFraPdicUsqo
-         Bizi+G+Al1rRj5xk+cWSCwFfRrCuawwER7O6vrifqTBB7bnQMmL4sR0W5p/0doFJCI9k
-         54OVrnBpvZTcNxuxWvlTUl+IqQqEH9MdzPrr6oaHf8TQrTiMBkxs7wzzP5hk9cJqDWGR
-         EyxKgNTpOSBZwJX2hbOP1Q4ONGc+U18ClWFIJDJEbSm6MD8Nl6+ZkFCL7srI/2/009Qc
-         H2vqvflrb0QxzOzYs0Y+14U6gW5A4bwYLTCS16wuoo1NdR7616GJKJHUXJVSVGWIHcup
-         galw==
-X-Gm-Message-State: AOAM5318lI71VXH9MSL7VN+5q8DNTnZg9E+Jgstt7cXQIQ+MncNg2BJl
-        d7oUX9GM4/RdIgrlRTNXNvwIEzu7lekJML3blNI=
-X-Google-Smtp-Source: ABdhPJxTB6ov3FqHT+008QYiFGzHna4AqaZyAXmUF3B/nuZvpZotuaRjkOZs5cuHgDNDgHHgnenutR3H0cFDQhtbukc=
-X-Received: by 2002:ac2:4ec3:: with SMTP id p3mr12897103lfr.556.1627923135717;
- Mon, 02 Aug 2021 09:52:15 -0700 (PDT)
+        with ESMTP id S229567AbhHBVrI (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 2 Aug 2021 17:47:08 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B028C06175F
+        for <linux-ext4@vger.kernel.org>; Mon,  2 Aug 2021 14:46:58 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 026AD1F42CC2
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     ltp@lists.linux.it, jack@suse.com, amir73il@gmail.com
+Cc:     linux-ext4@vger.kernel.org, khazhy@google.com,
+        kernel@collabora.com,
+        Gabriel Krisman Bertazi <krisman@collabora.com>
+Subject: [PATCH 0/7] Test the new fanotify FAN_FS_ERROR event
+Date:   Mon,  2 Aug 2021 17:46:38 -0400
+Message-Id: <20210802214645.2633028-1-krisman@collabora.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Received: by 2002:a05:6504:51d4:0:0:0:0 with HTTP; Mon, 2 Aug 2021 09:52:15
- -0700 (PDT)
-Reply-To: fms333166@yandex.com
-From:   Frank Martins <martinsandpartners.tg@gmail.com>
-Date:   Mon, 2 Aug 2021 09:52:15 -0700
-Message-ID: <CAKBT9ERw2Q+0BWBw_r4iU+s0qwGsitedz0krZscarqXs29mtqw@mail.gmail.com>
-Subject: =?UTF-8?Q?Ich_warte_immer_noch_auf_Ihre_Antwort_auf_meine_zahl?=
-        =?UTF-8?Q?reichen_unbeantworteten_E=2DMails_an_Sie_bez=C3=BCglich_Ihres_Fami?=
-        =?UTF-8?Q?lienerbschaftsfonds_=288=2C5_Millionen_US=2DDollar=29=2E_Bitte_best=C3=A4t?=
-        =?UTF-8?Q?igen_Sie_mir_diesen_Brief_f=C3=BCr_weitere_Details=2E_Gr=C3=BC=C3=9Fe=2E_Mit?=
-        =?UTF-8?Q?_freundlichen_Gr=C3=BC=C3=9Fen_Herr_Frank_Martins=2E?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+FAN_FS_ERROR is a new (still unmerged) fanotify event to monitor
+fileystem errors.  This patchset introduces a new LTP test for this
+feature.
+
+Testing file system errors is slightly tricky, in particular because
+they are mostly file system dependent.  Since there are only patches for
+ext4, I choose to make the test around it, since there wouldn't be much
+to do with other file systems.  The second challenge is how we cause the
+file system errors, since there is no error injection for ext4 in Linux.
+In this series, this is done by corrupting specific data in the
+test device with the help of debugfs.
+
+The FAN_FS_ERROR feature is flying around linux-ext4 and fsdevel, and
+the latest version is available on the branch below:
+
+    https://gitlab.collabora.com/krisman/linux -b fanotify-notifications-single-slot
+
+A proper manpage description is also available on the respective mailing
+list, or in the branch below:
+
+    https://gitlab.collabora.com/krisman/man-pages.git -b fan-fs-error
+
+Please, let me know your thoughts.
+
+Gabriel Krisman Bertazi (7):
+  syscalls/fanotify20: Introduce helpers for FAN_FS_ERROR test
+  syscalls/fanotify20: Validate the generic error info
+  syscalls/fanotify20: Validate incoming FID in FAN_FS_ERROR
+  syscalls/fanotify20: Watch event after filesystem abort
+  syscalls/fanotify20: Support submission of debugfs commands
+  syscalls/fanotify20: Test file event with broken inode
+  syscalls/fanotify20: Test capture of multiple errors
+
+ testcases/kernel/syscalls/fanotify/.gitignore |   1 +
+ .../kernel/syscalls/fanotify/fanotify20.c     | 328 ++++++++++++++++++
+ 2 files changed, 329 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/fanotify/fanotify20.c
+
+-- 
+2.32.0
 
