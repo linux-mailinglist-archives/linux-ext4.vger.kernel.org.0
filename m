@@ -2,54 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE663DE897
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Aug 2021 10:42:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72A7B3DE906
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Aug 2021 10:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234412AbhHCImk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 3 Aug 2021 04:42:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56598 "EHLO
+        id S234813AbhHCI4x (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 3 Aug 2021 04:56:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234356AbhHCImj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 3 Aug 2021 04:42:39 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DCC2C06175F
-        for <linux-ext4@vger.kernel.org>; Tue,  3 Aug 2021 01:42:28 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id f6so17613919ioc.6
-        for <linux-ext4@vger.kernel.org>; Tue, 03 Aug 2021 01:42:28 -0700 (PDT)
+        with ESMTP id S234579AbhHCI4x (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 3 Aug 2021 04:56:53 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD35BC061764
+        for <linux-ext4@vger.kernel.org>; Tue,  3 Aug 2021 01:56:42 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id z7so22621149iog.13
+        for <linux-ext4@vger.kernel.org>; Tue, 03 Aug 2021 01:56:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=3V77oViv0XYlTBqXdkkWQBA0edv1sYPU0QfQcSuYzf4=;
-        b=RxS1gZtRwZXokDQnkjXJJLbRZQn3nDzXZZFERpLvf7HhCKx2jPxmv7p2Fdm5rLqspq
-         sp911Ba6LIpHi8RPMEGc8WdlbQA4+CEBaeWEiAWvTsLOVEucvTDXqDL4D5aBnCv3bc77
-         kJLFo4At1VD3j6J5dC2TUJkKQdZ9cZehvxGVhHX1ADWGszUZHwXjLmymFLTLawXusyTf
-         qBZ1hCb0UtqDVraXqhZ6Ktw5YgLTWt97maSnQ6Qqlc6+sl7qnNyFcJWJlYw6BOtBf64A
-         eI5r1yMn5re++vUqASEbjkyKLvnRa3xUjxLK8f51g+ah+9X0sJh16hqiReoeQq9DL2Wx
-         B4og==
+        bh=7SsFV2iOXhu6gJLnc6G6fBI8/OQbVqmopZT5kD/FcIs=;
+        b=hahqrRRSNDxZMk6jEqqdCYQMZnmFhozTgz/v2l2OyEpN0XE9axp4g+uUg0B4IVXtJl
+         F8FojYZGy7QoKv/o8/73A+2islxAtMxqrWMb0vHD0d5rixpjAWEwIOlA8uA7ClO4eOtH
+         v0WfzPwU+iE+doh5PSZDmUV6dFXL9OIR0cV3p1ehfyw0azdChf3HbahiTMbi1N/PKZks
+         WXJfjhngcQa70rOz3AVDuROoTuHCogbGDL3nnpogMQh0fINLmn6ZiZQDw2hRxGH7Pe4K
+         JeIGAXr/FRFQ+yBHyVYmbjmRzsuRA/q5XVIj1y3pzhmLI+eEA7ge+hA2IJu/rXe6we8E
+         yQyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=3V77oViv0XYlTBqXdkkWQBA0edv1sYPU0QfQcSuYzf4=;
-        b=Gbgx6zOJE953FCXQmVnZx/KthMRnXn9RDRSiqzW5ZdEalL34NcF/kxBaMKQmcGxiv4
-         t51a+CXkK/th6TlocyLAevypekIT4iaS6mqho6gGEW93kocXI9VChRKEBTe4wEmeEotw
-         gjP9AJZ7SZtT3KOTy1pdviC5BAY+y1UfeY40Zca67UF/uUBDz9FcyngGMYvn8woz5r+t
-         5LCWNo376BCCskWcxo1dSA///8xBCaIgIesntJkMrQ/ZkHhJMYFU34+ULnuq8v0jetYM
-         M6fDDZ5xWNipl/eOeNSgmx/7c+zPdvgCXlkGknwi2LG+brqdKVSZHfc9TJGn8yGp5FdF
-         zFvg==
-X-Gm-Message-State: AOAM5321LGyGUDLSz/EN6Vtb0/EImH0T97fCbdz1mlGtPmeqepo3J/sF
-        itZYdiZxm/a9nOka8ZmWqRcnvVb2C4cZcLTJstg=
-X-Google-Smtp-Source: ABdhPJy6QwItcOMWcc2V/SuuX+hs6i/S/v6H58kQ5Zkck7Slb4U/vQol3er0yx1TUMKcx+Eb8dt1uSTXK+CT651wC5A=
-X-Received: by 2002:a05:6638:1036:: with SMTP id n22mr14836075jan.81.1627980147689;
- Tue, 03 Aug 2021 01:42:27 -0700 (PDT)
+        bh=7SsFV2iOXhu6gJLnc6G6fBI8/OQbVqmopZT5kD/FcIs=;
+        b=SP/o8gNzHpE2VyNPNpBr/YeZ/ZUVwri3dejDKSkrDYfifKWMs4j9refHF6mFB4D+cR
+         tIKpcQWHAxURrhAI9fUHYlpjjVWQf4CxL8SukuDAJoi6fbnwGn3BQfZaI1vxy0h27MDz
+         PYqkJBjvAuyvv0kD1qdWV0JdfiNc8Fcj2qihAjXnMA47kdM62br8VAnlbREWu6RGr960
+         /7hwtWrJZW+Z2IS97w5Bp2/+BCJnmMUNdBqdh+QG7ort7PLOWaNGi8oIh3JDYdJFN8nL
+         Wc40yJSbZaxjS6r8YZW78u6CiszzoCMNfJjwz7NaPfC2fsumHo+04RGH3Zt39SJVURir
+         IzIQ==
+X-Gm-Message-State: AOAM533QjtA29CENPUxzmUVVs+ovkrDgXI5dzTrEgHXdYnKJeLT6VA84
+        mtIn4SyIxNwGA2wHxo8YgaPalQwQRhLP0JLN0Ok=
+X-Google-Smtp-Source: ABdhPJy0vwWcnNizvdeVjYXwq4nHkZgMGj0gupr2wyZ17s8UZye0j+4lfNn2qmtR3XhFEfpxNQ3Mj9FxzlZaECwRnPo=
+X-Received: by 2002:a05:6638:1928:: with SMTP id p40mr4348179jal.93.1627981002326;
+ Tue, 03 Aug 2021 01:56:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210802214645.2633028-1-krisman@collabora.com> <20210802214645.2633028-3-krisman@collabora.com>
-In-Reply-To: <20210802214645.2633028-3-krisman@collabora.com>
+References: <20210802214645.2633028-1-krisman@collabora.com> <20210802214645.2633028-4-krisman@collabora.com>
+In-Reply-To: <20210802214645.2633028-4-krisman@collabora.com>
 From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Tue, 3 Aug 2021 11:42:16 +0300
-Message-ID: <CAOQ4uxhDUZND7Ak9vL-_vR50KSoewyKNzFsTsGP+UeDQmB2Rhg@mail.gmail.com>
-Subject: Re: [PATCH 2/7] syscalls/fanotify20: Validate the generic error info
+Date:   Tue, 3 Aug 2021 11:56:31 +0300
+Message-ID: <CAOQ4uxjMfJM4FM4tWJWgjbK4a2K1hNJdEBRvwQTh9+5su2N0Tw@mail.gmail.com>
+Subject: Re: [PATCH 3/7] syscalls/fanotify20: Validate incoming FID in FAN_FS_ERROR
 To:     Gabriel Krisman Bertazi <krisman@collabora.com>
 Cc:     LTP List <ltp@lists.linux.it>, Jan Kara <jack@suse.com>,
         Ext4 <linux-ext4@vger.kernel.org>,
@@ -62,70 +62,42 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 On Tue, Aug 3, 2021 at 12:47 AM Gabriel Krisman Bertazi
 <krisman@collabora.com> wrote:
 >
-> Implement some validation for the generic error info record emitted by
-> the kernel.  The error number is fs-specific but, well, we only support
-> ext4 for now anyway.
+> Verify the FID provided in the event.  If the testcase has a null inode,
+> this is assumed to be a superblock error (i.e. null FH).
 >
 > Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 > ---
->  .../kernel/syscalls/fanotify/fanotify20.c     | 59 ++++++++++++++++++-
->  1 file changed, 58 insertions(+), 1 deletion(-)
+>  .../kernel/syscalls/fanotify/fanotify20.c     | 51 +++++++++++++++++++
+>  1 file changed, 51 insertions(+)
 >
 > diff --git a/testcases/kernel/syscalls/fanotify/fanotify20.c b/testcases/kernel/syscalls/fanotify/fanotify20.c
-> index 50531bd99cc9..fd5cfb8744f1 100644
+> index fd5cfb8744f1..d8d788ae685f 100644
 > --- a/testcases/kernel/syscalls/fanotify/fanotify20.c
 > +++ b/testcases/kernel/syscalls/fanotify/fanotify20.c
-> @@ -37,6 +37,14 @@
+> @@ -40,6 +40,14 @@
 >
->  #ifndef FAN_FS_ERROR
->  #define FAN_FS_ERROR           0x00008000
+>  #define FAN_EVENT_INFO_TYPE_ERROR      4
+>
+> +#ifndef FILEID_INVALID
+> +#define        FILEID_INVALID          0xff
+> +#endif
 > +
-> +#define FAN_EVENT_INFO_TYPE_ERROR      4
+> +#ifndef FILEID_INO32_GEN
+> +#define FILEID_INO32_GEN       1
+> +#endif
 > +
-> +struct fanotify_event_info_error {
-> +       struct fanotify_event_info_header hdr;
-> +       __s32 error;
-> +       __u32 error_count;
-> +};
->  #endif
-
-Those defines go in fanotify.h
-
->
->  #define BUF_SIZE 256
-> @@ -47,11 +55,54 @@ int fd_notify;
->
->  static const struct test_case {
+>  struct fanotify_event_info_error {
+>         struct fanotify_event_info_header hdr;
+>         __s32 error;
+> @@ -57,6 +65,9 @@ static const struct test_case {
 >         char *name;
-> +       int error;
-> +       unsigned int error_count;
->         void (*trigger_error)(void);
->         void (*prepare_fs)(void);
->  } testcases[] = {
->  };
->
-> +struct fanotify_event_info_header *get_event_info(
-> +                                       struct fanotify_event_metadata *event,
-> +                                       int info_type)
-> +{
-> +       struct fanotify_event_info_header *hdr = NULL;
-> +       char *start = (char *) event;
-> +       int off;
+>         int error;
+>         unsigned int error_count;
 > +
-> +       for (off = event->metadata_len; (off+sizeof(*hdr)) < event->event_len;
-> +            off += hdr->len) {
-> +               hdr = (struct fanotify_event_info_header *) &(start[off]);
-> +               if (hdr->info_type == info_type)
-> +                       return hdr;
-> +       }
-> +       return NULL;
-> +}
-> +
-> +#define get_event_info_error(event)                                    \
-> +       ((struct fanotify_event_info_error *)                           \
-> +        get_event_info((event), FAN_EVENT_INFO_TYPE_ERROR))
+> +       /* inode can be null for superblock errors */
+> +       unsigned int *inode;
 
-This helper and macro would be very useful in fanotify.h for other tests to use.
+Any reason not to use fanotify_fid_t * like fanotify16.c?
 
 Thanks,
 Amir.
