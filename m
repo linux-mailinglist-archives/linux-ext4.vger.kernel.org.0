@@ -2,123 +2,83 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 207B53DF256
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Aug 2021 18:19:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D0573DF365
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Aug 2021 19:01:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233013AbhHCQT1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 3 Aug 2021 12:19:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233051AbhHCQT0 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 3 Aug 2021 12:19:26 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C67DC06179B;
-        Tue,  3 Aug 2021 09:19:15 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id k3so20005397ilu.2;
-        Tue, 03 Aug 2021 09:19:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TO/BEShdVdtfrOssLTeZLTNZdChzJThwgKAZS+uU6WE=;
-        b=i81DPzn/BiTioiDp/Ve7BcxQSmjsCCMcgtiXVDMLq/Sk6dSis4FHhbK0cnROYddV0m
-         aKiCid+i9D1/QT0cYtoIQFcg592rmZu79qo0b3IchATIW6nOjztnmpgGL/0gcmabLeAW
-         UNvQh+dvJ+3Bm6pMGUWrCqMMmX1Vz2Qlohl5ylFB6UnlqdSqvrO32bT07av/57vqcmNF
-         EdgMK4gumjFPqp4829XHYQt9kGoboPhXOZNCN1uofzkMAKXaiowCQoeSG8N0wCzS2G0z
-         y/IX4qo+4mLaB8IlecDIw+d8+/KitD2GVnY3Z28lzyq78ckWSoCFHO5xdMS/VIIK32kc
-         lbXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TO/BEShdVdtfrOssLTeZLTNZdChzJThwgKAZS+uU6WE=;
-        b=rm0EpSqTO5MWwwF5tdSBKn6TcbyIz9VFm9TGGchStty2ql3KzFAMSde49jzCX2yxuI
-         WasrY2OscDlqdkfU72+ku2lPBhbjnxy0DRntyHwB6YkKQi5nbKYORgXgdaKSk+7fMWkP
-         GenIptpmftnUpd9byuMCibi7T5n9+7MlfSdYswRgGFdr1S7Eyuu+IS97sW/Sakf/L+ao
-         yjRSCC7qOQJ7aVkBdevFLLrciHjSve1aXa1Zi32kooCL8mXajXFfK0NRc0zaoO1GAWmx
-         kG29MTPHtMtu3BYLuCTPJA/+pzgXfINXsZDZoBAqSjUmegr1/kS/HA26XcZ5V+qdyRg8
-         vH8A==
-X-Gm-Message-State: AOAM530P7X7uwft2rZ0UU36OCMdGMOmTDwNwpiFv5DiCw8Mci6tfc/xb
-        mfW1sYFjsDVCZDa9z1Dnyeo2MfGSeIlofdic0Zk=
-X-Google-Smtp-Source: ABdhPJxlIyQ1ozmFNJ+nS254bJf1C4kbaAEZc34gOakhC4ep3Q1V2GSYBNyRa6UeNzJpFeJ/dUJfDkDfdRefsK3w56Y=
-X-Received: by 2002:a05:6e02:1c2d:: with SMTP id m13mr1391454ilh.137.1628007554960;
- Tue, 03 Aug 2021 09:19:14 -0700 (PDT)
+        id S237291AbhHCRBl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 3 Aug 2021 13:01:41 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:39513 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S237507AbhHCQ5w (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 3 Aug 2021 12:57:52 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 173GvaBt005122
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 3 Aug 2021 12:57:37 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id D4A0015C37C1; Tue,  3 Aug 2021 12:57:36 -0400 (EDT)
+Date:   Tue, 3 Aug 2021 12:57:36 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 4/9] libext2fs: Support for orphan file feature
+Message-ID: <YQl1gGwVSB5+IMCW@mit.edu>
+References: <20210712154315.9606-1-jack@suse.cz>
+ <20210712154315.9606-5-jack@suse.cz>
 MIME-Version: 1.0
-References: <20210720155944.1447086-9-krisman@collabora.com>
- <20210731063818.GB18773@xsang-OptiPlex-9020> <CAOQ4uxgtke-jK3a1SxowdEhObw8rDuUXB-DSGCr-M1uVMWarww@mail.gmail.com>
- <CAOQ4uxh+do6SVyYCcNSM+7dqzSRU_Y-AXYuMyti4ESkmLdm5zQ@mail.gmail.com> <20210803142225.GA28609@xsang-OptiPlex-9020>
-In-Reply-To: <20210803142225.GA28609@xsang-OptiPlex-9020>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Tue, 3 Aug 2021 19:19:04 +0300
-Message-ID: <CAOQ4uxisyDjVpWX1M6O4ugxBbcX+LWWf4NQJ+LQY1-3-9tN+BA@mail.gmail.com>
-Subject: Re: [fsnotify] 4c40d6efc8: unixbench.score -3.3% regression
-To:     Oliver Sang <oliver.sang@intel.com>
-Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        ying.huang@intel.com, feng.tang@intel.com,
-        zhengjun.xing@linux.intel.com, Jan Kara <jack@suse.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Theodore Tso <tytso@mit.edu>,
-        Dave Chinner <david@fromorbit.com>,
-        David Howells <dhowells@redhat.com>,
-        Khazhismel Kumykov <khazhy@google.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Ext4 <linux-ext4@vger.kernel.org>, kernel@collabora.com,
-        Mel Gorman <mgorman@techsingularity.net>,
-        0day robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210712154315.9606-5-jack@suse.cz>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-> > Oliver,
-> >
-> > Would it be possible to request a re-test with the branch:
-> > https://github.com/amir73il/linux fsnotify-perf
-> >
-> > The patch at the tip of that branch is the one this regression report
-> > has blamed.
-> >
-> > My expectation is that the patch at fsnotify-perf^ ("fsnotify: optimize the
-> > case of no marks of any type") will improve performance of the test case
-> > compared to baseline (v5.14-rc3) and that the patch at the tip of fsnotify-perf
-> > would not regress performance.
->
-> we tested this branch and the results meet your expectation.
->
-> fsnotify-perf^ improves performance comparing to v5.14-rc3. tip is a little worse
-> than its parent (-3.3%), but still better than v5.14-rc3.
->
-> below is detail data.
->
->
-> =========================================================================================
-> compiler/cpufreq_governor/kconfig/nr_task/rootfs/runtime/tbox_group/test/testcase/ucode:
->   gcc-9/performance/x86_64-rhel-8.3/1/debian-10.4-x86_64-20200603.cgz/300s/lkp-csl-2sp4/pipe/unixbench/0x4003006
->
-> commit:
->   v5.14-rc3
->   23050d041 ("fsnotify: optimize the case of no marks of any type")
->   7446ba772 ("fsnotify: pass arguments of fsnotify() in struct fsnotify_event_info")
->
->        v5.14-rc3 23050d0419441a02185e4ed5170 7446ba772ae107ab937cd04e880
-> ---------------- --------------------------- ---------------------------
->          %stddev     %change         %stddev     %change         %stddev
->              \          |                \          |                \
->       1562            +8.0%       1688            +4.5%       1633        unixbench.score
+On Mon, Jul 12, 2021 at 05:43:10PM +0200, Jan Kara wrote:
+> @@ -825,6 +826,7 @@ struct ext2_super_block {
+>  #define EXT4_FEATURE_RO_COMPAT_GDT_CSUM		0x0010
+>  #define EXT4_FEATURE_RO_COMPAT_DIR_NLINK	0x0020
+>  #define EXT4_FEATURE_RO_COMPAT_EXTRA_ISIZE	0x0040
+> +#define EXT4_FEATURE_RO_COMPAT_ORPHAN_PRESENT	0x0080
+>  #define EXT4_FEATURE_RO_COMPAT_QUOTA		0x0100
+>  #define EXT4_FEATURE_RO_COMPAT_BIGALLOC		0x0200
 
-Hi Oliver,
+(This isn't a full review of the patch, but just a quick feedback of
+what I've noticed so far.)
 
-Thanks a lot for testing!
+Since Andreas has requested that we not get rid of the
+RO_COMPAT_SNAPSHOT, I'm using 0x0400 for
+EXT4_FEATURE_RO_COMPAT_ORPHAN_PRESENT in my testing.
 
-I don't know what to make of the (-3.3%) degradation because I was expecting
-that fsnotify-perf^ would optimize out the calls to fsnotify() and fsnotify-perf
-only changes code from fsnotify() and below.
+I also noted a number of new GCC warnings when running "make gcc-wall"
+on lib/ext2fs after applying this commit.
 
-But I guess it doesn't matter much as Gabriel said, its a cleanup patch and
-we can drop it.
+					- Ted
 
-But now that I have this report I can post the fsnotify-perf^ patches :-)
+/usr/projects/e2fsprogs/e2fsprogs/lib/ext2fs/orphan.c: In function ‘ext2fs_do_orphan_file_block_csum’:
+/usr/projects/e2fsprogs/e2fsprogs/lib/ext2fs/orphan.c:58:30: warning: pointer targets in passing argument 2 of ‘ext2fs_crc32c_le’ differ in signedness [-Wpointer-sign]
+   58 |  crc = ext2fs_crc32c_le(crc, buf, inodes_per_ob * sizeof(__u32));
+      |                              ^~~
+      |                              |
+      |                              char *
+In file included from /usr/projects/e2fsprogs/e2fsprogs/lib/ext2fs/ext2fsP.h:16,
+                 from /usr/projects/e2fsprogs/e2fsprogs/lib/ext2fs/orphan.c:16:
+/usr/projects/e2fsprogs/e2fsprogs/lib/ext2fs/ext2fs.h:1075:63: note: expected ‘const unsigned char *’ but argument is of type ‘char *’
+ 1075 | extern __u32 ext2fs_crc32c_le(__u32 crc, unsigned char const *p, size_t len);
+      |                                          ~~~~~~~~~~~~~~~~~~~~~^
+/usr/projects/e2fsprogs/e2fsprogs/lib/ext2fs/orphan.c: In function ‘ext2fs_do_orphan_file_block_csum’:
+/usr/projects/e2fsprogs/e2fsprogs/lib/ext2fs/orphan.c:58:30: warning: pointer targets in passing argument 2 of ‘ext2fs_crc32c_le’ differ in signedness [-Wpointer-sign]
+   58 |  crc = ext2fs_crc32c_le(crc, buf, inodes_per_ob * sizeof(__u32));
+      |                              ^~~
+      |                              |
+      |                              char *
+In file included from /usr/projects/e2fsprogs/e2fsprogs/lib/ext2fs/ext2fsP.h:16,
+                 from /usr/projects/e2fsprogs/e2fsprogs/lib/ext2fs/orphan.c:16:
+/usr/projects/e2fsprogs/e2fsprogs/lib/ext2fs/ext2fs.h:1075:63: note: expected ‘const unsigned char *’ but argument is of type ‘char *’
+ 1075 | extern __u32 ext2fs_crc32c_le(__u32 crc, unsigned char const *p, size_t len);
+      |                                          ~~~~~~~~~~~~~~~~~~~~~^
+make[1]: Leaving directory '/build/e2fsprogs/lib/ext2fs'
 
-Thanks,
-Amir.
+
