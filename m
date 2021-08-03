@@ -2,63 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2F6B3DF439
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Aug 2021 19:57:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D321F3DF512
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Aug 2021 20:56:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233590AbhHCR6K (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 3 Aug 2021 13:58:10 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:49533 "EHLO
+        id S238645AbhHCS4v (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 3 Aug 2021 14:56:51 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:58997 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233446AbhHCR6J (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 3 Aug 2021 13:58:09 -0400
+        with ESMTP id S238452AbhHCS4v (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 3 Aug 2021 14:56:51 -0400
 Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 173HvroX027891
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 173IuZQR017532
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 3 Aug 2021 13:57:53 -0400
+        Tue, 3 Aug 2021 14:56:35 -0400
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 3F5DF15C37C1; Tue,  3 Aug 2021 13:57:53 -0400 (EDT)
-Date:   Tue, 3 Aug 2021 13:57:53 -0400
+        id 2F9DD15C37C1; Tue,  3 Aug 2021 14:56:35 -0400 (EDT)
+Date:   Tue, 3 Aug 2021 14:56:35 -0400
 From:   "Theodore Ts'o" <tytso@mit.edu>
 To:     Jan Kara <jack@suse.cz>
 Cc:     linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 4/9] libext2fs: Support for orphan file feature
-Message-ID: <YQmDoXZSPjY7xq12@mit.edu>
-References: <20210616105735.5424-1-jack@suse.cz>
- <20210616105735.5424-5-jack@suse.cz>
- <YQl+u2HwLV3f6cUE@mit.edu>
+Subject: Re: [PATCH 6/9] e2fsck: Add support for handling orphan file
+Message-ID: <YQmRY5ZaLxpN4ZID@mit.edu>
+References: <20210712154315.9606-1-jack@suse.cz>
+ <20210712154315.9606-7-jack@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YQl+u2HwLV3f6cUE@mit.edu>
+In-Reply-To: <20210712154315.9606-7-jack@suse.cz>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 01:36:59PM -0400, Theodore Ts'o wrote:
-> On Mon, Jul 12, 2021 at 05:43:10PM +0200, Jan Kara wrote:
-> > @@ -825,6 +826,7 @@ struct ext2_super_block {
-> >  #define EXT4_FEATURE_RO_COMPAT_GDT_CSUM		0x0010
-> >  #define EXT4_FEATURE_RO_COMPAT_DIR_NLINK	0x0020
-> >  #define EXT4_FEATURE_RO_COMPAT_EXTRA_ISIZE	0x0040
-> > +#define EXT4_FEATURE_RO_COMPAT_ORPHAN_PRESENT	0x0080
-> >  #define EXT4_FEATURE_RO_COMPAT_QUOTA		0x0100
-> >  #define EXT4_FEATURE_RO_COMPAT_BIGALLOC		0x0200
-> 
-> (This isn't a full review of the patch, but just a quick feedback of
-> what I've noticed so far.)
-> 
-> Since Andreas has requested that we not get rid of the
-> RO_COMPAT_SNAPSHOT, I'm using 0x10000 for
-> EXT4_FEATURE_RO_COMPAT_ORPHAN_PRESENT in my testing.
-> 
-> I also noted a number of new GCC warnings when running "make gcc-wall"
-> on lib/ext2fs after applying this commit.
+On Mon, Jul 12, 2021 at 05:43:12PM +0200, Jan Kara wrote:
+> diff --git a/e2fsck/problem.h b/e2fsck/problem.h
+> index 24cdcf9b90f7..0611d71f9e03 100644
+> --- a/e2fsck/problem.h
+> +++ b/e2fsck/problem.h
+> @@ -717,6 +729,15 @@ struct problem_context {
+>  #define PR_1_HTREE_CANNOT_SIPHASH		0x01008E
+>  
+>  
+> +/* Orphan file inode is not a regular file */
+> +#define PR_1_ORPHAN_FILE_BAD_MODE		0x01007F
+> +
+> +/* Orphan file inode is not in use, but contains data */
+> +#define PR_1_ORPHAN_FILE_NOT_CLEAR		0x010080
+> +
+> +/* Orphan file inode is not clear */
+> +#define PR_1_ORPHAN_INODE_NOT_CLEAR		0x01007F
+> +
 
-Sorry, I just realized I had used b4 to grab the v3 instead of the v4
-of the patch series.  Fortunately it looks like the 2nd and 3rd
-patches hadn't changed between the two patch series, so I'll regroup
-and try again this time with the v4 patches.
+The problem codes for PR_1_ORPHAN_FILE_BAD_MODE,
+PR_1_ORPHAN_FILE_NOT_CLEAR, and PR_1_ORPHAN_INODE_NOT_CLEAR overlap
+with pre-existing problem codes.  This was picked up by running "make
+check", either at the top-level or in the e2fsck subdirectory.  I've
+fixed this up in my repo.
+
+I've pushed out the slightly massaged e2fsprogs parallel orphan list
+patches on the "pu" (proposed updates, a terminology that Junio uses
+for the git repo) branch, for folks who want to experiment with the
+parallel orphan list patches.
 
 					- Ted
