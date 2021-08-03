@@ -2,124 +2,245 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C6C3DE601
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Aug 2021 07:06:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9696E3DE874
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Aug 2021 10:30:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233677AbhHCFGs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 3 Aug 2021 01:06:48 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:53566 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233647AbhHCFGq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 3 Aug 2021 01:06:46 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17354aCM019926;
-        Tue, 3 Aug 2021 01:06:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=JKnaNnz5NYnoZhmqZRyo+N4Q6un/C+uMKyoUxNEOrjM=;
- b=L6q58r1sa2japnCgnKOzjtRUKeoW0hBTQOMuDNUJCyNvOO04/WR1suEY1pLeDDwECPc4
- 9URxUQ5km1vB/dArpJgnNnN8KoRu+BIGjkKOG3iOm+trt3odEFpGGy4ALIZIC+N9PPOf
- KCc0/mDs0wPkM5TUz7giRP6LyAoyGiqTLcXT8KnKWsNt53aBDardGgQ+Pq+9PRWbP8s8
- a017ePDYGelG/QhHk8ZhUYS3PZyndstuz+CkJVoHAYBOQGJSf8orvf7Gkl+Gnz2gsUSR
- S58jpFdVCvdW7LdalgwVHeJzIar6rWDvDLeSeKif3lYredJKZjZ9c7VtGKDvHfwOGM8s 2A== 
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a5pdn812k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 03 Aug 2021 01:06:29 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17353AO1019643;
-        Tue, 3 Aug 2021 05:06:27 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma03fra.de.ibm.com with ESMTP id 3a4x58nq0f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 03 Aug 2021 05:06:27 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17353Wf818547186
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 3 Aug 2021 05:03:32 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AA275A4066;
-        Tue,  3 Aug 2021 05:06:24 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2E4FCA4065;
-        Tue,  3 Aug 2021 05:06:24 +0000 (GMT)
-Received: from localhost (unknown [9.85.100.55])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  3 Aug 2021 05:06:23 +0000 (GMT)
-Date:   Tue, 3 Aug 2021 10:36:22 +0530
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-To:     Eryu Guan <guan@eryu.me>
-Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        "Darrick J . Wong" <djwong@kernel.org>
-Subject: Re: [PATCHv2 7/9] generic/620: Use _mkfs_dev_blocksized to use 4k bs
-Message-ID: <20210803050622.yh2wn2fhzxn4jjbv@riteshh-domain>
-References: <cover.1626844259.git.riteshh@linux.ibm.com>
- <a7d863771ec7187a1d89e0e33aa36bb6aaa5a2a7.1626844259.git.riteshh@linux.ibm.com>
- <YQbF38FWSLX+eUm6@desktop>
+        id S234521AbhHCIbC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 3 Aug 2021 04:31:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234469AbhHCIbB (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 3 Aug 2021 04:31:01 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFBE4C061764
+        for <linux-ext4@vger.kernel.org>; Tue,  3 Aug 2021 01:30:50 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id j18so15819344ile.8
+        for <linux-ext4@vger.kernel.org>; Tue, 03 Aug 2021 01:30:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uCcXlwSAKTIF37G9Oo5Jh0ZARuxw2IkE3sJLiIMH2tw=;
+        b=i075z81cME7P4lYR3hb/d99BmR/hPnypw9laAJw02LW/p+NlpiSyc0xxRRh/bl2c+i
+         CpxrWHOMCEuSTSo7UHB4Y8ejtYlsZ7OAvKJvW46KXq3bAFvXTw5eyvkStGeQYuEU15M+
+         qH0pnVz4/KECR1JZpe6tQ5o/YqCAn7Juo6Dj4kc3NKgx8F7qqrDzf/CtjZPQYjaLDI82
+         qoDOcddYcsY+ZaFUx2nioejc3aF5BuR1TJzg9GTNTu7CkdRdbGoe3quovx3FaJzghR41
+         Jvnr+l2YifYVn2LUes+E4hcXjUFIdPuQRQArIKI4eb29d2zCNAHr9B7B+zbVTZGcJGhp
+         C1AQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uCcXlwSAKTIF37G9Oo5Jh0ZARuxw2IkE3sJLiIMH2tw=;
+        b=laXQS5zQphM3xyU1F+RlQ/AewO5MLfcKYXZejKpr7zc30kpOc8YOV1iUR6/YYJBidD
+         1Y8YaJ0uZgKGLUtr8k7mgyCtV3tGKyTwtD111ZIFTxaZz99+hB/X2we3YTWswsKGwenO
+         RhjII7aNC70aX6nmzMB6JRsiWoKliq1vapVpnegxpnSVLql1oA0xTvUKclXYRsU6zFOF
+         j4DkJ2KWDmhC5VYojUMuFbhw6xu36wpO8u4bv3OzBmoAMSKEASrArcEllzwbR0TR6mO0
+         2qigcMtbgmV4dFgOXUCNKGdp5Vxqxarm5GgzU3IupCFVTXXKRq0zDZDCboj9nUbvLO6Q
+         tb8g==
+X-Gm-Message-State: AOAM530t6wQgxQGC5XZoyeWvrvYBASHa2Z32fmfalx1Gktnw8Ay01XWi
+        G7PTkDuuL7WI5cZUFu1a6UD9Tjk0cRVLLvNZqMk=
+X-Google-Smtp-Source: ABdhPJwEEJ35hjJ6F+z0GpDh3Qb3ZgcxyqkAjj++FMG7+Mg9vmXPQrHF5gslVyP+0WolsRdp8nDmyhvF8/bTSW/SeeA=
+X-Received: by 2002:a05:6e02:1c02:: with SMTP id l2mr275707ilh.9.1627979450356;
+ Tue, 03 Aug 2021 01:30:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQbF38FWSLX+eUm6@desktop>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: beTdnRpjDG7P1Bq0ua9Mi757PECZ9qWT
-X-Proofpoint-ORIG-GUID: beTdnRpjDG7P1Bq0ua9Mi757PECZ9qWT
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-02_10:2021-08-02,2021-08-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- impostorscore=0 priorityscore=1501 bulkscore=0 malwarescore=0
- suspectscore=0 lowpriorityscore=0 adultscore=0 clxscore=1015 spamscore=0
- mlxscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108030031
+References: <20210802214645.2633028-1-krisman@collabora.com> <20210802214645.2633028-2-krisman@collabora.com>
+In-Reply-To: <20210802214645.2633028-2-krisman@collabora.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Tue, 3 Aug 2021 11:30:39 +0300
+Message-ID: <CAOQ4uxjRULAa_+n-6xf--7B=afEVN_7kzJ0H8QQP7ZQwA8Ahig@mail.gmail.com>
+Subject: Re: [PATCH 1/7] syscalls/fanotify20: Introduce helpers for
+ FAN_FS_ERROR test
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     LTP List <ltp@lists.linux.it>, Jan Kara <jack@suse.com>,
+        Ext4 <linux-ext4@vger.kernel.org>,
+        Khazhismel Kumykov <khazhy@google.com>, kernel@collabora.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 21/08/02 12:03AM, Eryu Guan wrote:
-> On Wed, Jul 21, 2021 at 10:58:00AM +0530, Ritesh Harjani wrote:
-> > ext4 with 64k blocksize (passed by user config) fails with below error for
-> > this given test which requires dmhugedisk. Since this test anyways only
-> > requires 4k bs, so use _mkfs_dev_blocksized() to fix this.
-> >
-> > <error log with 64k bs>
-> > mkfs.ext4: Input/output error while writing out and closing file system
-> >
-> > Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
-> > ---
-> >  tests/generic/620 | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/tests/generic/620 b/tests/generic/620
-> > index b052376f..444e682d 100755
-> > --- a/tests/generic/620
-> > +++ b/tests/generic/620
-> > @@ -42,7 +42,9 @@ sectors=$((2*1024*1024*1024*17))
-> >  chunk_size=128
-> >
-> >  _dmhugedisk_init $sectors $chunk_size
-> > -_mkfs_dev $DMHUGEDISK_DEV
-> > +
-> > +# Use 4k blocksize.
-> > +_mkfs_dev_blocksized 4096 $DMHUGEDISK_DEV
+On Tue, Aug 3, 2021 at 12:47 AM Gabriel Krisman Bertazi
+<krisman@collabora.com> wrote:
 >
-> We run the test by forcing 4k blocksize, which could be tested in 4k
-> blocksize setup. Maybe it's another case that should _notrun in 64k
-> blocksize setup.
-
-So for testing that, first I should mkfs and mount a scratch device with the
-passed mount/mkfs options and then see if the blocksize passed is 64K, if yes
-I should _notrun this case.
-
-Isn't the current approach of (_mkfs_dev_blocksized 4096) is better then above
-approach?
-
--ritesh
-
-> Thanks,
-> Eryu
+> fanotify20 is a new test validating the FAN_FS_ERROR file system error
+> event.  This adds some basic structure for the next patches.
 >
-> >  _mount $DMHUGEDISK_DEV $SCRATCH_MNT || _fail "mount failed for $DMHUGEDISK_DEV $SCRATCH_MNT"
-> >  testfile=$SCRATCH_MNT/testfile-$seq
-> >
-> > --
-> > 2.31.1
+> The strategy for error reporting testing in fanotify20 goes like this:
+>
+>   - Generate a broken filesystem
+>   - Start FAN_FS_ERROR monitoring group
+>   - Make the file system  notice the error through ordinary operations
+>   - Observe the event generated
+>
+> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+> ---
+>  testcases/kernel/syscalls/fanotify/.gitignore |   1 +
+>  .../kernel/syscalls/fanotify/fanotify20.c     | 135 ++++++++++++++++++
+>  2 files changed, 136 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/fanotify/fanotify20.c
+>
+> diff --git a/testcases/kernel/syscalls/fanotify/.gitignore b/testcases/kernel/syscalls/fanotify/.gitignore
+> index 9554b16b196e..c99e6fff76d6 100644
+> --- a/testcases/kernel/syscalls/fanotify/.gitignore
+> +++ b/testcases/kernel/syscalls/fanotify/.gitignore
+> @@ -17,4 +17,5 @@
+>  /fanotify17
+>  /fanotify18
+>  /fanotify19
+> +/fanotify20
+>  /fanotify_child
+> diff --git a/testcases/kernel/syscalls/fanotify/fanotify20.c b/testcases/kernel/syscalls/fanotify/fanotify20.c
+> new file mode 100644
+> index 000000000000..50531bd99cc9
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/fanotify/fanotify20.c
+> @@ -0,0 +1,135 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2021 Collabora Ltd.
+> + *
+> + * Author: Gabriel Krisman Bertazi <gabriel@krisman.be>
+> + * Based on previous work by Amir Goldstein <amir73il@gmail.com>
+> + */
+> +
+> +/*\
+> + * [Description]
+> + * Check fanotify FAN_ERROR_FS events triggered by intentionally
+> + * corrupted filesystems:
+> + *
+> + * - Generate a broken filesystem
+> + * - Start FAN_FS_ERROR monitoring group
+> + * - Make the file system notice the error through ordinary operations
+> + * - Observe the event generated
+> + */
+> +
+> +#define _GNU_SOURCE
+> +#include "config.h"
+> +
+> +#include <stdio.h>
+> +#include <sys/stat.h>
+> +#include <sys/types.h>
+> +#include <errno.h>
+> +#include <string.h>
+> +#include <sys/mount.h>
+> +#include <sys/syscall.h>
+> +#include "tst_test.h"
+> +#include <sys/fanotify.h>
+> +#include <sys/types.h>
+> +#include <fcntl.h>
+> +
+> +#ifdef HAVE_SYS_FANOTIFY_H
+> +#include "fanotify.h"
+> +
+> +#ifndef FAN_FS_ERROR
+> +#define FAN_FS_ERROR           0x00008000
+> +#endif
+> +
+> +#define BUF_SIZE 256
+> +static char event_buf[BUF_SIZE];
+> +int fd_notify;
+> +
+> +#define MOUNT_PATH "test_mnt"
+> +
+> +static const struct test_case {
+> +       char *name;
+> +       void (*trigger_error)(void);
+> +       void (*prepare_fs)(void);
+> +} testcases[] = {
+> +};
+> +
+> +int check_error_event_metadata(struct fanotify_event_metadata *event)
+> +{
+> +       int fail = 0;
+> +
+> +       if (event->mask != FAN_FS_ERROR) {
+> +               fail++;
+> +               tst_res(TFAIL, "got unexpected event %llx",
+> +                       (unsigned long long)event->mask);
+> +       }
+> +
+> +       if (event->fd != FAN_NOFD) {
+> +               fail++;
+> +               tst_res(TFAIL, "Weird FAN_FD %llx",
+> +                       (unsigned long long)event->mask);
+> +       }
+> +       return fail;
+> +}
+> +
+> +void check_event(char *buf, size_t len, const struct test_case *ex)
+> +{
+> +       struct fanotify_event_metadata *event =
+> +               (struct fanotify_event_metadata *) buf;
+> +
+> +       if (len < FAN_EVENT_METADATA_LEN)
+> +               tst_res(TFAIL, "No event metadata found");
+> +
+> +       if (check_error_event_metadata(event))
+> +               return;
+> +
+> +       tst_res(TPASS, "Successfully received: %s", ex->name);
+> +}
+> +
+> +static void do_test(unsigned int i)
+> +{
+> +       const struct test_case *tcase = &testcases[i];
+> +       size_t read_len;
+> +
+> +       tcase->trigger_error();
+> +
+> +       read_len = SAFE_READ(0, fd_notify, event_buf, BUF_SIZE);
+> +
+> +       check_event(event_buf, read_len, tcase);
+> +}
+> +
+> +static void setup(void)
+> +{
+> +       unsigned long i;
+> +
+> +       for (i = 0; i < ARRAY_SIZE(testcases); i++)
+> +               if (testcases[i].prepare_fs)
+> +                       testcases[i].prepare_fs();
+> +
+
+Why is prepare_fs called up front and not on every test case?
+
+> +       fd_notify = SAFE_FANOTIFY_INIT(FAN_CLASS_NOTIF|FAN_REPORT_FID,
+> +                                      O_RDONLY);
+> +
+> +       SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_ADD|FAN_MARK_FILESYSTEM,
+> +                          FAN_FS_ERROR, AT_FDCWD, MOUNT_PATH);
+
+This will cause test to fail on old kernels.
+You need to start this test with
+fanotify_events_supported_by_kernel(FAN_FS_ERROR)
+but you cannot use it as is.
+
+Create a macro like
+REQUIRE_FANOTIFY_INIT_FLAGS_SUPPORTED_ON_FS
+which calls fanotify_init_flags_err_msg(...fanotify_events_supported_by_kernel())
+and pass init flags as argument to fanotify_events_supported_by_kernel()
+instead of using hardcoded flags FAN_CLASS_CONTENT.
+
+
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +       if (fd_notify > 0)
+> +               SAFE_CLOSE(fd_notify);
+> +}
+> +
+> +static struct tst_test test = {
+> +       .test = do_test,
+> +       .tcnt = ARRAY_SIZE(testcases),
+> +       .setup = setup,
+> +       .cleanup = cleanup,
+> +       .mount_device = 1,
+> +       .mntpoint = MOUNT_PATH,
+> +       .all_filesystems = 0,
+
+This is 0 by default
+
+Thanks,
+Amir.
