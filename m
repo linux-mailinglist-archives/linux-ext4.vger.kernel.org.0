@@ -2,122 +2,107 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C293C3E00F7
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 Aug 2021 14:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1440A3E014E
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 Aug 2021 14:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238016AbhHDMRJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 4 Aug 2021 08:17:09 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:36746 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237411AbhHDMRJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 4 Aug 2021 08:17:09 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id C36AC22200;
-        Wed,  4 Aug 2021 12:16:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628079415; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=1TMDbfzHGlH2wUsv4ldlI4qjexGrr77MuSs+SYSqC+Q=;
-        b=KLIcth+xrrADcuEiQ6atg9MiDvZ9irRGfE2qx7wyebuByCf6RQHCJ6T6C20C9hokoQ3BsJ
-        QV8Jz8cNp7Fzvek03ipYrVfBQcFxbm03QwbmViatsVnk3625i+3YL9Lp0d6sGd99uFK/Tf
-        lc0H0pEN6zaxcYOqqrOM3WVbuAU2I8Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628079415;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=1TMDbfzHGlH2wUsv4ldlI4qjexGrr77MuSs+SYSqC+Q=;
-        b=xEOmLya+ePmXpWA3gzt3XEX7Jsy+evaUZmU4jfA6YUqorgTMaJizK0GoU86z0GcnY/JtOt
-        KXkatif/x6j5sxBg==
-Received: from quack2.suse.cz (unknown [10.163.43.118])
-        by relay2.suse.de (Postfix) with ESMTP id B7214A3B84;
-        Wed,  4 Aug 2021 12:16:55 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 9C6441E62D6; Wed,  4 Aug 2021 14:16:55 +0200 (CEST)
-From:   Jan Kara <jack@suse.cz>
-To:     Ted Tso <tytso@mit.edu>
-Cc:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>
-Subject: [PATCH] tests: check quota file space usage does not get accounted
-Date:   Wed,  4 Aug 2021 14:16:52 +0200
-Message-Id: <20210804121652.25833-1-jack@suse.cz>
-X-Mailer: git-send-email 2.26.2
+        id S238157AbhHDMkK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 4 Aug 2021 08:40:10 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:7921 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236625AbhHDMkK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 4 Aug 2021 08:40:10 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Gfrnc2rvNz83vF;
+        Wed,  4 Aug 2021 20:36:04 +0800 (CST)
+Received: from dggema766-chm.china.huawei.com (10.1.198.208) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 4 Aug 2021 20:39:54 +0800
+Received: from localhost.localdomain (10.175.127.227) by
+ dggema766-chm.china.huawei.com (10.1.198.208) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 4 Aug 2021 20:39:53 +0800
+From:   yangerkun <yangerkun@huawei.com>
+To:     <tytso@mit.edu>, <jack@suse.cz>, <adilger.kernel@dilger.ca>
+CC:     <linux-ext4@vger.kernel.org>, <yangerkun@huawei.com>,
+        <yukuai3@huawei.com>
+Subject: [PATCH] ext4: stop return ENOSPC from ext4_issue_zeroout
+Date:   Wed, 4 Aug 2021 20:50:44 +0800
+Message-ID: <20210804125044.2480435-1-yangerkun@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2201; h=from:subject; bh=hU8Q0XF8Yxe5kpLZ2upUmq9hcI/7v03GrrlK47lKDdA=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBhCoUQ9lzI5+ecy5ER4FU2tW5acZdCq1nD8N9ke8Pg EjTp75SJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCYQqFEAAKCRCcnaoHP2RA2RgnCA CpY4MMRq4Dt1N7DNvO2S8uYIWBNowlusFkXp5rw4s3b7EQ3g+S+J1NgB61mBZpCf6nbjswk2v5Ac8C tNmiva9JST1rbqHTTq27W4xzF+9PcQ0HSezKjBuJYibMXM6aLqfCjsziIigJCgVFT//sh8gNGYVfDe IP0hRoaPsCjTpPEMsoJy2VACZdctcWRztDrlvX3uhTSARjas3XXhwlJk1K3VVujHzfl3goYRsq+zn2 JbObq4XlPvAU8v9b4ZDbdvj/GK7L66KzQck+ohMzchyjEDl9naE2aRRb1PRPHZ1wV2ba9NWky4yvuX 8WOTxa1+yhqZyuQdthflCkgV6c0UOn
-X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggema766-chm.china.huawei.com (10.1.198.208)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Check that space used by quota files themselves does not get accounted
-into the space tracked by quota subsystem.
+Our testcase(briefly described as fsstress on dm thin-provisioning which
+ext4 see volume size with 100G but actual size 10G) trigger a hungtask
+bug since ext4_writepages fall into a infinite loop:
 
-Signed-off-by: Jan Kara <jack@suse.cz>
+static int ext4_writepages(xxx)
+{
+    ...
+   while (!done && mpd.first_page <= mpd.last_page) {
+       ...
+       ret = mpage_prepare_extent_to_map(&mpd);
+       if (!ret) {
+           ...
+           ret = mpage_map_and_submit_extent(handle,
+&mpd,&give_up_on_write);
+           <----- will return -ENOSPC
+           ...
+       }
+       ...
+       if (ret == -ENOSPC && sbi->s_journal) {
+           <------ we cannot break since we will get ENOSPC forever
+           jbd2_journal_force_commit_nested(sbi->s_journal);
+           ret = 0;
+           continue;
+       }
+       ...
+   }
+}
+
+Got ENOSPC with follow stack:
+...
+ext4_ext_map_blocks
+  ext4_ext_convert_to_initialized
+    ext4_ext_zeroout
+      ext4_issue_zeroout
+        ...
+        submit_bio_wait <-- bio to thinpool will return ENOSPC
+
+'df22291ff0fd ("ext4: Retry block allocation if we have free blocks
+left")' add the logic to retry block allcate since we may get free block
+after we commit a transaction. But the ENOSPC from thin-provisioning
+will confuse ext4, and lead the upper infinite loop. Fix it by convert
+the err to EIO.
+
+Signed-off-by: yangerkun <yangerkun@huawei.com>
 ---
- tests/t_quota_add/name   |  1 +
- tests/t_quota_add/script | 46 ++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 47 insertions(+)
- create mode 100644 tests/t_quota_add/name
- create mode 100644 tests/t_quota_add/script
+ fs/ext4/inode.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/tests/t_quota_add/name b/tests/t_quota_add/name
-new file mode 100644
-index 000000000000..43a4bfd084db
---- /dev/null
-+++ b/tests/t_quota_add/name
-@@ -0,0 +1 @@
-+add several quota types using tune2fs and check computed usage
-diff --git a/tests/t_quota_add/script b/tests/t_quota_add/script
-new file mode 100644
-index 000000000000..c26c37a7b814
---- /dev/null
-+++ b/tests/t_quota_add/script
-@@ -0,0 +1,46 @@
-+FSCK_OPT=-yf
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 038aebd7eb2f..d9ded699a88c 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -428,6 +428,9 @@ int ext4_issue_zeroout(struct inode *inode, ext4_lblk_t lblk, ext4_fsblk_t pblk,
+ 	if (ret > 0)
+ 		ret = 0;
+ 
++	if (ret == -ENOSPC)
++		ret = -EIO;
 +
-+if [ "$QUOTA" != "y" ]; then
-+	echo "$test_name: $test_description: skipped"
-+	return 0
-+fi
-+
-+$MKE2FS -q -F -o Linux -b 4096 -O quota -E quotatype=prjquota $TMPFILE 10000 > $test_name.log 2>&1
-+status=$?
-+if [ "$status" != 0 ] ; then
-+	echo "mke2fs failed" > $test_name.failed
-+	echo "$test_name: $test_description: failed"
-+	return $status
-+fi
-+
-+for type in usrquota grpquota; do
-+	$TUNE2FS -Q $type $TMPFILE >> $test_name.log 2>&1
-+	status=$?
-+	if [ "$status" != 0 ] ; then
-+		echo "tune2fs -O quota failed with $status" > $test_name.failed
-+		echo "$test_name: $test_description: failed"
-+		return $status
-+	fi
-+done
-+
-+UUSAGE=$($DEBUGFS 2>/dev/null -R "lq user" $TMPFILE | grep "^ *0 ")
-+for type in group project; do
-+	TUSAGE=$($DEBUGFS 2>/dev/null -R "lq $type" $TMPFILE | grep "^ *0 ")
-+	if [ "$TUSAGE" != "$UUSAGE" ]; then
-+		echo "user and $type quota entries are different" >$test_name.failed
-+		echo "$test_name: $test_description: failed"
-+		return 1
-+	fi
-+done
-+
-+$FSCK $FSCK_OPT $TMPFILE >> $test_name.log 2>&1
-+status=$?
-+if [ "$status" = 0 ] ; then
-+	echo "$test_name: $test_description: ok"
-+	touch $test_name.ok
-+else
-+	echo "e2fsck with quota enabled failed with $status" > $test_name.failed
-+	echo "$test_name: $test_description: failed"
-+	return $status
-+fi
-+rm -f $TMPFILE
+ 	return ret;
+ }
+ 
 -- 
-2.26.2
+2.31.1
 
