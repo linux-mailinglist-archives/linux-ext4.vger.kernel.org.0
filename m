@@ -2,120 +2,177 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF583E04E1
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 Aug 2021 17:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 363563E053D
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 Aug 2021 18:06:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239572AbhHDPwb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 4 Aug 2021 11:52:31 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:41558 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239567AbhHDPwa (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 4 Aug 2021 11:52:30 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id F150C1FDFE;
-        Wed,  4 Aug 2021 15:52:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628092336; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DsQZleP+a92Q9m/XYDgfuGFJXRSyYXNyPiGtDd47CFc=;
-        b=fkuHI02LvqjMYRclhitwjoI9XYIBcDuLNYF1E4FwrbECKJx1Itje5zImfKp6syAWT6zpSg
-        DFFwDZyAbsG7oJEDFXuXDclREyWZrv/W30tOEO1pf4cia53LEhR0yeHSN0Nk72U+v6lW5Z
-        XrutC5cAgY6b/y2yi8slcQFZCoGLKBw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628092336;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DsQZleP+a92Q9m/XYDgfuGFJXRSyYXNyPiGtDd47CFc=;
-        b=JfCoMrYQ5IDLBP8he7K7aoZeAbEIubobla7byGvV3wBqhFBb80/ppRPmdS6HSgYxWbO2FH
-        Uuuapa8oQs2JGRCw==
-Received: from quack2.suse.cz (jack.udp.ovpn2.nue.suse.de [10.163.43.118])
-        by relay2.suse.de (Postfix) with ESMTP id DD87BA3BD6;
-        Wed,  4 Aug 2021 15:52:16 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 3CE871F2B83; Wed,  4 Aug 2021 17:52:14 +0200 (CEST)
-Date:   Wed, 4 Aug 2021 17:52:14 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Wang Jianchao <jianchao.wan9@gmail.com>
-Cc:     Guoqing Jiang <guoqing.jiang@linux.dev>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tytso@mit.edu, adilger.kernel@dilger.ca
-Subject: Re: [PATCH V3 5/5] ext4: make fallocate retry when err is ENOSPC
-Message-ID: <20210804155214.GN4578@quack2.suse.cz>
-References: <20210724074124.25731-1-jianchao.wan9@gmail.com>
- <20210724074124.25731-6-jianchao.wan9@gmail.com>
- <0ac551b1-6295-9117-757d-12bee70de588@linux.dev>
- <2888807f-2822-a73d-4c01-f073f8fffae2@gmail.com>
+        id S230438AbhHDQGv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 4 Aug 2021 12:06:51 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:41822 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229577AbhHDQGp (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 4 Aug 2021 12:06:45 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 469141F4080F
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     jack@suse.com, amir73il@gmail.com
+Cc:     djwong@kernel.org, tytso@mit.edu, david@fromorbit.com,
+        dhowells@redhat.com, khazhy@google.com,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-api@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel@collabora.com
+Subject: [PATCH v5 00/23] File system wide monitoring
+Date:   Wed,  4 Aug 2021 12:05:49 -0400
+Message-Id: <20210804160612.3575505-1-krisman@collabora.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <2888807f-2822-a73d-4c01-f073f8fffae2@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 26-07-21 15:05:41, Wang Jianchao wrote:
-> 
-> 
-> On 2021/7/26 11:40 AM, Guoqing Jiang wrote:
-> > Hi,
-> > 
-> > On 7/24/21 3:41 PM, Wang Jianchao wrote:
-> >> From: Wang Jianchao <wangjianchao@kuaishou.com>
-> >>
-> >> The blocks may be waiting for journal commit to be freed back to
-> >> mb buddy. Let fallocate wait and retry in that case.
-> >>
-> >> Signed-off-by: Wang Jianchao <wangjianchao@kuaishou.com>
-> >> ---
-> >>   fs/ext4/extents.c | 6 +++++-
-> >>   1 file changed, 5 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> >> index 92ad64b89d9b..ad0b874d3448 100644
-> >> --- a/fs/ext4/extents.c
-> >> +++ b/fs/ext4/extents.c
-> >> @@ -4635,7 +4635,7 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
-> >>       struct inode *inode = file_inode(file);
-> >>       loff_t new_size = 0;
-> >>       unsigned int max_blocks;
-> >> -    int ret = 0;
-> >> +    int ret = 0, retries = 0;
-> >>       int flags;
-> >>       ext4_lblk_t lblk;
-> >>       unsigned int blkbits = inode->i_blkbits;
-> >> @@ -4656,6 +4656,7 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
-> >>                FALLOC_FL_INSERT_RANGE))
-> >>           return -EOPNOTSUPP;
-> >>   +retry:
-> >>       ext4_fc_start_update(inode);
-> >>         if (mode & FALLOC_FL_PUNCH_HOLE) {
-> >> @@ -4722,6 +4723,9 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
-> >>       trace_ext4_fallocate_exit(inode, offset, max_blocks, ret);
-> >>   exit:
-> >>       ext4_fc_stop_update(inode);
-> >> +    if (ret == -ENOSPC && ext4_should_retry_alloc(inode->i_sb, &retries))
-> >> +        goto retry;
-> >> +
-> > 
-> > Not sure if it is necessary since ext4_alloc_file_blocks already retries allocate.
-> 
-> Yes, this patch should be get rid of.  But it is indeed helpful to fix
-> the xfstest generic/371 which does concurrently write/rm and
-> fallocate/rm. I'll figure out some other way to improve that
+Hi,
 
-Note that the retry logic is only a heuristic. It is not guaranteed any
-number of retries is enough, we just do three to not give up too easily...
-Your patch effectively raised number of retries to 9 so that may have
-masked the issue. But I don't think so high number of retries is a sensible
-choice because that way it may take too long to return ENOSPC.
+This is the 5th version of the FAN_FS_ERROR patches.  This applies
+the feedback from last version (thanks Amir, Jan).  Biggest changes are
+the split up of the FAN_FS_ERROR patch into something more reviewable,
+and the removal of the event_info structure due to the perf regression
+shown by unixbench.
 
-								Honza
+This was tested with LTP for regressions, and also using the sample on
+the last patch, with a corrupted image.  I wrote a new ltp test for this
+feature which is being reviewed and is available at:
+
+  https://gitlab.collabora.com/krisman/ltp  -b fan-fs-error
+
+In addition, I wrote a man-page that can be pulled from:
+
+  https://gitlab.collabora.com/krisman/man-pages.git -b fan-fs-error
+
+And is being reviewed at the list.
+
+I also pushed this full series to:
+
+  https://gitlab.collabora.com/krisman/linux -b fanotify-notifications-single-slot
+
+Thank you
+
+Original cover letter
+---------------------
+Hi,
+
+This series follow up on my previous proposal [1] to support file system
+wide monitoring.  As suggested by Amir, this proposal drops the ring
+buffer in favor of a single slot associated with each mark.  This
+simplifies a bit the implementation, as you can see in the code.
+
+As a reminder, This proposal is limited to an interface for
+administrators to monitor the health of a file system, instead of a
+generic inteface for file errors.  Therefore, this doesn't solve the
+problem of writeback errors or the need to watch a specific subtree.
+
+In comparison to the previous RFC, this implementation also drops the
+per-fs data and location, and leave those as future extensions.
+
+* Implementation
+
+The feature is implemented on top of fanotify, as a new type of fanotify
+mark, FAN_ERROR, which a file system monitoring tool can register to
+receive error notifications.  When an error occurs a new notification is
+generated, in addition followed by this info field:
+
+ - FS generic data: A file system agnostic structure that has a generic
+ error code and identifies the filesystem.  Basically, it let's
+ userspace know something happened on a monitored filesystem.  Since
+ only the first error is recorded since the last read, this also
+ includes a counter of errors that happened since the last read.
+
+* Testing
+
+This was tested by watching notifications flowing from an intentionally
+corrupted filesystem in different places.  In addition, other events
+were watched in an attempt to detect regressions.
+
+Is there a specific testsuite for fanotify I should be running?
+
+* Patches
+
+This patchset is divided as follows: Patch 1 through 5 are refactoring
+to fsnotify/fanotify in preparation for FS_ERROR/FAN_ERROR; patch 6 and
+7 implement the FS_ERROR API for filesystems to report error; patch 8
+add support for FAN_ERROR in fanotify; Patch 9 is an example
+implementation for ext4; patch 10 and 11 provide a sample userspace code
+and documentation.
+
+I also pushed the full series to:
+
+  https://gitlab.collabora.com/krisman/linux -b fanotify-notifications-single-slot
+
+[1] https://lwn.net/Articles/854545/
+[2] https://lwn.net/Articles/856916/
+
+Cc: Darrick J. Wong <djwong@kernel.org>
+Cc: Theodore Ts'o <tytso@mit.edu>
+Cc: Dave Chinner <david@fromorbit.com>
+Cc: jack@suse.com
+To: amir73il@gmail.com
+Cc: dhowells@redhat.com
+Cc: khazhy@google.com
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-ext4@vger.kernel.org
+Cc: linux-api@vger.kernel.org
+Cc: linux-api@vger.kernel.org
+
+Gabriel Krisman Bertazi (23):
+  fsnotify: Don't insert unmergeable events in hashtable
+  fanotify: Fold event size calculation to its own function
+  fanotify: Split fsid check from other fid mode checks
+  fsnotify: Reserve mark bits for backends
+  fanotify: Split superblock marks out to a new cache
+  inotify: Don't force FS_IN_IGNORED
+  fsnotify: Add helper to detect overflow_event
+  fsnotify: Add wrapper around fsnotify_add_event
+  fsnotify: Support passing argument to insert callback on add_event
+  fsnotify: Allow events reported with an empty inode
+  fsnotify: Support FS_ERROR event type
+  fanotify: Expose helper to estimate file handle encoding length
+  fanotify: Allow file handle encoding for unhashed events
+  fanotify: Encode invalid file handler when no inode is provided
+  fanotify: Require fid_mode for any non-fd event
+  fanotify: Reserve UAPI bits for FAN_FS_ERROR
+  fanotify: Preallocate per superblock mark error event
+  fanotify: Handle FAN_FS_ERROR events
+  fanotify: Report fid info for file related file system errors
+  fanotify: Emit generic error info type for error event
+  ext4: Send notifications on error
+  samples: Add fs error monitoring example
+  docs: Document the FAN_FS_ERROR event
+
+ .../admin-guide/filesystem-monitoring.rst     |  70 +++++
+ Documentation/admin-guide/index.rst           |   1 +
+ fs/ext4/super.c                               |   8 +
+ fs/kernfs/file.c                              |   6 +-
+ fs/notify/fanotify/fanotify.c                 | 186 +++++++++---
+ fs/notify/fanotify/fanotify.h                 |  80 +++++-
+ fs/notify/fanotify/fanotify_user.c            | 266 +++++++++++++++---
+ fs/notify/fsnotify.c                          |  14 +-
+ fs/notify/inotify/inotify_fsnotify.c          |   2 +-
+ fs/notify/inotify/inotify_user.c              |   6 +-
+ fs/notify/notification.c                      |  16 +-
+ include/linux/fanotify.h                      |   9 +-
+ include/linux/fsnotify.h                      |  20 +-
+ include/linux/fsnotify_backend.h              |  76 ++++-
+ include/uapi/linux/fanotify.h                 |   8 +
+ samples/Kconfig                               |   9 +
+ samples/Makefile                              |   1 +
+ samples/fanotify/Makefile                     |   5 +
+ samples/fanotify/fs-monitor.c                 | 138 +++++++++
+ 19 files changed, 803 insertions(+), 118 deletions(-)
+ create mode 100644 Documentation/admin-guide/filesystem-monitoring.rst
+ create mode 100644 samples/fanotify/Makefile
+ create mode 100644 samples/fanotify/fs-monitor.c
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.32.0
+
