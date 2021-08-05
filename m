@@ -2,162 +2,63 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6C6F3E1719
-	for <lists+linux-ext4@lfdr.de>; Thu,  5 Aug 2021 16:40:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF3893E173F
+	for <lists+linux-ext4@lfdr.de>; Thu,  5 Aug 2021 16:46:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241189AbhHEOkm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 5 Aug 2021 10:40:42 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:60365 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S234937AbhHEOkl (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 5 Aug 2021 10:40:41 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 175EeM24003803
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 5 Aug 2021 10:40:22 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 3E00415C3DD2; Thu,  5 Aug 2021 10:40:22 -0400 (EDT)
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     fstests@vger.kernel.org
-Cc:     artem.blagodarenko@gmail.com, denis@voxelsoft.com,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>
-Subject: [PATCH] ext4: add test to validate the large_dir feature
-Date:   Thu,  5 Aug 2021 10:40:16 -0400
-Message-Id: <20210805144016.3556979-1-tytso@mit.edu>
-X-Mailer: git-send-email 2.31.0
+        id S242107AbhHEOqj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 5 Aug 2021 10:46:39 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:41809 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242140AbhHEOqY (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 5 Aug 2021 10:46:24 -0400
+Received: by mail-il1-f199.google.com with SMTP id m18-20020a924b120000b02901ee102ac952so2871967ilg.8
+        for <linux-ext4@vger.kernel.org>; Thu, 05 Aug 2021 07:46:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=M+CG0V/JI/8dSO9GWQyntpikCmP0PrauSUlgadFbtcw=;
+        b=fOnxglSbecPFrR/nGiiKGCDPt0TkgR1+rc/Z4eGyPmu0ku4JkCae/F5eVJAH9zlnzS
+         UtHWNrgr0iiU856Q1NoT7IjmfamF4CQ2bnlVYQl7oindDYG2diSGwErJXLewRhdjd6qR
+         ItaltK68FBA0VSRHGBkUtu6S6+hvLVKq7midhF350VM9aM7myEmu1UEkDFLLuvJVbzO5
+         HrxWDKhHFwgLI1zhYagYIZKrcwP/TawEvpI8iBe0AtWuwMzFPV0FvCzKkKMRAzWZjDeS
+         4od+He7xagDkN/Y8+hFZpeSzvXDvQgyUpzoBxJLwsGkKI6bL56cnh8hDV3KFa0fgVNWL
+         yNuQ==
+X-Gm-Message-State: AOAM531sEbWmzDLQ9GOGQVu4fP6/gr6KHUxXsCRdyAM12u5KiIYGPkCy
+        /XyPUwVpUhu58zNQorXJXKcLx3O3FAGOPQf8V9JVQGWnH7Z/
+X-Google-Smtp-Source: ABdhPJz8IPp08WqV02D4H6gE7y7ffaPfZAftqTCnXJyRCYESE0r6TvHsonBfJMMGgx494836Yn3kg6UdOlg+p4zGbRss3T1Hh4o+
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a02:8807:: with SMTP id r7mr197145jai.35.1628174768557;
+ Thu, 05 Aug 2021 07:46:08 -0700 (PDT)
+Date:   Thu, 05 Aug 2021 07:46:08 -0700
+In-Reply-To: <1e291320-3ad3-aa21-77c6-c71da9d32fdb@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b6692805c8d0fae6@google.com>
+Subject: Re: [syzbot] INFO: task hung in ext4_fill_super
+From:   syzbot <syzbot+c9ff4822a62eee994ea3@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, clang-built-linux@googlegroups.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        nathan@kernel.org, ndesaulniers@google.com, paskripkin@gmail.com,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
----
- src/dirstress.c    |  7 +++++-
- tests/ext4/051     | 62 ++++++++++++++++++++++++++++++++++++++++++++++
- tests/ext4/051.out |  2 ++
- 3 files changed, 70 insertions(+), 1 deletion(-)
- create mode 100755 tests/ext4/051
- create mode 100644 tests/ext4/051.out
+Hello,
 
-diff --git a/src/dirstress.c b/src/dirstress.c
-index 615cb6e3..ec28d643 100644
---- a/src/dirstress.c
-+++ b/src/dirstress.c
-@@ -16,6 +16,7 @@ int verbose;
- int pid;
- 
- int checkflag=0;
-+int create_only=0;
- 
- #define MKNOD_DEV 0
- 
-@@ -51,7 +52,7 @@ main(
- 	nprocs_per_dir = 1;
- 	keep = 0;
-         verbose = 0;
--	while ((c = getopt(argc, argv, "d:p:f:s:n:kvc")) != EOF) {
-+	while ((c = getopt(argc, argv, "d:p:f:s:n:kvcC")) != EOF) {
- 		switch(c) {
- 			case 'p':
- 				nprocs = atoi(optarg);
-@@ -80,6 +81,9 @@ main(
- 			case 'c':
-                                 checkflag++;
-                                 break;
-+			case 'C':
-+				create_only++;
-+				break;
- 		}
- 	}
- 	if (errflg || (dirname == NULL)) {
-@@ -170,6 +174,7 @@ dirstress(
- 	if (create_entries(nfiles)) {
-             printf("!! [%d] create failed\n", pid);
-         } else {
-+	    if (create_only) return 0;
-             if (verbose) fprintf(stderr,"** [%d] scramble entries\n", pid);
- 	    if (scramble_entries(nfiles)) {
-                 printf("!! [%d] scramble failed\n", pid);
-diff --git a/tests/ext4/051 b/tests/ext4/051
-new file mode 100755
-index 00000000..387e2518
---- /dev/null
-+++ b/tests/ext4/051
-@@ -0,0 +1,62 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# FS QA Test 051
-+#
-+# Test ext4's large_dir feature
-+#
-+. ./common/preamble
-+_begin_fstest auto quick dir
-+
-+# Override the default cleanup function.
-+_cleanup()
-+{
-+	cd /
-+	rm -r -f $tmp.*
-+	if [ ! -z "$loop_mnt" ]; then
-+		$UMOUNT_PROG $loop_mnt
-+		rm -rf $loop_mnt
-+	fi
-+	[ ! -z "$fs_img" ] && rm -rf $fs_img
-+}
-+
-+# Import common functions.
-+# . ./common/filter
-+
-+# real QA test starts here
-+
-+# Modify as appropriate.
-+_supported_fs ext4
-+_require_test
-+_require_loop
-+_require_scratch_ext4_feature "large_dir"
-+
-+echo "Silence is golden"
-+
-+loop_mnt=$TEST_DIR/$seq.mnt
-+fs_img=$TEST_DIR/$seq.img
-+status=0
-+
-+cp /dev/null $fs_img
-+${MKFS_PROG} -t ${FSTYP} -b 1024 -N 600020 -O large_dir,^has_journal \
-+	     $fs_img 40G >> $seqres.full 2>&1 || _fail "mkfs failed"
-+
-+mkdir -p $loop_mnt
-+_mount -o loop $fs_img $loop_mnt > /dev/null  2>&1 || \
-+	_fail "Couldn't do initial mount"
-+
-+/root/xfstests/src/dirstress -c -d /tmpmnt -p 1 -f 400000 -C \
-+	>> $seqres.full 2>&1
-+
-+if ! $here/src/dirstress -c -d $loop_mnt -p 1 -f 400000 -C >$tmp.out 2>&1
-+then
-+    echo "    dirstress failed"
-+    cat $tmp.out >> $seqres.full
-+    echo "    dirstress failed" >> $seqres.full
-+    status=1
-+fi
-+
-+$UMOUNT_PROG $loop_mnt || _fail "umount failed"
-+loop_mnt=
-+
-+$E2FSCK_PROG -fn $fs_img >> $seqres.full 2>&1 || _fail "file system corrupted"
-diff --git a/tests/ext4/051.out b/tests/ext4/051.out
-new file mode 100644
-index 00000000..32f74d89
---- /dev/null
-+++ b/tests/ext4/051.out
-@@ -0,0 +1,2 @@
-+QA output created by 051
-+Silence is golden
--- 
-2.31.0
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
+Reported-and-tested-by: syzbot+c9ff4822a62eee994ea3@syzkaller.appspotmail.com
+
+Tested on:
+
+commit:         251a1524 Merge tag 'scsi-fixes' of git://git.kernel.or..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=166c8f6532dd88df
+dashboard link: https://syzkaller.appspot.com/bug?extid=c9ff4822a62eee994ea3
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=160a3301300000
+
+Note: testing is done by a robot and is best-effort only.
