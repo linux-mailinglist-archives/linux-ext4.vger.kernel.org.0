@@ -2,69 +2,97 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CC013E1879
-	for <lists+linux-ext4@lfdr.de>; Thu,  5 Aug 2021 17:44:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2B383E18D9
+	for <lists+linux-ext4@lfdr.de>; Thu,  5 Aug 2021 17:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242453AbhHEPon (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 5 Aug 2021 11:44:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47928 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242515AbhHEPnn (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 5 Aug 2021 11:43:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 45B116113B;
-        Thu,  5 Aug 2021 15:43:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628178209;
-        bh=OkygAFFi/GK9Glt34GCM3YsoR5yh6ZE4tf0BX8UKxfw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=R3tYKHavpvD5n2rzXQS5NXFC7unRhsEkmO+ziRI8lkX9lNKwd7fTPqvBETFYHk6P4
-         ZxvPPp/AxKA/hmXer70EH1cqrqhHob0+eIucr7kIBXa4jtsVlX/WDa7SAixUJrkehy
-         i303dvtPPblEILzITd4eLCq73Rn6NUrOqNjW0vyuQ0FUa+v5c+lG7u4xn38jk7iBO3
-         gWbZlLJuG4bWWPbEDezvmyJbtM9Yfh8Az0HhSOf3Ei/EA5jz3ebQfH5mlgccqbQCpq
-         T4t9q5fvjo5U6ykY3dqLdDt5JH75utS0e1h+m/OcQ8PshZxRvZujcammAj5T9zrTX9
-         z0CWFu2yRHZRw==
-Date:   Thu, 5 Aug 2021 08:43:28 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-Subject: [PATCH RESEND] tests: skip u_direct_io if losetup fails
-Message-ID: <20210805154328.GB3601392@magnolia>
+        id S242713AbhHEPzp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 5 Aug 2021 11:55:45 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:39658 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242655AbhHEPzo (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 5 Aug 2021 11:55:44 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 088C0223D1;
+        Thu,  5 Aug 2021 15:55:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628178929; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dRS8W2fSdbInZnode1VLLZoQwYcBMtWZIsbGmSoeHq4=;
+        b=CIthExvPxVPjncvT/rZM6Ys3SU0tML4mogdAk1aRD87nTInO6G33Hzr9uOphb4MtjNowbh
+        h9hScglk4NVTZ0kEfvj8QHNvFRgfW0210bWSYiiY/6uymFwRjMZT6eulb8g7V2u+t5Do2+
+        hlCDwKYqAduCr+xDTxKZAD8VLBkwEaA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628178929;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dRS8W2fSdbInZnode1VLLZoQwYcBMtWZIsbGmSoeHq4=;
+        b=EDs3lSsswX+BstistyykpAfNDfRb8tHe6Csjc0wAl/PivhiucKFONjcq4WCjIZb3++9/5v
+        /clobKWir5R/mIDg==
+Received: from quack2.suse.cz (unknown [10.100.224.230])
+        by relay2.suse.de (Postfix) with ESMTP id E3B0BA4A52;
+        Thu,  5 Aug 2021 15:55:28 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id B55671E1511; Thu,  5 Aug 2021 17:55:28 +0200 (CEST)
+Date:   Thu, 5 Aug 2021 17:55:28 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Jan Kara <jack@suse.cz>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Jan Kara <jack@suse.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Theodore Tso <tytso@mit.edu>,
+        Dave Chinner <david@fromorbit.com>,
+        David Howells <dhowells@redhat.com>,
+        Khazhismel Kumykov <khazhy@google.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Ext4 <linux-ext4@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>, kernel@collabora.com
+Subject: Re: [PATCH v5 10/23] fsnotify: Allow events reported with an empty
+ inode
+Message-ID: <20210805155528.GN14483@quack2.suse.cz>
+References: <20210804160612.3575505-1-krisman@collabora.com>
+ <20210804160612.3575505-11-krisman@collabora.com>
+ <20210805102453.GG14483@quack2.suse.cz>
+ <CAOQ4uxjFyMd=Ja4W18JjBBSpzoKdPD-jafdw78OZO3eAEeMFNA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <CAOQ4uxjFyMd=Ja4W18JjBBSpzoKdPD-jafdw78OZO3eAEeMFNA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Darrick J. Wong <djwong@kernel.org>
+On Thu 05-08-21 17:14:26, Amir Goldstein wrote:
+> > 2) AFAICS 'inode' can be always derived from 'data' as well. So maybe we
+> > can drop it Amir?
+> 
+> If only we could. The reason that we pass the allegedly redundant inode
+> argument is because there are two different distinguished inode
+> arguments:
+> 
+> 1. The inode event happened on, which can be referenced from data
+> 2. Inode that may be marked, which is passed in the inode argument
+> 
+> Particularly, dirent events carry the inode of the child as data, but
+> intentionally pass NULL inode arguments, because mark on inode
+> itself should not be getting e.g. FAN_DELETE event, but
+> audit_mark_handle_event() uses the child inode data.
 
-This new test requires a loop device to run testing.  While it checks
-for some "obvious" parameters that might cause the test to fail such as
-not being root and no losetup executable, it doesn't actually check that
-the losetup -a call succeeds.  This causes a test regression in my
-package building container (where there is only a minimal /dev with no
-loop devices available) so I can't build debian packages.
+I see, thanks for explanation. I forgot that NULL 'inode' argument from
+fsnotify_name() is actually needed for this to work.
 
-Fix the test to skip out if we can't create a loop device.
+> If we wanted to, we could pass report_mask arg to fsnotify()
+> instead of inode arg and then fsnotify() will build iter_info
+> accordingly, but that sounds very complicated and doesn't gain
+> much.
 
-Signed-off-by: Darrick J. Wong <djwong@kernel.org>
----
- tests/u_direct_io/script |    5 +++++
- 1 file changed, 5 insertions(+)
+Yeah. I'll think a bit more if we could simplify this but now I don't see
+anything obvious.
 
-diff --git a/tests/u_direct_io/script b/tests/u_direct_io/script
-index 0b5d7083..b4f07752 100644
---- a/tests/u_direct_io/script
-+++ b/tests/u_direct_io/script
-@@ -9,6 +9,11 @@ elif test ! -x $DEBUGFS_EXE; then
- else
-     dd if=/dev/zero of=$TMPFILE bs=1M count=128 > /dev/null 2>&1
-     LOOP=$(losetup --show --sector-size 4096 -f $TMPFILE)
-+    if [ ! -b "$LOOP" ]; then
-+        echo "$test_name: $DESCRIPTION: skipped (no loop devices)"
-+        rm -f $TMPFILE
-+        exit 0
-+    fi
-     echo mke2fs -F -o Linux -t ext4 -O ^metadata_csum,^uninit_bg -D \$LOOP > $OUT
-     $MKE2FS -F -o Linux -t ext4 -O ^metadata_csum,^uninit_bg -D $LOOP 2>&1 | \
- 	sed -f $cmd_dir/filter.sed >> $OUT
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
