@@ -2,63 +2,110 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF3893E173F
-	for <lists+linux-ext4@lfdr.de>; Thu,  5 Aug 2021 16:46:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF2593E17A3
+	for <lists+linux-ext4@lfdr.de>; Thu,  5 Aug 2021 17:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242107AbhHEOqj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 5 Aug 2021 10:46:39 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:41809 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242140AbhHEOqY (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 5 Aug 2021 10:46:24 -0400
-Received: by mail-il1-f199.google.com with SMTP id m18-20020a924b120000b02901ee102ac952so2871967ilg.8
-        for <linux-ext4@vger.kernel.org>; Thu, 05 Aug 2021 07:46:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=M+CG0V/JI/8dSO9GWQyntpikCmP0PrauSUlgadFbtcw=;
-        b=fOnxglSbecPFrR/nGiiKGCDPt0TkgR1+rc/Z4eGyPmu0ku4JkCae/F5eVJAH9zlnzS
-         UtHWNrgr0iiU856Q1NoT7IjmfamF4CQ2bnlVYQl7oindDYG2diSGwErJXLewRhdjd6qR
-         ItaltK68FBA0VSRHGBkUtu6S6+hvLVKq7midhF350VM9aM7myEmu1UEkDFLLuvJVbzO5
-         HrxWDKhHFwgLI1zhYagYIZKrcwP/TawEvpI8iBe0AtWuwMzFPV0FvCzKkKMRAzWZjDeS
-         4od+He7xagDkN/Y8+hFZpeSzvXDvQgyUpzoBxJLwsGkKI6bL56cnh8hDV3KFa0fgVNWL
-         yNuQ==
-X-Gm-Message-State: AOAM531sEbWmzDLQ9GOGQVu4fP6/gr6KHUxXsCRdyAM12u5KiIYGPkCy
-        /XyPUwVpUhu58zNQorXJXKcLx3O3FAGOPQf8V9JVQGWnH7Z/
-X-Google-Smtp-Source: ABdhPJz8IPp08WqV02D4H6gE7y7ffaPfZAftqTCnXJyRCYESE0r6TvHsonBfJMMGgx494836Yn3kg6UdOlg+p4zGbRss3T1Hh4o+
+        id S240991AbhHEPKf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 5 Aug 2021 11:10:35 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:60614 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233201AbhHEPKe (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 5 Aug 2021 11:10:34 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id CF1C721D68;
+        Thu,  5 Aug 2021 15:10:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628176219; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LfbU1doiSAejI1J04e3WXfgZHBDi3ymv5pX1rZRz/Ss=;
+        b=rygP/xCLwwzohJMIbt+Mn5N3AYfCoB5jIoQt0ZpO6gTn1wElqmmab+4OCZFWhZSh3wVrlY
+        P278g7rHDMr/q2t5Mpu9Wwiq/Dlma+amm3XCHDeU7s6FJ1iooDQSgeMQ1bVDDA7BwzApsI
+        WAzg/1Y4kBuQDVZ6ShpICrG8wsLoB50=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628176219;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LfbU1doiSAejI1J04e3WXfgZHBDi3ymv5pX1rZRz/Ss=;
+        b=Kjl+Mi3EofJZhVWD0da0sMAyqCm/KNYUyByWBhLHTFaH0bykOQ6Zdmjsyxs7uX1dcKWmzi
+        niOzvKsP5q587OAA==
+Received: from quack2.suse.cz (unknown [10.100.224.230])
+        by relay2.suse.de (Postfix) with ESMTP id CCA8BA3BE8;
+        Thu,  5 Aug 2021 15:00:14 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 059771E1511; Thu,  5 Aug 2021 17:00:14 +0200 (CEST)
+Date:   Thu, 5 Aug 2021 17:00:13 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 8/9] mke2fs: Add orphan_file feature into mke2fs.conf
+Message-ID: <20210805150013.GM14483@quack2.suse.cz>
+References: <20210712154315.9606-1-jack@suse.cz>
+ <20210712154315.9606-9-jack@suse.cz>
+ <YQrkqslPB8oRrgwA@mit.edu>
 MIME-Version: 1.0
-X-Received: by 2002:a02:8807:: with SMTP id r7mr197145jai.35.1628174768557;
- Thu, 05 Aug 2021 07:46:08 -0700 (PDT)
-Date:   Thu, 05 Aug 2021 07:46:08 -0700
-In-Reply-To: <1e291320-3ad3-aa21-77c6-c71da9d32fdb@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b6692805c8d0fae6@google.com>
-Subject: Re: [syzbot] INFO: task hung in ext4_fill_super
-From:   syzbot <syzbot+c9ff4822a62eee994ea3@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, clang-built-linux@googlegroups.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        nathan@kernel.org, ndesaulniers@google.com, paskripkin@gmail.com,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YQrkqslPB8oRrgwA@mit.edu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+On Wed 04-08-21 15:04:10, Theodore Ts'o wrote:
+> On Mon, Jul 12, 2021 at 05:43:14PM +0200, Jan Kara wrote:
+> > Enable orphan_file feature by default in larger filesystems. Since the
+> > feature is COMPAT, older kernels will just ignore it and happily work
+> > with the filesystem as well.
+> > 
+> > Signed-off-by: Jan Kara <jack@suse.cz>
+> 
+> We'll need to decide whether we want to enable this by default, at
+> least initially.  The general practice has been to not enable new
+> kernel functionality right away by default.  It's true that older
+> kernels will ignore the feature if they aren't orphan_file aware;
+> however, we if have a file system which is created with orphan_file
+> eanbled, but that file system with the orphan_file feature is made
+> available to a system which is running an orphan_file-aware kernel,
+> but the distro hadn't picked up the a version e2fsprogs which is
+> orphan_file-aware.  This might happen if the file system was created
+> on one system, and then it gets connected to an system w/o a new
+> version of e2fsprogs (e.g. via fibre channel, iscsi, AWS EBS, GCE PD,
+> etc), then could be a surprise to the user.  So that's something for
+> us to discuss.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Yes, I think you are right that enabling the functionality by default right
+from the start may be too aggressive. I'm fine with postponing this for
+some time.
 
-Reported-and-tested-by: syzbot+c9ff4822a62eee994ea3@syzkaller.appspotmail.com
+> In the shorter term, there's another problem I've notied, which is if
+> we add this to mke2fs.conf, and the user runs:
+> 
+> 	mke2fs -t ext4 -O ^has_journal foo.img 1G
+> 
+> mke2fs will fail mid-way through the mkfs process with the error
+> message, "mke2fs: cannot set orphan_file flag without a journal".
+> This represents a regression, and if we don't want to drop orphan_file
+> from the default feature set in mke2fs.conf, I think we'll need to
+> check for the case where the file system doesn't have a journal, and
+> only fail when the user has explicitly requested orphan_file on the
+> command line.  But if orphan_file is a default as defined in
+> mke2fs.conf, and the journal is not present for whatever reaseon, we
+> need to silently disable the orphan_file feature.
 
-Tested on:
+Good catch. I'll fix this.
 
-commit:         251a1524 Merge tag 'scsi-fixes' of git://git.kernel.or..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=166c8f6532dd88df
-dashboard link: https://syzkaller.appspot.com/bug?extid=c9ff4822a62eee994ea3
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=160a3301300000
+> (Also note that to avoid user confusion, we should refer to
+> orphan_file as a "feature" instead of a "flag".  Even for things like
+> "orphan_present" or "recovery_needed" it is probably clearer to call
+> them features, simply because it makes it easier for system
+> adminsitrators and developers to be able to find the "flag" location.)
 
-Note: testing is done by a robot and is best-effort only.
+Good point. I've fixed up couple of occurences of 'flag' I've found in the
+messages.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
