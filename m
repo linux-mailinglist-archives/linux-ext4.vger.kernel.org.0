@@ -2,83 +2,118 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 871E93E1E24
-	for <lists+linux-ext4@lfdr.de>; Thu,  5 Aug 2021 23:50:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D5B53E1F15
+	for <lists+linux-ext4@lfdr.de>; Fri,  6 Aug 2021 00:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232361AbhHEVue (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 5 Aug 2021 17:50:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231371AbhHEVud (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 5 Aug 2021 17:50:33 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9F3CC0613D5
-        for <linux-ext4@vger.kernel.org>; Thu,  5 Aug 2021 14:50:18 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id 8988E1F44365
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     LTP List <ltp@lists.linux.it>, Jan Kara <jack@suse.com>,
-        Ext4 <linux-ext4@vger.kernel.org>,
-        Khazhismel Kumykov <khazhy@google.com>, kernel@collabora.com
-Subject: Re: [PATCH 6/7] syscalls/fanotify20: Test file event with broken inode
-Organization: Collabora
-References: <20210802214645.2633028-1-krisman@collabora.com>
-        <20210802214645.2633028-7-krisman@collabora.com>
-        <CAOQ4uxizX0ar7d9eYgazcenQcA7Ku7quEZOLbcaxKJiY0sTPLA@mail.gmail.com>
-        <87k0l1hkuz.fsf@collabora.com>
-        <CAOQ4uxis23+T3=+R+9rKkxtZLtS4S4LJ6RBgG0AEHsg4=MJyRA@mail.gmail.com>
-Date:   Thu, 05 Aug 2021 17:50:11 -0400
-In-Reply-To: <CAOQ4uxis23+T3=+R+9rKkxtZLtS4S4LJ6RBgG0AEHsg4=MJyRA@mail.gmail.com>
-        (Amir Goldstein's message of "Wed, 4 Aug 2021 08:27:46 +0300")
-Message-ID: <87tuk3ef3g.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S231993AbhHEW7v (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 5 Aug 2021 18:59:51 -0400
+Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:39251 "EHLO
+        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229482AbhHEW7u (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 5 Aug 2021 18:59:50 -0400
+Received: from dread.disaster.area (pa49-195-182-146.pa.nsw.optusnet.com.au [49.195.182.146])
+        by mail106.syd.optusnet.com.au (Postfix) with ESMTPS id 9372580BA06;
+        Fri,  6 Aug 2021 08:59:27 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1mBmKk-00Exmn-ED; Fri, 06 Aug 2021 08:59:26 +1000
+Date:   Fri, 6 Aug 2021 08:59:26 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     Theodore Ts'o <tytso@mit.edu>, adilger.kernel@dilger.ca,
+        johann@whamcloud.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+c9ff4822a62eee994ea3@syzkaller.appspotmail.com
+Subject: Re: [PATCH] ext4: avoid huge mmp update interval value
+Message-ID: <20210805225926.GB2566745@dread.disaster.area>
+References: <20210805151418.30659-1-paskripkin@gmail.com>
+ <YQw/2PuZ8z22Qice@mit.edu>
+ <2e940500-6d77-2871-407b-201ca29f24fc@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2e940500-6d77-2871-407b-201ca29f24fc@gmail.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0
+        a=QpfB3wCSrn/dqEBSktpwZQ==:117 a=QpfB3wCSrn/dqEBSktpwZQ==:17
+        a=kj9zAlcOel0A:10 a=MhDmnRu9jo8A:10 a=7-415B0cAAAA:8
+        a=znp41cB1dSf8sDBhxX4A:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Thu, Aug 05, 2021 at 11:12:42PM +0300, Pavel Skripkin wrote:
+> On 8/5/21 10:45 PM, Theodore Ts'o wrote:
+> > On Thu, Aug 05, 2021 at 06:14:18PM +0300, Pavel Skripkin wrote:
+> > > Syzbot reported task hung bug in ext4_fill_super(). The problem was in
+> > > too huge mmp update interval.
+> > > 
+> > > Syzkaller reproducer setted s_mmp_update_interval to 39785 seconds. This
+> > > update interaval is unreasonable huge and it can cause tasks to hung on
+> > > kthread_stop() call, since it will wait until timeout timer expires.
+> > 
+> > I must be missing something.  kthread_stop() should wake up the
+> > kmmpd() thread, which should see kthread_should_stop(), and then it
+> > should exit.  What is causing it to wait until the timeout timer
+> > expires?
+> > 
+> > 					- Ted
+> > 
+> 
+> 
+> Hi, Ted!
+> 
+> I guess, I've explained my idea badly, sorry :)
+> 
+> I mean, that there is a chance to hit this situation:
+> 
+> CPU0				CPU1
+> 				kthread_should_stop()  <-- false
+> kthread_stop()
+> set_bit(KTHREAD_SHOULD_STOP)				
+> wake_up_process()
+> wait_for_completion()
+> 				schedule_timeout_interruptible()
+> 
+> *waits until timer expires*
 
-Hi Amir,
+Yeah, so the bug here is checking kthread_should_stop() while
+the task state is TASK_RUNNING.
 
-thanks for the review.
+What you need to do here is:
 
-Amir Goldstein <amir73il@gmail.com> writes:
-> Well, I would not expect a FAN_FS_ERROR event to ever have 0 error
-> value. Since this test practically only tests ext4, I do not think it
-> is reasonable
-> for the test to VERIFY a bug. It is fine to write this test with expectations
-> that are not met and let it fail.
+while (run) {
 
-This gave me a good chuckle. :)  I will check for a
-EXT4_ERR_EFSCORRUPTED and propose a fix on ext4.
+	....
+	set_current_state(TASK_INTERRUPTIBLE);
+	if (kthread_should_stop()) {
+		__set_current_state(TASK_RUNNING);
+		break;
+	}
+	schedule_timeout(tout);
 
->
-> But a better plan would probably be to merge the patches up to 5 to test
-> FAN_FS_ERROR and then add more test cases after ext4 is fixed
-> Either that or you fix the ext4 problem along with FAN_FS_ERROR.
->
-> Forgot to say that the test needs to declare .needs_cmds "debugfs".
->
-> In any case, as far as prerequisite to merging FAN_FS_ERROR
-> your WIP tests certainly suffice.
-> Please keep your test branch around so we can use it to validate
-> the kernel patches.
-> I usually hold off on submitting LTP tests for inclusion until at least -rc3
-> after kernel patches have been merged.
+	.....
+}
 
-As requested, I will not send a new version of the test for now. I
-published them on the following unstable branch:
 
-  https://gitlab.collabora.com/krisman/ltp -b fan-fs-error
+That means in the case above where schedule() occurs after the
+kthread_should_stop() check has raced with kthread_stop(), then
+wake_up_process() will handle any races with schedule() correctly.
 
-The v1, as submitted in this thread is also available at:
+i.e.  wake_up_process() will set the task state to TASK_RUNNING and
+schedule() will not sleep if it is called after wake_up_process().
+Or if schedule() runs first then wake_up_process() will wake it
+correctly after setting the state to TASK_RUNNING.
 
-  https://gitlab.collabora.com/krisman/ltp -b fan-fs-error-v1
+Either way, the loop then runs around again straight away to the next
+kthread_should_stop() call, at which point it breaks out.
 
-Thanks,
+I note that the "wait_to_exit:" code in the same function does this
+properly....
 
+Cheers,
+
+Dave.
 -- 
-Gabriel Krisman Bertazi
+Dave Chinner
+david@fromorbit.com
