@@ -2,176 +2,152 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C4C3E09E9
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 Aug 2021 23:15:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 497473E0C7A
+	for <lists+linux-ext4@lfdr.de>; Thu,  5 Aug 2021 04:35:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229862AbhHDVQC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 4 Aug 2021 17:16:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbhHDVQC (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 4 Aug 2021 17:16:02 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4185C0613D5
-        for <linux-ext4@vger.kernel.org>; Wed,  4 Aug 2021 14:15:47 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id c16so6838641lfc.2
-        for <linux-ext4@vger.kernel.org>; Wed, 04 Aug 2021 14:15:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=m061UtWKXw9gHO4jAR+Wk6NhmM0CVjE24PxUNOnO1Vg=;
-        b=qd0CBKxdvzB+w5FuxJXLe5+8SnV1wDc/R1sidsb5K6l6C7nTUaWQmTqxS3saOug0sJ
-         al+LgWW9ygJWqyQF1O6sRkm9rUFS8svZNuemoVDGrByYOLue1L1ClLpxBX1ogW7ZVRLO
-         DHNkRVxqTpfbXOPmSrqLJ+2KZzROFq/joYZo1dKkkwaOvJQZkE72T36TRMu3y0irLrk/
-         qJX8tSVvMOqRQv3Vu76jbH1JBz3Gk3EJQsxvgPcRfnA4Zt+pdsBVM9UM0zyE66BmV03P
-         FCnBJITirupZfWFuxqDdN2Wr1UETZzVwZBC9devFRrCRZytScw++bXjK6tbnix8bVBd0
-         rEKQ==
+        id S231865AbhHECfs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 4 Aug 2021 22:35:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50500 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230373AbhHECfp (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 4 Aug 2021 22:35:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628130931;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type;
+        bh=CMK629/i8rlV/usgjzjv12E8h3L65L9c1FAVGf4uOxs=;
+        b=UgMNF7ilIc0ValQixVBO6rfEsqD2+LeybNG+I9Rg4FgmzycGtzhD+SkWNOjnC0hQdrxJLk
+        BrPbyn2URQXKmSN+BuwQVLQVvSeZBIAJZW/H5cUhwcHIlcirdYEYcGX424ezo3IVCBFfjG
+        TkuYveHdZiWJb/SFXcmw7zfyGq8S9pg=
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
+ [209.85.216.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-105-1FPIUdMfNI6caA7_5CU_aQ-1; Wed, 04 Aug 2021 22:35:29 -0400
+X-MC-Unique: 1FPIUdMfNI6caA7_5CU_aQ-1
+Received: by mail-pj1-f71.google.com with SMTP id q6-20020a17090aa006b02901779796d79eso6135954pjp.1
+        for <linux-ext4@vger.kernel.org>; Wed, 04 Aug 2021 19:35:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=m061UtWKXw9gHO4jAR+Wk6NhmM0CVjE24PxUNOnO1Vg=;
-        b=lJ+VRy+TOGO0vJiIwNpgzFFbXNYN/rSDM6aNG/yA7yhj49RMXS+c8svxGmAmgUJWGg
-         FFE/EVoOaExGyGVymx7wDGFHtM9iepzZtoVvQGJhlD+0hwYuAaeTDy9lKFrIM69nbdkl
-         xEdgNylzD+N2cUK8aM1c/iPGyejOAv5+SxIfq6VpEi09t9mGgcZoyTNq4wm6jXlWlJEW
-         8KjfMJXR1pBUo0TrcQ/4KRs62tlmygQFbJdzDicd8WXwgWmzIVTpGrjUtWHaDSc3T6bS
-         ILLv+4pCykLqwEyto6fdlE2wkbxlc2z6tqVVZnE5nujwd3HvDDdVZ7l+VJVh4xhqAzax
-         O4HQ==
-X-Gm-Message-State: AOAM530gpOs9iJ4CGIPAuiwzPCe48dQ3ZlPryymMDoCzWxiod0SKs73c
-        ESbxa/LbYzLbP9QpRGdDCrA=
-X-Google-Smtp-Source: ABdhPJyeeljMCgnvuy3DPkkw+TkoqLUXt/sBle8w7iwFK6TLqj0CQkKq7FnMYzj5ZoPXWojSa3JDJQ==
-X-Received: by 2002:ac2:531c:: with SMTP id c28mr944566lfh.74.1628111746078;
-        Wed, 04 Aug 2021 14:15:46 -0700 (PDT)
-Received: from [192.168.2.192] ([62.33.81.195])
-        by smtp.gmail.com with ESMTPSA id b4sm301719lfv.86.2021.08.04.14.15.44
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 04 Aug 2021 14:15:45 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
-Subject: Re: bug with large_dir in 5.12.17
-From:   =?utf-8?B?0JHQu9Cw0LPQvtC00LDRgNC10L3QutC+INCQ0YDRgtGR0Lw=?= 
-        <artem.blagodarenko@gmail.com>
-In-Reply-To: <YQrpmUq/y3T/L2E6@mit.edu>
-Date:   Thu, 5 Aug 2021 00:15:41 +0300
-Cc:     Carlos Carvalho <carlos@fisica.ufpr.br>,
-        linux-ext4@vger.kernel.org, Theodore Tso <tytso@google.com>,
-        Andreas Dilger <adilger@dilger.ca>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <B24E01FD-F436-4BA5-BDB3-E1CDB2E07EF3@gmail.com>
-References: <YPl/boTCfc3rlJLU@fisica.ufpr.br>
- <5FE9762B-6C6B-4A44-AC99-22192B76C060@gmail.com> <YQrpmUq/y3T/L2E6@mit.edu>
-To:     Theodore Ts'o <tytso@mit.edu>
-X-Mailer: Apple Mail (2.3445.104.21)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=CMK629/i8rlV/usgjzjv12E8h3L65L9c1FAVGf4uOxs=;
+        b=MFJAxKNmeFdpkU2w7h1nhBqE8QCKBkD7aVNPPZLH3UhknSR52/9vyh4sKIH7KabzOI
+         M+2SF1tUHyd4pPokG+mYpIjXxbOaMNfCJ6aTh7VtPLyN3roKLqRYn80nbbXRCkuHbx+Y
+         WxcGSghKIxiA90rrcE5LJ+VJhWpgYXGyiR5X3/+xFNCZXSo2yJE1hbEgrLc3Sjtr2NmG
+         cLnhKv+T+Vp5SGsLoZNttENGPJS2EuPxFNrLiz6CMxabWC2yN8xQI+s4XKWcX9QHnooA
+         0urHEBmrIQJeuMP8LtHZtllCrb4wlXcVWDFVINT2wxnjLxO52cFAmrTzXGGHoSnfDT91
+         EL0Q==
+X-Gm-Message-State: AOAM530YpHpiJrVsBzA7I672H13tcIg6o6JWNWQ05lg5e0TuF/6Sgknh
+        QR8KvWG+VZ4/0IJv4qG4do2oqMrenugVXaFgMv64CJotSxPmY7zHPQZw0oL7mnpzJb4NrV83nY1
+        6QbHBxbINGteXcNRtqyozYTgP2brX+KEudu9y8A==
+X-Received: by 2002:a17:90b:4a06:: with SMTP id kk6mr12975653pjb.178.1628130928292;
+        Wed, 04 Aug 2021 19:35:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzp3KWlAIyA1Z9oQT3W1CA0dKRVlzLaZozlv6ZY6MYMXEztnHneJZnYegD2D+hePzrfZjFTP+kaITvqNfWgRMQ=
+X-Received: by 2002:a17:90b:4a06:: with SMTP id kk6mr12975632pjb.178.1628130927983;
+ Wed, 04 Aug 2021 19:35:27 -0700 (PDT)
+MIME-Version: 1.0
+From:   Boyang Xue <bxue@redhat.com>
+Date:   Thu, 5 Aug 2021 10:35:16 +0800
+Message-ID: <CAHLe9YbqejLQJO-6-a0ETtNUitQtsYr3Q2b7xW4VV=6fXO6APw@mail.gmail.com>
+Subject: [kernel-5.11 regression] tune2fs fails after shutdown
+To:     linux-ext4@vger.kernel.org
+Content-Type: multipart/mixed; boundary="0000000000009c776a05c8c6c570"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello Teodore,
+--0000000000009c776a05c8c6c570
+Content-Type: text/plain; charset="UTF-8"
 
-Your one-line fix looks good.
+Hi,
 
-I have tested it. 1560000 names created successfully.
+kernel commit
 
-But the patch with refactoring doesn=E2=80=99t work. I got this messages
+4274f516d4bc ext4: recalucate superblock checksum after updating free
+blocks/inodes
 
-1480000 names created
-1520000 names created
-ln: failed to access =
-'n000000000000000000000000000000000000000000000000000000000000000000000000=
-00000000000000000000000000000000000000000000000000000000000000000000000000=
-00000000000000000000000000000000000000000000000000000000000000000000000000=
-000000000000000000000000001520519': Bad message
-ln: failed to access =
-'n000000000000000000000000000000000000000000000000000000000000000000000000=
-00000000000000000000000000000000000000000000000000000000000000000000000000=
-00000000000000000000000000000000000000000000000000000000000000000000000000=
-000000000000000000000000001520520': Bad message
+had been reverted by
 
-[ 7699.212018] EXT4-fs error (device loop0): dx_probe:887: inode #2: =
-block 144843: comm ln: Directory index failed checksum
-[ 7699.216001] EXT4-fs error (device loop0): dx_probe:887: inode #2: =
-block 144843: comm ln: Directory index failed checksum
+81414b4dd48 ext4: remove redundant sb checksum recomputation
 
-I have no objections to send your one-line fix, but we need to double =
-check refactoring.
+since kernel-5.11-rc1. As a result, the original reproducer fails again.
 
-Best regards,
-Artem Blagodarenko
+Reproducer:
+```
+mkdir mntpt
+fallocate -l 256M mntpt.img
+mkfs.ext4 -Fq -t ext4 mntpt.img 128M
+LPDEV=$(losetup -f --show mntpt.img)
+mount "$LPDEV" mntpt
+cp /proc/version mntpt/
+./godown mntpt # godown program attached.
+umount mntpt
+mount "$LPDEV" mntpt
+tune2fs -l "$LPDEV"
+```
 
+tune2fs fails with
+```
+tune2fs 1.46.2 (28-Feb-2021)
+tune2fs: Superblock checksum does not match superblock while trying to
+open /dev/loop0
+Couldn't find valid filesystem superblock.
+```
 
+Tested on e2fsprogs-1.46.2 + kernel-5.14.0-0.rc3.29. I think it's a
+regression. If this is the case, can we fix it again please?
 
-> On 4 Aug 2021, at 22:25, Theodore Ts'o <tytso@mit.edu> wrote:
->=20
-> On Thu, Jul 29, 2021 at 10:23:35PM +0300, =D0=91=D0=BB=D0=B0=D0=B3=D0=BE=
-=D0=B4=D0=B0=D1=80=D0=B5=D0=BD=D0=BA=D0=BE =D0=90=D1=80=D1=82=D1=91=D0=BC =
-wrote:
->> Hello,
->>=20
->> It looks like the fix b5776e7524afbd4569978ff790864755c438bba7 "ext4: =
-fix potential htree index checksum corruption=E2=80=9D introduced this =
-regression.
->> I reverted it and my test from previous message passed the dangerous =
-level of 1570000 names count.
->> Now test is still in progress. 2520000 names are already created.
->>=20
->> I am searching the way to fix this.
->>=20
->> Best regards,
->> Artem Blagodarenko.
->=20
-> Hi Artem, did you have a chance to take a look at some of the possible
-> fixes which I floated on this thread?
->=20
-> Do you have any objections if I take this and send it to Linus?
->=20
-> Thanks,
->=20
-> 					- Ted
->=20
-> =46rom fa8db30806b4e83981c65f18f98de33f804012d9 Mon Sep 17 00:00:00 =
-2001
-> From: Theodore Ts'o <tytso@mit.edu>
-> Date: Wed, 4 Aug 2021 14:23:55 -0400
-> Subject: [PATCH] ext4: fix potential htree correuption when growing =
-large_dir
-> directories
-> MIME-Version: 1.0
-> Content-Type: text/plain; charset=3DUTF-8
-> Content-Transfer-Encoding: 8bit
->=20
-> Commit b5776e7524af ("ext4: fix potential htree index checksum
-> corruption) removed a required restart when multiple levels of index
-> nodes need to be split.  Fix this to avoid directory htree corruptions
-> when using the large_dir feature.
->=20
-> Cc: stable@kernel.org # v5.11
-> Cc: =D0=91=D0=BB=D0=B0=D0=B3=D0=BE=D0=B4=D0=B0=D1=80=D0=B5=D0=BD=D0=BA=D0=
-=BE =D0=90=D1=80=D1=82=D1=91=D0=BC <artem.blagodarenko@gmail.com>
-> Fixes: b5776e7524af ("ext4: fix potential htree index checksum =
-corruption)
-> Reported-by: Denis <denis@voxelsoft.com>
-> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-> ---
-> fs/ext4/namei.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-> index 5fd56f616cf0..f3bbcd4efb56 100644
-> --- a/fs/ext4/namei.c
-> +++ b/fs/ext4/namei.c
-> @@ -2517,7 +2517,7 @@ static int ext4_dx_add_entry(handle_t *handle, =
-struct ext4_filename *fname,
-> 				goto journal_error;
-> 			err =3D ext4_handle_dirty_dx_node(handle, dir,
-> 							frame->bh);
-> -			if (err)
-> +			if (restart || err)
-> 				goto journal_error;
-> 		} else {
-> 			struct dx_root *dxroot;
-> --=20
-> 2.31.0
->=20
+Thanks,
+Boyang
+
+--0000000000009c776a05c8c6c570
+Content-Type: application/octet-stream; name="godown.c"
+Content-Disposition: attachment; filename="godown.c"
+Content-Transfer-Encoding: base64
+Content-ID: <f_kryazjid0>
+X-Attachment-Id: f_kryazjid0
+
+LyoKICogQ29weSB0aGlzIHByb2dyYW0gZnJvbSB4ZnN0ZXN0cy9zcmMvZ29kb3duLmMKICogY2hh
+bmdlIHNvbWUgY29kZSB0byBtYWtlIHN1cmUgdGhpcyBwcm9ncmFtIGNhbgogKiBiZSBjb21waWxl
+ZCBpbmRpdmlkdWFsbHksIGRvbid0IG5lZWQgdG8gY29tcGlsZQogKiB3aXRoIGFsbCB4ZnN0ZXN0
+cyBwcm9ncmFtLiAKICogKHN0aWxsIGRlcGVuZHMgb24geGZzcHJvZ3MtZGV2ZWwgb2YgY291cnNl
+KQogKgogKiBnY2MgLW8gZ29kb3duIGdvZG93bi5jIC1XYWxsCiAqCiAqIE1vZGlmaWVkIGJ5OiBa
+b3JybyBMYW5nIDx6bGFuZ0ByZWRoYXQuY29tPgogKgogKi8KCiNkZWZpbmUgX0dOVV9TT1VSQ0UK
+I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxzeXNsb2cuaD4KI2luY2x1ZGUgPHN0cmluZy5o
+PgojaW5jbHVkZSA8ZXJybm8uaD4KI2luY2x1ZGUgPHVuaXN0ZC5oPgojaW5jbHVkZSA8Z2V0b3B0
+Lmg+CiNpbmNsdWRlIDxzeXMvdHlwZXMuaD4KI2luY2x1ZGUgPHN5cy9zdGF0Lmg+CiNpbmNsdWRl
+IDxzeXMvc3RhdHZmcy5oPgojaW5jbHVkZSA8ZmNudGwuaD4KI2luY2x1ZGUgPHhmcy94ZnMuaD4K
+CnN0YXRpYyBjaGFyICp4cHJvZ25hbWU7CgoKc3RhdGljIHZvaWQKdXNhZ2Uodm9pZCkKewoJZnBy
+aW50ZihzdGRlcnIsICJ1c2FnZTogJXMgWy1mXSBbLXZdIG1udC1kaXJcbiIsIHhwcm9nbmFtZSk7
+Cn0KCmludAptYWluKGludCBhcmdjLCBjaGFyICphcmd2W10pCnsKCWludCBjOwoJaW50IGZsYWc7
+CglpbnQgZmx1c2hsb2dfb3B0ID0gMDsKCWludCB2ZXJib3NlX29wdCA9IDA7CglzdHJ1Y3Qgc3Rh
+dCBzdDsKCWNoYXIgKm1udF9kaXI7CglpbnQgZmQ7CgogICAgICAJeHByb2duYW1lID0gYXJndlsw
+XTsKCgl3aGlsZSAoKGMgPSBnZXRvcHQoYXJnYywgYXJndiwgImZ2IikpICE9IC0xKSB7CgkJc3dp
+dGNoIChjKSB7CgkJY2FzZSAnZic6CgkJCWZsdXNobG9nX29wdCA9IDE7CgkJCWJyZWFrOwoJCWNh
+c2UgJ3YnOgoJCQl2ZXJib3NlX29wdCA9IDE7CgkJCWJyZWFrOwoJCWNhc2UgJz8nOgoJCQl1c2Fn
+ZSgpOwoJCQlyZXR1cm4gMTsKCQl9Cgl9CgoJLyogcHJvY2VzcyByZXF1aXJlZCBjbWQgYXJndW1l
+bnQgKi8KCWlmIChvcHRpbmQgPT0gYXJnYy0xKSB7CgkJbW50X2RpciA9IGFyZ3Zbb3B0aW5kXTsK
+CX0KCWVsc2UgewoJCXVzYWdlKCk7CgkJcmV0dXJuIDE7Cgl9CgoJaWYgKChzdGF0KG1udF9kaXIs
+ICZzdCkpID09IC0xKSB7CgkJZnByaW50ZihzdGRlcnIsICIlczogZXJyb3Igb24gc3RhdCBcIiVz
+XCI6ICVzXG4iLAoJCQl4cHJvZ25hbWUsIG1udF9kaXIsIHN0cmVycm9yKGVycm5vKSk7CgkJcmV0
+dXJuIDE7Cgl9CgoJaWYgKCFTX0lTRElSKHN0LnN0X21vZGUpKSB7CgkJZnByaW50ZihzdGRlcnIs
+ICIlczogYXJndW1lbnQgXCIlc1wiIGlzIG5vdCBhIGRpcmVjdG9yeVxuIiwKCQkJeHByb2duYW1l
+LCBtbnRfZGlyKTsKCQlyZXR1cm4gMTsKCX0KCgkKI2lmIDAKCXsKCQlzdHJ1Y3Qgc3RhdHZmcyBz
+dHZmczsKCQlpZiAoKHN0YXR2ZnMobW50X2RpciwgJnN0dmZzKSkgPT0gLTEpIHsKCQkJZnByaW50
+ZihzdGRlcnIsICIlczogZXJyb3Igb24gc3RhdGZzIFwiJXNcIjogJXNcbiIsCgkJCQl4cHJvZ25h
+bWUsIG1udF9kaXIsIHN0cmVycm9yKGVycm5vKSk7CgkJCXJldHVybiAxOwoJCX0KCgkJaWYgKHN0
+cmNtcChzdHZmcy5mX2Jhc2V0eXBlLCAieGZzIikgIT0gMCkgewoJCQlmcHJpbnRmKHN0ZGVyciwg
+IiVzOiBmaWxlc3lzIGZvciBcIiVzXCIgaXMgbm90IFhGUzpcIiVzXCJcbiIsCgkJCQl4cHJvZ25h
+bWUsIG1udF9kaXIsIHN0dmZzLmZfYmFzZXR5cGUpOwoJCQlyZXR1cm4gMTsKCQl9Cgl9CiNlbmRp
+ZgoKCglmbGFnID0gKGZsdXNobG9nX29wdCA/IFhGU19GU09QX0dPSU5HX0ZMQUdTX0xPR0ZMVVNI
+IAoJCQkgICAgOiBYRlNfRlNPUF9HT0lOR19GTEFHU19OT0xPR0ZMVVNIKTsKCglpZiAodmVyYm9z
+ZV9vcHQpIHsKCQlwcmludGYoIk9wZW5pbmcgXCIlc1wiXG4iLCBtbnRfZGlyKTsKCX0KCWlmICgo
+ZmQgPSBvcGVuKG1udF9kaXIsIE9fUkRPTkxZKSkgPT0gLTEpIHsKCQlmcHJpbnRmKHN0ZGVyciwg
+IiVzOiBlcnJvciBvbiBvcGVuIG9mIFwiJXNcIjogJXNcbiIsCgkJCXhwcm9nbmFtZSwgbW50X2Rp
+ciwgc3RyZXJyb3IoZXJybm8pKTsKCQlyZXR1cm4gMTsKCX0KCglpZiAodmVyYm9zZV9vcHQpIHsK
+CQlwcmludGYoIkNhbGxpbmcgWEZTX0lPQ19HT0lOR0RPV05cbiIpOwoJfQoJc3lzbG9nKExPR19X
+QVJOSU5HLCAieGZzdGVzdHMtaW5kdWNlZCBmb3JjZWQgc2h1dGRvd24gb2YgJXM6XG4iLAoJCW1u
+dF9kaXIpOwoJaWYgKCh4ZnNjdGwobW50X2RpciwgZmQsIFhGU19JT0NfR09JTkdET1dOLCAmZmxh
+ZykpID09IC0xKSB7CgkJZnByaW50ZihzdGRlcnIsICIlczogZXJyb3Igb24geGZzY3RsKEdPSU5H
+RE9XTikgb2YgXCIlc1wiOiAlc1xuIiwKCQkJeHByb2duYW1lLCBtbnRfZGlyLCBzdHJlcnJvcihl
+cnJubykpOwoJCXJldHVybiAxOwoJfQoKCWNsb3NlKGZkKTsKCglyZXR1cm4gMDsKfQo=
+--0000000000009c776a05c8c6c570--
 
