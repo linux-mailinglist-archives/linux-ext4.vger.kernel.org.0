@@ -2,144 +2,63 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 270713E11B3
-	for <lists+linux-ext4@lfdr.de>; Thu,  5 Aug 2021 11:56:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BCBD3E11FF
+	for <lists+linux-ext4@lfdr.de>; Thu,  5 Aug 2021 12:06:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239938AbhHEJ4e (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 5 Aug 2021 05:56:34 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:57638 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232930AbhHEJ4e (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 5 Aug 2021 05:56:34 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 0F6971FE42;
-        Thu,  5 Aug 2021 09:56:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628157379; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gfY4K5+0+7vBrDy12tOrfA0yGsug6efsrXkibuaP9XI=;
-        b=JXs0cuhMxm04010Ez7oiVyiCph0E6fkmVywfD0VoCTkiTRA/YAbvcDTE5y9EgOsxQ+kBEZ
-        J/3yBu1Cxh6pE/CVUF73KLqUbbLJddXAgGdnIbr+hs/Pa/jRALH+0Q7+P5NXf4lTIz7L1e
-        1smJeMD2RRsGBcpkd23tR7TZtDnG10M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628157379;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gfY4K5+0+7vBrDy12tOrfA0yGsug6efsrXkibuaP9XI=;
-        b=1ATS2f59ObC+xHetWqfLT8aEi+uTOKZapPrHYShJAxRX9Dv5JperNSmbGCAFaIHIzX5pTP
-        N0Ju1Vct6EjUlcDw==
-Received: from quack2.suse.cz (unknown [10.163.43.118])
-        by relay2.suse.de (Postfix) with ESMTP id E4317A3B94;
-        Thu,  5 Aug 2021 09:56:18 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id BB2A41E1511; Thu,  5 Aug 2021 11:56:18 +0200 (CEST)
-Date:   Thu, 5 Aug 2021 11:56:18 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     jack@suse.com, amir73il@gmail.com, djwong@kernel.org,
-        tytso@mit.edu, david@fromorbit.com, dhowells@redhat.com,
-        khazhy@google.com, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-api@vger.kernel.org,
-        kernel@collabora.com
-Subject: Re: [PATCH v5 14/23] fanotify: Encode invalid file handler when no
- inode is provided
-Message-ID: <20210805095618.GF14483@quack2.suse.cz>
-References: <20210804160612.3575505-1-krisman@collabora.com>
- <20210804160612.3575505-15-krisman@collabora.com>
+        id S240232AbhHEKHJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 5 Aug 2021 06:07:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240212AbhHEKHH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 5 Aug 2021 06:07:07 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4771C06179F
+        for <linux-ext4@vger.kernel.org>; Thu,  5 Aug 2021 03:06:47 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id b133so8151323ybg.4
+        for <linux-ext4@vger.kernel.org>; Thu, 05 Aug 2021 03:06:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=IXiF0cE8iLdsKXBHXuqgd6kWlwigyuOCyyGf/zSHAKo=;
+        b=TxxkN+TJ855OIuhbyic/34kJBCIWIBE+p1FbIlOWwCuI4nClN1WR8LG5/cXo7RX2za
+         rPIp1sy19FkAg1PL1LAL1s2ltUwJpao2VBEO5l9uwH6CNjGDx4A+gfKK6PWHgQ7koOgw
+         HhJzcHUcUqC+XlKdKfP0ZYt2ZyMQB5eW0CPQfGBx533eIRbsy4hjdJ1FT1ouTbgfG8Ki
+         y0Wzu7ZfVqHioNjlkM/5+SEI1owBnvBrJEXQdkcNIzvBk8OIg1WvPMZAdCdA0E1xTyKB
+         avQGZyIxrxEPz2zwEhwMf/O+KS8LqjpnvrrRhhx4iAohTc+RRERNJeiHgWKFK+G1/qLP
+         7K2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=IXiF0cE8iLdsKXBHXuqgd6kWlwigyuOCyyGf/zSHAKo=;
+        b=En0dBXcjit8zprkeqMQWhq5j2dPaHIm/7uu89ugPqpywKuIcC6/jxCxYUUYff2Blpa
+         ddvX3+oGoIRng6L/sGBq/2DWD1DQ/Ki10aiwLtuH8PQghN4H8xPO+diQUc8R1q4bHP8M
+         9a3t9GxOBDxwh9IHqmEnvDNEZy3d8AaFDieQ93FQHLH4XJLYYDtMQiyBSDcjw73iCptI
+         LuMJ0ZKXFUB9qwCa7CYlwec70VnQYK1059k2LyKUFv0gHSCuvv1ML0lj8yWxNeyWpp6W
+         jlgWnWQ1eT1f5VF2TqKbb8yL1EF0QoA1Hf1DmrnVE0LGk1iV+uAC04oM6W9ZAShj8I2k
+         2mQQ==
+X-Gm-Message-State: AOAM531OFalUOdheMnO/+76mn8mcHLrjlW3vLfv+t4Eb+QMbo24AYbX7
+        e1BLmsWUkOidgwImoCsbR9eNzBx1ZjCyaR9ha60=
+X-Google-Smtp-Source: ABdhPJx7tVrOX0XSbxGpIaYv6DBVywIlFjaV/U1kSLSuLAXMKfRFomCEboLwIMW2suhajp3gXJ3l6IVEeFne9bYGOnU=
+X-Received: by 2002:a25:bc4c:: with SMTP id d12mr4885638ybk.105.1628158007023;
+ Thu, 05 Aug 2021 03:06:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210804160612.3575505-15-krisman@collabora.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Received: by 2002:a05:7010:330b:b029:db:4f3a:6691 with HTTP; Thu, 5 Aug 2021
+ 03:06:46 -0700 (PDT)
+Reply-To: rihabmanyang07@yahoo.com
+From:   Rihab Manyang <diamakaire48@gmail.com>
+Date:   Thu, 5 Aug 2021 11:06:46 +0100
+Message-ID: <CAJq20OkBiv194GeDN_RqDymdCc75yWy7wU_YGD3KAgyNa8S8YQ@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 04-08-21 12:06:03, Gabriel Krisman Bertazi wrote:
-> Instead of failing, encode an invalid file handler in fanotify_encode_fh
-> if no inode is provided.  This bogus file handler will be reported by
-> FAN_FS_ERROR for non-inode errors.
-> 
-> Also adjust the single caller that might rely on failure after passing
-> an empty inode.
-
-It is not 'file handler' but rather 'file handle' - several times in the
-changelog and in subject :).
-
-> Suggested-by: Amir Goldstein <amir73il@gmail.com>
-> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-> ---
->  fs/notify/fanotify/fanotify.c | 39 ++++++++++++++++++++---------------
->  fs/notify/fanotify/fanotify.h |  6 ++++--
->  2 files changed, 26 insertions(+), 19 deletions(-)
-> 
-> diff --git a/fs/notify/fanotify/fanotify.c b/fs/notify/fanotify/fanotify.c
-> index 0d6ba218bc01..456c60107d88 100644
-> --- a/fs/notify/fanotify/fanotify.c
-> +++ b/fs/notify/fanotify/fanotify.c
-> @@ -349,12 +349,6 @@ static int fanotify_encode_fh(struct fanotify_fh *fh, struct inode *inode,
->  	void *buf = fh->buf;
->  	int err;
->  
-> -	fh->type = FILEID_ROOT;
-> -	fh->len = 0;
-> -	fh->flags = 0;
-> -	if (!inode)
-> -		return 0;
-> -
-
-I'd keep the fh->flags initialization here. Otherwise it will not be
-initialized on some error returns.
-
-> @@ -363,8 +357,9 @@ static int fanotify_encode_fh(struct fanotify_fh *fh, struct inode *inode,
->  	if (fh_len < 4 || WARN_ON_ONCE(fh_len % 4))
->  		goto out_err;
->  
-> -	/* No external buffer in a variable size allocated fh */
-> -	if (gfp && fh_len > FANOTIFY_INLINE_FH_LEN) {
-> +	fh->flags = 0;
-> +	/* No external buffer in a variable size allocated fh or null fh */
-> +	if (inode && gfp && fh_len > FANOTIFY_INLINE_FH_LEN) {
->  		/* Treat failure to allocate fh as failure to encode fh */
->  		err = -ENOMEM;
->  		ext_buf = kmalloc(fh_len, gfp);
-> @@ -376,14 +371,24 @@ static int fanotify_encode_fh(struct fanotify_fh *fh, struct inode *inode,
->  		fh->flags |= FANOTIFY_FH_FLAG_EXT_BUF;
->  	}
->  
-> -	dwords = fh_len >> 2;
-> -	type = exportfs_encode_inode_fh(inode, buf, &dwords, NULL);
-> -	err = -EINVAL;
-> -	if (!type || type == FILEID_INVALID || fh_len != dwords << 2)
-> -		goto out_err;
-> -
-> -	fh->type = type;
-> -	fh->len = fh_len;
-> +	if (inode) {
-> +		dwords = fh_len >> 2;
-> +		type = exportfs_encode_inode_fh(inode, buf, &dwords, NULL);
-> +		err = -EINVAL;
-> +		if (!type || type == FILEID_INVALID || fh_len != dwords << 2)
-> +			goto out_err;
-> +		fh->type = type;
-> +		fh->len = fh_len;
-> +	} else {
-> +		/*
-> +		 * Invalid FHs are used on FAN_FS_ERROR for errors not
-> +		 * linked to any inode. Caller needs to guarantee the fh
-> +		 * has at least FANOTIFY_NULL_FH_LEN bytes of space.
-> +		 */
-> +		fh->type = FILEID_INVALID;
-> +		fh->len = FANOTIFY_NULL_FH_LEN;
-> +		memset(buf, 0, FANOTIFY_NULL_FH_LEN);
-> +	}
-
-Maybe it will become clearer later during the series but why do you set
-fh->len to FANOTIFY_NULL_FH_LEN and not 0?
-
-								Honza
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+
+Hello,
+
+i am trying to reach you hope this message get to
+you.from Rihab Manyang
