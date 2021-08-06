@@ -2,118 +2,147 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D5B53E1F15
-	for <lists+linux-ext4@lfdr.de>; Fri,  6 Aug 2021 00:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B98D93E2463
+	for <lists+linux-ext4@lfdr.de>; Fri,  6 Aug 2021 09:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231993AbhHEW7v (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 5 Aug 2021 18:59:51 -0400
-Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:39251 "EHLO
-        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229482AbhHEW7u (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 5 Aug 2021 18:59:50 -0400
-Received: from dread.disaster.area (pa49-195-182-146.pa.nsw.optusnet.com.au [49.195.182.146])
-        by mail106.syd.optusnet.com.au (Postfix) with ESMTPS id 9372580BA06;
-        Fri,  6 Aug 2021 08:59:27 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1mBmKk-00Exmn-ED; Fri, 06 Aug 2021 08:59:26 +1000
-Date:   Fri, 6 Aug 2021 08:59:26 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>, adilger.kernel@dilger.ca,
-        johann@whamcloud.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+c9ff4822a62eee994ea3@syzkaller.appspotmail.com
-Subject: Re: [PATCH] ext4: avoid huge mmp update interval value
-Message-ID: <20210805225926.GB2566745@dread.disaster.area>
-References: <20210805151418.30659-1-paskripkin@gmail.com>
- <YQw/2PuZ8z22Qice@mit.edu>
- <2e940500-6d77-2871-407b-201ca29f24fc@gmail.com>
+        id S235706AbhHFHpw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 6 Aug 2021 03:45:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230513AbhHFHpw (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 6 Aug 2021 03:45:52 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A891AC061798;
+        Fri,  6 Aug 2021 00:45:35 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id p38so16328005lfa.0;
+        Fri, 06 Aug 2021 00:45:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language;
+        bh=OWQLdupjTEh4OlyCZ+bQemzpvexRaSTViOt6rJ5MT8k=;
+        b=SmL159THnj1qYHJdqCa0BQCY9pnPRBeO4lPKiYuE6Ogx41aR6VaZ3SOHeSRDDDET6b
+         QI/vmJPnExW5+Z66Y0485vhx8D4pUhWzcpEfjwJYMmpg04tuUXC+AgS2frUAf/gJBOnq
+         pDgZrEyT9P8r1jj4Z2ZXZPFS/8rMPhO6nZ5mJvBjBJxiWImrxrYO3GMXXZlbihtbACTO
+         Q6ilpp1wCqa1VxByPPsfijWajQhqGpl4PdTxVjRX9vGGsdQn7USGB4iG289cMT4lHR0/
+         3sstlCgK1Wc+8A9Ehg7rRNk9P8iPIid9TjaxcjN+u2LT413GrMNuVjuQjGf38Pc1z7E7
+         tW+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language;
+        bh=OWQLdupjTEh4OlyCZ+bQemzpvexRaSTViOt6rJ5MT8k=;
+        b=rfJwVaXxJtoZj4GlCv2O0P9GS5APWSbnTf5SW8AJkRdAu/wbeV4EWRaf2aObZh0h2r
+         1G9CUylOr1RkXFzzUR/SU18aspgMYzO8BbWwZDNqq/AeXYPa3qtPmQEDEwwUFmVqGcLJ
+         evEZmC/zooKP9MrCdmXXYKIAUPa+FiQ2PlZvILZGEncGATeS/oiEVW+DLDzINNMCgfF5
+         rzAMdCS2HuLKSWjKt3WfQyBcXDtpTlefLhtQi6pGjtY119qRUHlfMQ++9qF7j4GEFpOZ
+         DNbpumqCAKQbHAeq9gsbwIbQxbJkX8nFCHakQTLRSSMlVjJvb2MPaej/qFTwVg8n3EJR
+         yV0g==
+X-Gm-Message-State: AOAM532BpV08ly02cQc5jiAMlz8HDWFnDF2pHFASFqUJj3pf4lyxooSv
+        +/Bs/HoisIyr2csHIyYmq9E=
+X-Google-Smtp-Source: ABdhPJxDofi8yLWllCG+mcqf/KQ3XjFdw1OyL1Dis76BEOfkuHm0ON+aA8nhaW039P+n4LeYqCHo0g==
+X-Received: by 2002:ac2:5978:: with SMTP id h24mr6833758lfp.354.1628235934010;
+        Fri, 06 Aug 2021 00:45:34 -0700 (PDT)
+Received: from [192.168.1.11] ([94.103.226.235])
+        by smtp.gmail.com with ESMTPSA id b14sm624419lji.91.2021.08.06.00.45.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Aug 2021 00:45:33 -0700 (PDT)
+Subject: Re: [syzbot] INFO: task hung in ext4_fill_super
+To:     syzbot <syzbot+c9ff4822a62eee994ea3@syzkaller.appspotmail.com>,
+        adilger.kernel@dilger.ca, clang-built-linux@googlegroups.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        nathan@kernel.org, ndesaulniers@google.com,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+References: <000000000000b6692805c8d0fae6@google.com>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+Message-ID: <daae3696-aed8-a0b6-9470-d76ab4901b7d@gmail.com>
+Date:   Fri, 6 Aug 2021 10:45:32 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2e940500-6d77-2871-407b-201ca29f24fc@gmail.com>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0
-        a=QpfB3wCSrn/dqEBSktpwZQ==:117 a=QpfB3wCSrn/dqEBSktpwZQ==:17
-        a=kj9zAlcOel0A:10 a=MhDmnRu9jo8A:10 a=7-415B0cAAAA:8
-        a=znp41cB1dSf8sDBhxX4A:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <000000000000b6692805c8d0fae6@google.com>
+Content-Type: multipart/mixed;
+ boundary="------------79CCD88B29A58180385B73E4"
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 11:12:42PM +0300, Pavel Skripkin wrote:
-> On 8/5/21 10:45 PM, Theodore Ts'o wrote:
-> > On Thu, Aug 05, 2021 at 06:14:18PM +0300, Pavel Skripkin wrote:
-> > > Syzbot reported task hung bug in ext4_fill_super(). The problem was in
-> > > too huge mmp update interval.
-> > > 
-> > > Syzkaller reproducer setted s_mmp_update_interval to 39785 seconds. This
-> > > update interaval is unreasonable huge and it can cause tasks to hung on
-> > > kthread_stop() call, since it will wait until timeout timer expires.
-> > 
-> > I must be missing something.  kthread_stop() should wake up the
-> > kmmpd() thread, which should see kthread_should_stop(), and then it
-> > should exit.  What is causing it to wait until the timeout timer
-> > expires?
-> > 
-> > 					- Ted
-> > 
+This is a multi-part message in MIME format.
+--------------79CCD88B29A58180385B73E4
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+
+On 8/5/21 5:46 PM, syzbot wrote:
+> Hello,
 > 
+> syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 > 
-> Hi, Ted!
+> Reported-and-tested-by: syzbot+c9ff4822a62eee994ea3@syzkaller.appspotmail.com
 > 
-> I guess, I've explained my idea badly, sorry :)
+> Tested on:
 > 
-> I mean, that there is a chance to hit this situation:
+> commit:         251a1524 Merge tag 'scsi-fixes' of git://git.kernel.or..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=166c8f6532dd88df
+> dashboard link: https://syzkaller.appspot.com/bug?extid=c9ff4822a62eee994ea3
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+> patch:          https://syzkaller.appspot.com/x/patch.diff?x=160a3301300000
 > 
-> CPU0				CPU1
-> 				kthread_should_stop()  <-- false
-> kthread_stop()
-> set_bit(KTHREAD_SHOULD_STOP)				
-> wake_up_process()
-> wait_for_completion()
-> 				schedule_timeout_interruptible()
+> Note: testing is done by a robot and is best-effort only.
 > 
-> *waits until timer expires*
 
-Yeah, so the bug here is checking kthread_should_stop() while
-the task state is TASK_RUNNING.
-
-What you need to do here is:
-
-while (run) {
-
-	....
-	set_current_state(TASK_INTERRUPTIBLE);
-	if (kthread_should_stop()) {
-		__set_current_state(TASK_RUNNING);
-		break;
-	}
-	schedule_timeout(tout);
-
-	.....
-}
+#syz test
+git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 
 
-That means in the case above where schedule() occurs after the
-kthread_should_stop() check has raced with kthread_stop(), then
-wake_up_process() will handle any races with schedule() correctly.
+With regards,
+Pavel Skripkin
 
-i.e.  wake_up_process() will set the task state to TASK_RUNNING and
-schedule() will not sleep if it is called after wake_up_process().
-Or if schedule() runs first then wake_up_process() will wake it
-correctly after setting the state to TASK_RUNNING.
+--------------79CCD88B29A58180385B73E4
+Content-Type: text/x-patch; charset=UTF-8;
+ name="0001-ext4-fix-kthread_should_stop-while-TASK_RUNNING.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-ext4-fix-kthread_should_stop-while-TASK_RUNNING.patch"
 
-Either way, the loop then runs around again straight away to the next
-kthread_should_stop() call, at which point it breaks out.
+From f31fdca900d687994a880dfd675d0a46da1eaec9 Mon Sep 17 00:00:00 2001
+From: Pavel Skripkin <paskripkin@gmail.com>
+Date: Fri, 6 Aug 2021 10:40:31 +0300
+Subject: [PATCH] ext4: fix kthread_should_stop() while TASK_RUNNING
 
-I note that the "wait_to_exit:" code in the same function does this
-properly....
+/* ... */
 
-Cheers,
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
+ fs/ext4/mmp.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-Dave.
+diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
+index bc364c119af6..fd1985b79a8d 100644
+--- a/fs/ext4/mmp.c
++++ b/fs/ext4/mmp.c
+@@ -183,9 +183,15 @@ static int kmmpd(void *data)
+ 		}
+ 
+ 		diff = jiffies - last_update_time;
+-		if (diff < mmp_update_interval * HZ)
+-			schedule_timeout_interruptible(mmp_update_interval *
+-						       HZ - diff);
++		if (diff < mmp_update_interval * HZ) {
++			set_current_state(TASK_INTERRUPTIBLE);
++			if (kthread_should_stop()) {
++				__set_current_state(TASK_RUNNING);
++				break;
++			}
++
++			schedule_timeout(mmp_update_interval * HZ - diff);
++		}
+ 
+ 		/*
+ 		 * We need to make sure that more than mmp_check_interval
 -- 
-Dave Chinner
-david@fromorbit.com
+2.32.0
+
+
+--------------79CCD88B29A58180385B73E4--
