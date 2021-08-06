@@ -2,135 +2,63 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 235FA3E27ED
-	for <lists+linux-ext4@lfdr.de>; Fri,  6 Aug 2021 11:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA7023E2859
+	for <lists+linux-ext4@lfdr.de>; Fri,  6 Aug 2021 12:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244773AbhHFJ64 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 6 Aug 2021 05:58:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41627 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244771AbhHFJ6v (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 6 Aug 2021 05:58:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628243915;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2gyfKEgbT5BTjyNZs/aGzasGPnzV93pjDH6vDUCPUck=;
-        b=PQ+8H0tvT9QE75aFD2CtV4t7wD6+aLQnkeAwb38Tyn081B00TIHvTZB9spT8x+G3AmbT5W
-        hedz+pP899uTqs8MnNi5TWmK9Ijyt7BoOFl1YZn3ynt2lt8o5Av8cjSv8/b8ji8gHGa+BE
-        /wzSsQvJ/UYk9QxIAFtBngEkkibi3Iw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-385-RuLOoc0LMt-X-7SK0tjnKw-1; Fri, 06 Aug 2021 05:58:33 -0400
-X-MC-Unique: RuLOoc0LMt-X-7SK0tjnKw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D8B66802929;
-        Fri,  6 Aug 2021 09:58:32 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.40.193.198])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2AE7E81F76;
-        Fri,  6 Aug 2021 09:58:32 +0000 (UTC)
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     tytso@mit.edu
-Cc:     linux-ext4@vger.kernel.org
-Subject: [PATCH 7/7] mkquota: Fix potental NULL pointer dereference
-Date:   Fri,  6 Aug 2021 11:58:20 +0200
-Message-Id: <20210806095820.83731-7-lczerner@redhat.com>
-In-Reply-To: <20210806095820.83731-1-lczerner@redhat.com>
-References: <20210806095820.83731-1-lczerner@redhat.com>
+        id S244773AbhHFKOb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 6 Aug 2021 06:14:31 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:38826 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244760AbhHFKO2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 6 Aug 2021 06:14:28 -0400
+Received: by mail-io1-f71.google.com with SMTP id g5-20020a05660203c5b02905867ea91fc6so2189313iov.5
+        for <linux-ext4@vger.kernel.org>; Fri, 06 Aug 2021 03:14:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=Vpzob4HJVT0gsbEDKcUpjv1PhL52+wuvbx1JFOPGfCs=;
+        b=OOfvpOmR3Db0Cn4rbQcjaIDF/Vt4sNAtJkIiABQkoPTA8HJUbWsoO5dZDD1LBdjRAO
+         Rgfz3+rqgpuNwdCv4wjugqNyZEGQ7Wbh2OQUWEICKrS20ksHLr54bcK98d+mQ12vJ7QQ
+         rWwdC0Q4X/mLX79d+YPxfMWoZcADSHAf71qKCUdgPGu+v5lMxmz8xX5pnKteXcZaqYCY
+         +RWL2pdg14tMzQ/a/B0nwTB2QvhMSotdfglYy9a3zRHqKlxeIUpKKsa7o5A1FFjr6WB4
+         NBmfGqnhb1elPSYXO+mUJ/94PPeYZDbJtIHEHVbmTtsNQbAXKyV/EpJe8KVPGtjnPJXU
+         I9aQ==
+X-Gm-Message-State: AOAM533gpShZ5zTfVA1q0q0kFNa1rpkrKLiTqSb1alTZu6KeBg3IErlE
+        tTpw348kq+VIhmcRsjo/4UFzQIt9T9DsKiiJFJ5qBN90AjoW
+X-Google-Smtp-Source: ABdhPJz/CcQHmGUqBPzOdHy6NF2avDG0hKnERDW8wGKUkoWXWE+B0Prm+oxsLOoJgM3/iDB73i9Aj45ScvmP+hZZx1t/1iTrvyJe
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Received: by 2002:a92:c245:: with SMTP id k5mr60444ilo.143.1628244852406;
+ Fri, 06 Aug 2021 03:14:12 -0700 (PDT)
+Date:   Fri, 06 Aug 2021 03:14:12 -0700
+In-Reply-To: <daae3696-aed8-a0b6-9470-d76ab4901b7d@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000008fde105c8e14c57@google.com>
+Subject: Re: [syzbot] INFO: task hung in ext4_fill_super
+From:   syzbot <syzbot+c9ff4822a62eee994ea3@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, clang-built-linux@googlegroups.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        nathan@kernel.org, ndesaulniers@google.com, paskripkin@gmail.com,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-get_dq() function can fail when the memory allocation fails and so we
-could end up dereferencing NULL pointer. Fix it.
+Hello,
 
-Also, we should really return -ENOMEM instead of -1, or even 0 from
-various functions in quotaio_tree.c when memory allocation fails.
-Fix it as well.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-Signed-off-by: Lukas Czerner <lczerner@redhat.com>
----
- lib/support/mkquota.c      | 8 ++++++--
- lib/support/quotaio_tree.c | 8 ++++----
- 2 files changed, 10 insertions(+), 6 deletions(-)
+Reported-and-tested-by: syzbot+c9ff4822a62eee994ea3@syzkaller.appspotmail.com
 
-diff --git a/lib/support/mkquota.c b/lib/support/mkquota.c
-index dce077e6..420ba503 100644
---- a/lib/support/mkquota.c
-+++ b/lib/support/mkquota.c
-@@ -433,7 +433,8 @@ void quota_data_sub(quota_ctx_t qctx, struct ext2_inode_large *inode,
- 		dict = qctx->quota_dict[qtype];
- 		if (dict) {
- 			dq = get_dq(dict, get_qid(inode, qtype));
--			dq->dq_dqb.dqb_curspace -= space;
-+			if (dq)
-+				dq->dq_dqb.dqb_curspace -= space;
- 		}
- 	}
- }
-@@ -460,7 +461,8 @@ void quota_data_inodes(quota_ctx_t qctx, struct ext2_inode_large *inode,
- 		dict = qctx->quota_dict[qtype];
- 		if (dict) {
- 			dq = get_dq(dict, get_qid(inode, qtype));
--			dq->dq_dqb.dqb_curinodes += adjust;
-+			if (dq)
-+				dq->dq_dqb.dqb_curinodes += adjust;
- 		}
- 	}
- }
-@@ -533,6 +535,8 @@ static int scan_dquots_callback(struct dquot *dquot, void *cb_data)
- 	struct dquot *dq;
- 
- 	dq = get_dq(quota_dict, dquot->dq_id);
-+	if (!dq)
-+		return -ENOMEM;
- 	dq->dq_id = dquot->dq_id;
- 	dq->dq_flags |= DQF_SEEN;
- 
-diff --git a/lib/support/quotaio_tree.c b/lib/support/quotaio_tree.c
-index 6cc4fb5b..65e68792 100644
---- a/lib/support/quotaio_tree.c
-+++ b/lib/support/quotaio_tree.c
-@@ -569,7 +569,7 @@ static int report_block(struct dquot *dquot, unsigned int blk, char *bitmap,
- 	int entries, i;
- 
- 	if (!buf)
--		return -1;
-+		return -ENOMEM;
- 
- 	set_bit(bitmap, blk);
- 	read_blk(dquot->dq_h, blk, buf);
-@@ -601,7 +601,7 @@ static int report_tree(struct dquot *dquot, unsigned int blk, int depth,
- 	__le32 *ref = (__le32 *) buf;
- 
- 	if (!buf)
--		return 0;
-+		return -ENOMEM;
- 
- 	read_blk(dquot->dq_h, blk, buf);
- 	if (depth == QT_TREEDEPTH - 1) {
-@@ -667,12 +667,12 @@ int qtree_scan_dquots(struct quota_handle *h,
- 	struct dquot *dquot = get_empty_dquot();
- 
- 	if (!dquot)
--		return -1;
-+		return -ENOMEM;
- 
- 	dquot->dq_h = h;
- 	if (ext2fs_get_memzero((info->dqi_blocks + 7) >> 3, &bitmap)) {
- 		ext2fs_free_mem(&dquot);
--		return -1;
-+		return -ENOMEM;
- 	}
- 	ret = report_tree(dquot, QT_TREEOFF, 0, bitmap, process_dquot, data);
- 	if (ret < 0)
--- 
-2.31.1
+Tested on:
 
+commit:         902e7f37 Merge tag 'net-5.14-rc5' of git://git.kernel...
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=166c8f6532dd88df
+dashboard link: https://syzkaller.appspot.com/bug?extid=c9ff4822a62eee994ea3
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=12680c4e300000
+
+Note: testing is done by a robot and is best-effort only.
