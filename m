@@ -2,65 +2,74 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39CC23E349F
-	for <lists+linux-ext4@lfdr.de>; Sat,  7 Aug 2021 12:09:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEAB03E365C
+	for <lists+linux-ext4@lfdr.de>; Sat,  7 Aug 2021 18:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231810AbhHGKJq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 7 Aug 2021 06:09:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231848AbhHGKJ0 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 7 Aug 2021 06:09:26 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED8FC061798
-        for <linux-ext4@vger.kernel.org>; Sat,  7 Aug 2021 03:09:06 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id l3so52198qtk.10
-        for <linux-ext4@vger.kernel.org>; Sat, 07 Aug 2021 03:09:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=aiYv+ghkj1wcr5KlnL1ML71lfnXzfmxAeT1E5sMi1Qw=;
-        b=Qn7f/ZGqtmvwGXQRciZWri+KO/NsgF3CPH0EwL+RE5kFwMrrWlCCcuJJc15QVRBmdh
-         Ed+21E8DokJUWCU2MBOQCQSKFKUHp6ECVDQ1el7J0tbrfPl8P/WW5gR6WZtczafilAxD
-         c0V0t1Zmfe/l3aj2IdKLTV9AkeA0ybUdpWt+fig0Uofea2CDqGA7SXpP8nkjz/Kccmtm
-         soKTugSIqa99AFZlqXwZvQUyG7XFCsvVut/lDmr6U2gssIVFfAhKqU2FQX4XcMSUD3D8
-         lXbP72nnj26QJR8IoNuXUEbAP+6SLmrWHO81Ts4ApLFeTj0nqwv2A3t2ClAeQDyZ5TIk
-         qeRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=aiYv+ghkj1wcr5KlnL1ML71lfnXzfmxAeT1E5sMi1Qw=;
-        b=HzpyQfEq8pSf2rRA+6mcCcbUf+JfC84hlVBZEPch8YX+8ATuHUP8bcDELWTVsqkUpg
-         uWDwaN84zozZXGx890v84BcpN6YZ8/o8ObJbOkPRl8ECloveiNd6+g+SAuoHENROGNNv
-         NxmsBrTdRCNFdlWDmoZ8n7xJp3R2jU3W4fM6mwahT4GZWj3eu1sqyCoCndaz/lZqQQk4
-         p2JM5cf3epKyZMVgTUflkHQmzPtB0XEmQ/XWFD7dKbX5mxqkrDQcgkUCnXx9wJ9AsF+f
-         62hOhxt7xvIlzVHaswb4dq2SH0bPwdUMqa0AmBlBKR5+pY9EwLZpAaqRid68ynUYD7M5
-         dLlg==
-X-Gm-Message-State: AOAM530JU6HCpAh9qhlvwuo5+fY+M7FEifmJTINFY7GecVdstQDHbH0j
-        089Vyxve6Q2WK2wz8+ZueoBWTDWg6IVB8L2A6ik=
-X-Google-Smtp-Source: ABdhPJwb7x3UIr1pPG0IvC2ctQ/MoS4MPC7G5vQAqYl0moU/AdS6laUFZ5J0Y4ztxsgXgXT9rwncXxZ+62NN1GshMHY=
-X-Received: by 2002:ac8:6655:: with SMTP id j21mr12505024qtp.57.1628330945515;
- Sat, 07 Aug 2021 03:09:05 -0700 (PDT)
+        id S229517AbhHGQ4L (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 7 Aug 2021 12:56:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58826 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229437AbhHGQ4K (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sat, 7 Aug 2021 12:56:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E104C61058;
+        Sat,  7 Aug 2021 16:55:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628355353;
+        bh=xneXCef3FRjBCnaNoY9tPBcNVJGns+i3iXDMrVO58mU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=U9cRwDNoB6btRNhwTev/FroT9STOvybHbTC5Wd7HQsfk7sHA/LRv2Jz4Ob60iTCW/
+         vzmIgNeKI+7hn91QKZPej+HhOnQebH/rf3tl/mjl57NIoOFNGY0CORfAKiMPACjmOS
+         PZ8VqjW4lyOC4Mq70yCjJYJ9QiLjZdhFC3ajV3x5onW0x0XJI7TsbOBEwAyLd9asNw
+         rO6BXHol6p6s0N0TjMuwKbdmtEIaGSBS9maUDC6DR57GirE9fV2eiZb3XL2C7qchwY
+         vPdsVBfmdSL7eRL002qBnjdFbCj9AoyZDEX8PCp1YzK9i1qlOyJhaQGb9W6K7rFY4f
+         hmJrE1sa3JyxA==
+Date:   Sat, 7 Aug 2021 09:55:51 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Shreeya Patel <shreeya.patel@collabora.com>
+Cc:     krisman@collabora.com, tytso@mit.edu, adilger.kernel@dilger.ca,
+        jaegeuk@kernel.org, chao@kernel.org, drosen@google.com,
+        yuchao0@huawei.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
+        andre.almeida@collabora.com
+Subject: Re: [PATCH] fs: unicode: Add utf8-data module
+Message-ID: <YQ67FxJRlfTj5EGy@sol.localdomain>
+References: <20210730124333.6744-1-shreeya.patel@collabora.com>
 MIME-Version: 1.0
-Received: by 2002:a05:622a:112:0:0:0:0 with HTTP; Sat, 7 Aug 2021 03:09:05
- -0700 (PDT)
-Reply-To: ssaar0101@gmail.com
-From:   Medinat Sherrif <do348911@gmail.com>
-Date:   Sat, 7 Aug 2021 10:09:05 +0000
-Message-ID: <CA+WgU6qbkcYPx0r5NPqVUCWv6G0EB2ZsTNhT69YmSSECjt58uQ@mail.gmail.com>
-Subject: Good morning,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210730124333.6744-1-shreeya.patel@collabora.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Greetings from here.
+On Fri, Jul 30, 2021 at 06:13:33PM +0530, Shreeya Patel wrote:
+> diff --git a/fs/unicode/utf8n.h b/fs/unicode/utf8n.h
+> index 0acd530c2c79..6843229bcb2b 100644
+> --- a/fs/unicode/utf8n.h
+> +++ b/fs/unicode/utf8n.h
+> @@ -11,6 +11,7 @@
+>  #include <linux/export.h>
+>  #include <linux/string.h>
+>  #include <linux/module.h>
+> +#include <linux/spinlock.h>
+>  
+>  /* Encoding a unicode version number as a single unsigned int. */
+>  #define UNICODE_MAJ_SHIFT		(16)
+> @@ -21,6 +22,11 @@
+>  	 ((unsigned int)(MIN) << UNICODE_MIN_SHIFT) |	\
+>  	 ((unsigned int)(REV)))
+>  
+> +extern spinlock_t utf8_lock;
+> +
+> +extern struct utf8_data *utf8_ops;
+> +extern bool utf8data_loaded;
 
-My name is Medinat. M  Sherrif, I have something very confidential to
-discuss with you in my next mail. Reply to me with your private email
-address for confidential discussion.
+The 'utf8data_loaded' variable is unnecessary, since it's equivalent to
+'utf8_ops != NULL'.
 
-Best Regards.
-Medinat. M  Sherrif,
+Also, there are no function pointer fields anymore, so this really should be
+called utf8_data, not utf8_ops.
+
+- Eric
