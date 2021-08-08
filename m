@@ -2,107 +2,184 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA3123E3A76
-	for <lists+linux-ext4@lfdr.de>; Sun,  8 Aug 2021 15:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C4E63E3AB4
+	for <lists+linux-ext4@lfdr.de>; Sun,  8 Aug 2021 15:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231270AbhHHNdX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 8 Aug 2021 09:33:23 -0400
-Received: from out20-73.mail.aliyun.com ([115.124.20.73]:37046 "EHLO
-        out20-73.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230505AbhHHNdL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 8 Aug 2021 09:33:11 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07502286|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.265791-0.0208945-0.713315;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047198;MF=guan@eryu.me;NM=1;PH=DS;RN=5;RT=5;SR=0;TI=SMTPD_---.Kx179PM_1628429568;
-Received: from localhost(mailfrom:guan@eryu.me fp:SMTPD_---.Kx179PM_1628429568)
-          by smtp.aliyun-inc.com(10.147.41.158);
-          Sun, 08 Aug 2021 21:32:48 +0800
-Date:   Sun, 8 Aug 2021 21:32:48 +0800
+        id S231607AbhHHN5q (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 8 Aug 2021 09:57:46 -0400
+Received: from out20-38.mail.aliyun.com ([115.124.20.38]:60582 "EHLO
+        out20-38.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229923AbhHHN5p (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 8 Aug 2021 09:57:45 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07477473|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0205998-0.00153276-0.977867;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047193;MF=guan@eryu.me;NM=1;PH=DS;RN=5;RT=5;SR=0;TI=SMTPD_---.Kx1a3wy_1628431044;
+Received: from localhost(mailfrom:guan@eryu.me fp:SMTPD_---.Kx1a3wy_1628431044)
+          by smtp.aliyun-inc.com(10.147.40.7);
+          Sun, 08 Aug 2021 21:57:25 +0800
+Date:   Sun, 8 Aug 2021 21:57:24 +0800
 From:   Eryu Guan <guan@eryu.me>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Theodore Ts'o <tytso@mit.edu>,
-        "Darrick J . Wong" <djwong@kernel.org>
-Subject: Re: [PATCHv2 7/9] generic/620: Use _mkfs_dev_blocksized to use 4k bs
-Message-ID: <YQ/dAFFDLp0edZUl@desktop>
-References: <cover.1626844259.git.riteshh@linux.ibm.com>
- <a7d863771ec7187a1d89e0e33aa36bb6aaa5a2a7.1626844259.git.riteshh@linux.ibm.com>
- <YQbF38FWSLX+eUm6@desktop>
- <20210803050622.yh2wn2fhzxn4jjbv@riteshh-domain>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     fstests@vger.kernel.org, artem.blagodarenko@gmail.com,
+        denis@voxelsoft.com,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+Subject: Re: [PATCH] ext4: add test to validate the large_dir feature
+Message-ID: <YQ/ixFR3Q4ucAFP3@desktop>
+References: <20210805144016.3556979-1-tytso@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210803050622.yh2wn2fhzxn4jjbv@riteshh-domain>
+In-Reply-To: <20210805144016.3556979-1-tytso@mit.edu>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 10:36:22AM +0530, Ritesh Harjani wrote:
-> On 21/08/02 12:03AM, Eryu Guan wrote:
-> > On Wed, Jul 21, 2021 at 10:58:00AM +0530, Ritesh Harjani wrote:
-> > > ext4 with 64k blocksize (passed by user config) fails with below error for
-> > > this given test which requires dmhugedisk. Since this test anyways only
-> > > requires 4k bs, so use _mkfs_dev_blocksized() to fix this.
+On Thu, Aug 05, 2021 at 10:40:16AM -0400, Theodore Ts'o wrote:
+> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 
-I don't see how this test always requires 4k blocksize, 1k blocksized
-xfs also passes the test.
+I think it'd be better to explain large_dir feature a bit, and describe
+the test, how it's supposed to test this feature.
 
-> > >
-> > > <error log with 64k bs>
-> > > mkfs.ext4: Input/output error while writing out and closing file system
-
-Is this a bug in mkfs.ext4 or expected error (unsupported config)? If
-it's an expected error, it'd be better to explain it in commit log as
-well.
-
-> > >
-> > > Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
-> > > ---
-> > >  tests/generic/620 | 4 +++-
-> > >  1 file changed, 3 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/tests/generic/620 b/tests/generic/620
-> > > index b052376f..444e682d 100755
-> > > --- a/tests/generic/620
-> > > +++ b/tests/generic/620
-> > > @@ -42,7 +42,9 @@ sectors=$((2*1024*1024*1024*17))
-> > >  chunk_size=128
-> > >
-> > >  _dmhugedisk_init $sectors $chunk_size
-> > > -_mkfs_dev $DMHUGEDISK_DEV
-> > > +
-> > > +# Use 4k blocksize.
-> > > +_mkfs_dev_blocksized 4096 $DMHUGEDISK_DEV
-> >
-> > We run the test by forcing 4k blocksize, which could be tested in 4k
-> > blocksize setup. Maybe it's another case that should _notrun in 64k
-> > blocksize setup.
+> ---
+>  src/dirstress.c    |  7 +++++-
+>  tests/ext4/051     | 62 ++++++++++++++++++++++++++++++++++++++++++++++
+>  tests/ext4/051.out |  2 ++
+>  3 files changed, 70 insertions(+), 1 deletion(-)
+>  create mode 100755 tests/ext4/051
+>  create mode 100644 tests/ext4/051.out
 > 
-> So for testing that, first I should mkfs and mount a scratch device with the
-> passed mount/mkfs options and then see if the blocksize passed is 64K, if yes
-> I should _notrun this case.
-> 
-> Isn't the current approach of (_mkfs_dev_blocksized 4096) is better then above
-> approach?
+> diff --git a/src/dirstress.c b/src/dirstress.c
+> index 615cb6e3..ec28d643 100644
+> --- a/src/dirstress.c
+> +++ b/src/dirstress.c
+> @@ -16,6 +16,7 @@ int verbose;
+>  int pid;
+>  
+>  int checkflag=0;
+> +int create_only=0;
+>  
+>  #define MKNOD_DEV 0
+>  
+> @@ -51,7 +52,7 @@ main(
+>  	nprocs_per_dir = 1;
+>  	keep = 0;
+>          verbose = 0;
+> -	while ((c = getopt(argc, argv, "d:p:f:s:n:kvc")) != EOF) {
+> +	while ((c = getopt(argc, argv, "d:p:f:s:n:kvcC")) != EOF) {
+>  		switch(c) {
+>  			case 'p':
+>  				nprocs = atoi(optarg);
+> @@ -80,6 +81,9 @@ main(
+>  			case 'c':
+>                                  checkflag++;
+>                                  break;
+> +			case 'C':
+> +				create_only++;
+> +				break;
+>  		}
+>  	}
+>  	if (errflg || (dirname == NULL)) {
+> @@ -170,6 +174,7 @@ dirstress(
+>  	if (create_entries(nfiles)) {
+>              printf("!! [%d] create failed\n", pid);
+>          } else {
+> +	    if (create_only) return 0;
+>              if (verbose) fprintf(stderr,"** [%d] scramble entries\n", pid);
+>  	    if (scramble_entries(nfiles)) {
+>                  printf("!! [%d] scramble failed\n", pid);
+> diff --git a/tests/ext4/051 b/tests/ext4/051
+> new file mode 100755
+> index 00000000..387e2518
+> --- /dev/null
+> +++ b/tests/ext4/051
+> @@ -0,0 +1,62 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +#
+> +# FS QA Test 051
+> +#
+> +# Test ext4's large_dir feature
+> +#
+> +. ./common/preamble
+> +_begin_fstest auto quick dir
+> +
+> +# Override the default cleanup function.
+> +_cleanup()
+> +{
+> +	cd /
+> +	rm -r -f $tmp.*
+> +	if [ ! -z "$loop_mnt" ]; then
+> +		$UMOUNT_PROG $loop_mnt
+> +		rm -rf $loop_mnt
+> +	fi
+> +	[ ! -z "$fs_img" ] && rm -rf $fs_img
+> +}
+> +
+> +# Import common functions.
+> +# . ./common/filter
+> +
+> +# real QA test starts here
+> +
+> +# Modify as appropriate.
+> +_supported_fs ext4
+> +_require_test
+> +_require_loop
+> +_require_scratch_ext4_feature "large_dir"
+> +
+> +echo "Silence is golden"
+> +
+> +loop_mnt=$TEST_DIR/$seq.mnt
+> +fs_img=$TEST_DIR/$seq.img
+> +status=0
+> +
+> +cp /dev/null $fs_img
 
-If the test always requires 4k blocksize, forcing creating a 4k
-blocksize filesystem doesn't increase any test coverage, I don't see any
-point introducing a new _mkfs_dev_blocksized helper just to do so.
+Just a nit, we usually do
 
-And even if we decide to force 4k blocksize config, I think it'd be
-better to update _scratch_mkfs_blocksized() to take device as argument,
-like what _check_scratch_fs() does, so we don't duplicate all the code
-to create fs with specified blocksize.
+$XFS_IO_PROG -f -c "truncate 40G" $fs_img >>$seqres.full 2>&1
+
+> +${MKFS_PROG} -t ${FSTYP} -b 1024 -N 600020 -O large_dir,^has_journal \
+> +	     $fs_img 40G >> $seqres.full 2>&1 || _fail "mkfs failed"
+
+Better to describe the mkfs options used here, e.g. why using 1k
+blocksize, 600020 inodes, and without journal.
+
+> +
+> +mkdir -p $loop_mnt
+> +_mount -o loop $fs_img $loop_mnt > /dev/null  2>&1 || \
+> +	_fail "Couldn't do initial mount"
+> +
+> +/root/xfstests/src/dirstress -c -d /tmpmnt -p 1 -f 400000 -C \
+> +	>> $seqres.full 2>&1
+
+Use $here/src/dirstress as below. And /tmpmnt is not used elsewhere. Is
+this a debug line that should be removed?
+
+> +
+> +if ! $here/src/dirstress -c -d $loop_mnt -p 1 -f 400000 -C >$tmp.out 2>&1
+> +then
+> +    echo "    dirstress failed"
+> +    cat $tmp.out >> $seqres.full
+> +    echo "    dirstress failed" >> $seqres.full
+> +    status=1
+> +fi
+> +
+> +$UMOUNT_PROG $loop_mnt || _fail "umount failed"
+> +loop_mnt=
+> +
+> +$E2FSCK_PROG -fn $fs_img >> $seqres.full 2>&1 || _fail "file system corrupted"
+
+Better to have an explicit "exit" at the end of test, like all other
+tests do.
 
 Thanks,
 Eryu
 
-> 
-> -ritesh
-> 
-> > Thanks,
-> > Eryu
-> >
-> > >  _mount $DMHUGEDISK_DEV $SCRATCH_MNT || _fail "mount failed for $DMHUGEDISK_DEV $SCRATCH_MNT"
-> > >  testfile=$SCRATCH_MNT/testfile-$seq
-> > >
-> > > --
-> > > 2.31.1
+> diff --git a/tests/ext4/051.out b/tests/ext4/051.out
+> new file mode 100644
+> index 00000000..32f74d89
+> --- /dev/null
+> +++ b/tests/ext4/051.out
+> @@ -0,0 +1,2 @@
+> +QA output created by 051
+> +Silence is golden
+> -- 
+> 2.31.0
