@@ -2,63 +2,81 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 571413E5AFD
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Aug 2021 15:20:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B916B3E5D60
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 Aug 2021 16:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241160AbhHJNUh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 10 Aug 2021 09:20:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241173AbhHJNUg (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 10 Aug 2021 09:20:36 -0400
-Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89E9BC061799
-        for <linux-ext4@vger.kernel.org>; Tue, 10 Aug 2021 06:20:13 -0700 (PDT)
-Received: by mail-ua1-x929.google.com with SMTP id x21so4575370uau.0
-        for <linux-ext4@vger.kernel.org>; Tue, 10 Aug 2021 06:20:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=2tvLhkad0w+Mh63WhnFJkmRFgYsLXsJmUqGVjzUAFIo=;
-        b=r56fIwbJz5SklG4JA6EP+FkmERPm8EjuNIz1zvYA0Tpmfsnzkuj9Mr9ilB+4O1t4iF
-         TJSaAiRseAeimWXIoiZ/aojR4w1dbcHsNBujLSCuMuiKaLluyvcgUi/JEQJlj70o9IEd
-         Yl/0OOPV9kllRbjD3zoBaFd2ApzxJDEEHzY9ZJTfL4UXq1/r4AobRJH0IUhbnGDv8HVX
-         yiVUloxSQKlbYb1M7BZgm8fAZ9m20jI1slKm68o1oKxPbw8XzrEgPc9oJSx/4tHQe2x8
-         HrZw5WHEF9bREO+R7wsyO2DExoyYmOVp3UFrXNeckA4TksY0PWoEs1kePiLiiulK2ynd
-         oMVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=2tvLhkad0w+Mh63WhnFJkmRFgYsLXsJmUqGVjzUAFIo=;
-        b=CGJJ4jUMnz6sldX0Ke0QFLiO4sfSYLXGgZ61qXOvYzBI84jfb4K8LNFFMaEgFuqtxL
-         elweOgqYsWdltzrOJV6JUzttcso55bDsr8t3JCd4kPkKA7e1B6+N4Gem1+ZK68hulSWY
-         DcHrtRtDBqOxCTOA92W4ScOEYGa2V0V2slhyiu3bsieI95OXZOlwcM0a5U3Kw1lqQzvV
-         ImOTMf6PiHSvS6lESEKldfsNu1EuMBbf4qL9AL0l5z8EulLlAAA7Sguj444tyJjY4P/t
-         LqaF/u74YujVWFluYzWE0UgvwhSjKdIddGP5JE9yNRg3iNPS/J6B/nYE/SlW9HDBH4ya
-         AcFg==
-X-Gm-Message-State: AOAM532jmtaS8GfN/TB8PMSsfWubASMwmhwDPlCkUt0SX8MflZugYLL8
-        1nHiWEsFH7M0QUwBRsIxAjH4VQCiPnW8PMMbMWo=
-X-Google-Smtp-Source: ABdhPJzvGsx1vfv3zDD0ahziTo63ivIbwfZEjzIqeDHBCiEzkGEl++4p3okNueaG6Xo6XFnebs4VnqPzJeE4UcTii44=
-X-Received: by 2002:a9f:2c93:: with SMTP id w19mr9591949uaj.26.1628601612739;
- Tue, 10 Aug 2021 06:20:12 -0700 (PDT)
+        id S242370AbhHJOS5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 10 Aug 2021 10:18:57 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:8394 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242832AbhHJORG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 10 Aug 2021 10:17:06 -0400
+Received: from dggeme752-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GkZfP64gpz85xS;
+        Tue, 10 Aug 2021 22:12:45 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggeme752-chm.china.huawei.com
+ (10.3.19.98) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 10
+ Aug 2021 22:16:41 +0800
+From:   Zhang Yi <yi.zhang@huawei.com>
+To:     <linux-ext4@vger.kernel.org>
+CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+        <yi.zhang@huawei.com>, <yukuai3@huawei.com>
+Subject: [PATCH 0/3] ext4: fix a inode checksum error
+Date:   Tue, 10 Aug 2021 22:27:19 +0800
+Message-ID: <20210810142722.923175-1-yi.zhang@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Sender: immeublesourou@gmail.com
-Received: by 2002:ab0:3903:0:0:0:0:0 with HTTP; Tue, 10 Aug 2021 06:20:12
- -0700 (PDT)
-From:   John Kumor <owo219901@gmail.com>
-Date:   Wed, 11 Aug 2021 01:20:12 +1200
-X-Google-Sender-Auth: zdxQGkl3dqzssRDPO2oW64CMnKw
-Message-ID: <CAHdg_cRt+TWqdUjK3Xf84mj5+AwgMtamTmu9J8c3d6u2KdArLQ@mail.gmail.com>
-Subject: Urgent
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggeme752-chm.china.huawei.com (10.3.19.98)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-My dear,
-Greetings! I trust that all is well with you and your family. Did you
-receive my previous email?
-Regards
-John Kumor.
+We find a checksum error and a inode corruption problem while doing
+stress test, this 3 patches address to fix them.
+
+ - Checksum error
+
+    EXT4-fs error (device sda): ext4_lookup:1784: inode #131074: comm cat: iget: checksum invalid
+
+ - Inode corruption
+
+    e2fsck 1.46.0 (29-Jan-2020)
+    Pass 1: Checking inodes, blocks, and sizes
+    Pass 2: Checking directory structure
+    Entry 'foo' in / (2) has deleted/unused inode 17.  Clear<y>? yes
+    Pass 3: Checking directory connectivity
+    Pass 4: Checking reference counts
+    Pass 5: Checking group summary information
+    Inode bitmap differences:  -17
+    Fix<y>? yes
+    Free inodes count wrong for group #0 (32750, counted=32751).
+    Fix<y>? yes
+    Free inodes count wrong (32750, counted=32751).
+    Fix<y>? yes
+
+The first patch is relate to the error simulation, and the second patch
+is just a cleanup patch, which are prepare to do the fix. The last patch
+fix these two issue.
+
+Thanks,
+Yi.
+
+
+
+Zhang Yi (3):
+  ext4: move inode eio simulation behind io completeion
+  ext4: remove an unnecessary if statement in __ext4_get_inode_loc()
+  ext4: prevent getting empty inode buffer
+
+ fs/ext4/inode.c | 177 +++++++++++++++++++++++++-----------------------
+ 1 file changed, 94 insertions(+), 83 deletions(-)
+
+-- 
+2.31.1
+
