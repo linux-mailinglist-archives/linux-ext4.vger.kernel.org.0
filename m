@@ -2,73 +2,86 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F443EA412
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Aug 2021 13:52:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1F043EA4D9
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Aug 2021 14:47:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236983AbhHLLwz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 12 Aug 2021 07:52:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237140AbhHLLwt (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 12 Aug 2021 07:52:49 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A9E6C0617A0
-        for <linux-ext4@vger.kernel.org>; Thu, 12 Aug 2021 04:52:14 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id o126so2913974ybo.7
-        for <linux-ext4@vger.kernel.org>; Thu, 12 Aug 2021 04:52:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=YmL0IRxeWrFbh0vlXgRwXxoaH3pPmHoURYabIlp2Hi0=;
-        b=EGyO9DOTP3M9NXUdHMd8in5CBPx1RdJNkUMxPJ6MI/DrdZaN54DlGC+5jriC1yV0NL
-         7l69VLnftbN2/lVuqO1FlRySQ5zokxdnnjNbg4fMCzHWu5N9Klagk9lHvReL5R2EZnCr
-         W3+DVHw/CdzE77xdIt3IGAqfku3vSPkjlUDGv4burOT82EvN6oPpeOKRwsB/FiF7Z79h
-         cH7SpaNLKPUsp6VLEEjO1EjKo1TC/X1FjrohhTLrJkWtw47bdtO2thvEBrwKKl/mBDAI
-         2oXKHIHW5Z3UYo6gr3KSqFcTmaJHEkjp6rKqk/SClhVoSp9UmIl0esB6y33eCR+1d508
-         EWNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=YmL0IRxeWrFbh0vlXgRwXxoaH3pPmHoURYabIlp2Hi0=;
-        b=E9PgQA4jL5rKpeN/gNrxjmNzw3eFFOJRZBlLvk4DVWJkcZcHLwBHSE95ncWwoQ1YBg
-         oMkvfooJaQHXezXjMlbGgSC09AjHtk8PGFcmOSrNEtmp/24DeSjo4z5B/lyBxL7vFmqv
-         fEBKkta59r4b7r2hkdIHz3Mf86BcfNaVMHofPk6kyFt0HMtTruY4dvxPei30LEc6s+4h
-         bVIxJYavNVgIwJRahhFFiRHToavVl174UAHzE9tmZVhWMrCQLaCkqK7iAxsSEGGb/74Q
-         l6yJk2b4+ALjdCSjboedgaGgfsAOWOYoOs6o9I+nzgCn77w45C4TOvK5svlzmc8r+ue1
-         WzrA==
-X-Gm-Message-State: AOAM533AY/5/dNc5Kdpa0a30WSXW+VIQNC/kDgS24j5UHPPrPo7/WNzg
-        OYhQ092HfI9XUlB7WOWHO8ew0EmlEryesNrnDpc=
-X-Google-Smtp-Source: ABdhPJz0R3gS6h8abCTCoUIof0QEbGSbW4GORm9iD0Z/Xgm+FeZ1LopBjnwjaLZWKuTYzLJ2XaZq9ov5JJ2bNHj0bO4=
-X-Received: by 2002:a25:28c1:: with SMTP id o184mr4134725ybo.215.1628769133296;
- Thu, 12 Aug 2021 04:52:13 -0700 (PDT)
+        id S236983AbhHLMsI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 12 Aug 2021 08:48:08 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:42750 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235864AbhHLMsI (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 12 Aug 2021 08:48:08 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 14BE41FF3E;
+        Thu, 12 Aug 2021 12:47:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628772462; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=A39j2co4sIqqC7Vxyvl//96WHcWa/7qEbNRag2kEL+c=;
+        b=YOpaLSvVA5tjtTZyMGjlT2xPVrDD9P15kf0Gl0eGQX4yaMtlKJ4nEzxN0cUjbZkdwr52wc
+        bnDFw+HGh556B2hi14j1enDLG+3rmUVpROvqnXolPt7Z8FcG3gxTkABRy6Jskw30S9n1qX
+        l2YN4ZqfB4hWyjdR0GjgxzkiCzGguCg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628772462;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=A39j2co4sIqqC7Vxyvl//96WHcWa/7qEbNRag2kEL+c=;
+        b=CR5LxnaunnrTcmfDVmj8GmvYEWUjmm3h7wQQbazcHHL3VKT0VtI10ZYd7dcq28/C6jhUA3
+        LF0BMRyQyDfUolAQ==
+Received: from quack2.suse.cz (unknown [10.100.224.230])
+        by relay2.suse.de (Postfix) with ESMTP id 0561FA3EF0;
+        Thu, 12 Aug 2021 12:47:42 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id CAAC21F2AC2; Thu, 12 Aug 2021 14:47:41 +0200 (CEST)
+From:   Jan Kara <jack@suse.cz>
+To:     Ted Tso <tytso@mit.edu>
+Cc:     Boyang Xue <bxue@redhat.com>, <linux-ext4@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>
+Subject: [PATCH] ext4: Fix tune2fs checksum failure for mounted filesystem
+Date:   Thu, 12 Aug 2021 14:47:37 +0200
+Message-Id: <20210812124737.21981-1-jack@suse.cz>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Received: by 2002:a05:7000:3bd1:0:0:0:0 with HTTP; Thu, 12 Aug 2021 04:52:12
- -0700 (PDT)
-Reply-To: ms.lisahugh000@gmail.com
-From:   MS LISA HUGH <flint.douglas0000@gmail.com>
-Date:   Thu, 12 Aug 2021 13:52:12 +0200
-Message-ID: <CAOOgWXGam7JrgpEn4zysbQx-E-rPgRca2HDL5WKvtKy4o6epJw@mail.gmail.com>
-Subject: MASSAGE OF THE BUSINESS.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1482; h=from:subject; bh=uKWbBc+a3E9TXFE5SbPvTNP8T/oUIFXIsO8xql8BSeA=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBhFRhI4IM7uxiUm1VJoaKEctIy5sB2soRb2AiovQUv u8Ai8j6JATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCYRUYSAAKCRCcnaoHP2RA2eyUCA Cv5k3A0GD2Yw9kgFgvlR0SauJu6g9RgSVwMWz5u9964lx18Ked6Huls789AwafXvSaRE8OzTJAkxaw pqeCC4dzOcvMRrfP68uhuvaiIFJlTx4kf2WA/cES3gLEbfSnM5QhnqjdpkpE36q6LyTpJSF72X1SPC LbXsdaKjyo1hAUXx3UlazKpYhQk9ups0ZozARzaa6UKQSS9aUaqTVhtjMpERHMDY6vd1PFqObyt+ar DhE+o+5kEOuKYWDN/SwCmThSvuS4qNJMhMtkew0Tcjs1sZOVLvHFIjMYSirOiYSAupJ0VpMAFCZXg2 vvMYeQ2OMeYM3DezWxX/gOPN6c2mxP
+X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Dear Friend,
+Commit 81414b4dd48 ("ext4: remove redundant sb checksum recomputation")
+removed checksum recalculation after updating superblock free space /
+inode counters in ext4_fill_super() based on the fact that we will
+recalculate the checksum on superblock writeout. That is correct
+assumption but until the writeout happens (which can take a long time)
+the checksum is incorrect in the buffer cache and if tune2fs is called
+in that time window it will complain. So return back the checksum
+recalculation and add a comment explaining the tune2fs peculiarity.
 
-I am Ms Lisa Hugh, work in the department of Audit and accounting
-manager here in the Bank.
+Fixes: 81414b4dd48f ("ext4: remove redundant sb checksum recomputation")
+Reported-by: Boyang Xue <bxue@redhat.com>
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ fs/ext4/super.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-I need Your help for the transfer of this fund amount ($4,500,000,00
-,U.S.DOLLARS)to your bank account with your co-operation.
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index dfa09a277b56..8f2474618f7e 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -5032,6 +5032,12 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+ 		err = percpu_counter_init(&sbi->s_freeinodes_counter, freei,
+ 					  GFP_KERNEL);
+ 	}
++	/*
++	 * Let's update the checksum after updating free space/inode counters.
++	 * Otherwise sb will have incorrect checksum in the buffer cache until
++	 * sb is written out and tune2fs can get confused.
++	 */
++	ext4_superblock_csum_set(sb);
+ 	if (!err)
+ 		err = percpu_counter_init(&sbi->s_dirs_counter,
+ 					  ext4_count_dirs(sb), GFP_KERNEL);
+-- 
+2.26.2
 
-Please send the follow below, 1)AGE....2)TELEPHONE
-NUMBER,,,,,...,3)COUNTRY.....4)OCCUPATION......
-
-Note. reply me ( ms.lisahugh000@gmail.com )
-
-Thanks.
-
-Ms Lisa Hugh,
