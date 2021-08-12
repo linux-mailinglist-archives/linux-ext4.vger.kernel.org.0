@@ -2,152 +2,138 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 985DC3EACBA
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Aug 2021 23:41:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97EDD3EAD93
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 Aug 2021 01:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238090AbhHLVmU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 12 Aug 2021 17:42:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238078AbhHLVmS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 12 Aug 2021 17:42:18 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1EEAC061756;
-        Thu, 12 Aug 2021 14:41:52 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id 557BF1F41890
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     amir73il@gmail.com, jack@suse.com
-Cc:     linux-api@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, khazhy@google.com,
-        dhowells@redhat.com, david@fromorbit.com, tytso@mit.edu,
-        djwong@kernel.org, repnop@google.com,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel@collabora.com
-Subject: [PATCH v6 21/21] docs: Document the FAN_FS_ERROR event
-Date:   Thu, 12 Aug 2021 17:40:10 -0400
-Message-Id: <20210812214010.3197279-22-krisman@collabora.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210812214010.3197279-1-krisman@collabora.com>
-References: <20210812214010.3197279-1-krisman@collabora.com>
+        id S237839AbhHLXWt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 12 Aug 2021 19:22:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45688 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230244AbhHLXWs (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 12 Aug 2021 19:22:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DD4C60E9B;
+        Thu, 12 Aug 2021 23:22:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628810542;
+        bh=H45Qm9TmpFWzJZOmnegU1uJpH5BCvoJoOFsil17E6Ck=;
+        h=Date:From:To:Cc:Subject:From;
+        b=jt4/1Wvll67xGjBRUBKth/3yM8ThRqN5pKh+OKhOpxu9gOggRgRTSGUFZZIVKPGS6
+         4vZn0NWKu2XFXMJ6jCJKWO10z1hhqmUoXpTrTdhZiFyePNahdVFvc4IDNoC69ix48l
+         pub+86lvkc5zpbc/0K/xGE5XZR7rUTYNNqpvbCNC/TLytabIFQv1TOFBARgZgxynKv
+         nQGGudAiaUcY+0kXt1DLvKVF5c/z4DtP2a8y5lY5zQbMKZBvNvu0cVoHW4psXMutkX
+         Zp6NH6xtF9bMTrPbSm2CHB7kLG+xzoGBxL3Nn414Sja4pyY5vsKjOu3Rj7JnPlrrgl
+         5+HuQBm95deuA==
+Date:   Thu, 12 Aug 2021 16:22:22 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Andreas Dilger <adilger@dilger.ca>,
+        linux-ext4 <linux-ext4@vger.kernel.org>
+Subject: [PATCH v2] mke2fs: warn about missing y2038 support when formatting
+ fresh ext4 fs
+Message-ID: <20210812232222.GE3601392@magnolia>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Document the FAN_FS_ERROR event for user administrators and user space
-developers.
+From: Darrick J. Wong <djwong@kernel.org>
 
-Reviewed-by: Amir Goldstein <amir73il@gmail.com>
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+Filesystems with 128-byte inodes do not support timestamps beyond the
+year 2038.  Since we're now less than 16.5 years away from that point,
+it's time to start warning users about this lack of support when they
+format an ext4 filesystem with small inodes.
 
+First, change the mke2fs.conf file to specify 256-byte inodes even for
+small filesystems, then add a warning to mke2fs itself if someone is
+trying to make us format an ext4 filesystem with 128-byte inodes.
+
+Note that we /don't/ warn about these things if the user has signalled
+that they want an old format such as ext2, ext3, or hurd.  Everyone
+should know by now that those are legacy.
+
+Signed-off-by: Darrick J. Wong <djwong@kernel.org>
 ---
-Changes Since v4:
-  - Update documentation about reporting non-file error.
-Changes Since v3:
-  - Move FAN_FS_ERROR notification into a subsection of the file.
-Changes Since v2:
-  - NTR
-Changes since v1:
-  - Drop references to location record
-  - Explain that the inode field is optional
-  - Explain we are reporting only the first error
+v2: fix the comments
 ---
- .../admin-guide/filesystem-monitoring.rst     | 70 +++++++++++++++++++
- Documentation/admin-guide/index.rst           |  1 +
- 2 files changed, 71 insertions(+)
- create mode 100644 Documentation/admin-guide/filesystem-monitoring.rst
+ misc/mke2fs.c       |   39 +++++++++++++++++++++++++++++++++++++++
+ misc/mke2fs.conf.in |    4 ++--
+ 2 files changed, 41 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/admin-guide/filesystem-monitoring.rst b/Documentation/admin-guide/filesystem-monitoring.rst
-new file mode 100644
-index 000000000000..b03093567a93
---- /dev/null
-+++ b/Documentation/admin-guide/filesystem-monitoring.rst
-@@ -0,0 +1,70 @@
-+.. SPDX-License-Identifier: GPL-2.0
+diff --git a/misc/mke2fs.c b/misc/mke2fs.c
+index 92003e11..114a64f7 100644
+--- a/misc/mke2fs.c
++++ b/misc/mke2fs.c
+@@ -1537,6 +1537,35 @@ static int get_device_geometry(const char *file,
+ }
+ #endif
+ 
++/*
++ * Decide if the user is formatting with an old feature set (e.g. ext2, ext3).
++ *
++ * If there is no fs_types list, assume that the user's getting ext4 and return
++ * 0.  If we find 'ext4' anywhere in the fs_types list, take that as a sign
++ * that the user will get ext4 and return 0.  Any other case returns 1.
++ *
++ * Normally, 'ext4' will be the first item in fs_types, but the user can
++ * combine argv[0], -t, and -T options in such a way that fs_types will start
++ * with some other word and the 'ext4' will end up in a non-zero slot.  A
++ * simple way to do this is "mke2fs -T ext4 /dev/XXX".  The user is supposed to
++ * use -t for the fs type and not -T, but we've never enforced that.
++ */
++static inline int
++old_format_forced(char **fs_types)
++{
++	int found_ext4 = 0;
++	int i;
 +
-+====================================
-+File system Monitoring with fanotify
-+====================================
++	if (!fs_types)
++		return 0;
 +
-+File system Error Reporting
-+===========================
++	for (i = 0; fs_types[i]; i++)
++		if (!strcmp(fs_types[i], "ext4"))
++			found_ext4 = 1;
 +
-+fanotify supports the FAN_FS_ERROR mark for file system-wide error
-+reporting.  It is meant to be used by file system health monitoring
-+daemons who listen on that interface and take actions (notify sysadmin,
-+start recovery) when a file system problem is detected by the kernel.
++	return !found_ext4;
++}
 +
-+By design, A FAN_FS_ERROR notification exposes sufficient information for a
-+monitoring tool to know a problem in the file system has happened.  It
-+doesn't necessarily provide a user space application with semantics to
-+verify an IO operation was successfully executed.  That is outside of
-+scope of this feature. Instead, it is only meant as a framework for
-+early file system problem detection and reporting recovery tools.
+ static void PRS(int argc, char *argv[])
+ {
+ 	int		b, c, flags;
+@@ -2603,6 +2632,16 @@ static void PRS(int argc, char *argv[])
+ 		exit(1);
+ 	}
+ 
++	/*
++	 * If we're formatting with an ext4 feature set (and not an old ondisk
++	 * format), warn the user that filesystems with 128-byte inodes will
++	 * not work properly beyond 2038.
++	 */
++	if (!old_format_forced(fs_types) &&
++	    inode_size == EXT2_GOOD_OLD_INODE_SIZE)
++		printf(
++_("128-byte inodes cannot handle dates beyond 2038 and are deprecated\n"));
 +
-+When a file system operation fails, it is common for dozens of kernel
-+errors to cascade after the initial failure, hiding the original failure
-+log, which is usually the most useful debug data to troubleshoot the
-+problem.  For this reason, FAN_FS_ERROR only reports the first error that
-+occurred since the last notification, and it simply counts addition
-+errors.  This ensures that the most important piece of error information
-+is never lost.
-+
-+FAN_FS_ERROR requires the fanotify group to be setup with the
-+FAN_REPORT_FID flag.
-+
-+At the time of this writing, the only file system that emits FAN_FS_ERROR
-+notifications is Ext4.
-+
-+A user space example code is provided at ``samples/fanotify/fs-monitor.c``.
-+
-+A FAN_FS_ERROR Notification has the following format::
-+
-+  [ Notification Metadata (Mandatory) ]
-+  [ Generic Error Record  (Mandatory) ]
-+  [ FID record            (Mandatory) ]
-+
-+Generic error record
-+--------------------
-+
-+The generic error record provides enough information for a file system
-+agnostic tool to learn about a problem in the file system, without
-+providing any additional details about the problem.  This record is
-+identified by ``struct fanotify_event_info_header.info_type`` being set
-+to FAN_EVENT_INFO_TYPE_ERROR.
-+
-+  struct fanotify_event_info_error {
-+	struct fanotify_event_info_header hdr;
-+	__s32 error;
-+	__u32 error_count;
-+  };
-+
-+The `error` field identifies the type of error. `error_count` count
-+tracks the number of errors that occurred and were suppressed to
-+preserve the original error, since the last notification.
-+
-+FID record
-+----------
-+
-+The FID record can be used to uniquely identify the inode that triggered
-+the error through the combination of fsid and file handle.  A file system
-+specific application can use that information to attempt a recovery
-+procedure.  Errors that are not related to an inode are reported with an
-+empty file handle, with type FILEID_INVALID.
-diff --git a/Documentation/admin-guide/index.rst b/Documentation/admin-guide/index.rst
-index dc00afcabb95..1bedab498104 100644
---- a/Documentation/admin-guide/index.rst
-+++ b/Documentation/admin-guide/index.rst
-@@ -82,6 +82,7 @@ configure specific aspects of kernel behavior to your liking.
-    edid
-    efi-stub
-    ext4
-+   filesystem-monitoring
-    nfs/index
-    gpio/index
-    highuid
--- 
-2.32.0
-
+ 	/* Make sure number of inodes specified will fit in 32 bits */
+ 	if (num_inodes == 0) {
+ 		unsigned long long n;
+diff --git a/misc/mke2fs.conf.in b/misc/mke2fs.conf.in
+index 01e35cf8..2fa1a824 100644
+--- a/misc/mke2fs.conf.in
++++ b/misc/mke2fs.conf.in
+@@ -16,12 +16,12 @@
+ 	}
+ 	small = {
+ 		blocksize = 1024
+-		inode_size = 128
++		inode_size = 256
+ 		inode_ratio = 4096
+ 	}
+ 	floppy = {
+ 		blocksize = 1024
+-		inode_size = 128
++		inode_size = 256
+ 		inode_ratio = 8192
+ 	}
+ 	big = {
