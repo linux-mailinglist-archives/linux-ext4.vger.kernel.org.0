@@ -2,174 +2,190 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70BD53E9E97
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Aug 2021 08:31:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B67EA3E9EAB
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Aug 2021 08:34:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234587AbhHLGcL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 12 Aug 2021 02:32:11 -0400
-Received: from mail-dm6nam11on2050.outbound.protection.outlook.com ([40.107.223.50]:43232
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234298AbhHLGcB (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 12 Aug 2021 02:32:01 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jRmjBS6ylkW0O1W2rhoA6yrRGyS2y41S4PGj1dECbcaQBGCUm4S4GI+jG6xy6+VfRCh2R8klnfS8ORAt5mvRqnmbWfgar5uJSu3ArTXUmQx2yux05XIZPUBXwhgoVh8JnWfDdJ9wsUNPZxvYBEXWPlXTlSswNJBk3GcIgg66AO0AMDMhQuYbX/8ENVrZ9kAQtbtTtduLVGZUIgRCN3y08Tp39HYHyQQRX0gPJcMZ29mAludz0DDWjywzK6Y8sJjqkd8i+AqPOHjFR35yBYMwsCVNvhVD5XD4XvvBy2UM0QcZas+FwJlXJ3LICqp1rX4Svq0Vo7VmKQZ39NpmAaSWEg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=707xnJfuFhrp+6dAh962xzl7si469vWZYp4BZWlrkTo=;
- b=DKyJg46fpmz+CMwYaAdcqSoB14y2jfurfbUEf25m/B633QljzY+8tzfyANVvPIDO87OaE9v2+lnouj0aIgNX6+21GREtIpeWKNTcBJE4bYpqBJIC93Q1hxWC+BkwBsfUhztdSeBfNALFJLRai+ZijknV+VwrdvZhpu3Km5So/GjqYMU05IJaynyTj149MNZ2+aikz4c5yuQhldVXLyrwMEGLcAGm90DrrisjCRJEB5LafsmoNTY0jgaRWkZHq4SbrbFwXMasRdQwzlBCkGtaxXASl82EsKp0yp2xUPpiy2odfJHVkEgqlkfph2Imxjo6SVYrx9XBfqfwPMlfzbuMZw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=707xnJfuFhrp+6dAh962xzl7si469vWZYp4BZWlrkTo=;
- b=4DVv6w0Spa3S8TCpJQTs8duhp1C69JqmkQhgZHhqXRtfsfYvHRFNXpYgcdP1INui2CIvy7/jQLautshk5bmU8gacsVS8Ku91Zj3Q/doDJvXjoM/t2Khcv1l0oRaRNhwb1mzIAXkpY7qS6bPw/+bDzdSD1GeCpUi1E7hp7gvLe0U=
-Authentication-Results: linux-foundation.org; dkim=none (message not signed)
- header.d=none;linux-foundation.org; dmarc=none action=none
- header.from=amd.com;
-Received: from SA0PR12MB4430.namprd12.prod.outlook.com (2603:10b6:806:70::20)
- by SN1PR12MB2448.namprd12.prod.outlook.com (2603:10b6:802:28::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.25; Thu, 12 Aug
- 2021 06:31:28 +0000
-Received: from SA0PR12MB4430.namprd12.prod.outlook.com
- ([fe80::e828:5445:a5aa:94cb]) by SA0PR12MB4430.namprd12.prod.outlook.com
- ([fe80::e828:5445:a5aa:94cb%5]) with mapi id 15.20.4415.016; Thu, 12 Aug 2021
- 06:31:28 +0000
-From:   Alex Sierra <alex.sierra@amd.com>
-To:     akpm@linux-foundation.org, Felix.Kuehling@amd.com,
+        id S234331AbhHLGeq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 12 Aug 2021 02:34:46 -0400
+Received: from verein.lst.de ([213.95.11.211]:43060 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229956AbhHLGep (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 12 Aug 2021 02:34:45 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id CF00D67373; Thu, 12 Aug 2021 08:34:17 +0200 (CEST)
+Date:   Thu, 12 Aug 2021 08:34:17 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Alex Sierra <alex.sierra@amd.com>
+Cc:     akpm@linux-foundation.org, Felix.Kuehling@amd.com,
         linux-mm@kvack.org, rcampbell@nvidia.com,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         hch@lst.de, jgg@nvidia.com, jglisse@redhat.com
-Subject: [PATCH v5 13/13] tools: update test_hmm script to support SP config
-Date:   Thu, 12 Aug 2021 01:31:00 -0500
-Message-Id: <20210812063100.31997-14-alex.sierra@amd.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210812063100.31997-1-alex.sierra@amd.com>
+Subject: Re: [PATCH v5 00/13] Support DEVICE_GENERIC memory in migrate_vma_*
+Message-ID: <20210812063417.GA26938@lst.de>
 References: <20210812063100.31997-1-alex.sierra@amd.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SN7PR18CA0026.namprd18.prod.outlook.com
- (2603:10b6:806:f3::18) To SA0PR12MB4430.namprd12.prod.outlook.com
- (2603:10b6:806:70::20)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from alex-MS-7B09.amd.com (165.204.78.1) by SN7PR18CA0026.namprd18.prod.outlook.com (2603:10b6:806:f3::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.17 via Frontend Transport; Thu, 12 Aug 2021 06:31:28 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 735803a4-df2e-4f5f-001e-08d95d5ad0f3
-X-MS-TrafficTypeDiagnostic: SN1PR12MB2448:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN1PR12MB244870BC60CFE0FFCB6FBBAAFDF99@SN1PR12MB2448.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: S2IC5SltKzIax363imrqaAPfg4jsNG8j2a7bIquvjKAGhExnHh7a7HioPCWGPh1x+XY2ZCdEmcfRvDCsG1rbirtd+OE1kJtVXpgt8Ms7wf69DaMs1ISWF7p3h3AE4CqqZLU8NNV7thOmx3kCwr05x38fc2gl5SFd2+M9xE4KWbQz/4IG1yLcPSKTsXa80AA5h8NbDP76Htxepr1hZzRkbBGfb3F5AZRKRv1fpVcLGQ4I/3/NZVlbOVkFsQYExG6tiSgkEoejwFE1ct5SyoxaK7bondOj/HTZfOhkDT62qscEbN79Df+7QSKUpYbNYJNQKsWK5lGHcw8HOuTFxfsRSNtpY0v8qhsbUIrQrKO2xdi8LbCFZfvg10O8AIOdvA87IZwPsHVz3Il+oqOTPrtFacyP4moNMny3pkkiBuP7qDe2T3sYalm+KOMVMGNOUCFfHMaPukO7vABJtvcNxvEtKyk9UbzDAiopy+at6NYy3/cFL8LjswmqMcUOguAl0vRjZ3BYB6/VgOfWVWPDWlMLAe5CD6tmzve5/WvvK9+LbWQB0lwDo/+7VlURhbbCQ2Wqp40MeulfiFjBI8O+coFqgfjD75mRBUu0QwkkIIstfR//GExhSzqMvVj65SUX2sA9t3o8ouvIAhEFIMbHx/lFaJVX84b47YDFO7fIg3hECTq3ORI1htiFsnmxMLdcxOvIbc/IWH7z7j60ZoGQ3xgJpA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA0PR12MB4430.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(396003)(366004)(136003)(346002)(38350700002)(6666004)(186003)(66556008)(66946007)(2616005)(478600001)(83380400001)(38100700002)(8676002)(26005)(44832011)(2906002)(66476007)(956004)(52116002)(7416002)(1076003)(4326008)(86362001)(36756003)(6486002)(8936002)(5660300002)(316002)(7696005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?bzgNKTYdgH/wFFV0Uav3lS0c6ybcEjXMfkNn21C1F16o9x+kBQHYol8FftF5?=
- =?us-ascii?Q?7kH36yWsLBiwgIc8DYurs0iMGBiilppHLGEerEX1MmETLnMlJK506vonnJeS?=
- =?us-ascii?Q?EE+6gfR1hPW36bB+kaeV7WZ2xzAeFEEr6LH8bGc8M0smZ6nSs0mA7u3TE3Ib?=
- =?us-ascii?Q?ssVfuulzDMFj9GCVus+TX4f/0FFZVS4pf0v7ba3VBVSXwUwx+I7SP14Brq79?=
- =?us-ascii?Q?eBDbfFO3N3sl94YrpokhQBtMmTAx3cjxiV2MfUE3A4ADyQY5HzZl1uT+9QIZ?=
- =?us-ascii?Q?S678hQURAn2gYqUC5wu9A8MEc76nf4Yu1NmlowwUVvYmvOXtM175qyaMMxd8?=
- =?us-ascii?Q?KZhYs49+tP2xK46GHl9qhdpMwzIKmLf3+AIiJ3oUJx/rA/0N5VAD3A1n21Pg?=
- =?us-ascii?Q?Y9jKBDwN8tajPnSAQf1835ARN+Gy5RQR/K0apVC+XOVSKEzHKMyeDkPumAAw?=
- =?us-ascii?Q?IrQPyUwj291ZqoM1fYguF3MnDPEtvw4fuZGA9NfAkLQfAAP2EWKEBsh5mlaB?=
- =?us-ascii?Q?FvZQnc4LuHJpyH2vNhpODvskhpZfCWkwx8m4Fi8AwHxSn9W6/tzeejngNgXW?=
- =?us-ascii?Q?tnYkOSI0K/F7spuRD63vvDvXj8r5EmF9JWysdIIxFF6fHOPz8tD9O8ktxW0A?=
- =?us-ascii?Q?pz8Cy9Na3KHn/EjKfFehH7Q/aylBu6fMo1uxjqcOfVz//MDQ10DD7VnAKsuq?=
- =?us-ascii?Q?Nmpp4pM5THKCS+IUlfXRptYExpJeWwI9EAIDzl/Qtu/s/dttdLpPHDFKRX7U?=
- =?us-ascii?Q?qs2Vrv6HIur7MxRbmIOm/r/Wg/X91VHjDjmKAmT2yFgiHIMPj4aEWLQp3SGh?=
- =?us-ascii?Q?2EuQI1ppR4M9fodx+uBcZqJk/iNV4a4sXQhAyn1dAVIV8LLWvu6MBOamJjtP?=
- =?us-ascii?Q?nelCrehhAst/tZIQE8gq6o9yPYUDlMFBjic64BUGIli9RHGBseDkAyj30K/k?=
- =?us-ascii?Q?ilskUQlTKbYQctRfkBxj9QaNylXEfWFSg4XhUd0j56PwxDBkq3xVpeFcnqmI?=
- =?us-ascii?Q?ePqgqtpA8iUHLODe5NE+qscjxF0EpX6um6G3sIb803YZIk3uB1c0k0BdheAR?=
- =?us-ascii?Q?hgvrxP2DX+bA5uUjXv2HPKa5hMXK6D7//C15Zixx2xvu9AdFOkNujxMxPNqS?=
- =?us-ascii?Q?dEAMNwvM2U66bW6B+9EfR8sz235KrVR+oH6ICKC8gyLU4MtaFr8Gd5XPrNei?=
- =?us-ascii?Q?BLW38k9IabD52l+jOWRXDmpAViPwcCO1RVktitjfgCqId/VZdZon2g9H0i/3?=
- =?us-ascii?Q?Z/N0xaA62Iod4ymwuhHSip7vWJYpzrcoc4uAf2FMydL5+xsWLnj2mZiZ+jJh?=
- =?us-ascii?Q?uP50aMmvbprHTEvCpDsUlkVh?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 735803a4-df2e-4f5f-001e-08d95d5ad0f3
-X-MS-Exchange-CrossTenant-AuthSource: SA0PR12MB4430.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Aug 2021 06:31:28.5075
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: a4DhHhfykdWL+FU8GUiAroFs6rbNIIaJDzFxnaqj3Gql0q7BFfKszXaOUR1exsI6zrad8Vzw98SBi/DuGj9Iow==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2448
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210812063100.31997-1-alex.sierra@amd.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Add two more parameters to set spm_addr_dev0 & spm_addr_dev1
-addresses. These two parameters configure the start SP
-addresses for each device in test_hmm driver.
-Consequently, this configures zone device type as generic.
+Do you have a pointer to a git branch with this series and all dependencies
+to ease testing?
 
-Signed-off-by: Alex Sierra <alex.sierra@amd.com>
----
- tools/testing/selftests/vm/test_hmm.sh | 20 +++++++++++++++++---
- 1 file changed, 17 insertions(+), 3 deletions(-)
-
-diff --git a/tools/testing/selftests/vm/test_hmm.sh b/tools/testing/selftests/vm/test_hmm.sh
-index 0647b525a625..3eeabe94399f 100755
---- a/tools/testing/selftests/vm/test_hmm.sh
-+++ b/tools/testing/selftests/vm/test_hmm.sh
-@@ -40,7 +40,18 @@ check_test_requirements()
- 
- load_driver()
- {
--	modprobe $DRIVER > /dev/null 2>&1
-+	if [ $# -eq 0 ]; then
-+		modprobe $DRIVER > /dev/null 2>&1
-+	else
-+		if [ $# -eq 2 ]; then
-+			modprobe $DRIVER spm_addr_dev0=$1 spm_addr_dev1=$2
-+				> /dev/null 2>&1
-+		else
-+			echo "Missing module parameters. Make sure pass"\
-+			"spm_addr_dev0 and spm_addr_dev1"
-+			usage
-+		fi
-+	fi
- 	if [ $? == 0 ]; then
- 		major=$(awk "\$2==\"HMM_DMIRROR\" {print \$1}" /proc/devices)
- 		mknod /dev/hmm_dmirror0 c $major 0
-@@ -58,7 +69,7 @@ run_smoke()
- {
- 	echo "Running smoke test. Note, this test provides basic coverage."
- 
--	load_driver
-+	load_driver $1 $2
- 	$(dirname "${BASH_SOURCE[0]}")/hmm-tests
- 	unload_driver
- }
-@@ -75,6 +86,9 @@ usage()
- 	echo "# Smoke testing"
- 	echo "./${TEST_NAME}.sh smoke"
- 	echo
-+	echo "# Smoke testing with SPM enabled"
-+	echo "./${TEST_NAME}.sh smoke <spm_addr_dev0> <spm_addr_dev1>"
-+	echo
- 	exit 0
- }
- 
-@@ -84,7 +98,7 @@ function run_test()
- 		usage
- 	else
- 		if [ "$1" = "smoke" ]; then
--			run_smoke
-+			run_smoke $2 $3
- 		else
- 			usage
- 		fi
--- 
-2.32.0
-
+On Thu, Aug 12, 2021 at 01:30:47AM -0500, Alex Sierra wrote:
+> v1:
+> AMD is building a system architecture for the Frontier supercomputer with a
+> coherent interconnect between CPUs and GPUs. This hardware architecture allows
+> the CPUs to coherently access GPU device memory. We have hardware in our labs
+> and we are working with our partner HPE on the BIOS, firmware and software
+> for delivery to the DOE.
+> 
+> The system BIOS advertises the GPU device memory (aka VRAM) as SPM
+> (special purpose memory) in the UEFI system address map. The amdgpu driver looks
+> it up with lookup_resource and registers it with devmap as MEMORY_DEVICE_GENERIC
+> using devm_memremap_pages.
+> 
+> Now we're trying to migrate data to and from that memory using the migrate_vma_*
+> helpers so we can support page-based migration in our unified memory allocations,
+> while also supporting CPU access to those pages.
+> 
+> This patch series makes a few changes to make MEMORY_DEVICE_GENERIC pages behave
+> correctly in the migrate_vma_* helpers. We are looking for feedback about this
+> approach. If we're close, what's needed to make our patches acceptable upstream?
+> If we're not close, any suggestions how else to achieve what we are trying to do
+> (i.e. page migration and coherent CPU access to VRAM)?
+> 
+> This work is based on HMM and our SVM memory manager that was recently upstreamed
+> to Dave Airlie's drm-next branch
+> https://cgit.freedesktop.org/drm/drm/log/?h=drm-next
+> On top of that we did some rework of our VRAM management for migrations to remove
+> some incorrect assumptions, allow partially successful migrations and GPU memory
+> mappings that mix pages in VRAM and system memory.
+> https://lore.kernel.org/dri-devel/20210527205606.2660-6-Felix.Kuehling@amd.com/T/#r996356015e295780eb50453e7dbd5d0d68b47cbc
+> 
+> v2:
+> This patch series version has merged "[RFC PATCH v3 0/2]
+> mm: remove extra ZONE_DEVICE struct page refcount" patch series made by
+> Ralph Campbell. It also applies at the top of these series, our changes
+> to support device generic type in migration_vma helpers.
+> This has been tested in systems with device memory that has coherent
+> access by CPU.
+> 
+> Also addresses the following feedback made in v1:
+> - Isolate in one patch kernel/resource.c modification, based
+> on Christoph's feedback.
+> - Add helpers check for generic and private type to avoid
+> duplicated long lines.
+> 
+> v3:
+> - Include cover letter from v1.
+> - Rename dax_layout_is_idle_page func to dax_page_unused in patch
+> ext4/xfs: add page refcount helper.
+> 
+> v4:
+> - Add support for zone device generic type in lib/test_hmm and
+> tool/testing/selftest/vm/hmm-tests.
+> - Add missing page refcount helper to fuse/dax.c. This was included in
+> one of Ralph Campbell's patches.
+> 
+> v5:
+> - Cosmetic changes on patches 3, 5 and 13
+> - Bug founded at test_hmm, remove devmem->pagemap.type = MEMORY_DEVICE_PRIVATE
+> at dmirror_allocate_chunk that was forcing to configure pagemap.type to
+> MEMORY_DEVICE_PRIVATE.
+> - A bug was found while running one of the xfstest (generic/413) used to
+> validate fs_dax device type. This was first introduced by patch: "mm: remove
+> extra ZONE_DEVICE struct page refcount" whic is part of these patch series.
+> The bug was showed as WARNING message at try_grab_page function call, due to
+> a page refcounter equal to zero. Part of "mm: remove extra ZONE_DEVICE struct
+> page refcount" changes, was to initialize page refcounter to zero. Therefore,
+> a special condition was added to try_grab_page on this v5, were it checks for
+> device zone pages too. It is included in the same patch.
+> 
+> This is how mm changes from these patch series have been validated:
+> - hmm-tests were run using device private and device generic types. This last,
+> just added in these patch series. efi_fake_mem was used to mimic SPM memory
+> for device generic.
+> - xfstests tool was used to validate fs-dax device type and page refcounter
+> changes. DAX configuration was used along with emulated Persisten Memory set as
+> memmap=4G!4G memmap=4G!9G. xfstests were run from ext4 and generic lists. Some
+> of them, did not run due to limitations in configuration. Ex. test not
+> supporting specific file system or DAX mode.
+> Only three tests failed, generic/356/357 and ext4/049. However, these failures
+> were consistent before and after applying these patch series.
+> xfstest configuration:
+> TEST_DEV=/dev/pmem0
+> TEST_DIR=/mnt/ram0
+> SCRATCH_DEV=/dev/pmem1
+> SCRATCH_MNT=/mnt/ram1
+> TEST_FS_MOUNT_OPTS="-o dax"
+> EXT_MOUNT_OPTIONS="-o dax"
+> MKFS_OPTIONS="-b4096"
+> xfstest passed list:
+> Ext4:
+> 001,003,005,021,022,023,025,026,030,031,032,036,037,038,042,043,044,271,306
+> Generic:
+> 1,2,3,4,5,6,7,8,9,11,12,13,14,15,16,20,21,22,23,24,25,28,29,30,31,32,33,35,37,
+> 50,52,53,58,60,61,62,63,64,67,69,70,71,75,76,78,79,80,82,84,86,87,88,91,92,94,
+> 96,97,98,99,103,105,112,113,114,117,120,124,126,129,130,131,135,141,169,184,
+> 198,207,210,211,212,213,214,215,221,223,225,228,236,237,240,244,245,246,247,
+> 248,249,255,257,258,263,277,286,294,306,307,308,309,313,315,316,318,319,337,
+> 346,360,361,371,375,377,379,380,383,384,385,386,389,391,392,393,394,400,401,
+> 403,404,406,409,410,411,412,413,417,420,422,423,424,425,426,427,428
+> 
+> Patches 1-2 Rebased Ralph Campbell's ZONE_DEVICE page refcounting patches.
+> 
+> Patches 4-5 are for context to show how we are looking up the SPM 
+> memory and registering it with devmap.
+> 
+> Patches 3,6-8 are the changes we are trying to upstream or rework to 
+> make them acceptable upstream.
+> 
+> Patches 9-13 add ZONE_DEVICE Generic type support into the hmm test.
+> 
+> Alex Sierra (11):
+>   kernel: resource: lookup_resource as exported symbol
+>   drm/amdkfd: add SPM support for SVM
+>   drm/amdkfd: generic type as sys mem on migration to ram
+>   include/linux/mm.h: helpers to check zone device generic type
+>   mm: add generic type support to migrate_vma helpers
+>   mm: call pgmap->ops->page_free for DEVICE_GENERIC pages
+>   lib: test_hmm add ioctl to get zone device type
+>   lib: test_hmm add module param for zone device type
+>   lib: add support for device generic type in test_hmm
+>   tools: update hmm-test to support device generic type
+>   tools: update test_hmm script to support SP config
+> 
+> Ralph Campbell (2):
+>   ext4/xfs: add page refcount helper
+>   mm: remove extra ZONE_DEVICE struct page refcount
+> 
+>  arch/powerpc/kvm/book3s_hv_uvmem.c       |   2 +-
+>  drivers/gpu/drm/amd/amdkfd/kfd_migrate.c |  22 ++-
+>  drivers/gpu/drm/nouveau/nouveau_dmem.c   |   2 +-
+>  fs/dax.c                                 |   8 +-
+>  fs/ext4/inode.c                          |   5 +-
+>  fs/fuse/dax.c                            |   4 +-
+>  fs/xfs/xfs_file.c                        |   4 +-
+>  include/linux/dax.h                      |  10 +
+>  include/linux/memremap.h                 |   7 +-
+>  include/linux/mm.h                       |  54 +-----
+>  kernel/resource.c                        |   1 +
+>  lib/test_hmm.c                           | 231 +++++++++++++++--------
+>  lib/test_hmm_uapi.h                      |  16 ++
+>  mm/internal.h                            |   8 +
+>  mm/memremap.c                            |  69 ++-----
+>  mm/migrate.c                             |  25 +--
+>  mm/page_alloc.c                          |   3 +
+>  mm/swap.c                                |  45 +----
+>  tools/testing/selftests/vm/hmm-tests.c   | 142 ++++++++++++--
+>  tools/testing/selftests/vm/test_hmm.sh   |  20 +-
+>  20 files changed, 405 insertions(+), 273 deletions(-)
+> 
+> -- 
+> 2.32.0
+---end quoted text---
