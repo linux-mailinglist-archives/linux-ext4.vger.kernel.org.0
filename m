@@ -2,100 +2,103 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AFFA3EA714
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Aug 2021 17:05:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B32D53EA744
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Aug 2021 17:14:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238305AbhHLPF7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 12 Aug 2021 11:05:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35320 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234850AbhHLPF6 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 12 Aug 2021 11:05:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CCCBF6103A;
-        Thu, 12 Aug 2021 15:05:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628780732;
-        bh=xB0xau6mobE/BCCOoCDk4Aa0L9ouSA0Uui8dc7NhZCw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mT6KYmi9kWpByxh0dtNYmJMAb0kdISnL3Cu9mHlbS9m6Aij3KplxUh6/zp/uq/1xs
-         tdUo5OIhAEZqKwwYmuuUTokTfmw1dx5iTckGo1YChJg44fukm3tuHqtvrpYPTLKE+j
-         ACzi4vg0USw6db3DjNDdpHcmnbEaeOx1CJab3g7TfWzKhxpLovM4RWoznwt3UJLihz
-         h1mw5+MLboILfz06Vg1x7970xG/rsRjbr+oJYDNI/IALpr/jhs8OyGWK9tr30yNj1h
-         52FGg1NSafyApYHwxrjL6zJELVGbue7v81a35BZY1sGhrP5UJN3oLwmVTT/GY10fB3
-         OtSQ2siUaMxgA==
-Date:   Thu, 12 Aug 2021 08:05:32 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     linux-ext4 <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH] mke2fs: warn about missing y2038 support when formatting
- fresh ext4 fs
-Message-ID: <20210812150532.GD3601392@magnolia>
-References: <20210811233253.GC3601392@magnolia>
- <YRR4fmg2eQMWf2iO@mit.edu>
+        id S236349AbhHLPPA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 12 Aug 2021 11:15:00 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:41264 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230369AbhHLPO7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 12 Aug 2021 11:14:59 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id BC09C1F44053
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     jack@suse.com, amir73il@gmail.com, djwong@kernel.org,
+        tytso@mit.edu, david@fromorbit.com, dhowells@redhat.com,
+        khazhy@google.com, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-api@vger.kernel.org,
+        kernel@collabora.com
+Subject: Re: [PATCH v5 14/23] fanotify: Encode invalid file handler when no
+ inode is provided
+Organization: Collabora
+References: <20210804160612.3575505-1-krisman@collabora.com>
+        <20210804160612.3575505-15-krisman@collabora.com>
+        <20210805095618.GF14483@quack2.suse.cz> <87fsvf65zu.fsf@collabora.com>
+        <20210812142047.GG14675@quack2.suse.cz>
+Date:   Thu, 12 Aug 2021 11:14:29 -0400
+In-Reply-To: <20210812142047.GG14675@quack2.suse.cz> (Jan Kara's message of
+        "Thu, 12 Aug 2021 16:20:47 +0200")
+Message-ID: <875ywa66ga.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YRR4fmg2eQMWf2iO@mit.edu>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 09:25:18PM -0400, Theodore Ts'o wrote:
-> On Wed, Aug 11, 2021 at 04:32:53PM -0700, Darrick J. Wong wrote:
-> > +/*
-> > + * Returns true if the user is forcing an old format (e.g. ext2, ext3).
-> > + *
-> > + * If there is no fs_types list, the user invoked us with no explicit type and
-> > + * gets the default (ext4) format.  If we find the latest format (ext4) in the
-> > + * type list, some combination of program name and -T argument put us in ext4
-> > + * mode.  Anything else (ext2, ext3, hurd) and we return false.
-> > + */
-> 
-> So that's not actually quite right.  Even if the user has no explicit
-> type, mke2fs will assign a default type --- and it's not necessarily
-> ext4.  You can see what the contents of the fs_types list using the -v
-> option:
+Jan Kara <jack@suse.cz> writes:
 
-Ok, fair, I'll fix the message.  "If the user invoked us with no
-explicit type, mke2fs adds some variant of ext* to the type list by
-default."
+> On Wed 11-08-21 17:12:05, Gabriel Krisman Bertazi wrote:
+>> Jan Kara <jack@suse.cz> writes:
+>> >> @@ -376,14 +371,24 @@ static int fanotify_encode_fh(struct fanotify_fh *fh, struct inode *inode,
+>> >>  		fh->flags |= FANOTIFY_FH_FLAG_EXT_BUF;
+>> >>  	}
+>> >>  
+>> >> -	dwords = fh_len >> 2;
+>> >> -	type = exportfs_encode_inode_fh(inode, buf, &dwords, NULL);
+>> >> -	err = -EINVAL;
+>> >> -	if (!type || type == FILEID_INVALID || fh_len != dwords << 2)
+>> >> -		goto out_err;
+>> >> -
+>> >> -	fh->type = type;
+>> >> -	fh->len = fh_len;
+>> >> +	if (inode) {
+>> >> +		dwords = fh_len >> 2;
+>> >> +		type = exportfs_encode_inode_fh(inode, buf, &dwords, NULL);
+>> >> +		err = -EINVAL;
+>> >> +		if (!type || type == FILEID_INVALID || fh_len != dwords << 2)
+>> >> +			goto out_err;
+>> >> +		fh->type = type;
+>> >> +		fh->len = fh_len;
+>> >> +	} else {
+>> >> +		/*
+>> >> +		 * Invalid FHs are used on FAN_FS_ERROR for errors not
+>> >> +		 * linked to any inode. Caller needs to guarantee the fh
+>> >> +		 * has at least FANOTIFY_NULL_FH_LEN bytes of space.
+>> >> +		 */
+>> >> +		fh->type = FILEID_INVALID;
+>> >> +		fh->len = FANOTIFY_NULL_FH_LEN;
+>> >> +		memset(buf, 0, FANOTIFY_NULL_FH_LEN);
+>> >> +	}
+>> >
+>> > Maybe it will become clearer later during the series but why do you set
+>> > fh->len to FANOTIFY_NULL_FH_LEN and not 0?
+>> 
+>> Jan,
+>> 
+>> That is how we encode a NULL file handle (i.e. superblock error).  Amir
+>> suggested it would be an invalid FILEID_INVALID, with a zeroed handle of
+>> size 8.  I will improve the comment on the next iteration.
+>
+> Thanks for info. Then I have a question for Amir I guess :) Amir, what's
+> the advantage of zeroed handle of size 8 instead of just 0 length file
+> handle?
 
-> % /bin/rm /tmp/foo.img ; mke2fs -vq /tmp/foo.img 8m
-> fs_types for mke2fs.conf resolution: 'ext2', 'small'
-> % /bin/rm /tmp/foo.img ; mke2fs -vq -T news /tmp/foo.img 8m
-> fs_types for mke2fs.conf resolution: 'ext2', 'news'
-> % /bin/rm /tmp/foo.img ; mkfs.ext4 -vq /tmp/foo.img 8m
-> fs_types for mke2fs.conf resolution: 'ext4', 'small'
-> % /bin/rm /tmp/foo.img ; mkfs.ext4 -T huge -vq /tmp/foo.img 8m
-> fs_types for mke2fs.conf resolution: 'ext4', 'huge'
-> % /bin/rm /tmp/foo.img ; mkfs.ext4 -o hurd -vq /tmp/foo.img 8m
-> fs_types for mke2fs.conf resolution: 'ext2', 'small', 'hurd'
-> 
-> Also note that the ext2/ext3/ext4 fs_type will always be in
-> fs_types[0], so it's not necessary to search the entire list, as the
-> patch is currently doing:
+Jan,
 
-But that's not quite right either:
+Looking back at the email from Amir, I realize I misunderstood his
+original suggestion.  Amir suggested it be FILEID_INVALID with 0-len OR
+FILEID_INO32_GEN with zeroed fields.  I mixed the two suggestions.
 
-# mke2fs -t small -T ext4 -vqn a.img
-fs_types for mke2fs.conf resolution: 'small', 'ext4'
+The advantage of doing FILEID_INO32_GEN with zeroed field is to avoid
+special casing the test program.  But I don't have a good reason to use
+FILEID_INVALID with a len > 0.
 
-So to find the 'ext4' here, you /do/ have to iterate the whole list.
+I'm sending a v6 with everything, including this, addressed.  testcase
+and man pages will be updated as well.
 
---D
-
-> 
-> > +	for (i = 0; fs_types[i]; i++)
-> > +		if (!strcmp(fs_types[i], "ext4"))
-> > +			found_ext4 = 1;
-> 
-> 
-> Cheers,
-> 
-> 						- Ted
-> 
-> P.S.  Although I'm not aware of anyone actually doing this, if there
-> mke2fs is installed as mke3fs or mke4fs, that's the equivalent of
-> mkfs.ext3 and mkfs.ext4.  (See the logic in the parse_fs_type
-> function.)  Although perhaps there is some obscure distro somewhere
-> out there that I don't know about....
+-- 
+Gabriel Krisman Bertazi
