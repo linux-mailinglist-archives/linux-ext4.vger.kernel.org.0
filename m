@@ -2,111 +2,78 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93CD93EA66A
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Aug 2021 16:20:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 540FE3EA708
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Aug 2021 17:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237931AbhHLOVP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 12 Aug 2021 10:21:15 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:52930 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237341AbhHLOVO (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 12 Aug 2021 10:21:14 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 1C581221FF;
-        Thu, 12 Aug 2021 14:20:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628778048; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EClbvh9H+h5jyqo9gR5SEvG/Auimr/66D2NFteFl1D8=;
-        b=lV2elbtYUDc84fX/o5rXKWB/zott34AxpZXY6uRtGS+5sm4816iMxnMkJvpmtAvP/8xhlx
-        HStjguATPwUnhtbaWej9MlkiYPdN6jZuhVWq2Tq/ngnl823VW0WoJoZrmF+VkdxdCPYaR8
-        b3bk5IP9Hax9He7QiI8UaHyr52Rgt/s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628778048;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EClbvh9H+h5jyqo9gR5SEvG/Auimr/66D2NFteFl1D8=;
-        b=uAC8kh+39aQAVX9rctu7o6GTL2p468GQ2NLM65o535WUQyksmoVofTdIQafrFK9aaNAB9j
-        xyLLAfzqlwxNrFBA==
-Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id F10B2A3F5B;
-        Thu, 12 Aug 2021 14:20:47 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id B7F771F2BA7; Thu, 12 Aug 2021 16:20:47 +0200 (CEST)
-Date:   Thu, 12 Aug 2021 16:20:47 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     Jan Kara <jack@suse.cz>, jack@suse.com, amir73il@gmail.com,
-        djwong@kernel.org, tytso@mit.edu, david@fromorbit.com,
-        dhowells@redhat.com, khazhy@google.com,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-api@vger.kernel.org, kernel@collabora.com
-Subject: Re: [PATCH v5 14/23] fanotify: Encode invalid file handler when no
- inode is provided
-Message-ID: <20210812142047.GG14675@quack2.suse.cz>
-References: <20210804160612.3575505-1-krisman@collabora.com>
- <20210804160612.3575505-15-krisman@collabora.com>
- <20210805095618.GF14483@quack2.suse.cz>
- <87fsvf65zu.fsf@collabora.com>
+        id S237129AbhHLPCF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 12 Aug 2021 11:02:05 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:38233 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234287AbhHLPCE (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 12 Aug 2021 11:02:04 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 17CF1YOx021949
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Aug 2021 11:01:35 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 5AF6B15C37C1; Thu, 12 Aug 2021 11:01:34 -0400 (EDT)
+Date:   Thu, 12 Aug 2021 11:01:34 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 3/5] ext4: Speedup ext4 orphan inode handling
+Message-ID: <YRU3zjcP5hukrsyt@mit.edu>
+References: <20210811101006.2033-1-jack@suse.cz>
+ <20210811101925.6973-3-jack@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87fsvf65zu.fsf@collabora.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210811101925.6973-3-jack@suse.cz>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 11-08-21 17:12:05, Gabriel Krisman Bertazi wrote:
-> Jan Kara <jack@suse.cz> writes:
-> >> @@ -376,14 +371,24 @@ static int fanotify_encode_fh(struct fanotify_fh *fh, struct inode *inode,
-> >>  		fh->flags |= FANOTIFY_FH_FLAG_EXT_BUF;
-> >>  	}
-> >>  
-> >> -	dwords = fh_len >> 2;
-> >> -	type = exportfs_encode_inode_fh(inode, buf, &dwords, NULL);
-> >> -	err = -EINVAL;
-> >> -	if (!type || type == FILEID_INVALID || fh_len != dwords << 2)
-> >> -		goto out_err;
-> >> -
-> >> -	fh->type = type;
-> >> -	fh->len = fh_len;
-> >> +	if (inode) {
-> >> +		dwords = fh_len >> 2;
-> >> +		type = exportfs_encode_inode_fh(inode, buf, &dwords, NULL);
-> >> +		err = -EINVAL;
-> >> +		if (!type || type == FILEID_INVALID || fh_len != dwords << 2)
-> >> +			goto out_err;
-> >> +		fh->type = type;
-> >> +		fh->len = fh_len;
-> >> +	} else {
-> >> +		/*
-> >> +		 * Invalid FHs are used on FAN_FS_ERROR for errors not
-> >> +		 * linked to any inode. Caller needs to guarantee the fh
-> >> +		 * has at least FANOTIFY_NULL_FH_LEN bytes of space.
-> >> +		 */
-> >> +		fh->type = FILEID_INVALID;
-> >> +		fh->len = FANOTIFY_NULL_FH_LEN;
-> >> +		memset(buf, 0, FANOTIFY_NULL_FH_LEN);
-> >> +	}
-> >
-> > Maybe it will become clearer later during the series but why do you set
-> > fh->len to FANOTIFY_NULL_FH_LEN and not 0?
-> 
-> Jan,
-> 
-> That is how we encode a NULL file handle (i.e. superblock error).  Amir
-> suggested it would be an invalid FILEID_INVALID, with a zeroed handle of
-> size 8.  I will improve the comment on the next iteration.
+On Wed, Aug 11, 2021 at 12:19:13PM +0200, Jan Kara wrote:
+> +static int ext4_orphan_file_del(handle_t *handle, struct inode *inode)
+> +{
+> +	struct ext4_orphan_info *oi = &EXT4_SB(inode->i_sb)->s_orphan_info;
+> +	__le32 *bdata;
+> +	int blk, off;
+> +	int inodes_per_ob = ext4_inodes_per_orphan_block(inode->i_sb);
+> +	int ret = 0;
+> +
+> +	if (!handle)
+> +		goto out;
+> +	blk = EXT4_I(inode)->i_orphan_idx / inodes_per_ob;
+> +	off = EXT4_I(inode)->i_orphan_idx % inodes_per_ob;
+> +	if (WARN_ON_ONCE(blk >= oi->of_blocks))
+> +		goto out;
+> +
+> +	ret = ext4_journal_get_write_access(handle, inode->i_sb,
+> +				oi->of_binfo[blk].ob_bh, EXT4_JTR_ORPHAN_FILE);
+> +	if (ret)
+> +		goto out;
 
-Thanks for info. Then I have a question for Amir I guess :) Amir, what's
-the advantage of zeroed handle of size 8 instead of just 0 length file
-handle?
+If ext4_journal_get_write_access() fails, we effectively drop the
+inode from the orphan list (as far as the in-memory inode is
+concerned), although the inode will still be listed in the orphan
+file.  This can be really unfortunate since if the inode gets
+reallocated for some other purpose, since its inode number is left in
+the orphan block, on the next remount, this could lead to data loss.
 
-								Honza
+In the orphan list code, we leave the inode on the linked list, which
+is not great, since that will prevent the inode from being freed, but
+at least we're keeping the in-memory and on-disk state in sync and we
+avoid the data loss scenario when the inode gets reused.
 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+I'll also note that all or at least most of the callers of
+ext4_orphan_del() are doing error checking, which also unfortunate
+(although what are we supposed to do in case of a failure here?).
+
+I think keeping things consistent with the existing non-optimal "error
+handle" at least makes things no worse than before, but looking at the
+error handling, I'm left with a sense of unease.  What do you think?
+
+      		    	      	      - Ted
