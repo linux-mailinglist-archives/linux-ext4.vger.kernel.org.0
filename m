@@ -2,86 +2,130 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1F043EA4D9
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Aug 2021 14:47:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3BEA3EA4DA
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Aug 2021 14:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236983AbhHLMsI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 12 Aug 2021 08:48:08 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:42750 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235864AbhHLMsI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 12 Aug 2021 08:48:08 -0400
+        id S237119AbhHLMsM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 12 Aug 2021 08:48:12 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:59782 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233260AbhHLMsM (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 12 Aug 2021 08:48:12 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 14BE41FF3E;
-        Thu, 12 Aug 2021 12:47:42 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 82F962224B;
+        Thu, 12 Aug 2021 12:47:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628772462; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=A39j2co4sIqqC7Vxyvl//96WHcWa/7qEbNRag2kEL+c=;
-        b=YOpaLSvVA5tjtTZyMGjlT2xPVrDD9P15kf0Gl0eGQX4yaMtlKJ4nEzxN0cUjbZkdwr52wc
-        bnDFw+HGh556B2hi14j1enDLG+3rmUVpROvqnXolPt7Z8FcG3gxTkABRy6Jskw30S9n1qX
-        l2YN4ZqfB4hWyjdR0GjgxzkiCzGguCg=
+        t=1628772466; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xQPyVPUqB+5Gnvh0aihAKmjBNmedVfESzBrr040MKH4=;
+        b=RpkZAt4jS2ia90yrrYYeG/ooamNmTIC+Om3QhUp0cJvx5Av2J1V8JVCzUQNvIy/TNi23gd
+        vpEHmTXGLqVc7WAGMo5cb2ym1wzkQYgkrk21eA7nLQa+qoUK5HDS/ZTk1R28R3kZ1RceXs
+        qgXUT5rNndTgHis7TFx9gMbDvUa6ECo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628772462;
+        s=susede2_ed25519; t=1628772466;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=A39j2co4sIqqC7Vxyvl//96WHcWa/7qEbNRag2kEL+c=;
-        b=CR5LxnaunnrTcmfDVmj8GmvYEWUjmm3h7wQQbazcHHL3VKT0VtI10ZYd7dcq28/C6jhUA3
-        LF0BMRyQyDfUolAQ==
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xQPyVPUqB+5Gnvh0aihAKmjBNmedVfESzBrr040MKH4=;
+        b=1zhH2HPY2FwecxlaKljSvaG9mjQ62sUi/oPyyIrEulkOfF1lue7iGEhT+vRtOgHG99C/hx
+        ztHGxdMmUprmPzAg==
 Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id 0561FA3EF0;
-        Thu, 12 Aug 2021 12:47:42 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 6EF85A3F07;
+        Thu, 12 Aug 2021 12:47:46 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id CAAC21F2AC2; Thu, 12 Aug 2021 14:47:41 +0200 (CEST)
+        id 466051F2AC2; Thu, 12 Aug 2021 14:47:46 +0200 (CEST)
+Date:   Thu, 12 Aug 2021 14:47:46 +0200
 From:   Jan Kara <jack@suse.cz>
-To:     Ted Tso <tytso@mit.edu>
-Cc:     Boyang Xue <bxue@redhat.com>, <linux-ext4@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>
-Subject: [PATCH] ext4: Fix tune2fs checksum failure for mounted filesystem
-Date:   Thu, 12 Aug 2021 14:47:37 +0200
-Message-Id: <20210812124737.21981-1-jack@suse.cz>
-X-Mailer: git-send-email 2.26.2
+To:     Boyang Xue <bxue@redhat.com>
+Cc:     linux-ext4@vger.kernel.org, Jan Kara <jack@suse.cz>, tytso@mit.edu
+Subject: Re: [kernel-5.11 regression] tune2fs fails after shutdown
+Message-ID: <20210812124746.GA14675@quack2.suse.cz>
+References: <CAHLe9YbqejLQJO-6-a0ETtNUitQtsYr3Q2b7xW4VV=6fXO6APw@mail.gmail.com>
+ <CAHLe9YZN2LJHMzKPkA-g7C=fx-u-0Jw-2s6Ebyy-XUmv_5y-gg@mail.gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1482; h=from:subject; bh=uKWbBc+a3E9TXFE5SbPvTNP8T/oUIFXIsO8xql8BSeA=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBhFRhI4IM7uxiUm1VJoaKEctIy5sB2soRb2AiovQUv u8Ai8j6JATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCYRUYSAAKCRCcnaoHP2RA2eyUCA Cv5k3A0GD2Yw9kgFgvlR0SauJu6g9RgSVwMWz5u9964lx18Ked6Huls789AwafXvSaRE8OzTJAkxaw pqeCC4dzOcvMRrfP68uhuvaiIFJlTx4kf2WA/cES3gLEbfSnM5QhnqjdpkpE36q6LyTpJSF72X1SPC LbXsdaKjyo1hAUXx3UlazKpYhQk9ups0ZozARzaa6UKQSS9aUaqTVhtjMpERHMDY6vd1PFqObyt+ar DhE+o+5kEOuKYWDN/SwCmThSvuS4qNJMhMtkew0Tcjs1sZOVLvHFIjMYSirOiYSAupJ0VpMAFCZXg2 vvMYeQ2OMeYM3DezWxX/gOPN6c2mxP
-X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHLe9YZN2LJHMzKPkA-g7C=fx-u-0Jw-2s6Ebyy-XUmv_5y-gg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Commit 81414b4dd48 ("ext4: remove redundant sb checksum recomputation")
-removed checksum recalculation after updating superblock free space /
-inode counters in ext4_fill_super() based on the fact that we will
-recalculate the checksum on superblock writeout. That is correct
-assumption but until the writeout happens (which can take a long time)
-the checksum is incorrect in the buffer cache and if tune2fs is called
-in that time window it will complain. So return back the checksum
-recalculation and add a comment explaining the tune2fs peculiarity.
+Hello Boyang,
 
-Fixes: 81414b4dd48f ("ext4: remove redundant sb checksum recomputation")
-Reported-by: Boyang Xue <bxue@redhat.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/super.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+On Thu 12-08-21 09:47:30, Boyang Xue wrote:
+> (Adding the author of the commits)
+> Hi Jan,
+> 
+> The commit
+> 
+> 81414b4dd48 ext4: remove redundant sb checksum recomputation
+> 
+> breaks the original reproducer of
+> 
+> 4274f516d4bc ext4: recalucate superblock checksum after updating free
+> blocks/inodes
+> 
+> I'm wondering is it expected please?
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index dfa09a277b56..8f2474618f7e 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -5032,6 +5032,12 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 		err = percpu_counter_init(&sbi->s_freeinodes_counter, freei,
- 					  GFP_KERNEL);
- 	}
-+	/*
-+	 * Let's update the checksum after updating free space/inode counters.
-+	 * Otherwise sb will have incorrect checksum in the buffer cache until
-+	 * sb is written out and tune2fs can get confused.
-+	 */
-+	ext4_superblock_csum_set(sb);
- 	if (!err)
- 		err = percpu_counter_init(&sbi->s_dirs_counter,
- 					  ext4_count_dirs(sb), GFP_KERNEL);
+Thanks for report! So for record the problem is not that superblock with
+incorrect checksum would ever get to disk with my patches but the checksum
+will be incorrect in the buffer cache until the moment we start writeout of
+the superblock. And tune2fs accesses the buffer cache and sees the
+incorrect (stale) checksum. It is impossible to fix this problem completely
+(the tune2fs access is fundamentally racy) but yes, I guess returning the
+checksum recalculation back will make the race window small and the cost is
+small. I'll send a patch for this shortly.
+
+Also can you perhaps make this sequence into a fstests testcase for ext4
+filesystem so that we have it covered? Thanks!
+
+								Honza
+
+> On Thu, Aug 5, 2021 at 10:35 AM Boyang Xue <bxue@redhat.com> wrote:
+> >
+> > Hi,
+> >
+> > kernel commit
+> >
+> > 4274f516d4bc ext4: recalucate superblock checksum after updating free
+> > blocks/inodes
+> >
+> > had been reverted by
+> >
+> > 81414b4dd48 ext4: remove redundant sb checksum recomputation
+> >
+> > since kernel-5.11-rc1. As a result, the original reproducer fails again.
+> >
+> > Reproducer:
+> > ```
+> > mkdir mntpt
+> > fallocate -l 256M mntpt.img
+> > mkfs.ext4 -Fq -t ext4 mntpt.img 128M
+> > LPDEV=$(losetup -f --show mntpt.img)
+> > mount "$LPDEV" mntpt
+> > cp /proc/version mntpt/
+> > ./godown mntpt # godown program attached.
+> > umount mntpt
+> > mount "$LPDEV" mntpt
+> > tune2fs -l "$LPDEV"
+> > ```
+> >
+> > tune2fs fails with
+> > ```
+> > tune2fs 1.46.2 (28-Feb-2021)
+> > tune2fs: Superblock checksum does not match superblock while trying to
+> > open /dev/loop0
+> > Couldn't find valid filesystem superblock.
+> > ```
+> >
+> > Tested on e2fsprogs-1.46.2 + kernel-5.14.0-0.rc3.29. I think it's a
+> > regression. If this is the case, can we fix it again please?
+> >
+> > Thanks,
+> > Boyang
+> 
 -- 
-2.26.2
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
