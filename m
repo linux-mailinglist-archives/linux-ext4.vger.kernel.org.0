@@ -2,163 +2,160 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CFFD3EBB6B
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 Aug 2021 19:25:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66C1E3EBBB9
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 Aug 2021 19:55:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231582AbhHMR0O (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 13 Aug 2021 13:26:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230377AbhHMR0N (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 13 Aug 2021 13:26:13 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BE11C061756;
-        Fri, 13 Aug 2021 10:25:46 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id j18so11565827ile.8;
-        Fri, 13 Aug 2021 10:25:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+S4KVBw8yJJB/lH4WqdNiyvGW22o5SNQiP41sgzMDNQ=;
-        b=qCL/GtZbI6TEy2j8PXsp4xYga40DBF2y5vJrPqkm7lDJRM7Bvat6M5IrGE+Utie2Ak
-         qT9/G+b762+CSLWqSddSRQVJIfZHO/mZcHIuQvLV9yxYh+NRO50kyh7DqlByW0f88MKt
-         Cv8i4i33w/eEVWNDl1QDeaKdiMd2T2KxxDiM72vrGwx+kWRQN4J97Zx+S43vTZYsJu26
-         NYkwLLsigMfr1D+qau34a66fe+1VibqZ55+XcdaAz11hzsf5juWU5cqmZt8v5+2MTPFb
-         RxTNWGlDftqImdhHLtuSvH8L0+mvco7qPQ3XJnraSfQIZRVYLmI1CtjdKeEvpFvo2lMD
-         yL/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+S4KVBw8yJJB/lH4WqdNiyvGW22o5SNQiP41sgzMDNQ=;
-        b=blYggq4kD5jX/i6icHVusWG/vBbJWGktm30XaEOawsC3sJkXERJizfEy4n75fCDSzy
-         MjP3FZbBwCVuCgHw1+vrpzhQ3RX5MSsFZKwNuwzerksO6BrX9Xb0vWa64Y50c54rN/+F
-         kTGUZr+FC1PSQ0Zn5s+EsIbrlvlt3GAYZzz+lzlIDr1IhZmohCtwfNLQ/u94pwxDiSIm
-         DdYe3VtrNEHm+x7AWwDMAiDOWbP6MgFobHdnL2XBHdB72Q60c0mOBd+TYgrRlaF9bFxT
-         YGOHaDIB1+SG0BpNrI8FmQ6AHCbvQDPyLzYRNwCKZO4OXRXzHwE4ysGCgA0WZmVsDZND
-         ixJw==
-X-Gm-Message-State: AOAM533A5mwqwZiIncax7QMlPMkoxQbiPgE6P1ww9ENdaaykDkT++UjA
-        JgQs9RaeIi0K+wmp09+OIG5HwBnD3AueAzX1Ies=
-X-Google-Smtp-Source: ABdhPJz5mNdrteFnDuv6JqWGHzA1iVZT98tciPujIaiqBIoNiO83BVZdgRaJR3Z/lQ6gvp0Q8n1Va5/WZ6JI0ZPxlms=
-X-Received: by 2002:a92:cd0a:: with SMTP id z10mr2392060iln.137.1628875545704;
- Fri, 13 Aug 2021 10:25:45 -0700 (PDT)
+        id S230377AbhHMRz6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 13 Aug 2021 13:55:58 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:53943 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230316AbhHMRzk (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 13 Aug 2021 13:55:40 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 17DHq0aT013255
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 13 Aug 2021 13:52:01 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 5572C15C37C1; Fri, 13 Aug 2021 13:52:00 -0400 (EDT)
+Date:   Fri, 13 Aug 2021 13:52:00 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Andreas Dilger <adilger@dilger.ca>,
+        linux-ext4 <linux-ext4@vger.kernel.org>
+Subject: Re: [PATCH v2] mke2fs: warn about missing y2038 support when
+ formatting fresh ext4 fs
+Message-ID: <YRaxQBRnB3vtRieP@mit.edu>
+References: <20210812232222.GE3601392@magnolia>
 MIME-Version: 1.0
-References: <20210804160612.3575505-1-krisman@collabora.com>
- <20210804160612.3575505-15-krisman@collabora.com> <20210805095618.GF14483@quack2.suse.cz>
- <87fsvf65zu.fsf@collabora.com> <20210812142047.GG14675@quack2.suse.cz>
- <CAOQ4uxjy2FOt6r5=x9FO3YXs8_FWwew055ZfrumDjSz0HCgz3w@mail.gmail.com> <20210813120954.GA11955@quack2.suse.cz>
-In-Reply-To: <20210813120954.GA11955@quack2.suse.cz>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Fri, 13 Aug 2021 20:25:34 +0300
-Message-ID: <CAOQ4uxgffafdqTYYjy4tsXFMQxN5zeKfXcC3G93SGaEOnqpZMQ@mail.gmail.com>
-Subject: Re: [PATCH v5 14/23] fanotify: Encode invalid file handler when no
- inode is provided
-To:     Jan Kara <jack@suse.cz>
-Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Jan Kara <jack@suse.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Theodore Tso <tytso@mit.edu>,
-        Dave Chinner <david@fromorbit.com>,
-        David Howells <dhowells@redhat.com>,
-        Khazhismel Kumykov <khazhy@google.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Ext4 <linux-ext4@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>, kernel@collabora.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210812232222.GE3601392@magnolia>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 3:09 PM Jan Kara <jack@suse.cz> wrote:
->
-> On Thu 12-08-21 18:17:10, Amir Goldstein wrote:
-> > On Thu, Aug 12, 2021 at 5:20 PM Jan Kara <jack@suse.cz> wrote:
-> > >
-> > > On Wed 11-08-21 17:12:05, Gabriel Krisman Bertazi wrote:
-> > > > Jan Kara <jack@suse.cz> writes:
-> > > > >> @@ -376,14 +371,24 @@ static int fanotify_encode_fh(struct fanotify_fh *fh, struct inode *inode,
-> > > > >>            fh->flags |= FANOTIFY_FH_FLAG_EXT_BUF;
-> > > > >>    }
-> > > > >>
-> > > > >> -  dwords = fh_len >> 2;
-> > > > >> -  type = exportfs_encode_inode_fh(inode, buf, &dwords, NULL);
-> > > > >> -  err = -EINVAL;
-> > > > >> -  if (!type || type == FILEID_INVALID || fh_len != dwords << 2)
-> > > > >> -          goto out_err;
-> > > > >> -
-> > > > >> -  fh->type = type;
-> > > > >> -  fh->len = fh_len;
-> > > > >> +  if (inode) {
-> > > > >> +          dwords = fh_len >> 2;
-> > > > >> +          type = exportfs_encode_inode_fh(inode, buf, &dwords, NULL);
-> > > > >> +          err = -EINVAL;
-> > > > >> +          if (!type || type == FILEID_INVALID || fh_len != dwords << 2)
-> > > > >> +                  goto out_err;
-> > > > >> +          fh->type = type;
-> > > > >> +          fh->len = fh_len;
-> > > > >> +  } else {
-> > > > >> +          /*
-> > > > >> +           * Invalid FHs are used on FAN_FS_ERROR for errors not
-> > > > >> +           * linked to any inode. Caller needs to guarantee the fh
-> > > > >> +           * has at least FANOTIFY_NULL_FH_LEN bytes of space.
-> > > > >> +           */
-> > > > >> +          fh->type = FILEID_INVALID;
-> > > > >> +          fh->len = FANOTIFY_NULL_FH_LEN;
-> > > > >> +          memset(buf, 0, FANOTIFY_NULL_FH_LEN);
-> > > > >> +  }
-> > > > >
-> > > > > Maybe it will become clearer later during the series but why do you set
-> > > > > fh->len to FANOTIFY_NULL_FH_LEN and not 0?
-> > > >
-> > > > Jan,
-> > > >
-> > > > That is how we encode a NULL file handle (i.e. superblock error).  Amir
-> > > > suggested it would be an invalid FILEID_INVALID, with a zeroed handle of
-> > > > size 8.  I will improve the comment on the next iteration.
-> > >
-> > > Thanks for info. Then I have a question for Amir I guess :) Amir, what's
-> > > the advantage of zeroed handle of size 8 instead of just 0 length file
-> > > handle?
-> >
-> > With current code, zero fh->len means we are not reporting an FID info
-> > record (e.g. due to encode error), see copy_info_records_to_user().
-> >
-> > This is because fh->len plays a dual role for indicating the length of the
-> > file handle and the existence of FID info.
->
-> I see, thanks for info.
->
-> > I figured that keeping a positive length for the special NULL_FH is an
-> > easy way to workaround this ambiguity and keep the code simpler.
-> > We don't really need to pay any cost for keeping the 8 bytes zero buffer.
->
-> There are two separate questions:
-> 1) How do we internally propagate the information that we don't have
-> file_handle to report but we do want fsid reported.
-> 2) What do we report to userspace in file_handle.
->
-> For 2) I think we should report fsid + FILEID_INVALID, 0-length filehandle.
-> Currently the non-zero lenght FILEID_INVALID filehandle was propagating to
-> userspace and IMO that's confusing.
+On Thu, Aug 12, 2021 at 04:22:22PM -0700, Darrick J. Wong wrote:
+> Note that we /don't/ warn about these things if the user has signalled
+> that they want an old format such as ext2, ext3, or hurd.  Everyone
+> should know by now that those are legacy.
 
-Agree. That was implemented in v6.
+So I took a closer look, and it turns out that we changed the default
+inode size for ext2 and ext3 file systems in 2008 (see commit
+b1631cce648e ("Create new filesystems with 256-byte inodes by
+default"), in e2fsprogs 1.40.4.  Even a positively antedeluvian distro
+such as RHEL 7 uses e2fsprogs 1.42.9, and RHEL 6 EOL'ed November 30th,
+2020.
 
-> For 1), whatever is the simplest to
-> propagate the information "we want only fsid reported" internally is fine
-> by me.
->
+There were only two cases where we created file systems with 128 byte
+inodes --- "small" and "floppy" sized file systems, and for the GNU
+Hurd, which only supports the original 128 byte inode.  What will GNU
+Hurd do in 16.5 years?  ¯\_(ツ)_/¯
 
-Ok. I think it would be fair (based on v6 patches) to call the fh->len = 4
-option "simple".
+Given that, I think we can simplify the patch a little, and just use a
+mke2fs.conf boolean to disable the warning message.
 
-But following my "simple" suggestion as is, v6 has a side effect of
-adding 4 bytes of zero padding after the event fid info record.
+What do folks think?
 
-Can you please confirm that this side effect is fine by you as well.
-It wouldn't be too hard to special case FILEID_INVALID and also
-truncate those 4 bytes of zero padding, but I really don't think it is
-worth the effort.
+						- Ted
 
-Thanks,
-Amir.
+
+
+commit f569fe86caddf964973ed35cdf36ed520ef23a0c
+Author: Darrick J. Wong <djwong@kernel.org>
+Date:   Thu Aug 12 16:22:22 2021 -0700
+
+    mke2fs: warn about missing y2038 support when formatting fresh ext4 fs
+    
+    Filesystems with 128-byte inodes do not support timestamps beyond the
+    year 2038.  Since we're now less than 16.5 years away from that point,
+    it's time to start warning users about this lack of support when they
+    format an ext4 filesystem with small inodes.
+    
+    (Note that even for ext2 and ext3, we changed the default for
+    non-small file systems in 2008 in commit commit b1631cce648e ("Create
+    new filesystems with 256-byte inodes by default").)
+    
+    So change the mke2fs.conf file to specify 256-byte inodes even for
+    small filesystems, and then add a warning to mke2fs itself if someone
+    is trying to make us format a file system with 128-byte inodes.  This
+    can be suppressed by setting the boolean option warn_y2038_dates in
+    the mke2fs.conf file to false, which we do in the case of GNU Hurd,
+    since it only supports 128 byte inodes as of this writing.
+    
+    [ Patch reworked by tytso to only warn in the case of GNU Hurd, since
+      the default for ext2/ext3 was changed for all but small file systems
+      in 2008. ]
+    
+    Signed-off-by: Darrick J. Wong <djwong@kernel.org>
+    Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+
+diff --git a/misc/mke2fs.c b/misc/mke2fs.c
+index 92003e11..881ffd31 100644
+--- a/misc/mke2fs.c
++++ b/misc/mke2fs.c
+@@ -2603,6 +2603,17 @@ profile_error:
+ 		exit(1);
+ 	}
+ 
++	/*
++	 * Warn the user that filesystems with 128-byte inodes will
++	 * not work properly beyond 2038.  This can be suppressed via
++	 * a boolean in the mke2fs.conf file, and we will disable this
++	 * warning for ext2, ext3, and hurd file systems.
++	 */
++	if (inode_size == EXT2_GOOD_OLD_INODE_SIZE &&
++	    get_bool_from_profile(fs_types, "warn_y2038_dates", 1))
++		printf(
++_("128-byte inodes cannot handle dates beyond 2038 and are deprecated\n"));
++
+ 	/* Make sure number of inodes specified will fit in 32 bits */
+ 	if (num_inodes == 0) {
+ 		unsigned long long n;
+diff --git a/misc/mke2fs.conf.5.in b/misc/mke2fs.conf.5.in
+index 08bb9488..62d0fdb5 100644
+--- a/misc/mke2fs.conf.5.in
++++ b/misc/mke2fs.conf.5.in
+@@ -505,6 +505,13 @@ This relation specifies the base file name for the huge files.
+ This relation specifies the (zero-padded) width of the field for the
+ huge file number.
+ .TP
++.I warn_y2038_dates
++This boolean relation specifies wheather mke2fs will issue a warning
++when creating a file system with 128 byte inodes (and so therefore will
++not support dates after January 19th, 2038.  The default value is true,
++except for file systems created for the GNU Hurd, which does not support
++inodes larger than 128 bytes.
++.TP
+ .I zero_hugefiles
+ This boolean relation specifies whether or not zero blocks will be
+ written to the hugefiles while
+diff --git a/misc/mke2fs.conf.in b/misc/mke2fs.conf.in
+index 01e35cf8..05680992 100644
+--- a/misc/mke2fs.conf.in
++++ b/misc/mke2fs.conf.in
+@@ -12,16 +12,13 @@
+ 	}
+ 	ext4 = {
+ 		features = has_journal,extent,huge_file,flex_bg,metadata_csum,64bit,dir_nlink,extra_isize
+-		inode_size = 256
+ 	}
+ 	small = {
+ 		blocksize = 1024
+-		inode_size = 128
+ 		inode_ratio = 4096
+ 	}
+ 	floppy = {
+ 		blocksize = 1024
+-		inode_size = 128
+ 		inode_ratio = 8192
+ 	}
+ 	big = {
+@@ -44,4 +41,5 @@
+ 	hurd = {
+ 	     blocksize = 4096
+ 	     inode_size = 128
++	     warn_y2038_dates = 0
+ 	}
