@@ -2,174 +2,122 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D3FF3EB063
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 Aug 2021 08:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B65763EB178
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 Aug 2021 09:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239005AbhHMGdX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 13 Aug 2021 02:33:23 -0400
-Received: from mail-co1nam11on2047.outbound.protection.outlook.com ([40.107.220.47]:62997
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238984AbhHMGdS (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 13 Aug 2021 02:33:18 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BQtmYqpTSQzvezbTRvfuI5nTBSLtzpUFl2i0utyDQNntWXtUiFYnjsnv8+K9d22YUJ/kMRdxLOORKza+3VfWr02/tPHGP53sJ/uApBS7JiUWe4PRPYSCV9nmt2/PymbVvmigH2OjtlUQfffmzh66J/KwjJs5vd6PfZbuCjPS62EobfJaW8G1NcsxvbY/vW5NdPakFov9Icu0zoW11S0tvda4d+kiMzlAaKS0T1/VEXpAnR2fXuocugHiF4GANN67dLC0FF5Lr8nd+EeI1TWpaRjO0gvMBfY5z0irYdrMZfM9j2JPwPMzeeWPcG15teXtcGarB7e/LQcQh1AxWZ/vpA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=707xnJfuFhrp+6dAh962xzl7si469vWZYp4BZWlrkTo=;
- b=fdZD7io8YMQegbYTugegIOTi7ApvMHU3iq2lKpeissgPLZcIItKpOgjdjvnNwluV3wAPUBAv9gfYWt/CMIBnuJhIFDdH8aZLOSAr/UgWdzpVXalVkygWiZmc3H3TWiQtt5OhCw6HgjW/1Z31KWRq46DE92WO/Wk12Is+MADhANtO4tNEp5+6Jh3jkWiRLwy9BsOCshOqgB+rlaAlRQ1VkMSd1yNUvJixaUK6t+N2K6DYsz+Fl4QyeenFuPhH/yiE7NLMOCsOeUy6IALDPBjnGn06KV9dGYMqXuous0srgHlcEqNdFhhjDR+Bt5NvVKhXEVx+1AfeEvoidsmugPTzZg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=707xnJfuFhrp+6dAh962xzl7si469vWZYp4BZWlrkTo=;
- b=fpW8BLEwpgWWtlfRcrTVzNVhzbMQ0spoVFk2wyiBInqYcsLHKN0cqAdHwXvGi+85kxy/bCvl4OyyubyU+FnqFnYq38/461PL4gF5MeHd83NxFTNG47xzt22JNgIGm9X9O7W4o7YvMt08kbL29MyQfMY10grWR3wzxfHBavTjkII=
-Authentication-Results: linux-foundation.org; dkim=none (message not signed)
- header.d=none;linux-foundation.org; dmarc=none action=none
- header.from=amd.com;
-Received: from SA0PR12MB4430.namprd12.prod.outlook.com (2603:10b6:806:70::20)
- by SN6PR12MB2782.namprd12.prod.outlook.com (2603:10b6:805:73::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.19; Fri, 13 Aug
- 2021 06:32:12 +0000
-Received: from SA0PR12MB4430.namprd12.prod.outlook.com
- ([fe80::e828:5445:a5aa:94cb]) by SA0PR12MB4430.namprd12.prod.outlook.com
- ([fe80::e828:5445:a5aa:94cb%5]) with mapi id 15.20.4415.019; Fri, 13 Aug 2021
- 06:32:12 +0000
-From:   Alex Sierra <alex.sierra@amd.com>
-To:     akpm@linux-foundation.org, Felix.Kuehling@amd.com,
-        linux-mm@kvack.org, rcampbell@nvidia.com,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        hch@lst.de, jgg@nvidia.com, jglisse@redhat.com
-Subject: [PATCH v6 13/13] tools: update test_hmm script to support SP config
-Date:   Fri, 13 Aug 2021 01:31:50 -0500
-Message-Id: <20210813063150.2938-14-alex.sierra@amd.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210813063150.2938-1-alex.sierra@amd.com>
-References: <20210813063150.2938-1-alex.sierra@amd.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SN7PR18CA0026.namprd18.prod.outlook.com
- (2603:10b6:806:f3::18) To SA0PR12MB4430.namprd12.prod.outlook.com
- (2603:10b6:806:70::20)
+        id S239421AbhHMH3G (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 13 Aug 2021 03:29:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238816AbhHMH3F (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 13 Aug 2021 03:29:05 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C471C061756;
+        Fri, 13 Aug 2021 00:28:39 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id h18so9851477ilc.5;
+        Fri, 13 Aug 2021 00:28:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+zdEzeUkOiPUy+9bCWdpo6nFSqKb8zoXRDJ+beTsy+8=;
+        b=rbJ1FwB0AFxhocix583OME/FSGZJX0waV6+R7jclzI+567zJ3EsXbGjJJUPfquY079
+         X/AErOYEhOLg0fWnCcgq0ubLHBuHu+Gb+fE4DNMSNAcmxxVEYmKQeGZ7ikUlE491WR2F
+         H4wFOK8mWOPy0SiYtIFmb/NZmaXrmIZs/+UIcK8sxaIgU8bEb4tLH8BMcR5dp631DV2z
+         lfBWMz8LU5p1hGuEIP9XFBVWMQlpLqECVlkKBDf0vgu6mJMB66BY+ks/EqaLkVo1Iw8+
+         rwBjJZfNxvpLgLgdekVfsCaIROk7i1HKpNTX8o3YK2A5lua9xfTkRKhgHTtL/kAy/3A8
+         AasQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+zdEzeUkOiPUy+9bCWdpo6nFSqKb8zoXRDJ+beTsy+8=;
+        b=FlkZjQFGLI5DOJHYhsatWZb/0nGQwVjije+Oyc53TSyrEmyFzQIGFzPf542SWDPai7
+         MRoQq7dUAb/3InaYGGMnfj7tvFXrLS7MpxAuMfhCcdCgw8c/ZXi9tMydebRnXwkj6yzo
+         YsMi9raTVYFkDPzSjdZJupcdmdykgv4vE6cW1qYISFo9Q62fYOUpN+h1a1QBrTSyzTh6
+         9GsEErclXt5uKZ8Rg1LvMjuIN5slyUb2jqoxsAXvKWt0dtZ0dKuEsUy1qNZN8/rtID2D
+         k+yen2tlZM3I0FLYdNM1goiT9ArscvCHDAg8vrE0tqhoV2Ro07XsshKRIRs6C0ELtNVF
+         Cqcg==
+X-Gm-Message-State: AOAM5328FtZDvdgcHlJ0V2I4lh8HwwEWy68xYvEOWCfjCe5XkSp3sj9J
+        B/5LXbM70LrK/6u9eBic8uzANjC0fGQFPtuU5yI=
+X-Google-Smtp-Source: ABdhPJyK+cd1IF1AqpBpVRNANZdcnXPB54sDUY2VDLRjgyQXP+kALWC1+cR2AzTFYZjWBdbwarhbodvyW80Y4hmPigA=
+X-Received: by 2002:a05:6e02:1c02:: with SMTP id l2mr894353ilh.9.1628839718740;
+ Fri, 13 Aug 2021 00:28:38 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from alex-MS-7B09.amd.com (165.204.78.1) by SN7PR18CA0026.namprd18.prod.outlook.com (2603:10b6:806:f3::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.17 via Frontend Transport; Fri, 13 Aug 2021 06:32:11 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: cbc613b7-fd90-4022-2b83-08d95e241578
-X-MS-TrafficTypeDiagnostic: SN6PR12MB2782:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN6PR12MB278257DBACABF9ED6FA8BCD5FDFA9@SN6PR12MB2782.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fqUx8InZgJW3SeYwMhysI5cqy+nzGKCWWfNe8LDRiXglXHUbVfIMCyrd2FrwjOTeTZvO5+dIJ28RpRfupKmXQQj1+FS7HZzyA4irKrMU2VnMu/7BNQJQzzTeLD2ndL+0sHSEscX4v2W+o9T4CBCJ68kh9knWLTExDm7G/l1bbaypAqfPN3daNkLS4YhLWpE4lGGGGzROSq7mjzDcKKZtAT6qRUz0nIY4NSvpOv40Zf1M4yfMQ/FNwAkdm+TUpPnGEN8d7SCmbfaxZ15kdhCZkS9+OLOebtIRvrisKTPwLNBaKTYkutWRHO2xWgsXtDVk0pnikObogE2ufEUDhUeTwiPWUgN/4Fgk5wKfQbtUXv+nblAFCSY+rxgMmTZ0nkCGlhK6m9EcJHzPzjjBIHYGT+TBxh7PwcDBgd+iN9FzgjTJzGEzAKp775qaEUqcUyQmytxFwOoGibvs2xvbz3HxxifwvF4o+vsd84VTjp0Fmh65+arqjxRd8jUqcTu1OZf6D7vr3sBgfNT/sGBmgamyDnLW8fCuIixTtOuSskLAN0drZkbmepM1oBQXKgXJKS+GqUdIJ3/Xi140gmJeHaXHN5SKNqStjBp9RmTvbuwye340FswigFy0Ok+RDP0fUUaQr0I3QzYCVh3IZFSvOe8vqZ41gwr/dvTVKIh3FUFfC5KikE70nMcQUk2RT2ca2KHy4aqRmDkiQ5iKf05cPDu8ow==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA0PR12MB4430.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(346002)(396003)(39860400002)(136003)(316002)(2616005)(956004)(7416002)(38350700002)(7696005)(38100700002)(66946007)(66556008)(4326008)(52116002)(36756003)(6666004)(66476007)(1076003)(8936002)(5660300002)(83380400001)(44832011)(2906002)(478600001)(26005)(6486002)(186003)(8676002)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/DLyPltnd0X5UHVcuS8gwiErkNpPn3arf/K3bjMNmT2iM/+VRVWuv8IkFEXm?=
- =?us-ascii?Q?VkRpt5u7DH0YFUBERuPF9fRKXaeBAE1HaQoPpLt1zNNG/468gSlkYhE4vHqS?=
- =?us-ascii?Q?peT0lvovmhTx9gebGAdhW6E8PGjfQ63253f0wueH9Me5war3lrhMzBvlkWq2?=
- =?us-ascii?Q?97SuwRwoXIvCanudDeuZ43RIJEWEEiJJc1Upbh00gPh8GAGeCa86eZNmhGma?=
- =?us-ascii?Q?UDs9Zw/WrDPkU4Lv+DANAYXiKVNThi8jTtlk5XGRK1S6imSAGlXik6XQAW+n?=
- =?us-ascii?Q?kBTGM0KFB+Dtc8mOrnpHkWMJkOI+XzMIqBBFAIlU0qVSoEKcezd/El7Hsq3G?=
- =?us-ascii?Q?UQCY7xlfyDsAQHFQPIjPbyNWqwIh6cNXAHIKJsER8FUGRM8fZChWwVFULhO2?=
- =?us-ascii?Q?smI8O2+C84uR8k+WZUiZ3R67OrjRH09I70PugxAAGfsFnDxCC9DbHEeXjmA8?=
- =?us-ascii?Q?AWSCeQWKUKWgAwXOr4UgWUR2bUw0ad5BobLoqVg1J0LkyPN2VV6KnZjZFTzn?=
- =?us-ascii?Q?EKxBX2O1FaqvV4cxTP8AB7zNSmHzYHXT8L5WLM+svYxY401uOZDXpZR8Gmj/?=
- =?us-ascii?Q?bx6JWAlfxmmXMXojGuxsK6iMft061/qi5sKjKf4ORS2/aEM+DutX1sjF0VrW?=
- =?us-ascii?Q?WipmUm9IJ8dYdz/hUJjD379DWfAY60wcCt4tDQ74uHaQi+QCG5f5eqmz1cqj?=
- =?us-ascii?Q?lWcz8nkiZQ37ro23rMzlLXSU1QJFC2CdbHHQhD2cZiZi+NdBVv/MGuFH4cqB?=
- =?us-ascii?Q?AEDRGC7haThSwg7mf41LqRvVddr6FTrHSCjf3gg9IuRZ0sSKCAQuKOpCOoLs?=
- =?us-ascii?Q?vlaNcKokJIdBu9Bp66CwoQmPktRlsWvRv4rzQBciNzY/kJtld1yNHgD1uY6p?=
- =?us-ascii?Q?OLSzsHfBGfi8+DNB6t4zoCYgdAsP0HjZ5enNpA7EhNBnNfwtCh6zUc7Rt6Kd?=
- =?us-ascii?Q?gpEr/GppezbStp9pnPSpw4XwkPqSGSbfWGbsUvBjOBzHTUrTU4T2PmctsHJ3?=
- =?us-ascii?Q?wjNkviQyYOKnq7scMs2swPKER6yoZOE7rj4Fhd+UEOQ5eZ4Pke+dZDMhGlfY?=
- =?us-ascii?Q?Zgxp478VjOZXyRv0Jxb+YqhyK/Nk0k6Orm6e2L3sm1bjYeTu6L33oacbSkGL?=
- =?us-ascii?Q?BdvQO0HRIS4oMUVoc1yjpUc3I+NXF31dBSpTZil2CGZ89bvnZhBuYjiU5Pal?=
- =?us-ascii?Q?4x6UJihM01Y6pFYZrIm7k3OgCZ0Tiwpi/QV68dZf2tkpwn8iwFWYJ6Y6iO93?=
- =?us-ascii?Q?OG2pnMWqVG5cskhm1ZtdzIVg9LsT+pnLcZQR4DfVXErCVkMtvmfqwpHrYKzq?=
- =?us-ascii?Q?mdGj4KL9goW9/udroCuqxY7n?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cbc613b7-fd90-4022-2b83-08d95e241578
-X-MS-Exchange-CrossTenant-AuthSource: SA0PR12MB4430.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Aug 2021 06:32:12.3239
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2kMm0Wbv1G2Ufb2sh7T55sjDzjjkCFnPzWolDo5tNi+lXGqmQnCYbpFUDOTPWmk8sCh1f1h/3AHdQ8iIhDBFpg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2782
+References: <20210812214010.3197279-1-krisman@collabora.com> <20210812214010.3197279-5-krisman@collabora.com>
+In-Reply-To: <20210812214010.3197279-5-krisman@collabora.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Fri, 13 Aug 2021 10:28:27 +0300
+Message-ID: <CAOQ4uxh0WNxsuwtfv_iDCaZbmJEDB700D5_v==ffm2-WAg_V7w@mail.gmail.com>
+Subject: Re: [PATCH v6 04/21] fsnotify: Reserve mark flag bits for backends
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     Jan Kara <jack@suse.com>, Linux API <linux-api@vger.kernel.org>,
+        Ext4 <linux-ext4@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Khazhismel Kumykov <khazhy@google.com>,
+        David Howells <dhowells@redhat.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Theodore Tso <tytso@mit.edu>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Matthew Bobrowski <repnop@google.com>, kernel@collabora.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Add two more parameters to set spm_addr_dev0 & spm_addr_dev1
-addresses. These two parameters configure the start SP
-addresses for each device in test_hmm driver.
-Consequently, this configures zone device type as generic.
+On Fri, Aug 13, 2021 at 12:40 AM Gabriel Krisman Bertazi
+<krisman@collabora.com> wrote:
+>
+> Split out the final bits of struct fsnotify_mark->flags for use by a
+> backend.
+>
+> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+>
+> Changes since v1:
+>   - turn consts into defines (jan)
+> ---
+>  include/linux/fsnotify_backend.h | 18 +++++++++++++++---
+>  1 file changed, 15 insertions(+), 3 deletions(-)
+>
+> diff --git a/include/linux/fsnotify_backend.h b/include/linux/fsnotify_backend.h
+> index 1ce66748a2d2..ae1bd9f06808 100644
+> --- a/include/linux/fsnotify_backend.h
+> +++ b/include/linux/fsnotify_backend.h
+> @@ -363,6 +363,20 @@ struct fsnotify_mark_connector {
+>         struct hlist_head list;
+>  };
+>
+> +enum fsnotify_mark_bits {
+> +       FSN_MARK_FL_BIT_IGNORED_SURV_MODIFY,
+> +       FSN_MARK_FL_BIT_ALIVE,
+> +       FSN_MARK_FL_BIT_ATTACHED,
+> +       FSN_MARK_PRIVATE_FLAGS,
+> +};
+> +
+> +#define FSNOTIFY_MARK_FLAG_IGNORED_SURV_MODIFY \
+> +       (1 << FSN_MARK_FL_BIT_IGNORED_SURV_MODIFY)
+> +#define FSNOTIFY_MARK_FLAG_ALIVE \
+> +       (1 << FSN_MARK_FL_BIT_ALIVE)
+> +#define FSNOTIFY_MARK_FLAG_ATTACHED \
+> +       (1 << FSN_MARK_FL_BIT_ATTACHED)
+> +
+>  /*
+>   * A mark is simply an object attached to an in core inode which allows an
+>   * fsnotify listener to indicate they are either no longer interested in events
+> @@ -398,9 +412,7 @@ struct fsnotify_mark {
+>         struct fsnotify_mark_connector *connector;
+>         /* Events types to ignore [mark->lock, group->mark_mutex] */
+>         __u32 ignored_mask;
+> -#define FSNOTIFY_MARK_FLAG_IGNORED_SURV_MODIFY 0x01
+> -#define FSNOTIFY_MARK_FLAG_ALIVE               0x02
+> -#define FSNOTIFY_MARK_FLAG_ATTACHED            0x04
+> +       /* Upper bits [31:PRIVATE_FLAGS] are reserved for backend usage */
 
-Signed-off-by: Alex Sierra <alex.sierra@amd.com>
----
- tools/testing/selftests/vm/test_hmm.sh | 20 +++++++++++++++++---
- 1 file changed, 17 insertions(+), 3 deletions(-)
+I don't understand what [31:PRIVATE_FLAGS] means
 
-diff --git a/tools/testing/selftests/vm/test_hmm.sh b/tools/testing/selftests/vm/test_hmm.sh
-index 0647b525a625..3eeabe94399f 100755
---- a/tools/testing/selftests/vm/test_hmm.sh
-+++ b/tools/testing/selftests/vm/test_hmm.sh
-@@ -40,7 +40,18 @@ check_test_requirements()
- 
- load_driver()
- {
--	modprobe $DRIVER > /dev/null 2>&1
-+	if [ $# -eq 0 ]; then
-+		modprobe $DRIVER > /dev/null 2>&1
-+	else
-+		if [ $# -eq 2 ]; then
-+			modprobe $DRIVER spm_addr_dev0=$1 spm_addr_dev1=$2
-+				> /dev/null 2>&1
-+		else
-+			echo "Missing module parameters. Make sure pass"\
-+			"spm_addr_dev0 and spm_addr_dev1"
-+			usage
-+		fi
-+	fi
- 	if [ $? == 0 ]; then
- 		major=$(awk "\$2==\"HMM_DMIRROR\" {print \$1}" /proc/devices)
- 		mknod /dev/hmm_dmirror0 c $major 0
-@@ -58,7 +69,7 @@ run_smoke()
- {
- 	echo "Running smoke test. Note, this test provides basic coverage."
- 
--	load_driver
-+	load_driver $1 $2
- 	$(dirname "${BASH_SOURCE[0]}")/hmm-tests
- 	unload_driver
- }
-@@ -75,6 +86,9 @@ usage()
- 	echo "# Smoke testing"
- 	echo "./${TEST_NAME}.sh smoke"
- 	echo
-+	echo "# Smoke testing with SPM enabled"
-+	echo "./${TEST_NAME}.sh smoke <spm_addr_dev0> <spm_addr_dev1>"
-+	echo
- 	exit 0
- }
- 
-@@ -84,7 +98,7 @@ function run_test()
- 		usage
- 	else
- 		if [ "$1" = "smoke" ]; then
--			run_smoke
-+			run_smoke $2 $3
- 		else
- 			usage
- 		fi
--- 
-2.32.0
+Otherwise:
 
+Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+
+Thanks,
+Amir.
