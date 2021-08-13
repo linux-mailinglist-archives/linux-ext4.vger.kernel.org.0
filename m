@@ -2,54 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1E633EB2A3
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 Aug 2021 10:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B2EB3EB2BE
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 Aug 2021 10:40:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238792AbhHMIaH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 13 Aug 2021 04:30:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39254 "EHLO
+        id S239249AbhHMIlJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 13 Aug 2021 04:41:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238673AbhHMIaG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 13 Aug 2021 04:30:06 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BC31C061756;
-        Fri, 13 Aug 2021 01:29:40 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id r72so12213715iod.6;
-        Fri, 13 Aug 2021 01:29:40 -0700 (PDT)
+        with ESMTP id S238688AbhHMIlI (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 13 Aug 2021 04:41:08 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B128C061756;
+        Fri, 13 Aug 2021 01:40:42 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id f15so6040020ilk.4;
+        Fri, 13 Aug 2021 01:40:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=X2HpYlGIY7PCHonwpDYY+gio00UcnIrbODfp/COLs84=;
-        b=AA6ACM1n3bPUh86vKPUO+IuD1hLSUmYq6y3KQc6V4M/vspM5qEA0RLlXkc3NtaJCTu
-         iahDri+UxWqEva0wH8yx/60/cKwNC39kjoQPMjQID8mGbxyNO6HrKs9PHefApyKDfHeL
-         lKWjx0HFretDwVe3C3MC+kCRTIMCYkDXMPzrD2Noe8NpquXZ3NaYqEqN9ozOofgYCaeX
-         6jk0NTybPwR9SbVUAQzQwI1/jSyLn9xQ2L7N6CdTVc9pmHw/SILgWnCS+i9bB/DJr3Tt
-         lpT5blL5Y7z/aSabgm57F5r+DuISI0Peq0R6d3kCbaOKIxBQpT53rEJu20Y5M1fkeTur
-         H8wQ==
+        bh=//14LGuNLlUtJO8ZuTsuudem0p3ym1bzgNa9Q4lrwv4=;
+        b=gCXCIgMEKrMj+covUc+7TMS6TQ02ugY21ERYSh4ktwWWkAhFgj9GHVNwaPcMeM/jKW
+         mGCl9ncsuuiUpadGYkbCV8WdcmpZ4MRGh2ERx2W8zp3rHMM55Umyz9rlQsoV8mnzJMF8
+         +zlx0WuyHBg7obpWJpkAwQbYz9FjSngdK4sIpBJ/gAUZIebdeLhwiBjZjXhUZwMJualO
+         kvQRUZozUJYSgglLOxRWhCxYnU3T+ROAlx4pYjtQ5V7zs9AV2KCfhlK+zJM8sSFAAvfJ
+         70MBWlREdUagSL9t0d94fdi5PyaBLaS891K1TuTZExh83Q4B+6Eck2nyj2Srvo/TND4h
+         MjDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=X2HpYlGIY7PCHonwpDYY+gio00UcnIrbODfp/COLs84=;
-        b=cNwwEbvETQziGwIb4Yg9WMEUtzcMoci6FNxQEFl/DgtShZT0LvhB4cB6KgyAfDdthI
-         dRyH4YHafMorJIzTiKONLqvVfBwVSHp+vx7ViZ2xTGonptWTJK9qlwtCDLpQI+ShrgIc
-         bheQTsLJ2a/0hBuRWE1dkXhmZoxs2mUMkGucHeMb6Uz/P+Fye4gDohhXvyMQk6OkU1lp
-         39/sAyaDnzKUGZt7B2ZJ5JsRq823kkyhQpLSRpx5/Nb/5Vudr+9cI2mcZdTbLg0ziWEX
-         K7JmqwBC6/vh3dLH/A+JLJyz/XhyK9IKdXW3ZGG5ORUqwLSpREXEX90Cxi46cvLlItFT
-         isvg==
-X-Gm-Message-State: AOAM533Nqe76lgcx58J4F2uKuuFzowN7DBQtClJSd5i/fo3ujSLrEK5d
-        K3TGbKja0t3jPutfYU/X/XWXKBm1LBkjzYn4mZk=
-X-Google-Smtp-Source: ABdhPJxuNa8+pr0K/AfBa4uY6cbEmz8ocuR92JVvm8We5LRBvOrgjLv/auvQBBjfZ1nQaYzrGIH9VOLhtsBU/ihL/NY=
-X-Received: by 2002:a02:958e:: with SMTP id b14mr1185696jai.123.1628843380077;
- Fri, 13 Aug 2021 01:29:40 -0700 (PDT)
+        bh=//14LGuNLlUtJO8ZuTsuudem0p3ym1bzgNa9Q4lrwv4=;
+        b=t7kBV9DWNEtfPcT37zdq2fNjwRugQSCuUAw/4mpGveH7kkS4BZ6oRJkcOvKk5LPJme
+         0kNeklM8MiS6xxWJZSUkS8rBiBLWRXc+OypA3JmX8Ut1jGtrfE5wqMC6CthkQ1Mfnnok
+         oMXNphwayJ1bzRLEQUEK2koNZ+CrZ6Ir2S4YjBuUgYNI74Zk31/8h83jpa80rMATJRl8
+         oxSaqY7j98dr+HOXRytfp+jfWsSALFj4B9DzdxR45qRuNT0vTRcwIqe1HDfSMhyUneN2
+         ro5uIymYdZjEWwWMhlEGert9iwlK4NjjEc3BojMHbeUfrb4qDEY2ScLSuPGjWZD6XJEx
+         AeTA==
+X-Gm-Message-State: AOAM531bzdPokzUVk3X+6JxkXsQr4kzrzewX4MylK3Y49vNW5Lh9DCEr
+        0oMjQo4S6EKFVjdicUDJzW7Ize6VbVjAdyIgeeA=
+X-Google-Smtp-Source: ABdhPJwazYPentWqY5uT39FGKeuVIVBot/7WzWF67MCvCdwahcFZ/1/ZLfbDDPMlRpW2oQ1M+7At1VGzN00c15I/LMk=
+X-Received: by 2002:a92:c0ce:: with SMTP id t14mr1039665ilf.72.1628844041615;
+ Fri, 13 Aug 2021 01:40:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210812214010.3197279-1-krisman@collabora.com> <20210812214010.3197279-15-krisman@collabora.com>
-In-Reply-To: <20210812214010.3197279-15-krisman@collabora.com>
+References: <20210812214010.3197279-1-krisman@collabora.com> <20210812214010.3197279-16-krisman@collabora.com>
+In-Reply-To: <20210812214010.3197279-16-krisman@collabora.com>
 From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Fri, 13 Aug 2021 11:29:29 +0300
-Message-ID: <CAOQ4uxhP6ad+iJyWJqycLB1a9xZ6EHq7V67JqjoB=ORPf-_FYA@mail.gmail.com>
-Subject: Re: [PATCH v6 14/21] fanotify: Reserve UAPI bits for FAN_FS_ERROR
+Date:   Fri, 13 Aug 2021 11:40:30 +0300
+Message-ID: <CAOQ4uxhAhmWTieCx0BJKde14gwJJe6DH-Xv2wg7On5Ley99Hqg@mail.gmail.com>
+Subject: Re: [PATCH v6 15/21] fanotify: Preallocate per superblock mark error event
 To:     Gabriel Krisman Bertazi <krisman@collabora.com>
 Cc:     Jan Kara <jack@suse.com>, Linux API <linux-api@vger.kernel.org>,
         Ext4 <linux-ext4@vger.kernel.org>,
@@ -59,8 +59,7 @@ Cc:     Jan Kara <jack@suse.com>, Linux API <linux-api@vger.kernel.org>,
         Dave Chinner <david@fromorbit.com>,
         Theodore Tso <tytso@mit.edu>,
         "Darrick J. Wong" <djwong@kernel.org>,
-        Matthew Bobrowski <repnop@google.com>, kernel@collabora.com,
-        Jan Kara <jack@suse.cz>
+        Matthew Bobrowski <repnop@google.com>, kernel@collabora.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
@@ -69,44 +68,148 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 On Fri, Aug 13, 2021 at 12:41 AM Gabriel Krisman Bertazi
 <krisman@collabora.com> wrote:
 >
-> FAN_FS_ERROR allows reporting of event type FS_ERROR to userspace, which
-> a mechanism to report file system wide problems via fanotify.  This
-> commit preallocate userspace visible bits to match the FS_ERROR event.
+> Error reporting needs to be done in an atomic context.  This patch
+> introduces a single error slot for superblock marks that report the
+> FAN_FS_ERROR event, to be used during event submission.
 >
-> Reviewed-by: Jan Kara <jack@suse.cz>
 > Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-
-Reviewed-by: Amir Goldstein <amir73il@gmail.com>
-
+>
 > ---
->  fs/notify/fanotify/fanotify.c | 1 +
->  include/uapi/linux/fanotify.h | 1 +
->  2 files changed, 2 insertions(+)
+> Changes v5:
+>   - Restore mark references. (jan)
+>   - Tie fee slot to the mark lifetime.(jan)
+>   - Don't reallocate event(jan)
+> ---
+>  fs/notify/fanotify/fanotify.c      | 12 ++++++++++++
+>  fs/notify/fanotify/fanotify.h      | 13 +++++++++++++
+>  fs/notify/fanotify/fanotify_user.c | 31 ++++++++++++++++++++++++++++--
+>  3 files changed, 54 insertions(+), 2 deletions(-)
 >
 > diff --git a/fs/notify/fanotify/fanotify.c b/fs/notify/fanotify/fanotify.c
-> index 2b1ab031fbe5..ebb6c557cea1 100644
+> index ebb6c557cea1..3bf6fd85c634 100644
 > --- a/fs/notify/fanotify/fanotify.c
 > +++ b/fs/notify/fanotify/fanotify.c
-> @@ -760,6 +760,7 @@ static int fanotify_handle_event(struct fsnotify_group *group, u32 mask,
->         BUILD_BUG_ON(FAN_ONDIR != FS_ISDIR);
->         BUILD_BUG_ON(FAN_OPEN_EXEC != FS_OPEN_EXEC);
->         BUILD_BUG_ON(FAN_OPEN_EXEC_PERM != FS_OPEN_EXEC_PERM);
-> +       BUILD_BUG_ON(FAN_FS_ERROR != FS_ERROR);
+> @@ -855,6 +855,14 @@ static void fanotify_free_name_event(struct fanotify_event *event)
+>         kfree(FANOTIFY_NE(event));
+>  }
 >
->         BUILD_BUG_ON(HWEIGHT32(ALL_FANOTIFY_EVENT_BITS) != 19);
+> +static void fanotify_free_error_event(struct fanotify_event *event)
+> +{
+> +       /*
+> +        * The actual event is tied to a mark, and is released on mark
+> +        * removal
+> +        */
+> +}
+> +
+>  static void fanotify_free_event(struct fsnotify_event *fsn_event)
+>  {
+>         struct fanotify_event *event;
+> @@ -877,6 +885,9 @@ static void fanotify_free_event(struct fsnotify_event *fsn_event)
+>         case FANOTIFY_EVENT_TYPE_OVERFLOW:
+>                 kfree(event);
+>                 break;
+> +       case FANOTIFY_EVENT_TYPE_FS_ERROR:
+> +               fanotify_free_error_event(event);
+> +               break;
+>         default:
+>                 WARN_ON_ONCE(1);
+>         }
+> @@ -894,6 +905,7 @@ static void fanotify_free_mark(struct fsnotify_mark *mark)
+>         if (mark->flags & FANOTIFY_MARK_FLAG_SB_MARK) {
+>                 struct fanotify_sb_mark *fa_mark = FANOTIFY_SB_MARK(mark);
 >
-> diff --git a/include/uapi/linux/fanotify.h b/include/uapi/linux/fanotify.h
-> index fbf9c5c7dd59..16402037fc7a 100644
-> --- a/include/uapi/linux/fanotify.h
-> +++ b/include/uapi/linux/fanotify.h
-> @@ -20,6 +20,7 @@
->  #define FAN_OPEN_EXEC          0x00001000      /* File was opened for exec */
+> +               kfree(fa_mark->fee_slot);
+>                 kmem_cache_free(fanotify_sb_mark_cache, fa_mark);
+>         } else {
+>                 kmem_cache_free(fanotify_mark_cache, mark);
+> diff --git a/fs/notify/fanotify/fanotify.h b/fs/notify/fanotify/fanotify.h
+> index b3ab620822c2..3f03333df32f 100644
+> --- a/fs/notify/fanotify/fanotify.h
+> +++ b/fs/notify/fanotify/fanotify.h
+> @@ -139,6 +139,7 @@ enum fanotify_mark_bits {
 >
->  #define FAN_Q_OVERFLOW         0x00004000      /* Event queued overflowed */
-> +#define FAN_FS_ERROR           0x00008000      /* Filesystem error */
+>  struct fanotify_sb_mark {
+>         struct fsnotify_mark fsn_mark;
+> +       struct fanotify_error_event *fee_slot;
+>  };
 >
->  #define FAN_OPEN_PERM          0x00010000      /* File open in perm check */
->  #define FAN_ACCESS_PERM                0x00020000      /* File accessed in perm check */
-> --
-> 2.32.0
+>  static inline
+> @@ -161,6 +162,7 @@ enum fanotify_event_type {
+>         FANOTIFY_EVENT_TYPE_PATH,
+>         FANOTIFY_EVENT_TYPE_PATH_PERM,
+>         FANOTIFY_EVENT_TYPE_OVERFLOW, /* struct fanotify_event */
+> +       FANOTIFY_EVENT_TYPE_FS_ERROR, /* struct fanotify_error_event */
+>         __FANOTIFY_EVENT_TYPE_NUM
+>  };
 >
+> @@ -216,6 +218,17 @@ FANOTIFY_NE(struct fanotify_event *event)
+>         return container_of(event, struct fanotify_name_event, fae);
+>  }
+>
+> +struct fanotify_error_event {
+> +       struct fanotify_event fae;
+> +       struct fanotify_sb_mark *sb_mark; /* Back reference to the mark. */
+> +};
+> +
+> +static inline struct fanotify_error_event *
+> +FANOTIFY_EE(struct fanotify_event *event)
+> +{
+> +       return container_of(event, struct fanotify_error_event, fae);
+> +}
+> +
+>  static inline __kernel_fsid_t *fanotify_event_fsid(struct fanotify_event *event)
+>  {
+>         if (event->type == FANOTIFY_EVENT_TYPE_FID)
+> diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
+> index 54107f1533d5..b77030386d7f 100644
+> --- a/fs/notify/fanotify/fanotify_user.c
+> +++ b/fs/notify/fanotify/fanotify_user.c
+> @@ -947,8 +947,10 @@ static struct fsnotify_mark *fanotify_alloc_mark(struct fsnotify_group *group,
+>
+>         fsnotify_init_mark(mark, group);
+>
+> -       if (type == FSNOTIFY_OBJ_TYPE_SB)
+> +       if (type == FSNOTIFY_OBJ_TYPE_SB) {
+>                 mark->flags |= FANOTIFY_MARK_FLAG_SB_MARK;
+> +               sb_mark->fee_slot = NULL;
+> +       }
+>
+>         return mark;
+>  }
+> @@ -999,6 +1001,7 @@ static int fanotify_add_mark(struct fsnotify_group *group,
+>  {
+>         struct fsnotify_mark *fsn_mark;
+>         __u32 added;
+> +       int ret = 0;
+>
+>         mutex_lock(&group->mark_mutex);
+>         fsn_mark = fsnotify_find_mark(connp, group);
+> @@ -1009,13 +1012,37 @@ static int fanotify_add_mark(struct fsnotify_group *group,
+>                         return PTR_ERR(fsn_mark);
+>                 }
+>         }
+> +
+> +       /*
+> +        * Error events are allocated per super-block mark only if
+> +        * strictly needed (i.e. FAN_FS_ERROR was requested).
+> +        */
+> +       if (type == FSNOTIFY_OBJ_TYPE_SB && !(flags & FAN_MARK_IGNORED_MASK) &&
+> +           (mask & FAN_FS_ERROR)) {
+> +               struct fanotify_sb_mark *sb_mark = FANOTIFY_SB_MARK(fsn_mark);
+> +
+> +               if (!sb_mark->fee_slot) {
+> +                       struct fanotify_error_event *fee =
+> +                               kzalloc(sizeof(*fee), GFP_KERNEL_ACCOUNT);
+> +                       if (!fee) {
+> +                               ret = -ENOMEM;
+> +                               goto out;
+> +                       }
+> +                       fanotify_init_event(&fee->fae, 0, FS_ERROR);
+> +                       fee->sb_mark = sb_mark;
+
+I think Jan wanted to avoid zalloc()?
+Please use kmalloc() and init the rest of the fee-> members.
+We do not need to fill the entire fh buf with zeroes.
+
+Thanks,
+Amir.
