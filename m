@@ -2,142 +2,107 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72C353EB504
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 Aug 2021 14:10:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A998E3EB59F
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 Aug 2021 14:35:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240202AbhHMMK0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 13 Aug 2021 08:10:26 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:52662 "EHLO
+        id S240440AbhHMMfV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 13 Aug 2021 08:35:21 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:55800 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239981AbhHMMKZ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 13 Aug 2021 08:10:25 -0400
+        with ESMTP id S240407AbhHMMfH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 13 Aug 2021 08:35:07 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id C01FB2232F;
-        Fri, 13 Aug 2021 12:09:57 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id BF76722334;
+        Fri, 13 Aug 2021 12:34:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628856597; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1628858077; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=ZDrASliUDxQKAR4lqmIWyOYaRQOJ3szPxAVZ9aYxObM=;
-        b=wnxard6CyPLNJOUa12qVcYR3ZxXLFFRV50NSoCVIL8M1na6T8UEsg8zHI0xFrNoJGUTFEV
-        qTUE77u548MiwB0pGGpbgVMxQAodVgMk+6F9MXqugNdZw89OCsCnx5dEQU0JMOjKMF8TeB
-        HeILTO3ukcLuaSLA/X9+/Wu8oTAMpNs=
+        bh=X9bWXWAl5yk2Xe8Q6bXYgt4qOrFtisrhnycpZ5uaDNw=;
+        b=ALya8jdTw23qDeFqDGEGc9e3NHVxWcjafVcjbGB6BzmpVMtuUi60LxOxpp4IUDvnnr5jb0
+        UmUswnKUDgTF7wI0oOJ8P+zwPnVQj77JJArOeWTOUSW9sr/zRJaxcpu69Pu63re8hqgmVX
+        JIXAPv8Oq9LY4rF1BEO7IE1bBchls/8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628856597;
+        s=susede2_ed25519; t=1628858077;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=ZDrASliUDxQKAR4lqmIWyOYaRQOJ3szPxAVZ9aYxObM=;
-        b=9eh9YddJ4JzR+mPw8Myo306KnLpGaU5X+Gnhgl1RkfrCmXmPWg3hFmJwom7PF5b3jNorBV
-        rounD5JBNxfsZmAg==
+        bh=X9bWXWAl5yk2Xe8Q6bXYgt4qOrFtisrhnycpZ5uaDNw=;
+        b=3r1wi1Dxt/TfWZIiUmJCwWQarJDe73TbUIBWmWkGs7DA70MrrbzC2rzLHF6ZqzRwck/tq0
+        plUQAg+b1/Q0gwBw==
 Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id A1F43A3B84;
-        Fri, 13 Aug 2021 12:09:57 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id B3C80A3B91;
+        Fri, 13 Aug 2021 12:34:37 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 7EC891E423D; Fri, 13 Aug 2021 14:09:54 +0200 (CEST)
-Date:   Fri, 13 Aug 2021 14:09:54 +0200
+        id 8BC871E423D; Fri, 13 Aug 2021 14:34:34 +0200 (CEST)
+Date:   Fri, 13 Aug 2021 14:34:34 +0200
 From:   Jan Kara <jack@suse.cz>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Jan Kara <jack@suse.cz>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Jan Kara <jack@suse.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Theodore Tso <tytso@mit.edu>,
-        Dave Chinner <david@fromorbit.com>,
-        David Howells <dhowells@redhat.com>,
-        Khazhismel Kumykov <khazhy@google.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Ext4 <linux-ext4@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>, kernel@collabora.com
-Subject: Re: [PATCH v5 14/23] fanotify: Encode invalid file handler when no
- inode is provided
-Message-ID: <20210813120954.GA11955@quack2.suse.cz>
-References: <20210804160612.3575505-1-krisman@collabora.com>
- <20210804160612.3575505-15-krisman@collabora.com>
- <20210805095618.GF14483@quack2.suse.cz>
- <87fsvf65zu.fsf@collabora.com>
- <20210812142047.GG14675@quack2.suse.cz>
- <CAOQ4uxjy2FOt6r5=x9FO3YXs8_FWwew055ZfrumDjSz0HCgz3w@mail.gmail.com>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 3/5] ext4: Speedup ext4 orphan inode handling
+Message-ID: <20210813123434.GB11955@quack2.suse.cz>
+References: <20210811101006.2033-1-jack@suse.cz>
+ <20210811101925.6973-3-jack@suse.cz>
+ <YRU3zjcP5hukrsyt@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAOQ4uxjy2FOt6r5=x9FO3YXs8_FWwew055ZfrumDjSz0HCgz3w@mail.gmail.com>
+In-Reply-To: <YRU3zjcP5hukrsyt@mit.edu>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 12-08-21 18:17:10, Amir Goldstein wrote:
-> On Thu, Aug 12, 2021 at 5:20 PM Jan Kara <jack@suse.cz> wrote:
-> >
-> > On Wed 11-08-21 17:12:05, Gabriel Krisman Bertazi wrote:
-> > > Jan Kara <jack@suse.cz> writes:
-> > > >> @@ -376,14 +371,24 @@ static int fanotify_encode_fh(struct fanotify_fh *fh, struct inode *inode,
-> > > >>            fh->flags |= FANOTIFY_FH_FLAG_EXT_BUF;
-> > > >>    }
-> > > >>
-> > > >> -  dwords = fh_len >> 2;
-> > > >> -  type = exportfs_encode_inode_fh(inode, buf, &dwords, NULL);
-> > > >> -  err = -EINVAL;
-> > > >> -  if (!type || type == FILEID_INVALID || fh_len != dwords << 2)
-> > > >> -          goto out_err;
-> > > >> -
-> > > >> -  fh->type = type;
-> > > >> -  fh->len = fh_len;
-> > > >> +  if (inode) {
-> > > >> +          dwords = fh_len >> 2;
-> > > >> +          type = exportfs_encode_inode_fh(inode, buf, &dwords, NULL);
-> > > >> +          err = -EINVAL;
-> > > >> +          if (!type || type == FILEID_INVALID || fh_len != dwords << 2)
-> > > >> +                  goto out_err;
-> > > >> +          fh->type = type;
-> > > >> +          fh->len = fh_len;
-> > > >> +  } else {
-> > > >> +          /*
-> > > >> +           * Invalid FHs are used on FAN_FS_ERROR for errors not
-> > > >> +           * linked to any inode. Caller needs to guarantee the fh
-> > > >> +           * has at least FANOTIFY_NULL_FH_LEN bytes of space.
-> > > >> +           */
-> > > >> +          fh->type = FILEID_INVALID;
-> > > >> +          fh->len = FANOTIFY_NULL_FH_LEN;
-> > > >> +          memset(buf, 0, FANOTIFY_NULL_FH_LEN);
-> > > >> +  }
-> > > >
-> > > > Maybe it will become clearer later during the series but why do you set
-> > > > fh->len to FANOTIFY_NULL_FH_LEN and not 0?
-> > >
-> > > Jan,
-> > >
-> > > That is how we encode a NULL file handle (i.e. superblock error).  Amir
-> > > suggested it would be an invalid FILEID_INVALID, with a zeroed handle of
-> > > size 8.  I will improve the comment on the next iteration.
-> >
-> > Thanks for info. Then I have a question for Amir I guess :) Amir, what's
-> > the advantage of zeroed handle of size 8 instead of just 0 length file
-> > handle?
+On Thu 12-08-21 11:01:34, Theodore Ts'o wrote:
+> On Wed, Aug 11, 2021 at 12:19:13PM +0200, Jan Kara wrote:
+> > +static int ext4_orphan_file_del(handle_t *handle, struct inode *inode)
+> > +{
+> > +	struct ext4_orphan_info *oi = &EXT4_SB(inode->i_sb)->s_orphan_info;
+> > +	__le32 *bdata;
+> > +	int blk, off;
+> > +	int inodes_per_ob = ext4_inodes_per_orphan_block(inode->i_sb);
+> > +	int ret = 0;
+> > +
+> > +	if (!handle)
+> > +		goto out;
+> > +	blk = EXT4_I(inode)->i_orphan_idx / inodes_per_ob;
+> > +	off = EXT4_I(inode)->i_orphan_idx % inodes_per_ob;
+> > +	if (WARN_ON_ONCE(blk >= oi->of_blocks))
+> > +		goto out;
+> > +
+> > +	ret = ext4_journal_get_write_access(handle, inode->i_sb,
+> > +				oi->of_binfo[blk].ob_bh, EXT4_JTR_ORPHAN_FILE);
+> > +	if (ret)
+> > +		goto out;
 > 
-> With current code, zero fh->len means we are not reporting an FID info
-> record (e.g. due to encode error), see copy_info_records_to_user().
+> If ext4_journal_get_write_access() fails, we effectively drop the
+> inode from the orphan list (as far as the in-memory inode is
+> concerned), although the inode will still be listed in the orphan
+> file.  This can be really unfortunate since if the inode gets
+> reallocated for some other purpose, since its inode number is left in
+> the orphan block, on the next remount, this could lead to data loss.
 > 
-> This is because fh->len plays a dual role for indicating the length of the
-> file handle and the existence of FID info.
+> In the orphan list code, we leave the inode on the linked list, which
+> is not great, since that will prevent the inode from being freed, but
+> at least we're keeping the in-memory and on-disk state in sync and we
+> avoid the data loss scenario when the inode gets reused.
 
-I see, thanks for info.
+Actually, in the orphan list code, we leave the inode in the on-disk list
+but remove it from the in-memory list - see how
+list_del_init(&ei->i_orphan) is called very early in ext4_orphan_del(). The
+reason for this unconditional deletion is that if we do not remove the
+inode from the in-memory orphan list, the filesystem will complain and
+corrupt memory on unmount.
 
-> I figured that keeping a positive length for the special NULL_FH is an
-> easy way to workaround this ambiguity and keep the code simpler.
-> We don't really need to pay any cost for keeping the 8 bytes zero buffer.
+Also note that leaving inode in the on-disk orphan list actually does no
+serious harm. Because the orphan cleanup code just checks i_nlink and
+i_disksize and truncates inode down to current i_disksize and removes inode
+completely if i_nlink is 0. So even if an inode on the orphan list gets
+reused, orphan cleanup will just do nothing for it. So the worst problem
+that will likely happen is that on-disk orphan linked list becomes
+corrupted but there's no data loss AFAICT.
 
-There are two separate questions:
-1) How do we internally propagate the information that we don't have
-file_handle to report but we do want fsid reported.
-2) What do we report to userspace in file_handle.
-
-For 2) I think we should report fsid + FILEID_INVALID, 0-length filehandle.
-Currently the non-zero lenght FILEID_INVALID filehandle was propagating to
-userspace and IMO that's confusing. For 1), whatever is the simplest to
-propagate the information "we want only fsid reported" internally is fine
-by me. 
+Is it clearer now or am I missing something?
 
 								Honza
 -- 
