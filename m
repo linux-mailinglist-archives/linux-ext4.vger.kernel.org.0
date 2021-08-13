@@ -2,93 +2,135 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC0A63EBC92
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 Aug 2021 21:32:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCC323EBC94
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 Aug 2021 21:35:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233612AbhHMTdV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 13 Aug 2021 15:33:21 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:41903 "EHLO
+        id S233719AbhHMTfb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 13 Aug 2021 15:35:31 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:42690 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230440AbhHMTdV (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 13 Aug 2021 15:33:21 -0400
+        with ESMTP id S233613AbhHMTfa (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 13 Aug 2021 15:35:30 -0400
 Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 17DJWnOk017205
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 17DJYx7x018922
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 13 Aug 2021 15:32:49 -0400
+        Fri, 13 Aug 2021 15:34:59 -0400
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 02EE315C37C1; Fri, 13 Aug 2021 15:32:48 -0400 (EDT)
-Date:   Fri, 13 Aug 2021 15:32:48 -0400
+        id 366B915C37C1; Fri, 13 Aug 2021 15:34:59 -0400 (EDT)
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Andreas Dilger <adilger@dilger.ca>,
-        linux-ext4 <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH v2] mke2fs: warn about missing y2038 support when
- formatting fresh ext4 fs
-Message-ID: <YRbI4E3b42X3otJv@mit.edu>
-References: <20210812232222.GE3601392@magnolia>
- <YRaxQBRnB3vtRieP@mit.edu>
- <20210813181436.GZ3601466@magnolia>
+To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
+Cc:     djwong@kernel.org, "Theodore Ts'o" <tytso@mit.edu>
+Subject: [PATCH -v4] mke2fs: warn about missing y2038 support when formatting fresh ext4 fs
+Date:   Fri, 13 Aug 2021 15:34:53 -0400
+Message-Id: <20210813193453.359568-1-tytso@mit.edu>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <YRbI4E3b42X3otJv@mit.edu>
+References: <YRbI4E3b42X3otJv@mit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210813181436.GZ3601466@magnolia>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 11:14:36AM -0700, Darrick J. Wong wrote:
-> > There were only two cases where we created file systems with 128 byte
-> > inodes --- "small" and "floppy" sized file systems, and for the GNU
-> > Hurd, which only supports the original 128 byte inode.  What will GNU
-> > Hurd do in 16.5 years?  ¯\_(ツ)_/¯
-> 
-> Perhaps in that time someone can donate a disused Opteron 140 system?
-> Assuming the motherboard capacitors haven't since lost their mojo.
+From: "Darrick J. Wong" <djwong@kernel.org>
 
-Apparently GNU Hurd uses a unsigned 32-bit int for time_t, so they
-have a 2106 problem.  They "have no plans for a 64-bit userspace, but
-they have plans for a 64-bit kernel that can run 32-bit user space".
-Comments from the the GNU Hurd folks on an IRC chat from 2013:
+Filesystems with 128-byte inodes do not support timestamps beyond the
+year 2038.  Since we're now less than 16.5 years away from that point,
+it's time to start warning users about this lack of support when they
+format an ext4 filesystem with small inodes.
 
-    <braunr> which overflows in 2106
-    <braunr> and we already include funny comments that predict our successors,
-      if any, will probably fail to deal with the problem until short before
-      the overflow :>
-    <azeem> luckily, no nuclear reactors are running the Hurd sofar
+(Note that even for ext2 and ext3, we changed the default for
+non-small file systems in 2008 in commit commit b1631cce648e ("Create
+new filesystems with 256-byte inodes by default").)
 
-    https://www.gnu.org/software/hurd/open_issues/versioning.html
+So change the mke2fs.conf file to specify 256-byte inodes even for
+small filesystems, and then add a warning to mke2fs itself if someone
+is trying to make us format a file system with 128-byte inodes.  This
+can be suppressed by setting the boolean option warn_y2038_dates in
+the mke2fs.conf file to false, which we do in the case of GNU Hurd,
+since it only supports 128 byte inodes as of this writing.
 
-> > +	/*
-> > +	 * Warn the user that filesystems with 128-byte inodes will
-> > +	 * not work properly beyond 2038.  This can be suppressed via
-> > +	 * a boolean in the mke2fs.conf file, and we will disable this
-> > +	 * warning for ext2, ext3, and hurd file systems.
-> 
-> Um... the conffile changes only disable the warning for Hurd?
+[ Patch reworked by tytso to only warn in the case of GNU Hurd, since
+  the default for ext2/ext3 was changed for all but small file systems
+  in 2008. ]
 
-Oops, good catch, I'll fix up the comment.
+Signed-off-by: Darrick J. Wong <djwong@kernel.org>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ misc/mke2fs.c         | 11 +++++++++++
+ misc/mke2fs.conf.5.in |  7 +++++++
+ misc/mke2fs.conf.in   |  4 +---
+ 3 files changed, 19 insertions(+), 3 deletions(-)
 
-> > +This boolean relation specifies wheather mke2fs will issue a warning
-> > +when creating a file system with 128 byte inodes (and so therefore will
-> > +not support dates after January 19th, 2038.  The default value is true,
-> 
-> Nit: need a closing parentheses after '2038' or no opening paren.
+diff --git a/misc/mke2fs.c b/misc/mke2fs.c
+index 92003e11..881ffd31 100644
+--- a/misc/mke2fs.c
++++ b/misc/mke2fs.c
+@@ -2603,6 +2603,17 @@ profile_error:
+ 		exit(1);
+ 	}
+ 
++	/*
++	 * Warn the user that filesystems with 128-byte inodes will
++	 * not work properly beyond 2038.  This can be suppressed via
++	 * a boolean in the mke2fs.conf file, and we will disable this
++	 * warning for ext2, ext3, and hurd file systems.
++	 */
++	if (inode_size == EXT2_GOOD_OLD_INODE_SIZE &&
++	    get_bool_from_profile(fs_types, "warn_y2038_dates", 1))
++		printf(
++_("128-byte inodes cannot handle dates beyond 2038 and are deprecated\n"));
++
+ 	/* Make sure number of inodes specified will fit in 32 bits */
+ 	if (num_inodes == 0) {
+ 		unsigned long long n;
+diff --git a/misc/mke2fs.conf.5.in b/misc/mke2fs.conf.5.in
+index 08bb9488..62d0fdb5 100644
+--- a/misc/mke2fs.conf.5.in
++++ b/misc/mke2fs.conf.5.in
+@@ -505,6 +505,13 @@ This relation specifies the base file name for the huge files.
+ This relation specifies the (zero-padded) width of the field for the
+ huge file number.
+ .TP
++.I warn_y2038_dates
++This boolean relation specifies wheather mke2fs will issue a warning
++when creating a file system with 128 byte inodes (and so therefore will
++not support dates after January 19th, 2038.  The default value is true,
++except for file systems created for the GNU Hurd, which does not support
++inodes larger than 128 bytes.
++.TP
+ .I zero_hugefiles
+ This boolean relation specifies whether or not zero blocks will be
+ written to the hugefiles while
+diff --git a/misc/mke2fs.conf.in b/misc/mke2fs.conf.in
+index 01e35cf8..05680992 100644
+--- a/misc/mke2fs.conf.in
++++ b/misc/mke2fs.conf.in
+@@ -12,16 +12,13 @@
+ 	}
+ 	ext4 = {
+ 		features = has_journal,extent,huge_file,flex_bg,metadata_csum,64bit,dir_nlink,extra_isize
+-		inode_size = 256
+ 	}
+ 	small = {
+ 		blocksize = 1024
+-		inode_size = 128
+ 		inode_ratio = 4096
+ 	}
+ 	floppy = {
+ 		blocksize = 1024
+-		inode_size = 128
+ 		inode_ratio = 8192
+ 	}
+ 	big = {
+@@ -44,4 +41,5 @@
+ 	hurd = {
+ 	     blocksize = 4096
+ 	     inode_size = 128
++	     warn_y2038_dates = 0
+ 	}
+-- 
+2.31.0
 
-Thanks, fixed.
-
-> > +except for file systems created for the GNU Hurd, which does not support
-> > +inodes larger than 128 bytes.
-> 
-> I wonder if this statementt about Hurd this belongs in the conffile as a
-> comment in the hurd section?
-
-We currently don't have a Hurd section.  We probably could document
-more about the magic that mke2fs does when you specify "-o hurd",
-which probably should go in the mke2fs man page but I can't quite
-bring myself to care.  Maybe some GNU Hurd folks can get interested to
-do this?  :-)
-
-						- Ted
