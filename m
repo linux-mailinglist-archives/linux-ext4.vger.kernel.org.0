@@ -2,67 +2,106 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCCD53EBE96
-	for <lists+linux-ext4@lfdr.de>; Sat, 14 Aug 2021 01:15:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 497A63EBFAD
+	for <lists+linux-ext4@lfdr.de>; Sat, 14 Aug 2021 04:15:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235397AbhHMXQF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 13 Aug 2021 19:16:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235029AbhHMXQE (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 13 Aug 2021 19:16:04 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39093C061756;
-        Fri, 13 Aug 2021 16:15:37 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id h13so15344653wrp.1;
-        Fri, 13 Aug 2021 16:15:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:from:mime-version:content-transfer-encoding
-         :content-description:subject:to:date:reply-to;
-        bh=5NTJSky9UX3JbuB9riY3wCYfXDpCwy2c7hzO0kF4AHA=;
-        b=m3kaznv5RSK1BWuewGhPniRCVZRVtmLhiMQc82NPgV1lbpig4IpWDqLHfRFQWep4uV
-         u9USJqn0i117kVuZbpQRiaKoPduf5vBv+5n2XCJ1Zi/PiOCPtxBqSNRCAQP5kaQ2mAsU
-         Y5bZ9l/Ywh28JmGvLJoxqM6Ul1ffDV3u/hGNUkAkuLBi6/5lvfo3cx5uV4E7YqFcrVoD
-         P473X5jZVfA8ng+UmAQBhFJnNm0tghQFe9GY6EPJCAtfH7J6uWDWXNiLZGtU9MevCUW5
-         DRowXfKzl2fu1GqCIZqK9osnArGXXSweMNTjsEvEIs/LZ9N5qS/xKejKJQ4am+tM4765
-         6D3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:from:mime-version
-         :content-transfer-encoding:content-description:subject:to:date
-         :reply-to;
-        bh=5NTJSky9UX3JbuB9riY3wCYfXDpCwy2c7hzO0kF4AHA=;
-        b=kY2WU6JKkqW14/hBfsBCO7KzhB6k0DCzrPgFmhWabjMHMoS/ln/38s8LS3Mdv8KAuy
-         kzWZOK1ARLp6s5mstu+MsdF9HlSqkhthDUBjLpmH67OIjnBrMPiyKW5xawtISRBhgZEB
-         pMZzDP/6QFuOpd/MeuLg6QCUCqcCsGRdTh2K9eqgm0Ii+U1TnmkgYN36leSoWdOEsGCz
-         SD7gBL3LFRPdgtrx5BsxErDq4uAt1ywl5PF5jlVRoCVo9Xh9EWVdxiY7jA/TDizkO53y
-         jTxBxjQt27OeiODaL9uhzzIZwE+YNmAMUFp0gMzxjte/OYqzCZ7w/leIEHdi2pFL0vwC
-         CxPQ==
-X-Gm-Message-State: AOAM531e/pX1DNTNWQnXBiHUtkds4/4E7wKbDpuVn+KyVouNLjCyJymD
-        2nvav++5bEmW+kzUx6qnx84=
-X-Google-Smtp-Source: ABdhPJzo+/68/RbgwmMkWN69xSAJ9ge9jJs+Ht3ETckBqMN9U4gb0ZjAmsERXteo+OUcF7kI6kbhSQ==
-X-Received: by 2002:a5d:45c2:: with SMTP id b2mr5463075wrs.188.1628896535899;
-        Fri, 13 Aug 2021 16:15:35 -0700 (PDT)
-Received: from [192.168.1.70] ([102.64.163.193])
-        by smtp.gmail.com with ESMTPSA id a18sm2566962wmg.43.2021.08.13.16.15.31
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Fri, 13 Aug 2021 16:15:35 -0700 (PDT)
-Message-ID: <6116fd17.1c69fb81.4edbd.f5df@mx.google.com>
-From:   Vanina curth <akoelekouevidjin95@gmail.com>
-X-Google-Original-From: Vanina  curth
-Content-Type: text/plain; charset="iso-8859-1"
+        id S236402AbhHNCPl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 13 Aug 2021 22:15:41 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:13315 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232651AbhHNCPl (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 13 Aug 2021 22:15:41 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GmkXX5NtVz85dS;
+        Sat, 14 Aug 2021 10:15:08 +0800 (CST)
+Received: from dggema766-chm.china.huawei.com (10.1.198.208) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Sat, 14 Aug 2021 10:15:11 +0800
+Received: from [10.174.177.210] (10.174.177.210) by
+ dggema766-chm.china.huawei.com (10.1.198.208) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Sat, 14 Aug 2021 10:15:11 +0800
+Subject: Re: [PATCH] ext4: if zeroout fails fall back to splitting the extent
+ node
+To:     Theodore Ts'o <tytso@mit.edu>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+CC:     <yukuai3@huawei.com>
+References: <YRaNKc2PvM+Eyzmp@mit.edu> <20210813212701.366447-1-tytso@mit.edu>
+From:   yangerkun <yangerkun@huawei.com>
+Message-ID: <2714202a-872e-aa75-7033-fb06a47b9241@huawei.com>
+Date:   Sat, 14 Aug 2021 10:15:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Dear
-To:     Recipients <Vanina@vger.kernel.org>
-Date:   Fri, 13 Aug 2021 23:15:10 +0000
-Reply-To: curtisvani9008@gmail.com
+In-Reply-To: <20210813212701.366447-1-tytso@mit.edu>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.210]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggema766-chm.china.huawei.com (10.1.198.208)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-How are you? I'm Vanina. I'm interested to know you and I would like to kno=
-w more about you and establish relationship with you. i will wait for your =
-response. thank you.
+
+
+在 2021/8/14 5:27, Theodore Ts'o 写道:
+> If the underlying storage device is using thin-provisioning, it's
+> possible for a zeroout operation to return ENOSPC.
+> 
+> Commit df22291ff0fd ("ext4: Retry block allocation if we have free blocks
+> left") added logic to retry block allocation since we might get free block
+> after we commit a transaction. But the ENOSPC from thin-provisioning
+> will confuse ext4, and lead to an infinite loop.
+> 
+> Since using zeroout instead of splitting the extent node is an
+> optimization, if it fails, we might as well fall back to splitting the
+> extent node.
+> 
+> Reported-by: yangerkun <yangerkun@huawei.com>
+> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+> ---
+> 
+> I've run this through my battery of tests, and it doesn't cause any
+> regressions.  Yangerkun, can you test this and see if this works for
+> you?
+
+Will do it.
+
+> 
+>   fs/ext4/extents.c | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> index 92ad64b89d9b..501516cadc1b 100644
+> --- a/fs/ext4/extents.c
+> +++ b/fs/ext4/extents.c
+> @@ -3569,7 +3569,7 @@ static int ext4_ext_convert_to_initialized(handle_t *handle,
+>   				split_map.m_len - ee_block);
+>   			err = ext4_ext_zeroout(inode, &zero_ex1);
+>   			if (err)
+> -				goto out;
+> +				goto fallback;
+>   			split_map.m_len = allocated;
+>   		}
+>   		if (split_map.m_lblk - ee_block + split_map.m_len <
+> @@ -3583,7 +3583,7 @@ static int ext4_ext_convert_to_initialized(handle_t *handle,
+>   						      ext4_ext_pblock(ex));
+>   				err = ext4_ext_zeroout(inode, &zero_ex2);
+>   				if (err)
+> -					goto out;
+> +					goto fallback;
+>   			}
+>   
+>   			split_map.m_len += split_map.m_lblk - ee_block;
+> @@ -3592,6 +3592,7 @@ static int ext4_ext_convert_to_initialized(handle_t *handle,
+>   		}
+>   	}
+>   
+> +fallback:
+>   	err = ext4_split_extent(handle, inode, ppath, &split_map, split_flag,
+>   				flags);
+>   	if (err > 0)
+> 
