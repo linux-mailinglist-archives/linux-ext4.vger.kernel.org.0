@@ -2,125 +2,229 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB883ED62B
-	for <lists+linux-ext4@lfdr.de>; Mon, 16 Aug 2021 15:17:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BE6C3ED65D
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Aug 2021 15:22:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240085AbhHPNSO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 16 Aug 2021 09:18:14 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:45690 "EHLO
+        id S238917AbhHPNUh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 16 Aug 2021 09:20:37 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:46248 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237173AbhHPNQJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 16 Aug 2021 09:16:09 -0400
+        with ESMTP id S240169AbhHPNTZ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 16 Aug 2021 09:19:25 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 1FD131FE5F;
-        Mon, 16 Aug 2021 13:15:37 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id DE8661FE6F;
+        Mon, 16 Aug 2021 13:18:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1629119737; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1629119930; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=kFqrL9tlo3vHH2OdCMbi/CRA3pJJfS/41yIA8FjXzf0=;
-        b=Y+/b46UOpoHG8J+Den7D1I/U91wSOlxhsn4uivMO+Um52pZb4o1wu3i9pSHbwFY003kxJK
-        kPOLDVKsavKS3HPLJIvRjNoc6/OBKQliGpPOfuNPqY/GvYA0yB3R9ZwQdyfqtPYTk3sv0O
-        3jDtlS6KKuQ/rW8m8bCC1m04jU6inNQ=
+        bh=BoAMWR7Ykja6Ogd0JcusUgpGDWD9ocMKTw5LjQGWy2o=;
+        b=U07WEFV5WbFuiBMtzYN+0zbeUCZKPSxQ68FlCXrHaRThrT9psHB+OMHk8kRMQneUfh64X1
+        x3ztIrIS5fA668nzwjiJKuCs0btxRr3vBfKCQev8vgV6spN0DdH4xDqgj4bx0ue2b1kWZC
+        6UkJ3ZAg3FEohynwKKO9IL0AH9spynI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1629119737;
+        s=susede2_ed25519; t=1629119930;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=kFqrL9tlo3vHH2OdCMbi/CRA3pJJfS/41yIA8FjXzf0=;
-        b=K9F1H0giDC5X/udipaLGIVqN+I2jMVsptFImKLYPW//ApiZGVPXmfixcCOcXe7vKoEHmgT
-        szNwcQFVyAmS1lBw==
+        bh=BoAMWR7Ykja6Ogd0JcusUgpGDWD9ocMKTw5LjQGWy2o=;
+        b=5nXqkKhrz+jDwSLrtyizBs8KDrcSNzrLaD/eXVCGsM65+4ugX9H1lmCN9nNRH1pjt0RS7M
+        451ECAor4w+l5+DA==
 Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id 058AEA3B8F;
-        Mon, 16 Aug 2021 13:15:37 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id CC6E8A3B94;
+        Mon, 16 Aug 2021 13:18:50 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id E21741E0426; Mon, 16 Aug 2021 15:15:36 +0200 (CEST)
-Date:   Mon, 16 Aug 2021 15:15:36 +0200
+        id B4FFF1E0426; Mon, 16 Aug 2021 15:18:50 +0200 (CEST)
+Date:   Mon, 16 Aug 2021 15:18:50 +0200
 From:   Jan Kara <jack@suse.cz>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Jan Kara <jack@suse.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Ext4 <linux-ext4@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Khazhismel Kumykov <khazhy@google.com>,
-        David Howells <dhowells@redhat.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Theodore Tso <tytso@mit.edu>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Matthew Bobrowski <repnop@google.com>, kernel@collabora.com
-Subject: Re: [PATCH v6 04/21] fsnotify: Reserve mark flag bits for backends
-Message-ID: <20210816131536.GB30215@quack2.suse.cz>
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     amir73il@gmail.com, jack@suse.com, linux-api@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        khazhy@google.com, dhowells@redhat.com, david@fromorbit.com,
+        tytso@mit.edu, djwong@kernel.org, repnop@google.com,
+        kernel@collabora.com
+Subject: Re: [PATCH v6 05/21] fanotify: Split superblock marks out to a new
+ cache
+Message-ID: <20210816131850.GC30215@quack2.suse.cz>
 References: <20210812214010.3197279-1-krisman@collabora.com>
- <20210812214010.3197279-5-krisman@collabora.com>
- <CAOQ4uxh0WNxsuwtfv_iDCaZbmJEDB700D5_v==ffm2-WAg_V7w@mail.gmail.com>
+ <20210812214010.3197279-6-krisman@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAOQ4uxh0WNxsuwtfv_iDCaZbmJEDB700D5_v==ffm2-WAg_V7w@mail.gmail.com>
+In-Reply-To: <20210812214010.3197279-6-krisman@collabora.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri 13-08-21 10:28:27, Amir Goldstein wrote:
-> On Fri, Aug 13, 2021 at 12:40 AM Gabriel Krisman Bertazi
-> <krisman@collabora.com> wrote:
-> >
-> > Split out the final bits of struct fsnotify_mark->flags for use by a
-> > backend.
-> >
-> > Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-> >
-> > Changes since v1:
-> >   - turn consts into defines (jan)
-> > ---
-> >  include/linux/fsnotify_backend.h | 18 +++++++++++++++---
-> >  1 file changed, 15 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/include/linux/fsnotify_backend.h b/include/linux/fsnotify_backend.h
-> > index 1ce66748a2d2..ae1bd9f06808 100644
-> > --- a/include/linux/fsnotify_backend.h
-> > +++ b/include/linux/fsnotify_backend.h
-> > @@ -363,6 +363,20 @@ struct fsnotify_mark_connector {
-> >         struct hlist_head list;
-> >  };
-> >
-> > +enum fsnotify_mark_bits {
-> > +       FSN_MARK_FL_BIT_IGNORED_SURV_MODIFY,
-> > +       FSN_MARK_FL_BIT_ALIVE,
-> > +       FSN_MARK_FL_BIT_ATTACHED,
-> > +       FSN_MARK_PRIVATE_FLAGS,
-> > +};
-> > +
-> > +#define FSNOTIFY_MARK_FLAG_IGNORED_SURV_MODIFY \
-> > +       (1 << FSN_MARK_FL_BIT_IGNORED_SURV_MODIFY)
-> > +#define FSNOTIFY_MARK_FLAG_ALIVE \
-> > +       (1 << FSN_MARK_FL_BIT_ALIVE)
-> > +#define FSNOTIFY_MARK_FLAG_ATTACHED \
-> > +       (1 << FSN_MARK_FL_BIT_ATTACHED)
-> > +
-> >  /*
-> >   * A mark is simply an object attached to an in core inode which allows an
-> >   * fsnotify listener to indicate they are either no longer interested in events
-> > @@ -398,9 +412,7 @@ struct fsnotify_mark {
-> >         struct fsnotify_mark_connector *connector;
-> >         /* Events types to ignore [mark->lock, group->mark_mutex] */
-> >         __u32 ignored_mask;
-> > -#define FSNOTIFY_MARK_FLAG_IGNORED_SURV_MODIFY 0x01
-> > -#define FSNOTIFY_MARK_FLAG_ALIVE               0x02
-> > -#define FSNOTIFY_MARK_FLAG_ATTACHED            0x04
-> > +       /* Upper bits [31:PRIVATE_FLAGS] are reserved for backend usage */
+On Thu 12-08-21 17:39:54, Gabriel Krisman Bertazi wrote:
+> FAN_FS_ERROR will require an error structure to be stored per mark.
+> But, since FAN_FS_ERROR doesn't apply to inode/mount marks, it should
+> suffice to only expose this information for superblock marks. Therefore,
+> wrap this kind of marks into a container and plumb it for the future.
 > 
-> I don't understand what [31:PRIVATE_FLAGS] means
+> Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 
-I think it should be [FSN_MARK_PRIVATE_FLAGS:31] (identifying a range of
-bits). I'd maybe write just "Bits starting from FSN_MARK_PRIVATE_FLAGS are
-reserved for backend usage". With this fixed feel free to add:
+Looks good. Feel free to add:
 
 Reviewed-by: Jan Kara <jack@suse.cz>
 
 								Honza
+
+> ---
+> Changes since v5:
+>   - turn the flag bits into defines (jan)
+>   - don't use zalloc for consistency (jan)
+> Changes since v2:
+>   - Move mark initialization to fanotify_alloc_mark (Amir)
+> 
+> Changes since v1:
+>   - Only extend superblock marks (Amir)
+> ---
+>  fs/notify/fanotify/fanotify.c      | 10 ++++++--
+>  fs/notify/fanotify/fanotify.h      | 20 ++++++++++++++++
+>  fs/notify/fanotify/fanotify_user.c | 38 ++++++++++++++++++++++++++++--
+>  3 files changed, 64 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/notify/fanotify/fanotify.c b/fs/notify/fanotify/fanotify.c
+> index 310246f8d3f1..c3eefe3f6494 100644
+> --- a/fs/notify/fanotify/fanotify.c
+> +++ b/fs/notify/fanotify/fanotify.c
+> @@ -869,9 +869,15 @@ static void fanotify_freeing_mark(struct fsnotify_mark *mark,
+>  		dec_ucount(group->fanotify_data.ucounts, UCOUNT_FANOTIFY_MARKS);
+>  }
+>  
+> -static void fanotify_free_mark(struct fsnotify_mark *fsn_mark)
+> +static void fanotify_free_mark(struct fsnotify_mark *mark)
+>  {
+> -	kmem_cache_free(fanotify_mark_cache, fsn_mark);
+> +	if (mark->flags & FANOTIFY_MARK_FLAG_SB_MARK) {
+> +		struct fanotify_sb_mark *fa_mark = FANOTIFY_SB_MARK(mark);
+> +
+> +		kmem_cache_free(fanotify_sb_mark_cache, fa_mark);
+> +	} else {
+> +		kmem_cache_free(fanotify_mark_cache, mark);
+> +	}
+>  }
+>  
+>  const struct fsnotify_ops fanotify_fsnotify_ops = {
+> diff --git a/fs/notify/fanotify/fanotify.h b/fs/notify/fanotify/fanotify.h
+> index 4a5e555dc3d2..3b11dd03df59 100644
+> --- a/fs/notify/fanotify/fanotify.h
+> +++ b/fs/notify/fanotify/fanotify.h
+> @@ -6,6 +6,7 @@
+>  #include <linux/hashtable.h>
+>  
+>  extern struct kmem_cache *fanotify_mark_cache;
+> +extern struct kmem_cache *fanotify_sb_mark_cache;
+>  extern struct kmem_cache *fanotify_fid_event_cachep;
+>  extern struct kmem_cache *fanotify_path_event_cachep;
+>  extern struct kmem_cache *fanotify_perm_event_cachep;
+> @@ -129,6 +130,25 @@ static inline void fanotify_info_copy_name(struct fanotify_info *info,
+>  	       name->name);
+>  }
+>  
+> +enum fanotify_mark_bits {
+> +	FANOTIFY_MARK_FLAG_BIT_SB_MARK = FSN_MARK_PRIVATE_FLAGS,
+> +};
+> +
+> +#define FANOTIFY_MARK_FLAG_SB_MARK \
+> +	(1 << FANOTIFY_MARK_FLAG_BIT_SB_MARK)
+> +
+> +struct fanotify_sb_mark {
+> +	struct fsnotify_mark fsn_mark;
+> +};
+> +
+> +static inline
+> +struct fanotify_sb_mark *FANOTIFY_SB_MARK(struct fsnotify_mark *mark)
+> +{
+> +	WARN_ON(!(mark->flags & FANOTIFY_MARK_FLAG_SB_MARK));
+> +
+> +	return container_of(mark, struct fanotify_sb_mark, fsn_mark);
+> +}
+> +
+>  /*
+>   * Common structure for fanotify events. Concrete structs are allocated in
+>   * fanotify_handle_event() and freed when the information is retrieved by
+> diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
+> index 67b18dfe0025..c47a5a45c0d3 100644
+> --- a/fs/notify/fanotify/fanotify_user.c
+> +++ b/fs/notify/fanotify/fanotify_user.c
+> @@ -99,6 +99,7 @@ struct ctl_table fanotify_table[] = {
+>  extern const struct fsnotify_ops fanotify_fsnotify_ops;
+>  
+>  struct kmem_cache *fanotify_mark_cache __read_mostly;
+> +struct kmem_cache *fanotify_sb_mark_cache __read_mostly;
+>  struct kmem_cache *fanotify_fid_event_cachep __read_mostly;
+>  struct kmem_cache *fanotify_path_event_cachep __read_mostly;
+>  struct kmem_cache *fanotify_perm_event_cachep __read_mostly;
+> @@ -915,6 +916,38 @@ static __u32 fanotify_mark_add_to_mask(struct fsnotify_mark *fsn_mark,
+>  	return mask & ~oldmask;
+>  }
+>  
+> +static struct fsnotify_mark *fanotify_alloc_mark(struct fsnotify_group *group,
+> +						 unsigned int type)
+> +{
+> +	struct fanotify_sb_mark *sb_mark;
+> +	struct fsnotify_mark *mark;
+> +
+> +	switch (type) {
+> +	case FSNOTIFY_OBJ_TYPE_SB:
+> +		sb_mark = kmem_cache_alloc(fanotify_sb_mark_cache, GFP_KERNEL);
+> +		if (!sb_mark)
+> +			return NULL;
+> +		mark = &sb_mark->fsn_mark;
+> +		break;
+> +
+> +	case FSNOTIFY_OBJ_TYPE_INODE:
+> +	case FSNOTIFY_OBJ_TYPE_PARENT:
+> +	case FSNOTIFY_OBJ_TYPE_VFSMOUNT:
+> +		mark = kmem_cache_alloc(fanotify_mark_cache, GFP_KERNEL);
+> +		break;
+> +	default:
+> +		WARN_ON(1);
+> +		return NULL;
+> +	}
+> +
+> +	fsnotify_init_mark(mark, group);
+> +
+> +	if (type == FSNOTIFY_OBJ_TYPE_SB)
+> +		mark->flags |= FANOTIFY_MARK_FLAG_SB_MARK;
+> +
+> +	return mark;
+> +}
+> +
+>  static struct fsnotify_mark *fanotify_add_new_mark(struct fsnotify_group *group,
+>  						   fsnotify_connp_t *connp,
+>  						   unsigned int type,
+> @@ -933,13 +966,12 @@ static struct fsnotify_mark *fanotify_add_new_mark(struct fsnotify_group *group,
+>  	    !inc_ucount(ucounts->ns, ucounts->uid, UCOUNT_FANOTIFY_MARKS))
+>  		return ERR_PTR(-ENOSPC);
+>  
+> -	mark = kmem_cache_alloc(fanotify_mark_cache, GFP_KERNEL);
+> +	mark = fanotify_alloc_mark(group, type);
+>  	if (!mark) {
+>  		ret = -ENOMEM;
+>  		goto out_dec_ucounts;
+>  	}
+>  
+> -	fsnotify_init_mark(mark, group);
+>  	ret = fsnotify_add_mark_locked(mark, connp, type, 0, fsid);
+>  	if (ret) {
+>  		fsnotify_put_mark(mark);
+> @@ -1497,6 +1529,8 @@ static int __init fanotify_user_setup(void)
+>  
+>  	fanotify_mark_cache = KMEM_CACHE(fsnotify_mark,
+>  					 SLAB_PANIC|SLAB_ACCOUNT);
+> +	fanotify_sb_mark_cache = KMEM_CACHE(fanotify_sb_mark,
+> +					    SLAB_PANIC|SLAB_ACCOUNT);
+>  	fanotify_fid_event_cachep = KMEM_CACHE(fanotify_fid_event,
+>  					       SLAB_PANIC);
+>  	fanotify_path_event_cachep = KMEM_CACHE(fanotify_path_event,
+> -- 
+> 2.32.0
+> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
