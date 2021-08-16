@@ -2,121 +2,104 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F5763ECEE6
-	for <lists+linux-ext4@lfdr.de>; Mon, 16 Aug 2021 08:57:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E17C3ED0FB
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Aug 2021 11:23:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233550AbhHPG6L (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 16 Aug 2021 02:58:11 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:8417 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233349AbhHPG6K (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 16 Aug 2021 02:58:10 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Gp4cw3WTjz85NG;
-        Mon, 16 Aug 2021 14:53:36 +0800 (CST)
-Received: from dggema766-chm.china.huawei.com (10.1.198.208) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 16 Aug 2021 14:57:37 +0800
-Received: from [10.174.177.210] (10.174.177.210) by
- dggema766-chm.china.huawei.com (10.1.198.208) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 16 Aug 2021 14:57:37 +0800
-Subject: Re: [PATCH] ext4: if zeroout fails fall back to splitting the extent
- node
-From:   yangerkun <yangerkun@huawei.com>
-To:     Theodore Ts'o <tytso@mit.edu>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>
-CC:     <yukuai3@huawei.com>
-References: <YRaNKc2PvM+Eyzmp@mit.edu> <20210813212701.366447-1-tytso@mit.edu>
- <2714202a-872e-aa75-7033-fb06a47b9241@huawei.com>
-Message-ID: <9fdbfcce-961d-8074-e431-5d867fbf5216@huawei.com>
-Date:   Mon, 16 Aug 2021 14:57:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S235360AbhHPJXy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 16 Aug 2021 05:23:54 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:40616 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235307AbhHPJXp (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 16 Aug 2021 05:23:45 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id D1DB21FE9F;
+        Mon, 16 Aug 2021 09:23:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1629105792; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=lIhbtfmQFdUyLr+XRg4X189IA3pmb9ipPv3oDyGsdAk=;
+        b=ZvpbcYm/EqvWLf2vBJ5CkR9pIkhz67biMHzXgp1fTtcgiF3RQls0iN9gVZV8fy86Bw19x0
+        SMBOkfOXC+vloHb/ASdhy0fdl4CHPRR8UdYKIWSM0aWUMEfoPkJXR/1nTY94q3uVSEG6pI
+        kgKzltAq5c2R9dCHRg93+CrdasTtEXw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1629105792;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=lIhbtfmQFdUyLr+XRg4X189IA3pmb9ipPv3oDyGsdAk=;
+        b=nqMgIrKk5QB2oRbM5SkuVn/WYXk2O5OD1FQ48/pu8h6En3ei+qlMeXUJAAjm20SSRMrML3
+        h4qMozw+RJ0DB+Cg==
+Received: from quack2.suse.cz (unknown [10.100.224.230])
+        by relay2.suse.de (Postfix) with ESMTP id C1889A3B8E;
+        Mon, 16 Aug 2021 09:23:12 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 91F7D1E0426; Mon, 16 Aug 2021 11:23:09 +0200 (CEST)
+From:   Jan Kara <jack@suse.cz>
+To:     Ted Tso <tytso@mit.edu>
+Cc:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>
+Subject: [PATCH 0/5 v6] ext4: Speedup orphan file handling
+Date:   Mon, 16 Aug 2021 11:22:58 +0200
+Message-Id: <20210816091810.16994-1-jack@suse.cz>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <2714202a-872e-aa75-7033-fb06a47b9241@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2222; h=from:subject:message-id; bh=+dol8tocQN+OE6iZMOk/W/8ZT/JoSmI7b+s6J9ZlrVs=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBhGi5RRGVcyCfxlG1lBHJLc5NIdXP+Mce7N9uiE2Qd AcqJ6C6JATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCYRouUQAKCRCcnaoHP2RA2b6YCA DnMlIbjp6fhmDMp+1Y8ZXAXhR6FAi2rBFVaX0D1yaF2/Kh7DNsX9fbbYVstZmtTuh3afs5tkJlCA11 9Kw3vDVwBAESiqpjlKZxocGVzkb4WBDkl92rbkbuUXOdqPHTRUsReIsC3ujeZXa6wdbWLR9Jqhy46Q ZczWZNB8ai+B30Z3biRQ+anTFg4FknJRQSn2CyZHGSlIpj1nibpa3y+4ptW301D+MWtHtEYfnp2ugZ Mhut5gBnfQxADjquSdbTn0+Afony/vvq+tG7Oxq+r8gsVUYwEQugiSiGnvZMgw+Sym4TNb1EGn4/Qk p244wG/ZhaZxtCNbFVkssM/z0ykG5f
+X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.210]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggema766-chm.china.huawei.com (10.1.198.208)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+  Hello,
 
+Here is a fourth version of my series to speed up orphan inode handling in
+ext4.
 
-在 2021/8/14 10:15, yangerkun 写道:
-> 
-> 
-> 在 2021/8/14 5:27, Theodore Ts'o 写道:
->> If the underlying storage device is using thin-provisioning, it's
->> possible for a zeroout operation to return ENOSPC.
->>
->> Commit df22291ff0fd ("ext4: Retry block allocation if we have free blocks
->> left") added logic to retry block allocation since we might get free 
->> block
->> after we commit a transaction. But the ENOSPC from thin-provisioning
->> will confuse ext4, and lead to an infinite loop.
->>
->> Since using zeroout instead of splitting the extent node is an
->> optimization, if it fails, we might as well fall back to splitting the
->> extent node.
->>
->> Reported-by: yangerkun <yangerkun@huawei.com>
->> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
->> ---
->>
->> I've run this through my battery of tests, and it doesn't cause any
->> regressions.  Yangerkun, can you test this and see if this works for
->> you?
-> 
-> Will do it.
+Orphan inode handling in ext4 is a bottleneck for workloads which heavily
+excercise truncate / unlink of small files as they contend on global
+s_orphan_mutex (when you have fast enough storage). This patch set implements
+new way of handling orphan inodes - instead of using a linked list, we store
+inode numbers of orphaned inodes in a file which is possible to implement in a
+more scalable manner than linked list manipulations. See description of patch
+3/5 for more details.
 
-Thanks for the patch, it can help us to pass the testcase. And after 
-some review, it's really a better fix for me.
+The patch set achieves significant gains both for a micro benchmark stressing
+orphan inode handling (truncating file byte-by-byte, several threads in
+parallel) and for reaim creat_clo workload. I'm happy for any review, thoughts,
+ideas about the patches. I have also implemented full support in e2fsprogs
+which I'll send separately.
 
-Thanks,
-Kun.
+								Honza
 
-> 
->>
->>   fs/ext4/extents.c | 5 +++--
->>   1 file changed, 3 insertions(+), 2 deletions(-)
->>
->> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
->> index 92ad64b89d9b..501516cadc1b 100644
->> --- a/fs/ext4/extents.c
->> +++ b/fs/ext4/extents.c
->> @@ -3569,7 +3569,7 @@ static int 
->> ext4_ext_convert_to_initialized(handle_t *handle,
->>                   split_map.m_len - ee_block);
->>               err = ext4_ext_zeroout(inode, &zero_ex1);
->>               if (err)
->> -                goto out;
->> +                goto fallback;
->>               split_map.m_len = allocated;
->>           }
->>           if (split_map.m_lblk - ee_block + split_map.m_len <
->> @@ -3583,7 +3583,7 @@ static int 
->> ext4_ext_convert_to_initialized(handle_t *handle,
->>                                 ext4_ext_pblock(ex));
->>                   err = ext4_ext_zeroout(inode, &zero_ex2);
->>                   if (err)
->> -                    goto out;
->> +                    goto fallback;
->>               }
->>               split_map.m_len += split_map.m_lblk - ee_block;
->> @@ -3592,6 +3592,7 @@ static int 
->> ext4_ext_convert_to_initialized(handle_t *handle,
->>           }
->>       }
->> +fallback:
->>       err = ext4_split_extent(handle, inode, ppath, &split_map, 
->> split_flag,
->>                   flags);
->>       if (err > 0)
->>
-> .
+[1] https://lore.kernel.org/lkml/20210227120804.GB22871@xsang-OptiPlex-9020/
+
+Changes since v5:
+* Added Reviewed-by tags from Ted
+* Fixed up sparse warning spotted by 0-day
+* Fixed error handling path in ext4_orphan_add() to not leak orphan entry
+
+Changes since v4:
+* Rebased on top of v5.14-rc5
+* Updated commit message of patch 1/5
+* Added Reviewed-by tags from Ted
+
+Changes since v3:
+* Added documentation about on-disk format changes
+* Add physical block number into orphan block checksum
+* Improve some sanity checks, handling of corrupted orphan file
+* Improved some changelogs
+
+Changes since v2:
+* Updated some comments
+* Rebased onto 5.13-rc5
+* Change orphan file inode from a fixed inode number to inode number stored
+  in the superblock
+
+Changes since v1:
+* orphan blocks have now magic numbers
+* split out orphan handling to a separate source file
+* some smaller updates according to review
+
+Previous versions:
+Link: http://lore.kernel.org/r/20210811101006.2033-1-jack@suse.cz # v5
+Link: https://lore.kernel.org/linux-ext4/20210712154009.9290-1-jack@suse.cz/ #v4
+Link: https://lore.kernel.org/linux-ext4/20210616105655.5129-1-jack@suse.cz/ #v3
+Link: https://lore.kernel.org/linux-ext4/1432293717-24010-1-git-send-email-jack@suse.cz/ #v2
