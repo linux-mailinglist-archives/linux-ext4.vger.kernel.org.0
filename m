@@ -2,40 +2,40 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BE6C3ED65D
-	for <lists+linux-ext4@lfdr.de>; Mon, 16 Aug 2021 15:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27F1B3ED6F9
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Aug 2021 15:28:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238917AbhHPNUh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 16 Aug 2021 09:20:37 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:46248 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240169AbhHPNTZ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 16 Aug 2021 09:19:25 -0400
+        id S240747AbhHPNZm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 16 Aug 2021 09:25:42 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:52334 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238754AbhHPNYF (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 16 Aug 2021 09:24:05 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id DE8661FE6F;
-        Mon, 16 Aug 2021 13:18:50 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 2109B21DA5;
+        Mon, 16 Aug 2021 13:23:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1629119930; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1629120213; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=BoAMWR7Ykja6Ogd0JcusUgpGDWD9ocMKTw5LjQGWy2o=;
-        b=U07WEFV5WbFuiBMtzYN+0zbeUCZKPSxQ68FlCXrHaRThrT9psHB+OMHk8kRMQneUfh64X1
-        x3ztIrIS5fA668nzwjiJKuCs0btxRr3vBfKCQev8vgV6spN0DdH4xDqgj4bx0ue2b1kWZC
-        6UkJ3ZAg3FEohynwKKO9IL0AH9spynI=
+        bh=22mScugL1fLxQzYMhho9jmQhIvvc4nXeZ8bD48Nn3Rw=;
+        b=UukOSQOneF2D+37ccVX3RdNLjDGOxLA8XsbfjUTGpmuNCWgWnqv1i933o+EPUnvtDe2Bzs
+        XI1uxNFsGfKIYqa/FTtfFFB5DK9iPDuXzKwc3FR05W2UXMcai5ADYqBy/2qkY+jgOSEefz
+        oMLqnAmo8NHR6irNhn3z8eDAqvfwbOs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1629119930;
+        s=susede2_ed25519; t=1629120213;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=BoAMWR7Ykja6Ogd0JcusUgpGDWD9ocMKTw5LjQGWy2o=;
-        b=5nXqkKhrz+jDwSLrtyizBs8KDrcSNzrLaD/eXVCGsM65+4ugX9H1lmCN9nNRH1pjt0RS7M
-        451ECAor4w+l5+DA==
+        bh=22mScugL1fLxQzYMhho9jmQhIvvc4nXeZ8bD48Nn3Rw=;
+        b=1BnzC6mXJijnrk2+4keyfNEEUCxjzL3/LBKdZumik0bSvMEh+/VCDJyTi8nG5C0pJiOB/L
+        qbCb1swfEPiDLTAQ==
 Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id CC6E8A3B94;
-        Mon, 16 Aug 2021 13:18:50 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 01AE5A3B97;
+        Mon, 16 Aug 2021 13:23:33 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id B4FFF1E0426; Mon, 16 Aug 2021 15:18:50 +0200 (CEST)
-Date:   Mon, 16 Aug 2021 15:18:50 +0200
+        id B7FC81E0426; Mon, 16 Aug 2021 15:23:32 +0200 (CEST)
+Date:   Mon, 16 Aug 2021 15:23:32 +0200
 From:   Jan Kara <jack@suse.cz>
 To:     Gabriel Krisman Bertazi <krisman@collabora.com>
 Cc:     amir73il@gmail.com, jack@suse.com, linux-api@vger.kernel.org,
@@ -43,27 +43,25 @@ Cc:     amir73il@gmail.com, jack@suse.com, linux-api@vger.kernel.org,
         khazhy@google.com, dhowells@redhat.com, david@fromorbit.com,
         tytso@mit.edu, djwong@kernel.org, repnop@google.com,
         kernel@collabora.com
-Subject: Re: [PATCH v6 05/21] fanotify: Split superblock marks out to a new
- cache
-Message-ID: <20210816131850.GC30215@quack2.suse.cz>
+Subject: Re: [PATCH v6 10/21] fsnotify: Support FS_ERROR event type
+Message-ID: <20210816132332.GD30215@quack2.suse.cz>
 References: <20210812214010.3197279-1-krisman@collabora.com>
- <20210812214010.3197279-6-krisman@collabora.com>
+ <20210812214010.3197279-11-krisman@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210812214010.3197279-6-krisman@collabora.com>
+In-Reply-To: <20210812214010.3197279-11-krisman@collabora.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 12-08-21 17:39:54, Gabriel Krisman Bertazi wrote:
-> FAN_FS_ERROR will require an error structure to be stored per mark.
-> But, since FAN_FS_ERROR doesn't apply to inode/mount marks, it should
-> suffice to only expose this information for superblock marks. Therefore,
-> wrap this kind of marks into a container and plumb it for the future.
+On Thu 12-08-21 17:39:59, Gabriel Krisman Bertazi wrote:
+> Expose a new type of fsnotify event for filesystems to report errors for
+> userspace monitoring tools.  fanotify will send this type of
+> notification for FAN_FS_ERROR events.  This also introduce a helper for
+> generating the new event.
 > 
-> Reviewed-by: Amir Goldstein <amir73il@gmail.com>
 > Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 
 Looks good. Feel free to add:
@@ -72,156 +70,112 @@ Reviewed-by: Jan Kara <jack@suse.cz>
 
 								Honza
 
+> 
 > ---
 > Changes since v5:
->   - turn the flag bits into defines (jan)
->   - don't use zalloc for consistency (jan)
+>   - pass sb inside data field (jan)
+> Changes since v3:
+>   - Squash patch ("fsnotify: Introduce helpers to send error_events")
+>   - Drop reviewed-bys!
+> 
 > Changes since v2:
->   - Move mark initialization to fanotify_alloc_mark (Amir)
+>   - FAN_ERROR->FAN_FS_ERROR (Amir)
 > 
 > Changes since v1:
->   - Only extend superblock marks (Amir)
+>   - Overload FS_ERROR with FS_IN_IGNORED
+>   - Implement support for this type on fsnotify_data_inode (Amir)
 > ---
->  fs/notify/fanotify/fanotify.c      | 10 ++++++--
->  fs/notify/fanotify/fanotify.h      | 20 ++++++++++++++++
->  fs/notify/fanotify/fanotify_user.c | 38 ++++++++++++++++++++++++++++--
->  3 files changed, 64 insertions(+), 4 deletions(-)
+>  fs/notify/fsnotify.c             |  3 +++
+>  include/linux/fsnotify.h         | 13 +++++++++++++
+>  include/linux/fsnotify_backend.h | 18 +++++++++++++++++-
+>  3 files changed, 33 insertions(+), 1 deletion(-)
 > 
-> diff --git a/fs/notify/fanotify/fanotify.c b/fs/notify/fanotify/fanotify.c
-> index 310246f8d3f1..c3eefe3f6494 100644
-> --- a/fs/notify/fanotify/fanotify.c
-> +++ b/fs/notify/fanotify/fanotify.c
-> @@ -869,9 +869,15 @@ static void fanotify_freeing_mark(struct fsnotify_mark *mark,
->  		dec_ucount(group->fanotify_data.ucounts, UCOUNT_FANOTIFY_MARKS);
+> diff --git a/fs/notify/fsnotify.c b/fs/notify/fsnotify.c
+> index 536db02cb26e..6d3b3de4f8ee 100644
+> --- a/fs/notify/fsnotify.c
+> +++ b/fs/notify/fsnotify.c
+> @@ -103,6 +103,9 @@ static struct super_block *fsnotify_data_sb(const void *data, int data_type)
+>  	struct inode *inode = fsnotify_data_inode(data, data_type);
+>  	struct super_block *sb = inode ? inode->i_sb : NULL;
+>  
+> +	if (!sb && data_type == FSNOTIFY_EVENT_ERROR)
+> +		sb = ((struct fs_error_report *) data)->sb;
+> +
+>  	return sb;
 >  }
 >  
-> -static void fanotify_free_mark(struct fsnotify_mark *fsn_mark)
-> +static void fanotify_free_mark(struct fsnotify_mark *mark)
->  {
-> -	kmem_cache_free(fanotify_mark_cache, fsn_mark);
-> +	if (mark->flags & FANOTIFY_MARK_FLAG_SB_MARK) {
-> +		struct fanotify_sb_mark *fa_mark = FANOTIFY_SB_MARK(mark);
-> +
-> +		kmem_cache_free(fanotify_sb_mark_cache, fa_mark);
-> +	} else {
-> +		kmem_cache_free(fanotify_mark_cache, mark);
-> +	}
+> diff --git a/include/linux/fsnotify.h b/include/linux/fsnotify.h
+> index f8acddcf54fb..521234af1827 100644
+> --- a/include/linux/fsnotify.h
+> +++ b/include/linux/fsnotify.h
+> @@ -317,4 +317,17 @@ static inline void fsnotify_change(struct dentry *dentry, unsigned int ia_valid)
+>  		fsnotify_dentry(dentry, mask);
 >  }
 >  
->  const struct fsnotify_ops fanotify_fsnotify_ops = {
-> diff --git a/fs/notify/fanotify/fanotify.h b/fs/notify/fanotify/fanotify.h
-> index 4a5e555dc3d2..3b11dd03df59 100644
-> --- a/fs/notify/fanotify/fanotify.h
-> +++ b/fs/notify/fanotify/fanotify.h
-> @@ -6,6 +6,7 @@
->  #include <linux/hashtable.h>
->  
->  extern struct kmem_cache *fanotify_mark_cache;
-> +extern struct kmem_cache *fanotify_sb_mark_cache;
->  extern struct kmem_cache *fanotify_fid_event_cachep;
->  extern struct kmem_cache *fanotify_path_event_cachep;
->  extern struct kmem_cache *fanotify_perm_event_cachep;
-> @@ -129,6 +130,25 @@ static inline void fanotify_info_copy_name(struct fanotify_info *info,
->  	       name->name);
->  }
->  
-> +enum fanotify_mark_bits {
-> +	FANOTIFY_MARK_FLAG_BIT_SB_MARK = FSN_MARK_PRIVATE_FLAGS,
-> +};
-> +
-> +#define FANOTIFY_MARK_FLAG_SB_MARK \
-> +	(1 << FANOTIFY_MARK_FLAG_BIT_SB_MARK)
-> +
-> +struct fanotify_sb_mark {
-> +	struct fsnotify_mark fsn_mark;
-> +};
-> +
-> +static inline
-> +struct fanotify_sb_mark *FANOTIFY_SB_MARK(struct fsnotify_mark *mark)
+> +static inline int fsnotify_sb_error(struct super_block *sb, struct inode *inode,
+> +				    int error)
 > +{
-> +	WARN_ON(!(mark->flags & FANOTIFY_MARK_FLAG_SB_MARK));
+> +	struct fs_error_report report = {
+> +		.error = error,
+> +		.inode = inode,
+> +		.sb = sb,
+> +	};
 > +
-> +	return container_of(mark, struct fanotify_sb_mark, fsn_mark);
+> +	return fsnotify(FS_ERROR, &report, FSNOTIFY_EVENT_ERROR,
+> +			NULL, NULL, NULL, 0);
 > +}
 > +
->  /*
->   * Common structure for fanotify events. Concrete structs are allocated in
->   * fanotify_handle_event() and freed when the information is retrieved by
-> diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
-> index 67b18dfe0025..c47a5a45c0d3 100644
-> --- a/fs/notify/fanotify/fanotify_user.c
-> +++ b/fs/notify/fanotify/fanotify_user.c
-> @@ -99,6 +99,7 @@ struct ctl_table fanotify_table[] = {
->  extern const struct fsnotify_ops fanotify_fsnotify_ops;
+>  #endif	/* _LINUX_FS_NOTIFY_H */
+> diff --git a/include/linux/fsnotify_backend.h b/include/linux/fsnotify_backend.h
+> index e027af3cd8dd..277b6f3e0998 100644
+> --- a/include/linux/fsnotify_backend.h
+> +++ b/include/linux/fsnotify_backend.h
+> @@ -42,6 +42,12 @@
 >  
->  struct kmem_cache *fanotify_mark_cache __read_mostly;
-> +struct kmem_cache *fanotify_sb_mark_cache __read_mostly;
->  struct kmem_cache *fanotify_fid_event_cachep __read_mostly;
->  struct kmem_cache *fanotify_path_event_cachep __read_mostly;
->  struct kmem_cache *fanotify_perm_event_cachep __read_mostly;
-> @@ -915,6 +916,38 @@ static __u32 fanotify_mark_add_to_mask(struct fsnotify_mark *fsn_mark,
->  	return mask & ~oldmask;
->  }
+>  #define FS_UNMOUNT		0x00002000	/* inode on umount fs */
+>  #define FS_Q_OVERFLOW		0x00004000	/* Event queued overflowed */
+> +#define FS_ERROR		0x00008000	/* Filesystem Error (fanotify) */
+> +
+> +/*
+> + * FS_IN_IGNORED overloads FS_ERROR.  It is only used internally by inotify
+> + * which does not support FS_ERROR.
+> + */
+>  #define FS_IN_IGNORED		0x00008000	/* last inotify event here */
 >  
-> +static struct fsnotify_mark *fanotify_alloc_mark(struct fsnotify_group *group,
-> +						 unsigned int type)
-> +{
-> +	struct fanotify_sb_mark *sb_mark;
-> +	struct fsnotify_mark *mark;
-> +
-> +	switch (type) {
-> +	case FSNOTIFY_OBJ_TYPE_SB:
-> +		sb_mark = kmem_cache_alloc(fanotify_sb_mark_cache, GFP_KERNEL);
-> +		if (!sb_mark)
-> +			return NULL;
-> +		mark = &sb_mark->fsn_mark;
-> +		break;
-> +
-> +	case FSNOTIFY_OBJ_TYPE_INODE:
-> +	case FSNOTIFY_OBJ_TYPE_PARENT:
-> +	case FSNOTIFY_OBJ_TYPE_VFSMOUNT:
-> +		mark = kmem_cache_alloc(fanotify_mark_cache, GFP_KERNEL);
-> +		break;
-> +	default:
-> +		WARN_ON(1);
-> +		return NULL;
-> +	}
-> +
-> +	fsnotify_init_mark(mark, group);
-> +
-> +	if (type == FSNOTIFY_OBJ_TYPE_SB)
-> +		mark->flags |= FANOTIFY_MARK_FLAG_SB_MARK;
-> +
-> +	return mark;
-> +}
-> +
->  static struct fsnotify_mark *fanotify_add_new_mark(struct fsnotify_group *group,
->  						   fsnotify_connp_t *connp,
->  						   unsigned int type,
-> @@ -933,13 +966,12 @@ static struct fsnotify_mark *fanotify_add_new_mark(struct fsnotify_group *group,
->  	    !inc_ucount(ucounts->ns, ucounts->uid, UCOUNT_FANOTIFY_MARKS))
->  		return ERR_PTR(-ENOSPC);
+>  #define FS_OPEN_PERM		0x00010000	/* open event in an permission hook */
+> @@ -95,7 +101,8 @@
+>  #define ALL_FSNOTIFY_EVENTS (ALL_FSNOTIFY_DIRENT_EVENTS | \
+>  			     FS_EVENTS_POSS_ON_CHILD | \
+>  			     FS_DELETE_SELF | FS_MOVE_SELF | FS_DN_RENAME | \
+> -			     FS_UNMOUNT | FS_Q_OVERFLOW | FS_IN_IGNORED)
+> +			     FS_UNMOUNT | FS_Q_OVERFLOW | FS_IN_IGNORED | \
+> +			     FS_ERROR)
 >  
-> -	mark = kmem_cache_alloc(fanotify_mark_cache, GFP_KERNEL);
-> +	mark = fanotify_alloc_mark(group, type);
->  	if (!mark) {
->  		ret = -ENOMEM;
->  		goto out_dec_ucounts;
+>  /* Extra flags that may be reported with event or control handling of events */
+>  #define ALL_FSNOTIFY_FLAGS  (FS_EXCL_UNLINK | FS_ISDIR | FS_IN_ONESHOT | \
+> @@ -248,6 +255,13 @@ enum fsnotify_data_type {
+>  	FSNOTIFY_EVENT_NONE,
+>  	FSNOTIFY_EVENT_PATH,
+>  	FSNOTIFY_EVENT_INODE,
+> +	FSNOTIFY_EVENT_ERROR,
+> +};
+> +
+> +struct fs_error_report {
+> +	int error;
+> +	struct inode *inode;
+> +	struct super_block *sb;
+>  };
+>  
+>  static inline struct inode *fsnotify_data_inode(const void *data, int data_type)
+> @@ -257,6 +271,8 @@ static inline struct inode *fsnotify_data_inode(const void *data, int data_type)
+>  		return (struct inode *)data;
+>  	case FSNOTIFY_EVENT_PATH:
+>  		return d_inode(((const struct path *)data)->dentry);
+> +	case FSNOTIFY_EVENT_ERROR:
+> +		return ((struct fs_error_report *)data)->inode;
+>  	default:
+>  		return NULL;
 >  	}
->  
-> -	fsnotify_init_mark(mark, group);
->  	ret = fsnotify_add_mark_locked(mark, connp, type, 0, fsid);
->  	if (ret) {
->  		fsnotify_put_mark(mark);
-> @@ -1497,6 +1529,8 @@ static int __init fanotify_user_setup(void)
->  
->  	fanotify_mark_cache = KMEM_CACHE(fsnotify_mark,
->  					 SLAB_PANIC|SLAB_ACCOUNT);
-> +	fanotify_sb_mark_cache = KMEM_CACHE(fanotify_sb_mark,
-> +					    SLAB_PANIC|SLAB_ACCOUNT);
->  	fanotify_fid_event_cachep = KMEM_CACHE(fanotify_fid_event,
->  					       SLAB_PANIC);
->  	fanotify_path_event_cachep = KMEM_CACHE(fanotify_path_event,
 > -- 
 > 2.32.0
 > 
