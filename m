@@ -2,122 +2,125 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CA413ED197
-	for <lists+linux-ext4@lfdr.de>; Mon, 16 Aug 2021 12:05:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DB883ED62B
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Aug 2021 15:17:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233173AbhHPKGU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 16 Aug 2021 06:06:20 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:49366 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbhHPKGR (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 16 Aug 2021 06:06:17 -0400
+        id S240085AbhHPNSO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 16 Aug 2021 09:18:14 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:45690 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237173AbhHPNQJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 16 Aug 2021 09:16:09 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id C734321E3D;
-        Mon, 16 Aug 2021 10:05:45 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 1FD131FE5F;
+        Mon, 16 Aug 2021 13:15:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1629108345; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1629119737; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=fTkeG6bJXMshF/esefDOyz4MmK4jqeIJN3ZmUuKvdN0=;
-        b=cy4+aRzF2Fo5vhx02UatpYM3C5k3gpUtrZkI+R7wAkmnEsZ1m06rXVmxNQgrpB4Jt4xhOc
-        t4abY+NolW0Mq4+fh87GP1CbsbbP3wPHVClkBbS38k6mr0gyn1HQ3d4yMg+PDB8zqoWLlN
-        fg/Foams+Z9090VMZUOSIsm699pT1+M=
+        bh=kFqrL9tlo3vHH2OdCMbi/CRA3pJJfS/41yIA8FjXzf0=;
+        b=Y+/b46UOpoHG8J+Den7D1I/U91wSOlxhsn4uivMO+Um52pZb4o1wu3i9pSHbwFY003kxJK
+        kPOLDVKsavKS3HPLJIvRjNoc6/OBKQliGpPOfuNPqY/GvYA0yB3R9ZwQdyfqtPYTk3sv0O
+        3jDtlS6KKuQ/rW8m8bCC1m04jU6inNQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1629108345;
+        s=susede2_ed25519; t=1629119737;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=fTkeG6bJXMshF/esefDOyz4MmK4jqeIJN3ZmUuKvdN0=;
-        b=mA/+HCKEXnaje/dL5p8iitqIiBQPgqBMtKF8L9uNApiG70M9NOcAT/cj5RmEhz7AuGPnMK
-        O+2m7f/guXaORPCQ==
+        bh=kFqrL9tlo3vHH2OdCMbi/CRA3pJJfS/41yIA8FjXzf0=;
+        b=K9F1H0giDC5X/udipaLGIVqN+I2jMVsptFImKLYPW//ApiZGVPXmfixcCOcXe7vKoEHmgT
+        szNwcQFVyAmS1lBw==
 Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id B985AA3B8C;
-        Mon, 16 Aug 2021 10:05:45 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 058AEA3B8F;
+        Mon, 16 Aug 2021 13:15:37 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 952E81E0426; Mon, 16 Aug 2021 12:05:45 +0200 (CEST)
-Date:   Mon, 16 Aug 2021 12:05:45 +0200
+        id E21741E0426; Mon, 16 Aug 2021 15:15:36 +0200 (CEST)
+Date:   Mon, 16 Aug 2021 15:15:36 +0200
 From:   Jan Kara <jack@suse.cz>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Jan Kara <jack@suse.cz>, yangerkun <yangerkun@huawei.com>,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        yukuai3@huawei.com
-Subject: Re: [PATCH] ext4: stop return ENOSPC from ext4_issue_zeroout
-Message-ID: <20210816100545.GF24793@quack2.suse.cz>
-References: <20210804125044.2480435-1-yangerkun@huawei.com>
- <20210804133529.GE4578@quack2.suse.cz>
- <YRaNKc2PvM+Eyzmp@mit.edu>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Jan Kara <jack@suse.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Ext4 <linux-ext4@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Khazhismel Kumykov <khazhy@google.com>,
+        David Howells <dhowells@redhat.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Theodore Tso <tytso@mit.edu>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Matthew Bobrowski <repnop@google.com>, kernel@collabora.com
+Subject: Re: [PATCH v6 04/21] fsnotify: Reserve mark flag bits for backends
+Message-ID: <20210816131536.GB30215@quack2.suse.cz>
+References: <20210812214010.3197279-1-krisman@collabora.com>
+ <20210812214010.3197279-5-krisman@collabora.com>
+ <CAOQ4uxh0WNxsuwtfv_iDCaZbmJEDB700D5_v==ffm2-WAg_V7w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YRaNKc2PvM+Eyzmp@mit.edu>
+In-Reply-To: <CAOQ4uxh0WNxsuwtfv_iDCaZbmJEDB700D5_v==ffm2-WAg_V7w@mail.gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri 13-08-21 11:18:01, Theodore Ts'o wrote:
-> On Wed, Aug 04, 2021 at 03:35:29PM +0200, Jan Kara wrote:
-> > On Wed 04-08-21 20:50:44, yangerkun wrote:
-> > > Our testcase(briefly described as fsstress on dm thin-provisioning which
-> > > ext4 see volume size with 100G but actual size 10G) trigger a hungtask
-> > > bug since ext4_writepages fall into a infinite loop:
-> > > 
-> > > Got ENOSPC with follow stack:
-> > > ...
-> > > ext4_ext_map_blocks
-> > >   ext4_ext_convert_to_initialized
-> > >     ext4_ext_zeroout
-> > >       ext4_issue_zeroout
-> > >         ...
-> > >         submit_bio_wait <-- bio to thinpool will return ENOSPC
-> > > 
-> > 
-> > Thanks for the patch. As a quick fix for the problem this is probably fine.
-> > But longer term we might need to implement a configurable behavior for this
-> > because just dropping data on the floor (which is what would happen here)
-> > need not be what sysadmin wants and blocking until space is provisioned may be
-> > actually a preferable behavior. Anyway for now feel free to add:
-> > 
-> > Reviewed-by: Jan Kara <jack@suse.cz>
+On Fri 13-08-21 10:28:27, Amir Goldstein wrote:
+> On Fri, Aug 13, 2021 at 12:40 AM Gabriel Krisman Bertazi
+> <krisman@collabora.com> wrote:
+> >
+> > Split out the final bits of struct fsnotify_mark->flags for use by a
+> > backend.
+> >
+> > Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+> >
+> > Changes since v1:
+> >   - turn consts into defines (jan)
+> > ---
+> >  include/linux/fsnotify_backend.h | 18 +++++++++++++++---
+> >  1 file changed, 15 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/include/linux/fsnotify_backend.h b/include/linux/fsnotify_backend.h
+> > index 1ce66748a2d2..ae1bd9f06808 100644
+> > --- a/include/linux/fsnotify_backend.h
+> > +++ b/include/linux/fsnotify_backend.h
+> > @@ -363,6 +363,20 @@ struct fsnotify_mark_connector {
+> >         struct hlist_head list;
+> >  };
+> >
+> > +enum fsnotify_mark_bits {
+> > +       FSN_MARK_FL_BIT_IGNORED_SURV_MODIFY,
+> > +       FSN_MARK_FL_BIT_ALIVE,
+> > +       FSN_MARK_FL_BIT_ATTACHED,
+> > +       FSN_MARK_PRIVATE_FLAGS,
+> > +};
+> > +
+> > +#define FSNOTIFY_MARK_FLAG_IGNORED_SURV_MODIFY \
+> > +       (1 << FSN_MARK_FL_BIT_IGNORED_SURV_MODIFY)
+> > +#define FSNOTIFY_MARK_FLAG_ALIVE \
+> > +       (1 << FSN_MARK_FL_BIT_ALIVE)
+> > +#define FSNOTIFY_MARK_FLAG_ATTACHED \
+> > +       (1 << FSN_MARK_FL_BIT_ATTACHED)
+> > +
+> >  /*
+> >   * A mark is simply an object attached to an in core inode which allows an
+> >   * fsnotify listener to indicate they are either no longer interested in events
+> > @@ -398,9 +412,7 @@ struct fsnotify_mark {
+> >         struct fsnotify_mark_connector *connector;
+> >         /* Events types to ignore [mark->lock, group->mark_mutex] */
+> >         __u32 ignored_mask;
+> > -#define FSNOTIFY_MARK_FLAG_IGNORED_SURV_MODIFY 0x01
+> > -#define FSNOTIFY_MARK_FLAG_ALIVE               0x02
+> > -#define FSNOTIFY_MARK_FLAG_ATTACHED            0x04
+> > +       /* Upper bits [31:PRIVATE_FLAGS] are reserved for backend usage */
 > 
-> Hmm, I wonder if this would be a better fix.  (Not yet tested, may fry
-> your file system, etc....)   What do folks think?
+> I don't understand what [31:PRIVATE_FLAGS] means
 
-Yes, that looks indeed better. I'd note that even splitting extent may fail
-due to ENOSPC on thin-provisioned storage but the chances are *much* lower.
+I think it should be [FSN_MARK_PRIVATE_FLAGS:31] (identifying a range of
+bits). I'd maybe write just "Bits starting from FSN_MARK_PRIVATE_FLAGS are
+reserved for backend usage". With this fixed feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
 
 								Honza
-
-> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> index 92ad64b89d9b..501516cadc1b 100644
-> --- a/fs/ext4/extents.c
-> +++ b/fs/ext4/extents.c
-> @@ -3569,7 +3569,7 @@ static int ext4_ext_convert_to_initialized(handle_t *handle,
->  				split_map.m_len - ee_block);
->  			err = ext4_ext_zeroout(inode, &zero_ex1);
->  			if (err)
-> -				goto out;
-> +				goto fallback;
->  			split_map.m_len = allocated;
->  		}
->  		if (split_map.m_lblk - ee_block + split_map.m_len <
-> @@ -3583,7 +3583,7 @@ static int ext4_ext_convert_to_initialized(handle_t *handle,
->  						      ext4_ext_pblock(ex));
->  				err = ext4_ext_zeroout(inode, &zero_ex2);
->  				if (err)
-> -					goto out;
-> +					goto fallback;
->  			}
->  
->  			split_map.m_len += split_map.m_lblk - ee_block;
-> @@ -3592,6 +3592,7 @@ static int ext4_ext_convert_to_initialized(handle_t *handle,
->  		}
->  	}
->  
-> +fallback:
->  	err = ext4_split_extent(handle, inode, ppath, &split_map, split_flag,
->  				flags);
->  	if (err > 0)
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
