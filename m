@@ -2,1279 +2,925 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 445773ED165
-	for <lists+linux-ext4@lfdr.de>; Mon, 16 Aug 2021 11:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EED1E3ED164
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Aug 2021 11:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235546AbhHPJ5w (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 16 Aug 2021 05:57:52 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:48258 "EHLO
+        id S235543AbhHPJ5u (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 16 Aug 2021 05:57:50 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:48250 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235544AbhHPJ5q (ORCPT
+        with ESMTP id S235538AbhHPJ5q (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Mon, 16 Aug 2021 05:57:46 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 2684221E51;
+        by smtp-out1.suse.de (Postfix) with ESMTP id 1DF0B21E40;
         Mon, 16 Aug 2021 09:57:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
         t=1629107834; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=JPBWPU9hJekYLW4Xu9ZYafzNWMjHHG/1Wy4yIq/Jdl8=;
-        b=yysPYC4pMXZfQMf+v6FiWNxg1nBOuOpHmBNd/dd77lEpMnjpMFv/7UBUUQ33fNWlD6geaj
-        mZAUCMOyUj4ocTw0aqiNIyiLNL4nvGfSipRIVBHZpQzgNSs5Zp8QK/s8bFOnJYxMFf8rJd
-        O7VGCD/U2HL5+ROsQOghnrH5d3oYlmM=
+        bh=XLfJd4IWlN3FHLeRI73iOcudvyQk3hkmEJBjPl6p2Dc=;
+        b=lUJ7Id8qTDWm68R3EI4PDsWrZ2mjNDMAy5gmqs1JZKpaHeutWuMWUkPgNbr3aikukFfb8G
+        AkwBHip5bdAfujZDzWpya7JyLAwJ++py0MjI3yQJfrUyXS+J11KCac4vhqbbuLpAY26XKT
+        RZohjtnD9c+q+2XwCS6+DN8K8ynYbi8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1629107834;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=JPBWPU9hJekYLW4Xu9ZYafzNWMjHHG/1Wy4yIq/Jdl8=;
-        b=xGEiPIMFXVqp95S/Opla87Dp7psHqIM3L5zOvFt3CK/TC1/K733Lh5008HqcJt9OIUJ2G6
-        i6/85y2FzXyL5dDA==
+        bh=XLfJd4IWlN3FHLeRI73iOcudvyQk3hkmEJBjPl6p2Dc=;
+        b=dztI7A/n5bYrlMRdrVDDysNLe9sbIcVgOesTIdRssuScVxMD3ZpVBSPxbAjFAKbfbIXZ5Y
+        aHdBesogNyuL3tAA==
 Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id 100ADA3B91;
+        by relay2.suse.de (Postfix) with ESMTP id 0B05BA3B8F;
         Mon, 16 Aug 2021 09:57:14 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id DBC661E031D; Mon, 16 Aug 2021 11:57:13 +0200 (CEST)
+        id E3A5C1E0679; Mon, 16 Aug 2021 11:57:13 +0200 (CEST)
 From:   Jan Kara <jack@suse.cz>
 To:     Ted Tso <tytso@mit.edu>
-Cc:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>
-Subject: [PATCH 1/5] ext4: Support for checksumming from journal triggers
-Date:   Mon, 16 Aug 2021 11:57:04 +0200
-Message-Id: <20210816095713.16537-1-jack@suse.cz>
+Cc:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>,
+        Andreas Dilger <adilger@dilger.ca>
+Subject: [PATCH 2/5] ext4: Move orphan inode handling into a separate file
+Date:   Mon, 16 Aug 2021 11:57:05 +0200
+Message-Id: <20210816095713.16537-2-jack@suse.cz>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210816093626.18767-1-jack@suse.cz>
 References: <20210816093626.18767-1-jack@suse.cz>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=45590; h=from:subject; bh=yZ3tJ6tlLHerKUDpiLNX8vo5BOGhXPEeYdjLsNd0S+k=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBhGjZwfsdgtSgu2dOkwD8abuTRjGtsb/jj2VPoFiTU 6+j1B3mJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCYRo2cAAKCRCcnaoHP2RA2QJkB/ 9oFwgP3/i2PCcNjG7Qz0mMWW9e7kHN/Uk5V/9VFZHu2ikIGf91PQdIC1H20wSLNGzfYFmaJ3RVWdiR wMalcekRaH9D2ge/+9IsLjRBTC2iLvBLRvY5WtNnDY7l2XeJnF7O1DME9U5ZGZ2EZsBj+xvt+S12VR CY22cM3ZyK5lT+L58OR0MBbw+RDonl3f9AxZgnECAMmtr25O+fMEFeE/25EVaQunwTSdqaRQl7k/+K H9NGIAiysR6YM3tUjJkUTfaBhYXjuKoVfeQrEhTFtnC3FS00yiS6gdl8H3JtCacyjP37U5WItYLrUu CSF5WwRJIRRh/IpN/XSRYIdWgXJmiw
+X-Developer-Signature: v=1; a=openpgp-sha256; l=29079; h=from:subject; bh=F8scXl/c0cq4BwGQacngeFfZc7uzoDht7jduvVtJ7DY=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBhGjZxhi9QCE/LdJhB80BXeM4Oyf+I/aFAGWaic/g6 LC9iLwSJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCYRo2cQAKCRCcnaoHP2RA2c7tB/ sF+j0OBQHg0+m23OTA5z3mentgSG3kyp1Xcca0Cg/JxF9DeDC+CmXd0htI5AGUH4nb0WhKswVEa9fV F6ikRXgsEhrl/5175D1UTdCIL32jd/3zTX+MHcdtky4e5TZS2RmA7rVJMOAGNnqGS8LQQRRfMF/mgS 6ImwH+xWPzTjIhGFbtUYS682Eurg9xwGhpFkE+Q8SMRTOzvmzOhQ1694rpCQMitPCRoQ0ui5EomJLX rNoFaXK49NqLTLNZBx+XV9d6gntL3/NEHBWUS0XdTUGOQluBdwcl42qoSMTrosnR8pppBqsK25MNd2 o/lxy1CctXDbmKp7F5myUmDNCrG+Ue
 X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-JBD2 layer support triggers which are called when journaling layer moves
-buffer to a certain state. We can use the frozen trigger, which gets
-called when buffer data is frozen and about to be written out to the
-journal, to compute block checksums for some buffer types (similarly as
-does ocfs2). This avoids unnecessary repeated recomputation of the
-checksum (at the cost of larger window where memory corruption won't be
-caught by checksumming) and is even necessary when there are
-unsynchronized updaters of the checksummed data.
+Move functions for handling orphan inodes into a new file
+fs/ext4/orphan.c to have them in one place and somewhat reduce size of
+other files. No code changes.
 
-So add superblock and journal trigger type arguments to
-ext4_journal_get_write_access() and ext4_journal_get_create_access() so
-that frozen triggers can be set accordingly. Also add inode argument to
-ext4_walk_page_buffers() and all the callbacks used with that function
-for the same purpose. This patch is mostly only a change of prototype of
-the above mentioned functions and a few small helpers. Real checksumming
-will come later.
-
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 Reviewed-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Jan Kara <jack@suse.cz>
 ---
- fs/ext4/ext4.h        | 26 ++++++++++++--
- fs/ext4/ext4_jbd2.c   | 43 +++++++++++++++-------
- fs/ext4/ext4_jbd2.h   | 18 ++++++----
- fs/ext4/extents.c     | 12 ++++---
- fs/ext4/file.c        |  3 +-
- fs/ext4/ialloc.c      | 19 ++++++----
- fs/ext4/indirect.c    | 15 +++++---
- fs/ext4/inline.c      | 26 +++++++++-----
- fs/ext4/inode.c       | 84 +++++++++++++++++++++++++------------------
- fs/ext4/ioctl.c       |  4 ++-
- fs/ext4/mballoc.c     | 15 ++++----
- fs/ext4/namei.c       | 40 +++++++++++++--------
- fs/ext4/resize.c      | 38 ++++++++++++--------
- fs/ext4/super.c       | 16 ++++++++-
- fs/ext4/xattr.c       | 26 +++++++++-----
- fs/jbd2/transaction.c |  2 +-
- 16 files changed, 259 insertions(+), 128 deletions(-)
+ fs/ext4/Makefile |   2 +-
+ fs/ext4/ext4.h   |  11 +-
+ fs/ext4/namei.c  | 182 ------------------------
+ fs/ext4/orphan.c | 363 +++++++++++++++++++++++++++++++++++++++++++++++
+ fs/ext4/super.c  | 180 +----------------------
+ 5 files changed, 375 insertions(+), 363 deletions(-)
+ create mode 100644 fs/ext4/orphan.c
 
+diff --git a/fs/ext4/Makefile b/fs/ext4/Makefile
+index 49e7af6cc93f..7d89142e1421 100644
+--- a/fs/ext4/Makefile
++++ b/fs/ext4/Makefile
+@@ -10,7 +10,7 @@ ext4-y	:= balloc.o bitmap.o block_validity.o dir.o ext4_jbd2.o extents.o \
+ 		indirect.o inline.o inode.o ioctl.o mballoc.o migrate.o \
+ 		mmp.o move_extent.o namei.o page-io.o readpage.o resize.o \
+ 		super.o symlink.o sysfs.o xattr.o xattr_hurd.o xattr_trusted.o \
+-		xattr_user.o fast_commit.o
++		xattr_user.o fast_commit.o orphan.o
+ 
+ ext4-$(CONFIG_EXT4_FS_POSIX_ACL)	+= acl.o
+ ext4-$(CONFIG_EXT4_FS_SECURITY)		+= xattr_security.o
 diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 3c51e243450d..c3cd7faa6cf2 100644
+index c3cd7faa6cf2..b8194ea85fff 100644
 --- a/fs/ext4/ext4.h
 +++ b/fs/ext4/ext4.h
-@@ -1447,6 +1447,24 @@ struct ext4_super_block {
+@@ -2168,6 +2168,8 @@ static inline bool ext4_has_incompat_features(struct super_block *sb)
+ 	return (EXT4_SB(sb)->s_es->s_feature_incompat != 0);
+ }
  
- #define EXT4_ENC_UTF8_12_1	1
- 
-+/* Types of ext4 journal triggers */
-+enum ext4_journal_trigger_type {
-+	EXT4_JTR_NONE	/* This must be the last entry for indexing to work! */
-+};
-+
-+#define EXT4_JOURNAL_TRIGGER_COUNT EXT4_JTR_NONE
-+
-+struct ext4_journal_trigger {
-+	struct jbd2_buffer_trigger_type tr_triggers;
-+	struct super_block *sb;
-+};
-+
-+static inline struct ext4_journal_trigger *EXT4_TRIGGER(
-+				struct jbd2_buffer_trigger_type *trigger)
-+{
-+	return container_of(trigger, struct ext4_journal_trigger, tr_triggers);
-+}
++extern int ext4_feature_set_ok(struct super_block *sb, int readonly);
 +
  /*
-  * fourth extended-fs super-block data in memory
+  * Superblock flags
   */
-@@ -1625,6 +1643,9 @@ struct ext4_sb_info {
- 	struct mb_cache *s_ea_inode_cache;
- 	spinlock_t s_es_lock ____cacheline_aligned_in_smp;
- 
-+	/* Journal triggers for checksum computation */
-+	struct ext4_journal_trigger s_journal_triggers[EXT4_JOURNAL_TRIGGER_COUNT];
-+
- 	/* Ratelimit ext4 messages. */
- 	struct ratelimit_state s_err_ratelimit_state;
- 	struct ratelimit_state s_warning_ratelimit_state;
-@@ -2920,13 +2941,14 @@ int ext4_get_block(struct inode *inode, sector_t iblock,
- int ext4_da_get_block_prep(struct inode *inode, sector_t iblock,
- 			   struct buffer_head *bh, int create);
- int ext4_walk_page_buffers(handle_t *handle,
-+			   struct inode *inode,
- 			   struct buffer_head *head,
- 			   unsigned from,
- 			   unsigned to,
- 			   int *partial,
--			   int (*fn)(handle_t *handle,
-+			   int (*fn)(handle_t *handle, struct inode *inode,
- 				     struct buffer_head *bh));
--int do_journal_get_write_access(handle_t *handle,
-+int do_journal_get_write_access(handle_t *handle, struct inode *inode,
- 				struct buffer_head *bh);
- #define FALL_BACK_TO_NONDELALLOC 1
- #define CONVERT_INLINE_DATA	 2
-diff --git a/fs/ext4/ext4_jbd2.c b/fs/ext4/ext4_jbd2.c
-index b60f0152ea57..6def7339056d 100644
---- a/fs/ext4/ext4_jbd2.c
-+++ b/fs/ext4/ext4_jbd2.c
-@@ -218,9 +218,11 @@ static void ext4_check_bdev_write_error(struct super_block *sb)
+@@ -3028,8 +3030,6 @@ extern int ext4_init_new_dir(handle_t *handle, struct inode *dir,
+ 			     struct inode *inode);
+ extern int ext4_dirblock_csum_verify(struct inode *inode,
+ 				     struct buffer_head *bh);
+-extern int ext4_orphan_add(handle_t *, struct inode *);
+-extern int ext4_orphan_del(handle_t *, struct inode *);
+ extern int ext4_htree_fill_tree(struct file *dir_file, __u32 start_hash,
+ 				__u32 start_minor_hash, __u32 *next_hash);
+ extern int ext4_search_dir(struct buffer_head *bh,
+@@ -3498,6 +3498,7 @@ static inline bool ext4_is_quota_journalled(struct super_block *sb)
+ 	return (ext4_has_feature_quota(sb) ||
+ 		sbi->s_qf_names[USRQUOTA] || sbi->s_qf_names[GRPQUOTA]);
  }
- 
- int __ext4_journal_get_write_access(const char *where, unsigned int line,
--				    handle_t *handle, struct buffer_head *bh)
-+				    handle_t *handle, struct super_block *sb,
-+				    struct buffer_head *bh,
-+				    enum ext4_journal_trigger_type trigger_type)
- {
--	int err = 0;
-+	int err;
- 
- 	might_sleep();
- 
-@@ -229,11 +231,18 @@ int __ext4_journal_get_write_access(const char *where, unsigned int line,
- 
- 	if (ext4_handle_valid(handle)) {
- 		err = jbd2_journal_get_write_access(handle, bh);
--		if (err)
-+		if (err) {
- 			ext4_journal_abort_handle(where, line, __func__, bh,
- 						  handle, err);
-+			return err;
-+		}
- 	}
--	return err;
-+	if (trigger_type == EXT4_JTR_NONE || !ext4_has_metadata_csum(sb))
-+		return 0;
-+	BUG_ON(trigger_type >= EXT4_JOURNAL_TRIGGER_COUNT);
-+	jbd2_journal_set_triggers(bh,
-+		&EXT4_SB(sb)->s_journal_triggers[trigger_type].tr_triggers);
-+	return 0;
- }
- 
- /*
-@@ -301,17 +310,27 @@ int __ext4_forget(const char *where, unsigned int line, handle_t *handle,
- }
- 
- int __ext4_journal_get_create_access(const char *where, unsigned int line,
--				handle_t *handle, struct buffer_head *bh)
-+				handle_t *handle, struct super_block *sb,
-+				struct buffer_head *bh,
-+				enum ext4_journal_trigger_type trigger_type)
- {
--	int err = 0;
-+	int err;
- 
--	if (ext4_handle_valid(handle)) {
--		err = jbd2_journal_get_create_access(handle, bh);
--		if (err)
--			ext4_journal_abort_handle(where, line, __func__,
--						  bh, handle, err);
-+	if (!ext4_handle_valid(handle))
-+		return 0;
-+
-+	err = jbd2_journal_get_create_access(handle, bh);
-+	if (err) {
-+		ext4_journal_abort_handle(where, line, __func__, bh, handle,
-+					  err);
-+		return err;
- 	}
--	return err;
-+	if (trigger_type == EXT4_JTR_NONE || !ext4_has_metadata_csum(sb))
-+		return 0;
-+	BUG_ON(trigger_type >= EXT4_JOURNAL_TRIGGER_COUNT);
-+	jbd2_journal_set_triggers(bh,
-+		&EXT4_SB(sb)->s_journal_triggers[trigger_type].tr_triggers);
-+	return 0;
- }
- 
- int __ext4_handle_dirty_metadata(const char *where, unsigned int line,
-diff --git a/fs/ext4/ext4_jbd2.h b/fs/ext4/ext4_jbd2.h
-index 0d2fa423b7ad..0e4fa644df01 100644
---- a/fs/ext4/ext4_jbd2.h
-+++ b/fs/ext4/ext4_jbd2.h
-@@ -231,26 +231,32 @@ int ext4_expand_extra_isize(struct inode *inode,
-  * Wrapper functions with which ext4 calls into JBD.
-  */
- int __ext4_journal_get_write_access(const char *where, unsigned int line,
--				    handle_t *handle, struct buffer_head *bh);
-+				    handle_t *handle, struct super_block *sb,
-+				    struct buffer_head *bh,
-+				    enum ext4_journal_trigger_type trigger_type);
- 
- int __ext4_forget(const char *where, unsigned int line, handle_t *handle,
- 		  int is_metadata, struct inode *inode,
- 		  struct buffer_head *bh, ext4_fsblk_t blocknr);
- 
- int __ext4_journal_get_create_access(const char *where, unsigned int line,
--				handle_t *handle, struct buffer_head *bh);
-+				handle_t *handle, struct super_block *sb,
-+				struct buffer_head *bh,
-+				enum ext4_journal_trigger_type trigger_type);
- 
- int __ext4_handle_dirty_metadata(const char *where, unsigned int line,
- 				 handle_t *handle, struct inode *inode,
- 				 struct buffer_head *bh);
- 
--#define ext4_journal_get_write_access(handle, bh) \
--	__ext4_journal_get_write_access(__func__, __LINE__, (handle), (bh))
-+#define ext4_journal_get_write_access(handle, sb, bh, trigger_type) \
-+	__ext4_journal_get_write_access(__func__, __LINE__, (handle), (sb), \
-+					(bh), (trigger_type))
- #define ext4_forget(handle, is_metadata, inode, bh, block_nr) \
- 	__ext4_forget(__func__, __LINE__, (handle), (is_metadata), (inode), \
- 		      (bh), (block_nr))
--#define ext4_journal_get_create_access(handle, bh) \
--	__ext4_journal_get_create_access(__func__, __LINE__, (handle), (bh))
-+#define ext4_journal_get_create_access(handle, sb, bh, trigger_type) \
-+	__ext4_journal_get_create_access(__func__, __LINE__, (handle), (sb), \
-+					 (bh), (trigger_type))
- #define ext4_handle_dirty_metadata(handle, inode, bh) \
- 	__ext4_handle_dirty_metadata(__func__, __LINE__, (handle), (inode), \
- 				     (bh))
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index 92ad64b89d9b..7edc921107ac 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -139,7 +139,8 @@ static int ext4_ext_get_access(handle_t *handle, struct inode *inode,
- 	if (path->p_bh) {
- 		/* path points to block */
- 		BUFFER_TRACE(path->p_bh, "get_write_access");
--		return ext4_journal_get_write_access(handle, path->p_bh);
-+		return ext4_journal_get_write_access(handle, inode->i_sb,
-+						     path->p_bh, EXT4_JTR_NONE);
- 	}
- 	/* path points to leaf/index in inode body */
- 	/* we use in-core data, no need to protect them */
-@@ -1082,7 +1083,8 @@ static int ext4_ext_split(handle_t *handle, struct inode *inode,
- 	}
- 	lock_buffer(bh);
- 
--	err = ext4_journal_get_create_access(handle, bh);
-+	err = ext4_journal_get_create_access(handle, inode->i_sb, bh,
-+					     EXT4_JTR_NONE);
- 	if (err)
- 		goto cleanup;
- 
-@@ -1160,7 +1162,8 @@ static int ext4_ext_split(handle_t *handle, struct inode *inode,
- 		}
- 		lock_buffer(bh);
- 
--		err = ext4_journal_get_create_access(handle, bh);
-+		err = ext4_journal_get_create_access(handle, inode->i_sb, bh,
-+						     EXT4_JTR_NONE);
- 		if (err)
- 			goto cleanup;
- 
-@@ -1286,7 +1289,8 @@ static int ext4_ext_grow_indepth(handle_t *handle, struct inode *inode,
- 		return -ENOMEM;
- 	lock_buffer(bh);
- 
--	err = ext4_journal_get_create_access(handle, bh);
-+	err = ext4_journal_get_create_access(handle, inode->i_sb, bh,
-+					     EXT4_JTR_NONE);
- 	if (err) {
- 		unlock_buffer(bh);
- 		goto out;
-diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-index 816dedcbd541..eda12bc50592 100644
---- a/fs/ext4/file.c
-+++ b/fs/ext4/file.c
-@@ -822,7 +822,8 @@ static int ext4_sample_last_mounted(struct super_block *sb,
- 	if (IS_ERR(handle))
- 		goto out;
- 	BUFFER_TRACE(sbi->s_sbh, "get_write_access");
--	err = ext4_journal_get_write_access(handle, sbi->s_sbh);
-+	err = ext4_journal_get_write_access(handle, sb, sbi->s_sbh,
-+					    EXT4_JTR_NONE);
- 	if (err)
- 		goto out_journal;
- 	lock_buffer(sbi->s_sbh);
-diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
-index e89fc0f770b0..f73e5eb43eae 100644
---- a/fs/ext4/ialloc.c
-+++ b/fs/ext4/ialloc.c
-@@ -300,7 +300,8 @@ void ext4_free_inode(handle_t *handle, struct inode *inode)
- 	}
- 
- 	BUFFER_TRACE(bitmap_bh, "get_write_access");
--	fatal = ext4_journal_get_write_access(handle, bitmap_bh);
-+	fatal = ext4_journal_get_write_access(handle, sb, bitmap_bh,
-+					      EXT4_JTR_NONE);
- 	if (fatal)
- 		goto error_return;
- 
-@@ -308,7 +309,8 @@ void ext4_free_inode(handle_t *handle, struct inode *inode)
- 	gdp = ext4_get_group_desc(sb, block_group, &bh2);
- 	if (gdp) {
- 		BUFFER_TRACE(bh2, "get_write_access");
--		fatal = ext4_journal_get_write_access(handle, bh2);
-+		fatal = ext4_journal_get_write_access(handle, sb, bh2,
-+						      EXT4_JTR_NONE);
- 	}
- 	ext4_lock_group(sb, block_group);
- 	cleared = ext4_test_and_clear_bit(bit, bitmap_bh->b_data);
-@@ -1085,7 +1087,8 @@ struct inode *__ext4_new_inode(struct user_namespace *mnt_userns,
- 			}
- 		}
- 		BUFFER_TRACE(inode_bitmap_bh, "get_write_access");
--		err = ext4_journal_get_write_access(handle, inode_bitmap_bh);
-+		err = ext4_journal_get_write_access(handle, sb, inode_bitmap_bh,
-+						    EXT4_JTR_NONE);
- 		if (err) {
- 			ext4_std_error(sb, err);
- 			goto out;
-@@ -1127,7 +1130,8 @@ struct inode *__ext4_new_inode(struct user_namespace *mnt_userns,
- 	}
- 
- 	BUFFER_TRACE(group_desc_bh, "get_write_access");
--	err = ext4_journal_get_write_access(handle, group_desc_bh);
-+	err = ext4_journal_get_write_access(handle, sb, group_desc_bh,
-+					    EXT4_JTR_NONE);
- 	if (err) {
- 		ext4_std_error(sb, err);
- 		goto out;
-@@ -1144,7 +1148,8 @@ struct inode *__ext4_new_inode(struct user_namespace *mnt_userns,
- 			goto out;
- 		}
- 		BUFFER_TRACE(block_bitmap_bh, "get block bitmap access");
--		err = ext4_journal_get_write_access(handle, block_bitmap_bh);
-+		err = ext4_journal_get_write_access(handle, sb, block_bitmap_bh,
-+						    EXT4_JTR_NONE);
- 		if (err) {
- 			brelse(block_bitmap_bh);
- 			ext4_std_error(sb, err);
-@@ -1583,8 +1588,8 @@ int ext4_init_inode_table(struct super_block *sb, ext4_group_t group,
- 	num = sbi->s_itb_per_group - used_blks;
- 
- 	BUFFER_TRACE(group_desc_bh, "get_write_access");
--	ret = ext4_journal_get_write_access(handle,
--					    group_desc_bh);
-+	ret = ext4_journal_get_write_access(handle, sb, group_desc_bh,
-+					    EXT4_JTR_NONE);
- 	if (ret)
- 		goto err_out;
- 
-diff --git a/fs/ext4/indirect.c b/fs/ext4/indirect.c
-index a7bc6ad656a9..89efa78ed4b2 100644
---- a/fs/ext4/indirect.c
-+++ b/fs/ext4/indirect.c
-@@ -354,7 +354,8 @@ static int ext4_alloc_branch(handle_t *handle,
- 		}
- 		lock_buffer(bh);
- 		BUFFER_TRACE(bh, "call get_create_access");
--		err = ext4_journal_get_create_access(handle, bh);
-+		err = ext4_journal_get_create_access(handle, ar->inode->i_sb,
-+						     bh, EXT4_JTR_NONE);
- 		if (err) {
- 			unlock_buffer(bh);
- 			goto failed;
-@@ -429,7 +430,8 @@ static int ext4_splice_branch(handle_t *handle,
- 	 */
- 	if (where->bh) {
- 		BUFFER_TRACE(where->bh, "get_write_access");
--		err = ext4_journal_get_write_access(handle, where->bh);
-+		err = ext4_journal_get_write_access(handle, ar->inode->i_sb,
-+						    where->bh, EXT4_JTR_NONE);
- 		if (err)
- 			goto err_out;
- 	}
-@@ -728,7 +730,8 @@ static int ext4_ind_truncate_ensure_credits(handle_t *handle,
- 		return ret;
- 	if (bh) {
- 		BUFFER_TRACE(bh, "retaking write access");
--		ret = ext4_journal_get_write_access(handle, bh);
-+		ret = ext4_journal_get_write_access(handle, inode->i_sb, bh,
-+						    EXT4_JTR_NONE);
- 		if (unlikely(ret))
- 			return ret;
- 	}
-@@ -916,7 +919,8 @@ static void ext4_free_data(handle_t *handle, struct inode *inode,
- 
- 	if (this_bh) {				/* For indirect block */
- 		BUFFER_TRACE(this_bh, "get_write_access");
--		err = ext4_journal_get_write_access(handle, this_bh);
-+		err = ext4_journal_get_write_access(handle, inode->i_sb,
-+						    this_bh, EXT4_JTR_NONE);
- 		/* Important: if we can't update the indirect pointers
- 		 * to the blocks, we can't free them. */
- 		if (err)
-@@ -1079,7 +1083,8 @@ static void ext4_free_branches(handle_t *handle, struct inode *inode,
- 				 */
- 				BUFFER_TRACE(parent_bh, "get_write_access");
- 				if (!ext4_journal_get_write_access(handle,
--								   parent_bh)){
-+						inode->i_sb, parent_bh,
-+						EXT4_JTR_NONE)) {
- 					*p = 0;
- 					BUFFER_TRACE(parent_bh,
- 					"call ext4_handle_dirty_metadata");
-diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-index 70cb64db33f7..fc15ed79f09d 100644
---- a/fs/ext4/inline.c
-+++ b/fs/ext4/inline.c
-@@ -264,7 +264,8 @@ static int ext4_create_inline_data(handle_t *handle,
- 		return error;
- 
- 	BUFFER_TRACE(is.iloc.bh, "get_write_access");
--	error = ext4_journal_get_write_access(handle, is.iloc.bh);
-+	error = ext4_journal_get_write_access(handle, inode->i_sb, is.iloc.bh,
-+					      EXT4_JTR_NONE);
- 	if (error)
- 		goto out;
- 
-@@ -350,7 +351,8 @@ static int ext4_update_inline_data(handle_t *handle, struct inode *inode,
- 		goto out;
- 
- 	BUFFER_TRACE(is.iloc.bh, "get_write_access");
--	error = ext4_journal_get_write_access(handle, is.iloc.bh);
-+	error = ext4_journal_get_write_access(handle, inode->i_sb, is.iloc.bh,
-+					      EXT4_JTR_NONE);
- 	if (error)
- 		goto out;
- 
-@@ -427,7 +429,8 @@ static int ext4_destroy_inline_data_nolock(handle_t *handle,
- 		goto out;
- 
- 	BUFFER_TRACE(is.iloc.bh, "get_write_access");
--	error = ext4_journal_get_write_access(handle, is.iloc.bh);
-+	error = ext4_journal_get_write_access(handle, inode->i_sb, is.iloc.bh,
-+					      EXT4_JTR_NONE);
- 	if (error)
- 		goto out;
- 
-@@ -593,7 +596,7 @@ static int ext4_convert_inline_data_to_extent(struct address_space *mapping,
- 		ret = __block_write_begin(page, from, to, ext4_get_block);
- 
- 	if (!ret && ext4_should_journal_data(inode)) {
--		ret = ext4_walk_page_buffers(handle, page_buffers(page),
-+		ret = ext4_walk_page_buffers(handle, inode, page_buffers(page),
- 					     from, to, NULL,
- 					     do_journal_get_write_access);
- 	}
-@@ -682,7 +685,8 @@ int ext4_try_to_write_inline_data(struct address_space *mapping,
- 		goto convert;
- 	}
- 
--	ret = ext4_journal_get_write_access(handle, iloc.bh);
-+	ret = ext4_journal_get_write_access(handle, inode->i_sb, iloc.bh,
-+					    EXT4_JTR_NONE);
- 	if (ret)
- 		goto out;
- 
-@@ -923,7 +927,8 @@ int ext4_da_write_inline_data_begin(struct address_space *mapping,
- 		if (ret < 0)
- 			goto out_release_page;
- 	}
--	ret = ext4_journal_get_write_access(handle, iloc.bh);
-+	ret = ext4_journal_get_write_access(handle, inode->i_sb, iloc.bh,
-+					    EXT4_JTR_NONE);
- 	if (ret)
- 		goto out_release_page;
- 
-@@ -1028,7 +1033,8 @@ static int ext4_add_dirent_to_inline(handle_t *handle,
- 		return err;
- 
- 	BUFFER_TRACE(iloc->bh, "get_write_access");
--	err = ext4_journal_get_write_access(handle, iloc->bh);
-+	err = ext4_journal_get_write_access(handle, dir->i_sb, iloc->bh,
-+					    EXT4_JTR_NONE);
- 	if (err)
- 		return err;
- 	ext4_insert_dentry(dir, inode, de, inline_size, fname);
-@@ -1223,7 +1229,8 @@ static int ext4_convert_inline_data_nolock(handle_t *handle,
- 	}
- 
- 	lock_buffer(data_bh);
--	error = ext4_journal_get_create_access(handle, data_bh);
-+	error = ext4_journal_get_create_access(handle, inode->i_sb, data_bh,
-+					       EXT4_JTR_NONE);
- 	if (error) {
- 		unlock_buffer(data_bh);
- 		error = -EIO;
-@@ -1707,7 +1714,8 @@ int ext4_delete_inline_entry(handle_t *handle,
- 	}
- 
- 	BUFFER_TRACE(bh, "get_write_access");
--	err = ext4_journal_get_write_access(handle, bh);
-+	err = ext4_journal_get_write_access(handle, dir->i_sb, bh,
-+					    EXT4_JTR_NONE);
- 	if (err)
- 		goto out;
- 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 2c33c795c4a7..d47a57f3d8de 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -139,7 +139,6 @@ static inline int ext4_begin_ordered_truncate(struct inode *inode,
- static void ext4_invalidatepage(struct page *page, unsigned int offset,
- 				unsigned int length);
- static int __ext4_journalled_writepage(struct page *page, unsigned int len);
--static int ext4_bh_delay_or_unwritten(handle_t *handle, struct buffer_head *bh);
- static int ext4_meta_trans_blocks(struct inode *inode, int lblocks,
- 				  int pextents);
- 
-@@ -869,7 +868,8 @@ struct buffer_head *ext4_getblk(handle_t *handle, struct inode *inode,
- 		 */
- 		lock_buffer(bh);
- 		BUFFER_TRACE(bh, "call get_create_access");
--		err = ext4_journal_get_create_access(handle, bh);
-+		err = ext4_journal_get_create_access(handle, inode->i_sb, bh,
-+						     EXT4_JTR_NONE);
- 		if (unlikely(err)) {
- 			unlock_buffer(bh);
- 			goto errout;
-@@ -954,12 +954,12 @@ int ext4_bread_batch(struct inode *inode, ext4_lblk_t block, int bh_count,
- 	return err;
- }
- 
--int ext4_walk_page_buffers(handle_t *handle,
-+int ext4_walk_page_buffers(handle_t *handle, struct inode *inode,
- 			   struct buffer_head *head,
- 			   unsigned from,
- 			   unsigned to,
- 			   int *partial,
--			   int (*fn)(handle_t *handle,
-+			   int (*fn)(handle_t *handle, struct inode *inode,
- 				     struct buffer_head *bh))
- {
- 	struct buffer_head *bh;
-@@ -978,7 +978,7 @@ int ext4_walk_page_buffers(handle_t *handle,
- 				*partial = 1;
- 			continue;
- 		}
--		err = (*fn)(handle, bh);
-+		err = (*fn)(handle, inode, bh);
- 		if (!ret)
- 			ret = err;
- 	}
-@@ -1009,7 +1009,7 @@ int ext4_walk_page_buffers(handle_t *handle,
-  * is elevated.  We'll still have enough credits for the tiny quotafile
-  * write.
-  */
--int do_journal_get_write_access(handle_t *handle,
-+int do_journal_get_write_access(handle_t *handle, struct inode *inode,
- 				struct buffer_head *bh)
- {
- 	int dirty = buffer_dirty(bh);
-@@ -1028,7 +1028,8 @@ int do_journal_get_write_access(handle_t *handle,
- 	if (dirty)
- 		clear_buffer_dirty(bh);
- 	BUFFER_TRACE(bh, "get write access");
--	ret = ext4_journal_get_write_access(handle, bh);
-+	ret = ext4_journal_get_write_access(handle, inode->i_sb, bh,
-+					    EXT4_JTR_NONE);
- 	if (!ret && dirty)
- 		ret = ext4_handle_dirty_metadata(handle, NULL, bh);
- 	return ret;
-@@ -1208,8 +1209,8 @@ static int ext4_write_begin(struct file *file, struct address_space *mapping,
- 		ret = __block_write_begin(page, pos, len, ext4_get_block);
++int ext4_enable_quotas(struct super_block *sb);
  #endif
- 	if (!ret && ext4_should_journal_data(inode)) {
--		ret = ext4_walk_page_buffers(handle, page_buffers(page),
--					     from, to, NULL,
-+		ret = ext4_walk_page_buffers(handle, inode,
-+					     page_buffers(page), from, to, NULL,
- 					     do_journal_get_write_access);
- 	}
  
-@@ -1253,7 +1254,8 @@ static int ext4_write_begin(struct file *file, struct address_space *mapping,
- }
+ /*
+@@ -3759,6 +3760,12 @@ extern void ext4_stop_mmpd(struct ext4_sb_info *sbi);
+ /* verity.c */
+ extern const struct fsverity_operations ext4_verityops;
  
- /* For write_end() in data=journal mode */
--static int write_end_fn(handle_t *handle, struct buffer_head *bh)
-+static int write_end_fn(handle_t *handle, struct inode *inode,
-+			struct buffer_head *bh)
- {
- 	int ret;
- 	if (!buffer_mapped(bh) || buffer_freed(bh))
-@@ -1352,6 +1354,7 @@ static int ext4_write_end(struct file *file,
-  * to call ext4_handle_dirty_metadata() instead.
-  */
- static void ext4_journalled_zero_new_buffers(handle_t *handle,
-+					    struct inode *inode,
- 					    struct page *page,
- 					    unsigned from, unsigned to)
- {
-@@ -1370,7 +1373,7 @@ static void ext4_journalled_zero_new_buffers(handle_t *handle,
- 					size = min(to, block_end) - start;
- 
- 					zero_user(page, start, size);
--					write_end_fn(handle, bh);
-+					write_end_fn(handle, inode, bh);
- 				}
- 				clear_buffer_new(bh);
- 			}
-@@ -1412,13 +1415,13 @@ static int ext4_journalled_write_end(struct file *file,
- 		copied = ret;
- 	} else if (unlikely(copied < len) && !PageUptodate(page)) {
- 		copied = 0;
--		ext4_journalled_zero_new_buffers(handle, page, from, to);
-+		ext4_journalled_zero_new_buffers(handle, inode, page, from, to);
- 	} else {
- 		if (unlikely(copied < len))
--			ext4_journalled_zero_new_buffers(handle, page,
-+			ext4_journalled_zero_new_buffers(handle, inode, page,
- 							 from + copied, to);
--		ret = ext4_walk_page_buffers(handle, page_buffers(page), from,
--					     from + copied, &partial,
-+		ret = ext4_walk_page_buffers(handle, inode, page_buffers(page),
-+					     from, from + copied, &partial,
- 					     write_end_fn);
- 		if (!partial)
- 			SetPageUptodate(page);
-@@ -1619,7 +1622,8 @@ static void ext4_print_free_blocks(struct inode *inode)
- 	return;
- }
- 
--static int ext4_bh_delay_or_unwritten(handle_t *handle, struct buffer_head *bh)
-+static int ext4_bh_delay_or_unwritten(handle_t *handle, struct inode *inode,
-+				      struct buffer_head *bh)
- {
- 	return (buffer_delay(bh) || buffer_unwritten(bh)) && buffer_dirty(bh);
- }
-@@ -1851,13 +1855,15 @@ int ext4_da_get_block_prep(struct inode *inode, sector_t iblock,
- 	return 0;
- }
- 
--static int bget_one(handle_t *handle, struct buffer_head *bh)
-+static int bget_one(handle_t *handle, struct inode *inode,
-+		    struct buffer_head *bh)
- {
- 	get_bh(bh);
- 	return 0;
- }
- 
--static int bput_one(handle_t *handle, struct buffer_head *bh)
-+static int bput_one(handle_t *handle, struct inode *inode,
-+		    struct buffer_head *bh)
- {
- 	put_bh(bh);
- 	return 0;
-@@ -1888,7 +1894,7 @@ static int __ext4_journalled_writepage(struct page *page,
- 			BUG();
- 			goto out;
- 		}
--		ext4_walk_page_buffers(handle, page_bufs, 0, len,
-+		ext4_walk_page_buffers(handle, inode, page_bufs, 0, len,
- 				       NULL, bget_one);
- 	}
- 	/*
-@@ -1920,11 +1926,11 @@ static int __ext4_journalled_writepage(struct page *page,
- 	if (inline_data) {
- 		ret = ext4_mark_inode_dirty(handle, inode);
- 	} else {
--		ret = ext4_walk_page_buffers(handle, page_bufs, 0, len, NULL,
--					     do_journal_get_write_access);
-+		ret = ext4_walk_page_buffers(handle, inode, page_bufs, 0, len,
-+					     NULL, do_journal_get_write_access);
- 
--		err = ext4_walk_page_buffers(handle, page_bufs, 0, len, NULL,
--					     write_end_fn);
-+		err = ext4_walk_page_buffers(handle, inode, page_bufs, 0, len,
-+					     NULL, write_end_fn);
- 	}
- 	if (ret == 0)
- 		ret = err;
-@@ -1941,7 +1947,7 @@ static int __ext4_journalled_writepage(struct page *page,
- 	unlock_page(page);
- out_no_pagelock:
- 	if (!inline_data && page_bufs)
--		ext4_walk_page_buffers(NULL, page_bufs, 0, len,
-+		ext4_walk_page_buffers(NULL, inode, page_bufs, 0, len,
- 				       NULL, bput_one);
- 	brelse(inode_bh);
- 	return ret;
-@@ -2031,7 +2037,7 @@ static int ext4_writepage(struct page *page,
- 	 * for the extremely common case, this is an optimization that
- 	 * skips a useless round trip through ext4_bio_write_page().
- 	 */
--	if (ext4_walk_page_buffers(NULL, page_bufs, 0, len, NULL,
-+	if (ext4_walk_page_buffers(NULL, inode, page_bufs, 0, len, NULL,
- 				   ext4_bh_delay_or_unwritten)) {
- 		redirty_page_for_writepage(wbc, page);
- 		if ((current->flags & PF_MEMALLOC) ||
-@@ -3794,7 +3800,8 @@ static int __ext4_block_zero_page_range(handle_t *handle,
- 	}
- 	if (ext4_should_journal_data(inode)) {
- 		BUFFER_TRACE(bh, "get write access");
--		err = ext4_journal_get_write_access(handle, bh);
-+		err = ext4_journal_get_write_access(handle, inode->i_sb, bh,
-+						    EXT4_JTR_NONE);
- 		if (err)
- 			goto unlock;
- 	}
-@@ -5146,7 +5153,9 @@ static int ext4_do_update_inode(handle_t *handle,
- 	ext4_clear_inode_state(inode, EXT4_STATE_NEW);
- 	if (set_large_file) {
- 		BUFFER_TRACE(EXT4_SB(sb)->s_sbh, "get write access");
--		err = ext4_journal_get_write_access(handle, EXT4_SB(sb)->s_sbh);
-+		err = ext4_journal_get_write_access(handle, sb,
-+						    EXT4_SB(sb)->s_sbh,
-+						    EXT4_JTR_NONE);
- 		if (err)
- 			goto out_brelse;
- 		lock_buffer(EXT4_SB(sb)->s_sbh);
-@@ -5747,7 +5756,8 @@ ext4_reserve_inode_write(handle_t *handle, struct inode *inode,
- 	err = ext4_get_inode_loc(inode, iloc);
- 	if (!err) {
- 		BUFFER_TRACE(iloc->bh, "get_write_access");
--		err = ext4_journal_get_write_access(handle, iloc->bh);
-+		err = ext4_journal_get_write_access(handle, inode->i_sb,
-+						    iloc->bh, EXT4_JTR_NONE);
- 		if (err) {
- 			brelse(iloc->bh);
- 			iloc->bh = NULL;
-@@ -5870,7 +5880,8 @@ int ext4_expand_extra_isize(struct inode *inode,
- 	ext4_write_lock_xattr(inode, &no_expand);
- 
- 	BUFFER_TRACE(iloc->bh, "get_write_access");
--	error = ext4_journal_get_write_access(handle, iloc->bh);
-+	error = ext4_journal_get_write_access(handle, inode->i_sb, iloc->bh,
-+					      EXT4_JTR_NONE);
- 	if (error) {
- 		brelse(iloc->bh);
- 		goto out_unlock;
-@@ -6041,7 +6052,8 @@ int ext4_change_inode_journal_flag(struct inode *inode, int val)
- 	return err;
- }
- 
--static int ext4_bh_unmapped(handle_t *handle, struct buffer_head *bh)
-+static int ext4_bh_unmapped(handle_t *handle, struct inode *inode,
-+			    struct buffer_head *bh)
- {
- 	return !buffer_mapped(bh);
- }
-@@ -6114,7 +6126,7 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
- 	 * inode to the transaction's list to writeprotect pages on commit.
- 	 */
- 	if (page_has_buffers(page)) {
--		if (!ext4_walk_page_buffers(NULL, page_buffers(page),
-+		if (!ext4_walk_page_buffers(NULL, inode, page_buffers(page),
- 					    0, len, NULL,
- 					    ext4_bh_unmapped)) {
- 			/* Wait so that we don't change page under IO */
-@@ -6160,11 +6172,13 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
- 		err = __block_write_begin(page, 0, len, ext4_get_block);
- 		if (!err) {
- 			ret = VM_FAULT_SIGBUS;
--			if (ext4_walk_page_buffers(handle, page_buffers(page),
--					0, len, NULL, do_journal_get_write_access))
-+			if (ext4_walk_page_buffers(handle, inode,
-+					page_buffers(page), 0, len, NULL,
-+					do_journal_get_write_access))
- 				goto out_error;
--			if (ext4_walk_page_buffers(handle, page_buffers(page),
--					0, len, NULL, write_end_fn))
-+			if (ext4_walk_page_buffers(handle, inode,
-+					page_buffers(page), 0, len, NULL,
-+					write_end_fn))
- 				goto out_error;
- 			if (ext4_jbd2_inode_add_write(handle, inode,
- 						      page_offset(page), len))
-diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-index 6eed6170aded..20aeff88cab6 100644
---- a/fs/ext4/ioctl.c
-+++ b/fs/ext4/ioctl.c
-@@ -1154,7 +1154,9 @@ static long __ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- 				err = PTR_ERR(handle);
- 				goto pwsalt_err_exit;
- 			}
--			err = ext4_journal_get_write_access(handle, sbi->s_sbh);
-+			err = ext4_journal_get_write_access(handle, sb,
-+							    sbi->s_sbh,
-+							    EXT4_JTR_NONE);
- 			if (err)
- 				goto pwsalt_err_journal;
- 			lock_buffer(sbi->s_sbh);
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 089c958aa2c3..349fabed7e0a 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -3726,7 +3726,8 @@ ext4_mb_mark_diskspace_used(struct ext4_allocation_context *ac,
- 	}
- 
- 	BUFFER_TRACE(bitmap_bh, "getting write access");
--	err = ext4_journal_get_write_access(handle, bitmap_bh);
-+	err = ext4_journal_get_write_access(handle, sb, bitmap_bh,
-+					    EXT4_JTR_NONE);
- 	if (err)
- 		goto out_err;
- 
-@@ -3739,7 +3740,7 @@ ext4_mb_mark_diskspace_used(struct ext4_allocation_context *ac,
- 			ext4_free_group_clusters(sb, gdp));
- 
- 	BUFFER_TRACE(gdp_bh, "get_write_access");
--	err = ext4_journal_get_write_access(handle, gdp_bh);
-+	err = ext4_journal_get_write_access(handle, sb, gdp_bh, EXT4_JTR_NONE);
- 	if (err)
- 		goto out_err;
- 
-@@ -5916,7 +5917,8 @@ void ext4_free_blocks(handle_t *handle, struct inode *inode,
- 	}
- 
- 	BUFFER_TRACE(bitmap_bh, "getting write access");
--	err = ext4_journal_get_write_access(handle, bitmap_bh);
-+	err = ext4_journal_get_write_access(handle, sb, bitmap_bh,
-+					    EXT4_JTR_NONE);
- 	if (err)
- 		goto error_return;
- 
-@@ -5926,7 +5928,7 @@ void ext4_free_blocks(handle_t *handle, struct inode *inode,
- 	 * using it
- 	 */
- 	BUFFER_TRACE(gd_bh, "get_write_access");
--	err = ext4_journal_get_write_access(handle, gd_bh);
-+	err = ext4_journal_get_write_access(handle, sb, gd_bh, EXT4_JTR_NONE);
- 	if (err)
- 		goto error_return;
- #ifdef AGGRESSIVE_CHECK
-@@ -6107,7 +6109,8 @@ int ext4_group_add_blocks(handle_t *handle, struct super_block *sb,
- 	}
- 
- 	BUFFER_TRACE(bitmap_bh, "getting write access");
--	err = ext4_journal_get_write_access(handle, bitmap_bh);
-+	err = ext4_journal_get_write_access(handle, sb, bitmap_bh,
-+					    EXT4_JTR_NONE);
- 	if (err)
- 		goto error_return;
- 
-@@ -6117,7 +6120,7 @@ int ext4_group_add_blocks(handle_t *handle, struct super_block *sb,
- 	 * using it
- 	 */
- 	BUFFER_TRACE(gd_bh, "get_write_access");
--	err = ext4_journal_get_write_access(handle, gd_bh);
-+	err = ext4_journal_get_write_access(handle, sb, gd_bh, EXT4_JTR_NONE);
- 	if (err)
- 		goto error_return;
- 
++/* orphan.c */
++extern int ext4_orphan_add(handle_t *, struct inode *);
++extern int ext4_orphan_del(handle_t *, struct inode *);
++extern void ext4_orphan_cleanup(struct super_block *sb,
++				struct ext4_super_block *es);
++
+ /*
+  * Add new method to test whether block and inode bitmaps are properly
+  * initialized. With uninit_bg reading the block from disk is not enough
 diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index f3bbcd4efb56..dfb3ae61dfe8 100644
+index dfb3ae61dfe8..da7698341d7d 100644
 --- a/fs/ext4/namei.c
 +++ b/fs/ext4/namei.c
-@@ -70,7 +70,8 @@ static struct buffer_head *ext4_append(handle_t *handle,
- 	inode->i_size += inode->i_sb->s_blocksize;
- 	EXT4_I(inode)->i_disksize = inode->i_size;
- 	BUFFER_TRACE(bh, "get_write_access");
--	err = ext4_journal_get_write_access(handle, bh);
-+	err = ext4_journal_get_write_access(handle, inode->i_sb, bh,
-+					    EXT4_JTR_NONE);
- 	if (err) {
- 		brelse(bh);
- 		ext4_std_error(inode->i_sb, err);
-@@ -1927,12 +1928,14 @@ static struct ext4_dir_entry_2 *do_split(handle_t *handle, struct inode *dir,
- 	}
- 
- 	BUFFER_TRACE(*bh, "get_write_access");
--	err = ext4_journal_get_write_access(handle, *bh);
-+	err = ext4_journal_get_write_access(handle, dir->i_sb, *bh,
-+					    EXT4_JTR_NONE);
- 	if (err)
- 		goto journal_error;
- 
- 	BUFFER_TRACE(frame->bh, "get_write_access");
--	err = ext4_journal_get_write_access(handle, frame->bh);
-+	err = ext4_journal_get_write_access(handle, dir->i_sb, frame->bh,
-+					    EXT4_JTR_NONE);
- 	if (err)
- 		goto journal_error;
- 
-@@ -2109,7 +2112,8 @@ static int add_dirent_to_buf(handle_t *handle, struct ext4_filename *fname,
- 			return err;
- 	}
- 	BUFFER_TRACE(bh, "get_write_access");
--	err = ext4_journal_get_write_access(handle, bh);
-+	err = ext4_journal_get_write_access(handle, dir->i_sb, bh,
-+					    EXT4_JTR_NONE);
- 	if (err) {
- 		ext4_std_error(dir->i_sb, err);
- 		return err;
-@@ -2167,7 +2171,8 @@ static int make_indexed_dir(handle_t *handle, struct ext4_filename *fname,
- 	blocksize =  dir->i_sb->s_blocksize;
- 	dxtrace(printk(KERN_DEBUG "Creating index: inode %lu\n", dir->i_ino));
- 	BUFFER_TRACE(bh, "get_write_access");
--	retval = ext4_journal_get_write_access(handle, bh);
-+	retval = ext4_journal_get_write_access(handle, dir->i_sb, bh,
-+					       EXT4_JTR_NONE);
- 	if (retval) {
- 		ext4_std_error(dir->i_sb, retval);
- 		brelse(bh);
-@@ -2419,7 +2424,7 @@ static int ext4_dx_add_entry(handle_t *handle, struct ext4_filename *fname,
- 	}
- 
- 	BUFFER_TRACE(bh, "get_write_access");
--	err = ext4_journal_get_write_access(handle, bh);
-+	err = ext4_journal_get_write_access(handle, sb, bh, EXT4_JTR_NONE);
- 	if (err)
- 		goto journal_error;
- 
-@@ -2476,7 +2481,8 @@ static int ext4_dx_add_entry(handle_t *handle, struct ext4_filename *fname,
- 		node2->fake.rec_len = ext4_rec_len_to_disk(sb->s_blocksize,
- 							   sb->s_blocksize);
- 		BUFFER_TRACE(frame->bh, "get_write_access");
--		err = ext4_journal_get_write_access(handle, frame->bh);
-+		err = ext4_journal_get_write_access(handle, sb, frame->bh,
-+						    EXT4_JTR_NONE);
- 		if (err)
- 			goto journal_error;
- 		if (!add_level) {
-@@ -2486,8 +2492,9 @@ static int ext4_dx_add_entry(handle_t *handle, struct ext4_filename *fname,
- 				       icount1, icount2));
- 
- 			BUFFER_TRACE(frame->bh, "get_write_access"); /* index root */
--			err = ext4_journal_get_write_access(handle,
--							     (frame - 1)->bh);
-+			err = ext4_journal_get_write_access(handle, sb,
-+							    (frame - 1)->bh,
-+							    EXT4_JTR_NONE);
- 			if (err)
- 				goto journal_error;
- 
-@@ -2636,7 +2643,8 @@ static int ext4_delete_entry(handle_t *handle,
- 		csum_size = sizeof(struct ext4_dir_entry_tail);
- 
- 	BUFFER_TRACE(bh, "get_write_access");
--	err = ext4_journal_get_write_access(handle, bh);
-+	err = ext4_journal_get_write_access(handle, dir->i_sb, bh,
-+					    EXT4_JTR_NONE);
- 	if (unlikely(err))
- 		goto out;
- 
-@@ -3088,7 +3096,8 @@ int ext4_orphan_add(handle_t *handle, struct inode *inode)
- 		  S_ISLNK(inode->i_mode)) || inode->i_nlink == 0);
- 
- 	BUFFER_TRACE(sbi->s_sbh, "get_write_access");
--	err = ext4_journal_get_write_access(handle, sbi->s_sbh);
-+	err = ext4_journal_get_write_access(handle, sb, sbi->s_sbh,
-+					    EXT4_JTR_NONE);
- 	if (err)
- 		goto out;
- 
-@@ -3186,7 +3195,8 @@ int ext4_orphan_del(handle_t *handle, struct inode *inode)
- 	if (prev == &sbi->s_orphan) {
- 		jbd_debug(4, "superblock will point to %u\n", ino_next);
- 		BUFFER_TRACE(sbi->s_sbh, "get_write_access");
--		err = ext4_journal_get_write_access(handle, sbi->s_sbh);
-+		err = ext4_journal_get_write_access(handle, inode->i_sb,
-+						    sbi->s_sbh, EXT4_JTR_NONE);
- 		if (err) {
- 			mutex_unlock(&sbi->s_orphan_lock);
- 			goto out_brelse;
-@@ -3675,7 +3685,8 @@ static int ext4_rename_dir_prepare(handle_t *handle, struct ext4_renament *ent)
- 	if (le32_to_cpu(ent->parent_de->inode) != ent->dir->i_ino)
- 		return -EFSCORRUPTED;
- 	BUFFER_TRACE(ent->dir_bh, "get_write_access");
--	return ext4_journal_get_write_access(handle, ent->dir_bh);
-+	return ext4_journal_get_write_access(handle, ent->dir->i_sb,
-+					     ent->dir_bh, EXT4_JTR_NONE);
+@@ -3054,188 +3054,6 @@ bool ext4_empty_dir(struct inode *inode)
+ 	return true;
  }
  
- static int ext4_rename_dir_finish(handle_t *handle, struct ext4_renament *ent,
-@@ -3710,7 +3721,8 @@ static int ext4_setent(handle_t *handle, struct ext4_renament *ent,
- 	int retval, retval2;
- 
- 	BUFFER_TRACE(ent->bh, "get write access");
--	retval = ext4_journal_get_write_access(handle, ent->bh);
-+	retval = ext4_journal_get_write_access(handle, ent->dir->i_sb, ent->bh,
-+					       EXT4_JTR_NONE);
- 	if (retval)
- 		return retval;
- 	ent->de->inode = cpu_to_le32(ino);
-diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
-index 7a9f1adef679..b63cb88ccdae 100644
---- a/fs/ext4/resize.c
-+++ b/fs/ext4/resize.c
-@@ -409,7 +409,8 @@ static struct buffer_head *bclean(handle_t *handle, struct super_block *sb,
- 	if (unlikely(!bh))
- 		return ERR_PTR(-ENOMEM);
- 	BUFFER_TRACE(bh, "get_write_access");
--	if ((err = ext4_journal_get_write_access(handle, bh))) {
-+	err = ext4_journal_get_write_access(handle, sb, bh, EXT4_JTR_NONE);
-+	if (err) {
- 		brelse(bh);
- 		bh = ERR_PTR(err);
- 	} else {
-@@ -474,7 +475,8 @@ static int set_flexbg_block_bitmap(struct super_block *sb, handle_t *handle,
- 			return -ENOMEM;
- 
- 		BUFFER_TRACE(bh, "get_write_access");
--		err = ext4_journal_get_write_access(handle, bh);
-+		err = ext4_journal_get_write_access(handle, sb, bh,
-+						    EXT4_JTR_NONE);
- 		if (err) {
- 			brelse(bh);
- 			return err;
-@@ -569,7 +571,8 @@ static int setup_new_flex_group_blocks(struct super_block *sb,
- 			}
- 
- 			BUFFER_TRACE(gdb, "get_write_access");
--			err = ext4_journal_get_write_access(handle, gdb);
-+			err = ext4_journal_get_write_access(handle, sb, gdb,
-+							    EXT4_JTR_NONE);
- 			if (err) {
- 				brelse(gdb);
- 				goto out;
-@@ -837,17 +840,18 @@ static int add_new_gdb(handle_t *handle, struct inode *inode,
- 	}
- 
- 	BUFFER_TRACE(EXT4_SB(sb)->s_sbh, "get_write_access");
--	err = ext4_journal_get_write_access(handle, EXT4_SB(sb)->s_sbh);
-+	err = ext4_journal_get_write_access(handle, sb, EXT4_SB(sb)->s_sbh,
-+					    EXT4_JTR_NONE);
- 	if (unlikely(err))
- 		goto errout;
- 
- 	BUFFER_TRACE(gdb_bh, "get_write_access");
--	err = ext4_journal_get_write_access(handle, gdb_bh);
-+	err = ext4_journal_get_write_access(handle, sb, gdb_bh, EXT4_JTR_NONE);
- 	if (unlikely(err))
- 		goto errout;
- 
- 	BUFFER_TRACE(dind, "get_write_access");
--	err = ext4_journal_get_write_access(handle, dind);
-+	err = ext4_journal_get_write_access(handle, sb, dind, EXT4_JTR_NONE);
- 	if (unlikely(err)) {
- 		ext4_std_error(sb, err);
- 		goto errout;
-@@ -956,7 +960,7 @@ static int add_new_gdb_meta_bg(struct super_block *sb,
- 	n_group_desc[gdb_num] = gdb_bh;
- 
- 	BUFFER_TRACE(gdb_bh, "get_write_access");
--	err = ext4_journal_get_write_access(handle, gdb_bh);
-+	err = ext4_journal_get_write_access(handle, sb, gdb_bh, EXT4_JTR_NONE);
- 	if (err) {
- 		kvfree(n_group_desc);
- 		brelse(gdb_bh);
-@@ -1042,7 +1046,8 @@ static int reserve_backup_gdb(handle_t *handle, struct inode *inode,
- 
- 	for (i = 0; i < reserved_gdb; i++) {
- 		BUFFER_TRACE(primary[i], "get_write_access");
--		if ((err = ext4_journal_get_write_access(handle, primary[i])))
-+		if ((err = ext4_journal_get_write_access(handle, sb, primary[i],
-+							 EXT4_JTR_NONE)))
- 			goto exit_bh;
- 	}
- 
-@@ -1149,10 +1154,9 @@ static void update_backups(struct super_block *sb, sector_t blk_off, char *data,
- 			   backup_block, backup_block -
- 			   ext4_group_first_block_no(sb, group));
- 		BUFFER_TRACE(bh, "get_write_access");
--		if ((err = ext4_journal_get_write_access(handle, bh))) {
--			brelse(bh);
-+		if ((err = ext4_journal_get_write_access(handle, sb, bh,
-+							 EXT4_JTR_NONE)))
- 			break;
+-/*
+- * ext4_orphan_add() links an unlinked or truncated inode into a list of
+- * such inodes, starting at the superblock, in case we crash before the
+- * file is closed/deleted, or in case the inode truncate spans multiple
+- * transactions and the last transaction is not recovered after a crash.
+- *
+- * At filesystem recovery time, we walk this list deleting unlinked
+- * inodes and truncating linked inodes in ext4_orphan_cleanup().
+- *
+- * Orphan list manipulation functions must be called under i_mutex unless
+- * we are just creating the inode or deleting it.
+- */
+-int ext4_orphan_add(handle_t *handle, struct inode *inode)
+-{
+-	struct super_block *sb = inode->i_sb;
+-	struct ext4_sb_info *sbi = EXT4_SB(sb);
+-	struct ext4_iloc iloc;
+-	int err = 0, rc;
+-	bool dirty = false;
+-
+-	if (!sbi->s_journal || is_bad_inode(inode))
+-		return 0;
+-
+-	WARN_ON_ONCE(!(inode->i_state & (I_NEW | I_FREEING)) &&
+-		     !inode_is_locked(inode));
+-	/*
+-	 * Exit early if inode already is on orphan list. This is a big speedup
+-	 * since we don't have to contend on the global s_orphan_lock.
+-	 */
+-	if (!list_empty(&EXT4_I(inode)->i_orphan))
+-		return 0;
+-
+-	/*
+-	 * Orphan handling is only valid for files with data blocks
+-	 * being truncated, or files being unlinked. Note that we either
+-	 * hold i_mutex, or the inode can not be referenced from outside,
+-	 * so i_nlink should not be bumped due to race
+-	 */
+-	ASSERT((S_ISREG(inode->i_mode) || S_ISDIR(inode->i_mode) ||
+-		  S_ISLNK(inode->i_mode)) || inode->i_nlink == 0);
+-
+-	BUFFER_TRACE(sbi->s_sbh, "get_write_access");
+-	err = ext4_journal_get_write_access(handle, sb, sbi->s_sbh,
+-					    EXT4_JTR_NONE);
+-	if (err)
+-		goto out;
+-
+-	err = ext4_reserve_inode_write(handle, inode, &iloc);
+-	if (err)
+-		goto out;
+-
+-	mutex_lock(&sbi->s_orphan_lock);
+-	/*
+-	 * Due to previous errors inode may be already a part of on-disk
+-	 * orphan list. If so skip on-disk list modification.
+-	 */
+-	if (!NEXT_ORPHAN(inode) || NEXT_ORPHAN(inode) >
+-	    (le32_to_cpu(sbi->s_es->s_inodes_count))) {
+-		/* Insert this inode at the head of the on-disk orphan list */
+-		NEXT_ORPHAN(inode) = le32_to_cpu(sbi->s_es->s_last_orphan);
+-		lock_buffer(sbi->s_sbh);
+-		sbi->s_es->s_last_orphan = cpu_to_le32(inode->i_ino);
+-		ext4_superblock_csum_set(sb);
+-		unlock_buffer(sbi->s_sbh);
+-		dirty = true;
+-	}
+-	list_add(&EXT4_I(inode)->i_orphan, &sbi->s_orphan);
+-	mutex_unlock(&sbi->s_orphan_lock);
+-
+-	if (dirty) {
+-		err = ext4_handle_dirty_metadata(handle, NULL, sbi->s_sbh);
+-		rc = ext4_mark_iloc_dirty(handle, inode, &iloc);
+-		if (!err)
+-			err = rc;
+-		if (err) {
+-			/*
+-			 * We have to remove inode from in-memory list if
+-			 * addition to on disk orphan list failed. Stray orphan
+-			 * list entries can cause panics at unmount time.
+-			 */
+-			mutex_lock(&sbi->s_orphan_lock);
+-			list_del_init(&EXT4_I(inode)->i_orphan);
+-			mutex_unlock(&sbi->s_orphan_lock);
 -		}
- 		lock_buffer(bh);
- 		memcpy(bh->b_data, data, size);
- 		if (rest)
-@@ -1232,7 +1236,8 @@ static int ext4_add_new_descs(handle_t *handle, struct super_block *sb,
- 			gdb_bh = sbi_array_rcu_deref(sbi, s_group_desc,
- 						     gdb_num);
- 			BUFFER_TRACE(gdb_bh, "get_write_access");
--			err = ext4_journal_get_write_access(handle, gdb_bh);
-+			err = ext4_journal_get_write_access(handle, sb, gdb_bh,
-+							    EXT4_JTR_NONE);
- 
- 			if (!err && reserved_gdb && ext4_bg_num_gdb(sb, group))
- 				err = reserve_backup_gdb(handle, resize_inode, group);
-@@ -1509,7 +1514,8 @@ static int ext4_flex_group_add(struct super_block *sb,
- 	}
- 
- 	BUFFER_TRACE(sbi->s_sbh, "get_write_access");
--	err = ext4_journal_get_write_access(handle, sbi->s_sbh);
-+	err = ext4_journal_get_write_access(handle, sb, sbi->s_sbh,
-+					    EXT4_JTR_NONE);
- 	if (err)
- 		goto exit_journal;
- 
-@@ -1722,7 +1728,8 @@ static int ext4_group_extend_no_check(struct super_block *sb,
- 	}
- 
- 	BUFFER_TRACE(EXT4_SB(sb)->s_sbh, "get_write_access");
--	err = ext4_journal_get_write_access(handle, EXT4_SB(sb)->s_sbh);
-+	err = ext4_journal_get_write_access(handle, sb, EXT4_SB(sb)->s_sbh,
-+					    EXT4_JTR_NONE);
- 	if (err) {
- 		ext4_warning(sb, "error %d on journal write access", err);
- 		goto errout;
-@@ -1884,7 +1891,8 @@ static int ext4_convert_meta_bg(struct super_block *sb, struct inode *inode)
- 		return PTR_ERR(handle);
- 
- 	BUFFER_TRACE(sbi->s_sbh, "get_write_access");
--	err = ext4_journal_get_write_access(handle, sbi->s_sbh);
-+	err = ext4_journal_get_write_access(handle, sb, sbi->s_sbh,
-+					    EXT4_JTR_NONE);
- 	if (err)
- 		goto errout;
- 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index dfa09a277b56..61fcea9dce3d 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -4014,6 +4014,20 @@ static const char *ext4_quota_mode(struct super_block *sb)
- #endif
- }
- 
-+static void ext4_setup_csum_trigger(struct super_block *sb,
-+				    enum ext4_journal_trigger_type type,
-+				    void (*trigger)(
-+					struct jbd2_buffer_trigger_type *type,
-+					struct buffer_head *bh,
-+					void *mapped_data,
-+					size_t size))
-+{
-+	struct ext4_sb_info *sbi = EXT4_SB(sb);
+-	} else
+-		brelse(iloc.bh);
+-
+-	jbd_debug(4, "superblock will point to %lu\n", inode->i_ino);
+-	jbd_debug(4, "orphan inode %lu will point to %d\n",
+-			inode->i_ino, NEXT_ORPHAN(inode));
+-out:
+-	ext4_std_error(sb, err);
+-	return err;
+-}
+-
+-/*
+- * ext4_orphan_del() removes an unlinked or truncated inode from the list
+- * of such inodes stored on disk, because it is finally being cleaned up.
+- */
+-int ext4_orphan_del(handle_t *handle, struct inode *inode)
+-{
+-	struct list_head *prev;
+-	struct ext4_inode_info *ei = EXT4_I(inode);
+-	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
+-	__u32 ino_next;
+-	struct ext4_iloc iloc;
+-	int err = 0;
+-
+-	if (!sbi->s_journal && !(sbi->s_mount_state & EXT4_ORPHAN_FS))
+-		return 0;
+-
+-	WARN_ON_ONCE(!(inode->i_state & (I_NEW | I_FREEING)) &&
+-		     !inode_is_locked(inode));
+-	/* Do this quick check before taking global s_orphan_lock. */
+-	if (list_empty(&ei->i_orphan))
+-		return 0;
+-
+-	if (handle) {
+-		/* Grab inode buffer early before taking global s_orphan_lock */
+-		err = ext4_reserve_inode_write(handle, inode, &iloc);
+-	}
+-
+-	mutex_lock(&sbi->s_orphan_lock);
+-	jbd_debug(4, "remove inode %lu from orphan list\n", inode->i_ino);
+-
+-	prev = ei->i_orphan.prev;
+-	list_del_init(&ei->i_orphan);
+-
+-	/* If we're on an error path, we may not have a valid
+-	 * transaction handle with which to update the orphan list on
+-	 * disk, but we still need to remove the inode from the linked
+-	 * list in memory. */
+-	if (!handle || err) {
+-		mutex_unlock(&sbi->s_orphan_lock);
+-		goto out_err;
+-	}
+-
+-	ino_next = NEXT_ORPHAN(inode);
+-	if (prev == &sbi->s_orphan) {
+-		jbd_debug(4, "superblock will point to %u\n", ino_next);
+-		BUFFER_TRACE(sbi->s_sbh, "get_write_access");
+-		err = ext4_journal_get_write_access(handle, inode->i_sb,
+-						    sbi->s_sbh, EXT4_JTR_NONE);
+-		if (err) {
+-			mutex_unlock(&sbi->s_orphan_lock);
+-			goto out_brelse;
+-		}
+-		lock_buffer(sbi->s_sbh);
+-		sbi->s_es->s_last_orphan = cpu_to_le32(ino_next);
+-		ext4_superblock_csum_set(inode->i_sb);
+-		unlock_buffer(sbi->s_sbh);
+-		mutex_unlock(&sbi->s_orphan_lock);
+-		err = ext4_handle_dirty_metadata(handle, NULL, sbi->s_sbh);
+-	} else {
+-		struct ext4_iloc iloc2;
+-		struct inode *i_prev =
+-			&list_entry(prev, struct ext4_inode_info, i_orphan)->vfs_inode;
+-
+-		jbd_debug(4, "orphan inode %lu will point to %u\n",
+-			  i_prev->i_ino, ino_next);
+-		err = ext4_reserve_inode_write(handle, i_prev, &iloc2);
+-		if (err) {
+-			mutex_unlock(&sbi->s_orphan_lock);
+-			goto out_brelse;
+-		}
+-		NEXT_ORPHAN(i_prev) = ino_next;
+-		err = ext4_mark_iloc_dirty(handle, i_prev, &iloc2);
+-		mutex_unlock(&sbi->s_orphan_lock);
+-	}
+-	if (err)
+-		goto out_brelse;
+-	NEXT_ORPHAN(inode) = 0;
+-	err = ext4_mark_iloc_dirty(handle, inode, &iloc);
+-out_err:
+-	ext4_std_error(inode->i_sb, err);
+-	return err;
+-
+-out_brelse:
+-	brelse(iloc.bh);
+-	goto out_err;
+-}
+-
+ static int ext4_rmdir(struct inode *dir, struct dentry *dentry)
+ {
+ 	int retval;
+diff --git a/fs/ext4/orphan.c b/fs/ext4/orphan.c
+new file mode 100644
+index 000000000000..1f2fa2ef53bd
+--- /dev/null
++++ b/fs/ext4/orphan.c
+@@ -0,0 +1,363 @@
++/*
++ * Ext4 orphan inode handling
++ */
++#include <linux/fs.h>
++#include <linux/quotaops.h>
++#include <linux/buffer_head.h>
 +
-+	sbi->s_journal_triggers[type].sb = sb;
-+	sbi->s_journal_triggers[type].tr_triggers.t_frozen = trigger;
++#include "ext4.h"
++#include "ext4_jbd2.h"
++
++/*
++ * ext4_orphan_add() links an unlinked or truncated inode into a list of
++ * such inodes, starting at the superblock, in case we crash before the
++ * file is closed/deleted, or in case the inode truncate spans multiple
++ * transactions and the last transaction is not recovered after a crash.
++ *
++ * At filesystem recovery time, we walk this list deleting unlinked
++ * inodes and truncating linked inodes in ext4_orphan_cleanup().
++ *
++ * Orphan list manipulation functions must be called under i_mutex unless
++ * we are just creating the inode or deleting it.
++ */
++int ext4_orphan_add(handle_t *handle, struct inode *inode)
++{
++	struct super_block *sb = inode->i_sb;
++	struct ext4_sb_info *sbi = EXT4_SB(sb);
++	struct ext4_iloc iloc;
++	int err = 0, rc;
++	bool dirty = false;
++
++	if (!sbi->s_journal || is_bad_inode(inode))
++		return 0;
++
++	WARN_ON_ONCE(!(inode->i_state & (I_NEW | I_FREEING)) &&
++		     !inode_is_locked(inode));
++	/*
++	 * Exit early if inode already is on orphan list. This is a big speedup
++	 * since we don't have to contend on the global s_orphan_lock.
++	 */
++	if (!list_empty(&EXT4_I(inode)->i_orphan))
++		return 0;
++
++	/*
++	 * Orphan handling is only valid for files with data blocks
++	 * being truncated, or files being unlinked. Note that we either
++	 * hold i_mutex, or the inode can not be referenced from outside,
++	 * so i_nlink should not be bumped due to race
++	 */
++	ASSERT((S_ISREG(inode->i_mode) || S_ISDIR(inode->i_mode) ||
++		  S_ISLNK(inode->i_mode)) || inode->i_nlink == 0);
++
++	BUFFER_TRACE(sbi->s_sbh, "get_write_access");
++	err = ext4_journal_get_write_access(handle, sb, sbi->s_sbh,
++					    EXT4_JTR_NONE);
++	if (err)
++		goto out;
++
++	err = ext4_reserve_inode_write(handle, inode, &iloc);
++	if (err)
++		goto out;
++
++	mutex_lock(&sbi->s_orphan_lock);
++	/*
++	 * Due to previous errors inode may be already a part of on-disk
++	 * orphan list. If so skip on-disk list modification.
++	 */
++	if (!NEXT_ORPHAN(inode) || NEXT_ORPHAN(inode) >
++	    (le32_to_cpu(sbi->s_es->s_inodes_count))) {
++		/* Insert this inode at the head of the on-disk orphan list */
++		NEXT_ORPHAN(inode) = le32_to_cpu(sbi->s_es->s_last_orphan);
++		lock_buffer(sbi->s_sbh);
++		sbi->s_es->s_last_orphan = cpu_to_le32(inode->i_ino);
++		ext4_superblock_csum_set(sb);
++		unlock_buffer(sbi->s_sbh);
++		dirty = true;
++	}
++	list_add(&EXT4_I(inode)->i_orphan, &sbi->s_orphan);
++	mutex_unlock(&sbi->s_orphan_lock);
++
++	if (dirty) {
++		err = ext4_handle_dirty_metadata(handle, NULL, sbi->s_sbh);
++		rc = ext4_mark_iloc_dirty(handle, inode, &iloc);
++		if (!err)
++			err = rc;
++		if (err) {
++			/*
++			 * We have to remove inode from in-memory list if
++			 * addition to on disk orphan list failed. Stray orphan
++			 * list entries can cause panics at unmount time.
++			 */
++			mutex_lock(&sbi->s_orphan_lock);
++			list_del_init(&EXT4_I(inode)->i_orphan);
++			mutex_unlock(&sbi->s_orphan_lock);
++		}
++	} else
++		brelse(iloc.bh);
++
++	jbd_debug(4, "superblock will point to %lu\n", inode->i_ino);
++	jbd_debug(4, "orphan inode %lu will point to %d\n",
++			inode->i_ino, NEXT_ORPHAN(inode));
++out:
++	ext4_std_error(sb, err);
++	return err;
 +}
 +
- static int ext4_fill_super(struct super_block *sb, void *data, int silent)
++/*
++ * ext4_orphan_del() removes an unlinked or truncated inode from the list
++ * of such inodes stored on disk, because it is finally being cleaned up.
++ */
++int ext4_orphan_del(handle_t *handle, struct inode *inode)
++{
++	struct list_head *prev;
++	struct ext4_inode_info *ei = EXT4_I(inode);
++	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
++	__u32 ino_next;
++	struct ext4_iloc iloc;
++	int err = 0;
++
++	if (!sbi->s_journal && !(sbi->s_mount_state & EXT4_ORPHAN_FS))
++		return 0;
++
++	WARN_ON_ONCE(!(inode->i_state & (I_NEW | I_FREEING)) &&
++		     !inode_is_locked(inode));
++	/* Do this quick check before taking global s_orphan_lock. */
++	if (list_empty(&ei->i_orphan))
++		return 0;
++
++	if (handle) {
++		/* Grab inode buffer early before taking global s_orphan_lock */
++		err = ext4_reserve_inode_write(handle, inode, &iloc);
++	}
++
++	mutex_lock(&sbi->s_orphan_lock);
++	jbd_debug(4, "remove inode %lu from orphan list\n", inode->i_ino);
++
++	prev = ei->i_orphan.prev;
++	list_del_init(&ei->i_orphan);
++
++	/* If we're on an error path, we may not have a valid
++	 * transaction handle with which to update the orphan list on
++	 * disk, but we still need to remove the inode from the linked
++	 * list in memory. */
++	if (!handle || err) {
++		mutex_unlock(&sbi->s_orphan_lock);
++		goto out_err;
++	}
++
++	ino_next = NEXT_ORPHAN(inode);
++	if (prev == &sbi->s_orphan) {
++		jbd_debug(4, "superblock will point to %u\n", ino_next);
++		BUFFER_TRACE(sbi->s_sbh, "get_write_access");
++		err = ext4_journal_get_write_access(handle, inode->i_sb,
++						    sbi->s_sbh, EXT4_JTR_NONE);
++		if (err) {
++			mutex_unlock(&sbi->s_orphan_lock);
++			goto out_brelse;
++		}
++		lock_buffer(sbi->s_sbh);
++		sbi->s_es->s_last_orphan = cpu_to_le32(ino_next);
++		ext4_superblock_csum_set(inode->i_sb);
++		unlock_buffer(sbi->s_sbh);
++		mutex_unlock(&sbi->s_orphan_lock);
++		err = ext4_handle_dirty_metadata(handle, NULL, sbi->s_sbh);
++	} else {
++		struct ext4_iloc iloc2;
++		struct inode *i_prev =
++			&list_entry(prev, struct ext4_inode_info, i_orphan)->vfs_inode;
++
++		jbd_debug(4, "orphan inode %lu will point to %u\n",
++			  i_prev->i_ino, ino_next);
++		err = ext4_reserve_inode_write(handle, i_prev, &iloc2);
++		if (err) {
++			mutex_unlock(&sbi->s_orphan_lock);
++			goto out_brelse;
++		}
++		NEXT_ORPHAN(i_prev) = ino_next;
++		err = ext4_mark_iloc_dirty(handle, i_prev, &iloc2);
++		mutex_unlock(&sbi->s_orphan_lock);
++	}
++	if (err)
++		goto out_brelse;
++	NEXT_ORPHAN(inode) = 0;
++	err = ext4_mark_iloc_dirty(handle, inode, &iloc);
++out_err:
++	ext4_std_error(inode->i_sb, err);
++	return err;
++
++out_brelse:
++	brelse(iloc.bh);
++	goto out_err;
++}
++
++#ifdef CONFIG_QUOTA
++static int ext4_quota_on_mount(struct super_block *sb, int type)
++{
++	return dquot_quota_on_mount(sb,
++		rcu_dereference_protected(EXT4_SB(sb)->s_qf_names[type],
++					  lockdep_is_held(&sb->s_umount)),
++		EXT4_SB(sb)->s_jquota_fmt, type);
++}
++#endif
++
++/* ext4_orphan_cleanup() walks a singly-linked list of inodes (starting at
++ * the superblock) which were deleted from all directories, but held open by
++ * a process at the time of a crash.  We walk the list and try to delete these
++ * inodes at recovery time (only with a read-write filesystem).
++ *
++ * In order to keep the orphan inode chain consistent during traversal (in
++ * case of crash during recovery), we link each inode into the superblock
++ * orphan list_head and handle it the same way as an inode deletion during
++ * normal operation (which journals the operations for us).
++ *
++ * We only do an iget() and an iput() on each inode, which is very safe if we
++ * accidentally point at an in-use or already deleted inode.  The worst that
++ * can happen in this case is that we get a "bit already cleared" message from
++ * ext4_free_inode().  The only reason we would point at a wrong inode is if
++ * e2fsck was run on this filesystem, and it must have already done the orphan
++ * inode cleanup for us, so we can safely abort without any further action.
++ */
++void ext4_orphan_cleanup(struct super_block *sb, struct ext4_super_block *es)
++{
++	unsigned int s_flags = sb->s_flags;
++	int ret, nr_orphans = 0, nr_truncates = 0;
++#ifdef CONFIG_QUOTA
++	int quota_update = 0;
++	int i;
++#endif
++	if (!es->s_last_orphan) {
++		jbd_debug(4, "no orphan inodes to clean up\n");
++		return;
++	}
++
++	if (bdev_read_only(sb->s_bdev)) {
++		ext4_msg(sb, KERN_ERR, "write access "
++			"unavailable, skipping orphan cleanup");
++		return;
++	}
++
++	/* Check if feature set would not allow a r/w mount */
++	if (!ext4_feature_set_ok(sb, 0)) {
++		ext4_msg(sb, KERN_INFO, "Skipping orphan cleanup due to "
++			 "unknown ROCOMPAT features");
++		return;
++	}
++
++	if (EXT4_SB(sb)->s_mount_state & EXT4_ERROR_FS) {
++		/* don't clear list on RO mount w/ errors */
++		if (es->s_last_orphan && !(s_flags & SB_RDONLY)) {
++			ext4_msg(sb, KERN_INFO, "Errors on filesystem, "
++				  "clearing orphan list.\n");
++			es->s_last_orphan = 0;
++		}
++		jbd_debug(1, "Skipping orphan recovery on fs with errors.\n");
++		return;
++	}
++
++	if (s_flags & SB_RDONLY) {
++		ext4_msg(sb, KERN_INFO, "orphan cleanup on readonly fs");
++		sb->s_flags &= ~SB_RDONLY;
++	}
++#ifdef CONFIG_QUOTA
++	/*
++	 * Turn on quotas which were not enabled for read-only mounts if
++	 * filesystem has quota feature, so that they are updated correctly.
++	 */
++	if (ext4_has_feature_quota(sb) && (s_flags & SB_RDONLY)) {
++		int ret = ext4_enable_quotas(sb);
++
++		if (!ret)
++			quota_update = 1;
++		else
++			ext4_msg(sb, KERN_ERR,
++				"Cannot turn on quotas: error %d", ret);
++	}
++
++	/* Turn on journaled quotas used for old sytle */
++	for (i = 0; i < EXT4_MAXQUOTAS; i++) {
++		if (EXT4_SB(sb)->s_qf_names[i]) {
++			int ret = ext4_quota_on_mount(sb, i);
++
++			if (!ret)
++				quota_update = 1;
++			else
++				ext4_msg(sb, KERN_ERR,
++					"Cannot turn on journaled "
++					"quota: type %d: error %d", i, ret);
++		}
++	}
++#endif
++
++	while (es->s_last_orphan) {
++		struct inode *inode;
++
++		/*
++		 * We may have encountered an error during cleanup; if
++		 * so, skip the rest.
++		 */
++		if (EXT4_SB(sb)->s_mount_state & EXT4_ERROR_FS) {
++			jbd_debug(1, "Skipping orphan recovery on fs with errors.\n");
++			es->s_last_orphan = 0;
++			break;
++		}
++
++		inode = ext4_orphan_get(sb, le32_to_cpu(es->s_last_orphan));
++		if (IS_ERR(inode)) {
++			es->s_last_orphan = 0;
++			break;
++		}
++
++		list_add(&EXT4_I(inode)->i_orphan, &EXT4_SB(sb)->s_orphan);
++		dquot_initialize(inode);
++		if (inode->i_nlink) {
++			if (test_opt(sb, DEBUG))
++				ext4_msg(sb, KERN_DEBUG,
++					"%s: truncating inode %lu to %lld bytes",
++					__func__, inode->i_ino, inode->i_size);
++			jbd_debug(2, "truncating inode %lu to %lld bytes\n",
++				  inode->i_ino, inode->i_size);
++			inode_lock(inode);
++			truncate_inode_pages(inode->i_mapping, inode->i_size);
++			ret = ext4_truncate(inode);
++			if (ret) {
++				/*
++				 * We need to clean up the in-core orphan list
++				 * manually if ext4_truncate() failed to get a
++				 * transaction handle.
++				 */
++				ext4_orphan_del(NULL, inode);
++				ext4_std_error(inode->i_sb, ret);
++			}
++			inode_unlock(inode);
++			nr_truncates++;
++		} else {
++			if (test_opt(sb, DEBUG))
++				ext4_msg(sb, KERN_DEBUG,
++					"%s: deleting unreferenced inode %lu",
++					__func__, inode->i_ino);
++			jbd_debug(2, "deleting unreferenced inode %lu\n",
++				  inode->i_ino);
++			nr_orphans++;
++		}
++		iput(inode);  /* The delete magic happens here! */
++	}
++
++#define PLURAL(x) (x), ((x) == 1) ? "" : "s"
++
++	if (nr_orphans)
++		ext4_msg(sb, KERN_INFO, "%d orphan inode%s deleted",
++		       PLURAL(nr_orphans));
++	if (nr_truncates)
++		ext4_msg(sb, KERN_INFO, "%d truncate%s cleaned up",
++		       PLURAL(nr_truncates));
++#ifdef CONFIG_QUOTA
++	/* Turn off quotas if they were enabled for orphan cleanup */
++	if (quota_update) {
++		for (i = 0; i < EXT4_MAXQUOTAS; i++) {
++			if (sb_dqopt(sb)->files[i])
++				dquot_quota_off(sb, i);
++		}
++	}
++#endif
++	sb->s_flags = s_flags; /* Restore SB_RDONLY status */
++}
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 61fcea9dce3d..a7081d525faa 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -80,7 +80,6 @@ static struct dentry *ext4_mount(struct file_system_type *fs_type, int flags,
+ 		       const char *dev_name, void *data);
+ static inline int ext2_feature_set_ok(struct super_block *sb);
+ static inline int ext3_feature_set_ok(struct super_block *sb);
+-static int ext4_feature_set_ok(struct super_block *sb, int readonly);
+ static void ext4_destroy_lazyinit_thread(void);
+ static void ext4_unregister_li_request(struct super_block *sb);
+ static void ext4_clear_request_list(void);
+@@ -1585,14 +1584,12 @@ static int ext4_mark_dquot_dirty(struct dquot *dquot);
+ static int ext4_write_info(struct super_block *sb, int type);
+ static int ext4_quota_on(struct super_block *sb, int type, int format_id,
+ 			 const struct path *path);
+-static int ext4_quota_on_mount(struct super_block *sb, int type);
+ static ssize_t ext4_quota_read(struct super_block *sb, int type, char *data,
+ 			       size_t len, loff_t off);
+ static ssize_t ext4_quota_write(struct super_block *sb, int type,
+ 				const char *data, size_t len, loff_t off);
+ static int ext4_quota_enable(struct super_block *sb, int type, int format_id,
+ 			     unsigned int flags);
+-static int ext4_enable_quotas(struct super_block *sb);
+ 
+ static struct dquot **ext4_get_dquots(struct inode *inode)
  {
- 	struct dax_device *dax_dev = fs_dax_get_by_bdev(sb->s_bdev);
-@@ -6609,7 +6623,7 @@ static ssize_t ext4_quota_write(struct super_block *sb, int type,
- 	if (!bh)
- 		goto out;
- 	BUFFER_TRACE(bh, "get write access");
--	err = ext4_journal_get_write_access(handle, bh);
-+	err = ext4_journal_get_write_access(handle, sb, bh, EXT4_JTR_NONE);
- 	if (err) {
- 		brelse(bh);
- 		return err;
-diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-index 6dd5c05c444a..1e0fc1ed845b 100644
---- a/fs/ext4/xattr.c
-+++ b/fs/ext4/xattr.c
-@@ -791,7 +791,8 @@ static void ext4_xattr_update_super_block(handle_t *handle,
- 		return;
+@@ -2970,169 +2967,6 @@ static int ext4_check_descriptors(struct super_block *sb,
+ 	return 1;
+ }
  
- 	BUFFER_TRACE(EXT4_SB(sb)->s_sbh, "get_write_access");
--	if (ext4_journal_get_write_access(handle, EXT4_SB(sb)->s_sbh) == 0) {
-+	if (ext4_journal_get_write_access(handle, sb, EXT4_SB(sb)->s_sbh,
-+					  EXT4_JTR_NONE) == 0) {
- 		lock_buffer(EXT4_SB(sb)->s_sbh);
- 		ext4_set_feature_xattr(sb);
- 		ext4_superblock_csum_set(sb);
-@@ -1169,7 +1170,8 @@ ext4_xattr_inode_dec_ref_all(handle_t *handle, struct inode *parent,
- 			continue;
- 		}
- 		if (err > 0) {
--			err = ext4_journal_get_write_access(handle, bh);
-+			err = ext4_journal_get_write_access(handle,
-+					parent->i_sb, bh, EXT4_JTR_NONE);
- 			if (err) {
- 				ext4_warning_inode(ea_inode,
- 						"Re-get write access err=%d",
-@@ -1230,7 +1232,8 @@ ext4_xattr_release_block(handle_t *handle, struct inode *inode,
- 	int error = 0;
- 
- 	BUFFER_TRACE(bh, "get_write_access");
--	error = ext4_journal_get_write_access(handle, bh);
-+	error = ext4_journal_get_write_access(handle, inode->i_sb, bh,
-+					      EXT4_JTR_NONE);
- 	if (error)
- 		goto out;
- 
-@@ -1371,7 +1374,8 @@ static int ext4_xattr_inode_write(handle_t *handle, struct inode *ea_inode,
- 					 "ext4_getblk() return bh = NULL");
- 			return -EFSCORRUPTED;
- 		}
--		ret = ext4_journal_get_write_access(handle, bh);
-+		ret = ext4_journal_get_write_access(handle, ea_inode->i_sb, bh,
-+						   EXT4_JTR_NONE);
- 		if (ret)
- 			goto out;
- 
-@@ -1855,7 +1859,8 @@ ext4_xattr_block_set(handle_t *handle, struct inode *inode,
- 
- 	if (s->base) {
- 		BUFFER_TRACE(bs->bh, "get_write_access");
--		error = ext4_journal_get_write_access(handle, bs->bh);
-+		error = ext4_journal_get_write_access(handle, sb, bs->bh,
-+						      EXT4_JTR_NONE);
- 		if (error)
- 			goto cleanup;
- 		lock_buffer(bs->bh);
-@@ -1987,8 +1992,9 @@ ext4_xattr_block_set(handle_t *handle, struct inode *inode,
- 				if (error)
- 					goto cleanup;
- 				BUFFER_TRACE(new_bh, "get_write_access");
--				error = ext4_journal_get_write_access(handle,
--								      new_bh);
-+				error = ext4_journal_get_write_access(
-+						handle, sb, new_bh,
-+						EXT4_JTR_NONE);
- 				if (error)
- 					goto cleanup_dquot;
- 				lock_buffer(new_bh);
-@@ -2092,7 +2098,8 @@ ext4_xattr_block_set(handle_t *handle, struct inode *inode,
- 			}
- 
- 			lock_buffer(new_bh);
--			error = ext4_journal_get_create_access(handle, new_bh);
-+			error = ext4_journal_get_create_access(handle, sb,
-+							new_bh, EXT4_JTR_NONE);
- 			if (error) {
- 				unlock_buffer(new_bh);
- 				error = -EIO;
-@@ -2848,7 +2855,8 @@ int ext4_xattr_delete_inode(handle_t *handle, struct inode *inode,
- 			goto cleanup;
- 		}
- 
--		error = ext4_journal_get_write_access(handle, iloc.bh);
-+		error = ext4_journal_get_write_access(handle, inode->i_sb,
-+						iloc.bh, EXT4_JTR_NONE);
- 		if (error) {
- 			EXT4_ERROR_INODE(inode, "write access (error %d)",
- 					 error);
-diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-index 8804e126805f..707f92d78c69 100644
---- a/fs/jbd2/transaction.c
-+++ b/fs/jbd2/transaction.c
-@@ -1404,7 +1404,7 @@ void jbd2_journal_set_triggers(struct buffer_head *bh,
+-/* ext4_orphan_cleanup() walks a singly-linked list of inodes (starting at
+- * the superblock) which were deleted from all directories, but held open by
+- * a process at the time of a crash.  We walk the list and try to delete these
+- * inodes at recovery time (only with a read-write filesystem).
+- *
+- * In order to keep the orphan inode chain consistent during traversal (in
+- * case of crash during recovery), we link each inode into the superblock
+- * orphan list_head and handle it the same way as an inode deletion during
+- * normal operation (which journals the operations for us).
+- *
+- * We only do an iget() and an iput() on each inode, which is very safe if we
+- * accidentally point at an in-use or already deleted inode.  The worst that
+- * can happen in this case is that we get a "bit already cleared" message from
+- * ext4_free_inode().  The only reason we would point at a wrong inode is if
+- * e2fsck was run on this filesystem, and it must have already done the orphan
+- * inode cleanup for us, so we can safely abort without any further action.
+- */
+-static void ext4_orphan_cleanup(struct super_block *sb,
+-				struct ext4_super_block *es)
+-{
+-	unsigned int s_flags = sb->s_flags;
+-	int ret, nr_orphans = 0, nr_truncates = 0;
+-#ifdef CONFIG_QUOTA
+-	int quota_update = 0;
+-	int i;
+-#endif
+-	if (!es->s_last_orphan) {
+-		jbd_debug(4, "no orphan inodes to clean up\n");
+-		return;
+-	}
+-
+-	if (bdev_read_only(sb->s_bdev)) {
+-		ext4_msg(sb, KERN_ERR, "write access "
+-			"unavailable, skipping orphan cleanup");
+-		return;
+-	}
+-
+-	/* Check if feature set would not allow a r/w mount */
+-	if (!ext4_feature_set_ok(sb, 0)) {
+-		ext4_msg(sb, KERN_INFO, "Skipping orphan cleanup due to "
+-			 "unknown ROCOMPAT features");
+-		return;
+-	}
+-
+-	if (EXT4_SB(sb)->s_mount_state & EXT4_ERROR_FS) {
+-		/* don't clear list on RO mount w/ errors */
+-		if (es->s_last_orphan && !(s_flags & SB_RDONLY)) {
+-			ext4_msg(sb, KERN_INFO, "Errors on filesystem, "
+-				  "clearing orphan list.\n");
+-			es->s_last_orphan = 0;
+-		}
+-		jbd_debug(1, "Skipping orphan recovery on fs with errors.\n");
+-		return;
+-	}
+-
+-	if (s_flags & SB_RDONLY) {
+-		ext4_msg(sb, KERN_INFO, "orphan cleanup on readonly fs");
+-		sb->s_flags &= ~SB_RDONLY;
+-	}
+-#ifdef CONFIG_QUOTA
+-	/*
+-	 * Turn on quotas which were not enabled for read-only mounts if
+-	 * filesystem has quota feature, so that they are updated correctly.
+-	 */
+-	if (ext4_has_feature_quota(sb) && (s_flags & SB_RDONLY)) {
+-		int ret = ext4_enable_quotas(sb);
+-
+-		if (!ret)
+-			quota_update = 1;
+-		else
+-			ext4_msg(sb, KERN_ERR,
+-				"Cannot turn on quotas: error %d", ret);
+-	}
+-
+-	/* Turn on journaled quotas used for old sytle */
+-	for (i = 0; i < EXT4_MAXQUOTAS; i++) {
+-		if (EXT4_SB(sb)->s_qf_names[i]) {
+-			int ret = ext4_quota_on_mount(sb, i);
+-
+-			if (!ret)
+-				quota_update = 1;
+-			else
+-				ext4_msg(sb, KERN_ERR,
+-					"Cannot turn on journaled "
+-					"quota: type %d: error %d", i, ret);
+-		}
+-	}
+-#endif
+-
+-	while (es->s_last_orphan) {
+-		struct inode *inode;
+-
+-		/*
+-		 * We may have encountered an error during cleanup; if
+-		 * so, skip the rest.
+-		 */
+-		if (EXT4_SB(sb)->s_mount_state & EXT4_ERROR_FS) {
+-			jbd_debug(1, "Skipping orphan recovery on fs with errors.\n");
+-			es->s_last_orphan = 0;
+-			break;
+-		}
+-
+-		inode = ext4_orphan_get(sb, le32_to_cpu(es->s_last_orphan));
+-		if (IS_ERR(inode)) {
+-			es->s_last_orphan = 0;
+-			break;
+-		}
+-
+-		list_add(&EXT4_I(inode)->i_orphan, &EXT4_SB(sb)->s_orphan);
+-		dquot_initialize(inode);
+-		if (inode->i_nlink) {
+-			if (test_opt(sb, DEBUG))
+-				ext4_msg(sb, KERN_DEBUG,
+-					"%s: truncating inode %lu to %lld bytes",
+-					__func__, inode->i_ino, inode->i_size);
+-			jbd_debug(2, "truncating inode %lu to %lld bytes\n",
+-				  inode->i_ino, inode->i_size);
+-			inode_lock(inode);
+-			truncate_inode_pages(inode->i_mapping, inode->i_size);
+-			ret = ext4_truncate(inode);
+-			if (ret) {
+-				/*
+-				 * We need to clean up the in-core orphan list
+-				 * manually if ext4_truncate() failed to get a
+-				 * transaction handle.
+-				 */
+-				ext4_orphan_del(NULL, inode);
+-				ext4_std_error(inode->i_sb, ret);
+-			}
+-			inode_unlock(inode);
+-			nr_truncates++;
+-		} else {
+-			if (test_opt(sb, DEBUG))
+-				ext4_msg(sb, KERN_DEBUG,
+-					"%s: deleting unreferenced inode %lu",
+-					__func__, inode->i_ino);
+-			jbd_debug(2, "deleting unreferenced inode %lu\n",
+-				  inode->i_ino);
+-			nr_orphans++;
+-		}
+-		iput(inode);  /* The delete magic happens here! */
+-	}
+-
+-#define PLURAL(x) (x), ((x) == 1) ? "" : "s"
+-
+-	if (nr_orphans)
+-		ext4_msg(sb, KERN_INFO, "%d orphan inode%s deleted",
+-		       PLURAL(nr_orphans));
+-	if (nr_truncates)
+-		ext4_msg(sb, KERN_INFO, "%d truncate%s cleaned up",
+-		       PLURAL(nr_truncates));
+-#ifdef CONFIG_QUOTA
+-	/* Turn off quotas if they were enabled for orphan cleanup */
+-	if (quota_update) {
+-		for (i = 0; i < EXT4_MAXQUOTAS; i++) {
+-			if (sb_dqopt(sb)->files[i])
+-				dquot_quota_off(sb, i);
+-		}
+-	}
+-#endif
+-	sb->s_flags = s_flags; /* Restore SB_RDONLY status */
+-}
+-
+ /*
+  * Maximal extent format file size.
+  * Resulting logical blkno at s_maxbytes must fit in our on-disk
+@@ -3312,7 +3146,7 @@ static unsigned long ext4_get_stripe_size(struct ext4_sb_info *sbi)
+  * Returns 1 if this filesystem can be mounted as requested,
+  * 0 if it cannot be.
+  */
+-static int ext4_feature_set_ok(struct super_block *sb, int readonly)
++int ext4_feature_set_ok(struct super_block *sb, int readonly)
  {
- 	struct journal_head *jh = jbd2_journal_grab_journal_head(bh);
+ 	if (ext4_has_unknown_ext4_incompat_features(sb)) {
+ 		ext4_msg(sb, KERN_ERR,
+@@ -6326,16 +6160,6 @@ static int ext4_write_info(struct super_block *sb, int type)
+ 	return ret;
+ }
  
--	if (WARN_ON(!jh))
-+	if (WARN_ON_ONCE(!jh))
- 		return;
- 	jh->b_triggers = type;
- 	jbd2_journal_put_journal_head(jh);
+-/*
+- * Turn on quotas during mount time - we need to find
+- * the quota file and such...
+- */
+-static int ext4_quota_on_mount(struct super_block *sb, int type)
+-{
+-	return dquot_quota_on_mount(sb, get_qf_name(sb, EXT4_SB(sb), type),
+-					EXT4_SB(sb)->s_jquota_fmt, type);
+-}
+-
+ static void lockdep_set_quota_inode(struct inode *inode, int subclass)
+ {
+ 	struct ext4_inode_info *ei = EXT4_I(inode);
+@@ -6465,7 +6289,7 @@ static int ext4_quota_enable(struct super_block *sb, int type, int format_id,
+ }
+ 
+ /* Enable usage tracking for all quota types. */
+-static int ext4_enable_quotas(struct super_block *sb)
++int ext4_enable_quotas(struct super_block *sb)
+ {
+ 	int type, err = 0;
+ 	unsigned long qf_inums[EXT4_MAXQUOTAS] = {
 -- 
 2.26.2
 
