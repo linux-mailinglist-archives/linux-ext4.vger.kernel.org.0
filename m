@@ -2,58 +2,71 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 350713EE662
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Aug 2021 07:50:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 806CB3EE75E
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Aug 2021 09:40:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234233AbhHQFvH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 17 Aug 2021 01:51:07 -0400
-Received: from verein.lst.de ([213.95.11.211]:57167 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233928AbhHQFvG (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 17 Aug 2021 01:51:06 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id AB5316736F; Tue, 17 Aug 2021 07:50:31 +0200 (CEST)
-Date:   Tue, 17 Aug 2021 07:50:31 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Felix Kuehling <felix.kuehling@amd.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Alex Sierra <alex.sierra@amd.com>,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        rcampbell@nvidia.com, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, jgg@nvidia.com,
-        jglisse@redhat.com, Roger Pau Monne <roger.pau@citrix.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Subject: Re: [PATCH v6 08/13] mm: call pgmap->ops->page_free for
- DEVICE_GENERIC pages
-Message-ID: <20210817055031.GC4895@lst.de>
-References: <20210813063150.2938-1-alex.sierra@amd.com> <20210813063150.2938-9-alex.sierra@amd.com> <20210815154047.GC32384@lst.de> <7a55366f-bd65-7ab9-be9e-3bfd3aea3ea1@amd.com>
+        id S234799AbhHQHkg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 17 Aug 2021 03:40:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234402AbhHQHke (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Aug 2021 03:40:34 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D8A8C061764;
+        Tue, 17 Aug 2021 00:40:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=KfwRHnjdRbP4ZHi0hu2qspn9wFiV5cDDqAzN3MYU9kM=; b=SJPzEtocr0pIyrOVpbBEsBp8qI
+        UixtMAUf3iIYsy0aweKkYfYkBRRq/A3D6nFp4Kd8BzsZkXeIcyHjmkEkbiMbhrRykONGWqiLrSM8Y
+        OWJRflRlD/9sUK00IZKiRi2QphFWnhKC7a9p/DTD1d7gSsG9UC+vvTqAi99gyBbfzzYi8ULvur4zY
+        wzIYtzcVDvtjYpi6UTU7vMw6TXpHZJt2+1vm7IBWdKv4LZJ1kuihn82+U5Mj/ZzmTqP5MHwQXqC3Q
+        L8B26cTMtv7wobahqGrOrlhj9uss5XFm1QS/5mROkvGgoBeiL2D4efC7oTo3JnK2zULMlZdP1toz4
+        ft7/S0uQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mFtga-002GQZ-F3; Tue, 17 Aug 2021 07:39:12 +0000
+Date:   Tue, 17 Aug 2021 08:39:00 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     linux-xfs@vger.kernel.org, jane.chu@oracle.com,
+        willy@infradead.org, tytso@mit.edu, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, sandeen@sandeen.net
+Subject: Re: [PATCHSET 0/2] dax: fix broken pmem poison narrative
+Message-ID: <YRtnlPERHfMZ23Tr@infradead.org>
+References: <162914791879.197065.12619905059952917229.stgit@magnolia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7a55366f-bd65-7ab9-be9e-3bfd3aea3ea1@amd.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <162914791879.197065.12619905059952917229.stgit@magnolia>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 03:00:49PM -0400, Felix Kuehling wrote:
+On Mon, Aug 16, 2021 at 02:05:18PM -0700, Darrick J. Wong wrote:
+> AFAICT, the only reason why the "punch and write" dance works at all is
+> that the XFS and ext4 currently call blkdev_issue_zeroout when
+> allocating pmem as part of a pwrite call.  A pwrite without the punch
+> won't clear the poison, because pwrite on a DAX file calls
+> dax_direct_access to access the memory directly, and dax_direct_access
+> is only smart enough to bail out on poisoned pmem.  It does not know how
+> to clear it.  Userspace could solve the problem by calling FIEMAP and
+> issuing a BLKZEROOUT, but that requires rawio capabilities.
 > 
-> Am 2021-08-15 um 11:40 a.m. schrieb Christoph Hellwig:
-> > On Fri, Aug 13, 2021 at 01:31:45AM -0500, Alex Sierra wrote:
-> >> Add MEMORY_DEVICE_GENERIC case to free_zone_device_page callback.
-> >> Device generic type memory case is now able to free its pages properly.
-> > How is this going to work for the two existing MEMORY_DEVICE_GENERIC
-> > that now change behavior?  And which don't have a ->page_free callback
-> > at all?
-> 
-> That's a good catch. Existing drivers shouldn't need a page_free
-> callback if they didn't have one before. That means we need to add a
-> NULL-pointer check in free_device_page.
+> The whole pmem poison recovery story is is wrong and needs to be
+> corrected ASAP before everyone else starts doing this.  Therefore,
+> create a dax_zeroinit_range function that filesystems can call to reset
+> the contents of the pmem to a known value and clear any state associated
+> with the media error.  Then, connect FALLOC_FL_ZERO_RANGE to this new
+> function (for DAX files) so that unprivileged userspace has a safe way
+> to reset the pmem and clear media errors.
 
-Also the other state clearing (__ClearPageWaiters/mem_cgroup_uncharge/
-->mapping = NULL).
+I agree with the problem statement, but I don't think the fix is
+significantly better than what we have, as it still magically overloads
+other behavior.  I'd rather have an explicit operation to clear the
+poison both at the syscall level (maybe another falloc mode), and the
+internal kernel API level (new method in dax_operations).
 
-In many ways this seems like you want to bring back the DEVICE_PUBLIC
-pgmap type that was removed a while ago due to the lack of users
-instead of overloading the generic type.
+Also for the next iteration please split the iomap changes from the
+usage in xfs.
