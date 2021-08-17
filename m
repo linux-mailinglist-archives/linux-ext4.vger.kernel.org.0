@@ -2,282 +2,157 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9269F3EEA9F
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Aug 2021 12:08:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 263F43EEF53
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Aug 2021 17:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236577AbhHQKI6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 17 Aug 2021 06:08:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234593AbhHQKIw (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Aug 2021 06:08:52 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79686C061764;
-        Tue, 17 Aug 2021 03:08:18 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id h18so21575845ilc.5;
-        Tue, 17 Aug 2021 03:08:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NOFCDOixLJY6DwFBePJH88H6/uMJRgdjY55vjUZoo48=;
-        b=hoAJ/OkcphMR4GHR50YVWJok6t2Niw1p6DDijPvd5/GgHtcDj0jlzYXp49525ouIJe
-         jaBtEBYw78wcDIRJ6n3xKm/rkyzsyAvQwUD5LBXsjSgsYm28/G5S/TtCCcBVl51riUXQ
-         YOo80WhlKuGwR9AChmWeRlYxvB7kq6A8vrVpgM3f2y9x8vHtuNGJYoSFiSTXKKRYnPOG
-         pKsi1QQZ7Rjl2wtzBVLFE/3/l2oMj7/mBQe5r6rFID2qmumsbK1SuZ+Mh09Qcu161ffH
-         iiNq/03UcrHUBGIZds8AnaEjwhnuwR1QfWiq5KXc2l+NHZNJHLK5Yqdfk7PHwsMu6cVB
-         TiCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NOFCDOixLJY6DwFBePJH88H6/uMJRgdjY55vjUZoo48=;
-        b=JtCm8XeqlHfR/LjUf7brkW+hPiXGEn9LAQ/BWCWC6KxFwpRn2Cyanw2ZrCHXYONQlf
-         EzZlS23wsggArbQ58Uxxbw4aGdWPchzoaZhS7nzYCbPtuxvYW687tI/vcDMc+BHHZmsK
-         iFWNVovHbfhUewtFa27LTcrkeQX43/SWux9VG+yMnifKW6AQhl3WCCluWD9w8/XqzQnW
-         CFyfuivYDT9lCx1IrFwEoQdvUK9H7WvLcV3IIC6WHhfICcJ5k8nGhVaj7wBHPpqQ/thl
-         NqPYb3OSjFhcYHEWWPm4MW/DPku3oTvA/pzQblHvIe635qy95C3blE/A04Bxciz1Xxgy
-         +kxA==
-X-Gm-Message-State: AOAM532eBLpla0cQZzu8u/9geby7lg8OCbn5fIbGzLO4+TOFr7w7PJ5F
-        ZspihokZEbbygDQP+wIFyebhoozWYvmKx6qkMUo=
-X-Google-Smtp-Source: ABdhPJx3s7hVoptraNTTEsNt+0hGavUpuIBZ5hNibbEEGmh3AJQJee5XNa3h9CSQI3nTTv/9NaCZ+/OorF0p48A69Uc=
-X-Received: by 2002:a92:cd0a:: with SMTP id z10mr1801660iln.137.1629194897821;
- Tue, 17 Aug 2021 03:08:17 -0700 (PDT)
+        id S233372AbhHQPpd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 17 Aug 2021 11:45:33 -0400
+Received: from mail-bn1nam07on2073.outbound.protection.outlook.com ([40.107.212.73]:61359
+        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231893AbhHQPpb (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 17 Aug 2021 11:45:31 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Yd0N/2neHctFWuquuE14T8begTCGZlpBdBLXy7dTNQhn1aeuj4qs8FbQ9ZL8JdS9F74FUyHYT76MRzNg2C/f5GfBwnGlDLMN3wsyRQPqyujo9HNNFOSyUNme1OwUB1eGoHl47ZvRfwplLSkc9h3aiFPaDFysGxiOkgfxFD8ODmrVYuoRdB/5UPb+8mZqDy6bfAqW5T00criAluIz0TfLN2b3CUohyUJ5bj3PM1AAzgcBFJmBdS03jFozlejnlYksUM/SWcMwGhx+Di4S5LpqiVvd7JOZMj4uL/L++q1rH1tSa7pCFZGeo5T6Z34f4lqCrEOtxRnYznqazw5L+qiA1g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=H2eVlr+b/OJMS8dZqmTWaXlegDT5hqA4TmoKcUGqQuY=;
+ b=CsUGN1d713wsPgJsFM6Qfq0Rb9KRMs2t6YswIPZniR2p66a7MzWaCnR5Zx4W76l4ittX8D19k6SdoRJlcjIg7FhcTtGYdqHDmZro51VpsuOYFVwXmYTTQP8ggKFnICe9Xv25WNIglnNBQNLv3ZLMZlQN13XXKRAIJUw8xbQRUj+fJ5XFd8k9NPHqS8WpBfyq36npTbCbD+aEIOCycM7fB/7G6upvVqfFNanNqsw4wovDNBXpuGHiMiwy1na3FiEWMbJ0Qq87hhu63RLM5TbUchZBhSEF8fj3RiDsdeTnZrqzCNoy2W22H6j/ql7AiFTOtPYDTbG975Hr5dl4vI02zA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=H2eVlr+b/OJMS8dZqmTWaXlegDT5hqA4TmoKcUGqQuY=;
+ b=2aK9LrMzWO9u9AgbMv7Lq3DVssJIXF5i0wWPZRETQmDPhSuYKklddTtvIdi2dxcAA8dYQLuFPL/RXc6+M9BDsNkb+BhB4CF71TeSn8uXHM8BgWKEeV4tJ9INjXOVUHNAIVMmU04dbG8MEfzFtM6/qKtqq1n+TEBNnn/087sFM4I=
+Authentication-Results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=amd.com;
+Received: from BN9PR12MB5129.namprd12.prod.outlook.com (2603:10b6:408:136::12)
+ by BN9PR12MB5033.namprd12.prod.outlook.com (2603:10b6:408:132::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.19; Tue, 17 Aug
+ 2021 15:44:57 +0000
+Received: from BN9PR12MB5129.namprd12.prod.outlook.com
+ ([fe80::b891:a906:28f0:fdb]) by BN9PR12MB5129.namprd12.prod.outlook.com
+ ([fe80::b891:a906:28f0:fdb%4]) with mapi id 15.20.4415.023; Tue, 17 Aug 2021
+ 15:44:57 +0000
+Subject: Re: [PATCH v6 08/13] mm: call pgmap->ops->page_free for
+ DEVICE_GENERIC pages
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Alex Sierra <alex.sierra@amd.com>, akpm@linux-foundation.org,
+        linux-mm@kvack.org, rcampbell@nvidia.com,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        jgg@nvidia.com, jglisse@redhat.com,
+        Roger Pau Monne <roger.pau@citrix.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+References: <20210813063150.2938-1-alex.sierra@amd.com>
+ <20210813063150.2938-9-alex.sierra@amd.com> <20210815154047.GC32384@lst.de>
+ <7a55366f-bd65-7ab9-be9e-3bfd3aea3ea1@amd.com> <20210817055031.GC4895@lst.de>
+From:   Felix Kuehling <felix.kuehling@amd.com>
+Message-ID: <e5eb53f9-c52a-52e1-5fa0-bb468c0c9c85@amd.com>
+Date:   Tue, 17 Aug 2021 11:44:54 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <20210817055031.GC4895@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-ClientProxiedBy: YTBPR01CA0004.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:14::17) To BN9PR12MB5129.namprd12.prod.outlook.com
+ (2603:10b6:408:136::12)
 MIME-Version: 1.0
-References: <20210812214010.3197279-1-krisman@collabora.com>
- <20210812214010.3197279-19-krisman@collabora.com> <20210816214103.GA12664@magnolia>
- <20210817090538.GA26181@quack2.suse.cz>
-In-Reply-To: <20210817090538.GA26181@quack2.suse.cz>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Tue, 17 Aug 2021 13:08:06 +0300
-Message-ID: <CAOQ4uxgdJpovZ-zzJkLOdQ=YYF3ta46m0_jrt0QFSdJ9GdXR=g@mail.gmail.com>
-Subject: Re: [PATCH v6 18/21] fanotify: Emit generic error info type for error event
-To:     Jan Kara <jack@suse.cz>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Jan Kara <jack@suse.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Ext4 <linux-ext4@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Khazhismel Kumykov <khazhy@google.com>,
-        David Howells <dhowells@redhat.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Theodore Tso <tytso@mit.edu>,
-        Matthew Bobrowski <repnop@google.com>, kernel@collabora.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.2.100] (142.186.47.3) by YTBPR01CA0004.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:14::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Tue, 17 Aug 2021 15:44:56 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 43da59a3-7b43-46b7-6beb-08d96195f6d8
+X-MS-TrafficTypeDiagnostic: BN9PR12MB5033:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BN9PR12MB5033B025227E7AB3A633A73E92FE9@BN9PR12MB5033.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: n9PdZs+1AST24Z3onUDpuyp3JpO0lYpLYaGAu5xUB/QmWdPNCt844dxbCBkxXUbc4tH0cjMgiAB//MyMicGtUJJ9Vne47VHrvrfaxUkCMMS3i+bVJPpOp6gTyjMbPJqeOH8ve5G2YVslIVb/JdnBq1z5+xHiDK7t6URCk1aYeWXTisxGhkLVel82mW/9UVtiJz9CAM9hvN0/BeBlBtGLgGUgaUMHM0LYGhpdUgNAuwiL3TTo1LBr1orT3+vdRFnjiuAtpGL51gtcaPpEw8VcwCpEbnPUJPG2Zm5He3ihWHcZ7xUwMSEXstvWpaXmHhSDyVENxc5PtsyoFWECeTYYxQ1FiH4r0//MkdyzduVEanOQuXtscfNOIOWIdCGInWirEtetHa8vD8AJHGhFQi9L5eyzzqyCwHD2oiEXd2IufpdXZZvj+eH4ct9iTnH0PMZ2BHxv/nzlJbHQCoz8OucvQiH/AzJVSlkeJShQ1n4SGK+mM74YYSOj04geoULRXWmSCmbP+JquZHJbmk+p+nTcuceSEUXOKMCOqu4xEQq5Ay4slnTfKEuO93E52H6ajPjK7v0RcL3IQg6EOgNPnmWDgflV3nDQifvSiBqnKXy9r1MIfhnzhwCCal8ZN696iAUhoQL8YdoMZmyRiKsLINih9rWflPQFd25XcUMBh+XYSpELuy0uK5Rt5t62HwyAUDk0Iy3dM0PCCANtgyhJ/j8SkSBt+XQfDzHTEBN6XCmF9sTbMOqmFsO5REVsZ6taXCefP2hwlIpHHJAdiaTsr1TLvw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5129.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(346002)(376002)(396003)(39860400002)(16576012)(316002)(5660300002)(8936002)(38100700002)(31686004)(66556008)(66946007)(66476007)(8676002)(4326008)(2616005)(26005)(6916009)(31696002)(956004)(6486002)(86362001)(7416002)(83380400001)(478600001)(186003)(44832011)(2906002)(54906003)(36756003)(41533002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cCszOEpoRVNVUzdRa0lyRHVjQXJHWGkwYUxBb0hKL3lScFltQk0zeWNtR3BM?=
+ =?utf-8?B?UjN5TSthbDlaZFZGNG9vbjhJeEszZkpRMWZaRW4vSWVZdDErK3h5TVVPQkRh?=
+ =?utf-8?B?YVlhYXJFVERoT2Vva0MyNGRDemFVeEdLWHVFNHdQMmFPaDdSUjlqN1VqRU9u?=
+ =?utf-8?B?YW5zK1R6RG9kSFY5amU1NXp3VEJISGI0Y0RYSWorZjRlK2hGVkU4WFJKVExi?=
+ =?utf-8?B?bnI2b3dRSTRnc2UxVnR5bElybUkxbmwzdHI3c1l3SG5sTjMwWGhKQi9vTlJz?=
+ =?utf-8?B?bUUxM1BLUzR1NmRzV2x2Z0lhdUtuS3VINGswTkZtVTZKSW5nTTY5SHRWdkJu?=
+ =?utf-8?B?QnduS3IxN0JGUFpCUDNaSEp5REpRVkUrMzgzdmJ0aUxRb1FEaVBXQmg0NTlC?=
+ =?utf-8?B?UFJiazZXVldvNnczbGlCV21ZRFRacVVnb09BM1c1d0VxMXdaVXI1VGw4S1F2?=
+ =?utf-8?B?cG1EdDZhdDRXQ1o4b2k2Y1BFZGVXbTBTWnIvVmEwT3NPNlVJZDRvb01XclNz?=
+ =?utf-8?B?R0Qrc0l6NkdkNS83ZG1zeGEvaFBETG1adjg0Y2ZnRHRlM0UrNWN2VFF3a0la?=
+ =?utf-8?B?RGxKdXlqMXNHOHNWOGM4RmJaWXgwZDBkLzdYczNUTWErNklicEx2Z1BkcWhE?=
+ =?utf-8?B?ME5JMmY1Ukl0QXozR3VNWjZMY1lZL2dJNFlRWENUQjdUUU9GQXZqYmxTQlFN?=
+ =?utf-8?B?VGJFSEtqVmdoREgxakVVbHhoR1laRXZ1SmFUSmZuM3p0ZklHb1ZyNXVTU2dT?=
+ =?utf-8?B?RGdqVjFmZjRzV1JIakluaGNSQXFIRENvelN0NTdabG1oWjVKbTRxdGJIeTdu?=
+ =?utf-8?B?L1FzZURiVS9BRE9ialNuYVFoRmNrbldDN1AvSkw3bEEzSndYVnVQMXZleTZT?=
+ =?utf-8?B?Q1lmZHE3K004Mnl1RUpsVCtnQTRFZ2ZiV1FuTU5reHZVVi9vZnZTSWVuNXBk?=
+ =?utf-8?B?MnhnaG0yMFR1ZVBuTlJBQ0xtaXA5MHVnSkNFZG9IdmpNazhZU240dmVVUG9z?=
+ =?utf-8?B?VVdGNXEwYVVuUnYxdjI5N2JweG40NUNQMjFHZlBYUDRyZTlFYkVrMGJrSSsx?=
+ =?utf-8?B?OGdJWmVBVmpjcmQyRmNkSTk3MndnYmI4ajVqZU95eG44TmxsQ2Z6RWgwWUwy?=
+ =?utf-8?B?Y3NnaWVEZ2JBSGZJQlY2ZHRySllIbENYZ0cybjZaWFBsSnR6OXdvUlI0Qita?=
+ =?utf-8?B?dTNwdUY0eE1vbW5VL3ZGUlg1VGlBd2lINWZUTTN5ZnNQQ2FxK3kyM2Z3MFFH?=
+ =?utf-8?B?YVBBWDZLTGxsc0RSSUxrdytiWGF6VHVMRm8wRFdiUkZ2VUtrV3ZDVU92M3V0?=
+ =?utf-8?B?QzY3SjVOenpSWWt2VjQvWGdzaHFsWm13eDk5aGtPR1RhUzI4WDNXMUdrY1hG?=
+ =?utf-8?B?Y0ovRHJzVjU0cm1nRUg4RDZOb3FVUTNJbnBzRkN4WTdJTjBwNC9mOFA5UmNE?=
+ =?utf-8?B?MzdxTUtRYTVMNElSVS9Va3RQZi9LS2pVa1VpVmdNcTloNGcydUZTclNsVEhF?=
+ =?utf-8?B?Wmphb2l5QUd4Sys5TUlSYmJ1ZGZQQW5NOFR2MVdTSVEvbnNHVXZtMDJVYmt5?=
+ =?utf-8?B?cGl3L3FXVFVqbG5ZdVROTVd4TDJoV1BCY0FuV1NVbVMyUUtsajNPK2owR0kr?=
+ =?utf-8?B?WmVWRHQ4REFHWlZQUktQSGpuMVJCWVUxdVp5Y0RIKytVVHpWWWJUREVGYXJI?=
+ =?utf-8?B?RDNwOTJJY2pNUTBwYXp4M2E5dFRLZ09aSkxTTk00cUlUaE9ta1BycVNRazZY?=
+ =?utf-8?Q?5dZfa4ZH2oTpr4wspD1N84eNMQKidLURx5cHGpX?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 43da59a3-7b43-46b7-6beb-08d96195f6d8
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5129.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Aug 2021 15:44:57.1206
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: lQWbtDEwJwnLpjfasNNQqfEtjWhebNtGIlXbuT+/StJXfrIJkuqtjIwXopJGlgpLpl4R3iExYJu5xv86KW4x3Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5033
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 12:05 PM Jan Kara <jack@suse.cz> wrote:
+Am 2021-08-17 um 1:50 a.m. schrieb Christoph Hellwig:
+> On Mon, Aug 16, 2021 at 03:00:49PM -0400, Felix Kuehling wrote:
+>> Am 2021-08-15 um 11:40 a.m. schrieb Christoph Hellwig:
+>>> On Fri, Aug 13, 2021 at 01:31:45AM -0500, Alex Sierra wrote:
+>>>> Add MEMORY_DEVICE_GENERIC case to free_zone_device_page callback.
+>>>> Device generic type memory case is now able to free its pages properly.
+>>> How is this going to work for the two existing MEMORY_DEVICE_GENERIC
+>>> that now change behavior?  And which don't have a ->page_free callback
+>>> at all?
+>> That's a good catch. Existing drivers shouldn't need a page_free
+>> callback if they didn't have one before. That means we need to add a
+>> NULL-pointer check in free_device_page.
+> Also the other state clearing (__ClearPageWaiters/mem_cgroup_uncharge/
+> ->mapping = NULL).
 >
-> On Mon 16-08-21 14:41:03, Darrick J. Wong wrote:
-> > On Thu, Aug 12, 2021 at 05:40:07PM -0400, Gabriel Krisman Bertazi wrote:
-> > > The Error info type is a record sent to users on FAN_FS_ERROR events
-> > > documenting the type of error.  It also carries an error count,
-> > > documenting how many errors were observed since the last reporting.
-> > >
-> > > Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-> > >
-> > > ---
-> > > Changes since v5:
-> > >   - Move error code here
-> > > ---
-> > >  fs/notify/fanotify/fanotify.c      |  1 +
-> > >  fs/notify/fanotify/fanotify.h      |  1 +
-> > >  fs/notify/fanotify/fanotify_user.c | 36 ++++++++++++++++++++++++++++++
-> > >  include/uapi/linux/fanotify.h      |  7 ++++++
-> > >  4 files changed, 45 insertions(+)
-> >
-> > <snip>
-> >
-> > > diff --git a/include/uapi/linux/fanotify.h b/include/uapi/linux/fanotify.h
-> > > index 16402037fc7a..80040a92e9d9 100644
-> > > --- a/include/uapi/linux/fanotify.h
-> > > +++ b/include/uapi/linux/fanotify.h
-> > > @@ -124,6 +124,7 @@ struct fanotify_event_metadata {
-> > >  #define FAN_EVENT_INFO_TYPE_FID            1
-> > >  #define FAN_EVENT_INFO_TYPE_DFID_NAME      2
-> > >  #define FAN_EVENT_INFO_TYPE_DFID   3
-> > > +#define FAN_EVENT_INFO_TYPE_ERROR  4
-> > >
-> > >  /* Variable length info record following event metadata */
-> > >  struct fanotify_event_info_header {
-> > > @@ -149,6 +150,12 @@ struct fanotify_event_info_fid {
-> > >     unsigned char handle[0];
-> > >  };
-> > >
-> > > +struct fanotify_event_info_error {
-> > > +   struct fanotify_event_info_header hdr;
-> > > +   __s32 error;
-> > > +   __u32 error_count;
-> > > +};
-> >
-> > My apologies for not having time to review this patchset since it was
-> > redesigned to use fanotify.  Someday it would be helpful to be able to
-> > export more detailed error reports from XFS, but as I'm not ready to
-> > move forward and write that today, I'll try to avoid derailling this at
-> > the last minute.
->
-> I think we are not quite there and tweaking the passed structure is easy
-> enough so no worries. Eventually, passing some filesystem-specific blob
-> together with the event was the plan AFAIR. You're right now is a good
-> moment to think how exactly we want that passed.
->
-> > Eventually, XFS might want to be able to report errors in file data,
-> > file metadata, allocation group metadata, and whole-filesystem metadata.
-> > Userspace can already gather reports from XFS about corruptions reported
-> > by the online fsck code (see xfs_health.c).
->
-> Yes, although note that the current plan is that we currently have only one
-> error event queue, others are just added to error_count until the event is
-> fetched by userspace (on the grounds that the first error is usually the
-> most meaningful, the others are usually just cascading problems). But I'm
-> not sure if this scheme would be suitable for online fsck usecase since we
-> may discard even valid independent errors this way.
->
-> > I /think/ we could subclass the file error structure that you've
-> > provided like so:
-> >
-> > struct fanotify_event_info_xfs_filesystem_error {
-> >       struct fanotify_event_info_error        base;
-> >
-> >       __u32 magic; /* 0x58465342 to identify xfs */
-> >       __u32 type; /* quotas, realtime bitmap, etc. */
-> > };
-> >
-> > struct fanotify_event_info_xfs_perag_error {
-> >       struct fanotify_event_info_error        base;
-> >
-> >       __u32 magic; /* 0x58465342 to identify xfs */
-> >       __u32 type; /* agf, agi, agfl, bno btree, ino btree, etc. */
-> >       __u32 agno; /* allocation group number */
-> > };
-> >
-> > struct fanotify_event_info_xfs_file_error {
-> >       struct fanotify_event_info_error        base;
-> >
-> >       __u32 magic; /* 0x58465342 to identify xfs */
-> >       __u32 type; /* extent map, dir, attr, etc. */
-> >       __u64 offset; /* file data offset, if applicable */
-> >       __u64 length; /* file data length, if applicable */
-> > };
-> >
-> > (A real XFS implementation might have one structure with the type code
-> > providing for a tagged union or something; I split it into three
-> > separate structs here to avoid confusing things.)
->
-> The structure of fanotify event as passed to userspace generally is:
->
-> struct fanotify_event_metadata {
->         __u32 event_len;
->         __u8 vers;
->         __u8 reserved;
->         __u16 metadata_len;
->         __aligned_u64 mask;
->         __s32 fd;
->         __s32 pid;
-> };
->
-> If event_len is > sizeof(struct fanotify_event_metadata), userspace is
-> expected to look for struct fanotify_event_info_header after struct
-> fanotify_event_metadata. struct fanotify_event_info_header looks like:
->
-> struct fanotify_event_info_header {
->         __u8 info_type;
->         __u8 pad;
->         __u16 len;
-> };
->
-> Again if the end of this info (defined by 'len') is smaller than
-> 'event_len', there is next header with next payload of data. So for example
-> error event will have:
->
-> struct fanotify_event_metadata
-> struct fanotify_event_info_error
-> struct fanotify_event_info_fid
->
-> Now either we could add fs specific blob into fanotify_event_info_error
-> (but then it would be good to add 'magic' to fanotify_event_info_error now
-> and define that if 'len' is larger, fs-specific blob follows after fixed
-> data) or we can add another info type FAN_EVENT_INFO_TYPE_ERROR_FS_DATA
-> (i.e., attach another structure into the event) which would contain the
-> 'magic' and then blob of data. I don't have strong preference.
->
-> > I have three questions at this point:
-> >
-> > 1) What's the maximum size of a fanotify event structure?  None of these
-> > structures exceed 36 bytes, which I hope will fit in whatever size
-> > constraints?
->
-> Whole event must fit into 4G, each event info needs to fit in 64k. At least
-> these are the limits of the interface. Practically, it would be difficult
-> and inefficient to manipulate such huge events...
->
+> In many ways this seems like you want to bring back the DEVICE_PUBLIC
+> pgmap type that was removed a while ago due to the lack of users
+> instead of overloading the generic type.
 
-Just keep in mind that the current scheme pre-allocates the single event slot
-on fanotify_mark() time and (I think) we agreed to pre-allocate
-sizeof(fsnotify_error_event) + MAX_HDNALE_SZ.
-If filesystems would want to store some variable length fs specific info,
-a future implementation will have to take that into account.
+I think so. I'm not clear about how DEVICE_PUBLIC differed from what
+DEVICE_GENERIC is today. As I understand it, DEVICE_PUBLIC was removed
+because it was unused and also known to be broken in some ways.
+DEVICE_GENERIC seemed close enough to what we need, other than not being
+supported in the migration helpers.
 
-> > 2) If a program written for today's notification events sees a
-> > fanotify_event_info_header from future-XFS with a header length that is
-> > larger than FANOTIFY_INFO_ERROR_LEN, will it be able to react
-> > appropriately?  Which is to say, ignore it on the grounds that the
-> > length is unexpectedly large?
->
-> That is the expected behavior :). But I guess separate info type for
-> fs-specific blob might be more foolproof in this sense - when parsing
-> events, you are expected to just skip info_types you don't understand
-> (based on 'len' and 'type' in the common header) and generally different
-> events have different sets of infos attached to them so you mostly have to
-> implement this logic to be able to process events.
->
-> > It /looks/ like this is the case; really I'm just fishing around here
-> > to make sure nothing in the design of /this/ patchset would make it Very
-> > Difficult(tm) to add more information later.
-> >
-> > 3) Once we let filesystem implementations create their own extended
-> > error notifications, should we have a "u32 magic" to aid in decoding?
-> > Or even add it to fanotify_event_info_error now?
->
-> If we go via the 'separate info type' route, then the magic can go into
-> that structure and there's no great use for 'magic' in
-> fanotify_event_info_error.
-
-My 0.02$:
-With current patch set, filesystem reports error using:
-fsnotify_sb_error(sb, inode, error)
-
-The optional @inode argument is encoded to a filesystem opaque
-blob using  exportfs_encode_inode_fh(), recorded in the event
-as a blob and reported to userspace as a blob.
-
-If filesystem would like to report a different type of opaque blob
-(e.g. xfs_perag_info), the interface should be extended to:
-fsnotify_sb_error(sb, inode, error, info, info_len)
-and the 'separate info type' route seems like the best and most natural
-way to deal with the case of information that is only emitted from
-a specific filesystem with a specific feature enabled (online fsck).
-
-IOW, there is no need for fanotify_event_info_xfs_perag_error
-in fanotify UAPI if you ask me.
-
-Regarding 'magic' in fanotify_event_info_error, I also don't see the
-need for that, because the event already has fsid which can be
-used to identify the filesystem in question.
-
-Keep in mind that the value of handle_type inside struct file_handle
-inside struct fanotify_event_info_fid is not a universal classifier.
-Specifically, the type 0x81 means "XFS_FILEID_INO64_GEN"
-only in the context of XFS and it can mean something else in the
-context of another type of filesystem.
-
-If we add a new info record fanotify_event_info_fs_private
-it could even be an alias to fanotify_event_info_fid with the only
-difference that the handle[0] member is not expected to be
-struct file_handle, but some other fs private struct.
+Would you see benefit in re-introducing DEVICE_PUBLIC as a distinct
+memory type from DEVICE_GENERIC? What would be the benefits of making
+that distinction?
 
 Thanks,
-Amir.
+  Felix
+
+
