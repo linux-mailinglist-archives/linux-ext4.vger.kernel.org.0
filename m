@@ -2,131 +2,88 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 561F73F1754
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Aug 2021 12:35:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F0113F1A17
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Aug 2021 15:12:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237730AbhHSKfm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 Aug 2021 06:35:42 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:40604 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236149AbhHSKfl (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Aug 2021 06:35:41 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 6708D2209B;
-        Thu, 19 Aug 2021 10:35:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1629369304; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=p1/YjMtunmntj17IgarF8r82HsoYyHTF0J/qAPFpnFw=;
-        b=tboh7SBNbEvFQy8ofVvQ/LHbFcEb2QdNW/t4oH7mU6XjQDcGU0Qxz39jCQr9UgFGeQwwlt
-        kFJOZgZrYc0v3JtXz9FzhpBKI+rcje2ZS4gZj7LwFwUGt1zC+Zv7zltuxi5eaFB6fe6dwE
-        /hgODNN/k9EQHMCcUn0ur/ir3XT7J38=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1629369304;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=p1/YjMtunmntj17IgarF8r82HsoYyHTF0J/qAPFpnFw=;
-        b=icC8cjY07IHHsIct7uGGvl8SvNr/rociHdyu5uhEk8y0GEliX57wi0LK69XD9A/gOSNGHC
-        X9q9hoELCZgyqpDA==
-Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id C3628A3BC7;
-        Thu, 19 Aug 2021 10:34:46 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 30E6E1E0679; Thu, 19 Aug 2021 12:35:04 +0200 (CEST)
-Date:   Thu, 19 Aug 2021 12:35:04 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Zhang Yi <yi.zhang@huawei.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, jack@suse.cz, yukuai3@huawei.com
-Subject: Re: [PATCH v2 4/4] ext4: prevent getting empty inode buffer
-Message-ID: <20210819103504.GB32435@quack2.suse.cz>
+        id S239474AbhHSNMj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 Aug 2021 09:12:39 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:8047 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233713AbhHSNMj (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Aug 2021 09:12:39 -0400
+Received: from dggeme752-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Gr4sf4jG6zYrSp;
+        Thu, 19 Aug 2021 21:11:34 +0800 (CST)
+Received: from [10.174.178.134] (10.174.178.134) by
+ dggeme752-chm.china.huawei.com (10.3.19.98) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 19 Aug 2021 21:11:59 +0800
+Subject: Re: [PATCH v2 3/4] ext4: don't return error if huge_file feature
+ mismatch
+To:     Jan Kara <jack@suse.cz>
+CC:     <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
+        <adilger.kernel@dilger.ca>, <yukuai3@huawei.com>
 References: <20210819065704.1248402-1-yi.zhang@huawei.com>
- <20210819065704.1248402-5-yi.zhang@huawei.com>
+ <20210819065704.1248402-4-yi.zhang@huawei.com>
+ <20210819102614.GA32435@quack2.suse.cz>
+From:   Zhang Yi <yi.zhang@huawei.com>
+Message-ID: <3bccf3af-8408-4a57-74a0-5d9fca85cf1e@huawei.com>
+Date:   Thu, 19 Aug 2021 21:11:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210819065704.1248402-5-yi.zhang@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210819102614.GA32435@quack2.suse.cz>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.134]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggeme752-chm.china.huawei.com (10.3.19.98)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 19-08-21 14:57:04, Zhang Yi wrote:
-> In ext4_get_inode_loc(), we may skip IO and get an zero && uptodate
-> inode buffer when the inode monopolize an inode block for performance
-> reason. For most cases, ext4_mark_iloc_dirty() will fill the inode
-> buffer to make it fine, but we could miss this call if something bad
-> happened. Finally, __ext4_get_inode_loc_noinmem() may probably get an
-> empty inode buffer and trigger ext4 error.
+On 2021/8/19 18:26, Jan Kara wrote:
+> On Thu 19-08-21 14:57:03, Zhang Yi wrote:
+>> In ext4_inode_blocks_set(), huge_file feature should exist when setting
+>> i_blocks beyond a 32 bit variable could be represented, return EFBIG if
+>> not. This error should never happen in theory since sb->s_maxbytes should
+>> not have allowed this, and we have already init sb->s_maxbytes according
+>> to this feature in ext4_fill_super(). So switch to use WARN_ON_ONCE
+>> instead.
+>>
+>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+>> ---
 > 
-> For example, if we remove a nonexistent xattr on inode A,
-> ext4_xattr_set_handle() will return ENODATA before invoking
-> ext4_mark_iloc_dirty(), it will left an uptodate but zero buffer. We
-> will get checksum error message in ext4_iget() when getting inode again.
+> One comment below:
 > 
->   EXT4-fs error (device sda): ext4_lookup:1784: inode #131074: comm cat: iget: checksum invalid
+>> @@ -4918,10 +4918,15 @@ static int ext4_inode_blocks_set(handle_t *handle,
+>>  		raw_inode->i_blocks_lo   = cpu_to_le32(i_blocks);
+>>  		raw_inode->i_blocks_high = 0;
+>>  		ext4_clear_inode_flag(inode, EXT4_INODE_HUGE_FILE);
+>> -		return 0;
+>> +		return;
+>>  	}
+>> -	if (!ext4_has_feature_huge_file(sb))
+>> -		return -EFBIG;
+>> +
+>> +	/*
+>> +	 * This should never happen since sb->s_maxbytes should not have
+>> +	 * allowed this, which was set according to the huge_file feature
+>> +	 * in ext4_fill_super().
+>> +	 */
+>> +	WARN_ON_ONCE(!ext4_has_feature_huge_file(sb));
 > 
-> Even worse, if we allocate another inode B at the same inode block, it
-> will corrupt the inode A on disk when write back inode B.
+> Thinking about this a bit more, this could also happen due to fs
+> corruption. So we probably need to call ext4_error_inode() here instead of
+> WARN_ON_ONCE(). Also it will result in properly marking fs as having
+> errors. But since we hold i_raw_lock at this call site we need to
+> keep the error bail out from ext4_inode_blocks_set() and in
+> ext4_do_update_inode() finish updating inode and then call
+> ext4_error_inode() after dropping i_raw_lock.
 > 
-> So this patch postpone the init and mark buffer uptodate logic until
-> before filling correct inode data in ext4_do_update_inode() if skip read
-> I/O, ensure the buffer is real uptodate.
-> 
-> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+Yes, make sense, ext4_error_inode() is more reasonable.
 
-Looks good. Just some language fixes below. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-> ---
->  fs/ext4/inode.c | 26 +++++++++++++++++++++++---
->  1 file changed, 23 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index d0d7a5295bf9..02d910c9d8f1 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -4367,9 +4367,11 @@ static int __ext4_get_inode_loc(struct super_block *sb, unsigned long ino,
->  		}
->  		brelse(bitmap_bh);
->  		if (i == start + inodes_per_block) {
-> -			/* all other inodes are free, so skip I/O */
-> -			memset(bh->b_data, 0, bh->b_size);
-> -			set_buffer_uptodate(bh);
-> +			/*
-> +			 * All other inodes are free, skip I/O. Return
-> +			 * un-inited buffer (which is postponed until
-
-I'd repharse this sentence as: Return uninitialized buffer immediately,
-initialization is postponed until shortly before we fill inode contents.
-
-> +			 * before filling inode data) immediately.
-> +			 */
->  			unlock_buffer(bh);
->  			goto has_buffer;
->  		}
-> @@ -5026,6 +5028,24 @@ static int ext4_do_update_inode(handle_t *handle,
->  	gid_t i_gid;
->  	projid_t i_projid;
->  
-> +	/*
-> +	 * If the buffer is not uptodate, it means all information of inode
-								   ^^^^^^^^
-of the inode is
-
-> +	 * in memory and we got this buffer without reading the block. We
-> +	 * must be cautious that once we mark the buffer as uptodate, we
-> +	 * rely on filling in the correct inode data later in this function.
-> +	 * Otherwise if we getting the left falsepositive buffer when
-
-I'd rephrase this sentence as: Otherwise if we left uptodate buffer without
-copying proper inode contents, we could corrupt the inode on disk after
-allocating another inode in the same block.
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Thanks,
+Yi.
