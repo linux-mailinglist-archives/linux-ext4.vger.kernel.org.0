@@ -2,45 +2,42 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BAEC3F14DA
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Aug 2021 10:10:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 813033F150E
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Aug 2021 10:21:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237023AbhHSIKz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 Aug 2021 04:10:55 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:39811 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236873AbhHSIKy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Aug 2021 04:10:54 -0400
-Received: by mail-io1-f71.google.com with SMTP id u22-20020a5d9f560000b02905058dc6c376so2848016iot.6
-        for <linux-ext4@vger.kernel.org>; Thu, 19 Aug 2021 01:10:19 -0700 (PDT)
+        id S237248AbhHSIWB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 Aug 2021 04:22:01 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:41510 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237160AbhHSIWA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Aug 2021 04:22:00 -0400
+Received: by mail-il1-f200.google.com with SMTP id l4-20020a92d8c40000b02902242b6ea4b3so2841225ilo.8
+        for <linux-ext4@vger.kernel.org>; Thu, 19 Aug 2021 01:21:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=VLMWKMsTun8f1GPH/VyUO/C5MN+JOvRdiw23QeqF200=;
-        b=A7AzVmipyYS14p62TVZ1l9xCc7iz0/989++Lm2Uz3iF37SAvv6dQhraNZ45ZoBD0l4
-         FegPTz2hPLXFS4aa8erRh3qifkUyBxmQIKaqCVKIHSWW98TkldjvrQEQ3jqOguPP4820
-         0OpZtHLAyDKj8XQe15u+iBf7wTvxLDlJK5fJCAz5FXzFHV9osE7ZKl7qFHZAjgn3jz0R
-         WJtvYGUVuSviAAo+bJBTK0C4+5w1dmUGrUIIecOueIS2vbYzXyQavv2Wls5KBTsAANR8
-         w+WrS2RJxOZyeGP6PzHFXos2Dwn+HkAmbJ5KCnf1JFa94RDlIGqTPo7ePiKRiSJj16iE
-         4Ejw==
-X-Gm-Message-State: AOAM532AyY4phPHk6tHX9WXvtDBgoY6DAW6QS2+R1B8mPVW0TufNgNwW
-        pzapOBhoQBN1M6qPB9yTmlz5RKpobmVU5XvXl1LUhPwKeEjl
-X-Google-Smtp-Source: ABdhPJzWaicSivhm3PGO7iRjyzTxLxqsHbGoPoQp3LIjt8mKPWxAMqXJ0YHiMGvXsjGaeAPSiKeWefmLNuwNvgUwPRzor3b+rEI+
+        bh=Eb6HoG4IPAl9Hpav/QpD4nHzjmmUxM3oKXoCUI5RFOI=;
+        b=c+waCDkwsx4bNGjwU2GVf+5B8jY+4e+EAGx1UEtjVfhQQlpX2NuDAaeZVSSbsHlFSa
+         rs5QOYU1j4+NtIcwR4vjYYpSWNglAn+GlYr7NpyitaRHMH+6j9nxkxN5X/E2CTgcshQz
+         PFVnz+KNu5jscjKQTboJfH5e6t/762WuvpvLMmY49YFj5s871BCdYYmEjais3vULGcm9
+         y3nd3G/ofz8x0EEbjbyQOF+W8+4VYWU2O99oc9eC0NwmDAqpNq0M/cY4Bb9iWbfoehdU
+         BTm1P3fy204l5osYHzMCtmKvCNMJyZxQlfP0I3Vk/Y4pW7Z29+vWa0LLJ/Weohto2dEg
+         zB+A==
+X-Gm-Message-State: AOAM532ohCMGYI7GGSfUJU+gKUBmVSPCjqrPt7Ok/oQJUR3rCND0ECID
+        2+TgZgGHAdVF7b0bP6iJBHphrOu394CNkqnOzFQ0mJGRCyPS
+X-Google-Smtp-Source: ABdhPJzloMYYTKvTvWQP+CgyF80OEz2uHg7OHiak7fr7GASRIE2ktWk1PVmCQwmwb0b2ZvWkBj2GtrIrbYzU8/l4LKD9aZyuLFrQ
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1905:: with SMTP id w5mr9110685ilu.165.1629360618799;
- Thu, 19 Aug 2021 01:10:18 -0700 (PDT)
-Date:   Thu, 19 Aug 2021 01:10:18 -0700
+X-Received: by 2002:a92:d741:: with SMTP id e1mr9058698ilq.18.1629361284277;
+ Thu, 19 Aug 2021 01:21:24 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 01:21:24 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e5080305c9e51453@google.com>
-Subject: [syzbot] KASAN: slab-out-of-bounds Write in ext4_write_inline_data_end
-From:   syzbot <syzbot+13146364637c7363a7de@syzkaller.appspotmail.com>
-To:     a@unstable.cc, adilger.kernel@dilger.ca, arnd@arndb.de,
-        b.a.t.m.a.n@lists.open-mesh.org, christian@brauner.io,
-        davem@davemloft.net, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mareklindner@neomailbox.ch,
-        netdev@vger.kernel.org, sw@simonwunderlich.de,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Message-ID: <0000000000008f6d2005c9e53c59@google.com>
+Subject: [syzbot] kernel BUG in ext4_get_group_info
+From:   syzbot <syzbot+e2efa3efc15a1c9e95c3@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
@@ -52,49 +49,42 @@ syzbot found the following issue on:
 
 HEAD commit:    614cb2751d31 Merge tag 'trace-v5.14-rc6' of git://git.kern..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=130112c5300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=128cfb31300000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=f61012d0b1cd846f
-dashboard link: https://syzkaller.appspot.com/bug?extid=13146364637c7363a7de
+dashboard link: https://syzkaller.appspot.com/bug?extid=e2efa3efc15a1c9e95c3
 compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=104d7cc5300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1333ce0e300000
-
-The issue was bisected to:
-
-commit a154d5d83d21af6b9ee32adc5dbcea5ac1fb534c
-Author: Arnd Bergmann <arnd@arndb.de>
-Date:   Mon Mar 4 20:38:03 2019 +0000
-
-    net: ignore sysctl_devconf_inherit_init_net without SYSCTL
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13f970b6300000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=100570b6300000
-console output: https://syzkaller.appspot.com/x/log.txt?x=17f970b6300000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=122a0161300000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+13146364637c7363a7de@syzkaller.appspotmail.com
-Fixes: a154d5d83d21 ("net: ignore sysctl_devconf_inherit_init_net without SYSCTL")
+Reported-by: syzbot+e2efa3efc15a1c9e95c3@syzkaller.appspotmail.com
 
-==================================================================
-BUG: KASAN: slab-out-of-bounds in ext4_write_inline_data fs/ext4/inline.c:245 [inline]
-BUG: KASAN: slab-out-of-bounds in ext4_write_inline_data_end+0x4d4/0x960 fs/ext4/inline.c:754
-Write of size 70 at addr ffff8880195444ef by task syz-executor279/8426
-
-CPU: 0 PID: 8426 Comm: syz-executor279 Not tainted 5.14.0-rc6-syzkaller #0
+EXT4-fs error (device loop1): ext4_map_blocks:718: inode #17: block 424: comm syz-executor.1: lblock 296 mapped to illegal pblock 424 (length 1)
+------------[ cut here ]------------
+kernel BUG at fs/ext4/ext4.h:3295!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 10426 Comm: syz-executor.1 Not tainted 5.14.0-rc6-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:ext4_get_group_info+0x34d/0x350 fs/ext4/ext4.h:3295
+Code: 5c ff 8b 74 24 04 48 c7 c7 40 77 88 8c 4c 89 f2 e8 08 9f 05 02 43 80 3c 2c 00 0f 85 6d fd ff ff e9 70 fd ff ff e8 a3 46 5c ff <0f> 0b 90 55 41 57 41 56 41 55 41 54 53 48 83 ec 20 41 89 d5 89 f5
+RSP: 0018:ffffc9000c49f320 EFLAGS: 00010293
+RAX: ffffffff8223f12d RBX: 00000000fffff95a RCX: ffff88802d923880
+RDX: 0000000000000000 RSI: 00000000fffff95a RDI: 0000000000000001
+RBP: 0000000000000001 R08: ffffffff8223ee48 R09: ffffed1008f9ac2c
+R10: ffffed1008f9ac2c R11: 0000000000000000 R12: 1ffff110073d74cf
+R13: dffffc0000000000 R14: ffff8880328dc000 R15: ffff888039eba678
+FS:  00007fe3035a4700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000002112848 CR3: 0000000033f2d000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1ae/0x29f lib/dump_stack.c:105
- print_address_description+0x66/0x3b0 mm/kasan/report.c:233
- __kasan_report mm/kasan/report.c:419 [inline]
- kasan_report+0x163/0x210 mm/kasan/report.c:436
- check_region_inline mm/kasan/generic.c:135 [inline]
- kasan_check_range+0x2b5/0x2f0 mm/kasan/generic.c:189
- memcpy+0x3c/0x60 mm/kasan/shadow.c:66
- ext4_write_inline_data fs/ext4/inline.c:245 [inline]
- ext4_write_inline_data_end+0x4d4/0x960 fs/ext4/inline.c:754
- ext4_write_end+0x1ff/0xbd0 fs/ext4/inode.c:1290
- generic_perform_write+0x361/0x580 mm/filemap.c:3667
+ ext4_mb_load_buddy_gfp+0xc7/0x1370 fs/ext4/mballoc.c:1490
+ ext4_discard_preallocations+0x811/0x16a0 fs/ext4/mballoc.c:4940
+ ext4_truncate+0xa1a/0xec0 fs/ext4/inode.c:4259
+ ext4_truncate_failed_write fs/ext4/truncate.h:20 [inline]
+ ext4_write_begin+0xa7b/0x1350 fs/ext4/inode.c:1234
+ ext4_da_write_begin+0x384/0x10c0 fs/ext4/inode.c:2960
+ generic_perform_write+0x262/0x580 mm/filemap.c:3656
  ext4_buffered_write_iter+0x41c/0x590 fs/ext4/file.c:269
  ext4_file_write_iter+0x8f7/0x1b90 fs/ext4/file.c:519
  call_write_iter include/linux/fs.h:2114 [inline]
@@ -104,117 +94,51 @@ Call Trace:
  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
  do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
  entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x44ac89
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ff12e8852f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00000000004ce4d0 RCX: 000000000044ac89
-RDX: 0000000000000082 RSI: 0000000020000180 RDI: 0000000000000006
-RBP: 000000000049de98 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0030656c69662f2e
-R13: 024645fc87234f45 R14: 26e1d8b70aefbc5b R15: 00000000004ce4d8
-
-Allocated by task 1:
- kasan_save_stack mm/kasan/common.c:38 [inline]
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:434 [inline]
- __kasan_slab_alloc+0x96/0xd0 mm/kasan/common.c:467
- kasan_slab_alloc include/linux/kasan.h:254 [inline]
- slab_post_alloc_hook mm/slab.h:519 [inline]
- slab_alloc_node mm/slub.c:2959 [inline]
- slab_alloc mm/slub.c:2967 [inline]
- kmem_cache_alloc+0x1d1/0x340 mm/slub.c:2972
- kmem_cache_zalloc include/linux/slab.h:711 [inline]
- acpi_os_acquire_object include/acpi/platform/aclinuxex.h:67 [inline]
- acpi_ut_allocate_object_desc_dbg+0xd8/0x165 drivers/acpi/acpica/utobject.c:359
- acpi_ut_create_internal_object_dbg+0x21/0x195 drivers/acpi/acpica/utobject.c:69
- acpi_ds_build_internal_object+0x15f/0x732 drivers/acpi/acpica/dsobject.c:94
- acpi_ds_create_node+0xe9/0x1a8 drivers/acpi/acpica/dsobject.c:281
- acpi_ds_load2_end_op+0x7d0/0xebc drivers/acpi/acpica/dswload2.c:618
- acpi_ds_exec_end_op+0x6ce/0x11d4 drivers/acpi/acpica/dswexec.c:637
- acpi_ps_parse_loop+0xd9f/0x1cf0 drivers/acpi/acpica/psloop.c:525
- acpi_ps_parse_aml+0x1d5/0x955 drivers/acpi/acpica/psparse.c:475
- acpi_ps_execute_table+0x317/0x3ef drivers/acpi/acpica/psxface.c:295
- acpi_ns_execute_table+0x436/0x5bf drivers/acpi/acpica/nsparse.c:116
- acpi_ns_load_table+0x5e/0x120 drivers/acpi/acpica/nsload.c:71
- acpi_tb_load_namespace+0x456/0x6b9 drivers/acpi/acpica/tbxfload.c:186
- acpi_load_tables+0x45/0xf5 drivers/acpi/acpica/tbxfload.c:59
- acpi_bus_init+0x9a/0x993 drivers/acpi/bus.c:1213
- acpi_init+0x8c/0x22c drivers/acpi/bus.c:1324
- do_one_initcall+0x197/0x3f0 init/main.c:1287
- do_initcall_level+0x14a/0x1f5 init/main.c:1360
- do_initcalls+0x4b/0x8c init/main.c:1376
- kernel_init_freeable+0x3f1/0x57e init/main.c:1598
- kernel_init+0x19/0x2a0 init/main.c:1490
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-The buggy address belongs to the object at ffff8880195444e0
- which belongs to the cache Acpi-Operand of size 72
-The buggy address is located 15 bytes inside of
- 72-byte region [ffff8880195444e0, ffff888019544528)
-The buggy address belongs to the page:
-page:ffffea0000655100 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff888019544068 pfn:0x19544
-flags: 0xfff00000000200(slab|node=0|zone=1|lastcpupid=0x7ff)
-raw: 00fff00000000200 ffffea0000654f88 ffffea0000654e08 ffff8880110c2b40
-raw: ffff888019544068 000000000027001d 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY), pid 1, ts 3012488798, free_ts 0
- prep_new_page mm/page_alloc.c:2436 [inline]
- get_page_from_freelist+0x779/0xa30 mm/page_alloc.c:4169
- __alloc_pages+0x26c/0x5f0 mm/page_alloc.c:5391
- alloc_page_interleave+0x22/0x1c0 mm/mempolicy.c:2119
- alloc_slab_page mm/slub.c:1691 [inline]
- allocate_slab+0xf1/0x540 mm/slub.c:1831
- new_slab mm/slub.c:1894 [inline]
- new_slab_objects mm/slub.c:2640 [inline]
- ___slab_alloc+0x1cf/0x350 mm/slub.c:2803
- __slab_alloc mm/slub.c:2843 [inline]
- slab_alloc_node mm/slub.c:2925 [inline]
- slab_alloc mm/slub.c:2967 [inline]
- kmem_cache_alloc+0x299/0x340 mm/slub.c:2972
- kmem_cache_zalloc include/linux/slab.h:711 [inline]
- acpi_os_acquire_object include/acpi/platform/aclinuxex.h:67 [inline]
- acpi_ut_allocate_object_desc_dbg+0xd8/0x165 drivers/acpi/acpica/utobject.c:359
- acpi_ut_create_internal_object_dbg+0x21/0x195 drivers/acpi/acpica/utobject.c:69
- acpi_ds_build_internal_object+0x15f/0x732 drivers/acpi/acpica/dsobject.c:94
- acpi_ds_create_node+0xe9/0x1a8 drivers/acpi/acpica/dsobject.c:281
- acpi_ds_load2_end_op+0x7d0/0xebc drivers/acpi/acpica/dswload2.c:618
- acpi_ds_exec_end_op+0x6ce/0x11d4 drivers/acpi/acpica/dswexec.c:637
- acpi_ps_parse_loop+0xd9f/0x1cf0 drivers/acpi/acpica/psloop.c:525
- acpi_ps_parse_aml+0x1d5/0x955 drivers/acpi/acpica/psparse.c:475
- acpi_ps_execute_table+0x317/0x3ef drivers/acpi/acpica/psxface.c:295
- acpi_ns_execute_table+0x436/0x5bf drivers/acpi/acpica/nsparse.c:116
-page_owner free stack trace missing
-
-Memory state around the buggy address:
- ffff888019544400: fc fc 00 00 00 00 00 00 00 00 00 fc fc fc fc 00
- ffff888019544480: 00 00 00 00 00 00 00 00 fc fc fc fc 00 00 00 00
->ffff888019544500: 00 00 00 00 00 fc fc fc fc fb fb fb fb fb fb fb
-                                  ^
- ffff888019544580: fb fb fc fc fc fc 00 00 00 00 00 00 00 00 00 fc
- ffff888019544600: fc fc fc 00 00 00 00 00 00 00 00 00 fc fc fc fc
-==================================================================
+RIP: 0033:0x4665e9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fe3035a4188 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665e9
+RDX: 000000000d4ba0ff RSI: 00000000200009c0 RDI: 0000000000000007
+RBP: 00000000004bfcc4 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
+R13: 00007ffd1a1dd7ef R14: 00007fe3035a4300 R15: 0000000000022000
+Modules linked in:
+---[ end trace 6608a809acf19a79 ]---
+RIP: 0010:ext4_get_group_info+0x34d/0x350 fs/ext4/ext4.h:3295
+Code: 5c ff 8b 74 24 04 48 c7 c7 40 77 88 8c 4c 89 f2 e8 08 9f 05 02 43 80 3c 2c 00 0f 85 6d fd ff ff e9 70 fd ff ff e8 a3 46 5c ff <0f> 0b 90 55 41 57 41 56 41 55 41 54 53 48 83 ec 20 41 89 d5 89 f5
+RSP: 0018:ffffc9000c49f320 EFLAGS: 00010293
+RAX: ffffffff8223f12d RBX: 00000000fffff95a RCX: ffff88802d923880
+RDX: 0000000000000000 RSI: 00000000fffff95a RDI: 0000000000000001
+RBP: 0000000000000001 R08: ffffffff8223ee48 R09: ffffed1008f9ac2c
+R10: ffffed1008f9ac2c R11: 0000000000000000 R12: 1ffff110073d74cf
+R13: dffffc0000000000 R14: ffff8880328dc000 R15: ffff888039eba678
+FS:  00007fe3035a4700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 0000000033f2d000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 ----------------
-Code disassembly (best guess), 1 bytes skipped:
-   0:	ff c3                	inc    %ebx
-   2:	66 2e 0f 1f 84 00 00 	nopw   %cs:0x0(%rax,%rax,1)
-   9:	00 00 00 
-   c:	0f 1f 40 00          	nopl   0x0(%rax)
-  10:	48 89 f8             	mov    %rdi,%rax
-  13:	48 89 f7             	mov    %rsi,%rdi
-  16:	48 89 d6             	mov    %rdx,%rsi
-  19:	48 89 ca             	mov    %rcx,%rdx
-  1c:	4d 89 c2             	mov    %r8,%r10
-  1f:	4d 89 c8             	mov    %r9,%r8
-  22:	4c 8b 4c 24 08       	mov    0x8(%rsp),%r9
-  27:	0f 05                	syscall 
-  29:	48 3d 01 f0 ff ff    	cmp    $0xfffffffffffff001,%rax <-- trapping instruction
-  2f:	73 01                	jae    0x32
-  31:	c3                   	retq   
-  32:	48 c7 c1 b8 ff ff ff 	mov    $0xffffffffffffffb8,%rcx
-  39:	f7 d8                	neg    %eax
-  3b:	64 89 01             	mov    %eax,%fs:(%rcx)
-  3e:	48                   	rex.W
+Code disassembly (best guess):
+   0:	5c                   	pop    %rsp
+   1:	ff 8b 74 24 04 48    	decl   0x48042474(%rbx)
+   7:	c7 c7 40 77 88 8c    	mov    $0x8c887740,%edi
+   d:	4c 89 f2             	mov    %r14,%rdx
+  10:	e8 08 9f 05 02       	callq  0x2059f1d
+  15:	43 80 3c 2c 00       	cmpb   $0x0,(%r12,%r13,1)
+  1a:	0f 85 6d fd ff ff    	jne    0xfffffd8d
+  20:	e9 70 fd ff ff       	jmpq   0xfffffd95
+  25:	e8 a3 46 5c ff       	callq  0xff5c46cd
+  2a:	0f 0b                	ud2     <-- trapping instruction
+  2c:	90                   	nop
+  2d:	55                   	push   %rbp
+  2e:	41 57                	push   %r15
+  30:	41 56                	push   %r14
+  32:	41 55                	push   %r13
+  34:	41 54                	push   %r12
+  36:	53                   	push   %rbx
+  37:	48 83 ec 20          	sub    $0x20,%rsp
+  3b:	41 89 d5             	mov    %edx,%r13d
+  3e:	89 f5                	mov    %esi,%ebp
 
 
 ---
@@ -224,6 +148,5 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 syzbot can test patches for this issue, for details see:
 https://goo.gl/tpsmEJ#testing-patches
