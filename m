@@ -2,28 +2,65 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91FAA3F1310
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Aug 2021 08:06:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3A773F131D
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Aug 2021 08:09:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230292AbhHSGHP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 Aug 2021 02:07:15 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:44730 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229782AbhHSGHO (ORCPT
+        id S230292AbhHSGKW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 Aug 2021 02:10:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50258 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230016AbhHSGKV (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 19 Aug 2021 02:07:14 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=eguan@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UjytbX0_1629353196;
-Received: from localhost(mailfrom:eguan@linux.alibaba.com fp:SMTPD_---0UjytbX0_1629353196)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 19 Aug 2021 14:06:37 +0800
-Date:   Thu, 19 Aug 2021 14:06:36 +0800
-From:   Eryu Guan <eguan@linux.alibaba.com>
+        Thu, 19 Aug 2021 02:10:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629353385;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bftUwMn67t07VNHKcAxxGtkkSNCtgiuM69e3eUcq0wA=;
+        b=cT1IHN0egQMoDto55fhCNiHeblCjulpHfUeJZuRakMsdlGxqKvg237dyHgQY2ikfJpP/2e
+        L/0E7hIr3yH+i49M4TJcFoAHXEknskfGazg6ffofXVlPqUlgA6c96Y8547mNszRxW25max
+        NS0CIqhFdQpLOefmP35FPMJZIGt9nGw=
+Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
+ [209.85.215.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-513-UYm9rKSENzmfOT6Or2FoUw-1; Thu, 19 Aug 2021 02:09:43 -0400
+X-MC-Unique: UYm9rKSENzmfOT6Or2FoUw-1
+Received: by mail-pg1-f199.google.com with SMTP id q23-20020a6562570000b029023cbfb4fd73so2876657pgv.14
+        for <linux-ext4@vger.kernel.org>; Wed, 18 Aug 2021 23:09:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=bftUwMn67t07VNHKcAxxGtkkSNCtgiuM69e3eUcq0wA=;
+        b=KhSQWte1eDSwkP31vQioKGrfvX4cBVDe9h8eSN94+TBkbHG+Dyv34uJYh3BT9+sqjw
+         sDwUXlslhBMaYGpAvxoOixwRwmifTgfd/PK6wkPL0T1EW/NsLRdiaBKFKHUdbDN5MCeo
+         R09y5P3I3sVfLUi+DiVJLrn3+cX5wEvYqKy7xAY6WRO2CLT8ZMF+8S70IpxRz5ACQ34b
+         cBeARz/cehVhMApW3+AnTagnTme46rwCDEvKJBKHrMqhFSxjfORcHA9I6LsTPY+aCKqd
+         oHIWJCHbJIZvFnMFyzvThzQGh0h5dhi32GqdRhxeUFNzilkWuEIX+F0Jbt8E66Dd0IDo
+         /ItA==
+X-Gm-Message-State: AOAM530GkJYGaC/9RlHrYPY89LwvtUyzA9/f6xIAoAeWMNRVr6Orh92N
+        V940lbN02e09UtFW5Hh5ypqGmTvpgDKD1C+zQGg1xKmMu1LqEr5p50swYAaCDUSpGCFZyRf6snt
+        Rj9S0QaBokaBG+14+Jr9hfA==
+X-Received: by 2002:a17:902:c40d:b0:12d:97e1:e19b with SMTP id k13-20020a170902c40d00b0012d97e1e19bmr10537211plk.45.1629353382081;
+        Wed, 18 Aug 2021 23:09:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyidW8kzpyvAeNsKSbqw0BIbk5FhYmExrRIRTgXU35VykW5Q38jXCg8b4fOoaC4nXFzv42nTQ==
+X-Received: by 2002:a17:902:c40d:b0:12d:97e1:e19b with SMTP id k13-20020a170902c40d00b0012d97e1e19bmr10537187plk.45.1629353381745;
+        Wed, 18 Aug 2021 23:09:41 -0700 (PDT)
+Received: from fedora ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id b190sm2143212pgc.91.2021.08.18.23.09.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 23:09:41 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 14:30:19 +0800
+From:   Zorro Lang <zlang@redhat.com>
 To:     Boyang Xue <bxue@redhat.com>
 Cc:     fstests@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        linux-ext4@vger.kernel.org, Zirong Lang <zlang@redhat.com>
+        linux-ext4@vger.kernel.org
 Subject: Re: [PATCH] ext4: regression test for "tune2fs -l" after ext4
  shutdown
-Message-ID: <20210819060636.GQ60846@e18g06458.et15sqa>
+Message-ID: <20210819063019.4kzimy3q5rkusql6@fedora>
+Mail-Followup-To: Boyang Xue <bxue@redhat.com>, fstests@vger.kernel.org,
+        Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org
 References: <20210818084126.4167799-1-bxue@redhat.com>
  <20210818114517.kqvfzu2vd45vuhze@fedora>
  <CAHLe9YZcuo2K6ELT0p1c6sfzwkSgikeiyNect4phEoCt8vTPXw@mail.gmail.com>
@@ -33,7 +70,6 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <CAHLe9YbdZrYH3E4U60KufrVKvcDf9O4Ow1ugg2HPgSSw6NvctA@mail.gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
@@ -295,9 +331,7 @@ On Thu, Aug 19, 2021 at 01:48:55PM +0800, Boyang Xue wrote:
 > 
 > $TUNE2FS_PROG -l $SCRATCH_DEV >/dev/null
 
-I think what Zorro is suggesting is that *when test fails* just dump
-stderr and let the error message break golden image to fail the test, so
-there's no need to set exit status.
+Yes, I've metioned that in my first reply above.
 
 > 
 > My original version redirecting stderr and stdout both to $seqres.full
@@ -312,20 +346,152 @@ there's no need to set exit status.
 > context=system_u:object_r:root_t:s0 /dev/vda3 /scratch
 > 
 > ext4/309        [failed, exit status 1]
+> Ran: ext4/309
+> Failures: ext4/309
+> Failed 1 of 1 tests
+> [root@kvm102 repo_xfstests]# cat results/ext4/309.full
+> /usr/sbin/tune2fs: Superblock checksum does not match superblock while
+> trying to open /dev/vda3
+> Couldn't find valid filesystem superblock.
+> tune2fs 1.46.2 (28-Feb-2021)
+> [root@kvm102 repo_xfstests]# ls results/ext4/309.out.bad
+> ls: cannot access 'results/ext4/309.out.bad': No such file or directory
+> ```
+> 
+> As far as I can understand, there're at least two approaches to mark a
+> test pass or fail in xfstests:
+> 1) Compare the output of the test with the "golden output" (i.e.
+> 309.out), I guess this is the approach you mentioned.
+> 2) Exit the test with the value of $status (i.e. status=0 - pass,
+> status=non-zero - fail)
+> 
+> I'm using the 2) here, not using 1) with the output of tune2fs
+> compared with the 309.out, because the output of tune2fs can be
+> different in different runs. An example output of a successful tune2fs
+> run is like (sorry for this long paste):
+> ```
 
-And this failure doesn't give any clues why it failed, you must check
-$seqres.full file to find out.
+You can
+[1]
+$TUNE2FS_PROG -l $SCRATCH_DEV >> $seqres.full
+status=0
+exit
 
-With stderr breaking golden image, you'll see what fails more easily,
-e.g.
+Or:
+[2]
+$TUNE2FS_PROG -l $SCRATCH_DEV >> $seqres.full 2>&1
+if [ $? -ne 0 ];then
+	echo "Fail to get superblock from SCRATCH_DEV"
+fi
+status=0
+exit
 
+Or:
+[3]
+$TUNE2FS_PROG -l $SCRATCH_DEV >> $seqres.full 2>&1 || exit
+status=0
+exit
 
-  QA output created by 309
-  Silence is golden
- +/usr/sbin/tune2fs: Superblock checksum does not match superblock while trying to open /dev/mapper/testvg-scratchdev
- +Couldn't find valid filesystem superblock.
- ...
- (Run 'diff -u /root/git/xfstests-dev/tests/ext4/309.out /root/git/xfstests-dev/results//ext4/309.out.bad'  to see the entire diff)
+Or:
+[4]
+$TUNE2FS_PROG -l $SCRATCH_DEV >> $seqres.full 2>&1 && status=0
+exit
+
+I perfer the 1st one, most xfstests cases fail by breaking golden image.
+I just showed my review points, anyway I don't mind if maintainer would like
+to choose anyone else :)
 
 Thanks,
-Eryu
+Zorro
+
+
+> [root@kvm101 repo_xfstests]# cat results/ext4/309.full
+> tune2fs 1.45.6 (20-Mar-2020)
+> Filesystem volume name:   <none>
+> Last mounted on:          /scratch
+> Filesystem UUID:          22975090-96d7-49ee-9b4f-ee6afe046219
+> Filesystem magic number:  0xEF53
+> Filesystem revision #:    1 (dynamic)
+> Filesystem features:      has_journal ext_attr resize_inode dir_index
+> filetype needs_recovery extent 64bit flex_bg sparse_super large_file
+> huge_file dir_nlink extra_isize metadata_csum
+> Filesystem flags:         signed_directory_hash
+> Default mount options:    user_xattr acl
+> Filesystem state:         clean
+> Errors behavior:          Continue
+> Filesystem OS type:       Linux
+> Inode count:              720896
+> Block count:              11534336
+> Reserved block count:     576716
+> Free blocks:              11280570
+> Free inodes:              720884
+> First block:              1
+> Block size:               1024
+> Fragment size:            1024
+> Group descriptor size:    64
+> Reserved GDT blocks:      256
+> Blocks per group:         8192
+> Fragments per group:      8192
+> Inodes per group:         512
+> Inode blocks per group:   128
+> Flex block group size:    16
+> Filesystem created:       Thu Aug 19 05:45:26 2021
+> Last mount time:          Thu Aug 19 05:45:26 2021
+> Last write time:          Thu Aug 19 05:45:26 2021
+> Mount count:              2
+> Maximum mount count:      -1
+> Last checked:             Thu Aug 19 05:45:26 2021
+> Check interval:           0 (<none>)
+> Lifetime writes:          462 kB
+> Reserved blocks uid:      0 (user root)
+> Reserved blocks gid:      0 (group root)
+> First inode:              11
+> Inode size:               256
+> Required extra isize:     32
+> Desired extra isize:      32
+> Journal inode:            8
+> Default directory hash:   half_md4
+> Directory Hash Seed:      f5af5862-d415-460b-9a6b-97584578600f
+> Journal backup:           inode blocks
+> Checksum type:            crc32c
+> Checksum:                 0x0f5b9c13
+> ```
+> 
+> Thanks,
+> Boyang
+> 
+> >
+> >
+> > Thanks,
+> > Zorro
+> >
+> > >
+> > > >
+> > > > ( cc ext4 mailist, to get more review)
+> > > >
+> > > > Thanks,
+> > > > Zorro
+> > >
+> > > Thanks for review!
+> > >
+> > > -Boyang
+> > >
+> > > >
+> > > > > +
+> > > > > +exit
+> > > > > diff --git a/tests/ext4/309.out b/tests/ext4/309.out
+> > > > > new file mode 100644
+> > > > > index 00000000..56330d65
+> > > > > --- /dev/null
+> > > > > +++ b/tests/ext4/309.out
+> > > > > @@ -0,0 +1,2 @@
+> > > > > +QA output created by 309
+> > > > > +Silence is golden
+> > > > > --
+> > > > > 2.27.0
+> > > > >
+> > > >
+> > >
+> >
+> 
+
