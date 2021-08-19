@@ -2,18 +2,18 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 772653F13BE
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Aug 2021 08:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 154E03F13C0
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Aug 2021 08:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231336AbhHSGrM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 Aug 2021 02:47:12 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:14232 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230483AbhHSGrM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Aug 2021 02:47:12 -0400
+        id S231411AbhHSGrN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 Aug 2021 02:47:13 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:14275 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231234AbhHSGrN (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Aug 2021 02:47:13 -0400
 Received: from dggeme752-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GqwJx2Msyz1CYQg;
-        Thu, 19 Aug 2021 14:46:09 +0800 (CST)
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GqwKG38fNz84wg;
+        Thu, 19 Aug 2021 14:46:26 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by dggeme752-chm.china.huawei.com
  (10.3.19.98) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 19
@@ -22,10 +22,12 @@ From:   Zhang Yi <yi.zhang@huawei.com>
 To:     <linux-ext4@vger.kernel.org>
 CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
         <yi.zhang@huawei.com>, <yukuai3@huawei.com>
-Subject: [PATCH v2 0/4] ext4: fix a inode checksum error
-Date:   Thu, 19 Aug 2021 14:57:00 +0800
-Message-ID: <20210819065704.1248402-1-yi.zhang@huawei.com>
+Subject: [PATCH v2 1/4] ext4: move inode eio simulation behind io completeion
+Date:   Thu, 19 Aug 2021 14:57:01 +0800
+Message-ID: <20210819065704.1248402-2-yi.zhang@huawei.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210819065704.1248402-1-yi.zhang@huawei.com>
+References: <20210819065704.1248402-1-yi.zhang@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -37,51 +39,39 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-We find a checksum error and a inode corruption problem while doing
-stress test, this 4 patches address to fix them. The first patch is
-relate to the error simulation, and the second & third patch are
-prepare to do the fix. The last patch fix these two issue.
+No EIO simulation is required if the buffer is uptodate, so move the
+simulation behind read bio completeion just like inode/block bitmap
+simulation does.
 
- - Checksum error
+Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+---
+ fs/ext4/inode.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-    EXT4-fs error (device sda): ext4_lookup:1784: inode #131074: comm cat: iget: checksum invalid
-
- - Inode corruption
-
-    e2fsck 1.46.0 (29-Jan-2020)
-    Pass 1: Checking inodes, blocks, and sizes
-    Pass 2: Checking directory structure
-    Entry 'foo' in / (2) has deleted/unused inode 17.  Clear<y>? yes
-    Pass 3: Checking directory connectivity
-    Pass 4: Checking reference counts
-    Pass 5: Checking group summary information
-    Inode bitmap differences:  -17
-    Fix<y>? yes
-    Free inodes count wrong for group #0 (32750, counted=32751).
-    Fix<y>? yes
-    Free inodes count wrong (32750, counted=32751).
-    Fix<y>? yes
-
-Change since v1:
- - Add a patch to prevent ext4_do_update_inode() return before filling
-   the inode buffer.
- - Do not use BH_New flag to indicate the empty buffer, postpone the
-   zero and uptodate logic into ext4_do_update_inode() before filling
-   the inode buffer.
-
-Thanks,
-Yi.
-
-
-Zhang Yi (4):
-  ext4: move inode eio simulation behind io completeion
-  ext4: remove an unnecessary if statement in __ext4_get_inode_loc()
-  ext4: don't return error if huge_file feature mismatch
-  ext4: prevent getting empty inode buffer
-
- fs/ext4/inode.c | 206 +++++++++++++++++++++++++-----------------------
- 1 file changed, 109 insertions(+), 97 deletions(-)
-
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index d8de607849df..eb2526a35254 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -4330,8 +4330,6 @@ static int __ext4_get_inode_loc(struct super_block *sb, unsigned long ino,
+ 	bh = sb_getblk(sb, block);
+ 	if (unlikely(!bh))
+ 		return -ENOMEM;
+-	if (ext4_simulate_fail(sb, EXT4_SIM_INODE_EIO))
+-		goto simulate_eio;
+ 	if (!buffer_uptodate(bh)) {
+ 		lock_buffer(bh);
+ 
+@@ -4418,8 +4416,8 @@ static int __ext4_get_inode_loc(struct super_block *sb, unsigned long ino,
+ 		ext4_read_bh_nowait(bh, REQ_META | REQ_PRIO, NULL);
+ 		blk_finish_plug(&plug);
+ 		wait_on_buffer(bh);
++		ext4_simulate_fail_bh(sb, bh, EXT4_SIM_INODE_EIO);
+ 		if (!buffer_uptodate(bh)) {
+-		simulate_eio:
+ 			if (ret_block)
+ 				*ret_block = block;
+ 			brelse(bh);
 -- 
 2.31.1
 
