@@ -2,191 +2,200 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35F973F0BC4
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Aug 2021 21:28:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 661633F1227
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Aug 2021 05:58:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232404AbhHRT3O (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 18 Aug 2021 15:29:14 -0400
-Received: from mail-bn1nam07on2059.outbound.protection.outlook.com ([40.107.212.59]:24067
-        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229965AbhHRT3I (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 18 Aug 2021 15:29:08 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OmqAQXEpdPdb56bWQLnHNSLDQOMGxN8VS/P7Yt77DbI+5YYFwp0KU1atRqRD1TnaRH5CVZ1lNfSBAOZXIJz8h2rSmYT0cOl6/BSHvJccyOJTzOEuCSI8YCXCqn9pRrFUZ3RcktSO+fkGKrxVCQx/MSIoYPBvAk8jfCMibKgaJppWWaD1nRkw1+RrCLUXwJFFjXGCt+SkgMigkKVjKIH9IP/03u8+hlvJC9DCkwR9cdOcgdPyNcDLRCbnAX61Z559KG7m6MH6OQWdp71b4I8OzTzoGWFgsbtXBqaNHvCR5jQvh/z8cbSkVbEix+R2b6E7YAmC380XHkoRxkYCP+nQLQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=P0dxBB+gTPgn6xtJRTWooXg5Ofo2P3zOE2xwaHUAyrQ=;
- b=J2qUs7VWgvBw2jNN1Th68X+biEN4JshjW8F7UcXQp222K9sJDBIZILqXFwXHk1CTXubyf3AD8ouUUXpt6zolx3OpPZTzyqU13urlZ0giXb3CdS3c2YovxST6jhwEat8G5nCjPb7vdTzC1jAdbbZwcwgpKdlGbTB+WNUZ99DmpV+PUnIbMJCYHH4VDpD2sb+7twAHTw6wy7ckyR7QvG5ci2HK+mkt3EP06hGzm/utcbdMTjvs8mwz5hBRg4UbEtCXlNEmRwCORSZPUbQqfRkWJQNvxBk8wZEBSdQ4IrNsFJ2t0/YmbvsM25RovSIYxaC91UDQfhOCd9B+Et9Jpq10Cg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.32) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=P0dxBB+gTPgn6xtJRTWooXg5Ofo2P3zOE2xwaHUAyrQ=;
- b=pt4FulzCGAi6z3RnU1HIgF/giSn4aJ4+QiNKT99IQN+2FcFVNWdQskycy5R1vzxhx3k24TIbYTHIxCNDsm8HdjFOgos7bKyilPZOVC7kmMxH0dTIlUKAKFItG1bl8nwYoCveSj4u7OZM9Y/MA0cn8QbWjvxg3ZU0p82WMo5BfQpqZ2i0lySiVqZceiIOCIVovSvMq5rEKwnXORjNJQUvQS+DJAhUw92jRpvkUVPAGIGNWi8p7iSAY9CpWIMU+r35L2rb83u/bRCB8aAMBYDJ3/jWVNSjb7f+o0rdT6X+bdRMV2auGIYnLvoX5SerzauujmEGWWTMOxJCc1aKneEGag==
-Received: from MWHPR02CA0018.namprd02.prod.outlook.com (2603:10b6:300:4b::28)
- by DM5PR12MB1609.namprd12.prod.outlook.com (2603:10b6:4:10::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.24; Wed, 18 Aug
- 2021 19:28:31 +0000
-Received: from CO1NAM11FT031.eop-nam11.prod.protection.outlook.com
- (2603:10b6:300:4b::4) by MWHPR02CA0018.outlook.office365.com
- (2603:10b6:300:4b::28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend
- Transport; Wed, 18 Aug 2021 19:28:31 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
- smtp.mailfrom=nvidia.com; redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.32; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.32) by
- CO1NAM11FT031.mail.protection.outlook.com (10.13.174.118) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4415.16 via Frontend Transport; Wed, 18 Aug 2021 19:28:31 +0000
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 18 Aug
- 2021 12:28:31 -0700
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 18 Aug
- 2021 19:28:31 +0000
-Received: from rcampbell-test.nvidia.com (172.20.187.5) by mail.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1497.2 via Frontend
- Transport; Wed, 18 Aug 2021 19:28:31 +0000
-Subject: Re: [PATCH v6 02/13] mm: remove extra ZONE_DEVICE struct page
- refcount
-To:     Felix Kuehling <felix.kuehling@amd.com>,
-        Alex Sierra <alex.sierra@amd.com>, <akpm@linux-foundation.org>,
-        <linux-mm@kvack.org>, <linux-ext4@vger.kernel.org>,
-        <linux-xfs@vger.kernel.org>
-CC:     <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
-        <hch@lst.de>, <jgg@nvidia.com>, <jglisse@redhat.com>
-References: <20210813063150.2938-1-alex.sierra@amd.com>
- <20210813063150.2938-3-alex.sierra@amd.com>
- <7b821150-af18-f786-e419-ec245b8cfb1e@nvidia.com>
- <393e9815-838d-5fe6-d6ab-bfe7b543fef6@amd.com>
-From:   Ralph Campbell <rcampbell@nvidia.com>
-Message-ID: <e155ed59-8c3c-4046-e731-f082ee4b10bb@nvidia.com>
-Date:   Wed, 18 Aug 2021 12:28:30 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S236379AbhHSD70 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 18 Aug 2021 23:59:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46662 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235893AbhHSD70 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 18 Aug 2021 23:59:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4475C610CB;
+        Thu, 19 Aug 2021 03:58:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629345530;
+        bh=It3UWJT/EISjJbSXJOa9YOZrmo0c8cMi/Z71oauhW1o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=B8YJS3s9/SG4ffD2pUndnBEUmZ/rGTKk143b5aSWLidLDRfF3rRHrbS3sG/KdLFoe
+         fO2i8I4B/tdR+nOAn50qXcduL736ue0ayVwSLKnC/382wpgRKNX5yQDev19DIoX1a+
+         UwlH6klunOX5kQtDhqsLRRIrl+3915OVPlaZ7Y9f2us1VPtcFk+i63959XJXFvw/M5
+         QRlP2OK4MdbEHUVxd7bTwXjGnxQc6dfcZsNPZBIVoWma/HKUPKgOERVOqcosqqCvTZ
+         s+IKizsl4Qz4slLXVbqbopf3vCpQcnfx6wBx7Iyx2br0qroybo7gYnk7e+GEniPSC5
+         7Q1M+zJjI5SCg==
+Date:   Wed, 18 Aug 2021 20:58:49 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Amir Goldstein <amir73il@gmail.com>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Jan Kara <jack@suse.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Ext4 <linux-ext4@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Khazhismel Kumykov <khazhy@google.com>,
+        David Howells <dhowells@redhat.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Theodore Tso <tytso@mit.edu>,
+        Matthew Bobrowski <repnop@google.com>, kernel@collabora.com
+Subject: Re: [PATCH v6 18/21] fanotify: Emit generic error info type for
+ error event
+Message-ID: <20210819035849.GA12586@magnolia>
+References: <20210812214010.3197279-1-krisman@collabora.com>
+ <20210812214010.3197279-19-krisman@collabora.com>
+ <20210816214103.GA12664@magnolia>
+ <20210817090538.GA26181@quack2.suse.cz>
+ <CAOQ4uxgdJpovZ-zzJkLOdQ=YYF3ta46m0_jrt0QFSdJ9GdXR=g@mail.gmail.com>
+ <20210818001632.GD12664@magnolia>
+ <CAOQ4uxhccRchiajjje3C20UOKwxQUapu=RYPsM1Y0uTnS81Vew@mail.gmail.com>
+ <20210818095818.GA28119@quack2.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <393e9815-838d-5fe6-d6ab-bfe7b543fef6@amd.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0ca49a3a-3231-4322-e250-08d9627e5d0b
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1609:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB16092220E81E2EBBCE5A66FEC2FF9@DM5PR12MB1609.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VpQvXu9STTWL62aQ9sm3SiAiAuc7renl76Gf3apCxC6dfqMz5ba7e337onDgTTnp97GB6WdCZXzpLTUzFVkO7wIdTa6wceM9aeNi1k3xZAiYsRQ/WiTRaKJb6mXWuWM4qns+A5pBsgYB0Nve2Vrsp8V2AiiRkNQUckVKxahydna4r20JsxRkk/2KEbZnKLN13Q/sWfbUDQc9Vm/eoZhtklqfhlK7pMn2u9QDwBUuSNHEKsYy8lggMK9vbLpXxMLG5+si9n/jJgZ5fa1lV34GZ5bOPewkMDlt32p8KJ+JWZF7SPmKi++LZ6RxBXpVrs3ySuodvPgr9V+M7xatUiilVZnE1upsrmFe6cnWCKHnufKWF7zAju4K75Dg4FT6NHeNZNs7Be8NqWr4M+aDclW0EmC3Mc9gzoRD/mtc7Sa9sPRJvYrPkwzjsk2oJhK4boNuH36VJtmRAoaGxBq3eC2yNxqjoaV0k3Uz3fFdPumDWn+2BCuUVoKGDNhnFN1LKt4YRcHRWFVbVmmErydJE+rKWyvTnPQLu1dYWVPsb3w5ayMfuz44G++oEE5Mu++xJdCWkulT6bClScEWRzuWUsZ2QkxngNQ7+ypLmDVWRU89nK1rwO+i/uHn4D2zbMdJyLsSh6SSdzDPjEYHsSlbNwQ4OTmRJgCkrdZdzN6J13xeW4AoEuOpX4j4/E/hZH0RLZpJ0uqRqI7Pu1GmT0k5mQx6E2/sEEB/sK5u/naXP2yGvx1e17fzoXR0Kcn4Z72I3d5gghms4FTzNAWRt+REDg9B6iJAX6/dBj225YerKItxDrFwCnxL8nkJRMda7DBzcOf2kxgku6+l2rslz/YaFEvoJ2MISmngxtSuTNe49jQmtEU+py2uBL7FPhL94iT9CM0D
-X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(39860400002)(136003)(346002)(376002)(46966006)(36840700001)(2906002)(54906003)(83380400001)(110136005)(86362001)(8676002)(316002)(82310400003)(8936002)(47076005)(31686004)(82740400003)(36860700001)(36756003)(356005)(7636003)(53546011)(70586007)(70206006)(186003)(478600001)(336012)(7416002)(26005)(5660300002)(2616005)(31696002)(7696005)(4326008)(966005)(426003)(2101003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Aug 2021 19:28:31.4867
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0ca49a3a-3231-4322-e250-08d9627e5d0b
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT031.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1609
+In-Reply-To: <20210818095818.GA28119@quack2.suse.cz>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 8/17/21 5:35 PM, Felix Kuehling wrote:
-> Am 2021-08-17 um 8:01 p.m. schrieb Ralph Campbell:
->> On 8/12/21 11:31 PM, Alex Sierra wrote:
->>> From: Ralph Campbell <rcampbell@nvidia.com>
->>>
->>> ZONE_DEVICE struct pages have an extra reference count that
->>> complicates the
->>> code for put_page() and several places in the kernel that need to
->>> check the
->>> reference count to see that a page is not being used (gup, compaction,
->>> migration, etc.). Clean up the code so the reference count doesn't
->>> need to
->>> be treated specially for ZONE_DEVICE.
->>>
->>> v2:
->>> AS: merged this patch in linux 5.11 version
->>>
->>> v5:
->>> AS: add condition at try_grab_page to check for the zone device type,
->>> while
->>> page ref counter is checked less/equal to zero. In case of device
->>> zone, pages
->>> ref counter are initialized to zero.
->>>
->>> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
->>> Signed-off-by: Alex Sierra <alex.sierra@amd.com>
->>> ---
->>>    arch/powerpc/kvm/book3s_hv_uvmem.c     |  2 +-
->>>    drivers/gpu/drm/nouveau/nouveau_dmem.c |  2 +-
->>>    fs/dax.c                               |  4 +-
->>>    include/linux/dax.h                    |  2 +-
->>>    include/linux/memremap.h               |  7 +--
->>>    include/linux/mm.h                     | 13 +----
->>>    lib/test_hmm.c                         |  2 +-
->>>    mm/internal.h                          |  8 +++
->>>    mm/memremap.c                          | 68 +++++++-------------------
->>>    mm/migrate.c                           |  5 --
->>>    mm/page_alloc.c                        |  3 ++
->>>    mm/swap.c                              | 45 ++---------------
->>>    12 files changed, 46 insertions(+), 115 deletions(-)
->>>
->> I haven't seen a response to the issues I raised back at v3 of this
->> series.
->> https://lore.kernel.org/linux-mm/4f6dd918-d79b-1aa7-3a4c-caa67ddc29bc@nvidia.com/
->>
->>
->> Did I miss something?
-> I think part of the response was that we did more testing. Alex added
-> support for DEVICE_GENERIC pages to test_hmm and he ran DAX tests
-> recommended by Theodore Tso. In that testing he ran into a WARN_ON_ONCE
-> about a zero page refcount in try_get_page. The fix is in the latest
-> version of patch 2. But it's already obsolete because John Hubbard is
-> about to remove that function altogether.
->
-> I think the issues you raised were more uncertainty than known bugs. It
-> seems the fact that you can have DAX pages with 0 refcount is a feature
-> more than a bug.
->
-> Regards,
->    Felix
+On Wed, Aug 18, 2021 at 11:58:18AM +0200, Jan Kara wrote:
+> On Wed 18-08-21 06:24:26, Amir Goldstein wrote:
+> > [...]
+> > 
+> > > > Just keep in mind that the current scheme pre-allocates the single event slot
+> > > > on fanotify_mark() time and (I think) we agreed to pre-allocate
+> > > > sizeof(fsnotify_error_event) + MAX_HDNALE_SZ.
+> > > > If filesystems would want to store some variable length fs specific info,
+> > > > a future implementation will have to take that into account.
+> > >
+> > > <nod> I /think/ for the fs and AG metadata we could preallocate these,
+> > > so long as fsnotify doesn't free them out from under us.
+> > 
+> > fs won't get notified when the event is freed, so fsnotify must
+> > take ownership on the data structure.
+> > I was thinking more along the lines of limiting maximum size for fs
+> > specific info and pre-allocating that size for the event.
+> 
+> Agreed. If there's a sensible upperbound than preallocating this inside
+> fsnotify is likely the least problematic solution.
+> 
+> > > For inodes...
+> > > there are many more of those, so they'd have to be allocated
+> > > dynamically.
+> > 
+> > The current scheme is that the size of the queue for error events
+> > is one and the single slot is pre-allocated.
+> > The reason for pre-allocate is that the assumption is that fsnotify_error()
+> > could be called from contexts where memory allocation would be
+> > inconvenient.
+> > Therefore, we can store the encoded file handle of the first erroneous
+> > inode, but we do not store any more events until user read this
+> > one event.
+> 
+> Right. OTOH I can imagine allowing GFP_NOFS allocations in the error
+> context. At least for ext4 it would be workable (after all ext4 manages to
+> lock & modify superblock in its error handlers, GFP_NOFS allocation isn't
+> harder). But then if events are dynamically allocated there's still the
+> inconvenient question what are you going to do if you need to report fs
+> error and you hit ENOMEM. Just not sending the notification may have nasty
+> consequences and in the world of containerization and virtualization
+> tightly packed machines where ENOMEM happens aren't that unlikely. It is
+> just difficult to make assumptions about filesystems overall so we decided
+> to be better safe and preallocate the event.
+> 
+> Or, we could leave the allocation troubles for the filesystem and
+> fsnotify_sb_error() would be passed already allocated event (this way
+> attaching of fs-specific blobs to the event is handled as well) which it
+> would just queue. Plus we'd need to provide some helper to fill in generic
+> part of the event...
+> 
+> The disadvantage is that if there are filesystems / callsites needing
+> preallocated events, it would be painful for them. OTOH current two users -
+> ext4 & xfs - can handle allocation in the error path AFAIU.
+> 
+> Thinking about this some more, maybe we could have event preallocated (like
+> a "rescue event"). Normally we would dynamically allocate (or get passed
+> from fs) the event and only if the allocation fails, we would queue the
+> rescue event to indicate to listeners that something bad happened, there
+> was error but we could not fully report it.
 
-Did you test on a system without CONFIG_ARCH_HAS_PTE_SPECIAL defined?
-In that case, mmap() of a DAX device will call insert_page() which calls
-get_page() which would trigger VM_BUG_ON_PAGE().
+Yes.
 
-I can believe it is OK for PTE_SPECIAL page table entries to have no
-struct page or that MEMORY_DEVICE_GENERIC struct pages be mapped with
-a zero reference count using insert_pfn().
+> But then, even if we'd go for dynamic event allocation by default, we need
+> to efficiently merge events since some fs failures (e.g. resulting in
+> journal abort in ext4) lead to basically all operations with the filesystem
+> to fail and that could easily swamp the notification system with useless
+> events.
 
-I find it hard to believe that other MM developers don't see an issue
-with a struct page with refcount == 0 and mapcount == 1.
+Hm.  Going out on a limb, I would guess that the majority of fs error
+flood events happen if the storage fails catastrophically.  Assuming
+that a catastrophic failure will quickly take the filesystem offline, I
+would say that for XFS we should probably send one last "and then we
+died" event and stop reporting after that.
 
-I don't see where init_page_count() is being called for the
-MEMORY_DEVICE_GENERIC or MEMORY_DEVICE_PRIVATE struct pages the AMD
-driver allocates and passes to migrate_vma_setup().
-Looks like svm_migrate_get_vram_page() needs to call init_page_count()
-instead of get_page(). (I'm looking at branch origin/alexsierrag/device_generic
-https://github.com/RadeonOpenCompute/ROCK-Kernel-Driver.git)
+> Current system with preallocated event nicely handles this
+> situation, it is questionable how to extend it for online fsck usecase
+> where we need to queue more than one event (but even there probably needs
+> to be some sensible upper-bound). I'll think about it...
 
-Also, what about the other places where is_device_private_page() is called?
-Don't they need to be updated to call is_device_page() instead?
-One of my goals for this patch was to remove special casing reference counts
-for ZONE_DEVICE pages in rmap.c, etc.
+At least for XFS, I was figuring that xfs_scrub errors wouldn't be
+reported via fsnotify since the repair tool is already running anyway.
 
-I still think this patch needs an ACK from a FS/DAX maintainer.
+> > > Hmm.  For handling accumulated errors, can we still access the
+> > > fanotify_event_info_* object once we've handed it to fanotify?  If the
+> > > user hasn't picked up the event yet, it might be acceptable to set more
+> > > bits in the type mask and bump the error count.  In other words, every
+> > > time userspace actually reads the event, it'll get the latest error
+> > > state.  I /think/ that's where the design of this patchset is going,
+> > > right?
+> > 
+> > Sort of.
+> > fsnotify does have a concept of "merging" new event with an event
+> > already in queue.
+> > 
+> > With most fsnotify events, merge only happens if the info related
+> > to the new event (e.g. sb,inode) is the same as that off the queued
+> > event and the "merge" is only in the event mask
+> > (e.g. FS_OPEN|FS_CLOSE).
+> > 
+> > However, the current scheme for "merge" of an FS_ERROR event is only
+> > bumping err_count, even if the new reported error or inode do not
+> > match the error/inode in the queued event.
+> > 
+> > If we define error event subtypes (e.g. FS_ERROR_WRITEBACK,
+> > FS_ERROR_METADATA), then the error event could contain
+> > a field for subtype mask and user could read the subtype mask
+> > along with the accumulated error count, but this cannot be
+> > done by providing the filesystem access to modify an internal
+> > fsnotify event, so those have to be generic UAPI defined subtypes.
+> > 
+> > If you think that would be useful, then we may want to consider
+> > reserving the subtype mask field in fanotify_event_info_error in
+> > advance.
+> 
+> It depends on what exactly Darrick has in mind but I suspect we'd need a
+> fs-specific merge helper that would look at fs-specific blobs in the event
+> and decide whether events can be merged or not, possibly also handling the
+> merge by updating the blob.
 
+Yes.  If the filesystem itself were allowed to manage the lifespan of
+the fsnotify error event object then this would be trivial -- we'll own
+the object, keep it updated as needed, and fsnotify can copy the
+contents to userspace whenever convenient.
+
+(This might be a na�ve view of fsnotify...)
+
+> From the POV of fsnotify that would probably
+> mean merge callback in the event itself. But I guess this needs more
+> details from Darrick and maybe we don't need to decide this at this moment
+> since nobody is close to the point of having code needing to pass fs-blobs
+> with events.
+
+<nod> We ... probably don't need to decide this now.
+
+--D
+
+> 
+> 								Honza
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
