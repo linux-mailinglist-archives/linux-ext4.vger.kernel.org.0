@@ -2,105 +2,76 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C1133F2BBD
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Aug 2021 14:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D37E3F315D
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Aug 2021 18:15:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239903AbhHTMJk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 20 Aug 2021 08:09:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239997AbhHTMJf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 20 Aug 2021 08:09:35 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CBDEC061756;
-        Fri, 20 Aug 2021 05:08:56 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id q11so13949607wrr.9;
-        Fri, 20 Aug 2021 05:08:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xX8QN7d/XFWwmEHcKdCeyQmpM6FgPCJTtiiYzun1nck=;
-        b=kH4HIamt7oILiZuSApPBXZnoQFLtCuckve57zFz8cX9t/D0ZtrdMIBwOUUKRu8xDcu
-         njkuMtV4HDsQddnx0Md0jZFue2C4wRZc28Nn6lREOdQvA9NGrae7T1R0Vp4rNKVhdink
-         n+YiHQKhsE9YtliitiNoIxoNAeTOEcpqkWhHHfgm+zOul4yKn64rIpqDmHk3ugQvYx5I
-         9P0B1jJPnO48StytsxkNkuzAblt0NlXGxCp7FBMCBD+1e8s1Ju5e/V0v5o0zps693vRZ
-         ZLQT9kuu3qDnoxH3DCdmeD7QVsrql/+pqdnss3D3JbtTPjtkomC91S3sNX9yEbnGjoBB
-         mU8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xX8QN7d/XFWwmEHcKdCeyQmpM6FgPCJTtiiYzun1nck=;
-        b=mO2PdedQffEt+ZRz7CJ0evn2j9eyuPXljwjpSLmqeHxfXTjU56hW1U7XncIbux7UDq
-         iL2XR2D+bECjX+Aopnksjbn2xHjxNOAW+ZOsjRghFR1ZMzwuG8jG6G5GHP+t0w/G1X9F
-         W9kGOVPXRl5I70H5w+Zpjp5YgvHm8uqlX/GZvmpdRQalPrnv1pw/BE+lLy6JCidnlTZx
-         Cf9FAWjtYGHYi0cHjO6Bahxd+/uzSp9hAGchJkt/Cu7S9qwecJ1EyGAN453SmSRRdI6H
-         s4lkyC89K8ri0YO/S5Gs+V8oaVbP6LhzyW9HvHa0oJhcRghKwD8DTChBF2OI/6ea6nRN
-         sWgQ==
-X-Gm-Message-State: AOAM531bjjV21+nKRMXQWXooX2OA/czz54bik/dpj+zVTradFOWfgI3Y
-        PSJdZcuv0ZDPP7nzHLEKEEc=
-X-Google-Smtp-Source: ABdhPJz15XRXK+GbAJ5vixyecTYGr4CF9zYwwiwYVn4Z+PLL4hgegHZg4GyJe3sRZKAsk76v0pQZJg==
-X-Received: by 2002:adf:ed50:: with SMTP id u16mr9801083wro.174.1629461334826;
-        Fri, 20 Aug 2021 05:08:54 -0700 (PDT)
-Received: from localhost.localdomain (arl-84-90-178-246.netvisao.pt. [84.90.178.246])
-        by smtp.gmail.com with ESMTPSA id u5sm5683785wrr.94.2021.08.20.05.08.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Aug 2021 05:08:54 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] ext4: scope ret locally in ext4_try_to_trim_range()
-Date:   Fri, 20 Aug 2021 14:08:53 +0200
-Message-Id: <20210820120853.23134-1-lukas.bulwahn@gmail.com>
+        id S231672AbhHTQPr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 20 Aug 2021 12:15:47 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:37382 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229791AbhHTQPq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 20 Aug 2021 12:15:46 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 0C0C4221E9;
+        Fri, 20 Aug 2021 16:15:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1629476108; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=pPu1MIJVt35RD10fJe4zhHVyfHRc7zPYfxdXjLJIQPg=;
+        b=oUsJEspq6EuUs8ZVBxZgy9CGxka1FfLAMF9Ecp0uShNJI461g8C0qg74xqNAbHwdEVl/GI
+        p0g5aQuFG+DJDPUFXeQsY2f5PokRb7SS2JGeHz8y7af8COH/RqLX3PZM/lMR+pbt5j8Htz
+        AZd+1qdSj84/lwqhfaixWXIorVw8YzQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1629476108;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=pPu1MIJVt35RD10fJe4zhHVyfHRc7zPYfxdXjLJIQPg=;
+        b=+h2hRzxe5od6Cx/qgkF8k8i8NlVg6w9inYoMFpkq8nB6GzHUBNelcZtPO87AZRrfxSvS7l
+        lsu6aqtUKgRYaNCA==
+Received: from quack2.suse.cz (unknown [10.100.224.230])
+        by relay2.suse.de (Postfix) with ESMTP id 0076AA3B87;
+        Fri, 20 Aug 2021 16:15:07 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id CCEDF1E0679; Fri, 20 Aug 2021 18:15:04 +0200 (CEST)
+From:   Jan Kara <jack@suse.cz>
+To:     Ted Tso <tytso@mit.edu>
+Cc:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>
+Subject: [PATCH] libss: add newer libreadline.so.8 to dlopen path
+Date:   Fri, 20 Aug 2021 18:15:02 +0200
+Message-Id: <20210820161502.8497-1-jack@suse.cz>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1068; h=from:subject; bh=LHoupy/y/pBh46Y+3+qREs9sS9c1VwNorCB5FbEKdVo=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBhH9TblntXKwwtKLgwOR43o/ztXK5uVQAgKuHshD0h KHqejNCJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCYR/U2wAKCRCcnaoHP2RA2cerB/ 4j7P8PnlvkSnetNKuhc2piqQonYmJ560wlqtuD89f9HVtYqjGik40CNL8s89ou/e971MisK9j3KciI +Ml8p3H2WxXEe9cYuYE2SUuXWEE97fsgy9O2xVmyz7NJUdZWNKdMdDlNwx0v074u/tOriN5MtzPeLC PsXM3dBS1LHsA3DSQfvqTTCul/R05iCG5zK92uoGyCYhQv+P5hZX2YDnqHSsl/+jX9TGEemlz/e/xI z7y3z/uODJUr/ZNqOHaMOWoKH7yM/PGRl+aDxHDqKzZp/KxnsDdPy27cQNKyD1pfnUTxnepnPYOAXf B7CRj4zF4Ln1lvNIy9TQcd5I13uwY4
+X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-As commit 6920b3913235 ("ext4: add new helper interface
-ext4_try_to_trim_range()") moves some code into the separate function
-ext4_try_to_trim_range(), the use of the variable ret within that
-function is more limited and can be adjusted as well.
+OpenSUSE Tumbleweed now has libreadline.so.8. Add it to the list of libs
+to look for.
 
-Scope the use of the variable ret locally and drop dead assignments.
-
-No functional change.
-
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Signed-off-by: Jan Kara <jack@suse.cz>
 ---
- fs/ext4/mballoc.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ lib/ss/get_readline.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index e89db3396203..f4c0a37431cd 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -6301,7 +6301,6 @@ __releases(ext4_group_lock_ptr(sb, e4b->bd_group))
- {
- 	ext4_grpblk_t next, count, free_count;
- 	void *bitmap;
--	int ret = 0;
+Hum, why don't we look for libreadline.so BTW? That way we could save adding
+now so version whenever one appears?
+
+diff --git a/lib/ss/get_readline.c b/lib/ss/get_readline.c
+index 11c72b3387d1..aa1615747934 100644
+--- a/lib/ss/get_readline.c
++++ b/lib/ss/get_readline.c
+@@ -37,7 +37,7 @@ static void ss_release_readline(ss_data *info)
+ #endif
  
- 	bitmap = e4b->bd_bitmap;
- 	start = (e4b->bd_info->bb_first_free > start) ?
-@@ -6316,10 +6315,9 @@ __releases(ext4_group_lock_ptr(sb, e4b->bd_group))
- 		next = mb_find_next_bit(bitmap, max + 1, start);
+ /* Libraries we will try to use for readline/editline functionality */
+-#define DEFAULT_LIBPATH "libreadline.so.7:libreadline.so.6:libreadline.so.5:libreadline.so.4:libreadline.so:libedit.so.2:libedit.so:libeditline.so.0:libeditline.so"
++#define DEFAULT_LIBPATH "libreadline.so.8:libreadline.so.7:libreadline.so.6:libreadline.so.5:libreadline.so.4:libreadline.so:libedit.so.2:libedit.so:libeditline.so.0:libeditline.so"
  
- 		if ((next - start) >= minblocks) {
--			ret = ext4_trim_extent(sb, start, next - start, e4b);
-+			int ret = ext4_trim_extent(sb, start, next - start, e4b);
- 			if (ret && ret != -EOPNOTSUPP)
- 				break;
--			ret = 0;
- 			count += next - start;
- 		}
- 		free_count += next - start;
+ #ifdef HAVE_DLOPEN
+ void ss_get_readline(int sci_idx)
 -- 
 2.26.2
 
