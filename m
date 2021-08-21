@@ -2,60 +2,94 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 629933F38C2
-	for <lists+linux-ext4@lfdr.de>; Sat, 21 Aug 2021 06:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F8463F3925
+	for <lists+linux-ext4@lfdr.de>; Sat, 21 Aug 2021 08:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230314AbhHUExu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 21 Aug 2021 00:53:50 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:34753 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229620AbhHUExu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 21 Aug 2021 00:53:50 -0400
-Received: by mail-io1-f71.google.com with SMTP id a9-20020a5ec309000000b005baa3f77016so4079738iok.1
-        for <linux-ext4@vger.kernel.org>; Fri, 20 Aug 2021 21:53:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=5FRAuZPUiU0xKn4RWrot8z/nYnETAm9Goj44lyXceb0=;
-        b=JWLDgPZ+4c1HQ/1ABQfXpvr5lFwakzR5V5r2Tb6bzy84b07bRzBAea2ZNFwMymla99
-         X+ssdyx3F9pdSrhQ+2A5Fg31UXMtRqN1mdRTCcUhf75hGR/j0BBpMMX7tJS4UB9/ak8U
-         gTzQ+uwqGbRy9jlUZKqmkzykEh/6hyKekJRYonsQ+wq0GmDny89r0BhmV7jrXbRQV2rJ
-         HTyZ2aijLy0Fk6y8sdTjB1R5RptrAw04MO+CP+hQEQJR8zTYLAte86GjVNmldwcexXng
-         X9GQ0AN51Fn3f0gpkpT3qooW63Zj1P1FJYZjfdt1BgvL6P9Mt9IF0kFcTtriQYoeVXGJ
-         dZkw==
-X-Gm-Message-State: AOAM533G9Oaa+s9FXe43hk9Zd1r9uK9N/BH/No1n0WScjwp+MWnDJo70
-        /cqpBeITBj9tpkPT9fx7CakgM6ivZwWc6vtSblO86TmKXOX/
-X-Google-Smtp-Source: ABdhPJw6ZnuG/vzpJFEfkG6KnqS/hPSfKcIbJMZgAjuksqm6JM8G8NUo0yq5mmnikNMq0w37gVacq00iq7qfpxM/+EPQV1nGC8P8
+        id S232059AbhHUGpK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 21 Aug 2021 02:45:10 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:8916 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230375AbhHUGpJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 21 Aug 2021 02:45:09 -0400
+Received: from dggeme752-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Gs85L2LqRz8snr;
+        Sat, 21 Aug 2021 14:40:22 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggeme752-chm.china.huawei.com
+ (10.3.19.98) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sat, 21
+ Aug 2021 14:44:27 +0800
+From:   Zhang Yi <yi.zhang@huawei.com>
+To:     <linux-ext4@vger.kernel.org>
+CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+        <yi.zhang@huawei.com>, <yukuai3@huawei.com>
+Subject: [PATCH v3 0/4] ext4: fix a inode checksum error
+Date:   Sat, 21 Aug 2021 14:54:46 +0800
+Message-ID: <20210821065450.1397451-1-yi.zhang@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-Received: by 2002:a92:cf07:: with SMTP id c7mr15916909ilo.291.1629521591381;
- Fri, 20 Aug 2021 21:53:11 -0700 (PDT)
-Date:   Fri, 20 Aug 2021 21:53:11 -0700
-In-Reply-To: <YSB79Lt77EpxHTnl@mit.edu>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009bb2f105ca0a8f57@google.com>
-Subject: Re: [syzbot] KASAN: slab-out-of-bounds Write in ext4_write_inline_data_end
-From:   syzbot <syzbot+13146364637c7363a7de@syzkaller.appspotmail.com>
-To:     linux-ext4@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggeme752-chm.china.huawei.com (10.3.19.98)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+We find a checksum error and a inode corruption problem while doing
+stress test, this 4 patches address to fix them. The first patch is
+relate to the error simulation, and the second & third patch are
+prepare to do the fix. The last patch fix these two issue.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+ - Checksum error
 
-Reported-and-tested-by: syzbot+13146364637c7363a7de@syzkaller.appspotmail.com
+    EXT4-fs error (device sda): ext4_lookup:1784: inode #131074: comm cat: iget: checksum invalid
 
-Tested on:
+ - Inode corruption
 
-commit:         9e445093 ext4: fix race writing to an inline_data file..
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git
-kernel config:  https://syzkaller.appspot.com/x/.config?x=300aea483211c875
-dashboard link: https://syzkaller.appspot.com/bug?extid=13146364637c7363a7de
-compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
+    e2fsck 1.46.0 (29-Jan-2020)
+    Pass 1: Checking inodes, blocks, and sizes
+    Pass 2: Checking directory structure
+    Entry 'foo' in / (2) has deleted/unused inode 17.  Clear<y>? yes
+    Pass 3: Checking directory connectivity
+    Pass 4: Checking reference counts
+    Pass 5: Checking group summary information
+    Inode bitmap differences:  -17
+    Fix<y>? yes
+    Free inodes count wrong for group #0 (32750, counted=32751).
+    Fix<y>? yes
+    Free inodes count wrong (32750, counted=32751).
+    Fix<y>? yes
 
-Note: testing is done by a robot and is best-effort only.
+
+Changes since v2:
+ - Instead of using WARN_ON_ONCE to prevent ext4_do_update_inode()
+   return before filling the inode buffer, keep the error and postpone
+   the report after the updating in the third patch.
+ - Fix some language mistacks in the last patch.
+
+Changes since v1:
+ - Add a patch to prevent ext4_do_update_inode() return before filling
+   the inode buffer.
+ - Do not use BH_New flag to indicate the empty buffer, postpone the
+   zero and uptodate logic into ext4_do_update_inode() before filling
+   the inode buffer.
+
+Thanks,
+Yi.
+
+
+
+Zhang Yi (4):
+  ext4: move inode eio simulation behind io completeion
+  ext4: remove an unnecessary if statement in __ext4_get_inode_loc()
+  ext4: make the updating inode data procedure atomic
+  ext4: prevent getting empty inode buffer
+
+ fs/ext4/inode.c | 227 +++++++++++++++++++++++++++---------------------
+ 1 file changed, 126 insertions(+), 101 deletions(-)
+
+-- 
+2.31.1
+
