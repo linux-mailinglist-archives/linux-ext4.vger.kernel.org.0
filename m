@@ -2,77 +2,75 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F20CF3F369C
-	for <lists+linux-ext4@lfdr.de>; Sat, 21 Aug 2021 00:45:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 314773F3856
+	for <lists+linux-ext4@lfdr.de>; Sat, 21 Aug 2021 05:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233828AbhHTWpk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 20 Aug 2021 18:45:40 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:56356 "EHLO
+        id S232838AbhHUDpB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 20 Aug 2021 23:45:01 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:55370 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229451AbhHTWpj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 20 Aug 2021 18:45:39 -0400
+        with ESMTP id S229610AbhHUDpA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 20 Aug 2021 23:45:00 -0400
 Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 17KMiv1E013803
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 17L3hoN2017864
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 20 Aug 2021 18:44:57 -0400
+        Fri, 20 Aug 2021 23:43:51 -0400
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 0139115C3DBB; Fri, 20 Aug 2021 18:44:56 -0400 (EDT)
-Date:   Fri, 20 Aug 2021 18:44:56 -0400
+        id 6D62315C3DBB; Fri, 20 Aug 2021 23:43:50 -0400 (EDT)
+Date:   Fri, 20 Aug 2021 23:43:50 -0400
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 2/2] tune2fs: Fix conversion of quota files
-Message-ID: <YSAwaKONl7vptrX/@mit.edu>
-References: <20210820194656.27799-1-jack@suse.cz>
- <20210820194656.27799-3-jack@suse.cz>
+To:     syzbot <syzbot+13146364637c7363a7de@syzkaller.appspotmail.com>
+Cc:     a@unstable.cc, adilger.kernel@dilger.ca, arnd@arndb.de,
+        b.a.t.m.a.n@lists.open-mesh.org, christian@brauner.io,
+        davem@davemloft.net, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mareklindner@neomailbox.ch,
+        netdev@vger.kernel.org, sw@simonwunderlich.de,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] KASAN: slab-out-of-bounds Write in
+ ext4_write_inline_data_end
+Message-ID: <YSB2dsveNTr9G3Mq@mit.edu>
+References: <000000000000e5080305c9e51453@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210820194656.27799-3-jack@suse.cz>
+In-Reply-To: <000000000000e5080305c9e51453@google.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 09:46:56PM +0200, Jan Kara wrote:
+On Thu, Aug 19, 2021 at 01:10:18AM -0700, syzbot wrote:
+> Hello,
 > 
-> diff --git a/lib/support/mkquota.c b/lib/support/mkquota.c
-> index fbc3833aee98..34ab632fb81c 100644
-> --- a/lib/support/mkquota.c
-> +++ b/lib/support/mkquota.c
-> @@ -569,14 +569,14 @@ static int scan_dquots_callback(struct dquot *dquot, void *cb_data)
->   */
->  static errcode_t quota_read_all_dquots(struct quota_handle *qh,
->                                         quota_ctx_t qctx,
-> -				       int update_limits EXT2FS_ATTR((unused)))
-> +				       int update_limits)
->  {
->  	struct scan_dquots_data scan_data;
->  
->  	scan_data.quota_dict = qctx->quota_dict[qh->qh_type];
->  	scan_data.check_consistency = 0;
-> -	scan_data.update_limits = 0;
-> -	scan_data.update_usage = 1;
-> +	scan_data.update_limits = update_limits;
-> +	scan_data.update_usage = 0;
->  
->  	return qh->qh_ops->scan_dquots(qh, scan_dquots_callback, &scan_data);
->  }
+> syzbot found the following issue on:
+> 
+> HEAD commit:    614cb2751d31 Merge tag 'trace-v5.14-rc6' of git://git.kern..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=130112c5300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=f61012d0b1cd846f
+> dashboard link: https://syzkaller.appspot.com/bug?extid=13146364637c7363a7de
+> compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=104d7cc5300000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1333ce0e300000
+> 
+> The issue was bisected to:
+> 
+> commit a154d5d83d21af6b9ee32adc5dbcea5ac1fb534c
+> Author: Arnd Bergmann <arnd@arndb.de>
+> Date:   Mon Mar 4 20:38:03 2019 +0000
+> 
+>     net: ignore sysctl_devconf_inherit_init_net without SYSCTL
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13f970b6300000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=100570b6300000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=17f970b6300000
 
-This change, while it is correct for tune2fs, is breaking e2fsck's
-f_orphquot test.  The root cause is that e2fsck_read_all_quotas() in
-e2fsck/super.c is calling quota_update_limits(), where it had wanted
-to be reading the quota usage data, not the limits.
+In case it wasn't obvious, this is a bogus bisection.  It's a bug
+ext4's inline_data support where there is a race between writing to an
+inline_data file against setting extended attributes on that same
+inline_data file.
 
-I think what we need to do is to take quota_read_all_dquots(), which
-is only used by quota_update_limits(), and then fodl it into
-quota_update_limits().  And then add a flags parameter to indicate
-whether we want to be reading the limits or the usage, and then rename
-quota_update_limits() to quota_read_all_dquots().
+Fix is coming up....
 
-Does that make sense to you?  (One of the reasons why the quota
-functions are all in libsupport is precisely because I knew these
-functions still needed more polishing.)
-
-						- Ted
+					- Ted
