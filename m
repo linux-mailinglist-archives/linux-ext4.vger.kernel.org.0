@@ -2,154 +2,140 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 134A43F3B5B
-	for <lists+linux-ext4@lfdr.de>; Sat, 21 Aug 2021 18:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BE553F3E04
+	for <lists+linux-ext4@lfdr.de>; Sun, 22 Aug 2021 07:17:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230186AbhHUQJx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 21 Aug 2021 12:09:53 -0400
-Received: from mga12.intel.com ([192.55.52.136]:48002 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229529AbhHUQJx (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Sat, 21 Aug 2021 12:09:53 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10083"; a="196485798"
-X-IronPort-AV: E=Sophos;i="5.84,340,1620716400"; 
-   d="scan'208";a="196485798"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2021 09:09:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,340,1620716400"; 
-   d="scan'208";a="506783442"
-Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 21 Aug 2021 09:09:11 -0700
-Received: from kbuild by d053b881505b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mHTYU-000Vxs-OL; Sat, 21 Aug 2021 16:09:10 +0000
-Date:   Sun, 22 Aug 2021 00:08:30 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-Subject: [ext4:dev] BUILD SUCCESS 9e445093e523f3277081314c864f708fd4bd34aa
-Message-ID: <612124fe.iMren4mlRaofe3uT%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S230046AbhHVFST (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 22 Aug 2021 01:18:19 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:55233 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229939AbhHVFST (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Sun, 22 Aug 2021 01:18:19 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R411e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Uksy5lp_1629609454;
+Received: from B-P7TQMD6M-0146(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0Uksy5lp_1629609454)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sun, 22 Aug 2021 13:17:36 +0800
+Date:   Sun, 22 Aug 2021 13:17:34 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     Eric Whitney <enwlinux@gmail.com>
+Cc:     Jeffle Xu <jefflexu@linux.alibaba.com>, tytso@mit.edu,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        joseph.qi@linux.alibaba.com
+Subject: Re: [PATCH] ext4: fix reserved space counter leakage
+Message-ID: <YSHd7q7tdzUTSCfV@B-P7TQMD6M-0146>
+References: <20210819091351.19297-1-jefflexu@linux.alibaba.com>
+ <20210820164556.GA30851@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210820164556.GA30851@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
-branch HEAD: 9e445093e523f3277081314c864f708fd4bd34aa  ext4: fix race writing to an inline_data file while its xattrs are changing
+On Fri, Aug 20, 2021 at 12:45:56PM -0400, Eric Whitney wrote:
+> * Jeffle Xu <jefflexu@linux.alibaba.com>:
+> > When ext4_es_insert_delayed_block() returns error, e.g., ENOMEM,
+> > previously reserved space is not released as the error handling,
+> > in which case @s_dirtyclusters_counter is left over. Since this delayed
+> > extent failes to be inserted into extent status tree, when inode is
+> > written back, the extra @s_dirtyclusters_counter won't be subtracted and
+> > remains there forever.
+> > 
+> > This can leads to /sys/fs/ext4/<dev>/delayed_allocation_blocks remains
+> > non-zero even when syncfs is executed on the filesystem.
+> > 
+> 
+> Hi:
+> 
+> I think the fix below looks fine.  However, this comment doesn't look right
+> to me.  Are you really seeing delayed_allocation_blocks values that remain
+> incorrectly elevated across last closes (or across file system unmounts and
+> remounts)?  s_dirtyclusters_counter isn't written out to stable storage -
+> it's an in-memory only variable that's created when a file is first opened
+> and destroyed on last close.
 
-elapsed time: 720m
+hmmm.... Let me explain a bit about this. It can be reproduced easily by fault
+injection with the code modified below:
 
-configs tested: 96
-configs skipped: 3
+diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
+index 9a3a8996aacf..29dc0da5960c 100644
+--- a/fs/ext4/extents_status.c
++++ b/fs/ext4/extents_status.c
+@@ -794,6 +794,9 @@ static int __es_insert_extent(struct inode *inode, struct extent_status *newes)
+                }
+        }
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
++       if (!(ktime_get_ns() % 3)) {
++               return -ENOMEM;
++       }
+        es = ext4_es_alloc_extent(inode, newes->es_lblk, newes->es_len,
+                                  newes->es_pblk);
+        if (!es)
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20210821
-arm                        clps711x_defconfig
-mips                         tb0219_defconfig
-powerpc                 mpc8540_ads_defconfig
-arm                         palmz72_defconfig
-sh                             shx3_defconfig
-powerpc                 mpc85xx_cds_defconfig
-sh                          landisk_defconfig
-sh                         ap325rxa_defconfig
-arm                            pleb_defconfig
-arm                            mmp2_defconfig
-arm                        trizeps4_defconfig
-powerpc                     mpc5200_defconfig
-sh                           se7750_defconfig
-sh                        edosk7760_defconfig
-arm                             mxs_defconfig
-arm                              alldefconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a014-20210821
-x86_64               randconfig-a016-20210821
-x86_64               randconfig-a015-20210821
-x86_64               randconfig-a013-20210821
-x86_64               randconfig-a012-20210821
-x86_64               randconfig-a011-20210821
-i386                 randconfig-a011-20210821
-i386                 randconfig-a016-20210821
-i386                 randconfig-a012-20210821
-i386                 randconfig-a014-20210821
-i386                 randconfig-a013-20210821
-i386                 randconfig-a015-20210821
-arc                  randconfig-r043-20210821
-riscv                randconfig-r042-20210821
-s390                 randconfig-r044-20210821
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+and then run a loop
+while true; do dd if=/dev/zero of=aaa bs=8192 count=10000; sync; rm -rf aaa; done
 
-clang tested configs:
-s390                 randconfig-c005-20210821
-i386                 randconfig-c001-20210821
-arm                  randconfig-c002-20210821
-riscv                randconfig-c006-20210821
-powerpc              randconfig-c003-20210821
-x86_64               randconfig-c007-20210821
-mips                 randconfig-c004-20210821
-x86_64               randconfig-a005-20210821
-x86_64               randconfig-a001-20210821
-x86_64               randconfig-a006-20210821
-x86_64               randconfig-a003-20210821
-x86_64               randconfig-a004-20210821
-x86_64               randconfig-a002-20210821
+After "Cannot allocate memory reported" is shown, s_dirtyclusters_counter
+was already leaked. It can cause df and free space counting incorrect in
+this mount.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+If my understanging is correct, in priciple, we should also check with
+"WARN_ON(ei->i_reserved_data_blocks)" in the inode evict path since it
+should be considered as 0.
+
+Thanks,
+Gao Xiang
+
+> 
+> Eric
+> 
+> > Fixes: 51865fda28e5 ("ext4: let ext4 maintain extent status tree")
+> > Cc: <stable@vger.kernel.org>
+> > Reported-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+> > Signed-off-by: Jeffle Xu <jefflexu@linux.alibaba.com>
+> > ---
+> >  fs/ext4/inode.c | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> > 
+> > diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> > index 82087657860b..7f15da370281 100644
+> > --- a/fs/ext4/inode.c
+> > +++ b/fs/ext4/inode.c
+> > @@ -1650,6 +1650,7 @@ static int ext4_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk)
+> >  	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
+> >  	int ret;
+> >  	bool allocated = false;
+> > +	bool reserved = false;
+> >  
+> >  	/*
+> >  	 * If the cluster containing lblk is shared with a delayed,
+> > @@ -1666,6 +1667,7 @@ static int ext4_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk)
+> >  		ret = ext4_da_reserve_space(inode);
+> >  		if (ret != 0)   /* ENOSPC */
+> >  			goto errout;
+> > +		reserved = true;
+> >  	} else {   /* bigalloc */
+> >  		if (!ext4_es_scan_clu(inode, &ext4_es_is_delonly, lblk)) {
+> >  			if (!ext4_es_scan_clu(inode,
+> > @@ -1678,6 +1680,7 @@ static int ext4_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk)
+> >  					ret = ext4_da_reserve_space(inode);
+> >  					if (ret != 0)   /* ENOSPC */
+> >  						goto errout;
+> > +					reserved = true;
+> >  				} else {
+> >  					allocated = true;
+> >  				}
+> > @@ -1688,6 +1691,8 @@ static int ext4_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk)
+> >  	}
+> >  
+> >  	ret = ext4_es_insert_delayed_block(inode, lblk, allocated);
+> > +	if (ret && reserved)
+> > +		ext4_da_release_space(inode, 1);
+> >  
+> >  errout:
+> >  	return ret;
+> > -- 
+> > 2.27.0
+> > 
