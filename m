@@ -2,128 +2,120 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CED073F44B6
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Aug 2021 07:46:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCC7F3F44CE
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 Aug 2021 08:14:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234054AbhHWFrQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 23 Aug 2021 01:47:16 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:42507 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231267AbhHWFrP (ORCPT
+        id S233584AbhHWGOn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 23 Aug 2021 02:14:43 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:53683 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231267AbhHWGOl (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 23 Aug 2021 01:47:15 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UlD8Sr1_1629697591;
-Received: from admindeMacBook-Pro-2.local(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0UlD8Sr1_1629697591)
+        Mon, 23 Aug 2021 02:14:41 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R451e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UlCK-Sz_1629699238;
+Received: from localhost(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0UlCK-Sz_1629699238)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 23 Aug 2021 13:46:31 +0800
-Subject: Re: [PATCH] ext4: fix reserved space counter leakage
-To:     Eric Whitney <enwlinux@gmail.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
-References: <20210819091351.19297-1-jefflexu@linux.alibaba.com>
- <20210820164556.GA30851@localhost.localdomain>
- <c7a95109-e468-cd25-1042-20e0779a87d4@linux.alibaba.com>
- <e33bc4a3-4378-364e-c834-8bb479872fa4@linux.alibaba.com>
- <20210822215214.GA12669@localhost.localdomain>
-From:   JeffleXu <jefflexu@linux.alibaba.com>
-Message-ID: <24adeb24-feaa-c32e-a4d2-143ba1f7f9c1@linux.alibaba.com>
-Date:   Mon, 23 Aug 2021 13:46:31 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+          Mon, 23 Aug 2021 14:13:58 +0800
+From:   Jeffle Xu <jefflexu@linux.alibaba.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org, joseph.qi@linux.alibaba.com,
+        enwlinux@gmail.com, hsiangkao@linux.alibaba.com
+Subject: [PATCH v2] ext4: fix reserved space counter leakage
+Date:   Mon, 23 Aug 2021 14:13:58 +0800
+Message-Id: <20210823061358.84473-1-jefflexu@linux.alibaba.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20210822215214.GA12669@localhost.localdomain>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+When ext4_insert_delayed block receives and recovers from an error from
+ext4_es_insert_delayed_block(), e.g., ENOMEM, it does not release the
+space it has reserved for that block insertion as it should. One effect
+of this bug is that s_dirtyclusters_counter is not decremented and
+remains incorrectly elevated until the file system has been unmounted.
+This can result in premature ENOSPC returns and apparent loss of free
+space.
 
+Another effect of this bug is that
+/sys/fs/ext4/<dev>/delayed_allocation_blocks can remain non-zero even
+after syncfs has been executed on the filesystem.
 
-On 8/23/21 5:52 AM, Eric Whitney wrote:
-> * Joseph Qi <joseph.qi@linux.alibaba.com>:
->>
->>
->> On 8/22/21 9:06 PM, Joseph Qi wrote:
->>>
->>>
->>> On 8/21/21 12:45 AM, Eric Whitney wrote:
->>>> * Jeffle Xu <jefflexu@linux.alibaba.com>:
->>>>> When ext4_es_insert_delayed_block() returns error, e.g., ENOMEM,
->>>>> previously reserved space is not released as the error handling,
->>>>> in which case @s_dirtyclusters_counter is left over. Since this delayed
->>>>> extent failes to be inserted into extent status tree, when inode is
->>>>> written back, the extra @s_dirtyclusters_counter won't be subtracted and
->>>>> remains there forever.
->>>>>
->>>>> This can leads to /sys/fs/ext4/<dev>/delayed_allocation_blocks remains
->>>>> non-zero even when syncfs is executed on the filesystem.
->>>>>
->>>>
->>>> Hi:
->>>>
->>>> I think the fix below looks fine.  However, this comment doesn't look right
->>>> to me.  Are you really seeing delayed_allocation_blocks values that remain
->>>> incorrectly elevated across last closes (or across file system unmounts and
->>>> remounts)?  s_dirtyclusters_counter isn't written out to stable storage -
->>>> it's an in-memory only variable that's created when a file is first opened
->>>> and destroyed on last close.
->>>>
->>>
->>> Actually we've encountered a real case in our production environment,
->>> which has about 20G space lost (df - du = ~20G).
->>> After some investigation, we've confirmed that it cause by leaked
->>> s_dirtyclusters_counter (~5M), and even we do manually sync, it remains.
->>> Since there is no error messages, we've checked all logic around
->>> s_dirtyclusters_counter and found this. Also we can manually inject
->>> error and reproduce the leaked s_dirtyclusters_counter.
->>>
-> 
-> Sure - as I noted, the fix looks good - I agree that you could see inaccurate
-> s_dirtyclusters_counter (and i_reserved_data_blocks) values.  This is a good
-> catch and a good fix.  It's the comment I find misleading / inaccurate, and
-> I'd like to see that improved for the sake of developers reading commit
-> histories in the future.
-> 
-> Also, Gao Xiang's idea of checking i_reserved_data_blocks in the inode evict
-> path sounds good to me - I'd considered doing that in the past but never
-> actually did it.
+Besides, add check for s_dirtyclusters_counter when inode is going to be
+evicted and freed. s_dirtyclusters_counter can still keep non-zero until
+inode is written back in .evict_inode(), and thus the check is delayed
+to .destroy_inode().
 
-Thanks, it will be added in v2.
+Fixes: 51865fda28e5 ("ext4: let ext4 maintain extent status tree")
+Cc: <stable@vger.kernel.org>
+Suggested-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+Signed-off-by: Jeffle Xu <jefflexu@linux.alibaba.com>
+---
+changes since v1:
+- improve commit log suggested by Eric Whitney
+- update "Suggested-by" title for Gao Xian, who actually found this bug
+  code
+- add check for s_dirtyclusters_counter in .destroy_inode()
+---
+ fs/ext4/inode.c | 5 +++++
+ fs/ext4/super.c | 6 ++++++
+ 2 files changed, 11 insertions(+)
 
-> 
->>
->> BTW, it's a runtime lost, but not about on-disk.
->> If umount and then mount it again, it becomes normal. But
->> application also should be restarted...
-> 
-> And this is where the comment could use a little help.  "when inode is
-> written back, the extra @s_dirtyclusters_counter won't be subtracted and
-> remains there forever" suggests to me that s_dirtyclusters_counter is
-> being persisted on stable storage.  But as you note, simply umounting and
-> remounting the filesystem clears up the problem.  (And in my rush to get
-> my feedback out earlier I incorrectly stated that s_dirtyclusters_counter
-> would get created and destroyed on first open and last close - that's
-> i_reserved_data_blocks, of course.)
-> 
-> So, in order to speed things along, please allow me to suggest some edits
-> for the commit comment:
-> 
-> When ext4_insert_delayed block receives and recovers from an error from
-> ext4_es_insert_delayed_block(), e.g., ENOMEM, it does not release the
-> space it has reserved for that block insertion as it should.  One effect
-> of this bug is that s_dirtyclusters_counter is not decremented and remains
-> incorrectly elevated until the file system has been unmounted.  This can
-> result in premature ENOSPC returns and apparent loss of free space.
-> 
-> Another effect of this bug is that /sys/fs/ext4/<dev>/delayed_allocation_blocks
-> can remain non-zero even after syncfs has been executed on the filesystem.
-> 
-> Does that sound right?
-
-Thanks, I will update the commit log in v2.
-
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index d8de607849df..73daf9443e5e 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -1640,6 +1640,7 @@ static int ext4_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk)
+ 	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
+ 	int ret;
+ 	bool allocated = false;
++	bool reserved = false;
+ 
+ 	/*
+ 	 * If the cluster containing lblk is shared with a delayed,
+@@ -1656,6 +1657,7 @@ static int ext4_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk)
+ 		ret = ext4_da_reserve_space(inode);
+ 		if (ret != 0)   /* ENOSPC */
+ 			goto errout;
++		reserved = true;
+ 	} else {   /* bigalloc */
+ 		if (!ext4_es_scan_clu(inode, &ext4_es_is_delonly, lblk)) {
+ 			if (!ext4_es_scan_clu(inode,
+@@ -1668,6 +1670,7 @@ static int ext4_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk)
+ 					ret = ext4_da_reserve_space(inode);
+ 					if (ret != 0)   /* ENOSPC */
+ 						goto errout;
++					reserved = true;
+ 				} else {
+ 					allocated = true;
+ 				}
+@@ -1678,6 +1681,8 @@ static int ext4_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk)
+ 	}
+ 
+ 	ret = ext4_es_insert_delayed_block(inode, lblk, allocated);
++	if (ret && reserved)
++		ext4_da_release_space(inode, 1);
+ 
+ errout:
+ 	return ret;
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index dfa09a277b56..61bf52b58fca 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -1351,6 +1351,12 @@ static void ext4_destroy_inode(struct inode *inode)
+ 				true);
+ 		dump_stack();
+ 	}
++
++	if (EXT4_I(inode)->i_reserved_data_blocks)
++		ext4_msg(inode->i_sb, KERN_ERR,
++			 "Inode %lu (%p): i_reserved_data_blocks (%u) not cleared!",
++			 inode->i_ino, EXT4_I(inode),
++			 EXT4_I(inode)->i_reserved_data_blocks);
+ }
+ 
+ static void init_once(void *foo)
 -- 
-Thanks,
-Jeffle
+2.27.0
+
