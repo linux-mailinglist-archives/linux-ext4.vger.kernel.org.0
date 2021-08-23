@@ -2,65 +2,227 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EAB33F4DA6
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Aug 2021 17:41:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A79323F4DA9
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 Aug 2021 17:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231425AbhHWPmg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 23 Aug 2021 11:42:36 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:37254 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231183AbhHWPmf (ORCPT
+        id S231499AbhHWPmh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 23 Aug 2021 11:42:37 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:57876 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231203AbhHWPmf (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Mon, 23 Aug 2021 11:42:35 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 144EB2001D;
+        by smtp-out1.suse.de (Postfix) with ESMTP id 13FE922003;
         Mon, 23 Aug 2021 15:41:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
         t=1629733312; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=Lo5ACFFy6jjOqStLjngzVVVJfa4fnQM2VExUEs/Wo1c=;
-        b=rEPSSVIDh/giDfgl0G620BSSt6Mf45xgVUioeJgFPcNG1Dyqll4t7unxTkaWye9py1eBWf
-        qi2gH0SzvzrGjaFjnCNI8jzEjQ2iLroAZgpP+DLadE31xh2f1H8NxikcC1J33xoGqOLnuM
-        SKB9pS2Ujl2gcgbIGZXEXrUF+nReUBo=
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DcJdzWWUOpfSKODHYIiwRU50kRFxCE7iXLFcAqRW8ec=;
+        b=PdxmVLjvwqWaj3B79vzSoa8Pc94z+fWuLzAat8QXZYb5XSpYJdVtvHtXjEjeMYMtXNwMjO
+        wnfmp2DyrXQFCk9MAtNWna6FlQd0m1lbA6a4AhyPXetx3yj56XokazCRZweFvZYG9b8dnk
+        hfprfDyBHUZGVfUkEXunFFvujRFxhdg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1629733312;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=Lo5ACFFy6jjOqStLjngzVVVJfa4fnQM2VExUEs/Wo1c=;
-        b=UuPuGhwVxk4jOlfmUSm0qFQV8tm4c5dN9aXncHeFXRNP8GqkBEkFkLNcBlYJ4JiFwujbCU
-        WEJRJZ2JJ9aTfFBg==
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DcJdzWWUOpfSKODHYIiwRU50kRFxCE7iXLFcAqRW8ec=;
+        b=957cZCrbFB6eA1l8cJw9RycL/7NDHfxBME0Mcwsan6ACXOmsBL6mn3ULyY+ISkL2kkA9rh
+        9J7K7yc2GTP/pmDg==
 Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id 05DA9A3BB9;
+        by relay2.suse.de (Postfix) with ESMTP id 08603A3BBA;
         Mon, 23 Aug 2021 15:41:52 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id BEC9C1F2CC8; Mon, 23 Aug 2021 17:41:51 +0200 (CEST)
+        id C7E441F2CCB; Mon, 23 Aug 2021 17:41:51 +0200 (CEST)
 From:   Jan Kara <jack@suse.cz>
 To:     Ted Tso <tytso@mit.edu>
 Cc:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>
-Subject: [PATCH 0/8 v2] Quota fixes for e2fsprogs
-Date:   Mon, 23 Aug 2021 17:41:20 +0200
-Message-Id: <20210823154128.16615-1-jack@suse.cz>
+Subject: [PATCH 1/8] quota: Add support to version 0 quota format
+Date:   Mon, 23 Aug 2021 17:41:21 +0200
+Message-Id: <20210823154128.16615-2-jack@suse.cz>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210823154128.16615-1-jack@suse.cz>
+References: <20210823154128.16615-1-jack@suse.cz>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=664; h=from:subject; bh=DxsO2R+7RZDCl4+T/GytLSxUdpEniRiW7NC4yI79HZc=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBhI8GaXyHt5Q2QHJkDyBj33W743xJHIYiUr1CjV1HD LBYMXRyJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCYSPBmgAKCRCcnaoHP2RA2cB4CA C9WM/KQhuz1cxYrDMhWImJSn+9nUF/sQfdT9auR7QCoD49bOBa+rFkt/dSRnPO99FsxMnojSzZH122 oXbkOIS83QFEzzLht3pMnJAzYWoC39c1qGZYmDdaK+xrIAOrMKfjXE34ZBGe/nV4vvdbjcNLkPJ4fa BPzz+kixkxL5Lykj4n0YxZSr1IcoTjBQH+JKDgcUA/15+Pa0oCEfHUS8TqPXhapF0AWh0d8nQrELee fmNheENja9A9j1m2GxTaNbKpr5FSBN2d+INtM6o9xUifhf1iTGwbpFo5KLKEJg1IK0Kg5PCXAUoqtK FX1c05Efg4jZFNpgjWIBJR6sJpSbgO
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6268; h=from:subject; bh=UhE03jWwtF7/2Unh5tfHgBCzzdLaSNZ7G9C22vuq4H4=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBhI8GhrizE8ehds+qrTxuX1OCIKL+zMflZgbZ3qOb5 4X5jnt+JATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCYSPBoQAKCRCcnaoHP2RA2dHMCA CzR/VySs+XXZrCsUYOO3oUzFueRoSJnOAuAUONScP8h7x8fH7wclET0eU/ZGDTMFPrhSIAWjqqwfI8 zeFGmbi4GR5BRbsxWNCJnmjwtbxHfOiXsH8KLqT8DyLFl/Svw4yHi9URyIKk4rij2q9AqmA1DTc5M6 iMHejidF5w4SbKSmvVYpJi1Ny/TyWXUU9ATzZv01cwjBnMsTw+xq3MD55K9VVZJ9tIF3YZd0PahiT0 h/zKA7uQX6W3PKWVuTHkSzjUnsOhKMCX9MxMX6uGXzHBiUsqdCSijVQ6qwBmbwbbz5OZRBRdTfm+0X 6fJidGzi6Zcpp/jOs8RIOSu55qCTAb
 X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+Version 0 quota format differs from version 1 by having only 32-bit
+counters for inodes and block limits. For many installations this is not
+limiting and thus the format is widely used. Also quota tools still
+create quota files with this format by default. Add support for this
+quota format to e2fsprogs so that we can seamlessly convert quota files
+in this format into our internal quota files.
 
-here is next revision of my quota fixes for e2fsprogs. When addressing the
-e2fsck regression Ted has pointed out, I've noticed another serious bug in
-e2fsck support for quotas where it just nukes existing quota limits when
-replaying orphan list. A fix is now included in this series together with
-expanded test to catch the problem.
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ lib/support/quotaio_v2.c | 85 +++++++++++++++++++++++++++++++++++++---
+ lib/support/quotaio_v2.h | 17 +++++++-
+ 2 files changed, 96 insertions(+), 6 deletions(-)
 
-Changes since v1:
-* Rename the functions so that names match functionality
-* Fix e2fsck regression when processing orphan list
-* Fix e2fsck bug to preserve quota limits over orphan processing
-* Expand test to verify quota limits are properly preserved
-* Fix quota output headings in debugfs
+diff --git a/lib/support/quotaio_v2.c b/lib/support/quotaio_v2.c
+index 23717f03f428..a49aa6ac8c2f 100644
+--- a/lib/support/quotaio_v2.c
++++ b/lib/support/quotaio_v2.c
+@@ -41,6 +41,68 @@ struct quotafile_ops quotafile_ops_2 = {
+ 	.report		= v2_report,
+ };
+ 
++/*
++ * Copy dquot from disk to memory
++ */
++static void v2r0_disk2memdqblk(struct dquot *dquot, void *dp)
++{
++	struct util_dqblk *m = &dquot->dq_dqb;
++	struct v2r0_disk_dqblk *d = dp, empty;
++
++	dquot->dq_id = ext2fs_le32_to_cpu(d->dqb_id);
++	m->dqb_ihardlimit = ext2fs_le32_to_cpu(d->dqb_ihardlimit);
++	m->dqb_isoftlimit = ext2fs_le32_to_cpu(d->dqb_isoftlimit);
++	m->dqb_bhardlimit = ext2fs_le32_to_cpu(d->dqb_bhardlimit);
++	m->dqb_bsoftlimit = ext2fs_le32_to_cpu(d->dqb_bsoftlimit);
++	m->dqb_curinodes = ext2fs_le32_to_cpu(d->dqb_curinodes);
++	m->dqb_curspace = ext2fs_le64_to_cpu(d->dqb_curspace);
++	m->dqb_itime = ext2fs_le64_to_cpu(d->dqb_itime);
++	m->dqb_btime = ext2fs_le64_to_cpu(d->dqb_btime);
++
++	memset(&empty, 0, sizeof(struct v2r0_disk_dqblk));
++	empty.dqb_itime = ext2fs_cpu_to_le64(1);
++	if (!memcmp(&empty, dp, sizeof(struct v2r0_disk_dqblk)))
++		m->dqb_itime = 0;
++}
++
++/*
++ * Copy dquot from memory to disk
++ */
++static void v2r0_mem2diskdqblk(void *dp, struct dquot *dquot)
++{
++	struct util_dqblk *m = &dquot->dq_dqb;
++	struct v2r0_disk_dqblk *d = dp;
++
++	d->dqb_ihardlimit = ext2fs_cpu_to_le32(m->dqb_ihardlimit);
++	d->dqb_isoftlimit = ext2fs_cpu_to_le32(m->dqb_isoftlimit);
++	d->dqb_bhardlimit = ext2fs_cpu_to_le32(m->dqb_bhardlimit);
++	d->dqb_bsoftlimit = ext2fs_cpu_to_le32(m->dqb_bsoftlimit);
++	d->dqb_curinodes = ext2fs_cpu_to_le32(m->dqb_curinodes);
++	d->dqb_curspace = ext2fs_cpu_to_le64(m->dqb_curspace);
++	d->dqb_itime = ext2fs_cpu_to_le64(m->dqb_itime);
++	d->dqb_btime = ext2fs_cpu_to_le64(m->dqb_btime);
++	d->dqb_id = ext2fs_cpu_to_le32(dquot->dq_id);
++	if (qtree_entry_unused(&dquot->dq_h->qh_info.u.v2_mdqi.dqi_qtree, dp))
++		d->dqb_itime = ext2fs_cpu_to_le64(1);
++}
++
++static int v2r0_is_id(void *dp, struct dquot *dquot)
++{
++	struct v2r0_disk_dqblk *d = dp;
++	struct qtree_mem_dqinfo *info =
++			&dquot->dq_h->qh_info.u.v2_mdqi.dqi_qtree;
++
++	if (qtree_entry_unused(info, dp))
++		return 0;
++	return ext2fs_le32_to_cpu(d->dqb_id) == dquot->dq_id;
++}
++
++static struct qtree_fmt_operations v2r0_fmt_ops = {
++	.mem2disk_dqblk = v2r0_mem2diskdqblk,
++	.disk2mem_dqblk = v2r0_disk2memdqblk,
++	.is_id = v2r0_is_id,
++};
++
+ /*
+  * Copy dquot from disk to memory
+  */
+@@ -164,7 +226,8 @@ static int v2_check_file(struct quota_handle *h, int type, int fmt)
+ 		log_err("Your quota file is stored in wrong endianity");
+ 		return 0;
+ 	}
+-	if (V2_VERSION != ext2fs_le32_to_cpu(dqh.dqh_version))
++	if (V2_VERSION_R0 != ext2fs_le32_to_cpu(dqh.dqh_version) &&
++	    V2_VERSION_R1 != ext2fs_le32_to_cpu(dqh.dqh_version))
+ 		return 0;
+ 	return 1;
+ }
+@@ -174,13 +237,25 @@ static int v2_check_file(struct quota_handle *h, int type, int fmt)
+  */
+ static int v2_init_io(struct quota_handle *h)
+ {
++	struct v2_disk_dqheader dqh;
+ 	struct v2_disk_dqinfo ddqinfo;
+ 	struct v2_mem_dqinfo *info;
+ 	__u64 filesize;
++	int version;
+ 
+-	h->qh_info.u.v2_mdqi.dqi_qtree.dqi_entry_size =
+-		sizeof(struct v2r1_disk_dqblk);
+-	h->qh_info.u.v2_mdqi.dqi_qtree.dqi_ops = &v2r1_fmt_ops;
++	if (!v2_read_header(h, &dqh))
++		return -1;
++	version = ext2fs_le32_to_cpu(dqh.dqh_version);
++
++	if (version == V2_VERSION_R0) {
++		h->qh_info.u.v2_mdqi.dqi_qtree.dqi_entry_size =
++			sizeof(struct v2r0_disk_dqblk);
++		h->qh_info.u.v2_mdqi.dqi_qtree.dqi_ops = &v2r0_fmt_ops;
++	} else {
++		h->qh_info.u.v2_mdqi.dqi_qtree.dqi_entry_size =
++			sizeof(struct v2r1_disk_dqblk);
++		h->qh_info.u.v2_mdqi.dqi_qtree.dqi_ops = &v2r1_fmt_ops;
++	}
+ 
+ 	/* Read information about quotafile */
+ 	if (h->e2fs_read(&h->qh_qf, V2_DQINFOOFF, &ddqinfo,
+@@ -231,7 +306,7 @@ static int v2_new_io(struct quota_handle *h)
+ 
+ 	/* Write basic quota header */
+ 	ddqheader.dqh_magic = ext2fs_cpu_to_le32(file_magics[h->qh_type]);
+-	ddqheader.dqh_version = ext2fs_cpu_to_le32(V2_VERSION);
++	ddqheader.dqh_version = ext2fs_cpu_to_le32(V2_VERSION_R1);
+ 	if (h->e2fs_write(&h->qh_qf, 0, &ddqheader, sizeof(ddqheader)) !=
+ 			sizeof(ddqheader))
+ 		return -1;
+diff --git a/lib/support/quotaio_v2.h b/lib/support/quotaio_v2.h
+index de2db2785cb0..35054cafaa23 100644
+--- a/lib/support/quotaio_v2.h
++++ b/lib/support/quotaio_v2.h
+@@ -13,7 +13,8 @@
+ /* Offset of info header in file */
+ #define V2_DQINFOOFF		sizeof(struct v2_disk_dqheader)
+ /* Supported version of quota-tree format */
+-#define V2_VERSION 1
++#define V2_VERSION_R1 1
++#define V2_VERSION_R0 0
+ 
+ struct v2_disk_dqheader {
+ 	__le32 dqh_magic;	/* Magic number identifying file */
+@@ -36,6 +37,20 @@ struct v2_disk_dqinfo {
+ 					 * free entry */
+ } __attribute__ ((packed));
+ 
++struct v2r0_disk_dqblk {
++	__le32 dqb_id;	/* id this quota applies to */
++	__le32 dqb_ihardlimit;	/* absolute limit on allocated inodes */
++	__le32 dqb_isoftlimit;	/* preferred inode limit */
++	__le32 dqb_curinodes;	/* current # allocated inodes */
++	__le32 dqb_bhardlimit;	/* absolute limit on disk space
++					 * (in QUOTABLOCK_SIZE) */
++	__le32 dqb_bsoftlimit;	/* preferred limit on disk space
++					 * (in QUOTABLOCK_SIZE) */
++	__le64 dqb_curspace;	/* current space occupied (in bytes) */
++	__le64 dqb_btime;	/* time limit for excessive disk use */
++	__le64 dqb_itime;	/* time limit for excessive inode use */
++} __attribute__ ((packed));
++
+ struct v2r1_disk_dqblk {
+ 	__le32 dqb_id;	/* id this quota applies to */
+ 	__le32 dqb_pad;
+-- 
+2.26.2
 
-								Honza
