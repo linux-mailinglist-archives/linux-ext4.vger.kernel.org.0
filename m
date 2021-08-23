@@ -2,55 +2,55 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D38D83F5279
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Aug 2021 22:56:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 826E43F5282
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 Aug 2021 22:58:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232683AbhHWU5P (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 23 Aug 2021 16:57:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35242 "EHLO
+        id S232713AbhHWU6o (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 23 Aug 2021 16:58:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232460AbhHWU5O (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 23 Aug 2021 16:57:14 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26915C061757
-        for <linux-ext4@vger.kernel.org>; Mon, 23 Aug 2021 13:56:31 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id c4so10900730plh.7
-        for <linux-ext4@vger.kernel.org>; Mon, 23 Aug 2021 13:56:31 -0700 (PDT)
+        with ESMTP id S232594AbhHWU6m (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 23 Aug 2021 16:58:42 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC669C061575
+        for <linux-ext4@vger.kernel.org>; Mon, 23 Aug 2021 13:57:59 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id y23so17766636pgi.7
+        for <linux-ext4@vger.kernel.org>; Mon, 23 Aug 2021 13:57:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=intel-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Vc/aN0oRmNAXm6mXAGLkDsuBBboDWXtU8orOhuBIg2Q=;
-        b=B1PN8/oQCmXbi6l3QVCMPVcI3O4p3WLJA2eJeCS8TyZ/9O3zP1YyDhITU4ZcQUMu9A
-         8Jv3FvTsSNw0wedo++tDncepWpg5fNlx5yOWydCxJxO2LvZgmafOowgtsiW33KkmxXri
-         JicnY3m49d7Mh7sxoVHfKYR9tR4vxLm0cTOPiz13j1eLGWJpH4EqBXIsByJu+wugislF
-         s6cQkVjauCeFLAIH7yrSgJ+rNWkZxDUHqX64XCMW3WAknCaEAVdKpKS94amQp5lRvzVE
-         JLGKD1TjCujv8RstgFNxXr4d9/bplk1r3u+5Pw+HrYG4JEKzIAam/KjQAVW3vquIOGjY
-         zzmA==
+        bh=viPh+0UJyTwjrfYxnKuRCjFXOrg8d7O9dPBV2w1jhQo=;
+        b=cCYTzhYCc+5UIWdSxQdJiIdjTBmUrpYexZ+GhELekTQzgUIgY8Dlfd7yL6Ff1yWKSY
+         L+naw0dPpc2gr2+htpd2ZMVtVL6fG9Tag9Q1wCFypTa5ZGyxwB0wERVJtqEt63CM5I1I
+         B2/BGEenOHr/Rq5xjs8wJco0+TEQyhdAs+Gfmq4gMeNTsBZNEsG2MXlT1mkdZRRAduAC
+         q77L00UESyhD7X1PyDfxpaBGhcgkscRLg4DX6W3oRB93x6q+4EXuIszs6+T8iEBSquvY
+         3SHmYNQGLqoiA3Afhrvk87/PYGSse1LS7/EARSP3v81J0/t2fvKNUnujNzgNxq8HOJZz
+         S1PQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Vc/aN0oRmNAXm6mXAGLkDsuBBboDWXtU8orOhuBIg2Q=;
-        b=AeZIBQQ/2gb//Yty6l+SwmV8kw5biIkf9IQwQ6tHEh49TIg0H9m0s0hSd9OUEWlE58
-         +MpyxwJSy1X7CUg/au6DLYaL1N9UrH3uTLFdWJtg4vLA6woKdE4nb6DY3+IjRQUFViKY
-         GUO4Z0rJcMUzulTYW6J/i9dgl5JKey6iSfqGVjJ6u4EjzFMbHzYHqKChNMfXZDghtCFB
-         EqyAPpwyzs7y7gQ2bNcXAiG1NPEX9qNEwgT9FwGPsrdlh5oN8vlo8QYrT578ZqvkLHkQ
-         ENiaR2gAxMTS5xY1bNcJDMzVOx8BWJZTFE9lWmr5ar33zqPgS/9v3neXippYmqnXw1JR
-         0nyA==
-X-Gm-Message-State: AOAM532vJMX6l4qDWMwI1tad1tTMOiDtErjWWEperT+XVHpdI1R5vq79
-        JnSFiUSNjxO50rLsPfEjzQCLcJqrfJev6QSE+UKMXA==
-X-Google-Smtp-Source: ABdhPJzahdnrNond377llVfK4n8/pb9BvsPDfdsBxiv7TsIPXVvYqFPJnZxVBQsD+DCyRAqPYzTF7GnMCMP9/MlvOFQ=
-X-Received: by 2002:a17:902:edd0:b0:135:b351:bd5a with SMTP id
- q16-20020a170902edd000b00135b351bd5amr2063016plk.52.1629752190557; Mon, 23
- Aug 2021 13:56:30 -0700 (PDT)
+        bh=viPh+0UJyTwjrfYxnKuRCjFXOrg8d7O9dPBV2w1jhQo=;
+        b=EDvHuq7/qNhUadkzQ+TVu55JmNsUfP+RVBjf101raAnbiyH4riZ/M2ZV7diC+GD5BD
+         cuTh9im0Ssh+C7tjGDaRF4CMwPLPGyJtLdNJ5+P2kP5/V1PlUy+77KM6WsUBMNPFis+g
+         qkVqtXgCcnALp9NwVef2GJyUSgRsO6GYA/poAUPRRkpajsnt82WXdYDwJLSYcW/qNeE3
+         F8bk7t/8bbRkTqIk60R3CRtCJqh2YFKybPekfPRdCNZdRRTM8itQjC6AKtrE6YMdvwPJ
+         xyJU7Gw0pG2PVwdWomLzXxupA7kh3S4u1mgITVgGWZUHSNRiVUWL2ZtOHUWkFUIPbNtE
+         cmRA==
+X-Gm-Message-State: AOAM533U8sE7pGueFcwZ7zxE/KkZa2emHEFJ1UdJy3uduDBlF5IHoEL+
+        8ia78GkC8g5DbBF1mZ59d9hDguGSgsX5GS9kVp92jQ==
+X-Google-Smtp-Source: ABdhPJyTkPxH6f09SsHyv6amBiRJE33JmtsdOuXl3/Csrh5zhh/d00ls47dcJWNTFnZBryYWLMz+fEcPv6/HoulPba8=
+X-Received: by 2002:a05:6a00:9a4:b0:3e2:f6d0:c926 with SMTP id
+ u36-20020a056a0009a400b003e2f6d0c926mr28665609pfg.31.1629752279308; Mon, 23
+ Aug 2021 13:57:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210823123516.969486-1-hch@lst.de> <20210823123516.969486-5-hch@lst.de>
-In-Reply-To: <20210823123516.969486-5-hch@lst.de>
+References: <20210823123516.969486-1-hch@lst.de> <20210823123516.969486-6-hch@lst.de>
+In-Reply-To: <20210823123516.969486-6-hch@lst.de>
 From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 23 Aug 2021 13:56:19 -0700
-Message-ID: <CAPcyv4j2-8OPHDowaH0ogZP5qKM6rkGVgjjPPRt1k2DC_SpnFw@mail.gmail.com>
-Subject: Re: [PATCH 4/9] dax: mark dax_get_by_host static
+Date:   Mon, 23 Aug 2021 13:57:48 -0700
+Message-ID: <CAPcyv4gDm4DQY3KNY04cgdhMCp-0j5gmc9G0E3e68BGw2kHN8A@mail.gmail.com>
+Subject: Re: [PATCH 5/9] dax: move the dax_read_lock() locking into dax_supported
 To:     Christoph Hellwig <hch@lst.de>
 Cc:     Vishal Verma <vishal.l.verma@intel.com>,
         Dave Jiang <dave.jiang@intel.com>,
@@ -65,10 +65,11 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 5:39 AM Christoph Hellwig <hch@lst.de> wrote:
+On Mon, Aug 23, 2021 at 5:40 AM Christoph Hellwig <hch@lst.de> wrote:
 >
-> And move the code around a bit to avoid a forward declaration.
+> Move the dax_read_lock/dax_read_unlock pair from the callers into
+> dax_supported to make it a little easier to use.
 
-Looks good,
+Looks good:
 
 Reviewed-by: Dan Williams <dan.j.williams@intel.com>
