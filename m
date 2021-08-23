@@ -2,120 +2,87 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCC7F3F44CE
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Aug 2021 08:14:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2AD03F4791
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 Aug 2021 11:31:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233584AbhHWGOn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 23 Aug 2021 02:14:43 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:53683 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231267AbhHWGOl (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 23 Aug 2021 02:14:41 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R451e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UlCK-Sz_1629699238;
-Received: from localhost(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0UlCK-Sz_1629699238)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 23 Aug 2021 14:13:58 +0800
-From:   Jeffle Xu <jefflexu@linux.alibaba.com>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     linux-ext4@vger.kernel.org, joseph.qi@linux.alibaba.com,
-        enwlinux@gmail.com, hsiangkao@linux.alibaba.com
-Subject: [PATCH v2] ext4: fix reserved space counter leakage
-Date:   Mon, 23 Aug 2021 14:13:58 +0800
-Message-Id: <20210823061358.84473-1-jefflexu@linux.alibaba.com>
-X-Mailer: git-send-email 2.27.0
+        id S232124AbhHWJcX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 23 Aug 2021 05:32:23 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:48090 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231160AbhHWJcW (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 23 Aug 2021 05:32:22 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id A4BE01FF95;
+        Mon, 23 Aug 2021 09:31:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1629711099; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SVBVWVcXjZICXYpFagpS5X9qD8aBwMKd+AGpsz6aB9g=;
+        b=j7+upi4zVoE8VTBn6OE+Tah3eRozJ1I3PSuxZnIwsO7fezEQYtrIg+8t3kl46HhWw0x1Vy
+        Am5drk4XziMt5PyUd3Z5E/9VvO7fjqSvykv2WygC6gChIdMhQbpCEGBim5qVNO0gNw8sx8
+        a3MtslBZFVOKEJZkfGqfNj8/6C530NE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1629711099;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SVBVWVcXjZICXYpFagpS5X9qD8aBwMKd+AGpsz6aB9g=;
+        b=CIcn6lD09PCRAkXaWW8UEg+PI8iPMj1336bPuaRJzuSfYB9CHVDYRxpXm3zoMCj72cyK4a
+        zvKXkhNr29BqdVCg==
+Received: from quack2.suse.cz (unknown [10.100.224.230])
+        by relay2.suse.de (Postfix) with ESMTP id 90CA3A3B85;
+        Mon, 23 Aug 2021 09:31:39 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 604411E3B01; Mon, 23 Aug 2021 11:31:39 +0200 (CEST)
+Date:   Mon, 23 Aug 2021 11:31:39 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] libss: add newer libreadline.so.8 to dlopen path
+Message-ID: <20210823093139.GA21467@quack2.suse.cz>
+References: <20210820161502.8497-1-jack@suse.cz>
+ <YSAZm8XAkXmW2VMC@mit.edu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YSAZm8XAkXmW2VMC@mit.edu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-When ext4_insert_delayed block receives and recovers from an error from
-ext4_es_insert_delayed_block(), e.g., ENOMEM, it does not release the
-space it has reserved for that block insertion as it should. One effect
-of this bug is that s_dirtyclusters_counter is not decremented and
-remains incorrectly elevated until the file system has been unmounted.
-This can result in premature ENOSPC returns and apparent loss of free
-space.
+On Fri 20-08-21 17:07:39, Theodore Ts'o wrote:
+> On Fri, Aug 20, 2021 at 06:15:02PM +0200, Jan Kara wrote:
+> > OpenSUSE Tumbleweed now has libreadline.so.8. Add it to the list of libs
+> > to look for.
+> > 
+> > Signed-off-by: Jan Kara <jack@suse.cz>
+> > ---
+> >  lib/ss/get_readline.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > Hum, why don't we look for libreadline.so BTW? That way we could save adding
+> > now so version whenever one appears?
+> 
+> We do actually look for libreadline.so; it's right after
+> libreadline.so.4:
+> 
+> > -#define DEFAULT_LIBPATH "libreadline.so.7:libreadline.so.6:libreadline.so.5:libreadline.so.4:libreadline.so:libedit.so.2:libedit.so:libeditline.so.0:libeditline.so"
+> 
+> However, we still need the libreadline.so.N in the path because at
+> least for some distributions, they only install libreadline.so if you
+> install the -dev package.  For example, in Debian, libreadline.so.8 is
+> installed from the libreadline8 package, while libreadline.so is
+> installed from the libreadline-dev package (and it's not guaranteed to
+> be installed).
 
-Another effect of this bug is that
-/sys/fs/ext4/<dev>/delayed_allocation_blocks can remain non-zero even
-after syncfs has been executed on the filesystem.
+Oh, right. I've just checked and on my openSUSE machine libreadline.so is
+also only provided by readline-devel package (which I have installed so I
+didn't originally noticed). Thanks for explanation. I'm just wondering if
+there isn't a better way to search for a suitable library...
 
-Besides, add check for s_dirtyclusters_counter when inode is going to be
-evicted and freed. s_dirtyclusters_counter can still keep non-zero until
-inode is written back in .evict_inode(), and thus the check is delayed
-to .destroy_inode().
-
-Fixes: 51865fda28e5 ("ext4: let ext4 maintain extent status tree")
-Cc: <stable@vger.kernel.org>
-Suggested-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-Signed-off-by: Jeffle Xu <jefflexu@linux.alibaba.com>
----
-changes since v1:
-- improve commit log suggested by Eric Whitney
-- update "Suggested-by" title for Gao Xian, who actually found this bug
-  code
-- add check for s_dirtyclusters_counter in .destroy_inode()
----
- fs/ext4/inode.c | 5 +++++
- fs/ext4/super.c | 6 ++++++
- 2 files changed, 11 insertions(+)
-
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index d8de607849df..73daf9443e5e 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -1640,6 +1640,7 @@ static int ext4_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk)
- 	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
- 	int ret;
- 	bool allocated = false;
-+	bool reserved = false;
- 
- 	/*
- 	 * If the cluster containing lblk is shared with a delayed,
-@@ -1656,6 +1657,7 @@ static int ext4_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk)
- 		ret = ext4_da_reserve_space(inode);
- 		if (ret != 0)   /* ENOSPC */
- 			goto errout;
-+		reserved = true;
- 	} else {   /* bigalloc */
- 		if (!ext4_es_scan_clu(inode, &ext4_es_is_delonly, lblk)) {
- 			if (!ext4_es_scan_clu(inode,
-@@ -1668,6 +1670,7 @@ static int ext4_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk)
- 					ret = ext4_da_reserve_space(inode);
- 					if (ret != 0)   /* ENOSPC */
- 						goto errout;
-+					reserved = true;
- 				} else {
- 					allocated = true;
- 				}
-@@ -1678,6 +1681,8 @@ static int ext4_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk)
- 	}
- 
- 	ret = ext4_es_insert_delayed_block(inode, lblk, allocated);
-+	if (ret && reserved)
-+		ext4_da_release_space(inode, 1);
- 
- errout:
- 	return ret;
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index dfa09a277b56..61bf52b58fca 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1351,6 +1351,12 @@ static void ext4_destroy_inode(struct inode *inode)
- 				true);
- 		dump_stack();
- 	}
-+
-+	if (EXT4_I(inode)->i_reserved_data_blocks)
-+		ext4_msg(inode->i_sb, KERN_ERR,
-+			 "Inode %lu (%p): i_reserved_data_blocks (%u) not cleared!",
-+			 inode->i_ino, EXT4_I(inode),
-+			 EXT4_I(inode)->i_reserved_data_blocks);
- }
- 
- static void init_once(void *foo)
+								Honza
 -- 
-2.27.0
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
