@@ -2,78 +2,110 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 860313F52CD
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Aug 2021 23:23:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6933F56D6
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Aug 2021 05:49:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232782AbhHWVXs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 23 Aug 2021 17:23:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41298 "EHLO
+        id S234107AbhHXDuX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 23 Aug 2021 23:50:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232503AbhHWVXs (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 23 Aug 2021 17:23:48 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9ED1C061575
-        for <linux-ext4@vger.kernel.org>; Mon, 23 Aug 2021 14:23:04 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id j10-20020a17090a94ca00b00181f17b7ef7so374793pjw.2
-        for <linux-ext4@vger.kernel.org>; Mon, 23 Aug 2021 14:23:04 -0700 (PDT)
+        with ESMTP id S232605AbhHXDuU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 23 Aug 2021 23:50:20 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0712C061575;
+        Mon, 23 Aug 2021 20:49:34 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id r2so18541171pgl.10;
+        Mon, 23 Aug 2021 20:49:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ShErwyspG88Bo4yVlFpB0fmc1BjfRh8zuGfu0CGRDeA=;
-        b=rHIKZbBUCGl81JJDCGO2jSGr728UIVVQ13KxyIxc5kP6Wg5oWA9rRVWif9iIao5pL4
-         L8JX62XyKt1eePLQ2AwBJuJrwPwVawP5zim6ZdRWmHiKv2kKR3fko7lTmbKjyT/aQtzo
-         MEdxWwqwa1yVZo9MHkLO9AqBKKOAaM2gOsmwCUlHxgSNIJ8uSbFInX867fUxouhXCXBK
-         gKKCWO53t3zw6Z8NYQly+wmZgIqWldfA/074D115o3Qsil+IMBtncqlvsQq8DAEwET7c
-         V12Srx4AvkF0ONhtcsEFOppkKM7yNRBoaPdKFKb4agsQdX7D6hUMAsWrwA5FtIt/Kyou
-         eNlQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :content-transfer-encoding:user-agent;
+        bh=5XhERRnYu/DuBhvBYP0AnQbv2TXqBtKHcBR7KzXaAy0=;
+        b=ZetcpJogvvQRdfWAugp/yv5EMphT9hDaBrMEYX6AScYY0N4L0GI07NJNg/PcOFdH6T
+         moZJf2b3sCOOtWZvoUMeM4OFJNgKgU3e9nCplEXnETAX1pxyEAy0JSz01JUA/iVxLTPT
+         OjWb6NnCisJTbyHzwxaDlLEzaiTe9NbOduJa1pTCIKCx97jtIaXbpTihKDpZ9E/eV/2z
+         0bkAmSx1JVRaEezV8Yee8YQZJKCSoR/w4XNsOl3gkK5S/zVxAo7HzhPi0RMGyMDlvJJQ
+         ZSXcZ2ctc0f/ojHvRLN6HK8CAs9nC3P3MpFBEMOU22elPmMj0kNG6BbDknYQgSyMjXMB
+         srbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ShErwyspG88Bo4yVlFpB0fmc1BjfRh8zuGfu0CGRDeA=;
-        b=D6pSKbmVuDXyvJpw9TXDVsf2UYX9g/5aiFOvjPw5F2Z0JIhx4ABW0Vk6TLli22OtCv
-         QbWO8JLKXHlnMyImHH8nElD120uckeM/HiDY3cc7u4yirJMxuzDgKUD7AhVQjthCNH90
-         ty+tlbSfF1WWD3MKGCVEiBGcLjiK3c5I3WtY3Z8NKFYMadzviDoh63xIxYxMVpWLi6S6
-         oPthJYMxndxozCVNb3bWW2Z/ZLVb7Kczr5WIN2XhGQXwNFxFCNv+6q516VuoiecLV1HJ
-         h4ZYRKSvVVqtTlSwAR60Od+iWwRAFLygLbR94OSAdbrKCEujjh+CiaOw9o5+xznXvqUY
-         USZg==
-X-Gm-Message-State: AOAM532sxC8KQN9Q/0lL4NZ9ImMu+QT1J+1JWxBjy7hPJq0DkVSHcYx0
-        YWUj2kEVzLpqNHPPz0jDYnU5aLQMlr9PAl8joVlDJg==
-X-Google-Smtp-Source: ABdhPJx42nu034KgnU+n5z3pwJcpAAmVm/tyH+LAY8tSKD1qwe5mGvbj3AXhqEGCH92DHgFtK8TvIT3ZBlghdPmQxgY=
-X-Received: by 2002:a17:902:edd0:b0:135:b351:bd5a with SMTP id
- q16-20020a170902edd000b00135b351bd5amr2141894plk.52.1629753782818; Mon, 23
- Aug 2021 14:23:02 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:content-transfer-encoding:user-agent;
+        bh=5XhERRnYu/DuBhvBYP0AnQbv2TXqBtKHcBR7KzXaAy0=;
+        b=QOSnzlWaNtWKhnYlRa/pAGA8cskFABvCC5xMbHskZ0HjcYAJ9NRDGX0Tyug5nfjY5Q
+         aBa95epYYwDzbQ+ZTT0p+wqCO3dSeqSqJ77dS1624WoQUMPHXuW7aFgEpdQOfWHinLqA
+         5Nxo94x3HuzUXDi9Q6JuhT0f39LizKdE9uu6wQWknRvsdOCugXE1JMJPY9vanaDZ5rOs
+         9Ems9AKTkxLf0X9e30UnAvt70zMEhXG2HK7hX8horBkOTK3bFLtJqO8sTok+bwZUPDK7
+         aC/h0eG1+rw7BASFCupdobT8jCyJwz4UoZzpeR2AdZWGlqYOew7Z8Ozno8RByWfs8sYz
+         cyzg==
+X-Gm-Message-State: AOAM532UO9mWhUqyAm2xSSebgKc5jROSb3Z6dI6tybt0b+8KS51Vuua6
+        o5kRYXu0tP4ahwNsSipfzso=
+X-Google-Smtp-Source: ABdhPJzmUR8F7yUUBeJ99QbiQ6Er9mRfNCirqCXozcaJh8cyNxqSXRLdjEzFPRe9K2bgfwzGJyubDA==
+X-Received: by 2002:a63:1209:: with SMTP id h9mr34426295pgl.106.1629776974193;
+        Mon, 23 Aug 2021 20:49:34 -0700 (PDT)
+Received: from raspberrypi ([210.183.35.240])
+        by smtp.gmail.com with ESMTPSA id c15sm657720pjr.22.2021.08.23.20.49.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 20:49:33 -0700 (PDT)
+Date:   Tue, 24 Aug 2021 04:49:29 +0100
+From:   Austin Kim <austindh.kim@gmail.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        austin.kim@lge.com
+Subject: [PATCH] ext4: remove an unused variable warning with CONFIG_QUOTA=n
+Message-ID: <20210824034929.GA13415@raspberrypi>
 MIME-Version: 1.0
-References: <20210823123516.969486-1-hch@lst.de> <20210823123516.969486-10-hch@lst.de>
-In-Reply-To: <20210823123516.969486-10-hch@lst.de>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 23 Aug 2021 14:22:52 -0700
-Message-ID: <CAPcyv4hNL+ohvTP7VK9zrPDhyVTbUZSD74=z2H2uveudaqi+=w@mail.gmail.com>
-Subject: Re: [PATCH 9/9] dax: remove bdev_dax_supported
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        Linux NVDIMM <nvdimm@lists.linux.dev>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-ext4 <linux-ext4@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 5:45 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> All callers already have a dax_device obtained from fs_dax_get_by_bdev
-> at hand, so just pass that to dax_supported() insted of doing another
-> lookup.
+The 'enable_quota' variable is only used in an CONFIG_QUOTA.
+With CONFIG_QUOTA=n, compiler causes a harmless warning:
 
-Looks good, series passes regression tests:
+fs/ext4/super.c: In function ‘ext4_remount’:
+fs/ext4/super.c:5840:6: warning: variable ‘enable_quota’ set but not used
+  [-Wunused-but-set-variable]
+  int enable_quota = 0;
+              ^~~~~
 
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+Move 'enable_quota' into the same #ifdef CONFIG_QUOTA block
+to remove an unused variable warning.
 
-I can take this with an XFS ack, or if Darrick wants to carry it to
-make Ruan's life easier that's ok with me.
+Signed-off-by: Austin Kim <austindh.kim@gmail.com>
+---
+ fs/ext4/super.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 6b03e4281f6f..6adb570f4b31 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -5845,10 +5845,10 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
+ 	unsigned long old_sb_flags, vfs_flags;
+ 	struct ext4_mount_options old_opts;
+-	int enable_quota = 0;
+ 	ext4_group_t g;
+ 	int err = 0;
+ #ifdef CONFIG_QUOTA
++	int enable_quota = 0;
+ 	int i, j;
+ 	char *to_free[EXT4_MAXQUOTAS];
+ #endif
+@@ -6053,7 +6053,9 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
+ 					err = -EROFS;
+ 					goto restore_opts;
+ 				}
++#ifdef CONFIG_QUOTA
+ 			enable_quota = 1;
++#endif
+ 		}
+ 	}
+ 
+-- 
+2.20.1
+
