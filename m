@@ -2,132 +2,140 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A76B43F7BAF
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Aug 2021 19:49:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 321443F7C2A
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Aug 2021 20:24:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242336AbhHYRtx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 25 Aug 2021 13:49:53 -0400
-Received: from mail-bn8nam08on2067.outbound.protection.outlook.com ([40.107.100.67]:3809
+        id S235055AbhHYSZd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 25 Aug 2021 14:25:33 -0400
+Received: from mail-bn8nam08on2081.outbound.protection.outlook.com ([40.107.100.81]:12161
         "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231602AbhHYRtu (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 25 Aug 2021 13:49:50 -0400
+        id S232629AbhHYSZc (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 25 Aug 2021 14:25:32 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=L94HSvLZfRi6AQzrzB8rHeSlzSUiP86AbnjH1OOvgpKk65tUc6rs8QtBNDOdoZ62BnJyUPOzMdX67B0kV7y3kNKW/c6yICdKixeEEgHq1vDbjZjJzv0OiGIf1Q/nab+Od9Od5ZE1EmEBsFKBXO3Lx1RgsU9Mf2oqjzxjSCPDOuJrDaRiHo9FxTOKon4JcjkvS7Glm/BrcCdmHPM9Hzrtcq262vQ0bY4BbEuQSLTV4Q5AIzco1Ogi8f4Xa/XtjUeMjdWmfMjvcIeQrThHkXpu54ut+kytfMpNsuPCDs9e6JvK/zt/jprIa941O4286GFsqUdKGyS5JjRe1lgIB55izQ==
+ b=nSadm+ebvcCM7JcUTTKmMmPKSmoqyJ8ytGKUyv3b8TggKjp1/UUHa0aFcF6tMzDGy/b3fcT+1SilLK89UU/xStNCmWx+zLVRTWD9YtCBn6DrMBPS/bKSZ9Eekrw7X63DavsTZnsCpMU20m9/EygMcG3EOk6u3knN1F1cXxj890JGW+N0wUxQ9PHkw8XjNpmMTPB0RpI6tXhlrZDqOIuPk40zFwRjcbSIkS77hlvigFZToOoU3qwmRkClJNUHu3cdeq29y5C6cS9drVnCR6ydPceFwMUEwzAXiox0dc3LODNiZXWYsqEKMhDvxlaALuOXMkAAZ78ChZ9X4f7JSHdCLw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=836XBpZH3d+fdvKEqzLZQ9K3DZDuUGf5MVN4Xajae/U=;
- b=iQ3DEJe1rgZMRiobhuAx8RpzIQL5zb2yhwZtj0Enw9hmSzw0gag6v49qZX/ILzWTUuRdDN4erF9Qn1lS83507THQJo5y9oQyE02tVdrfabwLl9KthsX+hxCeYnrhJ4cOt7XCoSF2EBzgupQbUWpcKsbNhR2ehYpyPWOFGmsUZOTrz47LwiY1a2SsM7jLEDUvhhrOmVX3+ZbFP2TF4G2kWuug3fXilvylcgKIXDR7rIhqoSTL/dsT/4SE+XzU+rreANhEbSnwhJzVwa2pli6VXQFdEFqF5K/envRa6KZdGalb9APSjp5PcgB08QCKOyiKk6GVFzmvE3qlS/XVpr7efQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.36) smtp.rcpttodomain=amd.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ bh=ppYb8aI2vaFQMXvIHUVuRdSJF/JkhoBnaRihSrtyOto=;
+ b=XOn/o1ZFp6B6p5cwzphCQZFcFN9WjYqVeSwe6wMezvIsDsmKS3qCwduUsgE1hUzTCbIkdUrlmiiu0xyHcqJoYfSawqKM05vQ5ePAoTvetHd3iYGn8l+M1a/0ksdoLlKQviKq/LRyV4ewE4l5rzkmiSt5SaeuaFdcOnNLVCdxsuXKeCgLr5LC0O+pREVsa0+CUcIUYzkf96eJ+ZA6S/5liEH0axE+gSkZFDWdpkQZCZnjyyQt/FVaIVkTtMxW2ZJpuEhPfzDPZjovjnRGg/q8S9y3Jcx5aeYgCof6eLdzHgK0T3zmOK4Zh2uzfmixIZ0dSGuPIi9a/fAraBLxuSsylQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=836XBpZH3d+fdvKEqzLZQ9K3DZDuUGf5MVN4Xajae/U=;
- b=Uf5FX7oqFx5m4K3QumLMI8Sc6QROdZUFouqpra7HvUCKDSG3HEA+icbSISQTT9JSoS3A0ljBJDniydPv3njc/8IhDpOEI25e6kCB6N0cV1FdaJ5QyZ2Mw8w5kZRje4eXTGwT8Y7O9wwX6wT3g93MyLeKD2PiAHDgnrGv2z+COSSwilDNirsvPmZAzffaVTXyIdN4mPhVaVnVERyssXDGgsW2wZG4fof5SWvKU+Lr+a/A67I5WN0KwVEFjT8jDvdr/+UieNwRNy7HGoK2zN4VkwTrHV0hpH0QPrS0mRxk+pHpEEcU05SYv2BjV3aN+pNp1nbg0tapYNwDqkEZinaQSg==
-Received: from DM5PR07CA0156.namprd07.prod.outlook.com (2603:10b6:3:ee::22) by
- DM8PR12MB5495.namprd12.prod.outlook.com (2603:10b6:8:33::12) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4436.22; Wed, 25 Aug 2021 17:49:03 +0000
-Received: from DM6NAM11FT034.eop-nam11.prod.protection.outlook.com
- (2603:10b6:3:ee:cafe::eb) by DM5PR07CA0156.outlook.office365.com
- (2603:10b6:3:ee::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.17 via Frontend
- Transport; Wed, 25 Aug 2021 17:49:03 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.36)
- smtp.mailfrom=nvidia.com; amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.36 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.36; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.36) by
- DM6NAM11FT034.mail.protection.outlook.com (10.13.173.47) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4457.17 via Frontend Transport; Wed, 25 Aug 2021 17:49:02 +0000
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 25 Aug
- 2021 17:49:02 +0000
-Received: from rcampbell-test.nvidia.com (172.20.187.6) by mail.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1497.2 via Frontend
- Transport; Wed, 25 Aug 2021 17:49:02 +0000
-Subject: Re: [PATCH v1 02/14] mm: remove extra ZONE_DEVICE struct page
- refcount
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        Alex Sierra <alex.sierra@amd.com>, <akpm@linux-foundation.org>,
-        <Felix.Kuehling@amd.com>, <linux-mm@kvack.org>,
-        <linux-ext4@vger.kernel.org>, <linux-xfs@vger.kernel.org>
-CC:     <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
-        <hch@lst.de>, <jgg@nvidia.com>, <jglisse@redhat.com>
+ bh=ppYb8aI2vaFQMXvIHUVuRdSJF/JkhoBnaRihSrtyOto=;
+ b=aLZs93LShzO/ouVKX+1lVRjL2Ia163KJjW1BArge3iz6FXFuOaHobORyiK6HaehESNPmDYIsrfDcx6ZbPjDDdjnMVoPR67QVyD/Rly+OG2FUKWK/QSTf46/5N2pDac/T9V7RlSITFAiWUMLK8Gc6Hxf8RCoQRn36ezMvqGtOce4=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
+Received: from SA0PR12MB4430.namprd12.prod.outlook.com (2603:10b6:806:70::20)
+ by SN6PR12MB2830.namprd12.prod.outlook.com (2603:10b6:805:e0::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.23; Wed, 25 Aug
+ 2021 18:24:33 +0000
+Received: from SA0PR12MB4430.namprd12.prod.outlook.com
+ ([fe80::855b:1f8c:c5d1:331f]) by SA0PR12MB4430.namprd12.prod.outlook.com
+ ([fe80::855b:1f8c:c5d1:331f%7]) with mapi id 15.20.4457.017; Wed, 25 Aug 2021
+ 18:24:33 +0000
+Subject: Re: [PATCH v1 03/14] mm: add iomem vma selection for memory migration
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     akpm@linux-foundation.org, Felix.Kuehling@amd.com,
+        linux-mm@kvack.org, rcampbell@nvidia.com,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        jgg@nvidia.com, jglisse@redhat.com
 References: <20210825034828.12927-1-alex.sierra@amd.com>
- <20210825034828.12927-3-alex.sierra@amd.com>
- <dbd0f54a-ad6c-97a2-17d7-826247424c97@suse.cz>
-From:   Ralph Campbell <rcampbell@nvidia.com>
-Message-ID: <505e4fe4-241a-8205-d2ef-f603e9cc46c6@nvidia.com>
-Date:   Wed, 25 Aug 2021 10:49:01 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <dbd0f54a-ad6c-97a2-17d7-826247424c97@suse.cz>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+ <20210825034828.12927-4-alex.sierra@amd.com> <20210825074602.GA29620@lst.de>
+From:   "Sierra Guiza, Alejandro (Alex)" <alex.sierra@amd.com>
+Message-ID: <c4241eb3-07d2-c85b-0f48-cce4b8369381@amd.com>
+Date:   Wed, 25 Aug 2021 13:24:22 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+In-Reply-To: <20210825074602.GA29620@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-X-EOPAttributedMessage: 0
+X-ClientProxiedBy: SA0PR11CA0146.namprd11.prod.outlook.com
+ (2603:10b6:806:131::31) To SA0PR12MB4430.namprd12.prod.outlook.com
+ (2603:10b6:806:70::20)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [172.31.9.47] (165.204.77.11) by SA0PR11CA0146.namprd11.prod.outlook.com (2603:10b6:806:131::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.17 via Frontend Transport; Wed, 25 Aug 2021 18:24:29 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f60f875c-00f9-4d75-cfc8-08d967f0a062
-X-MS-TrafficTypeDiagnostic: DM8PR12MB5495:
-X-Microsoft-Antispam-PRVS: <DM8PR12MB5495C64B7D3FBA3447A5AAF3C2C69@DM8PR12MB5495.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Office365-Filtering-Correlation-Id: 878ea72c-ca32-4bee-e277-08d967f59619
+X-MS-TrafficTypeDiagnostic: SN6PR12MB2830:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN6PR12MB2830A6793FC0EFB09B2D23CAFDC69@SN6PR12MB2830.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: EUD9gLnj84NJTkTFCk9HSdNz/cRUsi1KSKwCAoDcNO3QWfBp6CawHcI3WLkRtFDJAzmZjFcCBSdCSgtPspHuPgtg4Q0Oo1g319KIjspMISuKp9sUN+7dzDIvVgDSuKQFlsCKAYniRMrzVYMj+UbC6e2q7vPakMS+wv+ok9XcAWzYdAa1q7pN1qN/sklbMADA/MzHzlpfZEoQ6M7JQwfJ3EsrUlhGJ9gLZN9ejit5ZqXb7EJKefpFCAwrJ3AMe2MoiNnXHdd/Dao6bJcR0P27rOf22wNRqGgCLCQn40dmk7+u4oi5V2bf2jmMW94PaueOvIu3d/EbmjKhDx/dIy6SU8YEm5r7Jv0YXgOkToTa2AhS8gBHocb0NPWYfl79egMkbeDVV5T5i6c1tUGWcsgadBwqOBJC78YIlwcibpas49utWk8k2c1Gtxh86wgMPid9qkepvhACzI79kUhjzhPHLvDKNEijoXn6D25j5tByC8z407BINNW5op+HKznbzSBQhbItHs+bu1V/lwDwbuGaqzWVbezMdpQ28JIn38YypNIe8OnTTb3gXZnH90LLs4oKDCkGh2hGpZWg5lI0ELZEiiVcAKoudZ+uCCJMll3cFAfUe+UusE4MD41BlNHIb5QKNQhor4a/c9hDGTR23lo5OQtBka6KjHlnzuIKLAE6X6OGdPqwcwupnTQlCkXah+aAqq9/Tjij1s/2SPQrjyE55sTMZmr3vamrxnSrOtBzV3jcRtewF1gZ7/s1PAUN3+ug
-X-Forefront-Antispam-Report: CIP:216.228.112.36;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid05.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(346002)(39860400002)(136003)(396003)(36840700001)(46966006)(7636003)(478600001)(316002)(26005)(54906003)(110136005)(36906005)(82740400003)(31686004)(2616005)(53546011)(36756003)(336012)(86362001)(426003)(31696002)(70206006)(47076005)(7416002)(36860700001)(5660300002)(186003)(4326008)(8676002)(82310400003)(356005)(70586007)(2906002)(7696005)(8936002)(43740500002)(2101003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2021 17:49:02.9178
+X-Microsoft-Antispam-Message-Info: dGPzE6eqwgvbfTf9kLFHze+t9RvsCqvGIVnUj8L5An7Ow0IEEoww1UHRLuQQEmYQek58HLO9G1G3Z8howaSIZcq4zwsIEhCWvjtVXkdzzkMu/X/5o/luSN8teYkBBlhS3RbuHYUzwnedzoN08SD3eyOUv/ZdRtmXGU4XS+qNePwtA2CYRUL72OYzBbOaAhYDetXtBP6/jIZOWCmcCtK8qnJYJzfscHanKnN0o3uQXi48gjSnAVJFuEXL4KQNvzXpackDg/sM96xJJGghNKcjpH2sFOXuzIfAputkj+CzQuuy3f+s+6yrkSLAuUv8h5eQOnGyonGvHCOjae3DtwHO5lBhLF7mCx0bo4l9nvMTaVMmn9NJ4VCqOtioLFm9BPDA9CLlajkGz/dwL6j1BHF40ifRG3oKYDXvXemtj1BlUCm5qYWvTDDmbnxQgXANYMVTpym+zezxU+x2wfKrEG+C35CF2kxlYpac3lfmv0iCAnu4EU3SwdV4Khann9ew1nPgNCSt3JlqUSTqlNlBOQu3lm8yWsdLaohMKiZWgs+gkDN6vIW8pf0jfPVSfmiLxuX+CinJAt0Bh5qw27YYh98Knd0yEffQq+3J91lsQ1OoHZZv8XAjEqkNb1GneSe3ZI4YXHdDPODZCiS1OCz16jEBBr/dpWGgrANXCxaUY21e/iG6PGLsW9FijypAm4XhO7l1oE73GJGjYn6ttNh+t5LGqtaEfoPht86fqvi7d0CwpSIJoftGV8s0ab0Xp+gtlJ1giRXMXDKAVBjbrypOdxLhWw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA0PR12MB4430.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(396003)(366004)(39860400002)(346002)(4744005)(4326008)(5660300002)(7416002)(36756003)(6916009)(31686004)(478600001)(2906002)(2616005)(956004)(38100700002)(38350700002)(8676002)(186003)(66946007)(8936002)(66556008)(6486002)(53546011)(26005)(52116002)(86362001)(31696002)(16576012)(66476007)(316002)(6666004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NHpJNU1BckFuNFZpNnZEQm9CeWtSOUtIWSt4NXJYdVZWWFVkSjBaVVJycFhQ?=
+ =?utf-8?B?WUhQYWZLN3VwcU81Z2pybHgyOUI0WlROVmNtWC8rSldrYWFta0hmSlZPcFVy?=
+ =?utf-8?B?bWd6Z2ZQN2c4Nk5lTEtrTzdTdWdLVTdnUmFnMHFOaW1MU3JjYlk5cDN0dVlN?=
+ =?utf-8?B?QmpzZ3pudEJTTGZ2NVlhQjRNZWFMS1NVekFXTkNKamlKWVRWTTVKZXQ2Uko0?=
+ =?utf-8?B?ZTZCck1SQzlSQm9UeG1raFFXMWhiaDBpK29kRjV2Y29FcEtwK21Pdk1vaHEz?=
+ =?utf-8?B?c2JMVHpiSDZpam1BZFU0WU93dDJaUnhSQ3REUzBDVEVadTIvMUd2V1pLL2lM?=
+ =?utf-8?B?VjNRY1RsRGpCVHNpcDNzUFF0TXUzdUlKYXFqNjN6OElVOVdXb09CRGt6OG1V?=
+ =?utf-8?B?dzgvNGhWSTU1REFhT1IzdmJneEFicTM3ZUp6Rmd6M1VIdlpJSVFMdVNGaTJY?=
+ =?utf-8?B?R2MzSGFCaytWeDNWbUliRG10V1orNnhTN3FtNk9PRWg4WVUvT1Y5cFM2WVVx?=
+ =?utf-8?B?Um1FTjdlREt3MXhXbW55OWRWckNoM2JPV2xKVWlmbE1yWUVxRlpuN0hwS0hm?=
+ =?utf-8?B?MGgzdVhtaTRjSU9aUTZ0UGgycVdwU3lJV1JtZU5NRWx5NUVMa21pdVRxTXlw?=
+ =?utf-8?B?VG4vOEZjK3ZMcnQ0OVZMeFB3ZGVVdTdoaWs1WWx4MjBlMi9wVHdBdzNoMGpS?=
+ =?utf-8?B?cnN0OHV6QzZYcmFBcmQxT1REbmRYWFRxMHF5eUFIa0h0alExMExmQnh0YW9H?=
+ =?utf-8?B?VE9janIwVlMwSFd3WXpzWUc0bjdENm1KaWE5WXQ3ZXFjUzZKZ3dhZjZmWjdk?=
+ =?utf-8?B?M0xTU1BLQ0FzSE51WDBNK1BqQTNRN25yV29BS2ZhaTNnbFJqb2dNZ0U1Y3ZF?=
+ =?utf-8?B?b0hpQlJ3c0dEcUFWZFVHR2FPUkttM1FkQXZ4WmlRTHFYWHpGSVhsSGR5NjE2?=
+ =?utf-8?B?ZGNiWTJLRGFFbUI0UjdyWVBKNkNZMmNSNzh1UVhtdUhPc25WOC9ZOGRpQ2Z6?=
+ =?utf-8?B?Tjg3OWhEWmp3OUJqZGsxaE9zQUVhTTZFUjlFcVpEMWxVZWwrUnVKYjk5ZVg3?=
+ =?utf-8?B?YmNGcTA0QzBHRmYybTJDbExTaEw0M1FodzBvZWhYOGxXeVQ1cEFPL1Z6ZHVD?=
+ =?utf-8?B?Wlp1N0Z2TVh5YWtOK0o4S21VQ1BrcnlMcGpGNlREdnFldllTMjZQTlB3dVpZ?=
+ =?utf-8?B?b0dUbXEwUTZFWTZSL2V5OWdqZHZ3V0hvbyt5MTZ4Si8yQzFCbkxLNnFmcHc0?=
+ =?utf-8?B?MlljVXJTaUhEVldyak85bHBUdGtTVzkzSVdhSGlCRnhsKzVZb3JYc01BZkJ0?=
+ =?utf-8?B?L1prTEdscnVCZEJDZGlnRVBYNkZkWHBTS0ZsL084RytQeWJDVExiM25ITTBS?=
+ =?utf-8?B?YnpRQk1FR2E4d0cxL0ozbTUvckpncXVpSVA1T3gxSWJtckplRDVyL2VmVVNs?=
+ =?utf-8?B?S3pSZ2pYVHNwSUZxdXZFWFFTRU03b05xRVd3Mk5PL0Fjc0h3WW9uVGtvbllh?=
+ =?utf-8?B?dEtBNWljOFRBU2o1a2tGWHdzSFFWYzQybjg5d01ObkhxRnlvSDdVUkNVRk9j?=
+ =?utf-8?B?RU9hVSsrSGdtRVhMTEJGWU5mRXNabGpCTWF2R05UdWVWTzNCR2d1Qi9JY2hH?=
+ =?utf-8?B?dW9WZGg0bVNXRFZkV2drY3VrSnpRMmYzcHRtWlkwanAzdDlUeStVZjEyTDRQ?=
+ =?utf-8?B?dWRaN2s4WDlsM3lCc2U4R3hDTnN5L0pvVzZSYlk2eGpDSEJRMHdXc1hUZVNK?=
+ =?utf-8?Q?NmN05rCS0OWlfe5cEXV31fD2UUpuboE2UXfvW4w?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 878ea72c-ca32-4bee-e277-08d967f59619
+X-MS-Exchange-CrossTenant-AuthSource: SA0PR12MB4430.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2021 18:24:33.4195
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f60f875c-00f9-4d75-cfc8-08d967f0a062
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.36];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT034.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR12MB5495
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4z8rivtQary1ywSjKfvvCiuGp/d4AqXURW77QzUE5KHMlVXlBliQde/YDWf+KuvbFaYlpDXWxnlX2WDNwtSatQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2830
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 
-On 8/25/21 4:15 AM, Vlastimil Babka wrote:
-> On 8/25/21 05:48, Alex Sierra wrote:
->> From: Ralph Campbell <rcampbell@nvidia.com>
->>
->> ZONE_DEVICE struct pages have an extra reference count that complicates the
->> code for put_page() and several places in the kernel that need to check the
->> reference count to see that a page is not being used (gup, compaction,
->> migration, etc.). Clean up the code so the reference count doesn't need to
->> be treated specially for ZONE_DEVICE.
-> That's certainly welcome. I just wonder what was the reason to use 1 in the
-> first place and why it's no longer necessary?
+On 8/25/2021 2:46 AM, Christoph Hellwig wrote:
+> On Tue, Aug 24, 2021 at 10:48:17PM -0500, Alex Sierra wrote:
+>>   		} else {
+>> -			if (!(migrate->flags & MIGRATE_VMA_SELECT_SYSTEM))
+>> +			if (!(migrate->flags & MIGRATE_VMA_SELECT_SYSTEM) &&
+>> +			    !(migrate->flags & MIGRATE_VMA_SELECT_IOMEM))
+>>   				goto next;
+>>   			pfn = pte_pfn(pte);
+>>   			if (is_zero_pfn(pfn)) {
+> .. also how is this going to work for the device public memory?  That
+> should be pte_special() an thus fail vm_normal_page.
+Perhaps we're missing something, as we're not doing any special marking 
+for the device public pfn/entries.
+pfn_valid return true, pte_special return false and pfn_t_devmap return 
+false on these pages. Same as system pages.
+That's the reason vm_normal_page returns the page correctly through 
+pfn_to_page helper.
 
-I'm sure this is a long story that I don't know most of the history.
-I'm guessing that ZONE_DEVICE started out with a reference count of
-one since that is what most "normal" struct page pages start with.
-Then put_page() is used to free newly initialized struct pages to the
-slab/slob/slub page allocator.
-This made it easy to call get_page()/put_page() on ZONE_DEVICE pages
-since get_page() asserts that the caller has a reference.
-However, most drivers that create ZONE_DEVICE struct pages just insert
-a PTE into the user page tables and don't increment/decrement the
-reference count. MEMORY_DEVICE_FS_DAX used the >1 to 1 reference count
-transition to signal that a page was idle so that made put_page() a
-bit more complex. Then MEMORY_DEVICE_PRIVATE pages were added and this
-special casing of what "idle" meant got more complicated and more parts
-of mm had to check for is_device_private_page().
-My goal was to make ZONE_DEVICE struct pages reference counts be zero
-based and allocated/freed similar to the page allocator so that more
-of the mm code could be used, like THP ZONE_DEVICE pages, without special
-casing ZONE_DEVICE.
-
+Regards,
+Alex S.
