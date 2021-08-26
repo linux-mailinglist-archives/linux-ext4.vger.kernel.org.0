@@ -2,105 +2,86 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7E813F7EC0
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Aug 2021 00:47:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 390D03F7FA5
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Aug 2021 03:06:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231270AbhHYWso (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 25 Aug 2021 18:48:44 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:53271 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229642AbhHYWsn (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 25 Aug 2021 18:48:43 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 17PMlqB0028745
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Aug 2021 18:47:52 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id EB24215C3E69; Wed, 25 Aug 2021 18:47:51 -0400 (EDT)
-Date:   Wed, 25 Aug 2021 18:47:51 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
+        id S235342AbhHZBHb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 25 Aug 2021 21:07:31 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:15216 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235211AbhHZBHa (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 25 Aug 2021 21:07:30 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Gw4RP3B9Rz19Vch;
+        Thu, 26 Aug 2021 09:06:09 +0800 (CST)
+Received: from dggema766-chm.china.huawei.com (10.1.198.208) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Thu, 26 Aug 2021 09:06:38 +0800
+Received: from [10.174.177.210] (10.174.177.210) by
+ dggema766-chm.china.huawei.com (10.1.198.208) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 26 Aug 2021 09:06:37 +0800
+Subject: Re: [QUESTION] question for commit 2d01ddc86606 ("ext4: save error
+ info to sb through journal if available")
 To:     Jan Kara <jack@suse.cz>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 0/5 v7] ext4: Speedup orphan file handling
-Message-ID: <YSbIl0FfDCtPJyal@mit.edu>
-References: <20210816093626.18767-1-jack@suse.cz>
- <YSUo4TBKjcdX7N/q@mit.edu>
- <20210825113016.GB14620@quack2.suse.cz>
- <20210825161331.GA14270@quack2.suse.cz>
+CC:     "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+References: <05ff3a17-6559-9317-a382-f0a02fa59926@huawei.com>
+ <20210825102518.GA14620@quack2.suse.cz>
+From:   yangerkun <yangerkun@huawei.com>
+Message-ID: <61524dfc-ddd3-0bf2-2ef6-278e024fd6bd@huawei.com>
+Date:   Thu, 26 Aug 2021 09:06:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210825161331.GA14270@quack2.suse.cz>
+In-Reply-To: <20210825102518.GA14620@quack2.suse.cz>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.210]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggema766-chm.china.huawei.com (10.1.198.208)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 06:13:31PM +0200, Jan Kara wrote:
->
-> Interestingly, I couldn't make generic/476
-> fail for me either with or without my patches so that may be some random
-> failure. I'm now running that test in a loop to see whether the failure
-> will reproduce to investigate.
-
-On my test infrastructure (using gce-xfstests, which uses 5gig test
-and scratch partitions using PD-SSD as the device, 2CPU's, with 7.5 GB
-of memory), it's failing 70% of the time in the 1k and orphan_file_1k
-case.
-
-Looking through my notes, that's a known failure:
-
-generic/476	1k
-   Run an all-writes fsstress run with multiple threads to shake out
-   bugs in the write path.
-
-   50% of the time.  fsck complaining corrupted file system block
-   bitmap differences all negative.  Possible cause: races loading
-   adjacent block bitmaps in a single 4k page, leading to bitmap
-   updates getting lost?
-
-   Eric Whitney reports that it's a punch hole bug, where we are
-   leaking a block or a cluster (in bigalloc); with fixed seed he
-   can repro reliably at 100%.
-
-					- Ted
 
 
-TESTRUNID: tytso-20210825172314
-KERNEL:    kernel 5.14.0-rc2-xfstests-00019-g3e5533948c16 #326 SMP Mon Aug 23 22:27:25
-EDT 2021 x86_64
-CMDLINE:   --update-files -c 1k -C 10 generic/476
-CPUS:      2
-MEM:       7680
+在 2021/8/25 18:25, Jan Kara 写道:
+> 
+> Hello Kun!
+> 
+> On Wed 25-08-21 10:13:03, yangerkun wrote:
+>> There is a question about 2d01ddc86606 ("ext4: save error info to sb through
+>> journal if available"). This commit describe that we can have checksum
+>> failure with follow case:
+>>
+>> 1. ext4_handle_error will call ext4_commit_super which write directly to the
+>> superblock
+>> 2. At the same time, jounalled update of the superblock is ongoing
+>>
+>> However, after commit 05c2c00f3769 ("ext4: protect superblock modifications
+>> with a buffer lock"), all the update for superblock and the csum will be
+>> protected with buffer lock. It seems we won't get a csum error after that
+>> commit and the journal logic in flush_stashed_error_work seems useless.
+>>
+>> Maybe there is something missing... Can you help to explain more for that...
+> 
+> You are correct that after commit 05c2c00f3769 the checksum will be
+> correct. However there are also other problems that 2d01ddc86606 addresses
+> and that are mentioned in the commit description like "writing inconsistent
+> information". The fundamental problem is that you cannot mix journalled and
+> non-journalled updates to any block. Because e.g. the unjournalled update
+> could store to disk information that was changed only as part of the
+> currently running transaction and if the machine crashes before the
+> transaction commits, we have too new information in the block and thus
+> inconsistent filesystem. Or in the other direction, journal replay can
+> overwrite unjournalled modifications to the superblock if we crash at the
+> right moment.
 
-ext4/1k: 10 tests, 7 failures, 3399 seconds
-  generic/476  Failed   327s
-  generic/476  Failed   348s
-  generic/476  Failed   344s
-  generic/476  Pass     343s
-  generic/476  Pass     335s
-  generic/476  Failed   348s
-  generic/476  Failed   341s
-  generic/476  Failed   335s
-  generic/476  Failed   345s
-  generic/476  Pass     333s
-Totals: 10 tests, 0 skipped, 7 failures, 0 errors, 3399s
+Got it! Thanks for your explain!
 
-FSTESTIMG: gce-xfstests/xfstests-202108232144
-FSTESTPRJ: gce-xfstests
-FSTESTVER: blktests 62ec9d6 (Tue, 1 Jun 2021 10:08:38 -0700)
-FSTESTVER: e2fsprogs v1.46.4-5-g4cda2545-orphan_file (Sun, 22 Aug 2021 10:07:15 -0400)
-FSTESTVER: fio  fio-3.27 (Wed, 26 May 2021 10:10:32 -0600)
-FSTESTVER: fsverity v1.4 (Mon, 14 Jun 2021 16:14:52 -0700)
-FSTESTVER: ima-evm-utils v1.3.2 (Wed, 28 Oct 2020 13:18:08 -0400)
-FSTESTVER: nvme-cli v1.14-61-gf729e93 (Fri, 25 Jun 2021 10:21:17 -0600)
-FSTESTVER: quota  v4.05-40-g25f16b1 (Tue, 16 Mar 2021 17:57:19 +0100)
-FSTESTVER: util-linux v2.37 (Tue, 1 Jun 2021 09:52:10 +0200)
-FSTESTVER: xfsprogs v5.12.0 (Fri, 21 May 2021 15:53:24 -0400)
-FSTESTVER: xfstests-bld 779b6a0 (Mon, 23 Aug 2021 21:29:52 -0400)
-FSTESTVER: xfstests linux-v3.8-3295-gddc09fff (Mon, 23 Aug 2021 20:54:57 -0400)
-FSTESTCFG: 1k
-FSTESTSET: generic/476
-FSTESTOPT: count 10 aex
-GCE ID:    2585249240830380583
+> 
+> 								Honza
+> 
