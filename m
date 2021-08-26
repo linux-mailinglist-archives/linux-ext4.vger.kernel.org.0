@@ -2,18 +2,18 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15C2B3F8823
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Aug 2021 14:54:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38CF03F8822
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Aug 2021 14:54:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242582AbhHZMyz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 26 Aug 2021 08:54:55 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:15256 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242587AbhHZMyt (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 26 Aug 2021 08:54:49 -0400
-Received: from dggeme752-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GwN7q6S2lz8B0r;
-        Thu, 26 Aug 2021 20:53:43 +0800 (CST)
+        id S242633AbhHZMy7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 26 Aug 2021 08:54:59 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:18043 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242577AbhHZMys (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 26 Aug 2021 08:54:48 -0400
+Received: from dggeme752-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GwN3j4nWgzbj1J;
+        Thu, 26 Aug 2021 20:50:09 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by dggeme752-chm.china.huawei.com
  (10.3.19.98) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.8; Thu, 26
@@ -22,9 +22,9 @@ From:   Zhang Yi <yi.zhang@huawei.com>
 To:     <linux-ext4@vger.kernel.org>
 CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
         <yi.zhang@huawei.com>, <yukuai3@huawei.com>
-Subject: [PATCH v4 3/6] ext4: make the updating inode data procedure atomic
-Date:   Thu, 26 Aug 2021 21:04:09 +0800
-Message-ID: <20210826130412.3921207-4-yi.zhang@huawei.com>
+Subject: [PATCH v4 4/6] ext4: factor out ext4_fill_raw_inode()
+Date:   Thu, 26 Aug 2021 21:04:10 +0800
+Message-ID: <20210826130412.3921207-5-yi.zhang@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210826130412.3921207-1-yi.zhang@huawei.com>
 References: <20210826130412.3921207-1-yi.zhang@huawei.com>
@@ -39,135 +39,139 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Now that ext4_do_update_inode() return error before filling the whole
-inode data if we fail to set inode blocks in ext4_inode_blocks_set().
-This error should never happen in theory since sb->s_maxbytes should not
-have allowed this, we have already init sb->s_maxbytes according to this
-feature in ext4_fill_super(). So even through that could only happen due
-to the filesystem corruption, we'd better to return after we finish
-updating the inode because it may left an uninitialized buffer and we
-could read this buffer later in "errors=continue" mode.
-
-This patch make the updating inode data procedure atomic, call
-EXT4_ERROR_INODE() after we dropping i_raw_lock after something bad
-happened, make sure that the inode is integrated, and also drop a BUG_ON
-and do some small cleanups.
+Factor out ext4_fill_raw_inode() from ext4_do_update_inode(), which is
+use to fill the in-mem inode contents into the inode table buffer, in
+preparation for initializing the exclusive inode buffer without reading
+the block in __ext4_get_inode_loc().
 
 Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
 ---
- fs/ext4/inode.c | 44 ++++++++++++++++++++++++++++----------------
- 1 file changed, 28 insertions(+), 16 deletions(-)
+ fs/ext4/inode.c | 85 +++++++++++++++++++++++++++----------------------
+ 1 file changed, 47 insertions(+), 38 deletions(-)
 
 diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index eae1b2d0b550..8323d3e8f393 100644
+index 8323d3e8f393..c7186460c14d 100644
 --- a/fs/ext4/inode.c
 +++ b/fs/ext4/inode.c
-@@ -4920,8 +4920,14 @@ static int ext4_inode_blocks_set(handle_t *handle,
- 		ext4_clear_inode_flag(inode, EXT4_INODE_HUGE_FILE);
- 		return 0;
- 	}
+@@ -4902,9 +4902,8 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
+ 	return ERR_PTR(ret);
+ }
+ 
+-static int ext4_inode_blocks_set(handle_t *handle,
+-				struct ext4_inode *raw_inode,
+-				struct ext4_inode_info *ei)
++static int ext4_inode_blocks_set(struct ext4_inode *raw_inode,
++				 struct ext4_inode_info *ei)
+ {
+ 	struct inode *inode = &(ei->vfs_inode);
+ 	u64 i_blocks = READ_ONCE(inode->i_blocks);
+@@ -5007,37 +5006,16 @@ static void ext4_update_other_inodes_time(struct super_block *sb,
+ 	rcu_read_unlock();
+ }
+ 
+-/*
+- * Post the struct inode info into an on-disk inode location in the
+- * buffer-cache.  This gobbles the caller's reference to the
+- * buffer_head in the inode location struct.
+- *
+- * The caller must have write access to iloc->bh.
+- */
+-static int ext4_do_update_inode(handle_t *handle,
+-				struct inode *inode,
+-				struct ext4_iloc *iloc)
++static int ext4_fill_raw_inode(struct inode *inode, struct ext4_inode *raw_inode)
+ {
+-	struct ext4_inode *raw_inode = ext4_raw_inode(iloc);
+ 	struct ext4_inode_info *ei = EXT4_I(inode);
+-	struct buffer_head *bh = iloc->bh;
+-	struct super_block *sb = inode->i_sb;
+-	int err = 0, block;
+-	int need_datasync = 0, set_large_file = 0;
+ 	uid_t i_uid;
+ 	gid_t i_gid;
+ 	projid_t i_projid;
++	int block;
++	int err;
+ 
+-	spin_lock(&ei->i_raw_lock);
+-
+-	/*
+-	 * For fields not tracked in the in-memory inode, initialise them
+-	 * to zero for new inodes.
+-	 */
+-	if (ext4_test_inode_state(inode, EXT4_STATE_NEW))
+-		memset(raw_inode, 0, EXT4_SB(inode->i_sb)->s_inode_size);
+-
+-	err = ext4_inode_blocks_set(handle, raw_inode, ei);
++	err = ext4_inode_blocks_set(raw_inode, ei);
+ 
+ 	raw_inode->i_mode = cpu_to_le16(inode->i_mode);
+ 	i_uid = i_uid_read(inode);
+@@ -5079,16 +5057,8 @@ static int ext4_do_update_inode(handle_t *handle,
+ 		raw_inode->i_file_acl_high =
+ 			cpu_to_le16(ei->i_file_acl >> 32);
+ 	raw_inode->i_file_acl_lo = cpu_to_le32(ei->i_file_acl);
+-	if (READ_ONCE(ei->i_disksize) != ext4_isize(inode->i_sb, raw_inode)) {
+-		ext4_isize_set(raw_inode, ei->i_disksize);
+-		need_datasync = 1;
+-	}
+-	if (ei->i_disksize > 0x7fffffffULL) {
+-		if (!ext4_has_feature_large_file(sb) ||
+-				EXT4_SB(sb)->s_es->s_rev_level ==
+-		    cpu_to_le32(EXT4_GOOD_OLD_REV))
+-			set_large_file = 1;
+-	}
++	ext4_isize_set(raw_inode, ei->i_disksize);
 +
-+	/*
-+	 * This should never happen since sb->s_maxbytes should not have
-+	 * allowed this, sb->s_maxbytes was set according to the huge_file
-+	 * feature in ext4_fill_super().
-+	 */
- 	if (!ext4_has_feature_huge_file(sb))
--		return -EFBIG;
-+		return -EFSCORRUPTED;
+ 	raw_inode->i_generation = cpu_to_le32(inode->i_generation);
+ 	if (S_ISCHR(inode->i_mode) || S_ISBLK(inode->i_mode)) {
+ 		if (old_valid_dev(inode->i_rdev)) {
+@@ -5128,6 +5098,45 @@ static int ext4_do_update_inode(handle_t *handle,
+ 		raw_inode->i_projid = cpu_to_le32(i_projid);
  
- 	if (i_blocks <= 0xffffffffffffULL) {
- 		/*
-@@ -5024,16 +5030,14 @@ static int ext4_do_update_inode(handle_t *handle,
- 
- 	spin_lock(&ei->i_raw_lock);
- 
--	/* For fields not tracked in the in-memory inode,
--	 * initialise them to zero for new inodes. */
+ 	ext4_inode_csum_set(inode, raw_inode, ei);
++	return err;
++}
++
++/*
++ * Post the struct inode info into an on-disk inode location in the
++ * buffer-cache.  This gobbles the caller's reference to the
++ * buffer_head in the inode location struct.
++ *
++ * The caller must have write access to iloc->bh.
++ */
++static int ext4_do_update_inode(handle_t *handle,
++				struct inode *inode,
++				struct ext4_iloc *iloc)
++{
++	struct ext4_inode *raw_inode = ext4_raw_inode(iloc);
++	struct ext4_inode_info *ei = EXT4_I(inode);
++	struct buffer_head *bh = iloc->bh;
++	struct super_block *sb = inode->i_sb;
++	int err;
++	int need_datasync = 0, set_large_file = 0;
++
++	spin_lock(&ei->i_raw_lock);
++
 +	/*
 +	 * For fields not tracked in the in-memory inode, initialise them
 +	 * to zero for new inodes.
 +	 */
- 	if (ext4_test_inode_state(inode, EXT4_STATE_NEW))
- 		memset(raw_inode, 0, EXT4_SB(inode->i_sb)->s_inode_size);
- 
- 	err = ext4_inode_blocks_set(handle, raw_inode, ei);
--	if (err) {
--		spin_unlock(&ei->i_raw_lock);
--		goto out_brelse;
--	}
- 
- 	raw_inode->i_mode = cpu_to_le16(inode->i_mode);
- 	i_uid = i_uid_read(inode);
-@@ -5042,10 +5046,11 @@ static int ext4_do_update_inode(handle_t *handle,
- 	if (!(test_opt(inode->i_sb, NO_UID32))) {
- 		raw_inode->i_uid_low = cpu_to_le16(low_16_bits(i_uid));
- 		raw_inode->i_gid_low = cpu_to_le16(low_16_bits(i_gid));
--/*
-- * Fix up interoperability with old kernels. Otherwise, old inodes get
-- * re-used with the upper 16 bits of the uid/gid intact
-- */
-+		/*
-+		 * Fix up interoperability with old kernels. Otherwise,
-+		 * old inodes get re-used with the upper 16 bits of the
-+		 * uid/gid intact.
-+		 */
- 		if (ei->i_dtime && list_empty(&ei->i_orphan)) {
- 			raw_inode->i_uid_high = 0;
- 			raw_inode->i_gid_high = 0;
-@@ -5114,8 +5119,9 @@ static int ext4_do_update_inode(handle_t *handle,
- 		}
- 	}
- 
--	BUG_ON(!ext4_has_feature_project(inode->i_sb) &&
--	       i_projid != EXT4_DEF_PROJID);
-+	if (i_projid != EXT4_DEF_PROJID &&
-+	    !ext4_has_feature_project(inode->i_sb))
-+		err = err ?: -EFSCORRUPTED;
- 
- 	if (EXT4_INODE_SIZE(inode->i_sb) > EXT4_GOOD_OLD_INODE_SIZE &&
- 	    EXT4_FITS_IN_INODE(raw_inode, ei, i_projid))
-@@ -5123,6 +5129,11 @@ static int ext4_do_update_inode(handle_t *handle,
- 
- 	ext4_inode_csum_set(inode, raw_inode, ei);
- 	spin_unlock(&ei->i_raw_lock);
-+	if (err) {
-+		EXT4_ERROR_INODE(inode, "corrupted inode contents");
-+		goto out_brelse;
++	if (ext4_test_inode_state(inode, EXT4_STATE_NEW))
++		memset(raw_inode, 0, EXT4_SB(inode->i_sb)->s_inode_size);
++
++	if (READ_ONCE(ei->i_disksize) != ext4_isize(inode->i_sb, raw_inode))
++		need_datasync = 1;
++	if (ei->i_disksize > 0x7fffffffULL) {
++		if (!ext4_has_feature_large_file(sb) ||
++		    EXT4_SB(sb)->s_es->s_rev_level == cpu_to_le32(EXT4_GOOD_OLD_REV))
++			set_large_file = 1;
 +	}
 +
- 	if (inode->i_sb->s_flags & SB_LAZYTIME)
- 		ext4_update_other_inodes_time(inode->i_sb, inode->i_ino,
- 					      bh->b_data);
-@@ -5130,13 +5141,13 @@ static int ext4_do_update_inode(handle_t *handle,
- 	BUFFER_TRACE(bh, "call ext4_handle_dirty_metadata");
- 	err = ext4_handle_dirty_metadata(handle, NULL, bh);
- 	if (err)
--		goto out_brelse;
-+		goto out_error;
- 	ext4_clear_inode_state(inode, EXT4_STATE_NEW);
- 	if (set_large_file) {
- 		BUFFER_TRACE(EXT4_SB(sb)->s_sbh, "get write access");
- 		err = ext4_journal_get_write_access(handle, EXT4_SB(sb)->s_sbh);
- 		if (err)
--			goto out_brelse;
-+			goto out_error;
- 		lock_buffer(EXT4_SB(sb)->s_sbh);
- 		ext4_set_feature_large_file(sb);
- 		ext4_superblock_csum_set(sb);
-@@ -5146,9 +5157,10 @@ static int ext4_do_update_inode(handle_t *handle,
- 						 EXT4_SB(sb)->s_sbh);
- 	}
- 	ext4_update_inode_fsync_trans(handle, inode, need_datasync);
-+out_error:
-+	ext4_std_error(inode->i_sb, err);
- out_brelse:
- 	brelse(bh);
--	ext4_std_error(inode->i_sb, err);
- 	return err;
- }
- 
++	err = ext4_fill_raw_inode(inode, raw_inode);
+ 	spin_unlock(&ei->i_raw_lock);
+ 	if (err) {
+ 		EXT4_ERROR_INODE(inode, "corrupted inode contents");
 -- 
 2.31.1
 
