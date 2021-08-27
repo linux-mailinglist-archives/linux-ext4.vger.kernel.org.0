@@ -2,156 +2,229 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 606503F90BF
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Aug 2021 01:01:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 453B83F9253
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Aug 2021 04:29:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243822AbhHZW2X (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 26 Aug 2021 18:28:23 -0400
-Received: from mail-dm6nam10on2062.outbound.protection.outlook.com ([40.107.93.62]:22624
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S243799AbhHZW2W (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 26 Aug 2021 18:28:22 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GqJyOQFrFKl6brxbHRWFM/nEaelG/P5Fm6jzj+a8bSsuYmtriaQs9CzsAcMSvE5vPjvDa3p7SLYgcq2zENlDZrN6We1iQ34H5b1D9wSLeRFBmO1iYz3EkcLc8+/cKk4W0iD69ZWUMtAB4anPL0zyDJ65rMcSxIcWIe7OGsQTDEUCGTFD6RiT4/IQuqq1vgatZCNNwIx3p+UsyEQ/BW9z/BTbd6gGmV8yOc8MvQnl1jdIcA8GdjwEockSi+QRfKSeb/larhxJR3zypIqrLEeupDJpCqPJ/Oo+N90W4j5O5RsBRI95iUDkA5ZBj1OM6NsmWULih9d1O6UhZJqkD+7Iyg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eW8bnWEViOjMUDQKAQ+jUogWF+7PCXFNpo0HjvN+wsM=;
- b=AMFrg4KXR5qG9dkvYhECexQZ9MSPOmnuJIJEu8/c9aXhQZbG5FhYVzB9eqIAEu8Cc1hv4fq2YVP95FmdDgfi5MI9ADlRTee/Ri5oi+GR0pJag3HecY6tCX1jmv0Kfh1A/otkpjNh1xcQfLJSAJh+VN3p/9KJRwFoGCr4Xfm8s/bi+8MMUJ0z/1xekypTRgsP6CyyT+pTdUQ08oVRgLDIXnflSO7wYbPuL3wEaSGizr07aXjpH0TRnPi2+F0eGznfPSEkhqTi7ZY4f87/kOykShpS+sJTak31iNcefTysIJcYOz8UtfmAHsg2IQm3uFyQg6coJe0rQ/EOxcNV311MMA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eW8bnWEViOjMUDQKAQ+jUogWF+7PCXFNpo0HjvN+wsM=;
- b=MQ8ksyJ8Ljo6WsuvIardfhwRus0yRfuF7oLMkQ9brkLIAQt1aPABqL6pDKUOr08R4NJEVTQXAGZNbti76ozPC1lORiZKaQuILYSqW+E9aZsgvX1OLwTgL8Rk1kvi/cRhfGF0QrI//2Roj2mjBNpN+2EN9HixiVYWaB/KErjB57o=
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
-Received: from BN9PR12MB5129.namprd12.prod.outlook.com (2603:10b6:408:136::12)
- by BN9PR12MB5164.namprd12.prod.outlook.com (2603:10b6:408:11d::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.17; Thu, 26 Aug
- 2021 22:27:33 +0000
-Received: from BN9PR12MB5129.namprd12.prod.outlook.com
- ([fe80::b891:a906:28f0:fdb]) by BN9PR12MB5129.namprd12.prod.outlook.com
- ([fe80::b891:a906:28f0:fdb%3]) with mapi id 15.20.4436.024; Thu, 26 Aug 2021
- 22:27:33 +0000
-Subject: Re: [PATCH v1 03/14] mm: add iomem vma selection for memory migration
-To:     "Sierra Guiza, Alejandro (Alex)" <alex.sierra@amd.com>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        rcampbell@nvidia.com, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, jgg@nvidia.com, jglisse@redhat.com
-References: <20210825034828.12927-1-alex.sierra@amd.com>
- <20210825034828.12927-4-alex.sierra@amd.com> <20210825074602.GA29620@lst.de>
- <c4241eb3-07d2-c85b-0f48-cce4b8369381@amd.com>
-From:   Felix Kuehling <felix.kuehling@amd.com>
-Message-ID: <a9eb2c4a-d8cc-9553-57b7-fd1622679aaa@amd.com>
-Date:   Thu, 26 Aug 2021 18:27:31 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <c4241eb3-07d2-c85b-0f48-cce4b8369381@amd.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-ClientProxiedBy: YT1PR01CA0040.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:2e::9) To BN9PR12MB5129.namprd12.prod.outlook.com
- (2603:10b6:408:136::12)
+        id S244005AbhH0C1C (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 26 Aug 2021 22:27:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54006 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243148AbhH0C1B (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 26 Aug 2021 22:27:01 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36F49C0613C1
+        for <linux-ext4@vger.kernel.org>; Thu, 26 Aug 2021 19:26:13 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id g21so7692631edw.4
+        for <linux-ext4@vger.kernel.org>; Thu, 26 Aug 2021 19:26:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Tn7AXqoNlFEiSH5o/ASAVHYdKyToR0ttJRMjHQuhc2k=;
+        b=kShX6RE57p3tTmkrpmlSTmebMyPgiIhmX67GY4jlYN5zdRMezqjEOqyo1BepHRZudO
+         BET2EDCtfMFIb8nhAbGJxjZazPx17q3HLXlYnR1hMv1JicgUH+EgVj/BfNzSX8ME0bgg
+         qyiPTolSSKhsUPz3NcC66HuIjkCnGBak211JB7HiLtCxOnt59LZWZ7hBF+Ldr7Tc8b15
+         kIUjzOLBgJnvCTEwbil2XQbNsj1gjjyXEXkjGQJIGjIHmwe7ThZxyRrv+kvFyU1qe+2j
+         iHbEYJUAW8m0A1Sq1L1VjflDHwDc3/exe7C2oeGPKgg9Awr0pKnogtcpHsmXLjVXlwMF
+         /87A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Tn7AXqoNlFEiSH5o/ASAVHYdKyToR0ttJRMjHQuhc2k=;
+        b=tyvjfz8IhQ+V8zaIC3bh4t1z4qN8qSMdugtYg5Gh8PNJ4IhpMde4n1XgQDSsqZij3g
+         gdJwxOf1BE8ORnhJY4H+z1zVNSqghSNEAEW3fBsQKRRFNVlx0EVUtjZeivecffcqCqsE
+         mUgPlNNUIlkNoJCbDh7qXCXcur7LryxQZOrKAId+hlM9CsB+fEQhINIQdwMsz4Mea3ft
+         HRV/HLm+eYj4uXF40IFIvT6ag38gnqRJDXHwUuGU8PgVHb/AVb+tPQ26e8t7f7PWW6s5
+         UYMvUdrz0LKQG80KbNA4of19fBoLfO0vGid8DmJLVJD5O+sv2eqjnr4JRtSztY8eEtsz
+         vp/A==
+X-Gm-Message-State: AOAM533BNmf1MIOCuGTg+WCp5fIb8d1x1LdBuSumUMbEh2ToxsSvc/3d
+        TTE8JQnQxWPsBJfi89L8VdOPbUlGUy6TjUnxDQyS
+X-Google-Smtp-Source: ABdhPJyAX69PQ+NxLWiGAYBLmdcOx3QvYk2/H1F/1d3DZLZ/12m47WckKKaur36QJcC5AJHYtraO8I6FNeqLBKEN87Q=
+X-Received: by 2002:a05:6402:1642:: with SMTP id s2mr7461170edx.135.1630031171063;
+ Thu, 26 Aug 2021 19:26:11 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.2.100] (142.186.47.3) by YT1PR01CA0040.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2e::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.21 via Frontend Transport; Thu, 26 Aug 2021 22:27:32 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8d51cac4-1386-465b-0702-08d968e0b2d1
-X-MS-TrafficTypeDiagnostic: BN9PR12MB5164:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BN9PR12MB5164EABA0E4E61AB480ECF8E92C79@BN9PR12MB5164.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: E2FnfY0U+VrvBEXCdeyQtF53uTJz7koYuW1iwgZfxyUR3XVRdwyQIKdv62Nx9T1jskBY2ZA8qMvzrpjisWBJzaCq/TSOG0vPQhHF0q7mXfjDPGYWtAgU4HSxJ5l/JKWQ9T0xQJxFHv1wW9XgYRKd2gG8CS8gHR6st2FacCntyRSla36kVMn8nP7e+jcLyM/sdl5DRyebd3kTPrW4kmeG/mV/SM5ptf6herh4rLOJuI38egJ6MaIER+xd6uXuZsfh7EDtzFsAgyWQwvr696e2fzuWaZWqAHuGlAc2p78ZhMqE65lMhWcnBtEF/54UIqW0cs7VRf1M1MrwnEQKk6/oYtfCBCn4FYlaNY0n4ohPvRx5ewOeBGnPb0zQoSeycVpbdHhg85ZHcaJrjCwOZlTDfR577PcWlBBKvFSDqy2p9gXqmSlMymZoUDNLrlXg885ydLZvQLz9xNNaP42g7JuwvErG2cuo6jk2M9vKxwxS9ut5qSUpm2HTgRkDi7G0At+V8L6Kg50wEUS58YD7t+j1V1Ji3vBuCsSYWDlnIISJwuflLWFsKF+liyDs5RpXiibHCBlQ+gOwnxkZCTvHDoUm5He5w111Uq6/r4otXy31s7tOk3lWExbeL7mVQRoKctnK0dV8FBFprfw4ChgCA/oxV7IaDF0F0g+7dK39XtHS7gGrwuMIfDFZKYSQNvSvcXiJpExFIIPQkSlUBG6uXWrqqR9V0IRi3mWp93EaBqsS6Qg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5129.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(136003)(366004)(376002)(346002)(478600001)(4326008)(86362001)(31696002)(8676002)(66946007)(66556008)(31686004)(316002)(66476007)(8936002)(16576012)(110136005)(2906002)(38100700002)(36756003)(53546011)(44832011)(26005)(186003)(5660300002)(2616005)(6486002)(956004)(7416002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MWV6cFB6engrMWExWUE1TS9jekZDS01IR0RiY0lTWjdIMTgxTW5mdW85ZU9r?=
- =?utf-8?B?UnhuM05QRWRaRW5PckVTNEcvQjg5V1E4R0FnS1l4NS9nVmtZVzR1RGlJYWUz?=
- =?utf-8?B?V2JsVlQ5eEJhYW5zY1VFbmtIVHdMUjZ3WXdWbVozWDljZXFzczU3NXVRcU0r?=
- =?utf-8?B?YVJxVytUbDhVWGM2QWRnNno2Tm00elBWTEdoc09hMS9DbVZNWm9idGJ2elhK?=
- =?utf-8?B?eWtuMTFaWGdBUk05cnU3eDlYNHREaWFGZHJTcXBJWHlEbWFCcTJLbXBKRnpN?=
- =?utf-8?B?QzdPOUsxOUZhQWFFSUJRcTJyK0ZnSmtmdnV5QmVKMEpCNlJBc1dpRGF5bkZC?=
- =?utf-8?B?NytncnR2dHZzZVNIeHJsMVRlK1MrUStaU0EvUFJSYmlVZ1dpaXZaSlFTSTB3?=
- =?utf-8?B?Tm5FZlNvZ1lyTExoVzV4YnE1VVRxNEVwMXRUL3oyUHVTOEEvVlFGQjNGTXJG?=
- =?utf-8?B?eXpWbzRMMmpxWjcrVmY0emRSSmpSNndXR0ROQndoT3FEcmQ5Mkg4ZEV5V2pP?=
- =?utf-8?B?Y0FhYVpUaXlPMkFhMUZZUUJYVkpJcVpNbVpJZ0JBMlZJZkViY3IwRVRrckVr?=
- =?utf-8?B?WGtKeWdkUm41NDRMUzM5Z3JrODUrMHJuMnBlZHlPblloN1VxejJMM1gzc2Vn?=
- =?utf-8?B?Rm5oN0xQRTZDTmZXd0tRSGtHNlhGZU9STGVaL2lsT1FjbkwrR2hBRjhKeEZF?=
- =?utf-8?B?NytSWmJkWmRyUEhSZUQzVThQMXlrbktvb2pPOWtxVFFpRTloWmhEczZNR2VV?=
- =?utf-8?B?TDNHVzRDVWpwb0E5ZnYyeEdHVXg4clpXOGxyUkNHQ2JMZG1iOHNxSlRQMS9a?=
- =?utf-8?B?WVU3cHU0Y011Mk9LTCtaZlI0MmpZbEtmMzQrZElhbmZnUTNuakdZWWM1S0RP?=
- =?utf-8?B?NnpGZG02a0F3RkpPNHMveUYvcjh2MHVkSiswdEpkQXZ5QTBTM1pnQzNKS25W?=
- =?utf-8?B?V0F5NkdjdWVXNXNxSkdDeWVoR0xMUjlVeXlDNTdIY1ZOREFhNG9NZXIyUUFJ?=
- =?utf-8?B?U2RKb1RBUGkyUlo2LzZlbS8xME80WTQ3dENTeml4V29qWWh2dm5FbnRaL2I0?=
- =?utf-8?B?S1JveitQaXdwNFNBYlNmeVZPYkFrYWFGU0FzWGJaVEJpZHdHbWF2bGdLWXAz?=
- =?utf-8?B?TFRtWVFwRjV2OFl2bjBNOHR6NktsQk9jQW9QaVJVQzJjTzFNdGNvT1FjL1U5?=
- =?utf-8?B?NUo0SmVCdXpzOFhyNUpuZGM3TGpwY3dNSDIwWXB3ZysxaU9MWHdUVktZanBB?=
- =?utf-8?B?azF0ZFJXKzhPbXRrcFIxeVNxQ3hVbEoyQUZuYkl5ZXFaNDAySHFWRldwWGow?=
- =?utf-8?B?alA2QVZYK3RneFFWTUZKZDlzV1I4NHlSSlNYcDJ6WmFyakJrT05QWGdpaHpr?=
- =?utf-8?B?OEJHMVd3L3Bxa3JKWW5Rc0pRNTRkVFRsdEhRd1lzb3l3Tm1UbVY1RjYzM0hM?=
- =?utf-8?B?aVM5TWRxOEpPdXYxZEt3QkNienB6R0hCN2h4d2YxalE3azhuZWZ5S3FoSGlQ?=
- =?utf-8?B?Ti94SURyZS8xTDBaYTNQOU1wUGNsVCtwbFduV1Z1b1NPdnRoN24yN0xrTE5R?=
- =?utf-8?B?endqbVpCdVFpclRmSnF1ZzY5MTUzNFc4Qm9ldzA3WUhSd1FUTU9QZVEvdlFC?=
- =?utf-8?B?U0VjSHRCTE15S3RyMlFtazFCdDZRTTRGem1TOEFXWVd6TmR6REtxVU50dWxR?=
- =?utf-8?B?c24rdjNYZldUYjlpYVZvUVd2N1V0Qk1aZ3ZWZlUzMkZ0MmhIM1NaNy9aVTRz?=
- =?utf-8?Q?lkeLxPHUswi8F60B3QgarQOonVqKI1+VQNFK5PI?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8d51cac4-1386-465b-0702-08d968e0b2d1
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5129.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Aug 2021 22:27:33.3593
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: SanLMPqS/O0oQBvAUwxmh6AI2jEy1jvvINlDyDy+WyjeV0uYES/JgaGJdyKHJec7Y+DsVhUaHmH0BXr/nqvOGw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5164
+References: <20210812214010.3197279-1-krisman@collabora.com>
+ <20210812214010.3197279-10-krisman@collabora.com> <CAOQ4uxi7otGo6aNNMk9-fVQCx4Q0tDFe7sJaCr6jj1tNtfExTg@mail.gmail.com>
+ <87tujdz7u7.fsf@collabora.com> <CAOQ4uxhj=UuvT5ZonFD2sgufqWrF9m4XJ19koQ5390GUZ32g7g@mail.gmail.com>
+ <87mtp5yz0q.fsf@collabora.com> <CAOQ4uxjnb0JmKVpMuEfa_NgHmLRchLz_3=9t2nepdS4QXJ=QVg@mail.gmail.com>
+In-Reply-To: <CAOQ4uxjnb0JmKVpMuEfa_NgHmLRchLz_3=9t2nepdS4QXJ=QVg@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 26 Aug 2021 22:26:00 -0400
+Message-ID: <CAHC9VhT9SE6+kLYBh2d7CW5N6RCr=_ryK+ncGvqYJ51B7_egPA@mail.gmail.com>
+Subject: Re: [PATCH v6 09/21] fsnotify: Allow events reported with an empty inode
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Jan Kara <jack@suse.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Ext4 <linux-ext4@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Khazhismel Kumykov <khazhy@google.com>,
+        David Howells <dhowells@redhat.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Theodore Tso <tytso@mit.edu>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Matthew Bobrowski <repnop@google.com>, kernel@collabora.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Am 2021-08-25 um 2:24 p.m. schrieb Sierra Guiza, Alejandro (Alex):
+On Thu, Aug 26, 2021 at 6:45 AM Amir Goldstein <amir73il@gmail.com> wrote:
+> On Thu, Aug 26, 2021 at 12:50 AM Gabriel Krisman Bertazi
+> <krisman@collabora.com> wrote:
+> >
+> > Amir Goldstein <amir73il@gmail.com> writes:
+> >
+> > > On Wed, Aug 25, 2021 at 9:40 PM Gabriel Krisman Bertazi
+> > > <krisman@collabora.com> wrote:
+> > >>
+> > >> Amir Goldstein <amir73il@gmail.com> writes:
+> > >>
+> > >> > On Fri, Aug 13, 2021 at 12:41 AM Gabriel Krisman Bertazi
+> > >> > <krisman@collabora.com> wrote:
+> > >> >>
+> > >> >> Some file system events (i.e. FS_ERROR) might not be associated with an
+> > >> >> inode.  For these, it makes sense to associate them directly with the
+> > >> >> super block of the file system they apply to.  This patch allows the
+> > >> >> event to be reported with a NULL inode, by recovering the superblock
+> > >> >> directly from the data field, if needed.
+> > >> >>
+> > >> >> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+> > >> >>
+> > >> >> --
+> > >> >> Changes since v5:
+> > >> >>   - add fsnotify_data_sb handle to retrieve sb from the data field. (jan)
+> > >> >> ---
+> > >> >>  fs/notify/fsnotify.c | 16 +++++++++++++---
+> > >> >>  1 file changed, 13 insertions(+), 3 deletions(-)
+> > >> >>
+> > >> >> diff --git a/fs/notify/fsnotify.c b/fs/notify/fsnotify.c
+> > >> >> index 30d422b8c0fc..536db02cb26e 100644
+> > >> >> --- a/fs/notify/fsnotify.c
+> > >> >> +++ b/fs/notify/fsnotify.c
+> > >> >> @@ -98,6 +98,14 @@ void fsnotify_sb_delete(struct super_block *sb)
+> > >> >>         fsnotify_clear_marks_by_sb(sb);
+> > >> >>  }
+> > >> >>
+> > >> >> +static struct super_block *fsnotify_data_sb(const void *data, int data_type)
+> > >> >> +{
+> > >> >> +       struct inode *inode = fsnotify_data_inode(data, data_type);
+> > >> >> +       struct super_block *sb = inode ? inode->i_sb : NULL;
+> > >> >> +
+> > >> >> +       return sb;
+> > >> >> +}
+> > >> >> +
+> > >> >>  /*
+> > >> >>   * Given an inode, first check if we care what happens to our children.  Inotify
+> > >> >>   * and dnotify both tell their parents about events.  If we care about any event
+> > >> >> @@ -455,8 +463,10 @@ static void fsnotify_iter_next(struct fsnotify_iter_info *iter_info)
+> > >> >>   *             @file_name is relative to
+> > >> >>   * @file_name: optional file name associated with event
+> > >> >>   * @inode:     optional inode associated with event -
+> > >> >> - *             either @dir or @inode must be non-NULL.
+> > >> >> - *             if both are non-NULL event may be reported to both.
+> > >> >> + *             If @dir and @inode are NULL, @data must have a type that
+> > >> >> + *             allows retrieving the file system associated with this
+> > >> >
+> > >> > Irrelevant comment. sb must always be available from @data.
+> > >> >
+> > >> >> + *             event.  if both are non-NULL event may be reported to
+> > >> >> + *             both.
+> > >> >>   * @cookie:    inotify rename cookie
+> > >> >>   */
+> > >> >>  int fsnotify(__u32 mask, const void *data, int data_type, struct inode *dir,
+> > >> >> @@ -483,7 +493,7 @@ int fsnotify(__u32 mask, const void *data, int data_type, struct inode *dir,
+> > >> >>                  */
+> > >> >>                 parent = dir;
+> > >> >>         }
+> > >> >> -       sb = inode->i_sb;
+> > >> >> +       sb = inode ? inode->i_sb : fsnotify_data_sb(data, data_type);
+> > >> >
+> > >> >         const struct path *path = fsnotify_data_path(data, data_type);
+> > >> > +       const struct super_block *sb = fsnotify_data_sb(data, data_type);
+> > >> >
+> > >> > All the games with @data @inode and @dir args are irrelevant to this.
+> > >> > sb should always be available from @data and it does not matter
+> > >> > if fsnotify_data_inode() is the same as @inode, @dir or neither.
+> > >> > All those inodes are anyway on the same sb.
+> > >>
+> > >> Hi Amir,
+> > >>
+> > >> I think this is actually necessary.  I could identify at least one event
+> > >> (FS_CREATE | FS_ISDIR) where fsnotify is invoked with a NULL data field.
+> > >> In that case, fsnotify_dirent is called with a negative dentry from
+> > >> vfs_mkdir().  I'm not sure why exactly the dentry is negative after the
+> > >
+> > > That doesn't sound right at all.
+> > > Are you sure about this?
+> > > Which filesystem was this mkdir called on?
+> >
+> > You should be able to reproduce it on top of mainline if you pick only this
+> > patch and do the change you suggested:
+> >
+> >  -       sb = inode->i_sb;
+> >  +       sb = fsnotify_data_sb(data, data_type);
+> >
+> > And then boot a Debian stable with systemd.  The notification happens on
+> > the cgroup pseudo-filesystem (/sys/fs/cgroup), which is being monitored
+> > by systemd itself.  The event that arrives with a NULL data is telling the
+> > directory /sys/fs/cgroup/*/ about the creation of directory
+> > `init.scope`.
+> >
+> > The change above triggers the following null dereference of struct
+> > super_block, since data is NULL.
+> >
+> > I will keep looking but you might be able to answer it immediately...
 >
-> On 8/25/2021 2:46 AM, Christoph Hellwig wrote:
->> On Tue, Aug 24, 2021 at 10:48:17PM -0500, Alex Sierra wrote:
->>>           } else {
->>> -            if (!(migrate->flags & MIGRATE_VMA_SELECT_SYSTEM))
->>> +            if (!(migrate->flags & MIGRATE_VMA_SELECT_SYSTEM) &&
->>> +                !(migrate->flags & MIGRATE_VMA_SELECT_IOMEM))
->>>                   goto next;
->>>               pfn = pte_pfn(pte);
->>>               if (is_zero_pfn(pfn)) {
->> .. also how is this going to work for the device public memory?  That
->> should be pte_special() an thus fail vm_normal_page.
-> Perhaps we're missing something, as we're not doing any special
-> marking for the device public pfn/entries.
-> pfn_valid return true, pte_special return false and pfn_t_devmap
-> return false on these pages. Same as system pages.
-> That's the reason vm_normal_page returns the page correctly through
-> pfn_to_page helper.
-
-Hi Christoph,
-
-I think we're missing something here. As far as I can tell, all the work
-we did first with DEVICE_GENERIC and now DEVICE_PUBLIC always used
-normal pages. Are we missing something in our driver code that would
-make these PTEs special? I don't understand how that can be, because
-driver code is not really involved in updating the CPU mappings. Maybe
-it's something we need to do in the migration helpers.
-
-Thanks,
-  Felix
-
-
+> Yes, I see what is going on.
 >
-> Regards,
-> Alex S.
+> cgroupfs is a sort of kernfs and kernfs_iop_mkdir() does not instantiate
+> the negative dentry. Instead, kernfs_dop_revalidate() always invalidates
+> negative dentries to force re-lookup to find the inode.
+>
+> Documentation/filesystems/vfs.rst says on create() and friends:
+> "...you will probably call d_instantiate() with the dentry and the
+>   newly created inode..."
+>
+> So this behavior seems legit.
+> Meaning that we have made a wrong assumption in fsnotify_create()
+> and fsnotify_mkdir().
+> Please note the comment above fsnotify_link() which anticipates
+> negative dentries.
+>
+> I've audited the fsnotify backends and it seems that the
+> WARN_ON(!inode) in kernel/audit_* is the only immediate implication
+> of negative dentry with FS_CREATE.
+> I am the one who added these WARN_ON(), so I will remove them.
+> I think that missing inode in an FS_CREATE event really breaks
+> audit on kernfs, but not sure if that is a valid use case (Paul?).
+
+While it is tempting to ignore kernfs from an audit filesystem watch
+perspective, I can see admins potentially wanting to watch
+kernfs/cgroupfs/other-config-pseudofs to detect who is potentially
+playing with the system config.  Arguably the most important config
+changes would already be audited if they were security relevant, but I
+could also see an admin wanting to watch for *any* changes so it's
+probably best not to rule out a kernfs based watch right now.
+
+I'm sure I'm missing some details, but from what I gather from the
+portion of the thread that I'm seeing, it looks like the audit issue
+lies in audit_mark_handle_event() and audit_watch_handle_event().  In
+both cases it looks like the functions are at least safe with a NULL
+inode pointer, even with the WARN_ON() removed; the problem being that
+the mark and watch will not be updated with the device and inode
+number which means the audit filters based on those marks/watches will
+not trigger.  Is that about right or did I read the thread and code a
+bit too quickly?
+
+Working under the assumption that the above is close enough to
+correct, that is a bit of a problem as it means audit can't
+effectively watch kernfs based filesystems, although it sounds like it
+wasn't really working properly to begin with, yes?  Before I start
+thinking too hard about this, does anyone already have a great idea to
+fix this that they want to share?
+
+-- 
+paul moore
+www.paul-moore.com
