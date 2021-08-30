@@ -2,54 +2,82 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6703FB5A3
-	for <lists+linux-ext4@lfdr.de>; Mon, 30 Aug 2021 14:09:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05FB03FBA54
+	for <lists+linux-ext4@lfdr.de>; Mon, 30 Aug 2021 18:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237266AbhH3MGo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 30 Aug 2021 08:06:44 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:53932 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S236625AbhH3MGf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 30 Aug 2021 08:06:35 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 17UC5Yfr003951
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 30 Aug 2021 08:05:35 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 68C7015C3E6B; Mon, 30 Aug 2021 08:05:34 -0400 (EDT)
-Date:   Mon, 30 Aug 2021 08:05:34 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Denis Efremov <efremov@linux.com>
-Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4: change EXT4_IOC_GETSTATE ioctl to _IOR
-Message-ID: <YSzJjtUtXRxeXSwl@mit.edu>
-References: <20210830100508.56004-1-efremov@linux.com>
+        id S237902AbhH3QsO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 30 Aug 2021 12:48:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34392 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237882AbhH3QsN (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 30 Aug 2021 12:48:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E01B160F5B;
+        Mon, 30 Aug 2021 16:47:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630342039;
+        bh=/ZbEAxvBW5ig7WPYzIG6ftbGUGoR7j4+CJT1CyKUAgE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=pPqSREqxmcM2xCHL9kODFPILmxDGalIsKDmDe4jGEPsUozDmh+ruX/O/LmhFODtxt
+         VIYvEwC66svykfXl46dTWe79Ys9le0rVp8NZQw7+j4+oAkLtIeqaBDdNerIXmXcYy2
+         DL1OPRMOsyyZ2q+lnCE7aOMpGrtF1gToEk+RLJeAnoj92vfbhp0ATxlcesE0t4ukna
+         UCMbyhEXzp4HW4Eeddf/2PerQXND5kpqT+osxua6VBfYadx7WWHEOBZqSUV18dXwku
+         NgpMAbi14Mi2x+cqbjH7Q8Ol9FNwDAMOZ5wOFyU3Kl+CO6fH5m7N17PykROLOlsM3a
+         try7iQyJi19Lg==
+Date:   Mon, 30 Aug 2021 09:47:17 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [GIT PULL] fscrypt updates for 5.15
+Message-ID: <YS0LlXIhvZc4r5Vt@sol.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210830100508.56004-1-efremov@linux.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 01:05:08PM +0300, Denis Efremov wrote:
-> EXT4_IOC_GETSTATE is only used to read the state flags from the kernel.
-> 
-> Fixes: 1ad3ea6e0a69 ("ext4: add a new ioctl EXT4_IOC_GETSTATE")
-> Signed-off-by: Denis Efremov <efremov@linux.com>
+The following changes since commit ff1176468d368232b684f75e82563369208bc371:
 
-NACK.  This will break ABI compatibility, which is way important than
-getting the ioctl encoding incorrect.
+  Linux 5.14-rc3 (2021-07-25 15:35:14 -0700)
 
-If you really care, I suppose we could add an EXT4_IOC_GETSTATE_OLD
-for the old value, and then support EXT4_IOC_GETSTATE and
-EXT4_IOC_GETSTATE_OLD for a decade or two until all of the binaries in
-the world get recompiled.
+are available in the Git repository at:
 
-Is it worth it?  Eh....
+  https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
 
-						- Ted
-						
+for you to fetch changes up to 38ef66b05cfa3560323344a0b3e09e583f1eb974:
+
+  fscrypt: document struct fscrypt_operations (2021-07-28 21:40:36 -0700)
+
+----------------------------------------------------------------
+
+Some small fixes and cleanups for fs/crypto/:
+
+- Fix ->getattr() for ext4, f2fs, and ubifs to report the correct
+  st_size for encrypted symlinks.
+
+- Use base64url instead of a custom Base64 variant.
+
+- Document struct fscrypt_operations.
+
+----------------------------------------------------------------
+Eric Biggers (7):
+      fscrypt: add fscrypt_symlink_getattr() for computing st_size
+      ext4: report correct st_size for encrypted symlinks
+      f2fs: report correct st_size for encrypted symlinks
+      ubifs: report correct st_size for encrypted symlinks
+      fscrypt: remove mention of symlink st_size quirk from documentation
+      fscrypt: align Base64 encoding with RFC 4648 base64url
+      fscrypt: document struct fscrypt_operations
+
+ Documentation/filesystems/fscrypt.rst |  15 ++---
+ fs/crypto/fname.c                     | 106 +++++++++++++++++++------------
+ fs/crypto/hooks.c                     |  44 +++++++++++++
+ fs/ext4/symlink.c                     |  12 +++-
+ fs/f2fs/namei.c                       |  12 +++-
+ fs/ubifs/file.c                       |  13 +++-
+ include/linux/fscrypt.h               | 116 ++++++++++++++++++++++++++++++++--
+ 7 files changed, 260 insertions(+), 58 deletions(-)
