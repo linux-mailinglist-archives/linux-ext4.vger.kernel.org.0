@@ -2,142 +2,112 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB6B43FE26C
-	for <lists+linux-ext4@lfdr.de>; Wed,  1 Sep 2021 20:32:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 295743FE52F
+	for <lists+linux-ext4@lfdr.de>; Thu,  2 Sep 2021 00:03:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240154AbhIASd3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 1 Sep 2021 14:33:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236651AbhIASd3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Sep 2021 14:33:29 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 753AEC061575
-        for <linux-ext4@vger.kernel.org>; Wed,  1 Sep 2021 11:32:32 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so343054pjc.3
-        for <linux-ext4@vger.kernel.org>; Wed, 01 Sep 2021 11:32:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=DmpEch5ev3+gTobUZKB+8VTTEvVodWKsEqQ8GZ13Y4s=;
-        b=R7p2LugP07pwnViWKE72FgbMIgEoCiIrYi3+3v0YNMpGr53jmERowx51uipKmKBrvz
-         px0dsxp+i9F5dQOyjctjKAPkZwrKXZmbCsHSm/JjqoBi4pg53J/+ZxFwi2nqlULlVKkK
-         1JZYuuV3uRYqD6r/6MV6MYJXUIhGDcTANCfPVwBiIrjOPEAiJpfOIFqehhrcOf56F2dF
-         nwCUOM5z9B9W9YyiMdQaHEX2S+zBsWlvudHBxv91xM/svz+jJEUu9YoQ7W6P3VmOnlqG
-         vpfbgvvaSKR95xouL/g1+ppWZXogxxhy32SgUoZ+sSHhjO+UEwEWwue4ohm/lLOJhTqf
-         TZyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=DmpEch5ev3+gTobUZKB+8VTTEvVodWKsEqQ8GZ13Y4s=;
-        b=OqPPCPe5sR7he1RQuhk0G743Z1DIA3eg3pNZys56D7A1hSjJvRBxETK3u1/FJx5WCJ
-         l9gIfJTkCDOaWpR28oWIbGf0kwdPG8kZL5ZgOWan+Fo9OvnGEftVqQVbSzifVxet1Kq4
-         3YQ8a8WnZHv8qJPMaCjV+PHkPK2tGeoTkQptZppy5iaSpwFp++OeIGkTgsIW8PiC+BKg
-         e7UaBYWcod/U7YkczXPo+1MCeZ6mLwdStP4B90gqfZYJ1sxs0fDs9ffsYOCQWUWRxWgt
-         PVYkfHaFniVufjvw5UDwTpeWRhdHdh3FpJXGGUmx0ycG6aHC6J9bY0rp+DLAzRH3xFzE
-         wfCQ==
-X-Gm-Message-State: AOAM532Aw1IxaHcLXiziReqw/O2EJqGmHpNfTIlkwpV7kzOEEj2FD2mZ
-        K2+qIisoRNatVfQijPJYiNV3zA==
-X-Google-Smtp-Source: ABdhPJwusXND+YHpZp1RmnFVhEwpbuM/NlMKHM2MGpjzFDgDQ3c+Hcv9+Wl7u1X1+Vn/e2JXyCEiMg==
-X-Received: by 2002:a17:902:ab98:b029:12b:acc0:e18c with SMTP id f24-20020a170902ab98b029012bacc0e18cmr847025plr.10.1630521151949;
-        Wed, 01 Sep 2021 11:32:31 -0700 (PDT)
-Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id t15sm217159pja.1.2021.09.01.11.32.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 01 Sep 2021 11:32:31 -0700 (PDT)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <D621A2D5-954E-4CEC-94CD-CB4D6643934B@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_112E4B44-E5AA-476E-B4FB-7A497A760CDA";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [RFC] replace revoke hash table with rhashtable
-Date:   Wed, 1 Sep 2021 12:32:28 -0600
-In-Reply-To: <96FE09AA-171C-49B1-B434-505C15FEB435@whamcloud.com>
-Cc:     linux-ext4 <linux-ext4@vger.kernel.org>
-To:     Alex Zhuravlev <azhuravlev@whamcloud.com>
-References: <96FE09AA-171C-49B1-B434-505C15FEB435@whamcloud.com>
-X-Mailer: Apple Mail (2.3273)
+        id S243571AbhIAWER (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 1 Sep 2021 18:04:17 -0400
+Received: from mail110.syd.optusnet.com.au ([211.29.132.97]:60031 "EHLO
+        mail110.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232075AbhIAWEM (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Sep 2021 18:04:12 -0400
+Received: from dread.disaster.area (pa49-195-182-146.pa.nsw.optusnet.com.au [49.195.182.146])
+        by mail110.syd.optusnet.com.au (Postfix) with ESMTPS id 19347110DA0;
+        Thu,  2 Sep 2021 08:03:09 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1mLYK4-007bho-FA; Thu, 02 Sep 2021 08:03:08 +1000
+Date:   Thu, 2 Sep 2021 08:03:08 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Felix Kuehling <felix.kuehling@amd.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        "Sierra Guiza, Alejandro (Alex)" <alex.sierra@amd.com>,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        rcampbell@nvidia.com, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, jgg@nvidia.com, jglisse@redhat.com
+Subject: Re: [PATCH v1 03/14] mm: add iomem vma selection for memory migration
+Message-ID: <20210901220308.GL2566745@dread.disaster.area>
+References: <20210825034828.12927-1-alex.sierra@amd.com>
+ <20210825034828.12927-4-alex.sierra@amd.com>
+ <20210825074602.GA29620@lst.de>
+ <c4241eb3-07d2-c85b-0f48-cce4b8369381@amd.com>
+ <a9eb2c4a-d8cc-9553-57b7-fd1622679aaa@amd.com>
+ <20210830082800.GA6836@lst.de>
+ <e40b3b79-f548-b87b-7a85-f654f25ed8dd@amd.com>
+ <20210901082925.GA21961@lst.de>
+ <11d64457-9d61-f82d-6c98-d68762dce85d@amd.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <11d64457-9d61-f82d-6c98-d68762dce85d@amd.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0
+        a=QpfB3wCSrn/dqEBSktpwZQ==:117 a=QpfB3wCSrn/dqEBSktpwZQ==:17
+        a=kj9zAlcOel0A:10 a=7QKq2e-ADPsA:10 a=7-415B0cAAAA:8
+        a=f3XvwggIp9kaoS7fsTAA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Wed, Sep 01, 2021 at 11:40:43AM -0400, Felix Kuehling wrote:
+> 
+> Am 2021-09-01 um 4:29 a.m. schrieb Christoph Hellwig:
+> > On Mon, Aug 30, 2021 at 01:04:43PM -0400, Felix Kuehling wrote:
+> >>>> driver code is not really involved in updating the CPU mappings. Maybe
+> >>>> it's something we need to do in the migration helpers.
+> >>> It looks like I'm totally misunderstanding what you are adding here
+> >>> then.  Why do we need any special treatment at all for memory that
+> >>> has normal struct pages and is part of the direct kernel map?
+> >> The pages are like normal memory for purposes of mapping them in CPU
+> >> page tables and for coherent access from the CPU.
+> > That's the user page tables.  What about the kernel direct map?
+> > If there is a normal kernel struct page backing there really should
+> > be no need for the pgmap.
+> 
+> I'm not sure. The physical address ranges are in the UEFI system address
+> map as special-purpose memory. Does Linux create the struct pages and
+> kernel direct map for that without a pgmap call? I didn't see that last
+> time I went digging through that code.
+> 
+> 
+> >
+> >> From an application
+> >> perspective, we want file-backed and anonymous mappings to be able to
+> >> use DEVICE_PUBLIC pages with coherent CPU access. The goal is to
+> >> optimize performance for GPU heavy workloads while minimizing the need
+> >> to migrate data back-and-forth between system memory and device memory.
+> > I don't really understand that part.  file backed pages are always
+> > allocated by the file system using the pagecache helpers, that is
+> > using the page allocator.  Anonymouns memory also always comes from
+> > the page allocator.
+> 
+> I'm coming at this from my experience with DEVICE_PRIVATE. Both
+> anonymous and file-backed pages should be migrateable to DEVICE_PRIVATE
+> memory by the migrate_vma_* helpers for more efficient access by our
+> GPU. (*) It's part of the basic premise of HMM as I understand it. I
+> would expect the same thing to work for DEVICE_PUBLIC memory.
+> 
+> (*) I believe migrating file-backed pages to DEVICE_PRIVATE doesn't
+> currently work, but that's something I'm hoping to fix at some point.
 
---Apple-Mail=_112E4B44-E5AA-476E-B4FB-7A497A760CDA
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=utf-8
+FWIW, I'd love to see the architecture documents that define how
+filesystems are supposed to interact with this device private
+memory. This whole "hand filesystem controlled memory to other
+devices" is a minefield that is trivial to get wrong iand very
+difficult to fix - just look at the historical mess that RDMA
+to/from file backed and/or DAX pages has been.
 
-On Aug 31, 2021, at 8:49 AM, Alex Zhuravlev <azhuravlev@whamcloud.com> =
-wrote:
->=20
-> Hi,
->=20
-> Not so long ago we noticed that journal replay can take quite a lot =
-(hours)
-> in cases where many journaled blocks were freed during a short period.
+So, really, from my perspective as a filesystem engineer, I want to
+see an actual specification for how this new memory type is going to
+interact with filesystem and the page cache so everyone has some
+idea of how this is going to work and can point out how it doesn't
+work before code that simply doesn't work is pushed out into
+production systems and then merged....
 
-It may be worthwhile to mention this was a case with a 4GB journal size.
+Cheers,
 
-> I benchmarked hash table used by revoke code, basically it=E2=80=99s =
-lookup+insert
-> like jbd2 does at replay:
->=20
-> 1048576 records - 95 seconds
-> 2097152 records - 580 seconds
->=20
-> Then I benchmarked rhashtable:
-> 1048576 records - 2 seconds
-> 2097152 records - 3 seconds
-> 4194304 records - 7 seconds
->=20
-> So, here is a patch replacing existing fixed-size hash table with =
-rhashtable, please have a look.
->=20
-> Thanks, Alex
-
-Alex,
-the patch looks good from both a performance standpoint, as well as
-a good reduction in lines (and possibly memory, for the cases where
-there are fewer entries in the hash than the static table size).
-
-I did notice some lines are using 8-space indents instead of tabs.
-That can be fixed if there are any other comments, and you resubmit
-without [RFC].
-
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_112E4B44-E5AA-476E-B4FB-7A497A760CDA
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmEvxzwACgkQcqXauRfM
-H+CjwQ/+Iegi87BY3W1p9e4yC4o8HiCRo4hXAE2hxKVzH1OIwW0atb0wMacNN376
-+zFxb5JU6CnIpGnOumzqggmsQ7AVzUwu0E8R8/jYpV8jUoC2/iCqKpkF3HiJAg4U
-L2SOVYTptVHJPG430kuOO28dQnzKpx5jPNRGrWCc9kttiT5YZfShF7jVP3iyfpL6
-qxKr/IgrRDaricIZ/aM8gVJvETW+ClkHA/QSl2MznQ5leNyREIID5BBwaF8ZKs33
-NxQ5Bc7oAaYm5XIkaMsDY4cf4ZWF8jI11Qx9oUrdPiygZzIDvVv+IvF+fCzF+wbk
-sgYbxq3bp/kVn3zXlpaWOdOQzG5O86OgR5yhv6Jn94cvGeVvkfkuUQWq9peG/Xqt
-QDv/gaLwjJkTkgNC8s7QvwjzRWqOF31kJJYPI5Xe834m8iMrs3thLMyjylX7eCWx
-1bBpoFUkPtaGIAkjNh7Rn6kUSTKF6ZcFw0rNWGXr13FP+ZCeu6FiDs7I4We2XBE4
-RoEVNJ/5XlRHHz6Ciz+FPFDVkO3nHMBKLyXj6WiE/GHgbd1r14LwQd1r7FIQgLLn
-LggIavk89WTkufSHki1B3YpDc3VXXrA7dPIJokZ28HsPU+fQ+RNEicSTyT2ePGsn
-sXEPEvyUddKPm8m/zUgFJuVfYwV5HX1C6ij6dMe3mhPmYzxP6WM=
-=md+S
------END PGP SIGNATURE-----
-
---Apple-Mail=_112E4B44-E5AA-476E-B4FB-7A497A760CDA--
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
