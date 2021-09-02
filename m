@@ -2,116 +2,128 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC8513FEFCB
-	for <lists+linux-ext4@lfdr.de>; Thu,  2 Sep 2021 17:03:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F31493FF082
+	for <lists+linux-ext4@lfdr.de>; Thu,  2 Sep 2021 17:51:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345686AbhIBPE3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 2 Sep 2021 11:04:29 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:55921 "EHLO
+        id S1345946AbhIBPwY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 2 Sep 2021 11:52:24 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:36500 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1345673AbhIBPE1 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 2 Sep 2021 11:04:27 -0400
+        with ESMTP id S1345939AbhIBPwY (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 2 Sep 2021 11:52:24 -0400
 Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 182F3Jgn005560
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 182FpJ3h027037
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 2 Sep 2021 11:03:20 -0400
+        Thu, 2 Sep 2021 11:51:19 -0400
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 6FFC315C33F9; Thu,  2 Sep 2021 11:03:19 -0400 (EDT)
-Date:   Thu, 2 Sep 2021 11:03:19 -0400
+        id 12F3115C33F9; Thu,  2 Sep 2021 11:51:19 -0400 (EDT)
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: [GIT PULL] ext4 changes for 5.15
-Message-ID: <YTDnt5RzyL+gOoHK@mit.edu>
+To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, stable@kernel.org,
+        Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Subject: [PATCH] ext4: add error checking to ext4_ext_replay_set_iblocks()
+Date:   Thu,  2 Sep 2021 11:51:08 -0400
+Message-Id: <20210902155108.381962-1-tytso@mit.edu>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The following changes since commit 877ba3f729fd3d8ef0e29bc2a55e57cfa54b2e43:
+If the call to ext4_map_blocks() fails due to an corrupted file
+system, ext4_ext_replay_set_iblocks() can get stuck in an infinite
+loop.  This could be reproduced by running generic/526 with a file
+system that has inline_data and fast_commit enabled.  The system will
+repeatedly log to the console:
 
-  ext4: fix potential htree corruption when growing large_dir directories (2021-08-06 13:00:49 -0400)
+EXT4-fs warning (device dm-3): ext4_block_to_path:105: block 1074800922 > max in inode 131076
 
-are available in the Git repository at:
+and the stack that it gets stuck in is:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus
+   ext4_block_to_path+0xe3/0x130
+   ext4_ind_map_blocks+0x93/0x690
+   ext4_map_blocks+0x100/0x660
+   skip_hole+0x47/0x70
+   ext4_ext_replay_set_iblocks+0x223/0x440
+   ext4_fc_replay_inode+0x29e/0x3b0
+   ext4_fc_replay+0x278/0x550
+   do_one_pass+0x646/0xc10
+   jbd2_journal_recover+0x14a/0x270
+   jbd2_journal_load+0xc4/0x150
+   ext4_load_journal+0x1f3/0x490
+   ext4_fill_super+0x22d4/0x2c00
 
-for you to fetch changes up to baaae979b112642a41b71c71c599d875c067d257:
+With this patch, generic/526 still fails, but system is no longer
+locking up in a tight loop.  It's likely the root casue is that
+fast_commit replay is corrupting file systems with inline_data, and we
+probably need to add better error handling in the fast commit replay
+code path beyond what is done here, which essentially just breaks the
+infinite loop without reporting the to the higher levels of the code.
 
-  ext4: make the updating inode data procedure atomic (2021-08-30 23:36:51 -0400)
+Fixes: 8016E29F4362 ("ext4: fast commit recovery path")
+Cc: stable@kernel.org
+Cc: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ fs/ext4/extents.c | 19 ++++++++++++++-----
+ 1 file changed, 14 insertions(+), 5 deletions(-)
 
-----------------------------------------------------------------
-In addition to some ext4 bug fixes and cleanups, this cycle we add the
-orphan_file feature, which eliminates bottlenecks when doing a large
-number of parallel truncates and file deletions, and move the discard
-operation out of the jbd2 commit thread when using the discard mount
-option, to better support devices with slow discard operations.
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index eb1dd4f024f2..e57019cc3601 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -5913,7 +5913,7 @@ void ext4_ext_replay_shrink_inode(struct inode *inode, ext4_lblk_t end)
+ }
+ 
+ /* Check if *cur is a hole and if it is, skip it */
+-static void skip_hole(struct inode *inode, ext4_lblk_t *cur)
++static int skip_hole(struct inode *inode, ext4_lblk_t *cur)
+ {
+ 	int ret;
+ 	struct ext4_map_blocks map;
+@@ -5922,9 +5922,12 @@ static void skip_hole(struct inode *inode, ext4_lblk_t *cur)
+ 	map.m_len = ((inode->i_size) >> inode->i_sb->s_blocksize_bits) - *cur;
+ 
+ 	ret = ext4_map_blocks(NULL, inode, &map, 0);
++	if (ret < 0)
++		return ret;
+ 	if (ret != 0)
+-		return;
++		return 0;
+ 	*cur = *cur + map.m_len;
++	return 0;
+ }
+ 
+ /* Count number of blocks used by this inode and update i_blocks */
+@@ -5973,7 +5976,9 @@ int ext4_ext_replay_set_iblocks(struct inode *inode)
+ 	 * iblocks by total number of differences found.
+ 	 */
+ 	cur = 0;
+-	skip_hole(inode, &cur);
++	ret = skip_hole(inode, &cur);
++	if (ret < 0)
++		goto out;
+ 	path = ext4_find_extent(inode, cur, NULL, 0);
+ 	if (IS_ERR(path))
+ 		goto out;
+@@ -5992,8 +5997,12 @@ int ext4_ext_replay_set_iblocks(struct inode *inode)
+ 		}
+ 		cur = max(cur + 1, le32_to_cpu(ex->ee_block) +
+ 					ext4_ext_get_actual_len(ex));
+-		skip_hole(inode, &cur);
+-
++		ret = skip_hole(inode, &cur);
++		if (ret < 0) {
++			ext4_ext_drop_refs(path);
++			kfree(path);
++			break;
++		}
+ 		path2 = ext4_find_extent(inode, cur, NULL, 0);
+ 		if (IS_ERR(path2)) {
+ 			ext4_ext_drop_refs(path);
+-- 
+2.31.0
 
-----------------------------------------------------------------
-Guoqing Jiang (1):
-      ext4: reduce arguments of ext4_fc_add_dentry_tlv
-
-Jan Kara (7):
-      ext4: fix e2fsprogs checksum failure for mounted filesystem
-      ext4: Make sure quota files are not grabbed accidentally
-      ext4: Support for checksumming from journal triggers
-      ext4: Move orphan inode handling into a separate file
-      ext4: Speedup ext4 orphan inode handling
-      ext4: Orphan file documentation
-      ext4: Improve scalability of ext4 orphan file handling
-
-Theodore Ts'o (7):
-      jbd2: fix portability problems caused by unaligned accesses
-      jbd2: fix clang warning in recovery.c
-      jbd2: clean up two gcc -Wall warnings in recovery.c
-      ext4: if zeroout fails fall back to splitting the extent node
-      ext4: fix sparse warnings
-      jbd2: add sparse annotations for add_transaction_credits()
-      ext4: fix race writing to an inline_data file while its xattrs are changing
-
-Wang Jianchao (5):
-      ext4: remove the 'group' parameter of ext4_trim_extent
-      ext4: add new helper interface ext4_try_to_trim_range()
-      ext4: remove the repeated comment of ext4_trim_all_free
-      ext4: get discard out of jbd2 commit kthread contex
-      ext4: flush background discard kwork when retry allocation
-
-Zhang Yi (3):
-      ext4: move inode eio simulation behind io completeion
-      ext4: remove an unnecessary if statement in __ext4_get_inode_loc()
-      ext4: make the updating inode data procedure atomic
-
- Documentation/filesystems/ext4/globals.rst        |   1 +
- Documentation/filesystems/ext4/inodes.rst         |  10 +-
- Documentation/filesystems/ext4/orphan.rst         |  52 +++
- Documentation/filesystems/ext4/special_inodes.rst |  17 +
- Documentation/filesystems/ext4/super.rst          |  15 +-
- fs/ext4/Makefile                                  |   2 +-
- fs/ext4/balloc.c                                  |   8 +-
- fs/ext4/ext4.h                                    | 108 ++++-
- fs/ext4/ext4_extents.h                            |   5 +-
- fs/ext4/ext4_jbd2.c                               |  43 +-
- fs/ext4/ext4_jbd2.h                               |  18 +-
- fs/ext4/extents.c                                 |  17 +-
- fs/ext4/fast_commit.c                             |  27 +-
- fs/ext4/file.c                                    |   3 +-
- fs/ext4/ialloc.c                                  |  19 +-
- fs/ext4/indirect.c                                |  15 +-
- fs/ext4/inline.c                                  |  32 +-
- fs/ext4/inode.c                                   | 301 +++++++-------
- fs/ext4/ioctl.c                                   |   4 +-
- fs/ext4/mballoc.c                                 | 259 ++++++++----
- fs/ext4/namei.c                                   | 214 +---------
- fs/ext4/orphan.c                                  | 652 ++++++++++++++++++++++++++++++
- fs/ext4/resize.c                                  |  38 +-
- fs/ext4/super.c                                   | 238 +++--------
- fs/ext4/xattr.c                                   |  26 +-
- fs/jbd2/recovery.c                                |  29 +-
- fs/jbd2/transaction.c                             |  21 +-
- 27 files changed, 1443 insertions(+), 731 deletions(-)
- create mode 100644 Documentation/filesystems/ext4/orphan.rst
- create mode 100644 fs/ext4/orphan.c
