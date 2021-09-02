@@ -2,96 +2,72 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0DCF3FEA83
-	for <lists+linux-ext4@lfdr.de>; Thu,  2 Sep 2021 10:18:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB17F3FEC8D
+	for <lists+linux-ext4@lfdr.de>; Thu,  2 Sep 2021 12:59:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244285AbhIBIT3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 2 Sep 2021 04:19:29 -0400
-Received: from verein.lst.de ([213.95.11.211]:50460 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233504AbhIBIT2 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 2 Sep 2021 04:19:28 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 1190E6736F; Thu,  2 Sep 2021 10:18:26 +0200 (CEST)
-Date:   Thu, 2 Sep 2021 10:18:26 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Felix Kuehling <felix.kuehling@amd.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        "Sierra Guiza, Alejandro (Alex)" <alex.sierra@amd.com>,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        rcampbell@nvidia.com, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, jgg@nvidia.com,
-        jglisse@redhat.com, Dan Williams <dan.j.williams@intel.com>
-Subject: Re: [PATCH v1 03/14] mm: add iomem vma selection for memory
- migration
-Message-ID: <20210902081826.GA16283@lst.de>
-References: <20210825034828.12927-1-alex.sierra@amd.com> <20210825034828.12927-4-alex.sierra@amd.com> <20210825074602.GA29620@lst.de> <c4241eb3-07d2-c85b-0f48-cce4b8369381@amd.com> <a9eb2c4a-d8cc-9553-57b7-fd1622679aaa@amd.com> <20210830082800.GA6836@lst.de> <e40b3b79-f548-b87b-7a85-f654f25ed8dd@amd.com> <20210901082925.GA21961@lst.de> <11d64457-9d61-f82d-6c98-d68762dce85d@amd.com>
+        id S232816AbhIBK76 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 2 Sep 2021 06:59:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28624 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231133AbhIBK75 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 2 Sep 2021 06:59:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630580339;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=qXQlZgA6EHuDgWBBwsvp+ZfFFR8ceZAteJMJO5nKZ3M=;
+        b=ElUNhZO5H/8JZIFRmMHPVVYouJ/4moQOYdJiTDWpRYJ+0fyqDEKAvgtymxcPKwQnS+gZvz
+        zIPv9WwVrv+AuFkhbdt7qg/SHmPcCmTuo/qME7yV4vioP4Au0exO6xA0hNC4uoXmK47HVx
+        IODp87bLYbDJKTVFVG7RajcFiXj2ghE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-188-NOOtwIGzOh-5wqGePuBWBA-1; Thu, 02 Sep 2021 06:58:57 -0400
+X-MC-Unique: NOOtwIGzOh-5wqGePuBWBA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 05E716D252;
+        Thu,  2 Sep 2021 10:58:57 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.40.194.170])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5275076BF9;
+        Thu,  2 Sep 2021 10:58:56 +0000 (UTC)
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     tytso@mit.edu
+Cc:     linux-ext4@vger.kernel.org
+Subject: [PATCH] tests: Add option to print diff output of failed tests
+Date:   Thu,  2 Sep 2021 12:58:52 +0200
+Message-Id: <20210902105852.72745-1-lczerner@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <11d64457-9d61-f82d-6c98-d68762dce85d@amd.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 11:40:43AM -0400, Felix Kuehling wrote:
-> >>> It looks like I'm totally misunderstanding what you are adding here
-> >>> then.  Why do we need any special treatment at all for memory that
-> >>> has normal struct pages and is part of the direct kernel map?
-> >> The pages are like normal memory for purposes of mapping them in CPU
-> >> page tables and for coherent access from the CPU.
-> > That's the user page tables.  What about the kernel direct map?
-> > If there is a normal kernel struct page backing there really should
-> > be no need for the pgmap.
-> 
-> I'm not sure. The physical address ranges are in the UEFI system address
-> map as special-purpose memory. Does Linux create the struct pages and
-> kernel direct map for that without a pgmap call? I didn't see that last
-> time I went digging through that code.
+Add variable $PRINT_FAILED which when set will print the diff output of
+a failed test.
 
-So doing some googling finds a patch from Dan that claims to hand EFI
-special purpose memory to the device dax driver.  But when I try to
-follow the version that got merged it looks it is treated simply as an
-MMIO region to be claimed by drivers, which would not get a struct page.
+Signed-off-by: Lukas Czerner <lczerner@redhat.com>
+---
+ tests/test_one.in | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Dan, did I misunderstand how E820_TYPE_SOFT_RESERVED works?
+diff --git a/tests/test_one.in b/tests/test_one.in
+index 5d7607ad..78499ad0 100644
+--- a/tests/test_one.in
++++ b/tests/test_one.in
+@@ -82,6 +82,10 @@ if [ $elapsed -gt 60 -a ! -f $test_dir/is_slow_test ]; then
+ 	echo "$test_name:  consider adding $test_dir/is_slow_test"
+ fi
+ 
++if [ -n "$PRINT_FAILED" -a -f $test_name.failed ] ; then
++	cat $test_name.failed
++fi
++
+ if [ "$SKIP_UNLINK" != "true" ] ; then
+ 	rm -f $TMPFILE
+ fi
+-- 
+2.31.1
 
-> >> From an application
-> >> perspective, we want file-backed and anonymous mappings to be able to
-> >> use DEVICE_PUBLIC pages with coherent CPU access. The goal is to
-> >> optimize performance for GPU heavy workloads while minimizing the need
-> >> to migrate data back-and-forth between system memory and device memory.
-> > I don't really understand that part.  file backed pages are always
-> > allocated by the file system using the pagecache helpers, that is
-> > using the page allocator.  Anonymouns memory also always comes from
-> > the page allocator.
-> 
-> I'm coming at this from my experience with DEVICE_PRIVATE. Both
-> anonymous and file-backed pages should be migrateable to DEVICE_PRIVATE
-> memory by the migrate_vma_* helpers for more efficient access by our
-> GPU. (*) It's part of the basic premise of HMM as I understand it. I
-> would expect the same thing to work for DEVICE_PUBLIC memory.
-
-Ok, so you want to migrate to and from them.  Not use DEVICE_PUBLIC
-for the actual page cache pages.  That maks a lot more sense.
-
-> I see DEVICE_PUBLIC as an improved version of DEVICE_PRIVATE that allows
-> the CPU to map the device memory coherently to minimize the need for
-> migrations when CPU and GPU access the same memory concurrently or
-> alternatingly. But we're not going as far as putting that memory
-> entirely under the management of the Linux memory manager and VM
-> subsystem. Our (and HPE's) system architects decided that this memory is
-> not suitable to be used like regular NUMA system memory by the Linux
-> memory manager.
-
-So yes.  It is a Memory Mapped I/O region, which unlike the PCIe BARs
-that people typically deal with is fully cache coherent.  I think this
-does make more sense as a description.
-
-But to go back to what start this discussion:  If these are memory
-mapped I/O pfn_valid should generally not return true for them.
-
-And as you already pointed out in reply to Alex we need to tighten the
-selection criteria one way or another.
