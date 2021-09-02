@@ -2,111 +2,201 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E6D3FF2FE
-	for <lists+linux-ext4@lfdr.de>; Thu,  2 Sep 2021 20:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F5A23FF596
+	for <lists+linux-ext4@lfdr.de>; Thu,  2 Sep 2021 23:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346893AbhIBSIj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 2 Sep 2021 14:08:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234619AbhIBSIi (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 2 Sep 2021 14:08:38 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 814CEC061757
-        for <linux-ext4@vger.kernel.org>; Thu,  2 Sep 2021 11:07:39 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id d5so1938259pjx.2
-        for <linux-ext4@vger.kernel.org>; Thu, 02 Sep 2021 11:07:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vRIjmhyCmvhzoncqRr/4/DZW11FScO6N7+EAyatLST8=;
-        b=XMesfIC0+k3N01cWkq/7yrPStcBFfCtU0Xt5gHxmO6bSOqNzOd/s/+OIcyxTtPL0UB
-         Zng0Xr0YFco/Xf9QMwJ1lFRNjwY2PQU2HaoU373axgK5j5uox9fzWYNliilkTt2b7635
-         V91czhYOVkLyFSSHgMICNRA+1MUJvkWBhBtJCw+K3Pz7KZzwdTemN3cZWwl6TG6/x/VY
-         gVXwVoSa8S7795y2jXzfuGxwg/3NV2fxcHJ+poYDNAV/6rPM1QeRY/Xp9i6iTn+hetnE
-         jzukgzWZ2XX4nyFUgxq4UKt32X2sBiiT9MgweOPYXEtFj2L1DKwPsQuH2MLeX33munh9
-         iWgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vRIjmhyCmvhzoncqRr/4/DZW11FScO6N7+EAyatLST8=;
-        b=gr+bNg36U/kKIi6JF19ouaL/jl985ODxYLujtPRm1gF3O5e/EQZYOzYngSsSmhkYxh
-         Uy2zvQNiF6tyY0I0eSQzSgx2be5QlK6TZ5gHYLzc9NoWSn8dyc1dFLrEPBo2fAcJmv6u
-         6fzQ0W/IQrVp7TljcxWH8PPjR4PLG8rzHsa2zowd0eWyTKAqn051ujM1RauhTCVoGkiL
-         PeOiT7bCrfhWrxneAyGwjW1LCxEfTnqS0ExOJQquQlVMwT9UT2u3GLzwEHV42DbIgAxn
-         aN6Y7xHdQ85nNj/Inq0NoUUChxRt/dzumy3UW/5QdoMJa17GeNIXpwf98iPfyE1lQlUo
-         efmg==
-X-Gm-Message-State: AOAM531lBs3na4gMWfNHjM1A2/67mHjpE5iIK5nmYqVHFcWTtUmfYj62
-        uPkEs1G2RQoqnoIBNkc76RNdCnGwshfUpEXs2YGwWA==
-X-Google-Smtp-Source: ABdhPJzISzTRdHEt3HEJe+ostypx1drj+Ux+3k9nfUpn2fvhtymn5ZGWoVXBoZmcXh6gl6QtltkADP+8aToUdn6EVdg=
-X-Received: by 2002:a17:902:e550:b0:137:734f:1d84 with SMTP id
- n16-20020a170902e55000b00137734f1d84mr4046482plf.27.1630606059035; Thu, 02
- Sep 2021 11:07:39 -0700 (PDT)
+        id S1346282AbhIBVZu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 2 Sep 2021 17:25:50 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:59050 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245379AbhIBVZt (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 2 Sep 2021 17:25:49 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id E37841F44BAB
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     amir73il@gmail.com, jack@suse.com, linux-api@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        khazhy@google.com, dhowells@redhat.com, david@fromorbit.com,
+        tytso@mit.edu, djwong@kernel.org, repnop@google.com,
+        kernel@collabora.com
+Subject: Re: [PATCH v6 15/21] fanotify: Preallocate per superblock mark
+ error event
+Organization: Collabora
+References: <20210812214010.3197279-1-krisman@collabora.com>
+        <20210812214010.3197279-16-krisman@collabora.com>
+        <20210816155758.GF30215@quack2.suse.cz> <877dg6rbtn.fsf@collabora.com>
+Date:   Thu, 02 Sep 2021 17:24:44 -0400
+In-Reply-To: <877dg6rbtn.fsf@collabora.com> (Gabriel Krisman Bertazi's message
+        of "Fri, 27 Aug 2021 14:18:12 -0400")
+Message-ID: <87a6kusmar.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20210825034828.12927-1-alex.sierra@amd.com> <20210825034828.12927-4-alex.sierra@amd.com>
- <20210825074602.GA29620@lst.de> <c4241eb3-07d2-c85b-0f48-cce4b8369381@amd.com>
- <a9eb2c4a-d8cc-9553-57b7-fd1622679aaa@amd.com> <20210830082800.GA6836@lst.de>
- <e40b3b79-f548-b87b-7a85-f654f25ed8dd@amd.com> <20210901082925.GA21961@lst.de>
- <11d64457-9d61-f82d-6c98-d68762dce85d@amd.com> <20210902081826.GA16283@lst.de>
-In-Reply-To: <20210902081826.GA16283@lst.de>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 2 Sep 2021 11:07:28 -0700
-Message-ID: <CAPcyv4gCbZikp1k+f3FA5HusSW8gGkpCAxzR70eKEASLcnMCRA@mail.gmail.com>
-Subject: Re: [PATCH v1 03/14] mm: add iomem vma selection for memory migration
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Felix Kuehling <felix.kuehling@amd.com>,
-        "Sierra Guiza, Alejandro (Alex)" <alex.sierra@amd.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Sep 2, 2021 at 1:18 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> On Wed, Sep 01, 2021 at 11:40:43AM -0400, Felix Kuehling wrote:
-> > >>> It looks like I'm totally misunderstanding what you are adding here
-> > >>> then.  Why do we need any special treatment at all for memory that
-> > >>> has normal struct pages and is part of the direct kernel map?
-> > >> The pages are like normal memory for purposes of mapping them in CPU
-> > >> page tables and for coherent access from the CPU.
-> > > That's the user page tables.  What about the kernel direct map?
-> > > If there is a normal kernel struct page backing there really should
-> > > be no need for the pgmap.
-> >
-> > I'm not sure. The physical address ranges are in the UEFI system address
-> > map as special-purpose memory. Does Linux create the struct pages and
-> > kernel direct map for that without a pgmap call? I didn't see that last
-> > time I went digging through that code.
->
-> So doing some googling finds a patch from Dan that claims to hand EFI
-> special purpose memory to the device dax driver.  But when I try to
-> follow the version that got merged it looks it is treated simply as an
-> MMIO region to be claimed by drivers, which would not get a struct page.
->
-> Dan, did I misunderstand how E820_TYPE_SOFT_RESERVED works?
+Gabriel Krisman Bertazi <krisman@collabora.com> writes:
 
-The original implementation of "soft reserve" support depended on the
-combination of the EFI special purpose memory type and the ACPI HMAT
-to define the device ranges. The requirement for ACPI HMAT was relaxed
-later with commit:
+> Jan Kara <jack@suse.cz> writes:
+>
+>> On Thu 12-08-21 17:40:04, Gabriel Krisman Bertazi wrote:
+>>> Error reporting needs to be done in an atomic context.  This patch
+>>> introduces a single error slot for superblock marks that report the
+>>> FAN_FS_ERROR event, to be used during event submission.
+>>> 
+>>> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+>>> 
+>>> ---
+>>> Changes v5:
+>>>   - Restore mark references. (jan)
+>>>   - Tie fee slot to the mark lifetime.(jan)
+>>>   - Don't reallocate event(jan)
+>>> ---
+>>>  fs/notify/fanotify/fanotify.c      | 12 ++++++++++++
+>>>  fs/notify/fanotify/fanotify.h      | 13 +++++++++++++
+>>>  fs/notify/fanotify/fanotify_user.c | 31 ++++++++++++++++++++++++++++--
+>>>  3 files changed, 54 insertions(+), 2 deletions(-)
+>>> 
+>>> diff --git a/fs/notify/fanotify/fanotify.c b/fs/notify/fanotify/fanotify.c
+>>> index ebb6c557cea1..3bf6fd85c634 100644
+>>> --- a/fs/notify/fanotify/fanotify.c
+>>> +++ b/fs/notify/fanotify/fanotify.c
+>>> @@ -855,6 +855,14 @@ static void fanotify_free_name_event(struct fanotify_event *event)
+>>>  	kfree(FANOTIFY_NE(event));
+>>>  }
+>>>  
+>>> +static void fanotify_free_error_event(struct fanotify_event *event)
+>>> +{
+>>> +	/*
+>>> +	 * The actual event is tied to a mark, and is released on mark
+>>> +	 * removal
+>>> +	 */
+>>> +}
+>>> +
+>>
+>> I was pondering about the lifetime rules some more. This is also related to
+>> patch 16/21 but I'll comment here. When we hold mark ref from queued event,
+>> we introduce a subtle race into group destruction logic. There we first
+>> evict all marks, wait for them to be destroyed by worker thread after SRCU
+>> period expires, and then we remove queued events. When we hold mark
+>> reference from an event we break this as mark will exist until the event is
+>> dequeued and then group can get freed before we actually free the mark and
+>> so mark freeing can hit use-after-free issues.
+>>
+>> So we'll have to do this a bit differently. I have two options:
+>>
+>> 1) Instead of preallocating events explicitely like this, we could setup a
+>> mempool to allocate error events from for each notification group. We would
+>> resize the mempool when adding error mark so that it has as many reserved
+>> events as error marks. Upside is error events will be much less special -
+>> no special lifetime rules. We'd just need to setup & resize the mempool. We
+>> would also have to provide proper merge function for error events (to merge
+>> events from the same sb). Also there will be limitation of number of error
+>> marks per group because mempools use kmalloc() for an array tracking
+>> reserved events. But we could certainly manage 512, likely 1024 error marks
+>> per notification group.
+>>
+>> 2) We would keep attaching event to mark as currently. As far as I have
+>> checked the event doesn't actually need a back-ref to sb_mark. It is
+>> really only used for mark reference taking (and then to get to sb from
+>> fanotify_handle_error_event() but we can certainly get to sb by easier
+>> means there). So I would just remove that. What we still need to know in
+>> fanotify_free_error_event() though is whether the sb_mark is still alive or
+>> not. If it is alive, we leave the event alone, otherwise we need to free it.
+>> So we need a mark_alive flag in the error event and then do in ->freeing_mark
+>> callback something like:
+>>
+>> 	if (mark->flags & FANOTIFY_MARK_FLAG_SB_MARK) {
+>> 		struct fanotify_sb_mark *fa_mark = FANOTIFY_SB_MARK(mark);
+>>
+>> ###		/* Maybe we could use mark->lock for this? */
+>> 		spin_lock(&group->notification_lock);
+>> 		if (fa_mark->fee_slot) {
+>> 			if (list_empty(&fa_mark->fee_slot->fae.fse.list)) {
+>> 				kfree(fa_mark->fee_slot);
+>> 				fa_mark->fee_slot = NULL;
+>> 			} else {
+>> 				fa_mark->fee_slot->mark_alive = 0;
+>> 			}
+>> 		}
+>> 		spin_unlock(&group->notification_lock);
+>> 	}
+>>
+>> And then when queueing and dequeueing event we would have to carefully
+>> check what is the mark & event state under appropriate lock (because
+>> ->handle_event() callbacks can see marks on the way to be destroyed as they
+>> are protected just by SRCU).
+>
+> Thanks for the review.  That is indeed a subtle race that I hadn't
+> noticed.
+>
+> Option 2 is much more straightforward.  And considering the uABI won't
+> be changed if we decide to change to option 1 later, I gave that a try
+> and should be able to prepare a new version that leaves the error event
+> with a weak association to the mark, without the back reference, and
+> allowing it to be deleted by the latest between dequeue and
+> ->freeing_mark, as you suggested.
 
-5ccac54f3e12 ACPI: HMAT: attach a device for each soft-reserved range
+Actually, I don't think this will work for insertion unless we keep a
+bounce buffer for the file_handle, because we need to keep the
+group->notification_lock to ensure the fee doesn't go away with the mark
+(since it is not yet enqueued) but, as discussed before, we don't want
+to hold that lock when generating the FH.
 
-The expectation is that system software policy can then either use the
-device interface, assign a portion of the reservation back to the page
-allocator, ignore the reservation altogether. Is this discussion
-asking for a way to assign this memory to the GPU driver to manage?
-device-dax already knows how to hand off to the page-allocator, seems
-reasonable for it to be able to hand-off to another driver.
+I think the correct way is to have some sort of refcount of the error
+event slot.  We could use err_count for that and change the suggestion
+above to:
+
+if (mark->flags & FANOTIFY_MARK_FLAG_SB_MARK) {
+	struct fanotify_sb_mark *fa_mark = FANOTIFY_SB_MARK(mark);
+
+	spin_lock(&group->notification_lock);
+	if (fa_mark->fee_slot) {
+		if (!fee->err_count) {
+			kfree(fa_mark->fee_slot);
+			fa_mark->fee_slot = NULL;
+		} else {
+			fa_mark->fee_slot->mark_alive = 0;
+		}
+	}
+	spin_unlock(&group->notification_lock);
+}
+
+And insertion would look like this:
+
+static int fanotify_handle_error_event(....) {
+
+	spin_lock(&group->notification_lock);
+
+	if (!mark->fee || (mark->fee->err_count++) {
+		spin_unlock(&group->notification_lock);
+		return 0;
+	}
+
+	spin_unlock(&group->notification_lock);
+
+	mark->fee->fae.type = FANOTIFY_EVENT_TYPE_FS_ERROR;
+
+	/* ... Write report data to error event ... */
+
+	fanotify_encode_fh(&fee->object_fh, fanotify_encode_fh_len(inode),
+ 			   NULL, 0);
+
+	fsnotify_add_event(group, &fee->fae.fse, NULL);
+   }
+
+Unless you think this is too hack-ish.
+
+To be fair, I think it is hack-ish.  I would add a proper refcount_t
+to the error event, and let the mark own a reference to it, which is
+dropped when the mark goes away.  Enqueue and Dequeue will acquire and
+drop references, respectively. In this case, err_count is not
+overloaded.
+
+Will it work?
+
+-- 
+Gabriel Krisman Bertazi
