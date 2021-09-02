@@ -2,128 +2,81 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F31493FF082
-	for <lists+linux-ext4@lfdr.de>; Thu,  2 Sep 2021 17:51:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B49823FF1BD
+	for <lists+linux-ext4@lfdr.de>; Thu,  2 Sep 2021 18:44:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345946AbhIBPwY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 2 Sep 2021 11:52:24 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:36500 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1345939AbhIBPwY (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 2 Sep 2021 11:52:24 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 182FpJ3h027037
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 2 Sep 2021 11:51:19 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 12F3115C33F9; Thu,  2 Sep 2021 11:51:19 -0400 (EDT)
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, stable@kernel.org,
-        Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Subject: [PATCH] ext4: add error checking to ext4_ext_replay_set_iblocks()
-Date:   Thu,  2 Sep 2021 11:51:08 -0400
-Message-Id: <20210902155108.381962-1-tytso@mit.edu>
-X-Mailer: git-send-email 2.31.0
+        id S1346409AbhIBQpT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 2 Sep 2021 12:45:19 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:6916 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242304AbhIBQpO (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 2 Sep 2021 12:45:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1630601057; x=1662137057;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=B9I29+nLfN1HhtPMBvajbM4PPB+iF05uDdsVf19ddmU=;
+  b=UoIsUvP5na6QGpD2gvF6LwBa7r+66F8+BKLYLvkEWKL0zVVlbusf61+N
+   IYXgN9rtGdZZwW5WdlQFe9c8xX74HjI9c4nyp4gBddT+ptKh3Vk9VJ4iQ
+   MYG5ksJ6+vhIuadKeo65gHfQvunGZGcK5q2Kz9xm+PPOuX29RB/v5XVHL
+   o=;
+X-IronPort-AV: E=Sophos;i="5.85,262,1624320000"; 
+   d="scan'208";a="157198972"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-1a-715bee71.us-east-1.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-9102.sea19.amazon.com with ESMTP; 02 Sep 2021 16:44:16 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1a-715bee71.us-east-1.amazon.com (Postfix) with ESMTPS id 77001A1DFD;
+        Thu,  2 Sep 2021 16:44:14 +0000 (UTC)
+Received: from EX13D46UWB002.ant.amazon.com (10.43.161.70) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Thu, 2 Sep 2021 16:44:13 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (10.43.61.77) by
+ EX13D46UWB002.ant.amazon.com (10.43.161.70) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Thu, 2 Sep 2021 16:44:13 +0000
+Received: from dev-dsk-shaoyi-2b-c0ca772a.us-west-2.amazon.com (172.22.152.76)
+ by mail-relay.amazon.com (10.43.61.169) with Microsoft SMTP Server id
+ 15.0.1497.23 via Frontend Transport; Thu, 2 Sep 2021 16:44:12 +0000
+Received: by dev-dsk-shaoyi-2b-c0ca772a.us-west-2.amazon.com (Postfix, from userid 13116433)
+        id 8B6A741AC5; Thu,  2 Sep 2021 16:44:12 +0000 (UTC)
+From:   Shaoying Xu <shaoyi@amazon.com>
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>
+CC:     <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <benh@amazon.com>, <shaoyi@amazon.com>
+Subject: [PATCH 0/1] [RESEND] ext4: fix lazy initialization next schedule time computation in more granular unit
+Date:   Thu, 2 Sep 2021 16:44:11 +0000
+Message-ID: <20210902164412.9994-1-shaoyi@amazon.com>
+X-Mailer: git-send-email 2.16.6
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-If the call to ext4_map_blocks() fails due to an corrupted file
-system, ext4_ext_replay_set_iblocks() can get stuck in an infinite
-loop.  This could be reproduced by running generic/526 with a file
-system that has inline_data and fast_commit enabled.  The system will
-repeatedly log to the console:
+Description
+===========
+Ext4 FS has inappropriate implementations on the next schedule time calculation
+that use jiffies to measure the time for one request to zero out inode table. This
+actually makes the wait time effectively dependent on CONFIG_HZ, which is
+undesirable. We have observed on server systems with 100HZ some fairly long delays
+in initialization as a result. Therefore, we propose to use more granular unit to
+calculate the next schedule time.
 
-EXT4-fs warning (device dm-3): ext4_block_to_path:105: block 1074800922 > max in inode 131076
+Test
+====
+Tested the patch in stable kernel 5.10 with FS volume 2T and 3T on EC2
+instances. Before the fix, instances with 250HZ finished the lazy initialization 
+in around 2.4x time less than instances with 100HZ. 
+After the fix, both of them finished within approximately same time. 
 
-and the stack that it gets stuck in is:
+Patch
+=====
+Shaoying Xu (1):
+  ext4: fix lazy initialization next schedule time computation in more
+    granular unit
 
-   ext4_block_to_path+0xe3/0x130
-   ext4_ind_map_blocks+0x93/0x690
-   ext4_map_blocks+0x100/0x660
-   skip_hole+0x47/0x70
-   ext4_ext_replay_set_iblocks+0x223/0x440
-   ext4_fc_replay_inode+0x29e/0x3b0
-   ext4_fc_replay+0x278/0x550
-   do_one_pass+0x646/0xc10
-   jbd2_journal_recover+0x14a/0x270
-   jbd2_journal_load+0xc4/0x150
-   ext4_load_journal+0x1f3/0x490
-   ext4_fill_super+0x22d4/0x2c00
+ fs/ext4/super.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-With this patch, generic/526 still fails, but system is no longer
-locking up in a tight loop.  It's likely the root casue is that
-fast_commit replay is corrupting file systems with inline_data, and we
-probably need to add better error handling in the fast commit replay
-code path beyond what is done here, which essentially just breaks the
-infinite loop without reporting the to the higher levels of the code.
-
-Fixes: 8016E29F4362 ("ext4: fast commit recovery path")
-Cc: stable@kernel.org
-Cc: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
----
- fs/ext4/extents.c | 19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
-
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index eb1dd4f024f2..e57019cc3601 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -5913,7 +5913,7 @@ void ext4_ext_replay_shrink_inode(struct inode *inode, ext4_lblk_t end)
- }
- 
- /* Check if *cur is a hole and if it is, skip it */
--static void skip_hole(struct inode *inode, ext4_lblk_t *cur)
-+static int skip_hole(struct inode *inode, ext4_lblk_t *cur)
- {
- 	int ret;
- 	struct ext4_map_blocks map;
-@@ -5922,9 +5922,12 @@ static void skip_hole(struct inode *inode, ext4_lblk_t *cur)
- 	map.m_len = ((inode->i_size) >> inode->i_sb->s_blocksize_bits) - *cur;
- 
- 	ret = ext4_map_blocks(NULL, inode, &map, 0);
-+	if (ret < 0)
-+		return ret;
- 	if (ret != 0)
--		return;
-+		return 0;
- 	*cur = *cur + map.m_len;
-+	return 0;
- }
- 
- /* Count number of blocks used by this inode and update i_blocks */
-@@ -5973,7 +5976,9 @@ int ext4_ext_replay_set_iblocks(struct inode *inode)
- 	 * iblocks by total number of differences found.
- 	 */
- 	cur = 0;
--	skip_hole(inode, &cur);
-+	ret = skip_hole(inode, &cur);
-+	if (ret < 0)
-+		goto out;
- 	path = ext4_find_extent(inode, cur, NULL, 0);
- 	if (IS_ERR(path))
- 		goto out;
-@@ -5992,8 +5997,12 @@ int ext4_ext_replay_set_iblocks(struct inode *inode)
- 		}
- 		cur = max(cur + 1, le32_to_cpu(ex->ee_block) +
- 					ext4_ext_get_actual_len(ex));
--		skip_hole(inode, &cur);
--
-+		ret = skip_hole(inode, &cur);
-+		if (ret < 0) {
-+			ext4_ext_drop_refs(path);
-+			kfree(path);
-+			break;
-+		}
- 		path2 = ext4_find_extent(inode, cur, NULL, 0);
- 		if (IS_ERR(path2)) {
- 			ext4_ext_drop_refs(path);
 -- 
-2.31.0
+2.16.6
 
