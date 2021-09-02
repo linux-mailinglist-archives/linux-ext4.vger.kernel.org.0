@@ -2,106 +2,59 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 465543FF1BC
-	for <lists+linux-ext4@lfdr.de>; Thu,  2 Sep 2021 18:44:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88BF43FF26A
+	for <lists+linux-ext4@lfdr.de>; Thu,  2 Sep 2021 19:37:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346377AbhIBQpT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 2 Sep 2021 12:45:19 -0400
-Received: from smtp-fw-80006.amazon.com ([99.78.197.217]:1921 "EHLO
-        smtp-fw-80006.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240292AbhIBQpO (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 2 Sep 2021 12:45:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1630601057; x=1662137057;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=MzJcUtfc7iPoM8SpKJzbe6uipwEa0d0bW+92yrWo/JI=;
-  b=MSL6/WWjz64zqFTG/JPub7febH0ZKZ5ZYXeasuIdv/iwenfqiB+Al29A
-   RT99yfZuzQuqSaUhq5NEu5KEIYgQrha05uf8/0rHzQFfIJrbe1+JsYX/Q
-   Qgh7/QqvzTdEpbuvPY5kws2CYQ4j2FOo4Ip+zx8iupqUqNDw6HI6/W16h
-   I=;
-X-IronPort-AV: E=Sophos;i="5.85,262,1624320000"; 
-   d="scan'208";a="24073115"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-1a-67b371d8.us-east-1.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP; 02 Sep 2021 16:44:16 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1a-67b371d8.us-east-1.amazon.com (Postfix) with ESMTPS id 6F54CA1DDC;
-        Thu,  2 Sep 2021 16:44:14 +0000 (UTC)
-Received: from EX13D21UWB001.ant.amazon.com (10.43.161.108) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23; Thu, 2 Sep 2021 16:44:13 +0000
-Received: from EX13MTAUEB002.ant.amazon.com (10.43.60.12) by
- EX13D21UWB001.ant.amazon.com (10.43.161.108) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23; Thu, 2 Sep 2021 16:44:13 +0000
-Received: from dev-dsk-shaoyi-2b-c0ca772a.us-west-2.amazon.com (172.22.152.76)
- by mail-relay.amazon.com (10.43.60.234) with Microsoft SMTP Server id
- 15.0.1497.23 via Frontend Transport; Thu, 2 Sep 2021 16:44:12 +0000
-Received: by dev-dsk-shaoyi-2b-c0ca772a.us-west-2.amazon.com (Postfix, from userid 13116433)
-        id 8D41A41A9E; Thu,  2 Sep 2021 16:44:12 +0000 (UTC)
-From:   Shaoying Xu <shaoyi@amazon.com>
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>
-CC:     <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <benh@amazon.com>, <shaoyi@amazon.com>
-Subject: [PATCH 1/1] ext4: fix lazy initialization next schedule time computation in more granular unit
-Date:   Thu, 2 Sep 2021 16:44:12 +0000
-Message-ID: <20210902164412.9994-2-shaoyi@amazon.com>
-X-Mailer: git-send-email 2.16.6
-In-Reply-To: <20210902164412.9994-1-shaoyi@amazon.com>
-References: <20210902164412.9994-1-shaoyi@amazon.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S1346668AbhIBRiP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 2 Sep 2021 13:38:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35522 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234504AbhIBRiO (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 2 Sep 2021 13:38:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id DDCAA610E7;
+        Thu,  2 Sep 2021 17:37:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630604235;
+        bh=2xm+18OybcggZ8NknSshjjbxsTWnPTVm8djTfpirJFg=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=B+VS0W4JWk5Vi6jDJWqituFL482EcIjPT165t8R2+jiDTYd8OYqnKyKu4arUn1Lky
+         lP0QIfNsbHoS9edHytFc+sJX5EDnDBMAlhKpmM3IOCh0jo1KDAK/Y6mGMX8dytSYOO
+         A/sz2tY9N1lxU5UDoSEQb4UzmFFNzXRoxsEdl1yry6ht5Qgf64PHqvET++i2bVQjpe
+         oNqZKVh/aT8YrywUycnzmdRqpjd+2lmqrUtFPxF/afeihIsxTv97djiZEobsBf3ukJ
+         DLugKAyYNVm9w9rdUJnrcICfX6TPJpVgV7+rIAVYRcMLwK40V8Yq9VQdqPX271oN4R
+         iq0d9Ix7p7jCQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id CDE4A60982;
+        Thu,  2 Sep 2021 17:37:15 +0000 (UTC)
+Subject: Re: [GIT PULL] ext4 changes for 5.15
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YTDnt5RzyL+gOoHK@mit.edu>
+References: <YTDnt5RzyL+gOoHK@mit.edu>
+X-PR-Tracked-List-Id: <linux-ext4.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YTDnt5RzyL+gOoHK@mit.edu>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus
+X-PR-Tracked-Commit-Id: baaae979b112642a41b71c71c599d875c067d257
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 111c1aa8cad4a0069dfe98fc093507b5b2cdfda7
+Message-Id: <163060423577.29568.3596244468595528780.pr-tracker-bot@kernel.org>
+Date:   Thu, 02 Sep 2021 17:37:15 +0000
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Ext4 file system has default lazy inode table initialization setup once
-it is mounted. However, it has issue on computing the next schedule time
-that makes the timeout same amount in jiffies but different real time in
-secs if with various HZ values. Therefore, fix by measuring the current
-time in a more granular unit nanoseconds and make the next schedule time
-independent of the HZ value.
+The pull request you sent on Thu, 2 Sep 2021 11:03:19 -0400:
 
-Fixes: bfff68738f1c ("ext4: add support for lazy inode table initialization")
-Signed-off-by: Shaoying Xu <shaoyi@amazon.com>
-Cc: stable@vger.kernel.org
----
- fs/ext4/super.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+> git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index dfa09a277b56..399cbe9c14a8 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -3421,9 +3421,9 @@ static int ext4_run_li_request(struct ext4_li_request *elr)
- 	struct super_block *sb = elr->lr_super;
- 	ext4_group_t ngroups = EXT4_SB(sb)->s_groups_count;
- 	ext4_group_t group = elr->lr_next_group;
--	unsigned long timeout = 0;
- 	unsigned int prefetch_ios = 0;
- 	int ret = 0;
-+	u64 start_time;
- 
- 	if (elr->lr_mode == EXT4_LI_MODE_PREFETCH_BBITMAP) {
- 		elr->lr_next_group = ext4_mb_prefetch(sb, group,
-@@ -3460,14 +3460,13 @@ static int ext4_run_li_request(struct ext4_li_request *elr)
- 		ret = 1;
- 
- 	if (!ret) {
--		timeout = jiffies;
-+		start_time = ktime_get_real_ns();
- 		ret = ext4_init_inode_table(sb, group,
- 					    elr->lr_timeout ? 0 : 1);
- 		trace_ext4_lazy_itable_init(sb, group);
- 		if (elr->lr_timeout == 0) {
--			timeout = (jiffies - timeout) *
--				EXT4_SB(elr->lr_super)->s_li_wait_mult;
--			elr->lr_timeout = timeout;
-+			elr->lr_timeout = nsecs_to_jiffies((ktime_get_real_ns() - start_time) *
-+				EXT4_SB(elr->lr_super)->s_li_wait_mult);
- 		}
- 		elr->lr_next_sched = jiffies + elr->lr_timeout;
- 		elr->lr_next_group = group + 1;
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/111c1aa8cad4a0069dfe98fc093507b5b2cdfda7
+
+Thank you!
+
 -- 
-2.16.6
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
