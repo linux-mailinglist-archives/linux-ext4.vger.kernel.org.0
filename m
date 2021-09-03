@@ -2,103 +2,263 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE6D53FF6E2
-	for <lists+linux-ext4@lfdr.de>; Fri,  3 Sep 2021 00:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A82273FF948
+	for <lists+linux-ext4@lfdr.de>; Fri,  3 Sep 2021 06:16:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229946AbhIBWKf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 2 Sep 2021 18:10:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43208 "EHLO
+        id S231953AbhICERo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 3 Sep 2021 00:17:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231297AbhIBWK3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 2 Sep 2021 18:10:29 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B699C061575;
-        Thu,  2 Sep 2021 15:09:30 -0700 (PDT)
-Received: from meer.lwn.net (unknown [IPv6:2601:281:8300:104d:444a:d152:279d:1dbb])
-        by ms.lwn.net (Postfix) with ESMTPA id 5D6A561C7;
-        Thu,  2 Sep 2021 22:09:29 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 5D6A561C7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1630620569; bh=l1dnA7POZ9SG5u4+MMSNjNA3JdFATzQVZzAiyW78yEE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MeSdkyf5+SfF4ja1WxPh8FqdCz5hHKRatKVve4nq5gKI/+WiZqKIHCZI2Sh4ZlSmi
-         P1MWl+SHjzTo8DY4PEBOCQ/DKxjndGZrsiRpgOkplHXV+Iiekg/p6Ue/gxMCXN4WMc
-         yEeWThtfVtwTNfyK7/cH71dDRfNwqdkDx0SOi2m6KWt/TP7Jz5ZvmKEB/Cvgmgq/R6
-         vHgAT+qomi9fEMXFkQ2sDZfC/ADM4rmx/qIsN5LnsKbWIF/U/YjodbE4VsDlsnwIJw
-         lU2Rl0aa9t+AqawcJ6j0U+hFbJLWUwCCFT2InwXc+fOEf3ueCTFf/vS3vE9txpYP26
-         k91g5XjaI99Aw==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
-        linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH 2/2] ext4: docs: Take out unneeded escaping
-Date:   Thu,  2 Sep 2021 16:08:54 -0600
-Message-Id: <20210902220854.198850-3-corbet@lwn.net>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210902220854.198850-1-corbet@lwn.net>
-References: <20210902220854.198850-1-corbet@lwn.net>
+        with ESMTP id S229573AbhICERo (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 3 Sep 2021 00:17:44 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D763C061575;
+        Thu,  2 Sep 2021 21:16:45 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id m11so5276471ioo.6;
+        Thu, 02 Sep 2021 21:16:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=K0guQT0U37UbQ5Iw8Wrxkb6O6gDW4AD2C77si9uBEwk=;
+        b=PrOoVR1y8p3j7eNRwUHH0Y65YIGFq52torMLiwySZcQxEqtB3fzUYbyrLgftqx3j4O
+         Nd9yz+2bjWcTydAH3593m3auC6mXcjpxCaAjZXq6yaKWO20nVk9XsDKoM9w46y5BkFfD
+         SLUSbvchj3ePE93yDZqbm5F9DJ6vylOyabtbMgfaxeENz18OooxGI7nZE+FvYpIRxtV0
+         dV7oaoTbvPoQLpBZ5hV+XcYI4ALtV7f2NCgJ9DoN9d52JBHQPwU/sr4gidYewddaErCR
+         wN4nGbtzT3y9CnzUCD7SBTHxzrv0VohpdyQ+WnhgmdnA02pCcnbI2od1EohQn5PbQXC7
+         BsHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=K0guQT0U37UbQ5Iw8Wrxkb6O6gDW4AD2C77si9uBEwk=;
+        b=ENlBHTkUDFrkgy8nZkc3X+DazBXXCKAszgeNoth8pZbelrl7pdLpJneB2dX4NBckUB
+         CF8edQz3DtN+8E+mnURdAZ+Tw4lRB21Xv+ERVl+dcEefST4lha8p2xpWan4lhgDGJ2KP
+         RkpgGayKjQlhIhmJTsewWdc89YwtSwIL2Eduf0tPxwxV3dnnU9kQ+5x/g86NW9sSGr4j
+         6q8mAnJTK3nkSmSxzMIMGU0mbkxOROSmxznlcrWAb7khI0W4Bb0ocuEQeobycKJonkKv
+         DsCOx7HkSJtzfOPYt2uxaTeVQAPn2swcbtJL2VeADgNfON1qnhsJEOjsFctWUX0QB3nK
+         tfqQ==
+X-Gm-Message-State: AOAM532OrFzMO/mK2kX7j8RhukRRH9zDyFeC408/fXntQefnY8+AK33H
+        YAQDjIvE3gwWMmmrxHYoouApE5ayCk00dTLJ6HaCl5da
+X-Google-Smtp-Source: ABdhPJydAQTqUUywodkFdb7WUUexERBk+tz7jiLRdDZq+5G2uYF602RQYxTPC/x1nzoUArNEHHpcaV54VKIdAnAOGZI=
+X-Received: by 2002:a05:6602:200f:: with SMTP id y15mr1433093iod.64.1630642604562;
+ Thu, 02 Sep 2021 21:16:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210812214010.3197279-1-krisman@collabora.com>
+ <20210812214010.3197279-16-krisman@collabora.com> <20210816155758.GF30215@quack2.suse.cz>
+ <877dg6rbtn.fsf@collabora.com> <87a6kusmar.fsf@collabora.com>
+In-Reply-To: <87a6kusmar.fsf@collabora.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Fri, 3 Sep 2021 07:16:33 +0300
+Message-ID: <CAOQ4uxjDtA45nn4iT9LFbbavuGa=vMPQJFp7GOJHdqrst8y+1A@mail.gmail.com>
+Subject: Re: [PATCH v6 15/21] fanotify: Preallocate per superblock mark error event
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     Jan Kara <jack@suse.cz>, Jan Kara <jack@suse.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Ext4 <linux-ext4@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Khazhismel Kumykov <khazhy@google.com>,
+        David Howells <dhowells@redhat.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Theodore Tso <tytso@mit.edu>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Matthew Bobrowski <repnop@google.com>, kernel@collabora.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The new file Documentation/orphan/ext4.rst escapes underscores ("\_")
-throughout.  However, RST doesn't actually require that, so the escaping
-only succeeds in making the document less readable.  Remove the unneeded
-escapes.
+On Fri, Sep 3, 2021 at 12:24 AM Gabriel Krisman Bertazi
+<krisman@collabora.com> wrote:
+>
+> Gabriel Krisman Bertazi <krisman@collabora.com> writes:
+>
+> > Jan Kara <jack@suse.cz> writes:
+> >
+> >> On Thu 12-08-21 17:40:04, Gabriel Krisman Bertazi wrote:
+> >>> Error reporting needs to be done in an atomic context.  This patch
+> >>> introduces a single error slot for superblock marks that report the
+> >>> FAN_FS_ERROR event, to be used during event submission.
+> >>>
+> >>> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+> >>>
+> >>> ---
+> >>> Changes v5:
+> >>>   - Restore mark references. (jan)
+> >>>   - Tie fee slot to the mark lifetime.(jan)
+> >>>   - Don't reallocate event(jan)
+> >>> ---
+> >>>  fs/notify/fanotify/fanotify.c      | 12 ++++++++++++
+> >>>  fs/notify/fanotify/fanotify.h      | 13 +++++++++++++
+> >>>  fs/notify/fanotify/fanotify_user.c | 31 ++++++++++++++++++++++++++++--
+> >>>  3 files changed, 54 insertions(+), 2 deletions(-)
+> >>>
+> >>> diff --git a/fs/notify/fanotify/fanotify.c b/fs/notify/fanotify/fanotify.c
+> >>> index ebb6c557cea1..3bf6fd85c634 100644
+> >>> --- a/fs/notify/fanotify/fanotify.c
+> >>> +++ b/fs/notify/fanotify/fanotify.c
+> >>> @@ -855,6 +855,14 @@ static void fanotify_free_name_event(struct fanotify_event *event)
+> >>>     kfree(FANOTIFY_NE(event));
+> >>>  }
+> >>>
+> >>> +static void fanotify_free_error_event(struct fanotify_event *event)
+> >>> +{
+> >>> +   /*
+> >>> +    * The actual event is tied to a mark, and is released on mark
+> >>> +    * removal
+> >>> +    */
+> >>> +}
+> >>> +
+> >>
+> >> I was pondering about the lifetime rules some more. This is also related to
+> >> patch 16/21 but I'll comment here. When we hold mark ref from queued event,
+> >> we introduce a subtle race into group destruction logic. There we first
+> >> evict all marks, wait for them to be destroyed by worker thread after SRCU
+> >> period expires, and then we remove queued events. When we hold mark
+> >> reference from an event we break this as mark will exist until the event is
+> >> dequeued and then group can get freed before we actually free the mark and
+> >> so mark freeing can hit use-after-free issues.
+> >>
+> >> So we'll have to do this a bit differently. I have two options:
+> >>
+> >> 1) Instead of preallocating events explicitely like this, we could setup a
+> >> mempool to allocate error events from for each notification group. We would
+> >> resize the mempool when adding error mark so that it has as many reserved
+> >> events as error marks. Upside is error events will be much less special -
+> >> no special lifetime rules. We'd just need to setup & resize the mempool. We
+> >> would also have to provide proper merge function for error events (to merge
+> >> events from the same sb). Also there will be limitation of number of error
+> >> marks per group because mempools use kmalloc() for an array tracking
+> >> reserved events. But we could certainly manage 512, likely 1024 error marks
+> >> per notification group.
+> >>
+> >> 2) We would keep attaching event to mark as currently. As far as I have
+> >> checked the event doesn't actually need a back-ref to sb_mark. It is
+> >> really only used for mark reference taking (and then to get to sb from
+> >> fanotify_handle_error_event() but we can certainly get to sb by easier
+> >> means there). So I would just remove that. What we still need to know in
+> >> fanotify_free_error_event() though is whether the sb_mark is still alive or
+> >> not. If it is alive, we leave the event alone, otherwise we need to free it.
+> >> So we need a mark_alive flag in the error event and then do in ->freeing_mark
+> >> callback something like:
+> >>
+> >>      if (mark->flags & FANOTIFY_MARK_FLAG_SB_MARK) {
+> >>              struct fanotify_sb_mark *fa_mark = FANOTIFY_SB_MARK(mark);
+> >>
+> >> ###          /* Maybe we could use mark->lock for this? */
+> >>              spin_lock(&group->notification_lock);
+> >>              if (fa_mark->fee_slot) {
+> >>                      if (list_empty(&fa_mark->fee_slot->fae.fse.list)) {
+> >>                              kfree(fa_mark->fee_slot);
+> >>                              fa_mark->fee_slot = NULL;
+> >>                      } else {
+> >>                              fa_mark->fee_slot->mark_alive = 0;
+> >>                      }
+> >>              }
+> >>              spin_unlock(&group->notification_lock);
+> >>      }
+> >>
+> >> And then when queueing and dequeueing event we would have to carefully
 
-Signed-off-by: Jonathan Corbet <corbet@lwn.net>
----
- Documentation/filesystems/ext4/orphan.rst | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+"would have to carefully..." oh oh! there are not words that I like to
+read unless
+I have to.
+I think that fs error events are rare enough case and not performance sensitive
+at all, so we should strive to KISS design principle in this case.
 
-diff --git a/Documentation/filesystems/ext4/orphan.rst b/Documentation/filesystems/ext4/orphan.rst
-index d096fe0ba19e..03cca178864b 100644
---- a/Documentation/filesystems/ext4/orphan.rst
-+++ b/Documentation/filesystems/ext4/orphan.rst
-@@ -12,31 +12,31 @@ track the inode as orphan so that in case of crash extra blocks allocated to
- the file get truncated.
- 
- Traditionally ext4 tracks orphan inodes in a form of single linked list where
--superblock contains the inode number of the last orphan inode (s\_last\_orphan
-+superblock contains the inode number of the last orphan inode (s_last_orphan
- field) and then each inode contains inode number of the previously orphaned
--inode (we overload i\_dtime inode field for this). However this filesystem
-+inode (we overload i_dtime inode field for this). However this filesystem
- global single linked list is a scalability bottleneck for workloads that result
- in heavy creation of orphan inodes. When orphan file feature
--(COMPAT\_ORPHAN\_FILE) is enabled, the filesystem has a special inode
--(referenced from the superblock through s\_orphan_file_inum) with several
-+(COMPAT_ORPHAN_FILE) is enabled, the filesystem has a special inode
-+(referenced from the superblock through s_orphan_file_inum) with several
- blocks. Each of these blocks has a structure:
- 
- ============= ================ =============== ===============================
- Offset        Type             Name            Description
- ============= ================ =============== ===============================
--0x0           Array of         Orphan inode    Each \_\_le32 entry is either
--              \_\_le32 entries entries         empty (0) or it contains
-+0x0           Array of         Orphan inode    Each __le32 entry is either
-+              __le32 entries   entries         empty (0) or it contains
- 	                                       inode number of an orphan
- 					       inode.
--blocksize-8   \_\_le32         ob\_magic       Magic value stored in orphan
-+blocksize-8   __le32           ob_magic        Magic value stored in orphan
-                                                block tail (0x0b10ca04)
--blocksize-4   \_\_le32         ob\_checksum    Checksum of the orphan block.
-+blocksize-4   __le32           ob_checksum     Checksum of the orphan block.
- ============= ================ =============== ===============================
- 
- When a filesystem with orphan file feature is writeably mounted, we set
--RO\_COMPAT\_ORPHAN\_PRESENT feature in the superblock to indicate there may
-+RO_COMPAT_ORPHAN_PRESENT feature in the superblock to indicate there may
- be valid orphan entries. In case we see this feature when mounting the
- filesystem, we read the whole orphan file and process all orphan inodes found
- there as usual. When cleanly unmounting the filesystem we remove the
--RO\_COMPAT\_ORPHAN\_PRESENT feature to avoid unnecessary scanning of the orphan
-+RO_COMPAT_ORPHAN_PRESENT feature to avoid unnecessary scanning of the orphan
- file and also make the filesystem fully compatible with older kernels.
--- 
-2.31.1
+> >> check what is the mark & event state under appropriate lock (because
+> >> ->handle_event() callbacks can see marks on the way to be destroyed as they
+> >> are protected just by SRCU).
+> >
+> > Thanks for the review.  That is indeed a subtle race that I hadn't
+> > noticed.
+> >
+> > Option 2 is much more straightforward.  And considering the uABI won't
+> > be changed if we decide to change to option 1 later, I gave that a try
+> > and should be able to prepare a new version that leaves the error event
+> > with a weak association to the mark, without the back reference, and
+> > allowing it to be deleted by the latest between dequeue and
+> > ->freeing_mark, as you suggested.
+>
+> Actually, I don't think this will work for insertion unless we keep a
+> bounce buffer for the file_handle, because we need to keep the
+> group->notification_lock to ensure the fee doesn't go away with the mark
+> (since it is not yet enqueued) but, as discussed before, we don't want
+> to hold that lock when generating the FH.
+>
+> I think the correct way is to have some sort of refcount of the error
+> event slot.  We could use err_count for that and change the suggestion
+> above to:
+>
+> if (mark->flags & FANOTIFY_MARK_FLAG_SB_MARK) {
+>         struct fanotify_sb_mark *fa_mark = FANOTIFY_SB_MARK(mark);
+>
+>         spin_lock(&group->notification_lock);
+>         if (fa_mark->fee_slot) {
+>                 if (!fee->err_count) {
+>                         kfree(fa_mark->fee_slot);
+>                         fa_mark->fee_slot = NULL;
+>                 } else {
+>                         fa_mark->fee_slot->mark_alive = 0;
+>                 }
+>         }
+>         spin_unlock(&group->notification_lock);
+> }
+>
+> And insertion would look like this:
+>
+> static int fanotify_handle_error_event(....) {
+>
+>         spin_lock(&group->notification_lock);
+>
+>         if (!mark->fee || (mark->fee->err_count++) {
+>                 spin_unlock(&group->notification_lock);
+>                 return 0;
+>         }
+>
+>         spin_unlock(&group->notification_lock);
+>
+>         mark->fee->fae.type = FANOTIFY_EVENT_TYPE_FS_ERROR;
+>
+>         /* ... Write report data to error event ... */
+>
+>         fanotify_encode_fh(&fee->object_fh, fanotify_encode_fh_len(inode),
+>                            NULL, 0);
+>
+>         fsnotify_add_event(group, &fee->fae.fse, NULL);
+>    }
+>
+> Unless you think this is too hack-ish.
+>
+> To be fair, I think it is hack-ish.
 
+Actually, I wouldn't mind the hack-ish-ness if it would simplify things,
+but I do not see how this is the case here.
+I still cannot wrap my head around the semantics, which is a big red light.
+First of all a suggestion should start with the lifetime rules:
+- Possible states
+- State transition rules
+
+Speaking for myself, I simply cannot review a proposal without these
+documented rules.
+
+> I would add a proper refcount_t
+> to the error event, and let the mark own a reference to it, which is
+> dropped when the mark goes away.  Enqueue and Dequeue will acquire and
+> drop references, respectively. In this case, err_count is not
+> overloaded.
+>
+> Will it work?
+
+Maybe, I still don't see the full picture, but if this can get us to a state
+where error events handling is simpler then it's a good idea.
+Saving the space of refcount_t in error event struct is not important at all.
+
+But if Jan's option #1 (mempool) brings us to less special casing
+of enqueue/dequeue of error events, then I think that would be
+my preference.
+
+In any case, I suggest to wait for Jan's inputs before you continue.
+
+Thanks,
+Amir.
