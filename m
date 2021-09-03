@@ -2,150 +2,95 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF0AD3FFA4F
-	for <lists+linux-ext4@lfdr.de>; Fri,  3 Sep 2021 08:17:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FF003FFA73
+	for <lists+linux-ext4@lfdr.de>; Fri,  3 Sep 2021 08:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346858AbhICGSs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 3 Sep 2021 02:18:48 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:15285 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346596AbhICGSp (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 3 Sep 2021 02:18:45 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4H16yl0c0Sz8DRC;
-        Fri,  3 Sep 2021 14:17:19 +0800 (CST)
-Received: from dggema766-chm.china.huawei.com (10.1.198.208) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 3 Sep 2021 14:17:43 +0800
-Received: from localhost.localdomain (10.175.127.227) by
- dggema766-chm.china.huawei.com (10.1.198.208) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Fri, 3 Sep 2021 14:17:42 +0800
-From:   yangerkun <yangerkun@huawei.com>
-To:     <tytso@mit.edu>, <jack@suse.cz>
-CC:     <linux-ext4@vger.kernel.org>, <yangerkun@huawei.com>,
-        <yukuai3@huawei.com>
-Subject: [PATCH 3/3] ext4: stop use path once restart journal in ext4_ext_shift_path_extents
-Date:   Fri, 3 Sep 2021 14:27:48 +0800
-Message-ID: <20210903062748.4118886-4-yangerkun@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210903062748.4118886-1-yangerkun@huawei.com>
-References: <20210903062748.4118886-1-yangerkun@huawei.com>
+        id S1345599AbhICGfP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 3 Sep 2021 02:35:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230128AbhICGfO (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 3 Sep 2021 02:35:14 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EC1FC061575;
+        Thu,  2 Sep 2021 23:34:15 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id q3so2710880plx.4;
+        Thu, 02 Sep 2021 23:34:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:cc:references:subject:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=eUpW6d6s4oHd6jmEUW6QkIvZXo5st+Kpg9QF8HRR6rA=;
+        b=NzBBjCS2po1yKEWQe9R3DFWucJ8vaHvVzkcZxE0ZmQ0fd/eDTVYnpTR1N38OnH7toZ
+         f5kxVgPPhTXyMHvnt1sTLI+SxlPMHKIKxW4q/FOee+04P4EOSaJl9+617st3bzbLa4rv
+         wOyQKC99XyT5F4jLGJNFz6XjB7d/I2bwnK+lVS3RM9ZX9YOSxC7pIuxaaKD/VVDiclHm
+         4sLp9x4mONgT0hZQQ00PaT8dQaC/OjCKaCBaCncikt4UkW7aGlPvFC9f3ohwy7H/Czem
+         JCv6Nknt3/alnGJRRuxnRWiVFijF/LhMiSu68aoEm9FyGclHcXGgk+KS0OtANbtM2cXO
+         ctOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:subject:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=eUpW6d6s4oHd6jmEUW6QkIvZXo5st+Kpg9QF8HRR6rA=;
+        b=UZWBrjeNlWm0+ssfWw4Zm3wRhFj0LSVbhxz+nUYoqJ7eAL1aKNAV0a/rFrTBQ/0eul
+         XnAnsuEl829hqpHfQ/EuhjbHYjlOCrj9NCf13OBkR/h4EPhPDJdmFJKinoVz0I2cpNXG
+         f4Xyi8GHRzHppJRjxLyCROjZKfLh/YypOc9/XpzbjecE6Zhz07qoc0Vmj1bmoLlR9Rk7
+         b5P0uzSimEV1SXpDeCFk9hbNaopqU3/ey1DPQfVcGSuadEgav3FXe5OKLl/Bwv2py2I9
+         XsLHy8uvhWwYS6Mf4SAeN0okdOyd1TaRFYehhsH4/1Oew/1Vsv9wPZAXZupmb7QXddIf
+         bVrA==
+X-Gm-Message-State: AOAM532V0DAZAPgTfbqBJiF4jjeto7DRNYlofA2wgog/yiDMFYngKMKS
+        ZSRlRDCK/u8xXJ9JQdRxKb8=
+X-Google-Smtp-Source: ABdhPJylv6eQkhn7qf8RRjJAu5/K5uzb3Fmf9xZsCCgnKOhMu5PInhG6oSWMHNthoC0SH27MRZalCQ==
+X-Received: by 2002:a17:90b:3a8e:: with SMTP id om14mr8418298pjb.192.1630650854496;
+        Thu, 02 Sep 2021 23:34:14 -0700 (PDT)
+Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id x10sm4482508pfj.174.2021.09.02.23.34.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Sep 2021 23:34:14 -0700 (PDT)
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     jack@suse.cz, linux-doc@vger.kernel.org,
+        linux-ext4@vger.kernel.org, tytso@mit.edu,
+        Akira Yokosawa <akiyks@gmail.com>
+References: <20210902220854.198850-2-corbet@lwn.net>
+Subject: Re: [PATCH 1/2] ext4: docs: switch away from list-table
+From:   Akira Yokosawa <akiyks@gmail.com>
+Message-ID: <b1909f4c-9e07-abd7-89ee-c2e551f9dc5b@gmail.com>
+Date:   Fri, 3 Sep 2021 15:34:09 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggema766-chm.china.huawei.com (10.1.198.208)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210902220854.198850-2-corbet@lwn.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-We get a BUG as follow:
+Hi Jon,
 
-[52117.465187] ------------[ cut here ]------------
-[52117.465686] kernel BUG at fs/ext4/extents.c:1756!
-...
-[52117.478306] Call Trace:
-[52117.478565]  ext4_ext_shift_extents+0x3ee/0x710
-[52117.479020]  ext4_fallocate+0x139c/0x1b40
-[52117.479405]  ? __do_sys_newfstat+0x6b/0x80
-[52117.479805]  vfs_fallocate+0x151/0x4b0
-[52117.480177]  ksys_fallocate+0x4a/0xa0
-[52117.480533]  __x64_sys_fallocate+0x22/0x30
-[52117.480930]  do_syscall_64+0x35/0x80
-[52117.481277]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[52117.481769] RIP: 0033:0x7fa062f855ca
+On Thu,  2 Sep 2021 16:08:53 -0600, Jonathan Corbet wrote:
 
-static int ext4_ext_try_to_merge_right(struct inode *inode,
-                                 struct ext4_ext_path *path,
-                                 struct ext4_extent *ex)
-{
-        struct ext4_extent_header *eh;
-        unsigned int depth, len;
-        int merge_done = 0, unwritten;
+> Commit 3a6541e97c03 (Add documentation about the orphan file feature) added
+> a new document on orphan files, which is great.  But the use of
+> "list-table" results in documents that are absolutely unreadable in their
+> plain-text form.  Switch this file to the regular RST table format instead;
+> the rendered (HTML) output is identical.
 
-        depth = ext_depth(inode);
-        BUG_ON(path[depth].p_hdr == NULL); <=== trigger here
-        eh = path[depth].p_hdr;
+In the "list tables" section of doc-guide/sphinx.rst, the first paragraph
+starts with the sentence:
 
-Normally, we protect extent tree with i_data_sem, and once we really
-need drop i_data_sem, we should reload the ext4_ext_path array after we
-recatch i_data_sem since extent tree may has changed, the 'again' in
-ext4_ext_remove_space give us a sample. But the other case
-ext4_ext_shift_path_extents seems forget to do this(ext4_access_path may
-drop i_data_sem and recatch it with not enough credits), and will lead
-the upper BUG when there is a parallel extents split which will grow the
-extent tree.
+    We recommend the use of list table formats.
 
-Fix it by introduce the again in ext4_ext_shift_extents.
+Yes, the disadvantage of list tables is mentioned later in the paragraph:
 
-Signed-off-by: yangerkun <yangerkun@huawei.com>
----
- fs/ext4/extents.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+    Compared to the ASCII-art they might not be as comfortable for readers
+    of the text files.
 
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index a6fb0350f062..0aa14f6ca914 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -5009,8 +5009,11 @@ ext4_ext_shift_path_extents(struct ext4_ext_path *path, ext4_lblk_t shift,
- 			restart_credits = ext4_writepage_trans_blocks(inode);
- 			err = ext4_datasem_ensure_credits(handle, inode, credits,
- 					restart_credits, 0);
--			if (err)
-+			if (err) {
-+				if (err > 0)
-+					err = -EAGAIN;
- 				goto out;
-+			}
- 
- 			err = ext4_ext_get_access(handle, inode, path + depth);
- 			if (err)
-@@ -5084,6 +5087,7 @@ ext4_ext_shift_extents(struct inode *inode, handle_t *handle,
- 	int ret = 0, depth;
- 	struct ext4_extent *extent;
- 	ext4_lblk_t stop, *iterator, ex_start, ex_end;
-+	ext4_lblk_t tmp = EXT_MAX_BLOCKS;
- 
- 	/* Let path point to the last extent */
- 	path = ext4_find_extent(inode, EXT_MAX_BLOCKS - 1, NULL,
-@@ -5137,11 +5141,15 @@ ext4_ext_shift_extents(struct inode *inode, handle_t *handle,
- 	 * till we reach stop. In case of right shift, iterator points to stop
- 	 * and it is decreased till we reach start.
- 	 */
-+again:
- 	if (SHIFT == SHIFT_LEFT)
- 		iterator = &start;
- 	else
- 		iterator = &stop;
- 
-+	if (tmp != EXT_MAX_BLOCKS)
-+		*iterator = tmp;
-+
- 	/*
- 	 * Its safe to start updating extents.  Start and stop are unsigned, so
- 	 * in case of right shift if extent with 0 block is reached, iterator
-@@ -5170,6 +5178,7 @@ ext4_ext_shift_extents(struct inode *inode, handle_t *handle,
- 			}
- 		}
- 
-+		tmp = *iterator;
- 		if (SHIFT == SHIFT_LEFT) {
- 			extent = EXT_LAST_EXTENT(path[depth].p_hdr);
- 			*iterator = le32_to_cpu(extent->ee_block) +
-@@ -5188,6 +5197,9 @@ ext4_ext_shift_extents(struct inode *inode, handle_t *handle,
- 		}
- 		ret = ext4_ext_shift_path_extents(path, shift, inode,
- 				handle, SHIFT);
-+		/* iterator can be NULL which means we should break */
-+		if (ret == -EAGAIN)
-+			goto again;
- 		if (ret)
- 			break;
- 	}
--- 
-2.31.1
+, but I still see list-table is meant as the preferred format.
 
+If you prefer the ASCII-art form for simple tables, you might need to
+de-emphasize the above mentioned recommendation as well.
+
+        Thanks, Akira
