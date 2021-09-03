@@ -2,97 +2,81 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA1184000D8
-	for <lists+linux-ext4@lfdr.de>; Fri,  3 Sep 2021 15:57:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD46B4001C9
+	for <lists+linux-ext4@lfdr.de>; Fri,  3 Sep 2021 17:11:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349033AbhICN6P (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 3 Sep 2021 09:58:15 -0400
-Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:46573 "EHLO
-        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1348778AbhICN6O (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 3 Sep 2021 09:58:14 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id B69662B01266;
-        Fri,  3 Sep 2021 09:57:13 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Fri, 03 Sep 2021 09:57:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=ou2miFBf0Z/Mek7c6HsqgdNghxW
-        0xkCyTnhz5o626Y8=; b=ujmvwFns1pMZ57Jl79UjlA3tREURGfhBIfb9nj7Xna8
-        LCCZ4jAIls9dKj64uPgX3j6A2Eqhimi6wKQd7yXicr4bCgyWDkekkceVCjekx1dC
-        jp4tQ35JTalEpBdn5S45k9r2kj9vQC/AMThtr6El6uKjz16BImd8xbkJxvh6G0KF
-        tP5xUPYQwkOLrM5E8P/0cdcJFRhjWy8atNaLCsv9QR+l7ncMX2moOETnG1KEvRUF
-        JLwPxYuGJl3aht2U4Y1hXwpUQreodEgTww7BsW+aO6Yn2lZB8vTDySnB38ZzdPBg
-        7o+P2417ibAdq7D/ZU9xjjFfK5WhN8NccSoRwNh7qYg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=ou2miF
-        Bf0Z/Mek7c6HsqgdNghxW0xkCyTnhz5o626Y8=; b=RfSgwpmViTbjmEQiDkUbqM
-        DEU0pQCf+sDaSdLie8qCH3a8qkxA6uxumJlPny74Hcky7774It0TMrK2dWn1TFrw
-        RN9Ny50Scw0acuFxJuKA2/cUokR27N3FdtP+Aa0nH093PSgzs500eYQDyYxXLTT1
-        D618M0GTgjc3LgwgPsk6Gkdkp2NT09Fd2dp1uZ2lPYltQfaVM8jyqihPSmxM5lbu
-        iDpbI0Ww7P2RdLt8fQTAQjLK960k+Amvp1i+xLzI3Jhigl770Pew4po6sZ7jAdU+
-        jj7YzYU1I6EQlSpcIuKSOCcbq820bD6IHGF1fia4LzR5lZPGv2HyUf5ymCJYCkOg
-        ==
-X-ME-Sender: <xms:uCkyYf2a-zGiwsDzkrR3pjixUG_0I4bNcs-yKnPgre8rucTh6CI9ZA>
-    <xme:uCkyYeFnkuRkQ1h0YchVeS7JfWgXtEwjUOid2OhnPiPcD-RuH7UrDJZ1y7TqJl-rB
-    sZd60JpLJiBLg>
-X-ME-Received: <xmr:uCkyYf64drTwrzWB2BXX4CBR3jP-q084OGpy4fMYNxakIQXbrBYuDQ2wTZnN72ejEoqIS0BuZwf8NjgG_8uM8izUzW6IzvcW>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvjedgieelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucevlhhushht
-    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
-    drtghomh
-X-ME-Proxy: <xmx:uCkyYU1kzJNRa0MFr0hspEjs0xuHuRuWYFVgrO2V9_Suo-8TN3gMQQ>
-    <xmx:uCkyYSGnYwl5Q2AUUcgPJpO1bLT4Y_12Xx1PdiNVjtrlovwLoKz3fw>
-    <xmx:uCkyYV9r6Lh_cUyVg9LJ62hfOuhpPJKeW69cXZlEIfnBdepf5V_-yQ>
-    <xmx:uSkyYa9D9tQwAWiYU1pcksmD8tEVt3tsODE05e5cKq4_ViO9j_q-6qpGz6A>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 3 Sep 2021 09:57:11 -0400 (EDT)
-Date:   Fri, 3 Sep 2021 15:57:09 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     stable@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 5.4 0/4] backport fscrypt symlink fixes to 5.4
-Message-ID: <YTIptf2dFHf9sSIY@kroah.com>
-References: <20210901164041.176238-1-ebiggers@kernel.org>
+        id S236367AbhICPM2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 3 Sep 2021 11:12:28 -0400
+Received: from ms.lwn.net ([45.79.88.28]:46748 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229789AbhICPM1 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 3 Sep 2021 11:12:27 -0400
+X-Greylist: delayed 61319 seconds by postgrey-1.27 at vger.kernel.org; Fri, 03 Sep 2021 11:12:27 EDT
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 4D2C5663B;
+        Fri,  3 Sep 2021 15:11:27 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 4D2C5663B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1630681887; bh=I7eHpaDCMcn+gV/Go7uz+qvINtjF5jC2bNVhtMJtDN0=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=p6w3uIRTp7YZD/LBsZ1EruHgD6tJFHamUaUv8UelNcPQz32KefofopmreGzFM5xf5
+         ZLJZgbQjMEoOgBt1iUux4MbXjEsOU/MjE+7bFZO28z5QIWVUtq96t4OHkjvum0SYGs
+         ffXXBq6uVgnuk7PdlkWjbAcbxbhlRA6RpMjTAHf1Kek8Ck9FJFI0JaZz4UlVkzrKqj
+         lrXSthYiEN6oi+z0on3n7gTwt8I0ssWaVNec6+vvght4/8+rHTyWmBZ8S6gJ3iivBN
+         EDqOr01NNs0DMRGnifT7kQPWGPN9zxwvNt7VS1qJjVEQItvEQoCZTmTvMF/zn+zXAU
+         0yJbSUDV5oNvQ==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Akira Yokosawa <akiyks@gmail.com>
+Cc:     jack@suse.cz, linux-doc@vger.kernel.org,
+        linux-ext4@vger.kernel.org, tytso@mit.edu,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Subject: Re: [PATCH 1/2] ext4: docs: switch away from list-table
+In-Reply-To: <b1909f4c-9e07-abd7-89ee-c2e551f9dc5b@gmail.com>
+References: <20210902220854.198850-2-corbet@lwn.net>
+ <b1909f4c-9e07-abd7-89ee-c2e551f9dc5b@gmail.com>
+Date:   Fri, 03 Sep 2021 09:11:26 -0600
+Message-ID: <871r65zobl.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210901164041.176238-1-ebiggers@kernel.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 09:40:37AM -0700, Eric Biggers wrote:
-> This series backports some patches that failed to apply to 5.4-stable
-> due to the prototype of inode_operations::getattr having changed in
-> v5.12, as well several other conflicts.  Please apply to 5.4-stable.
-> 
-> Eric Biggers (4):
->   fscrypt: add fscrypt_symlink_getattr() for computing st_size
->   ext4: report correct st_size for encrypted symlinks
->   f2fs: report correct st_size for encrypted symlinks
->   ubifs: report correct st_size for encrypted symlinks
-> 
->  fs/crypto/hooks.c       | 44 +++++++++++++++++++++++++++++++++++++++++
->  fs/ext4/symlink.c       | 11 ++++++++++-
->  fs/f2fs/namei.c         | 11 ++++++++++-
->  fs/ubifs/file.c         | 12 ++++++++++-
->  include/linux/fscrypt.h |  7 +++++++
->  5 files changed, 82 insertions(+), 3 deletions(-)
-> 
-> -- 
-> 2.33.0
-> 
+Akira Yokosawa <akiyks@gmail.com> writes:
 
-All now queued up, thanks.
+[Adding Mauro]
 
-greg k-h
+> On Thu,  2 Sep 2021 16:08:53 -0600, Jonathan Corbet wrote:
+>
+>> Commit 3a6541e97c03 (Add documentation about the orphan file feature) added
+>> a new document on orphan files, which is great.  But the use of
+>> "list-table" results in documents that are absolutely unreadable in their
+>> plain-text form.  Switch this file to the regular RST table format instead;
+>> the rendered (HTML) output is identical.
+>
+> In the "list tables" section of doc-guide/sphinx.rst, the first paragraph
+> starts with the sentence:
+>
+>     We recommend the use of list table formats.
+>
+> Yes, the disadvantage of list tables is mentioned later in the paragraph:
+>
+>     Compared to the ASCII-art they might not be as comfortable for readers
+>     of the text files.
+>
+> , but I still see list-table is meant as the preferred format.
+
+Interesting...that is not at all my memory of the discussions we had at
+that time.  There was a lot of pushback against anything that makes the
+RST files less readable - still is, if certain people join the
+conversation.  Tables were one of the early flash points.  
+
+Mauro, you added that text; do you remember things differently?  Do you
+feel we should retain that recommendation?
+
+Thanks,
+
+jon
