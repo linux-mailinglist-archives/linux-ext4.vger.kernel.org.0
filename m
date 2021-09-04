@@ -2,108 +2,111 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D73F4009CF
-	for <lists+linux-ext4@lfdr.de>; Sat,  4 Sep 2021 06:41:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E42F8400A4F
+	for <lists+linux-ext4@lfdr.de>; Sat,  4 Sep 2021 09:50:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231438AbhIDEkr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 4 Sep 2021 00:40:47 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:15288 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229915AbhIDEko (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 4 Sep 2021 00:40:44 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4H1hl82hb6z8snk;
-        Sat,  4 Sep 2021 12:39:16 +0800 (CST)
-Received: from dggema766-chm.china.huawei.com (10.1.198.208) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Sat, 4 Sep 2021 12:39:41 +0800
-Received: from localhost.localdomain (10.175.127.227) by
- dggema766-chm.china.huawei.com (10.1.198.208) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Sat, 4 Sep 2021 12:39:41 +0800
-From:   yangerkun <yangerkun@huawei.com>
-To:     <tytso@mit.edu>, <jack@suse.cz>
-CC:     <linux-ext4@vger.kernel.org>, <yangerkun@huawei.com>,
-        <yukuai3@huawei.com>
-Subject: [PATCH 2/2] ext4: check magic even the extent block bh is verified
-Date:   Sat, 4 Sep 2021 12:49:46 +0800
-Message-ID: <20210904044946.2102404-3-yangerkun@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210904044946.2102404-1-yangerkun@huawei.com>
-References: <20210904044946.2102404-1-yangerkun@huawei.com>
+        id S233962AbhIDHvb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 4 Sep 2021 03:51:31 -0400
+Received: from smtp3-1.goneo.de ([85.220.129.38]:46960 "EHLO smtp3-1.goneo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233068AbhIDHvb (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sat, 4 Sep 2021 03:51:31 -0400
+X-Greylist: delayed 309 seconds by postgrey-1.27 at vger.kernel.org; Sat, 04 Sep 2021 03:51:30 EDT
+Received: from [192.168.1.107] (dyndsl-085-016-043-081.ewe-ip-backbone.de [85.16.43.81])
+        by smtp3.goneo.de (Postfix) with ESMTPSA id 4A8E82040DA4;
+        Sat,  4 Sep 2021 09:45:18 +0200 (CEST)
+Subject: Re: [PATCH 1/2] ext4: docs: switch away from list-table
+To:     Akira Yokosawa <akiyks@gmail.com>, Jonathan Corbet <corbet@lwn.net>
+Cc:     jack@suse.cz, linux-doc@vger.kernel.org,
+        linux-ext4@vger.kernel.org, tytso@mit.edu,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+References: <20210902220854.198850-2-corbet@lwn.net>
+ <b1909f4c-9e07-abd7-89ee-c2e551f9dc5b@gmail.com>
+ <871r65zobl.fsf@meer.lwn.net>
+ <a93af4a2-9b9f-6430-bc3a-dfb2dbf7e56b@gmail.com>
+From:   Markus Heiser <markus.heiser@darmarit.de>
+Message-ID: <68ae637d-dc8d-cedc-b058-8f4ebb146137@darmarit.de>
+Date:   Sat, 4 Sep 2021 09:45:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggema766-chm.china.huawei.com (10.1.198.208)
-X-CFilter-Loop: Reflected
+In-Reply-To: <a93af4a2-9b9f-6430-bc3a-dfb2dbf7e56b@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Our stress testing with IO error can trigger follow OOB with a very low
-probability.
+Am 04.09.21 um 03:23 schrieb Akira Yokosawa:
+> On Fri, 03 Sep 2021 09:11:26 -0600, Jonathan Corbet wrote:
+>> Akira Yokosawa <akiyks@gmail.com> writes:
+>>
+>> [Adding Mauro]
+>>
+>>> On Thu,  2 Sep 2021 16:08:53 -0600, Jonathan Corbet wrote:
+>>>
+>>>> Commit 3a6541e97c03 (Add documentation about the orphan file feature) added
+>>>> a new document on orphan files, which is great.  But the use of
+>>>> "list-table" results in documents that are absolutely unreadable in their
+>>>> plain-text form.  Switch this file to the regular RST table format instead;
+>>>> the rendered (HTML) output is identical.
+>>>
+>>> In the "list tables" section of doc-guide/sphinx.rst, the first paragraph
+>>> starts with the sentence:
+>>>
+>>>      We recommend the use of list table formats.
+>>>
+>>> Yes, the disadvantage of list tables is mentioned later in the paragraph:
+>>>
+>>>      Compared to the ASCII-art they might not be as comfortable for readers
+>>>      of the text files.
+>>>
+>>> , but I still see list-table is meant as the preferred format.
+>>
+>> Interesting...that is not at all my memory of the discussions we had at
+>> that time.  There was a lot of pushback against anything that makes the
+>> RST files less readable - still is, if certain people join the
+>> conversation.  Tables were one of the early flash points.
+>>
+>> Mauro, you added that text; do you remember things differently?  Do you
+>> feel we should retain that recommendation?
+> 
+> No, the text was first added by Markus Heiser [added to CC] in commit
+> 0249a7644857 ("doc-rst: flat-table directive - initial implementation")
+> and have not updated ever since.
+> 
+> He might remember the circumstances, but 2016 was a long time ago,
+> I guess.
 
-[59898.282466] BUG: KASAN: slab-out-of-bounds in ext4_find_extent+0x2e4/0x480
-...
-[59898.287162] Call Trace:
-[59898.287575]  dump_stack+0x8b/0xb9
-[59898.288070]  print_address_description+0x73/0x280
-[59898.289903]  ext4_find_extent+0x2e4/0x480
-[59898.290553]  ext4_ext_map_blocks+0x125/0x1470
-[59898.295481]  ext4_map_blocks+0x5ee/0x940
-[59898.315984]  ext4_mpage_readpages+0x63c/0xdb0
-[59898.320231]  read_pages+0xe6/0x370
-[59898.321589]  __do_page_cache_readahead+0x233/0x2a0
-[59898.321594]  ondemand_readahead+0x157/0x450
-[59898.321598]  generic_file_read_iter+0xcb2/0x1550
-[59898.328828]  __vfs_read+0x233/0x360
-[59898.328840]  vfs_read+0xa5/0x190
-[59898.330126]  ksys_read+0xa5/0x150
-[59898.331405]  do_syscall_64+0x6d/0x1f0
-[59898.331418]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+We prefer list tables ...
 
-Digging deep and we found it's actually a xattr block which can happened
-with follow steps:
+"""Their advantage is that they are easy to create or modify and that the
+diff of a modification is much more meaningful, because it is limited to
+the modified content."""
 
-1. extent update for file1 and will remove a leaf extent block(block A)
-2. we need update the idx extent block too
-3. block A has been allocated as a xattr block and will set verified
-3. io error happened for this idx block and will the buffer has been
-   released late
-4. extent find for file1 will read the idx block and see block A again
-5. since the buffer of block A is already verified, we will use it
-   directly, which can lead the upper OOB
+By example: We have some very large tables with tons of rows and cols.
+If you need to extend one column just by one character you have to edit
+the whole table and the diff is not readable.
 
-Same as __ext4_xattr_check_block, we can check magic even the buffer is
-verified to fix the problem.
+It is not limited to big tables, e.g. if you patch a simple typo,
+you might need touch content not related to your fix.
 
-Signed-off-by: yangerkun <yangerkun@huawei.com>
----
- fs/ext4/extents.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+At the end it is a trade of, what weights more, readability of the
+plain text or readability of the patch / most often I would vote
+for the latter.
 
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index 8559e288472f..d2e2ae90bc4a 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -506,6 +506,14 @@ __read_extent_tree_block(const char *function, unsigned int line,
- 			goto errout;
- 	}
- 	if (buffer_verified(bh)) {
-+		if (unlikely(ext_block_hdr(bh)->eh_magic != EXT4_EXT_MAGIC)) {
-+			err = -EFSCORRUPTED;
-+			ext4_error_inode(inode, function, line, 0,
-+				"invalid magic for verified extent block %llu",
-+				(unsigned long long)bh->b_blocknr);
-+			goto errout;
-+		}
-+
- 		if (!(flags & EXT4_EX_FORCE_CACHE))
- 			return bh;
- 	} else {
--- 
-2.31.1
+  -- Markus --
 
+
+> 
+> Or did the discussions take place after the list table support had been
+> added?
+> 
+>          Thanks, Akira (a newcomer to kerneldoc)
+> 
+>>
+>> Thanks,
+>>
+>> jon
+>>
