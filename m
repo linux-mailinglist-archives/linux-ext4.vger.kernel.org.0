@@ -2,68 +2,98 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92E73401005
-	for <lists+linux-ext4@lfdr.de>; Sun,  5 Sep 2021 15:38:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42F4A401052
+	for <lists+linux-ext4@lfdr.de>; Sun,  5 Sep 2021 16:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231754AbhIENiu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 5 Sep 2021 09:38:50 -0400
-Received: from azure-sdnproxy.icoremail.net ([207.46.229.174]:60296 "HELO
-        azure-sdnproxy-1.icoremail.net" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with SMTP id S229759AbhIENiu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 5 Sep 2021 09:38:50 -0400
-X-Greylist: delayed 462 seconds by postgrey-1.27 at vger.kernel.org; Sun, 05 Sep 2021 09:38:49 EDT
-Received: by ajax-webmail-sr0414.icoremail.net (Coremail) ; Sun, 5 Sep 2021
- 21:29:45 +0800 (GMT+08:00)
-X-Originating-IP: [154.207.66.65]
-Date:   Sun, 5 Sep 2021 21:29:45 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   =?UTF-8?B?6IKW5p2w6Z+s?= <20151213521@stu.xidian.edu.cn>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     linux-ext4@vger.kernel.org, security@kernel.org
-Subject: Report bug to Linux ext4 file system about inode
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210401(fdb522e2)
- Copyright (c) 2002-2021 www.mailtech.cn icmhosting
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        id S237541AbhIEOhy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 5 Sep 2021 10:37:54 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:51381 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S237914AbhIEOhs (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 5 Sep 2021 10:37:48 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 185EaV3V016209
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 5 Sep 2021 10:36:32 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 5BA4715C33F9; Sun,  5 Sep 2021 10:36:31 -0400 (EDT)
+Date:   Sun, 5 Sep 2021 10:36:31 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     =?utf-8?B?6IKW5p2w6Z+s?= <20151213521@stu.xidian.edu.cn>
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        security@kernel.org
+Subject: Re: Report bug to Linux ext4 file system about inode
+Message-ID: <YTTV7x02dI7rvZyp@mit.edu>
+References: <52000f5c.6b0.17bb6268e72.Coremail.20151213521@stu.xidian.edu.cn>
 MIME-Version: 1.0
-Message-ID: <52000f5c.6b0.17bb6268e72.Coremail.20151213521@stu.xidian.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: AQAAfwB3PXFKxjRhl4MJAA--.641W
-X-CM-SenderInfo: xmlh3t5r0lt0o6vw3h50lgxtvqohv3gofq/1tbiAQIBClwR-kZQVw
-        AAs6
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <52000f5c.6b0.17bb6268e72.Coremail.20151213521@stu.xidian.edu.cn>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-SGksIG91ciB0ZWFtIGhhcyBmb3VuZCBhIHByb2JsZW0gaW4gZXh0NCBzeXN0ZW0gb24gTGludXgg
-a2VybmVsIHY1LjEwLCBsZWFkaW5nIHRvIERvUyBhdHRhY2tzLgoKVGhlIHN0cnVjdCBpbm9kZSBj
-YW4gYmUgZXhoYXVzdGVkIGJ5IG5vcm1hbCB1c2VycyBieSBjYWxsaW5nIHN5c2NhbGwgc3VjaCBh
-cyBjcmVhdC4gQSBub3JtYWwgdXNlciBjYW4gcmVwZWF0ZWRseSBtYWtlIHRoZSBjcmVhdCBzeXNj
-YWxscyB0byBjcmVhdCBmaWxlcyBhbmQgZXhoYXVzdCBhbGwgc3RydWN0IGlub2RlLiBBcyBhIHJl
-c3VsdO+8jGFsdGhvdWdoIHRoZXJlIGlzIHN0aWxsIGEgbG90IG9mIHNwYWNlIGluIHRoZSBkaXNr
-LCB0aGVyZSBhcmUgbm8gYXZhaWxhYmxlIGlub2RlcyBhbmQgYWxsIGV4dDQgZmlsZXMvZGlyZWN0
-b3JpZXMgY3JlYXRpb24gb2YgYWxsIG90aGVyIHVzZXJzIHdpbGwgZmFpbC4KCkluIGZhY3QsIHdl
-IHRyeSB0aGlzIGF0dGFjayBpbnNpZGUgYSBkZXByaXZpbGVnZWQgZG9ja2VyIGNvbnRhaW5lciB3
-aXRob3V0IGFueSBjYXBhYmlsaXRpZXMuIFRoZSBwcm9jZXNzZXMgaW4gdGhlIGRvY2tlciBjYW4g
-ZXhoYXVzdCBhbGwgc3RydWN0IGlub2RlIG9uIHRoZSBob3N0IGtlcm5lbC4gV2UgdXNlIGEgbWFj
-aGluZSB3aXRoIDUwMEcgU1NEIGRpc2suIFdlIHN0YXJ0IG9uZSBwcm9jZXNzIHRvIGV4aGF1c3Qg
-YWxsIHN0cnVjdCBpbm9kZS4gSW4gdG90YWwsIGFyb3VuZCAzMDQ5ODgxNiBudW1iZXIgb2Ygc3Ry
-dWN0IGlub2RlIGFyZSBjb25zdW1lZCBhbmQgdGhlcmUgYXJlIG5vIGF2YWlsYWJsZSBzdHJ1Y3Qg
-aW5vZGUgaW4gdGhlIGtlcm5lbC4gVGhlIGJsa2lvIGNvbnRyb2wgZ3JvdXAgY2FuIG9ubHkgbGlt
-aXQgdGhlIElPUFMgb3IgSU8gYmFuZHdpZHRoLCBzbyBibGtpbyBjb250cm9sIGdyb3VwIGNhbiBu
-b3QgaGVscC4gCgoKVGhlIGZvbGxvd2luZyBjb2RlIHNob3dzIGEgUG9DIHRoYXQgdGFrZXMgMzA0
-OTg4MTYgbnVtYmVyIG9mIHN0cnVjdCBpbm9kZSwgd2hpbGUgdGFrZSBhbGwgc3RydWN0IGlub2Rl
-IG9uIGhvc3QuIFdlIGV2YWx1YXRlIHRoZSBQb0Mgb24gaW50ZWwgaTUgQ1BVIHBoeXNpY2FsIG1h
-Y2hpbmUgKyBMaW51eCBrZXJuZWwgdjUuMTAuMCArIFVidW50dSAxOC4wNCBMVFMuCi0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiNpbmNsdWRlPHN0ZGlvLmg+
-CiNpbmNsdWRlPHN0ZGxpYi5oPgojaW5jbHVkZTx1bmlzdGQuaD4KI2luY2x1ZGU8ZmNudGwuaD4K
-CgppbnQgbWFpbigpCnsKICAgIGNoYXIgbmFtZW91dFs2NF07IAogICAgaW50IGZkOyAKICAgIGZv
-ciAoaW50IGkgPSAxOyA7IGkrKykgeyAKICAgICAgICAgc3ByaW50ZihuYW1lb3V0LCAidGVzdCVk
-LnR4dCIsIGkpOyAKICAgICAgICAgZmQgPSBjcmVhdCgmYW1wO25hbWVvdXRbMF0sIE9fQ1JFQVQp
-OyAKICAgICAgICAgY2xvc2UoZmQpOyAKICAgIH0gCiAgICBnZXRjaGFyKCk7CiAgICByZXR1cm4g
-MDsKfSAKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tIAog
-Ckxvb2tpbmcgZm9yd2FyZCB0byB5b3VyIHJlcGx5ISAKCgoKCi0tCgoK
+On Sun, Sep 05, 2021 at 09:29:45PM +0800, 肖杰韬 wrote:
+> Hi, our team has found a problem in ext4 system on Linux kernel
+> v5.10, leading to DoS attacks.
+> 
+> The struct inode can be exhausted by normal users by calling syscall
+> such as creat. A normal user can repeatedly make the creat syscalls
+> to creat files and exhaust all struct inode. As a result，although
+> there is still a lot of space in the disk, there are no available
+> inodes and all ext4 files/directories creation of all other users
+> will fail.
+
+You can use project quotas to control the number of blocks and inodes
+that are used under a particular directory hierarchy.  So if a
+particular container is chroot'ed to the top-level of the directory
+using project quota, you can control the amount of file system
+resources used by that container.
+
+Indeed, project quotas were added to ext4 specifically to address the
+issue of different containers sharing a file system potentially using
+all of the blocks or inodes in that shared file system.  (See more
+below for a discussion of the on-going effort to add various point
+solutions for the sake of containers.)  If you are not using
+containers, normal user and group quotas would be the appropriate
+solution.
+
+If you are referring to memory utilization (which is normally what
+people refer to when they use terms like "struct inode") it
+appropriate solution is the memcg controller to limit how much memory
+can be used by a particular container.
+
+These techniques are applicable to any file system, and the issue you
+raised is not specific to the ext4 file system.  The real issue is the
+mistaken belief that containers provide perfect (or some would say,
+even adequate) isolation between mutually suspicious users --- and
+they do not.
+
+There are people who are trying to sell the benefits of containers who
+will try to make this claim, and the obvious issues such as the one
+you have identified, have point solutions.  However, if you are really
+concerned about providing iron-clad isolation between two users such
+that if one of them is malicious, they can not affect the other, the
+much better solution is to use Virtual Machines.  VM's are not as
+efficient, of course, but that is the nature of engineering tradeoffs.
+
+That being said, people who are developing containers do work to patch
+up each isolation failure as they come up, but people need to
+understand that there is a certain amount of whack-a-mole[1] that is
+happening.  This continuing effort is because of the clear efficiency
+gains of containers vs VM's.  But there is a reason why cloud products
+such as Google Kubernetes Engine use VM's *plus* containers such that
+each GCP Project has exclusive use of a particular VM.  This avoids
+the problems where two mutually suspicious customers, such as for
+example, Qingju Bike and Meituan Bike, or Hauwei and Samsung, would be
+in a position to try to breach the isolation of a pure container-based
+system, and cause problems for their competitor(s).
+
+[1] https://en.wikipedia.org/wiki/Whac-A-Mole#Colloquial_usage
+
+Cheers,
+
+					- Ted
