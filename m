@@ -2,111 +2,68 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E42F8400A4F
-	for <lists+linux-ext4@lfdr.de>; Sat,  4 Sep 2021 09:50:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92E73401005
+	for <lists+linux-ext4@lfdr.de>; Sun,  5 Sep 2021 15:38:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233962AbhIDHvb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 4 Sep 2021 03:51:31 -0400
-Received: from smtp3-1.goneo.de ([85.220.129.38]:46960 "EHLO smtp3-1.goneo.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233068AbhIDHvb (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Sat, 4 Sep 2021 03:51:31 -0400
-X-Greylist: delayed 309 seconds by postgrey-1.27 at vger.kernel.org; Sat, 04 Sep 2021 03:51:30 EDT
-Received: from [192.168.1.107] (dyndsl-085-016-043-081.ewe-ip-backbone.de [85.16.43.81])
-        by smtp3.goneo.de (Postfix) with ESMTPSA id 4A8E82040DA4;
-        Sat,  4 Sep 2021 09:45:18 +0200 (CEST)
-Subject: Re: [PATCH 1/2] ext4: docs: switch away from list-table
-To:     Akira Yokosawa <akiyks@gmail.com>, Jonathan Corbet <corbet@lwn.net>
-Cc:     jack@suse.cz, linux-doc@vger.kernel.org,
-        linux-ext4@vger.kernel.org, tytso@mit.edu,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-References: <20210902220854.198850-2-corbet@lwn.net>
- <b1909f4c-9e07-abd7-89ee-c2e551f9dc5b@gmail.com>
- <871r65zobl.fsf@meer.lwn.net>
- <a93af4a2-9b9f-6430-bc3a-dfb2dbf7e56b@gmail.com>
-From:   Markus Heiser <markus.heiser@darmarit.de>
-Message-ID: <68ae637d-dc8d-cedc-b058-8f4ebb146137@darmarit.de>
-Date:   Sat, 4 Sep 2021 09:45:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231754AbhIENiu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 5 Sep 2021 09:38:50 -0400
+Received: from azure-sdnproxy.icoremail.net ([207.46.229.174]:60296 "HELO
+        azure-sdnproxy-1.icoremail.net" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with SMTP id S229759AbhIENiu (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 5 Sep 2021 09:38:50 -0400
+X-Greylist: delayed 462 seconds by postgrey-1.27 at vger.kernel.org; Sun, 05 Sep 2021 09:38:49 EDT
+Received: by ajax-webmail-sr0414.icoremail.net (Coremail) ; Sun, 5 Sep 2021
+ 21:29:45 +0800 (GMT+08:00)
+X-Originating-IP: [154.207.66.65]
+Date:   Sun, 5 Sep 2021 21:29:45 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   =?UTF-8?B?6IKW5p2w6Z+s?= <20151213521@stu.xidian.edu.cn>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org, security@kernel.org
+Subject: Report bug to Linux ext4 file system about inode
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210401(fdb522e2)
+ Copyright (c) 2002-2021 www.mailtech.cn icmhosting
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-In-Reply-To: <a93af4a2-9b9f-6430-bc3a-dfb2dbf7e56b@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Message-ID: <52000f5c.6b0.17bb6268e72.Coremail.20151213521@stu.xidian.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: AQAAfwB3PXFKxjRhl4MJAA--.641W
+X-CM-SenderInfo: xmlh3t5r0lt0o6vw3h50lgxtvqohv3gofq/1tbiAQIBClwR-kZQVw
+        AAs6
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Am 04.09.21 um 03:23 schrieb Akira Yokosawa:
-> On Fri, 03 Sep 2021 09:11:26 -0600, Jonathan Corbet wrote:
->> Akira Yokosawa <akiyks@gmail.com> writes:
->>
->> [Adding Mauro]
->>
->>> On Thu,  2 Sep 2021 16:08:53 -0600, Jonathan Corbet wrote:
->>>
->>>> Commit 3a6541e97c03 (Add documentation about the orphan file feature) added
->>>> a new document on orphan files, which is great.  But the use of
->>>> "list-table" results in documents that are absolutely unreadable in their
->>>> plain-text form.  Switch this file to the regular RST table format instead;
->>>> the rendered (HTML) output is identical.
->>>
->>> In the "list tables" section of doc-guide/sphinx.rst, the first paragraph
->>> starts with the sentence:
->>>
->>>      We recommend the use of list table formats.
->>>
->>> Yes, the disadvantage of list tables is mentioned later in the paragraph:
->>>
->>>      Compared to the ASCII-art they might not be as comfortable for readers
->>>      of the text files.
->>>
->>> , but I still see list-table is meant as the preferred format.
->>
->> Interesting...that is not at all my memory of the discussions we had at
->> that time.  There was a lot of pushback against anything that makes the
->> RST files less readable - still is, if certain people join the
->> conversation.  Tables were one of the early flash points.
->>
->> Mauro, you added that text; do you remember things differently?  Do you
->> feel we should retain that recommendation?
-> 
-> No, the text was first added by Markus Heiser [added to CC] in commit
-> 0249a7644857 ("doc-rst: flat-table directive - initial implementation")
-> and have not updated ever since.
-> 
-> He might remember the circumstances, but 2016 was a long time ago,
-> I guess.
-
-We prefer list tables ...
-
-"""Their advantage is that they are easy to create or modify and that the
-diff of a modification is much more meaningful, because it is limited to
-the modified content."""
-
-By example: We have some very large tables with tons of rows and cols.
-If you need to extend one column just by one character you have to edit
-the whole table and the diff is not readable.
-
-It is not limited to big tables, e.g. if you patch a simple typo,
-you might need touch content not related to your fix.
-
-At the end it is a trade of, what weights more, readability of the
-plain text or readability of the patch / most often I would vote
-for the latter.
-
-  -- Markus --
-
-
-> 
-> Or did the discussions take place after the list table support had been
-> added?
-> 
->          Thanks, Akira (a newcomer to kerneldoc)
-> 
->>
->> Thanks,
->>
->> jon
->>
+SGksIG91ciB0ZWFtIGhhcyBmb3VuZCBhIHByb2JsZW0gaW4gZXh0NCBzeXN0ZW0gb24gTGludXgg
+a2VybmVsIHY1LjEwLCBsZWFkaW5nIHRvIERvUyBhdHRhY2tzLgoKVGhlIHN0cnVjdCBpbm9kZSBj
+YW4gYmUgZXhoYXVzdGVkIGJ5IG5vcm1hbCB1c2VycyBieSBjYWxsaW5nIHN5c2NhbGwgc3VjaCBh
+cyBjcmVhdC4gQSBub3JtYWwgdXNlciBjYW4gcmVwZWF0ZWRseSBtYWtlIHRoZSBjcmVhdCBzeXNj
+YWxscyB0byBjcmVhdCBmaWxlcyBhbmQgZXhoYXVzdCBhbGwgc3RydWN0IGlub2RlLiBBcyBhIHJl
+c3VsdO+8jGFsdGhvdWdoIHRoZXJlIGlzIHN0aWxsIGEgbG90IG9mIHNwYWNlIGluIHRoZSBkaXNr
+LCB0aGVyZSBhcmUgbm8gYXZhaWxhYmxlIGlub2RlcyBhbmQgYWxsIGV4dDQgZmlsZXMvZGlyZWN0
+b3JpZXMgY3JlYXRpb24gb2YgYWxsIG90aGVyIHVzZXJzIHdpbGwgZmFpbC4KCkluIGZhY3QsIHdl
+IHRyeSB0aGlzIGF0dGFjayBpbnNpZGUgYSBkZXByaXZpbGVnZWQgZG9ja2VyIGNvbnRhaW5lciB3
+aXRob3V0IGFueSBjYXBhYmlsaXRpZXMuIFRoZSBwcm9jZXNzZXMgaW4gdGhlIGRvY2tlciBjYW4g
+ZXhoYXVzdCBhbGwgc3RydWN0IGlub2RlIG9uIHRoZSBob3N0IGtlcm5lbC4gV2UgdXNlIGEgbWFj
+aGluZSB3aXRoIDUwMEcgU1NEIGRpc2suIFdlIHN0YXJ0IG9uZSBwcm9jZXNzIHRvIGV4aGF1c3Qg
+YWxsIHN0cnVjdCBpbm9kZS4gSW4gdG90YWwsIGFyb3VuZCAzMDQ5ODgxNiBudW1iZXIgb2Ygc3Ry
+dWN0IGlub2RlIGFyZSBjb25zdW1lZCBhbmQgdGhlcmUgYXJlIG5vIGF2YWlsYWJsZSBzdHJ1Y3Qg
+aW5vZGUgaW4gdGhlIGtlcm5lbC4gVGhlIGJsa2lvIGNvbnRyb2wgZ3JvdXAgY2FuIG9ubHkgbGlt
+aXQgdGhlIElPUFMgb3IgSU8gYmFuZHdpZHRoLCBzbyBibGtpbyBjb250cm9sIGdyb3VwIGNhbiBu
+b3QgaGVscC4gCgoKVGhlIGZvbGxvd2luZyBjb2RlIHNob3dzIGEgUG9DIHRoYXQgdGFrZXMgMzA0
+OTg4MTYgbnVtYmVyIG9mIHN0cnVjdCBpbm9kZSwgd2hpbGUgdGFrZSBhbGwgc3RydWN0IGlub2Rl
+IG9uIGhvc3QuIFdlIGV2YWx1YXRlIHRoZSBQb0Mgb24gaW50ZWwgaTUgQ1BVIHBoeXNpY2FsIG1h
+Y2hpbmUgKyBMaW51eCBrZXJuZWwgdjUuMTAuMCArIFVidW50dSAxOC4wNCBMVFMuCi0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiNpbmNsdWRlPHN0ZGlvLmg+
+CiNpbmNsdWRlPHN0ZGxpYi5oPgojaW5jbHVkZTx1bmlzdGQuaD4KI2luY2x1ZGU8ZmNudGwuaD4K
+CgppbnQgbWFpbigpCnsKICAgIGNoYXIgbmFtZW91dFs2NF07IAogICAgaW50IGZkOyAKICAgIGZv
+ciAoaW50IGkgPSAxOyA7IGkrKykgeyAKICAgICAgICAgc3ByaW50ZihuYW1lb3V0LCAidGVzdCVk
+LnR4dCIsIGkpOyAKICAgICAgICAgZmQgPSBjcmVhdCgmYW1wO25hbWVvdXRbMF0sIE9fQ1JFQVQp
+OyAKICAgICAgICAgY2xvc2UoZmQpOyAKICAgIH0gCiAgICBnZXRjaGFyKCk7CiAgICByZXR1cm4g
+MDsKfSAKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tIAog
+Ckxvb2tpbmcgZm9yd2FyZCB0byB5b3VyIHJlcGx5ISAKCgoKCi0tCgoK
