@@ -2,149 +2,131 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA2C940168B
-	for <lists+linux-ext4@lfdr.de>; Mon,  6 Sep 2021 08:46:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58EC74017FB
+	for <lists+linux-ext4@lfdr.de>; Mon,  6 Sep 2021 10:26:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239543AbhIFGrX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 6 Sep 2021 02:47:23 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:39848 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239244AbhIFGrX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 6 Sep 2021 02:47:23 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UnMKCx2_1630910776;
-Received: from admindeMacBook-Pro-2.local(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0UnMKCx2_1630910776)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 06 Sep 2021 14:46:17 +0800
-Subject: Re: [PATCH v2] ext4: fix reserved space counter leakage
-From:   JeffleXu <jefflexu@linux.alibaba.com>
-To:     Eric Whitney <enwlinux@gmail.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, joseph.qi@linux.alibaba.com,
-        hsiangkao@linux.alibaba.com
-References: <20210823061358.84473-1-jefflexu@linux.alibaba.com>
- <20210823203009.GA10429@localhost.localdomain>
- <77ac5ffe-9769-bcb4-0600-f72ddf0aa59a@linux.alibaba.com>
-Message-ID: <ffb203e9-b8b6-d3fe-a438-4dbddf6f7938@linux.alibaba.com>
-Date:   Mon, 6 Sep 2021 14:46:16 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        id S241099AbhIFI0q (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 6 Sep 2021 04:26:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44008 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240975AbhIFI0o (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 6 Sep 2021 04:26:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 1E05960041
+        for <linux-ext4@vger.kernel.org>; Mon,  6 Sep 2021 08:25:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630916740;
+        bh=Kt5DY37xJN4dNTViCOdItjnvb2x+0IvHWdUle+K/UP8=;
+        h=From:To:Subject:Date:From;
+        b=YVya7HnDIF1BcwSzFAZepOZfPpIBsVlXeceH+yYkH+CE9juRgUEPE+vY2f3zY/l8M
+         Ujd8TmtnOx9LWNKnHrT8H7UgYRkvRMwwPiiPYZ+b/11WByj7sk6Jb72U3bVe7uVUEB
+         K1+Sszl4WJScLP3GrheeWRwi7dS9CZZGxKoyVY9Jq2EcrzLTqAHFY+GTLo1Zh8PdX0
+         yYgvQQglqyKd59yD7RHGCkVYurq2uqVGSOt4Zd/V0g0mgVL4yWA20rTzzY3MQHp9/R
+         kA9kW55bci7ZNJ2cJ/nCCdCDbanRJkuY6vtoF+vs6yUnIa64j7FOiTX45aabX0MIVm
+         8iKrH9MOxxQSg==
+Received: by pdx-korg-bugzilla-2.web.codeaurora.org (Postfix, from userid 48)
+        id 1244660F90; Mon,  6 Sep 2021 08:25:40 +0000 (UTC)
+From:   bugzilla-daemon@bugzilla.kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 214327] New: Cant't shutdown or reboot: loop messages
+ "ext4_writepages: jbd2_start: err -30"
+Date:   Mon, 06 Sep 2021 08:25:39 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: new
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: antdev66@gmail.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: bug_id short_desc product version
+ cf_kernel_version rep_platform op_sys cf_tree bug_status bug_severity
+ priority component assigned_to reporter cf_regression attachments.created
+Message-ID: <bug-214327-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-In-Reply-To: <77ac5ffe-9769-bcb4-0600-f72ddf0aa59a@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+https://bugzilla.kernel.org/show_bug.cgi?id=3D214327
 
+            Bug ID: 214327
+           Summary: Cant't shutdown or reboot: loop messages
+                    "ext4_writepages: jbd2_start: err -30"
+           Product: File System
+           Version: 2.5
+    Kernel Version: 5.14.1
+          Hardware: x86-64
+                OS: Linux
+              Tree: Mainline
+            Status: NEW
+          Severity: normal
+          Priority: P1
+         Component: ext4
+          Assignee: fs_ext4@kernel-bugs.osdl.org
+          Reporter: antdev66@gmail.com
+        Regression: No
 
-On 8/25/21 9:38 AM, JeffleXu wrote:
-> 
-> 
-> On 8/24/21 4:30 AM, Eric Whitney wrote:
->> * Jeffle Xu <jefflexu@linux.alibaba.com>:
->>> When ext4_insert_delayed block receives and recovers from an error from
->>> ext4_es_insert_delayed_block(), e.g., ENOMEM, it does not release the
->>> space it has reserved for that block insertion as it should. One effect
->>> of this bug is that s_dirtyclusters_counter is not decremented and
->>> remains incorrectly elevated until the file system has been unmounted.
->>> This can result in premature ENOSPC returns and apparent loss of free
->>> space.
->>>
->>> Another effect of this bug is that
->>> /sys/fs/ext4/<dev>/delayed_allocation_blocks can remain non-zero even
->>> after syncfs has been executed on the filesystem.
->>>
->>> Besides, add check for s_dirtyclusters_counter when inode is going to be
->>> evicted and freed. s_dirtyclusters_counter can still keep non-zero until
->>> inode is written back in .evict_inode(), and thus the check is delayed
->>> to .destroy_inode().
->>>
->>> Fixes: 51865fda28e5 ("ext4: let ext4 maintain extent status tree")
->>> Cc: <stable@vger.kernel.org>
->>> Suggested-by: Gao Xiang <hsiangkao@linux.alibaba.com>
->>> Signed-off-by: Jeffle Xu <jefflexu@linux.alibaba.com>
->>> ---
->>> changes since v1:
->>> - improve commit log suggested by Eric Whitney
->>> - update "Suggested-by" title for Gao Xian, who actually found this bug
->>>   code
->>> - add check for s_dirtyclusters_counter in .destroy_inode()
->>> ---
->>>  fs/ext4/inode.c | 5 +++++
->>>  fs/ext4/super.c | 6 ++++++
->>>  2 files changed, 11 insertions(+)
->>>
->>> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
->>> index d8de607849df..73daf9443e5e 100644
->>> --- a/fs/ext4/inode.c
->>> +++ b/fs/ext4/inode.c
->>> @@ -1640,6 +1640,7 @@ static int ext4_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk)
->>>  	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
->>>  	int ret;
->>>  	bool allocated = false;
->>> +	bool reserved = false;
->>>  
->>>  	/*
->>>  	 * If the cluster containing lblk is shared with a delayed,
->>> @@ -1656,6 +1657,7 @@ static int ext4_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk)
->>>  		ret = ext4_da_reserve_space(inode);
->>>  		if (ret != 0)   /* ENOSPC */
->>>  			goto errout;
->>> +		reserved = true;
->>>  	} else {   /* bigalloc */
->>>  		if (!ext4_es_scan_clu(inode, &ext4_es_is_delonly, lblk)) {
->>>  			if (!ext4_es_scan_clu(inode,
->>> @@ -1668,6 +1670,7 @@ static int ext4_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk)
->>>  					ret = ext4_da_reserve_space(inode);
->>>  					if (ret != 0)   /* ENOSPC */
->>>  						goto errout;
->>> +					reserved = true;
->>>  				} else {
->>>  					allocated = true;
->>>  				}
->>> @@ -1678,6 +1681,8 @@ static int ext4_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk)
->>>  	}
->>>  
->>>  	ret = ext4_es_insert_delayed_block(inode, lblk, allocated);
->>> +	if (ret && reserved)
->>> +		ext4_da_release_space(inode, 1);
->>>  
->>>  errout:
->>>  	return ret;
->>> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
->>> index dfa09a277b56..61bf52b58fca 100644
->>> --- a/fs/ext4/super.c
->>> +++ b/fs/ext4/super.c
->>> @@ -1351,6 +1351,12 @@ static void ext4_destroy_inode(struct inode *inode)
->>>  				true);
->>>  		dump_stack();
->>>  	}
->>> +
->>> +	if (EXT4_I(inode)->i_reserved_data_blocks)
->>> +		ext4_msg(inode->i_sb, KERN_ERR,
->>> +			 "Inode %lu (%p): i_reserved_data_blocks (%u) not cleared!",
->>> +			 inode->i_ino, EXT4_I(inode),
->>> +			 EXT4_I(inode)->i_reserved_data_blocks);
->>>  }
->>>  
->>>  static void init_once(void *foo)
->>> -- 
->>> 2.27.0
->>>
->>
->> Looks good, passed 4k xfstests-bld regression.  Feel free to add:
->>
->> Reviewed-by: Eric Whitney <enwlinux@gmail.com>
-> 
-> 
-> Hi tytso, it's a bug fix and it would be great if it could be merged to
-> 5.15.
-> 
+Created attachment 298677
+  --> https://bugzilla.kernel.org/attachment.cgi?id=3D298677&action=3Dedit
+reboot/shutdown phase
 
-ping ...
+Hello,
+I have my workflow on Debian/Sid, with kernel compiled by
+https://www.kernel.org/, currently at version 5.14.1, on asus x555ln notebo=
+ok.
 
--- 
+The problem occurs when the external USB 3 harddisk is disconnected from
+itself: in some cases it is no longer reconnected and if I try to do "sync"
+from console, this command appears freezed.
+
+If I reboot, at the end the system log shows that it has reached the
+"Rebooting" phase but remains in loops on the message indicated above (see
+image file).
+
+When this happens, the system should recognize that the harddisk is no long=
+er
+available or stalled, to interrupt the write of the cache and terminate the
+reboot or shutdown phase.
+
 Thanks,
-Jeffle
+Antonio
+
+
+-- DETAILS --
+
+dmesg:
+
+scsi host4: uas
+scsi 4:0:0:0: Direct-Access     ASMT     2115             0    PQ: 0 ANSI: 6
+sd 4:0:0:0: Attached scsi generic sg0 type 0
+sd 4:0:0:0: [sda] 1953525168 512-byte logical blocks: (1.00 TB/932 GiB)
+sd 4:0:0:0: [sda] Write Protect is off
+sd 4:0:0:0: [sda] Mode Sense: 43 00 00 00
+sd 4:0:0:0: [sda] Write cache: enabled, read cache: enabled, doesn't support
+DPO or FUA
+sd 4:0:0:0: [sda] Optimal transfer size 33553920 bytes
+ sda: sda1
+sd 4:0:0:0: [sda] Attached SCSI disk
+usb 3-1: USB disconnect, device number 8
+xhci_hcd 0000:00:14.0: WARN Set TR Deq Ptr cmd failed due to incorrect slot=
+ or
+ep state.
+sd 4:0:0:0: [sda] tag#28 uas_eh_abort_handler 0 uas-tag 5 inflight: CMD IN=
+=20
+sd 4:0:0:0: [sda] tag#28 CDB: Read(10) 28 00 00 00 01 08 00 00 f8 00
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
