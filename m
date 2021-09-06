@@ -2,119 +2,149 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C69B240120E
-	for <lists+linux-ext4@lfdr.de>; Mon,  6 Sep 2021 01:19:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA2C940168B
+	for <lists+linux-ext4@lfdr.de>; Mon,  6 Sep 2021 08:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232984AbhIEXUx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 5 Sep 2021 19:20:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232745AbhIEXUw (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 5 Sep 2021 19:20:52 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B3AC061575;
-        Sun,  5 Sep 2021 16:19:48 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id u1so2834660plq.5;
-        Sun, 05 Sep 2021 16:19:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=7BZXdqPIIbX0lmfQ4SwtNY8oiLwmuMvBZoqm565+qZM=;
-        b=MJSm/ehKryiK4KHSbaVd1Bq9pjHb6JwWb4gkXn/IJsRe6yPqfykinE6UE8Koi4DMvf
-         BTz8DtzdBUophSXgxJqKXEL9HiHjM8W25/w4Cv9gznDkiw7d3+So26uM6pvsHgOPr49o
-         j8MrSVf1rAUTWtIH0Ot2cwQcYVxu3pPtDr8jASbgL/cQHsC731RX7adz1bxJCRcqxwjd
-         Kzbug6y3/2StJO5YRBbBIsvpMwTjN6K3ykHkICuV+E2+gZZR9z1AiIIkE9/aBxkT2f80
-         xJjXOlaHmoqCiTI8PZpoEVjcHvXnCOp03q3+sh+EQ8X1T7+wGTtZLh4nCg5vMOtNnZ3a
-         9llw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=7BZXdqPIIbX0lmfQ4SwtNY8oiLwmuMvBZoqm565+qZM=;
-        b=SAlKL2kJLXebt7DiVn9I/ogrggrPO9rA7CLcsy1INYHMmPP8rviHL55iNBeEE5YSy1
-         l+CNIRnNPQl4Yywamj3KZV9FAYD5gztRnmTT1o5qp7fx+HJ1+3T2fJVVCwzhG2DlCAmx
-         xFM7bEA5axXI7e6Rw2izC+heT4XLSM5NL/vPFS7UTL6MDLTdaD5ru5BPrws3M88myEhZ
-         FJtk93g6/8BYuWtF54J9lRrznhXECGQdbL9uTwq93AIU1sJc9PxOnrJd9VBwv7n1Qbrg
-         qI+iOGV4f/4VQpDoC4vmxhewYgP7Kjv8QzdUJ2A8wz83a43etiGlJZiILhBeWLVcIlf4
-         4JaQ==
-X-Gm-Message-State: AOAM531ubdNS3rpe6aHu43OgQUubC4p04FJrmSkyjppMnDoyLgYCNAlO
-        ZDDRZu9xchjsDbSq/zPd/92moUYtBZsSn8kD7f4=
-X-Google-Smtp-Source: ABdhPJxsH5A5v5b+7DWL2nI/OixOXfS7188Aze7SkaMeitjT4fO59ORtgY3F3G5cd+2rqSKYKy3vOXeftTmUTQke1D0=
-X-Received: by 2002:a17:90b:1085:: with SMTP id gj5mr10789472pjb.66.1630883988225;
- Sun, 05 Sep 2021 16:19:48 -0700 (PDT)
+        id S239543AbhIFGrX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 6 Sep 2021 02:47:23 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:39848 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239244AbhIFGrX (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 6 Sep 2021 02:47:23 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UnMKCx2_1630910776;
+Received: from admindeMacBook-Pro-2.local(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0UnMKCx2_1630910776)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 06 Sep 2021 14:46:17 +0800
+Subject: Re: [PATCH v2] ext4: fix reserved space counter leakage
+From:   JeffleXu <jefflexu@linux.alibaba.com>
+To:     Eric Whitney <enwlinux@gmail.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, joseph.qi@linux.alibaba.com,
+        hsiangkao@linux.alibaba.com
+References: <20210823061358.84473-1-jefflexu@linux.alibaba.com>
+ <20210823203009.GA10429@localhost.localdomain>
+ <77ac5ffe-9769-bcb4-0600-f72ddf0aa59a@linux.alibaba.com>
+Message-ID: <ffb203e9-b8b6-d3fe-a438-4dbddf6f7938@linux.alibaba.com>
+Date:   Mon, 6 Sep 2021 14:46:16 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210824034929.GA13415@raspberrypi>
-In-Reply-To: <20210824034929.GA13415@raspberrypi>
-From:   Austin Kim <austindh.kim@gmail.com>
-Date:   Mon, 6 Sep 2021 08:19:38 +0900
-Message-ID: <CADLLry4tZjHKpJq7cQ3Rmhc_OOvHK+Wmss=8x_8KA-aHP++oLw@mail.gmail.com>
-Subject: Re: [PATCH] ext4: remove an unused variable warning with CONFIG_QUOTA=n
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca
-Cc:     linux-ext4@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        =?UTF-8?B?6rmA64+Z7ZiE?= <austin.kim@lge.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <77ac5ffe-9769-bcb4-0600-f72ddf0aa59a@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-2021=EB=85=84 8=EC=9B=94 24=EC=9D=BC (=ED=99=94) =EC=98=A4=ED=9B=84 12:49, =
-Austin Kim <austindh.kim@gmail.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> The 'enable_quota' variable is only used in an CONFIG_QUOTA.
-> With CONFIG_QUOTA=3Dn, compiler causes a harmless warning:
->
-> fs/ext4/super.c: In function =E2=80=98ext4_remount=E2=80=99:
-> fs/ext4/super.c:5840:6: warning: variable =E2=80=98enable_quota=E2=80=99 =
-set but not used
->   [-Wunused-but-set-variable]
->   int enable_quota =3D 0;
->               ^~~~~
->
-> Move 'enable_quota' into the same #ifdef CONFIG_QUOTA block
-> to remove an unused variable warning.
->
-> Signed-off-by: Austin Kim <austindh.kim@gmail.com>
-> ---
->  fs/ext4/super.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 6b03e4281f6f..6adb570f4b31 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -5845,10 +5845,10 @@ static int ext4_remount(struct super_block *sb, i=
-nt *flags, char *data)
->         struct ext4_sb_info *sbi =3D EXT4_SB(sb);
->         unsigned long old_sb_flags, vfs_flags;
->         struct ext4_mount_options old_opts;
-> -       int enable_quota =3D 0;
->         ext4_group_t g;
->         int err =3D 0;
->  #ifdef CONFIG_QUOTA
-> +       int enable_quota =3D 0;
->         int i, j;
->         char *to_free[EXT4_MAXQUOTAS];
->  #endif
-> @@ -6053,7 +6053,9 @@ static int ext4_remount(struct super_block *sb, int=
- *flags, char *data)
->                                         err =3D -EROFS;
->                                         goto restore_opts;
->                                 }
-> +#ifdef CONFIG_QUOTA
->                         enable_quota =3D 1;
-> +#endif
->                 }
->         }
->
-> --
-> 2.20.1
->
 
-If you are available, would you please review this patch?
-It will not take long.
 
-BR,
-Austin Kim
+On 8/25/21 9:38 AM, JeffleXu wrote:
+> 
+> 
+> On 8/24/21 4:30 AM, Eric Whitney wrote:
+>> * Jeffle Xu <jefflexu@linux.alibaba.com>:
+>>> When ext4_insert_delayed block receives and recovers from an error from
+>>> ext4_es_insert_delayed_block(), e.g., ENOMEM, it does not release the
+>>> space it has reserved for that block insertion as it should. One effect
+>>> of this bug is that s_dirtyclusters_counter is not decremented and
+>>> remains incorrectly elevated until the file system has been unmounted.
+>>> This can result in premature ENOSPC returns and apparent loss of free
+>>> space.
+>>>
+>>> Another effect of this bug is that
+>>> /sys/fs/ext4/<dev>/delayed_allocation_blocks can remain non-zero even
+>>> after syncfs has been executed on the filesystem.
+>>>
+>>> Besides, add check for s_dirtyclusters_counter when inode is going to be
+>>> evicted and freed. s_dirtyclusters_counter can still keep non-zero until
+>>> inode is written back in .evict_inode(), and thus the check is delayed
+>>> to .destroy_inode().
+>>>
+>>> Fixes: 51865fda28e5 ("ext4: let ext4 maintain extent status tree")
+>>> Cc: <stable@vger.kernel.org>
+>>> Suggested-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+>>> Signed-off-by: Jeffle Xu <jefflexu@linux.alibaba.com>
+>>> ---
+>>> changes since v1:
+>>> - improve commit log suggested by Eric Whitney
+>>> - update "Suggested-by" title for Gao Xian, who actually found this bug
+>>>   code
+>>> - add check for s_dirtyclusters_counter in .destroy_inode()
+>>> ---
+>>>  fs/ext4/inode.c | 5 +++++
+>>>  fs/ext4/super.c | 6 ++++++
+>>>  2 files changed, 11 insertions(+)
+>>>
+>>> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+>>> index d8de607849df..73daf9443e5e 100644
+>>> --- a/fs/ext4/inode.c
+>>> +++ b/fs/ext4/inode.c
+>>> @@ -1640,6 +1640,7 @@ static int ext4_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk)
+>>>  	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
+>>>  	int ret;
+>>>  	bool allocated = false;
+>>> +	bool reserved = false;
+>>>  
+>>>  	/*
+>>>  	 * If the cluster containing lblk is shared with a delayed,
+>>> @@ -1656,6 +1657,7 @@ static int ext4_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk)
+>>>  		ret = ext4_da_reserve_space(inode);
+>>>  		if (ret != 0)   /* ENOSPC */
+>>>  			goto errout;
+>>> +		reserved = true;
+>>>  	} else {   /* bigalloc */
+>>>  		if (!ext4_es_scan_clu(inode, &ext4_es_is_delonly, lblk)) {
+>>>  			if (!ext4_es_scan_clu(inode,
+>>> @@ -1668,6 +1670,7 @@ static int ext4_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk)
+>>>  					ret = ext4_da_reserve_space(inode);
+>>>  					if (ret != 0)   /* ENOSPC */
+>>>  						goto errout;
+>>> +					reserved = true;
+>>>  				} else {
+>>>  					allocated = true;
+>>>  				}
+>>> @@ -1678,6 +1681,8 @@ static int ext4_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk)
+>>>  	}
+>>>  
+>>>  	ret = ext4_es_insert_delayed_block(inode, lblk, allocated);
+>>> +	if (ret && reserved)
+>>> +		ext4_da_release_space(inode, 1);
+>>>  
+>>>  errout:
+>>>  	return ret;
+>>> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+>>> index dfa09a277b56..61bf52b58fca 100644
+>>> --- a/fs/ext4/super.c
+>>> +++ b/fs/ext4/super.c
+>>> @@ -1351,6 +1351,12 @@ static void ext4_destroy_inode(struct inode *inode)
+>>>  				true);
+>>>  		dump_stack();
+>>>  	}
+>>> +
+>>> +	if (EXT4_I(inode)->i_reserved_data_blocks)
+>>> +		ext4_msg(inode->i_sb, KERN_ERR,
+>>> +			 "Inode %lu (%p): i_reserved_data_blocks (%u) not cleared!",
+>>> +			 inode->i_ino, EXT4_I(inode),
+>>> +			 EXT4_I(inode)->i_reserved_data_blocks);
+>>>  }
+>>>  
+>>>  static void init_once(void *foo)
+>>> -- 
+>>> 2.27.0
+>>>
+>>
+>> Looks good, passed 4k xfstests-bld regression.  Feel free to add:
+>>
+>> Reviewed-by: Eric Whitney <enwlinux@gmail.com>
+> 
+> 
+> Hi tytso, it's a bug fix and it would be great if it could be merged to
+> 5.15.
+> 
+
+ping ...
+
+-- 
+Thanks,
+Jeffle
