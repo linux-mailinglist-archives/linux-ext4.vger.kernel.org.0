@@ -2,98 +2,76 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A39E1401D22
-	for <lists+linux-ext4@lfdr.de>; Mon,  6 Sep 2021 16:38:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 963A9401E69
+	for <lists+linux-ext4@lfdr.de>; Mon,  6 Sep 2021 18:32:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243594AbhIFOjE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 6 Sep 2021 10:39:04 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:19013 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243551AbhIFOi6 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 6 Sep 2021 10:38:58 -0400
-Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H39rJ4zg3zbmG5;
-        Mon,  6 Sep 2021 22:33:52 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggeme754-chm.china.huawei.com
- (10.3.19.100) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.8; Mon, 6 Sep
- 2021 22:37:51 +0800
-From:   Ye Bin <yebin10@huawei.com>
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
-        Ye Bin <yebin10@huawei.com>
-Subject: [PATCH -next 6/6] ext4: fix possible store wrong check interval value in disk when umount
-Date:   Mon, 6 Sep 2021 22:47:54 +0800
-Message-ID: <20210906144754.2601607-7-yebin10@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210906144754.2601607-1-yebin10@huawei.com>
-References: <20210906144754.2601607-1-yebin10@huawei.com>
+        id S244197AbhIFQdz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 6 Sep 2021 12:33:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244198AbhIFQds (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 6 Sep 2021 12:33:48 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48B63C0617AE
+        for <linux-ext4@vger.kernel.org>; Mon,  6 Sep 2021 09:32:43 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id w7so6997058ilj.12
+        for <linux-ext4@vger.kernel.org>; Mon, 06 Sep 2021 09:32:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=Hi0ERA05Hh6q+34+Ou3AtyiRWoG/jVLdZcB+Ekv+M3g=;
+        b=AQXQzDCQYveoXX8TzTwuiAk/FEyR3wCuvC9VFUOgylxIOdg1EFZyjuPsYQnAcX6J45
+         hGQ/TLw/xoIRE4dR4duos/11L9nUC9pcUBl/RXv6WkJZOj9GF3K+dFgRBHNvOmD3hg/2
+         8aWexR+OCBkLd9FzUsmw6Mf2hXMKPJJYu5JOjAjvp1WIk7xCdh9mnYnLj+26R+tY7rgo
+         HJPLbs6wPd+nl87UvFskxFfDoXbe22pxgW1zf9L/3TdM0lyau7vB+LmM0EAyEmYoeoMO
+         ZhwZDLJwTAD2meT4nF7FnViJ3hJIW4496YAschcWJBrRRFI5yQJjoNMRwEQgQiqRwsUz
+         E0sQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=Hi0ERA05Hh6q+34+Ou3AtyiRWoG/jVLdZcB+Ekv+M3g=;
+        b=cuHQkOkzE8enERKv+R2I9WHMJjnQCDzqxjWe0YIMa3nqXMTLqNXxCSRZGMkz93jxrW
+         rUbCZTBETJeQXhH30d6n3THWBRidaoHqEMyChFNLLDv65KMcVpag6c8ws9UaapJNQx4x
+         Y27ACSXiJiP/GqDrd5ww76t4YoOdFg9NRXPmsdkeV6rlK6liS8RJ40O6HXamSG9Br9JX
+         NXBM1YMJQ06ShkfPHigAZtyoS0uoOFIwI3hsF8s35aBBWYPRNsGgHnGi0KodzqoRY9LF
+         lwhcQUoV9yQkrf5Ia8RLhEytuZe1F0mvHYK5lPk8yy454pfv49rsr+muq17s7vnjJ/bk
+         CV7Q==
+X-Gm-Message-State: AOAM533EGsD8mKmc0RUTck50G7eUA8VlkN9yAir9TI8ZrRIcccxfBOiM
+        RVOTKz/GCiyjRESIQ2ejdoSOgT4+GFR0PPSNxu8=
+X-Google-Smtp-Source: ABdhPJyNYLbPp58BcQ7mI7j8eL1xi4DRM/CVSKmP+XLlKZnpaM0c4B2zxnkjBdrMYYyKOgNolLHbsclwr0lft4or1UU=
+X-Received: by 2002:a05:6e02:1ca6:: with SMTP id x6mr8854675ill.86.1630945961991;
+ Mon, 06 Sep 2021 09:32:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggeme754-chm.china.huawei.com (10.3.19.100)
-X-CFilter-Loop: Reflected
+Received: by 2002:a05:6e02:1d86:0:0:0:0 with HTTP; Mon, 6 Sep 2021 09:32:41
+ -0700 (PDT)
+Reply-To: suzara.wans2021@gmail.com
+From:   Mrs Suzara Maling Wan <mr.brueshands4world@gmail.com>
+Date:   Mon, 6 Sep 2021 09:32:41 -0700
+Message-ID: <CABvx5tpkSnzTGw2hd3awtMaYZ6SrrR=GwA3X22LN=2t5+bDtOw@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Test follow steps:
-1. mkfs.ext4 /dev/sda -O mmp
-2. mount /dev/sda  /mnt
-3. wait for about 1 minute
-4. umount mnt
-5. debugfs /dev/sda
-6. dump_mmp
-7. fsck.ext4 /dev/sda
-
-I found 'check_interval' is range in [5, 10]. And sometime run fsck
-print "MMP interval is 10 seconds and total wait time is 42 seconds.
-Please wait...".
-kmmpd:
-...
-	if (diff < mmp_update_interval * HZ)
-		schedule_timeout_interruptible(mmp_update_interval * HZ - diff);
-	 diff = jiffies - last_update_time;
-...
-	mmp_check_interval = max(min(EXT4_MMP_CHECK_MULT * diff / HZ,
-				EXT4_MMP_MAX_CHECK_INTERVAL),
-			        EXT4_MMP_MIN_CHECK_INTERVAL);
-	mmp->mmp_check_interval = cpu_to_le16(mmp_check_interval);
-...
-We will call ext4_stop_mmpd to stop kmmpd kthread when umount, and
-schedule_timeout_interruptible will be interrupted, so 'diff' maybe
-little than mmp_update_interval. Then mmp_check_interval will range
-in [EXT4_MMP_MAX_CHECK_INTERVAL, EXT4_MMP_CHECK_MULT * diff / HZ].
-To solve this issue, if 'diff' little then mmp_update_interval * HZ
-just break loop, don't update check interval.
-
-Signed-off-by: Ye Bin <yebin10@huawei.com>
----
- fs/ext4/mmp.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
-index eed854bb6194..41c0a03019db 100644
---- a/fs/ext4/mmp.c
-+++ b/fs/ext4/mmp.c
-@@ -205,6 +205,14 @@ static int kmmpd(void *data)
- 			schedule_timeout_interruptible(mmp_update_interval *
- 						       HZ - diff);
- 			diff = jiffies - last_update_time;
-+			/* If 'diff' little 'than mmp_update_interval * HZ', it
-+			 * means someone call ext4_stop_mmpd to stop kmmpd
-+			 * kthread. We don't need to update mmp_check_interval
-+			 * any more, as 'diff' is not exact value.
-+			 */
-+			if (unlikely(diff < mmp_update_interval * HZ &&
-+			    kthread_should_stop()))
-+				break;
- 		}
- 
- 		/*
 -- 
-2.31.1
+My names are Mrs Suzara Maling Wan, I am a Nationality of the Republic
+of the Philippine presently base in West Africa B/F, dealing with
+exportation of Gold, I was diagnose of blood Causal decease, and my
+doctor have announce to me that I have few days to leave due to the
+condition of my sickness.
 
+I have a desire to build an orphanage home in your country of which i
+cannot execute the project myself due to my present health condition,
+I am willing to hand over the project under your care for you to help
+me fulfill my dreams and desire of building an orphanage home in your
+country.
+
+Reply in you are will to help so that I can direct you to my bank for
+the urgent transfer of the fund/money require for the project to your
+account as I have already made the fund/money available.
+
+With kind regards
+Mrs Suzara Maling Wan
