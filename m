@@ -2,35 +2,34 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA3F406250
-	for <lists+linux-ext4@lfdr.de>; Fri, 10 Sep 2021 02:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1E98406265
+	for <lists+linux-ext4@lfdr.de>; Fri, 10 Sep 2021 02:44:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241865AbhIJApq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 9 Sep 2021 20:45:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46338 "EHLO mail.kernel.org"
+        id S241895AbhIJApt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 9 Sep 2021 20:45:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47130 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231163AbhIJAUT (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 9 Sep 2021 20:20:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 235F2611CA;
-        Fri, 10 Sep 2021 00:19:09 +0000 (UTC)
+        id S232440AbhIJAVN (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 9 Sep 2021 20:21:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2409061167;
+        Fri, 10 Sep 2021 00:20:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631233149;
-        bh=57vFTcOJ+yFREvKnkKYBx44O4OYEhdto7aRuTkiK8wg=;
+        s=k20201202; t=1631233203;
+        bh=cUL+dXOhsDusUf/Lku5gWzcRv4kBgyBdkjN19fpSsf4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lb+E9Xo8bhuS+c6/S9jyIgnHZZ6nrQuvyQdu3I/zht9BuqZ4dM8FLNCWz/BVMmRxv
-         BJXVvPA5GMHAcs4OCmN5XuTcHmUICz0XECaDVpN9lWKAsuq5LACxJbFfO1e+UjiGdn
-         mBm9pXCrH1gk3SxnC4WLrj2NbVo+oYQBALw63xCcE7NBD8advMdsbvlf+qE6MS/EFA
-         lEjnrosni3oi2RIxbco5meAGpzIT7HivRLNcxxhX1a6V0jElRwBjUeDe3XDKGqDpkD
-         tiB2eTWEB433qy/6S+ik6QnH4+4IHrACZznhaCx5K1v17ejJBSJDdJmGcIhxIeFDEI
-         fFlBxW8daNCGA==
+        b=CQZImtx/H1v/060zsRmf7mkD14omCGVXeCCzA5ow6jqKVRCYkxOdTJFscDnqB6+Is
+         Lu96vwK7U90rEhCNkHvCk8SLMflR7KD6ioKAbq3mq8pKJ57ZYm0U8qjw59PkJqs/hY
+         523LIAFLQEH+t6YxLVBvNSIz2RkAOgAySkbmggJGFexFngqyhTzGXhKtXXlvCP4NTX
+         SiHRkHXsVs9ra6Bi2dYDt/wIaMhAnb7y8YlSgAFlqMD+zt798m1W/jpHQ5W2YUK5Ys
+         ouKF7fPlFr/6vG12atMTd0Zixn4KpHLSMoOGla/2nJVsInrIOv/IAM+WuxX007AnJm
+         TwXaVfgdNzSag==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Theodore Ts'o <tytso@mit.edu>, Lukas Czerner <lczerner@redhat.com>,
-        Sasha Levin <sashal@kernel.org>, linux-ext4@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH AUTOSEL 5.13 34/88] jbd2: fix clang warning in recovery.c
-Date:   Thu,  9 Sep 2021 20:17:26 -0400
-Message-Id: <20210910001820.174272-34-sashal@kernel.org>
+Cc:     Theodore Ts'o <tytso@mit.edu>, yangerkun <yangerkun@huawei.com>,
+        Sasha Levin <sashal@kernel.org>, linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.13 73/88] ext4: if zeroout fails fall back to splitting the extent node
+Date:   Thu,  9 Sep 2021 20:18:05 -0400
+Message-Id: <20210910001820.174272-73-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210910001820.174272-1-sashal@kernel.org>
 References: <20210910001820.174272-1-sashal@kernel.org>
@@ -44,32 +43,57 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Theodore Ts'o <tytso@mit.edu>
 
-[ Upstream commit 390add0cc9f4d7fda89cf3db7651717e82cf0afc ]
+[ Upstream commit 308c57ccf4318236be75dfa251c84713e694457b ]
 
-Remove unused variable store which was never used.
+If the underlying storage device is using thin-provisioning, it's
+possible for a zeroout operation to return ENOSPC.
 
-This fix is also in e2fsprogs commit 99a2294f85f0 ("e2fsck: value
-stored to err is never read").
+Commit df22291ff0fd ("ext4: Retry block allocation if we have free blocks
+left") added logic to retry block allocation since we might get free block
+after we commit a transaction. But the ENOSPC from thin-provisioning
+will confuse ext4, and lead to an infinite loop.
 
-Signed-off-by: Lukas Czerner <lczerner@redhat.com>
+Since using zeroout instead of splitting the extent node is an
+optimization, if it fails, we might as well fall back to splitting the
+extent node.
+
+Reported-by: yangerkun <yangerkun@huawei.com>
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/jbd2/recovery.c | 1 -
- 1 file changed, 1 deletion(-)
+ fs/ext4/extents.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
-index 4c4209262437..ba979fcf1cd3 100644
---- a/fs/jbd2/recovery.c
-+++ b/fs/jbd2/recovery.c
-@@ -760,7 +760,6 @@ static int do_one_pass(journal_t *journal,
- 				 */
- 				jbd_debug(1, "JBD2: Invalid checksum ignored in transaction %u, likely stale data\n",
- 					  next_commit_ID);
--				err = 0;
- 				brelse(bh);
- 				goto done;
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index 1293de50c8d4..ea699ce9ff5e 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -3568,7 +3568,7 @@ static int ext4_ext_convert_to_initialized(handle_t *handle,
+ 				split_map.m_len - ee_block);
+ 			err = ext4_ext_zeroout(inode, &zero_ex1);
+ 			if (err)
+-				goto out;
++				goto fallback;
+ 			split_map.m_len = allocated;
+ 		}
+ 		if (split_map.m_lblk - ee_block + split_map.m_len <
+@@ -3582,7 +3582,7 @@ static int ext4_ext_convert_to_initialized(handle_t *handle,
+ 						      ext4_ext_pblock(ex));
+ 				err = ext4_ext_zeroout(inode, &zero_ex2);
+ 				if (err)
+-					goto out;
++					goto fallback;
  			}
+ 
+ 			split_map.m_len += split_map.m_lblk - ee_block;
+@@ -3591,6 +3591,7 @@ static int ext4_ext_convert_to_initialized(handle_t *handle,
+ 		}
+ 	}
+ 
++fallback:
+ 	err = ext4_split_extent(handle, inode, ppath, &split_map, split_flag,
+ 				flags);
+ 	if (err > 0)
 -- 
 2.30.2
 
