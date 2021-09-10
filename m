@@ -2,89 +2,160 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30E754062D0
-	for <lists+linux-ext4@lfdr.de>; Fri, 10 Sep 2021 02:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5B5D4066E8
+	for <lists+linux-ext4@lfdr.de>; Fri, 10 Sep 2021 07:49:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232473AbhIJAq0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 9 Sep 2021 20:46:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50376 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234963AbhIJAZ3 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 9 Sep 2021 20:25:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BFBD610A3;
-        Fri, 10 Sep 2021 00:24:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631233459;
-        bh=d7btG8WqUYKP0BAS9y1/vub8PmoVRbCXgL8IJ+40SlA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PuX1p3Q9aCz8IjZkjenft0EGTWVLr07wC1VK9OA59J4YFOiZGY/L5/puNBeNqPHbT
-         WoOxg+iQ+D/jGXdMxJPnwjAQKmIqa5gIC8tiRBi3spLmPcUsYB0ZTUMC2bPUksWoeI
-         8wOVCDHrAndX4Eiplt9aVGFm0GT2lMmAKca7RTfyvSg1WkOMd2RSTS8xfkZ9K6rUBX
-         ZXu8vR+l3rYlB/wU7OpzSUgvDE02DpA50cNke9h+7V6VVds7rpRyDcFEHHViyJvszt
-         5M6vJMpUzMssDdMJbR7iw7EpQB8k/wDnRSbWpM74XQFGIlVgR7Y66jeJjRiK5S4o3P
-         cRgF6cM+kFYBw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>,
-        Sasha Levin <sashal@kernel.org>, linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 12/14] ext4: Make sure quota files are not grabbed accidentally
-Date:   Thu,  9 Sep 2021 20:24:01 -0400
-Message-Id: <20210910002403.176887-12-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210910002403.176887-1-sashal@kernel.org>
-References: <20210910002403.176887-1-sashal@kernel.org>
+        id S230493AbhIJFth (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 10 Sep 2021 01:49:37 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:60704 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230385AbhIJFtf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 10 Sep 2021 01:49:35 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UnrWbRt_1631252901;
+Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UnrWbRt_1631252901)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 10 Sep 2021 13:48:23 +0800
+Date:   Fri, 10 Sep 2021 13:48:21 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     tytso@mit.edu
+Cc:     JeffleXu <jefflexu@linux.alibaba.com>,
+        Eric Whitney <enwlinux@gmail.com>, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, joseph.qi@linux.alibaba.com
+Subject: Re: [PATCH v2] ext4: fix reserved space counter leakage
+Message-ID: <YTrxpXZB9JkuLesZ@B-P7TQMD6M-0146.local>
+References: <20210823061358.84473-1-jefflexu@linux.alibaba.com>
+ <20210823203009.GA10429@localhost.localdomain>
+ <77ac5ffe-9769-bcb4-0600-f72ddf0aa59a@linux.alibaba.com>
+ <ffb203e9-b8b6-d3fe-a438-4dbddf6f7938@linux.alibaba.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ffb203e9-b8b6-d3fe-a438-4dbddf6f7938@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+Hi Ted,
 
-[ Upstream commit bd2c38cf1726ea913024393a0d11f2e2a3f4c180 ]
+On Mon, Sep 06, 2021 at 02:46:16PM +0800, JeffleXu wrote:
+> 
+> 
+> On 8/25/21 9:38 AM, JeffleXu wrote:
+> > 
+> > 
+> > On 8/24/21 4:30 AM, Eric Whitney wrote:
+> >> * Jeffle Xu <jefflexu@linux.alibaba.com>:
+> >>> When ext4_insert_delayed block receives and recovers from an error from
+> >>> ext4_es_insert_delayed_block(), e.g., ENOMEM, it does not release the
+> >>> space it has reserved for that block insertion as it should. One effect
+> >>> of this bug is that s_dirtyclusters_counter is not decremented and
+> >>> remains incorrectly elevated until the file system has been unmounted.
+> >>> This can result in premature ENOSPC returns and apparent loss of free
+> >>> space.
+> >>>
+> >>> Another effect of this bug is that
+> >>> /sys/fs/ext4/<dev>/delayed_allocation_blocks can remain non-zero even
+> >>> after syncfs has been executed on the filesystem.
+> >>>
+> >>> Besides, add check for s_dirtyclusters_counter when inode is going to be
+> >>> evicted and freed. s_dirtyclusters_counter can still keep non-zero until
+> >>> inode is written back in .evict_inode(), and thus the check is delayed
+> >>> to .destroy_inode().
+> >>>
+> >>> Fixes: 51865fda28e5 ("ext4: let ext4 maintain extent status tree")
+> >>> Cc: <stable@vger.kernel.org>
+> >>> Suggested-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+> >>> Signed-off-by: Jeffle Xu <jefflexu@linux.alibaba.com>
+> >>> ---
+> >>> changes since v1:
+> >>> - improve commit log suggested by Eric Whitney
+> >>> - update "Suggested-by" title for Gao Xian, who actually found this bug
+> >>>   code
+> >>> - add check for s_dirtyclusters_counter in .destroy_inode()
+> >>> ---
+> >>>  fs/ext4/inode.c | 5 +++++
+> >>>  fs/ext4/super.c | 6 ++++++
+> >>>  2 files changed, 11 insertions(+)
+> >>>
+> >>> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> >>> index d8de607849df..73daf9443e5e 100644
+> >>> --- a/fs/ext4/inode.c
+> >>> +++ b/fs/ext4/inode.c
+> >>> @@ -1640,6 +1640,7 @@ static int ext4_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk)
+> >>>  	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
+> >>>  	int ret;
+> >>>  	bool allocated = false;
+> >>> +	bool reserved = false;
+> >>>  
+> >>>  	/*
+> >>>  	 * If the cluster containing lblk is shared with a delayed,
+> >>> @@ -1656,6 +1657,7 @@ static int ext4_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk)
+> >>>  		ret = ext4_da_reserve_space(inode);
+> >>>  		if (ret != 0)   /* ENOSPC */
+> >>>  			goto errout;
+> >>> +		reserved = true;
+> >>>  	} else {   /* bigalloc */
+> >>>  		if (!ext4_es_scan_clu(inode, &ext4_es_is_delonly, lblk)) {
+> >>>  			if (!ext4_es_scan_clu(inode,
+> >>> @@ -1668,6 +1670,7 @@ static int ext4_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk)
+> >>>  					ret = ext4_da_reserve_space(inode);
+> >>>  					if (ret != 0)   /* ENOSPC */
+> >>>  						goto errout;
+> >>> +					reserved = true;
+> >>>  				} else {
+> >>>  					allocated = true;
+> >>>  				}
+> >>> @@ -1678,6 +1681,8 @@ static int ext4_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk)
+> >>>  	}
+> >>>  
+> >>>  	ret = ext4_es_insert_delayed_block(inode, lblk, allocated);
+> >>> +	if (ret && reserved)
+> >>> +		ext4_da_release_space(inode, 1);
+> >>>  
+> >>>  errout:
+> >>>  	return ret;
+> >>> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> >>> index dfa09a277b56..61bf52b58fca 100644
+> >>> --- a/fs/ext4/super.c
+> >>> +++ b/fs/ext4/super.c
+> >>> @@ -1351,6 +1351,12 @@ static void ext4_destroy_inode(struct inode *inode)
+> >>>  				true);
+> >>>  		dump_stack();
+> >>>  	}
+> >>> +
+> >>> +	if (EXT4_I(inode)->i_reserved_data_blocks)
+> >>> +		ext4_msg(inode->i_sb, KERN_ERR,
+> >>> +			 "Inode %lu (%p): i_reserved_data_blocks (%u) not cleared!",
+> >>> +			 inode->i_ino, EXT4_I(inode),
+> >>> +			 EXT4_I(inode)->i_reserved_data_blocks);
+> >>>  }
+> >>>  
+> >>>  static void init_once(void *foo)
+> >>> -- 
+> >>> 2.27.0
+> >>>
+> >>
+> >> Looks good, passed 4k xfstests-bld regression.  Feel free to add:
+> >>
+> >> Reviewed-by: Eric Whitney <enwlinux@gmail.com>
+> > 
+> > 
+> > Hi tytso, it's a bug fix and it would be great if it could be merged to
+> > 5.15.
+> > 
+> 
+> ping ...
 
-If ext4 filesystem is corrupted so that quota files are linked from
-directory hirerarchy, bad things can happen. E.g. quota files can get
-corrupted or deleted. Make sure we are not grabbing quota file inodes
-when we expect normal inodes.
+It seems somewhat a real issue and has some impact in our production.
+Would you mind giving some hints if it could be resolved in this way?
 
-Signed-off-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Link: https://lore.kernel.org/r/20210812133122.26360-1-jack@suse.cz
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/ext4/inode.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+Or if some other concerns / solution about this?
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 6551f08e89a7..9792a604e35c 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -4231,6 +4231,7 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
- 	struct ext4_iloc iloc;
- 	struct ext4_inode *raw_inode;
- 	struct ext4_inode_info *ei;
-+	struct ext4_super_block *es = EXT4_SB(sb)->s_es;
- 	struct inode *inode;
- 	journal_t *journal = EXT4_SB(sb)->s_journal;
- 	long ret;
-@@ -4240,9 +4241,12 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
- 	gid_t i_gid;
- 
- 	if ((!(flags & EXT4_IGET_SPECIAL) &&
--	     (ino < EXT4_FIRST_INO(sb) && ino != EXT4_ROOT_INO)) ||
-+	     ((ino < EXT4_FIRST_INO(sb) && ino != EXT4_ROOT_INO) ||
-+	      ino == le32_to_cpu(es->s_usr_quota_inum) ||
-+	      ino == le32_to_cpu(es->s_grp_quota_inum) ||
-+	      ino == le32_to_cpu(es->s_prj_quota_inum))) ||
- 	    (ino < EXT4_ROOT_INO) ||
--	    (ino > le32_to_cpu(EXT4_SB(sb)->s_es->s_inodes_count))) {
-+	    (ino > le32_to_cpu(es->s_inodes_count))) {
- 		if (flags & EXT4_IGET_HANDLE)
- 			return ERR_PTR(-ESTALE);
- 		__ext4_error(sb, function, line,
--- 
-2.30.2
+Thanks,
+Gao Xiang
 
+> 
+> -- 
+> Thanks,
+> Jeffle
