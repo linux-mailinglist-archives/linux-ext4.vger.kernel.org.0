@@ -2,118 +2,146 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12A73405CF3
-	for <lists+linux-ext4@lfdr.de>; Thu,  9 Sep 2021 20:46:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88A61406298
+	for <lists+linux-ext4@lfdr.de>; Fri, 10 Sep 2021 02:45:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237738AbhIISqt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 9 Sep 2021 14:46:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59550 "EHLO mail.kernel.org"
+        id S241795AbhIJAph (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 9 Sep 2021 20:45:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237208AbhIISqs (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 9 Sep 2021 14:46:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE7B8610CE;
-        Thu,  9 Sep 2021 18:45:38 +0000 (UTC)
+        id S231751AbhIJASU (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 9 Sep 2021 20:18:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 78582611F2;
+        Fri, 10 Sep 2021 00:16:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631213139;
-        bh=aoyQEZvSd1+vYy9qkBjguGDggRTI0dLHoK9hq7Mx2yY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=KXvkGpIrxCmJIdH1Km0g/8dgNjJHNKJJjqP5enlPVfhL+RYlDftQ7viPPIy8THpR8
-         quKG2AnonGHE5r2rhH8iPJejTdvE+0/IKAS0AlZTE67DfWfmStoSo1STy0uhp3O/3J
-         WzJBeoe1XtOeeVT+d4oRzrcQ82eexPguYWwiRLqDzRxQ4LQqnZ2m9Ag3wmcOquaCWs
-         POCb9PUcH+dYTMwRwMYHI81XtGSSfr9/S5+/s63PsGqNWuoW0q+O6HTBPmUYgojO3i
-         fQEADAswkp/rtccTS8vLlJ49dNtxGcC8gtcM5JdR1CWyxizM4p2g65XnKOJp5rMYZ8
-         SANHIGYjwBAVA==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org
-Subject: [PATCH] fscrypt: remove fscrypt_operations::max_namelen
-Date:   Thu,  9 Sep 2021 11:45:13 -0700
-Message-Id: <20210909184513.139281-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.33.0
+        s=k20201202; t=1631233013;
+        bh=rQ1yDeHV+X4An5M1J5eMNbx8BfZ5b1ajquIcRCMKf+k=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=QKzxZEnm60rPXR7FrFlFP1JLIMXLqkhqIz3oIjxNfCG6j97hK1//m4QowaURSkRhn
+         H9DutCyEmmTd5qVr99hlbPODOPfCBTRTLGLzIsOA8IRTZKDM5ESvrOTJFkGFablw/K
+         ZftANSWAThIRkbQJJyO4Q32vqd3HzaDlhLuhguyerNdVwiwsMaETbJ/S0TyfdbIH1h
+         hN1A4rRMU5N1UATfEXCGeLQ9yfwWQscP0/s1emSwOBooTX8kF1p0Ww4iVP3CefFAdU
+         rvrvPu0Cz+pqrTQ6L01J16RUwSjTQgV/aXmycABchDl7fHlQO75np7gcxtrqUsUkHQ
+         BEkOr2HRn9w9A==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
+        linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.14 39/99] jbd2: fix portability problems caused by unaligned accesses
+Date:   Thu,  9 Sep 2021 20:14:58 -0400
+Message-Id: <20210910001558.173296-39-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210910001558.173296-1-sashal@kernel.org>
+References: <20210910001558.173296-1-sashal@kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+From: Theodore Ts'o <tytso@mit.edu>
 
-The max_namelen field is unnecessary, as it is set to 255 (NAME_MAX) on
-all filesystems that support fscrypt (or plan to support fscrypt).  For
-simplicity, just use NAME_MAX directly instead.
+[ Upstream commit a20d1cebb98bba75f2e34fddc768dd8712c1bded ]
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
+This commit applies the e2fsck/recovery.c portions of commit
+1e0c8ca7c08a ("e2fsck: fix portability problems caused by unaligned
+accesses) from the e2fsprogs git tree.
+
+The on-disk format for the ext4 journal can have unaigned 32-bit
+integers.  This can happen when replaying a journal using a obsolete
+checksum format (which was never popularly used, since the v3 format
+replaced v2 while the metadata checksum feature was being stablized).
+
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/crypto/fname.c       | 3 +--
- fs/ext4/super.c         | 1 -
- fs/f2fs/super.c         | 1 -
- fs/ubifs/crypto.c       | 1 -
- include/linux/fscrypt.h | 3 ---
- 5 files changed, 1 insertion(+), 8 deletions(-)
+ fs/jbd2/recovery.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
-index eb538c28df940..a9be4bc74a94a 100644
---- a/fs/crypto/fname.c
-+++ b/fs/crypto/fname.c
-@@ -429,8 +429,7 @@ int fscrypt_setup_filename(struct inode *dir, const struct qstr *iname,
+diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
+index d47a0d96bf30..4c4209262437 100644
+--- a/fs/jbd2/recovery.c
++++ b/fs/jbd2/recovery.c
+@@ -196,7 +196,7 @@ static int jbd2_descriptor_block_csum_verify(journal_t *j, void *buf)
+ static int count_tags(journal_t *journal, struct buffer_head *bh)
+ {
+ 	char *			tagp;
+-	journal_block_tag_t *	tag;
++	journal_block_tag_t	tag;
+ 	int			nr = 0, size = journal->j_blocksize;
+ 	int			tag_bytes = journal_tag_bytes(journal);
  
- 	if (fscrypt_has_encryption_key(dir)) {
- 		if (!fscrypt_fname_encrypted_size(&dir->i_crypt_info->ci_policy,
--						  iname->len,
--						  dir->i_sb->s_cop->max_namelen,
-+						  iname->len, NAME_MAX,
- 						  &fname->crypto_buf.len))
- 			return -ENAMETOOLONG;
- 		fname->crypto_buf.name = kmalloc(fname->crypto_buf.len,
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 136940af00b88..47212d7c02b84 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1566,7 +1566,6 @@ static const struct fscrypt_operations ext4_cryptops = {
- 	.set_context		= ext4_set_context,
- 	.get_dummy_policy	= ext4_get_dummy_policy,
- 	.empty_dir		= ext4_empty_dir,
--	.max_namelen		= EXT4_NAME_LEN,
- 	.has_stable_inodes	= ext4_has_stable_inodes,
- 	.get_ino_and_lblk_bits	= ext4_get_ino_and_lblk_bits,
- };
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 78ebc306ee2b5..cf049a042482b 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -2976,7 +2976,6 @@ static const struct fscrypt_operations f2fs_cryptops = {
- 	.set_context		= f2fs_set_context,
- 	.get_dummy_policy	= f2fs_get_dummy_policy,
- 	.empty_dir		= f2fs_empty_dir,
--	.max_namelen		= F2FS_NAME_LEN,
- 	.has_stable_inodes	= f2fs_has_stable_inodes,
- 	.get_ino_and_lblk_bits	= f2fs_get_ino_and_lblk_bits,
- 	.get_num_devices	= f2fs_get_num_devices,
-diff --git a/fs/ubifs/crypto.c b/fs/ubifs/crypto.c
-index 22be7aeb96c4f..c57b46a352d8f 100644
---- a/fs/ubifs/crypto.c
-+++ b/fs/ubifs/crypto.c
-@@ -82,5 +82,4 @@ const struct fscrypt_operations ubifs_crypt_operations = {
- 	.get_context		= ubifs_crypt_get_context,
- 	.set_context		= ubifs_crypt_set_context,
- 	.empty_dir		= ubifs_crypt_empty_dir,
--	.max_namelen		= UBIFS_MAX_NLEN,
- };
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index e912ed9141d9d..91ea9477e9bd2 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -118,9 +118,6 @@ struct fscrypt_operations {
- 	 */
- 	bool (*empty_dir)(struct inode *inode);
+@@ -206,14 +206,14 @@ static int count_tags(journal_t *journal, struct buffer_head *bh)
+ 	tagp = &bh->b_data[sizeof(journal_header_t)];
  
--	/* The filesystem's maximum ciphertext filename length, in bytes */
--	unsigned int max_namelen;
--
- 	/*
- 	 * Check whether the filesystem's inode numbers and UUID are stable,
- 	 * meaning that they will never be changed even by offline operations
+ 	while ((tagp - bh->b_data + tag_bytes) <= size) {
+-		tag = (journal_block_tag_t *) tagp;
++		memcpy(&tag, tagp, sizeof(tag));
+ 
+ 		nr++;
+ 		tagp += tag_bytes;
+-		if (!(tag->t_flags & cpu_to_be16(JBD2_FLAG_SAME_UUID)))
++		if (!(tag.t_flags & cpu_to_be16(JBD2_FLAG_SAME_UUID)))
+ 			tagp += 16;
+ 
+-		if (tag->t_flags & cpu_to_be16(JBD2_FLAG_LAST_TAG))
++		if (tag.t_flags & cpu_to_be16(JBD2_FLAG_LAST_TAG))
+ 			break;
+ 	}
+ 
+@@ -433,9 +433,9 @@ static int jbd2_commit_block_csum_verify(journal_t *j, void *buf)
+ }
+ 
+ static int jbd2_block_tag_csum_verify(journal_t *j, journal_block_tag_t *tag,
++				      journal_block_tag3_t *tag3,
+ 				      void *buf, __u32 sequence)
+ {
+-	journal_block_tag3_t *tag3 = (journal_block_tag3_t *)tag;
+ 	__u32 csum32;
+ 	__be32 seq;
+ 
+@@ -496,7 +496,7 @@ static int do_one_pass(journal_t *journal,
+ 	while (1) {
+ 		int			flags;
+ 		char *			tagp;
+-		journal_block_tag_t *	tag;
++		journal_block_tag_t	tag;
+ 		struct buffer_head *	obh;
+ 		struct buffer_head *	nbh;
+ 
+@@ -613,8 +613,8 @@ static int do_one_pass(journal_t *journal,
+ 			       <= journal->j_blocksize - descr_csum_size) {
+ 				unsigned long io_block;
+ 
+-				tag = (journal_block_tag_t *) tagp;
+-				flags = be16_to_cpu(tag->t_flags);
++				memcpy(&tag, tagp, sizeof(tag));
++				flags = be16_to_cpu(tag.t_flags);
+ 
+ 				io_block = next_log_block++;
+ 				wrap(journal, next_log_block);
+@@ -632,7 +632,7 @@ static int do_one_pass(journal_t *journal,
+ 
+ 					J_ASSERT(obh != NULL);
+ 					blocknr = read_tag_block(journal,
+-								 tag);
++								 &tag);
+ 
+ 					/* If the block has been
+ 					 * revoked, then we're all done
+@@ -647,8 +647,8 @@ static int do_one_pass(journal_t *journal,
+ 
+ 					/* Look for block corruption */
+ 					if (!jbd2_block_tag_csum_verify(
+-						journal, tag, obh->b_data,
+-						be32_to_cpu(tmp->h_sequence))) {
++			journal, &tag, (journal_block_tag3_t *)tagp,
++			obh->b_data, be32_to_cpu(tmp->h_sequence))) {
+ 						brelse(obh);
+ 						success = -EFSBADCRC;
+ 						printk(KERN_ERR "JBD2: Invalid "
 -- 
-2.33.0
+2.30.2
 
