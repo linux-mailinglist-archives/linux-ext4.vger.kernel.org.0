@@ -2,17 +2,17 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98B114075A2
+	by mail.lfdr.de (Postfix) with ESMTP id E96654075A3
 	for <lists+linux-ext4@lfdr.de>; Sat, 11 Sep 2021 10:51:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235488AbhIKIwS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 11 Sep 2021 04:52:18 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:16190 "EHLO
+        id S235501AbhIKIwT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 11 Sep 2021 04:52:19 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:16191 "EHLO
         szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235408AbhIKIwP (ORCPT
+        with ESMTP id S235439AbhIKIwP (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Sat, 11 Sep 2021 04:52:15 -0400
-Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4H65zL1ykLz1DGjS;
+Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4H65zL4vNNz1DGps;
         Sat, 11 Sep 2021 16:50:06 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by dggeme754-chm.china.huawei.com
  (10.3.19.100) with Microsoft SMTP Server (version=TLS1_2,
@@ -23,9 +23,9 @@ To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
         <linux-ext4@vger.kernel.org>
 CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
         Ye Bin <yebin10@huawei.com>
-Subject: [PATCH -next v2 3/6] ext4: compare to local seq and nodename when check conflict
-Date:   Sat, 11 Sep 2021 17:00:56 +0800
-Message-ID: <20210911090059.1876456-4-yebin10@huawei.com>
+Subject: [PATCH -next v2 4/6] ext4: avoid to re-read mmp check data get from page cache
+Date:   Sat, 11 Sep 2021 17:00:57 +0800
+Message-ID: <20210911090059.1876456-5-yebin10@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210911090059.1876456-1-yebin10@huawei.com>
 References: <20210911090059.1876456-1-yebin10@huawei.com>
@@ -40,49 +40,57 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-As mmp and check_mmp is point to the same data, so there will never
-detect conflict.
-To solve this issue just compare to local data.
+As call read_mmp_block pass bh_check which value is NULL, then call
+sb_getblk to get buffer_head. But mmp_block's buffer_head is already exist
+ which also is uptodate. Lead to compare the same data.
 
 Signed-off-by: Ye Bin <yebin10@huawei.com>
 ---
- fs/ext4/mmp.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ fs/ext4/mmp.c | 17 ++++++-----------
+ 1 file changed, 6 insertions(+), 11 deletions(-)
 
 diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
-index c781b09a78c9..4433fe7e9e86 100644
+index 4433fe7e9e86..007bde3c12b8 100644
 --- a/fs/ext4/mmp.c
 +++ b/fs/ext4/mmp.c
-@@ -154,6 +154,7 @@ static int kmmpd(void *data)
- 	unsigned long last_update_time;
- 	unsigned long last_check_time;
- 	unsigned long diff;
-+	char nodename[64];
- 	int retval = 0;
- 
- 	mmp_block = le64_to_cpu(es->s_mmp_block);
-@@ -169,8 +170,8 @@ static int kmmpd(void *data)
- 	BUILD_BUG_ON(sizeof(mmp->mmp_bdevname) < BDEVNAME_SIZE);
- 	bdevname(bh->b_bdev, mmp->mmp_bdevname);
- 
--	memcpy(mmp->mmp_nodename, init_utsname()->nodename,
--	       sizeof(mmp->mmp_nodename));
-+	memcpy(nodename, init_utsname()->nodename, sizeof(nodename));
-+	memcpy(mmp->mmp_nodename, nodename, sizeof(mmp->mmp_nodename));
- 	last_check_time = jiffies;
- 
- 	while (!kthread_should_stop() && !sb_rdonly(sb)) {
-@@ -224,8 +225,8 @@ static int kmmpd(void *data)
+@@ -213,10 +213,7 @@ static int kmmpd(void *data)
+ 		 * we need to check if the MMP block is as we write it.
+ 		 */
+ 		if (jiffies - last_check_time > mmp_check_interval * HZ) {
+-			struct buffer_head *bh_check = NULL;
+-			struct mmp_struct *mmp_check;
+-
+-			retval = read_mmp_block(sb, &bh_check, mmp_block);
++			retval = read_mmp_block(sb, &bh, mmp_block);
+ 			if (retval) {
+ 				ext4_error_err(sb, -retval,
+ 					       "error reading MMP data: %d",
+@@ -224,20 +221,18 @@ static int kmmpd(void *data)
+ 				goto wait_to_exit;
  			}
  
- 			mmp_check = (struct mmp_struct *)(bh_check->b_data);
--			if (mmp->mmp_seq != mmp_check->mmp_seq ||
--			    memcmp(mmp->mmp_nodename, mmp_check->mmp_nodename,
-+			if (seq != mmp_check->mmp_seq ||
-+			    memcmp(nodename, mmp_check->mmp_nodename,
- 				   sizeof(mmp->mmp_nodename))) {
- 				dump_mmp_msg(sb, mmp_check,
+-			mmp_check = (struct mmp_struct *)(bh_check->b_data);
+-			if (seq != mmp_check->mmp_seq ||
+-			    memcmp(nodename, mmp_check->mmp_nodename,
+-				   sizeof(mmp->mmp_nodename))) {
+-				dump_mmp_msg(sb, mmp_check,
++			mmp = (struct mmp_struct *)(bh->b_data);
++			if (seq != le32_to_cpu(mmp->mmp_seq) ||
++			    memcmp(nodename, mmp->mmp_nodename,
++				    sizeof(nodename))) {
++				dump_mmp_msg(sb, mmp,
  					     "Error while updating MMP info. "
+ 					     "The filesystem seems to have been"
+ 					     " multiply mounted.");
+ 				ext4_error_err(sb, EBUSY, "abort");
+-				put_bh(bh_check);
+ 				retval = -EBUSY;
+ 				goto wait_to_exit;
+ 			}
+-			put_bh(bh_check);
+ 			last_check_time = jiffies;
+ 		}
+ 
 -- 
 2.31.1
 
