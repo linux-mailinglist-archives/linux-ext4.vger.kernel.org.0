@@ -2,127 +2,64 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F66340849D
-	for <lists+linux-ext4@lfdr.de>; Mon, 13 Sep 2021 08:22:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F7B640884E
+	for <lists+linux-ext4@lfdr.de>; Mon, 13 Sep 2021 11:34:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237174AbhIMGXq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 13 Sep 2021 02:23:46 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:16193 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230003AbhIMGXq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 13 Sep 2021 02:23:46 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4H7GZy5xhLz1DGvv;
-        Mon, 13 Sep 2021 14:21:30 +0800 (CST)
-Received: from dggema766-chm.china.huawei.com (10.1.198.208) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Mon, 13 Sep 2021 14:22:28 +0800
-Received: from [10.174.177.210] (10.174.177.210) by
- dggema766-chm.china.huawei.com (10.1.198.208) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Mon, 13 Sep 2021 14:22:27 +0800
-Subject: Re: [PATCH v2] ext4: flush s_error_work before journal destroy in
- ext4_fill_super
-To:     <tytso@mit.edu>, <jack@suse.cz>
-CC:     <linux-ext4@vger.kernel.org>, <yukuai3@huawei.com>
-References: <20210831120449.2910005-1-yangerkun@huawei.com>
-From:   yangerkun <yangerkun@huawei.com>
-Message-ID: <7843daee-6de9-c684-9d11-1b4e1a90fbec@huawei.com>
-Date:   Mon, 13 Sep 2021 14:22:27 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S238696AbhIMJfN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 13 Sep 2021 05:35:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48952 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238683AbhIMJfL (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 13 Sep 2021 05:35:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C880961004;
+        Mon, 13 Sep 2021 09:33:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631525636;
+        bh=GY8EbtbGrgePZfSn3NDCuLNemetE1SRK37HKfuiJrzI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lXfVZu5j0ppumZyeQdoQvH4+bjWZ2qTjg+7G2oYG4+8A6qFXQ1t9Ht1Wy00W3Dxli
+         OeFQkayIypGECabAt0QI2dN2J3NHxXZiJ1A5dQ2xtWflk3NdrQdcbdCjSSMPLDLUXt
+         qr+gz75pyugwlAj99JLG6U0f/kVMoJzmSk2BcAZU=
+Date:   Mon, 13 Sep 2021 11:33:54 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     stable@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 0/4] backport fscrypt symlink fixes to 4.19
+Message-ID: <YT8bAlnKAYXMqFpe@kroah.com>
+References: <20210908215033.1122580-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210831120449.2910005-1-yangerkun@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.210]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggema766-chm.china.huawei.com (10.1.198.208)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210908215033.1122580-1-ebiggers@kernel.org>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-ping...
+On Wed, Sep 08, 2021 at 02:50:29PM -0700, Eric Biggers wrote:
+> This series backports some patches that failed to apply to 4.19-stable
+> due to the prototype of inode_operations::getattr having changed in
+> v5.12, as well as several other conflicts.  Please apply to 4.19-stable.
+> 
+> Eric Biggers (4):
+>   fscrypt: add fscrypt_symlink_getattr() for computing st_size
+>   ext4: report correct st_size for encrypted symlinks
+>   f2fs: report correct st_size for encrypted symlinks
+>   ubifs: report correct st_size for encrypted symlinks
+> 
+>  fs/crypto/hooks.c               | 44 +++++++++++++++++++++++++++++++++
+>  fs/ext4/symlink.c               | 11 ++++++++-
+>  fs/f2fs/namei.c                 | 11 ++++++++-
+>  fs/ubifs/file.c                 | 12 ++++++++-
+>  include/linux/fscrypt_notsupp.h |  6 +++++
+>  include/linux/fscrypt_supp.h    |  1 +
+>  6 files changed, 82 insertions(+), 3 deletions(-)
+> 
+> -- 
+> 2.33.0.153.gba50c8fa24-goog
+> 
 
-在 2021/8/31 20:04, yangerkun 写道:
-> The error path in ext4_fill_super forget to flush s_error_work before
-> journal destroy, and it may trigger the follow bug since
-> flush_stashed_error_work can run concurrently with journal destroy
-> without any protection for sbi->s_journal.
-> 
-> [32031.740193] EXT4-fs (loop66): get root inode failed
-> [32031.740484] EXT4-fs (loop66): mount failed
-> [32031.759805] ------------[ cut here ]------------
-> [32031.759807] kernel BUG at fs/jbd2/transaction.c:373!
-> [32031.760075] invalid opcode: 0000 [#1] SMP PTI
-> [32031.760336] CPU: 5 PID: 1029268 Comm: kworker/5:1 Kdump: loaded
-> 4.18.0
-> [32031.765112] Call Trace:
-> [32031.765375]  ? __switch_to_asm+0x35/0x70
-> [32031.765635]  ? __switch_to_asm+0x41/0x70
-> [32031.765893]  ? __switch_to_asm+0x35/0x70
-> [32031.766148]  ? __switch_to_asm+0x41/0x70
-> [32031.766405]  ? _cond_resched+0x15/0x40
-> [32031.766665]  jbd2__journal_start+0xf1/0x1f0 [jbd2]
-> [32031.766934]  jbd2_journal_start+0x19/0x20 [jbd2]
-> [32031.767218]  flush_stashed_error_work+0x30/0x90 [ext4]
-> [32031.767487]  process_one_work+0x195/0x390
-> [32031.767747]  worker_thread+0x30/0x390
-> [32031.768007]  ? process_one_work+0x390/0x390
-> [32031.768265]  kthread+0x10d/0x130
-> [32031.768521]  ? kthread_flush_work_fn+0x10/0x10
-> [32031.768778]  ret_from_fork+0x35/0x40
-> 
-> static int start_this_handle(...)
->      BUG_ON(journal->j_flags & JBD2_UNMOUNT); <---- Trigger this
-> 
-> Besides, after we enable fast commit, ext4_fc_replay can add work to
-> s_error_work but return success, so the latter journal destroy in
-> ext4_load_journal can trigger this problem too.
-> 
-> Fix this problem with two steps:
-> 1. Call ext4_commit_super directly in ext4_handle_error for the case
->     that called from ext4_fc_replay
-> 2. Since it's hard to pair the init and flush for s_error_work, we'd
->     better add a extras flush_work before journal destroy in
->     ext4_fill_super
-> 
-> Fixes: c92dc856848f ("ext4: defer saving error info from atomic context")
-> Fixes: 2d01ddc86606 ("ext4: save error info to sb through journal if available")
-> Signed-off-by: yangerkun <yangerkun@huawei.com>
-> ---
->   fs/ext4/super.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index d6df62fc810c..06b5ad34d892 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -659,7 +659,7 @@ static void ext4_handle_error(struct super_block *sb, bool force_ro, int error,
->   		 * constraints, it may not be safe to do it right here so we
->   		 * defer superblock flushing to a workqueue.
->   		 */
-> -		if (continue_fs)
-> +		if (continue_fs && journal)
->   			schedule_work(&EXT4_SB(sb)->s_error_work);
->   		else
->   			ext4_commit_super(sb);
-> @@ -5172,12 +5172,15 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
->   	sbi->s_ea_block_cache = NULL;
->   
->   	if (sbi->s_journal) {
-> +		/* flush s_error_work before journal destroy. */
-> +		flush_work(&sbi->s_error_work);
->   		jbd2_journal_destroy(sbi->s_journal);
->   		sbi->s_journal = NULL;
->   	}
->   failed_mount3a:
->   	ext4_es_unregister_shrinker(sbi);
->   failed_mount3:
-> +	/* flush s_error_work before sbi destroy */
->   	flush_work(&sbi->s_error_work);
->   	del_timer_sync(&sbi->s_err_report);
->   	ext4_stop_mmpd(sbi);
-> 
+All now queued up, thanks!
+
+greg k-h
