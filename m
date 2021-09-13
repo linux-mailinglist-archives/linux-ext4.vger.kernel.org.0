@@ -2,98 +2,127 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A13444075A6
-	for <lists+linux-ext4@lfdr.de>; Sat, 11 Sep 2021 10:51:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F66340849D
+	for <lists+linux-ext4@lfdr.de>; Mon, 13 Sep 2021 08:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235520AbhIKIwW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 11 Sep 2021 04:52:22 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:19028 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235470AbhIKIwQ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 11 Sep 2021 04:52:16 -0400
-Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H65vl5ZrQzbmFv;
-        Sat, 11 Sep 2021 16:46:59 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggeme754-chm.china.huawei.com
- (10.3.19.100) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.8; Sat, 11
- Sep 2021 16:51:02 +0800
-From:   Ye Bin <yebin10@huawei.com>
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
-        Ye Bin <yebin10@huawei.com>
-Subject: [PATCH -next v2 6/6] ext4: fix possible store wrong check interval value in disk when umount
-Date:   Sat, 11 Sep 2021 17:00:59 +0800
-Message-ID: <20210911090059.1876456-7-yebin10@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210911090059.1876456-1-yebin10@huawei.com>
-References: <20210911090059.1876456-1-yebin10@huawei.com>
+        id S237174AbhIMGXq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 13 Sep 2021 02:23:46 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:16193 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230003AbhIMGXq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 13 Sep 2021 02:23:46 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4H7GZy5xhLz1DGvv;
+        Mon, 13 Sep 2021 14:21:30 +0800 (CST)
+Received: from dggema766-chm.china.huawei.com (10.1.198.208) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.8; Mon, 13 Sep 2021 14:22:28 +0800
+Received: from [10.174.177.210] (10.174.177.210) by
+ dggema766-chm.china.huawei.com (10.1.198.208) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Mon, 13 Sep 2021 14:22:27 +0800
+Subject: Re: [PATCH v2] ext4: flush s_error_work before journal destroy in
+ ext4_fill_super
+To:     <tytso@mit.edu>, <jack@suse.cz>
+CC:     <linux-ext4@vger.kernel.org>, <yukuai3@huawei.com>
+References: <20210831120449.2910005-1-yangerkun@huawei.com>
+From:   yangerkun <yangerkun@huawei.com>
+Message-ID: <7843daee-6de9-c684-9d11-1b4e1a90fbec@huawei.com>
+Date:   Mon, 13 Sep 2021 14:22:27 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggeme754-chm.china.huawei.com (10.3.19.100)
+In-Reply-To: <20210831120449.2910005-1-yangerkun@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.210]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggema766-chm.china.huawei.com (10.1.198.208)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Test follow steps:
-1. mkfs.ext4 /dev/sda -O mmp
-2. mount /dev/sda  /mnt
-3. wait for about 1 minute
-4. umount mnt
-5. debugfs /dev/sda
-6. dump_mmp
-7. fsck.ext4 /dev/sda
+ping...
 
-I found 'check_interval' is range in [5, 10]. And sometime run fsck
-print "MMP interval is 10 seconds and total wait time is 42 seconds.
-Please wait...".
-kmmpd:
-...
-	if (diff < mmp_update_interval * HZ)
-		schedule_timeout_interruptible(mmp_update_interval * HZ - diff);
-	 diff = jiffies - last_update_time;
-...
-	mmp_check_interval = max(min(EXT4_MMP_CHECK_MULT * diff / HZ,
-				EXT4_MMP_MAX_CHECK_INTERVAL),
-			        EXT4_MMP_MIN_CHECK_INTERVAL);
-	mmp->mmp_check_interval = cpu_to_le16(mmp_check_interval);
-...
-We will call ext4_stop_mmpd to stop kmmpd kthread when umount, and
-schedule_timeout_interruptible will be interrupted, so 'diff' maybe
-little than mmp_update_interval. Then mmp_check_interval will range
-in [EXT4_MMP_MAX_CHECK_INTERVAL, EXT4_MMP_CHECK_MULT * diff / HZ].
-To solve this issue, if 'diff' little then mmp_update_interval * HZ
-just break loop, don't update check interval.
-
-Signed-off-by: Ye Bin <yebin10@huawei.com>
----
- fs/ext4/mmp.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
-index a0d47a906faa..f39e1fa0c6db 100644
---- a/fs/ext4/mmp.c
-+++ b/fs/ext4/mmp.c
-@@ -205,6 +205,14 @@ static int kmmpd(void *data)
- 			schedule_timeout_interruptible(mmp_update_interval *
- 						       HZ - diff);
- 			diff = jiffies - last_update_time;
-+			/* If 'diff' little 'than mmp_update_interval * HZ', it
-+			 * means someone call ext4_stop_mmpd to stop kmmpd
-+			 * kthread. We don't need to update mmp_check_interval
-+			 * any more, as 'diff' is not exact value.
-+			 */
-+			if (unlikely(diff < mmp_update_interval * HZ &&
-+			    kthread_should_stop()))
-+				break;
- 		}
- 
- 		/*
--- 
-2.31.1
-
+在 2021/8/31 20:04, yangerkun 写道:
+> The error path in ext4_fill_super forget to flush s_error_work before
+> journal destroy, and it may trigger the follow bug since
+> flush_stashed_error_work can run concurrently with journal destroy
+> without any protection for sbi->s_journal.
+> 
+> [32031.740193] EXT4-fs (loop66): get root inode failed
+> [32031.740484] EXT4-fs (loop66): mount failed
+> [32031.759805] ------------[ cut here ]------------
+> [32031.759807] kernel BUG at fs/jbd2/transaction.c:373!
+> [32031.760075] invalid opcode: 0000 [#1] SMP PTI
+> [32031.760336] CPU: 5 PID: 1029268 Comm: kworker/5:1 Kdump: loaded
+> 4.18.0
+> [32031.765112] Call Trace:
+> [32031.765375]  ? __switch_to_asm+0x35/0x70
+> [32031.765635]  ? __switch_to_asm+0x41/0x70
+> [32031.765893]  ? __switch_to_asm+0x35/0x70
+> [32031.766148]  ? __switch_to_asm+0x41/0x70
+> [32031.766405]  ? _cond_resched+0x15/0x40
+> [32031.766665]  jbd2__journal_start+0xf1/0x1f0 [jbd2]
+> [32031.766934]  jbd2_journal_start+0x19/0x20 [jbd2]
+> [32031.767218]  flush_stashed_error_work+0x30/0x90 [ext4]
+> [32031.767487]  process_one_work+0x195/0x390
+> [32031.767747]  worker_thread+0x30/0x390
+> [32031.768007]  ? process_one_work+0x390/0x390
+> [32031.768265]  kthread+0x10d/0x130
+> [32031.768521]  ? kthread_flush_work_fn+0x10/0x10
+> [32031.768778]  ret_from_fork+0x35/0x40
+> 
+> static int start_this_handle(...)
+>      BUG_ON(journal->j_flags & JBD2_UNMOUNT); <---- Trigger this
+> 
+> Besides, after we enable fast commit, ext4_fc_replay can add work to
+> s_error_work but return success, so the latter journal destroy in
+> ext4_load_journal can trigger this problem too.
+> 
+> Fix this problem with two steps:
+> 1. Call ext4_commit_super directly in ext4_handle_error for the case
+>     that called from ext4_fc_replay
+> 2. Since it's hard to pair the init and flush for s_error_work, we'd
+>     better add a extras flush_work before journal destroy in
+>     ext4_fill_super
+> 
+> Fixes: c92dc856848f ("ext4: defer saving error info from atomic context")
+> Fixes: 2d01ddc86606 ("ext4: save error info to sb through journal if available")
+> Signed-off-by: yangerkun <yangerkun@huawei.com>
+> ---
+>   fs/ext4/super.c | 5 ++++-
+>   1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index d6df62fc810c..06b5ad34d892 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -659,7 +659,7 @@ static void ext4_handle_error(struct super_block *sb, bool force_ro, int error,
+>   		 * constraints, it may not be safe to do it right here so we
+>   		 * defer superblock flushing to a workqueue.
+>   		 */
+> -		if (continue_fs)
+> +		if (continue_fs && journal)
+>   			schedule_work(&EXT4_SB(sb)->s_error_work);
+>   		else
+>   			ext4_commit_super(sb);
+> @@ -5172,12 +5172,15 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+>   	sbi->s_ea_block_cache = NULL;
+>   
+>   	if (sbi->s_journal) {
+> +		/* flush s_error_work before journal destroy. */
+> +		flush_work(&sbi->s_error_work);
+>   		jbd2_journal_destroy(sbi->s_journal);
+>   		sbi->s_journal = NULL;
+>   	}
+>   failed_mount3a:
+>   	ext4_es_unregister_shrinker(sbi);
+>   failed_mount3:
+> +	/* flush s_error_work before sbi destroy */
+>   	flush_work(&sbi->s_error_work);
+>   	del_timer_sync(&sbi->s_err_report);
+>   	ext4_stop_mmpd(sbi);
+> 
