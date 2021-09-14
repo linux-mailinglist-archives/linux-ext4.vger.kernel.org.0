@@ -2,23 +2,23 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14D1E40A286
-	for <lists+linux-ext4@lfdr.de>; Tue, 14 Sep 2021 03:31:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F19F40A313
+	for <lists+linux-ext4@lfdr.de>; Tue, 14 Sep 2021 04:08:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235350AbhINBcl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 13 Sep 2021 21:32:41 -0400
-Received: from mail110.syd.optusnet.com.au ([211.29.132.97]:47857 "EHLO
-        mail110.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232109AbhINBci (ORCPT
+        id S236621AbhINCKA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 13 Sep 2021 22:10:00 -0400
+Received: from mail109.syd.optusnet.com.au ([211.29.132.80]:50947 "EHLO
+        mail109.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233111AbhINCKA (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 13 Sep 2021 21:32:38 -0400
+        Mon, 13 Sep 2021 22:10:00 -0400
 Received: from dread.disaster.area (pa49-195-238-16.pa.nsw.optusnet.com.au [49.195.238.16])
-        by mail110.syd.optusnet.com.au (Postfix) with ESMTPS id D566A1093D9;
-        Tue, 14 Sep 2021 11:31:18 +1000 (AEST)
+        by mail109.syd.optusnet.com.au (Postfix) with ESMTPS id 82C30ECDEAD;
+        Tue, 14 Sep 2021 12:08:40 +1000 (AEST)
 Received: from dave by dread.disaster.area with local (Exim 4.92.3)
         (envelope-from <david@fromorbit.com>)
-        id 1mPxI5-00CCbG-9U; Tue, 14 Sep 2021 11:31:17 +1000
-Date:   Tue, 14 Sep 2021 11:31:17 +1000
+        id 1mPxsD-00CD9j-TB; Tue, 14 Sep 2021 12:08:37 +1000
+Date:   Tue, 14 Sep 2021 12:08:37 +1000
 From:   Dave Chinner <david@fromorbit.com>
 To:     NeilBrown <neilb@suse.de>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -30,19 +30,20 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-nfs@vger.kernel.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/6] XFS: remove congestion_wait() loop from kmem_alloc()
-Message-ID: <20210914013117.GG2361455@dread.disaster.area>
+Subject: Re: [PATCH 6/6] XFS: remove congestion_wait() loop from
+ xfs_buf_alloc_pages()
+Message-ID: <20210914020837.GH2361455@dread.disaster.area>
 References: <163157808321.13293.486682642188075090.stgit@noble.brown>
- <163157838439.13293.5032214643474179966.stgit@noble.brown>
+ <163157838440.13293.12568710689057349786.stgit@noble.brown>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <163157838439.13293.5032214643474179966.stgit@noble.brown>
+In-Reply-To: <163157838440.13293.12568710689057349786.stgit@noble.brown>
 X-Optus-CM-Score: 0
 X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0
         a=DzKKRZjfViQTE5W6EVc0VA==:117 a=DzKKRZjfViQTE5W6EVc0VA==:17
         a=kj9zAlcOel0A:10 a=7QKq2e-ADPsA:10 a=7-415B0cAAAA:8
-        a=-upqpVM4ziubeLwI_h0A:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+        a=W8B-ML30YZIRN3gm7fgA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
@@ -54,57 +55,89 @@ On Tue, Sep 14, 2021 at 10:13:04AM +1000, NeilBrown wrote:
 >     is definitely preferable to use the flag rather than opencode
 >     endless loop around allocator.
 > 
-> So remove the loop, instead specifying __GFP_NOFAIL if KM_MAYFAIL was
-> not given.
+> congestion_wait() is indistinguishable from
+> schedule_timeout_uninterruptible() in practice and it is not a good way
+> to wait for memory to become available.
+> 
+> So instead of waiting, allocate a single page using __GFP_NOFAIL, then
+> loop around and try to get any more pages that might be needed with a
+> bulk allocation.  This single-page allocation will wait in the most
+> appropriate way.
 > 
 > Signed-off-by: NeilBrown <neilb@suse.de>
 > ---
->  fs/xfs/kmem.c |   16 ++++------------
->  1 file changed, 4 insertions(+), 12 deletions(-)
+>  fs/xfs/xfs_buf.c |    6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> diff --git a/fs/xfs/kmem.c b/fs/xfs/kmem.c
-> index 6f49bf39183c..f545f3633f88 100644
-> --- a/fs/xfs/kmem.c
-> +++ b/fs/xfs/kmem.c
-> @@ -13,19 +13,11 @@ kmem_alloc(size_t size, xfs_km_flags_t flags)
->  {
->  	int	retries = 0;
->  	gfp_t	lflags = kmem_flags_convert(flags);
-> -	void	*ptr;
+> diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
+> index 5fa6cd947dd4..1ae3768f6504 100644
+> --- a/fs/xfs/xfs_buf.c
+> +++ b/fs/xfs/xfs_buf.c
+> @@ -372,8 +372,8 @@ xfs_buf_alloc_pages(
 >  
->  	trace_kmem_alloc(size, flags, _RET_IP_);
+>  	/*
+>  	 * Bulk filling of pages can take multiple calls. Not filling the entire
+> -	 * array is not an allocation failure, so don't back off if we get at
+> -	 * least one extra page.
+> +	 * array is not an allocation failure, so don't fail or fall back on
+> +	 * __GFP_NOFAIL if we get at least one extra page.
+>  	 */
+>  	for (;;) {
+>  		long	last = filled;
+> @@ -394,7 +394,7 @@ xfs_buf_alloc_pages(
+>  		}
 >  
-> -	do {
-> -		ptr = kmalloc(size, lflags);
-> -		if (ptr || (flags & KM_MAYFAIL))
-> -			return ptr;
-> -		if (!(++retries % 100))
-> -			xfs_err(NULL,
-> -	"%s(%u) possible memory allocation deadlock size %u in %s (mode:0x%x)",
-> -				current->comm, current->pid,
-> -				(unsigned int)size, __func__, lflags);
-> -		congestion_wait(BLK_RW_ASYNC, HZ/50);
-> -	} while (1);
-> +	if (!(flags & KM_MAYFAIL))
-> +		lflags |= __GFP_NOFAIL;
-> +
-> +	return kmalloc(size, lflags);
->  }
+>  		XFS_STATS_INC(bp->b_mount, xb_page_retries);
+> -		congestion_wait(BLK_RW_ASYNC, HZ / 50);
+> +		bp->b_pages[filled++] = alloc_page(gfp_mask | __GFP_NOFAIL);
 
-Which means we no longer get warnings about memory allocation
-failing - kmem_flags_convert() sets __GFP_NOWARN for all allocations
-in this loop. Hence we'll now get silent deadlocks through this code
-instead of getting warnings that memory allocation is failing
-repeatedly.
+This smells wrong - the whole point of using the bulk page allocator
+in this loop is to avoid the costly individual calls to
+alloc_page().
 
-I also wonder about changing the backoff behaviour here (it's a 20ms
-wait right now because there are not early wakeups) will affect the
-behaviour, as __GFP_NOFAIL won't wait for that extra time between
-allocation attempts....
+What we are implementing here fail-fast semantics for readahead and
+fail-never for everything else.  If the bulk allocator fails to get
+a page from the fast path free lists, it already falls back to
+__alloc_pages(gfp, 0, ...) to allocate a single page. So AFAICT
+there's no need to add another call to alloc_page() because we can
+just do this instead:
 
-And, of course, how did you test this? Sometimes we see
-unpredicted behaviours as a result of "simple" changes like this
-under low memory conditions...
+	if (flags & XBF_READ_AHEAD)
+		gfp_mask |= __GFP_NORETRY;
+	else
+-		gfp_mask |= GFP_NOFS;
++		gfp_mask |= GFP_NOFS | __GFP_NOFAIL;
+
+Which should make the __alloc_pages() call in
+alloc_pages_bulk_array() do a __GFP_NOFAIL allocation and hence
+provide the necessary never-fail guarantee that is needed here.
+
+At which point, the bulk allocation loop can be simplified because
+we can only fail bulk allocation for readahead, so something like:
+
+		if (filled == bp->b_page_count) {
+			XFS_STATS_INC(bp->b_mount, xb_page_found);
+			break;
+		}
+
+-		if (filled != last)
++		if (filled == last) {
+-			continue;
+-
+-		if (flags & XBF_READ_AHEAD) {
+			ASSERT(flags & XBF_READ_AHEAD);
+			xfs_buf_free_pages(bp);
+			return -ENOMEM;
+		}
+
+		XFS_STATS_INC(bp->b_mount, xb_page_retries);
+-		congestion_wait(BLK_RW_ASYNC, HZ / 50);
+	}
+	return 0;
+}
+
+would do the right thing and still record that we are doing
+blocking allocations (via the xb_page_retries stat) in this loop.
 
 Cheers,
 
