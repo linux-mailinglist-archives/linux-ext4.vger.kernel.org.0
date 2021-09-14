@@ -2,49 +2,49 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 809E940A204
-	for <lists+linux-ext4@lfdr.de>; Tue, 14 Sep 2021 02:28:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94B7240A203
+	for <lists+linux-ext4@lfdr.de>; Tue, 14 Sep 2021 02:28:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238477AbhINAaB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 13 Sep 2021 20:30:01 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:47790 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238446AbhINA37 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 13 Sep 2021 20:29:59 -0400
+        id S238767AbhINA3v (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 13 Sep 2021 20:29:51 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:55148 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238544AbhINA3r (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 13 Sep 2021 20:29:47 -0400
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 230D921E66;
-        Tue, 14 Sep 2021 00:28:41 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id EB9EB200AC;
+        Tue, 14 Sep 2021 00:28:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1631579321; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1631579309; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=kKg7RlKucOqg4kFvULlcfcgLDUa14h212dG0lQnULcE=;
-        b=awMekhqm0ZNbe0UAJauJmcBwIc7nmh/WiO0Wm1svGCnQLjolPKb5AEyzgL6E7o+LIz4y5b
-        lmX317K+JkPpTEpTlv/8PeWzfPTcsJIfAIpsVotoHrncS7969LnN3tar3wZGiAWm97fph1
-        H5B/qIkNeKC7yoT4eFeE3/rSAVYmUos=
+        bh=/fJh0QfLu557SRIcbnLQw5jXDd2d5nR20JToY2iryFI=;
+        b=HxscG/LDiGhsXGcbasBy/GQpdvuvcezFHx0oNgiHTzBfG6jLNj7at1rWx8uH73RB9dCBEK
+        43zz46aMTEEwRh8Kab1HMrXpHEHa8osZ6ZQ61ivRCI80gCkcehQ/wgKC04GE2CRXQEzw46
+        /6h+o/IWXCBi0R7pu+/Q8WQGi/3R1gU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1631579321;
+        s=susede2_ed25519; t=1631579309;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=kKg7RlKucOqg4kFvULlcfcgLDUa14h212dG0lQnULcE=;
-        b=2y/BbnOYFFsEbgxZG3DjeobRaJHXJPGcoflnoSvt9f/Hntganr1MCbrR5BikDTWxDcsICr
-        wEc7foc1STYeTIBA==
+        bh=/fJh0QfLu557SRIcbnLQw5jXDd2d5nR20JToY2iryFI=;
+        b=zy9E9ltAIbtS5E4r1Cp18Z6g2l7UU2NIsT6UJfPtYAJjWhnxeEspX3gl509vflmF/5AQeU
+        SGQVgd8837Ms+xDQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 86E1A13ADE;
-        Tue, 14 Sep 2021 00:28:36 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 91DDF13ADE;
+        Tue, 14 Sep 2021 00:28:26 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id kqaiEbTsP2FYawAAMHmgww
-        (envelope-from <neilb@suse.de>); Tue, 14 Sep 2021 00:28:36 +0000
+        id EE9HFKrsP2FQawAAMHmgww
+        (envelope-from <neilb@suse.de>); Tue, 14 Sep 2021 00:28:26 +0000
 From:   NeilBrown <neilb@suse.de>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Theodore Ts'o <tytso@mit.edu>,
@@ -53,12 +53,11 @@ To:     Andrew Morton <akpm@linux-foundation.org>,
         Matthew Wilcox <willy@infradead.org>,
         Mel Gorman <mgorman@suse.com>
 Date:   Tue, 14 Sep 2021 10:13:04 +1000
-Subject: [PATCH 6/6] XFS: remove congestion_wait() loop from
- xfs_buf_alloc_pages()
+Subject: [PATCH 5/6] XFS: remove congestion_wait() loop from kmem_alloc()
 Cc:     linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Message-ID: <163157838440.13293.12568710689057349786.stgit@noble.brown>
+Message-ID: <163157838439.13293.5032214643474179966.stgit@noble.brown>
 In-Reply-To: <163157808321.13293.486682642188075090.stgit@noble.brown>
 References: <163157808321.13293.486682642188075090.stgit@noble.brown>
 User-Agent: StGit/0.23
@@ -75,43 +74,41 @@ ENOMEM and says of __GFP_NOFAIL that it
     is definitely preferable to use the flag rather than opencode
     endless loop around allocator.
 
-congestion_wait() is indistinguishable from
-schedule_timeout_uninterruptible() in practice and it is not a good way
-to wait for memory to become available.
-
-So instead of waiting, allocate a single page using __GFP_NOFAIL, then
-loop around and try to get any more pages that might be needed with a
-bulk allocation.  This single-page allocation will wait in the most
-appropriate way.
+So remove the loop, instead specifying __GFP_NOFAIL if KM_MAYFAIL was
+not given.
 
 Signed-off-by: NeilBrown <neilb@suse.de>
 ---
- fs/xfs/xfs_buf.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ fs/xfs/kmem.c |   16 ++++------------
+ 1 file changed, 4 insertions(+), 12 deletions(-)
 
-diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
-index 5fa6cd947dd4..1ae3768f6504 100644
---- a/fs/xfs/xfs_buf.c
-+++ b/fs/xfs/xfs_buf.c
-@@ -372,8 +372,8 @@ xfs_buf_alloc_pages(
+diff --git a/fs/xfs/kmem.c b/fs/xfs/kmem.c
+index 6f49bf39183c..f545f3633f88 100644
+--- a/fs/xfs/kmem.c
++++ b/fs/xfs/kmem.c
+@@ -13,19 +13,11 @@ kmem_alloc(size_t size, xfs_km_flags_t flags)
+ {
+ 	int	retries = 0;
+ 	gfp_t	lflags = kmem_flags_convert(flags);
+-	void	*ptr;
  
- 	/*
- 	 * Bulk filling of pages can take multiple calls. Not filling the entire
--	 * array is not an allocation failure, so don't back off if we get at
--	 * least one extra page.
-+	 * array is not an allocation failure, so don't fail or fall back on
-+	 * __GFP_NOFAIL if we get at least one extra page.
- 	 */
- 	for (;;) {
- 		long	last = filled;
-@@ -394,7 +394,7 @@ xfs_buf_alloc_pages(
- 		}
+ 	trace_kmem_alloc(size, flags, _RET_IP_);
  
- 		XFS_STATS_INC(bp->b_mount, xb_page_retries);
--		congestion_wait(BLK_RW_ASYNC, HZ / 50);
-+		bp->b_pages[filled++] = alloc_page(gfp_mask | __GFP_NOFAIL);
- 	}
- 	return 0;
+-	do {
+-		ptr = kmalloc(size, lflags);
+-		if (ptr || (flags & KM_MAYFAIL))
+-			return ptr;
+-		if (!(++retries % 100))
+-			xfs_err(NULL,
+-	"%s(%u) possible memory allocation deadlock size %u in %s (mode:0x%x)",
+-				current->comm, current->pid,
+-				(unsigned int)size, __func__, lflags);
+-		congestion_wait(BLK_RW_ASYNC, HZ/50);
+-	} while (1);
++	if (!(flags & KM_MAYFAIL))
++		lflags |= __GFP_NOFAIL;
++
++	return kmalloc(size, lflags);
  }
 
 
