@@ -2,49 +2,49 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D87AA40A1FC
-	for <lists+linux-ext4@lfdr.de>; Tue, 14 Sep 2021 02:28:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF80840A1F0
+	for <lists+linux-ext4@lfdr.de>; Tue, 14 Sep 2021 02:28:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238664AbhINA3s (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 13 Sep 2021 20:29:48 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:55106 "EHLO
+        id S238365AbhINA3S (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 13 Sep 2021 20:29:18 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:55074 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238425AbhINA3k (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 13 Sep 2021 20:29:40 -0400
+        with ESMTP id S238305AbhINA3S (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 13 Sep 2021 20:29:18 -0400
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 8E60D200AA;
-        Tue, 14 Sep 2021 00:28:21 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 94D4E200AA;
+        Tue, 14 Sep 2021 00:28:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1631579301; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1631579280; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=K2Rgi41wxZueRRJfJ3e7t139IMXGOwOFm/IW/86sxa8=;
-        b=lyzjdxtY3SnzCwzK/kuZJUC9SY4Xs7ZXRw+PP/oAiwssdGGvZuytAC5YDSWdV3wkeEbVUN
-        eyns/Vbu/tlvelFBIDmgZ5FHtcnjomj2R4y823Hws1tCEgwJKhsPS/c5wzVgfdDw/cMM2W
-        VDrSFwyOEF2ta5PPGMVNOKXvEhEr0jw=
+        bh=fz478wuK2aqSUdVMTm0N58JnzuLLXcDfeQcH+i0TRAc=;
+        b=xe9UJcFJ9/etWuZVpkedbCfZdZGh4I+9k/xRiVFR+eOLjUc/38MzmSICzhxCaBDieHWCCU
+        IGfVi+k1JTkaS1tbSmYAM2N1g3fFIk1xYp+Z9Ww/PkVOo0+PW5yrER7llpNQuvMk4su7zT
+        Bx3yl4AFRjURJB8UHQZi0ijxP89K9dA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1631579301;
+        s=susede2_ed25519; t=1631579280;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=K2Rgi41wxZueRRJfJ3e7t139IMXGOwOFm/IW/86sxa8=;
-        b=QEL/DIW6vsNM7xl0L40jcqiiJLi/KiVfzJJKmTMtPziFOdCdB0wIt8hA78gAu/sb81FJoL
-        0TOAkRCT3w8YOPDQ==
+        bh=fz478wuK2aqSUdVMTm0N58JnzuLLXcDfeQcH+i0TRAc=;
+        b=Z5hLlNcuwJJinzCF56fW+4/hhbShZz4exvm5VcH5q6dN4x9juqo28ZwRLP51q89RkWh1Kh
+        Pld6ww2EgjdayQDQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 29D6613ADE;
-        Tue, 14 Sep 2021 00:28:17 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 386E713ADE;
+        Tue, 14 Sep 2021 00:27:56 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id KmZZNqHsP2FCawAAMHmgww
-        (envelope-from <neilb@suse.de>); Tue, 14 Sep 2021 00:28:17 +0000
+        id 5x0MOozsP2EiawAAMHmgww
+        (envelope-from <neilb@suse.de>); Tue, 14 Sep 2021 00:27:56 +0000
 From:   NeilBrown <neilb@suse.de>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Theodore Ts'o <tytso@mit.edu>,
@@ -53,12 +53,12 @@ To:     Andrew Morton <akpm@linux-foundation.org>,
         Matthew Wilcox <willy@infradead.org>,
         Mel Gorman <mgorman@suse.com>
 Date:   Tue, 14 Sep 2021 10:13:04 +1000
-Subject: [PATCH 4/6] EXT4: remove congestion_wait from ext4_bio_write_page,
- and simplify
+Subject: [PATCH 2/6] MM: annotate congestion_wait() and wait_iff_congested()
+ as ineffective.
 Cc:     linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Message-ID: <163157838439.13293.3505783933403734827.stgit@noble.brown>
+Message-ID: <163157838437.13293.15392955714346973750.stgit@noble.brown>
 In-Reply-To: <163157808321.13293.486682642188075090.stgit@noble.brown>
 References: <163157808321.13293.486682642188075090.stgit@noble.brown>
 User-Agent: StGit/0.23
@@ -69,69 +69,64 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-congestion_wait() is indistinguishable from
-schedule_timeout_uninterruptible().  It is best avoided and should be
-deprecated.
+Only 4 subsystems call set_bdi_congested() or clear_bdi_congested():
+ block/pktcdvd, fs/ceph fs/fuse fs/nfs
 
-It is not needed in ext4_bio_write_page().  There are two cases.
-If there are no ->io_bio yet, then it is appropriate to use __GFP_NOFAIL
-which does the waiting in a better place.  The code already uses this
-flag on the second attempt.  This patch changes to it always use that
-flag for this case.
+It may make sense to use congestion_wait() or wait_iff_congested()
+within these subsystems, but they have no value outside of these.
 
-If there *are* ->io_bio (in which case the allocation was non-blocking)
-we submit the io and return the first case.  No waiting is needed in
-this case.
-
-So remove the congestion_wait() call, and simplify the code so that the
-two cases are somewhat clearer.
-
-Remove the "if (io->io_bio)" before calling ext4_io_submit() as that
-test is performed internally by that function.
+Add documentation comments to these functions to discourage further use.
 
 Signed-off-by: NeilBrown <neilb@suse.de>
 ---
- fs/ext4/page-io.c |   13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+ include/linux/backing-dev.h |    7 +++++++
+ mm/backing-dev.c            |    9 +++++++++
+ 2 files changed, 16 insertions(+)
 
-diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c
-index f038d578d8d8..3b6ece0d3ad6 100644
---- a/fs/ext4/page-io.c
-+++ b/fs/ext4/page-io.c
-@@ -506,7 +506,7 @@ int ext4_bio_write_page(struct ext4_io_submit *io,
- 	 * can't happen in the common case of blocksize == PAGE_SIZE.
- 	 */
- 	if (fscrypt_inode_uses_fs_layer_crypto(inode) && nr_to_submit) {
--		gfp_t gfp_flags = GFP_NOFS;
-+		gfp_t gfp_flags;
- 		unsigned int enc_bytes = round_up(len, i_blocksize(inode));
+diff --git a/include/linux/backing-dev.h b/include/linux/backing-dev.h
+index ac7f231b8825..cc9513840351 100644
+--- a/include/linux/backing-dev.h
++++ b/include/linux/backing-dev.h
+@@ -153,6 +153,13 @@ static inline int wb_congested(struct bdi_writeback *wb, int cong_bits)
+ 	return wb->congested & cong_bits;
+ }
  
- 		/*
-@@ -514,21 +514,18 @@ int ext4_bio_write_page(struct ext4_io_submit *io,
- 		 * a waiting mask (i.e. request guaranteed allocation) on the
- 		 * first page of the bio.  Otherwise it can deadlock.
- 		 */
-+	retry_encrypt:
- 		if (io->io_bio)
- 			gfp_flags = GFP_NOWAIT | __GFP_NOWARN;
--	retry_encrypt:
-+		else
-+			gfp_flags = GFP_NOFS | __GFP_NOFAIL;
- 		bounce_page = fscrypt_encrypt_pagecache_blocks(page, enc_bytes,
- 							       0, gfp_flags);
- 		if (IS_ERR(bounce_page)) {
- 			ret = PTR_ERR(bounce_page);
- 			if (ret == -ENOMEM &&
- 			    (io->io_bio || wbc->sync_mode == WB_SYNC_ALL)) {
--				gfp_flags = GFP_NOFS;
--				if (io->io_bio)
--					ext4_io_submit(io);
--				else
--					gfp_flags |= __GFP_NOFAIL;
--				congestion_wait(BLK_RW_ASYNC, HZ/50);
-+				ext4_io_submit(io);
- 				goto retry_encrypt;
- 			}
++/* NOTE congestion_wait() and wait_iff_congested() are
++ * largely useless except as documentation.
++ * congestion_wait() will (almost) always wait for the given timeout.
++ * wait_iff_congested() will (almost) never wait, but will call
++ * cond_resched().
++ * Were possible an alternative waiting strategy should be found.
++ */
+ long congestion_wait(int sync, long timeout);
+ long wait_iff_congested(int sync, long timeout);
  
+diff --git a/mm/backing-dev.c b/mm/backing-dev.c
+index 4a9d4e27d0d9..53472ab38796 100644
+--- a/mm/backing-dev.c
++++ b/mm/backing-dev.c
+@@ -1023,6 +1023,11 @@ EXPORT_SYMBOL(set_bdi_congested);
+  * Waits for up to @timeout jiffies for a backing_dev (any backing_dev) to exit
+  * write congestion.  If no backing_devs are congested then just wait for the
+  * next write to be completed.
++ *
++ * NOTE: in the current implementation, hardly any backing_devs are ever
++ * marked as congested, and write-completion is rarely reported (see calls
++ * to clear_bdi_congested).  So this should not be assumed to ever wake before
++ * the timeout.
+  */
+ long congestion_wait(int sync, long timeout)
+ {
+@@ -1054,6 +1059,10 @@ EXPORT_SYMBOL(congestion_wait);
+  * The return value is 0 if the sleep is for the full timeout. Otherwise,
+  * it is the number of jiffies that were still remaining when the function
+  * returned. return_value == timeout implies the function did not sleep.
++ *
++ * NOTE: in the current implementation, hardly any backing_devs are ever
++ * marked as congested, and write-completion is rarely reported (see calls
++ * to clear_bdi_congested).  So this should not be assumed to sleep at all.
+  */
+ long wait_iff_congested(int sync, long timeout)
+ {
 
 
