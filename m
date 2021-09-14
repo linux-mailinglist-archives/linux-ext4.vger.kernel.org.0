@@ -2,141 +2,73 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 289BD40B52A
-	for <lists+linux-ext4@lfdr.de>; Tue, 14 Sep 2021 18:45:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6500640B7A0
+	for <lists+linux-ext4@lfdr.de>; Tue, 14 Sep 2021 21:12:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230033AbhINQq1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 14 Sep 2021 12:46:27 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:38400 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbhINQq0 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 14 Sep 2021 12:46:26 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 76C6520141;
-        Tue, 14 Sep 2021 16:45:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631637907; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ozFdqBIwmwyJglrohMvn3NkJIfp+ikVZXcbLX7txgcw=;
-        b=c+tWXz3iFiMt2fBT2y8zj5/DP3kTS+clAtQNQjW/Q0M6SxwQAy6krw8G8j0cJ8C2E/b09i
-        awJaPyl97itLD9c6bLIbr1CN+kU50My+7nVpVgBukC5bx/DrxIAwFzjQQkm1Bg2V8RK7QV
-        BDTYLlCiPqBuvc5JJPd+Ai4Uy25bW3s=
-Received: from suse.com (unknown [10.163.32.246])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id B15CCA3B94;
-        Tue, 14 Sep 2021 16:45:06 +0000 (UTC)
-Date:   Tue, 14 Sep 2021 17:45:04 +0100
-From:   Mel Gorman <mgorman@suse.com>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/6] XFS: remove congestion_wait() loop from
- xfs_buf_alloc_pages()
-Message-ID: <20210914164504.GS3828@suse.com>
-References: <163157808321.13293.486682642188075090.stgit@noble.brown>
- <163157838440.13293.12568710689057349786.stgit@noble.brown>
- <20210914020837.GH2361455@dread.disaster.area>
- <163158695921.3992.9776900395549582360@noble.neil.brown.name>
+        id S233090AbhINTMu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 14 Sep 2021 15:12:50 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:51816 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233055AbhINTMf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 14 Sep 2021 15:12:35 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 18EJBASQ024779
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 14 Sep 2021 15:11:11 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 6A4EB15C3424; Tue, 14 Sep 2021 15:11:10 -0400 (EDT)
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>
+Subject: [PATCH 1/3] resize2fs: attempt to keep the # of inodes valid by removing the last bg
+Date:   Tue, 14 Sep 2021 15:11:02 -0400
+Message-Id: <20210914191104.2283033-1-tytso@mit.edu>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <163158695921.3992.9776900395549582360@noble.neil.brown.name>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 12:35:59PM +1000, NeilBrown wrote:
-> On Tue, 14 Sep 2021, Dave Chinner wrote:
-> > On Tue, Sep 14, 2021 at 10:13:04AM +1000, NeilBrown wrote:
-> > > Documentation commment in gfp.h discourages indefinite retry loops on
-> > > ENOMEM and says of __GFP_NOFAIL that it
-> > > 
-> > >     is definitely preferable to use the flag rather than opencode
-> > >     endless loop around allocator.
-> > > 
-> > > congestion_wait() is indistinguishable from
-> > > schedule_timeout_uninterruptible() in practice and it is not a good way
-> > > to wait for memory to become available.
-> > > 
-> > > So instead of waiting, allocate a single page using __GFP_NOFAIL, then
-> > > loop around and try to get any more pages that might be needed with a
-> > > bulk allocation.  This single-page allocation will wait in the most
-> > > appropriate way.
-> > > 
-> > > Signed-off-by: NeilBrown <neilb@suse.de>
-> > > ---
-> > >  fs/xfs/xfs_buf.c |    6 +++---
-> > >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
-> > > index 5fa6cd947dd4..1ae3768f6504 100644
-> > > --- a/fs/xfs/xfs_buf.c
-> > > +++ b/fs/xfs/xfs_buf.c
-> > > @@ -372,8 +372,8 @@ xfs_buf_alloc_pages(
-> > >  
-> > >  	/*
-> > >  	 * Bulk filling of pages can take multiple calls. Not filling the entire
-> > > -	 * array is not an allocation failure, so don't back off if we get at
-> > > -	 * least one extra page.
-> > > +	 * array is not an allocation failure, so don't fail or fall back on
-> > > +	 * __GFP_NOFAIL if we get at least one extra page.
-> > >  	 */
-> > >  	for (;;) {
-> > >  		long	last = filled;
-> > > @@ -394,7 +394,7 @@ xfs_buf_alloc_pages(
-> > >  		}
-> > >  
-> > >  		XFS_STATS_INC(bp->b_mount, xb_page_retries);
-> > > -		congestion_wait(BLK_RW_ASYNC, HZ / 50);
-> > > +		bp->b_pages[filled++] = alloc_page(gfp_mask | __GFP_NOFAIL);
-> > 
-> > This smells wrong - the whole point of using the bulk page allocator
-> > in this loop is to avoid the costly individual calls to
-> > alloc_page().
-> > 
-> > What we are implementing here fail-fast semantics for readahead and
-> > fail-never for everything else.  If the bulk allocator fails to get
-> > a page from the fast path free lists, it already falls back to
-> > __alloc_pages(gfp, 0, ...) to allocate a single page. So AFAICT
-> > there's no need to add another call to alloc_page() because we can
-> > just do this instead:
-> > 
-> > 	if (flags & XBF_READ_AHEAD)
-> > 		gfp_mask |= __GFP_NORETRY;
-> > 	else
-> > -		gfp_mask |= GFP_NOFS;
-> > +		gfp_mask |= GFP_NOFS | __GFP_NOFAIL;
-> > 
-> > Which should make the __alloc_pages() call in
-> > alloc_pages_bulk_array() do a __GFP_NOFAIL allocation and hence
-> > provide the necessary never-fail guarantee that is needed here.
-> 
-> That is a nice simplification.
-> Mel Gorman told me
->   https://lore.kernel.org/linux-nfs/20210907153116.GJ3828@suse.com/
-> that alloc_pages_bulk ignores GFP_NOFAIL.  I added that to the
-> documentation comment in an earlier patch.
-> 
-> I had a look at the code and cannot see how it would fail to allocate at
-> least one page.  Maybe Mel can help....
-> 
+If a the 10GB file system (with the default inode ratio size of 16k)
+is resized to 64TB, the number of inodes will become 2**32 --- one
+above the maximum allowed number of inodes of 2**32-1.  In
+adjust_fs_info(), we already try drop the last block group if there
+isn't sufficient space in the last block group to support the metadata
+for that block group.  So if dropping the last block group allows the
+number of inodes to valid, we should try that as well.  In some cases
+this will mean resizing a file system to 64TB will result in it be
+resized to a size of 64TB - 128MB, which is close enough for
+government work.
 
-If there are already at least one page an the array and the first attempt
-at bulk allocation fails, it'll simply return. It's an odd corner case
-that may never apply but it's possible.  That said, I'm of the opinion that
-__GFP_NOFAIL should not be expanded and instead congestion_wait should be
-deleted and replaced with something triggered by reclaim making progress.
+Addresses-Google-Bug: 199105099
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ resize/resize2fs.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
+diff --git a/resize/resize2fs.c b/resize/resize2fs.c
+index daaa3d49..770d2d06 100644
+--- a/resize/resize2fs.c
++++ b/resize/resize2fs.c
+@@ -757,6 +757,15 @@ retry:
+ 	 */
+ 	new_inodes =(unsigned long long) fs->super->s_inodes_per_group * fs->group_desc_count;
+ 	if (new_inodes > ~0U) {
++		new_inodes = (unsigned long long) fs->super->s_inodes_per_group * (fs->group_desc_count - 1);
++		if (new_inodes <= ~0U) {
++			unsigned long long new_blocks =
++		((unsigned long long) fs->super->s_blocks_per_group *
++		 (fs->group_desc_count - 1)) + fs->super->s_first_data_block;
++
++			ext2fs_blocks_count_set(fs->super, new_blocks);
++			goto retry;
++		}
+ 		fprintf(stderr, _("inodes (%llu) must be less than %u\n"),
+ 			(unsigned long long) new_inodes, ~0U);
+ 		return EXT2_ET_TOO_MANY_INODES;
 -- 
-Mel Gorman
-SUSE Labs
+2.31.0
+
