@@ -2,49 +2,47 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94B7240A203
-	for <lists+linux-ext4@lfdr.de>; Tue, 14 Sep 2021 02:28:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3564740A1E9
+	for <lists+linux-ext4@lfdr.de>; Tue, 14 Sep 2021 02:27:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238767AbhINA3v (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 13 Sep 2021 20:29:51 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:55148 "EHLO
+        id S238126AbhINA26 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 13 Sep 2021 20:28:58 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:55030 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238544AbhINA3r (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 13 Sep 2021 20:29:47 -0400
+        with ESMTP id S236554AbhINA26 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 13 Sep 2021 20:28:58 -0400
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id EB9EB200AC;
-        Tue, 14 Sep 2021 00:28:29 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 1FDF8200AB;
+        Tue, 14 Sep 2021 00:27:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1631579309; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1631579260; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/fJh0QfLu557SRIcbnLQw5jXDd2d5nR20JToY2iryFI=;
-        b=HxscG/LDiGhsXGcbasBy/GQpdvuvcezFHx0oNgiHTzBfG6jLNj7at1rWx8uH73RB9dCBEK
-        43zz46aMTEEwRh8Kab1HMrXpHEHa8osZ6ZQ61ivRCI80gCkcehQ/wgKC04GE2CRXQEzw46
-        /6h+o/IWXCBi0R7pu+/Q8WQGi/3R1gU=
+         content-transfer-encoding:content-transfer-encoding;
+        bh=PFbh9I08qiRIpx/LwQHrN9x2N5uOULjufRHblHpoK4g=;
+        b=uuSgtJ0+FRAjj4cM0Uw3gizAGdSOZ9KZJdQa8Xe47I5rWpB/k4+CBglCk9ze0+ku71h0Kj
+        DLOGlj0TJIV61exkhj/GiPT941q/fF9d5QndRC2KIKAtbsWDv1tpN5woiO3T0qT26hW9qR
+        4D8sFiwSqMqGDl+rMHe/VXOuaFh4drI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1631579309;
+        s=susede2_ed25519; t=1631579260;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/fJh0QfLu557SRIcbnLQw5jXDd2d5nR20JToY2iryFI=;
-        b=zy9E9ltAIbtS5E4r1Cp18Z6g2l7UU2NIsT6UJfPtYAJjWhnxeEspX3gl509vflmF/5AQeU
-        SGQVgd8837Ms+xDQ==
+         content-transfer-encoding:content-transfer-encoding;
+        bh=PFbh9I08qiRIpx/LwQHrN9x2N5uOULjufRHblHpoK4g=;
+        b=0FOlCmgmDR5J/+kI3Q4QjdyDlONqJLexEA9naFbBESq2iYI7TMeUTBl0wf8j5qeuc63GzD
+        MaW4gs77K7fW/GDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 91DDF13ADE;
-        Tue, 14 Sep 2021 00:28:26 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B074513ADE;
+        Tue, 14 Sep 2021 00:27:36 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id EE9HFKrsP2FQawAAMHmgww
-        (envelope-from <neilb@suse.de>); Tue, 14 Sep 2021 00:28:26 +0000
+        id 4YCuG3jsP2ECawAAMHmgww
+        (envelope-from <neilb@suse.de>); Tue, 14 Sep 2021 00:27:36 +0000
 From:   NeilBrown <neilb@suse.de>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Theodore Ts'o <tytso@mit.edu>,
@@ -53,13 +51,11 @@ To:     Andrew Morton <akpm@linux-foundation.org>,
         Matthew Wilcox <willy@infradead.org>,
         Mel Gorman <mgorman@suse.com>
 Date:   Tue, 14 Sep 2021 10:13:04 +1000
-Subject: [PATCH 5/6] XFS: remove congestion_wait() loop from kmem_alloc()
+Subject: [PATCH 0/6] congestion_wait() and GFP_NOFAIL
 Cc:     linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Message-ID: <163157838439.13293.5032214643474179966.stgit@noble.brown>
-In-Reply-To: <163157808321.13293.486682642188075090.stgit@noble.brown>
-References: <163157808321.13293.486682642188075090.stgit@noble.brown>
+Message-ID: <163157808321.13293.486682642188075090.stgit@noble.brown>
 User-Agent: StGit/0.23
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -68,47 +64,62 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Documentation commment in gfp.h discourages indefinite retry loops on
-ENOMEM and says of __GFP_NOFAIL that it
+While working on an NFS issue recently I was informed (or maybe
+"reminded") that congestion_wait() doesn't really do what we think it
+does.   It is indistinguishable from schedule_timeout_uninterruptible().
 
-    is definitely preferable to use the flag rather than opencode
-    endless loop around allocator.
+Some current users for congestion_wait() would be better suited by
+__GFP_NOFAIL.   In related discussions it was pointed out that the 
+__GFP_NOFAIL documentation could usefully clarify the costs of its use.
 
-So remove the loop, instead specifying __GFP_NOFAIL if KM_MAYFAIL was
-not given.
+So this set of patch addresses some of these issues.  The patches are
+all independent and can safely be applied separately in different tress
+as appropriate.
 
-Signed-off-by: NeilBrown <neilb@suse.de>
+They:
+ - add or improve documentation relating to these issues
+ - make a tiny fix to the page_alloc_bulk_*
+ - replace those calls to congestion_wait() which are simply waiting
+   to retry a memory allocation.
+
+These are the easy bits.  There are 5 calls to congestion_wait() and one
+to wait_iff_congested() in mm/ which need consideration.  There are
+multiple calls to congestion_wait in fs/, particularly fs/f2fs/ which
+need to be addressed too.  I'll try to form an opinion about these in
+coming weeks.
+
+Thanks,
+NeilBrown
+
+
 ---
- fs/xfs/kmem.c |   16 ++++------------
- 1 file changed, 4 insertions(+), 12 deletions(-)
 
-diff --git a/fs/xfs/kmem.c b/fs/xfs/kmem.c
-index 6f49bf39183c..f545f3633f88 100644
---- a/fs/xfs/kmem.c
-+++ b/fs/xfs/kmem.c
-@@ -13,19 +13,11 @@ kmem_alloc(size_t size, xfs_km_flags_t flags)
- {
- 	int	retries = 0;
- 	gfp_t	lflags = kmem_flags_convert(flags);
--	void	*ptr;
- 
- 	trace_kmem_alloc(size, flags, _RET_IP_);
- 
--	do {
--		ptr = kmalloc(size, lflags);
--		if (ptr || (flags & KM_MAYFAIL))
--			return ptr;
--		if (!(++retries % 100))
--			xfs_err(NULL,
--	"%s(%u) possible memory allocation deadlock size %u in %s (mode:0x%x)",
--				current->comm, current->pid,
--				(unsigned int)size, __func__, lflags);
--		congestion_wait(BLK_RW_ASYNC, HZ/50);
--	} while (1);
-+	if (!(flags & KM_MAYFAIL))
-+		lflags |= __GFP_NOFAIL;
-+
-+	return kmalloc(size, lflags);
- }
+NeilBrown (6):
+      MM: improve documentation for __GFP_NOFAIL
+      MM: annotate congestion_wait() and wait_iff_congested() as ineffective.
+      EXT4: Remove ENOMEM/congestion_wait() loops.
+      EXT4: remove congestion_wait from ext4_bio_write_page, and simplify
+      XFS: remove congestion_wait() loop from kmem_alloc()
+      XFS: remove congestion_wait() loop from xfs_buf_alloc_pages()
 
+
+ fs/ext4/ext4.h              |  2 +-
+ fs/ext4/ext4_jbd2.c         |  8 +++++-
+ fs/ext4/extents.c           | 49 ++++++++++++++-----------------------
+ fs/ext4/extents_status.c    | 35 ++++++++++++++------------
+ fs/ext4/extents_status.h    |  2 +-
+ fs/ext4/indirect.c          |  2 +-
+ fs/ext4/inode.c             |  6 ++---
+ fs/ext4/ioctl.c             |  4 +--
+ fs/ext4/page-io.c           | 13 ++++------
+ fs/ext4/super.c             |  2 +-
+ fs/jbd2/transaction.c       |  8 +++---
+ fs/xfs/kmem.c               | 16 +++---------
+ fs/xfs/xfs_buf.c            |  6 ++---
+ include/linux/backing-dev.h |  7 ++++++
+ mm/backing-dev.c            |  9 +++++++
+ 15 files changed, 86 insertions(+), 83 deletions(-)
+
+--
+Signature
 
