@@ -2,167 +2,114 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88C4340C3A6
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Sep 2021 12:31:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B10E240C49B
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Sep 2021 13:51:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237249AbhIOKdD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 15 Sep 2021 06:33:03 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:35732 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232286AbhIOKdC (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Sep 2021 06:33:02 -0400
+        id S232927AbhIOLxQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 15 Sep 2021 07:53:16 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:45234 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232672AbhIOLxP (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Sep 2021 07:53:15 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 8A0E11FE50;
-        Wed, 15 Sep 2021 10:31:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1631701902; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        by smtp-out1.suse.de (Postfix) with ESMTP id 90FC422230;
+        Wed, 15 Sep 2021 11:51:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1631706715; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=OBqVQGnFWgtPG9Q+UphQmLlXVL6BaYYUbmftNzq04iQ=;
-        b=vCIxgPTi6OMDqQ1ajFPPws6U/nEaOZXbNreE5vLj0ORZVg9SGJK5j03eyv1Pm/qcwe8Lul
-        zUSA36no50k4583wA4oRhu13+NFroEoBYuq2Ymiujc9Cj8pkGoJdk9VkNNBNFavQhvy8eK
-        jqk/KMIUfFBs0odiRg8c66j8c+i81Z8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1631701902;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OBqVQGnFWgtPG9Q+UphQmLlXVL6BaYYUbmftNzq04iQ=;
-        b=e/WnNShqk62O0dQZnZD9WPguIsQYzduDCgskdnNv9m/4hbEBfdiHXgi+hGDxnaudXKibAb
-        jiWMOVYTfo8QVvCQ==
-Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id 6D872A3B90;
-        Wed, 15 Sep 2021 10:31:42 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 02FF31E4318; Wed, 15 Sep 2021 12:31:40 +0200 (CEST)
-Date:   Wed, 15 Sep 2021 12:31:40 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Jan Kara <jack@suse.cz>, Jan Kara <jack@suse.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Ext4 <linux-ext4@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Khazhismel Kumykov <khazhy@google.com>,
-        David Howells <dhowells@redhat.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Theodore Tso <tytso@mit.edu>,
+        bh=ezTag8FBwZoPE0mbLQd/8vVA5u9wYyKzzA2BAaeCdqk=;
+        b=Oowyq/u6gqCCB5BKOXaYHANJZj9rQRrGvyHHnoqL1aX++Prhi3F/s+TF/6PlPAURkDAXvl
+        jxiuM8flPGKlG5a4+hCKS9+5+lPuySlLZeGkY6QQYlSV4ysoNL+WVXmZzvpHIYF6CSaq3+
+        C35NZQnKrXWKI6wrCyqiIDtxYChJ3d4=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 5F0C9A3B8F;
+        Wed, 15 Sep 2021 11:51:55 +0000 (UTC)
+Date:   Wed, 15 Sep 2021 13:51:54 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
         "Darrick J. Wong" <djwong@kernel.org>,
-        Matthew Bobrowski <repnop@google.com>, kernel@collabora.com
-Subject: Re: [PATCH v6 15/21] fanotify: Preallocate per superblock mark error
- event
-Message-ID: <20210915103140.GA6166@quack2.suse.cz>
-References: <20210812214010.3197279-1-krisman@collabora.com>
- <20210812214010.3197279-16-krisman@collabora.com>
- <20210816155758.GF30215@quack2.suse.cz>
- <877dg6rbtn.fsf@collabora.com>
- <87a6kusmar.fsf@collabora.com>
- <CAOQ4uxjDtA45nn4iT9LFbbavuGa=vMPQJFp7GOJHdqrst8y+1A@mail.gmail.com>
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.com>, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/6] MM: improve documentation for __GFP_NOFAIL
+Message-ID: <YUHeWnKtR0WMNGo8@dhcp22.suse.cz>
+References: <163157808321.13293.486682642188075090.stgit@noble.brown>
+ <163157838436.13293.8832201267053160346.stgit@noble.brown>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAOQ4uxjDtA45nn4iT9LFbbavuGa=vMPQJFp7GOJHdqrst8y+1A@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <163157838436.13293.8832201267053160346.stgit@noble.brown>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri 03-09-21 07:16:33, Amir Goldstein wrote:
-> On Fri, Sep 3, 2021 at 12:24 AM Gabriel Krisman Bertazi
-> <krisman@collabora.com> wrote:
-> > Actually, I don't think this will work for insertion unless we keep a
-> > bounce buffer for the file_handle, because we need to keep the
-> > group->notification_lock to ensure the fee doesn't go away with the mark
-> > (since it is not yet enqueued) but, as discussed before, we don't want
-> > to hold that lock when generating the FH.
-> >
-> > I think the correct way is to have some sort of refcount of the error
-> > event slot.  We could use err_count for that and change the suggestion
-> > above to:
-> >
-> > if (mark->flags & FANOTIFY_MARK_FLAG_SB_MARK) {
-> >         struct fanotify_sb_mark *fa_mark = FANOTIFY_SB_MARK(mark);
-> >
-> >         spin_lock(&group->notification_lock);
-> >         if (fa_mark->fee_slot) {
-> >                 if (!fee->err_count) {
-> >                         kfree(fa_mark->fee_slot);
-> >                         fa_mark->fee_slot = NULL;
-> >                 } else {
-> >                         fa_mark->fee_slot->mark_alive = 0;
-> >                 }
-> >         }
-> >         spin_unlock(&group->notification_lock);
-> > }
-> >
-> > And insertion would look like this:
-> >
-> > static int fanotify_handle_error_event(....) {
-> >
-> >         spin_lock(&group->notification_lock);
-> >
-> >         if (!mark->fee || (mark->fee->err_count++) {
-> >                 spin_unlock(&group->notification_lock);
-> >                 return 0;
-> >         }
-> >
-> >         spin_unlock(&group->notification_lock);
-> >
-> >         mark->fee->fae.type = FANOTIFY_EVENT_TYPE_FS_ERROR;
-> >
-> >         /* ... Write report data to error event ... */
-> >
-> >         fanotify_encode_fh(&fee->object_fh, fanotify_encode_fh_len(inode),
-> >                            NULL, 0);
-> >
-> >         fsnotify_add_event(group, &fee->fae.fse, NULL);
-> >    }
-> >
-> > Unless you think this is too hack-ish.
-> >
-> > To be fair, I think it is hack-ish.
+On Tue 14-09-21 10:13:04, Neil Brown wrote:
+> __GFP_NOFAIL is documented both in gfp.h and memory-allocation.rst.
+> The details are not entirely consistent.
 > 
-> Actually, I wouldn't mind the hack-ish-ness if it would simplify things,
-> but I do not see how this is the case here.
-> I still cannot wrap my head around the semantics, which is a big red light.
-> First of all a suggestion should start with the lifetime rules:
-> - Possible states
-> - State transition rules
+> This patch ensures both places state that:
+>  - there is a cost potentially imposed on other subsystems
+>  - it should only be used when there is no real alternative
+>  - it is preferable to an endless loop
+>  - it is strongly discourages for costly-order allocations.
+>
+
+Yes this is a useful addition to the documentation. Thanks!
+
+> Signed-off-by: NeilBrown <neilb@suse.de>
+
+Acked-by: Michal Hocko <mhocko@suse.com>
+
+> ---
+>  Documentation/core-api/memory-allocation.rst |    9 ++++++++-
+>  include/linux/gfp.h                          |    4 ++++
+>  2 files changed, 12 insertions(+), 1 deletion(-)
 > 
-> Speaking for myself, I simply cannot review a proposal without these
-> documented rules.
-
-Hum, getting back up to speed on this after vacation is tough which
-suggests maybe we've indeed overengineered this :) So let's try to simplify
-things.
-
-> > I would add a proper refcount_t
-> > to the error event, and let the mark own a reference to it, which is
-> > dropped when the mark goes away.  Enqueue and Dequeue will acquire and
-> > drop references, respectively. In this case, err_count is not
-> > overloaded.
-> >
-> > Will it work?
+> diff --git a/Documentation/core-api/memory-allocation.rst b/Documentation/core-api/memory-allocation.rst
+> index 5954ddf6ee13..9458ce72d31c 100644
+> --- a/Documentation/core-api/memory-allocation.rst
+> +++ b/Documentation/core-api/memory-allocation.rst
+> @@ -126,7 +126,14 @@ or another request.
+>  
+>    * ``GFP_KERNEL | __GFP_NOFAIL`` - overrides the default allocator behavior
+>      and all allocation requests will loop endlessly until they succeed.
+> -    This might be really dangerous especially for larger orders.
+> +    The allocator may provide access to memory that would otherwise be
+> +    reserved in order to satisfy this allocation which might adversely
+> +    affect other subsystems.  So it should only be used when there is no
+> +    reasonable failure policy and when the memory is likely to be freed
+> +    again in the near future.  Its use is strong discourage (via a
+> +    WARN_ON) for allocations larger than ``PAGE_ALLOC_COSTLY_ORDER``.
+> +    While this flag is best avoided, it is still preferable to endless
+> +    loops around the allocator.
+>  
+>  Selecting memory allocator
+>  ==========================
+> diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+> index 55b2ec1f965a..101479373738 100644
+> --- a/include/linux/gfp.h
+> +++ b/include/linux/gfp.h
+> @@ -209,6 +209,10 @@ struct vm_area_struct;
+>   * used only when there is no reasonable failure policy) but it is
+>   * definitely preferable to use the flag rather than opencode endless
+>   * loop around allocator.
+> + * Use of this flag may provide access to memory which would otherwise be
+> + * reserved.  As such it must be understood that there can be a cost imposed
+> + * on other subsystems as well as the obvious cost of placing the calling
+> + * thread in an uninterruptible indefinite wait.
+>   * Using this flag for costly allocations is _highly_ discouraged.
+>   */
+>  #define __GFP_IO	((__force gfp_t)___GFP_IO)
 > 
-> Maybe, I still don't see the full picture, but if this can get us to a state
-> where error events handling is simpler then it's a good idea.
-> Saving the space of refcount_t in error event struct is not important at all.
-> 
-> But if Jan's option #1 (mempool) brings us to less special casing
-> of enqueue/dequeue of error events, then I think that would be
-> my preference.
 
-Yes, I think mempools would result in a simpler code overall (the
-complexity of recycling events would be handled by mempool for us). Maybe
-we would not even need to play tricks with mempool resizing? We could just
-make sure it has couple of events reserved and if it ever happens that
-mempool_alloc() cannot give us any event, we'd report queue overflow (like
-we already do for other event types if that happens). I think we could
-require that callers generating error events are in a context where GFP_NOFS
-allocation is OK - this should be achievable target for filesystems and
-allocation failures should be rare with such mask.
-
-									Honza
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Michal Hocko
+SUSE Labs
