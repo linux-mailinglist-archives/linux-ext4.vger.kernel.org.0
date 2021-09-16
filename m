@@ -2,102 +2,68 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92FDE40E9F3
-	for <lists+linux-ext4@lfdr.de>; Thu, 16 Sep 2021 20:35:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF56540EA4B
+	for <lists+linux-ext4@lfdr.de>; Thu, 16 Sep 2021 20:54:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345527AbhIPShN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 16 Sep 2021 14:37:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47860 "EHLO
+        id S243374AbhIPS4B (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 16 Sep 2021 14:56:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245701AbhIPSg4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Sep 2021 14:36:56 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 882ECC0C1320
-        for <linux-ext4@vger.kernel.org>; Thu, 16 Sep 2021 09:52:55 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id g9so8689174ioq.11
-        for <linux-ext4@vger.kernel.org>; Thu, 16 Sep 2021 09:52:55 -0700 (PDT)
+        with ESMTP id S1344965AbhIPSz6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Sep 2021 14:55:58 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D873C00EA8E
+        for <linux-ext4@vger.kernel.org>; Thu, 16 Sep 2021 10:57:57 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id f3-20020a17090a638300b00199097ddf1aso8143883pjj.0
+        for <linux-ext4@vger.kernel.org>; Thu, 16 Sep 2021 10:57:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=4uozDo5pD5mr5wZ7iQLebLxDLwKFOVwcKiL4nVjWOU8=;
-        b=dJL7zL6w+xBlAJEtyvWfHDHA7wxxdLw9B/t3atozUcyxC7F6Q3OUqpt8AfDex2/S9m
-         i04d2RoJ+zYs6VS8Y/2kG2uWnU9SisFWf3nQGdafQ45J5STdQxdBnQJfAuS3E7ERikpn
-         JGojL3in8/a4b5uNwPplwHAm7qE2AGswxwkVADdfvAk5DPlybh1HV+y8Xb5RAcyzTYr5
-         bAXyK5dyTHtnBnV5eVtajtW1deY8fDDNy+XGxE6emO1xa0E55lcaqs3ERpxWIKGxqshs
-         PyeJcJkj0AHB0Gu+dEmd6WLQmhWHtsFBkM5AvlOTrVaHOBsdxSnfntpD6AzbuDiuBH6g
-         qt5Q==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qdm7aqM6cPmqGgmk/iB/fYKsk2wFX5hSUYjlnian/V4=;
+        b=Eyd587gVkUJOeuq1UtFdEeW6oEl5ijLE0OtxmuuU5faC6M5PIHd5PMuD7qC4q47XVH
+         mHCGrRYGsMuUO6TlKJPYW6JX93JxiViZ56k7UetqkzMxNsJsBJlRZANu/2f4Y3UrOE9N
+         cutVTM1HNbsv0nzEM4kCBkpboj/7ncwVpTQ/Iu2vvQOgJccDpBvuZdlepx5GUrAFt0zM
+         5w7depS/RIvCgt+2MSV1ClDP6rH/7nQAhBnt4vgtAgWTNAkVOp48Uy/d/yk7e8G+p3kw
+         MWDXTFdWA1KFthL1rwiB4Xzfw4OzVE1CXD6np/jodb4kQSsdyXRLpPyzZrjpA2agVapn
+         ODRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=4uozDo5pD5mr5wZ7iQLebLxDLwKFOVwcKiL4nVjWOU8=;
-        b=zp1gbDPWKgffdIVu9Div/oS80epgyrKKyYm1W/BsaXpNm0sJbi3PtARAjTPgqNV/hx
-         2KolXO6fnXDS/9LubldAqqNDxh1VfoP/SeitfpgKf3PU3j7HOoerpYYH10sLy1Y6QuFp
-         g6eX5/efpnMFvoQb5WJ6LUeTWY7A9wgmGXu4RWzIjVu79IQVVUafa946rF/3BRwi45Tm
-         EXpnxtLOd3UDpsAvSbVt5EzZdlksRyfzTd0rpHgr5CLWtxEvvG/juEwx7QQFbL4aueDu
-         67Imt4oFtuUwTlhsBh6OhIjznU6JnfGIKrAI6jwCHqbVMIPhaR8SLf/HpZCpFZfBpOUC
-         KTKA==
-X-Gm-Message-State: AOAM532P0cyQaD6wg15Yw/9EMI2bie5MWXrcc/xwmIo/Yae+1E9IVrTq
-        +SCJwPZeFaBybjmJ8LtzEnChP9MMZFEFYAJwnyo=
-X-Google-Smtp-Source: ABdhPJwJuv/YJ4F5fgv74lTj5XPCm2M9s6d1Rfvt7RUGmfYPHBdwlHZmXHxM4XBmgHQZQvx5O0+VdF+mPSLIJyehGBw=
-X-Received: by 2002:a6b:8f4e:: with SMTP id r75mr5315084iod.172.1631811174534;
- Thu, 16 Sep 2021 09:52:54 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qdm7aqM6cPmqGgmk/iB/fYKsk2wFX5hSUYjlnian/V4=;
+        b=2sblcjS9BxyWuJhZHqjLqVSUQFiTnZfmJ6PEBDgHt21rUEUV6p3kehtU4nky8/Fr9P
+         Sl3rZIufIPFrnSej8Ieu/vBZ5FipGMiQYY7sSn7Vu98UV8laDnA01nbOYtXud8rFDwjg
+         gxJ9BuG4WQpoj44r/qSvcc+oMfbQcpoIvImMn6I38y97jrajJTZAVKweGaCEiRA59yBw
+         T4D7v4rF1IemL+N3ux/upiVW2DKVwb1CF/a/V5yTGUWNNwjJD0vt1YbD6xZI4BF66tDY
+         zCnvyoebUch14amDd+yGGFJr0zUNgx/1kAAIbQBZ+g+jCMJMNqP4iYEtGAF+fy7PE4+A
+         XAIw==
+X-Gm-Message-State: AOAM530oi7pP+X+UEwOmXtfNwuFhBEdckTMw6rjxMjAOkhTdr590VMb6
+        RDhqDjOpEiWSbbd5rGWgQcLh6+LHjnY=
+X-Google-Smtp-Source: ABdhPJyNwyl5YcJKzAFNrZAs2W4pC9RnlLgO2w5ZuBkkTLpuV1RGOyw86vkdwIrd6Slrqq6Ny8eobA==
+X-Received: by 2002:a17:90b:1807:: with SMTP id lw7mr3715544pjb.217.1631815076538;
+        Thu, 16 Sep 2021 10:57:56 -0700 (PDT)
+Received: from google.com ([2601:647:4701:18d0:7868:d0fe:c210:2ee])
+        by smtp.gmail.com with ESMTPSA id m26sm3799591pfo.146.2021.09.16.10.57.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Sep 2021 10:57:56 -0700 (PDT)
+Date:   Thu, 16 Sep 2021 10:57:53 -0700
+From:   Leah Rumancik <leah.rumancik@gmail.com>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>
+Subject: Re: [PATCH 1/3] resize2fs: attempt to keep the # of inodes valid by
+ removing the last bg
+Message-ID: <YUOFoTVNEddokU4A@google.com>
+References: <20210914191104.2283033-1-tytso@mit.edu>
 MIME-Version: 1.0
-Received: by 2002:a02:a58b:0:0:0:0:0 with HTTP; Thu, 16 Sep 2021 09:52:54
- -0700 (PDT)
-From:   phot akachi <photakachi@gmail.com>
-Date:   Thu, 16 Sep 2021 09:52:54 -0700
-Message-ID: <CAKTgzwzXT3a73P8NVOwJHVZfrgDYexXNKZaCD6s3ERkvA4mtYQ@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210914191104.2283033-1-tytso@mit.edu>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-0JLQvdC40LzQsNC90LjQtSwg0L/QvtC20LDQu9GD0LnRgdGC0LAsDQoNCtCvINCR0LDRgC4gdWNo
-ZW5uYSBpbG9iaSwg0LrQsNC6INC00LXQu9CwLCDQvdCw0LTQtdGO0YHRjCDRgyDRgtC10LHRjyDQ
-stGB0LUg0YXQvtGA0L7RiNC+INC4INC30LTQvtGA0L7QstCwPw0K0KHQvtC+0LHRidCw0LXQvCDQ
-stCw0LwsINGH0YLQviDRjyDRg9GB0L/QtdGI0L3QviDQt9Cw0LLQtdGA0YjQuNC7INGB0LTQtdC7
-0LrRgyDRgSDQv9C+0LzQvtGJ0YzRjiDQvdC+0LLQvtCz0L4g0L/QsNGA0YLQvdC10YDQsA0K0LjQ
-tyDQktC10L3QtdGB0YPRjdC70YssINC4INGC0LXQv9C10YDRjCDRgdGA0LXQtNGB0YLQstCwINCx
-0YvQu9C4INC/0LXRgNC10LLQtdC00LXQvdGLINCyINCS0LXQvdC10YHRg9GN0LvRgyDQvdCwDQrQ
-sdCw0L3QutC+0LLRgdC60LjQuSDRgdGH0LXRgiDQvdC+0LLQvtCz0L4g0L/QsNGA0YLQvdC10YDQ
-sC4NCg0K0KLQtdC8INCy0YDQtdC80LXQvdC10Lwg0Y8g0YDQtdGI0LjQuyDQutC+0LzQv9C10L3R
-gdC40YDQvtCy0LDRgtGMINCy0LDQvCDRgdGD0LzQvNGDINCyIDM1MCAwMDAg0LTQvtC70LvQsNGA
-0L7QsiDQodCo0JANCijRgtGA0Lgg0YHQvtGC0L3QuCDQv9GP0YLRjNC00LXRgdGP0YIg0YLRi9GB
-0Y/RhyDQtNC+0LvQu9Cw0YDQvtCyINCh0KjQkCkg0LjQty3Qt9CwINCy0LDRiNC40YUg0L/RgNC+
-0YjQu9GL0YUg0YPRgdC40LvQuNC5LA0K0YXQvtGC0Y8g0LLRiyDQvNC10L3RjyDRgNCw0LfQvtGH
-0LDRgNC+0LLQsNC70LguINCd0L4sINGC0LXQvCDQvdC1INC80LXQvdC10LUsINGPINC+0YfQtdC9
-0Ywg0YDQsNC0INGD0YHQv9C10YjQvdC+0LzRgw0K0LfQsNCy0LXRgNGI0LXQvdC40Y4g0YLRgNCw
-0L3Qt9Cw0LrRhtC40Lgg0LHQtdC3INC60LDQutC40YUt0LvQuNCx0L4g0L/RgNC+0LHQu9C10Lws
-INC4INC/0L7RjdGC0L7QvNGDINGPINGA0LXRiNC40LsNCtC60L7QvNC/0LXQvdGB0LjRgNC+0LLQ
-sNGC0Ywg0LLQsNC8INGB0YPQvNC80YMg0LIg0YDQsNC30LzQtdGA0LUgMzUwIDAwMCwwMCDQtNC+
-0LvQu9Cw0YDQvtCyINCh0KjQkCwg0YfRgtC+0LHRiyDQstGLDQrRgNCw0LfQtNC10LvQuNC70Lgg
-0YHQviDQvNC90L7QuSDRgNCw0LTQvtGB0YLRjC4NCg0K0K8g0YHQvtCy0LXRgtGD0Y4g0LLQsNC8
-INC+0LHRgNCw0YLQuNGC0YzRgdGPINC6INC80L7QtdC80YMg0YHQtdC60YDQtdGC0LDRgNGOINC3
-0LAg0LHQsNC90LrQvtC80LDRgtC90L7QuSDQutCw0YDRgtC+0Lkg0L3QsA0KMzUwIDAwMCDQtNC+
-0LvQu9Cw0YDQvtCyINCh0KjQkCwg0LrQvtGC0L7RgNGD0Y4g0Y8g0L7RgdGC0LDQstC40Lsg0LTQ
-u9GPINCy0LDRgS4g0KHQstGP0LbQuNGC0LXRgdGMINGBINC90LjQvA0K0YHQtdC50YfQsNGBINCx
-0LXQtyDQv9GA0L7QvNC10LTQu9C10L3QuNGPLg0KDQrQndCw0LfQstCw0L3QuNC1OiDQsdGA0LXQ
-vdC00Lgg0YHQvtC70L7QvNC+0L0NCg0K0J/QvtGH0YLQsDogc29sb21vbmJyYW5keWZpdmVvbmVA
-Z21haWwuY29tDQoNCtCj0LHQtdC00LjRgtC10LvRjNC90L4g0L/QvtC00YLQstC10YDQtNC40YLQ
-tSDQtdC80YMg0YHQu9C10LTRg9GO0YnRg9GOINC40L3RhNC+0YDQvNCw0YbQuNGOOg0KDQrQktCw
-0YjQtSDQv9C+0LvQvdC+0LUg0LjQvNGPX19fX19fX19fX19fX19fX19fX19fX19fXw0K0JLQsNGI
-INCw0LTRgNC10YHRgV9fX19fX19fX19fX19fX19fX19fX19fX19fDQrQotCy0L7RjyDRgdGC0YDQ
-sNC90LBfX19fX19fX19fX19fX19fX19fX19fX19fX18NCtCi0LLQvtC5INCy0L7Qt9GA0LDRgdGC
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQrQktCw0Ygg0YDQvtC0INC30LDQvdGP0YLQ
-uNC5X19fX19fX19fX19fX19fX19fX19fX19fDQrQktCw0Ygg0L3QvtC80LXRgCDQvNC+0LHQuNC7
-0YzQvdC+0LPQviDRgtC10LvQtdGE0L7QvdCwIF9fX19fX19fX19fX19fX19fX19fX18NCg0K0J7Q
-sdGA0LDRgtC40YLQtSDQstC90LjQvNCw0L3QuNC1OiDQtdGB0LvQuCDQstGLINC90LUg0L7RgtC/
-0YDQsNCy0LjQu9C4INC10LzRgyDQv9C+0LvQvdGD0Y4g0LjQvdGE0L7RgNC80LDRhtC40Y4sINC+
-0L0g0L3QtQ0K0LLRi9C00LDRgdGCINCy0LDQvCDQutCw0YDRgtGDINCx0LDQvdC60L7QvNCw0YLQ
-sCwg0L/QvtGC0L7QvNGDINGH0YLQviDQvtC9INC00L7Qu9C20LXQvSDQsdGL0YLRjCDRg9Cy0LXR
-gNC10L0sINGH0YLQviDRjdGC0L4NCtCy0YsuINCf0L7Qv9GA0L7RgdC40YLQtSDQtdCz0L4g0LLR
-i9GB0LvQsNGC0Ywg0LLQsNC8INC60LDRgNGC0YMg0LHQsNC90LrQvtC80LDRgtCwINC90LAg0L7Q
-sdGJ0YPRjiDRgdGD0LzQvNGDICgzNTAgMDAwDQrQtNC+0LvQu9Cw0YDQvtCyINCh0KjQkCksINC6
-0L7RgtC+0YDRg9GOINGPINC+0YHRgtCw0LLQuNC7INC00LvRjyDQstCw0YEuDQoNCtChINC90LDQ
-uNC70YPRh9GI0LjQvNC4INC/0L7QttC10LvQsNC90LjRj9C80LgsDQoNCtCTLdC9INGD0YfQtdC9
-0L3QsCDQuNC70L7QsdC4DQo=
+Looks good to me. Series compiled and ran without any test regressions
+for me. Some lines are over 80 chars though, could wrap.
+
+Signed-off-by: Leah Rumancik <leah.rumancik@gmail.com>
