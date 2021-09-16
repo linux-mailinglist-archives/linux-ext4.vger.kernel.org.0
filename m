@@ -2,126 +2,102 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F34240DC18
-	for <lists+linux-ext4@lfdr.de>; Thu, 16 Sep 2021 16:00:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92FDE40E9F3
+	for <lists+linux-ext4@lfdr.de>; Thu, 16 Sep 2021 20:35:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237892AbhIPOCM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 16 Sep 2021 10:02:12 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:43084 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235536AbhIPOCL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Sep 2021 10:02:11 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 6432B223D1;
-        Thu, 16 Sep 2021 14:00:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1631800850; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hIJLlufKVyjdYEfqx/HCbz9i/DCGShNqv5yny221QFc=;
-        b=eEqfmxWEZ5htxQkRoY7AQPjWaNdnIDiLFT/xIvKn/MaKhuixgyyqU5FIDwP5/+s0gDoqJW
-        SNFAirWWKef7+QDXyQM6YYeCJ3RC6mpo1h+2pnuFBR02S5Una51nN1zls+olZ1Y07xJz2Q
-        B+QUhIIubw6yj2ED91BNfA0lKAwUQQQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1631800850;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hIJLlufKVyjdYEfqx/HCbz9i/DCGShNqv5yny221QFc=;
-        b=Pe9sx9/9uGLmjSCYZABFdzaxberI/l6+pyXicOX/+xd7Xis0ewhO+gL0zVQQ4z9EgkzkOh
-        YOk1bWuBQMCZ20Dg==
-Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id 3A503A3B90;
-        Thu, 16 Sep 2021 14:00:50 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 02DFA1E0C06; Thu, 16 Sep 2021 16:00:47 +0200 (CEST)
-Date:   Thu, 16 Sep 2021 16:00:46 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     yangerkun <yangerkun@huawei.com>
-Cc:     tytso@mit.edu, jack@suse.cz, linux-ext4@vger.kernel.org,
-        yukuai3@huawei.com
-Subject: Re: [PATCH] ext4: update last_pos for the case ext4_htree_fill_tree
- return fail
-Message-ID: <20210916140046.GH10610@quack2.suse.cz>
-References: <20210914111415.3921954-1-yangerkun@huawei.com>
+        id S1345527AbhIPShN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 16 Sep 2021 14:37:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245701AbhIPSg4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Sep 2021 14:36:56 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 882ECC0C1320
+        for <linux-ext4@vger.kernel.org>; Thu, 16 Sep 2021 09:52:55 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id g9so8689174ioq.11
+        for <linux-ext4@vger.kernel.org>; Thu, 16 Sep 2021 09:52:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=4uozDo5pD5mr5wZ7iQLebLxDLwKFOVwcKiL4nVjWOU8=;
+        b=dJL7zL6w+xBlAJEtyvWfHDHA7wxxdLw9B/t3atozUcyxC7F6Q3OUqpt8AfDex2/S9m
+         i04d2RoJ+zYs6VS8Y/2kG2uWnU9SisFWf3nQGdafQ45J5STdQxdBnQJfAuS3E7ERikpn
+         JGojL3in8/a4b5uNwPplwHAm7qE2AGswxwkVADdfvAk5DPlybh1HV+y8Xb5RAcyzTYr5
+         bAXyK5dyTHtnBnV5eVtajtW1deY8fDDNy+XGxE6emO1xa0E55lcaqs3ERpxWIKGxqshs
+         PyeJcJkj0AHB0Gu+dEmd6WLQmhWHtsFBkM5AvlOTrVaHOBsdxSnfntpD6AzbuDiuBH6g
+         qt5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=4uozDo5pD5mr5wZ7iQLebLxDLwKFOVwcKiL4nVjWOU8=;
+        b=zp1gbDPWKgffdIVu9Div/oS80epgyrKKyYm1W/BsaXpNm0sJbi3PtARAjTPgqNV/hx
+         2KolXO6fnXDS/9LubldAqqNDxh1VfoP/SeitfpgKf3PU3j7HOoerpYYH10sLy1Y6QuFp
+         g6eX5/efpnMFvoQb5WJ6LUeTWY7A9wgmGXu4RWzIjVu79IQVVUafa946rF/3BRwi45Tm
+         EXpnxtLOd3UDpsAvSbVt5EzZdlksRyfzTd0rpHgr5CLWtxEvvG/juEwx7QQFbL4aueDu
+         67Imt4oFtuUwTlhsBh6OhIjznU6JnfGIKrAI6jwCHqbVMIPhaR8SLf/HpZCpFZfBpOUC
+         KTKA==
+X-Gm-Message-State: AOAM532P0cyQaD6wg15Yw/9EMI2bie5MWXrcc/xwmIo/Yae+1E9IVrTq
+        +SCJwPZeFaBybjmJ8LtzEnChP9MMZFEFYAJwnyo=
+X-Google-Smtp-Source: ABdhPJwJuv/YJ4F5fgv74lTj5XPCm2M9s6d1Rfvt7RUGmfYPHBdwlHZmXHxM4XBmgHQZQvx5O0+VdF+mPSLIJyehGBw=
+X-Received: by 2002:a6b:8f4e:: with SMTP id r75mr5315084iod.172.1631811174534;
+ Thu, 16 Sep 2021 09:52:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210914111415.3921954-1-yangerkun@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Received: by 2002:a02:a58b:0:0:0:0:0 with HTTP; Thu, 16 Sep 2021 09:52:54
+ -0700 (PDT)
+From:   phot akachi <photakachi@gmail.com>
+Date:   Thu, 16 Sep 2021 09:52:54 -0700
+Message-ID: <CAKTgzwzXT3a73P8NVOwJHVZfrgDYexXNKZaCD6s3ERkvA4mtYQ@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 14-09-21 19:14:15, yangerkun wrote:
-> Or the ls for ext4 dir can run into a deadloop since info->last_pos !=
-> ctx->pos which will reset the world and start read the entry which has
-> already got before. Details see below:
-> 
-> 1. a dx_dir which has 3 block, block 0 as dx_root block, block 1/2 as
->    leaf block which own the ext4_dir_entry_2
-> 2. block 1 read ok and call_filldir which will fill the dirent and update
->    the ctx->pos
-> 3. block 2 read fail, but we has already fill some dirent, so we will
->    return back to userspace will a positive return val(see ksys_getdents64)
-> 4. the second ext4_dx_readdir will reset the world since info->last_pos
->    != ctx->pos, and will also init the curr_hash which pos to block 1
-> 5. So we will read block1 too, and once block2 still read fail, we can
->    only fill one dirent because the hash of the entry in block1(besides
->    the last one) won't greater than curr_hash
-> 6. this time, we forget update last_pos too since the read for block2
->    will fail, and since we has got the one entry, ksys_getdents64 can
->    return success
-> 7. Latter we will trapped in a loop with step 4~6
-> 
-> Fix it by update last_pos too once ext4_htree_fill_tree return fail.
-> 
-> Signed-off-by: yangerkun <yangerkun@huawei.com>
-
-Looks good. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  fs/ext4/dir.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
-> index ffb295aa891c..74b172a4adda 100644
-> --- a/fs/ext4/dir.c
-> +++ b/fs/ext4/dir.c
-> @@ -551,7 +551,7 @@ static int ext4_dx_readdir(struct file *file, struct dir_context *ctx)
->  	struct dir_private_info *info = file->private_data;
->  	struct inode *inode = file_inode(file);
->  	struct fname *fname;
-> -	int	ret;
-> +	int ret = 0;
->  
->  	if (!info) {
->  		info = ext4_htree_create_dir_info(file, ctx->pos);
-> @@ -599,7 +599,7 @@ static int ext4_dx_readdir(struct file *file, struct dir_context *ctx)
->  						   info->curr_minor_hash,
->  						   &info->next_hash);
->  			if (ret < 0)
-> -				return ret;
-> +				goto finished;
->  			if (ret == 0) {
->  				ctx->pos = ext4_get_htree_eof(file);
->  				break;
-> @@ -630,7 +630,7 @@ static int ext4_dx_readdir(struct file *file, struct dir_context *ctx)
->  	}
->  finished:
->  	info->last_pos = ctx->pos;
-> -	return 0;
-> +	return ret < 0 ? ret : 0;
->  }
->  
->  static int ext4_release_dir(struct inode *inode, struct file *filp)
-> -- 
-> 2.31.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+0JLQvdC40LzQsNC90LjQtSwg0L/QvtC20LDQu9GD0LnRgdGC0LAsDQoNCtCvINCR0LDRgC4gdWNo
+ZW5uYSBpbG9iaSwg0LrQsNC6INC00LXQu9CwLCDQvdCw0LTQtdGO0YHRjCDRgyDRgtC10LHRjyDQ
+stGB0LUg0YXQvtGA0L7RiNC+INC4INC30LTQvtGA0L7QstCwPw0K0KHQvtC+0LHRidCw0LXQvCDQ
+stCw0LwsINGH0YLQviDRjyDRg9GB0L/QtdGI0L3QviDQt9Cw0LLQtdGA0YjQuNC7INGB0LTQtdC7
+0LrRgyDRgSDQv9C+0LzQvtGJ0YzRjiDQvdC+0LLQvtCz0L4g0L/QsNGA0YLQvdC10YDQsA0K0LjQ
+tyDQktC10L3QtdGB0YPRjdC70YssINC4INGC0LXQv9C10YDRjCDRgdGA0LXQtNGB0YLQstCwINCx
+0YvQu9C4INC/0LXRgNC10LLQtdC00LXQvdGLINCyINCS0LXQvdC10YHRg9GN0LvRgyDQvdCwDQrQ
+sdCw0L3QutC+0LLRgdC60LjQuSDRgdGH0LXRgiDQvdC+0LLQvtCz0L4g0L/QsNGA0YLQvdC10YDQ
+sC4NCg0K0KLQtdC8INCy0YDQtdC80LXQvdC10Lwg0Y8g0YDQtdGI0LjQuyDQutC+0LzQv9C10L3R
+gdC40YDQvtCy0LDRgtGMINCy0LDQvCDRgdGD0LzQvNGDINCyIDM1MCAwMDAg0LTQvtC70LvQsNGA
+0L7QsiDQodCo0JANCijRgtGA0Lgg0YHQvtGC0L3QuCDQv9GP0YLRjNC00LXRgdGP0YIg0YLRi9GB
+0Y/RhyDQtNC+0LvQu9Cw0YDQvtCyINCh0KjQkCkg0LjQty3Qt9CwINCy0LDRiNC40YUg0L/RgNC+
+0YjQu9GL0YUg0YPRgdC40LvQuNC5LA0K0YXQvtGC0Y8g0LLRiyDQvNC10L3RjyDRgNCw0LfQvtGH
+0LDRgNC+0LLQsNC70LguINCd0L4sINGC0LXQvCDQvdC1INC80LXQvdC10LUsINGPINC+0YfQtdC9
+0Ywg0YDQsNC0INGD0YHQv9C10YjQvdC+0LzRgw0K0LfQsNCy0LXRgNGI0LXQvdC40Y4g0YLRgNCw
+0L3Qt9Cw0LrRhtC40Lgg0LHQtdC3INC60LDQutC40YUt0LvQuNCx0L4g0L/RgNC+0LHQu9C10Lws
+INC4INC/0L7RjdGC0L7QvNGDINGPINGA0LXRiNC40LsNCtC60L7QvNC/0LXQvdGB0LjRgNC+0LLQ
+sNGC0Ywg0LLQsNC8INGB0YPQvNC80YMg0LIg0YDQsNC30LzQtdGA0LUgMzUwIDAwMCwwMCDQtNC+
+0LvQu9Cw0YDQvtCyINCh0KjQkCwg0YfRgtC+0LHRiyDQstGLDQrRgNCw0LfQtNC10LvQuNC70Lgg
+0YHQviDQvNC90L7QuSDRgNCw0LTQvtGB0YLRjC4NCg0K0K8g0YHQvtCy0LXRgtGD0Y4g0LLQsNC8
+INC+0LHRgNCw0YLQuNGC0YzRgdGPINC6INC80L7QtdC80YMg0YHQtdC60YDQtdGC0LDRgNGOINC3
+0LAg0LHQsNC90LrQvtC80LDRgtC90L7QuSDQutCw0YDRgtC+0Lkg0L3QsA0KMzUwIDAwMCDQtNC+
+0LvQu9Cw0YDQvtCyINCh0KjQkCwg0LrQvtGC0L7RgNGD0Y4g0Y8g0L7RgdGC0LDQstC40Lsg0LTQ
+u9GPINCy0LDRgS4g0KHQstGP0LbQuNGC0LXRgdGMINGBINC90LjQvA0K0YHQtdC50YfQsNGBINCx
+0LXQtyDQv9GA0L7QvNC10LTQu9C10L3QuNGPLg0KDQrQndCw0LfQstCw0L3QuNC1OiDQsdGA0LXQ
+vdC00Lgg0YHQvtC70L7QvNC+0L0NCg0K0J/QvtGH0YLQsDogc29sb21vbmJyYW5keWZpdmVvbmVA
+Z21haWwuY29tDQoNCtCj0LHQtdC00LjRgtC10LvRjNC90L4g0L/QvtC00YLQstC10YDQtNC40YLQ
+tSDQtdC80YMg0YHQu9C10LTRg9GO0YnRg9GOINC40L3RhNC+0YDQvNCw0YbQuNGOOg0KDQrQktCw
+0YjQtSDQv9C+0LvQvdC+0LUg0LjQvNGPX19fX19fX19fX19fX19fX19fX19fX19fXw0K0JLQsNGI
+INCw0LTRgNC10YHRgV9fX19fX19fX19fX19fX19fX19fX19fX19fDQrQotCy0L7RjyDRgdGC0YDQ
+sNC90LBfX19fX19fX19fX19fX19fX19fX19fX19fX18NCtCi0LLQvtC5INCy0L7Qt9GA0LDRgdGC
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQrQktCw0Ygg0YDQvtC0INC30LDQvdGP0YLQ
+uNC5X19fX19fX19fX19fX19fX19fX19fX19fDQrQktCw0Ygg0L3QvtC80LXRgCDQvNC+0LHQuNC7
+0YzQvdC+0LPQviDRgtC10LvQtdGE0L7QvdCwIF9fX19fX19fX19fX19fX19fX19fX18NCg0K0J7Q
+sdGA0LDRgtC40YLQtSDQstC90LjQvNCw0L3QuNC1OiDQtdGB0LvQuCDQstGLINC90LUg0L7RgtC/
+0YDQsNCy0LjQu9C4INC10LzRgyDQv9C+0LvQvdGD0Y4g0LjQvdGE0L7RgNC80LDRhtC40Y4sINC+
+0L0g0L3QtQ0K0LLRi9C00LDRgdGCINCy0LDQvCDQutCw0YDRgtGDINCx0LDQvdC60L7QvNCw0YLQ
+sCwg0L/QvtGC0L7QvNGDINGH0YLQviDQvtC9INC00L7Qu9C20LXQvSDQsdGL0YLRjCDRg9Cy0LXR
+gNC10L0sINGH0YLQviDRjdGC0L4NCtCy0YsuINCf0L7Qv9GA0L7RgdC40YLQtSDQtdCz0L4g0LLR
+i9GB0LvQsNGC0Ywg0LLQsNC8INC60LDRgNGC0YMg0LHQsNC90LrQvtC80LDRgtCwINC90LAg0L7Q
+sdGJ0YPRjiDRgdGD0LzQvNGDICgzNTAgMDAwDQrQtNC+0LvQu9Cw0YDQvtCyINCh0KjQkCksINC6
+0L7RgtC+0YDRg9GOINGPINC+0YHRgtCw0LLQuNC7INC00LvRjyDQstCw0YEuDQoNCtChINC90LDQ
+uNC70YPRh9GI0LjQvNC4INC/0L7QttC10LvQsNC90LjRj9C80LgsDQoNCtCTLdC9INGD0YfQtdC9
+0L3QsCDQuNC70L7QsdC4DQo=
