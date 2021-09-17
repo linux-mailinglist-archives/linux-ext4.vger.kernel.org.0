@@ -2,129 +2,175 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6C3040FA8E
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Sep 2021 16:42:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB78E40FDA2
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Sep 2021 18:12:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229702AbhIQOoB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 17 Sep 2021 10:44:01 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:36748 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbhIQOoA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Sep 2021 10:44:00 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 6DEE02028D;
-        Fri, 17 Sep 2021 14:42:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1631889756; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9Q9z58nJWZPYLSInI8nBVh8lTbi5/ptCY6EYwUNxRM4=;
-        b=MUYuU0fOLsgnj8zbOAkl/3jMLDnS31vFMWaKPHkYgJw1tZkKnIOLzJy7WrbTXqjqEpHMcL
-        ClB0fxX40hbcNJFuD00Rt8mCP7uEGLcZYn7LWcomJtLEJLljcA0Z26Y7EeL/pJwQuXZ5R/
-        yKRTA4uf38taeV1zhjd6CARyC2keir4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1631889756;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9Q9z58nJWZPYLSInI8nBVh8lTbi5/ptCY6EYwUNxRM4=;
-        b=iQepc13dGR2A2g+ziflA00yEmJbebWNeoIDsac1mJMFizHHqfl7RS8h8Wtor/t/r2KaHLs
-        t43wYd5JMlQXYmBQ==
-Received: from suse.de (unknown [10.163.32.246])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 21802A3BFF;
-        Fri, 17 Sep 2021 14:42:35 +0000 (UTC)
-Date:   Fri, 17 Sep 2021 15:42:33 +0100
-From:   Mel Gorman <mgorman@suse.de>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        ". Dave Chinner" <david@fromorbit.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-xfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH 1/6] MM: Support __GFP_NOFAIL in  alloc_pages_bulk_*()
- and improve doco
-Message-ID: <20210917144233.GD3891@suse.de>
-References: <163184698512.29351.4735492251524335974.stgit@noble.brown>
- <163184741776.29351.3565418361661850328.stgit@noble.brown>
+        id S243634AbhIQQNl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 17 Sep 2021 12:13:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54296 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243366AbhIQQNj (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 17 Sep 2021 12:13:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A3277611C4;
+        Fri, 17 Sep 2021 16:12:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631895137;
+        bh=uTmfg0vv6vwj4FrYE4j5mba4CVZJQ7Gc8JrPKcVhY6w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dZGw6F7XEdLNKWtHFnkGjC3Ph1hUrkzryX/AlGu21AjxOK7y6XRDuw4EtGarkW718
+         PW4QaNJbqocm43BnVSv5y3w17CVyQCBMwyi3nDSVlWyFwkcjFOcBKOzEfwOL0mVxLO
+         6fGIXqxp9lWaBjtHdQSRmuwqlVRa/gkt3fdRDUe27RRvSIjm1EVE84RWMbm0QvLj45
+         sWe0pF/CtzkDe4ATWLyVZpldl9RyD9IQuJcx4uHZKq4RTzeRpdUrvHzo+DhU5t7RpF
+         d32CbQJB0zEYyimHbuA45lgUzp3aX8m9ciQJFKhTEaMWEdRE1LeiudX80IjWAOS4Ky
+         1tP2YpEe0zD3w==
+Date:   Fri, 17 Sep 2021 09:12:17 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Jan Kara <jack@suse.cz>, xfs <linux-xfs@vger.kernel.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Subject: Re: Shameless plug for the FS Track at LPC next week!
+Message-ID: <20210917161217.GB10224@magnolia>
+References: <20210916013916.GD34899@magnolia>
+ <20210917083043.GA6547@quack2.suse.cz>
+ <20210917083608.GB6547@quack2.suse.cz>
+ <20210917093838.GC6547@quack2.suse.cz>
+ <CAOQ4uxg3FYuQ3hrhG5H87Uzd-2gYXbFfUkeTPY7ESsDdjGB5EQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <163184741776.29351.3565418361661850328.stgit@noble.brown>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAOQ4uxg3FYuQ3hrhG5H87Uzd-2gYXbFfUkeTPY7ESsDdjGB5EQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-I'm top-posting to cc Jesper with full context of the patch. I don't
-have a problem with this patch other than the Fixes: being a bit
-marginal, I should have acked as Mel Gorman <mgorman@suse.de> and the
-@gfp in the comment should have been @gfp_mask.
+On Fri, Sep 17, 2021 at 01:23:08PM +0300, Amir Goldstein wrote:
+> On Fri, Sep 17, 2021 at 12:38 PM Jan Kara <jack@suse.cz> wrote:
+> >
+> > On Fri 17-09-21 10:36:08, Jan Kara wrote:
+> > > Let me also post Amir's thoughts on this from a private thread:
+> >
+> > And now I'm actually replying to Amir :-p
+> >
+> > > On Fri 17-09-21 10:30:43, Jan Kara wrote:
+> > > > We did a small update to the schedule:
+> > > >
+> > > > > Christian Brauner will run the second session, discussing what idmapped
+> > > > > filesystem mounts are for and the current status of supporting more
+> > > > > filesystems.
+> > > >
+> > > > We have extended this session as we'd like to discuss and get some feedback
+> > > > from users about project quotas and project ids:
+> > > >
+> > > > Project quotas were originally mostly a collaborative feature and later got
+> > > > used by some container runtimes to implement limitation of used space on a
+> > > > filesystem shared by multiple containers. As a result current semantics of
+> > > > project quotas are somewhat surprising and handling of project ids is not
+> > > > consistent among filesystems. The main two contending points are:
+> > > >
+> > > > 1) Currently the inode owner can set project id of the inode to any
+> > > > arbitrary number if he is in init_user_ns. It cannot change project id at
+> > > > all in other user namespaces.
+> > > >
+> > > > 2) Should project IDs be mapped in user namespaces or not? User namespace
+> > > > code does implement the mapping, VFS quota code maps project ids when using
+> > > > them. However e.g. XFS does not map project IDs in its calls setting them
+> > > > in the inode. Among other things this results in some funny errors if you
+> > > > set project ID to (unsigned)-1.
+> > > >
+> > > > In the session we'd like to get feedback how project quotas / ids get used
+> > > > / could be used so that we can define the common semantics and make the
+> > > > code consistently follow these rules.
+> > >
+> > > I think that legacy projid semantics might not be a perfect fit for
+> > > container isolation requirements. I added project quota support to docker
+> > > at the time because it was handy and it did the job of limiting and
+> > > querying disk usage of containers with an overlayfs storage driver.
+> > >
+> > > With btrfs storage driver, subvolumes are used to create that isolation.
+> > > The TREE_ID proposal [1] got me thinking that it is not so hard to
+> > > implement "tree id" as an extention or in addition to project id.
+> > >
+> > > The semantics of "tree id" would be:
+> > > 1. tree id is a quota entity accounting inodes and blocks
+> > > 2. tree id can be changed only on an empty directory
+> > > 3. tree id can be set to TID only if quota inode usage of TID is 0
+> > > 4. tree id is always inherited from parent
+> > > 5. No rename() or link() across tree id (clone should be possible)
+> > >
+> > > AFAIK btrfs subvol meets all the requirements of "tree id".
+> > >
+> > > Implementing tree id in ext4/xfs could be done by adding a new field to
+> > > inode on-disk format and a new quota entity to quota on-disk format and
+> > > quotatools.
+> > >
+> > > An alternative simpler way is to repurpose project id and project quota:
+> > > * Add filesystem feature projid-is-treeid
+> > > * The feature can be enabled on fresh mkfs or after fsck verifies "tree id"
+> > >    rules are followed for all usage of projid
+> > > * Once the feature is enabled, filesystem enforces the new semantics
+> > >   about setting projid and projid_inherit
 
-However, an assumption the API design made was that it should fail fast
-if memory is not quickly available but have at least one page in the
-array. I don't think the network use case cares about the situation where
-the array is already populated but I'd like Jesper to have the opportunity
-to think about it.  It's possible he would prefer it's explicit and the
-check becomes
-(!nr_populated || ((gfp_mask & __GFP_NOFAIL) && !nr_account)) to
-state that __GFP_NOFAIL users are willing to take a potential latency
-penalty if the array is already partially populated but !__GFP_NOFAIL
-users would prefer fail-fast behaviour. I'm on the fence because while
-I wrote the implementation, it was based on other peoples requirements.
+I'd probably just repurpose the project quota mechanism, which means
+that the xfs treeid is really just project quotas with somewhat
+different behavior rules that are tailored to modern adversarial usage
+models. ;)
 
-On Fri, Sep 17, 2021 at 12:56:57PM +1000, NeilBrown wrote:
-> When alloc_pages_bulk_array() is called on an array that is partially
-> allocated, the level of effort to get a single page is less than when
-> the array was completely unallocated.  This behaviour is inconsistent,
-> but now fixed.  One effect if this is that __GFP_NOFAIL will not ensure
-> at least one page is allocated.
+IIRC someone asked for some sort of change like this on the xfs list
+some years back.  If memory serves, they wanted to prevent non-admin
+userspace from changing project ids, even in the regular user ns?  It
+never got as far as a formal proposal though.
+
+I could definitely see a use case for letting admin processes in a
+container change project ids among only the projids that are idmapped
+into the namespace.
+
+> > >
+> > > This might be a good option if there is little intersection between
+> > > systems that need to use the old project semantics and systems
+> > > that would rather have the tree id semantics.
+> >
+> > Yes, I actually think that having both tree-id and project-id on a
+> > filesystem would be too confusing. And I'm not aware of realistic usecases.
+> > I've heard only of people wanting current semantics (although these we more
+> > of the kind: "sometime in the past people used the feature like this") and
+> > the people complaining current semantics is not useful for them. This was
+> > discussed e.g. in ext4 list [2].
+> >
+> > > I think that with the "tree id" semantics, the user_ns/idmapped
+> > > questions become easier to answer.
+> > > Allocating tree id ranges per userns to avoid exhausting the tree id
+> > > namespace is a very similar problem to allocating uids per userns.
+> >
+> > It still depends how exactly tree ids get used - if you want to use them to
+> > limit space usage of a container, you still have to forbid changing of tree
+> > ids inside the container, don't you?
+> >
 > 
-> Also clarify the expected success rate.  __alloc_pages_bulk() will
-> allocated one page according to @gfp, and may allocate more if that can
-> be done cheaply.  It is assumed that the caller values cheap allocation
-> where possible and may decide to use what it has got, or to call again
-> to get more.
+> Yes.
+> This is where my view of userns becomes hazy (so pulling Christain into
+> the discussion), but in general I think that this use case would be similar
+> to the concept of single uid container - the range of allowed tree ids that
+> is allocated for the container in that case is a single tree id.
 > 
-> Acked-by: Mel Gorman <mgorman@suse.com>
-> Fixes: 0f87d9d30f21 ("mm/page_alloc: add an array-based interface to the bulk page allocator")
-> Signed-off-by: NeilBrown <neilb@suse.de>
-> ---
->  mm/page_alloc.c |    7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
+> I understand that the next question would be about nesting subtree quotas
+> and I don't have a good answer to that question.
 > 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index b37435c274cf..aa51016e49c5 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -5191,6 +5191,11 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
->   * is the maximum number of pages that will be stored in the array.
->   *
->   * Returns the number of pages on the list or array.
-> + *
-> + * At least one page will be allocated if that is possible while
-> + * remaining consistent with @gfp.  Extra pages up to the requested
-> + * total will be allocated opportunistically when doing so is
-> + * significantly cheaper than having the caller repeat the request.
->   */
->  unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->  			nodemask_t *nodemask, int nr_pages,
-> @@ -5292,7 +5297,7 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->  								pcp, pcp_list);
->  		if (unlikely(!page)) {
->  			/* Try and get at least one page */
-> -			if (!nr_populated)
-> +			if (!nr_account)
->  				goto failed_irq;
->  			break;
->  		}
+> Are btrfs subvolume nested w.r.t. capacity limit? I don't think that they are.
+
+One thing that someone on #btrfs pointed out to me -- unlike ext4 and
+xfs project quotas where the statvfs output reflects the project quota
+limits, btrfs qgroups don't do that.  Software that tries to trim its
+preallocations when "space" gets low (e.g. journald) then fails to react
+and /var/log can fill up.
+
+Granted, it's btrfs quotas which they say aren't production ready still
+and I have no idea, so ... <shrug>
+
+--D
+
 > 
-> 
+> Thanks,
+> Amir.
