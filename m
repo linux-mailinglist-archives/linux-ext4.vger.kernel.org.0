@@ -2,51 +2,51 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB56840F002
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Sep 2021 05:00:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38F4040EFF0
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Sep 2021 04:59:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243237AbhIQDBU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 16 Sep 2021 23:01:20 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:56580 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243481AbhIQDBR (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Sep 2021 23:01:17 -0400
+        id S243287AbhIQDAy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 16 Sep 2021 23:00:54 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:41390 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243248AbhIQDAw (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Sep 2021 23:00:52 -0400
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id D0018223BD;
-        Fri, 17 Sep 2021 02:59:54 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id ABA7D2007B;
+        Fri, 17 Sep 2021 02:59:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1631847594; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1631847569; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=K2Rgi41wxZueRRJfJ3e7t139IMXGOwOFm/IW/86sxa8=;
-        b=TN9g57JhoeeQCj56ZDT1Z5eH8c3azHNFurn6Qcu8WtVKUJyL+7juZYOKl1ThupKPKuR9Zk
-        wrwCImtWXdb8m2WpjzERGLTMfrZEvG2PAT+/nYm6aGTE1kEUhzGQxoTgg4GRVdjak/X352
-        u75+NChOvjnDYseuYUWwfwRfaQ3y4LU=
+        bh=PhO+AMBCn5CF5KJqwHi2NRgoifLeDG6tBD6IhB9YLqI=;
+        b=vThorR8aWQ88Y2GmJEKKlzu9235Z/ZeCUkMr1tu37GhRXPpZfoOnsprc1JRFJTuXWRqbYo
+        OrwNdG+winpkkSlgaBUSLsVjiQSK1WiUbcsFBMP1c4iGoCvNYpDkYEriFSvFrODR8idE2j
+        Tlusg86Y9/ATaenPc/okC73RyP3RPU0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1631847594;
+        s=susede2_ed25519; t=1631847569;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=K2Rgi41wxZueRRJfJ3e7t139IMXGOwOFm/IW/86sxa8=;
-        b=wTggxCx6C/rUpvp5f5bdxeTCzPFiiQYeoHK1ofO3v0pxvISag8G6Kmr6h1TGJJjXk9dWpv
-        DMvK0w6KJxde2nCw==
+        bh=PhO+AMBCn5CF5KJqwHi2NRgoifLeDG6tBD6IhB9YLqI=;
+        b=PdD7iVhth5i0uczJ3IGRe4R+iuVLNQA6JKSOCFB6xykfVbdQIAbKb0z9L556d52BZHWlwR
+        comcujPIZxeGDSBw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8AC2A13D0B;
-        Fri, 17 Sep 2021 02:59:48 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4A36E13D0B;
+        Fri, 17 Sep 2021 02:59:25 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id OQR+EqQERGGWMwAAMHmgww
-        (envelope-from <neilb@suse.de>); Fri, 17 Sep 2021 02:59:48 +0000
-Subject: [PATCH 4/6] EXT4: remove congestion_wait from ext4_bio_write_page,
- and simplify
+        id v4HZAo0ERGFmMwAAMHmgww
+        (envelope-from <neilb@suse.de>); Fri, 17 Sep 2021 02:59:25 +0000
+Subject: [PATCH 1/6] MM: Support __GFP_NOFAIL in  alloc_pages_bulk_*() and
+ improve doco
 From:   NeilBrown <neilb@suse.de>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Theodore Ts'o <tytso@mit.edu>,
@@ -61,7 +61,7 @@ Cc:     linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         linux-doc@vger.kernel.org
 Date:   Fri, 17 Sep 2021 12:56:57 +1000
-Message-ID: <163184741781.29351.8660877195340279243.stgit@noble.brown>
+Message-ID: <163184741776.29351.3565418361661850328.stgit@noble.brown>
 In-Reply-To: <163184698512.29351.4735492251524335974.stgit@noble.brown>
 References: <163184698512.29351.4735492251524335974.stgit@noble.brown>
 User-Agent: StGit/0.23
@@ -72,69 +72,49 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-congestion_wait() is indistinguishable from
-schedule_timeout_uninterruptible().  It is best avoided and should be
-deprecated.
+When alloc_pages_bulk_array() is called on an array that is partially
+allocated, the level of effort to get a single page is less than when
+the array was completely unallocated.  This behaviour is inconsistent,
+but now fixed.  One effect if this is that __GFP_NOFAIL will not ensure
+at least one page is allocated.
 
-It is not needed in ext4_bio_write_page().  There are two cases.
-If there are no ->io_bio yet, then it is appropriate to use __GFP_NOFAIL
-which does the waiting in a better place.  The code already uses this
-flag on the second attempt.  This patch changes to it always use that
-flag for this case.
+Also clarify the expected success rate.  __alloc_pages_bulk() will
+allocated one page according to @gfp, and may allocate more if that can
+be done cheaply.  It is assumed that the caller values cheap allocation
+where possible and may decide to use what it has got, or to call again
+to get more.
 
-If there *are* ->io_bio (in which case the allocation was non-blocking)
-we submit the io and return the first case.  No waiting is needed in
-this case.
-
-So remove the congestion_wait() call, and simplify the code so that the
-two cases are somewhat clearer.
-
-Remove the "if (io->io_bio)" before calling ext4_io_submit() as that
-test is performed internally by that function.
-
+Acked-by: Mel Gorman <mgorman@suse.com>
+Fixes: 0f87d9d30f21 ("mm/page_alloc: add an array-based interface to the bulk page allocator")
 Signed-off-by: NeilBrown <neilb@suse.de>
 ---
- fs/ext4/page-io.c |   13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+ mm/page_alloc.c |    7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c
-index f038d578d8d8..3b6ece0d3ad6 100644
---- a/fs/ext4/page-io.c
-+++ b/fs/ext4/page-io.c
-@@ -506,7 +506,7 @@ int ext4_bio_write_page(struct ext4_io_submit *io,
- 	 * can't happen in the common case of blocksize == PAGE_SIZE.
- 	 */
- 	if (fscrypt_inode_uses_fs_layer_crypto(inode) && nr_to_submit) {
--		gfp_t gfp_flags = GFP_NOFS;
-+		gfp_t gfp_flags;
- 		unsigned int enc_bytes = round_up(len, i_blocksize(inode));
- 
- 		/*
-@@ -514,21 +514,18 @@ int ext4_bio_write_page(struct ext4_io_submit *io,
- 		 * a waiting mask (i.e. request guaranteed allocation) on the
- 		 * first page of the bio.  Otherwise it can deadlock.
- 		 */
-+	retry_encrypt:
- 		if (io->io_bio)
- 			gfp_flags = GFP_NOWAIT | __GFP_NOWARN;
--	retry_encrypt:
-+		else
-+			gfp_flags = GFP_NOFS | __GFP_NOFAIL;
- 		bounce_page = fscrypt_encrypt_pagecache_blocks(page, enc_bytes,
- 							       0, gfp_flags);
- 		if (IS_ERR(bounce_page)) {
- 			ret = PTR_ERR(bounce_page);
- 			if (ret == -ENOMEM &&
- 			    (io->io_bio || wbc->sync_mode == WB_SYNC_ALL)) {
--				gfp_flags = GFP_NOFS;
--				if (io->io_bio)
--					ext4_io_submit(io);
--				else
--					gfp_flags |= __GFP_NOFAIL;
--				congestion_wait(BLK_RW_ASYNC, HZ/50);
-+				ext4_io_submit(io);
- 				goto retry_encrypt;
- 			}
- 
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index b37435c274cf..aa51016e49c5 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -5191,6 +5191,11 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
+  * is the maximum number of pages that will be stored in the array.
+  *
+  * Returns the number of pages on the list or array.
++ *
++ * At least one page will be allocated if that is possible while
++ * remaining consistent with @gfp.  Extra pages up to the requested
++ * total will be allocated opportunistically when doing so is
++ * significantly cheaper than having the caller repeat the request.
+  */
+ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ 			nodemask_t *nodemask, int nr_pages,
+@@ -5292,7 +5297,7 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ 								pcp, pcp_list);
+ 		if (unlikely(!page)) {
+ 			/* Try and get at least one page */
+-			if (!nr_populated)
++			if (!nr_account)
+ 				goto failed_irq;
+ 			break;
+ 		}
 
 
