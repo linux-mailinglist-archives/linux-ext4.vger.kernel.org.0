@@ -2,168 +2,94 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C521B40ED2C
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Sep 2021 00:13:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAE6F40EE69
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Sep 2021 02:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240797AbhIPWOt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 16 Sep 2021 18:14:49 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:54872 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240764AbhIPWOs (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Sep 2021 18:14:48 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id D597F22285;
-        Thu, 16 Sep 2021 22:13:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1631830405; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fUML7PP2cwKhFn9IzXhNLUrnTUVcJXoS96ewZU1uWd4=;
-        b=jXq3fACJglbXO8ZZxnEEMQ+MUPWIjZYeP9OWVMQcOLpTCitAL/GY0hB3ikpZqLry9QOXDj
-        ZRrPGSLgWi+Y6HeNGhcNrGJGBweWKtIOvbUo2E/PYEVdhNesAL6oSHskkTyze7963m/w7v
-        FapF8aEecdCetxL/vyAtSFplWCBT8aI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1631830405;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fUML7PP2cwKhFn9IzXhNLUrnTUVcJXoS96ewZU1uWd4=;
-        b=tYmy1+ayRfKGCMEtC5l9akiHOlDJJKFM6kSmG2YO8aDY/SdACek6JZkZDMbN7tSZ+4Wr23
-        jXJfi3+TQ02lBADg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 35C2013D6D;
-        Thu, 16 Sep 2021 22:13:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id uyMeOYHBQ2GwUwAAMHmgww
-        (envelope-from <neilb@suse.de>); Thu, 16 Sep 2021 22:13:21 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        id S241862AbhIQAli (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 16 Sep 2021 20:41:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241861AbhIQAlh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Sep 2021 20:41:37 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD8BEC061756
+        for <linux-ext4@vger.kernel.org>; Thu, 16 Sep 2021 17:40:16 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id m7-20020a9d4c87000000b0051875f56b95so10658367otf.6
+        for <linux-ext4@vger.kernel.org>; Thu, 16 Sep 2021 17:40:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=k3+PIl84BDEKsR+afDftURi+daSqqQKQrezVjb4o2gs=;
+        b=o91WH2FYmAbe2J86ItVZyvcC+WfBRmqI4olWx7OSyVQ8+LS8ErbnHHsHv9wyCm7GuD
+         6KnITsgaa74aQCUSrsf2p7n7W9x8P1Qvxw9bXntq5UWfJ5+bbbi5Y2GRCjY0tsEjdeYq
+         zhRpaYtzUeVWkTR0hsXz7QRGiSogcAtHgycm/znn68PyJIRxhYwoQ65hAvHYrC/F0Hz3
+         g3Q21oYi0j5gF2hqLdclLxKf76n4OCo4uT65ER/5BVZP6Xf9nR4UgEwklGzQovBuv9Qh
+         YobgLF2ljoo2HVmECA6PAq3/wWJqbWVdzzaYvj5/CXRCmeQt/FjeBoPTNc0iOwHrOgyb
+         Qoqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=k3+PIl84BDEKsR+afDftURi+daSqqQKQrezVjb4o2gs=;
+        b=24T1+GVbyHHasptqH71LCSPlEfDDkeU4ufIlyquYNp1sC3enFuJPW6KUlHtJrABqPP
+         duhaB1Rz2cLsso5NDN2AeEQfkc0QGfMnNU+D0+jbadxn+O+caC1Y1iXcKYrXp+OHipQk
+         X4fRWLtV1L4OM7Ag78dQ+BXoqtlrYMyJWHGuauNIp923Ek7KGyK2YOTb95qBGJGYW7cf
+         Y7cLWVcC/LscNDo3juWfKvjm+altAIx8pOcE87MdwANjQpeDEYX6wI+3Wl2tPyFg1y0e
+         kLGJJyggKloePYmJ5jI7crtLuZeeY/YRVDlnuB0JeAcua9wMq759HF2GcsdKCxXU/mvd
+         qbfQ==
+X-Gm-Message-State: AOAM5327aIvvsNtqwGNiVI8hZFGzEX+5WB3LVrcyu039W6BqK12EKe2Q
+        2k0ivV3gVaeWHwv65fFx6E3Z8O+VIVEmVMLbR6w=
+X-Google-Smtp-Source: ABdhPJwu07aZv66FcMO+ywu68L+MMBsCKqmBZmQ1pGfexZhYSVeiqda4utBitCTe2YWuQjXg6ROZtDxAH++fIYA77Og=
+X-Received: by 2002:a9d:57c4:: with SMTP id q4mr7324056oti.229.1631839216083;
+ Thu, 16 Sep 2021 17:40:16 -0700 (PDT)
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Michal Hocko" <mhocko@suse.com>
-Cc:     "Andrew Morton" <akpm@linux-foundation.org>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        "Andreas Dilger" <adilger.kernel@dilger.ca>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        "Matthew Wilcox" <willy@infradead.org>,
-        "Mel Gorman" <mgorman@suse.com>, linux-xfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/6] MM: annotate congestion_wait() and
- wait_iff_congested() as ineffective.
-In-reply-to: <YUHfdtth69qKvk8r@dhcp22.suse.cz>
-References: <163157808321.13293.486682642188075090.stgit@noble.brown>,
- <163157838437.13293.15392955714346973750.stgit@noble.brown>,
- <YUHfdtth69qKvk8r@dhcp22.suse.cz>
-Date:   Fri, 17 Sep 2021 08:13:19 +1000
-Message-id: <163183039931.3992.6407941879351179168@noble.neil.brown.name>
+Sender: mrslila88haber@gmail.com
+Received: by 2002:a4a:3512:0:0:0:0:0 with HTTP; Thu, 16 Sep 2021 17:40:15
+ -0700 (PDT)
+From:   Mrs Lila Haber <mrslilahabe2016@gmail.com>
+Date:   Fri, 17 Sep 2021 00:40:15 +0000
+X-Google-Sender-Auth: DCuNIC66y7pwoc_t-mow7IL1rws
+Message-ID: <CAODWenZ+Zvz+2JebjyMBcZ5OBYNx8Key8ArM8bfEanxsuXhGow@mail.gmail.com>
+Subject: Dear Child of God
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, 15 Sep 2021, Michal Hocko wrote:
-> On Tue 14-09-21 10:13:04, Neil Brown wrote:
-> > Only 4 subsystems call set_bdi_congested() or clear_bdi_congested():
-> >  block/pktcdvd, fs/ceph fs/fuse fs/nfs
-> >=20
-> > It may make sense to use congestion_wait() or wait_iff_congested()
-> > within these subsystems, but they have no value outside of these.
-> >=20
-> > Add documentation comments to these functions to discourage further use.
->=20
-> This is an unfortunate state. The MM layer still relies on the API.
-> While adding a documentation to clarify the current status can stop more
-> usage I am wondering what is a real alternative. My experience tells me
-> that a lack of real alternative will lead to new creative ways of doing
-> things instead.
+Dear Child of God,
 
-That is a valid concern.  Discouraging the use of an interface without
-providing a clear alternative risks people doing worse things.
+Calvary Greetings in the name of the LORD Almighty and Our LORD JESUS
+CHRIST the giver of every good thing. Good day and compliments of the
+seasons, i know this letter will definitely come to you as a huge
+surprise, but I implore you to take the time to go through it
+carefully as the decision you make will go off a long way to determine
+my future and continued existence. I am Mrs Lila Haber aging widow of
+57 years old suffering from long time illness.I have some funds I
+inherited from my late husband, the sum of (19.1Million Dollars) and I
+needed a very honest and God fearing who can withdraw this money then
+use the funds for Charity works. I WISH TO GIVE THIS FUNDS TO YOU FOR
+CHARITY WORKS. I found your email address from the internet after
+honest prayers to the LORD to bring me a helper and i decided to
+contact you if you may be willing and interested to handle these trust
+funds in good faith before anything happens to me.
 
-At lease if people continue to use congestion_wait(), then we will be
-able to find those uses when we are able to provide a better approach.
+I accept this decision because I do not have any child who will
+inherit this money after I die. I want your urgent reply to me so that
+I will give you the deposit receipt which the SECURITY COMPANY issued
+to me as next of kin for immediate transfer of the money to your
+account in your country, to start the good work of God, I want you to
+use the 25/percent of the total amount to help yourself in doing the
+project. I am desperately in keen need of assistance and I have
+summoned up courage to contact you for this task, you must not fail me
+and the millions of the poor people in our todays WORLD. This is no
+stolen money and there are no dangers involved,100% RISK FREE with
+full legal proof. Please if you would be able to use the funds for the
+Charity works kindly let me know immediately.I will appreciate your
+utmost confidentiality and trust in this matter to accomplish my heart
+desire, as I don't want anything that will jeopardize my last wish.
+Please
+kindly respond quickly for further details.
 
-I'll drop this patch.
-
-Thanks,
-NeilBrown
-
-
-> =20
-> > Signed-off-by: NeilBrown <neilb@suse.de>
-> > ---
-> >  include/linux/backing-dev.h |    7 +++++++
-> >  mm/backing-dev.c            |    9 +++++++++
-> >  2 files changed, 16 insertions(+)
-> >=20
-> > diff --git a/include/linux/backing-dev.h b/include/linux/backing-dev.h
-> > index ac7f231b8825..cc9513840351 100644
-> > --- a/include/linux/backing-dev.h
-> > +++ b/include/linux/backing-dev.h
-> > @@ -153,6 +153,13 @@ static inline int wb_congested(struct bdi_writeback =
-*wb, int cong_bits)
-> >  	return wb->congested & cong_bits;
-> >  }
-> > =20
-> > +/* NOTE congestion_wait() and wait_iff_congested() are
-> > + * largely useless except as documentation.
-> > + * congestion_wait() will (almost) always wait for the given timeout.
-> > + * wait_iff_congested() will (almost) never wait, but will call
-> > + * cond_resched().
-> > + * Were possible an alternative waiting strategy should be found.
-> > + */
-> >  long congestion_wait(int sync, long timeout);
-> >  long wait_iff_congested(int sync, long timeout);
-> > =20
-> > diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-> > index 4a9d4e27d0d9..53472ab38796 100644
-> > --- a/mm/backing-dev.c
-> > +++ b/mm/backing-dev.c
-> > @@ -1023,6 +1023,11 @@ EXPORT_SYMBOL(set_bdi_congested);
-> >   * Waits for up to @timeout jiffies for a backing_dev (any backing_dev) =
-to exit
-> >   * write congestion.  If no backing_devs are congested then just wait fo=
-r the
-> >   * next write to be completed.
-> > + *
-> > + * NOTE: in the current implementation, hardly any backing_devs are ever
-> > + * marked as congested, and write-completion is rarely reported (see cal=
-ls
-> > + * to clear_bdi_congested).  So this should not be assumed to ever wake =
-before
-> > + * the timeout.
-> >   */
-> >  long congestion_wait(int sync, long timeout)
-> >  {
-> > @@ -1054,6 +1059,10 @@ EXPORT_SYMBOL(congestion_wait);
-> >   * The return value is 0 if the sleep is for the full timeout. Otherwise,
-> >   * it is the number of jiffies that were still remaining when the functi=
-on
-> >   * returned. return_value =3D=3D timeout implies the function did not sl=
-eep.
-> > + *
-> > + * NOTE: in the current implementation, hardly any backing_devs are ever
-> > + * marked as congested, and write-completion is rarely reported (see cal=
-ls
-> > + * to clear_bdi_congested).  So this should not be assumed to sleep at a=
-ll.
-> >   */
-> >  long wait_iff_congested(int sync, long timeout)
-> >  {
-> >=20
->=20
-> --=20
-> Michal Hocko
-> SUSE Labs
->=20
->=20
+Warmest Regards,
+Mrs Lila Haber
