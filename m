@@ -2,259 +2,211 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED24A4107BC
-	for <lists+linux-ext4@lfdr.de>; Sat, 18 Sep 2021 19:08:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B28441099F
+	for <lists+linux-ext4@lfdr.de>; Sun, 19 Sep 2021 06:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238151AbhIRRJe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 18 Sep 2021 13:09:34 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:6372 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233210AbhIRRJe (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Sat, 18 Sep 2021 13:09:34 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18IH0KdG003766;
-        Sat, 18 Sep 2021 13:08:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=r44pCIkboU67vrUt7SMofnZIYe0NQ0/P+QTi3wuQ7ps=;
- b=OgtchIiYQczWvPlrdQlgwQ5a+Ytkm07fLzDLu1KGY0x0+kwQpsr8rlI40s72AB5kkfDK
- eLvNKA76ioIIVuECSydijIYmDSQRm1aK6B9LxkIv92Tg2fhtaFOf2mTsr5Ec1Ca71+AX
- i7yoOvEGF2shJeG4rXjIJnHWXTvkzhy2TrpvxhopIzYlhVe8CZChmKx0xYUwCJfezTnQ
- CZBWIHTWOJPy1eUpfVBnpbFVxbdm+tQ+UTiJ3hTlUfOd17xMLbohx6HowK6W/O6USbDd
- CAQe0ro1qVps+mLu66yzmBJA3q8/Our8sHsCMuOuPGlkrztum6LYx60mE+7E6wvRb+17 bA== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3b5m4r82w7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 18 Sep 2021 13:08:02 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18IH7EMg028237;
-        Sat, 18 Sep 2021 17:08:01 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 3b57r8ude2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 18 Sep 2021 17:08:00 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18IH7w2i43319584
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 18 Sep 2021 17:07:58 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id ACD1642049;
-        Sat, 18 Sep 2021 17:07:58 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3EEFB42045;
-        Sat, 18 Sep 2021 17:07:58 +0000 (GMT)
-Received: from localhost (unknown [9.43.63.221])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Sat, 18 Sep 2021 17:07:58 +0000 (GMT)
-Date:   Sat, 18 Sep 2021 22:37:57 +0530
-From:   riteshh <riteshh@linux.ibm.com>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     jane.chu@oracle.com, linux-xfs@vger.kernel.org, hch@infradead.org,
-        dan.j.williams@intel.com, linux-fsdevel@vger.kernel.org,
-        linux-ext4 <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH 5/5] ext4: implement FALLOC_FL_ZEROINIT_RANGE
-Message-ID: <20210918170757.j5yjxo34thzks5iv@riteshh-domain>
-References: <163192864476.417973.143014658064006895.stgit@magnolia>
- <163192867220.417973.4913917281472586603.stgit@magnolia>
+        id S236372AbhISDvP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 18 Sep 2021 23:51:15 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:36911 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S236306AbhISDvO (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 18 Sep 2021 23:51:14 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 18J3nMhb007725
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 18 Sep 2021 23:49:23 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 5131115C33EC; Sat, 18 Sep 2021 23:49:22 -0400 (EDT)
+Date:   Sat, 18 Sep 2021 23:49:22 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Eric Blake <eblake@redhat.com>
+Cc:     linux-ext4@vger.kernel.org, libguestfs@redhat.com
+Subject: Re: e2fsprogs concurrency questions
+Message-ID: <YUazQg9TtlZZm10H@mit.edu>
+References: <20210917210655.sjrqvd3r73gwclti@redhat.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <163192867220.417973.4913917281472586603.stgit@magnolia>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: k_kOm3xhYRvgrAVSQOGBLH57KNIeJXIQ
-X-Proofpoint-ORIG-GUID: k_kOm3xhYRvgrAVSQOGBLH57KNIeJXIQ
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-18_05,2021-09-17_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- priorityscore=1501 clxscore=1015 mlxscore=0 malwarescore=0 spamscore=0
- adultscore=0 lowpriorityscore=0 phishscore=0 bulkscore=0 mlxlogscore=999
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109180121
+In-Reply-To: <20210917210655.sjrqvd3r73gwclti@redhat.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-+cc linux-ext4
+On Fri, Sep 17, 2021 at 04:06:55PM -0500, Eric Blake wrote:
+> TL;DR summary: is there documented best practices for parallel access
+> to the same inode of an ext2 filesystem from multiple threads?
+> 
+> First, a meta-question: is there a publicly archived mailing list for
+> questions on e2fsprogs?  The README merely mentions Ted's email
+> address, and http://e2fsprogs.sourceforge.net/ is silent on contact
+> information, although with some googling, I found at least
+> https://patchwork.ozlabs.org/project/linux-ext4/patch/20201205045856.895342-6-tytso@mit.edu/
+> which suggests linux-ext4@vger.kernel.org as a worthwhile list to
+> mention on the web page.
 
-[Thread]: https://lore.kernel.org/linux-xfs/163192864476.417973.143014658064006895.stgit@magnolia/T/#t
+Yes, discussions and patches relating to e2fsprogs take place on
+linux-ext4@vger.kernel.org.  (Just as xfsprogs patches and discussions
+are sent to linux-xfs@vger.kernel.org.)
 
-On 21/09/17 06:31PM, Darrick J. Wong wrote:
-> From: Darrick J. Wong <djwong@kernel.org>
->
-> Implement this new fallocate mode so that persistent memory users can,
-> upon receipt of a pmem poison notification, cause the pmem to be
-> reinitialized to a known value (zero) and clear any hardware poison
-> state that might be lurking.
->
-> Signed-off-by: Darrick J. Wong <djwong@kernel.org>
-> ---
->  fs/ext4/extents.c           |   93 +++++++++++++++++++++++++++++++++++++++++++
->  include/trace/events/ext4.h |    7 +++
->  2 files changed, 99 insertions(+), 1 deletion(-)
->
->
-> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> index c0de30f25185..c345002e2da6 100644
-> --- a/fs/ext4/extents.c
-> +++ b/fs/ext4/extents.c
-> @@ -29,6 +29,7 @@
->  #include <linux/fiemap.h>
->  #include <linux/backing-dev.h>
->  #include <linux/iomap.h>
-> +#include <linux/dax.h>
->  #include "ext4_jbd2.h"
->  #include "ext4_extents.h"
->  #include "xattr.h"
-> @@ -4475,6 +4476,90 @@ static int ext4_collapse_range(struct inode *inode, loff_t offset, loff_t len);
->
->  static int ext4_insert_range(struct inode *inode, loff_t offset, loff_t len);
->
-> +static long ext4_zeroinit_range(struct file *file, loff_t offset, loff_t len)
-> +{
-> +	struct inode *inode = file_inode(file);
-> +	struct address_space *mapping = inode->i_mapping;
-> +	handle_t *handle = NULL;
-> +	loff_t end = offset + len;
-> +	long ret;
-> +
-> +	trace_ext4_zeroinit_range(inode, offset, len,
-> +			FALLOC_FL_ZEROINIT_RANGE | FALLOC_FL_KEEP_SIZE);
-> +
-> +	/* We don't support data=journal mode */
-> +	if (ext4_should_journal_data(inode))
-> +		return -EOPNOTSUPP;
-> +
-> +	inode_lock(inode);
-> +
-> +	/*
-> +	 * Indirect files do not support unwritten extents
-> +	 */
-> +	if (!(ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))) {
-> +		ret = -EOPNOTSUPP;
-> +		goto out_mutex;
-> +	}
-> +
-> +	/* Wait all existing dio workers, newcomers will block on i_mutex */
-> +	inode_dio_wait(inode);
-> +
-> +	/*
-> +	 * Prevent page faults from reinstantiating pages we have released from
-> +	 * page cache.
-> +	 */
-> +	filemap_invalidate_lock(mapping);
-> +
-> +	ret = ext4_break_layouts(inode);
-> +	if (ret)
-> +		goto out_mmap;
-> +
-> +	/* Now release the pages and zero block aligned part of pages */
-> +	truncate_pagecache_range(inode, offset, end - 1);
-> +	inode->i_mtime = inode->i_ctime = current_time(inode);
-> +
-> +	if (IS_DAX(inode))
-> +		ret = dax_zeroinit_range(inode, offset, len,
-> +				&ext4_iomap_report_ops);
-> +	else
-> +		ret = iomap_zeroout_range(inode, offset, len,
-> +				&ext4_iomap_report_ops);
-> +	if (ret == -ECANCELED)
-> +		ret = -EOPNOTSUPP;
-> +	if (ret)
-> +		goto out_mmap;
-> +
-> +	/*
-> +	 * In worst case we have to writeout two nonadjacent unwritten
-> +	 * blocks and update the inode
-> +	 */
+> Now, on to my real reason for writing.  The nbdkit project is using
+> the ext2fs library to provide an ext2/3/4 filter on top of any data
+> being served over NBD (Network Block Device protocol) in userspace:
+> https://libguestfs.org/nbdkit-ext2-filter.1.html
+> 
+> Searching for the word 'thread' or 'concurrent' in libext2fs.info came
+> up with no hits, so I'm going off of minimal documentation, and mostly
+> what I can ascertain from existing examples (of which I'm not seeing
+> very many).
 
-Is this comment true? We are actually not touching IOMAP_UNWRITTEN blocks no?
-So is there any need for journal transaction for this?
-We are essentially only writing to blocks which are already allocated on disk
-and zeroing it out in both dax_zeroinit_range() and iomap_zeroinit_range().
+Historically, libext2fs and e2fsprogs had no pthreads or concurrency
+access at all.  This is because e2fsprogs predates Linux having
+pthreads support at all.
 
+This is _starting_ to change, but more on that in a little.
 
-> +	handle = ext4_journal_start(inode, EXT4_HT_MISC, 1);
+> Right now, the nbdkit filter forces some rather strict serialization
+> in order to be conservatively safe: for every client that wants to
+> connect, the nbdkit filter calls ext2fs_open(), then eventually
+> ext2fs_file_open2(), then exposes the contents of that one extracted
+> file over NBD one operation at a time, then closes everything back
+> down before accepting a second client.  But we'd LOVE to add some
+> parallelization; the NBD protocol allows multiple clients, as well as
+> out-of-order processing of requests from a single client.
+> 
+> Right away, I already know that calling ext2fs_open() more than once
+> on the same file system is a recipe for disaster (it is equivalent to
+> mounting the same block device at once through more than one bare
+> metal OS, and won't work).  So I've got a proposal for how to rework
+> the nbdkit code to open the file system exactly once and share that
+> handle among multiple NBD clients:
+> https://listman.redhat.com/archives/libguestfs/2021-May/msg00028.html
 
-I guess credits is 1 here since only inode is getting modified.
+So you are apparently calling ext2fs_open() before forking, and then
+you want to use the ext2fs handle from separate processes.  Is that
+correct?
 
+That's not going to work if you are going to try to modify the file
+system from different processes simultaneously.  That's because the
+libext2fs using a writeback cache.  After the fork, each process has
+its own copy of the wrteiback cache.
 
-> +	if (IS_ERR(handle)) {
-> +		ret = PTR_ERR(handle);
-> +		ext4_std_error(inode->i_sb, ret);
-> +		goto out_mmap;
-> +	}
-> +
-> +	inode->i_mtime = inode->i_ctime = current_time(inode);
-> +	ret = ext4_mark_inode_dirty(handle, inode);
-> +	if (unlikely(ret))
-> +		goto out_handle;
-> +	ext4_fc_track_range(handle, inode, offset >> inode->i_sb->s_blocksize_bits,
-> +			(offset + len - 1) >> inode->i_sb->s_blocksize_bits);
+If you are using threads, older versions of libext2fs don't do any
+locking before modifying data structures internal to the ext2_fs file
+handle.  So if two threads simultaneously try to use the "ext2_fs fs"
+handle, they might try to access the block allocation bitmap (for
+example) at the same time, without locking, and so bad things will
+happen.
 
-I am not sure whether we need ext4_fc_track_range() here?
-We are not doing any metadata operation except maybe updating inode timestamp
-right?
+You can do your own locking to make sure only one thread is trying to
+use the fs handle at a time, at which point you should be fine.  So
+you can have multiple clients accessing the file system without having
+to open the file system, open a file, and then close the file and
+close the file system before accepting the next client.  But only one
+client can be using the ext2_fs handle at a time, and if you want to
+share any libext2fs data structure across multiple threads,
+appropriate read/write locking would be needed.
 
--ritesh
+> Is it okay to have two concurrent handles open to the same inode, or
+> do I need to implement a hash map on my end so that two NBD clients
+> requesting access to the same file within the ext2 filesystem share a
+> single inode?  If concurrent handles are supported, what mechanism can
+> I use to ensure that a flush performed on one handle will be visible
+> for reading from the other handle, as ext2fs_file_flush does not seem
+> to be strong enough?
 
-> +	ext4_update_inode_fsync_trans(handle, inode, 1);
-> +
-> +	if (file->f_flags & O_SYNC)
-> +		ext4_handle_sync(handle);
-> +
-> +out_handle:
-> +	ext4_journal_stop(handle);
-> +out_mmap:
-> +	filemap_invalidate_unlock(mapping);
-> +out_mutex:
-> +	inode_unlock(inode);
-> +	return ret;
-> +}
-> +
->  static long ext4_zero_range(struct file *file, loff_t offset,
->  			    loff_t len, int mode)
->  {
-> @@ -4659,7 +4744,7 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
->  	/* Return error if mode is not supported */
->  	if (mode & ~(FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE |
->  		     FALLOC_FL_COLLAPSE_RANGE | FALLOC_FL_ZERO_RANGE |
-> -		     FALLOC_FL_INSERT_RANGE))
-> +		     FALLOC_FL_INSERT_RANGE | FALLOC_FL_ZEROINIT_RANGE))
->  		return -EOPNOTSUPP;
->
->  	ext4_fc_start_update(inode);
-> @@ -4687,6 +4772,12 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
->  		ret = ext4_zero_range(file, offset, len, mode);
->  		goto exit;
->  	}
-> +
-> +	if (mode & FALLOC_FL_ZEROINIT_RANGE) {
-> +		ret = ext4_zeroinit_range(file, offset, len);
-> +		goto exit;
-> +	}
-> +
->  	trace_ext4_fallocate_enter(inode, offset, len, mode);
->  	lblk = offset >> blkbits;
->
-> diff --git a/include/trace/events/ext4.h b/include/trace/events/ext4.h
-> index 0ea36b2b0662..282f1208067f 100644
-> --- a/include/trace/events/ext4.h
-> +++ b/include/trace/events/ext4.h
-> @@ -1407,6 +1407,13 @@ DEFINE_EVENT(ext4__fallocate_mode, ext4_zero_range,
->  	TP_ARGS(inode, offset, len, mode)
->  );
->
-> +DEFINE_EVENT(ext4__fallocate_mode, ext4_zeroinit_range,
-> +
-> +	TP_PROTO(struct inode *inode, loff_t offset, loff_t len, int mode),
-> +
-> +	TP_ARGS(inode, offset, len, mode)
-> +);
-> +
->  TRACE_EVENT(ext4_fallocate_exit,
->  	TP_PROTO(struct inode *inode, loff_t offset,
->  		 unsigned int max_blocks, int ret),
->
+You could have two threads sharing the same file handle, with locking
+so that only one thread is using a file handle at a time.  Also, since
+we don't have an analogue for pread(2) and pwrite(2), each thread
+would have to assume that the fseek position may have changed by some
+other thread, so after it grabbed the file system lock, and then the
+per-file lock, it would need to call ext2fs_file_llseek() to make sure
+file's position is at a known location before calling
+ext2fs_file_read() or ext2fs_file_write().
+
+(The reason why ext2fs_file_flush() is not strong enough is because
+that will force writeback, but it doesn't invaludate any cached
+information about the file's inode or extent tree structure.  So if
+the file inode or extent tree is getting modified by some other thread
+out from under it, you're going to have a bad time.)
+
+> Finally, I see with
+> https://patchwork.ozlabs.org/project/linux-ext4/patch/20201205045856.895342-6-tytso@mit.edu/
+> that you recently added EXT2_FLAG_THREADS, as well as
+> CHANNEL_FLAGS_THREADS.  I think it should be fairly straightforward to
+> tweak my nbdkit custom IO manager to advertise CHANNEL_FLAGS_THREADS
+> (as the NBD protocol really DOES support parallel outstanding IO
+> requests), and then add EXT2_FLAG_THREADS into the flags I pss to
+> ext2fs_file_open2(), to try and get ext2fs to take advantage of
+> parallel access to the underlying storage (regardless of whether the
+> clients are parallel coming into ext2fs).  Are there any concurrency
+> issues I should be aware of on that front when updating my code?
+
+So this is the _beginning_ of adding threaded support into libext2fs.
+At the moment, we now have locking for the unix_io.c data structures.
+This allows multiple threads to safely do read-only operations in
+parallel.  But this is *all* that it allows.
+
+This was implemented as part of preparatory work to do parallel
+e2fsck.  The strategy is that we will have several different threads
+reading from disjoint parts of the file system.  So for example, one
+thread might be reading from block groups 0 -- 100.  Another thread
+might be reading from block groups 101 -- 200.  And so on.  Each
+thread will have its own copy of struct e2fsck_struct, and when they
+are done they will merge their data to the global e2fsck_struct.  If
+there are any inconsistencies that need to be fixed, such that the
+file system needs to be modified, this will require waiting until all
+of the threads are done, or other specialized locking inside e2fsck.
+Of course, in the "happy path", where the file system does not need
+any repairs, we won't need to do any special locking or waiting, since
+the workload will be read-only.
+
+So we do not have any concurrency support for allocating inodes, or
+allocating blocks, or assigning blocks to an inode's extent tree, etc.
+Nor do we currently have any plans to add more concureency support to
+libext2fs.
+
+To do this would require a huge amount of effort, and it would also
+require making a lot of changes to the underlying data structures.
+For example, even if we added locking to all of the various data
+structures hanging off of the ext2_fs handle, if two threads tried to
+open the same inode using ext2fs_file_open(), the two file handles are
+completely independent, and there is no way for one thread to do any
+kind of cache invalidation of another thread's file handle after it
+has modified the inode.  The same is true if one thread is using a
+directory iterator while another process tries to modify that
+directory.
+
+> Obviously, when the kernel accesses an ext2/3/4 file system, it DOES
+> support full concurrency (separate user space processes can open
+> independent handles to the same file....
+
+Yes, and that's because the kernel was designed with that in mind from
+the beginning.  The ext2fs library was originally designed to support
+programs like e2fsck, mke2fs, and debugfs.  None of these tools
+required concurrency, and as I've mentioned, at the time when
+libext2fs was first implemented, Linux didn't even *have* threads
+support.  So concurrency wasn't even possible, even if it had been
+needed at that time.
+
+> process must be observed from another).  But nbdkit is all about
+> accessing the data of an ext2 filesystem from userspace, without any
+> kernel bio involvement, and is thus reliant on whatever concurrency
+> guarantees the ext2progs library has (or lacks).
+
+The e2fsprogs library pretty much doesn't have any concurrency
+guarantees, sorry.  I suspect you could create a layer on top of
+libext2fs which actually implemented a global inode cache ala the
+kernel, so that when two threads call something like ext2fs_iget()
+function, it works like the kernel's iget() function and they get the
+same inode structure, which is reference counted.  Things like the
+directory iterator would have to be changed into something more like
+the functions exported by the kernel VFS layer, which would make this
+layer useless for e2fsck, but it would be more useful for a threaded
+client that wanted concurrent read/write access to the filesystem from
+mulitple threads.
+
+Cheers,
+
+						- Ted
