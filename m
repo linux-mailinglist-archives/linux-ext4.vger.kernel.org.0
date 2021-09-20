@@ -2,309 +2,163 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE9C9412731
-	for <lists+linux-ext4@lfdr.de>; Mon, 20 Sep 2021 22:07:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97045412993
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Sep 2021 01:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231492AbhITUJE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 20 Sep 2021 16:09:04 -0400
-Received: from mail-bn1nam07on2077.outbound.protection.outlook.com ([40.107.212.77]:31070
-        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231414AbhITUHD (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 20 Sep 2021 16:07:03 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RFBFbDYyWpdq4Cxqb79jXYUxdnCL4YvhfvHvv2TM8RhEsuJvvg46gG8Jea4tCb28wKvcOMqd3C/o6tyjJHaa+yCOHvwXlIEmeCIDdkUcxt5AfBb5Hx92BP/6QHe/wMJVEDiab04CgQN6yUhj0LmVX/temY2tCpEMjsk6fwwAby6irRgnuRCgPaPwA4vyOAMhLJjd1DevHa4qaAVfGpuvdY6gJO+bNG2Kdr8llUnpr5+ZtyOxHW4ORVE0s3Z8h709SRzoRboFJqFqzts+HNuzkfaIvI+xBg6TVVTupfh9PKK4lp9nV0ELQKKv9k6J6kuOMq64WlmyL1VyrSBLGmAAfA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=e6QiknsDtDbo16MzY8mXMYYJhjEFtjlG6PbZJmVHPZw=;
- b=m4k0NbtZMBtE3OqWLgFoJlNKZEXIg9xfCPWDeuuLe/xSD4rWhD7W+YZ/aW38oyw4aSU/53t1OKa3JiLsiC3DXnsOfDJUUjRWhVpl73827MVjUNt8QS0Wq0IwnDBGQuC8IQ93DeNxjripdozuKm+bfOMOEJs57BtgYLRGJjAW1MjX047Qt4ZoUA+JvB/2fvsnGAWRfwS8iMG5nsQ1EFqQQErwZlM/ype5uZmVfw+efxAmMDRk2eVyNSj6FglGCpEmRY6wP499mPusqhlrOxDLRChIh/B18HBU3Szcx4LdWmlroLMm6Q+9XvxqgKYbqE+CvyX4k3ur8VxnvUC35PkF/A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=e6QiknsDtDbo16MzY8mXMYYJhjEFtjlG6PbZJmVHPZw=;
- b=5adnuL+jK5hKus77SlJBVQiUpFVDTLJYylryKIBBhglmFLvYhNHkStDmuNzIEaKaiXb+hD2t7sr2T4ezz6UiuwuWrxiBOP3kL5yI78TSIAf/NNUtiJv1tVTty3YdmiYZjfNAXI6Cm+9aCTPUUOxCM2JRkK6b4IIbmWOkETi9RKs=
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
-Received: from SA0PR12MB4430.namprd12.prod.outlook.com (2603:10b6:806:70::20)
- by SA0PR12MB4510.namprd12.prod.outlook.com (2603:10b6:806:94::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Mon, 20 Sep
- 2021 20:05:33 +0000
-Received: from SA0PR12MB4430.namprd12.prod.outlook.com
- ([fe80::f1aa:9adc:b4f:4d14]) by SA0PR12MB4430.namprd12.prod.outlook.com
- ([fe80::f1aa:9adc:b4f:4d14%7]) with mapi id 15.20.4523.018; Mon, 20 Sep 2021
- 20:05:33 +0000
-Subject: Re: [PATCH v2 09/12] lib: test_hmm add module param for zone device
- type
-To:     Alistair Popple <apopple@nvidia.com>, akpm@linux-foundation.org,
-        Felix.Kuehling@amd.com, linux-mm@kvack.org, rcampbell@nvidia.com,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        hch@lst.de, jgg@nvidia.com, jglisse@redhat.com
-References: <20210913161604.31981-1-alex.sierra@amd.com>
- <20210913161604.31981-10-alex.sierra@amd.com> <2139200.KYAmxeAneQ@nvdebian>
-From:   "Sierra Guiza, Alejandro (Alex)" <alex.sierra@amd.com>
-Message-ID: <729f833c-e880-96ce-5f49-2d72a93faa21@amd.com>
-Date:   Mon, 20 Sep 2021 15:05:30 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-In-Reply-To: <2139200.KYAmxeAneQ@nvdebian>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-ClientProxiedBy: SA9PR13CA0122.namprd13.prod.outlook.com
- (2603:10b6:806:27::7) To SA0PR12MB4430.namprd12.prod.outlook.com
- (2603:10b6:806:70::20)
+        id S239911AbhITXvt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 20 Sep 2021 19:51:49 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:46288 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236315AbhITXts (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 20 Sep 2021 19:49:48 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id E0B25220C9;
+        Mon, 20 Sep 2021 23:48:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1632181698; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WDR8rd0yeY+WwyoUfkNID7NmGWHu0FjMPIrB2wt75VE=;
+        b=chupZgMQPOxHEij3AQE2fQ2gSjEBexoIhCfHuOMAHmdvWRbUCZ3gF+k/9vweTWz5Vta7u7
+        mQNBvpOGiocqZ8S2DLOKWCj1DnMxDgqu+pm+lZ995Bqs12YFbnoaxjNRQ+fsjkM3Y2EJf6
+        IcYOJqc0DX/D4NVZVgH8EEpAAkJy30I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1632181698;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WDR8rd0yeY+WwyoUfkNID7NmGWHu0FjMPIrB2wt75VE=;
+        b=D5EiDX5Iks4DL7NrQNDrrqwivNtaz8nkcu8GToJ6VdTOfRtsYDcTPgMQNgtEz/8W0CdMf5
+        geVHQgv+cPcW2OAg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 40BED13B3F;
+        Mon, 20 Sep 2021 23:48:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 5j12O70dSWH0bgAAMHmgww
+        (envelope-from <neilb@suse.de>); Mon, 20 Sep 2021 23:48:13 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Received: from [172.31.9.47] (165.204.77.11) by SA9PR13CA0122.namprd13.prod.outlook.com (2603:10b6:806:27::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.6 via Frontend Transport; Mon, 20 Sep 2021 20:05:32 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f2b93f99-51f1-441b-2601-08d97c7200d0
-X-MS-TrafficTypeDiagnostic: SA0PR12MB4510:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA0PR12MB4510CCFB0D09BA1A1D525CF3FDA09@SA0PR12MB4510.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: g1WPuHuS9tpFdhaZkYgdajFEI7Wak/4eenYUdY8evXUEN3FFg4XK+/MgDAwCD1atfis88Lzctiv5L+j3OuPhs++r8fo93lOV0nfkdtvGh/9IwTTcarbaEzsFGVyQ5pg+mO/pqfDn1VJZfF/cuek9rDyG4Xw5PXneap4n9cyHsls2+ENkN5b0yzxnNyEY/3y3aRgsYUoby91Zv3USI00uDQ940jMV3hyRjZ5D+FxXj54XQ5MkzVWyr+276M+vjvl4MDC8sraNC501sS31iGM+6qwq5Vp+b9gueQzw0gKUeczcGCN/mO66V2xZbY8VxvngXOfIsVzjuEuOD1jBH+VHBYZ5NPsPpH5SIaF7L+vIbg3sl4e6vcAyRkRO1VMIvv5KEC4A5odLi/dc5ke3KNlrB/eVIfNCtG9XRNF/grOQ4u82UyZpg0li6ILdBt3pPHlPEf+DISci4qGWdTWCEIYkZzC2ePQdTOfRuk3BUVCzuyqFk8Gw2kI3VeydtskvKevkrEKG6IEjYKljfVmvYzdu4MUfl0tJ8JE28ImCSEDWpUBZT7Zchn+10vBLpLCMbN7vnTOQDExoOG32XvfG7y6e06ddffs0dep3Ae+JRl2LlObfPNM0ZnVk9IHUgTNSZSbr3wdvoSaf6IzDwDkJhizXhoc8gAdfoMhUXZudANzz1vMhyi0aOfpp/3G5F3CpF2xEeARID+nlCiRLp5uLCW8TumNe7G8Eyt3kJxdwAgFeW0o82ED27rm9fb2grI2QsCKAb5Hpo7c3dYQ+nV79mQDRbg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA0PR12MB4430.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(86362001)(2616005)(4326008)(2906002)(956004)(16576012)(5660300002)(83380400001)(26005)(316002)(8936002)(7416002)(8676002)(31686004)(52116002)(6486002)(36756003)(31696002)(508600001)(186003)(53546011)(38100700002)(66556008)(66946007)(38350700002)(66476007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QWV0blpOZm9oK1lHOVF3bFIrOXViRC9uYmNtV3lkRnBVbHpIekVNRFlLdS9z?=
- =?utf-8?B?eU83aU5pbk02eXVkTzZGMU9FR3VmSEtPME5ncGZ6L3M1MklMdm4vclZSeXFl?=
- =?utf-8?B?USs4cTBET09OcWl0YUlEdEFzNEZIbWhrK3FyOUNqUzgrWFZQTEVGNHlwd083?=
- =?utf-8?B?UU9jMXB3UzVvcUVnZXNEd3ZoVld0bmVQUVJzbmtjUUtDYW9XcmJIck4wWVlW?=
- =?utf-8?B?c0R3UGorRFkzaWtnTC9lbks5akg3R1BzcHJZV2dWeEhMNTlLNFNhcnZlOENU?=
- =?utf-8?B?aU5scUdrVXR0bHRnejRaeThBS0YrS1R0MnUzRDRZK011dkg5eG4yc1BKNFh6?=
- =?utf-8?B?aHUxOERiZ0Y3MTFLMGRFSlVWcHkxQlNsR3psL3FDZGEySkE0YXZaMTFCSDBl?=
- =?utf-8?B?NFU0enhzcVVaY3ExNktuRGlhTUhmMmRyVmJMZjVpWVNPR2JIYTNpamJuL2VB?=
- =?utf-8?B?MzdkQnVrazl5Sng3dFJVVm5JaThwREp6bHc1ZHBLbjRLU21NM3I4RThKL3NC?=
- =?utf-8?B?NUp5a09MWGEzS2s2dXhhTSs2WXE3cFp0MENvUXlMNVJDdTZjZ0oxS1hWVFF3?=
- =?utf-8?B?UGZZRWFSQXhZSDZmSDJiYjZLa2NzdWgxWDI1RW5LNDFHS3UxcmlHVmxlWXRl?=
- =?utf-8?B?NEpQcjF3elBZUVE4TWRoN3VXcXBCY0dMRi92TVVzeGtwaEJpZWtEY2VrVHJ4?=
- =?utf-8?B?L2FuVjd6Tzk1V2lleTliYXkyR0xXZ2NSd2ZwYnBOVkl3WjZkellqTHlqOGxi?=
- =?utf-8?B?a1V5Z1BOVEk0N0xkZW9GUGJ6eEpONzBjSkVkR095WlprMFVTV1pKWGJDUEs1?=
- =?utf-8?B?aHdiM0UxUUFHaTFaQjRnWUNLenE2WCtlR3RzSWQrZEc3cGg0NC82RG9ORUlh?=
- =?utf-8?B?WDBwYW91VE1rWlE1QUg2aERYbHZwRzZ6Mmh0d1MxS2FWUmxUMGt6MjZ5eVdX?=
- =?utf-8?B?MnVLVmJPWXpjbjBWOVlzeCtRNjBKUTRRZmZlUjI2YW1BR1RTOHFJbDh5WGox?=
- =?utf-8?B?RXN2Ly9QOWkvRVZ6R2h4QUtwU2VnNE96Ny9BMmNaeU42ZUszSWRpQXMrVm5O?=
- =?utf-8?B?SUE3YU5za3RoaHFPUVAyK291MTJMamRNd243OGlJZmU1aEh2YzJWT2pydHNG?=
- =?utf-8?B?alF1MFRKZSsyd01WRVZMTWVKWFhWeTlGcXdwMzNYNXZwbEVSWFhDVU93RFZy?=
- =?utf-8?B?OWhDZzJ5U3NnVHk5RHJxUHZEeDlJeEoxWVdQQk42TXJHNjdGRS9PZXlDRGRO?=
- =?utf-8?B?TnQwbUlyVFArSGw3bTMvMGp5QTFZMDBBeXpUWTlFbHJNcmdyd3dHb2t2dGJk?=
- =?utf-8?B?OUxlY0lRUkRZTmlsUVlGREt3VHZoUUNPNjhqS0lYaUNxc2N6c1Q4NVNNRWJT?=
- =?utf-8?B?R3V1UzhXN0FNY1BuN1UvRmsrMDRZdGxYZkxRdHBVbTNiY1F1UjZyTnppNDh3?=
- =?utf-8?B?UlhBbTVLRm5mVWpmb3BIWTloc2t5NDBqZFR0Zk1BbXl6Q1V4aE5UVUpWZGVL?=
- =?utf-8?B?SzlZdC9TK1oxNndrYjBoVFRLM3F2d2EvVlQ4dkM3cVFXNFRIWGYyVUxZWExV?=
- =?utf-8?B?QVQ5dEpIRE5EcTVXc0w5amJSM3RoQVRybkpHdmozYWQ4ZWtOL1JRb3JzbTJO?=
- =?utf-8?B?RmdKWlhVRlVNMG1kU2o2SE5mN3ExV3pNb2EybGxkaW90b2J3NC93S3dKQ01D?=
- =?utf-8?B?T29TMUZFZE5WdmlHUHUrWDBHRVF0RjFNZDNpYXVaWEpJWFRLKzdLbE9BM1hT?=
- =?utf-8?Q?+411FrIG4EVvLMNYx35cWrJmKwQDjEOEzsj+wLB?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f2b93f99-51f1-441b-2601-08d97c7200d0
-X-MS-Exchange-CrossTenant-AuthSource: SA0PR12MB4430.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Sep 2021 20:05:33.3005
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fvtxYjd2jJSo2qLPxFqG1ctqljB0X5HTGABiVewIlyalXtwo/etum8fpS5txyAN6EWTKNf+r8SNyOUsMSaXUaA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4510
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Mel Gorman" <mgorman@suse.de>
+Cc:     "Andrew Morton" <akpm@linux-foundation.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        "Andreas Dilger" <adilger.kernel@dilger.ca>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        "Matthew Wilcox" <willy@infradead.org>,
+        "Michal Hocko" <mhocko@suse.com>,
+        "Jesper Dangaard Brouer" <jbrouer@redhat.com>,
+        "Dave Chinner" <david@fromorbit.com>,
+        "Jonathan Corbet" <corbet@lwn.net>, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH 1/6] MM: Support __GFP_NOFAIL in  alloc_pages_bulk_*() and
+ improve doco
+In-reply-to: <20210917144233.GD3891@suse.de>
+References: <163184698512.29351.4735492251524335974.stgit@noble.brown>,
+ <163184741776.29351.3565418361661850328.stgit@noble.brown>,
+ <20210917144233.GD3891@suse.de>
+Date:   Tue, 21 Sep 2021 09:48:11 +1000
+Message-id: <163218169134.3992.18152143151159846850@noble.neil.brown.name>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Sat, 18 Sep 2021, Mel Gorman wrote:
+> I'm top-posting to cc Jesper with full context of the patch. I don't
+> have a problem with this patch other than the Fixes: being a bit
+> marginal, I should have acked as Mel Gorman <mgorman@suse.de> and the
+> @gfp in the comment should have been @gfp_mask.
+>=20
+> However, an assumption the API design made was that it should fail fast
+> if memory is not quickly available but have at least one page in the
+> array. I don't think the network use case cares about the situation where
+> the array is already populated but I'd like Jesper to have the opportunity
+> to think about it.  It's possible he would prefer it's explicit and the
+> check becomes
+> (!nr_populated || ((gfp_mask & __GFP_NOFAIL) && !nr_account)) to
+> state that __GFP_NOFAIL users are willing to take a potential latency
+> penalty if the array is already partially populated but !__GFP_NOFAIL
+> users would prefer fail-fast behaviour. I'm on the fence because while
+> I wrote the implementation, it was based on other peoples requirements.
 
-On 9/20/2021 3:53 AM, Alistair Popple wrote:
-> On Tuesday, 14 September 2021 2:16:01 AM AEST Alex Sierra wrote:
->> In order to configure device public in test_hmm, two module parameters
->> should be passed, which correspond to the SP start address of each
->> device (2) spm_addr_dev0 & spm_addr_dev1. If no parameters are passed,
->> private device type is configured.
-> It's a pity that testing this seems to require some amount of special setup to
-> test. Is there a way this could be made to work on a more standard setup
-> similar to how DEVICE_PRIVATE is tested?
-Hi Alistair
-We tried to do it as simpler as possible. Unfortunately, there are two main
-requirements to register dev memory as DEVICE_PUBLIC type. This memory must
-NOT be accessed by any memory allocator (SLAB, SLOB, SLUB) plus, it has 
-to be
-CPU coherently accessed.  We also want to avoid aliasing the same PFNs for
-different page types (regular system memory and DEVICE_PUBLIC). So we don't
-want the reserved memory to be part of the kernel's memory map before we 
-call
-memremap_pages. A transparent way of doing it, without any special HW, was
-setting a portion of system memory as SPM (Special purpose memory). And use
-this as our “device fake” memory.
+I can see that it could be desirable to not try too hard when we already
+have pages allocated, but maybe the best way to achieve that is for the
+called to clear __GFP_RECLAIM in that case.
 
-Regards,
-Alex Sierra
+Alternately, callers that really want the __GFP_RECLAIM and __GFP_NOFAIL
+flags to be honoured could ensure that the array passed in is empty.
+That wouldn't be difficult (for current callers).
 
->
->> Signed-off-by: Alex Sierra <alex.sierra@amd.com>
->> ---
->> v5:
->> Remove devmem->pagemap.type = MEMORY_DEVICE_PRIVATE at
->> dmirror_allocate_chunk that was forcing to configure pagemap.type
->> to MEMORY_DEVICE_PRIVATE
->>
->> v6:
->> Check for null pointers for resource and memremap references
->> at dmirror_allocate_chunk
->>
->> v7:
->> Due to patch dropped from these patch series "kernel: resource:
->> lookup_resource as exported symbol", lookup_resource was not longer a
->> callable function. This was used in public device configuration, to
->> get start and end addresses, to create pgmap->range struct. This
->> information is now taken directly from the spm_addr_devX parameters and
->> the fixed size DEVMEM_CHUNK_SIZE.
->> ---
->>   lib/test_hmm.c      | 66 +++++++++++++++++++++++++++++++--------------
->>   lib/test_hmm_uapi.h |  1 +
->>   2 files changed, 47 insertions(+), 20 deletions(-)
->>
->> diff --git a/lib/test_hmm.c b/lib/test_hmm.c
->> index 3cd91ca31dd7..ef27e355738a 100644
->> --- a/lib/test_hmm.c
->> +++ b/lib/test_hmm.c
->> @@ -33,6 +33,16 @@
->>   #define DEVMEM_CHUNK_SIZE		(256 * 1024 * 1024U)
->>   #define DEVMEM_CHUNKS_RESERVE		16
->>   
->> +static unsigned long spm_addr_dev0;
->> +module_param(spm_addr_dev0, long, 0644);
->> +MODULE_PARM_DESC(spm_addr_dev0,
->> +		"Specify start address for SPM (special purpose memory) used for device 0. By setting this Generic device type will be used. Make sure spm_addr_dev1 is set too");
->> +
->> +static unsigned long spm_addr_dev1;
->> +module_param(spm_addr_dev1, long, 0644);
->> +MODULE_PARM_DESC(spm_addr_dev1,
->> +		"Specify start address for SPM (special purpose memory) used for device 1. By setting this Generic device type will be used. Make sure spm_addr_dev0 is set too");
->> +
->>   static const struct dev_pagemap_ops dmirror_devmem_ops;
->>   static const struct mmu_interval_notifier_ops dmirror_min_ops;
->>   static dev_t dmirror_dev;
->> @@ -450,11 +460,11 @@ static int dmirror_write(struct dmirror *dmirror, struct hmm_dmirror_cmd *cmd)
->>   	return ret;
->>   }
->>   
->> -static bool dmirror_allocate_chunk(struct dmirror_device *mdevice,
->> +static int dmirror_allocate_chunk(struct dmirror_device *mdevice,
->>   				   struct page **ppage)
->>   {
->>   	struct dmirror_chunk *devmem;
->> -	struct resource *res;
->> +	struct resource *res = NULL;
->>   	unsigned long pfn;
->>   	unsigned long pfn_first;
->>   	unsigned long pfn_last;
->> @@ -462,17 +472,29 @@ static bool dmirror_allocate_chunk(struct dmirror_device *mdevice,
->>   
->>   	devmem = kzalloc(sizeof(*devmem), GFP_KERNEL);
->>   	if (!devmem)
->> -		return false;
->> +		return -ENOMEM;
->>   
->> -	res = request_free_mem_region(&iomem_resource, DEVMEM_CHUNK_SIZE,
->> -				      "hmm_dmirror");
->> -	if (IS_ERR(res))
->> -		goto err_devmem;
->> +	if (!spm_addr_dev0 && !spm_addr_dev1) {
->> +		res = request_free_mem_region(&iomem_resource, DEVMEM_CHUNK_SIZE,
->> +					      "hmm_dmirror");
->> +		if (IS_ERR_OR_NULL(res))
->> +			goto err_devmem;
->> +		devmem->pagemap.range.start = res->start;
->> +		devmem->pagemap.range.end = res->end;
->> +		devmem->pagemap.type = MEMORY_DEVICE_PRIVATE;
->> +		mdevice->zone_device_type = HMM_DMIRROR_MEMORY_DEVICE_PRIVATE;
->> +	} else if (spm_addr_dev0 && spm_addr_dev1) {
->> +		devmem->pagemap.range.start = MINOR(mdevice->cdevice.dev) ?
->> +							spm_addr_dev0 :
->> +							spm_addr_dev1;
->> +		devmem->pagemap.range.end = devmem->pagemap.range.start +
->> +					    DEVMEM_CHUNK_SIZE - 1;
->> +		devmem->pagemap.type = MEMORY_DEVICE_PUBLIC;
->> +		mdevice->zone_device_type = HMM_DMIRROR_MEMORY_DEVICE_PUBLIC;
->> +	} else {
->> +		pr_err("Both spm_addr_dev parameters should be set\n");
->> +	}
->>   
->> -	mdevice->zone_device_type = HMM_DMIRROR_MEMORY_DEVICE_PRIVATE;
->> -	devmem->pagemap.type = MEMORY_DEVICE_PRIVATE;
->> -	devmem->pagemap.range.start = res->start;
->> -	devmem->pagemap.range.end = res->end;
->>   	devmem->pagemap.nr_range = 1;
->>   	devmem->pagemap.ops = &dmirror_devmem_ops;
->>   	devmem->pagemap.owner = mdevice;
->> @@ -493,10 +515,14 @@ static bool dmirror_allocate_chunk(struct dmirror_device *mdevice,
->>   		mdevice->devmem_capacity = new_capacity;
->>   		mdevice->devmem_chunks = new_chunks;
->>   	}
->> -
->>   	ptr = memremap_pages(&devmem->pagemap, numa_node_id());
->> -	if (IS_ERR(ptr))
->> +	if (IS_ERR_OR_NULL(ptr)) {
->> +		if (ptr)
->> +			ret = PTR_ERR(ptr);
->> +		else
->> +			ret = -EFAULT;
->>   		goto err_release;
->> +	}
->>   
->>   	devmem->mdevice = mdevice;
->>   	pfn_first = devmem->pagemap.range.start >> PAGE_SHIFT;
->> @@ -529,7 +555,8 @@ static bool dmirror_allocate_chunk(struct dmirror_device *mdevice,
->>   
->>   err_release:
->>   	mutex_unlock(&mdevice->devmem_lock);
->> -	release_mem_region(devmem->pagemap.range.start, range_len(&devmem->pagemap.range));
->> +	if (res)
->> +		release_mem_region(devmem->pagemap.range.start, range_len(&devmem->pagemap.range));
->>   err_devmem:
->>   	kfree(devmem);
->>   
->> @@ -1097,10 +1124,8 @@ static int dmirror_device_init(struct dmirror_device *mdevice, int id)
->>   	if (ret)
->>   		return ret;
->>   
->> -	/* Build a list of free ZONE_DEVICE private struct pages */
->> -	dmirror_allocate_chunk(mdevice, NULL);
->> -
->> -	return 0;
->> +	/* Build a list of free ZONE_DEVICE struct pages */
->> +	return dmirror_allocate_chunk(mdevice, NULL);
->>   }
->>   
->>   static void dmirror_device_remove(struct dmirror_device *mdevice)
->> @@ -1113,8 +1138,9 @@ static void dmirror_device_remove(struct dmirror_device *mdevice)
->>   				mdevice->devmem_chunks[i];
->>   
->>   			memunmap_pages(&devmem->pagemap);
->> -			release_mem_region(devmem->pagemap.range.start,
->> -					   range_len(&devmem->pagemap.range));
->> +			if (devmem->pagemap.type == MEMORY_DEVICE_PRIVATE)
->> +				release_mem_region(devmem->pagemap.range.start,
->> +						   range_len(&devmem->pagemap.range));
->>   			kfree(devmem);
->>   		}
->>   		kfree(mdevice->devmem_chunks);
->> diff --git a/lib/test_hmm_uapi.h b/lib/test_hmm_uapi.h
->> index ee88701793d5..00259d994410 100644
->> --- a/lib/test_hmm_uapi.h
->> +++ b/lib/test_hmm_uapi.h
->> @@ -65,6 +65,7 @@ enum {
->>   enum {
->>   	/* 0 is reserved to catch uninitialized type fields */
->>   	HMM_DMIRROR_MEMORY_DEVICE_PRIVATE = 1,
->> +	HMM_DMIRROR_MEMORY_DEVICE_PUBLIC,
->>   };
->>   
->>   #endif /* _LIB_TEST_HMM_UAPI_H */
->>
->
->
->
+In either case, the documentation should make it clear which flags are
+honoured when.
+
+Let's see what Jesper has to say.
+
+Thanks,
+NeilBrown
+
+
+>=20
+> On Fri, Sep 17, 2021 at 12:56:57PM +1000, NeilBrown wrote:
+> > When alloc_pages_bulk_array() is called on an array that is partially
+> > allocated, the level of effort to get a single page is less than when
+> > the array was completely unallocated.  This behaviour is inconsistent,
+> > but now fixed.  One effect if this is that __GFP_NOFAIL will not ensure
+> > at least one page is allocated.
+> >=20
+> > Also clarify the expected success rate.  __alloc_pages_bulk() will
+> > allocated one page according to @gfp, and may allocate more if that can
+> > be done cheaply.  It is assumed that the caller values cheap allocation
+> > where possible and may decide to use what it has got, or to call again
+> > to get more.
+> >=20
+> > Acked-by: Mel Gorman <mgorman@suse.com>
+> > Fixes: 0f87d9d30f21 ("mm/page_alloc: add an array-based interface to the =
+bulk page allocator")
+> > Signed-off-by: NeilBrown <neilb@suse.de>
+> > ---
+> >  mm/page_alloc.c |    7 ++++++-
+> >  1 file changed, 6 insertions(+), 1 deletion(-)
+> >=20
+> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > index b37435c274cf..aa51016e49c5 100644
+> > --- a/mm/page_alloc.c
+> > +++ b/mm/page_alloc.c
+> > @@ -5191,6 +5191,11 @@ static inline bool prepare_alloc_pages(gfp_t gfp_m=
+ask, unsigned int order,
+> >   * is the maximum number of pages that will be stored in the array.
+> >   *
+> >   * Returns the number of pages on the list or array.
+> > + *
+> > + * At least one page will be allocated if that is possible while
+> > + * remaining consistent with @gfp.  Extra pages up to the requested
+> > + * total will be allocated opportunistically when doing so is
+> > + * significantly cheaper than having the caller repeat the request.
+> >   */
+> >  unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+> >  			nodemask_t *nodemask, int nr_pages,
+> > @@ -5292,7 +5297,7 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int pre=
+ferred_nid,
+> >  								pcp, pcp_list);
+> >  		if (unlikely(!page)) {
+> >  			/* Try and get at least one page */
+> > -			if (!nr_populated)
+> > +			if (!nr_account)
+> >  				goto failed_irq;
+> >  			break;
+> >  		}
+> >=20
+> >=20
+>=20
+>=20
