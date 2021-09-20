@@ -2,237 +2,111 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72F93412611
-	for <lists+linux-ext4@lfdr.de>; Mon, 20 Sep 2021 20:51:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53534412710
+	for <lists+linux-ext4@lfdr.de>; Mon, 20 Sep 2021 21:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353984AbhITSxE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 20 Sep 2021 14:53:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38254 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1385892AbhITSwh (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:52:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A9246139F;
-        Mon, 20 Sep 2021 18:12:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632161520;
-        bh=ORmP/PpPJ4jZv08mjHln2oqKkpHLuOqF1ihYmPqRs1c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dxZiKWWKKbX8AXKdt5JDau76nGaxqmB0tHzbHotum6rV0iJ3SbWqgQLMYLWrtZctM
-         cUDXXOvr+Fv6W0R+v6K3SN1Ya07sfEm+xGlKjDxKAISZqDConQz1ts3reRSkHrVPvS
-         w7gk/dtgvfO3xRgvwD+LJm7rtF0bgyzLKHRsd6X1B8KG/u1R9LnQKDat7w3ASLC951
-         mE9RjY8U4+13AXlnHyj2LgTMqZzRK7AWJH9M+JJVQFfgTETaZiUio0j8f3EMuWlrGe
-         DgwVrdvaxLpSpU9by9Rq2dFxJqAEpAoqVFzuJ+bSzknR6Ct8uD24AqSCcGqIR3ANJH
-         Gyp7BrpM5K8OA==
-Date:   Mon, 20 Sep 2021 11:11:59 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     riteshh <riteshh@linux.ibm.com>
-Cc:     jane.chu@oracle.com, linux-xfs@vger.kernel.org, hch@infradead.org,
-        dan.j.williams@intel.com, linux-fsdevel@vger.kernel.org,
-        linux-ext4 <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH 5/5] ext4: implement FALLOC_FL_ZEROINIT_RANGE
-Message-ID: <20210920181159.GA570565@magnolia>
-References: <163192864476.417973.143014658064006895.stgit@magnolia>
- <163192867220.417973.4913917281472586603.stgit@magnolia>
- <20210918170757.j5yjxo34thzks5iv@riteshh-domain>
+        id S230203AbhITT7q (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 20 Sep 2021 15:59:46 -0400
+Received: from smtp-fw-9103.amazon.com ([207.171.188.200]:54823 "EHLO
+        smtp-fw-9103.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346968AbhITT5p (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 20 Sep 2021 15:57:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1632167778; x=1663703778;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   in-reply-to;
+  bh=VGCAh2/X9B7s47ZlI2jWLZuZmG6ax30G1VRtR1CiL/w=;
+  b=SRbGw1P+W+Iw6VxwJ9cjFlJtnHBT+MbpgM4tzBpAOtK+F4FM5P6DT8Xl
+   9CtiUKxWQr6tOK85rpJNGi+6v4PHcGvD0Rw+MxbRbXDCxfur68G3FOhXW
+   BgWvG/GVjGXxBKITyb1d7ftUsb9QU+gLWEcLGrdmGBp8L+GF0NUCjke7P
+   Q=;
+X-IronPort-AV: E=Sophos;i="5.85,309,1624320000"; 
+   d="scan'208";a="959003975"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1a-4ba5c7da.us-east-1.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-9103.sea19.amazon.com with ESMTP; 20 Sep 2021 19:56:17 +0000
+Received: from EX13MTAUWC002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-iad-1a-4ba5c7da.us-east-1.amazon.com (Postfix) with ESMTPS id 9780086D24;
+        Mon, 20 Sep 2021 19:56:16 +0000 (UTC)
+Received: from EX13D46UWC004.ant.amazon.com (10.43.162.173) by
+ EX13MTAUWC002.ant.amazon.com (10.43.162.240) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Mon, 20 Sep 2021 19:56:15 +0000
+Received: from EX13MTAUWC001.ant.amazon.com (10.43.162.135) by
+ EX13D46UWC004.ant.amazon.com (10.43.162.173) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Mon, 20 Sep 2021 19:56:15 +0000
+Received: from dev-dsk-shaoyi-2b-c0ca772a.us-west-2.amazon.com (172.22.152.76)
+ by mail-relay.amazon.com (10.43.162.232) with Microsoft SMTP Server id
+ 15.0.1497.23 via Frontend Transport; Mon, 20 Sep 2021 19:56:15 +0000
+Received: by dev-dsk-shaoyi-2b-c0ca772a.us-west-2.amazon.com (Postfix, from userid 13116433)
+        id 694FD42867; Mon, 20 Sep 2021 19:56:15 +0000 (UTC)
+Date:   Mon, 20 Sep 2021 19:56:15 +0000
+From:   Shaoying Xu <shaoyi@amazon.com>
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>
+CC:     <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <benh@amazon.com>, <shaoyi@amazon.com>
+Subject: Re: [PATCH 0/1] [RESEND] ext4: fix lazy initialization next schedule
+ time computation in more granular unit
+Message-ID: <20210920195615.GB27753@amazon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210918170757.j5yjxo34thzks5iv@riteshh-domain>
+In-Reply-To: <20210902164412.9994-1-shaoyi@amazon.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Sep 18, 2021 at 10:37:57PM +0530, riteshh wrote:
-> +cc linux-ext4
-> 
-> [Thread]: https://lore.kernel.org/linux-xfs/163192864476.417973.143014658064006895.stgit@magnolia/T/#t
-> 
-> On 21/09/17 06:31PM, Darrick J. Wong wrote:
-> > From: Darrick J. Wong <djwong@kernel.org>
-> >
-> > Implement this new fallocate mode so that persistent memory users can,
-> > upon receipt of a pmem poison notification, cause the pmem to be
-> > reinitialized to a known value (zero) and clear any hardware poison
-> > state that might be lurking.
-> >
-> > Signed-off-by: Darrick J. Wong <djwong@kernel.org>
-> > ---
-> >  fs/ext4/extents.c           |   93 +++++++++++++++++++++++++++++++++++++++++++
-> >  include/trace/events/ext4.h |    7 +++
-> >  2 files changed, 99 insertions(+), 1 deletion(-)
-> >
-> >
-> > diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> > index c0de30f25185..c345002e2da6 100644
-> > --- a/fs/ext4/extents.c
-> > +++ b/fs/ext4/extents.c
-> > @@ -29,6 +29,7 @@
-> >  #include <linux/fiemap.h>
-> >  #include <linux/backing-dev.h>
-> >  #include <linux/iomap.h>
-> > +#include <linux/dax.h>
-> >  #include "ext4_jbd2.h"
-> >  #include "ext4_extents.h"
-> >  #include "xattr.h"
-> > @@ -4475,6 +4476,90 @@ static int ext4_collapse_range(struct inode *inode, loff_t offset, loff_t len);
-> >
-> >  static int ext4_insert_range(struct inode *inode, loff_t offset, loff_t len);
-> >
-> > +static long ext4_zeroinit_range(struct file *file, loff_t offset, loff_t len)
-> > +{
-> > +	struct inode *inode = file_inode(file);
-> > +	struct address_space *mapping = inode->i_mapping;
-> > +	handle_t *handle = NULL;
-> > +	loff_t end = offset + len;
-> > +	long ret;
-> > +
-> > +	trace_ext4_zeroinit_range(inode, offset, len,
-> > +			FALLOC_FL_ZEROINIT_RANGE | FALLOC_FL_KEEP_SIZE);
-> > +
-> > +	/* We don't support data=journal mode */
-> > +	if (ext4_should_journal_data(inode))
-> > +		return -EOPNOTSUPP;
-> > +
-> > +	inode_lock(inode);
-> > +
-> > +	/*
-> > +	 * Indirect files do not support unwritten extents
-> > +	 */
-> > +	if (!(ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))) {
-> > +		ret = -EOPNOTSUPP;
-> > +		goto out_mutex;
-> > +	}
-> > +
-> > +	/* Wait all existing dio workers, newcomers will block on i_mutex */
-> > +	inode_dio_wait(inode);
-> > +
-> > +	/*
-> > +	 * Prevent page faults from reinstantiating pages we have released from
-> > +	 * page cache.
-> > +	 */
-> > +	filemap_invalidate_lock(mapping);
-> > +
-> > +	ret = ext4_break_layouts(inode);
-> > +	if (ret)
-> > +		goto out_mmap;
-> > +
-> > +	/* Now release the pages and zero block aligned part of pages */
-> > +	truncate_pagecache_range(inode, offset, end - 1);
-> > +	inode->i_mtime = inode->i_ctime = current_time(inode);
-> > +
-> > +	if (IS_DAX(inode))
-> > +		ret = dax_zeroinit_range(inode, offset, len,
-> > +				&ext4_iomap_report_ops);
-> > +	else
-> > +		ret = iomap_zeroout_range(inode, offset, len,
-> > +				&ext4_iomap_report_ops);
-> > +	if (ret == -ECANCELED)
-> > +		ret = -EOPNOTSUPP;
-> > +	if (ret)
-> > +		goto out_mmap;
-> > +
-> > +	/*
-> > +	 * In worst case we have to writeout two nonadjacent unwritten
-> > +	 * blocks and update the inode
-> > +	 */
-> 
-> Is this comment true? We are actually not touching IOMAP_UNWRITTEN blocks no?
-> So is there any need for journal transaction for this?
-> We are essentially only writing to blocks which are already allocated on disk
-> and zeroing it out in both dax_zeroinit_range() and iomap_zeroinit_range().
+Here are more context and testing details:
 
-Oops.  Yeah, the comment is wrong.  Deleted.
+This issue was originally identified in Amazon Linux 2 with kernel 5.10 and
+CONFIG_HZ is 250 in x86_64 while 100 in arm64. It can be reproduced by launching
+EC2 instances c5.2xlarge (x86_64) and c6g.2xlarge (arm64) then measuring time to
+finish ext4lazyinit thread after mounting the ext4 FS.
 
-> > +	handle = ext4_journal_start(inode, EXT4_HT_MISC, 1);
+w/o fix in kernel 5.10
+|----------------+-------------+------------|
+| ext4 FS volume | c6g.2xlarge | c5.2xlarge |
+|----------------+-------------+------------|
+| 2T             | 1842 secs   | 743 secs   |
+|----------------+-------------+------------|
+| 3T             | 2690 secs   | 1110 secs  |
+|----------------+-------------+------------|
+
+w/ fix in kernel 5.10
+|----------------+-------------+------------|
+| ext4 FS volume | c6g.2xlarge | c5.2xlarge |
+|----------------+-------------+------------|
+| 2T             | 660 secs    | 544 secs   |
+|----------------+-------------+------------|
+| 3T             | 1053 secs   | 932 secs   |
+|----------------+-------------+------------|
+
+On Thu, Sep 02, 2021 at 04:44:11PM +0000, Shaoying Xu wrote:
+> Description
+> ===========
+> Ext4 FS has inappropriate implementations on the next schedule time calculation
+> that use jiffies to measure the time for one request to zero out inode table. This
+> actually makes the wait time effectively dependent on CONFIG_HZ, which is
+> undesirable. We have observed on server systems with 100HZ some fairly long delays
+> in initialization as a result. Therefore, we propose to use more granular unit to
+> calculate the next schedule time.
 > 
-> I guess credits is 1 here since only inode is getting modified.
-
-Yep.
-
+> Test
+> ====
+> Tested the patch in stable kernel 5.10 with FS volume 2T and 3T on EC2
+> instances. Before the fix, instances with 250HZ finished the lazy initialization 
+> in around 2.4x time less than instances with 100HZ. 
+> After the fix, both of them finished within approximately same time. 
 > 
-> > +	if (IS_ERR(handle)) {
-> > +		ret = PTR_ERR(handle);
-> > +		ext4_std_error(inode->i_sb, ret);
-> > +		goto out_mmap;
-> > +	}
-> > +
-> > +	inode->i_mtime = inode->i_ctime = current_time(inode);
-> > +	ret = ext4_mark_inode_dirty(handle, inode);
-> > +	if (unlikely(ret))
-> > +		goto out_handle;
-> > +	ext4_fc_track_range(handle, inode, offset >> inode->i_sb->s_blocksize_bits,
-> > +			(offset + len - 1) >> inode->i_sb->s_blocksize_bits);
+> Patch
+> =====
+> Shaoying Xu (1):
+>   ext4: fix lazy initialization next schedule time computation in more
+>     granular unit
 > 
-> I am not sure whether we need ext4_fc_track_range() here?
-> We are not doing any metadata operation except maybe updating inode timestamp
-> right?
-
-I wasn't sure what fastcommit needs to track about the range.  Is it
-/only/ tracking changes to the file mapping?
-
-/me is sadly falling further and further behind on where ext4 is these
-days... :/
-
---D
-
+>  fs/ext4/super.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
 > 
-> -ritesh
+> -- 
+> 2.16.6
 > 
-> > +	ext4_update_inode_fsync_trans(handle, inode, 1);
-> > +
-> > +	if (file->f_flags & O_SYNC)
-> > +		ext4_handle_sync(handle);
-> > +
-> > +out_handle:
-> > +	ext4_journal_stop(handle);
-> > +out_mmap:
-> > +	filemap_invalidate_unlock(mapping);
-> > +out_mutex:
-> > +	inode_unlock(inode);
-> > +	return ret;
-> > +}
-> > +
-> >  static long ext4_zero_range(struct file *file, loff_t offset,
-> >  			    loff_t len, int mode)
-> >  {
-> > @@ -4659,7 +4744,7 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
-> >  	/* Return error if mode is not supported */
-> >  	if (mode & ~(FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE |
-> >  		     FALLOC_FL_COLLAPSE_RANGE | FALLOC_FL_ZERO_RANGE |
-> > -		     FALLOC_FL_INSERT_RANGE))
-> > +		     FALLOC_FL_INSERT_RANGE | FALLOC_FL_ZEROINIT_RANGE))
-> >  		return -EOPNOTSUPP;
-> >
-> >  	ext4_fc_start_update(inode);
-> > @@ -4687,6 +4772,12 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
-> >  		ret = ext4_zero_range(file, offset, len, mode);
-> >  		goto exit;
-> >  	}
-> > +
-> > +	if (mode & FALLOC_FL_ZEROINIT_RANGE) {
-> > +		ret = ext4_zeroinit_range(file, offset, len);
-> > +		goto exit;
-> > +	}
-> > +
-> >  	trace_ext4_fallocate_enter(inode, offset, len, mode);
-> >  	lblk = offset >> blkbits;
-> >
-> > diff --git a/include/trace/events/ext4.h b/include/trace/events/ext4.h
-> > index 0ea36b2b0662..282f1208067f 100644
-> > --- a/include/trace/events/ext4.h
-> > +++ b/include/trace/events/ext4.h
-> > @@ -1407,6 +1407,13 @@ DEFINE_EVENT(ext4__fallocate_mode, ext4_zero_range,
-> >  	TP_ARGS(inode, offset, len, mode)
-> >  );
-> >
-> > +DEFINE_EVENT(ext4__fallocate_mode, ext4_zeroinit_range,
-> > +
-> > +	TP_PROTO(struct inode *inode, loff_t offset, loff_t len, int mode),
-> > +
-> > +	TP_ARGS(inode, offset, len, mode)
-> > +);
-> > +
-> >  TRACE_EVENT(ext4_fallocate_exit,
-> >  	TP_PROTO(struct inode *inode, loff_t offset,
-> >  		 unsigned int max_blocks, int ret),
-> >
