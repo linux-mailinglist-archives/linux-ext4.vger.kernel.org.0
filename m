@@ -2,293 +2,162 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA6F0412E84
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Sep 2021 08:11:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17B49413A9F
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Sep 2021 21:19:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229712AbhIUGMc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 21 Sep 2021 02:12:32 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:31664 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229614AbhIUGMb (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 21 Sep 2021 02:12:31 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18L59PNU023247;
-        Tue, 21 Sep 2021 02:10:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=9TxeeBAI+lO+bjNrxKdv4E37yA0ac3EDTTsg2HJLnTo=;
- b=EgEUYQCNBU7LNQCPZn0hxbTxJyjGeTH88TMVpWyfiEKMFK4nBLR039aQEGmUx8GzUjdL
- YfUVPUXB27NadFf5mzmR1Japij0q2KUw8C9InFuLLS8tES/q8x9jcPkkRDyuIoKX5KoP
- RdKeclvYHBeN2ogN9dBketJAU5Y7OD+a849EmwYaWkMFRacKvSEy2QmknB9Wxanknbxk
- Z6nImsbSNeeJt1T6Bgix8CCoxQKgioHUiQSgOP45Qv8Kb7Pamg8q6M47B7CDwCSjGetk
- OhDo406s+pui5HbZzbVjdnYcf8ZygdH+BDF7Kj5lthTd1HcytCJFRZWo9yHtHXqqpskf DQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3b75ud48tb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Sep 2021 02:10:55 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18L5Ad5d030707;
-        Tue, 21 Sep 2021 02:10:55 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3b75ud48sj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Sep 2021 02:10:54 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18L63Cv4018832;
-        Tue, 21 Sep 2021 06:10:53 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma02fra.de.ibm.com with ESMTP id 3b57r9763j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Sep 2021 06:10:52 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18L6AohU30998824
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 21 Sep 2021 06:10:50 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4BEFD52059;
-        Tue, 21 Sep 2021 06:10:50 +0000 (GMT)
-Received: from localhost (unknown [9.43.105.212])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id DA9F152050;
-        Tue, 21 Sep 2021 06:10:49 +0000 (GMT)
-Date:   Tue, 21 Sep 2021 11:40:48 +0530
-From:   riteshh <riteshh@linux.ibm.com>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     jane.chu@oracle.com, linux-xfs@vger.kernel.org, hch@infradead.org,
-        dan.j.williams@intel.com, linux-fsdevel@vger.kernel.org,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Subject: Re: [PATCH 5/5] ext4: implement FALLOC_FL_ZEROINIT_RANGE
-Message-ID: <20210921061048.bv7ut3x3sugfrt5t@riteshh-domain>
-References: <163192864476.417973.143014658064006895.stgit@magnolia>
- <163192867220.417973.4913917281472586603.stgit@magnolia>
- <20210918170757.j5yjxo34thzks5iv@riteshh-domain>
- <20210920181159.GA570565@magnolia>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210920181159.GA570565@magnolia>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: KLAs31-pUXC2yNkVx4L-jD_Ensa_rAM2
-X-Proofpoint-ORIG-GUID: OD1PclyN1GMLC71jyR-ft5eG8-loDYPg
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S234390AbhIUTUg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 21 Sep 2021 15:20:36 -0400
+Received: from mail-bn8nam12on2046.outbound.protection.outlook.com ([40.107.237.46]:53728
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234301AbhIUTUf (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 21 Sep 2021 15:20:35 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LhVklMHo+wx62hGNfaPE9+JO1MLJUGzB2RX47ns0Zf+iC9qcW6WQlEqelB2RRXq7X0lnMq8/mFr6lqLcdpUHSUCs5XD2BvRz+FcOV1RlaZdpAJJVlRd3XI/8Rc71SxC2AJasBIkRrb/3kib5LPXkHmRxBItjbI9Kqao0cTxWcoUiFf2lojpDHiQ7cmmpz98m/qCAwEN0HSU52IOJi4oLt43c3u0Raw/s67PswknRAeV0WF8pw88vmDuo6BM0lTb0ShsqayleiNdkkJCTATql6PnY2KOdh/hE3efSN1c0iAitbF+FC18lujW7G9kv9AAZ1VKT6zoDt8Kb2NAFzBO+7w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=y/TqFwxeQCyR5KLnSavJs1SkVVNnlySJYc7vA/210c8=;
+ b=TkZipc6A+jpQTl61ir8RnHZWzeU6MEk/5Mc4uF7eQ9yIJSALJRgTvahNf/ky9sIEYrupPENxOI2+ARjThCPwA/g+PPdbOEDI70ovUmFhWtNOcWncI9fgH4MgdFTIPZ2qTPJpLYlqjag629db5u59MHbHiwndrNa9Cx1iWyrVjRrfZGwOn56qQoJYAdTrL16DhOqNoKnLzJwa2mnAUvM6Sp4u4a92IP9xPBpajESB2W1QOhTst5xu6DfzQjvXLSh+9/27kYULlQmdpDQbHBe+3As0j8vQlqViGc4obj9P7su7qj8AUzK06D3Gf5XnmIJCaKDJ5XwlURuzcZDhthhioA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=y/TqFwxeQCyR5KLnSavJs1SkVVNnlySJYc7vA/210c8=;
+ b=L60nlBPeTwYj/R26+br4dNUXnAbCWzn3u8LzcNUZJfksQOxf3mDX75EahOK05qE6/3Bb3aeIvqm5PUhZIH0qusvFlkMVoPP+h5sy83Pf/SbCU5Om87dwlvLXCk8eb32HKuiMx3IKKgLqbMdl1nF5ILO+7QByTld+awHoB6Bxqs4=
+Authentication-Results: amd.com; dkim=none (message not signed)
+ header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
+Received: from BN9PR12MB5129.namprd12.prod.outlook.com (2603:10b6:408:136::12)
+ by BN9PR12MB5164.namprd12.prod.outlook.com (2603:10b6:408:11d::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Tue, 21 Sep
+ 2021 19:19:04 +0000
+Received: from BN9PR12MB5129.namprd12.prod.outlook.com
+ ([fe80::94bc:6146:87a:9f3c]) by BN9PR12MB5129.namprd12.prod.outlook.com
+ ([fe80::94bc:6146:87a:9f3c%5]) with mapi id 15.20.4523.018; Tue, 21 Sep 2021
+ 19:19:04 +0000
+To:     Linux MM <linux-mm@kvack.org>, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     Christoph Hellwig <hch@lst.de>, Jason Gunthorpe <jgg@mellanox.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Phillips, Daniel" <Daniel.Phillips@amd.com>,
+        "Sierra Guiza, Alejandro (Alex)" <Alex.Sierra@amd.com>
+From:   Felix Kuehling <felix.kuehling@amd.com>
+Organization: AMD Inc.
+Subject: BoF at LPC: Documenting the Heterogeneous Memory Model Architecture
+Message-ID: <23aeacb6-0cd9-d10f-76bc-3c9d33905daa@amd.com>
+Date:   Tue, 21 Sep 2021 15:19:02 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-ClientProxiedBy: YTOPR0101CA0001.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b00:15::14) To BN9PR12MB5129.namprd12.prod.outlook.com
+ (2603:10b6:408:136::12)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-21_01,2021-09-20_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- adultscore=0 impostorscore=0 suspectscore=0 malwarescore=0 bulkscore=0
- spamscore=0 clxscore=1015 priorityscore=1501 mlxscore=0 phishscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109210039
+Received: from [172.27.226.80] (165.204.55.251) by YTOPR0101CA0001.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b00:15::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend Transport; Tue, 21 Sep 2021 19:19:03 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 74288d7e-5bd7-4ecf-87c8-08d97d34acf7
+X-MS-TrafficTypeDiagnostic: BN9PR12MB5164:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BN9PR12MB5164FD655B8ADA29D896530392A19@BN9PR12MB5164.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lU4s4ejjeRrj/j4IdgYIh+UfjtAJkBjSobKsrLFuAQiWagkJy5kpJgakkjF8R26VWhIfvqro6S9ljH6ShLN4cCdKnWjuVEHPhRzH64R53CRMEt6REk86O8n+DaQh6QxNDU89B/IjftJOLj1Kx1aJpEsHZ/Vj7hscWq2NLvecDOCpL06mgbfEHBWlZ29VfPE6YA/XoVbItiVOe7NEkAauAG2HAWWDd6HVWoUkT3GE5tgDvan7QbDTG2uendTzvrfmgSSBAVxREGufVUcoo3shhbFM1cU2n94GbyEBzd6oJWXUbVqrj+5Td6ngixQ9B2caEiBzYHvaD+fAxNz/CFjxNW1FJ6VZJ2etVeud0hub0hYLF4rVUCTZnCOT7TSoXgcgJ7bYv/o2zwkc2tMBnDq4UdmFqZjh9UD+yEPcTFuQ2UHSlsMo/Ys2Y8wwUpERTMFIw6Y67lwhkvPd1rBRasmGU7DoQNesv7dFCzb9asbim1z1nLA4ue/dqgjqcAQ/Fs7cQ1SwJLBZ1xiCNxk1xtna/axoHBeibH6h4N6+FrsfEU5nW/APRHDxZN+lN8AAbFAJEO8H63DL7W7S/Y4yyAs5+9/OeiEeunPYWzE7vVl93NqkN0qR6B2AY1NEpJ+j6DJUSI7yeBNIXb/8hjD0QpZlnQaET17GChR/75I5/DmIaU5Gj0ePkvVYl/K9zNlVeNaFm82EtmSHLTzrU3mJ0iraqQ/mb1Jd5xFGs5SIUqtA9NsbcfY6CuGnUpYVhVmpzykkfjF2GvB2s+qLCyrMaSd2QFZXNajfmIqxA0fOUE1bTDVqigY9tuFs4ww5jkNBga9D
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5129.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(7416002)(31686004)(2616005)(2906002)(66946007)(6486002)(36756003)(5660300002)(4326008)(44832011)(16576012)(66556008)(86362001)(54906003)(38100700002)(8936002)(186003)(40140700001)(8676002)(508600001)(31696002)(26005)(956004)(316002)(966005)(66476007)(110136005)(83380400001)(36916002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Y2NrRnI5cWtOTlJsV1lwbkFmcmc2U0RUVUNiTjc4OW9IOUNlbmdobHZScmxw?=
+ =?utf-8?B?Z1ZWaGhZWGpaeTJMY3lyQWFYRzNVUzJRTmFJK1BJdjVEaHQ0SWlpZ2F0MXBs?=
+ =?utf-8?B?R0Uvak91QkdDaEgvZkVFRDU2aWxNZ0FMQnhDZ3d1czVvdGVVWlBrQ1lRTXps?=
+ =?utf-8?B?eEVOdkhSZ2kxc2RSN1dUNWJPVW5jWklud3FKWFRnbWdsdXdQam1IN2RXV2cv?=
+ =?utf-8?B?RnlOUlJqRUpPN2dHZDhMR01DbytPNGpESmU5Rmp4L3h6UjhVVERGamxCeGpy?=
+ =?utf-8?B?ZCtES1pBUFJjMWRkSk16WkJiNXNFWU44enJOMG1Ec1dHRVFFQ1ZjZjFvdE1H?=
+ =?utf-8?B?UmZMK2tHQ2pLWVRFRVRhL1k0UzhDMThkSEFFZ20vY1gyNU9CbEpXdFovdEIz?=
+ =?utf-8?B?dmQ5TW8zVEdzUGJ1UXFoUEt1cThHNzlsenl6Z1NOZ25OOFo5aDhEcTVvRElj?=
+ =?utf-8?B?NGU5UWtVK3E5SjVGYmJhUjFJNzBCc3pmazFtbWNrbjVhYnZMSWJUYnZuNnpW?=
+ =?utf-8?B?eHl2dml5Q1pzYWpYNzd3N1hJR0x5RTVYdlFWaksycFNDc21MSHVYWHh3SUZ2?=
+ =?utf-8?B?dGQxSyszc2R4WnE4emRIYUp1WFhMZTJBb2JLdC8rMG9DSzlsdm5zTEVIbWhD?=
+ =?utf-8?B?RHYzUWJSU2hLUzhLL0d3Y3BCS3FtWW1yL0pxTlc5K21hRzJRbDZIVkRnM0kw?=
+ =?utf-8?B?U0RtYjg1VWJIKzZZWWV6Mkk0MEU3Q0JpbU82c2dzbktZZDgwQjl4L0VpTVF2?=
+ =?utf-8?B?U2hrRnR1ZVRHRDBDZ3Yvd2hrMElsQzRVVGVMY3N2R0pVUEwyTGRYWXo5VUZN?=
+ =?utf-8?B?aU1hc0htMm9COERYMHRLSmxBNXY1M01RTFM2a2hvUjZ5b01NNUIwSEN5NkY0?=
+ =?utf-8?B?V05JVWJHTTgxckdHVjJ3R1JUTndHWUJhN1NCSTZIeU5FK2EwQzI0UTdaS0x1?=
+ =?utf-8?B?TTMrUWVtRDNhbmVQVUg5WStUaUp3NDZMNDF5dmx1d2lsT2NyY3hzRTBGbXJR?=
+ =?utf-8?B?TTk1K3RzdWpHNjlHL1pEQmZtSU12ZWRwbEFtWVN6aTVCeEdJMTZ0OTZLamZr?=
+ =?utf-8?B?aEI2M3VCVkhpek9LQnRnbDFzVFdBSmJTc2UwaS8rb0M3bHZDUHhta1lsam5q?=
+ =?utf-8?B?OU9QQXp3MGh1NEl4bDRma1FNRXN1MklRTmtnSFpEZld0LzkzNTVCLzhRMnFu?=
+ =?utf-8?B?aVFsRlJodlZtcmtTRXdiaC9ETWp6WEhNZS9XYXV2SzZPZzc0ZDFDS3BJaEt6?=
+ =?utf-8?B?WnNKR3JsbkQ5TkI1MGsrb1JOUHBBMUxicHZMUjZ3ZHNHVDhLREN6a2Z1K25K?=
+ =?utf-8?B?dWpUb2ROQmpzN1d1amdQdithSlNRRnFuY3BzMHNVbk5qcGw1Y044SnRDdmIv?=
+ =?utf-8?B?MWg2U1ZTYlBQK3BSSE8wV01aa3BSMmU2cjh0SWtrelAvaGRQY3RGZXZIdGhI?=
+ =?utf-8?B?aGdvVVlUODEvRkVCTldCZ0U3aDNLOFdUbURsa2wzK0RrM2ZOZUJtbGZkSVV1?=
+ =?utf-8?B?NHJUOWhiVEl1UVNtcDY5YnRCLzdlbVAxQWxaZzNPN1krc1R6TW1jZXc5RXJM?=
+ =?utf-8?B?OWFpU0Z4bGFRRUozTlZNdFMvY1RkMk1ESEdRS3luMENyWlQxb2dlTy81RHFZ?=
+ =?utf-8?B?MU1yUlh5SFhMRFJCamJwd1FWL2xUOVdYTE02T0pKdTc5L1o0a2xCWStyRkIw?=
+ =?utf-8?B?MC8wWDVWc1M5MklOdlVjUlM4NnlJRE5mOGVBb1VvMmdhc1cyYWx5V2FrbWt5?=
+ =?utf-8?Q?+ke+ldMAZ7o/xHX1FKBSudpHfMmQ8zZZUV4No2q?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 74288d7e-5bd7-4ecf-87c8-08d97d34acf7
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5129.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2021 19:19:04.5281
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Ois2xtszmJ0ReJrway2yveG4YI3UOoCTF2VnGT05EKRMB/8gdqCnymvyceFZ/k+7/O2psdcdVQAHNE0qxdEsmQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5164
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 21/09/20 11:11AM, Darrick J. Wong wrote:
-> On Sat, Sep 18, 2021 at 10:37:57PM +0530, riteshh wrote:
-> > +cc linux-ext4
-> >
-> > [Thread]: https://lore.kernel.org/linux-xfs/163192864476.417973.143014658064006895.stgit@magnolia/T/#t
-> >
-> > On 21/09/17 06:31PM, Darrick J. Wong wrote:
-> > > From: Darrick J. Wong <djwong@kernel.org>
-> > >
-> > > Implement this new fallocate mode so that persistent memory users can,
-> > > upon receipt of a pmem poison notification, cause the pmem to be
-> > > reinitialized to a known value (zero) and clear any hardware poison
-> > > state that might be lurking.
-> > >
-> > > Signed-off-by: Darrick J. Wong <djwong@kernel.org>
-> > > ---
-> > >  fs/ext4/extents.c           |   93 +++++++++++++++++++++++++++++++++++++++++++
-> > >  include/trace/events/ext4.h |    7 +++
-> > >  2 files changed, 99 insertions(+), 1 deletion(-)
-> > >
-> > >
-> > > diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> > > index c0de30f25185..c345002e2da6 100644
-> > > --- a/fs/ext4/extents.c
-> > > +++ b/fs/ext4/extents.c
-> > > @@ -29,6 +29,7 @@
-> > >  #include <linux/fiemap.h>
-> > >  #include <linux/backing-dev.h>
-> > >  #include <linux/iomap.h>
-> > > +#include <linux/dax.h>
-> > >  #include "ext4_jbd2.h"
-> > >  #include "ext4_extents.h"
-> > >  #include "xattr.h"
-> > > @@ -4475,6 +4476,90 @@ static int ext4_collapse_range(struct inode *inode, loff_t offset, loff_t len);
-> > >
-> > >  static int ext4_insert_range(struct inode *inode, loff_t offset, loff_t len);
-> > >
-> > > +static long ext4_zeroinit_range(struct file *file, loff_t offset, loff_t len)
-> > > +{
-> > > +	struct inode *inode = file_inode(file);
-> > > +	struct address_space *mapping = inode->i_mapping;
-> > > +	handle_t *handle = NULL;
-> > > +	loff_t end = offset + len;
-> > > +	long ret;
-> > > +
-> > > +	trace_ext4_zeroinit_range(inode, offset, len,
-> > > +			FALLOC_FL_ZEROINIT_RANGE | FALLOC_FL_KEEP_SIZE);
-> > > +
-> > > +	/* We don't support data=journal mode */
-> > > +	if (ext4_should_journal_data(inode))
-> > > +		return -EOPNOTSUPP;
-> > > +
-> > > +	inode_lock(inode);
-> > > +
-> > > +	/*
-> > > +	 * Indirect files do not support unwritten extents
-> > > +	 */
-> > > +	if (!(ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))) {
-> > > +		ret = -EOPNOTSUPP;
-> > > +		goto out_mutex;
-> > > +	}
-> > > +
-> > > +	/* Wait all existing dio workers, newcomers will block on i_mutex */
-> > > +	inode_dio_wait(inode);
-> > > +
-> > > +	/*
-> > > +	 * Prevent page faults from reinstantiating pages we have released from
-> > > +	 * page cache.
-> > > +	 */
-> > > +	filemap_invalidate_lock(mapping);
-> > > +
-> > > +	ret = ext4_break_layouts(inode);
-> > > +	if (ret)
-> > > +		goto out_mmap;
-> > > +
-> > > +	/* Now release the pages and zero block aligned part of pages */
-> > > +	truncate_pagecache_range(inode, offset, end - 1);
-> > > +	inode->i_mtime = inode->i_ctime = current_time(inode);
-> > > +
-> > > +	if (IS_DAX(inode))
-> > > +		ret = dax_zeroinit_range(inode, offset, len,
-> > > +				&ext4_iomap_report_ops);
-> > > +	else
-> > > +		ret = iomap_zeroout_range(inode, offset, len,
-> > > +				&ext4_iomap_report_ops);
-> > > +	if (ret == -ECANCELED)
-> > > +		ret = -EOPNOTSUPP;
-> > > +	if (ret)
-> > > +		goto out_mmap;
-> > > +
-> > > +	/*
-> > > +	 * In worst case we have to writeout two nonadjacent unwritten
-> > > +	 * blocks and update the inode
-> > > +	 */
-> >
-> > Is this comment true? We are actually not touching IOMAP_UNWRITTEN blocks no?
-> > So is there any need for journal transaction for this?
-> > We are essentially only writing to blocks which are already allocated on disk
-> > and zeroing it out in both dax_zeroinit_range() and iomap_zeroinit_range().
->
-> Oops.  Yeah, the comment is wrong.  Deleted.
->
-> > > +	handle = ext4_journal_start(inode, EXT4_HT_MISC, 1);
-> >
-> > I guess credits is 1 here since only inode is getting modified.
->
-> Yep.
->
-> >
-> > > +	if (IS_ERR(handle)) {
-> > > +		ret = PTR_ERR(handle);
-> > > +		ext4_std_error(inode->i_sb, ret);
-> > > +		goto out_mmap;
-> > > +	}
-> > > +
-> > > +	inode->i_mtime = inode->i_ctime = current_time(inode);
-> > > +	ret = ext4_mark_inode_dirty(handle, inode);
-> > > +	if (unlikely(ret))
-> > > +		goto out_handle;
-> > > +	ext4_fc_track_range(handle, inode, offset >> inode->i_sb->s_blocksize_bits,
-> > > +			(offset + len - 1) >> inode->i_sb->s_blocksize_bits);
-> >
-> > I am not sure whether we need ext4_fc_track_range() here?
-> > We are not doing any metadata operation except maybe updating inode timestamp
-> > right?
->
-> I wasn't sure what fastcommit needs to track about the range.  Is it
-> /only/ tracking changes to the file mapping?
+As the programming models for GPU-based high-performance computing 
+applications are evolving, HMM is helping us integrate the GPU memory 
+management more closely with the kernel's virtual memory management. As 
+a result we can provide a shared virtual address space with 
+demand-paging and page-based migrations of anonymous pages to/from 
+device memory. A patch series by AMD [1, 2] to add support for 
+cache-coherent, CPU-accessible device memory has brought up some fairly 
+fundamental questions about HMM and its interaction with virtual memory 
+management, page cache and file systems. We'd like to use the chance of 
+getting together for a BoF [3] at LPC to raise awareness for HMM outside 
+the GPU driver code, identify gaps in the architectural documentation 
+and clarify our priorities for future development.
 
-cc'ing Harshad as well (to correct if any of below is incorrect/incomplete).
+Thank you, Daniel, for suggesting the BoF and getting it scheduled. It's 
+set for Friday, 10am Pacific, 1pm Eastern, 5pm UTC.
 
-I guess so yes, from reading this [1].
-ext4_fc_track_range() - Track _changed_ logical block offsets inodes
+I am registered at LPC. Daniel got a speaker's pass. We're still trying 
+to work something out for Alex.
 
-For only inode update, I guess fastcommit uses ext4_fc_track_inode(), which is
-implicit when we call ext4_mark_inode_dirty().
+I hope to see many of you on Friday.
 
-[1]: https://lore.kernel.org/all/20201015203802.3597742-6-harshadshirwadkar@gmail.com/
-
->
-> /me is sadly falling further and further behind on where ext4 is these
-> days... :/
->
-> >
-> > > +	ext4_update_inode_fsync_trans(handle, inode, 1);
-
-Then do we even need above?
-
--ritesh
+Best regards,
+   Felix
 
 
-> > > +
-> > > +	if (file->f_flags & O_SYNC)
-> > > +		ext4_handle_sync(handle);
-> > > +
-> > > +out_handle:
-> > > +	ext4_journal_stop(handle);
-> > > +out_mmap:
-> > > +	filemap_invalidate_unlock(mapping);
-> > > +out_mutex:
-> > > +	inode_unlock(inode);
-> > > +	return ret;
-> > > +}
-> > > +
-> > >  static long ext4_zero_range(struct file *file, loff_t offset,
-> > >  			    loff_t len, int mode)
-> > >  {
-> > > @@ -4659,7 +4744,7 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
-> > >  	/* Return error if mode is not supported */
-> > >  	if (mode & ~(FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE |
-> > >  		     FALLOC_FL_COLLAPSE_RANGE | FALLOC_FL_ZERO_RANGE |
-> > > -		     FALLOC_FL_INSERT_RANGE))
-> > > +		     FALLOC_FL_INSERT_RANGE | FALLOC_FL_ZEROINIT_RANGE))
-> > >  		return -EOPNOTSUPP;
-> > >
-> > >  	ext4_fc_start_update(inode);
-> > > @@ -4687,6 +4772,12 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
-> > >  		ret = ext4_zero_range(file, offset, len, mode);
-> > >  		goto exit;
-> > >  	}
-> > > +
-> > > +	if (mode & FALLOC_FL_ZEROINIT_RANGE) {
-> > > +		ret = ext4_zeroinit_range(file, offset, len);
-> > > +		goto exit;
-> > > +	}
-> > > +
-> > >  	trace_ext4_fallocate_enter(inode, offset, len, mode);
-> > >  	lblk = offset >> blkbits;
-> > >
-> > > diff --git a/include/trace/events/ext4.h b/include/trace/events/ext4.h
-> > > index 0ea36b2b0662..282f1208067f 100644
-> > > --- a/include/trace/events/ext4.h
-> > > +++ b/include/trace/events/ext4.h
-> > > @@ -1407,6 +1407,13 @@ DEFINE_EVENT(ext4__fallocate_mode, ext4_zero_range,
-> > >  	TP_ARGS(inode, offset, len, mode)
-> > >  );
-> > >
-> > > +DEFINE_EVENT(ext4__fallocate_mode, ext4_zeroinit_range,
-> > > +
-> > > +	TP_PROTO(struct inode *inode, loff_t offset, loff_t len, int mode),
-> > > +
-> > > +	TP_ARGS(inode, offset, len, mode)
-> > > +);
-> > > +
-> > >  TRACE_EVENT(ext4_fallocate_exit,
-> > >  	TP_PROTO(struct inode *inode, loff_t offset,
-> > >  		 unsigned int max_blocks, int ret),
-> > >
+[1] https://patchwork.freedesktop.org/series/94611/
+[2] https://patchwork.freedesktop.org/series/90706/
+[3] https://linuxplumbersconf.org/event/11/contributions/1123/
+
+-- 
+F e l i x   K u e h l i n g
+PMTS Software Development Engineer | Linux Compute Kernel
+1 Commerce Valley Dr. East, Markham, ON L3T 7X6 Canada
+(O) +1(289)695-1597
+     _     _   _   _____   _____
+    / \   | \ / | |  _  \  \ _  |
+   / A \  | \M/ | | |D) )  /|_| |
+  /_/ \_\ |_| |_| |_____/ |__/ \|   facebook.com/AMD | amd.com
+
