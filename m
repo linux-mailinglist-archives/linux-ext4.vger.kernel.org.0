@@ -2,65 +2,73 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1637D413DE8
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Sep 2021 01:18:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 399E0413F81
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 Sep 2021 04:36:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229976AbhIUXTj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 21 Sep 2021 19:19:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229794AbhIUXTj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 21 Sep 2021 19:19:39 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B674C061574;
-        Tue, 21 Sep 2021 16:18:10 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 4B44937B;
-        Tue, 21 Sep 2021 23:18:07 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 4B44937B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1632266287; bh=mf0KOo3ckLgLF2xp4Atdjuf2Zv+WYRw9Ib3vZUan8eg=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=lO0YHeqW1w8s/Pg9atLuXcSU1xX0RkfIxladUKapW/sOBjInYFXRrwiHCoNdkSDLr
-         wFWsLmFHbXkErZd8kwFtequp0VsoALal3sxJZAlzPowiKLo5F9OQj/yFZL3h9kCl7y
-         mrype6ytEXI+PMOoaW8wJtPT9HNmw9dL9BB1mYV89gxfpr6q5ScLrXWhcfk/E6JFP7
-         kLB39WExo53vtTLW8rtoedv7TPxQld/WF0HP21b9/fqTo5M/7+7N0zxkVVa8Y5T/Rg
-         NYTcOF5UFPLDw2kPkPGPB2of2zTIfrsB213dk4qrJ+pWW/fk8CzJItuC12ed//0CO2
-         dOop7seSRrcIg==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        linux-ext4@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH 1/2] ext4: docs: switch away from list-table
-In-Reply-To: <20210916095455.GE10610@quack2.suse.cz>
-References: <20210902220854.198850-1-corbet@lwn.net>
- <20210902220854.198850-2-corbet@lwn.net>
- <20210916095455.GE10610@quack2.suse.cz>
-Date:   Tue, 21 Sep 2021 17:18:06 -0600
-Message-ID: <877df9tt5d.fsf@meer.lwn.net>
+        id S229819AbhIVChx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 21 Sep 2021 22:37:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55592 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229466AbhIVChw (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 21 Sep 2021 22:37:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 56B8661178;
+        Wed, 22 Sep 2021 02:36:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632278183;
+        bh=fot5GTOfzIwkSGTvycywEcAtayVaDZk7RQjs5hY/iLM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=khIvVq5mk15hhgiDYyVIhMn4rPlsUa37QqB7PQiomxMNZCy21dcnfr2926AVgMkjw
+         FWS6HJzEhb5QqQ0F1ALQwsOm9Y6BDQ1XCoJ5H08at1fXpBCIRa2QAKAo4BUD3azuhI
+         e9r1S4j9cQoTHBsohvHGmMKkYprM2Ttwuy18uLI3Cv3owuc/USJ4l7YxJzOTBBRBJj
+         v0XfZepdLpzZCe+FLz8vK4bQEg9w5nIoUps0awJgMF3nWJ1h9tsGMpY6jTEdz/CJxA
+         bFi5LBqpgp3AMcD0OT3FtrIjUT53CnonqunBdqCc+6XBCfQgFOYOJT80AvsfZOlH2v
+         92vZJk3V6Kf8g==
+Date:   Tue, 21 Sep 2021 19:36:22 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Jan Kara <jack@suse.cz>, Eric Sandeen <sandeen@redhat.com>,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, dan.j.williams@intel.com
+Subject: Re: [PATCH 3/3] ext2: remove dax EXPERIMENTAL warning
+Message-ID: <20210922023622.GC570615@magnolia>
+References: <1631726561-16358-1-git-send-email-sandeen@redhat.com>
+ <1631726561-16358-4-git-send-email-sandeen@redhat.com>
+ <20210917094707.GD6547@quack2.suse.cz>
+ <YUSRHjynaozAuO+P@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUSRHjynaozAuO+P@infradead.org>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Jan Kara <jack@suse.cz> writes:
+On Fri, Sep 17, 2021 at 01:59:10PM +0100, Christoph Hellwig wrote:
+> On Fri, Sep 17, 2021 at 11:47:07AM +0200, Jan Kara wrote:
+> > On Wed 15-09-21 12:22:41, Eric Sandeen wrote:
+> > > As there seems to be no significant outstanding concern about
+> > > dax on ext2 at this point, remove the scary EXPERIMENTAL
+> > > warning when in use.
+> > > 
+> > > Signed-off-by: Eric Sandeen <sandeen@redhat.com>
+> > 
+> > Agreed. Do you want my ack or should I just merge this patch?
+> 
+> Please do not merge it.  The whole DAX path is still a mess and should
+> not be elevated to non-EXPERMINTAL state in this form.
 
-> On Thu 02-09-21 16:08:53, Jonathan Corbet wrote:
->> Commit 3a6541e97c03 (Add documentation about the orphan file feature) added
->> a new document on orphan files, which is great.  But the use of
->> "list-table" results in documents that are absolutely unreadable in their
->> plain-text form.  Switch this file to the regular RST table format instead;
->> the rendered (HTML) output is identical.
->> 
->> Signed-off-by: Jonathan Corbet <corbet@lwn.net>
->
-> Thanks! Definitely looks more readable :). You can add:
->
-> Reviewed-by: Jan Kara <jack@suse.cz>
+Hi Christoph,
 
-Thanks for having a look!  I'll ahead and apply these, then.
+'still a mess' isn't all that useful for figuring out what still needs
+to be done and splitting up the work.  Do you have items beyond my own
+list below?
 
-jon
+ - still arguing over what exactly FALLOC_FL_ZERO_REINIT_WHATEVER_PONIES
+   should be doing
+ - no reflink support, encompassing:
+ - hwpoison from mmap regions really ought to tell the fs that bad stuff
+   happened
+ - mm rmap can't handle more than one owner
+
+--D
+
