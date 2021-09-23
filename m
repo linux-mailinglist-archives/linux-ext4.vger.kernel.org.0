@@ -2,93 +2,185 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2BC41573F
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 Sep 2021 05:57:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FBDB415DF3
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 Sep 2021 14:12:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239094AbhIWD7M (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 22 Sep 2021 23:59:12 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:42680 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S237798AbhIWD7M (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 22 Sep 2021 23:59:12 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 18N3vZI2001360
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 22 Sep 2021 23:57:36 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id B2B9315C3756; Wed, 22 Sep 2021 23:57:35 -0400 (EDT)
-Date:   Wed, 22 Sep 2021 23:57:35 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     "Kiselev, Oleg" <okiselev@amazon.com>
-Cc:     Andreas Dilger <adilger@dilger.ca>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH] mke2fs: Add extended option for prezeroed storage devices
-Message-ID: <YUv7LzBIOodL6xyW@mit.edu>
-References: <20210921034203.323950-1-sarthakkukreti@google.com>
- <C5A2A75B-F767-40AC-B500-C99D484E9E30@dilger.ca>
- <0A4B11C1-A119-4733-A841-683889E9DC7B@amazon.com>
+        id S240740AbhIWMOF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 23 Sep 2021 08:14:05 -0400
+Received: from mx24.baidu.com ([111.206.215.185]:38184 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S240619AbhIWMOE (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 23 Sep 2021 08:14:04 -0400
+Received: from BC-Mail-Ex26.internal.baidu.com (unknown [172.31.51.20])
+        by Forcepoint Email with ESMTPS id 310902381A84B4CE59AF;
+        Thu, 23 Sep 2021 20:12:30 +0800 (CST)
+Received: from BJHW-MAIL-EX28.internal.baidu.com (10.127.64.43) by
+ BC-Mail-Ex26.internal.baidu.com (172.31.51.20) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 23 Sep 2021 20:12:30 +0800
+Received: from localhost.localdomain (172.31.62.16) by
+ BJHW-MAIL-EX28.internal.baidu.com (10.127.64.43) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Thu, 23 Sep 2021 20:12:29 +0800
+From:   xueqingwen <xueqingwen@baidu.com>
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>
+CC:     <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        xueqingwen <xueqingwen@baidu.com>, zhaojie <zhaojie17@baidu.com>,
+        jimyan <jimyan@baidu.com>
+Subject: [PATCH] ext4: start the handle later in ext4_writepages() to avoid unnecessary wait
+Date:   Thu, 23 Sep 2021 20:12:04 +0800
+Message-ID: <20210923121204.5772-1-xueqingwen@baidu.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0A4B11C1-A119-4733-A841-683889E9DC7B@amazon.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [172.31.62.16]
+X-ClientProxiedBy: BC-MAIL-EX01.internal.baidu.com (172.31.51.41) To
+ BJHW-MAIL-EX28.internal.baidu.com (10.127.64.43)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 03:31:00AM +0000, Kiselev, Oleg wrote:
-> Wouldn't it make more sense to use "write-same" of 0 instead of
-> writing a page of zeros and task the layers that do thin
-> provisioning and return 0 on read from unallocated blocks to check
-> if a block exists before writing zeros to it?
+The mpage_prepare_extent_to_map() was called in ext4_writepages() to find
+pages that need mapping. It probably waited for locking page in
+mpage_prepare_extent_to_map() while the handle had been started, which
+would block the commit of corresponding transaction and further likely to
+cause the I/O request delays jitter in other cgroups.
 
-The problem is we have absolutely no idea what "write-same" of 0 will
-actually do in terms of whether it will consume storage for various
-thinly provisioned devices.  We also have no idea what the performance
-might be.  It might be the same speed as explicitly passing in
-zero-filled buffers and sending DMA requests to a hard drive.  (e.g.,
-potentially very S-L-O-W.)
+This problem was touched in our pressure test environment as follow:
+There were two equivalent database server processes, which meet key-value
+request of data access by exposing different ports in a machine. They were
+attached to cgroup A and cgroup B, separately. They shared the same NVME
+SSD, and the io read/write bandwidth of the SSD was limited to 20Mbps by
+using io.max in cgroup A and the bandwidth limit was not set in cgroup B.
+Then the read/write requests with same pressure would be continuously sent
+to the two server processes separately and simultaneously. Our expectation
+is that the server process in cgroup B could meet the request latency
+metrics.
 
-That's technically true for "discard" as well, except there's a vague
-understanding that discard will generally be faster than writing all
-zeros --- it's just that it might also be a no-op, or it might
-randomly be a no-op, depending on the phase of the moon, or anything
-other random variable, including whether "the storage device feels
-like it or not".
+According to the previous discussion in upstream community,
+the dioread_nolock was mounted for ext4 and the io priority inversion
+problem has indeed been alleviated to a great extent. However, in the
+above test scenario, the write request of server process in cgroup B would
+be hanged occasionally with servel sceconds, causing a sharp increase of
+request latency. The stacktraces when hanging were captured as follows:
 
-Bottom line --- unfortunately, the SATA/SCSI standards authors were
-mealy-mouthed and made discard something which is completely useless
-for our purposes.  And since we don't know anything about the
-performance of write same and what it might do from the perspective of
-thin-provisioned storage, we can't really depend on it either.
+PID: 7602  COMMAND: "jbd2/nvme0n1-8":
+ #0 __schedule
+ #1 schedule
+ #2 jbd2_journal_commit_transaction
+ #3 kjournald2
+ #4 kthread
+ #5 ret_from_fork
 
-The problem is mke2fs really does need to care about the performance
-of discard or write same.  Users want mke2fs to be fast, especially
-during the distro installation process.  That's why we implemented the
-lazy inode table initialization feature in the first place.  So
-reading all each block from the inode table to see if it's zero might
-be slow, and so we might be better off just doing the lazy itable init
-instead.
+PID: 55526 COMMAND: "kworker/u114:9":
+ #0 __schedule
+ #1 schedule
+ #2 io_schedule
+ #3 __lock_page
+ #4 mpage_prepare_extent_to_map
+ #5 ext4_writepages
+ #6 do_writepages
+ #7 __writeback_single_inode
+ #8 writeback_sb_inodes
+ #9 __writeback_inodes_wb
 
-Hence, I think Sarthak's approach of giving an explicit hint is a good
-approach.
+PID: 109830  COMMAND: "snnode":
+ #0 __schedule
+ #1 schedule
+ #2 io_schedule
+ #3 wait_on_page_bit
+ #4 mpage_prepare_extent_to_map
+ #5 ext4_writepages
+ #6 do_writepages
+ #7 __filemap_fdatawrite_range
+ #8 file_write_and_wait_range
+ #9 ext4_sync_file
 
-The other approach we can use is to depend on metadata checksums, and
-the fact that a new file system will use a different UUID for the seed
-for the checksum.  Unfortunately, in order to make this work well, we
-need to change e2fsck so that if the checksum doesn't work out ---
-especially if all of the checksums in an inode table block are
-incorrect --- we need to assume that it means we should just presume
-that the inode table block is from an old instance of the file system,
-and return a zero-filled block when reading that inode table block.
-(Right now, e2fsck still offers the chance to just fix the checksum,
-back when we were worried there might be bugs in the metadata checksum
-code.)
+By analyzing the above stack information, it indicated that the process
+named "kworker/u114:9" was waitting for locking a page while holding a
+handle. The page was locked by the process named "snnode", which belonged
+to cgroup A, and its writeback to block device was throttled. Then the
+Kjournald2 process had to wait the handle being stopped to commit current
+transaction. Then it caused the I/O request delays jitter from the cgroup
+B.
 
-But I don't think the two approaches are mutually exclusive.  The
-approach of an explicit hint is a "safe" and a lot easier to review.
+Therefore, the handle was delayed to start until finding the pages that
+need mapping in ext4_writepages(). With this patch, the above problem did
+not recur. We had looked this patch over pretty carefully, but another pair
+of eyes would be appreciated. Please help to review whether there are
+defects and whether it can be merged to upstream.
 
-Cheers,
+Thanks.
 
-					- Ted
+Co-developed-by: zhaojie <zhaojie17@baidu.com>
+Signed-off-by: zhaojie <zhaojie17@baidu.com>
+Signed-off-by: xueqingwen <xueqingwen@baidu.com>
+Signed-off-by: jimyan <jimyan@baidu.com>
+---
+ fs/ext4/inode.c | 36 +++++++++++++++++++++---------------
+ 1 file changed, 21 insertions(+), 15 deletions(-)
+
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index d18852d6029c..29bb7ab3e01f 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -2785,26 +2785,32 @@ static int ext4_writepages(struct address_space *mapping,
+ 		BUG_ON(ext4_should_journal_data(inode));
+ 		needed_blocks = ext4_da_writepages_trans_blocks(inode);
+ 
+-		/* start a new transaction */
+-		handle = ext4_journal_start_with_reserve(inode,
+-				EXT4_HT_WRITE_PAGE, needed_blocks, rsv_blocks);
+-		if (IS_ERR(handle)) {
+-			ret = PTR_ERR(handle);
+-			ext4_msg(inode->i_sb, KERN_CRIT, "%s: jbd2_start: "
+-			       "%ld pages, ino %lu; err %d", __func__,
+-				wbc->nr_to_write, inode->i_ino, ret);
+-			/* Release allocated io_end */
+-			ext4_put_io_end(mpd.io_submit.io_end);
+-			mpd.io_submit.io_end = NULL;
+-			break;
+-		}
+ 		mpd.do_map = 1;
+ 
+ 		trace_ext4_da_write_pages(inode, mpd.first_page, mpd.wbc);
+ 		ret = mpage_prepare_extent_to_map(&mpd);
+-		if (!ret && mpd.map.m_len)
++		if (!ret && mpd.map.m_len) {
++			/* start a new transaction */
++			handle = ext4_journal_start_with_reserve(inode,
++					EXT4_HT_WRITE_PAGE, needed_blocks, rsv_blocks);
++			if (IS_ERR(handle)) {
++				ret = PTR_ERR(handle);
++				ext4_msg(inode->i_sb, KERN_CRIT,
++					"%s: jbd2_start: %ld pages, ino %lu; err %d",
++					__func__, wbc->nr_to_write, inode->i_ino, ret);
++				/*submit prepared bio if has*/
++				ext4_io_submit(&mpd.io_submit);
++
++				/* Release allocated io_end */
++				ext4_put_io_end(mpd.io_submit.io_end);
++				mpd.io_submit.io_end = NULL;
++				/*unlock pages we don't use */
++				mpage_release_unused_pages(&mpd, false);
++				break;
++			}
+ 			ret = mpage_map_and_submit_extent(handle, &mpd,
+ 					&give_up_on_write);
++		}
+ 		/*
+ 		 * Caution: If the handle is synchronous,
+ 		 * ext4_journal_stop() can wait for transaction commit
+@@ -2815,7 +2821,7 @@ static int ext4_writepages(struct address_space *mapping,
+ 		 * and dropped io_end reference (for extent conversion
+ 		 * to be able to complete) before stopping the handle.
+ 		 */
+-		if (!ext4_handle_valid(handle) || handle->h_sync == 0) {
++		if (handle && (!ext4_handle_valid(handle) || handle->h_sync == 0)) {
+ 			ext4_journal_stop(handle);
+ 			handle = NULL;
+ 			mpd.do_map = 0;
+-- 
+2.17.1
+
