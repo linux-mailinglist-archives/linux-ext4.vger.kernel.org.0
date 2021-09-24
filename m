@@ -2,224 +2,60 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8ADA4179C0
-	for <lists+linux-ext4@lfdr.de>; Fri, 24 Sep 2021 19:20:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 031B44179E6
+	for <lists+linux-ext4@lfdr.de>; Fri, 24 Sep 2021 19:34:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344841AbhIXRVy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 24 Sep 2021 13:21:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28040 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347774AbhIXRUz (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 24 Sep 2021 13:20:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632503962;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=x7BpkThd4W7Otj77d326ZQ439zIBR66OsnpLRS8EUC4=;
-        b=EnuirPLModdDX58xXF8rMtKag2tVQLfPVY5pY7QCZBXWth90DhAClt9aRZaJo+le1WtDfO
-        mI3548RUesLmS5gIvm/mWVEPKgFdW8iA9eR7VovqB/87sW3kKzIBhHb0ovhU/iNDVJ0Ce1
-        nEGxpejQSTuERWCpK0O72rW8ouuFnk8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-384-FXe5ABoKNvWZ-0xXSP1U8g-1; Fri, 24 Sep 2021 13:19:21 -0400
-X-MC-Unique: FXe5ABoKNvWZ-0xXSP1U8g-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4F5DC802B9F;
-        Fri, 24 Sep 2021 17:19:18 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.44])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D7B3D5F707;
-        Fri, 24 Sep 2021 17:19:12 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH v3 8/9] block, btrfs, ext4, xfs: Implement swap_rw
-From:   David Howells <dhowells@redhat.com>
-To:     willy@infradead.org, hch@lst.de, trond.myklebust@primarydata.com
-Cc:     Jens Axboe <axboe@kernel.dk>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J. Wong" <djwong@kernel.org>, linux-block@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, dhowells@redhat.com, dhowells@redhat.com,
-        darrick.wong@oracle.com, viro@zeniv.linux.org.uk,
-        jlayton@kernel.org, torvalds@linux-foundation.org,
-        linux-nfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Fri, 24 Sep 2021 18:19:11 +0100
-Message-ID: <163250395192.2330363.9101664122191208351.stgit@warthog.procyon.org.uk>
-In-Reply-To: <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
-References: <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        id S1344699AbhIXRf0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 24 Sep 2021 13:35:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51920 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344554AbhIXRfY (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 24 Sep 2021 13:35:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 6D2486103B;
+        Fri, 24 Sep 2021 17:33:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632504831;
+        bh=l80xHo3LSMbaGxsESA1waD33TNPr+o5h4iO7rcDNJT0=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=sZ8YJai1GukF0TijwiL+fdd7BDThnF+L9mMTzL10kylpD13HKpR/1SMVa3n/pAYik
+         SroIqvun7TQZdVFpz3y4nROFfik3H+k2AUeAuysA79viE+/lNlOg1rWu8vxQ9OKTOp
+         IhIEzQonO5DFRnYI68X8M4iN9eJ8osFdIm94KAEIte6a7nuDsXG3bD1nWwqkAfO5mJ
+         TCHuvH9mAxeJhZWkMU2tbtD1KuD/yF0GowExaQxkRZDuUZ/9Cg1gEEkecEHINO1B4Q
+         /t3If4uzyCzLZz4vOdKqrr+GpZvkoT+bixYCjipPWM75+UEc0orHCyJEDXLam/0K+5
+         Rc+YacNMDbbjA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 673F460A88;
+        Fri, 24 Sep 2021 17:33:51 +0000 (UTC)
+Subject: Re: [GIT PULL] Two fixes for 5.15-rc3
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210924102703.GA19744@quack2.suse.cz>
+References: <20210924102703.GA19744@quack2.suse.cz>
+X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210924102703.GA19744@quack2.suse.cz>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git fixes_for_v5.15-rc3
+X-PR-Tracked-Commit-Id: 372d1f3e1bfede719864d0d1fbf3146b1e638c88
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: e655c81ade7b877cb5ee31c85e88928ec3f77db6
+Message-Id: <163250483141.13479.1938375695052407939.pr-tracker-bot@kernel.org>
+Date:   Fri, 24 Sep 2021 17:33:51 +0000
+To:     Jan Kara <jack@suse.cz>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-mm@kvack.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Implement swap_rw for block devices, btrfs, ext4 and xfs.  This allows the
-the page swapping code to use direct-IO rather than direct bio submission,
-whilst skipping the checks going via read/write_iter would entail.
+The pull request you sent on Fri, 24 Sep 2021 12:27:04 +0200:
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Matthew Wilcox <willy@infradead.org>
-cc: Christoph Hellwig <hch@lst.de>
-cc: Jens Axboe <axboe@kernel.dk>
-cc: Chris Mason <clm@fb.com>
-cc: Josef Bacik <josef@toxicpanda.com>
-cc: David Sterba <dsterba@suse.com>
-cc: "Theodore Ts'o" <tytso@mit.edu>
-cc: Andreas Dilger <adilger.kernel@dilger.ca>
-cc: Darrick J. Wong <djwong@kernel.org>
-cc: linux-block@vger.kernel.org
-cc: linux-btrfs@vger.kernel.org
-cc: linux-ext4@vger.kernel.org
-cc: linux-xfs@vger.kernel.org
-cc: linux-fsdevel@vger.kernel.org
-cc: linux-mm@kvack.org
----
+> git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git fixes_for_v5.15-rc3
 
- block/fops.c      |    1 +
- fs/btrfs/inode.c  |   12 +++++-------
- fs/ext4/inode.c   |    9 +++++++++
- fs/xfs/xfs_aops.c |    9 +++++++++
- 4 files changed, 24 insertions(+), 7 deletions(-)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/e655c81ade7b877cb5ee31c85e88928ec3f77db6
 
-diff --git a/block/fops.c b/block/fops.c
-index 84c64d814d0d..7ba37dfafae2 100644
---- a/block/fops.c
-+++ b/block/fops.c
-@@ -382,6 +382,7 @@ const struct address_space_operations def_blk_aops = {
- 	.write_end	= blkdev_write_end,
- 	.writepages	= blkdev_writepages,
- 	.direct_IO	= blkdev_direct_IO,
-+	.swap_rw	= blkdev_direct_IO,
- 	.migratepage	= buffer_migrate_page_norefs,
- 	.is_dirty_writeback = buffer_check_dirty_writeback,
- 	.supports	= AS_SUPPORTS_DIRECT_IO,
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index b479c97e42fc..9ffcefecb3bb 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -10852,15 +10852,10 @@ static int btrfs_swap_activate(struct swap_info_struct *sis, struct file *file,
- 	sis->highest_bit = bsi.nr_pages - 1;
- 	return bsi.nr_extents;
- }
--#else
--static void btrfs_swap_deactivate(struct file *file)
--{
--}
- 
--static int btrfs_swap_activate(struct swap_info_struct *sis, struct file *file,
--			       sector_t *span)
-+static ssize_t btrfs_swap_rw(struct kiocb *iocb, struct iov_iter *iter)
- {
--	return -EOPNOTSUPP;
-+	return iomap_dio_rw(iocb, iter, &btrfs_dio_iomap_ops, NULL, 0);
- }
- #endif
- 
-@@ -10944,8 +10939,11 @@ static const struct address_space_operations btrfs_aops = {
- #endif
- 	.set_page_dirty	= btrfs_set_page_dirty,
- 	.error_remove_page = generic_error_remove_page,
-+#ifdef CONFIG_SWAP
- 	.swap_activate	= btrfs_swap_activate,
- 	.swap_deactivate = btrfs_swap_deactivate,
-+	.swap_rw	= btrfs_swap_rw,
-+#endif
- 	.supports	= AS_SUPPORTS_DIRECT_IO,
- };
- 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 08d3541d8daa..3c14724d58a8 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -3651,6 +3651,11 @@ static int ext4_iomap_swap_activate(struct swap_info_struct *sis,
- 				       &ext4_iomap_report_ops);
- }
- 
-+static ssize_t ext4_swap_rw(struct kiocb *iocb, struct iov_iter *iter)
-+{
-+	return iomap_dio_rw(iocb, iter, &ext4_iomap_ops, NULL, 0);
-+}
-+
- static const struct address_space_operations ext4_aops = {
- 	.readpage		= ext4_readpage,
- 	.readahead		= ext4_readahead,
-@@ -3666,6 +3671,7 @@ static const struct address_space_operations ext4_aops = {
- 	.is_partially_uptodate  = block_is_partially_uptodate,
- 	.error_remove_page	= generic_error_remove_page,
- 	.swap_activate		= ext4_iomap_swap_activate,
-+	.swap_rw		= ext4_swap_rw,
- 	.supports		= AS_SUPPORTS_DIRECT_IO,
- };
- 
-@@ -3683,6 +3689,7 @@ static const struct address_space_operations ext4_journalled_aops = {
- 	.is_partially_uptodate  = block_is_partially_uptodate,
- 	.error_remove_page	= generic_error_remove_page,
- 	.swap_activate		= ext4_iomap_swap_activate,
-+	.swap_rw		= ext4_swap_rw,
- 	.supports		= AS_SUPPORTS_DIRECT_IO,
- };
- 
-@@ -3701,6 +3708,7 @@ static const struct address_space_operations ext4_da_aops = {
- 	.is_partially_uptodate  = block_is_partially_uptodate,
- 	.error_remove_page	= generic_error_remove_page,
- 	.swap_activate		= ext4_iomap_swap_activate,
-+	.swap_rw		= ext4_swap_rw,
- 	.supports		= AS_SUPPORTS_DIRECT_IO,
- };
- 
-@@ -3710,6 +3718,7 @@ static const struct address_space_operations ext4_dax_aops = {
- 	.bmap			= ext4_bmap,
- 	.invalidatepage		= noop_invalidatepage,
- 	.swap_activate		= ext4_iomap_swap_activate,
-+	.swap_rw		= ext4_swap_rw,
- 	.supports		= AS_SUPPORTS_DIRECT_IO,
- };
- 
-diff --git a/fs/xfs/xfs_aops.c b/fs/xfs/xfs_aops.c
-index 2a4570516591..23ade2cc8241 100644
---- a/fs/xfs/xfs_aops.c
-+++ b/fs/xfs/xfs_aops.c
-@@ -540,6 +540,13 @@ xfs_iomap_swapfile_activate(
- 			&xfs_read_iomap_ops);
- }
- 
-+static ssize_t xfs_swap_rw(struct kiocb *iocb, struct iov_iter *iter)
-+{
-+	if (iocb->ki_flags & IOCB_WRITE)
-+		return iomap_dio_rw(iocb, iter, &xfs_direct_write_iomap_ops, NULL, 0);
-+	return iomap_dio_rw(iocb, iter, &xfs_read_iomap_ops, NULL, 0);
-+}
-+
- const struct address_space_operations xfs_address_space_operations = {
- 	.readpage		= xfs_vm_readpage,
- 	.readahead		= xfs_vm_readahead,
-@@ -552,6 +559,7 @@ const struct address_space_operations xfs_address_space_operations = {
- 	.is_partially_uptodate  = iomap_is_partially_uptodate,
- 	.error_remove_page	= generic_error_remove_page,
- 	.swap_activate		= xfs_iomap_swapfile_activate,
-+	.swap_rw		= xfs_swap_rw,
- 	.supports		= AS_SUPPORTS_DIRECT_IO,
- };
- 
-@@ -560,5 +568,6 @@ const struct address_space_operations xfs_dax_aops = {
- 	.set_page_dirty		= __set_page_dirty_no_writeback,
- 	.invalidatepage		= noop_invalidatepage,
- 	.swap_activate		= xfs_iomap_swapfile_activate,
-+	.swap_rw		= xfs_swap_rw,
- 	.supports		= AS_SUPPORTS_DIRECT_IO,
- };
+Thank you!
 
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
